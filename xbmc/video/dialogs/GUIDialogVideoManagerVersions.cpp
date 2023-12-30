@@ -185,6 +185,8 @@ void CGUIDialogVideoManagerVersions::SetDefaultVideoVersion(const CFileItem& ver
 bool CGUIDialogVideoManagerVersions::AddVideoVersion()
 {
   CFileItemList items;
+  if (!GetSimilarMovies(items))
+    return false;
 
   CGUIDialogSelect* dialog{CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
       WINDOW_DIALOG_SELECT)};
@@ -198,10 +200,9 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersion()
   // Load thumbs async
   CVideoThumbLoader loader;
   loader.Load(items);
-
   dialog->Reset();
   dialog->SetItems(items);
-  dialog->SetHeading(CVariant{40002});
+  dialog->SetHeading(40030);
   dialog->SetUseDetails(true);
   dialog->EnableButton(true, 40028); // Browse files
   dialog->EnableButton2(true, 40029); // Browse library
@@ -213,7 +214,7 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersion()
   if (dialog->IsConfirmed())
   {
     // A similar movie was selected
-    return false;
+    return AddSimilarMovieAsVersion(dialog->GetSelectedFileItem());
   }
   else if (dialog->IsButtonPressed())
   {
@@ -518,4 +519,70 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
     return true;
   }
   return false;
+}
+
+bool CGUIDialogVideoManagerVersions::GetSimilarMovies(CFileItemList& list)
+{
+  list.Clear();
+
+  CVideoDatabase videoDb;
+  if (!videoDb.Open())
+  {
+    CLog::LogF(LOGERROR, "Failed to open video database!");
+    return false;
+  }
+
+  videoDb.GetSameVideoItems(*m_videoAsset, list);
+
+  if (list.Size() < 2)
+  {
+    list.Clear();
+    return true;
+  }
+
+  const int dbId{m_videoAsset->GetVideoInfoTag()->m_iDbId};
+  for (int i = 0; i < list.Size(); ++i)
+  {
+    if (dbId == list[i]->GetVideoInfoTag()->m_iDbId)
+    {
+      list.Remove(i);
+      break;
+    }
+  }
+
+  // decorate the items
+  for (const auto& item : list)
+  {
+    item->SetLabel2(item->GetVideoInfoTag()->m_strFileNameAndPath);
+  }
+
+  return true;
+}
+
+bool CGUIDialogVideoManagerVersions::AddSimilarMovieAsVersion(
+    const std::shared_ptr<CFileItem> itemMovie)
+{
+  // A movie with versions cannot be turned into a version
+  if (itemMovie->GetVideoInfoTag()->HasVideoVersions())
+  {
+    CGUIDialogOK::ShowAndGetInput(CVariant{40005}, CVariant{40006});
+    return false;
+  }
+
+  // choose a video version type for the video
+  const int idVideoVersion{ChooseVideoAsset(itemMovie, VideoAssetType::VERSION)};
+  if (idVideoVersion < 0)
+    return false;
+
+  CVideoDatabase videoDb;
+  if (!videoDb.Open())
+  {
+    CLog::LogF(LOGERROR, "Failed to open video database!");
+    return false;
+  }
+
+  const int sourceDbId{itemMovie->GetVideoInfoTag()->m_iDbId};
+  const int targetDbId{m_videoAsset->GetVideoInfoTag()->m_iDbId};
+  return videoDb.ConvertVideoToVersion(VideoDbContentType::MOVIES, sourceDbId, targetDbId,
+                                       idVideoVersion);
 }

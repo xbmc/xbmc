@@ -23920,7 +23920,13 @@ msgctxt "#40029"
 msgid "Browse library"
 msgstr ""
 
-#empty strings with id 40030 to 40199
+#. Select the movie to be added as a version
+#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
+msgctxt "#40030"
+msgid "Select movie to add as a version"
+msgstr ""
+
+#empty strings with id 40031 to 40199
 
 #. Select default video version setting
 #: system/settings/settings.xml

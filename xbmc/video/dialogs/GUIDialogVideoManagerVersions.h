@@ -52,6 +52,15 @@ private:
   void SetDefault();
   void UpdateDefaultVideoVersionSelection();
 
+  /*!
+   * \brief 
+   * \param items The items for the user to choose from
+   * \param itemType Type of the item being chosen
+   * \param mediaType "movie" ?
+   * \param dbId id of the video being added
+   * \param videoDb Databse connection
+   * \return 
+  */
   static bool ChooseVideoAndConvertToVideoVersion(CFileItemList& items,
                                                   VideoDbContentType itemType,
                                                   const std::string& mediaType,
@@ -62,6 +71,21 @@ private:
    * \return True when a version was added, false otherwise
    */
   bool AddVideoVersionFilePicker();
+
+  /*!
+   * \brief Populates a list of movies of the library that are similar to the video asset of the
+   * dialog
+   * \param[out] list The list of movies
+   * \return True for success, false otherwise
+   */
+  bool GetSimilarMovies(CFileItemList& list);
+
+  /*!
+   * \brief Convert the movie into a version
+   * \param itemMovie Movie to convert
+   * \return True for success, false otherwse
+   */
+  bool AddSimilarMovieAsVersion(const std::shared_ptr<CFileItem> itemMovie);
 
   std::shared_ptr<CFileItem> m_defaultVideoVersion;
 };
