@@ -9,6 +9,7 @@
 #pragma once
 
 #include "guilib/XBTFReader.h"
+#include "threads/CriticalSection.h"
 
 #include <map>
 #include <memory>
@@ -54,5 +55,6 @@ private:
   static std::string NormalizePath(const CURL& path);
 
   mutable XBTFReaders m_readers;
+  mutable CCriticalSection m_lock;
 };
 }
