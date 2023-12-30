@@ -184,6 +184,12 @@ void CGUIDialogVideoManagerVersions::SetDefaultVideoVersion(const CFileItem& ver
 
 bool CGUIDialogVideoManagerVersions::AddVideoVersion()
 {
+  if (!m_videoAsset || !m_videoAsset->HasVideoInfoTag())
+  {
+    CLog::LogF(LOGERROR, "invalid video asset");
+    return false;
+  }
+
   CFileItemList items;
   if (!GetSimilarMovies(items))
     return false;
@@ -224,7 +230,21 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersion()
   else if (dialog->IsButton2Pressed())
   {
     // User wants to browse the library
-    return false;
+    CVideoDatabase videoDb;
+    if (!videoDb.Open())
+    {
+      CLog::LogF(LOGERROR, "Failed to open video database!");
+      return false;
+    }
+
+    if (!GetAllOtherMovies(m_videoAsset, items, videoDb))
+      return false;
+
+    const auto tag{m_videoAsset->GetVideoInfoTag()};
+
+    return ChooseVideoAndConvertToVideoVersion(items, m_videoAsset->GetVideoContentType(),
+                                               tag->m_type, tag->m_iDbId, videoDb,
+                                               MediaRole::Parent);
   }
   return false;
 }
@@ -331,15 +351,22 @@ bool CGUIDialogVideoManagerVersions::ChooseVideoAndConvertToVideoVersion(
     VideoDbContentType itemType,
     const std::string& mediaType,
     int dbId,
-    CVideoDatabase& videoDb)
+    CVideoDatabase& videoDb,
+    MediaRole role)
 {
+  if (items.Size() == 0)
+  {
+    CGUIDialogOK::ShowAndGetInput(role == MediaRole::NewVersion ? 40002 : 40030, 40031);
+    return false;
+  }
+
   // choose a video
   CGUIDialogSelect* dialog{CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
       WINDOW_DIALOG_SELECT)};
   if (!dialog)
   {
     CLog::LogF(LOGERROR, "Unable to get WINDOW_DIALOG_SELECT instance!");
-    return {};
+    return false;
   }
 
   // Load thumbs async
@@ -348,7 +375,7 @@ bool CGUIDialogVideoManagerVersions::ChooseVideoAndConvertToVideoVersion(
 
   dialog->Reset();
   dialog->SetItems(items);
-  dialog->SetHeading(CVariant{40002});
+  dialog->SetHeading(role == MediaRole::NewVersion ? 40002 : 40030);
   dialog->SetUseDetails(true);
   dialog->Open();
 
@@ -367,8 +394,68 @@ bool CGUIDialogVideoManagerVersions::ChooseVideoAndConvertToVideoVersion(
   if (idVideoVersion < 0)
     return false;
 
-  videoDb.ConvertVideoToVersion(itemType, dbId, selectedItem->GetVideoInfoTag()->m_iDbId,
-                                idVideoVersion);
+  int sourceDbId, targetDbId;
+  switch (role)
+  {
+    case MediaRole::NewVersion:
+      sourceDbId = dbId;
+      targetDbId = selectedItem->GetVideoInfoTag()->m_iDbId;
+      break;
+    case MediaRole::Parent:
+      sourceDbId = selectedItem->GetVideoInfoTag()->m_iDbId;
+      targetDbId = dbId;
+      break;
+    default:
+      return false;
+  }
+
+  return videoDb.ConvertVideoToVersion(itemType, sourceDbId, targetDbId, idVideoVersion);
+}
+
+bool CGUIDialogVideoManagerVersions::GetAllOtherMovies(const std::shared_ptr<CFileItem>& item,
+                                                       CFileItemList& list,
+                                                       CVideoDatabase& videoDb)
+{
+  if (!item || !item->HasVideoInfoTag())
+    return false;
+
+  // get video list
+  const std::string videoTitlesDir{StringUtils::Format(
+      "videodb://{}/titles", CMediaTypes::ToPlural(item->GetVideoInfoTag()->m_type))};
+
+  list.Clear();
+
+  if (item->GetVideoContentType() == VideoDbContentType::MOVIES)
+    videoDb.GetMoviesNav(videoTitlesDir, list);
+  else
+    return false;
+
+  if (list.Size() < 2)
+    return false;
+
+  list.Sort(SortByLabel, SortOrderAscending,
+            CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING)
+                ? SortAttributeIgnoreArticle
+                : SortAttributeNone);
+
+  const int dbId{item->GetVideoInfoTag()->m_iDbId};
+
+  for (int i = 0; i < list.Size(); ++i)
+  {
+    if (list[i]->GetVideoInfoTag()->m_iDbId == dbId)
+    {
+      list.Remove(i);
+      break;
+    }
+  }
+
+  // decorate the items
+  for (const auto& item : list)
+  {
+    item->SetLabel2(item->GetVideoInfoTag()->m_strFileNameAndPath);
+  }
+
   return true;
 }
 
@@ -421,7 +508,8 @@ bool CGUIDialogVideoManagerVersions::ProcessVideoVersion(VideoDbContentType item
     item->SetLabel2(item->GetVideoInfoTag()->m_strFileNameAndPath);
   }
 
-  return ChooseVideoAndConvertToVideoVersion(list, itemType, mediaType, dbId, videodb);
+  return ChooseVideoAndConvertToVideoVersion(list, itemType, mediaType, dbId, videodb,
+                                             MediaRole::NewVersion);
 }
 
 bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
