@@ -58,7 +58,12 @@ bool CGUIDialogVideoManagerVersions::OnMessage(CGUIMessage& message)
       const int control{message.GetSenderId()};
       if (control == CONTROL_BUTTON_ADD_VERSION)
       {
-        AddVideoVersion();
+        if (AddVideoVersion())
+        {
+          // refresh data and controls
+          Refresh();
+          UpdateControls();
+        }
       }
       else if (control == CONTROL_BUTTON_SET_DEFAULT)
       {
@@ -177,9 +182,9 @@ void CGUIDialogVideoManagerVersions::SetDefaultVideoVersion(const CFileItem& ver
   CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
 }
 
-void CGUIDialogVideoManagerVersions::AddVideoVersion()
+bool CGUIDialogVideoManagerVersions::AddVideoVersion()
 {
-  AddVideoVersionFilePicker();
+  return AddVideoVersionFilePicker();
 }
 
 std::tuple<int, std::string> CGUIDialogVideoManagerVersions::NewVideoVersion()
@@ -377,7 +382,7 @@ bool CGUIDialogVideoManagerVersions::ProcessVideoVersion(VideoDbContentType item
   return ChooseVideoAndConvertToVideoVersion(list, itemType, mediaType, dbId, videodb);
 }
 
-void CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
+bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
 {
   const int dbId{m_videoAsset->GetVideoInfoTag()->m_iDbId};
   const MediaType mediaType{m_videoAsset->GetVideoInfoTag()->m_type};
@@ -414,7 +419,7 @@ void CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
       {
         CGUIDialogOK::ShowAndGetInput(
             CVariant{40014}, StringUtils::Format(g_localizeStrings.Get(40016), typeVideoVersion));
-        return;
+        return false;
       }
 
       if (itemMediaType == MediaTypeMovie)
@@ -422,13 +427,13 @@ void CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
         videoTitle = m_database.GetMovieTitle(idMedia);
       }
       else
-        return;
+        return false;
 
       if (!CGUIDialogYesNo::ShowAndGetInput(
               CVariant{40014},
               StringUtils::Format(g_localizeStrings.Get(40017), typeVideoVersion, videoTitle)))
       {
-        return;
+        return false;
       }
 
       if (m_database.IsDefaultVideoVersion(idFile))
@@ -439,7 +444,7 @@ void CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
         if (list.Size() > 1)
         {
           CGUIDialogOK::ShowAndGetInput(CVariant{40014}, CVariant{40019});
-          return;
+          return false;
         }
         else
         {
@@ -448,7 +453,7 @@ void CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
             m_database.DeleteMovie(idMedia);
           }
           else
-            return;
+            return false;
         }
       }
       else
@@ -469,8 +474,7 @@ void CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
     if (idNewVideoVersion != -1)
       m_database.AddPrimaryVideoVersion(itemType, dbId, idNewVideoVersion, item);
 
-    // refresh data and controls
-    Refresh();
-    UpdateControls();
+    return true;
   }
+  return false;
 }

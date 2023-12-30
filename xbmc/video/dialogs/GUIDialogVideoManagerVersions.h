@@ -44,7 +44,11 @@ protected:
 
 private:
   void SetDefaultVideoVersion(const CFileItem& version);
-  void AddVideoVersion();
+  /*!
+   * \brief Prompt the user to select a file / movie to add as version
+   * \return true if a version was added, false otherwise.
+   */
+  bool AddVideoVersion();
   void SetDefault();
   void UpdateDefaultVideoVersionSelection();
 
@@ -55,8 +59,9 @@ private:
                                                   CVideoDatabase& videoDb);
   /*!
    * \brief Use a file picker to select a file to add as a new version of a movie.
+   * \return True when a version was added, false otherwise
    */
-  void AddVideoVersionFilePicker();
+  bool AddVideoVersionFilePicker();
 
   std::shared_ptr<CFileItem> m_defaultVideoVersion;
 };
