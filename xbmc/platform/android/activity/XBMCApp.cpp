@@ -1333,6 +1333,11 @@ void CXBMCApp::onReceive(CJNIIntent intent)
       if (winSystem && dynamic_cast<CWinSystemAndroid*>(winSystem))
         dynamic_cast<CWinSystemAndroid*>(winSystem)->SetHdmiState(hdmiPlugged);
     }
+    if (hdmiPlugged)
+    {
+      CLog::Log(LOGDEBUG, "CXBMCApp::{}: Reset audio engine", __FUNCTION__);
+      CServiceBroker::GetActiveAE()->DeviceChange();
+    }
   }
   else if (action == CJNIIntent::ACTION_SCREEN_ON)
   {
