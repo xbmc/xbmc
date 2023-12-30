@@ -184,7 +184,48 @@ void CGUIDialogVideoManagerVersions::SetDefaultVideoVersion(const CFileItem& ver
 
 bool CGUIDialogVideoManagerVersions::AddVideoVersion()
 {
-  return AddVideoVersionFilePicker();
+  CFileItemList items;
+
+  CGUIDialogSelect* dialog{CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
+      WINDOW_DIALOG_SELECT)};
+
+  if (!dialog)
+  {
+    CLog::LogF(LOGERROR, "Unable to get WINDOW_DIALOG_SELECT instance!");
+    return false;
+  }
+
+  // Load thumbs async
+  CVideoThumbLoader loader;
+  loader.Load(items);
+
+  dialog->Reset();
+  dialog->SetItems(items);
+  dialog->SetHeading(CVariant{40002});
+  dialog->SetUseDetails(true);
+  dialog->EnableButton(true, 40028); // Browse files
+  dialog->EnableButton2(true, 40029); // Browse library
+  dialog->Open();
+
+  if (loader.IsLoading())
+    loader.StopThread();
+
+  if (dialog->IsConfirmed())
+  {
+    // A similar movie was selected
+    return false;
+  }
+  else if (dialog->IsButtonPressed())
+  {
+    // User wants to browse the files
+    return AddVideoVersionFilePicker();
+  }
+  else if (dialog->IsButton2Pressed())
+  {
+    // User wants to browse the library
+    return false;
+  }
+  return false;
 }
 
 std::tuple<int, std::string> CGUIDialogVideoManagerVersions::NewVideoVersion()
