@@ -53,6 +53,10 @@ private:
                                                   const std::string& mediaType,
                                                   int dbId,
                                                   CVideoDatabase& videoDb);
+  /*!
+   * \brief Use a file picker to select a file to add as a new version of a movie.
+   */
+  void AddVideoVersionFilePicker();
 
   std::shared_ptr<CFileItem> m_defaultVideoVersion;
 };
