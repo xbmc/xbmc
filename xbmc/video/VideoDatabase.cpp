@@ -6238,6 +6238,18 @@ void CVideoDatabase::UpdateTables(int iVersion)
   if (iVersion < 128)
   {
     m_pDS2->exec("ALTER TABLE videoversion RENAME COLUMN mediaType TO media_type");
+
+    // Fix gap in the migration to videodb v127 for unused user-defined video version types.
+    // Unfortunately due to original design we cannot tell which ones were movie versions or
+    // extras and now they're all displayed in the version type selection for movies.
+    // Remove them all as the better fix of providing a GUI to manage version types will not be
+    // available in Omega v21. That implies the loss of the unused user-defined version names
+    // created since v21 beta 2.
+    m_pDS2->exec(PrepareSQL("DELETE FROM videoversiontype "
+                            "WHERE id NOT IN (SELECT idType FROM videoversion) "
+                            "AND owner = %i "
+                            "AND itemType = %i",
+                            VideoAssetTypeOwner::USER, VideoAssetType::VERSION));
   }
 }
 
