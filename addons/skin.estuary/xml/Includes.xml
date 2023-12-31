@@ -265,7 +265,7 @@
 					<right>0</right>
 					<bottom>0</bottom>
 					<texture colordiffuse="button_focus">lists/focus.png</texture>
-					<visible>Control.HasFocus($PARAM[list_id])</visible>
+					<animation effect="fade" start="100" end="50" time="0">UnFocus</animation>
 				</control>
 				<control type="group">
 					<visible>ListItem.Property(PVR.IsRecordingTimer) | ListItem.Property(PVR.IsRemindingTimer)</visible>

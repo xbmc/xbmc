@@ -102,7 +102,7 @@
 						<right>0</right>
 						<bottom>0</bottom>
 						<texture colordiffuse="button_focus">lists/focus.png</texture>
-						<visible>Control.HasFocus(6)</visible>
+						<animation effect="fade" start="100" end="50" time="0">UnFocus</animation>
 					</control>
 					<control type="image">
 						<left>12</left>
