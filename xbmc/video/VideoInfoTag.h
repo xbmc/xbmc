@@ -319,6 +319,18 @@ public:
   void SetHasVideoExtras(bool hasExtras);
 
   /*!
+   * @brief Whether the item is the default video version.
+   * @return True if the item is the default version, false otherwise.
+   */
+  bool IsDefaultVideoVersion() const { return m_isDefaultVideoVersion; }
+
+  /*!
+   * @brief Set whether the item is the default version.
+   * @param isDefaultVideoVersion The default flag.
+   */
+  void SetIsDefaultVideoVersion(bool isDefaultVideoVersion);
+
+  /*!
    * @brief Set this videos's resume point.
    * @param timeInSeconds the time of the resume point
    * @param totalTimeInSeconds the total time of the video
@@ -419,6 +431,7 @@ private:
   CAssetInfo m_assetInfo;
   bool m_hasVideoVersions{false};
   bool m_hasVideoExtras{false};
+  bool m_isDefaultVideoVersion{false};
 };
 
 typedef std::vector<CVideoInfoTag> VECMOVIES;
