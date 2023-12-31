@@ -736,12 +736,14 @@ CUPnPRenderer::OnSeek(PLT_ActionReference& action)
   NPT_CHECK_SEVERE(action->GetArgumentValue("Unit", unit));
   NPT_CHECK_SEVERE(action->GetArgumentValue("Target", target));
 
-  if (!unit.Compare("REL_TIME"))
+  if (unit.Compare("REL_TIME") == 0)
   {
     // converts target to seconds
     NPT_UInt32 seconds;
     NPT_CHECK_SEVERE(PLT_Didl::ParseTimeStamp(target, seconds));
-    g_application.SeekTime(seconds);
+    // seek (milliseconds)
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_SEEK_TIME,
+                                               static_cast<int64_t>(seconds * 1000));
   }
 
     return NPT_SUCCESS;
