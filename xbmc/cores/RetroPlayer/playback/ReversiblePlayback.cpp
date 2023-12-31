@@ -180,9 +180,8 @@ std::string CReversiblePlayback::CreateSavestate(bool autosave,
 
     // Save async to not block game loop
     std::future<void> task =
-        std::async(std::launch::async, [this, autosave, savePath, nowUTC, timestampFrames]() {
-          CommitSavestate(autosave, savePath, nowUTC, timestampFrames);
-        });
+        std::async(std::launch::async, [this, autosave, savePath, nowUTC, timestampFrames]()
+                   { CommitSavestate(autosave, savePath, nowUTC, timestampFrames); });
 
     m_savestateThreads.emplace_back(std::move(task));
   }
