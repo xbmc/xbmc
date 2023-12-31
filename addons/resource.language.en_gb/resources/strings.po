@@ -23932,7 +23932,13 @@ msgctxt "#40031"
 msgid "No other movies found in the library."
 msgstr ""
 
-#empty strings with id 40032 to 40199
+#. Add version: no similar movies were found in the library.
+#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
+msgctxt "#40032"
+msgid "No similar movies were found in the library."
+msgstr ""
+
+#empty strings with id 40033 to 40199
 
 #. Select default video version setting
 #: system/settings/settings.xml

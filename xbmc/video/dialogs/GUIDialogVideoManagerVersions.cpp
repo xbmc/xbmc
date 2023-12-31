@@ -201,6 +201,45 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersion()
   if (!GetSimilarMovies(m_videoAsset, items, videoDb))
     return false;
 
+  if (items.Size() == 0)
+  {
+    // No button = browse library
+    // Yes button = browse files
+    // Custom button = cancel
+
+    const int dlgResult{CGUIDialogYesNo::ShowAndGetInput(
+        CVariant{40030}, CVariant{40032}, CVariant{40029}, CVariant{40028}, CVariant{222},
+        CGUIDialogYesNo::NO_TIMEOUT)};
+
+    switch (dlgResult)
+    {
+      case CGUIDialogYesNo::DIALOG_RESULT_CANCEL:
+      case CGUIDialogYesNo::DIALOG_RESULT_CUSTOM:
+        // Dialog dismissed or Cancel button
+        return false;
+
+      case CGUIDialogYesNo::DIALOG_RESULT_NO:
+      {
+        // Browse library
+        if (!GetAllOtherMovies(m_videoAsset, items, videoDb))
+          return false;
+
+        const auto tag{m_videoAsset->GetVideoInfoTag()};
+
+        return ChooseVideoAndConvertToVideoVersion(items, m_videoAsset->GetVideoContentType(),
+                                                   tag->m_type, tag->m_iDbId, videoDb,
+                                                   MediaRole::Parent);
+      }
+
+      case CGUIDialogYesNo::DIALOG_RESULT_YES:
+        // Browse files
+        return AddVideoVersionFilePicker();
+    }
+
+    CLog::LogF(LOGERROR, "Unknown return value {} from CGUIDialogYesNo", dlgResult);
+    return false;
+  }
+
   CGUIDialogSelect* dialog{CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
       WINDOW_DIALOG_SELECT)};
 
