@@ -40,4 +40,9 @@ protected:
 private:
   void AddVideoExtra();
   static std::string GenerateVideoExtra(const std::string& extrasPath);
+  /*!
+   * \brief Return a likely location for extras related to the movie
+   * \return path of the location
+  */
+  std::string GetLikelyExtrasPath();
 };
