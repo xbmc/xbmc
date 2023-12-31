@@ -206,7 +206,7 @@ void CVideoDatabase::CreateTables()
   InitializeVideoVersionTypeTable(GetSchemaVersion());
 
   CLog::Log(LOGINFO, "create videoversion table");
-  m_pDS->exec("CREATE TABLE videoversion (idFile INTEGER PRIMARY KEY, idMedia INTEGER, mediaType "
+  m_pDS->exec("CREATE TABLE videoversion (idFile INTEGER PRIMARY KEY, idMedia INTEGER, media_type "
               "TEXT, itemType INTEGER, idType INTEGER)");
 }
 
@@ -289,7 +289,7 @@ void CVideoDatabase::CreateAnalytics()
               "actor_link (media_id, media_type(20), actor_id)");
   m_pDS->exec("CREATE INDEX ix_actor_link_3 ON actor_link (media_type(20))");
 
-  m_pDS->exec("CREATE INDEX ix_videoversion ON videoversion (idMedia, mediaType(20))");
+  m_pDS->exec("CREATE INDEX ix_videoversion ON videoversion (idMedia, media_type(20))");
 
   m_pDS->exec(PrepareSQL("CREATE INDEX ix_movie_title ON movie (c%02d(255))", VIDEODB_ID_TITLE));
 
@@ -313,7 +313,7 @@ void CVideoDatabase::CreateAnalytics()
               "DELETE FROM tag_link WHERE media_id=old.idMovie AND media_type='movie'; "
               "DELETE FROM rating WHERE media_id=old.idMovie AND media_type='movie'; "
               "DELETE FROM uniqueid WHERE media_id=old.idMovie AND media_type='movie'; "
-              "DELETE FROM videoversion WHERE idMedia=old.idMovie AND mediaType='movie'; "
+              "DELETE FROM videoversion WHERE idMedia=old.idMovie AND media_type='movie'; "
               "END");
   m_pDS->exec("CREATE TRIGGER delete_tvshow AFTER DELETE ON tvshow FOR EACH ROW BEGIN "
               "DELETE FROM actor_link WHERE media_id=old.idShow AND media_type='tvshow'; "
@@ -573,7 +573,7 @@ void CVideoDatabase::CreateViews()
                                      "    SELECT 1 "
                                      "    FROM  videoversion vv "
                                      "    WHERE vv.idMedia = movie.idMovie "
-                                     "    AND   vv.mediaType = 'movie' "
+                                     "    AND   vv.media_type = '%s' "
                                      "    AND   vv.itemType = %i "
                                      "    AND   vv.idFile <> movie.idFile "
                                      "  ) AS hasVideoVersions, "
@@ -581,7 +581,7 @@ void CVideoDatabase::CreateViews()
                                      "    SELECT 1 "
                                      "    FROM  videoversion vv "
                                      "    WHERE vv.idMedia = movie.idMovie "
-                                     "    AND   vv.mediaType = 'movie' "
+                                     "    AND   vv.media_type = '%s' "
                                      "    AND   vv.itemType = %i "
                                      "  ) AS hasVideoExtras "
                                      "FROM movie"
@@ -597,7 +597,8 @@ void CVideoDatabase::CreateViews()
                                      "    rating.rating_id=movie.c%02d"
                                      "  LEFT JOIN uniqueid ON"
                                      "    uniqueid.uniqueid_id=movie.c%02d",
-                                     VideoAssetType::VERSION, VideoAssetType::EXTRA,
+                                     MediaTypeMovie, VideoAssetType::VERSION, 
+                                     MediaTypeMovie, VideoAssetType::EXTRA,
                                      VIDEODB_ID_RATING_ID, VIDEODB_ID_IDENT_ID);
   m_pDS->exec(movieview);
 }
@@ -1460,9 +1461,11 @@ int CVideoDatabase::AddNewMovie(CVideoInfoTag& details)
     m_pDS->exec(
         PrepareSQL("INSERT INTO movie (idMovie, idFile) VALUES (NULL, %i)", details.m_iFileId));
     details.m_iDbId = static_cast<int>(m_pDS->lastinsertid());
-    m_pDS->exec(PrepareSQL("INSERT INTO videoversion VALUES(%i, %i, 'movie', %i, '%i')",
-                           details.m_iFileId, details.m_iDbId, VideoAssetType::VERSION,
-                           VIDEO_VERSION_ID_DEFAULT));
+    m_pDS->exec(
+        PrepareSQL("INSERT INTO videoversion (idFile, idMedia, media_type, itemType, idType) "
+                   "VALUES(%i, %i, '%s', %i, %i)",
+                   details.m_iFileId, details.m_iDbId, MediaTypeMovie, VideoAssetType::VERSION,
+                   VIDEO_VERSION_ID_DEFAULT));
 
     CommitTransaction();
 
@@ -6230,6 +6233,11 @@ void CVideoDatabase::UpdateTables(int iVersion)
       m_pDS->next();
     }
     m_pDS->close();
+  }
+
+  if (iVersion < 128)
+  {
+    m_pDS2->exec("ALTER TABLE videoversion RENAME COLUMN mediaType TO media_type");
   }
 }
 
@@ -11437,8 +11445,8 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
       const int idVideoVersion = option->second.asInteger();
       if (idVideoVersion > 0)
         filter.AppendWhere(PrepareSQL("idMovie IN (SELECT idMedia FROM videoversion WHERE "
-                                      "mediaType = 'movie' AND idType = %i)",
-                                      idVideoVersion));
+                                      "media_type = '%s' AND idType = %i)",
+                                      MediaTypeMovie, idVideoVersion));
     }
 
     AppendIdLinkFilter("tag", "tag", "movie", "movie", "idMovie", options, filter);
@@ -11883,7 +11891,7 @@ void CVideoDatabase::GetVideoVersions(VideoDbContentType itemType,
                              "FROM videoversiontype"
                              "  JOIN videoversion ON"
                              "    videoversion.idType = videoversiontype.id "
-                             "WHERE videoversion.idMedia = %i AND videoversion.mediaType = '%s' "
+                             "WHERE videoversion.idMedia = %i AND videoversion.media_type = '%s' "
                              "AND videoversion.itemType = %i",
                              dbId, mediaType.c_str(), videoAssetType));
 
@@ -12069,11 +12077,11 @@ bool CVideoDatabase::IsDefaultVideoVersion(int idFile)
   try
   {
     m_pDS->query(
-        PrepareSQL("SELECT idMedia, mediaType FROM videoversion WHERE idFile = %i", idFile));
+        PrepareSQL("SELECT idMedia, media_type FROM videoversion WHERE idFile = %i", idFile));
     if (m_pDS->num_rows() > 0)
     {
       int idMedia = m_pDS->fv("idMedia").get_asInt();
-      std::string mediaType = m_pDS->fv("mediaType").get_asString();
+      std::string mediaType = m_pDS->fv("media_type").get_asString();
 
       if (mediaType == MediaTypeMovie)
       {
@@ -12179,7 +12187,7 @@ void CVideoDatabase::AddVideoVersion(VideoDbContentType itemType,
       m_pDS->exec(PrepareSQL("INSERT INTO videoversion VALUES(%i, %i, '%s', %i, %i)", idFile, dbId,
                              mediaType.c_str(), videoAssetType, idVideoVersion));
     else
-      m_pDS->exec(PrepareSQL("UPDATE videoversion SET idMedia = %i, mediaType = '%s', itemType = "
+      m_pDS->exec(PrepareSQL("UPDATE videoversion SET idMedia = %i, media_type = '%s', itemType = "
                              "%i, idType = %i WHERE idFile = %i",
                              dbId, mediaType.c_str(), videoAssetType, idVideoVersion, idFile));
 
@@ -12212,7 +12220,7 @@ int CVideoDatabase::GetVideoVersionFile(VideoDbContentType itemType, int dbId, i
   try
   {
     m_pDS2->query(PrepareSQL(
-        "SELECT idFile FROM videoversion WHERE idMedia = %i AND mediaType = '%s' and idType = %i",
+        "SELECT idFile FROM videoversion WHERE idMedia = %i AND media_type = '%s' and idType = %i",
         dbId, mediaType.c_str(), idVideoVersion));
 
     if (!m_pDS2->eof())
@@ -12260,7 +12268,7 @@ int CVideoDatabase::GetVideoVersionInfo(int idFile,
     m_pDS->query(PrepareSQL("SELECT videoversiontype.name AS name,"
                             "  videoversiontype.id AS id,"
                             "  videoversion.idMedia AS idMedia,"
-                            "  videoversion.mediaType AS mediaType,"
+                            "  videoversion.media_type AS mediaType,"
                             "  videoversion.itemType AS itemType "
                             "FROM videoversion"
                             "  JOIN videoversiontype ON "
@@ -12273,7 +12281,7 @@ int CVideoDatabase::GetVideoVersionInfo(int idFile,
       idVideoVersion = m_pDS->fv("id").get_asInt();
       typeVideoVersion = m_pDS->fv("name").get_asString();
       idMedia = m_pDS->fv("idMedia").get_asInt();
-      mediaType = m_pDS->fv("mediaType").get_asString();
+      mediaType = m_pDS->fv("media_type").get_asString();
       videoAssetType = static_cast<VideoAssetType>(m_pDS->fv("itemType").get_asInt());
     }
 
@@ -12453,12 +12461,12 @@ bool CVideoDatabase::GetVideoItemByVideoVersion(int dbId, CFileItem& item)
 
   try
   {
-    m_pDS->query(PrepareSQL("SELECT idMedia, mediaType FROM videoversion WHERE idFile = %i", dbId));
+    m_pDS->query(PrepareSQL("SELECT idMedia, media_type FROM videoversion WHERE idFile = %i", dbId));
 
     if (m_pDS->num_rows() > 0)
     {
       int idMedia = m_pDS->fv("idMedia").get_asInt();
-      std::string mediaType = m_pDS->fv("mediaType").get_asString();
+      std::string mediaType = m_pDS->fv("media_type").get_asString();
 
       m_pDS->close();
 
