@@ -768,10 +768,35 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
     else if (layout >= 0)
     {
       wfxex.dwChannelMask = CAESinkFactoryWin::ChLayoutToChMask(layoutsList[layout], &noOfCh);
+
+      if (noOfCh != requestedChannels)
+        continue;
+
       wfxex.Format.nChannels = noOfCh;
       int res = desired_map & wfxex.dwChannelMask;
       if (res != desired_map)
-        continue; // output channel layout doesn't match input channels
+      {
+        bool skip = true;
+        if (requestedChannels == 6 && wfxex.Format.nChannels == 6)
+        {
+          // For old sound cards it might look as follows
+          // Works: Channel Layout: FL, FR, FC, LFE, BL, BR
+          // Does not work: FL, FR, FC, LFE, SL, SR
+          // in the mask comparison SL and SR remain as driver only
+          // returns BL and BR channel
+          CLog::LogF(LOGDEBUG, "Fallback Matching Res: {} SL|SR {} BL|BR {}", res,
+                     (int)(SPEAKER_SIDE_LEFT | SPEAKER_SIDE_RIGHT),
+                     (int)(SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT));
+          if (res == (SPEAKER_SIDE_LEFT | SPEAKER_SIDE_RIGHT) &&
+              (wfxex.dwChannelMask & (SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT) != 0))
+          {
+            CLog::LogF(LOGINFO, "Falling back to wide channel layout 5.1");
+            skip = false;
+          }
+          if (skip)
+            continue; // output channel layout doesn't match input channels
+        }
+      }
     }
     CAEChannelInfo foundChannels;
     CAESinkFactoryWin::AEChannelsFromSpeakerMask(foundChannels, wfxex.dwChannelMask);
