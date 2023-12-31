@@ -338,17 +338,26 @@ public:
   /*!
    * \brief Access the input manager passed to the constructor
    */
-  CInputManager& GetInputManager() { return m_inputManager; }
+  CInputManager& GetInputManager()
+  {
+    return m_inputManager;
+  }
 
   /*!
    * \brief Access controller profiles through the construction parameter
    */
-  KODI::GAME::CControllerManager& GetControllerProfiles() { return m_controllerProfiles; }
+  KODI::GAME::CControllerManager& GetControllerProfiles()
+  {
+    return m_controllerProfiles;
+  }
 
   /*!
    * \brief Get a mutex that allows for add-on install tasks to block on each other
    */
-  CCriticalSection& GetAddonInstallMutex() { return m_addonInstallMutex; }
+  CCriticalSection& GetAddonInstallMutex()
+  {
+    return m_addonInstallMutex;
+  }
 
 private:
   bool LoadMappings();

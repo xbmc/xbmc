@@ -155,23 +155,26 @@ void CPeripheralJoystick::InitializeControllerProfile(IButtonMap& buttonMap)
                          m_installTasks.end());
 
     // Install controller off-thread
-    std::future<void> installTask = std::async(std::launch::async, [this]() {
-      // Withdraw controller from queue
-      std::string controllerToInstall;
-      {
-        std::unique_lock<CCriticalSection> lock(m_controllerInstallMutex);
-        if (!m_controllersToInstall.empty())
-        {
-          controllerToInstall = m_controllersToInstall.front();
-          m_controllersToInstall.pop();
-        }
-      }
+    std::future<void> installTask =
+        std::async(std::launch::async,
+                   [this]()
+                   {
+                     // Withdraw controller from queue
+                     std::string controllerToInstall;
+                     {
+                       std::unique_lock<CCriticalSection> lock(m_controllerInstallMutex);
+                       if (!m_controllersToInstall.empty())
+                       {
+                         controllerToInstall = m_controllersToInstall.front();
+                         m_controllersToInstall.pop();
+                       }
+                     }
 
-      // Do the install
-      GAME::ControllerPtr controller = InstallAsync(controllerToInstall);
-      if (controller)
-        CPeripheral::SetControllerProfile(controller);
-    });
+                     // Do the install
+                     GAME::ControllerPtr controller = InstallAsync(controllerToInstall);
+                     if (controller)
+                       CPeripheral::SetControllerProfile(controller);
+                   });
 
     // Hold the task to prevent the destructor from completing during an install
     m_installTasks.emplace_back(std::move(installTask));
@@ -229,9 +232,8 @@ void CPeripheralJoystick::UnregisterJoystickDriverHandler(IDriverHandler* handle
   std::unique_lock<CCriticalSection> lock(m_handlerMutex);
 
   m_driverHandlers.erase(std::remove_if(m_driverHandlers.begin(), m_driverHandlers.end(),
-                                        [handler](const DriverHandler& driverHandler) {
-                                          return driverHandler.handler == handler;
-                                        }),
+                                        [handler](const DriverHandler& driverHandler)
+                                        { return driverHandler.handler == handler; }),
                          m_driverHandlers.end());
 }
 

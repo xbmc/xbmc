@@ -445,7 +445,8 @@ void CPeripheralBusAddon::UpdateAddons(void)
 void CPeripheralBusAddon::UnRegisterAddon(const std::string& addonId)
 {
   PeripheralAddonPtr erased;
-  auto ErasePeripheralAddon = [&addonId, &erased](const PeripheralAddonPtr& addon) {
+  auto ErasePeripheralAddon = [&addonId, &erased](const PeripheralAddonPtr& addon)
+  {
     if (addon->ID() == addonId)
     {
       erased = addon;
@@ -478,10 +479,9 @@ void CPeripheralBusAddon::PromptEnableAddons(
   // True if the user confirms enabling the disabled peripheral add-on
   bool bAccepted = false;
 
-  auto itAddon =
-      std::find_if(disabledAddons.begin(), disabledAddons.end(), [](const AddonInfoPtr& addonInfo) {
-        return CPeripheralAddon::ProvidesJoysticks(addonInfo);
-      });
+  auto itAddon = std::find_if(disabledAddons.begin(), disabledAddons.end(),
+                              [](const AddonInfoPtr& addonInfo)
+                              { return CPeripheralAddon::ProvidesJoysticks(addonInfo); });
 
   if (itAddon != disabledAddons.end())
   {
