@@ -268,9 +268,8 @@ void CGUIPortList::OnItemSelect(unsigned int itemIndex)
     // Check if we should show a "disconnect" option
     const bool showDisconnect = !port.IsForceConnected();
 
-    auto callback = [this, port = std::move(port)](const ControllerPtr& controller) {
-      OnControllerSelected(port, controller);
-    };
+    auto callback = [this, port = std::move(port)](const ControllerPtr& controller)
+    { OnControllerSelected(port, controller); };
 
     m_controllerSelectDialog.Initialize(std::move(controllers), std::move(controller),
                                         showDisconnect, callback);

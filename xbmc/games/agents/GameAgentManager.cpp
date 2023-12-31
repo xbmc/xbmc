@@ -239,9 +239,9 @@ void CGameAgentManager::ProcessKeyboard()
     {
       CControllerTree controllers = m_gameClient->Input().GetActiveControllerTree();
 
-      auto it = std::find_if(
-          controllers.GetPorts().begin(), controllers.GetPorts().end(),
-          [](const CPortNode& port) { return port.GetPortType() == PORT_TYPE::KEYBOARD; });
+      auto it = std::find_if(controllers.GetPorts().begin(), controllers.GetPorts().end(),
+                             [](const CPortNode& port)
+                             { return port.GetPortType() == PORT_TYPE::KEYBOARD; });
 
       PERIPHERALS::PeripheralPtr keyboard = std::move(keyboards.at(0));
       m_gameClient->Input().OpenKeyboard(it->GetActiveController().GetController(), keyboard);
@@ -261,9 +261,9 @@ void CGameAgentManager::ProcessMouse()
     {
       CControllerTree controllers = m_gameClient->Input().GetActiveControllerTree();
 
-      auto it = std::find_if(
-          controllers.GetPorts().begin(), controllers.GetPorts().end(),
-          [](const CPortNode& port) { return port.GetPortType() == PORT_TYPE::MOUSE; });
+      auto it = std::find_if(controllers.GetPorts().begin(), controllers.GetPorts().end(),
+                             [](const CPortNode& port)
+                             { return port.GetPortType() == PORT_TYPE::MOUSE; });
 
       PERIPHERALS::PeripheralPtr mouse = std::move(mice.at(0));
       m_gameClient->Input().OpenMouse(it->GetActiveController().GetController(), mouse);
@@ -281,10 +281,9 @@ void CGameAgentManager::ProcessAgents(const PERIPHERALS::PeripheralVector& joyst
   // Handle new and existing agents
   for (const auto& joystick : joysticks)
   {
-    auto it =
-        std::find_if(m_agents.begin(), m_agents.end(), [&joystick](const GameAgentPtr& agent) {
-          return agent->GetPeripheralLocation() == joystick->Location();
-        });
+    auto it = std::find_if(m_agents.begin(), m_agents.end(),
+                           [&joystick](const GameAgentPtr& agent)
+                           { return agent->GetPeripheralLocation() == joystick->Location(); });
 
     if (it == m_agents.end())
     {
@@ -322,9 +321,8 @@ void CGameAgentManager::ProcessAgents(const PERIPHERALS::PeripheralVector& joyst
   for (const auto& agent : m_agents)
   {
     auto it = std::find_if(joysticks.begin(), joysticks.end(),
-                           [&agent](const PERIPHERALS::PeripheralPtr& joystick) {
-                             return agent->GetPeripheralLocation() == joystick->Location();
-                           });
+                           [&agent](const PERIPHERALS::PeripheralPtr& joystick)
+                           { return agent->GetPeripheralLocation() == joystick->Location(); });
 
     if (it == joysticks.end())
       expiredJoysticks.emplace_back(agent->GetPeripheralLocation());
@@ -332,9 +330,8 @@ void CGameAgentManager::ProcessAgents(const PERIPHERALS::PeripheralVector& joyst
   for (const std::string& expiredJoystick : expiredJoysticks)
   {
     auto it = std::find_if(m_agents.begin(), m_agents.end(),
-                           [&expiredJoystick](const GameAgentPtr& agent) {
-                             return agent->GetPeripheralLocation() == expiredJoystick;
-                           });
+                           [&expiredJoystick](const GameAgentPtr& agent)
+                           { return agent->GetPeripheralLocation() == expiredJoystick; });
     if (it != m_agents.end())
     {
       if (!inputHandlingLock)
@@ -364,7 +361,8 @@ void CGameAgentManager::UpdateExpiredJoysticks(const PERIPHERALS::PeripheralVect
 
     // Search peripheral vector for input provider
     auto it2 = std::find_if(joysticks.begin(), joysticks.end(),
-                            [inputProviderCopy](const PERIPHERALS::PeripheralPtr& joystick) {
+                            [inputProviderCopy](const PERIPHERALS::PeripheralPtr& joystick)
+                            {
                               // Upcast peripheral to input interface
                               JOYSTICK::IInputProvider* peripheralInput = joystick.get();
 
@@ -482,7 +480,8 @@ CGameAgentManager::PortMap CGameAgentManager::MapJoysticks(
   // order.
   PERIPHERALS::PeripheralVector availableJoysticks = peripheralJoysticks;
   std::sort(availableJoysticks.begin(), availableJoysticks.end(),
-            [](const PERIPHERALS::PeripheralPtr& lhs, const PERIPHERALS::PeripheralPtr& rhs) {
+            [](const PERIPHERALS::PeripheralPtr& lhs, const PERIPHERALS::PeripheralPtr& rhs)
+            {
               if (lhs->LastActive().IsValid() && !rhs->LastActive().IsValid())
                 return true;
               if (!lhs->LastActive().IsValid() && rhs->LastActive().IsValid())
@@ -515,9 +514,8 @@ CGameAgentManager::PortMap CGameAgentManager::MapJoysticks(
 
       // Find peripheral with matching source location
       itJoystick = std::find_if(availableJoysticks.begin(), availableJoysticks.end(),
-                                [&currentPeripheral](const PERIPHERALS::PeripheralPtr& joystick) {
-                                  return joystick->Location() == currentPeripheral;
-                                });
+                                [&currentPeripheral](const PERIPHERALS::PeripheralPtr& joystick)
+                                { return joystick->Location() == currentPeripheral; });
     }
 
     if (itJoystick == availableJoysticks.end())
@@ -525,7 +523,8 @@ CGameAgentManager::PortMap CGameAgentManager::MapJoysticks(
       // Get the next most recently active joystick that doesn't have a current port
       itJoystick = std::find_if(
           availableJoysticks.begin(), availableJoysticks.end(),
-          [&currentPeripherals, &gameClientjoysticks](const PERIPHERALS::PeripheralPtr& joystick) {
+          [&currentPeripherals, &gameClientjoysticks](const PERIPHERALS::PeripheralPtr& joystick)
+          {
             const PeripheralLocation& joystickLocation = joystick->Location();
 
             // If joystick doesn't have a current port, use it

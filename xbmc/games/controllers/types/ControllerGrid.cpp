@@ -48,17 +48,17 @@ unsigned int CControllerGrid::AddPorts(const PortVec& ports, ControllerGrid& gri
 {
   unsigned int height = 0;
 
-  auto itKeyboard = std::find_if(ports.begin(), ports.end(), [](const CPortNode& port) {
-    return port.GetPortType() == PORT_TYPE::KEYBOARD;
-  });
+  auto itKeyboard =
+      std::find_if(ports.begin(), ports.end(),
+                   [](const CPortNode& port) { return port.GetPortType() == PORT_TYPE::KEYBOARD; });
 
-  auto itMouse = std::find_if(ports.begin(), ports.end(), [](const CPortNode& port) {
-    return port.GetPortType() == PORT_TYPE::MOUSE;
-  });
+  auto itMouse =
+      std::find_if(ports.begin(), ports.end(),
+                   [](const CPortNode& port) { return port.GetPortType() == PORT_TYPE::MOUSE; });
 
-  auto itController = std::find_if(ports.begin(), ports.end(), [](const CPortNode& port) {
-    return port.GetPortType() == PORT_TYPE::CONTROLLER;
-  });
+  auto itController = std::find_if(ports.begin(), ports.end(),
+                                   [](const CPortNode& port)
+                                   { return port.GetPortType() == PORT_TYPE::CONTROLLER; });
 
   // Keyboard and mouse are not allowed to have ports because they might
   // overlap with controllers

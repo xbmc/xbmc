@@ -72,9 +72,8 @@ void CControllerNode::GetControllers(ControllerVector& controllers) const
     const ControllerPtr& myController = m_controller;
 
     auto it = std::find_if(controllers.begin(), controllers.end(),
-                           [&myController](const ControllerPtr& controller) {
-                             return myController->ID() == controller->ID();
-                           });
+                           [&myController](const ControllerPtr& controller)
+                           { return myController->ID() == controller->ID(); });
 
     if (it == controllers.end())
       controllers.emplace_back(m_controller);
