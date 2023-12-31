@@ -81,12 +81,16 @@ private:
   bool AddVideoVersionFilePicker();
 
   /*!
-   * \brief Populates a list of movies of the library that are similar to the video asset of the
-   * dialog
-   * \param[out] list The list of movies
+   * \brief Populates a list of movies of the library that are similar to the item provided as
+   * parameter.
+   * \param[in] item The reference item
+   * \param[out] list List to populate
+   * \param[in] videoDb Database connection
    * \return True for success, false otherwise
    */
-  bool GetSimilarMovies(CFileItemList& list);
+  static bool GetSimilarMovies(const std::shared_ptr<CFileItem>& item,
+                               CFileItemList& list,
+                               CVideoDatabase& videoDb);
 
   /*!
    * \brief Convert the movie into a version
@@ -105,6 +109,14 @@ private:
   static bool GetAllOtherMovies(const std::shared_ptr<CFileItem>& item,
                                 CFileItemList& list,
                                 CVideoDatabase& videoDb);
+
+  /*!
+   * \brief Shared post processing of lists after extraction and before display
+   * \param[in,out] list the list of movies
+   * \param[in] dbId item to remove from the list
+   * \return True for success, false otherwise.
+   */
+  static bool PostProcessList(CFileItemList& list, int dbId);
 
   std::shared_ptr<CFileItem> m_defaultVideoVersion;
 };

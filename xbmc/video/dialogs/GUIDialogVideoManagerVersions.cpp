@@ -190,8 +190,15 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersion()
     return false;
   }
 
+  CVideoDatabase videoDb;
+  if (!videoDb.Open())
+  {
+    CLog::LogF(LOGERROR, "Failed to open video database!");
+    return false;
+  }
+
   CFileItemList items;
-  if (!GetSimilarMovies(items))
+  if (!GetSimilarMovies(m_videoAsset, items, videoDb))
     return false;
 
   CGUIDialogSelect* dialog{CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
@@ -230,13 +237,6 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersion()
   else if (dialog->IsButton2Pressed())
   {
     // User wants to browse the library
-    CVideoDatabase videoDb;
-    if (!videoDb.Open())
-    {
-      CLog::LogF(LOGERROR, "Failed to open video database!");
-      return false;
-    }
-
     if (!GetAllOtherMovies(m_videoAsset, items, videoDb))
       return false;
 
@@ -439,22 +439,8 @@ bool CGUIDialogVideoManagerVersions::GetAllOtherMovies(const std::shared_ptr<CFi
                 ? SortAttributeIgnoreArticle
                 : SortAttributeNone);
 
-  const int dbId{item->GetVideoInfoTag()->m_iDbId};
-
-  for (int i = 0; i < list.Size(); ++i)
-  {
-    if (list[i]->GetVideoInfoTag()->m_iDbId == dbId)
-    {
-      list.Remove(i);
-      break;
-    }
-  }
-
-  // decorate the items
-  for (const auto& item : list)
-  {
-    item->SetLabel2(item->GetVideoInfoTag()->m_strFileNameAndPath);
-  }
+  if (!PostProcessList(list, item->GetVideoInfoTag()->m_iDbId))
+    return false;
 
   return true;
 }
@@ -493,20 +479,8 @@ bool CGUIDialogVideoManagerVersions::ProcessVideoVersion(VideoDbContentType item
     return false;
   }
 
-  for (int i = 0; i < list.Size(); ++i)
-  {
-    if (dbId == list[i]->GetVideoInfoTag()->m_iDbId)
-    {
-      list.Remove(i);
-      break;
-    }
-  }
-
-  // decorate the items
-  for (const auto& item : list)
-  {
-    item->SetLabel2(item->GetVideoInfoTag()->m_strFileNameAndPath);
-  }
+  if (!PostProcessList(list, dbId))
+    return false;
 
   return ChooseVideoAndConvertToVideoVersion(list, itemType, mediaType, dbId, videodb,
                                              MediaRole::NewVersion);
@@ -609,18 +583,13 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
   return false;
 }
 
-bool CGUIDialogVideoManagerVersions::GetSimilarMovies(CFileItemList& list)
+bool CGUIDialogVideoManagerVersions::GetSimilarMovies(const std::shared_ptr<CFileItem>& item,
+                                                      CFileItemList& list,
+                                                      CVideoDatabase& videoDb)
 {
   list.Clear();
 
-  CVideoDatabase videoDb;
-  if (!videoDb.Open())
-  {
-    CLog::LogF(LOGERROR, "Failed to open video database!");
-    return false;
-  }
-
-  videoDb.GetSameVideoItems(*m_videoAsset, list);
+  videoDb.GetSameVideoItems(*item, list);
 
   if (list.Size() < 2)
   {
@@ -628,21 +597,8 @@ bool CGUIDialogVideoManagerVersions::GetSimilarMovies(CFileItemList& list)
     return true;
   }
 
-  const int dbId{m_videoAsset->GetVideoInfoTag()->m_iDbId};
-  for (int i = 0; i < list.Size(); ++i)
-  {
-    if (dbId == list[i]->GetVideoInfoTag()->m_iDbId)
-    {
-      list.Remove(i);
-      break;
-    }
-  }
-
-  // decorate the items
-  for (const auto& item : list)
-  {
-    item->SetLabel2(item->GetVideoInfoTag()->m_strFileNameAndPath);
-  }
+  if (!PostProcessList(list, item->GetVideoInfoTag()->m_iDbId))
+    return false;
 
   return true;
 }
@@ -673,4 +629,29 @@ bool CGUIDialogVideoManagerVersions::AddSimilarMovieAsVersion(
   const int targetDbId{m_videoAsset->GetVideoInfoTag()->m_iDbId};
   return videoDb.ConvertVideoToVersion(VideoDbContentType::MOVIES, sourceDbId, targetDbId,
                                        idVideoVersion);
+}
+
+bool CGUIDialogVideoManagerVersions::PostProcessList(CFileItemList& list, int dbId)
+{
+  // Exclude the provided dbId and decorate the items
+
+  int i = 0;
+  while (i < list.Size())
+  {
+    const auto item{list[i]};
+    const auto itemtag{item->GetVideoInfoTag()};
+
+    if (itemtag->m_iDbId == dbId)
+    {
+      list.Remove(i);
+      // i is not incremented for the next iteration because the removal shifted what would have
+      // been the next item into the current position.
+      continue;
+    }
+
+    item->SetLabel2(itemtag->m_strFileNameAndPath);
+    ++i;
+  }
+
+  return true;
 }
