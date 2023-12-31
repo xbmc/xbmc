@@ -321,9 +321,8 @@ void CInputManager::QueueAction(const CAction& action)
   if (action.IsAnalog())
   {
     m_queuedActions.erase(std::remove_if(m_queuedActions.begin(), m_queuedActions.end(),
-                                         [&action](const CAction& queuedAction) {
-                                           return action.GetID() == queuedAction.GetID();
-                                         }),
+                                         [&action](const CAction& queuedAction)
+                                         { return action.GetID() == queuedAction.GetID(); }),
                           m_queuedActions.end());
   }
 

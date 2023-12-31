@@ -151,9 +151,8 @@ CAction CKeyHandler::ProcessActions(std::vector<const KeymapAction*> actions,
 
   // Filter out actions without pressed hotkeys
   actions.erase(std::remove_if(actions.begin(), actions.end(),
-                               [this](const KeymapAction* action) {
-                                 return !m_keymapHandler->HotkeysPressed(action->hotkeys);
-                               }),
+                               [this](const KeymapAction* action)
+                               { return !m_keymapHandler->HotkeysPressed(action->hotkeys); }),
                 actions.end());
 
   if (actions.empty())
