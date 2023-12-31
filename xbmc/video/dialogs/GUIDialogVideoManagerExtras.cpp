@@ -168,7 +168,7 @@ void CGUIDialogVideoManagerExtras::AddVideoExtra()
   }
 }
 
-void CGUIDialogVideoManagerExtras::ManageVideoExtra(const std::shared_ptr<CFileItem>& item)
+void CGUIDialogVideoManagerExtras::ManageVideoExtras(const std::shared_ptr<CFileItem>& item)
 {
   CGUIDialogVideoManagerExtras* dialog{
       CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogVideoManagerExtras>(
