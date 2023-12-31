@@ -1450,12 +1450,15 @@ void CGUIWindowVideoBase::UpdateVideoVersionItems()
 
   for (const auto& item : *m_vecItems)
   {
-    if (item->m_bIsFolder || !item->HasVideoInfoTag() ||
-        item->GetVideoInfoTag()->GetAssetInfo().GetId() > 0)
+    if (item->m_bIsFolder || !item->HasVideoInfoTag())
       continue;
 
     MediaType type = item->GetVideoInfoTag()->m_type;
-    if (type == MediaTypeMovie)
+    if (type == MediaTypeVideoVersion)
+    {
+      continue;
+    }
+    else if (type == MediaTypeMovie)
     {
       if (item->GetVideoInfoTag()->HasVideoVersions())
       {
