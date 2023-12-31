@@ -1333,6 +1333,12 @@ void CXBMCApp::onReceive(CJNIIntent intent)
       if (winSystem && dynamic_cast<CWinSystemAndroid*>(winSystem))
         dynamic_cast<CWinSystemAndroid*>(winSystem)->SetHdmiState(hdmiPlugged);
     }
+    if (hdmiPlugged && m_wakeUp)
+    {
+      CLog::Log(LOGDEBUG, "CXBMCApp::{}: Reset audio engine", __FUNCTION__);
+      CServiceBroker::GetActiveAE()->DeviceChange();
+      m_wakeUp = false;
+    }
   }
   else if (action == CJNIIntent::ACTION_SCREEN_ON)
   {
@@ -1354,6 +1360,8 @@ void CXBMCApp::onReceive(CJNIIntent intent)
       const auto appPower = components.GetComponent<CApplicationPowerHandling>();
       appPower->WakeUpScreenSaverAndDPMS();
     }
+
+    m_wakeUp = true;
   }
   else if (action == CJNIIntent::ACTION_SCREEN_OFF)
   {

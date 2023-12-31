@@ -255,6 +255,7 @@ private:
   bool m_hasFocus{false};
   bool m_headsetPlugged{false};
   bool m_hdmiSource{false};
+  bool m_wakeUp{false};
   IInputDeviceCallbacks* m_inputDeviceCallbacks{nullptr};
   IInputDeviceEventHandler* m_inputDeviceEventHandler{nullptr};
   bool m_hasReqVisible{false};
