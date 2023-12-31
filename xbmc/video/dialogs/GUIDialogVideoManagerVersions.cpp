@@ -318,7 +318,7 @@ int CGUIDialogVideoManagerVersions::ManageVideoVersionContextMenu(
   CContextButtons buttons;
 
   buttons.Add(CONTEXT_BUTTON_RENAME, 118);
-  buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 31614);
+  buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 40023);
   buttons.Add(CONTEXT_BUTTON_DELETE, 15015);
   buttons.Add(CONTEXT_BUTTON_SET_ART, 13511);
 

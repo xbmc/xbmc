@@ -23877,6 +23877,7 @@ msgstr ""
 
 #. Button label to make a video version the default version
 #: addons/skin.estuary/xml/DialogVideoVersion.xml
+#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
 msgctxt "#40023"
 msgid "Set as default"
 msgstr ""
