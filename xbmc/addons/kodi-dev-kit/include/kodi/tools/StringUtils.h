@@ -1378,14 +1378,16 @@ public:
 
     safeUrl.reserve(str.size());
 
-    std::transform(str.begin(), str.end(), std::back_inserter(safeUrl), [](char c) {
-      if (('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || ('0' <= c && c <= '9') || c == '-' ||
-          c == '.' || c == '_' || c == '~')
-      {
-        return c;
-      }
-      return '_';
-    });
+    std::transform(str.begin(), str.end(), std::back_inserter(safeUrl),
+                   [](char c)
+                   {
+                     if (('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') ||
+                         ('0' <= c && c <= '9') || c == '-' || c == '.' || c == '_' || c == '~')
+                     {
+                       return c;
+                     }
+                     return '_';
+                   });
 
     return safeUrl;
   }
@@ -1406,12 +1408,14 @@ public:
 
     safeString.reserve(str.size());
 
-    std::transform(str.begin(), str.end(), std::back_inserter(safeString), [](char c) {
-      if (c < 0x20)
-        return ' ';
+    std::transform(str.begin(), str.end(), std::back_inserter(safeString),
+                   [](char c)
+                   {
+                     if (c < 0x20)
+                       return ' ';
 
-      return c;
-    });
+                     return c;
+                   });
 
     return safeString;
   }
@@ -1449,7 +1453,10 @@ public:
   /// EXPECT_STREQ(refstr.c_str(), varstr.c_str());
   /// ~~~~~~~~~~~~~
   ///
-  inline static void RemoveCRLF(std::string& strLine) { StringUtils::TrimRight(strLine, "\n\r"); }
+  inline static void RemoveCRLF(std::string& strLine)
+  {
+    StringUtils::TrimRight(strLine, "\n\r");
+  }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -2021,7 +2028,10 @@ public:
   /// @param[in] c Character to check
   /// @return true if space, false otherwise
   ///
-  inline static int IsSpace(char c) { return (c & 0x80) == 0 && ::isspace(c); }
+  inline static int IsSpace(char c)
+  {
+    return (c & 0x80) == 0 && ::isspace(c);
+  }
   //----------------------------------------------------------------------------
 
   //============================================================================
