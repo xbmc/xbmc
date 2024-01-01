@@ -404,7 +404,7 @@ int CGUIDialogVideoManager::ChooseVideoAsset(const std::shared_ptr<CFileItem>& i
 
     //! @todo db refactor: should not be versions, but assets
     CFileItemList assets;
-    videodb.GetVideoVersions(itemType, dbId, assets);
+    videodb.GetVideoVersions(itemType, dbId, assets, assetType);
 
     // the selected video asset already exists
     if (std::any_of(assets.cbegin(), assets.cend(),

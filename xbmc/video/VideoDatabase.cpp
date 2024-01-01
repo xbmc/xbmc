@@ -11867,19 +11867,6 @@ int CVideoDatabase::AddVideoVersionType(const std::string& typeVideoVersion,
   return id;
 }
 
-void CVideoDatabase::GetVideoVersions(VideoDbContentType itemType, int dbId, CFileItemList& items)
-{
-  // get main video versions
-  CFileItemList mainList;
-  GetVideoVersions(itemType, dbId, mainList, VideoAssetType::VERSION);
-  items.Append(mainList);
-
-  // get video extras versions
-  CFileItemList extrasList;
-  GetVideoVersions(itemType, dbId, extrasList, VideoAssetType::EXTRA);
-  items.Append(extrasList);
-}
-
 void CVideoDatabase::GetVideoVersions(VideoDbContentType itemType,
                                       int dbId,
                                       CFileItemList& items,
