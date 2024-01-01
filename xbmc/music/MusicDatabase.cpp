@@ -9640,7 +9640,7 @@ int CMusicDatabase::GetSongsCount(Filter filter)
       return 0;
 
     std::string strSQL = "select count(idSong) as NumSongs from songview ";
-    
+
     // Apply profile filter. Needed here to show empty (filtered) library properly
     if (m_enforceProfileInSearch)
       filter.AppendWhere(GetProfileFilter("song", true));
@@ -13451,10 +13451,9 @@ bool CMusicDatabase::GetFilter(CDbUrl& musicUrl, Filter& filter, SortDescription
       // No souces in profile
       strSQLSources = "album_source.idSource=0";
   }
-  else
-    if (idSource > 0)
-      // Single source
-      strSQLSources = StringUtils::Format("album_source.idSource={}", idSource);
+  else if (idSource > 0)
+    // Single source
+    strSQLSources = StringUtils::Format("album_source.idSource={}", idSource);
 
   bool doneProfileInSeach{false};
 
@@ -13563,7 +13562,8 @@ bool CMusicDatabase::GetFilter(CDbUrl& musicUrl, Filter& filter, SortDescription
         ExistsSubQuery songArtistSub("song_artist", "song_artist.idArtist = artistview.idArtist");
         if (idRole > 0)
           songArtistSub.AppendWhere(PrepareSQL("song_artist.idRole = %i", idRole));
-        if ((idSource > 0 || m_enforceProfileInSearch) && idGenre > 0 && !albumArtistsOnly && idRole >= 1)
+        if ((idSource > 0 || m_enforceProfileInSearch) && idGenre > 0 && !albumArtistsOnly &&
+            idRole >= 1)
         {
           songArtistSub.AppendWhere(PrepareSQL("EXISTS(SELECT 1 FROM song "
                                                "JOIN song_genre ON song_genre.idSong = song.idSong "
