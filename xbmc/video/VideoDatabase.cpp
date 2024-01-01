@@ -12025,7 +12025,7 @@ void CVideoDatabase::GetDefaultVideoVersion(VideoDbContentType itemType, int dbI
   }
 }
 
-void CVideoDatabase::ConvertVideoToVersion(VideoDbContentType itemType,
+bool CVideoDatabase::ConvertVideoToVersion(VideoDbContentType itemType,
                                            int dbIdSource,
                                            int dbIdTarget,
                                            int idVideoVersion)
@@ -12037,10 +12037,10 @@ void CVideoDatabase::ConvertVideoToVersion(VideoDbContentType itemType,
     idFile = GetFileIdByMovie(dbIdSource);
   }
   else
-    return;
+    return false;
 
   if (idFile < 0)
-    return;
+    return false;
 
   BeginTransaction();
 
@@ -12058,6 +12058,8 @@ void CVideoDatabase::ConvertVideoToVersion(VideoDbContentType itemType,
                             idFile));
 
   CommitTransaction();
+
+  return true;
 }
 
 void CVideoDatabase::SetDefaultVideoVersion(VideoDbContentType itemType, int dbId, int idFile)

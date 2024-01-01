@@ -23908,7 +23908,37 @@ msgctxt "#40027"
 msgid "The selected video is the \"{0:s}\" extra of the movie \"{1:s}\". Would you like to move the extra to this movie?"
 msgstr ""
 
-#empty strings with id 40028 to 40199
+#. Browse the computer files for the file to be added as version
+#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
+msgctxt "#40028"
+msgid "Browse files"
+msgstr ""
+
+#. Browse the library for the movie to be added as version
+#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
+msgctxt "#40029"
+msgid "Browse library"
+msgstr ""
+
+#. Select the movie to be added as a version
+#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
+msgctxt "#40030"
+msgid "Select movie to add as a version"
+msgstr ""
+
+#. No other movies found in the library
+#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
+msgctxt "#40031"
+msgid "No other movies found in the library."
+msgstr ""
+
+#. Add version: no similar movies were found in the library.
+#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
+msgctxt "#40032"
+msgid "No similar movies were found in the library."
+msgstr ""
+
+#empty strings with id 40033 to 40199
 
 #. Select default video version setting
 #: system/settings/settings.xml

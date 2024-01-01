@@ -1003,7 +1003,7 @@ public:
                         CFileItemList& items,
                         VideoAssetType videoAssetType);
   void GetDefaultVideoVersion(VideoDbContentType itemType, int dbId, CFileItem& item);
-  void ConvertVideoToVersion(VideoDbContentType itemType,
+  bool ConvertVideoToVersion(VideoDbContentType itemType,
                              int dbIdSource,
                              int dbIdTarget,
                              int idVideoVersion);

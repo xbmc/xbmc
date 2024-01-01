@@ -32,7 +32,16 @@ public:
   bool OnBack(int actionID) override;
 
   void Reset();
-  int GetResult() const;
+
+  enum DialogResult
+  {
+    DIALOG_RESULT_CANCEL = -1,
+    DIALOG_RESULT_NO = 0,
+    DIALOG_RESULT_YES = 1,
+    DIALOG_RESULT_CUSTOM = 2,
+  };
+
+  DialogResult GetResult() const;
 
   enum TimeOut
   {
@@ -122,15 +131,15 @@ public:
   \param customLabel Localized label id or string for the custom button
   \param autoCloseTime Time in ms before the dialog becomes automatically closed
   \param defaultButtonId Specifies the default focused button
-  \return -1 for cancelled, 0 for No, 1 for Yes and 2 for custom button
+  \return action that closed the dialog
   */
-  static int ShowAndGetInput(const CVariant& heading,
-                             const CVariant& text,
-                             const CVariant& noLabel,
-                             const CVariant& yesLabel,
-                             const CVariant& customLabel,
-                             unsigned int autoCloseTime,
-                             int defaultButtonId = CONTROL_NO_BUTTON);
+  static DialogResult ShowAndGetInput(const CVariant& heading,
+                                      const CVariant& text,
+                                      const CVariant& noLabel,
+                                      const CVariant& yesLabel,
+                                      const CVariant& customLabel,
+                                      unsigned int autoCloseTime,
+                                      int defaultButtonId = CONTROL_NO_BUTTON);
 
   /*!
     \brief Open a Yes/No dialog and wait for input
@@ -138,10 +147,10 @@ public:
     \param[in] options  a struct of type DialogYesNoMessage containing
                         the options to set for this dialog.
 
-    \returns -1 for cancelled, 0 for No and 1 for Yes
+    \returns action that closed the dialog
     \sa KODI::MESSAGING::HELPERS::DialogYesNoMessage
   */
-  int ShowAndGetInput(const KODI::MESSAGING::HELPERS::DialogYesNoMessage& options);
+  DialogResult ShowAndGetInput(const KODI::MESSAGING::HELPERS::DialogYesNoMessage& options);
 
 protected:
   void OnInitWindow() override;

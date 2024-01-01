@@ -23,6 +23,12 @@ enum class VideoAssetType
   EXTRA = 1
 };
 
+enum class MediaRole
+{
+  NewVersion,
+  Parent
+};
+
 static constexpr int VIDEO_VERSION_ID_BEGIN = 40400;
 static constexpr int VIDEO_VERSION_ID_END = 40800;
 static constexpr int VIDEO_VERSION_ID_DEFAULT = VIDEO_VERSION_ID_BEGIN;
