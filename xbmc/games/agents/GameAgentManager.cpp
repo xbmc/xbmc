@@ -19,6 +19,8 @@
 #include "peripherals/devices/PeripheralJoystick.h"
 #include "utils/log.h"
 
+#include <array>
+
 using namespace KODI;
 using namespace GAME;
 
@@ -146,6 +148,62 @@ void CGameAgentManager::ProcessJoysticks(PERIPHERALS::EventLockHandlePtr& inputH
   //
   PERIPHERALS::PeripheralVector joysticks;
   m_peripheralManager.GetPeripheralsWithFeature(joysticks, PERIPHERALS::FEATURE_JOYSTICK);
+
+  // Remove "virtual" Android joysticks
+  //
+  // The heuristic used to identify these is to check if the device name is all
+  // lowercase letters and dashes (and contains at least one dash). The
+  // following virtual devices have been observed:
+  //
+  //   shield-ask-remote
+  //   sunxi-ir-uinput
+  //   virtual-search
+  //
+  // Additionally, we specifically allow the following devices:
+  //
+  //   virtual-remote
+  //
+  joysticks.erase(
+      std::remove_if(joysticks.begin(), joysticks.end(),
+                     [](const PERIPHERALS::PeripheralPtr& joystick)
+                     {
+                       const std::string& joystickName = joystick->DeviceName();
+
+                       // Skip joysticks in the allowlist
+                       static const std::array<std::string, 1> peripheralAllowlist = {
+                           "virtual-remote",
+                       };
+                       if (std::find_if(peripheralAllowlist.begin(), peripheralAllowlist.end(),
+                                        [&joystickName](const std::string& allowedJoystick) {
+                                          return allowedJoystick == joystickName;
+                                        }) != peripheralAllowlist.end())
+                       {
+                         return false;
+                       }
+
+                       // Require at least one dash
+                       if (std::find_if(joystickName.begin(), joystickName.end(),
+                                        [](char c) { return c == '-'; }) == joystickName.end())
+                       {
+                         return false;
+                       }
+
+                       // Require all lowercase letters or dashes
+                       if (std::find_if(joystickName.begin(), joystickName.end(),
+                                        [](char c)
+                                        {
+                                          const bool isLowercase = ('a' <= c && c <= 'z');
+                                          const bool isDash = (c == '-');
+                                          return !(isLowercase || isDash);
+                                        }) != joystickName.end())
+                       {
+                         return false;
+                       }
+
+                       // Joystick matches the pattern, remove it
+                       return true;
+                     }),
+      joysticks.end());
 
   // Update expired joysticks
   UpdateExpiredJoysticks(joysticks, inputHandlingLock);
