@@ -7992,6 +7992,26 @@ bool CVideoDatabase::GetMoviesNav(const std::string& strBaseDir, CFileItemList& 
   return GetMoviesByWhere(videoUrl.ToString(), filter, items, sortDescription, getDetails);
 }
 
+std::string CVideoDatabase::GetProfileFilter()
+{
+  // Start with sources from profile
+  std::string strSQL{};
+  VECSOURCES sources(*CMediaSourceSettings::GetInstance().GetSources("videos"));
+  for (CMediaSource& source : sources)
+  {
+    strSQL = StringUtils::Format("{}strPath LIKE \"{}%\" OR ", strSQL, source.strPath);
+  }
+
+  if (strSQL.empty())
+    // No sources in profile
+    strSQL = "strPath = ''";
+  else
+    // WHERE clause to filter results by source
+    strSQL = StringUtils::Format("({}) ", strSQL.erase(strSQL.length() - 4));
+
+  return strSQL;
+}
+
 bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription /* = SortDescription() */, int getDetails /* = VideoDbDetailsNone */)
 {
   try
@@ -8525,11 +8545,16 @@ bool CVideoDatabase::HasContent(VideoDbContentType type)
 
     std::string sql;
     if (type == VideoDbContentType::MOVIES)
-      sql = "select count(1) from movie";
+      sql = "select count(1) from movie_view";
     else if (type == VideoDbContentType::TVSHOWS)
-      sql = "select count(1) from tvshow";
+      sql = "select count(1) from tvshow_view";
     else if (type == VideoDbContentType::MUSICVIDEOS)
-      sql = "select count(1) from musicvideo";
+      sql = "select count(1) from musicvideo_view";
+    
+    // Profile filtering
+    if (m_enforceProfileInSearch)
+      sql = StringUtils::Format("{} WHERE {}", sql, GetProfileFilter());
+
     m_pDS->query( sql );
 
     if (!m_pDS->eof())
@@ -11625,6 +11650,10 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
     else
       videoUrl.RemoveOption("filter");
   }
+
+ // Profile filtering
+  if (m_enforceProfileInSearch)
+    filter.AppendWhere(GetProfileFilter());
 
   return true;
 }
