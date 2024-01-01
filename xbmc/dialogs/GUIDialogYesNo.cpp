@@ -142,10 +142,10 @@ bool CGUIDialogYesNo::ShowAndGetInput(const CVariant& heading,
                                       unsigned int autoCloseTime,
                                       int defaultButtonId /* = CONTROL_NO_BUTTON */)
 {
-  int result =
+  const DialogResult result =
       ShowAndGetInput(heading, text, noLabel, yesLabel, "", autoCloseTime, defaultButtonId);
 
-  bCanceled = result == -1;
+  bCanceled = result == DIALOG_RESULT_CANCEL;
   return result == 1;
 }
 
@@ -158,29 +158,30 @@ void CGUIDialogYesNo::Reset()
   m_defaultButtonId = CONTROL_NO_BUTTON;
 }
 
-int CGUIDialogYesNo::GetResult() const
+CGUIDialogYesNo::DialogResult CGUIDialogYesNo::GetResult() const
 {
   if (m_bCanceled)
-    return -1;
+    return DIALOG_RESULT_CANCEL;
   else if (m_bCustom)
-    return 2;
+    return DIALOG_RESULT_CUSTOM;
   else if (IsConfirmed())
-    return 1;
+    return DIALOG_RESULT_YES;
   else
-    return 0;
+    return DIALOG_RESULT_NO;
 }
 
-int CGUIDialogYesNo::ShowAndGetInput(const CVariant& heading,
-                                     const CVariant& text,
-                                     const CVariant& noLabel,
-                                     const CVariant& yesLabel,
-                                     const CVariant& customLabel,
-                                     unsigned int autoCloseTime,
-                                     int defaultButtonId /* = CONTROL_NO_BUTTON */)
+CGUIDialogYesNo::DialogResult CGUIDialogYesNo::ShowAndGetInput(
+    const CVariant& heading,
+    const CVariant& text,
+    const CVariant& noLabel,
+    const CVariant& yesLabel,
+    const CVariant& customLabel,
+    unsigned int autoCloseTime,
+    int defaultButtonId /* = CONTROL_NO_BUTTON */)
 {
   CGUIDialogYesNo *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
   if (!dialog)
-    return false;
+    return DIALOG_RESULT_CANCEL;
 
   dialog->SetHeading(heading);
   dialog->SetText(text);
@@ -197,7 +198,8 @@ int CGUIDialogYesNo::ShowAndGetInput(const CVariant& heading,
   return dialog->GetResult();
 }
 
-int CGUIDialogYesNo::ShowAndGetInput(const KODI::MESSAGING::HELPERS::DialogYesNoMessage& options)
+CGUIDialogYesNo::DialogResult CGUIDialogYesNo::ShowAndGetInput(
+    const KODI::MESSAGING::HELPERS::DialogYesNoMessage& options)
 {
   //Set default yes/no labels, these might be overwritten further down if specified
   //by the caller
