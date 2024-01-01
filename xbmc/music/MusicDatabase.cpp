@@ -3365,6 +3365,30 @@ CArtist CMusicDatabase::GetArtistFromDataset(const dbiplus::sql_record* const re
   return artist;
 }
 
+std::string CMusicDatabase::GetProfileFilter(std::string viewTable, bool noWhere)
+{
+  // Start with sources from profile
+  std::string strSQL{};
+  VECSOURCES sources(*CMediaSourceSettings::GetInstance().GetSources("music"));
+  for (CMediaSource& source : sources)
+    strSQL = StringUtils::Format("{}album_source.idSource={} OR ", strSQL,
+                                 GetSourceFromPath(source.strPath));
+
+  if (strSQL.empty())
+    // No sources in profile
+    strSQL = "album_source.idSource=0 OR ";
+
+  // WHERE clause to filter results by source
+  strSQL = StringUtils::Format("EXISTS(SELECT 1 FROM album_source WHERE album_source.idAlbum = "
+                               "{}view.idAlbum AND ({})) ",
+                               viewTable, strSQL.erase(strSQL.length() - 4));
+
+  if (!noWhere)
+    strSQL = StringUtils::Format("WHERE {}", strSQL);
+
+  return strSQL;
+}
+
 bool CMusicDatabase::GetSongByFileName(const std::string& strFileNameAndPath,
                                        CSong& song,
                                        int64_t startOffset)
@@ -3693,13 +3717,16 @@ bool CMusicDatabase::GetRecentlyPlayedAlbums(VECALBUMS& albums)
 
     // Get data from album and album_artist tables to fully populate albums
     std::string strSQL =
-        PrepareSQL("SELECT albumview.*, albumartistview.* "
-                   "FROM (SELECT idAlbum FROM albumview WHERE albumview.lastplayed IS NOT NULL "
-                   "AND albumview.strReleaseType = '%s' "
-                   "ORDER BY albumview.lastplayed DESC LIMIT %u) as playedalbums "
-                   "JOIN albumview ON albumview.idAlbum = playedalbums.idAlbum "
-                   "JOIN albumartistview ON albumview.idAlbum = albumartistview.idAlbum "
-                   "ORDER BY albumview.lastplayed DESC, albumartistview.iorder ",
+        PrepareSQL(StringUtils::Format(
+                       "SELECT albumview.*, albumartistview.* "
+                       "FROM (SELECT idAlbum FROM albumview WHERE albumview.lastplayed IS NOT NULL "
+                       "AND albumview.strReleaseType = '%s' "
+                       "ORDER BY albumview.lastplayed DESC LIMIT %u) as playedalbums "
+                       "JOIN albumview ON albumview.idAlbum = playedalbums.idAlbum "
+                       "JOIN albumartistview ON albumview.idAlbum = albumartistview.idAlbum "
+                       "{} "
+                       "ORDER BY albumview.lastplayed DESC, albumartistview.iorder ",
+                       GetProfileFilter()),
                    CAlbum::ReleaseTypeToString(CAlbum::Album).c_str(), RECENTLY_PLAYED_LIMIT);
 
     auto queryStart = std::chrono::steady_clock::now();
@@ -3854,12 +3881,15 @@ bool CMusicDatabase::GetRecentlyAddedAlbums(VECALBUMS& albums, unsigned int limi
     // Determine the recently added albums from dateAdded (usually derived from music file
     // timestamps, nothing to do with when albums added to library)
     std::string strSQL =
-        PrepareSQL("SELECT albumview.*, albumartistview.* "
-                   "FROM (SELECT idAlbum FROM album WHERE strAlbum != '' "
-                   "ORDER BY dateAdded DESC LIMIT %u) AS recentalbums "
-                   "JOIN albumview ON albumview.idAlbum = recentalbums.idAlbum "
-                   "JOIN albumartistview ON albumview.idAlbum = albumartistview.idAlbum "
-                   "ORDER BY dateAdded DESC, albumview.idAlbum desc, albumartistview.iOrder ",
+        PrepareSQL(StringUtils::Format(
+                       "SELECT albumview.*, albumartistview.* "
+                       "FROM (SELECT idAlbum FROM album WHERE strAlbum != '' "
+                       "ORDER BY dateAdded DESC LIMIT %u) AS recentalbums "
+                       "JOIN albumview ON albumview.idAlbum = recentalbums.idAlbum "
+                       "JOIN albumartistview ON albumview.idAlbum = albumartistview.idAlbum "
+                       "{} "
+                       "ORDER BY dateAdded DESC, albumview.idAlbum desc, albumartistview.iOrder ",
+                       GetProfileFilter()),
                    limit ? limit
                          : CServiceBroker::GetSettingsComponent()
                                ->GetAdvancedSettings()
@@ -9597,7 +9627,7 @@ unsigned int CMusicDatabase::GetRandomSongIDs(const Filter& filter,
   return 0;
 }
 
-int CMusicDatabase::GetSongsCount(const Filter& filter)
+int CMusicDatabase::GetSongsCount(Filter filter)
 {
   try
   {
@@ -9607,6 +9637,11 @@ int CMusicDatabase::GetSongsCount(const Filter& filter)
       return 0;
 
     std::string strSQL = "select count(idSong) as NumSongs from songview ";
+    
+    // Apply profile filter. Needed here to show empty (filtered) library properly
+    if (m_enforceProfileInSearch)
+      filter.AppendWhere(GetProfileFilter("song", true));
+
     if (!CDatabase::BuildSQL(strSQL, filter, strSQL))
       return false;
 
@@ -10324,7 +10359,7 @@ bool CMusicDatabase::UpdateSources()
   try
   {
     // Empty sources table (related link tables removed by trigger);
-    ExecuteQuery("DELETE FROM source");
+    //ExecuteQuery("DELETE FROM source");
 
     // Fill source table, and album sources
     for (const auto& source : sources)
@@ -13379,6 +13414,47 @@ bool CMusicDatabase::GetFilter(CDbUrl& musicUrl, Filter& filter, SortDescription
       idSource = GetSourceByName(option->second.asString());
   }
 
+  // Profile filtering
+  std::vector<int> idSources{};
+  std::string strSQLSources = "";
+  VECSOURCES sources(*CMediaSourceSettings::GetInstance().GetSources("music"));
+  for (CMediaSource& source : sources)
+    idSources.emplace_back(GetSourceFromPath(source.strPath));
+
+  // Now see if idSource is in this profile
+  if (m_enforceProfileInSearch)
+  {
+    if (idSource > 0)
+    {
+      if (std::any_of(idSources.begin(), idSources.end(),
+                      [idSource](int i) { return i == idSource; }))
+        // Yes, so use only idSouce
+        strSQLSources = StringUtils::Format("album_source.idSource={}", idSource);
+      else
+        // No, so use invalid source (will result in empty query)
+        strSQLSources = "album_source.idSource=0";
+    }
+    else if (!idSources.empty())
+    {
+      // No specifc idSource so just those in the profile
+      for (int source : idSources)
+        strSQLSources =
+            StringUtils::Format("{}album_source.idSource={} OR ", strSQLSources, source);
+      if (!strSQLSources.empty())
+        strSQLSources =
+            StringUtils::Format("({})", strSQLSources.erase(strSQLSources.length() - 4));
+    }
+    else
+      // No souces in profile
+      strSQLSources = "album_source.idSource=0";
+  }
+  else
+    if (idSource > 0)
+      // Single source
+      strSQLSources = StringUtils::Format("album_source.idSource={}", idSource);
+
+  bool doneProfileInSeach{false};
+
   // Process album option
   option = options.find("albumid");
   if (option != options.end())
@@ -13451,21 +13527,23 @@ bool CMusicDatabase::GetFilter(CDbUrl& musicUrl, Filter& filter, SortDescription
         ExistsSubQuery albumArtistSub("album_artist",
                                       "album_artist.idArtist = artistview.idArtist");
         // Prepare album artist subquery SQL
-        if (idSource > 0)
+        if (idSource > 0 || m_enforceProfileInSearch)
         {
           if (idRole == 1 && idGenre < 0)
           {
             albumArtistSub.AppendJoin(
                 "JOIN album_source ON album_source.idAlbum = album_artist.idAlbum");
-            albumArtistSub.AppendWhere(PrepareSQL("album_source.idSource = %i", idSource));
+            albumArtistSub.AppendWhere(PrepareSQL(strSQLSources.c_str()));
+            doneProfileInSeach = true;
           }
           else
           {
             albumArtistSub.AppendWhere(
                 PrepareSQL("EXISTS(SELECT 1 FROM album_source "
-                           "WHERE album_source.idSource = %i "
+                           "WHERE %s "
                            "AND album_source.idAlbum = album_artist.idAlbum)",
-                           idSource));
+                           strSQLSources.c_str()));
+            doneProfileInSeach = true;
           }
         }
         if (idRole <= 1 && idGenre > 0)
@@ -13482,16 +13560,17 @@ bool CMusicDatabase::GetFilter(CDbUrl& musicUrl, Filter& filter, SortDescription
         ExistsSubQuery songArtistSub("song_artist", "song_artist.idArtist = artistview.idArtist");
         if (idRole > 0)
           songArtistSub.AppendWhere(PrepareSQL("song_artist.idRole = %i", idRole));
-        if (idSource > 0 && idGenre > 0 && !albumArtistsOnly && idRole >= 1)
+        if ((idSource > 0 || m_enforceProfileInSearch) && idGenre > 0 && !albumArtistsOnly && idRole >= 1)
         {
           songArtistSub.AppendWhere(PrepareSQL("EXISTS(SELECT 1 FROM song "
                                                "JOIN song_genre ON song_genre.idSong = song.idSong "
                                                "WHERE song.idSong = song_artist.idSong "
                                                "AND song_genre.idGenre = %i "
                                                "AND EXISTS(SELECT 1 FROM album_source "
-                                               "WHERE album_source.idSource = %i "
+                                               "WHERE %s "
                                                "AND album_source.idAlbum = song.idAlbum))",
-                                               idGenre, idSource));
+                                               idGenre, strSQLSources.c_str()));
+          doneProfileInSeach = true;
         }
         else
         {
@@ -13500,11 +13579,12 @@ bool CMusicDatabase::GetFilter(CDbUrl& musicUrl, Filter& filter, SortDescription
             songArtistSub.AppendJoin("JOIN song_genre ON song_genre.idSong = song_artist.idSong");
             songArtistSub.AppendWhere(PrepareSQL("song_genre.idGenre = %i", idGenre));
           }
-          if (idSource > 0 && !albumArtistsOnly)
+          if ((idSource > 0 || m_enforceProfileInSearch) && !albumArtistsOnly)
           {
             songArtistSub.AppendJoin("JOIN song ON song.idSong = song_artist.idSong");
             songArtistSub.AppendJoin("JOIN album_source ON album_source.idAlbum = song.idAlbum");
-            songArtistSub.AppendWhere(PrepareSQL("album_source.idSource = %i", idSource));
+            songArtistSub.AppendWhere(PrepareSQL(strSQLSources.c_str()));
+            doneProfileInSeach = true;
           }
           if (idRole > 1 && albumArtistsOnly)
           { // Album artists only with role, check AND in album_artist for album of song
@@ -13570,11 +13650,13 @@ bool CMusicDatabase::GetFilter(CDbUrl& musicUrl, Filter& filter, SortDescription
       filter.AppendWhere(
           PrepareSQL("albumview.bBoxedSet = %i", option->second.asBoolean() ? 1 : 0));
 
-    if (idSource > 0)
-      filter.AppendWhere(PrepareSQL(
-          "EXISTS(SELECT 1 FROM album_source "
-          "WHERE album_source.idAlbum = albumview.idAlbum AND album_source.idSource = %i)",
-          idSource));
+    if (idSource > 0 || m_enforceProfileInSearch)
+    {
+      filter.AppendWhere(PrepareSQL("EXISTS(SELECT 1 FROM album_source "
+                                    "WHERE album_source.idAlbum = albumview.idAlbum AND %s)",
+                                    strSQLSources.c_str()));
+      doneProfileInSeach = true;
+    }
 
     // Process artist, role and genre options together as song subquery to filter those
     // albums that have songs with both that artist and genre
@@ -13687,11 +13769,13 @@ bool CMusicDatabase::GetFilter(CDbUrl& musicUrl, Filter& filter, SortDescription
         filter.AppendWhere(
             PrepareSQL("albumview.bBoxedSet = %i", option->second.asBoolean() ? 1 : 0));
 
-      if (idSource > 0)
-        filter.AppendWhere(PrepareSQL(
-            "EXISTS(SELECT 1 FROM album_source "
-            "WHERE album_source.idAlbum = albumview.idAlbum AND album_source.idSource = %i)",
-            idSource));
+      if (idSource > 0 || m_enforceProfileInSearch)
+      {
+        filter.AppendWhere(PrepareSQL("EXISTS(SELECT 1 FROM album_source "
+                                      "WHERE album_source.idAlbum = albumview.idAlbum AND %s)",
+                                      strSQLSources.c_str()));
+        doneProfileInSeach = true;
+      }
     }
     option = options.find("discid");
     if (option != options.end())
@@ -13809,11 +13893,13 @@ bool CMusicDatabase::GetFilter(CDbUrl& musicUrl, Filter& filter, SortDescription
                                     "WHERE song_genre.idGenre = %i)",
                                     idGenre));
 
-    if (idSource > 0)
-      filter.AppendWhere(PrepareSQL(
-          "EXISTS(SELECT 1 FROM album_source "
-          "WHERE album_source.idAlbum = songview.idAlbum AND album_source.idSource = %i)",
-          idSource));
+    if (idSource > 0 || m_enforceProfileInSearch)
+    {
+      filter.AppendWhere(PrepareSQL("EXISTS(SELECT 1 FROM album_source "
+                                    "WHERE album_source.idAlbum = songview.idAlbum AND %s)",
+                                    strSQLSources.c_str()));
+      doneProfileInSeach = true;
+    }
 
     std::string songArtistClause, albumArtistClause;
     if (idArtist > 0)
@@ -13880,6 +13966,11 @@ bool CMusicDatabase::GetFilter(CDbUrl& musicUrl, Filter& filter, SortDescription
     else
       musicUrl.RemoveOption("filter");
   }
+
+  if (m_enforceProfileInSearch && !doneProfileInSeach)
+    filter.AppendWhere(PrepareSQL("EXISTS(SELECT 1 FROM album_source "
+                                  "WHERE album_source.idAlbum = albumview.idAlbum AND %s)",
+                                  strSQLSources.c_str()));
 
   return true;
 }

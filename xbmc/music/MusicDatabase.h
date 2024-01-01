@@ -646,7 +646,7 @@ public:
                          const SortDescription& sortDescription = SortDescription(),
                          bool countOnly = false);
   int GetDiscsCount(const std::string& baseDir, const Filter& filter = Filter());
-  int GetSongsCount(const Filter& filter = Filter());
+  int GetSongsCount(Filter filter = Filter());
   bool GetFilter(CDbUrl& musicUrl, Filter& filter, SortDescription& sorting) override;
   int GetOrderFilter(const std::string& type, const SortDescription& sorting, Filter& filter);
 
@@ -982,6 +982,9 @@ private:
   returns true when successfully done
   */
   bool MigrateSources();
+
+  std::string GetProfileFilter(std::string viewTable = "album", bool noWhere = false);
+  bool m_enforceProfileInSearch = true;
 
   bool m_translateBlankArtist;
 
