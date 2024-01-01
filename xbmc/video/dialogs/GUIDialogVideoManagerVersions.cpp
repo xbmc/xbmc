@@ -552,6 +552,7 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
     const int idVideoVersion{m_database.GetVideoVersionInfo(path, idFile, typeVideoVersion, idMedia,
                                                             itemMediaType, videoAssetType)};
 
+    // @todo look only for a version identified by idFile instead of retrieving all versions
     if (idVideoVersion != -1)
     {
       CFileItemList versions;
