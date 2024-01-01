@@ -33,5 +33,6 @@ using namespace xbmcaddon;
 %include "interfaces/legacy/AddonString.h"
 
 %include "interfaces/legacy/Addon.h"
+%nodefaultctor Settings;
 %include "interfaces/legacy/Settings.h"
 
