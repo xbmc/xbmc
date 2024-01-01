@@ -23739,7 +23739,6 @@ msgstr ""
 
 #: xbmc/filesystem/VideoDatabaseDirectory.cpp
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMoviesOverview.cpp
-#: xbmc/video/windows/GUIWindowVideoBase.cpp
 #: addons/skin.estuary/xml/DialogVideoInfo.xml
 msgctxt "#40000"
 msgid "Versions"

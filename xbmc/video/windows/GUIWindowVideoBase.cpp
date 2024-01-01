@@ -1462,20 +1462,31 @@ void CGUIWindowVideoBase::UpdateVideoVersionItems()
     }
     else if (type == MediaTypeMovie)
     {
+      //! @todo patching the items after loading is a hack, which only works in the video window,
+      //! not for example for home screen widgets!
+
+      int videoVersionId{-1};
       if (item->GetVideoInfoTag()->HasVideoVersions())
       {
+        if (item->GetProperty("has_resolved_video_version").asBoolean(false))
+        {
+          // certain version of the movie
+          videoVersionId = item->GetVideoInfoTag()->GetAssetInfo().GetId();
+        }
+        else
+        {
+          // movie node representing all versions of this movie
+          videoVersionId = VIDEO_VERSION_ID_ALL;
+          item->GetVideoInfoTag()->GetAssetInfo().SetId(videoVersionId);
+          item->m_bIsFolder = true;
+          item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, true);
+        }
+
         CVideoDbUrl itemUrl;
-        if (!itemUrl.FromString(
-                StringUtils::Format("videodb://movies/videoversions/{}", VIDEO_VERSION_ID_ALL)))
-          return;
-
+        itemUrl.FromString(
+            StringUtils::Format("videodb://movies/videoversions/{}", videoVersionId));
         itemUrl.AddOption("mediaid", item->GetVideoInfoTag()->m_iDbId);
-
-        item->GetVideoInfoTag()->GetAssetInfo().SetId(VIDEO_VERSION_ID_ALL);
         item->SetPath(itemUrl.ToString());
-        item->m_bIsFolder = true;
-
-        item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, true);
       }
     }
   }
@@ -1483,23 +1494,28 @@ void CGUIWindowVideoBase::UpdateVideoVersionItems()
 
 void CGUIWindowVideoBase::UpdateVideoVersionItemsLabel(const std::string& directory)
 {
+  bool isVersionsFolderView{false};
+
   CVideoDbUrl videoUrl;
   if (videoUrl.FromString(directory) && videoUrl.HasOption("videoversionid"))
   {
     CVariant value;
     if (videoUrl.GetOption("videoversionid", value))
     {
-      const int idVideoVersion = value.asInteger(-1);
+      const int idVideoVersion{static_cast<int>(value.asInteger(-1))};
       if (idVideoVersion == VIDEO_VERSION_ID_ALL && videoUrl.GetOption("mediaid", value))
       {
-        int idMedia = value.asInteger(-1);
+        const int idMedia{static_cast<int>(value.asInteger(-1))};
         if (idMedia != -1)
         {
-          m_vecItems->SetLabel(StringUtils::Format(
-              "{} {}", m_database.GetVideoItemTitle(m_vecItems->GetVideoContentType(), idMedia),
-              g_localizeStrings.Get(40000)));
+          // adjust breadcrumb to display the correct movie title
+          m_vecItems->SetLabel(
+              m_database.GetVideoItemTitle(m_vecItems->GetVideoContentType(), idMedia));
+          isVersionsFolderView = true;
         }
       }
     }
   }
+
+  SetProperty("VideoVersionsFolderView", isVersionsFolderView);
 }

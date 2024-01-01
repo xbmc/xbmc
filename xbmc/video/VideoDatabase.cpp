@@ -8065,9 +8065,6 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
     if (!videoUrl.HasOption("videoversionid"))
       extFilter.AppendWhere("isDefaultVersion = 1");
 
-    if (videoUrl.HasOption("videoversionid") && videoUrl.HasOption("mediaid"))
-      return GetVideoVersionsNav(strBaseDir, items, VideoDbContentType::MOVIES, extFilter);
-
     int total = -1;
 
     std::string strSQL = "select %s from movie_view ";
@@ -8125,16 +8122,8 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
         CVariant value;
         if (itemUrl.GetOption("videoversionid", value))
         {
-          const int idVideoVersion = value.asInteger();
-          if (idVideoVersion > 0)
-          {
-            pItem->GetVideoInfoTag()->SetHasVideoVersions(false);
-            pItem->GetVideoInfoTag()->SetHasVideoExtras(false);
-            pItem->GetVideoInfoTag()->GetAssetInfo().SetId(idVideoVersion);
-            pItem->GetVideoInfoTag()->GetAssetInfo().SetTitle(GetVideoVersionById(idVideoVersion));
-            pItem->GetVideoInfoTag()->SetFileNameAndPath(GetFilenameAndPathById(
-                GetVideoVersionFile(VideoDbContentType::MOVIES, movie.m_iDbId, idVideoVersion)));
-          }
+          // certain version requested, no need to resolve (e.g. no version chooser on select)
+          pItem->SetProperty("has_resolved_video_version", true);
         }
 
         pItem->SetDynPath(movie.m_strFileNameAndPath);
@@ -11493,6 +11482,16 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
       const int idVideoVersion{static_cast<int>(option->second.asInteger())};
       if (idVideoVersion > 0)
         filter.AppendWhere(PrepareSQL("videoVersionTypeId = %i", idVideoVersion));
+      else
+      {
+        option = options.find("mediaid");
+        if (option != options.end())
+        {
+          const int mediaId{static_cast<int>(option->second.asInteger())};
+          if (mediaId > 0)
+            filter.AppendWhere(PrepareSQL("idMovie = %i", mediaId));
+        }
+      }
     }
 
     AppendIdLinkFilter("tag", "tag", "movie", "movie", "idMovie", options, filter);
