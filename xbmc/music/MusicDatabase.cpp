@@ -3371,8 +3371,11 @@ std::string CMusicDatabase::GetProfileFilter(std::string viewTable, bool noWhere
   std::string strSQL{};
   VECSOURCES sources(*CMediaSourceSettings::GetInstance().GetSources("music"));
   for (CMediaSource& source : sources)
-    strSQL = StringUtils::Format("{}album_source.idSource={} OR ", strSQL,
-                                 GetSourceFromPath(source.strPath));
+  {
+    const int s = GetSourceFromPath(source.strPath);
+    if (s > 0)
+      strSQL = StringUtils::Format("{}album_source.idSource={} OR ", strSQL, s);
+  }
 
   if (strSQL.empty())
     // No sources in profile
