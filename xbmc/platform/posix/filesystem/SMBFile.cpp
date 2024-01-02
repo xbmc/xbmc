@@ -34,9 +34,9 @@
 
 using namespace XFILE;
 
-void xb_smbc_log(const char* msg)
+void xb_smbc_log(void* private_ptr, int level, const char* msg)
 {
-  CLog::Log(LOGINFO, "{}{}", "smb: ", msg);
+  CLog::Log(LOGDEBUG, "smb: {}", msg);
 }
 
 void xb_smbc_auth(const char *srv, const char *shr, char *wg, int wglen,
@@ -175,6 +175,7 @@ void CSMB::Init()
 
 #ifdef DEPRECATED_SMBC_INTERFACE
     smbc_setDebug(m_context, CServiceBroker::GetLogging().CanLogComponent(LOGSAMBA) ? 10 : 0);
+    smbc_setLogCallback(m_context, this, xb_smbc_log);
     smbc_setFunctionAuthData(m_context, xb_smbc_auth);
     orig_cache = smbc_getFunctionGetCachedServer(m_context);
     smbc_setFunctionGetCachedServer(m_context, xb_smbc_cache);
