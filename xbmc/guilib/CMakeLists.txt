@@ -61,6 +61,7 @@ set(SOURCES DDSImage.cpp
             GUIWindowManager.cpp
             GUIWrappingListContainer.cpp
             imagefactory.cpp
+            ImageSettings.cpp
             IWindowManagerCallback.cpp
             LocalizeStrings.cpp
             StereoscopicsManager.cpp
@@ -145,6 +146,7 @@ set(HEADERS AspectRatio.h
             IGUIContainer.h
             iimage.h
             imagefactory.h
+            ImageSettings.h
             IMsgTargetCallback.h
             IRenderingCallback.h
             ISliderCallback.h

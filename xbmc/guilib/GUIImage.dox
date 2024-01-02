@@ -26,6 +26,7 @@ position, size, transparency and contents of the image to be displayed.
       <bordersize>5</bordersize>
       <texture>$INFO[MusicPlayer.Cover]</texture>
       <aspectratio>keep</aspectratio>
+      <imagefilter>linear</imagefilter>
 </control>
 ~~~~~~~~~~~~~
 
@@ -71,6 +72,7 @@ important, as `xml` tags are case-sensitive.
 | info          | Specifies the information that this image control is presenting. Kodi will select the texture to use based on this tag. [See here for more information](http://kodi.wiki/view/InfoLabels).
 | fadetime      | This specifies a crossfade time that will be used whenever the underlying <b>`<texture>`</b> filename changes. The previous image will be held until the new image is ready, and then they will be crossfaded. This is particularly useful for a large thumbnail image showing the focused item in a list, or for fanart or other large backdrops.
 | background    | For images inside a container, you can specify background="true" to load the textures in a background worker thread. [See here for additional information about background loading](http://kodi.wiki/view/Background_Image_Loader).
+| imagefilter   | This can take two values: <b>`linear`</b> or <b>`nearest`</b>. Linear scaling is the default, and smoothly blurs between pixels. Nearest neighbor scaling will apply a pixelated effect to the image.
 
 For the tags "texture" and "bordertexture", the following attributes are available.
 
@@ -85,6 +87,7 @@ For the tags "texture" and "bordertexture", the following attributes are availab
 | colordiffuse  | This specifies the color to be used for the texture basis. It's is specified in hexadecimal notation using the AARRGGBB format. If you define <b>`<texture colordiffuse="FFFFAAFF">texture.png</texture>`</b> (magenta), the image will be given a magenta tint when rendered. You can also specify this as a name from the colour theme, or you can also use $VAR and $INFO for dynamic values.
 
 @skinning_v20 <b>infill</b> New texture attribute added.
+@skinning_v22 <b>imagefilter</b> New tag added.
 
 --------------------------------------------------------------------------------
 \section Image_Control_sect4 See also
