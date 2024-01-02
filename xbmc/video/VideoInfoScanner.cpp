@@ -1481,11 +1481,14 @@ namespace VIDEO
                                      movieDetails.m_iSeason, movieDetails.m_iEpisode, strTitle);
     }
 
-    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-            CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS) &&
-        CDVDFileInfo::GetFileStreamDetails(pItem))
+    if (!movieDetails.HasStreamDetails() &&
+        CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+            CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
+    {
+      CDVDFileInfo::GetFileStreamDetails(pItem);
       CLog::Log(LOGDEBUG, "VideoInfoScanner: Extracted filestream details from video file {}",
                 CURL::GetRedacted(pItem->GetPath()));
+    }
 
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new item to {}:{}", TranslateContent(content), CURL::GetRedacted(pItem->GetPath()));
     long lResult = -1;
