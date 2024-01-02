@@ -368,7 +368,9 @@ bool CGUIWindowVideoBase::ShowInfo(const CFileItemPtr& item2, const ScraperPtr& 
     int dbId = item->HasVideoInfoTag() ? item->GetVideoInfoTag()->m_iDbId : -1;
     if (info->Content() == CONTENT_MOVIES)
     {
-      bHasInfo = m_database.GetMovieInfo(item->GetPath(), movieDetails, dbId);
+      const int versionId{item->HasVideoInfoTag() ? item->GetVideoInfoTag()->GetAssetInfo().GetId()
+                                                  : -1};
+      bHasInfo = m_database.GetMovieInfo(item->GetPath(), movieDetails, dbId, versionId);
     }
     if (info->Content() == CONTENT_TVSHOWS)
     {

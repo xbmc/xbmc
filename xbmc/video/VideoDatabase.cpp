@@ -2162,7 +2162,11 @@ void CVideoDatabase::GetMusicVideosByArtist(const std::string& strArtist, CFileI
 }
 
 //********************************************************************************************************************************
-bool CVideoDatabase::GetMovieInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details, int idMovie /* = -1 */, int getDetails /* = VideoDbDetailsAll */)
+bool CVideoDatabase::GetMovieInfo(const std::string& strFilenameAndPath,
+                                  CVideoInfoTag& details,
+                                  int idMovie /* = -1 */,
+                                  int idVersion /* = -1 */,
+                                  int getDetails /* = VideoDbDetailsAll */)
 {
   try
   {
@@ -2171,10 +2175,19 @@ bool CVideoDatabase::GetMovieInfo(const std::string& strFilenameAndPath, CVideoI
 
     if (idMovie < 0)
       idMovie = GetMovieId(strFilenameAndPath);
-    if (idMovie < 0) return false;
+
+    if (idMovie < 0)
+      return false;
 
     std::string sql;
-    if (!strFilenameAndPath.empty())
+    if (idVersion >= 0)
+    {
+      //! @todo get rid of "videos with versions as folder" hack!
+      if (idVersion != VIDEO_VERSION_ID_ALL)
+        sql = PrepareSQL("SELECT * FROM movie_view WHERE idMovie = %i AND videoVersionTypeId = %i",
+                         idMovie, idVersion);
+    }
+    else if (!strFilenameAndPath.empty())
     {
       const int idFile{GetFileId(strFilenameAndPath)};
       if (idFile != -1)
@@ -2188,6 +2201,7 @@ bool CVideoDatabase::GetMovieInfo(const std::string& strFilenameAndPath, CVideoI
 
     if (!m_pDS->query(sql))
       return false;
+
     details = GetDetailsForMovie(m_pDS, getDetails);
     return !details.IsEmpty();
   }
@@ -12490,19 +12504,21 @@ bool CVideoDatabase::GetVideoItemByVideoVersion(int dbId, CFileItem& item)
 
   try
   {
-    m_pDS->query(PrepareSQL("SELECT idMedia, media_type FROM videoversion WHERE idFile = %i", dbId));
+    m_pDS->query(
+        PrepareSQL("SELECT idMedia, media_type, idType FROM videoversion WHERE idFile = %i", dbId));
 
     if (m_pDS->num_rows() > 0)
     {
       int idMedia = m_pDS->fv("idMedia").get_asInt();
       std::string mediaType = m_pDS->fv("media_type").get_asString();
+      const int idType{m_pDS->fv("idType").get_asInt()};
 
       m_pDS->close();
 
       if (mediaType == MediaTypeMovie)
       {
         CVideoInfoTag videoInfo;
-        if (GetMovieInfo("", videoInfo, idMedia))
+        if (GetMovieInfo("", videoInfo, idMedia, idType))
         {
           item.SetFromVideoInfoTag(videoInfo);
           return true;

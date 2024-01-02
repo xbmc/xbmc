@@ -3796,7 +3796,8 @@ bool CFileItem::LoadDetails()
     bool ret{false};
     auto tag{std::make_unique<CVideoInfoTag>()};
     if (params.GetMovieId() >= 0)
-      ret = db.GetMovieInfo(GetPath(), *tag, static_cast<int>(params.GetMovieId()));
+      ret = db.GetMovieInfo(GetPath(), *tag, static_cast<int>(params.GetMovieId()),
+                            static_cast<int>(params.GetVideoVersionId()));
     else if (params.GetMVideoId() >= 0)
       ret = db.GetMusicVideoInfo(GetPath(), *tag, static_cast<int>(params.GetMVideoId()));
     else if (params.GetEpisodeId() >= 0)

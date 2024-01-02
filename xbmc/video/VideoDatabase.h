@@ -523,7 +523,11 @@ public:
   int GetSeasonForEpisode(int idEpisode);
 
   bool LoadVideoInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details, int getDetails = VideoDbDetailsAll);
-  bool GetMovieInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details, int idMovie = -1, int getDetails = VideoDbDetailsAll);
+  bool GetMovieInfo(const std::string& strFilenameAndPath,
+                    CVideoInfoTag& details,
+                    int idMovie = -1,
+                    int idVersion = -1,
+                    int getDetails = VideoDbDetailsAll);
   bool GetTvShowInfo(const std::string& strPath, CVideoInfoTag& details, int idTvShow = -1, CFileItem* item = NULL, int getDetails = VideoDbDetailsAll);
   bool GetSeasonInfo(const std::string& path, int season, CVideoInfoTag& details, CFileItem* item);
   bool GetSeasonInfo(int idSeason, CVideoInfoTag& details, CFileItem* item);

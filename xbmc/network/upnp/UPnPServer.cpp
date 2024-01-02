@@ -362,7 +362,8 @@ PLT_MediaObject* CUPnPServer::Build(const std::shared_ptr<CFileItem>& item,
                     if (!db.Open() ) return NULL;
 
                     if (params.GetMovieId() >= 0 )
-                        db.GetMovieInfo((const char*)path, *item->GetVideoInfoTag(), params.GetMovieId());
+                      db.GetMovieInfo(static_cast<const char*>(path), *item->GetVideoInfoTag(),
+                                      params.GetMovieId(), params.GetVideoVersionId());
                     else if (params.GetMVideoId() >= 0 )
                         db.GetMusicVideoInfo((const char*)path, *item->GetVideoInfoTag(), params.GetMVideoId());
                     else if (params.GetEpisodeId() >= 0 )
