@@ -75,6 +75,7 @@ bool CGUIAgentList::Initialize(GameClientPtr gameClient)
 
   // Initialize GUI
   Refresh();
+  m_viewControl->SetSelectedItem(0);
 
   // Register observers
   if (m_gameClient)
