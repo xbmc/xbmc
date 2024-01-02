@@ -258,8 +258,11 @@ bool CRetroPlayer::CloseFile(bool reopen /* = false */)
   m_gameClient.reset();
 
   m_renderManager.reset();
+  if (m_processInfo)
+  {
+    m_processInfo->ResetInfo();
+  }
   m_processInfo.reset();
-
   CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Playback ended");
   m_callback.OnPlayBackEnded();
 
