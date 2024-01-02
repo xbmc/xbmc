@@ -1,40 +1,30 @@
-include ../../Makefile.include
+include ../../Makefile.include SWIG-VERSION ../../download-files.include
 PREFIX=$(NATIVEPREFIX)
 PLATFORM=$(NATIVEPLATFORM)
 
-DEPS = ../../Makefile.include Makefile ../../download-files.include
+DEPS = ../../Makefile.include Makefile SWIG-VERSION ../../download-files.include
 
-# lib name, version
-LIBNAME=swig
-VERSION=4.0.2
-SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
-SHA512=05e7da70ce6d9a733b96c0bcfa3c1b82765bd859f48c74759bbf4bb1467acb1809caa310cba5e2b3280cd704fca249eaa0624821dffae1d2a75097c7f55d14ed
-include ../../download-files.include
-
-# configuration settings
-CONFIGURE=./configure --prefix=$(PREFIX) --without-alllang --without-x --disable-ccache
-
-LIBDYLIB=$(PLATFORM)/swig
+LIBDYLIB=$(PLATFORM)/build/swig
 
 all: .installed-$(PLATFORM)
 
 
 $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
-	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
+	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)/build
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); $(CONFIGURE)
+	cd $(PLATFORM)/build; $(CMAKE_FOR_BUILD) $(CMAKE_OPTIONS) ..
 
 $(LIBDYLIB): $(PLATFORM)
-	$(MAKE) -C $(PLATFORM)
+	$(MAKE) -C $(PLATFORM)/build
 
 .installed-$(PLATFORM): $(LIBDYLIB)
-	$(MAKE) -C $(PLATFORM) install
+	$(MAKE) -C $(PLATFORM)/build install
 	touch $@
 
 clean:
-	$(MAKE) -C $(PLATFORM) clean
+	$(MAKE) -C $(PLATFORM)/build clean
 	rm -f .installed-$(PLATFORM)
+
 
 distclean::
 	rm -rf $(PLATFORM) .installed-$(PLATFORM)
