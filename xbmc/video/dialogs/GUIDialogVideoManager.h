@@ -15,6 +15,7 @@
 
 class CFileItem;
 class CFileItemList;
+class CMediaSource;
 
 enum class VideoAssetType;
 
