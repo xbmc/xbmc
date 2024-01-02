@@ -1263,7 +1263,7 @@ public:
 
   /// @brief Get all primitives on this class (as constant).
   ///
-  /// @return Constant a´rray list of primitives
+  /// @return Constant array list of primitives
   const std::array<DriverPrimitive, JOYSTICK_PRIMITIVE_MAX>& Primitives() const
   {
     return m_primitives;
