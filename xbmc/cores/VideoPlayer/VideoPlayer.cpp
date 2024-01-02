@@ -682,6 +682,8 @@ bool CVideoPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options
   }
 
   m_item = file;
+  CServiceBroker::GetDataCacheCore().SetFileItem(m_item);
+
   m_playerOptions = options;
 
   m_processInfo->SetPlayTimes(0,0,0,0);

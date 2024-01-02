@@ -13,8 +13,11 @@
 
 #include <atomic>
 #include <chrono>
+#include <memory>
 #include <string>
 #include <vector>
+
+class CFileItem;
 
 class CDataCacheCore
 {
@@ -195,8 +198,23 @@ public:
    */
   int64_t GetMaxTime();
 
+  /*!
+   * \brief Cache the current playing item
+   *
+   * \param item - the item to store
+   */
+  void SetFileItem(const CFileItem& item);
+
+  /*!
+   * \brief Get the current playing item
+   *
+   * \return the item currently cached by the player
+   */
+  std::shared_ptr<CFileItem> GetFileItem() const;
+
 protected:
   std::atomic_bool m_hasAVInfoChanges = false;
+  std::shared_ptr<CFileItem> m_item;
 
   CCriticalSection m_videoPlayerSection;
   struct SPlayerVideoInfo

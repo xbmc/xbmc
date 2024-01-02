@@ -159,6 +159,14 @@ void CRPProcessInfo::ResetInfo()
   }
 }
 
+void CRPProcessInfo::SetFileItem(const CFileItem& item)
+{
+  if (m_dataCache != nullptr)
+  {
+    m_dataCache->SetFileItem(item);
+  }
+}
+
 bool CRPProcessInfo::HasScalingMethod(SCALINGMETHOD scalingMethod) const
 {
   return m_renderBufferManager->HasScalingMethod(scalingMethod);

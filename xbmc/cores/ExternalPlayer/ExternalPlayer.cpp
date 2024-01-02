@@ -94,6 +94,7 @@ bool CExternalPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &opti
     m_playbackStartTime = std::chrono::steady_clock::now();
     m_launchFilename = file.GetDynPath();
     CLog::Log(LOGINFO, "{}: {}", __FUNCTION__, m_launchFilename);
+    CServiceBroker::GetDataCacheCore().SetFileItem(file);
     Create();
 
     return true;
