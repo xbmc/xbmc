@@ -1681,8 +1681,17 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
   if (HasVideoInfoTag() && item->HasVideoInfoTag())
   {
     if (GetVideoInfoTag()->m_iDbId != -1 && item->GetVideoInfoTag()->m_iDbId != -1)
-      return ((GetVideoInfoTag()->m_iDbId == item->GetVideoInfoTag()->m_iDbId) &&
-        (GetVideoInfoTag()->m_type == item->GetVideoInfoTag()->m_type));
+    {
+      if ((GetVideoInfoTag()->m_iDbId == item->GetVideoInfoTag()->m_iDbId) &&
+          (GetVideoInfoTag()->m_type == item->GetVideoInfoTag()->m_type))
+      {
+        // for movies with multiple versions, wie need also to check the file id
+        if (HasVideoVersions() && item->HasVideoVersions() && GetVideoInfoTag()->m_iFileId != -1 &&
+            item->GetVideoInfoTag()->m_iFileId != -1)
+          return GetVideoInfoTag()->m_iFileId == item->GetVideoInfoTag()->m_iFileId;
+        return true;
+      }
+    }
   }
   if (IsMusicDb() && HasMusicInfoTag())
   {
