@@ -509,6 +509,7 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
         newVideoVersion->SetLabel(g_localizeStrings.Get(40004));
         newVideoVersion->SetLabelPreformatted(true);
         newVideoVersion->SetSpecialSort(SortSpecialOnTop);
+        newVideoVersion->SetProperty("IsPlayable", false);
         items.Add(newVideoVersion);
       }
     }
@@ -817,7 +818,8 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
              item->GetVideoInfoTag()->m_type == MediaTypeMusicVideo || // musicvideos
              item->GetVideoInfoTag()->m_type == "tag" || // tags
              item->GetVideoInfoTag()->m_type == MediaTypeVideoCollection || // sets
-             item->GetVideoInfoTag()->m_type == MediaTypeVideoVersion)) // videoversions
+             (item->GetVideoInfoTag()->m_type == MediaTypeVideoVersion &&
+              item->GetVideoInfoTag()->m_iFileId != -1))) // videoversions for a certain video
         {
           buttons.Add(CONTEXT_BUTTON_EDIT, 16106);
         }
