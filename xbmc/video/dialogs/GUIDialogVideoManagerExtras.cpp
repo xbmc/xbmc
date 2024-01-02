@@ -16,7 +16,6 @@
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
-#include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -94,9 +93,9 @@ void CGUIDialogVideoManagerExtras::AddVideoExtra()
 
   CServiceBroker::GetMediaManager().GetLocalDrives(sources);
   CServiceBroker::GetMediaManager().GetNetworkLocations(sources);
+  AppendItemFolderToFileBrowserSources(sources);
 
-  std::string path{GetLikelyExtrasPath()};
-
+  std::string path;
   if (CGUIDialogFileBrowser::ShowAndGetFile(
           sources, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
           g_localizeStrings.Get(40015), path))
@@ -208,21 +207,4 @@ std::string CGUIDialogVideoManagerExtras::GenerateVideoExtra(const std::string& 
 
   // trim the string
   return StringUtils::Trim(extrasVersion);
-}
-
-std::string CGUIDialogVideoManagerExtras::GetLikelyExtrasPath()
-{
-  std::string path{URIUtils::GetDirectory(m_videoAsset->GetDynPath())};
-  CFileItemList items;
-
-  if (!XFILE::CDirectory::GetDirectory(path, items, "", XFILE::DIR_FLAG_DEFAULTS))
-    return path;
-
-  for (const auto& item : items)
-  {
-    if (item->m_bIsFolder && item->IsVideoExtras())
-      return item->GetPath();
-  }
-
-  return path;
 }

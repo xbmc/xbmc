@@ -51,6 +51,7 @@ protected:
   void UpdateControls();
 
   static int ChooseVideoAsset(const std::shared_ptr<CFileItem>& item, VideoAssetType assetType);
+  void AppendItemFolderToFileBrowserSources(std::vector<CMediaSource>& sources);
 
   CVideoDatabase m_database;
   std::shared_ptr<CFileItem> m_videoAsset;

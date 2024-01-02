@@ -536,6 +536,7 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
 
   CServiceBroker::GetMediaManager().GetLocalDrives(sources);
   CServiceBroker::GetMediaManager().GetNetworkLocations(sources);
+  AppendItemFolderToFileBrowserSources(sources);
 
   std::string path;
   if (CGUIDialogFileBrowser::ShowAndGetFile(
