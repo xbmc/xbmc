@@ -4444,8 +4444,11 @@ int CMusicDatabase::Cleanup(CGUIDialogProgress* progressDialog /*= nullptr*/)
   SetLibraryLastCleaned();
 
   // Drop triggers  song_artist and album_artist to avoid creation of entries in removed_link
-  m_pDS->exec("DROP TRIGGER tgrDeleteSongArtist");
-  m_pDS->exec("DROP TRIGGER tgrDeleteAlbumArtist");
+  // Check that triggers actually exist first as interrupting the clean causes them to not be
+  // re-created
+
+  m_pDS->exec("DROP TRIGGER IF EXISTS tgrDeleteSongArtist");
+  m_pDS->exec("DROP TRIGGER IF EXISTS tgrDeleteAlbumArtist");
 
   // first cleanup any songs with invalid paths
   if (progressDialog)
