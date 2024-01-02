@@ -491,7 +491,7 @@ void QueueItem(const std::shared_ptr<CFileItem>& itemIn, QueuePosition pos)
 
   if (pos == QueuePosition::POSITION_BEGIN &&
       components.GetComponent<CApplicationPlayer>()->IsPlaying())
-    player.Insert(playlistId, queuedItems, player.GetCurrentSong() + 1);
+    player.Insert(playlistId, queuedItems, player.GetCurrentItemIdx() + 1);
   else
     player.Add(playlistId, queuedItems);
 

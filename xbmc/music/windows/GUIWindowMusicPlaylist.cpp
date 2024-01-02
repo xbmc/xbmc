@@ -124,7 +124,7 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
       if (appPlayer->IsPlayingAudio() &&
           CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST::TYPE_MUSIC)
       {
-        int iSong = CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
+        int iSong = CServiceBroker::GetPlaylistPlayer().GetCurrentItemIdx();
         if (iSong >= 0 && iSong <= m_vecItems->Size())
           m_viewControl.SetSelectedItem(iSong);
       }
@@ -272,8 +272,8 @@ bool CGUIWindowMusicPlayList::MoveCurrentPlayListItem(int iItem,
   bool bFixCurrentSong = false;
   if ((CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST::TYPE_MUSIC) &&
       appPlayer->IsPlayingAudio() &&
-      ((CServiceBroker::GetPlaylistPlayer().GetCurrentSong() == iSelected) ||
-       (CServiceBroker::GetPlaylistPlayer().GetCurrentSong() == iNew)))
+      ((CServiceBroker::GetPlaylistPlayer().GetCurrentItemIdx() == iSelected) ||
+       (CServiceBroker::GetPlaylistPlayer().GetCurrentItemIdx() == iNew)))
     bFixCurrentSong = true;
 
   PLAYLIST::CPlayList& playlist =
@@ -283,12 +283,12 @@ bool CGUIWindowMusicPlayList::MoveCurrentPlayListItem(int iItem,
     // Correct the current playing song in playlistplayer
     if (bFixCurrentSong)
     {
-      int iCurrentSong = CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
+      int iCurrentSong = CServiceBroker::GetPlaylistPlayer().GetCurrentItemIdx();
       if (iSelected == iCurrentSong)
         iCurrentSong = iNew;
       else if (iNew == iCurrentSong)
         iCurrentSong = iSelected;
-      CServiceBroker::GetPlaylistPlayer().SetCurrentSong(iCurrentSong);
+      CServiceBroker::GetPlaylistPlayer().SetCurrentItemIdx(iCurrentSong);
     }
 
     if (bUpdate)
@@ -368,7 +368,8 @@ void CGUIWindowMusicPlayList::RemovePlayListItem(int iItem)
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
   // The current playing song can't be removed
   if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST::TYPE_MUSIC &&
-      appPlayer->IsPlayingAudio() && CServiceBroker::GetPlaylistPlayer().GetCurrentSong() == iItem)
+      appPlayer->IsPlayingAudio() &&
+      CServiceBroker::GetPlaylistPlayer().GetCurrentItemIdx() == iItem)
     return;
 
   CServiceBroker::GetPlaylistPlayer().Remove(PLAYLIST::TYPE_MUSIC, iItem);
@@ -535,7 +536,7 @@ bool CGUIWindowMusicPlayList::Update(const std::string& strDirectory,
 void CGUIWindowMusicPlayList::GetContextButtons(int itemNumber, CContextButtons& buttons)
 {
   // is this playlist playing?
-  int itemPlaying = CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
+  int itemPlaying = CServiceBroker::GetPlaylistPlayer().GetCurrentItemIdx();
 
   if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
   {
@@ -688,7 +689,7 @@ void CGUIWindowMusicPlayList::MarkPlaying()
   // mark the currently playing item
   if ((CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == TYPE_MUSIC) && (g_application.GetAppPlayer().IsPlayingAudio()))
   {
-    int iSong = CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
+    int iSong = CServiceBroker::GetPlaylistPlayer().GetCurrentItemIdx();
     if (iSong >= 0 && iSong <= m_vecItems->Size())
       m_vecItems->Get(iSong)->Select(true);
   }*/

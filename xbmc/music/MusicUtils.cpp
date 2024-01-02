@@ -813,7 +813,7 @@ void QueueItem(const std::shared_ptr<CFileItem>& itemIn, QueuePosition pos)
 
   if (pos == QueuePosition::POSITION_BEGIN && appPlayer->IsPlaying())
     player.Insert(playlistId, queuedItems,
-                  CServiceBroker::GetPlaylistPlayer().GetCurrentSong() + 1);
+                  CServiceBroker::GetPlaylistPlayer().GetCurrentItemIdx() + 1);
   else
     player.Add(playlistId, queuedItems);
 

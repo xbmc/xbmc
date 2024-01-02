@@ -405,7 +405,7 @@ bool CPartyModeManager::ReapSongs()
   const PLAYLIST::Id playlistId = GetPlaylistId();
 
   // reap any played songs
-  int iCurrentSong = CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
+  int iCurrentSong = CServiceBroker::GetPlaylistPlayer().GetCurrentItemIdx();
   int i=0;
   while (i < CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlistId).size())
   {
@@ -420,14 +420,14 @@ bool CPartyModeManager::ReapSongs()
       i++;
   }
 
-  CServiceBroker::GetPlaylistPlayer().SetCurrentSong(iCurrentSong);
+  CServiceBroker::GetPlaylistPlayer().SetCurrentItemIdx(iCurrentSong);
   return true;
 }
 
 bool CPartyModeManager::MovePlaying()
 {
   // move current song to the top if its not there
-  int iCurrentSong = CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
+  int iCurrentSong = CServiceBroker::GetPlaylistPlayer().GetCurrentItemIdx();
 
   if (iCurrentSong > 0)
   {
@@ -444,7 +444,7 @@ bool CPartyModeManager::MovePlaying()
     for (int i=0; i<playlistTemp.size(); i++)
       playlist.Add(playlistTemp[i]);
   }
-  CServiceBroker::GetPlaylistPlayer().SetCurrentSong(0);
+  CServiceBroker::GetPlaylistPlayer().SetCurrentItemIdx(0);
   return true;
 }
 
