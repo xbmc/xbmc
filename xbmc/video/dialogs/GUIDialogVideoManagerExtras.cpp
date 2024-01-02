@@ -117,7 +117,7 @@ void CGUIDialogVideoManagerExtras::AddVideoExtra()
     if (idVideoVersion != -1)
     {
       CFileItemList versions;
-      m_database.GetVideoVersions(itemType, dbId, versions);
+      m_database.GetVideoVersions(itemType, dbId, versions, videoAssetType);
       if (std::any_of(versions.begin(), versions.end(),
                       [idFile](const std::shared_ptr<CFileItem>& version)
                       { return version->GetVideoInfoTag()->m_iDbId == idFile; }))

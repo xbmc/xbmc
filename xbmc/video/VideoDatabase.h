@@ -997,7 +997,6 @@ public:
   std::string GetVideoVersionById(int id);
   bool GetVideoItemByVideoVersion(int dbId, CFileItem& item);
   int GetVideoVersionFile(VideoDbContentType itemType, int dbId, int idVideoVersion);
-  void GetVideoVersions(VideoDbContentType itemType, int dbId, CFileItemList& items);
   void GetVideoVersions(VideoDbContentType itemType,
                         int dbId,
                         CFileItemList& items,

@@ -556,7 +556,7 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
     if (idVideoVersion != -1)
     {
       CFileItemList versions;
-      m_database.GetVideoVersions(itemType, dbId, versions);
+      m_database.GetVideoVersions(itemType, dbId, versions, videoAssetType);
       if (std::any_of(versions.begin(), versions.end(),
                       [idFile](const std::shared_ptr<CFileItem>& version)
                       { return version->GetVideoInfoTag()->m_iDbId == idFile; }))
@@ -583,7 +583,7 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
       if (m_database.IsDefaultVideoVersion(idFile))
       {
         CFileItemList list;
-        m_database.GetVideoVersions(itemType, idMedia, list);
+        m_database.GetVideoVersions(itemType, idMedia, list, videoAssetType);
 
         if (list.Size() > 1)
         {
