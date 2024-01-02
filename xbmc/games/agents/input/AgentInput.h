@@ -34,6 +34,14 @@ namespace JOYSTICK
 {
 class IInputProvider;
 }
+namespace KEYBOARD
+{
+class IKeyboardInputProvider;
+}
+namespace MOUSE
+{
+class IMouseInputProvider;
+}
 
 namespace GAME
 {
@@ -82,8 +90,10 @@ public:
   void OnButtonRelease(MOUSE::BUTTON_ID button) override {}
 
   // Public interface
-  std::vector<std::shared_ptr<CAgentController>> GetControllers() const;
+  std::vector<std::shared_ptr<const CAgentController>> GetControllers() const;
   std::string GetPortAddress(JOYSTICK::IInputProvider* inputProvider) const;
+  std::string GetKeyboardAddress(KEYBOARD::IKeyboardInputProvider* inputProvider) const;
+  std::string GetMouseAddress(MOUSE::IMouseInputProvider* inputProvider) const;
   std::vector<std::string> GetInputPorts() const;
   float GetPortActivation(const std::string& address) const;
   float GetPeripheralActivation(const std::string& peripheralLocation) const;
@@ -136,13 +146,15 @@ private:
   GameClientPtr m_gameClient;
   bool m_bHasKeyboard = false;
   bool m_bHasMouse = false;
+  int m_initialMouseX{-1};
+  int m_initialMouseY{-1};
   std::vector<std::shared_ptr<CAgentController>> m_controllers;
 
   // Synchronization parameters
   mutable std::mutex m_controllerMutex;
 
   /*!
-   * \brief Map of input provider to joystick handler
+   * \brief Map of joystick input provider to joystick handler
    *
    * The input provider is a handle to agent input.
    *
@@ -154,6 +166,16 @@ private:
    * Not exposed to the game.
    */
   PortMap m_portMap;
+
+  /*!
+   * \brief Map of keyboard input provider to keyboard port address
+   */
+  std::map<KEYBOARD::IKeyboardInputProvider*, PortAddress> m_keyboardPort;
+
+  /*!
+   * \brief Map of mouse input provider to mouse port address
+   */
+  std::map<MOUSE::IMouseInputProvider*, PortAddress> m_mousePort;
 
   /*!
    * \brief Map of the current ports to their peripheral

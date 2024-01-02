@@ -77,6 +77,20 @@ void CAgentInput::Stop()
     m_disconnectedPeripherals.clear();
   }
 
+  // Close open keyboard
+  if (!m_keyboardPort.empty())
+  {
+    m_keyboardPort.clear();
+    SetChanged(true);
+  }
+
+  // Close open mouse
+  if (!m_mousePort.empty())
+  {
+    m_mousePort.clear();
+    SetChanged(true);
+  }
+
   // Notify observers if anything changed
   NotifyObservers(ObservableMessageAgentControllersChanged);
 
@@ -89,10 +103,12 @@ void CAgentInput::Refresh()
   if (m_gameClient)
   {
     // Open keyboard
-    ProcessKeyboard();
+    if (m_bHasKeyboard)
+      ProcessKeyboard();
 
     // Open mouse
-    ProcessMouse();
+    if (m_bHasMouse)
+      ProcessMouse();
 
     // Open/close joysticks
     PERIPHERALS::EventLockHandlePtr inputHandlingLock;
@@ -120,26 +136,55 @@ void CAgentInput::Notify(const Observable& obs, const ObservableMessage msg)
 
 bool CAgentInput::OnKeyPress(const CKey& key)
 {
-  m_bHasKeyboard = true;
+  if (!m_bHasKeyboard)
+  {
+    m_bHasKeyboard = true;
+    ProcessKeyboard();
+    NotifyObservers(ObservableMessageAgentControllersChanged);
+  }
   return false;
 }
 
 bool CAgentInput::OnPosition(int x, int y)
 {
-  m_bHasMouse = true;
+  if (!m_bHasMouse)
+  {
+    // Only process mouse if the position has changed
+    if (m_initialMouseX == -1 && m_initialMouseY == -1)
+    {
+      m_initialMouseX = x;
+      m_initialMouseY = y;
+    }
+
+    if (m_initialMouseX != x || m_initialMouseY != y)
+    {
+      m_bHasMouse = true;
+      ProcessMouse();
+      NotifyObservers(ObservableMessageAgentControllersChanged);
+    }
+  }
   return false;
 }
 
 bool CAgentInput::OnButtonPress(MOUSE::BUTTON_ID button)
 {
-  m_bHasMouse = true;
+  if (!m_bHasMouse)
+  {
+    m_bHasMouse = true;
+    ProcessMouse();
+    NotifyObservers(ObservableMessageAgentControllersChanged);
+  }
   return false;
 }
 
-std::vector<std::shared_ptr<CAgentController>> CAgentInput::GetControllers() const
+std::vector<std::shared_ptr<const CAgentController>> CAgentInput::GetControllers() const
 {
   std::lock_guard<std::mutex> lock(m_controllerMutex);
-  return m_controllers;
+
+  std::vector<std::shared_ptr<const CAgentController>> controllers{m_controllers.size()};
+  std::copy(m_controllers.begin(), m_controllers.end(), controllers.begin());
+
+  return controllers;
 }
 
 std::string CAgentInput::GetPortAddress(JOYSTICK::IInputProvider* inputProvider) const
@@ -147,6 +192,24 @@ std::string CAgentInput::GetPortAddress(JOYSTICK::IInputProvider* inputProvider)
   auto it = m_portMap.find(inputProvider);
   if (it != m_portMap.end())
     return it->second->GetPortAddress();
+
+  return "";
+}
+
+std::string CAgentInput::GetKeyboardAddress(KEYBOARD::IKeyboardInputProvider* inputProvider) const
+{
+  auto it = m_keyboardPort.find(inputProvider);
+  if (it != m_keyboardPort.end())
+    return it->second;
+
+  return "";
+}
+
+std::string CAgentInput::GetMouseAddress(MOUSE::IMouseInputProvider* inputProvider) const
+{
+  auto it = m_mousePort.find(inputProvider);
+  if (it != m_mousePort.end())
+    return it->second;
 
   return "";
 }
@@ -259,6 +322,9 @@ void CAgentInput::ProcessJoysticks(PERIPHERALS::EventLockHandlePtr& inputHandlin
   // Update agent controllers
   ProcessAgentControllers(joysticks, inputHandlingLock);
 
+  if (!m_gameClient)
+    return;
+
   // Update expired joysticks
   UpdateExpiredJoysticks(joysticks, inputHandlingLock);
 
@@ -287,21 +353,32 @@ void CAgentInput::ProcessJoysticks(PERIPHERALS::EventLockHandlePtr& inputHandlin
 
 void CAgentInput::ProcessKeyboard()
 {
-  if (m_bHasKeyboard && m_gameClient->Input().SupportsKeyboard() &&
-      !m_gameClient->Input().IsKeyboardOpen())
-  {
-    PERIPHERALS::PeripheralVector keyboards;
-    m_peripheralManager.GetPeripheralsWithFeature(keyboards, PERIPHERALS::FEATURE_KEYBOARD);
-    if (!keyboards.empty())
-    {
-      CControllerTree controllers = m_gameClient->Input().GetActiveControllerTree();
+  PERIPHERALS::PeripheralVector keyboards;
+  m_peripheralManager.GetPeripheralsWithFeature(keyboards, PERIPHERALS::FEATURE_KEYBOARD);
 
+  if (!keyboards.empty())
+  {
+    // Update agent controllers
+    PERIPHERALS::EventLockHandlePtr inputHandlingLock;
+    ProcessAgentControllers(keyboards, inputHandlingLock);
+
+    // Process keyboard input
+    if (m_gameClient && m_gameClient->Input().SupportsKeyboard() &&
+        !m_gameClient->Input().IsKeyboardOpen())
+    {
+      // Get controller in keyboard port
+      const CControllerTree controllers = m_gameClient->Input().GetActiveControllerTree();
       auto it = std::find_if(controllers.GetPorts().begin(), controllers.GetPorts().end(),
                              [](const CPortNode& port)
                              { return port.GetPortType() == PORT_TYPE::KEYBOARD; });
 
+      // Open keyboard input
       PERIPHERALS::PeripheralPtr keyboard = std::move(keyboards.at(0));
       m_gameClient->Input().OpenKeyboard(it->GetActiveController().GetController(), keyboard);
+
+      // Save keyboard port
+      m_keyboardPort[static_cast<KEYBOARD::IKeyboardInputProvider*>(keyboard.get())] =
+          it->GetAddress();
 
       SetChanged(true);
     }
@@ -310,51 +387,65 @@ void CAgentInput::ProcessKeyboard()
 
 void CAgentInput::ProcessMouse()
 {
-  if (m_bHasMouse && m_gameClient->Input().SupportsMouse() && !m_gameClient->Input().IsMouseOpen())
+  PERIPHERALS::PeripheralVector mice;
+  m_peripheralManager.GetPeripheralsWithFeature(mice, PERIPHERALS::FEATURE_MOUSE);
+
+  if (!mice.empty())
   {
-    PERIPHERALS::PeripheralVector mice;
-    m_peripheralManager.GetPeripheralsWithFeature(mice, PERIPHERALS::FEATURE_MOUSE);
-    if (!mice.empty())
+    // Update agent controllers
+    PERIPHERALS::EventLockHandlePtr inputHandlingLock;
+    ProcessAgentControllers(mice, inputHandlingLock);
+
+    // Process mouse input
+    if (m_gameClient && m_gameClient->Input().SupportsMouse() &&
+        !m_gameClient->Input().IsMouseOpen())
     {
+      // Get controller in mouse port
       CControllerTree controllers = m_gameClient->Input().GetActiveControllerTree();
 
       auto it = std::find_if(controllers.GetPorts().begin(), controllers.GetPorts().end(),
                              [](const CPortNode& port)
                              { return port.GetPortType() == PORT_TYPE::MOUSE; });
 
+      // Open mouse input
       PERIPHERALS::PeripheralPtr mouse = std::move(mice.at(0));
       m_gameClient->Input().OpenMouse(it->GetActiveController().GetController(), mouse);
+
+      // Save mouse port
+      m_mousePort[static_cast<MOUSE::IMouseInputProvider*>(mouse.get())] = it->GetAddress();
 
       SetChanged(true);
     }
   }
 }
 
-void CAgentInput::ProcessAgentControllers(const PERIPHERALS::PeripheralVector& joysticks,
+void CAgentInput::ProcessAgentControllers(const PERIPHERALS::PeripheralVector& peripherals,
                                           PERIPHERALS::EventLockHandlePtr& inputHandlingLock)
 {
   std::lock_guard<std::mutex> lock(m_controllerMutex);
 
   // Handle new and existing controllers
-  for (const auto& joystick : joysticks)
+  for (const auto& peripheral : peripherals)
   {
+    // Check if controller already exists
     auto it = std::find_if(m_controllers.begin(), m_controllers.end(),
-                           [&joystick](const std::shared_ptr<CAgentController>& controller)
-                           { return controller->GetPeripheralLocation() == joystick->Location(); });
+                           [&peripheral](const std::shared_ptr<CAgentController>& controller) {
+                             return controller->GetPeripheralLocation() == peripheral->Location();
+                           });
 
     if (it == m_controllers.end())
     {
       // Handle new controller
-      m_controllers.emplace_back(std::make_shared<CAgentController>(joystick));
+      m_controllers.emplace_back(std::make_shared<CAgentController>(peripheral));
       SetChanged(true);
     }
     else
     {
+      // Check if appearance has changed
       CAgentController& agentController = **it;
 
-      // Check if appearance has changed
       ControllerPtr oldController = agentController.GetController();
-      ControllerPtr newController = joystick->ControllerProfile();
+      ControllerPtr newController = peripheral->ControllerProfile();
 
       std::string oldControllerId = oldController ? oldController->ID() : "";
       std::string newControllerId = newController ? newController->ID() : "";
@@ -373,37 +464,110 @@ void CAgentInput::ProcessAgentControllers(const PERIPHERALS::PeripheralVector& j
     }
   }
 
-  // Remove expired controllers
-  std::vector<std::string> expiredJoysticks;
-  for (const auto& agentController : m_controllers)
+  // If we're processing joysticks, remove expired joysticks
+  if (std::any_of(peripherals.begin(), peripherals.end(),
+                  [](const PERIPHERALS::PeripheralPtr& peripheral)
+                  { return peripheral->Type() == PERIPHERALS::PERIPHERAL_JOYSTICK; }))
   {
-    auto it =
-        std::find_if(joysticks.begin(), joysticks.end(),
-                     [&agentController](const PERIPHERALS::PeripheralPtr& joystick)
-                     { return agentController->GetPeripheralLocation() == joystick->Location(); });
-
-    if (it == joysticks.end())
-      expiredJoysticks.emplace_back(agentController->GetPeripheralLocation());
-  }
-  for (const std::string& expiredJoystick : expiredJoysticks)
-  {
-    auto it = std::find_if(m_controllers.begin(), m_controllers.end(),
-                           [&expiredJoystick](const std::shared_ptr<CAgentController>& controller)
-                           { return controller->GetPeripheralLocation() == expiredJoystick; });
-    if (it != m_controllers.end())
+    std::vector<std::string> expiredJoysticks;
+    for (const auto& agentController : m_controllers)
     {
-      if (!inputHandlingLock)
-        inputHandlingLock = m_peripheralManager.RegisterEventLock();
+      if (agentController->GetPeripheral()->Type() != PERIPHERALS::PERIPHERAL_JOYSTICK)
+        continue;
 
-      // Deinitialize agent
-      (*it)->Deinitialize();
+      auto it =
+          std::find_if(peripherals.begin(), peripherals.end(),
+                       [&agentController](const PERIPHERALS::PeripheralPtr& peripheral) {
+                         return agentController->GetPeripheralLocation() == peripheral->Location();
+                       });
 
-      // Remove from list
-      m_controllers.erase(it);
+      if (it == peripherals.end())
+        expiredJoysticks.emplace_back(agentController->GetPeripheralLocation());
+    }
+    for (const std::string& expiredJoystick : expiredJoysticks)
+    {
+      auto it = std::find_if(m_controllers.begin(), m_controllers.end(),
+                             [&expiredJoystick](const std::shared_ptr<CAgentController>& controller)
+                             { return controller->GetPeripheralLocation() == expiredJoystick; });
+      if (it != m_controllers.end())
+      {
+        if (!inputHandlingLock)
+          inputHandlingLock = m_peripheralManager.RegisterEventLock();
 
-      SetChanged(true);
+        // Deinitialize agent
+        (*it)->Deinitialize();
+
+        // Remove from list
+        m_controllers.erase(it);
+
+        SetChanged(true);
+      }
     }
   }
+
+  // Sort controllers in the order:
+  //
+  //   - Keyboard, if game client accepts keyboard input
+  //   - Mouse, if game client accepts mouse input
+  //   - Joysticks, in order of last button press
+  //   - Keyboard, if game client doesn't accept keyboard input
+  //   - Mouse, if game client doesn't accept mouse input
+  //
+  std::sort(m_controllers.begin(), m_controllers.end(),
+            [this](const std::shared_ptr<CAgentController>& lhs,
+                   const std::shared_ptr<CAgentController>& rhs)
+            {
+              const PERIPHERALS::PeripheralPtr& lhsPeripheral = lhs->GetPeripheral();
+              const PERIPHERALS::PeripheralPtr& rhsPeripheral = rhs->GetPeripheral();
+
+              if (m_gameClient && m_gameClient->Input().SupportsKeyboard())
+              {
+                if (lhsPeripheral->Type() == PERIPHERALS::PERIPHERAL_KEYBOARD &&
+                    rhsPeripheral->Type() != PERIPHERALS::PERIPHERAL_KEYBOARD)
+                  return true;
+                if (lhsPeripheral->Type() != PERIPHERALS::PERIPHERAL_KEYBOARD &&
+                    rhsPeripheral->Type() == PERIPHERALS::PERIPHERAL_KEYBOARD)
+                  return false;
+              }
+
+              if (m_gameClient && m_gameClient->Input().SupportsMouse())
+              {
+                if (lhsPeripheral->Type() == PERIPHERALS::PERIPHERAL_MOUSE &&
+                    rhsPeripheral->Type() != PERIPHERALS::PERIPHERAL_MOUSE)
+                  return true;
+                if (lhsPeripheral->Type() != PERIPHERALS::PERIPHERAL_MOUSE &&
+                    rhsPeripheral->Type() == PERIPHERALS::PERIPHERAL_MOUSE)
+                  return false;
+              }
+
+              if (lhsPeripheral->Type() == PERIPHERALS::PERIPHERAL_JOYSTICK &&
+                  rhsPeripheral->Type() == PERIPHERALS::PERIPHERAL_JOYSTICK)
+              {
+                if (lhsPeripheral->LastActive().IsValid() && !rhsPeripheral->LastActive().IsValid())
+                  return true;
+                if (!lhsPeripheral->LastActive().IsValid() && rhsPeripheral->LastActive().IsValid())
+                  return false;
+
+                return lhsPeripheral->LastActive() > rhsPeripheral->LastActive();
+              }
+
+              if (lhsPeripheral->Type() == PERIPHERALS::PERIPHERAL_JOYSTICK &&
+                  rhsPeripheral->Type() != PERIPHERALS::PERIPHERAL_JOYSTICK)
+                return true;
+              if (lhsPeripheral->Type() != PERIPHERALS::PERIPHERAL_JOYSTICK &&
+                  rhsPeripheral->Type() == PERIPHERALS::PERIPHERAL_JOYSTICK)
+                return false;
+
+              if (lhsPeripheral->Type() == PERIPHERALS::PERIPHERAL_KEYBOARD &&
+                  rhsPeripheral->Type() != PERIPHERALS::PERIPHERAL_KEYBOARD)
+                return true;
+              if (lhsPeripheral->Type() != PERIPHERALS::PERIPHERAL_KEYBOARD &&
+                  rhsPeripheral->Type() == PERIPHERALS::PERIPHERAL_KEYBOARD)
+                return false;
+
+              return lhsPeripheral->Type() == PERIPHERALS::PERIPHERAL_MOUSE &&
+                     rhsPeripheral->Type() != PERIPHERALS::PERIPHERAL_MOUSE;
+            });
 }
 
 void CAgentInput::UpdateExpiredJoysticks(const PERIPHERALS::PeripheralVector& joysticks,

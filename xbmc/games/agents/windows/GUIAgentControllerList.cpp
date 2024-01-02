@@ -138,8 +138,9 @@ void CGUIAgentControllerList::Refresh()
 
   CAgentInput& agentInput = CServiceBroker::GetGameServices().AgentInput();
 
-  std::vector<std::shared_ptr<CAgentController>> agentControllers = agentInput.GetControllers();
-  for (const std::shared_ptr<CAgentController>& agentController : agentControllers)
+  std::vector<std::shared_ptr<const CAgentController>> agentControllers =
+      agentInput.GetControllers();
+  for (const std::shared_ptr<const CAgentController>& agentController : agentControllers)
     AddItem(*agentController);
 
   // Add a "No controllers connected" item if no agents are available
@@ -261,8 +262,9 @@ void CGUIAgentControllerList::OnControllerSelect(const CFileItem& selectedAgentI
 {
   CAgentInput& agentInput = CServiceBroker::GetGameServices().AgentInput();
 
-  std::vector<std::shared_ptr<CAgentController>> agentControllers = agentInput.GetControllers();
-  for (const std::shared_ptr<CAgentController>& agentController : agentControllers)
+  std::vector<std::shared_ptr<const CAgentController>> agentControllers =
+      agentInput.GetControllers();
+  for (const std::shared_ptr<const CAgentController>& agentController : agentControllers)
   {
     PERIPHERALS::PeripheralPtr peripheral = agentController->GetPeripheral();
     if (peripheral && peripheral->Location() == selectedAgentItem.GetPath())
