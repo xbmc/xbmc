@@ -10,6 +10,7 @@
 
 #include "FileItem.h"
 #include "GUIUserMessages.h"
+#include "MediaSource.h"
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
