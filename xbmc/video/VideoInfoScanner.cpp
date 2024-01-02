@@ -65,6 +65,11 @@ namespace VIDEO
   {
     m_bStop = false;
     m_scanAll = false;
+
+    const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
+    m_ignoreVideoVersions = settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_IGNOREVIDEOVERSIONS);
+    m_ignoreVideoExtras = settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_IGNOREVIDEOEXTRAS);
   }
 
   CVideoInfoScanner::~CVideoInfoScanner()
@@ -76,11 +81,7 @@ namespace VIDEO
 
     try
     {
-      auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-
-      m_ignoreVideoVersions =
-          settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_IGNOREVIDEOVERSIONS);
-      m_ignoreVideoExtras = settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_IGNOREVIDEOEXTRAS);
+      const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
       if (m_showDialog && !settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_BACKGROUNDUPDATE))
       {
