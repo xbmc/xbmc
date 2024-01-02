@@ -15,6 +15,7 @@
 
 #include "GUIControl.h"
 #include "GUITexture.h"
+#include "ImageSettings.h"
 #include "guilib/guiinfo/GUIInfoLabel.h"
 
 #include <vector>
@@ -79,6 +80,7 @@ public:
   void SetPosition(float posX, float posY) override;
   std::string GetDescription() const override;
   void SetCrossFade(unsigned int time);
+  void SetImageFilter(const KODI::GUILIB::GUIINFO::CGUIInfoLabel& imageFilter);
 
   const std::string& GetFileName() const;
   float GetTextureWidth() const;
@@ -102,6 +104,8 @@ protected:
   */
   void UpdateDiffuseColor(const CGUIListItem* item);
 
+  void UpdateImageFilter(KODI::GUILIB::IMAGE_FILTER imageFilter);
+
   bool m_bDynamicResourceAlloc;
 
   // border + conditional info
@@ -116,5 +120,7 @@ protected:
   unsigned int m_crossFadeTime;
   unsigned int m_currentFadeTime;
   unsigned int m_lastRenderTime;
-};
 
+  KODI::GUILIB::GUIINFO::CGUIInfoLabel m_imageFilterInfo;
+  KODI::GUILIB::IMAGE_FILTER m_imageFilter{KODI::GUILIB::IMAGE_FILTER::UNKNOWN};
+};
