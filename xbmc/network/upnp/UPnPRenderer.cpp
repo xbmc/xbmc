@@ -627,10 +627,6 @@ CUPnPRenderer::OnSetNextAVTransportURI(PLT_ActionReference& action)
         CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(playlistId);
       }
 
-        CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
-        CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
-
-
         service->SetStateVariable("NextAVTransportURI", uri);
         service->SetStateVariable("NextAVTransportURIMetaData", meta);
 
