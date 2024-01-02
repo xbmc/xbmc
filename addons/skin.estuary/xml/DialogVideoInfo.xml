@@ -154,6 +154,12 @@
 					<onright>140</onright>
 					<onleft>140</onleft>
 					<include content="InfoDialogMetadata">
+						<param name="control_id" value="146" />
+						<param name="label" value="[COLOR button_focus]$LOCALIZE[40003]: [/COLOR]$INFO[ListItem.VideoVersionName]" />
+						<param name="altlabel" value="$LOCALIZE[40003]: $INFO[ListItem.VideoVersionname]" />
+						<param name="visible" value="!String.IsEmpty(ListItem.VideoVersionName)" />
+					</include>
+					<include content="InfoDialogMetadata">
 						<param name="control_id" value="147" />
 						<param name="label" value="$INFO[ListItem.Director,[COLOR button_focus]$LOCALIZE[20339]: [/COLOR]]" />
 						<param name="altlabel" value="$INFO[ListItem.Director,$LOCALIZE[20339]: ]" />
