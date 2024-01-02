@@ -188,9 +188,8 @@ bool CGUIControllerList::RefreshControllers(void)
   if (!m_controllerId.empty())
   {
     newControllers.erase(std::remove_if(newControllers.begin(), newControllers.end(),
-                                        [this](const ControllerPtr& controller) {
-                                          return controller->ID() != m_controllerId;
-                                        }),
+                                        [this](const ControllerPtr& controller)
+                                        { return controller->ID() != m_controllerId; }),
                          newControllers.end());
   }
   // Filter by current game add-on
@@ -198,9 +197,8 @@ bool CGUIControllerList::RefreshControllers(void)
   {
     const CControllerTree& controllers = m_gameClient->Input().GetDefaultControllerTree();
 
-    auto ControllerNotAccepted = [&controllers](const ControllerPtr& controller) {
-      return !controllers.IsControllerAccepted(controller->ID());
-    };
+    auto ControllerNotAccepted = [&controllers](const ControllerPtr& controller)
+    { return !controllers.IsControllerAccepted(controller->ID()); };
 
     if (!std::all_of(newControllers.begin(), newControllers.end(), ControllerNotAccepted))
       newControllers.erase(
@@ -229,7 +227,8 @@ bool CGUIControllerList::RefreshControllers(void)
 
     // Sort add-ons, with default controller first
     std::sort(m_controllers.begin(), m_controllers.end(),
-              [](const ControllerPtr& i, const ControllerPtr& j) {
+              [](const ControllerPtr& i, const ControllerPtr& j)
+              {
                 if (i->ID() == DEFAULT_CONTROLLER_ID && j->ID() != DEFAULT_CONTROLLER_ID)
                   return true;
                 if (i->ID() != DEFAULT_CONTROLLER_ID && j->ID() == DEFAULT_CONTROLLER_ID)

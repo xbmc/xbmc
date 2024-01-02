@@ -270,9 +270,9 @@ std::string CWindowTranslator::TranslateWindow(int windowId)
 
 int CWindowTranslator::GetFallbackWindow(int windowId)
 {
-  auto it = std::find_if(
-      FallbackWindows.begin(), FallbackWindows.end(),
-      [windowId](const FallbackWindowMapping& mapping) { return mapping.origin == windowId; });
+  auto it = std::find_if(FallbackWindows.begin(), FallbackWindows.end(),
+                         [windowId](const FallbackWindowMapping& mapping)
+                         { return mapping.origin == windowId; });
 
   if (it != FallbackWindows.end())
     return it->target;

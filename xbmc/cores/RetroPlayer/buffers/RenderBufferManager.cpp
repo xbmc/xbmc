@@ -36,9 +36,9 @@ RenderBufferPoolVector CRenderBufferManager::GetPools(IRendererFactory* factory)
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
-  auto it = std::find_if(m_pools.begin(), m_pools.end(), [factory](const RenderBufferPools& pools) {
-    return pools.factory == factory;
-  });
+  auto it =
+      std::find_if(m_pools.begin(), m_pools.end(),
+                   [factory](const RenderBufferPools& pools) { return pools.factory == factory; });
 
   if (it != m_pools.end())
     bufferPools = it->pools;

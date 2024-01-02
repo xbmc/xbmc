@@ -44,9 +44,9 @@ std::string CGUIDialogIgnoreInput::GetDialogText()
   std::vector<std::string> primitives;
 
   std::transform(m_capturedPrimitives.begin(), m_capturedPrimitives.end(),
-                 std::back_inserter(primitives), [](const JOYSTICK::CDriverPrimitive& primitive) {
-                   return JOYSTICK::CJoystickTranslator::GetPrimitiveName(primitive);
-                 });
+                 std::back_inserter(primitives),
+                 [](const JOYSTICK::CDriverPrimitive& primitive)
+                 { return JOYSTICK::CJoystickTranslator::GetPrimitiveName(primitive); });
 
   return StringUtils::Format(dialogText, StringUtils::Join(primitives, " | "));
 }
@@ -114,9 +114,8 @@ bool CGUIDialogIgnoreInput::AddPrimitive(const JOYSTICK::CDriverPrimitive& primi
   if (primitive.Type() == JOYSTICK::PRIMITIVE_TYPE::BUTTON ||
       primitive.Type() == JOYSTICK::PRIMITIVE_TYPE::SEMIAXIS)
   {
-    auto PrimitiveMatch = [&primitive](const JOYSTICK::CDriverPrimitive& other) {
-      return primitive.Type() == other.Type() && primitive.Index() == other.Index();
-    };
+    auto PrimitiveMatch = [&primitive](const JOYSTICK::CDriverPrimitive& other)
+    { return primitive.Type() == other.Type() && primitive.Index() == other.Index(); };
 
     bValid = std::find_if(m_capturedPrimitives.begin(), m_capturedPrimitives.end(),
                           PrimitiveMatch) == m_capturedPrimitives.end();

@@ -143,7 +143,8 @@ void CGameUtils::GetGameClients(const CFileItem& file,
 
   // Sort by name
   //! @todo Move to presentation code
-  auto SortByName = [](const GameClientPtr& lhs, const GameClientPtr& rhs) {
+  auto SortByName = [](const GameClientPtr& lhs, const GameClientPtr& rhs)
+  {
     std::string lhsName = lhs->Name();
     std::string rhsName = rhs->Name();
 

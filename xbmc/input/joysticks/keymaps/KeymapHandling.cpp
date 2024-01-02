@@ -40,9 +40,8 @@ CKeymapHandling::~CKeymapHandling()
 IInputReceiver* CKeymapHandling::GetInputReceiver(const std::string& controllerId) const
 {
   auto it = std::find_if(m_inputHandlers.begin(), m_inputHandlers.end(),
-                         [&controllerId](const std::unique_ptr<IInputHandler>& inputHandler) {
-                           return inputHandler->ControllerID() == controllerId;
-                         });
+                         [&controllerId](const std::unique_ptr<IInputHandler>& inputHandler)
+                         { return inputHandler->ControllerID() == controllerId; });
 
   if (it != m_inputHandlers.end())
     return (*it)->InputReceiver();
@@ -53,9 +52,8 @@ IInputReceiver* CKeymapHandling::GetInputReceiver(const std::string& controllerI
 IKeymap* CKeymapHandling::GetKeymap(const std::string& controllerId) const
 {
   auto it = std::find_if(m_keymaps.begin(), m_keymaps.end(),
-                         [&controllerId](const std::unique_ptr<IKeymap>& keymap) {
-                           return keymap->ControllerID() == controllerId;
-                         });
+                         [&controllerId](const std::unique_ptr<IKeymap>& keymap)
+                         { return keymap->ControllerID() == controllerId; });
 
   if (it != m_keymaps.end())
     return it->get();

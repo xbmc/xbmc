@@ -72,9 +72,8 @@ void CGUIDialogAxisDetection::OnLateAxis(const JOYSTICK::IButtonMap* buttonMap,
 void CGUIDialogAxisDetection::AddAxis(const std::string& deviceLocation, unsigned int axisIndex)
 {
   auto it = std::find_if(m_detectedAxes.begin(), m_detectedAxes.end(),
-                         [&deviceLocation, axisIndex](const AxisEntry& axis) {
-                           return axis.first == deviceLocation && axis.second == axisIndex;
-                         });
+                         [&deviceLocation, axisIndex](const AxisEntry& axis)
+                         { return axis.first == deviceLocation && axis.second == axisIndex; });
 
   if (it == m_detectedAxes.end())
   {

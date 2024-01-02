@@ -860,9 +860,8 @@ void CPeripheralAddon::UnregisterButtonMap(CPeripheral* device)
 
   m_buttonMaps.erase(
       std::remove_if(m_buttonMaps.begin(), m_buttonMaps.end(),
-                     [device](const std::pair<CPeripheral*, JOYSTICK::IButtonMap*>& buttonMap) {
-                       return buttonMap.first == device;
-                     }),
+                     [device](const std::pair<CPeripheral*, JOYSTICK::IButtonMap*>& buttonMap)
+                     { return buttonMap.first == device; }),
       m_buttonMaps.end());
 }
 

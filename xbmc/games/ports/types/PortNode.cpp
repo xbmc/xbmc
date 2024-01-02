@@ -111,9 +111,8 @@ bool CPortNode::IsControllerAccepted(const std::string& controllerId) const
 
   // Visit nodes
   return std::any_of(m_controllers.begin(), m_controllers.end(),
-                     [controllerId](const CControllerNode& node) {
-                       return node.IsControllerAccepted(controllerId);
-                     });
+                     [controllerId](const CControllerNode& node)
+                     { return node.IsControllerAccepted(controllerId); });
 }
 
 bool CPortNode::IsControllerAccepted(const std::string& portAddress,
@@ -133,9 +132,8 @@ bool CPortNode::IsControllerAccepted(const std::string& portAddress,
   {
     // Visit nodes
     if (std::any_of(m_controllers.begin(), m_controllers.end(),
-                    [portAddress, controllerId](const CControllerNode& node) {
-                      return node.IsControllerAccepted(portAddress, controllerId);
-                    }))
+                    [portAddress, controllerId](const CControllerNode& node)
+                    { return node.IsControllerAccepted(portAddress, controllerId); }))
     {
       bAccepted = true;
     }

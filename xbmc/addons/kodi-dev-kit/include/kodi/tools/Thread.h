@@ -202,7 +202,8 @@ public:
       //   same thing so a full system mutex needs to be used.
       std::unique_lock<std::recursive_mutex> lock(m_threadMutex);
       m_thread = new std::thread(
-          [](CThread* thread, std::promise<bool> promise) {
+          [](CThread* thread, std::promise<bool> promise)
+          {
             try
             {
               {

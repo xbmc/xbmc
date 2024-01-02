@@ -25,46 +25,47 @@ class CJNIViewInputDevice;
 
 namespace PERIPHERALS
 {
-  class CPeripheralBusAndroid : public CPeripheralBus,
-                                public IInputDeviceCallbacks,
-                                public IInputDeviceEventHandler
-  {
-  public:
-    explicit CPeripheralBusAndroid(CPeripherals& manager);
-    ~CPeripheralBusAndroid() override;
+class CPeripheralBusAndroid : public CPeripheralBus,
+                              public IInputDeviceCallbacks,
+                              public IInputDeviceEventHandler
+{
+public:
+  explicit CPeripheralBusAndroid(CPeripherals& manager);
+  ~CPeripheralBusAndroid() override;
 
-    // specialisation of CPeripheralBus
-    bool InitializeProperties(CPeripheral& peripheral) override;
-    void Initialise(void) override;
-    void ProcessEvents() override;
+  // specialisation of CPeripheralBus
+  bool InitializeProperties(CPeripheral& peripheral) override;
+  void Initialise(void) override;
+  void ProcessEvents() override;
 
-    // implementations of IInputDeviceCallbacks
-    void OnInputDeviceAdded(int deviceId) override;
-    void OnInputDeviceChanged(int deviceId) override;
-    void OnInputDeviceRemoved(int deviceId) override;
+  // implementations of IInputDeviceCallbacks
+  void OnInputDeviceAdded(int deviceId) override;
+  void OnInputDeviceChanged(int deviceId) override;
+  void OnInputDeviceRemoved(int deviceId) override;
 
-    // implementation of IInputDeviceEventHandler
-    bool OnInputDeviceEvent(const AInputEvent* event) override;
+  // implementation of IInputDeviceEventHandler
+  bool OnInputDeviceEvent(const AInputEvent* event) override;
 
-  protected:
-    // implementation of CPeripheralBus
-    bool PerformDeviceScan(PeripheralScanResults &results) override;
+protected:
+  // implementation of CPeripheralBus
+  bool PerformDeviceScan(PeripheralScanResults& results) override;
 
-  private:
-    static PeripheralScanResults GetInputDevices();
+private:
+  static PeripheralScanResults GetInputDevices();
 
-    static std::string GetDeviceLocation(int deviceId);
-    static bool GetDeviceId(const std::string& deviceLocation, int& deviceId);
+  static std::string GetDeviceLocation(int deviceId);
+  static bool GetDeviceId(const std::string& deviceLocation, int& deviceId);
 
-    static bool ConvertToPeripheralScanResult(const CJNIViewInputDevice& inputDevice, PeripheralScanResult& peripheralScanResult);
+  static bool ConvertToPeripheralScanResult(const CJNIViewInputDevice& inputDevice,
+                                            PeripheralScanResult& peripheralScanResult);
 
-    static void LogInputDevice(const CJNIViewInputDevice &device);
-    static std::vector<std::pair<int, const char*>> GetInputSources();
+  static void LogInputDevice(const CJNIViewInputDevice& device);
+  static std::vector<std::pair<int, const char*>> GetInputSources();
 
-    mutable std::map<int, CAndroidJoystickState> m_joystickStates;
-    PeripheralScanResults m_scanResults;
-    CCriticalSection m_critSectionStates;
-    CCriticalSection m_critSectionResults;
-  };
-  using PeripheralBusAndroidPtr = std::shared_ptr<CPeripheralBusAndroid>;
-}
+  mutable std::map<int, CAndroidJoystickState> m_joystickStates;
+  PeripheralScanResults m_scanResults;
+  CCriticalSection m_critSectionStates;
+  CCriticalSection m_critSectionResults;
+};
+using PeripheralBusAndroidPtr = std::shared_ptr<CPeripheralBusAndroid>;
+} // namespace PERIPHERALS
