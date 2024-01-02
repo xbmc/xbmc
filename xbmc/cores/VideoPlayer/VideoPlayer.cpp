@@ -729,9 +729,7 @@ bool CVideoPlayer::CloseFile(bool reopen)
   }
 
   m_Edl.Clear();
-  CServiceBroker::GetDataCacheCore().SetEditList(m_Edl.GetEditList());
-  CServiceBroker::GetDataCacheCore().SetCuts(m_Edl.GetCutMarkers());
-  CServiceBroker::GetDataCacheCore().SetSceneMarkers(m_Edl.GetSceneMarkers());
+  CServiceBroker::GetDataCacheCore().Reset();
 
   m_HasVideo = false;
   m_HasAudio = false;
