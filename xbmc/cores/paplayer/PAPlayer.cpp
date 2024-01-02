@@ -543,7 +543,7 @@ bool PAPlayer::CloseFile(bool reopen)
       lock.lock();
     }
   }
-
+  CServiceBroker::GetDataCacheCore().Reset();
   return true;
 }
 
