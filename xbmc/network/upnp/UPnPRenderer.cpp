@@ -17,6 +17,7 @@
 #include "UPnPInternal.h"
 #include "URL.h"
 #include "application/Application.h"
+#include "cores/DataCacheCore.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -251,8 +252,12 @@ void CUPnPRenderer::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
 
     if (message == "OnPlay" || message == "OnResume")
     {
-      avt->SetStateVariable("AVTransportURI", g_application.CurrentFile().c_str());
-      avt->SetStateVariable("CurrentTrackURI", g_application.CurrentFile().c_str());
+      const std::shared_ptr<CFileItem> item = CServiceBroker::GetDataCacheCore().GetFileItem();
+      if (item)
+      {
+        avt->SetStateVariable("AVTransportURI", item->GetPath().c_str());
+        avt->SetStateVariable("CurrentTrackURI", item->GetPath().c_str());
+      }
 
       NPT_String meta;
       if (NPT_SUCCEEDED(GetMetadata(meta)))
@@ -425,24 +430,23 @@ NPT_Result CUPnPRenderer::SetupIcons()
 NPT_Result CUPnPRenderer::GetMetadata(NPT_String& meta)
 {
   NPT_Result res = NPT_FAILURE;
-  CFileItem item(g_application.CurrentFileItem());
-  NPT_String file_path, tmp;
+  const std::shared_ptr<CFileItem> item = CServiceBroker::GetDataCacheCore().GetFileItem();
+  if (!item)
+  {
+    return res;
+  }
+  NPT_String file_path;
+  NPT_String tmp;
 
   // we pass an empty CThumbLoader reference, as it can't be used
   // without CUPnPServer enabled
   NPT_Reference<CThumbLoader> thumb_loader;
   PLT_MediaObject* object =
-      BuildObject(item, file_path, false, thumb_loader, NULL, NULL, UPnPRenderer);
+      BuildObject(*item.get(), file_path, false, thumb_loader, NULL, NULL, UPnPRenderer);
   if (object)
   {
     // fetch the item's artwork
-    std::string thumb;
-    if (object->m_ObjectClass.type == "object.item.audioItem.musicTrack")
-      thumb = CServiceBroker::GetGUI()->GetInfoManager().GetImage(MUSICPLAYER_COVER, -1);
-    else
-      thumb = CServiceBroker::GetGUI()->GetInfoManager().GetImage(VIDEOPLAYER_COVER, -1);
-
-    thumb = CTextureUtils::GetWrappedImageURL(thumb);
+    const std::string thumb = CTextureUtils::GetWrappedImageURL(item->GetArt("thumb"));
 
     NPT_String ip;
     if (CServiceBroker::GetNetwork().GetFirstConnectedInterface())
@@ -455,7 +459,7 @@ NPT_Result CUPnPRenderer::GetMetadata(NPT_String& meta)
     PLT_AlbumArtInfo art;
     art.uri = NPT_HttpUrl(ip, m_URLDescription.GetPort(), "/thumb", query.ToString()).ToString();
     // Set DLNA profileID by extension, defaulting to JPEG.
-    if (URIUtils::HasExtension(item.GetArt("thumb"), ".png"))
+    if (URIUtils::HasExtension(item->GetArt("thumb"), ".png"))
     {
       art.dlna_profile = "PNG_TN";
     }
