@@ -41,7 +41,7 @@ void CRetroPlayerInput::StartAgentManager()
   if (!m_bAgentManagerStarted)
   {
     m_bAgentManagerStarted = true;
-    m_processInfo.GetRenderContext().StartAgentManager(m_gameClient);
+    m_processInfo.GetRenderContext().StartAgentInput(m_gameClient);
   }
 }
 
@@ -50,7 +50,7 @@ void CRetroPlayerInput::StopAgentManager()
   if (m_bAgentManagerStarted)
   {
     m_bAgentManagerStarted = false;
-    m_processInfo.GetRenderContext().StopAgentManager();
+    m_processInfo.GetRenderContext().StopAgentInput();
   }
 }
 

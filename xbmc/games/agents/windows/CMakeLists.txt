@@ -1,11 +1,11 @@
-set(SOURCES GUIAgentList.cpp
+set(SOURCES GUIAgentControllerList.cpp
             GUIAgentWindow.cpp
 )
 
-set(HEADERS GUIAgentDefines.h
-            GUIAgentList.h
+set(HEADERS GUIAgentControllerList.h
+            GUIAgentDefines.h
             GUIAgentWindow.h
-            IAgentList.h
+            IAgentControllerList.h
 )
 
 core_add_library(games_agents_windows)

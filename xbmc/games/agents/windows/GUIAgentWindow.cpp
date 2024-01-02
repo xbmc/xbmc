@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022-2023 Team Kodi
+ *  Copyright (C) 2022-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -8,9 +8,8 @@
 
 #include "GUIAgentWindow.h"
 
+#include "GUIAgentControllerList.h"
 #include "GUIAgentDefines.h"
-#include "GUIAgentList.h"
-#include "IAgentList.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/IAddon.h"
@@ -33,7 +32,7 @@ using namespace GAME;
 CGUIAgentWindow::CGUIAgentWindow()
   : CGUIDialog(WINDOW_DIALOG_GAME_AGENTS, AGENT_DIALOG_XML),
     m_portList(std::make_unique<CGUIActivePortList>(*this, CONTROL_ACTIVE_PORT_LIST, true)),
-    m_agentList(std::make_unique<CGUIAgentList>(*this))
+    m_controllerList(std::make_unique<CGUIAgentControllerList>(*this))
 {
   // Initialize CGUIWindow
   m_loadType = KEEP_IN_MEMORY;
@@ -51,9 +50,10 @@ bool CGUIAgentWindow::OnMessage(CGUIMessage& message)
     case GUI_MSG_SETFOCUS:
     {
       const int controlId = message.GetControlId();
-      if (m_agentList->HasControl(controlId) && m_agentList->GetCurrentControl() != controlId)
+      if (m_controllerList->HasControl(controlId) &&
+          m_controllerList->GetCurrentControl() != controlId)
       {
-        FocusAgentList();
+        FocusControllerList();
         bHandled = true;
       }
       break;
@@ -67,12 +67,12 @@ bool CGUIAgentWindow::OnMessage(CGUIMessage& message)
         CloseDialog();
         bHandled = true;
       }
-      else if (m_agentList->HasControl(controlId))
+      else if (m_controllerList->HasControl(controlId))
       {
         const int actionId = message.GetParam1();
         if (actionId == ACTION_SELECT_ITEM || actionId == ACTION_MOUSE_LEFT_CLICK)
         {
-          OnAgentClick();
+          OnControllerClick();
           bHandled = true;
         }
       }
@@ -89,9 +89,9 @@ bool CGUIAgentWindow::OnMessage(CGUIMessage& message)
           bHandled = true;
           break;
         }
-        case CONTROL_AGENT_LIST:
+        case CONTROL_AGENT_CONTROLLER_LIST:
         {
-          UpdateAgentList();
+          UpdateControllerList();
           bHandled = true;
           break;
         }
@@ -115,19 +115,19 @@ void CGUIAgentWindow::FrameMove()
 {
   CGUIDialog::FrameMove();
 
-  m_agentList->FrameMove();
+  m_controllerList->FrameMove();
 }
 
 void CGUIAgentWindow::OnWindowLoaded()
 {
   CGUIDialog::OnWindowLoaded();
 
-  m_agentList->OnWindowLoaded();
+  m_controllerList->OnWindowLoaded();
 }
 
 void CGUIAgentWindow::OnWindowUnload()
 {
-  m_agentList->OnWindowUnload();
+  m_controllerList->OnWindowUnload();
 
   CGUIDialog::OnWindowUnload();
 }
@@ -153,13 +153,13 @@ void CGUIAgentWindow::OnInitWindow()
 
   // Initialize GUI
   m_portList->Initialize(m_gameClient);
-  m_agentList->Initialize(m_gameClient);
+  m_controllerList->Initialize(m_gameClient);
 }
 
 void CGUIAgentWindow::OnDeinitWindow(int nextWindowID)
 {
   // Deinitialize GUI
-  m_agentList->Deinitialize();
+  m_controllerList->Deinitialize();
   m_portList->Deinitialize();
 
   // Deinitialize game properties
@@ -178,17 +178,17 @@ void CGUIAgentWindow::UpdateActivePortList()
   m_portList->Refresh();
 }
 
-void CGUIAgentWindow::UpdateAgentList()
+void CGUIAgentWindow::UpdateControllerList()
 {
-  m_agentList->Refresh();
+  m_controllerList->Refresh();
 }
 
-void CGUIAgentWindow::FocusAgentList()
+void CGUIAgentWindow::FocusControllerList()
 {
-  m_agentList->SetFocused();
+  m_controllerList->SetFocused();
 }
 
-void CGUIAgentWindow::OnAgentClick()
+void CGUIAgentWindow::OnControllerClick()
 {
-  m_agentList->OnSelect();
+  m_controllerList->OnSelect();
 }

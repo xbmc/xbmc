@@ -1,14 +1,14 @@
 /*
- *  Copyright (C) 2017-2023 Team Kodi
+ *  Copyright (C) 2017-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
  *  See LICENSES/README.md for more information.
  */
 
-#include "GameAgent.h"
+#include "AgentController.h"
 
-#include "games/agents/input/GameAgentJoystick.h"
+#include "AgentJoystick.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerLayout.h"
 #include "peripherals/devices/Peripheral.h"
@@ -16,29 +16,28 @@
 using namespace KODI;
 using namespace GAME;
 
-CGameAgent::CGameAgent(PERIPHERALS::PeripheralPtr peripheral)
-  : m_peripheral(std::move(peripheral)),
-    m_joystick(std::make_unique<CGameAgentJoystick>(m_peripheral))
+CAgentController::CAgentController(PERIPHERALS::PeripheralPtr peripheral)
+  : m_peripheral(std::move(peripheral)), m_joystick(std::make_unique<CAgentJoystick>(m_peripheral))
 {
   Initialize();
 }
 
-CGameAgent::~CGameAgent()
+CAgentController::~CAgentController()
 {
   Deinitialize();
 }
 
-void CGameAgent::Initialize()
+void CAgentController::Initialize()
 {
   m_joystick->Initialize();
 }
 
-void CGameAgent::Deinitialize()
+void CAgentController::Deinitialize()
 {
   m_joystick->Deinitialize();
 }
 
-std::string CGameAgent::GetPeripheralName() const
+std::string CAgentController::GetPeripheralName() const
 {
   std::string deviceName = m_peripheral->DeviceName();
 
@@ -53,12 +52,12 @@ std::string CGameAgent::GetPeripheralName() const
   return deviceName;
 }
 
-const std::string& CGameAgent::GetPeripheralLocation() const
+const std::string& CAgentController::GetPeripheralLocation() const
 {
   return m_peripheral->Location();
 }
 
-ControllerPtr CGameAgent::GetController() const
+ControllerPtr CAgentController::GetController() const
 {
   // Use joystick controller if joystick is initialized
   ControllerPtr controller = m_joystick->Appearance();
@@ -69,12 +68,12 @@ ControllerPtr CGameAgent::GetController() const
   return m_peripheral->ControllerProfile();
 }
 
-CDateTime CGameAgent::LastActive() const
+CDateTime CAgentController::LastActive() const
 {
   return m_peripheral->LastActive();
 }
 
-float CGameAgent::GetActivation() const
+float CAgentController::GetActivation() const
 {
   return m_joystick->GetActivation();
 }

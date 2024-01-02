@@ -9,7 +9,7 @@
 #include "RenderContext.h"
 
 #include "games/GameServices.h"
-#include "games/agents/GameAgentManager.h"
+#include "games/agents/input/AgentInput.h"
 #include "rendering/RenderSystem.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
@@ -310,12 +310,12 @@ RESOLUTION_INFO& CRenderContext::GetResolutionInfo(RESOLUTION resolution)
   return m_mediaSettings.GetDefaultGameSettings();
 }
 
-void CRenderContext::StartAgentManager(GAME::GameClientPtr gameClient)
+void CRenderContext::StartAgentInput(GAME::GameClientPtr gameClient)
 {
-  m_gameServices.GameAgentManager().Start(std::move(gameClient));
+  m_gameServices.AgentInput().Start(std::move(gameClient));
 }
 
-void CRenderContext::StopAgentManager()
+void CRenderContext::StopAgentInput()
 {
-  m_gameServices.GameAgentManager().Stop();
+  m_gameServices.AgentInput().Stop();
 }

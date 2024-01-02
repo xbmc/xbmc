@@ -1,12 +1,12 @@
 /*
- *  Copyright (C) 2022-2023 Team Kodi
+ *  Copyright (C) 2022-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
  *  See LICENSES/README.md for more information.
  */
 
-#include "GUIAgentList.h"
+#include "GUIAgentControllerList.h"
 
 #include "FileItem.h"
 #include "GUIAgentDefines.h"
@@ -17,8 +17,8 @@
 #include "games/GameServices.h"
 #include "games/addons/GameClient.h"
 #include "games/addons/input/GameClientInput.h"
-#include "games/agents/GameAgent.h"
-#include "games/agents/GameAgentManager.h"
+#include "games/agents/input/AgentController.h"
+#include "games/agents/input/AgentInput.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerLayout.h"
 #include "guilib/GUIBaseContainer.h"
@@ -39,31 +39,31 @@
 using namespace KODI;
 using namespace GAME;
 
-CGUIAgentList::CGUIAgentList(CGUIWindow& window)
+CGUIAgentControllerList::CGUIAgentControllerList(CGUIWindow& window)
   : m_guiWindow(window),
     m_viewControl(std::make_unique<CGUIViewControl>()),
     m_vecItems(std::make_unique<CFileItemList>())
 {
 }
 
-CGUIAgentList::~CGUIAgentList()
+CGUIAgentControllerList::~CGUIAgentControllerList()
 {
   Deinitialize();
 }
 
-void CGUIAgentList::OnWindowLoaded()
+void CGUIAgentControllerList::OnWindowLoaded()
 {
   m_viewControl->Reset();
   m_viewControl->SetParentWindow(m_guiWindow.GetID());
-  m_viewControl->AddView(m_guiWindow.GetControl(CONTROL_AGENT_LIST));
+  m_viewControl->AddView(m_guiWindow.GetControl(CONTROL_AGENT_CONTROLLER_LIST));
 }
 
-void CGUIAgentList::OnWindowUnload()
+void CGUIAgentControllerList::OnWindowUnload()
 {
   m_viewControl->Reset();
 }
 
-bool CGUIAgentList::Initialize(GameClientPtr gameClient)
+bool CGUIAgentControllerList::Initialize(GameClientPtr gameClient)
 {
   // Validate parameters
   if (!gameClient)
@@ -80,18 +80,18 @@ bool CGUIAgentList::Initialize(GameClientPtr gameClient)
   // Register observers
   if (m_gameClient)
     m_gameClient->Input().RegisterObserver(this);
-  CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CGUIAgentList::OnEvent);
+  CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CGUIAgentControllerList::OnEvent);
   if (CServiceBroker::IsServiceManagerUp())
-    CServiceBroker::GetGameServices().GameAgentManager().RegisterObserver(this);
+    CServiceBroker::GetGameServices().AgentInput().RegisterObserver(this);
 
   return true;
 }
 
-void CGUIAgentList::Deinitialize()
+void CGUIAgentControllerList::Deinitialize()
 {
   // Unregister observers in reverse order
   if (CServiceBroker::IsServiceManagerUp())
-    CServiceBroker::GetGameServices().GameAgentManager().UnregisterObserver(this);
+    CServiceBroker::GetGameServices().AgentInput().UnregisterObserver(this);
   CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
   if (m_gameClient)
     m_gameClient->Input().UnregisterObserver(this);
@@ -103,20 +103,20 @@ void CGUIAgentList::Deinitialize()
   m_gameClient.reset();
 }
 
-bool CGUIAgentList::HasControl(int controlId) const
+bool CGUIAgentControllerList::HasControl(int controlId) const
 {
   return m_viewControl->HasControl(controlId);
 }
 
-int CGUIAgentList::GetCurrentControl() const
+int CGUIAgentControllerList::GetCurrentControl() const
 {
   return m_viewControl->GetCurrentControl();
 }
 
-void CGUIAgentList::FrameMove()
+void CGUIAgentControllerList::FrameMove()
 {
   CGUIBaseContainer* thumbs =
-      dynamic_cast<CGUIBaseContainer*>(m_guiWindow.GetControl(CONTROL_AGENT_LIST));
+      dynamic_cast<CGUIBaseContainer*>(m_guiWindow.GetControl(CONTROL_AGENT_CONTROLLER_LIST));
   if (thumbs != nullptr)
   {
     const int selectedItem = thumbs->GetSelectedItem();
@@ -129,18 +129,18 @@ void CGUIAgentList::FrameMove()
   }
 }
 
-void CGUIAgentList::Refresh()
+void CGUIAgentControllerList::Refresh()
 {
   // Send a synchronous message to clear the view control
   m_viewControl->Clear();
 
   CleanupItems();
 
-  CGameAgentManager& agentManager = CServiceBroker::GetGameServices().GameAgentManager();
+  CAgentInput& agentInput = CServiceBroker::GetGameServices().AgentInput();
 
-  GameAgentVec agents = agentManager.GetAgents();
-  for (const GameAgentPtr& agent : agents)
-    AddItem(*agent);
+  std::vector<std::shared_ptr<CAgentController>> agentControllers = agentInput.GetControllers();
+  for (const std::shared_ptr<CAgentController>& agentController : agentControllers)
+    AddItem(*agentController);
 
   // Add a "No controllers connected" item if no agents are available
   if (m_vecItems->IsEmpty())
@@ -166,26 +166,26 @@ void CGUIAgentList::Refresh()
   }
 }
 
-void CGUIAgentList::SetFocused()
+void CGUIAgentControllerList::SetFocused()
 {
   m_viewControl->SetFocused();
 }
 
-void CGUIAgentList::OnSelect()
+void CGUIAgentControllerList::OnSelect()
 {
   const int itemIndex = m_viewControl->GetSelectedItem();
   if (itemIndex >= 0)
     OnItemSelect(static_cast<unsigned int>(itemIndex));
 }
 
-void CGUIAgentList::Notify(const Observable& obs, const ObservableMessage msg)
+void CGUIAgentControllerList::Notify(const Observable& obs, const ObservableMessage msg)
 {
   switch (msg)
   {
-    case ObservableMessageGameAgentsChanged:
+    case ObservableMessageAgentControllersChanged:
     case ObservableMessageGamePortsChanged:
     {
-      CGUIMessage msg(GUI_MSG_REFRESH_LIST, m_guiWindow.GetID(), CONTROL_AGENT_LIST);
+      CGUIMessage msg(GUI_MSG_REFRESH_LIST, m_guiWindow.GetID(), CONTROL_AGENT_CONTROLLER_LIST);
       CServiceBroker::GetAppMessenger()->SendGUIMessage(msg, m_guiWindow.GetID());
       break;
     }
@@ -194,25 +194,25 @@ void CGUIAgentList::Notify(const Observable& obs, const ObservableMessage msg)
   }
 }
 
-void CGUIAgentList::OnEvent(const ADDON::AddonEvent& event)
+void CGUIAgentControllerList::OnEvent(const ADDON::AddonEvent& event)
 {
   if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) || // Also called on install
       typeid(event) == typeid(ADDON::AddonEvents::Disabled) || // Not called on uninstall
       typeid(event) == typeid(ADDON::AddonEvents::ReInstalled) ||
       typeid(event) == typeid(ADDON::AddonEvents::UnInstalled))
   {
-    CGUIMessage msg(GUI_MSG_REFRESH_LIST, m_guiWindow.GetID(), CONTROL_AGENT_LIST);
+    CGUIMessage msg(GUI_MSG_REFRESH_LIST, m_guiWindow.GetID(), CONTROL_AGENT_CONTROLLER_LIST);
     msg.SetStringParam(event.addonId);
     CServiceBroker::GetAppMessenger()->SendGUIMessage(msg, m_guiWindow.GetID());
   }
 }
 
-void CGUIAgentList::AddItem(const CGameAgent& agent)
+void CGUIAgentControllerList::AddItem(const CAgentController& agentController)
 {
   // Create the list item from agent properties
-  const std::string label = agent.GetPeripheralName();
-  const ControllerPtr controller = agent.GetController();
-  const std::string& path = agent.GetPeripheralLocation();
+  const std::string label = agentController.GetPeripheralName();
+  const ControllerPtr controller = agentController.GetController();
+  const std::string& path = agentController.GetPeripheralLocation();
 
   CFileItemPtr item = std::make_shared<CFileItem>(label);
   item->SetPath(path);
@@ -224,12 +224,12 @@ void CGUIAgentList::AddItem(const CGameAgent& agent)
   m_vecItems->Add(std::move(item));
 }
 
-void CGUIAgentList::CleanupItems()
+void CGUIAgentControllerList::CleanupItems()
 {
   m_vecItems->Clear();
 }
 
-void CGUIAgentList::OnItemFocus(unsigned int itemIndex)
+void CGUIAgentControllerList::OnItemFocus(unsigned int itemIndex)
 {
   // Remember the focused item
   m_currentItem = itemIndex;
@@ -237,10 +237,10 @@ void CGUIAgentList::OnItemFocus(unsigned int itemIndex)
   // Handle the focused agent
   CFileItemPtr item = m_vecItems->Get(m_currentItem);
   if (item)
-    OnAgentFocus(item->GetPath());
+    OnControllerFocus(item->GetPath());
 }
 
-void CGUIAgentList::OnAgentFocus(const std::string& focusedAgent)
+void CGUIAgentControllerList::OnControllerFocus(const std::string& focusedAgent)
 {
   if (!focusedAgent.empty())
   {
@@ -249,22 +249,22 @@ void CGUIAgentList::OnAgentFocus(const std::string& focusedAgent)
   }
 }
 
-void CGUIAgentList::OnItemSelect(unsigned int itemIndex)
+void CGUIAgentControllerList::OnItemSelect(unsigned int itemIndex)
 {
   // Handle the selected agent
   CFileItemPtr item = m_vecItems->Get(itemIndex);
   if (item)
-    OnAgentSelect(*item);
+    OnControllerSelect(*item);
 }
 
-void CGUIAgentList::OnAgentSelect(const CFileItem& selectedAgentItem)
+void CGUIAgentControllerList::OnControllerSelect(const CFileItem& selectedAgentItem)
 {
-  CGameAgentManager& agentManager = CServiceBroker::GetGameServices().GameAgentManager();
+  CAgentInput& agentInput = CServiceBroker::GetGameServices().AgentInput();
 
-  GameAgentVec agents = agentManager.GetAgents();
-  for (const GameAgentPtr& agent : agents)
+  std::vector<std::shared_ptr<CAgentController>> agentControllers = agentInput.GetControllers();
+  for (const std::shared_ptr<CAgentController>& agentController : agentControllers)
   {
-    PERIPHERALS::PeripheralPtr peripheral = agent->GetPeripheral();
+    PERIPHERALS::PeripheralPtr peripheral = agentController->GetPeripheral();
     if (peripheral && peripheral->Location() == selectedAgentItem.GetPath())
     {
       if (peripheral->GetSettings().empty())
@@ -278,14 +278,14 @@ void CGUIAgentList::OnAgentSelect(const CFileItem& selectedAgentItem)
       }
       else
       {
-        ShowAgentDialog(*agent);
+        ShowControllerDialog(*agentController);
       }
       break;
     }
   }
 }
 
-void CGUIAgentList::ShowAgentDialog(const CGameAgent& agent)
+void CGUIAgentControllerList::ShowControllerDialog(const CAgentController& agentController)
 {
   // Get the dialog
   PERIPHERALS::CGUIDialogPeripheralSettings* pSettingsDialog =
@@ -295,7 +295,7 @@ void CGUIAgentList::ShowAgentDialog(const CGameAgent& agent)
   if (pSettingsDialog == nullptr)
     return;
 
-  const PERIPHERALS::PeripheralPtr peripheral = agent.GetPeripheral();
+  const PERIPHERALS::PeripheralPtr peripheral = agentController.GetPeripheral();
 
   // Get a file item for the peripheral settings dialog
   CFileItemPtr peripheralItem;

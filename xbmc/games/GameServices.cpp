@@ -11,7 +11,7 @@
 #include "controllers/Controller.h"
 #include "controllers/ControllerManager.h"
 #include "games/GameSettings.h"
-#include "games/agents/GameAgentManager.h"
+#include "games/agents/input/AgentInput.h"
 #include "profiles/ProfileManager.h"
 
 using namespace KODI;
@@ -26,7 +26,7 @@ CGameServices::CGameServices(CControllerManager& controllerManager,
     m_gameRenderManager(renderManager),
     m_profileManager(profileManager),
     m_gameSettings(new CGameSettings()),
-    m_gameAgentManager(new CGameAgentManager(peripheralManager, inputManager))
+    m_agentInput(std::make_unique<CAgentInput>(peripheralManager, inputManager))
 {
 }
 
