@@ -278,6 +278,10 @@ void CUPnPRenderer::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
       avt->SetStateVariable("TransportPlaySpeed",
                             NPT_String::FromInteger(data["player"]["speed"].asInteger()));
     }
+    else if (message == "OnStop")
+    {
+      Reset(avt);
+    }
   }
   else if (flag == ANNOUNCEMENT::Application && message == "OnVolumeChanged")
   {
