@@ -32,6 +32,7 @@ public:
   bool RefreshAll() const;
   bool HasUpdatedThumb() const { return m_hasUpdatedThumb; }
   bool HasUpdatedUserrating() const { return m_hasUpdatedUserrating; }
+  bool HasUpdatedItems() const { return m_hasUpdatedItems; }
 
   std::string GetThumbnail() const;
   std::shared_ptr<CFileItem> GetCurrentListItem(int offset = 0) override { return m_movieItem; }
@@ -90,7 +91,7 @@ protected:
    * \param pItem Search result item
    */
   void OnSearchItemFound(const CFileItem* pItem);
-  void OnManageVideoVersions();
+  bool OnManageVideoVersions();
   void OnManageVideoExtras();
   void Play(bool resume = false);
   void OnGetArt();
@@ -111,6 +112,7 @@ protected:
   bool m_hasUpdatedThumb = false;
   bool m_hasUpdatedUserrating = false;
   int m_startUserrating = -1;
+  bool m_hasUpdatedItems{false};
 
 private:
   static bool ManageVideoItemArtwork(const std::shared_ptr<CFileItem>& item,

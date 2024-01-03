@@ -429,7 +429,7 @@ bool CGUIWindowVideoBase::ShowInfo(const CFileItemPtr& item2, const ScraperPtr& 
       return true;
     needsRefresh = pDlgInfo->NeedRefresh();
     if (!needsRefresh)
-      return pDlgInfo->HasUpdatedThumb();
+      return (pDlgInfo->HasUpdatedThumb() || pDlgInfo->HasUpdatedItems());
     // check if the item in the video info dialog has changed and if so, get the new item
     else if (pDlgInfo->GetCurrentListItem() != NULL)
     {

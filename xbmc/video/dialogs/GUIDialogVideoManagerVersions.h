@@ -30,7 +30,13 @@ public:
 
   static std::tuple<int, std::string> NewVideoVersion();
   static bool ProcessVideoVersion(VideoDbContentType itemType, int dbId);
-  static void ManageVideoVersions(const std::shared_ptr<CFileItem>& item);
+  /*!
+   * \brief Open the Manage Versions dialog for a video
+   * \param item video to manage
+   * \return true: the video or another item was modified, a containing list should be refreshed.
+   * false: no changes
+   */
+  static bool ManageVideoVersions(const std::shared_ptr<CFileItem>& item);
   static int ManageVideoVersionContextMenu(const std::shared_ptr<CFileItem>& version);
 
 protected:

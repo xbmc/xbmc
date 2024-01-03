@@ -27,6 +27,7 @@ public:
 
   virtual void SetVideoAsset(const std::shared_ptr<CFileItem>& item);
   virtual void SetSelectedVideoAsset(const std::shared_ptr<CFileItem>& asset);
+  virtual bool HasUpdatedItems() const { return m_hasUpdatedItems; }
 
 protected:
   void OnInitWindow() override;
@@ -58,6 +59,7 @@ protected:
   std::shared_ptr<CFileItem> m_videoAsset;
   std::unique_ptr<CFileItemList> m_videoAssetsList;
   std::shared_ptr<CFileItem> m_selectedVideoAsset;
+  bool m_hasUpdatedItems{false};
 
 private:
   CGUIDialogVideoManager() = delete;
