@@ -107,7 +107,14 @@ protected:
   void LoadPlayList(const std::string& strPlayList, PLAYLIST::Id playlistId = PLAYLIST::TYPE_VIDEO);
   bool PlayItem(const std::shared_ptr<CFileItem>& item, const std::string& player);
 
-  bool ShowInfo(const CFileItemPtr& item, const ADDON::ScraperPtr& content);
+  /*!
+   \brief Lookup the information of an item and display an Info dialog
+   If item has changed then refresh the active underlying list
+   \param item the item to lookup
+   \param content
+   \return true: the information of the item was modified. false: no change.
+   */
+  bool ShowInfoAndRefresh(const CFileItemPtr& item, const ADDON::ScraperPtr& content);
 
   void OnSearch();
   void OnSearchItemFound(const CFileItem* pSelItem);
@@ -127,4 +134,13 @@ protected:
 
   CVideoThumbLoader m_thumbLoader;
   bool m_stackingAvailable;
+
+private:
+  /*!
+   \brief Lookup the information of an item and display an Info dialog
+   \param item the item to lookup
+   \param content
+   \return true: the information of the item was modified. false: no change.
+   */
+  bool ShowInfo(const CFileItemPtr& item, const ADDON::ScraperPtr& content);
 };
