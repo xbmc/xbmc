@@ -235,5 +235,7 @@ std::shared_ptr<CFileItem> CVideoVersionHelper::GetMovieForVideoVersion(
 {
   auto item{std::make_shared<CFileItem>(videoVersion.GetDynPath(), false)};
   item->LoadDetails();
+  CVideoThumbLoader thumbLoader;
+  thumbLoader.LoadItem(item.get());
   return item;
 }
