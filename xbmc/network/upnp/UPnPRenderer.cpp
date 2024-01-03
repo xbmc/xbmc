@@ -366,17 +366,28 @@ CUPnPRenderer::UpdateState()
     }
     else
     {
-      avt->SetStateVariable("TransportState", "STOPPED");
-      avt->SetStateVariable("TransportPlaySpeed", "1");
-      avt->SetStateVariable("NumberOfTracks", "0");
-      avt->SetStateVariable("CurrentTrack", "0");
-      avt->SetStateVariable("RelativeTimePosition", "00:00:00");
-      avt->SetStateVariable("AbsoluteTimePosition", "00:00:00");
-      avt->SetStateVariable("CurrentTrackDuration", "00:00:00");
-      avt->SetStateVariable("CurrentMediaDuration", "00:00:00");
-      avt->SetStateVariable("NextAVTransportURI", "");
-      avt->SetStateVariable("NextAVTransportURIMetaData", "");
+      Reset(avt);
     }
+}
+
+NPT_Result CUPnPRenderer::Reset(PLT_Service* avt)
+{
+    if (!avt)
+    {
+      return NPT_ERROR_INTERNAL;
+    }
+
+    avt->SetStateVariable("TransportState", "STOPPED");
+    avt->SetStateVariable("TransportPlaySpeed", "1");
+    avt->SetStateVariable("NumberOfTracks", "0");
+    avt->SetStateVariable("CurrentTrack", "0");
+    avt->SetStateVariable("RelativeTimePosition", "00:00:00");
+    avt->SetStateVariable("AbsoluteTimePosition", "00:00:00");
+    avt->SetStateVariable("CurrentTrackDuration", "00:00:00");
+    avt->SetStateVariable("CurrentMediaDuration", "00:00:00");
+    avt->SetStateVariable("NextAVTransportURI", "");
+    avt->SetStateVariable("NextAVTransportURIMetaData", "");
+    return NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------

@@ -66,6 +66,7 @@ private:
     NPT_Result PlayMedia(const NPT_String& uri,
                          const NPT_String& meta,
                          PLT_Action* action = NULL);
+    NPT_Result Reset(PLT_Service* avt);
     NPT_Mutex m_state;
 };
 
