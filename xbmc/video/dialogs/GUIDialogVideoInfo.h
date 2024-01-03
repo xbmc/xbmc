@@ -8,14 +8,15 @@
 
 #pragma once
 
-#include "MediaSource.h"
 #include "guilib/GUIDialog.h"
 #include "media/MediaType.h"
 
 #include <memory>
+#include <vector>
 
 class CFileItem;
 class CFileItemList;
+class CMediaSource;
 class CVideoDatabase;
 
 class CGUIDialogVideoInfo :
@@ -37,7 +38,8 @@ public:
   const CFileItemList& CurrentDirectory() const { return *m_castList; }
   bool HasListItems() const override { return true; }
 
-  static void AddItemPathToFileBrowserSources(VECSOURCES &sources, const CFileItem &item);
+  static void AddItemPathToFileBrowserSources(std::vector<CMediaSource>& sources,
+                                              const CFileItem& item);
 
   static int ManageVideoItem(const std::shared_ptr<CFileItem>& item);
   static bool UpdateVideoItemTitle(const std::shared_ptr<CFileItem>& pItem);
