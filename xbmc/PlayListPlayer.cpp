@@ -694,6 +694,10 @@ void CPlayListPlayer::Add(Id playlistId, const CFileItemPtr& pItem)
   list.Add(pItem);
   if (list.IsShuffled())
     ReShuffle(playlistId, iSize);
+
+  // its likely that the playlist changed
+  CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
+  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
 }
 
 void CPlayListPlayer::Add(Id playlistId, const CFileItemList& items)
