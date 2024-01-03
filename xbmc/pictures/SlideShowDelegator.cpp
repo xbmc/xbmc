@@ -68,6 +68,14 @@ void CSlideShowDelegator::StartSlideShow()
   }
 }
 
+void CSlideShowDelegator::PlayPicture()
+{
+  if (m_delegate)
+  {
+    m_delegate->PlayPicture();
+  }
+}
+
 bool CSlideShowDelegator::InSlideShow() const
 {
   if (m_delegate)

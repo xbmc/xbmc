@@ -27,6 +27,7 @@ public:
   virtual void GetSlideShowContents(CFileItemList& list) = 0;
   virtual std::shared_ptr<const CFileItem> GetCurrentSlide() = 0;
   virtual void StartSlideShow() = 0;
+  virtual void PlayPicture() = 0;
   virtual bool InSlideShow() const = 0;
   virtual int NumSlides() const = 0;
   virtual int CurrentSlide() const = 0;

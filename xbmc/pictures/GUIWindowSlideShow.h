@@ -61,6 +61,7 @@ public:
   void GetSlideShowContents(CFileItemList& list) override;
   std::shared_ptr<const CFileItem> GetCurrentSlide() override;
   void StartSlideShow() override;
+  void PlayPicture() override;
   bool InSlideShow() const override;
   int NumSlides() const override;
   int CurrentSlide() const override;
