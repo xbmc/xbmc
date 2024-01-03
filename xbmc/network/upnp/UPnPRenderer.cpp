@@ -20,7 +20,6 @@
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
-#include "application/ApplicationVolumeHandling.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -696,9 +695,13 @@ CUPnPRenderer::OnSetVolume(PLT_ActionReference& action)
 {
     NPT_String volume;
     NPT_CHECK_SEVERE(action->GetArgumentValue("DesiredVolume", volume));
-    auto& components = CServiceBroker::GetAppComponents();
-    const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
-    appVolume->SetVolume((float)strtod((const char*)volume, NULL));
+    // From RenderingControl:3 Service Spec (2.2.16 Volume):
+    // The **unsigned integer** state variable represents the current volume
+    // setting of the associated audio channel. Its value ranges from a minimum
+    // of 0 to some device specific maximum, N.
+    NPT_UInt32 appVolume;
+    NPT_CHECK_SEVERE(volume.ToInteger32(appVolume));
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_SET_VOLUME, static_cast<int64_t>(appVolume));
     return NPT_SUCCESS;
 }
 
@@ -709,11 +712,9 @@ NPT_Result
 CUPnPRenderer::OnSetMute(PLT_ActionReference& action)
 {
     NPT_String mute;
-    NPT_CHECK_SEVERE(action->GetArgumentValue("DesiredMute",mute));
-    auto& components = CServiceBroker::GetAppComponents();
-    const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
-    if ((mute == "1") ^ appVolume->IsMuted())
-      appVolume->ToggleMute();
+    NPT_CHECK_SEVERE(action->GetArgumentValue("DesiredMute", mute));
+    CServiceBroker::GetAppMessenger()->PostMsg(
+        TMSG_SET_MUTE, (mute.Compare("1") == 0 || mute.Compare("true", true) == 0) ? 1 : 0);
     return NPT_SUCCESS;
 }
 

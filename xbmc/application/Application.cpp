@@ -1748,6 +1748,19 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
   }
   break;
 
+  case TMSG_SET_VOLUME:
+  {
+    const float volumedB = static_cast<float>(pMsg->param3);
+    GetComponent<CApplicationVolumeHandling>()->SetVolume(volumedB);
+  }
+  break;
+
+  case TMSG_SET_MUTE:
+  {
+    GetComponent<CApplicationVolumeHandling>()->SetMute(pMsg->param3 == 1 ? true : false);
+  }
+  break;
+
   default:
     CLog::Log(LOGERROR, "{}: Unhandled threadmessage sent, {}", __FUNCTION__, msg);
     break;

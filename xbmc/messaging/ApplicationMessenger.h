@@ -88,6 +88,9 @@
 /// @brief Called from the player when its current item is updated
 #define TMSG_UPDATE_PLAYER_ITEM TMSG_MASK_APPLICATION + 35
 
+#define TMSG_SET_VOLUME                   TMSG_MASK_APPLICATION + 36
+#define TMSG_SET_MUTE                     TMSG_MASK_APPLICATION + 37
+
 #define TMSG_GUI_INFOLABEL                TMSG_MASK_GUIINFOMANAGER + 0
 #define TMSG_GUI_INFOBOOL                 TMSG_MASK_GUIINFOMANAGER + 1
 #define TMSG_UPDATE_CURRENT_ITEM          TMSG_MASK_GUIINFOMANAGER + 2
