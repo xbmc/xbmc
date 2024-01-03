@@ -3954,17 +3954,20 @@ bool CMusicDatabase::GetRecentlyAddedAlbumSongs(const std::string& strBaseDir,
     // Determine the recently added albums from dateAdded (usually derived from music file
     // timestamps, nothing to do with when albums added to library)
     std::string strSQL;
-    strSQL = PrepareSQL("SELECT songview.*, songartistview.* "
-                        "FROM (SELECT idAlbum, dateAdded FROM album "
-                        "ORDER BY dateAdded DESC LIMIT %u) AS recentalbums "
-                        "JOIN songview ON songview.idAlbum = recentalbums.idAlbum "
-                        "JOIN songartistview ON songview.idSong = songartistview.idSong "
-                        "ORDER BY recentalbums.dateAdded DESC, songview.idAlbum DESC, "
-                        "songview.idSong, songartistview.idRole, songartistview.iOrder ",
-                        limit ? limit
-                              : CServiceBroker::GetSettingsComponent()
-                                    ->GetAdvancedSettings()
-                                    ->m_iMusicLibraryRecentlyAddedItems);
+    strSQL = PrepareSQL(
+        StringUtils::Format("SELECT songview.*, songartistview.* "
+                            "FROM (SELECT idAlbum, dateAdded FROM album "
+                            "ORDER BY dateAdded DESC LIMIT %u) AS recentalbums "
+                            "JOIN songview ON songview.idAlbum = recentalbums.idAlbum "
+                            "JOIN songartistview ON songview.idSong = songartistview.idSong "
+                            "{} "
+                            "ORDER BY recentalbums.dateAdded DESC, songview.idAlbum DESC, "
+                            "songview.idSong, songartistview.idRole, songartistview.iOrder ",
+                            GetProfileFilter("song")),
+        limit ? limit
+              : CServiceBroker::GetSettingsComponent()
+                    ->GetAdvancedSettings()
+                    ->m_iMusicLibraryRecentlyAddedItems);
     CLog::Log(LOGDEBUG, "GetRecentlyAddedAlbumSongs() query: {}", strSQL);
     if (!m_pDS->query(strSQL))
       return false;
