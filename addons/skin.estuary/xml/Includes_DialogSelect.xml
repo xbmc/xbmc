@@ -711,4 +711,87 @@
 			</control>
 		</control>
 	</include>
+	<include name="VideoSelectLayout">
+		<control type="group">
+			<centertop>50%</centertop>
+			<centerleft>50%</centerleft>
+			<height>750</height>
+			<width>1640</width>
+			<include content="DialogBackgroundCommons">
+				<param name="width" value="1640" />
+				<param name="height" value="750" />
+				<param name="header_id" value="1" />
+			</include>
+			<control type="image">
+				<left>20</left>
+				<width>400</width>
+				<height>630</height>
+				<top>100</top>
+				<texture>$VAR[VideoListPosterVar]</texture>
+				<aspectratio aligny="top">keep</aspectratio>
+			</control>
+			<control type="image">
+				<left>420</left>
+				<top>80</top>
+				<width>920</width>
+				<height>665</height>
+				<texture border="40">buttons/dialogbutton-nofo.png</texture>
+			</control>
+			<control type="list" id="3">
+			</control>
+			<control type="list" id="6">
+				<left>440</left>
+				<top>100</top>
+				<width>920</width>
+				<height>625</height>
+				<onup>6</onup>
+				<ondown>6</ondown>
+				<onleft>9001</onleft>
+				<onright>61</onright>
+				<pagecontrol>61</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<include>MediaInfoListLayout</include>
+			</control>
+			<control type="scrollbar" id="61">
+				<left>1320</left>
+				<top>100</top>
+				<width>12</width>
+				<bottom>20</bottom>
+				<onleft>6</onleft>
+				<onright>9001</onright>
+				<orientation>vertical</orientation>
+			</control>
+			<control type="grouplist" id="9001">
+				<left>1340</left>
+				<top>80</top>
+				<onleft>61</onleft>
+				<itemgap>dialogbuttons_itemgap</itemgap>
+				<onright>6</onright>
+				<include content="DefaultDialogButton">
+					<param name="id" value="5" />
+					<param name="label" value="" />
+					<param name="visible" value="false" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="8" />
+					<param name="label" value="" />
+					<param name="visible" value="false" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="7" />
+					<param name="label" value="$LOCALIZE[222]" />
+					</include>
+			</control>
+			<control type="label">
+				<right>20</right>
+				<bottom>10</bottom>
+				<width>275</width>
+				<height>35</height>
+				<font>font12</font>
+				<align>right</align>
+				<textcolor>grey</textcolor>
+				<label>$VAR[SelectLabel]</label>
+			</control>
+		</control>
+	</include>
 </includes>

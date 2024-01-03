@@ -1690,4 +1690,103 @@
 			</control>
 		</focusedlayout>
 	</include>
+	<include name="MediaInfoListLayout">
+		<param name="height">125</param>
+		<param name="width">880</param>
+		<param name="thumbtexture">$VAR[VideoListThumbVar]</param>
+		<param name="font_1">font14</param>
+		<param name="font_2">font12</param>
+		<param name="label_1">$INFO[ListItem.Label]</param>
+		<param name="label_2">$INFO[ListItem.Duration,$LOCALIZE[180]: ]</param>
+		<param name="label_3">$VAR[VideoCodecVar,, ]$INFO[ListItem.VideoResolution,| , ]$VAR[VideoResolutionTypeVar,, ]$VAR[VideoHDRVar,| , ]$INFO[ListItem.VideoAspect,| ,:1 ]$VAR[AudioCodecVar,| , ]$VAR[AudioChannelsVar]</param>
+		<param name="fontcolor">grey</param>
+		<definition>
+			<itemlayout height="$PARAM[height]" width="$PARAM[width]">
+				<control type="image">
+					<left>12</left>
+					<top>7</top>
+					<width>110</width>
+					<height>110</height>
+					<texture>$PARAM[thumbtexture]</texture>
+					<aspectratio>keep</aspectratio>
+				</control>
+				<control type="label">
+					<left>135</left>
+					<top>0</top>
+					<right>20</right>
+					<height>60</height>
+					<font>$PARAM[font_1]</font>
+					<aligny>center</aligny>
+					<textcolor>$PARAM[fontcolor]</textcolor>
+					<label>$PARAM[label_1]</label>
+				</control>
+				<control type="label">
+					<left>135</left>
+					<top>50</top>
+					<right>20</right>
+					<height>35</height>
+					<font>$PARAM[font_2]</font>
+					<aligny>center</aligny>
+					<textcolor>$PARAM[fontcolor]</textcolor>
+					<label>$PARAM[label_2]</label>
+				</control>
+				<control type="label">
+					<left>135</left>
+					<top>85</top>
+					<right>20</right>
+					<height>30</height>
+					<font>$PARAM[font_2]</font>
+					<aligny>center</aligny>
+					<textcolor>$PARAM[fontcolor]</textcolor>					
+					<label>$PARAM[label_3]</label>
+				</control>
+			</itemlayout>
+			<focusedlayout height="$PARAM[height]" width="$PARAM[width]">
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<right>0</right>
+					<bottom>0</bottom>
+					<texture colordiffuse="button_focus">lists/focus.png</texture>
+					<animation effect="fade" start="100" end="50" time="0">UnFocus</animation>
+				</control>
+				<control type="image">
+					<left>12</left>
+					<top>7</top>
+					<width>110</width>
+					<height>110</height>
+					<texture>$PARAM[thumbtexture]</texture>
+					<aspectratio>keep</aspectratio>
+				</control>
+				<control type="label">
+					<left>135</left>
+					<top>0</top>
+					<right>20</right>
+					<height>60</height>
+					<aligny>center</aligny>
+					<scroll>true</scroll>
+					<font>$PARAM[font_1]</font>
+					<label>$PARAM[label_1]</label>
+				</control>
+				<control type="label">
+					<left>135</left>
+					<top>50</top>
+					<right>20</right>
+					<height>35</height>
+					<font>$PARAM[font_2]</font>
+					<aligny>center</aligny>
+					<label>$PARAM[label_2]</label>
+				</control>
+				<control type="label">
+					<left>135</left>
+					<top>85</top>
+					<right>20</right>
+					<height>30</height>
+					<font>$PARAM[font_2]</font>
+					<aligny>center</aligny>
+					<label>$PARAM[label_3]</label>
+				</control>
+			</focusedlayout>
+		</definition>
+	</include>
 </includes>

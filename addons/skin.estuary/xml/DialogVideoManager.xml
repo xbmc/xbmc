@@ -5,83 +5,81 @@
 		<control type="group">
 			<centertop>50%</centertop>
 			<centerleft>50%</centerleft>
-			<width>1320</width>
-			<height>710</height>
+			<width>1640</width>
+			<height>780</height>
 			<include>Animation_DialogPopupVisible</include>
 			<include content="DialogBackgroundCommons">
-				<param name="width" value="1320" />
-				<param name="height" value="710" />
+				<param name="width" value="1640" />
+				<param name="height" value="780" />
 				<param name="header_id" value="2" />
 			</include>
 			<control type="image">
-				<top>200</top>
-				<left>40</left>
-				<width>260</width>
-				<height>390</height>
-				<align>center</align>
-				<aligny>center</aligny>
-				<aspectratio>keep</aspectratio>
-				<texture fallback="DefaultVideo.png" background="true">$VAR[VideoVersionPosterVar]</texture>
+				<left>20</left>
+				<width>400</width>
+				<height>630</height>
+				<top>100</top>
+				<texture>$VAR[VideoListPosterVar]</texture>
+				<aspectratio aligny="top">keep</aspectratio>
+			</control>
+			<control type="label">
+				<description>Path label</description>
+				<left>20</left>
+				<bottom>10</bottom>
+				<width>1300</width>
+				<height>30</height>
+				<font>font12</font>
+				<align>right</align>
+				<aligny>bottom</aligny>
+				<textcolor>grey</textcolor>
+				<label>$INFO[Container(50).ListItem.FileNameAndPath]</label>
+			</control>
+			<control type="label">
+				<right>20</right>
+				<bottom>10</bottom>
+				<width>275</width>
+				<height>30</height>
+				<font>font12</font>
+				<align>right</align>
+				<aligny>bottom</aligny>
+				<textcolor>grey</textcolor>
+				<label>$VAR[SelectLabel]</label>
 			</control>
 			<control type="group" id="100">
-				<top>90</top>
-				<left>320</left>
+				<top>80</top>
+				<left>420</left>
 				<control type="image">
-					<top>0</top>
 					<left>0</left>
-					<width>680</width>
-					<height>600</height>
-					<texture border="21">dialogs/dialog-bg.png</texture>
+					<top>0</top>
+					<width>920</width>
+					<height>665</height>
+					<texture border="40">buttons/dialogbutton-nofo.png</texture>
 				</control>
 				<control type="list" id="50">
 					<description>version list</description>
 					<top>20</top>
 					<left>20</left>
-					<height>580</height>
+					<height>625</height>
 					<onup>50</onup>
 					<ondown>50</ondown>
-					<onleft>200</onleft>
+					<onleft>9001</onleft>
 					<onright>60</onright>
 					<pagecontrol>60</pagecontrol>
 					<scrolltime>200</scrolltime>
-					<include content="DefaultSimpleListLayout">
-						<param name="width" value="640" />
-						<param name="height" value="80" />
-						<param name="list_id" value="50" />
-						<param name="align" value="left" />
-					</include>
+					<include>MediaInfoListLayout</include>
 				</control>
 				<control type="scrollbar" id="60">
-					<left>660</left>
+					<left>900</left>
 					<top>20</top>
 					<width>12</width>
-					<height>560</height>
+					<height>625</height>
 					<onleft>50</onleft>
 					<onright>101</onright>
 					<orientation>vertical</orientation>
 				</control>
 			</control>
-			<control type="label">
-				<visible>Control.HasFocus(50)</visible>
-				<align>left</align>
-				<top>675</top>
-				<left>40</left>
-				<right>40</right>
-				<height>44</height>
-				<scroll>true</scroll>
-				<font>font20_title</font>
-				<textcolor>99FFFFFF</textcolor>
-				<shadowcolor>text_shadow</shadowcolor>
-				<haspath>false</haspath>
-				<label>$VAR[VideoVersionFileVar]</label>
-				<animation effect="fade" start="0" end="100" time="300" delay="300">WindowOpen</animation>
-				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
-				<animation effect="fade" start="0" end="100" time="300">Visible</animation>
-				<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
-			</control>
 			<control type="grouplist" id="101">
-				<left>1000</left>
-				<top>90</top>
+				<left>1340</left>
+				<top>80</top>
 				<width>300</width>
 				<height>565</height>
 				<onleft condition="Integer.IsGreater(Container(50).NumItems,0)">100</onleft>
