@@ -370,6 +370,18 @@ CUPnPRenderer::UpdateState()
     }
 }
 
+NPT_String CUPnPRenderer::GetTransportState()
+{
+    NPT_AutoLock lock(m_state);
+    NPT_String transportState;
+    PLT_Service* avt;
+    if (NPT_FAILED(FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", avt)))
+      return transportState;
+
+    avt->GetStateVariableValue("TransportState", transportState);
+    return transportState;
+}
+
 NPT_Result CUPnPRenderer::Reset(PLT_Service* avt)
 {
     if (!avt)
