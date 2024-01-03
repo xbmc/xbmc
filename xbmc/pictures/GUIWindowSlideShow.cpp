@@ -1317,14 +1317,16 @@ void CGUIWindowSlideShow::RunSlideShow(const std::string &strPath,
     StartSlideShow();
   else
   {
-    CVariant param;
-    param["player"]["speed"] = 0;
-    param["player"]["playerid"] = PLAYLIST::TYPE_PICTURE;
-    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPlay",
-                                                       GetCurrentSlide(), param);
+    PlayPicture();
   }
 
   CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_SLIDESHOW);
+}
+
+void CGUIWindowSlideShow::PlayPicture()
+{
+  if (m_iCurrentSlide >= 0 && m_iCurrentSlide < static_cast<int>(m_slides.size()))
+    AnnouncePlayerPlay(m_slides.at(m_iCurrentSlide));
 }
 
 void CGUIWindowSlideShow::AddItems(const std::string &strPath, path_set *recursivePaths, SortBy method, SortOrder order, SortAttribute sortAttributes)

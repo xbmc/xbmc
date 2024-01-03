@@ -26,7 +26,6 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/actions/ActionIDs.h"
-#include "interfaces/AnnouncementManager.h"
 #include "media/MediaLockState.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "pictures/SlideShowDelegator.h"
@@ -343,11 +342,7 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
     slideShow.StartSlideShow();
   else
   {
-    CVariant param;
-    param["player"]["speed"] = 1;
-    param["player"]["playerid"] = PLAYLIST::TYPE_PICTURE;
-    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPlay",
-                                                       slideShow.GetCurrentSlide(), param);
+    slideShow.PlayPicture();
   }
 
   //! @todo this should trigger some event that should led the window manager to activate another window
