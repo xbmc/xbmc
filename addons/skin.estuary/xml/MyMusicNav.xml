@@ -33,7 +33,7 @@
 				<height>70</height>
 				<animation effect="fade" start="0" end="100" time="300" delay="300">WindowOpen</animation>
 				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
-				<include condition="!Skin.HasSetting(hide_mediaflags)">MediaFlags</include>
+				<include condition="!Skin.HasSetting(hide_mediaflags) + ![Window.IsVisible(songinformation) | Window.IsVisible(musicinformation)]">MediaFlags</include>
 			</control>
 			<include>MediaMenuMouseOverlay</include>
 			<control type="group">
