@@ -19,6 +19,7 @@
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "application/ApplicationPowerHandling.h"
+#include "cores/DataCacheCore.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUILabelControl.h"
@@ -156,6 +157,8 @@ CGUIWindowSlideShow::~CGUIWindowSlideShow()
 
 void CGUIWindowSlideShow::AnnouncePlayerPlay(const CFileItemPtr& item)
 {
+  CServiceBroker::GetDataCacheCore().SetFileItem(*item.get());
+
   CVariant param;
   param["player"]["speed"] = m_bSlideShow && !m_bPause ? 1 : 0;
   param["player"]["playerid"] = PLAYLIST::TYPE_PICTURE;
@@ -172,6 +175,8 @@ void CGUIWindowSlideShow::AnnouncePlayerPause(const CFileItemPtr& item)
 
 void CGUIWindowSlideShow::AnnouncePlayerStop(const CFileItemPtr& item)
 {
+  CServiceBroker::GetDataCacheCore().Reset();
+
   CVariant param;
   param["player"]["playerid"] = PLAYLIST::TYPE_PICTURE;
   param["end"] = true;
