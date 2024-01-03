@@ -4948,6 +4948,7 @@ bool CVideoDatabase::GetArtForItem(int mediaId, const MediaType &mediaType, std:
       return false; // using dataset 2 as we're likely called in loops on dataset 1
 
     std::string sql = PrepareSQL("SELECT type,url FROM art WHERE media_id=%i AND media_type='%s'", mediaId, mediaType.c_str());
+
     m_pDS2->query(sql);
     while (!m_pDS2->eof())
     {
@@ -4960,6 +4961,65 @@ bool CVideoDatabase::GetArtForItem(int mediaId, const MediaType &mediaType, std:
   catch (...)
   {
     CLog::Log(LOGERROR, "{}({}) failed", __FUNCTION__, mediaId);
+  }
+  return false;
+}
+
+bool CVideoDatabase::GetArtForAsset(int assetId,
+                                    int ownerMediaId,
+                                    const MediaType& mediaType,
+                                    std::map<std::string, std::string>& art)
+{
+  try
+  {
+    if (nullptr == m_pDB)
+      return false;
+    if (nullptr == m_pDS2)
+      return false; // using dataset 2 as we're likely called in loops on dataset 1
+
+    std::string sql;
+
+    if (mediaType == MediaTypeVideoVersion)
+    {
+      // MAYBE: use more compact and readable non-ANSI SQL extension where (,) in ()?
+      sql = PrepareSQL("SELECT art.media_type, art.type, art.url "
+                       "FROM art "
+                       "LEFT JOIN videoversion vv "
+                       "  ON art.media_id = vv.idMedia AND art.media_type = vv.media_type "
+                       "WHERE (art.media_id = %i AND art.media_type = '%s') "
+                       "OR(vv.idFile = %i) ",
+                       assetId, MediaTypeVideoVersion, assetId);
+    }
+    else
+    {
+      sql = PrepareSQL("SELECT media_type, type, url "
+                       "FROM art "
+                       "WHERE (media_id = %i AND media_type = '%s') "
+                       "OR (media_id = %i AND media_type = '%s')",
+                       assetId, MediaTypeVideoVersion, ownerMediaId, mediaType.c_str());
+    }
+
+    m_pDS2->query(sql);
+    while (!m_pDS2->eof())
+    {
+      if (m_pDS2->fv(0).get_asString() == MediaTypeVideoVersion)
+      {
+        // version data has priority over owner's data, used as fallback.
+        art[m_pDS2->fv(1).get_asString()] = m_pDS2->fv(2).get_asString();
+      }
+      else
+      {
+        // insert if not yet present
+        art.insert(make_pair(m_pDS2->fv(1).get_asString(), m_pDS2->fv(2).get_asString()));
+      }
+      m_pDS2->next();
+    }
+    m_pDS2->close();
+    return !art.empty();
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "retrieval failed ({}, {}, {})", assetId, ownerMediaId, mediaType);
   }
   return false;
 }

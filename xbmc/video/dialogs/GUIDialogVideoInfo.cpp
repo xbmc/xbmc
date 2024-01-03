@@ -844,7 +844,12 @@ void AddCurrentArtTypes(std::vector<std::string>& artTypes, const CVideoInfoTag&
   CVideoDatabase& db)
 {
   std::map<std::string, std::string> currentArt;
-  db.GetArtForItem(tag.m_iDbId, tag.m_type, currentArt);
+
+  if (tag.GetAssetInfo().GetId() >= 0)
+    db.GetArtForAsset(tag.m_iFileId, tag.m_iDbId, tag.m_type, currentArt);
+  else
+    db.GetArtForItem(tag.m_iDbId, tag.m_type, currentArt);
+
   for (const auto& art : currentArt)
   {
     if (!art.second.empty() &&
