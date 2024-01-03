@@ -18,8 +18,6 @@
 #include "UPnPInternal.h"
 #include "URL.h"
 #include "application/Application.h"
-#include "application/ApplicationComponents.h"
-#include "application/ApplicationPlayer.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -319,9 +317,9 @@ CUPnPRenderer::UpdateState()
 
     avt->SetStateVariable("TransportStatus", "OK");
     CSlideShowDelegator& slideShow = CServiceBroker::GetSlideShowDelegator();
-    const auto& components = CServiceBroker::GetAppComponents();
-    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-    if (appPlayer->IsPlaying() || appPlayer->IsPausedPlayback())
+    //! @todo: Remove dependency on GUI, go via slideshowdelegator
+    if ((state == "PLAYING" || state == "PAUSED_PLAYBACK") &&
+        CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() != WINDOW_SLIDESHOW)
     {
       avt->SetStateVariable("NumberOfTracks", "1");
       avt->SetStateVariable("CurrentTrack", "1");
@@ -508,10 +506,8 @@ CUPnPRenderer::OnPause(PLT_ActionReference& action)
     }
     else
     {
-      const auto& components = CServiceBroker::GetAppComponents();
-      const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-      if (!appPlayer->IsPausedPlayback())
-        CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_PAUSE);
+      if (GetTransportState() != "PAUSED_PLAYBACK")
+            CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_PAUSE);
     }
     return NPT_SUCCESS;
 }
@@ -525,13 +521,12 @@ CUPnPRenderer::OnPlay(PLT_ActionReference& action)
   if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW)
     return NPT_SUCCESS;
 
-  const auto& components = CServiceBroker::GetAppComponents();
-  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-  if (appPlayer->IsPausedPlayback())
+  const NPT_String transportState = GetTransportState();
+  if (transportState == "PAUSED_PLAYBACK")
   {
     CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_PAUSE);
   }
-  else if (appPlayer && !appPlayer->IsPlaying())
+  else if (transportState != "PLAYING")
   {
     NPT_String uri, meta;
     PLT_Service* service;
@@ -593,9 +588,7 @@ CUPnPRenderer::OnSetAVTransportURI(PLT_ActionReference& action)
 
     // if not playing already, just keep around uri & metadata
     // and wait for play command
-    const auto& components = CServiceBroker::GetAppComponents();
-    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-    if (!appPlayer->IsPlaying() &&
+    if (GetTransportState() != "PLAYING" &&
         CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() != WINDOW_SLIDESHOW)
     {
       service->SetStateVariable("TransportState", "STOPPED");
@@ -631,9 +624,9 @@ CUPnPRenderer::OnSetNextAVTransportURI(PLT_ActionReference& action)
         return NPT_FAILURE;
     }
 
-    const auto& components = CServiceBroker::GetAppComponents();
-    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-    if (appPlayer->IsPlaying())
+    //! @todo get rid of window checks (go via SlideshowDelegator)
+    if (GetTransportState() == "PLAYING" &&
+        CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() != WINDOW_SLIDESHOW)
     {
 
       PLAYLIST::Id playlistId = PLAYLIST::TYPE_MUSIC;
@@ -747,23 +740,21 @@ CUPnPRenderer::OnSetMute(PLT_ActionReference& action)
 NPT_Result
 CUPnPRenderer::OnSeek(PLT_ActionReference& action)
 {
-  const auto& components = CServiceBroker::GetAppComponents();
-  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-  if (!appPlayer->IsPlaying())
-    return NPT_ERROR_INVALID_STATE;
+    if (GetTransportState() != "PLAYING")
+        return NPT_ERROR_INVALID_STATE;
 
-  NPT_String unit, target;
-  NPT_CHECK_SEVERE(action->GetArgumentValue("Unit", unit));
-  NPT_CHECK_SEVERE(action->GetArgumentValue("Target", target));
+    NPT_String unit, target;
+    NPT_CHECK_SEVERE(action->GetArgumentValue("Unit", unit));
+    NPT_CHECK_SEVERE(action->GetArgumentValue("Target", target));
 
-  if (unit.Compare("REL_TIME") == 0)
-  {
-    // converts target to seconds
-    NPT_UInt32 seconds;
-    NPT_CHECK_SEVERE(PLT_Didl::ParseTimeStamp(target, seconds));
-    // seek (milliseconds)
-    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_SEEK_TIME,
-                                               static_cast<int64_t>(seconds * 1000));
+    if (unit.Compare("REL_TIME") == 0)
+    {
+        // converts target to seconds
+        NPT_UInt32 seconds;
+        NPT_CHECK_SEVERE(PLT_Didl::ParseTimeStamp(target, seconds));
+        // seek (milliseconds)
+        CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_SEEK_TIME,
+                                                   static_cast<int64_t>(seconds * 1000));
   }
 
     return NPT_SUCCESS;
