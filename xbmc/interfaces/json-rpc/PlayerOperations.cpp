@@ -1683,7 +1683,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
         if (!IsPVRChannel() &&
             CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == playlistId)
         {
-          result = CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
+          result = CServiceBroker::GetPlaylistPlayer().GetCurrentItemIdx();
         }
         else
           result = -1;

@@ -122,7 +122,7 @@ namespace XBMCAddon
 
     int PlayList::getposition()
     {
-      return CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
+      return CServiceBroker::GetPlaylistPlayer().GetCurrentItemIdx();
     }
 
     XBMCAddon::xbmcgui::ListItem* PlayList::operator [](long i)

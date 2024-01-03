@@ -2757,11 +2757,11 @@ bool CApplication::OnMessage(CGUIMessage& message)
         // we've started a previously queued item
         CFileItemPtr item = playList[m_nextPlaylistItem];
         // update the playlist manager
-        int currentSong = CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
+        int currentSong = CServiceBroker::GetPlaylistPlayer().GetCurrentItemIdx();
         int param = ((currentSong & 0xffff) << 16) | (m_nextPlaylistItem & 0xffff);
         CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_CHANGED, 0, 0, CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist(), param, item);
         CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
-        CServiceBroker::GetPlaylistPlayer().SetCurrentSong(m_nextPlaylistItem);
+        CServiceBroker::GetPlaylistPlayer().SetCurrentItemIdx(m_nextPlaylistItem);
         m_itemCurrentFile = std::make_shared<CFileItem>(*item);
       }
       CServiceBroker::GetGUI()->GetInfoManager().SetCurrentItem(*m_itemCurrentFile);
@@ -2800,7 +2800,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
     {
       // Check to see if our playlist player has a new item for us,
       // and if so, we check whether our current player wants the file
-      int iNext = CServiceBroker::GetPlaylistPlayer().GetNextSong();
+      int iNext = CServiceBroker::GetPlaylistPlayer().GetNextItemIdx();
       PLAYLIST::CPlayList& playlist = CServiceBroker::GetPlaylistPlayer().GetPlaylist(
           CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
       if (iNext < 0 || iNext >= playlist.size())
@@ -2849,7 +2849,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       {
         /* Player didn't accept next file: *ALWAYS* advance playlist in this case so the player can
             queue the next (if it wants to) and it doesn't keep looping on this song */
-        CServiceBroker::GetPlaylistPlayer().SetCurrentSong(iNext);
+        CServiceBroker::GetPlaylistPlayer().SetCurrentItemIdx(iNext);
       }
 
       return true;

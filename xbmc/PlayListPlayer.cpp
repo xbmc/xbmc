@@ -115,7 +115,7 @@ bool CPlayListPlayer::OnMessage(CGUIMessage &message)
   return false;
 }
 
-int CPlayListPlayer::GetNextSong(int offset) const
+int CPlayListPlayer::GetNextItemIdx(int offset) const
 {
   if (m_iCurrentPlayList == TYPE_NONE)
     return -1;
@@ -141,7 +141,7 @@ int CPlayListPlayer::GetNextSong(int offset) const
   return song;
 }
 
-int CPlayListPlayer::GetNextSong()
+int CPlayListPlayer::GetNextItemIdx()
 {
   if (m_iCurrentPlayList == TYPE_NONE)
     return -1;
@@ -182,7 +182,7 @@ int CPlayListPlayer::GetNextSong()
 
 bool CPlayListPlayer::PlayNext(int offset, bool bAutoPlay)
 {
-  int iSong = GetNextSong(offset);
+  int iSong = GetNextItemIdx(offset);
   const CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
 
   if ((iSong < 0) || (iSong >= playlist.size()) || (playlist.GetPlayable() <= 0))
@@ -245,7 +245,7 @@ bool CPlayListPlayer::Play()
   return Play(0, "");
 }
 
-bool CPlayListPlayer::PlaySongId(int songId)
+bool CPlayListPlayer::PlayItemIdx(int itemIdx)
 {
   if (m_iCurrentPlayList == TYPE_NONE)
     return false;
@@ -256,7 +256,8 @@ bool CPlayListPlayer::PlaySongId(int songId)
 
   for (int i = 0; i < playlist.size(); i++)
   {
-    if (playlist[i]->HasMusicInfoTag() && playlist[i]->GetMusicInfoTag()->GetDatabaseId() == songId)
+    if (playlist[i]->HasMusicInfoTag() &&
+        playlist[i]->GetMusicInfoTag()->GetDatabaseId() == itemIdx)
       return Play(i, "");
   }
   return Play();
@@ -407,13 +408,13 @@ bool CPlayListPlayer::Play(int iSong,
   return true;
 }
 
-void CPlayListPlayer::SetCurrentSong(int iSong)
+void CPlayListPlayer::SetCurrentItemIdx(int iSong)
 {
   if (iSong >= -1 && iSong < GetPlaylist(m_iCurrentPlayList).size())
     m_iCurrentSong = iSong;
 }
 
-int CPlayListPlayer::GetCurrentSong() const
+int CPlayListPlayer::GetCurrentItemIdx() const
 {
   return m_iCurrentSong;
 }
@@ -841,11 +842,11 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
       Play();
     break;
 
-  case TMSG_PLAYLISTPLAYER_PLAY_SONG_ID:
+  case TMSG_PLAYLISTPLAYER_PLAY_ITEM_ID:
     if (pMsg->param1 != -1)
     {
       bool *result = (bool*)pMsg->lpVoid;
-      *result = PlaySongId(pMsg->param1);
+      *result = PlayItemIdx(pMsg->param1);
     }
     else
       Play();

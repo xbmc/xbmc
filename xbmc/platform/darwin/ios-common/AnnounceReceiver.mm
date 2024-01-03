@@ -141,7 +141,7 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag,
     if (duration > 0)
       item[@"duration"] = @(duration);
     item[@"elapsed"] = @(g_application.GetTime());
-    int current = CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
+    int current = CServiceBroker::GetPlaylistPlayer().GetCurrentItemIdx();
     if (current >= 0)
     {
       item[@"current"] = @(current);

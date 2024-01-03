@@ -1603,7 +1603,7 @@ void CGUIMediaWindow::UpdateFileList()
   if (m_guiState.get() && m_guiState->IsCurrentPlaylistDirectory(m_vecItems->GetPath()))
   {
     PLAYLIST::Id playlistId = m_guiState->GetPlaylist();
-    int nSong = CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
+    int nSong = CServiceBroker::GetPlaylistPlayer().GetCurrentItemIdx();
     CFileItem playlistItem;
     if (nSong > -1 && playlistId != PLAYLIST::TYPE_NONE)
       playlistItem = *CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlistId)[nSong];
@@ -1622,7 +1622,7 @@ void CGUIMediaWindow::UpdateFileList()
 
       if (pItem->GetPath() == playlistItem.GetPath() &&
           pItem->GetStartOffset() == playlistItem.GetStartOffset())
-        CServiceBroker::GetPlaylistPlayer().SetCurrentSong(
+        CServiceBroker::GetPlaylistPlayer().SetCurrentItemIdx(
             CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlistId).size() - 1);
     }
   }

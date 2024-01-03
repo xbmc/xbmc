@@ -591,8 +591,10 @@ bool CPlayerGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       {
         if (item->HasProperty("playlistposition"))
         {
-          value = static_cast<int>(item->GetProperty("playlisttype").asInteger()) == CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() &&
-                  static_cast<int>(item->GetProperty("playlistposition").asInteger()) == CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
+          value = static_cast<int>(item->GetProperty("playlisttype").asInteger()) ==
+                      CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() &&
+                  static_cast<int>(item->GetProperty("playlistposition").asInteger()) ==
+                      CServiceBroker::GetPlaylistPlayer().GetCurrentItemIdx();
           return true;
         }
         else if (m_currentItem && !m_currentItem->GetPath().empty())

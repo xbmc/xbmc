@@ -592,7 +592,7 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
           if (playNext)
           {
             if (appPlayer->IsPlaying())
-              playlistPlayer.Insert(playlistId, items, playlistPlayer.GetCurrentSong() + 1);
+              playlistPlayer.Insert(playlistId, items, playlistPlayer.GetCurrentItemIdx() + 1);
             else
               playlistPlayer.Add(playlistId, items);
           }

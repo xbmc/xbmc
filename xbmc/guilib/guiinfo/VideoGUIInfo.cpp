@@ -639,7 +639,7 @@ bool CVideoGUIInfo::GetPlaylistInfo(std::string& value, const CGUIInfo& info) co
     if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() != PLAYLIST::TYPE_VIDEO)
       return false;
 
-    index = CServiceBroker::GetPlaylistPlayer().GetNextSong(index);
+    index = CServiceBroker::GetPlaylistPlayer().GetNextItemIdx(index);
   }
 
   if (index < 0 || index >= playlist.size())

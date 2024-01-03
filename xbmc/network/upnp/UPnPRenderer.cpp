@@ -623,7 +623,7 @@ CUPnPRenderer::OnSetNextAVTransportURI(PLT_ActionReference& action)
         CServiceBroker::GetPlaylistPlayer().ClearPlaylist(playlistId);
         CServiceBroker::GetPlaylistPlayer().Add(playlistId, item);
 
-        CServiceBroker::GetPlaylistPlayer().SetCurrentSong(-1);
+        CServiceBroker::GetPlaylistPlayer().SetCurrentItemIdx(-1);
         CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(playlistId);
       }
 
