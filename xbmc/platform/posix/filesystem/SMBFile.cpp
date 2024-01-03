@@ -36,7 +36,19 @@ using namespace XFILE;
 
 void xb_smbc_log(void* private_ptr, int level, const char* msg)
 {
-  CLog::Log(LOGDEBUG, "smb: {}", msg);
+  const int logLevel = [level]()
+  {
+    switch (level)
+    {
+      case 0:
+        return LOGWARNING;
+      case 1:
+        return LOGINFO;
+      default:
+        return LOGDEBUG;
+    }
+  }();
+  CLog::Log(logLevel, "smb: {}", msg);
 }
 
 void xb_smbc_auth(const char *srv, const char *shr, char *wg, int wglen,
