@@ -224,7 +224,7 @@ bool CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem)
   if (fileItem.m_bIsFolder && fileItem.IsVideoDb() &&
       fileItem.GetPath() != "videodb://movies/sets/" &&
       StringUtils::StartsWith(fileItem.GetPath(), "videodb://movies/sets/"))
-    return ShowInfo(std::make_shared<CFileItem>(fileItem), nullptr);
+    return ShowInfoAndRefresh(std::make_shared<CFileItem>(fileItem), nullptr);
 
   // Music video. Match visibility test of CMusicInfo::IsVisible
   if (fileItem.IsVideoDb() && fileItem.HasVideoInfoTag() &&
@@ -323,7 +323,7 @@ bool CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem)
   if (fileItem.m_bIsFolder)
     item.SetProperty("set_folder_thumb", fileItem.GetPath());
 
-  return ShowInfo(std::make_shared<CFileItem>(item), scraper);
+  return ShowInfoAndRefresh(std::make_shared<CFileItem>(item), scraper);
 }
 
 // ShowInfo is called as follows:
@@ -486,14 +486,22 @@ bool CGUIWindowVideoBase::ShowInfo(const CFileItemPtr& item2, const ScraperPtr& 
     listNeedsUpdating = true;
   } while (needsRefresh);
 
-  if (listNeedsUpdating &&
-      IsActive()) // since we can be called from other windows (music, home) we need this check
+  return listNeedsUpdating;
+}
+
+bool CGUIWindowVideoBase::ShowInfoAndRefresh(const CFileItemPtr& item, const ScraperPtr& info)
+{
+  const int ret{ShowInfo(item, info)};
+
+  // Test IsActive() since we can be called from other windows (music, home) we need this check
+  if (ret && IsActive())
   {
-    int itemNumber = m_viewControl.GetSelectedItem();
+    const int itemNumber{m_viewControl.GetSelectedItem()};
     Refresh();
     m_viewControl.SetSelectedItem(itemNumber);
   }
-  return true;
+
+  return ret;
 }
 
 void CGUIWindowVideoBase::OnQueueItem(int iItem, bool first)
