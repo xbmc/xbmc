@@ -16,7 +16,6 @@
 #include "UPnP.h"
 #include "UPnPInternal.h"
 #include "URL.h"
-#include "application/Application.h"
 #include "cores/DataCacheCore.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIComponent.h"
@@ -28,6 +27,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
 #include "pictures/SlideShowDelegator.h"
+#include "playlists/PlayListTypes.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -335,18 +335,20 @@ void CUPnPRenderer::UpdateState()
     avt->SetStateVariable("CurrentTrack", "1");
 
     // get elapsed time
-    std::string buffer =
-        StringUtils::SecondsToTimeString(std::lrint(g_application.GetTime()), TIME_FORMAT_HH_MM_SS);
-    avt->SetStateVariable("RelativeTimePosition", buffer.c_str());
-    avt->SetStateVariable("AbsoluteTimePosition", buffer.c_str());
+    const std::string playTime = StringUtils::SecondsToTimeString(
+        std::lrint(static_cast<double>(CServiceBroker::GetDataCacheCore().GetPlayTime()) / 1000),
+        TIME_FORMAT_HH_MM_SS);
+    avt->SetStateVariable("RelativeTimePosition", playTime.c_str());
+    avt->SetStateVariable("AbsoluteTimePosition", playTime.c_str());
 
     // get duration
-    buffer = StringUtils::SecondsToTimeString(std::lrint(g_application.GetTotalTime()),
-                                              TIME_FORMAT_HH_MM_SS);
-    if (buffer.length() > 0)
+    const std::string totalTime = StringUtils::SecondsToTimeString(
+        std::lrint(static_cast<double>(CServiceBroker::GetDataCacheCore().GetMaxTime()) / 1000),
+        TIME_FORMAT_HH_MM_SS);
+    if (totalTime.length() > 0)
     {
-      avt->SetStateVariable("CurrentTrackDuration", buffer.c_str());
-      avt->SetStateVariable("CurrentMediaDuration", buffer.c_str());
+      avt->SetStateVariable("CurrentTrackDuration", totalTime.c_str());
+      avt->SetStateVariable("CurrentMediaDuration", totalTime.c_str());
     }
     else
     {
