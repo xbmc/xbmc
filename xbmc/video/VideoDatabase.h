@@ -1030,6 +1030,7 @@ public:
                             VideoAssetType asset,
                             CFileItemList& items);
   void SetVideoVersionDefaultArt(int dbId, int idFrom, VideoDbContentType type);
+  void SetArtFromDefaultVideoVersion(int dbId, int idFrom, VideoDbContentType type);
   void InitializeVideoVersionTypeTable(int schemaVersion);
   void UpdateVideoVersionTypeTable();
   bool GetVideoVersionsNav(const std::string& strBaseDir,
@@ -1148,6 +1149,17 @@ protected:
   void GetDetailsFromDB(std::unique_ptr<dbiplus::Dataset> &pDS, int min, int max, const SDbTableOffsets *offsets, CVideoInfoTag &details, int idxOffset = 2);
   void GetDetailsFromDB(const dbiplus::sql_record* const record, int min, int max, const SDbTableOffsets *offsets, CVideoInfoTag &details, int idxOffset = 2);
   std::string GetValueString(const CVideoInfoTag &details, int min, int max, const SDbTableOffsets *offsets) const;
+
+  void SetArtForMovie(int idMovie, int idFile, const std::map<std::string, std::string>& art);
+  void SetArtForMovie(int idMovie, int idFile, const std::string& artType, const std::string& url);
+
+  void SetArtForItemInternal(int mediaId,
+                             const MediaType& mediaType,
+                             const std::string& artType,
+                             const std::string& url);
+  void SetArtForItemInternal(int mediaId,
+                             const MediaType& mediaType,
+                             const std::map<std::string, std::string>& art);
 
 private:
   void CreateTables() override;

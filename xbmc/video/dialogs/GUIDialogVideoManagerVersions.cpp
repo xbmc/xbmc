@@ -176,6 +176,10 @@ void CGUIDialogVideoManagerVersions::SetDefaultVideoVersion(const CFileItem& ver
   // update video details since we changed the video file for the item
   m_database.GetDetailsByTypeAndId(*m_videoAsset, itemType, dbId);
 
+  m_videoAsset->ClearArt();
+  CVideoThumbLoader thumbLoader;
+  thumbLoader.LoadItem(m_videoAsset.get());
+
   // notify all windows to update the file item
   CGUIMessage msg{GUI_MSG_NOTIFY_ALL,        0,           0, GUI_MSG_UPDATE_ITEM,
                   GUI_MSG_FLAG_FORCE_UPDATE, m_videoAsset};

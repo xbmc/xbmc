@@ -2628,7 +2628,7 @@ int CVideoDatabase::SetDetailsForMovie(CVideoInfoTag& details,
     if (details.HasStreamDetails())
       SetStreamDetailsForFileId(details.m_streamDetails, GetAndFillFileId(details));
 
-    SetArtForItem(idMovie, MediaTypeMovie, artwork);
+    SetArtForMovie(idMovie, details.m_iFileId, artwork);
 
     if (!details.HasUniqueID() && details.HasYear())
     { // query DB for any movies matching online id and year
@@ -4859,13 +4859,70 @@ void CVideoDatabase::SetVideoSettings(int idFile, const CVideoSettings &setting)
   }
 }
 
-void CVideoDatabase::SetArtForItem(int mediaId, const MediaType &mediaType, const std::map<std::string, std::string> &art)
+void CVideoDatabase::SetArtForMovie(int idMovie,
+                                    int idFile,
+                                    const std::map<std::string, std::string>& art)
 {
-  for (const auto &i : art)
-    SetArtForItem(mediaId, mediaType, i.first, i.second);
+  if (idFile > 0)
+  {
+    for (const auto& i : art)
+      SetArtForMovie(idMovie, idFile, i.first, i.second);
+  }
+  else
+  {
+    SetArtForItem(idMovie, MediaTypeMovie, art);
+  }
 }
 
-void CVideoDatabase::SetArtForItem(int mediaId, const MediaType &mediaType, const std::string &artType, const std::string &url)
+void CVideoDatabase::SetArtForMovie(int idMovie,
+                                    int idFile,
+                                    const std::string& artType,
+                                    const std::string& url)
+{
+  SetArtForItemInternal(idMovie, MediaTypeMovie, artType, url);
+  SetArtForItemInternal(idFile, MediaTypeVideoVersion, artType, url);
+}
+
+void CVideoDatabase::SetArtForItem(int mediaId,
+                                   const MediaType& mediaType,
+                                   const std::map<std::string, std::string>& art)
+{
+  if (mediaType == MediaTypeMovie)
+  {
+    CFileItem item{};
+    GetDefaultVideoVersion(VideoDbContentType::MOVIES, mediaId, item);
+    //TODO: error handling in case idFile could not be retrieved. Otherwise could do infinite loop
+    SetArtForMovie(mediaId, item.GetVideoInfoTag()->m_iDbId, art);
+  }
+  else
+  {
+    for (const auto& i : art)
+      SetArtForItemInternal(mediaId, mediaType, i.first, i.second);
+  }
+}
+
+void CVideoDatabase::SetArtForItem(int mediaId,
+                                   const MediaType& mediaType,
+                                   const std::string& artType,
+                                   const std::string& url)
+{
+  if (mediaType == MediaTypeMovie)
+  {
+    CFileItem item{};
+    GetDefaultVideoVersion(VideoDbContentType::MOVIES, mediaId, item);
+    //TODO: error handling in case idFile could not be retrieved. Otherwise could do infinite loop
+    SetArtForMovie(mediaId, item.GetVideoInfoTag()->m_iDbId, artType, url);
+  }
+  else
+  {
+    SetArtForItemInternal(mediaId, mediaType, artType, url);
+  }
+}
+
+void CVideoDatabase::SetArtForItemInternal(int mediaId,
+                                           const MediaType& mediaType,
+                                           const std::string& artType,
+                                           const std::string& url)
 {
   try
   {
@@ -12060,12 +12117,19 @@ void CVideoDatabase::SetDefaultVideoVersion(VideoDbContentType itemType, int dbI
 
   try
   {
+    BeginTransaction();
+
     if (itemType == VideoDbContentType::MOVIES)
       m_pDS->exec(PrepareSQL("UPDATE movie SET idFile = %i, c%02d = '%s' WHERE idMovie = %i",
                              idFile, VIDEODB_ID_BASEPATH, path.c_str(), dbId));
+
+    SetArtFromDefaultVideoVersion(dbId, idFile, itemType);
+
+    CommitTransaction();
   }
   catch (...)
   {
+    RollbackTransaction();
     CLog::Log(LOGERROR, "{} failed for video {}", __FUNCTION__, dbId);
   }
 }
@@ -12498,7 +12562,19 @@ void CVideoDatabase::SetVideoVersionDefaultArt(int dbId, int idFrom, VideoDbCont
   std::map<std::string, std::string> art;
   if (GetArtForItem(idFrom, mediaType, art))
   {
+      SetArtForItem(dbId, MediaTypeVideoVersion, art);
+  }
+}
+
+void CVideoDatabase::SetArtFromDefaultVideoVersion(int idMedia, int idVersion, VideoDbContentType type)
+{
+  MediaType mediaType;
+  VideoContentTypeToString(type, mediaType);
+
+  std::map<std::string, std::string> art;
+  if (GetArtForItem(idVersion, MediaTypeVideoVersion, art))
+  {
     for (const auto& it : art)
-      SetArtForItem(dbId, MediaTypeVideoVersion, it.first, it.second);
+      SetArtForItemInternal(idMedia, mediaType, it.first, it.second);
   }
 }

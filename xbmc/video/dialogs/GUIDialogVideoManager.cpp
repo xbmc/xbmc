@@ -329,6 +329,22 @@ void CGUIDialogVideoManager::ChooseArt()
 {
   if (!CGUIDialogVideoInfo::ChooseAndManageVideoItemArtwork(m_selectedVideoAsset))
     return;
+  if (m_selectedVideoAsset->GetVideoInfoTag()->m_iDbId ==
+      m_videoAsset->GetVideoInfoTag()->m_iFileId)
+  {
+    m_database.SetArtFromDefaultVideoVersion(m_videoAsset->GetVideoInfoTag()->m_iDbId,
+                                             m_selectedVideoAsset->GetVideoInfoTag()->m_iDbId,
+                                             m_videoAsset->GetVideoContentType());
+
+    m_videoAsset->ClearArt();
+    CVideoThumbLoader thumbLoader;
+    thumbLoader.LoadItem(m_videoAsset.get());
+
+    // notify all windows to update the file item
+    CGUIMessage msg{GUI_MSG_NOTIFY_ALL,        0,           0, GUI_MSG_UPDATE_ITEM,
+                    GUI_MSG_FLAG_FORCE_UPDATE, m_videoAsset};
+    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
+  }
 
   // refresh data and controls
   Refresh();
