@@ -3936,34 +3936,6 @@ std::string CVideoDatabase::GetFileBasePathById(int idFile)
   return "";
 }
 
-std::string CVideoDatabase::GetFilenameAndPathById(int idFile)
-{
-  if (!m_pDB || !m_pDS2)
-    return "";
-
-  std::string strFilenameAndPath = "";
-
-  try
-  {
-    m_pDS2->query(PrepareSQL("SELECT strPath, strFilename FROM path JOIN files ON path.idPath = "
-                             "files.idPath WHERE idFile = %i",
-                             idFile));
-
-    if (!m_pDS2->eof())
-    {
-      ConstructPath(strFilenameAndPath, m_pDS2->fv("strPath").get_asString(),
-                    m_pDS2->fv("strFilename").get_asString());
-    }
-    m_pDS2->close();
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "{} failed for file {}", __FUNCTION__, idFile);
-  }
-
-  return strFilenameAndPath;
-}
-
 int CVideoDatabase::GetFileIdByMovie(int idMovie)
 {
   if (!m_pDB || !m_pDS)
