@@ -207,9 +207,10 @@ bool CTextureCache::CacheImage(const std::string &image, CTextureDetails &detail
   return !path.empty();
 }
 
-void CTextureCache::ClearCachedImage(const std::string &url, bool deleteSource /*= false */)
+void CTextureCache::ClearCachedImage(const std::string& image, bool deleteSource /*= false */)
 {
   //! @todo This can be removed when the texture cache covers everything.
+  const std::string url = CTextureUtils::UnwrapImageURL(image);
   std::string path = deleteSource ? url : "";
   std::string cachedFile;
   if (ClearCachedTexture(url, cachedFile))
