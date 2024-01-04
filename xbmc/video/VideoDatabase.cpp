@@ -6308,11 +6308,29 @@ void CVideoDatabase::UpdateTables(int iVersion)
                             "AND itemType = %i",
                             VideoAssetTypeOwner::USER, VideoAssetType::VERSION));
   }
+
+  if (iVersion < 129)
+  {
+    // Copy the movie artwork to the default versions' artwork
+    // Preserve any artwork set by user on the default version since db v123.
+    m_pDS2->exec(
+        PrepareSQL("INSERT INTO art (media_id, media_type, type, url) "
+                   "SELECT movie.idFile, '" MediaTypeVideoVersion "', art2.type, art2.url "
+                   "FROM art AS art2 "
+                   "  JOIN movie ON art2.media_id = movie.idMovie and art2.media_type = 'movie' "
+                   "WHERE NOT EXISTS( "
+                   "  SELECT 1 "
+                   "  FROM art AS art3 "
+                   "  WHERE art3.media_id = movie.idFile "
+                   "  AND art3.media_type = '" MediaTypeVideoVersion "' "
+                   "  AND art3.type = art2.type "
+                   "  AND art3.url = art2.url) "));
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 128;
+  return 129;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
