@@ -433,7 +433,7 @@
 				<control type="group">
 					<width>115</width>
 					<visible>!String.IsEmpty($PARAM[infolabel_prefix]ListItem.Duration)</visible>
-					<visible>Container.Content(albums) | Window.IsActive(DialogMusicInfo.xml) + Container.Content(songs)</visible>
+					<visible>Container.Content(albums) + ![Window.IsVisible(songinformation) | Window.IsVisible(musicinformation)]</visible>
 					<control type="label">
 						<width>110</width>
 						<height>60</height>
