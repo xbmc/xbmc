@@ -298,7 +298,7 @@ bool CProfileManager::LoadProfile(unsigned int index)
     return false;
 
   // check if the profile is already active
-  
+
   if (m_currentProfile == index && !m_profiles.at(index).needsRefresh())
     return true;
 

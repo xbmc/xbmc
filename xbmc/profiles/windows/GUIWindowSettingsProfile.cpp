@@ -199,7 +199,7 @@ void CGUIWindowSettingsProfile::LoadList()
     item->SetLabel2(profile->getDate());
     item->SetArt("thumb", profile->getThumb());
     item->SetOverlayImage(profile->getLockMode() == LOCK_MODE_EVERYONE ? CGUIListItem::ICON_OVERLAY_NONE : CGUIListItem::ICON_OVERLAY_LOCKED);
-    item->Select(i == profileManager->GetCurrentProfileId()); // Highlight current profile
+    item->Select(i == static_cast<unsigned int>(profileManager->GetCurrentProfileId())); // Highlight current profile
     m_listItems->Add(item);
   }
   {

@@ -30,9 +30,9 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "utils/log.h"
 #include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
+#include "utils/log.h"
 
 #include <cassert>
 #include <utility>
@@ -97,7 +97,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
     if (CGUIDialogYesNo::ShowAndGetInput(CVariant{20058}, CVariant{20475}))
       // custom location so prompt for the user to slect directory
       GetProfilePath(userDir, false); // can't be the master user
-    
+
     if (userDir.empty())
     {
       // default location
