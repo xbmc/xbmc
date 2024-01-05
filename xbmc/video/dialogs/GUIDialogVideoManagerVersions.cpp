@@ -63,6 +63,7 @@ bool CGUIDialogVideoManagerVersions::OnMessage(CGUIMessage& message)
           // refresh data and controls
           Refresh();
           UpdateControls();
+          m_hasUpdatedItems = true;
         }
       }
       else if (control == CONTROL_BUTTON_SET_DEFAULT)
@@ -310,7 +311,7 @@ std::tuple<int, std::string> CGUIDialogVideoManagerVersions::NewVideoVersion()
   return std::make_tuple(idVideoVersion, typeVideoVersion);
 }
 
-void CGUIDialogVideoManagerVersions::ManageVideoVersions(const std::shared_ptr<CFileItem>& item)
+bool CGUIDialogVideoManagerVersions::ManageVideoVersions(const std::shared_ptr<CFileItem>& item)
 {
   CGUIDialogVideoManagerVersions* dialog{
       CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogVideoManagerVersions>(
@@ -318,11 +319,12 @@ void CGUIDialogVideoManagerVersions::ManageVideoVersions(const std::shared_ptr<C
   if (!dialog)
   {
     CLog::LogF(LOGERROR, "Unable to get WINDOW_DIALOG_MANAGE_VIDEO_VERSIONS instance!");
-    return;
+    return false;
   }
 
   dialog->SetVideoAsset(item);
   dialog->Open();
+  return dialog->HasUpdatedItems();
 }
 
 int CGUIDialogVideoManagerVersions::ManageVideoVersionContextMenu(

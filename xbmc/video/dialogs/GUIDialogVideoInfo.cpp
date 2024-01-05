@@ -160,7 +160,7 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTN_MANAGE_VIDEO_VERSIONS)
       {
-        OnManageVideoVersions();
+        m_hasUpdatedItems = OnManageVideoVersions();
       }
       else if (iControl == CONTROL_BTN_MANAGE_VIDEO_EXTRAS)
       {
@@ -2082,9 +2082,9 @@ void CGUIDialogVideoInfo::ShowFor(const CFileItem& item)
     window->OnItemInfo(item);
 }
 
-void CGUIDialogVideoInfo::OnManageVideoVersions()
+bool CGUIDialogVideoInfo::OnManageVideoVersions()
 {
-  CGUIDialogVideoManagerVersions::ManageVideoVersions(m_movieItem);
+  return CGUIDialogVideoManagerVersions::ManageVideoVersions(m_movieItem);
 }
 
 void CGUIDialogVideoInfo::OnManageVideoExtras()
