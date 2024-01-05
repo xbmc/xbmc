@@ -45,6 +45,7 @@ protected:
   VideoAssetType GetVideoAssetType() override;
   int GetHeadingId() override { return 40024; } // Versions:
 
+  void Clear() override;
   void Refresh() override;
   void UpdateButtons() override;
   void Remove() override;
