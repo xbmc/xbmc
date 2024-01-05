@@ -10,7 +10,6 @@
 #include "FileItem.h"
 #include "GUIInfoManager.h"
 #include "GUIUserMessages.h"
-#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "TextureDatabase.h"
 #include "ThumbLoader.h"
@@ -616,21 +615,18 @@ CUPnPRenderer::OnSetNextAVTransportURI(PLT_ActionReference& action)
       if (item->IsVideo())
         playlistId = PLAYLIST::TYPE_VIDEO;
 
-      {
-        std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
-        CServiceBroker::GetPlaylistPlayer().ClearPlaylist(playlistId);
-        CServiceBroker::GetPlaylistPlayer().Add(playlistId, item);
+      // note: auto-deleted when the message is consumed
+      auto playlist = new CFileItemList();
+      playlist->AddFront(item, 0);
+      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_PLAYLISTPLAYER_ADD, playlistId, -1,
+                                                 static_cast<void*>(playlist));
 
-        CServiceBroker::GetPlaylistPlayer().SetCurrentItemIdx(-1);
-        CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(playlistId);
-      }
+      service->SetStateVariable("NextAVTransportURI", uri);
+      service->SetStateVariable("NextAVTransportURIMetaData", meta);
 
-        service->SetStateVariable("NextAVTransportURI", uri);
-        service->SetStateVariable("NextAVTransportURIMetaData", meta);
+      NPT_CHECK_SEVERE(action->SetArgumentsOutFromStateVariable());
 
-        NPT_CHECK_SEVERE(action->SetArgumentsOutFromStateVariable());
-
-        return NPT_SUCCESS;
+      return NPT_SUCCESS;
     }
     else if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW)
     {
