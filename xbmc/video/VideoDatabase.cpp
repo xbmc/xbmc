@@ -12277,41 +12277,6 @@ void CVideoDatabase::AddVideoVersion(VideoDbContentType itemType,
   }
 }
 
-int CVideoDatabase::GetVideoVersionFile(VideoDbContentType itemType, int dbId, int idVideoVersion)
-{
-  if (!m_pDB || !m_pDS2)
-    return -1;
-
-  MediaType mediaType;
-
-  if (itemType == VideoDbContentType::MOVIES)
-    mediaType = MediaTypeMovie;
-  else
-    return -1;
-
-  int idFile = -1;
-
-  try
-  {
-    m_pDS2->query(PrepareSQL(
-        "SELECT idFile FROM videoversion WHERE idMedia = %i AND media_type = '%s' and idType = %i",
-        dbId, mediaType.c_str(), idVideoVersion));
-
-    if (!m_pDS2->eof())
-    {
-      idFile = m_pDS2->fv("idFile").get_asInt();
-    }
-
-    m_pDS2->close();
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "{} failed for {} {}", __FUNCTION__, mediaType, dbId);
-  }
-
-  return idFile;
-}
-
 int CVideoDatabase::GetVideoVersionInfo(const std::string& fileNameAndPath,
                                         int& idFile,
                                         std::string& typeVideoVersion,
