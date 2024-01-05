@@ -584,7 +584,6 @@ CUPnPRenderer::OnSetAVTransportURI(PLT_ActionReference& action)
       service->SetStateVariable("NextAVTransportURIMetaData", "");
 
       NPT_CHECK_SEVERE(action->SetArgumentsOutFromStateVariable());
-      return NPT_SUCCESS;
     }
 
     return PlayMedia(uri, meta, action.AsPointer());
