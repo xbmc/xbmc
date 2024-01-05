@@ -12033,6 +12033,14 @@ bool CVideoDatabase::ConvertVideoToVersion(VideoDbContentType itemType,
 
   if (dbIdSource != dbIdTarget)
   {
+    // First transfer the extras to the new movie.
+    // A movie with versions cannot be transformed into a version of another movie so there is no
+    // problem with moving all extras to the new movie. With the the current data model it's not
+    // possible to tell which extras initially belonged to which version.
+    ExecuteQuery(
+        PrepareSQL("UPDATE videoversion SET idMedia = %i WHERE idMedia = %i AND itemType = %i",
+                   dbIdTarget, dbIdSource, VideoAssetType::EXTRA));
+
     ExecuteQuery(PrepareSQL("UPDATE videoversion SET idMedia = %i, idType = %i WHERE idFile = %i",
                             dbIdTarget, idVideoVersion, idFile));
 
