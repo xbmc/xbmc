@@ -12355,74 +12355,29 @@ bool CVideoDatabase::GetVideoVersionsNav(const std::string& strBaseDir,
   if (!videoUrl.FromString(strBaseDir))
     return false;
 
-  int idVideoVersion = -1;
-  CVariant value;
-  if (videoUrl.GetOption("videoversionid", value))
-    idVideoVersion = value.asInteger(-1);
-
-  int idMedia = -1;
-  if (videoUrl.GetOption("mediaid", value))
-    idMedia = value.asInteger(-1);
-
-  if (idVideoVersion == VIDEO_VERSION_ID_ALL)
-  {
-    if (idMedia != -1)
-    {
-      CFileItemList list;
-      GetVideoVersions(idContent, idMedia, list, VideoAssetType::VERSION);
-
-      items.Clear();
-      items.Append(list);
-
-      return true;
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "{} mediaid is missing in {}", __FUNCTION__, strBaseDir);
-      return false;
-    }
-  }
-
   try
   {
-    std::string strSQL;
-
-    if (idMedia != -1)
-      strSQL =
-          PrepareSQL("SELECT videoversiontype.name AS name,"
-                     "  videoversiontype.id AS id "
-                     "FROM videoversiontype"
-                     "  JOIN videoversion ON"
-                     "    videoversion.idType = videoversiontype.id "
-                     "WHERE idMedia = %i AND mediaType = '%s' AND videoversiontype.itemType = %i",
-                     idMedia, mediaType.c_str(), VideoAssetType::VERSION);
-    else
-      strSQL = PrepareSQL(
-          "SELECT DISTINCT videoversiontype.name AS name,"
-          "  videoversiontype.id AS id "
-          "FROM videoversiontype"
-          "  JOIN videoversion ON"
-          "    videoversion.idType = videoversiontype.id "
-          "WHERE name != '' AND owner IN (%i, %i) AND videoversiontype.itemType = %i",
-          VideoAssetTypeOwner::SYSTEM, VideoAssetTypeOwner::USER, VideoAssetType::VERSION);
-
-    m_pDS->query(strSQL);
+    m_pDS->query(PrepareSQL(
+        "SELECT DISTINCT videoversiontype.name AS name,"
+        "  videoversiontype.id AS id "
+        "FROM videoversiontype"
+        "  JOIN videoversion ON"
+        "    videoversion.idType = videoversiontype.id "
+        "WHERE name != '' AND owner IN (%i, %i) AND videoversiontype.itemType = %i",
+        VideoAssetTypeOwner::SYSTEM, VideoAssetTypeOwner::USER, VideoAssetType::VERSION));
 
     while (!m_pDS->eof())
     {
-      std::string name = m_pDS->fv("name").get_asString();
-      int id = m_pDS->fv("id").get_asInt();
+      const int id{m_pDS->fv("id").get_asInt()};
 
-      auto item(std::make_shared<CFileItem>(name));
-      item->GetVideoInfoTag()->m_type = MediaTypeVideoVersion;
-      item->GetVideoInfoTag()->m_iDbId = id;
+      CVideoDbUrl itemUrl{videoUrl};
+      itemUrl.AppendPath(StringUtils::Format("{}/", id));
 
-      CVideoDbUrl itemUrl = videoUrl;
-      std::string path = StringUtils::Format("{}/", m_pDS->fv("id").get_asInt());
-      itemUrl.AppendPath(path);
-      item->SetPath(itemUrl.ToString());
-
-      item->m_bIsFolder = true;
+      const auto item{std::make_shared<CFileItem>(itemUrl.ToString(), true)};
+      item->SetLabel(m_pDS->fv("name").get_asString());
+      auto tag{item->GetVideoInfoTag()};
+      tag->m_type = MediaTypeVideoVersion;
+      tag->m_iDbId = id;
 
       items.Add(item);
       m_pDS->next();
