@@ -336,7 +336,14 @@ void CGUIDialogVideoManager::ChooseArt()
 
 void CGUIDialogVideoManager::SetSelectedVideoAsset(const std::shared_ptr<CFileItem>& asset)
 {
-  m_selectedVideoAsset = asset;
+  const int dbId{asset->GetVideoInfoTag()->m_iDbId};
+  const auto it{std::find_if(m_videoAssetsList->cbegin(), m_videoAssetsList->cend(),
+                             [dbId](const auto& entry)
+                             { return entry->GetVideoInfoTag()->m_iDbId == dbId; })};
+  if (it != m_videoAssetsList->cend())
+    m_selectedVideoAsset = (*it);
+  else
+    CLog::LogF(LOGERROR, "Item to select not found in asset list!");
 
   UpdateControls();
 }

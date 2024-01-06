@@ -77,6 +77,12 @@ bool CGUIDialogVideoManagerVersions::OnMessage(CGUIMessage& message)
   return CGUIDialogVideoManager::OnMessage(message);
 }
 
+void CGUIDialogVideoManagerVersions::Clear()
+{
+  m_defaultVideoVersion = std::make_shared<CFileItem>();
+  CGUIDialogVideoManager::Clear();
+}
+
 void CGUIDialogVideoManagerVersions::UpdateButtons()
 {
   CGUIDialogVideoManager::UpdateButtons();
@@ -253,6 +259,7 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersion()
   // Load thumbs async
   CVideoThumbLoader loader;
   loader.Load(items);
+
   dialog->Reset();
   dialog->SetItems(items);
   dialog->SetHeading(40030);

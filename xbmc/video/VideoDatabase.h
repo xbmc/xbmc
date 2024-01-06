@@ -98,6 +98,11 @@ enum VideoDbDetails
 #define VIDEODB_DETAILS_MOVIE_UNIQUEID_TYPE     VIDEODB_MAX_COLUMNS + 19
 #define VIDEODB_DETAILS_MOVIE_HASVERSIONS       VIDEODB_MAX_COLUMNS + 20
 #define VIDEODB_DETAILS_MOVIE_HASEXTRAS VIDEODB_MAX_COLUMNS + 21
+#define VIDEODB_DETAILS_MOVIE_ISDEFAULTVERSION VIDEODB_MAX_COLUMNS + 22
+#define VIDEODB_DETAILS_MOVIE_VERSION_FILEID VIDEODB_MAX_COLUMNS + 23
+#define VIDEODB_DETAILS_MOVIE_VERSION_TYPEID VIDEODB_MAX_COLUMNS + 24
+#define VIDEODB_DETAILS_MOVIE_VERSION_TYPENAME VIDEODB_MAX_COLUMNS + 25
+#define VIDEODB_DETAILS_MOVIE_VERSION_ITEMTYPE VIDEODB_MAX_COLUMNS + 26
 
 #define VIDEODB_DETAILS_EPISODE_TVSHOW_ID       VIDEODB_MAX_COLUMNS + 2
 #define VIDEODB_DETAILS_EPISODE_USER_RATING     VIDEODB_MAX_COLUMNS + 3
@@ -518,7 +523,11 @@ public:
   int GetSeasonForEpisode(int idEpisode);
 
   bool LoadVideoInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details, int getDetails = VideoDbDetailsAll);
-  bool GetMovieInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details, int idMovie = -1, int getDetails = VideoDbDetailsAll);
+  bool GetMovieInfo(const std::string& strFilenameAndPath,
+                    CVideoInfoTag& details,
+                    int idMovie = -1,
+                    int idVersion = -1,
+                    int getDetails = VideoDbDetailsAll);
   bool GetTvShowInfo(const std::string& strPath, CVideoInfoTag& details, int idTvShow = -1, CFileItem* item = NULL, int getDetails = VideoDbDetailsAll);
   bool GetSeasonInfo(const std::string& path, int season, CVideoInfoTag& details, CFileItem* item);
   bool GetSeasonInfo(int idSeason, CVideoInfoTag& details, CFileItem* item);
@@ -937,6 +946,10 @@ public:
   void SetArtForItem(int mediaId, const MediaType &mediaType, const std::map<std::string, std::string> &art);
   bool GetArtForItem(int mediaId, const MediaType &mediaType, std::map<std::string, std::string> &art);
   std::string GetArtForItem(int mediaId, const MediaType &mediaType, const std::string &artType);
+  bool GetArtForAsset(int assetId,
+                      int ownerId,
+                      const MediaType& mediaType,
+                      std::map<std::string, std::string>& art);
   bool HasArtForItem(int mediaId, const MediaType &mediaType);
   bool RemoveArtForItem(int mediaId, const MediaType &mediaType, const std::string &artType);
   bool RemoveArtForItem(int mediaId, const MediaType &mediaType, const std::set<std::string> &artTypes);
@@ -996,7 +1009,6 @@ public:
   std::string GetVideoItemTitle(VideoDbContentType itemType, int dbId);
   std::string GetVideoVersionById(int id);
   bool GetVideoItemByVideoVersion(int dbId, CFileItem& item);
-  int GetVideoVersionFile(VideoDbContentType itemType, int dbId, int idVideoVersion);
   void GetVideoVersions(VideoDbContentType itemType,
                         int dbId,
                         CFileItemList& items,
@@ -1053,7 +1065,6 @@ public:
   void GetSameVideoItems(CFileItem& item, CFileItemList& items);
   int GetFileIdByMovie(int idMovie);
   std::string GetFileBasePathById(int idFile);
-  std::string GetFilenameAndPathById(int idFile);
 
 protected:
   int AddNewMovie(CVideoInfoTag& details);

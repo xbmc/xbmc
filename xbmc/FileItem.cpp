@@ -1680,9 +1680,19 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
   }
   if (HasVideoInfoTag() && item->HasVideoInfoTag())
   {
-    if (GetVideoInfoTag()->m_iDbId != -1 && item->GetVideoInfoTag()->m_iDbId != -1)
-      return ((GetVideoInfoTag()->m_iDbId == item->GetVideoInfoTag()->m_iDbId) &&
-        (GetVideoInfoTag()->m_type == item->GetVideoInfoTag()->m_type));
+    const CVideoInfoTag* myTag{GetVideoInfoTag()};
+    const CVideoInfoTag* otherTag{item->GetVideoInfoTag()};
+    if (myTag->m_iDbId != -1 && otherTag->m_iDbId != -1)
+    {
+      if ((myTag->m_iDbId == otherTag->m_iDbId) && (myTag->m_type == otherTag->m_type))
+      {
+        // for movies with multiple versions, wie need also to check the file id
+        if (HasVideoVersions() && item->HasVideoVersions() && myTag->m_iFileId != -1 &&
+            otherTag->m_iFileId != -1)
+          return myTag->m_iFileId == otherTag->m_iFileId;
+        return true;
+      }
+    }
   }
   if (IsMusicDb() && HasMusicInfoTag())
   {
@@ -3787,7 +3797,8 @@ bool CFileItem::LoadDetails()
     bool ret{false};
     auto tag{std::make_unique<CVideoInfoTag>()};
     if (params.GetMovieId() >= 0)
-      ret = db.GetMovieInfo(GetPath(), *tag, static_cast<int>(params.GetMovieId()));
+      ret = db.GetMovieInfo(GetPath(), *tag, static_cast<int>(params.GetMovieId()),
+                            static_cast<int>(params.GetVideoVersionId()));
     else if (params.GetMVideoId() >= 0)
       ret = db.GetMusicVideoInfo(GetPath(), *tag, static_cast<int>(params.GetMVideoId()));
     else if (params.GetEpisodeId() >= 0)

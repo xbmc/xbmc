@@ -521,6 +521,24 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       case LISTITEM_VIDEO_HDR_TYPE:
         value = tag->m_streamDetails.GetVideoHdrType();
         return true;
+      case LISTITEM_VIDEOVERSION_NAME:
+        value = tag->GetAssetInfo().GetTitle();
+        return true;
+      case LISTITEM_LABEL:
+      {
+        //! @todo get rid of "videos with versions as folder" hack!
+
+        // special casing for "show videos with multiple versions as folders", where the label
+        // should be the video version, not the movie title.
+        CGUIWindow* videoNav{
+            CServiceBroker::GetGUI()->GetWindowManager().GetWindow(WINDOW_VIDEO_NAV)};
+        if (videoNav && videoNav->GetProperty("VideoVersionsFolderView").asBoolean())
+        {
+          value = tag->GetAssetInfo().GetTitle();
+          return true;
+        }
+        break;
+      }
     }
   }
 

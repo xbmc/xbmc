@@ -23737,9 +23737,9 @@ msgstr ""
 
 # 40000 to 40800 are reserved for Video Versions feature
 
+#. Generic video versions label (plural)
 #: xbmc/filesystem/VideoDatabaseDirectory.cpp
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMoviesOverview.cpp
-#: xbmc/video/windows/GUIWindowVideoBase.cpp
 #: addons/skin.estuary/xml/DialogVideoInfo.xml
 msgctxt "#40000"
 msgid "Versions"
@@ -23757,7 +23757,11 @@ msgctxt "#40002"
 msgid "Add as version to..."
 msgstr ""
 
-#empty string with id 40003
+#. Generic video version label (singular)
+#: addons/skin.estuary/xml/DialogVideoInfo.xml
+msgctxt "#40003"
+msgid "Version"
+msgstr ""
 
 #. New video version dialog button
 #: xbmc/video/dialogs/GUIDialogVideoManager.cpp

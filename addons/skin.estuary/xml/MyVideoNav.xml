@@ -41,7 +41,7 @@
 						<aligny>center</aligny>
 						<height>110</height>
 						<font>font36_title</font>
-						<label>$INFO[ListItem.Label]</label>
+						<label>$INFO[ListItem.Title]</label>
 					</control>
 					<control type="textbox">
 						<left>30</left>
