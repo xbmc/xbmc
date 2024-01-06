@@ -8,8 +8,12 @@
 
 #include "PlatformWebOS.h"
 
+#include "ServiceBroker.h"
 #include "filesystem/SpecialProtocol.h"
 #include "powermanagement/LunaPowerManagement.h"
+#include "utils/log.h"
+
+#include <sys/resource.h>
 
 CPlatform* CPlatform::CreateInstance()
 {
@@ -31,6 +35,18 @@ bool CPlatformWebOS::InitStageOne()
          CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem").c_str(), 1);
 
   return CPlatformLinux::InitStageOne();
+}
+
+bool CPlatformWebOS::InitStageTwo()
+{
+  if (CServiceBroker::GetLogging().GetLogLevel() > LOG_LEVEL_DEBUG)
+  {
+    constexpr rlimit limit{0, 0};
+    if (setrlimit(RLIMIT_CORE, &limit) != 0)
+      CLog::Log(LOGERROR, "Failed to disable core dumps");
+  }
+
+  return CPlatformLinux::InitStageTwo();
 }
 
 void CPlatformWebOS::RegisterPowerManagement()
