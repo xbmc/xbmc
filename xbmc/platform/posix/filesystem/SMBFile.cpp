@@ -27,8 +27,10 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
+#include <cstring>
 #include <inttypes.h>
 #include <mutex>
+#include <regex>
 
 #include <libsmbclient.h>
 
@@ -48,7 +50,15 @@ void xb_smbc_log(void* private_ptr, int level, const char* msg)
         return LOGDEBUG;
     }
   }();
-  CLog::Log(logLevel, "smb: {}", msg);
+
+  if (std::strchr(msg, '@'))
+  {
+    // redact User/pass in URLs
+    static const std::regex redact("(\\w+://)\\S+:\\S+@");
+    CLog::Log(logLevel, "smb: {}", std::regex_replace(msg, redact, "$1USERNAME:PASSWORD@"));
+  }
+  else
+    CLog::Log(logLevel, "smb: {}", msg);
 }
 
 void xb_smbc_auth(const char *srv, const char *shr, char *wg, int wglen,
