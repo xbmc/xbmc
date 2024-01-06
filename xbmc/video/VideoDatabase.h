@@ -1008,7 +1008,6 @@ public:
 
   std::string GetVideoItemTitle(VideoDbContentType itemType, int dbId);
   std::string GetVideoVersionById(int id);
-  bool GetVideoItemByVideoVersion(int dbId, CFileItem& item);
   void GetVideoVersions(VideoDbContentType itemType,
                         int dbId,
                         CFileItemList& items,

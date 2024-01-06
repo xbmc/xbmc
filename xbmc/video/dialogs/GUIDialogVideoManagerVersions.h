@@ -36,7 +36,6 @@ public:
    * false: no changes
    */
   static bool ManageVideoVersions(const std::shared_ptr<CFileItem>& item);
-  static int ManageVideoVersionContextMenu(const std::shared_ptr<CFileItem>& version);
 
 protected:
   bool OnMessage(CGUIMessage& message) override;

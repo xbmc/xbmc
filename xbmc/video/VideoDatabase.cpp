@@ -12448,43 +12448,6 @@ std::string CVideoDatabase::GetVideoVersionById(int id)
   return GetSingleValue(PrepareSQL("SELECT name FROM videoversiontype WHERE id=%i", id), m_pDS2);
 }
 
-bool CVideoDatabase::GetVideoItemByVideoVersion(int dbId, CFileItem& item)
-{
-  if (!m_pDB || !m_pDS)
-    return false;
-
-  try
-  {
-    m_pDS->query(
-        PrepareSQL("SELECT idMedia, media_type, idType FROM videoversion WHERE idFile = %i", dbId));
-
-    if (m_pDS->num_rows() > 0)
-    {
-      int idMedia = m_pDS->fv("idMedia").get_asInt();
-      std::string mediaType = m_pDS->fv("media_type").get_asString();
-      const int idType{m_pDS->fv("idType").get_asInt()};
-
-      m_pDS->close();
-
-      if (mediaType == MediaTypeMovie)
-      {
-        CVideoInfoTag videoInfo;
-        if (GetMovieInfo("", videoInfo, idMedia, idType))
-        {
-          item.SetFromVideoInfoTag(videoInfo);
-          return true;
-        }
-      }
-    }
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "{} failed for video version {}", __FUNCTION__, dbId);
-  }
-
-  return false;
-}
-
 void CVideoDatabase::SetVideoVersionDefaultArt(int dbId, int idFrom, VideoDbContentType type)
 {
   MediaType mediaType;
