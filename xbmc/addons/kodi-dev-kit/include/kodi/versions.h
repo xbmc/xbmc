@@ -124,7 +124,7 @@
                                                       "addon-instance/inputstream/StreamCrypto.h" \
                                                       "addon-instance/inputstream/TimingConstants.h"
 
-#define ADDON_INSTANCE_VERSION_PERIPHERAL             "3.0.1"
+#define ADDON_INSTANCE_VERSION_PERIPHERAL             "3.0.2"
 #define ADDON_INSTANCE_VERSION_PERIPHERAL_MIN         "3.0.0"
 #define ADDON_INSTANCE_VERSION_PERIPHERAL_XML_ID      "kodi.binary.instance.peripheral"
 #define ADDON_INSTANCE_VERSION_PERIPHERAL_DEPENDS     "addon-instance/Peripheral.h" \
