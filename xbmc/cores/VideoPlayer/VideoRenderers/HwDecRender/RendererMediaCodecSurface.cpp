@@ -73,7 +73,7 @@ CRenderInfo CRendererMediaCodecSurface::GetRenderInfo()
   return info;
 }
 
-bool CRendererMediaCodecSurface::RenderCapture(CRenderCapture* capture)
+bool CRendererMediaCodecSurface::RenderCapture(int index, CRenderCapture* capture)
 {
   capture->BeginRender();
   capture->EndRender();

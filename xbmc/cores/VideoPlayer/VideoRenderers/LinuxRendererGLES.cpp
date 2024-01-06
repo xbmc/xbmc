@@ -1243,8 +1243,10 @@ void CLinuxRendererGLES::RenderFromFBO()
   VerifyGLState();
 }
 
-bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
+bool CLinuxRendererGLES::RenderCapture(int index, CRenderCapture* capture)
 {
+  m_iYV12RenderBuffer = index;
+  
   if (!m_bValidated)
   {
     return false;

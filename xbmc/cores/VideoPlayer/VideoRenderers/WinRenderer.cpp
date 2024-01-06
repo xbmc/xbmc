@@ -218,7 +218,7 @@ void CWinRenderer::RenderUpdate(int index, int index2, bool clear, unsigned int 
   DX::Windowing()->SetAlphaBlendEnable(true);
 }
 
-bool CWinRenderer::RenderCapture(CRenderCapture* capture)
+bool CWinRenderer::RenderCapture(int index, CRenderCapture* capture)
 {
   if (!m_bConfigured)
     return false;

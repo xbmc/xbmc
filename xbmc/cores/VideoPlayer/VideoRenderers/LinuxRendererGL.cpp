@@ -1662,8 +1662,10 @@ void CLinuxRendererGL::RenderRGB(int index, int field)
   glBindTexture(m_textureTarget, 0);
 }
 
-bool CLinuxRendererGL::RenderCapture(CRenderCapture* capture)
+bool CLinuxRendererGL::RenderCapture(int index, CRenderCapture* capture)
 {
+  m_iYV12RenderBuffer = index;
+  
   if (!m_bValidated)
     return false;
 
