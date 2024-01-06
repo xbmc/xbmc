@@ -23766,7 +23766,6 @@ msgstr ""
 #. New video version dialog button
 #: xbmc/video/dialogs/GUIDialogVideoManager.cpp
 #: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
-#: xbmc/video/windows/GUIWindowVideoNav.cpp
 msgctxt "#40004"
 msgid "New version..."
 msgstr ""

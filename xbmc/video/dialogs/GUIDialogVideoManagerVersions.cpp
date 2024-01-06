@@ -19,7 +19,6 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIComponent.h"
-#include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/MediaSourceSettings.h"
@@ -294,28 +293,6 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersion()
                                                MediaRole::Parent);
   }
   return false;
-}
-
-std::tuple<int, std::string> CGUIDialogVideoManagerVersions::NewVideoVersion()
-{
-  std::string typeVideoVersion;
-
-  // prompt for the new video version
-  if (!CGUIKeyboardFactory::ShowAndGetInput(typeVideoVersion, CVariant{40004}, false))
-    return std::make_tuple(-1, "");
-
-  CVideoDatabase videodb;
-  if (!videodb.Open())
-  {
-    CLog::LogF(LOGERROR, "Failed to open video database!");
-    return std::make_tuple(-1, "");
-  }
-
-  typeVideoVersion = StringUtils::Trim(typeVideoVersion);
-  const int idVideoVersion{videodb.AddVideoVersionType(typeVideoVersion, VideoAssetTypeOwner::USER,
-                                                       VideoAssetType::VERSION)};
-
-  return std::make_tuple(idVideoVersion, typeVideoVersion);
 }
 
 bool CGUIDialogVideoManagerVersions::ManageVideoVersions(const std::shared_ptr<CFileItem>& item)
