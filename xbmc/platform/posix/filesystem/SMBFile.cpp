@@ -27,16 +27,38 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
+#include <cstring>
 #include <inttypes.h>
 #include <mutex>
+#include <regex>
 
 #include <libsmbclient.h>
 
 using namespace XFILE;
 
-void xb_smbc_log(const char* msg)
+void xb_smbc_log(void* private_ptr, int level, const char* msg)
 {
-  CLog::Log(LOGINFO, "{}{}", "smb: ", msg);
+  const int logLevel = [level]()
+  {
+    switch (level)
+    {
+      case 0:
+        return LOGWARNING;
+      case 1:
+        return LOGINFO;
+      default:
+        return LOGDEBUG;
+    }
+  }();
+
+  if (std::strchr(msg, '@'))
+  {
+    // redact User/pass in URLs
+    static const std::regex redact("(\\w+://)\\S+:\\S+@");
+    CLog::Log(logLevel, "smb: {}", std::regex_replace(msg, redact, "$1USERNAME:PASSWORD@"));
+  }
+  else
+    CLog::Log(logLevel, "smb: {}", msg);
 }
 
 void xb_smbc_auth(const char *srv, const char *shr, char *wg, int wglen,
@@ -175,6 +197,7 @@ void CSMB::Init()
 
 #ifdef DEPRECATED_SMBC_INTERFACE
     smbc_setDebug(m_context, CServiceBroker::GetLogging().CanLogComponent(LOGSAMBA) ? 10 : 0);
+    smbc_setLogCallback(m_context, this, xb_smbc_log);
     smbc_setFunctionAuthData(m_context, xb_smbc_auth);
     orig_cache = smbc_getFunctionGetCachedServer(m_context);
     smbc_setFunctionGetCachedServer(m_context, xb_smbc_cache);
