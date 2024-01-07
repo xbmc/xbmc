@@ -589,7 +589,7 @@ protected:
     return true;
   }
 
-  bool OnInfoSelected() override { return m_window.OnItemInfo(m_itemIndex); }
+  bool OnInfoSelected() override { return m_window.OnItemInfo(*m_item); }
 
   bool OnMoreSelected() override
   {
