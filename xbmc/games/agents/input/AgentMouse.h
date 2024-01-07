@@ -40,6 +40,10 @@ public:
 
   // Implementation of IMouseInputHandler
   std::string ControllerID() const override;
+  bool OnPosition(const MOUSE::PointerName& relpointer, int distanceX, int distanceY) override
+  {
+    return false;
+  }
   bool OnMotion(const MOUSE::PointerName& relpointer, int differenceX, int differenceY) override;
   bool OnButtonPress(const MOUSE::ButtonName& button) override;
   void OnButtonRelease(const MOUSE::ButtonName& button) override;

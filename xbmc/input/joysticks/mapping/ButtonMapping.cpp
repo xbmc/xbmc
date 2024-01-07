@@ -133,7 +133,7 @@ bool CButtonMapping::OnPosition(int x, int y)
   if (!m_buttonMapper->AcceptsPrimitive(PRIMITIVE_TYPE::RELATIVE_POINTER))
     return false;
 
-  return GetPointer().OnMotion(x, y);
+  return GetPointer().OnPosition(x, y);
 }
 
 bool CButtonMapping::OnButtonPress(MOUSE::BUTTON_ID button)
