@@ -501,17 +501,6 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
         newTag->SetSpecialSort(SortSpecialOnTop);
         items.Add(newTag);
       }
-      else if (items.GetContent() == "videoversions" &&
-               !items.Contains("newvideoversion://" + videoUrl.GetType()))
-      {
-        const auto newVideoVersion{
-            std::make_shared<CFileItem>("newvideoversion://" + videoUrl.GetType(), false)};
-        newVideoVersion->SetLabel(g_localizeStrings.Get(40004));
-        newVideoVersion->SetLabelPreformatted(true);
-        newVideoVersion->SetSpecialSort(SortSpecialOnTop);
-        newVideoVersion->SetProperty("IsPlayable", false);
-        items.Add(newVideoVersion);
-      }
     }
   }
   return bResult;
@@ -685,8 +674,7 @@ void CGUIWindowVideoNav::OnDeleteItem(const CFileItemPtr& pItem)
   if (!m_vecItems->IsVideoDb() && !pItem->IsVideoDb())
   {
     if (!pItem->IsPath("newsmartplaylist://video") && !pItem->IsPath("special://videoplaylists/") &&
-        !pItem->IsPath("sources://video/") && !URIUtils::IsProtocol(pItem->GetPath(), "newtag") &&
-        !URIUtils::IsProtocol(pItem->GetPath(), "newvideoversion"))
+        !pItem->IsPath("sources://video/") && !URIUtils::IsProtocol(pItem->GetPath(), "newtag"))
       CGUIWindowVideoBase::OnDeleteItem(pItem);
   }
   else if (StringUtils::StartsWithNoCase(pItem->GetPath(), "videodb://movies/sets/") &&
@@ -1046,20 +1034,6 @@ bool CGUIWindowVideoNav::OnClick(int iItem, const std::string &player)
         videodb.AddTagToItem(items[index]->GetVideoInfoTag()->m_iDbId, idTag, mediaType);
       }
     }
-
-    Refresh(true);
-    return true;
-  }
-  else if (StringUtils::StartsWithNoCase(item->GetPath(), "newvideoversion://"))
-  {
-    // dont allow update while scanning
-    if (CVideoLibraryQueue::GetInstance().IsScanningLibrary())
-    {
-      HELPERS::ShowOKDialogText(CVariant{257}, CVariant{14057});
-      return true;
-    }
-
-    CGUIDialogVideoManagerVersions::NewVideoVersion();
 
     Refresh(true);
     return true;
