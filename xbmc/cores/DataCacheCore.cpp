@@ -34,20 +34,27 @@ void CDataCacheCore::Reset()
 {
   {
     std::unique_lock<CCriticalSection> lock(m_stateSection);
-
-    m_stateInfo.m_speed = 1.0;
-    m_stateInfo.m_tempo = 1.0;
-    m_stateInfo.m_stateSeeking = false;
-    m_stateInfo.m_renderGuiLayer = false;
-    m_stateInfo.m_renderVideoLayer = false;
+    m_stateInfo = {};
     m_playerStateChanged = false;
   }
-
+  {
+    std::unique_lock<CCriticalSection> lock(m_videoPlayerSection);
+    m_playerVideoInfo = {};
+  }
+  {
+    std::unique_lock<CCriticalSection> lock(m_audioPlayerSection);
+    m_playerAudioInfo = {};
+  }
+  m_hasAVInfoChanges = false;
+  {
+    std::unique_lock<CCriticalSection> lock(m_renderSection);
+    m_renderInfo = {};
+  }
   {
     std::unique_lock<CCriticalSection> lock(m_contentSection);
-
     m_contentInfo.Reset();
   }
+  m_timeInfo = {};
 }
 
 bool CDataCacheCore::HasAVInfoChanges()
