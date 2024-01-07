@@ -9,6 +9,7 @@
 #include "GUIWindowVideoBase.h"
 
 #include "Autorun.h"
+#include "ContextMenuManager.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
 #include "PartyModeManager.h"
@@ -593,6 +594,10 @@ protected:
 
   bool OnMoreSelected() override
   {
+    // window only shows the default version, so no window specific context menu items available
+    if (m_item->HasVideoVersions() && !m_item->GetVideoInfoTag()->IsDefaultVideoVersion())
+      return CONTEXTMENU::ShowFor(m_item, CContextMenuManager::MAIN);
+
     m_window.OnPopupMenu(m_itemIndex);
     return true;
   }
