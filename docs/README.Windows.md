@@ -150,6 +150,7 @@ Build FFmpeg:
 ```
 make-mingwlibs.bat
 ```
+**HINT:** If you get the error `ERROR! Could not find vcvarsall.bat` you have not installed `Desktop development with C++` as a module within Visual Studio, go back and finish that step first.
 
 **[back to top](#table-of-contents)** | **[back to section top](#4-set-up-the-build-environment)**
 
