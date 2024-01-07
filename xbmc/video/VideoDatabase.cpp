@@ -8078,6 +8078,23 @@ bool CVideoDatabase::GetMoviesNav(const std::string& strBaseDir, CFileItemList& 
   return GetMoviesByWhere(videoUrl.ToString(), filter, items, sortDescription, getDetails);
 }
 
+namespace
+{
+std::string RewriteVideoVersionURL(const std::string& baseDir, const CVideoInfoTag& movie)
+{
+  const CURL parentPath{URIUtils::GetParentPath(baseDir)};
+  const std::string versionId{std::to_string(movie.GetAssetInfo().GetId())};
+  const std::string mediaId{std::to_string(movie.m_iDbId)};
+  CVideoDbUrl url;
+  url.FromString(parentPath.GetWithoutOptions());
+  url.AppendPath(versionId);
+  url.AppendPath(mediaId);
+  url.AddOption("videoversionid", versionId);
+  url.AddOption("mediaid", mediaId);
+  return url.ToString();
+}
+} // unnamed namespace
+
 bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription /* = SortDescription() */, int getDetails /* = VideoDbDetailsNone */)
 {
   try
@@ -8146,18 +8163,29 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
       {
         CFileItemPtr pItem(new CFileItem(movie));
 
-        CVideoDbUrl itemUrl = videoUrl;
-        std::string path = std::to_string(movie.m_iDbId);
-        itemUrl.AppendPath(path);
-        pItem->SetPath(itemUrl.ToString());
-
+        std::string path;
+        CVideoDbUrl itemUrl{videoUrl};
         CVariant value;
         if (itemUrl.GetOption("videoversionid", value))
         {
-          // certain version requested, no need to resolve (e.g. no version chooser on select)
+          //! @todo get rid of "videos with versions as folder" hack!
+          if (value.asInteger() == VIDEO_VERSION_ID_ALL)
+          {
+            // all versions for the given media id requested; we need to insert the real video
+            // version id for this movie into the videodb url
+            path = RewriteVideoVersionURL(strBaseDir, movie);
+          }
+          // this is a certain version, no need to resolve (e.g. no version chooser on select)
           pItem->SetProperty("has_resolved_video_version", true);
         }
 
+        if (path.empty())
+        {
+          itemUrl.AppendPath(std::to_string(movie.m_iDbId));
+          path = itemUrl.ToString();
+        }
+
+        pItem->SetPath(path);
         pItem->SetDynPath(movie.m_strFileNameAndPath);
 
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.GetPlayCount() > 0);
