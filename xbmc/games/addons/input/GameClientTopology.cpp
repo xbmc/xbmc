@@ -10,6 +10,7 @@
 
 #include "GameClientDevice.h"
 #include "GameClientPort.h"
+#include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/game.h"
 #include "games/controllers/Controller.h"
 
 #include <sstream>
@@ -19,6 +20,23 @@ using namespace KODI;
 using namespace GAME;
 
 #define CONTROLLER_ADDRESS_SEPARATOR '/'
+
+namespace
+{
+// Helper function
+bool ContainsOnlySeparator(const std::string& address,
+                           std::string::size_type firstSep,
+                           std::string::size_type lastSep)
+{
+  if (firstSep == std::string::npos)
+    return true;
+
+  if (firstSep == lastSep && address[firstSep] == CONTROLLER_ADDRESS_SEPARATOR)
+    return true;
+
+  return false;
+}
+} // namespace
 
 CGameClientTopology::CGameClientTopology(GameClientPortVec ports, int playerLimit)
   : m_ports(std::move(ports)), m_playerLimit(playerLimit), m_controllers(GetControllerTree(m_ports))
@@ -101,10 +119,39 @@ std::string CGameClientTopology::MakeAddress(const std::string& baseAddress,
 {
   std::ostringstream address;
 
-  if (!baseAddress.empty())
-    address << baseAddress;
+  // Strip leading and trailing slashes from base address
+  std::string basePart;
 
-  address << CONTROLLER_ADDRESS_SEPARATOR << nodeId;
+  std::string::size_type first = baseAddress.find_first_not_of(CONTROLLER_ADDRESS_SEPARATOR);
+  std::string::size_type last = baseAddress.find_last_not_of(CONTROLLER_ADDRESS_SEPARATOR);
+  if (!ContainsOnlySeparator(baseAddress, first, last))
+    basePart = baseAddress.substr(first, last - first + 1);
+
+  // Strip leading and trailing slashes from node ID
+  std::string nodePart;
+
+  first = nodeId.find_first_not_of(CONTROLLER_ADDRESS_SEPARATOR);
+  last = nodeId.find_last_not_of(CONTROLLER_ADDRESS_SEPARATOR);
+  if (!ContainsOnlySeparator(nodeId, first, last))
+    nodePart = nodeId.substr(first, last - first + 1);
+
+  // Start with the root port address
+  address << ROOT_PORT_ADDRESS;
+
+  if (!basePart.empty() && !nodePart.empty())
+  {
+    address << basePart;
+    address << CONTROLLER_ADDRESS_SEPARATOR;
+    address << nodePart;
+  }
+  else if (!basePart.empty())
+  {
+    address << basePart;
+  }
+  else if (!nodePart.empty())
+  {
+    address << nodePart;
+  }
 
   return address.str();
 }
@@ -125,6 +172,10 @@ std::pair<std::string, std::string> CGameClientTopology::SplitAddress(
   {
     baseAddress = nodeAddress;
   }
+
+  // Add a leading slash, if necessary
+  if (baseAddress.empty() || baseAddress[0] != CONTROLLER_ADDRESS_SEPARATOR)
+    baseAddress.insert(0, 1, CONTROLLER_ADDRESS_SEPARATOR);
 
   return std::make_pair(baseAddress, nodeId);
 }

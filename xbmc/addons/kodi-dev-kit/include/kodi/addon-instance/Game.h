@@ -737,12 +737,12 @@ public:
   /// To connect a multitap to the console's first port, the multitap's controller
   /// info is set using the port address:
   ///
-  ///     1
+  ///     /1
   ///
   /// To connect a SNES controller to the second port of the multitap, the
   /// controller info is next set using the address:
   ///
-  ///     1/game.controller.multitap/2
+  ///     /1/game.controller.multitap/2
   ///
   /// Any attempts to connect a controller to a port on a disconnected multitap
   /// will return false.
