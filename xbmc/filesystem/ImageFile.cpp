@@ -45,7 +45,13 @@ bool CImageFile::Exists(const CURL& url)
   std::string cachedFile =
       CServiceBroker::GetTextureCache()->CheckCachedImage(url.Get(), needsRecaching);
   if (!cachedFile.empty())
-    return CFile::Exists(cachedFile, false);
+  {
+    if (CFile::Exists(cachedFile, false))
+      return true;
+    else
+      // Remove from cache so it gets cached again on next Open()
+      CServiceBroker::GetTextureCache()->ClearCachedImage(url.Get());
+  }
 
   // need to check if the original can be cached on demand and that the file exists
   if (!CTextureCache::CanCacheImageURL(url))
