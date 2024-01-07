@@ -323,7 +323,7 @@ void CGUIListItem::FreeMemory(bool immediately)
   }
 }
 
-void CGUIListItem::SetLayout(CGUIListItemLayoutPtr layout)
+void CGUIListItem::SetLayout(std::unique_ptr<CGUIListItemLayout> layout)
 {
   m_layout = std::move(layout);
 }
@@ -333,7 +333,7 @@ CGUIListItemLayout *CGUIListItem::GetLayout()
   return m_layout.get();
 }
 
-void CGUIListItem::SetFocusedLayout(CGUIListItemLayoutPtr layout)
+void CGUIListItem::SetFocusedLayout(std::unique_ptr<CGUIListItemLayout> layout)
 {
   m_focusedLayout = std::move(layout);
 }
