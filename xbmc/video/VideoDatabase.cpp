@@ -4864,10 +4864,23 @@ void CVideoDatabase::SetVideoSettings(int idFile, const CVideoSettings &setting)
   }
 }
 
-void CVideoDatabase::SetArtForItem(int mediaId, const MediaType &mediaType, const std::map<std::string, std::string> &art)
+void CVideoDatabase::SetArtForItem(int mediaId,
+                                   const MediaType& mediaType,
+                                   const std::map<std::string, std::string>& art)
 {
-  for (const auto &i : art)
-    SetArtForItem(mediaId, mediaType, i.first, i.second);
+  if (mediaType == MediaTypeMovie)
+  {
+    // Take the hit of looking up the default version of the movie only once, instead of once per
+    // art piece.
+    CFileItem item;
+    GetDefaultVideoVersion(VideoDbContentType::MOVIES, mediaId, item);
+    SetArtForItem(item.GetVideoInfoTag()->m_iDbId, MediaTypeVideoVersion, art);
+  }
+  else
+  {
+    for (const auto& i : art)
+      SetArtForItem(mediaId, mediaType, i.first, i.second);
+  }
 }
 
 void CVideoDatabase::SetArtForItem(int mediaId, const MediaType &mediaType, const std::string &artType, const std::string &url)
@@ -4883,7 +4896,25 @@ void CVideoDatabase::SetArtForItem(int mediaId, const MediaType &mediaType, cons
     if (artType.find('.') != std::string::npos)
       return;
 
-    std::string sql = PrepareSQL("SELECT art_id,url FROM art WHERE media_id=%i AND media_type='%s' AND type='%s'", mediaId, mediaType.c_str(), artType.c_str());
+    std::string sql;
+
+    if (mediaType == MediaTypeMovie)
+    {
+      sql = PrepareSQL(
+          "SELECT art_id, url "
+          "FROM art "
+          "  JOIN movie "
+          "  ON art.media_id = movie.idMovie AND art.media_type = '" MediaTypeVideoVersion "' "
+          "WHERE movie.idMovie = %i",
+          mediaId);
+    }
+    else
+    {
+      sql = PrepareSQL(
+          "SELECT art_id, url FROM art WHERE media_id = %i AND media_type = '%s' AND type = '%s'",
+          mediaId, mediaType.c_str(), artType.c_str());
+    }
+
     m_pDS->query(sql);
     if (!m_pDS->eof())
     { // update
@@ -4905,42 +4936,13 @@ void CVideoDatabase::SetArtForItem(int mediaId, const MediaType &mediaType, cons
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{}({}, '{}', '{}', '{}') failed", __FUNCTION__, mediaId, mediaType,
-              artType, url);
+    CLog::LogF(LOGERROR, "({}, '{}', '{}', '{}') failed", mediaId, mediaType, artType, url);
   }
 }
 
-bool CVideoDatabase::GetArtForItem(int mediaId, const MediaType &mediaType, std::map<std::string, std::string> &art)
-{
-  try
-  {
-    if (nullptr == m_pDB)
-      return false;
-    if (nullptr == m_pDS2)
-      return false; // using dataset 2 as we're likely called in loops on dataset 1
-
-    std::string sql = PrepareSQL("SELECT type,url FROM art WHERE media_id=%i AND media_type='%s'", mediaId, mediaType.c_str());
-
-    m_pDS2->query(sql);
-    while (!m_pDS2->eof())
-    {
-      art.insert(make_pair(m_pDS2->fv(0).get_asString(), m_pDS2->fv(1).get_asString()));
-      m_pDS2->next();
-    }
-    m_pDS2->close();
-    return !art.empty();
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "{}({}) failed", __FUNCTION__, mediaId);
-  }
-  return false;
-}
-
-bool CVideoDatabase::GetArtForAsset(int assetId,
-                                    int ownerMediaId,
-                                    const MediaType& mediaType,
-                                    std::map<std::string, std::string>& art)
+bool CVideoDatabase::GetArtForItem(int mediaId,
+                                   const MediaType& mediaType,
+                                   std::map<std::string, std::string>& art)
 {
   try
   {
@@ -4951,39 +4953,26 @@ bool CVideoDatabase::GetArtForAsset(int assetId,
 
     std::string sql;
 
-    if (mediaType == MediaTypeVideoVersion)
+    if (mediaType == MediaTypeMovie)
     {
-      // MAYBE: use more compact and readable non-ANSI SQL extension where (,) in ()?
-      sql = PrepareSQL("SELECT art.media_type, art.type, art.url "
-                       "FROM art "
-                       "LEFT JOIN videoversion vv "
-                       "  ON art.media_id = vv.idMedia AND art.media_type = vv.media_type "
-                       "WHERE (art.media_id = %i AND art.media_type = '%s') "
-                       "OR(vv.idFile = %i) ",
-                       assetId, MediaTypeVideoVersion, assetId);
+      sql = PrepareSQL(
+          "SELECT type,url "
+          "FROM art "
+          "  JOIN movie "
+          "  ON art.media_id = movie.idFile AND art.media_type = '" MediaTypeVideoVersion "' "
+          "WHERE idMovie = %i ",
+          mediaId);
     }
     else
     {
-      sql = PrepareSQL("SELECT media_type, type, url "
-                       "FROM art "
-                       "WHERE (media_id = %i AND media_type = '%s') "
-                       "OR (media_id = %i AND media_type = '%s')",
-                       assetId, MediaTypeVideoVersion, ownerMediaId, mediaType.c_str());
+      sql = PrepareSQL("SELECT type, url FROM art WHERE media_id=%i AND media_type='%s'", mediaId,
+                       mediaType.c_str());
     }
 
     m_pDS2->query(sql);
     while (!m_pDS2->eof())
     {
-      if (m_pDS2->fv(0).get_asString() == MediaTypeVideoVersion)
-      {
-        // version data has priority over owner's data, used as fallback.
-        art[m_pDS2->fv(1).get_asString()] = m_pDS2->fv(2).get_asString();
-      }
-      else
-      {
-        // insert if not yet present
-        art.insert(make_pair(m_pDS2->fv(1).get_asString(), m_pDS2->fv(2).get_asString()));
-      }
+      art.insert(std::make_pair(m_pDS2->fv(0).get_asString(), m_pDS2->fv(1).get_asString()));
       m_pDS2->next();
     }
     m_pDS2->close();
@@ -4991,33 +4980,87 @@ bool CVideoDatabase::GetArtForAsset(int assetId,
   }
   catch (...)
   {
-    CLog::LogF(LOGERROR, "retrieval failed ({}, {}, {})", assetId, ownerMediaId, mediaType);
+    CLog::LogF(LOGERROR, "retrieval failed ({})", mediaId);
   }
   return false;
 }
 
-std::string CVideoDatabase::GetArtForItem(int mediaId, const MediaType &mediaType, const std::string &artType)
+std::string CVideoDatabase::GetArtForItem(int mediaId,
+                                          const MediaType& mediaType,
+                                          const std::string& artType)
 {
-  std::string query = PrepareSQL("SELECT url FROM art WHERE media_id=%i AND media_type='%s' AND type='%s'", mediaId, mediaType.c_str(), artType.c_str());
-  return GetSingleValue(query, m_pDS2);
+  std::string sql;
+
+  if (mediaType == MediaTypeMovie)
+  {
+    sql = PrepareSQL("SELECT url "
+                     "FROM art "
+                     "  JOIN movie "
+                     "  ON art.media_id = movie.idFile AND art.media_type = '%s' AND type = '%s' "
+                     "WHERE idMovie = %i ",
+                     MediaTypeVideoVersion, artType.c_str(), mediaId);
+  }
+  else
+  {
+    sql =
+        PrepareSQL("SELECT url FROM art WHERE media_id = %i AND media_type = '%s' AND type = '%s'",
+                   mediaId, mediaType.c_str(), artType.c_str());
+  }
+
+  return GetSingleValue(sql,
+                        m_pDS2); // using dataset 2 as we're likely called in loops on dataset 1
 }
 
-bool CVideoDatabase::RemoveArtForItem(int mediaId, const MediaType &mediaType, const std::string &artType)
+bool CVideoDatabase::RemoveArtForItem(int mediaId,
+                                      const MediaType& mediaType,
+                                      const std::string& artType)
 {
-  return ExecuteQuery(PrepareSQL("DELETE FROM art WHERE media_id=%i AND media_type='%s' AND type='%s'", mediaId, mediaType.c_str(), artType.c_str()));
+  std::string sql;
+  if (mediaType == MediaTypeMovie)
+  {
+    // The SQL extension WHERE (a,b,c) IN (SELECT x,y,z) is supported by SQLite and mySql/MariaDB
+    sql = PrepareSQL("DELETE FROM art "
+                     "WHERE (media_id, media_type, type) "
+                     "  IN ( "
+                     "    SELECT movie.idFile, '" MediaTypeVideoVersion "', '%s' "
+                     "    FROM movie "
+                     "    WHERE idMovie = %i "
+                     "  )",
+                     artType.c_str(), mediaId);
+  }
+  else
+  {
+    sql = PrepareSQL("DELETE FROM art WHERE media_id = %i AND media_type = '%s' AND type = '%s'",
+                     mediaId, mediaType.c_str(), artType.c_str());
+  }
+  return ExecuteQuery(sql);
 }
 
 bool CVideoDatabase::RemoveArtForItem(int mediaId, const MediaType &mediaType, const std::set<std::string> &artTypes)
 {
-  bool result = true;
-  for (const auto &i : artTypes)
-    result &= RemoveArtForItem(mediaId, mediaType, i);
+  if (mediaType == MediaTypeMovie)
+  {
+    // Take the hit of looking up the default version of the movie only once, instead of once per
+    // art piece.
+    CFileItem item;
+    GetDefaultVideoVersion(VideoDbContentType::MOVIES, mediaId, item);
+    return RemoveArtForItem(item.GetVideoInfoTag()->m_iDbId, MediaTypeVideoVersion, artTypes);
+  }
+  else
+  {
+    bool result = true;
 
-  return result;
+    for (const auto& i : artTypes)
+      result &= RemoveArtForItem(mediaId, mediaType, i);
+
+    return result;
+  }
 }
 
 bool CVideoDatabase::HasArtForItem(int mediaId, const MediaType &mediaType)
 {
+  // @todo: function doesn't have redirection of 'movie' media type to 'videoversion'
+  // To be added when/if ever used for anything besides MediaTypeVideoCollection.
   try
   {
     if (nullptr == m_pDB)
@@ -6316,11 +6359,40 @@ void CVideoDatabase::UpdateTables(int iVersion)
                             "AND itemType = %i",
                             VideoAssetTypeOwner::USER, VideoAssetType::VERSION));
   }
+
+  if (iVersion < 130)
+  {
+    // Convert movie artwork into the artwork of the movies' default versions.
+    // Preserve any artwork set by user on the default version since db v123.
+
+    // Temp indexes to speed up the conversion
+    m_pDS->exec("CREATE INDEX tmp_ix_art ON art(media_type(20), media_id, type(20))");
+    m_pDS->exec("CREATE INDEX tmp_ix_movie ON movie (idMovie, idFile)");
+
+    const std::string sql{PrepareSQL(
+        "INSERT INTO art (media_id, media_type, type, url) "
+        "SELECT movie.idFile, '" MediaTypeVideoVersion "', art2.type, art2.url "
+        "FROM art AS art2 "
+        "  JOIN movie ON art2.media_id = movie.idMovie AND art2.media_type = '" MediaTypeMovie "' "
+        "WHERE NOT EXISTS( "
+        "  SELECT 1 "
+        "  FROM art AS art3 "
+        "  WHERE art3.media_id = movie.idFile "
+        "  AND art3.media_type = '" MediaTypeVideoVersion "' "
+        "  AND art3.type = art2.type) ")};
+
+    m_pDS2->exec(sql);
+
+    m_pDS2->exec(PrepareSQL("DELETE FROM art WHERE media_type = '" MediaTypeMovie "'"));
+
+    m_pDS->exec("DROP INDEX tmp_ix_art ON art");
+    m_pDS->exec("DROP INDEX tmp_ix_movie ON movie");
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 129;
+  return 130;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)

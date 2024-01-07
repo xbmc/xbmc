@@ -397,15 +397,8 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
   {
     m_videoDatabase->Open();
 
-    if (tag.GetAssetInfo().GetId() >= 0)
-    {
-      if (m_videoDatabase->GetArtForAsset(tag.m_iFileId, tag.m_iDbId, tag.m_type, artwork))
-        item.AppendArt(artwork);
-    }
-    else if (m_videoDatabase->GetArtForItem(tag.m_iDbId, tag.m_type, artwork))
-    {
+    if (m_videoDatabase->GetArtForItem(tag.m_iDbId, tag.m_type, artwork))
       item.AppendArt(artwork);
-    }
     else if (tag.m_type == "actor" && !tag.m_artist.empty() &&
              item.GetProperty("musicvideomediatype") != MediaTypeArtist)
     {
