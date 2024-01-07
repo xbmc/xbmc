@@ -12,6 +12,7 @@
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/Game.h"
 #include "games/addons/GameClient.h"
 #include "games/addons/GameClientTranslator.h"
+#include "games/controllers/input/ControllerActivity.h"
 #include "input/keyboard/interfaces/IKeyboardInputProvider.h"
 #include "utils/log.h"
 
@@ -27,7 +28,8 @@ CGameClientKeyboard::CGameClientKeyboard(CGameClient& gameClient,
                                          KEYBOARD::IKeyboardInputProvider* inputProvider)
   : m_gameClient(gameClient),
     m_controllerId(std::move(controllerId)),
-    m_inputProvider(inputProvider)
+    m_inputProvider(inputProvider),
+    m_keyboardActivity(std::make_unique<CControllerActivity>())
 {
   m_inputProvider->RegisterKeyboardHandler(this, false);
 }
@@ -51,6 +53,9 @@ bool CGameClientKeyboard::OnKeyPress(const KEYBOARD::KeyName& key,
                                      KEYBOARD::Modifier mod,
                                      uint32_t unicode)
 {
+  m_keyboardActivity->OnKeyPress(key);
+  m_keyboardActivity->OnInputFrame();
+
   // Only allow activated input in fullscreen game
   if (!m_gameClient.Input().AcceptsInput())
   {
@@ -76,6 +81,9 @@ void CGameClientKeyboard::OnKeyRelease(const KEYBOARD::KeyName& key,
                                        KEYBOARD::Modifier mod,
                                        uint32_t unicode)
 {
+  m_keyboardActivity->OnKeyRelease(key);
+  m_keyboardActivity->OnInputFrame();
+
   game_input_event event;
 
   event.type = GAME_INPUT_EVENT_KEY;
@@ -88,6 +96,11 @@ void CGameClientKeyboard::OnKeyRelease(const KEYBOARD::KeyName& key,
   event.key.modifiers = CGameClientTranslator::GetModifiers(mod);
 
   m_gameClient.Input().InputEvent(event);
+}
+
+float CGameClientKeyboard::GetActivation() const
+{
+  return m_keyboardActivity->GetActivation();
 }
 
 void CGameClientKeyboard::SetSource(PERIPHERALS::PeripheralPtr sourcePeripheral)
