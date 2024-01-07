@@ -124,7 +124,7 @@ protected:
 
   static bool StackingAvailable(const CFileItemList &items);
 
-  bool OnPlayStackPart(int itemIndex, unsigned int partNumber);
+  bool OnPlayStackPart(const std::shared_ptr<CFileItem>& item, unsigned int partNumber);
 
   void UpdateVideoVersionItems();
   void UpdateVideoVersionItemsLabel(const std::string& directory);
