@@ -41,7 +41,6 @@
 #include "video/VideoInfoScanner.h"
 #include "video/VideoLibraryQueue.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
-#include "video/dialogs/GUIDialogVideoManagerVersions.h"
 #include "view/GUIViewState.h"
 
 #include <utility>
@@ -805,9 +804,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
              item->GetVideoInfoTag()->m_type == MediaTypeEpisode || // episodes
              item->GetVideoInfoTag()->m_type == MediaTypeMusicVideo || // musicvideos
              item->GetVideoInfoTag()->m_type == "tag" || // tags
-             item->GetVideoInfoTag()->m_type == MediaTypeVideoCollection || // sets
-             (item->GetVideoInfoTag()->m_type == MediaTypeVideoVersion &&
-              item->GetVideoInfoTag()->m_iFileId != -1))) // videoversions for a certain video
+             item->GetVideoInfoTag()->m_type == MediaTypeVideoCollection)) // sets
         {
           buttons.Add(CONTEXT_BUTTON_EDIT, 16106);
         }
@@ -887,10 +884,8 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   {
   case CONTEXT_BUTTON_EDIT:
     {
-      CONTEXT_BUTTON ret =
-          item->GetVideoInfoTag()->m_type == MediaTypeVideoVersion
-              ? (CONTEXT_BUTTON)CGUIDialogVideoManagerVersions::ManageVideoVersionContextMenu(item)
-              : (CONTEXT_BUTTON)CGUIDialogVideoInfo::ManageVideoItem(item);
+      const CONTEXT_BUTTON ret{
+          static_cast<CONTEXT_BUTTON>(CGUIDialogVideoInfo::ManageVideoItem(item))};
 
       if (ret != CONTEXT_BUTTON_CANCELLED)
       {

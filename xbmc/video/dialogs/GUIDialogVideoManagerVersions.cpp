@@ -13,7 +13,6 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "cores/VideoPlayer/DVDFileInfo.h"
-#include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
@@ -309,66 +308,6 @@ bool CGUIDialogVideoManagerVersions::ManageVideoVersions(const std::shared_ptr<C
   dialog->SetVideoAsset(item);
   dialog->Open();
   return dialog->HasUpdatedItems();
-}
-
-int CGUIDialogVideoManagerVersions::ManageVideoVersionContextMenu(
-    const std::shared_ptr<CFileItem>& version)
-{
-  CContextButtons buttons;
-
-  buttons.Add(CONTEXT_BUTTON_RENAME, 118);
-  buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 40023);
-  buttons.Add(CONTEXT_BUTTON_DELETE, 15015);
-  buttons.Add(CONTEXT_BUTTON_SET_ART, 13511);
-
-  const int button{CGUIDialogContextMenu::ShowAndGetChoice(buttons)};
-  if (button > 0)
-  {
-    CGUIDialogVideoManagerVersions* dialog{
-        CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogVideoManagerVersions>(
-            WINDOW_DIALOG_MANAGE_VIDEO_VERSIONS)};
-    if (!dialog)
-    {
-      CLog::LogF(LOGERROR, "Unable to get WINDOW_DIALOG_MANAGE_VIDEO_VERSIONS instance!");
-      return -1;
-    }
-
-    CFileItem videoItem;
-    if (!dialog->m_database.GetVideoItemByVideoVersion(version->GetVideoInfoTag()->m_iDbId,
-                                                       videoItem))
-      return -1;
-
-    dialog->SetVideoAsset(std::make_shared<CFileItem>(videoItem));
-    dialog->SetSelectedVideoAsset(version);
-
-    switch (static_cast<CONTEXT_BUTTON>(button))
-    {
-      case CONTEXT_BUTTON_RENAME:
-      {
-        dialog->Rename();
-        break;
-      }
-      case CONTEXT_BUTTON_SET_DEFAULT:
-      {
-        dialog->SetDefault();
-        break;
-      }
-      case CONTEXT_BUTTON_DELETE:
-      {
-        dialog->Remove();
-        break;
-      }
-      case CONTEXT_BUTTON_SET_ART:
-      {
-        dialog->ChooseArt();
-        break;
-      }
-      default:
-        break;
-    }
-  }
-
-  return button;
 }
 
 bool CGUIDialogVideoManagerVersions::ChooseVideoAndConvertToVideoVersion(
