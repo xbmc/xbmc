@@ -27,6 +27,15 @@ using namespace VIDEO::GUILIB;
 
 namespace
 {
+std::shared_ptr<CFileItem> GetMovieForVideoVersion(const CFileItem& videoVersion)
+{
+  auto item{std::make_shared<CFileItem>(videoVersion.GetDynPath(), false)};
+  item->LoadDetails();
+  CVideoThumbLoader thumbLoader;
+  thumbLoader.LoadItem(item.get());
+  return item;
+}
+
 class CVideoChooser
 {
 public:
@@ -227,15 +236,5 @@ std::shared_ptr<CFileItem> CVideoVersionHelper::ChooseMovieFromVideoVersions(
   if (videoVersion)
     return GetMovieForVideoVersion(*videoVersion);
 
-  return item;
-}
-
-std::shared_ptr<CFileItem> CVideoVersionHelper::GetMovieForVideoVersion(
-    const CFileItem& videoVersion)
-{
-  auto item{std::make_shared<CFileItem>(videoVersion.GetDynPath(), false)};
-  item->LoadDetails();
-  CVideoThumbLoader thumbLoader;
-  thumbLoader.LoadItem(item.get());
   return item;
 }
