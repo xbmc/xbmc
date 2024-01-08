@@ -12105,6 +12105,121 @@ void CVideoDatabase::GetDefaultVideoVersion(VideoDbContentType itemType, int dbI
   }
 }
 
+bool CVideoDatabase::FillMovieItem(std::unique_ptr<Dataset>& dataset, int movieId, CFileItem& item)
+{
+  CVideoInfoTag infoTag{GetDetailsForMovie(dataset)};
+  if (infoTag.IsEmpty())
+  {
+    CLog::LogF(LOGERROR, "Unable to fill movie item with id '{}'!", movieId);
+    return false;
+  }
+
+  item.SetFromVideoInfoTag(infoTag);
+
+  CVideoDbUrl itemUrl;
+  itemUrl.FromString(
+      StringUtils::Format("videodb://movies/videoversions/{}", infoTag.GetAssetInfo().GetId()));
+  itemUrl.AppendPath(std::to_string(movieId));
+  itemUrl.AddOption("mediaid", movieId);
+  item.SetPath(itemUrl.ToString());
+  item.SetDynPath(infoTag.m_strFileNameAndPath);
+  return true;
+}
+
+bool CVideoDatabase::GetAssetsForVideo(VideoDbContentType itemType,
+                                       int mediaId,
+                                       VideoAssetType assetType,
+                                       CFileItemList& items)
+{
+  if (assetType != VideoAssetType::VERSION)
+  {
+    //! @todo add bool return type to GetVideoVersions
+    GetVideoVersions(itemType, mediaId, items, assetType);
+    return true;
+  }
+
+  if (!m_pDB || !m_pDS)
+    return false;
+
+  MediaType mediaType;
+
+  if (itemType == VideoDbContentType::MOVIES)
+    mediaType = MediaTypeMovie;
+  else
+  {
+    CLog::LogF(LOGERROR, "Unsupported item type '{}'!", static_cast<int>(itemType));
+    return false;
+  }
+
+  try
+  {
+    m_pDS->query(
+        PrepareSQL("SELECT * FROM movie_view WHERE idMovie = %i AND videoVersionTypeItemType = %i",
+                   mediaId, assetType));
+
+    if (m_pDS->eof())
+    {
+      CLog::LogF(LOGERROR, "Query returned no data!");
+      return false;
+    }
+
+    while (!m_pDS->eof())
+    {
+      const auto item{std::make_shared<CFileItem>()};
+      if (FillMovieItem(m_pDS, mediaId, *item))
+        items.Add(item);
+
+      m_pDS->next();
+    }
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Execution failed for {} {}", mediaType, mediaId);
+    return false;
+  }
+  return true;
+}
+
+bool CVideoDatabase::GetDefaultVersionForVideo(VideoDbContentType itemType,
+                                               int mediaId,
+                                               CFileItem& item)
+{
+  if (!m_pDB || !m_pDS)
+    return false;
+
+  MediaType mediaType;
+
+  if (itemType == VideoDbContentType::MOVIES)
+    mediaType = MediaTypeMovie;
+  else
+  {
+    CLog::LogF(LOGERROR, "Unsupported item type '{}'!", static_cast<int>(itemType));
+    return false;
+  }
+
+  try
+  {
+    m_pDS->query(PrepareSQL("SELECT * FROM movie_view WHERE idMovie = %i AND "
+                            "videoVersionTypeItemType = %i AND isDefaultVersion = 1",
+                            mediaId, VideoAssetType::VERSION));
+    if (m_pDS->eof())
+    {
+      CLog::LogF(LOGERROR, "Query returned no data!");
+      return false;
+    }
+
+    if (!FillMovieItem(m_pDS, mediaId, item))
+      return false;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Execution failed for {} {}", mediaType, mediaId);
+    return false;
+  }
+  return true;
+}
+
 bool CVideoDatabase::ConvertVideoToVersion(VideoDbContentType itemType,
                                            int dbIdSource,
                                            int dbIdTarget,

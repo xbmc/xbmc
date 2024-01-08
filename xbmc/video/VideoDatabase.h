@@ -1058,6 +1058,11 @@ public:
                           int& idMedia,
                           MediaType& mediaType,
                           VideoAssetType& videoAssetType);
+  bool GetAssetsForVideo(VideoDbContentType itemType,
+                         int mediaId,
+                         VideoAssetType assetType,
+                         CFileItemList& items);
+  bool GetDefaultVersionForVideo(VideoDbContentType itemType, int mediaId, CFileItem& item);
 
   int GetMovieId(const std::string& strFilenameAndPath);
   std::string GetMovieTitle(int idMovie);
@@ -1233,4 +1238,6 @@ private:
   static void AnnounceUpdate(const std::string& content, int id);
 
   static CDateTime GetDateAdded(const std::string& filename, CDateTime dateAdded = CDateTime());
+
+  bool FillMovieItem(std::unique_ptr<dbiplus::Dataset>& dataset, int movieId, CFileItem& item);
 };
