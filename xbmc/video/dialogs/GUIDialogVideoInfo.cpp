@@ -84,6 +84,7 @@ using namespace KODI::MESSAGING;
 #define CONTROL_BTN_DIRECTOR        13
 #define CONTROL_BTN_MANAGE_VIDEO_VERSIONS 14
 #define CONTROL_BTN_MANAGE_VIDEO_EXTRAS 15
+#define CONTROL_BTN_USE_LOCAL_ART 16
 
 #define CONTROL_LIST                50
 
@@ -183,6 +184,18 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_BTN_GET_THUMB)
       {
         OnGetArt();
+      }
+      else if (iControl == CONTROL_BTN_USE_LOCAL_ART)
+      {
+        const ArtMap art = UpdateSetFromLocalArtwork(m_movieItem);
+        if (!art.empty())
+        {
+          m_movieItem->SetArt(art);
+          m_hasUpdatedThumb = true;
+
+          // Update our screen
+          Update();
+        }
       }
       else if (iControl == CONTROL_BTN_PLAY_TRAILER)
       {
@@ -299,6 +312,15 @@ void CGUIDialogVideoInfo::OnInitWindow()
         GetUniqueID().c_str(), "plugin"));
   else
     CONTROL_DISABLE(CONTROL_BTN_GET_FANART);
+
+  VIDEO::CVideoInfoScanner scanner;
+  if (type == VideoDbContentType::MOVIE_SETS &&
+      scanner.IsArtNeededAndLocalArtwork(*m_movieItem->GetVideoInfoTag()))
+    CONTROL_ENABLE_ON_CONDITION(
+        CONTROL_BTN_USE_LOCAL_ART,
+        (profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser));
+  else
+    CONTROL_DISABLE(CONTROL_BTN_USE_LOCAL_ART);
 
   Update();
 
@@ -1112,6 +1134,11 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
   // movie sets
   if (item->m_bIsFolder && type == MediaTypeVideoCollection)
   {
+    // see if any local art (if art blank)
+    VIDEO::CVideoInfoScanner scanner;
+    if (scanner.IsArtNeededAndLocalArtwork(*item->GetVideoInfoTag()))
+      buttons.Add(CONTEXT_BUTTON_MOVIESET_USE_LOCAL_ART, 20475);
+
     buttons.Add(CONTEXT_BUTTON_MOVIESET_ADD_REMOVE_ITEMS, 20465);
   }
 
@@ -1190,6 +1217,13 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
       case CONTEXT_BUTTON_SET_ART:
         result = ChooseAndManageVideoItemArtwork(item);
         break;
+
+      case CONTEXT_BUTTON_MOVIESET_USE_LOCAL_ART:
+      {
+        const ArtMap art = UpdateSetFromLocalArtwork(item);
+        result = !art.empty();
+        break;
+      }
 
       case CONTEXT_BUTTON_MOVIESET_ADD_REMOVE_ITEMS:
         result = ManageMovieSets(item);
@@ -1804,6 +1838,14 @@ bool CGUIDialogVideoInfo::RemoveItemsFromTag(const std::shared_ptr<CFileItem>& t
   }
 
   return true;
+}
+
+std::map<std::string, std::string> CGUIDialogVideoInfo::UpdateSetFromLocalArtwork(
+    const std::shared_ptr<CFileItem>& item)
+{
+  // directory exists in Movie Set Information Folder and artwork currently blank (otherwise menu option wouldn't be shown)
+  VIDEO::CVideoInfoScanner scanner;
+  return scanner.UpdateSetFromLocalArtwork(*item->GetVideoInfoTag());
 }
 
 bool CGUIDialogVideoInfo::ChooseAndManageVideoItemArtwork(const std::shared_ptr<CFileItem>& item)

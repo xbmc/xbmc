@@ -650,6 +650,12 @@
 						<param name="visible" value="Control.IsEnabled(10)" />
 					</include>
 					<include content="InfoDialogButton">
+						<param name="id" value="15" />
+						<param name="icon" value="icons/infodialogs/choose_image.png" />
+						<param name="label" value="$LOCALIZE[20475]" />
+						<param name="visible" value="Control.IsEnabled(15)" />
+					</include>
+					<include content="InfoDialogButton">
 						<param name="id" value="6" />
 						<param name="icon" value="icons/infodialogs/update.png" />
 						<param name="label" value="$LOCALIZE[184]" />

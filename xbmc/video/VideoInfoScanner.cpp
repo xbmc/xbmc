@@ -346,6 +346,21 @@ namespace VIDEO
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Rescanning dir '{}' due to change ({} != {})",
                   CURL::GetRedacted(strDirectory), dbHash, hash);
       }
+
+      // see if movie set artwork empty and could be updated locally
+      if (content == CONTENT_MOVIES && !hash.empty())
+      {
+        CVideoInfoTag movieDetails;
+        if (!items.IsEmpty() && m_database.GetMovieInfo(items[0]->GetPath(), movieDetails))
+        {
+          if (!movieDetails.m_set.title.empty())
+          {
+            CVideoInfoTag setDetails;
+            m_database.GetSetInfo(movieDetails.m_set.id, setDetails);
+            UpdateSetFromLocalArtwork(setDetails);
+          }
+        }
+      }
     }
     else if (content == CONTENT_TVSHOWS)
     {
@@ -435,6 +450,44 @@ namespace VIDEO
       }
     }
     return !m_bStop;
+  }
+
+  std::map<std::string, std::string> CVideoInfoScanner::UpdateSetFromLocalArtwork(
+      const CVideoInfoTag& setDetails)
+  {
+    CGUIListItem::ArtMap movieSetArt;
+    m_database.Open();
+    if (IsArtNeededAndLocalArtwork(setDetails))
+    {
+      // directory exists in Movie Set Information Folder and artwork currently blank
+      const std::string movieSetInfoPath = GetMovieSetInfoFolder(setDetails.m_strTitle);
+      const std::vector<std::string> movieSetArtTypes =
+          CVideoThumbLoader::GetArtTypes(MediaTypeVideoCollection);
+      AddLocalItemArtwork(movieSetArt, movieSetArtTypes, movieSetInfoPath, true, false);
+      m_database.SetArtForItem(setDetails.m_iDbId, MediaTypeVideoCollection, movieSetArt);
+    }
+    m_database.Close();
+    return movieSetArt;
+  }
+
+  bool CVideoInfoScanner::IsArtNeededAndLocalArtwork(const CVideoInfoTag& setDetails)
+  {
+    bool result = false;
+    if (!m_database.Open())
+      return result;
+    std::map<std::string, std::string> movieArt, setArt;
+    const bool isArt =
+        m_database.GetArtForItem(setDetails.m_iDbId, MediaTypeVideoCollection, setArt);
+    if (!isArt || !setArt.count("poster"))
+    {
+      // Movie set currently has no artwork poster (other art types do not seem to be used)
+      const std::string movieSetInfoPath = GetMovieSetInfoFolder(setDetails.m_strTitle);
+
+      // See if folder present
+      result = !movieSetInfoPath.empty();
+    }
+    m_database.Close();
+    return result;
   }
 
   bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, CONTENT_TYPE content, bool useLocal, CScraperUrl* pURL, bool fetchEpisodes, CGUIDialogProgress* pDlgProgress)
