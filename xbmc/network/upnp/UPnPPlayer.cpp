@@ -463,9 +463,11 @@ bool CUPnPPlayer::CloseFile(bool reopen)
     m_callback.OnPlayBackStopped();
   }
   StopThread(true);
+  CServiceBroker::GetDataCacheCore().Reset();
   return true;
 failed:
   m_logger->error("CloseFile - unable to stop playback");
+  CServiceBroker::GetDataCacheCore().Reset();
   return false;
 }
 

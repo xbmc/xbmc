@@ -118,7 +118,7 @@ bool CExternalPlayer::CloseFile(bool reopen)
     TerminateProcess(m_processInfo.hProcess, 1);
   }
 #endif
-
+  CServiceBroker::GetDataCacheCore().Reset();
   return true;
 }
 

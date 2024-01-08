@@ -140,22 +140,7 @@ void CRPProcessInfo::ResetInfo()
 {
   if (m_dataCache != nullptr)
   {
-    m_dataCache->SetVideoDecoderName("", false);
-    m_dataCache->SetVideoDeintMethod("");
-    m_dataCache->SetVideoPixelFormat("");
-    m_dataCache->SetVideoDimensions(0, 0);
-    m_dataCache->SetVideoFps(0.0f);
-    m_dataCache->SetVideoDAR(1.0f);
-    m_dataCache->SetAudioDecoderName("");
-    m_dataCache->SetAudioChannels("");
-    m_dataCache->SetAudioSampleRate(0);
-    m_dataCache->SetAudioBitsPerSample(0);
-    m_dataCache->SetRenderClockSync(false);
-    m_dataCache->SetStateSeeking(false);
-    m_dataCache->SetSpeed(1.0f, 1.0f);
-    m_dataCache->SetGuiRender(true); //! @todo
-    m_dataCache->SetVideoRender(false); //! @todo
-    m_dataCache->SetPlayTimes(0, 0, 0, 0);
+    m_dataCache->Reset();
   }
 }
 
