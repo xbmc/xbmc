@@ -60,7 +60,6 @@
 #include "video/Bookmark.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoTag.h"
-#include "video/guilib/VideoVersionHelper.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -4193,12 +4192,6 @@ CFileItem CFileItem::GetItemToPlay() const
         CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().GetChannelGroupMember(*this);
     if (groupMember)
       return CFileItem(groupMember);
-  }
-  else if (HasVideoInfoTag() && GetVideoInfoTag()->m_type == MediaTypeVideoVersion)
-  {
-    const auto movie{VIDEO::GUILIB::CVideoVersionHelper::GetMovieForVideoVersion(*this)};
-    if (movie)
-      return *movie;
   }
   return *this;
 }

@@ -21,7 +21,6 @@ class CVideoVersionHelper
 public:
   static std::shared_ptr<CFileItem> ChooseMovieFromVideoVersions(
       const std::shared_ptr<CFileItem>& item);
-  static std::shared_ptr<CFileItem> GetMovieForVideoVersion(const CFileItem& videoVersion);
 };
 } // namespace GUILIB
 } // namespace VIDEO
