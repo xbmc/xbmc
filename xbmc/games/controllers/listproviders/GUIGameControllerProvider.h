@@ -9,7 +9,7 @@
 #pragma once
 
 #include "games/controllers/ControllerTypes.h"
-#include "listproviders/IListProvider.h"
+#include "guilib/listproviders/IListProvider.h"
 
 #include <memory>
 #include <stdint.h>

@@ -27,7 +27,7 @@
 #include "guilib/GUISliderControl.h"
 #include "guilib/GUITextBox.h"
 #include "guilib/GUIWindowManager.h"
-#include "listproviders/StaticProvider.h"
+#include "guilib/listproviders/StaticProvider.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 
