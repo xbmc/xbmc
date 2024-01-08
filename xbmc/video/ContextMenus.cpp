@@ -409,15 +409,14 @@ bool CVideoPlay::Execute(const std::shared_ptr<CFileItem>& itemIn) const
   return true;
 };
 
-bool CVideoPlayUsing::IsVisible(const CFileItem& itemIn) const
+bool CVideoPlayUsing::IsVisible(const CFileItem& item) const
 {
-  if (itemIn.HasVideoVersions())
+  if (item.HasVideoVersions())
     return false; // display "Play version using..." if multiple versions are available.
 
-  if (itemIn.IsLiveTV())
+  if (item.IsLiveTV())
     return false;
 
-  const CFileItem item{itemIn.GetItemToPlay()};
   const CPlayerCoreFactory& playerCoreFactory{CServiceBroker::GetPlayerCoreFactory()};
   return (GetPlayers(playerCoreFactory, item).size() > 1) && VIDEO_UTILS::IsItemPlayable(item);
 }
