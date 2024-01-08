@@ -532,7 +532,8 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         // should be the video version, not the movie title.
         CGUIWindow* videoNav{
             CServiceBroker::GetGUI()->GetWindowManager().GetWindow(WINDOW_VIDEO_NAV)};
-        if (videoNav && videoNav->GetProperty("VideoVersionsFolderView").asBoolean())
+        if (videoNav && videoNav->GetProperty("VideoVersionsFolderView").asBoolean() &&
+            videoNav->IsActive())
         {
           value = tag->GetAssetInfo().GetTitle();
           return true;
