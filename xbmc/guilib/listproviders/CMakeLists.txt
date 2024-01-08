@@ -8,4 +8,4 @@ set(HEADERS DirectoryProvider.h
             MultiProvider.h
             StaticProvider.h)
 
-core_add_library(listproviders)
+core_add_library(guilib_listproviders)

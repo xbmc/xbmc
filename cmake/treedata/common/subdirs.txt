@@ -16,6 +16,7 @@ xbmc/dialogs                                    dialogs
 xbmc/favourites                                 favourites
 xbmc/guilib                                     guilib
 xbmc/guilib/guiinfo                             guilib_guiinfo
+xbmc/guilib/listproviders                       guilib_listproviders
 xbmc/imagefiles                                 imagefiles
 xbmc/input                                      input
 xbmc/input/actions                              input/actions
@@ -28,7 +29,6 @@ xbmc/input/keyboard                             input/keyboard
 xbmc/input/keyboard/generic                     input/keyboard/generic
 xbmc/input/mouse                                input/mouse
 xbmc/input/mouse/generic                        input/mouse/generic
-xbmc/listproviders                              listproviders
 xbmc/messaging                                  messaging
 xbmc/messaging/helpers                          messagingHelpers
 xbmc/pictures                                   pictures

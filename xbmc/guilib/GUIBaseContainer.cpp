@@ -15,7 +15,7 @@
 #include "ServiceBroker.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "input/Key.h"
-#include "listproviders/IListProvider.h"
+#include "guilib/listproviders/IListProvider.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/CharsetConverter.h"
