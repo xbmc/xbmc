@@ -748,8 +748,11 @@ namespace VIDEO
     }
     if (result == CInfoScanner::FULL_NFO)
     {
-      if (AddVideo(pItem, info2->Content(), bDirNames, true) < 0)
+      const int dbId = AddVideo(pItem, info2->Content(), bDirNames, true);
+      if (dbId < 0)
         return INFO_ERROR;
+      if (!m_ignoreVideoVersions && ProcessVideoVersion(VideoDbContentType::MOVIES, dbId))
+        return INFO_HAVE_ALREADY;
       return INFO_ADDED;
     }
     if (result == CInfoScanner::URL_NFO || result == CInfoScanner::COMBINED_NFO)
@@ -780,8 +783,11 @@ namespace VIDEO
                          : nullptr,
                      pDlgProgress))
       {
-        if (AddVideo(pItem, info2->Content(), bDirNames, useLocal) < 0)
+        const int dbId = AddVideo(pItem, info2->Content(), bDirNames, useLocal);
+        if (dbId < 0)
           return INFO_ERROR;
+        if (!m_ignoreVideoVersions && ProcessVideoVersion(VideoDbContentType::MOVIES, dbId))
+          return INFO_HAVE_ALREADY;
         return INFO_ADDED;
       }
     }
@@ -800,11 +806,10 @@ namespace VIDEO
                        : nullptr,
                    pDlgProgress))
     {
-      int dbId = AddVideo(pItem, info2->Content(), bDirNames, useLocal);
+      const int dbId = AddVideo(pItem, info2->Content(), bDirNames, useLocal);
       if (dbId < 0)
         return INFO_ERROR;
-      if (info2->Content() == CONTENT_MOVIES && !m_ignoreVideoVersions &&
-          ProcessVideoVersion(VideoDbContentType::MOVIES, dbId))
+      if (!m_ignoreVideoVersions && ProcessVideoVersion(VideoDbContentType::MOVIES, dbId))
         return INFO_HAVE_ALREADY;
       return INFO_ADDED;
     }
