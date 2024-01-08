@@ -907,6 +907,7 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
     const std::string& strLabel = g_localizeStrings.Get(showLabel);
     CFileItemPtr pItem(new CFileItem(strLabel));
     pItem->SetPath("add");
+    pItem->SetProperty("IsPlayable", false);
     pItem->SetArt("icon", "DefaultAddSource.png");
     pItem->SetLabel(strLabel);
     pItem->SetLabelPreformatted(true);

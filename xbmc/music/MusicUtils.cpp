@@ -930,10 +930,10 @@ bool IsItemPlayable(const CFileItem& item)
     return true;
   else if (item.m_bIsFolder)
   {
-    // Not a music-specific folder (just file:// or nfs://). Allow play if context is Music window.
-    if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_MUSIC_NAV &&
-        item.GetPath() != "add") // Exclude "Add music source" item
+    if (!item.HasProperty("IsPlayable") || item.GetProperty("IsPlayable").asBoolean())
+    {
       return true;
+    }
   }
   return false;
 }
