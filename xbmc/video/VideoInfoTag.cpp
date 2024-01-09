@@ -47,7 +47,7 @@ void CVideoInfoTag::Reset()
   m_assetInfo.Clear();
   m_hasVideoVersions = false;
   m_hasVideoExtras = false;
-  m_isDefaultVideoVersion = true;
+  m_isDefaultVideoVersion = false;
   m_strFile.clear();
   m_strPath.clear();
   m_strMPAARating.clear();
