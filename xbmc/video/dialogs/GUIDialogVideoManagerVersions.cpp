@@ -452,9 +452,7 @@ bool CGUIDialogVideoManagerVersions::ProcessVideoVersion(VideoDbContentType item
 
 bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
 {
-  const int dbId{m_videoAsset->GetVideoInfoTag()->m_iDbId};
   const MediaType mediaType{m_videoAsset->GetVideoInfoTag()->m_type};
-  const VideoDbContentType itemType{m_videoAsset->GetVideoContentType()};
 
   // prompt to choose a video file
   VECSOURCES sources{*CMediaSourceSettings::GetInstance().GetSources("files")};
@@ -468,48 +466,46 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
           sources, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
           g_localizeStrings.Get(40014), path))
   {
-    std::string typeVideoVersion;
-    std::string videoTitle;
-    int idFile{-1};
-    int idMedia{-1};
-    MediaType itemMediaType;
-    VideoAssetType videoAssetType{VideoAssetType::UNKNOWN};
+    const int dbId{m_videoAsset->GetVideoInfoTag()->m_iDbId};
+    const VideoDbContentType itemType{m_videoAsset->GetVideoContentType()};
 
-    const int idVideoVersion{m_database.GetVideoVersionInfo(path, idFile, typeVideoVersion, idMedia,
-                                                            itemMediaType, videoAssetType)};
+    const VideoAssetInfo newAsset{m_database.GetVideoVersionInfo(path)};
 
     // @todo look only for a version identified by idFile instead of retrieving all versions
-    if (idVideoVersion != -1)
+    if (newAsset.m_idFile != -1 && newAsset.m_assetTypeId != -1)
     {
       CFileItemList versions;
-      m_database.GetVideoVersions(itemType, dbId, versions, videoAssetType);
+      m_database.GetVideoVersions(itemType, dbId, versions, newAsset.m_assetType);
       if (std::any_of(versions.begin(), versions.end(),
-                      [idFile](const std::shared_ptr<CFileItem>& version)
-                      { return version->GetVideoInfoTag()->m_iDbId == idFile; }))
+                      [newAsset](const std::shared_ptr<CFileItem>& version)
+                      { return version->GetVideoInfoTag()->m_iDbId == newAsset.m_idFile; }))
       {
         CGUIDialogOK::ShowAndGetInput(
-            CVariant{40014}, StringUtils::Format(g_localizeStrings.Get(40016), typeVideoVersion));
+            CVariant{40014},
+            StringUtils::Format(g_localizeStrings.Get(40016), newAsset.m_assetTypeName));
         return false;
       }
 
-      if (itemMediaType == MediaTypeMovie)
+      std::string videoTitle;
+
+      if (newAsset.m_mediaType == MediaTypeMovie)
       {
-        videoTitle = m_database.GetMovieTitle(idMedia);
+        videoTitle = m_database.GetMovieTitle(newAsset.m_idMedia);
       }
       else
         return false;
 
       if (!CGUIDialogYesNo::ShowAndGetInput(
-              CVariant{40014},
-              StringUtils::Format(g_localizeStrings.Get(40017), typeVideoVersion, videoTitle)))
+              CVariant{40014}, StringUtils::Format(g_localizeStrings.Get(40017),
+                                                   newAsset.m_assetTypeName, videoTitle)))
       {
         return false;
       }
 
-      if (m_database.IsDefaultVideoVersion(idFile))
+      if (m_database.IsDefaultVideoVersion(newAsset.m_idFile))
       {
         CFileItemList list;
-        m_database.GetVideoVersions(itemType, idMedia, list, videoAssetType);
+        m_database.GetVideoVersions(itemType, newAsset.m_idMedia, list, newAsset.m_assetType);
 
         if (list.Size() > 1)
         {
@@ -518,16 +514,16 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
         }
         else
         {
-          if (itemMediaType == MediaTypeMovie)
+          if (newAsset.m_mediaType == MediaTypeMovie)
           {
-            m_database.DeleteMovie(idMedia);
+            m_database.DeleteMovie(newAsset.m_idMedia);
           }
           else
             return false;
         }
       }
       else
-        m_database.RemoveVideoVersion(idFile);
+        m_database.RemoveVideoVersion(newAsset.m_idFile);
     }
 
     CFileItem item{path, false};

@@ -100,47 +100,42 @@ void CGUIDialogVideoManagerExtras::AddVideoExtra()
           sources, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
           g_localizeStrings.Get(40015), path))
   {
-    std::string typeVideoVersion;
-    std::string videoTitle;
-    int idFile{-1};
-    int idMedia{-1};
-    MediaType itemMediaType;
-    VideoAssetType videoAssetType{VideoAssetType::UNKNOWN};
-
-    const int idVideoVersion{m_database.GetVideoVersionInfo(path, idFile, typeVideoVersion, idMedia,
-                                                            itemMediaType, videoAssetType)};
-
     const int dbId{m_videoAsset->GetVideoInfoTag()->m_iDbId};
     const VideoDbContentType itemType = m_videoAsset->GetVideoContentType();
 
-    if (idVideoVersion != -1)
+    const VideoAssetInfo newAsset{m_database.GetVideoVersionInfo(path)};
+
+    if (newAsset.m_idFile != -1 && newAsset.m_assetTypeId != -1)
     {
       CFileItemList versions;
-      m_database.GetVideoVersions(itemType, dbId, versions, videoAssetType);
+      m_database.GetVideoVersions(itemType, dbId, versions, newAsset.m_assetType);
       if (std::any_of(versions.begin(), versions.end(),
-                      [idFile](const std::shared_ptr<CFileItem>& version)
-                      { return version->GetVideoInfoTag()->m_iDbId == idFile; }))
+                      [newAsset](const std::shared_ptr<CFileItem>& version)
+                      { return version->GetVideoInfoTag()->m_iDbId == newAsset.m_idFile; }))
       {
         CGUIDialogOK::ShowAndGetInput(
-            CVariant{40015}, StringUtils::Format(g_localizeStrings.Get(40026), typeVideoVersion));
+            CVariant{40015},
+            StringUtils::Format(g_localizeStrings.Get(40026), newAsset.m_assetTypeName));
         return;
       }
 
-      if (itemMediaType == MediaTypeMovie)
+      std::string videoTitle;
+
+      if (newAsset.m_mediaType == MediaTypeMovie)
       {
-        videoTitle = m_database.GetMovieTitle(idMedia);
+        videoTitle = m_database.GetMovieTitle(newAsset.m_idMedia);
       }
       else
         return;
 
       if (!CGUIDialogYesNo::ShowAndGetInput(
-              CVariant{40014},
-              StringUtils::Format(g_localizeStrings.Get(40027), typeVideoVersion, videoTitle)))
+              CVariant{40014}, StringUtils::Format(g_localizeStrings.Get(40027),
+                                                   newAsset.m_assetTypeName, videoTitle)))
       {
         return;
       }
 
-      m_database.RemoveVideoVersion(idFile);
+      m_database.RemoveVideoVersion(newAsset.m_idFile);
     }
 
     CFileItem item{path, false};

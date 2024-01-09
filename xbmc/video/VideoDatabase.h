@@ -26,6 +26,8 @@ class CVideoSettings;
 class CGUIDialogProgress;
 class CGUIDialogProgressBarHandle;
 
+struct VideoAssetInfo;
+
 enum class VideoAssetTypeOwner;
 enum class VideoAssetType;
 
@@ -1047,17 +1049,7 @@ public:
                            CFileItemList& items,
                            VideoDbContentType idContent = VideoDbContentType::UNKNOWN,
                            const Filter& filter = Filter());
-  int GetVideoVersionInfo(const std::string& strFilenameAndPath,
-                          int& idFile,
-                          std::string& typeVideoVersion,
-                          int& idMedia,
-                          MediaType& mediaType,
-                          VideoAssetType& videoAssetType);
-  int GetVideoVersionInfo(int idFile,
-                          std::string& typeVideoVersion,
-                          int& idMedia,
-                          MediaType& mediaType,
-                          VideoAssetType& videoAssetType);
+  VideoAssetInfo GetVideoVersionInfo(const std::string& filenameAndPath);
   bool GetAssetsForVideo(VideoDbContentType itemType,
                          int mediaId,
                          VideoAssetType assetType,

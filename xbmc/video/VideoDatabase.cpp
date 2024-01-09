@@ -12420,30 +12420,16 @@ void CVideoDatabase::AddVideoVersion(VideoDbContentType itemType,
   }
 }
 
-int CVideoDatabase::GetVideoVersionInfo(const std::string& fileNameAndPath,
-                                        int& idFile,
-                                        std::string& typeVideoVersion,
-                                        int& idMedia,
-                                        MediaType& mediaType,
-                                        VideoAssetType& videoAssetType)
+VideoAssetInfo CVideoDatabase::GetVideoVersionInfo(const std::string& filenameAndPath)
 {
-  idFile = GetFileId(fileNameAndPath);
-  if (idFile < 0)
-    return -1;
+  VideoAssetInfo info;
 
-  return GetVideoVersionInfo(idFile, typeVideoVersion, idMedia, mediaType, videoAssetType);
-}
+  info.m_idFile = GetFileId(filenameAndPath);
+  if (info.m_idFile < 0)
+    return info;
 
-int CVideoDatabase::GetVideoVersionInfo(int idFile,
-                                        std::string& typeVideoVersion,
-                                        int& idMedia,
-                                        MediaType& mediaType,
-                                        VideoAssetType& videoAssetType)
-{
   if (!m_pDB || !m_pDS)
-    return -1;
-
-  int idVideoVersion = -1;
+    return info;
 
   try
   {
@@ -12456,25 +12442,25 @@ int CVideoDatabase::GetVideoVersionInfo(int idFile,
                             "  JOIN videoversiontype ON "
                             "    videoversiontype.id = videoversion.idType "
                             "WHERE videoversion.idFile = %i",
-                            idFile));
+                            info.m_idFile));
 
     if (m_pDS->num_rows() > 0)
     {
-      idVideoVersion = m_pDS->fv("id").get_asInt();
-      typeVideoVersion = m_pDS->fv("name").get_asString();
-      idMedia = m_pDS->fv("idMedia").get_asInt();
-      mediaType = m_pDS->fv("media_type").get_asString();
-      videoAssetType = static_cast<VideoAssetType>(m_pDS->fv("itemType").get_asInt());
+      info.m_assetTypeId = m_pDS->fv("id").get_asInt();
+      info.m_assetTypeName = m_pDS->fv("name").get_asString();
+      info.m_idMedia = m_pDS->fv("idMedia").get_asInt();
+      info.m_mediaType = m_pDS->fv("media_type").get_asString();
+      info.m_assetType = static_cast<VideoAssetType>(m_pDS->fv("itemType").get_asInt());
     }
 
     m_pDS->close();
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} failed for {}", __FUNCTION__, idFile);
+    CLog::LogF(LOGERROR, "failed for {}", filenameAndPath);
   }
 
-  return idVideoVersion;
+  return info;
 }
 
 bool CVideoDatabase::GetVideoVersionsNav(const std::string& strBaseDir,
