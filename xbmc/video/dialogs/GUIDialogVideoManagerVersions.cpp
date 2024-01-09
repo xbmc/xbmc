@@ -509,7 +509,8 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
 
         if (list.Size() > 1)
         {
-          CGUIDialogOK::ShowAndGetInput(CVariant{40014}, CVariant{40019});
+          // cannot add the default version of a movie with multiple versions as version of another movie
+          CGUIDialogOK::ShowAndGetInput(CVariant{40014}, CVariant{40033});
           return false;
         }
         else

@@ -23858,7 +23858,7 @@ msgctxt "#40018"
 msgid "Remove video version"
 msgstr ""
 
-#. Add new video version dialog text
+#. Manage versions, remove: removing the default version of a movie is not allowed.
 #: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
 msgctxt "#40019"
 msgid "The default version of a movie cannot be removed. Set a different default version and try again."
@@ -23938,7 +23938,13 @@ msgctxt "#40032"
 msgid "No similar movies were found in the library."
 msgstr ""
 
-#empty strings with id 40033 to 40199
+#. Addition of new version: a movie with multiple versions cannot be turned into a version of another movie.
+#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
+msgctxt "#40033"
+msgid "The default version of a movie with multiple versions cannot be added as a version to another movie. Please add its additional versions first."
+msgstr ""
+
+#empty strings with id 40034 to 40199
 
 #. Select default video version setting
 #: system/settings/settings.xml
