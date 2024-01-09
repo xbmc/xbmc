@@ -1,5 +1,7 @@
-set(SOURCES MouseInputHandling.cpp)
+set(SOURCES DefaultMouseHandling.cpp
+            MouseInputHandling.cpp)
 
-set(HEADERS MouseInputHandling.h)
+set(HEADERS DefaultMouseHandling.h
+            MouseInputHandling.h)
 
 core_add_library(input_mouse_generic)

@@ -1,0 +1,447 @@
+/*
+ *  Copyright (C) 2024 Team Kodi
+ *  This file is part of Kodi - https://kodi.tv
+ *
+ *  SPDX-License-Identifier: GPL-2.0-or-later
+ *  See LICENSES/README.md for more information.
+ */
+
+#include "DefaultKeyboardTranslator.h"
+
+using namespace KODI;
+using namespace GAME;
+
+namespace
+{
+constexpr auto DEFAULT_KEYBOARD_FEATURE_BACKSPACE = "backspace";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_TAB = "tab";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_CLEAR = "clear";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_ENTER = "enter";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_PAUSE = "pause";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_ESCAPE = "escape";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_SPACE = "space";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_EXCLAIM = "exclaim";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_DOUBLEQUOTE = "doublequote";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_HASH = "hash";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_DOLLAR = "dollar";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_AMPERSAND = "ampersand";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_QUOTE = "quote";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_LEFTPAREN = "leftparen";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_RIGHTPAREN = "rightparen";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_ASTERISK = "asterisk";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_PLUS = "plus";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_COMMA = "comma";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_MINUS = "minus";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_PERIOD = "period";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_SLASH = "slash";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_0 = "0";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_1 = "1";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_2 = "2";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_3 = "3";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_4 = "4";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_5 = "5";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_6 = "6";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_7 = "7";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_8 = "8";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_9 = "9";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_COLON = "colon";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_SEMICOLON = "semicolon";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_LESS = "less";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_EQUALS = "equals";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_GREATER = "greater";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_QUESTION = "question";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_AT = "at";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_LEFTBRACKET = "leftbracket";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_BACKSLASH = "backslash";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_RIGHTBRACKET = "rightbracket";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_CARET = "caret";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_UNDERSCORE = "underscore";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_GRAVE = "grave";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_A = "a";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_B = "b";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_C = "c";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_D = "d";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_E = "e";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_F = "f";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_G = "g";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_H = "h";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_I = "i";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_J = "j";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_K = "k";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_L = "l";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_M = "m";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_N = "n";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_O = "o";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_P = "p";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_Q = "q";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_R = "r";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_S = "s";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_T = "t";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_U = "u";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_V = "v";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_W = "w";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_X = "x";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_Y = "y";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_Z = "z";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_LEFTBRACE = "leftbrace";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_BAR = "bar";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_RIGHTBRACE = "rightbrace";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_TILDE = "tilde";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_DELETE = "delete";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_KP0 = "kp0";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_KP1 = "kp1";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_KP2 = "kp2";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_KP3 = "kp3";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_KP4 = "kp4";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_KP5 = "kp5";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_KP6 = "kp6";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_KP7 = "kp7";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_KP8 = "kp8";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_KP9 = "kp9";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_KPPERIOD = "kpperiod";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_KPDIVIDE = "kpdivide";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_KPMULTIPLY = "kpmultiply";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_KPMINUS = "kpminus";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_KPPLUS = "kpplus";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_KPENTER = "kpenter";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_KPEQUALS = "kpequals";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_UP = "up";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_DOWN = "down";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_RIGHT = "right";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_LEFT = "left";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_INSERT = "insert";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_HOME = "home";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_END = "end";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_PAGEUP = "pageup";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_PAGEDOWN = "pagedown";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_F1 = "f1";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_F2 = "f2";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_F3 = "f3";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_F4 = "f4";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_F5 = "f5";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_F6 = "f6";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_F7 = "f7";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_F8 = "f8";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_F9 = "f9";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_F10 = "f10";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_F11 = "f11";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_F12 = "f12";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_F13 = "f13";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_F14 = "f14";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_F15 = "f15";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_NUMLOCK = "numlock";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_CAPSLOCK = "capslock";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_SCROLLLOCK = "scrolllock";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_RIGHTSHIFT = "rightshift";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_LEFTSHIFT = "leftshift";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_RIGHTCTRL = "rightctrl";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_LEFTCTRL = "leftctrl";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_RIGHTALT = "rightalt";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_LEFTALT = "leftalt";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_RIGHTMETA = "rightmeta";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_LEFTMETA = "leftmeta";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_RIGHTSUPER = "rightsuper";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_LEFTSUPER = "leftsuper";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_MODE = "mode";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_COMPOSE = "compose";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_HELP = "help";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_PRINTSCREEN = "printscreen";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_SYSREQ = "sysreq";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_BREAK = "break";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_MENU = "menu";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_POWER = "power";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_EURO = "euro";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_UNDO = "undo";
+constexpr auto DEFAULT_KEYBOARD_FEATURE_OEM_102 = "oem102";
+} // namespace
+
+const char* CDefaultKeyboardTranslator::TranslateKeycode(KEYBOARD::XBMCKey keycode)
+{
+  switch (keycode)
+  {
+    case XBMCK_BACKSPACE:
+      return DEFAULT_KEYBOARD_FEATURE_BACKSPACE;
+    case XBMCK_TAB:
+      return DEFAULT_KEYBOARD_FEATURE_TAB;
+    case XBMCK_CLEAR:
+      return DEFAULT_KEYBOARD_FEATURE_CLEAR;
+    case XBMCK_RETURN:
+      return DEFAULT_KEYBOARD_FEATURE_ENTER;
+    case XBMCK_PAUSE:
+      return DEFAULT_KEYBOARD_FEATURE_PAUSE;
+    case XBMCK_ESCAPE:
+      return DEFAULT_KEYBOARD_FEATURE_ESCAPE;
+    case XBMCK_SPACE:
+      return DEFAULT_KEYBOARD_FEATURE_SPACE;
+    case XBMCK_EXCLAIM:
+      return DEFAULT_KEYBOARD_FEATURE_EXCLAIM;
+    case XBMCK_QUOTEDBL:
+      return DEFAULT_KEYBOARD_FEATURE_DOUBLEQUOTE;
+    case XBMCK_HASH:
+      return DEFAULT_KEYBOARD_FEATURE_HASH;
+    case XBMCK_DOLLAR:
+      return DEFAULT_KEYBOARD_FEATURE_DOLLAR;
+    case XBMCK_AMPERSAND:
+      return DEFAULT_KEYBOARD_FEATURE_AMPERSAND;
+    case XBMCK_QUOTE:
+      return DEFAULT_KEYBOARD_FEATURE_QUOTE;
+    case XBMCK_LEFTPAREN:
+      return DEFAULT_KEYBOARD_FEATURE_LEFTPAREN;
+    case XBMCK_RIGHTPAREN:
+      return DEFAULT_KEYBOARD_FEATURE_RIGHTPAREN;
+    case XBMCK_ASTERISK:
+      return DEFAULT_KEYBOARD_FEATURE_ASTERISK;
+    case XBMCK_PLUS:
+      return DEFAULT_KEYBOARD_FEATURE_PLUS;
+    case XBMCK_COMMA:
+      return DEFAULT_KEYBOARD_FEATURE_COMMA;
+    case XBMCK_MINUS:
+      return DEFAULT_KEYBOARD_FEATURE_MINUS;
+    case XBMCK_PERIOD:
+      return DEFAULT_KEYBOARD_FEATURE_PERIOD;
+    case XBMCK_SLASH:
+      return DEFAULT_KEYBOARD_FEATURE_SLASH;
+    case XBMCK_0:
+      return DEFAULT_KEYBOARD_FEATURE_0;
+    case XBMCK_1:
+      return DEFAULT_KEYBOARD_FEATURE_1;
+    case XBMCK_2:
+      return DEFAULT_KEYBOARD_FEATURE_2;
+    case XBMCK_3:
+      return DEFAULT_KEYBOARD_FEATURE_3;
+    case XBMCK_4:
+      return DEFAULT_KEYBOARD_FEATURE_4;
+    case XBMCK_5:
+      return DEFAULT_KEYBOARD_FEATURE_5;
+    case XBMCK_6:
+      return DEFAULT_KEYBOARD_FEATURE_6;
+    case XBMCK_7:
+      return DEFAULT_KEYBOARD_FEATURE_7;
+    case XBMCK_8:
+      return DEFAULT_KEYBOARD_FEATURE_8;
+    case XBMCK_9:
+      return DEFAULT_KEYBOARD_FEATURE_9;
+    case XBMCK_COLON:
+      return DEFAULT_KEYBOARD_FEATURE_COLON;
+    case XBMCK_SEMICOLON:
+      return DEFAULT_KEYBOARD_FEATURE_SEMICOLON;
+    case XBMCK_LESS:
+      return DEFAULT_KEYBOARD_FEATURE_LESS;
+    case XBMCK_EQUALS:
+      return DEFAULT_KEYBOARD_FEATURE_EQUALS;
+    case XBMCK_GREATER:
+      return DEFAULT_KEYBOARD_FEATURE_GREATER;
+    case XBMCK_QUESTION:
+      return DEFAULT_KEYBOARD_FEATURE_QUESTION;
+    case XBMCK_AT:
+      return DEFAULT_KEYBOARD_FEATURE_AT;
+    case XBMCK_LEFTBRACKET:
+      return DEFAULT_KEYBOARD_FEATURE_LEFTBRACKET;
+    case XBMCK_BACKSLASH:
+      return DEFAULT_KEYBOARD_FEATURE_BACKSLASH;
+    case XBMCK_RIGHTBRACKET:
+      return DEFAULT_KEYBOARD_FEATURE_RIGHTBRACKET;
+    case XBMCK_CARET:
+      return DEFAULT_KEYBOARD_FEATURE_CARET;
+    case XBMCK_UNDERSCORE:
+      return DEFAULT_KEYBOARD_FEATURE_UNDERSCORE;
+    case XBMCK_BACKQUOTE:
+      return DEFAULT_KEYBOARD_FEATURE_GRAVE;
+    case XBMCK_a:
+      return DEFAULT_KEYBOARD_FEATURE_A;
+    case XBMCK_b:
+      return DEFAULT_KEYBOARD_FEATURE_B;
+    case XBMCK_c:
+      return DEFAULT_KEYBOARD_FEATURE_C;
+    case XBMCK_d:
+      return DEFAULT_KEYBOARD_FEATURE_D;
+    case XBMCK_e:
+      return DEFAULT_KEYBOARD_FEATURE_E;
+    case XBMCK_f:
+      return DEFAULT_KEYBOARD_FEATURE_F;
+    case XBMCK_g:
+      return DEFAULT_KEYBOARD_FEATURE_G;
+    case XBMCK_h:
+      return DEFAULT_KEYBOARD_FEATURE_H;
+    case XBMCK_i:
+      return DEFAULT_KEYBOARD_FEATURE_I;
+    case XBMCK_j:
+      return DEFAULT_KEYBOARD_FEATURE_J;
+    case XBMCK_k:
+      return DEFAULT_KEYBOARD_FEATURE_K;
+    case XBMCK_l:
+      return DEFAULT_KEYBOARD_FEATURE_L;
+    case XBMCK_m:
+      return DEFAULT_KEYBOARD_FEATURE_M;
+    case XBMCK_n:
+      return DEFAULT_KEYBOARD_FEATURE_N;
+    case XBMCK_o:
+      return DEFAULT_KEYBOARD_FEATURE_O;
+    case XBMCK_p:
+      return DEFAULT_KEYBOARD_FEATURE_P;
+    case XBMCK_q:
+      return DEFAULT_KEYBOARD_FEATURE_Q;
+    case XBMCK_r:
+      return DEFAULT_KEYBOARD_FEATURE_R;
+    case XBMCK_s:
+      return DEFAULT_KEYBOARD_FEATURE_S;
+    case XBMCK_t:
+      return DEFAULT_KEYBOARD_FEATURE_T;
+    case XBMCK_u:
+      return DEFAULT_KEYBOARD_FEATURE_U;
+    case XBMCK_v:
+      return DEFAULT_KEYBOARD_FEATURE_V;
+    case XBMCK_w:
+      return DEFAULT_KEYBOARD_FEATURE_W;
+    case XBMCK_x:
+      return DEFAULT_KEYBOARD_FEATURE_X;
+    case XBMCK_y:
+      return DEFAULT_KEYBOARD_FEATURE_Y;
+    case XBMCK_z:
+      return DEFAULT_KEYBOARD_FEATURE_Z;
+    case XBMCK_LEFTBRACE:
+      return DEFAULT_KEYBOARD_FEATURE_LEFTBRACE;
+    case XBMCK_PIPE:
+      return DEFAULT_KEYBOARD_FEATURE_BAR;
+    case XBMCK_RIGHTBRACE:
+      return DEFAULT_KEYBOARD_FEATURE_RIGHTBRACE;
+    case XBMCK_TILDE:
+      return DEFAULT_KEYBOARD_FEATURE_TILDE;
+    case XBMCK_DELETE:
+      return DEFAULT_KEYBOARD_FEATURE_DELETE;
+    case XBMCK_KP0:
+      return DEFAULT_KEYBOARD_FEATURE_KP0;
+    case XBMCK_KP1:
+      return DEFAULT_KEYBOARD_FEATURE_KP1;
+    case XBMCK_KP2:
+      return DEFAULT_KEYBOARD_FEATURE_KP2;
+    case XBMCK_KP3:
+      return DEFAULT_KEYBOARD_FEATURE_KP3;
+    case XBMCK_KP4:
+      return DEFAULT_KEYBOARD_FEATURE_KP4;
+    case XBMCK_KP5:
+      return DEFAULT_KEYBOARD_FEATURE_KP5;
+    case XBMCK_KP6:
+      return DEFAULT_KEYBOARD_FEATURE_KP6;
+    case XBMCK_KP7:
+      return DEFAULT_KEYBOARD_FEATURE_KP7;
+    case XBMCK_KP8:
+      return DEFAULT_KEYBOARD_FEATURE_KP8;
+    case XBMCK_KP9:
+      return DEFAULT_KEYBOARD_FEATURE_KP9;
+    case XBMCK_KP_PERIOD:
+      return DEFAULT_KEYBOARD_FEATURE_KPPERIOD;
+    case XBMCK_KP_DIVIDE:
+      return DEFAULT_KEYBOARD_FEATURE_KPDIVIDE;
+    case XBMCK_KP_MULTIPLY:
+      return DEFAULT_KEYBOARD_FEATURE_KPMULTIPLY;
+    case XBMCK_KP_MINUS:
+      return DEFAULT_KEYBOARD_FEATURE_KPMINUS;
+    case XBMCK_KP_PLUS:
+      return DEFAULT_KEYBOARD_FEATURE_KPPLUS;
+    case XBMCK_KP_ENTER:
+      return DEFAULT_KEYBOARD_FEATURE_KPENTER;
+    case XBMCK_KP_EQUALS:
+      return DEFAULT_KEYBOARD_FEATURE_KPEQUALS;
+    case XBMCK_UP:
+      return DEFAULT_KEYBOARD_FEATURE_UP;
+    case XBMCK_DOWN:
+      return DEFAULT_KEYBOARD_FEATURE_DOWN;
+    case XBMCK_RIGHT:
+      return DEFAULT_KEYBOARD_FEATURE_RIGHT;
+    case XBMCK_LEFT:
+      return DEFAULT_KEYBOARD_FEATURE_LEFT;
+    case XBMCK_INSERT:
+      return DEFAULT_KEYBOARD_FEATURE_INSERT;
+    case XBMCK_HOME:
+      return DEFAULT_KEYBOARD_FEATURE_HOME;
+    case XBMCK_END:
+      return DEFAULT_KEYBOARD_FEATURE_END;
+    case XBMCK_PAGEUP:
+      return DEFAULT_KEYBOARD_FEATURE_PAGEUP;
+    case XBMCK_PAGEDOWN:
+      return DEFAULT_KEYBOARD_FEATURE_PAGEDOWN;
+    case XBMCK_F1:
+      return DEFAULT_KEYBOARD_FEATURE_F1;
+    case XBMCK_F2:
+      return DEFAULT_KEYBOARD_FEATURE_F2;
+    case XBMCK_F3:
+      return DEFAULT_KEYBOARD_FEATURE_F3;
+    case XBMCK_F4:
+      return DEFAULT_KEYBOARD_FEATURE_F4;
+    case XBMCK_F5:
+      return DEFAULT_KEYBOARD_FEATURE_F5;
+    case XBMCK_F6:
+      return DEFAULT_KEYBOARD_FEATURE_F6;
+    case XBMCK_F7:
+      return DEFAULT_KEYBOARD_FEATURE_F7;
+    case XBMCK_F8:
+      return DEFAULT_KEYBOARD_FEATURE_F8;
+    case XBMCK_F9:
+      return DEFAULT_KEYBOARD_FEATURE_F9;
+    case XBMCK_F10:
+      return DEFAULT_KEYBOARD_FEATURE_F10;
+    case XBMCK_F11:
+      return DEFAULT_KEYBOARD_FEATURE_F11;
+    case XBMCK_F12:
+      return DEFAULT_KEYBOARD_FEATURE_F12;
+    case XBMCK_F13:
+      return DEFAULT_KEYBOARD_FEATURE_F13;
+    case XBMCK_F14:
+      return DEFAULT_KEYBOARD_FEATURE_F14;
+    case XBMCK_F15:
+      return DEFAULT_KEYBOARD_FEATURE_F15;
+    case XBMCK_NUMLOCK:
+      return DEFAULT_KEYBOARD_FEATURE_NUMLOCK;
+    case XBMCK_CAPSLOCK:
+      return DEFAULT_KEYBOARD_FEATURE_CAPSLOCK;
+    case XBMCK_SCROLLOCK:
+      return DEFAULT_KEYBOARD_FEATURE_SCROLLLOCK;
+    case XBMCK_RSHIFT:
+      return DEFAULT_KEYBOARD_FEATURE_RIGHTSHIFT;
+    case XBMCK_LSHIFT:
+      return DEFAULT_KEYBOARD_FEATURE_LEFTSHIFT;
+    case XBMCK_RCTRL:
+      return DEFAULT_KEYBOARD_FEATURE_RIGHTCTRL;
+    case XBMCK_LCTRL:
+      return DEFAULT_KEYBOARD_FEATURE_LEFTCTRL;
+    case XBMCK_RALT:
+      return DEFAULT_KEYBOARD_FEATURE_RIGHTALT;
+    case XBMCK_LALT:
+      return DEFAULT_KEYBOARD_FEATURE_LEFTALT;
+    case XBMCK_RMETA:
+      return DEFAULT_KEYBOARD_FEATURE_RIGHTMETA;
+    case XBMCK_LMETA:
+      return DEFAULT_KEYBOARD_FEATURE_LEFTMETA;
+    case XBMCK_RSUPER:
+      return DEFAULT_KEYBOARD_FEATURE_RIGHTSUPER;
+    case XBMCK_LSUPER:
+      return DEFAULT_KEYBOARD_FEATURE_LEFTSUPER;
+    case XBMCK_MODE:
+      return DEFAULT_KEYBOARD_FEATURE_MODE;
+    case XBMCK_COMPOSE:
+      return DEFAULT_KEYBOARD_FEATURE_COMPOSE;
+    case XBMCK_HELP:
+      return DEFAULT_KEYBOARD_FEATURE_HELP;
+    case XBMCK_PRINT:
+      return DEFAULT_KEYBOARD_FEATURE_PRINTSCREEN;
+    case XBMCK_SYSREQ:
+      return DEFAULT_KEYBOARD_FEATURE_SYSREQ;
+    case XBMCK_BREAK:
+      return DEFAULT_KEYBOARD_FEATURE_BREAK;
+    case XBMCK_MENU:
+      return DEFAULT_KEYBOARD_FEATURE_MENU;
+    case XBMCK_POWER:
+      return DEFAULT_KEYBOARD_FEATURE_POWER;
+    case XBMCK_EURO:
+      return DEFAULT_KEYBOARD_FEATURE_EURO;
+    case XBMCK_UNDO:
+      return DEFAULT_KEYBOARD_FEATURE_UNDO;
+    case XBMCK_OEM_102:
+      return DEFAULT_KEYBOARD_FEATURE_OEM_102;
+    default:
+      break;
+  }
+
+  return "";
+}
