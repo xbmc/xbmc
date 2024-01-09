@@ -12332,11 +12332,11 @@ int CVideoDatabase::GetVideoVersionInfo(int idFile,
 
   try
   {
-    m_pDS->query(PrepareSQL("SELECT videoversiontype.name AS name,"
-                            "  videoversiontype.id AS id,"
-                            "  videoversion.idMedia AS idMedia,"
-                            "  videoversion.media_type AS mediaType,"
-                            "  videoversion.itemType AS itemType "
+    m_pDS->query(PrepareSQL("SELECT videoversiontype.name,"
+                            "  videoversiontype.id,"
+                            "  videoversion.idMedia,"
+                            "  videoversion.media_type,"
+                            "  videoversion.itemType "
                             "FROM videoversion"
                             "  JOIN videoversiontype ON "
                             "    videoversiontype.id = videoversion.idType "
