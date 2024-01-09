@@ -84,7 +84,7 @@ void CGUIDialogVideoManagerExtras::SetVideoAsset(const std::shared_ptr<CFileItem
     SetSelectedVideoAsset(m_videoAssetsList->Get(0));
 }
 
-void CGUIDialogVideoManagerExtras::AddVideoExtra()
+bool CGUIDialogVideoManagerExtras::AddVideoExtra()
 {
   const MediaType mediaType{m_videoAsset->GetVideoInfoTag()->m_type};
 
@@ -116,7 +116,7 @@ void CGUIDialogVideoManagerExtras::AddVideoExtra()
         CGUIDialogOK::ShowAndGetInput(
             CVariant{40015},
             StringUtils::Format(g_localizeStrings.Get(40026), newAsset.m_assetTypeName));
-        return;
+        return false;
       }
 
       std::string videoTitle;
@@ -126,13 +126,13 @@ void CGUIDialogVideoManagerExtras::AddVideoExtra()
         videoTitle = m_database.GetMovieTitle(newAsset.m_idMedia);
       }
       else
-        return;
+        return false;
 
       if (!CGUIDialogYesNo::ShowAndGetInput(
               CVariant{40014}, StringUtils::Format(g_localizeStrings.Get(40027),
                                                    newAsset.m_assetTypeName, videoTitle)))
       {
-        return;
+        return false;
       }
 
       m_database.RemoveVideoVersion(newAsset.m_idFile);
@@ -154,12 +154,18 @@ void CGUIDialogVideoManagerExtras::AddVideoExtra()
     const int idNewVideoVersion{m_database.AddVideoVersionType(
         typeNewVideoVersion, VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRA)};
 
+    if (idNewVideoVersion == -1)
+      return false;
+
     m_database.AddExtrasVideoVersion(itemType, dbId, idNewVideoVersion, item);
 
     // refresh data and controls
     Refresh();
     UpdateControls();
+
+    return true;
   }
+  return false;
 }
 
 void CGUIDialogVideoManagerExtras::ManageVideoExtras(const std::shared_ptr<CFileItem>& item)
