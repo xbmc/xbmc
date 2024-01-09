@@ -135,7 +135,9 @@ bool CGUIDialogVideoManagerExtras::AddVideoExtra()
         return false;
       }
 
-      m_database.RemoveVideoVersion(newAsset.m_idFile);
+      // @todo: should be in a database transaction with the addition as a new version below
+      if (!m_database.RemoveVideoVersion(newAsset.m_idFile))
+        return false;
     }
 
     CFileItem item{path, false};

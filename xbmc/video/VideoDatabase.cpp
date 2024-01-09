@@ -12319,13 +12319,13 @@ bool CVideoDatabase::IsDefaultVideoVersion(int idFile)
   return false;
 }
 
-void CVideoDatabase::RemoveVideoVersion(int dbId)
+bool CVideoDatabase::RemoveVideoVersion(int dbId)
 {
   if (!m_pDB || !m_pDS)
-    return;
+    return false;
 
   if (IsDefaultVideoVersion(dbId))
-    return;
+    return false;
 
   try
   {
@@ -12336,11 +12336,14 @@ void CVideoDatabase::RemoveVideoVersion(int dbId)
       InvalidatePathHash(path);
 
     m_pDS->exec(PrepareSQL("DELETE FROM videoversion WHERE idFile = %i", dbId));
+
+    return true;
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "{} failed for {}", __FUNCTION__, dbId);
   }
+  return false;
 }
 
 void CVideoDatabase::SetVideoVersion(int idFile, int idVideoVersion)

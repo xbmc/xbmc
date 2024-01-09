@@ -516,6 +516,7 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
         {
           if (newAsset.m_mediaType == MediaTypeMovie)
           {
+            // @todo: should be in a database transaction with the addition as a new version below
             m_database.DeleteMovie(newAsset.m_idMedia);
           }
           else
@@ -523,7 +524,11 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
         }
       }
       else
-        m_database.RemoveVideoVersion(newAsset.m_idFile);
+      {
+        // @todo: should be in a database transaction with the addition as a new version below
+        if (!m_database.RemoveVideoVersion(newAsset.m_idFile))
+          return false;
+      }
     }
 
     CFileItem item{path, false};
