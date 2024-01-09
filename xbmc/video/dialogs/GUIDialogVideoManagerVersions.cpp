@@ -500,6 +500,14 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
 
       // The video is an asset of another movie
 
+      // The video is an extra, ask for confirmation
+      if (newAsset.m_assetType == VideoAssetType::EXTRA &&
+          !CGUIDialogYesNo::ShowAndGetInput(CVariant{40014},
+                                            StringUtils::Format(g_localizeStrings.Get(40035))))
+      {
+        return false;
+      }
+
       std::string videoTitle;
       if (newAsset.m_mediaType == MediaTypeMovie)
       {

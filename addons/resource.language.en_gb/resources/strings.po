@@ -23950,7 +23950,19 @@ msgctxt "#40034"
 msgid "The default version of a movie with multiple versions cannot be added as an extra to another movie. Please move or remove the other versions first."
 msgstr ""
 
-#empty strings with id 40035 to 40199
+#. Addition of new version: the user picked an extra of another movie. Ask for confirmation.
+#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
+msgctxt "#40035"
+msgid "You are about to convert a movie extra into a movie version. Are you sure?"
+msgstr ""
+
+#. Addition of new version: the user picked an extra of another movie. Ask for confirmation.
+#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
+msgctxt "#40036"
+msgid "You are about to convert a movie version into a movie extra. Are you sure?"
+msgstr ""
+
+#empty strings with id 40037 to 40199
 
 #. Select default video version setting
 #: system/settings/settings.xml
