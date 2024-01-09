@@ -86,6 +86,8 @@ void CGUIDialogVideoManagerExtras::SetVideoAsset(const std::shared_ptr<CFileItem
 
 bool CGUIDialogVideoManagerExtras::AddVideoExtra()
 {
+  // @todo: combine with versions add file logic, structured similarly and sharing most logic.
+
   const MediaType mediaType{m_videoAsset->GetVideoInfoTag()->m_type};
 
   // prompt to choose a video file
@@ -107,20 +109,31 @@ bool CGUIDialogVideoManagerExtras::AddVideoExtra()
 
     if (newAsset.m_idFile != -1 && newAsset.m_assetTypeId != -1)
     {
-      CFileItemList versions;
-      m_database.GetVideoVersions(itemType, dbId, versions, newAsset.m_assetType);
-      if (std::any_of(versions.begin(), versions.end(),
-                      [newAsset](const std::shared_ptr<CFileItem>& version)
-                      { return version->GetVideoInfoTag()->m_iDbId == newAsset.m_idFile; }))
+      // The video already is an asset of the movie
+      if (newAsset.m_idMedia == dbId &&
+          newAsset.m_mediaType == m_videoAsset->GetVideoInfoTag()->m_type)
       {
+        unsigned int msgid{};
+
+        if (newAsset.m_assetType == VideoAssetType::VERSION)
+          msgid = 40016; // video is a version of the movie
+        else if (newAsset.m_assetType == VideoAssetType::EXTRA)
+          msgid = 40026; // video is an extra of the movie
+        else
+        {
+          CLog::LogF(LOGERROR, "unexpected asset type {}", static_cast<int>(newAsset.m_assetType));
+          return false;
+        }
+
         CGUIDialogOK::ShowAndGetInput(
             CVariant{40015},
-            StringUtils::Format(g_localizeStrings.Get(40026), newAsset.m_assetTypeName));
+            StringUtils::Format(g_localizeStrings.Get(msgid), newAsset.m_assetTypeName));
         return false;
       }
 
-      std::string videoTitle;
+      // The video is an asset of another movie
 
+      std::string videoTitle;
       if (newAsset.m_mediaType == MediaTypeMovie)
       {
         videoTitle = m_database.GetMovieTitle(newAsset.m_idMedia);
@@ -128,16 +141,57 @@ bool CGUIDialogVideoManagerExtras::AddVideoExtra()
       else
         return false;
 
-      if (!CGUIDialogYesNo::ShowAndGetInput(
-              CVariant{40014}, StringUtils::Format(g_localizeStrings.Get(40027),
-                                                   newAsset.m_assetTypeName, videoTitle)))
       {
-        return false;
+        unsigned int msgid{};
+
+        if (newAsset.m_assetType == VideoAssetType::VERSION)
+          msgid = 40017; // video is a version of another movie
+        else if (newAsset.m_assetType == VideoAssetType::EXTRA)
+          msgid = 40027; // video is an extra of another movie
+        else
+        {
+          CLog::LogF(LOGERROR, "unexpected asset type {}", static_cast<int>(newAsset.m_assetType));
+          return false;
+        }
+
+        if (!CGUIDialogYesNo::ShowAndGetInput(
+                CVariant{40015}, StringUtils::Format(g_localizeStrings.Get(msgid),
+                                                     newAsset.m_assetTypeName, videoTitle)))
+        {
+          return false;
+        }
       }
 
-      // @todo: should be in a database transaction with the addition as a new version below
-      if (!m_database.RemoveVideoVersion(newAsset.m_idFile))
-        return false;
+      // Additional constraints for the converion of a movie version
+      if (newAsset.m_assetType == VideoAssetType::VERSION &&
+          m_database.IsDefaultVideoVersion(newAsset.m_idFile))
+      {
+        CFileItemList list;
+        m_database.GetVideoVersions(itemType, newAsset.m_idMedia, list, newAsset.m_assetType);
+
+        if (list.Size() > 1)
+        {
+          // cannot add the default version of a movie with multiple versions to another movie
+          CGUIDialogOK::ShowAndGetInput(CVariant{40015}, CVariant{40034});
+          return false;
+        }
+        else
+        {
+          if (newAsset.m_mediaType == MediaTypeMovie)
+          {
+            // @todo: should be in a database transaction with the addition as a new asset below
+            m_database.DeleteMovie(newAsset.m_idMedia);
+          }
+          else
+            return false;
+        }
+      }
+      else
+      {
+        // @todo: should be in a database transaction with the addition as a new asset below
+        if (!m_database.RemoveVideoVersion(newAsset.m_idFile))
+          return false;
+      }
     }
 
     CFileItem item{path, false};
