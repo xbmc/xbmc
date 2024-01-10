@@ -1664,8 +1664,6 @@ void CLinuxRendererGL::RenderRGB(int index, int field)
 
 bool CLinuxRendererGL::RenderCapture(int index, CRenderCapture* capture)
 {
-  m_iYV12RenderBuffer = index;
-  
   if (!m_bValidated)
     return false;
 
@@ -1690,7 +1688,7 @@ bool CLinuxRendererGL::RenderCapture(int index, CRenderCapture* capture)
 
   capture->BeginRender();
 
-  Render(RENDER_FLAG_NOOSD, m_iYV12RenderBuffer);
+  Render(RENDER_FLAG_NOOSD, index);
   // read pixels
   glReadPixels(0, CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight() - capture->GetHeight(), capture->GetWidth(), capture->GetHeight(),
                GL_BGRA, GL_UNSIGNED_BYTE, capture->GetRenderBuffer());
