@@ -1271,11 +1271,18 @@ void CXBMCApp::SetSystemVolume(float percent)
 
 void CXBMCApp::onReceive(CJNIIntent intent)
 {
-  if (!g_application.IsInitialized())
-    return;
-
   std::string action = intent.getAction();
-  CLog::Log(LOGDEBUG, "CXBMCApp::onReceive - Got intent. Action: {}", action);
+  android_printf("CXBMCApp::onReceive - Got intent. Action: %s", action.c_str());
+
+  // Most actions can be processed only after the app is fully initialized,
+  // but some actions should be processed even during initilization phase.
+  if (!g_application.IsInitialized() && action != CJNIAudioManager::ACTION_HDMI_AUDIO_PLUG)
+  {
+    android_printf("CXBMCApp::onReceive - ignoring action %s during app initialization phase",
+                   action.c_str());
+    return;
+  }
+
   if (action == CJNIIntent::ACTION_BATTERY_CHANGED)
     m_batteryLevel = intent.getIntExtra("level", -1);
   else if (action == CJNIIntent::ACTION_DREAMING_STOPPED)
@@ -1326,7 +1333,7 @@ void CXBMCApp::onReceive(CJNIIntent intent)
   else if (action == CJNIAudioManager::ACTION_HDMI_AUDIO_PLUG)
   {
     const bool hdmiPlugged = (intent.getIntExtra(CJNIAudioManager::EXTRA_AUDIO_PLUG_STATE, 0) != 0);
-    CLog::Log(LOGDEBUG, "-- HDMI is plugged in: {}", hdmiPlugged);
+    android_printf("-- HDMI is plugged in: %s", hdmiPlugged ? "yes" : "no");
     if (m_hdmiSource && g_application.IsInitialized())
     {
       CWinSystemBase* winSystem = CServiceBroker::GetWinSystem();
@@ -1335,7 +1342,7 @@ void CXBMCApp::onReceive(CJNIIntent intent)
     }
     if (hdmiPlugged && m_wakeUp)
     {
-      CLog::Log(LOGDEBUG, "CXBMCApp::{}: Reset audio engine", __FUNCTION__);
+      android_printf("CXBMCApp::onReceive: Reset audio engine");
       CServiceBroker::GetActiveAE()->DeviceChange();
       m_wakeUp = false;
     }
@@ -1748,6 +1755,10 @@ void CXBMCApp::onDisplayAdded(int displayId)
 void CXBMCApp::onDisplayChanged(int displayId)
 {
   CLog::Log(LOGDEBUG, "CXBMCApp::{}: id: {}", __FUNCTION__, displayId);
+
+  if (!g_application.IsInitialized())
+    // Display mode has beed changed during app startup; we want to reset audio engine on next ACTION_HDMI_AUDIO_PLUG event
+    m_wakeUp = true;
 
   // Update display modes
   CWinSystemAndroid* winSystemAndroid = dynamic_cast<CWinSystemAndroid*>(CServiceBroker::GetWinSystem());
