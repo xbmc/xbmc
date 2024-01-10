@@ -12226,6 +12226,8 @@ bool CVideoDatabase::ConvertVideoToVersion(VideoDbContentType itemType,
                                            int idVideoVersion)
 {
   int idFile = -1;
+  MediaType mediaType;
+  VideoContentTypeToString(itemType, mediaType);
 
   if (itemType == VideoDbContentType::MOVIES)
   {
@@ -12241,24 +12243,22 @@ bool CVideoDatabase::ConvertVideoToVersion(VideoDbContentType itemType,
 
   if (dbIdSource != dbIdTarget)
   {
-    // First transfer the extras to the new movie.
-    // A movie with versions cannot be transformed into a version of another movie so there is no
-    // problem with moving all extras to the new movie. With the the current data model it's not
-    // possible to tell which extras initially belonged to which version.
+    // Transfer all assets (versions, extras,...) to the new movie.
     ExecuteQuery(
-        PrepareSQL("UPDATE videoversion SET idMedia = %i WHERE idMedia = %i AND itemType = %i",
-                   dbIdTarget, dbIdSource, VideoAssetType::EXTRA));
+        PrepareSQL("UPDATE videoversion SET idMedia = %i WHERE idMedia = %i AND media_type = '%s'",
+                   dbIdTarget, dbIdSource, mediaType.c_str()));
 
-    ExecuteQuery(PrepareSQL("UPDATE videoversion SET idMedia = %i, idType = %i WHERE idFile = %i",
-                            dbIdTarget, idVideoVersion, idFile));
-
+    // version-level art doesn't need any change.
+    // 'movie' art is converted to 'videoversion' art.
     SetVideoVersionDefaultArt(idFile, dbIdSource, itemType);
 
-    DeleteMovie(dbIdSource);
+    if (itemType == VideoDbContentType::MOVIES)
+      DeleteMovie(dbIdSource);
   }
-  else
-    ExecuteQuery(PrepareSQL("UPDATE videoversion SET idType = %i WHERE idFile = %i", idVideoVersion,
-                            idFile));
+
+  // Rename the default version
+  ExecuteQuery(
+      PrepareSQL("UPDATE videoversion SET idType = %i WHERE idFile = %i", idVideoVersion, idFile));
 
   CommitTransaction();
 

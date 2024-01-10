@@ -353,6 +353,16 @@ bool CGUIDialogVideoManagerVersions::ChooseVideoAndConvertToVideoVersion(
   if (!selectedItem)
     return false;
 
+  CFileItemList list;
+  videoDb.GetVideoVersions(itemType, selectedItem->GetVideoInfoTag()->m_iDbId, list,
+                           VideoAssetType::VERSION);
+
+  // ask confirmation for the addition of a movie with multiple versions to another movie
+  if (list.Size() > 1 && !CGUIDialogYesNo::ShowAndGetInput(CVariant{40014}, CVariant{40037}))
+  {
+    return false;
+  }
+
   // choose a video version for the video
   const int idVideoVersion{ChooseVideoAsset(selectedItem, VideoAssetType::VERSION)};
   if (idVideoVersion < 0)
