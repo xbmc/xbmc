@@ -2071,7 +2071,7 @@ msgid "Remove movie from library"
 msgstr ""
 
 msgctxt "#433"
-msgid "Would you really like to remove '{0:s}' from library?"
+msgid "Would you really like to remove '{0:s}' from the library?"
 msgstr ""
 
 #. From <wind dir.> at <speed> <unit>
@@ -23870,7 +23870,12 @@ msgctxt "#40020"
 msgid "Are you sure to remove version \"{0:s}\"?"
 msgstr ""
 
-#empty string with id 40021
+#. Remove item from library text if item has multiple versions
+#: xbmc/video/windows/GUIWindowVideoNav.cpp
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
+msgctxt "#40021"
+msgid "Would you really like to remove '{0:s}' and all its versions from the library?"
+msgstr ""
 
 #. Manage video version dialog title
 #: xbmc/video/dialogs/GUIDialogVideoManager.cpp
