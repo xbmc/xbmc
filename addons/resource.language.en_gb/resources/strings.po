@@ -23885,14 +23885,12 @@ msgid "Set as default"
 msgstr ""
 
 #. Choose/Manage video version dialog title
-#: xbmc/video/guilib/VideoVersionHelper.cpp
 #: xbmc/video/dialogs/GUIDialogVideoManagerVersions.h
 msgctxt "#40024"
 msgid "Versions: {0:s}"
 msgstr ""
 
 #. Choose/Manage video extra dialog title
-#: xbmc/video/guilib/VideoVersionHelper.cpp
 #: xbmc/video/dialogs/GUIDialogVideoManagerExtras.h
 msgctxt "#40025"
 msgid "Extras: {0:s}"
@@ -24004,12 +24002,14 @@ msgstr ""
 
 #. Button label for video versions
 #: addons/skin.estuary/xml/DialogVideoInfo.xml
+#: xbmc/video/guilib/VideoVersionHelper.cpp
 msgctxt "#40210"
 msgid "Versions"
 msgstr ""
 
 #. Button label for video extras
 #: addons/skin.estuary/xml/DialogVideoInfo.xml
+#: xbmc/video/guilib/VideoVersionHelper.cpp
 msgctxt "#40211"
 msgid "Extras"
 msgstr ""
