@@ -11991,9 +11991,8 @@ void CVideoDatabase::GetVideoVersions(VideoDbContentType itemType,
 
     while (!m_pDS2->eof())
     {
-      versions.push_back(std::make_tuple(m_pDS2->fv("name").get_asString(),
-                                         m_pDS2->fv("id").get_asInt(),
-                                         m_pDS2->fv("idFile").get_asInt()));
+      versions.emplace_back(m_pDS2->fv("name").get_asString(), m_pDS2->fv("id").get_asInt(),
+                            m_pDS2->fv("idFile").get_asInt());
       m_pDS2->next();
     }
     m_pDS2->close();
