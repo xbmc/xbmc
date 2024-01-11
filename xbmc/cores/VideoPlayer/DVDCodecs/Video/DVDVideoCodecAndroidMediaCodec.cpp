@@ -28,6 +28,7 @@
 #include "utils/BitstreamConverter.h"
 #include "utils/BitstreamWriter.h"
 #include "utils/CPUInfo.h"
+#include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "windowing/android/AndroidUtils.h"
@@ -755,7 +756,30 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       // Unsupported type?
       xbmc_jnienv()->ExceptionDescribe();
       xbmc_jnienv()->ExceptionClear();
-      continue;
+
+      // There is some confusion for video/VC1 vs. video/wvc1 especially on Sony devices, while
+      // JANA defines VC-1 as video/vc1, Android API defines it as video/wvc1
+      bool isVC1 = StringUtils::Contains(m_codecname, "vc1", false);
+      if (isVC1)
+      {
+        m_mime = "video/VC1";
+        codec_caps = codec_info.getCapabilitiesForType(m_mime);
+        if (xbmc_jnienv()->ExceptionCheck())
+        {
+          xbmc_jnienv()->ExceptionDescribe();
+          xbmc_jnienv()->ExceptionClear();
+          m_mime = "video/wvc1";
+          continue;
+        }
+        else
+        {
+          CLog::Log(LOGINFO, "Succesfully replaced VC1 mime type to {}", m_mime);
+        }
+      }
+      else
+      {
+        continue;
+      }
     }
 
     bool codecIsSecure(
