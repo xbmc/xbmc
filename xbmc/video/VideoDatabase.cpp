@@ -12223,7 +12223,8 @@ bool CVideoDatabase::GetDefaultVersionForVideo(VideoDbContentType itemType,
 bool CVideoDatabase::ConvertVideoToVersion(VideoDbContentType itemType,
                                            int dbIdSource,
                                            int dbIdTarget,
-                                           int idVideoVersion)
+                                           int idVideoVersion,
+                                           VideoAssetType assetType)
 {
   int idFile = -1;
   MediaType mediaType;
@@ -12257,8 +12258,8 @@ bool CVideoDatabase::ConvertVideoToVersion(VideoDbContentType itemType,
   }
 
   // Rename the default version
-  ExecuteQuery(
-      PrepareSQL("UPDATE videoversion SET idType = %i WHERE idFile = %i", idVideoVersion, idFile));
+  ExecuteQuery(PrepareSQL("UPDATE videoversion SET idType = %i, itemType = %i WHERE idFile = %i",
+                          idVideoVersion, assetType, idFile));
 
   CommitTransaction();
 

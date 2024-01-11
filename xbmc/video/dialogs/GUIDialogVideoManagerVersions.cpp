@@ -383,7 +383,8 @@ bool CGUIDialogVideoManagerVersions::ChooseVideoAndConvertToVideoVersion(
       return false;
   }
 
-  return videoDb.ConvertVideoToVersion(itemType, sourceDbId, targetDbId, idVideoVersion);
+  return videoDb.ConvertVideoToVersion(itemType, sourceDbId, targetDbId, idVideoVersion,
+                                       VideoAssetType::VERSION);
 }
 
 bool CGUIDialogVideoManagerVersions::GetAllOtherMovies(const std::shared_ptr<CFileItem>& item,
@@ -557,18 +558,19 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
         if (list.Size() > 1)
         {
           // cannot add the default version of a movie with multiple versions to another movie
-          CGUIDialogOK::ShowAndGetInput(CVariant{40014}, CVariant{40033});
+          CGUIDialogOK::ShowAndGetInput(CVariant{40014}, CVariant{40038});
           return false;
+        }
+
+        const int idNewVideoVersion{ChooseVideoAsset(m_videoAsset, VideoAssetType::VERSION)};
+        if (idNewVideoVersion != -1)
+        {
+          return m_database.ConvertVideoToVersion(itemType, newAsset.m_idMedia, dbId,
+                                                  idNewVideoVersion, VideoAssetType::VERSION);
         }
         else
         {
-          if (newAsset.m_mediaType == MediaTypeMovie)
-          {
-            // @todo: should be in a database transaction with the addition as a new asset below
-            m_database.DeleteMovie(newAsset.m_idMedia);
-          }
-          else
-            return false;
+          return false;
         }
       }
       else
@@ -645,7 +647,7 @@ bool CGUIDialogVideoManagerVersions::AddSimilarMovieAsVersion(
   const int sourceDbId{itemMovie->GetVideoInfoTag()->m_iDbId};
   const int targetDbId{m_videoAsset->GetVideoInfoTag()->m_iDbId};
   return videoDb.ConvertVideoToVersion(VideoDbContentType::MOVIES, sourceDbId, targetDbId,
-                                       idVideoVersion);
+                                       idVideoVersion, VideoAssetType::VERSION);
 }
 
 bool CGUIDialogVideoManagerVersions::PostProcessList(CFileItemList& list, int dbId)

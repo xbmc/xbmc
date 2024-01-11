@@ -53,7 +53,12 @@ bool CGUIDialogVideoManagerExtras::OnMessage(CGUIMessage& message)
       const int control{message.GetSenderId()};
       if (control == CONTROL_BUTTON_ADD_EXTRAS)
       {
-        AddVideoExtra();
+        if (AddVideoExtra())
+        {
+          // refresh data and controls
+          Refresh();
+          UpdateControls();
+        }
       }
       break;
     }
@@ -106,6 +111,9 @@ bool CGUIDialogVideoManagerExtras::AddVideoExtra()
     const VideoDbContentType itemType = m_videoAsset->GetVideoContentType();
 
     const VideoAssetInfo newAsset{m_database.GetVideoVersionInfo(path)};
+
+    std::string typeNewVideoVersion{
+        CGUIDialogVideoManagerExtras::GenerateVideoExtra(URIUtils::GetFileName(path))};
 
     if (newAsset.m_idFile != -1 && newAsset.m_assetTypeId != -1)
     {
@@ -183,16 +191,15 @@ bool CGUIDialogVideoManagerExtras::AddVideoExtra()
           CGUIDialogOK::ShowAndGetInput(CVariant{40015}, CVariant{40034});
           return false;
         }
-        else
-        {
-          if (newAsset.m_mediaType == MediaTypeMovie)
-          {
-            // @todo: should be in a database transaction with the addition as a new asset below
-            m_database.DeleteMovie(newAsset.m_idMedia);
-          }
-          else
-            return false;
-        }
+
+        const int idNewVideoVersion{m_database.AddVideoVersionType(
+            typeNewVideoVersion, VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRA)};
+
+        if (idNewVideoVersion == -1)
+          return false;
+
+        return m_database.ConvertVideoToVersion(itemType, newAsset.m_idMedia, dbId,
+                                                idNewVideoVersion, VideoAssetType::EXTRA);
       }
       else
       {
@@ -212,9 +219,6 @@ bool CGUIDialogVideoManagerExtras::AddVideoExtra()
                  CURL::GetRedacted(item.GetPath()));
     }
 
-    const std::string typeNewVideoVersion{
-        CGUIDialogVideoManagerExtras::GenerateVideoExtra(URIUtils::GetFileName(path))};
-
     const int idNewVideoVersion{m_database.AddVideoVersionType(
         typeNewVideoVersion, VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRA)};
 
@@ -222,10 +226,6 @@ bool CGUIDialogVideoManagerExtras::AddVideoExtra()
       return false;
 
     m_database.AddExtrasVideoVersion(itemType, dbId, idNewVideoVersion, item);
-
-    // refresh data and controls
-    Refresh();
-    UpdateControls();
 
     return true;
   }

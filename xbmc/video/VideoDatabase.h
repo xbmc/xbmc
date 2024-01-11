@@ -1015,10 +1015,22 @@ public:
                         CFileItemList& items,
                         VideoAssetType videoAssetType);
   void GetDefaultVideoVersion(VideoDbContentType itemType, int dbId, CFileItem& item);
+
+  /*!
+   * \brief Remove a video from the library and transfer all of its assets to another video of the
+   * same type.
+   * \param itemType Type of the video being converted
+   * \param dbIdSource id of the video being converted
+   * \param dbIdTarget id that the video will be attached to
+   * \param idVideoVersion new versiontype of the default version of the video
+   * \param assetType new asset type of the default version of the video
+   * \return true for success, false otherwise
+   */
   bool ConvertVideoToVersion(VideoDbContentType itemType,
                              int dbIdSource,
                              int dbIdTarget,
-                             int idVideoVersion);
+                             int idVideoVersion,
+                             VideoAssetType assetType);
   void SetDefaultVideoVersion(VideoDbContentType itemType, int dbId, int idFile);
   void SetVideoVersion(int idFile, int idVideoVersion);
   int AddVideoVersionType(const std::string& typeVideoVersion,
