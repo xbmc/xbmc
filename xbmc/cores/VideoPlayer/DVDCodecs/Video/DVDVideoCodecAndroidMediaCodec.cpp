@@ -1711,19 +1711,22 @@ void CDVDVideoCodecAndroidMediaCodec::ConfigureOutputFormat(CJNIMediaFormat& med
   if (xbmc_jnienv()->ExceptionCheck())
     xbmc_jnienv()->ExceptionClear();
 
-  CLog::Log(LOGDEBUG,
-            "CDVDVideoCodecAndroidMediaCodec:: "
-            "width({}), height({}), stride({}), slice-height({}), color-format({})",
-            width, height, stride, slice_height, color_format);
-  CLog::Log(LOGDEBUG,
-            "CDVDVideoCodecAndroidMediaCodec:: "
-            "crop-left({}), crop-top({}), crop-right({}), crop-bottom({})",
-            crop_left, crop_top, crop_right, crop_bottom);
+  if (CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
+  {
+    CLog::Log(LOGDEBUG,
+              "CDVDVideoCodecAndroidMediaCodec:: "
+              "width({}), height({}), stride({}), slice-height({}), color-format({})",
+              width, height, stride, slice_height, color_format);
+    CLog::Log(LOGDEBUG,
+              "CDVDVideoCodecAndroidMediaCodec:: "
+              "crop-left({}), crop-top({}), crop-right({}), crop-bottom({})",
+              crop_left, crop_top, crop_right, crop_bottom);
 
-  if (m_render_surface)
-    CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec:: Multi-Surface Rendering");
-  else
-    CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec:: Direct Surface Rendering");
+    if (m_render_surface)
+      CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec:: Multi-Surface Rendering");
+    else
+      CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec:: Direct Surface Rendering");
+  }
 
   if (crop_right)
     width = crop_right  + 1 - crop_left;
