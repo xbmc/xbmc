@@ -623,7 +623,7 @@ bool CGUIDialogVideoManagerVersions::GetSimilarMovies(const std::shared_ptr<CFil
 }
 
 bool CGUIDialogVideoManagerVersions::AddSimilarMovieAsVersion(
-    const std::shared_ptr<CFileItem> itemMovie)
+    const std::shared_ptr<CFileItem>& itemMovie)
 {
   // A movie with versions cannot be turned into a version
   if (itemMovie->GetVideoInfoTag()->HasVideoVersions())
