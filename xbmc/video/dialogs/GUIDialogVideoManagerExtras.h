@@ -24,8 +24,13 @@ public:
   ~CGUIDialogVideoManagerExtras() override = default;
 
   void SetVideoAsset(const std::shared_ptr<CFileItem>& item) override;
-
-  static void ManageVideoExtras(const std::shared_ptr<CFileItem>& item);
+  /*!
+   * \brief Open the Manage Extras dialog for a video
+   * \param item video to manage
+   * \return true: the video or another item was modified, a containing list should be refreshed.
+   * false: no changes
+   */
+  static bool ManageVideoExtras(const std::shared_ptr<CFileItem>& item);
   static std::string GenerateVideoExtra(const std::string& extrasRoot,
                                         const std::string& extrasPath);
 
