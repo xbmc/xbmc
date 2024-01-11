@@ -27,15 +27,6 @@ using namespace VIDEO::GUILIB;
 
 namespace
 {
-std::shared_ptr<CFileItem> GetMovieForVideoVersion(const CFileItem& videoVersion)
-{
-  auto item{std::make_shared<CFileItem>(videoVersion.GetDynPath(), false)};
-  item->LoadDetails();
-  CVideoThumbLoader thumbLoader;
-  thumbLoader.LoadItem(item.get());
-  return item;
-}
-
 class CVideoChooser
 {
 public:
@@ -80,23 +71,19 @@ std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideo()
     return result;
   }
 
-  db.GetVideoVersions(m_item->GetVideoContentType(), m_item->GetVideoInfoTag()->m_iDbId,
-                      m_videoVersions, VideoAssetType::VERSION);
+  db.GetAssetsForVideo(m_item->GetVideoContentType(), m_item->GetVideoInfoTag()->m_iDbId,
+                       VideoAssetType::VERSION, m_videoVersions);
+
   if (m_enableExtras)
-    db.GetVideoVersions(m_item->GetVideoContentType(), m_item->GetVideoInfoTag()->m_iDbId,
-                        m_videoExtras, VideoAssetType::EXTRA);
+    db.GetAssetsForVideo(m_item->GetVideoContentType(), m_item->GetVideoInfoTag()->m_iDbId,
+                         VideoAssetType::EXTRA, m_videoExtras);
   else
     m_videoExtras.Clear();
 
-  CFileItem defaultVideoVersion;
-  db.GetDefaultVideoVersion(m_item->GetVideoContentType(), m_item->GetVideoInfoTag()->m_iDbId,
-                            defaultVideoVersion);
-
   // find default version item in list and select it
-  const int defaultDbId{defaultVideoVersion.GetVideoInfoTag()->m_iDbId};
   for (const auto& item : m_videoVersions)
   {
-    item->Select(item->GetVideoInfoTag()->m_iDbId == defaultDbId);
+    item->Select(item->GetVideoInfoTag()->IsDefaultVideoVersion());
   }
 
   VideoAssetType itemType{VideoAssetType::VERSION};
@@ -191,15 +178,15 @@ std::shared_ptr<CFileItem> CVideoVersionHelper::ChooseMovieFromVideoVersions(
   {
     if (!item->GetProperty("needs_resolved_video_version").asBoolean(false))
     {
-      // select the specified video version
-      if (item->GetVideoInfoTag()->m_type == MediaTypeVideoVersion)
-        videoVersion = item;
-
-      if (!videoVersion)
+      // auto select the default video version
+      const auto settings{CServiceBroker::GetSettingsComponent()->GetSettings()};
+      if (settings->GetBool(CSettings::SETTING_MYVIDEOS_SELECTDEFAULTVERSION))
       {
-        // select the default video version
-        const auto settings{CServiceBroker::GetSettingsComponent()->GetSettings()};
-        if (settings->GetBool(CSettings::SETTING_MYVIDEOS_SELECTDEFAULTVERSION))
+        if (item->GetVideoInfoTag()->IsDefaultVideoVersion())
+        {
+          videoVersion = std::make_shared<const CFileItem>(*item);
+        }
+        else
         {
           CVideoDatabase db;
           if (!db.Open())
@@ -209,10 +196,9 @@ std::shared_ptr<CFileItem> CVideoVersionHelper::ChooseMovieFromVideoVersions(
           else
           {
             CFileItem defaultVersion;
-            db.GetDefaultVideoVersion(item->GetVideoContentType(), item->GetVideoInfoTag()->m_iDbId,
-                                      defaultVersion);
-            if (!defaultVersion.HasVideoInfoTag() || defaultVersion.GetVideoInfoTag()->IsEmpty())
-              CLog::LogF(LOGERROR, "Unable to get default video version from video database!");
+            if (!db.GetDefaultVersionForVideo(item->GetVideoContentType(),
+                                              item->GetVideoInfoTag()->m_iDbId, defaultVersion))
+              CLog::LogF(LOGERROR, "Unable to get default version from video database!");
             else
               videoVersion = std::make_shared<const CFileItem>(defaultVersion);
           }
@@ -234,7 +220,7 @@ std::shared_ptr<CFileItem> CVideoVersionHelper::ChooseMovieFromVideoVersions(
   }
 
   if (videoVersion)
-    return GetMovieForVideoVersion(*videoVersion);
+    return std::make_shared<CFileItem>(*videoVersion);
 
   return item;
 }
