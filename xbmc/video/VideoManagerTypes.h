@@ -33,3 +33,13 @@ static constexpr int VIDEO_VERSION_ID_BEGIN = 40400;
 static constexpr int VIDEO_VERSION_ID_END = 40800;
 static constexpr int VIDEO_VERSION_ID_DEFAULT = VIDEO_VERSION_ID_BEGIN;
 static constexpr int VIDEO_VERSION_ID_ALL = 0;
+
+struct VideoAssetInfo
+{
+  int m_idFile{-1};
+  int m_assetTypeId{-1};
+  std::string m_assetTypeName;
+  int m_idMedia{-1};
+  MediaType m_mediaType{MediaTypeNone};
+  VideoAssetType m_assetType{VideoAssetType::UNKNOWN};
+};

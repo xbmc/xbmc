@@ -53,7 +53,12 @@ bool CGUIDialogVideoManagerExtras::OnMessage(CGUIMessage& message)
       const int control{message.GetSenderId()};
       if (control == CONTROL_BUTTON_ADD_EXTRAS)
       {
-        AddVideoExtra();
+        if (AddVideoExtra())
+        {
+          // refresh data and controls
+          Refresh();
+          UpdateControls();
+        }
       }
       break;
     }
@@ -84,8 +89,10 @@ void CGUIDialogVideoManagerExtras::SetVideoAsset(const std::shared_ptr<CFileItem
     SetSelectedVideoAsset(m_videoAssetsList->Get(0));
 }
 
-void CGUIDialogVideoManagerExtras::AddVideoExtra()
+bool CGUIDialogVideoManagerExtras::AddVideoExtra()
 {
+  // @todo: combine with versions add file logic, structured similarly and sharing most logic.
+
   const MediaType mediaType{m_videoAsset->GetVideoInfoTag()->m_type};
 
   // prompt to choose a video file
@@ -100,47 +107,106 @@ void CGUIDialogVideoManagerExtras::AddVideoExtra()
           sources, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
           g_localizeStrings.Get(40015), path))
   {
-    std::string typeVideoVersion;
-    std::string videoTitle;
-    int idFile{-1};
-    int idMedia{-1};
-    MediaType itemMediaType;
-    VideoAssetType videoAssetType{VideoAssetType::UNKNOWN};
-
-    const int idVideoVersion{m_database.GetVideoVersionInfo(path, idFile, typeVideoVersion, idMedia,
-                                                            itemMediaType, videoAssetType)};
-
     const int dbId{m_videoAsset->GetVideoInfoTag()->m_iDbId};
     const VideoDbContentType itemType = m_videoAsset->GetVideoContentType();
 
-    if (idVideoVersion != -1)
+    const VideoAssetInfo newAsset{m_database.GetVideoVersionInfo(path)};
+
+    std::string typeNewVideoVersion{
+        CGUIDialogVideoManagerExtras::GenerateVideoExtra(URIUtils::GetFileName(path))};
+
+    if (newAsset.m_idFile != -1 && newAsset.m_assetTypeId != -1)
     {
-      CFileItemList versions;
-      m_database.GetVideoVersions(itemType, dbId, versions, videoAssetType);
-      if (std::any_of(versions.begin(), versions.end(),
-                      [idFile](const std::shared_ptr<CFileItem>& version)
-                      { return version->GetVideoInfoTag()->m_iDbId == idFile; }))
+      // The video already is an asset of the movie
+      if (newAsset.m_idMedia == dbId &&
+          newAsset.m_mediaType == m_videoAsset->GetVideoInfoTag()->m_type)
       {
+        unsigned int msgid{};
+
+        if (newAsset.m_assetType == VideoAssetType::VERSION)
+          msgid = 40016; // video is a version of the movie
+        else if (newAsset.m_assetType == VideoAssetType::EXTRA)
+          msgid = 40026; // video is an extra of the movie
+        else
+        {
+          CLog::LogF(LOGERROR, "unexpected asset type {}", static_cast<int>(newAsset.m_assetType));
+          return false;
+        }
+
         CGUIDialogOK::ShowAndGetInput(
-            CVariant{40015}, StringUtils::Format(g_localizeStrings.Get(40026), typeVideoVersion));
-        return;
+            CVariant{40015},
+            StringUtils::Format(g_localizeStrings.Get(msgid), newAsset.m_assetTypeName));
+        return false;
       }
 
-      if (itemMediaType == MediaTypeMovie)
+      // The video is an asset of another movie
+
+      // The video is a version, ask for confirmation
+      if (newAsset.m_assetType == VideoAssetType::VERSION &&
+          !CGUIDialogYesNo::ShowAndGetInput(CVariant{40015},
+                                            StringUtils::Format(g_localizeStrings.Get(40036))))
       {
-        videoTitle = m_database.GetMovieTitle(idMedia);
+        return false;
+      }
+
+      std::string videoTitle;
+      if (newAsset.m_mediaType == MediaTypeMovie)
+      {
+        videoTitle = m_database.GetMovieTitle(newAsset.m_idMedia);
       }
       else
-        return;
+        return false;
 
-      if (!CGUIDialogYesNo::ShowAndGetInput(
-              CVariant{40014},
-              StringUtils::Format(g_localizeStrings.Get(40027), typeVideoVersion, videoTitle)))
       {
-        return;
+        unsigned int msgid{};
+
+        if (newAsset.m_assetType == VideoAssetType::VERSION)
+          msgid = 40017; // video is a version of another movie
+        else if (newAsset.m_assetType == VideoAssetType::EXTRA)
+          msgid = 40027; // video is an extra of another movie
+        else
+        {
+          CLog::LogF(LOGERROR, "unexpected asset type {}", static_cast<int>(newAsset.m_assetType));
+          return false;
+        }
+
+        if (!CGUIDialogYesNo::ShowAndGetInput(
+                CVariant{40015}, StringUtils::Format(g_localizeStrings.Get(msgid),
+                                                     newAsset.m_assetTypeName, videoTitle)))
+        {
+          return false;
+        }
       }
 
-      m_database.RemoveVideoVersion(idFile);
+      // Additional constraints for the converion of a movie version
+      if (newAsset.m_assetType == VideoAssetType::VERSION &&
+          m_database.IsDefaultVideoVersion(newAsset.m_idFile))
+      {
+        CFileItemList list;
+        m_database.GetVideoVersions(itemType, newAsset.m_idMedia, list, newAsset.m_assetType);
+
+        if (list.Size() > 1)
+        {
+          // cannot add the default version of a movie with multiple versions to another movie
+          CGUIDialogOK::ShowAndGetInput(CVariant{40015}, CVariant{40034});
+          return false;
+        }
+
+        const int idNewVideoVersion{m_database.AddVideoVersionType(
+            typeNewVideoVersion, VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRA)};
+
+        if (idNewVideoVersion == -1)
+          return false;
+
+        return m_database.ConvertVideoToVersion(itemType, newAsset.m_idMedia, dbId,
+                                                idNewVideoVersion, VideoAssetType::EXTRA);
+      }
+      else
+      {
+        // @todo: should be in a database transaction with the addition as a new asset below
+        if (!m_database.RemoveVideoVersion(newAsset.m_idFile))
+          return false;
+      }
     }
 
     CFileItem item{path, false};
@@ -153,18 +219,17 @@ void CGUIDialogVideoManagerExtras::AddVideoExtra()
                  CURL::GetRedacted(item.GetPath()));
     }
 
-    const std::string typeNewVideoVersion{
-        CGUIDialogVideoManagerExtras::GenerateVideoExtra(URIUtils::GetFileName(path))};
-
     const int idNewVideoVersion{m_database.AddVideoVersionType(
         typeNewVideoVersion, VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRA)};
 
+    if (idNewVideoVersion == -1)
+      return false;
+
     m_database.AddExtrasVideoVersion(itemType, dbId, idNewVideoVersion, item);
 
-    // refresh data and controls
-    Refresh();
-    UpdateControls();
+    return true;
   }
+  return false;
 }
 
 void CGUIDialogVideoManagerExtras::ManageVideoExtras(const std::shared_ptr<CFileItem>& item)

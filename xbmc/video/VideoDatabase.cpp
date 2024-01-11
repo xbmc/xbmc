@@ -12223,9 +12223,12 @@ bool CVideoDatabase::GetDefaultVersionForVideo(VideoDbContentType itemType,
 bool CVideoDatabase::ConvertVideoToVersion(VideoDbContentType itemType,
                                            int dbIdSource,
                                            int dbIdTarget,
-                                           int idVideoVersion)
+                                           int idVideoVersion,
+                                           VideoAssetType assetType)
 {
   int idFile = -1;
+  MediaType mediaType;
+  VideoContentTypeToString(itemType, mediaType);
 
   if (itemType == VideoDbContentType::MOVIES)
   {
@@ -12241,24 +12244,22 @@ bool CVideoDatabase::ConvertVideoToVersion(VideoDbContentType itemType,
 
   if (dbIdSource != dbIdTarget)
   {
-    // First transfer the extras to the new movie.
-    // A movie with versions cannot be transformed into a version of another movie so there is no
-    // problem with moving all extras to the new movie. With the the current data model it's not
-    // possible to tell which extras initially belonged to which version.
+    // Transfer all assets (versions, extras,...) to the new movie.
     ExecuteQuery(
-        PrepareSQL("UPDATE videoversion SET idMedia = %i WHERE idMedia = %i AND itemType = %i",
-                   dbIdTarget, dbIdSource, VideoAssetType::EXTRA));
+        PrepareSQL("UPDATE videoversion SET idMedia = %i WHERE idMedia = %i AND media_type = '%s'",
+                   dbIdTarget, dbIdSource, mediaType.c_str()));
 
-    ExecuteQuery(PrepareSQL("UPDATE videoversion SET idMedia = %i, idType = %i WHERE idFile = %i",
-                            dbIdTarget, idVideoVersion, idFile));
-
+    // version-level art doesn't need any change.
+    // 'movie' art is converted to 'videoversion' art.
     SetVideoVersionDefaultArt(idFile, dbIdSource, itemType);
 
-    DeleteMovie(dbIdSource);
+    if (itemType == VideoDbContentType::MOVIES)
+      DeleteMovie(dbIdSource);
   }
-  else
-    ExecuteQuery(PrepareSQL("UPDATE videoversion SET idType = %i WHERE idFile = %i", idVideoVersion,
-                            idFile));
+
+  // Rename the default version
+  ExecuteQuery(PrepareSQL("UPDATE videoversion SET idType = %i, itemType = %i WHERE idFile = %i",
+                          idVideoVersion, assetType, idFile));
 
   CommitTransaction();
 
@@ -12319,13 +12320,13 @@ bool CVideoDatabase::IsDefaultVideoVersion(int idFile)
   return false;
 }
 
-void CVideoDatabase::RemoveVideoVersion(int dbId)
+bool CVideoDatabase::RemoveVideoVersion(int dbId)
 {
   if (!m_pDB || !m_pDS)
-    return;
+    return false;
 
   if (IsDefaultVideoVersion(dbId))
-    return;
+    return false;
 
   try
   {
@@ -12336,11 +12337,14 @@ void CVideoDatabase::RemoveVideoVersion(int dbId)
       InvalidatePathHash(path);
 
     m_pDS->exec(PrepareSQL("DELETE FROM videoversion WHERE idFile = %i", dbId));
+
+    return true;
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "{} failed for {}", __FUNCTION__, dbId);
   }
+  return false;
 }
 
 void CVideoDatabase::SetVideoVersion(int idFile, int idVideoVersion)
@@ -12420,30 +12424,16 @@ void CVideoDatabase::AddVideoVersion(VideoDbContentType itemType,
   }
 }
 
-int CVideoDatabase::GetVideoVersionInfo(const std::string& fileNameAndPath,
-                                        int& idFile,
-                                        std::string& typeVideoVersion,
-                                        int& idMedia,
-                                        MediaType& mediaType,
-                                        VideoAssetType& videoAssetType)
+VideoAssetInfo CVideoDatabase::GetVideoVersionInfo(const std::string& filenameAndPath)
 {
-  idFile = GetFileId(fileNameAndPath);
-  if (idFile < 0)
-    return -1;
+  VideoAssetInfo info;
 
-  return GetVideoVersionInfo(idFile, typeVideoVersion, idMedia, mediaType, videoAssetType);
-}
+  info.m_idFile = GetFileId(filenameAndPath);
+  if (info.m_idFile < 0)
+    return info;
 
-int CVideoDatabase::GetVideoVersionInfo(int idFile,
-                                        std::string& typeVideoVersion,
-                                        int& idMedia,
-                                        MediaType& mediaType,
-                                        VideoAssetType& videoAssetType)
-{
   if (!m_pDB || !m_pDS)
-    return -1;
-
-  int idVideoVersion = -1;
+    return info;
 
   try
   {
@@ -12456,25 +12446,25 @@ int CVideoDatabase::GetVideoVersionInfo(int idFile,
                             "  JOIN videoversiontype ON "
                             "    videoversiontype.id = videoversion.idType "
                             "WHERE videoversion.idFile = %i",
-                            idFile));
+                            info.m_idFile));
 
     if (m_pDS->num_rows() > 0)
     {
-      idVideoVersion = m_pDS->fv("id").get_asInt();
-      typeVideoVersion = m_pDS->fv("name").get_asString();
-      idMedia = m_pDS->fv("idMedia").get_asInt();
-      mediaType = m_pDS->fv("media_type").get_asString();
-      videoAssetType = static_cast<VideoAssetType>(m_pDS->fv("itemType").get_asInt());
+      info.m_assetTypeId = m_pDS->fv("id").get_asInt();
+      info.m_assetTypeName = m_pDS->fv("name").get_asString();
+      info.m_idMedia = m_pDS->fv("idMedia").get_asInt();
+      info.m_mediaType = m_pDS->fv("media_type").get_asString();
+      info.m_assetType = static_cast<VideoAssetType>(m_pDS->fv("itemType").get_asInt());
     }
 
     m_pDS->close();
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} failed for {}", __FUNCTION__, idFile);
+    CLog::LogF(LOGERROR, "failed for {}", filenameAndPath);
   }
 
-  return idVideoVersion;
+  return info;
 }
 
 bool CVideoDatabase::GetVideoVersionsNav(const std::string& strBaseDir,

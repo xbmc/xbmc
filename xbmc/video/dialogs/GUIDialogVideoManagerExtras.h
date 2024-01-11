@@ -38,6 +38,10 @@ protected:
   void UpdateButtons() override;
 
 private:
-  void AddVideoExtra();
+  /*!
+   * \brief Add an extra to the video, using GUI user-provided information.
+   * \return true if an extra was added, false otherwise.
+   */
+  bool AddVideoExtra();
   static std::string GenerateVideoExtra(const std::string& extrasPath);
 };
