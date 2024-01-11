@@ -83,10 +83,10 @@ public:
   bool SetRumbleState(const KODI::JOYSTICK::FeatureName& feature, float magnitude) override;
 
 private:
-  std::unique_ptr<KODI::JOYSTICK::IDriverHandler> m_driverHandler;
-  std::unique_ptr<KODI::JOYSTICK::IInputReceiver> m_inputReceiver;
-  std::unique_ptr<KODI::KEYBOARD::IKeyboardDriverHandler> m_keyboardHandler;
-  std::unique_ptr<KODI::MOUSE::IMouseDriverHandler> m_mouseHandler;
+  std::unique_ptr<KODI::JOYSTICK::IDriverHandler> m_joystickDriverHandler;
+  std::unique_ptr<KODI::JOYSTICK::IInputReceiver> m_joystickInputReceiver;
+  std::unique_ptr<KODI::KEYBOARD::IKeyboardDriverHandler> m_keyboardDriverHandler;
+  std::unique_ptr<KODI::MOUSE::IMouseDriverHandler> m_mouseDriverHandler;
   std::unique_ptr<KODI::JOYSTICK::IButtonMap> m_buttonMap;
 };
 } // namespace PERIPHERALS
