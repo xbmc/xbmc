@@ -430,7 +430,7 @@ public:
     return newRectanglesList;
   }
 
-  std::vector<this_type> SubtractRects(std::vector<this_type> intersectionList)
+  std::vector<this_type> SubtractRects(const std::vector<this_type>& intersectionList)
   {
     std::vector<this_type> fragmentsList;
     fragmentsList.push_back(*this);

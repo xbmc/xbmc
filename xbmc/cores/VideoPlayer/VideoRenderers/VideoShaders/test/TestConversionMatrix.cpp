@@ -21,7 +21,7 @@ namespace
 
 constexpr bool DEBUG_PRINT{false};
 
-void DebugPrint(Matrix3 matrix)
+void DebugPrint(const Matrix3& matrix)
 {
   if (!DEBUG_PRINT)
     return;
@@ -41,7 +41,7 @@ void DebugPrint(Matrix3 matrix)
   std::cout << "===== Matrix End =====" << std::endl;
 }
 
-void DebugPrint(Matrix4 matrix)
+void DebugPrint(const Matrix4& matrix)
 {
   if (!DEBUG_PRINT)
     return;

@@ -825,7 +825,7 @@ void CWebVTTHandler::CalculateTextPosition(std::string& subtitleText)
 
 std::string CWebVTTHandler::GetCueSettingValue(const std::string& propName,
                                                std::string& text,
-                                               std::string defaultValue)
+                                               const std::string& defaultValue)
 {
   if (m_cuePropsMapRegex[propName].RegFind(text) >= 0)
     return m_cuePropsMapRegex[propName].GetMatch(1);
