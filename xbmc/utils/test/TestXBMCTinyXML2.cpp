@@ -48,7 +48,7 @@ TEST(TestXBMCTinyXML2, ParseFromChar)
   // scraper results with unescaped &
   CXBMCTinyXML2 doc;
   std::string testfile = XBMC_REF_FILE_PATH("/xbmc/utils/test/CXBMCTinyXML-test.xml");
-  bool load = doc.LoadFile(testfile.c_str());
+  bool load = doc.LoadFile(testfile);
   EXPECT_TRUE(load);
 
   auto* root = doc.RootElement();
@@ -73,7 +73,7 @@ TEST(TestXBMCTinyXML2, ParseFromCharFail)
   // scraper results with unescaped &
   CXBMCTinyXML2 doc;
   std::string testfile = XBMC_REF_FILE_PATH("/xbmc/utils/test/Non-existant-CXBMCTinyXML-test.xml");
-  bool load = doc.LoadFile(testfile.c_str());
+  bool load = doc.LoadFile(testfile);
   EXPECT_FALSE(load);
 }
 

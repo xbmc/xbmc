@@ -2246,7 +2246,7 @@ bool CMusicDatabase::AddArtistVideoLinks(const CArtist& artist)
         const int songId = m_pDS->fv(0).get_asInt();
         std::string strSQL2 = PrepareSQL("UPDATE song SET strVideoURL='%s' WHERE idSong = %i",
                                          videoURL.videoURL.c_str(), songId);
-        CLog::Log(LOGDEBUG, "Adding videolink for song {} with id {}", dbSong.c_str(), songId);
+        CLog::Log(LOGDEBUG, "Adding videolink for song {} with id {}", dbSong, songId);
         m_pDS2->exec(strSQL2);
 
         if (!videoURL.thumbURL.empty())
@@ -2284,7 +2284,7 @@ bool CMusicDatabase::AddArtistVideoLinks(const CArtist& artist)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "MusicDatabase: Unable to add videolink for song ({})", dbSong.c_str());
+    CLog::Log(LOGERROR, "MusicDatabase: Unable to add videolink for song ({})", dbSong);
     return false;
   }
 }

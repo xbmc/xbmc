@@ -401,7 +401,7 @@ bool CMediaSourceSettings::GetSource(const std::string& category,
       // error message
       if (isInvalid)
         CLog::Log(LOGERROR, "CMediaSourceSettings:    invalid path type ({}) for multipath source",
-                  path->c_str());
+                  *path);
     }
 
     // no valid paths? skip to next source

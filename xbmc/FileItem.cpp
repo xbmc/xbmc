@@ -2989,8 +2989,7 @@ void CFileItemList::StackFiles()
       if (tmpRegExp.GetCaptureTotal() == 4)
         stackRegExps.push_back(tmpRegExp);
       else
-        CLog::Log(LOGERROR, "Invalid video stack RE ({}). Must have 4 captures.",
-                  strRegExp->c_str());
+        CLog::Log(LOGERROR, "Invalid video stack RE ({}). Must have 4 captures.", *strRegExp);
     }
     ++strRegExp;
   }
