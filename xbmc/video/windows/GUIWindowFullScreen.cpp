@@ -43,10 +43,9 @@ static CPosixResourceCounter m_resourceCounter;
 #endif
 
 CGUIWindowFullScreen::CGUIWindowFullScreen()
-    : CGUIWindow(WINDOW_FULLSCREEN_VIDEO, "VideoFullScreen.xml")
+  : CGUIWindow(WINDOW_FULLSCREEN_VIDEO, "VideoFullScreen.xml"), m_dwShowViewModeTimeout{}
 {
   m_viewModeChanged = true;
-  m_dwShowViewModeTimeout = {};
   m_bShowCurrentTime = false;
   m_loadType = KEEP_IN_MEMORY;
   // audio

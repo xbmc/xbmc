@@ -613,14 +613,14 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
     m_CurrentRadioRDS(STREAM_RADIO_RDS, VideoPlayer_RDS),
     m_CurrentAudioID3(STREAM_AUDIO_ID3, VideoPlayer_ID3),
     m_messenger("player"),
+    m_outboundEvents(std::make_unique<CJobQueue>(false, 1, CJob::PRIORITY_NORMAL)),
+    m_pInputStream(nullptr),
+    m_pDemuxer(nullptr),
+    m_pSubtitleDemuxer(nullptr),
+    m_pCCDemuxer(nullptr),
     m_renderManager(m_clock, this)
 {
-  m_outboundEvents = std::make_unique<CJobQueue>(false, 1, CJob::PRIORITY_NORMAL);
   m_players_created = false;
-  m_pDemuxer = nullptr;
-  m_pSubtitleDemuxer = nullptr;
-  m_pCCDemuxer = nullptr;
-  m_pInputStream = nullptr;
 
   m_dvd.Clear();
   m_State.Clear();

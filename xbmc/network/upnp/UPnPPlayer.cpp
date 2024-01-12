@@ -52,9 +52,9 @@ public:
       m_transport(NULL),
       m_device(device),
       m_callback(callback),
+      m_posinfo({}),
       m_logger(CServiceBroker::GetLogging().GetLogger("CUPnPPlayerController"))
   {
-    m_posinfo = {};
     m_device->FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", m_transport);
   }
 

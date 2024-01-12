@@ -26,9 +26,8 @@
 
 const char* CWinSystemBase::SETTING_WINSYSTEM_IS_HDR_DISPLAY = "winsystem.ishdrdisplay";
 
-CWinSystemBase::CWinSystemBase()
+CWinSystemBase::CWinSystemBase() : m_gfxContext(std::make_unique<CGraphicContext>())
 {
-  m_gfxContext = std::make_unique<CGraphicContext>();
 }
 
 CWinSystemBase::~CWinSystemBase() = default;
