@@ -58,6 +58,9 @@ bool CGUIDialogVideoManagerExtras::OnMessage(CGUIMessage& message)
           // refresh data and controls
           Refresh();
           UpdateControls();
+          // @todo more detailed status to trigger an library list refresh or item update only when
+          // needed. For example, library movie was converted into an extra.
+          m_hasUpdatedItems = true;
         }
       }
       break;
@@ -232,7 +235,7 @@ bool CGUIDialogVideoManagerExtras::AddVideoExtra()
   return false;
 }
 
-void CGUIDialogVideoManagerExtras::ManageVideoExtras(const std::shared_ptr<CFileItem>& item)
+bool CGUIDialogVideoManagerExtras::ManageVideoExtras(const std::shared_ptr<CFileItem>& item)
 {
   CGUIDialogVideoManagerExtras* dialog{
       CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogVideoManagerExtras>(
@@ -240,11 +243,12 @@ void CGUIDialogVideoManagerExtras::ManageVideoExtras(const std::shared_ptr<CFile
   if (!dialog)
   {
     CLog::LogF(LOGERROR, "Unable to get WINDOW_DIALOG_MANAGE_VIDEO_EXTRAS instance!");
-    return;
+    return false;
   }
 
   dialog->SetVideoAsset(item);
   dialog->Open();
+  return dialog->HasUpdatedItems();
 }
 
 std::string CGUIDialogVideoManagerExtras::GenerateVideoExtra(const std::string& extrasRoot,

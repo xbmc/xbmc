@@ -92,7 +92,7 @@ protected:
    */
   void OnSearchItemFound(const CFileItem* pItem);
   bool OnManageVideoVersions();
-  void OnManageVideoExtras();
+  bool OnManageVideoExtras();
   void Play(bool resume = false);
   void OnGetArt();
   void OnGetFanart();
