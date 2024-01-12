@@ -306,7 +306,7 @@ bool CDirectory::GetDirectory(const CURL& url,
 }
 
 bool CDirectory::EnumerateDirectory(const std::string& path,
-                                    DirectoryEnumerationCallback callback,
+                                    const DirectoryEnumerationCallback& callback,
                                     bool fileOnly /* = false */,
                                     const std::string& mask /* = "" */,
                                     int flags /* = DIR_FLAG_DEFAULTS */)

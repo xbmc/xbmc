@@ -102,7 +102,7 @@ private:
    * \param itemMovie Movie to convert
    * \return True for success, false otherwse
    */
-  bool AddSimilarMovieAsVersion(const std::shared_ptr<CFileItem> itemMovie);
+  bool AddSimilarMovieAsVersion(const std::shared_ptr<CFileItem>& itemMovie);
 
   /*!
    * \brief Populates a list with all movies of the libray, excluding the item provided as parameter.

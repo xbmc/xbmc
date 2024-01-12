@@ -72,7 +72,7 @@ public:
   using DirectoryEnumerationCallback = std::function<void(const std::shared_ptr<CFileItem>& item)>;
 
   static bool EnumerateDirectory(const std::string& path,
-                                 DirectoryEnumerationCallback callback,
+                                 const DirectoryEnumerationCallback& callback,
                                  bool fileOnly = false,
                                  const std::string& mask = "",
                                  int flags = DIR_FLAG_DEFAULTS);

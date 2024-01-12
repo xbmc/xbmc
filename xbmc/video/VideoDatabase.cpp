@@ -11869,7 +11869,7 @@ void CVideoDatabase::InitializeVideoVersionTypeTable(int schemaVersion)
 
     for (int id = VIDEO_VERSION_ID_BEGIN; id <= VIDEO_VERSION_ID_END; ++id)
     {
-      const std::string type{g_localizeStrings.Get(id)};
+      const std::string& type{g_localizeStrings.Get(id)};
       if (schemaVersion < 127)
       {
         m_pDS->exec(
@@ -11901,7 +11901,7 @@ void CVideoDatabase::UpdateVideoVersionTypeTable()
 
     for (int id = VIDEO_VERSION_ID_BEGIN; id <= VIDEO_VERSION_ID_END; ++id)
     {
-      std::string type = g_localizeStrings.Get(id);
+      const std::string& type = g_localizeStrings.Get(id);
       m_pDS->exec(PrepareSQL("UPDATE videoversiontype SET name = '%s', owner = %i WHERE id = '%i'",
                              type.c_str(), VideoAssetTypeOwner::SYSTEM, id));
     }
@@ -11991,9 +11991,8 @@ void CVideoDatabase::GetVideoVersions(VideoDbContentType itemType,
 
     while (!m_pDS2->eof())
     {
-      versions.push_back(std::make_tuple(m_pDS2->fv("name").get_asString(),
-                                         m_pDS2->fv("id").get_asInt(),
-                                         m_pDS2->fv("idFile").get_asInt()));
+      versions.emplace_back(m_pDS2->fv("name").get_asString(), m_pDS2->fv("id").get_asInt(),
+                            m_pDS2->fv("idFile").get_asInt());
       m_pDS2->next();
     }
     m_pDS2->close();

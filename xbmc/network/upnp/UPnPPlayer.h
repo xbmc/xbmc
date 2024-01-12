@@ -64,7 +64,7 @@ private:
   void Process() override;
   void OnExit() override;
 
-  PLT_MediaController* m_control;
+  PLT_MediaController* m_control = nullptr;
   std::unique_ptr<CUPnPPlayerController> m_delegate;
   std::string m_current_uri;
   std::string m_current_meta;
