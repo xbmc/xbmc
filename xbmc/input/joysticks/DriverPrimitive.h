@@ -98,7 +98,7 @@ public:
   /*!
    * \brief Construct a driver primitive representing a key on a keyboard
    */
-  CDriverPrimitive(KEYBOARD::KeySymbol keycode);
+  CDriverPrimitive(KEYBOARD::XBMCKey keycode);
 
   /*!
    * \brief Construct a driver primitive representing a mouse button
@@ -157,7 +157,7 @@ public:
   /*!
    * \brief The keyboard symbol (valid for keys)
    */
-  KEYBOARD::KeySymbol Keycode() const { return m_keycode; }
+  KEYBOARD::XBMCKey Keycode() const { return m_keycode; }
 
   /*!
    * \brief The mouse button ID (valid for mouse buttons)
@@ -187,7 +187,7 @@ private:
   int m_center = 0;
   SEMIAXIS_DIRECTION m_semiAxisDirection = SEMIAXIS_DIRECTION::ZERO;
   unsigned int m_range = 1;
-  KEYBOARD::KeySymbol m_keycode = XBMCK_UNKNOWN;
+  KEYBOARD::XBMCKey m_keycode = KEYBOARD::XBMCKey::XBMCK_UNKNOWN;
   RELATIVE_POINTER_DIRECTION m_pointerDirection = RELATIVE_POINTER_DIRECTION::NONE;
 };
 } // namespace JOYSTICK

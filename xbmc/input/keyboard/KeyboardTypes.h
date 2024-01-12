@@ -23,7 +23,7 @@ namespace KEYBOARD
 /*!
  * \brief Symbol of a hardware-independent key
  */
-using KeySymbol = XBMCKey;
+using XBMCKey = XBMCKey;
 
 /*!
  * \brief Name of a hardware-indendent symbol representing a key

@@ -113,8 +113,7 @@ CDriverPrimitive CPeripheralAddonTranslator::TranslatePrimitive(
     }
     case JOYSTICK_DRIVER_PRIMITIVE_TYPE_KEY:
     {
-      KEYBOARD::KeySymbol keycode =
-          GAME::CControllerTranslator::TranslateKeysym(primitive.Keycode());
+      KEYBOARD::XBMCKey keycode = GAME::CControllerTranslator::TranslateKeysym(primitive.Keycode());
       retVal = CDriverPrimitive(keycode);
       break;
     }
