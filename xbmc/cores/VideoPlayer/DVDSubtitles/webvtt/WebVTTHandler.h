@@ -193,7 +193,7 @@ private:
   void GetCueData(std::string& cueText);
   std::string GetCueSettingValue(const std::string& propName,
                                  std::string& text,
-                                 std::string defaultValue);
+                                 const std::string& defaultValue);
   std::string GetCueCssValue(const std::string& cssPropName, std::string& line);
   void AddDefaultCssClasses();
   void InsertCssStyleStartTag(const tagToken& tag,

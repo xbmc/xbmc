@@ -26,9 +26,8 @@
 
 const char* CWinSystemBase::SETTING_WINSYSTEM_IS_HDR_DISPLAY = "winsystem.ishdrdisplay";
 
-CWinSystemBase::CWinSystemBase()
+CWinSystemBase::CWinSystemBase() : m_gfxContext(std::make_unique<CGraphicContext>())
 {
-  m_gfxContext = std::make_unique<CGraphicContext>();
 }
 
 CWinSystemBase::~CWinSystemBase() = default;
@@ -215,7 +214,7 @@ std::vector<REFRESHRATE> CWinSystemBase::RefreshRates(int width, int height, uin
   return refreshrates;
 }
 
-REFRESHRATE CWinSystemBase::DefaultRefreshRate(std::vector<REFRESHRATE> rates)
+REFRESHRATE CWinSystemBase::DefaultRefreshRate(const std::vector<REFRESHRATE>& rates)
 {
   REFRESHRATE bestmatch = rates[0];
   float bestfitness = -1.0f;

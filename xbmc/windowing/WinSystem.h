@@ -172,7 +172,7 @@ public:
   void SetWindowResolution(int width, int height);
   std::vector<RESOLUTION_WHR> ScreenResolutions(float refreshrate);
   std::vector<REFRESHRATE> RefreshRates(int width, int height, uint32_t dwFlags);
-  REFRESHRATE DefaultRefreshRate(std::vector<REFRESHRATE> rates);
+  REFRESHRATE DefaultRefreshRate(const std::vector<REFRESHRATE>& rates);
   virtual bool HasCalibration(const RESOLUTION_INFO& resInfo) { return true; }
 
   // text input interface
