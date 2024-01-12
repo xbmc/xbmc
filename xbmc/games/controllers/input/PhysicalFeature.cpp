@@ -12,6 +12,7 @@
 #include "games/controllers/ControllerDefinitions.h"
 #include "games/controllers/ControllerTranslator.h"
 #include "guilib/LocalizeStrings.h"
+#include "input/keyboard/KeyboardTranslator.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
@@ -147,7 +148,7 @@ bool CPhysicalFeature::Deserialize(const tinyxml2::XMLElement* pElement,
     }
     else
     {
-      m_keycode = CControllerTranslator::TranslateKeysym(strSymbol);
+      m_keycode = KEYBOARD::CKeyboardTranslator::TranslateKeysym(strSymbol);
       if (m_keycode == XBMCK_UNKNOWN)
       {
         CLog::Log(LOGERROR, "<{}> tag - attribute \"{}\" is invalid: \"{}\"", strType,

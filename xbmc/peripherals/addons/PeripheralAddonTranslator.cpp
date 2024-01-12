@@ -8,8 +8,8 @@
 
 #include "PeripheralAddonTranslator.h"
 
-#include "games/controllers/ControllerTranslator.h"
 #include "input/joysticks/JoystickUtils.h"
+#include "input/keyboard/KeyboardTranslator.h"
 
 #include <algorithm>
 #include <iterator>
@@ -113,7 +113,8 @@ CDriverPrimitive CPeripheralAddonTranslator::TranslatePrimitive(
     }
     case JOYSTICK_DRIVER_PRIMITIVE_TYPE_KEY:
     {
-      KEYBOARD::XBMCKey keycode = GAME::CControllerTranslator::TranslateKeysym(primitive.Keycode());
+      KEYBOARD::XBMCKey keycode =
+          KEYBOARD::CKeyboardTranslator::TranslateKeysym(primitive.Keycode());
       retVal = CDriverPrimitive(keycode);
       break;
     }
@@ -166,7 +167,7 @@ kodi::addon::DriverPrimitive CPeripheralAddonTranslator::TranslatePrimitive(
     }
     case PRIMITIVE_TYPE::KEY:
     {
-      std::string keysym = GAME::CControllerTranslator::TranslateKeycode(primitive.Keycode());
+      std::string keysym = KEYBOARD::CKeyboardTranslator::TranslateKeycode(primitive.Keycode());
       retVal = kodi::addon::DriverPrimitive(keysym);
       break;
     }

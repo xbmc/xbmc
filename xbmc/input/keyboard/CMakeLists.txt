@@ -3,6 +3,7 @@ set(SOURCES Key.cpp
             KeyboardLayout.cpp
             KeyboardLayoutManager.cpp
             KeyboardStat.cpp
+            KeyboardTranslator.cpp
             XBMC_keytable.cpp
 )
 
@@ -11,6 +12,8 @@ set(HEADERS Key.h
             KeyboardLayout.h
             KeyboardLayoutManager.h
             KeyboardStat.h
+            KeyboardSymbols.h
+            KeyboardTranslator.h
             KeyboardTypes.h
             KeyIDs.h
             XBMC_keyboard.h
