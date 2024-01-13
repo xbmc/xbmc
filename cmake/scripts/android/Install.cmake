@@ -28,9 +28,6 @@ unset(APP_VERSION_CODE_LIST)
 math(EXPR APP_VERSION_CODE_ANDROID "(${major} * 100 + ${minor}) * 1000 + ${patch}")
 unset(major)
 unset(minor)
-if(ARCH STREQUAL aarch64 AND patch LESS 999)
-  math(EXPR APP_VERSION_CODE_ANDROID "${APP_VERSION_CODE_ANDROID} + 1")
-endif()
 unset(patch)
 
 set(package_files strings.xml
