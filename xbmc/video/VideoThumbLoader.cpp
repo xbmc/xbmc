@@ -240,9 +240,9 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
 
   m_videoDatabase->Open();
 
-  bool isLibraryItem = pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iDbId > -1 &&
-                       !pItem->GetVideoInfoTag()->m_type.empty();
-  bool libraryArtFilled =
+  const bool isLibraryItem = pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iDbId > -1 &&
+                             !pItem->GetVideoInfoTag()->m_type.empty();
+  const bool libraryArtFilled =
       pItem->HasVideoInfoTag() && pItem->GetProperty("libraryartfilled").asBoolean();
   if (!isLibraryItem || !libraryArtFilled)
   {
