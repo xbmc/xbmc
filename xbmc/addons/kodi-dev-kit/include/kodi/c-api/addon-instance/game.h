@@ -709,6 +709,10 @@ extern "C"
   /// by its path in the controller tree. For example, a controller attached to
   /// port `1` could be `/1/game.controller.default`.
   ///
+  /// The keyboard and mouse are automatically assigned a port address and the
+  /// "id" parameter in the game add-on's topology.xml is ignored. The keyboard
+  /// is `/keyboard` and the mouse is `/mouse`.
+  ///
   ///@{
 
   //==============================================================================
@@ -722,8 +726,28 @@ extern "C"
   //------------------------------------------------------------------------------
 
   //==============================================================================
+  /// @brief **Port ID used for the keyboard input device
+#define KEYBOARD_PORT_ID "keyboard"
+  //------------------------------------------------------------------------------
+
+  //==============================================================================
+  /// @brief **Port ID used for the mouse input device
+#define MOUSE_PORT_ID "mouse"
+  //------------------------------------------------------------------------------
+
+  //==============================================================================
   /// @brief **Port address used when topology is unknown**
 #define DEFAULT_PORT_ADDRESS "/1"
+  //------------------------------------------------------------------------------
+
+  //==============================================================================
+  /// @brief **Port address used for the keyboard input device
+#define KEYBOARD_PORT_ADDRESS "/keyboard"
+  //------------------------------------------------------------------------------
+
+  //==============================================================================
+  /// @brief **Port address used for the mouse input device
+#define MOUSE_PORT_ADDRESS "/mouse"
   //------------------------------------------------------------------------------
 
   //============================================================================

@@ -137,3 +137,48 @@ TEST(TestGameClientTopology, SplitAddress)
   EXPECT_EQ(multitapController.first, "/1/game.controller.snes.multitap/2");
   EXPECT_EQ(multitapController.second, "game.controller.snes");
 }
+
+TEST(TestGameClientTopology, TestKeyboard)
+{
+  //
+  // Spec: Test keyboard address
+  //
+
+  const auto keyboardAddress = CGameClientTopology::SplitAddress(KEYBOARD_PORT_ADDRESS);
+  EXPECT_EQ(keyboardAddress.first, ROOT_PORT_ADDRESS);
+  EXPECT_EQ(keyboardAddress.second, KEYBOARD_PORT_ID);
+
+  EXPECT_EQ(CGameClientTopology::MakeAddress(KEYBOARD_PORT_ADDRESS, DEFAULT_KEYBOARD_ID),
+            "/keyboard/game.controller.keyboard");
+
+  //
+  // Spec: Test keyboard controller
+  //
+
+  const auto keyboardController =
+      CGameClientTopology::SplitAddress("/keyboard/game.controller.keyboard");
+  EXPECT_EQ(keyboardController.first, KEYBOARD_PORT_ADDRESS);
+  EXPECT_EQ(keyboardController.second, DEFAULT_KEYBOARD_ID);
+}
+
+TEST(TestGameClientTopology, TestMouse)
+{
+  //
+  // Spec: Test mouse address
+  //
+
+  const auto mouseAddress = CGameClientTopology::SplitAddress(MOUSE_PORT_ADDRESS);
+  EXPECT_EQ(mouseAddress.first, ROOT_PORT_ADDRESS);
+  EXPECT_EQ(mouseAddress.second, MOUSE_PORT_ID);
+
+  EXPECT_EQ(CGameClientTopology::MakeAddress(MOUSE_PORT_ADDRESS, DEFAULT_MOUSE_ID),
+            "/mouse/game.controller.mouse");
+
+  //
+  // Spec: Test mouse controller
+  //
+
+  const auto mouseController = CGameClientTopology::SplitAddress("/mouse/game.controller.mouse");
+  EXPECT_EQ(mouseController.first, MOUSE_PORT_ADDRESS);
+  EXPECT_EQ(mouseController.second, DEFAULT_MOUSE_ID);
+}
