@@ -23887,13 +23887,13 @@ msgstr ""
 #. Choose/Manage video version dialog title
 #: xbmc/video/dialogs/GUIDialogVideoManagerVersions.h
 msgctxt "#40024"
-msgid "Versions: {0:s}"
+msgid "Versions Manager: {0:s}"
 msgstr ""
 
 #. Choose/Manage video extra dialog title
 #: xbmc/video/dialogs/GUIDialogVideoManagerExtras.h
 msgctxt "#40025"
-msgid "Extras: {0:s}"
+msgid "Extras Manager: {0:s}"
 msgstr ""
 
 #. Add extra dialog text.
