@@ -45,7 +45,7 @@ namespace
  */
 static int Action(const std::vector<std::string>& params)
 {
-  // try translating the action from our ButtonTranslator
+  // try translating the action from our ActionTranslator
   unsigned int actionID;
   if (ACTION::CActionTranslator::TranslateString(params[0], actionID))
   {

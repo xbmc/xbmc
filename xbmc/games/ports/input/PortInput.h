@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "input/KeymapEnvironment.h"
 #include "input/joysticks/interfaces/IInputHandler.h"
+#include "input/keymaps/interfaces/IKeymapEnvironment.h"
 
 #include <memory>
 
@@ -17,9 +17,13 @@ namespace KODI
 {
 namespace JOYSTICK
 {
-class CKeymapHandling;
 class IInputProvider;
 } // namespace JOYSTICK
+
+namespace KEYMAP
+{
+class CKeymapHandling;
+} // namespace KEYMAP
 
 namespace GAME
 {
@@ -28,7 +32,7 @@ class CControllerActivity;
 /*!
  * \ingroup games
  */
-class CPortInput : public JOYSTICK::IInputHandler, public IKeymapEnvironment
+class CPortInput : public JOYSTICK::IInputHandler, public KEYMAP::IKeymapEnvironment
 {
 public:
   CPortInput(JOYSTICK::IInputHandler* gameInput);
@@ -74,7 +78,7 @@ private:
   JOYSTICK::IInputHandler* const m_gameInput;
 
   // Handles input to Kodi
-  std::unique_ptr<JOYSTICK::CKeymapHandling> m_appInput;
+  std::unique_ptr<KEYMAP::CKeymapHandling> m_appInput;
 
   // Prevents input falling through to Kodi when not handled by the game
   std::unique_ptr<JOYSTICK::IInputHandler> m_inputSink;

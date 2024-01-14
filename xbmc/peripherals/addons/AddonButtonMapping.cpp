@@ -36,7 +36,7 @@ CAddonButtonMapping::CAddonButtonMapping(CPeripherals& manager,
     m_buttonMap = std::make_unique<CAddonButtonMap>(peripheral, addon, controllerId);
     if (m_buttonMap->Load())
     {
-      IKeymap* keymap = peripheral->GetKeymap(controllerId);
+      KEYMAP::IKeymap* keymap = peripheral->GetKeymap(controllerId);
       m_buttonMapping = std::make_unique<CButtonMapping>(mapper, m_buttonMap.get(), keymap);
 
       // Allow the mapper to save our button map

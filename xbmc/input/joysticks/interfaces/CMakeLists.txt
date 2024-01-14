@@ -7,8 +7,6 @@ set(HEADERS IButtonMap.h
             IInputHandler.h
             IInputProvider.h
             IInputReceiver.h
-            IKeyHandler.h
-            IKeymapHandler.h
 )
 
 if(NOT ENABLE_STATIC_LIBS)

@@ -1,35 +1,17 @@
-set(SOURCES AppTranslator.cpp
-            ButtonTranslator.cpp
-            CustomControllerTranslator.cpp
-            GamepadTranslator.cpp
-            InertialScrollingHandler.cpp
+set(SOURCES InertialScrollingHandler.cpp
             InputCodingTableBasePY.cpp
             InputCodingTableFactory.cpp
             InputCodingTableKorean.cpp
             InputManager.cpp
             InputTranslator.cpp
-            IRTranslator.cpp
-            JoystickMapper.cpp
             Key.cpp
             KeyboardLayout.cpp
             KeyboardLayoutManager.cpp
             KeyboardStat.cpp
-            KeyboardTranslator.cpp
-            Keymap.cpp
-            KeymapEnvironment.cpp
-            TouchTranslator.cpp
-            WindowKeymap.cpp
             WindowTranslator.cpp
             XBMC_keytable.cpp)
 
-set(HEADERS AppTranslator.h
-            ButtonTranslator.h
-            CustomControllerTranslator.h
-            GamepadTranslator.h
-            IButtonMapper.h
-            IKeymap.h
-            IKeymapEnvironment.h
-            InertialScrollingHandler.h
+set(HEADERS InertialScrollingHandler.h
             InputCodingTable.h
             InputCodingTableBasePY.h
             InputCodingTableFactory.h
@@ -37,18 +19,11 @@ set(HEADERS AppTranslator.h
             InputManager.h
             InputTranslator.h
             InputTypes.h
-            IRTranslator.h
-            JoystickMapper.h
             Key.h
             KeyboardLayout.h
             KeyboardLayoutManager.h
             KeyboardStat.h
-            KeyboardTranslator.h
-            Keymap.h
-            KeymapEnvironment.h
-            TouchTranslator.h
             WindowTranslator.h
-            WindowKeymap.h
             XBMC_keyboard.h
             XBMC_keysym.h
             XBMC_keytable.h

@@ -20,10 +20,13 @@
 #include <memory>
 #include <stdint.h>
 
-class IKeymap;
-
 namespace KODI
 {
+namespace KEYMAP
+{
+class IKeymap;
+} // namespace KEYMAP
+
 namespace JOYSTICK
 {
 class CButtonMapping;
@@ -337,7 +340,7 @@ public:
    * \param buttonMapper Carries out button-mapping commands using <buttonMap>
    * \param buttonMap The button map given to <buttonMapper> on each command
    */
-  CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMap, IKeymap* keymap);
+  CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMap, KEYMAP::IKeymap* keymap);
 
   ~CButtonMapping() override = default;
 
@@ -394,7 +397,7 @@ private:
   // Construction parameters
   IButtonMapper* const m_buttonMapper;
   IButtonMap* const m_buttonMap;
-  IKeymap* const m_keymap;
+  KEYMAP::IKeymap* const m_keymap;
 
   std::map<unsigned int, CButtonDetector> m_buttons;
   std::map<unsigned int, CHatDetector> m_hats;

@@ -12,7 +12,6 @@
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerManager.h"
 #include "games/controllers/input/PhysicalFeature.h"
-#include "input/IKeymap.h"
 #include "input/InputTranslator.h"
 #include "input/Key.h"
 #include "input/joysticks/DriverPrimitive.h"
@@ -20,6 +19,7 @@
 #include "input/joysticks/JoystickUtils.h"
 #include "input/joysticks/interfaces/IButtonMap.h"
 #include "input/joysticks/interfaces/IButtonMapper.h"
+#include "input/keymaps/interfaces/IKeymap.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -312,7 +312,9 @@ KODI::INPUT::INTERCARDINAL_DIRECTION CPointerDetector::GetPointerDirection(int x
 
 // --- CButtonMapping ----------------------------------------------------------
 
-CButtonMapping::CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMap, IKeymap* keymap)
+CButtonMapping::CButtonMapping(IButtonMapper* buttonMapper,
+                               IButtonMap* buttonMap,
+                               KEYMAP::IKeymap* keymap)
   : m_buttonMapper(buttonMapper), m_buttonMap(buttonMap), m_keymap(keymap)
 {
   assert(m_buttonMapper != nullptr);

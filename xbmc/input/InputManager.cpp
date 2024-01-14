@@ -8,12 +8,7 @@
 
 #include "InputManager.h"
 
-#include "ButtonTranslator.h"
-#include "CustomControllerTranslator.h"
-#include "JoystickMapper.h"
-#include "KeymapEnvironment.h"
 #include "ServiceBroker.h"
-#include "TouchTranslator.h"
 #include "XBMC_vkeys.h"
 #include "application/AppInboundProtocol.h"
 #include "application/Application.h"
@@ -27,6 +22,11 @@
 #include "input/Key.h"
 #include "input/keyboard/KeyboardEasterEgg.h"
 #include "input/keyboard/interfaces/IKeyboardDriverHandler.h"
+#include "input/keymaps/ButtonTranslator.h"
+#include "input/keymaps/KeymapEnvironment.h"
+#include "input/keymaps/joysticks/JoystickMapper.h"
+#include "input/keymaps/remote/CustomControllerTranslator.h"
+#include "input/keymaps/touch/TouchTranslator.h"
 #include "input/mouse/MouseTranslator.h"
 #include "input/mouse/interfaces/IMouseDriverHandler.h"
 #include "messaging/ApplicationMessenger.h"
@@ -60,11 +60,11 @@ const std::unordered_map<uint8_t, int> keyComposeactionEventMap = {
 }
 
 CInputManager::CInputManager()
-  : m_keymapEnvironment(new CKeymapEnvironment),
-    m_buttonTranslator(new CButtonTranslator),
-    m_customControllerTranslator(new CCustomControllerTranslator),
-    m_touchTranslator(new CTouchTranslator),
-    m_joystickTranslator(new CJoystickMapper),
+  : m_keymapEnvironment(new KEYMAP::CKeymapEnvironment),
+    m_buttonTranslator(new KEYMAP::CButtonTranslator),
+    m_customControllerTranslator(new KEYMAP::CCustomControllerTranslator),
+    m_touchTranslator(new KEYMAP::CTouchTranslator),
+    m_joystickTranslator(new KEYMAP::CJoystickMapper),
     m_keyboardEasterEgg(new KEYBOARD::CKeyboardEasterEgg)
 {
   m_buttonTranslator->RegisterMapper("touch", m_touchTranslator.get());
@@ -901,6 +901,11 @@ void CInputManager::RemoveKeymap(const std::string& keymap)
   }
 }
 
+const KEYMAP::IKeymapEnvironment* CInputManager::KeymapEnvironment() const
+{
+  return m_keymapEnvironment.get();
+}
+
 CAction CInputManager::GetAction(int window, const CKey& key, bool fallback /* = true */)
 {
   return m_buttonTranslator->GetAction(window, key, fallback);
@@ -923,7 +928,7 @@ bool CInputManager::TranslateTouchAction(
                                                  actionString);
 }
 
-std::vector<std::shared_ptr<const IWindowKeymap>> CInputManager::GetJoystickKeymaps() const
+std::vector<std::shared_ptr<const KEYMAP::IWindowKeymap>> CInputManager::GetJoystickKeymaps() const
 {
   return m_joystickTranslator->GetJoystickKeymaps();
 }

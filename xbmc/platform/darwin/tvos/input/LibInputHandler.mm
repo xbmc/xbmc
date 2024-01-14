@@ -13,8 +13,8 @@
 #include "application/ApplicationPowerHandling.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "input/CustomControllerTranslator.h"
 #include "input/InputManager.h"
+#include "input/keymaps/remote/CustomControllerTranslator.h"
 #include "utils/log.h"
 
 #import "platform/darwin/tvos/input/LibInputRemote.h"

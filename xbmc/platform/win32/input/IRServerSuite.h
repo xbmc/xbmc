@@ -9,7 +9,7 @@
 #pragma once
 
 #include "IrssMessage.h"
-#include "input/IRTranslator.h"
+#include "input/keymaps/remote/IRTranslator.h"
 #include "threads/Event.h"
 #include "threads/Thread.h"
 
@@ -43,5 +43,5 @@ private:
   SOCKET m_socket;
   CEvent m_event;
   CCriticalSection m_critSection;
-  CIRTranslator m_irTranslator;
+  KODI::KEYMAP::CIRTranslator m_irTranslator;
 };

@@ -10,10 +10,10 @@
 
 #include "ServiceBroker.h"
 #include "games/controllers/ControllerIDs.h"
-#include "input/IKeymap.h"
 #include "input/actions/ActionIDs.h"
 #include "input/joysticks/JoystickUtils.h"
 #include "input/joysticks/interfaces/IButtonMap.h"
+#include "input/keymaps/interfaces/IKeymap.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "peripherals/Peripherals.h"
 #include "utils/Variant.h"
@@ -69,7 +69,7 @@ void CGUIDialogButtonCapture::Process()
 }
 
 bool CGUIDialogButtonCapture::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
-                                           IKeymap* keymap,
+                                           KEYMAP::IKeymap* keymap,
                                            const JOYSTICK::CDriverPrimitive& primitive)
 {
   if (m_bStop)

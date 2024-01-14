@@ -13,10 +13,13 @@
 #include <map>
 #include <string>
 
-class IKeymap;
-
 namespace KODI
 {
+namespace KEYMAP
+{
+class IKeymap;
+} // namespace KEYMAP
+
 namespace JOYSTICK
 {
 class CDriverPrimitive;
@@ -75,7 +78,7 @@ public:
    * \return True if driver primitive was mapped to a feature
    */
   virtual bool MapPrimitive(IButtonMap* buttonMap,
-                            IKeymap* keyMap,
+                            KEYMAP::IKeymap* keyMap,
                             const CDriverPrimitive& primitive) = 0;
 
   /*!

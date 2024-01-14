@@ -18,6 +18,11 @@
 
 namespace KODI
 {
+namespace KEYMAP
+{
+class IKeymap;
+} // namespace KEYMAP
+
 namespace GAME
 {
 /*!
@@ -34,7 +39,7 @@ public:
   std::string ControllerID() const override;
   bool NeedsCooldown() const override { return false; }
   bool MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
-                    IKeymap* keymap,
+                    KEYMAP::IKeymap* keymap,
                     const JOYSTICK::CDriverPrimitive& primitive) override;
   void OnEventFrame(const JOYSTICK::IButtonMap* buttonMap, bool bMotion) override {}
   void OnLateAxis(const JOYSTICK::IButtonMap* buttonMap, unsigned int axisIndex) override {}
@@ -54,7 +59,7 @@ protected:
   virtual std::string GetDialogText() = 0;
   virtual std::string GetDialogHeader() = 0;
   virtual bool MapPrimitiveInternal(JOYSTICK::IButtonMap* buttonMap,
-                                    IKeymap* keymap,
+                                    KEYMAP::IKeymap* keymap,
                                     const JOYSTICK::CDriverPrimitive& primitive) = 0;
   virtual void OnClose(bool bAccepted) = 0;
 
