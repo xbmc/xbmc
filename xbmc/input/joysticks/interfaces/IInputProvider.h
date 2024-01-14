@@ -16,6 +16,7 @@ class IInputHandler;
 
 /*!
  * \ingroup joystick
+ *
  * \brief Interface for classes that can provide input
  */
 class IInputProvider

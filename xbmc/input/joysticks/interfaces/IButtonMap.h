@@ -20,6 +20,7 @@ namespace JOYSTICK
 {
 /*!
  * \ingroup joystick
+ *
  * \brief Button map interface to translate between the driver's raw
  *        button/hat/axis elements and physical joystick features.
  *

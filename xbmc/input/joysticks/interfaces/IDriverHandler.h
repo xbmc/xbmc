@@ -15,6 +15,8 @@ namespace KODI
 namespace JOYSTICK
 {
 /*!
+ * \ingroup joystick
+ *
  * \brief Interface defining methods to handle joystick events for raw driver
  *        elements (buttons, hats, axes)
  */

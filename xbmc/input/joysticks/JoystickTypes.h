@@ -8,15 +8,13 @@
 
 #pragma once
 
-/*!
- \file
- \ingroup joystick
- */
-
 #include "input/InputTypes.h"
 
 #include <set>
 #include <string>
+
+/// \ingroup joystick
+/// \{
 
 namespace KODI
 {
@@ -184,3 +182,5 @@ struct KeymapActionGroup
 };
 } // namespace JOYSTICK
 } // namespace KODI
+
+/// \}

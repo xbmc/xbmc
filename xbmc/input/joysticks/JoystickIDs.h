@@ -8,6 +8,17 @@
 
 #pragma once
 
-// Analog sticks on the default controller
+/// \ingroup joystick
+/// \{
+
+/*!
+ * \brief Left analog stick on the default controller
+ */
 #define DEFAULT_LEFT_STICK_NAME "leftstick"
+
+/*!
+ * \brief Right analog stick on the default controller
+ */
 #define DEFAULT_RIGHT_STICK_NAME "rightstick"
+
+/// \}

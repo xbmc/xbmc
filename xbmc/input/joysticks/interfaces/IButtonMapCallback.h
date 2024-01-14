@@ -13,6 +13,8 @@ namespace KODI
 namespace JOYSTICK
 {
 /*!
+ * \ingroup joystick
+ *
  * \brief Interface for handling button maps
  */
 class IButtonMapCallback

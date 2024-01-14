@@ -31,6 +31,8 @@ class IButtonMap;
 class IButtonMapper;
 
 /*!
+ * \ingroup joystick
+ *
  * \brief Detects and dispatches mapping events
  *
  * A mapping event usually occurs when a driver primitive is pressed or
@@ -56,6 +58,8 @@ private:
 };
 
 /*!
+ * \ingroup joystick
+ *
  * \brief Detects when a button should be mapped
  */
 class CButtonDetector : public CPrimitiveDetector
@@ -79,6 +83,8 @@ private:
 };
 
 /*!
+ * \ingroup joystick
+ *
  * \brief Detects when a D-pad direction should be mapped
  */
 class CHatDetector : public CPrimitiveDetector
@@ -109,6 +115,8 @@ struct AxisConfiguration
 };
 
 /*!
+ * \ingroup joystick
+ *
  * \brief Detects when an axis should be mapped
  */
 class CAxisDetector : public CPrimitiveDetector
@@ -222,6 +230,8 @@ private:
 };
 
 /*!
+ * \ingroup joystick
+ *
  * \brief Detects when a keyboard key should be mapped
  */
 class CKeyDetector : public CPrimitiveDetector
@@ -245,6 +255,8 @@ private:
 };
 
 /*!
+ * \ingroup joystick
+ *
  * \brief Detects when a mouse button should be mapped
  */
 class CMouseButtonDetector : public CPrimitiveDetector
@@ -268,6 +280,8 @@ private:
 };
 
 /*!
+ * \ingroup joystick
+ *
  * \brief Detects when a mouse button should be mapped
  */
 class CPointerDetector : public CPrimitiveDetector
@@ -301,6 +315,7 @@ private:
 
 /*!
  * \ingroup joystick
+ *
  * \brief Generic implementation of a class that provides button mapping by
  *        translating driver events to button mapping commands
  *

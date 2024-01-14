@@ -19,6 +19,9 @@ namespace JOYSTICK
 {
 class IInputReceiver;
 
+/*!
+ * \ingroup joystick
+ */
 class CRumbleGenerator : public CThread
 {
 public:

@@ -20,6 +20,7 @@ namespace JOYSTICK
 {
 /*!
  * \ingroup joystick
+ *
  * \brief Basic driver element associated with input events
  *
  * Driver input (bools, floats and enums) is split into primitives that better

@@ -14,6 +14,9 @@ namespace KODI
 {
 namespace JOYSTICK
 {
+/*!
+ * \ingroup joystick
+ */
 class IButtonSequence
 {
 public:

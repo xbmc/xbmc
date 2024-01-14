@@ -17,6 +17,8 @@ namespace JOYSTICK
 class CDriverPrimitive;
 
 /*!
+ * \ingroup joystick
+ *
  * \brief Joystick translation utilities
  */
 class CJoystickTranslator

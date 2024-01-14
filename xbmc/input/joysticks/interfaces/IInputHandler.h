@@ -20,6 +20,7 @@ class IInputReceiver;
 
 /*!
  * \ingroup joystick
+ *
  * \brief Interface for handling input events for game controllers
  */
 class IInputHandler
