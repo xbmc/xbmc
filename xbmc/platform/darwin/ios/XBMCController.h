@@ -6,7 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "input/XBMC_keysym.h"
+#include "input/keyboard/XBMC_keysym.h"
 #include "windowing/XBMC_events.h"
 
 #import "platform/darwin/ios-common/DarwinEmbedNowPlayingInfoManager.h"

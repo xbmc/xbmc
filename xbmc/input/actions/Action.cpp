@@ -10,7 +10,8 @@
 
 #include "ActionIDs.h"
 #include "ActionTranslator.h"
-#include "input/Key.h"
+#include "input/keyboard/Key.h"
+#include "input/keyboard/KeyIDs.h"
 
 using namespace KODI;
 using namespace ACTION;

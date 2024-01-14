@@ -17,6 +17,9 @@
 
 #include <stdint.h>
 
+/// \ingroup keyboard
+/// \{
+
 /* Keysym structure
    - The scancode is hardware dependent, and should not be used by general
      applications.  If no hardware scancode is available, it will be 0.
@@ -33,13 +36,15 @@
                 An international character..
         }
  */
-typedef struct XBMC_keysym
+struct XBMC_keysym
 {
   unsigned char scancode; /* hardware specific scancode */
   XBMCKey sym; /* SDL virtual keysym */
   XBMCMod mod; /* current key modifiers */
   uint16_t unicode; /* translated character */
-} XBMC_keysym;
+};
 
 /* This is the mask which refers to all hotkey bindings */
 #define XBMC_ALL_HOTKEYS 0xFFFFFFFF
+
+/// \}

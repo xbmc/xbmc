@@ -8,8 +8,8 @@
 
 #include "input/keyboard/KeyboardEasterEgg.h"
 
-#include "input/Key.h"
 #include "input/joysticks/JoystickEasterEgg.h"
+#include "input/keyboard/Key.h"
 
 using namespace KODI;
 using namespace KEYBOARD;

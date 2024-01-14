@@ -11,9 +11,15 @@
 #include <stdint.h>
 #include <string>
 
-typedef struct struct_XBMCKEYTABLE
+namespace KODI
 {
+namespace KEYBOARD
+{
+/// \ingroup keyboard
+/// \{
 
+struct XBMCKEYTABLE
+{
   // The sym is a value that identifies which key was pressed. Note
   // that it specifies the key not the character so it is unaffected by
   // shift, control, etc.
@@ -33,11 +39,17 @@ typedef struct struct_XBMCKEYTABLE
   // this is used in the mapping table.
   uint32_t vkey;
   const char* keyname;
+};
 
-} XBMCKEYTABLE;
+struct KeyTable
+{
+  static bool LookupName(std::string keyname, XBMCKEYTABLE* keytable);
+  static bool LookupSym(uint16_t sym, XBMCKEYTABLE* keytable);
+  static bool LookupUnicode(uint16_t unicode, XBMCKEYTABLE* keytable);
+  static bool LookupSymAndUnicode(uint16_t sym, uint16_t unicode, XBMCKEYTABLE* keytable);
+  static bool LookupVKeyName(uint32_t vkey, XBMCKEYTABLE* keytable);
+};
 
-bool KeyTableLookupName(std::string keyname, XBMCKEYTABLE* keytable);
-bool KeyTableLookupSym(uint16_t sym, XBMCKEYTABLE* keytable);
-bool KeyTableLookupUnicode(uint16_t unicode, XBMCKEYTABLE* keytable);
-bool KeyTableLookupSymAndUnicode(uint16_t sym, uint16_t unicode, XBMCKEYTABLE* keytable);
-bool KeyTableLookupVKeyName(uint32_t vkey, XBMCKEYTABLE* keytable);
+/// \}
+} // namespace KEYBOARD
+} // namespace KODI

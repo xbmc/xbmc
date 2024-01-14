@@ -15,7 +15,8 @@ namespace KEYBOARD
 class IKeyboardInputHandler;
 
 /*!
- * \ingroup mouse
+ * \ingroup keyboard
+ *
  * \brief Interface for classes that can provide keyboard input
  */
 class IKeyboardInputProvider

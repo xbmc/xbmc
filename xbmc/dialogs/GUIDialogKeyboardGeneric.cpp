@@ -18,9 +18,11 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/InputCodingTable.h"
-#include "input/Key.h"
-#include "input/KeyboardLayoutManager.h"
-#include "input/XBMC_vkeys.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
+#include "input/keyboard/KeyIDs.h"
+#include "input/keyboard/KeyboardLayoutManager.h"
+#include "input/keyboard/XBMC_vkeys.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/Settings.h"
@@ -37,7 +39,8 @@
 
 #include <mutex>
 
-using namespace KODI::MESSAGING;
+using namespace KODI;
+using namespace MESSAGING;
 
 #define BUTTON_ID_OFFSET      100
 #define BUTTONS_PER_ROW        20
@@ -124,7 +127,7 @@ CGUIDialogKeyboardGeneric::CGUIDialogKeyboardGeneric()
   m_bIsConfirmed = false;
   m_bShift = false;
   m_hiddenInput = false;
-  m_keyType = LOWER;
+  m_keyType = KEY_TYPE::LOWER;
   m_currentLayout = 0;
   m_loadType = KEEP_IN_MEMORY;
   m_isKeyboardNavigationMode = false;
@@ -175,7 +178,8 @@ void CGUIDialogKeyboardGeneric::OnInitWindow()
   // fill in the keyboard layouts
   m_currentLayout = 0;
   m_layouts.clear();
-  const KeyboardLayouts& keyboardLayouts = CServiceBroker::GetKeyboardLayoutManager()->GetLayouts();
+  const KEYBOARD::KeyboardLayouts& keyboardLayouts =
+      CServiceBroker::GetKeyboardLayoutManager()->GetLayouts();
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   std::vector<CVariant> layoutNames = settings->GetList(CSettings::SETTING_LOCALE_KEYBOARDLAYOUTS);
   std::string activeLayout = settings->GetString(CSettings::SETTING_LOCALE_ACTIVEKEYBOARDLAYOUT);
@@ -316,10 +320,10 @@ bool CGUIDialogKeyboardGeneric::OnMessage(CGUIMessage& message)
         OnShift();
         break;
       case CTL_BUTTON_CAPS:
-        if (m_keyType == LOWER)
-          m_keyType = CAPS;
-        else if (m_keyType == CAPS)
-          m_keyType = LOWER;
+        if (m_keyType == KEY_TYPE::LOWER)
+          m_keyType = KEY_TYPE::CAPS;
+        else if (m_keyType == KEY_TYPE::CAPS)
+          m_keyType = KEY_TYPE::LOWER;
         UpdateButtons();
         break;
       case CTL_BUTTON_LAYOUT:
@@ -493,12 +497,13 @@ void CGUIDialogKeyboardGeneric::OnClickButton(int iButtonControl)
 void CGUIDialogKeyboardGeneric::UpdateButtons()
 {
   SET_CONTROL_SELECTED(GetID(), CTL_BUTTON_SHIFT, m_bShift);
-  SET_CONTROL_SELECTED(GetID(), CTL_BUTTON_CAPS, m_keyType == CAPS);
-  SET_CONTROL_SELECTED(GetID(), CTL_BUTTON_SYMBOLS, m_keyType == SYMBOLS);
+  SET_CONTROL_SELECTED(GetID(), CTL_BUTTON_CAPS, m_keyType == KEY_TYPE::CAPS);
+  SET_CONTROL_SELECTED(GetID(), CTL_BUTTON_SYMBOLS, m_keyType == KEY_TYPE::SYMBOLS);
 
   if (m_currentLayout >= m_layouts.size())
     m_currentLayout = 0;
-  CKeyboardLayout layout = m_layouts.empty() ? CKeyboardLayout() : m_layouts[m_currentLayout];
+  KEYBOARD::CKeyboardLayout layout =
+      m_layouts.empty() ? KEYBOARD::CKeyboardLayout() : m_layouts[m_currentLayout];
   m_codingtable = layout.GetCodingTable();
   if (m_codingtable && !m_codingtable->IsInitialized())
     m_codingtable->Initialize();
@@ -531,14 +536,14 @@ void CGUIDialogKeyboardGeneric::UpdateButtons()
   }
   SET_CONTROL_LABEL(CTL_BUTTON_LAYOUT, layout.GetName());
 
-  unsigned int modifiers = CKeyboardLayout::ModifierKeyNone;
-  if ((m_keyType == CAPS && !m_bShift) || (m_keyType == LOWER && m_bShift))
-    modifiers |= CKeyboardLayout::ModifierKeyShift;
-  if (m_keyType == SYMBOLS)
+  unsigned int modifiers = KEYBOARD::CKeyboardLayout::ModifierKeyNone;
+  if ((m_keyType == KEY_TYPE::CAPS && !m_bShift) || (m_keyType == KEY_TYPE::LOWER && m_bShift))
+    modifiers |= KEYBOARD::CKeyboardLayout::ModifierKeyShift;
+  if (m_keyType == KEY_TYPE::SYMBOLS)
   {
-    modifiers |= CKeyboardLayout::ModifierKeySymbol;
+    modifiers |= KEYBOARD::CKeyboardLayout::ModifierKeySymbol;
     if (m_bShift)
-      modifiers |= CKeyboardLayout::ModifierKeyShift;
+      modifiers |= KEYBOARD::CKeyboardLayout::ModifierKeyShift;
   }
 
   for (unsigned int row = 0; row < BUTTONS_MAX_ROWS; row++)
@@ -589,17 +594,18 @@ void CGUIDialogKeyboardGeneric::OnLayout()
   m_currentLayout++;
   if (m_currentLayout >= m_layouts.size())
     m_currentLayout = 0;
-  CKeyboardLayout layout = m_layouts.empty() ? CKeyboardLayout() : m_layouts[m_currentLayout];
+  KEYBOARD::CKeyboardLayout layout =
+      m_layouts.empty() ? KEYBOARD::CKeyboardLayout() : m_layouts[m_currentLayout];
   CServiceBroker::GetSettingsComponent()->GetSettings()->SetString(CSettings::SETTING_LOCALE_ACTIVEKEYBOARDLAYOUT, layout.GetName());
   UpdateButtons();
 }
 
 void CGUIDialogKeyboardGeneric::OnSymbols()
 {
-  if (m_keyType == SYMBOLS)
-    m_keyType = LOWER;
+  if (m_keyType == KEY_TYPE::SYMBOLS)
+    m_keyType = KEY_TYPE::LOWER;
   else
-    m_keyType = SYMBOLS;
+    m_keyType = KEY_TYPE::SYMBOLS;
   UpdateButtons();
 }
 

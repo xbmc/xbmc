@@ -8,9 +8,9 @@
 
 #include "KeyboardInputHandling.h"
 
-#include "input/XBMC_keysym.h"
 #include "input/joysticks/DriverPrimitive.h"
 #include "input/joysticks/interfaces/IButtonMap.h"
+#include "input/keyboard/XBMC_keysym.h"
 #include "input/keyboard/interfaces/IKeyboardInputHandler.h"
 
 using namespace KODI;

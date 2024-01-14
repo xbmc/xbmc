@@ -10,7 +10,7 @@
 
 #include "Seat.h"
 #include "XkbcommonKeymap.h"
-#include "input/XBMC_keysym.h"
+#include "input/keyboard/XBMC_keysym.h"
 #include "threads/Timer.h"
 #include "windowing/XBMC_events.h"
 

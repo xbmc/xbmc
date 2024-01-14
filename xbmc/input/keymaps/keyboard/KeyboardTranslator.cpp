@@ -8,8 +8,9 @@
 
 #include "KeyboardTranslator.h"
 
-#include "input/Key.h"
-#include "input/XBMC_keytable.h"
+#include "input/keyboard/Key.h"
+#include "input/keyboard/KeyIDs.h"
+#include "input/keyboard/XBMC_keytable.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -83,10 +84,10 @@ uint32_t CKeyboardTranslator::TranslateButton(const tinyxml2::XMLElement* pButto
 uint32_t CKeyboardTranslator::TranslateString(const std::string& szButton)
 {
   uint32_t buttonCode = 0;
-  XBMCKEYTABLE keytable;
+  KEYBOARD::XBMCKEYTABLE keytable;
 
   // Look up the key name
-  if (KeyTableLookupName(szButton, &keytable))
+  if (KEYBOARD::KeyTable::LookupName(szButton, &keytable))
   {
     buttonCode = keytable.vkey;
   }

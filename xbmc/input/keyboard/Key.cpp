@@ -6,7 +6,9 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "input/Key.h"
+#include "Key.h"
+
+#include "KeyIDs.h"
 
 CKey::CKey(void)
 {

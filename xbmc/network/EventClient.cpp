@@ -13,7 +13,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/File.h"
 #include "guilib/LocalizeStrings.h"
-#include "input/Key.h"
+#include "input/keyboard/KeyIDs.h"
 #include "input/keymaps/ButtonTranslator.h"
 #include "input/keymaps/joysticks/GamepadTranslator.h"
 #include "input/keymaps/keyboard/KeyboardTranslator.h"

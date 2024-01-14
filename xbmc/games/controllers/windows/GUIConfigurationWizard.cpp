@@ -14,6 +14,7 @@
 #include "games/controllers/guicontrols/GUIFeatureButton.h"
 #include "games/controllers/input/PhysicalFeature.h"
 #include "input/InputManager.h"
+#include "input/actions/ActionIDs.h"
 #include "input/joysticks/JoystickUtils.h"
 #include "input/joysticks/interfaces/IButtonMap.h"
 #include "input/joysticks/interfaces/IButtonMapCallback.h"

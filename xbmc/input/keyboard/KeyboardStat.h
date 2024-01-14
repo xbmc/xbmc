@@ -24,12 +24,19 @@
 // ASCII/unicode could be derived from scancodes, virtual keys, modifiers and/or other
 // ASCII/unicode.
 
-#include "input/Key.h"
-#include "input/XBMC_keyboard.h"
+#include "input/keyboard/Key.h"
+#include "input/keyboard/XBMC_keyboard.h"
 
 #include <chrono>
 #include <string>
 
+namespace KODI
+{
+namespace KEYBOARD
+{
+/*!
+ * \ingroup keyboard
+ */
 class CKeyboardStat
 {
 public:
@@ -51,3 +58,5 @@ private:
   XBMC_keysym m_lastKeysym;
   std::chrono::time_point<std::chrono::steady_clock> m_lastKeyTime;
 };
+} // namespace KEYBOARD
+} // namespace KODI

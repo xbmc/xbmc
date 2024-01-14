@@ -7,7 +7,7 @@
  */
 #include "ButtonStat.h"
 
-#include "xbmc/input/InputTypes.h"
+#include "input/keyboard/KeyboardTypes.h"
 
 using namespace KODI;
 using namespace KEYMAP;
@@ -17,7 +17,7 @@ CButtonStat::CButtonStat() = default;
 CKey CButtonStat::TranslateKey(const CKey& key) const
 {
   uint32_t buttonCode = key.GetButtonCode();
-  if (key.GetHeld() > INPUT::HOLD_TRESHOLD)
+  if (key.GetHeld() > KEYBOARD::KEY_HOLD_TRESHOLD)
     buttonCode |= CKey::MODIFIER_LONG;
 
   CKey translatedKey(buttonCode, key.GetHeld());

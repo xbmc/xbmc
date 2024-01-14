@@ -12,7 +12,7 @@
 #include "application/AppInboundProtocol.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "input/Key.h"
+#include "input/actions/ActionIDs.h"
 
 #include <cmath>
 

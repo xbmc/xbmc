@@ -11,7 +11,7 @@
 #include "FileItem.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/LocalizeStrings.h"
-#include "input/Key.h"
+#include "input/actions/ActionIDs.h"
 #include "utils/StringUtils.h"
 
 #include <memory>

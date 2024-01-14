@@ -13,7 +13,7 @@
 #include "Tuple.h"
 #include "guilib/GUIControl.h"
 #include "guilib/GUIFont.h"
-#include "input/Key.h"
+#include "input/actions/ActionIDs.h"
 #include "swighelper.h"
 #include "utils/ColorUtils.h"
 

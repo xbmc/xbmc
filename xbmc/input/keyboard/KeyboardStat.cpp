@@ -14,16 +14,16 @@
 #include "KeyboardStat.h"
 
 #include "ServiceBroker.h"
-#include "input/InputTypes.h"
-#include "input/XBMC_keytable.h"
-#include "input/XBMC_vkeys.h"
+#include "input/keyboard/KeyboardTypes.h"
+#include "input/keyboard/XBMC_keytable.h"
+#include "input/keyboard/XBMC_vkeys.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/devices/PeripheralHID.h"
 #include "utils/log.h"
 #include "windowing/XBMC_events.h"
 
 using namespace KODI;
-using namespace INPUT;
+using namespace KEYBOARD;
 
 bool operator==(const XBMC_keysym& lhs, const XBMC_keysym& rhs)
 {
@@ -111,7 +111,7 @@ CKey CKeyboardStat::TranslateKey(XBMC_keysym& keysym) const
 
   // Continue by trying to match both the sym and unicode. This will identify
   // the majority of keypresses
-  else if (KeyTableLookupSymAndUnicode(keysym.sym, keysym.unicode, &keytable))
+  else if (KeyTable::LookupSymAndUnicode(keysym.sym, keysym.unicode, &keytable))
   {
     vkey = keytable.vkey;
     ascii = keytable.ascii;
@@ -119,7 +119,7 @@ CKey CKeyboardStat::TranslateKey(XBMC_keysym& keysym) const
 
   // If we failed to match the sym and unicode try just the unicode. This
   // will match keys like \ that are on different keys on regional keyboards.
-  else if (KeyTableLookupUnicode(keysym.unicode, &keytable))
+  else if (KeyTable::LookupUnicode(keysym.unicode, &keytable))
   {
     if (keycode == 0)
       keycode = keytable.sym;
@@ -128,7 +128,7 @@ CKey CKeyboardStat::TranslateKey(XBMC_keysym& keysym) const
   }
 
   // If there is still no match try the sym
-  else if (KeyTableLookupSym(keysym.sym, &keytable))
+  else if (KeyTable::LookupSym(keysym.sym, &keytable))
   {
     vkey = keytable.vkey;
 
@@ -169,7 +169,7 @@ CKey CKeyboardStat::TranslateKey(XBMC_keysym& keysym) const
     auto now = std::chrono::steady_clock::now();
 
     held = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_lastKeyTime);
-    if (held.count() > HOLD_TRESHOLD)
+    if (held.count() > KEY_HOLD_TRESHOLD)
       modifiers |= CKey::MODIFIER_LONG;
   }
 
@@ -236,7 +236,7 @@ std::string CKeyboardStat::GetKeyName(int KeyID)
   // Now get the key name
 
   keyid = KeyID & 0xFF;
-  bool VKeyFound = KeyTableLookupVKeyName(keyid, &keytable);
+  bool VKeyFound = KeyTable::LookupVKeyName(keyid, &keytable);
   if (VKeyFound)
     keyname.append(keytable.keyname);
   else

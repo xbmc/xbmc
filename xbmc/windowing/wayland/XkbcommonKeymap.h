@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "input/XBMC_keysym.h"
+#include "input/keyboard/XBMC_keysym.h"
 
 #include <cstdint>
 #include <memory>

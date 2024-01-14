@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "input/XBMC_vkeys.h"
+#include "input/keyboard/XBMC_vkeys.h"
 #include "input/keyboard/interfaces/IKeyboardDriverHandler.h"
 
 #include <vector>
@@ -18,6 +18,8 @@ namespace KODI
 namespace KEYBOARD
 {
 /*!
+ * \ingroup keyboard
+ *
  * \brief Hush!!!
  */
 class CKeyboardEasterEgg : public IKeyboardDriverHandler

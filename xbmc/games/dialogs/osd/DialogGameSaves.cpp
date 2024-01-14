@@ -26,7 +26,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
-#include "input/Key.h"
+#include "input/actions/ActionIDs.h"
 #include "utils/FileUtils.h"
 #include "utils/Variant.h"
 #include "view/GUIViewControl.h"

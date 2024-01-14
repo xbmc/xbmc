@@ -16,6 +16,7 @@ namespace KEYBOARD
 {
 /*!
  * \ingroup keyboard
+ *
  * \brief Interface for handling keyboard events
  */
 class IKeyboardDriverHandler

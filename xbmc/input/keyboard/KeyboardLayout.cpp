@@ -8,8 +8,8 @@
 
 #include "KeyboardLayout.h"
 
-#include "InputCodingTableFactory.h"
 #include "guilib/LocalizeStrings.h"
+#include "input/InputCodingTableFactory.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
@@ -18,6 +18,9 @@
 #include <set>
 
 #include <tinyxml2.h>
+
+using namespace KODI;
+using namespace KEYBOARD;
 
 CKeyboardLayout::~CKeyboardLayout() = default;
 

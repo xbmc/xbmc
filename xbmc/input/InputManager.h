@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include "input/KeyboardStat.h"
 #include "input/actions/Action.h"
 #include "input/actions/interfaces/IActionListener.h"
+#include "input/keyboard/KeyboardStat.h"
 #include "input/keymaps/ButtonStat.h"
 #include "input/mouse/MouseStat.h"
 #include "input/mouse/interfaces/IMouseInputProvider.h"
@@ -285,7 +285,7 @@ private:
    */
   void ProcessQueuedActions();
 
-  CKeyboardStat m_Keyboard;
+  KODI::KEYBOARD::CKeyboardStat m_Keyboard;
   KODI::KEYMAP::CButtonStat m_buttonStat;
   CMouseStat m_Mouse;
   CKey m_LastKey;

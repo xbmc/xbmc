@@ -79,7 +79,6 @@ class CLog;
 class CPlatform;
 class CTextureCache;
 class CJobManager;
-class CKeyboardLayoutManager;
 class CSlideShowDelegator;
 
 namespace WSDiscovery
@@ -99,6 +98,11 @@ namespace GAME
 class CControllerManager;
 class CGameServices;
 } // namespace GAME
+
+namespace KEYBOARD
+{
+class CKeyboardLayoutManager;
+} // namespace KEYBOARD
 
 namespace RETRO
 {
@@ -212,9 +216,9 @@ public:
   static std::shared_ptr<KODI::MESSAGING::CApplicationMessenger> GetAppMessenger();
 
   static void RegisterKeyboardLayoutManager(
-      const std::shared_ptr<CKeyboardLayoutManager>& keyboardLayoutManager);
+      const std::shared_ptr<KODI::KEYBOARD::CKeyboardLayoutManager>& keyboardLayoutManager);
   static void UnregisterKeyboardLayoutManager();
-  static std::shared_ptr<CKeyboardLayoutManager> GetKeyboardLayoutManager();
+  static std::shared_ptr<KODI::KEYBOARD::CKeyboardLayoutManager> GetKeyboardLayoutManager();
 
   static void RegisterSpeechRecognition(
       const std::shared_ptr<speech::ISpeechRecognition>& speechRecognition);
@@ -235,7 +239,7 @@ private:
   std::shared_ptr<CTextureCache> m_textureCache;
   std::shared_ptr<CJobManager> m_jobManager;
   std::shared_ptr<KODI::MESSAGING::CApplicationMessenger> m_appMessenger;
-  std::shared_ptr<CKeyboardLayoutManager> m_keyboardLayoutManager;
+  std::shared_ptr<KODI::KEYBOARD::CKeyboardLayoutManager> m_keyboardLayoutManager;
   std::shared_ptr<speech::ISpeechRecognition> m_speechRecognition;
   std::shared_ptr<CSlideShowDelegator> m_slideshowDelegator;
 };

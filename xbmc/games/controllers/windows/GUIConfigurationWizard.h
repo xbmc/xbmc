@@ -10,9 +10,9 @@
 
 #include "IConfigurationWindow.h"
 #include "games/controllers/input/PhysicalFeature.h"
-#include "input/XBMC_keysym.h"
 #include "input/joysticks/DriverPrimitive.h"
 #include "input/joysticks/interfaces/IButtonMapper.h"
+#include "input/keyboard/XBMC_keysym.h"
 #include "input/keyboard/interfaces/IKeyboardDriverHandler.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"

@@ -9,7 +9,7 @@
 #pragma once
 
 #include "Peripheral.h"
-#include "input/XBMC_keyboard.h"
+#include "input/keyboard/XBMC_keyboard.h"
 
 namespace PERIPHERALS
 {

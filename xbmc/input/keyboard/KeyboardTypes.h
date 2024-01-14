@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "input/Key.h"
-#include "input/XBMC_keysym.h"
+#include "input/keyboard/Key.h"
+#include "input/keyboard/XBMC_keysym.h"
 
 #include <string>
 
@@ -17,6 +17,9 @@ namespace KODI
 {
 namespace KEYBOARD
 {
+/// \ingroup keyboard
+/// \{
+
 /*!
  * \brief Symbol of a hardware-independent key
  */
@@ -36,5 +39,12 @@ using KeyName = std::string;
  * \todo Move CKey enum to this file
  */
 using Modifier = CKey::Modifier;
+
+/*!
+ * \brief Duration for which a keyboard key is considered held
+ */
+const unsigned int KEY_HOLD_TRESHOLD = 250;
+
+/// \}
 } // namespace KEYBOARD
 } // namespace KODI

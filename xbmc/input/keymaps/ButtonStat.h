@@ -8,8 +8,7 @@
 
 #pragma once
 
-#include "input/Key.h"
-#include "input/XBMC_keyboard.h"
+#include "input/keyboard/Key.h"
 
 #include <string>
 

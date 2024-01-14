@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "input/KeyboardLayout.h"
+#include "KeyboardLayout.h"
 
 #include <map>
 #include <string>
@@ -18,8 +18,18 @@
 class CSetting;
 struct StringSettingOption;
 
-typedef std::map<std::string, CKeyboardLayout> KeyboardLayouts;
+namespace KODI
+{
+namespace KEYBOARD
+{
+/*!
+ * \ingroup keyboard
+ */
+using KeyboardLayouts = std::map<std::string, CKeyboardLayout>;
 
+/*!
+ * \ingroup keyboard
+ */
 class CKeyboardLayoutManager
 {
 public:
@@ -43,3 +53,5 @@ private:
 
   KeyboardLayouts m_layouts;
 };
+} // namespace KEYBOARD
+} // namespace KODI

@@ -6,12 +6,17 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "input/XBMC_keytable.h"
+#include "input/keyboard/XBMC_keytable.h"
 
-#include "input/XBMC_keysym.h"
-#include "input/XBMC_vkeys.h"
+#include "input/keyboard/XBMC_keysym.h"
+#include "input/keyboard/XBMC_vkeys.h"
 #include "utils/StringUtils.h"
 
+using namespace KODI;
+using namespace KEYBOARD;
+
+namespace
+{
 // The array of XBMCKEYTABLEs used in XBMC.
 // scancode, sym, unicode, ascii, vkey, keyname
 static const XBMCKEYTABLE XBMCKeyTable[] = {
@@ -245,8 +250,9 @@ static const XBMCKEYTABLE XBMCKeyTable[] = {
     {XBMCK_EPG, 0, 0, XBMCVK_EPG, "epg"}};
 
 static int XBMCKeyTableSize = sizeof(XBMCKeyTable) / sizeof(XBMCKEYTABLE);
+} // namespace
 
-bool KeyTableLookupName(std::string keyname, XBMCKEYTABLE* keytable)
+bool KeyTable::LookupName(std::string keyname, XBMCKEYTABLE* keytable)
 {
   // If the name being searched for is empty there will be no match
   if (keyname.empty())
@@ -272,7 +278,7 @@ bool KeyTableLookupName(std::string keyname, XBMCKEYTABLE* keytable)
   return false;
 }
 
-bool KeyTableLookupSym(uint16_t sym, XBMCKEYTABLE* keytable)
+bool KeyTable::LookupSym(uint16_t sym, XBMCKEYTABLE* keytable)
 {
   // If the sym being searched for is zero there will be no match
   if (sym == 0)
@@ -292,7 +298,7 @@ bool KeyTableLookupSym(uint16_t sym, XBMCKEYTABLE* keytable)
   return false;
 }
 
-bool KeyTableLookupUnicode(uint16_t unicode, XBMCKEYTABLE* keytable)
+bool KeyTable::LookupUnicode(uint16_t unicode, XBMCKEYTABLE* keytable)
 {
   // If the unicode being searched for is zero there will be no match
   if (unicode == 0)
@@ -312,7 +318,7 @@ bool KeyTableLookupUnicode(uint16_t unicode, XBMCKEYTABLE* keytable)
   return false;
 }
 
-bool KeyTableLookupSymAndUnicode(uint16_t sym, uint16_t unicode, XBMCKEYTABLE* keytable)
+bool KeyTable::LookupSymAndUnicode(uint16_t sym, uint16_t unicode, XBMCKEYTABLE* keytable)
 {
   // If the sym being searched for is zero there will be no match (the
   // unicode can be zero if the sym is non-zero)
@@ -333,7 +339,7 @@ bool KeyTableLookupSymAndUnicode(uint16_t sym, uint16_t unicode, XBMCKEYTABLE* k
   return false;
 }
 
-bool KeyTableLookupVKeyName(uint32_t vkey, XBMCKEYTABLE* keytable)
+bool KeyTable::LookupVKeyName(uint32_t vkey, XBMCKEYTABLE* keytable)
 {
   // If the vkey being searched for is zero there will be no match
   if (vkey == 0)

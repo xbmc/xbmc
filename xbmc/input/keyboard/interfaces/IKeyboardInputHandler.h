@@ -19,6 +19,7 @@ namespace KEYBOARD
 {
 /*!
  * \ingroup keyboard
+ *
  * \brief Interface for handling input events for keyboards
  *
  * Input events are an abstraction over driver events. Keys are identified by

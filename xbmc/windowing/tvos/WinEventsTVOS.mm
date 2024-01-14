@@ -12,7 +12,7 @@
 #include "application/AppInboundProtocol.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/InputManager.h"
-#include "input/XBMC_vkeys.h"
+#include "input/keyboard/XBMC_vkeys.h"
 #include "threads/CriticalSection.h"
 #include "utils/log.h"
 

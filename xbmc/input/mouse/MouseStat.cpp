@@ -9,7 +9,7 @@
 #include "MouseStat.h"
 
 #include "ServiceBroker.h"
-#include "input/Key.h"
+#include "input/keyboard/KeyIDs.h"
 #include "utils/TimeUtils.h"
 #include "windowing/WinSystem.h"
 

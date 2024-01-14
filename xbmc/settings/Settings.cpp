@@ -18,7 +18,7 @@
 #include "filesystem/File.h"
 #include "guilib/GUIFontManager.h"
 #include "guilib/StereoscopicsManager.h"
-#include "input/KeyboardLayoutManager.h"
+#include "input/keyboard/KeyboardLayoutManager.h"
 
 #include <mutex>
 #if defined(TARGET_POSIX)
@@ -436,7 +436,8 @@ void CSettings::InitializeOptionFillers()
   GetSettingsManager()->RegisterSettingOptionsFiller("timezonecountries", CPosixTimezone::SettingOptionsTimezoneCountriesFiller);
   GetSettingsManager()->RegisterSettingOptionsFiller("timezones", CPosixTimezone::SettingOptionsTimezonesFiller);
 #endif
-  GetSettingsManager()->RegisterSettingOptionsFiller("keyboardlayouts", CKeyboardLayoutManager::SettingOptionsKeyboardLayoutsFiller);
+  GetSettingsManager()->RegisterSettingOptionsFiller(
+      "keyboardlayouts", KEYBOARD::CKeyboardLayoutManager::SettingOptionsKeyboardLayoutsFiller);
   GetSettingsManager()->RegisterSettingOptionsFiller(
       "filechunksizes", CServicesSettings::SettingOptionsChunkSizesFiller);
   GetSettingsManager()->RegisterSettingOptionsFiller(

@@ -8,7 +8,8 @@
 
 #include "GUIDialogPlayerProcessInfo.h"
 
-#include "input/Key.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
 
 CGUIDialogPlayerProcessInfo::CGUIDialogPlayerProcessInfo(void)
     : CGUIDialog(WINDOW_DIALOG_PLAYER_PROCESS_INFO, "DialogPlayerProcessInfo.xml")
