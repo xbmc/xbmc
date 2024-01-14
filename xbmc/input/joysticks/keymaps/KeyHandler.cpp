@@ -119,7 +119,8 @@ bool CKeyHandler::OnAnalogMotion(float magnitude, unsigned int motionTimeMs)
   // If specific action was sent last frame but not this one, send a release event
   if (dispatchAction.GetID() != m_lastAction.GetID())
   {
-    if (CActionTranslator::IsAnalog(m_lastAction.GetID()) && m_lastAction.GetAmount() > 0.0f)
+    if (ACTION::CActionTranslator::IsAnalog(m_lastAction.GetID()) &&
+        m_lastAction.GetAmount() > 0.0f)
     {
       m_lastAction.ClearAmount();
       m_actionHandler->OnAction(m_lastAction);
@@ -239,7 +240,7 @@ CAction CKeyHandler::ProcessAction(const KeymapAction& action,
   {
     // Don't send actions if the window has changed since being pressed
   }
-  else if (CActionTranslator::IsAnalog(action.actionId))
+  else if (ACTION::CActionTranslator::IsAnalog(action.actionId))
   {
     bSendAction = true;
   }

@@ -12,6 +12,9 @@
 #include "ActionTranslator.h"
 #include "input/Key.h"
 
+using namespace KODI;
+using namespace ACTION;
+
 CAction::CAction() : m_id(ACTION_NONE)
 {
 }

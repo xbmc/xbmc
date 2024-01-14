@@ -15,6 +15,9 @@
 
 #include <map>
 
+using namespace KODI;
+using namespace ACTION;
+
 namespace
 {
 using ActionName = std::string;

@@ -33,6 +33,7 @@
 
 #include <string.h>
 
+using namespace KODI;
 using namespace JSONRPC;
 
 bool CJSONRPC::m_initialized = false;
@@ -51,7 +52,7 @@ void CJSONRPC::Initialize()
   CJSONServiceDescription::AddEnum("Addon.Types", enumList);
 
   enumList.clear();
-  CActionTranslator::GetActions(enumList);
+  ACTION::CActionTranslator::GetActions(enumList);
   CJSONServiceDescription::AddEnum("Input.Action", enumList);
 
   enumList.clear();

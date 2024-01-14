@@ -18,8 +18,13 @@
 
 #include <tinyxml2.h>
 
+using namespace KODI;
+
+namespace
+{
 using ActionName = std::string;
 using TouchCommandID = unsigned int;
+} // namespace
 
 #define TOUCH_COMMAND_NONE 0
 
@@ -178,7 +183,7 @@ unsigned int CTouchTranslator::TranslateTouchCommand(const tinyxml2::XMLElement*
   unsigned int touchActionKey = GetTouchActionKey(touchCommandId, pointers);
 
   action.strAction = szAction;
-  if (!CActionTranslator::TranslateString(action.strAction, action.actionId) ||
+  if (!ACTION::CActionTranslator::TranslateString(action.strAction, action.actionId) ||
       action.actionId == ACTION_NONE)
     return ACTION_NONE;
 

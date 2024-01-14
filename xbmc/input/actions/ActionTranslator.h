@@ -11,6 +11,13 @@
 #include <string>
 #include <vector>
 
+namespace KODI
+{
+namespace ACTION
+{
+/*!
+ * \ingroup action
+ */
 class CActionTranslator
 {
 public:
@@ -18,3 +25,5 @@ public:
   static bool IsAnalog(unsigned int actionId);
   static bool TranslateString(std::string strAction, unsigned int& actionId);
 };
+} // namespace ACTION
+} // namespace KODI

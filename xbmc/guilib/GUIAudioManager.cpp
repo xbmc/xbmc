@@ -27,6 +27,8 @@
 
 #include <mutex>
 
+using namespace KODI;
+
 CGUIAudioManager::CGUIAudioManager()
   : m_settings(CServiceBroker::GetSettingsComponent()->GetSettings())
 {
@@ -266,7 +268,7 @@ bool CGUIAudioManager::Load()
       unsigned int id = ACTION_NONE;    // action identity
       if (pIdNode && pIdNode->FirstChild())
       {
-        CActionTranslator::TranslateString(pIdNode->FirstChild()->Value(), id);
+        ACTION::CActionTranslator::TranslateString(pIdNode->FirstChild()->Value(), id);
       }
 
       TiXmlNode* pFileNode = pAction->FirstChild("file");

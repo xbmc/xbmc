@@ -287,7 +287,7 @@ unsigned int CButtonTranslator::GetActionCode(int window,
 void CButtonTranslator::MapAction(uint32_t buttonCode, const std::string& szAction, buttonMap& map)
 {
   unsigned int action = ACTION_NONE;
-  if (!CActionTranslator::TranslateString(szAction, action) || buttonCode == 0)
+  if (!ACTION::CActionTranslator::TranslateString(szAction, action) || buttonCode == 0)
     return; // no valid action, or an invalid buttoncode
 
   // have a valid action, and a valid button - map it.
