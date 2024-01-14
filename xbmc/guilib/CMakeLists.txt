@@ -66,6 +66,7 @@ set(SOURCES DDSImage.cpp
             TextureBundle.cpp
             TextureBundleXBT.cpp
             Texture.cpp
+            TextureBase.cpp
             TextureManager.cpp
             VisibleEffect.cpp
             XBTF.cpp
@@ -148,6 +149,7 @@ set(HEADERS DDSImage.h
             LocalizeStrings.h
             StereoscopicsManager.h
             Texture.h
+            TextureBase.h
             TextureBundle.h
             TextureBundleXBT.h
             TextureManager.h
