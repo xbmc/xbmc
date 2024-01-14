@@ -17,11 +17,15 @@
 #include <vector>
 
 class CAction;
-class IActionListener;
 class IKeymap;
 
 namespace KODI
 {
+namespace ACTION
+{
+class IActionListener;
+} // namespace ACTION
+
 namespace JOYSTICK
 {
 class IKeymapHandler;
@@ -34,7 +38,7 @@ class CKeyHandler : public IKeyHandler
 {
 public:
   CKeyHandler(const std::string& keyName,
-              IActionListener* actionHandler,
+              ACTION::IActionListener* actionHandler,
               const IKeymap* keymap,
               IKeymapHandler* keymapHandler);
 
@@ -96,7 +100,7 @@ private:
 
   // Construction parameters
   const std::string m_keyName;
-  IActionListener* const m_actionHandler;
+  ACTION::IActionListener* const m_actionHandler;
   const IKeymap* const m_keymap;
   IKeymapHandler* const m_keymapHandler;
 

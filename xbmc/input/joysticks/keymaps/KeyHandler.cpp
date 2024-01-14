@@ -11,9 +11,9 @@
 #include "input/IKeymap.h"
 #include "input/actions/ActionIDs.h"
 #include "input/actions/ActionTranslator.h"
+#include "input/actions/interfaces/IActionListener.h"
 #include "input/joysticks/JoystickUtils.h"
 #include "input/joysticks/interfaces/IKeymapHandler.h"
-#include "interfaces/IActionListener.h"
 
 #include <algorithm>
 #include <assert.h>
@@ -27,7 +27,7 @@ using namespace JOYSTICK;
 #define REPEAT_TIMEOUT_MS 50
 
 CKeyHandler::CKeyHandler(const std::string& keyName,
-                         IActionListener* actionHandler,
+                         ACTION::IActionListener* actionHandler,
                          const IKeymap* keymap,
                          IKeymapHandler* keymapHandler)
   : m_keyName(keyName),

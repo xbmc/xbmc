@@ -10,10 +10,10 @@
 
 #include "input/KeyboardStat.h"
 #include "input/actions/Action.h"
+#include "input/actions/interfaces/IActionListener.h"
 #include "input/button/ButtonStat.h"
 #include "input/mouse/MouseStat.h"
 #include "input/mouse/interfaces/IMouseInputProvider.h"
-#include "interfaces/IActionListener.h"
 #include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 #include "utils/Observer.h"
@@ -60,7 +60,9 @@ class IMouseDriverHandler;
  * \copydoc keyboard
  * \copydoc mouse
  */
-class CInputManager : public ISettingCallback, public IActionListener, public Observable
+class CInputManager : public ISettingCallback,
+                      public KODI::ACTION::IActionListener,
+                      public Observable
 {
 public:
   CInputManager();

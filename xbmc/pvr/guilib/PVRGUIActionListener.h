@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "interfaces/IActionListener.h"
+#include "input/actions/interfaces/IActionListener.h"
 #include "settings/lib/ISettingCallback.h"
 
 namespace PVR
@@ -18,7 +18,7 @@ class CPVRManager;
 enum class ChannelSwitchMode;
 enum class PVREvent;
 
-class CPVRGUIActionListener : public IActionListener, public ISettingCallback
+class CPVRGUIActionListener : public KODI::ACTION::IActionListener, public ISettingCallback
 {
 public:
   CPVRGUIActionListener();

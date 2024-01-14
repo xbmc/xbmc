@@ -17,11 +17,15 @@
 #include <memory>
 #include <string>
 
-class IActionListener;
 class IKeymap;
 
 namespace KODI
 {
+namespace ACTION
+{
+class IActionListener;
+} // namespace ACTION
+
 namespace JOYSTICK
 {
 class IKeyHandler;
@@ -33,7 +37,7 @@ class IKeyHandler;
 class CKeymapHandler : public IKeymapHandler, public IInputHandler
 {
 public:
-  CKeymapHandler(IActionListener* actionHandler, const IKeymap* keymap);
+  CKeymapHandler(ACTION::IActionListener* actionHandler, const IKeymap* keymap);
 
   ~CKeymapHandler() override = default;
 
@@ -95,7 +99,7 @@ private:
   bool HasAction(const std::string& keyName) const;
 
   // Construction parameters
-  IActionListener* const m_actionHandler;
+  ACTION::IActionListener* const m_actionHandler;
   const IKeymap* const m_keymap;
 
   // Handlers for individual keys

@@ -10,15 +10,14 @@
 
 #include <string>
 
-#ifndef SWIG
-
 class CKey;
 
 /*!
-  \ingroup actionkeys
-  \brief class encapsulating information regarding a particular user action to be sent to windows
-  and controls
-  */
+ * \ingroup action
+ *
+ * \brief Class encapsulating information regarding a particular user action to
+ * be sent to windows and controls
+ */
 class CAction
 {
 public:
@@ -120,5 +119,3 @@ private:
   wchar_t m_unicode = 0;
   std::string m_text;
 };
-
-#endif

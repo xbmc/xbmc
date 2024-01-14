@@ -9,8 +9,7 @@
 #pragma once
 
 #include "guilib/ISliderCallback.h"
-#include "input/Key.h"
-#include "interfaces/IActionListener.h"
+#include "input/actions/interfaces/IActionListener.h"
 #include "utils/MovingSpeed.h"
 
 /*! \brief Player controller class to handle user actions.
@@ -19,7 +18,7 @@
  altering subtitles and audio tracks, changing aspect ratio, subtitle placement,
  and placement of the video on screen.
  */
-class CPlayerController : public ISliderCallback, public IActionListener
+class CPlayerController : public ISliderCallback, public KODI::ACTION::IActionListener
 {
 public:
   static CPlayerController& GetInstance();

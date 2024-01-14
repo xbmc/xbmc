@@ -1,5 +1,6 @@
 xbmc/input                                      input
 xbmc/input/actions                              input/actions
+xbmc/input/actions/interfaces                   input/actions/interfaces
 xbmc/input/button                               input/button
 xbmc/input/joysticks                            input/joysticks
 xbmc/input/joysticks/dialogs                    input/joysticks/dialogs

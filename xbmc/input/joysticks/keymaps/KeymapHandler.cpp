@@ -27,7 +27,7 @@
 using namespace KODI;
 using namespace JOYSTICK;
 
-CKeymapHandler::CKeymapHandler(IActionListener* actionHandler, const IKeymap* keymap)
+CKeymapHandler::CKeymapHandler(ACTION::IActionListener* actionHandler, const IKeymap* keymap)
   : m_actionHandler(actionHandler), m_keymap(keymap)
 {
   assert(m_actionHandler != nullptr);
