@@ -62,7 +62,7 @@ std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideo()
   m_videoExtras.Clear();
 
   std::shared_ptr<const CFileItem> result;
-  if (!m_item->HasVideoVersions())
+  if (!m_item->HasVideoVersions() && !m_item->HasVideoExtras())
     return result;
 
   CVideoDatabase db;
@@ -119,7 +119,7 @@ std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideoVersion()
     return {};
   }
 
-  return ChooseVideo(*dialog, 40210 /* Versions */, 40211 /* Extras */, m_videoVersions,
+  return ChooseVideo(*dialog, 40208 /* Choose version */, 40211 /* Extras */, m_videoVersions,
                      m_videoExtras);
 }
 
@@ -133,7 +133,7 @@ std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideoExtra()
     return {};
   }
 
-  return ChooseVideo(*dialog, 402011 /* Extras */, 40210 /* Versions */, m_videoExtras,
+  return ChooseVideo(*dialog, 40214 /* Choose extra */, 40210 /* Versions */, m_videoExtras,
                      m_videoVersions);
 }
 
@@ -171,13 +171,13 @@ std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideo(CGUIDialogSelect& di
 }
 } // unnamed namespace
 
-std::shared_ptr<CFileItem> CVideoVersionHelper::ChooseMovieFromVideoVersions(
+std::shared_ptr<CFileItem> CVideoVersionHelper::ChooseMovieFromVideoAssets(
     const std::shared_ptr<CFileItem>& item)
 {
-  std::shared_ptr<const CFileItem> videoVersion;
-  if (item->HasVideoVersions())
+  std::shared_ptr<const CFileItem> video;
+  if (item->HasVideoVersions() || item->HasVideoExtras())
   {
-    if (!item->GetProperty("needs_resolved_video_version").asBoolean(false))
+    if (!item->GetProperty("needs_resolved_video_asset").asBoolean(false))
     {
       // auto select the default video version
       const auto settings{CServiceBroker::GetSettingsComponent()->GetSettings()};
@@ -185,7 +185,7 @@ std::shared_ptr<CFileItem> CVideoVersionHelper::ChooseMovieFromVideoVersions(
       {
         if (item->GetVideoInfoTag()->IsDefaultVideoVersion())
         {
-          videoVersion = std::make_shared<const CFileItem>(*item);
+          video = std::make_shared<const CFileItem>(*item);
         }
         else
         {
@@ -201,27 +201,27 @@ std::shared_ptr<CFileItem> CVideoVersionHelper::ChooseMovieFromVideoVersions(
                                               item->GetVideoInfoTag()->m_iDbId, defaultVersion))
               CLog::LogF(LOGERROR, "Unable to get default version from video database!");
             else
-              videoVersion = std::make_shared<const CFileItem>(defaultVersion);
+              video = std::make_shared<const CFileItem>(defaultVersion);
           }
         }
       }
     }
 
-    if (!videoVersion && (item->GetProperty("needs_resolved_video_version").asBoolean(false) ||
-                          !item->GetProperty("has_resolved_video_version").asBoolean(false)))
+    if (!video && (item->GetProperty("needs_resolved_video_asset").asBoolean(false) ||
+                   !item->GetProperty("has_resolved_video_asset").asBoolean(false)))
     {
       CVideoChooser chooser{item};
-      chooser.EnableExtras(false);
+      chooser.EnableExtras(true);
       const auto result{chooser.ChooseVideo()};
       if (result)
-        videoVersion = result;
+        video = result;
       else
         return {};
     }
   }
 
-  if (videoVersion)
-    return std::make_shared<CFileItem>(*videoVersion);
+  if (video)
+    return std::make_shared<CFileItem>(*video);
 
   return item;
 }

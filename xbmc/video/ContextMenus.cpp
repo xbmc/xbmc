@@ -228,16 +228,16 @@ protected:
 
 bool CVideoChooseVersion::IsVisible(const CFileItem& item) const
 {
-  return item.HasVideoVersions();
+  return item.HasVideoVersions() || item.HasVideoExtras();
 }
 
 bool CVideoChooseVersion::Execute(const std::shared_ptr<CFileItem>& item) const
 {
   // force selection dialog, regardless of any settings like 'Select default video version'
-  item->SetProperty("needs_resolved_video_version", true);
+  item->SetProperty("needs_resolved_video_asset", true);
   CVideoSelectActionProcessor proc{item};
   const bool ret = proc.ProcessDefaultAction();
-  item->ClearProperty("needs_resolved_video_version");
+  item->ClearProperty("needs_resolved_video_asset");
   return ret;
 }
 
@@ -357,12 +357,12 @@ void SetPathAndPlay(const std::shared_ptr<CFileItem>& item, PlayMode mode)
     if (mode == PlayMode::PLAY_VERSION_USING)
     {
       // force video version selection dialog
-      itemCopy->SetProperty("needs_resolved_video_version", true);
+      itemCopy->SetProperty("needs_resolved_video_asset", true);
     }
     else
     {
       // play the given/default video version, if multiple versions are available
-      itemCopy->SetProperty("has_resolved_video_version", true);
+      itemCopy->SetProperty("has_resolved_video_asset", true);
     }
 
     const bool choosePlayer{mode == PlayMode::PLAY_USING || mode == PlayMode::PLAY_VERSION_USING};
@@ -436,7 +436,7 @@ bool CVideoPlayUsing::Execute(const std::shared_ptr<CFileItem>& itemIn) const
 
 bool CVideoPlayVersionUsing::IsVisible(const CFileItem& item) const
 {
-  return item.HasVideoVersions();
+  return item.HasVideoVersions() || item.HasVideoExtras();
 }
 
 bool CVideoPlayVersionUsing::Execute(const std::shared_ptr<CFileItem>& itemIn) const

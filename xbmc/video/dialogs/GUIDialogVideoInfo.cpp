@@ -805,7 +805,7 @@ void CGUIDialogVideoInfo::Play(bool resume)
   Close(true);
 
   // play the current video version, even if multiple versions are available
-  m_movieItem->SetProperty("has_resolved_video_version", true);
+  m_movieItem->SetProperty("has_resolved_video_asset", true);
 
   if (resume)
   {
@@ -834,7 +834,7 @@ void CGUIDialogVideoInfo::Play(bool resume)
     }
   }
 
-  m_movieItem->ClearProperty("has_resolved_video_version");
+  m_movieItem->ClearProperty("has_resolved_video_asset");
 }
 
 namespace
