@@ -30,7 +30,7 @@ public:
   bool HasVisibleControls() override;
 
 protected:
-  EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event) override;
+  EVENT_RESULT OnMouseEvent(const CPoint& point, const KODI::MOUSE::CMouseEvent& event) override;
 
 private:
   void SeekChapter(int iChapter);

@@ -13,10 +13,14 @@
 #include "GUIWindowManager.h"
 #include "ServiceBroker.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
-#include "input/Key.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
+#include "input/mouse/MouseEvent.h"
 #include "input/mouse/MouseStat.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
+
+using namespace KODI;
 
 static const SliderAction actions[] = {
     {"seek", "PlayerControl(SeekPercentage({:2f}))", PLAYER_PROGRESS, false},
@@ -676,7 +680,7 @@ void CGUISliderControl::SetFromPosition(const CPoint &point, bool guessSelector 
   SendClick();
 }
 
-EVENT_RESULT CGUISliderControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+EVENT_RESULT CGUISliderControl::OnMouseEvent(const CPoint& point, const MOUSE::CMouseEvent& event)
 {
   m_dragging = false;
   if (event.m_id == ACTION_MOUSE_DRAG || event.m_id == ACTION_MOUSE_DRAG_END)

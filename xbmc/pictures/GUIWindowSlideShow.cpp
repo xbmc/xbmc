@@ -25,7 +25,9 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/Texture.h"
-#include "input/Key.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
+#include "input/mouse/MouseEvent.h"
 #include "interfaces/AnnouncementManager.h"
 #include "pictures/GUIViewStatePictures.h"
 #include "pictures/PictureThumbLoader.h"
@@ -44,8 +46,9 @@
 #include <memory>
 #include <random>
 
+using namespace KODI;
+using namespace MESSAGING;
 using namespace XFILE;
-using namespace KODI::MESSAGING;
 using namespace std::chrono_literals;
 
 #define MAX_ZOOM_FACTOR                     10
@@ -698,7 +701,7 @@ void CGUIWindowSlideShow::Render()
     }
     else if (appPlayer)
     {
-      const UTILS::COLOR::Color alpha = gfxCtx.MergeAlpha(0xff000000) >> 24;
+      const ::UTILS::COLOR::Color alpha = gfxCtx.MergeAlpha(0xff000000) >> 24;
       appPlayer->Render(false, alpha);
     }
 
@@ -744,7 +747,7 @@ int CGUIWindowSlideShow::GetNextSlide()
   return m_iCurrentSlide;
 }
 
-EVENT_RESULT CGUIWindowSlideShow::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+EVENT_RESULT CGUIWindowSlideShow::OnMouseEvent(const CPoint& point, const MOUSE::CMouseEvent& event)
 {
   if (event.m_id == ACTION_GESTURE_NOTIFY)
   {

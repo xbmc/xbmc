@@ -2,7 +2,8 @@ set(SOURCES MouseStat.cpp
             MouseTranslator.cpp
 )
 
-set(HEADERS MouseStat.h
+set(HEADERS MouseEvent.h
+            MouseStat.h
             MouseTranslator.h
             MouseTypes.h
 )

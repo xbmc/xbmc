@@ -16,6 +16,7 @@ class IMouseInputHandler;
 
 /*!
  * \ingroup mouse
+ *
  * \brief Interface for classes that can provide mouse input
  */
 class IMouseInputProvider

@@ -48,7 +48,7 @@ public:
   void Render() override;
   bool OnAction(const CAction &action) override;
   void OnUnFocus() override;
-  EVENT_RESULT OnMouseEvent(const CPoint& point, const CMouseEvent& event) override;
+  EVENT_RESULT OnMouseEvent(const CPoint& point, const KODI::MOUSE::CMouseEvent& event) override;
   void SetActive();
   bool IsActive() const override { return m_active; }
   void AllocResources() override;

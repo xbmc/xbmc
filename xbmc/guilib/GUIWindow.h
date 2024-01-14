@@ -192,7 +192,7 @@ public:
 
   virtual void OnDeinitWindow(int nextWindowID);
 protected:
-  EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event) override;
+  EVENT_RESULT OnMouseEvent(const CPoint& point, const KODI::MOUSE::CMouseEvent& event) override;
 
   /*!
    \brief Load the window XML from the given path

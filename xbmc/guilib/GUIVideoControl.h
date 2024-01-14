@@ -30,7 +30,7 @@ public:
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
   void Render() override;
   void RenderEx() override;
-  EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event) override;
+  EVENT_RESULT OnMouseEvent(const CPoint& point, const KODI::MOUSE::CMouseEvent& event) override;
   bool CanFocus() const override;
   bool CanFocusFromPoint(const CPoint &point) const override;
 };

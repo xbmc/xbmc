@@ -17,6 +17,9 @@ namespace tinyxml2
 class XMLElement;
 }
 
+/*!
+ * \ingroup mouse
+ */
 class CMouseTranslator
 {
 public:

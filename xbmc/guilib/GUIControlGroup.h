@@ -42,7 +42,7 @@ public:
   void DynamicResourceAlloc(bool bOnOff) override;
   bool CanFocus() const override;
 
-  EVENT_RESULT SendMouseEvent(const CPoint &point, const CMouseEvent &event) override;
+  EVENT_RESULT SendMouseEvent(const CPoint& point, const KODI::MOUSE::CMouseEvent& event) override;
   void UnfocusFromPoint(const CPoint &point) override;
 
   void SetInitialVisibility() override;

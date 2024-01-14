@@ -14,8 +14,9 @@
 #include "GUIMessage.h"
 #include "ServiceBroker.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
-#include "input/Key.h"
 #include "guilib/listproviders/IListProvider.h"
+#include "input/Key.h"
+#include "input/mouse/MouseEvent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/CharsetConverter.h"
@@ -27,6 +28,8 @@
 #include "utils/log.h"
 
 #include <memory>
+
+using namespace KODI;
 
 #define HOLD_TIME_START 100
 #define HOLD_TIME_END   3000
@@ -765,7 +768,7 @@ bool CGUIBaseContainer::OnMouseOver(const CPoint &point)
   return CGUIControl::OnMouseOver(point);
 }
 
-EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint& point, const MOUSE::CMouseEvent& event)
 {
   if (event.m_id == ACTION_MOUSE_LEFT_CLICK ||
       event.m_id == ACTION_MOUSE_DOUBLE_CLICK ||

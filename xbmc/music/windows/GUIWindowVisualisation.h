@@ -21,7 +21,7 @@ public:
   bool OnAction(const CAction &action) override;
   void FrameMove() override;
 protected:
-  EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event) override;
+  EVENT_RESULT OnMouseEvent(const CPoint& point, const KODI::MOUSE::CMouseEvent& event) override;
 
   CStopWatch m_initTimer;
   CStopWatch m_lockedTimer;

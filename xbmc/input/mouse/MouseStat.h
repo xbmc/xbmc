@@ -10,6 +10,9 @@
 
 #include "windowing/XBMC_events.h"
 
+/// \ingroup mouse
+/// \{
+
 #define XBMC_BUTTON(X) (1 << ((X)-1))
 #define XBMC_BUTTON_LEFT 1
 #define XBMC_BUTTON_MIDDLE 2
@@ -225,3 +228,5 @@ private:
 
   uint32_t m_Key;
 };
+
+/// \}

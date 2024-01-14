@@ -84,7 +84,7 @@ public:
 protected:
   CGUISpinControl(const CGUISpinControl& control);
 
-  EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event) override;
+  EVENT_RESULT OnMouseEvent(const CPoint& point, const KODI::MOUSE::CMouseEvent& event) override;
   bool UpdateColors(const CGUIListItem* item) override;
   /*! \brief Render the spinner text
    \param posX position of the left edge of the text

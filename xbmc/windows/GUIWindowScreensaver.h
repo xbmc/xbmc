@@ -35,7 +35,7 @@ public:
   void Process(unsigned int currentTime, CDirtyRegionList& regions) override;
 
 protected:
-  EVENT_RESULT OnMouseEvent(const CPoint& point, const CMouseEvent& event) override;
+  EVENT_RESULT OnMouseEvent(const CPoint& point, const KODI::MOUSE::CMouseEvent& event) override;
 
 private:
   std::unique_ptr<KODI::ADDONS::CScreenSaver> m_addon;

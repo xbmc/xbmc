@@ -16,6 +16,7 @@ namespace MOUSE
 {
 /*!
  * \ingroup mouse
+ *
  * \brief Interface for handling mouse driver events
  */
 class IMouseDriverHandler

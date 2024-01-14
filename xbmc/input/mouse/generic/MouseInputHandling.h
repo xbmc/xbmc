@@ -24,6 +24,7 @@ class IMouseInputHandler;
 
 /*!
  * \ingroup mouse
+ *
  * \brief Class to translate input from driver info to higher-level features
  */
 class CMouseInputHandling : public IMouseDriverHandler

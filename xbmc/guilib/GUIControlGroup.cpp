@@ -9,9 +9,12 @@
 #include "GUIControlGroup.h"
 
 #include "GUIMessage.h"
+#include "input/mouse/MouseEvent.h"
 
 #include <cassert>
 #include <utility>
+
+using namespace KODI;
 
 CGUIControlGroup::CGUIControlGroup()
 {
@@ -351,7 +354,7 @@ bool CGUIControlGroup::HasAnimation(ANIMATION_TYPE animType)
   return false;
 }
 
-EVENT_RESULT CGUIControlGroup::SendMouseEvent(const CPoint &point, const CMouseEvent &event)
+EVENT_RESULT CGUIControlGroup::SendMouseEvent(const CPoint& point, const MOUSE::CMouseEvent& event)
 {
   // transform our position into child coordinates
   CPoint childPoint(point);

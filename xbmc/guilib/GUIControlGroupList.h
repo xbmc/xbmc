@@ -42,7 +42,7 @@ public:
   bool OnAction(const CAction& action) override;
   bool OnMessage(CGUIMessage& message) override;
 
-  EVENT_RESULT SendMouseEvent(const CPoint &point, const CMouseEvent &event) override;
+  EVENT_RESULT SendMouseEvent(const CPoint& point, const KODI::MOUSE::CMouseEvent& event) override;
   void UnfocusFromPoint(const CPoint &point) override;
 
   void AddControl(CGUIControl *control, int position = -1) override;
@@ -62,7 +62,7 @@ public:
   using CGUIControlGroup::GetFirstFocusableControl;
 
 protected:
-  EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event) override;
+  EVENT_RESULT OnMouseEvent(const CPoint& point, const KODI::MOUSE::CMouseEvent& event) override;
   bool IsControlOnScreen(float pos, const CGUIControl* control) const;
   void ValidateOffset();
   void CalculateItemGap();
