@@ -7884,7 +7884,10 @@ bool CVideoDatabase::GetSeasonsByWhere(const std::string& strBaseDir, const Filt
         if (iSeason == 0)
           pItem->SetProperty("isspecial", true);
         pItem->GetVideoInfoTag()->SetPlayCount((totalEpisodes == watchedEpisodes) ? 1 : 0);
-        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (pItem->GetVideoInfoTag()->GetPlayCount() > 0) && (pItem->GetVideoInfoTag()->m_iEpisode > 0));
+        pItem->SetOverlayImage((pItem->GetVideoInfoTag()->GetPlayCount() > 0) &&
+                                       (pItem->GetVideoInfoTag()->m_iEpisode > 0)
+                                   ? CGUIListItem::ICON_OVERLAY_WATCHED
+                                   : CGUIListItem::ICON_OVERLAY_UNWATCHED);
 
         items.Add(pItem);
       }
@@ -8188,7 +8191,8 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
         pItem->SetPath(path);
         pItem->SetDynPath(movie.m_strFileNameAndPath);
 
-        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.GetPlayCount() > 0);
+        pItem->SetOverlayImage(movie.GetPlayCount() > 0 ? CGUIListItem::ICON_OVERLAY_WATCHED
+                                                        : CGUIListItem::ICON_OVERLAY_UNWATCHED);
         items.Add(pItem);
       }
     }
@@ -8297,7 +8301,10 @@ bool CVideoDatabase::GetTvShowsByWhere(const std::string& strBaseDir, const Filt
         itemUrl.AppendPath(path);
         pItem->SetPath(itemUrl.ToString());
 
-        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (pItem->GetVideoInfoTag()->GetPlayCount() > 0) && (pItem->GetVideoInfoTag()->m_iEpisode > 0));
+        pItem->SetOverlayImage((pItem->GetVideoInfoTag()->GetPlayCount() > 0) &&
+                                       (pItem->GetVideoInfoTag()->m_iEpisode > 0)
+                                   ? CGUIListItem::ICON_OVERLAY_WATCHED
+                                   : CGUIListItem::ICON_OVERLAY_UNWATCHED);
         items.Add(pItem);
       }
     }
@@ -8433,7 +8440,8 @@ bool CVideoDatabase::GetEpisodesByWhere(const std::string& strBaseDir, const Fil
         pItem->SetPath(itemUrl.ToString());
         pItem->SetDynPath(episode.m_strFileNameAndPath);
 
-        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, episode.GetPlayCount() > 0);
+        pItem->SetOverlayImage(episode.GetPlayCount() > 0 ? CGUIListItem::ICON_OVERLAY_WATCHED
+                                                          : CGUIListItem::ICON_OVERLAY_UNWATCHED);
         pItem->m_dateTime = episode.m_firstAired;
         items.Add(pItem);
       }
@@ -9339,7 +9347,8 @@ bool CVideoDatabase::GetMusicVideosByWhere(const std::string &baseDir, const Fil
         item->SetPath(itemUrl.ToString());
         item->SetDynPath(musicvideo.m_strFileNameAndPath);
 
-        item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, musicvideo.GetPlayCount() > 0);
+        item->SetOverlayImage(musicvideo.GetPlayCount() > 0 ? CGUIListItem::ICON_OVERLAY_WATCHED
+                                                            : CGUIListItem::ICON_OVERLAY_UNWATCHED);
         items.Add(item);
       }
     }
@@ -12033,7 +12042,8 @@ void CVideoDatabase::GetVideoVersions(VideoDbContentType itemType,
 
         item->SetDynPath(infoTag.m_strFileNameAndPath);
 
-        item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, GetPlayCount(idFile) > 0);
+        item->SetOverlayImage(GetPlayCount(idFile) > 0 ? CGUIListItem::ICON_OVERLAY_WATCHED
+                                                       : CGUIListItem::ICON_OVERLAY_UNWATCHED);
 
         items.Add(item);
       }

@@ -1754,7 +1754,8 @@ void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
 
     m_pvrRecordingInfoTag = item.m_pvrRecordingInfoTag;
 
-    SetOverlayImage(ICON_OVERLAY_UNWATCHED, GetVideoInfoTag()->GetPlayCount() > 0);
+    SetOverlayImage(GetVideoInfoTag()->GetPlayCount() > 0 ? CGUIListItem::ICON_OVERLAY_WATCHED
+                                                          : CGUIListItem::ICON_OVERLAY_UNWATCHED);
     SetInvalid();
   }
   if (item.HasMusicInfoTag())
@@ -1818,7 +1819,8 @@ void CFileItem::MergeInfo(const CFileItem& item)
 
     m_pvrRecordingInfoTag = item.m_pvrRecordingInfoTag;
 
-    SetOverlayImage(ICON_OVERLAY_UNWATCHED, GetVideoInfoTag()->GetPlayCount() > 0);
+    SetOverlayImage(GetVideoInfoTag()->GetPlayCount() > 0 ? CGUIListItem::ICON_OVERLAY_WATCHED
+                                                          : CGUIListItem::ICON_OVERLAY_UNWATCHED);
     SetInvalid();
   }
   if (item.HasMusicInfoTag())

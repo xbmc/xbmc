@@ -60,7 +60,7 @@ public:
   void SetLabel2(const std::string& strLabel);
   const std::string& GetLabel2() const;
 
-  void SetOverlayImage(GUIIconOverlay icon, bool bOnOff=false);
+  void SetOverlayImage(GUIIconOverlay icon);
   std::string GetOverlayImage() const;
 
   /*! \brief Set a particular art type for an item

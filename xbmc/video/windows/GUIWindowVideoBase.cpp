@@ -727,9 +727,10 @@ void CGUIWindowVideoBase::LoadVideoInfo(CFileItemList& items,
 
       // set the watched overlay
       if (pItem->IsVideo())
-        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,
-                               pItem->HasVideoInfoTag() &&
-                                   pItem->GetVideoInfoTag()->GetPlayCount() > 0);
+        pItem->SetOverlayImage(pItem->HasVideoInfoTag() &&
+                                       pItem->GetVideoInfoTag()->GetPlayCount() > 0
+                                   ? CGUIListItem::ICON_OVERLAY_WATCHED
+                                   : CGUIListItem::ICON_OVERLAY_UNWATCHED);
     }
   }
 }

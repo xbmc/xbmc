@@ -100,7 +100,7 @@ void CSaveFileState::DoWork(CFileItem& item,
               // consider this item as played
               const CDateTime newLastPlayed = videodatabase.IncrementPlayCount(item);
 
-              item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, true);
+              item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED);
               updateListing = true;
 
               if (item.HasVideoInfoTag())

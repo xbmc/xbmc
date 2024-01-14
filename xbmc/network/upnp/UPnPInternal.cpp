@@ -1269,7 +1269,8 @@ std::shared_ptr<CFileItem> BuildObject(PLT_MediaObject* entry,
     }
     else if (type == MediaTypeEpisode || type == MediaTypeMovie)
       watched = (played > 0);
-    pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, watched);
+    pItem->SetOverlayImage(watched ? CGUIListItem::ICON_OVERLAY_WATCHED
+                                   : CGUIListItem::ICON_OVERLAY_UNWATCHED);
   }
   return pItem;
 }
