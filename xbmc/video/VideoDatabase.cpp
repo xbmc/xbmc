@@ -6302,7 +6302,14 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
   if (iVersion < 128)
   {
-    m_pDS2->exec("ALTER TABLE videoversion RENAME COLUMN mediaType TO media_type");
+    m_pDS->exec("CREATE TABLE videoversion_new "
+                "(idFile INTEGER PRIMARY KEY, idMedia INTEGER, media_type TEXT, "
+                " itemType INTEGER, idType INTEGER)");
+    m_pDS->exec("INSERT INTO videoversion_new "
+                " (idFile, idMedia, media_type, itemType, idType) "
+                "SELECT idFile, idMedia, mediaType, itemType, idType FROM videoversion");
+    m_pDS->exec("DROP TABLE videoversion");
+    m_pDS->exec("ALTER TABLE videoversion_new RENAME TO videoversion");
 
     // Fix gap in the migration to videodb v127 for unused user-defined video version types.
     // Unfortunately due to original design we cannot tell which ones were movie versions or
