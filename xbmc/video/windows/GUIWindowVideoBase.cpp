@@ -1480,7 +1480,6 @@ void CGUIWindowVideoBase::UpdateVideoVersionItems()
           videoVersionId = VIDEO_VERSION_ID_ALL;
           item->GetVideoInfoTag()->GetAssetInfo().SetId(videoVersionId);
           item->m_bIsFolder = true;
-          item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, true);
         }
 
         CVideoDbUrl itemUrl;
