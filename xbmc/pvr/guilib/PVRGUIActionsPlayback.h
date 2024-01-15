@@ -24,8 +24,6 @@ enum PlaybackType
   PlaybackTypeRadio
 };
 
-class CPVRStreamProperties;
-
 class CPVRGUIActionsPlayback : public IPVRComponent
 {
 public:
@@ -127,16 +125,6 @@ private:
    * @param bFullscreen switch to fullscreen or set windowed playback.
    */
   void CheckAndSwitchToFullscreen(bool bFullscreen) const;
-
-  /*!
-   * @brief Start playback of the given item.
-   * @param bFullscreen start playback fullscreen or not.
-   * @param epgProps properties to be used instead of calling to the client if supplied.
-   * @param item containing a channel or a recording.
-   */
-  void StartPlayback(CFileItem* item,
-                     bool bFullscreen,
-                     const CPVRStreamProperties* epgProps = nullptr) const;
 
   CPVRSettings m_settings;
 };

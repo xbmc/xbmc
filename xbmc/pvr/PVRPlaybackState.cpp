@@ -12,7 +12,9 @@
 #include "ServiceBroker.h"
 #include "XBDateTime.h"
 #include "cores/DataCacheCore.h"
+#include "messaging/ApplicationMessenger.h"
 #include "pvr/PVRManager.h"
+#include "pvr/PVRStreamProperties.h"
 #include "pvr/addons/PVRClient.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroup.h"
@@ -287,6 +289,48 @@ bool CPVRPlaybackState::OnPlaybackEnded(const CFileItem& item)
 {
   // Playback ended, but not due to user interaction
   return OnPlaybackStopped(item);
+}
+
+void CPVRPlaybackState::StartPlayback(CFileItem* item) const
+{
+  // Obtain dynamic playback url and properties from the respective pvr client
+  const std::shared_ptr<const CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(*item);
+  if (client)
+  {
+    CPVRStreamProperties props;
+
+    if (item->IsPVRChannel())
+    {
+      client->GetChannelStreamProperties(item->GetPVRChannelInfoTag(), props);
+    }
+    else if (item->IsPVRRecording())
+    {
+      client->GetRecordingStreamProperties(item->GetPVRRecordingInfoTag(), props);
+    }
+    else if (item->IsEPG())
+    {
+      client->GetEpgTagStreamProperties(item->GetEPGInfoTag(), props);
+    }
+
+    if (props.size())
+    {
+      const std::string url = props.GetStreamURL();
+      if (!url.empty())
+        item->SetDynPath(url);
+
+      const std::string mime = props.GetStreamMimeType();
+      if (!mime.empty())
+      {
+        item->SetMimeType(mime);
+        item->SetContentLookup(false);
+      }
+
+      for (const auto& prop : props)
+        item->SetProperty(prop.first, prop.second);
+    }
+  }
+
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
 }
 
 bool CPVRPlaybackState::IsPlaying() const

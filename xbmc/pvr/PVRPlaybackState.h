@@ -23,6 +23,7 @@ class CPVRChannelGroup;
 class CPVRChannelGroupMember;
 class CPVREpgInfoTag;
 class CPVRRecording;
+class CPVRStreamProperties;
 
 class CPVRPlaybackState
 {
@@ -66,6 +67,12 @@ public:
    * @return True, if the state has changed, false otherwise
    */
   bool OnPlaybackEnded(const CFileItem& item);
+
+  /*!
+   * @brief Start playback of the given item.
+   * @param item containing a channel, a recording or an epg tag.
+   */
+  void StartPlayback(CFileItem* item) const;
 
   /*!
    * @brief Check if a TV channel, radio channel or recording is playing.
