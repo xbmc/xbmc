@@ -22,8 +22,7 @@ set(SOURCES AppTranslator.cpp
             WindowTranslator.cpp
             XBMC_keytable.cpp)
 
-set(HEADERS remote/IRRemote.h
-            AppTranslator.h
+set(HEADERS AppTranslator.h
             ButtonTranslator.h
             CustomControllerTranslator.h
             GamepadTranslator.h
