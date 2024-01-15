@@ -285,9 +285,64 @@ bool CPVRPlaybackState::OnPlaybackStopped(const CFileItem& item)
   return bChanged;
 }
 
+std::unique_ptr<CFileItem> CPVRPlaybackState::GetNextAutoplayItem(const CFileItem& item)
+{
+  if (!item.GetProperty("epg_playlist_item").asBoolean(false))
+    return {};
+
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+
+  if (item.HasEPGInfoTag() && item.GetEPGInfoTag()->ClientID() == m_playingClientId &&
+      item.GetEPGInfoTag()->UniqueChannelID() == m_playingEpgTagChannelUniqueId &&
+      item.GetEPGInfoTag()->UniqueBroadcastID() == m_playingEpgTagUniqueId)
+  {
+    auto& pvrMgr{CServiceBroker::GetPVRManager()};
+    const std::shared_ptr<const CPVREpg> epg{
+        pvrMgr.EpgContainer().GetByChannelUid(m_playingClientId, m_playingEpgTagChannelUniqueId)};
+    const std::shared_ptr<const CPVRClient> client{pvrMgr.GetClient(m_playingClientId)};
+    if (epg && client)
+    {
+      const std::vector<std::shared_ptr<CPVREpgInfoTag>> tags{epg->GetTags()};
+      bool nextIsMatch{false};
+      for (const auto& tag : tags)
+      {
+        if (nextIsMatch)
+        {
+          // Next to play is successor of given item in channel's timeline.
+          return std::make_unique<CFileItem>(tag);
+        }
+
+        if (tag != tags.back() && tag->StartAsUTC() == m_playingEpgTag->StartAsUTC() &&
+            tag->EndAsUTC() == m_playingEpgTag->EndAsUTC())
+          nextIsMatch = true;
+      }
+
+      if (!nextIsMatch)
+      {
+        // No more non-live epg items in channel's timeline. Next to play is the live channel.
+        const std::shared_ptr<CPVRChannelGroup> group{
+            pvrMgr.ChannelGroups()->Get(m_playingEpgTag->IsRadio())->GetGroupAll()};
+        if (group)
+        {
+          const std::shared_ptr<CPVRChannelGroupMember> groupMember{
+              group->GetByUniqueID({m_playingClientId, m_playingEpgTagChannelUniqueId})};
+          if (groupMember)
+            return std::make_unique<CFileItem>(groupMember);
+        }
+      }
+    }
+  }
+  return {};
+}
+
 bool CPVRPlaybackState::OnPlaybackEnded(const CFileItem& item)
 {
   // Playback ended, but not due to user interaction
+
+  std::unique_ptr<CFileItem> nextToPlay{GetNextAutoplayItem(item)};
+  if (nextToPlay)
+    StartPlayback(nextToPlay.release());
+
   return OnPlaybackStopped(item);
 }
 
@@ -310,6 +365,7 @@ void CPVRPlaybackState::StartPlayback(CFileItem* item) const
     else if (item->IsEPG())
     {
       client->GetEpgTagStreamProperties(item->GetEPGInfoTag(), props);
+      item->SetProperty("epg_playlist_item", true);
     }
 
     if (props.size())

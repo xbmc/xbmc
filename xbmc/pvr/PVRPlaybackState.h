@@ -254,6 +254,13 @@ private:
   void ClearData();
 
   /*!
+   * @brief Return the next item to play automatically, if any.
+   * @param item The item which just finished playback.
+   * @return The item to play next, if any, nullptr otherwise.
+   */
+  std::unique_ptr<CFileItem> GetNextAutoplayItem(const CFileItem& item);
+
+  /*!
    * @brief Set the active group to the group of the supplied channel group member.
    * @param channel The channel group member
    */
