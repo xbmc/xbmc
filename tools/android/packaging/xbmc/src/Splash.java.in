@@ -13,8 +13,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Resources;
-import android.content.res.Resources.NotFoundException;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -36,7 +34,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.lang.System;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -71,7 +68,6 @@ public class Splash extends Activity
   private static final int RECORDAUDIO_RESULT_CODE = 8946;
   private static final int PERMISSION_RESULT_CODE = 8947;
 
-  private String mCpuinfo = "";
   private ArrayList<String> mMounts = new ArrayList<String>();
   private String mErrorMsg = "";
 
@@ -512,32 +508,6 @@ public class Splash extends Activity
     fPackagePath = new File(sPackagePath);
   }
 
-  private boolean ParseCpuFeature()
-  {
-    ProcessBuilder cmd;
-
-    try
-    {
-      String[] args = {"/system/bin/cat", "/proc/cpuinfo"};
-      cmd = new ProcessBuilder(args);
-
-      Process process = cmd.start();
-      InputStream in = process.getInputStream();
-      byte[] re = new byte[1024];
-      while (in.read(re) != -1)
-      {
-        mCpuinfo = mCpuinfo + new String(re);
-      }
-      in.close();
-    }
-    catch (IOException ex)
-    {
-      ex.printStackTrace();
-      return false;
-    }
-    return true;
-  }
-
   // We can't find a way to properly detect and monitor status of
   //  a physical sdcard currently.
   // "External storage" points to internal flash storage on modern
@@ -586,13 +556,6 @@ public class Splash extends Activity
       }
     }
     return true;
-  }
-
-  private boolean CheckCpuFeature(String feat)
-  {
-    final Pattern FeaturePattern = Pattern.compile("(?i):.*?\\s" + feat + "(?:\\s|$)");
-    Matcher m = FeaturePattern.matcher(mCpuinfo);
-    return m.find();
   }
 
   private boolean CheckPermissions()
@@ -729,74 +692,6 @@ public class Splash extends Activity
       }
 
     mStateMachine.sendEmptyMessage(Checking);
-
-    String pkg_arch = "";
-    // Read the properties
-    try
-    {
-      Resources resources = this.getResources();
-      InputStream xbmcprop = resources.openRawResource(R.raw.xbmc);
-      Properties properties = new Properties();
-      properties.load(xbmcprop);
-      pkg_arch = properties.getProperty("native_arch");
-    }
-    catch (NotFoundException e)
-    {
-      mErrorMsg = "Cannot find properties file";
-      Log.e(TAG, mErrorMsg);
-      mState = InError;
-    }
-    catch (IOException e)
-    {
-      mErrorMsg = "Failed to open properties file";
-      Log.e(TAG, mErrorMsg);
-      mState = InError;
-    }
-
-    boolean arch_ok = false;
-    String[] abis = Build.SUPPORTED_ABIS;
-    for (int i = 0; i < abis.length; ++i)
-    {
-      Log.i(TAG, "ABI: " + abis[i]);
-      if (abis[i].equalsIgnoreCase(pkg_arch))
-      {
-        arch_ok = true;
-        //break;
-      }
-    }
-
-    if (!arch_ok)
-    {
-      mErrorMsg = "This package is not compatible with your device (" + pkg_arch + ").\nPlease check the <a href=\"http://wiki.@APP_NAME_LC@.tv/index.php?title=XBMC_for_Android_specific_FAQ\">@APP_NAME@ Android wiki</a> for more information.";
-      Log.e(TAG, mErrorMsg);
-      mState = InError;
-    }
-
-    if (mState != InError)
-    {
-      if (pkg_arch.equalsIgnoreCase("armeabi-v7a"))
-      {
-        // arm arch: check if the cpu supports neon
-        boolean ret = ParseCpuFeature();
-        //Log.d(TAG, "/proc/cpuinfo = " + mCpuinfo);
-        if (!ret)
-        {
-          mErrorMsg = "Error! Cannot parse CPU features.";
-          Log.e(TAG, mErrorMsg);
-          mState = InError;
-        }
-        else
-        {
-          ret = CheckCpuFeature("neon") || CheckCpuFeature("aarch64") || CheckCpuFeature("asimd");  // aarch64 is always neon; asimd feature also represents neon
-          if (!ret)
-          {
-            mErrorMsg = "This @APP_NAME@ package is not compatible with your device (NEON).\nPlease check the <a href=\"http://wiki.@APP_NAME_LC@.tv/index.php?title=XBMC_for_Android_specific_FAQ\">@APP_NAME@ Android wiki</a> for more information.";
-            Log.e(TAG, mErrorMsg);
-            mState = InError;
-          }
-        }
-      }
-    }
 
     Log.d(TAG, "External storage = " + Environment.getExternalStorageDirectory().getAbsolutePath() + "; state = " + Environment.getExternalStorageState());
     if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()))
