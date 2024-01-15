@@ -850,7 +850,11 @@ void CPVRManager::OnPlaybackStopped(const CFileItem& item)
 void CPVRManager::OnPlaybackEnded(const CFileItem& item)
 {
   // Playback ended, but not due to user interaction
-  OnPlaybackStopped(item);
+  if (m_playbackState->OnPlaybackEnded(item))
+    PublishEvent(PVREvent::ChannelPlaybackStopped);
+
+  Get<PVR::GUI::Channels>().OnPlaybackStopped(item);
+  m_epgContainer->OnPlaybackStopped();
 }
 
 void CPVRManager::LocalizationChanged()

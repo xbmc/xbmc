@@ -63,8 +63,9 @@ public:
   /*!
    * @brief Inform that playback of an item has stopped without user interaction.
    * @param item The item that ended to play.
+   * @return True, if the state has changed, false otherwise
    */
-  void OnPlaybackEnded(const CFileItem& item);
+  bool OnPlaybackEnded(const CFileItem& item);
 
   /*!
    * @brief Check if a TV channel, radio channel or recording is playing.

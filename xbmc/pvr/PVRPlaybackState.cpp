@@ -283,10 +283,10 @@ bool CPVRPlaybackState::OnPlaybackStopped(const CFileItem& item)
   return bChanged;
 }
 
-void CPVRPlaybackState::OnPlaybackEnded(const CFileItem& item)
+bool CPVRPlaybackState::OnPlaybackEnded(const CFileItem& item)
 {
   // Playback ended, but not due to user interaction
-  OnPlaybackStopped(item);
+  return OnPlaybackStopped(item);
 }
 
 bool CPVRPlaybackState::IsPlaying() const
