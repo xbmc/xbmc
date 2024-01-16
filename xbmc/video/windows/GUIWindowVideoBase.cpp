@@ -727,9 +727,10 @@ void CGUIWindowVideoBase::LoadVideoInfo(CFileItemList& items,
 
       // set the watched overlay
       if (pItem->IsVideo())
-        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,
-                               pItem->HasVideoInfoTag() &&
-                                   pItem->GetVideoInfoTag()->GetPlayCount() > 0);
+        pItem->SetOverlayImage(pItem->HasVideoInfoTag() &&
+                                       pItem->GetVideoInfoTag()->GetPlayCount() > 0
+                                   ? CGUIListItem::ICON_OVERLAY_WATCHED
+                                   : CGUIListItem::ICON_OVERLAY_UNWATCHED);
     }
   }
 }
@@ -1480,7 +1481,6 @@ void CGUIWindowVideoBase::UpdateVideoVersionItems()
           videoVersionId = VIDEO_VERSION_ID_ALL;
           item->GetVideoInfoTag()->GetAssetInfo().SetId(videoVersionId);
           item->m_bIsFolder = true;
-          item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, true);
         }
 
         CVideoDbUrl itemUrl;

@@ -142,7 +142,8 @@ bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileI
       pItem->SetProperty("watched", iWatched);
       pItem->SetProperty("unwatched", (int)set->second.size() - iWatched);
       pItem->SetProperty("inprogress", inProgress);
-      pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, setInfo->GetPlayCount() > 0);
+      pItem->SetOverlayImage(setInfo->GetPlayCount() > 0 ? CGUIListItem::ICON_OVERLAY_WATCHED
+                                                         : CGUIListItem::ICON_OVERLAY_UNWATCHED);
 
       groupedItems.Add(pItem);
     }

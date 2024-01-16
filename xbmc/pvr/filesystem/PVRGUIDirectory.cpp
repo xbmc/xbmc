@@ -321,7 +321,7 @@ void GetSubDirectories(const CPVRRecordingsPath& recParentPath,
       item->SetProperty("sizeinbytes", UINT64_C(0));
 
       // Assume all folders are watched, we'll change the overlay later
-      item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED, false);
+      item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED);
       results.Add(item);
     }
     else
@@ -360,7 +360,7 @@ void GetSubDirectories(const CPVRRecordingsPath& recParentPath,
 
   // Change the watched overlay to unwatched for folders containing unwatched entries
   for (auto& item : unwatchedFolders)
-    item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, false);
+    item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED);
 }
 
 } // unnamed namespace
@@ -412,7 +412,8 @@ bool CPVRGUIDirectory::GetRecordingsDirectory(CFileItemList& results) const
         continue;
 
       item = std::make_shared<CFileItem>(recording);
-      item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, recording->GetPlayCount() > 0);
+      item->SetOverlayImage(recording->GetPlayCount() > 0 ? CGUIListItem::ICON_OVERLAY_WATCHED
+                                                          : CGUIListItem::ICON_OVERLAY_UNWATCHED);
       results.Add(item);
     }
   }
