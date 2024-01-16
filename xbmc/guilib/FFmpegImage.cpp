@@ -227,6 +227,8 @@ bool CFFmpegImage::Initialize(unsigned char* buffer, size_t bufSize)
     inp = av_find_input_format("tiff_pipe");
   else if (m_strMimeType == "image/gif")
     inp = av_find_input_format("gif");
+  else if (m_strMimeType == "image/avif")
+    inp = av_find_input_format("avif");
 
   if (avformat_open_input(&m_fctx, NULL, inp, NULL) < 0)
   {
