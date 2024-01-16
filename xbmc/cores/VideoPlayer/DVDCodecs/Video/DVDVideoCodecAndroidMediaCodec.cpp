@@ -751,39 +751,46 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
 
     CLog::Log(LOGINFO, "CDVDVideoCodecAndroidMediaCodec::Open Testing codec: {}", m_codecname);
 
-    // There is some confusion for video/VC1 vs. video/wvc1 especially on Sony devices, while
-    // IANA defines VC-1 as video/vc1, Android API defines it as video/wvc1 - be nice and test it
-    const bool isVC1 = StringUtils::Contains(m_codecname, "vc1", true);
-
     CJNIMediaCodecInfoCodecCapabilities codec_caps = codec_info.getCapabilitiesForType(m_mime);
     if (xbmc_jnienv()->ExceptionCheck())
     {
       // Unsupported type?
       xbmc_jnienv()->ExceptionDescribe();
       xbmc_jnienv()->ExceptionClear();
-      if (!isVC1)
-        continue;
 
-      const std::array<const std::string, 2> mimes = {"video/VC1", "video/vc1"};
-      bool success = false;
-      for (const auto& v : mimes)
+      if (m_mime == "video/wvc1")
       {
-        codec_caps = codec_info.getCapabilitiesForType(v);
-        if (xbmc_jnienv()->ExceptionCheck())
+        // There is some confusion for video/VC1 vs. video/wvc1 especially on Sony devices, while
+        // IANA defines VC-1 as video/vc1, Android API defines it as video/wvc1 - be nice and test it
+        const bool isVC1 = StringUtils::Contains(m_codecname, "vc1", true);
+        if (!isVC1)
+          continue;
+
+        const std::array<const std::string, 2> mimes = {"video/VC1", "video/vc1"};
+        bool success = false;
+        for (const auto& v : mimes)
         {
-          xbmc_jnienv()->ExceptionDescribe();
-          xbmc_jnienv()->ExceptionClear();
+          codec_caps = codec_info.getCapabilitiesForType(v);
+          if (xbmc_jnienv()->ExceptionCheck())
+          {
+            xbmc_jnienv()->ExceptionDescribe();
+            xbmc_jnienv()->ExceptionClear();
+          }
+          else
+          {
+            m_mime = v;
+            CLog::Log(LOGDEBUG, "Succesfully replaced VC1 mime type to {}", m_mime);
+            success = true;
+            break;
+          }
         }
-        else
-        {
-          m_mime = v;
-          CLog::Log(LOGDEBUG, "Succesfully replaced VC1 mime type to {}", m_mime);
-          success = true;
-          break;
-        }
+        if (!success)
+          continue;
       }
-      if (!success)
+      else
+      {
         continue;
+      }
     }
 
     bool codecIsSecure(
