@@ -155,6 +155,23 @@ public:
   double GetDownloadSpeed();
 
 private:
+  /*!
+   * \brief Determines if CFileStreamBuffer should be used to read a file.
+   *
+   * In general, should be used for ALL media files (only when is not used FileCache)
+   * and NOT used for non-media files e.g. small local files as config/settings xml files.
+   * Enables basic buffer that allows read sources with 64K chunk size even if FFmpeg only reads
+   * data with small 4K chunks or Blu-Ray sector size (6144 bytes):
+   *
+   * [FFmpeg] <-----4K chunks----- [CFileStreamBuffer] <-----64K chunks----- [Source file / Network]
+   *
+   * NOTE: in case of SMB / NFS default 64K chunk size is replaced with value configured in
+   * settings for the protocol.
+   * This improves performance when reads big files through Network.
+   * \param url Source file info as CULR class.
+   */
+  bool ShouldUseStreamBuffer(const CURL& url);
+
   unsigned int m_flags = 0;
   CURL                m_curl;
   std::unique_ptr<IFile> m_pFile;

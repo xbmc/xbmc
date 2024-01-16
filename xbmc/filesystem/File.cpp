@@ -364,12 +364,7 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
       return false;
     }
 
-    constexpr int64_t len = 200 * 1024 * 1024; // 200 MB
-
-    // Use CFileStreamBuffer for all "big" files (audio/video files) when FileCache is not used
-    // This also makes use of 64K file read chunk size, suitable for localfiles, USB files, etc.
-    // Also enbles basic cache for Blu-Ray but only big .m2ts files (main audio/video files only)
-    if ((m_pFile->GetChunkSize() || m_pFile->GetLength() > len) && !(m_flags & READ_CHUNKED))
+    if (ShouldUseStreamBuffer(url))
     {
       m_pBuffer = std::make_unique<CFileStreamBuffer>(0);
       m_pBuffer->Attach(m_pFile.get());
@@ -386,6 +381,21 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
   XBMCCOMMONS_HANDLE_UNCHECKED
   catch (...) { CLog::Log(LOGERROR, "{} - Unhandled exception", __FUNCTION__); }
   CLog::Log(LOGERROR, "{} - Error opening {}", __FUNCTION__, file.GetRedacted());
+  return false;
+}
+
+bool CFile::ShouldUseStreamBuffer(const CURL& url)
+{
+  if (m_flags & READ_CHUNKED || m_pFile->GetChunkSize() > 0)
+    return true;
+
+  // file size > 200 MB but not in optical disk
+  if (m_pFile->GetLength() > 200 * 1024 * 1024 && !URIUtils::IsDVD(url.GetShareName()))
+    return true;
+
+  if (URIUtils::IsNetworkFilesystem(url.Get()))
+    return true;
+
   return false;
 }
 
