@@ -312,12 +312,12 @@ protected:
   bool m_playerStateChanged = false;
   struct SStateInfo
   {
-    bool m_stateSeeking;
-    bool m_renderGuiLayer;
-    bool m_renderVideoLayer;
-    float m_tempo;
-    float m_speed;
-    bool m_frameAdvance;
+    bool m_stateSeeking{false};
+    bool m_renderGuiLayer{false};
+    bool m_renderVideoLayer{false};
+    float m_tempo{1.0f};
+    float m_speed{1.0f};
+    bool m_frameAdvance{false};
     /*! Time point of the last seek operation */
     std::chrono::time_point<std::chrono::system_clock> m_lastSeekTime{
         std::chrono::time_point<std::chrono::system_clock>{}};
