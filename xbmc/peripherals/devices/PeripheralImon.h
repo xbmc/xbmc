@@ -16,6 +16,9 @@ class CSetting;
 
 namespace PERIPHERALS
 {
+/*!
+ * \ingroup peripherals
+ */
 class CPeripheralImon : public CPeripheralHID
 {
 public:

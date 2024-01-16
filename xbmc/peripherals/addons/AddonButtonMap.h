@@ -19,6 +19,9 @@ namespace PERIPHERALS
 {
 class CPeripheral;
 
+/*!
+ * \ingroup peripherals
+ */
 class CAddonButtonMap : public KODI::JOYSTICK::IButtonMap
 {
 public:

@@ -16,6 +16,9 @@ namespace PERIPHERALS
 {
 class CPeripherals;
 
+/*!
+ * \ingroup peripherals
+ */
 class CGUIDialogPeripheralSettings : public CGUIDialogSettingsManualBase
 {
 public:

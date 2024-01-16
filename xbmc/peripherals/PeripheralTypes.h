@@ -23,6 +23,9 @@ class CSetting;
 
 namespace PERIPHERALS
 {
+/// \ingroup peripherals
+/// \{
+
 enum PeripheralBusType
 {
   PERIPHERAL_BUS_UNKNOWN = 0,
@@ -367,4 +370,6 @@ struct PeripheralScanResults
 
   std::vector<PeripheralScanResult> m_results;
 };
+
+/// \}
 } // namespace PERIPHERALS

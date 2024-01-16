@@ -17,6 +17,9 @@
 
 namespace PERIPHERALS
 {
+/*!
+ * \ingroup peripherals
+ */
 class CPeripheralMouse : public CPeripheral, public KODI::MOUSE::IMouseDriverHandler
 {
 public:

@@ -30,6 +30,9 @@ namespace PERIPHERALS
 class CPeripheral;
 class CPeripherals;
 
+/*!
+* \ingroup peripherals
+*/
 class CAddonButtonMapping : public KODI::JOYSTICK::IDriverHandler,
                             public KODI::KEYBOARD::IKeyboardDriverHandler,
                             public KODI::MOUSE::IMouseDriverHandler,

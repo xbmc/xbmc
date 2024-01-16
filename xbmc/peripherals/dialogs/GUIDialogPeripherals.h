@@ -17,6 +17,9 @@ namespace PERIPHERALS
 {
 class CPeripherals;
 
+/*!
+ * \ingroup peripherals
+ */
 class CGUIDialogPeripherals : public CGUIDialogSelect, protected Observer
 {
 public:

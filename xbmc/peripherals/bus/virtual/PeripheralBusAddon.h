@@ -23,6 +23,9 @@ class CAddonInfo;
 
 namespace PERIPHERALS
 {
+/*!
+ * \ingroup peripherals
+ */
 class CPeripheralBusAddon : public CPeripheralBus
 {
 public:

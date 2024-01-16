@@ -13,6 +13,8 @@ namespace PERIPHERALS
 class CEventLockHandle;
 
 /*!
+ * \ingroup peripherals
+ *
  * \brief Callback implemented by event scanner
  */
 class IEventLockCallback

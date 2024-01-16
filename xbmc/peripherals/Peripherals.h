@@ -50,6 +50,9 @@ namespace PERIPHERALS
 {
 class CEventScanner;
 
+/*!
+ * \ingroup peripherals
+ */
 class CPeripherals : public ISettingCallback,
                      public Observable,
                      public KODI::MESSAGING::IMessageTarget,

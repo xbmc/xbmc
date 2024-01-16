@@ -23,6 +23,8 @@ namespace PERIPHERALS
 class IEventScannerCallback;
 
 /*!
+ * \ingroup peripherals
+ *
  * \brief Class to scan for peripheral events
  *
  * By default, a rate of 60 Hz is used. A client can obtain control over when

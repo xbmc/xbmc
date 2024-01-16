@@ -12,6 +12,9 @@
 
 namespace PERIPHERALS
 {
+/*!
+ * \ingroup peripherals
+ */
 class CPeripheralTuner : public CPeripheral
 {
 public:

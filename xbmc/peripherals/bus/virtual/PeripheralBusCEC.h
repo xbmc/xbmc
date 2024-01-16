@@ -25,6 +25,9 @@ namespace PERIPHERALS
 {
 class CPeripherals;
 
+/*!
+ * \ingroup peripherals
+ */
 class CPeripheralBusCEC : public CPeripheralBus
 {
 public:

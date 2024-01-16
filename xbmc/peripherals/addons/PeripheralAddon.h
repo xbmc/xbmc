@@ -39,6 +39,9 @@ class CPeripherals;
 typedef std::vector<kodi::addon::DriverPrimitive> PrimitiveVector;
 typedef std::map<KODI::JOYSTICK::FeatureName, kodi::addon::JoystickFeature> FeatureMap;
 
+/*!
+* \ingroup peripherals
+*/
 class CPeripheralAddon : public ADDON::IAddonInstanceHandler
 {
 public:

@@ -12,6 +12,9 @@
 
 namespace PERIPHERALS
 {
+/*!
+ * \ingroup peripherals
+ */
 class CPeripheralNyxboard : public CPeripheralHID
 {
 public:

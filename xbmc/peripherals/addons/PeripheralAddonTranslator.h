@@ -18,6 +18,9 @@
 
 namespace PERIPHERALS
 {
+/*!
+ * \ingroup peripherals
+ */
 class CPeripheralAddonTranslator
 {
 public:

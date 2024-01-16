@@ -10,6 +10,9 @@
 
 namespace PERIPHERALS
 {
+/*!
+ * \ingroup peripherals
+ */
 class IEventScannerCallback
 {
 public:

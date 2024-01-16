@@ -44,6 +44,9 @@ namespace PERIPHERALS
 {
 class CPeripherals;
 
+/*!
+ * \ingroup peripherals
+ */
 class CPeripheralJoystick : public CPeripheral, //! @todo extend CPeripheralHID
                             public KODI::JOYSTICK::IDriverReceiver
 {

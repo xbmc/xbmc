@@ -13,6 +13,9 @@
 
 namespace PERIPHERALS
 {
+/*!
+ * \ingroup peripherals
+ */
 class CPeripheralHID : public CPeripheral
 {
 public:

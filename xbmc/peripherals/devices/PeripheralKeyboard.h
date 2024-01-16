@@ -17,6 +17,9 @@
 
 namespace PERIPHERALS
 {
+/*!
+ * \ingroup peripherals
+ */
 class CPeripheralKeyboard : public CPeripheral, public KODI::KEYBOARD::IKeyboardDriverHandler
 {
 public:

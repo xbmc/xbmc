@@ -11,10 +11,14 @@
 #if !defined(HAVE_LIBCEC)
 #include "Peripheral.h"
 
-// an empty implementation, so CPeripherals can be compiled without a bunch of #ifdef's when libCEC
-// is not available
 namespace PERIPHERALS
 {
+/*!
+ * \ingroup peripherals
+ *
+ * An empty implementation, so CPeripherals can be compiled without a bunch of
+ * #ifdef's when libCEC is not available.
+ */
 class CPeripheralCecAdapter : public CPeripheral
 {
 public:

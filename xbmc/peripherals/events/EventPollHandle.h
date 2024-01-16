@@ -13,6 +13,8 @@ namespace PERIPHERALS
 class CEventPollHandle;
 
 /*!
+ * \ingroup peripherals
+ *
  * \brief Callback implemented by event scanner
  */
 class IEventPollCallback
