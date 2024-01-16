@@ -4,3 +4,5 @@ xbmc/peripherals/bus            peripherals/bus
 xbmc/peripherals/bus/virtual    peripherals/bus/virtual
 xbmc/peripherals/devices        peripherals/devices
 xbmc/peripherals/dialogs        peripherals/dialogs
+xbmc/peripherals/events         peripherals/events
+xbmc/peripherals/events/interfaces peripherals/events/interfaces

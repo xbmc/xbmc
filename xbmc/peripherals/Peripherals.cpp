@@ -9,7 +9,6 @@
 #include "Peripherals.h"
 
 #include "CompileInfo.h"
-#include "EventScanner.h"
 #include "addons/AddonButtonMap.h"
 #include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonInfo.h"
@@ -54,6 +53,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/ThreadMessage.h"
 #include "peripherals/dialogs/GUIDialogPeripherals.h"
+#include "peripherals/events/EventScanner.h"
 #include "settings/SettingAddon.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"

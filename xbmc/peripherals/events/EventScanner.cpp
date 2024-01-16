@@ -8,7 +8,7 @@
 
 #include "EventScanner.h"
 
-#include "IEventScannerCallback.h"
+#include "peripherals/events/interfaces/IEventScannerCallback.h"
 #include "utils/log.h"
 
 #include <algorithm>

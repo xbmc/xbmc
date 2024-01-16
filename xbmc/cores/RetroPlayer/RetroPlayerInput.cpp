@@ -10,8 +10,8 @@
 
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
 #include "cores/RetroPlayer/rendering/RenderContext.h"
-#include "peripherals/EventPollHandle.h"
 #include "peripherals/Peripherals.h"
+#include "peripherals/events/EventPollHandle.h"
 #include "utils/log.h"
 
 using namespace KODI;

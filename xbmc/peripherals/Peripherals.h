@@ -8,11 +8,11 @@
 
 #pragma once
 
-#include "IEventScannerCallback.h"
 #include "bus/PeripheralBus.h"
 #include "devices/Peripheral.h"
 #include "interfaces/IAnnouncer.h"
 #include "messaging/IMessageTarget.h"
+#include "peripherals/events/interfaces/IEventScannerCallback.h"
 #include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
