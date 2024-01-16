@@ -1861,7 +1861,14 @@
           <control type="list" format="string" />
         </setting>
       </group>
-      <group id="2" label="14304">
+      <group id="2" label="19351">
+        <setting id="pvrplayback.autoplaynextprogramme" type="boolean" label="19352" help="36439">
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+      <group id="3" label="14304">
         <setting id="pvrplayback.enableradiords" type="boolean" label="29980" help="29981">
           <level>1</level>
           <default>true</default>

@@ -365,7 +365,10 @@ void CPVRPlaybackState::StartPlayback(CFileItem* item) const
     else if (item->IsEPG())
     {
       client->GetEpgTagStreamProperties(item->GetEPGInfoTag(), props);
-      item->SetProperty("epg_playlist_item", true);
+
+      if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+              CSettings::SETTING_PVRPLAYBACK_AUTOPLAYNEXTPROGRAMME))
+        item->SetProperty("epg_playlist_item", true);
     }
 
     if (props.size())
