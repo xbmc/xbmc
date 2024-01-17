@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017-2018 Team Kodi
+ *  Copyright (C) 2017-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -8,9 +8,9 @@
 
 #include "KeyboardInputHandling.h"
 
-#include "input/XBMC_keysym.h"
 #include "input/joysticks/DriverPrimitive.h"
 #include "input/joysticks/interfaces/IButtonMap.h"
+#include "input/keyboard/XBMC_keysym.h"
 #include "input/keyboard/interfaces/IKeyboardInputHandler.h"
 
 using namespace KODI;

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017-2018 Team Kodi
+ *  Copyright (C) 2017-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -8,6 +8,17 @@
 
 #pragma once
 
-// Analog sticks on the default controller
+/// \ingroup joystick
+/// \{
+
+/*!
+ * \brief Left analog stick on the default controller
+ */
 #define DEFAULT_LEFT_STICK_NAME "leftstick"
+
+/*!
+ * \brief Right analog stick on the default controller
+ */
 #define DEFAULT_RIGHT_STICK_NAME "rightstick"
+
+/// \}

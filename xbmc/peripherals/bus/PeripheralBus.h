@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -23,6 +23,8 @@ class CPeripheral;
 class CPeripherals;
 
 /*!
+ * \ingroup peripherals
+ *
  * @class CPeripheralBus
  * This represents a bus on the system. By default, this bus instance will scan for changes every 5
  * seconds. If this bus only has to be updated after a notification sent by the system, set

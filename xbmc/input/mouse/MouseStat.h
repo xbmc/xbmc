@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -9,6 +9,9 @@
 #pragma once
 
 #include "windowing/XBMC_events.h"
+
+/// \ingroup mouse
+/// \{
 
 #define XBMC_BUTTON(X) (1 << ((X)-1))
 #define XBMC_BUTTON_LEFT 1
@@ -225,3 +228,5 @@ private:
 
   uint32_t m_Key;
 };
+
+/// \}

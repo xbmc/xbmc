@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2014-2018 Team Kodi
+ *  Copyright (C) 2014-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -12,14 +12,15 @@
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerManager.h"
 #include "games/controllers/input/PhysicalFeature.h"
-#include "input/IKeymap.h"
 #include "input/InputTranslator.h"
-#include "input/Key.h"
+#include "input/actions/ActionIDs.h"
 #include "input/joysticks/DriverPrimitive.h"
 #include "input/joysticks/JoystickTranslator.h"
 #include "input/joysticks/JoystickUtils.h"
 #include "input/joysticks/interfaces/IButtonMap.h"
 #include "input/joysticks/interfaces/IButtonMapper.h"
+#include "input/keyboard/Key.h"
+#include "input/keymaps/interfaces/IKeymap.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -312,7 +313,9 @@ KODI::INPUT::INTERCARDINAL_DIRECTION CPointerDetector::GetPointerDirection(int x
 
 // --- CButtonMapping ----------------------------------------------------------
 
-CButtonMapping::CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMap, IKeymap* keymap)
+CButtonMapping::CButtonMapping(IButtonMapper* buttonMapper,
+                               IButtonMap* buttonMap,
+                               KEYMAP::IKeymap* keymap)
   : m_buttonMapper(buttonMapper), m_buttonMap(buttonMap), m_keymap(keymap)
 {
   assert(m_buttonMapper != nullptr);

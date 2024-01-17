@@ -14,9 +14,9 @@
 #include "guilib/GUIAction.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
-#include "input/Key.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
+#include "input/mouse/MouseEvent.h"
 #include "messaging/ApplicationMessenger.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
@@ -35,6 +35,7 @@
 
 #include <tinyxml.h>
 
+using namespace KODI;
 using namespace PVR;
 
 #define BLOCKJUMP    4 // how many blocks are jumped with each analogue scroll action
@@ -1215,7 +1216,8 @@ bool CGUIEPGGridContainer::SelectItemFromPoint(const CPoint& point, bool justGri
   return true;
 }
 
-EVENT_RESULT CGUIEPGGridContainer::OnMouseEvent(const CPoint& point, const CMouseEvent& event)
+EVENT_RESULT CGUIEPGGridContainer::OnMouseEvent(const CPoint& point,
+                                                const MOUSE::CMouseEvent& event)
 {
   switch (event.m_id)
   {

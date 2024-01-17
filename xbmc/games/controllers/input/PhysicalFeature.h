@@ -49,7 +49,7 @@ public:
 
   // Input properties
   JOYSTICK::INPUT_TYPE InputType(void) const { return m_inputType; }
-  KEYBOARD::KeySymbol Keycode() const { return m_keycode; }
+  KEYBOARD::XBMCKey Keycode() const { return m_keycode; }
 
   bool Deserialize(const tinyxml2::XMLElement* pElement,
                    const CController* controller,
@@ -64,7 +64,7 @@ private:
   std::string m_strName;
   int m_labelId = -1;
   JOYSTICK::INPUT_TYPE m_inputType = JOYSTICK::INPUT_TYPE::UNKNOWN;
-  KEYBOARD::KeySymbol m_keycode = XBMCK_UNKNOWN;
+  KEYBOARD::XBMCKey m_keycode = KEYBOARD::XBMCKey::XBMCK_UNKNOWN;
 };
 
 } // namespace GAME

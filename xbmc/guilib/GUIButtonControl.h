@@ -77,7 +77,7 @@ public:
 
 protected:
   friend class CGUISpinControlEx;
-  EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event) override;
+  EVENT_RESULT OnMouseEvent(const CPoint& point, const KODI::MOUSE::CMouseEvent& event) override;
   void OnFocus() override;
   void OnUnFocus() override;
   virtual void ProcessText(unsigned int currentTime);

@@ -21,6 +21,8 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 
+using namespace KODI;
+
 CGUIWindowScreensaver::CGUIWindowScreensaver() : CGUIWindow(WINDOW_SCREENSAVER, "")
 {
 }
@@ -50,7 +52,8 @@ void CGUIWindowScreensaver::Render()
 }
 
 // called when the mouse is moved/clicked etc. etc.
-EVENT_RESULT CGUIWindowScreensaver::OnMouseEvent(const CPoint& point, const CMouseEvent& event)
+EVENT_RESULT CGUIWindowScreensaver::OnMouseEvent(const CPoint& point,
+                                                 const MOUSE::CMouseEvent& event)
 {
   CServiceBroker::GetGUI()->GetWindowManager().PreviousWindow();
   return EVENT_RESULT_HANDLED;

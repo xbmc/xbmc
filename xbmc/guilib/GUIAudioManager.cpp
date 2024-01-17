@@ -14,8 +14,8 @@
 #include "addons/addoninfo/AddonType.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "filesystem/Directory.h"
-#include "input/Key.h"
 #include "input/WindowTranslator.h"
+#include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "input/actions/ActionTranslator.h"
 #include "settings/Settings.h"
@@ -26,6 +26,8 @@
 #include "utils/log.h"
 
 #include <mutex>
+
+using namespace KODI;
 
 CGUIAudioManager::CGUIAudioManager()
   : m_settings(CServiceBroker::GetSettingsComponent()->GetSettings())
@@ -266,7 +268,7 @@ bool CGUIAudioManager::Load()
       unsigned int id = ACTION_NONE;    // action identity
       if (pIdNode && pIdNode->FirstChild())
       {
-        CActionTranslator::TranslateString(pIdNode->FirstChild()->Value(), id);
+        ACTION::CActionTranslator::TranslateString(pIdNode->FirstChild()->Value(), id);
       }
 
       TiXmlNode* pFileNode = pAction->FirstChild("file");

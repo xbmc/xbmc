@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2015-2018 Team Kodi
+ *  Copyright (C) 2015-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -113,8 +113,7 @@ CDriverPrimitive CPeripheralAddonTranslator::TranslatePrimitive(
     }
     case JOYSTICK_DRIVER_PRIMITIVE_TYPE_KEY:
     {
-      KEYBOARD::KeySymbol keycode =
-          GAME::CControllerTranslator::TranslateKeysym(primitive.Keycode());
+      KEYBOARD::XBMCKey keycode = GAME::CControllerTranslator::TranslateKeysym(primitive.Keycode());
       retVal = CDriverPrimitive(keycode);
       break;
     }

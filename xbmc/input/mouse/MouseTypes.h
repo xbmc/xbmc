@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018 Team Kodi
+ *  Copyright (C) 2018-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -16,6 +16,10 @@ namespace KODI
 {
 namespace MOUSE
 {
+
+/// \ingroup mouse
+/// \{
+
 /*!
  * \brief Buttons on a mouse
  */
@@ -51,5 +55,8 @@ using POINTER_DIRECTION = INPUT::CARDINAL_DIRECTION;
  * Names are defined in the mouse's controller profile.
  */
 using PointerName = std::string;
+
+/// \}
+
 } // namespace MOUSE
 } // namespace KODI

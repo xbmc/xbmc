@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2014-2018 Team Kodi
+ *  Copyright (C) 2014-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -25,6 +25,7 @@ class IButtonMap;
 
 /*!
  * \ingroup joystick
+ *
  * \brief Class to translate input from the driver into higher-level features
  *
  * Raw driver input arrives for three elements: buttons, hats and axes. When

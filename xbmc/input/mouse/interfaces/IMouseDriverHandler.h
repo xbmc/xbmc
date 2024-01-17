@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2016-2018 Team Kodi
+ *  Copyright (C) 2016-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -16,6 +16,7 @@ namespace MOUSE
 {
 /*!
  * \ingroup mouse
+ *
  * \brief Interface for handling mouse driver events
  */
 class IMouseDriverHandler

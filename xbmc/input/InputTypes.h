@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018 Team Kodi
+ *  Copyright (C) 2018-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -39,8 +39,5 @@ enum class INTERCARDINAL_DIRECTION
   LEFTUP = LEFT | UP,
   LEFTDOWN = LEFT | DOWN,
 };
-
-const unsigned int HOLD_TRESHOLD = 250;
-
 } // namespace INPUT
 } // namespace KODI

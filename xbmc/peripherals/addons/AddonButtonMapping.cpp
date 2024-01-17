@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2014-2018 Team Kodi
+ *  Copyright (C) 2014-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -36,7 +36,7 @@ CAddonButtonMapping::CAddonButtonMapping(CPeripherals& manager,
     m_buttonMap = std::make_unique<CAddonButtonMap>(peripheral, addon, controllerId);
     if (m_buttonMap->Load())
     {
-      IKeymap* keymap = peripheral->GetKeymap(controllerId);
+      KEYMAP::IKeymap* keymap = peripheral->GetKeymap(controllerId);
       m_buttonMapping = std::make_unique<CButtonMapping>(mapper, m_buttonMap.get(), keymap);
 
       // Allow the mapper to save our button map

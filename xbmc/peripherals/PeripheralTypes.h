@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -23,6 +23,9 @@ class CSetting;
 
 namespace PERIPHERALS
 {
+/// \ingroup peripherals
+/// \{
+
 enum PeripheralBusType
 {
   PERIPHERAL_BUS_UNKNOWN = 0,
@@ -367,4 +370,6 @@ struct PeripheralScanResults
 
   std::vector<PeripheralScanResult> m_results;
 };
+
+/// \}
 } // namespace PERIPHERALS

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2014-2018 Team Kodi
+ *  Copyright (C) 2014-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -20,6 +20,7 @@ namespace JOYSTICK
 {
 /*!
  * \ingroup joystick
+ *
  * \brief Button map interface to translate between the driver's raw
  *        button/hat/axis elements and physical joystick features.
  *

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017-2018 Team Kodi
+ *  Copyright (C) 2017-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -15,7 +15,8 @@ namespace KEYBOARD
 class IKeyboardInputHandler;
 
 /*!
- * \ingroup mouse
+ * \ingroup keyboard
+ *
  * \brief Interface for classes that can provide keyboard input
  */
 class IKeyboardInputProvider

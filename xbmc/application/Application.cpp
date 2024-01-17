@@ -78,8 +78,10 @@
 #include "guilib/TextureManager.h"
 #include "input/InertialScrollingHandler.h"
 #include "input/InputManager.h"
-#include "input/KeyboardLayoutManager.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
 #include "input/actions/ActionTranslator.h"
+#include "input/keyboard/KeyboardLayoutManager.h"
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/builtins/Builtins.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
@@ -334,7 +336,7 @@ bool CApplication::Create()
   const auto appMessenger = std::make_shared<CApplicationMessenger>();
   CServiceBroker::RegisterAppMessenger(appMessenger);
 
-  const auto keyboardLayoutManager = std::make_shared<CKeyboardLayoutManager>();
+  const auto keyboardLayoutManager = std::make_shared<KEYBOARD::CKeyboardLayoutManager>();
   CServiceBroker::RegisterKeyboardLayoutManager(keyboardLayoutManager);
 
   m_ServiceManager = std::make_unique<CServiceManager>();
@@ -3080,7 +3082,7 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr, const CGUIListItemPt
   {
     // try translating the action from our ButtonTranslator
     unsigned int actionID;
-    if (CActionTranslator::TranslateString(actionStr, actionID))
+    if (ACTION::CActionTranslator::TranslateString(actionStr, actionID))
     {
       OnAction(CAction(actionID));
       return true;

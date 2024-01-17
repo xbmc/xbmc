@@ -10,7 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "XBMCApp.h"
-#include "input/Key.h"
+#include "input/keyboard/XBMC_keysym.h"
 #include "windowing/android/WinSystemAndroid.h"
 
 #include <androidjni/KeyCharacterMap.h>

@@ -68,7 +68,7 @@ void CGUIGameControllerList::UpdateInfo(const CGUIListItem* item)
   CAgentInput& agentInput = CServiceBroker::GetGameServices().AgentInput();
 
   // Update port count
-  const std::vector<std::string> inputPorts = agentInput.GetInputPorts();
+  const std::vector<std::string> inputPorts = agentInput.GetGameInputPorts();
   m_portCount = inputPorts.size();
 
   // Update port index

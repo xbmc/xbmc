@@ -34,6 +34,10 @@
 #include "utils/log.h"
 #include "windows/GUIMediaWindow.h"
 
+using namespace KODI;
+
+namespace
+{
 /*! \brief Execute a GUI action.
  *  \param params The parameters.
  *  \details params[0] = Action to execute.
@@ -41,9 +45,9 @@
  */
 static int Action(const std::vector<std::string>& params)
 {
-  // try translating the action from our ButtonTranslator
+  // try translating the action from our ActionTranslator
   unsigned int actionID;
-  if (CActionTranslator::TranslateString(params[0], actionID))
+  if (ACTION::CActionTranslator::TranslateString(params[0], actionID))
   {
     int windowID = params.size() == 2 ? CWindowTranslator::TranslateWindow(params[1]) : WINDOW_INVALID;
     CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, windowID, -1,
@@ -393,6 +397,7 @@ static int ToggleDirty(const std::vector<std::string>&)
 
   return 0;
 }
+} // namespace
 
 // Note: For new Texts with comma add a "\" before!!! Is used for table text.
 //

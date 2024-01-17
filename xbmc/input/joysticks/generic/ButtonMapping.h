@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2014-2018 Team Kodi
+ *  Copyright (C) 2014-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -20,10 +20,13 @@
 #include <memory>
 #include <stdint.h>
 
-class IKeymap;
-
 namespace KODI
 {
+namespace KEYMAP
+{
+class IKeymap;
+} // namespace KEYMAP
+
 namespace JOYSTICK
 {
 class CButtonMapping;
@@ -31,6 +34,8 @@ class IButtonMap;
 class IButtonMapper;
 
 /*!
+ * \ingroup joystick
+ *
  * \brief Detects and dispatches mapping events
  *
  * A mapping event usually occurs when a driver primitive is pressed or
@@ -56,6 +61,8 @@ private:
 };
 
 /*!
+ * \ingroup joystick
+ *
  * \brief Detects when a button should be mapped
  */
 class CButtonDetector : public CPrimitiveDetector
@@ -79,6 +86,8 @@ private:
 };
 
 /*!
+ * \ingroup joystick
+ *
  * \brief Detects when a D-pad direction should be mapped
  */
 class CHatDetector : public CPrimitiveDetector
@@ -109,6 +118,8 @@ struct AxisConfiguration
 };
 
 /*!
+ * \ingroup joystick
+ *
  * \brief Detects when an axis should be mapped
  */
 class CAxisDetector : public CPrimitiveDetector
@@ -222,6 +233,8 @@ private:
 };
 
 /*!
+ * \ingroup joystick
+ *
  * \brief Detects when a keyboard key should be mapped
  */
 class CKeyDetector : public CPrimitiveDetector
@@ -245,6 +258,8 @@ private:
 };
 
 /*!
+ * \ingroup joystick
+ *
  * \brief Detects when a mouse button should be mapped
  */
 class CMouseButtonDetector : public CPrimitiveDetector
@@ -268,6 +283,8 @@ private:
 };
 
 /*!
+ * \ingroup joystick
+ *
  * \brief Detects when a mouse button should be mapped
  */
 class CPointerDetector : public CPrimitiveDetector
@@ -301,6 +318,7 @@ private:
 
 /*!
  * \ingroup joystick
+ *
  * \brief Generic implementation of a class that provides button mapping by
  *        translating driver events to button mapping commands
  *
@@ -322,7 +340,7 @@ public:
    * \param buttonMapper Carries out button-mapping commands using <buttonMap>
    * \param buttonMap The button map given to <buttonMapper> on each command
    */
-  CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMap, IKeymap* keymap);
+  CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMap, KEYMAP::IKeymap* keymap);
 
   ~CButtonMapping() override = default;
 
@@ -379,7 +397,7 @@ private:
   // Construction parameters
   IButtonMapper* const m_buttonMapper;
   IButtonMap* const m_buttonMap;
-  IKeymap* const m_keymap;
+  KEYMAP::IKeymap* const m_keymap;
 
   std::map<unsigned int, CButtonDetector> m_buttons;
   std::map<unsigned int, CHatDetector> m_hats;

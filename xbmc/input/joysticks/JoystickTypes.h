@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2014-2018 Team Kodi
+ *  Copyright (C) 2014-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -8,15 +8,13 @@
 
 #pragma once
 
-/*!
- \file
- \ingroup joystick
- */
-
 #include "input/InputTypes.h"
 
 #include <set>
 #include <string>
+
+/// \ingroup joystick
+/// \{
 
 namespace KODI
 {
@@ -158,29 +156,7 @@ enum class PRIMITIVE_TYPE
   MOUSE_BUTTON, // a mouse button
   RELATIVE_POINTER, // a relative pointer, such as on a mouse
 };
-
-/*!
- * \ingroup joystick
- * \brief Action entry in joystick.xml
- */
-struct KeymapAction
-{
-  unsigned int actionId;
-  std::string actionString;
-  unsigned int holdTimeMs;
-  std::set<std::string> hotkeys;
-
-  bool operator<(const KeymapAction& rhs) const { return holdTimeMs < rhs.holdTimeMs; }
-};
-
-/*!
- * \ingroup joystick
- * \brief Container that sorts action entries by their holdtime
- */
-struct KeymapActionGroup
-{
-  int windowId = -1;
-  std::set<KeymapAction> actions;
-};
 } // namespace JOYSTICK
 } // namespace KODI
+
+/// \}

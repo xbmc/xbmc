@@ -10,9 +10,9 @@
 
 #include "IConfigurationWindow.h"
 #include "games/controllers/input/PhysicalFeature.h"
-#include "input/XBMC_keysym.h"
 #include "input/joysticks/DriverPrimitive.h"
 #include "input/joysticks/interfaces/IButtonMapper.h"
+#include "input/keyboard/XBMC_keysym.h"
 #include "input/keyboard/interfaces/IKeyboardDriverHandler.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
@@ -27,10 +27,11 @@
 
 namespace KODI
 {
-namespace KEYBOARD
+namespace KEYMAP
 {
-class IActionMap;
-}
+class IKeyboardActionMap;
+class IKeymap;
+} // namespace KEYMAP
 
 namespace GAME
 {
@@ -61,7 +62,7 @@ public:
   bool NeedsCooldown() const override { return true; }
   bool AcceptsPrimitive(JOYSTICK::PRIMITIVE_TYPE type) const override { return true; }
   bool MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
-                    IKeymap* keymap,
+                    KEYMAP::IKeymap* keymap,
                     const JOYSTICK::CDriverPrimitive& primitive) override;
   void OnEventFrame(const JOYSTICK::IButtonMap* buttonMap, bool bMotion) override;
   void OnLateAxis(const JOYSTICK::IButtonMap* buttonMap, unsigned int axisIndex) override;
@@ -113,7 +114,7 @@ private:
   std::set<const JOYSTICK::IButtonMap*> m_bInMotion;
 
   // Keyboard handling
-  std::unique_ptr<KEYBOARD::IActionMap> m_actionMap;
+  std::unique_ptr<KEYMAP::IKeyboardActionMap> m_actionMap;
   std::map<XBMCKey, CPhysicalFeature> m_keyMap; // Keycode -> feature
 };
 } // namespace GAME

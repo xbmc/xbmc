@@ -15,7 +15,6 @@
 #include "guilib/GUIVisualisationControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "input/Key.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 

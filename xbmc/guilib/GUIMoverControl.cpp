@@ -9,10 +9,13 @@
 #include "GUIMoverControl.h"
 
 #include "GUIMessage.h"
-#include "input/Key.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
+#include "input/mouse/MouseEvent.h"
 #include "input/mouse/MouseStat.h"
 #include "utils/TimeUtils.h"
 
+using namespace KODI;
 using namespace UTILS;
 
 CGUIMoverControl::CGUIMoverControl(int parentID,
@@ -146,7 +149,7 @@ void CGUIMoverControl::OnRight()
   Move(static_cast<int>(m_movingSpeed.GetUpdatedDistance(MOVING_SPEED::EventType::RIGHT)), 0);
 }
 
-EVENT_RESULT CGUIMoverControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+EVENT_RESULT CGUIMoverControl::OnMouseEvent(const CPoint& point, const MOUSE::CMouseEvent& event)
 {
   if (event.m_id == ACTION_MOUSE_DRAG || event.m_id == ACTION_MOUSE_DRAG_END)
   {

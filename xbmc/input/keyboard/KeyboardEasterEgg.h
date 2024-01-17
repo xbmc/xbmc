@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2016-2018 Team Kodi
+ *  Copyright (C) 2016-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "input/XBMC_vkeys.h"
+#include "input/keyboard/XBMC_vkeys.h"
 #include "input/keyboard/interfaces/IKeyboardDriverHandler.h"
 
 #include <vector>
@@ -18,6 +18,8 @@ namespace KODI
 namespace KEYBOARD
 {
 /*!
+ * \ingroup keyboard
+ *
  * \brief Hush!!!
  */
 class CKeyboardEasterEgg : public IKeyboardDriverHandler

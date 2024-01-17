@@ -13,8 +13,12 @@
 #include "GUIFont.h" // for XBFONT_* definitions
 #include "GUIMessage.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
-#include "input/Key.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
+#include "input/mouse/MouseEvent.h"
 #include "utils/StringUtils.h"
+
+using namespace KODI;
 
 CGUIControlGroupList::CGUIControlGroupList(int parentID, int controlID, float posX, float posY, float width, float height, float itemGap, int pageControl, ORIENTATION orientation, bool useControlPositions, uint32_t alignment, const CScroller& scroller)
 : CGUIControlGroup(parentID, controlID, posX, posY, width, height)
@@ -390,7 +394,8 @@ void CGUIControlGroupList::ScrollTo(float offset)
   MarkDirtyRegion();
 }
 
-EVENT_RESULT CGUIControlGroupList::SendMouseEvent(const CPoint &point, const CMouseEvent &event)
+EVENT_RESULT CGUIControlGroupList::SendMouseEvent(const CPoint& point,
+                                                  const MOUSE::CMouseEvent& event)
 {
   // transform our position into child coordinates
   CPoint childPoint(point);
@@ -538,7 +543,8 @@ float CGUIControlGroupList::GetAlignOffset() const
   return 0.0f;
 }
 
-EVENT_RESULT CGUIControlGroupList::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+EVENT_RESULT CGUIControlGroupList::OnMouseEvent(const CPoint& point,
+                                                const MOUSE::CMouseEvent& event)
 {
   if (event.m_id == ACTION_MOUSE_WHEEL_UP || event.m_id == ACTION_MOUSE_WHEEL_DOWN)
   {

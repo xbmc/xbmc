@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -9,7 +9,7 @@
 #include "MouseStat.h"
 
 #include "ServiceBroker.h"
-#include "input/Key.h"
+#include "input/keyboard/KeyIDs.h"
 #include "utils/TimeUtils.h"
 #include "windowing/WinSystem.h"
 

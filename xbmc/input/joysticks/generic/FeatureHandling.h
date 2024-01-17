@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2014-2018 Team Kodi
+ *  Copyright (C) 2014-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -26,6 +26,7 @@ using FeaturePtr = std::shared_ptr<CJoystickFeature>;
 
 /*!
  * \ingroup joystick
+ *
  * \brief Base class for joystick features
  *
  * See list of feature types in JoystickTypes.h.
@@ -109,6 +110,9 @@ private:
   std::chrono::time_point<std::chrono::steady_clock> m_motionStartTimeMs;
 };
 
+/*!
+ * \ingroup joystick
+ */
 class CScalarFeature : public CJoystickFeature
 {
 public:
@@ -140,6 +144,7 @@ private:
 
 /*!
  * \ingroup joystick
+ *
  * \brief Axis of a feature (analog stick, accelerometer, etc)
  *
  * Axes are composed of two driver primitives, one for the positive semiaxis
@@ -203,6 +208,9 @@ protected:
   float m_negativeDistance;
 };
 
+/*!
+ * \ingroup joystick
+ */
 class CAxisFeature : public CJoystickFeature
 {
 public:
@@ -219,6 +227,9 @@ protected:
   float m_state = 0.0f;
 };
 
+/*!
+ * \ingroup joystick
+ */
 class CWheel : public CAxisFeature
 {
 public:
@@ -229,6 +240,9 @@ public:
   bool OnAnalogMotion(const CDriverPrimitive& source, float magnitude) override;
 };
 
+/*!
+ * \ingroup joystick
+ */
 class CThrottle : public CAxisFeature
 {
 public:
@@ -239,6 +253,9 @@ public:
   bool OnAnalogMotion(const CDriverPrimitive& source, float magnitude) override;
 };
 
+/*!
+ * \ingroup joystick
+ */
 class CAnalogStick : public CJoystickFeature
 {
 public:
@@ -258,6 +275,9 @@ protected:
   float m_horizState = 0.0f;
 };
 
+/*!
+ * \ingroup joystick
+ */
 class CAccelerometer : public CJoystickFeature
 {
 public:

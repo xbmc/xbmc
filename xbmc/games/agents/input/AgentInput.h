@@ -94,8 +94,8 @@ public:
   std::string GetPortAddress(JOYSTICK::IInputProvider* inputProvider) const;
   std::string GetKeyboardAddress(KEYBOARD::IKeyboardInputProvider* inputProvider) const;
   std::string GetMouseAddress(MOUSE::IMouseInputProvider* inputProvider) const;
-  std::vector<std::string> GetInputPorts() const;
-  float GetPortActivation(const std::string& address) const;
+  std::vector<std::string> GetGameInputPorts() const;
+  float GetGamePortActivation(const std::string& address) const;
   float GetPeripheralActivation(const std::string& peripheralLocation) const;
 
 private:

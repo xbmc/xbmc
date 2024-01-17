@@ -13,11 +13,11 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/File.h"
 #include "guilib/LocalizeStrings.h"
-#include "input/ButtonTranslator.h"
-#include "input/GamepadTranslator.h"
-#include "input/IRTranslator.h"
-#include "input/Key.h"
-#include "input/KeyboardTranslator.h"
+#include "input/keyboard/KeyIDs.h"
+#include "input/keymaps/ButtonTranslator.h"
+#include "input/keymaps/joysticks/GamepadTranslator.h"
+#include "input/keymaps/keyboard/KeyboardTranslator.h"
+#include "input/keymaps/remote/IRTranslator.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
@@ -27,6 +27,7 @@
 #include <mutex>
 #include <queue>
 
+using namespace KODI;
 using namespace EVENTCLIENT;
 using namespace EVENTPACKET;
 
@@ -59,7 +60,7 @@ void CEventButtonState::Load()
   {
     if ( (m_mapName.length() > 0) && (m_buttonName.length() > 0) )
     {
-      m_iKeyCode = CButtonTranslator::TranslateString(m_mapName, m_buttonName);
+      m_iKeyCode = KEYMAP::CButtonTranslator::TranslateString(m_mapName, m_buttonName);
       if (m_iKeyCode == 0)
       {
         Reset();

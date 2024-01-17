@@ -13,7 +13,7 @@
 #include "guilib/GUIColorManager.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/LocalizeStrings.h"
-#include "input/Key.h"
+#include "input/actions/ActionIDs.h"
 #include "utils/ColorUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"

@@ -9,7 +9,7 @@
 #pragma once
 
 #include "Seat.h"
-#include "input/XBMC_keysym.h"
+#include "input/keyboard/XBMC_keysym.h"
 #include "utils/Geometry.h"
 #include "windowing/XBMC_events.h"
 

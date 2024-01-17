@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2014-2018 Team Kodi
+ *  Copyright (C) 2014-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -28,18 +28,25 @@ namespace KODI
 namespace JOYSTICK
 {
 class CDeadzoneFilter;
-class CKeymapHandling;
 class CRumbleGenerator;
 class IButtonMap;
 class IDriverHandler;
 class IInputHandler;
 } // namespace JOYSTICK
+
+namespace KEYMAP
+{
+class CKeymapHandling;
+} // namespace KEYMAP
 } // namespace KODI
 
 namespace PERIPHERALS
 {
 class CPeripherals;
 
+/*!
+ * \ingroup peripherals
+ */
 class CPeripheralJoystick : public CPeripheral, //! @todo extend CPeripheralHID
                             public KODI::JOYSTICK::IDriverReceiver
 {
@@ -58,7 +65,7 @@ public:
                                      bool bPromiscuous) override;
   void UnregisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler) override;
   KODI::JOYSTICK::IDriverReceiver* GetDriverReceiver() override { return this; }
-  IKeymap* GetKeymap(const std::string& controllerId) override;
+  KODI::KEYMAP::IKeymap* GetKeymap(const std::string& controllerId) override;
   CDateTime LastActive() override { return m_lastActive; }
   KODI::GAME::ControllerPtr ControllerProfile() const override;
   void SetControllerProfile(const KODI::GAME::ControllerPtr& controller) override;
@@ -136,7 +143,7 @@ protected:
   std::vector<std::future<void>> m_installTasks;
 
   // Input clients
-  std::unique_ptr<KODI::JOYSTICK::CKeymapHandling> m_appInput;
+  std::unique_ptr<KODI::KEYMAP::CKeymapHandling> m_appInput;
   std::unique_ptr<KODI::JOYSTICK::CRumbleGenerator> m_rumbleGenerator;
   std::unique_ptr<KODI::JOYSTICK::IInputHandler> m_joystickMonitor;
   std::unique_ptr<KODI::JOYSTICK::IButtonMap> m_buttonMap;

@@ -98,7 +98,7 @@ protected:
   CGUISliderControl(const CGUISliderControl& control);
 
   bool HitTest(const CPoint &point) const override;
-  EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event) override;
+  EVENT_RESULT OnMouseEvent(const CPoint& point, const KODI::MOUSE::CMouseEvent& event) override;
   bool UpdateColors(const CGUIListItem* item) override;
   virtual void Move(int iNumSteps);
   virtual void SetFromPosition(const CPoint &point, bool guessSelector = false);

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -89,18 +89,3 @@
 // Reserved 256 -> ...
 // Key.h
 // KEY_BUTTON_*
-
-typedef struct _XINPUT_IR_REMOTE
-{
-  unsigned char wButtons;
-  unsigned char region; // just a guess
-
-  //! Some value that is changing while a button is pressed... could be the
-  //! state of the buffer
-  unsigned char counter;
-
-  //! If > 0: first event triggered after a button was pressed on the remote
-  //! If 0: not first event
-  unsigned char firstEvent;
-
-} XINPUT_IR_REMOTE, *PIR_REMOTE;

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2016-2018 Team Kodi
+ *  Copyright (C) 2016-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -14,6 +14,7 @@ namespace JOYSTICK
 {
 /*!
  * \ingroup joystick
+ *
  * \brief Interface for sending input events to joystick drivers
  */
 class IDriverReceiver

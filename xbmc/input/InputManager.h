@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -8,12 +8,12 @@
 
 #pragma once
 
-#include "input/KeyboardStat.h"
 #include "input/actions/Action.h"
-#include "input/button/ButtonStat.h"
+#include "input/actions/interfaces/IActionListener.h"
+#include "input/keyboard/KeyboardStat.h"
+#include "input/keymaps/ButtonStat.h"
 #include "input/mouse/MouseStat.h"
 #include "input/mouse/interfaces/IMouseInputProvider.h"
-#include "interfaces/IActionListener.h"
 #include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 #include "utils/Observer.h"
@@ -24,14 +24,8 @@
 #include <string>
 #include <vector>
 
-class CButtonTranslator;
-class CCustomControllerTranslator;
-class CJoystickMapper;
 class CKey;
 class CProfileManager;
-class CTouchTranslator;
-class IKeymapEnvironment;
-class IWindowKeymap;
 
 namespace KODI
 {
@@ -40,6 +34,16 @@ namespace KEYBOARD
 {
 class IKeyboardDriverHandler;
 }
+
+namespace KEYMAP
+{
+class CButtonTranslator;
+class CCustomControllerTranslator;
+class CJoystickMapper;
+class CTouchTranslator;
+class IKeymapEnvironment;
+class IWindowKeymap;
+} // namespace KEYMAP
 
 namespace MOUSE
 {
@@ -51,7 +55,8 @@ class IMouseDriverHandler;
 /// \{
 
 /*!
- * \ingroup input keyboard mouse touch joystick
+ * \ingroup input keyboard mouse touch joystick keymap
+ *
  * \brief Main input processing class.
  *
  * This class consolidates all input generated from different sources such as
@@ -60,7 +65,9 @@ class IMouseDriverHandler;
  * \copydoc keyboard
  * \copydoc mouse
  */
-class CInputManager : public ISettingCallback, public IActionListener, public Observable
+class CInputManager : public ISettingCallback,
+                      public KODI::ACTION::IActionListener,
+                      public Observable
 {
 public:
   CInputManager();
@@ -192,7 +199,7 @@ public:
   void AddKeymap(const std::string& keymap);
   void RemoveKeymap(const std::string& keymap);
 
-  const IKeymapEnvironment* KeymapEnvironment() const { return m_keymapEnvironment.get(); }
+  const KODI::KEYMAP::IKeymapEnvironment* KeymapEnvironment() const;
 
   /*! \brief Obtain the action configured for a given window and key
    *
@@ -214,7 +221,7 @@ public:
   bool TranslateTouchAction(
       int windowId, int touchAction, int touchPointers, int& action, std::string& actionString);
 
-  std::vector<std::shared_ptr<const IWindowKeymap>> GetJoystickKeymaps() const;
+  std::vector<std::shared_ptr<const KODI::KEYMAP::IWindowKeymap>> GetJoystickKeymaps() const;
 
   /*!
    * \brief Queue an action to be processed on the next call to Process()
@@ -278,8 +285,8 @@ private:
    */
   void ProcessQueuedActions();
 
-  CKeyboardStat m_Keyboard;
-  KODI::INPUT::CButtonStat m_buttonStat;
+  KODI::KEYBOARD::CKeyboardStat m_Keyboard;
+  KODI::KEYMAP::CButtonStat m_buttonStat;
   CMouseStat m_Mouse;
   CKey m_LastKey;
 
@@ -289,11 +296,11 @@ private:
   CCriticalSection m_actionMutex;
 
   // Button translation
-  std::unique_ptr<IKeymapEnvironment> m_keymapEnvironment;
-  std::unique_ptr<CButtonTranslator> m_buttonTranslator;
-  std::unique_ptr<CCustomControllerTranslator> m_customControllerTranslator;
-  std::unique_ptr<CTouchTranslator> m_touchTranslator;
-  std::unique_ptr<CJoystickMapper> m_joystickTranslator;
+  std::unique_ptr<KODI::KEYMAP::IKeymapEnvironment> m_keymapEnvironment;
+  std::unique_ptr<KODI::KEYMAP::CButtonTranslator> m_buttonTranslator;
+  std::unique_ptr<KODI::KEYMAP::CCustomControllerTranslator> m_customControllerTranslator;
+  std::unique_ptr<KODI::KEYMAP::CTouchTranslator> m_touchTranslator;
+  std::unique_ptr<KODI::KEYMAP::CJoystickMapper> m_joystickTranslator;
 
   std::vector<KODI::KEYBOARD::IKeyboardDriverHandler*> m_keyboardHandlers;
   std::vector<KODI::MOUSE::IMouseDriverHandler*> m_mouseHandlers;

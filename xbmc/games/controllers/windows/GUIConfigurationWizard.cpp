@@ -13,12 +13,13 @@
 #include "games/controllers/dialogs/GUIDialogAxisDetection.h"
 #include "games/controllers/guicontrols/GUIFeatureButton.h"
 #include "games/controllers/input/PhysicalFeature.h"
-#include "input/IKeymap.h"
 #include "input/InputManager.h"
+#include "input/actions/ActionIDs.h"
 #include "input/joysticks/JoystickUtils.h"
 #include "input/joysticks/interfaces/IButtonMap.h"
 #include "input/joysticks/interfaces/IButtonMapCallback.h"
-#include "input/keyboard/KeymapActionMap.h"
+#include "input/keymaps/interfaces/IKeymap.h"
+#include "input/keymaps/keyboard/KeyboardActionMap.h"
 #include "peripherals/Peripherals.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
@@ -41,7 +42,7 @@ constexpr auto POST_MAPPING_WAIT_TIME_MS = 5000ms;
 } // namespace
 
 CGUIConfigurationWizard::CGUIConfigurationWizard()
-  : CThread("GUIConfigurationWizard"), m_actionMap(new KEYBOARD::CKeymapActionMap)
+  : CThread("GUIConfigurationWizard"), m_actionMap(new KEYMAP::CKeyboardActionMap)
 {
   InitializeState();
 }
@@ -204,7 +205,7 @@ void CGUIConfigurationWizard::Process(void)
 }
 
 bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
-                                           IKeymap* keymap,
+                                           KEYMAP::IKeymap* keymap,
                                            const JOYSTICK::CDriverPrimitive& primitive)
 {
   using namespace INPUT;

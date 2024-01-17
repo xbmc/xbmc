@@ -40,7 +40,7 @@ public:
    *
    * \return The layout-independent keycode associated with the key
    */
-  static KEYBOARD::KeySymbol TranslateKeysym(const std::string& symbol);
+  static KEYBOARD::XBMCKey TranslateKeysym(const std::string& symbol);
 
   /*!
    * \brief Translate a Kodi key code to a keyboard symbol
@@ -49,7 +49,7 @@ public:
    *
    * \return The key's symbol, or an empty string if no symbol is defined for the keycode
    */
-  static const char* TranslateKeycode(KEYBOARD::KeySymbol keycode);
+  static const char* TranslateKeycode(KEYBOARD::XBMCKey keycode);
 };
 
 } // namespace GAME

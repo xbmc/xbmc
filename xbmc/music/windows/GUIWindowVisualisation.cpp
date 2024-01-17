@@ -16,11 +16,14 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIDialog.h"
 #include "guilib/GUIWindowManager.h"
-#include "input/Key.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
+#include "input/mouse/MouseEvent.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 
+using namespace KODI;
 using namespace MUSIC_INFO;
 
 #define START_FADE_LENGTH  2.0f // 2 seconds on startup
@@ -181,7 +184,8 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
-EVENT_RESULT CGUIWindowVisualisation::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+EVENT_RESULT CGUIWindowVisualisation::OnMouseEvent(const CPoint& point,
+                                                   const MOUSE::CMouseEvent& event)
 {
   if (event.m_id == ACTION_MOUSE_RIGHT_CLICK)
   { // no control found to absorb this click - go back to GUI

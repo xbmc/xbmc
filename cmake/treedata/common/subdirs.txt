@@ -18,17 +18,6 @@ xbmc/guilib                                     guilib
 xbmc/guilib/guiinfo                             guilib_guiinfo
 xbmc/guilib/listproviders                       guilib_listproviders
 xbmc/imagefiles                                 imagefiles
-xbmc/input                                      input
-xbmc/input/actions                              input/actions
-xbmc/input/button                               input/button
-xbmc/input/joysticks                            input/joysticks
-xbmc/input/joysticks/dialogs                    input/joysticks/dialogs
-xbmc/input/joysticks/generic                    input/joysticks/generic
-xbmc/input/joysticks/keymaps                    input/joysticks/keymaps
-xbmc/input/keyboard                             input/keyboard
-xbmc/input/keyboard/generic                     input/keyboard/generic
-xbmc/input/mouse                                input/mouse
-xbmc/input/mouse/generic                        input/mouse/generic
 xbmc/messaging                                  messaging
 xbmc/messaging/helpers                          messagingHelpers
 xbmc/pictures                                   pictures

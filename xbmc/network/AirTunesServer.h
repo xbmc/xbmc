@@ -12,7 +12,7 @@
 #pragma once
 
 #include "filesystem/PipeFile.h"
-#include "interfaces/IActionListener.h"
+#include "input/actions/interfaces/IActionListener.h"
 #include "interfaces/IAnnouncer.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
@@ -30,7 +30,9 @@
 class CDACP;
 class CVariant;
 
-class CAirTunesServer : public ANNOUNCEMENT::IAnnouncer, public IActionListener, public CThread
+class CAirTunesServer : public ANNOUNCEMENT::IAnnouncer,
+                        public KODI::ACTION::IActionListener,
+                        public CThread
 {
 public:
   // ANNOUNCEMENT::IAnnouncer

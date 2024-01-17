@@ -15,7 +15,8 @@
 #include "Zeroconf.h"
 #include "application/Application.h"
 #include "guilib/GUIAudioManager.h"
-#include "input/Key.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
 #include "input/actions/ActionTranslator.h"
 #include "interfaces/builtins/Builtins.h"
 #include "utils/SystemInfo.h"
@@ -26,6 +27,7 @@
 #include <mutex>
 #include <queue>
 
+using namespace KODI;
 using namespace EVENTSERVER;
 using namespace EVENTPACKET;
 using namespace EVENTCLIENT;
@@ -303,7 +305,7 @@ bool CEventServer::ExecuteNextAction()
       case AT_BUTTON:
         {
           unsigned int actionID;
-          CActionTranslator::TranslateString(actionEvent.actionName, actionID);
+          ACTION::CActionTranslator::TranslateString(actionEvent.actionName, actionID);
           CAction action(actionID, 1.0f, 0.0f, actionEvent.actionName);
           CGUIComponent* gui = CServiceBroker::GetGUI();
           if (gui)

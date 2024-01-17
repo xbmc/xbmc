@@ -14,10 +14,10 @@
 #include "games/addons/input/GameClientJoystick.h"
 #include "games/controllers/Controller.h"
 #include "input/InputManager.h"
-#include "peripherals/EventLockHandle.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/devices/Peripheral.h"
 #include "peripherals/devices/PeripheralJoystick.h"
+#include "peripherals/events/EventLockHandle.h"
 #include "utils/log.h"
 
 #include <array>
@@ -214,7 +214,7 @@ std::string CAgentInput::GetMouseAddress(MOUSE::IMouseInputProvider* inputProvid
   return "";
 }
 
-std::vector<std::string> CAgentInput::GetInputPorts() const
+std::vector<std::string> CAgentInput::GetGameInputPorts() const
 {
   std::vector<std::string> inputPorts;
 
@@ -227,7 +227,7 @@ std::vector<std::string> CAgentInput::GetInputPorts() const
   return inputPorts;
 }
 
-float CAgentInput::GetPortActivation(const std::string& portAddress) const
+float CAgentInput::GetGamePortActivation(const std::string& portAddress) const
 {
   float activation = 0.0f;
 

@@ -10,7 +10,7 @@
 
 #include "GUIInfoManager.h"
 #include "LocalizeStrings.h"
-#include "input/Key.h"
+#include "input/keyboard/Key.h"
 #include "utils/ColorUtils.h"
 #include "utils/StringUtils.h"
 

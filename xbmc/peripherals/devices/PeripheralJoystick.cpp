@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2014-2018 Team Kodi
+ *  Copyright (C) 2014-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -22,7 +22,7 @@
 #include "input/joysticks/JoystickTranslator.h"
 #include "input/joysticks/RumbleGenerator.h"
 #include "input/joysticks/interfaces/IDriverHandler.h"
-#include "input/joysticks/keymaps/KeymapHandling.h"
+#include "input/keymaps/joysticks/KeymapHandling.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/addons/AddonButtonMap.h"
 #include "peripherals/bus/virtual/PeripheralBusAddon.h"
@@ -106,7 +106,7 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
         }
 
         // Give joystick monitor priority over default controller
-        m_appInput = std::make_unique<CKeymapHandling>(
+        m_appInput = std::make_unique<KEYMAP::CKeymapHandling>(
             this, false, m_manager.GetInputManager().KeymapEnvironment());
         m_joystickMonitor = std::make_unique<CJoystickMonitor>();
         RegisterInputHandler(m_joystickMonitor.get(), false);
@@ -237,7 +237,7 @@ void CPeripheralJoystick::UnregisterJoystickDriverHandler(IDriverHandler* handle
                          m_driverHandlers.end());
 }
 
-IKeymap* CPeripheralJoystick::GetKeymap(const std::string& controllerId)
+KEYMAP::IKeymap* CPeripheralJoystick::GetKeymap(const std::string& controllerId)
 {
   return m_appInput->GetKeymap(controllerId);
 }

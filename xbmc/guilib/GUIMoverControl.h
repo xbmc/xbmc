@@ -60,7 +60,7 @@ public:
   bool CanFocus() const override { return true; }
 
 protected:
-  EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event) override;
+  EVENT_RESULT OnMouseEvent(const CPoint& point, const KODI::MOUSE::CMouseEvent& event) override;
   bool UpdateColors(const CGUIListItem* item) override;
   bool SetAlpha(unsigned char alpha);
   void Move(int iX, int iY);

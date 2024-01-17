@@ -17,11 +17,14 @@
 #include "GUIWindowManager.h"
 #include "ServiceBroker.h"
 #include "input/InputManager.h"
-#include "input/Key.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
+#include "input/mouse/MouseEvent.h"
 #include "input/mouse/MouseStat.h"
 #include "utils/log.h"
 
-using namespace KODI::GUILIB;
+using namespace KODI;
+using namespace GUILIB;
 
 CGUIControl::CGUIControl()
 {
@@ -573,7 +576,7 @@ bool CGUIControl::HitTest(const CPoint &point) const
   return m_hitRect.PtInRect(point);
 }
 
-EVENT_RESULT CGUIControl::SendMouseEvent(const CPoint &point, const CMouseEvent &event)
+EVENT_RESULT CGUIControl::SendMouseEvent(const CPoint& point, const MOUSE::CMouseEvent& event)
 {
   CPoint childPoint(point);
   m_transform.InverseTransformPosition(childPoint.x, childPoint.y);

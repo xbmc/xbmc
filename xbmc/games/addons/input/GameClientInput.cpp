@@ -30,8 +30,8 @@
 #include "games/ports/input/PortManager.h"
 #include "games/ports/types/PortNode.h"
 #include "input/joysticks/JoystickTypes.h"
-#include "peripherals/EventLockHandle.h"
 #include "peripherals/Peripherals.h"
+#include "peripherals/events/EventLockHandle.h"
 #include "utils/log.h"
 
 #include <algorithm>
