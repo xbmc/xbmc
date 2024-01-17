@@ -75,7 +75,7 @@ void CGUIGameController::DoProcess(unsigned int currentTime, CDirtyRegionList& d
   float activation = 0.0f;
 
   if (!portAddress.empty())
-    activation = agentInput.GetPortActivation(portAddress);
+    activation = agentInput.GetGamePortActivation(portAddress);
 
   if (!peripheralLocation.empty())
     activation = std::max(agentInput.GetPeripheralActivation(peripheralLocation), activation);
