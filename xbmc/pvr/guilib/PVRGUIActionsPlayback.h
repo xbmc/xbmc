@@ -10,6 +10,7 @@
 
 #include "pvr/IPVRComponent.h"
 #include "pvr/settings/PVRSettings.h"
+#include "utils/ContentUtils.h"
 
 #include <string>
 
@@ -58,9 +59,12 @@ public:
   /*!
    * @brief Play EPG tag.
    * @param item containing an epg tag.
+   * @param mode playback mode.
    * @return true on success, false otherwise.
    */
-  bool PlayEpgTag(const CFileItem& item) const;
+  bool PlayEpgTag(
+      const CFileItem& item,
+      ContentUtils::PlayMode mode = ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM) const;
 
   /*!
    * @brief Switch channel.

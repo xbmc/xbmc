@@ -187,7 +187,9 @@ bool CPVRGUIActionsPlayback::PlayRecordingFolder(const CFileItem& item, bool bCh
   return true;
 }
 
-bool CPVRGUIActionsPlayback::PlayEpgTag(const CFileItem& item) const
+bool CPVRGUIActionsPlayback::PlayEpgTag(
+    const CFileItem& item,
+    ContentUtils::PlayMode mode /* = ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM */) const
 {
   const std::shared_ptr<CPVREpgInfoTag> epgTag(CPVRItem(item).GetEpgInfoTag());
   if (!epgTag)
@@ -225,7 +227,7 @@ bool CPVRGUIActionsPlayback::PlayEpgTag(const CFileItem& item) const
     itemToPlay = new CFileItem(epgTag);
   }
 
-  CServiceBroker::GetPVRManager().PlaybackState()->StartPlayback(itemToPlay);
+  CServiceBroker::GetPVRManager().PlaybackState()->StartPlayback(itemToPlay, mode);
   CheckAndSwitchToFullscreen(true);
   return true;
 }

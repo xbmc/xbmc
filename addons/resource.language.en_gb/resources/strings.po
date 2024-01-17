@@ -11638,7 +11638,19 @@ msgctxt "#19352"
 msgid "Play next programme automatically"
 msgstr ""
 
-#empty strings from id 19353 to 19498
+#. Label of a context menu entry to kick catchup / VOD playback, starting with the selected item, auto playing all following programmes
+#: xbmc/pvr/PVRContextMenuItem.cpp
+msgctxt "#19353"
+msgid "Play programmes from here"
+msgstr ""
+
+#. Label of a context menu entry to kick catchup / VOD playback of only the selected item, not auto playing any following programmes
+#: xbmc/pvr/PVRContextMenuItem.cpp
+msgctxt "#19354"
+msgid "Play only this programme"
+msgstr ""
+
+#empty strings from id 19355 to 19498
 
 #. label for epg genre value
 #: xbmc/pvr/epg/Epg.cpp

@@ -9,6 +9,7 @@
 #pragma once
 
 #include "threads/CriticalSection.h"
+#include "utils/ContentUtils.h"
 
 #include <memory>
 #include <string>
@@ -71,8 +72,11 @@ public:
   /*!
    * @brief Start playback of the given item.
    * @param item containing a channel, a recording or an epg tag.
+   * @param mode playback mode.
    */
-  void StartPlayback(CFileItem* item) const;
+  void StartPlayback(
+      CFileItem* item,
+      ContentUtils::PlayMode mode = ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM) const;
 
   /*!
    * @brief Check if a TV channel, radio channel or recording is playing.
