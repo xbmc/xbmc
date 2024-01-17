@@ -98,8 +98,11 @@ void BaseYUV2RGBGLSLShader::OnCompiledAndLinked()
   m_hGammaSrc = glGetUniformLocation(ProgramHandle(), "m_gammaSrc");
   m_hGammaDstInv = glGetUniformLocation(ProgramHandle(), "m_gammaDstInv");
   m_hCoefsDst = glGetUniformLocation(ProgramHandle(), "m_coefsDst");
-  m_hToneP1 = glGetUniformLocation(ProgramHandle(), "m_toneP1");
-  m_hLuminance = glGetUniformLocation(ProgramHandle(), "m_luminance");
+  m_hReinhardParam1 = glGetUniformLocation(ProgramHandle(), "m_reinhardParam1");
+  m_hACESParam1 = glGetUniformLocation(ProgramHandle(), "m_acesParam1");
+  m_hACESParam2 = glGetUniformLocation(ProgramHandle(), "m_acesParam2");
+  m_hHableParam1 = glGetUniformLocation(ProgramHandle(), "m_hableParam1");
+  m_hHableParam2 = glGetUniformLocation(ProgramHandle(), "m_hableParam2");
   VerifyGLState();
 }
 
@@ -126,7 +129,17 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
     Matrix3 primMat = m_convMatrix.GetPrimMat();
     glUniformMatrix3fv(m_hPrimMat, 1, GL_FALSE, primMat.ToRaw());
     glUniform1f(m_hGammaSrc, m_convMatrix.GetGammaSrc());
-    glUniform1f(m_hGammaDstInv, 1 / m_convMatrix.GetGammaDst());
+
+    // if we have aces or hable, merge two pows into one. i.e. pow(pow())
+    if (!m_toneMapping || m_toneMappingMethod == VS_TONEMAPMETHOD_REINHARD)
+    {
+      glUniform1f(m_hGammaDstInv, 1 / m_convMatrix.GetGammaDst());
+    }
+    else
+    {
+      const float st2084_m2 = (2523.0f / 4096.0f) * 128.0f;
+      glUniform1f(m_hGammaDstInv, 1 / (m_convMatrix.GetGammaDst() * st2084_m2));
+    }
   }
 
   if (m_toneMapping)
@@ -152,25 +165,44 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
       }
 
       param *= m_toneMappingParam;
+      param = 1.0f / (param * param);
 
       Matrix3x1 coefs = m_convMatrix.GetRGBYuvCoefs(AVColorSpace::AVCOL_SPC_BT709);
       glUniform3f(m_hCoefsDst, coefs[0], coefs[1], coefs[2]);
-      glUniform1f(m_hToneP1, param);
+      glUniform1f(m_hReinhardParam1, param);
     }
     else if (m_toneMappingMethod == VS_TONEMAPMETHOD_ACES)
     {
       const float lumin = CToneMappers::GetLuminanceValue(m_hasDisplayMetadata, m_displayMetadata,
                                                           m_hasLightMetadata, m_lightMetadata);
-      glUniform1f(m_hLuminance, lumin);
-      glUniform1f(m_hToneP1, m_toneMappingParam);
+
+      const float param1 = (10000.0f / lumin) * (2.0f / m_toneMappingParam);
+      const float param2 = 1.24f / m_toneMappingParam;
+
+      glUniform1f(m_hACESParam1, param1);
+      glUniform1f(m_hACESParam2, param2);
     }
     else if (m_toneMappingMethod == VS_TONEMAPMETHOD_HABLE)
     {
       const float lumin = CToneMappers::GetLuminanceValue(m_hasDisplayMetadata, m_displayMetadata,
                                                           m_hasLightMetadata, m_lightMetadata);
       const float param = (10000.0f / lumin) * (2.0f / m_toneMappingParam);
-      glUniform1f(m_hLuminance, lumin);
-      glUniform1f(m_hToneP1, param);
+
+      const float wp = lumin / 100.0f;
+
+      const float param1 = wp * param;
+
+      const float A = 0.15;
+      const float B = 0.5;
+      const float C = 0.1;
+      const float D = 0.2;
+      const float E = 0.02;
+      const float F = 0.3;
+      const float param2 =
+          1.0f / ((wp * (A * wp + C * B) + D * E) / (wp * (A * wp + B) + D * F)) - E / F;
+
+      glUniform1f(m_hHableParam1, param1);
+      glUniform1f(m_hHableParam2, param2);
     }
   }
 
