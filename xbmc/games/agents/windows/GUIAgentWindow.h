@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022-2023 Team Kodi
+ *  Copyright (C) 2022-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -18,7 +18,7 @@ namespace KODI
 namespace GAME
 {
 class IActivePortList;
-class IAgentList;
+class IAgentControllerList;
 
 /*!
  * \ingroup games
@@ -47,14 +47,14 @@ private:
   // Actions for port list
   void UpdateActivePortList();
 
-  // Actions for agent list
-  void UpdateAgentList();
-  void FocusAgentList();
-  void OnAgentClick();
+  // Actions for controller list
+  void UpdateControllerList();
+  void FocusControllerList();
+  void OnControllerClick();
 
   // GUI parameters
   std::unique_ptr<IActivePortList> m_portList;
-  std::unique_ptr<IAgentList> m_agentList;
+  std::unique_ptr<IAgentControllerList> m_controllerList;
 
   // Game parameters
   GameClientPtr m_gameClient;

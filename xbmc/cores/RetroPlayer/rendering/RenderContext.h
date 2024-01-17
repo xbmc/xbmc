@@ -105,8 +105,8 @@ public:
   ::CGameSettings& GetDefaultGameSettings();
 
   // Agent functions
-  void StartAgentManager(GAME::GameClientPtr gameClient);
-  void StopAgentManager();
+  void StartAgentInput(GAME::GameClientPtr gameClient);
+  void StopAgentInput();
 
 private:
   // Construction parameters

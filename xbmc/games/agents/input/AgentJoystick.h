@@ -1,5 +1,5 @@
 /*
-*  Copyright (C) 2023 Team Kodi
+*  Copyright (C) 2023-2024 Team Kodi
 *  This file is part of Kodi - https://kodi.tv
 *
 *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -23,12 +23,12 @@ class CControllerActivity;
  *
  * \brief Handles game controller events for game agent functionality
  */
-class CGameAgentJoystick : public JOYSTICK::IInputHandler
+class CAgentJoystick : public JOYSTICK::IInputHandler
 {
 public:
-  CGameAgentJoystick(PERIPHERALS::PeripheralPtr peripheral);
+  CAgentJoystick(PERIPHERALS::PeripheralPtr peripheral);
 
-  ~CGameAgentJoystick() override;
+  ~CAgentJoystick() override;
 
   void Initialize();
   void Deinitialize();

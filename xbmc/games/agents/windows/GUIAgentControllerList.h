@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022-2023 Team Kodi
+ *  Copyright (C) 2022-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "IAgentList.h"
+#include "IAgentControllerList.h"
 #include "addons/AddonEvents.h"
 #include "games/GameTypes.h"
 #include "games/controllers/ControllerTypes.h"
@@ -28,16 +28,18 @@ namespace KODI
 {
 namespace GAME
 {
+class CAgentController;
+
 /*!
  * \ingroup games
  */
-class CGUIAgentList : public IAgentList, public Observer
+class CGUIAgentControllerList : public IAgentControllerList, public Observer
 {
 public:
-  CGUIAgentList(CGUIWindow& window);
-  ~CGUIAgentList() override;
+  CGUIAgentControllerList(CGUIWindow& window);
+  ~CGUIAgentControllerList() override;
 
-  // Implementation of IAgentList
+  // Implementation of IAgentControllerList
   void OnWindowLoaded() override;
   void OnWindowUnload() override;
   bool Initialize(GameClientPtr gameClient) override;
@@ -57,13 +59,13 @@ private:
   void OnEvent(const ADDON::AddonEvent& event);
 
   // GUI functions
-  void AddItem(const CGameAgent& agent);
+  void AddItem(const CAgentController& agentController);
   void CleanupItems();
   void OnItemFocus(unsigned int itemIndex);
-  void OnAgentFocus(const std::string& focusedAgent);
+  void OnControllerFocus(const std::string& focusedAgent);
   void OnItemSelect(unsigned int itemIndex);
-  void OnAgentSelect(const CFileItem& selectedAgentItem);
-  void ShowAgentDialog(const CGameAgent& agent);
+  void OnControllerSelect(const CFileItem& selectedAgentItem);
+  void ShowControllerDialog(const CAgentController& agentController);
 
   // Construction parameters
   CGUIWindow& m_guiWindow;

@@ -12,7 +12,7 @@
 #include "ServiceBroker.h"
 #include "games/GameServices.h"
 #include "games/addons/input/GameClientTopology.h"
-#include "games/agents/GameAgentManager.h"
+#include "games/agents/input/AgentInput.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerLayout.h"
 #include "guilib/GUIListItem.h"
@@ -69,17 +69,16 @@ void CGUIGameController::DoProcess(unsigned int currentTime, CDirtyRegionList& d
     peripheralLocation = m_peripheralLocation;
   }
 
-  const GAME::CGameAgentManager& agentManager =
-      CServiceBroker::GetGameServices().GameAgentManager();
+  const GAME::CAgentInput& agentInput = CServiceBroker::GetGameServices().AgentInput();
 
   // Highlight the controller if it is active
   float activation = 0.0f;
 
   if (!portAddress.empty())
-    activation = agentManager.GetPortActivation(portAddress);
+    activation = agentInput.GetPortActivation(portAddress);
 
   if (!peripheralLocation.empty())
-    activation = std::max(agentManager.GetPeripheralActivation(peripheralLocation), activation);
+    activation = std::max(agentInput.GetPeripheralActivation(peripheralLocation), activation);
 
   SetActivation(activation);
 

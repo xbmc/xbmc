@@ -30,7 +30,7 @@ class CGUIGameRenderManager;
 
 namespace GAME
 {
-class CGameAgentManager;
+class CAgentInput;
 class CControllerManager;
 class CGameSettings;
 
@@ -70,7 +70,7 @@ public:
 
   RETRO::CGUIGameRenderManager& GameRenderManager() { return m_gameRenderManager; }
 
-  CGameAgentManager& GameAgentManager() { return *m_gameAgentManager; }
+  CAgentInput& AgentInput() { return *m_agentInput; }
 
 private:
   // Construction parameters
@@ -80,7 +80,7 @@ private:
 
   // Game services
   std::unique_ptr<CGameSettings> m_gameSettings;
-  std::unique_ptr<CGameAgentManager> m_gameAgentManager;
+  std::unique_ptr<CAgentInput> m_agentInput;
 };
 } // namespace GAME
 } // namespace KODI

@@ -352,7 +352,7 @@
 						<bottom>-20</bottom>
 						<left>-20</left>
 						<right>-20</right>
-						<ondown>5</ondown>
+						<ondown>7</ondown>
 						<label>$LOCALIZE[35110]</label>
 						<font>font37</font>
 						<textoffsetx>36</textoffsetx>
@@ -433,26 +433,26 @@
 					</control>
 				</control>
 				<control type="group">
-					<description>Area of the dialog for players</description>
+					<description>Area of the dialog for player controllers</description>
 					<top>136</top>
 					<height>576</height>
 					<control type="image">
-						<description>Player list background</description>
+						<description>Controller list background</description>
 						<top>-20</top>
 						<bottom>-20</bottom>
 						<left>-20</left>
 						<right>-20</right>
 						<texture border="40">buttons/dialogbutton-nofo.png</texture>
 					</control>
-					<control type="list" id="5">
-						<description>Player list</description>
+					<control type="list" id="7">
+						<description>Controller list</description>
 						<onup>3</onup>
-						<ondown>6</ondown>
+						<ondown>10</ondown>
 						<pagecontrol>61</pagecontrol>
 						<scrolltime tween="sine">200</scrolltime>
 						<orientation>vertical</orientation>
 						<itemlayout width="1740" height="96">
-							<include>GameDialogAgentLayout</include>
+							<include>AgentControllerList</include>
 						</itemlayout>
 						<focusedlayout width="1740" height="96">
 							<control type="image">
@@ -461,9 +461,9 @@
 								<left>-20</left>
 								<right>-20</right>
 								<texture border="40" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texture>
-								<visible>Control.HasFocus(5)</visible>
+								<visible>Control.HasFocus(7)</visible>
 							</control>
-							<include>GameDialogAgentLayout</include>
+							<include>AgentControllerList</include>
 						</focusedlayout>
 						<!--
 							Note to skinners: this control can be populated
@@ -510,20 +510,20 @@
 					</control>
 				</control>
 				<control type="scrollbar" id="61">
-					<description>Agent list scroll bar</description>
+					<description>Controller list scroll bar</description>
 					<top>136</top>
 					<height>576</height>
 					<right>-12</right>
 					<width>12</width>
 					<orientation>vertical</orientation>
 				</control>
-				<control type="grouplist" id="6">
+				<control type="grouplist" id="10">
 					<description>Action buttons</description>
 					<left>-20</left>
 					<right>-20</right>
 					<bottom>-20</bottom>
 					<height>100</height>
-					<onup>5</onup>
+					<onup>7</onup>
 					<orientation>horizontal</orientation>
 					<itemgap>dialogbuttons_itemgap</itemgap>
 					<include content="DefaultDialogButton">
@@ -535,9 +535,9 @@
 			</control>
 		</control>
 	</include>
-	<include name="GameDialogAgentLayout">
+	<include name="AgentControllerList">
 		<control type="label">
-			<description>Player name</description>
+			<description>Controller name as reported by the driver</description>
 			<top>20</top>
 			<left>20</left>
 			<label>$INFO[ListItem.Label]</label>
@@ -546,7 +546,7 @@
 			<align>left</align>
 		</control>
 		<control type="gamecontrollerlist">
-			<description>Player's game controller list. Length should fit 13 listitems (12 players and one "input disabled" indicator).</description>
+			<description>Controller list which indicates the port a player's controller is connected to. Length should fit 13 listitems (12 controller items and one "input disabled" item).</description>
 			<right>0</right>
 			<width>1248</width>
 			<orientation>horizontal</orientation>

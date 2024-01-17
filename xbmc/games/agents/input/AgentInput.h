@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017-2022 Team Kodi
+ *  Copyright (C) 2017-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -7,6 +7,7 @@
  */
 #pragma once
 
+#include "AgentController.h"
 #include "games/GameTypes.h"
 #include "input/keyboard/interfaces/IKeyboardDriverHandler.h"
 #include "input/mouse/interfaces/IMouseDriverHandler.h"
@@ -18,6 +19,7 @@
 #include <mutex>
 #include <set>
 #include <string>
+#include <vector>
 
 class CInputManager;
 
@@ -31,6 +33,14 @@ namespace KODI
 namespace JOYSTICK
 {
 class IInputProvider;
+}
+namespace KEYBOARD
+{
+class IKeyboardInputProvider;
+}
+namespace MOUSE
+{
+class IMouseInputProvider;
 }
 
 namespace GAME
@@ -52,15 +62,15 @@ class CGameClientJoystick;
  * occurs in the static function MapJoysticks(). The strategy is to simply
  * sort controllers by heuristics and greedily assign to game ports.
  */
-class CGameAgentManager : public Observable,
-                          public Observer,
-                          KEYBOARD::IKeyboardDriverHandler,
-                          MOUSE::IMouseDriverHandler
+class CAgentInput : public Observable,
+                    public Observer,
+                    KEYBOARD::IKeyboardDriverHandler,
+                    MOUSE::IMouseDriverHandler
 {
 public:
-  CGameAgentManager(PERIPHERALS::CPeripherals& peripheralManager, CInputManager& inputManager);
+  CAgentInput(PERIPHERALS::CPeripherals& peripheralManager, CInputManager& inputManager);
 
-  virtual ~CGameAgentManager();
+  virtual ~CAgentInput();
 
   // Lifecycle functions
   void Start(GameClientPtr gameClient);
@@ -80,8 +90,10 @@ public:
   void OnButtonRelease(MOUSE::BUTTON_ID button) override {}
 
   // Public interface
-  GameAgentVec GetAgents() const;
+  std::vector<std::shared_ptr<const CAgentController>> GetControllers() const;
   std::string GetPortAddress(JOYSTICK::IInputProvider* inputProvider) const;
+  std::string GetKeyboardAddress(KEYBOARD::IKeyboardInputProvider* inputProvider) const;
+  std::string GetMouseAddress(MOUSE::IMouseInputProvider* inputProvider) const;
   std::vector<std::string> GetInputPorts() const;
   float GetPortActivation(const std::string& address) const;
   float GetPeripheralActivation(const std::string& peripheralLocation) const;
@@ -105,8 +117,8 @@ private:
   void ProcessMouse();
 
   // Internal helpers
-  void ProcessAgents(const PERIPHERALS::PeripheralVector& joysticks,
-                     PERIPHERALS::EventLockHandlePtr& inputHandlingLock);
+  void ProcessAgentControllers(const PERIPHERALS::PeripheralVector& joysticks,
+                               PERIPHERALS::EventLockHandlePtr& inputHandlingLock);
   void UpdateExpiredJoysticks(const PERIPHERALS::PeripheralVector& joysticks,
                               PERIPHERALS::EventLockHandlePtr& inputHandlingLock);
   void UpdateConnectedJoysticks(const PERIPHERALS::PeripheralVector& joysticks,
@@ -134,13 +146,15 @@ private:
   GameClientPtr m_gameClient;
   bool m_bHasKeyboard = false;
   bool m_bHasMouse = false;
-  GameAgentVec m_agents;
+  int m_initialMouseX{-1};
+  int m_initialMouseY{-1};
+  std::vector<std::shared_ptr<CAgentController>> m_controllers;
 
   // Synchronization parameters
-  mutable std::mutex m_agentMutex;
+  mutable std::mutex m_controllerMutex;
 
   /*!
-   * \brief Map of input provider to joystick handler
+   * \brief Map of joystick input provider to joystick handler
    *
    * The input provider is a handle to agent input.
    *
@@ -152,6 +166,16 @@ private:
    * Not exposed to the game.
    */
   PortMap m_portMap;
+
+  /*!
+   * \brief Map of keyboard input provider to keyboard port address
+   */
+  std::map<KEYBOARD::IKeyboardInputProvider*, PortAddress> m_keyboardPort;
+
+  /*!
+   * \brief Map of mouse input provider to mouse port address
+   */
+  std::map<MOUSE::IMouseInputProvider*, PortAddress> m_mousePort;
 
   /*!
    * \brief Map of the current ports to their peripheral

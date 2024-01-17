@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017-2023 Team Kodi
+ *  Copyright (C) 2017-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -18,21 +18,21 @@ namespace KODI
 {
 namespace GAME
 {
-class CGameAgentJoystick;
+class CAgentJoystick;
 
 /*!
  * \ingroup games
  *
- * \brief Class to represent a game player (a.k.a. agent)
+ * \brief Class to represent the controller of a game player (a.k.a. agent)
  *
  * The term "agent" is used to distinguish game players from the myriad of other
  * uses of the term "player" in Kodi, such as media players and player cores.
  */
-class CGameAgent
+class CAgentController
 {
 public:
-  CGameAgent(PERIPHERALS::PeripheralPtr peripheral);
-  ~CGameAgent();
+  CAgentController(PERIPHERALS::PeripheralPtr peripheral);
+  ~CAgentController();
 
   // Lifecycle functions
   void Initialize();
@@ -51,7 +51,7 @@ private:
   const PERIPHERALS::PeripheralPtr m_peripheral;
 
   // Input parameters
-  std::unique_ptr<CGameAgentJoystick> m_joystick;
+  std::unique_ptr<CAgentJoystick> m_joystick;
 };
 
 } // namespace GAME

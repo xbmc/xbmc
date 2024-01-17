@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017-2023 Team Kodi
+ *  Copyright (C) 2017-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -12,7 +12,7 @@ constexpr auto AGENT_DIALOG_XML = "DialogGameControllers.xml";
 
 // GUI control IDs
 constexpr auto CONTROL_ACTIVE_PORT_LIST = 4;
-constexpr auto CONTROL_AGENT_LIST = 5;
+constexpr auto CONTROL_AGENT_CONTROLLER_LIST = 7;
 
 // GUI button IDs
 constexpr auto CONTROL_AGENT_CLOSE_BUTTON = 18;

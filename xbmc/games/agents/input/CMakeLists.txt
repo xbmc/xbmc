@@ -1,7 +1,11 @@
-set(SOURCES GameAgentJoystick.cpp
+set(SOURCES AgentController.cpp
+            AgentInput.cpp
+            AgentJoystick.cpp
 )
 
-set(HEADERS GameAgentJoystick.h
+set(HEADERS AgentController.h
+            AgentInput.h
+            AgentJoystick.h
 )
 
-core_add_library(games_agent_input)
+core_add_library(games_agents_input)
