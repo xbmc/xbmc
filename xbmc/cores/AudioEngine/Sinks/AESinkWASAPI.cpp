@@ -730,6 +730,7 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
   unsigned int requestedChannels = 0;
   unsigned int noOfCh = 0;
   uint64_t desired_map = 0;
+  bool matchNoChannelsOnly = false;
 
   if (SUCCEEDED(hr))
   {
@@ -744,15 +745,15 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
   else if (format.m_dataFormat == AE_FMT_RAW) //No sense in trying other formats for passthrough.
     return false;
 
-  CLog::LogFC(LOGDEBUG, LOGAUDIO,
-              "IsFormatSupported failed ({}) - trying to find a compatible format",
-              WASAPIErrToStr(hr));
+  CLog::Log(LOGWARNING,
+            "AESinkWASAPI: IsFormatSupported failed ({}) - trying to find a compatible format",
+            WASAPIErrToStr(hr));
 
   requestedChannels = wfxex.Format.nChannels;
   desired_map = CAESinkFactoryWin::SpeakerMaskFromAEChannels(format.m_channelLayout);
 
   /* The requested format is not supported by the device.  Find something that works */
-  CLog::Log(LOGDEBUG,
+  CLog::Log(LOGWARNING,
             "AESinkWASAPI: Input channels are [{}] - Trying to find a matching output layout",
             std::string(format.m_channelLayout));
   for (int layout = -1; layout <= (int)ARRAYSIZE(layoutsList); layout++)
@@ -762,16 +763,34 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
     // as the last resort try stereo
     if (layout == ARRAYSIZE(layoutsList))
     {
-      wfxex.dwChannelMask = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
-      wfxex.Format.nChannels = 2;
+      if (matchNoChannelsOnly)
+      {
+        wfxex.dwChannelMask = SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
+        wfxex.Format.nChannels = 2;
+      }
+      else
+      {
+        matchNoChannelsOnly = true;
+        layout = -1;
+        CLog::Log(LOGWARNING, "AESinkWASAPI: Match only number of audio channels as fallback");
+        continue;
+      }
     }
     else if (layout >= 0)
     {
       wfxex.dwChannelMask = CAESinkFactoryWin::ChLayoutToChMask(layoutsList[layout], &noOfCh);
       wfxex.Format.nChannels = noOfCh;
       int res = desired_map & wfxex.dwChannelMask;
-      if (res != desired_map)
-        continue; // output channel layout doesn't match input channels
+      if (matchNoChannelsOnly)
+      {
+        if (noOfCh < requestedChannels)
+          continue; // number of channels doesn't match requested channels
+      }
+      else
+      {
+        if (res != desired_map)
+          continue; // output channel layout doesn't match input channels
+      }
     }
     CAEChannelInfo foundChannels;
     CAESinkFactoryWin::AEChannelsFromSpeakerMask(foundChannels, wfxex.dwChannelMask);
