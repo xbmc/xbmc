@@ -47,11 +47,7 @@ function convert2framework
   install_name_tool -change  @executable_path/Frameworks/${DYLIB_BASENAME} @executable_path/Frameworks/${DYLIB_LIBNAME}.framework/${DYLIB_LIBNAME} ${TARGET_BUILD_DIR}/${EXECUTABLE_FOLDER_PATH}/${EXECUTABLE_NAME}
   install_name_tool -add_rpath @executable_path/Frameworks/${DYLIB_LIBNAME}.framework ${TARGET_BUILD_DIR}/${EXECUTABLE_FOLDER_PATH}/${EXECUTABLE_NAME}
 
-  BUNDLEID=`mdls -raw -name kMDItemCFBundleIdentifier ${TARGET_BUILD_DIR}/${EXECUTABLE_FOLDER_PATH}`
-  if [ "${BUNDLEID}" == "(null)" ] ; then
-    BUNDLEID=`/usr/libexec/PlistBuddy -c 'Print CFBundleIdentifier' ${TARGET_BUILD_DIR}/${EXECUTABLE_FOLDER_PATH}/Info.plist`
-  fi
-
+  BUNDLEID=$(/usr/libexec/PlistBuddy -c 'Print CFBundleIdentifier' ${TARGET_BUILD_DIR}/${EXECUTABLE_FOLDER_PATH}/Info.plist)
   FRAMEWORKBUNDLEID="${BUNDLEID}.framework.${DYLIB_LIBNAME}"
   echo "CFBundleIdentifier is ${FRAMEWORKBUNDLEID}"
   echo "convert ${DYLIB_BASENAME} to ${DYLIB_LIBNAME}.framework"
