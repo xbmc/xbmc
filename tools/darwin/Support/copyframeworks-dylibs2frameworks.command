@@ -17,7 +17,7 @@
 #  along with MrMC; see the file COPYING.  If not, see
 #  <http://www.gnu.org/licenses/>.
 
-#set -x
+set -x
 
 TARGET_CONTENTS="${TARGET_BUILD_DIR}/${EXECUTABLE_FOLDER_PATH}"
 TARGET_FRAMEWORKS=$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH
