@@ -67,7 +67,8 @@ void CPortManager::LoadXML()
 {
   if (!CFileUtils::Exists(m_xmlPath))
   {
-    CLog::Log(LOGDEBUG, "Can't load port config, file doesn't exist: {}", m_xmlPath);
+    CLog::Log(LOGDEBUG, "Can't load port config, file doesn't exist: {}",
+              CURL::GetRedacted(m_xmlPath));
     return;
   }
 
