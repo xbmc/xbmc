@@ -47,6 +47,11 @@ bool CContextMenuItem::IsGroup() const
   return !m_groupId.empty();
 }
 
+bool CContextMenuItem::HasParent() const
+{
+  return !m_parent.empty();
+}
+
 bool CContextMenuItem::Execute(const std::shared_ptr<CFileItem>& item) const
 {
   if (!item || m_library.empty() || IsGroup())
