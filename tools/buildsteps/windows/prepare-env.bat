@@ -20,7 +20,7 @@ rem we assume git in path as this is a requirement
 rem git clean the untracked files and directories
 rem but keep the downloaded dependencies
 rem also keeps MSYS2 installation
-SET GIT_CLEAN_CMD=git clean -xffd -e "project/BuildDependencies/downloads" -e "project/BuildDependencies/downloads2" -e "project/BuildDependencies/mingwlibs" -e "project/BuildDependencies/msys64" -e "project/BuildDependencies/tools"
+SET GIT_CLEAN_CMD=git clean -xffd -e "project/BuildDependencies/downloads" -e "project/BuildDependencies/downloads2" -e "project/BuildDependencies/mingwlibs" -e "project/BuildDependencies/msys64" -e "project/BuildDependencies/tools" -e "cmake/addons/build/download/msys2-base-*.tar.xz"
 
 ECHO running %GIT_CLEAN_CMD%
 %GIT_CLEAN_CMD%
