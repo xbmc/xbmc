@@ -8104,9 +8104,6 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
     if (!videoUrl.FromString(strBaseDir) || !GetFilter(videoUrl, extFilter, sorting))
       return false;
 
-    if (!videoUrl.HasOption("videoversionid"))
-      extFilter.AppendWhere("isDefaultVersion = 1");
-
     int total = -1;
 
     std::string strSQL = "select %s from movie_view ";
@@ -11551,6 +11548,10 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
             filter.AppendWhere(PrepareSQL("idMovie = %i", mediaId));
         }
       }
+    }
+    else
+    {
+      filter.AppendWhere("isDefaultVersion = 1");
     }
 
     AppendIdLinkFilter("tag", "tag", "movie", "movie", "idMovie", options, filter);
