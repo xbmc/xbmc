@@ -4958,16 +4958,22 @@ bool CVideoDatabase::GetArtForAsset(int assetId,
                        "FROM art "
                        "LEFT JOIN videoversion vv "
                        "  ON art.media_id = vv.idMedia AND art.media_type = vv.media_type "
-                       "WHERE (art.media_id = %i AND art.media_type = '%s') "
-                       "OR(vv.idFile = %i) ",
+                       "WHERE art.url <> '' "
+                       "AND ( "
+                       "  (art.media_id = %i AND art.media_type = '%s') "
+                       "  OR (vv.idFile = %i) "
+                       ")",
                        assetId, MediaTypeVideoVersion, assetId);
     }
     else
     {
       sql = PrepareSQL("SELECT media_type, type, url "
                        "FROM art "
-                       "WHERE (media_id = %i AND media_type = '%s') "
-                       "OR (media_id = %i AND media_type = '%s')",
+                       "WHERE art.url <> '' "
+                       "AND ( "
+                       "  (media_id = %i AND media_type = '%s') "
+                       "  OR (media_id = %i AND media_type = '%s')"
+                       ")",
                        assetId, MediaTypeVideoVersion, ownerMediaId, mediaType.c_str());
     }
 
