@@ -4940,6 +4940,7 @@ bool CVideoDatabase::GetArtForItem(int mediaId, const MediaType &mediaType, std:
 bool CVideoDatabase::GetArtForAsset(int assetId,
                                     int ownerMediaId,
                                     const MediaType& mediaType,
+                                    ArtFallbackOptions fallback,
                                     std::map<std::string, std::string>& art)
 {
   try
@@ -4982,10 +4983,10 @@ bool CVideoDatabase::GetArtForAsset(int assetId,
     {
       if (m_pDS2->fv(0).get_asString() == MediaTypeVideoVersion)
       {
-        // version data has priority over owner's data, used as fallback.
+        // version data has priority over owner's data
         art[m_pDS2->fv(1).get_asString()] = m_pDS2->fv(2).get_asString();
       }
-      else
+      else if (fallback == ArtFallbackOptions::PARENT)
       {
         // insert if not yet present
         art.insert(make_pair(m_pDS2->fv(1).get_asString(), m_pDS2->fv(2).get_asString()));
