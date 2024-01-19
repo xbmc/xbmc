@@ -5,7 +5,7 @@ WEBSITE http://kodi.tv
 VERSION_MAJOR 20
 VERSION_MINOR 3
 VERSION_TAG
-VERSION_CODE 20.3.0
+VERSION_CODE 20.3.2
 ADDON_API 20.3.0
 ADDON_REPOS repository.xbmc.org|https://mirrors.kodi.tv
 APP_PACKAGE org.xbmc.kodi

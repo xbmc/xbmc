@@ -61,10 +61,6 @@ all: apk
 
 apk: apk-clean sharedapk package
 
-obb: apk-clean sharedobb
-
-apk-obb: apk-clean sharedobb package
-
 xbmc/assets:
 	mkdir -p xbmc/assets
 
@@ -80,11 +76,6 @@ shared:
 
 sharedapk: shared | xbmc/assets
 	cp -rfp assets/* ./xbmc/assets
-
-sharedobb: shared
-	rm -f $(CMAKE_SOURCE_DIR)/main.@APP_NAME_LC@.obb
-	$(ZIP) -9 -q -r $(CMAKE_SOURCE_DIR)/main.@APP_NAME_LC@.obb assets
-	@echo "$(CMAKE_SOURCE_DIR)/main.@APP_NAME_LC@.obb created"
 
 python: | xbmc/assets
 	mkdir -p xbmc/assets/python@PYTHON_VERSION@/lib/
@@ -150,5 +141,5 @@ apk-clean:
 	rm -f xbmc/res/drawable-xxxhdpi/splash.*
 	rm -rf assets
 
-.PHONY: force libs assets python sharedapk sharedobb res package
+.PHONY: force libs assets python sharedapk res package
 

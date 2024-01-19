@@ -38,8 +38,6 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.System;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -66,8 +64,6 @@ public class Splash extends Activity
   private static final int CheckingPermissionsInfo = 11;
   private static final int CheckExternalStorage = 12;
   private static final int RecordAudioPermission = 13;
-  private static final int DownloadingObb = 90;
-  private static final int DownloadObbDone = 91;
   private static final int StartingXBMC = 99;
 
   private static final String TAG = "@APP_NAME@";
@@ -178,11 +174,6 @@ public class Splash extends Activity
           mSplash.mTextView.setText("Clearing cache...");
           mSplash.mProgress.setVisibility(View.INVISIBLE);
           break;
-        case DownloadingObb:
-          break;
-        case DownloadObbDone:
-          new FillCache(mSplash).execute();
-          break;
         case Caching:
           if (!mCachingDone)
             new FillCache(mSplash).execute();
@@ -249,136 +240,6 @@ public class Splash extends Activity
   }
 
   private StateMachine mStateMachine = new StateMachine(this);
-
-  private class DownloadObb extends AsyncTask<String, Integer, Integer>
-  {
-    private Splash mSplash = null;
-    private int mProgressStatus = 0;
-
-    public DownloadObb(Splash splash)
-    {
-      this.mSplash = splash;
-    }
-
-    @Override
-    protected Integer doInBackground(String... sUrl)
-    {
-      InputStream input = null;
-      OutputStream output = null;
-      HttpURLConnection connection = null;
-
-      String src = sUrl[0];
-      String dest = sUrl[1];
-      File fObb = new File(dest);
-
-      Log.d(TAG, "Downloading " + src + " to " + dest);
-
-      if (!fObb.getParentFile().exists() && !fObb.getParentFile().mkdirs())
-      {
-        Log.e(TAG, "Error creating directory " + fObb.getParentFile().getAbsolutePath());
-        return -1;
-      }
-
-      int ret = 0;
-      try
-      {
-        URL url = new URL(src);
-        connection = (HttpURLConnection) url.openConnection();
-        connection.connect();
-
-        // expect HTTP 200 OK, so we don't mistakenly save error report
-        // instead of the file
-        if (connection.getResponseCode() != HttpURLConnection.HTTP_OK)
-        {
-          return -1;
-        }
-
-        // this will be useful to display download percentage
-        // might be -1: server did not report the length
-        int fileLength = connection.getContentLength();
-
-        // download the file
-        input = connection.getInputStream();
-        output = new FileOutputStream(dest);
-
-        byte data[] = new byte[4096];
-        long total = 0;
-        int count;
-        mProgress.setProgress(0);
-        mProgress.setMax(fileLength);
-        while ((count = input.read(data)) != -1)
-        {
-          // allow canceling with back button
-          if (isCancelled())
-          {
-            ret = -1;
-            break;
-          }
-          total += count;
-          // publishing the progress....
-          if (fileLength > 0) // only if total length is known
-            publishProgress((int) total);
-          output.write(data, 0, count);
-        }
-      }
-      catch (Exception e)
-      {
-        return -1;
-      }
-      finally
-      {
-        try
-        {
-          if (output != null)
-            output.close();
-          if (input != null)
-            input.close();
-        }
-        catch (IOException ignored)
-        {
-        }
-
-        if (connection != null)
-          connection.disconnect();
-      }
-      if (ret == 0)
-        mState = DownloadObbDone;
-      else
-        fObb.delete();
-
-      publishProgress(0);
-      return ret;
-    }
-
-    @Override
-    protected void onProgressUpdate(Integer... values)
-    {
-      switch (mState)
-      {
-        case DownloadingObb:
-          mSplash.mTextView.setText("Downloading OBB...");
-          mSplash.mProgress.setVisibility(View.VISIBLE);
-          mSplash.mProgress.setProgress(values[0]);
-          break;
-        case DownloadObbDone:
-          mSplash.mProgress.setVisibility(View.INVISIBLE);
-          break;
-      }
-    }
-
-    @Override
-    protected void onPostExecute(Integer result)
-    {
-      super.onPostExecute(result);
-      if (result < 0)
-      {
-        mState = InError;
-        mErrorMsg = "Cannot download obb.";
-      }
-
-      mStateMachine.sendEmptyMessage(mState);
-    }
-  }
 
   private class FillCache extends AsyncTask<Void, Integer, Integer>
   {
@@ -649,32 +510,6 @@ public class Splash extends Activity
 
     sPackagePath = getPackageResourcePath();
     fPackagePath = new File(sPackagePath);
-    String obbfn = "";
-    if (fPackagePath.length() < 50 * 1024 * 1024)
-    {
-      sPackagePath = XBMCProperties.getStringProperty("@APP_NAME_LC@.obb", "");
-      if (sPackagePath.equals(""))
-      {
-        try
-        {
-          obbfn = "main." + getPackageManager().getPackageInfo(getPackageName(), 0).versionCode + "." + getPackageName() + ".obb";
-          sPackagePath = Environment.getExternalStorageDirectory()
-                  + "/Android/obb/" + getPackageName() + "/" + obbfn;
-        }
-        catch (Exception e)
-        {
-        }
-      }
-
-      fPackagePath = new File(sPackagePath);
-      if (fPackagePath.length() < 10 * 1024 * 1024)
-        fPackagePath.delete();  // borked download
-      if (!fPackagePath.exists())
-      {
-        mState = DownloadingObb;
-        new DownloadObb(this).execute("http://mirrors.@APP_NAME_LC@.tv/releases/android/obb/" + obbfn, sPackagePath);
-      }
-    }
   }
 
   private boolean ParseCpuFeature()
@@ -980,7 +815,7 @@ public class Splash extends Activity
 
         SetupEnvironment();
 
-        if ((mState != DownloadingObb && mState != InError) && fXbmcHome.exists() && fXbmcHome.lastModified() >= fPackagePath.lastModified() && !mInstallLibs)
+        if (mState != InError && fXbmcHome.exists() && fXbmcHome.lastModified() >= fPackagePath.lastModified() && !mInstallLibs)
         {
           mState = CachingDone;
           mCachingDone = true;
@@ -988,7 +823,7 @@ public class Splash extends Activity
       }
     }
 
-    if ((mState != DownloadingObb && mState != InError) && mCachingDone && mExternalStorageChecked && mPermissionOK)
+    if (mState != InError && mCachingDone && mExternalStorageChecked && mPermissionOK)
     {
       startXBMC();
       return;
@@ -998,7 +833,7 @@ public class Splash extends Activity
     mProgress = (ProgressBar) findViewById(R.id.progressBar1);
     mTextView = (TextView) findViewById(R.id.textView1);
 
-    if (mState == DownloadingObb || mState == InError || mState == CheckingPermissionsInfo)
+    if (mState == InError || mState == CheckingPermissionsInfo)
     {
       mStateMachine.sendEmptyMessage(mState);
       return;
