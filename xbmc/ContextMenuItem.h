@@ -33,6 +33,7 @@ public:
   virtual bool Execute(const std::shared_ptr<CFileItem>& item) const = 0;
   virtual std::string GetLabel(const CFileItem& item) const = 0;
   virtual bool IsGroup() const { return false; }
+  virtual bool HasParent() const { return false; }
 };
 
 
@@ -56,6 +57,7 @@ public:
   bool IsVisible(const CFileItem& item) const override ;
   bool IsParentOf(const CContextMenuItem& menuItem) const;
   bool IsGroup() const override ;
+  bool HasParent() const override;
   bool Execute(const std::shared_ptr<CFileItem>& item) const override;
   bool operator==(const CContextMenuItem& other) const;
   std::string ToString() const;

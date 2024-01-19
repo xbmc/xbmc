@@ -298,6 +298,8 @@ bool CONTEXTMENU::ShowFor(const std::shared_ptr<CFileItem>& fileItem, const CCon
 
   CContextButtons buttons;
   // compute fileitem property-based contextmenu items
+  // unless we're browsing a child menu item
+  if (!root.HasParent())
   {
     int i = 0;
     while (fileItem->HasProperty(StringUtils::Format("contextmenulabel({})", i)))
