@@ -397,7 +397,8 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
   {
     m_videoDatabase->Open();
 
-    if (tag.GetAssetInfo().GetId() >= 0)
+    // @todo unify asset path for other items path
+    if (item.IsVideoAssetNav())
     {
       if (m_videoDatabase->GetArtForAsset(tag.m_iFileId, tag.m_iDbId, tag.m_type, artwork))
         item.AppendArt(artwork);
