@@ -500,6 +500,10 @@ void CApplicationPowerHandling::HandleShutdownMessage()
       CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MINIMIZE);
       break;
 
+    case POWERSTATE_SHOW_MENU:
+      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_SHOW_SHUTDOWN_MENU);
+      break;
+
     default:
       CLog::Log(LOGERROR, "{}: No valid shutdownstate matched", __FUNCTION__);
       break;
