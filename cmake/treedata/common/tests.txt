@@ -7,6 +7,7 @@ xbmc/filesystem/test              test/filesystem
 xbmc/filesystem/VideoDatabaseDirectory/test test/videodatabasedirectory
 xbmc/games/addons/input/test      test/games/addons/input
 xbmc/games/controllers/input/test test/games/controllers/input
+xbmc/games/controllers/test       test/games/controllers
 xbmc/guilib/test                  test/guilib
 xbmc/imagefiles/test              test/imagefiles
 xbmc/input/keyboard/test          test/input/keyboard

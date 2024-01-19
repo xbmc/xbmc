@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "ControllerTypes.h"
 #include "input/joysticks/JoystickTypes.h"
 
 #include <string>
@@ -31,6 +32,9 @@ public:
 
   static const char* TranslateInputType(JOYSTICK::INPUT_TYPE type);
   static JOYSTICK::INPUT_TYPE TranslateInputType(const std::string& strType);
+
+  static PORT_TYPE TranslatePortType(const std::string& strPortType);
+  static const char* TranslatePortType(PORT_TYPE portType);
 };
 
 } // namespace GAME

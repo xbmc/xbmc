@@ -13,6 +13,11 @@
 
 #include <string>
 
+namespace tinyxml2
+{
+class XMLElement;
+} // namespace tinyxml2
+
 namespace KODI
 {
 namespace GAME
@@ -52,6 +57,10 @@ public:
    * \param[out] inputPorts The list of input ports
    */
   void GetInputPorts(std::vector<std::string>& inputPorts) const;
+
+  // XML functions
+  bool Serialize(tinyxml2::XMLElement& controllerElement) const;
+  bool Deserialize(const tinyxml2::XMLElement& controllerElement);
 
 private:
   static const CPortNode& GetPortInternal(const PortVec& ports, const std::string& address);

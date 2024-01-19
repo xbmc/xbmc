@@ -10,12 +10,20 @@
 
 #include "ControllerTree.h"
 #include "games/controllers/Controller.h"
+#include "utils/log.h"
 
 #include <algorithm>
 #include <utility>
 
+#include <tinyxml2.h>
+
 using namespace KODI;
 using namespace GAME;
+
+namespace
+{
+constexpr auto XML_ELM_PORT = "port";
+} // namespace
 
 CControllerHub::~CControllerHub() = default;
 
@@ -110,4 +118,53 @@ void CControllerHub::GetInputPorts(std::vector<std::string>& inputPorts) const
 {
   for (const CPortNode& port : m_ports)
     port.GetInputPorts(inputPorts);
+}
+
+bool CControllerHub::Serialize(tinyxml2::XMLElement& controllerElement) const
+{
+  // Iterate and serialize each port
+  for (const CPortNode& portNode : m_ports)
+  {
+    // Create a new "port" element
+    tinyxml2::XMLElement* portElement = controllerElement.GetDocument()->NewElement(XML_ELM_PORT);
+    if (portElement == nullptr)
+    {
+      CLog::Log(LOGERROR, "Serialize: Failed to create \"{}\" element", XML_ELM_PORT);
+      return false;
+    }
+
+    // Serialize the port node
+    if (!portNode.Serialize(*portElement))
+      return false;
+
+    // Add the "port" element to the controller element
+    controllerElement.InsertEndChild(portElement);
+  }
+
+  return true;
+}
+
+bool CControllerHub::Deserialize(const tinyxml2::XMLElement& controllerElement)
+{
+  Clear();
+
+  // Get first "port" element
+  const tinyxml2::XMLElement* portElement = controllerElement.FirstChildElement(XML_ELM_PORT);
+
+  // Iterate over all "port" elements
+  while (portElement != nullptr)
+  {
+    CPortNode port;
+
+    // Deserialize port
+    if (!port.Deserialize(*portElement))
+      return false;
+
+    m_ports.emplace_back(std::move(port));
+
+    // Get next "port" element
+    portElement = portElement->NextSiblingElement(XML_ELM_PORT);
+  }
+
+  return true;
 }
