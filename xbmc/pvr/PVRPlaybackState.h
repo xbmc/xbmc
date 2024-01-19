@@ -9,6 +9,7 @@
 #pragma once
 
 #include "threads/CriticalSection.h"
+#include "utils/ContentUtils.h"
 
 #include <memory>
 #include <string>
@@ -23,6 +24,7 @@ class CPVRChannelGroup;
 class CPVRChannelGroupMember;
 class CPVREpgInfoTag;
 class CPVRRecording;
+class CPVRStreamProperties;
 
 class CPVRPlaybackState
 {
@@ -63,8 +65,18 @@ public:
   /*!
    * @brief Inform that playback of an item has stopped without user interaction.
    * @param item The item that ended to play.
+   * @return True, if the state has changed, false otherwise
    */
-  void OnPlaybackEnded(const CFileItem& item);
+  bool OnPlaybackEnded(const CFileItem& item);
+
+  /*!
+   * @brief Start playback of the given item.
+   * @param item containing a channel, a recording or an epg tag.
+   * @param mode playback mode.
+   */
+  void StartPlayback(
+      CFileItem* item,
+      ContentUtils::PlayMode mode = ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM) const;
 
   /*!
    * @brief Check if a TV channel, radio channel or recording is playing.
@@ -244,6 +256,13 @@ public:
 
 private:
   void ClearData();
+
+  /*!
+   * @brief Return the next item to play automatically, if any.
+   * @param item The item which just finished playback.
+   * @return The item to play next, if any, nullptr otherwise.
+   */
+  std::unique_ptr<CFileItem> GetNextAutoplayItem(const CFileItem& item);
 
   /*!
    * @brief Set the active group to the group of the supplied channel group member.

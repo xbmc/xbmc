@@ -223,6 +223,8 @@ public:
   static constexpr auto SETTING_PVRPLAYBACK_DELAYMARKLASTWATCHED =
       "pvrplayback.delaymarklastwatched";
   static constexpr auto SETTING_PVRPLAYBACK_FPS = "pvrplayback.fps";
+  static constexpr auto SETTING_PVRPLAYBACK_AUTOPLAYNEXTPROGRAMME =
+      "pvrplayback.autoplaynextprogramme";
   static constexpr auto SETTING_PVRRECORD_INSTANTRECORDACTION = "pvrrecord.instantrecordaction";
   static constexpr auto SETTING_PVRRECORD_INSTANTRECORDTIME = "pvrrecord.instantrecordtime";
   static constexpr auto SETTING_PVRRECORD_MARGINSTART = "pvrrecord.marginstart";

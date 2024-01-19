@@ -29,6 +29,8 @@
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/timers/PVRTimersPath.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
 
 #include <memory>
@@ -57,6 +59,7 @@ namespace CONTEXTMENUITEM
   };
 
 DECL_STATICCONTEXTMENUITEM(PlayEpgTag);
+DECL_CONTEXTMENUITEM(PlayEpgTagFromHere);
 DECL_STATICCONTEXTMENUITEM(PlayRecording);
 DECL_CONTEXTMENUITEM(ShowInformation);
 DECL_STATICCONTEXTMENUITEM(ShowChannelGuide);
@@ -123,6 +126,37 @@ bool PlayEpgTag::IsVisible(const CFileItem& item) const
 bool PlayEpgTag::Execute(const CFileItemPtr& item) const
 {
   return CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayEpgTag(*item);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Play epg tag from here
+
+std::string PlayEpgTagFromHere::GetLabel(const CFileItem& item) const
+{
+  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_PVRPLAYBACK_AUTOPLAYNEXTPROGRAMME))
+    return g_localizeStrings.Get(19354); /* Play only this programme */
+
+  return g_localizeStrings.Get(19353); /* Play programmes from here */
+}
+
+bool PlayEpgTagFromHere::IsVisible(const CFileItem& item) const
+{
+  const std::shared_ptr<const CPVREpgInfoTag> epg(item.GetEPGInfoTag());
+  if (epg)
+    return epg->IsPlayable();
+
+  return false;
+}
+
+bool PlayEpgTagFromHere::Execute(const CFileItemPtr& item) const
+{
+  ContentUtils::PlayMode mode{ContentUtils::PlayMode::PLAY_FROM_HERE};
+  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_PVRPLAYBACK_AUTOPLAYNEXTPROGRAMME))
+    mode = ContentUtils::PlayMode::PLAY_ONLY_THIS;
+
+  return CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayEpgTag(*item, mode);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -724,6 +758,7 @@ CPVRContextMenuManager& CPVRContextMenuManager::GetInstance()
 CPVRContextMenuManager::CPVRContextMenuManager()
   : m_items({
         std::make_shared<CONTEXTMENUITEM::PlayEpgTag>(19190), /* Play programme */
+        std::make_shared<CONTEXTMENUITEM::PlayEpgTagFromHere>(),
         std::make_shared<CONTEXTMENUITEM::PlayRecording>(19687), /* Play recording */
         std::make_shared<CONTEXTMENUITEM::ShowInformation>(),
         std::make_shared<CONTEXTMENUITEM::ShowChannelGuide>(19686), /* Channel guide */

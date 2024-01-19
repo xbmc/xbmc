@@ -11620,13 +11620,37 @@ msgctxt "#19349"
 msgid "User preference"
 msgstr ""
 
-#. label for PVR settings use backend channel group order control
+#. label for PVR setting use backend channel group order control
 #: system/settings/settings.xml
 msgctxt "#19350"
 msgid "Use channel group order from backend(s)"
 msgstr ""
 
-#empty strings from id 19351 to 19498
+#. label for PVR settings category for live tv catchup and video on demand
+#: system/settings/settings.xml
+msgctxt "#19351"
+msgid "Catchup / Video On Demand"
+msgstr ""
+
+#. label for PVR setting play next programme automatically in catchup / vod mode
+#: system/settings/settings.xml
+msgctxt "#19352"
+msgid "Play next programme automatically"
+msgstr ""
+
+#. Label of a context menu entry to kick catchup / VOD playback, starting with the selected item, auto playing all following programmes
+#: xbmc/pvr/PVRContextMenuItem.cpp
+msgctxt "#19353"
+msgid "Play programmes from here"
+msgstr ""
+
+#. Label of a context menu entry to kick catchup / VOD playback of only the selected item, not auto playing any following programmes
+#: xbmc/pvr/PVRContextMenuItem.cpp
+msgctxt "#19354"
+msgid "Play only this programme"
+msgstr ""
+
+#empty strings from id 19355 to 19498
 
 #. label for epg genre value
 #: xbmc/pvr/epg/Epg.cpp
@@ -21052,7 +21076,13 @@ msgctxt "#36438"
 msgid "Any repositories"
 msgstr ""
 
-#empty strings from id 36439 to 36441
+#. Description of setting with label #19352 "Play next programme automatically"
+#: system/settings/settings.xml
+msgctxt "#36439"
+msgid "Enable automatic playback of the next programme when playing past programmes (catchup) or for Video On Demand (VOD) channels. Please note that catchup and VOD only work if supported by the channel provider."
+msgstr ""
+
+#empty strings from id 36440 to 36441
 
 #. Description of setting "System -> Audio output -> Volume control steps" with label #1302
 #: system/settings/settings.xml

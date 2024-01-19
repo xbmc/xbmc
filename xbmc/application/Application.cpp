@@ -2932,11 +2932,20 @@ bool CApplication::OnMessage(CGUIMessage& message)
       PlayFile(stackHelper->SetNextStackPartCurrentFileItem(), "", true);
       return true;
     }
-    ResetCurrentItem();
-    if (!CServiceBroker::GetPlaylistPlayer().PlayNext(1, true))
-      GetComponent<CApplicationPlayer>()->ClosePlayer();
 
-    PlaybackCleanup();
+    // For EPG playlist items we keep the player open to ensure continuous viewing experience.
+    const bool isEpgPlaylistItem{
+        m_itemCurrentFile->GetProperty("epg_playlist_item").asBoolean(false)};
+
+    ResetCurrentItem();
+
+    if (!isEpgPlaylistItem)
+    {
+      if (!CServiceBroker::GetPlaylistPlayer().PlayNext(1, true))
+        GetComponent<CApplicationPlayer>()->ClosePlayer();
+
+      PlaybackCleanup();
+    }
 
 #ifdef HAS_PYTHON
     CServiceBroker::GetXBPython().OnPlayBackEnded();

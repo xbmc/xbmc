@@ -108,59 +108,6 @@ void CPVRGUIActionsPlayback::CheckAndSwitchToFullscreen(bool bFullscreen) const
   }
 }
 
-void CPVRGUIActionsPlayback::StartPlayback(CFileItem* item,
-                                           bool bFullscreen,
-                                           const CPVRStreamProperties* epgProps) const
-{
-  // Obtain dynamic playback url and properties from the respective pvr client
-  const std::shared_ptr<const CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(*item);
-  if (client)
-  {
-    CPVRStreamProperties props;
-
-    if (item->IsPVRChannel())
-    {
-      // If this was an EPG Tag to be played as live then PlayEpgTag() will create a channel
-      // fileitem instead and pass the epg tags props so we use those and skip the client call
-      if (epgProps)
-        props = *epgProps;
-      else
-        client->GetChannelStreamProperties(item->GetPVRChannelInfoTag(), props);
-    }
-    else if (item->IsPVRRecording())
-    {
-      client->GetRecordingStreamProperties(item->GetPVRRecordingInfoTag(), props);
-    }
-    else if (item->IsEPG())
-    {
-      if (epgProps) // we already have props from PlayEpgTag()
-        props = *epgProps;
-      else
-        client->GetEpgTagStreamProperties(item->GetEPGInfoTag(), props);
-    }
-
-    if (props.size())
-    {
-      const std::string url = props.GetStreamURL();
-      if (!url.empty())
-        item->SetDynPath(url);
-
-      const std::string mime = props.GetStreamMimeType();
-      if (!mime.empty())
-      {
-        item->SetMimeType(mime);
-        item->SetContentLookup(false);
-      }
-
-      for (const auto& prop : props)
-        item->SetProperty(prop.first, prop.second);
-    }
-  }
-
-  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
-  CheckAndSwitchToFullscreen(bFullscreen);
-}
-
 bool CPVRGUIActionsPlayback::PlayRecording(const CFileItem& item, bool bCheckResume) const
 {
   const std::shared_ptr<CPVRRecording> recording(CPVRItem(item).GetRecording());
@@ -209,14 +156,14 @@ bool CPVRGUIActionsPlayback::PlayRecording(const CFileItem& item, bool bCheckRes
 
       CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, pos, -1,
                                                  static_cast<void*>(queuedItems.release()));
-      CheckAndSwitchToFullscreen(true);
     }
     else
     {
       CFileItem* itemToPlay = new CFileItem(recording);
       itemToPlay->SetStartOffset(item.GetStartOffset());
-      StartPlayback(itemToPlay, true);
+      CServiceBroker::GetPVRManager().PlaybackState()->StartPlayback(itemToPlay);
     }
+    CheckAndSwitchToFullscreen(true);
   }
   return true;
 }
@@ -240,7 +187,9 @@ bool CPVRGUIActionsPlayback::PlayRecordingFolder(const CFileItem& item, bool bCh
   return true;
 }
 
-bool CPVRGUIActionsPlayback::PlayEpgTag(const CFileItem& item) const
+bool CPVRGUIActionsPlayback::PlayEpgTag(
+    const CFileItem& item,
+    ContentUtils::PlayMode mode /* = ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM */) const
 {
   const std::shared_ptr<CPVREpgInfoTag> epgTag(CPVRItem(item).GetEpgInfoTag());
   if (!epgTag)
@@ -278,7 +227,8 @@ bool CPVRGUIActionsPlayback::PlayEpgTag(const CFileItem& item) const
     itemToPlay = new CFileItem(epgTag);
   }
 
-  StartPlayback(itemToPlay, true, &props);
+  CServiceBroker::GetPVRManager().PlaybackState()->StartPlayback(itemToPlay, mode);
+  CheckAndSwitchToFullscreen(true);
   return true;
 }
 
@@ -360,7 +310,8 @@ bool CPVRGUIActionsPlayback::SwitchToChannel(const CFileItem& item, bool bCheckR
     if (!groupMember)
       return false;
 
-    StartPlayback(new CFileItem(groupMember), bFullscreen);
+    CServiceBroker::GetPVRManager().PlaybackState()->StartPlayback(new CFileItem(groupMember));
+    CheckAndSwitchToFullscreen(bFullscreen);
     return true;
   }
   else if (result == ParentalCheckResult::FAILED)
