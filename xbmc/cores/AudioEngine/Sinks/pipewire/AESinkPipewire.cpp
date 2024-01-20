@@ -410,12 +410,15 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
   std::string fraction =
       StringUtils::Format("{}/{}", frames / DEFAULT_LATENCY_DIVIDER, format.m_sampleRate);
 
-  std::array<spa_dict_item, 5> items = {
+  std::string srate = StringUtils::Format("1/{}", format.m_sampleRate);
+
+  std::array<spa_dict_item, 6> items = {
       SPA_DICT_ITEM_INIT(PW_KEY_MEDIA_TYPE, "Audio"),
       SPA_DICT_ITEM_INIT(PW_KEY_MEDIA_CATEGORY, "Playback"),
       SPA_DICT_ITEM_INIT(PW_KEY_APP_NAME, CCompileInfo::GetAppName()),
       SPA_DICT_ITEM_INIT(PW_KEY_NODE_NAME, CCompileInfo::GetAppName()),
-      SPA_DICT_ITEM_INIT(PW_KEY_NODE_LATENCY, fraction.c_str())};
+      SPA_DICT_ITEM_INIT(PW_KEY_NODE_LATENCY, fraction.c_str()),
+      SPA_DICT_ITEM_INIT(PW_KEY_NODE_RATE, srate.c_str())};
 
   auto properties = SPA_DICT_INIT(items.data(), items.size());
   m_stream->UpdateProperties(&properties);
