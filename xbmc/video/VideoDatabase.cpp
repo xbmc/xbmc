@@ -4938,8 +4938,6 @@ bool CVideoDatabase::GetArtForItem(int mediaId, const MediaType &mediaType, std:
 }
 
 bool CVideoDatabase::GetArtForAsset(int assetId,
-                                    int ownerMediaId,
-                                    const MediaType& mediaType,
                                     ArtFallbackOptions fallback,
                                     std::map<std::string, std::string>& art)
 {
@@ -4950,33 +4948,18 @@ bool CVideoDatabase::GetArtForAsset(int assetId,
     if (nullptr == m_pDS2)
       return false; // using dataset 2 as we're likely called in loops on dataset 1
 
-    std::string sql;
-
-    if (mediaType == MediaTypeVideoVersion)
-    {
-      // MAYBE: use more compact and readable non-ANSI SQL extension where (,) in ()?
-      sql = PrepareSQL("SELECT art.media_type, art.type, art.url "
-                       "FROM art "
-                       "LEFT JOIN videoversion vv "
-                       "  ON art.media_id = vv.idMedia AND art.media_type = vv.media_type "
-                       "WHERE art.url <> '' "
-                       "AND ( "
-                       "  (art.media_id = %i AND art.media_type = '%s') "
-                       "  OR (vv.idFile = %i) "
-                       ")",
-                       assetId, MediaTypeVideoVersion, assetId);
-    }
-    else
-    {
-      sql = PrepareSQL("SELECT media_type, type, url "
-                       "FROM art "
-                       "WHERE art.url <> '' "
-                       "AND ( "
-                       "  (media_id = %i AND media_type = '%s') "
-                       "  OR (media_id = %i AND media_type = '%s')"
-                       ")",
-                       assetId, MediaTypeVideoVersion, ownerMediaId, mediaType.c_str());
-    }
+    // MAYBE: use more compact and readable non-ANSI SQL extension where (,) in ()?
+    const std::string sql{
+        PrepareSQL("SELECT art.media_type, art.type, art.url "
+                   "FROM art "
+                   "LEFT JOIN videoversion vv "
+                   "  ON art.media_id = vv.idMedia AND art.media_type = vv.media_type "
+                   "WHERE art.url <> '' "
+                   "AND ( "
+                   "  (art.media_id = %i AND art.media_type = '%s') "
+                   "  OR (vv.idFile = %i) "
+                   ")",
+                   assetId, MediaTypeVideoVersion, assetId)};
 
     m_pDS2->query(sql);
     while (!m_pDS2->eof())
@@ -4998,7 +4981,7 @@ bool CVideoDatabase::GetArtForAsset(int assetId,
   }
   catch (...)
   {
-    CLog::LogF(LOGERROR, "retrieval failed ({}, {}, {})", assetId, ownerMediaId, mediaType);
+    CLog::LogF(LOGERROR, "retrieval failed ({})", assetId);
   }
   return false;
 }

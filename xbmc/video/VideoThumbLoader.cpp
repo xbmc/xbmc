@@ -400,7 +400,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
     // @todo unify asset path for other items path
     if (item.IsVideoAssetNav())
     {
-      if (m_videoDatabase->GetArtForAsset(tag.m_iFileId, tag.m_iDbId, tag.m_type,
+      if (m_videoDatabase->GetArtForAsset(tag.m_iFileId,
                                           item.GetProperty("noartfallbacktoowner").asBoolean(false)
                                               ? ArtFallbackOptions::NONE
                                               : ArtFallbackOptions::PARENT,
