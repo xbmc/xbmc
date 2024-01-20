@@ -4948,18 +4948,22 @@ bool CVideoDatabase::GetArtForAsset(int assetId,
     if (nullptr == m_pDS2)
       return false; // using dataset 2 as we're likely called in loops on dataset 1
 
-    // MAYBE: use more compact and readable non-ANSI SQL extension where (,) in ()?
-    const std::string sql{
-        PrepareSQL("SELECT art.media_type, art.type, art.url "
-                   "FROM art "
-                   "LEFT JOIN videoversion vv "
-                   "  ON art.media_id = vv.idMedia AND art.media_type = vv.media_type "
-                   "WHERE art.url <> '' "
-                   "AND ( "
-                   "  (art.media_id = %i AND art.media_type = '%s') "
-                   "  OR (vv.idFile = %i) "
-                   ")",
-                   assetId, MediaTypeVideoVersion, assetId)};
+    const std::string sqlFallback{fallback == ArtFallbackOptions::PARENT
+                                      ? StringUtils::Format("UNION "
+                                                            "SELECT idMedia, media_type "
+                                                            "FROM videoversion "
+                                                            "WHERE idFile = {} ",
+                                                            assetId)
+                                      : ""};
+
+    const std::string sql{PrepareSQL("SELECT art.media_type, art.type, art.url "
+                                     "FROM art "
+                                     "WHERE (media_id, media_type) "
+                                     "IN ("
+                                     "SELECT %i, '%s'"
+                                     "%s"
+                                     ")",
+                                     assetId, MediaTypeVideoVersion, sqlFallback.c_str())};
 
     m_pDS2->query(sql);
     while (!m_pDS2->eof())
