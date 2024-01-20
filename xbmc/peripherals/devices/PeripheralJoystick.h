@@ -21,8 +21,6 @@
 #include <string>
 #include <vector>
 
-#define JOYSTICK_PORT_UNKNOWN (-1)
-
 namespace KODI
 {
 namespace JOYSTICK
@@ -132,7 +130,7 @@ protected:
 
   // State parameters
   std::string m_strProvider;
-  int m_requestedPort = JOYSTICK_PORT_UNKNOWN;
+  int m_requestedPort{JOYSTICK_NO_PORT_REQUESTED};
   unsigned int m_buttonCount = 0;
   unsigned int m_hatCount = 0;
   unsigned int m_axisCount = 0;
