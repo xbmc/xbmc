@@ -10,6 +10,7 @@
 
 #include "games/controllers/ControllerTypes.h"
 #include "games/ports/types/PortNode.h"
+#include "utils/Digest.h"
 
 #include <string>
 
@@ -61,6 +62,9 @@ public:
   // XML functions
   bool Serialize(tinyxml2::XMLElement& controllerElement) const;
   bool Deserialize(const tinyxml2::XMLElement& controllerElement);
+
+  // Crypto functions
+  std::string GetDigest(UTILITY::CDigest::Type digestType) const;
 
 private:
   static const CPortNode& GetPortInternal(const PortVec& ports, const std::string& address);

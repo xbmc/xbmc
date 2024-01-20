@@ -289,3 +289,16 @@ bool CPortNode::Deserialize(const tinyxml2::XMLElement& portElement)
 
   return true;
 }
+
+std::string CPortNode::GetDigest(UTILITY::CDigest::Type digestType) const
+{
+  UTILITY::CDigest digest{digestType};
+
+  digest.Update(CControllerTranslator::TranslatePortType(m_portType));
+  digest.Update(m_portId);
+
+  for (const CControllerNode& controller : m_controllers)
+    digest.Update(controller.GetDigest(digestType));
+
+  return digest.FinalizeRaw();
+}
