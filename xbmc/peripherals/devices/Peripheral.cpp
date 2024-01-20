@@ -786,7 +786,7 @@ bool CPeripheral::operator!=(const PeripheralScanResult& right) const
   return !(*this == right);
 }
 
-CDateTime CPeripheral::LastActive()
+CDateTime CPeripheral::LastActive() const
 {
   return CDateTime();
 }
