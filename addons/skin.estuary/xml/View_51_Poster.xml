@@ -147,19 +147,29 @@
 					<visible>!String.IsEmpty(ListItem.Art(poster))</visible>
 				</control>
 				<control type="image">
-					<left>6</left>
+					<left>10</left>
 					<top>684</top>
 					<width>32</width>
 					<height>32</height>
-					<texture>$VAR[WallWatchedIconVar]</texture>
-					<align>right</align>
+					<align>left</align>
 					<aligny>center</aligny>
+					<texture>$VAR[ItemTypeIconVar]</texture>
+				</control>
+				<control type="image">
+					<left>45</left>
+					<top>684</top>
+					<width>32</width>
+					<height>32</height>
+					<align>left</align>
+					<aligny>center</aligny>
+					<texture>overlays/extras.png</texture>
+					<visible>ListItem.HasVideoVersions + ListItem.HasVideoExtras</visible>
 				</control>
 				<control type="label">
-					<left>0</left>
-					<top>690</top>
-					<width>435</width>
-					<height>24</height>
+					<left>100</left>
+					<top>684</top>
+					<width>330</width>
+					<height>32</height>
 					<label>$VAR[WatchedStatusVar]</label>
 					<font>font20_title</font>
 					<shadowcolor>text_shadow</shadowcolor>
@@ -168,14 +178,13 @@
 					<visible>String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBtype,set) | String.IsEqual(ListItem.DBType,season)</visible>
 				</control>
 				<control type="image">
-					<left>445</left>
-					<top>690</top>
-					<width>24</width>
-					<height>24</height>
-					<texture>lists/played-total.png</texture>
+					<left>435</left>
+					<top>684</top>
+					<width>32</width>
+					<height>32</height>
+					<texture>$VAR[ItemStatusIconVar]</texture>
 					<align>right</align>
 					<aligny>center</aligny>
-					<visible>String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBtype,set) | String.IsEqual(ListItem.DBType,season)</visible>
 				</control>
 			</control>
 			<control type="progress">

@@ -496,7 +496,7 @@
 							<top>30</top>
 							<width>32</width>
 							<height>32</height>
-							<texture>$VAR[WallWatchedIconVar]</texture>
+							<texture>$VAR[ItemStatusIconVar]</texture>
 						</control>
 						<control type="progress">
 							<left>20</left>
@@ -597,7 +597,7 @@
 							<top>30</top>
 							<width>32</width>
 							<height>32</height>
-							<texture>$VAR[WallWatchedIconVar]</texture>
+							<texture>$VAR[ItemStatusIconVar]</texture>
 						</control>
 						<control type="progress">
 							<left>20</left>

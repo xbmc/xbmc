@@ -208,10 +208,29 @@
 				<texture colordiffuse="CCFFFFFF">overlays/overlayfade.png</texture>
 				<visible>!String.IsEmpty(ListItem.Art(poster))</visible>
 			</control>
-			<control type="label">
+			<control type="image">
+				<left>45</left>
+				<top>522</top>
+				<width>24</width>
+				<height>24</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<texture>$VAR[ItemTypeIconVar]</texture>
+			</control>
+			<control type="image">
 				<left>75</left>
 				<top>522</top>
-				<width>222</width>
+				<width>24</width>
+				<height>24</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<texture>overlays/extras.png</texture>
+				<visible>ListItem.HasVideoVersions + ListItem.HasVideoExtras</visible>
+			</control>
+			<control type="label">
+				<left>110</left>
+				<top>522</top>
+				<width>185</width>
 				<height>24</height>
 				<label>$VAR[WatchedStatusVar]</label>
 				<font>font20_title</font>
@@ -225,19 +244,9 @@
 				<top>522</top>
 				<width>24</width>
 				<height>24</height>
-				<texture>lists/played-total.png</texture>
+				<texture>$VAR[ItemStatusIconVar]</texture>
 				<align>right</align>
 				<aligny>center</aligny>
-				<visible>String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBtype,set) | String.IsEqual(ListItem.DBType,season)</visible>
-			</control>
-			<control type="image">
-				<left>45</left>
-				<top>522</top>
-				<width>24</width>
-				<height>24</height>
-				<align>left</align>
-				<aligny>center</aligny>
-				<texture>$VAR[WallWatchedIconVar]</texture>
 			</control>
 		</control>
 	</include>
