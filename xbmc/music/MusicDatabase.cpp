@@ -1051,16 +1051,32 @@ int CMusicDatabase::AddSong(const int idSong,
         strSQL = PrepareSQL("SELECT idSong FROM song WHERE "
                             "idAlbum = %i AND iTrack=%i AND strMusicBrainzTrackID = '%s'",
                             idAlbum, iTrack, strMusicBrainzTrackID.c_str());
-      else
+      else if (!isAudioBook)
         strSQL = PrepareSQL("SELECT idSong FROM song WHERE "
                             "idAlbum=%i AND strFileName='%s' AND strTitle='%s' AND iTrack=%i "
                             "AND strMusicBrainzTrackID IS NULL",
                             idAlbum, strFileName.c_str(), strTitle.c_str(), iTrack);
 
+      else /* If an audiobook (m4b) spans more than one file then assume that all files are in
+              the same directory (path).  This is used later to create virtual disks (one for each
+              file) so that the book displays properly in library views.
+           */
+        strSQL = PrepareSQL("SELECT idSong, strFileName FROM song WHERE idAlbum=%i AND idPath=%i "
+                            "AND strFileName !='%s' GROUP BY strFileName ",
+                            idAlbum, idPath, strFileName.c_str());
+
       if (!m_pDS->query(strSQL))
         return -1;
     }
-    if (m_pDS->num_rows() == 0)
+    /* If we have an m4b audiobook in multiple files and have already added the first files chapters
+       make virtual disks for each of the additional files and then add the chapters from them.
+       Slight disadvatange is that single disk books get a disk number of 1 but that doesn't matter
+       in the scheme of things.
+     */
+    int iAudioBookDiskNumber = m_pDS->num_rows() + 1;
+    if (isAudioBook && iAudioBookDiskNumber >= 1)
+      iTrack = (iTrack  & 0xffff) | (iAudioBookDiskNumber << 16);
+    if ((m_pDS->num_rows() == 0) || (iAudioBookDiskNumber >= 1 && isAudioBook))
     {
       m_pDS->close();
 
