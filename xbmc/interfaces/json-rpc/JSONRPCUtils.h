@@ -23,7 +23,7 @@ namespace JSONRPC
 {
   /*!
    \ingroup jsonrpc
-   \brief Possible statuc codes of a response
+   \brief Possible status codes of a response
    to a JSON-RPC request
    */
   enum JSONRPC_STATUS
@@ -37,7 +37,8 @@ namespace JSONRPC
     ParseError = -32700,
     //-32099..-32000 Reserved for implementation-defined server-errors.
     BadPermission = -32099,
-    FailedToExecute = -32100
+    FailedToExecute = -32100,
+    InvalidObject = -32101
   };
 
   /*!

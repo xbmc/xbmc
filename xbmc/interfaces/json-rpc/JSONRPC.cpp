@@ -340,6 +340,10 @@ inline void CJSONRPC::BuildResponse(const CVariant& request, JSONRPC_STATUS code
     case ACK:
       response["result"] = "OK";
       break;
+    case InvalidObject:
+      response["error"]["code"] = InvalidObject;
+      response["error"]["message"] = "Invalid Object (Not Found in database).";
+      break;
     case InvalidRequest:
       response["error"]["code"] = InvalidRequest;
       response["error"]["message"] = "Invalid request.";
