@@ -10,6 +10,7 @@ NATIVE= \
   autoconf-archive \
   automake \
   cmake \
+  bison \
   gas-preprocessor \
   gettext \
   giflib \
@@ -69,6 +70,7 @@ download: $(DOWNLOAD_TARGETS)
 autoconf-archive: autoconf
 autoconf: m4
 automake: autoconf
+bison: gettext
 cargo-c: pkg-config openssl rustup
 dpkg: automake gettext libtool pkg-config tar
 heimdal: libtool
