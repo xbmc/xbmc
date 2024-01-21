@@ -25,6 +25,7 @@ NATIVE= \
   ninja \
   openssl \
   pcre \
+  pcre2 \
   perlmodule-parseyapp \
   pkg-config \
   python3 \
@@ -82,6 +83,7 @@ Mako: MarkupSafe
 meson: python3
 ninja: meson
 openssl: zlib
+pcre2: cmake
 pugixml: cmake
 python3: $(EXPAT) $(LIBFFI) pkg-config zlib openssl autoconf-archive
 swig: pcre
