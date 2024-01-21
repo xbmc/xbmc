@@ -11,7 +11,9 @@
 #include "ServiceBroker.h"
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
@@ -404,7 +406,10 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   {
     m_passthrough = false;
     m_format.m_sampleRate     = m_sink_sampleRate;
-    if (m_sinkSupportsMultiChannelFloat)
+    // this is temporarily opt-in via advancedsettings only
+    const bool allowMultiFloat =
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_AllowMultiChannelFloat;
+    if (allowMultiFloat && m_sinkSupportsMultiChannelFloat)
     {
       m_encoding = CJNIAudioFormat::ENCODING_PCM_FLOAT;
       m_format.m_dataFormat     = AE_FMT_FLOAT;
@@ -1221,11 +1226,11 @@ void CAESinkAUDIOTRACK::UpdateAvailablePCMCapabilities()
 
   int encoding = CJNIAudioFormat::ENCODING_PCM_16BIT;
   m_sinkSupportsFloat = VerifySinkConfiguration(native_sampleRate, CJNIAudioFormat::CHANNEL_OUT_STEREO, CJNIAudioFormat::ENCODING_PCM_FLOAT);
-  // Only try for Android 7 or later - there are a lot of old devices that open successfully
-  // but won't work correctly under the hood (famouse example: old FireTV)
-  // As even newish devices like Android Chromecast don't do it properly - just disable it ... and use 16 bit Integer
-  //if (CJNIAudioManager::GetSDKVersion() > 23)
-  //  m_sinkSupportsMultiChannelFloat = VerifySinkConfiguration(native_sampleRate, CJNIAudioFormat::CHANNEL_OUT_7POINT1_SURROUND, CJNIAudioFormat::ENCODING_PCM_FLOAT);
+
+  if (CJNIAudioManager::GetSDKVersion() >= 21)
+    m_sinkSupportsMultiChannelFloat =
+        VerifySinkConfiguration(native_sampleRate, CJNIAudioFormat::CHANNEL_OUT_7POINT1_SURROUND,
+                                CJNIAudioFormat::ENCODING_PCM_FLOAT);
 
   if (m_sinkSupportsFloat)
   {
