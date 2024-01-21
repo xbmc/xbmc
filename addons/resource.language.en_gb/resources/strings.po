@@ -23199,7 +23199,13 @@ msgctxt "#39031"
 msgid "Sources"
 msgstr ""
 
-#empty strings from id 39032 to 39099
+#. Smart playlist rule option
+#: xbmc/playlists/SmartPlaylist.cpp
+msgctxt "#39032"
+msgid "Audiobook"
+msgstr ""
+
+#empty strings from id 39033 to 39099
 
 #: system/settings/settings.xml
 msgctxt "#39100"

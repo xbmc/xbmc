@@ -66,6 +66,9 @@ void CLibraryGUIInfo::SetLibraryBool(int condition, bool value)
     case LIBRARY_HAS_BOXSETS:
       m_libraryHasBoxsets = value ? 1 : 0;
       break;
+    case LIBRARY_HAS_AUDIOBOOKS:
+      m_libraryHasAudiobooks = value ? 1 : 0;
+      break;
     default:
       break;
   }
@@ -82,6 +85,7 @@ void CLibraryGUIInfo::ResetLibraryBools()
   m_libraryHasCompilations = -1;
   m_libraryHasBoxsets = -1;
   m_libraryRoleCounts.clear();
+  m_libraryHasAudiobooks = -1;
 }
 
 bool CLibraryGUIInfo::InitCurrentItem(CFileItem *item)
@@ -216,6 +220,20 @@ bool CLibraryGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contex
         }
       }
       value = m_libraryHasBoxsets > 0;
+      return true;
+    }
+    case LIBRARY_HAS_AUDIOBOOKS:
+    {
+      if (m_libraryHasAudiobooks < 0)
+      {
+        CMusicDatabase db;
+        if (db.Open())
+        {
+          m_libraryHasAudiobooks = (db.GetAudioBookCount() > 0) ? 1 : 0;
+          db.Close();
+        }
+      }
+      value = m_libraryHasAudiobooks > 0;
       return true;
     }
     case LIBRARY_HAS_VIDEO:

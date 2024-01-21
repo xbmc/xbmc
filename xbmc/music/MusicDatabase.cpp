@@ -3860,7 +3860,7 @@ bool CMusicDatabase::GetRecentlyAddedAlbums(VECALBUMS& albums, unsigned int limi
     // timestamps, nothing to do with when albums added to library)
     std::string strSQL =
         PrepareSQL("SELECT albumview.*, albumartistview.* "
-                   "FROM (SELECT idAlbum FROM album WHERE strAlbum != '' "
+                   "FROM (SELECT idAlbum FROM album WHERE strAlbum != '' AND strReleaseType == 'album' "
                    "ORDER BY dateAdded DESC LIMIT %u) AS recentalbums "
                    "JOIN albumview ON albumview.idAlbum = recentalbums.idAlbum "
                    "JOIN albumartistview ON albumview.idAlbum = albumartistview.idAlbum "
@@ -13671,9 +13671,13 @@ bool CMusicDatabase::GetFilter(CDbUrl& musicUrl, Filter& filter, SortDescription
       // Exclude any single albums (aka empty tagged albums)
       // This causes "albums"  media filter artist selection to only offer album artists
       option = options.find("show_singles");
-      if (option == options.end() || !option->second.asBoolean())
+      bool isAudioBook = filter.where.find("audiobook") != std::string::npos;
+      if ((option == options.end() || !option->second.asBoolean()) && !isAudioBook)
         filter.AppendWhere(PrepareSQL("albumview.strReleaseType = '%s'",
                                       CAlbum::ReleaseTypeToString(CAlbum::Album).c_str()));
+      else if (isAudioBook)
+        filter.AppendWhere(PrepareSQL("albumview.strReleaseType = '%s'",
+                                      CAlbum::ReleaseTypeToString(CAlbum::Audiobook).c_str()));
     }
   }
   else if (type == "discs")
