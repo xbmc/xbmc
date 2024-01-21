@@ -932,6 +932,8 @@ bool CTagLoaderTagLib::ParseTag(MP4::Tag *mp4, EmbeddedArt *art, CMusicInfoTag& 
       tag.SetAlbumReleaseStatus(it->second.toStringList().front().to8Bit(true));
     else if (it->first == "tmpo")
       tag.SetBPM(it->second.toIntPair().first);
+    else if (it->first == "desc")
+      tag.SetComment(it->second.toStringList().front().to8Bit(true));
     else if (it->first == "covr")
     {
       MP4::CoverArtList coverArtList = it->second.toCoverArtList();
