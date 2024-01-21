@@ -32,8 +32,6 @@ using namespace ADDON;
 using namespace GAME;
 using namespace XFILE;
 
-#define GAME_CLIENT_RESOURCES_DIRECTORY "resources"
-
 CGameClientProperties::CGameClientProperties(const CGameClient& parent, AddonProps_Game& props)
   : m_parent(parent), m_properties(props)
 {
