@@ -132,6 +132,7 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
     std::vector<std::string> instruments;
     std::string lyricist;
     std::string composer;
+    std::string conductor;
     while ((tag = av_dict_get(m_fctx->chapters[i]->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)))
     { // read and store the tags we are interested in
 
@@ -158,6 +159,8 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
           composer = data;
         else if (key == "LYRICIST")
           lyricist = data;
+        else if (key == "COMPOSER")
+          composer == data;
         else if (key == "INSTRUMENTS")
           instruments =
               StringUtils::Split(data, ","); //comma separated list of instrument, performer
@@ -213,6 +216,9 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
       if (!composer.empty())
         item->GetMusicInfoTag()->AddArtistRole("Composer",
                                                StringUtils::Split(composer, separators));
+      if (!conductor.empty())
+        item->GetMusicInfoTag()->AddArtistRole("Conductor",
+                                               StringUtils::Split(conductor, separators));
     }
     if (isAudioBook)
       item->GetMusicInfoTag()->SetAlbumReleaseType(CAlbum::ReleaseType::Audiobook);

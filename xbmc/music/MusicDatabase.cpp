@@ -13965,9 +13965,7 @@ bool CMusicDatabase::SetResumeBookmarkForAudioBook(const CFileItem& item, int bo
   const int albumid = item.GetMusicInfoTag()->GetAlbumId();
   std::string strSQL;
   if (albumid > -1)
-    strSQL = PrepareSQL("SELECT bookmark FROM audiobook "
-                        "WHERE idBook='%i'",
-                        albumid);
+    strSQL = PrepareSQL("SELECT bookmark FROM audiobook WHERE idBook='%i'", albumid);
   else
     strSQL =
         PrepareSQL("SELECT bookmark FROM audiobook WHERE file='%s'", item.GetDynPath().c_str());
@@ -13978,18 +13976,17 @@ bool CMusicDatabase::SetResumeBookmarkForAudioBook(const CFileItem& item, int bo
       return false;
   }
 
- if (item.IsAudioBook())
-    // update the bookmark with the offset position in the file
+  if (item.IsAudioBook())
+    //update the bookmark with the offset position in the file
     strSQL = PrepareSQL("UPDATE audiobook SET bookmark=%i "
-                      "WHERE file='%s'",
-                      bookmark, item.GetDynPath().c_str());
+                        "WHERE file='%s'", bookmark, item.GetDynPath().c_str());
 
-  else if (item.GetMusicInfoTag()->GetAlbumReleaseType() == CAlbum::Audiobook && !item.IsAudioBook())
+  else if (item.GetMusicInfoTag()->GetAlbumReleaseType() == CAlbum::Audiobook &&
+           !item.IsAudioBook())
     // update the bookmark with the last file played (mp3/flac/other audiobooks)
-    strSQL = PrepareSQL("UPDATE audiobook SET bookmark=%i, file='%s' WHERE idBook=%i",
-                        item.GetMusicInfoTag()->GetTrackNumber(), item.GetDynPath().c_str(),
-                        item.GetMusicInfoTag()->GetAlbumId());
-
+    strSQL =
+        PrepareSQL("UPDATE audiobook SET bookmark=%i, file='%s' WHERE idBook=%i",
+                   item.GetMusicInfoTag()->GetTrackNumber(), item.GetDynPath().c_str(), albumid);
   return ExecuteQuery(strSQL);
 }
 

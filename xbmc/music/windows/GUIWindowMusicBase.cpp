@@ -891,30 +891,43 @@ bool CGUIWindowMusicBase::CanContainFilter(const std::string &strDirectory) cons
 bool CGUIWindowMusicBase::OnSelect(int iItem)
 {
   auto item = m_vecItems->Get(iItem);
-  if (item->IsAudioBook())
+  int bookmark = 0;
+  std::shared_ptr <CFileItem> pItemToResume = nullptr;
+  const std::shared_ptr <CFileItem> firstItem = *m_vecItems->cbegin();
+  if (item->HasMusicInfoTag() &&
+      item->GetMusicInfoTag()->GetAlbumReleaseType() == CAlbum::Audiobook && !item->m_bIsFolder)
   {
-    int bookmark;
     if (m_musicdatabase.GetResumeBookmarkForAudioBook(*item, bookmark) && bookmark > 0)
     {
       // find which chapter the bookmark belongs to
-      auto itemIt =
+      if (item->IsType(".m4b")) // should we allow resuming mka too?
+      {
+        auto itemIt =
           std::find_if(m_vecItems->cbegin(), m_vecItems->cend(),
                        [&](const CFileItemPtr& item) { return bookmark < item->GetEndOffset(); });
 
-      if (itemIt != m_vecItems->cend())
+          pItemToResume = *itemIt;
+          bookmark = pItemToResume->GetMusicInfoTag()->GetTrackNumber() - 1;
+      }
+      else//mp3 etc book - bookmark will already be the track number to resume
+      {
+        bookmark--;// subtract 1 because m_vecItems are numbered from zero but tracks start at 1
+        pItemToResume = (m_vecItems->Get(bookmark));
+      }
+      if (pItemToResume != *m_vecItems->cend() && pItemToResume != nullptr)
       {
         // ask the user if they want to play or resume
         CContextButtons choices;
         choices.Add(MUSIC_SELECT_ACTION_PLAY, 208); // 208 = Play
         choices.Add(MUSIC_SELECT_ACTION_RESUME,
                     StringUtils::Format(g_localizeStrings.Get(12022), // 12022 = Resume from ...
-                                        (*itemIt)->GetMusicInfoTag()->GetTitle()));
+                                        pItemToResume->GetMusicInfoTag()->GetTitle()));
 
         auto choice = CGUIDialogContextMenu::Show(choices);
         if (choice == MUSIC_SELECT_ACTION_RESUME)
         {
-          (*itemIt)->SetProperty("audiobook_bookmark", bookmark);
-          return CGUIMediaWindow::OnSelect(static_cast<int>(itemIt - m_vecItems->cbegin()));
+          pItemToResume->SetProperty("audiobook_bookmark", bookmark);
+          return CGUIMediaWindow::OnSelect(bookmark);
         }
         else if (choice < 0)
           return true;
