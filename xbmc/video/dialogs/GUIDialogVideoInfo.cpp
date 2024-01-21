@@ -1060,16 +1060,18 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
   int dbId = item->GetVideoInfoTag()->m_iDbId;
 
   CContextButtons buttons;
-  if (type == MediaTypeMovie || type == MediaTypeVideoCollection ||
-      type == MediaTypeTvShow || type == MediaTypeEpisode ||
-     (type == MediaTypeSeason && item->GetVideoInfoTag()->m_iSeason > 0) ||  // seasons without "all seasons" and "specials"
+  if ((type == MediaTypeMovie && (item->m_bIsFolder || !item->IsVideoAssetNav())) ||
+      type == MediaTypeVideoCollection || type == MediaTypeTvShow || type == MediaTypeEpisode ||
+      (type == MediaTypeSeason &&
+       item->GetVideoInfoTag()->m_iSeason > 0) || // seasons without "all seasons" and "specials"
       type == MediaTypeMusicVideo)
     buttons.Add(CONTEXT_BUTTON_EDIT, 16105);
 
-  if (type == MediaTypeMovie || type == MediaTypeTvShow || type == MediaTypeSeason)
+  if ((type == MediaTypeMovie && (item->m_bIsFolder || !item->IsVideoAssetNav())) ||
+      type == MediaTypeTvShow || type == MediaTypeSeason)
     buttons.Add(CONTEXT_BUTTON_EDIT_SORTTITLE, 16107);
 
-  if (type == MediaTypeMovie)
+  if (type == MediaTypeMovie && (item->m_bIsFolder || !item->IsVideoAssetNav()))
   {
     // only show link/unlink if there are tvshows available
     if (database.HasContent(VideoDbContentType::TVSHOWS))
@@ -1081,7 +1083,10 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
 
     // set or change movie set the movie belongs to
     buttons.Add(CONTEXT_BUTTON_SET_MOVIESET, 20465);
+  }
 
+  if (type == MediaTypeMovie)
+  {
     // manage video versions
     buttons.Add(CONTEXT_BUTTON_MANAGE_VIDEOVERSIONS, 40001); // Manage versions
   }
@@ -1090,8 +1095,9 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
       item->GetVideoInfoTag()->m_iBookmarkId > 0)
     buttons.Add(CONTEXT_BUTTON_UNLINK_BOOKMARK, 20405);
 
-  if (type == MediaTypeVideoCollection || type == MediaTypeMovie || type == MediaTypeTvShow ||
-      type == MediaTypeSeason || type == MediaTypeEpisode)
+  if (type == MediaTypeVideoCollection ||
+      (type == MediaTypeMovie && (item->m_bIsFolder || !item->IsVideoAssetNav())) ||
+      type == MediaTypeTvShow || type == MediaTypeSeason || type == MediaTypeEpisode)
     buttons.Add(CONTEXT_BUTTON_SET_ART, 13511);
 
   // movie sets
@@ -1115,8 +1121,11 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
     }
   }
 
-  if (type != MediaTypeSeason)
+  if (type != MediaTypeSeason && (item->m_bIsFolder || !item->IsVideoAssetNav()))
+  {
+    // Remove from library
     buttons.Add(CONTEXT_BUTTON_DELETE, 646);
+  }
 
   //temporary workaround until the context menu ids are removed
   const int addonItemOffset = 10000;
