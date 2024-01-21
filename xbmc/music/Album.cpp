@@ -29,7 +29,8 @@ typedef struct ReleaseTypeInfo {
 
 ReleaseTypeInfo releaseTypes[] = {
   { CAlbum::Album,  "album" },
-  { CAlbum::Single, "single" }
+  { CAlbum::Single, "single" },
+  { CAlbum::Audiobook, "audiobook" }
 };
 
 CAlbum::CAlbum(const CFileItem& item)

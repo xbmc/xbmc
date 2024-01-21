@@ -86,6 +86,7 @@ public:
   const std::string& GetStationName() const;
   const std::string& GetStationArt() const;
   const std::string& GetSongVideoURL() const;
+  const std::string GetAlbumReleaseTypeToString() const;
   const EmbeddedArtInfo &GetCoverArtInfo() const;
   const ReplayGain& GetReplayGain() const;
   CAlbum::ReleaseType GetAlbumReleaseType() const;

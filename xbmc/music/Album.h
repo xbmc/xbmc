@@ -102,7 +102,8 @@ public:
 
   typedef enum ReleaseType {
     Album = 0,
-    Single
+    Single,
+    Audiobook
   } ReleaseType;
 
   std::string GetReleaseType() const;

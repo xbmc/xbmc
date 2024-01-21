@@ -698,7 +698,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
     bool tracksOverlap = false;
     bool hasAlbumArtist = false;
     bool isCompilation = true;
-    std::string old_DiscSubtitle;
+    std::string strThisReleaseType;
 
     std::map<std::string, std::vector<CSong *> > artists;
     for (VECSONGS::iterator song = songs.begin(); song != songs.end(); ++song)
@@ -710,8 +710,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
       if (!song->bCompilation)
         isCompilation = false;
 
-      if (song->strDiscSubtitle != old_DiscSubtitle)
-        old_DiscSubtitle = song->strDiscSubtitle;
+      strThisReleaseType = song->strReleaseType;
 
       // get primary artist
       std::string primary;
@@ -836,6 +835,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
        */
       CAlbum album;
       album.strAlbum = songsByAlbumName.first;
+      album.SetReleaseType(strThisReleaseType);
 
       //Split the albumartist sort string to try and get sort names for individual artists
       std::vector<std::string> sortnames = StringUtils::Split(albumartistsort, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);

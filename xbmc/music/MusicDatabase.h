@@ -161,6 +161,7 @@ public:
               const std::string& strReleaseDate,
               const std::string& strOrigReleaseDate,
               std::string& strDiscSubtitle,
+              const std::string& strReleaseType,
               const int iTimesPlayed,
               int iStartOffset,
               int iEndOffset,
@@ -344,6 +345,8 @@ public:
   bool AddAudioBook(const CFileItem& item);
   bool SetResumeBookmarkForAudioBook(const CFileItem& item, int bookmark);
   bool GetResumeBookmarkForAudioBook(const CFileItem& item, int& bookmark);
+  int GetAudioBookCount();
+
 
   /*! \brief Checks if the given path is inside a folder that has already been scanned into the library
    \param path the path we want to check

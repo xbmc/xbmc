@@ -61,6 +61,7 @@ CSong::CSong(CFileItem& item)
   strRecordLabel = tag.GetRecordLabel();
   strAlbumType = tag.GetMusicBrainzReleaseType();
   bCompilation = tag.GetCompilation();
+  strReleaseType = tag.GetAlbumReleaseTypeToString();
   embeddedArt = tag.GetCoverArtInfo();
   strFileName = tag.GetURL().empty() ? item.GetPath() : tag.GetURL();
   dateAdded = tag.GetDateAdded();
