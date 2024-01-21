@@ -401,6 +401,12 @@ const struct SDbTableOffsets DbMusicVideoOffsets[] =
   { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iIdUniqueID)}
 };
 
+enum class ArtFallbackOptions
+{
+  NONE,
+  PARENT
+};
+
 #define COMPARE_PERCENTAGE     0.90f // 90%
 #define COMPARE_PERCENTAGE_MIN 0.50f // 50%
 
@@ -948,9 +954,18 @@ public:
   void SetArtForItem(int mediaId, const MediaType &mediaType, const std::map<std::string, std::string> &art);
   bool GetArtForItem(int mediaId, const MediaType &mediaType, std::map<std::string, std::string> &art);
   std::string GetArtForItem(int mediaId, const MediaType &mediaType, const std::string &artType);
+
+  /*!
+   * \brief Retrieve all art for the given video asset, with optional fallback to the art of the
+   * parent/owner of the asset
+   * \param assetId id of the file of the asset
+   * \param fallback optionally request fallback to the art of the parent/owner for each art type
+     that is not defined for the asset
+   * \param art collection of the retrieved art
+   * \return 
+  */
   bool GetArtForAsset(int assetId,
-                      int ownerId,
-                      const MediaType& mediaType,
+                      ArtFallbackOptions fallback,
                       std::map<std::string, std::string>& art);
   bool HasArtForItem(int mediaId, const MediaType &mediaType);
   bool RemoveArtForItem(int mediaId, const MediaType &mediaType, const std::string &artType);

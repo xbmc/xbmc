@@ -4938,8 +4938,7 @@ bool CVideoDatabase::GetArtForItem(int mediaId, const MediaType &mediaType, std:
 }
 
 bool CVideoDatabase::GetArtForAsset(int assetId,
-                                    int ownerMediaId,
-                                    const MediaType& mediaType,
+                                    ArtFallbackOptions fallback,
                                     std::map<std::string, std::string>& art)
 {
   try
@@ -4949,37 +4948,32 @@ bool CVideoDatabase::GetArtForAsset(int assetId,
     if (nullptr == m_pDS2)
       return false; // using dataset 2 as we're likely called in loops on dataset 1
 
-    std::string sql;
+    const std::string sqlFallback{fallback == ArtFallbackOptions::PARENT
+                                      ? StringUtils::Format("UNION "
+                                                            "SELECT idMedia, media_type "
+                                                            "FROM videoversion "
+                                                            "WHERE idFile = {} ",
+                                                            assetId)
+                                      : ""};
 
-    if (mediaType == MediaTypeVideoVersion)
-    {
-      // MAYBE: use more compact and readable non-ANSI SQL extension where (,) in ()?
-      sql = PrepareSQL("SELECT art.media_type, art.type, art.url "
-                       "FROM art "
-                       "LEFT JOIN videoversion vv "
-                       "  ON art.media_id = vv.idMedia AND art.media_type = vv.media_type "
-                       "WHERE (art.media_id = %i AND art.media_type = '%s') "
-                       "OR(vv.idFile = %i) ",
-                       assetId, MediaTypeVideoVersion, assetId);
-    }
-    else
-    {
-      sql = PrepareSQL("SELECT media_type, type, url "
-                       "FROM art "
-                       "WHERE (media_id = %i AND media_type = '%s') "
-                       "OR (media_id = %i AND media_type = '%s')",
-                       assetId, MediaTypeVideoVersion, ownerMediaId, mediaType.c_str());
-    }
+    const std::string sql{PrepareSQL("SELECT art.media_type, art.type, art.url "
+                                     "FROM art "
+                                     "WHERE (media_id, media_type) "
+                                     "IN ("
+                                     "SELECT %i, '%s'"
+                                     "%s"
+                                     ")",
+                                     assetId, MediaTypeVideoVersion, sqlFallback.c_str())};
 
     m_pDS2->query(sql);
     while (!m_pDS2->eof())
     {
       if (m_pDS2->fv(0).get_asString() == MediaTypeVideoVersion)
       {
-        // version data has priority over owner's data, used as fallback.
+        // version data has priority over owner's data
         art[m_pDS2->fv(1).get_asString()] = m_pDS2->fv(2).get_asString();
       }
-      else
+      else if (fallback == ArtFallbackOptions::PARENT)
       {
         // insert if not yet present
         art.insert(make_pair(m_pDS2->fv(1).get_asString(), m_pDS2->fv(2).get_asString()));
@@ -4991,7 +4985,7 @@ bool CVideoDatabase::GetArtForAsset(int assetId,
   }
   catch (...)
   {
-    CLog::LogF(LOGERROR, "retrieval failed ({}, {}, {})", assetId, ownerMediaId, mediaType);
+    CLog::LogF(LOGERROR, "retrieval failed ({})", assetId);
   }
   return false;
 }
@@ -8120,9 +8114,6 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
     SortDescription sorting = sortDescription;
     if (!videoUrl.FromString(strBaseDir) || !GetFilter(videoUrl, extFilter, sorting))
       return false;
-
-    if (!videoUrl.HasOption("videoversionid"))
-      extFilter.AppendWhere("isDefaultVersion = 1");
 
     int total = -1;
 
@@ -11568,6 +11559,10 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
             filter.AppendWhere(PrepareSQL("idMovie = %i", mediaId));
         }
       }
+    }
+    else
+    {
+      filter.AppendWhere("isDefaultVersion = 1");
     }
 
     AppendIdLinkFilter("tag", "tag", "movie", "movie", "idMovie", options, filter);

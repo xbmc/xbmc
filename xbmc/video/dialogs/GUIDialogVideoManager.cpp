@@ -217,7 +217,10 @@ void CGUIDialogVideoManager::Refresh()
   CVideoThumbLoader loader;
 
   for (auto& item : *m_videoAssetsList)
+  {
+    item->SetProperty("noartfallbacktoowner", true);
     loader.LoadItem(item.get());
+  }
 
   CGUIMessage msg{GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST_ASSETS, 0, 0, m_videoAssetsList.get()};
   OnMessage(msg);
