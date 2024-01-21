@@ -92,27 +92,6 @@ static AEChannel AUDIOTRACKChannelToAEChannel(int atChannel)
   return aeChannel;
 }
 
-static int AEChannelToAUDIOTRACKChannel(AEChannel aeChannel)
-{
-  int atChannel;
-  switch (aeChannel)
-  {
-    case AE_CH_FL:    atChannel = CJNIAudioFormat::CHANNEL_OUT_FRONT_LEFT; break;
-    case AE_CH_FR:    atChannel = CJNIAudioFormat::CHANNEL_OUT_FRONT_RIGHT; break;
-    case AE_CH_FC:    atChannel = CJNIAudioFormat::CHANNEL_OUT_FRONT_CENTER; break;
-    case AE_CH_LFE:   atChannel = CJNIAudioFormat::CHANNEL_OUT_LOW_FREQUENCY; break;
-    case AE_CH_BL:    atChannel = CJNIAudioFormat::CHANNEL_OUT_BACK_LEFT; break;
-    case AE_CH_BR:    atChannel = CJNIAudioFormat::CHANNEL_OUT_BACK_RIGHT; break;
-    case AE_CH_SL:    atChannel = CJNIAudioFormat::CHANNEL_OUT_SIDE_LEFT; break;
-    case AE_CH_SR:    atChannel = CJNIAudioFormat::CHANNEL_OUT_SIDE_RIGHT; break;
-    case AE_CH_BC:    atChannel = CJNIAudioFormat::CHANNEL_OUT_BACK_CENTER; break;
-    case AE_CH_FLOC:  atChannel = CJNIAudioFormat::CHANNEL_OUT_FRONT_LEFT_OF_CENTER; break;
-    case AE_CH_FROC:  atChannel = CJNIAudioFormat::CHANNEL_OUT_FRONT_RIGHT_OF_CENTER; break;
-    default:          atChannel = CJNIAudioFormat::CHANNEL_INVALID; break;
-  }
-  return atChannel;
-}
-
 static CAEChannelInfo AUDIOTRACKChannelMaskToAEChannelMap(int atMask)
 {
   CAEChannelInfo info;
@@ -132,26 +111,17 @@ static int AEChannelMapToAUDIOTRACKChannelMask(CAEChannelInfo info)
 {
   info.ResolveChannels(CAEChannelInfo(KnownChannels));
 
-  // Detect layouts with 6 channels including one LFE channel
-  // We currently support the following layouts:
-  // 5.1            FL+FR+FC+LFE+BL+BR
-  // 5.1(side)      FL+FR+FC+LFE+SL+SR
-  // According to CEA-861-D only RR and RL are defined
-  // Therefore we let Android decide about the 5.1 mapping
-  // For 8 channel layouts including one LFE channel
-  // we leave the same decision to Android
-  if (info.Count() == 6 && info.HasChannel(AE_CH_LFE))
-    return CJNIAudioFormat::CHANNEL_OUT_5POINT1;
+  // Sadly Android is quite limited these days with supported formats
+  // Therefore only distinguish between Stereo, 5.1 and 7.1
+  // simply by the number of speakers.
 
-  if (info.Count() == 8 && info.HasChannel(AE_CH_LFE))
+  if (info.Count() > 6)
     return CJNIAudioFormat::CHANNEL_OUT_7POINT1_SURROUND;
 
-  int atMask = 0;
+  if (info.Count() > 2)
+    return CJNIAudioFormat::CHANNEL_OUT_5POINT1;
 
-  for (unsigned int i = 0; i < info.Count(); i++)
-    atMask |= AEChannelToAUDIOTRACKChannel(info[i]);
-
-  return atMask;
+  return CJNIAudioFormat::CHANNEL_OUT_STEREO;
 }
 
 jni::CJNIAudioTrack *CAESinkAUDIOTRACK::CreateAudioTrack(int stream, int sampleRate, int channelMask, int encoding, int bufferSize)
