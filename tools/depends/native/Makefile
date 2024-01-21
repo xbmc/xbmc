@@ -24,7 +24,6 @@ NATIVE= \
   nasm \
   ninja \
   openssl \
-  pcre \
   pcre2 \
   perlmodule-parseyapp \
   pkg-config \
