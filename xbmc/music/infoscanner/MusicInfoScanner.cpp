@@ -583,11 +583,41 @@ CInfoScanner::INFO_RET CMusicInfoScanner::ScanTags(const CFileItemList& items,
     m_currentItem++;
 
     CMusicInfoTag& tag = *pItem->GetMusicInfoTag();
+    // variables for tags we want to preserve for m4b files (these are not read by taglib)
+    std::string chapter_title;
+    std::string desc;
+    int iDuration = 0;
+    int trackNo = 0;
+    if (pItem->IsType(".m4b")) //m4b type audiobook - generally used by Apple
+
+    { /* save tag values returned from CAudioBookFileDirectory.cpp.
+         Set SetLoaded to false so we call the tag reader to read any other tags that may be set on
+         the file(s). m4b files are basically mp4 files so taglib can read the tags and fill in
+         samplerate, bitrate and channel info.  It also loads embedded art.  It isn't chapter aware
+         so we restore the saved tag values for each chapter so that the library can display the
+         correct information.
+      */
+      chapter_title = pItem->GetMusicInfoTag()->GetTitle();
+      iDuration = pItem->GetMusicInfoTag()->GetDuration();
+      trackNo = pItem->GetMusicInfoTag()->GetTrackNumber();
+      desc = pItem->GetMusicInfoTag()->GetComment();
+      pItem->GetMusicInfoTag()->SetLoaded(false);
+    }
     if (!tag.Loaded())
     {
       std::unique_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(*pItem));
       if (nullptr != pLoader)
         pLoader->Load(pItem->GetPath(), tag);
+    if(pItem->IsType(".m4b"))
+      {
+        if (!chapter_title.empty())
+          pItem->GetMusicInfoTag()->SetTitle(chapter_title);// Chapter name from original tag
+        pItem->GetMusicInfoTag()->SetDuration(iDuration);// duration of chapter from original tag
+        pItem->GetMusicInfoTag()->SetTrackNumber(trackNo);
+        pItem->GetMusicInfoTag()->SetComment(desc); // comments are often used to describe a book
+        pItem->GetMusicInfoTag()->SetLoaded(true);
+        pItem->GetMusicInfoTag()->SetAlbumReleaseType(CAlbum::Audiobook);
+      }
     }
 
     if (m_handle && m_itemCount>0)
