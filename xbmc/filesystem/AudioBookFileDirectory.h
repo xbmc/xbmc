@@ -8,6 +8,8 @@
 #pragma once
 
 #include "IFileDirectory.h"
+#include "music/tags/MusicInfoTag.h"
+
 extern "C" {
 #include <libavformat/avformat.h>
 }
