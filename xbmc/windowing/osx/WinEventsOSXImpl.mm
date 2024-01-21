@@ -110,6 +110,48 @@
     case NSCarriageReturnCharacter:
     case NSEnterCharacter:
       return XBMCK_RETURN;
+    case NSF1FunctionKey:
+      return XBMCK_F1;
+    case NSF2FunctionKey:
+      return XBMCK_F2;
+    case NSF3FunctionKey:
+      return XBMCK_F3;
+    case NSF4FunctionKey:
+      return XBMCK_F4;
+    case NSF5FunctionKey:
+      return XBMCK_F5;
+    case NSF6FunctionKey:
+      return XBMCK_F6;
+    case NSF7FunctionKey:
+      return XBMCK_F7;
+    case NSF8FunctionKey:
+      return XBMCK_F8;
+    case NSF9FunctionKey:
+      return XBMCK_F9;
+    case NSF10FunctionKey:
+      return XBMCK_F10;
+    case NSF11FunctionKey:
+      return XBMCK_F11;
+    case NSF12FunctionKey:
+      return XBMCK_F12;
+    case NSF13FunctionKey:
+      return XBMCK_F13;
+    case NSF14FunctionKey:
+      return XBMCK_F14;
+    case NSF15FunctionKey:
+      return XBMCK_F15;
+    case NSHomeFunctionKey:
+      return XBMCK_HOME;
+    case NSEndFunctionKey:
+      return XBMCK_END;
+    case NSPageDownFunctionKey:
+      return XBMCK_PAGEDOWN;
+    case NSPageUpFunctionKey:
+      return XBMCK_PAGEUP;
+    case NSPauseFunctionKey:
+      return XBMCK_PAUSE;
+    case NSInsertCharFunctionKey:
+      return XBMCK_INSERT;
     default:
       return character;
   }
