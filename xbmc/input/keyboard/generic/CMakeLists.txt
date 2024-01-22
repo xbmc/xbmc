@@ -1,5 +1,7 @@
-set(SOURCES KeyboardInputHandling.cpp)
+set(SOURCES DefaultKeyboardHandling.cpp
+            KeyboardInputHandling.cpp)
 
-set(HEADERS KeyboardInputHandling.h)
+set(HEADERS DefaultKeyboardHandling.h
+            KeyboardInputHandling.h)
 
 core_add_library(input_keyboard_generic)

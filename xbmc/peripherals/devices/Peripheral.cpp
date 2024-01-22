@@ -14,6 +14,8 @@
 #include "games/controllers/ControllerLayout.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/joysticks/interfaces/IInputHandler.h"
+#include "input/keyboard/generic/DefaultKeyboardHandling.h"
+#include "input/mouse/generic/DefaultMouseHandling.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/addons/AddonButtonMapping.h"
 #include "peripherals/addons/AddonInputHandling.h"
@@ -642,6 +644,14 @@ void CPeripheral::RegisterKeyboardHandler(KEYBOARD::IKeyboardInputHandler* handl
       CLog::Log(LOGDEBUG, "Failed to locate add-on for \"{}\"", m_strLocation);
     }
 
+    if (!keyboardDriverHandler)
+    {
+      std::unique_ptr<KODI::KEYBOARD::CDefaultKeyboardHandling> defaultInput =
+          std::make_unique<KODI::KEYBOARD::CDefaultKeyboardHandling>(this, handler);
+      if (defaultInput->Load())
+        keyboardDriverHandler = std::move(defaultInput);
+    }
+
     if (keyboardDriverHandler)
     {
       RegisterKeyboardDriverHandler(keyboardDriverHandler.get(), bPromiscuous);
@@ -678,6 +688,14 @@ void CPeripheral::RegisterMouseHandler(MOUSE::IMouseInputHandler* handler, bool 
     else
     {
       CLog::Log(LOGDEBUG, "Failed to locate add-on for \"{}\"", m_strLocation);
+    }
+
+    if (!mouseDriverHandler)
+    {
+      std::unique_ptr<KODI::MOUSE::CDefaultMouseHandling> defaultInput =
+          std::make_unique<KODI::MOUSE::CDefaultMouseHandling>(this, handler);
+      if (defaultInput->Load())
+        mouseDriverHandler = std::move(defaultInput);
     }
 
     if (mouseDriverHandler)
