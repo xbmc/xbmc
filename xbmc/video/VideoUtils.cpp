@@ -606,10 +606,10 @@ bool IsItemPlayable(const CFileItem& item)
   }
   else if (item.m_bIsFolder)
   {
-    if (!item.HasProperty("IsPlayable") || item.GetProperty("IsPlayable").asBoolean())
-    {
+    // Not a video-specific folder (like file:// or nfs://). Allow play if context is Video window.
+    if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VIDEO_NAV &&
+        item.GetPath() != "add") // Exclude "Add video source" item
       return true;
-    }
   }
 
   return false;

@@ -495,7 +495,6 @@ bool CGUIWindowFileManager::Update(int iList, const std::string &strDirectory)
     const std::string& strLabel = g_localizeStrings.Get(1026);
     CFileItemPtr pItem(new CFileItem(strLabel));
     pItem->SetPath("add");
-    pItem->SetProperty("IsPlayable", false);
     pItem->SetArt("icon", "DefaultAddSource.png");
     pItem->SetLabel(strLabel);
     pItem->SetLabelPreformatted(true);
