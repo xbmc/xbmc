@@ -24093,7 +24093,7 @@ msgctxt "#40213"
 msgid "If selected the remote player volume level will be synchronized with the volume of this application.[CR]Warning: Global system volume level may be different than the application volume level - they are controlled independently.[CR]This may lead the remote player to be set to 100% volume level if the application has 100% volume level but the overall system volume level is smaller."
 msgstr ""
 
-#. Dialog title for the selection of the video extra after "select" in library
+#. Dialog title for the selection of the video extra
 #: xbmc/video/guilib/VideoVersionHelper.cpp
 msgctxt "#40214"
 msgid "Choose extra"
