@@ -134,7 +134,8 @@ public:
                            AVColorPrimaries srcPrimaries,
                            bool toneMap,
                            ETONEMAPMETHOD toneMapMethod,
-                           std::shared_ptr<GLSLOutput> output);
+                           std::shared_ptr<GLSLOutput> output,
+                           bool gammaCorrection);
 };
 
 class YUV2RGBFilterShader4 : public BaseYUV2RGBGLSLShader
