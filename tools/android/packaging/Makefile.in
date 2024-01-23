@@ -83,8 +83,7 @@ python: | xbmc/assets
 	cd xbmc/assets/python@PYTHON_VERSION@/lib/python@PYTHON_VERSION@/; rm -rf test config config-@PYTHON_VERSION@ lib-dynload ; find . -name "*.so" -exec rm -f {} \;
 
 res:
-	mkdir -p xbmc/res xbmc/res/raw xbmc/res/values images
-	@echo "native_arch=$(CPU)" > xbmc/res/raw/xbmc.properties
+	mkdir -p xbmc/res xbmc/res/values images
 	cp -fp $(CMAKE_SOURCE_DIR)/media/splash.* xbmc/res/drawable/
 	cp -fp media/drawable-hdpi/ic_launcher.png xbmc/res/drawable-hdpi/ic_launcher.png
 	cp -fp media/drawable-ldpi/ic_launcher.png xbmc/res/drawable-ldpi/ic_launcher.png
@@ -135,7 +134,6 @@ apk-clean:
 	rm -rf xbmc/lib
 	rm -rf xbmc/assets
 	rm -rf xbmc/obj
-	rm -rf xbmc/res/raw
 	rm -rf xbmc/res/values
 	rm -f xbmc/res/drawable/splash.*
 	rm -f xbmc/res/drawable-xxxhdpi/splash.*
