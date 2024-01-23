@@ -12,6 +12,7 @@
 #include "ServiceBroker.h"
 #include "TextureDatabase.h"
 #include "URL.h"
+#include "Util.h"
 #include "addons/Scraper.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -174,6 +175,19 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
 
       // create the info downloader for the scraper
       CVideoInfoDownloader infoDownloader(scraper);
+
+      // try adding by filename identifier
+      if (scraper->IsPython() && CUtil::HasFilenameIdentifier(itemTitle))
+      {
+        CFileItemList items;
+        items.Add(m_item);
+        CVideoInfoScanner scanner;
+        if (scanner.RetrieveVideoInfo(items, scanSettings.parent_name, scraper->Content(),
+                                      !ignoreNfo, nullptr, m_refreshAll, GetProgressDialog()))
+        {
+          return true;
+        }
+      }
 
       // try to find a matching item
       MOVIELIST itemResultList;
