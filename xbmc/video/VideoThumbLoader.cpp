@@ -30,6 +30,7 @@
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoTag.h"
+#include "video/guilib/VideoVersionHelper.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -398,7 +399,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
     m_videoDatabase->Open();
 
     // @todo unify asset path for other items path
-    if (item.IsVideoAssetNav())
+    if (VIDEO::IsVideoAssetFile(item))
     {
       if (m_videoDatabase->GetArtForAsset(tag.m_iFileId,
                                           item.GetProperty("noartfallbacktoowner").asBoolean(false)

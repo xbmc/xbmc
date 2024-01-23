@@ -59,6 +59,7 @@
 #include "video/dialogs/GUIDialogVideoManagerExtras.h"
 #include "video/dialogs/GUIDialogVideoManagerVersions.h"
 #include "video/guilib/VideoPlayActionProcessor.h"
+#include "video/guilib/VideoVersionHelper.h"
 #include "video/windows/GUIWindowVideoNav.h"
 
 #include <algorithm>
@@ -277,7 +278,7 @@ void CGUIDialogVideoInfo::OnInitWindow()
     CONTROL_DISABLE(CONTROL_BTN_REFRESH);
 
   // @todo add support to edit video asset art. Until then edit art through Versions Manager.
-  if (m_movieItem->m_bIsFolder || !m_movieItem->IsVideoAssetNav())
+  if (!VIDEO::IsVideoAssetFile(*m_movieItem))
     CONTROL_ENABLE_ON_CONDITION(
         CONTROL_BTN_GET_THUMB,
         (profileManager->GetCurrentProfile().canWriteDatabases() ||
@@ -1068,18 +1069,18 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
   int dbId = item->GetVideoInfoTag()->m_iDbId;
 
   CContextButtons buttons;
-  if ((type == MediaTypeMovie && (item->m_bIsFolder || !item->IsVideoAssetNav())) ||
+  if ((type == MediaTypeMovie && !VIDEO::IsVideoAssetFile(*item)) ||
       type == MediaTypeVideoCollection || type == MediaTypeTvShow || type == MediaTypeEpisode ||
       (type == MediaTypeSeason &&
        item->GetVideoInfoTag()->m_iSeason > 0) || // seasons without "all seasons" and "specials"
       type == MediaTypeMusicVideo)
     buttons.Add(CONTEXT_BUTTON_EDIT, 16105);
 
-  if ((type == MediaTypeMovie && (item->m_bIsFolder || !item->IsVideoAssetNav())) ||
-      type == MediaTypeTvShow || type == MediaTypeSeason)
+  if ((type == MediaTypeMovie && !VIDEO::IsVideoAssetFile(*item)) || type == MediaTypeTvShow ||
+      type == MediaTypeSeason)
     buttons.Add(CONTEXT_BUTTON_EDIT_SORTTITLE, 16107);
 
-  if (type == MediaTypeMovie && (item->m_bIsFolder || !item->IsVideoAssetNav()))
+  if (type == MediaTypeMovie && !VIDEO::IsVideoAssetFile(*item))
   {
     // only show link/unlink if there are tvshows available
     if (database.HasContent(VideoDbContentType::TVSHOWS))
@@ -1104,8 +1105,8 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
     buttons.Add(CONTEXT_BUTTON_UNLINK_BOOKMARK, 20405);
 
   if (type == MediaTypeVideoCollection ||
-      (type == MediaTypeMovie && (item->m_bIsFolder || !item->IsVideoAssetNav())) ||
-      type == MediaTypeTvShow || type == MediaTypeSeason || type == MediaTypeEpisode)
+      (type == MediaTypeMovie && !VIDEO::IsVideoAssetFile(*item)) || type == MediaTypeTvShow ||
+      type == MediaTypeSeason || type == MediaTypeEpisode)
     buttons.Add(CONTEXT_BUTTON_SET_ART, 13511);
 
   // movie sets
@@ -1129,7 +1130,7 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
     }
   }
 
-  if (type != MediaTypeSeason && (item->m_bIsFolder || !item->IsVideoAssetNav()))
+  if (type != MediaTypeSeason && !VIDEO::IsVideoAssetFile(*item))
   {
     // Remove from library
     buttons.Add(CONTEXT_BUTTON_DELETE, 646);

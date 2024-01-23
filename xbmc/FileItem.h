@@ -261,7 +261,6 @@ public:
   bool IsLiveTV() const;
   bool IsRSS() const;
   bool IsAndroidApp() const;
-  bool IsVideoAssetNav() const;
 
   bool HasVideoVersions() const;
   bool HasVideoExtras() const;
