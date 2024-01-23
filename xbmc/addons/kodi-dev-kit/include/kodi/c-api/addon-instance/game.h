@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2014-2020 Team Kodi
+ *  Copyright (C) 2014-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -12,12 +12,6 @@
 #include "../addon_base.h"
 
 #include <stddef.h> /* size_t */
-
-//==============================================================================
-/// @ingroup cpp_kodi_addon_game_Defs
-/// @brief **Port ID used when topology is unknown**
-#define DEFAULT_PORT_ID "1"
-//------------------------------------------------------------------------------
 
 #ifdef __cplusplus
 extern "C"
@@ -101,7 +95,7 @@ extern "C"
     /// @brief Channel front center
     GAME_CH_FC,
 
-    /// @brief Channel Low Frequency Effects / Subwoofer
+    /// @brief Channel low frequency effects / subwoofer
     GAME_CH_LFE,
 
     /// @brief Channel back left
@@ -146,7 +140,7 @@ extern "C"
     /// @brief Channel top back center
     GAME_CH_TBC,
 
-    /// @brief Channel bacl left over center
+    /// @brief Channel back left over center
     GAME_CH_BLOC,
 
     /// @brief Channel back right over center
@@ -481,20 +475,21 @@ extern "C"
   ///
   typedef struct game_stream_properties
   {
-    /// @brief
+    /// @brief The stream type
     GAME_STREAM_TYPE type;
+
     union
     {
-      /// @brief
+      /// @brief The audio stream properties
       game_stream_audio_properties audio;
 
-      /// @brief
+      /// @brief The video stream properties
       game_stream_video_properties video;
 
-      /// @brief
+      /// @brief The hardware framebuffer properties
       game_stream_hw_framebuffer_properties hw_framebuffer;
 
-      /// @brief
+      /// @brief The software framebuffer properties
       game_stream_sw_framebuffer_properties sw_framebuffer;
     };
   } ATTR_PACKED game_stream_properties;
@@ -505,14 +500,15 @@ extern "C"
   ///
   typedef struct game_stream_buffer
   {
-    /// @brief
+    /// @brief The stream type
     GAME_STREAM_TYPE type;
+
     union
     {
-      /// @brief
+      /// @brief The audio stream packet
       game_stream_hw_framebuffer_buffer hw_framebuffer;
 
-      /// @brief
+      /// @brief The video stream packet
       game_stream_sw_framebuffer_buffer sw_framebuffer;
     };
   } ATTR_PACKED game_stream_buffer;
@@ -527,20 +523,21 @@ extern "C"
   ///
   typedef struct game_stream_packet
   {
-    /// @brief
+    /// @brief The stream type
     GAME_STREAM_TYPE type;
+
     union
     {
-      /// @brief
+      /// @brief The audio stream packet
       game_stream_audio_packet audio;
 
-      /// @brief
+      /// @brief The video stream packet
       game_stream_video_packet video;
 
-      /// @brief
+      /// @brief The hardware framebuffer packet
       game_stream_hw_framebuffer_packet hw_framebuffer;
 
-      /// @brief
+      /// @brief The software framebuffer packet
       game_stream_sw_framebuffer_packet sw_framebuffer;
     };
   } ATTR_PACKED game_stream_packet;
@@ -695,70 +692,126 @@ extern "C"
   /// @ingroup cpp_kodi_addon_game_Defs
   /// @brief **Input types**
   ///
+  /// Input consists of two categories: Input events and input topology.
+  ///
+  /// The events are the changes in that state. For example, a button press is
+  /// an event.
+  ///
+  /// The topology is the tree that describes the entire hardware state of the
+  /// virtual game console. This includes all port connections and physical
+  /// properties of the devices.
+  ///
+  /// Ports can accept multiple devices and devices can have multiple ports, so
+  /// the topology of possible configurations is a tree structure of alternating
+  /// port and device nodes. The root of the controller tree is `/`.
+  ///
+  /// The port address combined with the controller ID identifies the controller
+  /// by its path in the controller tree. For example, a controller attached to
+  /// port `1` could be `/1/game.controller.default`.
+  ///
+  /// The keyboard and mouse are automatically assigned a port address and the
+  /// "id" parameter in the game add-on's topology.xml is ignored. The keyboard
+  /// is `/keyboard` and the mouse is `/mouse`.
+  ///
   ///@{
 
+  //==============================================================================
+  /// @brief **Root address of the controller tree
+#define ROOT_PORT_ADDRESS "/"
+  //------------------------------------------------------------------------------
+
+  //==============================================================================
+  /// @brief **Port ID used when topology is unknown**
+#define DEFAULT_PORT_ID "1"
+  //------------------------------------------------------------------------------
+
+  //==============================================================================
+  /// @brief **Port ID used for the keyboard input device
+#define KEYBOARD_PORT_ID "keyboard"
+  //------------------------------------------------------------------------------
+
+  //==============================================================================
+  /// @brief **Port ID used for the mouse input device
+#define MOUSE_PORT_ID "mouse"
+  //------------------------------------------------------------------------------
+
+  //==============================================================================
+  /// @brief **Port address used when topology is unknown**
+#define DEFAULT_PORT_ADDRESS "/1"
+  //------------------------------------------------------------------------------
+
+  //==============================================================================
+  /// @brief **Port address used for the keyboard input device
+#define KEYBOARD_PORT_ADDRESS "/keyboard"
+  //------------------------------------------------------------------------------
+
+  //==============================================================================
+  /// @brief **Port address used for the mouse input device
+#define MOUSE_PORT_ADDRESS "/mouse"
+  //------------------------------------------------------------------------------
+
   //============================================================================
-  /// @brief
+  /// @brief Type of input event
   typedef enum GAME_INPUT_EVENT_SOURCE
   {
-    /// @brief
+    /// @brief Digital button press or release
     GAME_INPUT_EVENT_DIGITAL_BUTTON,
 
-    /// @brief
+    /// @brief Analog button motion
     GAME_INPUT_EVENT_ANALOG_BUTTON,
 
-    /// @brief
+    /// @brief Axis motion
     GAME_INPUT_EVENT_AXIS,
 
-    /// @brief
+    /// @brief Analog stick motion
     GAME_INPUT_EVENT_ANALOG_STICK,
 
-    /// @brief
+    /// @brief Accelerometer motion
     GAME_INPUT_EVENT_ACCELEROMETER,
 
-    /// @brief
+    /// @brief Key press or release
     GAME_INPUT_EVENT_KEY,
 
-    /// @brief
+    /// @brief Relative pointer motion
     GAME_INPUT_EVENT_RELATIVE_POINTER,
 
-    /// @brief
+    /// @brief Absolute pointer motion
     GAME_INPUT_EVENT_ABSOLUTE_POINTER,
 
-    /// @brief
+    /// @brief Motor vibration
     GAME_INPUT_EVENT_MOTOR,
   } GAME_INPUT_EVENT_SOURCE;
   //----------------------------------------------------------------------------
 
   //============================================================================
-  /// @brief
+  /// @brief A modifier key pressed to give another key a special meaning
   typedef enum GAME_KEY_MOD
   {
-    /// @brief
+    /// @brief No modifier key
     GAME_KEY_MOD_NONE = 0x0000,
 
-    /// @brief
+    /// @brief Shift key
     GAME_KEY_MOD_SHIFT = 0x0001,
 
-    /// @brief
+    /// @brief Control key
     GAME_KEY_MOD_CTRL = 0x0002,
 
-    /// @brief
+    /// @brief Alt key
     GAME_KEY_MOD_ALT = 0x0004,
 
-    /// @brief
+    /// @brief Meta key
     GAME_KEY_MOD_META = 0x0008,
 
-    /// @brief
+    /// @brief Windows key
     GAME_KEY_MOD_SUPER = 0x0010,
 
-    /// @brief
+    /// @brief Num Lock key
     GAME_KEY_MOD_NUMLOCK = 0x0100,
 
-    /// @brief
+    /// @brief Caps Lock key
     GAME_KEY_MOD_CAPSLOCK = 0x0200,
 
-    /// @brief
+    /// @brief Scroll Lock key
     GAME_KEY_MOD_SCROLLOCK = 0x0400,
   } GAME_KEY_MOD;
   //----------------------------------------------------------------------------
@@ -781,7 +834,6 @@ extern "C"
   } GAME_PORT_TYPE;
   //----------------------------------------------------------------------------
 
-  /*! @cond PRIVATE */
   /*!
     * @brief "C" Game add-on controller layout.
     *
@@ -810,7 +862,6 @@ extern "C"
     char** motors;
     unsigned int motor_count;
   } ATTR_PACKED game_controller_layout;
-  /*! @endcond */
 
   struct game_input_port;
 
@@ -818,16 +869,16 @@ extern "C"
   /// @brief Device that can provide input
   typedef struct game_input_device
   {
-    /// @brief ID used in the Kodi controller API
+    /// @brief ID used in the Kodi controller API, e.g. `game.controller.default`
     const char* controller_id;
 
-    /// @brief
+    /// @brief The address of the port that the device is connected to
     const char* port_address;
 
-    /// @brief
+    /// @brief The list of ports that the device can be connected to
     struct game_input_port* available_ports;
 
-    /// @brief
+    /// @brief The number of ports in the available ports list
     unsigned int port_count;
   } ATTR_PACKED game_input_device;
   //----------------------------------------------------------------------------
@@ -835,13 +886,9 @@ extern "C"
   //============================================================================
   /// @brief Port that can provide input
   ///
-  /// Ports can accept multiple devices and devices can have multiple ports, so
-  /// the topology of possible configurations is a tree structure of alternating
-  /// port and device nodes.
-  ///
   typedef struct game_input_port
   {
-    /// @brief
+    /// @brief The type of port
     GAME_PORT_TYPE type;
 
     /// @brief Required for GAME_PORT_CONTROLLER type
@@ -854,10 +901,10 @@ extern "C"
     ///
     bool force_connected;
 
-    /// @brief
+    /// @brief The list of devices that can be connected to the port
     game_input_device* accepted_devices;
 
-    /// @brief
+    /// @brief The number of devices in the accepted devices list
     unsigned int device_count;
   } ATTR_PACKED game_input_port;
   //----------------------------------------------------------------------------
@@ -883,64 +930,67 @@ extern "C"
   //----------------------------------------------------------------------------
 
   //============================================================================
-  /// @brief
+  /// @brief A digital button event, such as a button press or release
   typedef struct game_digital_button_event
   {
-    /// @brief
+    /// @brief True if the button is pressed, false if it is released
     bool pressed;
   } ATTR_PACKED game_digital_button_event;
   //----------------------------------------------------------------------------
 
   //============================================================================
-  /// @brief
+  /// @brief An analog button event, such as a trigger press or release
   typedef struct game_analog_button_event
   {
-    /// @brief
+    /// @brief The magnitude of the button press, from 0.0 to 1.0
     float magnitude;
   } ATTR_PACKED game_analog_button_event;
   //----------------------------------------------------------------------------
 
   //============================================================================
-  /// @brief
+  /// @brief An axis event, such as a joystick or accelerometer
   typedef struct game_axis_event
   {
-    /// @brief
+    /// @brief The position of the axis, from -1.0 to 1.0
     float position;
   } ATTR_PACKED game_axis_event;
   //----------------------------------------------------------------------------
 
   //============================================================================
-  /// @brief
+  /// @brief An analog stick event, such as a joystick's motion
+  ///
+  /// @todo Document which coordinate system is used, left-hand or right-hand.
+  ///
   typedef struct game_analog_stick_event
   {
-    /// @brief
+    /// @brief The position of the stick along the X axis, from -1.0 to 1.0
     float x;
 
-    /// @brief
+    /// @brief The position of the stick along the Y axis, from -1.0 to 1.0
     float y;
   } ATTR_PACKED game_analog_stick_event;
   //----------------------------------------------------------------------------
 
   //============================================================================
-  /// @brief
+  /// @brief An accelerometer event
   typedef struct game_accelerometer_event
   {
-    /// @brief
+    /// @brief The accelerometer X axis, from -1.0 to 1.0
     float x;
 
-    /// @brief
+    /// @brief The accelerometer Y axis, from -1.0 to 1.0
     float y;
 
-    /// @brief
+    /// @brief The accelerometer Z axis, from -1.0 to 1.0
     float z;
   } ATTR_PACKED game_accelerometer_event;
   //----------------------------------------------------------------------------
 
   //============================================================================
-  /// @brief
+  /// @brief A key event, such as a key press or release
   typedef struct game_key_event
   {
-    /// @brief
+    /// @brief True if the key is pressed, false if it is released
     bool pressed;
 
     /// @brief If the keypress generates a printing character
@@ -950,92 +1000,93 @@ extern "C"
     /// is zero.
     uint32_t unicode;
 
-    /// @brief
+    /// @brief Modifier keys pressed with the event key
     GAME_KEY_MOD modifiers;
   } ATTR_PACKED game_key_event;
   //----------------------------------------------------------------------------
 
   //============================================================================
-  /// @brief
+  /// @brief A relative pointer event, such as a mouse motion
   typedef struct game_rel_pointer_event
   {
-    /// @brief
+    /// @brief The relative X position of the pointer
     int x;
 
-    /// @brief
+    /// @brief The relative Y position of the pointer
     int y;
   } ATTR_PACKED game_rel_pointer_event;
   //----------------------------------------------------------------------------
 
   //============================================================================
-  /// @brief
+  /// @brief An absolute pointer event, such as a touchscreen or tablet motion
   typedef struct game_abs_pointer_event
   {
-    /// @brief
+    /// @brief True if the pointer is pressed, false if it is released
     bool pressed;
 
-    /// @brief
+    /// @brief The absolute X position of the pointer
     float x;
 
-    /// @brief
+    /// @brief The absolute Y position of the pointer
     float y;
   } ATTR_PACKED game_abs_pointer_event;
   //----------------------------------------------------------------------------
 
   //============================================================================
-  /// @brief
+  /// @brief A motor vibration event
   typedef struct game_motor_event
   {
-    /// @brief
+    /// @brief The magnitude of the vibration, from 0.0 to 1.0
     float magnitude;
   } ATTR_PACKED game_motor_event;
   //----------------------------------------------------------------------------
 
   //============================================================================
-  /// @brief
+  /// @brief An input event
   typedef struct game_input_event
   {
-    /// @brief
+    /// @brief The type of input event
     GAME_INPUT_EVENT_SOURCE type;
 
-    /// @brief
+    /// @brief The ID of the controller that generated the event
     const char* controller_id;
 
-    /// @brief
+    /// @brief The type of port that the controller is connected to
     GAME_PORT_TYPE port_type;
 
-    /// @brief
+    /// @brief The address of the port that the controller is connected to
     const char* port_address;
 
-    /// @brief
+    /// @brief The name of the feature that generated the event
     const char* feature_name;
+
     union
     {
-      /// @brief
+      /// @brief Digital button event
       struct game_digital_button_event digital_button;
 
-      /// @brief
+      /// @brief Analog button event
       struct game_analog_button_event analog_button;
 
-      /// @brief
+      /// @brief Axis event
       struct game_axis_event axis;
 
-      /// @brief
+      /// @brief Analog stick event
       struct game_analog_stick_event analog_stick;
 
-      /// @brief
+      /// @brief Accelerometer event
       struct game_accelerometer_event accelerometer;
 
-      /// @brief
+      /// @brief Key event
       struct game_key_event key;
 
-      /// @brief
+      /// @brief Relative pointer event
       struct game_rel_pointer_event rel_pointer;
 
-      /// @brief
+      /// @brief Absolute pointer event
       struct game_abs_pointer_event abs_pointer;
 
-      /// @brief
+      /// @brief Motor vibration event
       struct game_motor_event motor;
     };
   } ATTR_PACKED game_input_event;
@@ -1075,58 +1126,62 @@ extern "C"
   typedef struct AddonProps_Game
   {
     /*!
-     * The path of the game client being loaded.
+     * @brief The path of the game client being loaded.
      */
     const char* game_client_dll_path;
 
     /*!
-     * Paths to proxy DLLs used to load the game client.
+     * @brief Paths to proxy DLLs used to load the game client.
      */
     const char** proxy_dll_paths;
 
     /*!
-     * Number of proxy DLL paths provided.
+     * @brief Number of proxy DLL paths provided.
      */
     unsigned int proxy_dll_count;
 
     /*!
-     * The "system" directories of the frontend. These directories can be used to
-     * store system-specific ROMs such as BIOSes, configuration data, etc.
+     * @brief The "system" directories of the frontend
+     *
+     * These directories can be used to store system-specific ROMs such as
+     * BIOSes, configuration data, etc.
      */
     const char** resource_directories;
 
     /*!
-     * Number of resource directories provided
+     * @brief Number of resource directories provided
      */
     unsigned int resource_directory_count;
 
     /*!
-     * The writable directory of the frontend. This directory can be used to store
-     * SRAM, memory cards, high scores, etc, if the game client cannot use the
-     * regular memory interface, GetMemoryData().
+     * @brief The writable directory of the frontend.
+     *
+     * This directory can be used to store SRAM, memory cards, high scores,
+     * etc.
      */
     const char* profile_directory;
 
     /*!
-     * The value of the <supports_vfs> property from addon.xml
+     * @brief The value of the <supports_vfs> property from addon.xml
      */
     bool supports_vfs;
 
     /*!
-     * The extensions in the <extensions> property from addon.xml
+     * @brief The extensions in the <extensions> property from addon.xml
      */
     const char** extensions;
 
     /*!
-     * Number of extensions provided
+     * @brief Number of extensions provided
      */
     unsigned int extension_count;
   } AddonProps_Game;
 
   typedef void* KODI_GAME_STREAM_HANDLE;
 
-  /*! Structure to transfer the methods from kodi_game_dll.h to Kodi */
-
+  /*!
+   * @brief Structure to transfer the methods from kodi_game_dll.h to Kodi
+   */
   struct AddonInstance_Game;
 
   /*!

@@ -63,7 +63,7 @@ bool CGameClientKeyboard::OnKeyPress(const KEYBOARD::KeyName& key,
   event.type = GAME_INPUT_EVENT_KEY;
   event.controller_id = m_controllerId.c_str();
   event.port_type = GAME_PORT_KEYBOARD;
-  event.port_address = ""; // Not used
+  event.port_address = KEYBOARD_PORT_ADDRESS;
   event.feature_name = key.c_str();
   event.key.pressed = true;
   event.key.unicode = unicode;
@@ -81,7 +81,7 @@ void CGameClientKeyboard::OnKeyRelease(const KEYBOARD::KeyName& key,
   event.type = GAME_INPUT_EVENT_KEY;
   event.controller_id = m_controllerId.c_str();
   event.port_type = GAME_PORT_KEYBOARD;
-  event.port_address = ""; // Not used
+  event.port_address = KEYBOARD_PORT_ADDRESS;
   event.feature_name = key.c_str();
   event.key.pressed = false;
   event.key.unicode = unicode;
