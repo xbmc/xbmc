@@ -61,6 +61,7 @@
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "video/guilib/VideoPlayActionProcessor.h"
 #include "video/guilib/VideoSelectActionProcessor.h"
+#include "video/guilib/VideoVersionHelper.h"
 #include "view/GUIViewState.h"
 
 #include <memory>
@@ -422,8 +423,9 @@ bool CGUIWindowVideoBase::ShowInfo(const CFileItemPtr& item2, const ScraperPtr& 
   bool needsRefresh = false;
   if (bHasInfo)
   {
-    if (!info || info->Content() == CONTENT_NONE) // disable refresh button
-      item->SetProperty("xxuniqueid", "xx" + movieDetails.GetUniqueID());
+    // @todo add support to refresh movie version information
+    if (!info || info->Content() == CONTENT_NONE || VIDEO::IsVideoAssetFile(*item))
+      item->SetProperty("xxuniqueid", "xx" + movieDetails.GetUniqueID()); // disable refresh button
     item->SetProperty("CheckAutoPlayNextItem", IsActive());
     *item->GetVideoInfoTag() = movieDetails;
     pDlgInfo->SetMovie(item.get());

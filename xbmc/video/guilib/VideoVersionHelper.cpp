@@ -10,6 +10,7 @@
 
 #include "FileItem.h"
 #include "ServiceBroker.h"
+#include "URL.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -223,4 +224,18 @@ std::shared_ptr<CFileItem> CVideoVersionHelper::ChooseMovieFromVideoVersions(
     return std::make_shared<CFileItem>(*videoVersion);
 
   return item;
+}
+
+bool VIDEO::IsVideoAssetFile(const CFileItem& item)
+{
+  if (item.m_bIsFolder || !item.IsVideoDb())
+    return false;
+
+  // @todo maybe in the future look for prefix videodb://movies/videoversions in path instead
+  // @todo better encoding of video assets as path, they won't always be tied with movies.
+  const CURL itemUrl{item.GetPath()};
+  if (itemUrl.HasOption("videoversionid"))
+    return true;
+
+  return false;
 }

@@ -59,6 +59,7 @@
 #include "video/dialogs/GUIDialogVideoManagerExtras.h"
 #include "video/dialogs/GUIDialogVideoManagerVersions.h"
 #include "video/guilib/VideoPlayActionProcessor.h"
+#include "video/guilib/VideoVersionHelper.h"
 #include "video/windows/GUIWindowVideoNav.h"
 
 #include <algorithm>
@@ -275,10 +276,18 @@ void CGUIDialogVideoInfo::OnInitWindow()
         g_passwordManager.bMasterUser));
   else
     CONTROL_DISABLE(CONTROL_BTN_REFRESH);
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB,
-      (profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) &&
-      !StringUtils::StartsWithNoCase(m_movieItem->GetVideoInfoTag()->
-      GetUniqueID().c_str(), "plugin"));
+
+  // @todo add support to edit video asset art. Until then edit art through Versions Manager.
+  if (!VIDEO::IsVideoAssetFile(*m_movieItem))
+    CONTROL_ENABLE_ON_CONDITION(
+        CONTROL_BTN_GET_THUMB,
+        (profileManager->GetCurrentProfile().canWriteDatabases() ||
+         g_passwordManager.bMasterUser) &&
+            !StringUtils::StartsWithNoCase(m_movieItem->GetVideoInfoTag()->GetUniqueID().c_str(),
+                                           "plugin"));
+  else
+    CONTROL_DISABLE(CONTROL_BTN_GET_THUMB);
+
   // Disable video user rating button for plugins and sets as they don't have tables to save this
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_USERRATING, !m_movieItem->IsPlugin() && m_movieItem->GetVideoInfoTag()->m_type != MediaTypeVideoCollection);
 
@@ -1060,16 +1069,18 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
   int dbId = item->GetVideoInfoTag()->m_iDbId;
 
   CContextButtons buttons;
-  if (type == MediaTypeMovie || type == MediaTypeVideoCollection ||
-      type == MediaTypeTvShow || type == MediaTypeEpisode ||
-     (type == MediaTypeSeason && item->GetVideoInfoTag()->m_iSeason > 0) ||  // seasons without "all seasons" and "specials"
+  if ((type == MediaTypeMovie && !VIDEO::IsVideoAssetFile(*item)) ||
+      type == MediaTypeVideoCollection || type == MediaTypeTvShow || type == MediaTypeEpisode ||
+      (type == MediaTypeSeason &&
+       item->GetVideoInfoTag()->m_iSeason > 0) || // seasons without "all seasons" and "specials"
       type == MediaTypeMusicVideo)
     buttons.Add(CONTEXT_BUTTON_EDIT, 16105);
 
-  if (type == MediaTypeMovie || type == MediaTypeTvShow || type == MediaTypeSeason)
+  if ((type == MediaTypeMovie && !VIDEO::IsVideoAssetFile(*item)) || type == MediaTypeTvShow ||
+      type == MediaTypeSeason)
     buttons.Add(CONTEXT_BUTTON_EDIT_SORTTITLE, 16107);
 
-  if (type == MediaTypeMovie)
+  if (type == MediaTypeMovie && !VIDEO::IsVideoAssetFile(*item))
   {
     // only show link/unlink if there are tvshows available
     if (database.HasContent(VideoDbContentType::TVSHOWS))
@@ -1081,7 +1092,10 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
 
     // set or change movie set the movie belongs to
     buttons.Add(CONTEXT_BUTTON_SET_MOVIESET, 20465);
+  }
 
+  if (type == MediaTypeMovie)
+  {
     // manage video versions
     buttons.Add(CONTEXT_BUTTON_MANAGE_VIDEOVERSIONS, 40001); // Manage versions
   }
@@ -1090,7 +1104,8 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
       item->GetVideoInfoTag()->m_iBookmarkId > 0)
     buttons.Add(CONTEXT_BUTTON_UNLINK_BOOKMARK, 20405);
 
-  if (type == MediaTypeVideoCollection || type == MediaTypeMovie || type == MediaTypeTvShow ||
+  if (type == MediaTypeVideoCollection ||
+      (type == MediaTypeMovie && !VIDEO::IsVideoAssetFile(*item)) || type == MediaTypeTvShow ||
       type == MediaTypeSeason || type == MediaTypeEpisode)
     buttons.Add(CONTEXT_BUTTON_SET_ART, 13511);
 
@@ -1115,8 +1130,11 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
     }
   }
 
-  if (type != MediaTypeSeason)
+  if (type != MediaTypeSeason && !VIDEO::IsVideoAssetFile(*item))
+  {
+    // Remove from library
     buttons.Add(CONTEXT_BUTTON_DELETE, 646);
+  }
 
   //temporary workaround until the context menu ids are removed
   const int addonItemOffset = 10000;

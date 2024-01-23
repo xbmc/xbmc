@@ -4273,17 +4273,3 @@ bool CFileItem::HasVideoExtras() const
   }
   return false;
 }
-
-bool CFileItem::IsVideoAssetNav() const
-{
-  if (!IsVideoDb())
-    return false;
-
-  // @todo maybe in the future look for prefix videodb://movies/videoversions in path instead
-  // @todo better encoding of video assets as path, they won't always be tied with movies.
-  const CURL itemUrl{GetPath()};
-  if (itemUrl.HasOption("videoversionid"))
-    return true;
-
-  return false;
-}
