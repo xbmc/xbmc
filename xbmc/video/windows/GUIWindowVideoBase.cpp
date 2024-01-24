@@ -1069,7 +1069,9 @@ void CGUIWindowVideoBase::LoadPlayList(const std::string& strPlayList,
 bool CGUIWindowVideoBase::PlayItem(const std::shared_ptr<CFileItem>& pItem,
                                    const std::string& player)
 {
-  if (pItem->m_bIsFolder && !pItem->IsPlugin())
+  //! @todo get rid of "videos with versions as folder" hack!
+  if (pItem->m_bIsFolder && !pItem->IsPlugin() &&
+      !(pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->IsDefaultVideoVersion()))
   {
     // take a copy so we can alter the queue state
     const auto item{std::make_shared<CFileItem>(*pItem)};
