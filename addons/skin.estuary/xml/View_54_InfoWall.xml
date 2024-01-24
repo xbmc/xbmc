@@ -176,7 +176,7 @@
 				<top>175</top>
 				<width>32</width>
 				<height>32</height>
-				<texture>$VAR[WallWatchedIconVar]</texture>
+				<texture>$VAR[ItemStatusIconVar]</texture>
 			</control>
 			<control type="textbox">
 				<left>28</left>
@@ -310,16 +310,28 @@
 					<visible>!String.IsEmpty(ListItem.Art(poster))</visible>
 				</control>
 				<control type="image">
-					<left>35</left>
-					<top>353</top>
-					<width>32</width>
-					<height>32</height>
-					<texture>$VAR[WallWatchedIconVar]</texture>
+					<left>40</left>
+					<top>358</top>
+					<width>24</width>
+					<height>24</height>
+					<align>left</align>
+					<aligny>center</aligny>
+					<texture>$VAR[ItemTypeIconVar]</texture>
+				</control>
+				<control type="image">
+					<left>70</left>
+					<top>358</top>
+					<width>24</width>
+					<height>24</height>
+					<align>left</align>
+					<aligny>center</aligny>
+					<texture>overlays/extras.png</texture>
+					<visible>ListItem.HasVideoVersions + ListItem.HasVideoExtras</visible>
 				</control>
 				<control type="label">
-					<left>0</left>
+					<left>105</left>
 					<top>355</top>
-					<width>244</width>
+					<width>145</width>
 					<label>$VAR[WatchedStatusVar]</label>
 					<font>font20_title</font>
 					<shadowcolor>text_shadow</shadowcolor>
@@ -331,8 +343,7 @@
 					<top>358</top>
 					<width>24</width>
 					<height>24</height>
-					<texture>lists/played-total.png</texture>
-					<visible>String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBtype,set) | String.IsEqual(ListItem.DBType,season)</visible>
+					<texture>$VAR[ItemStatusIconVar]</texture>
 				</control>
 			</control>
 			<control type="group">
