@@ -339,33 +339,39 @@ void SetPathAndPlay(const std::shared_ptr<CFileItem>& item, PlayMode mode)
   }
   else
   {
-    if (!item->m_bIsFolder && item->IsVideoDb())
+    const auto itemCopy{std::make_shared<CFileItem>(*item)};
+    if (itemCopy->IsVideoDb())
     {
-      item->SetProperty("original_listitem_url", item->GetPath());
-      item->SetPath(item->GetVideoInfoTag()->m_strFileNameAndPath);
+      if (!itemCopy->m_bIsFolder)
+      {
+        itemCopy->SetProperty("original_listitem_url", item->GetPath());
+        itemCopy->SetPath(item->GetVideoInfoTag()->m_strFileNameAndPath);
+      }
+      else if (itemCopy->HasVideoInfoTag() && itemCopy->GetVideoInfoTag()->IsDefaultVideoVersion())
+      {
+        //! @todo get rid of "videos with versions as folder" hack!
+        itemCopy->m_bIsFolder = false;
+      }
     }
 
     if (mode == PlayMode::PLAY_VERSION_USING)
     {
       // force video version selection dialog
-      item->SetProperty("needs_resolved_video_version", true);
+      itemCopy->SetProperty("needs_resolved_video_version", true);
     }
     else
     {
       // play the given/default video version, if multiple versions are available
-      item->SetProperty("has_resolved_video_version", true);
+      itemCopy->SetProperty("has_resolved_video_version", true);
     }
 
     const bool choosePlayer{mode == PlayMode::PLAY_USING || mode == PlayMode::PLAY_VERSION_USING};
-    CVideoPlayActionProcessor proc{item, choosePlayer};
-    if (mode == PlayMode::RESUME && (item->GetStartOffset() == STARTOFFSET_RESUME ||
+    CVideoPlayActionProcessor proc{itemCopy, choosePlayer};
+    if (mode == PlayMode::RESUME && (itemCopy->GetStartOffset() == STARTOFFSET_RESUME ||
                                      VIDEO_UTILS::GetItemResumeInformation(*item).isResumable))
       proc.ProcessAction(VIDEO::GUILIB::ACTION_RESUME);
     else // all other modes are actually PLAY
       proc.ProcessAction(VIDEO::GUILIB::ACTION_PLAY_FROM_BEGINNING);
-
-    item->ClearProperty("needs_resolved_video_version");
-    item->ClearProperty("has_resolved_video_version");
   }
 }
 } // unnamed namespace
