@@ -144,6 +144,7 @@ bool CWinSystemAndroid::CreateNewWindow(const std::string& name,
 
   m_android->SetNativeResolution(res);
 
+  m_bWindowCreated = true;
   return true;
 }
 
