@@ -50,6 +50,9 @@ void CAgentInput::Start(GameClientPtr gameClient)
   // Register callbacks
   if (m_gameClient)
     m_gameClient->Input().RegisterObserver(this);
+
+  // Perform initial refresh
+  Refresh();
 }
 
 void CAgentInput::Stop()

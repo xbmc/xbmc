@@ -98,6 +98,8 @@ bool CMouseInputHandling::OnPosition(int x, int y)
   m_x = x;
   m_y = y;
 
+  m_handler->OnInputFrame();
+
   return bHandled;
 }
 
@@ -111,6 +113,8 @@ bool CMouseInputHandling::OnButtonPress(BUTTON_ID button)
   if (m_buttonMap->GetFeature(source, buttonName))
     bHandled = m_handler->OnButtonPress(buttonName);
 
+  m_handler->OnInputFrame();
+
   return bHandled;
 }
 
@@ -121,6 +125,8 @@ void CMouseInputHandling::OnButtonRelease(BUTTON_ID button)
   ButtonName buttonName;
   if (m_buttonMap->GetFeature(source, buttonName))
     m_handler->OnButtonRelease(buttonName);
+
+  m_handler->OnInputFrame();
 }
 
 POINTER_DIRECTION CMouseInputHandling::GetPointerDirection(int x, int y)

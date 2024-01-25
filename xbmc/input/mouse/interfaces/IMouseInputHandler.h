@@ -62,6 +62,14 @@ public:
    * \param button      The name of the feature being released
    */
   virtual void OnButtonRelease(const ButtonName& button) = 0;
+
+  /*!
+   * \brief Called at the end of the frame that provided input
+   *
+   * This can be as a result of a pointer update, a button press, or a button
+   * release. All three events will result in a call to OnInputFrame().
+   */
+  virtual void OnInputFrame() = 0;
 };
 } // namespace MOUSE
 } // namespace KODI

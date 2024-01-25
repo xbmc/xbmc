@@ -48,6 +48,11 @@ void CAgentJoystick::Deinitialize()
   m_controllerAppearance.reset();
 }
 
+void CAgentJoystick::ClearButtonState()
+{
+  return m_controllerActivity->ClearButtonState();
+}
+
 float CAgentJoystick::GetActivation() const
 {
   return m_controllerActivity->GetActivation();
