@@ -37,7 +37,11 @@ namespace MUSIC_INFO
     /*!
      * Reads a block of size \a length at the current get pointer.
      */
+#if (TAGLIB_MAJOR_VERSION >= 2)
+    TagLib::ByteVector readBlock(unsigned long length) override;
+#else
     TagLib::ByteVector readBlock(TagLib::ulong length) override;
+#endif
 
     /*!
      * Attempts to write the block \a data at the current get pointer.  If the
@@ -121,7 +125,11 @@ namespace MUSIC_INFO
     /*!
      * Returns the buffer size that is used for internal buffering.
      */
+#if (TAGLIB_MAJOR_VERSION >= 2)
+    static unsigned int bufferSize() { return 1024; }
+#else
     static TagLib::uint bufferSize() { return 1024; }
+#endif
 
   private:
     std::string   m_strFileName;
