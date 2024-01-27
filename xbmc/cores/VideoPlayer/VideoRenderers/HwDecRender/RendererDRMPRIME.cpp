@@ -229,7 +229,7 @@ void CRendererDRMPRIME::RenderUpdate(
   m_iLastRenderBuffer = index;
 }
 
-bool CRendererDRMPRIME::RenderCapture(CRenderCapture* capture)
+bool CRendererDRMPRIME::RenderCapture(int index, CRenderCapture* capture)
 {
   capture->BeginRender();
   capture->EndRender();

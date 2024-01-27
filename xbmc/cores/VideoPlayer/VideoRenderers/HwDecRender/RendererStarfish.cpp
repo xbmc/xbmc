@@ -164,7 +164,7 @@ bool CRendererStarfish::IsGuiLayer()
   return false;
 }
 
-bool CRendererStarfish::RenderCapture(CRenderCapture* capture)
+bool CRendererStarfish::RenderCapture(int index, CRenderCapture* capture)
 {
   return false;
 }

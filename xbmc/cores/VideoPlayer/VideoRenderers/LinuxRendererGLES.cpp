@@ -1243,7 +1243,7 @@ void CLinuxRendererGLES::RenderFromFBO()
   VerifyGLState();
 }
 
-bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
+bool CLinuxRendererGLES::RenderCapture(int index, CRenderCapture* capture)
 {
   if (!m_bValidated)
   {
@@ -1269,7 +1269,7 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
 
   capture->BeginRender();
 
-  Render(RENDER_FLAG_NOOSD, m_iYV12RenderBuffer);
+  Render(RENDER_FLAG_NOOSD, index);
   // read pixels
   glReadPixels(0, CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight() - capture->GetHeight(), capture->GetWidth(), capture->GetHeight(),
                GL_RGBA, GL_UNSIGNED_BYTE, capture->GetRenderBuffer());

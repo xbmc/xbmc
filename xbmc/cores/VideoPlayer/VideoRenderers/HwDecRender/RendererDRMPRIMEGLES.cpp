@@ -280,7 +280,7 @@ void CRendererDRMPRIMEGLES::RenderUpdate(
   glEnable(GL_BLEND);
 }
 
-bool CRendererDRMPRIMEGLES::RenderCapture(CRenderCapture* capture)
+bool CRendererDRMPRIMEGLES::RenderCapture(int index, CRenderCapture* capture)
 {
   capture->BeginRender();
   capture->EndRender();

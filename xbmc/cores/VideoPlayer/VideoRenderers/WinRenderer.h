@@ -24,7 +24,7 @@ public:
   static bool Register();
 
   void Update() override;
-  bool RenderCapture(CRenderCapture* capture) override;
+  bool RenderCapture(int index, CRenderCapture* capture) override;
 
   // Player functions
   bool Configure(const VideoPicture &picture, float fps, unsigned int orientation) override;
