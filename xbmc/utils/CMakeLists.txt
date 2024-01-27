@@ -29,6 +29,7 @@ set(SOURCES ActorProtocol.cpp
             FontUtils.cpp
             GpuInfo.cpp
             GroupUtils.cpp
+            HevcSei.cpp
             HTMLUtil.cpp
             HttpHeader.cpp
             HttpParser.cpp
@@ -115,6 +116,7 @@ set(HEADERS ActorProtocol.h
             GpuInfo.h
             GroupUtils.h
             HDRCapabilities.h
+            HevcSei.h
             HTMLUtil.h
             HttpHeader.h
             HttpParser.h
