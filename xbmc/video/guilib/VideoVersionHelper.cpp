@@ -34,7 +34,8 @@ public:
   explicit CVideoChooser(const std::shared_ptr<const CFileItem>& item) : m_item(item) {}
   virtual ~CVideoChooser() = default;
 
-  void EnableExtras(bool enable) { m_enableExtras = enable; }
+  void EnableTypeSwitch(bool enable) { m_enableTypeSwitch = enable; }
+  void SetInitialAssetType(VideoAssetType type) { m_initialAssetType = type; }
 
   std::shared_ptr<const CFileItem> ChooseVideo();
 
@@ -49,7 +50,8 @@ private:
                                                const CFileItemList& itemsToSwitchTo);
 
   const std::shared_ptr<const CFileItem> m_item;
-  bool m_enableExtras{false};
+  bool m_enableTypeSwitch{false};
+  VideoAssetType m_initialAssetType{VideoAssetType::UNKNOWN};
   bool m_switchType{false};
   CFileItemList m_videoVersions;
   CFileItemList m_videoExtras;
@@ -62,7 +64,15 @@ std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideo()
   m_videoExtras.Clear();
 
   std::shared_ptr<const CFileItem> result;
-  if (!m_item->HasVideoVersions())
+  if (m_enableTypeSwitch && !m_item->HasVideoVersions() && !m_item->HasVideoExtras())
+    return result;
+
+  if (!m_enableTypeSwitch && m_initialAssetType == VideoAssetType::VERSION &&
+      !m_item->HasVideoVersions())
+    return result;
+
+  if (!m_enableTypeSwitch && m_initialAssetType == VideoAssetType::EXTRA &&
+      !m_item->HasVideoExtras())
     return result;
 
   CVideoDatabase db;
@@ -72,22 +82,23 @@ std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideo()
     return result;
   }
 
-  db.GetAssetsForVideo(m_item->GetVideoContentType(), m_item->GetVideoInfoTag()->m_iDbId,
-                       VideoAssetType::VERSION, m_videoVersions);
-
-  if (m_enableExtras)
-    db.GetAssetsForVideo(m_item->GetVideoContentType(), m_item->GetVideoInfoTag()->m_iDbId,
-                         VideoAssetType::EXTRA, m_videoExtras);
-  else
-    m_videoExtras.Clear();
-
-  // find default version item in list and select it
-  for (const auto& item : m_videoVersions)
+  if (m_initialAssetType == VideoAssetType::VERSION || m_enableTypeSwitch)
   {
-    item->Select(item->GetVideoInfoTag()->IsDefaultVideoVersion());
+    db.GetAssetsForVideo(m_item->GetVideoContentType(), m_item->GetVideoInfoTag()->m_iDbId,
+                         VideoAssetType::VERSION, m_videoVersions);
+
+    // find default version item in list and select it
+    for (const auto& item : m_videoVersions)
+    {
+      item->Select(item->GetVideoInfoTag()->IsDefaultVideoVersion());
+    }
   }
 
-  VideoAssetType itemType{VideoAssetType::VERSION};
+  if (m_initialAssetType == VideoAssetType::EXTRA || m_enableTypeSwitch)
+    db.GetAssetsForVideo(m_item->GetVideoContentType(), m_item->GetVideoInfoTag()->m_iDbId,
+                         VideoAssetType::EXTRA, m_videoExtras);
+
+  VideoAssetType itemType{m_initialAssetType};
   while (true)
   {
     if (itemType == VideoAssetType::VERSION)
@@ -119,7 +130,7 @@ std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideoVersion()
     return {};
   }
 
-  return ChooseVideo(*dialog, 40210 /* Versions */, 40211 /* Extras */, m_videoVersions,
+  return ChooseVideo(*dialog, 40208 /* Choose version */, 40211 /* Extras */, m_videoVersions,
                      m_videoExtras);
 }
 
@@ -133,7 +144,7 @@ std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideoExtra()
     return {};
   }
 
-  return ChooseVideo(*dialog, 402011 /* Extras */, 40210 /* Versions */, m_videoExtras,
+  return ChooseVideo(*dialog, 40214 /* Choose extra */, 40210 /* Versions */, m_videoExtras,
                      m_videoVersions);
 }
 
@@ -156,7 +167,7 @@ std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideo(CGUIDialogSelect& di
       StringUtils::Format(g_localizeStrings.Get(headingId), m_item->GetVideoInfoTag()->GetTitle())};
   dialog.SetHeading(heading);
 
-  dialog.EnableButton(!itemsToSwitchTo.IsEmpty(), buttonId);
+  dialog.EnableButton(m_enableTypeSwitch && !itemsToSwitchTo.IsEmpty(), buttonId);
   dialog.SetUseDetails(true);
   dialog.SetMultiSelection(false);
   dialog.SetItems(itemsToDisplay);
@@ -171,13 +182,43 @@ std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideo(CGUIDialogSelect& di
 }
 } // unnamed namespace
 
-std::shared_ptr<CFileItem> CVideoVersionHelper::ChooseMovieFromVideoVersions(
+std::shared_ptr<CFileItem> CVideoVersionHelper::ChooseVideoFromAssets(
     const std::shared_ptr<CFileItem>& item)
 {
-  std::shared_ptr<const CFileItem> videoVersion;
-  if (item->HasVideoVersions())
+  std::shared_ptr<const CFileItem> video;
+
+  VideoAssetType assetType{static_cast<int>(
+      item->GetProperty("video_asset_type").asInteger(static_cast<int>(VideoAssetType::UNKNOWN)))};
+  bool allAssetTypes{false};
+  bool hasMultipleChoices{false};
+
+  switch (assetType)
   {
-    if (!item->GetProperty("needs_resolved_video_version").asBoolean(false))
+    case VideoAssetType::UNKNOWN:
+      // asset type not provided means all types are allowed and the user can switch between types
+      allAssetTypes = true;
+      if (item->HasVideoVersions() || item->HasVideoExtras())
+        hasMultipleChoices = true;
+      break;
+
+    case VideoAssetType::VERSION:
+      if (item->HasVideoVersions())
+        hasMultipleChoices = true;
+      break;
+
+    case VideoAssetType::EXTRA:
+      if (item->HasVideoExtras())
+        hasMultipleChoices = true;
+      break;
+
+    default:
+      CLog::LogF(LOGERROR, "unknown asset type ({})", static_cast<int>(assetType));
+      return {};
+  }
+
+  if (hasMultipleChoices)
+  {
+    if (!item->GetProperty("needs_resolved_video_asset").asBoolean(false))
     {
       // auto select the default video version
       const auto settings{CServiceBroker::GetSettingsComponent()->GetSettings()};
@@ -185,7 +226,7 @@ std::shared_ptr<CFileItem> CVideoVersionHelper::ChooseMovieFromVideoVersions(
       {
         if (item->GetVideoInfoTag()->IsDefaultVideoVersion())
         {
-          videoVersion = std::make_shared<const CFileItem>(*item);
+          video = std::make_shared<const CFileItem>(*item);
         }
         else
         {
@@ -201,27 +242,38 @@ std::shared_ptr<CFileItem> CVideoVersionHelper::ChooseMovieFromVideoVersions(
                                               item->GetVideoInfoTag()->m_iDbId, defaultVersion))
               CLog::LogF(LOGERROR, "Unable to get default version from video database!");
             else
-              videoVersion = std::make_shared<const CFileItem>(defaultVersion);
+              video = std::make_shared<const CFileItem>(defaultVersion);
           }
         }
       }
     }
 
-    if (!videoVersion && (item->GetProperty("needs_resolved_video_version").asBoolean(false) ||
-                          !item->GetProperty("has_resolved_video_version").asBoolean(false)))
+    if (!video && (item->GetProperty("needs_resolved_video_asset").asBoolean(false) ||
+                   !item->GetProperty("has_resolved_video_asset").asBoolean(false)))
     {
       CVideoChooser chooser{item};
-      chooser.EnableExtras(false);
+
+      if (allAssetTypes)
+      {
+        chooser.EnableTypeSwitch(true);
+        chooser.SetInitialAssetType(VideoAssetType::VERSION);
+      }
+      else
+      {
+        chooser.EnableTypeSwitch(false);
+        chooser.SetInitialAssetType(assetType);
+      }
+
       const auto result{chooser.ChooseVideo()};
       if (result)
-        videoVersion = result;
+        video = result;
       else
         return {};
     }
   }
 
-  if (videoVersion)
-    return std::make_shared<CFileItem>(*videoVersion);
+  if (video)
+    return std::make_shared<CFileItem>(*video);
 
   return item;
 }

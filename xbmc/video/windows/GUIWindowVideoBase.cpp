@@ -1474,7 +1474,7 @@ void CGUIWindowVideoBase::UpdateVideoVersionItems()
       int videoVersionId{-1};
       if (item->GetVideoInfoTag()->HasVideoVersions())
       {
-        if (item->GetProperty("has_resolved_video_version").asBoolean(false))
+        if (item->GetProperty("has_resolved_video_asset").asBoolean(false))
         {
           // certain version of the movie
           videoVersionId = item->GetVideoInfoTag()->GetAssetInfo().GetId();

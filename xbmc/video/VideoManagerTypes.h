@@ -16,7 +16,7 @@ enum class VideoAssetTypeOwner
   USER = 2
 };
 
-enum class VideoAssetType
+enum class VideoAssetType : int
 {
   UNKNOWN = -1,
   VERSION = 0,

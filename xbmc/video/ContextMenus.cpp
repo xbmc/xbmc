@@ -22,10 +22,12 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoInfoTag.h"
+#include "video/VideoManagerTypes.h"
 #include "video/VideoUtils.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "video/guilib/VideoPlayActionProcessor.h"
 #include "video/guilib/VideoSelectActionProcessor.h"
+#include "video/guilib/VideoVersionHelper.h"
 
 #include <utility>
 
@@ -228,16 +230,18 @@ protected:
 
 bool CVideoChooseVersion::IsVisible(const CFileItem& item) const
 {
-  return item.HasVideoVersions();
+  return item.HasVideoVersions() && !VIDEO::IsVideoAssetFile(item);
 }
 
 bool CVideoChooseVersion::Execute(const std::shared_ptr<CFileItem>& item) const
 {
   // force selection dialog, regardless of any settings like 'Select default video version'
-  item->SetProperty("needs_resolved_video_version", true);
+  item->SetProperty("needs_resolved_video_asset", true);
+  item->SetProperty("video_asset_type", static_cast<int>(VideoAssetType::VERSION));
   CVideoSelectActionProcessor proc{item};
   const bool ret = proc.ProcessDefaultAction();
-  item->ClearProperty("needs_resolved_video_version");
+  item->ClearProperty("needs_resolved_video_asset");
+  item->ClearProperty("video_asset_type");
   return ret;
 }
 
@@ -357,12 +361,12 @@ void SetPathAndPlay(const std::shared_ptr<CFileItem>& item, PlayMode mode)
     if (mode == PlayMode::PLAY_VERSION_USING)
     {
       // force video version selection dialog
-      itemCopy->SetProperty("needs_resolved_video_version", true);
+      itemCopy->SetProperty("needs_resolved_video_asset", true);
     }
     else
     {
       // play the given/default video version, if multiple versions are available
-      itemCopy->SetProperty("has_resolved_video_version", true);
+      itemCopy->SetProperty("has_resolved_video_asset", true);
     }
 
     const bool choosePlayer{mode == PlayMode::PLAY_USING || mode == PlayMode::PLAY_VERSION_USING};
@@ -436,12 +440,13 @@ bool CVideoPlayUsing::Execute(const std::shared_ptr<CFileItem>& itemIn) const
 
 bool CVideoPlayVersionUsing::IsVisible(const CFileItem& item) const
 {
-  return item.HasVideoVersions();
+  return item.HasVideoVersions() && !VIDEO::IsVideoAssetFile(item);
 }
 
 bool CVideoPlayVersionUsing::Execute(const std::shared_ptr<CFileItem>& itemIn) const
 {
   const auto item{std::make_shared<CFileItem>(itemIn->GetItemToPlay())};
+  item->SetProperty("video_asset_type", "version");
   SetPathAndPlay(item, PlayMode::PLAY_VERSION_USING);
   return true;
 }

@@ -24054,8 +24054,9 @@ msgctxt "#40207"
 msgid "When enabled, a video with multiple versions will be shown as a folder in the video library. This folder can then be opened to display the individual video versions. When disabled, the configured select action will be applied."
 msgstr ""
 
-#. Choose video version context menu item label
+#. Choose video version context menu item label and dialog title
 #: xbmc/video/ContextMenus.h
+#: xbmc/video/guilib/VideoVersionHelper.cpp
 msgctxt "#40208"
 msgid "Choose version"
 msgstr ""
@@ -24092,7 +24093,13 @@ msgctxt "#40213"
 msgid "If selected the remote player volume level will be synchronized with the volume of this application.[CR]Warning: Global system volume level may be different than the application volume level - they are controlled independently.[CR]This may lead the remote player to be set to 100% volume level if the application has 100% volume level but the overall system volume level is smaller."
 msgstr ""
 
-#empty strings from id 40214 to 40399
+#. Dialog title for the selection of the video extra
+#: xbmc/video/guilib/VideoVersionHelper.cpp
+msgctxt "#40214"
+msgid "Choose extra"
+msgstr ""
+
+#empty strings from id 40215 to 40399
 
 # Video versions
 
