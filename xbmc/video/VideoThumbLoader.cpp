@@ -241,40 +241,48 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
 
   m_videoDatabase->Open();
 
-  std::map<std::string, std::string> artwork = pItem->GetArt();
-  std::vector<std::string> artTypes = GetArtTypes(pItem->HasVideoInfoTag() ? pItem->GetVideoInfoTag()->m_type : "");
-  if (find(artTypes.begin(), artTypes.end(), "thumb") == artTypes.end())
-    artTypes.emplace_back("thumb"); // always look for "thumb" art for files
-  for (std::vector<std::string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
+  const bool isLibraryItem = pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iDbId > -1 &&
+                             !pItem->GetVideoInfoTag()->m_type.empty();
+  const bool libraryArtFilled =
+      pItem->HasVideoInfoTag() && pItem->GetProperty("libraryartfilled").asBoolean();
+  if (!isLibraryItem || !libraryArtFilled)
   {
-    std::string type = *i;
-    if (!pItem->HasArt(type))
+    std::map<std::string, std::string> artwork = pItem->GetArt();
+    std::vector<std::string> artTypes =
+        GetArtTypes(pItem->HasVideoInfoTag() ? pItem->GetVideoInfoTag()->m_type : "");
+    if (find(artTypes.begin(), artTypes.end(), "thumb") == artTypes.end())
+      artTypes.emplace_back("thumb"); // always look for "thumb" art for files
+    for (std::vector<std::string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
     {
-      std::string art = GetLocalArt(*pItem, type, type=="fanart");
-      if (!art.empty()) // cache it
+      std::string type = *i;
+      if (!pItem->HasArt(type))
       {
-        SetCachedImage(*pItem, type, art);
-        CServiceBroker::GetTextureCache()->BackgroundCacheImage(art);
-        artwork.insert(std::make_pair(type, art));
-      }
-      else
-      {
-        // If nothing was found, try embedded art
-        if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_coverArt.empty())
+        std::string art = GetLocalArt(*pItem, type, type == "fanart");
+        if (!art.empty()) // cache it
         {
-          for (auto& it : pItem->GetVideoInfoTag()->m_coverArt)
+          SetCachedImage(*pItem, type, art);
+          CServiceBroker::GetTextureCache()->BackgroundCacheImage(art);
+          artwork.insert(std::make_pair(type, art));
+        }
+        else
+        {
+          // If nothing was found, try embedded art
+          if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_coverArt.empty())
           {
-            if (it.m_type == type)
+            for (auto& it : pItem->GetVideoInfoTag()->m_coverArt)
             {
-              art = CTextureUtils::GetWrappedImageURL(pItem->GetPath(), "video_" + type);
-              artwork.insert(std::make_pair(type, art));
+              if (it.m_type == type)
+              {
+                art = CTextureUtils::GetWrappedImageURL(pItem->GetPath(), "video_" + type);
+                artwork.insert(std::make_pair(type, art));
+              }
             }
           }
         }
       }
     }
+    pItem->AppendArt(artwork);
   }
-  pItem->AppendArt(artwork);
 
   // We can only extract flags/thumbs for file-like items
   if (!pItem->m_bIsFolder && pItem->IsVideo())
