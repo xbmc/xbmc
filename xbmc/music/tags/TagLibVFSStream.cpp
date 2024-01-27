@@ -58,9 +58,17 @@ FileName TagLibVFSStream::name() const
 /*!
  * Reads a block of size \a length at the current get pointer.
  */
+#if (TAGLIB_MAJOR_VERSION >= 2)
+ByteVector TagLibVFSStream::readBlock(unsigned long length)
+#else
 ByteVector TagLibVFSStream::readBlock(TagLib::ulong length)
+#endif
 {
+#if (TAGLIB_MAJOR_VERSION >= 2)
+  ByteVector byteVector(static_cast<unsigned int>(length));
+#else
   ByteVector byteVector(static_cast<TagLib::uint>(length));
+#endif
   ssize_t read = m_file.Read(byteVector.data(), length);
   if (read > 0)
     byteVector.resize(read);
@@ -119,7 +127,11 @@ void TagLibVFSStream::insert(const ByteVector &data, TagLib::ulong start, TagLib
   // First, make sure that we're working with a buffer that is longer than
   // the *difference* in the tag sizes.  We want to avoid overwriting parts
   // that aren't yet in memory, so this is necessary.
+#if (TAGLIB_MAJOR_VERSION >= 2)
+  unsigned long bufferLength = bufferSize();
+#else
   TagLib::ulong bufferLength = bufferSize();
+#endif
 
   while (data.size() - replace > bufferLength)
     bufferLength += bufferSize();
@@ -128,7 +140,11 @@ void TagLibVFSStream::insert(const ByteVector &data, TagLib::ulong start, TagLib
   long readPosition = start + replace;
   long writePosition = start;
   ByteVector buffer;
+#if (TAGLIB_MAJOR_VERSION >= 2)
+  ByteVector aboutToOverwrite(static_cast<unsigned int>(bufferLength));
+#else
   ByteVector aboutToOverwrite(static_cast<TagLib::uint>(bufferLength));
+#endif
 
   // This is basically a special case of the loop below.  Here we're just
   // doing the same steps as below, but since we aren't using the same buffer
@@ -163,7 +179,11 @@ void TagLibVFSStream::insert(const ByteVector &data, TagLib::ulong start, TagLib
 
     // Check to see if we just read the last block.  We need to call clear()
     // if we did so that the last write succeeds.
+#if (TAGLIB_MAJOR_VERSION >= 2)
+    if (static_cast<unsigned long>(bytesRead) < bufferLength)
+#else
     if (TagLib::ulong(bytesRead) < bufferLength)
+#endif
       clear();
 
     // Seek to the write position and write our buffer.  Increment the
@@ -191,14 +211,26 @@ void TagLibVFSStream::removeBlock(TagLib::offset_t start, size_t length)
 void TagLibVFSStream::removeBlock(TagLib::ulong start, TagLib::ulong length)
 #endif
 {
+#if (TAGLIB_MAJOR_VERSION >= 2)
+  unsigned long bufferLength = bufferSize();
+#else
   TagLib::ulong bufferLength = bufferSize();
+#endif
 
   long readPosition = start + length;
   long writePosition = start;
 
+#if (TAGLIB_MAJOR_VERSION >= 2)
+  ByteVector buffer(static_cast<unsigned int>(bufferLength));
+#else
   ByteVector buffer(static_cast<TagLib::uint>(bufferLength));
+#endif
 
+#if (TAGLIB_MAJOR_VERSION >= 2)
+  unsigned long bytesRead = 1;
+#else
   TagLib::ulong bytesRead = 1;
+#endif
 
   while(bytesRead != 0)
   {
@@ -207,7 +239,11 @@ void TagLibVFSStream::removeBlock(TagLib::ulong start, TagLib::ulong length)
     if (read < 0)
       return;// explicit error
 
+#if (TAGLIB_MAJOR_VERSION >= 2)
+    bytesRead = static_cast<unsigned long>(read);
+#else
     bytesRead = static_cast<TagLib::ulong>(read);
+#endif
     readPosition += bytesRead;
 
     // Check to see if we just read the last block.  We need to call clear()

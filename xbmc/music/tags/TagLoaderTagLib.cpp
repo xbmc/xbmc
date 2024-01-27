@@ -472,7 +472,11 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, EmbeddedArt *art, MUSIC_INFO:
     if (picture)
     {
       std::string  mime =            picture->mimeType().to8Bit(true);
+#if (TAGLIB_MAJOR_VERSION >= 2)
+      unsigned int size =            picture->picture().size();
+#else
       TagLib::uint size =            picture->picture().size();
+#endif
       tag.SetCoverArtInfo(size, mime);
       if (art)
         art->Set(reinterpret_cast<const uint8_t*>(picture->picture().data()), size, mime);
@@ -789,7 +793,11 @@ bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment *xiph, EmbeddedArt *art, CMusic
       std::string mime = pictures[i].mimeType().toCString();
       if (mime.compare(0, 6, "image/") != 0)
         continue;
+#if (TAGLIB_MAJOR_VERSION >= 2)
+      unsigned int size =            pictures[i].data().size();
+#else
       TagLib::uint size =            pictures[i].data().size();
+#endif
       tag.SetCoverArtInfo(size, mime);
       if (art)
         art->Set(reinterpret_cast<const uint8_t*>(pictures[i].data().data()), size, mime);
