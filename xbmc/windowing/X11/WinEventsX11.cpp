@@ -329,7 +329,7 @@ bool CWinEventsX11::MessagePump()
       continue;
     }
 
-    if (XFilterEvent(&xevent, m_window))
+    if (XFilterEvent(&xevent, None))
       continue;
 
     switch (xevent.type)
