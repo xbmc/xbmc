@@ -23783,6 +23783,12 @@ msgctxt "#39200"
 msgid "Dolby Vision"
 msgstr ""
 
+#. Label of HDR10+ option for setting "Allowed HDR dynamic metadata formats" of label #39198
+#: system/settings/settings.xml
+msgctxt "#39201"
+msgid "HDR10+"
+msgstr ""
+
 # 40000 to 40800 are reserved for Video Versions feature
 
 #. Generic video versions label (plural)

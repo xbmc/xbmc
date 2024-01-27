@@ -193,10 +193,11 @@
         <setting id="videoplayer.allowedhdrformats" type="list[integer]" label="39198" help="39199">
           <requirement>HAS_MEDIACODEC</requirement>
           <level>2</level>
-          <default>0</default> <!-- Allow all HDR formats -->
+          <default>0,1</default> <!-- Allow all HDR formats -->
           <constraints>
             <options>
               <option label="39200">0</option> <!-- Dolby Vision -->
+              <option label="39201">1</option> <!-- HDR10+ -->
             </options>
             <delimiter>,</delimiter>
           </constraints>

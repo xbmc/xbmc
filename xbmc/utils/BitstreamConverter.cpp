@@ -17,6 +17,7 @@
 #include "BitstreamConverter.h"
 #include "BitstreamReader.h"
 #include "BitstreamWriter.h"
+#include "HevcSei.h"
 
 #include <algorithm>
 
@@ -357,6 +358,7 @@ CBitstreamConverter::CBitstreamConverter()
   m_start_decode = true;
   m_convert_dovi = false;
   m_removeDovi = false;
+  m_removeHdr10Plus = false;
 }
 
 CBitstreamConverter::~CBitstreamConverter()
@@ -914,6 +916,8 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **
   const DoviData* rpu_data = NULL;
 #endif
 
+  std::vector<uint8_t> finalPrefixSeiNalu;
+
   switch (m_codec)
   {
     case AV_CODEC_ID_H264:
@@ -971,6 +975,8 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **
       const uint8_t* buf_to_write = buf;
       int32_t final_nal_size = nal_size;
 
+      bool containsHdr10Plus{false};
+
       if (!m_sps_pps_context.first_idr && IsSlice(unit_type))
       {
           m_sps_pps_context.first_idr = 1;
@@ -979,6 +985,26 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **
 
       if (m_removeDovi && (unit_type == HEVC_NAL_UNSPEC62 || unit_type == HEVC_NAL_UNSPEC63))
         write_buf = false;
+
+      // Try removing HDR10+ only if the NAL is big enough, optimization
+      if (m_removeHdr10Plus && unit_type == HEVC_NAL_SEI_PREFIX && nal_size >= 7)
+      {
+        std::tie(containsHdr10Plus, finalPrefixSeiNalu) =
+            CHevcSei::RemoveHdr10PlusFromSeiNalu(buf, nal_size);
+
+        if (containsHdr10Plus)
+        {
+          if (!finalPrefixSeiNalu.empty())
+          {
+            buf_to_write = finalPrefixSeiNalu.data();
+            final_nal_size = finalPrefixSeiNalu.size();
+          }
+          else
+          {
+            write_buf = false;
+          }
+        }
+      }
 
       if (write_buf && m_convert_dovi)
       {
@@ -1012,6 +1038,9 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **
         rpu_data = NULL;
       }
 #endif
+
+      if (containsHdr10Plus && !finalPrefixSeiNalu.empty())
+        finalPrefixSeiNalu.clear();
     }
 
     buf += nal_size;

@@ -120,3 +120,67 @@ std::vector<CHevcSei> CHevcSei::ParseSeiRbspUnclearedEmulation(const uint8_t* in
   HevcClearStartCodeEmulationPrevention3Byte(inData, inDataLen, buf);
   return ParseSeiRbsp(buf.data(), buf.size());
 }
+
+std::optional<const CHevcSei*> CHevcSei::FindHdr10PlusSeiMessage(
+    const std::vector<uint8_t>& buf, const std::vector<CHevcSei>& messages)
+{
+  for (const CHevcSei& sei : messages)
+  {
+    // User Data Registered ITU-T T.35
+    if (sei.m_payloadType == 4 && sei.m_payloadSize >= 7)
+    {
+      CBitstreamReader br(buf.data() + sei.m_payloadOffset, sei.m_payloadSize);
+      const auto itu_t_t35_country_code = br.ReadBits(8);
+      const auto itu_t_t35_terminal_provider_code = br.ReadBits(16);
+      const auto itu_t_t35_terminal_provider_oriented_code = br.ReadBits(16);
+
+      // United States, Samsung Electronics America, ST 2094-40
+      if (itu_t_t35_country_code == 0xB5 && itu_t_t35_terminal_provider_code == 0x003C &&
+          itu_t_t35_terminal_provider_oriented_code == 0x0001)
+      {
+        const auto application_identifier = br.ReadBits(8);
+        const auto application_version = br.ReadBits(8);
+
+        if (application_identifier == 4 && application_version <= 1)
+          return &sei;
+      }
+    }
+  }
+
+  return {};
+}
+
+std::pair<bool, const std::vector<uint8_t>> CHevcSei::RemoveHdr10PlusFromSeiNalu(
+    const uint8_t* inData, const size_t inDataLen)
+{
+  bool containsHdr10Plus{false};
+
+  std::vector<uint8_t> buf;
+  std::vector<CHevcSei> messages = CHevcSei::ParseSeiRbspUnclearedEmulation(inData, inDataLen, buf);
+
+  if (auto res = CHevcSei::FindHdr10PlusSeiMessage(buf, messages))
+  {
+    auto msg = *res;
+
+    containsHdr10Plus = true;
+    if (messages.size() > 1)
+    {
+      // Multiple SEI messages in NALU, remove only the HDR10+ one
+      buf.erase(std::next(buf.begin(), msg->m_msgOffset),
+                std::next(buf.begin(), msg->m_payloadOffset + msg->m_payloadSize));
+      HevcAddStartCodeEmulationPrevention3Byte(buf);
+    }
+    else
+    {
+      // Single SEI message in NALU
+      buf.clear();
+    }
+  }
+  else
+  {
+    // No HDR10+
+    buf.clear();
+  }
+
+  return std::make_pair(containsHdr10Plus, buf);
+}

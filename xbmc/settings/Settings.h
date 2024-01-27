@@ -501,6 +501,7 @@ public:
 
   // values for SETTING_VIDEOPLAYER_ALLOWEDHDRFORMATS
   static const int VIDEOPLAYER_ALLOWED_HDR_TYPE_DOLBY_VISION = 0;
+  static const int VIDEOPLAYER_ALLOWED_HDR_TYPE_HDR10PLUS = 1;
 
   /*!
    \brief Creates a new settings wrapper around a new settings manager.

@@ -45,6 +45,18 @@ public:
                                                               const size_t inDataLen,
                                                               std::vector<uint8_t>& buf);
 
+  // Returns a HDR10+ SEI message if present in the list
+  static std::optional<const CHevcSei*> FindHdr10PlusSeiMessage(
+      const std::vector<uint8_t>& buf, const std::vector<CHevcSei>& messages);
+
+  // Returns a pair with:
+  //   1) a bool for whether or not the NALU SEI payload contains a HDR10+ SEI message.
+  //   2) a vector of bytes:
+  //      When not empty: the new NALU containing all but the HDR10+ SEI message.
+  //      Otherwise: the NALU contained only one HDR10+ SEI and can be discarded.
+  static std::pair<bool, const std::vector<uint8_t>> RemoveHdr10PlusFromSeiNalu(
+      const uint8_t* inData, const size_t inDataLen);
+
 private:
   // Parses single SEI message from the reader and pushes it to the list
   static int ParseSeiMessage(CBitstreamReader& br, std::vector<CHevcSei>& messages);

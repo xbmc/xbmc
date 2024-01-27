@@ -505,6 +505,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
       bool convertDovi{false};
       bool removeDovi{false};
+      bool removeHdr10Plus{false};
 
       if (settings)
       {
@@ -515,6 +516,8 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
                 settings->GetSetting(CSettings::SETTING_VIDEOPLAYER_ALLOWEDHDRFORMATS)));
         removeDovi = !CSettingUtils::FindIntInList(
             allowedHdrFormatsSetting, CSettings::VIDEOPLAYER_ALLOWED_HDR_TYPE_DOLBY_VISION);
+        removeHdr10Plus = !CSettingUtils::FindIntInList(
+            allowedHdrFormatsSetting, CSettings::VIDEOPLAYER_ALLOWED_HDR_TYPE_HDR10PLUS);
       }
 
       bool isDvhe = (m_hints.codec_tag == MKTAG('d', 'v', 'h', 'e'));
@@ -605,6 +608,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
         if (m_bitstream)
         {
           m_bitstream->SetRemoveDovi(removeDovi);
+          m_bitstream->SetRemoveHdr10Plus(removeHdr10Plus);
 
           // Only set for profile 7, container hint allows to skip parsing unnecessarily
           if (m_hints.dovi.dv_profile == 7)

@@ -101,6 +101,7 @@ public:
   bool              CanStartDecode() const;
   void SetConvertDovi(bool value) { m_convert_dovi = value; }
   void SetRemoveDovi(bool value) { m_removeDovi = value; }
+  void SetRemoveHdr10Plus(bool value) { m_removeHdr10Plus = value; }
 
   static bool       mpeg2_sequence_header(const uint8_t *data, const uint32_t size, mpeg2_sequence *sequence);
 
@@ -147,4 +148,5 @@ protected:
   bool              m_start_decode;
   bool m_convert_dovi;
   bool m_removeDovi;
+  bool m_removeHdr10Plus;
 };
