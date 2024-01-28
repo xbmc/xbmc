@@ -186,6 +186,12 @@ bool CDVDVideoCodecStarfish::OpenInternal(CDVDStreamInfo& hints, CDVDCodecOption
         {
           m_bitstream.reset();
         }
+
+        if (m_bitstream)
+        {
+          // HDR10+ is not supported on webOS
+          m_bitstream->SetRemoveHdr10Plus(true);
+        }
       }
 
       break;
