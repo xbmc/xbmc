@@ -11,7 +11,9 @@
 #include "ServiceBroker.h"
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
@@ -420,6 +422,9 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
       m_format.m_dataFormat     = AE_FMT_S16LE;
     }
   }
+
+  m_superviseAudioDelay =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_superviseAudioDelay;
 
   int atChannelMask = AEChannelMapToAUDIOTRACKChannelMask(m_format.m_channelLayout);
   m_format.m_channelLayout  = AUDIOTRACKChannelMaskToAEChannelMap(atChannelMask);
@@ -848,7 +853,7 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
     const double max_stuck_delay_ms = m_audiotrackbuffer_sec_orig * 2000.0;
     const double stime_ms = 1000.0 * frames / m_format.m_sampleRate;
 
-    if (m_stuckCounter * stime_ms > max_stuck_delay_ms)
+    if (m_superviseAudioDelay && (m_stuckCounter * stime_ms > max_stuck_delay_ms))
     {
       CLog::Log(LOGERROR, "Sink got stuck with {:f} ms - ask AE for reopening", max_stuck_delay_ms);
       usleep(max_stuck_delay_ms * 1000);
