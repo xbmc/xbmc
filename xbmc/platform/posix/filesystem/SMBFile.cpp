@@ -414,7 +414,7 @@ bool CSMBFile::Open(const CURL& url)
   if (m_fd == -1)
   {
     // write error to logfile
-    CLog::Log(LOGINFO, "SMBFile->Open: Unable to open file : '{}'\nunix_err:'{:x}' error : '{}'",
+    CLog::Log(LOGERROR, "SMBFile->Open: Unable to open file : '{}'\nunix_err:'{:x}' error : '{}'",
               CURL::GetRedacted(strFileName), errno, strerror(errno));
     return false;
   }
