@@ -1085,7 +1085,7 @@ public:
 
   int GetMovieId(const std::string& strFilenameAndPath);
   std::string GetMovieTitle(int idMovie);
-  void GetSameVideoItems(CFileItem& item, CFileItemList& items);
+  void GetSameVideoItems(const CFileItem& item, CFileItemList& items);
   int GetFileIdByMovie(int idMovie);
   std::string GetFileBasePathById(int idFile);
 

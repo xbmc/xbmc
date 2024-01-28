@@ -3962,7 +3962,7 @@ int CVideoDatabase::GetFileIdByMovie(int idMovie)
   return idFile;
 }
 
-void CVideoDatabase::GetSameVideoItems(CFileItem& item, CFileItemList& items)
+void CVideoDatabase::GetSameVideoItems(const CFileItem& item, CFileItemList& items)
 {
   if (!m_pDB || !m_pDS)
     return;
