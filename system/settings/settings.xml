@@ -190,6 +190,22 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="videoplayer.allowedhdrformats" type="list[integer]" label="39198" help="39199">
+          <requirement>HAS_MEDIACODEC</requirement>
+          <level>2</level>
+          <default>0,1</default> <!-- Allow all HDR formats -->
+          <constraints>
+            <options>
+              <option label="39200">0</option> <!-- Dolby Vision -->
+              <option label="39201">1</option> <!-- HDR10+ -->
+            </options>
+            <delimiter>,</delimiter>
+          </constraints>
+          <control type="list" format="string">
+            <multiselect>true</multiselect>
+            <hidevalue>false</hidevalue>
+          </control>
+        </setting>
       </group>
       <group id="4" label="14232">
         <setting id="videoplayer.stereoscopicplaybackmode" type="integer" label="36520" help="36537">
