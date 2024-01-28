@@ -317,7 +317,8 @@ void CGUIDialogVideoManager::Remove()
 
 void CGUIDialogVideoManager::Rename()
 {
-  const int idAsset{ChooseVideoAsset(m_videoAsset, GetVideoAssetType())};
+  const int idAsset{
+      ChooseVideoAsset(m_videoAsset, GetVideoAssetType(), m_selectedVideoAsset->m_strTitle)};
   if (idAsset != -1)
   {
     //! @todo db refactor: should not be version, but asset
@@ -353,7 +354,8 @@ void CGUIDialogVideoManager::SetSelectedVideoAsset(const std::shared_ptr<CFileIt
 }
 
 int CGUIDialogVideoManager::ChooseVideoAsset(const std::shared_ptr<CFileItem>& item,
-                                             VideoAssetType assetType)
+                                             VideoAssetType assetType,
+                                             const std::string& defaultName)
 {
   if (!item || !item->HasVideoInfoTag())
     return -1;
@@ -361,6 +363,27 @@ int CGUIDialogVideoManager::ChooseVideoAsset(const std::shared_ptr<CFileItem>& i
   const VideoDbContentType itemType{item->GetVideoContentType()};
   if (itemType != VideoDbContentType::MOVIES)
     return -1;
+
+  int dialogHeadingMsgId{};
+  int dialogButtonMsgId{};
+  int dialogNewHeadingMsgId{};
+
+  switch (assetType)
+  {
+    case VideoAssetType::VERSION:
+      dialogHeadingMsgId = 40215;
+      dialogButtonMsgId = 40216;
+      dialogNewHeadingMsgId = 40217;
+      break;
+    case VideoAssetType::EXTRA:
+      dialogHeadingMsgId = 40218;
+      dialogButtonMsgId = 40219;
+      dialogNewHeadingMsgId = 40220;
+      break;
+    default:
+      CLog::LogF(LOGERROR, "Unknown asset type ({})", static_cast<int>(assetType));
+      return -1;
+  }
 
   CVideoDatabase videodb;
   if (!videodb.Open())
@@ -388,14 +411,16 @@ int CGUIDialogVideoManager::ChooseVideoAsset(const std::shared_ptr<CFileItem>& i
 
     dialog->Reset();
     dialog->SetItems(list);
-    dialog->SetHeading(40208);
-    dialog->EnableButton(true, 40004);
+    dialog->SetHeading(dialogHeadingMsgId);
+    dialog->EnableButton(true, dialogButtonMsgId);
     dialog->Open();
 
     if (dialog->IsButtonPressed())
     {
       // create a new asset
-      if (CGUIKeyboardFactory::ShowAndGetInput(assetTitle, g_localizeStrings.Get(40004), false))
+      assetTitle = defaultName;
+      if (CGUIKeyboardFactory::ShowAndGetInput(assetTitle,
+                                               g_localizeStrings.Get(dialogNewHeadingMsgId), false))
       {
         assetTitle = StringUtils::Trim(assetTitle);
         //! @todo db refactor: should not be version, but asset

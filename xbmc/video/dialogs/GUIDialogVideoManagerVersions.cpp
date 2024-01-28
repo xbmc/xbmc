@@ -364,7 +364,7 @@ bool CGUIDialogVideoManagerVersions::ChooseVideoAndConvertToVideoVersion(
   }
 
   // choose a video version for the video
-  const int idVideoVersion{ChooseVideoAsset(selectedItem, VideoAssetType::VERSION)};
+  const int idVideoVersion{ChooseVideoAsset(selectedItem, VideoAssetType::VERSION, "")};
   if (idVideoVersion < 0)
     return false;
 
@@ -562,7 +562,7 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
           return false;
         }
 
-        const int idNewVideoVersion{ChooseVideoAsset(m_videoAsset, VideoAssetType::VERSION)};
+        const int idNewVideoVersion{ChooseVideoAsset(m_videoAsset, VideoAssetType::VERSION, "")};
         if (idNewVideoVersion != -1)
         {
           return m_database.ConvertVideoToVersion(itemType, newAsset.m_idMedia, dbId,
@@ -591,7 +591,7 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
                  CURL::GetRedacted(item.GetPath()));
     }
 
-    const int idNewVideoVersion{ChooseVideoAsset(m_videoAsset, VideoAssetType::VERSION)};
+    const int idNewVideoVersion{ChooseVideoAsset(m_videoAsset, VideoAssetType::VERSION, "")};
     if (idNewVideoVersion == -1)
       return false;
 
@@ -633,7 +633,7 @@ bool CGUIDialogVideoManagerVersions::AddSimilarMovieAsVersion(
   }
 
   // choose a video version type for the video
-  const int idVideoVersion{ChooseVideoAsset(itemMovie, VideoAssetType::VERSION)};
+  const int idVideoVersion{ChooseVideoAsset(itemMovie, VideoAssetType::VERSION, "")};
   if (idVideoVersion < 0)
     return false;
 

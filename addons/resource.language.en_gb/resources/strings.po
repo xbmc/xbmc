@@ -23793,12 +23793,7 @@ msgctxt "#40003"
 msgid "Version"
 msgstr ""
 
-#. New video version dialog button
-#: xbmc/video/dialogs/GUIDialogVideoManager.cpp
-#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
-msgctxt "#40004"
-msgid "New version..."
-msgstr ""
+#empty string with id 40004
 
 #. Warning dialog title
 #: xbmc/video/dialogs/GUIDialogVideoManager.cpp
@@ -24099,7 +24094,43 @@ msgctxt "#40214"
 msgid "Choose extra"
 msgstr ""
 
-#empty strings from id 40215 to 40399
+#. Title of the dialog for version rename action from Versions Manager
+#: xbmc/video/dialogs/GUIDialogVideoManager.cpp
+msgctxt "#40215"
+msgid "Choose version type"
+msgstr ""
+
+#. Caption of the button to create a new version type (Versions Manager > Rename)
+#: xbmc/video/dialogs/GUIDialogVideoManager.cpp
+msgctxt "#40216"
+msgid "New type..."
+msgstr ""
+
+#. Caption of the dialog for keyboard entry of a new version type
+#: xbmc/video/dialogs/GUIDialogVideoManager.cpp
+msgctxt "#40217"
+msgid "New version type"
+msgstr ""
+
+#. Title of the dialog for extra rename action from Extras Manager
+#: xbmc/video/dialogs/GUIDialogVideoManager.cpp
+msgctxt "#40218"
+msgid "Choose extra name"
+msgstr ""
+
+#. Caption of the button to create a new extra name (Extras Manager > Rename)
+#: xbmc/video/dialogs/GUIDialogVideoManager.cpp
+msgctxt "#40219"
+msgid "New name..."
+msgstr ""
+
+#. Caption of the dialog for keyboard entry of a new extra name
+#: xbmc/video/dialogs/GUIDialogVideoManager.cpp
+msgctxt "#40220"
+msgid "New extra name"
+msgstr ""
+
+#empty strings from id 40221 to 40399
 
 # Video versions
 
