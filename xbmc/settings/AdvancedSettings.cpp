@@ -585,6 +585,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetUInt(pElement, "maxpassthroughoffsyncduration", m_maxPassthroughOffSyncDuration,
                       10, 100);
     XMLUtils::GetBoolean(pElement, "allowmultichannelfloat", m_AllowMultiChannelFloat);
+    XMLUtils::GetBoolean(pElement, "superviseaudiodelay", m_superviseAudioDelay);
   }
 
   pElement = pRootElement->FirstChildElement("x11");
