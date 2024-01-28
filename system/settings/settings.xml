@@ -191,7 +191,12 @@
           <control type="toggle" />
         </setting>
         <setting id="videoplayer.allowedhdrformats" type="list[integer]" label="39198" help="39199">
-          <requirement>HAS_MEDIACODEC</requirement>
+          <requirement><!-- Android and webOS use CBitstreamConverter -->
+            <or>
+              <condition>HAS_MEDIACODEC</condition>
+              <condition>HAVE_WEBOS</condition>
+            </or>
+          </requirement>
           <level>2</level>
           <default>0,1</default> <!-- Allow all HDR formats -->
           <constraints>

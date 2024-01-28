@@ -17,8 +17,10 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "media/decoderfilter/DecoderFilterManager.h"
 #include "messaging/ApplicationMessenger.h"
+#include "settings/SettingUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/lib/Setting.h"
 #include "utils/BitstreamConverter.h"
 #include "utils/CPUInfo.h"
 #include "utils/JSONVariantWriter.h"
@@ -152,6 +154,18 @@ bool CDVDVideoCodecStarfish::OpenInternal(CDVDStreamInfo& hints, CDVDCodecOption
       break;
     case AV_CODEC_ID_HEVC:
     {
+      const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+      bool removeDovi{false};
+
+      if (settings)
+      {
+        const std::shared_ptr<CSettingList> allowedHdrFormatsSetting(
+            std::dynamic_pointer_cast<CSettingList>(
+                settings->GetSetting(CSettings::SETTING_VIDEOPLAYER_ALLOWEDHDRFORMATS)));
+        removeDovi = !CSettingUtils::FindIntInList(
+            allowedHdrFormatsSetting, CSettings::VIDEOPLAYER_ALLOWED_HDR_TYPE_DOLBY_VISION);
+      }
+
       bool isDvhe = (m_hints.codec_tag == MKTAG('d', 'v', 'h', 'e'));
       bool isDvh1 = (m_hints.codec_tag == MKTAG('d', 'v', 'h', '1'));
 
@@ -165,7 +179,7 @@ bool CDVDVideoCodecStarfish::OpenInternal(CDVDStreamInfo& hints, CDVDCodecOption
           isDvhe = true;
       }
 
-      if (isDvhe || isDvh1)
+      if (!removeDovi && (isDvhe || isDvh1))
       {
         m_formatname = isDvhe ? "starfish-dvhe" : "starfish-dvh1";
 
@@ -185,6 +199,14 @@ bool CDVDVideoCodecStarfish::OpenInternal(CDVDStreamInfo& hints, CDVDCodecOption
                                m_hints.extradata.GetSize(), true))
         {
           m_bitstream.reset();
+        }
+
+        if (m_bitstream)
+        {
+          m_bitstream->SetRemoveDovi(removeDovi);
+
+          // webOS doesn't support HDR10+ and it can cause issues
+          m_bitstream->SetRemoveHdr10Plus(true);
         }
       }
 
