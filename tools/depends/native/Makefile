@@ -10,6 +10,7 @@ NATIVE= \
   autoconf-archive \
   automake \
   cmake \
+  bison \
   gas-preprocessor \
   gettext \
   giflib \
@@ -23,7 +24,7 @@ NATIVE= \
   nasm \
   ninja \
   openssl \
-  pcre \
+  pcre2 \
   perlmodule-parseyapp \
   pkg-config \
   python3 \
@@ -69,6 +70,7 @@ download: $(DOWNLOAD_TARGETS)
 autoconf-archive: autoconf
 autoconf: m4
 automake: autoconf
+bison: gettext
 cargo-c: pkg-config openssl rustup
 dpkg: automake gettext libtool pkg-config tar
 heimdal: libtool
@@ -80,9 +82,10 @@ Mako: MarkupSafe
 meson: python3
 ninja: meson
 openssl: zlib
+pcre2: cmake
 pugixml: cmake
 python3: $(EXPAT) $(LIBFFI) pkg-config zlib openssl autoconf-archive
-swig: pcre
+swig: bison cmake pcre2
 tar: xz automake
 TexturePacker: cmake libpng liblzo2 giflib libjpeg-turbo
 wayland-scanner: expat ninja pkg-config
