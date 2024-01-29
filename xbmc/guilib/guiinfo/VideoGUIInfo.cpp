@@ -319,6 +319,10 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       case LISTITEM_TAGLINE:
         value = tag->m_strTagLine;
         return true;
+      case VIDEOPLAYER_VIDEOVERSION_NAME:
+      case LISTITEM_VIDEOVERSION_NAME:
+        value = tag->GetAssetInfo().GetTitle();
+        return true;
       case VIDEOPLAYER_LASTPLAYED:
       case LISTITEM_LASTPLAYED:
       {
@@ -520,9 +524,6 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         return true;
       case LISTITEM_VIDEO_HDR_TYPE:
         value = tag->m_streamDetails.GetVideoHdrType();
-        return true;
-      case LISTITEM_VIDEOVERSION_NAME:
-        value = tag->GetAssetInfo().GetTitle();
         return true;
       case LISTITEM_LABEL:
       {
