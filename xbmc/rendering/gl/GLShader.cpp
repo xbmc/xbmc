@@ -1,11 +1,10 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
  *  See LICENSES/README.md for more information.
  */
-
 
 #include "GLShader.h"
 
@@ -49,6 +48,9 @@ void CGLShader::OnCompiledAndLinked()
   // Variables passed directly to the Vertex shader
   m_hProj = glGetUniformLocation(ProgramHandle(), "m_proj");
   m_hModel = glGetUniformLocation(ProgramHandle(), "m_model");
+  m_hMatrix = glGetUniformLocation(ProgramHandle(), "m_matrix");
+  m_hShaderClip = glGetUniformLocation(ProgramHandle(), "m_shaderClip");
+  m_hCoordStep = glGetUniformLocation(ProgramHandle(), "m_cordStep");
 
   // Vertex attributes
   m_hPos = glGetAttribLocation(ProgramHandle(),  "m_attrpos");

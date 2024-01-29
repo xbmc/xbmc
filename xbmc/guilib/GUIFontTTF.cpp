@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -349,7 +349,14 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
   Begin();
   uint32_t rawAlignment = alignment;
   bool dirtyCache(false);
+
+#if defined(HAS_GL)
+  // GL can scissor and shader clip
+  const bool hardwareClipping = true;
+#else
+  // FIXME: remove static (CPU based) clipping for GLES/DX
   const bool hardwareClipping = m_renderSystem->ScissorsCanEffectClipping();
+#endif
   CGUIFontCacheStaticPosition staticPos(x, y);
   CGUIFontCacheDynamicPosition dynamicPos;
   if (hardwareClipping)
@@ -1050,6 +1057,8 @@ void CGUIFontTTF::RenderCharacter(CGraphicContext& context,
                (posY + ch->m_offsetY + height) * context.GetGUIScaleY());
   vertex += CPoint(m_originX, m_originY);
   CRect texture(ch->m_left, ch->m_top, ch->m_right, ch->m_bottom);
+
+#if !defined(HAS_GL)
   if (!m_renderSystem->ScissorsCanEffectClipping())
     context.ClipRect(vertex, texture);
 
@@ -1109,6 +1118,14 @@ void CGUIFontTTF::RenderCharacter(CGraphicContext& context,
   const float tr = texture.x2 * m_textureScaleX;
   const float tt = texture.y1 * m_textureScaleY;
   const float tb = texture.y2 * m_textureScaleY;
+#else
+  // when scaling by shader, we have to grow the vertex and texture coords
+  // by .5 or we would ommit pixels when animating.
+  const float tl = (texture.x1 - .5f) * m_textureScaleX;
+  const float tr = (texture.x2 + .5f) * m_textureScaleX;
+  const float tt = (texture.y1 - .5f) * m_textureScaleY;
+  const float tb = (texture.y2 + .5f) * m_textureScaleY;
+#endif
 
   vertices.resize(vertices.size() + VERTEX_PER_GLYPH);
   SVertex* v = &vertices[vertices.size() - VERTEX_PER_GLYPH];
@@ -1152,8 +1169,39 @@ void CGUIFontTTF::RenderCharacter(CGraphicContext& context,
 
   v[3].u = tl;
   v[3].v = tb;
-#else
+#elif defined(HAS_GL)
   // GL / GLES uses triangle strips, not quads, so have to rearrange the vertex order
+  // GL uses vertex shaders to manipulate text rotation/translation/scaling/clipping.
+
+  // nudge position to align with raster grid. messes up kerning, but also avoids
+  // linear filtering (when not scaled/rotated).
+  float xOffset = vertex.x1 - std::round(vertex.x1);
+  float yOffset = vertex.y1 - std::round(vertex.y1);
+
+  v[0].u = tl;
+  v[0].v = tt;
+  v[0].x = vertex.x1 - xOffset - 0.5f;
+  v[0].y = vertex.y1 - yOffset - 0.5f;
+  v[0].z = 0;
+
+  v[1].u = tl;
+  v[1].v = tb;
+  v[1].x = vertex.x1 - xOffset - 0.5f;
+  v[1].y = vertex.y2 - yOffset + 0.5f;
+  v[1].z = 0;
+
+  v[2].u = tr;
+  v[2].v = tt;
+  v[2].x = vertex.x2 - xOffset + 0.5f;
+  v[2].y = vertex.y1 - yOffset - 0.5f;
+  v[2].z = 0;
+
+  v[3].u = tr;
+  v[3].v = tb;
+  v[3].x = vertex.x2 - xOffset + 0.5f;
+  v[3].y = vertex.y2 - yOffset + 0.5f;
+  v[3].z = 0;
+#else
   v[0].u = tl;
   v[0].v = tt;
   v[0].x = x[0];
