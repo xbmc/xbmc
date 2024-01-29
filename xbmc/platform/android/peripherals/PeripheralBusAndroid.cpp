@@ -31,7 +31,7 @@ using namespace PERIPHERALS;
 #define JOYSTICK_PROVIDER_ANDROID "android"
 
 // Set this to the final key code in android/keycodes.h
-const unsigned int KEY_CODE_FINAL = AKEYCODE_HELP;
+const unsigned int KEY_CODE_FINAL = AKEYCODE_PROFILE_SWITCH;
 
 static const std::string DeviceLocationPrefix = "android/inputdevice/";
 
