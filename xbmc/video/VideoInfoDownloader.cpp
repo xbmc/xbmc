@@ -71,7 +71,7 @@ void CVideoInfoDownloader::Process()
     return;
   }
 
-  if (!m_url.HasUrls())
+  if (!m_url.HasUrls() && m_uniqueIDs.empty())
   {
     // empty url when it's not supposed to be..
     // this might happen if the previously scraped item was removed from the site (see ticket #10537)

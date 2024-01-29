@@ -475,6 +475,13 @@ bool CUtil::GetFilenameIdentifier(const std::string& fileName,
   return false;
 }
 
+bool CUtil::HasFilenameIdentifier(const std::string& fileName)
+{
+  std::string identifierType;
+  std::string identifier;
+  return GetFilenameIdentifier(fileName, identifierType, identifier);
+}
+
 void CUtil::CleanString(const std::string& strFileName,
                         std::string& strTitle,
                         std::string& strTitleAndYear,
