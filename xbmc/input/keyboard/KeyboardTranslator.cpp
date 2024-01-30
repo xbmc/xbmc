@@ -457,5 +457,5 @@ const char* CKeyboardTranslator::TranslateKeycode(XBMCKey keycode)
       break;
   }
 
-  return "";
+  return "unknown";
 }
