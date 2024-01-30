@@ -342,7 +342,7 @@ const std::map<std::string, std::string> CMime::m_mimetypes = {
      {"rexx", "text/x-script.rexx"},
      {"rf", "image/vnd.rn-realflash"},
      {"rgb", "image/x-rgb"},
-     {"rm", "audio/x-pn-realaudio"},
+     {"rm", "application/vnd.rn-realmedia"},
      {"rmi", "audio/mid"},
      {"rmm", "audio/x-pn-realaudio"},
      {"rmp", "audio/x-pn-realaudio"},
