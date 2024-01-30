@@ -750,9 +750,7 @@
 				<onright>61</onright>
 				<pagecontrol>61</pagecontrol>
 				<scrolltime>200</scrolltime>
-				<include content="MediaInfoListLayout">
-					<param name="label_1" value="$INFO[ListItem.VideoVersionName]" />
-				</include>
+				<include>MediaInfoListLayout</include>
 			</control>
 			<control type="scrollbar" id="61">
 				<left>1320</left>
