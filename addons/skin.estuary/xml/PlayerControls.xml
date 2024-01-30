@@ -139,7 +139,7 @@
 						<width>74</width>
 						<height>74</height>
 						<animation center="38,38" effect="zoom" end="100" reversible="false" start="95" time="480" tween="back" condition="Control.HasFocus(704)">Conditional</animation>
-						<texture colordiffuse="white]">$VAR[PlayerControlsRepeatImageVar]</texture>
+						<texture colordiffuse="white">$VAR[PlayerControlsRepeatImageVar]</texture>
 					</control>
 				</control>
 				<control type="radiobutton" id="607">
