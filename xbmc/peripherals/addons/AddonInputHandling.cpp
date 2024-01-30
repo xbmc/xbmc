@@ -24,28 +24,38 @@ using namespace KODI;
 using namespace JOYSTICK;
 using namespace PERIPHERALS;
 
-CAddonInputHandling::CAddonInputHandling(CPeripheral* peripheral,
+CAddonInputHandling::CAddonInputHandling(CPeripherals& manager,
+                                         CPeripheral* peripheral,
                                          std::shared_ptr<CPeripheralAddon> addon,
                                          IInputHandler* handler,
                                          IDriverReceiver* receiver)
-  : m_peripheral(peripheral),
+  : m_manager(manager),
+    m_peripheral(peripheral),
     m_addon(std::move(addon)),
     m_joystickInputHandler(handler),
     m_joystickDriverReceiver(receiver)
 {
 }
 
-CAddonInputHandling::CAddonInputHandling(CPeripheral* peripheral,
+CAddonInputHandling::CAddonInputHandling(CPeripherals& manager,
+                                         CPeripheral* peripheral,
                                          std::shared_ptr<CPeripheralAddon> addon,
                                          KEYBOARD::IKeyboardInputHandler* handler)
-  : m_peripheral(peripheral), m_addon(std::move(addon)), m_keyboardInputHandler(handler)
+  : m_manager(manager),
+    m_peripheral(peripheral),
+    m_addon(std::move(addon)),
+    m_keyboardInputHandler(handler)
 {
 }
 
-CAddonInputHandling::CAddonInputHandling(CPeripheral* peripheral,
+CAddonInputHandling::CAddonInputHandling(CPeripherals& manager,
+                                         CPeripheral* peripheral,
                                          std::shared_ptr<CPeripheralAddon> addon,
                                          MOUSE::IMouseInputHandler* handler)
-  : m_peripheral(peripheral), m_addon(std::move(addon)), m_mouseInputHandler(handler)
+  : m_manager(manager),
+    m_peripheral(peripheral),
+    m_addon(std::move(addon)),
+    m_mouseInputHandler(handler)
 {
 }
 
@@ -69,7 +79,7 @@ bool CAddonInputHandling::Load()
     controllerId = m_mouseInputHandler->ControllerID();
 
   if (!controllerId.empty())
-    m_buttonMap = std::make_unique<CAddonButtonMap>(m_peripheral, m_addon, controllerId);
+    m_buttonMap = std::make_unique<CAddonButtonMap>(m_peripheral, m_addon, controllerId, m_manager);
 
   if (m_buttonMap && m_buttonMap->Load())
   {

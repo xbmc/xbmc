@@ -30,5 +30,14 @@ public:
    * \return The translated enum label, or "unknown" if unknown
    */
   static const char* TranslateKeyCode(int keyCode);
+
+  /*!
+   * \brief Translate a button key code to a feature on the default controller
+   *
+   * \param buttonKeycode The key code given in <android/keycodes.h>
+   *
+   * \return The translated feature, or "" if unknown
+   */
+  static const char* TranslateJoystickButton(int buttonKeycode);
 };
 } // namespace PERIPHERALS
