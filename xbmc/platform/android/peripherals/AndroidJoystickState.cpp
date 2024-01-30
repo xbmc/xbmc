@@ -9,6 +9,11 @@
 #include "AndroidJoystickState.h"
 
 #include "AndroidJoystickTranslator.h"
+#include "games/controllers/ControllerIDs.h"
+#include "games/controllers/DefaultController.h"
+#include "input/joysticks/DriverPrimitive.h"
+#include "input/joysticks/JoystickTypes.h"
+#include "input/joysticks/interfaces/IButtonMap.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -19,10 +24,13 @@
 #include <android/input.h>
 #include <androidjni/View.h>
 
+using namespace KODI;
 using namespace PERIPHERALS;
 
 namespace
 {
+// Used to set the appearance of PlayStation controllers
+constexpr const char* CONTROLLER_ID_PLAYSTATION = "game.controller.ps.dualanalog";
 
 // clang-format off
 static const std::vector<int> ButtonKeycodes{
@@ -250,6 +258,70 @@ void CAndroidJoystickState::Deinitialize(void)
   m_digitalEvents.clear();
 }
 
+bool CAndroidJoystickState::InitializeButtonMap(KODI::JOYSTICK::IButtonMap& buttonMap) const
+{
+  // We only map the default controller
+  if (buttonMap.ControllerID() != DEFAULT_CONTROLLER_ID)
+    return false;
+
+  bool success = false;
+
+  // Map buttons
+  for (auto it = ButtonKeycodes.begin(); it != ButtonKeycodes.end(); ++it)
+  {
+    const int buttonKeycode = *it;
+    success |= MapButton(buttonMap, buttonKeycode);
+  }
+
+  // Map D-pad
+  success |= MapDpad(buttonMap, AMOTION_EVENT_AXIS_HAT_X, AMOTION_EVENT_AXIS_HAT_Y);
+
+  // Map triggers
+  // Note: This should come after buttons, because the PS4 controller uses
+  // both a digital button and an analog axis for the triggers, and we want
+  // the analog axis to override the button for full range of motion.
+  success |= MapTrigger(buttonMap, AMOTION_EVENT_AXIS_LTRIGGER,
+                        GAME::CDefaultController::FEATURE_LEFT_TRIGGER);
+  success |= MapTrigger(buttonMap, AMOTION_EVENT_AXIS_RTRIGGER,
+                        GAME::CDefaultController::FEATURE_RIGHT_TRIGGER);
+
+  // Map analog sticks
+  success |= MapAnalogStick(buttonMap, AMOTION_EVENT_AXIS_X, AMOTION_EVENT_AXIS_Y,
+                            GAME::CDefaultController::FEATURE_LEFT_STICK);
+  success |= MapAnalogStick(buttonMap, AMOTION_EVENT_AXIS_Z, AMOTION_EVENT_AXIS_RZ,
+                            GAME::CDefaultController::FEATURE_RIGHT_STICK);
+
+  if (success)
+  {
+    // If the controller has both L2/R2 buttons and LTRIGGER/RTRIGGER axes, it's
+    // probably a PS controller
+    size_t indexL2 = 0;
+    size_t indexR2 = 0;
+    size_t indexLTrigger = 0;
+    size_t indexRTrigger = 0;
+    if (GetAxesIndex({AKEYCODE_BUTTON_L2}, m_buttons, indexL2) &&
+        GetAxesIndex({AKEYCODE_BUTTON_R2}, m_buttons, indexR2) &&
+        GetAxesIndex({AMOTION_EVENT_AXIS_LTRIGGER}, m_axes, indexLTrigger) &&
+        GetAxesIndex({AMOTION_EVENT_AXIS_RTRIGGER}, m_axes, indexRTrigger))
+    {
+      CLog::Log(LOGDEBUG, "Detected dual-input triggers, ignoring digital buttons");
+      std::vector<JOYSTICK::CDriverPrimitive> ignoredPrimitives{
+          {JOYSTICK::PRIMITIVE_TYPE::BUTTON, static_cast<unsigned int>(indexL2)},
+          {JOYSTICK::PRIMITIVE_TYPE::BUTTON, static_cast<unsigned int>(indexR2)},
+      };
+      buttonMap.SetIgnoredPrimitives(ignoredPrimitives);
+
+      CLog::Log(LOGDEBUG, "Setting appearance to {}", CONTROLLER_ID_PLAYSTATION);
+      buttonMap.SetAppearance(CONTROLLER_ID_PLAYSTATION);
+    }
+
+    // Save the buttonmap
+    buttonMap.SaveButtonMap();
+  }
+
+  return success;
+}
+
 bool CAndroidJoystickState::ProcessEvent(const AInputEvent* event)
 {
   int32_t type = AInputEvent_getType(event);
@@ -399,6 +471,145 @@ bool CAndroidJoystickState::SetAxisValue(const std::vector<int>& axisIds,
   axisValue = Scale(axisValue, axis.max, 1.0f);
 
   m_analogState[axisIndex] = axisValue;
+  return true;
+}
+
+bool CAndroidJoystickState::MapButton(KODI::JOYSTICK::IButtonMap& buttonMap,
+                                      int buttonKeycode) const
+{
+  size_t buttonIndex = 0;
+  std::string featureName;
+
+  if (!GetAxesIndex({buttonKeycode}, m_buttons, buttonIndex))
+    return false;
+
+  // Check if button is already mapped
+  JOYSTICK::CDriverPrimitive buttonPrimitive{JOYSTICK::PRIMITIVE_TYPE::BUTTON,
+                                             static_cast<unsigned int>(buttonIndex)};
+  if (buttonMap.GetFeature(buttonPrimitive, featureName))
+    return false;
+
+  // Translate the button
+  std::string controllerButton = CAndroidJoystickTranslator::TranslateJoystickButton(buttonKeycode);
+  if (controllerButton.empty())
+    return false;
+
+  // Map the button
+  CLog::Log(LOGDEBUG, "Automatically mapping {} to {}", controllerButton,
+            buttonPrimitive.ToString());
+  buttonMap.AddScalar(controllerButton, buttonPrimitive);
+
+  return true;
+}
+
+bool CAndroidJoystickState::MapTrigger(KODI::JOYSTICK::IButtonMap& buttonMap,
+                                       int axisId,
+                                       const std::string& triggerName) const
+{
+  size_t axisIndex = 0;
+  std::string featureName;
+
+  if (!GetAxesIndex({axisId}, m_axes, axisIndex))
+    return false;
+
+  const JOYSTICK::CDriverPrimitive semiaxis{static_cast<unsigned int>(axisIndex), 0,
+                                            JOYSTICK::SEMIAXIS_DIRECTION::POSITIVE, 1};
+  if (buttonMap.GetFeature(semiaxis, featureName))
+    return false;
+
+  CLog::Log(LOGDEBUG, "Automatically mapping {} to {}", triggerName, semiaxis.ToString());
+  buttonMap.AddScalar(triggerName, semiaxis);
+
+  return true;
+}
+
+bool CAndroidJoystickState::MapDpad(KODI::JOYSTICK::IButtonMap& buttonMap,
+                                    int horizAxisId,
+                                    int vertAxisId) const
+{
+  bool success = false;
+
+  size_t axisIndex = 0;
+  std::string featureName;
+
+  // Map horizontal axis
+  if (GetAxesIndex({horizAxisId}, m_axes, axisIndex))
+  {
+    const JOYSTICK::CDriverPrimitive positiveSemiaxis{static_cast<unsigned int>(axisIndex), 0,
+                                                      JOYSTICK::SEMIAXIS_DIRECTION::POSITIVE, 1};
+    const JOYSTICK::CDriverPrimitive negativeSemiaxis{static_cast<unsigned int>(axisIndex), 0,
+                                                      JOYSTICK::SEMIAXIS_DIRECTION::NEGATIVE, 1};
+    if (!buttonMap.GetFeature(positiveSemiaxis, featureName) &&
+        !buttonMap.GetFeature(negativeSemiaxis, featureName))
+    {
+      CLog::Log(LOGDEBUG, "Automatically mapping {} to {}", GAME::CDefaultController::FEATURE_LEFT,
+                negativeSemiaxis.ToString());
+      CLog::Log(LOGDEBUG, "Automatically mapping {} to {}", GAME::CDefaultController::FEATURE_RIGHT,
+                positiveSemiaxis.ToString());
+      buttonMap.AddScalar(GAME::CDefaultController::FEATURE_LEFT, negativeSemiaxis);
+      buttonMap.AddScalar(GAME::CDefaultController::FEATURE_RIGHT, positiveSemiaxis);
+      success |= true;
+    }
+  }
+
+  // Map vertical axis
+  if (GetAxesIndex({vertAxisId}, m_axes, axisIndex))
+  {
+    const JOYSTICK::CDriverPrimitive positiveSemiaxis{static_cast<unsigned int>(axisIndex), 0,
+                                                      JOYSTICK::SEMIAXIS_DIRECTION::POSITIVE, 1};
+    const JOYSTICK::CDriverPrimitive negativeSemiaxis{static_cast<unsigned int>(axisIndex), 0,
+                                                      JOYSTICK::SEMIAXIS_DIRECTION::NEGATIVE, 1};
+    if (!buttonMap.GetFeature(positiveSemiaxis, featureName) &&
+        !buttonMap.GetFeature(negativeSemiaxis, featureName))
+    {
+      CLog::Log(LOGDEBUG, "Automatically mapping {} to {}", GAME::CDefaultController::FEATURE_UP,
+                negativeSemiaxis.ToString());
+      CLog::Log(LOGDEBUG, "Automatically mapping {} to {}", GAME::CDefaultController::FEATURE_DOWN,
+                positiveSemiaxis.ToString());
+      buttonMap.AddScalar(GAME::CDefaultController::FEATURE_DOWN, positiveSemiaxis);
+      buttonMap.AddScalar(GAME::CDefaultController::FEATURE_UP, negativeSemiaxis);
+      success |= true;
+    }
+  }
+
+  return success;
+}
+
+bool CAndroidJoystickState::MapAnalogStick(KODI::JOYSTICK::IButtonMap& buttonMap,
+                                           int horizAxisId,
+                                           int vertAxisId,
+                                           const std::string& analogStickName) const
+{
+  size_t axisIndex1 = 0;
+  size_t axisIndex2 = 0;
+  std::string featureName;
+
+  if (!GetAxesIndex({horizAxisId}, m_axes, axisIndex1) ||
+      !GetAxesIndex({vertAxisId}, m_axes, axisIndex2))
+    return false;
+
+  const JOYSTICK::CDriverPrimitive upSemiaxis{static_cast<unsigned int>(axisIndex2), 0,
+                                              JOYSTICK::SEMIAXIS_DIRECTION::NEGATIVE, 1};
+  const JOYSTICK::CDriverPrimitive downSemiaxis{static_cast<unsigned int>(axisIndex2), 0,
+                                                JOYSTICK::SEMIAXIS_DIRECTION::POSITIVE, 1};
+  const JOYSTICK::CDriverPrimitive leftSemiaxis{static_cast<unsigned int>(axisIndex1), 0,
+                                                JOYSTICK::SEMIAXIS_DIRECTION::NEGATIVE, 1};
+  const JOYSTICK::CDriverPrimitive rightSemiaxis{static_cast<unsigned int>(axisIndex1), 0,
+                                                 JOYSTICK::SEMIAXIS_DIRECTION::POSITIVE, 1};
+  if (buttonMap.GetFeature(upSemiaxis, featureName) ||
+      buttonMap.GetFeature(downSemiaxis, featureName) ||
+      buttonMap.GetFeature(leftSemiaxis, featureName) ||
+      buttonMap.GetFeature(rightSemiaxis, featureName))
+    return false;
+
+  CLog::Log(LOGDEBUG, "Automatically mapping {} to [{}, {}, {}, {}]", analogStickName,
+            upSemiaxis.ToString(), downSemiaxis.ToString(), leftSemiaxis.ToString(),
+            rightSemiaxis.ToString());
+  buttonMap.AddAnalogStick(analogStickName, JOYSTICK::ANALOG_STICK_DIRECTION::UP, upSemiaxis);
+  buttonMap.AddAnalogStick(analogStickName, JOYSTICK::ANALOG_STICK_DIRECTION::DOWN, downSemiaxis);
+  buttonMap.AddAnalogStick(analogStickName, JOYSTICK::ANALOG_STICK_DIRECTION::LEFT, leftSemiaxis);
+  buttonMap.AddAnalogStick(analogStickName, JOYSTICK::ANALOG_STICK_DIRECTION::RIGHT, rightSemiaxis);
+
   return true;
 }
 
