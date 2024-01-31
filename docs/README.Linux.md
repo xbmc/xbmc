@@ -48,9 +48,14 @@ git clone -b Krypton https://github.com/xbmc/xbmc kodi
 
 Several different strategies are used to draw your attention to certain pieces of information. In order of how critical the information is, these items are marked as a note, tip, or warning. For example:
  
-**NOTE:** Linux is user friendly... It's just very particular about who its friends are.  
-**TIP:** Algorithm is what developers call code they do not want to explain.  
-**WARNING:** Developers don't change light bulbs. It's a hardware problem.
+> [!NOTE]  
+> Linux is user friendly... It's just very particular about who its friends are.
+
+> [!TIP]
+> Algorithm is what developers call code they do not want to explain.
+
+> [!WARNING]  
+> Developers don't change light bulbs. It's a hardware problem.
 
 **[back to top](#table-of-contents)** | **[back to section top](#1-document-conventions)**
 
@@ -72,7 +77,8 @@ git clone https://github.com/xbmc/xbmc kodi
 ## 3. Install the required packages
 The following is the list of packages that are used to build Kodi on Debian/Ubuntu (with all supported external libraries enabled).
 
-**NOTE:** Kodi requires a compiler with C++17 support, i.e. gcc >= 7 or clang >= 5
+> [!NOTE]  
+> Kodi requires a compiler with C++17 support, i.e. gcc >= 7 or clang >= 5
 
 * autoconf, automake, autopoint, gettext, autotools-dev, cmake, curl, default-jre | openjdk-6-jre | openjdk-7-jre, gawk, gcc (>= 7) | gcc-7, g++ (>= 7) | g++-7, cpp (>= 7) | cpp-7, flatbuffers, gdc, gperf, libasound2-dev | libasound-dev, libass-dev (>= 0.9.8), libavahi-client-dev, libavahi-common-dev, libbluetooth-dev, libbluray-dev, libbz2-dev, libcdio-dev, libcec4-dev | libcec-dev, libp8-platform-dev, libcrossguid-dev, libcurl4-openssl-dev | libcurl4-gnutls-dev | libcurl-dev, libcwiid-dev, libdbus-1-dev, libegl1-mesa-dev, libenca-dev, libflac-dev, libfontconfig-dev, libfmt3-dev | libfmt-dev, libfreetype6-dev, libfribidi-dev, libfstrcmp-dev, libgcrypt-dev, libgif-dev (>= 5.0.5), libgles2-mesa-dev [armel] | libgl1-mesa-dev | libgl-dev, libglew-dev, libglu1-mesa-dev | libglu-dev, libgnutls-dev | libgnutls28-dev, libgpg-error-dev, libgtest-dev, libiso9660-dev, libjpeg-dev, liblcms2-dev, liblirc-dev, libltdl-dev, liblzo2-dev, libmicrohttpd-dev, libmysqlclient-dev, libnfs-dev, libogg-dev, libomxil-bellagio-dev [armel], libpcre3-dev, libplist-dev, libpng12-dev | libpng-dev, libpulse-dev, libshairplay-dev, libsmbclient-dev, libspdlog-dev, libsqlite3-dev, libssl-dev, libtag1-dev (>= 1.8) | libtag1x8, libtiff5-dev | libtiff-dev | libtiff4-dev, libtinyxml-dev, libtinyxml2-dev, libtool, libudev-dev, libunistring-dev, libva-dev, libvdpau-dev, libvorbis-dev, libxkbcommon-dev, libxmu-dev, libxrandr-dev, libxslt1-dev | libxslt-dev, libxt-dev, waylandpp-dev | netcat, wayland-protocols | wipe, lsb-release, meson (>= 0.47.0), nasm (>= 2.14), ninja-build, python3-dev, python3-pil | python-imaging, python-support | python3-minimal, rapidjson-dev, swig, unzip, uuid-dev, zip, zlib1g-dev
 
@@ -114,15 +120,18 @@ Build and install waylandpp:
 sudo make -C tools/depends/target/waylandpp PREFIX=/usr/local
 ```
 
-**WARNING:** Building `waylandpp` has some dependencies of its own, namely `scons, libwayland-dev (>= 1.11.0) and libwayland-egl1-mesa`
+> [!WARNING]  
+> Building `waylandpp` has some dependencies of its own, namely `scons, libwayland-dev (>= 1.11.0) and libwayland-egl1-mesa`
 
-**TIP:** Complete list of dependencies is available **[here](https://github.com/xbmc/xbmc/tree/master/tools/depends/target)**.
+> [!TIP]
+> Complete list of dependencies is available **[here](https://github.com/xbmc/xbmc/tree/master/tools/depends/target)**.
 
 ### 3.2. Enable internal dependencies
 Some dependencies can be configured to build before Kodi. That's the case with `flatbuffers`, `crossguid`, `fmt`, `spdlog`, `rapidjson`, `fstrcmp` and `dav1d`. To enable the internal build of a dependency, append `-DENABLE_INTERNAL_<DEPENDENCY_NAME>=ON` to the configure command below. For example, configuring an X11 build with internal `fmt` would become `cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DENABLE_INTERNAL_FMT=ON` instead of `cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local`.
 Internal dependencies that are based on cmake upstream (currently crossguid, ffmpeg, fmt, spdlog) can have their build type overridden by defining `-D<DEPENDENCY_NAME>_BUILD_TYPE=<buildtype>`. Build Type can be one of `Release, RelWithDebInfo, Debug, MinSizeRel`. eg `-DFFMPEG_BUILD_TYPE=RelWithDebInfo`. If not provided, the build type will be the same as the core Kodi project.
 
-**Note:** fstrcmp requires libtool
+> [!NOTE]  
+> fstrcmp requires libtool
 
 ### 3.3. External Dependencies
 
@@ -139,7 +148,8 @@ Create an out-of-source build directory:
 mkdir $HOME/kodi-build
 ```
 
-**TIP:** Look for comments starting with `Or ...` and only execute the command(s) you need.
+> [!TIP]
+> Look for comments starting with `Or ...` and only execute the command(s) you need.
 
 Change to build directory:
 ```
@@ -151,31 +161,35 @@ Configure build for X11:
 cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DCORE_PLATFORM_NAME=x11 -DAPP_RENDER_SYSTEM=gl
 ```
 
-**NOTE:** You can use `gles` instead of `gl` if you want to build with `GLES`.
+> [!NOTE]  
+> You can use `gles` instead of `gl` if you want to build with `GLES`.
 
 Or configure build for Wayland:
 ```
 cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DCORE_PLATFORM_NAME=wayland -DAPP_RENDER_SYSTEM=gl
 ```
 
-**NOTE:** You can use `gles` instead of `gl` if you want to build with `GLES`.
+> [!NOTE]  
+> You can use `gles` instead of `gl` if you want to build with `GLES`.
 
 Or configure build for GBM:
 ```
 cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DCORE_PLATFORM_NAME=gbm -DAPP_RENDER_SYSTEM=gles
 ```
 
-**NOTE:** You can use `gl` instead of `gles` if you want to build with `GL`.
+> [!NOTE]  
+> You can use `gl` instead of `gles` if you want to build with `GL`.
 
 Or configure build with any combination of the three (default is "x11 wayland gbm"):
 ```
 cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DCORE_PLATFORM_NAME="x11 wayland gbm" -DAPP_RENDER_SYSTEM=gl
 ```
 
-**NOTE:** You can use `gles` instead of `gl` if you want to build with `GLES`.
+> [!NOTE]  
+> You can use `gles` instead of `gl` if you want to build with `GLES`.
 
-
-**NOTE:** You can use several alternative linkers if available on your system: gnu gold (default), llvm lld or mold
+> [!NOTE]  
+> You can use several alternative linkers if available on your system: gnu gold (default), llvm lld or mold
 
 To use an alternative linker, enable it with `-DENABLE_GOLD=ON` or `-DENABLE_LLD=ON` or `-DENABLE_MOLD=ON`
 
@@ -184,7 +198,9 @@ To use an alternative linker, enable it with `-DENABLE_GOLD=ON` or `-DENABLE_LLD
 ```
 cmake --build . -- VERBOSE=1 -j$(getconf _NPROCESSORS_ONLN)
 ```
-**TIP:** By adding `-j<number>` to the make command, you can choose how many concurrent jobs will be used and expedite the build process. It is recommended to use `-j$(getconf _NPROCESSORS_ONLN)` to compile on all available processor cores. The build machine can also be configured to do this automatically by adding `export MAKEFLAGS="-j$(getconf _NPROCESSORS_ONLN)"` to your shell config (e.g. `~/.bashrc`).
+
+> [!TIP]
+> By adding `-j<number>` to the make command, you can choose how many concurrent jobs will be used and expedite the build process. It is recommended to use `-j$(getconf _NPROCESSORS_ONLN)` to compile on all available processor cores. The build machine can also be configured to do this automatically by adding `export MAKEFLAGS="-j$(getconf _NPROCESSORS_ONLN)"` to your shell config (e.g. `~/.bashrc`).
 
 After the build process completes successfully you can test your shiny new Kodi build while in the build directory:
 ```
@@ -201,7 +217,8 @@ Or if you built for GBM:
 ./kodi-gbm
 ```
 
-**WARNING:** User running `kodi-gbm` needs to be part of `input` and `video` groups. Otherwise you'll have to use `sudo`.
+> [!WARNING]  
+> User running `kodi-gbm` needs to be part of `input` and `video` groups. Otherwise you'll have to use `sudo`.
 
 Add user to input and video groups:
 ```
@@ -220,7 +237,9 @@ sudo make install
 
 This will install Kodi in the prefix provided in **[section 4.1](#41-configure-build)**.
 
-**TIP:** To override Kodi's install location, use `DESTDIR=<path>`. For example:
+> [!TIP]
+> To override Kodi's install location, use `DESTDIR=<path>`. For example:
+
 ```
 sudo make install DESTDIR=$HOME/kodi
 ```
@@ -264,7 +283,8 @@ sudo make -C tools/depends/target/binary-addons clean
 
 For additional information on regular expression usage for ADDONS_TO_BUILD, view ADDONS_TO_BUILD section located here [Kodi add-ons CMake based buildsystem](../cmake/addons/README.md)
 
-**NOTE:** `PREFIX=/usr/local` should match Kodi's `-DCMAKE_INSTALL_PREFIX=` prefix used in **[section 4.1](#41-configure-build)**.
+> [!NOTE]  
+> `PREFIX=/usr/local` should match Kodi's `-DCMAKE_INSTALL_PREFIX=` prefix used in **[section 4.1](#41-configure-build)**.
 
 **[back to top](#table-of-contents)**
 
@@ -314,7 +334,8 @@ cmake -DCMAKE_INSTALL_PREFIX=/usr/local
 make && make install
 ```
 
-**NOTE:** `-DCMAKE_INSTALL_PREFIX=` should match Kodi's `-DCMAKE_INSTALL_PREFIX=` prefix used in **[section 4.1](#41-configure-build)**.
+> [!NOTE]  
+> `-DCMAKE_INSTALL_PREFIX=` should match Kodi's `-DCMAKE_INSTALL_PREFIX=` prefix used in **[section 4.1](#41-configure-build)**.
 
 ## 6. Run Kodi
 If you chose to install Kodi using `/usr` or `/usr/local` as the `-DCMAKE_INSTALL_PREFIX=`, you can just issue *kodi* in a terminal session.
@@ -335,7 +356,9 @@ To run Kodi in *portable* mode (useful for testing):
 ```
 sudo make uninstall
 ```
-**WARNING:**: If you reran CMakes' configure step with a different `-DCMAKE_INSTALL_PREFIX=`, you will need to rerun configure with the correct path for this step to work correctly.
+
+> [!WARNING]  
+> If you reran CMakes' configure step with a different `-DCMAKE_INSTALL_PREFIX=`, you will need to rerun configure with the correct path for this step to work correctly.
 
 If you would like to also remove any settings and third-party addons (skins, scripts, etc.) and Kodi configuration files, you should also run:
 ```

@@ -45,9 +45,14 @@ git clone -b Krypton https://github.com/xbmc/xbmc kodi
 
 Several different strategies are used to draw your attention to certain pieces of information. In order of how critical the information is, these items are marked as a note, tip, or warning. For example:
  
-**NOTE:** Linux is user friendly... It's just very particular about who its friends are.  
-**TIP:** Algorithm is what developers call code they do not want to explain.  
-**WARNING:** Developers don't change light bulbs. It's a hardware problem.
+> [!NOTE]  
+> Linux is user friendly... It's just very particular about who its friends are.
+
+> [!TIP]
+> Algorithm is what developers call code they do not want to explain.
+
+> [!WARNING]  
+> Developers don't change light bulbs. It's a hardware problem.
 
 **[back to top](#table-of-contents)** | **[back to section top](#1-document-conventions)**
 
@@ -72,23 +77,27 @@ git clone https://github.com/xbmc/xbmc kodi
 ## 3. Install the required packages
 If you get a `package not found` type of message with the below command, remove the offending package(s) from the install list and reissue the command. Take a note of the missing dependencies and, after a successful step completion, **[build the missing dependencies manually](#31-build-missing-dependencies)**.
 
-**NOTE:** Kodi requires a compiler with C++17 support, i.e. gcc >= 7 or clang >= 5
+> [!NOTE]  
+> Kodi requires a compiler with C++17 support, i.e. gcc >= 7 or clang >= 5
 
 Install build dependencies:
 ```
 sudo pkg install autoconf automake avahi-app binutils cmake curl dbus doxygen e2fsprogs-libuuid enca encodings flac flatbuffers font-util fontconfig freetype2 fribidi fstrcmp gawk gettext-tools giflib git glew gmake gmp gnutls googletest gperf gstreamer1-vaapi hal jpeg-turbo libaacs libass libbdplus libbluray libcapn libcdio libcec libedit libfmt libgcrypt libgpg-error libidn libinotify libmicrohttpd libnfs libogg libplist librtmp libtool libudev-devd libva libvdpau libvorbis libxslt lirc lzo2 m4 mesa-libs mysql57-client nasm openjdk8 p8-platform pkgconf python3 rapidjson shairplay sndio sqlite3 swig30 taglib tiff tinyxml tinyxml2 xf86-input-keyboard xf86-input-mouse xorg-server xrandr zip
 ```
 
-**WARNING:** Make sure you copy paste the entire line or you might receive an error or miss a few dependencies.
+> [!WARNING]  
+> Make sure you copy paste the entire line or you might receive an error or miss a few dependencies.
 
-**NOTE:** For developers and anyone else who builds frequently it is recommended to install `ccache` to expedite subsequent builds of Kodi.
+> [!NOTE]  
+> For developers and anyone else who builds frequently it is recommended to install `ccache` to expedite subsequent builds of Kodi.
 
 You can install it with:
 ```
 sudo pkg install ccache
 ```
 
-**TIP:** If you have multiple computers at home, `distcc` will distribute build workloads of C and C++ code across several machines on a network. Team Kodi may not be willing to give support if problems arise using such a build configuration.
+> [!TIP]
+> If you have multiple computers at home, `distcc` will distribute build workloads of C and C++ code across several machines on a network. Team Kodi may not be willing to give support if problems arise using such a build configuration.
 
 You can install it with:
 ```
@@ -123,7 +132,8 @@ cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local
 ```
 cmake --build . -- VERBOSE=1 -j$(sysctl hw.ncpu | awk '{print $2}')
 ```
-**TIP:** By adding `-j<number>` to the make command, you can choose how many concurrent jobs will be used and expedite the build process. It is recommended to use `-j$(sysctl hw.ncpu | awk '{print $2}')` to compile on all available processor cores.
+> [!TIP]
+> By adding `-j<number>` to the make command, you can choose how many concurrent jobs will be used and expedite the build process. It is recommended to use `-j$(sysctl hw.ncpu | awk '{print $2}')` to compile on all available processor cores.
 
 After the build process completes successfully you can test your shiny new Kodi build while in the build directory:
 ```
@@ -135,11 +145,14 @@ If everything was OK during your test you can now install the binaries to their 
 sudo gmake install
 ```
 
-**NOTE:** `gmake` stands for *GNU Make*. BSD's own make does not work here.
+> [!NOTE]  
+> `gmake` stands for *GNU Make*. BSD's own make does not work here.
 
 This will install Kodi in the prefix provided in **[section 4.1](#41-configure-build)**.
 
-**TIP:** To override Kodi's install location, use `DESTDIR=<path>`. For example:
+> [!TIP]
+> To override Kodi's install location, use `DESTDIR=<path>`. For example:
+
 ```
 sudo gmake install DESTDIR=$HOME/kodi
 ```
@@ -176,7 +189,8 @@ sudo gmake -C tools/depends/target/binary-addons clean
 
 For additional information on regular expression usage for ADDONS_TO_BUILD, view ADDONS_TO_BUILD section located at [Kodi add-ons CMake based buildsystem](../cmake/addons/README.md)
 
-**NOTE:** `PREFIX=/usr/local` should match Kodi's `-DCMAKE_INSTALL_PREFIX=` prefix used in **[section 4.1](#41-configure-build)**.
+> [!NOTE]  
+> `PREFIX=/usr/local` should match Kodi's `-DCMAKE_INSTALL_PREFIX=` prefix used in **[section 4.1](#41-configure-build)**.
 
 **[back to top](#table-of-contents)**
 
@@ -199,7 +213,8 @@ To run Kodi in *portable* mode (useful for testing):
 ```
 sudo gmake uninstall
 ```
-**WARNING:**: If you reran CMakes' configure step with a different `-DCMAKE_INSTALL_PREFIX=`, you will need to rerun configure with the correct path for this step to work correctly.
+> [!WARNING]  
+> If you reran CMakes' configure step with a different `-DCMAKE_INSTALL_PREFIX=`, you will need to rerun configure with the correct path for this step to work correctly.
 
 If you would like to also remove any settings and third-party addons (skins, scripts, etc.) and Kodi configuration files, you should also run:
 ```

@@ -48,9 +48,14 @@ git clone -b Krypton https://github.com/xbmc/xbmc kodi
 
 Several different strategies are used to draw your attention to certain pieces of information. In order of how critical the information is, these items are marked as a note, tip, or warning. For example:
  
-**NOTE:** Linux is user friendly... It's just very particular about who its friends are.  
-**TIP:** Algorithm is what developers call code they do not want to explain.  
-**WARNING:** Developers don't change light bulbs. It's a hardware problem.
+> [!NOTE]  
+> Linux is user friendly... It's just very particular about who its friends are.
+
+> [!TIP]
+> Algorithm is what developers call code they do not want to explain.
+
+> [!WARNING]  
+> Developers don't change light bulbs. It's a hardware problem.
 
 **[back to top](#table-of-contents)** | **[back to section top](#1-document-conventions)**
 
@@ -59,9 +64,11 @@ Install build dependencies needed to cross-compile Kodi for Android:
 ```
 sudo apt install autoconf bison build-essential curl default-jdk flex gawk git gperf lib32stdc++6 lib32z1 lib32z1-dev libcurl4-openssl-dev unzip zip zlib1g-dev
 ```
-**NOTE:** If you're running a 32bit Debian/Ubuntu distribution,  remove `lib32stdc++6 lib32z1 lib32z1-dev` from the command.
-**NOTE:** Gradle 7.0.2+ requires Jave Runtime 11+. Check java version by running `java --version`.  If version is < 11, set JAVA_HOME to java 11+ home directory._
+> [!NOTE]  
+> If you're running a 32bit Debian/Ubuntu distribution,  remove `lib32stdc++6 lib32z1 lib32z1-dev` from the command.
 
+> [!NOTE]  
+> Gradle 7.0.2+ requires Jave Runtime 11+. Check java version by running `java --version`.  If version is < 11, set JAVA_HOME to java 11+ home directory._
 
 **[back to top](#table-of-contents)**
 
@@ -82,7 +89,8 @@ Extract Android SDK Command line tools:
 unzip $HOME/Downloads/commandlinetools-linux-6200805_latest.zip -d $HOME/android-tools/android-sdk-linux/
 ```
 
-**NOTE:** Since we're using the latest SDK Command line tools available, filename can change over time. Adapt the `unzip` command accordingly.
+> [!NOTE]  
+> Since we're using the latest SDK Command line tools available, filename can change over time. Adapt the `unzip` command accordingly.
 
 ### 3.2. Configure Android SDK
 Before Android SDK can be used, you need to accept the licenses and configure it:
@@ -122,7 +130,8 @@ cd $HOME/kodi/tools/depends
 ./bootstrap
 ```
 
-**TIP:** Look for comments starting with `Or ...` and only execute the command(s) you need.
+> [!TIP]
+> Look for comments starting with `Or ...` and only execute the command(s) you need.
 
 Configure build for aarch64:
 ```
@@ -144,16 +153,19 @@ Or configure build for x86_64:
 ./configure --with-tarballs=$HOME/android-tools/xbmc-tarballs --host=x86_64-linux-android --with-sdk-path=$HOME/android-tools/android-sdk-linux --with-ndk-path=$HOME/android-tools/android-sdk-linux/ndk/21.4.7075529 --prefix=$HOME/android-tools/xbmc-depends
 ```
 
-> **Note:** Android x86 and x86_64 are not maintained and are not 100% sure that everything works correctly!
+> [!NOTE]  
+> Android x86 and x86_64 are not maintained and are not 100% sure that everything works correctly!
 
 Build tools and dependencies:
 ```
 make -j$(getconf _NPROCESSORS_ONLN)
 ```
 
-**TIP:** By adding `-j<number>` to the make command, you can choose how many concurrent jobs will be used and expedite the build process. It is recommended to use `-j$(getconf _NPROCESSORS_ONLN)` to compile on all available processor cores. The build machine can also be configured to do this automatically by adding `export MAKEFLAGS="-j$(getconf _NPROCESSORS_ONLN)"` to your shell config (e.g. `~/.bashrc`).
+> [!TIP]
+> By adding `-j<number>` to the make command, you can choose how many concurrent jobs will be used and expedite the build process. It is recommended to use `-j$(getconf _NPROCESSORS_ONLN)` to compile on all available processor cores. The build machine can also be configured to do this automatically by adding `export MAKEFLAGS="-j$(getconf _NPROCESSORS_ONLN)"` to your shell config (e.g. `~/.bashrc`).
 
-**WARNING:** Look for the `Dependencies built successfully.` success message. If in doubt run a single threaded `make` command until the message appears. If the single make fails, clean the specific library by issuing `make -C target/<name_of_failed_lib> distclean` and run `make`again.
+> [!WARNING]  
+> Look for the `Dependencies built successfully.` success message. If in doubt run a single threaded `make` command until the message appears. If the single make fails, clean the specific library by issuing `make -C target/<name_of_failed_lib> distclean` and run `make`again.
 
 ### 5.1. Advanced Configure Options
 
@@ -280,7 +292,9 @@ cd $HOME/kodi
 make -C tools/depends/target/cmakebuildsys
 ```
 
-**TIP:** BUILD_DIR can be provided as an argument to cmakebuildsys. This allows you to provide an alternate build location. Change all paths onwards as required if BUILD_DIR option used.
+> [!TIP]
+> BUILD_DIR can be provided as an argument to cmakebuildsys. This allows you to provide an alternate build location. Change all paths onwards as required if BUILD_DIR option used.
+
 ```
 mkdir $HOME/kodi-build
 make -C tools/depends/target/cmakebuildsys BUILD_DIR=$HOME/kodi-build
@@ -358,7 +372,8 @@ Enable CheckJNI (**before** starting the Kodi):
 adb shell setprop debug.checkjni 1
 ```
 
-**NOTE:** These commands assume that current directory is `$HOME/kodi-build/tools/android/packaging` and that the proper SDK/NDK paths are set.
+> [!NOTE]  
+> These commands assume that current directory is `$HOME/kodi-build/tools/android/packaging` and that the proper SDK/NDK paths are set.
 
 GDB can be used to debug, though the support is rather primitive. Rather than using `gdb` directly, you will need to use `ndk-gdb` which wraps it. You can use the `-p/--project` switches or instead you will need to `cd` to `$HOME/kodi-build/tools/android/packaging/xbmc` and execute it from there.
 ```
