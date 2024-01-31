@@ -132,7 +132,9 @@ int32_t CEventLoop::processInput(AInputEvent* event)
   int32_t source = AInputEvent_getSource(event);
 
   // handle joystick input
-  if (IS_FROM_SOURCE(source, AINPUT_SOURCE_GAMEPAD) || IS_FROM_SOURCE(source, AINPUT_SOURCE_JOYSTICK))
+  if (IS_FROM_SOURCE(source, AINPUT_SOURCE_GAMEPAD) ||
+      IS_FROM_SOURCE(source, AINPUT_SOURCE_JOYSTICK) ||
+      IS_FROM_SOURCE(source, AINPUT_SOURCE_KEYBOARD))
   {
     if (m_inputHandler->onJoyStickEvent(event))
       return true;
