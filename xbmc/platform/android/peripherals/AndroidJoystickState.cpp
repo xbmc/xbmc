@@ -271,6 +271,25 @@ bool CAndroidJoystickState::ProcessEvent(const AInputEvent* event)
 
       bool result = SetButtonValue(keycode, buttonState);
 
+      if (!result)
+      {
+        // Try shoehorning keys into buttons
+        switch (keycode)
+        {
+          case AKEYCODE_MENU:
+            result = SetButtonValue(AKEYCODE_BUTTON_START, buttonState);
+            break;
+          case AKEYCODE_BACK:
+            result = SetButtonValue(AKEYCODE_BUTTON_SELECT, buttonState);
+            break;
+          case AKEYCODE_HOME:
+            result = SetButtonValue(AKEYCODE_BUTTON_MODE, buttonState);
+            break;
+          default:
+            break;
+        }
+      }
+
       return result;
     }
 
