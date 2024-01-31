@@ -780,7 +780,7 @@ void PlayItem(const std::shared_ptr<CFileItem>& itemIn,
       if (bookmark != 0 )
       {
         std::string resumetitle = pItemToResume->GetMusicInfoTag()->GetTitle();
-      std::string resumedisc =
+        std::string resumedisc =
           std::to_string(pItemToResume->GetMusicInfoTag()->GetTrackAndDiscNumber() >> 16);
         std::string restitle = StringUtils::Format(
           g_localizeStrings.Get(29995), resumetitle, resumedisc);
@@ -795,6 +795,7 @@ void PlayItem(const std::shared_ptr<CFileItem>& itemIn,
           return;
         if (choice == MUSIC_SELECT_ACTION_PLAY)
           pItemToResume = contents[0]; // start playing from first item
+      }
         if (pItemToResume != nullptr)
         {
           item = pItemToResume;
@@ -803,7 +804,6 @@ void PlayItem(const std::shared_ptr<CFileItem>& itemIn,
           AddItemToPlayListAndPlay(itemPath, item, player);
           return;
         }
-      }
       const auto parentItem = std::make_shared<CFileItem>(parentPath, true);
       if (item->GetStartOffset() == STARTOFFSET_RESUME)
         parentItem->SetStartOffset(STARTOFFSET_RESUME);

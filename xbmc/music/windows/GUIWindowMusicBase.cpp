@@ -892,46 +892,80 @@ bool CGUIWindowMusicBase::OnSelect(int iItem)
 {
   auto item = m_vecItems->Get(iItem);
   int bookmark = 0;
-  std::shared_ptr <CFileItem> pItemToResume = nullptr;
-  const std::shared_ptr <CFileItem> firstItem = *m_vecItems->cbegin();
   if (item->HasMusicInfoTag() &&
       item->GetMusicInfoTag()->GetAlbumReleaseType() == CAlbum::Audiobook && !item->m_bIsFolder)
   {
     if (m_musicdatabase.GetResumeBookmarkForAudioBook(*item, bookmark) && bookmark > 0)
     {
-      // find which chapter the bookmark belongs to
-      if (item->IsType(".m4b")) // should we allow resuming mka too?
-      {
-        auto itemIt =
-          std::find_if(m_vecItems->cbegin(), m_vecItems->cend(),
-                       [&](const CFileItemPtr& item) { return bookmark < item->GetEndOffset(); });
+      std::string path = item->GetPath();
+      std::string albumPath = item->GetProperty("ParentPath").asString();
+      if (albumPath.empty())
+        URIUtils::GetParentPath(path, albumPath);
 
-          pItemToResume = *itemIt;
-          bookmark = pItemToResume->GetMusicInfoTag()->GetTrackNumber() - 1;
-      }
-      else//mp3 etc book - bookmark will already be the track number to resume
-      {
-        bookmark--;// subtract 1 because m_vecItems are numbered from zero but tracks start at 1
-        pItemToResume = (m_vecItems->Get(bookmark));
-      }
-      if (pItemToResume != *m_vecItems->cend() && pItemToResume != nullptr)
-      {
-        // ask the user if they want to play or resume
-        CContextButtons choices;
-        choices.Add(MUSIC_SELECT_ACTION_PLAY, 208); // 208 = Play
-        choices.Add(MUSIC_SELECT_ACTION_RESUME,
-                    StringUtils::Format(g_localizeStrings.Get(12022), // 12022 = Resume from ...
-                                        pItemToResume->GetMusicInfoTag()->GetTitle()));
+      CMusicDbUrl musicUrl;
+      musicUrl.FromString(albumPath);
 
-        auto choice = CGUIDialogContextMenu::Show(choices);
-        if (choice == MUSIC_SELECT_ACTION_RESUME)
+      bool show_all_tracks = !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_MUSICLIBRARY_SHOWDISCS);
+      /* If we are navigating with discs then as we are on a track we need to go back two levels to
+       * get the top level url (track->disc->book), remove any disc options (there will be either
+       * a numeric discid or a string disctitle but not both) and then get the full list of tracks
+       * by appending '-2/' to the end of the album url - any further xsp is ignored */
+      if (!show_all_tracks)
+      {
+        std::string old_albumPath = albumPath;
+        URIUtils::GetParentPath(old_albumPath, albumPath);
+        musicUrl.FromString(albumPath);
+        const CUrlOptions::UrlOptions& options = musicUrl.GetOptions();
+        if (options.find("discid") != options.end())
+          musicUrl.RemoveOption("discid");
+        else if (options.find("disctitle") != options.end())
+          musicUrl.RemoveOption("disctitle");
+        musicUrl.AppendPath("-2/");
+      }
+      path = musicUrl.ToString();
+
+      CFileItemList tracklist;
+      CDirectory::GetDirectory(path, tracklist, "",0);
+      // Find the item in the list that matches the bookmark
+      std::shared_ptr <CFileItem> track_to_resume_from = nullptr;
+      int resumepos = 0;
+      for (int i = 0; i <= tracklist.Size(); i++)
+      {
+        auto checkitem = tracklist.Get(i);
+        if (checkitem->GetMusicInfoTag()->GetTrackAndDiscNumber() == bookmark)
         {
-          pItemToResume->SetProperty("audiobook_bookmark", bookmark);
-          return CGUIMediaWindow::OnSelect(bookmark);
+          track_to_resume_from = checkitem;
+          resumepos = i;
+          break;
         }
-        else if (choice < 0)
-          return true;
       }
+      // ask the user if they want to play or resume
+      CContextButtons choices;
+      choices.Add(MUSIC_SELECT_ACTION_PLAY, 208); // 208 = Play
+      std::string resumetitle = track_to_resume_from->GetMusicInfoTag()->GetTitle();
+      std::string resumedisc =
+          std::to_string(track_to_resume_from->GetMusicInfoTag()->GetTrackAndDiscNumber() >> 16);
+      std::string restitle = StringUtils::Format(
+          g_localizeStrings.Get(29995), resumetitle, resumedisc);
+      choices.Add(MUSIC_SELECT_ACTION_RESUME,
+                  StringUtils::Format(g_localizeStrings.Get(12022), // 12022 = Resume from ...
+                                      restitle));
+
+      auto choice = CGUIDialogContextMenu::Show(choices);
+      if (choice == MUSIC_SELECT_ACTION_RESUME)
+      {
+        auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
+        playlistPlayer.ClearPlaylist(PLAYLIST::TYPE_MUSIC);
+        playlistPlayer.Reset();
+        playlistPlayer.Add(PLAYLIST::TYPE_MUSIC, tracklist);// add all tracks to playlist
+
+        playlistPlayer.SetCurrentPlaylist(PLAYLIST::TYPE_MUSIC);
+        playlistPlayer.Play(resumepos, ""); // start playing at the bookmarked track
+        return true;
+      }
+      else if (choice < 0)
+        return true;
     }
   }
 
