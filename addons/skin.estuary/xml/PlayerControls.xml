@@ -119,13 +119,13 @@
 					<height>125</height>
 					<visible>Player.HasAudio + !MusicPlayer.Content(LiveTV)</visible>
 					<control type="button" id="704">
-						<left>0</left>
+						<left>40</left>
 						<top>0</top>
 						<width>74</width>
 						<height>74</height>
-						<label>$LOCALIZE[486]$INFO[Playlist.Repeat, : ]</label>
+						<label></label>
 						<font></font>
-						<texturefocus />
+						<texturefocus colordiffuse="button_focus">osd/fullscreen/buttons/button-fo.png</texturefocus>
 						<texturenofocus />
 						<onleft>605</onleft>
 						<onright>607</onright>
@@ -135,30 +135,29 @@
 					</control>
 					<control type="image">
 						<left>40</left>
-						<top>25</top>
+						<top>0</top>
 						<width>74</width>
 						<height>74</height>
-						<animation center="37,37" effect="zoom" end="100" reversible="false" start="95" time="480" tween="back" condition="Control.HasFocus(704)">Conditional</animation>
-						<texture colordiffuse="$VAR[RepeatButtonColordiffuseVar]">$VAR[PlayerControlsRepeatImageVar]</texture>
+						<animation center="38,38" effect="zoom" end="100" reversible="false" start="95" time="480" tween="back" condition="Control.HasFocus(704)">Conditional</animation>
+						<texture colordiffuse="white">$VAR[PlayerControlsRepeatImageVar]</texture>
 					</control>
 				</control>
 				<control type="radiobutton" id="607">
-					<textureradioonfocus colordiffuse="button_focus">osd/fullscreen/buttons/random-on.png</textureradioonfocus>
+					<textureradioonfocus colordiffuse="white">osd/fullscreen/buttons/random-on.png</textureradioonfocus>
 					<textureradioonnofocus>osd/fullscreen/buttons/random-on.png</textureradioonnofocus>
-					<textureradioofffocus colordiffuse="button_focus">osd/fullscreen/buttons/random-off.png</textureradioofffocus>
+					<textureradioofffocus colordiffuse="white">osd/fullscreen/buttons/random-off.png</textureradioofffocus>
 					<textureradiooffnofocus>osd/fullscreen/buttons/random-off.png</textureradiooffnofocus>
 					<textureradioondisabled colordiffuse="disabled">osd/fullscreen/buttons/random-on.png</textureradioondisabled>
 					<textureradiooffdisabled colordiffuse="disabled">osd/fullscreen/buttons/random-off.png</textureradiooffdisabled>
-					<texturefocus />
-					<width>125</width>
-					<height>123</height>
+					<texturefocus colordiffuse="button_focus">osd/fullscreen/buttons/button-fo.png</texturefocus>
+					<width>76</width>
+					<height>76</height>
 					<radiowidth>74</radiowidth>
 					<radioheight>74</radioheight>
 					<font></font>
 					<texturenofocus />
-					<radioposx>0</radioposx>
+					<radioposx>1</radioposx>
 					<radioposy>0</radioposy>
-					<label>$LOCALIZE[590]$INFO[Playlist.Random, : ]</label>
 					<animation center="62,62" effect="zoom" end="100" reversible="false" start="95" time="480" tween="back">Focus</animation>
 					<selected>Playlist.IsRandom</selected>
 					<visible>Player.HasAudio + !MusicPlayer.Content(LiveTV)</visible>
@@ -172,7 +171,7 @@
 				<height>250</height>
 				<fadetime>400</fadetime>
 				<aspectratio>keep</aspectratio>
-				<texture fallback="DefaultAlbumCover.png" border="2">$INFO[Player.Art(thumb)]</texture>
+				<texture border="2">$VAR[NowPlayingPosterVar]</texture>
 				<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
 				<bordersize>4</bordersize>
 			</control>
