@@ -1487,13 +1487,23 @@ namespace VIDEO
                                      movieDetails.m_iSeason, movieDetails.m_iEpisode, strTitle);
     }
 
-    if (!movieDetails.HasStreamDetails() &&
-        CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+    /* As HasStreamDetails() returns true for TV shows (because the scraper calls SetVideoInfoTag()
+     * directly to set the duration) a better test is just to see if we have any common flag info
+     * missing.  If we have already read an nfo file then this data should be populated, otherwise
+     * get it from the video file */
+
+    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
             CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
     {
-      CDVDFileInfo::GetFileStreamDetails(pItem);
-      CLog::Log(LOGDEBUG, "VideoInfoScanner: Extracted filestream details from video file {}",
-                CURL::GetRedacted(pItem->GetPath()));
+      const auto& strmdetails = movieDetails.m_streamDetails;
+      if (strmdetails.GetVideoCodec(1).empty() || strmdetails.GetVideoHeight(1) == 0 ||
+          strmdetails.GetVideoWidth(1) == 0 || strmdetails.GetVideoDuration(1) == 0)
+
+      {
+        CDVDFileInfo::GetFileStreamDetails(pItem);
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: Extracted filestream details from video file {}",
+                  CURL::GetRedacted(pItem->GetPath()));
+      }
     }
 
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new item to {}:{}", TranslateContent(content), CURL::GetRedacted(pItem->GetPath()));
