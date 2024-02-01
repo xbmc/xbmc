@@ -235,6 +235,12 @@ bool CGUIWindowVideoPlaylist::OnAction(const CAction& action)
     OnMove(iItem, action.GetID());
     return true;
   }
+  if (action.GetID() == ACTION_PLAYER_PLAY)
+  {
+    if (m_viewControl.HasControl(GetFocusedControlID()))
+      return OnPlayMedia(m_viewControl.GetSelectedItem());
+  }
+
   return CGUIWindowVideoBase::OnAction(action);
 }
 
