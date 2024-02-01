@@ -1472,7 +1472,7 @@ void CGUIWindowVideoBase::UpdateVideoVersionItems()
       //! not for example for home screen widgets!
 
       int videoVersionId{-1};
-      if (item->GetVideoInfoTag()->HasVideoVersions())
+      if (item->IsVideoDb() && item->GetVideoInfoTag()->HasVideoVersions())
       {
         if (item->GetProperty("has_resolved_video_asset").asBoolean(false))
         {
