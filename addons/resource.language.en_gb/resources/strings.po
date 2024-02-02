@@ -24061,7 +24061,7 @@ msgstr ""
 #: xbmc/video/ContextMenus.h
 #: xbmc/video/guilib/VideoVersionHelper.cpp
 msgctxt "#40208"
-msgid "Choose version"
+msgid "Choose version: {}"
 msgstr ""
 
 #. First choose video version and then select a player and play context menu item label
@@ -24099,7 +24099,7 @@ msgstr ""
 #. Dialog title for the selection of the video extra
 #: xbmc/video/guilib/VideoVersionHelper.cpp
 msgctxt "#40214"
-msgid "Choose extra"
+msgid "Choose extra: {}"
 msgstr ""
 
 #. Title of the dialog for version rename action from Versions Manager
