@@ -2421,6 +2421,17 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
+  /// @brief The currently playing stream has been closed
+  ///
+  /// @remarks Called if both @ref PVRCapabilities::SetHandlesInputStream() or
+  /// @ref PVRCapabilities::SetHandlesDemuxing() are set to false. Allows add-ons
+  /// to do any cleanup required prior to a stream being opened.
+  /// @return @ref PVR_ERROR_NO_ERROR if the properties have been fetched successfully.
+  ///
+  virtual PVR_ERROR StreamClosed() { return PVR_ERROR_NOT_IMPLEMENTED; }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
   /// @brief Read the next packet from the demultiplexer, if there is one.
   ///
   /// @return The next packet.
@@ -2809,6 +2820,7 @@ private:
     instance->pvr->toAddon->SeekLiveStream = ADDON_SeekLiveStream;
     instance->pvr->toAddon->LengthLiveStream = ADDON_LengthLiveStream;
     instance->pvr->toAddon->GetStreamProperties = ADDON_GetStreamProperties;
+    instance->pvr->toAddon->StreamClosed = ADDON_StreamClosed;
     instance->pvr->toAddon->GetStreamReadChunkSize = ADDON_GetStreamReadChunkSize;
     instance->pvr->toAddon->IsRealTimeStream = ADDON_IsRealTimeStream;
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
@@ -3451,6 +3463,11 @@ private:
     }
 
     return err;
+  }
+
+  inline static PVR_ERROR ADDON_StreamClosed(const AddonInstance_PVR* instance)
+  {
+    return static_cast<CInstancePVRClient*>(instance->toAddon->addonInstance)->StreamClosed();
   }
 
   inline static PVR_ERROR ADDON_GetStreamReadChunkSize(const AddonInstance_PVR* instance,
