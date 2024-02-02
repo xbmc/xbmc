@@ -44,7 +44,10 @@ static std::string PrintAxisIds(const std::vector<int>& axisIds)
   return strAxisIds;
 }
 
-static void MapAxisIds(int axisId, int primaryAxisId, int secondaryAxisId, std::vector<int>& axisIds)
+static void MapAxisIds(int axisId,
+                       int primaryAxisId,
+                       int secondaryAxisId,
+                       std::vector<int>& axisIds)
 {
   if (axisId != primaryAxisId && axisId != secondaryAxisId)
     return;
@@ -104,26 +107,25 @@ bool CAndroidJoystickState::Initialize(const CJNIViewInputDevice& inputDevice)
     }
 
     int axisId = motionRange.getAxis();
-    JoystickAxis axis {
-      { axisId },
-      motionRange.getFlat(),
-      motionRange.getFuzz(),
-      motionRange.getMin(),
-      motionRange.getMax(),
-      motionRange.getRange(),
-      motionRange.getResolution()
-    };
+    JoystickAxis axis{{axisId},
+                      motionRange.getFlat(),
+                      motionRange.getFuzz(),
+                      motionRange.getMin(),
+                      motionRange.getMax(),
+                      motionRange.getRange(),
+                      motionRange.getResolution()};
 
     // check if the axis ID belongs to a D-pad, analogue stick or trigger
     if (axisId == AMOTION_EVENT_AXIS_HAT_X || axisId == AMOTION_EVENT_AXIS_HAT_Y ||
-             axisId == AMOTION_EVENT_AXIS_X || axisId == AMOTION_EVENT_AXIS_Y ||
-             axisId == AMOTION_EVENT_AXIS_Z || axisId == AMOTION_EVENT_AXIS_RX ||
-             axisId == AMOTION_EVENT_AXIS_RY || axisId == AMOTION_EVENT_AXIS_RZ ||
-             axisId == AMOTION_EVENT_AXIS_LTRIGGER || axisId == AMOTION_EVENT_AXIS_RTRIGGER ||
-             axisId == AMOTION_EVENT_AXIS_GAS || axisId == AMOTION_EVENT_AXIS_BRAKE ||
-             axisId == AMOTION_EVENT_AXIS_THROTTLE || axisId == AMOTION_EVENT_AXIS_RUDDER || axisId == AMOTION_EVENT_AXIS_WHEEL)
+        axisId == AMOTION_EVENT_AXIS_X || axisId == AMOTION_EVENT_AXIS_Y ||
+        axisId == AMOTION_EVENT_AXIS_Z || axisId == AMOTION_EVENT_AXIS_RX ||
+        axisId == AMOTION_EVENT_AXIS_RY || axisId == AMOTION_EVENT_AXIS_RZ ||
+        axisId == AMOTION_EVENT_AXIS_LTRIGGER || axisId == AMOTION_EVENT_AXIS_RTRIGGER ||
+        axisId == AMOTION_EVENT_AXIS_GAS || axisId == AMOTION_EVENT_AXIS_BRAKE ||
+        axisId == AMOTION_EVENT_AXIS_THROTTLE || axisId == AMOTION_EVENT_AXIS_RUDDER ||
+        axisId == AMOTION_EVENT_AXIS_WHEEL)
     {
-       // check if this axis is already known
+      // check if this axis is already known
       if (ContainsAxis(axisId, m_axes))
       {
         CLog::Log(LOGWARNING,
@@ -150,29 +152,29 @@ bool CAndroidJoystickState::Initialize(const CJNIViewInputDevice& inputDevice)
   }
 
   // add the usual suspects
-  m_buttons.push_back({ { AKEYCODE_BUTTON_A } });
-  m_buttons.push_back({ { AKEYCODE_BUTTON_B } });
-  m_buttons.push_back({ { AKEYCODE_BUTTON_C } });
-  m_buttons.push_back({ { AKEYCODE_BUTTON_X } });
-  m_buttons.push_back({ { AKEYCODE_BUTTON_Y } });
-  m_buttons.push_back({ { AKEYCODE_BUTTON_Z } });
-  m_buttons.push_back({ { AKEYCODE_BACK } });
-  m_buttons.push_back({ { AKEYCODE_MENU } });
-  m_buttons.push_back({ { AKEYCODE_HOME } });
-  m_buttons.push_back({ { AKEYCODE_BUTTON_SELECT } });
-  m_buttons.push_back({ { AKEYCODE_BUTTON_MODE } });
-  m_buttons.push_back({ { AKEYCODE_BUTTON_START } });
-  m_buttons.push_back({ { AKEYCODE_BUTTON_L1 } });
-  m_buttons.push_back({ { AKEYCODE_BUTTON_R1 } });
-  m_buttons.push_back({ { AKEYCODE_BUTTON_L2 } });
-  m_buttons.push_back({ { AKEYCODE_BUTTON_R2 } });
-  m_buttons.push_back({ { AKEYCODE_BUTTON_THUMBL } });
-  m_buttons.push_back({ { AKEYCODE_BUTTON_THUMBR } });
-  m_buttons.push_back({ { AKEYCODE_DPAD_UP } });
-  m_buttons.push_back({ { AKEYCODE_DPAD_RIGHT } });
-  m_buttons.push_back({ { AKEYCODE_DPAD_DOWN } });
-  m_buttons.push_back({ { AKEYCODE_DPAD_LEFT } });
-  m_buttons.push_back({ { AKEYCODE_DPAD_CENTER} });
+  m_buttons.push_back({{AKEYCODE_BUTTON_A}});
+  m_buttons.push_back({{AKEYCODE_BUTTON_B}});
+  m_buttons.push_back({{AKEYCODE_BUTTON_C}});
+  m_buttons.push_back({{AKEYCODE_BUTTON_X}});
+  m_buttons.push_back({{AKEYCODE_BUTTON_Y}});
+  m_buttons.push_back({{AKEYCODE_BUTTON_Z}});
+  m_buttons.push_back({{AKEYCODE_BACK}});
+  m_buttons.push_back({{AKEYCODE_MENU}});
+  m_buttons.push_back({{AKEYCODE_HOME}});
+  m_buttons.push_back({{AKEYCODE_BUTTON_SELECT}});
+  m_buttons.push_back({{AKEYCODE_BUTTON_MODE}});
+  m_buttons.push_back({{AKEYCODE_BUTTON_START}});
+  m_buttons.push_back({{AKEYCODE_BUTTON_L1}});
+  m_buttons.push_back({{AKEYCODE_BUTTON_R1}});
+  m_buttons.push_back({{AKEYCODE_BUTTON_L2}});
+  m_buttons.push_back({{AKEYCODE_BUTTON_R2}});
+  m_buttons.push_back({{AKEYCODE_BUTTON_THUMBL}});
+  m_buttons.push_back({{AKEYCODE_BUTTON_THUMBR}});
+  m_buttons.push_back({{AKEYCODE_DPAD_UP}});
+  m_buttons.push_back({{AKEYCODE_DPAD_RIGHT}});
+  m_buttons.push_back({{AKEYCODE_DPAD_DOWN}});
+  m_buttons.push_back({{AKEYCODE_DPAD_LEFT}});
+  m_buttons.push_back({{AKEYCODE_DPAD_CENTER}});
 
   // check if there are no buttons or axes at all
   if (GetButtonCount() == 0 && GetAxisCount() == 0)
@@ -274,9 +276,9 @@ void CAndroidJoystickState::GetButtonEvents(std::vector<kodi::addon::PeripheralE
   // Only report a single event per button (avoids dropping rapid presses)
   std::vector<kodi::addon::PeripheralEvent> repeatButtons;
 
-  for (const auto &digitalEvent : m_digitalEvents)
+  for (const auto& digitalEvent : m_digitalEvents)
   {
-    auto HasButton = [&digitalEvent](const kodi::addon::PeripheralEvent &event)
+    auto HasButton = [&digitalEvent](const kodi::addon::PeripheralEvent& event)
     {
       if (event.Type() == PERIPHERAL_EVENT_TYPE_DRIVER_BUTTON)
         return event.DriverIndex() == digitalEvent.DriverIndex();
@@ -301,7 +303,7 @@ void CAndroidJoystickState::GetAxisEvents(std::vector<kodi::addon::PeripheralEve
 bool CAndroidJoystickState::SetButtonValue(int axisId, JOYSTICK_STATE_BUTTON buttonValue)
 {
   size_t buttonIndex = 0;
-  if (!GetAxesIndex({ axisId }, m_buttons, buttonIndex) || buttonIndex >= GetButtonCount())
+  if (!GetAxesIndex({axisId}, m_buttons, buttonIndex) || buttonIndex >= GetButtonCount())
     return false;
 
   std::unique_lock<CCriticalSection> lock(m_eventMutex);
@@ -311,7 +313,8 @@ bool CAndroidJoystickState::SetButtonValue(int axisId, JOYSTICK_STATE_BUTTON but
   return true;
 }
 
-bool CAndroidJoystickState::SetAxisValue(const std::vector<int>& axisIds, JOYSTICK_STATE_AXIS axisValue)
+bool CAndroidJoystickState::SetAxisValue(const std::vector<int>& axisIds,
+                                         JOYSTICK_STATE_AXIS axisValue)
 {
   size_t axisIndex = 0;
   if (!GetAxesIndex(axisIds, m_axes, axisIndex) || axisIndex >= GetAxisCount())
@@ -347,33 +350,35 @@ float CAndroidJoystickState::Scale(float value, float max, float scaledMax)
 
 float CAndroidJoystickState::Deadzone(float value, float deadzone)
 {
-  if ((value > 0.0f && value < deadzone) ||
-      (value < 0.0f && value > -deadzone))
+  if ((value > 0.0f && value < deadzone) || (value < 0.0f && value > -deadzone))
     return 0.0f;
 
   return value;
 }
 
-CAndroidJoystickState::JoystickAxes::const_iterator CAndroidJoystickState::GetAxis(const std::vector<int>& axisIds, const JoystickAxes& axes)
+CAndroidJoystickState::JoystickAxes::const_iterator CAndroidJoystickState::GetAxis(
+    const std::vector<int>& axisIds, const JoystickAxes& axes)
 {
   return std::find_if(axes.cbegin(), axes.cend(),
-                     [&axisIds](const JoystickAxis& axis)
-                     {
-                       std::vector<int> matches(std::max(axisIds.size(), axis.ids.size()));
-                       const auto& matchesEnd = std::set_intersection(axisIds.begin(), axisIds.end(),
-                                                                      axis.ids.begin(), axis.ids.end(),
-                                                                      matches.begin());
-                       matches.resize(matchesEnd - matches.begin());
-                       return !matches.empty();
-                     });
+                      [&axisIds](const JoystickAxis& axis)
+                      {
+                        std::vector<int> matches(std::max(axisIds.size(), axis.ids.size()));
+                        const auto& matchesEnd =
+                            std::set_intersection(axisIds.begin(), axisIds.end(), axis.ids.begin(),
+                                                  axis.ids.end(), matches.begin());
+                        matches.resize(matchesEnd - matches.begin());
+                        return !matches.empty();
+                      });
 }
 
 bool CAndroidJoystickState::ContainsAxis(int axisId, const JoystickAxes& axes)
 {
-  return GetAxis({ axisId }, axes) != axes.cend();
+  return GetAxis({axisId}, axes) != axes.cend();
 }
 
-bool CAndroidJoystickState::GetAxesIndex(const std::vector<int>& axisIds, const JoystickAxes& axes, size_t& axesIndex)
+bool CAndroidJoystickState::GetAxesIndex(const std::vector<int>& axisIds,
+                                         const JoystickAxes& axes,
+                                         size_t& axesIndex)
 {
   auto axesIt = GetAxis(axisIds, axes);
   if (axesIt == axes.end())
