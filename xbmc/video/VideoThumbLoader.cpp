@@ -30,6 +30,7 @@
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoTag.h"
+#include "video/VideoManagerTypes.h"
 #include "video/guilib/VideoVersionHelper.h"
 
 #include <algorithm>
@@ -409,11 +410,13 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
     // @todo unify asset path for other items path
     if (VIDEO::IsVideoAssetFile(item))
     {
-      if (m_videoDatabase->GetArtForAsset(tag.m_iFileId,
-                                          item.GetProperty("noartfallbacktoowner").asBoolean(false)
-                                              ? ArtFallbackOptions::NONE
-                                              : ArtFallbackOptions::PARENT,
-                                          artwork))
+      if (m_videoDatabase->GetArtForAsset(
+              tag.m_iFileId,
+              (item.GetProperty("noartfallbacktoowner").asBoolean(false) ||
+               item.GetVideoInfoTag()->GetAssetInfo().GetType() != VideoAssetType::VERSION)
+                  ? ArtFallbackOptions::NONE
+                  : ArtFallbackOptions::PARENT,
+              artwork))
         item.AppendArt(artwork);
     }
     else if (m_videoDatabase->GetArtForItem(tag.m_iDbId, tag.m_type, artwork))
