@@ -2947,7 +2947,9 @@ msgctxt "#629"
 msgid "View mode"
 msgstr ""
 
+#. Label for stretching the displayed video to its normal size
 #: system/settings/settings.xml
+#: xbmc/games/dialogs/osd/DialogGameStretchMode.cpp
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#630"
 msgid "Normal"
@@ -2959,6 +2961,8 @@ msgctxt "#631"
 msgid "Zoom"
 msgstr ""
 
+#. Label for stretching the displayed video to a 4:3 aspect ratio
+#: xbmc/games/dialogs/osd/DialogGameStretchMode.cpp
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#632"
 msgid "Stretch 4:3"
@@ -2970,12 +2974,15 @@ msgctxt "#633"
 msgid "Wide zoom"
 msgstr ""
 
+#. Label for stretching the displayed video to a 16:9 aspect ratio
 #: system/settings/settings.xml
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#634"
 msgid "Stretch 16:9"
 msgstr ""
 
+#. Label for stretching the displayed video to the original size of the video stream
+#: xbmc/games/dialogs/osd/DialogGameStretchMode.cpp
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#635"
 msgid "Original size"
@@ -18622,14 +18629,14 @@ msgid "270°"
 msgstr ""
 
 #. Label of thumbnail in the in-game menu for stretching the video to fullscreen
-#: xbmc/games/dialogs/osd/DialogGameViewMode.h
+#: xbmc/games/dialogs/osd/DialogGameStretchMode.cpp
 msgctxt "#35232"
 msgid "Fullscreen"
 msgstr ""
 
 #. Label of the setting in the in-game menu for stretching the game to fit the monitor
 #: addons/skin.estuary/xml/Custom_1101_SettingsList.xml
-#: xbmc/games/dialogs/osdDialogGameViewMode.cpp
+#: xbmc/games/dialogs/osd/DialogGameStretchMode.cpp
 msgctxt "#35233"
 msgid "Stretch mode"
 msgstr ""
