@@ -66,7 +66,7 @@ if(NOT TARGET MariaDBClient::MariaDBClient)
     set_target_properties(MariaDBClient::MariaDBClient PROPERTIES
                                                        INTERFACE_INCLUDE_DIRECTORIES "${MARIADBCLIENT_INCLUDE_DIR}"
                                                        INTERFACE_COMPILE_DEFINITIONS HAS_MARIADB=1)
-    if(CORE_SYSTEM_NAME STREQUAL osx)
+    if(CORE_SYSTEM_NAME STREQUAL osx OR HOST MATCHES "steamdeck")
       target_link_libraries(MariaDBClient::MariaDBClient INTERFACE gssapi_krb5)
     endif()
 
