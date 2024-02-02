@@ -211,6 +211,7 @@ bool CPVRGUIActionsPlayback::PlayEpgTag(
     return false;
 
   CPVRStreamProperties props;
+  client->StreamClosed();
   client->GetEpgTagStreamProperties(epgTag, props);
 
   CFileItem* itemToPlay = nullptr;

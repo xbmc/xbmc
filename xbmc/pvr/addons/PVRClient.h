@@ -144,6 +144,12 @@ public:
   PVR_ERROR GetStreamProperties(PVR_STREAM_PROPERTIES* pProperties) const;
 
   /*!
+   * @brief A stream was closed or has ended
+   * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
+   */
+  PVR_ERROR StreamClosed() const;
+
+  /*!
    * @return The name reported by the backend.
    */
   const std::string& GetBackendName() const;

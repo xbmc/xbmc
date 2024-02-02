@@ -1264,6 +1264,16 @@ PVR_ERROR CPVRClient::GetStreamProperties(PVR_STREAM_PROPERTIES* props) const
   });
 }
 
+PVR_ERROR CPVRClient::StreamClosed() const
+{
+  return DoAddonCall(__func__,
+                     [](const AddonInstance* addon)
+                     {
+                       addon->toAddon->StreamClosed(addon);
+                       return PVR_ERROR_NO_ERROR;
+                     });
+}
+
 PVR_ERROR CPVRClient::DemuxReset()
 {
   return DoAddonCall(

@@ -359,6 +359,9 @@ void CPVRPlaybackState::StartPlayback(
 
     if (item->IsPVRChannel())
     {
+      if (!fromEpgAsLive)
+        client->StreamClosed();
+
       client->GetChannelStreamProperties(item->GetPVRChannelInfoTag(), props, fromEpgAsLive);
     }
     else if (item->IsPVRRecording())
@@ -367,6 +370,7 @@ void CPVRPlaybackState::StartPlayback(
     }
     else if (item->IsEPG())
     {
+      client->StreamClosed();
       client->GetEpgTagStreamProperties(item->GetEPGInfoTag(), props);
 
       if (mode == ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM)
