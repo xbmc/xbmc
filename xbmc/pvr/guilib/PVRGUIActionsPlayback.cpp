@@ -214,6 +214,11 @@ bool CPVRGUIActionsPlayback::PlayEpgTag(
     return false;
 
   CPVRStreamProperties props;
+  PVR_ERROR retVal = client->StreamClosed();
+  if (retVal != PVR_ERROR_NO_ERROR)
+    CLog::LogFC(LOGERROR, LOGPVR, "Client error on call to StreamClosed(): {}",
+                CPVRClient::ToString(retVal));
+
   client->GetEpgTagStreamProperties(epgTag, props);
 
   CFileItem* itemToPlay = nullptr;

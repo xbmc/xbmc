@@ -359,6 +359,14 @@ void CPVRPlaybackState::StartPlayback(CFileItem* item,
 
     if (item->IsPVRChannel())
     {
+      if (source == PVR_SOURCE::DEFAULT)
+      {
+        PVR_ERROR retVal = client->StreamClosed();
+        if (retVal != PVR_ERROR_NO_ERROR)
+          CLog::LogFC(LOGERROR, LOGPVR, "Client error on call to StreamClosed(): {}",
+                      CPVRClient::ToString(retVal));
+      }
+
       client->GetChannelStreamProperties(item->GetPVRChannelInfoTag(), source, props);
     }
     else if (item->IsPVRRecording())
@@ -367,6 +375,11 @@ void CPVRPlaybackState::StartPlayback(CFileItem* item,
     }
     else if (item->IsEPG())
     {
+      PVR_ERROR retVal = client->StreamClosed();
+      if (retVal != PVR_ERROR_NO_ERROR)
+        CLog::LogFC(LOGERROR, LOGPVR, "Client error on call to StreamClosed(): {}",
+                    CPVRClient::ToString(retVal));
+
       client->GetEpgTagStreamProperties(item->GetEPGInfoTag(), props);
 
       if (mode == ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM)
