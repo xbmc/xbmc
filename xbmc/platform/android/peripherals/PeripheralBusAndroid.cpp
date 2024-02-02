@@ -16,6 +16,7 @@
 #include "utils/log.h"
 
 #include "platform/android/activity/XBMCApp.h"
+#include "platform/android/peripherals/AndroidJoystickState.h"
 
 #include <algorithm>
 #include <mutex>
@@ -31,7 +32,7 @@ using namespace PERIPHERALS;
 #define JOYSTICK_PROVIDER_ANDROID "android"
 
 // Set this to the final key code in android/keycodes.h
-const unsigned int KEY_CODE_FINAL = AKEYCODE_HELP;
+const unsigned int KEY_CODE_FINAL = AKEYCODE_PROFILE_SWITCH;
 
 static const std::string DeviceLocationPrefix = "android/inputdevice/";
 
@@ -116,6 +117,50 @@ bool CPeripheralBusAndroid::InitializeProperties(CPeripheral& peripheral)
 
   CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: Device has {} buttons and {} axes",
             joystick.ButtonCount(), joystick.AxisCount());
+
+  return true;
+}
+
+bool CPeripheralBusAndroid::InitializeButtonMap(const CPeripheral& peripheral,
+                                                KODI::JOYSTICK::IButtonMap& buttonMap) const
+{
+  int deviceId;
+  if (!GetDeviceId(peripheral.Location(), deviceId))
+  {
+    CLog::Log(LOGWARNING,
+              "CPeripheralBusAndroid: failed to initialize buttonmap due to unknown device ID for "
+              "peripheral \"{}\"",
+              peripheral.Location());
+    return false;
+  }
+
+  // get the joystick state
+  auto it = m_joystickStates.find(deviceId);
+  if (it == m_joystickStates.end())
+  {
+    CLog::Log(LOGWARNING,
+              "CPeripheralBusAndroid: joystick with device ID {} not found for peripheral \"{}\"",
+              deviceId, peripheral.Location());
+    return false;
+  }
+
+  const CAndroidJoystickState& joystick = it->second;
+  if (joystick.GetButtonCount() == 0 && joystick.GetAxisCount() == 0)
+  {
+    CLog::Log(LOGDEBUG,
+              "CPeripheralBusAndroid: joystick has no buttons or axes for peripheral \"{}\"",
+              peripheral.Location());
+    return false;
+  }
+
+  if (!joystick.InitializeButtonMap(buttonMap))
+  {
+    CLog::Log(
+        LOGDEBUG,
+        "CPeripheralBusAndroid: failed to initialize joystick buttonmap for peripheral \"{}\"",
+        peripheral.Location());
+    return false;
+  }
 
   return true;
 }
@@ -208,7 +253,7 @@ void CPeripheralBusAndroid::OnInputDeviceAdded(int deviceId)
     PeripheralScanResult result;
     if (!ConvertToPeripheralScanResult(device, result))
       return;
-    m_scanResults.m_results.push_back(result);
+    m_scanResults.m_results.emplace_back(std::move(result));
   }
 
   CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: input device with ID {} added", deviceId);
@@ -345,7 +390,7 @@ PeripheralScanResults CPeripheralBusAndroid::GetInputDevices()
       continue;
 
     CLog::Log(LOGINFO, "CPeripheralBusAndroid: added input device");
-    results.m_results.push_back(result);
+    results.m_results.emplace_back(std::move(result));
   }
 
   return results;
@@ -382,8 +427,59 @@ bool CPeripheralBusAndroid::ConvertToPeripheralScanResult(
   if (!inputDevice.supportsSource(CJNIViewInputDevice::SOURCE_JOYSTICK) &&
       !inputDevice.supportsSource(CJNIViewInputDevice::SOURCE_GAMEPAD))
   {
-    CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: ignoring non-joystick device");
-    return false;
+    // Observed an anomylous PS4 controller with only SOURCE_MOUSE
+    if (!inputDevice.supportsSource(CJNIViewInputDevice::SOURCE_MOUSE))
+    {
+      CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: ignoring non-joystick device");
+      return false;
+    }
+
+    // Make sure the anomylous controller has buttons
+    // clang-format off
+    std::vector<int> buttons{
+        AKEYCODE_BUTTON_A,
+        AKEYCODE_BUTTON_B,
+        AKEYCODE_BUTTON_C,
+        AKEYCODE_BUTTON_X,
+        AKEYCODE_BUTTON_Y,
+        AKEYCODE_BUTTON_Z,
+        AKEYCODE_BUTTON_L1,
+        AKEYCODE_BUTTON_R1,
+        AKEYCODE_BUTTON_L2,
+        AKEYCODE_BUTTON_R2,
+        AKEYCODE_BUTTON_THUMBL,
+        AKEYCODE_BUTTON_THUMBR,
+        AKEYCODE_BUTTON_START,
+        AKEYCODE_BUTTON_SELECT,
+        AKEYCODE_BUTTON_MODE,
+        AKEYCODE_BUTTON_1,
+        AKEYCODE_BUTTON_2,
+        AKEYCODE_BUTTON_3,
+        AKEYCODE_BUTTON_4,
+        AKEYCODE_BUTTON_5,
+        AKEYCODE_BUTTON_6,
+        AKEYCODE_BUTTON_7,
+        AKEYCODE_BUTTON_8,
+        AKEYCODE_BUTTON_9,
+        AKEYCODE_BUTTON_10,
+        AKEYCODE_BUTTON_11,
+        AKEYCODE_BUTTON_12,
+        AKEYCODE_BUTTON_13,
+        AKEYCODE_BUTTON_14,
+        AKEYCODE_BUTTON_15,
+        AKEYCODE_BUTTON_16,
+    };
+    // clang-format on
+
+    auto result = inputDevice.hasKeys(buttons);
+
+    if (std::find(result.begin(), result.end(), true) == result.end())
+    {
+      CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: ignoring non-joystick device with mouse source");
+      return false;
+    }
+
+    CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: adding non-joystick device with mouse source");
   }
 
   peripheralScanResult.m_type = PERIPHERAL_JOYSTICK;

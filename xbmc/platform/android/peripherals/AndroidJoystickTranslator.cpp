@@ -8,9 +8,12 @@
 
 #include "AndroidJoystickTranslator.h"
 
+#include "games/controllers/DefaultController.h"
+
 #include <android/input.h>
 #include <android/keycodes.h>
 
+using namespace KODI;
 using namespace PERIPHERALS;
 
 const char* CAndroidJoystickTranslator::TranslateAxis(int axisId)
@@ -630,7 +633,115 @@ const char* CAndroidJoystickTranslator::TranslateKeyCode(int keyCode)
       return "AKEYCODE_TV_TIMER_PROGRAMMING";
     case AKEYCODE_HELP:
       return "AKEYCODE_HELP";
+    case AKEYCODE_NAVIGATE_PREVIOUS:
+      return "AKEYCODE_NAVIGATE_PREVIOUS";
+    case AKEYCODE_NAVIGATE_NEXT:
+      return "AKEYCODE_NAVIGATE_NEXT";
+    case AKEYCODE_NAVIGATE_IN:
+      return "AKEYCODE_NAVIGATE_IN";
+    case AKEYCODE_NAVIGATE_OUT:
+      return "AKEYCODE_NAVIGATE_OUT";
+    case AKEYCODE_STEM_PRIMARY:
+      return "AKEYCODE_STEM_PRIMARY";
+    case AKEYCODE_STEM_1:
+      return "AKEYCODE_STEM_1";
+    case AKEYCODE_STEM_2:
+      return "AKEYCODE_STEM_2";
+    case AKEYCODE_STEM_3:
+      return "AKEYCODE_STEM_3";
+    case AKEYCODE_DPAD_UP_LEFT:
+      return "AKEYCODE_DPAD_UP_LEFT";
+    case AKEYCODE_DPAD_DOWN_LEFT:
+      return "AKEYCODE_DPAD_DOWN_LEFT";
+    case AKEYCODE_DPAD_UP_RIGHT:
+      return "AKEYCODE_DPAD_UP_RIGHT";
+    case AKEYCODE_DPAD_DOWN_RIGHT:
+      return "AKEYCODE_DPAD_DOWN_RIGHT";
+    case AKEYCODE_MEDIA_SKIP_FORWARD:
+      return "AKEYCODE_MEDIA_SKIP_FORWARD";
+    case AKEYCODE_MEDIA_SKIP_BACKWARD:
+      return "AKEYCODE_MEDIA_SKIP_BACKWARD";
+    case AKEYCODE_MEDIA_STEP_FORWARD:
+      return "AKEYCODE_MEDIA_STEP_FORWARD";
+    case AKEYCODE_MEDIA_STEP_BACKWARD:
+      return "AKEYCODE_MEDIA_STEP_BACKWARD";
+    case AKEYCODE_SOFT_SLEEP:
+      return "AKEYCODE_SOFT_SLEEP";
+    case AKEYCODE_CUT:
+      return "AKEYCODE_CUT";
+    case AKEYCODE_COPY:
+      return "AKEYCODE_COPY";
+    case AKEYCODE_PASTE:
+      return "AKEYCODE_PASTE";
+    case AKEYCODE_SYSTEM_NAVIGATION_UP:
+      return "AKEYCODE_SYSTEM_NAVIGATION_UP";
+    case AKEYCODE_SYSTEM_NAVIGATION_DOWN:
+      return "AKEYCODE_SYSTEM_NAVIGATION_DOWN";
+    case AKEYCODE_SYSTEM_NAVIGATION_LEFT:
+      return "AKEYCODE_SYSTEM_NAVIGATION_LEFT";
+    case AKEYCODE_SYSTEM_NAVIGATION_RIGHT:
+      return "AKEYCODE_SYSTEM_NAVIGATION_RIGHT";
+    case AKEYCODE_ALL_APPS:
+      return "AKEYCODE_ALL_APPS";
+    case AKEYCODE_REFRESH:
+      return "AKEYCODE_REFRESH";
+    case AKEYCODE_THUMBS_UP:
+      return "AKEYCODE_THUMBS_UP";
+    case AKEYCODE_THUMBS_DOWN:
+      return "AKEYCODE_THUMBS_DOWN";
+    case AKEYCODE_PROFILE_SWITCH:
+      return "AKEYCODE_PROFILE_SWITCH";
+    default:
+      break;
   }
 
   return "unknown";
+}
+
+const char* CAndroidJoystickTranslator::TranslateJoystickButton(int buttonKeycode)
+{
+  switch (buttonKeycode)
+  {
+    case AKEYCODE_BUTTON_A:
+      return GAME::CDefaultController::FEATURE_A;
+    case AKEYCODE_BUTTON_B:
+      return GAME::CDefaultController::FEATURE_B;
+    case AKEYCODE_BUTTON_X:
+      return GAME::CDefaultController::FEATURE_X;
+    case AKEYCODE_BUTTON_Y:
+      return GAME::CDefaultController::FEATURE_Y;
+    case AKEYCODE_BUTTON_START:
+    case AKEYCODE_MENU:
+      return GAME::CDefaultController::FEATURE_START;
+    case AKEYCODE_BUTTON_SELECT:
+    case AKEYCODE_BACK:
+      return GAME::CDefaultController::FEATURE_BACK;
+    case AKEYCODE_BUTTON_MODE:
+    case AKEYCODE_HOME:
+      return GAME::CDefaultController::FEATURE_GUIDE;
+    case AKEYCODE_DPAD_UP:
+      return GAME::CDefaultController::FEATURE_UP;
+    case AKEYCODE_DPAD_RIGHT:
+      return GAME::CDefaultController::FEATURE_RIGHT;
+    case AKEYCODE_DPAD_DOWN:
+      return GAME::CDefaultController::FEATURE_DOWN;
+    case AKEYCODE_DPAD_LEFT:
+      return GAME::CDefaultController::FEATURE_LEFT;
+    case AKEYCODE_BUTTON_L1:
+      return GAME::CDefaultController::FEATURE_LEFT_BUMPER;
+    case AKEYCODE_BUTTON_R1:
+      return GAME::CDefaultController::FEATURE_RIGHT_BUMPER;
+    case AKEYCODE_BUTTON_L2:
+      return GAME::CDefaultController::FEATURE_LEFT_TRIGGER;
+    case AKEYCODE_BUTTON_R2:
+      return GAME::CDefaultController::FEATURE_RIGHT_TRIGGER;
+    case AKEYCODE_BUTTON_THUMBL:
+      return GAME::CDefaultController::FEATURE_LEFT_THUMB;
+    case AKEYCODE_BUTTON_THUMBR:
+      return GAME::CDefaultController::FEATURE_RIGHT_THUMB;
+    default:
+      break;
+  }
+
+  return "";
 }
