@@ -435,7 +435,8 @@ private:
 /// ...
 ///
 /// PVR_ERROR CMyPVRInstance::GetChannelStreamProperties(const kodi::addon::PVRChannel& channel,
-///                                                      std::vector<kodi::addon::PVRStreamProperty>& properties)
+///                                                      std::vector<kodi::addon::PVRStreamProperty>& properties,
+///                                                      bool fromEpgAsLive)
 /// {
 ///   ...
 ///   properties.emplace_back(PVR_STREAM_PROPERTY_INPUTSTREAM, "inputstream.adaptive");
@@ -451,7 +452,8 @@ private:
 /// ...
 ///
 /// PVR_ERROR CMyPVRInstance::GetChannelStreamProperties(const kodi::addon::PVRChannel& channel,
-///                                                      std::vector<kodi::addon::PVRStreamProperty>& properties)
+///                                                      std::vector<kodi::addon::PVRStreamProperty>& properties,
+///                                                      bool fromEpgAsLive)
 /// {
 ///   ...
 ///   kodi::addon::PVRStreamProperty property;

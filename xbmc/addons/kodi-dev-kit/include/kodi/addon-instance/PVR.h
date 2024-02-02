@@ -292,7 +292,8 @@ namespace addon
 ///   PVR_ERROR GetChannelsAmount(int& amount) override;
 ///   PVR_ERROR GetChannels(bool radio, std::vector<kodi::addon::PVRChannel>& channels) override;
 ///   PVR_ERROR GetChannelStreamProperties(const kodi::addon::PVRChannel&	channel,
-///                                        std::vector<kodi::addon::PVRStreamProperty>& properties) override;
+///                                        std::vector<kodi::addon::PVRStreamProperty>& properties,
+///                                        bool fromEpgAsLive) override;
 ///
 /// private:
 ///   std::vector<kodi::addon::PVRChannel> m_myChannels;
@@ -351,7 +352,8 @@ namespace addon
 /// }
 ///
 /// PVR_ERROR CMyPVRClient::GetChannelStreamProperties(const kodi::addon::PVRChannel& channel,
-///                                                    std::vector<kodi::addon::PVRStreamProperty>& properties)
+///                                                    std::vector<kodi::addon::PVRStreamProperty>& properties,
+///                                                    bool fromEpgAsLive)
 /// {
 ///   if (channel.GetUniqueId() == 123)
 ///   {
@@ -969,6 +971,7 @@ public:
   ///
   /// @param[in] channel The channel to get the stream properties for.
   /// @param[out] properties the properties required to play the stream.
+  /// @param[in] fromEpgAsLive True if this call resulted from PVR_STREAM_PROPERTY_EPGPLAYBACKASLIVE being set from GetEPGTagStreamProperties(), false otherwise
   /// @return @ref PVR_ERROR_NO_ERROR if the stream is available.
   ///
   /// @remarks If @ref PVRCapabilities::SetSupportsTV "SetSupportsTV" or
@@ -988,7 +991,8 @@ public:
   /// ~~~~~~~~~~~~~{.cpp}
   /// ...
   /// PVR_ERROR CMyPVRInstance::GetChannelStreamProperties(const kodi::addon::PVRChannel& channel,
-  ///                                                      std::vector<kodi::addon::PVRStreamProperty>& properties)
+  ///                                                      std::vector<kodi::addon::PVRStreamProperty>& properties,
+  ///                                                      bool fromEpgAsLive)
   /// {
   ///   ...
   ///   properties.emplace_back(PVR_STREAM_PROPERTY_INPUTSTREAM, "inputstream.adaptive");
@@ -1002,7 +1006,8 @@ public:
   ///
   virtual PVR_ERROR GetChannelStreamProperties(
       const kodi::addon::PVRChannel& channel,
-      std::vector<kodi::addon::PVRStreamProperty>& properties)
+      std::vector<kodi::addon::PVRStreamProperty>& properties,
+      bool fromEpgAsLive)
   {
     return PVR_ERROR_NOT_IMPLEMENTED;
   }
@@ -2921,12 +2926,13 @@ private:
   inline static PVR_ERROR ADDON_GetChannelStreamProperties(const AddonInstance_PVR* instance,
                                                            const PVR_CHANNEL* channel,
                                                            PVR_NAMED_VALUE* properties,
-                                                           unsigned int* propertiesCount)
+                                                           unsigned int* propertiesCount,
+                                                           bool fromEpgAsLive)
   {
     *propertiesCount = 0;
     std::vector<PVRStreamProperty> propertiesList;
     PVR_ERROR error = static_cast<CInstancePVRClient*>(instance->toAddon->addonInstance)
-                          ->GetChannelStreamProperties(channel, propertiesList);
+                          ->GetChannelStreamProperties(channel, propertiesList, fromEpgAsLive);
     if (error == PVR_ERROR_NO_ERROR)
     {
       for (const auto& property : propertiesList)

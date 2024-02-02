@@ -134,7 +134,8 @@ extern "C"
   /// ...
   ///
   /// PVR_ERROR CMyPVRInstance::GetChannelStreamProperties(const kodi::addon::PVRChannel& channel,
-  ///                                                      std::vector<PVRStreamProperty>& properties)
+  ///                                                      std::vector<PVRStreamProperty>& properties,
+  ///                                                      bool fromEpgAsLive)
   /// {
   ///   ...
   ///   properties.emplace_back(PVR_STREAM_PROPERTY_INPUTSTREAM, "inputstream.adaptive");
@@ -193,7 +194,8 @@ extern "C"
   ///
   /// // On PVR instance of addon
   /// PVR_ERROR CMyPVRInstance::GetChannelStreamProperties(const kodi::addon::PVRChannel& channel,
-  ///                                                      std::vector<PVRStreamProperty>& properties)
+  ///                                                      std::vector<PVRStreamProperty>& properties,
+  ///                                                      bool fromEpgAsLive)
   /// {
   ///   ...
   ///   // For here on example the inpustream is also inside the PVR addon
