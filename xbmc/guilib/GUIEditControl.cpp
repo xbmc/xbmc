@@ -91,8 +91,12 @@ void CGUIEditControl::DefaultConstructor()
   m_editOffset = 0;
 }
 
-CGUIEditControl::CGUIEditControl(const CGUIButtonControl &button)
-    : CGUIButtonControl(button)
+CGUIEditControl::CGUIEditControl(const CGUIButtonControl& button) : CGUIButtonControl(button)
+{
+  DefaultConstructor();
+}
+
+CGUIEditControl::CGUIEditControl(const CGUIEditControl& button) : CGUIButtonControl(button)
 {
   DefaultConstructor();
 }
