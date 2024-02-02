@@ -34,6 +34,7 @@
 #include <string>
 
 static constexpr unsigned int CONTROL_BUTTON_ADD_VERSION = 22;
+static constexpr unsigned int CONTROL_BUTTON_RENAME_VERSION = 24;
 static constexpr unsigned int CONTROL_BUTTON_SET_DEFAULT = 25;
 
 CGUIDialogVideoManagerVersions::CGUIDialogVideoManagerVersions()
@@ -64,6 +65,10 @@ bool CGUIDialogVideoManagerVersions::OnMessage(CGUIMessage& message)
           m_hasUpdatedItems = true;
         }
       }
+      else if (control == CONTROL_BUTTON_RENAME_VERSION)
+      {
+        Rename();
+      }
       else if (control == CONTROL_BUTTON_SET_DEFAULT)
       {
         SetDefault();
@@ -85,7 +90,7 @@ void CGUIDialogVideoManagerVersions::UpdateButtons()
 {
   CGUIDialogVideoManager::UpdateButtons();
 
-  // Always anabled
+  // Always enabled
   CONTROL_ENABLE(CONTROL_BUTTON_ADD_VERSION);
 
   // Enabled for non-default version only
@@ -101,10 +106,15 @@ void CGUIDialogVideoManagerVersions::UpdateButtons()
     CONTROL_ENABLE(CONTROL_BUTTON_SET_DEFAULT);
   }
 
-  // Enabled if list not empty
+  // Conditional to empty list
   if (m_videoAssetsList->IsEmpty())
   {
     SET_CONTROL_FOCUS(CONTROL_BUTTON_ADD_VERSION, 0);
+    CONTROL_DISABLE(CONTROL_BUTTON_RENAME_VERSION);
+  }
+  else
+  {
+    CONTROL_ENABLE(CONTROL_BUTTON_RENAME_VERSION);
   }
 }
 

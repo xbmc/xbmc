@@ -464,6 +464,7 @@ msgctxt "#117"
 msgid "Delete"
 msgstr ""
 
+#: addons/skin.estuary/xml/DialogVideoManager.xml
 #: xbmc/favourites/ContextMenus.h
 #: xbmc/favourites/GUIDialogFavourites.cpp
 #: xbmc/pvr/PVRContextMenus.cpp
@@ -23793,7 +23794,11 @@ msgctxt "#40003"
 msgid "Version"
 msgstr ""
 
-#empty string with id 40004
+#. Button to change the version type of a version in Versions Manager
+#: addons/skin.estuary/xml/DialogVideoManager.xml
+msgctxt "#40004"
+msgid "Choose type"
+msgstr ""
 
 #. Warning dialog title
 #: xbmc/video/dialogs/GUIDialogVideoManager.cpp

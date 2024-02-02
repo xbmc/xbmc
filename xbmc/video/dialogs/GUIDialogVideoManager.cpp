@@ -38,7 +38,6 @@
 static constexpr unsigned int CONTROL_LABEL_TITLE = 2;
 
 static constexpr unsigned int CONTROL_BUTTON_PLAY = 21;
-static constexpr unsigned int CONTROL_BUTTON_RENAME = 24;
 static constexpr unsigned int CONTROL_BUTTON_REMOVE = 26;
 static constexpr unsigned int CONTROL_BUTTON_CHOOSE_ART = 27;
 
@@ -81,10 +80,6 @@ bool CGUIDialogVideoManager::OnMessage(CGUIMessage& message)
       else if (control == CONTROL_BUTTON_PLAY)
       {
         Play();
-      }
-      else if (control == CONTROL_BUTTON_RENAME)
-      {
-        Rename();
       }
       else if (control == CONTROL_BUTTON_REMOVE)
       {
@@ -142,7 +137,6 @@ void CGUIDialogVideoManager::UpdateButtons()
   if (!m_videoAssetsList->IsEmpty())
   {
     CONTROL_ENABLE(CONTROL_BUTTON_CHOOSE_ART);
-    CONTROL_ENABLE(CONTROL_BUTTON_RENAME);
     CONTROL_ENABLE(CONTROL_BUTTON_REMOVE);
     CONTROL_ENABLE(CONTROL_BUTTON_PLAY);
 
@@ -151,7 +145,6 @@ void CGUIDialogVideoManager::UpdateButtons()
   else
   {
     CONTROL_DISABLE(CONTROL_BUTTON_CHOOSE_ART);
-    CONTROL_DISABLE(CONTROL_BUTTON_RENAME);
     CONTROL_DISABLE(CONTROL_BUTTON_REMOVE);
     CONTROL_DISABLE(CONTROL_BUTTON_PLAY);
   }
