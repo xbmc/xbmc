@@ -683,18 +683,20 @@
 		<value>[B]$LOCALIZE[1223][/B]</value>
 	</variable>
 	<variable name="VideoListPosterVar">
-		<value condition="!String.IsEmpty(container(6).listitem.art(poster))">$INFO[container(6).listitem.art(poster)]</value>
-		<value condition="!String.IsEmpty(container(6).listitem.art(thumb))">$INFO[container(6).listitem.art(thumb)]</value>
-		<value condition="!String.IsEmpty(container(50).listitem.art(poster))">$INFO[container(50).listitem.art(poster)]</value>
-		<value condition="!String.IsEmpty(container(50).listitem.art(thumb))">$INFO[container(50).listitem.art(thumb)]</value>
-		<value condition="String.IsEmpty(Listitem.Art(poster))">$INFO[Listitem.Art(poster)]</value>
-		<value>$INFO[ListItem.Icon]</value>			
+		<value condition="!String.IsEmpty(Container(6).ListItem.Art(poster))">$INFO[Container(6).ListItem.Art(poster)]</value>
+		<value condition="!String.IsEmpty(Container(6).ListItem.Art(thumb))">$INFO[Container(6).ListItem.Art(thumb)]</value>
+		<value condition="!String.IsEmpty(Container(50).ListItem.Art(poster))">$INFO[Container(50).ListItem.Art(poster)]</value>
+		<value condition="!String.IsEmpty(Container(50).ListItem.Art(thumb))">$INFO[Container(50).ListItem.Art(thumb)]</value>
+		<value condition="String.IsEmpty(Container(50).ListItem.Art(thumb))">DefaultMovies.png</value>
+		<value condition="!String.IsEmpty(Listitem.Art(poster))">$INFO[ListItem.Art(poster)]</value>
+		<value>$INFO[ListItem.Art(thumb)]</value>
 	</variable>
 	<variable name="VideoListThumbVar">
-		<value condition="!String.IsEmpty(Listitem.Art(landscape))">$INFO[Listitem.Art(landscape)]</value>
-		<value condition="!String.IsEmpty(Listitem.Art(fanart))">$INFO[Listitem.Art(fanart)]</value>
-		<value condition="!String.IsEmpty(Listitem.Art(thumb))">$INFO[Listitem.Art(thumb)]</value>
-		<value>$INFO[ListItem.Icon]</value>		
+		<value condition="!String.IsEmpty(Container(6).ListItem.Art(landscape))">$INFO[Container(6).ListItem.Art(landscape)]</value>
+		<value condition="!String.IsEmpty(Container(6).ListItem.Art(thumb))">$INFO[Container(6).ListItem.Art(thumb)]</value>
+		<value condition="!String.IsEmpty(Container(50).ListItem.Art(landscape))">$INFO[Container(50).ListItem.Art(landscape)]</value>
+		<value condition="!String.IsEmpty(Container(50).ListItem.Art(thumb))">$INFO[Container(50).ListItem.Art(thumb)]</value>
+		<value>$INFO[ListItem.Art(thumb)]</value>	
 	</variable>
 	<variable name="VideoResolutionTypeVar">
 		<value condition="String.IsEqual(ListItem.VideoResolution,480)">SD</value>
@@ -786,5 +788,9 @@
 		<value condition="String.IsEqual(ListItem.AudioChannels,8)">7.1</value>
 		<value condition="String.IsEqual(ListItem.AudioChannels,10)">9.1</value>
 		<value>$INFO[ListItem.AudioChannels]</value>
+	</variable>
+	<variable name="MediaInfoListLabelVar">
+		<value condition="Window.IsActive(selectvideoversion)">$INFO[ListItem.VideoVersionName]</value>
+		<value>$INFO[ListItem.Label]</value>
 	</variable>
 </includes>
