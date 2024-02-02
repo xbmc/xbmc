@@ -951,6 +951,7 @@ msgstr ""
 
 #. generic "play" (some sort of media) label used in different places
 #: addons/skin.estuary/xml/DialogVideoInfo.xml
+#: addons/skin.estuary/xml/DialogVideoManager.xml
 #: addons/skin.estuary/xml/SkinSettings.xml
 #: addons/skin.estuary/xml/Variables.xml
 #: xbmc/dialogs/GUIDialogPlayEject.cpp
@@ -7564,6 +7565,7 @@ msgctxt "#13510"
 msgid "Sync playback to display"
 msgstr ""
 
+#: addons/skin.estuary/xml/DialogVideoManager.xml
 #: xbmc/music/dialogs/GUIDialogSongInfo.cpp
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 msgctxt "#13511"
@@ -8688,6 +8690,7 @@ msgctxt "#15014"
 msgid "Keep"
 msgstr ""
 
+#: addons/skin.estuary/xml/DialogVideoManager.xml
 #: xbmc/favourites/ContextMenus.h
 #: xbmc/favourites/GUIDialogFavourites.cpp
 #: xbmc/video/VideoDatabase.cpp
@@ -23857,14 +23860,14 @@ msgstr ""
 
 #. Add video version dialog title
 #: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
-#: addons/skin.estuary/xml/DialogVideoVersion.xml
+#: addons/skin.estuary/xml/DialogVideoManager.xml
 msgctxt "#40014"
 msgid "Add version"
 msgstr ""
 
 #. Add video extra dialog title
 #: xbmc/video/dialogs/GUIDialogVideoManagerExtras.cpp
-#: addons/skin.estuary/xml/DialogVideoVersion.xml
+#: addons/skin.estuary/xml/DialogVideoManager.xml
 msgctxt "#40015"
 msgid "Add extra"
 msgstr ""
@@ -23909,7 +23912,7 @@ msgid "Manage {0:s}"
 msgstr ""
 
 #. Button label to make a video version the default version
-#: addons/skin.estuary/xml/DialogVideoVersion.xml
+#: addons/skin.estuary/xml/DialogVideoManager.xml
 msgctxt "#40023"
 msgid "Set as default"
 msgstr ""
