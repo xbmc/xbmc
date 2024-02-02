@@ -95,7 +95,8 @@ bool ValidateSignature(const std::string& data, const char* signature)
     if (data.compare(0, signatureLen, signature) == 0)
     {
       // Check if last char is valid
-      if (std::strchr(signatureLastChars, data[signatureLen]) != nullptr)
+      if (std::memchr(signatureLastChars, data[signatureLen], sizeof(signatureLastChars)) !=
+          nullptr)
         return true;
     }
   }
