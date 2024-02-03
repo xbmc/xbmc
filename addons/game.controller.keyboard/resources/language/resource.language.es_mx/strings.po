@@ -459,12 +459,12 @@ msgid "Right Meta"
 msgstr "Meta Derecho"
 
 msgctxt "#30108"
-msgid "Left Super"
-msgstr "Súper Izquierdo"
+msgid "Left Windows"
+msgstr ""
 
 msgctxt "#30109"
-msgid "Right Super"
-msgstr "Súper Derecho"
+msgid "Right Windows"
+msgstr ""
 
 msgctxt "#30110"
 msgid "!"
@@ -547,7 +547,7 @@ msgid "~"
 msgstr ""
 
 msgctxt "#30130"
-msgid "Mode"
+msgid "Mode/Option"
 msgstr ""
 
 msgctxt "#30131"
@@ -583,7 +583,7 @@ msgid "Undo"
 msgstr ""
 
 msgctxt "#30139"
-msgid "Num Pad Equals"
+msgid "Num Pad ="
 msgstr ""
 
 msgctxt "#30140"
@@ -593,3 +593,11 @@ msgstr ""
 msgctxt "#30141"
 msgid "OEM 102nd Key"
 msgstr ""
+
+#~ msgctxt "#30108"
+#~ msgid "Left Super"
+#~ msgstr "Súper Izquierdo"
+
+#~ msgctxt "#30109"
+#~ msgid "Right Super"
+#~ msgstr "Súper Derecho"
