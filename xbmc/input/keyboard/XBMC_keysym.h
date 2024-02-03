@@ -16,13 +16,13 @@
 
 // The XBMC_keysym identifies a physical key on the keyboard i.e. it is
 // analogous to a scan code but is hardware independent.
-// These values are bazsed on the SDL_keysym standards, see:
+// These values are based on the SDL_keysym standards, see:
 //
 //   http://www.libsdl.org/tmp/SDL-1.3-docs/SDL__keysym_8h.html
 //
 // On SDL_KEYDOWN messages the keysym.sym will be one of these values.
 //
-// On OSs that don't support SDL (i.e. Windows) the OS dependant key
+// On OSs that don't support SDL (i.e. Windows) the OS dependent key
 // handling code converts keypresses to an XBMC_keysym value.
 
 enum XBMCKey
