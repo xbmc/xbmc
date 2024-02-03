@@ -43,7 +43,8 @@ Since most source files in Kodi are `GPL-2.0-or-later` licensed, the typical cop
  */
 ```
 
-**NOTE:** Kodi is developed and maintained by Kodi Team members and the open-source community. We thank all of our **[contributors](https://github.com/xbmc/xbmc/graphs/contributors)**! **For the detailed history of contributions** of a given file, use `git blame <filename>` to see line-by-line credits or `git log --follow <filename>` to see the changelog across renames, rewrites and code shuffle.
+> [!NOTE]  
+> Kodi is developed and maintained by Kodi Team members and the open-source community. We thank all of our **[contributors](https://github.com/xbmc/xbmc/graphs/contributors)**! **For the detailed history of contributions** of a given file, use `git blame <filename>` to see line-by-line credits or `git log --follow <filename>` to see the changelog across renames, rewrites and code shuffle.
 
 ### License Files
 All SPDX license identifiers must have a corresponding file in the **LICENSES** subdirectory. This is required to allow tool verification (e.g. **[ScanCode toolkit](https://github.com/nexB/scancode-toolkit)**) and to have the licenses ready to read and extract right from the source, which is recommended by various FOSS organizations, e.g. the **[FSFE REUSE Initiative](https://reuse.software/)**.

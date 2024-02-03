@@ -86,9 +86,14 @@ git clone -b Krypton https://github.com/xbmc/xbmc kodi
 
 Several different strategies are used to draw your attention to certain pieces of information. In order of how critical the information is, these items are marked as a note, tip, or warning. For example:
  
-**NOTE:** Linux is user friendly... It's just very particular about who its friends are.  
-**TIP:** Algorithm is what developers call code they do not want to explain.  
-**WARNING:** Developers don't change light bulbs. It's a hardware problem.
+> [!NOTE]  
+> Linux is user friendly... It's just very particular about who its friends are.
+
+> [!TIP]
+> Algorithm is what developers call code they do not want to explain.
+
+> [!WARNING]  
+> Developers don't change light bulbs. It's a hardware problem.
 
 **[back to top](#table-of-contents)** | **[back to section top](#2-document-conventions)**
 
@@ -121,7 +126,8 @@ cd kodi                                                  // change to the newly 
 git remote add upstream https://github.com/xbmc/xbmc.git // assign Kodi's main repo to a remote
 ```
 
-**TIP:** Windows users should use `cd %userprofile%` instead.
+> [!TIP]
+> Windows users should use `cd %userprofile%` instead.
 
 From this point forward, every command shown assumes you're inside `$HOME/kodi` or `%userprofile%\kodi` if you're a Windows user. To get there, issue:
 ```
@@ -197,7 +203,8 @@ Delete remote branch:
 git push origin -d <feature-branch>
 ```
 
-**WARNING:** Be careful deleting branches. Make sure you don't need them anymore.
+> [!WARNING]  
+> Be careful deleting branches. Make sure you don't need them anymore.
 
 ### 5.8. Rebase branch
 ```
@@ -236,7 +243,8 @@ git checkout <feature-branch> // switch to feature branch
 git push origin               // push updated feature branch to your personal remote repo
 ```
 
-**WARNING:** Be **very careful** updating to and from origin. It can cause loss of work, specially if you work on more than one machine. Make sure your remote origin repo **always** holds the most up-to-date version of your code. **No, seriously**. Make a mental rule: *remote origin repo always holds the most up-to-date version of my code!* and **stick to it!** It's almost always possible to recover lost work with `git` but it's hard and unnecessary work if you follow some simple rules.
+> [!WARNING]  
+> Be **very careful** updating to and from origin. It can cause loss of work, specially if you work on more than one machine. Make sure your remote origin repo **always** holds the most up-to-date version of your code. **No, seriously**. Make a mental rule: *remote origin repo always holds the most up-to-date version of my code!* and **stick to it!** It's almost always possible to recover lost work with `git` but it's hard and unnecessary work if you follow some simple rules.
 
 **[back to top](#table-of-contents)** | **[back to section top](#6-syncing-branches)**
 

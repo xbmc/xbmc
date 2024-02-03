@@ -52,9 +52,14 @@ git clone -b Krypton https://github.com/xbmc/xbmc kodi
 
 Several different strategies are used to draw your attention to certain pieces of information. In order of how critical the information is, these items are marked as a note, tip, or warning. For example:
 
-**NOTE:** Linux is user friendly... It's just very particular about who its friends are.
-**TIP:** Algorithm is what developers call code they do not want to explain.
-**WARNING:** Developers don't change light bulbs. It's a hardware problem.
+> [!NOTE]  
+> Linux is user friendly... It's just very particular about who its friends are.
+
+> [!TIP]
+> Algorithm is what developers call code they do not want to explain.
+
+> [!WARNING]  
+> Developers don't change light bulbs. It's a hardware problem.
 
 **[back to top](#table-of-contents)** | **[back to section top](#1-document-conventions)**
 
@@ -68,7 +73,8 @@ Building for tvOS should work with the following combinations of Xcode and macOS
   * Xcode 13.x against tvOS SDK 15.4 on 12.x (Monterey)(recommended)
 
 Team Kodi CI infrastructure is limited, and therefore we only have the single combination tested. Newer xcode/macos combinations generally should work, however the team does not actively test/use pre-release versions, so use with caution. Earlier versions may work, however we dont actively support them, so use with caution.
-**WARNING:** Start Xcode after installation finishes. You need to accept the licenses and install missing components.
+> [!WARNING]  
+> Start Xcode after installation finishes. You need to accept the licenses and install missing components.
 
 **[back to top](#table-of-contents)**
 
@@ -87,7 +93,8 @@ git clone https://github.com/xbmc/xbmc kodi
 
 ## 4. Configure and build tools and dependencies
 Kodi can be built as a 64bit program only for tvOS. The dependencies are built in `$HOME/kodi/tools/depends` and installed into `/Users/Shared/xbmc-depends`.
-**NOTE:** `--with-platform` is mandatory for all Apple platforms
+> [!NOTE]  
+> `--with-platform` is mandatory for all Apple platforms
 
 Configure build:
 ```
@@ -101,11 +108,15 @@ Build tools and dependencies:
 make -j$(getconf _NPROCESSORS_ONLN)
 ```
 
-**TIP:** By adding `-j<number>` to the make command, you can choose how many concurrent jobs will be used and expedite the build process. It is recommended to use `-j$(getconf _NPROCESSORS_ONLN)` to compile on all available processor cores. The build machine can also be configured to do this automatically by adding `export MAKEFLAGS="-j$(getconf _NPROCESSORS_ONLN)"` to your shell config (e.g. `~/.bashrc`).
+> [!TIP]
+> By adding `-j<number>` to the make command, you can choose how many concurrent jobs will be used and expedite the build process. It is recommended to use `-j$(getconf _NPROCESSORS_ONLN)` to compile on all available processor cores. The build machine can also be configured to do this automatically by adding `export MAKEFLAGS="-j$(getconf _NPROCESSORS_ONLN)"` to your shell config (e.g. `~/.bashrc`).
 
-**WARNING:** Look for the `Dependencies built successfully.` success message. If in doubt run a single threaded `make` command until the message appears. If the single make fails, clean the specific library by issuing `make -C target/<name_of_failed_lib> distclean` and run `make`again.
+> [!WARNING]  
+> Look for the `Dependencies built successfully.` success message. If in doubt run a single threaded `make` command until the message appears. If the single make fails, clean the specific library by issuing `make -C target/<name_of_failed_lib> distclean` and run `make`again.
 
-**NOTE:** **Advanced developers** may want to specify an tvOS SDK version (if multiple versions are installed) in the configure line(s) shown above. The example below would use the tvOS SDK 11.0:
+> [!NOTE]  
+> **Advanced developers** may want to specify an tvOS SDK version (if multiple versions are installed) in the configure line(s) shown above. The example below would use the tvOS SDK 11.0:
+
 ```
 ./configure --host=aarch64-apple-darwin --with-platform=tvos --with-sdk=11.0
 ```
@@ -202,7 +213,8 @@ Generate Xcode project for TVOS:
 make -C tools/depends/target/cmakebuildsys BUILD_DIR=$HOME/kodi-build
 ```
 
-**TIP:** BUILD_DIR can be omitted, and project will be created in $HOME/kodi/build
+> [!TIP]
+> BUILD_DIR can be omitted, and project will be created in $HOME/kodi/build
 Change all relevant paths onwards if omitted.
 
 Additional cmake arguments can be supplied via the CMAKE_EXTRA_ARGUMENTS command line variable
@@ -220,7 +232,8 @@ PROVISIONING_PROFILE_TOPSHELF - provprofile name for the top shelf
 
 ## 5.2. Add Binary Addons to Project
 
-**TIP:** If you wish to add signing settings automatically, look at **[Generate XCode Project Files](#51-generate-xcode-project-files)** for the additional `CMAKE_EXTRA_ARGUMENTS`
+> [!TIP]
+> If you wish to add signing settings automatically, look at **[Generate XCode Project Files](#51-generate-xcode-project-files)** for the additional `CMAKE_EXTRA_ARGUMENTS`
 
 You can find a complete list of available binary add-ons **[here](https://github.com/xbmc/repo-binary-addons)**.
 
@@ -242,8 +255,11 @@ Generate Xcode project to build all add-ons automatically:
 make -C tools/depends/target/cmakebuildsys CMAKE_EXTRA_ARGUMENTS="-DENABLE_XCODE_ADDONBUILD=ON"
 ```
 
-**TIP:** If you wish to not automatically build addons added to your xcode project, omit `-DENABLE_XCODE_ADDONBUILD=ON`. The target will be added to the project, but the dependency will not be set to automatically build
-**TIP:** Binary add-ons added to the generated Xcode project can be built independently of the Kodi app by selecting the scheme/target `binary-addons` in the Xcode project.
+> [!TIP]
+> If you wish to not automatically build addons added to your xcode project, omit `-DENABLE_XCODE_ADDONBUILD=ON`. The target will be added to the project, but the dependency will not be set to automatically build
+
+> [!TIP]
+> Binary add-ons added to the generated Xcode project can be built independently of the Kodi app by selecting the scheme/target `binary-addons` in the Xcode project.
 You can also build the binary-addons target via xcodebuild. This will not build the Kodi App, but will build any/all binary addons added for the project Generation.
 ```
 xcodebuild -config "Debug" -target binary-addons
@@ -256,16 +272,21 @@ xcodebuild -config "Debug" -target binary-addons
 
 Start Xcode, open the Kodi project file created in **[Generate Kodi Build files](#5-generate-kodi-build-files)**
 
-**TIP:** (`kodi.xcodeproj`) is located in `$HOME/kodi-build`
+> [!TIP]
+> (`kodi.xcodeproj`) is located in `$HOME/kodi-build`
 
 Once the project has loaded, select `Generic TvOs Device` (or your actual connected device if you have it connected) and hit `Build`.
 
 This will create a `Kodi.app` file located in `$HOME/kodi-build/build/Debug-appletvos`. This App can be deployed via Xcode to an AppleTV via `Window -> Devices and Simulators -> Select device and click +`
 
-**TIP:** If you build as a release target, the location of the `Kodi.app` will be `$HOME/kodi-build/build/Release-appletvos`
+> [!TIP]
+> If you build as a release target, the location of the `Kodi.app` will be `$HOME/kodi-build/build/Release-appletvos`
 
-**WARNING:** If you have selected a specific tvOS SDK Version in step 4 then you might need to adapt the active target to use the same tvOS SDK version, otherwise build will fail. Be sure to select a device configuration.
-**WARNING:** Building for simulator is NOT supported.
+> [!WARNING]  
+> If you have selected a specific tvOS SDK Version in step 4 then you might need to adapt the active target to use the same tvOS SDK version, otherwise build will fail. Be sure to select a device configuration.
+
+> [!WARNING]  
+> Building for simulator is NOT supported.
 
 ### 6.2. Build with xcodebuild
 Alternatively, you can also build via Xcode from the command-line with `xcodebuild`, triggered by CMake:
@@ -278,8 +299,11 @@ xcodebuild -config "Debug" -jobs $(getconf _NPROCESSORS_ONLN)
 
 This will create a `Kodi.app` file located in `$HOME/kodi-build/build/Debug-appletvos`. This App can be deployed via Xcode to an AppleTV via `Window -> Devices and Simulators -> Select device and click +`
 
-**TIP:** You can specify Release instead of Debug as -config parameter.
-**TIP:** If you build as a release target, the location of the `Kodi.app` will be `$HOME/kodi-build/build/Release-appletvos`
+> [!TIP]
+> You can specify Release instead of Debug as -config parameter.
+
+> [!TIP]
+> If you build as a release target, the location of the `Kodi.app` will be `$HOME/kodi-build/build/Release-appletvos`
 
 **[back to top](#table-of-contents)** | **[back to section top](#6-build)**
 
@@ -290,13 +314,15 @@ CMake generates a target called `deb` which will package Kodi ready for distribu
 
 Start Xcode, open the Kodi project file created in **[Generate XCode Project Files](#51-generate-xcode-project-files)**
 
-**TIP:** (`kodi.xcodeproj`) is located in `$HOME/kodi-build`
+> [!TIP]
+> (`kodi.xcodeproj`) is located in `$HOME/kodi-build`
 
 Click on `Product` in the top menu bar, and then go to `Scheme`, then select `deb`
 
 Hit `Build`
 
-**TIP:** The generated package will be located at $HOME/kodi-build/tools/darwin/packaging/tvos.
+> [!TIP]
+> The generated package will be located at $HOME/kodi-build/tools/darwin/packaging/tvos.
 
 ## 7.2. Package via Xcodebuild
 
@@ -306,13 +332,15 @@ cd $HOME/kodi-build
 xcodebuild -target deb
 ```
 
-**TIP:** The generated package will be located at $HOME/kodi-build/tools/darwin/packaging/tvos.
+> [!TIP]
+> The generated package will be located at $HOME/kodi-build/tools/darwin/packaging/tvos.
 
 **[back to top](#table-of-contents)**
 
 ## 8. Signing
 
-**TIP:** If your device is jailbroken, you can go direct to **[Installing on Jailbroken Device](#91-jailbroken-devices)**
+> [!TIP]
+> If your device is jailbroken, you can go direct to **[Installing on Jailbroken Device](#91-jailbroken-devices)**
 
 ## 8.1. Signing using a developer account
 

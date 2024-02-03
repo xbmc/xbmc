@@ -38,9 +38,14 @@ git clone -b Matrix https://github.com/xbmc/xbmc kodi
 
 Several different strategies are used to draw your attention to certain pieces of information. In order of how critical the information is, these items are marked as a note, tip, or warning. For example:
 
-**NOTE:** Linux is user friendly... It's just very particular about who its friends are.  
-**TIP:** Algorithm is what developers call code they do not want to explain.  
-**WARNING:** Developers don't change light bulbs. It's a hardware problem.
+> [!NOTE]  
+> Linux is user friendly... It's just very particular about who its friends are.
+
+> [!TIP]
+> Algorithm is what developers call code they do not want to explain.
+
+> [!WARNING]  
+> Developers don't change light bulbs. It's a hardware problem.
 
 **[back to top](#table-of-contents)** | **[back to section top](#1-document-conventions)**
 
@@ -104,11 +109,13 @@ git clone https://github.com/xbmc/xbmc kodi
 ## 4. Set up the build environment
 To set up the build environment, several scripts must be called.
 
-**WARNING:** The scripts may fail if you have a space in the path to the bat files.
+> [!WARNING]  
+> The scripts may fail if you have a space in the path to the bat files.
 
 Kodi can be built as either a normal 32bit or 64bit program, UWP 32bit and 64bit and UWP ARM 32bit. Unless there is a reason to prefer 32bit builds, we advise you to build Kodi for 64bit.
 
-**TIP:** Look for comments starting with `Or ...` and only execute the command(s) you need.
+> [!TIP]
+> Look for comments starting with `Or ...` and only execute the command(s) you need.
 
 Change to the 64bit build directory (**recommended**):
 ```
@@ -139,7 +146,9 @@ Download dependencies:
 ```
 download-dependencies.bat
 ```
-**TIP:** Look for the `All formed packages ready!` success message. If you see the message `ERROR: Not all formed packages are ready!`, execute the command again until you see the success message.
+
+> [!TIP]
+> Look for the `All formed packages ready!` success message. If you see the message `ERROR: Not all formed packages are ready!`, execute the command again until you see the success message.
 
 Download and setup the build environment for libraries:
 ```
@@ -165,7 +174,8 @@ BuildSetup.bat
 
 UWP builds generate `msix`, `appxsym` and `cer` files, located at `%userprofile%\kodi\project\UWPBuildSetup`. You can install them following this **[guide](https://kodi.wiki/view/HOW-TO:Install_Kodi_for_Universal_Windows_Platform)**.
 
-**NOTE:** To generate an exact replica of the official Kodi Windows installer, some additional steps are required:
+> [!NOTE]  
+> To generate an exact replica of the official Kodi Windows installer, some additional steps are required:
 
 Build built-in add-ons (peripheral.joystick only) with command line:
 ```

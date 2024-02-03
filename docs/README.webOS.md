@@ -53,9 +53,14 @@ git clone -b Krypton https://github.com/xbmc/xbmc kodi
 
 Several different strategies are used to draw your attention to certain pieces of information. In order of how critical the information is, these items are marked as a note, tip, or warning. For example:
 
-**NOTE:** Linux is user friendly... It's just very particular about who its friends are.
-**TIP:** Algorithm is what developers call code they do not want to explain.
-**WARNING:** Developers don't change light bulbs. It's a hardware problem.
+> [!NOTE]  
+> Linux is user friendly... It's just very particular about who its friends are.
+
+> [!TIP]
+> Algorithm is what developers call code they do not want to explain.
+
+> [!WARNING]  
+> Developers don't change light bulbs. It's a hardware problem.
 
 **[back to top](#table-of-contents)** | **[back to section top](#1-document-conventions)**
 
@@ -123,11 +128,15 @@ Build tools and dependencies:
 make -j$(getconf _NPROCESSORS_ONLN)
 ```
 
-**TIP:** By adding `-j<number>` to the make command, you can choose how many concurrent jobs will be used and expedite the build process. It is recommended to use `-j$(getconf _NPROCESSORS_ONLN)` to compile on all available processor cores. The build machine can also be configured to do this automatically by adding `export MAKEFLAGS="-j$(getconf _NPROCESSORS_ONLN)"` to your shell config (e.g. `~/.bashrc`).
+> [!TIP]
+> By adding `-j<number>` to the make command, you can choose how many concurrent jobs will be used and expedite the build process. It is recommended to use `-j$(getconf _NPROCESSORS_ONLN)` to compile on all available processor cores. The build machine can also be configured to do this automatically by adding `export MAKEFLAGS="-j$(getconf _NPROCESSORS_ONLN)"` to your shell config (e.g. `~/.bashrc`).
 
-**WARNING:** Look for the `Dependencies built successfully.` success message. If in doubt run a single threaded `make` command until the message appears. If the single make fails, clean the specific library by issuing `make -C target/<name_of_failed_lib> distclean` and run `make`again.
+> [!WARNING]  
+> Look for the `Dependencies built successfully.` success message. If in doubt run a single threaded `make` command until the message appears. If the single make fails, clean the specific library by issuing `make -C target/<name_of_failed_lib> distclean` and run `make`again.
 
-**NOTE:** You may want to modify arch, float-abi or fpu to obtain the best performance out of the target CPU, however the defaults are recommended for now until you have a working build:
+> [!NOTE]  
+> You may want to modify arch, float-abi or fpu to obtain the best performance out of the target CPU, however the defaults are recommended for now until you have a working build:
+
 ```
 ./configure --with-target-cflags='-march=armv7-a -mfloat-abi=softfp -mfpu=neon'
 ```
@@ -212,7 +221,8 @@ Generate project for webOS:
 make -C tools/depends/target/cmakebuildsys
 ```
 
-**TIP:** BUILD_DIR can be omitted, and project will be created in $HOME/kodi/build
+> [!TIP]
+> BUILD_DIR can be omitted, and project will be created in $HOME/kodi/build
 Change all relevant paths onwards if omitted.
 
 Additional cmake arguments can be supplied via the CMAKE_EXTRA_ARGUMENTS command line variable
@@ -246,7 +256,8 @@ make -j$(getconf _NPROCESSORS_ONLN) -C tools/depends/target/binary-addons PREFIX
 
 To build specific addons or help with regular expression usage for ADDONS_TO_BUILD, view ADDONS_TO_BUILD section located at [Kodi add-ons CMake based buildsystem](../cmake/addons/README.md)
 
-**TIP:** Binary add-ons added to the generated project can be built independently of the Kodi app by selecting the scheme/target `binary-addons` in the project.
+> [!TIP]
+> Binary add-ons added to the generated project can be built independently of the Kodi app by selecting the scheme/target `binary-addons` in the project.
 
 **[back to top](#table-of-contents)** | **[back to section top](#5-Generate-Kodi-Build-files)**
 
@@ -260,7 +271,8 @@ In '$HOME/kodi/build`
 make -j$(getconf _NPROCESSORS_ONLN)
 ```
 
-**WARNING:** Building for simulator is NOT supported.
+> [!WARNING]  
+> Building for simulator is NOT supported.
 
 **[back to top](#table-of-contents)** | **[back to section top](#6-Build)**
 

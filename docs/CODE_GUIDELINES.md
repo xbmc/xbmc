@@ -595,7 +595,9 @@ Prefix global variables with `g_`
 ```cpp
 int g_globalVariableA;
 ```
-**WARNING:** Avoid use of globals as far as reasonably possible. We generally do not want to introduce new global variables.
+
+> [!WARNING]  
+> Avoid use of globals as far as reasonably possible. We generally do not want to introduce new global variables.
 
 **[back to top](#table-of-contents)**
 

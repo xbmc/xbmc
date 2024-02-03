@@ -41,9 +41,14 @@ git clone -b Krypton https://github.com/xbmc/xbmc kodi
 
 Several different strategies are used to draw your attention to certain pieces of information. In order of how critical the information is, these items are marked as a note, tip, or warning. For example:
  
-**NOTE:** Linux is user friendly... It's just very particular about who its friends are.  
-**TIP:** Algorithm is what developers call code they do not want to explain.  
-**WARNING:** Developers don't change light bulbs. It's a hardware problem.
+> [!NOTE]  
+> Linux is user friendly... It's just very particular about who its friends are.
+
+> [!TIP]
+> Algorithm is what developers call code they do not want to explain.
+
+> [!WARNING]  
+> Developers don't change light bulbs. It's a hardware problem.
 
 **[back to top](#table-of-contents)** | **[back to section top](#1-document-conventions)**
 
@@ -68,7 +73,8 @@ git clone https://github.com/xbmc/xbmc kodi
 ## 3. Install the required packages
 You can install the required packages using one of two methods: automagically or manually. Please use the former whenever possible.
 
-**WARNING:** Oldest supported Ubuntu version is 16.04 (Xenial). It is possible to build on older Ubuntu releases but due to outdated packages it will require considerable fiddling. Sorry, you're on your own if you decide to go down that particular rabbit hole.
+> [!WARNING]  
+> Oldest supported Ubuntu version is 16.04 (Xenial). It is possible to build on older Ubuntu releases but due to outdated packages it will require considerable fiddling. Sorry, you're on your own if you decide to go down that particular rabbit hole.
 
 ### 3.1. Get build dependencies automagically
 Add Kodi's *nightly* PPA to grab dependencies:
@@ -87,7 +93,8 @@ Super-duper magic command to get the build dependencies:
 sudo apt build-dep kodi
 ```
 
-**WARNING:** Do not use `aptitude` for the `build-dep` command. It doesn't resolve everything properly.
+> [!WARNING]  
+> Do not use `aptitude` for the `build-dep` command. It doesn't resolve everything properly.
 
 If at a later point you decide you do not want Kodi's PPAs on your system, removing them is as easy as:
 ```
@@ -95,14 +102,16 @@ sudo add-apt-repository -r ppa:team-xbmc/xbmc-nightly
 sudo add-apt-repository -r ppa:team-xbmc/xbmc-ppa-build-depends
 ```
 
-**NOTE:** For developers and anyone else who builds frequently it is recommended to install `ccache` to expedite subsequent builds of Kodi.
+> [!NOTE]  
+> For developers and anyone else who builds frequently it is recommended to install `ccache` to expedite subsequent builds of Kodi.
 
 You can install it with:
 ```
 sudo apt install ccache
 ```
 
-**TIP:** If you have multiple computers at home, `distcc` will distribute build workloads of C and C++ code across several machines on a network. Team Kodi may not be willing to give support if problems arise using such a build configuration.
+> [!TIP]
+> If you have multiple computers at home, `distcc` will distribute build workloads of C and C++ code across several machines on a network. Team Kodi may not be willing to give support if problems arise using such a build configuration.
 
 You can install it with:
 ```
@@ -112,14 +121,16 @@ sudo apt install distcc
 ### 3.2. Get build dependencies manually
 If you get a `package not found` type of message with the below command, remove the offending package(s) from the install list and reissue the command. Take a note of the missing dependencies and, after a successful step completion, **[build the missing dependencies manually](README.Linux.md#31-build-missing-dependencies)**.
 
-**NOTE:** Kodi requires a compiler with C++17 support, i.e. gcc >= 7 or clang >= 5
+> [!NOTE]  
+> Kodi requires a compiler with C++17 support, i.e. gcc >= 7 or clang >= 5
 
 Install build dependencies manually:
 ```
 sudo apt install debhelper autoconf automake autopoint gettext autotools-dev cmake curl default-jre doxygen gawk gcc gdc gperf libasound2-dev libass-dev libavahi-client-dev libavahi-common-dev libbluetooth-dev libbluray-dev libbz2-dev libcdio-dev libp8-platform-dev libcrossguid-dev libcurl4-openssl-dev libcwiid-dev libdbus-1-dev libdrm-dev libegl1-mesa-dev libenca-dev libflac-dev libfmt-dev libfontconfig-dev libfreetype6-dev libfribidi-dev libfstrcmp-dev libgcrypt-dev libgif-dev libgles2-mesa-dev libgl1-mesa-dev libglu1-mesa-dev libgnutls28-dev libgpg-error-dev libgtest-dev libiso9660-dev libjpeg-dev liblcms2-dev libltdl-dev liblzo2-dev libmicrohttpd-dev libmysqlclient-dev libnfs-dev libogg-dev libpcre3-dev libplist-dev libpng-dev libpulse-dev libshairplay-dev libsmbclient-dev libspdlog-dev libsqlite3-dev libssl-dev libtag1-dev libtiff5-dev libtinyxml-dev libtinyxml2-dev libtool libudev-dev libunistring-dev libva-dev libvdpau-dev libvorbis-dev libxmu-dev libxrandr-dev libxslt1-dev libxt-dev lsb-release meson nasm ninja-build python3-dev python3-pil python3-pip rapidjson-dev swig unzip uuid-dev zip zlib1g-dev
 ```
 
-**WARNING:** Make sure you copy paste the entire line or you might receive an error or miss a few dependencies.
+> [!WARNING]  
+> Make sure you copy paste the entire line or you might receive an error or miss a few dependencies.
 
 If you're using Ubuntu 16.04, you also need to install:
 ```

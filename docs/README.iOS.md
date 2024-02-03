@@ -46,9 +46,14 @@ git clone -b Krypton https://github.com/xbmc/xbmc kodi
 
 Several different strategies are used to draw your attention to certain pieces of information. In order of how critical the information is, these items are marked as a note, tip, or warning. For example:
  
-**NOTE:** Linux is user friendly... It's just very particular about who its friends are.  
-**TIP:** Algorithm is what developers call code they do not want to explain.  
-**WARNING:** Developers don't change light bulbs. It's a hardware problem.
+> [!NOTE]  
+> Linux is user friendly... It's just very particular about who its friends are.
+
+> [!TIP]
+> Algorithm is what developers call code they do not want to explain.
+
+> [!WARNING]  
+> Developers don't change light bulbs. It's a hardware problem.
 
 **[back to top](#table-of-contents)** | **[back to section top](#1-document-conventions)**
 
@@ -62,7 +67,8 @@ Building for iOS should work with the following constellations of Xcode and macO
   * Xcode 13.x against iOS SDK 15.5 on 12.x (Monterey)(recommended)
 
 Team Kodi CI infrastructure is limited, and therefore we only have the single combination tested. Newer xcode/macos combinations generally should work, however the team does not actively test/use pre-release versions, so use with caution. Earlier versions may work, however we dont actively support them, so use with caution.
-**WARNING:** Start Xcode after installation finishes. You need to accept the licenses and install missing components.
+> [!WARNING]  
+> Start Xcode after installation finishes. You need to accept the licenses and install missing components.
 
 **[back to top](#table-of-contents)**
 
@@ -82,8 +88,11 @@ git clone https://github.com/xbmc/xbmc kodi
 ## 4. Configure and build tools and dependencies
 Kodi can be built as a 64bit program for iOS. The dependencies are built in `$HOME/kodi/tools/depends` and installed into `/Users/Shared/xbmc-depends`.
 
-**TIP:** Look for comments starting with `Or ...` and only execute the command(s) you need.
-**NOTE:** `--with-platform` is mandatory for all Apple platforms
+> [!TIP]
+> Look for comments starting with `Or ...` and only execute the command(s) you need.
+
+> [!NOTE]  
+> `--with-platform` is mandatory for all Apple platforms
 
 Configure build:
 ```
@@ -97,11 +106,15 @@ Build tools and dependencies:
 make -j$(getconf _NPROCESSORS_ONLN)
 ```
 
-**TIP:** By adding `-j<number>` to the make command, you can choose how many concurrent jobs will be used and expedite the build process. It is recommended to use `-j$(getconf _NPROCESSORS_ONLN)` to compile on all available processor cores. The build machine can also be configured to do this automatically by adding `export MAKEFLAGS="-j$(getconf _NPROCESSORS_ONLN)"` to your shell config (e.g. `~/.bashrc`).
+> [!TIP]
+> By adding `-j<number>` to the make command, you can choose how many concurrent jobs will be used and expedite the build process. It is recommended to use `-j$(getconf _NPROCESSORS_ONLN)` to compile on all available processor cores. The build machine can also be configured to do this automatically by adding `export MAKEFLAGS="-j$(getconf _NPROCESSORS_ONLN)"` to your shell config (e.g. `~/.bashrc`).
 
-**WARNING:** Look for the `Dependencies built successfully.` success message. If in doubt run a single threaded `make` command until the message appears. If the single make fails, clean the specific library by issuing `make -C target/<name_of_failed_lib> distclean` and run `make`again.
+> [!WARNING]  
+> Look for the `Dependencies built successfully.` success message. If in doubt run a single threaded `make` command until the message appears. If the single make fails, clean the specific library by issuing `make -C target/<name_of_failed_lib> distclean` and run `make`again.
 
-**NOTE:** **Advanced developers** may want to specify an iOS SDK version (if multiple versions are installed) in the configure line(s) shown above. The example below would use the iOS SDK 11.0:
+> [!NOTE]  
+> **Advanced developers** may want to specify an iOS SDK version (if multiple versions are installed) in the configure line(s) shown above. The example below would use the iOS SDK 11.0:
+
 ```
 ./configure --host=aarch64-apple-darwin --with-platform=ios --with-sdk=11.0
 ```
@@ -231,13 +244,17 @@ Generate Xcode project to build all add-ons automatically:
 make -C tools/depends/target/cmakebuildsys CMAKE_EXTRA_ARGUMENTS="-DENABLE_XCODE_ADDONBUILD=ON"
 ```
 
-**TIP:** If you wish to not automatically build addons added to your xcode project, omit
+> [!TIP]
+> If you wish to not automatically build addons added to your xcode project, omit
 `-DENABLE_XCODE_ADDONBUILD=ON`. The target will be added to the project, but the dependency
  will not be set to automatically build  
-**TIP:** Binary add-ons added to the generated Xcode project can be built independently of 
+
+> [!TIP]
+> Binary add-ons added to the generated Xcode project can be built independently of 
 the Kodi app by selecting the scheme/target `binary-addons` in the Xcode project.
 You can also build the binary-addons target via xcodebuild. This will not build the Kodi
 App, but will build any/all binary addons added for the project Generation.
+
 ```sh
 xcodebuild -config "Debug" -target binary-addons
 ```
@@ -259,7 +276,8 @@ Generate Xcode project as per configure command in **[Configure and build tools 
 make -C tools/depends/target/cmakebuildsys BUILD_DIR=$HOME/kodi-build
 ```
 
-**TIP:** BUILD_DIR can be omitted, and project will be created in $HOME/kodi/build
+> [!TIP]
+> BUILD_DIR can be omitted, and project will be created in $HOME/kodi/build
 Change all relevant paths onwards if omitted.
 
 Additional cmake arguments can be supplied via the CMAKE_EXTRA_ARGUMENTS command line variable
@@ -272,7 +290,8 @@ cd $HOME/kodi-build
 /Users/Shared/xbmc-depends/x86_64-darwin17.5.0-native/bin/cmake -G Xcode -DCMAKE_TOOLCHAIN_FILE=/Users/Shared/xbmc-depends/iphoneos11.3_arm64-target-debug/share/Toolchain.cmake $HOME/kodi
 ```
 
-**WARNING:** The toolchain file location differs depending on your iOS and SDK version. You have to replace `x86_64-darwin15.6.0-native` and `iphoneos11.3_arm64-target-debug` in the paths above with the correct ones on your system.
+> [!WARNING]  
+> The toolchain file location differs depending on your iOS and SDK version. You have to replace `x86_64-darwin15.6.0-native` and `iphoneos11.3_arm64-target-debug` in the paths above with the correct ones on your system.
 
 You can check `Users/Shared/xbmc-depends` directory content with:
 ```
@@ -282,7 +301,8 @@ ls -l /Users/Shared/xbmc-depends
 
 **Start Xcode, open the Kodi project file** (`kodi.xcodeproj`) located in `$HOME/kodi-build` and hit `Build`.
 
-**WARNING:** If you have selected a specific iOS SDK Version in step 4 then you might need to adapt the active target to use the same iOS SDK version, otherwise build will fail. Be sure to select a device configuration. Building for simulator is not supported.
+> [!WARNING]  
+> If you have selected a specific iOS SDK Version in step 4 then you might need to adapt the active target to use the same iOS SDK version, otherwise build will fail. Be sure to select a device configuration. Building for simulator is not supported.
 
 **Alternatively**, you can also build via Xcode from the command-line with `xcodebuild`:
 
@@ -292,7 +312,8 @@ cd $HOME/kodi-build
 xcodebuild -config "Debug" -jobs $(getconf _NPROCESSORS_ONLN)
 ```
 
-**TIP:** You can specify Release instead of Debug as -config parameter.
+> [!TIP]
+> You can specify Release instead of Debug as -config parameter.
 
 **[back to top](#table-of-contents)** | **[back to section top](#6-build-kodi)**
 
