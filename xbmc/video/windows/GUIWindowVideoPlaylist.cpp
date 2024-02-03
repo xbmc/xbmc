@@ -30,6 +30,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+#include "video/guilib/VideoPlayActionProcessor.h"
 
 #define CONTROL_BTNVIEWASICONS 2
 #define CONTROL_BTNSORTBY 3
@@ -44,6 +45,8 @@
 #define CONTROL_BTNNEXT 24
 #define CONTROL_BTNPREVIOUS 25
 #define CONTROL_BTNREPEAT 26
+
+using namespace VIDEO::GUILIB;
 
 CGUIWindowVideoPlaylist::CGUIWindowVideoPlaylist()
   : CGUIWindowVideoBase(WINDOW_VIDEO_PLAYLIST, "MyPlaylist.xml")
@@ -232,6 +235,12 @@ bool CGUIWindowVideoPlaylist::OnAction(const CAction& action)
     OnMove(iItem, action.GetID());
     return true;
   }
+  if (action.GetID() == ACTION_PLAYER_PLAY)
+  {
+    if (m_viewControl.HasControl(GetFocusedControlID()))
+      return OnPlayMedia(m_viewControl.GetSelectedItem());
+  }
+
   return CGUIWindowVideoBase::OnAction(action);
 }
 
@@ -240,6 +249,12 @@ bool CGUIWindowVideoPlaylist::OnBack(int actionID)
   if (actionID == ACTION_NAV_BACK)
     return CGUIWindow::OnBack(actionID); // base class goes up a folder, but none to go up
   return CGUIWindowVideoBase::OnBack(actionID);
+}
+
+bool CGUIWindowVideoPlaylist::OnSelect(int iItem)
+{
+  // We ignore default select action and always play the selected item.
+  return OnPlayMedia(iItem);
 }
 
 bool CGUIWindowVideoPlaylist::MoveCurrentPlayListItem(int iItem,
@@ -359,29 +374,64 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
   MarkPlaying();
 }
 
+namespace
+{
+class CVideoPlayActionProcessor : public CVideoPlayActionProcessorBase
+{
+public:
+  CVideoPlayActionProcessor(const std::shared_ptr<CFileItem>& item,
+                            int itemIndex,
+                            const std::string& player)
+    : CVideoPlayActionProcessorBase(item), m_itemIndex(itemIndex), m_player(player)
+  {
+  }
+
+protected:
+  bool OnResumeSelected() override
+  {
+    auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
+    playlistPlayer.SetCurrentPlaylist(PLAYLIST::TYPE_VIDEO);
+
+    const auto playlistItem{playlistPlayer.GetPlaylist(PLAYLIST::TYPE_VIDEO)[m_itemIndex]};
+    playlistItem->SetStartOffset(STARTOFFSET_RESUME);
+    if (playlistItem->HasVideoInfoTag() && m_item->HasVideoInfoTag())
+      playlistItem->GetVideoInfoTag()->SetResumePoint(m_item->GetVideoInfoTag()->GetResumePoint());
+
+    playlistPlayer.Play(m_itemIndex, m_player);
+    return true;
+  }
+
+  bool OnPlaySelected() override
+  {
+    auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
+    playlistPlayer.SetCurrentPlaylist(PLAYLIST::TYPE_VIDEO);
+    playlistPlayer.Play(m_itemIndex, m_player);
+    return true;
+  }
+
+private:
+  const int m_itemIndex{-1};
+  const std::string m_player;
+};
+} // namespace
+
 bool CGUIWindowVideoPlaylist::OnPlayMedia(int iItem, const std::string& player)
 {
   if (iItem < 0 || iItem >= m_vecItems->Size())
     return false;
+
   if (g_partyModeManager.IsEnabled())
+  {
     g_partyModeManager.Play(iItem);
+  }
   else
   {
-    CFileItemPtr pItem = m_vecItems->Get(iItem);
-    std::string strPath = pItem->GetPath();
-    CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST::TYPE_VIDEO);
-    // need to update Playlist FileItem's startOffset and resumePoint based on GUIWindowVideoPlaylist FileItem
-    if (pItem->GetStartOffset() == STARTOFFSET_RESUME)
-    {
-      CFileItemPtr pPlaylistItem =
-          CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST::TYPE_VIDEO)[iItem];
-      pPlaylistItem->SetStartOffset(pItem->GetStartOffset());
-      if (pPlaylistItem->HasVideoInfoTag() && pItem->HasVideoInfoTag())
-        pPlaylistItem->GetVideoInfoTag()->SetResumePoint(
-            pItem->GetVideoInfoTag()->GetResumePoint());
-    }
-    // now play item
-    CServiceBroker::GetPlaylistPlayer().Play(iItem, player);
+    const auto item{m_vecItems->Get(iItem)};
+    // play the current video version, even if multiple versions are available
+    item->SetProperty("has_resolved_video_asset", true);
+    CVideoPlayActionProcessor proc{item, iItem, player};
+    proc.ProcessDefaultAction();
+    item->ClearProperty("has_resolved_video_asset");
   }
   return true;
 }
