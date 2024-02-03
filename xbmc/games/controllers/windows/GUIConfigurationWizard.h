@@ -115,7 +115,7 @@ private:
 
   // Keyboard handling
   std::unique_ptr<KEYMAP::IKeyboardActionMap> m_actionMap;
-  std::map<XBMCKey, CPhysicalFeature> m_keyMap; // Keycode -> feature
+  std::map<std::string, CPhysicalFeature> m_keyMap; // Key symbol -> feature
 };
 } // namespace GAME
 } // namespace KODI

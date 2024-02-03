@@ -176,6 +176,7 @@ const char* CKeyboardTranslator::TranslateKeycode(XBMCKey keycode)
     case XBMCK_BACKSPACE:
       return KEY_SYMBOL_BACKSPACE;
     case XBMCK_TAB:
+    case XBMCK_XKB_KP_TAB:
       return KEY_SYMBOL_TAB;
     case XBMCK_CLEAR:
       return KEY_SYMBOL_CLEAR;
@@ -186,6 +187,7 @@ const char* CKeyboardTranslator::TranslateKeycode(XBMCKey keycode)
     case XBMCK_ESCAPE:
       return KEY_SYMBOL_ESCAPE;
     case XBMCK_SPACE:
+    case XBMCK_XKB_KP_SPACE:
       return KEY_SYMBOL_SPACE;
     case XBMCK_EXCLAIM:
       return KEY_SYMBOL_EXCLAIM;
@@ -324,38 +326,66 @@ const char* CKeyboardTranslator::TranslateKeycode(XBMCKey keycode)
     case XBMCK_DELETE:
       return KEY_SYMBOL_DELETE;
     case XBMCK_KP0:
+    case XBMCK_XKB_KP_INSERT: // numlock disabled
+    case XBMCK_XKB_KP0: // numlock enabled
       return KEY_SYMBOL_KP0;
     case XBMCK_KP1:
+    case XBMCK_XKB_KP_END: // numlock disabled
+    case XBMCK_XKB_KP1: // numlock enabled
       return KEY_SYMBOL_KP1;
     case XBMCK_KP2:
+    case XBMCK_XKB_KP_DOWN: // numlock disabled
+    case XBMCK_XKB_KP2: // numlock enabled
       return KEY_SYMBOL_KP2;
     case XBMCK_KP3:
+    case XBMCK_XKB_KP_PAGE_DOWN: // numlock disabled
+    case XBMCK_XKB_KP3: // numlock enabled
       return KEY_SYMBOL_KP3;
     case XBMCK_KP4:
+    case XBMCK_XKB_KP_LEFT: // numlock disabled
+    case XBMCK_XKB_KP4: // numlock enabled
       return KEY_SYMBOL_KP4;
     case XBMCK_KP5:
+    case XBMCK_XKB_KP_BEGIN: // numlock disabled
+    case XBMCK_XKB_KP5: // numlock enabled
       return KEY_SYMBOL_KP5;
     case XBMCK_KP6:
+    case XBMCK_XKB_KP_RIGHT: // numlock disabled
+    case XBMCK_XKB_KP6: // numlock enabled
       return KEY_SYMBOL_KP6;
     case XBMCK_KP7:
+    case XBMCK_XKB_KP_HOME: // numlock disabled
+    case XBMCK_XKB_KP7: // numlock enabled
       return KEY_SYMBOL_KP7;
     case XBMCK_KP8:
+    case XBMCK_XKB_KP_UP: // numlock disabled
+    case XBMCK_XKB_KP8: // numlock enabled
       return KEY_SYMBOL_KP8;
     case XBMCK_KP9:
+    case XBMCK_XKB_KP_PAGE_UP: // numlock disabled
+    case XBMCK_XKB_KP9: // numlock enabled
       return KEY_SYMBOL_KP9;
     case XBMCK_KP_PERIOD:
+    case XBMCK_XKB_KP_DELETE: // numlock disabled
+    case XBMCK_XKB_KP_DECIMAL: // numlock enabled
       return KEY_SYMBOL_KPPERIOD;
     case XBMCK_KP_DIVIDE:
+    case XBMCK_XKB_KP_DIVIDE:
       return KEY_SYMBOL_KPDIVIDE;
     case XBMCK_KP_MULTIPLY:
+    case XBMCK_XKB_KP_MULTIPLY:
       return KEY_SYMBOL_KPMULTIPLY;
     case XBMCK_KP_MINUS:
+    case XBMCK_XKB_KP_SUBTRACT:
       return KEY_SYMBOL_KPMINUS;
     case XBMCK_KP_PLUS:
+    case XBMCK_XKB_KP_ADD:
       return KEY_SYMBOL_KPPLUS;
     case XBMCK_KP_ENTER:
+    case XBMCK_XKB_KP_ENTER:
       return KEY_SYMBOL_KPENTER;
     case XBMCK_KP_EQUALS:
+    case XBMCK_XKB_KP_EQUALS:
       return KEY_SYMBOL_KPEQUALS;
     case XBMCK_UP:
       return KEY_SYMBOL_UP;
@@ -376,12 +406,16 @@ const char* CKeyboardTranslator::TranslateKeycode(XBMCKey keycode)
     case XBMCK_PAGEDOWN:
       return KEY_SYMBOL_PAGEDOWN;
     case XBMCK_F1:
+    case XBMCK_XKB_KP_F1:
       return KEY_SYMBOL_F1;
     case XBMCK_F2:
+    case XBMCK_XKB_KP_F2:
       return KEY_SYMBOL_F2;
     case XBMCK_F3:
+    case XBMCK_XKB_KP_F3:
       return KEY_SYMBOL_F3;
     case XBMCK_F4:
+    case XBMCK_XKB_KP_F4:
       return KEY_SYMBOL_F4;
     case XBMCK_F5:
       return KEY_SYMBOL_F5;

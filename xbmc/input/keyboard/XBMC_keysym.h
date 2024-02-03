@@ -284,6 +284,63 @@ enum XBMCKey
   XBMCK_FASTFORWARD = 343,
   XBMCK_EJECT = 344,
 
+  /*
+   * Extended keypad key symbols for Num Lock state-specific behaviors
+   *
+   * These key symbols address the dual behavior of the numeric keypad's keys,
+   * observed within the context of the Linux platform, using the XKB common
+   * library.
+   *
+   * Depending on the Num Lock state — enabled or disabled — the key on the
+   * numeric keypad emits different keycodes.
+   */
+  XBMCK_XKB_KP_HOME = 0xFF95, // XBMCK_KP7
+  XBMCK_XKB_KP_LEFT = 0xFF96, // XBMCK_KP4
+  XBMCK_XKB_KP_UP = 0xFF97, // XBMCK_KP8
+  XBMCK_XKB_KP_RIGHT = 0xFF98, // XBMCK_KP6
+  XBMCK_XKB_KP_DOWN = 0xFF99, // XBMCK_KP2
+  XBMCK_XKB_KP_PAGE_UP = 0xFF9A, // XBMCK_KP9
+  XBMCK_XKB_KP_PAGE_DOWN = 0xFF9B, // XBMCK_KP3
+  XBMCK_XKB_KP_END = 0xFF9C, // XBMCK_KP1
+  XBMCK_XKB_KP_BEGIN = 0xFF9D, // XBMCK_KP5
+  XBMCK_XKB_KP_INSERT = 0xFF9E, // XBMCK_KP0
+  XBMCK_XKB_KP_DELETE = 0xFF9F, // XBMCK_KP_PERIOD
+
+  XBMCK_XKB_KP_DECIMAL = 0xFFAE, // XBMCK_KP_PERIOD
+  XBMCK_XKB_KP0 = 0xFFB0, // XBMCK_KP0
+  XBMCK_XKB_KP1 = 0xFFB1, // XBMCK_KP1
+  XBMCK_XKB_KP2 = 0xFFB2, // XBMCK_KP2
+  XBMCK_XKB_KP3 = 0xFFB3, // XBMCK_KP3
+  XBMCK_XKB_KP4 = 0xFFB4, // XBMCK_KP4
+  XBMCK_XKB_KP5 = 0xFFB5, // XBMCK_KP5
+  XBMCK_XKB_KP6 = 0xFFB6, // XBMCK_KP6
+  XBMCK_XKB_KP7 = 0xFFB7, // XBMCK_KP7
+  XBMCK_XKB_KP8 = 0xFFB8, // XBMCK_KP8
+  XBMCK_XKB_KP9 = 0xFFB9, // XBMCK_KP9
+
+  /*
+   * Extended keypad key symbols for Num Lock state-independent behaviors
+   *
+   * These key symbols address the behavior of the numeric keypad's keys,
+   * observed within the context of the Linux platform, using the XKB common
+   * library.
+   *
+   * The keycodes emitted by these keys are independent of the Num Lock state.
+   */
+  XBMCK_XKB_KP_SPACE = 0xFF80,
+  XBMCK_XKB_KP_TAB = 0xFF89,
+  XBMCK_XKB_KP_ENTER = 0xFF8D, // XBMCK_KP_ENTER
+  XBMCK_XKB_KP_F1 = 0xFF91,
+  XBMCK_XKB_KP_F2 = 0xFF92,
+  XBMCK_XKB_KP_F3 = 0xFF93,
+  XBMCK_XKB_KP_F4 = 0xFF94,
+  XBMCK_XKB_KP_EQUALS = 0xFFBD, // XBMCK_KP_EQUALS
+  XBMCK_XKB_KP_MULTIPLY = 0xFFAA, // XBMCK_KP_MULTIPLY
+  XBMCK_XKB_KP_ADD = 0xFFAB, // XBMCK_KP_PLUS
+  XBMCK_XKB_KP_SEPARATOR = 0xFFAC,
+  XBMCK_XKB_KP_SUBTRACT = 0xFFAD, // XBMCK_KP_MINUS
+  XBMCK_XKB_KP_DIVIDE = 0xFFAF, // XBMCK_KP_DIVIDE
+
   XBMCK_LAST
 };
 
