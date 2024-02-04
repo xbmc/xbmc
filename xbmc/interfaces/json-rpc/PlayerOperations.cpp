@@ -47,6 +47,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/MathUtils.h"
+#include "utils/PlayerUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
@@ -499,9 +500,9 @@ JSONRPC_STATUS CPlayerOperations::SetTempo(const std::string& method,
       else if (parameterObject["tempo"].isString())
       {
         if (parameterObject["tempo"].asString().compare("increment") == 0)
-          CBuiltins::GetInstance().Execute("playercontrol(tempoup)");
+          CPlayerUtils::AdvanceTempoStep(appPlayer, TempoStepChange::INCREASE);
         else
-          CBuiltins::GetInstance().Execute("playercontrol(tempodown)");
+          CPlayerUtils::AdvanceTempoStep(appPlayer, TempoStepChange::DECREASE);
       }
       else
         return InvalidParams;
