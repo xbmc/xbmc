@@ -12,6 +12,7 @@
 #include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
 #include "music/MusicDatabase.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 
@@ -25,7 +26,12 @@ CDirectoryNodeArtist::CDirectoryNodeArtist(const std::string& strName, CDirector
 
 NODE_TYPE CDirectoryNodeArtist::GetChildType() const
 {
-  return NODE_TYPE_ALBUM;
+  if (!CServiceBroker::GetSettingsComponent()
+           ->GetAdvancedSettings()
+           ->m_bMusicLibraryArtistNavigatesToSongs)
+    return NODE_TYPE_ALBUM;
+  else
+    return NODE_TYPE_SONG;
 }
 
 std::string CDirectoryNodeArtist::GetLocalizedName() const
