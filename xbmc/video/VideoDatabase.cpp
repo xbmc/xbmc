@@ -1743,7 +1743,9 @@ int CVideoDatabase::AddUniqueIDs(int mediaId, const char *mediaType, const CVide
   return uniqueid;
 }
 
-int CVideoDatabase::AddSet(const std::string& strSet, const std::string& strOverview /* = "" */)
+int CVideoDatabase::AddSet(const std::string& strSet,
+                           const std::string& strOverview /* = "" */,
+                           const bool updateOverview /* = true */)
 {
   if (strSet.empty())
     return -1;
@@ -1769,9 +1771,13 @@ int CVideoDatabase::AddSet(const std::string& strSet, const std::string& strOver
       m_pDS->close();
 
       // update set data
-      strSQL = PrepareSQL("UPDATE sets SET strOverview = '%s' WHERE idSet = %i",
-                          strOverview.c_str(), id);
-      m_pDS->exec(strSQL);
+      if (updateOverview)
+      {
+        strSQL = PrepareSQL("UPDATE sets SET strOverview = '%s' WHERE idSet = %i",
+                            strOverview.c_str(), id);
+        m_pDS->exec(strSQL);
+      }
+
       return id;
     }
   }
@@ -2641,7 +2647,7 @@ int CVideoDatabase::SetDetailsForMovie(CVideoInfoTag& details,
     int idSet = -1;
     if (!details.m_set.title.empty())
     {
-      idSet = AddSet(details.m_set.title, details.m_set.overview);
+      idSet = AddSet(details.m_set.title, details.m_set.overview, details.GetUpdateSetOverview());
       // add art if not available
       if (!HasArtForItem(idSet, MediaTypeVideoCollection))
       {
