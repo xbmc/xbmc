@@ -679,6 +679,36 @@
       "$ref": "Player.Speed"
     }
   },
+  "Player.SetTempo": {
+    "type": "method",
+    "description": "Set the tempo of the current playback",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      {
+        "name": "playerid",
+        "$ref": "Player.Id",
+        "required": true
+      },
+      {
+        "name": "tempo",
+        "type": [
+          {
+            "type": "number",
+            "required": true
+          },
+          {
+            "$ref": "Global.IncrementDecrement",
+            "required": true
+          }
+        ],
+        "required": true
+      }
+    ],
+    "returns": {
+      "$ref": "Player.Tempo"
+    }
+  },
   "Player.Seek": {
     "type": "method",
     "description": "Seek through the playing item",

@@ -508,6 +508,15 @@
       }
     }
   },
+  "Player.Tempo": {
+    "type": "object",
+    "required": true,
+    "properties": {
+      "tempo": {
+        "type": "number"
+      }
+    }
+  },
   "Player.ViewMode": {
     "type": "string",
     "enum": [
