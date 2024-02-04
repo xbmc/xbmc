@@ -3962,7 +3962,7 @@ int CVideoDatabase::GetFileIdByMovie(int idMovie)
   return idFile;
 }
 
-void CVideoDatabase::GetSameVideoItems(CFileItem& item, CFileItemList& items)
+void CVideoDatabase::GetSameVideoItems(const CFileItem& item, CFileItemList& items)
 {
   if (!m_pDB || !m_pDS)
     return;
@@ -3976,12 +3976,16 @@ void CVideoDatabase::GetSameVideoItems(CFileItem& item, CFileItemList& items)
   {
     // get items with same unique ids (imdb, tmdb, etc.) as the specified item, these are
     // the different versions of the item
-    m_pDS->query(
-        PrepareSQL("SELECT DISTINCT media_id "
-                   "FROM uniqueid "
-                   "WHERE (value, type) IN "
-                   "  (SELECT value, type FROM uniqueid WHERE media_id = %i AND media_type = '%s')",
-                   dbId, mediaType.c_str()));
+    // note: old records may have the type 'unknown'
+    // note 2: for type 'tmdb' the same value may be used for a movie and a tv episode, only
+    // distinguished by media_type.
+    // @todo make the (value,type) pairs truly unique
+    m_pDS->query(PrepareSQL("SELECT DISTINCT media_id "
+                            "FROM uniqueid "
+                            "WHERE (media_type, value, type) IN "
+                            "  (SELECT media_type, value, type "
+                            "  FROM uniqueid WHERE media_id = %i AND media_type = '%s') ",
+                            dbId, mediaType.c_str()));
 
     while (!m_pDS->eof())
     {
