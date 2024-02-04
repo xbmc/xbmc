@@ -1427,7 +1427,7 @@ void CXBMCApp::onReceive(CJNIIntent intent)
 
 void CXBMCApp::OnSleep()
 {
-  CLog::Log(LOGINFO, "CXBMCApp::OnSleep");
+  CLog::Log(LOGDEBUG, "CXBMCApp::OnSleep");
   IPowerSyscall* syscall = CServiceBroker::GetPowerManager().GetPowerSyscall();
   if (syscall)
     static_cast<CAndroidPowerSyscall*>(syscall)->SetSuspended();
@@ -1435,7 +1435,7 @@ void CXBMCApp::OnSleep()
 
 void CXBMCApp::OnWakeup()
 {
-  CLog::Log(LOGINFO, "CXBMCApp::OnWakeup");
+  CLog::Log(LOGDEBUG, "CXBMCApp::OnWakeup");
   IPowerSyscall* syscall = CServiceBroker::GetPowerManager().GetPowerSyscall();
   if (syscall)
     static_cast<CAndroidPowerSyscall*>(syscall)->SetResumed();
