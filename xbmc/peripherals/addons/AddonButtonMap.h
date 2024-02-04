@@ -18,13 +18,15 @@
 namespace PERIPHERALS
 {
 class CPeripheral;
+class CPeripherals;
 
 class CAddonButtonMap : public KODI::JOYSTICK::IButtonMap
 {
 public:
   CAddonButtonMap(CPeripheral* device,
                   const std::weak_ptr<CPeripheralAddon>& addon,
-                  const std::string& strControllerId);
+                  const std::string& strControllerId,
+                  CPeripherals& manager);
 
   ~CAddonButtonMap(void) override;
 
@@ -130,6 +132,7 @@ private:
   CPeripheral* const m_device;
   const std::weak_ptr<CPeripheralAddon> m_addon;
   const std::string m_strControllerId;
+  CPeripherals& m_manager;
 
   // Button map state
   std::string m_controllerAppearance;

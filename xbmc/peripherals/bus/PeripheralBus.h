@@ -17,6 +17,14 @@
 
 class CFileItemList;
 
+namespace KODI
+{
+namespace JOYSTICK
+{
+class IButtonMap;
+} // namespace JOYSTICK
+} // namespace KODI
+
 namespace PERIPHERALS
 {
 class CPeripheral;
@@ -56,6 +64,15 @@ public:
    * \brief Initialize the properties of a peripheral with a known location
    */
   virtual bool InitializeProperties(CPeripheral& peripheral);
+
+  /*!
+   * \brief Initialize a joystick buttonmap, if possible
+   */
+  virtual bool InitializeButtonMap(const CPeripheral& peripheral,
+                                   KODI::JOYSTICK::IButtonMap& buttonMap) const
+  {
+    return false;
+  }
 
   /*!
    * @brief Get the instance of the peripheral at the given location.

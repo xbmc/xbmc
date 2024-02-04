@@ -10,25 +10,34 @@
 
 namespace PERIPHERALS
 {
-  class CAndroidJoystickTranslator
-  {
-  public:
-    /*!
-     * \brief Translate an axis ID to an Android enum suitable for logging
-     *
-     * \param axisId The axis ID given in <android/input.h>
-     *
-     * \return The translated enum label, or "unknown" if unknown
-     */
-    static const char *TranslateAxis(int axisId);
+class CAndroidJoystickTranslator
+{
+public:
+  /*!
+   * \brief Translate an axis ID to an Android enum suitable for logging
+   *
+   * \param axisId The axis ID given in <android/input.h>
+   *
+   * \return The translated enum label, or "unknown" if unknown
+   */
+  static const char* TranslateAxis(int axisId);
 
-    /*!
-     * \brief Translate a key code to an Android enum suitable for logging
-     *
-     * \param keyCode The key code given in <android/keycodes.h>
-     *
-     * \return The translated enum label, or "unknown" if unknown
-     */
-    static const char *TranslateKeyCode(int keyCode);
-  };
-}
+  /*!
+   * \brief Translate a key code to an Android enum suitable for logging
+   *
+   * \param keyCode The key code given in <android/keycodes.h>
+   *
+   * \return The translated enum label, or "unknown" if unknown
+   */
+  static const char* TranslateKeyCode(int keyCode);
+
+  /*!
+   * \brief Translate a button key code to a feature on the default controller
+   *
+   * \param buttonKeycode The key code given in <android/keycodes.h>
+   *
+   * \return The translated feature, or "" if unknown
+   */
+  static const char* TranslateJoystickButton(int buttonKeycode);
+};
+} // namespace PERIPHERALS
