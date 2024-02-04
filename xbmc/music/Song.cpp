@@ -283,6 +283,7 @@ void CSong::Clear()
   iSampleRate = 0;
   iChannels =  0;
   songVideoURL.clear();
+  resumeTime = -1;
 
   replayGain = ReplayGain();
 }

@@ -393,6 +393,8 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn)
   }
   else if (starttime > 0)
     si->m_seekFrame = si->m_audioFormat.m_sampleRate * starttime;
+  else if (si->m_fileItem->GetMusicInfoTag()->GetResumeTime() > 0)
+    si->m_seekFrame = si->m_audioFormat.m_sampleRate * CUtil::ConvertMilliSecsToSecs(si->m_fileItem->GetMusicInfoTag()->GetResumeTime());
   else if (si->m_fileItem->HasProperty("audiobook_bookmark"))
     si->m_seekFrame = si->m_audioFormat.m_sampleRate *
                       CUtil::ConvertMilliSecsToSecs(
@@ -1183,6 +1185,9 @@ void PAPlayer::CloseFileCB(StreamInfo &si)
   bookmark.timeInSeconds -= si.m_stream->GetDelay();
   bookmark.player = m_name;
   bookmark.playerState = GetPlayerState();
+  if (fileItem.GetMusicInfoTag()->GetAlbumReleaseType() == CAlbum::Audiobook &&
+      (std::round(bookmark.timeInSeconds) != std::round(bookmark.totalTimeInSeconds)))
+    fileItem.SetProperty("audiobook_resume_point", bookmark.timeInSeconds);
   CServiceBroker::GetJobManager()->Submit([=]() { cb->OnPlayerCloseFile(fileItem, bookmark); },
                                           CJob::PRIORITY_NORMAL);
 }

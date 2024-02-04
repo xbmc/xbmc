@@ -328,6 +328,11 @@ const std::string& CMusicInfoTag::GetSongVideoURL() const
   return m_songVideoURL;
 }
 
+int CMusicInfoTag::GetResumeTime() const
+{
+  return m_resumeTime;
+}
+
 const std::string CMusicInfoTag::GetAlbumReleaseTypeToString() const
 {
   return CAlbum::ReleaseTypeToString(m_albumReleaseType);
@@ -789,6 +794,11 @@ void CMusicInfoTag::SetSongVideoURL(const std::string& songVideoURL)
   m_songVideoURL = songVideoURL;
 }
 
+void CMusicInfoTag::SetResumeTime(int resumeTime)
+{
+  m_resumeTime = resumeTime;
+}
+
 void CMusicInfoTag::SetArtist(const CArtist& artist)
 {
   SetArtist(artist.strArtist);
@@ -1213,6 +1223,7 @@ void CMusicInfoTag::Clear()
   m_stationName.clear();
   m_stationArt.clear();
   m_songVideoURL.clear();
+  m_resumeTime = -1;
 }
 
 void CMusicInfoTag::AppendArtist(const std::string &artist)

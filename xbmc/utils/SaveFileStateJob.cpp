@@ -226,8 +226,11 @@ void CSaveFileState::DoWork(CFileItem& item,
       if (item.GetMusicInfoTag()->GetAlbumReleaseType() == CAlbum::Audiobook)
       {
         musicdatabase.Open();
+        int resume_point = -1;
+        if (item.HasProperty("audiobook_resume_point"))
+          resume_point = item.GetProperty("audiobook_resume_point").asInteger();
         musicdatabase.SetResumeBookmarkForAudioBook(
-            item, item.GetMusicInfoTag()->GetTrackAndDiscNumber());
+            item, item.GetMusicInfoTag()->GetTrackAndDiscNumber(), CUtil::ConvertSecsToMilliSecs(resume_point));
         musicdatabase.Close();
       }
     }

@@ -1233,6 +1233,8 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 
   XMLUtils::GetBoolean(pRootElement, "opengldebugging", m_openGlDebugging);
 
+  XMLUtils::GetInt(pRootElement,"audiobookstepbackwards", m_audiobookStepBackwards);
+
   // load in the settings overrides
   CServiceBroker::GetSettingsComponent()->GetSettings()->LoadHidden(pRootElement);
 }

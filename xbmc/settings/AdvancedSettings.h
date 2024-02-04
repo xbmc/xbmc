@@ -328,6 +328,8 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     bool m_useLocaleCollation;
 
+    int m_audiobookStepBackwards = 0; // seconds
+
     bool m_guiVisualizeDirtyRegions;
     int  m_guiAlgorithmDirtyRegions;
     bool m_guiSmartRedraw;

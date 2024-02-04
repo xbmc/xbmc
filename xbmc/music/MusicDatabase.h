@@ -343,8 +343,8 @@ public:
   // Audiobook
   /////////////////////////////////////////////////
   bool AddAudioBook(const CFileItem& item);
-  bool SetResumeBookmarkForAudioBook(const CFileItem& item, int bookmark);
-  bool GetResumeBookmarkForAudioBook(const CFileItem& item, int& bookmark);
+  bool SetResumeBookmarkForAudioBook(const CFileItem& item, int bookmark, int resumeTime);
+  bool GetResumeBookmarkForAudioBook(const CFileItem& item, int& bookmark, int& resumeTime);
   int GetAudioBookCount();
 
 
@@ -1032,6 +1032,7 @@ private:
     song_dateAdded,
     song_dateNew,
     song_dateModified,
+    song_resumeTime,
     song_enumCount // end of the enum, do not add past here
   } SongFields;
 

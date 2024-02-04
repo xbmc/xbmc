@@ -166,7 +166,8 @@ void CMusicDatabase::CreateTables()
   CLog::Log(LOGINFO, "create audiobook table");
   m_pDS->exec("CREATE TABLE audiobook (idBook integer primary key, "
               " strBook varchar(256), strAuthor text,"
-              " bookmark integer, file text,"
+              " bookmark integer, resumeTime INTEGER NOT NULL DEFAULT -1, "
+              " file text,"
               " dateAdded varchar (20) default NULL)");
 
   CLog::Log(LOGINFO, "create album_artist table");
@@ -458,12 +459,14 @@ void CMusicDatabase::CreateViews()
               "        album.iDiscTotal as iDiscTotal, "
               "        song.dateAdded as dateAdded, "
               "        song.dateNew AS dateNew, "
-              "        song.dateModified AS dateModified "
+              "        song.dateModified AS dateModified, "
+              "        audiobook.resumeTime as resumeTime "
               "FROM song"
               "  JOIN album ON"
               "    song.idAlbum=album.idAlbum"
               "  JOIN path ON"
-              "    song.idPath=path.idPath");
+              "    song.idPath=path.idPath"
+              "  LEFT JOIN audiobook ON song.idAlbum=audiobook.idBook");
 
   CLog::Log(LOGINFO, "create album view");
   m_pDS->exec("CREATE VIEW albumview AS SELECT "
@@ -3139,6 +3142,7 @@ CSong CMusicDatabase::GetSongFromDataset(const dbiplus::sql_record* const record
   song.iSampleRate = record->at(offset + song_iSampleRate).get_asInt();
   song.iChannels = record->at(offset + song_iChannels).get_asInt();
   song.songVideoURL = record->at(offset + song_songVideoURL).get_asString();
+  song.resumeTime = record->at(offset + song_resumeTime).get_asInt();
   return song;
 }
 
@@ -3202,6 +3206,7 @@ void CMusicDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const rec
   item->GetMusicInfoTag()->SetReplayGain(replaygain);
   item->GetMusicInfoTag()->SetTotalDiscs(record->at(song_iDiscTotal).get_asInt());
   item->GetMusicInfoTag()->SetSongVideoURL(record->at(song_songVideoURL).get_asString());
+  item->GetMusicInfoTag()->SetResumeTime(record->at(song_resumeTime).get_asInt());
 
   item->GetMusicInfoTag()->SetLoaded(true);
   // Get filename with full path
@@ -9442,6 +9447,12 @@ void CMusicDatabase::UpdateTables(int version)
   if (version < 83)
     m_pDS->exec("ALTER TABLE song ADD strVideoURL TEXT");
 
+  if (version < 84)
+  {
+    m_pDS->exec("DELETE FROM audiobook");
+    m_pDS->exec("ALTER TABLE audiobook ADD resumeTime INTEGER NOT NULL DEFAULT -1");
+  }
+
   // Set the version of tag scanning required.
   // Not every schema change requires the tags to be rescanned, set to the highest schema version
   // that needs this. Forced rescanning (of music files that have not changed since they were
@@ -9462,7 +9473,7 @@ void CMusicDatabase::UpdateTables(int version)
 
 int CMusicDatabase::GetSchemaVersion() const
 {
-  return 83;
+  return 84;
 }
 
 int CMusicDatabase::GetMusicNeedsTagScan()
@@ -13957,10 +13968,14 @@ bool CMusicDatabase::AddAudioBook(const CFileItem& item)
     strSQL += PrepareSQL(", '%i' )", albumid);
   else
     strSQL += PrepareSQL(", NULL)");
+  CLog::Log(LOGDEBUG, LOGDATABASE, "{}: query = {}",__FUNCTION__, strSQL);
+
   return ExecuteQuery(strSQL);
 }
 
-bool CMusicDatabase::SetResumeBookmarkForAudioBook(const CFileItem& item, int bookmark)
+bool CMusicDatabase::SetResumeBookmarkForAudioBook(const CFileItem& item,
+                                                   int bookmark,
+                                                   int resumeTime)
 {
   const int albumid = item.GetMusicInfoTag()->GetAlbumId();
   std::string strSQL;
@@ -13976,20 +13991,28 @@ bool CMusicDatabase::SetResumeBookmarkForAudioBook(const CFileItem& item, int bo
       return false;
   }
 
-  strSQL = PrepareSQL("UPDATE audiobook SET bookmark=%i, file='%s' WHERE idBook=%i",
+  strSQL = PrepareSQL("UPDATE audiobook SET bookmark=%i, file='%s', resumeTime=%i WHERE idBook=%i",
                       item.GetMusicInfoTag()->GetTrackAndDiscNumber(), item.GetDynPath().c_str(),
-                      albumid);
+                      resumeTime, albumid);
+  CLog::Log(LOGDEBUG, LOGDATABASE, "{}: query = {}",__FUNCTION__, strSQL);
   return ExecuteQuery(strSQL);
 }
 
-bool CMusicDatabase::GetResumeBookmarkForAudioBook(const CFileItem& item, int& bookmark)
+bool CMusicDatabase::GetResumeBookmarkForAudioBook(const CFileItem& item,
+                                                   int& bookmark,
+                                                   int& resumeTime)
 {
-  std::string strSQL = PrepareSQL("SELECT bookmark from audiobook where idBook='%i'",
+  std::string strSQL = PrepareSQL("SELECT bookmark, resumeTime from audiobook where idBook='%i'",
                                   item.GetMusicInfoTag()->GetAlbumId());
-  if (!m_pDS->query(strSQL.c_str()) || m_pDS->num_rows() == 0)
+  if (!m_pDS->query(strSQL.c_str()))
     return false;
 
-  bookmark = m_pDS->fv(0).get_asInt();
+  if (m_pDS->num_rows() != 0)
+  {
+    bookmark = m_pDS->fv(0).get_asInt();
+    resumeTime = m_pDS->fv(1).get_asInt();
+  }
+  CLog::Log(LOGDEBUG, LOGDATABASE, "{}: query = {}",__FUNCTION__, strSQL);
   m_pDS->close();
   return true;
 }

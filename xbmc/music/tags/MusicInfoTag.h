@@ -87,6 +87,7 @@ public:
   const std::string& GetStationArt() const;
   const std::string& GetSongVideoURL() const;
   const std::string GetAlbumReleaseTypeToString() const;
+  int GetResumeTime() const;
   const EmbeddedArtInfo &GetCoverArtInfo() const;
   const ReplayGain& GetReplayGain() const;
   CAlbum::ReleaseType GetAlbumReleaseType() const;
@@ -160,6 +161,7 @@ public:
   void SetStationName(const std::string& strStationName); // name of online radio station
   void SetStationArt(const std::string& strStationArt);
   void SetSongVideoURL(const std::string& songVideoURL); // link to video of song
+  void SetResumeTime(const int resumeTime); // time in seconds to resume at in an audiobook chapter
 
   /*! \brief Append a unique artist to the artist list
    Checks if we have this artist already added, and if not adds it to the songs artist list.
@@ -259,6 +261,7 @@ protected:
   std::string m_stationName;
   std::string m_stationArt; // Used to fetch thumb URL for Shoutcasts
   std::string m_songVideoURL; // link to a video for a song
+  int m_resumeTime; // time in seconds to resume from in an audiobook chapter
 
   EmbeddedArtInfo m_coverArt; ///< art information
 

@@ -34,6 +34,7 @@
 #include "playlists/PlayListFactory.h"
 #include "profiles/ProfileManager.h"
 #include "settings/Settings.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/IRunnable.h"
 #include "utils/FileUtils.h"
@@ -749,8 +750,9 @@ void PlayItem(const std::shared_ptr<CFileItem>& itemIn,
         }
       }
 
-      std::shared_ptr <CFileItem> pItemToResume = nullptr; // Pointer to item to resume 
+      std::shared_ptr <CFileItem> itemToResume = nullptr; // Pointer to item to resume 
       int bookmark = 0;
+      int resumeTime = -1;
       std::string path = GetMusicDbItemPath(*item);
       CMusicDbUrl musicUrl;
       musicUrl.FromString(path);
@@ -761,7 +763,7 @@ void PlayItem(const std::shared_ptr<CFileItem>& itemIn,
       CMusicDatabase db;
       if (!db.Open())
         return;
-      db.GetResumeBookmarkForAudioBook(*item, bookmark);
+      db.GetResumeBookmarkForAudioBook(*item, bookmark, resumeTime);
       db.Close();
       if (bookmark > 0)
       {// Find the item in the list that matches the bookmark
@@ -770,18 +772,18 @@ void PlayItem(const std::shared_ptr<CFileItem>& itemIn,
           auto testitem = contents.Get(i);
           if (testitem->GetMusicInfoTag()->GetTrackAndDiscNumber() == bookmark)
           {
-            pItemToResume = testitem;
+            itemToResume = testitem;
             break;
           }
         }
       }
       else // bookmark is zero or no bookmark so start with first item
-        pItemToResume = contents[0];
+        itemToResume = contents[0];
       if (bookmark != 0 )
       {
-        std::string resumetitle = pItemToResume->GetMusicInfoTag()->GetTitle();
+        std::string resumetitle = itemToResume->GetMusicInfoTag()->GetTitle();
         std::string resumedisc =
-          std::to_string(pItemToResume->GetMusicInfoTag()->GetTrackAndDiscNumber() >> 16);
+          std::to_string(itemToResume->GetMusicInfoTag()->GetTrackAndDiscNumber() >> 16);
         std::string restitle = StringUtils::Format(
           g_localizeStrings.Get(29995), resumetitle, resumedisc);
         // ask the user if they want to play or resume
@@ -794,16 +796,30 @@ void PlayItem(const std::shared_ptr<CFileItem>& itemIn,
         if (choice < 0)
           return;
         if (choice == MUSIC_SELECT_ACTION_PLAY)
-          pItemToResume = contents[0]; // start playing from first item
-      }
-        if (pItemToResume != nullptr)
         {
-          item = pItemToResume;
-          item->SetStartOffset(STARTOFFSET_RESUME);
-          const auto itemPath = std::make_shared<CFileItem>(path, true);
-          AddItemToPlayListAndPlay(itemPath, item, player);
-          return;
+          itemToResume = contents[0]; // start playing from first item
+          resumeTime = -1; // and start playing from the beginning of it
         }
+      }
+      if (itemToResume)
+      {
+        int stepBack = CServiceBroker::GetSettingsComponent()
+                           ->GetAdvancedSettings()
+                           ->m_audiobookStepBackwards *
+                       1000;
+        if (resumeTime != -1 && resumeTime - stepBack > 50000)
+          resumeTime = resumeTime - stepBack;
+        else
+          resumeTime = 0;
+        // update db with new resumeTime (either skip back time if applicable or zero)
+        db.Open();
+        db.SetResumeBookmarkForAudioBook(
+            *itemToResume, itemToResume->GetMusicInfoTag()->GetTrackAndDiscNumber(), resumeTime);
+        db.Close();
+        const auto itemPath = std::make_shared<CFileItem>(path, true);
+        AddItemToPlayListAndPlay(itemPath, itemToResume, player);
+        return;
+      }
       const auto parentItem = std::make_shared<CFileItem>(parentPath, true);
       if (item->GetStartOffset() == STARTOFFSET_RESUME)
         parentItem->SetStartOffset(STARTOFFSET_RESUME);

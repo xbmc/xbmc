@@ -892,13 +892,16 @@ bool CGUIWindowMusicBase::OnSelect(int iItem)
 {
   auto item = m_vecItems->Get(iItem);
   int bookmark = 0;
+  int resumeTime = -1;
   if (item->HasMusicInfoTag() &&
       item->GetMusicInfoTag()->GetAlbumReleaseType() == CAlbum::Audiobook && !item->m_bIsFolder)
   {
-    if (m_musicdatabase.GetResumeBookmarkForAudioBook(*item, bookmark) && bookmark > 0)
+    if (m_musicdatabase.GetResumeBookmarkForAudioBook(*item, bookmark, resumeTime) && bookmark > 0)
     {
       std::string path = item->GetPath();
       std::string albumPath = item->GetProperty("ParentPath").asString();
+      int originalitem = item->GetMusicInfoTag()->GetTrackAndDiscNumber();
+
       if (albumPath.empty())
         URIUtils::GetParentPath(path, albumPath);
 
@@ -929,43 +932,71 @@ bool CGUIWindowMusicBase::OnSelect(int iItem)
       CDirectory::GetDirectory(path, tracklist, "",0);
       // Find the item in the list that matches the bookmark
       std::shared_ptr <CFileItem> track_to_resume_from = nullptr;
-      int resumepos = 0;
-      for (int i = 0; i <= tracklist.Size(); i++)
+      int resumeTrack = 0;
+      bool multipleDiscs = item->GetMusicInfoTag()->GetTotalDiscs() > 1;
+      int originalitem_start = 0;
+
+      if (bookmark > 0)
       {
-        auto checkitem = tracklist.Get(i);
-        if (checkitem->GetMusicInfoTag()->GetTrackAndDiscNumber() == bookmark)
+        for (int i = 0; i < tracklist.Size(); i++)
         {
-          track_to_resume_from = checkitem;
-          resumepos = i;
-          break;
+          auto checkitem = tracklist.Get(i);
+          if (checkitem->GetMusicInfoTag()->GetTrackAndDiscNumber() == bookmark)
+          {
+            track_to_resume_from = checkitem;
+            resumeTrack = i;
+          }
+          else if (checkitem->GetMusicInfoTag()->GetTrackAndDiscNumber() == originalitem)
+          {
+            originalitem_start = i; // start point in list if we want to play and not resume
+          }
         }
       }
+      else
+        track_to_resume_from = tracklist.Get(0); // no bookmark so start at beginning
       // ask the user if they want to play or resume
-      CContextButtons choices;
-      choices.Add(MUSIC_SELECT_ACTION_PLAY, 208); // 208 = Play
-      std::string resumetitle = track_to_resume_from->GetMusicInfoTag()->GetTitle();
-      std::string resumedisc =
-          std::to_string(track_to_resume_from->GetMusicInfoTag()->GetTrackAndDiscNumber() >> 16);
-      std::string restitle = StringUtils::Format(
-          g_localizeStrings.Get(29995), resumetitle, resumedisc);
-      choices.Add(MUSIC_SELECT_ACTION_RESUME,
-                  StringUtils::Format(g_localizeStrings.Get(12022), // 12022 = Resume from ...
-                                      restitle));
-
-      auto choice = CGUIDialogContextMenu::Show(choices);
-      if (choice == MUSIC_SELECT_ACTION_RESUME)
+      if (bookmark > 0)
       {
-        auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
-        playlistPlayer.ClearPlaylist(PLAYLIST::TYPE_MUSIC);
-        playlistPlayer.Reset();
-        playlistPlayer.Add(PLAYLIST::TYPE_MUSIC, tracklist);// add all tracks to playlist
+        CContextButtons choices;
+        choices.Add(MUSIC_SELECT_ACTION_PLAY, 208); // 208 = Play
+        std::string resumetitle = track_to_resume_from->GetMusicInfoTag()->GetTitle();
+        int resume_disc = track_to_resume_from->GetMusicInfoTag()->GetTrackAndDiscNumber() >> 16;
+        if (!(resume_disc == 1 && multipleDiscs == false))
+          resumetitle = StringUtils::Format(
+              g_localizeStrings.Get(29995), resumetitle, std::to_string(resume_disc));
+        choices.Add(MUSIC_SELECT_ACTION_RESUME,
+                    StringUtils::Format(g_localizeStrings.Get(12022), // 12022 = Resume from ...
+                                        resumetitle));
 
-        playlistPlayer.SetCurrentPlaylist(PLAYLIST::TYPE_MUSIC);
-        playlistPlayer.Play(resumepos, ""); // start playing at the bookmarked track
-        return true;
+        auto choice = CGUIDialogContextMenu::Show(choices);
+        if (choice < 0)
+          return true;
+        else if (choice == MUSIC_SELECT_ACTION_PLAY)
+        {
+          resumeTime = -1;
+          resumeTrack = originalitem_start; // start at the track that was selected originally
+        }
       }
-      else if (choice < 0)
-        return true;
+
+      int stepBack =
+          CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_audiobookStepBackwards *
+          1000;
+      CLog::LogF(LOGINFO, "Step back - {}", stepBack);
+      if ( resumeTime != -1 && resumeTime - stepBack > 5000)
+        resumeTime = resumeTime - stepBack;
+      else
+        resumeTime = -1;
+                CLog::LogF(LOGINFO, "resumeTime - {}", resumeTime);
+
+      auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
+      playlistPlayer.ClearPlaylist(PLAYLIST::TYPE_MUSIC);
+      playlistPlayer.Reset();
+      tracklist[resumeTrack]->GetMusicInfoTag()->SetResumeTime(resumeTime);
+
+      playlistPlayer.Add(PLAYLIST::TYPE_MUSIC, tracklist);// add all tracks to playlist
+      playlistPlayer.SetCurrentPlaylist(PLAYLIST::TYPE_MUSIC);
+      playlistPlayer.Play(resumeTrack, ""); // start playing at the bookmarked track
+      return true;
     }
   }
 
