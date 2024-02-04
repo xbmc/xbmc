@@ -170,6 +170,7 @@ public:
   std::string GetProtocolOption(const std::string &key) const;
   void SetProtocolOption(const std::string &key, const std::string &value);
   void RemoveProtocolOption(const std::string &key);
+  bool AreProtocolOptionsProhibited() const;
 
 protected:
   int m_iPort = 0;
