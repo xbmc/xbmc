@@ -34,6 +34,7 @@
 #include <string>
 
 static constexpr unsigned int CONTROL_BUTTON_ADD_VERSION = 22;
+static constexpr unsigned int CONTROL_BUTTON_RENAME_VERSION = 24;
 static constexpr unsigned int CONTROL_BUTTON_SET_DEFAULT = 25;
 
 CGUIDialogVideoManagerVersions::CGUIDialogVideoManagerVersions()
@@ -64,6 +65,10 @@ bool CGUIDialogVideoManagerVersions::OnMessage(CGUIMessage& message)
           m_hasUpdatedItems = true;
         }
       }
+      else if (control == CONTROL_BUTTON_RENAME_VERSION)
+      {
+        Rename();
+      }
       else if (control == CONTROL_BUTTON_SET_DEFAULT)
       {
         SetDefault();
@@ -85,7 +90,7 @@ void CGUIDialogVideoManagerVersions::UpdateButtons()
 {
   CGUIDialogVideoManager::UpdateButtons();
 
-  // Always anabled
+  // Always enabled
   CONTROL_ENABLE(CONTROL_BUTTON_ADD_VERSION);
 
   // Enabled for non-default version only
@@ -101,10 +106,15 @@ void CGUIDialogVideoManagerVersions::UpdateButtons()
     CONTROL_ENABLE(CONTROL_BUTTON_SET_DEFAULT);
   }
 
-  // Enabled if list not empty
+  // Conditional to empty list
   if (m_videoAssetsList->IsEmpty())
   {
     SET_CONTROL_FOCUS(CONTROL_BUTTON_ADD_VERSION, 0);
+    CONTROL_DISABLE(CONTROL_BUTTON_RENAME_VERSION);
+  }
+  else
+  {
+    CONTROL_ENABLE(CONTROL_BUTTON_RENAME_VERSION);
   }
 }
 
@@ -364,7 +374,7 @@ bool CGUIDialogVideoManagerVersions::ChooseVideoAndConvertToVideoVersion(
   }
 
   // choose a video version for the video
-  const int idVideoVersion{ChooseVideoAsset(selectedItem, VideoAssetType::VERSION)};
+  const int idVideoVersion{ChooseVideoAsset(selectedItem, VideoAssetType::VERSION, "")};
   if (idVideoVersion < 0)
     return false;
 
@@ -562,7 +572,7 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
           return false;
         }
 
-        const int idNewVideoVersion{ChooseVideoAsset(m_videoAsset, VideoAssetType::VERSION)};
+        const int idNewVideoVersion{ChooseVideoAsset(m_videoAsset, VideoAssetType::VERSION, "")};
         if (idNewVideoVersion != -1)
         {
           return m_database.ConvertVideoToVersion(itemType, newAsset.m_idMedia, dbId,
@@ -591,7 +601,7 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
                  CURL::GetRedacted(item.GetPath()));
     }
 
-    const int idNewVideoVersion{ChooseVideoAsset(m_videoAsset, VideoAssetType::VERSION)};
+    const int idNewVideoVersion{ChooseVideoAsset(m_videoAsset, VideoAssetType::VERSION, "")};
     if (idNewVideoVersion == -1)
       return false;
 
@@ -633,7 +643,7 @@ bool CGUIDialogVideoManagerVersions::AddSimilarMovieAsVersion(
   }
 
   // choose a video version type for the video
-  const int idVideoVersion{ChooseVideoAsset(itemMovie, VideoAssetType::VERSION)};
+  const int idVideoVersion{ChooseVideoAsset(itemMovie, VideoAssetType::VERSION, "")};
   if (idVideoVersion < 0)
     return false;
 

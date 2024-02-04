@@ -464,6 +464,7 @@ msgctxt "#117"
 msgid "Delete"
 msgstr ""
 
+#: addons/skin.estuary/xml/DialogVideoManager.xml
 #: xbmc/favourites/ContextMenus.h
 #: xbmc/favourites/GUIDialogFavourites.cpp
 #: xbmc/pvr/PVRContextMenus.cpp
@@ -950,6 +951,7 @@ msgstr ""
 
 #. generic "play" (some sort of media) label used in different places
 #: addons/skin.estuary/xml/DialogVideoInfo.xml
+#: addons/skin.estuary/xml/DialogVideoManager.xml
 #: addons/skin.estuary/xml/SkinSettings.xml
 #: addons/skin.estuary/xml/Variables.xml
 #: xbmc/dialogs/GUIDialogPlayEject.cpp
@@ -7563,6 +7565,7 @@ msgctxt "#13510"
 msgid "Sync playback to display"
 msgstr ""
 
+#: addons/skin.estuary/xml/DialogVideoManager.xml
 #: xbmc/music/dialogs/GUIDialogSongInfo.cpp
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 msgctxt "#13511"
@@ -8687,6 +8690,7 @@ msgctxt "#15014"
 msgid "Keep"
 msgstr ""
 
+#: addons/skin.estuary/xml/DialogVideoManager.xml
 #: xbmc/favourites/ContextMenus.h
 #: xbmc/favourites/GUIDialogFavourites.cpp
 #: xbmc/video/VideoDatabase.cpp
@@ -23817,11 +23821,10 @@ msgctxt "#40003"
 msgid "Version"
 msgstr ""
 
-#. New video version dialog button
-#: xbmc/video/dialogs/GUIDialogVideoManager.cpp
-#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
+#. Button to change the version type of a version in Versions Manager
+#: addons/skin.estuary/xml/DialogVideoManager.xml
 msgctxt "#40004"
-msgid "New version..."
+msgid "Choose type"
 msgstr ""
 
 #. Warning dialog title
@@ -23881,14 +23884,14 @@ msgstr ""
 
 #. Add video version dialog title
 #: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
-#: addons/skin.estuary/xml/DialogVideoVersion.xml
+#: addons/skin.estuary/xml/DialogVideoManager.xml
 msgctxt "#40014"
 msgid "Add version"
 msgstr ""
 
 #. Add video extra dialog title
 #: xbmc/video/dialogs/GUIDialogVideoManagerExtras.cpp
-#: addons/skin.estuary/xml/DialogVideoVersion.xml
+#: addons/skin.estuary/xml/DialogVideoManager.xml
 msgctxt "#40015"
 msgid "Add extra"
 msgstr ""
@@ -23933,7 +23936,7 @@ msgid "Manage {0:s}"
 msgstr ""
 
 #. Button label to make a video version the default version
-#: addons/skin.estuary/xml/DialogVideoVersion.xml
+#: addons/skin.estuary/xml/DialogVideoManager.xml
 msgctxt "#40023"
 msgid "Set as default"
 msgstr ""
@@ -24082,7 +24085,7 @@ msgstr ""
 #: xbmc/video/ContextMenus.h
 #: xbmc/video/guilib/VideoVersionHelper.cpp
 msgctxt "#40208"
-msgid "Choose version"
+msgid "Choose version: {}"
 msgstr ""
 
 #. First choose video version and then select a player and play context menu item label
@@ -24120,10 +24123,46 @@ msgstr ""
 #. Dialog title for the selection of the video extra
 #: xbmc/video/guilib/VideoVersionHelper.cpp
 msgctxt "#40214"
-msgid "Choose extra"
+msgid "Choose extra: {}"
 msgstr ""
 
-#empty strings from id 40215 to 40399
+#. Title of the dialog for version rename action from Versions Manager
+#: xbmc/video/dialogs/GUIDialogVideoManager.cpp
+msgctxt "#40215"
+msgid "Choose version type"
+msgstr ""
+
+#. Caption of the button to create a new version type (Versions Manager > Rename)
+#: xbmc/video/dialogs/GUIDialogVideoManager.cpp
+msgctxt "#40216"
+msgid "New type..."
+msgstr ""
+
+#. Caption of the dialog for keyboard entry of a new version type
+#: xbmc/video/dialogs/GUIDialogVideoManager.cpp
+msgctxt "#40217"
+msgid "New version type"
+msgstr ""
+
+#. Title of the dialog for extra rename action from Extras Manager
+#: xbmc/video/dialogs/GUIDialogVideoManager.cpp
+msgctxt "#40218"
+msgid "Choose extra name"
+msgstr ""
+
+#. Caption of the button to create a new extra name (Extras Manager > Rename)
+#: xbmc/video/dialogs/GUIDialogVideoManager.cpp
+msgctxt "#40219"
+msgid "New name..."
+msgstr ""
+
+#. Caption of the dialog for keyboard entry of a new extra name
+#: xbmc/video/dialogs/GUIDialogVideoManager.cpp
+msgctxt "#40220"
+msgid "New extra name"
+msgstr ""
+
+#empty strings from id 40221 to 40399
 
 # Video versions
 

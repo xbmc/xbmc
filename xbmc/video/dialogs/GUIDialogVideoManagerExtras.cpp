@@ -33,6 +33,7 @@
 #include <string>
 
 static constexpr unsigned int CONTROL_BUTTON_ADD_EXTRAS = 23;
+static constexpr unsigned int CONTROL_BUTTON_RENAME_EXTRA = 28;
 
 CGUIDialogVideoManagerExtras::CGUIDialogVideoManagerExtras()
   : CGUIDialogVideoManager(WINDOW_DIALOG_MANAGE_VIDEO_EXTRAS)
@@ -63,6 +64,10 @@ bool CGUIDialogVideoManagerExtras::OnMessage(CGUIMessage& message)
           m_hasUpdatedItems = true;
         }
       }
+      else if (control == CONTROL_BUTTON_RENAME_EXTRA)
+      {
+        Rename();
+      }
       break;
     }
   }
@@ -77,10 +82,15 @@ void CGUIDialogVideoManagerExtras::UpdateButtons()
   // Always enabled
   CONTROL_ENABLE(CONTROL_BUTTON_ADD_EXTRAS);
 
-  // Enabled if list not empty
+  // Conditional to empty list
   if (m_videoAssetsList->IsEmpty())
   {
     SET_CONTROL_FOCUS(CONTROL_BUTTON_ADD_EXTRAS, 0);
+    CONTROL_DISABLE(CONTROL_BUTTON_RENAME_EXTRA);
+  }
+  else
+  {
+    CONTROL_ENABLE(CONTROL_BUTTON_RENAME_EXTRA);
   }
 }
 
