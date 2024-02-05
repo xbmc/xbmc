@@ -323,24 +323,26 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     SetText(itemTitle);
     SetProgress(0);
 
+    const bool hasAdditionalAssets{m_item->HasVideoVersions() || m_item->HasVideoExtras()};
+    const int origDbId{m_item->GetVideoInfoTag()->m_iDbId};
+
     // remove any existing data for the item we're going to refresh
-    if (m_item->GetVideoInfoTag()->m_iDbId > 0)
+    if (origDbId > 0)
     {
-      int dbId = m_item->GetVideoInfoTag()->m_iDbId;
       if (scraper->Content() == CONTENT_MOVIES)
-        db.DeleteMovie(dbId);
+        db.DeleteMovie(origDbId, false, DeleteMovieCascadeAction::DEFAULT_VERSION);
       else if (scraper->Content() == CONTENT_MUSICVIDEOS)
-        db.DeleteMusicVideo(dbId);
+        db.DeleteMusicVideo(origDbId);
       else if (scraper->Content() == CONTENT_TVSHOWS)
       {
         if (!m_item->m_bIsFolder)
-          db.DeleteEpisode(dbId);
+          db.DeleteEpisode(origDbId);
         else if (m_item->GetVideoInfoTag()->m_type == MediaTypeSeason)
-          db.DeleteSeason(dbId);
+          db.DeleteSeason(origDbId);
         else if (m_refreshAll)
-          db.DeleteTvShow(dbId);
+          db.DeleteTvShow(origDbId);
         else
-          db.DeleteDetailsForTvShow(dbId);
+          db.DeleteDetailsForTvShow(origDbId);
       }
     }
 
@@ -396,6 +398,12 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       }
       else
         db.GetEpisodeInfo(m_item->GetPath(), *m_item->GetVideoInfoTag());
+    }
+
+    if (hasAdditionalAssets)
+    {
+      const auto videoTag{m_item->GetVideoInfoTag()};
+      db.UpdateAssetsOwner(videoTag->m_type, origDbId, videoTag->m_iDbId);
     }
 
     // we're finally done
