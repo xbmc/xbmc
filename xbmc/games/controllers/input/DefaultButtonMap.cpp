@@ -37,15 +37,23 @@ bool CDefaultButtonMap::Load()
   switch (m_device->Type())
   {
     case PERIPHERALS::PERIPHERAL_KEYBOARD:
-      return m_strControllerId == DEFAULT_KEYBOARD_ID;
+    {
+      if (m_strControllerId == DEFAULT_KEYBOARD_ID)
+        return true;
+      break;
+    }
     case PERIPHERALS::PERIPHERAL_MOUSE:
-      return m_strControllerId == DEFAULT_MOUSE_ID;
+    {
+      if (m_strControllerId == DEFAULT_MOUSE_ID)
+        return true;
+      break;
+    }
     default:
       break;
   }
 
-  CLog::Log(LOGDEBUG, "Failed to load button map for \"{}\" with profile {}", m_device->Location(),
-            m_strControllerId);
+  CLog::Log(LOGDEBUG, "Failed to load default button map for \"{}\" with profile {}",
+            m_device->Location(), m_strControllerId);
   return false;
 }
 
