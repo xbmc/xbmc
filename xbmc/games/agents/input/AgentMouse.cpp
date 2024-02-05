@@ -9,6 +9,7 @@
 #include "AgentMouse.h"
 
 #include "games/controllers/Controller.h"
+#include "games/controllers/ControllerIDs.h"
 #include "games/controllers/input/ControllerActivity.h"
 #include "input/mouse/interfaces/IMouseInputProvider.h"
 #include "peripherals/devices/Peripheral.h"
@@ -32,7 +33,7 @@ void CAgentMouse::Initialize()
   MOUSE::IMouseInputProvider* inputProvider = m_peripheral.get();
 
   // Register input handler to silently observe all input
-  inputProvider->RegisterMouseHandler(this, true);
+  inputProvider->RegisterMouseHandler(this, true, true);
 }
 
 void CAgentMouse::Deinitialize()
@@ -59,10 +60,7 @@ float CAgentMouse::GetActivation() const
 
 std::string CAgentMouse::ControllerID(void) const
 {
-  if (m_controllerAppearance)
-    return m_controllerAppearance->ID();
-
-  return "";
+  return DEFAULT_MOUSE_ID;
 }
 
 bool CAgentMouse::OnMotion(const MOUSE::PointerName& relpointer, int differenceX, int differenceY)

@@ -240,11 +240,14 @@ public:
 
   // implementation of IKeyboardInputProvider
   void RegisterKeyboardHandler(KODI::KEYBOARD::IKeyboardInputHandler* handler,
-                               bool bPromiscuous) override;
+                               bool bPromiscuous,
+                               bool forceDefaultMap) override;
   void UnregisterKeyboardHandler(KODI::KEYBOARD::IKeyboardInputHandler* handler) override;
 
   // implementation of IMouseInputProvider
-  void RegisterMouseHandler(KODI::MOUSE::IMouseInputHandler* handler, bool bPromiscuous) override;
+  void RegisterMouseHandler(KODI::MOUSE::IMouseInputHandler* handler,
+                            bool bPromiscuous,
+                            bool forceDefaultMap) override;
   void UnregisterMouseHandler(KODI::MOUSE::IMouseInputHandler* handler) override;
 
   virtual void RegisterJoystickButtonMapper(KODI::JOYSTICK::IButtonMapper* mapper);

@@ -31,7 +31,7 @@ CGameClientKeyboard::CGameClientKeyboard(CGameClient& gameClient,
     m_inputProvider(inputProvider),
     m_keyboardActivity(std::make_unique<CControllerActivity>())
 {
-  m_inputProvider->RegisterKeyboardHandler(this, false);
+  m_inputProvider->RegisterKeyboardHandler(this, false, false);
 }
 
 CGameClientKeyboard::~CGameClientKeyboard()

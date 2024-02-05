@@ -9,6 +9,7 @@
 #include "AgentKeyboard.h"
 
 #include "games/controllers/Controller.h"
+#include "games/controllers/ControllerIDs.h"
 #include "games/controllers/input/ControllerActivity.h"
 #include "input/keyboard/interfaces/IKeyboardInputProvider.h"
 #include "peripherals/devices/Peripheral.h"
@@ -32,7 +33,7 @@ void CAgentKeyboard::Initialize()
   KEYBOARD::IKeyboardInputProvider* inputProvider = m_peripheral.get();
 
   // Register input handler to silently observe all input
-  inputProvider->RegisterKeyboardHandler(this, true);
+  inputProvider->RegisterKeyboardHandler(this, true, true);
 }
 
 void CAgentKeyboard::Deinitialize()
@@ -59,10 +60,7 @@ float CAgentKeyboard::GetActivation() const
 
 std::string CAgentKeyboard::ControllerID(void) const
 {
-  if (m_controllerAppearance)
-    return m_controllerAppearance->ID();
-
-  return "";
+  return DEFAULT_KEYBOARD_ID;
 }
 
 bool CAgentKeyboard::HasKey(const KEYBOARD::KeyName& key) const

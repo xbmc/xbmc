@@ -27,7 +27,7 @@ CGameClientMouse::CGameClientMouse(CGameClient& gameClient,
     m_inputProvider(inputProvider),
     m_mouseActivity(std::make_unique<CControllerActivity>())
 {
-  inputProvider->RegisterMouseHandler(this, false);
+  inputProvider->RegisterMouseHandler(this, false, false);
 }
 
 CGameClientMouse::~CGameClientMouse()

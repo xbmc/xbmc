@@ -30,8 +30,12 @@ public:
    * \param handler The handler to receive keyboard input provided by this class
    * \param bPromiscuous True to observe all events without affecting the
    *        input's destination
+   * \param forceDefaultMap Always use the default keyboard buttonmap, avoiding
+   *        buttonmaps provided by add-ons
    */
-  virtual void RegisterKeyboardHandler(IKeyboardInputHandler* handler, bool bPromiscuous) = 0;
+  virtual void RegisterKeyboardHandler(IKeyboardInputHandler* handler,
+                                       bool bPromiscuous,
+                                       bool forceDefaultMap) = 0;
 
   /*!
    * \brief Unregisters handler from keyboard input
