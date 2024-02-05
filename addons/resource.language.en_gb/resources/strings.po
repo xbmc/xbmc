@@ -24081,8 +24081,7 @@ msgctxt "#40207"
 msgid "When enabled, a video with multiple versions will be shown as a folder in the video library. This folder can then be opened to display the individual video versions. When disabled, the configured select action will be applied."
 msgstr ""
 
-#. Choose video version context menu item label and dialog title
-#: xbmc/video/ContextMenus.h
+#. Choose video version dialog title
 #: xbmc/video/guilib/VideoVersionHelper.cpp
 msgctxt "#40208"
 msgid "Choose version: {}"
@@ -24162,7 +24161,13 @@ msgctxt "#40220"
 msgid "New extra name"
 msgstr ""
 
-#empty strings from id 40221 to 40399
+#. Choose video version context menu item label
+#: xbmc/video/ContextMenus.h
+msgctxt "#40221"
+msgid "Choose version"
+msgstr ""
+
+#empty strings from id 40222 to 40399
 
 # Video versions
 
