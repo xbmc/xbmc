@@ -753,11 +753,19 @@ protected:
 private:
   void Play()
   {
-    m_item->SetProperty("playlist_type_hint", PLAYLIST::TYPE_VIDEO);
-    const ContentUtils::PlayMode mode{m_item->GetProperty("CheckAutoPlayNextItem").asBoolean()
+    auto item{m_item};
+    if (item->m_bIsFolder && item->HasVideoVersions())
+    {
+      //! @todo get rid of "videos with versions as folder" hack!
+      item = std::make_shared<CFileItem>(*item);
+      item->m_bIsFolder = false;
+    }
+
+    item->SetProperty("playlist_type_hint", PLAYLIST::TYPE_VIDEO);
+    const ContentUtils::PlayMode mode{item->GetProperty("CheckAutoPlayNextItem").asBoolean()
                                           ? ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM
                                           : ContentUtils::PlayMode::PLAY_ONLY_THIS};
-    VIDEO_UTILS::PlayItem(m_item, "", mode);
+    VIDEO_UTILS::PlayItem(item, "", mode);
   }
 };
 } // unnamed namespace
