@@ -115,6 +115,8 @@ static const std::map<ActionName, ActionID> ActionMappings = {
     {"smallstepback", ACTION_SMALL_STEP_BACK},
     {"fastforward", ACTION_PLAYER_FORWARD},
     {"rewind", ACTION_PLAYER_REWIND},
+    {"tempoup", ACTION_PLAYER_INCREASE_TEMPO},
+    {"tempodown", ACTION_PLAYER_DECREASE_TEMPO},
     {"play", ACTION_PLAYER_PLAY},
     {"playpause", ACTION_PLAYER_PLAYPAUSE},
     {"switchplayer", ACTION_SWITCH_PLAYER},

@@ -131,6 +131,7 @@
 #include "utils/FileExtensionProvider.h"
 #include "utils/JobManager.h"
 #include "utils/LangCodeExpander.h"
+#include "utils/PlayerUtils.h"
 #include "utils/RegExp.h"
 #include "utils/Screenshot.h"
 #include "utils/StringUtils.h"
@@ -1299,6 +1300,16 @@ bool CApplication::OnAction(const CAction &action)
         appPlayer->SetPlaySpeed(static_cast<float>(iSpeed));
         if (iSpeed == 1)
           CLog::Log(LOGDEBUG,"Resetting playspeed");
+        return true;
+      }
+      else if (action.GetID() == ACTION_PLAYER_INCREASE_TEMPO)
+      {
+        CPlayerUtils::AdvanceTempoStep(appPlayer, TempoStepChange::INCREASE);
+        return true;
+      }
+      else if (action.GetID() == ACTION_PLAYER_DECREASE_TEMPO)
+      {
+        CPlayerUtils::AdvanceTempoStep(appPlayer, TempoStepChange::DECREASE);
         return true;
       }
     }
