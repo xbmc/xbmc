@@ -559,7 +559,9 @@ std::string CVideoThumbLoader::GetEmbeddedThumbURL(const CFileItem &item)
 
 void CVideoThumbLoader::DetectAndAddMissingItemData(CFileItem &item)
 {
-  if (item.m_bIsFolder) return;
+  // @todo remove exception for hybrid movie/folder of versions
+  if (item.m_bIsFolder && !StringUtils::StartsWith(item.GetPath(), VIDEODB_PATH_VERSION_ID_ALL))
+    return;
 
   if (item.HasVideoInfoTag())
   {
