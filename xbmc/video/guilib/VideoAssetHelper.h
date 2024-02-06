@@ -16,10 +16,18 @@ namespace VIDEO
 {
 namespace GUILIB
 {
+enum class VideoAssetSelectMode
+{
+  NO_SELECT,
+  ENABLE_AUTO_SELECT,
+  ENFORCE_SELECT,
+};
+
 class CVideoAssetHelper
 {
 public:
-  static std::shared_ptr<CFileItem> ChooseVideoFromAssets(const std::shared_ptr<CFileItem>& item);
+  static std::shared_ptr<CFileItem> ChooseVideoFromAssets(const std::shared_ptr<CFileItem>& item,
+                                                          VideoAssetSelectMode mode);
 };
 } // namespace GUILIB
 

@@ -8181,7 +8181,7 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
             path = RewriteVideoVersionURL(strBaseDir, movie);
           }
           // this is a certain version, no need to resolve (e.g. no version chooser on select)
-          pItem->SetProperty("has_resolved_video_asset", true);
+          pItem->SetProperty("has_resolved_video_version", true);
         }
 
         if (path.empty())
