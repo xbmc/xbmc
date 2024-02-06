@@ -31,7 +31,7 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
-#include "video/guilib/VideoVersionHelper.h"
+#include "video/guilib/VideoAssetHelper.h"
 
 #include <algorithm>
 #include <cstdlib>

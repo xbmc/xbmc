@@ -6,7 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "VideoVersionHelper.h"
+#include "VideoAssetHelper.h"
 
 #include "FileItem.h"
 #include "ServiceBroker.h"
@@ -182,7 +182,7 @@ std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideo(CGUIDialogSelect& di
 }
 } // unnamed namespace
 
-std::shared_ptr<CFileItem> CVideoVersionHelper::ChooseVideoFromAssets(
+std::shared_ptr<CFileItem> CVideoAssetHelper::ChooseVideoFromAssets(
     const std::shared_ptr<CFileItem>& item)
 {
   std::shared_ptr<const CFileItem> video;

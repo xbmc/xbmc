@@ -16,7 +16,7 @@ namespace VIDEO
 {
 namespace GUILIB
 {
-class CVideoVersionHelper
+class CVideoAssetHelper
 {
 public:
   static std::shared_ptr<CFileItem> ChooseVideoFromAssets(const std::shared_ptr<CFileItem>& item);
