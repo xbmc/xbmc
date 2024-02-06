@@ -4892,7 +4892,6 @@ msgctxt "#10004"
 msgid "Settings"
 msgstr ""
 
-#: addons/skin.estouchy/xml/DialogAddonInfo.xml
 #: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
 #: addons/skin.estuary/xml/DialogSeekBar.xml
 #: xbmc/LangInfo.cpp
@@ -5806,61 +5805,51 @@ msgid "Hide password"
 msgstr ""
 
 #: addons/skin.estuary/xml/DialogNumeric.xml
-#: addons/skin.estouchy/xml/DialogNumeric.xml
 msgctxt "#12310"
 msgid "0"
 msgstr ""
 
 #: addons/skin.estuary/xml/DialogNumeric.xml
-#: addons/skin.estouchy/xml/DialogNumeric.xml
 msgctxt "#12311"
 msgid "1"
 msgstr ""
 
 #: addons/skin.estuary/xml/DialogNumeric.xml
-#: addons/skin.estouchy/xml/DialogNumeric.xml
 msgctxt "#12312"
 msgid "2"
 msgstr ""
 
 #: addons/skin.estuary/xml/DialogNumeric.xml
-#: addons/skin.estouchy/xml/DialogNumeric.xml
 msgctxt "#12313"
 msgid "3"
 msgstr ""
 
 #: addons/skin.estuary/xml/DialogNumeric.xml
-#: addons/skin.estouchy/xml/DialogNumeric.xml
 msgctxt "#12314"
 msgid "4"
 msgstr ""
 
 #: addons/skin.estuary/xml/DialogNumeric.xml
-#: addons/skin.estouchy/xml/DialogNumeric.xml
 msgctxt "#12315"
 msgid "5"
 msgstr ""
 
 #: addons/skin.estuary/xml/DialogNumeric.xml
-#: addons/skin.estouchy/xml/DialogNumeric.xml
 msgctxt "#12316"
 msgid "6"
 msgstr ""
 
 #: addons/skin.estuary/xml/DialogNumeric.xml
-#: addons/skin.estouchy/xml/DialogNumeric.xml
 msgctxt "#12317"
 msgid "7"
 msgstr ""
 
 #: addons/skin.estuary/xml/DialogNumeric.xml
-#: addons/skin.estouchy/xml/DialogNumeric.xml
 msgctxt "#12318"
 msgid "8"
 msgstr ""
 
 #: addons/skin.estuary/xml/DialogNumeric.xml
-#: addons/skin.estouchy/xml/DialogNumeric.xml
 msgctxt "#12319"
 msgid "9"
 msgstr ""
@@ -6223,9 +6212,6 @@ msgctxt "#13006"
 msgid "Add picture source"
 msgstr ""
 
-#: addons/skin.estouchy/xml/DialogPVRGuideSearch.xml
-#: addons/skin.estouchy/xml/GameOSD.xml
-#: addons/skin.estouchy/xml/DialogGameControllers.xml
 #: addons/skin.estuary/xml/DialogPVRGuideSearch.xml
 #: addons/skin.estuary/xml/GameOSD.xml
 #: addons/skin.estuary/xml/DialogGameControllers.xml
@@ -6257,7 +6243,6 @@ msgid "Suspend"
 msgstr ""
 
 #: addons/skin.estuary/xml/DialogButtonMenu.xml
-#: addons/skin.estouchy/xml/Home.xml
 msgctxt "#13012"
 msgid "Exit"
 msgstr ""
@@ -6571,7 +6556,6 @@ msgstr ""
 
 #empty strings from id 13175 to 13199
 
-#: addons/skin.estouchy/xml/SettingsProfile.xml
 #: xbmc/profiles/ProfilesManager.cpp
 #: xbmc/profiles/dialogs/GUIDialogProfileSettings.cpp
 #: addons/skin.estuary/xml/SettingsProfile.xml
@@ -10851,7 +10835,7 @@ msgstr ""
 
 #empty string with id 19221
 
-#: addons/skin.estouchy/xml/Includes.xml
+#: unused?
 msgctxt "#19222"
 msgid "Guide"
 msgstr ""
@@ -15777,7 +15761,6 @@ msgid "Version:"
 msgstr ""
 
 #: addons/skin.estuary/xml/DialogAddonInfo.xml
-#: addons/skin.estouchy/xml/DialogAddonInfo.xml
 msgctxt "#24052"
 msgid "Disclaimer"
 msgstr ""

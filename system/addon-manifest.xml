@@ -43,7 +43,6 @@
   <addon>screensaver.xbmc.builtin.dim</addon>
   <addon>script.module.pil</addon>
   <addon>script.module.pycryptodome</addon>
-  <addon>skin.estouchy</addon>
   <addon>skin.estuary</addon>
   <addon>webinterface.default</addon>
   <addon>xbmc.addon</addon>

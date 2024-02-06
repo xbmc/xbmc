@@ -17,7 +17,7 @@ SYNC="rsync -aq --exclude .git* --exclude .DS_Store* --exclude *.dll --exclude *
 SYNCSKIN="rsync -aq --exclude .git* --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.* --exclude *.png --exclude *.jpg --exclude *.bat"
 
 # rsync command for including everything but the skins
-ADDONSYNC="rsync -aq --no-links --exclude .git* --exclude .DS_Store* --exclude addons/skin.estuary --exclude addons/skin.estouchy"
+ADDONSYNC="rsync -aq --no-links --exclude .git* --exclude .DS_Store* --exclude addons/skin.estuary"
 
 BASE_TARGET_PATH="$TARGET_BUILD_DIR/Resources"
 TARGET_PATH="$BASE_TARGET_PATH/$APP_NAME"
@@ -40,9 +40,6 @@ ${SYNC} "$SRCROOT/media" "$TARGET_PATH"
 ${SYNCSKIN} "$SRCROOT/addons/skin.estuary" "$TARGET_PATH/addons"
 ${SYNC} "$SRCROOT/addons/skin.estuary/extras" "$TARGET_PATH/addons/skin.estuary"
 ${SYNC} "$SRCROOT/addons/skin.estuary/resources" "$TARGET_PATH/addons/skin.estuary"
-${SYNCSKIN} "$SRCROOT/addons/skin.estouchy" "$TARGET_PATH/addons"
-${SYNC} "$SRCROOT/addons/skin.estouchy/background" "$TARGET_PATH/addons/skin.estouchy"
-${SYNC} "$SRCROOT/addons/skin.estouchy/resources" "$TARGET_PATH/addons/skin.estouchy"
 ${SYNC} --include 'settings/settings.xml' --include 'settings/darwin*' --exclude 'settings/*.xml' "$SRCROOT/system" "$TARGET_PATH"
 ${SYNC} "$SRCROOT/userdata" "$TARGET_PATH"
 
