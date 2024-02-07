@@ -18,6 +18,7 @@ class CFileItem;
 class CFileItemList;
 class CMediaSource;
 class CVideoDatabase;
+enum class VideoAssetType;
 
 class CGUIDialogVideoInfo :
       public CGUIDialog
@@ -91,9 +92,8 @@ protected:
    * \param pItem Search result item
    */
   void OnSearchItemFound(const CFileItem* pItem);
-  bool OnManageVideoVersions();
-  bool OnManageVideoExtras();
-  void Play(bool resume = false);
+  void OnPlayVideoAsset(VideoAssetType assetType);
+  void Play(const std::shared_ptr<CFileItem>& item, bool resume = false);
   void OnGetArt();
   void OnGetFanart();
   void OnSetUserrating() const;

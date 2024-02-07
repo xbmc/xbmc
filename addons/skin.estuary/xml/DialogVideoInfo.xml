@@ -627,13 +627,13 @@
 						<param name="id" value="14" />
 						<param name="icon" value="icons/infodialogs/versions.png" />
 						<param name="label" value="$LOCALIZE[40000]" />
-						<param name="visible" value="String.IsEqual(ListItem.DBType,movie)" />
+						<param name="visible" value="Control.IsEnabled(14)" />
 					</include>
 					<include content="InfoDialogButton">
 						<param name="id" value="15" />
 						<param name="icon" value="icons/infodialogs/extras.png" />
 						<param name="label" value="$LOCALIZE[40211]" />
-						<param name="visible" value="String.IsEqual(ListItem.DBType,movie)" />
+						<param name="visible" value="Control.IsEnabled(15)" />
 					</include>
 					<include content="InfoDialogButton">
 						<param name="id" value="443" />
