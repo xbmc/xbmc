@@ -446,7 +446,7 @@ bool CVideoPlayVersionUsing::IsVisible(const CFileItem& item) const
 bool CVideoPlayVersionUsing::Execute(const std::shared_ptr<CFileItem>& itemIn) const
 {
   const auto item{std::make_shared<CFileItem>(itemIn->GetItemToPlay())};
-  item->SetProperty("video_asset_type", "version");
+  item->SetProperty("video_asset_type", static_cast<int>(VideoAssetType::VERSION));
   SetPathAndPlay(item, PlayMode::PLAY_VERSION_USING);
   return true;
 }
