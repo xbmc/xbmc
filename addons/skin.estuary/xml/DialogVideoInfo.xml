@@ -540,6 +540,18 @@
 						<param name="label" value="$VAR[VideoInfoPlayButtonLabelVar]" />
 					</include>
 					<include content="InfoDialogButton">
+						<param name="id" value="14" />
+						<param name="icon" value="icons/infodialogs/versions.png" />
+						<param name="label" value="$LOCALIZE[40210]" />
+						<param name="visible" value="Control.IsEnabled(14)" />
+					</include>
+					<include content="InfoDialogButton">
+						<param name="id" value="15" />
+						<param name="icon" value="icons/infodialogs/extras.png" />
+						<param name="label" value="$LOCALIZE[40211]" />
+						<param name="visible" value="Control.IsEnabled(15)" />
+					</include>
+					<include content="InfoDialogButton">
 						<param name="id" value="11" />
 						<param name="icon" value="icons/infodialogs/trailer.png" />
 						<param name="label" value="$LOCALIZE[20410]" />
@@ -622,18 +634,6 @@
 						<param name="onclick_2" value="ActivateWindow(Music,musicdb://albums/?artist=$INFO[ListItem.Artist]&amp;albumartistonly=true&amp;compilation=false)" />
 						<param name="label" value="$LOCALIZE[132]" />
 						<param name="visible" value="String.IsEqual(ListItem.DBType,musicvideo)" />
-					</include>
-					<include content="InfoDialogButton">
-						<param name="id" value="14" />
-						<param name="icon" value="icons/infodialogs/versions.png" />
-						<param name="label" value="$LOCALIZE[40000]" />
-						<param name="visible" value="Control.IsEnabled(14)" />
-					</include>
-					<include content="InfoDialogButton">
-						<param name="id" value="15" />
-						<param name="icon" value="icons/infodialogs/extras.png" />
-						<param name="label" value="$LOCALIZE[40211]" />
-						<param name="visible" value="Control.IsEnabled(15)" />
 					</include>
 					<include content="InfoDialogButton">
 						<param name="id" value="443" />
