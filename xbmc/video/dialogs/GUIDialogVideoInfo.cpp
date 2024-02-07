@@ -1120,8 +1120,9 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
 
   if (type == MediaTypeMovie)
   {
-    // manage video versions
+    // manage video versions and extras
     buttons.Add(CONTEXT_BUTTON_MANAGE_VIDEOVERSIONS, 40001); // Manage versions
+    buttons.Add(CONTEXT_BUTTON_MANAGE_VIDEOEXTRAS, 40039); // Manage extras
   }
 
   if (type == MediaTypeEpisode &&
@@ -1199,6 +1200,11 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
 
       case CONTEXT_BUTTON_MANAGE_VIDEOVERSIONS:
         ManageVideoVersions(item);
+        result = true;
+        break;
+
+      case CONTEXT_BUTTON_MANAGE_VIDEOEXTRAS:
+        ManageVideoExtras(item);
         result = true;
         break;
 
@@ -2147,4 +2153,9 @@ void CGUIDialogVideoInfo::OnPlayVideoAsset(VideoAssetType assetType)
 void CGUIDialogVideoInfo::ManageVideoVersions(const std::shared_ptr<CFileItem>& item)
 {
   CGUIDialogVideoManagerVersions::ManageVideoVersions(item);
+}
+
+void CGUIDialogVideoInfo::ManageVideoExtras(const std::shared_ptr<CFileItem>& item)
+{
+  CGUIDialogVideoManagerExtras::ManageVideoExtras(item);
 }
