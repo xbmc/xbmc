@@ -6,8 +6,6 @@ on:
     paths:
       - '**skin.estuary**addon.xml'
       - '**skin.estuary**resource.language.**strings.po'
-      - '**skin.estouchy**addon.xml'
-      - '**skin.estouchy**resource.language.**strings.po'
       - '**audioencoder.kodi.builtin.aac**addon.xml'
       - '**audioencoder.kodi.builtin.aac**resource.language.**strings.po'
       - '**audioencoder.kodi.builtin.wma**addon.xml'
@@ -60,7 +58,6 @@ jobs:
       - name: Run sync-addon-metadata-translations
         run: |
           sync-addon-metadata-translations --path ./skin.estuary/
-          sync-addon-metadata-translations --path ./skin.estouchy/
           sync-addon-metadata-translations --path ./audioencoder.kodi.builtin.aac/
           sync-addon-metadata-translations --path ./audioencoder.kodi.builtin.wma/
           sync-addon-metadata-translations --path ./repository.xbmc.org/

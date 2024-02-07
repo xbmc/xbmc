@@ -113,8 +113,6 @@ cmake_install.cmake
 /addons/packages
 /addons/skin.estuary/media/Makefile
 /addons/skin.estuary/media/*.xbt
-/addons/skin.estouchy/media/Makefile
-/addons/skin.estouchy/media/Textures.xbt
 /addons/skin.pm3-hd/media/Textures.xbt
 /addons/audioencoder.*
 /addons/pvr.*

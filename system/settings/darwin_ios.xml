@@ -82,7 +82,7 @@
     <category id="skin">
       <group id="1">
         <setting id="lookandfeel.skin" type="addon">
-          <default>skin.estouchy</default>
+          <default>skin.estuary</default>
         </setting>
       </group>
     </category>
