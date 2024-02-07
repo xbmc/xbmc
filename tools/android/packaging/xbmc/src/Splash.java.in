@@ -89,7 +89,6 @@ public class Splash extends Activity
   private BroadcastReceiver mExternalStorageReceiver = null;
   private boolean mExternalStorageChecked = false;
   private boolean mCachingDone = false;
-  private boolean mInstallLibs = false;
   private boolean mPermissionOK = false;
 
   private class StateMachine extends Handler
@@ -212,7 +211,7 @@ public class Splash extends Activity
             {
               sendEmptyMessage(InError);
             }
-            if (fXbmcHome.exists() && fXbmcHome.lastModified() >= fPackagePath.lastModified() && !mInstallLibs)
+            if (fXbmcHome.exists() && fXbmcHome.lastModified() >= fPackagePath.lastModified())
             {
               mState = CachingDone;
               mCachingDone = true;
@@ -286,8 +285,8 @@ public class Splash extends Activity
       }
       fXbmcHome.mkdirs();
 
-      // Log.d(TAG, "apk: " + sPackagePath);
-      // Log.d(TAG, "output: " + sXbmcHome);
+      Log.d(TAG, "apk: " + sPackagePath);
+      Log.d(TAG, "output: " + sXbmcHome);
 
       ZipFile zip;
       byte[] buf = new byte[4096];
@@ -309,27 +308,17 @@ public class Splash extends Activity
           ZipEntry e = (ZipEntry) entries.nextElement();
           String sName = e.getName();
 
-          if (!(sName.startsWith("assets/") || (mInstallLibs && sName.startsWith("lib/"))))
+          if (!sName.startsWith("assets/"))
             continue;
 
-          String sFullPath = null;
-          if (sName.startsWith("lib/"))
+          String sFullPath = sXbmcHome + "/" + sName;
+          File fFullPath = new File(sFullPath);
+          if (e.isDirectory())
           {
-            if (e.isDirectory())
-              continue;
-            sFullPath = getApplicationInfo().nativeLibraryDir + "/" + new File(sName).getName();
+            fFullPath.mkdirs();
+            continue;
           }
-          else
-          {
-            sFullPath = sXbmcHome + "/" + sName;
-            File fFullPath = new File(sFullPath);
-            if (e.isDirectory())
-            {
-              fFullPath.mkdirs();
-              continue;
-            }
-            fFullPath.getParentFile().mkdirs();
-          }
+          fFullPath.getParentFile().mkdirs();
 
           try
           {
@@ -724,7 +713,7 @@ public class Splash extends Activity
 
         SetupEnvironment();
 
-        if (mState != InError && fXbmcHome.exists() && fXbmcHome.lastModified() >= fPackagePath.lastModified() && !mInstallLibs)
+        if (mState != InError && fXbmcHome.exists() && fXbmcHome.lastModified() >= fPackagePath.lastModified())
         {
           mState = CachingDone;
           mCachingDone = true;
