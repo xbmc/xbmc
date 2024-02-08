@@ -18,6 +18,7 @@
 #include "input/joysticks/JoystickUtils.h"
 #include "input/joysticks/interfaces/IButtonMap.h"
 #include "input/joysticks/interfaces/IButtonMapCallback.h"
+#include "input/keyboard/KeyboardTranslator.h"
 #include "input/keymaps/interfaces/IKeymap.h"
 #include "input/keymaps/keyboard/KeyboardActionMap.h"
 #include "peripherals/Peripherals.h"
@@ -110,7 +111,7 @@ bool CGUIConfigurationWizard::Abort(bool bWait /* = true */)
 void CGUIConfigurationWizard::RegisterKey(const CPhysicalFeature& key)
 {
   if (key.Keycode() != XBMCK_UNKNOWN)
-    m_keyMap[key.Keycode()] = key;
+    m_keyMap[KEYBOARD::CKeyboardTranslator::TranslateKeycode(key.Keycode())] = key;
 }
 
 void CGUIConfigurationWizard::UnregisterKeys()
@@ -266,7 +267,8 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
       {
         if (primitive.Type() == PRIMITIVE_TYPE::KEY)
         {
-          auto it = m_keyMap.find(primitive.Keycode());
+          auto it =
+              m_keyMap.find(KEYBOARD::CKeyboardTranslator::TranslateKeycode(primitive.Keycode()));
           if (it != m_keyMap.end())
           {
             const CPhysicalFeature& key = it->second;

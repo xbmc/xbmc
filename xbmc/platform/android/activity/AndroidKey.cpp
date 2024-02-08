@@ -19,7 +19,7 @@
 
 typedef struct {
   int32_t nativeKey;
-  int16_t xbmcKey;
+  uint16_t xbmcKey;
 } KeyMap;
 
 static KeyMap keyMap[] = {

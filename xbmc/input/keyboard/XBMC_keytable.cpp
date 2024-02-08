@@ -19,6 +19,7 @@ namespace
 {
 // The array of XBMCKEYTABLEs used in XBMC.
 // scancode, sym, unicode, ascii, vkey, keyname
+// clang-format off
 static const XBMCKEYTABLE XBMCKeyTable[] = {
     {XBMCK_BACKSPACE, 0, 0, XBMCVK_BACK, "backspace"},
     {XBMCK_TAB, 0, 0, XBMCVK_TAB, "tab"},
@@ -247,7 +248,59 @@ static const XBMCKEYTABLE XBMCKeyTable[] = {
     {XBMCK_FAVORITES, 0, 0, XBMCVK_FAVORITES, "favorites"},
     {XBMCK_HOMEPAGE, 0, 0, XBMCVK_HOMEPAGE, "homepage"},
     {XBMCK_CONFIG, 0, 0, XBMCVK_CONFIG, "config"},
-    {XBMCK_EPG, 0, 0, XBMCVK_EPG, "epg"}};
+    {XBMCK_EPG, 0, 0, XBMCVK_EPG, "epg"},
+
+    /*
+     * Numpad extended keypad keys at table end
+     *
+     * They are appended to the end of this key table to ensure backward
+     * compatibility and minimize disruption to existing keycode mappings.
+     */
+
+    // Extended keypad key symbols for Num Lock state-specific behaviors, with
+    // Num Lock disabled
+    {XBMCK_XKB_KP_HOME, 0, 0, XBMCVK_HOME, "home"},
+    {XBMCK_XKB_KP_LEFT, 0, 0, XBMCVK_LEFT, "left"},
+    {XBMCK_XKB_KP_UP, 0, 0, XBMCVK_UP, "up"},
+    {XBMCK_XKB_KP_RIGHT, 0, 0, XBMCVK_RIGHT, "right"},
+    {XBMCK_XKB_KP_DOWN, 0, 0, XBMCVK_DOWN, "down"},
+    {XBMCK_XKB_KP_PAGE_UP, 0, 0, XBMCVK_PAGEUP, "pageup"},
+    {XBMCK_XKB_KP_PAGE_DOWN, 0, 0, XBMCVK_PAGEDOWN, "pagedown"},
+    {XBMCK_XKB_KP_END, 0, 0, XBMCVK_END, "end"},
+    {XBMCK_XKB_KP_BEGIN, 0, 0, XBMCVK_HOME, "home"},
+    {XBMCK_XKB_KP_INSERT, 0, 0, XBMCVK_INSERT, "insert"},
+    {XBMCK_XKB_KP_DELETE, 0, 0, XBMCVK_DELETE, "delete"},
+
+    // Extended keypad key symbols for Num Lock state-specific behaviors, with
+    // Num Lock enabled
+    {XBMCK_XKB_KP_DECIMAL, '.', '.', XBMCVK_NUMPADPERIOD, "numpadperiod"},
+    {XBMCK_XKB_KP0, '0', '0', XBMCVK_NUMPAD0, "numpadzero"},
+    {XBMCK_XKB_KP1, '1', '1', XBMCVK_NUMPAD1, "numpadone"},
+    {XBMCK_XKB_KP2, '2', '2', XBMCVK_NUMPAD2, "numpadtwo"},
+    {XBMCK_XKB_KP3, '3', '3', XBMCVK_NUMPAD3, "numpadthree"},
+    {XBMCK_XKB_KP4, '4', '4', XBMCVK_NUMPAD4, "numpadfour"},
+    {XBMCK_XKB_KP5, '5', '5', XBMCVK_NUMPAD5, "numpadfive"},
+    {XBMCK_XKB_KP6, '6', '6', XBMCVK_NUMPAD6, "numpadsix"},
+    {XBMCK_XKB_KP7, '7', '7', XBMCVK_NUMPAD7, "numpadseven"},
+    {XBMCK_XKB_KP8, '8', '8', XBMCVK_NUMPAD8, "numpadeight"},
+    {XBMCK_XKB_KP9, '9', '9', XBMCVK_NUMPAD9, "numpadnine"},
+
+    // Extended keypad key symbols for Num Lock state-independent behaviors
+    {XBMCK_XKB_KP_SPACE, ' ', ' ', XBMCVK_SPACE, "space"},
+    {XBMCK_XKB_KP_TAB, 0, 0, XBMCVK_TAB, "tab"},
+    {XBMCK_XKB_KP_ENTER, 0, 0, XBMCVK_NUMPADENTER, "enter"},
+    {XBMCK_XKB_KP_F1, 0, 0, XBMCVK_F1, "f1"},
+    {XBMCK_XKB_KP_F2, 0, 0, XBMCVK_F2, "f2"},
+    {XBMCK_XKB_KP_F3, 0, 0, XBMCVK_F3, "f3"},
+    {XBMCK_XKB_KP_F4, 0, 0, XBMCVK_F4, "f4"},
+    {XBMCK_XKB_KP_EQUALS, '=', '=', 0, "numpadequals"},
+    {XBMCK_XKB_KP_MULTIPLY, '*', '*', XBMCVK_NUMPADTIMES, "numpadtimes"},
+    {XBMCK_XKB_KP_ADD, '+', '+', XBMCVK_NUMPADPLUS, "numpadplus"},
+    {XBMCK_XKB_KP_SEPARATOR, 0, 0, 0, "numpadseparator"},
+    {XBMCK_XKB_KP_SUBTRACT, '-', '-', XBMCVK_NUMPADMINUS, "numpadminus"},
+    {XBMCK_XKB_KP_DIVIDE, '/', '/', XBMCVK_NUMPADDIVIDE, "numpaddivide"},
+};
+// clang-format on
 
 static int XBMCKeyTableSize = sizeof(XBMCKeyTable) / sizeof(XBMCKEYTABLE);
 } // namespace
