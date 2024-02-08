@@ -6461,7 +6461,6 @@ void CVideoDatabase::UpdateTables(int iVersion)
                             "AND itemType = %i",
                             VideoAssetTypeOwner::USER, VideoAssetType::VERSION));
   }
-}
 
   if (iVersion < 130)
   {
