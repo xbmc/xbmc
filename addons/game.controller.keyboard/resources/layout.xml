@@ -1,145 +1,145 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <layout label="30000" image="layout.png">
   <category name="keys" label="35167">
-    <key name="1" symbol="1" label="30002"/>
-    <key name="2" symbol="2" label="30003"/>
-    <key name="3" symbol="3" label="30004"/>
-    <key name="4" symbol="4" label="30005"/>
-    <key name="5" symbol="5" label="30006"/>
-    <key name="6" symbol="6" label="30007"/>
-    <key name="7" symbol="7" label="30008"/>
-    <key name="8" symbol="8" label="30009"/>
-    <key name="9" symbol="9" label="30010"/>
-    <key name="0" symbol="0" label="30011"/>
-    <key name="a" symbol="a" label="30012"/>
-    <key name="b" symbol="b" label="30013"/>
-    <key name="c" symbol="c" label="30014"/>
-    <key name="d" symbol="d" label="30015"/>
-    <key name="e" symbol="e" label="30016"/>
-    <key name="f" symbol="f" label="30017"/>
-    <key name="g" symbol="g" label="30018"/>
-    <key name="h" symbol="h" label="30019"/>
-    <key name="i" symbol="i" label="30020"/>
-    <key name="j" symbol="j" label="30021"/>
-    <key name="k" symbol="k" label="30022"/>
-    <key name="l" symbol="l" label="30023"/>
-    <key name="m" symbol="m" label="30024"/>
-    <key name="n" symbol="n" label="30025"/>
-    <key name="o" symbol="o" label="30026"/>
-    <key name="p" symbol="p" label="30027"/>
-    <key name="q" symbol="q" label="30028"/>
-    <key name="r" symbol="r" label="30029"/>
-    <key name="s" symbol="s" label="30030"/>
-    <key name="t" symbol="t" label="30031"/>
-    <key name="u" symbol="u" label="30032"/>
-    <key name="v" symbol="v" label="30033"/>
-    <key name="w" symbol="w" label="30034"/>
-    <key name="x" symbol="x" label="30035"/>
-    <key name="y" symbol="y" label="30036"/>
-    <key name="z" symbol="z" label="30037"/>
-    <key name="f1" symbol="f1" label="30038"/>
-    <key name="f2" symbol="f2" label="30039"/>
-    <key name="f3" symbol="f3" label="30040"/>
-    <key name="f4" symbol="f4" label="30041"/>
-    <key name="f5" symbol="f5" label="30042"/>
-    <key name="f6" symbol="f6" label="30043"/>
-    <key name="f7" symbol="f7" label="30044"/>
-    <key name="f8" symbol="f8" label="30045"/>
-    <key name="f9" symbol="f9" label="30046"/>
-    <key name="f10" symbol="f10" label="30047"/>
-    <key name="f11" symbol="f11" label="30048"/>
-    <key name="f12" symbol="f12" label="30049"/>
-    <key name="f13" symbol="f13" label="30103"/>
-    <key name="f14" symbol="f14" label="30104"/>
-    <key name="f15" symbol="f15" label="30105"/>
-    <key name="escape" symbol="escape" label="30050"/>
-    <key name="tab" symbol="tab" label="30051"/>
-    <key name="backspace" symbol="backspace" label="30052"/>
-    <key name="clear" symbol="clear" label="30140"/>
-    <key name="enter" symbol="enter" label="30053"/>
-    <key name="space" symbol="space" label="30054"/>
-    <key name="leftalt" symbol="leftalt" label="30055"/>
-    <key name="rightalt" symbol="rightalt" label="30056"/>
-    <key name="leftctrl" symbol="leftctrl" label="30057"/>
-    <key name="rightctrl" symbol="rightctrl" label="30058"/>
-    <key name="leftshift" symbol="leftshift" label="30059"/>
-    <key name="rightshift" symbol="rightshift" label="30060"/>
-    <key name="leftmeta" symbol="leftmeta" label="30106"/>
-    <key name="rightmeta" symbol="rightmeta" label="30107"/>
-    <key name="leftsuper" symbol="leftsuper" label="30108"/>
-    <key name="rightsuper" symbol="rightsuper" label="30109"/>
-    <key name="capslock" symbol="capslock" label="30061"/>
-    <key name="numlock" symbol="numlock" label="30063"/>
-    <key name="scrolllock" symbol="scrolllock" label="30062"/>
-    <key name="minus" symbol="minus" label="30064"/>
-    <key name="equals" symbol="equals" label="30065"/>
-    <key name="backslash" symbol="backslash" label="30066"/>
-    <key name="leftbracket" symbol="leftbracket" label="30067"/>
-    <key name="rightbracket" symbol="rightbracket" label="30068"/>
-    <key name="semicolon" symbol="semicolon" label="30069"/>
-    <key name="quote" symbol="quote" label="30070"/>
-    <key name="period" symbol="period" label="30071"/>
-    <key name="comma" symbol="comma" label="30072"/>
-    <key name="slash" symbol="slash" label="30073"/>
-    <key name="printscreen" symbol="printscreen" label="30074"/>
-    <key name="pause" symbol="pause" label="30075"/>
-    <key name="insert" symbol="insert" label="30076"/>
-    <key name="home" symbol="home" label="30077"/>
-    <key name="pageup" symbol="pageup" label="30078"/>
-    <key name="pagedown" symbol="pagedown" label="30079"/>
-    <key name="delete" symbol="delete" label="30080"/>
-    <key name="end" symbol="end" label="30081"/>
-    <key name="left" symbol="left" label="30082"/>
-    <key name="up" symbol="up" label="30083"/>
-    <key name="down" symbol="down" label="30084"/>
-    <key name="right" symbol="right" label="30085"/>
-    <key name="kp1" symbol="kp1" label="30086"/>
-    <key name="kp2" symbol="kp2" label="30087"/>
-    <key name="kp3" symbol="kp3" label="30088"/>
-    <key name="kp4" symbol="kp4" label="30089"/>
-    <key name="kp5" symbol="kp5" label="30090"/>
-    <key name="kp6" symbol="kp6" label="30091"/>
-    <key name="kp7" symbol="kp7" label="30092"/>
-    <key name="kp8" symbol="kp8" label="30093"/>
-    <key name="kp9" symbol="kp9" label="30094"/>
-    <key name="kp0" symbol="kp0" label="30095"/>
-    <key name="kpdivide" symbol="kpdivide" label="30096"/>
-    <key name="kpmultiply" symbol="kpmultiply" label="30097"/>
-    <key name="kpminus" symbol="kpminus" label="30098"/>
-    <key name="kpplus" symbol="kpplus" label="30099"/>
-    <key name="kpenter" symbol="kpenter" label="30100"/>
-    <key name="kpperiod" symbol="kpperiod" label="30101"/>
-    <key name="kpequals" symbol="kpequals" label="30139"/>
-    <key name="grave" symbol="grave" label="30102"/>
-    <key name="exclaim" symbol="exclaim" label="30110"/>
-    <key name="doublequote" symbol="doublequote" label="30111"/>
-    <key name="hash" symbol="hash" label="30112"/>
-    <key name="ampersand" symbol="ampersand" label="30113"/>
-    <key name="leftparen" symbol="leftparen" label="30114"/>
-    <key name="rightparen" symbol="rightparen" label="30115"/>
-    <key name="asterisk" symbol="asterisk" label="30116"/>
-    <key name="plus" symbol="plus" label="30117"/>
-    <key name="colon" symbol="colon" label="30118"/>
-    <key name="less" symbol="less" label="30119"/>
-    <key name="greater" symbol="greater" label="30120"/>
-    <key name="question" symbol="question" label="30121"/>
-    <key name="at" symbol="at" label="30122"/>
-    <key name="caret" symbol="caret" label="30123"/>
-    <key name="underscore" symbol="underscore" label="30124"/>
-    <key name="dollar" symbol="dollar" label="30125"/>
-    <key name="leftbrace" symbol="leftbrace" label="30126"/>
-    <key name="rightbrace" symbol="rightbrace" label="30127"/>
-    <key name="bar" symbol="bar" label="30128"/>
-    <key name="tilde" symbol="tilde" label="30129"/>
-    <key name="mode" symbol="mode" label="30130"/>
-    <key name="compose" symbol="compose" label="30131"/>
-    <key name="help" symbol="help" label="30132"/>
-    <key name="sysreq" symbol="sysreq" label="30133"/>
-    <key name="break" symbol="break" label="30134"/>
-    <key name="menu" symbol="menu" label="30135"/>
-    <key name="power" symbol="power" label="30136"/>
-    <key name="euro" symbol="euro" label="30137"/>
-    <key name="undo" symbol="undo" label="30138"/>
-    <key name="oem102" symbol="oem102" label="30141"/>
+    <key name="grave" symbol="grave" label="30102" />
+    <key name="1" symbol="1" label="30002" />
+    <key name="2" symbol="2" label="30003" />
+    <key name="3" symbol="3" label="30004" />
+    <key name="4" symbol="4" label="30005" />
+    <key name="5" symbol="5" label="30006" />
+    <key name="6" symbol="6" label="30007" />
+    <key name="7" symbol="7" label="30008" />
+    <key name="8" symbol="8" label="30009" />
+    <key name="9" symbol="9" label="30010" />
+    <key name="0" symbol="0" label="30011" />
+    <key name="minus" symbol="minus" label="30064" />
+    <key name="equals" symbol="equals" label="30065" />
+    <key name="backspace" symbol="backspace" label="30052" />
+    <key name="tab" symbol="tab" label="30051" />
+    <key name="q" symbol="q" label="30028" />
+    <key name="w" symbol="w" label="30034" />
+    <key name="e" symbol="e" label="30016" />
+    <key name="r" symbol="r" label="30029" />
+    <key name="t" symbol="t" label="30031" />
+    <key name="y" symbol="y" label="30036" />
+    <key name="u" symbol="u" label="30032" />
+    <key name="i" symbol="i" label="30020" />
+    <key name="o" symbol="o" label="30026" />
+    <key name="p" symbol="p" label="30027" />
+    <key name="leftbracket" symbol="leftbracket" label="30067" />
+    <key name="rightbracket" symbol="rightbracket" label="30068" />
+    <key name="backslash" symbol="backslash" label="30066" />
+    <key name="capslock" symbol="capslock" label="30061" />
+    <key name="a" symbol="a" label="30012" />
+    <key name="s" symbol="s" label="30030" />
+    <key name="d" symbol="d" label="30015" />
+    <key name="f" symbol="f" label="30017" />
+    <key name="g" symbol="g" label="30018" />
+    <key name="h" symbol="h" label="30019" />
+    <key name="j" symbol="j" label="30021" />
+    <key name="k" symbol="k" label="30022" />
+    <key name="l" symbol="l" label="30023" />
+    <key name="semicolon" symbol="semicolon" label="30069" />
+    <key name="quote" symbol="quote" label="30070" />
+    <key name="enter" symbol="enter" label="30053" />
+    <key name="leftshift" symbol="leftshift" label="30059" />
+    <key name="z" symbol="z" label="30037" />
+    <key name="x" symbol="x" label="30035" />
+    <key name="c" symbol="c" label="30014" />
+    <key name="v" symbol="v" label="30033" />
+    <key name="b" symbol="b" label="30013" />
+    <key name="n" symbol="n" label="30025" />
+    <key name="m" symbol="m" label="30024" />
+    <key name="comma" symbol="comma" label="30072" />
+    <key name="period" symbol="period" label="30071" />
+    <key name="slash" symbol="slash" label="30073" />
+    <key name="rightshift" symbol="rightshift" label="30060" />
+    <key name="leftctrl" symbol="leftctrl" label="30057" />
+    <key name="leftsuper" symbol="leftsuper" label="30108" />
+    <key name="leftalt" symbol="leftalt" label="30055" />
+    <key name="space" symbol="space" label="30054" />
+    <key name="rightalt" symbol="rightalt" label="30056" />
+    <key name="rightsuper" symbol="rightsuper" label="30109" />
+    <key name="menu" symbol="menu" label="30135" />
+    <key name="rightctrl" symbol="rightctrl" label="30058" />
+    <key name="insert" symbol="insert" label="30076" />
+    <key name="home" symbol="home" label="30077" />
+    <key name="pageup" symbol="pageup" label="30078" />
+    <key name="delete" symbol="delete" label="30080" />
+    <key name="end" symbol="end" label="30081" />
+    <key name="pagedown" symbol="pagedown" label="30079" />
+    <key name="up" symbol="up" label="30083" />
+    <key name="down" symbol="down" label="30084" />
+    <key name="left" symbol="left" label="30082" />
+    <key name="right" symbol="right" label="30085" />
+    <key name="escape" symbol="escape" label="30050" />
+    <key name="f1" symbol="f1" label="30038" />
+    <key name="f2" symbol="f2" label="30039" />
+    <key name="f3" symbol="f3" label="30040" />
+    <key name="f4" symbol="f4" label="30041" />
+    <key name="f5" symbol="f5" label="30042" />
+    <key name="f6" symbol="f6" label="30043" />
+    <key name="f7" symbol="f7" label="30044" />
+    <key name="f8" symbol="f8" label="30045" />
+    <key name="f9" symbol="f9" label="30046" />
+    <key name="f10" symbol="f10" label="30047" />
+    <key name="f11" symbol="f11" label="30048" />
+    <key name="f12" symbol="f12" label="30049" />
+    <key name="f13" symbol="f13" label="30103" />
+    <key name="f14" symbol="f14" label="30104" />
+    <key name="f15" symbol="f15" label="30105" />
+    <key name="printscreen" symbol="printscreen" label="30074" />
+    <key name="scrolllock" symbol="scrolllock" label="30062" />
+    <key name="pause" symbol="pause" label="30075" />
+    <key name="kp0" symbol="kp0" label="30095" />
+    <key name="kp1" symbol="kp1" label="30086" />
+    <key name="kp2" symbol="kp2" label="30087" />
+    <key name="kp3" symbol="kp3" label="30088" />
+    <key name="kp4" symbol="kp4" label="30089" />
+    <key name="kp5" symbol="kp5" label="30090" />
+    <key name="kp6" symbol="kp6" label="30091" />
+    <key name="kp7" symbol="kp7" label="30092" />
+    <key name="kp8" symbol="kp8" label="30093" />
+    <key name="kp9" symbol="kp9" label="30094" />
+    <key name="kpperiod" symbol="kpperiod" label="30101" />
+    <key name="kpenter" symbol="kpenter" label="30100" />
+    <key name="kpplus" symbol="kpplus" label="30099" />
+    <key name="kpminus" symbol="kpminus" label="30098" />
+    <key name="kpmultiply" symbol="kpmultiply" label="30097" />
+    <key name="kpdivide" symbol="kpdivide" label="30096" />
+    <key name="kpequals" symbol="kpequals" label="30139" />
+    <key name="numlock" symbol="numlock" label="30063" />
+    <key name="tilde" symbol="tilde" label="30129" />
+    <key name="exclaim" symbol="exclaim" label="30110" />
+    <key name="at" symbol="at" label="30122" />
+    <key name="hash" symbol="hash" label="30112" />
+    <key name="dollar" symbol="dollar" label="30125" />
+    <key name="caret" symbol="caret" label="30123" />
+    <key name="ampersand" symbol="ampersand" label="30113" />
+    <key name="asterisk" symbol="asterisk" label="30116" />
+    <key name="leftparen" symbol="leftparen" label="30114" />
+    <key name="rightparen" symbol="rightparen" label="30115" />
+    <key name="underscore" symbol="underscore" label="30124" />
+    <key name="plus" symbol="plus" label="30117" />
+    <key name="leftbrace" symbol="leftbrace" label="30126" />
+    <key name="rightbrace" symbol="rightbrace" label="30127" />
+    <key name="bar" symbol="bar" label="30128" />
+    <key name="colon" symbol="colon" label="30118" />
+    <key name="doublequote" symbol="doublequote" label="30111" />
+    <key name="less" symbol="less" label="30119" />
+    <key name="greater" symbol="greater" label="30120" />
+    <key name="question" symbol="question" label="30121" />
+    <key name="leftmeta" symbol="leftmeta" label="30106" />
+    <key name="rightmeta" symbol="rightmeta" label="30107" />
+    <key name="clear" symbol="clear" label="30140" />
+    <key name="mode" symbol="mode" label="30130" />
+    <key name="compose" symbol="compose" label="30131" />
+    <key name="help" symbol="help" label="30132" />
+    <key name="sysreq" symbol="sysreq" label="30133" />
+    <key name="break" symbol="break" label="30134" />
+    <key name="power" symbol="power" label="30136" />
+    <key name="euro" symbol="euro" label="30137" />
+    <key name="undo" symbol="undo" label="30138" />
+    <key name="oem102" symbol="oem102" label="30141" />
   </category>
 </layout>
