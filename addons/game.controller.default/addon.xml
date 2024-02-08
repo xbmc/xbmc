@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="game.controller.default"
         name="Default Controller"
-        version="1.0.41"
+        version="1.0.42"
         provider-name="Team Kodi">
     <extension point="kodi.game.controller" library="resources/layout.xml"/>
     <extension point="xbmc.addon.metadata">
@@ -9,6 +9,7 @@
         <assets>
             <icon>resources/icon.png</icon>
         </assets>
+        <summary lang="af_ZA">Verstek Beheerder</summary>
         <summary lang="be_BY">Прадвызначаны кантролер</summary>
         <summary lang="bs_BA">Zadani Džojstik</summary>
         <summary lang="ca_ES">Comandament per defecte</summary>
@@ -41,6 +42,7 @@
         <summary lang="tr_TR">Varsayılan Oyun Kumandası</summary>
         <summary lang="zh_CN">默认控制器</summary>
         <summary lang="zh_TW">預設控制器</summary>
+        <description lang="af_ZA">Die bestek media sentrum beheerder is gebaseer op die Xbox 360 beheerder.</description>
         <description lang="be_BY">Прадвызначаны кантролер на аснове кантролера Xbox 360.</description>
         <description lang="bs_BA">Zadani džojstik za medijski centar je baziran na Xbox 360 džojstik.</description>
         <description lang="ca_ES">El comandament predeterminat del centre multimèdia es basa en el comandament d&apos;Xbox 360.</description>
@@ -70,6 +72,7 @@
         <description lang="tr_TR">Varsayılan ortam merkezi denetleyicisi, Xbox 360 oyun kumandasını temel alır.</description>
         <description lang="zh_CN">默认媒体中心控制器基于 Xbox 360 控制器。</description>
         <description lang="zh_TW">預設的媒體中心控制器佈局是以Xbox 360控制器為基礎。</description>
+        <disclaimer lang="af_ZA">Beeld krediet: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="be_BY">Крыніца выяў: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="bs_BA">Zasluga za sliku: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="ca_ES">Crèdit de la imatge: Wikipedia (wikipedia.org)</disclaimer>

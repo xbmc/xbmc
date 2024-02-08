@@ -459,12 +459,12 @@ msgid "Right Meta"
 msgstr "Oikea Meta"
 
 msgctxt "#30108"
-msgid "Left Super"
-msgstr "Vasen Super"
+msgid "Left Windows"
+msgstr ""
 
 msgctxt "#30109"
-msgid "Right Super"
-msgstr "Oikea Super"
+msgid "Right Windows"
+msgstr ""
 
 msgctxt "#30110"
 msgid "!"
@@ -547,8 +547,8 @@ msgid "~"
 msgstr "~"
 
 msgctxt "#30130"
-msgid "Mode"
-msgstr "Mode"
+msgid "Mode/Option"
+msgstr ""
 
 msgctxt "#30131"
 msgid "Compose"
@@ -583,8 +583,8 @@ msgid "Undo"
 msgstr "Kumoa"
 
 msgctxt "#30139"
-msgid "Num Pad Equals"
-msgstr "Numeronäppäimistön on yhtä kuin"
+msgid "Num Pad ="
+msgstr ""
 
 msgctxt "#30140"
 msgid "Clear"
@@ -593,3 +593,19 @@ msgstr "Clear"
 msgctxt "#30141"
 msgid "OEM 102nd Key"
 msgstr ""
+
+#~ msgctxt "#30139"
+#~ msgid "Num Pad Equals"
+#~ msgstr "Numeronäppäimistön on yhtä kuin"
+
+#~ msgctxt "#30108"
+#~ msgid "Left Super"
+#~ msgstr "Vasen Super"
+
+#~ msgctxt "#30109"
+#~ msgid "Right Super"
+#~ msgstr "Oikea Super"
+
+#~ msgctxt "#30130"
+#~ msgid "Mode"
+#~ msgstr "Mode"
