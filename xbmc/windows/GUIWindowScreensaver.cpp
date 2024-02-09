@@ -17,14 +17,17 @@
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPowerHandling.h"
 #include "guilib/GUIComponent.h"
+#include "guilib/GUITexture.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 
 using namespace KODI;
 
-CGUIWindowScreensaver::CGUIWindowScreensaver() : CGUIWindow(WINDOW_SCREENSAVER, "")
+CGUIWindowScreensaver::CGUIWindowScreensaver()
+  : CGUIDialog(WINDOW_SCREENSAVER, "", DialogModalityType::MODELESS)
 {
+  m_renderOrder = RENDER_ORDER_WINDOW_SCREENSAVER;
 }
 
 void CGUIWindowScreensaver::Process(unsigned int currentTime, CDirtyRegionList& regions)
@@ -38,6 +41,10 @@ void CGUIWindowScreensaver::Process(unsigned int currentTime, CDirtyRegionList& 
 
 void CGUIWindowScreensaver::Render()
 {
+  // FIXME/TODO: Screensaver addons should make the screen black instead
+  // keeping this just for compatibility reasons since it's now a dialog.
+  CGUITexture::DrawQuad(m_renderRegion, UTILS::COLOR::BLACK);
+
   if (m_addon)
   {
     auto& context = CServiceBroker::GetWinSystem()->GetGfxContext();
@@ -48,15 +55,24 @@ void CGUIWindowScreensaver::Render()
     return;
   }
 
-  CGUIWindow::Render();
+  CGUIDialog::Render();
 }
 
-// called when the mouse is moved/clicked etc. etc.
-EVENT_RESULT CGUIWindowScreensaver::OnMouseEvent(const CPoint& point,
-                                                 const MOUSE::CMouseEvent& event)
+void CGUIWindowScreensaver::OnInitWindow()
 {
-  CServiceBroker::GetGUI()->GetWindowManager().PreviousWindow();
-  return EVENT_RESULT_HANDLED;
+  CGUIDialog::OnInitWindow();
+  m_visible = true;
+}
+
+void CGUIWindowScreensaver::UpdateVisibility()
+{
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+  if (!appPower->IsInScreenSaver() && m_visible)
+  {
+    m_visible = false;
+    Close();
+  }
 }
 
 bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)

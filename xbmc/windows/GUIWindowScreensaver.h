@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "guilib/GUIWindow.h"
+#include "guilib/GUIDialog.h"
 
 #include <memory>
 
@@ -20,7 +20,7 @@ class CScreenSaver;
 } // namespace ADDONS
 } // namespace KODI
 
-class CGUIWindowScreensaver : public CGUIWindow
+class CGUIWindowScreensaver : public CGUIDialog
 {
 public:
   CGUIWindowScreensaver();
@@ -35,8 +35,10 @@ public:
   void Process(unsigned int currentTime, CDirtyRegionList& regions) override;
 
 protected:
-  EVENT_RESULT OnMouseEvent(const CPoint& point, const KODI::MOUSE::CMouseEvent& event) override;
+  void UpdateVisibility() override;
+  void OnInitWindow() override;
 
 private:
   std::unique_ptr<KODI::ADDONS::CScreenSaver> m_addon;
+  bool m_visible{false};
 };
