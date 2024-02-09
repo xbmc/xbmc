@@ -30,8 +30,12 @@ public:
    * \param handler The handler to receive mouse input provided by this class
    * \param bPromiscuous True to observe all events without affecting
    *        subsequent handlers
+   * \param forceDefaultMap Always use the default keyboard buttonmap, avoiding
+   *        buttonmaps provided by add-ons
    */
-  virtual void RegisterMouseHandler(IMouseInputHandler* handler, bool bPromiscuous) = 0;
+  virtual void RegisterMouseHandler(IMouseInputHandler* handler,
+                                    bool bPromiscuous,
+                                    bool forceDefaultMap) = 0;
 
   /*!
    * \brief Unregisters handler from mouse input

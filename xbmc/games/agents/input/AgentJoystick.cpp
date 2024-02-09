@@ -9,6 +9,7 @@
 #include "AgentJoystick.h"
 
 #include "games/controllers/Controller.h"
+#include "games/controllers/ControllerIDs.h"
 #include "games/controllers/input/ControllerActivity.h"
 #include "input/joysticks/interfaces/IInputProvider.h"
 #include "peripherals/devices/Peripheral.h"
@@ -63,7 +64,7 @@ std::string CAgentJoystick::ControllerID(void) const
   if (m_controllerAppearance)
     return m_controllerAppearance->ID();
 
-  return "";
+  return DEFAULT_CONTROLLER_ID;
 }
 
 bool CAgentJoystick::HasFeature(const std::string& feature) const
