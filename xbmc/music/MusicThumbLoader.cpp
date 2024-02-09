@@ -366,8 +366,8 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
     }
 
     item.AppendArt(artmap);
+    item.SetProperty("libraryartfilled", true);
   }
 
-  item.SetProperty("libraryartfilled", true);
   return artfound;
 }
