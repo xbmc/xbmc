@@ -514,10 +514,19 @@ protected:
   int m_demuxerSpeed = DVD_PLAYSPEED_NORMAL;
   struct SSpeedState
   {
-    double lastpts;  // holds last display pts during ff/rw operations
-    int64_t lasttime;
-    double lastseekpts;
-    double lastabstime;
+    double lastpts{0.0}; // holds last display pts during ff/rw operations
+    int64_t lasttime{0};
+    double lastseekpts{0.0};
+    double lastabstime{0.0};
+
+    void Reset(double pts)
+    {
+      *this = {};
+      if (pts != DVD_NOPTS_VALUE)
+      {
+        lastseekpts = pts;
+      }
+    }
   } m_SpeedState;
 
   double m_offset_pts;

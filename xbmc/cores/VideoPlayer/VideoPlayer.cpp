@@ -634,8 +634,6 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
   m_HasAudio = false;
   m_UpdateStreamDetails = false;
 
-  memset(&m_SpeedState, 0, sizeof(m_SpeedState));
-
   m_SkipCommercials = true;
 
   m_processInfo.reset(CProcessInfo::CreateInstance());
@@ -1220,7 +1218,7 @@ void CVideoPlayer::Prepare()
   m_CurrentTeletext.hint.Clear();
   m_CurrentRadioRDS.hint.Clear();
   m_CurrentAudioID3.hint.Clear();
-  memset(&m_SpeedState, 0, sizeof(m_SpeedState));
+  m_SpeedState.Reset(DVD_NOPTS_VALUE);
   m_offset_pts = 0;
   m_CurrentAudio.lastdts = DVD_NOPTS_VALUE;
   m_CurrentVideo.lastdts = DVD_NOPTS_VALUE;
@@ -3953,6 +3951,8 @@ void CVideoPlayer::FlushBuffers(double pts, bool accurate, bool sync)
     startpts = pts;
   else
     startpts = DVD_NOPTS_VALUE;
+
+  m_SpeedState.Reset(pts);
 
   if (sync)
   {
