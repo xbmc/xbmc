@@ -634,8 +634,6 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
   m_HasAudio = false;
   m_UpdateStreamDetails = false;
 
-  memset(&m_SpeedState, 0, sizeof(m_SpeedState));
-
   m_SkipCommercials = true;
 
   m_processInfo.reset(CProcessInfo::CreateInstance());
@@ -1220,7 +1218,7 @@ void CVideoPlayer::Prepare()
   m_CurrentTeletext.hint.Clear();
   m_CurrentRadioRDS.hint.Clear();
   m_CurrentAudioID3.hint.Clear();
-  memset(&m_SpeedState, 0, sizeof(m_SpeedState));
+  m_SpeedState.Reset(DVD_NOPTS_VALUE);
   m_offset_pts = 0;
   m_CurrentAudio.lastdts = DVD_NOPTS_VALUE;
   m_CurrentVideo.lastdts = DVD_NOPTS_VALUE;
@@ -2150,13 +2148,6 @@ void CVideoPlayer::HandlePlaySpeed()
         m_SpeedState.lastpts  = m_VideoPlayerVideo->GetCurrentPts();
         m_SpeedState.lasttime = GetTime();
         m_SpeedState.lastabstime = m_clock.GetAbsoluteClock();
-        // check how much off clock video is when ff/rw:ing
-        // a problem here is that seeking isn't very accurate
-        // and since the clock will be resynced after seek
-        // we might actually not really be playing at the wanted
-        // speed. we'd need to have some way to not resync the clock
-        // after a seek to remember timing. still need to handle
-        // discontinuities somehow
 
         double error;
         error  = m_clock.GetClock() - m_SpeedState.lastpts;
@@ -3953,6 +3944,8 @@ void CVideoPlayer::FlushBuffers(double pts, bool accurate, bool sync)
     startpts = pts;
   else
     startpts = DVD_NOPTS_VALUE;
+
+  m_SpeedState.Reset(pts);
 
   if (sync)
   {
