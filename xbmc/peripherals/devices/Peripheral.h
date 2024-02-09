@@ -262,7 +262,7 @@ public:
    *
    * \return The time of last activation, or invalid if unknown/never active
    */
-  virtual CDateTime LastActive();
+  virtual CDateTime LastActive() const;
 
   /*!
    * \brief Get the controller profile that best represents this peripheral

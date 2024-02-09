@@ -43,8 +43,6 @@ CAgentController::CAgentController(PERIPHERALS::PeripheralPtr peripheral)
     default:
       break;
   }
-
-  Initialize();
 }
 
 CAgentController::~CAgentController()

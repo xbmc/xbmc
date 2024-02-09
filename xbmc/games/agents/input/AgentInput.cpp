@@ -439,7 +439,11 @@ void CAgentInput::ProcessAgentControllers(const PERIPHERALS::PeripheralVector& p
     if (it == m_controllers.end())
     {
       // Handle new controller
-      m_controllers.emplace_back(std::make_shared<CAgentController>(peripheral));
+      std::shared_ptr<CAgentController> agentController =
+          std::make_shared<CAgentController>(peripheral);
+      agentController->Initialize();
+      m_controllers.emplace_back(std::move(agentController));
+
       SetChanged(true);
     }
     else

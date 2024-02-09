@@ -77,5 +77,11 @@ using GameAgentPtr = std::shared_ptr<CGameAgent>;
  */
 using GameAgentVec = std::vector<GameAgentPtr>;
 
+/*!
+ * \ingroup games
+ *
+ * \brief Name of the resources directory for game clients
+ */
+constexpr auto GAME_CLIENT_RESOURCES_DIRECTORY = "resources";
 } // namespace GAME
 } // namespace KODI
