@@ -407,6 +407,12 @@ enum class ArtFallbackOptions
   PARENT
 };
 
+enum class DeleteMovieCascadeAction
+{
+  DEFAULT_VERSION,
+  ALL_ASSETS
+};
+
 #define COMPARE_PERCENTAGE     0.90f // 90%
 #define COMPARE_PERCENTAGE_MIN 0.50f // 50%
 
@@ -594,7 +600,9 @@ public:
 
   int UpdateDetailsForMovie(int idMovie, CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, const std::set<std::string> &updatedDetails);
 
-  void DeleteMovie(int idMovie, bool bKeepId = false);
+  void DeleteMovie(int idMovie,
+                   bool bKeepId = false,
+                   DeleteMovieCascadeAction action = DeleteMovieCascadeAction::ALL_ASSETS);
   void DeleteTvShow(int idTvShow, bool bKeepId = false);
   void DeleteTvShow(const std::string& strPath);
   void DeleteSeason(int idSeason, bool bKeepId = false);
@@ -1082,6 +1090,7 @@ public:
                          VideoAssetType assetType,
                          CFileItemList& items);
   bool GetDefaultVersionForVideo(VideoDbContentType itemType, int mediaId, CFileItem& item);
+  bool UpdateAssetsOwner(const std::string& mediaType, int dbIdSource, int dbIdTarget);
 
   int GetMovieId(const std::string& strFilenameAndPath);
   std::string GetMovieTitle(int idMovie);

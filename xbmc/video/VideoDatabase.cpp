@@ -313,7 +313,7 @@ void CVideoDatabase::CreateAnalytics()
               "DELETE FROM tag_link WHERE media_id=old.idMovie AND media_type='movie'; "
               "DELETE FROM rating WHERE media_id=old.idMovie AND media_type='movie'; "
               "DELETE FROM uniqueid WHERE media_id=old.idMovie AND media_type='movie'; "
-              "DELETE FROM videoversion WHERE idMedia=old.idMovie AND media_type='movie'; "
+              "DELETE FROM videoversion WHERE idFile=old.idFile AND media_type='movie'; "
               "END");
   m_pDS->exec("CREATE TRIGGER delete_tvshow AFTER DELETE ON tvshow FOR EACH ROW BEGIN "
               "DELETE FROM actor_link WHERE media_id=old.idShow AND media_type='tvshow'; "
@@ -1286,10 +1286,14 @@ int CVideoDatabase::GetMovieId(const std::string& strFilenameAndPath)
 
     std::string strSQL;
     if (idFile == -1)
-      strSQL=PrepareSQL("select idMovie from movie join files on files.idFile=movie.idFile where files.idPath=%i",idPath);
+      strSQL = PrepareSQL("SELECT idMovie FROM movie "
+                          "  JOIN files ON files.idFile=movie.idFile "
+                          "WHERE files.idPath=%i",
+                          idPath);
     else
-      strSQL = PrepareSQL("SELECT idMedia FROM videoversion WHERE idFile = %i AND itemType = %i",
-                          idFile, VideoAssetType::VERSION);
+      strSQL = PrepareSQL("SELECT idMedia FROM videoversion "
+                          "WHERE idFile = %i AND media_type = '%s' AND itemType = %i",
+                          idFile, MediaTypeMovie, VideoAssetType::VERSION);
 
     CLog::Log(LOGDEBUG, LOGDATABASE, "{} ({}), query = {}", __FUNCTION__,
               CURL::GetRedacted(strFilenameAndPath), strSQL);
@@ -3637,7 +3641,9 @@ void CVideoDatabase::DeleteBookMarkForEpisode(const CVideoInfoTag& tag)
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::DeleteMovie(int idMovie, bool bKeepId /* = false */)
+void CVideoDatabase::DeleteMovie(int idMovie,
+                                 bool bKeepId /* = false */,
+                                 DeleteMovieCascadeAction ca /* = ALL_ASSETS */)
 {
   if (idMovie < 0)
     return;
@@ -3665,6 +3671,14 @@ void CVideoDatabase::DeleteMovie(int idMovie, bool bKeepId /* = false */)
 
       std::string strSQL = PrepareSQL("delete from movie where idMovie=%i", idMovie);
       m_pDS->exec(strSQL);
+
+      if (ca == DeleteMovieCascadeAction::ALL_ASSETS)
+      {
+        const std::string strSQL{
+            PrepareSQL("DELETE FROM videoversion WHERE idMedia = %i AND media_type = '%s'", idMovie,
+                       MediaTypeMovie)};
+        m_pDS->exec(strSQL);
+      }
     }
 
     //! @todo move this below CommitTransaction() once UPnP doesn't rely on this anymore
@@ -6325,7 +6339,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 129;
+  return 130;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
@@ -12120,6 +12134,17 @@ void CVideoDatabase::GetDefaultVideoVersion(VideoDbContentType itemType, int dbI
   }
 }
 
+bool CVideoDatabase::UpdateAssetsOwner(const std::string& mediaType, int dbIdSource, int dbIdTarget)
+{
+  if (dbIdSource != dbIdTarget)
+  {
+    return ExecuteQuery(
+        PrepareSQL("UPDATE videoversion SET idMedia = %i WHERE idMedia = %i AND media_type = '%s'",
+                   dbIdTarget, dbIdSource, mediaType.c_str()));
+  }
+  return true;
+}
+
 bool CVideoDatabase::FillMovieItem(std::unique_ptr<Dataset>& dataset, int movieId, CFileItem& item)
 {
   CVideoInfoTag infoTag{GetDetailsForMovie(dataset)};
@@ -12260,9 +12285,7 @@ bool CVideoDatabase::ConvertVideoToVersion(VideoDbContentType itemType,
   if (dbIdSource != dbIdTarget)
   {
     // Transfer all assets (versions, extras,...) to the new movie.
-    ExecuteQuery(
-        PrepareSQL("UPDATE videoversion SET idMedia = %i WHERE idMedia = %i AND media_type = '%s'",
-                   dbIdTarget, dbIdSource, mediaType.c_str()));
+    UpdateAssetsOwner(mediaType, dbIdSource, dbIdTarget);
 
     // version-level art doesn't need any change.
     // 'movie' art is converted to 'videoversion' art.
