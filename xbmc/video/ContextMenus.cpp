@@ -18,6 +18,8 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/ExecString.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -230,7 +232,10 @@ protected:
 
 bool CVideoChooseVersion::IsVisible(const CFileItem& item) const
 {
-  return item.HasVideoVersions() && !VIDEO::IsVideoAssetFile(item);
+  return item.HasVideoVersions() &&
+         !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+             CSettings::SETTING_VIDEOLIBRARY_SHOWVIDEOVERSIONSASFOLDER) &&
+         !VIDEO::IsVideoAssetFile(item);
 }
 
 bool CVideoChooseVersion::Execute(const std::shared_ptr<CFileItem>& item) const
@@ -440,7 +445,10 @@ bool CVideoPlayUsing::Execute(const std::shared_ptr<CFileItem>& itemIn) const
 
 bool CVideoPlayVersionUsing::IsVisible(const CFileItem& item) const
 {
-  return item.HasVideoVersions() && !VIDEO::IsVideoAssetFile(item);
+  return item.HasVideoVersions() &&
+         !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+             CSettings::SETTING_VIDEOLIBRARY_SHOWVIDEOVERSIONSASFOLDER) &&
+         !VIDEO::IsVideoAssetFile(item);
 }
 
 bool CVideoPlayVersionUsing::Execute(const std::shared_ptr<CFileItem>& itemIn) const
