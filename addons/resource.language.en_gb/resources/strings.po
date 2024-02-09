@@ -24095,7 +24095,6 @@ msgid "Play version using..."
 msgstr ""
 
 #. Button label for video versions
-#: addons/skin.estuary/xml/DialogVideoInfo.xml
 #: xbmc/video/guilib/VideoVersionHelper.cpp
 msgctxt "#40210"
 msgid "Versions"

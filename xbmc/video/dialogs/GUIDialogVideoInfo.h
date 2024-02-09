@@ -94,6 +94,7 @@ protected:
    */
   void OnSearchItemFound(const CFileItem* pItem);
   void OnPlayVideoAsset(VideoAssetType assetType);
+  void OnPlay();
   void Play(const std::shared_ptr<CFileItem>& item, bool resume = false);
   void OnGetArt();
   void OnGetFanart();

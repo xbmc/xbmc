@@ -73,6 +73,7 @@ using namespace XFILE;
 using namespace KODI::MESSAGING;
 using namespace VIDEO::GUILIB;
 
+// clang-format off
 #define CONTROL_IMAGE                3
 #define CONTROL_TEXTAREA             4
 #define CONTROL_BTN_TRACKS           5
@@ -84,10 +85,10 @@ using namespace VIDEO::GUILIB;
 #define CONTROL_BTN_PLAY_TRAILER    11
 #define CONTROL_BTN_GET_FANART      12
 #define CONTROL_BTN_DIRECTOR        13
-#define CONTROL_BTN_PLAY_VIDEO_VERSIONS 14
 #define CONTROL_BTN_PLAY_VIDEO_EXTRAS 15
 
 #define CONTROL_LIST                50
+// clang-format on
 
 // predicate used by sorting and set_difference
 bool compFileItemsByDbId(const CFileItemPtr& lhs, const CFileItemPtr& rhs)
@@ -162,17 +163,13 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
         m_bViewReview = !m_bViewReview;
         Update();
       }
-      else if (iControl == CONTROL_BTN_PLAY_VIDEO_VERSIONS)
-      {
-        OnPlayVideoAsset(VideoAssetType::VERSION);
-      }
       else if (iControl == CONTROL_BTN_PLAY_VIDEO_EXTRAS)
       {
         OnPlayVideoAsset(VideoAssetType::EXTRA);
       }
       else if (iControl == CONTROL_BTN_PLAY)
       {
-        Play(m_movieItem);
+        OnPlay();
       }
       else if (iControl == CONTROL_BTN_USERRATING)
       {
@@ -301,12 +298,6 @@ void CGUIDialogVideoInfo::OnInitWindow()
         GetUniqueID().c_str(), "plugin"));
   else
     CONTROL_DISABLE(CONTROL_BTN_GET_FANART);
-
-  if (type == VideoDbContentType::MOVIES && m_movieItem->HasVideoVersions() &&
-      !VIDEO::IsVideoAssetFile(*m_movieItem))
-    CONTROL_ENABLE(CONTROL_BTN_PLAY_VIDEO_VERSIONS);
-  else
-    CONTROL_DISABLE(CONTROL_BTN_PLAY_VIDEO_VERSIONS);
 
   if (type == VideoDbContentType::MOVIES && m_movieItem->HasVideoExtras())
     CONTROL_ENABLE(CONTROL_BTN_PLAY_VIDEO_EXTRAS);
@@ -2158,4 +2149,13 @@ void CGUIDialogVideoInfo::ManageVideoVersions(const std::shared_ptr<CFileItem>& 
 void CGUIDialogVideoInfo::ManageVideoExtras(const std::shared_ptr<CFileItem>& item)
 {
   CGUIDialogVideoManagerExtras::ManageVideoExtras(item);
+}
+
+void CGUIDialogVideoInfo::OnPlay()
+{
+  if (m_movieItem->GetVideoContentType() == VideoDbContentType::MOVIES &&
+      m_movieItem->HasVideoVersions() && !VIDEO::IsVideoAssetFile(*m_movieItem))
+    OnPlayVideoAsset(VideoAssetType::VERSION);
+  else
+    Play(m_movieItem);
 }
