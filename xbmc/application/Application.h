@@ -167,7 +167,7 @@ public:
 
   void UpdateCurrentPlayArt();
 
-  bool ExecuteXBMCAction(std::string action, const CGUIListItemPtr &item = NULL);
+  bool ExecuteXBMCAction(std::string action, const std::shared_ptr<CGUIListItem>& item = NULL);
 
 #ifdef HAS_OPTICAL_DRIVE
   std::unique_ptr<MEDIA_DETECT::CAutorun> m_Autorun;

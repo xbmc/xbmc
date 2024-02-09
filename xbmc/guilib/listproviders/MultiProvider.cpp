@@ -46,10 +46,10 @@ bool CMultiProvider::Update(bool forceRefresh)
   return result;
 }
 
-void CMultiProvider::Fetch(std::vector<CGUIListItemPtr> &items)
+void CMultiProvider::Fetch(std::vector<std::shared_ptr<CGUIListItem>>& items)
 {
   std::unique_lock<CCriticalSection> lock(m_section);
-  std::vector<CGUIListItemPtr> subItems;
+  std::vector<std::shared_ptr<CGUIListItem>> subItems;
   items.clear();
   m_itemMap.clear();
   for (auto const& provider : m_providers)
@@ -84,7 +84,7 @@ void CMultiProvider::Reset()
     provider->Reset();
 }
 
-bool CMultiProvider::OnClick(const CGUIListItemPtr &item)
+bool CMultiProvider::OnClick(const std::shared_ptr<CGUIListItem>& item)
 {
   std::unique_lock<CCriticalSection> lock(m_section);
   auto key = GetItemKey(item);
@@ -95,7 +95,7 @@ bool CMultiProvider::OnClick(const CGUIListItemPtr &item)
     return false;
 }
 
-bool CMultiProvider::OnInfo(const CGUIListItemPtr &item)
+bool CMultiProvider::OnInfo(const std::shared_ptr<CGUIListItem>& item)
 {
   std::unique_lock<CCriticalSection> lock(m_section);
   auto key = GetItemKey(item);
@@ -106,7 +106,7 @@ bool CMultiProvider::OnInfo(const CGUIListItemPtr &item)
     return false;
 }
 
-bool CMultiProvider::OnContextMenu(const CGUIListItemPtr &item)
+bool CMultiProvider::OnContextMenu(const std::shared_ptr<CGUIListItem>& item)
 {
   std::unique_lock<CCriticalSection> lock(m_section);
   auto key = GetItemKey(item);
@@ -117,7 +117,7 @@ bool CMultiProvider::OnContextMenu(const CGUIListItemPtr &item)
     return false;
 }
 
-CMultiProvider::item_key_type CMultiProvider::GetItemKey(CGUIListItemPtr const &item)
+CMultiProvider::item_key_type CMultiProvider::GetItemKey(std::shared_ptr<CGUIListItem> const& item)
 {
   return reinterpret_cast<item_key_type>(item.get());
 }

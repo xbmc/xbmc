@@ -329,7 +329,7 @@ void CDirectoryProvider::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
   }
 }
 
-void CDirectoryProvider::Fetch(std::vector<CGUIListItemPtr> &items)
+void CDirectoryProvider::Fetch(std::vector<std::shared_ptr<CGUIListItem>>& items)
 {
   std::unique_lock<CCriticalSection> lock(m_section);
   items.clear();
@@ -544,7 +544,7 @@ protected:
 };
 } // namespace
 
-bool CDirectoryProvider::OnClick(const CGUIListItemPtr& item)
+bool CDirectoryProvider::OnClick(const std::shared_ptr<CGUIListItem>& item)
 {
   CFileItem targetItem{*std::static_pointer_cast<CFileItem>(item)};
 
@@ -580,7 +580,7 @@ bool CDirectoryProvider::OnClick(const CGUIListItemPtr& item)
   return ExecuteAction({fileItem, GetTarget(fileItem)});
 }
 
-bool CDirectoryProvider::OnPlay(const CGUIListItemPtr& item)
+bool CDirectoryProvider::OnPlay(const std::shared_ptr<CGUIListItem>& item)
 {
   CFileItem targetItem{*std::static_pointer_cast<CFileItem>(item)};
 
@@ -628,7 +628,7 @@ bool CDirectoryProvider::OnInfo(const std::shared_ptr<CFileItem>& fileItem)
   return UTILS::GUILIB::CGUIContentUtils::ShowInfoForItem(*targetItem);
 }
 
-bool CDirectoryProvider::OnInfo(const CGUIListItemPtr& item)
+bool CDirectoryProvider::OnInfo(const std::shared_ptr<CGUIListItem>& item)
 {
   auto fileItem = std::static_pointer_cast<CFileItem>(item);
   return OnInfo(fileItem);
@@ -643,7 +643,7 @@ bool CDirectoryProvider::OnContextMenu(const std::shared_ptr<CFileItem>& fileIte
   return CONTEXTMENU::ShowFor(fileItem, CContextMenuManager::MAIN);
 }
 
-bool CDirectoryProvider::OnContextMenu(const CGUIListItemPtr& item)
+bool CDirectoryProvider::OnContextMenu(const std::shared_ptr<CGUIListItem>& item)
 {
   auto fileItem = std::static_pointer_cast<CFileItem>(item);
   return OnContextMenu(fileItem);

@@ -63,7 +63,7 @@ void CGUIPanelContainer::Process(unsigned int currentTime, CDirtyRegionList &dir
       break;
     if (current >= 0)
     {
-      CGUIListItemPtr item = m_items[current];
+      std::shared_ptr<CGUIListItem> item = m_items[current];
       item->SetCurrentItem(current + 1);
       bool focused = (current == GetOffset() * m_itemsPerRow + GetCursor()) && m_bHasFocus;
 
@@ -111,7 +111,7 @@ void CGUIPanelContainer::Render()
 
     float focusedPos = 0;
     int focusedCol = 0;
-    CGUIListItemPtr focusedItem;
+    std::shared_ptr<CGUIListItem> focusedItem;
     int current = (offset - cacheBefore) * m_itemsPerRow;
     int col = 0;
     while (pos < end && m_items.size())
@@ -120,7 +120,7 @@ void CGUIPanelContainer::Render()
         break;
       if (current >= 0)
       {
-        CGUIListItemPtr item = m_items[current];
+        std::shared_ptr<CGUIListItem> item = m_items[current];
         bool focused = (current == GetOffset() * m_itemsPerRow + GetCursor()) && m_bHasFocus;
         // render our item
         if (focused)

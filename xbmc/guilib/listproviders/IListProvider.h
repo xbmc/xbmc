@@ -13,7 +13,6 @@
 
 class TiXmlNode;
 class CGUIListItem;
-typedef std::shared_ptr<CGUIListItem> CGUIListItemPtr;
 
 /*!
  \ingroup listproviders
@@ -52,7 +51,7 @@ public:
   /*! \brief Fetch the current list of items.
    \param items [out] the list to be filled.
    */
-  virtual void Fetch(std::vector<CGUIListItemPtr> &items)=0;
+  virtual void Fetch(std::vector<std::shared_ptr<CGUIListItem>>& items) = 0;
 
   /*! \brief Check whether the list provider is updating content.
    \return true if in the processing of updating, false otherwise.
@@ -73,25 +72,25 @@ public:
    \param item the item that was clicked.
    \return true if the click was handled, false otherwise.
    */
-  virtual bool OnClick(const CGUIListItemPtr &item)=0;
+  virtual bool OnClick(const std::shared_ptr<CGUIListItem>& item) = 0;
 
   /*! \brief Play event on an item.
    \param item the item to play.
    \return true if the event was handled, false otherwise.
    */
-  virtual bool OnPlay(const CGUIListItemPtr& item) { return false; }
+  virtual bool OnPlay(const std::shared_ptr<CGUIListItem>& item) { return false; }
 
   /*! \brief Open the info dialog for an item provided by this IListProvider.
    \param item the item that was clicked.
    \return true if the dialog was shown, false otherwise.
    */
-  virtual bool OnInfo(const CGUIListItemPtr &item)=0;
+  virtual bool OnInfo(const std::shared_ptr<CGUIListItem>& item) = 0;
 
   /*! \brief Open the context menu for an item provided by this IListProvider.
    \param item the item that was clicked.
    \return true if the click was handled, false otherwise.
    */
-  virtual bool OnContextMenu(const CGUIListItemPtr &item)=0;
+  virtual bool OnContextMenu(const std::shared_ptr<CGUIListItem>& item) = 0;
 
   /*! \brief Set the default item to focus. For backwards compatibility.
    \param item the item to focus.

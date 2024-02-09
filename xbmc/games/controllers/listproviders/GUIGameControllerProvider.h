@@ -64,10 +64,10 @@ public:
   // Implementation of IListProvider
   std::unique_ptr<IListProvider> Clone() override;
   bool Update(bool forceRefresh) override;
-  void Fetch(std::vector<CGUIListItemPtr>& items) override;
-  bool OnClick(const CGUIListItemPtr& item) override { return false; }
-  bool OnInfo(const CGUIListItemPtr& item) override { return false; }
-  bool OnContextMenu(const CGUIListItemPtr& item) override { return false; }
+  void Fetch(std::vector<std::shared_ptr<CGUIListItem>>& items) override;
+  bool OnClick(const std::shared_ptr<CGUIListItem>& item) override { return false; }
+  bool OnInfo(const std::shared_ptr<CGUIListItem>& item) override { return false; }
+  bool OnContextMenu(const std::shared_ptr<CGUIListItem>& item) override { return false; }
   void SetDefaultItem(int item, bool always) override {}
   int GetDefaultItem() const override { return -1; }
   bool AlwaysFocusDefaultItem() const override { return false; }

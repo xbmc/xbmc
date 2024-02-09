@@ -65,7 +65,7 @@ bool CGUIGameControllerProvider::Update(bool forceRefresh)
   return bDirty;
 }
 
-void CGUIGameControllerProvider::Fetch(std::vector<CGUIListItemPtr>& items)
+void CGUIGameControllerProvider::Fetch(std::vector<std::shared_ptr<CGUIListItem>>& items)
 {
   items = m_items;
 }
@@ -125,7 +125,7 @@ void CGUIGameControllerProvider::UpdateItems()
   int portIndex = -1;
   for (unsigned int i = 0; i < static_cast<unsigned int>(m_items.size()); ++i)
   {
-    CGUIListItemPtr& guiItem = m_items.at(i);
+    std::shared_ptr<CGUIListItem>& guiItem = m_items.at(i);
 
     // Pad list if aligning to the right
     if (m_alignment == XBFONT_RIGHT && i + m_portCount < MAX_PORT_COUNT)

@@ -68,7 +68,7 @@ namespace PVR
     void Process(unsigned int currentTime, CDirtyRegionList& dirtyregions) override;
     void Render() override;
 
-    CGUIListItemPtr GetListItem(int offset, unsigned int flag = 0) const override;
+    std::shared_ptr<CGUIListItem> GetListItem(int offset, unsigned int flag = 0) const override;
     std::string GetLabel(int info) const override;
 
     std::shared_ptr<CFileItem> GetSelectedGridItem(int offset = 0) const;
