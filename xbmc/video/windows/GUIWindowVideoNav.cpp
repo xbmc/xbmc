@@ -686,7 +686,8 @@ void CGUIWindowVideoNav::OnDeleteItem(const CFileItemPtr& pItem)
       return;
 
     pDialog->SetHeading(CVariant{432});
-    std::string strLabel = StringUtils::Format(g_localizeStrings.Get(433), pItem->GetLabel());
+    std::string strLabel = StringUtils::Format(
+        g_localizeStrings.Get(pItem->HasVideoVersions() ? 40021 : 433), pItem->GetLabel());
     pDialog->SetLine(1, CVariant{std::move(strLabel)});
     pDialog->SetLine(2, CVariant{""});
     pDialog->Open();

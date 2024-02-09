@@ -1375,8 +1375,9 @@ bool CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(const std::shared_ptr<CFil
   }
   else
   {
-    pDialog->SetLine(0,
-                     CVariant{StringUtils::Format(g_localizeStrings.Get(433), item->GetLabel())});
+    pDialog->SetLine(
+        0, CVariant{StringUtils::Format(
+               g_localizeStrings.Get(item->HasVideoVersions() ? 40021 : 433), item->GetLabel())});
     pDialog->SetLine(1, CVariant{""});
   }
   pDialog->SetLine(2, CVariant{""});
