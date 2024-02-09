@@ -159,9 +159,12 @@ CGUIControl* GetActiveContainer(int containerId, int contextWindow)
   return nullptr;
 }
 
-CGUIListItemPtr GetCurrentListItem(int contextWindow, int containerId /* = 0 */, int itemOffset /* = 0 */, unsigned int itemFlags /* = 0 */)
+std::shared_ptr<CGUIListItem> GetCurrentListItem(int contextWindow,
+                                                 int containerId /* = 0 */,
+                                                 int itemOffset /* = 0 */,
+                                                 unsigned int itemFlags /* = 0 */)
 {
-  CGUIListItemPtr item;
+  std::shared_ptr<CGUIListItem> item;
 
   if (containerId == 0  &&
       itemOffset == 0 &&

@@ -1157,7 +1157,7 @@ void CGUIEPGGridContainer::UpdateBlock(bool bUpdateBlockTravelAxis /* = true */)
 
 CGUIListItemLayout* CGUIEPGGridContainer::GetFocusedLayout() const
 {
-  CGUIListItemPtr item = GetListItem(0);
+  std::shared_ptr<CGUIListItem> item = GetListItem(0);
 
   if (item)
     return item->GetFocusedLayout();
@@ -1363,11 +1363,10 @@ CFileItemPtr CGUIEPGGridContainer::GetSelectedGridItem(int offset /*= 0*/) const
   return item;
 }
 
-
-CGUIListItemPtr CGUIEPGGridContainer::GetListItem(int offset, unsigned int flag) const
+std::shared_ptr<CGUIListItem> CGUIEPGGridContainer::GetListItem(int offset, unsigned int flag) const
 {
   if (!m_gridModel->HasChannelItems())
-    return CGUIListItemPtr();
+    return std::shared_ptr<CGUIListItem>();
 
   int item = m_channelCursor + m_channelOffset + offset;
   if (flag & INFOFLAG_LISTITEM_POSITION)
@@ -1386,7 +1385,7 @@ CGUIListItemPtr CGUIEPGGridContainer::GetListItem(int offset, unsigned int flag)
     if (item >= 0 && item < m_gridModel->ChannelItemsSize())
       return m_gridModel->GetChannelItem(item);
   }
-  return CGUIListItemPtr();
+  return std::shared_ptr<CGUIListItem>();
 }
 
 std::string CGUIEPGGridContainer::GetLabel(int info) const
@@ -2141,7 +2140,7 @@ void CGUIEPGGridContainer::HandleChannels(bool bRender, unsigned int currentTime
   end += cacheAfterChannel * m_channelLayout->Size(m_orientation);
 
   float focusedPos = 0;
-  CGUIListItemPtr focusedItem;
+  std::shared_ptr<CGUIListItem> focusedItem;
 
   CFileItemPtr item;
   int current = chanOffset - cacheBeforeChannel;

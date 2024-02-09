@@ -63,7 +63,7 @@ bool CDialogInGameSaves::OnMessage(CGUIMessage& message)
       if (message.GetControlId() == GetID())
       {
         const std::string& itemPath = message.GetStringParam();
-        CGUIListItemPtr itemInfo = message.GetItem();
+        std::shared_ptr<CGUIListItem> itemInfo = message.GetItem();
 
         if (!itemPath.empty())
         {
@@ -127,7 +127,8 @@ unsigned int CDialogInGameSaves::GetFocusedItem() const
   return m_focusedControl;
 }
 
-void CDialogInGameSaves::OnItemRefresh(const std::string& itemPath, const CGUIListItemPtr& itemInfo)
+void CDialogInGameSaves::OnItemRefresh(const std::string& itemPath,
+                                       const std::shared_ptr<CGUIListItem>& itemInfo)
 {
   // Turn the message params into a savestate item
   CFileItemPtr item = TranslateMessageItem(itemPath, itemInfo);
@@ -400,8 +401,8 @@ void CDialogInGameSaves::OnDelete(CFileItem& focusedItem)
   }
 }
 
-CFileItemPtr CDialogInGameSaves::TranslateMessageItem(const std::string& messagePath,
-                                                      const CGUIListItemPtr& messageItem)
+CFileItemPtr CDialogInGameSaves::TranslateMessageItem(
+    const std::string& messagePath, const std::shared_ptr<CGUIListItem>& messageItem)
 {
   CFileItemPtr item;
 

@@ -69,14 +69,14 @@ public:
                 const std::string& sender,
                 const std::string& message,
                 const CVariant& data) override;
-  void Fetch(std::vector<CGUIListItemPtr> &items) override;
+  void Fetch(std::vector<std::shared_ptr<CGUIListItem>>& items) override;
   void Reset() override;
-  bool OnClick(const CGUIListItemPtr &item) override;
-  bool OnPlay(const CGUIListItemPtr& item) override;
+  bool OnClick(const std::shared_ptr<CGUIListItem>& item) override;
+  bool OnPlay(const std::shared_ptr<CGUIListItem>& item) override;
   bool OnInfo(const std::shared_ptr<CFileItem>& item);
   bool OnContextMenu(const std::shared_ptr<CFileItem>& item);
-  bool OnInfo(const CGUIListItemPtr &item) override;
-  bool OnContextMenu(const CGUIListItemPtr &item) override;
+  bool OnInfo(const std::shared_ptr<CGUIListItem>& item) override;
+  bool OnContextMenu(const std::shared_ptr<CGUIListItem>& item) override;
   bool IsUpdating() const override;
   void FreeResources(bool immediately) override;
 

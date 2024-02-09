@@ -38,7 +38,7 @@ CGUIMessage::CGUIMessage(int msg,
                          int controlID,
                          int64_t param1,
                          int64_t param2,
-                         const CGUIListItemPtr& item)
+                         const std::shared_ptr<CGUIListItem>& item)
   : m_item(item)
 {
   m_message = msg;
@@ -69,7 +69,7 @@ void* CGUIMessage::GetPointer() const
   return m_pointer;
 }
 
-CGUIListItemPtr CGUIMessage::GetItem() const
+std::shared_ptr<CGUIListItem> CGUIMessage::GetItem() const
 {
   return m_item;
 }
@@ -155,7 +155,7 @@ size_t CGUIMessage::GetNumStringParams() const
   return m_params.size();
 }
 
-void CGUIMessage::SetItem(CGUIListItemPtr item)
+void CGUIMessage::SetItem(std::shared_ptr<CGUIListItem> item)
 {
   m_item = std::move(item);
 }

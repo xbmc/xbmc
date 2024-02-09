@@ -91,7 +91,7 @@ bool CStaticListProvider::Update(bool forceRefresh)
   return changed; //! @todo Also returned changed if properties are changed (if so, need to update scroll to letter).
 }
 
-void CStaticListProvider::Fetch(std::vector<CGUIListItemPtr> &items)
+void CStaticListProvider::Fetch(std::vector<std::shared_ptr<CGUIListItem>>& items)
 {
   items.clear();
   for (const auto& i : m_items)
@@ -130,7 +130,7 @@ bool CStaticListProvider::AlwaysFocusDefaultItem() const
   return m_defaultAlways;
 }
 
-bool CStaticListProvider::OnClick(const CGUIListItemPtr &item)
+bool CStaticListProvider::OnClick(const std::shared_ptr<CGUIListItem>& item)
 {
   CGUIStaticItem *staticItem = static_cast<CGUIStaticItem*>(item.get());
   return staticItem->GetClickActions().ExecuteActions(0, m_parentID);

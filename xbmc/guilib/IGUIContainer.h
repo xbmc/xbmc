@@ -12,8 +12,6 @@
 
 #include <memory>
 
-typedef std::shared_ptr<CGUIListItem> CGUIListItemPtr;
-
 /*!
  \ingroup controls
  \brief
@@ -40,6 +38,6 @@ public:
     m_label = label;
   }
 
-  virtual CGUIListItemPtr GetListItem(int offset, unsigned int flag = 0) const = 0;
+  virtual std::shared_ptr<CGUIListItem> GetListItem(int offset, unsigned int flag = 0) const = 0;
   virtual std::string GetLabel(int info) const                                 = 0;
 };

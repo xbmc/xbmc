@@ -10798,7 +10798,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   }
   else if (info >= LISTITEM_START && info <= LISTITEM_END)
   {
-    const CGUIListItemPtr item = GUIINFO::GetCurrentListItem(contextWindow);
+    const std::shared_ptr<CGUIListItem> item = GUIINFO::GetCurrentListItem(contextWindow);
     if (item && item->IsFileItem())
       return GetItemLabel(static_cast<CFileItem*>(item.get()), contextWindow, info, fallback);
   }
@@ -10816,7 +10816,7 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
   }
   else if (info >= LISTITEM_START && info <= LISTITEM_END)
   {
-    CGUIListItemPtr itemPtr;
+    std::shared_ptr<CGUIListItem> itemPtr;
     if (!item)
     {
       itemPtr = GUIINFO::GetCurrentListItem(contextWindow);
@@ -10857,7 +10857,9 @@ void CGUIInfoManager::UnRegister(const INFO::InfoPtr& expression)
   m_bools.erase(expression);
 }
 
-bool CGUIInfoManager::EvaluateBool(const std::string &expression, int contextWindow /* = 0 */, const CGUIListItemPtr &item /* = nullptr */)
+bool CGUIInfoManager::EvaluateBool(const std::string& expression,
+                                   int contextWindow /* = 0 */,
+                                   const std::shared_ptr<CGUIListItem>& item /* = nullptr */)
 {
   INFO::InfoPtr info = Register(expression, contextWindow);
   if (info)
@@ -10872,7 +10874,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 
   if (condition >= LISTITEM_START && condition < LISTITEM_END)
   {
-    CGUIListItemPtr itemPtr;
+    std::shared_ptr<CGUIListItem> itemPtr;
     if (!item)
     {
       itemPtr = GUIINFO::GetCurrentListItem(contextWindow);
@@ -10901,7 +10903,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const CGUIInfo &info, int contextWindow, 
 
   if (condition >= LISTITEM_START && condition <= LISTITEM_END)
   {
-    CGUIListItemPtr itemPtr;
+    std::shared_ptr<CGUIListItem> itemPtr;
     if (!item)
     {
       itemPtr = GUIINFO::GetCurrentListItem(contextWindow, info.GetData1(), info.GetData2(), info.GetInfoFlag());
@@ -10942,7 +10944,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const CGUIInfo &info, int contextWindow, 
           if (info.GetData2() < 0) // info labels are stored with negative numbers
           {
             int info2 = -info.GetData2();
-            CGUIListItemPtr item2;
+            std::shared_ptr<CGUIListItem> item2;
 
             if (IsListItemInfo(info2))
             {
@@ -11047,7 +11049,7 @@ bool CGUIInfoManager::GetMultiInfoInt(int &value, const CGUIInfo &info, int cont
   }
   else if (info.m_info >= LISTITEM_START && info.m_info <= LISTITEM_END)
   {
-    CGUIListItemPtr itemPtr;
+    std::shared_ptr<CGUIListItem> itemPtr;
     if (!item)
     {
       itemPtr = GUIINFO::GetCurrentListItem(contextWindow, info.GetData1(), info.GetData2(), info.GetInfoFlag());
@@ -11082,7 +11084,8 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const CGUIInfo &constinfo, int co
 
   if (info.m_info >= LISTITEM_START && info.m_info <= LISTITEM_END)
   {
-    const CGUIListItemPtr item = GUIINFO::GetCurrentListItem(contextWindow, info.GetData1(), info.GetData2(), info.GetInfoFlag());
+    const std::shared_ptr<CGUIListItem> item = GUIINFO::GetCurrentListItem(
+        contextWindow, info.GetData1(), info.GetData2(), info.GetInfoFlag());
     if (item)
     {
       // Image prioritizes images over labels (in the case of music item ratings for instance)
@@ -11127,7 +11130,7 @@ std::string CGUIInfoManager::GetImage(int info, int contextWindow, std::string *
            info == LISTITEM_OVERLAY ||
            info == LISTITEM_ART)
   {
-    const CGUIListItemPtr item = GUIINFO::GetCurrentListItem(contextWindow);
+    const std::shared_ptr<CGUIListItem> item = GUIINFO::GetCurrentListItem(contextWindow);
     if (item && item->IsFileItem())
       return GetItemImage(item.get(), contextWindow, info, fallback);
   }

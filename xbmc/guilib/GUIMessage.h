@@ -355,7 +355,7 @@ constexpr const int GUI_MSG_CODINGTABLE_LOOKUP_COMPLETED = 65000;
 #include <memory>
 
 // forwards
-class CGUIListItem; typedef std::shared_ptr<CGUIListItem> CGUIListItemPtr;
+class CGUIListItem;
 class CFileItemList;
 
 /*!
@@ -373,7 +373,7 @@ public:
               int controlID,
               int64_t param1,
               int64_t param2,
-              const CGUIListItemPtr& item);
+              const std::shared_ptr<CGUIListItem>& item);
   CGUIMessage(const CGUIMessage& msg);
   ~CGUIMessage(void);
   CGUIMessage& operator = (const CGUIMessage& msg);
@@ -381,7 +381,7 @@ public:
   int GetControlId() const ;
   int GetMessage() const;
   void* GetPointer() const;
-  CGUIListItemPtr GetItem() const;
+  std::shared_ptr<CGUIListItem> GetItem() const;
   int GetParam1() const;
   int64_t GetParam1AsI64() const;
   int GetParam2() const;
@@ -397,7 +397,7 @@ public:
   void SetStringParams(const std::vector<std::string> &params);
   const std::string& GetStringParam(size_t param = 0) const;
   size_t GetNumStringParams() const;
-  void SetItem(CGUIListItemPtr item);
+  void SetItem(std::shared_ptr<CGUIListItem> item);
 
 private:
   std::string m_strLabel;
@@ -408,7 +408,7 @@ private:
   void* m_pointer;
   int64_t m_param1;
   int64_t m_param2;
-  CGUIListItemPtr m_item;
+  std::shared_ptr<CGUIListItem> m_item;
 
   static std::string empty_string;
 };

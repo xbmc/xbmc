@@ -59,7 +59,9 @@ bool CGUIAction::ExecuteActions() const
   return ExecuteActions(DEFAULT_CONTROL_ID, DEFAULT_CONTROL_ID);
 }
 
-bool CGUIAction::ExecuteActions(int controlID, int parentID, const CGUIListItemPtr &item /* = NULL */) const
+bool CGUIAction::ExecuteActions(int controlID,
+                                int parentID,
+                                const std::shared_ptr<CGUIListItem>& item /* = NULL */) const
 {
   if (m_actions.empty())
     return false;

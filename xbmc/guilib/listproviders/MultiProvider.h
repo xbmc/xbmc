@@ -29,16 +29,16 @@ public:
   // Implementation of IListProvider
   std::unique_ptr<IListProvider> Clone() override;
   bool Update(bool forceRefresh) override;
-  void Fetch(std::vector<CGUIListItemPtr> &items) override;
+  void Fetch(std::vector<std::shared_ptr<CGUIListItem>>& items) override;
   bool IsUpdating() const override;
   void Reset() override;
-  bool OnClick(const CGUIListItemPtr &item) override;
-  bool OnInfo(const CGUIListItemPtr &item) override;
-  bool OnContextMenu(const CGUIListItemPtr &item) override;
+  bool OnClick(const std::shared_ptr<CGUIListItem>& item) override;
+  bool OnInfo(const std::shared_ptr<CGUIListItem>& item) override;
+  bool OnContextMenu(const std::shared_ptr<CGUIListItem>& item) override;
 
 protected:
   typedef size_t item_key_type;
-  static item_key_type GetItemKey(CGUIListItemPtr const &item);
+  static item_key_type GetItemKey(std::shared_ptr<CGUIListItem> const& item);
   std::vector<IListProviderPtr> m_providers;
   std::map<item_key_type, IListProvider*> m_itemMap;
   CCriticalSection m_section; // protects m_itemMap
