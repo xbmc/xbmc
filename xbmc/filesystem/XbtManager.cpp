@@ -29,11 +29,13 @@ CXbtManager& CXbtManager::GetInstance()
 
 bool CXbtManager::HasFiles(const CURL& path) const
 {
+  std::lock_guard l(m_lock);
   return ProcessFile(path) != m_readers.end();
 }
 
 bool CXbtManager::GetFiles(const CURL& path, std::vector<CXBTFFile>& files) const
 {
+  std::lock_guard l(m_lock);
   const auto& reader = ProcessFile(path);
   if (reader == m_readers.end())
     return false;
@@ -44,6 +46,7 @@ bool CXbtManager::GetFiles(const CURL& path, std::vector<CXBTFFile>& files) cons
 
 bool CXbtManager::GetReader(const CURL& path, CXBTFReaderPtr& reader) const
 {
+  std::lock_guard l(m_lock);
   const auto& it = ProcessFile(path);
   if (it == m_readers.end())
     return false;
@@ -54,6 +57,7 @@ bool CXbtManager::GetReader(const CURL& path, CXBTFReaderPtr& reader) const
 
 void CXbtManager::Release(const CURL& path)
 {
+  std::lock_guard l(m_lock);
   const auto& it = GetReader(path);
   if (it == m_readers.end())
     return;
