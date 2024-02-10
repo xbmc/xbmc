@@ -33,6 +33,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
+#include "utils/PlayerUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -182,17 +183,14 @@ static int PlayerControl(const std::vector<std::string>& params)
       appPlayer->SetPlaySpeed(playSpeed);
     }
   }
-  else if (paramlow =="tempoup" || paramlow == "tempodown")
+  else if (paramlow == "tempoup" || paramlow == "tempodown")
   {
     if (appPlayer->SupportsTempo() && appPlayer->IsPlaying() && !appPlayer->IsPaused())
     {
-      float playTempo = appPlayer->GetPlayTempo();
       if (paramlow == "tempodown")
-          playTempo -= 0.1f;
+        CPlayerUtils::AdvanceTempoStep(appPlayer, TempoStepChange::DECREASE);
       else if (paramlow == "tempoup")
-          playTempo += 0.1f;
-
-      appPlayer->SetTempo(playTempo);
+        CPlayerUtils::AdvanceTempoStep(appPlayer, TempoStepChange::INCREASE);
     }
   }
   else if (StringUtils::StartsWithNoCase(params[0], "tempo"))

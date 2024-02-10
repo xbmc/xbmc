@@ -47,6 +47,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/MathUtils.h"
+#include "utils/PlayerUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
@@ -468,6 +469,45 @@ JSONRPC_STATUS CPlayerOperations::SetSpeed(const std::string &method, ITransport
         return InvalidParams;
 
       result["speed"] = appPlayer->IsPausedPlayback() ? 0 : (int)lrint(appPlayer->GetPlaySpeed());
+      return OK;
+    }
+
+    case Picture:
+    case None:
+    default:
+      return FailedToExecute;
+  }
+}
+
+JSONRPC_STATUS CPlayerOperations::SetTempo(const std::string& method,
+                                           ITransportLayer* transport,
+                                           IClient* client,
+                                           const CVariant& parameterObject,
+                                           CVariant& result)
+{
+  switch (GetPlayer(parameterObject["playerid"]))
+  {
+    case Video:
+    case Audio:
+    {
+      auto& components = CServiceBroker::GetAppComponents();
+      const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+      if (!appPlayer->SupportsTempo() || appPlayer->IsPausedPlayback())
+        return FailedToExecute;
+
+      if (parameterObject["tempo"].isDouble())
+        appPlayer->SetTempo(parameterObject["tempo"].asFloat());
+      else if (parameterObject["tempo"].isString())
+      {
+        if (parameterObject["tempo"].asString().compare("increment") == 0)
+          CPlayerUtils::AdvanceTempoStep(appPlayer, TempoStepChange::INCREASE);
+        else
+          CPlayerUtils::AdvanceTempoStep(appPlayer, TempoStepChange::DECREASE);
+      }
+      else
+        return InvalidParams;
+
+      result["tempo"] = appPlayer->GetPlayTempo();
       return OK;
     }
 
