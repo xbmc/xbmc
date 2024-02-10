@@ -313,7 +313,8 @@ void CVideoDatabase::CreateAnalytics()
               "DELETE FROM tag_link WHERE media_id=old.idMovie AND media_type='movie'; "
               "DELETE FROM rating WHERE media_id=old.idMovie AND media_type='movie'; "
               "DELETE FROM uniqueid WHERE media_id=old.idMovie AND media_type='movie'; "
-              "DELETE FROM videoversion WHERE idFile=old.idFile AND media_type='movie'; "
+              "DELETE FROM videoversion "
+              "WHERE idFile=old.idFile AND idMedia=old.idMovie AND media_type='movie'; "
               "END");
   m_pDS->exec("CREATE TRIGGER delete_tvshow AFTER DELETE ON tvshow FOR EACH ROW BEGIN "
               "DELETE FROM actor_link WHERE media_id=old.idShow AND media_type='tvshow'; "
@@ -6339,7 +6340,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 130;
+  return 131;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
