@@ -25,6 +25,9 @@ public:
 
   bool IsConfigureAddonsAtStartupEnabled() override;
 
+protected:
+  virtual void RegisterPowerManagement();
+
 private:
   std::unique_ptr<OPTIONALS::CLircContainer, OPTIONALS::delete_CLircContainer> m_lirc;
 };

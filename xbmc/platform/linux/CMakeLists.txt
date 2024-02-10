@@ -16,8 +16,10 @@ set(HEADERS AppParamParserLinux.h
             TimeUtils.h)
 
 if(TARGET_WEBOS)
-  list(APPEND SOURCES AppParamParserWebOS.cpp)
-  list(APPEND HEADERS AppParamParserWebOS.h)
+  list(APPEND SOURCES AppParamParserWebOS.cpp
+                      PlatformWebOS.cpp)
+  list(APPEND HEADERS AppParamParserWebOS.h
+                      PlatformWebOS.h)
 endif()
 
 if(TARGET ALSA::ALSA)

@@ -12,6 +12,11 @@ if(TARGET DBus::DBus)
                       UPowerSyscall.h)
 endif()
 
+if (TARGET_WEBOS)
+  list(APPEND SOURCES LunaPowerManagement.cpp)
+  list(APPEND HEADERS LunaPowerManagement.h)
+endif ()
+
 if(SOURCES)
   core_add_library(platform_linux_powermanagement)
 endif()
