@@ -225,7 +225,9 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
             pItem->SetArt("thumb", song.strThumb);
         }
       }
-      else if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICFILES_USETAGS) || pItem->IsCDDA())
+      else if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                   CSettings::SETTING_MUSICFILES_USETAGS) ||
+               MUSIC::IsCDDA(*pItem))
       { // Nothing found, load tag from file,
         // always try to load cddb info
         // get correct tag parser

@@ -15,6 +15,7 @@
 #include "Util.h"
 #include "guilib/TextureManager.h"
 #include "media/MediaLockState.h"
+#include "music/MusicFileItemClassify.h"
 #include "profiles/ProfileManager.h"
 #include "settings/MediaSourceSettings.h"
 #include "storage/MediaManager.h"
@@ -82,7 +83,7 @@ bool CSourcesDirectory::GetDirectory(const VECSOURCES &sources, CFileItemList &i
       strIcon = "DefaultDVDFull.png";
     else if (pItem->IsBluray())
       strIcon = "DefaultBluray.png";
-    else if (pItem->IsCDDA())
+    else if (MUSIC::IsCDDA(*pItem))
       strIcon = "DefaultCDDA.png";
     else if (pItem->IsRemovable() && CServiceBroker::GetGUI()->GetTextureManager().HasTexture("DefaultRemovableDisk.png"))
       strIcon = "DefaultRemovableDisk.png";

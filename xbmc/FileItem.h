@@ -190,7 +190,6 @@ public:
   bool IsCBZ() const;
   bool IsCBR() const;
   bool IsISO9660() const;
-  bool IsCDDA() const;
   bool IsDVD() const;
   bool IsOnDVD() const;
   bool IsOnLAN() const;

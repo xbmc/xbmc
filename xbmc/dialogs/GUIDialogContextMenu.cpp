@@ -28,6 +28,7 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "media/MediaLockState.h"
+#include "music/MusicFileItemClassify.h"
 #include "profiles/ProfileManager.h"
 #include "profiles/dialogs/GUIDialogLockSettings.h"
 #include "settings/MediaSourceSettings.h"
@@ -38,6 +39,8 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+
+using namespace KODI;
 
 #define BACKGROUND_IMAGE       999
 #define GROUP_LIST             996
@@ -221,7 +224,7 @@ void CGUIDialogContextMenu::GetContextButtons(const std::string &type, const CFi
   // Add buttons to the ContextMenu that should be visible for both sources and autosourced items
   // Optical removable drives automatically have the static Eject button added (see CEjectDisk).
   // Here we only add the eject button to HDD drives
-  if (item && item->IsRemovable() && !item->IsDVD() && !item->IsCDDA())
+  if (item && item->IsRemovable() && !item->IsDVD() && !MUSIC::IsCDDA(*item))
   {
     buttons.Add(CONTEXT_BUTTON_EJECT_DRIVE, 13420); // Remove safely
   }

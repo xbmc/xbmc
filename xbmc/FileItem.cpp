@@ -1165,11 +1165,6 @@ bool CFileItem::IsBluray() const
   return IsBDFile(item);
 }
 
-bool CFileItem::IsCDDA() const
-{
-  return URIUtils::IsCDDA(m_strPath);
-}
-
 bool CFileItem::IsDVD() const
 {
   return URIUtils::IsDVD(m_strPath) || m_iDriveType == CMediaSource::SOURCE_TYPE_DVD;
@@ -1237,7 +1232,7 @@ bool CFileItem::IsVirtualDirectoryRoot() const
 
 bool CFileItem::IsRemovable() const
 {
-  return IsOnDVD() || IsCDDA() || m_iDriveType == CMediaSource::SOURCE_TYPE_REMOVABLE;
+  return IsOnDVD() || MUSIC::IsCDDA(*this) || m_iDriveType == CMediaSource::SOURCE_TYPE_REMOVABLE;
 }
 
 bool CFileItem::IsReadOnly() const
@@ -2460,7 +2455,7 @@ bool CFileItem::LoadMusicTag()
       return true;
   }
   // no tag - try some other things
-  if (IsCDDA())
+  if (MUSIC::IsCDDA(*this))
   {
     // we have the tracknumber...
     int iTrack = GetMusicInfoTag()->GetTrackNumber();

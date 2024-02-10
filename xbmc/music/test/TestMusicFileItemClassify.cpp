@@ -153,3 +153,21 @@ const auto lyrics_tests = std::array{
 };
 
 INSTANTIATE_TEST_SUITE_P(TestMusicFileItemClassify, LyricsTest, testing::ValuesIn(lyrics_tests));
+
+class CDDATest : public testing::WithParamInterface<SimpleDefinition>, public testing::Test
+{
+};
+
+TEST_P(CDDATest, IsCDDA)
+{
+  EXPECT_EQ(MUSIC::IsCDDA(CFileItem(GetParam().path, GetParam().folder)), GetParam().result);
+}
+
+const auto cdda_tests = std::array{
+    SimpleDefinition{"cdda://1", false, true},
+    SimpleDefinition{"cdda://1/", true, true},
+    SimpleDefinition{"cdda://1/", true, true},
+    SimpleDefinition{"/home/foo/yo.cdda", false, false},
+};
+
+INSTANTIATE_TEST_SUITE_P(TestMusicFileItemClassify, CDDATest, testing::ValuesIn(cdda_tests));

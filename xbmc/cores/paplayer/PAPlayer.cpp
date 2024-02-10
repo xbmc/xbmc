@@ -20,6 +20,7 @@
 #include "cores/DataCacheCore.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "messaging/ApplicationMessenger.h"
+#include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -32,6 +33,7 @@
 #include <memory>
 #include <mutex>
 
+using namespace KODI;
 using namespace std::chrono_literals;
 
 #define TIME_TO_CACHE_NEXT_FILE 5000 /* 5 seconds before end of song, start caching the next song */
@@ -248,8 +250,8 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 void PAPlayer::UpdateCrossfadeTime(const CFileItem& file)
 {
   // we explicitly disable crossfading for audio cds
-  if (file.IsCDDA())
-   m_upcomingCrossfadeMS = 0;
+  if (MUSIC::IsCDDA(file))
+    m_upcomingCrossfadeMS = 0;
   else
     m_upcomingCrossfadeMS = m_defaultCrossfadeMS = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_MUSICPLAYER_CROSSFADE) * 1000;
 
@@ -400,7 +402,7 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn)
 
   si->m_prepareNextAtFrame = 0;
   // cd drives don't really like it to be crossfaded or prepared
-  if (!file.IsCDDA())
+  if (!MUSIC::IsCDDA(file))
   {
     if (streamTotalTime >= TIME_TO_CACHE_NEXT_FILE + m_defaultCrossfadeMS)
       si->m_prepareNextAtFrame = (int)((streamTotalTime - TIME_TO_CACHE_NEXT_FILE - m_defaultCrossfadeMS) * si->m_audioFormat.m_sampleRate / 1000.0f);

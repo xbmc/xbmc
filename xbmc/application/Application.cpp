@@ -2571,7 +2571,7 @@ void CApplication::PlaybackCleanup()
 
   // DVD ejected while playing in vis ?
   if (!appPlayer->IsPlayingAudio() &&
-      (m_itemCurrentFile->IsCDDA() || m_itemCurrentFile->IsOnDVD()) &&
+      (MUSIC::IsCDDA(*m_itemCurrentFile) || m_itemCurrentFile->IsOnDVD()) &&
       !CServiceBroker::GetMediaManager().IsDiscInDrive() &&
       CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VISUALISATION)
   {

@@ -35,7 +35,7 @@ bool IsAudio(const CFileItem& item)
   if (item.HasGameInfoTag())
     return false;
 
-  if (item.IsCDDA())
+  if (IsCDDA(item))
     return true;
 
   if (StringUtils::StartsWithNoCase(item.GetMimeType(), "application/"))
@@ -56,6 +56,11 @@ bool IsAudio(const CFileItem& item)
 bool IsAudioBook(const CFileItem& item)
 {
   return item.IsType(".m4b") || item.IsType(".mka");
+}
+
+bool IsCDDA(const CFileItem& item)
+{
+  return URIUtils::IsCDDA(item.GetPath());
 }
 
 bool IsCUESheet(const CFileItem& item)

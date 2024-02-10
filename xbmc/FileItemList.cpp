@@ -1076,7 +1076,7 @@ std::string CFileItemList::GetDiscFileCache(int windowID) const
 
   uint32_t crc = Crc32::ComputeFromLowerCase(strPath);
 
-  if (IsCDDA() || IsOnDVD())
+  if (MUSIC::IsCDDA(*this) || IsOnDVD())
     return StringUtils::Format("special://temp/archive_cache/r-{:08x}.fi", crc);
 
   if (IsMusicDb())

@@ -458,7 +458,7 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
       }
 #ifdef HAS_OPTICAL_DRIVE
       // enable Rip CD Audio or Track button if we have an audio disc
-      if (CServiceBroker::GetMediaManager().IsDiscInDrive() && m_vecItems->IsCDDA())
+      if (CServiceBroker::GetMediaManager().IsDiscInDrive() && MUSIC::IsCDDA(*m_vecItems))
       {
         // those cds can also include Audio Tracks: CDExtra and MixedMode!
         MEDIA_DETECT::CCdInfo* pCdInfo = CServiceBroker::GetMediaManager().GetCdInfo();
@@ -469,7 +469,7 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
     }
 
     // enable CDDB lookup if the current dir is CDDA
-    if (CServiceBroker::GetMediaManager().IsDiscInDrive() && m_vecItems->IsCDDA() &&
+    if (CServiceBroker::GetMediaManager().IsDiscInDrive() && MUSIC::IsCDDA(*m_vecItems) &&
         (profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
     {
       buttons.Add(CONTEXT_BUTTON_CDDB, 16002);
@@ -567,7 +567,7 @@ void CGUIWindowMusicBase::OnRipCD()
 {
   if (CServiceBroker::GetMediaManager().IsAudio())
   {
-    if (!g_application.CurrentFileItem().IsCDDA())
+    if (!MUSIC::IsCDDA(g_application.CurrentFileItem()))
     {
 #ifdef HAS_CDDA_RIPPER
       KODI::CDRIP::CCDDARipper::GetInstance().RipCD();
@@ -582,7 +582,7 @@ void CGUIWindowMusicBase::OnRipTrack(int iItem)
 {
   if (CServiceBroker::GetMediaManager().IsAudio())
   {
-    if (!g_application.CurrentFileItem().IsCDDA())
+    if (!MUSIC::IsCDDA(g_application.CurrentFileItem()))
     {
 #ifdef HAS_CDDA_RIPPER
       CFileItemPtr item = m_vecItems->Get(iItem);
@@ -736,8 +736,10 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
   // No need to attempt to read music file tags for music videos
   if (IsVideoDb(items))
     return;
-  if (items.GetFolderCount()==items.Size() || items.IsMusicDb() ||
-     (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICFILES_USETAGS) && !items.IsCDDA()))
+  if (items.GetFolderCount() == items.Size() || items.IsMusicDb() ||
+      (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+           CSettings::SETTING_MUSICFILES_USETAGS) &&
+       !MUSIC::IsCDDA(items)))
   {
     return;
   }

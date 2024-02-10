@@ -29,6 +29,7 @@
 #include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#include "music/MusicFileItemClassify.h"
 #include "music/MusicLibraryQueue.h"
 #include "music/dialogs/GUIDialogInfoProviderSettings.h"
 #include "music/tags/MusicInfoTag.h"
@@ -54,6 +55,7 @@
 using namespace XFILE;
 using namespace PLAYLIST;
 using namespace MUSICDATABASEDIRECTORY;
+using namespace KODI;
 using namespace KODI::MESSAGING;
 using namespace KODI::VIDEO;
 
@@ -582,7 +584,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
       CGUIDialogContextMenu::GetContextButtons("music", item, buttons);
 #ifdef HAS_OPTICAL_DRIVE
       // enable Rip CD an audio disc
-      if (CServiceBroker::GetMediaManager().IsDiscInDrive() && item->IsCDDA())
+      if (CServiceBroker::GetMediaManager().IsDiscInDrive() && MUSIC::IsCDDA(*item))
       {
         // those cds can also include Audio Tracks: CDExtra and MixedMode!
         MEDIA_DETECT::CCdInfo* pCdInfo = CServiceBroker::GetMediaManager().GetCdInfo();
