@@ -1136,7 +1136,7 @@ bool CFileItem::IsOpticalMediaFile() const
   if (IsDVDFile(false, true))
     return true;
 
-  return IsBDFile();
+  return IsBDFile(*this);
 }
 
 bool CFileItem::IsDVDFile(bool bVobs /*= true*/, bool bIfos /*= true*/) const
@@ -1158,13 +1158,6 @@ bool CFileItem::IsDVDFile(bool bVobs /*= true*/, bool bIfos /*= true*/) const
   }
 
   return false;
-}
-
-bool CFileItem::IsBDFile() const
-{
-  std::string strFileName = URIUtils::GetFileName(GetDynPath());
-  return (StringUtils::EqualsNoCase(strFileName, "index.bdmv") || StringUtils::EqualsNoCase(strFileName, "MovieObject.bdmv")
-          || StringUtils::EqualsNoCase(strFileName, "INDEX.BDM") || StringUtils::EqualsNoCase(strFileName, "MOVIEOBJ.BDM"));
 }
 
 bool CFileItem::IsRAR() const
@@ -1246,7 +1239,7 @@ bool CFileItem::IsBluray() const
 
   CFileItem item = CFileItem(VIDEO_UTILS::GetOpticalMediaPath(*this), false);
 
-  return item.IsBDFile();
+  return IsBDFile(item);
 }
 
 bool CFileItem::IsProtectedBlurayDisc() const

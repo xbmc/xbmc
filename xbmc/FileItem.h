@@ -199,7 +199,6 @@ public:
   bool IsDiscImage() const;
   bool IsOpticalMediaFile() const;
   bool IsDVDFile(bool bVobs = true, bool bIfos = true) const;
-  bool IsBDFile() const;
   bool IsBluray() const;
   bool IsProtectedBlurayDisc() const;
   bool IsRAR() const;

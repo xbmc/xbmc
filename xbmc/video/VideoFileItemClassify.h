@@ -13,6 +13,9 @@ class CFileItem;
 namespace KODI::VIDEO
 {
 
+//! \brief Check whether an item is a blu-ray file.
+bool IsBDFile(const CFileItem& item);
+
 //! \brief Check whether an item is a disc stub.
 bool IsDiscStub(const CFileItem& item);
 

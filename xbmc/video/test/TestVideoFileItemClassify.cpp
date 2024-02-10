@@ -132,6 +132,15 @@ TEST(TestVideoFileItemClassify, VideoExtensions)
   }
 }
 
+TEST(TestVideoFileItemClassify, IsBDFile)
+{
+  EXPECT_TRUE(VIDEO::IsBDFile(CFileItem("/home/foo/index.BDMV", false)));
+  EXPECT_TRUE(VIDEO::IsBDFile(CFileItem("smb://foo/bar/index.bdm", false)));
+  EXPECT_TRUE(VIDEO::IsBDFile(CFileItem("ftp://foo:bar@foobar.com/movieobject.BDMV", false)));
+  EXPECT_TRUE(VIDEO::IsBDFile(CFileItem("https://foobar.com/movieobj.bdm", false)));
+  EXPECT_FALSE(VIDEO::IsBDFile(CFileItem("https://foobar.com/movieobject.not", false)));
+}
+
 TEST(TestVideoFileItemClassify, IsSubtitle)
 {
   const auto& exts = CServiceBroker::GetFileExtensionProvider().GetSubtitleExtensions();
