@@ -200,6 +200,7 @@ struct PlayerControllerState
 
 - (void)microValueChangeHandler:(GCController*)controller
 {
+  auto __unsafe_unretained controllerInBlock = controller;
   controller.microGamepad.valueChangedHandler =
       ^(GCMicroGamepad* gamepad, GCControllerElement* element) {
         NSString* message;
@@ -233,7 +234,7 @@ struct PlayerControllerState
           message = [self checkdpad:gamepad.dpad
                           withEvent:&newEvent
                       withInputInfo:InputValueInfo{GCCONTROLLER_TYPE::MICRO}
-                    withplayerIndex:static_cast<int>(controller.playerIndex)];
+                    withplayerIndex:static_cast<int>(controllerInBlock.playerIndex)];
         }
         if (@available(iOS 13.0, tvOS 13.0, macOS 10.15, *))
         {
