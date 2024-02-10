@@ -671,6 +671,21 @@ enum ADDON_ACTION
   /// @brief <b>`247`</b>: Toggle display HDR on/off
   ADDON_ACTION_HDR_TOGGLE = 260,
 
+  /// @brief <b>`280`</b>: Shift video image to top
+  ADDON_ACTION_VSHIFT_TOP = 280,
+
+  /// @brief <b>`281`</b>: Shift video image to center
+  ADDON_ACTION_VSHIFT_CENTER = 281,
+
+  /// @brief <b>`282`</b>: Shift video image to bottom
+  ADDON_ACTION_VSHIFT_BOTTOM = 282,
+
+  /// @brief <b>`283`</b>: Shift video image to top compensating for 2.39:1 black bars
+  ADDON_ACTION_VSHIFT_TOP239 = 283,
+
+  /// @brief <b>`284`</b>: Shift video image to bottom compensating for 2.39:1 black bars
+  ADDON_ACTION_VSHIFT_BOTTOM239 = 284,
+
   /// @brief <b>`300`</b>: Voice actions
   ADDON_ACTION_VOICE_RECOGNIZE = 300,
 

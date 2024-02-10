@@ -454,6 +454,14 @@ constexpr const int ACTION_KEYBOARD_COMPOSING_KEY_CANCELLED = 264;
 //! Keyboard has finishing the key composition
 constexpr const int ACTION_KEYBOARD_COMPOSING_KEY_FINISHED = 265;
 
+constexpr const int ACTION_VSHIFT_TOP = 280; //!< shift video image to top
+constexpr const int ACTION_VSHIFT_CENTER = 281; //!< center video image
+constexpr const int ACTION_VSHIFT_BOTTOM = 282; //!< shift video image to bottom
+//!< shift video image to top compensating for 2.39:1 black bars
+constexpr const int ACTION_VSHIFT_TOP239 = 283;
+//!< shift video image to bottom compensating for 2.39:1 black bars
+constexpr const int ACTION_VSHIFT_BOTTOM239 = 284;
+
 // Voice actions
 constexpr const int ACTION_VOICE_RECOGNIZE = 300;
 
