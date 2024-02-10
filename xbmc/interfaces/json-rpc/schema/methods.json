@@ -2090,6 +2090,14 @@
       }
     }
   },
+  "GUI.ActivateScreenSaver": {
+    "type": "method",
+    "description": "Activates currently used screensaver",
+    "transport": "Response",
+    "permission": "ControlGUI",
+    "params": [],
+    "returns": "string"
+  },
   "Addons.GetAddons": {
     "type": "method",
     "description": "Gets all available addons",

@@ -129,6 +129,16 @@ JSONRPC_STATUS CGUIOperations::GetStereoscopicModes(const std::string &method, I
   return OK;
 }
 
+JSONRPC_STATUS CGUIOperations::ActivateScreenSaver(const std::string& method,
+                                                   ITransportLayer* transport,
+                                                   IClient* client,
+                                                   const CVariant& parameterObject,
+                                                   CVariant& result)
+{
+  CServiceBroker::GetAppMessenger()->SendMsg(TMSG_ACTIVATESCREENSAVER);
+  return ACK;
+}
+
 JSONRPC_STATUS CGUIOperations::GetPropertyValue(const std::string &property, CVariant &result)
 {
   if (property == "currentwindow")
