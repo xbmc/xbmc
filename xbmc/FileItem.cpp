@@ -915,17 +915,6 @@ bool CFileItem::IsPVRTimer() const
   return HasPVRTimerInfoTag();
 }
 
-bool CFileItem::IsDiscStub() const
-{
-  if (IsVideoDb() && HasVideoInfoTag())
-  {
-    CFileItem dbItem(m_bIsFolder ? GetVideoInfoTag()->m_strPath : GetVideoInfoTag()->m_strFileNameAndPath, m_bIsFolder);
-    return dbItem.IsDiscStub();
-  }
-
-  return URIUtils::HasExtension(m_strPath, CServiceBroker::GetFileExtensionProvider().GetDiscStubExtensions());
-}
-
 bool CFileItem::IsAudio() const
 {
   /* check preset mime type */

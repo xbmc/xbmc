@@ -13,9 +13,24 @@
 #include "utils/FileExtensionProvider.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "video/VideoInfoTag.h"
 
 namespace KODI::VIDEO
 {
+
+bool IsDiscStub(const CFileItem& item)
+{
+  if (item.IsVideoDb() && item.HasVideoInfoTag())
+  {
+    CFileItem dbItem(item.m_bIsFolder ? item.GetVideoInfoTag()->m_strPath
+                                      : item.GetVideoInfoTag()->m_strFileNameAndPath,
+                     item.m_bIsFolder);
+    return IsDiscStub(dbItem);
+  }
+
+  return URIUtils::HasExtension(item.GetPath(),
+                                CServiceBroker::GetFileExtensionProvider().GetDiscStubExtensions());
+}
 
 bool IsVideo(const CFileItem& item)
 {

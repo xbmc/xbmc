@@ -13,6 +13,9 @@ class CFileItem;
 namespace KODI::VIDEO
 {
 
+//! \brief Check whether an item is a disc stub.
+bool IsDiscStub(const CFileItem& item);
+
 //! \brief Check whether an item is a video item.
 //! \details Note that this returns true for anything with a video info tag,
 //!          so that may include eg. folders.

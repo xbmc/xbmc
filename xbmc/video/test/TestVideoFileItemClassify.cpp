@@ -21,6 +21,47 @@
 
 using namespace KODI;
 
+struct StubDefinition
+{
+  StubDefinition(const std::string& path,
+                 bool res = true,
+                 const std::string& tagPath = "",
+                 bool isFolder = false)
+    : item(path, isFolder), result(res)
+  {
+    if (!tagPath.empty())
+    {
+      if (isFolder)
+        item.GetVideoInfoTag()->m_strPath = tagPath;
+      else
+        item.GetVideoInfoTag()->m_strFileNameAndPath = tagPath;
+    }
+  }
+
+  CFileItem item;
+  bool result;
+};
+
+class DiscStubTest : public testing::WithParamInterface<StubDefinition>, public testing::Test
+{
+};
+
+TEST_P(DiscStubTest, IsDiscStub)
+{
+  EXPECT_EQ(VIDEO::IsDiscStub(GetParam().item), GetParam().result);
+}
+
+const auto discstub_tests = std::array{
+    StubDefinition{"/home/user/test.disc"},
+    StubDefinition{"videodb://foo/bar", true, "/home/user/test.disc"},
+    StubDefinition{"videodb://foo/bar", false, "/home/user/test.disc", true},
+    StubDefinition{"/home/user/test.avi", false},
+};
+
+INSTANTIATE_TEST_SUITE_P(TestVideoFileItemClassify,
+                         DiscStubTest,
+                         testing::ValuesIn(discstub_tests));
+
 struct VideoClassifyTest
 {
   VideoClassifyTest(const std::string& path,
