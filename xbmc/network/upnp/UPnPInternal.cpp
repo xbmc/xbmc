@@ -211,7 +211,7 @@ NPT_String GetMimeType(const CFileItem& item, const PLT_HttpRequestContext* cont
       mime = "audio/" + ext;
     else if (item.IsPicture())
       mime = "image/" + ext;
-    else if (item.IsSubtitle())
+    else if (VIDEO::IsSubtitle(item))
       mime = "text/" + ext;
   }
 

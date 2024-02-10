@@ -1019,11 +1019,6 @@ bool CFileItem::IsLyrics() const
   return URIUtils::HasExtension(m_strPath, ".cdg|.lrc");
 }
 
-bool CFileItem::IsSubtitle() const
-{
-  return URIUtils::HasExtension(m_strPath, CServiceBroker::GetFileExtensionProvider().GetSubtitleExtensions());
-}
-
 bool CFileItem::IsCUESheet() const
 {
   return URIUtils::HasExtension(m_strPath, ".cue");

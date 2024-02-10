@@ -12,7 +12,9 @@
 #include "filesystem/IFile.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "video/VideoFileItemClassify.h"
 
+using namespace KODI;
 using namespace XFILE;
 
 CDVDInputStreamFile::CDVDInputStreamFile(const CFileItem& fileitem, unsigned int flags)
@@ -44,7 +46,7 @@ bool CDVDInputStreamFile::Open()
   unsigned int flags = m_flags;
 
   // If this file is audio and/or video (= not a subtitle) flag to caller
-  if (!m_item.IsSubtitle())
+  if (!VIDEO::IsSubtitle(m_item))
     flags |= READ_AUDIO_VIDEO;
 
   std::string content = m_item.GetMimeType();
