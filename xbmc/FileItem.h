@@ -192,7 +192,6 @@ public:
   bool IsISO9660() const;
   bool IsDVD() const;
   bool IsOnDVD() const;
-  bool IsOnLAN() const;
   bool IsHD() const;
   bool IsNfs() const;
   bool IsSmb() const;
