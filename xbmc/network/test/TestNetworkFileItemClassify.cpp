@@ -17,6 +17,21 @@
 
 using namespace KODI;
 
+namespace
+{
+
+struct SimpleDefinition
+{
+  SimpleDefinition(const std::string& path, bool folder, bool res) : item(path, folder), result(res)
+  {
+  }
+
+  CFileItem item;
+  bool result;
+};
+
+} // namespace
+
 struct InternetStreamDefinition
 {
   InternetStreamDefinition(const std::string& path, bool folder, bool strict, bool res)
@@ -174,4 +189,68 @@ TEST(TestNetworkWorkFileItemClassify, InternetStreamStacks)
   EXPECT_FALSE(NETWORK::IsInternetStream(CFileItem(stackPath, true), false));
   EXPECT_FALSE(NETWORK::IsInternetStream(CFileItem(stackPath, false), true));
   EXPECT_FALSE(NETWORK::IsInternetStream(CFileItem(stackPath, true), true));
+}
+
+class StreamedFilesystemTest : public testing::WithParamInterface<SimpleDefinition>,
+                               public testing::Test
+{
+};
+
+TEST_P(StreamedFilesystemTest, IsStreamedFilesystem)
+{
+  EXPECT_EQ(NETWORK::IsStreamedFilesystem(GetParam().item), GetParam().result);
+}
+
+const auto streamedfs_tests = std::array{
+    SimpleDefinition{"/home/user/test.disc", false, false},
+    SimpleDefinition{"/home/user/test.disc", true, false},
+    SimpleDefinition{"http://some.where/foo", false, true},
+    SimpleDefinition{"http://some.where/foo", true, true},
+    SimpleDefinition{"https://some.where/foo", false, true},
+    SimpleDefinition{"https://some.where/foo", true, true},
+    SimpleDefinition{"ftp://some.where/foo", false, true},
+    SimpleDefinition{"ftp://some.where/foo", true, true},
+    SimpleDefinition{"sftp://some.where/foo", false, true},
+    SimpleDefinition{"sftp://some.where/foo", true, true},
+    SimpleDefinition{"ssh://some.where/foo", false, true},
+    SimpleDefinition{"ssh://some.where/foo", true, true},
+    SimpleDefinition{"ssh://some.where/foo", true, true},
+};
+
+INSTANTIATE_TEST_SUITE_P(TestNetworkFileItemClassify,
+                         StreamedFilesystemTest,
+                         testing::ValuesIn(streamedfs_tests));
+
+TEST(TestNetworkWorkFileItemClassify, StreamedFilesystemStacks)
+{
+  std::string stackPath;
+  EXPECT_TRUE(XFILE::CStackDirectory::ConstructStackPath(
+      {"/home/foo/somthing.avi", "/home/bar/else.mkv"}, stackPath));
+  EXPECT_FALSE(NETWORK::IsStreamedFilesystem(CFileItem(stackPath, false)));
+  EXPECT_FALSE(NETWORK::IsStreamedFilesystem(CFileItem(stackPath, true)));
+
+  EXPECT_TRUE(XFILE::CStackDirectory::ConstructStackPath(
+      {"https://home/foo/somthing.avi", "https://home/bar/else.mkv"}, stackPath));
+  EXPECT_TRUE(NETWORK::IsStreamedFilesystem(CFileItem(stackPath, false)));
+  EXPECT_TRUE(NETWORK::IsStreamedFilesystem(CFileItem(stackPath, true)));
+
+  EXPECT_TRUE(XFILE::CStackDirectory::ConstructStackPath(
+      {"shout://home/foo/somthing.avi", "shout://home/bar/else.mkv"}, stackPath));
+  EXPECT_TRUE(NETWORK::IsStreamedFilesystem(CFileItem(stackPath, false)));
+  EXPECT_TRUE(NETWORK::IsStreamedFilesystem(CFileItem(stackPath, true)));
+
+  EXPECT_TRUE(XFILE::CStackDirectory::ConstructStackPath(
+      {"ftp://home/foo/somthing.avi", "ftp://home/bar/else.mkv"}, stackPath));
+  EXPECT_TRUE(NETWORK::IsStreamedFilesystem(CFileItem(stackPath, false)));
+  EXPECT_TRUE(NETWORK::IsStreamedFilesystem(CFileItem(stackPath, true)));
+
+  EXPECT_TRUE(XFILE::CStackDirectory::ConstructStackPath(
+      {"ftp://home/foo/somthing.avi", "/home/bar/else.mkv"}, stackPath));
+  EXPECT_TRUE(NETWORK::IsStreamedFilesystem(CFileItem(stackPath, false)));
+  EXPECT_TRUE(NETWORK::IsStreamedFilesystem(CFileItem(stackPath, true)));
+
+  EXPECT_TRUE(XFILE::CStackDirectory::ConstructStackPath(
+      {"/home/foo/somthing.avi", "ftp://home/bar/else.mkv"}, stackPath));
+  EXPECT_FALSE(NETWORK::IsStreamedFilesystem(CFileItem(stackPath, false)));
+  EXPECT_FALSE(NETWORK::IsStreamedFilesystem(CFileItem(stackPath, true)));
 }

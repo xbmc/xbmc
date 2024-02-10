@@ -25,4 +25,12 @@ bool IsInternetStream(const CFileItem& item, const bool bStrictCheck /* = false 
   return URIUtils::IsInternetStream(item.GetPath(), bStrictCheck);
 }
 
+bool IsStreamedFilesystem(const CFileItem& item)
+{
+  if (!item.GetDynPath().empty())
+    return URIUtils::IsStreamedFilesystem(item.GetDynPath());
+
+  return URIUtils::IsStreamedFilesystem(item.GetPath());
+}
+
 } // namespace KODI::NETWORK

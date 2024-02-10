@@ -172,7 +172,6 @@ public:
   bool IsDeleted() const;
 
   bool IsGame() const;
-  bool IsStreamedFilesystem() const;
   bool IsPlayList() const;
   bool IsSmartPlayList() const;
   bool IsLibraryFolder() const;
