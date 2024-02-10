@@ -426,8 +426,11 @@ bool CVideoPlay::Execute(const std::shared_ptr<CFileItem>& itemIn) const
 
 bool CVideoPlayUsing::IsVisible(const CFileItem& item) const
 {
-  if (item.HasVideoVersions())
-    return false; // display "Play version using..." if multiple versions are available.
+  if (item.HasVideoVersions() &&
+      !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_VIDEOLIBRARY_SHOWVIDEOVERSIONSASFOLDER) &&
+      !VIDEO::IsVideoAssetFile(item))
+    return false;
 
   if (item.IsLiveTV())
     return false;
