@@ -143,3 +143,11 @@ TEST(TestVideoFileItemClassify, IsSubtitle)
 
   EXPECT_FALSE(VIDEO::IsSubtitle(CFileItem("random.notasub", false)));
 }
+
+TEST(TestVideoFileItemClassify, IsVideoExtras)
+{
+  EXPECT_TRUE(VIDEO::IsVideoExtras(CFileItem("/home/foo/Extras/", true)));
+  EXPECT_TRUE(VIDEO::IsVideoExtras(CFileItem("/home/foo/extras/", true)));
+  EXPECT_FALSE(VIDEO::IsVideoExtras(CFileItem("/home/foo/Extraordinary/", true)));
+  EXPECT_FALSE(VIDEO::IsVideoExtras(CFileItem("/home/foo/Extras/abc.mkv", false)));
+}
