@@ -1718,21 +1718,11 @@
 					<left>135</left>
 					<top>50</top>
 					<right>20</right>
-					<height>35</height>
+					<height>65</height>
 					<font>font12</font>
 					<aligny>center</aligny>
 					<textcolor>grey</textcolor>
-					<label>$INFO[ListItem.Duration,$LOCALIZE[180]: ]</label>
-				</control>
-				<control type="label">
-					<left>135</left>
-					<top>85</top>
-					<right>20</right>
-					<height>30</height>
-					<font>font12</font>
-					<aligny>center</aligny>
-					<textcolor>grey</textcolor>					
-					<label>$VAR[VideoCodecVar,, ]$INFO[ListItem.VideoResolution,| , ]$VAR[VideoResolutionTypeVar,, ]$VAR[VideoHDRVar,| , ]$INFO[ListItem.VideoAspect,| ,:1 ]$VAR[AudioCodecVar,| , ]$VAR[AudioChannelsVar]</label>
+					<label>$VAR[MediaInfoListLabel2Var]</label>
 				</control>
 			</itemlayout>
 			<focusedlayout height="$PARAM[height]" width="$PARAM[width]">
@@ -1766,19 +1756,10 @@
 					<left>135</left>
 					<top>50</top>
 					<right>20</right>
-					<height>35</height>
+					<height>65</height>
 					<font>font12</font>
 					<aligny>center</aligny>
-					<label>$INFO[ListItem.Duration,$LOCALIZE[180]: ]</label>
-				</control>
-				<control type="label">
-					<left>135</left>
-					<top>85</top>
-					<right>20</right>
-					<height>30</height>
-					<font>font12</font>
-					<aligny>center</aligny>
-					<label>$VAR[VideoCodecVar,, ]$INFO[ListItem.VideoResolution,| , ]$VAR[VideoResolutionTypeVar,, ]$VAR[VideoHDRVar,| , ]$INFO[ListItem.VideoAspect,| ,:1 ]$VAR[AudioCodecVar,| , ]$VAR[AudioChannelsVar]</label>
+					<label>$VAR[MediaInfoListLabel2Var]</label>
 				</control>
 			</focusedlayout>
 		</definition>

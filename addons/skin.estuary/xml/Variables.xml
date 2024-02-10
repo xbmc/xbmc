@@ -80,6 +80,7 @@
 		<value>$INFO[ListItem.Icon]</value>
 	</variable>
 	<variable name="ListLabelVar">
+		<value condition="ListItem.HasVideoVersions + Window.IsActive(videoplaylist)">$INFO[ListItem.Label]$INFO[ListItem.VideoVersionName, [I](,)[/I]]</value>
 		<value condition="String.IsEqual(ListItem.DbType,episode) + Window.IsActive(videoplaylist)">$INFO[ListItem.TVShowtitle,,: ]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode,,. ]$INFO[ListItem.Title]</value>
 		<value condition="String.IsEqual(ListItem.DbType,musicvideo) + Window.IsActive(videoplaylist)">$INFO[ListItem.Artist,, - ]$INFO[ListItem.Title]</value>
 		<value condition="[!String.IsEmpty(ListItem.Season) | !String.IsEmpty(ListItem.Episode) | !String.IsEmpty(ListItem.EpisodeName)] + Window.IsActive(videoplaylist)">$INFO[ListItem.Title,,: ]$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName]</value>
@@ -792,5 +793,9 @@
 	<variable name="MediaInfoListLabelVar">
 		<value condition="Window.IsActive(selectvideoversion)">$INFO[ListItem.VideoVersionName]</value>
 		<value>$INFO[ListItem.Label]</value>
+	</variable>
+	<variable name="MediaInfoListLabel2Var">
+		<value condition="ListItem.IsStereoscopic">$INFO[ListItem.Duration,$LOCALIZE[180]: ][CR]$VAR[VideoCodecVar,, ]$INFO[ListItem.VideoResolution,| , ]$VAR[VideoResolutionTypeVar,, ]$VAR[VideoHDRVar,| , ]| 3D $INFO[ListItem.VideoAspect,| ,:1 ]$VAR[AudioCodecVar,| , ]$VAR[AudioChannelsVar]</value>
+		<value>$INFO[ListItem.Duration,$LOCALIZE[180]: ][CR]$VAR[VideoCodecVar,, ]$INFO[ListItem.VideoResolution,| , ]$VAR[VideoResolutionTypeVar,, ]$VAR[VideoHDRVar,| , ]$INFO[ListItem.VideoAspect,| ,:1 ]$VAR[AudioCodecVar,| , ]$VAR[AudioChannelsVar]</value>
 	</variable>
 </includes>
