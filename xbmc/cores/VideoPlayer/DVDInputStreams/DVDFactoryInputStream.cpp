@@ -9,6 +9,7 @@
 #include "DVDFactoryInputStream.h"
 
 #include "DVDInputStream.h"
+#include "network/NetworkFileItemClassify.h"
 #ifdef HAVE_LIBBLURAY
 #include "DVDInputStreamBluray.h"
 #endif
@@ -139,7 +140,7 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
 
   CFileItem finalFileitem(fileitem);
 
-  if (finalFileitem.IsInternetStream())
+  if (NETWORK::IsInternetStream(finalFileitem))
   {
     if (finalFileitem.ContentLookup())
     {

@@ -37,6 +37,7 @@
 #include "input/actions/ActionIDs.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
+#include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayList.h"
 #include "playlists/PlayListFactory.h"
 #include "profiles/ProfileManager.h"
@@ -1231,8 +1232,9 @@ bool CGUIWindowVideoBase::GetDirectory(const std::string &strDirectory, CFileIte
 bool CGUIWindowVideoBase::StackingAvailable(const CFileItemList &items)
 {
   CURL url(items.GetPath());
-  return !(items.IsPlugin() || items.IsAddonsPath() || items.IsRSS() || items.IsInternetStream() ||
-           VIDEO::IsVideoDb(items) || url.IsProtocol("playlistvideo"));
+  return !(items.IsPlugin() || items.IsAddonsPath() || items.IsRSS() ||
+           NETWORK::IsInternetStream(items) || VIDEO::IsVideoDb(items) ||
+           url.IsProtocol("playlistvideo"));
 }
 
 void CGUIWindowVideoBase::GetGroupedItems(CFileItemList &items)

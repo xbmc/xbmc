@@ -24,6 +24,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "music/MusicFileItemClassify.h"
+#include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayList.h"
 #include "playlists/PlayListFactory.h"
 #include "profiles/ProfileManager.h"
@@ -295,7 +296,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
     // just queue the playlist, it will be expanded on play
     m_queuedItems.Add(item);
   }
-  else if (item->IsInternetStream())
+  else if (NETWORK::IsInternetStream(*item))
   {
     // just queue the internet stream, it will be expanded on play
     m_queuedItems.Add(item);
