@@ -73,6 +73,7 @@ void CServicesSettings::SettingOptionsReadFactorsFiller(const SettingConstPtr& s
                                                         int& current,
                                                         void* data)
 {
+  list.emplace_back(g_localizeStrings.Get(37116), 0);
   list.emplace_back("1.1x", 110);
   list.emplace_back("1.25x", 125);
   list.emplace_back("1.5x", 150);

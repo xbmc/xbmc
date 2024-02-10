@@ -22290,7 +22290,7 @@ msgstr ""
 #. Description of setting #37107 "Read Factor"
 #: system/settings/settings.xml
 msgctxt "#37108"
-msgid "The read factor determines cache fill rate in terms of avg. bitrate of stream x Read Factor. Increasing this multiple, cache fills faster but more bandwidth is consumed. Large multiples may cause CPU spikes on some devices, saturate the connection and worsen performance."
+msgid "Determines cache fill rate in terms of avg. bitrate of stream x Read Factor. Increasing this multiple, cache fills faster. Large multiples may cause CPU spikes on some devices, saturate the connection and worsen performance.[CR][Adaptative] Uses dynamically calculated Read Factor based on cache level."
 msgstr ""
 
 #. Description of setting "Chunk Size"
@@ -22329,13 +22329,19 @@ msgctxt "#37114"
 msgid "Buffer all filesystems, including local files"
 msgstr ""
 
-#. Value of setting
+#. Value of setting #37105 "Memory Size"
 #: xbmc/settings/SevicesSettings.cpp
 msgctxt "#37115"
 msgid "Caches entire file on disk storage"
 msgstr ""
 
-#empty strings from id 37116 to 37119
+#. Value of setting #37107 "Read Factor"
+#: xbmc/settings/SevicesSettings.cpp
+msgctxt "#37116"
+msgid "Adaptative"
+msgstr ""
+
+#empty strings from id 37117 to 37119
 
 #. Value of setting - Byte
 #: xbmc/settings/SevicesSettings.cpp
