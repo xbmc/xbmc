@@ -58,7 +58,6 @@ using namespace XFILE;
 using namespace MUSICDATABASEDIRECTORY;
 using namespace KODI;
 using namespace KODI::MESSAGING;
-using namespace KODI::VIDEO;
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -392,7 +391,7 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
   }
 
   // update our content in the info manager
-  if (StringUtils::StartsWithNoCase(strDirectory, "videodb://") || IsVideoDb(items))
+  if (StringUtils::StartsWithNoCase(strDirectory, "videodb://") || VIDEO::IsVideoDb(items))
   {
     CVideoDatabaseDirectory dir;
     VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(items.GetPath());
@@ -481,8 +480,8 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
     items.SetContent("plugins");
   else if (items.IsAddonsPath())
     items.SetContent("addons");
-  else if (!items.IsSourcesPath() && !items.IsVirtualDirectoryRoot() &&
-           !items.IsLibraryFolder() && !items.IsPlugin() && !items.IsSmartPlayList())
+  else if (!items.IsSourcesPath() && !items.IsVirtualDirectoryRoot() && !items.IsLibraryFolder() &&
+           !items.IsPlugin() && !PLAYLIST::IsSmartPlayList(items))
     items.SetContent("files");
 
   return bResult;
@@ -632,7 +631,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
 
       if (!item->IsParentFolder() && !dir.IsAllItem(item->GetPath()))
       {
-        if (item->m_bIsFolder && !IsVideoDb(*item) && !item->IsPlugin() &&
+        if (item->m_bIsFolder && !VIDEO::IsVideoDb(*item) && !item->IsPlugin() &&
             !StringUtils::StartsWithNoCase(item->GetPath(), "musicsearch://"))
         {
           if (item->IsAlbum())
@@ -689,7 +688,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
           }
         }
         if (inPlaylists && URIUtils::GetFileName(item->GetPath()) != "PartyMode.xsp" &&
-            (PLAYLIST::IsPlayList(*item) || item->IsSmartPlayList()))
+            (PLAYLIST::IsPlayList(*item) || PLAYLIST::IsSmartPlayList(*item)))
           buttons.Add(CONTEXT_BUTTON_DELETE, 117);
 
         if (!item->IsReadOnly() && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool("filelists.allowfiledeletion"))
@@ -726,7 +725,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   {
   case CONTEXT_BUTTON_INFO:
     {
-      if (!IsVideoDb(*item))
+      if (!VIDEO::IsVideoDb(*item))
         return CGUIWindowMusicBase::OnContextButton(itemNumber,button);
 
       // music videos - artists
@@ -815,7 +814,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
 
   case CONTEXT_BUTTON_RENAME:
-    if (!IsVideoDb(*item) && !item->IsReadOnly())
+    if (!VIDEO::IsVideoDb(*item) && !item->IsReadOnly())
       OnRenameItem(itemNumber);
 
     CGUIDialogVideoInfo::UpdateVideoItemTitle(item);
@@ -824,14 +823,14 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return true;
 
   case CONTEXT_BUTTON_DELETE:
-    if (PLAYLIST::IsPlayList(*item) || item->IsSmartPlayList())
+    if (PLAYLIST::IsPlayList(*item) || PLAYLIST::IsSmartPlayList(*item))
     {
       item->m_bIsFolder = false;
       CGUIComponent *gui = CServiceBroker::GetGUI();
       if (gui && gui->ConfirmDelete(item->GetPath()))
         CFileUtils::DeleteItem(item);
     }
-    else if (!IsVideoDb(*item))
+    else if (!VIDEO::IsVideoDb(*item))
       OnDeleteItem(itemNumber);
     else
     {

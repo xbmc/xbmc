@@ -979,9 +979,9 @@ bool CFileItem::IsFileFolder(EFileFolderType types) const
   if (IsType(".strm") && (types & EFILEFOLDER_TYPE_ONBROWSE))
     return false;
 
-  if(types & always_type)
+  if (types & always_type)
   {
-    if (IsSmartPlayList() ||
+    if (PLAYLIST::IsSmartPlayList(*this) ||
         (PLAYLIST::IsPlayList(*this) &&
          CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_playlistAsFolders) ||
         IsAPK() || IsZIP() || IsRAR() || IsRSS() || MUSIC::IsAudioBook(*this) ||
@@ -1007,14 +1007,6 @@ bool CFileItem::IsFileFolder(EFileFolderType types) const
   }
 
   return false;
-}
-
-bool CFileItem::IsSmartPlayList() const
-{
-  if (HasProperty("library.smartplaylist") && GetProperty("library.smartplaylist").asBoolean())
-    return true;
-
-  return URIUtils::HasExtension(m_strPath, ".xsp");
 }
 
 bool CFileItem::IsLibraryFolder() const
@@ -1280,7 +1272,7 @@ void CFileItem::FillInDefaultIcon()
         // picture
         SetArt("icon", "DefaultPicture.png");
       }
-      else if (PLAYLIST::IsPlayList(*this) || IsSmartPlayList())
+      else if (PLAYLIST::IsPlayList(*this) || PLAYLIST::IsSmartPlayList(*this))
       {
         SetArt("icon", "DefaultPlaylist.png");
       }
@@ -1300,7 +1292,7 @@ void CFileItem::FillInDefaultIcon()
     }
     else
     {
-      if (PLAYLIST::IsPlayList(*this) || IsSmartPlayList())
+      if (PLAYLIST::IsPlayList(*this) || PLAYLIST::IsSmartPlayList(*this))
       {
         SetArt("icon", "DefaultPlaylist.png");
       }

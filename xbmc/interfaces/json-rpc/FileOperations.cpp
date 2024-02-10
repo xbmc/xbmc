@@ -380,7 +380,7 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
       {
         // Sort folders and files by filename to avoid reverse item order bug on some platforms,
         // but leave items from a playlist, smartplaylist or upnp container in order supplied
-        if (!PLAYLIST::IsPlayList(items) && !items.IsSmartPlayList() &&
+        if (!PLAYLIST::IsPlayList(items) && !PLAYLIST::IsSmartPlayList(items) &&
             !URIUtils::IsUPnP(items.GetPath()))
           items.Sort(SortByFile, SortOrderAscending);
 

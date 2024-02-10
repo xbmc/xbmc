@@ -1089,7 +1089,7 @@ std::string CFileItemList::GetDiscFileCache(int windowID) const
   if (VIDEO::IsVideoDb(*this))
     return StringUtils::Format("special://temp/archive_cache/vdb-{:08x}.fi", crc);
 
-  if (IsSmartPlayList())
+  if (PLAYLIST::IsSmartPlayList(*this))
     return StringUtils::Format("special://temp/archive_cache/sp-{:08x}.fi", crc);
 
   if (windowID)

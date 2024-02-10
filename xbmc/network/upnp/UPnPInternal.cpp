@@ -716,7 +716,7 @@ PLT_MediaObject* BuildObject(CFileItem& item,
           break;
       }
     }
-    else if (PLAYLIST::IsPlayList(item) || item.IsSmartPlayList())
+    else if (PLAYLIST::IsPlayList(item) || PLAYLIST::IsSmartPlayList(item))
     {
       container->m_ObjectClass.type += ".playlistContainer";
     }

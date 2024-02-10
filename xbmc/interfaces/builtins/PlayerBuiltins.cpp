@@ -626,7 +626,8 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
 
   if (forcePlay)
   {
-    if ((MUSIC::IsAudio(item) || VIDEO::IsVideo(item)) && !item.IsSmartPlayList() && !item.IsPVR())
+    if ((MUSIC::IsAudio(item) || VIDEO::IsVideo(item)) && !PLAYLIST::IsSmartPlayList(item) &&
+        !item.IsPVR())
     {
       if (!item.HasProperty("playlist_type_hint"))
         item.SetProperty("playlist_type_hint", static_cast<int>(GetPlayListId(item)));

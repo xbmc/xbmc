@@ -834,14 +834,14 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
                  CSettings::SETTING_FILELISTS_ALLOWFILEDELETION) &&
              CUtil::SupportsWriteFileOperations(item->GetPath())) ||
             (inPlaylists && URIUtils::GetFileName(item->GetPath()) != "PartyMode-Video.xsp" &&
-             (PLAYLIST::IsPlayList(*item) || item->IsSmartPlayList())))
+             (PLAYLIST::IsPlayList(*item) || PLAYLIST::IsSmartPlayList(*item))))
         {
           buttons.Add(CONTEXT_BUTTON_DELETE, 117);
           buttons.Add(CONTEXT_BUTTON_RENAME, 118);
         }
         // add "Set/Change content" to folders
         if (item->m_bIsFolder && !VIDEO::IsVideoDb(*item) && !PLAYLIST::IsPlayList(*item) &&
-            !item->IsSmartPlayList() && !item->IsLibraryFolder() && !item->IsLiveTV() &&
+            !PLAYLIST::IsSmartPlayList(*item) && !item->IsLibraryFolder() && !item->IsLiveTV() &&
             !item->IsPlugin() && !item->IsAddonsPath() && !URIUtils::IsUPnP(item->GetPath()))
         {
           if (info && info->Content() != CONTENT_NONE)
@@ -1089,7 +1089,7 @@ bool CGUIWindowVideoNav::ApplyWatchedFilter(CFileItemList &items)
   if (!VIDEO::IsVideoDb(items))
     filterWatched = true;
   if (items.GetContent() == "tvshows" &&
-     (items.IsSmartPlayList() || items.IsLibraryFolder()))
+      (PLAYLIST::IsSmartPlayList(items) || items.IsLibraryFolder()))
     node = NODE_TYPE_TITLE_TVSHOWS; // so that the check below works
 
   int watchMode = CMediaSettings::GetInstance().GetWatchedMode(m_vecItems->GetContent());

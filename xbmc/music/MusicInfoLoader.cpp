@@ -151,7 +151,7 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
 bool CMusicInfoLoader::LoadItemCached(CFileItem* pItem)
 {
   if ((pItem->m_bIsFolder && !MUSIC::IsAudio(*pItem)) || PLAYLIST::IsPlayList(*pItem) ||
-      pItem->IsSmartPlayList() ||
+      PLAYLIST::IsSmartPlayList(*pItem) ||
       StringUtils::StartsWithNoCase(pItem->GetPath(), "newplaylist://") ||
       StringUtils::StartsWithNoCase(pItem->GetPath(), "newsmartplaylist://") || pItem->IsNFO() ||
       (NETWORK::IsInternetStream(*pItem) && !MUSIC::IsMusicDb(*pItem)))
@@ -169,7 +169,7 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
     m_pProgressCallback->SetProgressAdvance();
 
   if ((pItem->m_bIsFolder && !MUSIC::IsAudio(*pItem)) || //
-      PLAYLIST::IsPlayList(*pItem) || pItem->IsSmartPlayList() || //
+      PLAYLIST::IsPlayList(*pItem) || PLAYLIST::IsSmartPlayList(*pItem) || //
       StringUtils::StartsWithNoCase(pItem->GetPath(), "newplaylist://") || //
       StringUtils::StartsWithNoCase(pItem->GetPath(), "newsmartplaylist://") || //
       pItem->IsNFO() || (NETWORK::IsInternetStream(*pItem) && !MUSIC::IsMusicDb(*pItem)))

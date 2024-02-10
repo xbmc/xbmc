@@ -796,7 +796,7 @@ void QueueItem(const std::shared_ptr<CFileItem>& itemIn, QueuePosition pos)
     playlistId = PLAYLIST::Id::TYPE_MUSIC;
 
   // Check for the partymode playlist item, do nothing when "PartyMode.xsp" not exists
-  if (item->IsSmartPlayList() && !CFileUtils::Exists(item->GetPath()))
+  if (PLAYLIST::IsSmartPlayList(*item) && !CFileUtils::Exists(item->GetPath()))
   {
     const auto profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
     if (item->GetPath() == profileManager->GetUserDataItem("PartyMode.xsp"))
@@ -864,7 +864,7 @@ namespace
 {
 bool IsNonExistingUserPartyModePlaylist(const CFileItem& item)
 {
-  if (!item.IsSmartPlayList())
+  if (!PLAYLIST::IsSmartPlayList(item))
     return false;
 
   const std::string& path{item.GetPath()};

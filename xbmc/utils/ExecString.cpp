@@ -107,7 +107,7 @@ bool CExecString::Parse(const CFileItem& item, const std::string& contextWindow)
   }
   else if (item.m_bIsFolder &&
            (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_playlistAsFolders ||
-            !(item.IsSmartPlayList() || PLAYLIST::IsPlayList(item))))
+            !(PLAYLIST::IsSmartPlayList(item) || PLAYLIST::IsPlayList(item))))
   {
     if (!contextWindow.empty())
       Build("ActivateWindow", {contextWindow, StringUtils::Paramify(item.GetPath()), "return"});

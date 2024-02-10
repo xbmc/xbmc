@@ -61,3 +61,16 @@ const auto playlist_tests = std::array{
 INSTANTIATE_TEST_SUITE_P(TestPlayListFileItemClassify,
                          PlayListTest,
                          testing::ValuesIn(playlist_tests));
+
+TEST(TestPlayListFileItemClassify, IsSmartPlayList)
+{
+  CFileItem item("/some/where.avi", false);
+  EXPECT_FALSE(PLAYLIST::IsSmartPlayList(item));
+  item.SetProperty("library.smartplaylist", true);
+  EXPECT_TRUE(PLAYLIST::IsSmartPlayList(item));
+
+  CFileItem item2("/some/where.xsp", false);
+  EXPECT_TRUE(PLAYLIST::IsSmartPlayList(item2));
+  CFileItem item3("/some/where.xsp", true);
+  EXPECT_TRUE(PLAYLIST::IsSmartPlayList(item3));
+}
