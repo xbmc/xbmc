@@ -85,6 +85,7 @@ void CGUIEditControl::DefaultConstructor()
   m_smsLastKey = 0;
   m_smsKeyIndex = 0;
   m_label2.GetLabelInfo().offsetX = 0;
+  m_label2.SetReversedTruncate(true); // Truncate the text by default on the left
   m_isMD5 = false;
   m_invalidInput = false;
   m_inputValidator = NULL;
@@ -93,8 +94,12 @@ void CGUIEditControl::DefaultConstructor()
   m_editOffset = 0;
 }
 
-CGUIEditControl::CGUIEditControl(const CGUIButtonControl &button)
-    : CGUIButtonControl(button)
+CGUIEditControl::CGUIEditControl(const CGUIButtonControl& button) : CGUIButtonControl(button)
+{
+  DefaultConstructor();
+}
+
+CGUIEditControl::CGUIEditControl(const CGUIEditControl& button) : CGUIButtonControl(button)
 {
   DefaultConstructor();
 }
