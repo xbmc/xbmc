@@ -1220,11 +1220,6 @@ bool CFileItem::IsHD() const
   return URIUtils::IsHD(m_strPath);
 }
 
-bool CFileItem::IsMusicDb() const
-{
-  return URIUtils::IsMusicDb(m_strPath);
-}
-
 bool CFileItem::IsVirtualDirectoryRoot() const
 {
   return (m_bIsFolder && m_strPath.empty());
@@ -1525,7 +1520,7 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
       }
     }
   }
-  if (IsMusicDb() && HasMusicInfoTag())
+  if (MUSIC::IsMusicDb(*this) && HasMusicInfoTag())
   {
     CFileItem dbItem(m_musicInfoTag->GetURL(), false);
     if (HasProperty("item_start"))
@@ -1539,7 +1534,7 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
       dbItem.SetProperty("item_start", GetProperty("item_start"));
     return dbItem.IsSamePath(item);
   }
-  if (item->IsMusicDb() && item->HasMusicInfoTag())
+  if (MUSIC::IsMusicDb(*item) && item->HasMusicInfoTag())
   {
     CFileItem dbItem(item->m_musicInfoTag->GetURL(), false);
     if (item->HasProperty("item_start"))
@@ -1998,18 +1993,13 @@ bool CFileItem::LoadTracksFromCueDocument(CFileItemList& scannedItems)
 
 std::string CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */, bool fallbackToFolder /* = false */) const
 {
-  if (m_strPath.empty()
-   || StringUtils::StartsWithNoCase(m_strPath, "newsmartplaylist://")
-   || StringUtils::StartsWithNoCase(m_strPath, "newplaylist://")
-   || m_bIsShareOrDrive
-   || IsInternetStream()
-   || URIUtils::IsUPnP(m_strPath)
-   || (URIUtils::IsFTP(m_strPath) && !CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bFTPThumbs)
-   || IsPlugin()
-   || IsAddonsPath()
-   || IsLibraryFolder()
-   || IsParentFolder()
-   || IsMusicDb())
+  if (m_strPath.empty() || StringUtils::StartsWithNoCase(m_strPath, "newsmartplaylist://") ||
+      StringUtils::StartsWithNoCase(m_strPath, "newplaylist://") || m_bIsShareOrDrive ||
+      IsInternetStream() || URIUtils::IsUPnP(m_strPath) ||
+      (URIUtils::IsFTP(m_strPath) &&
+       !CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bFTPThumbs) ||
+      IsPlugin() || IsAddonsPath() || IsLibraryFolder() || IsParentFolder() ||
+      MUSIC::IsMusicDb(*this))
     return "";
 
   // we first check for <filename>.tbn or <foldername>.tbn
@@ -2631,7 +2621,7 @@ bool CFileItem::LoadDetails()
     return LoadMusicTag();
   }
 
-  if (IsMusicDb())
+  if (MUSIC::IsMusicDb(*this))
   {
     if (HasMusicInfoTag())
       return true;

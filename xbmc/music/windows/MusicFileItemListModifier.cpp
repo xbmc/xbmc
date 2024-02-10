@@ -14,17 +14,19 @@
 #include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
 #include "guilib/LocalizeStrings.h"
 #include "music/MusicDbUrl.h"
+#include "music/MusicFileItemClassify.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 
 #include <memory>
 
+using namespace KODI;
 using namespace XFILE::MUSICDATABASEDIRECTORY;
 
 bool CMusicFileItemListModifier::CanModify(const CFileItemList &items) const
 {
-  if (items.IsMusicDb())
+  if (MUSIC::IsMusicDb(items))
     return true;
 
   return false;
@@ -40,7 +42,7 @@ bool CMusicFileItemListModifier::Modify(CFileItemList &items) const
 //  depending on the child node
 void CMusicFileItemListModifier::AddQueuingFolder(CFileItemList& items)
 {
-  if (!items.IsMusicDb())
+  if (!MUSIC::IsMusicDb(items))
     return;
 
   auto directoryNode = CDirectoryNode::ParseURL(items.GetPath());

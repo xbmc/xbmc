@@ -50,7 +50,7 @@ bool CMusicGUIInfo::InitCurrentItem(CFileItem *item)
     tag->SetLoaded(true);
 
     // find a thumb for this file.
-    if (item->IsInternetStream() && !item->IsMusicDb())
+    if (item->IsInternetStream() && !MUSIC::IsMusicDb(*item))
     {
       if (!g_application.m_strPlayListFile.empty())
       {
@@ -358,7 +358,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         return true;
       case LISTITEM_FILENAME:
       case LISTITEM_FILE_EXTENSION:
-        if (item->IsMusicDb())
+        if (MUSIC::IsMusicDb(*item))
           value = URIUtils::GetFileName(tag->GetURL());
         else if (item->HasVideoInfoTag()) // special handling for music videos, which have both a videotag and a musictag
           break;
@@ -373,7 +373,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         return true;
       case LISTITEM_FOLDERNAME:
       case LISTITEM_PATH:
-        if (item->IsMusicDb())
+        if (MUSIC::IsMusicDb(*item))
           value = URIUtils::GetDirectory(tag->GetURL());
         else if (item->HasVideoInfoTag()) // special handling for music videos, which have both a videotag and a musictag
           break;
@@ -389,7 +389,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         }
         return true;
       case LISTITEM_FILENAME_AND_PATH:
-        if (item->IsMusicDb())
+        if (MUSIC::IsMusicDb(*item))
           value = tag->GetURL();
         else if (item->HasVideoInfoTag()) // special handling for music videos, which have both a videotag and a musictag
           break;

@@ -508,7 +508,7 @@ void CPlayList::UpdateItem(const CFileItem *item)
 
 const std::string& CPlayList::ResolveURL(const std::shared_ptr<CFileItem>& item) const
 {
-  if (item->IsMusicDb() && item->HasMusicInfoTag())
+  if (MUSIC::IsMusicDb(*item) && item->HasMusicInfoTag())
     return item->GetMusicInfoTag()->GetURL();
   else
     return item->GetDynPath();

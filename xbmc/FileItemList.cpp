@@ -1079,7 +1079,7 @@ std::string CFileItemList::GetDiscFileCache(int windowID) const
   if (MUSIC::IsCDDA(*this) || IsOnDVD())
     return StringUtils::Format("special://temp/archive_cache/r-{:08x}.fi", crc);
 
-  if (IsMusicDb())
+  if (MUSIC::IsMusicDb(*this))
     return StringUtils::Format("special://temp/archive_cache/mdb-{:08x}.fi", crc);
 
   if (VIDEO::IsVideoDb(*this))
@@ -1097,7 +1097,7 @@ std::string CFileItemList::GetDiscFileCache(int windowID) const
 bool CFileItemList::AlwaysCache() const
 {
   // some database folders are always cached
-  if (IsMusicDb())
+  if (MUSIC::IsMusicDb(*this))
     return CMusicDatabaseDirectory::CanCache(GetPath());
   if (VIDEO::IsVideoDb(*this))
     return CVideoDatabaseDirectory::CanCache(GetPath());

@@ -31,6 +31,7 @@
 #include "interfaces/builtins/Builtins.h"
 #include "messaging/ApplicationMessenger.h"
 #include "music/MusicDatabase.h"
+#include "music/MusicFileItemClassify.h"
 #include "pictures/SlideShowDelegator.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
@@ -56,6 +57,7 @@
 #include <map>
 #include <tuple>
 
+using namespace KODI;
 using namespace JSONRPC;
 using namespace PVR;
 
@@ -269,7 +271,7 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const std::string &method, ITransportL
           }
         }
 
-        if (fileItem->IsMusicDb())
+        if (MUSIC::IsMusicDb(*fileItem))
         {
           CMusicDatabase musicdb;
           CFileItemList items;

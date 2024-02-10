@@ -30,5 +30,7 @@ bool IsCUESheet(const CFileItem& item);
 //! \brief Check whether an item is a lyrics file.
 bool IsLyrics(const CFileItem& item);
 
+//! \brief Check whether an item is a music database item.
+bool IsMusicDb(const CFileItem& item);
+
 } // namespace KODI::MUSIC
-}

@@ -152,7 +152,7 @@ bool CMusicInfoLoader::LoadItemCached(CFileItem* pItem)
       pItem->IsSmartPlayList() ||
       StringUtils::StartsWithNoCase(pItem->GetPath(), "newplaylist://") ||
       StringUtils::StartsWithNoCase(pItem->GetPath(), "newsmartplaylist://") || pItem->IsNFO() ||
-      (pItem->IsInternetStream() && !pItem->IsMusicDb()))
+      (pItem->IsInternetStream() && !MUSIC::IsMusicDb(*pItem)))
     return false;
 
   // Get thumb for item
@@ -170,7 +170,7 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
       pItem->IsPlayList() || pItem->IsSmartPlayList() || //
       StringUtils::StartsWithNoCase(pItem->GetPath(), "newplaylist://") || //
       StringUtils::StartsWithNoCase(pItem->GetPath(), "newsmartplaylist://") || //
-      pItem->IsNFO() || (pItem->IsInternetStream() && !pItem->IsMusicDb()))
+      pItem->IsNFO() || (pItem->IsInternetStream() && !MUSIC::IsMusicDb(*pItem)))
     return false;
 
   if ((!pItem->HasMusicInfoTag() || !pItem->GetMusicInfoTag()->Loaded()) && MUSIC::IsAudio(*pItem))
@@ -213,7 +213,7 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
         if (!it->second[0].strThumb.empty())
           pItem->SetArt("thumb", it->second[0].strThumb);
       }
-      else if (pItem->IsMusicDb())
+      else if (MUSIC::IsMusicDb(*pItem))
       { // a music db item that doesn't have tag loaded - grab details from the database
         XFILE::MUSICDATABASEDIRECTORY::CQueryParams param;
         XFILE::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(pItem->GetPath(),param);

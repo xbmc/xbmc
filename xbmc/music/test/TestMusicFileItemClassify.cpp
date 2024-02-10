@@ -171,3 +171,20 @@ const auto cdda_tests = std::array{
 };
 
 INSTANTIATE_TEST_SUITE_P(TestMusicFileItemClassify, CDDATest, testing::ValuesIn(cdda_tests));
+
+class MusicDbTest : public testing::WithParamInterface<SimpleDefinition>, public testing::Test
+{
+};
+
+TEST_P(MusicDbTest, IsMusicDb)
+{
+  EXPECT_EQ(MUSIC::IsMusicDb(CFileItem(GetParam().path, GetParam().folder)), GetParam().result);
+}
+
+const auto musicdb_tests = std::array{
+    SimpleDefinition{"musicdb://1", false, true},
+    SimpleDefinition{"musicdb://1/", true, true},
+    SimpleDefinition{"/home/foo/musicdb/yo.mp3", false, false},
+};
+
+INSTANTIATE_TEST_SUITE_P(TestMusicFileItemClassify, MusicDbTest, testing::ValuesIn(musicdb_tests));

@@ -73,4 +73,9 @@ bool IsLyrics(const CFileItem& item)
   return URIUtils::HasExtension(item.GetPath(), ".cdg|.lrc");
 }
 
+bool IsMusicDb(const CFileItem& item)
+{
+  return URIUtils::IsMusicDb(item.GetPath());
+}
+
 } // namespace KODI::MUSIC
