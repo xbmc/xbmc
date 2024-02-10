@@ -29,6 +29,7 @@
 #include "media/MediaType.h"
 #include "music/MusicDatabase.h"
 #include "music/MusicDbUrl.h"
+#include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
 #include "playlists/PlayList.h"
 #include "playlists/PlayListFactory.h"
@@ -46,6 +47,7 @@
 
 #include <memory>
 
+using namespace KODI;
 using namespace KODI::VIDEO;
 using namespace MUSIC_INFO;
 using namespace XFILE;
@@ -609,7 +611,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
       // python files can be played
       m_queuedItems.Add(item);
     }
-    else if (!item->IsNFO() && (item->IsAudio() || IsVideo(*item)))
+    else if (!item->IsNFO() && (MUSIC::IsAudio(*item) || IsVideo(*item)))
     {
       const auto itemCheck = m_queuedItems.Get(item->GetPath());
       if (!itemCheck || itemCheck->GetStartOffset() != item->GetStartOffset())
@@ -929,7 +931,7 @@ bool IsItemPlayable(const CFileItem& item)
 
   if (item.HasMusicInfoTag() && item.CanQueue())
     return true;
-  else if (!item.m_bIsFolder && item.IsAudio())
+  else if (!item.m_bIsFolder && MUSIC::IsAudio(item))
     return true;
   else if (item.m_bIsFolder)
   {

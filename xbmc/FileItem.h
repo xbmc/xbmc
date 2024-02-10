@@ -164,13 +164,6 @@ public:
   bool IsPicture() const;
 
   /*!
-   \brief Check whether an item is an audio item. Note that this returns true for
-    anything with a music info tag, so that may include eg. folders.
-   \return true if item is audio, false otherwise.
-   */
-  bool IsAudio() const;
-
-  /*!
    \brief Check whether an item is 'deleted' (for example, a trashed pvr recording).
    \return true if item is 'deleted', false otherwise.
    */

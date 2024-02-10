@@ -25,6 +25,7 @@
 #include "interfaces/AnnouncementManager.h"
 #include "music/Artist.h"
 #include "music/MusicDatabase.h"
+#include "music/MusicFileItemClassify.h"
 #include "music/MusicLibraryQueue.h"
 #include "music/MusicThumbLoader.h"
 #include "music/tags/MusicInfoTag.h"
@@ -51,6 +52,7 @@
 NPT_SET_LOCAL_LOGGER("xbmc.upnp.server")
 
 using namespace ANNOUNCEMENT;
+using namespace KODI;
 using namespace KODI::VIDEO;
 using namespace XFILE;
 using KODI::UTILITY::CDigest;
@@ -451,7 +453,7 @@ PLT_MediaObject* CUPnPServer::Build(const std::shared_ptr<CFileItem>& item,
       item->m_bIsFolder = true;
     }
     // audio and not a playlist -> song, so it's not a folder
-    else if (item->IsAudio())
+    else if (MUSIC::IsAudio(*item))
     {
       item->m_bIsFolder = false;
     }

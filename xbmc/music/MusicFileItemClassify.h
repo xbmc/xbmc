@@ -13,6 +13,11 @@ class CFileItem;
 namespace KODI::MUSIC
 {
 
+//! \brief Check whether an item is an audio item.
+//! \details Note that this returns true for anything with a music info tag,
+//!          so that may include eg. folders.
+bool IsAudio(const CFileItem& item);
+
 //! \brief Check whether an item is an audio book item.
 bool IsAudioBook(const CFileItem& item);
 

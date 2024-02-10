@@ -640,7 +640,7 @@ void CFileItemList::FilterCueItems()
                 strMediaFile = pItem->GetPath();
                 URIUtils::RemoveExtension(strMediaFile);
                 CFileItem item(strMediaFile, false);
-                if (item.IsAudio() && Contains(strMediaFile))
+                if (MUSIC::IsAudio(item) && Contains(strMediaFile))
                 {
                   bFoundMediaFile = true;
                 }

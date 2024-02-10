@@ -24,6 +24,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
+#include "music/MusicFileItemClassify.h"
 #include "music/MusicUtils.h"
 #include "playlists/PlayList.h"
 #include "pvr/PVRManager.h"
@@ -50,6 +51,7 @@
 #include "Autorun.h"
 #endif
 
+using namespace KODI::MUSIC;
 using namespace KODI::VIDEO;
 
 /*! \brief Clear current playlist
@@ -440,7 +442,7 @@ PLAYLIST::Id GetPlayListId(const CFileItem& item)
   PLAYLIST::Id playlistId{PLAYLIST::TYPE_NONE};
   if (IsVideo(item))
     playlistId = PLAYLIST::TYPE_VIDEO;
-  else if (item.IsAudio())
+  else if (IsAudio(item))
     playlistId = PLAYLIST::TYPE_MUSIC;
 
   return playlistId;
@@ -619,7 +621,7 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
 
   if (forcePlay)
   {
-    if ((item.IsAudio() || IsVideo(item)) && !item.IsSmartPlayList() && !item.IsPVR())
+    if ((IsAudio(item) || IsVideo(item)) && !item.IsSmartPlayList() && !item.IsPVR())
     {
       if (!item.HasProperty("playlist_type_hint"))
         item.SetProperty("playlist_type_hint", GetPlayListId(item));

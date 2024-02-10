@@ -18,6 +18,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
+#include "music/MusicFileItemClassify.h"
 #include "music/MusicThumbLoader.h"
 #include "pictures/PictureThumbLoader.h"
 #include "pvr/PVRManager.h"
@@ -48,6 +49,7 @@
 
 using namespace XFILE;
 using namespace KODI::MESSAGING;
+using namespace KODI::MUSIC;
 using namespace KODI::VIDEO;
 using namespace PVR;
 
@@ -140,7 +142,7 @@ public:
       initThumbLoader<CVideoThumbLoader>(InfoTagType::VIDEO);
       return m_thumbloaders[InfoTagType::VIDEO];
     }
-    if (item->IsAudio())
+    if (IsAudio(*item))
     {
       initThumbLoader<CMusicThumbLoader>(InfoTagType::AUDIO);
       return m_thumbloaders[InfoTagType::AUDIO];

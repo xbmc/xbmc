@@ -7,13 +7,87 @@
  */
 
 #include "FileItem.h"
+#include "ServiceBroker.h"
+#include "games/tags/GameInfoTag.h"
 #include "music/MusicFileItemClassify.h"
+#include "music/tags/MusicInfoTag.h"
+#include "pictures/PictureInfoTag.h"
+#include "utils/FileExtensionProvider.h"
+#include "video/VideoInfoTag.h"
 
 #include <array>
 
 #include <gtest/gtest.h>
 
 using namespace KODI;
+
+struct AudioClassifyTest
+{
+  AudioClassifyTest(const std::string& path,
+                    bool res = true,
+                    const std::string& mime = "",
+                    int tag_type = 0)
+    : item(path, false), result(res)
+  {
+    if (!mime.empty())
+      item.SetMimeType(mime);
+    switch (tag_type)
+    {
+      case 1:
+        item.GetVideoInfoTag()->m_strFileNameAndPath = path;
+        break;
+      case 2:
+        item.GetGameInfoTag()->SetGameClient("some_client");
+        break;
+      case 3:
+        item.GetMusicInfoTag()->SetPlayCount(1);
+        break;
+      case 4:
+        item.GetPictureInfoTag()->SetInfo("foo", "bar");
+        break;
+      default:
+        break;
+    }
+  }
+
+  CFileItem item;
+  bool result;
+};
+
+class AudioTest : public testing::WithParamInterface<AudioClassifyTest>, public testing::Test
+{
+};
+
+TEST_P(AudioTest, IsAudio)
+{
+  EXPECT_EQ(MUSIC::IsAudio(GetParam().item), GetParam().result);
+}
+
+const auto audio_tests = std::array{
+    AudioClassifyTest{"/home/user/song.avi", true, "audio/mp3"},
+    AudioClassifyTest{"/home/user/song.avi", false, "", 1},
+    AudioClassifyTest{"/home/user/song.avi", false, "", 2},
+    AudioClassifyTest{"/home/user/song.avi", true, "", 3},
+    AudioClassifyTest{"/home/user/song.avi", false, "", 4},
+    AudioClassifyTest{"cdda://1"},
+    AudioClassifyTest{"/home/user/song.avi", true, "application/ogg"},
+    AudioClassifyTest{"/home/user/video.not", true, "application/mp4"},
+    AudioClassifyTest{"/home/user/video.not", true, "application/mxf"},
+};
+
+INSTANTIATE_TEST_SUITE_P(TestMusicFileItemClassify, AudioTest, testing::ValuesIn(audio_tests));
+
+TEST(TestMusicFileItemClassify, MusicExtensions)
+{
+  const auto& exts = CServiceBroker::GetFileExtensionProvider().GetMusicExtensions();
+  for (const auto& ext : StringUtils::Split(exts, "|"))
+  {
+    if (!ext.empty())
+    {
+      EXPECT_TRUE(MUSIC::IsAudio(CFileItem(ext, false)));
+    }
+  }
+}
 
 struct SimpleDefinition
 {

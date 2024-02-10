@@ -18,6 +18,7 @@
 #include "filesystem/File.h"
 #include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
 #include "filesystem/MusicDatabaseDirectory/QueryParams.h"
+#include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
 #include "music/tags/MusicInfoTagLoaderFactory.h"
 #include "settings/Settings.h"
@@ -27,8 +28,9 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
-using namespace XFILE;
+using namespace KODI;
 using namespace MUSIC_INFO;
+using namespace XFILE;
 
 // HACK until we make this threadable - specify 1 thread only for now
 CMusicInfoLoader::CMusicInfoLoader() : CBackgroundInfoLoader()
@@ -72,8 +74,8 @@ void CMusicInfoLoader::OnLoaderStart()
 
 bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
 {
-  if (!pItem || (pItem->m_bIsFolder && !pItem->IsAudio()) ||
-      pItem->IsPlayList() || pItem->IsNFO() || pItem->IsInternetStream())
+  if (!pItem || (pItem->m_bIsFolder && !MUSIC::IsAudio(*pItem)) || pItem->IsPlayList() ||
+      pItem->IsNFO() || pItem->IsInternetStream())
     return false;
 
   if (pItem->GetProperty("hasfullmusictag") == "true")
@@ -146,11 +148,11 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
 
 bool CMusicInfoLoader::LoadItemCached(CFileItem* pItem)
 {
-  if ((pItem->m_bIsFolder && !pItem->IsAudio()) ||
-      pItem->IsPlayList() || pItem->IsSmartPlayList() ||
+  if ((pItem->m_bIsFolder && !MUSIC::IsAudio(*pItem)) || pItem->IsPlayList() ||
+      pItem->IsSmartPlayList() ||
       StringUtils::StartsWithNoCase(pItem->GetPath(), "newplaylist://") ||
-      StringUtils::StartsWithNoCase(pItem->GetPath(), "newsmartplaylist://") ||
-      pItem->IsNFO() || (pItem->IsInternetStream() && !pItem->IsMusicDb()))
+      StringUtils::StartsWithNoCase(pItem->GetPath(), "newsmartplaylist://") || pItem->IsNFO() ||
+      (pItem->IsInternetStream() && !pItem->IsMusicDb()))
     return false;
 
   // Get thumb for item
@@ -164,14 +166,14 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
   if (m_pProgressCallback && !pItem->m_bIsFolder)
     m_pProgressCallback->SetProgressAdvance();
 
-  if ((pItem->m_bIsFolder && !pItem->IsAudio()) || //
+  if ((pItem->m_bIsFolder && !MUSIC::IsAudio(*pItem)) || //
       pItem->IsPlayList() || pItem->IsSmartPlayList() || //
       StringUtils::StartsWithNoCase(pItem->GetPath(), "newplaylist://") || //
       StringUtils::StartsWithNoCase(pItem->GetPath(), "newsmartplaylist://") || //
       pItem->IsNFO() || (pItem->IsInternetStream() && !pItem->IsMusicDb()))
     return false;
 
-  if ((!pItem->HasMusicInfoTag() || !pItem->GetMusicInfoTag()->Loaded()) && pItem->IsAudio())
+  if ((!pItem->HasMusicInfoTag() || !pItem->GetMusicInfoTag()->Loaded()) && MUSIC::IsAudio(*pItem))
   {
     // first check the cached item
     CFileItemPtr mapItem = (*m_mapFileItems)[pItem->GetPath()];
