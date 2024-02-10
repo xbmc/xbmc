@@ -1966,7 +1966,7 @@ namespace VIDEO
       if (!hasEpisodeGuide)
       {
         // fetch episode guide
-        if (!showInfo.m_strEpisodeGuide.empty())
+        if (!showInfo.m_strEpisodeGuide.empty() && scraper->ID() != "metadata.local")
         {
           CScraperUrl url;
           url.ParseAndAppendUrlsFromEpisodeGuide(showInfo.m_strEpisodeGuide);
@@ -1989,8 +1989,10 @@ namespace VIDEO
       {
         CLog::Log(LOGERROR,
                   "VideoInfoScanner: Asked to lookup episode {}"
-                  " online, but we have no episode guide. Check your tvshow.nfo and make"
-                  " sure the <episodeguide> tag is in place.",
+                  " online, but we have either no episode guide or"
+                  " we are using the local scraper. Check your tvshow.nfo and make"
+                  " sure the <episodeguide> tag is in place and/or use an online"
+                  " scraper.",
                   CURL::GetRedacted(file->strPath));
         continue;
       }
