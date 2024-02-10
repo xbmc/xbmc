@@ -2481,7 +2481,8 @@ namespace VIDEO
           CLog::Log(LOGDEBUG, "VideoInfoScanner: Added video extras {}",
                     CURL::GetRedacted(item->GetPath()));
         },
-        true, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(), DIR_FLAG_DEFAULTS);
+        [](auto) { return true; }, true,
+        CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(), DIR_FLAG_DEFAULTS);
 
     return true;
   }

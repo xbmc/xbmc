@@ -70,12 +70,25 @@ public:
                            , const CHints &hints);
 
   using DirectoryEnumerationCallback = std::function<void(const std::shared_ptr<CFileItem>& item)>;
+  using DirectoryFilter = std::function<bool(const std::shared_ptr<CFileItem>& folder)>;
 
-  static bool EnumerateDirectory(const std::string& path,
-                                 const DirectoryEnumerationCallback& callback,
-                                 bool fileOnly = false,
-                                 const std::string& mask = "",
-                                 int flags = DIR_FLAG_DEFAULTS);
+  /*!
+   * \brief Enumerates files and folders in and below a directory. Every applicable gets passed to the callback.
+   *
+   * \param path Directory to enumerate
+   * \param callback Files and folders matching the criteria are passed to this function
+   * \param filter Only folders are passed to this function. If it return false the folder and everything below it will skipped from the enumeration
+   * \param fileOnly If true only files are passed to \p callback. Doesn't affect \p filter
+   * \param mask Only files matching this mask are passed to \p callback
+   * \param flags See \ref DIR_FLAG enum
+   */
+  static bool EnumerateDirectory(
+      const std::string& path,
+      const DirectoryEnumerationCallback& callback,
+      const DirectoryFilter& filter = [](const std::shared_ptr<CFileItem>&) { return true; },
+      bool fileOnly = false,
+      const std::string& mask = "",
+      int flags = DIR_FLAG_DEFAULTS);
 
   static bool Create(const std::string& strPath);
   static bool Exists(const std::string& strPath, bool bUseCache = true);

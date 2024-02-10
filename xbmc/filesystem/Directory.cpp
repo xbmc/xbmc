@@ -305,11 +305,13 @@ bool CDirectory::GetDirectory(const CURL& url,
   return false;
 }
 
-bool CDirectory::EnumerateDirectory(const std::string& path,
-                                    const DirectoryEnumerationCallback& callback,
-                                    bool fileOnly /* = false */,
-                                    const std::string& mask /* = "" */,
-                                    int flags /* = DIR_FLAG_DEFAULTS */)
+bool CDirectory::EnumerateDirectory(
+    const std::string& path,
+    const DirectoryEnumerationCallback& callback,
+    const DirectoryFilter& filter /* = [](const std::shared_ptr<CFileItem>&) {return true;} */,
+    bool fileOnly /* = false */,
+    const std::string& mask /* = "" */,
+    int flags /* = DIR_FLAG_DEFAULTS */)
 {
   CFileItemList items;
 
@@ -327,12 +329,12 @@ bool CDirectory::EnumerateDirectory(const std::string& path,
   // process all directories
   for (const auto& item : items)
   {
-    if (item->m_bIsFolder)
+    if (item->m_bIsFolder && filter(item))
     {
       if (!fileOnly)
         callback(item);
 
-      if (!EnumerateDirectory(item->GetPath(), callback, fileOnly, mask, flags))
+      if (!EnumerateDirectory(item->GetPath(), callback, filter, fileOnly, mask, flags))
         return false;
     }
   }
