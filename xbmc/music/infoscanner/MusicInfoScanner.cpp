@@ -37,6 +37,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
+#include "music/MusicFileItemClassify.h"
 #include "music/MusicLibraryQueue.h"
 #include "music/MusicThumbLoader.h"
 #include "music/MusicUtils.h"
@@ -56,6 +57,7 @@
 #include <algorithm>
 #include <utility>
 
+using namespace KODI;
 using namespace MUSIC_INFO;
 using namespace XFILE;
 using namespace MUSICDATABASEDIRECTORY;
@@ -578,7 +580,7 @@ CInfoScanner::INFO_RET CMusicInfoScanner::ScanTags(const CFileItemList& items,
     if (CUtil::ExcludeFileOrFolder(pItem->GetPath(), regexps))
       continue;
 
-    if (pItem->m_bIsFolder || pItem->IsPlayList() || pItem->IsPicture() || pItem->IsLyrics())
+    if (pItem->m_bIsFolder || pItem->IsPlayList() || pItem->IsPicture() || MUSIC::IsLyrics(*pItem))
       continue;
 
     m_currentItem++;

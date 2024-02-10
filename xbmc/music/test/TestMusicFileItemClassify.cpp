@@ -40,3 +40,22 @@ const auto cuesheet_tests = std::array{
 INSTANTIATE_TEST_SUITE_P(TestMusicFileItemClassify,
                          CuesheetTest,
                          testing::ValuesIn(cuesheet_tests));
+
+class LyricsTest : public testing::WithParamInterface<SimpleDefinition>, public testing::Test
+{
+};
+
+TEST_P(LyricsTest, IsLyrics)
+{
+  EXPECT_EQ(MUSIC::IsLyrics(CFileItem(GetParam().path, GetParam().folder)), GetParam().result);
+}
+
+const auto lyrics_tests = std::array{
+    SimpleDefinition{"/home/user/test.lrc", false, true},
+    SimpleDefinition{"/home/user/test.cdg", false, true},
+    SimpleDefinition{"/home/user/test.not", false, false},
+    SimpleDefinition{"/home/user/test.lrc/", true, false},
+};
+
+INSTANTIATE_TEST_SUITE_P(TestMusicFileItemClassify, LyricsTest, testing::ValuesIn(lyrics_tests));
+>>>>>>> e56c3cc3f8 (move CFileItem::IsLyrics to MusicFileItemClassify)

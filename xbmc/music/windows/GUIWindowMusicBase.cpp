@@ -23,6 +23,7 @@
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
+#include "music/MusicFileItemClassify.h"
 #include "video/VideoFileItemClassify.h"
 #ifdef HAS_CDDA_RIPPER
 #include "cdrip/CDDARipper.h"
@@ -73,6 +74,7 @@ using namespace XFILE;
 using namespace MUSICDATABASEDIRECTORY;
 using namespace MUSIC_GRABBER;
 using namespace MUSIC_INFO;
+using namespace KODI;
 using namespace KODI::MESSAGING;
 using KODI::MESSAGING::HELPERS::DialogResponse;
 using namespace KODI::VIDEO;
@@ -351,8 +353,8 @@ void CGUIWindowMusicBase::RetrieveMusicInfo()
   for (int i = 0; i < m_vecItems->Size(); ++i)
   {
     CFileItemPtr pItem = (*m_vecItems)[i];
-    if (pItem->m_bIsFolder || pItem->IsPlayList() || pItem->IsPicture() || pItem->IsLyrics() ||
-        IsVideo(*pItem))
+    if (pItem->m_bIsFolder || pItem->IsPlayList() || pItem->IsPicture() ||
+        MUSIC::IsLyrics(*pItem) || IsVideo(*pItem))
       continue;
 
     CMusicInfoTag& tag = *pItem->GetMusicInfoTag();

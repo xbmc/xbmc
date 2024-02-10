@@ -162,7 +162,6 @@ public:
    \return true if item is picture, false otherwise.
    */
   bool IsPicture() const;
-  bool IsLyrics() const;
 
   /*!
    \brief Check whether an item is an audio item. Note that this returns true for

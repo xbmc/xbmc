@@ -1012,11 +1012,6 @@ bool CFileItem::IsPicture() const
   return false;
 }
 
-bool CFileItem::IsLyrics() const
-{
-  return URIUtils::HasExtension(m_strPath, ".cdg|.lrc");
-}
-
 bool CFileItem::IsInternetStream(const bool bStrictCheck /* = false */) const
 {
   if (HasProperty("IsHTTPDirectory"))

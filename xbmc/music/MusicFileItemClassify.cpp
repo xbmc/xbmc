@@ -19,4 +19,9 @@ bool IsCUESheet(const CFileItem& item)
   return URIUtils::HasExtension(item.GetPath(), ".cue");
 }
 
+bool IsLyrics(const CFileItem& item)
+{
+  return URIUtils::HasExtension(item.GetPath(), ".cdg|.lrc");
+}
+
 } // namespace KODI::MUSIC

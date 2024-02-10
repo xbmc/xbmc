@@ -16,4 +16,8 @@ namespace KODI::MUSIC
 //! \brief Check whether an item is a cue sheet.
 bool IsCUESheet(const CFileItem& item);
 
+//! \brief Check whether an item is a lyrics file.
+bool IsLyrics(const CFileItem& item);
+
 } // namespace KODI::MUSIC
+}
