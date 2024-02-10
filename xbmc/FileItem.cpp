@@ -29,6 +29,7 @@
 #include "music/Album.h"
 #include "music/Artist.h"
 #include "music/MusicDatabase.h"
+#include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
 #include "music/tags/MusicInfoTagLoaderFactory.h"
 #include "pictures/PictureInfoTag.h"
@@ -1014,11 +1015,6 @@ bool CFileItem::IsPicture() const
 bool CFileItem::IsLyrics() const
 {
   return URIUtils::HasExtension(m_strPath, ".cdg|.lrc");
-}
-
-bool CFileItem::IsCUESheet() const
-{
-  return URIUtils::HasExtension(m_strPath, ".cue");
 }
 
 bool CFileItem::IsInternetStream(const bool bStrictCheck /* = false */) const

@@ -16,6 +16,7 @@
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/StackDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
+#include "music/MusicFileItemClassify.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -609,7 +610,7 @@ void CFileItemList::FilterCueItems()
     CFileItemPtr pItem = m_items[i];
     if (!pItem->m_bIsFolder)
     { // see if it's a .CUE sheet
-      if (pItem->IsCUESheet())
+      if (MUSIC::IsCUESheet(*pItem))
       {
         CCueDocumentPtr cuesheet(new CCueDocument);
         if (cuesheet->ParseFile(pItem->GetPath()))
@@ -652,7 +653,7 @@ void CFileItemList::FilterCueItems()
                   {
                     strMediaFile = URIUtils::ReplaceExtension(pItem->GetPath(), *i);
                     CFileItem item(strMediaFile, false);
-                    if (!item.IsCUESheet() && !item.IsPlayList() && Contains(strMediaFile))
+                    if (!MUSIC::IsCUESheet(item) && !item.IsPlayList() && Contains(strMediaFile))
                     {
                       bFoundMediaFile = true;
                       break;

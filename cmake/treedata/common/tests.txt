@@ -8,6 +8,7 @@ xbmc/games/addons/input/test      test/games/addons/input
 xbmc/games/controllers/input/test test/games/controllers/input
 xbmc/input/keyboard/test          test/input/keyboard
 xbmc/interfaces/python/test       test/python
+xbmc/music/test                   test/music
 xbmc/music/tags/test              test/music_tags
 xbmc/network/test                 test/network
 xbmc/playlists/test               test/playlists
