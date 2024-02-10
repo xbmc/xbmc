@@ -36,6 +36,7 @@
 #include "pictures/PictureInfoTag.h"
 #include "playlists/PlayList.h"
 #include "playlists/PlayListFactory.h"
+#include "playlists/PlayListFileItemClassify.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupMember.h"
@@ -981,7 +982,7 @@ bool CFileItem::IsFileFolder(EFileFolderType types) const
   if(types & always_type)
   {
     if (IsSmartPlayList() ||
-        (IsPlayList() &&
+        (PLAYLIST::IsPlayList(*this) &&
          CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_playlistAsFolders) ||
         IsAPK() || IsZIP() || IsRAR() || IsRSS() || MUSIC::IsAudioBook(*this) ||
         IsType(".ogg|.oga|.xbt")
@@ -999,8 +1000,9 @@ bool CFileItem::IsFileFolder(EFileFolderType types) const
 
   if(types & EFILEFOLDER_TYPE_ONBROWSE)
   {
-    if((IsPlayList() && !CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_playlistAsFolders)
-    || IsDiscImage())
+    if ((PLAYLIST::IsPlayList(*this) &&
+         !CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_playlistAsFolders) ||
+        IsDiscImage())
       return true;
   }
 
@@ -1021,11 +1023,6 @@ bool CFileItem::IsLibraryFolder() const
     return true;
 
   return URIUtils::IsLibraryFolder(m_strPath);
-}
-
-bool CFileItem::IsPlayList() const
-{
-  return CPlayListFactory::IsPlaylist(*this);
 }
 
 bool CFileItem::IsPythonScript() const
@@ -1283,7 +1280,7 @@ void CFileItem::FillInDefaultIcon()
         // picture
         SetArt("icon", "DefaultPicture.png");
       }
-      else if ( IsPlayList() || IsSmartPlayList())
+      else if (PLAYLIST::IsPlayList(*this) || IsSmartPlayList())
       {
         SetArt("icon", "DefaultPlaylist.png");
       }
@@ -1303,7 +1300,7 @@ void CFileItem::FillInDefaultIcon()
     }
     else
     {
-      if ( IsPlayList() || IsSmartPlayList())
+      if (PLAYLIST::IsPlayList(*this) || IsSmartPlayList())
       {
         SetArt("icon", "DefaultPlaylist.png");
       }
@@ -2534,7 +2531,7 @@ bool CFileItem::LoadDetails()
     return false;
   }
 
-  if (!IsPlayList() && VIDEO::IsVideo(*this))
+  if (!PLAYLIST::IsPlayList(*this) && VIDEO::IsVideo(*this))
   {
     if (HasVideoInfoTag())
       return true;
@@ -2558,7 +2555,7 @@ bool CFileItem::LoadDetails()
     return false;
   }
 
-  if (IsPlayList() && IsType(".strm"))
+  if (PLAYLIST::IsPlayList(*this) && IsType(".strm"))
   {
     const std::unique_ptr<PLAYLIST::CPlayList> playlist(PLAYLIST::CPlayListFactory::Create(*this));
     if (playlist)

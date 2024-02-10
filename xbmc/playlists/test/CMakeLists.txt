@@ -1,6 +1,7 @@
 set(SOURCES TestPlayListASX.cpp
             TestPlayListB4S.cpp
             TestPlayListFactory.cpp
+            TestPlayListFileItemClassify.cpp
             TestPlayListWPL.cpp
             TestPlayListXML.cpp
             TestPlayListXSPF.cpp)

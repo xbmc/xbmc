@@ -28,6 +28,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/MusicDatabase.h"
+#include "playlists/PlayListFileItemClassify.h"
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
@@ -540,7 +541,7 @@ void CGUIWindowVideoNav::UpdateButtons()
   if (m_vecItems->IsPath("special://videoplaylists/"))
     strLabel = g_localizeStrings.Get(136);
   // "{Playlist Name}"
-  else if (m_vecItems->IsPlayList())
+  else if (PLAYLIST::IsPlayList(*m_vecItems))
   {
     // get playlist name from path
     std::string strDummy;
@@ -829,16 +830,17 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
 
       if (!VIDEO::IsVideoDb(*m_vecItems) && !m_vecItems->IsVirtualDirectoryRoot())
       { // non-video db items, file operations are allowed
-        if ((CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_ALLOWFILEDELETION) &&
-            CUtil::SupportsWriteFileOperations(item->GetPath())) ||
-            (inPlaylists && URIUtils::GetFileName(item->GetPath()) != "PartyMode-Video.xsp"
-                         && (item->IsPlayList() || item->IsSmartPlayList())))
+        if ((CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                 CSettings::SETTING_FILELISTS_ALLOWFILEDELETION) &&
+             CUtil::SupportsWriteFileOperations(item->GetPath())) ||
+            (inPlaylists && URIUtils::GetFileName(item->GetPath()) != "PartyMode-Video.xsp" &&
+             (PLAYLIST::IsPlayList(*item) || item->IsSmartPlayList())))
         {
           buttons.Add(CONTEXT_BUTTON_DELETE, 117);
           buttons.Add(CONTEXT_BUTTON_RENAME, 118);
         }
         // add "Set/Change content" to folders
-        if (item->m_bIsFolder && !VIDEO::IsVideoDb(*item) && !item->IsPlayList() &&
+        if (item->m_bIsFolder && !VIDEO::IsVideoDb(*item) && !PLAYLIST::IsPlayList(*item) &&
             !item->IsSmartPlayList() && !item->IsLibraryFolder() && !item->IsLiveTV() &&
             !item->IsPlugin() && !item->IsAddonsPath() && !URIUtils::IsUPnP(item->GetPath()))
         {

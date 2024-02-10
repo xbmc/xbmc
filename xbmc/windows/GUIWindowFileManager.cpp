@@ -45,6 +45,7 @@
 #include "platform/Filesystem.h"
 #include "playlists/PlayList.h"
 #include "playlists/PlayListFactory.h"
+#include "playlists/PlayListFileItemClassify.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -62,7 +63,6 @@
 using namespace XFILE;
 using namespace KODI;
 using namespace KODI::MESSAGING;
-using namespace KODI::VIDEO;
 
 #define CONTROL_BTNSELECTALL            1
 #define CONTROL_BTNFAVOURITES           2
@@ -644,7 +644,7 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
 void CGUIWindowFileManager::OnStart(CFileItem *pItem, const std::string &player)
 {
   // start playlists from file manager
-  if (pItem->IsPlayList())
+  if (PLAYLIST::IsPlayList(*pItem))
   {
     const std::string& strPlayList = pItem->GetPath();
     std::unique_ptr<PLAYLIST::CPlayList> pPlayList(PLAYLIST::CPlayListFactory::Create(strPlayList));
@@ -659,7 +659,7 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem, const std::string &player)
     g_application.ProcessAndStartPlaylist(strPlayList, *pPlayList, PLAYLIST::Id::TYPE_MUSIC);
     return;
   }
-  if (MUSIC::IsAudio(*pItem) || IsVideo(*pItem))
+  if (MUSIC::IsAudio(*pItem) || VIDEO::IsVideo(*pItem))
   {
     CServiceBroker::GetPlaylistPlayer().Play(std::make_shared<CFileItem>(*pItem), player);
     return;

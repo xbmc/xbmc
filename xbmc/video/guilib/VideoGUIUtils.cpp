@@ -27,6 +27,7 @@
 #include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayList.h"
 #include "playlists/PlayListFactory.h"
+#include "playlists/PlayListFileItemClassify.h"
 #include "profiles/ProfileManager.h"
 #include "settings/MediaSettings.h"
 #include "settings/SettingUtils.h"
@@ -291,7 +292,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
       GetItemsForPlaylist(i);
     }
   }
-  else if (item->IsPlayList())
+  else if (PLAYLIST::IsPlayList(*item))
   {
     // just queue the playlist, it will be expanded on play
     m_queuedItems.Add(item);
@@ -533,7 +534,7 @@ bool IsItemPlayable(const CFileItem& item)
     return false;
 
   // Include playlists located at one of the possible video/mixed playlist locations
-  if (item.IsPlayList())
+  if (PLAYLIST::IsPlayList(item))
   {
     if (StringUtils::StartsWithNoCase(item.GetMimeType(), "video/"))
       return true;

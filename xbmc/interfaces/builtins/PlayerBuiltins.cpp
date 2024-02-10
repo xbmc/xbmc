@@ -27,6 +27,7 @@
 #include "music/MusicFileItemClassify.h"
 #include "music/MusicUtils.h"
 #include "playlists/PlayList.h"
+#include "playlists/PlayListFileItemClassify.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/guilib/PVRGUIActionsChannels.h"
@@ -538,7 +539,7 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
   }
   item.SetProperty("check_resume", false);
 
-  if (!forcePlay /* queue */ || item.m_bIsFolder || item.IsPlayList())
+  if (!forcePlay /* queue */ || item.m_bIsFolder || PLAYLIST::IsPlayList(item))
   {
     CFileItemList items;
     GetItemsForPlayList(std::make_shared<CFileItem>(item), items);
@@ -560,7 +561,7 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
       // Mixed playlist item played by music player, mixed content folder has music removed
       if (containsMusic && containsVideo)
       {
-        if (item.IsPlayList())
+        if (PLAYLIST::IsPlayList(item))
           playlistId = PLAYLIST::Id::TYPE_MUSIC;
         else
         {
