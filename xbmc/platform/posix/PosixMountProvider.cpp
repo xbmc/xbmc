@@ -94,7 +94,7 @@ std::vector<std::string> CPosixMountProvider::GetDiskUsage()
   FILE* pipe = popen("df -h", "r");
 #endif
 
-  static const char* excludes[] = {"rootfs","devtmpfs","tmpfs","none","/dev/loop", "udev", NULL};
+  static const char* excludes[] = {"rootfs","devtmpfs","tmpfs","none","efivarfs","systemd-1","/dev/loop", "udev", NULL};
 
   if (pipe)
   {
