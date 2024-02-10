@@ -26,7 +26,7 @@ typedef struct LCENTRY
   const char* name;
 } LCENTRY;
 
-extern const std::array<struct LCENTRY, 186> g_iso639_1;
+extern const std::array<struct LCENTRY, 188> g_iso639_1;
 extern const std::array<struct LCENTRY, 540> g_iso639_2;
 
 struct ISO639
@@ -44,7 +44,7 @@ struct ISO3166_1
 };
 
 // declared as extern to allow forward declaration
-extern const std::array<ISO639, 190> LanguageCodes;
+extern const std::array<ISO639, 192> LanguageCodes;
 extern const std::array<ISO3166_1, 245> RegionCodes;
 
 CLangCodeExpander::CLangCodeExpander() = default;
@@ -601,7 +601,7 @@ std::string CLangCodeExpander::FindLanguageCodeWithSubtag(const std::string& str
 }
 
 // clang-format off
-const std::array<struct LCENTRY, 186> g_iso639_1 = {{
+const std::array<struct LCENTRY, 188> g_iso639_1 = {{
     {MAKECODE('\0', '\0', 'a', 'a'), "Afar"},
     {MAKECODE('\0', '\0', 'a', 'b'), "Abkhazian"},
     {MAKECODE('\0', '\0', 'a', 'e'), "Avestan"},
@@ -672,10 +672,14 @@ const std::array<struct LCENTRY, 186> g_iso639_1 = {{
     {MAKECODE('\0', '\0', 'i', 'g'), "Igbo"},
     {MAKECODE('\0', '\0', 'i', 'i'), "Sichuan Yi"},
     {MAKECODE('\0', '\0', 'i', 'k'), "Inupiat"},
+    // in deprecated https://www.loc.gov/standards/iso639-2/php/code_changes_bycode.php?code_ID=207
+    {MAKECODE('\0', '\0', 'i', 'n'), "Indonesian"},
     {MAKECODE('\0', '\0', 'i', 'o'), "Ido"},
     {MAKECODE('\0', '\0', 'i', 's'), "Icelandic"},
     {MAKECODE('\0', '\0', 'i', 't'), "Italian"},
     {MAKECODE('\0', '\0', 'i', 'u'), "Inuktitut"},
+    // iw deprecated https://www.loc.gov/standards/iso639-2/php/code_changes_bycode.php?code_ID=184
+    {MAKECODE('\0', '\0', 'i', 'w'), "Hebrew"},
     {MAKECODE('\0', '\0', 'j', 'a'), "Japanese"},
     {MAKECODE('\0', '\0', 'j', 'v'), "Javanese"},
     {MAKECODE('\0', '\0', 'k', 'a'), "Georgian"},
@@ -1342,7 +1346,7 @@ const std::array<struct LCENTRY, 540> g_iso639_2 = {{
 // clang-format on
 
 // clang-format off
-const std::array<ISO639, 190> LanguageCodes = {{
+const std::array<ISO639, 192> LanguageCodes = {{
     {"aa", "aar", NULL, NULL},
     {"ab", "abk", NULL, NULL},
     {"af", "afr", NULL, NULL},
@@ -1414,9 +1418,13 @@ const std::array<ISO639, 190> LanguageCodes = {{
     {"ie", "ile", NULL, NULL},
     {"ia", "ina", NULL, NULL},
     {"id", "ind", NULL, NULL},
+    // in deprecated https://www.loc.gov/standards/iso639-2/php/code_changes_bycode.php?code_ID=207
+    {"in", "ind", NULL, NULL},
     {"ik", "ipk", NULL, NULL},
     {"is", "ice", "isl", "isl"},
     {"it", "ita", NULL, NULL},
+    // iw deprecated https://www.loc.gov/standards/iso639-2/php/code_changes_bycode.php?code_ID=184
+    {"iw", "heb", NULL, NULL},
     {"jv", "jav", NULL, NULL},
     {"ja", "jpn", NULL, NULL},
     {"kl", "kal", NULL, NULL},
