@@ -8,10 +8,15 @@
 
 #include "FileItem.h"
 #include "ServiceBroker.h"
+#include "filesystem/Directory.h"
+#include "filesystem/File.h"
 #include "games/tags/GameInfoTag.h"
 #include "music/tags/MusicInfoTag.h"
 #include "pictures/PictureInfoTag.h"
+#include "test/TestUtils.h"
 #include "utils/FileExtensionProvider.h"
+#include "utils/FileUtils.h"
+#include "utils/URIUtils.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 
@@ -139,6 +144,21 @@ TEST(TestVideoFileItemClassify, IsBDFile)
   EXPECT_TRUE(VIDEO::IsBDFile(CFileItem("ftp://foo:bar@foobar.com/movieobject.BDMV", false)));
   EXPECT_TRUE(VIDEO::IsBDFile(CFileItem("https://foobar.com/movieobj.bdm", false)));
   EXPECT_FALSE(VIDEO::IsBDFile(CFileItem("https://foobar.com/movieobject.not", false)));
+}
+
+TEST(TestVideoFileItemClassify, IsProtectedBlurayDisc)
+{
+  const auto temp_file = CXBMCTestUtils::Instance().CreateTempFile("bluraytest");
+  const std::string dir = CXBMCTestUtils::Instance().TempFileDirectory(temp_file);
+  CFileUtils::DeleteItem(URIUtils::AddFileToFolder(dir, "AACS", "Unit_Key_RO.inf"));
+  EXPECT_FALSE(VIDEO::IsProtectedBlurayDisc(CFileItem(dir, true)));
+  XFILE::CDirectory::Create(URIUtils::AddFileToFolder(dir, "AACS"));
+  XFILE::CFile inf_file;
+  inf_file.OpenForWrite(URIUtils::AddFileToFolder(dir, "AACS", "Unit_Key_RO.inf"));
+  inf_file.Close();
+  EXPECT_TRUE(VIDEO::IsProtectedBlurayDisc(CFileItem(dir, true)));
+  CFileUtils::DeleteItem(URIUtils::AddFileToFolder(dir, "AACS", "Unit_Key_RO.inf"));
+  CXBMCTestUtils::Instance().DeleteTempFile(temp_file);
 }
 
 TEST(TestVideoFileItemClassify, IsSubtitle)

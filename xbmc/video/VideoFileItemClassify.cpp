@@ -11,6 +11,7 @@
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "utils/FileExtensionProvider.h"
+#include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoInfoTag.h"
@@ -39,6 +40,12 @@ bool IsDiscStub(const CFileItem& item)
 
   return URIUtils::HasExtension(item.GetPath(),
                                 CServiceBroker::GetFileExtensionProvider().GetDiscStubExtensions());
+}
+
+bool IsProtectedBlurayDisc(const CFileItem& item)
+{
+  const std::string path = URIUtils::AddFileToFolder(item.GetPath(), "AACS", "Unit_Key_RO.inf");
+  return CFileUtils::Exists(path);
 }
 
 bool IsSubtitle(const CFileItem& item)
