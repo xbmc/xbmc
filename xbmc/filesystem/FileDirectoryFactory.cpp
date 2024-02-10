@@ -8,6 +8,8 @@
 
 #include "FileDirectoryFactory.h"
 
+#include "music/MusicFileItemClassify.h"
+
 #if defined(HAS_ISO9660PP)
 #include "ISO9660Directory.h"
 #endif
@@ -39,6 +41,7 @@
 #include "utils/log.h"
 
 using namespace ADDON;
+using namespace KODI;
 using namespace KODI::ADDONS;
 using namespace XFILE;
 using namespace PLAYLIST;
@@ -235,11 +238,11 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
     return NULL;
   }
 
-  if (pItem->IsAudioBook())
+  if (MUSIC::IsAudioBook(*pItem))
   {
     if (!pItem->HasMusicInfoTag() || pItem->GetEndOffset() <= 0)
     {
-      std::unique_ptr<CAudioBookFileDirectory> pDir(new CAudioBookFileDirectory);
+      auto pDir = std::make_unique<CAudioBookFileDirectory>();
       if (pDir->ContainsFiles(url))
         return pDir.release();
     }

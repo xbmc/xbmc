@@ -14,6 +14,11 @@
 namespace KODI::MUSIC
 {
 
+bool IsAudioBook(const CFileItem& item)
+{
+  return item.IsType(".m4b") || item.IsType(".mka");
+}
+
 bool IsCUESheet(const CFileItem& item)
 {
   return URIUtils::HasExtension(item.GetPath(), ".cue");

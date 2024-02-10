@@ -23,6 +23,7 @@
 #include "interfaces/AnnouncementManager.h"
 #include "log.h"
 #include "music/MusicDatabase.h"
+#include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
 #include "network/upnp/UPnP.h"
 #include "utils/Variant.h"
@@ -30,6 +31,7 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
 
+using namespace KODI;
 using namespace KODI::VIDEO;
 
 void CSaveFileState::DoWork(CFileItem& item,
@@ -226,7 +228,7 @@ void CSaveFileState::DoWork(CFileItem& item,
         }
       }
 
-      if (item.IsAudioBook())
+      if (MUSIC::IsAudioBook(item))
       {
         musicdatabase.Open();
         musicdatabase.SetResumeBookmarkForAudioBook(

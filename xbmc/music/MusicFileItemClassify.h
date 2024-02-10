@@ -13,6 +13,9 @@ class CFileItem;
 namespace KODI::MUSIC
 {
 
+//! \brief Check whether an item is an audio book item.
+bool IsAudioBook(const CFileItem& item);
+
 //! \brief Check whether an item is a cue sheet.
 bool IsCUESheet(const CFileItem& item);
 

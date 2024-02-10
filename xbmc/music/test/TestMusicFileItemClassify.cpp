@@ -22,6 +22,27 @@ struct SimpleDefinition
   bool result;
 };
 
+class AudioBookTest : public testing::WithParamInterface<SimpleDefinition>, public testing::Test
+{
+};
+
+TEST_P(AudioBookTest, IsAudioBook)
+{
+  EXPECT_EQ(MUSIC::IsAudioBook(CFileItem(GetParam().path, GetParam().folder)), GetParam().result);
+}
+
+const auto audiobook_tests = std::array{
+    SimpleDefinition{"/home/user/test.m4b", false, true},
+    SimpleDefinition{"/home/user/test.m4b", true, true},
+    SimpleDefinition{"/home/user/test.mka", false, true},
+    SimpleDefinition{"/home/user/test.mka", true, true},
+    SimpleDefinition{"/home/user/test.not", false, false},
+};
+
+INSTANTIATE_TEST_SUITE_P(TestMusicFileItemClassify,
+                         AudioBookTest,
+                         testing::ValuesIn(audiobook_tests));
+
 class CuesheetTest : public testing::WithParamInterface<SimpleDefinition>, public testing::Test
 {
 };
@@ -58,4 +79,3 @@ const auto lyrics_tests = std::array{
 };
 
 INSTANTIATE_TEST_SUITE_P(TestMusicFileItemClassify, LyricsTest, testing::ValuesIn(lyrics_tests));
->>>>>>> e56c3cc3f8 (move CFileItem::IsLyrics to MusicFileItemClassify)
