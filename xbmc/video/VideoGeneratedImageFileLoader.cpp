@@ -17,7 +17,10 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
+
+using namespace KODI::VIDEO;
 
 bool VIDEO::CVideoGeneratedImageFileLoader::CanLoad(const std::string& specialType) const
 {
@@ -29,7 +32,7 @@ namespace
 void SetupRarOptions(CFileItem& item, const std::string& path)
 {
   std::string path2(path);
-  if (item.IsVideoDb() && item.HasVideoInfoTag())
+  if (IsVideoDb(item) && item.HasVideoInfoTag())
     path2 = item.GetVideoInfoTag()->m_strFileNameAndPath;
   CURL url(path2);
   std::string opts = url.GetOptions();
@@ -40,7 +43,7 @@ void SetupRarOptions(CFileItem& item, const std::string& path)
   else
     opts = "?flags=8";
   url.SetOptions(opts);
-  if (item.IsVideoDb() && item.HasVideoInfoTag())
+  if (IsVideoDb(item) && item.HasVideoInfoTag())
     item.GetVideoInfoTag()->m_strFileNameAndPath = url.Get();
   else
     item.SetPath(url.Get());

@@ -221,7 +221,6 @@ public:
   bool IsFavourite() const;
   bool IsMultiPath() const;
   bool IsMusicDb() const;
-  bool IsVideoDb() const;
   bool IsEPG() const;
   bool IsPVRChannel() const;
   bool IsPVRChannelGroup() const;

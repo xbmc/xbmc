@@ -853,7 +853,7 @@ bool CFileItem::Exists(bool bUseCache /* = true */) const
    || IsPVR())
     return true;
 
-  if (IsVideoDb() && HasVideoInfoTag())
+  if (IsVideoDb(*this) && HasVideoInfoTag())
   {
     CFileItem dbItem(m_bIsFolder ? GetVideoInfoTag()->m_strPath : GetVideoInfoTag()->m_strFileNameAndPath, m_bIsFolder);
     return dbItem.Exists();
@@ -1324,11 +1324,6 @@ bool CFileItem::IsMusicDb() const
   return URIUtils::IsMusicDb(m_strPath);
 }
 
-bool CFileItem::IsVideoDb() const
-{
-  return URIUtils::IsVideoDb(m_strPath);
-}
-
 bool CFileItem::IsVirtualDirectoryRoot() const
 {
   return (m_bIsFolder && m_strPath.empty());
@@ -1636,7 +1631,7 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
       dbItem.SetProperty("item_start", GetProperty("item_start"));
     return dbItem.IsSamePath(item);
   }
-  if (IsVideoDb() && HasVideoInfoTag())
+  if (IsVideoDb(*this) && HasVideoInfoTag())
   {
     CFileItem dbItem(GetVideoInfoTag()->m_strFileNameAndPath, false);
     if (HasProperty("item_start"))
@@ -1650,7 +1645,7 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
       dbItem.SetProperty("item_start", item->GetProperty("item_start"));
     return IsSamePath(&dbItem);
   }
-  if (item->IsVideoDb() && item->HasVideoInfoTag())
+  if (IsVideoDb(*item) && item->HasVideoInfoTag())
   {
     CFileItem dbItem(item->GetVideoInfoTag()->m_strFileNameAndPath, false);
     if (item->HasProperty("item_start"))
@@ -3153,7 +3148,7 @@ std::string CFileItemList::GetDiscFileCache(int windowID) const
   if (IsMusicDb())
     return StringUtils::Format("special://temp/archive_cache/mdb-{:08x}.fi", crc);
 
-  if (IsVideoDb())
+  if (IsVideoDb(*this))
     return StringUtils::Format("special://temp/archive_cache/vdb-{:08x}.fi", crc);
 
   if (IsSmartPlayList())
@@ -3170,7 +3165,7 @@ bool CFileItemList::AlwaysCache() const
   // some database folders are always cached
   if (IsMusicDb())
     return CMusicDatabaseDirectory::CanCache(GetPath());
-  if (IsVideoDb())
+  if (IsVideoDb(*this))
     return CVideoDatabaseDirectory::CanCache(GetPath());
   if (IsEPG())
     return true; // always cache
@@ -3510,7 +3505,7 @@ std::string CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
 
 std::string CFileItem::GetLocalFanart() const
 {
-  if (IsVideoDb())
+  if (IsVideoDb(*this))
   {
     if (!HasVideoInfoTag())
       return ""; // nothing can be done
@@ -3684,7 +3679,7 @@ bool CFileItem::LoadGameTag()
 
 bool CFileItem::LoadDetails()
 {
-  if (IsVideoDb())
+  if (IsVideoDb(*this))
   {
     if (HasVideoInfoTag())
       return true;

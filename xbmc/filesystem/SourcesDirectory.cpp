@@ -19,7 +19,9 @@
 #include "storage/MediaManager.h"
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
+#include "video/VideoFileItemClassify.h"
 
+using namespace KODI;
 using namespace XFILE;
 
 CSourcesDirectory::CSourcesDirectory(void) = default;
@@ -68,10 +70,8 @@ bool CSourcesDirectory::GetDirectory(const VECSOURCES &sources, CFileItemList &i
     else if (   pItem->IsPath("special://musicplaylists/")
              || pItem->IsPath("special://videoplaylists/"))
       strIcon = "DefaultPlaylist.png";
-    else if (   pItem->IsVideoDb()
-             || pItem->IsMusicDb()
-             || pItem->IsPlugin()
-             || pItem->IsPath("musicsearch://"))
+    else if (VIDEO::IsVideoDb(*pItem) || pItem->IsMusicDb() || pItem->IsPlugin() ||
+             pItem->IsPath("musicsearch://"))
       strIcon = "DefaultFolder.png";
     else if (pItem->IsRemote())
       strIcon = "DefaultNetwork.png";

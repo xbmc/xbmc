@@ -25,7 +25,9 @@
 #include "utils/JobManager.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "video/VideoFileItemClassify.h"
 
+using namespace KODI;
 using namespace XFILE;
 using namespace std::chrono_literals;
 
@@ -282,7 +284,8 @@ bool CDirectory::GetDirectory(const CURL& url,
 
     //  Should any of the files we read be treated as a directory?
     //  Disable for database folders, as they already contain the extracted items
-    if (!(hints.flags & DIR_FLAG_NO_FILE_DIRS) && !items.IsMusicDb() && !items.IsVideoDb() && !items.IsSmartPlayList())
+    if (!(hints.flags & DIR_FLAG_NO_FILE_DIRS) && !items.IsMusicDb() && !VIDEO::IsVideoDb(items) &&
+        !items.IsSmartPlayList())
       FilterFileDirectories(items, hints.mask);
 
     // Correct items for path substitution

@@ -554,7 +554,7 @@ std::string CVideoThumbLoader::GetLocalArt(const CFileItem &item, const std::str
 std::string CVideoThumbLoader::GetEmbeddedThumbURL(const CFileItem &item)
 {
   std::string path(item.GetPath());
-  if (item.IsVideoDb() && item.HasVideoInfoTag())
+  if (IsVideoDb(item) && item.HasVideoInfoTag())
     path = item.GetVideoInfoTag()->m_strFileNameAndPath;
   if (URIUtils::IsStack(path))
     path = CStackDirectory::GetFirstStackedFile(path);
@@ -600,7 +600,7 @@ void CVideoThumbLoader::DetectAndAddMissingItemData(CFileItem &item)
   if (stereoMode.empty())
   {
     std::string path = item.GetPath();
-    if (item.IsVideoDb() && item.HasVideoInfoTag())
+    if (IsVideoDb(item) && item.HasVideoInfoTag())
       path = item.GetVideoInfoTag()->GetPath();
 
     // check for custom stereomode setting in video settings

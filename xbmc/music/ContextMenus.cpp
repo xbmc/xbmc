@@ -19,10 +19,12 @@
 #include "playlists/PlayListTypes.h"
 #include "tags/MusicInfoTag.h"
 #include "utils/Variant.h"
+#include "video/VideoFileItemClassify.h"
 
 #include <utility>
 
 using namespace CONTEXTMENU;
+using namespace KODI;
 
 CMusicInfo::CMusicInfo(MediaType mediaType)
   : CStaticContextMenuAction(19033), m_mediaType(std::move(mediaType))
@@ -32,8 +34,10 @@ CMusicInfo::CMusicInfo(MediaType mediaType)
 bool CMusicInfo::IsVisible(const CFileItem& item) const
 {
   return (item.HasMusicInfoTag() && item.GetMusicInfoTag()->GetType() == m_mediaType) ||
-         (m_mediaType == MediaTypeArtist && item.IsVideoDb() && item.HasProperty("artist_musicid")) ||
-         (m_mediaType == MediaTypeAlbum && item.IsVideoDb() && item.HasProperty("album_musicid"));
+         (m_mediaType == MediaTypeArtist && VIDEO::IsVideoDb(item) &&
+          item.HasProperty("artist_musicid")) ||
+         (m_mediaType == MediaTypeAlbum && VIDEO::IsVideoDb(item) &&
+          item.HasProperty("album_musicid"));
 }
 
 bool CMusicInfo::Execute(const std::shared_ptr<CFileItem>& item) const

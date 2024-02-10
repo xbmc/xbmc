@@ -200,7 +200,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
       items.Sort(sortDesc);
     }
 
-    if (items.GetContent().empty() && !items.IsVideoDb() && !items.IsVirtualDirectoryRoot() &&
+    if (items.GetContent().empty() && !IsVideoDb(items) && !items.IsVirtualDirectoryRoot() &&
         !items.IsSourcesPath() && !items.IsLibraryFolder())
     {
       CVideoDatabase db;
@@ -302,7 +302,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
     // a playable python files
     m_queuedItems.Add(item);
   }
-  else if (item->IsVideoDb())
+  else if (IsVideoDb(*item))
   {
     // this case is needed unless we allow IsVideo() to return true for videodb items,
     // but then we have issues with playlists of videodb items
@@ -556,7 +556,7 @@ bool IsItemPlayable(const CFileItem& item)
     return false;
 
   if (item.m_bIsFolder &&
-      (item.IsVideoDb() || StringUtils::StartsWithNoCase(item.GetPath(), "library://video/")))
+      (IsVideoDb(item) || StringUtils::StartsWithNoCase(item.GetPath(), "library://video/")))
   {
     // Exclude top level nodes - eg can't play 'genres' just a specific genre etc
     const XFILE::VIDEODATABASEDIRECTORY::NODE_TYPE node =

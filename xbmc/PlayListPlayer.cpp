@@ -333,7 +333,7 @@ bool CPlayListPlayer::Play(int iSong,
 
   m_iCurrentSong = iSong;
   CFileItemPtr item = playlist[m_iCurrentSong];
-  if (item->IsVideoDb() && !item->HasVideoInfoTag())
+  if (IsVideoDb(*item) && !item->HasVideoInfoTag())
     *(item->GetVideoInfoTag()) = XFILE::CVideoDatabaseFile::GetVideoTag(CURL(item->GetDynPath()));
 
   playlist.SetPlayed(true);

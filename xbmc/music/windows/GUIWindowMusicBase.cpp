@@ -299,7 +299,7 @@ void CGUIWindowMusicBase::OnItemInfo(int iItem)
   CFileItemPtr item = m_vecItems->Get(iItem);
 
   // Match visibility test of CMusicInfo::IsVisible
-  if (item->IsVideoDb() && item->HasVideoInfoTag() &&
+  if (IsVideoDb(*item) && item->HasVideoInfoTag() &&
       (item->HasProperty("artist_musicid") || item->HasProperty("album_musicid")))
   {
     // Music video artist or album (navigation by music > music video > artist))
@@ -731,7 +731,7 @@ bool CGUIWindowMusicBase::OnPlayMedia(int iItem, const std::string &player)
 void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
 {
   // No need to attempt to read music file tags for music videos
-  if (items.IsVideoDb())
+  if (IsVideoDb(items))
     return;
   if (items.GetFolderCount()==items.Size() || items.IsMusicDb() ||
      (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICFILES_USETAGS) && !items.IsCDDA()))

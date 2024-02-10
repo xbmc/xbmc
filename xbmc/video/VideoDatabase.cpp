@@ -52,6 +52,7 @@
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 #include "video/VideoDbUrl.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoLibraryQueue.h"
 #include "video/VideoManagerTypes.h"
@@ -70,6 +71,7 @@ using namespace VIDEO;
 using namespace ADDON;
 using namespace KODI::MESSAGING;
 using namespace KODI::GUILIB;
+using namespace KODI::VIDEO;
 
 //********************************************************************************************************************************
 CVideoDatabase::CVideoDatabase(void) = default;
@@ -1040,7 +1042,7 @@ int CVideoDatabase::AddFile(const std::string& strFileNameAndPath,
 
 int CVideoDatabase::AddFile(const CFileItem& item)
 {
-  if (item.IsVideoDb() && item.HasVideoInfoTag())
+  if (IsVideoDb(item) && item.HasVideoInfoTag())
   {
     const auto videoInfoTag = item.GetVideoInfoTag();
     if (videoInfoTag->m_iFileId != -1)
