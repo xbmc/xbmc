@@ -59,6 +59,7 @@
 #include "utils/log.h"
 #include "video/Bookmark.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoUtils.h"
 
@@ -68,6 +69,7 @@
 #include <mutex>
 
 using namespace KODI;
+using namespace KODI::VIDEO;
 using namespace XFILE;
 using namespace PLAYLIST;
 using namespace MUSIC_INFO;
@@ -873,51 +875,6 @@ bool CFileItem::Exists(bool bUseCache /* = true */) const
   return false;
 }
 
-bool CFileItem::IsVideo() const
-{
-  /* check preset mime type */
-  if(StringUtils::StartsWithNoCase(m_mimetype, "video/"))
-    return true;
-
-  if (HasVideoInfoTag())
-    return true;
-
-  if (HasGameInfoTag())
-    return false;
-
-  if (HasMusicInfoTag())
-    return false;
-
-  if (HasPictureInfoTag())
-    return false;
-
-  // TV recordings are videos...
-  if (!m_bIsFolder && URIUtils::IsPVRTVRecordingFileOrFolder(GetPath()))
-    return true;
-
-  // ... all other PVR items are not.
-  if (IsPVR())
-    return false;
-
-  if (URIUtils::IsDVD(m_strPath))
-    return true;
-
-  std::string extension;
-  if(StringUtils::StartsWithNoCase(m_mimetype, "application/"))
-  { /* check for some standard types */
-    extension = m_mimetype.substr(12);
-    if( StringUtils::EqualsNoCase(extension, "ogg")
-     || StringUtils::EqualsNoCase(extension, "mp4")
-     || StringUtils::EqualsNoCase(extension, "mxf") )
-     return true;
-  }
-
-  //! @todo If the file is a zip file, ask the game clients if any support this
-  // file before assuming it is video.
-
-  return URIUtils::HasExtension(m_strPath, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions());
-}
-
 bool CFileItem::IsEPG() const
 {
   return HasEPGInfoTag();
@@ -1477,7 +1434,7 @@ void CFileItem::FillInDefaultIcon()
         // audio
         SetArt("icon", "DefaultAudio.png");
       }
-      else if ( IsVideo() )
+      else if (IsVideo(*this))
       {
         // video
         SetArt("icon", "DefaultVideo.png");
@@ -1866,7 +1823,7 @@ void CFileItem::MergeInfo(const CFileItem& item)
     SetLabel2(item.GetLabel2());
   if (!item.GetArt().empty())
   {
-    if (item.IsVideo())
+    if (IsVideo(item))
       AppendArt(item.GetArt());
     else
       SetArt(item.GetArt());
@@ -3809,7 +3766,7 @@ bool CFileItem::LoadDetails()
     return false;
   }
 
-  if (!IsPlayList() && IsVideo())
+  if (!IsPlayList() && IsVideo(*this))
   {
     if (HasVideoInfoTag())
       return true;
@@ -3841,7 +3798,7 @@ bool CFileItem::LoadDetails()
       if (playlist->Load(GetPath()) && playlist->size() == 1)
       {
         const auto item{(*playlist)[0]};
-        if (item->IsVideo())
+        if (IsVideo(*item))
         {
           CVideoDatabase db;
           if (!db.Open())

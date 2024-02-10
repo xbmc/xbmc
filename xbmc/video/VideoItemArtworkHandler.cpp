@@ -23,11 +23,13 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoScanner.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoThumbLoader.h"
 #include "video/tags/VideoTagExtractionHelper.h"
 
+using namespace KODI::VIDEO;
 using namespace VIDEO;
 using namespace XFILE;
 
@@ -118,7 +120,7 @@ void CVideoItemArtworkHandler::AddItemPathToFileBrowserSources(std::vector<CMedi
     itemDir = m_item->GetVideoInfoTag()->GetPath();
 
   const CFileItem itemTmp(itemDir, false);
-  if (itemTmp.IsVideo())
+  if (IsVideo(itemTmp))
     itemDir = URIUtils::GetParentPath(itemDir);
 
   AddItemPathStringToFileBrowserSources(sources, itemDir,

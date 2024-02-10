@@ -18,6 +18,7 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoFileItemClassify.h"
 
 #include <memory>
 #include <mutex>
@@ -26,6 +27,7 @@
 #define LOOKUP_PROPERTY "database-lookup"
 
 using namespace ANNOUNCEMENT;
+using namespace KODI::VIDEO;
 
 const std::string CAnnouncementManager::ANNOUNCEMENT_SENDER = "xbmc";
 
@@ -296,7 +298,7 @@ void CAnnouncementManager::DoAnnounce(AnnouncementFlag flag,
         object["item"]["artist"] = item->GetMusicInfoTag()->GetArtist();
     }
   }
-  else if (item->IsVideo())
+  else if (IsVideo(*item))
   {
     // video item but has no video info tag.
     type = "movie";

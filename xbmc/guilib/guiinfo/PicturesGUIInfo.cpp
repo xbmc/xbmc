@@ -20,11 +20,13 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "video/VideoFileItemClassify.h"
 
 #include <map>
 #include <memory>
 
 using namespace KODI::GUILIB::GUIINFO;
+using namespace KODI;
 
 static const std::map<int, int> listitem2slideshow_map =
 {
@@ -251,7 +253,7 @@ bool CPicturesGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int conte
     case SLIDESHOW_ISVIDEO:
     {
       CSlideShowDelegator& slideShow = CServiceBroker::GetSlideShowDelegator();
-      value = slideShow.GetCurrentSlide() && slideShow.GetCurrentSlide()->IsVideo();
+      value = slideShow.GetCurrentSlide() && VIDEO::IsVideo(*slideShow.GetCurrentSlide());
       return true;
     }
   }

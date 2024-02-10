@@ -19,6 +19,7 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 
 #include <iostream>
@@ -26,6 +27,7 @@
 #include <string>
 #include <vector>
 
+using namespace KODI;
 using namespace XFILE;
 using namespace PLAYLIST;
 
@@ -272,7 +274,8 @@ bool CPlayListASX::LoadAsxIniInfo(std::istream &stream)
     CLog::Log(LOGINFO, "Adding element {}={}", name, value);
     CFileItemPtr newItem(new CFileItem(value));
     newItem->SetPath(value);
-    if (newItem->IsVideo() && !newItem->HasVideoInfoTag()) // File is a video and needs a VideoInfoTag
+    if (VIDEO::IsVideo(*newItem) &&
+        !newItem->HasVideoInfoTag()) // File is a video and needs a VideoInfoTag
       newItem->GetVideoInfoTag()->Reset(); // Force VideoInfoTag creation
     Add(newItem);
   }

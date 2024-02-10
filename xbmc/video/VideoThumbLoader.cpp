@@ -29,6 +29,7 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
 #include "video/guilib/VideoVersionHelper.h"
@@ -37,6 +38,7 @@
 #include <cstdlib>
 #include <utility>
 
+using namespace KODI::VIDEO;
 using namespace XFILE;
 using namespace VIDEO;
 
@@ -180,8 +182,11 @@ bool CVideoThumbLoader::LoadItemCached(CFileItem* pItem)
 
   if (!pItem->HasVideoInfoTag() || !pItem->GetVideoInfoTag()->HasStreamDetails()) // no stream details
   {
-    if ((pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iFileId >= 0) // file (or maybe folder) is in the database
-    || (!pItem->m_bIsFolder && pItem->IsVideo())) // Some other video file for which we haven't yet got any database details
+    if ((pItem->HasVideoInfoTag() &&
+         pItem->GetVideoInfoTag()->m_iFileId >= 0) // file (or maybe folder) is in the database
+        || (!pItem->m_bIsFolder &&
+            IsVideo(
+                *pItem))) // Some other video file for which we haven't yet got any database details
     {
       if (m_videoDatabase->GetStreamDetails(*pItem))
         pItem->SetInvalid();
@@ -286,7 +291,7 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
   }
 
   // We can only extract flags/thumbs for file-like items
-  if (!pItem->m_bIsFolder && pItem->IsVideo())
+  if (!pItem->m_bIsFolder && IsVideo(*pItem))
   {
     const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
     if (!pItem->HasArt("thumb"))
