@@ -1023,7 +1023,9 @@ public:
   \return The dbId of the season.
   */
   int AddSeason(int showID, int season, const std::string& name = "");
-  int AddSet(const std::string& strSet, const std::string& strOverview = "");
+  int AddSet(const std::string& strSet,
+             const std::string& strOverview = "",
+             const bool updateOverview = true);
   void ClearMovieSet(int idMovie);
   void SetMovieSet(int idMovie, int idSet);
   bool SetVideoUserRating(int dbId, int rating, const MediaType& mediaType);

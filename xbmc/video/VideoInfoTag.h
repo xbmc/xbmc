@@ -331,6 +331,13 @@ public:
   void SetIsDefaultVideoVersion(bool isDefaultVideoVersion);
 
   /*!
+  * @brief Get whether the Set Overview should be updated. If an NFO contains a <name> but no <overview> then
+  * this allows the current Overview to be kept. Otherwise it is overwritten. Default is true - so if updated
+  * by a scraper the Overview will be overwritten.
+  */
+  bool GetUpdateSetOverview() const { return m_updateSetOverview; }
+
+  /*!
    * @brief Set this videos's resume point.
    * @param timeInSeconds the time of the resume point
    * @param totalTimeInSeconds the total time of the video
@@ -432,6 +439,8 @@ private:
   bool m_hasVideoVersions{false};
   bool m_hasVideoExtras{false};
   bool m_isDefaultVideoVersion{false};
+
+  bool m_updateSetOverview{true};
 };
 
 typedef std::vector<CVideoInfoTag> VECMOVIES;
