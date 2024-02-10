@@ -6336,6 +6336,41 @@ void CVideoDatabase::UpdateTables(int iVersion)
                             "AND itemType = %i",
                             VideoAssetTypeOwner::USER, VideoAssetType::VERSION));
   }
+
+  if (iVersion < 131)
+  {
+    // Remove quality-like predefined version types
+
+    // Retrieve current utilization per type
+    m_pDS->query("SELECT vvt.id, vvt.name, count(vv.idType) "
+                 "FROM videoversiontype vvt "
+                 "  LEFT JOIN videoversion vv ON vvt.id = vv.idType "
+                 "WHERE vvt.id = 40405 OR vvt.id BETWEEN 40418 AND 40430 "
+                 "GROUP BY vvt.id");
+
+    while (!m_pDS->eof())
+    {
+      const int typeId{m_pDS->fv(0).get_asInt()};
+      const std::string typeName{m_pDS->fv(1).get_asString()};
+      const int versionsCount{m_pDS->fv(2).get_asInt()};
+
+      if (versionsCount > 0)
+      {
+        // type used by some versions, recreate as user type and link the versions to the new id
+        m_pDS2->exec(PrepareSQL(
+            "INSERT INTO videoversiontype (id, name, owner, itemType) VALUES(NULL, '%s', %i, %i)",
+            typeName.c_str(), VideoAssetTypeOwner::USER, VideoAssetType::VERSION));
+
+        const int newId{static_cast<int>(m_pDS2->lastinsertid())};
+
+        m_pDS2->exec(
+            PrepareSQL("UPDATE videoversion SET idType = %i WHERE idType = %i", newId, typeId));
+      }
+      m_pDS2->exec(PrepareSQL("DELETE FROM videoversiontype WHERE id = %i", typeId));
+      m_pDS->next();
+    }
+    m_pDS->close();
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
@@ -11899,6 +11934,10 @@ void CVideoDatabase::InitializeVideoVersionTypeTable(int schemaVersion)
 
     for (int id = VIDEO_VERSION_ID_BEGIN; id <= VIDEO_VERSION_ID_END; ++id)
     {
+      // Exclude removed pre-populated "quality" values
+      if (id == 40405 || (id >= 40418 && id <= 40430))
+        continue;
+
       const std::string& type{g_localizeStrings.Get(id)};
       if (schemaVersion < 127)
       {
