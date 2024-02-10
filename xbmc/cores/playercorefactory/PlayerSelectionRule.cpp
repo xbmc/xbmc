@@ -132,7 +132,7 @@ void CPlayerSelectionRule::GetPlayers(const CFileItem& item, std::vector<std::st
     return;
   if (m_tDVD >= 0 && (m_tDVD > 0) != item.IsDVD())
     return;
-  if (m_tDVDFile >= 0 && (m_tDVDFile > 0) != item.IsDVDFile())
+  if (m_tDVDFile >= 0 && (m_tDVDFile > 0) != VIDEO::IsDVDFile(item))
     return;
   if (m_tDiscImage >= 0 && (m_tDiscImage > 0) != item.IsDiscImage())
     return;

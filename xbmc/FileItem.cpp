@@ -1133,31 +1133,10 @@ bool CFileItem::IsDiscImage() const
 
 bool CFileItem::IsOpticalMediaFile() const
 {
-  if (IsDVDFile(false, true))
+  if (IsDVDFile(*this, false, true))
     return true;
 
   return IsBDFile(*this);
-}
-
-bool CFileItem::IsDVDFile(bool bVobs /*= true*/, bool bIfos /*= true*/) const
-{
-  std::string strFileName = URIUtils::GetFileName(GetDynPath());
-  if (bIfos)
-  {
-    if (StringUtils::EqualsNoCase(strFileName, "video_ts.ifo"))
-      return true;
-    if (StringUtils::StartsWithNoCase(strFileName, "vts_") && StringUtils::EndsWithNoCase(strFileName, "_0.ifo") && strFileName.length() == 12)
-      return true;
-  }
-  if (bVobs)
-  {
-    if (StringUtils::EqualsNoCase(strFileName, "video_ts.vob"))
-      return true;
-    if (StringUtils::StartsWithNoCase(strFileName, "vts_") && StringUtils::EndsWithNoCase(strFileName, ".vob"))
-      return true;
-  }
-
-  return false;
 }
 
 bool CFileItem::IsRAR() const

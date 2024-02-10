@@ -146,6 +146,29 @@ TEST(TestVideoFileItemClassify, IsBDFile)
   EXPECT_FALSE(VIDEO::IsBDFile(CFileItem("https://foobar.com/movieobject.not", false)));
 }
 
+TEST(TestVideoFileItemClassify, IsDVDFile)
+{
+  EXPECT_TRUE(VIDEO::IsDVDFile(CFileItem("/home/foo/video_ts.vob", false), true, false));
+  EXPECT_TRUE(VIDEO::IsDVDFile(CFileItem("/home/foo/video_ts.VOB", false), true, true));
+  EXPECT_FALSE(VIDEO::IsDVDFile(CFileItem("/home/foo/video_TS.vob", false), false, false));
+  EXPECT_FALSE(VIDEO::IsDVDFile(CFileItem("/home/foo/video_ts.VOb", false), false, true));
+
+  EXPECT_TRUE(VIDEO::IsDVDFile(CFileItem("/home/foo/vts_yo_0.vob", false), true, false));
+  EXPECT_TRUE(VIDEO::IsDVDFile(CFileItem("/home/foo/vts_0_ifo.vob", false), true, true));
+  EXPECT_FALSE(VIDEO::IsDVDFile(CFileItem("/home/foo/VTS_123456_0.vob", false), false, false));
+  EXPECT_FALSE(VIDEO::IsDVDFile(CFileItem("/home/foo/VTS_qwerty_0.VOB", false), false, true));
+
+  EXPECT_TRUE(VIDEO::IsDVDFile(CFileItem("/home/foo/video_ts.IFO", false), false, true));
+  EXPECT_TRUE(VIDEO::IsDVDFile(CFileItem("/home/foo/video_ts.IFO", false), true, true));
+  EXPECT_FALSE(VIDEO::IsDVDFile(CFileItem("/home/foo/video_ts.IFO", false), false, false));
+  EXPECT_FALSE(VIDEO::IsDVDFile(CFileItem("/home/foo/video_ts.IFO", false), true, false));
+
+  EXPECT_TRUE(VIDEO::IsDVDFile(CFileItem("/home/foo/vts_ab_0.ifo", false), false, true));
+  EXPECT_TRUE(VIDEO::IsDVDFile(CFileItem("/home/foo/vts_ab_0.ifo", false), false, true));
+  EXPECT_FALSE(VIDEO::IsDVDFile(CFileItem("/home/foo/VTS_ab_0.ifo", false), false, false));
+  EXPECT_FALSE(VIDEO::IsDVDFile(CFileItem("/home/foo/VTS_ab_0.ifo", false), false, false));
+}
+
 TEST(TestVideoFileItemClassify, IsProtectedBlurayDisc)
 {
   const auto temp_file = CXBMCTestUtils::Instance().CreateTempFile("bluraytest");

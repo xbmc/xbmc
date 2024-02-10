@@ -42,6 +42,29 @@ bool IsDiscStub(const CFileItem& item)
                                 CServiceBroker::GetFileExtensionProvider().GetDiscStubExtensions());
 }
 
+bool IsDVDFile(const CFileItem& item, bool bVobs /*= true*/, bool bIfos /*= true*/)
+{
+  const std::string strFileName = URIUtils::GetFileName(item.GetDynPath());
+  if (bIfos)
+  {
+    if (StringUtils::EqualsNoCase(strFileName, "video_ts.ifo"))
+      return true;
+    if (StringUtils::StartsWithNoCase(strFileName, "vts_") &&
+        StringUtils::EndsWithNoCase(strFileName, "_0.ifo") && strFileName.length() == 12)
+      return true;
+  }
+  if (bVobs)
+  {
+    if (StringUtils::EqualsNoCase(strFileName, "video_ts.vob"))
+      return true;
+    if (StringUtils::StartsWithNoCase(strFileName, "vts_") &&
+        StringUtils::EndsWithNoCase(strFileName, ".vob"))
+      return true;
+  }
+
+  return false;
+}
+
 bool IsProtectedBlurayDisc(const CFileItem& item)
 {
   const std::string path = URIUtils::AddFileToFolder(item.GetPath(), "AACS", "Unit_Key_RO.inf");

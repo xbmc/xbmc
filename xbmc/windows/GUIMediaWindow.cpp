@@ -59,6 +59,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+#include "video/VideoFileItemClassify.h"
 #include "view/GUIViewState.h"
 
 #include <inttypes.h>
@@ -78,6 +79,7 @@
 
 using namespace ADDON;
 using namespace KODI::MESSAGING;
+using namespace KODI::VIDEO;
 using namespace std::chrono_literals;
 
 namespace
@@ -1550,7 +1552,8 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr& item, const std::s
       if (nItem->m_bIsFolder)
         continue;
 
-      if (!nItem->IsZIP() && !nItem->IsRAR() && (!nItem->IsDVDFile() || (URIUtils::GetFileName(nItem->GetDynPath()) == mainDVD)))
+      if (!nItem->IsZIP() && !nItem->IsRAR() &&
+          (!IsDVDFile(*nItem) || (URIUtils::GetFileName(nItem->GetDynPath()) == mainDVD)))
         CServiceBroker::GetPlaylistPlayer().Add(playlistId, nItem);
 
       if (item->IsSamePath(nItem.get()))
