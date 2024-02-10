@@ -195,7 +195,6 @@ public:
   bool IsOnLAN() const;
   bool IsHD() const;
   bool IsNfs() const;
-  bool IsRemote() const;
   bool IsSmb() const;
   bool IsURL() const;
   bool IsStack() const;

@@ -7,6 +7,7 @@
  */
 
 #include "FileItem.h"
+#include "URL.h"
 #include "filesystem/StackDirectory.h"
 #include "network/NetworkFileItemClassify.h"
 
@@ -190,6 +191,38 @@ TEST(TestNetworkWorkFileItemClassify, InternetStreamStacks)
   EXPECT_FALSE(NETWORK::IsInternetStream(CFileItem(stackPath, false), true));
   EXPECT_FALSE(NETWORK::IsInternetStream(CFileItem(stackPath, true), true));
 }
+
+class RemoteTest : public testing::WithParamInterface<SimpleDefinition>, public testing::Test
+{
+};
+
+TEST_P(RemoteTest, IsRemote)
+{
+  EXPECT_EQ(NETWORK::IsRemote(GetParam().item), GetParam().result);
+}
+
+const auto remote_tests = std::array{
+    SimpleDefinition{"cdda://1", false, false},
+    SimpleDefinition{"cdda://1", true, false},
+    SimpleDefinition{"iso9660://some.file", false, false},
+    SimpleDefinition{"cdda://some.file", true, false},
+    SimpleDefinition{"special://home/foo.xml", false, false},
+    SimpleDefinition{"special://home", true, false},
+    SimpleDefinition{"zip://" + CURL::Encode("/home/foo/bar.zip"), true, false},
+    SimpleDefinition{"zip://" + CURL::Encode("https://some.where/yo.zip"), true, true},
+    SimpleDefinition{"addons://plugins", true, false},
+    SimpleDefinition{"sources://music", true, false},
+    SimpleDefinition{"videodb://1/2", true, false},
+    SimpleDefinition{"musicdb://1/2", true, false},
+    SimpleDefinition{"library://movies/titles", true, false},
+    SimpleDefinition{"plugin://plugin.video.yo", true, false},
+    SimpleDefinition{"androidapp://cool.app", true, false},
+    SimpleDefinition{"/home/foo/bar", true, false},
+    SimpleDefinition{"https://127.0.0.1/bar", true, false},
+    SimpleDefinition{"https://some.where/bar", true, true},
+};
+
+INSTANTIATE_TEST_SUITE_P(TestNetworkFileItemClassify, RemoteTest, testing::ValuesIn(remote_tests));
 
 class StreamedFilesystemTest : public testing::WithParamInterface<SimpleDefinition>,
                                public testing::Test

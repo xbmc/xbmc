@@ -17,6 +17,7 @@
 #include "filesystem/StackDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "music/MusicFileItemClassify.h"
+#include "network/NetworkFileItemClassify.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -758,7 +759,7 @@ void CFileItemList::StackFolders()
       // only check known fast sources?
       // NOTES:
       // 1. rars and zips may be on slow sources? is this supposed to be allowed?
-      if (!item->IsRemote() || item->IsSmb() || item->IsNfs() ||
+      if (!NETWORK::IsRemote(*item) || item->IsSmb() || item->IsNfs() ||
           URIUtils::IsInRAR(item->GetPath()) || URIUtils::IsInZIP(item->GetPath()) ||
           URIUtils::IsOnLAN(item->GetPath()))
       {

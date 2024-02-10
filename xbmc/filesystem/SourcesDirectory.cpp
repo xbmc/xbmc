@@ -16,6 +16,7 @@
 #include "guilib/TextureManager.h"
 #include "media/MediaLockState.h"
 #include "music/MusicFileItemClassify.h"
+#include "network/NetworkFileItemClassify.h"
 #include "profiles/ProfileManager.h"
 #include "settings/MediaSourceSettings.h"
 #include "storage/MediaManager.h"
@@ -75,7 +76,7 @@ bool CSourcesDirectory::GetDirectory(const VECSOURCES &sources, CFileItemList &i
     else if (VIDEO::IsVideoDb(*pItem) || MUSIC::IsMusicDb(*pItem) || pItem->IsPlugin() ||
              pItem->IsPath("musicsearch://"))
       strIcon = "DefaultFolder.png";
-    else if (pItem->IsRemote())
+    else if (NETWORK::IsRemote(*pItem))
       strIcon = "DefaultNetwork.png";
     else if (pItem->IsISO9660())
       strIcon = "DefaultDVDRom.png";

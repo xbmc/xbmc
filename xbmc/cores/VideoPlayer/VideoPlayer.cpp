@@ -17,6 +17,7 @@
 #include "DVDDemuxers/DVDFactoryDemuxer.h"
 #include "DVDInputStreams/DVDFactoryInputStream.h"
 #include "DVDInputStreams/DVDInputStream.h"
+#include "network/NetworkFileItemClassify.h"
 #if defined(HAVE_LIBBLURAY)
 #include "DVDInputStreams/DVDInputStreamBluray.h"
 #endif
@@ -46,6 +47,7 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
+#include "network/NetworkFileItemClassify.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -68,6 +70,7 @@
 #include <mutex>
 #include <utility>
 
+using namespace KODI;
 using namespace std::chrono_literals;
 
 //------------------------------------------------------------------------------
@@ -999,7 +1002,7 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
     CloseStream(m_CurrentAudioID3, false);
 
   // disable demux streams
-  if (m_item.IsRemote() && m_pDemuxer)
+  if (NETWORK::IsRemote(m_item) && m_pDemuxer)
   {
     for (auto &stream : m_SelectionStreams.m_Streams)
     {

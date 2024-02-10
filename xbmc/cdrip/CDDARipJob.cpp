@@ -22,6 +22,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "network/NetworkFileItemClassify.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -37,6 +38,7 @@
 using namespace ADDON;
 using namespace MUSIC_INFO;
 using namespace XFILE;
+using namespace KODI;
 using namespace KODI::CDRIP;
 
 CCDDARipJob::CCDDARipJob(const std::string& input,
@@ -66,7 +68,7 @@ bool CCDDARipJob::DoWork()
 
   // if we are ripping to a samba share, rip it to hd first and then copy it to the share
   CFileItem file(m_output, false);
-  if (file.IsRemote())
+  if (NETWORK::IsRemote(file))
     m_output = SetupTempFile();
 
   if (m_output.empty())
@@ -115,7 +117,7 @@ bool CCDDARipJob::DoWork()
   encoder.reset();
   reader.Close();
 
-  if (file.IsRemote() && !cancelled && result == 2)
+  if (NETWORK::IsRemote(file) && !cancelled && result == 2)
   {
     // copy the ripped track to the share
     if (!CFile::Copy(m_output, file.GetPath()))

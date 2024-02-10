@@ -126,7 +126,7 @@ void CPlayerSelectionRule::GetPlayers(const CFileItem& item, std::vector<std::st
     return;
   if (m_tInternetStream >= 0 && (m_tInternetStream > 0) != NETWORK::IsInternetStream(item))
     return;
-  if (m_tRemote >= 0 && (m_tRemote > 0) != item.IsRemote())
+  if (m_tRemote >= 0 && (m_tRemote > 0) != NETWORK::IsRemote(item))
     return;
 
   if (m_tBD >= 0 && (m_tBD > 0) != (VIDEO::IsBDFile(item) && item.IsOnDVD()))
