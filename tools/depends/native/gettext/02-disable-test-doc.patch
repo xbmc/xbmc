@@ -1,11 +1,11 @@
 --- a/gettext-tools/Makefile.in
 +++ b/gettext-tools/Makefile.in
-@@ -2198,7 +2198,7 @@
+@@ -3400,7 +3400,7 @@
  top_srcdir = @top_srcdir@
  AUTOMAKE_OPTIONS = 1.5 gnu no-dependencies
  ACLOCAL_AMFLAGS = -I m4 -I ../gettext-runtime/m4 -I ../m4 -I gnulib-m4 -I libgrep/gnulib-m4 -I libgettextpo/gnulib-m4
--SUBDIRS = intl gnulib-lib libgrep src libgettextpo po its projects styles emacs misc man m4 tests system-tests gnulib-tests examples doc
-+SUBDIRS = intl gnulib-lib libgrep src libgettextpo po its projects styles emacs misc man m4
+-SUBDIRS = gnulib-lib libgrep src libgettextpo po its projects styles emacs misc man m4 tests system-tests gnulib-tests examples doc
++SUBDIRS = gnulib-lib libgrep src libgettextpo po its projects styles emacs misc man m4
  
  # Allow users to use "gnulib-tool --update".
  
