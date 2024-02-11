@@ -321,7 +321,9 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         return true;
       case VIDEOPLAYER_VIDEOVERSION_NAME:
       case LISTITEM_VIDEOVERSION_NAME:
-        value = tag->GetAssetInfo().GetTitle();
+        value = tag->GetAssetInfo().GetType() == VideoAssetType::VERSION
+                    ? tag->GetAssetInfo().GetTitle()
+                    : "";
         return true;
       case VIDEOPLAYER_LASTPLAYED:
       case LISTITEM_LASTPLAYED:

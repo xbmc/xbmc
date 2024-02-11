@@ -3935,7 +3935,7 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///   \table_row3{   <b>`VideoPlayer.VideoVersionName`</b>,
 ///                  \anchor VideoPlayer_VideoVersionName
 ///                  _string_,
-///     @return String containing the version name of the currently playing video (movie) - empty if not a movie or movie version name not set
+///     @return String containing the version name of the currently playing video (movie) - empty if not a movie, version name is not set or not a version
 ///     <p><hr>
 ///     @skinning_v21 **[New Infolabel]** \link VideoPlayer_VideoVersionName `VideoPlayer.VideoVersionName`\endlink
 ///   }
@@ -6960,7 +6960,7 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///   \table_row3{   <b>`ListItem.VideoVersionName`</b>,
 ///                  \anchor ListItem_VideoVersionName
 ///                  _string_,
-///     @return String containing the name of the version of a video - empty if no version available
+///     @return String containing the name of the version of a video - empty for extras or if no version available
 ///     <p><hr>
 ///     @skinning_v21 **[New Infolabel]** \link ListItem_VideoVersionName `ListItem.VideoVersionName`\endlink
 ///   }
