@@ -219,6 +219,7 @@ private:
   bool m_overrideStyle{false};
   bool m_overridePositions{false};
   WebvttSection m_currentSection{WebvttSection::UNDEFINED};
+  CRegExp m_signatureRegex;
   CRegExp m_cueTimeRegex;
   CRegExp m_timeRegex;
   std::map<std::string, CRegExp> m_cuePropsMapRegex;

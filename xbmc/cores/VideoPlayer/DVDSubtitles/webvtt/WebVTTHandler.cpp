@@ -35,10 +35,12 @@ using namespace KODI::SUBTITLES::STYLE;
 
 namespace
 {
-// WebVTT signature
-constexpr const char* signatureCharsBOM = "\xEF\xBB\xBF\x57\x45\x42\x56\x54\x54";
-constexpr const char* signatureChars = "\x57\x45\x42\x56\x54\x54";
-constexpr char signatureLastChars[] = {'\x0A', '\x0D', '\x20', '\x09'};
+
+// WebVTT signature pattern according to spec.
+// Initial BOM is discarded by line read. Pattern is slightly less strict than spec by
+// ignoring requirement for 2 line terminators since a line read stops at first terminator.
+// Empty line which may follow would be skipped regardless in decoding steps.
+constexpr char signaturePattern[] = R"(WEBVTT(( |\t)[^\r\n]*)?)";
 
 constexpr char tagPattern[] = "<(\\/)?([^a-zA-Z >]+)?([^\\d:. >]+)?(\\.[^ >]+)?(?> ([^>]+))?>";
 
@@ -86,22 +88,6 @@ enum FlagTags
   FLAG_TAG_COLOR,
   FLAG_TAG_COUNT
 };
-
-bool ValidateSignature(const std::string& data, const char* signature)
-{
-  const size_t signatureLen = std::strlen(signature);
-  if (data.size() > signatureLen)
-  {
-    if (data.compare(0, signatureLen, signature) == 0)
-    {
-      // Check if last char is valid
-      if (std::memchr(signatureLastChars, data[signatureLen], sizeof(signatureLastChars)) !=
-          nullptr)
-        return true;
-    }
-  }
-  return false;
-}
 
 void InsertTextPos(std::string& text, const std::string& insert, int& pos)
 {
@@ -206,6 +192,8 @@ bool CWebVTTHandler::Initialize()
   AddDefaultCssClasses();
 
   // Compile regex patterns
+  if(!m_signatureRegex.RegComp(signaturePattern))
+    return false;
   if (!m_tagsRegex.RegComp(tagPattern))
     return false;
   if (!m_cueTimeRegex.RegComp(cueTimePattern))
@@ -248,10 +236,10 @@ void CWebVTTHandler::Reset()
   m_offset = 0;
 }
 
-bool CWebVTTHandler::CheckSignature(const std::string& data)
+bool CWebVTTHandler::CheckSignature(const std::string& signatureLine)
 {
-  // Check the sequence of chars to identify WebVTT signature
-  if (ValidateSignature(data, signatureCharsBOM) || ValidateSignature(data, signatureChars))
+  // Check with regex to identify WebVTT signature
+  if (m_signatureRegex.RegFind(signatureLine) >= 0)
     return true;
 
   CLog::LogF(LOGERROR, "WebVTT signature not valid");

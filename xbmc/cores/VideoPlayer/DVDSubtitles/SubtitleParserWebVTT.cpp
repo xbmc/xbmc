@@ -37,14 +37,16 @@ bool CSubtitleParserWebVTT::Open(CDVDStreamInfo& hints)
   if (!m_webvttHandler.Initialize())
     return false;
 
-  // Get the first chars to check WebVTT signature
-  if (!m_webvttHandler.CheckSignature(m_pStream->Read(10)))
+  std::string line;
+
+  // WebVTT signature is according to spec length-variable and stops
+  // with two consecutive line terminators.
+  // Get the first line to check WebVTT signature.
+  if(!(m_pStream->ReadLine(line) && m_webvttHandler.CheckSignature(line)))
     return false;
-  m_pStream->Seek(0);
 
   // Start decoding all lines
   std::vector<subtitleData> subtitleList;
-  std::string line;
 
   while (m_pStream->ReadLine(line))
   {
