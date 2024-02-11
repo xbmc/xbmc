@@ -50,7 +50,7 @@
       <volumeplus>VolumeUp</volumeplus>
       <volumeminus>VolumeDown</volumeminus>
       <mute>Mute</mute>
-      <power>ActivateWindow(ShutdownMenu)</power>
+      <power>ShutDown()</power>
       <myvideo>ActivateWindow(Videos)</myvideo>
       <mymusic>ActivateWindow(Music)</mymusic>
       <mypictures>ActivateWindow(Pictures)</mypictures>
