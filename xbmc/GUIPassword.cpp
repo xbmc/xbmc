@@ -11,6 +11,7 @@
 #include "FileItem.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
+#include "URL.h"
 #include "Util.h"
 #include "dialogs/GUIDialogGamepad.h"
 #include "dialogs/GUIDialogNumeric.h"
@@ -543,6 +544,14 @@ bool CGUIPassword::IsDatabasePathUnlocked(const std::string& strPath, VECSOURCES
 
   if (g_passwordManager.bMasterUser || profileManager->GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE)
     return true;
+
+  // Don't check plugin paths as they don't have an entry in sources.xml
+  // Base locked status on videos being locked and being in the video
+  // navigation screen (must have passed lock by then)
+  CURL url{strPath};
+  if (url.IsProtocol("plugin"))
+    return !(profileManager->GetCurrentProfile().videoLocked() &&
+             CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() != WINDOW_VIDEO_NAV);
 
   // try to find the best matching source
   bool bName = false;
