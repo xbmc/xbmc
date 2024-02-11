@@ -791,7 +791,7 @@
 		<value>$INFO[ListItem.AudioChannels]</value>
 	</variable>
 	<variable name="MediaInfoListLabelVar">
-		<value condition="Window.IsActive(selectvideoversion)">$INFO[ListItem.VideoVersionName]</value>
+		<value condition="Window.IsVisible(selectvideoversion)">$INFO[ListItem.VideoVersionName]</value>
 		<value>$INFO[ListItem.Label]</value>
 	</variable>
 	<variable name="MediaInfoListLabel2Var">
