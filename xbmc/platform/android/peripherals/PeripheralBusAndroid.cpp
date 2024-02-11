@@ -304,8 +304,8 @@ bool CPeripheralBusAndroid::OnInputDeviceEvent(const AInputEvent* event)
   auto joystickState = m_joystickStates.find(deviceId);
   if (joystickState == m_joystickStates.end())
   {
-    CLog::Log(LOGWARNING,
-              "CPeripheralBusAndroid: ignoring input event for unknown input device with ID {}",
+    CLog::Log(LOGDEBUG,
+              "CPeripheralBusAndroid: ignoring input event for non-joystick device with ID {}",
               deviceId);
     return false;
   }
