@@ -12,8 +12,8 @@ if(CMAKE_GENERATOR MATCHES "Xcode")
     set(_addons "ADDONS=${ADDONS_TO_BUILD}")
   endif()
   add_custom_target(binary-addons
-    COMMAND $(MAKE) -C ${CMAKE_SOURCE_DIR}/tools/depends/target/binary-addons clean
-    COMMAND $(MAKE) -C ${CMAKE_SOURCE_DIR}/tools/depends/target/binary-addons VERBOSE=1 V=99
+    COMMAND make -C ${CMAKE_SOURCE_DIR}/tools/depends/target/binary-addons clean
+    COMMAND make -C ${CMAKE_SOURCE_DIR}/tools/depends/target/binary-addons VERBOSE=1 V=99
           INSTALL_PREFIX="${CMAKE_BINARY_DIR}/addons" CROSS_COMPILING=yes ${_addons})
   if(ENABLE_XCODE_ADDONBUILD)
     add_dependencies(${APP_NAME_LC} binary-addons)
