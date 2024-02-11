@@ -779,15 +779,16 @@ bool CVideoGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextW
       case VIDEOPLAYER_HAS_INFO:
         value = !tag->IsEmpty();
         return true;
+      case VIDEOPLAYER_HAS_VIDEOVERSIONS:
+      case LISTITEM_HASVIDEOVERSIONS:
+        value = tag->HasVideoVersions();
+        return true;
 
       /////////////////////////////////////////////////////////////////////////////////////////////
       // LISTITEM_*
       /////////////////////////////////////////////////////////////////////////////////////////////
       case LISTITEM_IS_COLLECTION:
         value = tag->m_type == MediaTypeVideoCollection;
-        return true;
-      case LISTITEM_HASVIDEOVERSIONS:
-        value = tag->HasVideoVersions();
         return true;
       case LISTITEM_ISVIDEOEXTRA:
         value = (tag->GetAssetInfo().GetType() == VideoAssetType::EXTRA);
