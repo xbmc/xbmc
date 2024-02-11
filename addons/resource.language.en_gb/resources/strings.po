@@ -24202,11 +24202,7 @@ msgctxt "#40404"
 msgid "Remastered Version"
 msgstr ""
 
-#. Name of a video version, like "Director's Cut"
-#: xbmc/video/VideoDatabase.cpp
-msgctxt "#40405"
-msgid "4K"
-msgstr ""
+#empty string id 40405 do not reuse
 
 #. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
@@ -24280,83 +24276,7 @@ msgctxt "#40417"
 msgid "Black and White Edition"
 msgstr ""
 
-#. Name of a video version, like "Director's Cut"
-#: xbmc/video/VideoDatabase.cpp
-msgctxt "#40418"
-msgid "BluRay"
-msgstr ""
-
-#. Name of a video version, like "Director's Cut"
-#: xbmc/video/VideoDatabase.cpp
-msgctxt "#40419"
-msgid "WEB-DL"
-msgstr ""
-
-#. Name of a video version, like "Director's Cut"
-#: xbmc/video/VideoDatabase.cpp
-msgctxt "#40420"
-msgid "3D"
-msgstr ""
-
-#. Name of a video version, like "Director's Cut"
-#: xbmc/video/VideoDatabase.cpp
-msgctxt "#40421"
-msgid "8K"
-msgstr ""
-
-#. Name of a video version, like "Director's Cut"
-#: xbmc/video/VideoDatabase.cpp
-msgctxt "#40422"
-msgid "IMAX"
-msgstr ""
-
-#. Name of a video version, like "Director's Cut"
-#: xbmc/video/VideoDatabase.cpp
-msgctxt "#40423"
-msgid "UHD"
-msgstr ""
-
-#. Name of a video version, like "Director's Cut"
-#: xbmc/video/VideoDatabase.cpp
-msgctxt "#40424"
-msgid "FHD"
-msgstr ""
-
-#. Name of a video version, like "Director's Cut"
-#: xbmc/video/VideoDatabase.cpp
-msgctxt "#40425"
-msgid "HD"
-msgstr ""
-
-#. Name of a video version, like "Director's Cut"
-#: xbmc/video/VideoDatabase.cpp
-msgctxt "#40426"
-msgid "SD"
-msgstr ""
-
-#. Name of a video version, like "Director's Cut"
-#: xbmc/video/VideoDatabase.cpp
-msgctxt "#40427"
-msgid "DVD"
-msgstr ""
-
-#. Name of a video version, like "Director's Cut"
-#: xbmc/video/VideoDatabase.cpp
-msgctxt "#40428"
-msgid "VHS"
-msgstr ""
-
-#. Name of a video version, like "Director's Cut"
-#: xbmc/video/VideoDatabase.cpp
-msgctxt "#40429"
-msgid "VCD"
-msgstr ""
-
-#. Name of a video version, like "Director's Cut"
-#: xbmc/video/VideoDatabase.cpp
-msgctxt "#40430"
-msgid "REMUX"
-msgstr ""
+#empty strings from id 40418 to 40430 do not reuse
 
 #. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
