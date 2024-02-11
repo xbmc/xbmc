@@ -319,6 +319,12 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       case LISTITEM_TAGLINE:
         value = tag->m_strTagLine;
         return true;
+      case VIDEOPLAYER_VIDEOVERSION_NAME:
+      case LISTITEM_VIDEOVERSION_NAME:
+        value = tag->GetAssetInfo().GetType() == VideoAssetType::VERSION
+                    ? tag->GetAssetInfo().GetTitle()
+                    : "";
+        return true;
       case VIDEOPLAYER_LASTPLAYED:
       case LISTITEM_LASTPLAYED:
       {
@@ -520,9 +526,6 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         return true;
       case LISTITEM_VIDEO_HDR_TYPE:
         value = tag->m_streamDetails.GetVideoHdrType();
-        return true;
-      case LISTITEM_VIDEOVERSION_NAME:
-        value = tag->GetAssetInfo().GetTitle();
         return true;
       case LISTITEM_LABEL:
       {
@@ -778,15 +781,16 @@ bool CVideoGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextW
       case VIDEOPLAYER_HAS_INFO:
         value = !tag->IsEmpty();
         return true;
+      case VIDEOPLAYER_HAS_VIDEOVERSIONS:
+      case LISTITEM_HASVIDEOVERSIONS:
+        value = tag->HasVideoVersions();
+        return true;
 
       /////////////////////////////////////////////////////////////////////////////////////////////
       // LISTITEM_*
       /////////////////////////////////////////////////////////////////////////////////////////////
       case LISTITEM_IS_COLLECTION:
         value = tag->m_type == MediaTypeVideoCollection;
-        return true;
-      case LISTITEM_HASVIDEOVERSIONS:
-        value = tag->HasVideoVersions();
         return true;
       case LISTITEM_ISVIDEOEXTRA:
         value = (tag->GetAssetInfo().GetType() == VideoAssetType::EXTRA);

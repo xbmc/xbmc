@@ -2959,6 +2959,13 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///     library or from a plugin (eg director/plot etc.)
 ///     <p>
 ///   }
+///   \table_row3{   <b>`VideoPlayer.HasVideoVersions`</b>,
+///                  \anchor VideoPlayer_HasVideoVersions
+///                  _boolean_,
+///     @return **True** when the played item has multiple video versions.
+///     <p><hr>
+///     @skinning_v21 **[New Infolabel]** \link VideoPlayer_HasVideoVersions `VideoPlayer.HasVideoVersions`\endlink
+///   }
 ///   \table_row3{   <b>`VideoPlayer.Content(parameter)`</b>,
 ///                  \anchor VideoPlayer_Content
 ///                  _boolean_,
@@ -3925,6 +3932,13 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///     @skinning_v20 **[New Infolabel]** \link VideoPlayer_HdrType `VideoPlayer.HdrType`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`VideoPlayer.VideoVersionName`</b>,
+///                  \anchor VideoPlayer_VideoVersionName
+///                  _string_,
+///     @return String containing the version name of the currently playing video (movie) - empty if not a movie, version name is not set or not a version
+///     <p><hr>
+///     @skinning_v21 **[New Infolabel]** \link VideoPlayer_VideoVersionName `VideoPlayer.VideoVersionName`\endlink
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -4001,6 +4015,8 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "audiostreamcount", VIDEOPLAYER_AUDIOSTREAMCOUNT },
                                   { "hdrtype",          VIDEOPLAYER_HDR_TYPE },
                                   { "art",              VIDEOPLAYER_ART},
+                                  { "videoversionname", VIDEOPLAYER_VIDEOVERSION_NAME},
+                                  { "hasvideoversions", VIDEOPLAYER_HAS_VIDEOVERSIONS}
 };
 // clang-format on
 
@@ -6944,7 +6960,7 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///   \table_row3{   <b>`ListItem.VideoVersionName`</b>,
 ///                  \anchor ListItem_VideoVersionName
 ///                  _string_,
-///     @return String containing the name of the version of a video - empty if no version available
+///     @return String containing the name of the version of a video - empty for extras or if no version available
 ///     <p><hr>
 ///     @skinning_v21 **[New Infolabel]** \link ListItem_VideoVersionName `ListItem.VideoVersionName`\endlink
 ///   }
