@@ -30,7 +30,7 @@ public:
    *         is known to be incompatible, e.g., vob sub files.
    *  \param[in] pInputStream The input stream for the subtitle to check.
    */
-  bool IsIncompatible(CDVDInputStream* pInputStream, std::vector<uint8_t>& buf, size_t* bytesRead);
+  static bool IsIncompatible(CDVDInputStream* pInputStream, std::vector<uint8_t>& buf, size_t* bytesRead);
 
   /*!
    *  \brief Read some data of specified length, from the current position

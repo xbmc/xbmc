@@ -16,7 +16,6 @@
 #include "utils/Utf8Utils.h"
 #include "utils/log.h"
 
-#include <cstdio>
 #include <cstring>
 #include <memory>
 
@@ -28,7 +27,7 @@ bool CDVDSubtitleStream::Open(const std::string& strFile)
 {
   CFileItem item(strFile, false);
   item.SetContentLookup(false);
-  std::shared_ptr<CDVDInputStream> pInputStream(CDVDFactoryInputStream::CreateInputStream(NULL, item));
+  std::shared_ptr<CDVDInputStream> pInputStream(CDVDFactoryInputStream::CreateInputStream(nullptr, item));
   if (pInputStream && pInputStream->Open())
   {
     // prepare buffer
@@ -86,7 +85,7 @@ bool CDVDSubtitleStream::Open(const std::string& strFile)
       m_subtitleData = converted;
     }
 
-    m_arrayParser.Reset(m_subtitleData.c_str(), m_subtitleData.size());
+    m_arrayParser.Reset(m_subtitleData.c_str(), static_cast<int>(m_subtitleData.size()));
     return true;
   }
 

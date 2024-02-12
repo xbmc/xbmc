@@ -21,7 +21,6 @@
 #include "utils/log.h"
 
 #include <algorithm>
-#include <cstring>
 
 // This code follow W3C standard https://www.w3.org/TR/webvtt1/
 // Due to some Libass rendering limits some feature are not fully implemented
@@ -42,29 +41,29 @@ namespace
 // Empty line which may follow would be skipped regardless in decoding steps.
 constexpr char signaturePattern[] = R"(WEBVTT(( |\t)[^\r\n]*)?)";
 
-constexpr char tagPattern[] = "<(\\/)?([^a-zA-Z >]+)?([^\\d:. >]+)?(\\.[^ >]+)?(?> ([^>]+))?>";
+constexpr char tagPattern[] = R"(<(\/)?([^a-zA-Z >]+)?([^\d:. >]+)?(\.[^ >]+)?(?> ([^>]+))?>)";
 
 constexpr char cueTimePattern[] = "^(?>(\\d{2,}):)?(\\d{2}):(\\d{2}\\.\\d{3})"
                                   "[ \\t]*-->[ \\t]*"
                                   "(?>(\\d{2,}):)?(\\d{2}):(\\d{2}\\.\\d{3})";
 
-constexpr char timePattern[] = "<(?>(\\d{2,}):)?(\\d{2}):(\\d{2}\\.\\d{3})>";
+constexpr char timePattern[] = R"(<(?>(\d{2,}):)?(\d{2}):(\d{2}\.\d{3})>)";
 
 // Regex patterns for cue properties
 const std::map<std::string, std::string> cuePropsPatterns = {
-    {"position", "position\\:(\\d+|\\d+\\.\\d+|auto)%"},
-    {"positionAlign", "position\\:\\d+\\.\\d+%,([a-z]+)"},
-    {"size", "size\\:((\\d+\\.)?\\d+%?)"},
-    {"line", "line\\:(\\d+%|\\d+\\.\\d+%|-?\\d+|auto)(,|\\s|$)"},
+    {"position", R"(position\:(\d+|\d+\.\d+|auto)%)"},
+    {"positionAlign", R"(position\:\d+\.\d+%,([a-z]+))"},
+    {"size", R"(size\:((\d+\.)?\d+%?))"},
+    {"line", R"(line\:(\d+%|\d+\.\d+%|-?\d+|auto)(,|\s|$))"},
     {"align", "align\\:([a-z]+)"},
     {"vertical", "vertical\\:(rl|lr)"},
     {"snapToLines", "snapToLines\\:(true|false)"}};
 
-constexpr char cueCssTagPattern[] = "::cue\\(([^\\(]+)\\)|(?>(::cue)\\(?\\)?) *{";
+constexpr char cueCssTagPattern[] = R"(::cue\(([^\(]+)\)|(?>(::cue)\(?\)?) *{)";
 
 const std::map<std::string, std::string> cueCssPatterns = {
     {"colorName", "color:\\s*([a-zA-Z]+)($|;|\\s|})"},
-    {"colorRGB", "color:\\s?rgba?\\((\\d{1,3},\\d{1,3},\\d{1,3})(,\\d{1,3})?\\)"},
+    {"colorRGB", R"(color:\s?rgba?\((\d{1,3},\d{1,3},\d{1,3})(,\d{1,3})?\))"},
     {"fontStyle", "font-style:\\s*(italic)($|;|\\s|})"},
     {"fontWeight", "font-weight:\\s*(bold)($|;|\\s|})"},
     {"textDecoration", "text-decoration:\\s*(underline)($|;|\\s|})"}};
@@ -164,7 +163,7 @@ void TranslateEscapeChars(std::string& text)
 {
   if (text.find('&') != std::string::npos)
   {
-    // The specs says to use unicode
+    // The specs say to use unicode
     // U+200E for "&lrm;" and U+200F for "&rlm;"
     // but libass rendering assume the text as left-to-right,
     // to display text in the right order we have to use embedded codes
@@ -255,7 +254,7 @@ void CWebVTTHandler::DecodeLine(std::string line, std::vector<subtitleData>* sub
 
   if (m_currentSection == WebvttSection::UNDEFINED)
   {
-    if (line == "STYLE" || line == "Style:") // "Style:" Youtube spec
+    if (line == "STYLE" || line == "Style:") // "Style:" YouTube spec
     {
       m_currentSection = WebvttSection::STYLE;
       return;
@@ -275,7 +274,7 @@ void CWebVTTHandler::DecodeLine(std::string line, std::vector<subtitleData>* sub
       CRegExp regLocal;
       CRegExp regMpegTs;
 
-      if (regLocal.RegComp("LOCAL:((?:(\\d{1,}):)?(\\d{2}):(\\d{2}\\.\\d{3}))") &&
+      if (regLocal.RegComp(R"(LOCAL:((?:(\d{1,}):)?(\d{2}):(\d{2}\.\d{3})))") &&
           regMpegTs.RegComp("MPEGTS:(\\d+)"))
       {
         double tsLocalUs{0.0};
@@ -306,7 +305,7 @@ void CWebVTTHandler::DecodeLine(std::string line, std::vector<subtitleData>* sub
     else if (IsCueLine(line))
     {
       // From here we start the cue conversions,
-      // other sections should not be allowed with exception of "NOTE"
+      // other sections should not be allowed except for "NOTE"
       m_currentSection = WebvttSection::CUE;
     }
   }
@@ -592,7 +591,7 @@ void CWebVTTHandler::GetCueSettings(std::string& cueSettings)
   else
   {
     settings.position.isAuto = false;
-    settings.position.value = std::stod(cuePos.c_str());
+    settings.position.value = std::stod(cuePos);
     if (settings.position.value > 100) // Not valid
       settings.position.value = 50;
   }
@@ -612,7 +611,7 @@ void CWebVTTHandler::GetCueSettings(std::string& cueSettings)
     settings.positionAlign = WebvttAlign::AUTO;
 
   const std::string cueSize = GetCueSettingValue("size", cueSettings, "100.00");
-  settings.size = std::stod(cueSize.c_str());
+  settings.size = std::stod(cueSize);
   if (settings.size > 100.0) // Not valid
     settings.size = 100.0;
 
@@ -633,7 +632,7 @@ void CWebVTTHandler::GetCueSettings(std::string& cueSettings)
     if (cueLinePercPos != std::string::npos)
       cueLine.pop_back(); // Remove % at the end
   }
-  settings.line.value = std::stod(cueLine.c_str());
+  settings.line.value = std::stod(cueLine);
 
   // The optional "alignment" property of "line" setting is not supported.
 
@@ -697,7 +696,7 @@ void CWebVTTHandler::CalculateTextPosition(std::string& subtitleText)
   // Compute cue box "position" value
   if (settings->position.isAuto)
   {
-    // Position of cue box depends from text alignment
+    // Position of cue box depends on text alignment
     if (settings->align == WebvttAlign::LEFT)
       settings->position.value = 0;
     else if (settings->align == WebvttAlign::RIGHT)
@@ -770,7 +769,7 @@ void CWebVTTHandler::CalculateTextPosition(std::string& subtitleText)
     // From docs is specified to calculate the line position
     // by the height of the first line of text, but is not clear:
     // 1) how we can calculate the position when the text size is not fixed
-    // 2) what is the max value and if can change between webvtt files
+    // 2) what is the max value and if it can change between webvtt files
     // ref. https://www.w3.org/TR/webvtt1/#webvtt-line-cue-setting
   }
   else // Percentage line value
@@ -783,11 +782,11 @@ void CWebVTTHandler::CalculateTextPosition(std::string& subtitleText)
       cueLinePerc = settings->line.value;
   }
 
-  // The vertical margin should always referred from the top to simulate
+  // The vertical margin should always refer from the top to simulate
   // the current cue box position without a cue box.
   // But if the vertical margin is too high and the text size is very large,
   // in some cases the text could go off-screen.
-  // To try ensure that the text does not go off-screen,
+  // To try to ensure that the text does not go off-screen,
   // above a certain threshold of vertical margin we align from bottom.
   bool useAlignBottom = false;
   if (cueLinePerc >= 90)
@@ -850,7 +849,7 @@ bool CWebVTTHandler::GetBaseStyle(webvttCssStyle& style)
     }
   }
 
-  // Try find the CSS Style by cue ID
+  // Try to find the CSS Style by cue ID
   // and merge it to the base style
   if (!m_subtitleData.cueSettings.id.empty())
   {
@@ -883,7 +882,7 @@ void CWebVTTHandler::ConvertSubtitle(std::string& text)
   {
     const std::string baseStyleTag = ConvertStyleToOpenTags(flagTags, baseStyle);
     text.insert(0, baseStyleTag);
-    lastPos = baseStyleTag.length();
+    lastPos = static_cast<int>(baseStyleTag.length());
   }
 
   // Map to store opened CSS tags [tag name]+[style selector]
@@ -1009,7 +1008,7 @@ void CWebVTTHandler::InsertCssStyleStartTag(
     if (m_timeRegex.RegFind(tag.m_timestampTag) >= 0)
     {
       const double timeStart = GetTimeFromRegexTS(m_timeRegex) + m_offset;
-      // Libass works with duration instead of timestamp
+      // Libass works with duration instead of timestamp,
       // so we need to find the next timestamp
       double timeEnd = m_subtitleData.stopTime;
       if (m_timeRegex.RegFind(text) >= 0)
@@ -1117,12 +1116,12 @@ void CWebVTTHandler::ConvertAddSubtitle(std::vector<subtitleData>* subList)
       if (subList->empty())
       {
         // On segmented WebVTT, it can happen that the last subtitle entry is sent
-        // on consecutive demux packet. Hence we avoid showing overlapping subs.
+        // on consecutive demux packet. Hence, we avoid showing overlapping subs.
         return;
       }
       else
       {
-        // Youtube WebVTT can have multiple cues with same time, text and position
+        // YouTube WebVTT can have multiple cues with same time, text and position
         // sometimes with different css color but only last cue will be visible
         // this cause unexpected results on screen, so we keep only the current one
         // and delete the previous one.

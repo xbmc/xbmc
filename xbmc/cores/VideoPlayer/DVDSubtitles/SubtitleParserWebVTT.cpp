@@ -12,7 +12,6 @@
 #include "SubtitlesStyle.h"
 #include "cores/VideoPlayer/DVDSubtitles/webvtt/WebVTTHandler.h"
 #include "utils/CharArrayParser.h"
-#include "utils/StringUtils.h"
 
 #include <vector>
 

@@ -15,7 +15,7 @@
 #include <deque>
 #include <map>
 #include <memory>
-#include <stdio.h>
+#include <cstdio>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -115,12 +115,12 @@ enum class WebvttSelector
 
 struct webvttCssStyle
 {
-  webvttCssStyle() {}
+  webvttCssStyle() = default;
   webvttCssStyle(WebvttSelector selectorType,
-                 const std::string& selectorName,
+                 std::string  selectorName,
                  const std::string& colorHexRGB)
     : m_selectorType{selectorType},
-      m_selectorName{selectorName},
+      m_selectorName{std::move(selectorName)},
       // Color hex values need to be in BGR format
       m_color(colorHexRGB.substr(4, 2) + colorHexRGB.substr(2, 2) + colorHexRGB.substr(0, 2))
   {
@@ -147,8 +147,8 @@ struct tagToken
 class CWebVTTHandler
 {
 public:
-  CWebVTTHandler(){};
-  ~CWebVTTHandler(){};
+  CWebVTTHandler()= default;
+  ~CWebVTTHandler()= default;
 
   /*!
   * \brief Prepare the handler to the decoding
@@ -175,7 +175,7 @@ public:
   /*
    * \brief Return true if the margins are handled by the parser.
    */
-  bool IsForcedMargins() const { return !m_overridePositions; }
+  [[nodiscard]] bool IsForcedMargins() const { return !m_overridePositions; }
 
   /*
    * \brief Set the period start pts to sync subtitles
@@ -201,7 +201,7 @@ private:
                               int& pos,
                               int flagTags[],
                               std::deque<std::pair<std::string, webvttCssStyle*>>& cssTagsOpened);
-  void InsertCssStyleCloseTag(const tagToken& tag,
+  static void InsertCssStyleCloseTag(const tagToken& tag,
                               std::string& text,
                               int& pos,
                               int flagTags[],
@@ -210,7 +210,7 @@ private:
   bool GetBaseStyle(webvttCssStyle& style);
   void ConvertAddSubtitle(std::vector<subtitleData>* subList);
   void LoadColors();
-  double GetTimeFromRegexTS(CRegExp& regex, int indexStart = 1);
+  static double GetTimeFromRegexTS(CRegExp& regex, int indexStart = 1);
 
   // Last subtitle data added, must persist and be updated between all demuxer packages
   std::unique_ptr<subtitleData> m_lastSubtitleData;
