@@ -2157,9 +2157,9 @@ void CVideoPlayer::HandlePlaySpeed()
         // the the bigger is the error we allow
         if (m_playSpeed > DVD_PLAYSPEED_NORMAL)
         {
-          int errorwin = m_playSpeed / DVD_PLAYSPEED_NORMAL;
-          if (errorwin > 8)
-            errorwin = 8;
+          double errorwin = static_cast<double>(m_playSpeed) / DVD_PLAYSPEED_NORMAL;
+          if (errorwin > 8.0)
+            errorwin = 8.0;
           error /= errorwin;
         }
 
