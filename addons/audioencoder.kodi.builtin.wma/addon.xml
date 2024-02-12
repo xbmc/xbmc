@@ -13,6 +13,7 @@
     <assets>
       <icon>icon.png</icon>
     </assets>
+    <summary lang="af_ZA">WMA Oudio Enkodeerder</summary>
     <summary lang="be_BY">Кадавальнік WMA Audio</summary>
     <summary lang="bs_BA">WMA Audio Enkoder</summary>
     <summary lang="ca_ES">Codificador d&apos;àudio WMA</summary>
@@ -45,11 +46,12 @@
     <summary lang="tr_TR">WMA Ses Kodlayıcı</summary>
     <summary lang="uk_UA">Аудіокодер WMA</summary>
     <summary lang="zh_CN">WMA 音频编码器</summary>
+    <description lang="af_ZA">Windows Media Audio, Microsoft se oudio verlieserige formaat.</description>
     <description lang="be_BY">Windows Media Audio, гукавы фармат ад Microsoft.</description>
     <description lang="bs_BA">Windows Media Audio (WMA), Microsoftov format zvuka sa gubitkom.</description>
     <description lang="ca_ES">Windows Media Audio, el format d&apos;àudio amb pèrdua de Microsoft.</description>
     <description lang="cs_CZ">Windows Media Audio, ztrátový formát zvuku společnosti Microsoft.</description>
-    <description lang="da_DK">Windows Media Audio, Microsofts kvalitetstabende lydformat.</description>
+    <description lang="da_DK">Windows Media Audio, Microsofts lydformat med ikke-tabsfri komprimering.</description>
     <description lang="de_DE">Windows Media Audio, Microsofts verlustbehaftetes Audioformat.</description>
     <description lang="en_AU">Windows Media Audio, Microsoft’s lossy audio format.</description>
     <description lang="en_GB">Windows Media Audio, Microsoft’s lossy audio format.</description>
