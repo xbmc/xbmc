@@ -1,0 +1,24 @@
+WEBVTT arbitraryTextAfterSpaceHere00:10.851 --> 00:14.938
+[narrator] <i>This is some sample text
+of simple tags and line breaks,</i>
+
+00:15.022 --> 00:16.690
+<i>This is more text</i>
+
+00:17.441 --> 00:19.526
+<i>Another cue</i>
+
+00:19.609 --> 00:24.156
+<i>and more cues.</i>
+
+00:33.331 --> 00:35.333
+[bracketed cue]
+
+
+02:06.049 --> 02:09.177
+ALL CAPS TEXT
+WITH NO STYLING
+
+02:40.041 --> 02:43.170
+- Some standard dialogue
+- [Steve] Hi.

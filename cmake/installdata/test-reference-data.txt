@@ -8,6 +8,13 @@ xbmc/cores/VideoPlayer/test/edl/testdata/mplayertimebasedinterleavedcuts.edl
 xbmc/cores/VideoPlayer/test/edl/testdata/mplayertimebasedmixed.edl
 xbmc/cores/VideoPlayer/test/edl/testdata/snapstream.mkv.chapters.xml
 xbmc/cores/VideoPlayer/test/edl/testdata/videoredo.Vprj
+xbmc/cores/VideoPlayer/DVDSubtitles/test/webvtt/testdata/sample1_minimal.vtt
+xbmc/cores/VideoPlayer/DVDSubtitles/test/webvtt/testdata/sample2_text_space_lf.vtt
+xbmc/cores/VideoPlayer/DVDSubtitles/test/webvtt/testdata/sample3_text_tab_lf.vtt
+xbmc/cores/VideoPlayer/DVDSubtitles/test/webvtt/testdata/sample4_text_space_crlf.vtt
+xbmc/cores/VideoPlayer/DVDSubtitles/test/webvtt/testdata/sample5_text_tab_crlf.vtt
+xbmc/cores/VideoPlayer/DVDSubtitles/test/webvtt/testdata/sample6_text_space_crcr.vtt
+xbmc/cores/VideoPlayer/DVDSubtitles/test/webvtt/testdata/sample7_minimal_BOM.vtt
 xbmc/filesystem/test/data/httpdirectory/apache-default.html
 xbmc/filesystem/test/data/httpdirectory/apache-fancy.html
 xbmc/filesystem/test/data/httpdirectory/apache-html.html
