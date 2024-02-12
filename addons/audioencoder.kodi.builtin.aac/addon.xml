@@ -13,6 +13,7 @@
     <assets>
       <icon>icon.png</icon>
     </assets>
+    <summary lang="af_ZA">AAC Oudio Enkodeerder</summary>
     <summary lang="be_BY">Кадавальнік AAC Audio</summary>
     <summary lang="bs_BA">AAC Audio Enkoder</summary>
     <summary lang="ca_ES">Codificador d&apos;àudio AAC</summary>
@@ -46,6 +47,7 @@
     <summary lang="tr_TR">AAC Ses Kodlayıcı</summary>
     <summary lang="uk_UA">Кодувальник аудіо AAC</summary>
     <summary lang="zh_CN">AAC 音频编码器</summary>
+    <description lang="af_ZA">AAC is &apos;n stel van codecs ontwerp om beter kompressie te lewer as MP3s, en is verbeterde weergawes van MPEG oudio.</description>
     <description lang="be_BY">AAC - набор кодакаў, распрацаваны для забеспячэння сціскання, лепшага за MP3, і ёсць палепшанымі версіямі аўдыё MPEG.</description>
     <description lang="bs_BA">AAC je skupina kodeka dizajnirana da pruži bolje sabijanje od MP3-a, te su poboljšane verzije MPEG audia.</description>
     <description lang="ca_ES">AAC és un conjunt de còdecs dissenyats per proporcionar una millor compressió que els MP3 i són versions millorades de l&apos;àudio MPEG.</description>
