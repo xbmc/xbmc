@@ -339,7 +339,9 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
                                    const vecText& text,
                                    uint32_t alignment,
                                    float maxPixelWidth,
-                                   bool scrolling)
+                                   bool scrolling,
+                                   float dx,
+                                   float dy)
 {
   if (text.empty())
   {
@@ -351,20 +353,38 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
   bool dirtyCache(false);
 
 #if defined(HAS_GL)
+  // round coordinates to the pixel grid. otherwise, we might sample at the wrong positions.
+  if (!scrolling)
+    x = std::round(x);
+  y = std::round(y);
+#else
+  x += dx;
+  y += dy;
+#endif
+
+#if defined(HAS_GL)
   // GL can scissor and shader clip
   const bool hardwareClipping = true;
 #else
   // FIXME: remove static (CPU based) clipping for GLES/DX
   const bool hardwareClipping = m_renderSystem->ScissorsCanEffectClipping();
 #endif
+
+  // FIXME: remove positional stuff once GLES/DX are brought up to date
   CGUIFontCacheStaticPosition staticPos(x, y);
   CGUIFontCacheDynamicPosition dynamicPos;
+
+#if defined(HAS_GL)
+  // dummy positions for the time being
+  dynamicPos = CGUIFontCacheDynamicPosition(0.0f, 0.0f, 0.0f);
+#else
   if (hardwareClipping)
   {
     dynamicPos =
         CGUIFontCacheDynamicPosition(context.ScaleFinalXCoord(x, y), context.ScaleFinalYCoord(x, y),
                                      context.ScaleFinalZCoord(x, y));
   }
+#endif
 
   CVertexBuffer unusedVertexBuffer;
   CVertexBuffer& vertexBuffer =
@@ -395,8 +415,14 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
   {
     const std::vector<Glyph> glyphs = GetHarfBuzzShapedGlyphs(text);
     // save the origin, which is scaled separately
+#if defined(HAS_GL)
+    // the origin is now at [0,0], and not at "random" locations anymore. positioning is done in the vertex shader.
+    m_originX = 0;
+    m_originY = 0;
+#else
     m_originX = x;
     m_originY = y;
+#endif
 
     // cache the ellipses width
     if (!m_ellipseCached)
@@ -630,7 +656,11 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
                                 scrolling, std::chrono::steady_clock::now(), dirtyCache);
       CVertexBuffer newVertexBuffer = CreateVertexBuffer(*tempVertices);
       vertexBuffer = newVertexBuffer;
+#if defined(HAS_GL)
+      m_vertexTrans.emplace_back(x, y, 0.0f, &vertexBuffer, context.GetClipRegion(), dx, dy);
+#else
       m_vertexTrans.emplace_back(.0f, .0f, .0f, &vertexBuffer, context.GetClipRegion());
+#endif
     }
     else
     {
@@ -644,8 +674,12 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
   else
   {
     if (hardwareClipping)
+#if defined(HAS_GL)
+      m_vertexTrans.emplace_back(x, y, 0.0f, &vertexBuffer, context.GetClipRegion(), dx, dy);
+#else
       m_vertexTrans.emplace_back(dynamicPos.m_x, dynamicPos.m_y, dynamicPos.m_z, &vertexBuffer,
                                  context.GetClipRegion());
+#endif
     else
       /* Append the vertices from the cache to the set collected since the first Begin() call */
       m_vertex.insert(m_vertex.end(), vertices->begin(), vertices->end());
@@ -1175,8 +1209,10 @@ void CGUIFontTTF::RenderCharacter(CGraphicContext& context,
 
   // nudge position to align with raster grid. messes up kerning, but also avoids
   // linear filtering (when not scaled/rotated).
-  float xOffset = vertex.x1 - std::round(vertex.x1);
-  float yOffset = vertex.y1 - std::round(vertex.y1);
+  float xOffset = 0.0f;
+  if (roundX)
+    xOffset = std::abs(vertex.x1 - std::round(vertex.x1));
+  float yOffset = std::abs(vertex.y1 - std::round(vertex.y1));
 
   v[0].u = tl;
   v[0].v = tt;

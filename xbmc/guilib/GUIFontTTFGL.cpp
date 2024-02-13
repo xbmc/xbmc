@@ -64,10 +64,10 @@ bool CGUIFontTTFGL::FirstBegin()
   else
     internalFormat = GL_LUMINANCE;
 
+  renderSystem->EnableShader(ShaderMethodGL::SM_FONTS);
   if (renderSystem->ScissorsCanEffectClipping())
   {
     m_scissorClip = true;
-    renderSystem->EnableShader(ShaderMethodGL::SM_FONTS);
   }
   else
   {
@@ -187,16 +187,28 @@ void CGUIFontTTFGL::LastEnd()
       else
       {
         // clip using vertex shader
-        glUniform4f(clipUniformLoc, m_vertexTrans[i].m_clip.x1, m_vertexTrans[i].m_clip.y1,
-                    m_vertexTrans[i].m_clip.x2, m_vertexTrans[i].m_clip.y2);
+        renderSystem->ResetScissors();
+
+        float x1 =
+            m_vertexTrans[i].m_clip.x1 - m_vertexTrans[i].m_translateX - m_vertexTrans[i].m_offsetX;
+        float y1 =
+            m_vertexTrans[i].m_clip.y1 - m_vertexTrans[i].m_translateY - m_vertexTrans[i].m_offsetY;
+        float x2 =
+            m_vertexTrans[i].m_clip.x2 - m_vertexTrans[i].m_translateX - m_vertexTrans[i].m_offsetX;
+        float y2 =
+            m_vertexTrans[i].m_clip.y2 - m_vertexTrans[i].m_translateY - m_vertexTrans[i].m_offsetY;
+
+        glUniform4f(clipUniformLoc, x1, y1, x2, y2);
         glUniform4f(coordStepUniformLoc, 1.0f / static_cast<float>(m_textureWidth),
                     1.0f / static_cast<float>(m_textureHeight), 1.0f, 1.0f);
       }
 
-      // proj * model * gui
+      // proj * model * scroll * gui * translation
       CMatrixGL matrix = glMatrixProject.Get();
       matrix.MultMatrixf(glMatrixModview.Get());
+      matrix.Translatef(m_vertexTrans[i].m_offsetX, m_vertexTrans[i].m_offsetY, 0.0f);
       matrix.MultMatrixf(CMatrixGL(context.GetGUIMatrix()));
+      matrix.Translatef(m_vertexTrans[i].m_translateX, m_vertexTrans[i].m_translateY, 0.0f);
 
       glUniformMatrix4fv(matrixUniformLoc, 1, GL_FALSE, matrix);
 
