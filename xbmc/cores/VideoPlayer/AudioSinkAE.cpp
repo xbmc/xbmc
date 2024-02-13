@@ -112,11 +112,12 @@ unsigned int CAudioSinkAE::AddPackets(const DVDAudioFrame &audioframe)
     m_syncError = 0.0;
   }
 
-  //Calculate a timeout when this definitely should be done
+  // Calculate a timeout when this definitely should be done
   double timeout;
   timeout  = DVD_SEC_TO_TIME(m_pAudioStream->GetDelay()) + audioframe.duration;
   timeout += DVD_SEC_TO_TIME(1.0);
   timeout += m_pClock->GetAbsoluteClock();
+  timeout *= m_pClock->GetClockSpeed();
 
   unsigned int total = audioframe.nb_frames - audioframe.framesOut;
   unsigned int frames = total;
