@@ -382,59 +382,8 @@ bool CPeripheralBusAndroid::ConvertToPeripheralScanResult(
   if (!inputDevice.supportsSource(CJNIViewInputDevice::SOURCE_JOYSTICK) &&
       !inputDevice.supportsSource(CJNIViewInputDevice::SOURCE_GAMEPAD))
   {
-    // Observed an anomylous PS4 controller with only SOURCE_MOUSE
-    if (!inputDevice.supportsSource(CJNIViewInputDevice::SOURCE_MOUSE))
-    {
-      CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: ignoring non-joystick device");
-      return false;
-    }
-
-    // Make sure the anomylous controller has buttons
-    // clang-format off
-    std::vector<int> buttons{
-        AKEYCODE_BUTTON_A,
-        AKEYCODE_BUTTON_B,
-        AKEYCODE_BUTTON_C,
-        AKEYCODE_BUTTON_X,
-        AKEYCODE_BUTTON_Y,
-        AKEYCODE_BUTTON_Z,
-        AKEYCODE_BUTTON_L1,
-        AKEYCODE_BUTTON_R1,
-        AKEYCODE_BUTTON_L2,
-        AKEYCODE_BUTTON_R2,
-        AKEYCODE_BUTTON_THUMBL,
-        AKEYCODE_BUTTON_THUMBR,
-        AKEYCODE_BUTTON_START,
-        AKEYCODE_BUTTON_SELECT,
-        AKEYCODE_BUTTON_MODE,
-        AKEYCODE_BUTTON_1,
-        AKEYCODE_BUTTON_2,
-        AKEYCODE_BUTTON_3,
-        AKEYCODE_BUTTON_4,
-        AKEYCODE_BUTTON_5,
-        AKEYCODE_BUTTON_6,
-        AKEYCODE_BUTTON_7,
-        AKEYCODE_BUTTON_8,
-        AKEYCODE_BUTTON_9,
-        AKEYCODE_BUTTON_10,
-        AKEYCODE_BUTTON_11,
-        AKEYCODE_BUTTON_12,
-        AKEYCODE_BUTTON_13,
-        AKEYCODE_BUTTON_14,
-        AKEYCODE_BUTTON_15,
-        AKEYCODE_BUTTON_16,
-    };
-    // clang-format on
-
-    auto result = inputDevice.hasKeys(buttons);
-
-    if (std::find(result.begin(), result.end(), true) == result.end())
-    {
-      CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: ignoring non-joystick device with mouse source");
-      return false;
-    }
-
-    CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: adding non-joystick device with mouse source");
+    CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: ignoring non-joystick device");
+    return false;
   }
 
   peripheralScanResult.m_type = PERIPHERAL_JOYSTICK;
