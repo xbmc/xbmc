@@ -40,14 +40,14 @@ CAddonInputHandling::CAddonInputHandling(CPeripherals& manager,
     m_buttonMap.reset(new CAddonButtonMap(peripheral, addon, handler->ControllerID()));
     if (m_buttonMap->Load())
     {
-      m_joystickDriverHandler = std::make_unique<CInputHandling>(handler, m_buttonMap.get());
+      m_driverHandler.reset(new CInputHandling(handler, m_buttonMap.get()));
 
       if (receiver)
       {
-        m_joystickInputReceiver = std::make_unique<CDriverReceiving>(receiver, m_buttonMap.get());
+        m_inputReceiver.reset(new CDriverReceiving(receiver, m_buttonMap.get()));
 
         // Interfaces are connected here because they share button map as a common resource
-        handler->SetInputReceiver(m_joystickInputReceiver.get());
+        handler->SetInputReceiver(m_inputReceiver.get());
       }
     }
     else
@@ -72,8 +72,7 @@ CAddonInputHandling::CAddonInputHandling(CPeripherals& manager,
     m_buttonMap.reset(new CAddonButtonMap(peripheral, addon, handler->ControllerID()));
     if (m_buttonMap->Load())
     {
-      m_keyboardDriverHandler =
-          std::make_unique<KEYBOARD::CKeyboardInputHandling>(handler, m_buttonMap.get());
+      m_keyboardHandler.reset(new KEYBOARD::CKeyboardInputHandling(handler, m_buttonMap.get()));
     }
     else
     {
@@ -97,8 +96,7 @@ CAddonInputHandling::CAddonInputHandling(CPeripherals& manager,
     m_buttonMap.reset(new CAddonButtonMap(peripheral, addon, handler->ControllerID()));
     if (m_buttonMap->Load())
     {
-      m_mouseDriverHandler =
-          std::make_unique<MOUSE::CMouseInputHandling>(handler, m_buttonMap.get());
+      m_mouseHandler.reset(new MOUSE::CMouseInputHandling(handler, m_buttonMap.get()));
     }
     else
     {
@@ -109,25 +107,24 @@ CAddonInputHandling::CAddonInputHandling(CPeripherals& manager,
 
 CAddonInputHandling::~CAddonInputHandling(void)
 {
-  m_joystickDriverHandler.reset();
-  m_joystickInputReceiver.reset();
-  m_keyboardDriverHandler.reset();
-  m_mouseDriverHandler.reset();
+  m_driverHandler.reset();
+  m_inputReceiver.reset();
+  m_keyboardHandler.reset();
   m_buttonMap.reset();
 }
 
 bool CAddonInputHandling::OnButtonMotion(unsigned int buttonIndex, bool bPressed)
 {
-  if (m_joystickDriverHandler)
-    return m_joystickDriverHandler->OnButtonMotion(buttonIndex, bPressed);
+  if (m_driverHandler)
+    return m_driverHandler->OnButtonMotion(buttonIndex, bPressed);
 
   return false;
 }
 
 bool CAddonInputHandling::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
 {
-  if (m_joystickDriverHandler)
-    return m_joystickDriverHandler->OnHatMotion(hatIndex, state);
+  if (m_driverHandler)
+    return m_driverHandler->OnHatMotion(hatIndex, state);
 
   return false;
 }
@@ -137,58 +134,58 @@ bool CAddonInputHandling::OnAxisMotion(unsigned int axisIndex,
                                        int center,
                                        unsigned int range)
 {
-  if (m_joystickDriverHandler)
-    return m_joystickDriverHandler->OnAxisMotion(axisIndex, position, center, range);
+  if (m_driverHandler)
+    return m_driverHandler->OnAxisMotion(axisIndex, position, center, range);
 
   return false;
 }
 
 void CAddonInputHandling::OnInputFrame(void)
 {
-  if (m_joystickDriverHandler)
-    m_joystickDriverHandler->OnInputFrame();
+  if (m_driverHandler)
+    m_driverHandler->OnInputFrame();
 }
 
 bool CAddonInputHandling::OnKeyPress(const CKey& key)
 {
-  if (m_keyboardDriverHandler)
-    return m_keyboardDriverHandler->OnKeyPress(key);
+  if (m_keyboardHandler)
+    return m_keyboardHandler->OnKeyPress(key);
 
   return false;
 }
 
 void CAddonInputHandling::OnKeyRelease(const CKey& key)
 {
-  if (m_keyboardDriverHandler)
-    m_keyboardDriverHandler->OnKeyRelease(key);
+  if (m_keyboardHandler)
+    m_keyboardHandler->OnKeyRelease(key);
 }
 
 bool CAddonInputHandling::OnPosition(int x, int y)
 {
-  if (m_mouseDriverHandler)
-    return m_mouseDriverHandler->OnPosition(x, y);
+  if (m_mouseHandler)
+    return m_mouseHandler->OnPosition(x, y);
 
   return false;
 }
 
 bool CAddonInputHandling::OnButtonPress(MOUSE::BUTTON_ID button)
 {
-  if (m_mouseDriverHandler)
-    return m_mouseDriverHandler->OnButtonPress(button);
+  if (m_mouseHandler)
+    return m_mouseHandler->OnButtonPress(button);
 
   return false;
 }
 
 void CAddonInputHandling::OnButtonRelease(MOUSE::BUTTON_ID button)
 {
-  if (m_mouseDriverHandler)
-    m_mouseDriverHandler->OnButtonRelease(button);
+  if (m_mouseHandler)
+    m_mouseHandler->OnButtonRelease(button);
 }
 
 bool CAddonInputHandling::SetRumbleState(const JOYSTICK::FeatureName& feature, float magnitude)
 {
-  if (m_joystickInputReceiver)
-    return m_joystickInputReceiver->SetRumbleState(feature, magnitude);
+  if (m_inputReceiver)
+    return m_inputReceiver->SetRumbleState(feature, magnitude);
 
   return false;
 }
