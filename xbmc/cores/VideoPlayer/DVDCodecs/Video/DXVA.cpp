@@ -29,6 +29,7 @@
 #include "utils/SystemInfo.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <mutex>
 
 #include <Windows.h>
@@ -1376,7 +1377,8 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, enum AVPixel
     break;
   case AV_CODEC_ID_H264:
     // by specification h264 decoder can hold up to 16 unique refs
-    m_refs += avctx->refs ? avctx->refs : 16;
+    // but use 8 at least to avoid potential issues in some rare streams
+    m_refs += std::max(8, avctx->refs ? avctx->refs : 16);
     break;
   case AV_CODEC_ID_VP9:
     m_refs += 8;
