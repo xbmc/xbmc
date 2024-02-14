@@ -454,34 +454,31 @@ bool CButtonMapping::MapPrimitive(const CDriverPrimitive& primitive)
 {
   bool bHandled = false;
 
-  if (m_buttonMap->IsIgnored(primitive))
+  auto now = std::chrono::steady_clock::now();
+
+  bool bTimeoutElapsed = true;
+
+  if (m_buttonMapper->NeedsCooldown())
+    bTimeoutElapsed = (now >= m_lastAction + std::chrono::milliseconds(MAPPING_COOLDOWN_MS));
+
+  if (bTimeoutElapsed)
+  {
+    bHandled = m_buttonMapper->MapPrimitive(m_buttonMap, m_keymap, primitive);
+
+    if (bHandled)
+      m_lastAction = std::chrono::steady_clock::now();
+  }
+  else if (m_buttonMap->IsIgnored(primitive))
   {
     bHandled = true;
   }
   else
   {
-    auto now = std::chrono::steady_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_lastAction);
 
-    bool bTimeoutElapsed = true;
-
-    if (m_buttonMapper->NeedsCooldown())
-      bTimeoutElapsed = (now >= m_lastAction + std::chrono::milliseconds(MAPPING_COOLDOWN_MS));
-
-    if (bTimeoutElapsed)
-    {
-      bHandled = m_buttonMapper->MapPrimitive(m_buttonMap, m_keymap, primitive);
-
-      if (bHandled)
-        m_lastAction = std::chrono::steady_clock::now();
-    }
-    else
-    {
-      auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_lastAction);
-
-      CLog::Log(LOGDEBUG, "Button mapping: rapid input after {}ms dropped for profile \"{}\"",
-                duration.count(), m_buttonMapper->ControllerID());
-      bHandled = true;
-    }
+    CLog::Log(LOGDEBUG, "Button mapping: rapid input after {}ms dropped for profile \"{}\"",
+              duration.count(), m_buttonMapper->ControllerID());
+    bHandled = true;
   }
 
   return bHandled;
