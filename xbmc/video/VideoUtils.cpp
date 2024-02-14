@@ -17,11 +17,14 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
+#include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoTag.h"
 
+#include <algorithm>
+#include <array>
 #include <cstdint>
 #include <vector>
 
@@ -177,6 +180,37 @@ VIDEO_UTILS::ResumeInformation GetNonFolderItemResumeInformation(const CFileItem
 
 namespace VIDEO_UTILS
 {
+std::string GetOpticalMediaPath(const CFileItem& item)
+{
+  std::string path;
+  path = URIUtils::AddFileToFolder(item.GetPath(), "VIDEO_TS.IFO");
+  if (CFileUtils::Exists(path))
+    return path;
+
+  path = URIUtils::AddFileToFolder(item.GetPath(), "VIDEO_TS", "VIDEO_TS.IFO");
+  if (CFileUtils::Exists(path))
+    return path;
+
+#ifdef HAVE_LIBBLURAY
+  path = URIUtils::AddFileToFolder(item.GetPath(), "index.bdmv");
+  if (CFileUtils::Exists(path))
+    return path;
+
+  path = URIUtils::AddFileToFolder(item.GetPath(), "BDMV", "index.bdmv");
+  if (CFileUtils::Exists(path))
+    return path;
+
+  path = URIUtils::AddFileToFolder(item.GetPath(), "INDEX.BDM");
+  if (CFileUtils::Exists(path))
+    return path;
+
+  path = URIUtils::AddFileToFolder(item.GetPath(), "BDMV", "INDEX.BDM");
+  if (CFileUtils::Exists(path))
+    return path;
+#endif
+  return std::string();
+}
+
 bool IsAutoPlayNextItem(const CFileItem& item)
 {
   if (!item.HasVideoInfoTag())

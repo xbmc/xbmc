@@ -286,7 +286,8 @@ bool CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem)
       CDirectory::GetDirectory(item.GetPath(), items, fileExts, DIR_FLAG_DEFAULTS);
 
       // Check for cases 1_dir/1_dir/.../file (e.g. by packages where have a extra folder)
-      while (items.Size() == 1 && items[0]->m_bIsFolder && items[0]->GetOpticalMediaPath().empty())
+      while (items.Size() == 1 && items[0]->m_bIsFolder &&
+             VIDEO_UTILS::GetOpticalMediaPath(*items[0]).empty())
       {
         const std::string path = items[0]->GetPath();
         items.Clear();
