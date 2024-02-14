@@ -1,9 +1,7 @@
 set(SOURCES Controller.cpp
             ControllerLayout.cpp
             ControllerManager.cpp
-            ControllerTranslator.cpp
-            DefaultController.cpp
-)
+            ControllerTranslator.cpp)
 
 set(HEADERS Controller.h
             ControllerDefinitions.h
@@ -11,8 +9,6 @@ set(HEADERS Controller.h
             ControllerLayout.h
             ControllerManager.h
             ControllerTranslator.h
-            ControllerTypes.h
-            DefaultController.h
-)
+            ControllerTypes.h)
 
 core_add_library(games_controller)
