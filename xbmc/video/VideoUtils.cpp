@@ -182,33 +182,23 @@ namespace VIDEO_UTILS
 {
 std::string GetOpticalMediaPath(const CFileItem& item)
 {
-  std::string path;
-  path = URIUtils::AddFileToFolder(item.GetPath(), "VIDEO_TS.IFO");
-  if (CFileUtils::Exists(path))
-    return path;
+  auto exists = [&item](const std::string& file)
+  {
+    const std::string path = URIUtils::AddFileToFolder(item.GetPath(), file);
+    return CFileUtils::Exists(path);
+  };
 
-  path = URIUtils::AddFileToFolder(item.GetPath(), "VIDEO_TS", "VIDEO_TS.IFO");
-  if (CFileUtils::Exists(path))
-    return path;
-
+  using namespace std::string_literals;
+  const auto files = std::array{
+      "VIDEO_TS.IFO"s,    "VIDEO_TS/VIDEO_TS.IFO"s,
 #ifdef HAVE_LIBBLURAY
-  path = URIUtils::AddFileToFolder(item.GetPath(), "index.bdmv");
-  if (CFileUtils::Exists(path))
-    return path;
-
-  path = URIUtils::AddFileToFolder(item.GetPath(), "BDMV", "index.bdmv");
-  if (CFileUtils::Exists(path))
-    return path;
-
-  path = URIUtils::AddFileToFolder(item.GetPath(), "INDEX.BDM");
-  if (CFileUtils::Exists(path))
-    return path;
-
-  path = URIUtils::AddFileToFolder(item.GetPath(), "BDMV", "INDEX.BDM");
-  if (CFileUtils::Exists(path))
-    return path;
+      "index.bdmv"s,      "INDEX.BDM"s,
+      "BDMV/index.bdmv"s, "BDMV/INDEX.BDM"s,
 #endif
-  return std::string();
+  };
+
+  const auto it = std::find_if(files.begin(), files.end(), exists);
+  return it != files.end() ? URIUtils::AddFileToFolder(item.GetPath(), *it) : std::string{};
 }
 
 bool IsAutoPlayNextItem(const CFileItem& item)
