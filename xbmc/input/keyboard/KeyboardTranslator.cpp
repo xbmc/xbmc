@@ -491,5 +491,5 @@ const char* CKeyboardTranslator::TranslateKeycode(XBMCKey keycode)
       break;
   }
 
-  return "unknown";
+  return "";
 }
