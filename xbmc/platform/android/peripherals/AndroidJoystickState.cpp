@@ -54,15 +54,15 @@ static void MapAxisIds(int axisId,
 
   if (axisIds.empty())
   {
-    axisIds.emplace_back(primaryAxisId);
-    axisIds.emplace_back(secondaryAxisId);
+    axisIds.push_back(primaryAxisId);
+    axisIds.push_back(secondaryAxisId);
   }
 
   if (axisIds.size() > 1)
     return;
 
   if (axisId == primaryAxisId)
-    axisIds.emplace_back(secondaryAxisId);
+    axisIds.push_back(secondaryAxisId);
   else if (axisId == secondaryAxisId)
     axisIds.insert(axisIds.begin(), primaryAxisId);
 }
@@ -140,10 +140,10 @@ bool CAndroidJoystickState::Initialize(const CJNIViewInputDevice& inputDevice)
       MapAxisIds(axisId, AMOTION_EVENT_AXIS_LTRIGGER, AMOTION_EVENT_AXIS_BRAKE, axis.ids);
       MapAxisIds(axisId, AMOTION_EVENT_AXIS_RTRIGGER, AMOTION_EVENT_AXIS_GAS, axis.ids);
 
-      m_axes.emplace_back(std::move(axis));
+      m_axes.push_back(axis);
       CLog::Log(LOGDEBUG,
                 "CAndroidJoystickState: axis {} on input device \"{}\" with ID {} detected",
-                PrintAxisIds(m_axes.back().ids), deviceName, m_deviceId);
+                PrintAxisIds(axis.ids), deviceName, m_deviceId);
     }
     else
       CLog::Log(LOGWARNING,
@@ -152,29 +152,29 @@ bool CAndroidJoystickState::Initialize(const CJNIViewInputDevice& inputDevice)
   }
 
   // add the usual suspects
-  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_BUTTON_A}});
-  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_BUTTON_B}});
-  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_BUTTON_C}});
-  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_BUTTON_X}});
-  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_BUTTON_Y}});
-  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_BUTTON_Z}});
-  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_BACK}});
-  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_MENU}});
-  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_HOME}});
-  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_BUTTON_SELECT}});
-  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_BUTTON_MODE}});
-  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_BUTTON_START}});
-  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_BUTTON_L1}});
-  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_BUTTON_R1}});
-  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_BUTTON_L2}});
-  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_BUTTON_R2}});
-  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_BUTTON_THUMBL}});
-  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_BUTTON_THUMBR}});
-  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_DPAD_UP}});
-  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_DPAD_RIGHT}});
-  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_DPAD_DOWN}});
-  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_DPAD_LEFT}});
-  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_DPAD_CENTER}});
+  m_buttons.push_back({{AKEYCODE_BUTTON_A}});
+  m_buttons.push_back({{AKEYCODE_BUTTON_B}});
+  m_buttons.push_back({{AKEYCODE_BUTTON_C}});
+  m_buttons.push_back({{AKEYCODE_BUTTON_X}});
+  m_buttons.push_back({{AKEYCODE_BUTTON_Y}});
+  m_buttons.push_back({{AKEYCODE_BUTTON_Z}});
+  m_buttons.push_back({{AKEYCODE_BACK}});
+  m_buttons.push_back({{AKEYCODE_MENU}});
+  m_buttons.push_back({{AKEYCODE_HOME}});
+  m_buttons.push_back({{AKEYCODE_BUTTON_SELECT}});
+  m_buttons.push_back({{AKEYCODE_BUTTON_MODE}});
+  m_buttons.push_back({{AKEYCODE_BUTTON_START}});
+  m_buttons.push_back({{AKEYCODE_BUTTON_L1}});
+  m_buttons.push_back({{AKEYCODE_BUTTON_R1}});
+  m_buttons.push_back({{AKEYCODE_BUTTON_L2}});
+  m_buttons.push_back({{AKEYCODE_BUTTON_R2}});
+  m_buttons.push_back({{AKEYCODE_BUTTON_THUMBL}});
+  m_buttons.push_back({{AKEYCODE_BUTTON_THUMBR}});
+  m_buttons.push_back({{AKEYCODE_DPAD_UP}});
+  m_buttons.push_back({{AKEYCODE_DPAD_RIGHT}});
+  m_buttons.push_back({{AKEYCODE_DPAD_DOWN}});
+  m_buttons.push_back({{AKEYCODE_DPAD_LEFT}});
+  m_buttons.push_back({{AKEYCODE_DPAD_CENTER}});
 
   // check if there are no buttons or axes at all
   if (GetButtonCount() == 0 && GetAxisCount() == 0)
@@ -237,7 +237,7 @@ bool CAndroidJoystickState::ProcessEvent(const AInputEvent* event)
           // get all potential values
           std::vector<float> values;
           for (const auto& axisId : axis.ids)
-            values.emplace_back(AMotionEvent_getAxisValue(event, axisId, pointer));
+            values.push_back(AMotionEvent_getAxisValue(event, axisId, pointer));
 
           // remove all zero values
           values.erase(std::remove(values.begin(), values.end(), 0.0f), values.end());

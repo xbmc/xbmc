@@ -208,7 +208,7 @@ void CPeripheralBusAndroid::OnInputDeviceAdded(int deviceId)
     PeripheralScanResult result;
     if (!ConvertToPeripheralScanResult(device, result))
       return;
-    m_scanResults.m_results.emplace_back(std::move(result));
+    m_scanResults.m_results.push_back(result);
   }
 
   CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: input device with ID {} added", deviceId);
@@ -345,7 +345,7 @@ PeripheralScanResults CPeripheralBusAndroid::GetInputDevices()
       continue;
 
     CLog::Log(LOGINFO, "CPeripheralBusAndroid: added input device");
-    results.m_results.emplace_back(std::move(result));
+    results.m_results.push_back(result);
   }
 
   return results;
