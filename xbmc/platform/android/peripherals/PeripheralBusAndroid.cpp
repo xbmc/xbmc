@@ -16,7 +16,6 @@
 #include "utils/log.h"
 
 #include "platform/android/activity/XBMCApp.h"
-#include "platform/android/peripherals/AndroidJoystickState.h"
 
 #include <algorithm>
 #include <mutex>
@@ -117,50 +116,6 @@ bool CPeripheralBusAndroid::InitializeProperties(CPeripheral& peripheral)
 
   CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: Device has {} buttons and {} axes",
             joystick.ButtonCount(), joystick.AxisCount());
-
-  return true;
-}
-
-bool CPeripheralBusAndroid::InitializeButtonMap(const CPeripheral& peripheral,
-                                                KODI::JOYSTICK::IButtonMap& buttonMap) const
-{
-  int deviceId;
-  if (!GetDeviceId(peripheral.Location(), deviceId))
-  {
-    CLog::Log(LOGWARNING,
-              "CPeripheralBusAndroid: failed to initialize buttonmap due to unknown device ID for "
-              "peripheral \"{}\"",
-              peripheral.Location());
-    return false;
-  }
-
-  // get the joystick state
-  auto it = m_joystickStates.find(deviceId);
-  if (it == m_joystickStates.end())
-  {
-    CLog::Log(LOGWARNING,
-              "CPeripheralBusAndroid: joystick with device ID {} not found for peripheral \"{}\"",
-              deviceId, peripheral.Location());
-    return false;
-  }
-
-  const CAndroidJoystickState& joystick = it->second;
-  if (joystick.GetButtonCount() == 0 && joystick.GetAxisCount() == 0)
-  {
-    CLog::Log(LOGDEBUG,
-              "CPeripheralBusAndroid: joystick has no buttons or axes for peripheral \"{}\"",
-              peripheral.Location());
-    return false;
-  }
-
-  if (!joystick.InitializeButtonMap(buttonMap))
-  {
-    CLog::Log(
-        LOGDEBUG,
-        "CPeripheralBusAndroid: failed to initialize joystick buttonmap for peripheral \"{}\"",
-        peripheral.Location());
-    return false;
-  }
 
   return true;
 }
