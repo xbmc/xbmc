@@ -33,27 +33,25 @@ public:
   unsigned int GetAxisCount() const { return static_cast<unsigned int>(m_axes.size()); }
 
   /*!
-   * \brief Initialize the joystick object
-   *
-   * Joystick will be initialized before the first call to GetEvents().
-   */
+     * Initialize the joystick object. Joystick will be initialized before the
+     * first call to GetEvents().
+     */
   bool Initialize(const CJNIViewInputDevice& inputDevice);
 
   /*!
-   * \brief Deinitialize the joystick object
-   *
-   * GetEvents() will not be called after deinitialization.
-   */
+     * Deinitialize the joystick object. GetEvents() will not be called after
+     * deinitialization.
+     */
   void Deinitialize();
 
   /*!
-   * \brief Processes the given input event.
-   */
+     * Processes the given input event.
+     */
   bool ProcessEvent(const AInputEvent* event);
 
   /*!
-   * \brief Get events that have occurred since the last call to GetEvents()
-   */
+     * Get events that have occurred since the last call to GetEvents()
+     */
   void GetEvents(std::vector<kodi::addon::PeripheralEvent>& events);
 
 private:
