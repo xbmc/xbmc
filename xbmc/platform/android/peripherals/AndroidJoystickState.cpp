@@ -21,92 +21,28 @@
 
 using namespace PERIPHERALS;
 
-namespace
+static std::string PrintAxisIds(const std::vector<int>& axisIds)
 {
+  if (axisIds.empty())
+    return "";
 
-// clang-format off
-static const std::vector<int> ButtonKeycodes{
-    // add the usual suspects
-    AKEYCODE_HOME,
-    AKEYCODE_BACK,
-    AKEYCODE_DPAD_UP,
-    AKEYCODE_DPAD_DOWN,
-    AKEYCODE_DPAD_LEFT,
-    AKEYCODE_DPAD_RIGHT,
-    AKEYCODE_DPAD_CENTER,
-    AKEYCODE_MENU,
-    AKEYCODE_BUTTON_A,
-    AKEYCODE_BUTTON_B,
-    AKEYCODE_BUTTON_C,
-    AKEYCODE_BUTTON_X,
-    AKEYCODE_BUTTON_Y,
-    AKEYCODE_BUTTON_Z,
-    AKEYCODE_BUTTON_L1,
-    AKEYCODE_BUTTON_R1,
-    AKEYCODE_BUTTON_L2,
-    AKEYCODE_BUTTON_R2,
-    AKEYCODE_BUTTON_THUMBL,
-    AKEYCODE_BUTTON_THUMBR,
-    AKEYCODE_BUTTON_START,
-    AKEYCODE_BUTTON_SELECT,
-    AKEYCODE_BUTTON_MODE,
-    // add generic gamepad buttons for controllers that Android doesn't know
-    // how to map
-    AKEYCODE_BUTTON_1,
-    AKEYCODE_BUTTON_2,
-    AKEYCODE_BUTTON_3,
-    AKEYCODE_BUTTON_4,
-    AKEYCODE_BUTTON_5,
-    AKEYCODE_BUTTON_6,
-    AKEYCODE_BUTTON_7,
-    AKEYCODE_BUTTON_8,
-    AKEYCODE_BUTTON_9,
-    AKEYCODE_BUTTON_10,
-    AKEYCODE_BUTTON_11,
-    AKEYCODE_BUTTON_12,
-    AKEYCODE_BUTTON_13,
-    AKEYCODE_BUTTON_14,
-    AKEYCODE_BUTTON_15,
-    AKEYCODE_BUTTON_16,
-    // only add additional buttons at the end of the list
-};
-// clang-format on
+  if (axisIds.size() == 1)
+    return std::to_string(axisIds.front());
 
-// clang-format off
-static const std::vector<int> AxisIDs{
-    AMOTION_EVENT_AXIS_HAT_X,
-    AMOTION_EVENT_AXIS_HAT_Y,
-    AMOTION_EVENT_AXIS_X,
-    AMOTION_EVENT_AXIS_Y,
-    AMOTION_EVENT_AXIS_Z,
-    AMOTION_EVENT_AXIS_RX,
-    AMOTION_EVENT_AXIS_RY,
-    AMOTION_EVENT_AXIS_RZ,
-    AMOTION_EVENT_AXIS_LTRIGGER,
-    AMOTION_EVENT_AXIS_RTRIGGER,
-    AMOTION_EVENT_AXIS_GAS,
-    AMOTION_EVENT_AXIS_BRAKE,
-    AMOTION_EVENT_AXIS_THROTTLE,
-    AMOTION_EVENT_AXIS_RUDDER,
-    AMOTION_EVENT_AXIS_WHEEL,
-    AMOTION_EVENT_AXIS_GENERIC_1,
-    AMOTION_EVENT_AXIS_GENERIC_2,
-    AMOTION_EVENT_AXIS_GENERIC_3,
-    AMOTION_EVENT_AXIS_GENERIC_4,
-    AMOTION_EVENT_AXIS_GENERIC_5,
-    AMOTION_EVENT_AXIS_GENERIC_6,
-    AMOTION_EVENT_AXIS_GENERIC_7,
-    AMOTION_EVENT_AXIS_GENERIC_8,
-    AMOTION_EVENT_AXIS_GENERIC_9,
-    AMOTION_EVENT_AXIS_GENERIC_10,
-    AMOTION_EVENT_AXIS_GENERIC_11,
-    AMOTION_EVENT_AXIS_GENERIC_12,
-    AMOTION_EVENT_AXIS_GENERIC_13,
-    AMOTION_EVENT_AXIS_GENERIC_14,
-    AMOTION_EVENT_AXIS_GENERIC_15,
-    AMOTION_EVENT_AXIS_GENERIC_16,
-};
-// clang-format on
+  std::string strAxisIds;
+  for (const auto& axisId : axisIds)
+  {
+    if (strAxisIds.empty())
+      strAxisIds = "[";
+    else
+      strAxisIds += " | ";
+
+    strAxisIds += std::to_string(axisId);
+  }
+  strAxisIds += "]";
+
+  return strAxisIds;
+}
 
 static void MapAxisIds(int axisId,
                        int primaryAxisId,
@@ -130,7 +66,6 @@ static void MapAxisIds(int axisId,
   else if (axisId == secondaryAxisId)
     axisIds.insert(axisIds.begin(), primaryAxisId);
 }
-} // namespace
 
 CAndroidJoystickState::CAndroidJoystickState(CAndroidJoystickState&& other) noexcept
   : m_deviceId(other.m_deviceId),
@@ -165,9 +100,10 @@ bool CAndroidJoystickState::Initialize(const CJNIViewInputDevice& inputDevice)
         !motionRange.isFromSource(CJNIViewInputDevice::SOURCE_GAMEPAD))
     {
       CLog::Log(LOGDEBUG,
-                "CAndroidJoystickState: axis {} has unexpected source {} for input device \"{}\" "
+                "CAndroidJoystickState: ignoring axis {} from source {} for input device \"{}\" "
                 "with ID {}",
                 motionRange.getAxis(), motionRange.getSource(), deviceName, m_deviceId);
+      continue;
     }
 
     int axisId = motionRange.getAxis();
@@ -179,16 +115,24 @@ bool CAndroidJoystickState::Initialize(const CJNIViewInputDevice& inputDevice)
                       motionRange.getRange(),
                       motionRange.getResolution()};
 
-    // check if the axis ID belongs to a D-pad, analogue stick, trigger or
-    // generic axis
-    if (std::find(AxisIDs.begin(), AxisIDs.end(), axisId) != AxisIDs.end())
+    // check if the axis ID belongs to a D-pad, analogue stick or trigger
+    if (axisId == AMOTION_EVENT_AXIS_HAT_X || axisId == AMOTION_EVENT_AXIS_HAT_Y ||
+        axisId == AMOTION_EVENT_AXIS_X || axisId == AMOTION_EVENT_AXIS_Y ||
+        axisId == AMOTION_EVENT_AXIS_Z || axisId == AMOTION_EVENT_AXIS_RX ||
+        axisId == AMOTION_EVENT_AXIS_RY || axisId == AMOTION_EVENT_AXIS_RZ ||
+        axisId == AMOTION_EVENT_AXIS_LTRIGGER || axisId == AMOTION_EVENT_AXIS_RTRIGGER ||
+        axisId == AMOTION_EVENT_AXIS_GAS || axisId == AMOTION_EVENT_AXIS_BRAKE ||
+        axisId == AMOTION_EVENT_AXIS_THROTTLE || axisId == AMOTION_EVENT_AXIS_RUDDER ||
+        axisId == AMOTION_EVENT_AXIS_WHEEL)
     {
-      CLog::Log(LOGDEBUG, "CAndroidJoystickState:     axis found: {} ({})",
-                CAndroidJoystickTranslator::TranslateAxis(axisId), axisId);
-
       // check if this axis is already known
       if (ContainsAxis(axisId, m_axes))
+      {
+        CLog::Log(LOGWARNING,
+                  "CAndroidJoystickState: duplicate axis {} on input device \"{}\" with ID {}",
+                  PrintAxisIds(axis.ids), deviceName, m_deviceId);
         continue;
+      }
 
       // map AMOTION_EVENT_AXIS_GAS to AMOTION_EVENT_AXIS_RTRIGGER and
       // AMOTION_EVENT_AXIS_BRAKE to AMOTION_EVENT_AXIS_LTRIGGER
@@ -197,6 +141,9 @@ bool CAndroidJoystickState::Initialize(const CJNIViewInputDevice& inputDevice)
       MapAxisIds(axisId, AMOTION_EVENT_AXIS_RTRIGGER, AMOTION_EVENT_AXIS_GAS, axis.ids);
 
       m_axes.emplace_back(std::move(axis));
+      CLog::Log(LOGDEBUG,
+                "CAndroidJoystickState: axis {} on input device \"{}\" with ID {} detected",
+                PrintAxisIds(m_axes.back().ids), deviceName, m_deviceId);
     }
     else
       CLog::Log(LOGWARNING,
@@ -204,27 +151,30 @@ bool CAndroidJoystickState::Initialize(const CJNIViewInputDevice& inputDevice)
                 axisId, deviceName, m_deviceId);
   }
 
-  // check for presence of buttons
-  auto results = inputDevice.hasKeys(ButtonKeycodes);
-
-  if (results.size() != ButtonKeycodes.size())
-  {
-    CLog::Log(LOGERROR, "CAndroidJoystickState: failed to get key status for {} buttons",
-              ButtonKeycodes.size());
-    return false;
-  }
-
-  // log positive results and assign results to buttons
-  for (unsigned int i = 0; i < ButtonKeycodes.size(); ++i)
-  {
-    if (results[i])
-    {
-      const int buttonKeycode = ButtonKeycodes[i];
-      CLog::Log(LOGDEBUG, "CAndroidJoystickState:     button found: {} ({})",
-                CAndroidJoystickTranslator::TranslateKeyCode(buttonKeycode), buttonKeycode);
-      m_buttons.emplace_back(JoystickAxis{{buttonKeycode}});
-    }
-  }
+  // add the usual suspects
+  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_BUTTON_A}});
+  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_BUTTON_B}});
+  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_BUTTON_C}});
+  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_BUTTON_X}});
+  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_BUTTON_Y}});
+  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_BUTTON_Z}});
+  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_BACK}});
+  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_MENU}});
+  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_HOME}});
+  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_BUTTON_SELECT}});
+  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_BUTTON_MODE}});
+  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_BUTTON_START}});
+  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_BUTTON_L1}});
+  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_BUTTON_R1}});
+  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_BUTTON_L2}});
+  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_BUTTON_R2}});
+  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_BUTTON_THUMBL}});
+  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_BUTTON_THUMBR}});
+  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_DPAD_UP}});
+  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_DPAD_RIGHT}});
+  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_DPAD_DOWN}});
+  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_DPAD_LEFT}});
+  m_buttons.emplace_back(JoystickAxis{{AKEYCODE_DPAD_CENTER}});
 
   // check if there are no buttons or axes at all
   if (GetButtonCount() == 0 && GetAxisCount() == 0)
