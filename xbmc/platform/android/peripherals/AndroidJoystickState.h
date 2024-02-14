@@ -18,14 +18,6 @@
 struct AInputEvent;
 class CJNIViewInputDevice;
 
-namespace KODI
-{
-namespace JOYSTICK
-{
-class IButtonMap;
-} // namespace JOYSTICK
-} // namespace KODI
-
 namespace PERIPHERALS
 {
 class CAndroidJoystickState
@@ -46,18 +38,6 @@ public:
    * Joystick will be initialized before the first call to GetEvents().
    */
   bool Initialize(const CJNIViewInputDevice& inputDevice);
-
-  /*!
-   * \brief Initialize a joystick buttonmap, if possible
-   *
-   * Android has a large database of buttonmaps, which it uses to provide
-   * mapped button keycodes such as AKEYCODE_BUTTON_A. We can take advantage of
-   * this to initialize a default buttonmap based on these mappings.
-   *
-   * If Android can't map the buttons, it will use generic button keycodes such
-   * as AKEYCODE_BUTTON_1, in which case we can't initialize the buttonmap.
-   */
-  bool InitializeButtonMap(KODI::JOYSTICK::IButtonMap& buttonMap) const;
 
   /*!
    * \brief Deinitialize the joystick object
@@ -82,16 +62,6 @@ private:
 
   void GetButtonEvents(std::vector<kodi::addon::PeripheralEvent>& events);
   void GetAxisEvents(std::vector<kodi::addon::PeripheralEvent>& events) const;
-
-  bool MapButton(KODI::JOYSTICK::IButtonMap& buttonMap, int buttonKeycode) const;
-  bool MapTrigger(KODI::JOYSTICK::IButtonMap& buttonMap,
-                  int axisId,
-                  const std::string& triggerName) const;
-  bool MapDpad(KODI::JOYSTICK::IButtonMap& buttonMap, int horizAxisId, int vertAxisId) const;
-  bool MapAnalogStick(KODI::JOYSTICK::IButtonMap& buttonMap,
-                      int horizAxisId,
-                      int vertAxisId,
-                      const std::string& analogStickName) const;
 
   static float Contain(float value, float min, float max);
   static float Scale(float value, float max, float scaledMax);

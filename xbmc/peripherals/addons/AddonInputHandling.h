@@ -38,7 +38,6 @@ class IMouseInputHandler;
 namespace PERIPHERALS
 {
 class CPeripheral;
-class CPeripherals;
 class CPeripheralAddon;
 
 /*!
@@ -50,19 +49,16 @@ class CAddonInputHandling : public KODI::JOYSTICK::IDriverHandler,
                             public KODI::MOUSE::IMouseDriverHandler
 {
 public:
-  CAddonInputHandling(CPeripherals& manager,
-                      CPeripheral* peripheral,
+  CAddonInputHandling(CPeripheral* peripheral,
                       std::shared_ptr<CPeripheralAddon> addon,
                       KODI::JOYSTICK::IInputHandler* handler,
                       KODI::JOYSTICK::IDriverReceiver* receiver);
 
-  CAddonInputHandling(CPeripherals& manager,
-                      CPeripheral* peripheral,
+  CAddonInputHandling(CPeripheral* peripheral,
                       std::shared_ptr<CPeripheralAddon> addon,
                       KODI::KEYBOARD::IKeyboardInputHandler* handler);
 
-  CAddonInputHandling(CPeripherals& manager,
-                      CPeripheral* peripheral,
+  CAddonInputHandling(CPeripheral* peripheral,
                       std::shared_ptr<CPeripheralAddon> addon,
                       KODI::MOUSE::IMouseInputHandler* handler);
 
@@ -93,7 +89,6 @@ public:
 
 private:
   // Construction parameters
-  CPeripherals& m_manager;
   CPeripheral* const m_peripheral;
   const std::shared_ptr<CPeripheralAddon> m_addon;
   KODI::JOYSTICK::IInputHandler* const m_joystickInputHandler{nullptr};

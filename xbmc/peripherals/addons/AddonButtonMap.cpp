@@ -10,7 +10,6 @@
 
 #include "PeripheralAddonTranslator.h"
 #include "input/joysticks/JoystickUtils.h"
-#include "peripherals/Peripherals.h"
 #include "peripherals/devices/Peripheral.h"
 #include "utils/log.h"
 
@@ -25,9 +24,8 @@ using namespace PERIPHERALS;
 
 CAddonButtonMap::CAddonButtonMap(CPeripheral* device,
                                  const std::weak_ptr<CPeripheralAddon>& addon,
-                                 const std::string& strControllerId,
-                                 CPeripherals& manager)
-  : m_device(device), m_addon(addon), m_strControllerId(strControllerId), m_manager(manager)
+                                 const std::string& strControllerId)
+  : m_device(device), m_addon(addon), m_strControllerId(strControllerId)
 {
   auto peripheralAddon = m_addon.lock();
   assert(peripheralAddon != nullptr);
@@ -59,29 +57,6 @@ bool CAddonButtonMap::Load(void)
     bSuccess |= addon->GetAppearance(m_device, controllerAppearance);
     bSuccess |= addon->GetFeatures(m_device, m_strControllerId, features);
     bSuccess |= addon->GetIgnoredPrimitives(m_device, ignoredPrimitives);
-  }
-
-  if (features.empty())
-  {
-    // Check if we can initialize a buttonmap from the peripheral bus
-    PeripheralBusPtr peripheralBus = m_manager.GetBusByType(m_device->GetBusType());
-    if (peripheralBus)
-    {
-      CLog::Log(LOGDEBUG,
-                "Buttonmap not found for {}, attempting to initialize from peripheral bus",
-                m_device->Location());
-      if (peripheralBus->InitializeButtonMap(*m_device, *this))
-      {
-        bSuccess = true;
-
-        if (auto addon = m_addon.lock())
-        {
-          addon->GetAppearance(m_device, controllerAppearance);
-          addon->GetFeatures(m_device, m_strControllerId, features);
-          addon->GetIgnoredPrimitives(m_device, ignoredPrimitives);
-        }
-      }
-    }
   }
 
   // GetFeatures() was changed to always return false if no features were
