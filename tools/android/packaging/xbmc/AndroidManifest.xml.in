@@ -100,7 +100,7 @@
         -->
         <activity
             android:name=".Main"
-            android:configChanges="orientation|keyboard|keyboardHidden|navigation|touchscreen|screenLayout|screenSize"
+            android:configChanges="orientation|keyboard|keyboardHidden|navigation|touchscreen|screenLayout|screenSize|colorMode"
             android:finishOnTaskLaunch="true"
             android:label="@string/app_name"
             android:launchMode="singleInstance"
