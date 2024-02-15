@@ -19,6 +19,7 @@
 #include "utils/Variant.h"
 #include "utils/guilib/GUIContentUtils.h"
 #include "video/VideoUtils.h"
+#include "video/guilib/VideoGUIUtils.h"
 
 using namespace CONTEXTMENU;
 

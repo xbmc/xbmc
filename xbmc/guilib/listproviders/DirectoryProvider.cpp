@@ -37,6 +37,7 @@
 #include "video/VideoInfoTag.h"
 #include "video/VideoThumbLoader.h"
 #include "video/VideoUtils.h"
+#include "video/guilib/VideoGUIUtils.h"
 #include "video/guilib/VideoPlayActionProcessor.h"
 #include "video/guilib/VideoSelectActionProcessor.h"
 

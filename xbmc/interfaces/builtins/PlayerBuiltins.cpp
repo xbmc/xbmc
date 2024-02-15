@@ -39,6 +39,7 @@
 #include "utils/log.h"
 #include "video/PlayerController.h"
 #include "video/VideoUtils.h"
+#include "video/guilib/VideoGUIUtils.h"
 #include "video/guilib/VideoSelectActionProcessor.h"
 
 #include <math.h>

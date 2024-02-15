@@ -12,7 +12,7 @@
 #include "application/ApplicationPlayer.h"
 #include "music/MusicUtils.h"
 #include "utils/Variant.h"
-#include "video/VideoUtils.h"
+#include "video/guilib/VideoGUIUtils.h"
 
 bool CPlayerUtils::IsItemPlayable(const CFileItem& itemIn)
 {

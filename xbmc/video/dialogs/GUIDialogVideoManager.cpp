@@ -23,13 +23,14 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "playlists/PlayListTypes.h"
+#include "utils/ContentUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoManagerTypes.h"
 #include "video/VideoThumbLoader.h"
-#include "video/VideoUtils.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
+#include "video/guilib/VideoGUIUtils.h"
 #include "video/guilib/VideoPlayActionProcessor.h"
 
 #include <algorithm>
