@@ -58,7 +58,7 @@
 							<param name="texture" value="osd/fullscreen/buttons/rewind.png"/>
 						</include>
 						<onclick>PlayerControl(Rewind)</onclick>
-						<visible>[Player.SeekEnabled + !VideoPlayer.Content(livetv)] + !Player.Paused</visible>
+						<enable>[Player.SeekEnabled + !VideoPlayer.Content(livetv)] + !Player.Paused</enable>
 					</control>
 					<control type="group" id="698">
 						<width>76</width>
@@ -99,7 +99,7 @@
 							<param name="texture" value="osd/fullscreen/buttons/forward.png"/>
 						</include>
 						<onclick>PlayerControl(Forward)</onclick>
-						<visible>[Player.SeekEnabled + !VideoPlayer.Content(livetv)] + !Player.Paused</visible>
+						<enable>[Player.SeekEnabled + !VideoPlayer.Content(livetv)] + !Player.Paused</enable>
 					</control>
 					<control type="radiobutton" id="607">
 						<include content="OSDButton">
