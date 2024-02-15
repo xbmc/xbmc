@@ -180,13 +180,6 @@ public:
    */
   bool IsValid(void) const;
 
-  /*!
-   * \brief Convert primitive to a string suitable for logging
-   *
-   * \return The primitive as described by a short string, or empty if invalid
-   */
-  std::string ToString() const;
-
 private:
   PRIMITIVE_TYPE m_type = PRIMITIVE_TYPE::UNKNOWN;
   unsigned int m_driverIndex = 0;

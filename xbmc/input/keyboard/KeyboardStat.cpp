@@ -14,7 +14,6 @@
 #include "KeyboardStat.h"
 
 #include "ServiceBroker.h"
-#include "input/keyboard/KeyboardTranslator.h"
 #include "input/keyboard/KeyboardTypes.h"
 #include "input/keyboard/XBMC_keytable.h"
 #include "input/keyboard/XBMC_vkeys.h"
@@ -92,9 +91,8 @@ CKey CKeyboardStat::TranslateKey(XBMC_keysym& keysym) const
     lockingModifiers |= CKey::MODIFIER_SCROLLLOCK;
 
   CLog::Log(LOGDEBUG,
-            "Keyboard: scancode: {:#02x}, sym: {:#04x} ({}), unicode: {:#04x}, modifier: 0x{:x}",
-            keysym.scancode, keysym.sym, CKeyboardTranslator::TranslateKeycode(keysym.sym),
-            keysym.unicode, keysym.mod);
+            "Keyboard: scancode: {:#02x}, sym: {:#04x}, unicode: {:#04x}, modifier: 0x{:x}",
+            keysym.scancode, keysym.sym, keysym.unicode, keysym.mod);
 
   // The keysym.unicode is usually valid, even if it is zero. A zero
   // unicode just means this is a non-printing keypress. The ascii and
