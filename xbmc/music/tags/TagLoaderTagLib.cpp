@@ -1279,6 +1279,7 @@ bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, 
       if (!file || !file->isValid())
       {
         delete file;
+        file = nullptr;
         oggFlacFile = nullptr;
         file = oggVorbisFile = new Ogg::Vorbis::File(stream);
       }
