@@ -31,7 +31,7 @@ CAddonButtonMapping::CAddonButtonMapping(CPeripherals& manager,
   else
   {
     const std::string controllerId = mapper->ControllerID();
-    m_buttonMap = std::make_unique<CAddonButtonMap>(peripheral, addon, controllerId, manager);
+    m_buttonMap.reset(new CAddonButtonMap(peripheral, addon, controllerId));
     if (m_buttonMap->Load())
     {
       IKeymap* keymap = peripheral->GetKeymap(controllerId);

@@ -39,7 +39,6 @@ namespace PERIPHERALS
 {
 class CPeripheral;
 class CPeripherals;
-class CPeripheralAddon;
 
 class CAddonInputHandling : public KODI::JOYSTICK::IDriverHandler,
                             public KODI::JOYSTICK::IInputReceiver,
@@ -49,23 +48,18 @@ class CAddonInputHandling : public KODI::JOYSTICK::IDriverHandler,
 public:
   CAddonInputHandling(CPeripherals& manager,
                       CPeripheral* peripheral,
-                      std::shared_ptr<CPeripheralAddon> addon,
                       KODI::JOYSTICK::IInputHandler* handler,
                       KODI::JOYSTICK::IDriverReceiver* receiver);
 
   CAddonInputHandling(CPeripherals& manager,
                       CPeripheral* peripheral,
-                      std::shared_ptr<CPeripheralAddon> addon,
                       KODI::KEYBOARD::IKeyboardInputHandler* handler);
 
   CAddonInputHandling(CPeripherals& manager,
                       CPeripheral* peripheral,
-                      std::shared_ptr<CPeripheralAddon> addon,
                       KODI::MOUSE::IMouseInputHandler* handler);
 
   ~CAddonInputHandling(void) override;
-
-  bool Load();
 
   // implementation of IDriverHandler
   bool OnButtonMotion(unsigned int buttonIndex, bool bPressed) override;
@@ -89,20 +83,10 @@ public:
   bool SetRumbleState(const KODI::JOYSTICK::FeatureName& feature, float magnitude) override;
 
 private:
-  // Construction parameters
-  CPeripherals& m_manager;
-  CPeripheral* const m_peripheral;
-  const std::shared_ptr<CPeripheralAddon> m_addon;
-  KODI::JOYSTICK::IInputHandler* const m_joystickInputHandler{nullptr};
-  KODI::JOYSTICK::IDriverReceiver* const m_joystickDriverReceiver{nullptr};
-  KODI::KEYBOARD::IKeyboardInputHandler* m_keyboardInputHandler{nullptr};
-  KODI::MOUSE::IMouseInputHandler* const m_mouseInputHandler{nullptr};
-
-  // Input parameters
-  std::unique_ptr<KODI::JOYSTICK::IDriverHandler> m_joystickDriverHandler;
-  std::unique_ptr<KODI::JOYSTICK::IInputReceiver> m_joystickInputReceiver;
-  std::unique_ptr<KODI::KEYBOARD::IKeyboardDriverHandler> m_keyboardDriverHandler;
-  std::unique_ptr<KODI::MOUSE::IMouseDriverHandler> m_mouseDriverHandler;
+  std::unique_ptr<KODI::JOYSTICK::IDriverHandler> m_driverHandler;
+  std::unique_ptr<KODI::JOYSTICK::IInputReceiver> m_inputReceiver;
+  std::unique_ptr<KODI::KEYBOARD::IKeyboardDriverHandler> m_keyboardHandler;
+  std::unique_ptr<KODI::MOUSE::IMouseDriverHandler> m_mouseHandler;
   std::unique_ptr<KODI::JOYSTICK::IButtonMap> m_buttonMap;
 };
 } // namespace PERIPHERALS
