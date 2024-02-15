@@ -74,24 +74,23 @@ bool CPlayerController::OnAction(const CAction &action)
 
         bool subsOn = !appPlayer->GetSubtitleVisible();
         appPlayer->SetSubtitleVisible(subsOn);
-        std::string sub;
-        if (subsOn)
-        {
-          std::string lang;
-          SubtitleStreamInfo info;
-          appPlayer->GetSubtitleStreamInfo(CURRENT_STREAM, info);
-          if (!g_LangCodeExpander.Lookup(info.language, lang))
-            lang = g_localizeStrings.Get(13205); // Unknown
 
-          if (info.name.length() == 0)
-            sub = lang;
-          else
-            sub = StringUtils::Format("{} - {}", lang, info.name);
-        }
+        std::string sub, lang, caption = g_localizeStrings.Get(287); /*Subtitles*/
+        SubtitleStreamInfo info;
+        appPlayer->GetSubtitleStreamInfo(appPlayer->GetSubtitle(), info);
+        if (!g_LangCodeExpander.Lookup(info.language, lang))
+          lang = g_localizeStrings.Get(13205); /*Unknown*/
+
+        if (info.name.length() == 0)
+          sub = lang;
         else
-          sub = g_localizeStrings.Get(1223);
-        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
-                                              g_localizeStrings.Get(287), sub, DisplTime, false, MsgTime);
+          sub = StringUtils::Format("{} - {}", lang, info.name);
+
+        if (!subsOn)
+          caption =
+              StringUtils::Format("{}({})", caption, g_localizeStrings.Get(1223)); /*Disabled*/
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, caption, sub, DisplTime,
+                                              false, MsgTime);
         return true;
       }
 
@@ -102,28 +101,32 @@ bool CPlayerController::OnAction(const CAction &action)
           return true;
 
         int currentSub = appPlayer->GetSubtitle();
-        bool currentSubVisible = true;
+        bool previousSubVisible = appPlayer->GetSubtitleVisible();
+        bool nextSubVisible = previousSubVisible;
+        bool cycling = action.GetID() == ACTION_CYCLE_SUBTITLE;
 
-        if (appPlayer->GetSubtitleVisible())
+        if (previousSubVisible || cycling)
         {
           if (++currentSub >= appPlayer->GetSubtitleCount())
           {
             currentSub = 0;
-            if (action.GetID() == ACTION_NEXT_SUBTITLE)
+            if (!cycling)
             {
-              appPlayer->SetSubtitleVisible(false);
-              currentSubVisible = false;
+              nextSubVisible = false;
             }
           }
           appPlayer->SetSubtitle(currentSub);
         }
-        else if (action.GetID() == ACTION_NEXT_SUBTITLE)
+        else if (!cycling)
         {
-          appPlayer->SetSubtitleVisible(true);
+          nextSubVisible = true;
         }
 
-        std::string sub, lang;
-        if (currentSubVisible)
+        if (nextSubVisible != previousSubVisible)
+          appPlayer->SetSubtitleVisible(nextSubVisible);
+
+        std::string sub, lang, caption = g_localizeStrings.Get(287);
+        if (nextSubVisible || cycling)
         {
           SubtitleStreamInfo info;
           appPlayer->GetSubtitleStreamInfo(currentSub, info);
@@ -136,8 +139,47 @@ bool CPlayerController::OnAction(const CAction &action)
             sub = StringUtils::Format("{} - {}", lang, info.name);
         }
         else
+        {
           sub = g_localizeStrings.Get(1223);
-        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(287), sub, DisplTime, false, MsgTime);
+        }
+        if (!nextSubVisible && cycling)
+          caption = StringUtils::Format("{}({})", caption, g_localizeStrings.Get(1223)); // Disabled
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, caption, sub, DisplTime,
+                                              false, MsgTime);
+        return true;
+      }
+
+      case ACTION_REVERSE_CYCLE_SUBTITLE:
+      {
+        int totalCount = appPlayer->GetSubtitleCount();
+        if (totalCount == 0)
+          return true;
+
+        int nextSub = appPlayer->GetSubtitle() - 1;
+
+        if (nextSub < 0)
+        {
+          nextSub = totalCount - 1;
+        }
+        appPlayer->SetSubtitle(nextSub);
+
+        std::string sub, lang, caption = g_localizeStrings.Get(287);
+        SubtitleStreamInfo info;
+        appPlayer->GetSubtitleStreamInfo(nextSub, info);
+        if (!g_LangCodeExpander.Lookup(info.language, lang))
+          lang = g_localizeStrings.Get(13205); // Unknown
+
+        if (info.name.length() == 0)
+          sub = lang;
+        else
+          sub = StringUtils::Format("{} - {}", lang, info.name);
+
+        if (!appPlayer->GetSubtitleVisible())
+        {
+          caption = StringUtils::Format("{}({})", caption, g_localizeStrings.Get(1223));
+        }
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, caption, sub, DisplTime,
+                                              false, MsgTime);
         return true;
       }
 
