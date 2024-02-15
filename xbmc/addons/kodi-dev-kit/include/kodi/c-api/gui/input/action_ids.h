@@ -512,6 +512,10 @@ enum ADDON_ACTION
   /// @brief <b>`164`</b>: Set rating.
   ADDON_ACTION_SET_RATING = 164,
 
+  /// @brief <b>`165`</b>: Switch to the previous subtitle of a movie without enabling/disabling.
+  /// Can be used in videoFullScreen.xml window id=2005
+  ADDON_ACTION_REVERSE_CYCLE_SUBTITLE = 165,
+
   /// @brief <b>`170`</b>: Record.
   ADDON_ACTION_RECORD = 170,
 

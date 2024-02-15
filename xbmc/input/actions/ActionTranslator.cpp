@@ -58,6 +58,7 @@ static const std::map<ActionName, ActionID> ActionMappings = {
     {"dialogselectvideo", ACTION_DIALOG_SELECT_VIDEO},
     {"dialogselectaudio", ACTION_DIALOG_SELECT_AUDIO},
     {"dialogselectsubtitle", ACTION_DIALOG_SELECT_SUBTITLE},
+    {"reversecyclesubtitle", ACTION_REVERSE_CYCLE_SUBTITLE},
     {"playerdebug", ACTION_PLAYER_DEBUG},
     {"playerdebugvideo", ACTION_PLAYER_DEBUG_VIDEO},
     {"codecinfo", ACTION_PLAYER_PROCESS_INFO},
