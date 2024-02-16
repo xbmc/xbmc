@@ -206,21 +206,17 @@ void CGUIFontTTFGL::LastEnd()
         glUniform4f(coordStepUniformLoc, stepX, stepY, 1.0f, 1.0f);
       }
 
-      // scale the scolling offset to the UI resolution
-      float scrollX = m_vertexTrans[i].m_offsetX / context.GetGUIScaleX();
-      float scrollY = m_vertexTrans[i].m_offsetY / context.GetGUIScaleY();
-
       // calculate the fractional offset to the ideal position
       float fractX = context.ScaleFinalXCoord(m_vertexTrans[i].m_translateX, m_vertexTrans[i].m_translateY);
       float fractY = context.ScaleFinalYCoord(m_vertexTrans[i].m_translateX, m_vertexTrans[i].m_translateY);
       fractX = - fractX + std::round(fractX);
       fractY = - fractY + std::round(fractY);
 
-      // proj * model * scroll * gui * translation * scaling * correction factor
+      // proj * model * gui * scroll * translation * scaling * correction factor
       CMatrixGL matrix = glMatrixProject.Get();
       matrix.MultMatrixf(glMatrixModview.Get());
-      matrix.Translatef(scrollX, scrollY, 0.0f);
       matrix.MultMatrixf(CMatrixGL(context.GetGUIMatrix()));
+      matrix.Translatef(m_vertexTrans[i].m_offsetX, m_vertexTrans[i].m_offsetY, 0.0f);
       matrix.Translatef(m_vertexTrans[i].m_translateX, m_vertexTrans[i].m_translateY, 0.0f);
       // the gui matrix messes with the scale. correct it here for now.
       matrix.Scalef(context.GetGUIScaleX(), context.GetGUIScaleY(), 1.0f);
