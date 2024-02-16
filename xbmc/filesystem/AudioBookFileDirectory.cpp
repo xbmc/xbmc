@@ -60,6 +60,8 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
   std::string author;
   std::string album;
   std::string desc;
+  std::vector<std::string> artistsort;
+  std::vector<std::string> involvedPeople;
   bool isAudioBook = url.IsFileType("m4b");
   CMusicInfoTag albumtag;// Some tags are relevant to an album - these are read first
 
@@ -92,14 +94,24 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
         albumtag.SetAlbum(tag->value);
       else if (key == "ARTIST")
         albumtag.SetArtist(tag->value);
+      else if (key == "ARTISTSORT" || key == "ARTIST SORT")
+        albumtag.SetArtistSort(StringUtils::Join(
+            StringUtils::Split(tag->value, separators),
+            CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator));
+      else if (key == "ALBUMARTIST" || key == "ALBUM ARTIST")
+        albumtag.SetAlbumArtist(StringUtils::Join(
+            StringUtils::Split(tag->value, separators),
+            CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator));
+      else if (key == "ALBUMARTSTS" || key == "ALBUM ARTISTS")
+        albumtag.SetAlbumArtist(StringUtils::Split(tag->value, separators));
+      else if (key == "ALBUMARTISTSORT" || key =="ALBUM ARTIST SORT")
+        albumtag.SetAlbumArtistSort(StringUtils::Join(
+            StringUtils::Split(tag->value, separators),
+            CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator));
       else if (key == "MUSICBRAINZ_ARTISTID")
-        albumtag.SetMusicBrainzArtistID(StringUtils::Split(
-            tag->value,
-            CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator));
+        albumtag.SetMusicBrainzArtistID(StringUtils::Split(tag->value, separators));
       else if (key == "MUSICBRAINZ_ALBUMARTISTID")
-        albumtag.SetMusicBrainzAlbumArtistID(StringUtils::Split(
-            tag->value,
-            CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator));
+        albumtag.SetMusicBrainzAlbumArtistID(StringUtils::Split(tag->value, separators));
       else if (key == "MUSICBRAINZ_ALBUMARTIST")
         albumtag.SetAlbumArtist(tag->value);
       else if (key == "MUSICBRAINZ_ALBUMID")
@@ -108,6 +120,8 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
         albumtag.SetMusicBrainzReleaseGroupID(tag->value);
       else if (key == "PUBLISHER")
         albumtag.SetRecordLabel(tag->value);
+      else if (key == "INVOLVEDPEOPLE")
+          involvedPeople = StringUtils::Split(tag->value, ","); // comma separated list of role, person
     }
   }
 
@@ -128,11 +142,15 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
     std::string chaptitle = StringUtils::Format(g_localizeStrings.Get(25010), i + 1);
     std::string chapauthor;
     std::string chapalbum;
-    std::string role;
     std::vector<std::string> instruments;
     std::string lyricist;
     std::string composer;
     std::string conductor;
+    std::string writer;
+    std::string arranger;
+    std::string band;
+    std::string engineer;
+    std::string producer;
     while ((tag = av_dict_get(m_fctx->chapters[i]->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)))
     { // read and store the tags we are interested in
 
@@ -155,15 +173,29 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
           tracktag.SetArtist(data);
         else if (key == "MUSICBRAINZ_TRACKID")
           tracktag.SetMusicBrainzTrackID(data);
+        else if (key == "DISCSUBTITLE")
+          tracktag.SetDiscSubtitle(data);
         else if (key == "COMPOSER")
           composer = data;
         else if (key == "LYRICIST")
           lyricist = data;
-        else if (key == "COMPOSER")
-          composer == data;
+        else if (key == "CONDUCTOR")
+          conductor = data;
+        else if (key == "WRITER")
+          writer = data;
+        else if (key == "ARRANGER")
+          arranger = data;
+        else if (key == "BAND")
+          band = data;
+        else if (key == "ENGINEER")
+          engineer = data;
+        else if (key == "PRODUCER")
+          producer = data;
         else if (key == "INSTRUMENTS")
           instruments =
               StringUtils::Split(data, ","); //comma separated list of instrument, performer
+        //else if (key == "INVOLVEDPEOPLE")
+          //involvedPeople = StringUtils::Split(data, ","); // comma separated list of role, person
       }
     }
     CFileItemPtr item(new CFileItem(url.Get(), false));
@@ -210,6 +242,22 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
           }
         }
       }
+      if (!involvedPeople.empty())
+      {
+        for (size_t i = 0; i + 1 < involvedPeople.size(); i += 2)
+        {
+          std::vector<std::string> roles;
+          roles = StringUtils::Split(involvedPeople[i], separators);
+          for (auto role : roles)
+          {
+            StringUtils::Trim(role);
+            StringUtils::ToCapitalize(role);
+            item->GetMusicInfoTag()->AddArtistRole(role,
+                                                   StringUtils::Split(involvedPeople[i + 1], ","));
+          }
+        }
+      }
+
       if (!lyricist.empty())
         item->GetMusicInfoTag()->AddArtistRole("Lyricist",
                                                StringUtils::Split(lyricist, separators));
@@ -219,6 +267,16 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
       if (!conductor.empty())
         item->GetMusicInfoTag()->AddArtistRole("Conductor",
                                                StringUtils::Split(conductor, separators));
+      if (!writer.empty())
+        item->GetMusicInfoTag()->AddArtistRole("Writer", StringUtils::Split(writer, separators));
+      if (!band.empty())
+        item->GetMusicInfoTag()->AddArtistRole("Band", StringUtils::Split(band, separators));
+      if (!producer.empty())
+        item->GetMusicInfoTag()->AddArtistRole("Producer", StringUtils::Split(producer, separators));
+      if (!engineer.empty())
+        item->GetMusicInfoTag()->AddArtistRole("Engineer", StringUtils::Split(engineer, separators));
+      if (!arranger.empty())
+        item->GetMusicInfoTag()->AddArtistRole("Arranger", StringUtils::Split(arranger, separators));
     }
     if (isAudioBook)
       item->GetMusicInfoTag()->SetAlbumReleaseType(CAlbum::ReleaseType::Audiobook);
