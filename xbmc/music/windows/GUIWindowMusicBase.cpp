@@ -981,12 +981,10 @@ bool CGUIWindowMusicBase::OnSelect(int iItem)
       int stepBack =
           CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_audiobookStepBackwards *
           1000;
-      CLog::LogF(LOGINFO, "Step back - {}", stepBack);
       if ( resumeTime != -1 && resumeTime - stepBack > 5000)
         resumeTime = resumeTime - stepBack;
       else
         resumeTime = -1;
-                CLog::LogF(LOGINFO, "resumeTime - {}", resumeTime);
 
       auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
       playlistPlayer.ClearPlaylist(PLAYLIST::TYPE_MUSIC);

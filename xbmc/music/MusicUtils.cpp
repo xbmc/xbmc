@@ -807,7 +807,7 @@ void PlayItem(const std::shared_ptr<CFileItem>& itemIn,
                            ->GetAdvancedSettings()
                            ->m_audiobookStepBackwards *
                        1000;
-        if (resumeTime != -1 && resumeTime - stepBack > 50000)
+        if (resumeTime != -1 && resumeTime - stepBack > 5000)
           resumeTime = resumeTime - stepBack;
         else
           resumeTime = 0;

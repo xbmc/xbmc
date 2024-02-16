@@ -394,7 +394,9 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn)
   else if (starttime > 0)
     si->m_seekFrame = si->m_audioFormat.m_sampleRate * starttime;
   else if (si->m_fileItem->GetMusicInfoTag()->GetResumeTime() > 0)
-    si->m_seekFrame = si->m_audioFormat.m_sampleRate * CUtil::ConvertMilliSecsToSecs(si->m_fileItem->GetMusicInfoTag()->GetResumeTime());
+    si->m_seekFrame =
+        si->m_audioFormat.m_sampleRate *
+        CUtil::ConvertMilliSecsToSecs(si->m_fileItem->GetMusicInfoTag()->GetResumeTime());
   else if (si->m_fileItem->HasProperty("audiobook_bookmark"))
     si->m_seekFrame = si->m_audioFormat.m_sampleRate *
                       CUtil::ConvertMilliSecsToSecs(

@@ -487,7 +487,6 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, EmbeddedArt *art, MUSIC_INFO:
           chapters[chapNumber].push_back(titles[0]); // chapter title
           chapters[chapNumber].push_back(titles[2]); // start position in millisecs
           chapters[chapNumber].push_back(timing[1]); // end position in millisecs
-          CLog::LogF(LOGINFO, "Chapter {}, {} endpoint {}", chapNumber,titles[0], timing[1]);
           prevTime = stoi(timing[1]);
         }
         chapNumber++;
@@ -1039,6 +1038,26 @@ void CTagLoaderTagLib::SetArtist(CMusicInfoTag &tag, const std::vector<std::stri
     // Fill both artist vector and artist desc from tag value.
     // Note desc may not be empty as it could have been set by previous parsing of ID3v2 before APE
     tag.SetArtist(values, true);
+  // Audiobook artists often contain book author read by / narrated by <person>.  Check for this and
+  // create a "Reader" role for <person> if found.
+  std::string search = values[0];
+  StringUtils::ToLower(search);
+  size_t pos = search.find("read by");
+  if (pos != std::string::npos)
+  {
+    std::vector<std::string> reader;
+    std::string name = search.substr(pos + 8);
+    reader.push_back(name);
+    AddArtistRole(tag, "Reader", reader);
+  }
+  pos = search.find("narrated by");
+  if (pos != std::string::npos)
+  {
+    std::vector<std::string> reader;
+    std::string name = search.substr(pos + 12);
+    reader.push_back(name);
+    AddArtistRole(tag, "Reader", reader);
+  }
 }
 
 void CTagLoaderTagLib::SetArtistSort(CMusicInfoTag &tag, const std::vector<std::string> &values)
