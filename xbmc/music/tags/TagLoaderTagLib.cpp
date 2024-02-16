@@ -44,6 +44,7 @@
 #include <taglib/commentsframe.h>
 #include <taglib/unsynchronizedlyricsframe.h>
 #include <taglib/attachedpictureframe.h>
+#include <taglib/chapterframe.h>
 
 #include <taglib/tstring.h>
 #include <taglib/tpropertymap.h>
@@ -281,6 +282,7 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, EmbeddedArt *art, MUSIC_INFO:
 {
   if (!id3v2) return false;
   ReplayGain replayGainInfo;
+  std::map< int, std::vector<std::string> > chapters;
 
   ID3v2::AttachedPictureFrame *pictures[3] = {};
   const ID3v2::FrameListMap& frameListMap = id3v2->frameListMap();
@@ -462,6 +464,36 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, EmbeddedArt *art, MUSIC_INFO:
           tag.SetUserrating(POPMtoXBMC(popFrame->rating()));
         }
       }
+    else if (it->first == "CHAP")
+    {
+    //We use a chapter number index here to ensure chapters are added in the right order to the map
+      int chapNumber = 0;
+      int prevTime = 0;
+      for (ID3v2::FrameList::ConstIterator ch = it->second.begin(); ch != it->second.end(); ++ch)
+      {
+        auto* chapFrame = dynamic_cast<ID3v2::ChapterFrame*>(*ch);
+        if (!chapFrame)
+          continue;
+        std::string chapData = chapFrame->toString().toCString(true);
+        std::vector<std::string> chapInfo = StringUtils::Split(chapData, ",");
+        for (size_t i = 0; i + 2 < chapInfo.size(); i += 3)
+        { // splits to chapter name, start time( the string) and start time in millisecs
+          std::vector<std::string> titles = StringUtils::Split(chapInfo[i], ":");
+          // splits to end time (the string) and end time in millisecs
+          std::vector<std::string> timing = StringUtils::Split(chapInfo[i + 1], ":");
+          // Make sure last chapter really ends at file end
+          if (stoi(timing[1]) == prevTime)
+            timing[1] = std::to_string(m_totalLen);
+          chapters[chapNumber].push_back(titles[0]); // chapter title
+          chapters[chapNumber].push_back(titles[2]); // start position in millisecs
+          chapters[chapNumber].push_back(timing[1]); // end position in millisecs
+          CLog::LogF(LOGINFO, "Chapter {}, {} endpoint {}", chapNumber,titles[0], timing[1]);
+          prevTime = stoi(timing[1]);
+        }
+        chapNumber++;
+      }
+    tag.SetChapterMarks(chapters);
+    }
     else if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_logLevel == LOG_LEVEL_MAX)
       CLog::Log(LOGDEBUG, "unrecognized ID3 frame detected: {}{}{}{}", it->first[0], it->first[1],
                 it->first[2], it->first[3]);
@@ -1344,9 +1376,13 @@ bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, 
   else    // This is a catch all to get generic information for other files types (s3m, xm, it, mod, etc)
     genericTag = file->tag();
 
+  CTagLoaderTagLib::m_totalLen = 0; // used to make sure the last chapter of a chaptered mp3 file
+                                    // actually reaches the end of the file.
+
   if (file->audioProperties())
   {
     tag.SetDuration(file->audioProperties()->length());
+    m_totalLen = file->audioProperties()->lengthInMilliseconds();
     tag.SetBitRate(file->audioProperties()->bitrate());
     tag.SetNoOfChannels(file->audioProperties()->channels());
     tag.SetSampleRate(file->audioProperties()->sampleRate());

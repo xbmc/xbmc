@@ -31,6 +31,7 @@ public:
             const std::string& fallbackFileExtension, EmbeddedArt *art = nullptr);
 
   static std::vector<std::string> SplitMBID(const std::vector<std::string> &values);
+  inline static int m_totalLen = 0;
 protected:
   static void SetArtist(MUSIC_INFO::CMusicInfoTag &tag, const std::vector<std::string> &values);
   static void SetArtistSort(MUSIC_INFO::CMusicInfoTag &tag, const std::vector<std::string> &values);

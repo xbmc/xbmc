@@ -77,6 +77,7 @@ CSong::CSong(CFileItem& item)
   iBitRate = tag.GetBitRate();
   iChannels = tag.GetNoOfChannels();
   songVideoURL = tag.GetSongVideoURL();
+  chapterMarks = tag.GetChapters();
 }
 
 CSong::CSong()

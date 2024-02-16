@@ -1224,6 +1224,7 @@ void CMusicInfoTag::Clear()
   m_stationArt.clear();
   m_songVideoURL.clear();
   m_resumeTime = -1;
+  m_chapters.clear();
 }
 
 void CMusicInfoTag::AppendArtist(const std::string &artist)
@@ -1331,4 +1332,14 @@ std::string CMusicInfoTag::Trim(const std::string &value) const
   StringUtils::TrimLeft(trimmedValue, " ");
   StringUtils::TrimRight(trimmedValue, " \n\r");
   return trimmedValue;
+}
+
+void CMusicInfoTag::SetChapterMarks(const std::map<int, std::vector<std::string>>& chapters)
+{
+  m_chapters = chapters;
+}
+
+const std::map<int, std::vector<std::string>>& CMusicInfoTag::GetChapters() const
+{
+  return m_chapters;
 }

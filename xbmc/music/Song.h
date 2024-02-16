@@ -196,6 +196,7 @@ public:
   std::string strRecordLabel; // Record label from tag for album processing by CMusicInfoScanner::FileItemsToAlbums
   std::string strAlbumType; // (Musicbrainz release type) album type from tag for album processing by CMusicInfoScanner::FileItemsToAlbums
   std::string songVideoURL; // url to song video
+  std::map<int, std::vector<std::string>> chapterMarks;  // map of chapter names and start and end times (if any)
   std::string strReleaseType; // Album release type from tag for album processing by CMusicInfoScanner::FileItemsToAlbums
 
   ReplayGain replayGain;
