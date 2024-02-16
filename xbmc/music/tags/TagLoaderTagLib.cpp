@@ -505,7 +505,7 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag* id3v2,
 
         CLog::Log(LOGDEBUG, "CTagLoaderTagLib - Chapter {}, {} start point {}, endpoint {}",
                   chapNumber + 1, chapter.name, startTimeMs.count(), endTimeMs.count());
-        chapters.emplace_back(chapter);
+        chapters.emplace_back(std::move(chapter));
         ++chapNumber;
       }
 

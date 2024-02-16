@@ -21,6 +21,7 @@
 #include "utils/Artwork.h"
 #include "utils/SortUtils.h"
 
+#include <cctype>
 #include <map>
 #include <set>
 #include <string>
