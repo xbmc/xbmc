@@ -1085,11 +1085,18 @@ void CGUIFontTTF::RenderCharacter(CGraphicContext& context,
 
   // posX and posY are relative to our origin, and the textcell is offset
   // from our (posX, posY).  Plus, these are unscaled quantities compared to the underlying GUI resolution
+#if defined(HAS_GL)
+  CRect vertex((posX + ch->m_offsetX),
+               (posY + ch->m_offsetY),
+               (posX + ch->m_offsetX + width),
+               (posY + ch->m_offsetY + height));
+#else
   CRect vertex((posX + ch->m_offsetX) * context.GetGUIScaleX(),
                (posY + ch->m_offsetY) * context.GetGUIScaleY(),
                (posX + ch->m_offsetX + width) * context.GetGUIScaleX(),
                (posY + ch->m_offsetY + height) * context.GetGUIScaleY());
   vertex += CPoint(m_originX, m_originY);
+#endif
   CRect texture(ch->m_left, ch->m_top, ch->m_right, ch->m_bottom);
 
 #if !defined(HAS_GL)
@@ -1211,8 +1218,8 @@ void CGUIFontTTF::RenderCharacter(CGraphicContext& context,
   // linear filtering (when not scaled/rotated).
   float xOffset = 0.0f;
   if (roundX)
-    xOffset = std::abs(vertex.x1 - std::round(vertex.x1));
-  float yOffset = std::abs(vertex.y1 - std::round(vertex.y1));
+    xOffset = (vertex.x1 - std::floor(vertex.x1));
+  float yOffset = (vertex.y1 - std::floor(vertex.y1));
 
   v[0].u = tl;
   v[0].v = tt;

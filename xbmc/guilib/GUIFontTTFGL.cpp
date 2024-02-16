@@ -199,16 +199,33 @@ void CGUIFontTTFGL::LastEnd()
             m_vertexTrans[i].m_clip.y2 - m_vertexTrans[i].m_translateY - m_vertexTrans[i].m_offsetY;
 
         glUniform4f(clipUniformLoc, x1, y1, x2, y2);
-        glUniform4f(coordStepUniformLoc, 1.0f / static_cast<float>(m_textureWidth),
-                    1.0f / static_cast<float>(m_textureHeight), 1.0f, 1.0f);
+
+        // setup texture step
+        float stepX = context.GetGUIScaleX() / (static_cast<float>(m_textureWidth));
+        float stepY = context.GetGUIScaleY() / (static_cast<float>(m_textureHeight));
+        glUniform4f(coordStepUniformLoc, stepX, stepY, 1.0f, 1.0f);
       }
 
-      // proj * model * scroll * gui * translation
+      // scale the scolling offset to the UI resolution
+      float scrollX = m_vertexTrans[i].m_offsetX / context.GetGUIScaleX();
+      float scrollY = m_vertexTrans[i].m_offsetY / context.GetGUIScaleY();
+
+      // calculate the fractional offset to the ideal position
+      float fractX = context.ScaleFinalXCoord(m_vertexTrans[i].m_translateX, m_vertexTrans[i].m_translateY);
+      float fractY = context.ScaleFinalYCoord(m_vertexTrans[i].m_translateX, m_vertexTrans[i].m_translateY);
+      fractX = - fractX + std::round(fractX);
+      fractY = - fractY + std::round(fractY);
+
+      // proj * model * scroll * gui * translation * scaling * correction factor
       CMatrixGL matrix = glMatrixProject.Get();
       matrix.MultMatrixf(glMatrixModview.Get());
-      matrix.Translatef(m_vertexTrans[i].m_offsetX, m_vertexTrans[i].m_offsetY, 0.0f);
+      matrix.Translatef(scrollX, scrollY, 0.0f);
       matrix.MultMatrixf(CMatrixGL(context.GetGUIMatrix()));
       matrix.Translatef(m_vertexTrans[i].m_translateX, m_vertexTrans[i].m_translateY, 0.0f);
+      // the gui matrix messes with the scale. correct it here for now.
+      matrix.Scalef(context.GetGUIScaleX(), context.GetGUIScaleY(), 1.0f);
+      // the gui matrix doesn't align to exact pixel coords atm. correct it here for now.
+      matrix.Translatef(fractX, fractY, 0.0f);
 
       glUniformMatrix4fv(matrixUniformLoc, 1, GL_FALSE, matrix);
 
