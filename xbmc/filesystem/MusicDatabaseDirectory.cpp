@@ -93,7 +93,23 @@ bool CMusicDatabaseDirectory::GetDirectory(const CURL& url, CFileItemList &items
   }
   if (items.GetLabel().empty())
     items.SetLabel(pNode->GetLocalizedName());
-
+  if (items[0] != nullptr)
+  CMusicDatabase musicdatabase;
+  if (musicdatabase.Open())
+  {
+    if (items[0] != nullptr)
+    {
+      bool isAudiobook = musicdatabase.IsAlbumAudiobook(*items[0]);
+      if(isAudiobook && items.GetLabel().find(g_localizeStrings.Get(132)) != std::string::npos)
+        items.SetLabel(g_localizeStrings.Get(39033));
+      else if (isAudiobook)
+      {
+        std::string temp = items.GetLabel();
+        items.SetLabel(g_localizeStrings.Get(39033) + " / " + temp);
+      }
+    }
+  musicdatabase.Close();
+  }
   return bResult;
 }
 

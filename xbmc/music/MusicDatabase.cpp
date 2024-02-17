@@ -14038,3 +14038,11 @@ bool CMusicDatabase::GetResumeBookmarkForAudioBook(const CFileItem& item,
   m_pDS->close();
   return true;
 }
+
+bool CMusicDatabase::IsAlbumAudiobook(const CFileItem& item)
+{
+  bool isaudiobook = false;
+  if (item.HasMusicInfoTag())
+    isaudiobook = item.GetMusicInfoTag()->GetAlbumReleaseType() == CAlbum::Audiobook;
+  return isaudiobook;
+}

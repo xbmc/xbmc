@@ -23205,6 +23205,12 @@ msgctxt "#39032"
 msgid "Audiobook"
 msgstr ""
 
+#. Node title, plural of #39032
+#: xbmc/filesystem/MusicDatabaseDirectory.cpp
+msgctxt "#39033"
+msgid "Audiobooks"
+msgstr ""
+
 #empty strings from id 39033 to 39099
 
 #: system/settings/settings.xml

@@ -346,6 +346,7 @@ public:
   bool SetResumeBookmarkForAudioBook(const CFileItem& item, int bookmark, int resumeTime);
   bool GetResumeBookmarkForAudioBook(const CFileItem& item, int& bookmark, int& resumeTime);
   int GetAudioBookCount();
+  bool IsAlbumAudiobook(const CFileItem& item);
 
 
   /*! \brief Checks if the given path is inside a folder that has already been scanned into the library
