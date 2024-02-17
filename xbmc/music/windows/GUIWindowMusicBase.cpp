@@ -961,9 +961,14 @@ bool CGUIWindowMusicBase::OnSelect(int iItem)
         choices.Add(MUSIC_SELECT_ACTION_PLAY, 208); // 208 = Play
         std::string resumetitle = track_to_resume_from->GetMusicInfoTag()->GetTitle();
         int resume_disc = track_to_resume_from->GetMusicInfoTag()->GetTrackAndDiscNumber() >> 16;
-        if (!(resume_disc == 1 && multipleDiscs == false))
+        if (!(resume_disc == 1 && multipleDiscs == false)) // 39016 title, disc title (if any)
+        {
+          std::string subtitle = track_to_resume_from->GetMusicInfoTag()->GetDiscSubtitle();
+          if (subtitle.empty())
+            subtitle = g_localizeStrings.Get(427) + " " + std::to_string(resume_disc);
           resumetitle = StringUtils::Format(
-              g_localizeStrings.Get(29995), resumetitle, std::to_string(resume_disc));
+              g_localizeStrings.Get(39016), resumetitle, subtitle);
+        }
         choices.Add(MUSIC_SELECT_ACTION_RESUME,
                     StringUtils::Format(g_localizeStrings.Get(12022), // 12022 = Resume from ...
                                         resumetitle));

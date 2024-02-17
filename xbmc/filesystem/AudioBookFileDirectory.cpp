@@ -194,8 +194,8 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
         else if (key == "INSTRUMENTS")
           instruments =
               StringUtils::Split(data, ","); //comma separated list of instrument, performer
-        //else if (key == "INVOLVEDPEOPLE")
-          //involvedPeople = StringUtils::Split(data, ","); // comma separated list of role, person
+        else if (key == "INVOLVEDPEOPLE")
+          involvedPeople = StringUtils::Split(data, ","); // comma separated list of role, person
       }
     }
     CFileItemPtr item(new CFileItem(url.Get(), false));

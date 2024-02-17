@@ -23107,7 +23107,7 @@ msgstr ""
 
 #: xbmc/music/windows/GUIWindowMusicBase.cpp
 msgctxt "#39016"
-msgid "Resume audiobook"
+msgid "{0:s} ({1:s})"
 msgstr ""
 
 #. Description of setting with label #21358 "Share my libraries"

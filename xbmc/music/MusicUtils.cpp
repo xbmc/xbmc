@@ -782,15 +782,17 @@ void PlayItem(const std::shared_ptr<CFileItem>& itemIn,
       if (bookmark != 0 )
       {
         std::string resumetitle = itemToResume->GetMusicInfoTag()->GetTitle();
-        std::string resumedisc =
-          std::to_string(itemToResume->GetMusicInfoTag()->GetTrackAndDiscNumber() >> 16);
-        std::string restitle = StringUtils::Format(
-          g_localizeStrings.Get(29995), resumetitle, resumedisc);
+        bool multipleDiscs = item->GetMusicInfoTag()->GetTotalDiscs() > 1;
+
+        int resumedisc = itemToResume->GetMusicInfoTag()->GetTrackAndDiscNumber() >> 16;
+        if (!(resumedisc == 1 && multipleDiscs == false))
+          resumetitle = StringUtils::Format(g_localizeStrings.Get(29995), resumetitle,
+                                            std::to_string(resumedisc));
         // ask the user if they want to play or resume
         CContextButtons choices;
         choices.Add(MUSIC_SELECT_ACTION_PLAY, 208); // 208 = Play
         choices.Add(MUSIC_SELECT_ACTION_RESUME,
-                    StringUtils::Format(g_localizeStrings.Get(12022), restitle));// resume from ...
+                    StringUtils::Format(g_localizeStrings.Get(12022), resumetitle));// resume from ...
 
         auto choice = CGUIDialogContextMenu::Show(choices);
         if (choice < 0)
