@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<node order="11" type="filter" visible="Library.HasContent(Audiobooks)">
+	<label>Audiobooks</label>
+	<icon>DefaultAudioBook.png</icon>
+	<content>albums</content>
+	<rule field="isaudiobook" operator="true" />
+</node>
