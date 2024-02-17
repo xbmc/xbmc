@@ -756,6 +756,14 @@ void PlayItem(const std::shared_ptr<CFileItem>& itemIn,
       std::string path = GetMusicDbItemPath(*item);
       CMusicDbUrl musicUrl;
       musicUrl.FromString(path);
+      const CUrlOptions::UrlOptions& options = musicUrl.GetOptions();
+      bool disc_level = false;
+      if (options.find("discid") != options.end())
+        disc_level = true;
+      else if (options.find("disctitle") != options.end())
+        disc_level = true;
+      if (disc_level)
+        musicUrl.FromString(parentPath); // skip back a path if we are at disc level in gui
       musicUrl.AppendPath("-2/"); // ignore any discs and just get the list of tracks
       path = musicUrl.ToString();
       CFileItemList contents;
@@ -812,7 +820,7 @@ void PlayItem(const std::shared_ptr<CFileItem>& itemIn,
         if (resumeTime != -1 && resumeTime - stepBack > 5000)
           resumeTime = resumeTime - stepBack;
         else
-          resumeTime = 0;
+          resumeTime = -1;
         // update db with new resumeTime (either skip back time if applicable or zero)
         db.Open();
         db.SetResumeBookmarkForAudioBook(
