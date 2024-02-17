@@ -300,6 +300,10 @@ public class Splash extends Activity
 
         mState = Caching;
         publishProgress(mProgressStatus);
+
+        String cXbmcHome = fXbmcHome.getCanonicalPath();
+        Log.d(TAG, "output: " + cXbmcHome);
+
         while (entries.hasMoreElements())
         {
           // Update the progress bar
@@ -313,6 +317,14 @@ public class Splash extends Activity
 
           String sFullPath = sXbmcHome + "/" + sName;
           File fFullPath = new File(sFullPath);
+
+          // Zip Path Traversal vulnerability
+          String cFullPath = fFullPath.getCanonicalPath();
+          if (!cFullPath.startsWith(cXbmcHome)) {
+            Log.w(TAG, "Unsafe unzipping pattern: " + cFullPath);
+            continue;
+          }
+
           if (e.isDirectory())
           {
             fFullPath.mkdirs();
