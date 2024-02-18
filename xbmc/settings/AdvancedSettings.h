@@ -160,6 +160,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     float m_videoIgnorePercentAtEnd;
     float m_audioApplyDrc;
     unsigned int m_maxPassthroughOffSyncDuration = 10; // when 10 ms off adjust
+    bool m_superviseAudioDelay = false; // Android only to correct broken audio firmwares
 
     int   m_videoVDPAUScaling;
     float m_videoNonLinStretchRatio;
