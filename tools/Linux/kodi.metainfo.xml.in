@@ -136,4 +136,8 @@
         <control>gamepad</control>
         <control>tablet</control>
     </recommends>
+    <branding>
+        <color type="primary" scheme_preference="light">#E8F8FF</color>
+        <color type="primary" scheme_preference="dark">#082838</color>
+    </branding>
 </component>
