@@ -80,7 +80,6 @@ public class Splash extends Activity
   private File fPackagePath = null;
   private File fXbmcHome = null;
   private String sXbmcTemp = "";
-  private File fXbmcTemp = null;
 
   private BroadcastReceiver mExternalStorageReceiver = null;
   private boolean mExternalStorageChecked = false;
