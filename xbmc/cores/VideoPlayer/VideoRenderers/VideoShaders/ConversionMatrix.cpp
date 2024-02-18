@@ -515,15 +515,15 @@ const CGlMatrix& CConvertMatrix::GenMat()
   {
     if (m_srcBits >= 12)
     {
-      CScale scale(4080.0f / (3760 - 256), 4080.0f / (3840 - 256), 4080.0f / (3840 - 256));
-      CTranslate trans(- 256.0f / 4080, - 256.0f / 4080, - 256.0f / 4080);
+      CScale scale(4095.0f / (3760 - 256), 4095.0f / (3840 - 256), 4095.0f / (3840 - 256));
+      CTranslate trans(-256.0f / 4095.0f, -256.0f / 4095.0f, -256.0f / 4095.0f);
       mat *= scale;
       mat *= trans;
     }
     else if (m_srcBits == 10)
     {
-      CScale scale(1020.0f / (940 - 64), 1020.0f / (960 - 64), 1020.0f / (960 - 64));
-      CTranslate trans(- 64.0f / 1020, - 64.0f / 1020, - 64.0f / 1020);
+      CScale scale(1023.0f / (940 - 64), 1023.0f / (960 - 64), 1023.0f / (960 - 64));
+      CTranslate trans(-64.0f / 1023.0f, -64.0f / 1023.0f, -64.0f / 1023.0f);
       mat *= scale;
       mat *= trans;
     }
@@ -559,8 +559,8 @@ Matrix4 CConvertMatrix::GetYuvMat()
   ret *= black;
   if (m_limitedDst)
   {
-    float valScale = (235 - 16) / 255.0f;
-    float valTrans = 16.0f / 255;
+    float valScale = (940.0f - 64.0f) / 1023.0f;
+    float valTrans = 64.0f / 1023.0f;
     CScale scale(valScale, valScale, valScale);
     CTranslate trans(valTrans, valTrans, valTrans);
     ret *= trans;
