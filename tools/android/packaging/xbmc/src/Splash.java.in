@@ -28,7 +28,6 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -330,9 +329,8 @@ public class Splash extends Activity
           try
           {
             InputStream in = zip.getInputStream(e);
-            BufferedOutputStream out = new BufferedOutputStream(
-                    new FileOutputStream(sFullPath));
-            while ((n = in.read(buf, 0, 4096)) > -1)
+            FileOutputStream out = new FileOutputStream(sFullPath);
+            while ((n = in.read(buf)) > 0)
               out.write(buf, 0, n);
 
             in.close();
