@@ -368,6 +368,16 @@ void CPVRPlaybackState::StartPlayback(CFileItem* item,
       }
 
       client->GetChannelStreamProperties(item->GetPVRChannelInfoTag(), source, props);
+
+      if (props.LivePlaybackAsEPG())
+      {
+        const std::shared_ptr<CPVREpgInfoTag> epgTag = item->GetPVRChannelInfoTag()->GetEPGNow();
+        if (epgTag)
+        {
+          delete item;
+          item = new CFileItem(epgTag);
+        }
+      }
     }
     else if (item->IsPVRRecording())
     {
