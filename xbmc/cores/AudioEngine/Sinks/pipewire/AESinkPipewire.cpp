@@ -348,10 +348,17 @@ void CAESinkPipewire::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
                                   streamTypes.end());
     }
 
-    if (device.m_channels.Count() == 2 && !device.m_streamTypes.empty())
+    if (!device.m_streamTypes.empty())
     {
-      device.m_deviceType = AE_DEVTYPE_IEC958;
       device.m_dataFormats.emplace_back(AE_FMT_RAW);
+      if (device.m_channels.Count() == 2)
+      {
+        device.m_deviceType = AE_DEVTYPE_IEC958;
+      }
+      else
+      {
+        device.m_deviceType = AE_DEVTYPE_HDMI;
+      }
     }
 
     list.emplace_back(device);
