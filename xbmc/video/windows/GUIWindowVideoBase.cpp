@@ -544,7 +544,9 @@ bool CGUIWindowVideoBase::OnSelect(int iItem)
   if (!item->m_bIsFolder && path != "add" &&
       !StringUtils::StartsWith(path, "newsmartplaylist://") &&
       !StringUtils::StartsWith(path, "newplaylist://") &&
-      !StringUtils::StartsWith(path, "newtag://") && !StringUtils::StartsWith(path, "script://"))
+      !StringUtils::StartsWith(path, "newtag://") && !StringUtils::StartsWith(path, "script://") &&
+      !StringUtils::StartsWith(path, "plugin://") && !item->HasProperty("IsPlayable") &&
+      !item->GetProperty("IsPlayable").asBoolean())
     return OnFileAction(iItem, CVideoSelectActionProcessorBase::GetDefaultSelectAction(), "");
 
   return CGUIMediaWindow::OnSelect(iItem);
