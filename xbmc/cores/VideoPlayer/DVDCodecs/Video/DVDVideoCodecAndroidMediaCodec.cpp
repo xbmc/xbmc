@@ -1731,6 +1731,8 @@ void CDVDVideoCodecAndroidMediaCodec::ConfigureOutputFormat(CJNIMediaFormat& med
   int crop_top    = 0;
   int crop_right  = 0;
   int crop_bottom = 0;
+  int disp_width = 0;
+  int disp_height = 0;
 
   if (mediaformat.containsKey(CJNIMediaFormat::KEY_WIDTH))
     width = mediaformat.getInteger(CJNIMediaFormat::KEY_WIDTH);
@@ -1758,6 +1760,14 @@ void CDVDVideoCodecAndroidMediaCodec::ConfigureOutputFormat(CJNIMediaFormat& med
     if (mediaformat.containsKey(CJNIMediaFormat::KEY_CROP_BOTTOM))
       crop_bottom = mediaformat.getInteger(CJNIMediaFormat::KEY_CROP_BOTTOM);
   }
+
+  // Note: These properties are not documented in the Android SDK but
+  // are available in the MediaFormat object.
+  // This is how it's done in ffmpeg too.
+  if (mediaformat.containsKey("display-width"))
+    disp_width = mediaformat.getInteger("display-width");
+  if (mediaformat.containsKey("display-height"))
+    disp_height = mediaformat.getInteger("display-height");
 
   if (!crop_right)
     crop_right = width-1;
@@ -1792,6 +1802,11 @@ void CDVDVideoCodecAndroidMediaCodec::ConfigureOutputFormat(CJNIMediaFormat& med
 
   m_videobuffer.iDisplayWidth  = m_videobuffer.iWidth  = width;
   m_videobuffer.iDisplayHeight = m_videobuffer.iHeight = height;
+
+  if (disp_width > 0 && disp_height > 0 && !m_hints.forced_aspect)
+  {
+    m_hints.aspect = static_cast<double>(disp_width) / static_cast<double>(disp_height);
+  }
 
   if (m_hints.aspect > 1.0 && !m_hints.forced_aspect)
   {
