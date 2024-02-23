@@ -533,6 +533,9 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
 
         // special casing for "show videos with multiple versions as folders", where the label
         // should be the video version, not the movie title.
+        if (!item->HasVideoVersions())
+          break;
+
         CGUIWindow* videoNav{
             CServiceBroker::GetGUI()->GetWindowManager().GetWindow(WINDOW_VIDEO_NAV)};
         if (videoNav && videoNav->GetProperty("VideoVersionsFolderView").asBoolean() &&
