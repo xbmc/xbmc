@@ -14,10 +14,10 @@ if(NOT TARGET UDEV::UDEV)
   endif()
 
   find_path(UDEV_INCLUDE_DIR NAMES libudev.h
-                             PATHS ${PC_UDEV_INCLUDEDIR}
+                             HINTS ${PC_UDEV_INCLUDEDIR}
                              NO_CACHE)
   find_library(UDEV_LIBRARY NAMES udev
-                            PATHS ${PC_UDEV_LIBDIR}
+                            HINTS ${PC_UDEV_LIBDIR}
                             NO_CACHE)
 
   set(UDEV_VERSION ${PC_UDEV_VERSION})

@@ -10,6 +10,8 @@
 # VAAPI_LIBRARIES - the VAAPI libraries
 # VAAPI_DEFINITIONS - the VAAPI definitions
 
+find_package(PkgConfig)
+
 if(PKG_CONFIG_FOUND)
   pkg_check_modules(PC_VAAPI libva libva-drm libva-wayland libva-x11 QUIET)
 endif()
@@ -17,25 +19,25 @@ endif()
 set(REQUIRED_VARS "VAAPI_libva_LIBRARY" "VAAPI_libva-drm_LIBRARY" "VAAPI_libva_INCLUDE_DIR" "VAAPI_libva-drm_INCLUDE_DIR")
 
 find_path(VAAPI_libva_INCLUDE_DIR va/va.h
-                            PATHS ${PC_VAAPI_libva_INCLUDEDIR})
+                            HINTS ${PC_VAAPI_libva_INCLUDEDIR})
 find_library(VAAPI_libva_LIBRARY NAMES va
-                                 PATHS ${PC_VAAPI_libva_LIBDIR})
+                                 HINTS ${PC_VAAPI_libva_LIBDIR})
 find_path(VAAPI_libva-drm_INCLUDE_DIR va/va_drm.h
-                                PATHS ${PC_VAAPI_libva-drm_INCLUDEDIR})
+                                HINTS ${PC_VAAPI_libva-drm_INCLUDEDIR})
 find_library(VAAPI_libva-drm_LIBRARY NAMES va-drm
-                                     PATHS ${PC_VAAPI_libva-drm_LIBDIR})
+                                     HINTS ${PC_VAAPI_libva-drm_LIBDIR})
 if("wayland" IN_LIST CORE_PLATFORM_NAME_LC)
   find_path(VAAPI_libva-wayland_INCLUDE_DIR va/va_wayland.h
-                                      PATHS ${PC_VAAPI_libva-wayland_INCLUDEDIR})
+                                      HINTS ${PC_VAAPI_libva-wayland_INCLUDEDIR})
   find_library(VAAPI_libva-wayland_LIBRARY NAMES va-wayland
-                                           PATHS ${PC_VAAPI_libva-wayland_LIBDIR})
+                                           HINTS ${PC_VAAPI_libva-wayland_LIBDIR})
   list(APPEND REQUIRED_VARS "VAAPI_libva-wayland_INCLUDE_DIR" "VAAPI_libva-wayland_LIBRARY")
 endif()
 if("x11" IN_LIST CORE_PLATFORM_NAME_LC)
   find_path(VAAPI_libva-x11_INCLUDE_DIR va/va_x11.h
-                                  PATHS ${PC_VAAPI_libva-x11_INCLUDEDIR})
+                                  HINTS ${PC_VAAPI_libva-x11_INCLUDEDIR})
   find_library(VAAPI_libva-x11_LIBRARY NAMES va-x11
-                                       PATHS ${PC_VAAPI_libva-x11_LIBDIR})
+                                       HINTS ${PC_VAAPI_libva-x11_LIBDIR})
   list(APPEND REQUIRED_VARS "VAAPI_libva-x11_INCLUDE_DIR" "VAAPI_libva-x11_LIBRARY")
 endif()
 

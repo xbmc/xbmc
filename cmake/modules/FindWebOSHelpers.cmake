@@ -8,16 +8,25 @@
 #   WEBOSHELPERS::WEBOSHELPERS   - The webOS helpers library
 
 if(NOT TARGET WEBOSHELPERS::WEBOSHELPERS)
+
+  if(WebOSHelpers_FIND_VERSION)
+    if(WebOSHelpers_FIND_VERSION_EXACT)
+      set(WebOSHelpers_FIND_SPEC "=${WebOSHelpers_FIND_VERSION_COMPLETE}")
+    else()
+      set(WebOSHelpers_FIND_SPEC ">=${WebOSHelpers_FIND_VERSION_COMPLETE}")
+    endif()
+  endif()
+
   find_package(PkgConfig)
   if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_WEBOSHELPERS helpers>=2.0.0 QUIET)
+    pkg_check_modules(PC_WEBOSHELPERS helpers${WebOSHelpers_FIND_SPEC} QUIET)
   endif()
 
   find_path(WEBOSHELPERS_INCLUDE_DIR NAMES webos-helpers/libhelpers.h
-                                     PATHS ${PC_WEBOSHELPERS_INCLUDEDIR}
+                                     HINTS ${PC_WEBOSHELPERS_INCLUDEDIR}
                                      NO_CACHE)
   find_library(WEBOSHELPERS_LIBRARY NAMES helpers
-                                    PATHS ${PC_WEBOSHELPERS_LIBDIR}
+                                    HINTS ${PC_WEBOSHELPERS_LIBDIR}
                                     NO_CACHE)
 
   set(WEBOSHELPERS_VERSION ${PC_WEBOSHELPERS_VERSION})

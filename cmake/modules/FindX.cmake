@@ -15,13 +15,13 @@ if(NOT TARGET X::X)
   endif()
 
   find_path(X_INCLUDE_DIR NAMES X11/Xlib.h
-                          PATHS ${PC_X_x11_INCLUDEDIR}
+                          HINTS ${PC_X_x11_INCLUDEDIR}
                           NO_CACHE)
   find_library(X_LIBRARY NAMES X11
-                         PATHS ${PC_X_x11_LIBDIR}
+                         HINTS ${PC_X_x11_LIBDIR}
                          NO_CACHE)
   find_library(X_EXT_LIBRARY NAMES Xext
-                             PATHS ${PC_X_xext_LIBDIR}
+                             HINTS ${PC_X_xext_LIBDIR}
                              NO_CACHE)
 
   set(X_VERSION ${PC_X_x11_VERSION})

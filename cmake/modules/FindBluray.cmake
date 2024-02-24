@@ -14,14 +14,23 @@
 #
 #   Bluray::Bluray   - The libbluray library
 
-set(Bluray_FIND_VERSION 0.9.3)
+if(Bluray_FIND_VERSION)
+  if(Bluray_FIND_VERSION_EXACT)
+    set(Bluray_FIND_SPEC "=${Bluray_FIND_VERSION_COMPLETE}")
+  else()
+    set(Bluray_FIND_SPEC ">=${Bluray_FIND_VERSION_COMPLETE}")
+  endif()
+endif()
+
+find_package(PkgConfig)
+
 if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_BLURAY libbluray>=${Bluray_FIND_VERSION} QUIET)
+  pkg_check_modules(PC_BLURAY libbluray${Bluray_FIND_SPEC} QUIET)
   set(BLURAY_VERSION ${PC_BLURAY_VERSION})
 endif()
 
 find_path(BLURAY_INCLUDE_DIR libbluray/bluray.h
-                             PATHS ${PC_BLURAY_INCLUDEDIR})
+                             HINTS ${PC_BLURAY_INCLUDEDIR})
 
 if(NOT BLURAY_VERSION AND EXISTS ${BLURAY_INCLUDE_DIR}/libbluray/bluray-version.h)
   file(STRINGS ${BLURAY_INCLUDE_DIR}/libbluray/bluray-version.h _bluray_version_str
@@ -31,7 +40,7 @@ if(NOT BLURAY_VERSION AND EXISTS ${BLURAY_INCLUDE_DIR}/libbluray/bluray-version.
 endif()
 
 find_library(BLURAY_LIBRARY NAMES bluray libbluray
-                            PATHS ${PC_BLURAY_LIBDIR})
+                            HINTS ${PC_BLURAY_LIBDIR})
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Bluray

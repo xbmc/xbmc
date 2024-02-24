@@ -11,15 +11,17 @@
 # LIBDISPLAYINFO_DEFINITIONS - the LIBDISPLAY-INFO definitions
 #
 
+find_package(PkgConfig)
+
 if(PKG_CONFIG_FOUND)
   pkg_check_modules(PC_LIBDISPLAYINFO libdisplay-info QUIET)
 endif()
 
 find_path(LIBDISPLAYINFO_INCLUDE_DIR libdisplay-info/edid.h
-                          PATHS ${PC_LIBDISPLAYINFO_INCLUDEDIR})
+                          HINTS ${PC_LIBDISPLAYINFO_INCLUDEDIR})
 
 find_library(LIBDISPLAYINFO_LIBRARY NAMES display-info
-                         PATHS ${PC_LIBDISPLAYINFO_LIBDIR})
+                         HINTS ${PC_LIBDISPLAYINFO_LIBDIR})
 
 set(LIBDISPLAYINFO_VERSION ${PC_LIBDISPLAYINFO_VERSION})
 

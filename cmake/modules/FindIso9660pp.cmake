@@ -10,24 +10,33 @@
 # ISO9660PP_LIBRARIES - the iso9660++ libraries
 # ISO9660PP_DEFINITIONS  - the iso9660++ definitions
 
+if(Iso9660pp_FIND_VERSION)
+  if(Iso9660pp_FIND_VERSION_EXACT)
+    set(Iso9660pp_FIND_SPEC "=${Iso9660pp_FIND_VERSION_COMPLETE}")
+  else()
+    set(Iso9660pp_FIND_SPEC ">=${Iso9660pp_FIND_VERSION_COMPLETE}")
+  endif()
+endif()
+
+find_package(PkgConfig)
 if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_ISO9660PP libiso9660++>=2.1.0 QUIET)
-  pkg_check_modules(PC_ISO9660 libiso9660>=2.1.0 QUIET)
+  pkg_check_modules(PC_ISO9660PP libiso9660++${Iso9660pp_FIND_SPEC} QUIET)
+  pkg_check_modules(PC_ISO9660 libiso9660${Iso9660pp_FIND_SPEC} QUIET)
 endif()
 
 find_package(Cdio)
 
 find_path(ISO9660PP_INCLUDE_DIR NAMES cdio++/iso9660.hpp
-                                PATHS ${PC_ISO9660PP_INCLUDEDIR})
+                                HINTS ${PC_ISO9660PP_INCLUDEDIR})
 
 find_library(ISO9660PP_LIBRARY NAMES libiso9660++ iso9660++
-                               PATHS ${PC_ISO9660PP_LIBDIR})
+                               HINTS ${PC_ISO9660PP_LIBDIR})
 
 find_path(ISO9660_INCLUDE_DIR NAMES cdio/iso9660.h
-                              PATHS ${PC_ISO9660_INCLUDEDIR})
+                              HINTS ${PC_ISO9660_INCLUDEDIR})
 
 find_library(ISO9660_LIBRARY NAMES libiso9660 iso9660
-                             PATHS ${PC_ISO9660_LIBDIR})
+                             HINTS ${PC_ISO9660_LIBDIR})
 
 set(ISO9660PP_VERSION ${PC_ISO9660PP_VERSION})
 

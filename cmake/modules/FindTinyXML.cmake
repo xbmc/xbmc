@@ -14,19 +14,21 @@
 #
 #   TinyXML::TinyXML   - The TinyXML library
 
+find_package(PkgConfig)
+
 if(PKG_CONFIG_FOUND)
   pkg_check_modules(PC_TINYXML tinyxml QUIET)
 endif()
 
 find_path(TINYXML_INCLUDE_DIR tinyxml.h
                               PATH_SUFFIXES tinyxml
-                              PATHS ${PC_TINYXML_INCLUDEDIR})
+                              HINTS ${PC_TINYXML_INCLUDEDIR})
 find_library(TINYXML_LIBRARY_RELEASE NAMES tinyxml tinyxmlSTL
                                      PATH_SUFFIXES tinyxml
-                                     PATHS ${PC_TINYXML_LIBDIR})
+                                     HINTS ${PC_TINYXML_LIBDIR})
 find_library(TINYXML_LIBRARY_DEBUG NAMES tinyxmld tinyxmlSTLd
                                    PATH_SUFFIXES tinyxml
-                                   PATHS ${PC_TINYXML_LIBDIR})
+                                   HINTS ${PC_TINYXML_LIBDIR})
 set(TINYXML_VERSION ${PC_TINYXML_VERSION})
 
 include(SelectLibraryConfigurations)

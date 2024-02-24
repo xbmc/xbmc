@@ -9,14 +9,15 @@
 #
 
 if(NOT TARGET UUID::UUID)
+  find_package(PkgConfig)
   if(PKG_CONFIG_FOUND)
     pkg_check_modules(PC_UUID uuid QUIET)
   endif()
 
   find_path(UUID_INCLUDE_DIR uuid/uuid.h
-                             PATHS ${PC_UUID_INCLUDEDIR})
+                             HINTS ${PC_UUID_INCLUDEDIR})
   find_library(UUID_LIBRARY uuid
-                            PATHS ${PC_UUID_LIBRARY})
+                            HINTS ${PC_UUID_LIBRARY})
   set(UUID_VERSION ${PC_UUID_VERSION})
 
   include(FindPackageHandleStandardArgs)
@@ -30,6 +31,4 @@ if(NOT TARGET UUID::UUID)
                                      IMPORTED_LOCATION "${UUID_LIBRARY}"
                                      INTERFACE_INCLUDE_DIRECTORIES "${UUID_INCLUDE_DIR}")
   endif()
-
-  mark_as_advanced(UUID_INCLUDE_DIR UUID_LIBRARY)
 endif()

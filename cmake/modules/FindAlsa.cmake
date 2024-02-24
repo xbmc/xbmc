@@ -9,8 +9,17 @@
 
 if(NOT TARGET ALSA::ALSA)
   find_package(PkgConfig)
+
+  if(Alsa_FIND_VERSION)
+    if(Alsa_FIND_VERSION_EXACT)
+      set(Alsa_FIND_SPEC "=${Alsa_FIND_VERSION_COMPLETE}")
+    else()
+      set(Alsa_FIND_SPEC ">=${Alsa_FIND_VERSION_COMPLETE}")
+    endif()
+  endif()
+
   if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_ALSA alsa>=1.0.27 QUIET)
+    pkg_check_modules(PC_ALSA alsa${Alsa_FIND_SPEC} QUIET)
   endif()
 
   find_path(ALSA_INCLUDE_DIR NAMES alsa/asoundlib.h

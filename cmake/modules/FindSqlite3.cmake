@@ -15,10 +15,10 @@ if(NOT TARGET SQLite3::SQLite3)
   endif()
 
   find_path(SQLITE3_INCLUDE_DIR NAMES sqlite3.h
-                                PATHS ${PC_SQLITE3_INCLUDEDIR}
+                                HINTS ${PC_SQLITE3_INCLUDEDIR}
                                 NO_CACHE)
   find_library(SQLITE3_LIBRARY NAMES sqlite3
-                               PATHS ${PC_SQLITE3_LIBDIR}
+                               HINTS ${PC_SQLITE3_LIBDIR}
                                NO_CACHE)
 
   set(SQLITE3_VERSION ${PC_SQLITE3_VERSION})

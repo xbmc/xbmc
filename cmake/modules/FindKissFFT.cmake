@@ -22,9 +22,9 @@ else()
   endif()
 
   find_path(KISSFFT_INCLUDE_DIR kissfft/kiss_fft.h kissfft/kiss_fftr.h
-                            PATHS ${PC_KISSFFT_INCLUDEDIR})
+                            HINTS ${PC_KISSFFT_INCLUDEDIR})
   find_library(KISSFFT_LIBRARY NAMES kissfft-float kissfft-int32 kissfft-int16 kissfft-simd
-                            PATHS ${PC_KISSFFT_LIBDIR})
+                            HINTS ${PC_KISSFFT_LIBDIR})
 
   # Check if all REQUIRED_VARS are satisfied and set KISSFFT_FOUND
   include(FindPackageHandleStandardArgs)

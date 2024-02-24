@@ -35,6 +35,4 @@ if(NOT TARGET libandroidjni::libandroidjni)
   add_dependencies(libandroidjni::libandroidjni libandroidjni)
 
   set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP libandroidjni::libandroidjni)
-
-  mark_as_advanced(LIBANDROIDJNI_INCLUDE_DIR LIBANDROIDJNI_LIBRARY)
 endif()
