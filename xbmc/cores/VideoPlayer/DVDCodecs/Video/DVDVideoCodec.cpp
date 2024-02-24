@@ -51,6 +51,8 @@ void VideoPicture::Reset()
   qscale_type = 0;
   pict_type = 0;
 
+  hdrType = StreamHdrType::HDR_TYPE_NONE;
+
   hasDisplayMetadata = false;
   hasLightMetadata = false;
 

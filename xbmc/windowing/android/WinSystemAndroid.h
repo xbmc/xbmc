@@ -59,6 +59,7 @@ public:
   bool IsHDRDisplay() override;
 
   CHDRCapabilities GetDisplayHDRCapabilities() const override;
+  float GetGuiSdrPeakLuminance() const override;
 
 protected:
   std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() override;

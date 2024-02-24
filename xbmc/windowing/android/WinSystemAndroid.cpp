@@ -320,3 +320,11 @@ CHDRCapabilities CWinSystemAndroid::GetDisplayHDRCapabilities() const
 {
   return CAndroidUtils::GetDisplayHDRCapabilities();
 }
+
+float CWinSystemAndroid::GetGuiSdrPeakLuminance() const
+{
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  const int guiSdrPeak = settings->GetInt(CSettings::SETTING_VIDEOSCREEN_GUISDRPEAKLUMINANCE);
+
+  return ((0.7f * guiSdrPeak + 30.0f) / 100.0f);
+}

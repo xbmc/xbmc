@@ -1802,6 +1802,11 @@ void CDVDVideoCodecAndroidMediaCodec::ConfigureOutputFormat(CJNIMediaFormat& med
       m_videobuffer.iDisplayHeight = ((int)lrint(m_videobuffer.iWidth / m_hints.aspect)) & ~3;
     }
   }
+
+  m_videobuffer.hdrType = m_hints.hdrType;
+  m_videobuffer.color_space = m_hints.colorSpace;
+  m_videobuffer.color_primaries = m_hints.colorPrimaries;
+  m_videobuffer.color_transfer = m_hints.colorTransferCharacteristic;
 }
 
 void CDVDVideoCodecAndroidMediaCodec::CallbackInitSurfaceTexture(void *userdata)

@@ -91,6 +91,7 @@ protected:
   RENDER_STEREO_VIEW m_stereoView = RENDER_STEREO_VIEW_OFF;
   RENDER_STEREO_MODE m_stereoMode = RENDER_STEREO_MODE_OFF;
   bool m_limitedColorRange = false;
+  bool m_transferPQ{false};
 
   std::unique_ptr<CGUIImage> m_splashImage;
   std::unique_ptr<CGUITextLayout> m_splashMessageLayout;

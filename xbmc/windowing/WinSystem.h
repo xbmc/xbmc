@@ -217,6 +217,7 @@ public:
   virtual HDR_STATUS GetOSHDRStatus() { return HDR_STATUS::HDR_UNSUPPORTED; }
   virtual CHDRCapabilities GetDisplayHDRCapabilities() const { return {}; }
   static const char* SETTING_WINSYSTEM_IS_HDR_DISPLAY;
+  virtual float GetGuiSdrPeakLuminance() const { return .0f; }
   virtual bool HasSystemSdrPeakLuminance() { return false; }
 
   /*!
