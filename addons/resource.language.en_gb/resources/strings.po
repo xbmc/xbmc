@@ -7289,7 +7289,9 @@ msgctxt "#13423"
 msgid "Remember for this path"
 msgstr ""
 
-#empty string with id 13424
+msgctxt "#13424"
+msgid "Choose playlist"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13425"
