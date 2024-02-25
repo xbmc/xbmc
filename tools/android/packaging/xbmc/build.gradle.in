@@ -21,26 +21,21 @@ android {
             enableV2Signing true
             enableV3Signing true
         }
-
     }
     buildTypes {
         debug {
-            zipAlignEnabled true
             signingConfig signingConfigs.release
         }
         relwithdebinfo {
-            zipAlignEnabled true
             signingConfig signingConfigs.release
         }
         release {
-            zipAlignEnabled true
             signingConfig signingConfigs.release
         }
     }
     aaptOptions {
         ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
     }
-
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
