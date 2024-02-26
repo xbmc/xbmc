@@ -48,7 +48,7 @@ CLogindUPowerSyscall::CLogindUPowerSyscall()
 
   m_batteryLevel = 0;
   if (m_hasUPower)
-    UpdateBatteryLevel();
+    UpdatePowerSupplyInfo();
 
   if (!m_connection.Connect(DBUS_BUS_SYSTEM, true))
   {
@@ -60,7 +60,10 @@ CLogindUPowerSyscall::CLogindUPowerSyscall()
   dbus_bus_add_match(m_connection, "type='signal',interface='org.freedesktop.login1.Manager',member='PrepareForSleep'", error);
 
   if (!error && m_hasUPower)
-    dbus_bus_add_match(m_connection, "type='signal',interface='org.freedesktop.UPower',member='DeviceChanged'", error);
+    dbus_bus_add_match(m_connection,
+                       "type='signal',interface='org.freedesktop.DBus.Properties',member='"
+                       "PropertiesChanged',path_namespace='/org/freedesktop/UPower/devices'",
+                       error);
 
   dbus_connection_flush(m_connection);
 
@@ -186,12 +189,14 @@ int CLogindUPowerSyscall::BatteryLevel()
   return m_batteryLevel;
 }
 
-void CLogindUPowerSyscall::UpdateBatteryLevel()
+void CLogindUPowerSyscall::UpdatePowerSupplyInfo()
 {
   char** source  = NULL;
-  int    length = 0;
-  double batteryLevelSum = 0;
+  int length = 0;
   int    batteryCount = 0;
+  int chargerCount = 0;
+  int deviceBatteryCount = 0;
+  bool hasBattery = false;
 
   CDBusMessage message("org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower", "EnumerateDevices");
   DBusMessage *reply = message.SendSystem();
@@ -209,20 +214,91 @@ void CLogindUPowerSyscall::UpdateBatteryLevel()
   {
     CVariant properties = CDBusUtil::GetAll("org.freedesktop.UPower", source[i], "org.freedesktop.UPower.Device");
     bool isRechargeable = properties["IsRechargeable"].asBoolean();
+    bool isPowerSupply = properties["PowerSupply"].asBoolean();
+    int isType = properties["Type"].asInteger();
 
-    if (isRechargeable)
+    switch (isType)
     {
-      batteryCount++;
-      batteryLevelSum += properties["Percentage"].asDouble();
+      case 1: // Line Power
+      {
+        chargerCount++;
+        if (chargerCount > 1)
+        {
+          CLog::Log(LOGDEBUG,
+                    "LogindUPowerSyscall: More than one non battery powersupply found. Ignoring");
+          continue;
+        }
+        m_chargerState = properties["Online"].asBoolean();
+      }
+
+      case 2: // Battery
+      {
+        if (isPowerSupply && isRechargeable) //Verify this is a System Battery
+        {
+
+          //TODO:Add check for upower reporting backlight/display as battery.
+          batteryCount++;
+
+          if (batteryCount > 1)
+          {
+            CLog::Log(LOGDEBUG, "LogindUPowerSyscall: More than one system battery found Ignoring");
+            continue;
+          }
+
+          m_batteryLevel = (int)properties["Percentage"].asDouble();
+          //WAR: Some devices come up with screwy info for battery and dont seem to update the battery state properly, work around this....
+          //Connecting charger on such devices fixes this, TODO: add check if charger has been connected before.
+          if ((properties["State"].asInteger() == 4 || properties["State"].asInteger() == 0) &&
+              (int)properties["Percentage"].asDouble() != 100)
+            m_batteryState = 2; // Discharging.
+          else
+            m_batteryState = properties["State"].asInteger();
+        }
+        else
+        {
+          //TODO: Deal with other device that show as battery type, and arent PowerSupply's
+          deviceBatteryCount++;
+          continue;
+        }
+      }
+      default:
+        //TODO: Implement more device types for periphereals.
+        // Skip unspecified Device types
+        continue;
     }
   }
-
   dbus_free_string_array(source);
 
   if (batteryCount > 0)
   {
-    m_batteryLevel = (int)(batteryLevelSum / (double)batteryCount);
-    m_lowBattery = CDBusUtil::GetVariant("org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower", "OnLowBattery").asBoolean();
+    CLog::Log(LOGDEBUG, "LogindUPowerSyscall: Battery State: {}", m_batteryState);
+    hasBattery = true;
+  }
+
+  if (batteryCount > 1)
+    CLog::Log(LOGDEBUG, "LogindUPowerSyscall: {} Unhandled Non System Batteries found",
+              (batteryCount - 1));
+
+  if (deviceBatteryCount > 0) // TODO: Actually do something with this data
+    CLog::Log(LOGDEBUG, "LogindUPowerSyscall: {} Unhandled Device Batteries found",
+              deviceBatteryCount);
+
+  if (chargerCount > 1)
+    CLog::Log(LOGDEBUG, "LogindUPowerSyscall: {} Unhandled Line Power Supplies found",
+              (chargerCount - 1));
+
+  if (hasBattery)
+  {
+    CLog::Log(LOGDEBUG, "LogindUPowerSyscall: Battery State: {}", m_batteryState);
+    if (chargerCount > 0)
+      CLog::Log(LOGDEBUG, "LogindUPowerSyscall: Line Power Supply Status: {}", m_chargerState);
+    //Set Low battery level at 15% since upower doesnt calculate this anymore.
+    //Other backends that do this use 10%, but not all devices have properly calibrated fuel gages
+    //So set this a little higher to compinsate. Other backends that dont calculate this hard set to 10% Capacity.
+    if (m_batteryLevel < 15 && !m_chargerState == 0)
+      m_lowBattery = true;
+    else
+      m_lowBattery = false;
   }
 }
 
@@ -257,10 +333,11 @@ bool CLogindUPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
 
         result = true;
       }
-      else if (dbus_message_is_signal(msg.get(), "org.freedesktop.UPower", "DeviceChanged"))
+      else if (dbus_message_is_signal(msg.get(), "org.freedesktop.DBus.Properties",
+                                      "PropertiesChanged"))
       {
         bool lowBattery = m_lowBattery;
-        UpdateBatteryLevel();
+        UpdatePowerSupplyInfo();
         if (m_lowBattery && !lowBattery)
           callback->OnLowBattery();
 
