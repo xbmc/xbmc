@@ -1,11 +1,15 @@
 set(SOURCES CocoaInterface.mm
             CPUInfoOsx.cpp
             GPUInfoMacOS.cpp
-            PlatformDarwinOSX.cpp)
+            HotKeyController.mm
+            MediaKeys.mm
+            PlatformDarwinOSX.mm)
 
 set(HEADERS CocoaInterface.h
             CPUInfoOsx.h
             GPUInfoMacOS.h
+            HotKeyController.h
+            MediaKeys.h
             PlatformDarwinOSX.h)
 
 if(ENABLE_XBMCHELPER)

@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "application/AppInboundProtocol.h"
 #include "application/Application.h"
+#include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
@@ -89,6 +90,7 @@
 - (void)windowDidBecomeKey:(NSNotification*)aNotification
 {
   g_application.m_AppFocused = true;
+  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::GUI, "WindowFocused");
 
   auto winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
   if (winSystem)
@@ -100,6 +102,7 @@
 - (void)windowDidResignKey:(NSNotification*)aNotification
 {
   g_application.m_AppFocused = false;
+  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::GUI, "WindowUnfocused");
 
   auto winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
   if (winSystem)
