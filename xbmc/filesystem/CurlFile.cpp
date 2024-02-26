@@ -690,6 +690,7 @@ void CCurlFile::SetCorrectHeaders(CReadState* state)
 
 void CCurlFile::ParseAndCorrectUrl(CURL &url2)
 {
+    CLog::Log(LOGERROR, "ParseAndCorrectUrl: url= %s", url2.GetRedacted().c_str());
   std::string strProtocol = url2.GetTranslatedProtocol();
   url2.SetProtocol(strProtocol);
 
@@ -731,6 +732,10 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     /* make sure we keep slashes */
     if(StringUtils::EndsWith(url2.GetFileName(), "/"))
       filename += "/";
+    if(StringUtils::BeginsWith(url2.GetFileName(), "["))
+      filename = "["+filename;
+    if(StringUtils::EndsWith(url2.GetFileName(), "]"))
+      filename += "]";
 
     url2.SetFileName(filename);
 
