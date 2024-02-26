@@ -106,7 +106,7 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
     item->SetStartOffset(CUtil::ConvertSecsToMilliSecs(m_fctx->chapters[i]->start *
                                                        av_q2d(m_fctx->chapters[i]->time_base)));
     item->SetEndOffset(m_fctx->chapters[i]->end * av_q2d(m_fctx->chapters[i]->time_base));
-    int compare = m_fctx->duration / (AV_TIME_BASE);
+    int compare = m_fctx->streams[0]->duration * av_q2d(m_fctx->streams[0]->time_base);
     if (item->GetEndOffset() < 0 || item->GetEndOffset() > compare)
     {
       if (i < m_fctx->nb_chapters-1)
