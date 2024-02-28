@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 
 android {
     namespace '@APP_PACKAGE@'
-    compileSdkVersion @TARGET_SDK@
+    compileSdk @TARGET_SDK@
     ndkPath "@NDKROOT@"
     defaultConfig {
         applicationId "@APP_PACKAGE@"
-        minSdkVersion @TARGET_MINSDK@
-        targetSdkVersion @TARGET_SDK@
+        minSdk @TARGET_MINSDK@
+        targetSdk @TARGET_SDK@
         versionCode @APP_VERSION_CODE_ANDROID@
         versionName "@APP_VERSION@"
     }
