@@ -4,10 +4,6 @@
     android:versionCode="@APP_VERSION_CODE_ANDROID@"
     android:versionName="@APP_VERSION@">
 
-    <uses-sdk
-        android:minSdkVersion="@TARGET_MINSDK@"
-        android:targetSdkVersion="@TARGET_SDK@" />
-
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
