@@ -3951,8 +3951,10 @@ void CVideoPlayer::FlushBuffers(double pts, bool accurate, bool sync)
   {
     m_CurrentAudio.inited = false;
     m_CurrentAudio.avsync = CCurrentStream::AV_SYNC_FORCE;
+    m_CurrentAudio.starttime = DVD_NOPTS_VALUE;
     m_CurrentVideo.inited = false;
     m_CurrentVideo.avsync = CCurrentStream::AV_SYNC_FORCE;
+    m_CurrentVideo.starttime = DVD_NOPTS_VALUE;
     m_CurrentSubtitle.inited = false;
     m_CurrentTeletext.inited = false;
     m_CurrentRadioRDS.inited  = false;
