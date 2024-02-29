@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2020 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -9,6 +9,7 @@
 #pragma once
 
 #include "platform/darwin/PlatformDarwin.h"
+#include "platform/darwin/osx/HotKeyController.h"
 
 class CPlatformDarwinOSX : public CPlatformDarwin
 {
@@ -19,4 +20,7 @@ public:
 
   bool InitStageOne() override;
   bool InitStageTwo() override;
+
+private:
+  CHotKeyController m_hotkeyController;
 };
