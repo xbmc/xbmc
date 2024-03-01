@@ -201,6 +201,7 @@ bool CRenderSystemGLES::EndRender()
     case RENDER_RESOLVE_BLIT:
       if (PostProcessBlit())
         return true;
+      [[fallthrough]];
     case RENDER_RESOLVE_SHADER_DUAL_PASS:
       return PostProcessShaderDualPass();
     case RENDER_RESOLVE_DEFAULT:
@@ -788,7 +789,8 @@ void CRenderSystemGLES::BindIntermediateBuffer()
 
 bool CRenderSystemGLES::PostProcessBlit()
 {
-#if HAS_GLES == 3
+  // jenkins won't build android if enabled
+#if (HAS_GLES == 3 && not defined(TARGET_ANDROID))
   if (m_limitedColorRange)
     return false;
 
