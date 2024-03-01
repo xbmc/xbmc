@@ -115,7 +115,8 @@ void EglErrorCallback(EGLenum error,
     typeStr = eglType->second;
   }
 
-  CLog::Log(LOGDEBUG, "EGL Debugging:\nError: {}\nCommand: {}\nType: {}\nMessage: {}", errorStr, command, typeStr, message);
+  CLog::Log(LOGDEBUG, "EGL Debugging:\nError: {}\nCommand: {}\nType: {}\nMessage: {}", errorStr,
+            command, typeStr, message ? message : "");
 }
 
 std::set<std::string> CEGLUtils::GetClientExtensions()
