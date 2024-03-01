@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -33,6 +33,7 @@ enum class ShaderMethodGLES
   SM_TEXTURE_RGBA_BOB,
   SM_TEXTURE_RGBA_BOB_OES,
   SM_TEXTURE_NOALPHA,
+  SM_RESOLVE,
   SM_MAX
 };
 
@@ -63,6 +64,7 @@ private:
       {ShaderMethodGLES::SM_TEXTURE_RGBA_BOB, "texture rgba bob"},
       {ShaderMethodGLES::SM_TEXTURE_RGBA_BOB_OES, "texture rgba bob OES"},
       {ShaderMethodGLES::SM_TEXTURE_NOALPHA, "texture no alpha"},
+      {ShaderMethodGLES::SM_RESOLVE, "resolve shader"},
   });
 
   static_assert(static_cast<size_t>(ShaderMethodGLES::SM_MAX) == ShaderMethodGLESMap.size(),
@@ -125,6 +127,37 @@ public:
   GLint GUIShaderGetBrightness();
   GLint GUIShaderGetModel();
 
+  /**
+   * @brief Binds the intermediate framebuffer, so that it can be rendered to.
+   * Creates one if needed.
+   */
+  void BindIntermediateBuffer();
+  /**
+   * @brief Creates a triangle spanning the whole screen.
+   */
+  void CreateDefaultVertex();
+  /**
+   * @brief Blits the intermediate buffer to the main frame buffer. 
+   * Width/Height can differ, but we can't blend/manipulate the content.
+   *
+   * @return true The blit succeeded
+   */
+  bool PostProcessBlit();
+  /**
+   * @brief Applies the "virtual" intermediate buffer to the main frame buffer.
+   * Width/Height need to be the same, but we can blend/manipulate the content.
+   *
+   * @return true The pass succeeded
+   */
+  bool PostProcessShaderSinglePass();
+  /**
+   * @brief Applies the intermediate buffer to the main frame buffer.
+   * Width/Height can differ, and we can blend and manipulate the content.
+   *
+   * @return true The pass succeeded
+   */
+  bool PostProcessShaderDualPass();
+
 protected:
   virtual void SetVSyncImpl(bool enable) = 0;
   virtual void PresentRenderImpl(bool rendered) = 0;
@@ -140,4 +173,10 @@ protected:
   ShaderMethodGLES m_method = ShaderMethodGLES::SM_DEFAULT;
 
   GLint      m_viewPort[4];
+  GLuint m_framebufferGUI{0};
+  GLuint m_textureGUI{0};
+  GLuint m_defaultVertex{0};
+
+  RENDER_RESOLVE m_renderPassType{RENDER_RESOLVE_DEFAULT};
+  bool m_isRenderingVideoInUI{false};
 };

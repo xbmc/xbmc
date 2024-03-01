@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017-2018 Team Kodi
+ *  Copyright (C) 2017-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -32,4 +32,12 @@ enum RENDER_STEREO_MODE
   // Pseudo modes
   RENDER_STEREO_MODE_AUTO = 100,
   RENDER_STEREO_MODE_UNDEFINED = 999,
+};
+
+enum RENDER_RESOLVE
+{
+  RENDER_RESOLVE_DEFAULT, // default rendering behaviour
+  RENDER_RESOLVE_BLIT, // blit an intermediate buffer to the default FB
+  RENDER_RESOLVE_SHADER_SINGLE_PASS, // use shaders to apply an intermediate buffer to the default FB
+  RENDER_RESOLVE_SHADER_DUAL_PASS, // use shaders to apply an intermediate buffer to the default FB in a extra pass
 };

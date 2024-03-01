@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -8,6 +8,9 @@
 
 #include "RenderSystemGLES.h"
 
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
+#include "commons/ilog.h"
 #include "guilib/DirtyRegion.h"
 #include "guilib/GUITextureGLES.h"
 #include "rendering/MatrixGL.h"
@@ -164,14 +167,24 @@ bool CRenderSystemGLES::BeginRender()
     return false;
 
   bool useLimited = CServiceBroker::GetWinSystem()->UseLimitedColor();
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  bool isRenderingVideoInUI = appPlayer->IsRenderingVideo() && !appPlayer->IsRenderingVideoLayer();
 
-  if (m_limitedColorRange != useLimited)
+  // we can't do post processing shaders if the video is rendered as an UI element
+  if (m_limitedColorRange != useLimited ||
+      (m_isRenderingVideoInUI != isRenderingVideoInUI && useLimited))
   {
+    m_limitedColorRange = useLimited;
+    m_isRenderingVideoInUI = isRenderingVideoInUI;
     ReleaseShaders();
     InitialiseShaders();
   }
 
-  m_limitedColorRange = useLimited;
+  // blitting or a dual pass shader resolve needs an intermediate buffer
+  if (m_renderPassType == RENDER_RESOLVE_BLIT ||
+      m_renderPassType == RENDER_RESOLVE_SHADER_DUAL_PASS)
+    BindIntermediateBuffer();
 
   return true;
 }
@@ -181,7 +194,18 @@ bool CRenderSystemGLES::EndRender()
   if (!m_bRenderCreated)
     return false;
 
-  return true;
+  switch (m_renderPassType)
+  {
+    case RENDER_RESOLVE_SHADER_SINGLE_PASS:
+      return PostProcessShaderSinglePass();
+    case RENDER_RESOLVE_BLIT:
+      if (PostProcessBlit())
+        return true;
+    case RENDER_RESOLVE_SHADER_DUAL_PASS:
+      return PostProcessShaderDualPass();
+    case RENDER_RESOLVE_DEFAULT:
+      return true;
+  }
 }
 
 bool CRenderSystemGLES::ClearBuffers(UTILS::COLOR::Color color)
@@ -383,10 +407,37 @@ void CRenderSystemGLES::ResetScissors()
 void CRenderSystemGLES::InitialiseShaders()
 {
   std::string defines;
-  m_limitedColorRange = CServiceBroker::GetWinSystem()->UseLimitedColor();
   if (m_limitedColorRange)
   {
-    defines += "#define KODI_LIMITED_RANGE 1\n";
+    if (m_isRenderingVideoInUI)
+    {
+      defines += "#define KODI_LIMITED_RANGE 1\n";
+      m_renderPassType = RENDER_RESOLVE_DEFAULT;
+    }
+    else
+    {
+      defines += "#define KODI_LIMITED_RANGE_PASS 1\n";
+
+      if (IsExtSupported("GL_ARM_shader_framebuffer_fetch"))
+      {
+        defines += "#define KODI_FETCH_ARM 1\n";
+        m_renderPassType = RENDER_RESOLVE_SHADER_SINGLE_PASS;
+      }
+      else if (IsExtSupported("GL_EXT_shader_framebuffer_fetch"))
+      {
+        defines += "#define KODI_FETCH_EXT 1\n";
+        m_renderPassType = RENDER_RESOLVE_SHADER_SINGLE_PASS;
+      }
+      else if (IsExtSupported("GL_NV_shader_framebuffer_fetch"))
+      {
+        defines += "#define KODI_FETCH_NV 1\n";
+        m_renderPassType = RENDER_RESOLVE_SHADER_SINGLE_PASS;
+      }
+      else
+      {
+        m_renderPassType = RENDER_RESOLVE_SHADER_DUAL_PASS;
+      }
+    }
   }
 
   m_pShader[ShaderMethodGLES::SM_DEFAULT] =
@@ -500,6 +551,16 @@ void CRenderSystemGLES::InitialiseShaders()
     m_pShader[ShaderMethodGLES::SM_TEXTURE_NOALPHA].reset();
     CLog::Log(LOGERROR, "GUI Shader gles_shader_texture_noalpha.frag - compile and link failed");
   }
+
+  m_pShader[ShaderMethodGLES::SM_RESOLVE] = std::make_unique<CGLESShader>(
+      "gles_shader_passtrough.vert", "gles_shader_resolve.frag", defines);
+  if (!m_pShader[ShaderMethodGLES::SM_RESOLVE]->CompileAndLink())
+  {
+    m_pShader[ShaderMethodGLES::SM_RESOLVE]->Free();
+    m_pShader[ShaderMethodGLES::SM_RESOLVE].reset();
+    CLog::Log(LOGERROR, "GUI Shader gles_shader_passtrough.vert + gles_shader_resolve.frag - "
+                        "compile and link failed");
+  }
 }
 
 void CRenderSystemGLES::ReleaseShaders()
@@ -551,6 +612,10 @@ void CRenderSystemGLES::ReleaseShaders()
   if (m_pShader[ShaderMethodGLES::SM_TEXTURE_NOALPHA])
     m_pShader[ShaderMethodGLES::SM_TEXTURE_NOALPHA]->Free();
   m_pShader[ShaderMethodGLES::SM_TEXTURE_NOALPHA].reset();
+
+  if (m_pShader[ShaderMethodGLES::SM_RESOLVE])
+    m_pShader[ShaderMethodGLES::SM_RESOLVE]->Free();
+  m_pShader[ShaderMethodGLES::SM_RESOLVE].reset();
 }
 
 void CRenderSystemGLES::EnableGUIShader(ShaderMethodGLES method)
@@ -666,4 +731,122 @@ GLint CRenderSystemGLES::GUIShaderGetModel()
     return m_pShader[m_method]->GetModelLoc();
 
   return -1;
+}
+
+void CRenderSystemGLES::CreateDefaultVertex()
+{
+  if (m_defaultVertex)
+    return;
+
+  GLshort vertex[3][2];
+  // top left
+  vertex[0][0] = 0;
+  vertex[0][1] = 1;
+  // top right
+  vertex[1][0] = 2;
+  vertex[1][1] = 1;
+  // bottom left
+  vertex[2][0] = 0;
+  vertex[2][1] = -1;
+
+  glGenBuffers(1, &m_defaultVertex);
+  glBindBuffer(GL_ARRAY_BUFFER, m_defaultVertex);
+  glBufferData(GL_ARRAY_BUFFER, 3 * 2 * sizeof(GLshort), &vertex, GL_STATIC_DRAW);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void CRenderSystemGLES::BindIntermediateBuffer()
+{
+  if (m_framebufferGUI)
+  {
+    glBindFramebuffer(GL_FRAMEBUFFER, m_framebufferGUI);
+    return;
+  }
+
+  glGenFramebuffers(1, &m_framebufferGUI);
+  glBindFramebuffer(GL_FRAMEBUFFER, m_framebufferGUI);
+
+  glGenTextures(1, &m_textureGUI);
+  glBindTexture(GL_TEXTURE_2D, m_textureGUI);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_textureGUI, 0);
+
+  GLenum attachments[1] = {GL_COLOR_ATTACHMENT0};
+  glDrawBuffers(1, attachments);
+
+  if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    CLog::LogF(LOGERROR, "Intermediate FB incomplete!");
+
+  glBindFramebuffer(GL_FRAMEBUFFER, m_framebufferGUI);
+}
+
+bool CRenderSystemGLES::PostProcessBlit()
+{
+#if HAS_GLES >= 3
+  if (m_limitedColorRange)
+    return false;
+
+  glBindFramebuffer(GL_READ_FRAMEBUFFER, m_framebufferGUI);
+  glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+  glBlitFramebuffer(0, 0, m_width, m_height, 0, 0, m_width, m_height, GL_COLOR_BUFFER_BIT,
+                    GL_LINEAR);
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  return true;
+#endif
+  return false;
+}
+
+bool CRenderSystemGLES::PostProcessShaderSinglePass()
+{
+  CreateDefaultVertex();
+  glDisable(GL_BLEND);
+  glDisable(GL_SCISSOR_TEST);
+
+  EnableGUIShader(ShaderMethodGLES::SM_RESOLVE);
+  GLint posLoc = GUIShaderGetPos();
+  glBindBuffer(GL_ARRAY_BUFFER, m_defaultVertex);
+  glEnableVertexAttribArray(posLoc);
+  glVertexAttribPointer(posLoc, 2, GL_SHORT, GL_FALSE, 0, 0);
+
+  glDrawArrays(GL_TRIANGLES, 0, 3);
+
+  glDisableVertexAttribArray(posLoc);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  DisableGUIShader();
+  glEnable(GL_SCISSOR_TEST);
+  return true;
+}
+
+bool CRenderSystemGLES::PostProcessShaderDualPass()
+{
+  CreateDefaultVertex();
+  glDisable(GL_BLEND);
+  glDisable(GL_SCISSOR_TEST);
+
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  EnableGUIShader(ShaderMethodGLES::SM_RESOLVE);
+  GLint posLoc = GUIShaderGetPos();
+  GLint tex0Loc = GUIShaderGetCoord0();
+  glBindBuffer(GL_ARRAY_BUFFER, m_defaultVertex);
+  glBindTexture(GL_TEXTURE_2D, m_textureGUI);
+  glEnableVertexAttribArray(posLoc);
+  glEnableVertexAttribArray(tex0Loc);
+  glVertexAttribPointer(posLoc, 2, GL_SHORT, GL_FALSE, 0, 0);
+  glVertexAttribPointer(tex0Loc, 2, GL_SHORT, GL_FALSE, 0, 0);
+
+  glDrawArrays(GL_TRIANGLES, 0, 3);
+
+  glDisableVertexAttribArray(posLoc);
+  glDisableVertexAttribArray(tex0Loc);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindTexture(GL_TEXTURE_2D, 0);
+  DisableGUIShader();
+  glEnable(GL_SCISSOR_TEST);
+  return true;
 }
