@@ -472,7 +472,11 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, EmbeddedArt *art, MUSIC_INFO:
     if (picture)
     {
       std::string  mime =            picture->mimeType().to8Bit(true);
+#if (TAGLIB_MAJOR_VERSION >= 2)
+      unsigned int size =            picture->picture().size();
+#else
       TagLib::uint size =            picture->picture().size();
+#endif
       tag.SetCoverArtInfo(size, mime);
       if (art)
         art->Set(reinterpret_cast<const uint8_t*>(picture->picture().data()), size, mime);
@@ -500,19 +504,19 @@ bool CTagLoaderTagLib::ParseTag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTag& 
   for (APE::ItemListMap::ConstIterator it = itemListMap.begin(); it != itemListMap.end(); ++it)
   {
     if (it->first == "ARTIST")
-      SetArtist(tag, StringListToVectorString(it->second.toStringList()));
+      SetArtist(tag, StringListToVectorString(it->second.values()));
     else if (it->first == "ARTISTSORT")
-      SetArtistSort(tag, StringListToVectorString(it->second.toStringList()));
+      SetArtistSort(tag, StringListToVectorString(it->second.values()));
     else if (it->first == "ARTISTS")
-      SetArtistHints(tag, StringListToVectorString(it->second.toStringList()));
+      SetArtistHints(tag, StringListToVectorString(it->second.values()));
     else if (it->first == "ALBUMARTIST" || it->first == "ALBUM ARTIST")
-      SetAlbumArtist(tag, StringListToVectorString(it->second.toStringList()));
+      SetAlbumArtist(tag, StringListToVectorString(it->second.values()));
     else if (it->first == "ALBUMARTISTSORT")
-      SetAlbumArtistSort(tag, StringListToVectorString(it->second.toStringList()));
+      SetAlbumArtistSort(tag, StringListToVectorString(it->second.values()));
     else if (it->first == "ALBUMARTISTS" || it->first == "ALBUM ARTISTS")
-      SetAlbumArtistHints(tag, StringListToVectorString(it->second.toStringList()));
+      SetAlbumArtistHints(tag, StringListToVectorString(it->second.values()));
     else if (it->first == "COMPOSERSORT")
-      SetComposerSort(tag, StringListToVectorString(it->second.toStringList()));
+      SetComposerSort(tag, StringListToVectorString(it->second.values()));
     else if (it->first == "ALBUM")
       tag.SetAlbum(it->second.toString().to8Bit(true));
     else if (it->first == "TITLE")
@@ -528,7 +532,7 @@ bool CTagLoaderTagLib::ParseTag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTag& 
     else if (it->first == "ORIGINALYEAR")
       tag.SetOriginalDate(it->second.toString().to8Bit(true));
     else if (it->first == "GENRE")
-      SetGenre(tag, StringListToVectorString(it->second.toStringList()));
+      SetGenre(tag, StringListToVectorString(it->second.values()));
     else if (it->first == "MOOD")
       tag.SetMood(it->second.toString().to8Bit(true));
     else if (it->first == "COMMENT")
@@ -538,32 +542,32 @@ bool CTagLoaderTagLib::ParseTag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTag& 
     else if (it->first == "ENCODEDBY")
     {}
     else if (it->first == "COMPOSER")
-      AddArtistRole(tag, "Composer", StringListToVectorString(it->second.toStringList()));
+      AddArtistRole(tag, "Composer", StringListToVectorString(it->second.values()));
     else if (it->first == "CONDUCTOR")
-      AddArtistRole(tag, "Conductor", StringListToVectorString(it->second.toStringList()));
+      AddArtistRole(tag, "Conductor", StringListToVectorString(it->second.values()));
     else if (it->first == "BAND")
-      AddArtistRole(tag, "Band", StringListToVectorString(it->second.toStringList()));
+      AddArtistRole(tag, "Band", StringListToVectorString(it->second.values()));
     else if (it->first == "ENSEMBLE")
-      AddArtistRole(tag, "Ensemble", StringListToVectorString(it->second.toStringList()));
+      AddArtistRole(tag, "Ensemble", StringListToVectorString(it->second.values()));
     else if (it->first == "LYRICIST")
-      AddArtistRole(tag, "Lyricist", StringListToVectorString(it->second.toStringList()));
+      AddArtistRole(tag, "Lyricist", StringListToVectorString(it->second.values()));
     else if (it->first == "WRITER")
-      AddArtistRole(tag, "Writer", StringListToVectorString(it->second.toStringList()));
+      AddArtistRole(tag, "Writer", StringListToVectorString(it->second.values()));
     else if ((it->first == "MIXARTIST") || (it->first == "REMIXER"))
-      AddArtistRole(tag, "Remixer", StringListToVectorString(it->second.toStringList()));
+      AddArtistRole(tag, "Remixer", StringListToVectorString(it->second.values()));
     else if (it->first == "ARRANGER")
-      AddArtistRole(tag, "Arranger", StringListToVectorString(it->second.toStringList()));
+      AddArtistRole(tag, "Arranger", StringListToVectorString(it->second.values()));
     else if (it->first == "ENGINEER")
-      AddArtistRole(tag, "Engineer", StringListToVectorString(it->second.toStringList()));
+      AddArtistRole(tag, "Engineer", StringListToVectorString(it->second.values()));
     else if (it->first == "PRODUCER")
-      AddArtistRole(tag, "Producer", StringListToVectorString(it->second.toStringList()));
+      AddArtistRole(tag, "Producer", StringListToVectorString(it->second.values()));
     else if (it->first == "DJMIXER")
-      AddArtistRole(tag, "DJMixer", StringListToVectorString(it->second.toStringList()));
+      AddArtistRole(tag, "DJMixer", StringListToVectorString(it->second.values()));
     else if (it->first == "MIXER")
-      AddArtistRole(tag, "Mixer", StringListToVectorString(it->second.toStringList()));
+      AddArtistRole(tag, "Mixer", StringListToVectorString(it->second.values()));
     else if (it->first == "PERFORMER")
       // Picard uses PERFORMER tag as musician credits list formatted "name (instrument)"
-      AddArtistInstrument(tag, StringListToVectorString(it->second.toStringList()));
+      AddArtistInstrument(tag, StringListToVectorString(it->second.values()));
     else if (it->first == "LABEL")
       tag.SetRecordLabel(it->second.toString().to8Bit(true));
     else if (it->first == "COMPILATION")
@@ -579,11 +583,11 @@ bool CTagLoaderTagLib::ParseTag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTag& 
     else if (it->first == "REPLAYGAIN_ALBUM_PEAK")
       replayGainInfo.ParsePeak(ReplayGain::ALBUM, it->second.toString().toCString(true));
     else if (it->first == "MUSICBRAINZ_ARTISTID")
-      tag.SetMusicBrainzArtistID(SplitMBID(StringListToVectorString(it->second.toStringList())));
+      tag.SetMusicBrainzArtistID(SplitMBID(StringListToVectorString(it->second.values())));
     else if (it->first == "MUSICBRAINZ_ALBUMARTISTID")
-      tag.SetMusicBrainzAlbumArtistID(SplitMBID(StringListToVectorString(it->second.toStringList())));
+      tag.SetMusicBrainzAlbumArtistID(SplitMBID(StringListToVectorString(it->second.values())));
     else if (it->first == "MUSICBRAINZ_ALBUMARTIST")
-      SetAlbumArtist(tag, StringListToVectorString(it->second.toStringList()));
+      SetAlbumArtist(tag, StringListToVectorString(it->second.values()));
     else if (it->first == "MUSICBRAINZ_ALBUMID")
       tag.SetMusicBrainzAlbumID(it->second.toString().to8Bit(true));
     else if (it->first == "MUSICBRAINZ_RELEASEGROUPID")
@@ -591,7 +595,7 @@ bool CTagLoaderTagLib::ParseTag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTag& 
     else if (it->first == "MUSICBRAINZ_TRACKID")
       tag.SetMusicBrainzTrackID(it->second.toString().to8Bit(true));
     else if (it->first == "MUSICBRAINZ_ALBUMTYPE")
-      SetReleaseType(tag, StringListToVectorString(it->second.toStringList()));
+      SetReleaseType(tag, StringListToVectorString(it->second.values()));
     else if (it->first == "BPM")
       tag.SetBPM(it->second.toString().toInt());
     else if (it->first == "MUSICBRAINZ_ALBUMSTATUS")
@@ -789,7 +793,11 @@ bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment *xiph, EmbeddedArt *art, CMusic
       std::string mime = pictures[i].mimeType().toCString();
       if (mime.compare(0, 6, "image/") != 0)
         continue;
+#if (TAGLIB_MAJOR_VERSION >= 2)
+      unsigned int size =            pictures[i].data().size();
+#else
       TagLib::uint size =            pictures[i].data().size();
+#endif
       tag.SetCoverArtInfo(size, mime);
       if (art)
         art->Set(reinterpret_cast<const uint8_t*>(pictures[i].data().data()), size, mime);
