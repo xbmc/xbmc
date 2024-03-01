@@ -348,10 +348,25 @@ void CAESinkPipewire::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
                                   streamTypes.end());
     }
 
-    if (device.m_channels.Count() == 2 && !device.m_streamTypes.empty())
+    // If DTS-HD-MA or TrueHD are configured 8 channels are needed
+    bool hasHBRFormat = std::any_of(device.m_streamTypes.cbegin(), device.m_streamTypes.cend(),
+                                    [](const auto& streamType)
+                                    {
+                                      return streamType == CAEStreamInfo::STREAM_TYPE_TRUEHD ||
+                                             streamType == CAEStreamInfo::STREAM_TYPE_DTSHD_MA;
+                                    });
+
+    if (!device.m_streamTypes.empty())
     {
-      device.m_deviceType = AE_DEVTYPE_IEC958;
       device.m_dataFormats.emplace_back(AE_FMT_RAW);
+      if (!hasHBRFormat && device.m_channels.Count() == 2)
+      {
+        device.m_deviceType = AE_DEVTYPE_IEC958;
+      }
+      else
+      {
+        device.m_deviceType = AE_DEVTYPE_HDMI;
+      }
     }
 
     list.emplace_back(device);
