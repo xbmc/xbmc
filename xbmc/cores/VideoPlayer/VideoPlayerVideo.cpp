@@ -173,8 +173,7 @@ void CVideoPlayerVideo::OpenStream(CDVDStreamInfo& hint, std::unique_ptr<CDVDVid
   if (hint.fpsrate && hint.fpsscale)
   {
     m_fFrameRate = DVD_TIME_BASE / CDVDCodecUtils::NormalizeFrameduration(
-                                       (double)DVD_TIME_BASE *
-                                       ((hint.interlaced ? 2 : 1) * hint.fpsscale) / hint.fpsrate);
+                                       (double)DVD_TIME_BASE * hint.fpsscale / hint.fpsrate);
 
     m_bFpsInvalid = false;
     m_processInfo.SetVideoFps(static_cast<float>(m_fFrameRate));
