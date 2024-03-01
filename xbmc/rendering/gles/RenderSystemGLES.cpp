@@ -788,7 +788,7 @@ void CRenderSystemGLES::BindIntermediateBuffer()
 
 bool CRenderSystemGLES::PostProcessBlit()
 {
-#if HAS_GLES >= 3
+#if HAS_GLES == 3
   if (m_limitedColorRange)
     return false;
 
