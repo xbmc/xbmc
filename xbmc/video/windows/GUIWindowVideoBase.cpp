@@ -538,15 +538,17 @@ bool CGUIWindowVideoBase::OnSelect(int iItem)
   if (iItem < 0 || iItem >= m_vecItems->Size())
     return false;
 
-  CFileItemPtr item = m_vecItems->Get(iItem);
+  const std::shared_ptr<CFileItem> item = m_vecItems->Get(iItem);
 
-  std::string path = item->GetPath();
+  const std::string path = item->GetPath();
   if (!item->m_bIsFolder && path != "add" &&
-      !StringUtils::StartsWith(path, "newsmartplaylist://") &&
-      !StringUtils::StartsWith(path, "newplaylist://") &&
-      !StringUtils::StartsWith(path, "newtag://") && !StringUtils::StartsWith(path, "script://") &&
-      !StringUtils::StartsWith(path, "plugin://") && !item->HasProperty("IsPlayable") &&
-      !item->GetProperty("IsPlayable").asBoolean())
+      ((!StringUtils::StartsWith(path, "newsmartplaylist://") &&
+        !StringUtils::StartsWith(path, "newplaylist://") &&
+        !StringUtils::StartsWith(path, "newtag://") &&
+        !StringUtils::StartsWith(path, "script://") &&
+        !StringUtils::StartsWith(path, "plugin://")) ||
+       (StringUtils::StartsWith(path, "plugin://") &&
+        item->GetProperty("IsPlayable").asBoolean(false))))
     return OnFileAction(iItem, CVideoSelectActionProcessorBase::GetDefaultSelectAction(), "");
 
   return CGUIMediaWindow::OnSelect(iItem);
