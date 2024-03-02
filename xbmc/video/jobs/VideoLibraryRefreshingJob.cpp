@@ -9,10 +9,10 @@
 #include "VideoLibraryRefreshingJob.h"
 
 #include "FileItem.h"
-#include "ServiceBroker.h"
 #include "TextureDatabase.h"
 #include "URL.h"
 #include "Util.h"
+#include "addons/AddonManager.h"
 #include "addons/Scraper.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -29,8 +29,10 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoDownloader.h"
 #include "video/VideoInfoScanner.h"
+#include "video/VideoThumbLoader.h"
 #include "video/tags/IVideoInfoTagLoader.h"
 #include "video/tags/VideoInfoTagLoaderFactory.h"
+#include "video/tags/VideoTagLoaderNFO.h"
 #include "video/tags/VideoTagLoaderPlugin.h"
 
 #include <memory>
@@ -38,6 +40,7 @@
 
 using namespace KODI::MESSAGING;
 using namespace VIDEO;
+using namespace ADDON;
 
 CVideoLibraryRefreshingJob::CVideoLibraryRefreshingJob(std::shared_ptr<CFileItem> item,
                                                        bool forceRefresh,
@@ -73,11 +76,119 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
 
   // determine the scraper for the item's path
   VIDEO::SScanSettings scanSettings;
-  ADDON::ScraperPtr scraper = db.GetScraperForPath(m_item->GetPath(), scanSettings);
+  ScraperPtr scraper = db.GetScraperForPath(m_item->GetPath(), scanSettings);
   if (scraper == nullptr)
-    return false;
+  {
+    if (m_item->GetVideoContentType() == VideoDbContentType::MOVIE_SETS)
+    {
+      // Deal with refreshing movie set
+      // Get movies in set
+      std::string setTitle = m_item->GetVideoInfoTag()->GetTitle();
+      CVideoInfoTag& tag{*m_item->GetVideoInfoTag()};
+      const int dbId = tag.m_iDbId;
+      CFileItemList movies;
+      bool localFound{false};
+      bool onlineFound{false};
 
-  if (URIUtils::IsPlugin(m_item->GetPath()) && !XFILE::CPluginDirectory::IsMediaLibraryScanningAllowed(ADDON::TranslateContent(scraper->Content()), m_item->GetPath()))
+      if (db.GetMoviesBySet(m_item->GetPath(), movies, dbId))
+      {
+        // Scan each movie folder for an NFO file and get online information for a movie in the set
+        for (const auto& movie : movies)
+        {
+          // Check not plugin
+          if (!URIUtils::IsPlugin(movie->GetDynPath()))
+          {
+            // Use local scraper
+            AddonPtr addon{};
+            CServiceBroker::GetAddonMgr().GetAddon("metadata.local", addon,
+                                                   OnlyEnabled::CHOICE_YES);
+            scraper = std::dynamic_pointer_cast<CScraper>(addon);
+
+            // See if NFO
+            movie->SetPath(movie->GetDynPath());
+            const auto nfo{std::make_unique<CVideoTagLoaderNFO>(*movie, scraper, true)};
+            if (nfo->HasInfo())
+            {
+              // NFO found - see if it has set overview
+              nfo->Load(tag, false);
+
+              // Check set and overview present
+              if (tag.m_set.title == m_item->GetVideoInfoTag()->GetTitle() &&
+                  tag.GetUpdateSetOverview())
+              {
+                localFound = true;
+                break;
+              }
+            }
+
+            // Get online information
+            if (!onlineFound && !movie->GetVideoInfoTag()->GetTitle().empty())
+            {
+              scraper = db.GetScraperForPath(movie->GetDynPath(), scanSettings);
+              CVideoInfoDownloader infoDownloader{scraper};
+              MOVIELIST itemResultList;
+              infoDownloader.FindMovie(movie->GetVideoInfoTag()->GetTitle(),
+                                       movie->GetVideoInfoTag()->GetYear(), itemResultList);
+              if (!itemResultList.empty())
+              {
+                std::unordered_map<std::string, std::string> uniqueIDs;
+                if (infoDownloader.GetDetails(uniqueIDs, itemResultList.at(0), tag))
+                {
+                  // Get original online set title (may have been overridden with Set.NFO)
+                  if (tag.m_set.title.empty())
+                  {
+                    setTitle = tag.m_set.title;
+                    onlineFound = true;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      // Use Set.NFO, if present, as priority
+      // Done after online search above to get original set name
+      tag.m_set.title = setTitle; // Original set name
+      bool setFound{CVideoInfoScanner::UpdateSetInfo(tag)};
+
+      // Nothing found to update with
+      if (!localFound && !onlineFound && !setFound)
+        return false;
+
+      // item now contains up-to-date set title and overview
+      db.UpdateSet(dbId, tag.m_set.title, tag.m_set.overview);
+
+      // Now deal with art
+      // Clear art first
+      CTextureDatabase textureDb;
+      if (textureDb.Open())
+      {
+        for (const auto& artwork : m_item->GetArt())
+          textureDb.InvalidateCachedTexture(artwork.second);
+        textureDb.Close();
+      }
+      m_item->ClearArt();
+
+      // Local art from Media Set Information Folder will be in item (from UpdateSetInfo)
+      // if art was present, otherwise item will contain online art from movie scraper
+      CGUIListItem::ArtMap movieSetArt;
+      tag.m_strPictureURL.Parse();
+      for (const auto& url : tag.m_strPictureURL.GetUrls())
+        if (StringUtils::StartsWith(url.m_aspect, "set."))
+          movieSetArt.insert({url.m_aspect.substr(4), url.m_url});
+      db.SetArtForItem(dbId, MediaTypeVideoCollection, movieSetArt);
+
+      // Refresh (for video info dialog)
+      db.GetSetInfo(dbId, tag);
+      m_item->SetFromVideoInfoTag(tag);
+      return true;
+    }
+  }
+
+  if (URIUtils::IsPlugin(m_item->GetPath()) &&
+      !XFILE::CPluginDirectory::IsMediaLibraryScanningAllowed(TranslateContent(scraper->Content()),
+                                                              m_item->GetPath()))
   {
     CLog::Log(LOGINFO,
               "CVideoLibraryRefreshingJob: Plugin '{}' does not support media library scanning and "
@@ -87,7 +198,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
   }
 
   // copy the scraper in case we need it again
-  ADDON::ScraperPtr originalScraper(scraper);
+  ScraperPtr originalScraper(scraper);
 
   // get the item's correct title
   std::string itemTitle = m_searchTitle;

@@ -24,6 +24,7 @@ class CFileItemList;
 namespace VIDEO
 {
   class IVideoInfoTagLoader;
+  class ISetInfoTagLoader;
 
   typedef struct SScanSettings
   {
@@ -104,6 +105,12 @@ namespace VIDEO
     bool EnumerateEpisodeItem(const CFileItem *item, EPISODELIST& episodeList);
 
     static std::string GetMovieSetInfoFolder(const std::string& setTitle);
+
+    /*! \brief Update the set information from a SET.NFO in the Movie Set Information Folder
+     Gets set details from the VideoInfoTag of a movie
+     \param tag     info tag
+     */
+    static bool UpdateSetInfo(CVideoInfoTag& tag);
 
   protected:
     virtual void Process();
@@ -253,9 +260,10 @@ namespace VIDEO
 
   private:
     static void AddLocalItemArtwork(CGUIListItem::ArtMap& itemArt,
-      const std::vector<std::string>& wantedArtTypes, const std::string& itemPath,
-      bool addAll, bool exactName);
-
+                                    const std::vector<std::string>& wantedArtTypes,
+                                    const std::string& itemPath,
+                                    bool addAll,
+                                    bool exactName);
     /*! \brief Retrieve the art type for an image from the given size.
      \param width the width of the image.
      \param height the height of the image.
