@@ -768,6 +768,10 @@ bool CFile::ReadString(char *szLine, int iLineLength)
       if(aByte == traits::eof())
         break;
 
+      *szLine = traits::to_char_type(aByte);
+      szLine++;
+      iLineLength--;
+
       if(aByte == traits::to_int_type('\n'))
       {
         if(m_pBuffer->sgetc() == traits::to_int_type('\r'))
@@ -781,16 +785,9 @@ bool CFile::ReadString(char *szLine, int iLineLength)
           m_pBuffer->sbumpc();
         break;
       }
-
-      *szLine = traits::to_char_type(aByte);
-      szLine++;
-      iLineLength--;
     }
 
-    // if we have no space for terminating character we failed
-    if(iLineLength==0)
-      return false;
-
+    // there has to be the space for terminating character (at szLine[iLineLength])
     *szLine = 0;
 
     return true;
