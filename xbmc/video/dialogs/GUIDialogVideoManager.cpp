@@ -330,6 +330,7 @@ void CGUIDialogVideoManager::ChooseArt()
 
   // refresh data and controls
   Refresh();
+  UpdateControls();
 }
 
 void CGUIDialogVideoManager::SetSelectedVideoAsset(const std::shared_ptr<CFileItem>& asset)
