@@ -4,14 +4,9 @@
     android:versionCode="@APP_VERSION_CODE_ANDROID@"
     android:versionName="@APP_VERSION@">
 
-    <uses-sdk
-        android:minSdkVersion="@TARGET_MINSDK@"
-        android:targetSdkVersion="@TARGET_SDK@" />
-
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
@@ -102,7 +97,6 @@
             android:name=".Main"
             android:configChanges="orientation|keyboard|keyboardHidden|navigation|touchscreen|screenLayout|screenSize|colorMode"
             android:finishOnTaskLaunch="true"
-            android:label="@string/app_name"
             android:launchMode="singleInstance"
             android:exported="true"
             android:screenOrientation="sensorLandscape"
