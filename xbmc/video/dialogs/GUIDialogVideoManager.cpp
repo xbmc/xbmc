@@ -305,6 +305,7 @@ void CGUIDialogVideoManager::Remove()
 
   // refresh data and controls
   Refresh();
+  RefreshSelectedVideoAsset();
   UpdateControls();
 }
 
@@ -465,4 +466,22 @@ void CGUIDialogVideoManager::AppendItemFolderToFileBrowserSources(
     itemSource.strPath = itemDir;
     sources.emplace_back(itemSource);
   }
+}
+
+void CGUIDialogVideoManager::RefreshSelectedVideoAsset()
+{
+  if (!m_selectedVideoAsset || !m_selectedVideoAsset->HasVideoInfoTag() ||
+      !m_videoAssetsList->Size())
+  {
+    m_selectedVideoAsset = std::make_shared<CFileItem>();
+    return;
+  }
+
+  const int dbId{m_selectedVideoAsset->GetVideoInfoTag()->m_iDbId};
+  const auto it{std::find_if(m_videoAssetsList->cbegin(), m_videoAssetsList->cend(),
+                             [dbId](const auto& entry)
+                             { return entry->GetVideoInfoTag()->m_iDbId == dbId; })};
+
+  if (it == m_videoAssetsList->cend())
+    m_selectedVideoAsset = m_videoAssetsList->Get(0);
 }
