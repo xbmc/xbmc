@@ -799,7 +799,6 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
         filename += "/";
 
       if(StringUtils::StartsWith(*it, "["))
-       && (StringUtils::EndsWith(*it, "]"))
         filename += *it;
       else
         filename += CURL::Encode(*it);
