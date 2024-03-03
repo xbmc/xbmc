@@ -828,7 +828,7 @@ void CGUIDialogPVRChannelManager::Update()
     channelFile->SetProperty(PROPERTY_CHANNEL_USER_SET_NAME, channel->IsUserSetName());
     channelFile->SetProperty(PROPERTY_CHANNEL_NAME, channel->ChannelName());
     channelFile->SetProperty(PROPERTY_CHANNEL_EPG_ENABLED, channel->EPGEnabled());
-    channelFile->SetProperty(PROPERTY_CHANNEL_ICON, channel->ClientIconPath());
+    channelFile->SetProperty(PROPERTY_CHANNEL_ICON, channel->IconPath());
     channelFile->SetProperty(PROPERTY_CHANNEL_CUSTOM_ICON, channel->IsUserSetIcon());
     channelFile->SetProperty(PROPERTY_CHANNEL_EPG_SOURCE, 0);
     channelFile->SetProperty(PROPERTY_CHANNEL_LOCKED, channel->IsLocked());
@@ -1080,7 +1080,7 @@ bool IsItemChanged(const std::shared_ptr<CFileItem>& item)
              channel->IsUserSetName() ||
          item->GetProperty(PROPERTY_CHANNEL_NAME).asString() != channel->ChannelName() ||
          item->GetProperty(PROPERTY_CHANNEL_EPG_ENABLED).asBoolean() != channel->EPGEnabled() ||
-         item->GetProperty(PROPERTY_CHANNEL_ICON).asString() != channel->ClientIconPath() ||
+         item->GetProperty(PROPERTY_CHANNEL_ICON).asString() != channel->IconPath() ||
          item->GetProperty(PROPERTY_CHANNEL_CUSTOM_ICON).asBoolean() != channel->IsUserSetIcon() ||
          item->GetProperty(PROPERTY_CHANNEL_EPG_SOURCE).asInteger() != 0 ||
          item->GetProperty(PROPERTY_CHANNEL_LOCKED).asBoolean() != channel->IsLocked() ||
