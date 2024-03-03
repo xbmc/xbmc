@@ -798,6 +798,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
       if(it != array.begin())
         filename += "/";
 
+      //keep ipv6 address
       if (StringUtils::StartsWith(*it, "["))
         filename += *it;
       else
