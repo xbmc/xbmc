@@ -798,7 +798,10 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
       if(it != array.begin())
         filename += "/";
 
-      filename += CURL::Encode(*it);
+      if(StringUtils::BeginsWith(*it, "["))&&(StringUtils::EndsWith(*it, "]"))
+        filename += *it;
+      else
+        filename += CURL::Encode(*it);
     }
 
     /* make sure we keep slashes */
