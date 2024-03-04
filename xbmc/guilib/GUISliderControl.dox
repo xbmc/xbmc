@@ -50,7 +50,7 @@ important, as xml tags are case-sensitive.
 | Tag                      | Description                                                   |
 |-------------------------:|:--------------------------------------------------------------|
 | texturesliderbar         | Specifies the image file which should be displayed in the background of the slider control. [See here for additional information about textures](http://kodi.wiki/view/Texture_Attributes).
-| texturesliderdisabled    | Specifies the image file which should be displayed in the background of the slider control when it is disabled.
+| texturesliderbardisabled | Specifies the image file which should be displayed in the background of the slider control when it is disabled.
 | textureslidernib         | Specifies the image file which should be displayed for the slider nib.
 | textureslidernibfocus    | Specifies the image file which should be displayed for the slider nib when it has focus.
 | textureslidernibdisabled | Specifies the image file which should be displayed for the slider nib when it is disabled.
