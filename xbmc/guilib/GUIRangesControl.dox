@@ -39,7 +39,7 @@ important, as xml tags are case-sensitive.
 | lefttexture   | The texture used in the left hand side of the range
 | midtexture    | The texture used for the mid section of the range
 | righttexture  | The texture used in the right hand side of the range
-| info          | Specifies the information the range control holds. It expects an infolabel that returns a string in CSV format: e.g. `"start1,end1,start2,end2,..."`. Tokens must have values in the range from 0.0 to 100.0. end token must be less or equal than start token. Examples of currently supported infolabels are \link Player_Editlist `Player.Editlist`\endlink, \link Player_Cutlist `Player.Cutlist`\endlink (@deprecated), \link Player_Cuts `Player.Cuts`\endlink, \link Player_SceneMarkers `Player.Cutlist`\endlink and \link Player_Chapters `Player.Chapters`\endlink.
+| info          | Specifies the information the range control holds. It expects an infolabel that returns a string in CSV format: e.g. `"start1,end1,start2,end2,..."`. Tokens must have values in the range from 0.0 to 100.0. end token must be less or equal than start token. Examples of currently supported infolabels are \link Player_Editlist `Player.Editlist`\endlink, \link Player_Cutlist `Player.Cutlist`\endlink, \link Player_Cuts `Player.Cuts`\endlink, \link Player_SceneMarkers `Player.Cutlist`\endlink and \link Player_Chapters `Player.Chapters`\endlink. \n @deprecated \link Player_Cutlist `Player.Cutlist`\endlink is deprecated use \link Player_Cuts `Player.Cuts`\endlink instead.
 
 \section Ranges_Control_sect3 Revision History
 
