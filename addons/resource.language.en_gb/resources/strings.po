@@ -23996,11 +23996,7 @@ msgctxt "#40032"
 msgid "No similar movies were found in the library."
 msgstr ""
 
-#. Addition of new version: a movie with multiple versions cannot be turned into a version of another movie.
-#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
-msgctxt "#40033"
-msgid "The default version of a movie with multiple versions cannot be added as a version to another movie. Please add its additional versions first."
-msgstr ""
+#empty string id 40033
 
 #. Addition of new extra: a movie with multiple versions cannot be turned into an extra of another movie.
 #: xbmc/video/dialogs/GUIDialogVideoManagerExtras.cpp
