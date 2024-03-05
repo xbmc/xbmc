@@ -802,7 +802,7 @@ const infomap integer_bools[] =  {{ "isequal",          INTEGER_IS_EQUAL },
 ///     @deprecated \link Player_Cutlist `Player.Cutlist`\endlink is deprecated and will be removed in the next version.
 ///     <p><hr>
 ///     @skinning_v19 **[New Infolabel]** \link Player_Cutlist `Player.Cutlist`\endlink
-///     @skinning_v20 \link Player_Cutlist `Player.Cutlist`\endlink is deprecated\, use \link Player_Editlist `Player.Editlist`\endlink instead
+///     @skinning_v20 \link Player_Cutlist `Player.Cutlist`\endlink is deprecated\, use \link Player_Cuts `Player.Cuts`\endlink instead
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.Editlist`</b>,
