@@ -2998,7 +2998,12 @@
         <control type="toggle" />
       </setting>
       <setting id="videoscreen.guipeakluminance" type="integer" label="36097" help="36547">
-        <requirement>HAS_DX</requirement>
+        <requirement>
+          <or>
+            <condition>HAS_DX</condition>
+            <condition>HAS_MEDIACODEC</condition>
+          </or>
+        </requirement>
         <dependencies>
           <dependency type="visible" on="property" name="ishdrdisplay"/>
           <dependency type="enable">

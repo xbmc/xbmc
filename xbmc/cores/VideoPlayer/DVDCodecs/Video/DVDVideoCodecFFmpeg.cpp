@@ -1063,6 +1063,8 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
   pVideoPicture->qstride = 0;
   pVideoPicture->qscale_type = 0;
 
+  pVideoPicture->hdrType = m_hints.hdrType;
+
   AVFrameSideData* sd;
 
   // https://github.com/FFmpeg/FFmpeg/blob/991d417692/doc/APIchanges#L18-L20

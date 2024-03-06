@@ -163,15 +163,18 @@ bool CRenderSystemGLES::BeginRender()
   if (!m_bRenderCreated)
     return false;
 
-  bool useLimited = CServiceBroker::GetWinSystem()->UseLimitedColor();
+  const bool useLimited = CServiceBroker::GetWinSystem()->UseLimitedColor();
+  const bool usePQ = CServiceBroker::GetWinSystem()->GetGfxContext().IsTransferPQ();
 
-  if (m_limitedColorRange != useLimited)
+  if (m_limitedColorRange != useLimited || m_transferPQ != usePQ)
   {
     ReleaseShaders();
+
+    m_limitedColorRange = useLimited;
+    m_transferPQ = usePQ;
+
     InitialiseShaders();
   }
-
-  m_limitedColorRange = useLimited;
 
   return true;
 }
@@ -387,6 +390,11 @@ void CRenderSystemGLES::InitialiseShaders()
   if (m_limitedColorRange)
   {
     defines += "#define KODI_LIMITED_RANGE 1\n";
+  }
+
+  if (m_transferPQ)
+  {
+    defines += "#define KODI_TRANSFER_PQ 1\n";
   }
 
   m_pShader[ShaderMethodGLES::SM_DEFAULT] =

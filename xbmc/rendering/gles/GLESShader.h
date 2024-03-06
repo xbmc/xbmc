@@ -62,4 +62,6 @@ protected:
   GLfloat m_clipXOffset;
   GLfloat m_clipYFactor;
   GLfloat m_clipYOffset;
+
+  GLfloat m_sdrPeak;
 };

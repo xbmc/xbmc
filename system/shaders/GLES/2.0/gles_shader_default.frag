@@ -22,6 +22,7 @@
 
 precision mediump float;
 uniform lowp vec4 m_unicol;
+uniform float m_sdrPeak;
 
 void main ()
 {
@@ -32,6 +33,10 @@ void main ()
 #if defined(KODI_LIMITED_RANGE)
   rgb.rgb *= (235.0 - 16.0) / 255.0;
   rgb.rgb += 16.0 / 255.0;
+#endif
+
+#if defined(KODI_TRANSFER_PQ)
+  rgb.rgb *= m_sdrPeak;
 #endif
 
   gl_FragColor = rgb;

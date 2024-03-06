@@ -96,6 +96,7 @@ public:
   bool Show(bool raise = true) override;
   std::string GetClipboardText() override;
   bool UseLimitedColor() override;
+  float GetGuiSdrPeakLuminance() const override;
   bool HasSystemSdrPeakLuminance() override;
 
   // videosync
@@ -114,7 +115,6 @@ public:
   virtual bool DPIChanged(WORD dpi, RECT windowRect) const;
   bool IsMinimized() const { return m_bMinimized; }
   void SetMinimized(bool minimized);
-  float GetGuiSdrPeakLuminance() const;
   void CacheSystemSdrPeakLuminance();
 
   void SetSizeMoveMode(bool mode) { m_bSizeMoveEnabled = mode; }

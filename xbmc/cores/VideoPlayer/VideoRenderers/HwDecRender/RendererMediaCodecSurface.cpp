@@ -63,6 +63,18 @@ bool CRendererMediaCodecSurface::Configure(const VideoPicture &picture, float fp
   CalculateFrameAspectRatio(picture.iDisplayWidth, picture.iDisplayHeight);
   SetViewMode(m_videoSettings.m_ViewMode);
 
+  // Configure GUI/OSD for HDR PQ when display is in HDR PQ mode
+  if (picture.color_transfer == AVCOL_TRC_SMPTE2084)
+  {
+    if (CServiceBroker::GetWinSystem()->IsHDRDisplay())
+      CServiceBroker::GetWinSystem()->GetGfxContext().SetTransferPQ(true);
+  }
+  else if (picture.hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)
+  {
+    if (CServiceBroker::GetWinSystem()->GetDisplayHDRCapabilities().SupportsDolbyVision())
+      CServiceBroker::GetWinSystem()->GetGfxContext().SetTransferPQ(true);
+  }
+
   return true;
 }
 
@@ -130,6 +142,8 @@ void CRendererMediaCodecSurface::Reset()
   for (int i = 0 ; i < 4 ; ++i)
     ReleaseVideoBuffer(i, false);
   m_lastIndex = -1;
+
+  CServiceBroker::GetWinSystem()->GetGfxContext().SetTransferPQ(false);
 }
 
 void CRendererMediaCodecSurface::RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha)
