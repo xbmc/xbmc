@@ -527,17 +527,7 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
   }
   item.SetProperty("check_resume", false);
 
-  if (item.IsStack())
-  {
-    const VIDEO_UTILS::ResumeInformation resumeInfo =
-        VIDEO_UTILS::GetStackPartResumeInformation(item, playOffset + 1);
-
-    if (item.GetStartOffset() == STARTOFFSET_RESUME)
-      item.SetStartOffset(resumeInfo.startOffset);
-
-    item.m_lStartPartNumber = resumeInfo.partNumber;
-  }
-  else if (!forcePlay /* queue */ || item.m_bIsFolder || item.IsPlayList())
+  if (!forcePlay /* queue */ || item.m_bIsFolder || item.IsPlayList())
   {
     CFileItemList items;
     GetItemsForPlayList(std::make_shared<CFileItem>(item), items);

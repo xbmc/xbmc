@@ -38,9 +38,12 @@ CExecString::CExecString(const std::string& function,
                          const std::string& param)
   : m_function(function)
 {
-  m_valid = !m_function.empty() && !target.GetPath().empty();
+  const std::string path{target.GetVideoInfoTag()->HasVideoVersions() ? target.GetPath()
+                                                                      : target.GetDynPath()};
 
-  m_params.emplace_back(StringUtils::Paramify(target.GetPath()));
+  m_valid = !m_function.empty() && !path.empty();
+
+  m_params.emplace_back(StringUtils::Paramify(path));
 
   if (target.m_bIsFolder)
     m_params.emplace_back("isdir");
