@@ -108,7 +108,7 @@ void SplitParams(const std::string& paramString, std::vector<std::string>& param
           if (quotaPos > 1 && quotaPos < parameter.length() - 1 && parameter[quotaPos - 1] == '=')
           {
             parameter.erase(parameter.length() - 1);
-            parameter.erase(quotaPos);
+            parameter.erase(quotaPos, 1);
           }
         }
         parameters.push_back(parameter);
@@ -149,7 +149,7 @@ void SplitParams(const std::string& paramString, std::vector<std::string>& param
     if (quotaPos > 1 && quotaPos < parameter.length() - 1 && parameter[quotaPos - 1] == '=')
     {
       parameter.erase(parameter.length() - 1);
-      parameter.erase(quotaPos);
+      parameter.erase(quotaPos, 1);
     }
   }
   if (!parameter.empty() || parameters.size())
