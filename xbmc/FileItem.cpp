@@ -1270,7 +1270,7 @@ bool CFileItem::IsAndroidApp() const
 
 bool CFileItem::IsStack() const
 {
-  return URIUtils::IsStack(m_strPath);
+  return URIUtils::IsStack(GetDynPath());
 }
 
 bool CFileItem::IsFavourite() const
