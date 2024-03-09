@@ -34,6 +34,10 @@ CONFIGURE=./configure --prefix=$(PREFIX) \
                       --without-idn \
                       $(CONFIGURE_OPTIONS)
 
+# LLVM 15 has raised this to error by default. drop back to warning
+CFLAGS+= -Wno-error=implicit-int
+export CFLAGS
+
 LIBDYLIB=$(PLATFORM)/lib/.libs/lib$(LIBNAME).a
 
 all: .installed-$(PLATFORM)
