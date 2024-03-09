@@ -11,21 +11,30 @@
 #  PIPEWIRE_DEFINITIONS - the definitions needed to use Pipewire
 #
 
+if(Pipewire_FIND_VERSION)
+  if(Pipewire_FIND_VERSION_EXACT)
+    set(Pipewire_FIND_SPEC "=${Pipewire_FIND_VERSION_COMPLETE}")
+  else()
+    set(Pipewire_FIND_SPEC ">=${Pipewire_FIND_VERSION_COMPLETE}")
+  endif()
+endif()
+
+find_package(PkgConfig)
 if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_PIPEWIRE libpipewire-0.3>=0.3.50 QUIET)
+  pkg_check_modules(PC_PIPEWIRE libpipewire-0.3${Pipewire_FIND_SPEC} QUIET)
   pkg_check_modules(PC_SPA libspa-0.2>=0.2 QUIET)
 endif()
 
 find_path(PIPEWIRE_INCLUDE_DIR NAMES pipewire/pipewire.h
-                               PATHS ${PC_PIPEWIRE_INCLUDEDIR}
+                               HINTS ${PC_PIPEWIRE_INCLUDEDIR}
                                PATH_SUFFIXES pipewire-0.3)
 
 find_path(SPA_INCLUDE_DIR NAMES spa/support/plugin.h
-                          PATHS ${PC_SPA_INCLUDEDIR}
+                          HINTS ${PC_SPA_INCLUDEDIR}
                           PATH_SUFFIXES spa-0.2)
 
 find_library(PIPEWIRE_LIBRARY NAMES pipewire-0.3
-                              PATHS ${PC_PIPEWIRE_LIBDIR})
+                              HITNS ${PC_PIPEWIRE_LIBDIR})
 
 if(PC_PIPEWIRE_VERSION)
   set(PIPEWIRE_VERSION_STRING ${PC_PIPEWIRE_VERSION})

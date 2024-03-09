@@ -8,12 +8,16 @@
 # EPOLLSHIM_INCLUDE_DIR - the epoll-shim include directory
 # EPOLLSHIM_LIBRARY     - the epoll-shim library
 
+find_package(PkgConfig)
+
 if(PKG_CONFIG_FOUND)
   pkg_check_modules(PC_EPOLLSHIM epoll-shim QUIET)
 endif()
 
-find_path(EPOLLSHIM_INCLUDE_DIR NAMES sys/epoll.h PATHS ${PC_EPOLLSHIM_INCLUDE_DIRS})
-find_library(EPOLLSHIM_LIBRARY NAMES epoll-shim PATHS ${PC_EPOLLSHIM_LIBDIR})
+find_path(EPOLLSHIM_INCLUDE_DIR NAMES sys/epoll.h
+                                HINTS ${PC_EPOLLSHIM_INCLUDE_DIRS})
+find_library(EPOLLSHIM_LIBRARY NAMES epoll-shim
+                               HINTS ${PC_EPOLLSHIM_LIBDIR})
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(EpollShim

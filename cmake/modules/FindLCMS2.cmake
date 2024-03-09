@@ -8,9 +8,18 @@
 #   LCMS2::LCMS2 - The LCMS Color Management library
 
 if(NOT TARGET LCMS2::LCMS2)
+
+  if(LCMS2_FIND_VERSION)
+    if(LCMS2_FIND_VERSION_EXACT)
+      set(LCMS2_FIND_SPEC "=${LCMS2_FIND_VERSION_COMPLETE}")
+    else()
+      set(LCMS2_FIND_SPEC ">=${LCMS2_FIND_VERSION_COMPLETE}")
+    endif()
+  endif()
+
   find_package(PkgConfig)
   if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_LCMS2 lcms2>=2.10 QUIET)
+    pkg_check_modules(PC_LCMS2 lcms2${LCMS2_FIND_SPEC} QUIET)
   endif()
 
   find_path(LCMS2_INCLUDE_DIR NAMES lcms2.h

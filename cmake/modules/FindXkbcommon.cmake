@@ -13,10 +13,10 @@ if(NOT TARGET XKBCOMMON::XKBCOMMON)
   endif()
 
   find_path(XKBCOMMON_INCLUDE_DIR NAMES xkbcommon/xkbcommon.h
-                                  PATHS ${PC_XKBCOMMON_INCLUDEDIR}
+                                  HINTS ${PC_XKBCOMMON_INCLUDEDIR}
                                   NO_CACHE)
   find_library(XKBCOMMON_LIBRARY NAMES xkbcommon
-                                 PATHS ${PC_XKBCOMMON_LIBDIR}
+                                 HINTS ${PC_XKBCOMMON_LIBDIR}
                                  NO_CACHE)
 
   set(XKBCOMMON_VERSION ${PC_XKBCOMMON_VERSION})

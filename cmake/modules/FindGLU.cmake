@@ -11,14 +11,16 @@
 # GLU_DEFINITIONS - the GLU definitions
 #
 
+find_package(PkgConfig)
+
 if(PKG_CONFIG_FOUND)
   pkg_check_modules(PC_GLU glu QUIET)
 endif()
 
 find_path(GLU_INCLUDE_DIR NAMES GL/glu.h
-                          PATHS ${PC_GLU_INCLUDEDIR})
+                          HINTS ${PC_GLU_INCLUDEDIR})
 find_library(GLU_LIBRARY NAMES GLU
-                         PATHS ${PC_GLU_LIBDIR})
+                         HINTS ${PC_GLU_LIBDIR})
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(GLU

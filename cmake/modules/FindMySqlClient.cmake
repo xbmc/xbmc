@@ -11,8 +11,6 @@ if(NOT TARGET MySqlClient::MySqlClient)
   # Don't find system wide installed version on Windows
   if(WIN32)
     set(EXTRA_FIND_ARGS NO_SYSTEM_ENVIRONMENT_PATH)
-  else()
-    set(EXTRA_FIND_ARGS)
   endif()
 
   find_path(MYSQLCLIENT_INCLUDE_DIR NAMES mysql/mysql.h mysql/server/mysql.h

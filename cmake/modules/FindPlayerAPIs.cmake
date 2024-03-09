@@ -8,16 +8,25 @@
 #   PLAYERAPIS::PLAYERAPIS   - The playerAPIs library
 
 if(NOT TARGET PLAYERAPIS::PLAYERAPIS)
+
+  if(PlayerAPIs_FIND_VERSION)
+    if(PlayerAPIs_FIND_VERSION_EXACT)
+      set(PlayerAPIs_FIND_SPEC "=${PlayerAPIs_FIND_VERSION_COMPLETE}")
+    else()
+      set(PlayerAPIs_FIND_SPEC ">=${PlayerAPIs_FIND_VERSION_COMPLETE}")
+    endif()
+  endif()
+
   find_package(PkgConfig)
   if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_PLAYERAPIS libplayerAPIs>=1.0.0 QUIET)
+    pkg_check_modules(PC_PLAYERAPIS libplayerAPIs${PlayerAPIs_FIND_SPEC} QUIET)
   endif()
 
   find_path(PLAYERAPIS_INCLUDE_DIR NAMES starfish-media-pipeline/StarfishMediaAPIs.h
-                                   PATHS ${PC_PLAYERAPIS_INCLUDEDIR}
+                                   HINTS ${PC_PLAYERAPIS_INCLUDEDIR}
                                    NO_CACHE)
   find_library(PLAYERAPIS_LIBRARY NAMES playerAPIs
-                                  PATHS ${PC_PLAYERAPIS_LIBDIR}
+                                  HINTS ${PC_PLAYERAPIS_LIBDIR}
                                   NO_CACHE)
 
   set(PLAYERAPIS_VERSION ${PC_PLAYERAPIS_VERSION})

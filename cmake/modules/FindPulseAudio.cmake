@@ -10,11 +10,20 @@
 #   PulseAudio::PulseAudioMainloop - The PulseAudio mainloop library
 
 if(NOT TARGET PulseAudio::PulseAudio)
+
+  if(PulseAudio_FIND_VERSION)
+    if(PulseAudio_FIND_VERSION_EXACT)
+      set(PulseAudio_FIND_SPEC "=${PulseAudio_FIND_VERSION_COMPLETE}")
+    else()
+      set(PulseAudio_FIND_SPEC ">=${PulseAudio_FIND_VERSION_COMPLETE}")
+    endif()
+  endif()
+
   find_package(PkgConfig)
   if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_PULSEAUDIO libpulse>=11.0.0 QUIET)
-    pkg_check_modules(PC_PULSEAUDIO_MAINLOOP libpulse-mainloop-glib>=11.0.0 QUIET)
-    pkg_check_modules(PC_PULSEAUDIO_SIMPLE libpulse-simple>=11.0.0 QUIET)
+    pkg_check_modules(PC_PULSEAUDIO libpulse${PulseAudio_FIND_SPEC} QUIET)
+    pkg_check_modules(PC_PULSEAUDIO_MAINLOOP libpulse-mainloop-glib${PulseAudio_FIND_SPEC} QUIET)
+    pkg_check_modules(PC_PULSEAUDIO_SIMPLE libpulse-simple${PulseAudio_FIND_SPEC} QUIET)
   endif()
 
   find_path(PULSEAUDIO_INCLUDE_DIR NAMES pulse/pulseaudio.h pulse/simple.h

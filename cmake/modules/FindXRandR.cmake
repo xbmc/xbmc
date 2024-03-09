@@ -16,10 +16,10 @@ if(NOT TARGET XRandR::XRandR)
   endif()
 
   find_path(XRANDR_INCLUDE_DIR NAMES X11/extensions/Xrandr.h
-                               PATHS ${PC_XRANDR_INCLUDEDIR}
+                               HINTS ${PC_XRANDR_INCLUDEDIR}
                                NO_CACHE)
   find_library(XRANDR_LIBRARY NAMES Xrandr
-                              PATHS ${PC_XRANDR_LIBDIR}
+                              HINTS ${PC_XRANDR_LIBDIR}
                               NO_CACHE)
 
   set(XRANDR_VERSION ${PC_XRANDR_VERSION})
