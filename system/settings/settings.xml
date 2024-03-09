@@ -2517,7 +2517,7 @@
       <group id="1" label="16000">
         <setting id="filecache.buffermode" type="integer" label="37103" help="37104">
           <level>2</level>
-          <default>4</default>
+          <default>4</default> <!-- All network filesystems -->
           <constraints>
             <options>filecachebuffermodes</options>
           </constraints>
@@ -2525,7 +2525,7 @@
         </setting>
         <setting id="filecache.memorysize" type="integer" label="37105" help="37106">
           <level>2</level>
-          <default>20</default>
+          <default>64</default> <!-- 64 MB -->
           <dependencies>
             <dependency type="enable">
               <condition setting="filecache.buffermode" operator="!is">3</condition>
@@ -2538,7 +2538,7 @@
         </setting>
         <setting id="filecache.readfactor" type="integer" label="37107" help="37108">
           <level>2</level>
-          <default>400</default>
+          <default>0</default> <!-- Adaptive -->
           <dependencies>
             <dependency type="enable">
               <condition setting="filecache.buffermode" operator="!is">3</condition>
@@ -2553,7 +2553,7 @@
       <group id="2" label="37053">
         <setting id="filecache.chunksize" type="integer" label="37053" help="37109">
           <level>2</level>
-          <default>131072</default>
+          <default>131072</default> <!-- 128 KB -->
           <dependencies>
             <dependency type="enable">
               <condition setting="filecache.buffermode" operator="!is">3</condition>
