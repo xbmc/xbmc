@@ -9,7 +9,6 @@
 #include "CocoaDPMSSupport.h"
 
 #include "ServiceBroker.h"
-#include "utils/log.h"
 
 #include <CoreFoundation/CFNumber.h>
 #include <IOKit/IOKitLib.h>
