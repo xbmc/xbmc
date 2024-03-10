@@ -40,8 +40,8 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
 
   private class DelayedIntent
   {
-    public Intent mIntent = null;
-    public int mDelay = 0;
+    public Intent mIntent;
+    public int mDelay;
 
     public DelayedIntent(Intent intent, int delay) {
       mIntent = intent;
