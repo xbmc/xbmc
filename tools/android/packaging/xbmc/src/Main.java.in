@@ -72,7 +72,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
           mJsonRPC.updateLeanback(Main.this);
         }
       }.start();
-      handler.postDelayed(this, XBMCProperties.getIntProperty("xbmc.leanbackrefresh", 60 * 60) * 1000);
+      handler.postDelayed(this, XBMCProperties.getIntProperty("xbmc.leanbackrefresh", 60 * 60) * 1000L);
     }
   };
 
