@@ -339,9 +339,13 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
    * Gets the package name of the current system launcher
    */
   private String getLauncherName() {
+    String name = "";
     final Intent intent = new Intent(Intent.ACTION_MAIN);
     intent.addCategory(Intent.CATEGORY_HOME);
     final ResolveInfo res = getPackageManager().resolveActivity(intent, 0);
-    return res.activityInfo.packageName;
+    if (res != null) {
+      name = res.activityInfo.packageName;
+    }
+    return name;
   }
 }
