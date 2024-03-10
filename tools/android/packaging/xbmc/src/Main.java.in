@@ -97,6 +97,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
     }
     catch (Exception e)
     {
+      Log.d(TAG, "Main: Exception: " + e.getMessage());
     }
 
     return ret;
