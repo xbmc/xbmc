@@ -36,7 +36,6 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   private XBMCInputDeviceListener mInputDeviceListener;
   private XBMCJsonRPC mJsonRPC = null;
   private View mDecorView = null;
-  private RelativeLayout mVideoLayout = null;
   private Handler handler = new Handler(Looper.myLooper());
 
   private class DelayedIntent
@@ -162,12 +161,12 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
     mDecorView.setBackground(null);
     getWindow().takeSurface(null);
     setContentView(R.layout.activity_main);
-    mVideoLayout = (RelativeLayout) findViewById(R.id.VideoLayout);
+    RelativeLayout videoLayout = findViewById(R.id.VideoLayout);
 
     mMainView = new XBMCMainView(this);
     RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
     mMainView.setElevation(1);  // Always on Top
-    mVideoLayout.addView(mMainView, layoutParams);
+    videoLayout.addView(mMainView, layoutParams);
 
     if (Build.VERSION.SDK_INT < 30)
     {
