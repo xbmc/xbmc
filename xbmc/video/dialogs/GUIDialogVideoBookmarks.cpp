@@ -41,8 +41,6 @@
 #include <string>
 #include <vector>
 
-#define BOOKMARK_THUMB_WIDTH CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageRes
-
 #define CONTROL_ADD_BOOKMARK           2
 #define CONTROL_CLEAR_BOOKMARKS        3
 #define CONTROL_ADD_EPISODE_BOOKMARK   4
@@ -380,15 +378,37 @@ bool CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
   bookmark.player = g_application.GetCurrentPlayer();
 
   // create the thumbnail image
-  float aspectRatio = appPlayer->GetRenderAspectRatio();
-  int width = BOOKMARK_THUMB_WIDTH;
-  int height = (int)(BOOKMARK_THUMB_WIDTH / aspectRatio);
-  if (height > (int)BOOKMARK_THUMB_WIDTH)
-  {
-    height = BOOKMARK_THUMB_WIDTH;
-    width = (int)(BOOKMARK_THUMB_WIDTH * aspectRatio);
-  }
+  const float aspectRatio{appPlayer->GetRenderAspectRatio()};
+  CRect srcRect{}, renderRect{}, viewRect{};
+  appPlayer->GetRects(srcRect, renderRect, viewRect);
+  const unsigned int srcWidth{static_cast<unsigned int>(srcRect.Width())};
+  const unsigned int srcHeight{static_cast<unsigned int>(srcRect.Height())};
+  const unsigned int renderWidth{static_cast<unsigned int>(renderRect.Width())};
+  const unsigned int renderHeight{static_cast<unsigned int>(renderRect.Height())};
+  const unsigned int viewWidth{static_cast<unsigned int>(viewRect.Width())};
+  const unsigned int viewHeight{static_cast<unsigned int>(viewRect.Height())};
 
+  if (!srcWidth || !srcHeight || !renderWidth || !renderHeight || !viewWidth || !viewHeight)
+    return false;
+
+  // FIXME: the renderer sets the scissors to the size of the screen (provided by graphiccontext),
+  // limiting the max size of thumbs (for example 4k video played on 1024x768 screen)
+
+  // The advanced setting defines the max size of the largest dimension (depends on orientation)
+  const unsigned int maxThumbDim{
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageRes};
+  unsigned int width{}, height{};
+
+  if (aspectRatio >= 1.0f)
+  {
+    width = std::min({maxThumbDim, viewWidth, renderWidth, srcWidth});
+    height = static_cast<unsigned int>(width / aspectRatio);
+  }
+  else
+  {
+    height = std::min({maxThumbDim, viewHeight, renderHeight, srcHeight});
+    width = static_cast<unsigned int>(height * aspectRatio);
+  }
 
   uint8_t *pixels = (uint8_t*)malloc(height * width * 4);
   unsigned int captureId = appPlayer->RenderCaptureAlloc();

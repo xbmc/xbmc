@@ -865,6 +865,18 @@ float CApplicationPlayer::GetRenderAspectRatio() const
     return 1.0;
 }
 
+bool CApplicationPlayer::GetRects(CRect& source, CRect& dest, CRect& view) const
+{
+  const std::shared_ptr<const IPlayer> player{GetInternal()};
+  if (player)
+  {
+    player->GetRects(source, dest, view);
+    return true;
+  }
+  else
+    return false;
+}
+
 void CApplicationPlayer::TriggerUpdateResolution()
 {
   std::shared_ptr<IPlayer> player = GetInternal();

@@ -55,6 +55,7 @@ public:
   void FlushRenderer();
   void SetRenderViewMode(int mode, float zoom, float par, float shift, bool stretch);
   float GetRenderAspectRatio() const;
+  bool GetRects(CRect& source, CRect& dest, CRect& view) const;
   void TriggerUpdateResolution();
   bool IsRenderingVideo() const;
   bool IsRenderingGuiLayer() const;
