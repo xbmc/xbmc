@@ -52,6 +52,9 @@ else
   endif
 endif
 
+# LLVM 15 has raised this to error by default. drop back to warning
+CFLAGS+= -Wno-error=int-conversion
+
 export PERL5LIB:=$(PERLMODULE):$(PERL5LIB)
 
 export CC CXX CPP AR RANLIB LD AS NM STRIP TOOLCHAIN
