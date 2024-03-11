@@ -10,7 +10,7 @@ foreach(uwp_pythonlibinit_file \$\{uwp_pythonlibinit_foundfiles\})
     file(SIZE \"\$\{uwp_pythonlibinit_file\}\" uwp_pythonlibinit_filesize)
     if(\$\{uwp_pythonlibinit_filesize\} EQUAL 0)
         message(\"Adding hash comment character in the following empty file: \$\{uwp_pythonlibinit_file\}\")
-        file(APPEND ${uwp_pythonlibinit_file} \"#\")
+        file(APPEND \$\{uwp_pythonlibinit_file\} \"#\")
     endif()
 endforeach()\n")
 
