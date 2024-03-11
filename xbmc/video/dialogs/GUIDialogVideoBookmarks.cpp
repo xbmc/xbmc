@@ -37,6 +37,7 @@
 #include "video/VideoDatabase.h"
 #include "view/ViewState.h"
 
+#include <algorithm>
 #include <mutex>
 #include <string>
 #include <vector>
@@ -391,6 +392,9 @@ bool CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
   if (!srcWidth || !srcHeight || !renderWidth || !renderHeight || !viewWidth || !viewHeight)
     return false;
 
+  const unsigned int orientation{appPlayer->GetOrientation()};
+  const bool rotated{orientation == 90 || orientation == 270};
+
   // FIXME: the renderer sets the scissors to the size of the screen (provided by graphiccontext),
   // limiting the max size of thumbs (for example 4k video played on 1024x768 screen)
 
@@ -399,15 +403,32 @@ bool CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageRes};
   unsigned int width{}, height{};
 
-  if (aspectRatio >= 1.0f)
+  if (!rotated)
   {
-    width = std::min({maxThumbDim, viewWidth, renderWidth, srcWidth});
-    height = static_cast<unsigned int>(width / aspectRatio);
+    if (aspectRatio >= 1.0f)
+    {
+      width = std::min({maxThumbDim, viewWidth, renderWidth, srcWidth});
+      height = static_cast<unsigned int>(width / aspectRatio);
+    }
+    else
+    {
+      height = std::min({maxThumbDim, viewHeight, renderHeight, srcHeight});
+      width = static_cast<unsigned int>(height * aspectRatio);
+    }
   }
   else
   {
-    height = std::min({maxThumbDim, viewHeight, renderHeight, srcHeight});
-    width = static_cast<unsigned int>(height * aspectRatio);
+    // rotation is applied during rendering, switching source width and height
+    if (aspectRatio >= 1.0f)
+    {
+      height = std::min({maxThumbDim, viewHeight, renderHeight, srcWidth});
+      width = static_cast<unsigned int>(height / aspectRatio);
+    }
+    else
+    {
+      width = std::min({maxThumbDim, viewWidth, renderWidth, srcHeight});
+      height = static_cast<unsigned int>(width * aspectRatio);
+    }
   }
 
   uint8_t *pixels = (uint8_t*)malloc(height * width * 4);

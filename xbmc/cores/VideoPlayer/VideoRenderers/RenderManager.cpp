@@ -70,6 +70,15 @@ float CRenderManager::GetAspectRatio() const
     return 1.0f;
 }
 
+unsigned int CRenderManager::GetOrientation() const
+{
+  std::unique_lock<CCriticalSection> lock(m_statelock);
+  if (m_pRenderer)
+    return m_pRenderer->GetOrientation();
+  else
+    return 0;
+}
+
 void CRenderManager::SetVideoSettings(const CVideoSettings& settings)
 {
   std::unique_lock<CCriticalSection> lock(m_statelock);

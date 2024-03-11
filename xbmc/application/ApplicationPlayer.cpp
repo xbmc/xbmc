@@ -877,6 +877,15 @@ bool CApplicationPlayer::GetRects(CRect& source, CRect& dest, CRect& view) const
     return false;
 }
 
+unsigned int CApplicationPlayer::GetOrientation() const
+{
+  const std::shared_ptr<const IPlayer> player{GetInternal()};
+  if (player)
+    return player->GetOrientation();
+  else
+    return 0;
+}
+
 void CApplicationPlayer::TriggerUpdateResolution()
 {
   std::shared_ptr<IPlayer> player = GetInternal();

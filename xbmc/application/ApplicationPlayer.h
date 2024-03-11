@@ -56,6 +56,7 @@ public:
   void SetRenderViewMode(int mode, float zoom, float par, float shift, bool stretch);
   float GetRenderAspectRatio() const;
   bool GetRects(CRect& source, CRect& dest, CRect& view) const;
+  unsigned int GetOrientation() const;
   void TriggerUpdateResolution();
   bool IsRenderingVideo() const;
   bool IsRenderingGuiLayer() const;
