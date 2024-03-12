@@ -63,7 +63,7 @@ CVideoPlayerVideo::CVideoPlayerVideo(CDVDClock* pClock
   m_paused = false;
   m_syncState = IDVDStreamPlayer::SYNC_STARTING;
   m_iSubtitleDelay = 0;
-  m_subtitleFPS = 0.0;
+  m_subtitleCompensateFPS = 0.0;
   m_iLateFrames = 0;
   m_iDroppedRequest = 0;
   m_fForcedAspectRatio = 0;
@@ -803,7 +803,21 @@ void CVideoPlayerVideo::Flush(bool sync)
 
 void CVideoPlayerVideo::ProcessOverlays(const VideoPicture* pSource, double pts)
 {
-  double pts1 = (m_subtitleFPS == 0.0) ? pts : pts * (m_fFrameRate / m_subtitleFPS);
+  double pts1 = pts;
+  if (m_subtitleCompensateFPS) {
+    double stFrameRate = m_fFrameRate;
+    while (stFrameRate > 44.0)
+      stFrameRate /= 2.0;
+    if ((stFrameRate > 24.9 && stFrameRate < 25.1) || (stFrameRate > 49.9 && stFrameRate < 50.1))
+      // 25fps material, 24fps subtitles
+      // use 23.976 since it's waay more common
+      // in the ultra-rare cases of true 24.0 fps, it's still only a 86 frames
+      // = ~ 3.6 seconds difference per hour, something I feel one could deal
+      // with using the subtitle offset feature if need be.
+      pts1 = pts * (stFrameRate / 23.976); 
+    else // 24 fps material, compensate 25fps subtitles
+      pts1 = pts * (stFrameRate / 25.0);
+  }
 
   // remove any overlays that are out of time
   if (m_syncState == IDVDStreamPlayer::SYNC_INSYNC)

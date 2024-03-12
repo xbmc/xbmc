@@ -88,8 +88,8 @@ public:
   virtual bool IsSubtitleEnabled() = 0;
   virtual double GetSubtitleDelay() = 0;
   virtual void SetSubtitleDelay(double delay) = 0;
-  virtual double GetSubtitleFPS() = 0;
-  virtual void SetSubtitleFPS(double fps) = 0;
+  virtual bool GetSubtitleCompensateFPS() const = 0;
+  virtual void SetSubtitleCompensateFPS(bool bDoCompensate) = 0;
   bool IsStalled() const override = 0;
   virtual bool IsRewindStalled() const { return false; }
   virtual double GetCurrentPts() = 0;

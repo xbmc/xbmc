@@ -24,7 +24,7 @@ CVideoSettings::CVideoSettings()
   m_AudioStream = -1;
   m_SubtitleStream = -1;
   m_SubtitleDelay = 0.0f;
-  m_subtitleFPS = 0.0;
+  m_subtitleCompensateFPS = false;
   m_subtitleVerticalPosition = 0;
   m_subtitleVerticalPositionSave = false;
   m_SubtitleOn = true;
@@ -58,7 +58,7 @@ bool CVideoSettings::operator!=(const CVideoSettings &right) const
   if (m_AudioStream != right.m_AudioStream) return true;
   if (m_SubtitleStream != right.m_SubtitleStream) return true;
   if (m_SubtitleDelay != right.m_SubtitleDelay) return true;
-  if (m_subtitleFPS != right.m_subtitleFPS)
+  if (m_subtitleCompensateFPS != right.m_subtitleCompensateFPS)
     return true;
   if (m_subtitleVerticalPosition != right.m_subtitleVerticalPosition)
     return true;
@@ -128,10 +128,10 @@ void CVideoSettingsLocked::SetSubtitleDelay(float delay)
   m_videoSettings.m_SubtitleDelay = delay;
 }
 
-void CVideoSettingsLocked::SetSubtitleFPS(double stretch)
+void CVideoSettingsLocked::SetSubtitleCompensateFPS(bool doCompensate)
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  m_videoSettings.m_subtitleFPS = stretch;
+  m_videoSettings.m_subtitleCompensateFPS = doCompensate;
 }
 
 void CVideoSettingsLocked::SetSubtitleVerticalPosition(int value, bool save)

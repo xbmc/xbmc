@@ -282,8 +282,8 @@ public:
 
   void SetSubTitleDelay(float fValue = 0.0f) override;
   float GetSubTitleDelay() override;
-  void SetSubtitleFPS(SubtitleFPS value) override;
-  SubtitleFPS GetSubtitleFPS() override;
+  void SetSubtitleCompensateFPS(bool bValue) override;
+  bool GetSubtitleCompensateFPS() const override;
   int GetSubtitleCount() const override;
   int GetSubtitle() override;
   void GetSubtitleStreamInfo(int index, SubtitleStreamInfo& info) const override;

@@ -737,11 +737,19 @@ void CApplicationPlayer::SetSubTitleDelay(float fValue)
     player->SetSubTitleDelay(fValue);
 }
 
-void CApplicationPlayer::SetSubtitleFPS(SubtitleFPS value)
+void CApplicationPlayer::SetSubtitleCompensateFPS(bool bValue)
 {
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
-    player->SetSubtitleFPS(value);
+    player->SetSubtitleCompensateFPS(bValue);
+}
+
+bool CApplicationPlayer::GetSubtitleCompensateFPS() const
+{
+  std::shared_ptr<const IPlayer> player = GetInternal();
+  if (player)
+    return player->GetSubtitleCompensateFPS();
+  return false;
 }
 
 void CApplicationPlayer::SetAVDelay(float fValue)

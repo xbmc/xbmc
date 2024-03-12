@@ -177,13 +177,6 @@ private:
                 "add/remove a mapping?");
 };
 
-enum class SubtitleFPS
-{
-  SAME = 0,
-  FPS_24 = 23976,
-  FPS_25 = 25000
-};
-
 enum ViewMode
 {
   ViewModeNormal = 0,
@@ -217,7 +210,7 @@ public:
   float m_VolumeAmplification;
   int m_SubtitleStream;
   float m_SubtitleDelay;
-  double m_subtitleFPS;
+  double m_subtitleCompensateFPS;
   int m_subtitleVerticalPosition{0};
   bool m_subtitleVerticalPositionSave{false};
   bool m_SubtitleOn;
@@ -254,7 +247,7 @@ public:
   void SetVideoStream(int stream);
   void SetAudioDelay(float delay);
   void SetSubtitleDelay(float delay);
-  void SetSubtitleFPS(double stretch);
+  void SetSubtitleCompensateFPS(bool doCompensate);
 
   /*!
    * \brief Set the subtitle vertical position,
