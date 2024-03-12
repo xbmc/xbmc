@@ -21,6 +21,8 @@ else
     endif
   endif
   ifeq ($(OS), darwin_embedded)
+    # LLVM 15 has raised this to error by default. drop back to warning
+    CFLAGS+= -Wno-error=implicit-int
     export SDKROOT CFLAGS
     OPENSSLPLATFORM=kodi-$(TARGET_PLATFORM)-$(CPU)
     ifeq ($(TARGET_PLATFORM),appletvos)
