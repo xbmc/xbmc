@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 28.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Kodi_Icon" xmlns:xodm="http://www.corel.com/coreldraw/odm/2003"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 256 256"
+	 style="enable-background:new 0 0 256 256;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:none;}
+	.st1{fill-rule:evenodd;clip-rule:evenodd;fill:url(#Border_00000101104235666603682920000002035333013992593321_);}
+	.st2{fill-rule:evenodd;clip-rule:evenodd;fill:url(#Kodi_00000034792859328757966830000000135640982814228155_);}
+</style>
+<rect id="Boundary_Box" class="st0" width="256" height="256"/>
+<linearGradient id="Border_00000015318469695191313500000001378236376235353531_" gradientUnits="userSpaceOnUse" x1="-351.5" y1="457.5287" x2="-351.5" y2="341.4705" gradientTransform="matrix(2 0 0 -2 831 927)">
+	<stop  offset="0" style="stop-color:#FEFEFE"/>
+	<stop  offset="1" style="stop-color:#DFDFDF"/>
+</linearGradient>
+<path id="Border" style="fill-rule:evenodd;clip-rule:evenodd;fill:url(#Border_00000015318469695191313500000001378236376235353531_);" d="
+	M17.3,114.9l97.6-97.6c7.2-7.2,19-7.2,26.2,0l97.6,97.6c7.2,7.2,7.2,19,0,26.2l-97.6,97.6c-7.2,7.2-19,7.2-26.2,0l-97.6-97.6
+	C10.1,133.9,10.1,122.1,17.3,114.9z"/>
+<linearGradient id="Kodi_00000070798206131893957420000016692771746482146463_" gradientUnits="userSpaceOnUse" x1="-351.4952" y1="450.368" x2="-351.4952" y2="348.632" gradientTransform="matrix(2 0 0 -2 831 927)">
+	<stop  offset="0" style="stop-color:#33ADDD"/>
+	<stop  offset="1" style="stop-color:#148FBF"/>
+</linearGradient>
+<path id="Kodi" style="fill-rule:evenodd;clip-rule:evenodd;fill:url(#Kodi_00000070798206131893957420000016692771746482146463_);" d="
+	M61.6,96.1c0-4.4-2.1-6.4-4-4.4l-31.3,31.3c-2.8,2.8-2.8,7.3,0,10.1l31.3,31.3c1.9,1.9,4,0,4-4.4L61.6,96.1z M152.5,123l33.6-33.6
+	c2.8-2.8,7.3-2.8,10.1,0l33.6,33.6c2.8,2.8,2.8,7.3,0,10.1l-33.6,33.6c-2.8,2.8-7.3,2.8-10.1,0L152.5,133
+	C149.7,130.3,149.7,125.7,152.5,123z M89.4,186.1l33.6-33.6c2.8-2.8,7.3-2.8,10.1,0l33.6,33.6c2.8,2.8,2.8,7.3,0,10.1L133,229.7
+	c-2.8,2.8-7.3,2.8-10.1,0l-33.6-33.6C86.6,193.4,86.6,188.8,89.4,186.1z M88.5,65.8c0-3.5,1-6,3.4-8.5c10.4-10.4,20.7-20.7,31-31.1
+	c2.8-2.8,7.3-2.8,10.1,0l33.6,33.6c2.8,2.8,2.8,7.3,0,10.1c-24.8,24.8-49.5,49.5-74.3,74.3c-1.9,1.9-3.8,0-3.8-4.4L88.5,65.8
+	L88.5,65.8z"/>
+</svg>

@@ -134,6 +134,10 @@ install(FILES ${CMAKE_SOURCE_DIR}/tools/Linux/packaging/media/icon256x256.png
         RENAME ${APP_NAME_LC}.png
         DESTINATION ${datarootdir}/icons/hicolor/256x256/apps
         COMPONENT kodi)
+install(FILES ${CMAKE_SOURCE_DIR}/tools/Linux/packaging/media/iconScalable.svg
+        RENAME ${APP_NAME_LC}.png
+        DESTINATION ${datarootdir}/icons/hicolor/scalable/apps
+        COMPONENT kodi)
 
 # Install firewalld service definitions
 install(FILES ${CMAKE_SOURCE_DIR}/tools/Linux/firewalld-services/kodi-eventserver.xml
