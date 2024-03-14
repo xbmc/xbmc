@@ -312,7 +312,8 @@ void CGUIDialogSubtitleSettings::InitializeSettings()
   if (SupportsSubtitleFeature(IPC_SUBS_STRETCH))
   {
     m_subtitleCompensateFPS = appPlayer->GetSubtitleCompensateFPS();
-    AddToggle(groupSubtitles, SETTING_SUBTITLE_FPS, 39202, SettingLevel::Basic, m_subtitleCompensateFPS);
+    AddToggle(groupSubtitles, SETTING_SUBTITLE_FPS, 39202, SettingLevel::Basic,
+              m_subtitleCompensateFPS);
   }
 
   // subtitle stream setting

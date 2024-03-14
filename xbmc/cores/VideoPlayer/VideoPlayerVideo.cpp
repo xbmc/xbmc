@@ -804,7 +804,8 @@ void CVideoPlayerVideo::Flush(bool sync)
 void CVideoPlayerVideo::ProcessOverlays(const VideoPicture* pSource, double pts)
 {
   double pts1 = pts;
-  if (m_subtitleCompensateFPS) {
+  if (m_subtitleCompensateFPS)
+  {
     double stFrameRate = m_fFrameRate;
     while (stFrameRate > 44.0)
       stFrameRate /= 2.0;
@@ -814,7 +815,7 @@ void CVideoPlayerVideo::ProcessOverlays(const VideoPicture* pSource, double pts)
       // in the ultra-rare cases of true 24.0 fps, it's still only a 86 frames
       // = ~ 3.6 seconds difference per hour, something I feel one could deal
       // with using the subtitle offset feature if need be.
-      pts1 = pts * (stFrameRate / 23.976); 
+      pts1 = pts * (stFrameRate / 23.976);
     else // 24 fps material, compensate 25fps subtitles
       pts1 = pts * (stFrameRate / 25.0);
   }
