@@ -152,3 +152,128 @@ const TestUtilCleanStringData values[] = {
     {"Some (Director Cut).BDRemux.mkv", true, "Some (Director Cut)", "Some (Director Cut)", ""}};
 
 INSTANTIATE_TEST_SUITE_P(URL, TestUtilCleanString, ValuesIn(values));
+
+struct TestUtilSplitParamsData
+{
+  std::string input;
+  std::vector<std::string> expectedResult;
+};
+
+std::ostream& operator<<(std::ostream& os, const TestUtilSplitParamsData& rhs)
+{
+  os << "(input: " << rhs.input << "; expCount: " << rhs.expectedResult.size();
+  for (unsigned int i = 0; i < rhs.expectedResult.size(); ++i)
+    os << "; expParam " << i + 1 << ": " << rhs.expectedResult[i];
+
+  return os;
+}
+
+class TestUtilSplitParams : public Test, public WithParamInterface<TestUtilSplitParamsData>
+{
+};
+
+TEST_P(TestUtilSplitParams, SplitParams)
+{
+  std::vector<std::string> actual;
+  CUtil::SplitParams(GetParam().input, actual);
+  EXPECT_EQ(actual.size(), GetParam().expectedResult.size());
+  EXPECT_EQ(actual, GetParam().expectedResult);
+}
+
+const TestUtilSplitParamsData valuesSplitParams[] = {
+    {"", {}},
+    {"one", {"one"}},
+    {" one", {"one"}},
+    {"one ", {"one"}},
+    {" one ", {"one"}},
+    // quotes " removed only when at beginning and end of param (after trimming)
+    {R"(" one")", {R"( one)"}},
+    {R"("one ")", {R"(one )"}},
+    {R"("on"e )", {R"("on"e)"}},
+    {R"(o"n"e )", {R"(o"n"e)"}},
+    {R"(o" n"e )", {R"(o" n"e)"}},
+    {R"( "one" )", {R"(one)"}},
+    {R"( " one")", {R"( one)"}},
+    {R"( " one " )", {R"( one )"}},
+    {R"(o" n"e )", {R"(o" n"e)"}},
+    {R"(o"ne" )", {R"(o"ne")"}},
+    {R"(o\"ne")", {R"(o"ne")"}},
+    {R"(\" one")", {R"( one)"}},
+    {R"(\" one\")", {R"( one)"}},
+    {R"("one " one)", {R"("one " one)"}},
+    // function 1 parameter
+    {"fun(p1)", {"fun(p1)"}},
+    {" fun(p1)", {"fun(p1)"}},
+    {"fun(p1) ", {"fun(p1)"}},
+    {"fun(p1 p1) ", {"fun(p1 p1)"}},
+    {"fun( p1 ) ", {"fun( p1 )"}}, // no trim: likely omission of the code?
+    // 2 parameters
+    {"one,", {"one", ""}},
+    {"one,two", {"one", "two"}},
+    {"one ,two", {"one", "two"}},
+    {"one,two ", {"one", "two"}},
+    {"one, two", {"one", "two"}},
+    {"one,two two", {"one", "two two"}},
+    {"one, two two", {"one", "two two"}},
+    {"one,two two ", {"one", "two two"}},
+    {R"(\" one\", two)", {R"( one)", "two"}},
+    //{R"(\" one", two)", {R"( one)", "two"}}, // mixing \" & " not supported for multi param
+    {R"(one, \" two\")", {"one", R"( two)"}},
+    //{R"(one, \" two")", {"one", R"( two)"}},  // mixing \" & " not supported for multi param
+
+    // function 2 parameters
+    {"fun(p1,p2)", {"fun(p1,p2)"}},
+    {"fun(p1 ,p2)", {"fun(p1 ,p2)"}}, // no trim: omission in the code?
+    {"fun(p1, p2)", {"fun(p1, p2)"}}, // no trim: omission in the code?
+    {"fun(p1 p1 ,p2)", {"fun(p1 p1 ,p2)"}}, // no trim: omission in the code?
+    {"fun(p1,p2), two", {"fun(p1,p2)", "two"}},
+    {"\"fun(p1,p2)\",two", {"fun(p1,p2)", "two"}},
+    {"\"fun(p1,p2)\",\" two\"", {"fun(p1,p2)", " two"}},
+    {"fun(p1,p2),\" two\"", {"fun(p1,p2)", " two"}},
+    {"\\\"fun(p1,p2)\\\",two", {"fun(p1,p2)", "two"}},
+    {"fun(p1,p2),\\\"two\\\"", {"fun(p1,p2)", "two"}},
+    {"fun(fun2(p1,p2),p3),two", {"fun(fun2(p1,p2),p3)", "two"}},
+    {"fun\"ction(p1,p2\",p3,p4)\"", {"fun\"ction(p1,p2\"", "p3", "p4)\""}},
+    // 3 parameters
+    {"one,two,three", {"one", "two", "three"}},
+    {"one,two two,three", {"one", "two two", "three"}},
+    {"one, two, three", {"one", "two", "three"}},
+    {"one, two two, three", {"one", "two two", "three"}},
+    // \ escaping
+    {R"(D:\foo\bar\baz.m2ts)", {R"(D:\foo\bar\baz.m2ts)"}},
+    {R"(D:\foo\bar\)", {R"(D:\foo\bar\)"}},
+    {R"(D:\\foo\bar\)", {R"(D:\foo\bar\)"}},
+    {R"(D:\foo\\bar\)", {R"(D:\foo\bar\)"}},
+    {R"(D:\foo\bar\\)", {R"(D:\foo\bar\)"}},
+    {R"(D:\\\foo\bar\)", {R"(D:\\foo\bar\)"}},
+    {R"(D:\foo\\\bar\)", {R"(D:\foo\\bar\)"}},
+    {R"(D:\foo\bar\\\)", {R"(D:\foo\bar\\)"}},
+    {R"(D:\\\\foo\bar\)", {R"(D:\\foo\bar\)"}},
+    {R"(D:\foo\\\\bar\)", {R"(D:\foo\\bar\)"}},
+    {R"(D:\foo\bar\\\\)", {R"(D:\foo\bar\\)"}},
+    {R"("D:\foo\\bar\\\baz.m2ts\\\\")", {R"(D:\foo\bar\\baz.m2ts\\)"}},
+    {R"(" D:\foo\\bar\\\baz.m2ts\\\\")", {R"( D:\foo\bar\\baz.m2ts\\)"}},
+    {R"(\"D:\foo\\bar\\\baz.m2ts\\\\\")", {R"(D:\foo\bar\\baz.m2ts\\)"}},
+    {R"(\" D:\foo\\bar\\\baz.m2ts\\\\\")", {R"( D:\foo\bar\\baz.m2ts\\)"}},
+    {R"(123,D:\foo\\bar\\\baz.m2ts\\\\,abc)", {"123", R"(D:\foo\bar\\baz.m2ts\\)", "abc"}},
+    {R"(123,"D:\foo\\bar\\\baz.m2ts\\\\",abc)", {"123", R"(D:\foo\bar\\baz.m2ts\\)", "abc"}},
+    {R"(123," D:\foo\\bar\\\baz.m2ts\\\\",abc)", {"123", R"( D:\foo\bar\\baz.m2ts\\)", "abc"}},
+    {R"(123,\"D:\foo\\bar\\\baz.m2ts\\\\\",abc)", {"123", R"(D:\foo\bar\\baz.m2ts\\)", "abc"}},
+    {R"(123,\" D:\foo\\bar\\\baz.m2ts\\\\\",abc)", {"123", R"( D:\foo\bar\\baz.m2ts\\)", "abc"}},
+    // name="value" parameter form
+    {R"(name="value")", {"name=value"}},
+    {R"(name="value1 value2")", {"name=value1 value2"}},
+    {R"(name="value1,value2")", {"name=value1,value2"}},
+    {R"(name="value1, value2")", {"name=value1, value2"}},
+    {R"(name="value1 "value2 " value3")", {R"(name=value1 "value2 " value3)"}},
+    {R"(name="value1 \"value2 \" value 3")", {R"(name=value1 "value2 " value 3)"}},
+    {R"(name=\"value\")", {R"(name=value)"}},
+    {R"("name=\"value\"")", {R"(name="value")"}},
+    {R"(name=value1,value2)", {"name=value1", "value2"}},
+    {R"(foo=bar=value1,value2)", {"foo=bar=value1", "value2"}},
+    {R"(foo=bar="value1,value2")", {"foo=bar=value1,value2"}},
+    {R"("name=value1 value2")", {"name=value1 value2"}},
+    {R"(abc, name="value", cde)", {"abc", "name=value", "cde"}},
+};
+
+INSTANTIATE_TEST_SUITE_P(SP, TestUtilSplitParams, ValuesIn(valuesSplitParams));
