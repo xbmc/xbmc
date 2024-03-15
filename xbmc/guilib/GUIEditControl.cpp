@@ -85,7 +85,6 @@ void CGUIEditControl::DefaultConstructor()
   m_smsLastKey = 0;
   m_smsKeyIndex = 0;
   m_label2.GetLabelInfo().offsetX = 0;
-  m_label2.SetReversedTruncate(true); // Truncate the text by default on the left
   m_isMD5 = false;
   m_invalidInput = false;
   m_inputValidator = NULL;
@@ -538,7 +537,7 @@ void CGUIEditControl::ProcessText(unsigned int currentTime)
     if (HasFocus() || leftTextWidth == 0)
       changed |= m_label2.SetOverflow(CGUILabel::OVER_FLOW_CLIP);
     else
-      changed |= m_label2.SetOverflow(CGUILabel::OVER_FLOW_TRUNCATE);
+      changed |= m_label2.SetOverflow(CGUILabel::OVER_FLOW_TRUNCATE_LEFT);
 
     changed |= m_label2.Process(currentTime);
     CServiceBroker::GetWinSystem()->GetGfxContext().RestoreClipRegion();
