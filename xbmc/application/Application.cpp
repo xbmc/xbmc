@@ -244,76 +244,6 @@ CApplication::~CApplication(void)
   DeregisterComponent(typeid(CApplicationActionListeners));
 }
 
-bool CApplication::OnEvent(XBMC_Event& newEvent)
-{
-  std::unique_lock<CCriticalSection> lock(m_portSection);
-  m_portEvents.push_back(newEvent);
-  return true;
-}
-
-void CApplication::HandlePortEvents()
-{
-  std::unique_lock<CCriticalSection> lock(m_portSection);
-  while (!m_portEvents.empty())
-  {
-    auto newEvent = m_portEvents.front();
-    m_portEvents.pop_front();
-    CSingleExit lock(m_portSection);
-    switch(newEvent.type)
-    {
-      case XBMC_QUIT:
-        if (!m_bStop)
-          CServiceBroker::GetAppMessenger()->PostMsg(TMSG_QUIT);
-        break;
-      case XBMC_VIDEORESIZE:
-        if (CServiceBroker::GetGUI()->GetWindowManager().Initialized())
-        {
-          if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_fullScreen)
-          {
-            CServiceBroker::GetWinSystem()->GetGfxContext().ApplyWindowResize(newEvent.resize.w, newEvent.resize.h);
-
-            const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-            settings->SetInt(CSettings::SETTING_WINDOW_WIDTH, newEvent.resize.w);
-            settings->SetInt(CSettings::SETTING_WINDOW_HEIGHT, newEvent.resize.h);
-            settings->Save();
-          }
-          else
-          {
-            const auto& res_info = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP);
-            CServiceBroker::GetWinSystem()->ForceFullScreen(res_info);
-          }
-        }
-        break;
-      case XBMC_VIDEOMOVE:
-      {
-        CServiceBroker::GetWinSystem()->OnMove(newEvent.move.x, newEvent.move.y);
-      }
-        break;
-      case XBMC_MODECHANGE:
-        CServiceBroker::GetWinSystem()->GetGfxContext().ApplyModeChange(newEvent.mode.res);
-        break;
-      case XBMC_SCREENCHANGE:
-        CServiceBroker::GetWinSystem()->OnChangeScreen(newEvent.screen.screenIdx);
-        break;
-      case XBMC_USEREVENT:
-        CServiceBroker::GetAppMessenger()->PostMsg(static_cast<uint32_t>(newEvent.user.code));
-        break;
-      case XBMC_SETFOCUS:
-      {
-        // Reset the screensaver
-        const auto appPower = GetComponent<CApplicationPowerHandling>();
-        appPower->ResetScreenSaver();
-        appPower->WakeUpScreenSaverAndDPMS();
-        // Send a mouse motion event with no dx,dy for getting the current guiitem selected
-        OnAction(CAction(ACTION_MOUSE_MOVE, 0, static_cast<float>(newEvent.focus.x), static_cast<float>(newEvent.focus.y), 0, 0));
-        break;
-      }
-      default:
-        CServiceBroker::GetInputManager().OnEvent(newEvent);
-    }
-  }
-}
-
 extern "C" void __stdcall init_emu_environ();
 extern "C" void __stdcall update_emu_environ();
 extern "C" void __stdcall cleanup_emu_environ();
@@ -1586,7 +1516,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     newEvent.type = XBMC_VIDEORESIZE;
     newEvent.resize.w = pMsg->param1;
     newEvent.resize.h = pMsg->param2;
-    OnEvent(newEvent);
+    m_pAppPort->OnEvent(newEvent);
     CServiceBroker::GetGUI()->GetWindowManager().MarkDirty();
   }
     break;
@@ -1745,7 +1675,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     if (pMsg->lpVoid)
     {
       XBMC_Event* event = static_cast<XBMC_Event*>(pMsg->lpVoid);
-      OnEvent(*event);
+      m_pAppPort->OnEvent(*event);
       delete event;
     }
   }
@@ -1823,7 +1753,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
       }
     }
 
-    HandlePortEvents();
+    m_pAppPort->HandleEvents();
     CServiceBroker::GetInputManager().Process(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog(), frameTime);
 
     if (processGUI && renderGUI)
@@ -2093,7 +2023,7 @@ bool CApplication::Stop(int exitCode)
         break;
       }
     }
-    m_pAppPort.reset();
+    m_pAppPort->Close();
   }
 
   try
