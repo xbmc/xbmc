@@ -8,7 +8,6 @@ import android.app.NativeActivity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.hardware.input.InputManager;
 import android.media.AudioManager;
@@ -37,22 +36,20 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   private XBMCInputDeviceListener mInputDeviceListener;
   private XBMCJsonRPC mJsonRPC = null;
   private View mDecorView = null;
-  private RelativeLayout mVideoLayout = null;
   private Handler handler = new Handler(Looper.myLooper());
 
   private class DelayedIntent
   {
-    public Intent mIntent = null;
-    public int mDelay = 0;
+    public Intent mIntent;
+    public int mDelay;
 
     public DelayedIntent(Intent intent, int delay) {
       mIntent = intent;
       mDelay = delay;
     }
   }
-  private ArrayList<DelayedIntent> mDelayedIntents = new ArrayList<DelayedIntent>();
+  private ArrayList<DelayedIntent> mDelayedIntents = new ArrayList<>();
   private boolean mPaused = true;
-
 
   native void _onNewIntent(Intent intent);
 
@@ -75,7 +72,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
           mJsonRPC.updateLeanback(Main.this);
         }
       }.start();
-      handler.postDelayed(this, XBMCProperties.getIntProperty("xbmc.leanbackrefresh", 60 * 60) * 1000);
+      handler.postDelayed(this, XBMCProperties.getIntProperty("xbmc.leanbackrefresh", 60 * 60) * 1000L);
     }
   };
 
@@ -100,6 +97,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
     }
     catch (Exception e)
     {
+      Log.d(TAG, "Main: Exception: " + e.getMessage());
     }
 
     return ret;
@@ -163,12 +161,12 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
     mDecorView.setBackground(null);
     getWindow().takeSurface(null);
     setContentView(R.layout.activity_main);
-    mVideoLayout = (RelativeLayout) findViewById(R.id.VideoLayout);
+    RelativeLayout videoLayout = findViewById(R.id.VideoLayout);
 
     mMainView = new XBMCMainView(this);
     RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
     mMainView.setElevation(1);  // Always on Top
-    mVideoLayout.addView(mMainView, layoutParams);
+    videoLayout.addView(mMainView, layoutParams);
 
     if (Build.VERSION.SDK_INT < 30)
     {
@@ -342,9 +340,13 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
    * Gets the package name of the current system launcher
    */
   private String getLauncherName() {
+    String name = "";
     final Intent intent = new Intent(Intent.ACTION_MAIN);
     intent.addCategory(Intent.CATEGORY_HOME);
     final ResolveInfo res = getPackageManager().resolveActivity(intent, 0);
-    return res.activityInfo.packageName;
+    if (res != null) {
+      name = res.activityInfo.packageName;
+    }
+    return name;
   }
 }
