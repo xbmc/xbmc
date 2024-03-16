@@ -401,7 +401,7 @@ bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
       m_hdr_blob_id = 0;
     }
 
-    return true;
+    return false;
   }
 
   KODI::UTILS::Colorimetry colorimetry = DRMPRIME::GetColorimetry(*videoPicture);
@@ -501,7 +501,7 @@ bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
     drm->SetActive(true);
   }
 
-  return true;
+  return m_hdr_blob_id != 0;
 }
 
 bool CWinSystemGbm::IsHDRDisplay()
