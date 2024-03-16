@@ -1187,7 +1187,7 @@ void PAPlayer::CloseFileCB(StreamInfo &si)
   bookmark.timeInSeconds -= si.m_stream->GetDelay();
   bookmark.player = m_name;
   bookmark.playerState = GetPlayerState();
-  if (fileItem.GetMusicInfoTag()->GetAlbumReleaseType() == CAlbum::Audiobook &&
+  if (fileItem.GetMusicInfoTag()->GetAlbumReleaseType() == MUSIC_INFO::AudioContentType::AUDIO_TYPE_AUDIOBOOK &&
       (std::round(bookmark.timeInSeconds) != std::round(bookmark.totalTimeInSeconds)))
     fileItem.SetProperty("audiobook_resume_point", bookmark.timeInSeconds);
   CServiceBroker::GetJobManager()->Submit([=]() { cb->OnPlayerCloseFile(fileItem, bookmark); },

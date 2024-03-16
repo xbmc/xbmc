@@ -14,6 +14,7 @@
 */
 
 #include "Artist.h"
+#include "MusicType.h"
 #include "Song.h"
 #include "XBDateTime.h"
 #include "utils/ScraperUrl.h"
@@ -65,7 +66,8 @@ public:
     lastPlayed.Reset();
     iTotalDiscs = -1;
     songs.clear();
-    releaseType = Album;
+    //ReleaseType = Album;
+    contentType = MUSIC_INFO::AudioContentType::AUDIO_TYPE_ALBUM;
     strLastScraped.clear();
     bScrapedMBID = false;
     bArtistSongMerge = false;
@@ -113,8 +115,8 @@ public:
   void SetDateNew(const std::string& strDateNew);
   void SetLastPlayed(const std::string& strLastPlayed);
 
-  static std::string ReleaseTypeToString(ReleaseType releaseType);
-  static ReleaseType ReleaseTypeFromString(const std::string& strReleaseType);
+  static std::string ReleaseTypeToString(MUSIC_INFO::AudioContentType contentType);
+  static MUSIC_INFO::AudioContentType ReleaseTypeFromString(const std::string& strReleaseType);
 
   /*! \brief Set album artist credits using the arrays of tag values.
    If strArtistSort (as from ALBUMARTISTSORT tag) is already set then individual
@@ -174,7 +176,8 @@ public:
   CDateTime lastPlayed;
   int iTotalDiscs = -1;
   VECSONGS songs;     ///< Local songs
-  ReleaseType releaseType = Album;
+  //ReleaseType releaseType = Album;
+  MUSIC_INFO::AudioContentType contentType = MUSIC_INFO::AudioContentType::AUDIO_TYPE_ALBUM;
   std::string strLastScraped;
   bool bScrapedMBID = false;
   bool bArtistSongMerge = false;

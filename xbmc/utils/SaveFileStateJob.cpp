@@ -223,7 +223,8 @@ void CSaveFileState::DoWork(CFileItem& item,
         }
       }
 
-      if (item.GetMusicInfoTag()->GetAlbumReleaseType() == CAlbum::Audiobook)
+      if (item.GetMusicInfoTag()->GetAlbumReleaseType() ==
+          MUSIC_INFO::AudioContentType::AUDIO_TYPE_AUDIOBOOK)
       {
         musicdatabase.Open();
         int resume_point = -1;

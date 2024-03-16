@@ -130,9 +130,9 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
   {
     thumb = CTextureUtils::GetWrappedImageURL(url.Get(), "music");
     if (isAudioBook)
-      albumtag.SetAlbumReleaseType(CAlbum::ReleaseType::Audiobook);
+      albumtag.SetAlbumReleaseType(MUSIC_INFO::AudioContentType::AUDIO_TYPE_AUDIOBOOK);
     else
-      albumtag.SetAlbumReleaseType(CAlbum::ReleaseType::Album);
+      albumtag.SetAlbumReleaseType(MUSIC_INFO::AudioContentType::AUDIO_TYPE_ALBUM);
   }
   CMusicInfoTag tracktag;// some tags are only relevant to a track or chapter
 
@@ -214,7 +214,8 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
         item->GetMusicInfoTag()->SetArtist(chapauthor);
       if (!desc.empty())
         item->GetMusicInfoTag()->SetComment(desc);
-      item->GetMusicInfoTag()->SetAlbumReleaseType(CAlbum::ReleaseType::Audiobook);
+      item->GetMusicInfoTag()->SetAlbumReleaseType(
+          MUSIC_INFO::AudioContentType::AUDIO_TYPE_AUDIOBOOK);
     }
     else
     {// add the tags we previously found to the MusicInfoTag() for this track
@@ -272,16 +273,20 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
       if (!band.empty())
         item->GetMusicInfoTag()->AddArtistRole("Band", StringUtils::Split(band, separators));
       if (!producer.empty())
-        item->GetMusicInfoTag()->AddArtistRole("Producer", StringUtils::Split(producer, separators));
+        item->GetMusicInfoTag()->AddArtistRole("Producer",
+                                               StringUtils::Split(producer, separators));
       if (!engineer.empty())
-        item->GetMusicInfoTag()->AddArtistRole("Engineer", StringUtils::Split(engineer, separators));
+        item->GetMusicInfoTag()->AddArtistRole("Engineer",
+                                               StringUtils::Split(engineer, separators));
       if (!arranger.empty())
-        item->GetMusicInfoTag()->AddArtistRole("Arranger", StringUtils::Split(arranger, separators));
+        item->GetMusicInfoTag()->AddArtistRole("Arranger",
+                                               StringUtils::Split(arranger, separators));
     }
     if (isAudioBook)
-      item->GetMusicInfoTag()->SetAlbumReleaseType(CAlbum::ReleaseType::Audiobook);
+      item->GetMusicInfoTag()->SetAlbumReleaseType(
+          MUSIC_INFO::AudioContentType::AUDIO_TYPE_AUDIOBOOK);
     else
-      item->GetMusicInfoTag()->SetAlbumReleaseType(CAlbum::ReleaseType::Album);
+      item->GetMusicInfoTag()->SetAlbumReleaseType(MUSIC_INFO::AudioContentType::AUDIO_TYPE_ALBUM);
     // do stuff common to both albums and audiobooks
     item->GetMusicInfoTag()->SetTrackNumber(i + 1);
     item->GetMusicInfoTag()->SetLoaded(true);

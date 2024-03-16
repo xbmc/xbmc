@@ -894,7 +894,8 @@ bool CGUIWindowMusicBase::OnSelect(int iItem)
   int bookmark = 0;
   int resumeTime = -1;
   if (item->HasMusicInfoTag() &&
-      item->GetMusicInfoTag()->GetAlbumReleaseType() == CAlbum::Audiobook && !item->m_bIsFolder)
+      item->GetMusicInfoTag()->GetAlbumReleaseType() == AudioContentType::AUDIO_TYPE_AUDIOBOOK &&
+      !item->m_bIsFolder)
   {
     if (m_musicdatabase.GetResumeBookmarkForAudioBook(*item, bookmark, resumeTime) && bookmark > 0)
     {

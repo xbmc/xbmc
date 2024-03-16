@@ -22,16 +22,16 @@
 
 using namespace MUSIC_INFO;
 
-typedef struct ReleaseTypeInfo {
-  CAlbum::ReleaseType type;
-  std::string name;
-} ReleaseTypeInfo;
+//typedef struct ReleaseTypeInfo {
+  //CAlbum::ReleaseType type;
+  //std::string name;
+//} ReleaseTypeInfo;
 
-ReleaseTypeInfo releaseTypes[] = {
-  { CAlbum::Album,  "album" },
-  { CAlbum::Single, "single" },
-  { CAlbum::Audiobook, "audiobook" }
-};
+//ReleaseTypeInfo releaseTypes[] = {
+  //{ CAlbum::Album,  "album" },
+  //{ CAlbum::Single, "single" },
+  //{ CAlbum::Audiobook, "audiobook" }
+//};
 
 CAlbum::CAlbum(const CFileItem& item)
 {
@@ -58,7 +58,7 @@ CAlbum::CAlbum(const CFileItem& item)
   dateAdded.Reset();
   dateUpdated.Reset();
   lastPlayed.Reset();
-  releaseType = tag.GetAlbumReleaseType();
+  contentType = tag.GetAlbumReleaseType();
   strReleaseStatus = tag.GetAlbumReleaseStatus();
 }
 
@@ -408,12 +408,12 @@ const std::vector<int> CAlbum::GetArtistIDArray() const
 
 std::string CAlbum::GetReleaseType() const
 {
-  return ReleaseTypeToString(releaseType);
+  return ReleaseTypeToString(contentType);
 }
 
 void CAlbum::SetReleaseType(const std::string& strReleaseType)
 {
-  releaseType = ReleaseTypeFromString(strReleaseType);
+  contentType = ReleaseTypeFromString(strReleaseType);
 }
 
 void CAlbum::SetDateAdded(const std::string& strDateAdded)
@@ -436,26 +436,35 @@ void CAlbum::SetLastPlayed(const std::string& strLastPlayed)
   lastPlayed.SetFromDBDateTime(strLastPlayed);
 }
 
-std::string CAlbum::ReleaseTypeToString(CAlbum::ReleaseType releaseType)
+std::string CAlbum::ReleaseTypeToString(MUSIC_INFO::AudioContentType contentType)
 {
-  for (const ReleaseTypeInfo& releaseTypeInfo : releaseTypes)
+  switch (contentType)
   {
-    if (releaseTypeInfo.type == releaseType)
-      return releaseTypeInfo.name;
+    case AudioContentType::AUDIO_TYPE_ALBUM:
+      return "album";
+    case AudioContentType::AUDIO_TYPE_AUDIOBOOK:
+      return "audiobook";
+    case AudioContentType::AUDIO_TYPE_SINGLE:
+      return "single";
+    case AudioContentType::AUDIO_TYPE_PODCAST:
+      return "podcast";
+    default:
+      return "album";
   }
-
-  return "album";
 }
 
-CAlbum::ReleaseType CAlbum::ReleaseTypeFromString(const std::string& strReleaseType)
+AudioContentType CAlbum::ReleaseTypeFromString(const std::string& strReleaseType)
 {
-  for (const ReleaseTypeInfo& releaseTypeInfo : releaseTypes)
-  {
-    if (releaseTypeInfo.name == strReleaseType)
-      return releaseTypeInfo.type;
-  }
+  if (StringUtils::CompareNoCase(strReleaseType, "album") == 0)
+    return AudioContentType::AUDIO_TYPE_ALBUM;
+  else if (StringUtils::CompareNoCase(strReleaseType, "single") == 0)
+    return AudioContentType::AUDIO_TYPE_SINGLE;
+  else if (StringUtils::CompareNoCase(strReleaseType, "audiobook") == 0)
+    return AudioContentType::AUDIO_TYPE_AUDIOBOOK;
+  else if (StringUtils::CompareNoCase(strReleaseType, "podcast") == 0)
+    return AudioContentType::AUDIO_TYPE_PODCAST;
 
-  return Album;
+  return AudioContentType::AUDIO_TYPE_ALBUM;
 }
 
 bool CAlbum::operator<(const CAlbum &a) const
@@ -598,7 +607,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
   if (XMLUtils::GetString(album, "releasetype", strReleaseType))
     SetReleaseType(strReleaseType);
   else
-    releaseType = Album;
+    contentType = AudioContentType::AUDIO_TYPE_ALBUM;
 
   return true;
 }

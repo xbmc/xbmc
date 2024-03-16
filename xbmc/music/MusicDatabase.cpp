@@ -729,7 +729,7 @@ bool CMusicDatabase::AddAlbum(CAlbum& album, int idSource)
                            album.strType, //
                            album.strReleaseStatus, //
                            album.bCompilation, //
-                           album.releaseType);
+                           album.contentType);
 
   // Add the album artists
   // Album must have at least one artist so set artist to [Missing]
@@ -953,7 +953,7 @@ bool CMusicDatabase::UpdateAlbum(CAlbum& album)
               album.strOrigReleaseDate, //
               album.bBoxedSet, //
               album.bCompilation, //
-              album.releaseType, //
+              album.contentType, //
               album.bScrapedMBID);
 
   if (!album.bArtistSongMerge)
@@ -1422,7 +1422,7 @@ int CMusicDatabase::AddAlbum(const std::string& strAlbum,
                              const std::string& strType,
                              const std::string& strReleaseStatus,
                              bool bCompilation,
-                             CAlbum::ReleaseType releaseType)
+                             AudioContentType contentType)
 {
   std::string strSQL;
   try
@@ -1446,7 +1446,7 @@ int CMusicDatabase::AddAlbum(const std::string& strAlbum,
     if (strCheckFlag.find("boxset") != std::string::npos) //boxset flagged in album type
       bBoxedSet = true;
     else if (strCheckFlag.find("audiobook") != std::string::npos) //audiobook flagged in album type
-      releaseType = CAlbum::Audiobook; // Often set when tagging from Musicbrainz
+      contentType = AudioContentType::AUDIO_TYPE_AUDIOBOOK;//Often set when tagging from Musicbrainz
     if (m_pDS->num_rows() == 0)
     {
       m_pDS->close();
@@ -1461,7 +1461,7 @@ int CMusicDatabase::AddAlbum(const std::string& strAlbum,
                      strAlbum.c_str(), strArtist.c_str(), strGenre.c_str(), //
                      strReleaseDate.c_str(), strOrigReleaseDate.c_str(), bBoxedSet, //
                      strRecordLabel.c_str(), strType.c_str(), strReleaseStatus.c_str(), //
-                     bCompilation, CAlbum::ReleaseTypeToString(releaseType).c_str());
+                     bCompilation, CAlbum::ReleaseTypeToString(contentType).c_str());
 
       if (strMusicBrainzAlbumID.empty())
         strSQL += PrepareSQL(", NULL");
@@ -1515,7 +1515,7 @@ int CMusicDatabase::AddAlbum(const std::string& strAlbum,
                      "WHERE idAlbum=%i",
                      strGenre.c_str(), strReleaseDate.c_str(), strOrigReleaseDate.c_str(), //
                      bBoxedSet, strRecordLabel.c_str(), strType.c_str(), strReleaseStatus.c_str(),
-                     bCompilation, CAlbum::ReleaseTypeToString(releaseType).c_str(), //
+                     bCompilation, CAlbum::ReleaseTypeToString(contentType).c_str(), //
                      idAlbum);
       m_pDS->exec(strSQL);
       DeleteAlbumArtistsByAlbum(idAlbum);
@@ -1553,7 +1553,7 @@ int CMusicDatabase::UpdateAlbum(int idAlbum,
                                 const std::string& strOrigReleaseDate,
                                 bool bBoxedSet,
                                 bool bCompilation,
-                                CAlbum::ReleaseType releaseType,
+                                AudioContentType contentType,
                                 bool bScrapedMBID)
 {
   if (idAlbum < 0)
@@ -1583,7 +1583,7 @@ int CMusicDatabase::UpdateAlbum(int idAlbum,
                       strType.c_str(), static_cast<double>(fRating), iUserrating, iVotes, //
                       strReleaseDate.c_str(), strOrigReleaseDate.c_str(), //
                       bBoxedSet, bCompilation, //
-                      CAlbum::ReleaseTypeToString(releaseType).c_str(), strReleaseStatus.c_str(), //
+                      CAlbum::ReleaseTypeToString(contentType).c_str(), strReleaseStatus.c_str(), //
                       CDateTime::GetUTCDateTime().GetAsDBDateTime().c_str(), bScrapedMBID);
   if (strMusicBrainzAlbumID.empty())
     strSQL += PrepareSQL(", strMusicBrainzAlbumID = NULL");
@@ -3748,7 +3748,8 @@ bool CMusicDatabase::GetRecentlyPlayedAlbums(VECALBUMS& albums)
                    "JOIN albumview ON albumview.idAlbum = playedalbums.idAlbum "
                    "JOIN albumartistview ON albumview.idAlbum = albumartistview.idAlbum "
                    "ORDER BY albumview.lastplayed DESC, albumartistview.iorder ",
-                   CAlbum::ReleaseTypeToString(CAlbum::Album).c_str(), RECENTLY_PLAYED_LIMIT);
+                   CAlbum::ReleaseTypeToString(AudioContentType::AUDIO_TYPE_ALBUM).c_str(),
+                   RECENTLY_PLAYED_LIMIT);
 
     auto queryStart = std::chrono::steady_clock::now();
     CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL);
@@ -8665,10 +8666,10 @@ void CMusicDatabase::UpdateTables(int version)
     // set strReleaseType based on album name
     m_pDS->exec(PrepareSQL(
         "UPDATE album SET strReleaseType = '%s' WHERE strAlbum IS NOT NULL AND strAlbum <> ''",
-        CAlbum::ReleaseTypeToString(CAlbum::Album).c_str()));
+        CAlbum::ReleaseTypeToString(AudioContentType::AUDIO_TYPE_ALBUM).c_str()));
     m_pDS->exec(
         PrepareSQL("UPDATE album SET strReleaseType = '%s' WHERE strAlbum IS NULL OR strAlbum = ''",
-                   CAlbum::ReleaseTypeToString(CAlbum::Single).c_str()));
+                   CAlbum::ReleaseTypeToString(AudioContentType::AUDIO_TYPE_SINGLE).c_str()));
   }
   if (version < 51)
   {
@@ -11224,7 +11225,7 @@ int CMusicDatabase::GetAudioBookCount()
 {
   std::string strSQL =
       PrepareSQL("SELECT COUNT(idAlbum) FROM album WHERE album.strReleaseType = '%s'",
-                 CAlbum::ReleaseTypeToString(CAlbum::Audiobook).c_str());
+                 CAlbum::ReleaseTypeToString(AudioContentType::AUDIO_TYPE_AUDIOBOOK).c_str());
   return GetSingleValueInt(strSQL);
 }
 
@@ -11248,7 +11249,7 @@ int CMusicDatabase::GetSinglesCount()
 {
   CDatabase::Filter filter(
       PrepareSQL("songview.idAlbum IN (SELECT idAlbum FROM album WHERE strReleaseType = '%s')",
-                 CAlbum::ReleaseTypeToString(CAlbum::Single).c_str()));
+                 CAlbum::ReleaseTypeToString(AudioContentType::AUDIO_TYPE_SINGLE).c_str()));
   return GetSongsCount(filter);
 }
 
@@ -11981,8 +11982,9 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
     {
       // Find albums to export
       std::vector<int> albumIds;
-      std::string strSQL = PrepareSQL("SELECT idAlbum FROM album WHERE strReleaseType = '%s' ",
-                                      CAlbum::ReleaseTypeToString(CAlbum::Album).c_str());
+      std::string strSQL =
+          PrepareSQL("SELECT idAlbum FROM album WHERE strReleaseType = '%s' ",
+                     CAlbum::ReleaseTypeToString(AudioContentType::AUDIO_TYPE_ALBUM).c_str());
       if (!settings.m_unscraped)
         strSQL += "AND lastScraped IS NOT NULL";
       CLog::Log(LOGDEBUG, "CMusicDatabase::{} - {}", __FUNCTION__, strSQL);
@@ -12875,7 +12877,7 @@ void CMusicDatabase::SetPropertiesFromAlbum(CFileItem& item, const CAlbum& album
 
   item.SetProperty("album_isboxset", album.bBoxedSet);
   item.SetProperty("album_totaldiscs", album.iTotalDiscs);
-  item.SetProperty("album_releasetype", CAlbum::ReleaseTypeToString(album.releaseType));
+  item.SetProperty("album_releasetype", CAlbum::ReleaseTypeToString(album.contentType));
   item.SetProperty("album_duration",
                    StringUtils::SecondsToTimeString(album.iAlbumDuration,
                                                     static_cast<TIME_FORMAT>(TIME_FORMAT_GUESS)));
@@ -13722,11 +13724,13 @@ bool CMusicDatabase::GetFilter(CDbUrl& musicUrl, Filter& filter, SortDescription
       option = options.find("show_singles");
       bool isAudioBook = filter.where.find("audiobook") != std::string::npos;
       if ((option == options.end() || !option->second.asBoolean()) && !isAudioBook)
-        filter.AppendWhere(PrepareSQL("albumview.strReleaseType = '%s'",
-                                      CAlbum::ReleaseTypeToString(CAlbum::Album).c_str()));
+        filter.AppendWhere(
+            PrepareSQL("albumview.strReleaseType = '%s'",
+                       CAlbum::ReleaseTypeToString(AudioContentType::AUDIO_TYPE_ALBUM).c_str()));
       else if (isAudioBook)
-        filter.AppendWhere(PrepareSQL("albumview.strReleaseType = '%s'",
-                                      CAlbum::ReleaseTypeToString(CAlbum::Audiobook).c_str()));
+        filter.AppendWhere(PrepareSQL(
+            "albumview.strReleaseType = '%s'",
+            CAlbum::ReleaseTypeToString(AudioContentType::AUDIO_TYPE_AUDIOBOOK).c_str()));
     }
   }
   else if (type == "discs")
@@ -13828,7 +13832,7 @@ bool CMusicDatabase::GetFilter(CDbUrl& musicUrl, Filter& filter, SortDescription
       filter.AppendWhere(PrepareSQL(
           "songview.idAlbum %sIN (SELECT idAlbum FROM album WHERE strReleaseType = '%s')",
           option->second.asBoolean() ? "" : "NOT ",
-          CAlbum::ReleaseTypeToString(CAlbum::Single).c_str()));
+          CAlbum::ReleaseTypeToString(AudioContentType::AUDIO_TYPE_SINGLE).c_str()));
 
     // When have idAlbum skip year, compilation, boxset criteria as already applied via album
     if (idAlbum < 0)
@@ -14043,6 +14047,7 @@ bool CMusicDatabase::IsAlbumAudiobook(const CFileItem& item)
 {
   bool isaudiobook = false;
   if (item.HasMusicInfoTag())
-    isaudiobook = item.GetMusicInfoTag()->GetAlbumReleaseType() == CAlbum::Audiobook;
+    isaudiobook =
+        item.GetMusicInfoTag()->GetAlbumReleaseType() == AudioContentType::AUDIO_TYPE_AUDIOBOOK;
   return isaudiobook;
 }

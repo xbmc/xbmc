@@ -90,7 +90,7 @@ public:
   int GetResumeTime() const;
   const EmbeddedArtInfo &GetCoverArtInfo() const;
   const ReplayGain& GetReplayGain() const;
-  CAlbum::ReleaseType GetAlbumReleaseType() const;
+  AudioContentType GetAlbumReleaseType() const;
   const std::map<int, std::vector<std::string>>& GetChapters() const;
 
   void SetURL(const std::string& strURL);
@@ -150,7 +150,7 @@ public:
   void SetBoxset(bool boxset);
   void SetCoverArtInfo(size_t size, const std::string &mimeType);
   void SetReplayGain(const ReplayGain& aGain);
-  void SetAlbumReleaseType(CAlbum::ReleaseType releaseType);
+  void SetAlbumReleaseType(MUSIC_INFO::AudioContentType contentType);
   void SetType(const MediaType& mediaType);
   void SetDiscSubtitle(const std::string& strDiscSubtitle);
   void SetTotalDiscs(int iDiscTotal);
@@ -255,7 +255,8 @@ protected:
   int m_iDiscTotal;
   bool m_bBoxset;
   int m_iBPM;
-  CAlbum::ReleaseType m_albumReleaseType;
+  //CAlbum::ReleaseType m_albumReleaseType;
+  AudioContentType m_contentType;
   std::string m_strReleaseStatus;
   int m_samplerate;
   int m_channels;

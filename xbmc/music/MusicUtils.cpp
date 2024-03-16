@@ -721,13 +721,14 @@ void PlayItem(const std::shared_ptr<CFileItem>& itemIn,
     item->SetCanQueue(true);
   }
 
-  if (item->m_bIsFolder && item->GetMusicInfoTag()->GetAlbumReleaseType() != CAlbum::Audiobook)
+  if (item->m_bIsFolder &&
+      item->GetMusicInfoTag()->GetAlbumReleaseType() != AudioContentType::AUDIO_TYPE_AUDIOBOOK)
   {
     AddItemToPlayListAndPlay(item, nullptr, player);
   }
   else if (item->HasMusicInfoTag())
   {
-    if (item->GetMusicInfoTag()->GetAlbumReleaseType() == CAlbum::Audiobook)
+    if (item->GetMusicInfoTag()->GetAlbumReleaseType() == AudioContentType::AUDIO_TYPE_AUDIOBOOK)
       mode = ContentUtils::PlayMode::PLAY_FROM_HERE;
     if (mode == ContentUtils::PlayMode::PLAY_FROM_HERE ||
         (mode == ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM && IsAutoPlayNextItem(*item)))
@@ -800,7 +801,7 @@ void PlayItem(const std::shared_ptr<CFileItem>& itemIn,
         CContextButtons choices;
         choices.Add(MUSIC_SELECT_ACTION_PLAY, 208); // 208 = Play
         choices.Add(MUSIC_SELECT_ACTION_RESUME,
-                    StringUtils::Format(g_localizeStrings.Get(12022), resumetitle));// resume from ...
+                    StringUtils::Format(g_localizeStrings.Get(12022), resumetitle));//resume from ..
 
         auto choice = CGUIDialogContextMenu::Show(choices);
         if (choice < 0)

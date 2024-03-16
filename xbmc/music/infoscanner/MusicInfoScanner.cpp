@@ -616,7 +616,7 @@ CInfoScanner::INFO_RET CMusicInfoScanner::ScanTags(const CFileItemList& items,
         pItem->GetMusicInfoTag()->SetTrackNumber(trackNo);
         pItem->GetMusicInfoTag()->SetComment(desc); // comments are often used to describe a book
         pItem->GetMusicInfoTag()->SetLoaded(true);
-        pItem->GetMusicInfoTag()->SetAlbumReleaseType(CAlbum::Audiobook);
+        pItem->GetMusicInfoTag()->SetAlbumReleaseType(AudioContentType::AUDIO_TYPE_AUDIOBOOK);
       }
     }
 
@@ -991,7 +991,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(const std::string& strDirectory, CFileI
 
     // mark albums without a title as singles
     if (album.strAlbum.empty())
-      album.releaseType = CAlbum::Single;
+      album.contentType = AudioContentType::AUDIO_TYPE_SINGLE;
 
     album.strPath = strDirectory;
     m_musicDatabase.AddAlbum(album, m_idSourcePath);
