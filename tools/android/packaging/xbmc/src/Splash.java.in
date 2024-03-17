@@ -298,7 +298,7 @@ public class Splash extends Activity
           // Update the progress bar
           publishProgress(++mProgressStatus);
 
-          ZipEntry e = (ZipEntry) entries.nextElement();
+          ZipEntry e = entries.nextElement();
           String sName = e.getName();
 
           if (!sName.startsWith("assets/"))
@@ -673,8 +673,8 @@ public class Splash extends Activity
     }
 
     setContentView(R.layout.activity_splash);
-    mProgress = (ProgressBar) findViewById(R.id.progressBar1);
-    mTextView = (TextView) findViewById(R.id.textView1);
+    mProgress = findViewById(R.id.progressBar1);
+    mTextView = findViewById(R.id.textView1);
 
     if (mState == InError || mState == CheckingPermissionsInfo)
     {
