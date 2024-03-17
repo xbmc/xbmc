@@ -75,10 +75,8 @@ public class Splash extends Activity
 
   private String sPackagePath = "";
   private String sXbmcHome = "";
-  private String sXbmcdata = "";
   private File fPackagePath = null;
   private File fXbmcHome = null;
-  private String sXbmcTemp = "";
 
   private BroadcastReceiver mExternalStorageReceiver = null;
   private boolean mExternalStorageChecked = false;
@@ -460,7 +458,7 @@ public class Splash extends Activity
     File fLibCache = new File(fCacheDir.getAbsolutePath() + "/lib");
     fLibCache.mkdirs();
 
-    sXbmcdata = XBMCProperties.getStringProperty("xbmc.data", "");
+    final String sXbmcdata = XBMCProperties.getStringProperty("xbmc.data", "");
     if (!sXbmcdata.isEmpty())
     {
       File fXbmcData = new File(sXbmcdata);
@@ -481,12 +479,11 @@ public class Splash extends Activity
 
       if (!fXbmcData.exists())
       {
-        sXbmcdata = "";
         System.setProperty("xbmc.data", "");
       }
     }
 
-    sXbmcTemp = XBMCProperties.getStringProperty("xbmc.temp", "");
+    final String sXbmcTemp = XBMCProperties.getStringProperty("xbmc.temp", "");
     if (!sXbmcTemp.isEmpty())
     {
       File fXbmcTemp = new File(sXbmcTemp);
@@ -507,7 +504,6 @@ public class Splash extends Activity
 
       if (!fXbmcTemp.exists())
       {
-        sXbmcTemp = "";
         System.setProperty("xbmc.temp", "");
       }
     }
