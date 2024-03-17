@@ -333,7 +333,7 @@ public class Splash extends Activity
           }
           catch (IOException e1)
           {
-            e1.printStackTrace();
+            Log.e(TAG, "Exception: " + e1.getMessage());
           }
         }
 
@@ -344,13 +344,13 @@ public class Splash extends Activity
       }
       catch (FileNotFoundException e1)
       {
-        e1.printStackTrace();
+        Log.e(TAG, "Exception: " + e1.getMessage());
         mErrorMsg = "Cannot find package.";
         return -1;
       }
       catch (IOException e)
       {
-        e.printStackTrace();
+        Log.e(TAG, "Exception: " + e.getMessage());
         mErrorMsg = "Cannot read package.";
         File obb = new File(sPackagePath);
         obb.delete();
