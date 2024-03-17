@@ -48,6 +48,10 @@ ifeq ($(OS),linux)
   ifeq ($(RENDER_SYSTEM),gles)
     NATIVE += MarkupSafe Mako
   endif
+
+  ifeq ($(TARGET_PLATFORM),webos)
+    NATIVE += rustup cargo-c
+  endif
 endif
 
 ifeq ($(OS),android)

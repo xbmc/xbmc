@@ -9,7 +9,13 @@ CARGO = $(CARGO_ENV_VARS) $(NATIVEPREFIX)/bin/cargo
 
 CARGO_BASE_OPTS = --manifest-path $(PLATFORM)/dolby_vision/Cargo.toml
 ifeq ($(CROSS_COMPILING),yes)
-  CARGO_BASE_OPTS += --target $(HOST)
+  ifeq ($(TARGET_PLATFORM),webos)
+    RUST_TARGET = armv7-unknown-linux-gnueabi
+  else
+    RUST_TARGET = $(HOST)
+  endif
+
+  CARGO_BASE_OPTS += --target $(RUST_TARGET)
 endif
 
 CARGO_BUILD_OPTS = --offline \
