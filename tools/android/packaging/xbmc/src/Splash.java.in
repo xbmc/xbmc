@@ -253,9 +253,12 @@ public class Splash extends Activity
 
     void DeleteRecursive(File fileOrDirectory)
     {
-      if (fileOrDirectory.isDirectory())
-        for (File child : fileOrDirectory.listFiles())
-          DeleteRecursive(child);
+      if (fileOrDirectory.isDirectory()) {
+        File[] files = fileOrDirectory.listFiles();
+        if (files != null)
+          for (File child : files)
+            DeleteRecursive(child);
+      }
 
       fileOrDirectory.delete();
     }
@@ -316,7 +319,9 @@ public class Splash extends Activity
             fFullPath.mkdirs();
             continue;
           }
-          fFullPath.getParentFile().mkdirs();
+          File parent = fFullPath.getParentFile();
+          if (parent != null && !parent.exists())
+            parent.mkdirs();
 
           try
           {
@@ -626,7 +631,7 @@ public class Splash extends Activity
     List<RunningTaskInfo> tasks = activityManager
             .getRunningTasks(Integer.MAX_VALUE);
     for (RunningTaskInfo task : tasks)
-      if (task.topActivity.toString().equalsIgnoreCase(
+      if (task.topActivity != null && task.topActivity.toString().equalsIgnoreCase(
               "ComponentInfo{@APP_PACKAGE@/@APP_PACKAGE@.Main}"))
       {
         // @APP_NAME@ already running; just activate it
