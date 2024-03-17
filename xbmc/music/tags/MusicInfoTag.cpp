@@ -767,7 +767,7 @@ void CMusicInfoTag::SetReplayGain(const ReplayGain& aGain)
   m_replayGain = aGain;
 }
 
-void CMusicInfoTag::SetAlbumReleaseType(AudioContentType contentType)
+void CMusicInfoTag::SetAudioType(AudioContentType contentType)
 {
   m_contentType = contentType;
 }
@@ -846,7 +846,7 @@ void CMusicInfoTag::SetAlbum(const CAlbum& album)
   SetOriginalDate(album.strOrigReleaseDate);
   SetReleaseDate(album.strReleaseDate);
   SetBoxset(album.bBoxedSet);
-  SetAlbumReleaseType(album.contentType);
+  SetAudioType(album.contentType);
   SetDateAdded(album.dateAdded);
   SetDateUpdated(album.dateUpdated);
   SetDateNew(album.dateNew);

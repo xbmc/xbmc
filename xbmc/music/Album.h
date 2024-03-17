@@ -66,7 +66,6 @@ public:
     lastPlayed.Reset();
     iTotalDiscs = -1;
     songs.clear();
-    //ReleaseType = Album;
     contentType = MUSIC_INFO::AudioContentType::AUDIO_TYPE_ALBUM;
     strLastScraped.clear();
     bScrapedMBID = false;
@@ -101,12 +100,6 @@ public:
   \return album artist IDs as a vector of integers
   */
   const std::vector<int> GetArtistIDArray() const;
-
-  typedef enum ReleaseType {
-    Album = 0,
-    Single,
-    Audiobook
-  } ReleaseType;
 
   std::string GetReleaseType() const;
   void SetReleaseType(const std::string& strReleaseType);
@@ -176,7 +169,6 @@ public:
   CDateTime lastPlayed;
   int iTotalDiscs = -1;
   VECSONGS songs;     ///< Local songs
-  //ReleaseType releaseType = Album;
   MUSIC_INFO::AudioContentType contentType = MUSIC_INFO::AudioContentType::AUDIO_TYPE_ALBUM;
   std::string strLastScraped;
   bool bScrapedMBID = false;

@@ -616,7 +616,7 @@ CInfoScanner::INFO_RET CMusicInfoScanner::ScanTags(const CFileItemList& items,
         pItem->GetMusicInfoTag()->SetTrackNumber(trackNo);
         pItem->GetMusicInfoTag()->SetComment(desc); // comments are often used to describe a book
         pItem->GetMusicInfoTag()->SetLoaded(true);
-        pItem->GetMusicInfoTag()->SetAlbumReleaseType(AudioContentType::AUDIO_TYPE_AUDIOBOOK);
+        pItem->GetMusicInfoTag()->SetAudioType(AudioContentType::AUDIO_TYPE_AUDIOBOOK);
       }
     }
 

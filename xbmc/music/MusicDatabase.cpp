@@ -1445,8 +1445,9 @@ int CMusicDatabase::AddAlbum(const std::string& strAlbum,
     StringUtils::ToLower(strCheckFlag);
     if (strCheckFlag.find("boxset") != std::string::npos) //boxset flagged in album type
       bBoxedSet = true;
-    else if (strCheckFlag.find("audiobook") != std::string::npos) //audiobook flagged in album type
-      contentType = AudioContentType::AUDIO_TYPE_AUDIOBOOK;//Often set when tagging from Musicbrainz
+      // Check for audiobook in type.  This is often set when tagging from Musicbrainz
+    else if (strCheckFlag.find("audiobook") != std::string::npos)
+      contentType = AudioContentType::AUDIO_TYPE_AUDIOBOOK;
     if (m_pDS->num_rows() == 0)
     {
       m_pDS->close();
@@ -3216,7 +3217,7 @@ void CMusicDatabase::GetFileItemFromDataset(const dbiplus::sql_record* const rec
   item->GetMusicInfoTag()->SetBoxset(record->at(song_bBoxedSet).get_asInt() == 1);
   // get the album artist string from songview (not the album_artist and artist tables)
   item->GetMusicInfoTag()->SetAlbumArtist(record->at(song_strAlbumArtists).get_asString());
-  item->GetMusicInfoTag()->SetAlbumReleaseType(
+  item->GetMusicInfoTag()->SetAudioType(
       CAlbum::ReleaseTypeFromString(record->at(song_strAlbumReleaseType).get_asString()));
   item->GetMusicInfoTag()->SetBPM(record->at(song_iBPM).get_asInt());
   item->GetMusicInfoTag()->SetBitRate(record->at(song_iBitRate).get_asInt());

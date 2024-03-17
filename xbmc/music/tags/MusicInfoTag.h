@@ -150,7 +150,7 @@ public:
   void SetBoxset(bool boxset);
   void SetCoverArtInfo(size_t size, const std::string &mimeType);
   void SetReplayGain(const ReplayGain& aGain);
-  void SetAlbumReleaseType(MUSIC_INFO::AudioContentType contentType);
+  void SetAudioType(MUSIC_INFO::AudioContentType contentType);
   void SetType(const MediaType& mediaType);
   void SetDiscSubtitle(const std::string& strDiscSubtitle);
   void SetTotalDiscs(int iDiscTotal);

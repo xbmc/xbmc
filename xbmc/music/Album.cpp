@@ -22,17 +22,6 @@
 
 using namespace MUSIC_INFO;
 
-//typedef struct ReleaseTypeInfo {
-  //CAlbum::ReleaseType type;
-  //std::string name;
-//} ReleaseTypeInfo;
-
-//ReleaseTypeInfo releaseTypes[] = {
-  //{ CAlbum::Album,  "album" },
-  //{ CAlbum::Single, "single" },
-  //{ CAlbum::Audiobook, "audiobook" }
-//};
-
 CAlbum::CAlbum(const CFileItem& item)
 {
   Reset();

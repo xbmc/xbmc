@@ -130,9 +130,9 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
   {
     thumb = CTextureUtils::GetWrappedImageURL(url.Get(), "music");
     if (isAudioBook)
-      albumtag.SetAlbumReleaseType(MUSIC_INFO::AudioContentType::AUDIO_TYPE_AUDIOBOOK);
+      albumtag.SetAudioType(MUSIC_INFO::AudioContentType::AUDIO_TYPE_AUDIOBOOK);
     else
-      albumtag.SetAlbumReleaseType(MUSIC_INFO::AudioContentType::AUDIO_TYPE_ALBUM);
+      albumtag.SetAudioType(MUSIC_INFO::AudioContentType::AUDIO_TYPE_ALBUM);
   }
   CMusicInfoTag tracktag;// some tags are only relevant to a track or chapter
 
@@ -214,7 +214,7 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
         item->GetMusicInfoTag()->SetArtist(chapauthor);
       if (!desc.empty())
         item->GetMusicInfoTag()->SetComment(desc);
-      item->GetMusicInfoTag()->SetAlbumReleaseType(
+      item->GetMusicInfoTag()->SetAudioType(
           MUSIC_INFO::AudioContentType::AUDIO_TYPE_AUDIOBOOK);
     }
     else
@@ -283,10 +283,9 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
                                                StringUtils::Split(arranger, separators));
     }
     if (isAudioBook)
-      item->GetMusicInfoTag()->SetAlbumReleaseType(
-          MUSIC_INFO::AudioContentType::AUDIO_TYPE_AUDIOBOOK);
+      item->GetMusicInfoTag()->SetAudioType(MUSIC_INFO::AudioContentType::AUDIO_TYPE_AUDIOBOOK);
     else
-      item->GetMusicInfoTag()->SetAlbumReleaseType(MUSIC_INFO::AudioContentType::AUDIO_TYPE_ALBUM);
+      item->GetMusicInfoTag()->SetAudioType(MUSIC_INFO::AudioContentType::AUDIO_TYPE_ALBUM);
     // do stuff common to both albums and audiobooks
     item->GetMusicInfoTag()->SetTrackNumber(i + 1);
     item->GetMusicInfoTag()->SetLoaded(true);
