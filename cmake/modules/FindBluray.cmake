@@ -48,7 +48,7 @@ if(NOT TARGET Bluray::Bluray)
 
     if(${BLURAY_LIBRARY} MATCHES ".+\.a$" AND PC_BLURAY_STATIC_LIBRARIES)
       set_target_properties(Bluray::Bluray PROPERTIES
-                                           INTERFACE_LINK_LIBRARIES ${PC_BLURAY_STATIC_LIBRARIES})
+                                           INTERFACE_LINK_LIBRARIES "${PC_BLURAY_LINK_LIBRARIES}")
     endif()
 
     if(NOT CORE_PLATFORM_NAME_LC STREQUAL windowsstore)
