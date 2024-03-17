@@ -2601,6 +2601,16 @@ void CMusicDatabase::AddSongContributors(int idSong,
         countComposer++;
       }
     }
+    if (StringUtils::CompareNoCase(credit.GetRoleDesc(), "writer") == 0)
+    {
+      CAlbum album;
+      GetAlbumFromSong(idSong, album);
+      if (album.contentType == AudioContentType::AUDIO_TYPE_AUDIOBOOK)
+      {
+        AddSongContributor(idSong, "Author", credit.GetArtist(), strSortName);
+        continue;
+      }
+    }
     AddSongContributor(idSong, credit.GetRoleDesc(), credit.GetArtist(), strSortName);
   }
 }
