@@ -85,15 +85,13 @@ public class Splash extends Activity
 
   private class StateMachine extends Handler
   {
-
-    private Splash mSplash = null;
+    private final Splash mSplash;
 
     StateMachine(Splash a)
     {
       super(Looper.myLooper());
       this.mSplash = a;
     }
-
 
     @Override
     public void handleMessage(Message msg)
@@ -222,14 +220,14 @@ public class Splash extends Activity
     }
   }
 
-  private StateMachine mStateMachine = new StateMachine(this);
+  private final StateMachine mStateMachine = new StateMachine(this);
 
   private class FillCache
   {
-    private Splash mSplash = null;
+    private final Splash mSplash;
     private int mProgressStatus = 0;
-    private ExecutorService executor;
-    private Handler handler;
+    private final ExecutorService executor;
+    private final Handler handler;
 
     public FillCache(Splash splash)
     {
