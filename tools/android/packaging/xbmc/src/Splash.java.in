@@ -109,14 +109,8 @@ public class Splash extends Activity
           dialog.setCancelable(false);
           dialog.setTitle("Info");
           dialog.setMessage("@APP_NAME@ requires access to your device media and files to function. Please allow this via the following dialogue box or @APP_NAME@ will exit.");
-          dialog.setButton(DialogInterface.BUTTON_NEUTRAL, "continue", new DialogInterface.OnClickListener()
-          {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-              mStateMachine.sendEmptyMessage(RecordAudioPermission);
-            }
-          });
+          dialog.setButton(DialogInterface.BUTTON_NEUTRAL, "continue",
+                  (dialog1, which) -> mStateMachine.sendEmptyMessage(RecordAudioPermission));
           dialog.show();
           break;
         case RecordAudioPermission:
@@ -405,15 +399,10 @@ public class Splash extends Activity
     } else {
       builder.setMessage(Html.fromHtml(message));
     }
-    builder.setPositiveButton("Exit",
-            new DialogInterface.OnClickListener()
-            {
-              public void onClick(DialogInterface dialog, int arg1)
-              {
-                dialog.dismiss();
-                act.finish();
-              }
-            });
+    builder.setPositiveButton("Exit", (dialog, arg1) -> {
+      dialog.dismiss();
+      act.finish();
+    });
     builder.setCancelable(false);
     myAlertDialog = builder.create();
     myAlertDialog.show();
