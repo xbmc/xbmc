@@ -75,10 +75,8 @@ public class Splash extends Activity
 
   private String sPackagePath = "";
   private String sXbmcHome = "";
-  private String sXbmcdata = "";
   private File fPackagePath = null;
   private File fXbmcHome = null;
-  private String sXbmcTemp = "";
 
   private BroadcastReceiver mExternalStorageReceiver = null;
   private boolean mExternalStorageChecked = false;
@@ -87,15 +85,13 @@ public class Splash extends Activity
 
   private class StateMachine extends Handler
   {
-
-    private Splash mSplash = null;
+    private final Splash mSplash;
 
     StateMachine(Splash a)
     {
       super(Looper.myLooper());
       this.mSplash = a;
     }
-
 
     @Override
     public void handleMessage(Message msg)
@@ -111,14 +107,8 @@ public class Splash extends Activity
           dialog.setCancelable(false);
           dialog.setTitle("Info");
           dialog.setMessage("@APP_NAME@ requires access to your device media and files to function. Please allow this via the following dialogue box or @APP_NAME@ will exit.");
-          dialog.setButton(DialogInterface.BUTTON_NEUTRAL, "continue", new DialogInterface.OnClickListener()
-          {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-              mStateMachine.sendEmptyMessage(RecordAudioPermission);
-            }
-          });
+          dialog.setButton(DialogInterface.BUTTON_NEUTRAL, "continue",
+                  (dialog1, which) -> mStateMachine.sendEmptyMessage(RecordAudioPermission));
           dialog.show();
           break;
         case RecordAudioPermission:
@@ -230,14 +220,14 @@ public class Splash extends Activity
     }
   }
 
-  private StateMachine mStateMachine = new StateMachine(this);
+  private final StateMachine mStateMachine = new StateMachine(this);
 
   private class FillCache
   {
-    private Splash mSplash = null;
+    private final Splash mSplash;
     private int mProgressStatus = 0;
-    private ExecutorService executor;
-    private Handler handler;
+    private final ExecutorService executor;
+    private final Handler handler;
 
     public FillCache(Splash splash)
     {
@@ -261,9 +251,12 @@ public class Splash extends Activity
 
     void DeleteRecursive(File fileOrDirectory)
     {
-      if (fileOrDirectory.isDirectory())
-        for (File child : fileOrDirectory.listFiles())
-          DeleteRecursive(child);
+      if (fileOrDirectory.isDirectory()) {
+        File[] files = fileOrDirectory.listFiles();
+        if (files != null)
+          for (File child : files)
+            DeleteRecursive(child);
+      }
 
       fileOrDirectory.delete();
     }
@@ -303,7 +296,7 @@ public class Splash extends Activity
           // Update the progress bar
           publishProgress(++mProgressStatus);
 
-          ZipEntry e = (ZipEntry) entries.nextElement();
+          ZipEntry e = entries.nextElement();
           String sName = e.getName();
 
           if (!sName.startsWith("assets/"))
@@ -324,7 +317,9 @@ public class Splash extends Activity
             fFullPath.mkdirs();
             continue;
           }
-          fFullPath.getParentFile().mkdirs();
+          File parent = fFullPath.getParentFile();
+          if (parent != null && !parent.exists())
+            parent.mkdirs();
 
           try
           {
@@ -338,7 +333,7 @@ public class Splash extends Activity
           }
           catch (IOException e1)
           {
-            e1.printStackTrace();
+            Log.e(TAG, "Exception: " + e1.getMessage());
           }
         }
 
@@ -349,13 +344,13 @@ public class Splash extends Activity
       }
       catch (FileNotFoundException e1)
       {
-        e1.printStackTrace();
+        Log.e(TAG, "Exception: " + e1.getMessage());
         mErrorMsg = "Cannot find package.";
         return -1;
       }
       catch (IOException e)
       {
-        e.printStackTrace();
+        Log.e(TAG, "Exception: " + e.getMessage());
         mErrorMsg = "Cannot read package.";
         File obb = new File(sPackagePath);
         obb.delete();
@@ -407,15 +402,10 @@ public class Splash extends Activity
     } else {
       builder.setMessage(Html.fromHtml(message));
     }
-    builder.setPositiveButton("Exit",
-            new DialogInterface.OnClickListener()
-            {
-              public void onClick(DialogInterface dialog, int arg1)
-              {
-                dialog.dismiss();
-                act.finish();
-              }
-            });
+    builder.setPositiveButton("Exit", (dialog, arg1) -> {
+      dialog.dismiss();
+      act.finish();
+    });
     builder.setCancelable(false);
     myAlertDialog = builder.create();
     myAlertDialog.show();
@@ -460,7 +450,7 @@ public class Splash extends Activity
     File fLibCache = new File(fCacheDir.getAbsolutePath() + "/lib");
     fLibCache.mkdirs();
 
-    sXbmcdata = XBMCProperties.getStringProperty("xbmc.data", "");
+    final String sXbmcdata = XBMCProperties.getStringProperty("xbmc.data", "");
     if (!sXbmcdata.isEmpty())
     {
       File fXbmcData = new File(sXbmcdata);
@@ -481,12 +471,11 @@ public class Splash extends Activity
 
       if (!fXbmcData.exists())
       {
-        sXbmcdata = "";
         System.setProperty("xbmc.data", "");
       }
     }
 
-    sXbmcTemp = XBMCProperties.getStringProperty("xbmc.temp", "");
+    final String sXbmcTemp = XBMCProperties.getStringProperty("xbmc.temp", "");
     if (!sXbmcTemp.isEmpty())
     {
       File fXbmcTemp = new File(sXbmcTemp);
@@ -507,7 +496,6 @@ public class Splash extends Activity
 
       if (!fXbmcTemp.exists())
       {
-        sXbmcTemp = "";
         System.setProperty("xbmc.temp", "");
       }
     }
@@ -540,7 +528,7 @@ public class Splash extends Activity
   }
 
   @Override
-  public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults)
+  public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
   {
     switch (requestCode)
     {
@@ -641,7 +629,7 @@ public class Splash extends Activity
     List<RunningTaskInfo> tasks = activityManager
             .getRunningTasks(Integer.MAX_VALUE);
     for (RunningTaskInfo task : tasks)
-      if (task.topActivity.toString().equalsIgnoreCase(
+      if (task.topActivity != null && task.topActivity.toString().equalsIgnoreCase(
               "ComponentInfo{@APP_PACKAGE@/@APP_PACKAGE@.Main}"))
       {
         // @APP_NAME@ already running; just activate it
@@ -683,8 +671,8 @@ public class Splash extends Activity
     }
 
     setContentView(R.layout.activity_splash);
-    mProgress = (ProgressBar) findViewById(R.id.progressBar1);
-    mTextView = (TextView) findViewById(R.id.textView1);
+    mProgress = findViewById(R.id.progressBar1);
+    mTextView = findViewById(R.id.textView1);
 
     if (mState == InError || mState == CheckingPermissionsInfo)
     {
