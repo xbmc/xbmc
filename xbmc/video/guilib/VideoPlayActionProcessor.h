@@ -27,6 +27,9 @@ public:
   bool ProcessDefaultAction();
   bool ProcessAction(Action action);
 
+  void EnableVideoAssetAutoSelect() { m_enableVideoAssetAutoSelect = true; }
+  void EnforceVideoAssetSelect() { m_enforceVideoAssetSelect = true; }
+
   bool UserCancelled() const { return m_userCancelled; }
 
   static Action ChoosePlayOrResume(const CFileItem& item);
@@ -39,6 +42,8 @@ protected:
   virtual bool OnPlaySelected() = 0;
 
   std::shared_ptr<CFileItem> m_item;
+  bool m_enableVideoAssetAutoSelect{false};
+  bool m_enforceVideoAssetSelect{false};
   bool m_userCancelled{false};
 
 private:

@@ -59,9 +59,9 @@
 #include "video/VideoManagerTypes.h"
 #include "video/VideoUtils.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
+#include "video/guilib/VideoAssetHelper.h"
 #include "video/guilib/VideoPlayActionProcessor.h"
 #include "video/guilib/VideoSelectActionProcessor.h"
-#include "video/guilib/VideoVersionHelper.h"
 #include "view/GUIViewState.h"
 
 #include <memory>
@@ -620,6 +620,12 @@ bool CGUIWindowVideoBase::OnFileAction(int iItem, Action action, const std::stri
     return false;
 
   CVideoSelectActionProcessor proc(*this, item, iItem, player);
+  if (item->HasVideoVersions() && !item->GetProperty("has_resolved_video_version").asBoolean(false))
+  {
+    // For movies with multiple versions, enable auto selection of default versions (setting)
+    // or selection dialog
+    proc.EnableVideoAssetAutoSelect();
+  }
   return proc.ProcessAction(action);
 }
 
@@ -1513,7 +1519,7 @@ void CGUIWindowVideoBase::UpdateVideoVersionItems()
       int videoVersionId{-1};
       if (item->IsVideoDb() && item->GetVideoInfoTag()->HasVideoVersions())
       {
-        if (item->GetProperty("has_resolved_video_asset").asBoolean(false))
+        if (item->GetProperty("has_resolved_video_version").asBoolean(false))
         {
           // certain version of the movie
           videoVersionId = item->GetVideoInfoTag()->GetAssetInfo().GetId();

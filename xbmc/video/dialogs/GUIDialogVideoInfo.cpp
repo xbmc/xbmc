@@ -58,8 +58,8 @@
 #include "video/VideoUtils.h"
 #include "video/dialogs/GUIDialogVideoManagerExtras.h"
 #include "video/dialogs/GUIDialogVideoManagerVersions.h"
+#include "video/guilib/VideoAssetHelper.h"
 #include "video/guilib/VideoPlayActionProcessor.h"
-#include "video/guilib/VideoVersionHelper.h"
 #include "video/windows/GUIWindowVideoNav.h"
 
 #include <algorithm>
@@ -812,9 +812,6 @@ void CGUIDialogVideoInfo::Play(bool resume)
   // close our dialog
   Close(true);
 
-  // play the current video version, even if multiple versions are available
-  m_movieItem->SetProperty("has_resolved_video_asset", true);
-
   if (resume)
   {
     CVideoPlayActionProcessor proc{m_movieItem};
@@ -841,8 +838,6 @@ void CGUIDialogVideoInfo::Play(bool resume)
       }
     }
   }
-
-  m_movieItem->ClearProperty("has_resolved_video_asset");
 }
 
 namespace

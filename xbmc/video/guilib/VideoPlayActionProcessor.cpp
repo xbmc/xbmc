@@ -16,7 +16,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/Variant.h"
 #include "video/VideoUtils.h"
-#include "video/guilib/VideoVersionHelper.h"
+#include "video/guilib/VideoAssetHelper.h"
 
 using namespace VIDEO::GUILIB;
 
@@ -33,15 +33,21 @@ bool CVideoPlayActionProcessorBase::ProcessDefaultAction()
 
 bool CVideoPlayActionProcessorBase::ProcessAction(Action action)
 {
-  m_userCancelled = false;
-
-  const auto movie{CVideoVersionHelper::ChooseVideoFromAssets(m_item)};
-  if (movie)
-    m_item = movie;
-  else
+  if (m_enforceVideoAssetSelect || m_enableVideoAssetAutoSelect)
   {
-    m_userCancelled = true;
-    return true; // User cancelled the select menu. We're done.
+    m_userCancelled = false;
+
+    const VideoAssetSelectMode mode{m_enforceVideoAssetSelect
+                                        ? VideoAssetSelectMode::ENFORCE_SELECT
+                                        : VideoAssetSelectMode::ENABLE_AUTO_SELECT};
+    const auto movie{CVideoAssetHelper::ChooseVideoFromAssets(m_item, mode)};
+    if (movie)
+      m_item = movie;
+    else
+    {
+      m_userCancelled = true;
+      return true; // User cancelled the select menu. We're done.
+    }
   }
 
   return Process(action);

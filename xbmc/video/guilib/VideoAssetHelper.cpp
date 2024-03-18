@@ -6,7 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "VideoVersionHelper.h"
+#include "VideoAssetHelper.h"
 
 #include "FileItem.h"
 #include "ServiceBroker.h"
@@ -182,8 +182,8 @@ std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideo(CGUIDialogSelect& di
 }
 } // unnamed namespace
 
-std::shared_ptr<CFileItem> CVideoVersionHelper::ChooseVideoFromAssets(
-    const std::shared_ptr<CFileItem>& item)
+std::shared_ptr<CFileItem> CVideoAssetHelper::ChooseVideoFromAssets(
+    const std::shared_ptr<CFileItem>& item, VideoAssetSelectMode mode)
 {
   std::shared_ptr<const CFileItem> video;
 
@@ -218,7 +218,7 @@ std::shared_ptr<CFileItem> CVideoVersionHelper::ChooseVideoFromAssets(
 
   if (hasMultipleChoices)
   {
-    if (!item->GetProperty("needs_resolved_video_asset").asBoolean(false))
+    if (mode == VideoAssetSelectMode::ENABLE_AUTO_SELECT)
     {
       // auto select the default video version
       const auto settings{CServiceBroker::GetSettingsComponent()->GetSettings()};
@@ -248,8 +248,8 @@ std::shared_ptr<CFileItem> CVideoVersionHelper::ChooseVideoFromAssets(
       }
     }
 
-    if (!video && (item->GetProperty("needs_resolved_video_asset").asBoolean(false) ||
-                   !item->GetProperty("has_resolved_video_asset").asBoolean(false)))
+    if (!video && (mode == VideoAssetSelectMode::ENABLE_AUTO_SELECT ||
+                   mode == VideoAssetSelectMode::ENFORCE_SELECT))
     {
       CVideoChooser chooser{item};
 

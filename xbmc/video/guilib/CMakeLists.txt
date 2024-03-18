@@ -1,10 +1,10 @@
 set(SOURCES VideoPlayActionProcessor.cpp
             VideoSelectActionProcessor.cpp
-            VideoVersionHelper.cpp)
+            VideoAssetHelper.cpp)
 
 set(HEADERS VideoAction.h
             VideoPlayActionProcessor.h
             VideoSelectActionProcessor.h
-            VideoVersionHelper.h)
+            VideoAssetHelper.h)
 
 core_add_library(video_guilib)
