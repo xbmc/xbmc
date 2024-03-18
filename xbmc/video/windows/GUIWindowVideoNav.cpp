@@ -964,29 +964,7 @@ bool CGUIWindowVideoNav::OnAddMediaSource()
 bool CGUIWindowVideoNav::OnClick(int iItem, const std::string &player)
 {
   CFileItemPtr item = m_vecItems->Get(iItem);
-  if (!item->m_bIsFolder && item->IsVideoDb() && !item->Exists())
-  {
-    CLog::Log(LOGDEBUG, "{} called on '{}' but file doesn't exist", __FUNCTION__, item->GetPath());
-
-    const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
-
-    if (profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser)
-    {
-      if (!CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(item, true))
-        return true;
-
-      // update list
-      Refresh(true);
-      m_viewControl.SetSelectedItem(iItem);
-      return true;
-    }
-    else
-    {
-      HELPERS::ShowOKDialogText(CVariant{257}, CVariant{662});
-      return true;
-    }
-  }
-  else if (StringUtils::StartsWithNoCase(item->GetPath(), "newtag://"))
+  if (StringUtils::StartsWithNoCase(item->GetPath(), "newtag://"))
   {
     // dont allow update while scanning
     if (CVideoLibraryQueue::GetInstance().IsScanningLibrary())

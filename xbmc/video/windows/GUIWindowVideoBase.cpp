@@ -1073,6 +1073,41 @@ void CGUIWindowVideoBase::LoadPlayList(const std::string& strPlayList,
 bool CGUIWindowVideoBase::PlayItem(const std::shared_ptr<CFileItem>& pItem,
                                    const std::string& player)
 {
+  if (!pItem->m_bIsFolder && pItem->IsVideoDb() && !pItem->Exists())
+  {
+    CLog::LogF(LOGDEBUG, "File '{}' for library item '{}' doesn't exist.", pItem->GetDynPath(),
+               pItem->GetPath());
+
+    const auto profileManager{CServiceBroker::GetSettingsComponent()->GetProfileManager()};
+
+    if (profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser)
+    {
+      if (CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(pItem, true))
+      {
+        int itemIndex{0};
+        const std::string path{pItem->GetPath()};
+        for (int i = 0; i < m_vecItems->Size(); ++i)
+        {
+          if (m_vecItems->Get(i)->GetPath() == path)
+          {
+            itemIndex = i;
+            break;
+          }
+        }
+
+        // update list
+        Refresh(true);
+        m_viewControl.SetSelectedItem(itemIndex);
+      }
+    }
+    else
+    {
+      HELPERS::ShowOKDialogText(CVariant{257}, // Error
+                                CVariant{662}); // This file is no longer available.
+    }
+    return true;
+  }
+
   //! @todo get rid of "videos with versions as folder" hack!
   if (pItem->m_bIsFolder && !pItem->IsPlugin() &&
       !(pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->IsDefaultVideoVersion()))
