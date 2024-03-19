@@ -25,4 +25,7 @@ public:
 
 protected:
   static bool GetDirectoryItems(const std::string &path, CFileItemList &items, const XFILE::CDirectory::CHints &hints);
+  static bool GetEpisodeDirectoryItems(const std::string& path,
+                                       CFileItemList& items,
+                                       const CFileItem& item);
 };

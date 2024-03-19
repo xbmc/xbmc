@@ -6,7 +6,6 @@
  *  See LICENSES/README.md for more information.
  */
 
-
 #include "GUIDialogSimpleMenu.h"
 
 #include "FileItem.h"
@@ -25,34 +24,64 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
-#include "video/VideoInfoTag.h"
+#include "video/VideoDatabase.h"
 
 namespace
 {
 class CGetDirectoryItems : public IRunnable
 {
 public:
-  CGetDirectoryItems(const std::string &path, CFileItemList &items, const XFILE::CDirectory::CHints &hints)
-  : m_path(path), m_items(items), m_hints(hints)
+  CGetDirectoryItems(const std::string& path,
+                     CFileItemList& items,
+                     const XFILE::CDirectory::CHints& hints)
+    : m_path(path), m_items(items), m_hints(hints)
   {
   }
-  void Run() override
-  {
-    m_result = XFILE::CDirectory::GetDirectory(m_path, m_items, m_hints);
-  }
+  void Run() override { m_result = XFILE::CDirectory::GetDirectory(m_path, m_items, m_hints); }
+
   bool m_result;
+
 protected:
   std::string m_path;
-  CFileItemList &m_items;
+  CFileItemList& m_items;
   XFILE::CDirectory::CHints m_hints;
 };
-}
 
+class CGetEpisodeDirectoryItems : public IRunnable
+{
+public:
+  CGetEpisodeDirectoryItems(const std::string& path, CFileItemList& items, const CFileItem& item)
+    : m_path(path), m_items(items), m_item(item)
+  {
+  }
+  void Run() override { m_result = XFILE::CDirectory::GetDirectory(m_path, m_items, m_item); }
+
+  bool m_result;
+
+protected:
+  std::string m_path;
+  CFileItemList& m_items;
+  CFileItem m_item;
+};
+}
 
 bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item)
 {
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_DISC_PLAYBACK) != BD_PLAYBACK_SIMPLE_MENU)
     return true;
+
+  if (item.IsDVDFile())
+  {
+    std::string root = URIUtils::GetParentPath(item.GetDynPath());
+    URIUtils::RemoveSlashAtEnd(root);
+    if (URIUtils::GetFileName(root) == "VIDEO_TS")
+    {
+      CURL url("dvd://");
+      url.SetHostName(URIUtils::GetParentPath(root));
+      url.SetFileName("root");
+      return ShowPlaySelection(item, url.Get());
+    }
+  }
 
   if (item.IsBDFile())
   {
@@ -90,18 +119,23 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item, const std::string&
 
   CFileItemList items;
 
-  if (!GetDirectoryItems(directory, items, XFILE::CDirectory::CHints()))
+  if (item.GetVideoContentType() == VideoDbContentType::EPISODES)
+    // Try to show episodes instead of titles
+    GetEpisodeDirectoryItems(directory, items, item);
+
+  if (items.IsEmpty())
   {
-    CLog::Log(LOGERROR,
-              "CGUIWindowVideoBase::ShowPlaySelection - Failed to get play directory for {}",
-              directory);
-    return true;
+    // Not episode or new episode search failed, so do it the old way
+    if (!GetDirectoryItems(directory, items, XFILE::CDirectory::CHints()))
+    {
+      CLog::LogF(LOGERROR, "Failed to get play directory for {}", directory);
+      return true;
+    }
   }
 
   if (items.IsEmpty())
   {
-    CLog::Log(LOGERROR, "CGUIWindowVideoBase::ShowPlaySelection - Failed to get any items {}",
-              directory);
+    CLog::LogF(LOGERROR, "Failed to get any items {}", directory);
     return true;
   }
 
@@ -146,6 +180,18 @@ bool CGUIDialogSimpleMenu::GetDirectoryItems(const std::string &path, CFileItemL
                                              const XFILE::CDirectory::CHints &hints)
 {
   CGetDirectoryItems getItems(path, items, hints);
+  if (!CGUIDialogBusy::Wait(&getItems, 100, true))
+  {
+    return false;
+  }
+  return getItems.m_result;
+}
+
+bool CGUIDialogSimpleMenu::GetEpisodeDirectoryItems(const std::string& path,
+                                                    CFileItemList& items,
+                                                    const CFileItem& item)
+{
+  CGetEpisodeDirectoryItems getItems(path, items, item);
   if (!CGUIDialogBusy::Wait(&getItems, 100, true))
   {
     return false;

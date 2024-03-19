@@ -9,6 +9,7 @@
 #pragma once
 
 #include "utils/Variant.h"
+#include "video/VideoInfoTag.h"
 
 #include <string>
 
@@ -64,6 +65,15 @@ public:
    \sa CDirectoryFactory
    */
   virtual bool GetDirectory(const CURL& url, CFileItemList &items) = 0;
+
+  virtual bool GetEpisodeDirectory(const CURL& url,
+                                   const CFileItem& episode,
+                                   CFileItemList& items,
+                                   const std::vector<CVideoInfoTag>& episodesOnDisc)
+  {
+    return false;
+  }
+
   /*!
    \brief Retrieve the progress of the current directory fetch (if possible).
    \return the progress as a float in the range 0..100.

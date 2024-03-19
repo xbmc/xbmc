@@ -703,7 +703,7 @@ void CGUIWindowVideoBase::LoadVideoInfo(CFileItemList& items,
     }
     if (match)
     {
-      pItem->UpdateInfo(*match, replaceLabels);
+      pItem->UpdateInfo(*match, replaceLabels, true);
 
       if (stackItems)
       {

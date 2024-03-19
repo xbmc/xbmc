@@ -126,6 +126,10 @@ public:
   CDVDInputStream::IPosTime* GetIPosTime() override { return this; }
   bool PosTime(int iTimeInMsec) override; //seek within current pg(c)
 
+  void GetPlaylistInfo(std::vector<std::vector<unsigned int>>& clips,
+                       std::vector<std::vector<unsigned int>>& playlists,
+                       std::map<unsigned int, std::string>& playlist_langs);
+
   std::string GetDVDTitleString();
 
   /*!
@@ -175,6 +179,7 @@ protected:
 
   int m_iTitleCount;
   int m_iTitle;
+  bool m_directToTitle;
 
   int m_iPartCount;
   int m_iPart;
