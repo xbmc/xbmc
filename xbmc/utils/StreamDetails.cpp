@@ -481,7 +481,7 @@ std::string CStreamDetails::GetSubtitleLanguage(int idx) const
   if (item)
     return item->m_strLanguage;
   else
-    return "";
+    return "und";
 }
 
 void CStreamDetails::Archive(CArchive& ar)
