@@ -81,7 +81,7 @@ bool CApplicationStackHelper::InitializeStack(const CFileItem & item)
   return true;
 }
 
-int CApplicationStackHelper::InitializeStackStartPartAndOffset(const CFileItem& item)
+std::optional<int> CApplicationStackHelper::InitializeStackStartPartAndOffset(const CFileItem& item)
 {
   CVideoDatabase dbs;
   int64_t startoffset = 0;
@@ -163,7 +163,7 @@ int CApplicationStackHelper::InitializeStackStartPartAndOffset(const CFileItem& 
         if (!CDVDFileInfo::GetFileDuration(GetStackPartFileItem(i).GetDynPath(), duration))
         {
           m_currentStack->Clear();
-          return false;
+          return std::nullopt;
         }
         totalTimeMs += duration;
         // set end time in every part
