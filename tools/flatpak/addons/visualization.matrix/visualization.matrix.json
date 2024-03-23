@@ -1,0 +1,19 @@
+{
+    "name": "visualization.matrix",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/xbmc/visualization.matrix",
+            "commit": "8a373e240e47f27f1289c1c606621403794eb0d1"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}

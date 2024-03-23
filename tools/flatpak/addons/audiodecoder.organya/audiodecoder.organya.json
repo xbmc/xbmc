@@ -1,0 +1,19 @@
+{
+    "name": "audiodecoder.organya",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/xbmc/audiodecoder.organya",
+            "commit": "d6146d95da6b4f25b502f2a2d43afd44e8eaddbf"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}

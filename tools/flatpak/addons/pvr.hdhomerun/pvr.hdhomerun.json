@@ -1,0 +1,44 @@
+{
+    "name": "pvr.hdhomerun",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/kodi-pvr/pvr.hdhomerun",
+            "commit": "97dc7ebf15e66ab584c1dfb103b5365b8b3d3ee7"
+        }
+    ],
+    "modules": [
+        {
+            "name": "libhdhomerun",
+            "buildsystem": "cmake-ninja",
+            "build-options": {
+                "no-debuginfo": true,
+                "cflags": "-g0",
+                "cxxflags": "-g0"
+            },
+            "config-opts": [
+                "-DCMAKE_BUILD_TYPE=Release"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://github.com/Silicondust/libhdhomerun/archive/7c54382fb681d03888b469033e50bebaf4ce6bce.tar.gz",
+                    "sha256": "d686f88b8dc6089e2cb3829958170d6ba02ecc4f2c5f2cfe3fd37e0dda76ce42"
+                },
+                {
+                    "type": "file",
+                    "path": "CMakeLists.txt"
+                }
+            ]
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}

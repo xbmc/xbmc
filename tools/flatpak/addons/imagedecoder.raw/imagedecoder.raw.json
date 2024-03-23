@@ -1,0 +1,43 @@
+{
+    "name": "imagedecoder.raw",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/xbmc/imagedecoder.raw",
+            "commit": "7be9cf4d985c277f3a059f64873d81b24e6edd70"
+        }
+    ],
+    "modules": [
+        {
+            "name": "libraw",
+            "build-options": {
+                "no-debuginfo": true,
+                "cflags": "-g0",
+                "cxxflags": "-g0"
+            },
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://github.com/LibRaw/LibRaw/archive/refs/tags/0.20.2.tar.gz",
+                    "sha256": "02df7d403b34602b769bb38e5bf7d4258e075eeefbe980b6832e6e1491989d60"
+                },
+                {
+                    "type": "script",
+                    "dest-filename": "autogen.sh",
+                    "commands": [
+                        "autoreconf -vfi"
+                    ]
+                }
+            ]
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}

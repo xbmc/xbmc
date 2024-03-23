@@ -1,0 +1,28 @@
+{
+    "name": "inputstream.adaptive",
+    "buildsystem": "cmake-ninja",
+    "config-opts": [
+        "-DBUILD_TESTING=OFF",
+        "-DENABLE_INTERNAL_BENTO4=ON",
+        "-DBENTO4_URL=bento4.tar.gz",
+        "-DCMAKE_BUILD_TYPE=Release"
+    ],
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/xbmc/inputstream.adaptive",
+            "commit": "31dc91e870313c9145d881d17abcb372997a274f"
+        },
+        {
+            "type": "file",
+            "url": "https://github.com/xbmc/Bento4/archive/refs/tags/1.6.0-639-8-Omega.tar.gz",
+            "sha256": "d7fc48e52f0037ce977d7f54c49d4f8936cca0e58447c9ce7c55ab64d268e23d",
+            "dest-filename": "bento4.tar.gz"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    }
+}

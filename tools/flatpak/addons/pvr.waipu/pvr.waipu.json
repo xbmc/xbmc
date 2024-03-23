@@ -1,0 +1,19 @@
+{
+    "name": "pvr.waipu",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/flubshi/pvr.waipu",
+            "commit": "232e996b1b25ba1797fb79331de06680974f8185"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}

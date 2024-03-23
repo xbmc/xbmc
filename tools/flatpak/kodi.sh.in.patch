@@ -1,0 +1,14 @@
+--- a/tools/Linux/kodi.sh.in
++++ b/tools/Linux/kodi.sh.in
+@@ -26,8 +26,9 @@ exec_prefix="@exec_prefix@"
+ datarootdir="@datarootdir@"
+ LIBDIR="@libdir@"
+ APP_BINARY=$LIBDIR/${bin_name}/@APP_BINARY@
+-CRASHLOG_DIR=${CRASHLOG_DIR:-$HOME}
+-KODI_DATA=${KODI_DATA:-"${HOME}/.${bin_name}"} # mapped to special://home/
++export CRASHLOG_DIR=${XDG_DATA_HOME}
++export KODI_DATA=${XDG_DATA_HOME}
++export KODI_HOME=/app/share/kodi
+ 
+ # Workaround for high CPU load with nvidia GFX
+ export __GL_YIELD=USLEEP

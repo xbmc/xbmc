@@ -1,0 +1,19 @@
+{
+    "name": "audiodecoder.upse",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/xbmc/audiodecoder.upse",
+            "commit": "836102e74ab9eb0b842f7a2b2f0e20b19ba2463c"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}

@@ -1,0 +1,44 @@
+{
+    "name": "audiodecoder.openmpt",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/xbmc/audiodecoder.openmpt",
+            "commit": "f7cb103de96404fe26938f93cd277a066f77cb49"
+        }
+    ],
+    "modules": [
+        {
+            "name": "libopenmpt",
+            "config-opts": [
+                "--disable-openmpt123",
+                "--disable-examples",
+                "--disable-tests"
+            ],
+            "build-options": {
+                "no-debuginfo": true,
+                "cflags": "-g0",
+                "cxxflags": "-g0"
+            },
+            "cleanup": [
+                "/include"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://lib.openmpt.org/files/libopenmpt/src/libopenmpt-0.5.12+release.autotools.tar.gz",
+                    "sha256": "892aea7a599b5d21842bebf463b5aafdad5711be7008dd84401920c6234820af"
+                }
+            ]
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}

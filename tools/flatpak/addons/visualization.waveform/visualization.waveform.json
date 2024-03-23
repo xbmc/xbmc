@@ -1,0 +1,19 @@
+{
+    "name": "visualization.waveform",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/xbmc/visualization.waveform",
+            "commit": "a388be3b9c4a62a5087616d3c92a26d6cbbeb24f"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}

@@ -1,0 +1,19 @@
+{
+    "name": "screensaver.pyro",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/xbmc/screensaver.pyro",
+            "commit": "b0d14d3f8cfe7d0c71ce8df8a6b8d6f121b42908"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}

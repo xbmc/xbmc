@@ -1,0 +1,11 @@
+--- sidplay-libs-2.1.1/libsidutils/include/sidplay/utils/SidUsage.h.orig	2013-11-18 00:58:06.111224154 +0100
++++ sidplay-libs-2.1.1/libsidutils/include/sidplay/utils/SidUsage.h	2013-11-18 00:58:28.219225212 +0100
+@@ -33,7 +33,7 @@
+     uint_least16_t length;  // usage scan length
+ 
+     // Copy common parts of basic usage to extended usage.
+-    sid2_usage_t &sid2_usage_t::operator= (const sid_usage_t &usage)
++    sid2_usage_t &operator= (const sid_usage_t &usage)
+     {
+         *((sid_usage_t *) this) = usage;
+         return *this;

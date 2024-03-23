@@ -1,0 +1,19 @@
+{
+    "name": "pvr.teleboy",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/rbuehlma/pvr.teleboy",
+            "commit": "7c29a920a9f0cdfdd57ee285a693bb216fa28f83"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}

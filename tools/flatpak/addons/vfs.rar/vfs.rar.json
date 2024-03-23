@@ -1,0 +1,19 @@
+{
+    "name": "vfs.rar",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/xbmc/vfs.rar",
+            "commit": "2f49a0de43bc9f4e91dfec73a13dcb04df285233"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}
