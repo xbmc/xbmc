@@ -1,4 +1,4 @@
-PROJECT_NUMBER = 21.0
+PROJECT_NUMBER = 22.0
 
 ALIASES = "table_start=<table width=\"100%\" style=\"border\" bgcolor=\"576f9f\" border=\"0\">" \
           "table_end=</table>" \
@@ -24,6 +24,7 @@ ALIASES = "table_start=<table width=\"100%\" style=\"border\" bgcolor=\"576f9f\"
           "python_v19=\xrefitem python_v19 \"v19 Python API changes\" \"\"" \
           "python_v20=\xrefitem python_v20 \"v20 Python API changes\" \"\"" \
           "python_v21=\xrefitem python_v21 \"v21 Python API changes\" \"\"" \
+          "python_v22=\xrefitem python_v22 \"v22 Python API changes\" \"\"" \
           "skinning_v12=\xrefitem skinning_v12 \"v12 Skinning engine changes\" \"\"" \
           "skinning_v13=\xrefitem skinning_v13 \"v13 Skinning engine changes\" \"\"" \
           "skinning_v14=\xrefitem skinning_v14 \"v14 Skinning engine changes\" \"\"" \
@@ -33,4 +34,5 @@ ALIASES = "table_start=<table width=\"100%\" style=\"border\" bgcolor=\"576f9f\"
           "skinning_v18=\xrefitem skinning_v18 \"v18 Skinning engine changes\" \"\"" \
           "skinning_v19=\xrefitem skinning_v19 \"v19 Skinning engine changes\" \"\"" \
           "skinning_v20=\xrefitem skinning_v20 \"v20 Skinning engine changes\" \"\"" \
-          "skinning_v21=\xrefitem skinning_v21 \"v21 Skinning engine changes\" \"\""
+          "skinning_v21=\xrefitem skinning_v21 \"v21 Skinning engine changes\" \"\"" \
+          "skinning_v22=\xrefitem skinning_v22 \"v22 Skinning engine changes\" \"\""

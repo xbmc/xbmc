@@ -26,6 +26,9 @@ or two by adding a button, or altering the textures or layout.
 */
 
 /*!
+@page skinning_v22 Skinning engine v22
+*/
+/*!
 @page skinning_v21 Skinning engine v21
 */
 /*!
@@ -60,6 +63,7 @@ or two by adding a button, or altering the textures or layout.
 @page skinning_revisions Skinning engine changes
 @brief Overview of changes on Skinning engine for Kodi
 
+- @subpage skinning_v22
 - @subpage skinning_v21
 - @subpage skinning_v20
 - @subpage skinning_v19
