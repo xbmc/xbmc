@@ -711,9 +711,12 @@ bool CNetworkServices::StartWebserver()
 
   // publish web frontend and API services
 #ifdef HAS_WEB_INTERFACE
-  CZeroconf::GetInstance()->PublishService("servers.webserver", "_http._tcp", CSysInfo::GetDeviceName(), webPort, txt);
+  CZeroconf::GetInstance()->PublishService("servers.webserver", "_http._tcp",
+                                           CSysInfo::GetDeviceName() + " webserver", webPort, txt);
 #endif // HAS_WEB_INTERFACE
-  CZeroconf::GetInstance()->PublishService("servers.jsonrpc-http", "_xbmc-jsonrpc-h._tcp", CSysInfo::GetDeviceName(), webPort, txt);
+  CZeroconf::GetInstance()->PublishService("servers.jsonrpc-http", "_xbmc-jsonrpc-h._tcp",
+                                           CSysInfo::GetDeviceName() + " jsonrpc-http", webPort,
+                                           txt);
 #endif // HAS_ZEROCONF
 
   return true;
@@ -785,7 +788,9 @@ bool CNetworkServices::StartAirPlayServer()
   // we have implemented it anyways).
   txt.emplace_back("features", "0x20F7");
 
-  CZeroconf::GetInstance()->PublishService("servers.airplay", "_airplay._tcp", CSysInfo::GetDeviceName(), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_airPlayPort, txt);
+  CZeroconf::GetInstance()->PublishService(
+      "servers.airplay", "_airplay._tcp", CSysInfo::GetDeviceName() + " airplay",
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_airPlayPort, txt);
 #endif // HAS_ZEROCONF
 
   return true;
@@ -878,7 +883,7 @@ bool CNetworkServices::StartJSONRPCServer()
                              CSettings::SETTING_SERVICES_DEVICEUUID));
 
   CZeroconf::GetInstance()->PublishService(
-      "servers.jsonrpc-tcp", "_xbmc-jsonrpc._tcp", CSysInfo::GetDeviceName(),
+      "servers.jsonrpc-tcp", "_xbmc-jsonrpc._tcp", CSysInfo::GetDeviceName() + " jsonrpc-tcp",
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_jsonTcpPort, txt);
 #endif // HAS_ZEROCONF
 

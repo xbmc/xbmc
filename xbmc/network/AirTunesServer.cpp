@@ -627,7 +627,8 @@ bool CAirTunesServer::StartServer(int port, bool nonlocal, bool usePassword, con
     txt.emplace_back("am", "Kodi,1");
     txt.emplace_back("vs", "130.14");
 
-    CZeroconf::GetInstance()->PublishService("servers.airtunes", "_raop._tcp", appName, port, txt);
+    CZeroconf::GetInstance()->PublishService("servers.airtunes", "_raop._tcp",
+                                             CSysInfo::GetDeviceName() + " airtunes", port, txt);
   }
 
   return success;
