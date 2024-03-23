@@ -54,12 +54,20 @@ public:
    */
   void Await();
 
+  enum class UpdateScheduleType
+  {
+    /*! Update should be scheduled as the first update after application start or setting change. */
+    First,
+    /*! Update should be scheduled as a regular update during application runtime. */
+    Regular
+  };
+
   /**
    * Schedule an automatic update to run based on settings and previous update
    * times. May be called when there are external changes this updater must know
    * about. Any previously scheduled update will be cancelled.
    */
-  void ScheduleUpdate();
+  void ScheduleUpdate(UpdateScheduleType scheduleType);
 
   /**
    * Returns the time of the last check (oldest). Invalid time if never checked.
