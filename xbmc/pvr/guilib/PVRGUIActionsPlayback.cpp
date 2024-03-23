@@ -41,6 +41,7 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 #include "video/VideoUtils.h"
+#include "video/guilib/VideoGUIUtils.h"
 #include "video/guilib/VideoSelectActionProcessor.h"
 
 #include <memory>

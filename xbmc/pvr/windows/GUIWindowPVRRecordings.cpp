@@ -28,7 +28,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
 #include "video/VideoLibraryQueue.h"
-#include "video/VideoUtils.h"
+#include "video/guilib/VideoGUIUtils.h"
 #include "video/guilib/VideoPlayActionProcessor.h"
 #include "video/guilib/VideoSelectActionProcessor.h"
 #include "video/windows/GUIWindowVideoBase.h"

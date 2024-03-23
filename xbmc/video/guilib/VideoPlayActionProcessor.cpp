@@ -11,11 +11,9 @@
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogContextMenu.h"
-#include "guilib/LocalizeStrings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/Variant.h"
-#include "video/VideoUtils.h"
+#include "video/guilib/VideoGUIUtils.h"
 #include "video/guilib/VideoVersionHelper.h"
 
 using namespace VIDEO::GUILIB;
