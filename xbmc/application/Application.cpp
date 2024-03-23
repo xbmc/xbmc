@@ -2334,10 +2334,16 @@ bool CApplication::PlayStack(CFileItem& item, bool bRestart)
   if (!stackHelper->InitializeStack(item))
     return false;
 
-  int startoffset = stackHelper->InitializeStackStartPartAndOffset(item);
+  std::optional<int> startoffset = stackHelper->InitializeStackStartPartAndOffset(item);
+  if (!startoffset)
+  {
+    CLog::LogF(LOGERROR, "Failed to obtain start offset for stack {}. Aborting playback.",
+               item.GetDynPath());
+    return false;
+  }
 
   CFileItem selectedStackPart = stackHelper->GetCurrentStackPartFileItem();
-  selectedStackPart.SetStartOffset(startoffset);
+  selectedStackPart.SetStartOffset(startoffset.value());
 
   if (item.HasProperty("savedplayerstate"))
   {
