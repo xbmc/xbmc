@@ -155,10 +155,13 @@ bool CDVDVideoCodecStarfish::OpenInternal(CDVDStreamInfo& hints, CDVDCodecOption
     case AV_CODEC_ID_HEVC:
     {
       const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+      bool convertDovi{false};
       bool removeDovi{false};
 
       if (settings)
       {
+        convertDovi = settings->GetBool(CSettings::SETTING_VIDEOPLAYER_CONVERTDOVI);
+
         const std::shared_ptr<CSettingList> allowedHdrFormatsSetting(
             std::dynamic_pointer_cast<CSettingList>(
                 settings->GetSetting(CSettings::SETTING_VIDEOPLAYER_ALLOWEDHDRFORMATS)));
@@ -168,6 +171,9 @@ bool CDVDVideoCodecStarfish::OpenInternal(CDVDStreamInfo& hints, CDVDCodecOption
 
       bool isDvhe = (m_hints.codec_tag == MKTAG('d', 'v', 'h', 'e'));
       bool isDvh1 = (m_hints.codec_tag == MKTAG('d', 'v', 'h', '1'));
+
+      bool payloadDoviProfile = m_hints.dovi.dv_profile;
+      bool payloadElPresentFlag = m_hints.dovi.el_present_flag;
 
       // some files don't have dvhe or dvh1 tag set up but have Dolby Vision side data
       if (!isDvhe && !isDvh1 && m_hints.hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)
@@ -179,6 +185,13 @@ bool CDVDVideoCodecStarfish::OpenInternal(CDVDStreamInfo& hints, CDVDCodecOption
           isDvhe = true;
       }
 
+      // set profile 8 and single layer when converting
+      if (!removeDovi && convertDovi && m_hints.dovi.dv_profile == 7)
+      {
+        payloadDoviProfile = 8;
+        payloadElPresentFlag = false;
+      }
+
       if (!removeDovi && (isDvhe || isDvh1))
       {
         m_formatname = isDvhe ? "starfish-dvhe" : "starfish-dvh1";
@@ -186,9 +199,9 @@ bool CDVDVideoCodecStarfish::OpenInternal(CDVDStreamInfo& hints, CDVDCodecOption
         payloadArg["option"]["externalStreamingInfo"]["contents"]["DolbyHdrInfo"]
                   ["encryptionType"] = "clear"; //"clear", "bl", "el", "all"
         payloadArg["option"]["externalStreamingInfo"]["contents"]["DolbyHdrInfo"]["profileId"] =
-            m_hints.dovi.dv_profile; // profile 0-9
+            payloadDoviProfile; // profile 0-9
         payloadArg["option"]["externalStreamingInfo"]["contents"]["DolbyHdrInfo"]["trackType"] =
-            m_hints.dovi.el_present_flag ? "dual" : "single"; // "single" / "dual"
+            payloadElPresentFlag ? "dual" : "single"; // "single" / "dual"
       }
 
       // check for hevc-hvcC and convert to h265-annex-b
@@ -207,6 +220,10 @@ bool CDVDVideoCodecStarfish::OpenInternal(CDVDStreamInfo& hints, CDVDCodecOption
 
           // webOS doesn't support HDR10+ and it can cause issues
           m_bitstream->SetRemoveHdr10Plus(true);
+
+          // Only set for profile 7, container hint allows to skip parsing unnecessarily
+          if (m_hints.dovi.dv_profile == 7)
+            m_bitstream->SetConvertDovi(convertDovi);
         }
       }
 
