@@ -1,6 +1,6 @@
 --- /dev/null
 +++ b/CMakeLists.txt
-@@ -0,0 +1,173 @@
+@@ -0,0 +1,177 @@
 +cmake_minimum_required(VERSION 3.15)
 +
 +project(pillow VERSION 8.4.0 LANGUAGES C)
@@ -11,6 +11,10 @@
 +find_package(libjpeg-turbo REQUIRED NO_MODULE HINTS ${DEPENDS_PATH}/lib)
 +
 +list(APPEND INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/libImaging)
++# We explicitly build in RelWithDebInfo, so drop RTC1 (added by cmake internally)
++# as it clashes with /O* flags when built as debug
++string(REPLACE "/RTC1" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
++string(REPLACE "/RTC1" "" CMAKE_C_FLAGS ${CMAKE_C_FLAGS})
 +
 +function(addPythonExtension name)
 +  cmake_parse_arguments(addPythonExtension "" "" "SOURCES;LIBRARIES;MACROS;INCLUDES" ${ARGN})
