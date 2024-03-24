@@ -48,7 +48,7 @@ CVariant CDBusUtil::GetAll(const char *destination, const char *object, const ch
     if (dbus_message_iter_init(reply, &iter))
     {
       if (!dbus_message_has_signature(reply, "a{sv}"))
-        CLog::Log(LOGERROR, "DBus: wrong signature on GetAll - should be \"a{sv}\" but was {}",
+        CLog::Log(LOGERROR, "DBus: wrong signature on GetAll - should be \"a{{sv}}\" but was {}",
                   dbus_message_iter_get_signature(&iter));
       else
       {
