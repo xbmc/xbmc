@@ -40,9 +40,7 @@ CBaseRenderer::~CBaseRenderer() = default;
 
 float CBaseRenderer::GetAspectRatio() const
 {
-  float width = (float)m_sourceWidth;
-  float height = (float)m_sourceHeight;
-  return m_sourceFrameRatio * width / height * m_sourceHeight / m_sourceWidth;
+  return m_sourceFrameRatio;
 }
 
 void CBaseRenderer::GetVideoRect(CRect& source, CRect& dest, CRect& view) const
