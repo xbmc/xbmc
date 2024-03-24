@@ -123,11 +123,6 @@ std::string CTextureUtils::GetWrappedImageURL(const std::string &image, const st
   return url.Get();
 }
 
-std::string CTextureUtils::GetWrappedThumbURL(const std::string &image)
-{
-  return GetWrappedImageURL(image, "", "size=thumb");
-}
-
 std::string CTextureUtils::UnwrapImageURL(const std::string &image)
 {
   if (StringUtils::StartsWith(image, "image://"))

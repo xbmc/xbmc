@@ -44,8 +44,9 @@ public:
    \param options which options we need (eg size=thumb)
    \return full wrapped URL of the image file
    */
-  static std::string GetWrappedImageURL(const std::string &image, const std::string &type = "", const std::string &options = "");
-  static std::string GetWrappedThumbURL(const std::string &image);
+  static std::string GetWrappedImageURL(const std::string& image,
+                                        const std::string& type = "",
+                                        const std::string& options = "");
 
   /*! \brief Unwrap an image://<url_encoded_path> style URL
    Such urls are used for art over the webserver or other users of the VFS

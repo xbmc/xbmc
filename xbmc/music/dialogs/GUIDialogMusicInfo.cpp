@@ -891,9 +891,6 @@ void CGUIDialogMusicInfo::OnGetArt()
     if (url.IsProtocol("http") || url.IsProtocol("https"))
       continue;
     CServiceBroker::GetTextureCache()->ClearCachedImage(thumb);
-    // Remove any thumbnail of local image too (created when browsing files)
-    std::string thumbthumb(CTextureUtils::GetWrappedThumbURL(thumb));
-    CServiceBroker::GetTextureCache()->ClearCachedImage(thumbthumb);
   }
 
   // Show list of possible art for user selection

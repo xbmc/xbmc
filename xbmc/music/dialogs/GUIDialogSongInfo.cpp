@@ -398,9 +398,6 @@ void CGUIDialogSongInfo::OnGetArt()
     if (thumb.empty())
       continue;
     CServiceBroker::GetTextureCache()->ClearCachedImage(thumb);
-    // Remove any thumbnail of local image too (created when browsing files)
-    std::string thumbthumb(CTextureUtils::GetWrappedThumbURL(thumb));
-    CServiceBroker::GetTextureCache()->ClearCachedImage(thumbthumb);
   }
 
   if (bHasArt && !bFallback)

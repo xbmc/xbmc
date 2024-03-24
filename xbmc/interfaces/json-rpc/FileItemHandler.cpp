@@ -210,7 +210,7 @@ bool CFileItemHandler::GetField(const std::string& field,
         fetchedArt = true;
       }
       else if (item->HasPictureInfoTag() && !item->HasArt("thumb"))
-        item->SetArt("thumb", CTextureUtils::GetWrappedThumbURL(item->GetPath()));
+        item->SetArt("thumb", CTextureUtils::GetWrappedImageURL(item->GetPath()));
 
       if (item->HasArt("thumb"))
         result["thumbnail"] = CTextureUtils::GetWrappedImageURL(item->GetArt("thumb"));

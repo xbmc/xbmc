@@ -23,13 +23,12 @@ typedef struct
   const char *out;
 } TestFiles;
 
-const TestFiles test_files[] = {{ "/path/to/image/file.jpg", "", "", "image://%2fpath%2fto%2fimage%2ffile.jpg/" },
-                                { "/path/to/image/file.jpg", "", "size=thumb", "image://%2fpath%2fto%2fimage%2ffile.jpg/transform?size=thumb" },
-                                { "/path/to/video/file.mkv", "video", "", "image://video@%2fpath%2fto%2fvideo%2ffile.mkv/" },
-                                { "/path/to/music/file.mp3", "music", "", "image://music@%2fpath%2fto%2fmusic%2ffile.mp3/" },
-                                { "image://%2fpath%2fto%2fimage%2ffile.jpg/", "", "", "image://%2fpath%2fto%2fimage%2ffile.jpg/" },
-                                { "image://%2fpath%2fto%2fimage%2ffile.jpg/transform?size=thumb", "", "size=thumb", "image://%2fpath%2fto%2fimage%2ffile.jpg/transform?size=thumb" }};
-
+const TestFiles test_files[] = {
+    {"/path/to/image/file.jpg", "", "", "image://%2fpath%2fto%2fimage%2ffile.jpg/"},
+    {"/path/to/video/file.mkv", "video", "", "image://video@%2fpath%2fto%2fvideo%2ffile.mkv/"},
+    {"/path/to/music/file.mp3", "music", "", "image://music@%2fpath%2fto%2fmusic%2ffile.mp3/"},
+    {"image://%2fpath%2fto%2fimage%2ffile.jpg/", "", "",
+     "image://%2fpath%2fto%2fimage%2ffile.jpg/"}};
 
 class TestTextureUtils :
   public ::testing::TestWithParam<TestFiles>
