@@ -38,12 +38,11 @@ bool GetEmbeddedThumb(const std::string& path, EmbeddedArt& art)
 
 std::unique_ptr<CTexture> CMusicEmbeddedImageFileLoader::Load(const std::string& specialType,
                                                               const std::string& filePath,
-                                                              unsigned int preferredWidth,
-                                                              unsigned int preferredHeight) const
+                                                              unsigned int,
+                                                              unsigned int) const
 {
   EmbeddedArt art;
   if (GetEmbeddedThumb(filePath, art))
-    return CTexture::LoadFromFileInMemory(art.m_data.data(), art.m_size, art.m_mime, preferredWidth,
-                                          preferredHeight);
+    return CTexture::LoadFromFileInMemory(art.m_data.data(), art.m_size, art.m_mime);
   return nullptr;
 }

@@ -28,8 +28,8 @@ bool CPictureFolderImageFileLoader::CanLoad(const std::string& specialType) cons
 
 std::unique_ptr<CTexture> CPictureFolderImageFileLoader::Load(const std::string& specialType,
                                                               const std::string& filePath,
-                                                              unsigned int preferredWidth,
-                                                              unsigned int preferredHeight) const
+                                                              unsigned int,
+                                                              unsigned int) const
 {
   CFileItemList imagesInFolder;
   CDirectory::GetDirectory(filePath, imagesInFolder,
