@@ -31,7 +31,7 @@
 +
 +# Based on PCbuild\find_python.bat that allows us to cache to NATIVEPREFIX
 +add_custom_target(script.find_python
-+    COMMAND powershell -Command Invoke-WebRequest https://aka.ms/nugetclidl -OutFile '${NATIVEPREFIX}/bin/nuget.exe'
++    COMMAND @Powershell "Invoke-WebRequest https://aka.ms/nugetclidl -OutFile '${NATIVEPREFIX}/bin/nuget.exe'"
 +    COMMAND ${NATIVEPREFIX}/bin/nuget.exe install pythonx86 -Version ${PROJECT_VERSION} -OutputDirectory ${NATIVEPREFIX}/bin
 +  BYPRODUCTS
 +    ${NATIVEPREFIX}/bin/pythonx86.${PROJECT_VERSION}/tools/python.exe 
