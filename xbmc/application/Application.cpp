@@ -2264,7 +2264,7 @@ bool CApplication::PlayStack(CFileItem& item, bool bRestart)
   if (!stackHelper->InitializeStack(item))
     return false;
 
-  std::optional<int> startoffset = stackHelper->InitializeStackStartPartAndOffset(item);
+  std::optional<int64_t> startoffset = stackHelper->InitializeStackStartPartAndOffset(item);
   if (!startoffset)
   {
     CLog::LogF(LOGERROR, "Failed to obtain start offset for stack {}. Aborting playback.",
