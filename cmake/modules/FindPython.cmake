@@ -127,17 +127,12 @@ if(NOT TARGET Python::Python3)
                                COMMAND)
 
     if(CORE_SYSTEM_NAME MATCHES windows)
-      if(CMAKE_SYSTEM_NAME STREQUAL WindowsStore)
-          set(ADDITIONAL_ARGS "-DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME}" "-DCMAKE_SYSTEM_VERSION=${CMAKE_SYSTEM_VERSION}")
-      endif()
-
       set(CMAKE_ARGS -DCMAKE_MODULE_PATH=${CMAKE_MODULE_PATH}
                      -DDEPENDS_PATH=${DEPENDS_PATH}
                      -DNATIVEPREFIX=${NATIVEPREFIX}
                      -DENABLE_MODULES=ON
                      -DCMAKE_INSTALL_PREFIX=${DEPENDS_PATH}
                      -DCMAKE_BUILD_TYPE=RelWithDebInfo
-                     -DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME}
                      -DARCH=${ARCH}
                      ${ADDITIONAL_ARGS})
     else()
