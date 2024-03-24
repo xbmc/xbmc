@@ -497,6 +497,9 @@ add_dependencies(export-files ${GLOBAL_TARGET_DEPS})
 # a dependency to make sure they are built before export-files
 if(TARGET python-binarymodules)
   add_dependencies(export-files python-binarymodules)
+  if(_multiconfig_generator)
+    add_dependencies(build_internal_depends python-binarymodules)
+  endif()
 endif()
 
 # Add to lib${APP_NAME_LC} solely for Win UWP. msix building doesnt seem to pick up the
