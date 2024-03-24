@@ -231,7 +231,13 @@ public:
   virtual float GetRenderAspectRatio() const { return 1.0; }
   virtual void TriggerUpdateResolution() {}
   virtual bool IsRenderingVideo() const { return false; }
-
+  virtual void GetRects(CRect& source, CRect& dest, CRect& view) const
+  {
+    source = {};
+    dest = {};
+    view = {};
+  }
+  virtual unsigned int GetOrientation() const { return 0; }
   virtual bool Supports(EINTERLACEMETHOD method) const { return false; }
   virtual EINTERLACEMETHOD GetDeinterlacingMethodDefault() const
   {

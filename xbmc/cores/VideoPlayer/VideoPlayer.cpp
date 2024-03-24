@@ -5034,6 +5034,16 @@ float CVideoPlayer::GetRenderAspectRatio() const
   return m_renderManager.GetAspectRatio();
 }
 
+void CVideoPlayer::GetRects(CRect& source, CRect& dest, CRect& view) const
+{
+  m_renderManager.GetVideoRect(source, dest, view);
+}
+
+unsigned int CVideoPlayer::GetOrientation() const
+{
+  return m_renderManager.GetOrientation();
+}
+
 void CVideoPlayer::TriggerUpdateResolution()
 {
   std::string stereomode;

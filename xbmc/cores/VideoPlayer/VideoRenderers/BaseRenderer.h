@@ -85,6 +85,7 @@ public:
   */
   void GetVideoRect(CRect& source, CRect& dest, CRect& view) const;
   float GetAspectRatio() const;
+  unsigned int GetOrientation() const { return m_renderOrientation; }
 
   static void SettingOptionsRenderMethodsFiller(const std::shared_ptr<const CSetting>& setting,
                                                 std::vector<IntegerSettingOption>& list,
