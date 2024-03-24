@@ -327,20 +327,6 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       return true;
     }
 
-    case SYSTEM_LOCALE_TIMEZONECOUNTRY:
-    {
-      value = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
-          CSettings::SETTING_LOCALE_TIMEZONECOUNTRY);
-      return true;
-    }
-
-    case SYSTEM_LOCALE_TIMEZONE:
-    {
-      value = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
-          CSettings::SETTING_LOCALE_TIMEZONE);
-      return true;
-    }
-
     case SYSTEM_LOCALE_REGION:
     {
       value = g_langInfo.GetCurrentRegion();
