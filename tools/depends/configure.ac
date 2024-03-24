@@ -667,9 +667,9 @@ fi
 
 CXXFLAGS="$platform_cxxflags $platform_includes"
 CXX_CACHED="$CXX"
-AX_CXX_COMPILE_STDCXX([17], [noext], [mandatory])
+AX_CXX_COMPILE_STDCXX([20], [noext], [mandatory])
 CXX="$CXX_CACHED"
-platform_cxxflags="${platform_cxxflags} -std=c++17"
+platform_cxxflags="${platform_cxxflags} -std=c++20"
 
 if test "$ffmpeg_options" = "default"; then
   ffmpeg_options="$ffmpeg_options_default"

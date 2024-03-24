@@ -3,7 +3,7 @@ include FMT-VERSION
 DEPS = Makefile FMT-VERSION ../../download-files.include \
                             001-windows-pdb-symbol-gen.patch
 
-CMAKE_OPTIONS=-DCMAKE_CXX_STANDARD=17 -DCMAKE_CXX_EXTENSIONS:BOOL=OFF -DFMT_DOC=OFF -DFMT_INSTALL=ON -DFMT_TEST=OFF
+CMAKE_OPTIONS=-DFMT_DOC=OFF -DFMT_INSTALL=ON -DFMT_TEST=OFF
 
 ifeq ($(CROSS_COMPILING), yes)
   DEPS += ../../Makefile.include
