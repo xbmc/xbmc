@@ -2342,7 +2342,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
     if (item.HasVideoInfoTag())
       options.state = item.GetVideoInfoTag()->GetResumePoint().playerState;
   }
-  if (!bRestart || stackHelper->IsPlayingISOStack())
+  if (!bRestart || stackHelper->IsPlayingDiscStack())
   {
     // the following code block is only applicable when bRestart is false OR to ISO stacks
 
@@ -2875,7 +2875,8 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
     m_playerEvent.Set();
     const auto stackHelper = GetComponent<CApplicationStackHelper>();
-    if (stackHelper->IsPlayingRegularStack() && stackHelper->HasNextStackPartFileItem())
+    if ((stackHelper->IsPlayingRegularStack() || stackHelper->IsPlayingDiscStack()) &&
+        stackHelper->HasNextStackPartFileItem())
     { // just play the next item in the stack
       PlayFile(stackHelper->SetNextStackPartCurrentFileItem(), "", true);
       return true;
@@ -3331,7 +3332,7 @@ const CFileItem& CApplication::CurrentUnstackedItem()
 {
   const auto stackHelper = GetComponent<CApplicationStackHelper>();
 
-  if (stackHelper->IsPlayingISOStack() || stackHelper->IsPlayingRegularStack())
+  if (stackHelper->IsPlayingDiscStack() || stackHelper->IsPlayingRegularStack())
     return stackHelper->GetCurrentStackPartFileItem();
   else
     return *m_itemCurrentFile;

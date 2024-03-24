@@ -135,6 +135,8 @@ public:
   static bool IsDAV(const std::string& strFile);
   static bool IsDOSPath(const std::string &path);
   static bool IsDVD(const std::string& strFile);
+  static bool IsDVDFile(const std::string& file);
+  static bool IsBDFile(const std::string& file);
   static bool IsFTP(const std::string& strFile);
   static bool IsHTTP(const std::string& strFile, bool bTranslate = false);
   static bool IsUDP(const std::string& strFile);
@@ -178,6 +180,7 @@ public:
   static bool IsArchive(const std::string& strFile);
   static bool IsDiscImage(const std::string& file);
   static bool IsDiscImageStack(const std::string& file);
+  static bool IsDiscStack(const std::string& file);
   static bool IsBluray(const std::string& strFile);
   static bool IsAndroidApp(const std::string& strFile);
   static bool IsLibraryFolder(const std::string& strFile);

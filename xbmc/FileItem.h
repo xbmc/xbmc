@@ -775,10 +775,8 @@ public:
 
   /*! \brief stack a CFileItemList
    By default we stack all items (files and folders) in a CFileItemList
-   \param stackFiles whether to stack all items or just collapse folders (defaults to true)
-   \sa StackFiles,StackFolders
    */
-  void Stack(bool stackFiles = true);
+  void Stack();
 
   SortOrder GetSortOrder() const { return m_sortDescription.sortOrder; }
   SortBy GetSortMethod() const { return m_sortDescription.sortBy; }
@@ -867,18 +865,6 @@ private:
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
   void FillSortFields(FILEITEMFILLFUNC func);
   std::string GetDiscFileCache(int windowID) const;
-
-  /*!
-   \brief stack files in a CFileItemList
-   \sa Stack
-   */
-  void StackFiles();
-
-  /*!
-   \brief stack folders in a CFileItemList
-   \sa Stack
-   */
-  void StackFolders();
 
   VECFILEITEMS m_items;
   MAPFILEITEMS m_map;

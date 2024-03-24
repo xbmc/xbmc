@@ -47,9 +47,9 @@ public:
   int GetCurrentPartNumber() const { return m_currentStackPosition; }
 
   /*!
-  \brief Returns true if Application is currently playing an ISO stack
+  \brief Returns true if Application is currently playing an disc (ISO/BMDV/VIDEO_TS) stack
   */
-  bool IsPlayingISOStack() const;
+  bool IsPlayingDiscStack() const;
 
   /*!
   \brief Returns true if Application is currently playing a Regular (non-ISO) stack
