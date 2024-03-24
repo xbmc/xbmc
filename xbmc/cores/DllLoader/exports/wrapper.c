@@ -36,6 +36,7 @@ typedef fpos_t    fpos64_t;
 #endif
 
 struct mntent;
+struct statvfs64;
 
 void* dllmalloc(size_t );
 void* dllcalloc( size_t , size_t );
@@ -91,6 +92,7 @@ int dll_ftrylockfile(FILE *file);
 void dll_funlockfile(FILE *file);
 int dll_fstat64(int fd, struct stat64 *buf);
 int dll_fstat(int fd, struct _stat *buf);
+int dll_fstatvfs64(int fildes, struct statvfs64 *buf);
 FILE* dll_popen(const char *command, const char *mode);
 void* dll_dlopen(const char *filename, int flag);
 int dll_setvbuf(FILE *stream, char *buf, int type, size_t size);
@@ -441,6 +443,11 @@ int __wrap_fstat(int fd, struct _stat *buf)
 int __wrap_fstat64(int fd, struct stat64* buf)
 {
   return dll_fstat64(fd, buf);
+}
+
+int __wrap_fstatvfs64(int fd, struct statvfs64* buf)
+{
+  return dll_fstatvfs64(fd, buf);
 }
 
 int __wrap_setvbuf(FILE *stream, char *buf, int type, size_t size)
