@@ -51,10 +51,6 @@ if(NOT TARGET Python::Pycryptodome)
     generate_patchcommand("${patches}")
 
     if(${CORE_SYSTEM_NAME} MATCHES "windows")
-      if(CMAKE_SYSTEM_NAME STREQUAL WindowsStore)
-        set(ADDITIONAL_ARGS "-DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME}" "-DCMAKE_SYSTEM_VERSION=${CMAKE_SYSTEM_VERSION}")
-      endif()
-
       # Force as RelWithDebInfo due to prebuilt dependencies. If all dependencies are ever
       # built, this can be changed to reflect build type.
       set(PYTHONMODULE-PYCRYPTODOME_BUILD_TYPE RelWithDebInfo)
@@ -157,6 +153,9 @@ if(NOT TARGET Python::Pycryptodome)
     if(TARGET ${MODULE_LC})
       add_dependencies(Python::Pycryptodome ${MODULE_LC})
       add_dependencies(Python::Pycryptodome Python::Python3)
+      if(TARGET Pythonmodule-Pycryptodome)
+        add_dependencies(${MODULE_LC} Python::Python3)
+      endif()
       if(TARGET Python::Setuptools)
         add_dependencies(${MODULE_LC} Python::Setuptools)
       endif()
