@@ -507,10 +507,7 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
 
     if (!fontName.empty() && URIUtils::HasExtension(fileName, ".ttf"))
     {
-      //! @todo Why do we tolower() this shit?
-      std::string strFontFileName = fileName;
-      StringUtils::ToLower(strFontFileName);
-      LoadTTF(fontName, strFontFileName, textColor, shadowColor, iSize, iStyle, false, lineSpacing,
+      LoadTTF(fontName, fileName, textColor, shadowColor, iSize, iStyle, false, lineSpacing,
               aspect);
     }
     fontNode = fontNode->NextSibling("font");
