@@ -52,6 +52,8 @@ endif()
 
 # -------- Compiler options ---------
 
+# Allow to use UTF-8 strings in the source code, disable MSVC charset conversion
+add_options(CXX ALL_BUILDS "/utf-8")
 add_options(CXX ALL_BUILDS "/wd\"4996\"")
 set(ARCH_DEFINES -D_WINDOWS -DTARGET_WINDOWS -DTARGET_WINDOWS_DESKTOP -D__SSE__ -D__SSE2__)
 set(SYSTEM_DEFINES -DWIN32_LEAN_AND_MEAN -DNOMINMAX -DHAS_DX -D__STDC_CONSTANT_MACROS

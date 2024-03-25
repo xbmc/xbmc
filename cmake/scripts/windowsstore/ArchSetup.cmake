@@ -68,6 +68,9 @@ endif()
 
 # -------- Compiler options ---------
 
+# Allow to use UTF-8 strings in the source code, disable MSVC charset conversion
+add_options(CXX ALL_BUILDS "/utf-8")
+
 add_options(CXX ALL_BUILDS "/wd\"4996\"")
 add_options(CXX ALL_BUILDS "/wd\"4146\"")
 add_options(CXX ALL_BUILDS "/wd\"4251\"")
