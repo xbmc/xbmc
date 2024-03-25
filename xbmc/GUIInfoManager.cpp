@@ -11245,7 +11245,7 @@ void CGUIInfoManager::Clear()
   {
     swapList.clear();
     for (auto &item : m_bools)
-      if (!item.unique())
+      if (item.use_count() > 1)
         swapList.insert(item);
     m_bools.swap(swapList);
   } while (swapList.size() != m_bools.size());
