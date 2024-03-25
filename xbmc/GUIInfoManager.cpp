@@ -793,18 +793,6 @@ const infomap integer_bools[] =  {{ "isequal",          INTEGER_IS_EQUAL },
 ///     @skinning_v18 **[New Infolabel]** \link Player_Icon `Player.Icon`\endlink
 ///     <p>
 ///   }
-///   \table_row3{   <b>`Player.Cutlist`</b>,
-///                  \anchor Player_Cutlist
-///                  _string_,
-///     @return The cutlist of the currently playing item as csv in the format start1\,end1\,start2\,end2\,...
-///     Tokens must have values in the range from 0.0 to 100.0. end token must be less or equal than start token.
-///     <p>
-///     @deprecated \link Player_Cutlist `Player.Cutlist`\endlink is deprecated and will be removed in the next version.
-///     <p><hr>
-///     @skinning_v19 **[New Infolabel]** \link Player_Cutlist `Player.Cutlist`\endlink
-///     @skinning_v20 \link Player_Cutlist `Player.Cutlist`\endlink is deprecated\, use \link Player_Cuts `Player.Cuts`\endlink instead
-///     <p>
-///   }
 ///   \table_row3{   <b>`Player.Editlist`</b>,
 ///                  \anchor Player_Editlist
 ///                  _string_,
@@ -919,7 +907,6 @@ const infomap player_labels[] = {{"hasmedia", PLAYER_HAS_MEDIA},
                                  {"hasresolutions", PLAYER_HAS_RESOLUTIONS},
                                  {"frameadvance", PLAYER_FRAMEADVANCE},
                                  {"icon", PLAYER_ICON},
-                                 {"cutlist", PLAYER_CUTLIST},
                                  {"editlist", PLAYER_EDITLIST},
                                  {"cuts", PLAYER_CUTS},
                                  {"scenemarkers", PLAYER_SCENE_MARKERS},
@@ -9846,6 +9833,11 @@ const infomap slideshow[] =      {{ "ispaused",               SLIDESHOW_ISPAUSED
 
 /// \page modules__infolabels_boolean_conditions
 /// \section modules_rm_infolabels_booleans Additional revision history for Infolabels and Boolean Conditions
+/// <hr>
+/// \subsection modules_rm_infolabels_booleans_v22 Kodi v22
+/// @skinning_v22 **[Removed Infolabels]** The following infolabels have been removed:
+///   - `Player.Cutlist` - Please use \link Player_Editlist `Player.EditList`\endlink for the EDL list and \link Player_Cuts `Player.Cuts`\endlink for the cut markers
+///
 /// <hr>
 /// \subsection modules_rm_infolabels_booleans_v21 Kodi v21 (Omega)
 /// @skinning_v21 **[Removed Infolabels]** The following infolabels have been removed:
