@@ -479,9 +479,9 @@ std::string CStreamDetails::GetSubtitleLanguage(int idx) const
   const CStreamDetailSubtitle* item =
       dynamic_cast<const CStreamDetailSubtitle*>(GetNthStream(CStreamDetail::SUBTITLE, idx));
   if (item)
-    return item->m_strLanguage;
+    return item->m_strLanguage.empty() ? "und" : item->m_strLanguage;
   else
-    return "und";
+    return "";
 }
 
 void CStreamDetails::Archive(CArchive& ar)
