@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="webinterface.default"
-  version="19.x-2.4.8"
+  version="21.x-1.0.1"
   name="Kodi web interface - Chorus2"
   provider-name="jez500, Team Kodi">
   <requires>
@@ -9,8 +9,6 @@
   </requires>
   <extension point="xbmc.webinterface"/>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en_GB">Default web interface</summary>
-    <description lang="en_GB">Browse and interact with your Music, Movies, TV Shows and more via a web browser. Stream music and videos on your browser. Edit and manage your Kodi media library.</description>
     <platform>all</platform>
     <source>https://github.com/xbmc/chorus2</source>
     <forum>http://forum.xbmc.org/showthread.php?tid=183451</forum>
@@ -27,5 +25,59 @@
       <screenshot>screenshots/addons.jpg</screenshot>
       <screenshot>screenshots/edit-media.jpg</screenshot>
     </assets>
+    <summary lang="ca">Interfície web per defecte</summary>
+    <summary lang="cs">Výchozí rozhraní webu</summary>
+    <summary lang="cs_CZ">Výchozí rozhraní webu</summary>
+    <summary lang="da">Standard web-brugerflade</summary>
+    <summary lang="de">Standardweboberfläche</summary>
+    <summary lang="en_GB">Default web interface</summary>
+    <summary lang="es">Interfaz web por defecto</summary>
+    <summary lang="es_ES">Interfaz web por defecto</summary>
+    <summary lang="et">Vaikimisi veebiliides</summary>
+    <summary lang="et_EE">Vaikimisi veebiliides</summary>
+    <summary lang="fi">Oletusarvoinen web-käyttöliittymä</summary>
+    <summary lang="fi_FI">Oletusarvoinen verkkokäyttöliittymä</summary>
+    <summary lang="fr">Interface Web par défaut</summary>
+    <summary lang="hr">Zadano web sučelje</summary>
+    <summary lang="it">Interfaccia Web predefinita</summary>
+    <summary lang="it_IT">Interfaccia web di default</summary>
+    <summary lang="ja">デフォルトのWebインターフェース</summary>
+    <summary lang="ko">기본 웹 인터페이스</summary>
+    <summary lang="ko_KR">기본 웹 인터페이스</summary>
+    <summary lang="nl">Standaard webinterface</summary>
+    <summary lang="oc_FR">Interfàcia web per defaut</summary>
+    <summary lang="pl">Domyślny interfejs sieciowy</summary>
+    <summary lang="pl_PL">Domyślny interfejs sieciowy</summary>
+    <summary lang="ru">Веб-интерфейс по умолчанию</summary>
+    <summary lang="ru_RU">Веб-интерфейс по умолчанию</summary>
+    <summary lang="sk">Predvolené webové rozhranie</summary>
+    <summary lang="uk">Типовий веб-інтерфейс</summary>
+    <summary lang="uk_UA">Типовий веб-інтерфейс</summary>
+    <summary lang="zh_CN">默认的网络界面</summary>
+    <description lang="ca">Navega i interactua amb la teva música, pel·lícules, sèries i molt més mitjançant un navegador web. Reprodueix música i vídeos al teu navegador. Edita i gestiona la vostra biblioteca multimèdia Kodi.</description>
+    <description lang="cs">Procházejte a interagujte přes prohlížeč se svou hudbou, filmy, televizními pořady a ostatním. Streamujte hudbu a videa do vašeho prohlížeče. Upravujte a spravujte vaši multimediální knihovnu Kodi.</description>
+    <description lang="cs_CZ">Procházejte a interagujte přes prohlížeč se svou hudbou, filmy, televizními pořady a ostatním. Streamujte hudbu a videa do vašeho prohlížeče. Upravujte a spravujte vaši multimediální knihovnu Kodi.</description>
+    <description lang="da">Gennemse og interager med din musik, film, tv-serier og mere via en webbrowser. Stream musik og videoer i din browser. Rediger og administrer dit Kodi-mediebibliotek.</description>
+    <description lang="de">Musik, Filme, Serien und mehr mit dem Webbrowser durchsuchen und steuern, Musik und Videos im Browser streamen. Die Kodi Medienbibliothek ändern und verwalten.</description>
+    <description lang="en_GB">Browse and interact with your Music, Movies, TV Shows and more via a web browser. Stream music and videos on your browser. Edit and manage your Kodi media library.</description>
+    <description lang="es">Navega e interactúa con tu Música, Películas, Series de TV y mas por medio de un navegador web. Reproduce música y vídeo desde el navegador. Edita y gestiona tu colección de contenidos de Kodi.</description>
+    <description lang="es_ES">Navega e interactúa con tu Música, Películas, Series de TV y mas por medio de un navegador web. Reproduce música y vídeo desde el navegador. Edita y gestiona tu colección de contenidos de Kodi.</description>
+    <description lang="et">Sirvi oma meediakogu veebibrauseri kaudu. Voogesita muusikat ja videoid oma brauseris. Muuda ja halda oma Kodi meediakogu.</description>
+    <description lang="et_EE">Sirvi oma meediakogu veebibrauseri kaudu. Voogesita muusikat ja videoid oma brauseris. Muuda ja halda oma Kodi meediakogu.</description>
+    <description lang="fi">Selaa ja hallitse musiikki-, elokuva- ja sarjakirjastojasi, etäohjaa toistoa ja suoratoista mediaa verkkoselaimessa. Muokkaa ja hallitse Kodi-mediakirjastoasi.</description>
+    <description lang="fi_FI">Selaa ja hallitse musiikki-, elokuva- ja sarjojakirjastojasi, etäohjaa toistoa ja suoratoista mediaa verkkoselaimessa.</description>
+    <description lang="fr">Parcourir et interagir avec votre musique, vos films, vos émissions de télévision et plus encore via un navigateur Web. Diffusez de la musique et des vidéos sur votre navigateur. Modifiez et gérez votre médiathèque Kodi.</description>
+    <description lang="hr">Pregledavajte i imajte interakciju s vašom Glazbom, Filmovima, TV serijama i još mnogo toga putem web preglednika. Strujajte glazbu i videe u vašem pregledniku. Uredite i upravljajte vašom Kodi medijskom zbirkom.</description>
+    <description lang="it">Sfoglia e interagisci con la tua musica, film, serie TV e altro tramite un browser web. Riproduci musica e video in streaming sul tuo browser. Modifica e gestisci la tua libreria multimediale Kodi.</description>
+    <description lang="it_IT">Sfoglia e interagisci con musica, film, programmi TV e altro tramite un browser web. Riproduci musica e video in streaming sul tuo browser. Gestisci la tua libreria multimediale Kodi.</description>
+    <description lang="ja">Webブラウザーを介して、音楽、映画、テレビ番組などを閲覧して操作できます。 ブラウザ上で音楽やビデオをストリーミングします。Kodiメディアライブラリを編集および管理します。</description>
+    <description lang="ko">웹 브라우저를 통해 음악, 영화, TV 프로그램 등을 탐색하고 상호 작용할 수 있습니다. 브라우저에서 음악과 비디오를 스트리밍하세요. Kodi 미디어 라이브러리를 편집하고 관리합니다.</description>
+    <description lang="ko_KR">웹 브라우저를 통해 음악, 영화, TV 프로그램 등을 탐색하고 상호 작용할 수 있습니다. 브라우저에서 음악과 비디오를 스트리밍하세요. Kodi 미디어 라이브러리를 편집하고 관리합니다.</description>
+    <description lang="nl">Blader en gebruik uw muziek, films, tv-programma&apos;s en meer via een webbrowser. Stream muziek en video&apos;s in uw browser. Bewerk en beheer uw Kodi-mediabibliotheek.</description>
+    <description lang="pl">Przeglądaj i wchodź w interakcję z muzyką, filmami, programami telewizyjnymi i nie tylko za pomocą przeglądarki internetowej. Przesyłaj muzykę i filmy w przeglądarce. Edytuj i zarządzaj biblioteką multimediów Kodi.</description>
+    <description lang="pl_PL">Przeglądaj i wchodź w interakcję z muzyką, filmami, programami telewizyjnymi i nie tylko za pomocą przeglądarki internetowej. Przesyłaj muzykę i filmy w przeglądarce. Edytuj i zarządzaj biblioteką multimediów Kodi.</description>
+    <description lang="ru">Смотрите и взаимодействуйте с музыкой, с фильмами, с ТВ-передачами и с многим другим через веб-браузер. Транслируйте музыку и видео в своём браузере. Управляйте и изменяйте свою медиатеку Kodi.</description>
+    <description lang="ru_RU">Смотрите и взаимодействуйте с музыкой, с фильмами, с ТВ-передачами и с многим другим через веб-браузер. Транслируйте музыку и видео в своём браузере. Управляйте и изменяйте свою медиатеку Kodi.</description>
+    <description lang="zh_CN">通过网络浏览器浏览并与您的音乐、电影、电视节目等互动。在您的浏览器上播放音乐和视频。编辑和管理您的Kodi媒体库。</description>
   </extension>
 </addon>
