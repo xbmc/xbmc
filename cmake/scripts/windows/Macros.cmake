@@ -35,6 +35,9 @@ function(add_precompiled_header target pch_header pch_source)
   foreach(exclude_source IN LISTS PCH_EXCLUDE_SOURCES)
     list(REMOVE_ITEM sources ${exclude_source})
   endforeach()
+  # A PCH compiled in C++ mode cannot be used for C code
+  list(FILTER sources EXCLUDE REGEX "\\.c$")
+  
   set_source_files_properties(${sources}
                               PROPERTIES COMPILE_FLAGS "/Yu\"${pch_header}\" /Fp\"${pch_binary}\" /FI\"${pch_header}\""
                               OBJECT_DEPENDS "${pch_binary}")

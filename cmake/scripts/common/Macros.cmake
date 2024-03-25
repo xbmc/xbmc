@@ -88,7 +88,6 @@ function(core_add_library name)
     # Add precompiled headers to Kodi main libraries
     if(CORE_SYSTEM_NAME MATCHES windows)
       add_precompiled_header(${name} pch.h ${CMAKE_SOURCE_DIR}/xbmc/platform/win32/pch.cpp PCH_TARGET kodi)
-      set_language_cxx(${name})
     endif()
   else()
     foreach(src IN LISTS SOURCES HEADERS OTHERS)
@@ -181,19 +180,6 @@ function(core_add_shared_library name)
       target_compile_options(${name} PUBLIC ${CORE_COMPILE_OPTIONS})
     endif()
   endif()
-endfunction()
-
-# Sets the compile language for all C source files in a target to CXX.
-# Needs to be called from the CMakeLists.txt that defines the target.
-# Arguments:
-#   target   target
-function(set_language_cxx target)
-  get_property(sources TARGET ${target} PROPERTY SOURCES)
-  foreach(file IN LISTS sources)
-    if(file MATCHES "\.c$")
-      set_source_files_properties(${file} PROPERTIES LANGUAGE CXX)
-    endif()
-  endforeach()
 endfunction()
 
 # Add a data file to installation list with a mirror in build tree
