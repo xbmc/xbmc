@@ -59,8 +59,8 @@ public:
   /// | **Width** | `int` | @ref ImageDecoderInfoTag::SetWidth "SetWidth" | @ref ImageDecoderInfoTag::GetWidth "GetWidth"
   /// | **Height** | `int` | @ref ImageDecoderInfoTag::SetHeight "SetHeight" | @ref ImageDecoderInfoTag::GetHeight "GetHeight"
   /// | **Distance** | `float` | @ref ImageDecoderInfoTag::SetDistance "SetDistance" | @ref ImageDecoderInfoTag::GetDistance "GetDistance"
-  /// | **Color** | @ref cpp_kodi_addon_imagedecoder_Defs_ADDON_IMG_COLOR | @ref ImageDecoderInfoTag::SetColor "SetColor" | @ref ImageDecoderInfoTag::GetColor "GetColor"
   /// | **Orientation** | @ref cpp_kodi_addon_imagedecoder_Defs_ADDON_IMG_ORIENTATION | @ref ImageDecoderInfoTag::SetOrientation "SetOrientation" | @ref ImageDecoderInfoTag::GetOrientation "GetOrientation"
+  /// | **ColorSpace** | @ref cpp_kodi_addon_imagedecoder_Defs_ADDON_IMG_COLORSPACE | @ref ImageDecoderInfoTag::SetColorSpace "SetColorSpace" | @ref ImageDecoderInfoTag::GetColorSpace "GetColorSpace"
   /// | **Metering mode** | @ref cpp_kodi_addon_imagedecoder_Defs_ADDON_IMG_METERING_MODE | @ref ImageDecoderInfoTag::SetMeteringMode "SetMeteringMode" | @ref ImageDecoderInfoTag::GetMeteringMode "GetMeteringMode"
   /// | **Exposure time** | `float` | @ref ImageDecoderInfoTag::SetExposureTime "SetExposureTime" | @ref ImageDecoderInfoTag::GetExposureTime "GetExposureTime"
   /// | **Exposure bias** | `float` | @ref ImageDecoderInfoTag::SetExposureBias "SetExposureBias" | @ref ImageDecoderInfoTag::GetExposureBias "GetExposureBias"
@@ -77,6 +77,7 @@ public:
   /// | **Camera manufacturer** | `std::string` | @ref ImageDecoderInfoTag::SetCameraManufacturer "SetCameraManufacturer" | @ref ImageDecoderInfoTag::GetCameraManufacturer "GetCameraManufacturer"
   /// | **GPS info** | `bool, char, float[3], char, float[3], int, float` | @ref ImageDecoderInfoTag::SetGPSInfo "SetGPSInfo" | @ref ImageDecoderInfoTag::GetGPSInfo "GetGPSInfo"
   /// | **Camera model** | `std::string` | @ref ImageDecoderInfoTag::SetCameraModel "SetCameraModel" | @ref ImageDecoderInfoTag::GetCameraModel "GetCameraModel"
+  /// | **Software** | `std::string` | @ref ImageDecoderInfoTag::SetSoftware "SetSoftware" | @ref ImageDecoderInfoTag::GetSoftware "GetSoftware"
   /// | **Author** | `std::string` | @ref ImageDecoderInfoTag::SetAuthor "SetAuthor" | @ref ImageDecoderInfoTag::GetAuthor "GetAuthor"
   /// | **Description** | `std::string` | @ref ImageDecoderInfoTag::SetDescription "SetDescription" | @ref ImageDecoderInfoTag::GetDescription "GetDescription"
   /// | **Copyright** | `std::string` | @ref ImageDecoderInfoTag::SetCopyright "SetCopyright" | @ref ImageDecoderInfoTag::GetCopyright "GetCopyright"
@@ -102,13 +103,13 @@ public:
   /// @brief Get mage distance in meters.
   int GetDistance() const { return m_distance; }
 
-  /// @brief Set the image color type.
+  /// @brief Set the image color space.
   ///
-  /// @copydetails cpp_kodi_addon_imagedecoder_Defs_ADDON_IMG_COLOR
-  void SetColor(ADDON_IMG_COLOR color) { m_color = color; }
+  /// @copydetails cpp_kodi_addon_imagedecoder_Defs_ADDON_IMG_COLORSPACE
+  void SetColor(ADDON_IMG_COLORSPACE colorspace) { m_colorspace = colorspace; }
 
-  /// @brief Get image image color type.
-  ADDON_IMG_COLOR GetColor() const { return m_color; }
+  /// @brief Get image color space.
+  ADDON_IMG_COLORSPACE GetColorSpace() const { return m_colorspace; }
 
   /// @brief Set metering mode.
   ///
@@ -315,14 +316,20 @@ public:
   /// @brief Get copyright
   std::string GetCopyright() const { return m_copyright; }
 
+  /// @brief Get software
+  std::string GetSoftware() const { return m_software; }
+
+  /// @brief Set sofware
+  void SetSoftware(const std::string& software) { m_software = software; }
+
   ///@}
 
 private:
   int m_width{};
   int m_height{};
   float m_distance{};
+  ADDON_IMG_COLORSPACE m_colorspace{ADDON_IMG_COLORSPACE_UNKNOWN};
   ADDON_IMG_ORIENTATION m_orientation{ADDON_IMG_ORIENTATION_NONE};
-  ADDON_IMG_COLOR m_color{ADDON_IMG_COLOR_COLORED};
   ADDON_IMG_METERING_MODE m_metering_mode{ADDON_IMG_METERING_MODE_UNKNOWN};
   float m_exposure_time{};
   float m_exposure_bias{};
@@ -350,6 +357,7 @@ private:
   std::string m_author;
   std::string m_description;
   std::string m_copyright;
+  std::string m_software;
 };
 ///@}
 //------------------------------------------------------------------------------
@@ -654,7 +662,7 @@ private:
       tag->width = cppTag.GetWidth();
       tag->height = cppTag.GetHeight();
       tag->distance = cppTag.GetDistance();
-      tag->color = cppTag.GetColor();
+      tag->colorspace = cppTag.GetColorSpace();
       tag->orientation = cppTag.GetOrientation();
       tag->metering_mode = cppTag.GetMeteringMode();
       tag->exposure_time = cppTag.GetExposureTime();
@@ -676,6 +684,7 @@ private:
       tag->author = strdup(cppTag.GetAuthor().c_str());
       tag->description = strdup(cppTag.GetDescription().c_str());
       tag->copyright = strdup(cppTag.GetCopyright().c_str());
+      tag->software = strdup(cppTag.GetSoftware().c_str());
     }
     return ret;
 #ifdef _WIN32

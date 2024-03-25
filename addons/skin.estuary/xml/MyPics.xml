@@ -69,12 +69,16 @@
 						<param name="value" value="ListItem.PictureBylineTitle" />
 					</include>
 					<include content="PicsInfoLine">
-						<param name="label" value="$LOCALIZE[31041]"/>
+						<param name="label" value="$LOCALIZE[21822]"/>
 						<param name="value" value="ListItem.PictureCamMake" />
 					</include>
 					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21823]"/>
 						<param name="value" value="ListItem.PictureCamModel" />
+					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21825]"/>
+						<param name="value" value="ListItem.PictureColorSpace" />
 					</include>
 					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21862]"/>
@@ -91,10 +95,6 @@
 					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21873]"/>
 						<param name="value" value="ListItem.PictureCity" />
-					</include>
-					<include content="PicsInfoLine">
-						<param name="label" value="$LOCALIZE[21807]"/>
-						<param name="value" value="ListItem.PictureColour" />
 					</include>
 					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21839]"/>
@@ -185,8 +185,8 @@
 						<param name="value" value="ListItem.PictureOrientation" />
 					</include>
 					<include content="PicsInfoLine">
-						<param name="label" value="$LOCALIZE[21808]"/>
-						<param name="value" value="ListItem.PictureProcess" />
+						<param name="label" value="$LOCALIZE[13419]"/>
+						<param name="value" value="ListItem.PictureSoftware" />
 					</include>
 				</control>
 			</control>

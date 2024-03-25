@@ -81,20 +81,32 @@ extern "C"
   //----------------------------------------------------------------------------
 
   //============================================================================
-  /// @defgroup cpp_kodi_addon_imagedecoder_Defs_ADDON_IMG_COLOR enum ADDON_IMG_COLOR
+  /// @defgroup cpp_kodi_addon_imagedecoder_Defs_ADDON_IMG_COLORSPACE enum ADDON_IMG_COLORSPACE
   /// @ingroup cpp_kodi_addon_imagedecoder_Defs
-  /// @brief **Image color type**\n
-  /// To set image as colored or black/white.
+  /// @brief **Image color space**\n
+  /// To define the colorspace of the image
   ///
   ///@{
-  typedef enum ADDON_IMG_COLOR
+  typedef enum ADDON_IMG_COLORSPACE
   {
-    /// @brief Colored image
-    ADDON_IMG_COLOR_COLORED,
+    /// @brief Unknown
+    ADDON_IMG_COLORSPACE_UNKNOWN = 0x0,
 
-    /// @brief Black/White image
-    ADDON_IMG_COLOR_BLACK_WHITE
-  } ADDON_IMG_COLOR;
+    /// @brief sRGB
+    ADDON_IMG_COLORSPACE_SRGB = 0x1,
+
+    /// @brief Adobe RGB
+    ADDON_IMG_COLORSPACE_ADOBERGB = 0x2,
+
+    /// @brief Wide Gamut RGB
+    ADDON_IMG_COLORSPACE_WIDEGAMUTRGB = 0xfffd,
+
+    /// @brief ICC Profile
+    ADDON_IMG_COLORSPACE_ICCPROFILE = 0xfffe,
+
+    /// @brief Uncalibrated
+    ADDON_IMG_COLORSPACE_UNCALIBRATED = 0xffff,
+  } ADDON_IMG_COLORSPACE;
   ///@}
   //----------------------------------------------------------------------------
 
@@ -372,7 +384,7 @@ extern "C"
     int height;
     float distance;
     enum ADDON_IMG_ORIENTATION orientation;
-    enum ADDON_IMG_COLOR color;
+    enum ADDON_IMG_COLORSPACE colorspace;
     enum ADDON_IMG_METERING_MODE metering_mode;
     float exposure_time;
     float exposure_bias;
@@ -400,6 +412,7 @@ extern "C"
     char* author;
     char* description;
     char* copyright;
+    char* software;
   };
 
   typedef bool(ATTR_APIENTRYP PFN_KODI_ADDON_IMAGEDECODER_SUPPORTS_FILE_V1)(
