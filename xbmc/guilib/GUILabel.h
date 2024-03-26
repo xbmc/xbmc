@@ -79,10 +79,14 @@ public:
 
   /*! \brief allowed overflow handling techniques for labels, as defined by the skin
    */
-  enum OVER_FLOW { OVER_FLOW_TRUNCATE = 0,
-                   OVER_FLOW_SCROLL,
-                   OVER_FLOW_WRAP,
-                   OVER_FLOW_CLIP };
+  enum OVER_FLOW
+  {
+    OVER_FLOW_TRUNCATE = 0, // Truncated text from right (text end with ellipses)
+    OVER_FLOW_SCROLL,
+    OVER_FLOW_WRAP,
+    OVER_FLOW_CLIP,
+    OVER_FLOW_TRUNCATE_LEFT // Truncated text from left (text start with ellipses)
+  };
 
   CGUILabel(float posX, float posY, float width, float height, const CLabelInfo& labelInfo, OVER_FLOW overflow = OVER_FLOW_TRUNCATE);
   CGUILabel(const CGUILabel& label);
@@ -155,12 +159,6 @@ public:
    \sa OVER_FLOW
    */
   bool SetOverflow(OVER_FLOW overflow);
-
-  /*!
-   * \brief Set if the text truncate (and ellipsis "...") must be done in reverse (on LTR text by default on the left).
-   * \param isReversed Set true to reversed behaviour
-   */
-  void SetReversedTruncate(bool isReversed) { m_isReversedTruncate = isReversed; }
 
   /*! \brief Set this label invalid.  Forces an update of the control
    */
@@ -236,8 +234,7 @@ private:
   CGUITextLayout m_textLayout;
 
   bool           m_scrolling;
-  OVER_FLOW      m_overflowType;
-  bool m_isReversedTruncate{false};
+  OVER_FLOW m_overflowType;
   CScrollInfo    m_scrollInfo;
   CRect          m_renderRect;   ///< actual sizing of text
   CRect          m_maxRect;      ///< maximum sizing of text

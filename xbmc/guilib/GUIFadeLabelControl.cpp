@@ -184,8 +184,7 @@ void CGUIFadeLabelControl::Render()
     float posX = m_posX + m_label.offsetX;
     if (m_label.align & XBFONT_CENTER_X)
       posX = m_posX + m_width * 0.5f;
-    else if (m_label.align & XBFONT_RIGHT)
-      posX = m_posX + m_width - m_textLayout.GetTextWidth();
+
     m_textLayout.Render(posX, posY, m_label.angle, m_label.textColor, m_label.shadowColor, m_label.align, m_width - m_label.offsetX);
     CGUIControl::Render();
     return;
@@ -198,8 +197,7 @@ void CGUIFadeLabelControl::Render()
     float posX = m_posX + m_label.offsetX;
     if (m_label.align & XBFONT_CENTER_X)
       posX = m_posX + m_width * 0.5f;
-    else if (m_label.align & XBFONT_RIGHT)
-      posX = m_posX + m_width - m_textLayout.GetTextWidth();
+
     m_textLayout.Render(posX, posY, 0, m_label.textColor, m_label.shadowColor, m_label.align, m_width);
   }
   else
