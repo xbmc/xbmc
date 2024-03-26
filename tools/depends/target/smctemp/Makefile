@@ -3,6 +3,7 @@ DEPS = ../../Makefile.include SMCTEMP-VERSION  Makefile ../../download-files.inc
 
 LIBDYLIB=$(PLATFORM)/$(BYPRODUCT)
 
+CXXFLAGS += -std=c++17 -framework IOKit
 ifeq ($(CPU), arm64)
     CXXFLAGS += -DARCH_TYPE_ARM64
 else
