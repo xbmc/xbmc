@@ -21,7 +21,7 @@
         }
         function getBaseURL() {
             var parts = window.location.href.split('videoPlayer.html');
-            return parts[0];
+            return parts[0].replace(/\/\s*$/, '');
         }
 
         // Vars.
@@ -50,7 +50,7 @@
                 });
                 $player.append($('<source>', {
                     "type": 'video/mp4',
-                    "src": getBaseURL() + src
+                    "src": getBaseURL() + '/' + src
                 }));
                 $player.attr('width', width).attr('height', height);
             }

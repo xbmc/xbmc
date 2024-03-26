@@ -747,7 +747,7 @@ var Component = function () {
 
   /**
    * A callback that is called when a component is ready. Does not have any
-   * paramters and any callback value will be ignored.
+   * parameters and any callback value will be ignored.
    *
    * @callback Component~ReadyCallback
    * @this Component
@@ -763,7 +763,7 @@ var Component = function () {
    *        The key/value store of player options.
    #
    * @param {Object[]} [options.children]
-   *        An array of children objects to intialize this component with. Children objects have
+   *        An array of children objects to initialize this component with. Children objects have
    *        a name property that will be used if more than one component of the same type needs to be
    *        added.
    *
@@ -1292,7 +1292,7 @@ var Component = function () {
           return { name: name, opts: opts };
         }).filter(function (child) {
           // we have to make sure that child.name isn't in the techOrder since
-          // techs are registerd as Components but can't aren't compatible
+          // techs are registered as Components but can't aren't compatible
           // See https://github.com/videojs/video.js/issues/2772
           var c = Component.getComponent(child.opts.componentClass || (0, _toTitleCase2['default'])(child.name));
 
@@ -1303,7 +1303,7 @@ var Component = function () {
   };
 
   /**
-   * Builds the default DOM class name. Should be overriden by sub-components.
+   * Builds the default DOM class name. Should be overridden by sub-components.
    *
    * @return {string}
    *         The DOM class name for this object.
@@ -1404,7 +1404,7 @@ var Component = function () {
 
   /**
    * Remove an event listener from this `Component`s element. If the second argument is
-   * exluded all listeners for the type passed in as the first argument will be removed.
+   * excluded all listeners for the type passed in as the first argument will be removed.
    *
    * @param {string|Component|string[]} [first]
    *        The event name, and array of event names, or another `Component`.
@@ -1557,7 +1557,7 @@ var Component = function () {
   Component.prototype.triggerReady = function triggerReady() {
     this.isReady_ = true;
 
-    // Ensure ready is triggerd asynchronously
+    // Ensure ready is triggered asynchronously
     this.setTimeout(function () {
       var readyQueue = this.readyQueue_;
 
@@ -1768,7 +1768,7 @@ var Component = function () {
    *         - The value of the attribute that was asked for.
    *         - Can be an empty string on some browsers if the attribute does not exist
    *           or has no value
-   *         - Most browsers will return null if the attibute does not exist or has
+   *         - Most browsers will return null if the attribute does not exist or has
    *           no value.
    *
    * @see [DOM API]{@link https://developer.mozilla.org/en-US/docs/Web/API/Element/getAttribute}
@@ -2330,7 +2330,7 @@ var Component = function () {
 
   /**
    * Clears an interval that gets created via `window.setInterval` or
-   * {@link Component#setInterval}. If you set an inteval via {@link Component#setInterval}
+   * {@link Component#setInterval}. If you set an interval via {@link Component#setInterval}
    * use this function instead of `window.clearInterval`. If you don't your dispose
    * listener will not get cleaned up until {@link Component#dispose}!
    *
@@ -3946,13 +3946,13 @@ var MouseTimeDisplay = function (_Component) {
   };
 
   /**
-   * Update the time and posistion of the `MouseTimeDisplay`.
+   * Update the time and position of the `MouseTimeDisplay`.
    *
    * @param {number} newTime
    *        Time to change the `MouseTimeDisplay` to.
    *
-   * @param {nubmer} position
-   *        Postion from the left of the in pixels.
+   * @param {number} position
+   *        Position from the left of the in pixels.
    */
 
 
@@ -7241,7 +7241,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 /**
  * A combination of node inherits and babel's inherits (after transpile).
  * Both work the same but node adds `super_` to the subClass
- * and Bable adds the superClass as __proto__. Both seem useful.
+ * and Babel adds the superClass as __proto__. Both seem useful.
  *
  * @param {Object} subClass
  *        The class to inherit to
@@ -9432,7 +9432,7 @@ var Player = function (_Component) {
     this.addClass('vjs-paused');
 
     // Add a style element in the player that we'll use to set the width/height
-    // of the player in a way that's still overrideable by CSS, just like the
+    // of the player in a way that's still overridable by CSS, just like the
     // video element
     if (_window2['default'].VIDEOJS_NO_DYNAMIC_STYLE !== true) {
       this.styleEl_ = stylesheet.createStyleElement('vjs-styles-dimensions');
@@ -9499,10 +9499,10 @@ var Player = function (_Component) {
    * A getter/setter for the `Player`'s height.
    *
    * @param {number} [value]
-   *        The value to set the `Player's heigth to.
+   *        The value to set the `Player's height to.
    *
    * @return {number}
-   *         The current heigth of the `Player`.
+   *         The current height of the `Player`.
    */
 
 
@@ -9673,7 +9673,7 @@ var Player = function (_Component) {
       // Use any width that's been specifically set
       width = this.width_;
     } else if (this.height_ !== undefined) {
-      // Or calulate the width from the aspect ratio if a height has been set
+      // Or calculate the width from the aspect ratio if a height has been set
       width = this.height_ / ratioMultiplier;
     } else {
       // Or use the video's metadata, or use the video el's default of 300
@@ -10656,7 +10656,7 @@ var Player = function (_Component) {
     // cache last currentTime and return. default to 0 seconds
     //
     // Caching the currentTime is meant to prevent a massive amount of reads on the tech's
-    // currentTime when scrubbing, but may not provide much performance benefit afterall.
+    // currentTime when scrubbing, but may not provide much performance benefit after all.
     // Should be tested. Also something has to read the actual current time or the cache will
     // never get updated.
     this.cache_.currentTime = this.techGet_('currentTime') || 0;
@@ -10758,7 +10758,7 @@ var Player = function (_Component) {
    *
    * @return {number}
    *         A decimal between 0 and 1 representing the percent
-   *         that is bufferred 0 being 0% and 1 being 100%
+   *         that is buffered 0 being 0% and 1 being 100%
    */
 
 
@@ -11365,7 +11365,7 @@ var Player = function (_Component) {
 
   /**
    * Returns the fully qualified URL of the current source value e.g. http://mysite.com/video.mp4
-   * Can be used in conjuction with `currentType` to assist in rebuilding the current source object.
+   * Can be used in conjunction with `currentType` to assist in rebuilding the current source object.
    *
    * @return {string}
    *         The current source
@@ -11504,7 +11504,7 @@ var Player = function (_Component) {
    * asynchronous way. We want the poster component to use this
    * poster source so that it covers up the tech's controls.
    * (YouTube's play button). However we only want to use this
-   * soruce if the player user hasn't set a poster through
+   * source if the player user hasn't set a poster through
    * the normal APIs.
    *
    * @fires Player#posterchange
@@ -12118,7 +12118,7 @@ var Player = function (_Component) {
   /**
    * The player's language code
    * NOTE: The language should be set in the player options if you want the
-   * the controls to be built with a specific language. Changing the lanugage
+   * the controls to be built with a specific language. Changing the language
    * later will not update controls text.
    *
    * @param {string} [code]
@@ -12154,7 +12154,7 @@ var Player = function (_Component) {
   };
 
   /**
-   * returns a JavaScript object reperesenting the current track
+   * returns a JavaScript object representing the current track
    * information. **DOES not return it as JSON**
    *
    * @return {Object}
@@ -13276,8 +13276,8 @@ var Slider = function (_Component) {
    *
    * @return {number}
    *         The current position of the Slider.
-   *         - postition.x for vertical `Slider`s
-   *         - postition.y for horizontal `Slider`s
+   *         - position.x for vertical `Slider`s
+   *         - position.y for horizontal `Slider`s
    */
 
 
@@ -13305,7 +13305,7 @@ var Slider = function (_Component) {
   };
 
   /**
-   * Handle a `keydown` event on the `Slider`. Watches for left, rigth, up, and down
+   * Handle a `keydown` event on the `Slider`. Watches for left, right, up, and down
    * arrow keys. This function will only be called when the slider has focus. See
    * {@link Slider#handleFocus} and {@link Slider#handleBlur}.
    *
@@ -14673,7 +14673,7 @@ Flash.version = function () {
  *        Attributes to set on the element.
  *
  * @return {Element}
- *          The embeded Flash DOM element.
+ *          The embedded Flash DOM element.
  */
 Flash.embed = function (swf, flashVars, params, attributes) {
   var code = Flash.getEmbedCode(swf, flashVars, params, attributes);
@@ -14700,7 +14700,7 @@ Flash.embed = function (swf, flashVars, params, attributes) {
  *        Attributes to set on the element.
  *
  * @return {Element}
- *          The embeded Flash DOM element.
+ *          The embedded Flash DOM element.
  */
 Flash.getEmbedCode = function (swf, flashVars, params, attributes) {
   var objTag = '<object type="application/x-shockwave-flash" ';
@@ -15244,7 +15244,7 @@ var Html5 = function (_Tech) {
    *        HTML5 Tech's TrackList to search through
    *
    * @param {TrackList} elTracks
-   *        HTML5 media elements TrackList to search trough.
+   *        HTML5 media elements TrackList to search through.
    *
    * @private
    */
@@ -15387,7 +15387,7 @@ var Html5 = function (_Tech) {
    * Get the current height of the HTML5 media element.
    *
    * @return {number}
-   *         The heigth of the HTML5 media element.
+   *         The height of the HTML5 media element.
    */
 
 
@@ -15578,7 +15578,7 @@ var Html5 = function (_Tech) {
    * on the value of `featuresNativeTextTracks`
    *
    * @param {Object} options
-   *        The object should contain the options to intialize the TextTrack with.
+   *        The object should contain the options to initialize the TextTrack with.
    *
    * @param {string} [options.kind]
    *        `TextTrack` kind (subtitles, captions, descriptions, chapters, or metadata).
@@ -16570,7 +16570,7 @@ var MediaLoader = function (_Component) {
    *        The `Player` that this class should attach to.
    *
    * @param {Object} [options]
-   *        The key/value stroe of player options.
+   *        The key/value store of player options.
    *
    * @param {Component~ReadyCallback} [ready]
    *        The function that is run when this component is ready.
@@ -17609,7 +17609,7 @@ var Tech = function (_Component) {
    *        Name of the component to get
    *
    * @return {Tech|undefined}
-   *         The `Tech` or undefined if there was no tech with the name requsted.
+   *         The `Tech` or undefined if there was no tech with the name requested.
    */
 
 
@@ -17875,12 +17875,12 @@ Tech.withSourceHandlers = function (_Tech) {
     var sh = _Tech.selectSourceHandler(source, this.options_);
 
     if (!sh) {
-      // Fall back to a native source hander when unsupported sources are
+      // Fall back to a native source handler when unsupported sources are
       // deliberately set
       if (_Tech.nativeSourceHandler) {
         sh = _Tech.nativeSourceHandler;
       } else {
-        _log2['default'].error('No source hander found for the current source.');
+        _log2['default'].error('No source handler found for the current source.');
       }
     }
 
@@ -18503,7 +18503,7 @@ var HTMLTrackElement = function (_EventTarget) {
    *
    * @param {string} [options.srclang='']
    *        A valid two character language code. An alternative, but deprioritized
-   *        vesion of `options.language`
+   *        version of `options.language`
    *
    * @param {string} [options.src]
    *        A url to TextTrack cues.
@@ -19016,7 +19016,7 @@ var TextTrackDisplay = function (_Component) {
   };
 
   /**
-   * Add an {@link Texttrack} to the {@link Tech}s {@link TextTrackList}.
+   * Add an {@link Texttrack} to to the {@link Tech}s {@link TextTrackList}.
    *
    * @param {TextTrack} track
    *        Text track object to be added to the list.
@@ -20016,7 +20016,7 @@ var parseCues = function parseCues(srcContent, track) {
 };
 
 /**
- * Load a `TextTrack` from a specifed url.
+ * Load a `TextTrack` from a specified url.
  *
  * @param {string} src
  *        Url to load track from.
@@ -20101,7 +20101,7 @@ var TextTrack = function (_Track) {
    *
    * @param {string} [options.srclang='']
    *        A valid two character language code. An alternative, but deprioritized
-   *        vesion of `options.language`
+   *        version of `options.language`
    *
    * @param {string} [options.src]
    *        A url to TextTrack cues.
@@ -21945,7 +21945,7 @@ function unblockTextSelection() {
 }
 
 /**
- * The postion of a DOM element on the page.
+ * The position of a DOM element on the page.
  *
  * @typedef {Object} Dom~Position
  *
@@ -23167,7 +23167,7 @@ var _document2 = _interopRequireDefault(_document);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 /**
- * Create a DOM syle element given a className for it.
+ * Create a DOM style element given a className for it.
  *
  * @param {string} className
  *        The className to add to the created style element.
@@ -23229,7 +23229,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
  * @return {number}
  *         The time that offset at the specified index.
  *
- * @depricated index must be set to a value, in the future this will throw an error.
+ * @deprecated index must be set to a value, in the future this will throw an error.
  */
 
 /**
@@ -23288,7 +23288,7 @@ function rangeCheck(fnName, index, maxIndex) {
  *         The time that offset at the specified index.
  *
  *
- * @depricated rangeIndex must be set to a value, in the future this will throw an error.
+ * @deprecated rangeIndex must be set to a value, in the future this will throw an error.
  * @throws {Error} if rangeIndex is more than the length of ranges
  */
 /**
@@ -23710,7 +23710,7 @@ function videojs(id, options, ready) {
     // If a player instance has already been created for this ID return it.
     if (videojs.getPlayers()[id]) {
 
-      // If options or ready funtion are passed, warn
+      // If options or ready function are passed, warn
       if (options) {
         _log2['default'].warn('Player "' + id + '" is already initialised. Options will not be applied.');
       }
@@ -23730,7 +23730,7 @@ function videojs(id, options, ready) {
     tag = id;
   }
 
-  // Check for a useable element
+  // Check for a usable element
   // re: nodeName, could be a box div also
   if (!tag || !tag.nodeName) {
     throw new TypeError('The element or ID supplied is not valid. (videojs)');
@@ -23776,7 +23776,7 @@ videojs.hooks_ = {};
  * Get a list of hooks for a specific lifecycle
  *
  * @param {string} type
- *        the lifecyle to get hooks from
+ *        the lifecycle to get hooks from
  *
  * @param {Function} [fn]
  *        Optionally add a hook to the lifecycle that your are getting.
@@ -24415,7 +24415,7 @@ function _createXHR(options) {
     }
 
     function getBody() {
-        // Chrome with requestType=blob throws errors arround when even testing access to responseText
+        // Chrome with requestType=blob throws errors around when even testing access to responseText
         var body = undefined
 
         if (xhr.response) {
@@ -25218,7 +25218,7 @@ function extend() {
 
   // Creates a new ParserError object from an errorData object. The errorData
   // object should have default code and message properties. The default message
-  // property can be overriden by passing in a message parameter.
+  // property can be overridden by passing in a message parameter.
   // See ParsingError.Errors below for acceptable errors.
   function ParsingError(errorData, message) {
     this.name = "ParsingError";
@@ -25323,7 +25323,7 @@ function extend() {
   };
 
   // Helper function to parse input into groups separated by 'groupDelim', and
-  // interprete each group as a key/value pair separated by 'keyValueDelim'.
+  // interpret each group as a key/value pair separated by 'keyValueDelim'.
   function parseOptions(input, callback, keyValueDelim, groupDelim) {
     var groups = groupDelim ? input.split(groupDelim) : [input];
     for (var i in groups) {
@@ -26007,7 +26007,7 @@ function extend() {
   CueStyleBox.prototype = _objCreate(StyleBox.prototype);
   CueStyleBox.prototype.constructor = CueStyleBox;
 
-  // Represents the co-ordinates of an Element in a way that we can easily
+  // Represents the coordinates of an Element in a way that we can easily
   // compute things with such as if it overlaps or intersects with another Element.
   // Can initialize it with either a StyleBox or another BoxPosition.
   function BoxPosition(obj) {
@@ -26015,7 +26015,7 @@ function extend() {
 
     // Either a BoxPosition was passed in and we need to copy it, or a StyleBox
     // was passed in and we need to copy the results of 'getBoundingClientRect'
-    // as the object returned is readonly. All co-ordinate values are in reference
+    // as the object returned is readonly. All coordinate values are in reference
     // to the viewport origin (top left).
     var lh, height, width, top;
     if (obj.div) {
@@ -26026,7 +26026,7 @@ function extend() {
       var rects = (rects = obj.div.childNodes) && (rects = rects[0]) &&
                   rects.getClientRects && rects.getClientRects();
       obj = obj.div.getBoundingClientRect();
-      // In certain cases the outter div will be slightly larger then the sum of
+      // In certain cases the outer div will be slightly larger then the sum of
       // the inner div's lines. This could be due to bold text, etc, on some platforms.
       // In this case we should get the average line height and use that. This will
       // result in the desired behaviour.
@@ -26127,7 +26127,7 @@ function extend() {
   // Convert the positions from this box to CSS compatible positions using
   // the reference container's positions. This has to be done because this
   // box's positions are in reference to the viewport origin, whereas, CSS
-  // values are in referecne to their respective edges.
+  // values are in reference to their respective edges.
   BoxPosition.prototype.toCSSCompatValues = function(reference) {
     return {
       top: this.top - reference.top,
@@ -26225,7 +26225,7 @@ function extend() {
           maxPosition = containerBox[size] + step,
           initialAxis = axis[0];
 
-      // If the specified intial position is greater then the max position then
+      // If the specified initial position is greater then the max position then
       // clamp the box to the amount of steps it would take for the box to
       // reach the max position.
       if (Math.abs(position) > maxPosition) {
@@ -26374,7 +26374,7 @@ function extend() {
       for (var i = 0; i < cues.length; i++) {
         cue = cues[i];
 
-        // Compute the intial position and styles of the cue div.
+        // Compute the initial position and styles of the cue div.
         styleBox = new CueStyleBox(window, cue, styleOptions);
         paddedOverlay.appendChild(styleBox.div);
 
