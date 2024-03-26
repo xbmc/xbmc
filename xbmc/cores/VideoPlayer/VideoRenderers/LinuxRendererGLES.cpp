@@ -718,6 +718,7 @@ void CLinuxRendererGLES::UnInit()
   m_bConfigured = false;
 
   CServiceBroker::GetWinSystem()->SetHDR(nullptr);
+  m_passthroughHDR = false;
 }
 
 bool CLinuxRendererGLES::CreateTexture(int index)
