@@ -42,17 +42,17 @@ case $XBMC_PLATFORM_DIR in
     ;;
 
   osx64)
-    DEFAULT_SDK_VERSION=13.1
+    DEFAULT_SDK_VERSION=14.2
     DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
     DEFAULT_CONFIGURATION="Debug"
-    DEFAULT_XCODE_APP="Xcode_14.2.app"
+    DEFAULT_XCODE_APP="Xcode_15.2.app"
     ;;
 
   osx-arm64)
-    DEFAULT_SDK_VERSION=13.1
+    DEFAULT_SDK_VERSION=14.2
     DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
     DEFAULT_CONFIGURATION="Debug"
-    DEFAULT_XCODE_APP="Xcode_14.2.app"
+    DEFAULT_XCODE_APP="Xcode_15.2.app"
     ;;
 
   android)
