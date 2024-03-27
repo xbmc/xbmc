@@ -68,9 +68,7 @@ want to be able to give it more content than will fit on one line, then setting:
    <wrapmultiline>true</wrapmultiline>
 ~~~~~~~~~~~~~
 
-will cause the text to be cut up (at the spaces in the text) onto multiple lines.
-Note that if a single word is larger than <b>`<width>`</b> then it will not be cut, and
-will still overflow.
+Will cause the text to be cut up onto multiple lines.
 
 
 --------------------------------------------------------------------------------
