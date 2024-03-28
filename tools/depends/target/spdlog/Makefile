@@ -13,7 +13,6 @@ CMAKE_OPTIONS= \
 ifeq ($(CROSS_COMPILING), yes)
   DEPS += ../../Makefile.include
 else
-  CXXFLAGS += -std=c++17
   ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
   ifeq ($(PLATFORM),)

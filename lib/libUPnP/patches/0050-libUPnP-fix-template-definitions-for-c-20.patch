@@ -1,0 +1,1873 @@
+From 5f4ae86fe2f10fad0d1a23cae4917dc374ab771a Mon Sep 17 00:00:00 2001
+From: Lukas Rusak <lorusak@gmail.com>
+Date: Mon, 3 Jan 2022 11:08:06 -0800
+Subject: [PATCH] libUPnP: fix template definitions for c++20
+
+---
+ lib/libUPnP/Neptune/Source/Core/NptArray.h    |  83 +++--
+ lib/libUPnP/Neptune/Source/Core/NptList.h     | 209 ++++++-------
+ lib/libUPnP/Neptune/Source/Core/NptMap.h      |  85 +++---
+ lib/libUPnP/Neptune/Source/Core/NptQueue.h    |  14 +-
+ lib/libUPnP/Platinum/Source/Core/PltAction.h  | 115 ++++---
+ .../Platinum/Source/Core/PltDeviceData.cpp    | 283 ++++++++----------
+ .../Platinum/Source/Core/PltHttpClientTask.h  |  54 ++--
+ .../Devices/MediaServer/PltMediaCache.h       |  43 ++-
+ 8 files changed, 424 insertions(+), 462 deletions(-)
+
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptArray.h b/lib/libUPnP/Neptune/Source/Core/NptArray.h
+index 721bac8943..f80a956c23 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptArray.h
++++ b/lib/libUPnP/Neptune/Source/Core/NptArray.h
+@@ -50,8 +50,8 @@ const int NPT_ARRAY_INITIAL_MAX_SIZE = 128; // bytes
+ /*----------------------------------------------------------------------
+ |   NPT_Array
+ +---------------------------------------------------------------------*/
+-template <typename T> 
+-class NPT_Array 
++template<typename T>
++class NPT_Array
+ {
+ public:
+     // types
+@@ -59,12 +59,12 @@ public:
+     typedef T* Iterator;
+ 
+     // methods
+-    NPT_Array<T>(): m_Capacity(0), m_ItemCount(0), m_Items(0) {}
+-    explicit NPT_Array<T>(NPT_Cardinal count);
+-    NPT_Array<T>(NPT_Cardinal count, const T& item);
+-    NPT_Array<T>(const T* items, NPT_Cardinal item_count);
+-   ~NPT_Array<T>();
+-    NPT_Array<T>(const NPT_Array<T>& copy);
++    NPT_Array() : m_Capacity(0), m_ItemCount(0), m_Items(0) {}
++    explicit NPT_Array(NPT_Cardinal count);
++    NPT_Array(NPT_Cardinal count, const T& item);
++    NPT_Array(const T* items, NPT_Cardinal item_count);
++    ~NPT_Array();
++    NPT_Array(const NPT_Array<T>& copy);
+     NPT_Array<T>& operator=(const NPT_Array<T>& copy);
+     bool          operator==(const NPT_Array<T>& other) const;
+     bool          operator!=(const NPT_Array<T>& other) const;
+@@ -90,29 +90,34 @@ public:
+     // template list operations
+     // keep these template members defined here because MSV6 does not let
+     // us define them later
+-    template <typename X> 
++    template<typename X>
+     NPT_Result Apply(const X& function) const
+-    {                                  
+-        for (unsigned int i=0; i<m_ItemCount; i++) function(m_Items[i]);
+-        return NPT_SUCCESS;
++    {
++      for (unsigned int i = 0; i < m_ItemCount; i++)
++        function(m_Items[i]);
++      return NPT_SUCCESS;
+     }
+ 
+     template <typename X, typename P>
+     NPT_Result ApplyUntil(const X& function, const P& predicate, bool* match = NULL) const
+-    {                                  
+-        for (unsigned int i=0; i<m_ItemCount; i++) {
+-            NPT_Result return_value;
+-            if (predicate(function(m_Items[i]), return_value)) {
+-                if (match) *match = true;
+-                return return_value;
+-            }
++    {
++      for (unsigned int i = 0; i < m_ItemCount; i++)
++      {
++        NPT_Result return_value;
++        if (predicate(function(m_Items[i]), return_value))
++        {
++          if (match)
++            *match = true;
++          return return_value;
+         }
+-        if (match) *match = false;
+-        return NPT_SUCCESS;
++      }
++      if (match)
++        *match = false;
++      return NPT_SUCCESS;
+     }
+ 
+-    template <typename X> 
+-    T* Find(const X& predicate, NPT_Ordinal n=0, NPT_Ordinal* pos = NULL) const
++    template<typename X>
++    T* Find(const X& predicate, NPT_Ordinal n = 0, NPT_Ordinal* pos = NULL) const
+     {
+         if (pos) *pos = -1;
+ 
+@@ -169,12 +174,9 @@ NPT_Array<T>::NPT_Array(const NPT_Array<T>& copy) :
+ /*----------------------------------------------------------------------
+ |   NPT_Array<T>::NPT_Array<T>
+ +---------------------------------------------------------------------*/
+-template <typename T>
+-inline
+-NPT_Array<T>::NPT_Array(NPT_Cardinal count, const T& item) :
+-    m_Capacity(0),
+-    m_ItemCount(count),
+-    m_Items(0)    
++template<typename T>
++inline NPT_Array<T>::NPT_Array(NPT_Cardinal count, const T& item)
++  : m_Capacity(0), m_ItemCount(count), m_Items(0)
+ {
+     Reserve(count);
+     for (NPT_Ordinal i=0; i<count; i++) {
+@@ -185,12 +187,9 @@ NPT_Array<T>::NPT_Array(NPT_Cardinal count, const T& item) :
+ /*----------------------------------------------------------------------
+ |   NPT_Array<T>::NPT_Array<T>
+ +---------------------------------------------------------------------*/
+-template <typename T>
+-inline
+-NPT_Array<T>::NPT_Array(const T* items, NPT_Cardinal item_count) :
+-    m_Capacity(0),
+-    m_ItemCount(item_count),
+-    m_Items(0)    
++template<typename T>
++inline NPT_Array<T>::NPT_Array(const T* items, NPT_Cardinal item_count)
++  : m_Capacity(0), m_ItemCount(item_count), m_Items(0)
+ {
+     Reserve(item_count);
+     for (NPT_Ordinal i=0; i<item_count; i++) {
+@@ -255,17 +254,17 @@ NPT_Array<T>::Clear()
+ /*----------------------------------------------------------------------
+ |   NPT_Array<T>::Allocate
+ +---------------------------------------------------------------------*/
+-template <typename T>
+-T*
+-NPT_Array<T>::Allocate(NPT_Cardinal count, NPT_Cardinal& allocated) 
++template<typename T>
++T* NPT_Array<T>::Allocate(NPT_Cardinal count, NPT_Cardinal& allocated)
+ {
+     if (m_Capacity) {
+         allocated = 2*m_Capacity;
+     } else {
+-        // start with just enough elements to fill 
+-        // NPT_ARRAY_INITIAL_MAX_SIZE worth of memory
+-        allocated = NPT_ARRAY_INITIAL_MAX_SIZE/sizeof(T);
+-        if (allocated == 0) allocated = 1;
++      // start with just enough elements to fill
++      // NPT_ARRAY_INITIAL_MAX_SIZE worth of memory
++      allocated = NPT_ARRAY_INITIAL_MAX_SIZE / sizeof(T);
++      if (allocated == 0)
++        allocated = 1;
+     }
+     if (allocated < count) allocated = count;
+ 
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptList.h b/lib/libUPnP/Neptune/Source/Core/NptList.h
+index 37d1802d05..c7d4b703a2 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptList.h
++++ b/lib/libUPnP/Neptune/Source/Core/NptList.h
+@@ -50,8 +50,8 @@ const int NPT_ERROR_LIST_OPERATION_CONTINUE = NPT_ERROR_BASE_LIST - 2;
+ /*----------------------------------------------------------------------
+ |   NPT_List
+ +---------------------------------------------------------------------*/
+-template <typename T> 
+-class NPT_List 
++template<typename T>
++class NPT_List
+ {
+ protected:
+     class Item;
+@@ -69,7 +69,7 @@ public:
+         T*  operator->() const { return &m_Item->m_Data;}
+         Iterator& operator++()  { // prefix
+             m_Item = m_Item->m_Next;
+-            return (*this); 
++            return (*this);
+         }
+         Iterator operator++(int) { // postfix
+             Iterator saved_this = *this;
+@@ -78,7 +78,7 @@ public:
+         }
+         Iterator& operator--() { // prefix
+             m_Item = m_Item->m_Prev;
+-            return (*this); 
++            return (*this);
+         }
+         Iterator operator--(int) { // postfix
+             Iterator saved_this = *this;
+@@ -109,9 +109,9 @@ public:
+     };
+ 
+     // methods
+-                 NPT_List<T>();
+-                 NPT_List<T>(const NPT_List<T>& list);
+-                ~NPT_List<T>();
++    NPT_List();
++    NPT_List(const NPT_List<T>& list);
++    ~NPT_List();
+     NPT_Result   Add(const T& data);
+     NPT_Result   Insert(const Iterator where, const T& data);
+     NPT_Result   Remove(const T& data, bool all=false);
+@@ -130,7 +130,7 @@ public:
+     NPT_Result   Add(NPT_List<T>& list);
+     NPT_Result   Remove(const NPT_List<T>& list, bool all=false);
+     NPT_Result   Cut(NPT_Cardinal keep, NPT_List<T>& cut);
+-    
++
+     // item manipulation
+     NPT_Result   Add(Item& item);
+     NPT_Result   Detach(Item& item);
+@@ -139,37 +139,42 @@ public:
+     // list operations
+     // keep these template members defined here because MSV6 does not let
+     // us define them later
+-    template <typename X> 
++    template<typename X>
+     NPT_Result Apply(const X& function) const
+-    {                          
+-        Item* item = m_Head;
+-        while (item) {
+-            function(item->m_Data);
+-            item = item->m_Next;
+-        }
++    {
++      Item* item = m_Head;
++      while (item)
++      {
++        function(item->m_Data);
++        item = item->m_Next;
++      }
+ 
+-        return NPT_SUCCESS;
++      return NPT_SUCCESS;
+     }
+ 
+-    template <typename X, typename P> 
++    template<typename X, typename P>
+     NPT_Result ApplyUntil(const X& function, const P& predicate, bool* match = NULL) const
+-    {                          
+-        Item* item = m_Head;
+-        while (item) {
+-            NPT_Result return_value;
+-            if (predicate(function(item->m_Data), return_value)) {
+-                if (match) *match = true;
+-                return return_value;
+-            }
+-            item = item->m_Next;
++    {
++      Item* item = m_Head;
++      while (item)
++      {
++        NPT_Result return_value;
++        if (predicate(function(item->m_Data), return_value))
++        {
++          if (match)
++            *match = true;
++          return return_value;
+         }
+-        
+-        if (match) *match = false;
+-        return NPT_SUCCESS;
++        item = item->m_Next;
++      }
++
++      if (match)
++        *match = false;
++      return NPT_SUCCESS;
+     }
+ 
+-    template <typename P> 
+-    Iterator Find(const P& predicate, NPT_Ordinal n=0) const
++    template<typename P>
++    Iterator Find(const P& predicate, NPT_Ordinal n = 0) const
+     {
+         Item* item = m_Head;
+         while (item) {
+@@ -187,39 +192,43 @@ public:
+ 
+     // Merge sort algorithm
+     // http://en.wikipedia.org/wiki/Mergesort
+-    template <typename X> 
++    template<typename X>
+     NPT_Result Sort(const X& function)
+-    {   
+-        if (GetItemCount() <= 1) return NPT_SUCCESS;
+-        
+-        NPT_List<T> right;
+-        NPT_CHECK(Cut(GetItemCount() >> 1, right));
+-        
+-        // sort the left side
+-        Sort(function);
+-        
+-        // sort the right side
+-        right.Sort(function);
+-        
+-        // merge the two back inline
+-        if (function(m_Tail->m_Data, right.m_Head->m_Data) > 0) {
+-            Merge(right, function);
+-        } else {
+-            // append right
+-            right.m_Head->m_Prev = m_Tail;
+-            m_Tail->m_Next = right.m_Head;
+-            m_Tail = right.m_Tail;
+-            m_ItemCount += right.m_ItemCount;
+-            
+-            right.m_ItemCount = 0;
+-            right.m_Head = right.m_Tail = NULL;
+-        }
+-        
++    {
++      if (GetItemCount() <= 1)
+         return NPT_SUCCESS;
++
++      NPT_List<T> right;
++      NPT_CHECK(Cut(GetItemCount() >> 1, right));
++
++      // sort the left side
++      Sort(function);
++
++      // sort the right side
++      right.Sort(function);
++
++      // merge the two back inline
++      if (function(m_Tail->m_Data, right.m_Head->m_Data) > 0)
++      {
++        Merge(right, function);
++      }
++      else
++      {
++        // append right
++        right.m_Head->m_Prev = m_Tail;
++        m_Tail->m_Next = right.m_Head;
++        m_Tail = right.m_Tail;
++        m_ItemCount += right.m_ItemCount;
++
++        right.m_ItemCount = 0;
++        right.m_Head = right.m_Tail = NULL;
++      }
++
++      return NPT_SUCCESS;
+     }
+ 
+-    template <typename X> 
+-    NPT_Result Merge(NPT_List<T>& other, const X& function) 
++    template<typename X>
++    NPT_Result Merge(NPT_List<T>& other, const X& function)
+     {
+         Iterator left = GetFirstItem();
+         Iterator right;
+@@ -233,7 +242,7 @@ public:
+                 Insert(left, *head);
+             }
+         }
+-        
++
+         // add what's left of other if any
+         if (other.m_Head) {
+             other.m_Head->m_Prev = m_Tail;
+@@ -254,20 +263,20 @@ public:
+ 
+ protected:
+     // types
+-    class Item 
+-    {
+-    public:
+-        // methods
+-        Item(const T& data) : m_Next(0), m_Prev(0), m_Data(data) {}
++  class Item
++  {
++  public:
++    // methods
++    Item(const T& data) : m_Next(0), m_Prev(0), m_Data(data) {}
+ 
+-        // members
+-        Item* m_Next;
+-        Item* m_Prev;
+-        T     m_Data;
++    // members
++    Item* m_Next;
++    Item* m_Prev;
++    T m_Data;
+ 
+-        // friends
+-        //friend class NPT_List<T>;
+-        //friend class NPT_List<T>::Iterator;
++    // friends
++    //friend class NPT_List<T>;
++    //friend class NPT_List<T>::Iterator;
+     };
+ 
+     // members
+@@ -279,18 +288,16 @@ protected:
+ /*----------------------------------------------------------------------
+ |   NPT_List<T>::NPT_List
+ +---------------------------------------------------------------------*/
+-template <typename T>
+-inline
+-NPT_List<T>::NPT_List() : m_ItemCount(0), m_Head(0), m_Tail(0) 
++template<typename T>
++inline NPT_List<T>::NPT_List() : m_ItemCount(0), m_Head(0), m_Tail(0)
+ {
+ }
+ 
+ /*----------------------------------------------------------------------
+ |   NPT_List<T>::NPT_List
+ +---------------------------------------------------------------------*/
+-template <typename T>
+-inline
+-NPT_List<T>::NPT_List(const NPT_List<T>& list) : m_ItemCount(0), m_Head(0), m_Tail(0) 
++template<typename T>
++inline NPT_List<T>::NPT_List(const NPT_List<T>& list) : m_ItemCount(0), m_Head(0), m_Tail(0)
+ {
+     *this = list;
+ }
+@@ -304,7 +311,7 @@ NPT_List<T>::~NPT_List()
+ {
+     Clear();
+ }
+- 
++
+ /*----------------------------------------------------------------------
+ |   NPT_List<T>::operator=
+ +---------------------------------------------------------------------*/
+@@ -341,7 +348,7 @@ NPT_List<T>::operator==(const NPT_List<T>& other) const
+         our_item   = our_item->m_Next;
+         their_item = their_item->m_Next;
+     }
+-    
++
+     return our_item == NULL && their_item == NULL;
+ }
+ 
+@@ -400,7 +407,7 @@ NPT_List<T>::Add(Item& item)
+ 
+     // one more item in the list now
+     ++m_ItemCount;
+- 
++
+     return NPT_SUCCESS;
+ }
+ 
+@@ -441,7 +448,7 @@ NPT_List<T>::GetItem(NPT_Ordinal n) const
+ {
+     Iterator result;
+     if (n >= m_ItemCount) return result;
+-    
++
+     result = m_Head;
+     for (unsigned int i=0; i<n; i++) {
+         ++result;
+@@ -453,10 +460,8 @@ NPT_List<T>::GetItem(NPT_Ordinal n) const
+ /*----------------------------------------------------------------------
+ |   NPT_List<T>::Insert
+ +---------------------------------------------------------------------*/
+-template <typename T>
+-inline 
+-NPT_Result
+-NPT_List<T>::Insert(Iterator where, const T&data)
++template<typename T>
++inline NPT_Result NPT_List<T>::Insert(Iterator where, const T& data)
+ {
+     return Insert(where, *new Item(data));
+ }
+@@ -488,16 +493,15 @@ NPT_List<T>::Insert(Iterator where, Item& item)
+         // insert at tail
+         return Add(item);
+     }
+- 
++
+     return NPT_SUCCESS;
+ }
+ 
+ /*----------------------------------------------------------------------
+ |   NPT_List<T>::Erase
+ +---------------------------------------------------------------------*/
+-template <typename T>
+-NPT_Result
+-NPT_List<T>::Erase(Iterator position) 
++template<typename T>
++NPT_Result NPT_List<T>::Erase(Iterator position)
+ {
+     if (!position) return NPT_ERROR_NO_SUCH_ITEM;
+     Detach(*position.m_Item);
+@@ -524,7 +528,7 @@ NPT_List<T>::Remove(const T& data, bool all)
+ 
+             // detach item
+             Detach(*item);
+-            
++
+             // destroy the item
+             delete item;
+ 
+@@ -532,7 +536,7 @@ NPT_List<T>::Remove(const T& data, bool all)
+         }
+         item = next;
+     }
+- 
++
+     return matches?NPT_SUCCESS:NPT_ERROR_NO_SUCH_ITEM;
+ }
+ 
+@@ -669,35 +673,34 @@ NPT_List<T>::Contains(const T& data) const
+ /*----------------------------------------------------------------------
+ |   NPT_List<T>::Cut
+ +---------------------------------------------------------------------*/
+-template <typename T> 
+-NPT_Result 
+-NPT_List<T>::Cut(NPT_Cardinal keep, NPT_List<T>& cut) 
++template<typename T>
++NPT_Result NPT_List<T>::Cut(NPT_Cardinal keep, NPT_List<T>& cut)
+ {
+     cut.Clear();
+-    
++
+     // shortcut
+     if (keep >= GetItemCount()) return NPT_SUCCESS;
+-    
++
+     // update new counts first
+     cut.m_ItemCount = m_ItemCount-keep;
+     m_ItemCount = keep;
+-    
++
+     // look for the cut-point item
+     Item* item = m_Head;
+     while (keep--) { item = item->m_Next;}
+-    
++
+     // the cut list goes from the cut-point item to the tail
+     cut.m_Head = item;
+     cut.m_Tail = m_Tail;
+-    
++
+     // update the portion of the list we keep
+     if (item == m_Head) m_Head = NULL;
+     m_Tail = item->m_Prev;
+-    
++
+     // update the cut list
+     if (item->m_Prev) item->m_Prev->m_Next = NULL;
+     item->m_Prev = NULL;
+-    
++
+     return NPT_SUCCESS;
+ }
+ 
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptMap.h b/lib/libUPnP/Neptune/Source/Core/NptMap.h
+index 75acbbed5f..ee90e434f2 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptMap.h
++++ b/lib/libUPnP/Neptune/Source/Core/NptMap.h
+@@ -43,8 +43,8 @@
+ /*----------------------------------------------------------------------
+ |   NPT_Map
+ +---------------------------------------------------------------------*/
+-template <typename K, typename V> 
+-class NPT_Map 
++template<typename K, typename V>
++class NPT_Map
+ {
+ public:
+     // types
+@@ -53,12 +53,12 @@ public:
+         // constructor
+         Entry(const K& key, const V& value) : m_Key(key), m_Value(value) {}
+         Entry(const K& key) : m_Key(key), m_Value() {}
+-        
++
+         // accessors
+         const K& GetKey()   const { return m_Key;   }
+         const V& GetValue() const { return m_Value; }
+ 
+-        // operators 
++        // operators
+         bool operator==(const Entry& other) const {
+             return m_Key == other.m_Key && m_Value == other.m_Value;
+         }
+@@ -76,11 +76,11 @@ public:
+     };
+ 
+     // constructors
+-    NPT_Map<K,V>() {}
+-    NPT_Map<K,V>(const NPT_Map<K,V>& copy);
++    NPT_Map() {}
++    NPT_Map(const NPT_Map<K, V>& copy);
+ 
+     // destructor
+-    ~NPT_Map<K,V>();
++    ~NPT_Map();
+ 
+     // methods
+     NPT_Result   Put(const K& key, const V& value);
+@@ -310,15 +310,15 @@ NPT_Map<K,V>::operator[](const K& key)
+         entry = new Entry(key);
+         m_Entries.Add(entry);
+     }
+-     
++
+     return entry->m_Value;
+ }
+ 
+ /*----------------------------------------------------------------------
+ |   NPT_HashMap
+ +---------------------------------------------------------------------*/
+-template <typename K, typename V, typename HF = NPT_Hash<K> > 
+-class NPT_HashMap 
++template<typename K, typename V, typename HF = NPT_Hash<K>>
++class NPT_HashMap
+ {
+ public:
+     // types
+@@ -327,13 +327,13 @@ public:
+         // constructor
+         Entry(NPT_UInt32 hash_value, const K& key, const V& value) : m_HashValue(hash_value), m_Key(key), m_Value(value) {}
+         Entry(NPT_UInt32 hash_value, const K& key)                 : m_HashValue(hash_value), m_Key(key), m_Value()      {}
+-        
++
+         // accessors
+         const K&   GetKey()       const { return m_Key;   }
+         const V&   GetValue()     const { return m_Value; }
+         NPT_UInt32 GetHashValue() const { return m_HashValue; }
+-        
+-        // operators 
++
++        // operators
+         bool operator==(const Entry& other) const {
+             return m_HashValue == other.m_HashValue && m_Key == other.m_Key && m_Value == other.m_Value;
+         }
+@@ -368,7 +368,7 @@ public:
+                     }
+                 } while (m_Entry);
+             }
+-            return (*this); 
++            return (*this);
+         }
+         Iterator operator++(int) { // postfix
+             Iterator saved_this = *this;
+@@ -399,12 +399,12 @@ public:
+     };
+ 
+     // constructors
+-    NPT_HashMap<K,V,HF>();
+-    NPT_HashMap<K,V,HF>(const HF& hasher);
+-    NPT_HashMap<K,V,HF>(const NPT_HashMap<K,V,HF>& copy);
++    NPT_HashMap();
++    NPT_HashMap(const HF& hasher);
++    NPT_HashMap(const NPT_HashMap<K, V, HF>& copy);
+ 
+     // destructor
+-    ~NPT_HashMap<K,V,HF>();
++    ~NPT_HashMap();
+ 
+     // methods
+     NPT_Result   Put(const K& key, const V& value);
+@@ -415,19 +415,21 @@ public:
+     NPT_Cardinal GetEntryCount() const { return m_EntryCount; }
+     Iterator     GetEntries() const;
+     NPT_Result   Clear();
+-    
++
+     // list operations
+     // keep these template members defined here because MSV6 does not let
+     // us define them later
+-    template <typename X> 
++    template<typename X>
+     NPT_Result Apply(const X& function) const
+-    {                          
+-        for (int i=0; i<(1<<m_BucketCountLog); i++) {
+-            if (m_Buckets[i]) {
+-                function(m_Buckets[i]);
+-            }
++    {
++      for (int i = 0; i < (1 << m_BucketCountLog); i++)
++      {
++        if (m_Buckets[i])
++        {
++          function(m_Buckets[i]);
+         }
+-        return NPT_SUCCESS;
++      }
++      return NPT_SUCCESS;
+     }
+ 
+     // operators
+@@ -442,7 +444,7 @@ private:
+     NPT_Result AddEntry(Entry* entry);
+     void       AllocateBuckets(unsigned int count_log);
+     void       AdjustBuckets(NPT_Cardinal entry_count, bool allow_shrink=false);
+-    
++
+     // members
+     HF           m_Hasher;
+     Entry**      m_Buckets;
+@@ -553,7 +555,7 @@ NPT_HashMap<K,V,HF>::Clear()
+     }
+     m_EntryCount = 0;
+     AllocateBuckets(4);
+-    
++
+     return NPT_SUCCESS;
+ }
+ 
+@@ -591,7 +593,7 @@ NPT_HashMap<K,V,HF>::GetEntry(const K& key, NPT_UInt32* position) const
+         }
+         cursor = (cursor + 1) & mask;
+     }
+-    
++
+     return NULL;
+ }
+ 
+@@ -612,7 +614,7 @@ NPT_HashMap<K,V,HF>::AddEntry(Entry* entry)
+     }
+     m_Buckets[cursor] = entry;
+     ++m_EntryCount;
+-    
++
+     return NPT_SUCCESS;
+ }
+ 
+@@ -682,10 +684,10 @@ NPT_HashMap<K,V,HF>::Erase(const K& key)
+     if (entry == NULL) {
+         return NPT_ERROR_NO_SUCH_ITEM;
+     }
+-    
++
+     // mark the bucket as unoccupied
+     m_Buckets[position] = NULL;
+-    
++
+     // look for buckets that need to be relocated:
+     // there should be no empty bucket between an entry's ideal hash bucket
+     // and its actual bucket.
+@@ -700,13 +702,13 @@ NPT_HashMap<K,V,HF>::Erase(const K& key)
+              ((position < target) || (target <= cursor)) ) {
+              continue;
+         }
+-        
++
+         // move the bucket back
+         m_Buckets[position] = m_Buckets[cursor];
+         m_Buckets[cursor] = NULL;
+         position = cursor;
+     }
+-        
++
+     // cleanup and adjust the counter and buckets
+     delete entry;
+     --m_EntryCount;
+@@ -730,16 +732,15 @@ NPT_HashMap<K,V,HF>::operator=(const NPT_HashMap<K,V,HF>& copy)
+ 
+     // prepare to receive all the entries
+     AdjustBuckets(copy.m_EntryCount);
+-    
++
+     // copy all entries
+     for (int i=0; i<1<<copy.m_BucketCountLog; i++) {
+         if (copy.m_Buckets[i]) {
+-            AddEntry(new Entry(m_Hasher(copy.m_Buckets[i]->GetKey()),
+-                               copy.m_Buckets[i]->GetKey(), 
+-                               copy.m_Buckets[i]->GetValue()));
++          AddEntry(new Entry(m_Hasher(copy.m_Buckets[i]->GetKey()), copy.m_Buckets[i]->GetKey(),
++                             copy.m_Buckets[i]->GetValue()));
+         }
+     }
+-    
++
+     return *this;
+ }
+ 
+@@ -752,7 +753,7 @@ NPT_HashMap<K,V,HF>::operator==(const NPT_HashMap<K,V,HF>& other) const
+ {
+     // quick check
+     if (m_EntryCount != other.m_EntryCount) return false;
+-    
++
+     // compare all entries to all other entries
+     for (int i=0; i<(1<<m_BucketCountLog); i++) {
+         Entry* entry = m_Buckets[i];
+@@ -762,7 +763,7 @@ NPT_HashMap<K,V,HF>::operator==(const NPT_HashMap<K,V,HF>& other) const
+             return false;
+         }
+     }
+-    
++
+     return true;
+ }
+ 
+@@ -789,7 +790,7 @@ NPT_HashMap<K,V,HF>::operator[](const K& key)
+         entry = new Entry(m_Hasher(key), key);
+         AddEntry(entry);
+     }
+-     
++
+     return entry->m_Value;
+ }
+ 
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptQueue.h b/lib/libUPnP/Neptune/Source/Core/NptQueue.h
+index ecfe1a92fd..983e703a6b 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptQueue.h
++++ b/lib/libUPnP/Neptune/Source/Core/NptQueue.h
+@@ -54,13 +54,11 @@ class NPT_GenericQueue
+ 
+     // methods
+     virtual           ~NPT_GenericQueue() {}
+-    virtual NPT_Result Push(NPT_QueueItem* item, 
+-                           NPT_Timeout     timeout = NPT_TIMEOUT_INFINITE) = 0; 
+-    virtual NPT_Result Pop(NPT_QueueItem*& item, 
+-                           NPT_Timeout     timeout = NPT_TIMEOUT_INFINITE) = 0;
+-    virtual NPT_Result Peek(NPT_QueueItem*& item, 
+-                           NPT_Timeout     timeout = NPT_TIMEOUT_INFINITE) = 0;
+- protected:
++    virtual NPT_Result Push(NPT_QueueItem* item, NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) = 0;
++    virtual NPT_Result Pop(NPT_QueueItem*& item, NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) = 0;
++    virtual NPT_Result Peek(NPT_QueueItem*& item, NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) = 0;
++
++  protected:
+     // methods
+     NPT_GenericQueue() {}
+ };
+@@ -75,7 +73,7 @@ class NPT_Queue
+     // methods
+     NPT_Queue(NPT_Cardinal max_items = 0) :
+         m_Delegate(NPT_GenericQueue::CreateInstance(max_items)) {}
+-    virtual ~NPT_Queue<T>() { delete m_Delegate; }
++    virtual ~NPT_Queue() { delete m_Delegate; }
+     virtual NPT_Result Push(T* item, NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) {
+         return m_Delegate->Push(reinterpret_cast<NPT_QueueItem*>(item), timeout);
+     }
+diff --git a/lib/libUPnP/Platinum/Source/Core/PltAction.h b/lib/libUPnP/Platinum/Source/Core/PltAction.h
+index f457f3d7c1..b6ff1bade7 100644
+--- a/lib/libUPnP/Platinum/Source/Core/PltAction.h
++++ b/lib/libUPnP/Platinum/Source/Core/PltAction.h
+@@ -11,14 +11,14 @@
+ | as published by the Free Software Foundation; either version 2
+ | of the License, or (at your option) any later version.
+ |
+-| OEMs, ISVs, VARs and other distributors that combine and 
++| OEMs, ISVs, VARs and other distributors that combine and
+ | distribute commercially licensed software with Platinum software
+ | and do not wish to distribute the source code for the commercially
+ | licensed software under version 2, or (at your option) any later
+ | version, of the GNU General Public License (the "GPL") must enter
+ | into a commercial license agreement with Plutinosoft, LLC.
+ | licensing@plutinosoft.com
+-|  
++|
+ | This program is distributed in the hope that it will be useful,
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@@ -26,7 +26,7 @@
+ |
+ | You should have received a copy of the GNU General Public License
+ | along with this program; see the file LICENSE.txt. If not, write to
+-| the Free Software Foundation, Inc., 
++| the Free Software Foundation, Inc.,
+ | 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ | http://www.gnu.org/licenses/gpl-2.0.html
+ |
+@@ -73,45 +73,43 @@ public:
+      Return an array of arguments
+      @return array of arguments
+      */
+-    NPT_Array<PLT_ArgumentDesc*>& GetArgumentDescs() { 
+-        return m_ArgumentDescs; 
+-    }
++   NPT_Array<PLT_ArgumentDesc*>& GetArgumentDescs() { return m_ArgumentDescs; }
+ 
+-    /**
++   /**
+      Return the action name.
+      @return action name.
+      */
+-    const NPT_String& GetName() const { return m_Name;}
+-    
+-    /**
++   const NPT_String& GetName() const { return m_Name; }
++
++   /**
+      Look for an argument given a name.
+      @param name argument name
+      @return PLT_ArgumentDesc pointer
+      */
+-    PLT_ArgumentDesc* GetArgumentDesc(const char* name);
+-    
+-    /**
++   PLT_ArgumentDesc* GetArgumentDesc(const char* name);
++
++   /**
+      Serialize action information to xml into an existing xml tree
+      @param node the xml Element to serialize action information
+      */
+-    NPT_Result        GetSCPDXML(NPT_XmlElementNode* node);
+-    
+-    /**
++   NPT_Result GetSCPDXML(NPT_XmlElementNode* node);
++
++   /**
+      Return the service the action is associated with
+      */
+-    PLT_Service*      GetService();
++   PLT_Service* GetService();
+ 
+-protected:
+-    //members
+-    NPT_String                   m_Name;
+-    PLT_Service*                 m_Service;
+-    NPT_Array<PLT_ArgumentDesc*> m_ArgumentDescs;
++ protected:
++   //members
++   NPT_String m_Name;
++   PLT_Service* m_Service;
++   NPT_Array<PLT_ArgumentDesc*> m_ArgumentDescs;
+ };
+ 
+ /*----------------------------------------------------------------------
+ |   PLT_Action
+ +---------------------------------------------------------------------*/
+-/** 
++/**
+  The PLT_Action class provides a mechanism to call or verify the validity of a
+  specific UPNP service action.
+  Given a service, a UPnP Control Point would use this class to serialize a soap
+@@ -128,12 +126,12 @@ public:
+      and pass the root device of the device you wish to control.
+      */
+     PLT_Action(PLT_ActionDesc& action_desc);
+-    
++
+     /**
+      Constructor
+      @param action_desc the action description
+      @param root_device a reference to the root device of the service the action
+-     is associated with. This insures that the device won't be deleted if it goes 
++     is associated with. This insures that the device won't be deleted if it goes
+      away while we're waiting for a response for this action. This is important because
+      we only keep a reference to the PLT_ActionDesc which is own by the service operated
+      by the device (or embedded device).
+@@ -146,7 +144,7 @@ public:
+      @return the action description
+      */
+     PLT_ActionDesc& GetActionDesc() { return m_ActionDesc; }
+-    
++
+     /**
+      Retrieve the string value of an argument given an argument name.
+      @param name the argument name
+@@ -154,7 +152,7 @@ public:
+      @return error if the argument is not found or if the type does not correspond.
+      */
+     NPT_Result GetArgumentValue(const char* name, NPT_String& value);
+-    
++
+     /**
+      Retrieve the value of an argument given an argument name.
+      @param name the argument name
+@@ -162,7 +160,7 @@ public:
+      @return error if the argument is not found or if the type does not correspond.
+      */
+     NPT_Result GetArgumentValue(const char* name, NPT_UInt32& value);
+-    
++
+     /**
+      Retrieve the value of an argument given an argument name.
+      @param name the argument name
+@@ -170,7 +168,7 @@ public:
+      @return error if the argument is not found or if the type does not correspond.
+      */
+     NPT_Result GetArgumentValue(const char* name, NPT_Int32& value);
+-    
++
+     /**
+      Retrieve the value of an argument given an argument name.
+      @param name the argument name
+@@ -178,32 +176,32 @@ public:
+      @return error if the argument is not found or if the type does not correspond.
+      */
+ 	NPT_Result GetArgumentValue(const char* name, bool& value);
+-    
++
+     /**
+      Verify a value is valid for a given argument.
+      @param name the argument name
+      @param value the value to verify
+      */
+     NPT_Result VerifyArgumentValue(const char* name, const char* value);
+-    
++
+     /**
+      Verify that all required arguments are set.
+-     @param input boolean indicating whether input or output parameters 
++     @param input boolean indicating whether input or output parameters
+      should be verified
+      */
+     NPT_Result VerifyArguments(bool input);
+-    
++
+     /**
+      Set the output argument value from the associated current state variable value.
+      @param name the state variable name
+      */
+     NPT_Result SetArgumentOutFromStateVariable(const char* name);
+-    
++
+     /**
+      Set all the output argument values associated with state variables.
+      */
+     NPT_Result SetArgumentsOutFromStateVariable();
+-    
++
+     /**
+      Set an argument value
+      @param name the argument name
+@@ -211,32 +209,32 @@ public:
+      */
+     NPT_Result SetArgumentValue(const char* name, const char* value);
+ 
+-    /** 
++    /**
+      Set the error code and description in case of failure.
+      @param code the code for the error
+      @param description a short description
+      */
+     NPT_Result SetError(unsigned int code, const char* description);
+-    
++
+     /**
+      Return the error description and code for the failed action.
+      @param code optional pointer to receive the code
+      @return the error short description
+      */
+     const char* GetError(unsigned int* code = NULL);
+-    
++
+     /**
+      Return the error code for the failed action.
+      @return the error code.
+      */
+     unsigned int GetErrorCode();
+-    
++
+     /**
+      Called by a control point when serializing an action.
+      @param stream the stream to serialize the action to
+      */
+     NPT_Result    FormatSoapRequest(NPT_OutputStream& stream);
+-    
++
+     /**
+      Called by a device when serializing a response to an action.
+      @param stream the stream to serialize the action to
+@@ -249,11 +247,9 @@ public:
+      @param desc the error short description
+      @param stream the stream to serialize to
+      */
+-    static NPT_Result FormatSoapError(unsigned int      code, 
+-                                      NPT_String        desc, 
+-                                      NPT_OutputStream& stream);
++    static NPT_Result FormatSoapError(unsigned int code, NPT_String desc, NPT_OutputStream& stream);
+ 
+-private:
++  private:
+     // methods
+     NPT_Result    SetArgumentOutFromStateVariable(PLT_ArgumentDesc* arg_desc);
+     PLT_Argument* GetArgument(const char* name);
+@@ -264,10 +260,10 @@ protected:
+     PLT_Arguments           m_Arguments;
+     unsigned int            m_ErrorCode;
+     NPT_String              m_ErrorDescription;
+-    
+-    // keep reference of service root device to prevent it 
++
++    // keep reference of service root device to prevent it
+     // from being released during action lifetime
+-	PLT_DeviceDataReference m_RootDevice;
++    PLT_DeviceDataReference m_RootDevice;
+ };
+ 
+ typedef NPT_Reference<PLT_Action> PLT_ActionReference;
+@@ -276,19 +272,16 @@ typedef NPT_Reference<PLT_Action> PLT_ActionReference;
+ |   PLT_GetSCPDXMLIterator
+ +---------------------------------------------------------------------*/
+ /**
+- The PLT_GetSCPDXMLIterator class provides a recursive way to serialize 
++ The PLT_GetSCPDXMLIterator class provides a recursive way to serialize
+  an SCPD into an xml tree.
+  */
+ template <class T>
+ class PLT_GetSCPDXMLIterator
+ {
+ public:
+-    PLT_GetSCPDXMLIterator<T>(NPT_XmlElementNode* node) :
+-        m_Node(node) {}
+-      
+-    NPT_Result operator()(T* const & data) const {
+-        return data->GetSCPDXML(m_Node);
+-    }
++  PLT_GetSCPDXMLIterator(NPT_XmlElementNode* node) : m_Node(node) {}
++
++  NPT_Result operator()(T* const& data) const { return data->GetSCPDXML(m_Node); }
+ 
+ private:
+     NPT_XmlElementNode* m_Node;
+@@ -297,20 +290,20 @@ private:
+ /*----------------------------------------------------------------------
+ |   PLT_ActionDescNameFinder
+ +---------------------------------------------------------------------*/
+-/** 
+- The PLT_ActionDescNameFinder class provides a mechanism to find a PLT_ActionDesc 
++/**
++ The PLT_ActionDescNameFinder class provides a mechanism to find a PLT_ActionDesc
+  given an action name.
+  */
+ class PLT_ActionDescNameFinder
+ {
+ public:
+     // methods
+-    PLT_ActionDescNameFinder(const char* name) : 
+-        m_Name(name) {}
+-    virtual ~PLT_ActionDescNameFinder() {}
++  PLT_ActionDescNameFinder(const char* name) : m_Name(name) {}
++  virtual ~PLT_ActionDescNameFinder() {}
+ 
+-    bool operator()(const PLT_ActionDesc* const & action_desc) const {
+-        return action_desc->GetName().Compare(m_Name, true) ? false : true;
++  bool operator()(const PLT_ActionDesc* const& action_desc) const
++  {
++    return action_desc->GetName().Compare(m_Name, true) ? false : true;
+     }
+ 
+ private:
+diff --git a/lib/libUPnP/Platinum/Source/Core/PltDeviceData.cpp b/lib/libUPnP/Platinum/Source/Core/PltDeviceData.cpp
+index a092b77833..5453f16e31 100644
+--- a/lib/libUPnP/Platinum/Source/Core/PltDeviceData.cpp
++++ b/lib/libUPnP/Platinum/Source/Core/PltDeviceData.cpp
+@@ -11,14 +11,14 @@
+ | as published by the Free Software Foundation; either version 2
+ | of the License, or (at your option) any later version.
+ |
+-| OEMs, ISVs, VARs and other distributors that combine and 
++| OEMs, ISVs, VARs and other distributors that combine and
+ | distribute commercially licensed software with Platinum software
+ | and do not wish to distribute the source code for the commercially
+ | licensed software under version 2, or (at your option) any later
+ | version, of the GNU General Public License (the "GPL") must enter
+ | into a commercial license agreement with Plutinosoft, LLC.
+ | licensing@plutinosoft.com
+-|  
++|
+ | This program is distributed in the hope that it will be useful,
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@@ -26,7 +26,7 @@
+ |
+ | You should have received a copy of the GNU General Public License
+ | along with this program; see the file LICENSE.txt. If not, write to
+-| the Free Software Foundation, Inc., 
++| the Free Software Foundation, Inc.,
+ | 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ | http://www.gnu.org/licenses/gpl-2.0.html
+ |
+@@ -115,8 +115,7 @@ PLT_DeviceData::GetDescriptionUrl(const char* ip_address)
+ /*----------------------------------------------------------------------
+ |   PLT_DeviceData::SetURLBase
+ +---------------------------------------------------------------------*/
+-NPT_Result
+-PLT_DeviceData::SetURLBase(NPT_HttpUrl& url) 
++NPT_Result PLT_DeviceData::SetURLBase(NPT_HttpUrl& url)
+ {
+     // only http scheme supported
+     m_URLBase.SetScheme(url.GetScheme());
+@@ -139,7 +138,7 @@ PLT_DeviceData::SetURLBase(NPT_HttpUrl& url)
+     m_URLBase.SetPath(path, true);
+ 
+     return NPT_SUCCESS;
+-}    
++}
+ 
+ /*----------------------------------------------------------------------
+ |   PLT_DeviceData::GetURLBase
+@@ -171,10 +170,7 @@ PLT_DeviceData::NormalizeURL(const NPT_String& url)
+ /*----------------------------------------------------------------------
+ |   PLT_DeviceData::GetIconUrl
+ +---------------------------------------------------------------------*/
+-NPT_String
+-PLT_DeviceData::GetIconUrl(const char* mimetype, 
+-                           NPT_Int32   maxsize, 
+-                           NPT_Int32   maxdepth)
++NPT_String PLT_DeviceData::GetIconUrl(const char* mimetype, NPT_Int32 maxsize, NPT_Int32 maxdepth)
+ {
+     PLT_DeviceIcon icon;
+ 
+@@ -211,7 +207,7 @@ PLT_DeviceData::UpdateConfigId()
+         // prevent value to underflow
+         nextConfigId>0?--nextConfigId:++nextConfigId;
+     }
+-    
++
+     m_ConfigId = nextConfigId;
+ }
+ 
+@@ -249,12 +245,12 @@ PLT_DeviceData::GenerateNextBootId()
+ /*----------------------------------------------------------------------
+ |   PLT_DeviceData::SetLeaseTime
+ +---------------------------------------------------------------------*/
+-NPT_Result   
+-PLT_DeviceData::SetLeaseTime(NPT_TimeInterval lease_time, NPT_TimeStamp lease_time_last_update /* = 0 */) 
++NPT_Result PLT_DeviceData::SetLeaseTime(NPT_TimeInterval lease_time,
++                                        NPT_TimeStamp lease_time_last_update /* = 0 */)
+ {
+     // Enforce 10 seconds min lease time
+     m_LeaseTime = (lease_time.ToSeconds()>=10)?lease_time:*PLT_Constants::GetInstance().GetDefaultDeviceLease();
+-    
++
+     // get current time as last update time if none passed
+     if ((double)lease_time_last_update == 0.) {
+         NPT_System::GetCurrentTimeStamp(lease_time_last_update);
+@@ -266,8 +262,7 @@ PLT_DeviceData::SetLeaseTime(NPT_TimeInterval lease_time, NPT_TimeStamp lease_ti
+ /*----------------------------------------------------------------------
+ |   PLT_DeviceData::GetLeaseTimeLastUpdate
+ +---------------------------------------------------------------------*/
+-NPT_TimeStamp 
+-PLT_DeviceData::GetLeaseTimeLastUpdate() 
++NPT_TimeStamp PLT_DeviceData::GetLeaseTimeLastUpdate()
+ {
+     return m_LeaseTimeLastUpdate;
+ }
+@@ -301,7 +296,7 @@ NPT_Result
+ PLT_DeviceData::AddEmbeddedDevice(PLT_DeviceDataReference& device)
+ {
+     UpdateConfigId();
+-    
++
+     device->m_ParentUUID = m_UUID;
+     return m_EmbeddedDevices.Add(device);
+ }
+@@ -366,12 +361,9 @@ template <class T>
+ class PLT_GetDescriptionIterator
+ {
+ public:
+-    PLT_GetDescriptionIterator<T>(NPT_XmlElementNode* parent) :
+-      m_Parent(parent) {}
++  PLT_GetDescriptionIterator(NPT_XmlElementNode* parent) : m_Parent(parent) {}
+ 
+-      NPT_Result operator()(T& data) const {
+-          return data->GetDescription(m_Parent);
+-      }
++  NPT_Result operator()(T& data) const { return data->GetDescription(m_Parent); }
+ 
+ private:
+     NPT_XmlElementNode* m_Parent;
+@@ -397,13 +389,14 @@ PLT_DeviceData::GetDescription(NPT_XmlElementNode* root, NPT_XmlElementNode** de
+     NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(device, "modelName", m_ModelName));
+     if (!m_ModelNumber.IsEmpty()) NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(device, "modelNumber", m_ModelNumber));
+     if (!m_SerialNumber.IsEmpty()) NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(device, "serialNumber", m_SerialNumber));
+-    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(device, "modelURL", m_ModelURL)); // moved after modelNumber to go around a bug in UCTT 
++    NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(
++        device, "modelURL", m_ModelURL)); // moved after modelNumber to go around a bug in UCTT
+     NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(device, "UDN", "uuid:" + m_UUID));
+-    
++
+     if (!m_PresentationURL.IsEmpty()) {
+         NPT_CHECK_SEVERE(PLT_XmlHelper::AddChildText(device, "presentationURL", m_PresentationURL));
+     }
+-    
++
+     // Extra info not in UPnP specs
+     NPT_CHECK(OnAddExtraInfo(device));
+ 
+@@ -439,7 +432,7 @@ PLT_DeviceData::GetDescription(NPT_XmlElementNode* root, NPT_XmlElementNode** de
+     // services
+     NPT_XmlElementNode* services = new NPT_XmlElementNode("serviceList");
+     NPT_CHECK_SEVERE(device->AddChild(services));
+-    NPT_CHECK_SEVERE(m_Services.ApplyUntil(PLT_GetDescriptionIterator<PLT_Service*>(services), 
++    NPT_CHECK_SEVERE(m_Services.ApplyUntil(PLT_GetDescriptionIterator<PLT_Service*>(services),
+                                            NPT_UntilResultNotEquals(NPT_SUCCESS)));
+ 
+     // PS3 support
+@@ -456,7 +449,7 @@ PLT_DeviceData::GetDescription(NPT_XmlElementNode* root, NPT_XmlElementNode** de
+         NPT_CHECK_SEVERE(device->AddChild(deviceList));
+ 
+         NPT_CHECK_SEVERE(m_EmbeddedDevices.ApplyUntil(
+-            PLT_GetDescriptionIterator<PLT_DeviceDataReference>(deviceList), 
++            PLT_GetDescriptionIterator<PLT_DeviceDataReference>(deviceList),
+             NPT_UntilResultNotEquals(NPT_SUCCESS)));
+     }
+ 
+@@ -497,12 +490,11 @@ cleanup:
+ /*----------------------------------------------------------------------
+ |   PLT_DeviceData::SetDescription
+ +---------------------------------------------------------------------*/
+-NPT_Result
+-PLT_DeviceData::SetDescription(PLT_DeviceDataReference&      root_device,
+-                               NPT_TimeInterval              leasetime,
+-                               NPT_HttpUrl                   description_url,
+-                               const char*                   description, 
+-                               const NPT_HttpRequestContext& context)
++NPT_Result PLT_DeviceData::SetDescription(PLT_DeviceDataReference& root_device,
++                                          NPT_TimeInterval leasetime,
++                                          NPT_HttpUrl description_url,
++                                          const char* description,
++                                          const NPT_HttpRequestContext& context)
+ {
+     NPT_XmlParser       parser;
+     NPT_XmlNode*        tree = NULL;
+@@ -510,25 +502,24 @@ PLT_DeviceData::SetDescription(PLT_DeviceDataReference&      root_device,
+     NPT_XmlElementNode* root = NULL;
+     NPT_String          URLBase;
+     NPT_String          configId;
+-    
++
+     // create new device if none passed
+     if (root_device.IsNull()) {
+         root_device = new PLT_DeviceData(description_url, "", leasetime);
+     }
+-    
++
+     res = parser.Parse(description, tree);
+     NPT_CHECK_LABEL_SEVERE(res, cleanup);
+ 
+     root = tree->AsElementNode();
+-    if (!root || 
+-        root->GetTag() != "root" || 
+-        !root->GetNamespace() || 
+-        *root->GetNamespace() != "urn:schemas-upnp-org:device-1-0") {
+-        NPT_LOG_INFO_1("root namespace is invalid: %s", 
+-            (root&&root->GetNamespace())?root->GetNamespace()->GetChars():"null");
+-        NPT_CHECK_LABEL_SEVERE(NPT_FAILURE, cleanup);
++    if (!root || root->GetTag() != "root" || !root->GetNamespace() ||
++        *root->GetNamespace() != "urn:schemas-upnp-org:device-1-0")
++    {
++      NPT_LOG_INFO_1("root namespace is invalid: %s",
++                     (root && root->GetNamespace()) ? root->GetNamespace()->GetChars() : "null");
++      NPT_CHECK_LABEL_SEVERE(NPT_FAILURE, cleanup);
+     }
+-    
++
+     // look for optional URLBase element
+     if (NPT_SUCCEEDED(PLT_XmlHelper::GetChildText(root, "URLBase", URLBase))) {
+         NPT_HttpUrl url(URLBase);
+@@ -550,7 +541,7 @@ PLT_DeviceData::SetDescription(PLT_DeviceDataReference&      root_device,
+     }
+ 
+     res = SetDescriptionDevice(root_device, device, context);
+-    
++
+     // reset configId if and set it back from root attribute
+     root_device->m_ConfigId = 0;
+     if (NPT_SUCCEEDED(PLT_XmlHelper::GetAttribute(root, "configId", configId))) {
+@@ -569,15 +560,14 @@ cleanup:
+ /*----------------------------------------------------------------------
+ |   PLT_DeviceData::SetDescriptionDevice
+ +---------------------------------------------------------------------*/
+-NPT_Result
+-PLT_DeviceData::SetDescriptionDevice(PLT_DeviceDataReference&      device,
+-                                     NPT_XmlElementNode*           device_node, 
+-                                     const NPT_HttpRequestContext& context)
++NPT_Result PLT_DeviceData::SetDescriptionDevice(PLT_DeviceDataReference& device,
++                                                NPT_XmlElementNode* device_node,
++                                                const NPT_HttpRequestContext& context)
+ {
+     NPT_Result res;
+-    
++
+     device->m_LocalIfaceIp = context.GetLocalAddress().GetIpAddress();
+-    
++
+     NPT_CHECK_SEVERE(PLT_XmlHelper::GetChildText(device_node, "deviceType", device->m_DeviceType));
+     NPT_CHECK_SEVERE(PLT_XmlHelper::GetChildText(device_node, "UDN", device->m_UUID));
+ 
+@@ -629,18 +619,18 @@ PLT_DeviceData::SetDescriptionDevice(PLT_DeviceDataReference&      device,
+         for( int k = 0 ; k < (int)services.GetItemCount(); k++) {
+             NPT_String type, id, url;
+             PLT_XmlHelper::GetChildText(services[k], "serviceType", type);
+-            PLT_XmlHelper::GetChildText(services[k], "serviceId", id);    
++            PLT_XmlHelper::GetChildText(services[k], "serviceId", id);
+             PLT_Service* service = new PLT_Service(device.AsPointer(), type, id, NULL);
+-            
++
+             PLT_XmlHelper::GetChildText(services[k], "SCPDURL", url);
+             service->SetSCPDURL(url);
+-            
++
+             PLT_XmlHelper::GetChildText(services[k], "controlURL", url);
+             service->SetControlURL(url);
+-            
++
+             PLT_XmlHelper::GetChildText(services[k], "eventSubURL", url);
+             service->SetEventSubURL(url);
+-            
++
+             if (NPT_FAILED(res = device->AddService(service))) {
+                 delete service;
+                 return res;
+@@ -653,14 +643,17 @@ PLT_DeviceData::SetDescriptionDevice(PLT_DeviceDataReference&      device,
+     if (deviceList) {
+         NPT_Array<NPT_XmlElementNode*> devices;
+         PLT_XmlHelper::GetChildren(deviceList, devices, "device");
+-        for (int k = 0; k<(int)devices.GetItemCount(); k++) {    
+-            // create an embedded device with same url base and leasetime as parent
+-            PLT_DeviceDataReference embedded_device(new PLT_DeviceData(device->m_URLDescription, "", device->m_LeaseTime));
+-            NPT_CHECK_SEVERE(PLT_DeviceData::SetDescriptionDevice(embedded_device, devices[k], context));
+-            device->AddEmbeddedDevice(embedded_device);
++        for (int k = 0; k < (int)devices.GetItemCount(); k++)
++        {
++          // create an embedded device with same url base and leasetime as parent
++          PLT_DeviceDataReference embedded_device(
++              new PLT_DeviceData(device->m_URLDescription, "", device->m_LeaseTime));
++          NPT_CHECK_SEVERE(
++              PLT_DeviceData::SetDescriptionDevice(embedded_device, devices[k], context));
++          device->AddEmbeddedDevice(embedded_device);
+         }
+     }
+-    
++
+     // TODO: Parse extra DLNA stuff
+ 
+     return NPT_SUCCESS;
+@@ -670,20 +663,17 @@ PLT_DeviceData::SetDescriptionDevice(PLT_DeviceDataReference&      device,
+ /*----------------------------------------------------------------------
+ |   PLT_DeviceData::FindEmbeddedDevice
+ +---------------------------------------------------------------------*/
+-NPT_Result
+-PLT_DeviceData::FindEmbeddedDevice(const char*              uuid, 
+-                                   PLT_DeviceDataReference& device)
+-{
+-    NPT_Result res = NPT_ContainerFind(m_EmbeddedDevices, 
+-        PLT_DeviceDataFinder(uuid), 
+-        device);
+-    if (NPT_SUCCEEDED(res)) return res;
+-
+-    for (int i=0; i<(int)m_EmbeddedDevices.GetItemCount(); i++) {
+-        res = m_EmbeddedDevices[i]->FindEmbeddedDevice(
+-            uuid, 
+-            device);
+-        if (NPT_SUCCEEDED(res)) return res;
++NPT_Result PLT_DeviceData::FindEmbeddedDevice(const char* uuid, PLT_DeviceDataReference& device)
++{
++  NPT_Result res = NPT_ContainerFind(m_EmbeddedDevices, PLT_DeviceDataFinder(uuid), device);
++  if (NPT_SUCCEEDED(res))
++    return res;
++
++  for (int i = 0; i < (int)m_EmbeddedDevices.GetItemCount(); i++)
++  {
++    res = m_EmbeddedDevices[i]->FindEmbeddedDevice(uuid, device);
++    if (NPT_SUCCEEDED(res))
++      return res;
+     }
+ 
+     return NPT_FAILURE;
+@@ -692,20 +682,18 @@ PLT_DeviceData::FindEmbeddedDevice(const char*              uuid,
+ /*----------------------------------------------------------------------
+ |   PLT_DeviceData::FindEmbeddedDeviceByType
+ +---------------------------------------------------------------------*/
+-NPT_Result
+-PLT_DeviceData::FindEmbeddedDeviceByType(const char*              type, 
+-                                         PLT_DeviceDataReference& device)
+-{
+-    NPT_Result res = NPT_ContainerFind(m_EmbeddedDevices, 
+-        PLT_DeviceDataFinderByType(type), 
+-        device);
+-    if (NPT_SUCCEEDED(res)) return res;
+-
+-    for (int i=0; i<(int)m_EmbeddedDevices.GetItemCount(); i++) {
+-        res = m_EmbeddedDevices[i]->FindEmbeddedDeviceByType(
+-            type, 
+-            device);
+-        if (NPT_SUCCEEDED(res)) return res;
++NPT_Result PLT_DeviceData::FindEmbeddedDeviceByType(const char* type,
++                                                    PLT_DeviceDataReference& device)
++{
++  NPT_Result res = NPT_ContainerFind(m_EmbeddedDevices, PLT_DeviceDataFinderByType(type), device);
++  if (NPT_SUCCEEDED(res))
++    return res;
++
++  for (int i = 0; i < (int)m_EmbeddedDevices.GetItemCount(); i++)
++  {
++    res = m_EmbeddedDevices[i]->FindEmbeddedDeviceByType(type, device);
++    if (NPT_SUCCEEDED(res))
++      return res;
+     }
+ 
+     return NPT_FAILURE;
+@@ -719,9 +707,7 @@ PLT_DeviceData::FindServiceById(const char* id, PLT_Service*& service)
+ {
+     // do not try to find it within embedded devices, since different
+     // embedded devices could have an identical service
+-    return NPT_ContainerFind(m_Services, 
+-        PLT_ServiceIDFinder(id),
+-        service);
++    return NPT_ContainerFind(m_Services, PLT_ServiceIDFinder(id), service);
+ }
+ 
+ /*----------------------------------------------------------------------
+@@ -732,9 +718,7 @@ PLT_DeviceData::FindServiceByType(const char* type, PLT_Service*& service)
+ {
+     // do not try to find it within embedded devices, since different
+     // embedded devices could have an identical service
+-    return NPT_ContainerFind(m_Services, 
+-        PLT_ServiceTypeFinder(type), 
+-        service);
++    return NPT_ContainerFind(m_Services, PLT_ServiceTypeFinder(type), service);
+ }
+ 
+ /*----------------------------------------------------------------------
+@@ -745,33 +729,28 @@ PLT_DeviceData::FindServiceByName(const char* name, PLT_Service*& service)
+ {
+     // do not try to find it within embedded devices, since different
+     // embedded devices could have an identical service
+-    return NPT_ContainerFind(m_Services, 
+-        PLT_ServiceNameFinder(name), 
+-        service);
++    return NPT_ContainerFind(m_Services, PLT_ServiceNameFinder(name), service);
+ }
+ 
+ /*----------------------------------------------------------------------
+ |   PLT_DeviceData::FindServiceBySCPDURL
+ +---------------------------------------------------------------------*/
+-NPT_Result
+-PLT_DeviceData::FindServiceBySCPDURL(const char*   url,
+-                                     PLT_Service*& service, 
+-                                     bool          recursive /* = false */)
+-{
+-    NPT_Result res = NPT_ContainerFind(
+-        m_Services, 
+-        PLT_ServiceSCPDURLFinder(url), 
+-        service);
+-    if (NPT_SUCCEEDED(res)) return res;
+-
+-    if (recursive) {
+-		for (int i=0; i<(int)m_EmbeddedDevices.GetItemCount(); i++) {
+-            res = m_EmbeddedDevices[i]->FindServiceBySCPDURL(
+-                url, 
+-                service,
+-                recursive);
+-            if (NPT_SUCCEEDED(res)) return res;
+-        }
++NPT_Result PLT_DeviceData::FindServiceBySCPDURL(const char* url,
++                                                PLT_Service*& service,
++                                                bool recursive /* = false */)
++{
++  NPT_Result res = NPT_ContainerFind(m_Services, PLT_ServiceSCPDURLFinder(url), service);
++  if (NPT_SUCCEEDED(res))
++    return res;
++
++  if (recursive)
++  {
++    for (int i = 0; i < (int)m_EmbeddedDevices.GetItemCount(); i++)
++    {
++      res = m_EmbeddedDevices[i]->FindServiceBySCPDURL(url, service, recursive);
++      if (NPT_SUCCEEDED(res))
++        return res;
++    }
+     }
+ 
+     return NPT_FAILURE;
+@@ -780,24 +759,22 @@ PLT_DeviceData::FindServiceBySCPDURL(const char*   url,
+ /*----------------------------------------------------------------------
+ |   PLT_DeviceData::FindServiceByControlURL
+ +---------------------------------------------------------------------*/
+-NPT_Result
+-PLT_DeviceData::FindServiceByControlURL(const char*   url, 
+-                                        PLT_Service*& service, 
+-                                        bool          recursive /* = false */)
+-{
+-    NPT_Result res = NPT_ContainerFind(m_Services, 
+-        PLT_ServiceControlURLFinder(url), 
+-        service);
+-    if (NPT_SUCCEEDED(res)) return res;
+-
+-    if (recursive) {
+-		for (int i=0; i<(int)m_EmbeddedDevices.GetItemCount(); i++) {
+-            res = m_EmbeddedDevices[i]->FindServiceByControlURL(
+-                url, 
+-                service,
+-                recursive);
+-            if (NPT_SUCCEEDED(res)) return res;
+-        }
++NPT_Result PLT_DeviceData::FindServiceByControlURL(const char* url,
++                                                   PLT_Service*& service,
++                                                   bool recursive /* = false */)
++{
++  NPT_Result res = NPT_ContainerFind(m_Services, PLT_ServiceControlURLFinder(url), service);
++  if (NPT_SUCCEEDED(res))
++    return res;
++
++  if (recursive)
++  {
++    for (int i = 0; i < (int)m_EmbeddedDevices.GetItemCount(); i++)
++    {
++      res = m_EmbeddedDevices[i]->FindServiceByControlURL(url, service, recursive);
++      if (NPT_SUCCEEDED(res))
++        return res;
++    }
+     }
+ 
+     return NPT_FAILURE;
+@@ -806,25 +783,23 @@ PLT_DeviceData::FindServiceByControlURL(const char*   url,
+ /*----------------------------------------------------------------------
+ |   PLT_DeviceData::FindServiceByEventSubURL
+ +---------------------------------------------------------------------*/
+-NPT_Result
+-PLT_DeviceData::FindServiceByEventSubURL(const char*   url, 
+-                                         PLT_Service*& service, 
+-                                         bool          recursive /* = false */)
+-{       
+-    NPT_Result res = NPT_ContainerFind(m_Services, 
+-        PLT_ServiceEventSubURLFinder(url), 
+-        service);
+-    if (NPT_SUCCEEDED(res)) return res;
+-
+-    if (recursive) {
+-        for (int i=0; i<(int)m_EmbeddedDevices.GetItemCount(); i++) {
+-            res = m_EmbeddedDevices[i]->FindServiceByEventSubURL(
+-                url, 
+-                service,
+-                recursive);
+-            if (NPT_SUCCEEDED(res)) return res;
+-        }
++NPT_Result PLT_DeviceData::FindServiceByEventSubURL(const char* url,
++                                                    PLT_Service*& service,
++                                                    bool recursive /* = false */)
++{
++  NPT_Result res = NPT_ContainerFind(m_Services, PLT_ServiceEventSubURLFinder(url), service);
++  if (NPT_SUCCEEDED(res))
++    return res;
++
++  if (recursive)
++  {
++    for (int i = 0; i < (int)m_EmbeddedDevices.GetItemCount(); i++)
++    {
++      res = m_EmbeddedDevices[i]->FindServiceByEventSubURL(url, service, recursive);
++      if (NPT_SUCCEEDED(res))
++        return res;
+     }
++  }
+ 
+-    return NPT_FAILURE;
++  return NPT_FAILURE;
+ }
+diff --git a/lib/libUPnP/Platinum/Source/Core/PltHttpClientTask.h b/lib/libUPnP/Platinum/Source/Core/PltHttpClientTask.h
+index 62ac723cd0..931807385f 100644
+--- a/lib/libUPnP/Platinum/Source/Core/PltHttpClientTask.h
++++ b/lib/libUPnP/Platinum/Source/Core/PltHttpClientTask.h
+@@ -11,14 +11,14 @@
+ | as published by the Free Software Foundation; either version 2
+ | of the License, or (at your option) any later version.
+ |
+-| OEMs, ISVs, VARs and other distributors that combine and 
++| OEMs, ISVs, VARs and other distributors that combine and
+ | distribute commercially licensed software with Platinum software
+ | and do not wish to distribute the source code for the commercially
+ | licensed software under version 2, or (at your option) any later
+ | version, of the GNU General Public License (the "GPL") must enter
+ | into a commercial license agreement with Plutinosoft, LLC.
+ | licensing@plutinosoft.com
+-|  
++|
+ | This program is distributed in the hope that it will be useful,
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@@ -26,7 +26,7 @@
+ |
+ | You should have received a copy of the GNU General Public License
+ | along with this program; see the file LICENSE.txt. If not, write to
+-| the Free Software Foundation, Inc., 
++| the Free Software Foundation, Inc.,
+ | 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ | http://www.gnu.org/licenses/gpl-2.0.html
+ |
+@@ -52,7 +52,7 @@
+ /**
+  The PLT_HttpClientSocketTask class is the base class used to send a HTTP request
+  asynchronously using a task (thread). It supports persistent connections
+- and HTTP pipelining with automatic fallback and reconnection when HTTP 1.0 
++ and HTTP pipelining with automatic fallback and reconnection when HTTP 1.0
+  is used.
+  */
+ class PLT_HttpClientSocketTask : public PLT_ThreadTask
+@@ -60,24 +60,23 @@ class PLT_HttpClientSocketTask : public PLT_ThreadTask
+ friend class PLT_ThreadTask;
+ 
+ public:
+-    PLT_HttpClientSocketTask(NPT_HttpRequest* request = NULL, 
+-                             bool             wait_forever = false);
+-    ~PLT_HttpClientSocketTask() override;
++  PLT_HttpClientSocketTask(NPT_HttpRequest* request = NULL, bool wait_forever = false);
++  ~PLT_HttpClientSocketTask() override;
+ 
+-    virtual NPT_Result AddRequest(NPT_HttpRequest* request);
+-    virtual NPT_Result SetHttpClientConfig(const NPT_HttpClient::Config& config);
++  virtual NPT_Result AddRequest(NPT_HttpRequest* request);
++  virtual NPT_Result SetHttpClientConfig(const NPT_HttpClient::Config& config);
+ 
+ protected:
+     // PLT_ThreadTask methods
+     void DoAbort() override;
+     void DoRun() override;
+ 
+-    virtual NPT_Result ProcessResponse(NPT_Result                    res, 
+-                                       const NPT_HttpRequest&        request, 
++    virtual NPT_Result ProcessResponse(NPT_Result res,
++                                       const NPT_HttpRequest& request,
+                                        const NPT_HttpRequestContext& context,
+-                                       NPT_HttpResponse*             response);
++                                       NPT_HttpResponse* response);
+ 
+-private:
++  private:
+     NPT_Result GetNextRequest(NPT_HttpRequest*& request, NPT_Timeout timeout_ms);
+ 
+ protected:
+@@ -97,22 +96,23 @@ template <class T>
+ class PLT_HttpClientTask : public PLT_HttpClientSocketTask
+ {
+ public:
+-    PLT_HttpClientTask<T>(const NPT_HttpUrl& url, T* data) : 
+-        PLT_HttpClientSocketTask(new NPT_HttpRequest(url, 
+-                                                     "GET", 
+-                                                     NPT_HTTP_PROTOCOL_1_1)), 
+-                                 m_Data(data) {}
++  PLT_HttpClientTask(const NPT_HttpUrl& url, T* data)
++    : PLT_HttpClientSocketTask(new NPT_HttpRequest(url, "GET", NPT_HTTP_PROTOCOL_1_1)), m_Data(data)
++  {
++  }
++
+  protected:
+-    ~PLT_HttpClientTask<T>() override {}
++   ~PLT_HttpClientTask() override {}
+ 
+-protected:
+-    // PLT_HttpClientSocketTask method
+-    NPT_Result ProcessResponse(NPT_Result                    res, 
+-                               const NPT_HttpRequest&        request, 
+-                               const NPT_HttpRequestContext& context, 
+-                               NPT_HttpResponse*             response) override {
+-        return m_Data->ProcessResponse(res, request, context, response);
+-    }
++ protected:
++   // PLT_HttpClientSocketTask method
++   NPT_Result ProcessResponse(NPT_Result res,
++                              const NPT_HttpRequest& request,
++                              const NPT_HttpRequestContext& context,
++                              NPT_HttpResponse* response) override
++   {
++     return m_Data->ProcessResponse(res, request, context, response);
++   }
+ 
+ protected:
+     T* m_Data;
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaCache.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaCache.h
+index 8e365d807e..790599216f 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaCache.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaCache.h
+@@ -11,14 +11,14 @@
+ | as published by the Free Software Foundation; either version 2
+ | of the License, or (at your option) any later version.
+ |
+-| OEMs, ISVs, VARs and other distributors that combine and 
++| OEMs, ISVs, VARs and other distributors that combine and
+ | distribute commercially licensed software with Platinum software
+ | and do not wish to distribute the source code for the commercially
+ | licensed software under version 2, or (at your option) any later
+ | version, of the GNU General Public License (the "GPL") must enter
+ | into a commercial license agreement with Plutinosoft, LLC.
+ | licensing@plutinosoft.com
+-|  
++|
+ | This program is distributed in the hope that it will be useful,
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@@ -26,7 +26,7 @@
+ |
+ | You should have received a copy of the GNU General Public License
+ | along with this program; see the file LICENSE.txt. If not, write to
+-| the Free Software Foundation, Inc., 
++| the Free Software Foundation, Inc.,
+ | 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ | http://www.gnu.org/licenses/gpl-2.0.html
+ |
+@@ -48,9 +48,9 @@
+ |   PLT_MediaCache
+ +---------------------------------------------------------------------*/
+ /**
+- The PLT_MediaCache template provides a way to hold references to object in 
+- memory. 
+- */ 
++ The PLT_MediaCache template provides a way to hold references to object in
++ memory.
++ */
+ template <typename T, typename U>
+ class PLT_MediaCache
+ {
+@@ -58,8 +58,8 @@ public:
+     typedef typename NPT_Map<NPT_String,T>::Entry ElementEntry;
+     typedef typename NPT_List<ElementEntry*>::Iterator ElementIterator;
+ 
+-    PLT_MediaCache<T,U>() {}
+-    virtual ~PLT_MediaCache<T,U>() {}
++    PLT_MediaCache() {}
++    virtual ~PLT_MediaCache() {}
+ 
+     NPT_Result Put(const char* root, const char* key, T& value, U* tag = NULL);
+     NPT_Result Get(const char* root, const char* key, T& value, U* tag = NULL);
+@@ -95,13 +95,8 @@ PLT_MediaCache<T,U>::GenerateKey(const char* root, const char* key)
+ /*----------------------------------------------------------------------
+ |   PLT_MediaCache::Put
+ +---------------------------------------------------------------------*/
+-template <typename T, typename U>
+-inline
+-NPT_Result
+-PLT_MediaCache<T,U>::Put(const char* root,
+-                         const char* key, 
+-                         T&          value,
+-                         U*          tag)
++template<typename T, typename U>
++inline NPT_Result PLT_MediaCache<T, U>::Put(const char* root, const char* key, T& value, U* tag)
+ {
+     NPT_AutoLock lock(m_Mutex);
+ 
+@@ -110,9 +105,9 @@ PLT_MediaCache<T,U>::Put(const char* root,
+ 
+     m_Items.Erase(fullkey);
+     NPT_CHECK(m_Items.Put(fullkey, value));
+-    
++
+     if (tag) NPT_CHECK(m_Tags.Put(fullkey, *tag));
+-    
++
+     return NPT_SUCCESS;
+ }
+ 
+@@ -131,10 +126,10 @@ PLT_MediaCache<T,U>::Get(const char* root,
+ 
+     NPT_String fullkey = GenerateKey(root, key);
+     if (fullkey.GetLength() == 0) return NPT_ERROR_INVALID_PARAMETERS;
+-    
++
+     T* _value = NULL;
+     NPT_CHECK(m_Items.Get(fullkey, _value));
+-    
++
+     U* _tag;
+     if (tag) {
+         m_Tags.Get(fullkey, _tag);
+@@ -148,10 +143,8 @@ PLT_MediaCache<T,U>::Get(const char* root,
+ /*----------------------------------------------------------------------
+ |   PLT_MediaCache::Clear
+ +---------------------------------------------------------------------*/
+-template <typename T, typename U>
+-inline
+-NPT_Result 
+-PLT_MediaCache<T,U>::Clear(const char* root, const char* key) 
++template<typename T, typename U>
++inline NPT_Result PLT_MediaCache<T, U>::Clear(const char* root, const char* key)
+ {
+     NPT_AutoLock lock(m_Mutex);
+ 
+@@ -182,8 +175,8 @@ PLT_MediaCache<T,U>::Clear(const char* root)
+ {
+     NPT_AutoLock lock(m_Mutex);
+ 
+-    if (!root || root[0]=='\0') 
+-        return m_Items.Clear();
++    if (!root || root[0] == '\0')
++      return m_Items.Clear();
+ 
+     NPT_String key = GenerateKey(root, "");
+     ElementIterator entries = m_Items.GetEntries().GetFirstItem();
+-- 
+2.33.1
+

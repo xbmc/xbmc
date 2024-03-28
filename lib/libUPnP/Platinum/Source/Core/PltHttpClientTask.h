@@ -11,14 +11,14 @@
 | as published by the Free Software Foundation; either version 2
 | of the License, or (at your option) any later version.
 |
-| OEMs, ISVs, VARs and other distributors that combine and 
+| OEMs, ISVs, VARs and other distributors that combine and
 | distribute commercially licensed software with Platinum software
 | and do not wish to distribute the source code for the commercially
 | licensed software under version 2, or (at your option) any later
 | version, of the GNU General Public License (the "GPL") must enter
 | into a commercial license agreement with Plutinosoft, LLC.
 | licensing@plutinosoft.com
-|  
+|
 | This program is distributed in the hope that it will be useful,
 | but WITHOUT ANY WARRANTY; without even the implied warranty of
 | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -26,7 +26,7 @@
 |
 | You should have received a copy of the GNU General Public License
 | along with this program; see the file LICENSE.txt. If not, write to
-| the Free Software Foundation, Inc., 
+| the Free Software Foundation, Inc.,
 | 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 | http://www.gnu.org/licenses/gpl-2.0.html
 |
@@ -52,7 +52,7 @@
 /**
  The PLT_HttpClientSocketTask class is the base class used to send a HTTP request
  asynchronously using a task (thread). It supports persistent connections
- and HTTP pipelining with automatic fallback and reconnection when HTTP 1.0 
+ and HTTP pipelining with automatic fallback and reconnection when HTTP 1.0
  is used.
  */
 class PLT_HttpClientSocketTask : public PLT_ThreadTask
@@ -60,24 +60,23 @@ class PLT_HttpClientSocketTask : public PLT_ThreadTask
 friend class PLT_ThreadTask;
 
 public:
-    PLT_HttpClientSocketTask(NPT_HttpRequest* request = NULL, 
-                             bool             wait_forever = false);
-    ~PLT_HttpClientSocketTask() override;
+  PLT_HttpClientSocketTask(NPT_HttpRequest* request = NULL, bool wait_forever = false);
+  ~PLT_HttpClientSocketTask() override;
 
-    virtual NPT_Result AddRequest(NPT_HttpRequest* request);
-    virtual NPT_Result SetHttpClientConfig(const NPT_HttpClient::Config& config);
+  virtual NPT_Result AddRequest(NPT_HttpRequest* request);
+  virtual NPT_Result SetHttpClientConfig(const NPT_HttpClient::Config& config);
 
 protected:
     // PLT_ThreadTask methods
     void DoAbort() override;
     void DoRun() override;
 
-    virtual NPT_Result ProcessResponse(NPT_Result                    res, 
-                                       const NPT_HttpRequest&        request, 
+    virtual NPT_Result ProcessResponse(NPT_Result res,
+                                       const NPT_HttpRequest& request,
                                        const NPT_HttpRequestContext& context,
-                                       NPT_HttpResponse*             response);
+                                       NPT_HttpResponse* response);
 
-private:
+  private:
     NPT_Result GetNextRequest(NPT_HttpRequest*& request, NPT_Timeout timeout_ms);
 
 protected:
@@ -97,22 +96,23 @@ template <class T>
 class PLT_HttpClientTask : public PLT_HttpClientSocketTask
 {
 public:
-    PLT_HttpClientTask<T>(const NPT_HttpUrl& url, T* data) : 
-        PLT_HttpClientSocketTask(new NPT_HttpRequest(url, 
-                                                     "GET", 
-                                                     NPT_HTTP_PROTOCOL_1_1)), 
-                                 m_Data(data) {}
- protected:
-    ~PLT_HttpClientTask<T>() override {}
+  PLT_HttpClientTask(const NPT_HttpUrl& url, T* data)
+    : PLT_HttpClientSocketTask(new NPT_HttpRequest(url, "GET", NPT_HTTP_PROTOCOL_1_1)), m_Data(data)
+  {
+  }
 
-protected:
-    // PLT_HttpClientSocketTask method
-    NPT_Result ProcessResponse(NPT_Result                    res, 
-                               const NPT_HttpRequest&        request, 
-                               const NPT_HttpRequestContext& context, 
-                               NPT_HttpResponse*             response) override {
-        return m_Data->ProcessResponse(res, request, context, response);
-    }
+ protected:
+   ~PLT_HttpClientTask() override {}
+
+ protected:
+   // PLT_HttpClientSocketTask method
+   NPT_Result ProcessResponse(NPT_Result res,
+                              const NPT_HttpRequest& request,
+                              const NPT_HttpRequestContext& context,
+                              NPT_HttpResponse* response) override
+   {
+     return m_Data->ProcessResponse(res, request, context, response);
+   }
 
 protected:
     T* m_Data;
