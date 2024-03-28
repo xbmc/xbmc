@@ -64,6 +64,7 @@ public:
   static uint32_t FourCCWithoutAlpha(uint32_t fourcc);
 
   void SetInFenceFd(int fd) { m_inFenceFd = fd; }
+  bool FindPlanes(uint32_t format, uint64_t modifier);
   int TakeOutFenceFd()
   {
     int fd{-1};
@@ -89,13 +90,13 @@ protected:
   int m_inFenceFd{-1};
   int m_outFenceFd{-1};
 
+  std::vector<std::unique_ptr<CDRMCrtc>> m_crtcs;
   std::vector<std::unique_ptr<CDRMPlane>> m_planes;
 
 private:
   bool FindConnector();
   bool FindEncoder();
   bool FindCrtc();
-  bool FindPlanes();
   bool FindPreferredMode();
   bool RestoreOriginalMode();
   RESOLUTION_INFO GetResolutionInfo(drmModeModeInfoPtr mode);
@@ -106,7 +107,6 @@ private:
 
   std::vector<std::unique_ptr<CDRMConnector>> m_connectors;
   std::vector<std::unique_ptr<CDRMEncoder>> m_encoders;
-  std::vector<std::unique_ptr<CDRMCrtc>> m_crtcs;
 };
 
 }

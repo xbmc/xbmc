@@ -33,6 +33,7 @@ public:
   bool InitDrm() override;
   void DestroyDrm() override;
   bool AddProperty(CDRMObject* object, const char* name, uint64_t value);
+  void SortPlanes();
 
   bool DisplayHardwareScalingEnabled();
 

@@ -506,6 +506,19 @@ void CDVDVideoCodecDRMPRIME::SetPictureParams(VideoPicture* pVideoPicture)
   pVideoPicture->iWidth = m_pFrame->width;
   pVideoPicture->iHeight = m_pFrame->height;
 
+  /* according to ffmpeg devs crop fields in AVFrame are not always maintained actively
+   * and may cause under-shot buffers or mis-aligned strides if not implemented correctly
+   * in decoders. drm_prime frames on the other hand has their own memory allocators,
+   * and as long as the plane number is single, there should be no future regression
+   * related to usage of crop fields.
+   */
+  AVDRMFrameDescriptor* desc = reinterpret_cast<AVDRMFrameDescriptor*>(m_pFrame->data[0]);
+  if (m_pFrame->format == AV_PIX_FMT_DRM_PRIME && desc->nb_layers == 1)
+  {
+    pVideoPicture->iXOffset = m_pFrame->crop_left;
+    pVideoPicture->iYOffset = m_pFrame->crop_top;
+  }
+
   double aspect_ratio = 0;
   AVRational pixel_aspect = m_pFrame->sample_aspect_ratio;
   if (pixel_aspect.num)
