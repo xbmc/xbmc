@@ -1069,7 +1069,11 @@ bool CFileItem::IsPicture() const
 
 bool CFileItem::IsLyrics() const
 {
-  return URIUtils::HasExtension(m_strPath, ".cdg|.lrc");
+  static const std::vector<std::string> extensions = {
+    ".cdg",
+    ".lrc"
+  };
+  return URIUtils::HasExtension(m_strPath, extensions);
 }
 
 bool CFileItem::IsSubtitle() const

@@ -1219,7 +1219,11 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic,
     {
       CURL url(m_slides.at(m_iCurrentSlide)->GetPath());
       const std::string& strHostName = url.GetHostName();
-      if (URIUtils::HasExtension(strHostName, ".cbr|.cbz"))
+      static const std::vector<std::string> extensions = {
+        ".cbr",
+        ".cbz"
+      };
+      if (URIUtils::HasExtension(strHostName, extensions))
       {
         m_Image[iPic]->m_bIsComic = true;
         m_Image[iPic]->Move((float)m_Image[iPic]->GetOriginalWidth(),

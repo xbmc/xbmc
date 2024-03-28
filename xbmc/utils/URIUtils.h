@@ -70,6 +70,39 @@ public:
   static bool HasExtension(const std::string& strFileName, const std::string& strExtensions);
   static bool HasExtension(const CURL& url, const std::string& strExtensions);
 
+  /*!
+   * \brief Check if filename have any of the listed extensions
+   *
+   * \param[in] strFileName Path or URL to check
+   * \param[in] extList List of '.' prefixed lowercase extensions
+   * \return \e true if strFileName have any one of the extensions.
+   *
+   * \note The check is case insensitive for strFileName, but requires
+   * extList content to be lowercase. Returns false when strFileName or
+   * extList is empty.
+   *
+   * \sa GetExtension
+   *
+   * ------------------------------------------------------------------------
+   *
+   * **Example:**
+   * ~~~~~~~~~~~~~{.cpp}
+   * static const std::vector<std::string> list = {
+   *   ".mkv",
+   *   ".mp4",
+   *   ".avi",
+   *   ".m4v"
+   * };
+   *
+   * if (URIUtils::HasExtension(fileNameAndPath, list))
+   * {
+   *   ...
+   * }
+   * ~~~~~~~~~~~~~
+   */
+  static bool HasExtension(const std::string& strFileName, const std::vector<std::string>& extList);
+  static bool HasExtension(const CURL& url, const std::vector<std::string>& extList);
+
   static void RemoveExtension(std::string& strFileName);
   static std::string ReplaceExtension(const std::string& strFile,
                                      const std::string& strNewExtension);
