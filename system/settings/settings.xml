@@ -123,6 +123,19 @@
             <formatlabel>14047</formatlabel>
           </control>
         </setting>
+        <setting id="videoplayer.hqscalerprecision" type="integer" label="39198" help="39199">
+          <requirement>HAS_GL</requirement>
+          <level>2</level>
+          <default>10</default>
+          <constraints>
+            <options>
+              <option label="39200">8</option>
+              <option label="39201">10</option>
+              <option label="39202">16</option>
+            </options>
+          </constraints>
+          <control type="spinner" format="string" />
+        </setting>
         <setting id="videoplayer.usesuperresolution" type="boolean" label="13417" help="39194">
           <requirement>HAS_DX</requirement>
           <dependencies>

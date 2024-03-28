@@ -119,5 +119,9 @@ vec4 process()
 
 #endif
 
+#if defined(KODI_GAMMA_LINEARIZATION_FAST)
+  rgb.rgb = sqrt(rgb.rgb);
+#endif
+
   return rgb;
 }
