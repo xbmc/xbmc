@@ -1794,6 +1794,26 @@ int CVideoDatabase::AddSet(const std::string& strSet,
   return -1;
 }
 
+void CVideoDatabase::UpdateSet(int idSet,
+                               const std::string& title /* = "" */,
+                               const std::string& overview /* = "" */)
+{
+  try
+  {
+    if (m_pDB == nullptr || m_pDS == nullptr)
+      return;
+
+    const std::string sql =
+        PrepareSQL("UPDATE sets SET strSet = '%s', strOverview = '%s' WHERE idSet = %i",
+                   title.c_str(), overview.c_str(), idSet);
+    m_pDS->exec(sql);
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, idSet);
+  }
+}
+
 int CVideoDatabase::AddTag(const std::string& name)
 {
   if (name.empty())
@@ -8140,6 +8160,19 @@ bool CVideoDatabase::GetMoviesNav(const std::string& strBaseDir, CFileItemList& 
 
   Filter filter;
   return GetMoviesByWhere(videoUrl.ToString(), filter, items, sortDescription, getDetails);
+}
+
+bool CVideoDatabase::GetMoviesBySet(const std::string& baseDir, CFileItemList& items, int idSet)
+{
+  CVideoDbUrl videoUrl;
+  if (!videoUrl.FromString(baseDir))
+    return false;
+
+  if (idSet > 0)
+    videoUrl.AddOption("setid", idSet);
+
+  Filter filter;
+  return GetMoviesByWhere(videoUrl.ToString(), filter, items, SortDescription(), VideoDbDetailsAll);
 }
 
 namespace

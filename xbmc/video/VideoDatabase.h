@@ -850,6 +850,8 @@ public:
   bool GetRecentlyAddedMusicVideosNav(const std::string& strBaseDir, CFileItemList& items, unsigned int limit=0, int getDetails = VideoDbDetailsNone);
   bool GetInProgressTvShowsNav(const std::string& strBaseDir, CFileItemList& items, unsigned int limit=0, int getDetails = VideoDbDetailsNone);
 
+  bool GetMoviesBySet(const std::string& baseDir, CFileItemList& items, int idSet);
+
   bool HasContent();
   bool HasContent(VideoDbContentType type);
   bool HasSets() const;
@@ -1030,6 +1032,7 @@ public:
   void SetMovieSet(int idMovie, int idSet);
   bool SetVideoUserRating(int dbId, int rating, const MediaType& mediaType);
   bool GetUseAllExternalAudioForVideo(const std::string& videoPath);
+  void UpdateSet(int idSet, const std::string& title = "", const std::string& overview = "");
 
   std::string GetSetByNameLike(const std::string& nameLike) const;
 
