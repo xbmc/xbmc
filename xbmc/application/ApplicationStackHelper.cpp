@@ -76,7 +76,8 @@ bool CApplicationStackHelper::InitializeStack(const CFileItem & item)
     SetRegisteredStack(GetStackPartFileItem(i), stack);
     SetRegisteredStackPartNumber(GetStackPartFileItem(i), i);
   }
-  m_currentStackIsDiscImageStack = URIUtils::IsDiscImageStack(item.GetDynPath());
+  m_currentStackIsDiscImageStack =
+      URIUtils::IsDiscImageStack(item.GetDynPath()) || URIUtils::IsDiscStack(item.GetDynPath());
 
   return true;
 }
@@ -210,7 +211,7 @@ std::optional<int> CApplicationStackHelper::InitializeStackStartPartAndOffset(co
   return startoffset;
 }
 
-bool CApplicationStackHelper::IsPlayingISOStack() const
+bool CApplicationStackHelper::IsPlayingDiscStack() const
 {
   return m_currentStack->Size() > 0 && m_currentStackIsDiscImageStack;
 }

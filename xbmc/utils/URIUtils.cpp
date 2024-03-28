@@ -777,6 +777,16 @@ bool URIUtils::IsDVD(const std::string& strFile)
   return false;
 }
 
+bool URIUtils::IsDVDFile(const std::string& file)
+{
+  return StringUtils::EndsWith(StringUtils::ToLower(file), "video_ts.ifo");
+}
+
+bool URIUtils::IsBDFile(const std::string& file)
+{
+  return StringUtils::EndsWith(StringUtils::ToLower(file), "index.bdmv");
+}
+
 bool URIUtils::IsStack(const std::string& strFile)
 {
   return IsProtocol(strFile, "stack");
@@ -867,6 +877,12 @@ bool URIUtils::IsDiscImage(const std::string& file)
 bool URIUtils::IsDiscImageStack(const std::string& file)
 {
   return IsStack(file) && IsDiscImage(CStackDirectory::GetFirstStackedFile(file));
+}
+
+bool URIUtils::IsDiscStack(const std::string& file)
+{
+  return IsStack(file) && (IsDVDFile(CStackDirectory::GetFirstStackedFile(file)) ||
+                           IsBDFile(CStackDirectory::GetFirstStackedFile(file)));
 }
 
 bool URIUtils::IsSpecial(const std::string& strFile)

@@ -71,7 +71,7 @@ void CApplicationPlayerCallback::OnPlayBackStarted(const CFileItem& file)
   auto& components = CServiceBroker::GetAppComponents();
   const auto stackHelper = components.GetComponent<CApplicationStackHelper>();
 
-  if (stackHelper->IsPlayingISOStack() || stackHelper->IsPlayingRegularStack())
+  if (stackHelper->IsPlayingDiscStack() || stackHelper->IsPlayingRegularStack())
     itemCurrentFile = std::make_shared<CFileItem>(*stackHelper->GetRegisteredStack(file));
   else
     itemCurrentFile = std::make_shared<CFileItem>(file);
@@ -187,6 +187,17 @@ void CApplicationPlayerCallback::OnPlayBackResumed()
 
 void CApplicationPlayerCallback::OnPlayBackStopped()
 {
+  // If playing a DVD/Bluray stack and using a menu then stop can be the only way
+  // to exit. Therefore, if part way through a stack assume we want to play the next
+  // stacked item
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto stackHelper = components.GetComponent<CApplicationStackHelper>();
+  if (stackHelper->IsPlayingDiscStack() && stackHelper->HasNextStackPartFileItem())
+  {
+    OnPlayBackEnded();
+    return;
+  }
+
   CLog::LogF(LOGDEBUG, "CApplication::OnPlayBackStopped");
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_STOPPED, 0, 0);

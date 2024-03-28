@@ -243,7 +243,9 @@ void CAdvancedSettings::Initialize()
                                         m_allExcludeFromScanRegExps.end());
 
   m_folderStackRegExps.clear();
-  m_folderStackRegExps.emplace_back("((cd|dvd|dis[ck])[0-9]+)$");
+  //m_folderStackRegExps.emplace_back("((cd|dvd|dis[ck])[0-9]+)$");
+  m_folderStackRegExps.emplace_back(
+      "(.*?)(?:[ _.-]*)((?:cd|dvd|p(?:(?:ar)?t)|dis[ck])[ _.-]*[0-9])$");
 
   m_videoStackRegExps.clear();
   m_videoStackRegExps.emplace_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck])[ _.-]*[0-9]+)(.*?)(\\.[^.]+)$");
