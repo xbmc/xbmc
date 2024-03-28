@@ -55,6 +55,7 @@ static const std::map<ActionName, ActionID> ActionMappings = {
     {"nextsubtitle", ACTION_NEXT_SUBTITLE},
     {"browsesubtitle", ACTION_BROWSE_SUBTITLE},
     {"cyclesubtitle", ACTION_CYCLE_SUBTITLE},
+    {"reversecyclesubtitle", ACTION_REVERSE_CYCLE_SUBTITLE},
     {"playerdebug", ACTION_PLAYER_DEBUG},
     {"playerdebugvideo", ACTION_PLAYER_DEBUG_VIDEO},
     {"codecinfo", ACTION_PLAYER_PROCESS_INFO},
