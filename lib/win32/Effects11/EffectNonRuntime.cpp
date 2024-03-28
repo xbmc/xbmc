@@ -12,8 +12,10 @@
 // http://go.microsoft.com/fwlink/p/?LinkId=271568
 //--------------------------------------------------------------------------------------
 
-#include "pchfx.h"
 #include "SOParser.h"
+#include "pchfx.h"
+
+#include <memory>
 
 namespace D3DX11Effects
 {
@@ -1119,7 +1121,7 @@ HRESULT CEffect::BindToDevice(ID3D11Device *pDevice, LPCSTR srcName)
     pDevice->AddRef();
     SAFE_RELEASE(m_pDevice);
     m_pDevice = pDevice;
-    VH( m_pDevice->CreateClassLinkage( &m_pClassLinkage ) );
+    VHR(m_pDevice->CreateClassLinkage(&m_pClassLinkage));
     SetDebugObjectName(m_pClassLinkage,srcName);
 
     // Create all constant buffers
@@ -1143,7 +1145,7 @@ HRESULT CEffect::BindToDevice(ID3D11Device *pDevice, LPCSTR srcName)
                 bufDesc.CPUAccessFlags = 0;
                 bufDesc.MiscFlags = 0;
 
-                VH( pDevice->CreateBuffer( &bufDesc, nullptr, &pCB->pD3DObject) );
+                VHR(pDevice->CreateBuffer(&bufDesc, nullptr, &pCB->pD3DObject));
                 SetDebugObjectName(pCB->pD3DObject, srcName );
                 
                 D3D11_SHADER_RESOURCE_VIEW_DESC viewDesc;
@@ -1152,7 +1154,8 @@ HRESULT CEffect::BindToDevice(ID3D11Device *pDevice, LPCSTR srcName)
                 viewDesc.Buffer.ElementOffset = 0;
                 viewDesc.Buffer.ElementWidth = pCB->Size / SType::c_RegisterSize;
 
-                VH( pDevice->CreateShaderResourceView( pCB->pD3DObject, &viewDesc, &pCB->TBuffer.pShaderResource) );
+                VHR(pDevice->CreateShaderResourceView(pCB->pD3DObject, &viewDesc,
+                                                      &pCB->TBuffer.pShaderResource));
                 SetDebugObjectName(pCB->TBuffer.pShaderResource, srcName );
             }
             else
@@ -1165,7 +1168,7 @@ HRESULT CEffect::BindToDevice(ID3D11Device *pDevice, LPCSTR srcName)
                 bufDesc.CPUAccessFlags = 0;
                 bufDesc.MiscFlags = 0;
 
-                VH( pDevice->CreateBuffer( &bufDesc, nullptr, &pCB->pD3DObject) );
+                VHR(pDevice->CreateBuffer(&bufDesc, nullptr, &pCB->pD3DObject));
                 SetDebugObjectName( pCB->pD3DObject, srcName );
                 pCB->TBuffer.pShaderResource = nullptr;
             }
@@ -1230,7 +1233,8 @@ HRESULT CEffect::BindToDevice(ID3D11Device *pDevice, LPCSTR srcName)
     {
         SAFE_RELEASE(pSampler->pD3DObject);
 
-        VH( m_pDevice->CreateSamplerState( &pSampler->BackingStore.SamplerDesc, &pSampler->pD3DObject) );
+        VHR(m_pDevice->CreateSamplerState(&pSampler->BackingStore.SamplerDesc,
+                                          &pSampler->pD3DObject));
         SetDebugObjectName( pSampler->pD3DObject, srcName );
     }
 
@@ -1256,7 +1260,7 @@ HRESULT CEffect::BindToDevice(ID3D11Device *pDevice, LPCSTR srcName)
         {
             // This is a geometry shader, process it's data
             CSOParser soParser;
-            VH( soParser.Parse(pShader->pReflectionData->pStreamOutDecls) );
+            VHR(soParser.Parse(pShader->pReflectionData->pStreamOutDecls));
             uint32_t strides[4];
             soParser.GetStrides( strides );
             hr = m_pDevice->CreateGeometryShaderWithStreamOutput(pShader->pReflectionData->pBytecode,
@@ -1299,7 +1303,7 @@ HRESULT CEffect::BindToDevice(ID3D11Device *pDevice, LPCSTR srcName)
         }
 
         // Update all dependency pointers
-        VH( pShader->OnDeviceBind() );
+        VHR(pShader->OnDeviceBind());
     }
 
     // Initialize the member data pointers for all variables
@@ -1886,7 +1890,6 @@ _Use_decl_annotations_
 HRESULT CEffect::CopyOptimizedTypePool( CEffect* pEffectSource, CPointerMappingTable& mappingTableTypes )
 {
     HRESULT hr = S_OK;
-    CEffectHeap* pOptimizedTypeHeap = nullptr;
 
     assert( pEffectSource->m_pOptimizedTypeHeap != 0 );
     _Analysis_assume_( pEffectSource->m_pOptimizedTypeHeap != 0 );
@@ -1894,8 +1897,10 @@ HRESULT CEffect::CopyOptimizedTypePool( CEffect* pEffectSource, CPointerMappingT
     assert( m_pStringPool == 0 );
     assert( m_pPooledHeap == 0 );
 
-    VN( pOptimizedTypeHeap = new CEffectHeap );
-    VH( pOptimizedTypeHeap->ReserveMemory( pEffectSource->m_pOptimizedTypeHeap->GetSize() ) );
+    std::unique_ptr<CEffectHeap> pOptimizedTypeHeap = std::make_unique<CEffectHeap>();
+
+    VNR(pOptimizedTypeHeap);
+    VHR(pOptimizedTypeHeap->ReserveMemory(pEffectSource->m_pOptimizedTypeHeap->GetSize()));
     CPointerMappingTable::CIterator mapIter;
 
     // first pass: move types over, build mapping table
@@ -2190,7 +2195,7 @@ HRESULT CEffect::OptimizeTypes(_Inout_ CPointerMappingTable *pMappingTable, _In_
     // find all child types, point them to the new location
     for (size_t i = 0; i < m_VariableCount; ++ i)
     {
-        VH( RemapType((SType**)&m_pVariables[i].pType, pMappingTable) );
+      VHR(RemapType((SType**)&m_pVariables[i].pType, pMappingTable));
     }
 
     uint32_t Members = m_pMemberInterfaces.GetSize();

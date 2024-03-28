@@ -53,24 +53,36 @@ using namespace D3DX11Debug;
 #define __BREAK_ON_FAIL 
 #endif
 
+// clang-format off
+// Disable clang format to keep the original style of these macros
 #define VA(x, action) { hr = (x); if (FAILED(hr)) { action; __BREAK_ON_FAIL;                     return hr;  } }
 #define VNA(x,action) {           if (!(x))       { action; __BREAK_ON_FAIL; hr = E_OUTOFMEMORY; goto lExit; } }
 #define VBA(x,action) {           if (!(x))       { action; __BREAK_ON_FAIL; hr = E_FAIL;        goto lExit; } }
 #define VHA(x,action) { hr = (x); if (FAILED(hr)) { action; __BREAK_ON_FAIL;                     goto lExit; } }
-
+#define VAR(x, action){ hr = (x); if (FAILED(hr)) { action; __BREAK_ON_FAIL;                     return hr;  } }
+#define VNAR(x, action) {         if (!(x))       { action; __BREAK_ON_FAIL; hr = E_OUTOFMEMORY; return hr;  } }
+#define VBAR(x, action) {         if (!(x))       { action; __BREAK_ON_FAIL; hr = E_FAIL;        return hr;  } }
+#define VHAR(x, action) { hr = (x); if (FAILED(hr)) { action; __BREAK_ON_FAIL;                   return hr;  } }
 #define V(x)          { VA (x, 0) }
 #define VN(x)         { VNA(x, 0) }
 #define VB(x)         { VBA(x, 0) }
 #define VH(x)         { VHA(x, 0) }
+#define VR(x)         { VAR(x, 0) }
+#define VNR(x)        { VNAR(x, 0) }
+#define VBR(x)        { VBAR(x, 0) }
+#define VHR(x)        { VHAR(x, 0) }
 
 #define VBD(x,str)         { VBA(x, DPF(1,str)) }
 #define VHD(x,str)         { VHA(x, DPF(1,str)) }
+#define VBDR(x, str)       { VBAR(x, DPF(1, str)) }
+#define VHDR(x, str)       { VHAR(x, DPF(1, str)) }
 
 #define VEASSERT(x)   { hr = (x); if (FAILED(hr)) { __BREAK_ON_FAIL; assert(!#x);                     goto lExit; } }
 #define VNASSERT(x)   {           if (!(x))       { __BREAK_ON_FAIL; assert(!#x); hr = E_OUTOFMEMORY; goto lExit; } }
 
 #define D3DX11FLTASSIGN(a,b)    { *reinterpret_cast< UINT32* >(&(a)) = *reinterpret_cast< UINT32* >(&(b)); }
 
+// clang-format on
 // Preferred data alignment -- must be a power of 2!
 static const uint32_t c_DataAlignment = sizeof(UINT_PTR);
 
@@ -433,37 +445,37 @@ public:
     {
         Clear();
 
-        for (size_t i=0; i<m_CurSize; i++)
-            SAFE_DELETE(((T**)m_pData)[i]);
+        for (size_t i = 0; i < this->m_CurSize; i++)
+          SAFE_DELETE(((T**)this->m_pData)[i]);
 
-        SAFE_DELETE_ARRAY(m_pData);
+        SAFE_DELETE_ARRAY(this->m_pData);
     }
 
     void Clear()
     {
         Empty();
-        SAFE_DELETE_ARRAY(m_pData);
-        m_MaxSize = 0;
+        SAFE_DELETE_ARRAY(this->m_pData);
+        this->m_MaxSize = 0;
     }
 
     void Empty()
     {
         // manually invoke destructor on all elements
-        for (size_t i = 0; i < m_CurSize; ++ i)
+        for (size_t i = 0; i < this->m_CurSize; ++i)
         {
-            SAFE_DELETE(((T**)m_pData)[i]);
+          SAFE_DELETE(((T**)this->m_pData)[i]);
         }
-        m_CurSize = 0;
-        m_hLastError = S_OK;
+        this->m_CurSize = 0;
+        this->m_hLastError = S_OK;
     }
 
     void Delete(_In_ uint32_t index)
     {
-        assert(index < m_CurSize);
+      assert(index < this->m_CurSize);
 
-        SAFE_DELETE(((T**)m_pData)[index]);
+      SAFE_DELETE(((T**)this->m_pData)[index]);
 
-        CEffectVector<T*>::Delete(index);
+      CEffectVector<T*>::Delete(index);
     }
 };
 
@@ -1247,9 +1259,9 @@ public:
 
     void Cleanup()
     {
-        CleanArray();
-        m_NumHashSlots = 0;
-        m_NumEntries = 0;
+      this->CleanArray();
+      this->m_NumHashSlots = 0;
+      this->m_NumEntries = 0;
     }
 
     ~CEffectHashTableWithPrivateHeap()
@@ -1273,16 +1285,17 @@ public:
         _Analysis_assume_(m_pPrivateHeap);
         assert(m_NumHashSlots > 0);
 
-        SHashEntry *pHashEntry;
-        uint32_t index = Hash % m_NumHashSlots;
+        auto pHashEntry =
+            new (*m_pPrivateHeap) typename CEffectHashTable<T, pfnIsEqual>::SHashEntry();
+        uint32_t index = Hash % this->m_NumHashSlots;
 
-        VN( pHashEntry = new(*m_pPrivateHeap) SHashEntry );
-        pHashEntry->pNext = m_rgpHashEntries[index];
+        VN(pHashEntry);
+        pHashEntry->pNext = this->m_rgpHashEntries[index];
         pHashEntry->Data = Data;
         pHashEntry->Hash = Hash;
-        m_rgpHashEntries[index] = pHashEntry;
+        this->m_rgpHashEntries[index] = pHashEntry;
 
-        ++ m_NumEntries;
+        ++this->m_NumEntries;
 
 lExit:
         return hr;
