@@ -8,8 +8,6 @@
 
 #include "utils/XTimeUtils.h"
 
-#include "PosixTimezone.h"
-
 #include <errno.h>
 #include <mutex>
 #include <time.h>
@@ -63,8 +61,6 @@ void GetLocalTime(SystemTime* systemTime)
   systemTime->minute = now.tm_min;
   systemTime->second = now.tm_sec;
   systemTime->milliseconds = 0;
-  // NOTE: localtime_r() is not required to set this, but we Assume that it's set here.
-  g_timezone.m_IsDST = now.tm_isdst;
 }
 
 int FileTimeToLocalFileTime(const FileTime* fileTime, FileTime* localFileTime)
@@ -101,7 +97,6 @@ int SystemTimeToFileTime(const SystemTime* systemTime, FileTime* fileTime)
   sysTime.tm_min = systemTime->minute;
   sysTime.tm_sec = systemTime->second;
   sysTime.tm_yday = dayoffset[sysTime.tm_mon] + (sysTime.tm_mday - 1);
-  sysTime.tm_isdst = g_timezone.m_IsDST;
 
   // If this is a leap year, and we're past the 28th of Feb, increment tm_yday.
   if (IsLeapYear(systemTime->year) && (sysTime.tm_yday > 58))

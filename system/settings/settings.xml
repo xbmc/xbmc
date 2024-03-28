@@ -4030,25 +4030,6 @@
           </dependencies>
           <control type="list" format="string" />
         </setting>
-        <setting id="locale.timezonecountry" type="string" label="14079" help="36117">
-          <level>1</level>
-          <default>default</default> <!-- will be properly set on startup -->
-          <constraints>
-            <options>timezonecountries</options>
-          </constraints>
-          <control type="list" format="string" />
-        </setting>
-        <setting id="locale.timezone" type="string" label="14080" help="36118">
-          <level>1</level>
-          <default>default</default> <!-- will be properly set on startup -->
-          <constraints>
-            <options>timezones</options>
-          </constraints>
-          <dependencies>
-            <dependency type="update" setting="locale.timezonecountry" />
-          </dependencies>
-          <control type="list" format="string" />
-        </setting>
         <setting id="locale.shortdateformat" type="string" label="14109" help="36173">
           <level>2</level>
           <default>regional</default>
