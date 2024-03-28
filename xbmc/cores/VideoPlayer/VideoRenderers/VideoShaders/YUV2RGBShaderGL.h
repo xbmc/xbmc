@@ -110,9 +110,12 @@ protected:
   GLint m_hGammaSrc = -1;
   GLint m_hGammaDstInv = -1;
   GLint m_hPrimMat = -1;
-  GLint m_hToneP1 = -1;
   GLint m_hCoefsDst = -1;
-  GLint m_hLuminance = -1;
+  GLint m_hReinhardParam1 = -1;
+  GLint m_hACESParam1 = -1;
+  GLint m_hACESParam2 = -1;
+  GLint m_hHableParam1 = -1;
+  GLint m_hHableParam2 = -1;
 
   // vertex shader attribute handles
   GLint m_hVertex = -1;

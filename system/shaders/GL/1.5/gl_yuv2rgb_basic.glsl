@@ -15,9 +15,12 @@ uniform float m_alpha;
 uniform mat3 m_primMat;
 uniform float m_gammaDstInv;
 uniform float m_gammaSrc;
-uniform float m_toneP1;
-uniform float m_luminance;
 uniform vec3 m_coefsDst;
+uniform float m_reinhardParam1;
+uniform float m_acesParam1;
+uniform float m_acesParam2;
+uniform float m_hableParam1;
+uniform float m_hableParam2;
 in vec2 m_cordY;
 in vec2 m_cordU;
 in vec2 m_cordV;
@@ -100,20 +103,20 @@ vec4 process()
 
 #if defined(KODI_TONE_MAPPING_REINHARD)
   float luma = dot(rgb.rgb, m_coefsDst);
-  rgb.rgb *= reinhard(luma) / luma;
+  rgb.rgb *= reinhard(luma);
 
 #elif defined(KODI_TONE_MAPPING_ACES)
   rgb.rgb = inversePQ(rgb.rgb);
-  rgb.rgb *= (10000.0 / m_luminance) * (2.0 / m_toneP1);
+  rgb.rgb *= m_acesParam1;
   rgb.rgb = aces(rgb.rgb);
-  rgb.rgb *= (1.24 / m_toneP1);
+  rgb.rgb *= m_acesParam2;
   rgb.rgb = pow(rgb.rgb, vec3(0.27));
 
 #elif defined(KODI_TONE_MAPPING_HABLE)
   rgb.rgb = inversePQ(rgb.rgb);
-  rgb.rgb *= m_toneP1;
-  float wp = m_luminance / 100.0;
-  rgb.rgb = hable(rgb.rgb * wp) / hable(vec3(wp));
+  rgb.rgb *= m_hableParam1;
+  rgb.rgb = hable(rgb.rgb);
+  rgb.rgb *= m_hableParam2;
   rgb.rgb = pow(rgb.rgb, vec3(1.0 / 2.2));
 #endif
 
