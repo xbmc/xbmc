@@ -9,6 +9,7 @@
 #pragma once
 
 #include "guilib/TextureFormats.h"
+#include "guilib/TextureScaling.h"
 
 #include <cstddef>
 #include <memory>
@@ -20,12 +21,6 @@ class IImage;
 #pragma pack(1)
 struct COLOR {unsigned char b,g,r,x;};	// Windows GDI expects 4bytes per color
 #pragma pack()
-
-enum class TEXTURE_SCALING
-{
-  LINEAR,
-  NEAREST,
-};
 
 /*!
 \ingroup textures
