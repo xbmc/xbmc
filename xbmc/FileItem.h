@@ -157,14 +157,6 @@ public:
   bool Exists(bool bUseCache = true) const;
 
   /*!
-   \brief Check whether an item is an optical media folder or its parent.
-    This will return the non-empty path to the playable entry point of the media
-    one or two levels down (VIDEO_TS.IFO for DVDs or index.bdmv for BDs).
-    The returned path will be empty if folder does not meet this criterion.
-   \return non-empty string if item is optical media folder, empty otherwise.
-   */
-  std::string GetOpticalMediaPath() const;
-  /*!
    \brief Check whether an item is a video item. Note that this returns true for
     anything with a video info tag, so that may include eg. folders.
    \return true if item is video, false otherwise.
