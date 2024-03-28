@@ -161,6 +161,7 @@ public:
               const std::string& strReleaseDate,
               const std::string& strOrigReleaseDate,
               std::string& strDiscSubtitle,
+              const std::string& strReleaseType,
               const int iTimesPlayed,
               int iStartOffset,
               int iEndOffset,
@@ -302,7 +303,7 @@ public:
                const std::string& strType,
                const std::string& strReleaseStatus,
                bool bCompilation,
-               CAlbum::ReleaseType releaseType);
+               MUSIC_INFO::AudioContentType contentType);
 
   /*! \brief retrieve an album, optionally with all songs.
    \param idAlbum the database id of the album.
@@ -333,7 +334,7 @@ public:
                   const std::string& strOrigReleaseDate,
                   bool bBoxedSet,
                   bool bCompilation,
-                  CAlbum::ReleaseType releaseType,
+                  MUSIC_INFO::AudioContentType contentType,
                   bool bScrapedMBID);
   bool ClearAlbumLastScrapedTime(int idAlbum);
   bool HasAlbumBeenScraped(int idAlbum);
@@ -342,8 +343,11 @@ public:
   // Audiobook
   /////////////////////////////////////////////////
   bool AddAudioBook(const CFileItem& item);
-  bool SetResumeBookmarkForAudioBook(const CFileItem& item, int bookmark);
-  bool GetResumeBookmarkForAudioBook(const CFileItem& item, int& bookmark);
+  bool SetResumeBookmarkForAudioBook(const CFileItem& item, int bookmark, int resumeTime);
+  bool GetResumeBookmarkForAudioBook(const CFileItem& item, int& bookmark, int& resumeTime);
+  int GetAudioBookCount();
+  bool IsAlbumAudiobook(const CFileItem& item);
+
 
   /*! \brief Checks if the given path is inside a folder that has already been scanned into the library
    \param path the path we want to check
@@ -1029,6 +1033,7 @@ private:
     song_dateAdded,
     song_dateNew,
     song_dateModified,
+    song_resumeTime,
     song_enumCount // end of the enum, do not add past here
   } SongFields;
 

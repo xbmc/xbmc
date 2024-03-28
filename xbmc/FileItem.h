@@ -38,6 +38,7 @@ class IAddon;
 namespace MUSIC_INFO
 {
   class CMusicInfoTag;
+  enum class AudioContentType;
 }
 class CVideoInfoTag;
 class CPictureInfoTag;

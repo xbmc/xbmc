@@ -104,6 +104,12 @@ enum class QueuePosition
   POSITION_END, // place at end of queue, after other items
 };
 
+enum MusicSelectAction
+{
+    MUSIC_SELECT_ACTION_PLAY,
+    MUSIC_SELECT_ACTION_RESUME,
+};
+
 /*! \brief Queue the given item in the currently active playlist. If none is active, put the
   item into the music playlist. Start playback of the playlist, if player is not already playing.
   \param item [in] the item to queue

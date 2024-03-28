@@ -61,6 +61,7 @@ CSong::CSong(CFileItem& item)
   strRecordLabel = tag.GetRecordLabel();
   strAlbumType = tag.GetMusicBrainzReleaseType();
   bCompilation = tag.GetCompilation();
+  strReleaseType = tag.GetAlbumReleaseTypeToString();
   embeddedArt = tag.GetCoverArtInfo();
   strFileName = tag.GetURL().empty() ? item.GetPath() : tag.GetURL();
   dateAdded = tag.GetDateAdded();
@@ -76,6 +77,7 @@ CSong::CSong(CFileItem& item)
   iBitRate = tag.GetBitRate();
   iChannels = tag.GetNoOfChannels();
   songVideoURL = tag.GetSongVideoURL();
+  chapterMarks = tag.GetChapters();
 }
 
 CSong::CSong()
@@ -282,6 +284,7 @@ void CSong::Clear()
   iSampleRate = 0;
   iChannels =  0;
   songVideoURL.clear();
+  resumeTime = -1;
 
   replayGain = ReplayGain();
 }

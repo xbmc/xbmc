@@ -466,6 +466,7 @@
 #define LIBRARY_HAS_ROLE            735
 #define LIBRARY_HAS_BOXSETS         736
 #define LIBRARY_HAS_NODE            737
+#define LIBRARY_HAS_AUDIOBOOKS      738
 
 #define SYSTEM_PLATFORM_LINUX       741
 #define SYSTEM_PLATFORM_WINDOWS     742

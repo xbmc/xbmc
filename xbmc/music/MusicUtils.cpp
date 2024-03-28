@@ -17,6 +17,7 @@
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "dialogs/GUIDialogBusy.h"
+#include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "filesystem/Directory.h"
@@ -33,6 +34,7 @@
 #include "playlists/PlayListFactory.h"
 #include "profiles/ProfileManager.h"
 #include "settings/Settings.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/IRunnable.h"
 #include "utils/FileUtils.h"
@@ -719,12 +721,15 @@ void PlayItem(const std::shared_ptr<CFileItem>& itemIn,
     item->SetCanQueue(true);
   }
 
-  if (item->m_bIsFolder)
+  if (item->m_bIsFolder &&
+      item->GetMusicInfoTag()->GetAlbumReleaseType() != AudioContentType::AUDIO_TYPE_AUDIOBOOK)
   {
     AddItemToPlayListAndPlay(item, nullptr, player);
   }
   else if (item->HasMusicInfoTag())
   {
+    if (item->GetMusicInfoTag()->GetAlbumReleaseType() == AudioContentType::AUDIO_TYPE_AUDIOBOOK)
+      mode = ContentUtils::PlayMode::PLAY_FROM_HERE;
     if (mode == ContentUtils::PlayMode::PLAY_FROM_HERE ||
         (mode == ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM && IsAutoPlayNextItem(*item)))
     {
@@ -746,6 +751,86 @@ void PlayItem(const std::shared_ptr<CFileItem>& itemIn,
         }
       }
 
+      std::shared_ptr <CFileItem> itemToResume = nullptr; // Pointer to item to resume 
+      int bookmark = 0;
+      int resumeTime = -1;
+      std::string path = GetMusicDbItemPath(*item);
+      CMusicDbUrl musicUrl;
+      musicUrl.FromString(path);
+      const CUrlOptions::UrlOptions& options = musicUrl.GetOptions();
+      bool disc_level = false;
+      if (options.find("discid") != options.end())
+        disc_level = true;
+      else if (options.find("disctitle") != options.end())
+        disc_level = true;
+      if (disc_level)
+        musicUrl.FromString(parentPath); // skip back a path if we are at disc level in gui
+      musicUrl.AppendPath("-2/"); // ignore any discs and just get the list of tracks
+      path = musicUrl.ToString();
+      CFileItemList contents;
+      CDirectory::GetDirectory(path, contents, "",0);
+      CMusicDatabase db;
+      if (!db.Open())
+        return;
+      db.GetResumeBookmarkForAudioBook(*item, bookmark, resumeTime);
+      db.Close();
+      if (bookmark > 0)
+      {// Find the item in the list that matches the bookmark
+        for (int i = 0; i <= contents.Size(); i++)
+        {
+          auto testitem = contents.Get(i);
+          if (testitem->GetMusicInfoTag()->GetTrackAndDiscNumber() == bookmark)
+          {
+            itemToResume = testitem;
+            break;
+          }
+        }
+      }
+      else // bookmark is zero or no bookmark so start with first item
+        itemToResume = contents[0];
+      if (bookmark != 0 )
+      {
+        std::string resumetitle = itemToResume->GetMusicInfoTag()->GetTitle();
+        bool multipleDiscs = item->GetMusicInfoTag()->GetTotalDiscs() > 1;
+
+        int resumedisc = itemToResume->GetMusicInfoTag()->GetTrackAndDiscNumber() >> 16;
+        if (!(resumedisc == 1 && multipleDiscs == false))
+          resumetitle = StringUtils::Format(g_localizeStrings.Get(29995), resumetitle,
+                                            std::to_string(resumedisc));
+        // ask the user if they want to play or resume
+        CContextButtons choices;
+        choices.Add(MUSIC_SELECT_ACTION_PLAY, 208); // 208 = Play
+        choices.Add(MUSIC_SELECT_ACTION_RESUME,
+                    StringUtils::Format(g_localizeStrings.Get(12022), resumetitle));//resume from ..
+
+        auto choice = CGUIDialogContextMenu::Show(choices);
+        if (choice < 0)
+          return;
+        if (choice == MUSIC_SELECT_ACTION_PLAY)
+        {
+          itemToResume = contents[0]; // start playing from first item
+          resumeTime = -1; // and start playing from the beginning of it
+        }
+      }
+      if (itemToResume)
+      {
+        int stepBack = CServiceBroker::GetSettingsComponent()
+                           ->GetAdvancedSettings()
+                           ->m_audiobookStepBackwards *
+                       1000;
+        if (resumeTime != -1 && resumeTime - stepBack > 5000)
+          resumeTime = resumeTime - stepBack;
+        else
+          resumeTime = -1;
+        // update db with new resumeTime (either skip back time if applicable or zero)
+        db.Open();
+        db.SetResumeBookmarkForAudioBook(
+            *itemToResume, itemToResume->GetMusicInfoTag()->GetTrackAndDiscNumber(), resumeTime);
+        db.Close();
+        const auto itemPath = std::make_shared<CFileItem>(path, true);
+        AddItemToPlayListAndPlay(itemPath, itemToResume, player);
+        return;
+      }
       const auto parentItem = std::make_shared<CFileItem>(parentPath, true);
       if (item->GetStartOffset() == STARTOFFSET_RESUME)
         parentItem->SetStartOffset(STARTOFFSET_RESUME);

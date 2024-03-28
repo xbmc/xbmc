@@ -583,11 +583,41 @@ CInfoScanner::INFO_RET CMusicInfoScanner::ScanTags(const CFileItemList& items,
     m_currentItem++;
 
     CMusicInfoTag& tag = *pItem->GetMusicInfoTag();
+    // variables for tags we want to preserve for m4b files (these are not read by taglib)
+    std::string chapter_title;
+    std::string desc;
+    int iDuration = 0;
+    int trackNo = 0;
+    if (pItem->IsType(".m4b")) //m4b type audiobook - generally used by Apple
+
+    { /* save tag values returned from CAudioBookFileDirectory.cpp.
+         Set SetLoaded to false so we call the tag reader to read any other tags that may be set on
+         the file(s). m4b files are basically mp4 files so taglib can read the tags and fill in
+         samplerate, bitrate and channel info.  It also loads embedded art.  It isn't chapter aware
+         so we restore the saved tag values for each chapter so that the library can display the
+         correct information.
+      */
+      chapter_title = pItem->GetMusicInfoTag()->GetTitle();
+      iDuration = pItem->GetMusicInfoTag()->GetDuration();
+      trackNo = pItem->GetMusicInfoTag()->GetTrackNumber();
+      desc = pItem->GetMusicInfoTag()->GetComment();
+      pItem->GetMusicInfoTag()->SetLoaded(false);
+    }
     if (!tag.Loaded())
     {
       std::unique_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(*pItem));
       if (nullptr != pLoader)
         pLoader->Load(pItem->GetPath(), tag);
+    if(pItem->IsType(".m4b"))
+      {
+        if (!chapter_title.empty())
+          pItem->GetMusicInfoTag()->SetTitle(chapter_title);// Chapter name from original tag
+        pItem->GetMusicInfoTag()->SetDuration(iDuration);// duration of chapter from original tag
+        pItem->GetMusicInfoTag()->SetTrackNumber(trackNo);
+        pItem->GetMusicInfoTag()->SetComment(desc); // comments are often used to describe a book
+        pItem->GetMusicInfoTag()->SetLoaded(true);
+        pItem->GetMusicInfoTag()->SetAudioType(AudioContentType::AUDIO_TYPE_AUDIOBOOK);
+      }
     }
 
     if (m_handle && m_itemCount>0)
@@ -698,7 +728,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
     bool tracksOverlap = false;
     bool hasAlbumArtist = false;
     bool isCompilation = true;
-    std::string old_DiscSubtitle;
+    std::string strThisReleaseType;
 
     std::map<std::string, std::vector<CSong *> > artists;
     for (VECSONGS::iterator song = songs.begin(); song != songs.end(); ++song)
@@ -710,8 +740,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
       if (!song->bCompilation)
         isCompilation = false;
 
-      if (song->strDiscSubtitle != old_DiscSubtitle)
-        old_DiscSubtitle = song->strDiscSubtitle;
+      strThisReleaseType = song->strReleaseType;
 
       // get primary artist
       std::string primary;
@@ -836,6 +865,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
        */
       CAlbum album;
       album.strAlbum = songsByAlbumName.first;
+      album.SetReleaseType(strThisReleaseType);
 
       //Split the albumartist sort string to try and get sort names for individual artists
       std::vector<std::string> sortnames = StringUtils::Split(albumartistsort, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
@@ -961,7 +991,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(const std::string& strDirectory, CFileI
 
     // mark albums without a title as singles
     if (album.strAlbum.empty())
-      album.releaseType = CAlbum::Single;
+      album.contentType = AudioContentType::AUDIO_TYPE_SINGLE;
 
     album.strPath = strDirectory;
     m_musicDatabase.AddAlbum(album, m_idSourcePath);

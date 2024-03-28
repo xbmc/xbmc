@@ -86,9 +86,12 @@ public:
   const std::string& GetStationName() const;
   const std::string& GetStationArt() const;
   const std::string& GetSongVideoURL() const;
+  const std::string GetAlbumReleaseTypeToString() const;
+  int GetResumeTime() const;
   const EmbeddedArtInfo &GetCoverArtInfo() const;
   const ReplayGain& GetReplayGain() const;
-  CAlbum::ReleaseType GetAlbumReleaseType() const;
+  AudioContentType GetAlbumReleaseType() const;
+  const std::map<int, std::vector<std::string>>& GetChapters() const;
 
   void SetURL(const std::string& strURL);
   void SetTitle(const std::string& strTitle);
@@ -147,7 +150,7 @@ public:
   void SetBoxset(bool boxset);
   void SetCoverArtInfo(size_t size, const std::string &mimeType);
   void SetReplayGain(const ReplayGain& aGain);
-  void SetAlbumReleaseType(CAlbum::ReleaseType releaseType);
+  void SetAudioType(MUSIC_INFO::AudioContentType contentType);
   void SetType(const MediaType& mediaType);
   void SetDiscSubtitle(const std::string& strDiscSubtitle);
   void SetTotalDiscs(int iDiscTotal);
@@ -159,6 +162,8 @@ public:
   void SetStationName(const std::string& strStationName); // name of online radio station
   void SetStationArt(const std::string& strStationArt);
   void SetSongVideoURL(const std::string& songVideoURL); // link to video of song
+  void SetResumeTime(const int resumeTime); // time in seconds to resume at in an audiobook chapter
+  void SetChapterMarks(const std::map <int, std::vector<std::string>>& chapters);
 
   /*! \brief Append a unique artist to the artist list
    Checks if we have this artist already added, and if not adds it to the songs artist list.
@@ -250,7 +255,8 @@ protected:
   int m_iDiscTotal;
   bool m_bBoxset;
   int m_iBPM;
-  CAlbum::ReleaseType m_albumReleaseType;
+  //CAlbum::ReleaseType m_albumReleaseType;
+  AudioContentType m_contentType;
   std::string m_strReleaseStatus;
   int m_samplerate;
   int m_channels;
@@ -258,6 +264,8 @@ protected:
   std::string m_stationName;
   std::string m_stationArt; // Used to fetch thumb URL for Shoutcasts
   std::string m_songVideoURL; // link to a video for a song
+  int m_resumeTime; // time in seconds to resume from in an audiobook chapter
+  std::map <int, std::vector<std::string> > m_chapters; // Ch No., name, start time, end time
 
   EmbeddedArtInfo m_coverArt; ///< art information
 

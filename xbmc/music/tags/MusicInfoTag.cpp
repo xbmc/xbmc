@@ -41,7 +41,7 @@ bool CMusicInfoTag::operator !=(const CMusicInfoTag& tag) const
     return true;
   if (m_iTrack != tag.m_iTrack)
     return true;
-  if (m_albumReleaseType != tag.m_albumReleaseType) return true;
+  if (m_contentType != tag.m_contentType) return true;
   return false;
 }
 
@@ -271,9 +271,9 @@ const ReplayGain& CMusicInfoTag::GetReplayGain() const
   return m_replayGain;
 }
 
-CAlbum::ReleaseType CMusicInfoTag::GetAlbumReleaseType() const
+AudioContentType CMusicInfoTag::GetAlbumReleaseType() const
 {
-  return m_albumReleaseType;
+  return m_contentType;
 }
 
 int CMusicInfoTag::GetBPM() const
@@ -326,6 +326,16 @@ const std::string& CMusicInfoTag::GetStationArt() const
 const std::string& CMusicInfoTag::GetSongVideoURL() const
 {
   return m_songVideoURL;
+}
+
+int CMusicInfoTag::GetResumeTime() const
+{
+  return m_resumeTime;
+}
+
+const std::string CMusicInfoTag::GetAlbumReleaseTypeToString() const
+{
+  return CAlbum::ReleaseTypeToString(m_contentType);
 }
 
 void CMusicInfoTag::SetURL(const std::string& strURL)
@@ -757,9 +767,9 @@ void CMusicInfoTag::SetReplayGain(const ReplayGain& aGain)
   m_replayGain = aGain;
 }
 
-void CMusicInfoTag::SetAlbumReleaseType(CAlbum::ReleaseType releaseType)
+void CMusicInfoTag::SetAudioType(AudioContentType contentType)
 {
-  m_albumReleaseType = releaseType;
+  m_contentType = contentType;
 }
 
 void CMusicInfoTag::SetType(const MediaType& mediaType)
@@ -782,6 +792,11 @@ void CMusicInfoTag::SetStationArt(const std::string& strStationArt)
 void CMusicInfoTag::SetSongVideoURL(const std::string& songVideoURL)
 {
   m_songVideoURL = songVideoURL;
+}
+
+void CMusicInfoTag::SetResumeTime(int resumeTime)
+{
+  m_resumeTime = resumeTime;
 }
 
 void CMusicInfoTag::SetArtist(const CArtist& artist)
@@ -831,7 +846,7 @@ void CMusicInfoTag::SetAlbum(const CAlbum& album)
   SetOriginalDate(album.strOrigReleaseDate);
   SetReleaseDate(album.strReleaseDate);
   SetBoxset(album.bBoxedSet);
-  SetAlbumReleaseType(album.releaseType);
+  SetAudioType(album.contentType);
   SetDateAdded(album.dateAdded);
   SetDateUpdated(album.dateUpdated);
   SetDateNew(album.dateNew);
@@ -968,9 +983,9 @@ void CMusicInfoTag::Serialize(CVariant& value) const
   value["compilationartist"] = m_bCompilation;
   value["compilation"] = m_bCompilation;
   if (m_type.compare(MediaTypeAlbum) == 0)
-    value["releasetype"] = CAlbum::ReleaseTypeToString(m_albumReleaseType);
+    value["releasetype"] = CAlbum::ReleaseTypeToString(m_contentType);
   else if (m_type.compare(MediaTypeSong) == 0)
-    value["albumreleasetype"] = CAlbum::ReleaseTypeToString(m_albumReleaseType);
+    value["albumreleasetype"] = CAlbum::ReleaseTypeToString(m_contentType);
   value["isboxset"] = m_bBoxset;
   value["totaldiscs"] = m_iDiscTotal;
   value["disctitle"] = m_strDiscSubtitle;
@@ -1078,7 +1093,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar << m_listeners;
     ar << m_coverArt;
     ar << m_cuesheet;
-    ar << static_cast<int>(m_albumReleaseType);
+    ar << static_cast<int>(m_contentType);
     ar << m_iBPM;
     ar << m_samplerate;
     ar << m_bitrate;
@@ -1146,7 +1161,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
 
     int albumReleaseType;
     ar >> albumReleaseType;
-    m_albumReleaseType = static_cast<CAlbum::ReleaseType>(albumReleaseType);
+    m_contentType = static_cast<AudioContentType>(albumReleaseType);
     ar >> m_iBPM;
     ar >> m_samplerate;
     ar >> m_bitrate;
@@ -1195,7 +1210,7 @@ void CMusicInfoTag::Clear()
   m_iAlbumId = -1;
   m_coverArt.Clear();
   m_replayGain = ReplayGain();
-  m_albumReleaseType = CAlbum::Album;
+  m_contentType = AudioContentType::AUDIO_TYPE_ALBUM;
   m_listeners = 0;
   m_Rating = 0;
   m_Userrating = 0;
@@ -1208,6 +1223,8 @@ void CMusicInfoTag::Clear()
   m_stationName.clear();
   m_stationArt.clear();
   m_songVideoURL.clear();
+  m_resumeTime = -1;
+  m_chapters.clear();
 }
 
 void CMusicInfoTag::AppendArtist(const std::string &artist)
@@ -1315,4 +1332,14 @@ std::string CMusicInfoTag::Trim(const std::string &value) const
   StringUtils::TrimLeft(trimmedValue, " ");
   StringUtils::TrimRight(trimmedValue, " \n\r");
   return trimmedValue;
+}
+
+void CMusicInfoTag::SetChapterMarks(const std::map<int, std::vector<std::string>>& chapters)
+{
+  m_chapters = chapters;
+}
+
+const std::map<int, std::vector<std::string>>& CMusicInfoTag::GetChapters() const
+{
+  return m_chapters;
 }
