@@ -240,6 +240,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   // OnPlayBackStarted to be made only once. Callback processing may be slower than player process
   // so clear signal flag first otherwise async stream processing could also make callback
   m_signalStarted = false;
+  CServiceBroker::GetDataCacheCore().SetFileItem(file);
   m_callback.OnPlayBackStarted(file);
 
   return true;

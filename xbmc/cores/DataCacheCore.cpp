@@ -8,6 +8,7 @@
 
 #include "DataCacheCore.h"
 
+#include "FileItem.h"
 #include "ServiceBroker.h"
 #include "cores/EdlEdit.h"
 
@@ -36,6 +37,7 @@ void CDataCacheCore::Reset()
     std::unique_lock<CCriticalSection> lock(m_stateSection);
     m_stateInfo = {};
     m_playerStateChanged = false;
+    m_item.reset();
   }
   {
     std::unique_lock<CCriticalSection> lock(m_videoPlayerSection);
@@ -482,6 +484,18 @@ int64_t CDataCacheCore::GetMaxTime()
 {
   std::unique_lock<CCriticalSection> lock(m_stateSection);
   return m_timeInfo.m_timeMax;
+}
+
+void CDataCacheCore::SetFileItem(const CFileItem& item)
+{
+  std::unique_lock<CCriticalSection> lock(m_stateSection);
+  m_item = std::make_shared<CFileItem>(item);
+}
+
+std::shared_ptr<CFileItem> CDataCacheCore::GetFileItem() const
+{
+  std::unique_lock<CCriticalSection> lock(m_stateSection);
+  return m_item;
 }
 
 float CDataCacheCore::GetPlayPercentage()
