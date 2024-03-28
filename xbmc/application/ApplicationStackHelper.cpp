@@ -81,7 +81,8 @@ bool CApplicationStackHelper::InitializeStack(const CFileItem & item)
   return true;
 }
 
-std::optional<int> CApplicationStackHelper::InitializeStackStartPartAndOffset(const CFileItem& item)
+std::optional<int64_t> CApplicationStackHelper::InitializeStackStartPartAndOffset(
+    const CFileItem& item)
 {
   CVideoDatabase dbs;
   int64_t startoffset = 0;
