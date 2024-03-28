@@ -15,6 +15,7 @@
 #include "filesystem/File.h"
 #include "filesystem/ResourceFile.h"
 #include "filesystem/XbtFile.h"
+#include "guilib/TextureBase.h"
 #include "guilib/iimage.h"
 #include "guilib/imagefactory.h"
 #include "utils/URIUtils.h"
@@ -48,70 +49,6 @@ CTexture::~CTexture()
 {
   KODI::MEMORY::AlignedFree(m_pixels);
   m_pixels = NULL;
-}
-
-void CTexture::Allocate(unsigned int width, unsigned int height, XB_FMT format)
-{
-  m_imageWidth = m_originalWidth = width;
-  m_imageHeight = m_originalHeight = height;
-  m_format = format;
-  m_orientation = 0;
-
-  m_textureWidth = m_imageWidth;
-  m_textureHeight = m_imageHeight;
-
-  if (m_format & XB_FMT_DXT_MASK)
-  {
-    while (GetPitch() < CServiceBroker::GetRenderSystem()->GetMinDXTPitch())
-      m_textureWidth += GetBlockSize();
-  }
-
-  if (!CServiceBroker::GetRenderSystem()->SupportsNPOT((m_format & XB_FMT_DXT_MASK) != 0))
-  {
-    m_textureWidth = PadPow2(m_textureWidth);
-    m_textureHeight = PadPow2(m_textureHeight);
-  }
-
-  if (m_format & XB_FMT_DXT_MASK)
-  {
-    // DXT textures must be a multiple of 4 in width and height
-    m_textureWidth = ((m_textureWidth + 3) / 4) * 4;
-    m_textureHeight = ((m_textureHeight + 3) / 4) * 4;
-  }
-  else
-  {
-    // align all textures so that they have an even width
-    // in some circumstances when we downsize a thumbnail
-    // which has an uneven number of pixels in width
-    // we crash in CPicture::ScaleImage in ffmpegs swscale
-    // because it tries to access beyond the source memory
-    // (happens on osx and ios)
-    // UPDATE: don't just update to be on an even width;
-    // ffmpegs swscale relies on a 16-byte stride on some systems
-    // so the textureWidth needs to be a multiple of 16. see ffmpeg
-    // swscale headers for more info.
-    m_textureWidth = ((m_textureWidth + 15) / 16) * 16;
-  }
-
-  // check for max texture size
-  #define CLAMP(x, y) { if (x > y) x = y; }
-  CLAMP(m_textureWidth, CServiceBroker::GetRenderSystem()->GetMaxTextureSize());
-  CLAMP(m_textureHeight, CServiceBroker::GetRenderSystem()->GetMaxTextureSize());
-  CLAMP(m_imageWidth, m_textureWidth);
-  CLAMP(m_imageHeight, m_textureHeight);
-
-  KODI::MEMORY::AlignedFree(m_pixels);
-  m_pixels = NULL;
-  if (GetPitch() * GetRows() > 0)
-  {
-    size_t size = GetPitch() * GetRows();
-    m_pixels = static_cast<unsigned char*>(KODI::MEMORY::AlignedMalloc(size, 32));
-
-    if (m_pixels == nullptr)
-    {
-      CLog::Log(LOGERROR, "{} - Could not allocate {} bytes. Out of memory.", __FUNCTION__, size);
-    }
-  }
 }
 
 void CTexture::Update(unsigned int width,
@@ -154,39 +91,6 @@ void CTexture::Update(unsigned int width,
 
   if (loadToGPU)
     LoadToGPU();
-}
-
-void CTexture::ClampToEdge()
-{
-  if (m_pixels == nullptr)
-    return;
-
-  unsigned int imagePitch = GetPitch(m_imageWidth);
-  unsigned int imageRows = GetRows(m_imageHeight);
-  unsigned int texturePitch = GetPitch(m_textureWidth);
-  unsigned int textureRows = GetRows(m_textureHeight);
-  if (imagePitch < texturePitch)
-  {
-    unsigned int blockSize = GetBlockSize();
-    unsigned char *src = m_pixels + imagePitch - blockSize;
-    unsigned char *dst = m_pixels;
-    for (unsigned int y = 0; y < imageRows; y++)
-    {
-      for (unsigned int x = imagePitch; x < texturePitch; x += blockSize)
-        memcpy(dst + x, src, blockSize);
-      dst += texturePitch;
-    }
-  }
-
-  if (imageRows < textureRows)
-  {
-    unsigned char *dst = m_pixels + imageRows * texturePitch;
-    for (unsigned int y = imageRows; y < textureRows; y++)
-    {
-      memcpy(dst, dst - texturePitch, texturePitch);
-      dst += texturePitch;
-    }
-  }
 }
 
 std::unique_ptr<CTexture> CTexture::LoadFromFile(const std::string& texturePath,
@@ -396,100 +300,4 @@ bool CTexture::LoadPaletted(unsigned int width,
   }
   ClampToEdge();
   return true;
-}
-
-unsigned int CTexture::PadPow2(unsigned int x)
-{
-  --x;
-  x |= x >> 1;
-  x |= x >> 2;
-  x |= x >> 4;
-  x |= x >> 8;
-  x |= x >> 16;
-  return ++x;
-}
-
-bool CTexture::SwapBlueRed(unsigned char* pixels,
-                           unsigned int height,
-                           unsigned int pitch,
-                           unsigned int elements,
-                           unsigned int offset)
-{
-  if (!pixels) return false;
-  unsigned char *dst = pixels;
-  for (unsigned int y = 0; y < height; y++)
-  {
-    dst = pixels + (y * pitch);
-    for (unsigned int x = 0; x < pitch; x+=elements)
-      std::swap(dst[x+offset], dst[x+2+offset]);
-  }
-  return true;
-}
-
-unsigned int CTexture::GetPitch(unsigned int width) const
-{
-  switch (m_format)
-  {
-  case XB_FMT_DXT1:
-    return ((width + 3) / 4) * 8;
-  case XB_FMT_DXT3:
-  case XB_FMT_DXT5:
-  case XB_FMT_DXT5_YCoCg:
-    return ((width + 3) / 4) * 16;
-  case XB_FMT_A8:
-    return width;
-  case XB_FMT_RGB8:
-    return (((width + 1)* 3 / 4) * 4);
-  case XB_FMT_RGBA8:
-  case XB_FMT_A8R8G8B8:
-  default:
-    return width*4;
-  }
-}
-
-unsigned int CTexture::GetRows(unsigned int height) const
-{
-  switch (m_format)
-  {
-  case XB_FMT_DXT1:
-    return (height + 3) / 4;
-  case XB_FMT_DXT3:
-  case XB_FMT_DXT5:
-  case XB_FMT_DXT5_YCoCg:
-    return (height + 3) / 4;
-  default:
-    return height;
-  }
-}
-
-unsigned int CTexture::GetBlockSize() const
-{
-  switch (m_format)
-  {
-  case XB_FMT_DXT1:
-    return 8;
-  case XB_FMT_DXT3:
-  case XB_FMT_DXT5:
-  case XB_FMT_DXT5_YCoCg:
-    return 16;
-  case XB_FMT_A8:
-    return 1;
-  default:
-    return 4;
-  }
-}
-
-bool CTexture::HasAlpha() const
-{
-  return m_hasAlpha;
-}
-
-void CTexture::SetMipmapping()
-{
-  m_mipmapping = true;
-}
-
-bool CTexture::IsMipmapped() const
-{
-  return m_mipmapping;
 }
