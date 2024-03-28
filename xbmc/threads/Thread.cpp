@@ -216,6 +216,7 @@ void CThread::StopThread(bool bWait /*= true*/)
     lock.unlock();
     if (!Join(std::chrono::milliseconds::max())) // eh?
       lthread->join();
+    delete lthread;
     m_thread = nullptr;
   }
 }
