@@ -143,4 +143,6 @@ private:
    \return true: the information of the item was modified. false: no change.
    */
   bool ShowInfo(const CFileItemPtr& item, const ADDON::ScraperPtr& content);
+
+  bool m_forceSelection;
 };

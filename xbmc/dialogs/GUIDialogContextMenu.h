@@ -88,6 +88,7 @@ enum CONTEXT_BUTTON
   CONTEXT_BUTTON_PLAY_NEXT,
   CONTEXT_BUTTON_NAVIGATE,
   CONTEXT_BUTTON_MANAGE_VIDEOVERSIONS,
+  CONTEXT_BUTTON_CHOOSE_PLAYLIST,
 };
 
 class CContextButtons : public std::vector< std::pair<size_t, std::string> >

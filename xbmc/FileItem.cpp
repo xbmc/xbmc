@@ -1227,8 +1227,10 @@ bool CFileItem::IsDVDFile(bool bVobs /*= true*/, bool bIfos /*= true*/) const
 bool CFileItem::IsBDFile() const
 {
   std::string strFileName = URIUtils::GetFileName(GetDynPath());
-  return (StringUtils::EqualsNoCase(strFileName, "index.bdmv") || StringUtils::EqualsNoCase(strFileName, "MovieObject.bdmv")
-          || StringUtils::EqualsNoCase(strFileName, "INDEX.BDM") || StringUtils::EqualsNoCase(strFileName, "MOVIEOBJ.BDM"));
+  return (StringUtils::EqualsNoCase(strFileName, "index.bdmv") ||
+          StringUtils::EqualsNoCase(strFileName, "MovieObject.bdmv") ||
+          StringUtils::EqualsNoCase(strFileName, "INDEX.BDM") ||
+          StringUtils::EqualsNoCase(strFileName, "MOVIEOBJ.BDM") || IsBlurayPlaylist());
 }
 
 bool CFileItem::IsRAR() const
@@ -1321,6 +1323,11 @@ bool CFileItem::IsProtectedBlurayDisc() const
     return true;
 
   return false;
+}
+
+bool CFileItem::IsBlurayPlaylist() const
+{
+  return StringUtils::EqualsNoCase(URIUtils::GetExtension(GetDynPath()), ".mpls");
 }
 
 bool CFileItem::IsCDDA() const
@@ -1669,6 +1676,9 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
   {
     if (item->HasProperty("item_start") || HasProperty("item_start"))
       return (item->GetProperty("item_start") == GetProperty("item_start"));
+    // See if we have associated a bluray playlist
+    if (IsBlurayPlaylist() || item->IsBlurayPlaylist())
+      return (GetDynPath() == item->GetDynPath());
     return true;
   }
   if (HasMusicInfoTag() && item->HasMusicInfoTag())
@@ -2097,6 +2107,22 @@ const std::string &CFileItem::GetDynPath() const
 void CFileItem::SetDynPath(const std::string &path)
 {
   m_strDynPath = path;
+}
+
+std::string CFileItem::GetBlurayPath() const
+{
+  if (IsBlurayPlaylist())
+  {
+    CURL url(GetDynPath());
+    CURL url2(url.GetHostName()); // strip bluray://
+    if (url2.IsProtocol("udf"))
+      // ISO
+      return url2.GetHostName(); // strip udf://
+    else if (url.IsProtocol("bluray"))
+      // BDMV
+      return url2.Get() + "BDMV/index.bdmv";
+  }
+  return GetDynPath();
 }
 
 void CFileItem::SetCueDocument(const CCueDocumentPtr& cuePtr)
@@ -3690,7 +3716,11 @@ std::string CFileItem::GetLocalMetadataPath() const
   if (m_bIsFolder && !IsFileFolder())
     return m_strPath;
 
-  std::string parent(URIUtils::GetParentPath(m_strPath));
+  std::string parent{};
+  if (IsBlurayPlaylist())
+    parent = URIUtils::GetParentPath(GetBlurayPath());
+  else
+    parent = URIUtils::GetParentPath(m_strPath);
   std::string parentFolder(parent);
   URIUtils::RemoveSlashAtEnd(parentFolder);
   parentFolder = URIUtils::GetFileName(parentFolder);
