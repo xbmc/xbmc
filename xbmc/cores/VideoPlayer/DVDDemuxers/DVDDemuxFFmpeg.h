@@ -177,5 +177,8 @@ protected:
   double m_dtsAtDisplayTime;
   bool m_seekToKeyFrame = false;
   double m_startTime = 0;
+
+private:
+  bool isFpsNonsense(const AVRational &frameRate);
 };
 
