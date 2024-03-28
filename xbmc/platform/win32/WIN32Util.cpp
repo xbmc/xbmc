@@ -1424,7 +1424,7 @@ HDR_STATUS CWIN32Util::GetWindowsHDRStatus()
               if (getColorInfo.advancedColorEnabled)
                 advancedColorEnabled = true;
 
-              if (getColorInfo.advancedColorSupported)
+              if (getColorInfo.advancedColorSupported && !getColorInfo.wideColorEnforced)
                 advancedColorSupported = true;
             }
 
