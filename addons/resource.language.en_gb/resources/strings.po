@@ -16587,7 +16587,14 @@ msgctxt "#25014"
 msgid "Manual"
 msgstr ""
 
-#empty strings from id 25015 to 29800
+#. A DVD playback mode and a option in the simplified DVD menu
+#: xbmc/filesystem/DVDDirectory.cpp
+#: system/settings/settings.xml
+msgctxt "#25015"
+msgid "Show DVD menu"
+msgstr ""
+
+#empty strings from id 25016 to 29800
 
 #: unused
 msgctxt "#29801"

@@ -69,6 +69,8 @@ public:
                            , CFileItemList &items
                            , const CHints &hints);
 
+  static bool GetDirectory(const std::string& path, CFileItemList& items, const CFileItem& item);
+
   using DirectoryEnumerationCallback = std::function<void(const std::shared_ptr<CFileItem>& item)>;
   using DirectoryFilter = std::function<bool(const std::shared_ptr<CFileItem>& folder)>;
 
