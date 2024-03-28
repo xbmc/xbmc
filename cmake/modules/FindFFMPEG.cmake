@@ -55,6 +55,11 @@ macro(buildFFMPEG)
                    -DOS=${OS}
                    -DCMAKE_AR=${CMAKE_AR})
   endif()
+
+  if(USE_LTO)
+    list(APPEND FFMPEG_OPTIONS -DUSE_LTO=ON)
+  endif()
+
   set(LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
   list(APPEND LINKER_FLAGS ${SYSTEM_LDFLAGS})
 
