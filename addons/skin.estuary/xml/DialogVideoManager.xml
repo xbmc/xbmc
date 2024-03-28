@@ -87,10 +87,6 @@
 				<align>top</align>
 				<scrolltime tween="quadratic">200</scrolltime>
 				<include content="DefaultDialogButton">
-					<param name="id" value="21" />
-					<param name="label" value="$LOCALIZE[208]" />
-				</include>
-				<include content="DefaultDialogButton">
 					<param name="id" value="22" />
 					<param name="label" value="$LOCALIZE[40014]" />
 					<param name="visible">Window.IsVisible(managevideoversions)</param>

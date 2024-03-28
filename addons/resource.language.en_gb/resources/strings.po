@@ -951,7 +951,6 @@ msgstr ""
 
 #. generic "play" (some sort of media) label used in different places
 #: addons/skin.estuary/xml/DialogVideoInfo.xml
-#: addons/skin.estuary/xml/DialogVideoManager.xml
 #: addons/skin.estuary/xml/SkinSettings.xml
 #: addons/skin.estuary/xml/Variables.xml
 #: xbmc/dialogs/GUIDialogPlayEject.cpp
@@ -24028,7 +24027,13 @@ msgctxt "#40038"
 msgid "The default version of a movie with multiple versions cannot be added to another movie. Please move or remove the other versions first."
 msgstr ""
 
-#empty strings with id 40039 to 40199
+#. Manage video extras context menu item
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
+msgctxt "#40039"
+msgid "Manage extras"
+msgstr ""
+
+#empty strings with id 40040 to 40199
 
 #. Select default video version setting
 #: system/settings/settings.xml
@@ -24091,7 +24096,6 @@ msgid "Play version using..."
 msgstr ""
 
 #. Button label for video versions
-#: addons/skin.estuary/xml/DialogVideoInfo.xml
 #: xbmc/video/guilib/VideoVersionHelper.cpp
 msgctxt "#40210"
 msgid "Versions"

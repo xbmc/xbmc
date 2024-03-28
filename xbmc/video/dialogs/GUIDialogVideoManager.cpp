@@ -38,7 +38,6 @@
 
 static constexpr unsigned int CONTROL_LABEL_TITLE = 2;
 
-static constexpr unsigned int CONTROL_BUTTON_PLAY = 21;
 static constexpr unsigned int CONTROL_BUTTON_REMOVE = 26;
 static constexpr unsigned int CONTROL_BUTTON_CHOOSE_ART = 27;
 
@@ -73,14 +72,7 @@ bool CGUIDialogVideoManager::OnMessage(CGUIMessage& message)
       {
         const int action{message.GetParam1()};
         if (action == ACTION_SELECT_ITEM || action == ACTION_MOUSE_LEFT_CLICK)
-        {
-          if (UpdateSelectedAsset())
-            SET_CONTROL_FOCUS(CONTROL_BUTTON_PLAY, 0);
-        }
-      }
-      else if (control == CONTROL_BUTTON_PLAY)
-      {
-        Play();
+          UpdateSelectedAsset();
       }
       else if (control == CONTROL_BUTTON_REMOVE)
       {
@@ -139,7 +131,6 @@ void CGUIDialogVideoManager::UpdateButtons()
   {
     CONTROL_ENABLE(CONTROL_BUTTON_CHOOSE_ART);
     CONTROL_ENABLE(CONTROL_BUTTON_REMOVE);
-    CONTROL_ENABLE(CONTROL_BUTTON_PLAY);
 
     SET_CONTROL_FOCUS(CONTROL_LIST_ASSETS, 0);
   }
@@ -147,7 +138,6 @@ void CGUIDialogVideoManager::UpdateButtons()
   {
     CONTROL_DISABLE(CONTROL_BUTTON_CHOOSE_ART);
     CONTROL_DISABLE(CONTROL_BUTTON_REMOVE);
-    CONTROL_DISABLE(CONTROL_BUTTON_PLAY);
   }
 }
 

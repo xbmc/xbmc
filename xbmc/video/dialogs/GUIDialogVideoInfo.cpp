@@ -55,6 +55,7 @@
 #include "video/VideoInfoTag.h"
 #include "video/VideoItemArtworkHandler.h"
 #include "video/VideoLibraryQueue.h"
+#include "video/VideoManagerTypes.h"
 #include "video/VideoThumbLoader.h"
 #include "video/dialogs/GUIDialogVideoManagerExtras.h"
 #include "video/dialogs/GUIDialogVideoManagerVersions.h"
@@ -71,7 +72,9 @@
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 using namespace XFILE;
 using namespace KODI::MESSAGING;
+using namespace VIDEO::GUILIB;
 
+// clang-format off
 #define CONTROL_IMAGE                3
 #define CONTROL_TEXTAREA             4
 #define CONTROL_BTN_TRACKS           5
@@ -83,10 +86,10 @@ using namespace KODI::MESSAGING;
 #define CONTROL_BTN_PLAY_TRAILER    11
 #define CONTROL_BTN_GET_FANART      12
 #define CONTROL_BTN_DIRECTOR        13
-#define CONTROL_BTN_MANAGE_VIDEO_VERSIONS 14
-#define CONTROL_BTN_MANAGE_VIDEO_EXTRAS 15
+#define CONTROL_BTN_PLAY_VIDEO_EXTRAS 15
 
 #define CONTROL_LIST                50
+// clang-format on
 
 // predicate used by sorting and set_difference
 bool compFileItemsByDbId(const CFileItemPtr& lhs, const CFileItemPtr& rhs)
@@ -161,17 +164,13 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
         m_bViewReview = !m_bViewReview;
         Update();
       }
-      else if (iControl == CONTROL_BTN_MANAGE_VIDEO_VERSIONS)
+      else if (iControl == CONTROL_BTN_PLAY_VIDEO_EXTRAS)
       {
-        m_hasUpdatedItems = OnManageVideoVersions();
-      }
-      else if (iControl == CONTROL_BTN_MANAGE_VIDEO_EXTRAS)
-      {
-        m_hasUpdatedItems = OnManageVideoExtras();
+        OnPlayVideoAsset(VideoAssetType::EXTRA);
       }
       else if (iControl == CONTROL_BTN_PLAY)
       {
-        Play();
+        OnPlay();
       }
       else if (iControl == CONTROL_BTN_USERRATING)
       {
@@ -179,7 +178,7 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTN_RESUME)
       {
-        Play(true);
+        Play(m_movieItem, true);
       }
       else if (iControl == CONTROL_BTN_GET_THUMB)
       {
@@ -292,7 +291,7 @@ void CGUIDialogVideoInfo::OnInitWindow()
   // Disable video user rating button for plugins and sets as they don't have tables to save this
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_USERRATING, !m_movieItem->IsPlugin() && m_movieItem->GetVideoInfoTag()->m_type != MediaTypeVideoCollection);
 
-  VideoDbContentType type = m_movieItem->GetVideoContentType();
+  const VideoDbContentType type = m_movieItem->GetVideoContentType();
   if (type == VideoDbContentType::TVSHOWS || type == VideoDbContentType::MOVIES)
     CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_FANART, (profileManager->
         GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) &&
@@ -300,6 +299,11 @@ void CGUIDialogVideoInfo::OnInitWindow()
         GetUniqueID().c_str(), "plugin"));
   else
     CONTROL_DISABLE(CONTROL_BTN_GET_FANART);
+
+  if (type == VideoDbContentType::MOVIES && m_movieItem->HasVideoExtras())
+    CONTROL_ENABLE(CONTROL_BTN_PLAY_VIDEO_EXTRAS);
+  else
+    CONTROL_DISABLE(CONTROL_BTN_PLAY_VIDEO_EXTRAS);
 
   Update();
 
@@ -771,16 +775,16 @@ private:
 };
 } // unnamed namespace
 
-void CGUIDialogVideoInfo::Play(bool resume)
+void CGUIDialogVideoInfo::Play(const std::shared_ptr<CFileItem>& item, bool resume)
 {
   std::string strPath;
 
-  const CVideoInfoTag* videoTag = m_movieItem->GetVideoInfoTag();
+  const CVideoInfoTag* videoTag = item->GetVideoInfoTag();
   if (videoTag->m_type == MediaTypeTvShow || videoTag->m_type == MediaTypeSeason)
   {
-    if (m_movieItem->IsPlugin())
+    if (item->IsPlugin())
     {
-      strPath = m_movieItem->GetPath();
+      strPath = item->GetPath();
       Close();
       if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VIDEO_NAV)
       {
@@ -814,11 +818,11 @@ void CGUIDialogVideoInfo::Play(bool resume)
   Close(true);
 
   // play the current video version, even if multiple versions are available
-  m_movieItem->SetProperty("has_resolved_video_asset", true);
+  item->SetProperty("has_resolved_video_asset", true);
 
   if (resume)
   {
-    CVideoPlayActionProcessor proc{m_movieItem};
+    CVideoPlayActionProcessor proc{item};
     proc.ProcessAction(VIDEO::GUILIB::ACTION_RESUME);
   }
   else
@@ -826,24 +830,27 @@ void CGUIDialogVideoInfo::Play(bool resume)
     if (GetControl(CONTROL_BTN_RESUME))
     {
       // if dialog has a resume button, play button has always the purpose to start from beginning
-      CVideoPlayActionProcessor proc{m_movieItem};
+      CVideoPlayActionProcessor proc{item};
       proc.ProcessAction(VIDEO::GUILIB::ACTION_PLAY_FROM_BEGINNING);
     }
     else
     {
       // play button acts according to default play action setting
-      CVideoPlayActionProcessor proc{m_movieItem};
+      CVideoPlayActionProcessor proc{item};
       proc.ProcessDefaultAction();
       if (proc.UserCancelled())
       {
         // The Resume dialog was closed without any choice
+        // @todo: find a cleaner way. Reopen the dialog on the original item rather than on the
+        // version on which resume dialog was closed without choice
         SetMovie(m_movieItem.get()); // restore cast list, which was cleared on dialog close
+        item->ClearProperty("has_resolved_video_asset"); // Open() starts a new dialog event loop
         Open();
       }
     }
   }
 
-  m_movieItem->ClearProperty("has_resolved_video_asset");
+  item->ClearProperty("has_resolved_video_asset");
 }
 
 namespace
@@ -1105,8 +1112,9 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
 
   if (type == MediaTypeMovie)
   {
-    // manage video versions
+    // manage video versions and extras
     buttons.Add(CONTEXT_BUTTON_MANAGE_VIDEOVERSIONS, 40001); // Manage versions
+    buttons.Add(CONTEXT_BUTTON_MANAGE_VIDEOEXTRAS, 40039); // Manage extras
   }
 
   if (type == MediaTypeEpisode &&
@@ -1184,6 +1192,11 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
 
       case CONTEXT_BUTTON_MANAGE_VIDEOVERSIONS:
         ManageVideoVersions(item);
+        result = true;
+        break;
+
+      case CONTEXT_BUTTON_MANAGE_VIDEOEXTRAS:
+        ManageVideoExtras(item);
         result = true;
         break;
 
@@ -2119,17 +2132,31 @@ void CGUIDialogVideoInfo::ShowFor(const CFileItem& item)
     window->OnItemInfo(item);
 }
 
-bool CGUIDialogVideoInfo::OnManageVideoVersions()
+void CGUIDialogVideoInfo::OnPlayVideoAsset(VideoAssetType assetType)
 {
-  return CGUIDialogVideoManagerVersions::ManageVideoVersions(m_movieItem);
-}
+  m_movieItem->SetProperty("video_asset_type", static_cast<int>(assetType));
+  const auto video{CVideoVersionHelper::ChooseVideoFromAssets(m_movieItem)};
+  m_movieItem->ClearProperty("video_asset_type");
 
-bool CGUIDialogVideoInfo::OnManageVideoExtras()
-{
-  return CGUIDialogVideoManagerExtras::ManageVideoExtras(m_movieItem);
+  if (video)
+    Play(video);
 }
 
 void CGUIDialogVideoInfo::ManageVideoVersions(const std::shared_ptr<CFileItem>& item)
 {
   CGUIDialogVideoManagerVersions::ManageVideoVersions(item);
+}
+
+void CGUIDialogVideoInfo::ManageVideoExtras(const std::shared_ptr<CFileItem>& item)
+{
+  CGUIDialogVideoManagerExtras::ManageVideoExtras(item);
+}
+
+void CGUIDialogVideoInfo::OnPlay()
+{
+  if (m_movieItem->GetVideoContentType() == VideoDbContentType::MOVIES &&
+      m_movieItem->HasVideoVersions() && !VIDEO::IsVideoAssetFile(*m_movieItem))
+    OnPlayVideoAsset(VideoAssetType::VERSION);
+  else
+    Play(m_movieItem);
 }

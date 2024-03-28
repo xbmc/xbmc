@@ -18,6 +18,7 @@ class CFileItem;
 class CFileItemList;
 class CMediaSource;
 class CVideoDatabase;
+enum class VideoAssetType;
 
 class CGUIDialogVideoInfo :
       public CGUIDialog
@@ -55,6 +56,7 @@ public:
   static bool SetMovieSet(const CFileItem *movieItem, const CFileItem *selectedSet);
 
   static void ManageVideoVersions(const std::shared_ptr<CFileItem>& item);
+  static void ManageVideoExtras(const std::shared_ptr<CFileItem>& item);
 
   static bool GetItemsForTag(const std::string &strHeading, const std::string &type, CFileItemList &items, int idTag = -1, bool showAll = true);
   static bool AddItemsToTag(const std::shared_ptr<CFileItem>& tagItem);
@@ -91,9 +93,9 @@ protected:
    * \param pItem Search result item
    */
   void OnSearchItemFound(const CFileItem* pItem);
-  bool OnManageVideoVersions();
-  bool OnManageVideoExtras();
-  void Play(bool resume = false);
+  void OnPlayVideoAsset(VideoAssetType assetType);
+  void OnPlay();
+  void Play(const std::shared_ptr<CFileItem>& item, bool resume = false);
   void OnGetArt();
   void OnGetFanart();
   void OnSetUserrating() const;
