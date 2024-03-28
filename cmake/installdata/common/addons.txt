@@ -26,6 +26,7 @@ addons/metadata.tvshows.themoviedb.org.python/*
 addons/repository.xbmc.org/*
 addons/resource.images.weathericons.default/*
 addons/resource.language.en_gb/*
+addons/resource.timezone/*
 addons/resource.uisounds.kodi/*
 addons/screensaver.xbmc.builtin.black/*
 addons/screensaver.xbmc.builtin.dim/*

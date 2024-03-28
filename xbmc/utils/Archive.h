@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "utils/XTimeUtils.h"
+
 #include <cstring>
 #include <memory>
 #include <string>
@@ -57,7 +59,7 @@ public:
   CArchive& operator<<(char c);
   CArchive& operator<<(const std::string &str);
   CArchive& operator<<(const std::wstring& wstr);
-  CArchive& operator<<(const KODI::TIME::SystemTime& time);
+  CArchive& operator<<(const KODI::TIME::time_point& time);
   CArchive& operator<<(IArchivable& obj);
   CArchive& operator<<(const CVariant& variant);
   CArchive& operator<<(const std::vector<std::string>& strArray);
@@ -126,7 +128,7 @@ public:
 
   CArchive& operator>>(std::string &str);
   CArchive& operator>>(std::wstring& wstr);
-  CArchive& operator>>(KODI::TIME::SystemTime& time);
+  CArchive& operator>>(KODI::TIME::time_point& time);
   CArchive& operator>>(IArchivable& obj);
   CArchive& operator>>(CVariant& variant);
   CArchive& operator>>(std::vector<std::string>& strArray);

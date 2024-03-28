@@ -164,6 +164,7 @@
 #endif
 #ifdef TARGET_POSIX
 #include "platform/posix/PlatformPosix.h"
+#include "platform/posix/PosixTimezone.h"
 #include "platform/posix/XHandle.h"
 #endif
 #if defined(TARGET_POSIX) && defined(HAS_FILESYSTEM_SMB)
@@ -258,6 +259,11 @@ bool CApplication::Create()
 
   // Register JobManager service
   CServiceBroker::RegisterJobManager(std::make_shared<CJobManager>());
+
+  // Initialize,timezone
+#if defined(TARGET_POSIX)
+  g_timezone.Init();
+#endif
 
   // Announcement service
   m_pAnnouncementManager = std::make_shared<ANNOUNCEMENT::CAnnouncementManager>();

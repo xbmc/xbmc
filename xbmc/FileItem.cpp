@@ -203,7 +203,7 @@ CFileItem::CFileItem(const std::shared_ptr<PVR::CPVREpgSearchFilter>& filter)
 
   const CDateTime lastExec = filter->GetLastExecutedDateTime();
   if (lastExec.IsValid())
-    m_dateTime.SetFromUTCDateTime(lastExec);
+    m_dateTime = lastExec;
 
   SetArt("icon", "DefaultPVRSearch.png");
 

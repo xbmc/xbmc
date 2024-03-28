@@ -1,0 +1,58 @@
+From 1e512b082eb99b5d9cd790158f3bdaefcbac823d Mon Sep 17 00:00:00 2001
+From: Vasyl Gello <vasek.gello@gmail.com>
+Date: Wed, 11 Jan 2023 09:58:34 +0200
+Subject: [PATCH 3/4] Fix UWP build
+
+We don't need download_folder to be determined.
+Bringing full UWP runtime just for that is an overkill.
+---
+ CMakeLists.txt |  4 ++++
+ src/tz.cpp     | 17 +++++++++++++++++
+ 2 files changed, 21 insertions(+)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index c0bda7f..0fa3dc2 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -133,6 +133,10 @@ if( BUILD_TZ_LIB )
+       target_compile_definitions( date-tz PRIVATE AUTO_DOWNLOAD=1 HAS_REMOTE_API=1 )
+     endif()
+ 
++    if(WINRT)
++      target_compile_definitions( date-tz PRIVATE WINRT=1 INSTALL=. )
++    endif()
++
+     if ( USE_SYSTEM_TZ_DB AND NOT WIN32 AND NOT MANUAL_TZ_DB )
+       target_compile_definitions( date-tz PRIVATE INSTALL=. PUBLIC USE_OS_TZDB=1 )
+     else()
+diff --git a/src/tz.cpp b/src/tz.cpp
+index 69bab7c..aa15192 100644
+--- a/src/tz.cpp
++++ b/src/tz.cpp
+@@ -234,6 +234,23 @@ get_download_folder()
+ 
+ #      endif  // !INSTALL
+ 
++#    else // WINRT
++static
++std::string
++get_program_folder()
++{
++	return "";
++}
++
++#      ifndef INSTALL
++
++static
++std::string
++get_download_folder()
++{
++	return "";
++}
++#      endif  // !INSTALL
+ #    endif // WINRT
+ #  else // !_WIN32
+ 
+-- 
+2.39.0
+
