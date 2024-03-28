@@ -134,7 +134,8 @@ extern "C"
   /// ...
   ///
   /// PVR_ERROR CMyPVRInstance::GetChannelStreamProperties(const kodi::addon::PVRChannel& channel,
-  ///                                                      std::vector<PVRStreamProperty>& properties)
+  ///                                                      std::vector<PVRStreamProperty>& properties,
+  ///                                                      bool fromEpgAsLive)
   /// {
   ///   ...
   ///   properties.emplace_back(PVR_STREAM_PROPERTY_INPUTSTREAM, "inputstream.adaptive");
@@ -193,7 +194,8 @@ extern "C"
   ///
   /// // On PVR instance of addon
   /// PVR_ERROR CMyPVRInstance::GetChannelStreamProperties(const kodi::addon::PVRChannel& channel,
-  ///                                                      std::vector<PVRStreamProperty>& properties)
+  ///                                                      std::vector<PVRStreamProperty>& properties,
+  ///                                                      bool fromEpgAsLive)
   /// {
   ///   ...
   ///   // For here on example the inpustream is also inside the PVR addon
@@ -249,6 +251,14 @@ extern "C"
   /// play as normal video.
   ///
 #define PVR_STREAM_PROPERTY_EPGPLAYBACKASLIVE "epgplaybackaslive"
+
+  /// @brief <b>"true"</b> to denote that if the stream is from a channel but should
+  /// be played as an EPG tag.
+  ///
+  /// It should be played as an epg/catchup stream. Otherwise if it's a channel it will
+  /// played as live stream.
+  ///
+#define PVR_STREAM_PROPERTY_LIVEPLAYBACKASEPG "liveplaybackasepg"
 
   /// @brief Special value for @ref PVR_STREAM_PROPERTY_INPUTSTREAM to use
   /// ffmpeg to directly play a stream URL.

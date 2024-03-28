@@ -165,7 +165,8 @@ extern "C"
     enum PVR_ERROR(__cdecl* GetChannelStreamProperties)(const struct AddonInstance_PVR*,
                                                         const struct PVR_CHANNEL*,
                                                         struct PVR_NAMED_VALUE*,
-                                                        unsigned int*);
+                                                        unsigned int*,
+                                                        bool fromEpgAsLive);
     enum PVR_ERROR(__cdecl* GetSignalStatus)(const struct AddonInstance_PVR*,
                                              int,
                                              struct PVR_SIGNAL_STATUS*);
@@ -306,6 +307,7 @@ extern "C"
     // Stream demux interface functions
     enum PVR_ERROR(__cdecl* GetStreamProperties)(const struct AddonInstance_PVR*,
                                                  struct PVR_STREAM_PROPERTIES*);
+    void(__cdecl* StreamClosed)(const struct AddonInstance_PVR*);
     struct DEMUX_PACKET*(__cdecl* DemuxRead)(const struct AddonInstance_PVR*);
     void(__cdecl* DemuxReset)(const struct AddonInstance_PVR*);
     void(__cdecl* DemuxAbort)(const struct AddonInstance_PVR*);

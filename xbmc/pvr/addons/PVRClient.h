@@ -144,6 +144,12 @@ public:
   PVR_ERROR GetStreamProperties(PVR_STREAM_PROPERTIES* pProperties) const;
 
   /*!
+   * @brief A stream was closed or has ended
+   * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
+   */
+  PVR_ERROR StreamClosed() const;
+
+  /*!
    * @return The name reported by the backend.
    */
   const std::string& GetBackendName() const;
@@ -570,10 +576,12 @@ public:
    * @brief Fill the given container with the properties required for playback of the given channel. Values are obtained from the PVR backend.
    * @param channel The channel.
    * @param props The container to be filled with the stream properties.
+   * @param fromEpgAsLive True if this call resulted from PVR_STREAM_PROPERTY_EPGPLAYBACKASLIVE being set from GetEPGTagStreamProperties(), false otherwise.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
   PVR_ERROR GetChannelStreamProperties(const std::shared_ptr<const CPVRChannel>& channel,
-                                       CPVRStreamProperties& props) const;
+                                       CPVRStreamProperties& props,
+                                       bool fromEpgAsLive) const;
 
   /*!
    * @brief Check whether PVR backend supports pausing the currently playing stream

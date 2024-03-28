@@ -348,7 +348,8 @@ bool CPVRPlaybackState::OnPlaybackEnded(const CFileItem& item)
 
 void CPVRPlaybackState::StartPlayback(
     CFileItem* item,
-    ContentUtils::PlayMode mode /* = ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM */) const
+    ContentUtils::PlayMode mode /* = ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM */,
+    bool fromEpgAsLive /* = false */) const
 {
   // Obtain dynamic playback url and properties from the respective pvr client
   const std::shared_ptr<const CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(*item);
@@ -358,7 +359,17 @@ void CPVRPlaybackState::StartPlayback(
 
     if (item->IsPVRChannel())
     {
-      client->GetChannelStreamProperties(item->GetPVRChannelInfoTag(), props);
+      if (!fromEpgAsLive)
+        client->StreamClosed();
+
+      client->GetChannelStreamProperties(item->GetPVRChannelInfoTag(), props, fromEpgAsLive);
+
+      if (props.LivePlaybackAsEPG())
+      {
+        const std::shared_ptr<CPVREpgInfoTag> epgTag = item->GetPVRChannelInfoTag()->GetEPGNow();
+        if (epgTag)
+          item = new CFileItem(epgTag);
+      }
     }
     else if (item->IsPVRRecording())
     {
@@ -366,6 +377,7 @@ void CPVRPlaybackState::StartPlayback(
     }
     else if (item->IsEPG())
     {
+      client->StreamClosed();
       client->GetEpgTagStreamProperties(item->GetEPGInfoTag(), props);
 
       if (mode == ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM)

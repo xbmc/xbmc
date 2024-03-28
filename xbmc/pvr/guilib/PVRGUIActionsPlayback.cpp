@@ -211,9 +211,11 @@ bool CPVRGUIActionsPlayback::PlayEpgTag(
     return false;
 
   CPVRStreamProperties props;
+  client->StreamClosed();
   client->GetEpgTagStreamProperties(epgTag, props);
 
   CFileItem* itemToPlay = nullptr;
+  bool fromEpgAsLive = false;
   if (props.EPGPlaybackAsLive())
   {
     const std::shared_ptr<CPVRChannelGroupMember> groupMember =
@@ -221,6 +223,7 @@ bool CPVRGUIActionsPlayback::PlayEpgTag(
     if (!groupMember)
       return false;
 
+    fromEpgAsLive = true;
     itemToPlay = new CFileItem(groupMember);
   }
   else
@@ -228,7 +231,7 @@ bool CPVRGUIActionsPlayback::PlayEpgTag(
     itemToPlay = new CFileItem(epgTag);
   }
 
-  CServiceBroker::GetPVRManager().PlaybackState()->StartPlayback(itemToPlay, mode);
+  CServiceBroker::GetPVRManager().PlaybackState()->StartPlayback(itemToPlay, mode, fromEpgAsLive);
   CheckAndSwitchToFullscreen(true);
   return true;
 }

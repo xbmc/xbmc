@@ -76,7 +76,8 @@ public:
    */
   void StartPlayback(
       CFileItem* item,
-      ContentUtils::PlayMode mode = ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM) const;
+      ContentUtils::PlayMode mode = ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM,
+      bool fromEpgAsLive = false) const;
 
   /*!
    * @brief Check if a TV channel, radio channel or recording is playing.
