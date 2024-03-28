@@ -6306,7 +6306,12 @@ msgctxt "#13023"
 msgid "Successfully removed storage device"
 msgstr ""
 
-#empty strings from id 13024 to 13025
+#: system/settings/settings.xml
+msgctxt "#13024"
+msgid "Open shutdown menu"
+msgstr ""
+
+#empty string 13025
 
 #: system/settings/settings.xml
 msgctxt "#13026"
