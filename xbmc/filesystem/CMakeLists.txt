@@ -173,6 +173,15 @@ if(ENABLE_UPNP)
                       UPnPFile.h)
 endif()
 
+if(ENABLE_LIBTORRENT)
+  list(APPEND SOURCES MagnetDirectory.cpp
+                      MagnetFile.cpp
+  )
+  list(APPEND HEADERS MagnetDirectory.h
+                      MagnetFile.h
+  )
+endif()
+
 core_add_library(filesystem)
 if(ENABLE_STATIC_LIBS AND ENABLE_UPNP)
   target_link_libraries(filesystem PRIVATE upnp)

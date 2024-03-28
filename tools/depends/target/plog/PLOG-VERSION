@@ -1,0 +1,7 @@
+LIBNAME=plog
+VERSION=1.1.9
+ARCHIVE=$(VERSION).tar.gz
+SHA512=d979fdf0011ef9bb94a2271da5d17058dbab5bc47438a13769d084fdebe5e169e7c05a043d69acceb752896df7cdae4433f32bfbcc81e055dffd9c701be88003
+
+# TODO
+BASE_URL=https://github.com/SergiusTheBest/plog/archive/refs/tags

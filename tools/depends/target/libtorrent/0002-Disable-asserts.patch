@@ -1,0 +1,24 @@
+From 633fc5f01ba441950a0260607be98b052ff7fde2 Mon Sep 17 00:00:00 2001
+From: Garrett Brown <themagnificentmrb@gmail.com>
+Date: Thu, 17 Aug 2023 21:16:52 -0700
+Subject: [PATCH 2/2] Disable asserts
+
+---
+ CMakeLists.txt | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index b0ee343c9..5270ec785 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -543,7 +543,6 @@ target_include_directories(torrent-rasterbar PUBLIC
+ 
+ target_compile_definitions(torrent-rasterbar
+ 	PUBLIC
+-		$<$<CONFIG:Debug>:TORRENT_USE_ASSERTS>
+ 		BOOST_ASIO_ENABLE_CANCELIO
+ 		BOOST_ASIO_NO_DEPRECATED
+ 		BOOST_SYSTEM_USE_UTF8
+-- 
+2.34.1
+
