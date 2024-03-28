@@ -306,6 +306,11 @@ public:
   };
   GUICONTROLTYPES GetControlType() const { return ControlType; }
 
+  /*! \brief Test whether the control is "drawable" (not a group or similar)
+   \return true if the control has textures/labels it wants to render
+   */
+  bool IsControlRenderable();
+
   enum GUIVISIBLE { HIDDEN = 0, DELAYED, VISIBLE };
 
   enum GUISCROLLVALUE { FOCUS = 0, NEVER, ALWAYS };

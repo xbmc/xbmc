@@ -281,6 +281,11 @@ public:
     return (x1 <= point.x && point.x <= x2 && y1 <= point.y && point.y <= y2);
   };
 
+  constexpr bool Intersects(const this_type& rect) const
+  {
+    return (x1 < rect.x2 && x2 > rect.x1 && y1 < rect.y2 && y2 > rect.y1);
+  };
+
   this_type& operator-=(const point_type &point) XBMC_FORCE_INLINE
   {
     x1 -= point.x;
