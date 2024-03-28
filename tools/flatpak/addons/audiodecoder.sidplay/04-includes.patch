@@ -1,0 +1,30 @@
+--- sidplay-libs-2.1.1/builders/hardsid-builder/src/hardsid-builder.cpp.orig	2004-06-14 22:07:57.000000000 +0200
++++ sidplay-libs-2.1.1/builders/hardsid-builder/src/hardsid-builder.cpp	2013-11-18 01:01:50.399234880 +0100
+@@ -55,6 +55,7 @@
+ 
+ #include "hardsid.h"
+ #include "hardsid-emu.h"
++#include <string.h>
+ 
+ 
+ #ifdef HAVE_MSWINDOWS
+--- sidplay-libs-2.1.1/builders/resid-builder/src/resid.cpp.orig	2013-11-18 01:00:07.827229975 +0100
++++ sidplay-libs-2.1.1/builders/resid-builder/src/resid.cpp	2013-11-18 01:00:21.563230632 +0100
+@@ -24,6 +24,7 @@
+ 
+ #include "resid.h"
+ #include "resid-emu.h"
++#include <string.h>
+ 
+ 
+ char ReSID::m_credit[];
+--- sidplay-libs-2.1.1/builders/resid-builder/src/resid-builder.cpp.orig	2013-11-18 01:00:39.727231501 +0100
++++ sidplay-libs-2.1.1/builders/resid-builder/src/resid-builder.cpp	2013-11-18 01:00:57.415232346 +0100
+@@ -45,6 +45,7 @@
+ 
+ #include "resid.h"
+ #include "resid-emu.h"
++#include <string.h>
+ 
+ // Error String(s)
+ const char *ReSIDBuilder::ERR_FILTER_DEFINITION = "RESID ERROR: Filter definition is not valid (see docs).";

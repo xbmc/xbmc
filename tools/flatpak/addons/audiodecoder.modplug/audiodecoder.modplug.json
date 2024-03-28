@@ -1,0 +1,41 @@
+{
+    "name": "audiodecoder.modplug",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/xbmc/audiodecoder.modplug",
+            "commit": "e697156054ea3eb5974fb9727e046287220985e5"
+        }
+    ],
+    "modules": [
+        {
+            "name": "libmodplug",
+            "buildsystem": "cmake-ninja",
+            "config-opts": [
+                "-DBUILD_SHARED_LIBS=ON",
+                "-DCMAKE_BUILD_TYPE=Release"
+            ],
+            "build-options": {
+                "no-debuginfo": true,
+                "cflags": "-g0",
+                "cxxflags": "-g0"
+            },
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://github.com/Konstanty/libmodplug/archive/d7ba5efd5816696fba668a23194940f796d62b95.tar.gz",
+                    "sha256": "d11d770c485aba977ca682b4fc843a41a1cec7acc22a26a70ef1df46dcaa0ca5"
+                }
+            ]
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}

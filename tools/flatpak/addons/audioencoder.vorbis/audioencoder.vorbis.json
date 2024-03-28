@@ -1,0 +1,19 @@
+{
+    "name": "audioencoder.vorbis",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/xbmc/audioencoder.vorbis",
+            "commit": "88c1a68efa644aaf2bb91378e26a3f054dcf025c"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}

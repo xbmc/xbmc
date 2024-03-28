@@ -1,0 +1,19 @@
+{
+    "name": "visualization.fishbmc",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/xbmc/visualization.fishbmc",
+            "commit": "daa4e6b3e952075b813768e3518ac6e6b0724f55"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}

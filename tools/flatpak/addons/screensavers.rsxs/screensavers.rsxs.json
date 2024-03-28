@@ -1,0 +1,19 @@
+{
+    "name": "screensavers.rsxs",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/xbmc/screensavers.rsxs",
+            "commit": "56bc68ef28a8d2a8cf345472df6105bc4c111a04"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}

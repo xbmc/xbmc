@@ -1,0 +1,19 @@
+{
+    "name": "peripheral.xarcade",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/kodi-game/peripheral.xarcade",
+            "commit": "4257d3f5b0982d830a900f3a0ca8b6ff8b4b1323"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}

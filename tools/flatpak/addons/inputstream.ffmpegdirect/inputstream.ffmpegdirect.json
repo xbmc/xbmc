@@ -1,0 +1,19 @@
+{
+    "name": "inputstream.ffmpegdirect",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/xbmc/inputstream.ffmpegdirect",
+            "commit": "7f74630d417ab4ee6fd780d16c4f6a84385d4f45"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}

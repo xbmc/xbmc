@@ -1,0 +1,19 @@
+{
+    "name": "screensaver.shadertoy",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/xbmc/screensaver.shadertoy",
+            "commit": "a0b53a28277f1b2cfb4db74a688a6582e3e0ece6"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}

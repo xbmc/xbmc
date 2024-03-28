@@ -1,0 +1,19 @@
+{
+    "name": "audiodecoder.vgmstream",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/xbmc/audiodecoder.vgmstream",
+            "commit": "56bedfc90ca600401e6dda407a5b933da0976664"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}

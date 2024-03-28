@@ -1,0 +1,19 @@
+{
+    "name": "pvr.mythtv",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/janbar/pvr.mythtv",
+            "commit": "a353a44ec284ff78c65ec389b142459bad74f058"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}

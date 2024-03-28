@@ -1,0 +1,19 @@
+{
+    "name": "pvr.dvblink",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/kodi-pvr/pvr.dvblink",
+            "commit": "2a8a3f79b3a3a6271d05a9598e294a98ae9ad241"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}

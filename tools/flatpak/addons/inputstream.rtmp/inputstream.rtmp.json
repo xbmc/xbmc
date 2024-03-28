@@ -1,0 +1,43 @@
+{
+    "name": "inputstream.rtmp",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/xbmc/inputstream.rtmp",
+            "commit": "8dd2adae396327dde40eeccef2613a63cf0b269b"
+        }
+    ],
+    "modules": [
+        {
+            "name": "rtmpdump",
+            "buildsystem": "simple",
+            "build-commands": [
+                "sed -e 's/^CRYPTO=OPENSSL/CRYPTO=GNUTLS/' -i librtmp/Makefile",
+                "sed -e 's|usr/local|app|' -i librtmp/Makefile",
+                "make -C librtmp",
+                "make -C librtmp install PREFIX=/app"
+            ],
+            "build-options": {
+                "no-debuginfo": true,
+                "cflags": "-g0",
+                "cxxflags": "-g0"
+            },
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "http://mirrors.xbmc.org/build-deps/sources/rtmpdump-fa8646daeb19dfd12c181f7d19de708d623704c0.tar.gz",
+                    "sha256": "dba4d4d2e1c7de6884b01d98194b83cab6784669089fa3c919152087a3a38fd2"
+                }
+            ]
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}

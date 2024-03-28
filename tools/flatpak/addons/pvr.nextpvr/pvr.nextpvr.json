@@ -1,0 +1,19 @@
+{
+    "name": "pvr.nextpvr",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/kodi-pvr/pvr.nextpvr",
+            "commit": "bf7504a60ce9377333272a52b7ef86908fd6dbd7"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}

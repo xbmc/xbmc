@@ -1,0 +1,36 @@
+{
+    "name": "visualization.projectm",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/xbmc/visualization.projectm",
+            "commit": "378ed846cb71432bf78fcbed162590912ffda4a9"
+        }
+    ],
+    "modules": [
+        {
+            "name": "projectm",
+            "build-options": {
+                "no-debuginfo": true,
+                "cflags": "-g0",
+                "cxxflags": "-g0"
+            },
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://github.com/projectM-visualizer/projectm/releases/download/v3.1.12/projectM-3.1.12.tar.gz",
+                    "sha256": "b6b99dde5c8f0822ae362606a0429628ee478f4ec943a156723841b742954707"
+                }
+            ]
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}

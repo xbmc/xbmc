@@ -1,0 +1,19 @@
+{
+    "name": "pvr.vuplus",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/kodi-pvr/pvr.vuplus",
+            "commit": "0ec468ee6ed5539ffb9cc8c73efca0388dc2b532"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}

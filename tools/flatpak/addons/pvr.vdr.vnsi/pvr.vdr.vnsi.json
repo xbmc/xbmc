@@ -1,0 +1,19 @@
+{
+    "name": "pvr.vdr.vnsi",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/kodi-pvr/pvr.vdr.vnsi",
+            "commit": "3d0d5cf8adbe4c7fd4ab6a75aac6cb81ea6b1467"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}

@@ -1,0 +1,26 @@
+--- sidplay-libs-2.1.1/libsidplay/unix/my_macros.m4.orig	2004-06-14 22:08:04.000000000 +0200
++++ sidplay-libs-2.1.1/libsidplay/unix/my_macros.m4	2013-11-18 01:23:32.195297135 +0100
+@@ -80,8 +80,8 @@
+     AC_CACHE_VAL(test_cv_have_ios_binary,
+     [
+         AC_TRY_COMPILE(
+-            [#include <fstream.h>],
+-            [ifstream myTest(ios::in|ios::binary);],
++            [#include <fstream>],
++            [std::ifstream myTest(std::ios::in|std::ios::binary);],
+             [test_cv_have_ios_binary=yes],
+             [test_cv_have_ios_binary=no]
+         )
+@@ -105,9 +105,9 @@
+     AC_CACHE_VAL(test_cv_have_ios_openmode,
+     [
+         AC_TRY_COMPILE(
+-            [#include <fstream.h>
+-             #include <iomanip.h>],
+-            [ios::openmode myTest = ios::in;],
++            [#include <fstream>
++             #include <iomanip>],
++            [std::ios_base::openmode myTest = std::ios::in;],
+             [test_cv_have_ios_openmode=yes],
+             [test_cv_have_ios_openmode=no]
+         )

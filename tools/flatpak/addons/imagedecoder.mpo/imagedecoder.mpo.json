@@ -1,0 +1,20 @@
+{
+    "name": "imagedecoder.mpo",
+    "buildsystem": "cmake-ninja",
+    "builddir": true,
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/xbmc/imagedecoder.mpo",
+            "commit": "1d60fd5bfd3a552e8472a9bcbdcb7b04fe8423cc"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}
