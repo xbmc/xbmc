@@ -16,6 +16,7 @@
 /target/*/x86/*
 /target/*/x86_64-linux-android-**
 /target/*/x86_64-linux-gnu-**
+/target/*/x86_64-*-linux-gnu-**
 /target/*/armeabi-v7a-**
 /target/*/arm*-linux-gnueabihf-**
 /target/*/arm*-linux-androideabi-**
