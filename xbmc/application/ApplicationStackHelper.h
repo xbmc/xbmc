@@ -39,7 +39,7 @@ public:
   \param item the FileItem object that is the stack
   \returns the part offset if available, nullopt in case of errors
   */
-  std::optional<int> InitializeStackStartPartAndOffset(const CFileItem& item);
+  std::optional<int64_t> InitializeStackStartPartAndOffset(const CFileItem& item);
 
   /*!
   \brief returns the current part number
