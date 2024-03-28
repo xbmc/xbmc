@@ -565,8 +565,8 @@ void CDatabase::InitSettings(DatabaseSettings& dbSettings)
       dbSettings.host = CSpecialProtocol::TranslatePath(m_profileManager.GetDatabaseFolder());
   }
 
-  // use separate, versioned database
-  if (dbSettings.name.empty())
+  // use separate, versioned database unless user has elected to share default in profile
+  if (dbSettings.name.empty() || !m_profileManager.GetCurrentProfile().hasDatabases())
     dbSettings.name = GetBaseDBName();
 }
 

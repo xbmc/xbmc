@@ -44,6 +44,7 @@ CProfile::CProfile(const std::string &directory, const std::string &name, const 
   m_bSources = true;
   m_bCanWriteSources = true;
   m_bAddons = true;
+  m_bNeedsRefresh = false;
 }
 
 CProfile::~CProfile(void) = default;

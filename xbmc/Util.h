@@ -43,6 +43,7 @@ public:
                           std::string& strYear,
                           bool bRemoveExtension = false,
                           bool bCleanChars = true);
+  static std::string SQLTableCleanString(const std::string& table);
   static bool GetFilenameIdentifier(const std::string& fileName,
                                     std::string& identifierType,
                                     std::string& identifier);

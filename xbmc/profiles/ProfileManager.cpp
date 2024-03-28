@@ -298,7 +298,8 @@ bool CProfileManager::LoadProfile(unsigned int index)
     return false;
 
   // check if the profile is already active
-  if (m_currentProfile == index)
+
+  if (m_currentProfile == index && !m_profiles.at(index).needsRefresh())
     return true;
 
   // save any settings of the currently used skin but only if the (master)
@@ -314,6 +315,7 @@ bool CProfileManager::LoadProfile(unsigned int index)
 
   SetCurrentProfileId(index);
   m_previousProfileLoadedForLogin = false;
+  m_profiles.at(index).SetNeedsRefresh(false);
 
   // load the new settings
   if (!settings->Load())

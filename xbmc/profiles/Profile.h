@@ -71,6 +71,7 @@ public:
   bool programsLocked() const { return m_locks.programs; }
   bool gamesLocked() const { return m_locks.games; }
   const CLock &GetLocks() const { return m_locks; }
+  bool needsRefresh() const { return m_bNeedsRefresh; }
 
   void setName(const std::string& name) {m_name = name;}
   void setDirectory(const std::string& directory) {m_directory = directory;}
@@ -82,6 +83,7 @@ public:
   void setSources(bool bHas) { m_bSources = bHas; }
   void setWriteSources(bool bCan) { m_bCanWriteSources = bCan; }
   void SetLocks(const CLock &locks);
+  void SetNeedsRefresh(const bool needsRefresh) { m_bNeedsRefresh = needsRefresh; }
 
 private:
   std::string m_directory;
@@ -94,5 +96,6 @@ private:
   bool m_bSources;
   bool m_bCanWriteSources;
   bool m_bAddons;
+  bool m_bNeedsRefresh;
   CLock m_locks;
 };
