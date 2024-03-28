@@ -16,6 +16,8 @@
 #include "gui3d.h"
 #include "rendering/MatrixGL.h"
 #include "rendering/gl/RenderSystemGL.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/GLUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
@@ -87,6 +89,16 @@ bool CGUIFontTTFGL::FirstBegin()
     // Set the texture image -- THIS WORKS, so the pixels must be wrong.
     glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_texture->GetWidth(), m_texture->GetHeight(), 0,
                  pixformat, GL_UNSIGNED_BYTE, 0);
+
+#ifdef GL_TEXTURE_MAX_ANISOTROPY_EXT
+    if (CServiceBroker::GetRenderSystem()->IsExtSupported("GL_EXT_texture_filter_anisotropic"))
+    {
+      int32_t aniso =
+          CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiAnisotropicFiltering;
+      if (aniso > 1)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, aniso);
+    }
+#endif
 
     VerifyGLState();
     m_textureStatus = TEXTURE_UPDATED;
