@@ -404,6 +404,9 @@ bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode,
   if (flipY && StringUtils::CompareNoCase(flipY, "true") == 0)
     image.orientation = 3 - image.orientation; // either 3 or 2
   image.diffuse = XMLUtils::GetAttribute(pNode, "diffuse");
+  const char* diffuseslice = pNode->Attribute("sliceonlydiffuse");
+  if (diffuseslice && StringUtils::CompareNoCase(diffuseslice, "true", 4) == 0)
+    image.m_diffuseSlice = true;
   image.diffuseColor.Parse(XMLUtils::GetAttribute(pNode, "colordiffuse"), 0);
   const char* background = pNode->Attribute("background");
   if (background && StringUtils::CompareNoCase(background, "true", 4) == 0)
