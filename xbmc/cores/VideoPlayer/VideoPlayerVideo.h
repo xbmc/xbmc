@@ -65,6 +65,11 @@ public:
   bool IsSubtitleEnabled() override { return m_bRenderSubs; }
   double GetSubtitleDelay() override { return m_iSubtitleDelay; }
   void SetSubtitleDelay(double delay) override { m_iSubtitleDelay = delay; }
+  bool GetSubtitleCompensateFPS() const override { return m_subtitleCompensateFPS; }
+  void SetSubtitleCompensateFPS(bool bDoCompensate) override
+  {
+    m_subtitleCompensateFPS = bDoCompensate;
+  }
   bool IsStalled() const override { return m_stalled; }
   bool IsRewindStalled() const override { return m_rewindStalled; }
   double GetCurrentPts() override;
@@ -105,6 +110,7 @@ protected:
   int CalcDropRequirement(double pts);
 
   double m_iSubtitleDelay;
+  bool m_subtitleCompensateFPS;
 
   int m_iLateFrames;
   int m_iDroppedFrames;
