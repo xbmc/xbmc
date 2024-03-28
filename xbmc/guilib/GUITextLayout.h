@@ -185,9 +185,9 @@ private:
   {
     return (letter & 0xffff) == L' ';
   };
-  inline bool CanWrapAtLetter(character_t letter) const XBMC_FORCE_INLINE
+  inline bool CanWrapAtLetter(const character_t& letter) const XBMC_FORCE_INLINE
   {
-    character_t ch = letter & 0xffff;
+    const character_t ch = letter & 0xffff;
     return ch == L' ' || (ch >=0x4e00 && ch <= 0x9fff);
   };
   static void AppendToUTF32(const std::string &utf8, character_t colStyle, vecText &utf32);
