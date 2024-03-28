@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -27,6 +27,7 @@ enum class ShaderMethodGL
   SM_TEXTURE_LIM,
   SM_MULTI,
   SM_FONTS,
+  SM_FONTS_SHADER_CLIP,
   SM_TEXTURE_NOBLEND,
   SM_MULTI_BLENDCOLOR,
   SM_MAX
@@ -52,6 +53,7 @@ private:
       {ShaderMethodGL::SM_TEXTURE_LIM, "texture limited"},
       {ShaderMethodGL::SM_MULTI, "multi"},
       {ShaderMethodGL::SM_FONTS, "fonts"},
+      {ShaderMethodGL::SM_FONTS_SHADER_CLIP, "fonts with vertex shader based clipping"},
       {ShaderMethodGL::SM_TEXTURE_NOBLEND, "texture no blending"},
       {ShaderMethodGL::SM_MULTI_BLENDCOLOR, "multi blend colour"},
   });
@@ -114,6 +116,9 @@ public:
   GLint ShaderGetCoord1();
   GLint ShaderGetUniCol();
   GLint ShaderGetModel();
+  GLint ShaderGetMatrix();
+  GLint ShaderGetClip();
+  GLint ShaderGetCoordStep();
 
 protected:
   virtual void SetVSyncImpl(bool enable) = 0;
