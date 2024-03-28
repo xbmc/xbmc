@@ -39,10 +39,6 @@ DEPENDS = \
   nettle \
   nghttp2 \
   openssl \
-  python3 \
-  pythonmodule-pil \
-  pythonmodule-pycryptodome \
-  pythonmodule-setuptools \
   sqlite3 \
   tinyxml \
   udfread \
