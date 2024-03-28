@@ -112,7 +112,7 @@ bool CVideoPlayerVideo::OpenStream(CDVDStreamInfo hint)
     if (hint.codec == AV_CODEC_ID_NONE ||
         hint.codec == AV_CODEC_ID_MPEG1VIDEO ||
         hint.codec == AV_CODEC_ID_MPEG2VIDEO ||
-        hint.codec == AV_CODEC_ID_H264 ||
+        (hint.codec == AV_CODEC_ID_H264 && (hint.codec_tag != MKTAG('a','v','c','3') && hint.codec_tag != MKTAG('a','v','c','4'))) ||
         hint.codec == AV_CODEC_ID_HEVC ||
         hint.codec == AV_CODEC_ID_MPEG4 ||
         hint.codec == AV_CODEC_ID_WMV3 ||
