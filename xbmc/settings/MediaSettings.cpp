@@ -119,7 +119,7 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
     int toneMapMethod;
     if (!XMLUtils::GetInt(pElement, "tonemapmethod", toneMapMethod, VS_TONEMAPMETHOD_OFF,
                           VS_TONEMAPMETHOD_MAX))
-      toneMapMethod = VS_TONEMAPMETHOD_REINHARD;
+      toneMapMethod = VS_TONEMAPMETHOD_HABLE;
     m_defaultVideoSettings.m_ToneMapMethod = static_cast<ETONEMAPMETHOD>(toneMapMethod);
 
     if (!XMLUtils::GetFloat(pElement, "tonemapparam", m_defaultVideoSettings.m_ToneMapParam, 0.1f, 5.0f))
