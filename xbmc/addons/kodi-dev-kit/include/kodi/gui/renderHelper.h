@@ -28,6 +28,8 @@ struct ATTR_DLL_LOCAL IRenderHelper
 
 #if defined(WIN32) && defined(HAS_ANGLE)
 #include "gl/GLonDX.h"
+#elif defined(HAS_GL)
+#include "gl/GLRenderHelper.h"
 #else
 /*
  * Default background GUI render helper class

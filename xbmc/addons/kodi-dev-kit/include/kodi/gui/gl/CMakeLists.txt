@@ -3,6 +3,7 @@
 
 set(HEADERS
   GL.h
+  GLRenderHelper.h
   GLonDX.h
   Shader.h
 )

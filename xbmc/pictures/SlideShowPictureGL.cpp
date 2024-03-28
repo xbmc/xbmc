@@ -18,8 +18,20 @@ std::unique_ptr<CSlideShowPic> CSlideShowPic::CreateSlideShowPicture()
   return std::make_unique<CSlideShowPicGL>();
 }
 
+CSlideShowPicGL::CSlideShowPicGL()
+{
+  KODI::UTILS::GL::GLGenVertexArrays(1, &m_vao);
+}
+
+CSlideShowPicGL::~CSlideShowPicGL()
+{
+  KODI::UTILS::GL::GLDeleteVertexArrays(1, &m_vao);
+}
+
 void CSlideShowPicGL::Render(float* x, float* y, CTexture* pTexture, UTILS::COLOR::Color color)
 {
+  KODI::UTILS::GL::GLBindVertexArray(m_vao);
+
   CRenderSystemGL* renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
   if (pTexture)
   {
@@ -118,4 +130,6 @@ void CSlideShowPicGL::Render(float* x, float* y, CTexture* pTexture, UTILS::COLO
   glDeleteBuffers(1, &indexVBO);
 
   renderSystem->DisableShader();
+
+  KODI::UTILS::GL::GLBindVertexArray(0);
 }

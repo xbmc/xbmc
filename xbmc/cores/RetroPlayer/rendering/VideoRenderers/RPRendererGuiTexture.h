@@ -52,7 +52,7 @@ public:
   CRPRendererGuiTexture(const CRenderSettings& renderSettings,
                         CRenderContext& context,
                         std::shared_ptr<IRenderBufferPool> bufferPool);
-  ~CRPRendererGuiTexture() override = default;
+  ~CRPRendererGuiTexture() override;
 
   // public implementation of CRPBaseRenderer
   bool Supports(RENDERFEATURE feature) const override;
@@ -61,6 +61,11 @@ public:
 protected:
   // protected implementation of CRPBaseRenderer
   void RenderInternal(bool clear, uint8_t alpha) override;
+
+private:
+#if defined(HAS_GL)
+  uint32_t m_vao;
+#endif
 };
 } // namespace RETRO
 } // namespace KODI

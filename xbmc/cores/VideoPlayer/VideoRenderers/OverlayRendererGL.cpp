@@ -148,6 +148,8 @@ COverlayTextureGL::COverlayTextureGL(const CDVDOverlayImage& o, CRect& rSource)
     m_width = static_cast<float>(o.width);
     m_height = static_cast<float>(o.height);
   }
+
+  KODI::UTILS::GL::GLGenVertexArrays(1, &m_vao);
 }
 
 std::shared_ptr<COverlay> COverlay::Create(const CDVDOverlaySpu& o)
@@ -182,6 +184,8 @@ COverlayTextureGL::COverlayTextureGL(const CDVDOverlaySpu& o)
   m_width = static_cast<float>(max_x - min_x);
   m_height = static_cast<float>(max_y - min_y);
   m_pma = !!USE_PREMULTIPLIED_ALPHA;
+
+  KODI::UTILS::GL::GLGenVertexArrays(1, &m_vao);
 }
 
 std::shared_ptr<COverlay> COverlay::Create(ASS_Image* images, float width, float height)
@@ -261,11 +265,15 @@ COverlayGlyphGL::COverlayGlyphGL(ASS_Image* images, float width, float height)
   }
 
   glBindTexture(GL_TEXTURE_2D, 0);
+
+  KODI::UTILS::GL::GLGenVertexArrays(1, &m_vao);
 }
 
 COverlayGlyphGL::~COverlayGlyphGL()
 {
   glDeleteTextures(1, &m_texture);
+
+  KODI::UTILS::GL::GLDeleteVertexArrays(1, &m_vao);
 }
 
 void COverlayGlyphGL::Render(SRenderState& state)
@@ -307,8 +315,10 @@ void COverlayGlyphGL::Render(SRenderState& state)
     *vertices++ = m_vertex[i+3];
     *vertices++ = m_vertex[i+2];
   }
-  GLuint VertexVBO;
 
+  KODI::UTILS::GL::GLBindVertexArray(m_vao);
+
+  GLuint VertexVBO;
   glGenBuffers(1, &VertexVBO);
   glBindBuffer(GL_ARRAY_BUFFER, VertexVBO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(VERTEX) * vecVertices.size(), vecVertices.data(),
@@ -334,6 +344,8 @@ void COverlayGlyphGL::Render(SRenderState& state)
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glDeleteBuffers(1, &VertexVBO);
 
+  KODI::UTILS::GL::GLBindVertexArray(0);
+
   renderSystem->DisableShader();
 
   glMatrixModview.PopLoad();
@@ -347,6 +359,8 @@ void COverlayGlyphGL::Render(SRenderState& state)
 COverlayTextureGL::~COverlayTextureGL()
 {
   glDeleteTextures(1, &m_texture);
+
+  KODI::UTILS::GL::GLDeleteVertexArrays(1, &m_vao);
 }
 
 void COverlayTextureGL::Render(SRenderState& state)
@@ -435,6 +449,8 @@ void COverlayTextureGL::Render(SRenderState& state)
   vertex[3].u1 = 0.0f;
   vertex[3].v1 = m_v;
 
+  KODI::UTILS::GL::GLBindVertexArray(m_vao);
+
   glGenBuffers(1, &vertexVBO);
   glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex)*4, &vertex[0], GL_STATIC_DRAW);
@@ -459,6 +475,8 @@ void COverlayTextureGL::Render(SRenderState& state)
   glDeleteBuffers(1, &vertexVBO);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   glDeleteBuffers(1, &indexVBO);
+
+  KODI::UTILS::GL::GLBindVertexArray(0);
 
   renderSystem->DisableShader();
 
