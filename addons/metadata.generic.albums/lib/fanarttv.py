@@ -27,7 +27,7 @@ def fanarttv_albumart(data):
                     multidata['image'] = cdart['url']
                     multidata['preview'] = cdart['url'].replace('/fanart/', '/preview/')
                     multidata['aspect'] = 'discart%s' % num
-                    if not num in discs:
+                    if num not in discs:
                         discs[num] = [multidata]
                     else:
                         discs[num].append(multidata)
