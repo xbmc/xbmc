@@ -88,6 +88,8 @@ set(CMAKE_C_FLAGS_DEBUG "@platform_cflags_debug@ @platform_includes@")
 set(CMAKE_CXX_FLAGS_DEBUG "@platform_cxxflags_debug@ @platform_includes@")
 set(CMAKE_CPP_FLAGS "@platform_cflags@ @platform_includes@")
 set(CMAKE_EXE_LINKER_FLAGS "@platform_ldflags@")
+# set default C++ standard version - can be overridden
+set(CMAKE_CXX_STANDARD 17)
 set(ENV{CFLAGS} ${CMAKE_C_FLAGS})
 set(ENV{CXXFLAGS} ${CMAKE_CXX_FLAGS})
 set(ENV{CPPFLAGS} ${CMAKE_CPP_FLAGS})
