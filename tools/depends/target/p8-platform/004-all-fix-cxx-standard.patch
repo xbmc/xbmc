@@ -1,0 +1,27 @@
+From ad9fcceb6267e737316b616551b7aac3cf676481 Mon Sep 17 00:00:00 2001
+From: Lukas Rusak <lorusak@gmail.com>
+Date: Fri, 2 Oct 2020 15:31:36 -0700
+Subject: [PATCH] [cmake] require c++11 as the minimum standard
+
+---
+ CMakeLists.txt | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 7144b0b..e9112f9 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -3,6 +3,10 @@ project(p8-platform)
+ cmake_minimum_required(VERSION 2.8.9)
+ enable_language(CXX)
+ 
++set(CMAKE_CXX_STANDARD 11)
++set(CMAKE_CXX_STANDARD_REQUIRED YES)
++set(CMAKE_CXX_EXTENSIONS NO)
++
+ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR})
+ 
+ find_package(Threads REQUIRED)
+-- 
+2.44.0
+
