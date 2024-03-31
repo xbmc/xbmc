@@ -287,5 +287,8 @@ namespace KODI::VIDEO
              is at least 1:4, "thumb" otherwise.
      */
     static std::string GetArtTypeFromSize(unsigned int width, unsigned int height);
+
+    static std::pair<InfoType, std::unique_ptr<IVideoInfoTagLoader>> ReadInfoTag(
+        CFileItem& item, const ADDON::ScraperPtr& scraper, bool lookInFolder, bool resetTag);
   };
   } // namespace KODI::VIDEO
