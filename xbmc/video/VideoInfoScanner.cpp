@@ -42,6 +42,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+#include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
 #include "video/VideoThumbLoader.h"
 #include "video/dialogs/GUIDialogVideoManagerExtras.h"
@@ -744,7 +745,15 @@ namespace VIDEO
       if (loader)
       {
         pItem->GetVideoInfoTag()->Reset();
-        result = loader->Load(*pItem->GetVideoInfoTag(), false);
+        CVideoInfoTag& infoTag = *pItem->GetVideoInfoTag();
+        result = loader->Load(infoTag, false);
+
+        // keep some properties only if advancedsettings.xml says so
+        const auto advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+        if (!advancedSettings->m_bVideoLibraryImportWatchedState)
+          infoTag.ResetPlayCount();
+        if (!advancedSettings->m_bVideoLibraryImportResumePoint)
+          infoTag.SetResumePoint(CBookmark());
       }
     }
     if (result == CInfoScanner::FULL_NFO)
