@@ -47,6 +47,7 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 #include "video/VideoFileItemClassify.h"
+#include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
 #include "video/VideoThumbLoader.h"
 #include "video/VideoUtils.h"
@@ -625,14 +626,7 @@ namespace KODI::VIDEO
     // handle .nfo files
     std::unique_ptr<IVideoInfoTagLoader> loader;
     if (useLocal)
-    {
-      loader.reset(CVideoInfoTagLoaderFactory::CreateLoader(*pItem, info2, bDirNames));
-      if (loader)
-      {
-        pItem->GetVideoInfoTag()->Reset();
-        result = loader->Load(*pItem->GetVideoInfoTag(), false);
-      }
-    }
+      std::tie(result, loader) = ReadInfoTag(*pItem, info2, bDirNames, true);
 
     if (result == CInfoScanner::FULL_NFO)
     {
@@ -747,14 +741,7 @@ namespace KODI::VIDEO
     // handle .nfo files
     std::unique_ptr<IVideoInfoTagLoader> loader;
     if (useLocal)
-    {
-      loader.reset(CVideoInfoTagLoaderFactory::CreateLoader(*pItem, info2, bDirNames));
-      if (loader)
-      {
-        pItem->GetVideoInfoTag()->Reset();
-        result = loader->Load(*pItem->GetVideoInfoTag(), false);
-      }
-    }
+      std::tie(result, loader) = ReadInfoTag(*pItem, info2, bDirNames, true);
     if (result == CInfoScanner::FULL_NFO)
     {
       const int dbId = AddVideo(pItem, info2->Content(), bDirNames, true);
@@ -852,14 +839,7 @@ namespace KODI::VIDEO
     // handle .nfo files
     std::unique_ptr<IVideoInfoTagLoader> loader;
     if (useLocal)
-    {
-      loader.reset(CVideoInfoTagLoaderFactory::CreateLoader(*pItem, info2, bDirNames));
-      if (loader)
-      {
-        pItem->GetVideoInfoTag()->Reset();
-        result = loader->Load(*pItem->GetVideoInfoTag(), false);
-      }
-    }
+      std::tie(result, loader) = ReadInfoTag(*pItem, info2, bDirNames, true);
     if (result == CInfoScanner::FULL_NFO)
     {
       if (AddVideo(pItem, info2->Content(), bDirNames, true) < 0)
@@ -1688,6 +1668,32 @@ namespace KODI::VIDEO
     return type;
   }
 
+  std::pair<CInfoScanner::INFO_TYPE, std::unique_ptr<IVideoInfoTagLoader>> CVideoInfoScanner::
+      ReadInfoTag(CFileItem& item,
+                  const ADDON::ScraperPtr& scraper,
+                  bool lookInFolder,
+                  bool resetTag)
+  {
+    auto result = CInfoScanner::NO_NFO;
+    std::unique_ptr<IVideoInfoTagLoader> loader(
+        CVideoInfoTagLoaderFactory::CreateLoader(item, scraper, lookInFolder));
+    if (loader)
+    {
+      CVideoInfoTag& infoTag = *item.GetVideoInfoTag();
+      if (resetTag)
+        infoTag.Reset();
+      result = loader->Load(infoTag, false);
+
+      // keep some properties only if advancedsettings.xml says so
+      const auto advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+      if (!advancedSettings->m_bVideoLibraryImportWatchedState)
+        infoTag.ResetPlayCount();
+      if (!advancedSettings->m_bVideoLibraryImportResumePoint)
+        infoTag.SetResumePoint(CBookmark());
+    }
+    return {result, std::move(loader)};
+  }
+
   std::string CVideoInfoScanner::GetMovieSetInfoFolder(const std::string& setTitle)
   {
     if (setTitle.empty())
@@ -1964,14 +1970,7 @@ namespace KODI::VIDEO
       const ScraperPtr& info(scraper);
       std::unique_ptr<IVideoInfoTagLoader> loader;
       if (useLocal)
-      {
-        loader.reset(CVideoInfoTagLoaderFactory::CreateLoader(item, info, false));
-        if (loader)
-        {
-          // no reset here on purpose
-          result = loader->Load(*item.GetVideoInfoTag(), false);
-        }
-      }
+        std::tie(result, loader) = ReadInfoTag(item, info, false, false);
       if (result == CInfoScanner::FULL_NFO)
       {
         // override with episode and season number from file if available
