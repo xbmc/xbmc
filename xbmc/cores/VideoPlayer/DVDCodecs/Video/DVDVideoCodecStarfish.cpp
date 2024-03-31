@@ -172,7 +172,7 @@ bool CDVDVideoCodecStarfish::OpenInternal(CDVDStreamInfo& hints, CDVDCodecOption
       bool isDvhe = (m_hints.codec_tag == MKTAG('d', 'v', 'h', 'e'));
       bool isDvh1 = (m_hints.codec_tag == MKTAG('d', 'v', 'h', '1'));
 
-      bool payloadDoviProfile = m_hints.dovi.dv_profile;
+      unsigned int payloadDoviProfile = m_hints.dovi.dv_profile;
       bool payloadElPresentFlag = m_hints.dovi.el_present_flag;
 
       // some files don't have dvhe or dvh1 tag set up but have Dolby Vision side data
