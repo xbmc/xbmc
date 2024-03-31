@@ -56,7 +56,7 @@ case $XBMC_PLATFORM_DIR in
     ;;
 
   android)
-    DEFAULT_NDK_VERSION="21e" # NDK package version (newer API can be inside)
+    DEFAULT_NDK_VERSION="26c" # NDK package version (newer API can be inside)
     DEFAULT_NDK_API="24" # Nougat API level (24) defined in package ./sysroot/usr/include/android/api-level.h
     DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
     DEFAULT_CONFIGURATION="RelWithDebInfo"
