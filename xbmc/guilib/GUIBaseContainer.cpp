@@ -13,6 +13,7 @@
 #include "GUIListItemLayout.h"
 #include "GUIMessage.h"
 #include "ServiceBroker.h"
+#include "guilib/GUIListItem.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "guilib/listproviders/IListProvider.h"
 #include "input/actions/Action.h"
@@ -875,10 +876,16 @@ bool CGUIBaseContainer::OnClick(int actionID)
       int selected = GetSelectedItem();
       if (selected >= 0 && selected < static_cast<int>(m_items.size()))
       {
+        // One of the actions could trigger a reload of the GUI which destroys
+        // this CGUIBaseContainer and therefore the m_items[selected] we are
+        // going to process. The shared_ptr ensures that item survives until
+        // it has been processed.
+        std::shared_ptr<CGUIListItem> item = m_items[selected];
+
         if (m_clickActions.HasActionsMeetingCondition())
-          m_clickActions.ExecuteActions(0, GetParentID(), m_items[selected]);
+          m_clickActions.ExecuteActions(0, GetParentID(), item);
         else
-          m_listProvider->OnClick(m_items[selected]);
+          m_listProvider->OnClick(item);
       }
       return true;
     }
