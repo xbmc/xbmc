@@ -6,6 +6,6 @@ list(APPEND PLATFORM_OPTIONAL_DEPS LibDovi)
 # Store SDK compile version
 set(TARGET_SDK 34)
 # Minimum supported SDK version
-set(TARGET_MINSDK 21)
+set(TARGET_MINSDK 24)
 
 set(${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG NO_DEFAULT_PATH CACHE STRING "")

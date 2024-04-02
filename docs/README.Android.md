@@ -238,7 +238,7 @@ make -j$(getconf _NPROCESSORS_ONLN)
 ```
 --with-ndk-api=<ndk number>
 ```
-  specify ndk level (optional for android), default is 21.]
+  specify ndk level (optional for android), default is 24.]
 
 ```
 --with-ndk-path=<path>
