@@ -172,7 +172,7 @@ bool CDVDVideoCodecStarfish::OpenInternal(CDVDStreamInfo& hints, CDVDCodecOption
       bool isDvhe = (m_hints.codec_tag == MKTAG('d', 'v', 'h', 'e'));
       bool isDvh1 = (m_hints.codec_tag == MKTAG('d', 'v', 'h', '1'));
 
-      bool payloadDoviProfile = m_hints.dovi.dv_profile;
+      unsigned int payloadDoviProfile = m_hints.dovi.dv_profile;
       bool payloadElPresentFlag = m_hints.dovi.el_present_flag;
 
       // some files don't have dvhe or dvh1 tag set up but have Dolby Vision side data
@@ -223,7 +223,10 @@ bool CDVDVideoCodecStarfish::OpenInternal(CDVDStreamInfo& hints, CDVDCodecOption
 
           // Only set for profile 7, container hint allows to skip parsing unnecessarily
           if (m_hints.dovi.dv_profile == 7)
+          {
+            m_hints.hdrType = StreamHdrType::HDR_TYPE_HDR10;
             m_bitstream->SetConvertDovi(convertDovi);
+          }
         }
       }
 
@@ -514,62 +517,74 @@ void CDVDVideoCodecStarfish::SetSpeed(int iSpeed)
 
 void CDVDVideoCodecStarfish::SetHDR()
 {
+  if (m_hints.hdrType != StreamHdrType::HDR_TYPE_HDR10 &&
+      m_hints.hdrType != StreamHdrType::HDR_TYPE_HLG)
+    return;
+
+  CVariant hdrData;
+  CVariant sei;
+
+  if (ms_hdrInfoMap.find(m_hints.colorTransferCharacteristic) != ms_hdrInfoMap.cend())
+    hdrData["hdrType"] = ms_hdrInfoMap.at(m_hints.colorTransferCharacteristic).data();
+  else
+    hdrData["hdrType"] = "none";
+
   if (m_hints.masteringMetadata)
   {
-    CVariant hdrData;
-
-    if (ms_hdrInfoMap.find(m_hints.colorTransferCharacteristic) != ms_hdrInfoMap.cend())
-      hdrData["hdrType"] = ms_hdrInfoMap.at(m_hints.colorTransferCharacteristic).data();
-    else
-      hdrData["hdrType"] = "none";
-
-    CVariant sei;
-    // for more information, see CTA+861.3-A standard document
-    constexpr double maxChromaticity = 50000;
-    constexpr double maxLuminance = 10000;
-    sei["displayPrimariesX0"] = static_cast<unsigned short>(
-        av_q2d(m_hints.masteringMetadata->display_primaries[0][0]) * maxChromaticity + 0.5);
-    sei["displayPrimariesY0"] = static_cast<unsigned short>(
-        av_q2d(m_hints.masteringMetadata->display_primaries[0][1]) * maxChromaticity + 0.5);
-    sei["displayPrimariesX1"] = static_cast<unsigned short>(
-        av_q2d(m_hints.masteringMetadata->display_primaries[1][0]) * maxChromaticity + 0.5);
-    sei["displayPrimariesY1"] = static_cast<unsigned short>(
-        av_q2d(m_hints.masteringMetadata->display_primaries[1][1]) * maxChromaticity + 0.5);
-    sei["displayPrimariesX2"] = static_cast<unsigned short>(
-        av_q2d(m_hints.masteringMetadata->display_primaries[2][0]) * maxChromaticity + 0.5);
-    sei["displayPrimariesY2"] = static_cast<unsigned short>(
-        av_q2d(m_hints.masteringMetadata->display_primaries[2][1]) * maxChromaticity + 0.5);
-    sei["whitePointX"] = static_cast<unsigned short>(
-        av_q2d(m_hints.masteringMetadata->white_point[0]) * maxChromaticity + 0.5);
-    sei["whitePointY"] = static_cast<unsigned short>(
-        av_q2d(m_hints.masteringMetadata->white_point[1]) * maxChromaticity + 0.5);
-    sei["minDisplayMasteringLuminance"] =
-        static_cast<unsigned short>(av_q2d(m_hints.masteringMetadata->min_luminance) + 0.5);
-    sei["maxDisplayMasteringLuminance"] = static_cast<unsigned short>(
-        av_q2d(m_hints.masteringMetadata->max_luminance) * maxLuminance + 0.5);
-    // we can have HDR content that does not provide content light level metadata
-    if (m_hints.contentLightMetadata)
+    if (m_hints.masteringMetadata->has_primaries)
     {
-      sei["maxContentLightLevel"] =
-          static_cast<unsigned short>(m_hints.contentLightMetadata->MaxCLL);
-      sei["maxPicAverageLightLevel"] =
-          static_cast<unsigned short>(m_hints.contentLightMetadata->MaxFALL);
+      // for more information, see CTA+861.3-A standard document
+      constexpr int maxChromaticity = 50000;
+      // expected input is in gbr order
+      sei["displayPrimariesX0"] = static_cast<int>(
+          std::round(av_q2d(m_hints.masteringMetadata->display_primaries[1][0]) * maxChromaticity));
+      sei["displayPrimariesY0"] = static_cast<int>(
+          std::round(av_q2d(m_hints.masteringMetadata->display_primaries[1][1]) * maxChromaticity));
+      sei["displayPrimariesX1"] = static_cast<int>(
+          std::round(av_q2d(m_hints.masteringMetadata->display_primaries[2][0]) * maxChromaticity));
+      sei["displayPrimariesY1"] = static_cast<int>(
+          std::round(av_q2d(m_hints.masteringMetadata->display_primaries[2][1]) * maxChromaticity));
+      sei["displayPrimariesX2"] = static_cast<int>(
+          std::round(av_q2d(m_hints.masteringMetadata->display_primaries[0][0]) * maxChromaticity));
+      sei["displayPrimariesY2"] = static_cast<int>(
+          std::round(av_q2d(m_hints.masteringMetadata->display_primaries[0][1]) * maxChromaticity));
+      sei["whitePointX"] = static_cast<int>(
+          std::round(av_q2d(m_hints.masteringMetadata->white_point[0]) * maxChromaticity));
+      sei["whitePointY"] = static_cast<int>(
+          std::round(av_q2d(m_hints.masteringMetadata->white_point[1]) * maxChromaticity));
     }
+
+    if (m_hints.masteringMetadata->has_luminance)
+    {
+      constexpr int maxLuminance = 10000;
+      sei["minDisplayMasteringLuminance"] = static_cast<int>(
+          std::round(av_q2d(m_hints.masteringMetadata->min_luminance) * maxLuminance));
+      sei["maxDisplayMasteringLuminance"] = static_cast<int>(
+          std::round(av_q2d(m_hints.masteringMetadata->max_luminance) * maxLuminance));
+    }
+  }
+
+  // we can have HDR content that does not provide content light level metadata
+  if (m_hints.contentLightMetadata)
+  {
+    sei["maxContentLightLevel"] = m_hints.contentLightMetadata->MaxCLL;
+    sei["maxPicAverageLightLevel"] = m_hints.contentLightMetadata->MaxFALL;
+  }
+  if (!sei.empty())
     hdrData["sei"] = sei;
 
-    CVariant vui;
-    vui["transferCharacteristics"] = static_cast<int>(m_hints.colorTransferCharacteristic);
-    vui["colorPrimaries"] = static_cast<int>(m_hints.colorPrimaries);
-    vui["matrixCoeffs"] = static_cast<int>(m_hints.colorSpace);
-    vui["videoFullRangeFlag"] = m_hints.colorRange == AVCOL_RANGE_JPEG;
-    hdrData["vui"] = vui;
+  CVariant vui;
+  vui["transferCharacteristics"] = static_cast<int>(m_hints.colorTransferCharacteristic);
+  vui["colorPrimaries"] = static_cast<int>(m_hints.colorPrimaries);
+  vui["matrixCoeffs"] = static_cast<int>(m_hints.colorSpace);
+  vui["videoFullRangeFlag"] = m_hints.colorRange == AVCOL_RANGE_JPEG;
+  hdrData["vui"] = vui;
 
-    std::string payload;
-    CJSONVariantWriter::Write(hdrData, payload, true);
+  std::string payload;
+  CJSONVariantWriter::Write(hdrData, payload, true);
 
-    CLog::LogFC(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecStarfish: Setting HDR data payload {}", payload);
-    m_starfishMediaAPI->setHdrInfo(payload.c_str());
-  }
+  CLog::LogFC(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecStarfish: Setting HDR data payload {}", payload);
+  m_starfishMediaAPI->setHdrInfo(payload.c_str());
 }
 
 void CDVDVideoCodecStarfish::UpdateFpsDuration()
