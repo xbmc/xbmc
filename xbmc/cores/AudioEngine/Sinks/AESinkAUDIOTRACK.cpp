@@ -162,7 +162,8 @@ int CAESinkAUDIOTRACK::AudioTrackWrite(char* audioData, int offsetInBytes, int s
     if (m_floatbuf.size() != (sizeInBytes - offsetInBytes) / sizeof(float))
       m_floatbuf.resize((sizeInBytes - offsetInBytes) / sizeof(float));
     memcpy(m_floatbuf.data(), audioData + offsetInBytes, sizeInBytes - offsetInBytes);
-    written = m_at_jni->write(m_floatbuf, 0, (sizeInBytes - offsetInBytes) / sizeof(float), CJNIAudioTrack::WRITE_BLOCKING);
+    written = m_at_jni->write(m_floatbuf, 0, (sizeInBytes - offsetInBytes) / sizeof(float),
+                              CJNIAudioTrack::WRITE_BLOCKING);
     written *= sizeof(float);
   }
   else if (m_jniAudioFormat == CJNIAudioFormat::ENCODING_IEC61937)
@@ -170,10 +171,8 @@ int CAESinkAUDIOTRACK::AudioTrackWrite(char* audioData, int offsetInBytes, int s
     if (m_shortbuf.size() != (sizeInBytes - offsetInBytes) / sizeof(int16_t))
       m_shortbuf.resize((sizeInBytes - offsetInBytes) / sizeof(int16_t));
     memcpy(m_shortbuf.data(), audioData + offsetInBytes, sizeInBytes - offsetInBytes);
-    if (CJNIBase::GetSDKVersion() >= 23)
-      written = m_at_jni->write(m_shortbuf, 0, (sizeInBytes - offsetInBytes) / sizeof(int16_t), CJNIAudioTrack::WRITE_BLOCKING);
-    else
-      written = m_at_jni->write(m_shortbuf, 0, (sizeInBytes - offsetInBytes) / sizeof(int16_t));
+    written = m_at_jni->write(m_shortbuf, 0, (sizeInBytes - offsetInBytes) / sizeof(int16_t),
+                              CJNIAudioTrack::WRITE_BLOCKING);
     written *= sizeof(uint16_t);
   }
   else
@@ -181,10 +180,8 @@ int CAESinkAUDIOTRACK::AudioTrackWrite(char* audioData, int offsetInBytes, int s
     if (static_cast<int>(m_charbuf.size()) != (sizeInBytes - offsetInBytes))
       m_charbuf.resize(sizeInBytes - offsetInBytes);
     memcpy(m_charbuf.data(), audioData + offsetInBytes, sizeInBytes - offsetInBytes);
-    if (CJNIBase::GetSDKVersion() >= 23)
-      written = m_at_jni->write(m_charbuf, 0, sizeInBytes - offsetInBytes, CJNIAudioTrack::WRITE_BLOCKING);
-    else
-      written = m_at_jni->write(m_charbuf, 0, sizeInBytes - offsetInBytes);
+    written =
+        m_at_jni->write(m_charbuf, 0, sizeInBytes - offsetInBytes, CJNIAudioTrack::WRITE_BLOCKING);
   }
 
   return written;
@@ -1119,26 +1116,23 @@ void CAESinkAUDIOTRACK::UpdateAvailablePassthroughCapabilities(bool isRaw)
       }
     }
 
-    if (CJNIAudioManager::GetSDKVersion() >= 23)
+    if (CJNIAudioFormat::ENCODING_DTS_HD != -1)
     {
-      if (CJNIAudioFormat::ENCODING_DTS_HD != -1)
+      if (VerifySinkConfiguration(48000, AEChannelMapToAUDIOTRACKChannelMask(AE_CH_LAYOUT_7_1),
+                                  CJNIAudioFormat::ENCODING_DTS_HD, true))
       {
-        if (VerifySinkConfiguration(48000, AEChannelMapToAUDIOTRACKChannelMask(AE_CH_LAYOUT_7_1),
-                                    CJNIAudioFormat::ENCODING_DTS_HD, true))
-        {
-          CLog::Log(LOGDEBUG, "Firmware implements DTS-HD RAW");
-          m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
-          m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_MA);
-        }
+        CLog::Log(LOGDEBUG, "Firmware implements DTS-HD RAW");
+        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
+        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_MA);
       }
-      if (CJNIAudioFormat::ENCODING_DOLBY_TRUEHD != -1)
+    }
+    if (CJNIAudioFormat::ENCODING_DOLBY_TRUEHD != -1)
+    {
+      if (VerifySinkConfiguration(48000, AEChannelMapToAUDIOTRACKChannelMask(AE_CH_LAYOUT_7_1),
+                                  CJNIAudioFormat::ENCODING_DOLBY_TRUEHD, true))
       {
-        if (VerifySinkConfiguration(48000, AEChannelMapToAUDIOTRACKChannelMask(AE_CH_LAYOUT_7_1),
-                                    CJNIAudioFormat::ENCODING_DOLBY_TRUEHD, true))
-        {
-          CLog::Log(LOGDEBUG, "Firmware implements TrueHD RAW");
-          m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
-        }
+        CLog::Log(LOGDEBUG, "Firmware implements TrueHD RAW");
+        m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
       }
     }
   }
@@ -1200,10 +1194,9 @@ void CAESinkAUDIOTRACK::UpdateAvailablePCMCapabilities()
   int encoding = CJNIAudioFormat::ENCODING_PCM_16BIT;
   m_sinkSupportsFloat = VerifySinkConfiguration(native_sampleRate, CJNIAudioFormat::CHANNEL_OUT_STEREO, CJNIAudioFormat::ENCODING_PCM_FLOAT);
 
-  if (CJNIAudioManager::GetSDKVersion() >= 21)
-    m_sinkSupportsMultiChannelFloat =
-        VerifySinkConfiguration(native_sampleRate, CJNIAudioFormat::CHANNEL_OUT_7POINT1_SURROUND,
-                                CJNIAudioFormat::ENCODING_PCM_FLOAT);
+  m_sinkSupportsMultiChannelFloat =
+      VerifySinkConfiguration(native_sampleRate, CJNIAudioFormat::CHANNEL_OUT_7POINT1_SURROUND,
+                              CJNIAudioFormat::ENCODING_PCM_FLOAT);
 
   if (m_sinkSupportsFloat)
   {
