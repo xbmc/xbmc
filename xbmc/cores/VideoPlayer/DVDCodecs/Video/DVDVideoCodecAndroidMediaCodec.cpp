@@ -1389,7 +1389,8 @@ void CDVDVideoCodecAndroidMediaCodec::SignalEndOfStream()
       {
         xbmc_jnienv()->ExceptionDescribe();
         xbmc_jnienv()->ExceptionClear();
-        CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::{}: queueInputBuffer failed");
+        CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::{}: queueInputBuffer failed",
+                  __func__);
       }
       else
       {
