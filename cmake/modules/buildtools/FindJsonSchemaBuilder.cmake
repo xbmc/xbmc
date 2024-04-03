@@ -52,7 +52,7 @@ if(NOT TARGET JsonSchemaBuilder::JsonSchemaBuilder)
 
     if(WIN32 OR WINDOWS_STORE)
       # Make sure we generate for host arch, not target
-      set(JSONSCHEMABUILDER_GENERATOR_PLATFORM CMAKE_GENERATOR_PLATFORM WIN32)
+      set(JSONSCHEMABUILDER_GENERATOR_PLATFORM CMAKE_GENERATOR_PLATFORM ${HOSTTOOLSET})
       set(WIN_DISABLE_PROJECT_FLAGS 1)
       set(APP_EXTENSION ".exe")
     endif()
