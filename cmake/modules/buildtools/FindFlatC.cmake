@@ -60,7 +60,6 @@ if(NOT TARGET flatbuffers::flatc)
     if(WIN32 OR WINDOWS_STORE)
       # Make sure we generate for host arch, not target
       set(FLATBUFFERS_GENERATOR_PLATFORM CMAKE_GENERATOR_PLATFORM ${HOSTTOOLSET})
-      set(WIN_DISABLE_PROJECT_FLAGS 1)
     endif()
 
     set(FLATBUFFERS_FLATC_EXECUTABLE ${INSTALL_DIR}/flatc)
