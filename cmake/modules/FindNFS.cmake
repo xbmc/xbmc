@@ -19,6 +19,9 @@ if(NOT TARGET libnfs::nfs)
     if(WIN32 OR WINDOWS_STORE)
       set(${MODULE}_C_FLAGS "/sdl-")
       set(${MODULE}_CXX_FLAGS "/sdl-")
+
+      set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/01-MSUWP-compat.patch")
+      generate_patchcommand("${patches}")
     endif()
 
     BUILD_DEP_TARGET()
