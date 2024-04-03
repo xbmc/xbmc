@@ -33,6 +33,7 @@ macro(buildPCRE)
                  -DPCRE_SUPPORT_UNICODE_PROPERTIES=ON
                  -DPCRE_SUPPORT_LIBZ=OFF
                  -DPCRE_SUPPORT_LIBBZ2=OFF
+                 -DPCRE_BUILD_PCRECPP=OFF
                  -DPCRE_BUILD_PCREGREP=OFF
                  -DPCRE_BUILD_TESTS=OFF)
 
