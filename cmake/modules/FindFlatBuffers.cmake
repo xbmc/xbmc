@@ -13,9 +13,7 @@ if(NOT TARGET flatbuffers::flatbuffers)
     include(cmake/scripts/common/ModuleHelpers.cmake)
 
     set(MODULE_LC flatbuffers)
-    # Duplicate URL may exist from FindFlatC.cmake
-    # unset otherwise it thinks we are providing a local file location and incorrect concatenation happens
-    unset(FLATBUFFERS_URL)
+
     SETUP_BUILD_VARS()
 
     # Override build type detection and always build as release

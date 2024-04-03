@@ -10,12 +10,12 @@
 function(get_versionfile_data)
 
   # Dependency path
-  set(MODULE_PATH "${PROJECTSOURCE}/tools/depends/${${MODULE_LC}_LIB_TYPE}/${MODULE_LC}")
+  set(MODULE_PATH "${PROJECTSOURCE}/tools/depends/${${MODULE_LC}_LIB_TYPE}/${${MODULE_LC}_MODULE_LOCATION}")
 
-  if(NOT EXISTS "${MODULE_PATH}/${MODULE}-VERSION")
-    MESSAGE(FATAL_ERROR "${MODULE}-VERSION does not exist at ${MODULE_PATH}.")
+  if(NOT EXISTS "${MODULE_PATH}/${${MODULE_LC}_MODULE_VERSION}-VERSION")
+    MESSAGE(FATAL_ERROR "${${MODULE_LC}_MODULE_VERSION}-VERSION does not exist at ${MODULE_PATH}.")
   else()
-    set(${MODULE}_FILE "${MODULE_PATH}/${MODULE}-VERSION")
+    set(${MODULE}_FILE "${MODULE_PATH}/${${MODULE_LC}_MODULE_VERSION}-VERSION")
   endif()
 
   file(STRINGS ${${MODULE}_FILE} ${MODULE}_LNAME REGEX "^[ \t]*LIBNAME=")
@@ -122,6 +122,15 @@ endfunction()
 # Macro to factor out the repetitive URL setup
 macro(SETUP_BUILD_VARS)
   string(TOUPPER ${MODULE_LC} MODULE)
+
+  if(DEFINED ${MODULE_LC}_MODULE_LOCATION)
+    string(TOUPPER ${${MODULE_LC}_MODULE_LOCATION} _MODULE_UPPER)
+    set(${MODULE_LC}_MODULE_VERSION ${_MODULE_UPPER})
+    unset(_MODULE_UPPER)
+  else()
+    set(${MODULE_LC}_MODULE_LOCATION ${MODULE_LC})
+    set(${MODULE_LC}_MODULE_VERSION ${MODULE})
+  endif()
 
   # Fall through to target build module dir if not explicitly set
   if(NOT DEFINED ${MODULE_LC}_LIB_TYPE)
