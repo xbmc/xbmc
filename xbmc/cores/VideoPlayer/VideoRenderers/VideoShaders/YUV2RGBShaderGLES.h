@@ -69,7 +69,7 @@ class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
     bool m_hasLightMetadata{false};
     AVContentLightMetadata m_lightMetadata;
     bool m_toneMapping{false};
-    ETONEMAPMETHOD m_toneMappingMethod{VS_TONEMAPMETHOD_REINHARD};
+    ETONEMAPMETHOD m_toneMappingMethod{VS_TONEMAPMETHOD_OFF};
     float m_toneMappingParam{1.0};
 
     bool m_colorConversion{false};

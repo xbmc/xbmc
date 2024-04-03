@@ -39,7 +39,7 @@ CVideoSettings::CVideoSettings()
   m_StereoMode = 0;
   m_StereoInvert = false;
   m_VideoStream = -1;
-  m_ToneMapMethod = VS_TONEMAPMETHOD_REINHARD;
+  m_ToneMapMethod = VS_TONEMAPMETHOD_OFF;
   m_ToneMapParam = 1.0f;
   m_Orientation = 0;
   m_CenterMixLevel = 0;
