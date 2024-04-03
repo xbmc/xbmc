@@ -10,7 +10,7 @@
 function(get_versionfile_data)
 
   # Dependency path
-  set(MODULE_PATH "${PROJECTSOURCE}/tools/depends/${LIB_TYPE}/${MODULE_LC}")
+  set(MODULE_PATH "${PROJECTSOURCE}/tools/depends/${${MODULE_LC}_LIB_TYPE}/${MODULE_LC}")
 
   if(NOT EXISTS "${MODULE_PATH}/${MODULE}-VERSION")
     MESSAGE(FATAL_ERROR "${MODULE}-VERSION does not exist at ${MODULE_PATH}.")
@@ -124,12 +124,12 @@ macro(SETUP_BUILD_VARS)
   string(TOUPPER ${MODULE_LC} MODULE)
 
   # Fall through to target build module dir if not explicitly set
-  if(NOT DEFINED LIB_TYPE)
-    set(LIB_TYPE "target")
+  if(NOT DEFINED ${MODULE_LC}_LIB_TYPE)
+    set(${MODULE_LC}_LIB_TYPE "target")
   endif()
 
   # Location for build type, native or target
-  if(LIB_TYPE STREQUAL "target")
+  if(${MODULE_LC}_LIB_TYPE STREQUAL "target")
     set(DEP_LOCATION "${DEPENDS_PATH}")
   else()
     set(DEP_LOCATION "${NATIVEPREFIX}")
@@ -155,19 +155,17 @@ macro(SETUP_BUILD_VARS)
   endif()
   if(VERBOSE)
     message(STATUS "MODULE: ${MODULE}")
-    message(STATUS "LIB_TYPE: ${LIB_TYPE}")
+    message(STATUS "${MODULE_LC}_LIB_TYPE: ${${MODULE_LC}_LIB_TYPE}")
     message(STATUS "DEP_LOCATION: ${DEP_LOCATION}")
     message(STATUS "PROJECTSOURCE: ${PROJECTSOURCE}")
     message(STATUS "${MODULE}_URL: ${${MODULE}_URL}")
   endif()
-  unset(LIB_TYPE)
 endmacro()
 
 macro(CLEAR_BUILD_VARS)
   # unset all generic variables to insure clean state between macro calls
   # Potentially an issue with scope when a macro is used inside a dep that uses a macro
   unset(PROJECTSOURCE)
-  unset(LIB_TYPE)
   unset(BUILD_NAME)
   unset(INSTALL_DIR)
   unset(CMAKE_ARGS)
@@ -186,6 +184,7 @@ macro(CLEAR_BUILD_VARS)
   unset(${MODULE}_GENERATOR_PLATFORM)
   unset(${MODULE}_INSTALL_PREFIX)
   unset(${MODULE}_TOOLCHAIN_FILE)
+  unset(${MODULE_LC}_LIB_TYPE)
 endmacro()
 
 # Macro to create externalproject_add target
@@ -231,7 +230,8 @@ macro(BUILD_DEP_TARGET)
     # We can disable adding them with WIN_DISABLE_PROJECT_FLAGS. This is potentially required
     # for host build tools (eg flatc) that may be a different arch to the core app
     if(WIN32 OR WINDOWS_STORE)
-      if(NOT DEFINED WIN_DISABLE_PROJECT_FLAGS)
+      if(NOT (DEFINED WIN_DISABLE_PROJECT_FLAGS OR
+         ${MODULE_LC}_LIB_TYPE STREQUAL "native"))
         list(APPEND CMAKE_ARGS "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} $<$<CONFIG:Debug>:${CMAKE_C_FLAGS_DEBUG}> $<$<CONFIG:Release>:${CMAKE_C_FLAGS_RELEASE}> ${${MODULE}_C_FLAGS}"
                                "-DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS} $<$<CONFIG:Debug>:${CMAKE_CXX_FLAGS_DEBUG}> $<$<CONFIG:Release>:${CMAKE_CXX_FLAGS_RELEASE}> ${${MODULE}_CXX_FLAGS}"
                                "-DCMAKE_EXE_LINKER_FLAGS=${CMAKE_EXE_LINKER_FLAGS} $<$<CONFIG:Debug>:${CMAKE_EXE_LINKER_FLAGS_DEBUG}> $<$<CONFIG:Release>:${CMAKE_EXE_LINKER_FLAGS_RELEASE}> ${${MODULE}_EXE_LINKER_FLAGS}")

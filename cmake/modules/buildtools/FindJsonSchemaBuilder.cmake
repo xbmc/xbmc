@@ -28,7 +28,7 @@ if(NOT TARGET JsonSchemaBuilder::JsonSchemaBuilder)
   else()
 
     set(MODULE_LC JsonSchemaBuilder)
-    set(LIB_TYPE native)
+    set(${MODULE_LC}_LIB_TYPE native)
     set(JSONSCHEMABUILDER_DISABLE_VERSION ON)
     SETUP_BUILD_VARS()
 

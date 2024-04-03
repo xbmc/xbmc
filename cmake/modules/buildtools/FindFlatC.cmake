@@ -23,7 +23,7 @@ if(NOT TARGET flatbuffers::flatc)
   endif()
 
   set(MODULE_LC flatbuffers)
-  set(LIB_TYPE native)
+  set(${MODULE_LC}_LIB_TYPE native)
   # Duplicate URL may exist from FindFlatbuffers.cmake
   # unset otherwise it thinks we are providing a local file location and incorrect concatenation happens
   unset(FLATBUFFERS_URL)
