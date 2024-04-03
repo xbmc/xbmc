@@ -60,6 +60,7 @@
 #include "video/Bookmark.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoTag.h"
+#include "video/VideoUtils.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -1308,7 +1309,7 @@ bool CFileItem::IsBluray() const
   if (URIUtils::IsBluray(m_strPath))
     return true;
 
-  CFileItem item = CFileItem(GetOpticalMediaPath(), false);
+  CFileItem item = CFileItem(VIDEO_UTILS::GetOpticalMediaPath(*this), false);
 
   return item.IsBDFile();
 }
@@ -2006,37 +2007,6 @@ void CFileItem::SetFromSong(const CSong &song)
   if (!song.strThumb.empty())
     SetArt("thumb", song.strThumb);
   FillInMimeType(false);
-}
-
-std::string CFileItem::GetOpticalMediaPath() const
-{
-  std::string path;
-  path = URIUtils::AddFileToFolder(GetPath(), "VIDEO_TS.IFO");
-  if (CFile::Exists(path))
-    return path;
-
-  path = URIUtils::AddFileToFolder(GetPath(), "VIDEO_TS", "VIDEO_TS.IFO");
-  if (CFile::Exists(path))
-    return path;
-
-#ifdef HAVE_LIBBLURAY
-  path = URIUtils::AddFileToFolder(GetPath(), "index.bdmv");
-  if (CFile::Exists(path))
-    return path;
-
-  path = URIUtils::AddFileToFolder(GetPath(), "BDMV", "index.bdmv");
-  if (CFile::Exists(path))
-    return path;
-
-  path = URIUtils::AddFileToFolder(GetPath(), "INDEX.BDM");
-  if (CFile::Exists(path))
-    return path;
-
-  path = URIUtils::AddFileToFolder(GetPath(), "BDMV", "INDEX.BDM");
-  if (CFile::Exists(path))
-    return path;
-#endif
-  return std::string();
 }
 
 /**
@@ -2960,7 +2930,7 @@ void CFileItemList::StackFolders()
         // check for dvd folders
         if (!bMatch)
         {
-          std::string dvdPath = item->GetOpticalMediaPath();
+          std::string dvdPath = VIDEO_UTILS::GetOpticalMediaPath(*item);
 
           if (!dvdPath.empty())
           {
