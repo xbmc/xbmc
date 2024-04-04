@@ -1,39 +1,31 @@
-include ../../Makefile.include
+include ../../Makefile.include ZLIB-VERSION ../../download-files.include
 PREFIX=$(NATIVEPREFIX)
 PLATFORM=$(NATIVEPLATFORM)
-DEPS = ../../Makefile.include Makefile visibility.patch ../../download-files.include
+DEPS = ../../Makefile.include Makefile ZLIB-VERSION ../../download-files.include
 
-# lib name, version
-LIBNAME=zlib
-VERSION=1.2.13
-SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.xz
-SHA512=9e7ac71a1824855ae526506883e439456b74ac0b811d54e94f6908249ba8719bec4c8d7672903c5280658b26cb6b5e93ecaaafe5cdc2980c760fa196773f0725
-include ../../download-files.include
 # configuration settings
-CONFIGURE= CC="$(CC_FOR_BUILD)" CFLAGS="$(NATIVE_CFLAGS)" ./configure --prefix=$(PREFIX)
+CMAKE_OPTIONS=-DCMAKE_INSTALL_PREFIX=$(PREFIX) \
+              -DINSTALL_PKGCONFIG_DIR=$(PREFIX)/lib/pkgconfig \
+              -DZLIB_BUILD_EXAMPLES=OFF
 
-LIBDYLIB=$(PLATFORM)/$(LIBNAME).a
+LIBDYLIB=$(PLATFORM)/build/libz.a
 
 all: .installed-$(PLATFORM)
 
-
 $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
-	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
+	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)/build
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); patch -p1 -i ../visibility.patch
-	cd $(PLATFORM); $(CONFIGURE)
+	cd $(PLATFORM)/build; $(CMAKE_FOR_BUILD) $(CMAKE_OPTIONS) ..
 
 $(LIBDYLIB): $(PLATFORM)
-	$(MAKE) -C $(PLATFORM)
-	touch $@
+	$(MAKE) -C $(PLATFORM)/build
 
 .installed-$(PLATFORM): $(LIBDYLIB)
-	$(MAKE) -C $(PLATFORM) install
+	$(MAKE) -C $(PLATFORM)/build install
 	touch $@
 
 clean:
-	$(MAKE) -C $(PLATFORM) clean
+	$(MAKE) -C $(PLATFORM)/build clean
 	rm -f .installed-$(PLATFORM)
 
 distclean::
