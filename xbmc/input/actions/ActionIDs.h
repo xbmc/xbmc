@@ -358,6 +358,8 @@ constexpr const int ACTION_MENU = 163;
 
 constexpr const int ACTION_SET_RATING = 164;
 
+constexpr const int ACTION_PREV_SUBTITLE = 165;
+
 constexpr const int ACTION_RECORD = 170;
 
 constexpr const int ACTION_PASTE = 180;
