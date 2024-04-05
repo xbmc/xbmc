@@ -17,6 +17,7 @@ set(SOURCES ActorProtocol.cpp
             Crc32.cpp
             CSSUtils.cpp
             DatabaseUtils.cpp
+            DateLib.cpp
             Digest.cpp
             DiscsUtils.cpp
             EndianSwap.cpp
@@ -100,6 +101,7 @@ set(HEADERS ActorProtocol.h
             Crc32.h
             CSSUtils.h
             DatabaseUtils.h
+            DateLib.h
             Digest.h
             DiscsUtils.h
             EndianSwap.h

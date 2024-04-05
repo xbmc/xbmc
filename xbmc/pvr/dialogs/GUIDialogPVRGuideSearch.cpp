@@ -252,7 +252,7 @@ CDateTime CGUIDialogPVRGuideSearch::ReadDateTime(const std::string& strDate, con
   sscanf(strTime.c_str(), "%d:%d", &iHours, &iMinutes);
   dateTime.SetFromDBDate(strDate);
   dateTime.SetDateTime(dateTime.GetYear(), dateTime.GetMonth(), dateTime.GetDay(), iHours, iMinutes, 0);
-  return dateTime.GetAsUTCDateTime();
+  return dateTime;
 }
 
 bool CGUIDialogPVRGuideSearch::IsRadioSelected(int controlID)
@@ -358,10 +358,8 @@ void CGUIDialogPVRGuideSearch::Update()
   if (!m_endDateTime.IsValid())
     m_endDateTime = m_startDateTime + CDateTimeSpan(10, 0, 0, 0); // default to start + 10 days
 
-  CDateTime startLocal;
-  startLocal.SetFromUTCDateTime(m_startDateTime);
-  CDateTime endLocal;
-  endLocal.SetFromUTCDateTime(m_endDateTime);
+  CDateTime startLocal = m_startDateTime;
+  CDateTime endLocal = m_endDateTime;
 
   SET_CONTROL_LABEL2(CONTROL_EDIT_START_TIME, startLocal.GetAsLocalizedTime("", false));
   {

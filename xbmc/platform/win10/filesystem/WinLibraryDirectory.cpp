@@ -16,6 +16,7 @@
 
 #include "platform/win10/AsyncHelpers.h"
 #include "platform/win32/CharsetConverter.h"
+#include "platform/win32/WIN32Util.h"
 
 #include <string>
 
@@ -130,10 +131,7 @@ bool CWinLibraryDirectory::GetDirectory(const CURL& url, CFileItemList& items)
     auto props = Wait(item.GetBasicPropertiesAsync());
 
     FILETIME fileTime1 = winrt::clock::to_FILETIME(props.DateModified());
-    KODI::TIME::FileTime fileTime2;
-    fileTime2.highDateTime = fileTime1.dwHighDateTime;
-    fileTime2.lowDateTime = fileTime1.dwLowDateTime;
-    pItem->m_dateTime = fileTime2;
+    pItem->m_dateTime = CWIN32Util::fileTimeToTimeT(fileTime1);
     if (!pItem->m_bIsFolder)
       pItem->m_dwSize = static_cast<int64_t>(props.Size());
 

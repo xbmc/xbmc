@@ -17,6 +17,7 @@
 #include "addons/RepositoryUpdater.h"
 #include "addons/Service.h"
 #include "addons/VFSEntry.h"
+#include "addons/addoninfo/AddonType.h"
 #include "addons/binary-addons/BinaryAddonManager.h"
 #include "cores/DataCacheCore.h"
 #include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
@@ -46,6 +47,7 @@
 #include "pictures/SlideShowDelegator.h"
 #include "storage/MediaManager.h"
 #include "utils/FileExtensionProvider.h"
+#include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "weather/WeatherManager.h"
 

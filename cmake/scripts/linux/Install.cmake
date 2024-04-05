@@ -85,6 +85,13 @@ install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${APP_NAME_LC}-gbm-session.d
         DESTINATION ${datarootdir}/wayland-sessions
         COMPONENT kodi)
 
+# Install timezone resources
+if(ENABLE_INTERNAL_TZDATA)
+  install(DIRECTORY ${CMAKE_BINARY_DIR}/addons/resource.timezone/resources/tzdata
+          DESTINATION ${datarootdir}/${APP_NAME_LC}/addons/resource.timezone/resources
+          COMPONENT kodi)
+endif()
+
 # Install xsession entry
 install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${APP_NAME_LC}-xsession.desktop
         RENAME ${APP_NAME_LC}.desktop

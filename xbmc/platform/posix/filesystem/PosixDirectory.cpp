@@ -79,10 +79,7 @@ bool CPosixDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     {
       if (bStat || stat(pItem->GetPath().c_str(), &buffer) == 0)
       {
-        KODI::TIME::FileTime fileTime, localTime;
-        KODI::TIME::TimeTToFileTime(buffer.st_mtime, &fileTime);
-        KODI::TIME::FileTimeToLocalFileTime(&fileTime, &localTime);
-        pItem->m_dateTime = localTime;
+        pItem->m_dateTime = buffer.st_mtime;
 
         if (!pItem->m_bIsFolder)
           pItem->m_dwSize = buffer.st_size;

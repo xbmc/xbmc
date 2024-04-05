@@ -1,0 +1,37 @@
+From 5790d6aed57bda1dc1577860d8382678100ebfa3 Mon Sep 17 00:00:00 2001
+From: Vasyl Gello <vasek.gello@gmail.com>
+Date: Wed, 11 Jan 2023 11:35:41 +0200
+Subject: [PATCH 2/4] Fix Android build
+
+Signed-off-by: Vasyl Gello <vasek.gello@gmail.com>
+---
+ src/tz.cpp | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/src/tz.cpp b/src/tz.cpp
+index 26babbd..69bab7c 100644
+--- a/src/tz.cpp
++++ b/src/tz.cpp
+@@ -141,7 +141,7 @@
+ #  endif  // HAS_REMOTE_API
+ #else   // !_WIN32
+ #  include <unistd.h>
+-#  if !USE_OS_TZDB && !defined(INSTALL)
++#  if !USE_OS_TZDB && !defined(INSTALL) && !defined(__ANDROID__)
+ #    include <wordexp.h>
+ #  endif
+ #  include <limits.h>
+@@ -245,7 +245,9 @@ expand_path(std::string path)
+ {
+ #      if TARGET_OS_IPHONE
+     return date::iOSUtils::get_tzdata_path();
+-#      else  // !TARGET_OS_IPHONE
++#      elif defined(__ANDROID__)
++    return "/data/local/tmp";
++#      else  // !TARGET_OS_IPHONE && !__ANDROID__
+     ::wordexp_t w{};
+     std::unique_ptr<::wordexp_t, void(*)(::wordexp_t*)> hold{&w, ::wordfree};
+     ::wordexp(path.c_str(), &w, 0);
+-- 
+2.39.0
+

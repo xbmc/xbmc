@@ -24,6 +24,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SubtitlesSettings.h"
+#include "utils/DateLib.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -55,6 +56,10 @@ void CSettingsComponent::Initialize()
       inited = InitDirectoriesOSX(params->HasPlatformDirectories());
     if (!inited)
       inited = InitDirectoriesWin32(params->HasPlatformDirectories());
+
+    // Try loading timezone information after directories were provisioned
+    //!@todo check if the whole dirs logic should be moved to AppEnvironment
+    KODI::TIME::LoadTimeZoneDatabase();
 
     m_settings->Initialize();
 

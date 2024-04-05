@@ -19,6 +19,7 @@
 #include "addons/Scraper.h"
 #include "addons/Service.h"
 #include "addons/Skin.h"
+#include "addons/TimeZoneResource.h"
 #include "addons/UISoundsResource.h"
 #include "addons/Webinterface.h"
 #include "addons/addoninfo/AddonInfo.h"
@@ -106,6 +107,8 @@ AddonPtr CAddonBuilder::Generate(const AddonInfoPtr& info, AddonType type)
       return std::make_shared<CLanguageResource>(info);
     case AddonType::RESOURCE_UISOUNDS:
       return std::make_shared<CUISoundsResource>(info);
+    case AddonType::RESOURCE_TIMEZONE:
+      return std::make_shared<CTimeZoneResource>(info);
     case AddonType::REPOSITORY:
       return std::make_shared<CRepository>(info);
     case AddonType::CONTEXTMENU_ITEM:

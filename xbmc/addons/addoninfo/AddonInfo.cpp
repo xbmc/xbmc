@@ -37,7 +37,7 @@ typedef struct
 } TypeMapping;
 
 // clang-format off
-static constexpr const std::array<TypeMapping, 40> types =
+static constexpr const std::array<TypeMapping, 41> types =
   {{
    {"unknown",                           "", AddonType::UNKNOWN,                 0, AddonInstanceSupport::SUPPORT_NONE,      "" },
    {"xbmc.metadata.scraper.albums",      "", AddonType::SCRAPER_ALBUMS,      24016, AddonInstanceSupport::SUPPORT_NONE,      "DefaultAddonAlbumInfo.png" },
@@ -73,6 +73,7 @@ static constexpr const std::array<TypeMapping, 40> types =
    {"xbmc.service",                      "", AddonType::SERVICE,             24018, AddonInstanceSupport::SUPPORT_NONE,      "DefaultAddonService.png" },
    {"kodi.resource.images",              "", AddonType::RESOURCE_IMAGES,     24035, AddonInstanceSupport::SUPPORT_NONE,      "DefaultAddonImages.png" },
    {"kodi.resource.language",            "", AddonType::RESOURCE_LANGUAGE,   24026, AddonInstanceSupport::SUPPORT_NONE,      "DefaultAddonLanguage.png" },
+   {"kodi.resource.timezone",            "", AddonType::RESOURCE_TIMEZONE,   24026, AddonInstanceSupport::SUPPORT_NONE,      "DefaultAddonTimeZone.png" },
    {"kodi.resource.uisounds",            "", AddonType::RESOURCE_UISOUNDS,   24006, AddonInstanceSupport::SUPPORT_NONE,      "DefaultAddonUISounds.png" },
    {"kodi.resource.games",               "", AddonType::RESOURCE_GAMES,      35209, AddonInstanceSupport::SUPPORT_NONE,      "DefaultAddonGame.png" },
    {"kodi.resource.font",                "", AddonType::RESOURCE_FONT,       13303, AddonInstanceSupport::SUPPORT_NONE,      "DefaultAddonFont.png" },

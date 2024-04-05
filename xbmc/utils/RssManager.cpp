@@ -140,7 +140,7 @@ bool CRssManager::Load()
         {
           std::string strUrl = feedElement->FirstChild()->Value();
           set.url.push_back(strUrl);
-          set.interval.push_back(iInterval);
+          set.interval.push_back(std::chrono::minutes(iInterval));
         }
         feedElement = feedElement->NextSiblingElement("feed");
       }

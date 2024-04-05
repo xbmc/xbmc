@@ -119,6 +119,10 @@ if(UNIX)
 endif()
 # prefer kissfft from xbmc/contrib but let use system one on unices
 cmake_dependent_option(ENABLE_INTERNAL_KISSFFT "Enable internal kissfft?" ON "UNIX" ON)
+# prefer internal date and tzdata but let use system one on unices
+cmake_dependent_option(ENABLE_INTERNAL_DATE "Enable internal date library?" ON "UNIX" ON)
+cmake_dependent_option(ENABLE_INTERNAL_TZDATA "Use Kodi bundled timezone information?" ON "NOT ENABLE_INTERNAL_DATE" ON)
+cmake_dependent_option(DATE_HAS_STRINGVIEW "Is system date library compiled with StringView support?" ON "NOT ENABLE_INTERNAL_DATE" ON)
 # System options
 if(NOT WIN32)
   option(WITH_ARCH              "build with given arch" OFF)
@@ -203,6 +207,7 @@ set(required_deps ASS>=0.15.0
                   Cdio
                   CrossGUID
                   Curl
+                  Date
                   FFMPEG
                   FlatBuffers
                   Fmt
@@ -222,6 +227,7 @@ set(required_deps ASS>=0.15.0
                   TagLib>=1.9.0
                   TinyXML
                   TinyXML2
+                  TZData
                   ZLIB
                   ${PLATFORM_REQUIRED_DEPS})
 
