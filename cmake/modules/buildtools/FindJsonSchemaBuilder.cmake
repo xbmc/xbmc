@@ -28,7 +28,7 @@ if(NOT TARGET JsonSchemaBuilder::JsonSchemaBuilder)
   else()
 
     set(MODULE_LC JsonSchemaBuilder)
-    set(LIB_TYPE native)
+    set(${MODULE_LC}_LIB_TYPE native)
     set(JSONSCHEMABUILDER_DISABLE_VERSION ON)
     SETUP_BUILD_VARS()
 
@@ -52,8 +52,7 @@ if(NOT TARGET JsonSchemaBuilder::JsonSchemaBuilder)
 
     if(WIN32 OR WINDOWS_STORE)
       # Make sure we generate for host arch, not target
-      set(JSONSCHEMABUILDER_GENERATOR_PLATFORM CMAKE_GENERATOR_PLATFORM WIN32)
-      set(WIN_DISABLE_PROJECT_FLAGS 1)
+      set(JSONSCHEMABUILDER_GENERATOR_PLATFORM CMAKE_GENERATOR_PLATFORM ${HOSTTOOLSET})
       set(APP_EXTENSION ".exe")
     endif()
 

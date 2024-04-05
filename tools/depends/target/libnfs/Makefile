@@ -1,5 +1,6 @@
 include ../../Makefile.include LIBNFS-VERSION ../../download-files.include
-DEPS= ../../Makefile.include Makefile LIBNFS-VERSION ../../download-files.include
+DEPS= ../../Makefile.include Makefile LIBNFS-VERSION ../../download-files.include \
+                  01-MSUWP-compat.patch
 
 # configuration settings
 CMAKE_OPTIONS=-DBUILD_SHARED_LIBS=OFF \
@@ -16,6 +17,7 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	-rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); mkdir -p build
+	cd $(PLATFORM); patch -p1 -i ../01-MSUWP-compat.patch
 	cd $(PLATFORM)/build; $(CMAKE) $(CMAKE_OPTIONS) ..
 
 $(LIBDYLIB): $(PLATFORM)
