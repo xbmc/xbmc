@@ -170,6 +170,7 @@ void CAdvancedSettings::Initialize()
   m_videoPreferStereoStream = false;
 
   m_videoDefaultLatency = 0.0;
+  m_videoDefaultHdrExtraLatency = 0.0;
 
   m_musicUseTimeSeeking = true;
   m_musicTimeSeekForward = 10;
@@ -743,7 +744,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     TiXmlElement* pVideoLatency = pElement->FirstChildElement("latency");
     if (pVideoLatency)
     {
-      float refresh, refreshmin, refreshmax, delay;
+      float refresh, refreshmin, refreshmax;
       TiXmlElement* pRefreshVideoLatency = pVideoLatency->FirstChildElement("refresh");
 
       while (pRefreshVideoLatency)
@@ -761,8 +762,9 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
           videolatency.refreshmin = refreshmin;
           videolatency.refreshmax = refreshmax;
         }
-        if (XMLUtils::GetFloat(pRefreshVideoLatency, "delay", delay, -600.0f, 600.0f))
-          videolatency.delay = delay;
+        XMLUtils::GetFloat(pRefreshVideoLatency, "delay", videolatency.delay, -600.0f, 600.0f);
+        XMLUtils::GetFloat(pRefreshVideoLatency, "hdrextradelay", videolatency.hdrextradelay,
+                           -600.0f, 600.0f);
 
         if (videolatency.refreshmin > 0.0f && videolatency.refreshmax >= videolatency.refreshmin)
           m_videoRefreshLatency.push_back(videolatency);
@@ -774,8 +776,10 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
         pRefreshVideoLatency = pRefreshVideoLatency->NextSiblingElement("refresh");
       }
 
-      // Get default global display latency
+      // Get default global display latency values
       XMLUtils::GetFloat(pVideoLatency, "delay", m_videoDefaultLatency, -600.0f, 600.0f);
+      XMLUtils::GetFloat(pVideoLatency, "hdrextradelay", m_videoDefaultHdrExtraLatency, -600.0f,
+                         600.0f);
     }
   }
 
@@ -1385,16 +1389,26 @@ void CAdvancedSettings::AddSettingsFile(const std::string &filename)
   m_settingsFiles.push_back(filename);
 }
 
-float CAdvancedSettings::GetLatencyTweak(float refreshrate)
+float CAdvancedSettings::GetLatencyTweak(float refreshrate, bool isHDREnabled)
 {
-  float delay = m_videoDefaultLatency;
-  for (int i = 0; i < (int) m_videoRefreshLatency.size(); i++)
-  {
-    RefreshVideoLatency& videolatency = m_videoRefreshLatency[i];
-    if (refreshrate >= videolatency.refreshmin && refreshrate <= videolatency.refreshmax)
-      delay = videolatency.delay;
-  }
+  float delay{};
+  const auto& latency =
+      std::find_if(m_videoRefreshLatency.cbegin(), m_videoRefreshLatency.cend(),
+                   [refreshrate](const auto& param)
+                   { return refreshrate >= param.refreshmin && refreshrate <= param.refreshmax; });
 
+  if (latency != m_videoRefreshLatency.cend()) //refresh rate specific setting is found
+  {
+    delay = latency->delay == 0.0f ? m_videoDefaultLatency : latency->delay;
+    if (isHDREnabled)
+      delay +=
+          latency->hdrextradelay == 0.0f ? m_videoDefaultHdrExtraLatency : latency->hdrextradelay;
+  }
+  else //apply default delay settings
+  {
+    delay = isHDREnabled ? m_videoDefaultLatency + m_videoDefaultHdrExtraLatency
+                         : m_videoDefaultLatency;
+  }
   return delay; // in milliseconds
 }
 
