@@ -58,16 +58,4 @@
       </group>
     </category>
   </section>
-  <section id="interface">
-    <category id="regional">
-      <group id="2">
-        <setting id="locale.timezonecountry">
-          <visible>false</visible>
-        </setting>
-        <setting id="locale.timezone">
-          <visible>false</visible>
-        </setting>
-      </group>
-    </category>
-  </section>
 </settings>

@@ -8078,15 +8078,7 @@ msgctxt "#14078"
 msgid "Colours"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#14079"
-msgid "Timezone country"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#14080"
-msgid "Timezone"
-msgstr ""
+#empty strings from id 14072 to 14073
 
 #: system/settings/settings.xml
 msgctxt "#14081"
@@ -19221,17 +19213,7 @@ msgctxt "#36116"
 msgid "Choose which character set is used for displaying text in the user interface. This doesn't change the character set used for subtitles, for that go to Player > Language."
 msgstr ""
 
-#. Description of setting with label #14079 "Timezone country"
-#: system/settings/settings.xml
-msgctxt "#36117"
-msgid "Select country location."
-msgstr ""
-
-#. Description of setting with label #14080 "Timezone"
-#: system/settings/settings.xml
-msgctxt "#36118"
-msgid "Select your current timezone."
-msgstr ""
+#empty strings from id 36117 to 36118
 
 #. Description of setting with label #285 "Preferred audio language"
 #: system/settings/settings.xml

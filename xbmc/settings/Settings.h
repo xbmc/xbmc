@@ -45,8 +45,6 @@ public:
   static constexpr auto SETTING_LOCALE_CHARSET = "locale.charset";
   static constexpr auto SETTING_LOCALE_KEYBOARDLAYOUTS = "locale.keyboardlayouts";
   static constexpr auto SETTING_LOCALE_ACTIVEKEYBOARDLAYOUT = "locale.activekeyboardlayout";
-  static constexpr auto SETTING_LOCALE_TIMEZONECOUNTRY = "locale.timezonecountry";
-  static constexpr auto SETTING_LOCALE_TIMEZONE = "locale.timezone";
   static constexpr auto SETTING_LOCALE_SHORTDATEFORMAT = "locale.shortdateformat";
   static constexpr auto SETTING_LOCALE_LONGDATEFORMAT = "locale.longdateformat";
   static constexpr auto SETTING_LOCALE_TIMEFORMAT = "locale.timeformat";
@@ -602,7 +600,6 @@ protected:
   void UninitializeOptionFillers() override;
   void InitializeConditions() override;
   void UninitializeConditions() override;
-  void InitializeVisibility() override;
   void InitializeDefaults() override;
   void InitializeISettingsHandlers() override;
   void UninitializeISettingsHandlers() override;
