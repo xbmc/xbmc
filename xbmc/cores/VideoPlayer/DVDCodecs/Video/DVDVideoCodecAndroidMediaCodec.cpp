@@ -353,14 +353,10 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open - {}", "null size, cannot handle");
     goto FAIL;
   }
-  else if (hints.orientation && m_render_surface && CJNIBase::GetSDKVersion() < 23)
-  {
-    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open - {}",
-              "Surface does not support orientation before API 23");
-    goto FAIL;
-  }
-  else if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC) &&
-           !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE))
+  else if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+               CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC) &&
+           !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+               CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE))
     goto FAIL;
 
   CLog::Log(
@@ -553,44 +549,41 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
           m_formatname = isDvhe ? "amc-dvhe" : "amc-dvh1";
           profile = 0; // not an HEVC profile
 
-          if (CJNIBase::GetSDKVersion() >= 24)
+          switch (m_hints.dovi.dv_profile)
           {
-            switch (m_hints.dovi.dv_profile)
-            {
-              case 0:
-              case 1:
-              case 2:
-              case 3:
-              case 6:
-                // obsolete profiles that are not supported in current applications.
-                // 0 is ignored in case the AVDOVIDecoderConfigurationRecord hint is unset.
-                break;
-              case 4:
-                profile = CJNIMediaCodecInfoCodecProfileLevel::DolbyVisionProfileDvheDtr;
-                break;
-              case 5:
-                profile = CJNIMediaCodecInfoCodecProfileLevel::DolbyVisionProfileDvheStn;
-                break;
-              case 7:
-                // set profile 8 when converting
-                if (convertDovi && CJNIBase::GetSDKVersion() >= 27)
-                  profile = CJNIMediaCodecInfoCodecProfileLevel::DolbyVisionProfileDvheSt;
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            case 6:
+              // obsolete profiles that are not supported in current applications.
+              // 0 is ignored in case the AVDOVIDecoderConfigurationRecord hint is unset.
+              break;
+            case 4:
+              profile = CJNIMediaCodecInfoCodecProfileLevel::DolbyVisionProfileDvheDtr;
+              break;
+            case 5:
+              profile = CJNIMediaCodecInfoCodecProfileLevel::DolbyVisionProfileDvheStn;
+              break;
+            case 7:
+              // set profile 8 when converting
+              if (convertDovi && CJNIBase::GetSDKVersion() >= 27)
+                profile = CJNIMediaCodecInfoCodecProfileLevel::DolbyVisionProfileDvheSt;
 
-                // Profile 7 is not commonly supported. Not setting the profile here
-                // allows to pick the first available Dolby Vision codec.
-                // profile = CJNIMediaCodecInfoCodecProfileLevel::DolbyVisionProfileDvheDtb;
-                break;
-              case 8:
-                if (CJNIBase::GetSDKVersion() >= 27)
-                  profile = CJNIMediaCodecInfoCodecProfileLevel::DolbyVisionProfileDvheSt;
-                break;
-              case 9:
-                if (CJNIBase::GetSDKVersion() >= 27)
-                  profile = CJNIMediaCodecInfoCodecProfileLevel::DolbyVisionProfileDvavSe;
-                break;
-              default:
-                break;
-            }
+              // Profile 7 is not commonly supported. Not setting the profile here
+              // allows to pick the first available Dolby Vision codec.
+              // profile = CJNIMediaCodecInfoCodecProfileLevel::DolbyVisionProfileDvheDtb;
+              break;
+            case 8:
+              if (CJNIBase::GetSDKVersion() >= 27)
+                profile = CJNIMediaCodecInfoCodecProfileLevel::DolbyVisionProfileDvheSt;
+              break;
+            case 9:
+              if (CJNIBase::GetSDKVersion() >= 27)
+                profile = CJNIMediaCodecInfoCodecProfileLevel::DolbyVisionProfileDvavSe;
+              break;
+            default:
+              break;
           }
         }
       }
@@ -1477,7 +1470,7 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
       CJNIMediaFormat::createVideoFormat(m_mime, m_hints.width, m_hints.height);
   mediaformat.setInteger(CJNIMediaFormat::KEY_MAX_INPUT_SIZE, 0);
 
-  if (CJNIBase::GetSDKVersion() >= 23 && m_render_surface)
+  if (m_render_surface)
   {
     // Handle rotation
     mediaformat.setInteger(CJNIMediaFormat::KEY_ROTATION, m_hints.orientation);
@@ -1488,89 +1481,86 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
                                     true);
   }
 
-  if (CJNIBase::GetSDKVersion() >= 24)
+  switch (m_hints.colorRange)
   {
-    switch (m_hints.colorRange)
-    {
-      case AVCOL_RANGE_UNSPECIFIED:
-        CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec Color range: "
-                            "AVCOL_RANGE_UNSPECIFIED");
-        break;
-      case AVCOL_RANGE_MPEG:
-        mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_RANGE,
-                               CJNIMediaFormat::COLOR_RANGE_LIMITED);
-        break;
-      case AVCOL_RANGE_JPEG:
-        mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_RANGE, CJNIMediaFormat::COLOR_RANGE_FULL);
-        break;
-      default:
-        CLog::Log(LOGWARNING,
-                  "CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec Unhandled Color range: {}",
-                  m_hints.colorRange);
-        break;
-    }
+    case AVCOL_RANGE_UNSPECIFIED:
+      CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec Color range: "
+                          "AVCOL_RANGE_UNSPECIFIED");
+      break;
+    case AVCOL_RANGE_MPEG:
+      mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_RANGE,
+                             CJNIMediaFormat::COLOR_RANGE_LIMITED);
+      break;
+    case AVCOL_RANGE_JPEG:
+      mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_RANGE, CJNIMediaFormat::COLOR_RANGE_FULL);
+      break;
+    default:
+      CLog::Log(LOGWARNING,
+                "CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec Unhandled Color range: {}",
+                m_hints.colorRange);
+      break;
+  }
 
-    switch (m_hints.colorPrimaries)
-    {
-      case AVCOL_PRI_UNSPECIFIED:
-        CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec Color primaries: "
-                            "AVCOL_PRI_UNSPECIFIED");
-        break;
-      case AVCOL_PRI_BT709:
-        mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_STANDARD,
-                               CJNIMediaFormat::COLOR_STANDARD_BT709);
-        break;
-      case AVCOL_PRI_BT2020:
-        mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_STANDARD,
-                               CJNIMediaFormat::COLOR_STANDARD_BT2020);
-        break;
-      default:
-        CLog::Log(
-            LOGWARNING,
-            "CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec Unhandled Color primaries: {}",
-            m_hints.colorPrimaries);
-        break;
-    }
+  switch (m_hints.colorPrimaries)
+  {
+    case AVCOL_PRI_UNSPECIFIED:
+      CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec Color primaries: "
+                          "AVCOL_PRI_UNSPECIFIED");
+      break;
+    case AVCOL_PRI_BT709:
+      mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_STANDARD,
+                             CJNIMediaFormat::COLOR_STANDARD_BT709);
+      break;
+    case AVCOL_PRI_BT2020:
+      mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_STANDARD,
+                             CJNIMediaFormat::COLOR_STANDARD_BT2020);
+      break;
+    default:
+      CLog::Log(
+          LOGWARNING,
+          "CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec Unhandled Color primaries: {}",
+          m_hints.colorPrimaries);
+      break;
+  }
 
-    switch (m_hints.colorTransferCharacteristic)
-    {
-      case AVCOL_TRC_UNSPECIFIED:
-        CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec Transfer "
-                            "characteristic: AVCOL_TRC_UNSPECIFIED");
-        break;
-      case AVCOL_TRC_LINEAR:
-        mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_TRANSFER,
-                               CJNIMediaFormat::COLOR_TRANSFER_LINEAR);
-        break;
-      case AVCOL_TRC_BT709:
-      case AVCOL_TRC_SMPTE170M:
-        mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_TRANSFER,
-                               CJNIMediaFormat::COLOR_TRANSFER_SDR_VIDEO);
-        break;
-      case AVCOL_TRC_SMPTE2084:
-        mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_TRANSFER,
-                               CJNIMediaFormat::COLOR_TRANSFER_ST2084);
-        break;
-      case AVCOL_TRC_ARIB_STD_B67:
-        mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_TRANSFER,
-                               CJNIMediaFormat::COLOR_TRANSFER_HLG);
-        break;
-      default:
-        CLog::Log(LOGWARNING,
-                  "CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec Unhandled Transfer "
-                  "characteristic: {}",
-                  m_hints.colorTransferCharacteristic);
-        break;
-    }
+  switch (m_hints.colorTransferCharacteristic)
+  {
+    case AVCOL_TRC_UNSPECIFIED:
+      CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec Transfer "
+                          "characteristic: AVCOL_TRC_UNSPECIFIED");
+      break;
+    case AVCOL_TRC_LINEAR:
+      mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_TRANSFER,
+                             CJNIMediaFormat::COLOR_TRANSFER_LINEAR);
+      break;
+    case AVCOL_TRC_BT709:
+    case AVCOL_TRC_SMPTE170M:
+      mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_TRANSFER,
+                             CJNIMediaFormat::COLOR_TRANSFER_SDR_VIDEO);
+      break;
+    case AVCOL_TRC_SMPTE2084:
+      mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_TRANSFER,
+                             CJNIMediaFormat::COLOR_TRANSFER_ST2084);
+      break;
+    case AVCOL_TRC_ARIB_STD_B67:
+      mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_TRANSFER,
+                             CJNIMediaFormat::COLOR_TRANSFER_HLG);
+      break;
+    default:
+      CLog::Log(LOGWARNING,
+                "CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec Unhandled Transfer "
+                "characteristic: {}",
+                m_hints.colorTransferCharacteristic);
+      break;
+  }
 
-    std::vector<uint8_t> hdr_static_data = GetHDRStaticMetadata();
-    if (!hdr_static_data.empty())
-    {
-      CJNIByteBuffer bytebuffer = CJNIByteBuffer::allocateDirect(hdr_static_data.size());
-      void* dts_ptr = xbmc_jnienv()->GetDirectBufferAddress(bytebuffer.get_raw());
-      memcpy(dts_ptr, hdr_static_data.data(), hdr_static_data.size());
-      mediaformat.setByteBuffer(CJNIMediaFormat::KEY_HDR_STATIC_INFO, bytebuffer);
-    }
+  std::vector<uint8_t> hdr_static_data = GetHDRStaticMetadata();
+  if (!hdr_static_data.empty())
+  {
+    CJNIByteBuffer bytebuffer = CJNIByteBuffer::allocateDirect(hdr_static_data.size());
+    void* dts_ptr = xbmc_jnienv()->GetDirectBufferAddress(bytebuffer.get_raw());
+    memcpy(dts_ptr, hdr_static_data.data(), hdr_static_data.size());
+    mediaformat.setByteBuffer(CJNIMediaFormat::KEY_HDR_STATIC_INFO, bytebuffer);
   }
 
   // handle codec extradata
@@ -1741,14 +1731,10 @@ void CDVDVideoCodecAndroidMediaCodec::ConfigureOutputFormat(CJNIMediaFormat& med
     height = mediaformat.getInteger(CJNIMediaFormat::KEY_HEIGHT);
   if (mediaformat.containsKey(CJNIMediaFormat::KEY_COLOR_FORMAT))
     color_format = mediaformat.getInteger(CJNIMediaFormat::KEY_COLOR_FORMAT);
-
-  if (CJNIBase::GetSDKVersion() >= 23)
-  {
-    if (mediaformat.containsKey(CJNIMediaFormat::KEY_STRIDE))
-      stride = mediaformat.getInteger(CJNIMediaFormat::KEY_STRIDE);
-    if (mediaformat.containsKey(CJNIMediaFormat::KEY_SLICE_HEIGHT))
-      slice_height = mediaformat.getInteger(CJNIMediaFormat::KEY_SLICE_HEIGHT);
-  }
+  if (mediaformat.containsKey(CJNIMediaFormat::KEY_STRIDE))
+    stride = mediaformat.getInteger(CJNIMediaFormat::KEY_STRIDE);
+  if (mediaformat.containsKey(CJNIMediaFormat::KEY_SLICE_HEIGHT))
+    slice_height = mediaformat.getInteger(CJNIMediaFormat::KEY_SLICE_HEIGHT);
 
   if (CJNIBase::GetSDKVersion() >= 33)
   {

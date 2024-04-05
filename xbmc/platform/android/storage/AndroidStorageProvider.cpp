@@ -145,11 +145,19 @@ void CAndroidStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
 
 void CAndroidStorageProvider::GetRemovableDrives(VECSOURCES& removableDrives)
 {
-  if (CJNIBase::GetSDKVersion() >= 24)
-  {
-    bool inError = false;
+  bool inError = false;
 
-    CJNIStorageManager manager(CJNIContext::getSystemService(CJNIContext::STORAGE_SERVICE));
+  CJNIStorageManager manager(CJNIContext::getSystemService(CJNIContext::STORAGE_SERVICE));
+  if (xbmc_jnienv()->ExceptionCheck())
+  {
+    xbmc_jnienv()->ExceptionDescribe();
+    xbmc_jnienv()->ExceptionClear();
+    inError = true;
+  }
+
+  if (!inError)
+  {
+    CJNIStorageVolumes vols = manager.getStorageVolumes();
     if (xbmc_jnienv()->ExceptionCheck())
     {
       xbmc_jnienv()->ExceptionDescribe();
@@ -159,78 +167,67 @@ void CAndroidStorageProvider::GetRemovableDrives(VECSOURCES& removableDrives)
 
     if (!inError)
     {
-      CJNIStorageVolumes vols = manager.getStorageVolumes();
-      if (xbmc_jnienv()->ExceptionCheck())
+      VECSOURCES droidDrives;
+
+      for (int i = 0; i < vols.size(); ++i)
       {
-        xbmc_jnienv()->ExceptionDescribe();
-        xbmc_jnienv()->ExceptionClear();
-        inError = true;
+        CJNIStorageVolume vol = vols.get(i);
+        // CLog::Log(LOGDEBUG, "-- Volume: {}({}) -- {}", vol.getPath(), vol.getUserLabel(), vol.getState());
+
+        bool removable = vol.isRemovable();
+        if (xbmc_jnienv()->ExceptionCheck())
+        {
+          xbmc_jnienv()->ExceptionDescribe();
+          xbmc_jnienv()->ExceptionClear();
+          inError = true;
+          break;
+        }
+
+        std::string state = vol.getState();
+        if (xbmc_jnienv()->ExceptionCheck())
+        {
+          xbmc_jnienv()->ExceptionDescribe();
+          xbmc_jnienv()->ExceptionClear();
+          inError = true;
+          break;
+        }
+
+        if (removable && state == CJNIEnvironment::MEDIA_MOUNTED)
+        {
+          CMediaSource share;
+
+          share.strPath = vol.getPath();
+          if (xbmc_jnienv()->ExceptionCheck())
+          {
+            xbmc_jnienv()->ExceptionDescribe();
+            xbmc_jnienv()->ExceptionClear();
+            inError = true;
+            break;
+          }
+
+          share.strName = vol.getUserLabel();
+          if (xbmc_jnienv()->ExceptionCheck())
+          {
+            xbmc_jnienv()->ExceptionDescribe();
+            xbmc_jnienv()->ExceptionClear();
+            inError = true;
+            break;
+          }
+
+          StringUtils::Trim(share.strName);
+          if (share.strName.empty() || share.strName == "?" ||
+              StringUtils::EqualsNoCase(share.strName, "null"))
+            share.strName = URIUtils::GetFileName(share.strPath);
+
+          share.m_ignore = true;
+          droidDrives.emplace_back(share);
+        }
       }
 
       if (!inError)
       {
-        VECSOURCES droidDrives;
-
-        for (int i = 0; i < vols.size(); ++i)
-        {
-          CJNIStorageVolume vol = vols.get(i);
-          // CLog::Log(LOGDEBUG, "-- Volume: {}({}) -- {}", vol.getPath(), vol.getUserLabel(), vol.getState());
-
-          bool removable = vol.isRemovable();
-          if (xbmc_jnienv()->ExceptionCheck())
-          {
-            xbmc_jnienv()->ExceptionDescribe();
-            xbmc_jnienv()->ExceptionClear();
-            inError = true;
-            break;
-          }
-
-          std::string state = vol.getState();
-          if (xbmc_jnienv()->ExceptionCheck())
-          {
-            xbmc_jnienv()->ExceptionDescribe();
-            xbmc_jnienv()->ExceptionClear();
-            inError = true;
-            break;
-          }
-
-          if (removable && state == CJNIEnvironment::MEDIA_MOUNTED)
-          {
-            CMediaSource share;
-
-            share.strPath = vol.getPath();
-            if (xbmc_jnienv()->ExceptionCheck())
-            {
-              xbmc_jnienv()->ExceptionDescribe();
-              xbmc_jnienv()->ExceptionClear();
-              inError = true;
-              break;
-            }
-
-            share.strName = vol.getUserLabel();
-            if (xbmc_jnienv()->ExceptionCheck())
-            {
-              xbmc_jnienv()->ExceptionDescribe();
-              xbmc_jnienv()->ExceptionClear();
-              inError = true;
-              break;
-            }
-
-            StringUtils::Trim(share.strName);
-            if (share.strName.empty() || share.strName == "?" ||
-                StringUtils::EqualsNoCase(share.strName, "null"))
-              share.strName = URIUtils::GetFileName(share.strPath);
-
-            share.m_ignore = true;
-            droidDrives.emplace_back(share);
-          }
-        }
-
-        if (!inError)
-        {
-          removableDrives.insert(removableDrives.end(), droidDrives.begin(), droidDrives.end());
-          return;
-        }
+        removableDrives.insert(removableDrives.end(), droidDrives.begin(), droidDrives.end());
+        return;
       }
     }
   }

@@ -55,7 +55,6 @@
 
 #include "platform/android/activity/IInputDeviceCallbacks.h"
 #include "platform/android/activity/IInputDeviceEventHandler.h"
-#include "platform/android/network/NetworkAndroid.h"
 #include "platform/android/powermanagement/AndroidPowerSyscall.h"
 
 #include <memory>
@@ -1411,18 +1410,6 @@ void CXBMCApp::onReceive(CJNIIntent intent)
       CAndroidKey::XBMC_Key(keycode, XBMCK_MEDIA_REWIND, 0, 0, up);
     else if (keycode == CJNIKeyEvent::KEYCODE_MEDIA_STOP)
       CAndroidKey::XBMC_Key(keycode, XBMCK_MEDIA_STOP, 0, 0, up);
-  }
-  else if (action == CJNIConnectivityManager::CONNECTIVITY_ACTION)
-  {
-    if (g_application.IsInitialized())
-    {
-      if (CJNIBase::GetSDKVersion() < 24)
-      {
-        CNetworkBase& net = CServiceBroker::GetNetwork();
-        CNetworkAndroid* netdroid = static_cast<CNetworkAndroid*>(&net);
-        netdroid->RetrieveInterfaces();
-      }
-    }
   }
 }
 

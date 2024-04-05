@@ -237,11 +237,8 @@ CNetworkAndroid::CNetworkAndroid() : CNetworkBase(), CJNIXBMCConnectivityManager
 {
   RetrieveInterfaces();
 
-  if (CJNIBase::GetSDKVersion() >= 24)
-  {
-    CJNIConnectivityManager connman{CXBMCApp::getSystemService(CJNIContext::CONNECTIVITY_SERVICE)};
-    connman.registerDefaultNetworkCallback(this->get_raw());
-  }
+  CJNIConnectivityManager connman{CXBMCApp::getSystemService(CJNIContext::CONNECTIVITY_SERVICE)};
+  connman.registerDefaultNetworkCallback(this->get_raw());
 }
 
 CNetworkAndroid::~CNetworkAndroid()
@@ -251,11 +248,8 @@ CNetworkAndroid::~CNetworkAndroid()
   for (auto intf : m_oldInterfaces)
     delete intf;
 
-  if (CJNIBase::GetSDKVersion() >= 24)
-  {
-    CJNIConnectivityManager connman{CXBMCApp::getSystemService(CJNIContext::CONNECTIVITY_SERVICE)};
-    connman.unregisterNetworkCallback(this->get_raw());
-  }
+  CJNIConnectivityManager connman{CXBMCApp::getSystemService(CJNIContext::CONNECTIVITY_SERVICE)};
+  connman.unregisterNetworkCallback(this->get_raw());
 }
 
 bool CNetworkAndroid::GetHostName(std::string& hostname)

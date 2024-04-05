@@ -87,9 +87,9 @@ AC_ARG_WITH([sdk],
 
 AC_ARG_WITH([ndk-api],
   [AS_HELP_STRING([--with-ndk-api],
-  [specify ndk level (optional for android), default is 21.])],
+  [specify ndk level (optional for android), default is 24.])],
   [use_ndk_api=$withval],
-  [use_ndk_api=21])
+  [use_ndk_api=24])
 
 AC_ARG_ENABLE([gplv3],
   [AS_HELP_STRING([--enable-gplv3],
