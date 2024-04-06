@@ -568,8 +568,6 @@
 #define SYSTEM_BUILD_VERSION_CODE 1007
 #define SYSTEM_BUILD_VERSION_GIT 1008
 
-static constexpr unsigned int SYSTEM_LOCALE_TIMEZONECOUNTRY = 1009;
-static constexpr unsigned int SYSTEM_LOCALE_TIMEZONE = 1010;
 static constexpr unsigned int SYSTEM_LOCALE_REGION = 1011;
 static constexpr unsigned int SYSTEM_LOCALE = 1012;
 
