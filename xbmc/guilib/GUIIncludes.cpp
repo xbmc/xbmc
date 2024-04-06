@@ -529,7 +529,8 @@ void CGUIIncludes::InsertNested(TiXmlElement *controls, TiXmlElement *include, T
       }
       child = child->NextSiblingElement();
     }
-    target->RemoveChild(nested);
+    if (nested != node)
+      target->RemoveChild(nested);
   }
 
 }
