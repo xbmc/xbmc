@@ -466,17 +466,20 @@ void CGUIDialogSettingsBase::FreeControls()
     control->ClearAll();
   }
   m_categories.clear();
+
+  // If we created our own edit control instead of borrowing it then clean it up
+  if (m_newOriginalEdit)
+  {
+    delete m_pOriginalEdit;
+    m_pOriginalEdit = nullptr;
+    m_newOriginalEdit = false;
+  }
+
   FreeSettingsControls();
 }
 
 void CGUIDialogSettingsBase::DeleteControls()
 {
-  if (m_newOriginalEdit)
-  {
-    delete m_pOriginalEdit;
-    m_pOriginalEdit = NULL;
-  }
-
   m_resetSetting.reset();
   m_dummyCategory.reset();
 }
