@@ -1,6 +1,5 @@
 set(SOURCES TestBasicEnvironment.cpp
             TestFileItem.cpp
-            TestTextureUtils.cpp
             TestURL.cpp
             TestUtil.cpp
             TestUtils.cpp

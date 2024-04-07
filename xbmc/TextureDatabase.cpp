@@ -107,34 +107,6 @@ void CTextureRule::GetAvailableFields(std::vector<std::string> &fieldList)
     fieldList.emplace_back(fields[i].string);
 }
 
-std::string CTextureUtils::GetWrappedImageURL(const std::string &image, const std::string &type, const std::string &options)
-{
-  if (StringUtils::StartsWith(image, "image://"))
-    return image; // already wrapped
-
-  CURL url;
-  url.SetProtocol("image");
-  url.SetUserName(type);
-  url.SetHostName(image);
-  if (!options.empty())
-  {
-    url.SetFileName("transform");
-    url.SetOptions("?" + options);
-  }
-  return url.Get();
-}
-
-std::string CTextureUtils::UnwrapImageURL(const std::string &image)
-{
-  if (StringUtils::StartsWith(image, "image://"))
-  {
-    CURL url(image);
-    if (url.GetUserName().empty() && url.GetOptions().empty())
-      return url.GetHostName();
-  }
-  return image;
-}
-
 CTextureDatabase::CTextureDatabase() = default;
 
 CTextureDatabase::~CTextureDatabase() = default;
