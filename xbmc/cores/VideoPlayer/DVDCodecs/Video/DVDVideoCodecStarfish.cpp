@@ -562,8 +562,13 @@ void CDVDVideoCodecStarfish::SetHDR()
     sei["maxContentLightLevel"] = m_hints.contentLightMetadata->MaxCLL;
     sei["maxPicAverageLightLevel"] = m_hints.contentLightMetadata->MaxFALL;
   }
-  if (!sei.empty())
-    hdrData["sei"] = sei;
+
+  // Some TVs crash on a hdr info message without SEI information
+  // This data is often not available from ffmpeg from the stream (av_stream_get_side_data)
+  // So return here early and let the TV detect the presence of HDR metadata on its own
+  if (sei.empty())
+    return;
+  hdrData["sei"] = sei;
 
   CVariant vui;
   vui["transferCharacteristics"] = static_cast<int>(m_hints.colorTransferCharacteristic);
