@@ -6,6 +6,7 @@ xbmc/cores/VideoPlayer/VideoRenderers/VideoShaders/test test/videoshaders
 xbmc/filesystem/test              test/filesystem
 xbmc/games/addons/input/test      test/games/addons/input
 xbmc/games/controllers/input/test test/games/controllers/input
+xbmc/imagefiles/test              test/imagefiles
 xbmc/input/keyboard/test          test/input/keyboard
 xbmc/interfaces/python/test       test/python
 xbmc/music/test                   test/music
