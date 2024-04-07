@@ -121,6 +121,10 @@ if(CPU MATCHES x86 OR CPU MATCHES x86_64)
   list(APPEND ffmpeg_conf --x86asmexe=${NASM_EXECUTABLE})
 endif()
 
+if(USE_LTO)
+   list(APPEND ffmpeg_conf --enable-lto)
+endif()
+
 if(ENABLE_DAV1D)
   list(APPEND ffmpeg_conf --enable-libdav1d)
   set(pkgconf_path "PKG_CONFIG_PATH=${PKG_CONFIG_PATH}")
