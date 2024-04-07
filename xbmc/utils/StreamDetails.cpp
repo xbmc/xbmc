@@ -282,7 +282,7 @@ std::string CStreamDetails::GetVideoLanguage(int idx) const
   const CStreamDetailVideo* item =
       dynamic_cast<const CStreamDetailVideo*>(GetNthStream(CStreamDetail::VIDEO, idx));
   if (item)
-    return item->m_strLanguage;
+    return item->m_strLanguage.empty() ? "und" : item->m_strLanguage;
   else
     return "";
 }
@@ -459,7 +459,7 @@ std::string CStreamDetails::GetAudioLanguage(int idx) const
   const CStreamDetailAudio* item =
       dynamic_cast<const CStreamDetailAudio*>(GetNthStream(CStreamDetail::AUDIO, idx));
   if (item)
-    return item->m_strLanguage;
+    return item->m_strLanguage.empty() ? "und" : item->m_strLanguage;
   else
     return "";
 }
