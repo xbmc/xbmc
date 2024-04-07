@@ -18,6 +18,7 @@
 #include "filesystem/MultiPathDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "imagefiles/ImageFileURL.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -80,7 +81,7 @@ bool CPictureThumbLoader::LoadItemCached(CFileItem* pItem)
   if (pItem->IsPicture() && !pItem->IsZIP() && !pItem->IsRAR() && !pItem->IsCBZ() && !pItem->IsCBR() && !pItem->IsPlayList())
   { // load the thumb from the image file
     thumb = pItem->HasArt("thumb") ? pItem->GetArt("thumb")
-                                   : CTextureUtils::GetWrappedImageURL(pItem->GetPath());
+                                   : IMAGE_FILES::URLFromFile(pItem->GetPath());
   }
   else if (IsVideo(*pItem) && !pItem->IsZIP() && !pItem->IsRAR() && !pItem->IsCBZ() &&
            !pItem->IsCBR() && !pItem->IsPlayList())
@@ -198,14 +199,14 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
       if (items.Size() < 4 || pItem->IsCBR() || pItem->IsCBZ())
       { // less than 4 items, so just grab the first thumb
         items.Sort(SortByLabel, SortOrderAscending);
-        std::string thumb = CTextureUtils::GetWrappedImageURL(items[0]->GetPath());
+        std::string thumb = IMAGE_FILES::URLFromFile(items[0]->GetPath());
         db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
         CServiceBroker::GetTextureCache()->BackgroundCacheImage(thumb);
         pItem->SetArt("thumb", thumb);
       }
       else
       {
-        std::string thumb = CTextureUtils::GetWrappedImageURL(pItem->GetPath(), "picturefolder");
+        std::string thumb = IMAGE_FILES::URLFromFile(pItem->GetPath(), "picturefolder");
         db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
         pItem->SetArt("thumb", thumb);
       }

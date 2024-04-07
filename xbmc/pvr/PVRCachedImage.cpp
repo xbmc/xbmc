@@ -8,7 +8,7 @@
 
 #include "PVRCachedImage.h"
 
-#include "TextureDatabase.h"
+#include "imagefiles/ImageFileURL.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -67,5 +67,5 @@ void CPVRCachedImage::UpdateLocalImage()
   if (m_clientImage.empty())
     m_localImage.clear();
   else
-    m_localImage = CTextureUtils::GetWrappedImageURL(m_clientImage, m_owner);
+    m_localImage = IMAGE_FILES::URLFromFile(m_clientImage, m_owner);
 }

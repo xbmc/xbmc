@@ -11,6 +11,7 @@
 #include "URL.h"
 #include "XBDateTime.h"
 #include "dbwrappers/dataset.h"
+#include "imagefiles/ImageFileURL.h"
 #include "utils/DatabaseUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
@@ -95,7 +96,7 @@ std::string CTextureRule::FormatParameter(const std::string &operatorString,
 {
   std::string parameter(param);
   if (m_field == TF_Url)
-    parameter = CTextureUtils::UnwrapImageURL(param);
+    parameter = IMAGE_FILES::ToCacheKey(param);
   return CDatabaseQueryRule::FormatParameter(operatorString, parameter, db, strType);
 }
 

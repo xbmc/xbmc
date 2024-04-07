@@ -38,6 +38,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
+#include "imagefiles/ImageFileURL.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
@@ -7237,19 +7238,19 @@ bool CMusicDatabase::GetArtistsByWhereJSON(
         if (joinLayout.GetOutput(joinToArtist_idArt))
         {
           artistObj["art"][record->at(joinLayout.GetRecNo(joinToArtist_artType)).get_asString()] =
-              CTextureUtils::GetWrappedImageURL(
+              IMAGE_FILES::URLFromFile(
                   record->at(joinLayout.GetRecNo(joinToArtist_artURL)).get_asString());
         }
         if (joinLayout.GetOutput(joinToArtist_thumbnail) &&
             record->at(joinLayout.GetRecNo(joinToArtist_artType)).get_asString() == "thumb")
         {
-          artistObj["thumbnail"] = CTextureUtils::GetWrappedImageURL(
+          artistObj["thumbnail"] = IMAGE_FILES::URLFromFile(
               record->at(joinLayout.GetRecNo(joinToArtist_artURL)).get_asString());
         }
         if (joinLayout.GetOutput(joinToArtist_fanart) &&
             record->at(joinLayout.GetRecNo(joinToArtist_artType)).get_asString() == "fanart")
         {
-          artistObj["fanart"] = CTextureUtils::GetWrappedImageURL(
+          artistObj["fanart"] = IMAGE_FILES::URLFromFile(
               record->at(joinLayout.GetRecNo(joinToArtist_artURL)).get_asString());
         }
       }
@@ -7622,7 +7623,7 @@ bool CMusicDatabase::GetAlbumsByWhereJSON(
             {
               std::string url = record->at(1 + i).get_asString();
               if (!url.empty())
-                url = CTextureUtils::GetWrappedImageURL(url);
+                url = IMAGE_FILES::URLFromFile(url);
               albumObj[JSONtoDBAlbum[dbfieldindex[i]].fieldJSON] = url;
             }
             else

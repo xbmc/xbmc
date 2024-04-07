@@ -9,8 +9,8 @@
 #include "VideoInfoTag.h"
 
 #include "ServiceBroker.h"
-#include "TextureDatabase.h"
 #include "guilib/LocalizeStrings.h"
+#include "imagefiles/ImageFileURL.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Archive.h"
@@ -742,7 +742,7 @@ void CVideoInfoTag::Serialize(CVariant& value) const
     actor["role"] = m_cast[i].strRole;
     actor["order"] = m_cast[i].order;
     if (!m_cast[i].thumb.empty())
-      actor["thumbnail"] = CTextureUtils::GetWrappedImageURL(m_cast[i].thumb);
+      actor["thumbnail"] = IMAGE_FILES::URLFromFile(m_cast[i].thumb);
     value["cast"].push_back(actor);
   }
   value["set"] = m_set.title;

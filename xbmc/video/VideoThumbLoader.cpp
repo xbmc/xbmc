@@ -20,6 +20,7 @@
 #include "filesystem/StackDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/StereoscopicsManager.h"
+#include "imagefiles/ImageFileURL.h"
 #include "music/MusicDatabase.h"
 #include "music/tags/MusicInfoTag.h"
 #include "network/NetworkFileItemClassify.h"
@@ -280,7 +281,7 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
             {
               if (it.m_type == type)
               {
-                art = CTextureUtils::GetWrappedImageURL(pItem->GetPath(), "video_" + type);
+                art = IMAGE_FILES::URLFromFile(pItem->GetPath(), "video_" + type);
                 artwork.insert(std::make_pair(type, art));
               }
             }
@@ -497,7 +498,7 @@ bool CVideoThumbLoader::FillThumb(CFileItem &item)
       {
         if (it.m_type == "thumb")
         {
-          thumb = CTextureUtils::GetWrappedImageURL(item.GetPath(), "video_" + it.m_type);
+          thumb = IMAGE_FILES::URLFromFile(item.GetPath(), "video_" + it.m_type);
           item.SetArt(it.m_type, thumb);
         }
       }
@@ -560,7 +561,7 @@ std::string CVideoThumbLoader::GetEmbeddedThumbURL(const CFileItem &item)
   if (URIUtils::IsStack(path))
     path = CStackDirectory::GetFirstStackedFile(path);
 
-  return CTextureUtils::GetWrappedImageURL(path, "video");
+  return IMAGE_FILES::URLFromFile(path, "video");
 }
 
 void CVideoThumbLoader::DetectAndAddMissingItemData(CFileItem &item)

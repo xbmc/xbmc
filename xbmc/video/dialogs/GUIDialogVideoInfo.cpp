@@ -30,6 +30,7 @@
 #include "guilib/GUIWindow.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "imagefiles/ImageFileURL.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/helpers/DialogOKHelper.h"
@@ -1980,7 +1981,11 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
 
   // flip selected image, if user wants it
   if (!result.empty() && flip)
-    result = CTextureUtils::GetWrappedImageURL(result, "", "flipped");
+  {
+    auto file = IMAGE_FILES::CImageFileURL::FromFile(result);
+    file.flipped = true;
+    result = file.ToString();
+  }
 
   // write the selected artwork to the database
   artHandler->PersistArt(result);

@@ -9,7 +9,7 @@
 #include "MusicThumbLoader.h"
 
 #include "FileItem.h"
-#include "TextureDatabase.h"
+#include "imagefiles/ImageFileURL.h"
 #include "music/infoscanner/MusicInfoScanner.h"
 #include "music/tags/MusicInfoTag.h"
 #include "utils/StringUtils.h"
@@ -119,7 +119,7 @@ bool CMusicThumbLoader::LoadItemLookup(CFileItem* pItem)
       if (!FillThumb(*pItem, false)) // Check for user thumbs but ignore folder thumbs
       {
         // No user thumb, use embedded art
-        std::string thumb = CTextureUtils::GetWrappedImageURL(pItem->GetPath(), "music");
+        std::string thumb = IMAGE_FILES::URLFromFile(pItem->GetPath(), "music");
         pItem->SetArt("thumb", thumb);
       }
     }
