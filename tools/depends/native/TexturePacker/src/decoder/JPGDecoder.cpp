@@ -22,6 +22,8 @@
 
 #include "SimpleFS.h"
 
+#include <cstdint>
+#include <limits>
 #include <memory>
 
 #include <jpeglib.h>
@@ -80,8 +82,6 @@ bool JPGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   struct jpeg_decompress_struct cinfo;
   struct jpeg_error_mgr jerr;
 
-  int ImageSize;
-
   cinfo.err = jpeg_std_error(&jerr);
   jpeg_create_decompress(&cinfo);
 
@@ -89,12 +89,18 @@ bool JPGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   jpeg_read_header(&cinfo, TRUE);
   jpeg_start_decompress(&cinfo);
 
-  // Image Size is calculated as (width * height * bytes per pixel = 4
-  ImageSize = cinfo.image_width * cinfo.image_height * 4;
+  // Image Size is calculated as width * height * bytes per pixel = 4
+  // Since image_width and image_height can be at most 0xFFFF, this is safe from overflows
+  const std::uint64_t ImageSize =
+      static_cast<std::uint64_t>(cinfo.image_width) * cinfo.image_height * 4;
+
+  // Check if the conversion to std::size_t is lossless
+  if (ImageSize > std::numeric_limits<std::size_t>::max())
+    return false;
 
   DecodedFrame frame;
 
-  frame.rgbaImage.pixels.resize(ImageSize);
+  frame.rgbaImage.pixels.resize(static_cast<std::size_t>(ImageSize));
 
   std::vector<unsigned char> scanlinebuff;
   scanlinebuff.resize(3 * cinfo.image_width);
