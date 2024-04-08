@@ -57,8 +57,8 @@ if(NOT TARGET TagLib::TagLib)
   SETUP_BUILD_VARS()
 
   # Taglib installs a shell script for all platforms. This can provide version universally
-  find_program(TAGLIB-CONFIG NAMES taglib-config taglib-config.command
-                             HINTS ${DEPENDSPATH}/bin)
+  find_program(TAGLIB-CONFIG NAMES taglib-config taglib-config.cmd
+                             HINTS ${DEPENDS_PATH}/bin)
 
   if(TAGLIB-CONFIG)
     execute_process(COMMAND "${TAGLIB-CONFIG}" --version
