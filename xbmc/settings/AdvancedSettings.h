@@ -333,6 +333,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_guiVisualizeDirtyRegions;
     int  m_guiAlgorithmDirtyRegions;
     bool m_guiSmartRedraw;
+    int32_t m_guiAnisotropicFiltering{0};
     unsigned int m_addonPackageFolderSize;
 
     bool m_jsonOutputCompact;
