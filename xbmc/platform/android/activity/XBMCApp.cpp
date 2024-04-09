@@ -1332,22 +1332,21 @@ void CXBMCApp::onReceive(CJNIIntent intent)
   }
   else if (action == CJNIAudioManager::ACTION_HDMI_AUDIO_PLUG)
   {
-    m_supportsHdmiAudioPlug = true;
-    const bool hdmiPlugged = (intent.getIntExtra(CJNIAudioManager::EXTRA_AUDIO_PLUG_STATE, 0) != 0);
-    android_printf("-- HDMI is plugged in: %s", hdmiPlugged ? "yes" : "no");
+    m_hdmiPlugged = (intent.getIntExtra(CJNIAudioManager::EXTRA_AUDIO_PLUG_STATE, 0) != 0);
+    android_printf("-- HDMI is plugged in: %s", m_hdmiPlugged ? "yes" : "no");
     if (g_application.IsInitialized())
     {
       CWinSystemBase* winSystem = CServiceBroker::GetWinSystem();
       if (winSystem && dynamic_cast<CWinSystemAndroid*>(winSystem))
-        dynamic_cast<CWinSystemAndroid*>(winSystem)->SetHdmiState(hdmiPlugged);
+        dynamic_cast<CWinSystemAndroid*>(winSystem)->SetHdmiState(m_hdmiPlugged);
     }
-    if (hdmiPlugged && m_aeReset)
+    if (m_hdmiPlugged && m_aeReset)
     {
       android_printf("CXBMCApp::onReceive: Reset audio engine");
       CServiceBroker::GetActiveAE()->DeviceChange();
       m_aeReset = false;
     }
-    if (hdmiPlugged && m_wakeUp)
+    if (m_hdmiPlugged && m_wakeUp)
     {
       OnWakeup();
       m_wakeUp = false;
@@ -1361,11 +1360,11 @@ void CXBMCApp::onReceive(CJNIIntent intent)
     // screen but it is actually sent in response to changes in the overall interactive state of
     // the device.
     CLog::Log(LOGINFO, "Got device wakeup intent");
-    if (m_supportsHdmiAudioPlug)
+    if (m_hdmiPlugged)
+      OnWakeup();
+    else
       // wake-up sequence continues in ACTION_HDMI_AUDIO_PLUG intent
       m_wakeUp = true;
-    else
-      OnWakeup();
   }
   else if (action == CJNIIntent::ACTION_SCREEN_OFF)
   {
