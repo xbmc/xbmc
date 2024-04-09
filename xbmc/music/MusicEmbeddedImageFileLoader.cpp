@@ -10,6 +10,7 @@
 
 #include "FileItem.h"
 #include "guilib/Texture.h"
+#include "imagefiles/ImageFileURL.h"
 #include "music/tags/ImusicInfoTagLoader.h"
 #include "music/tags/MusicInfoTag.h"
 #include "music/tags/MusicInfoTagLoaderFactory.h"
@@ -35,6 +36,15 @@ bool GetEmbeddedThumb(const std::string& path, EmbeddedArt& art)
   return !art.Empty();
 }
 } // namespace
+
+std::unique_ptr<CTexture> CMusicEmbeddedImageFileLoader::Load(
+    const IMAGE_FILES::CImageFileURL& imageFile) const
+{
+  EmbeddedArt art;
+  if (GetEmbeddedThumb(imageFile.GetTargetFile(), art))
+    return CTexture::LoadFromFileInMemory(art.m_data.data(), art.m_size, art.m_mime);
+  return nullptr;
+}
 
 std::unique_ptr<CTexture> CMusicEmbeddedImageFileLoader::Load(const std::string& specialType,
                                                               const std::string& filePath,

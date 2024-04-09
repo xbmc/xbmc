@@ -9,6 +9,7 @@
 #include "SpecialImageLoaderFactory.h"
 
 #include "guilib/Texture.h"
+#include "imagefiles/ImageFileURL.h"
 #include "music/MusicEmbeddedImageFileLoader.h"
 #include "pictures/PictureFolderImageFileLoader.h"
 #include "pvr/PVRChannelGroupImageFileLoader.h"
@@ -41,6 +42,22 @@ std::unique_ptr<CTexture> CSpecialImageLoaderFactory::Load(const std::string& sp
     if (loader->CanLoad(specialType))
     {
       auto val = loader->Load(specialType, filePath, preferredWidth, preferredHeight);
+      if (val)
+        return val;
+    }
+  }
+  return {};
+}
+
+std::unique_ptr<CTexture> CSpecialImageLoaderFactory::Load(const CImageFileURL& imageFile) const
+{
+  if (!imageFile.IsSpecialImage())
+    return {};
+  for (auto& loader : m_specialImageLoaders)
+  {
+    if (loader->CanLoad(imageFile.GetSpecialType()))
+    {
+      auto val = loader->Load(imageFile);
       if (val)
         return val;
     }

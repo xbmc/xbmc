@@ -10,6 +10,7 @@
 
 #include "FileItem.h"
 #include "guilib/Texture.h"
+#include "imagefiles/ImageFileURL.h"
 #include "utils/EmbeddedArt.h"
 #include "utils/StringUtils.h"
 #include "video/VideoInfoTag.h"
@@ -47,6 +48,15 @@ bool GetEmbeddedThumb(const std::string& path, const std::string& type, Embedded
   return !art.Empty();
 }
 } // namespace
+
+std::unique_ptr<CTexture> CVideoEmbeddedImageFileLoader::Load(
+    const IMAGE_FILES::CImageFileURL& imageFile) const
+{
+  EmbeddedArt art;
+  if (GetEmbeddedThumb(imageFile.GetTargetFile(), imageFile.GetSpecialType().substr(6), art))
+    return CTexture::LoadFromFileInMemory(art.m_data.data(), art.m_size, art.m_mime);
+  return {};
+}
 
 std::unique_ptr<CTexture> VIDEO::CVideoEmbeddedImageFileLoader::Load(
     const std::string& specialType,

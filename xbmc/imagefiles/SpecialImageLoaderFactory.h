@@ -18,6 +18,8 @@ class CTexture;
 
 namespace IMAGE_FILES
 {
+class CImageFileURL;
+
 class CSpecialImageLoaderFactory
 {
 public:
@@ -27,6 +29,8 @@ public:
                                  const std::string& filePath,
                                  unsigned int preferredWidth,
                                  unsigned int preferredHeight) const;
+
+  std::unique_ptr<CTexture> Load(const CImageFileURL& imageFile) const;
 
 private:
   std::array<std::unique_ptr<ISpecialImageFileLoader>, 6> m_specialImageLoaders{};

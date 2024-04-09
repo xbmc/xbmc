@@ -17,6 +17,7 @@
 #include "commons/ilog.h"
 #include "filesystem/File.h"
 #include "guilib/Texture.h"
+#include "imagefiles/ImageFileURL.h"
 #include "imagefiles/SpecialImageLoaderFactory.h"
 #include "pictures/Picture.h"
 #include "settings/AdvancedSettings.h"
@@ -231,6 +232,40 @@ std::string CTextureCacheJob::DecodeImageURL(const std::string &url, unsigned in
   }
 
   return image;
+}
+
+std::unique_ptr<CTexture> CTextureCacheJob::LoadImage(const IMAGE_FILES::CImageFileURL& imageURL)
+{
+  if (imageURL.IsSpecialImage())
+  {
+    IMAGE_FILES::CSpecialImageLoaderFactory specialImageLoader{};
+    auto texture = specialImageLoader.Load(imageURL);
+    if (texture)
+      return texture;
+  }
+
+  // Validate file URL to see if it is an image
+  CFileItem file(imageURL.GetTargetFile(), false);
+  file.FillInMimeType();
+  if (!(file.IsPicture() && !(file.IsZIP() || file.IsRAR() || file.IsCBR() || file.IsCBZ())) &&
+      !StringUtils::StartsWithNoCase(file.GetMimeType(), "image/") &&
+      !StringUtils::EqualsNoCase(file.GetMimeType(),
+                                 "application/octet-stream")) // ignore non-pictures
+  {
+    return {};
+  }
+
+  auto texture = CTexture::LoadFromFile(imageURL.GetTargetFile(), 0, 0, true, file.GetMimeType());
+  if (!texture)
+    return {};
+
+  // EXIF bits are interpreted as: <flipXY><flipY*flipX><flipX>
+  // where to undo the operation we apply them in reverse order <flipX>*<flipY*flipX>*<flipXY>
+  // When flipped we have an additional <flipX> on the left, which is equivalent to toggling the last bit
+  if (imageURL.flipped)
+    texture->SetOrientation(texture->GetOrientation() ^ 1);
+
+  return texture;
 }
 
 std::unique_ptr<CTexture> CTextureCacheJob::LoadImage(const std::string& image,

@@ -18,6 +18,10 @@
 #include <vector>
 
 class CTexture;
+namespace IMAGE_FILES
+{
+class CImageFileURL;
+}
 
 /*!
  \ingroup textures
@@ -87,6 +91,16 @@ private:
    \return URL of the underlying image file.
    */
   static std::string DecodeImageURL(const std::string &url, unsigned int &width, unsigned int &height, CPictureScalingAlgorithm::Algorithm& scalingAlgorithm, std::string &additional_info);
+
+  /*! \brief Load an image at a given target size and orientation.
+
+   Doesn't necessarily load the image at the desired size - the loader *may* decide to load it slightly larger
+   or smaller than the desired size for speed reasons.
+
+   \param image the URL of the image file.
+   \return a pointer to a CTexture object, NULL if failed.
+   */
+  static std::unique_ptr<CTexture> LoadImage(const IMAGE_FILES::CImageFileURL& imageURL);
 
   /*! \brief Load an image at a given target size and orientation.
 

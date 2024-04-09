@@ -14,6 +14,7 @@
 #include "URL.h"
 #include "filesystem/DirectoryCache.h"
 #include "guilib/Texture.h"
+#include "imagefiles/ImageFileURL.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
@@ -51,6 +52,24 @@ void SetupRarOptions(CFileItem& item, const std::string& path)
   g_directoryCache.ClearDirectory(url.GetWithoutFilename());
 }
 } // namespace
+
+std::unique_ptr<CTexture> VIDEO::CVideoGeneratedImageFileLoader::Load(
+    const IMAGE_FILES::CImageFileURL& imageFile) const
+{
+  if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB))
+  {
+    return {};
+  }
+
+  std::string filePath = imageFile.GetTargetFile();
+  CFileItem item{filePath, false};
+
+  if (URIUtils::IsInRAR(filePath))
+    SetupRarOptions(item, filePath);
+
+  return CDVDFileInfo::ExtractThumbToTexture(item);
+}
 
 std::unique_ptr<CTexture> VIDEO::CVideoGeneratedImageFileLoader::Load(
     const std::string& specialType, const std::string& filePath, unsigned int, unsigned int) const
