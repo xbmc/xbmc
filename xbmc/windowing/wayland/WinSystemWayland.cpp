@@ -1088,9 +1088,7 @@ bool CWinSystemWayland::HasCursor()
   std::unique_lock<CCriticalSection> lock(m_seatsMutex);
   return std::any_of(m_seats.cbegin(), m_seats.cend(),
                      [](decltype(m_seats)::value_type const& entry)
-                     {
-                       return entry.second.HasPointerCapability();
-                     });
+                     { return entry.second->HasPointerCapability(); });
 }
 
 void CWinSystemWayland::ShowOSMouse(bool show)
@@ -1144,13 +1142,17 @@ void CWinSystemWayland::OnSeatAdded(std::uint32_t name, wayland::proxy_t&& proxy
   std::unique_lock<CCriticalSection> lock(m_seatsMutex);
 
   wayland::seat_t seat(proxy);
-  auto newSeatEmplace = m_seats.emplace(std::piecewise_construct,
-                                           std::forward_as_tuple(name),
-                                                 std::forward_as_tuple(name, seat, *m_connection));
+  auto newSeatEmplace = m_seats.emplace(std::piecewise_construct, std::forward_as_tuple(name),
+                                        std::forward_as_tuple(CreateSeat(name, seat)));
 
   auto& seatInst = newSeatEmplace.first->second;
-  m_seatInputProcessing->AddSeat(&seatInst);
-  m_windowDecorator->AddSeat(&seatInst);
+  m_seatInputProcessing->AddSeat(seatInst.get());
+  m_windowDecorator->AddSeat(seatInst.get());
+}
+
+std::unique_ptr<CSeat> CWinSystemWayland::CreateSeat(std::uint32_t name, wayland::seat_t& seat)
+{
+  return std::make_unique<CSeat>(name, seat, *m_connection);
 }
 
 void CWinSystemWayland::OnSeatRemoved(std::uint32_t name)
@@ -1160,8 +1162,8 @@ void CWinSystemWayland::OnSeatRemoved(std::uint32_t name)
   auto seatI = m_seats.find(name);
   if (seatI != m_seats.end())
   {
-    m_seatInputProcessing->RemoveSeat(&seatI->second);
-    m_windowDecorator->RemoveSeat(&seatI->second);
+    m_seatInputProcessing->RemoveSeat(seatI->second.get());
+    m_windowDecorator->RemoveSeat(seatI->second.get());
     m_seats.erase(name);
   }
 }
@@ -1262,12 +1264,13 @@ void CWinSystemWayland::OnSetCursor(std::uint32_t seatGlobalName, std::uint32_t 
     LoadDefaultCursor();
     if (m_cursorSurface) // Cursor loading could have failed
     {
-      seatI->second.SetCursor(serial, m_cursorSurface, m_cursorImage.hotspot_x(), m_cursorImage.hotspot_y());
+      seatI->second->SetCursor(serial, m_cursorSurface, m_cursorImage.hotspot_x(),
+                               m_cursorImage.hotspot_y());
     }
   }
   else
   {
-    seatI->second.SetCursor(serial, wayland::surface_t{}, 0, 0);
+    seatI->second->SetCursor(serial, wayland::surface_t{}, 0, 0);
   }
 }
 
@@ -1517,7 +1520,7 @@ std::string CWinSystemWayland::GetClipboardText()
   // probably just not that relevant in practice
   for (auto const& seat : m_seats)
   {
-    auto text = seat.second.GetSelectionText();
+    auto text = seat.second->GetSelectionText();
     if (text != "")
     {
       return text;

@@ -50,6 +50,7 @@ public:
 
 protected:
   std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() override;
+  std::unique_ptr<CSeat> CreateSeat(std::uint32_t name, wayland::seat_t& seat) override;
 
 private:
   static bool OnAppLifecycleEventWrapper(LSHandle* sh, LSMessage* reply, void* ctx);

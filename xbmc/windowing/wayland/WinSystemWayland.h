@@ -122,6 +122,8 @@ protected:
   void OnConfigure(std::uint32_t serial, CSizeInt size, IShellSurface::StateBitset state) override;
   void OnClose() override;
 
+  virtual std::unique_ptr<CSeat> CreateSeat(std::uint32_t name, wayland::seat_t& seat);
+
 private:
   // IInputHandler
   void OnEnter(InputType type) override;
@@ -208,7 +210,7 @@ private:
 
   // Seat handling
   // -------------
-  std::map<std::uint32_t, CSeat> m_seats;
+  std::map<std::uint32_t, std::unique_ptr<CSeat>> m_seats;
   CCriticalSection m_seatsMutex;
   std::unique_ptr<CSeatInputProcessing> m_seatInputProcessing;
   std::map<std::uint32_t, std::shared_ptr<COutput>> m_outputs;
