@@ -177,6 +177,9 @@ public:
                          std::int32_t hotspotX,
                          std::int32_t hotspotY);
 
+protected:
+  virtual void InstallKeyboardRepeatInfo();
+
 private:
   CSeat(CSeat const& other) = delete;
   CSeat& operator=(CSeat const& other) = delete;

@@ -25,6 +25,9 @@ public:
                  wayland::surface_t const& surface,
                  std::int32_t hotspotX,
                  std::int32_t hotspotY) override;
+
+protected:
+  void InstallKeyboardRepeatInfo() override;
 };
 
 } // namespace KODI::WINDOWING::WAYLAND

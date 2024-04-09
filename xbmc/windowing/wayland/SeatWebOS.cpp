@@ -19,4 +19,11 @@ void CSeatWebOS::SetCursor(std::uint32_t serial,
   // set_cursor on webOS completely breaks pointer input
 }
 
+void CSeatWebOS::InstallKeyboardRepeatInfo()
+{
+  // Since webOS 7 the compositor sends the following key repeat info:
+  // Key repeat rate: 40 cps, delay 400 ms
+  // Which is too fast for the long press detection
+}
+
 } // namespace KODI::WINDOWING::WAYLAND
