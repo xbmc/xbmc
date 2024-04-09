@@ -20,7 +20,6 @@ ___wrap_fread _fread
 ___wrap_freopen _freopen
 ___wrap_fseek _fseek
 ___wrap_fsetpos _fsetpos
-___wrap_fstatvfs64 _fstatvfs64
 ___wrap_ftell _ftell
 ___wrap_ftrylockfile _ftrylockfile
 ___wrap_funlockfile _funlockfile
