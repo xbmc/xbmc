@@ -164,7 +164,9 @@ protected:
                         const vecText& text,
                         uint32_t alignment,
                         float maxPixelWidth,
-                        bool scrolling);
+                        bool scrolling,
+                        float dx = 0.0f,
+                        float dy = 0.0f);
 
   float m_height{0.0f};
 
@@ -238,16 +240,22 @@ protected:
     float m_translateX;
     float m_translateY;
     float m_translateZ;
+    float m_offsetX; // skews the "raw" mesh before applying UI matrix (useful for scrolling)
+    float m_offsetY;
     const CVertexBuffer* m_vertexBuffer;
     CRect m_clip;
     CTranslatedVertices(float translateX,
                         float translateY,
                         float translateZ,
                         const CVertexBuffer* vertexBuffer,
-                        const CRect& clip)
+                        const CRect& clip,
+                        float offsetX = 0.0f,
+                        float offsetY = 0.0f)
       : m_translateX(translateX),
         m_translateY(translateY),
         m_translateZ(translateZ),
+        m_offsetX(offsetX),
+        m_offsetY(offsetY),
         m_vertexBuffer(vertexBuffer),
         m_clip(clip)
     {

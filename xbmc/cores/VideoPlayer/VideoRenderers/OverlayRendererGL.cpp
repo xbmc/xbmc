@@ -293,6 +293,11 @@ void COverlayGlyphGL::Render(SRenderState& state)
   GLint posLoc  = renderSystem->ShaderGetPos();
   GLint colLoc  = renderSystem->ShaderGetCol();
   GLint tex0Loc = renderSystem->ShaderGetCoord0();
+  GLint matrixUniformLoc = renderSystem->ShaderGetMatrix();
+
+  CMatrixGL matrix = glMatrixProject.Get();
+  matrix.MultMatrixf(glMatrixModview.Get());
+  glUniformMatrix4fv(matrixUniformLoc, 1, GL_FALSE, matrix);
 
   std::vector<VERTEX> vecVertices(6 * m_vertex.size() / 4);
   VERTEX* vertices = vecVertices.data();
