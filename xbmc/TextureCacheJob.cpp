@@ -140,23 +140,22 @@ bool CTextureCacheJob::CacheTexture(std::unique_ptr<CTexture>* out_texture)
   return false;
 }
 
-bool CTextureCacheJob::ResizeTexture(const std::string &url, uint8_t* &result, size_t &result_size)
+bool CTextureCacheJob::ResizeTexture(const std::string& url,
+                                     unsigned int height,
+                                     unsigned int width,
+                                     CPictureScalingAlgorithm::Algorithm scalingAlgorithm,
+                                     uint8_t*& result,
+                                     size_t& result_size)
 {
   result = NULL;
   result_size = 0;
 
-  if (url.empty())
-    return false;
-
-  // unwrap the URL as required
-  std::string additional_info;
-  unsigned int width, height;
-  CPictureScalingAlgorithm::Algorithm scalingAlgorithm;
-  std::string image = DecodeImageURL(url, width, height, scalingAlgorithm, additional_info);
+  const IMAGE_FILES::CImageFileURL imageURL{url};
+  const auto image = imageURL.GetTargetFile();
   if (image.empty())
     return false;
 
-  std::unique_ptr<CTexture> texture = LoadImage(image, width, height, additional_info, true);
+  std::unique_ptr<CTexture> texture = LoadImage(imageURL);
   if (texture == NULL)
     return false;
 

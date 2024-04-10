@@ -17,6 +17,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
+#include <charconv>
 #include <map>
 
 #define TRANSFORMATION_OPTION_WIDTH             "width"
@@ -114,29 +115,31 @@ MHD_RESULT CHTTPImageTransformationHandler::HandleRequest()
   std::map<std::string, std::string> options;
   HTTPRequestHandlerUtils::GetRequestHeaderValues(m_request.connection, MHD_GET_ARGUMENT_KIND, options);
 
-  std::vector<std::string> urlOptions;
+  unsigned int width = 0;
   std::map<std::string, std::string>::const_iterator option = options.find(TRANSFORMATION_OPTION_WIDTH);
   if (option != options.end())
-    urlOptions.push_back(TRANSFORMATION_OPTION_WIDTH "=" + option->second);
+  {
+    const std::string& str = option->second;
+    std::from_chars(str.data(), str.data() + str.size(), width);
+  }
 
+  unsigned int height = 0;
   option = options.find(TRANSFORMATION_OPTION_HEIGHT);
   if (option != options.end())
-    urlOptions.push_back(TRANSFORMATION_OPTION_HEIGHT "=" + option->second);
+  {
+    const std::string& str = option->second;
+    std::from_chars(str.data(), str.data() + str.size(), height);
+  }
 
+  auto scalingAlgorithm{CPictureScalingAlgorithm::NoAlgorithm};
   option = options.find(TRANSFORMATION_OPTION_SCALING_ALGORITHM);
   if (option != options.end())
-    urlOptions.push_back(TRANSFORMATION_OPTION_SCALING_ALGORITHM "=" + option->second);
-
-  std::string imagePath = m_url;
-  if (!urlOptions.empty())
-  {
-    imagePath += "?";
-    imagePath += StringUtils::Join(urlOptions, "&");
-  }
+    scalingAlgorithm = CPictureScalingAlgorithm::FromString(option->second);
 
   // resize the image into the local buffer
   size_t bufferSize;
-  if (!CTextureCacheJob::ResizeTexture(imagePath, m_buffer, bufferSize))
+  if (!CTextureCacheJob::ResizeTexture(m_url, height, width, scalingAlgorithm, m_buffer,
+                                       bufferSize))
   {
     m_response.status = MHD_HTTP_INTERNAL_SERVER_ERROR;
     m_response.type = HTTPError;

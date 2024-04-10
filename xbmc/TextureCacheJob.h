@@ -69,7 +69,12 @@ public:
    */
   bool CacheTexture(std::unique_ptr<CTexture>* texture = nullptr);
 
-  static bool ResizeTexture(const std::string &url, uint8_t* &result, size_t &result_size);
+  static bool ResizeTexture(const std::string& url,
+                            unsigned int height,
+                            unsigned int width,
+                            CPictureScalingAlgorithm::Algorithm scalingAlgorithm,
+                            uint8_t*& result,
+                            size_t& result_size);
 
   std::string m_url;
   std::string m_oldHash;
