@@ -71,27 +71,19 @@ bool CTextureCacheJob::DoWork()
 
 namespace
 {
-// Most PVR images use "additional_info" to signify 'ownership' of basic images for easy
+// Most PVR images use "type" to signify 'ownership' of basic images for easy
 // cache cleaning, rather than special generated images
-bool IsPVROwnedImage(const std::string& additional_info)
+bool IsPVROwnedImage(const std::string& specialType)
 {
-  return additional_info == "pvrchannel_radio" || additional_info == "pvrchannel_tv" ||
-         additional_info == "pvrprovider" || additional_info == "pvrrecording" ||
-         StringUtils::StartsWith(additional_info, "epgtag_");
-}
-
-// DecodeImageURL can also set "additional_info" to 'flipped' for mirror images selected in
-// the GUI, so is not a special generated image
-bool IsControl(const std::string& additional_info)
-{
-  return additional_info == "flipped";
+  return specialType == "pvrchannel_radio" || specialType == "pvrchannel_tv" ||
+         specialType == "pvrprovider" || specialType == "pvrrecording" ||
+         StringUtils::StartsWith(specialType, "epgtag_");
 }
 
 // special generated images and images served via HTTP should not be regularly checked for changes
-bool ShouldCheckForChanges(const std::string& additional_info, const std::string& url)
+bool ShouldCheckForChanges(const std::string& specialType, const std::string& url)
 {
-  const bool isSpecialImage =
-      !additional_info.empty() && !IsControl(additional_info) && !IsPVROwnedImage(additional_info);
+  const bool isSpecialImage = !specialType.empty() && !IsPVROwnedImage(specialType);
   if (isSpecialImage)
     return false;
 
@@ -103,13 +95,10 @@ bool ShouldCheckForChanges(const std::string& additional_info, const std::string
 
 bool CTextureCacheJob::CacheTexture(std::unique_ptr<CTexture>* out_texture)
 {
-  // unwrap the URL as required
-  std::string additional_info;
-  unsigned int width, height;
-  CPictureScalingAlgorithm::Algorithm scalingAlgorithm;
-  std::string image = DecodeImageURL(m_url, width, height, scalingAlgorithm, additional_info);
+  IMAGE_FILES::CImageFileURL imageURL{m_url};
 
-  m_details.updateable = ShouldCheckForChanges(additional_info, image);
+  auto image = imageURL.GetTargetFile();
+  m_details.updateable = ShouldCheckForChanges(imageURL.GetSpecialType(), image);
 
   if (m_details.updateable)
   {
@@ -125,7 +114,7 @@ bool CTextureCacheJob::CacheTexture(std::unique_ptr<CTexture>* out_texture)
     }
   }
 
-  std::unique_ptr<CTexture> texture = LoadImage(image, width, height, additional_info, true);
+  std::unique_ptr<CTexture> texture = LoadImage(imageURL);
   if (texture)
   {
     if (texture->HasAlpha())
@@ -136,11 +125,13 @@ bool CTextureCacheJob::CacheTexture(std::unique_ptr<CTexture>* out_texture)
     CLog::Log(LOGDEBUG, "{} image '{}' to '{}':", m_oldHash.empty() ? "Caching" : "Recaching",
               CURL::GetRedacted(image), m_details.file);
 
-    if (CPicture::CacheTexture(texture.get(), width, height,
-                               CTextureCache::GetCachedPath(m_details.file), scalingAlgorithm))
+    unsigned int cached_width = 0;
+    unsigned int cached_height = 0;
+    if (CPicture::CacheTexture(texture.get(), cached_width, cached_height,
+                               CTextureCache::GetCachedPath(m_details.file)))
     {
-      m_details.width = width;
-      m_details.height = height;
+      m_details.width = cached_width;
+      m_details.height = cached_height;
       if (out_texture) // caller wants the texture
         *out_texture = std::move(texture);
       return true;
