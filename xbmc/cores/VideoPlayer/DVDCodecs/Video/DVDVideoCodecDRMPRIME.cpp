@@ -582,8 +582,9 @@ void CDVDVideoCodecDRMPRIME::SetPictureParams(VideoPicture* pVideoPicture)
 
   pVideoPicture->iRepeatPicture = 0;
   pVideoPicture->iFlags = 0;
-  pVideoPicture->iFlags |= m_pFrame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;
-  pVideoPicture->iFlags |= m_pFrame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST : 0;
+  pVideoPicture->iFlags |= m_pFrame->flags & AV_FRAME_FLAG_INTERLACED ? DVP_FLAG_INTERLACED : 0;
+  pVideoPicture->iFlags |=
+      m_pFrame->flags & AV_FRAME_FLAG_TOP_FIELD_FIRST ? DVP_FLAG_TOP_FIELD_FIRST : 0;
   pVideoPicture->iFlags |= m_pFrame->data[0] ? 0 : DVP_FLAG_DROPPED;
 
   if (m_codecControlFlags & DVD_CODEC_CTRL_DROP)
