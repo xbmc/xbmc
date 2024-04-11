@@ -33,7 +33,7 @@ public:
   bool Close() override;
 
 private:
-  static int avio_write_callback(void* opaque, uint8_t* buf, int buf_size);
+  static int avio_write_callback(void* opaque, const uint8_t* buf, int buf_size);
   static int64_t avio_seek_callback(void* opaque, int64_t offset, int whence);
 
   void SetTag(const std::string& tag, const std::string& value);

@@ -235,7 +235,7 @@ void CEncoderFFmpeg::SetTag(const std::string& tag, const std::string& value)
   av_dict_set(&m_formatCtx->metadata, tag.c_str(), value.c_str(), 0);
 }
 
-int CEncoderFFmpeg::avio_write_callback(void* opaque, uint8_t* buf, int buf_size)
+int CEncoderFFmpeg::avio_write_callback(void* opaque, const uint8_t* buf, int buf_size)
 {
   CEncoderFFmpeg* enc = static_cast<CEncoderFFmpeg*>(opaque);
   if (enc->Write(buf, buf_size) != buf_size)

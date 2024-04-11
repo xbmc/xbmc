@@ -92,14 +92,12 @@ elseif(CORE_SYSTEM_NAME STREQUAL android)
     list(APPEND ffmpeg_conf --extra-cflags=-mno-stackrealign)
   endif()
 elseif(CORE_SYSTEM_NAME STREQUAL darwin_embedded)
-  list(APPEND ffmpeg_conf --disable-crystalhd
-                          --enable-videotoolbox
+  list(APPEND ffmpeg_conf --enable-videotoolbox
                           --disable-filter=yadif_videotoolbox
                           --target-os=darwin
               )
 elseif(CORE_SYSTEM_NAME STREQUAL osx)
-  list(APPEND ffmpeg_conf --disable-crystalhd
-                          --enable-videotoolbox
+  list(APPEND ffmpeg_conf --enable-videotoolbox
                           --target-os=darwin
                           --disable-securetransport
               )

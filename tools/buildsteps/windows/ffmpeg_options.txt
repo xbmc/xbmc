@@ -1,5 +1,4 @@
 --disable-avdevice
---disable-crystalhd
 --disable-cuda
 --disable-cuvid
 --disable-devices
