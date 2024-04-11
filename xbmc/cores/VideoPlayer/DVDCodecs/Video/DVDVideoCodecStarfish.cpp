@@ -12,17 +12,14 @@
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/Buffers/VideoBuffer.h"
-#include "cores/VideoPlayer/Interface/DemuxCrypto.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
-#include "media/decoderfilter/DecoderFilterManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/SettingUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "utils/BitstreamConverter.h"
-#include "utils/CPUInfo.h"
 #include "utils/JSONVariantWriter.h"
 #include "utils/log.h"
 #include "windowing/wayland/WinSystemWaylandWebOS.h"
@@ -172,9 +169,6 @@ bool CDVDVideoCodecStarfish::OpenInternal(CDVDStreamInfo& hints, CDVDCodecOption
       bool isDvhe = (m_hints.codec_tag == MKTAG('d', 'v', 'h', 'e'));
       bool isDvh1 = (m_hints.codec_tag == MKTAG('d', 'v', 'h', '1'));
 
-      unsigned int payloadDoviProfile = m_hints.dovi.dv_profile;
-      bool payloadElPresentFlag = m_hints.dovi.el_present_flag;
-
       // some files don't have dvhe or dvh1 tag set up but have Dolby Vision side data
       if (!isDvhe && !isDvh1 && m_hints.hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)
       {
@@ -183,25 +177,6 @@ bool CDVDVideoCodecStarfish::OpenInternal(CDVDStreamInfo& hints, CDVDCodecOption
           isDvh1 = true;
         else
           isDvhe = true;
-      }
-
-      // set profile 8 and single layer when converting
-      if (!removeDovi && convertDovi && m_hints.dovi.dv_profile == 7)
-      {
-        payloadDoviProfile = 8;
-        payloadElPresentFlag = false;
-      }
-
-      if (!removeDovi && (isDvhe || isDvh1))
-      {
-        m_formatname = isDvhe ? "starfish-dvhe" : "starfish-dvh1";
-
-        payloadArg["option"]["externalStreamingInfo"]["contents"]["DolbyHdrInfo"]
-                  ["encryptionType"] = "clear"; //"clear", "bl", "el", "all"
-        payloadArg["option"]["externalStreamingInfo"]["contents"]["DolbyHdrInfo"]["profileId"] =
-            payloadDoviProfile; // profile 0-9
-        payloadArg["option"]["externalStreamingInfo"]["contents"]["DolbyHdrInfo"]["trackType"] =
-            payloadElPresentFlag ? "dual" : "single"; // "single" / "dual"
       }
 
       // check for hevc-hvcC and convert to h265-annex-b
@@ -222,13 +197,30 @@ bool CDVDVideoCodecStarfish::OpenInternal(CDVDStreamInfo& hints, CDVDCodecOption
           m_bitstream->SetRemoveHdr10Plus(true);
 
           // Only set for profile 7, container hint allows to skip parsing unnecessarily
-          if (m_hints.dovi.dv_profile == 7)
+          // set profile 8 and single layer when converting
+          if (!removeDovi && convertDovi && m_hints.dovi.dv_profile == 7)
           {
-            m_hints.hdrType = StreamHdrType::HDR_TYPE_HDR10;
-            m_bitstream->SetConvertDovi(convertDovi);
+            m_hints.dovi.dv_profile = 8;
+            m_hints.dovi.el_present_flag = false;
+            m_bitstream->SetConvertDovi(true);
           }
         }
       }
+
+      if (!removeDovi && (isDvhe || isDvh1))
+      {
+        m_formatname = isDvhe ? "starfish-dvhe" : "starfish-dvh1";
+
+        payloadArg["option"]["externalStreamingInfo"]["contents"]["DolbyHdrInfo"]
+                  ["encryptionType"] = "clear"; //"clear", "bl", "el", "all"
+        payloadArg["option"]["externalStreamingInfo"]["contents"]["DolbyHdrInfo"]["profileId"] =
+            m_hints.dovi.dv_profile; // profile 0-9
+        payloadArg["option"]["externalStreamingInfo"]["contents"]["DolbyHdrInfo"]["trackType"] =
+            m_hints.dovi.el_present_flag ? "dual" : "single"; // "single" / "dual"
+      }
+
+      if (removeDovi && (isDvhe || isDvh1))
+        m_hints.hdrType = StreamHdrType::HDR_TYPE_HDR10;
 
       break;
     }
@@ -570,8 +562,13 @@ void CDVDVideoCodecStarfish::SetHDR()
     sei["maxContentLightLevel"] = m_hints.contentLightMetadata->MaxCLL;
     sei["maxPicAverageLightLevel"] = m_hints.contentLightMetadata->MaxFALL;
   }
-  if (!sei.empty())
-    hdrData["sei"] = sei;
+
+  // Some TVs crash on a hdr info message without SEI information
+  // This data is often not available from ffmpeg from the stream (av_stream_get_side_data)
+  // So return here early and let the TV detect the presence of HDR metadata on its own
+  if (sei.empty())
+    return;
+  hdrData["sei"] = sei;
 
   CVariant vui;
   vui["transferCharacteristics"] = static_cast<int>(m_hints.colorTransferCharacteristic);
