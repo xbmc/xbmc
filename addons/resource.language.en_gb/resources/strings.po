@@ -7459,10 +7459,7 @@ msgctxt "#13427"
 msgid "Allow hardware acceleration - DXVA2"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#13428"
-msgid "Allow hardware acceleration - CrystalHD"
-msgstr ""
+#empty string with id 13428
 
 #: system/settings/settings.xml
 msgctxt "#13429"
@@ -19819,11 +19816,7 @@ msgctxt "#36158"
 msgid "Enable DXVA2 hardware decoding of video files."
 msgstr ""
 
-#. Description of setting with label #13428 "Allow hardware acceleration (CrystalHD)"
-#: system/settings/settings.xml
-msgctxt "#36159"
-msgid "Enable CrystalHD decoding of video files."
-msgstr ""
+#empty string with id 36159
 
 #. Description of setting with label #13429 "Allow hardware acceleration (VDADecoder)"
 #: system/settings/settings.xml
