@@ -13,7 +13,8 @@
 namespace KODI::VIDEO
 {
 /*!
- * @brief Generates a texture for a thumbnail of a video file, from a frame approx 1/3 into the video.
+ * @brief Generates a texture for a thumbnail of a video file, for a specific chapter
+ * or from a frame approx 1/3 into the video.
 */
 class CVideoGeneratedImageFileLoader : public IMAGE_FILES::ISpecialImageFileLoader
 {

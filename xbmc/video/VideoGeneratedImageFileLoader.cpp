@@ -21,6 +21,8 @@
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 
+#include <charconv>
+
 namespace KODI::VIDEO
 {
 
@@ -68,7 +70,11 @@ std::unique_ptr<CTexture> CVideoGeneratedImageFileLoader::Load(
   if (URIUtils::IsInRAR(filePath))
     SetupRarOptions(item, filePath);
 
-  return CDVDFileInfo::ExtractThumbToTexture(item);
+  std::string chapterOption = imageFile.GetOption("chapter");
+  int chapter = 0;
+  std::from_chars(chapterOption.data(), chapterOption.data() + chapterOption.size(), chapter);
+
+  return CDVDFileInfo::ExtractThumbToTexture(item, chapter);
 }
 
 } // namespace KODI::VIDEO
