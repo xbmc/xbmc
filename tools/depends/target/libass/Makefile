@@ -1,12 +1,6 @@
 include ../../Makefile.include LIBASS-VERSION ../../download-files.include
 DEPS = ../../Makefile.include Makefile LIBASS-VERSION ../../download-files.include
 
-ifeq ($(OS),android)
-  # Android API Level 21/22 requires explicit link.
-  # This doesnt appear to be required for API Level 23+ (Android 6+)
-  export LDFLAGS+= -lstdc++
-endif
-
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) \
