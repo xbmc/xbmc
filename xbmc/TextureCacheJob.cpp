@@ -165,65 +165,6 @@ bool CTextureCacheJob::ResizeTexture(const std::string& url,
   return success;
 }
 
-std::string CTextureCacheJob::DecodeImageURL(const std::string &url, unsigned int &width, unsigned int &height, CPictureScalingAlgorithm::Algorithm& scalingAlgorithm, std::string &additional_info)
-{
-  // unwrap the URL as required
-  std::string image(url);
-  additional_info.clear();
-  width = height = 0;
-  scalingAlgorithm = CPictureScalingAlgorithm::NoAlgorithm;
-  if (StringUtils::StartsWith(url, "image://"))
-  {
-    // format is image://[type@]<url_encoded_path>?options
-    CURL thumbURL(url);
-
-    if (!CTextureCache::CanCacheImageURL(thumbURL))
-      return "";
-    if (thumbURL.GetUserName() == "music" || thumbURL.GetUserName() == "video" ||
-        thumbURL.GetUserName() == "picturefolder")
-      additional_info = thumbURL.GetUserName();
-    if (StringUtils::StartsWith(thumbURL.GetUserName(), "video_") ||
-        StringUtils::StartsWith(thumbURL.GetUserName(), "pvr") ||
-        StringUtils::StartsWith(thumbURL.GetUserName(), "epg"))
-      additional_info = thumbURL.GetUserName();
-
-    image = thumbURL.GetHostName();
-
-    if (thumbURL.HasOption("flipped"))
-      additional_info = "flipped";
-
-    if (thumbURL.GetOption("size") == "thumb")
-      width = height = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageRes;
-    else
-    {
-      if (thumbURL.HasOption("width") && StringUtils::IsInteger(thumbURL.GetOption("width")))
-        width = strtol(thumbURL.GetOption("width").c_str(), NULL, 0);
-      if (thumbURL.HasOption("height") && StringUtils::IsInteger(thumbURL.GetOption("height")))
-        height = strtol(thumbURL.GetOption("height").c_str(), NULL, 0);
-    }
-
-    if (thumbURL.HasOption("scaling_algorithm"))
-      scalingAlgorithm = CPictureScalingAlgorithm::FromString(thumbURL.GetOption("scaling_algorithm"));
-  }
-
-  if (StringUtils::StartsWith(url, "chapter://"))
-  {
-    // workaround for chapter thumbnail paths, which don't yet conform to the image:// path.
-    additional_info = "videochapter";
-  }
-
-  // Handle special case about audiodecoder addon music files, e.g. SACD
-  if (StringUtils::EndsWith(URIUtils::GetExtension(image), KODI_ADDON_AUDIODECODER_TRACK_EXT))
-  {
-    std::string addonImageURL = URIUtils::GetDirectory(image);
-    URIUtils::RemoveSlashAtEnd(addonImageURL);
-    if (XFILE::CFile::Exists(addonImageURL))
-      image = addonImageURL;
-  }
-
-  return image;
-}
-
 std::unique_ptr<CTexture> CTextureCacheJob::LoadImage(const IMAGE_FILES::CImageFileURL& imageURL)
 {
   if (imageURL.IsSpecialImage())
@@ -253,41 +194,6 @@ std::unique_ptr<CTexture> CTextureCacheJob::LoadImage(const IMAGE_FILES::CImageF
   // where to undo the operation we apply them in reverse order <flipX>*<flipY*flipX>*<flipXY>
   // When flipped we have an additional <flipX> on the left, which is equivalent to toggling the last bit
   if (imageURL.flipped)
-    texture->SetOrientation(texture->GetOrientation() ^ 1);
-
-  return texture;
-}
-
-std::unique_ptr<CTexture> CTextureCacheJob::LoadImage(const std::string& image,
-                                                      unsigned int width,
-                                                      unsigned int height,
-                                                      const std::string& additional_info,
-                                                      bool requirePixels)
-{
-  if (!additional_info.empty())
-  {
-    IMAGE_FILES::CSpecialImageLoaderFactory specialImageLoader{};
-    auto texture = specialImageLoader.Load(additional_info, image, width, height);
-    if (texture)
-      return texture;
-  }
-
-  // Validate file URL to see if it is an image
-  CFileItem file(image, false);
-  file.FillInMimeType();
-  if (!(file.IsPicture() && !(file.IsZIP() || file.IsRAR() || file.IsCBR() || file.IsCBZ() ))
-      && !StringUtils::StartsWithNoCase(file.GetMimeType(), "image/") && !StringUtils::EqualsNoCase(file.GetMimeType(), "application/octet-stream")) // ignore non-pictures
-    return NULL;
-
-  std::unique_ptr<CTexture> texture =
-      CTexture::LoadFromFile(image, width, height, requirePixels, file.GetMimeType());
-  if (!texture)
-    return NULL;
-
-  // EXIF bits are interpreted as: <flipXY><flipY*flipX><flipX>
-  // where to undo the operation we apply them in reverse order <flipX>*<flipY*flipX>*<flipXY>
-  // When flipped we have an additional <flipX> on the left, which is equivalent to toggling the last bit
-  if (additional_info == "flipped")
     texture->SetOrientation(texture->GetOrientation() ^ 1);
 
   return texture;

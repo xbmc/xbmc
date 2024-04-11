@@ -53,7 +53,7 @@ void SetupRarOptions(CFileItem& item, const std::string& path)
 }
 } // namespace
 
-std::unique_ptr<CTexture> VIDEO::CVideoGeneratedImageFileLoader::Load(
+std::unique_ptr<CTexture> CVideoGeneratedImageFileLoader::Load(
     const IMAGE_FILES::CImageFileURL& imageFile) const
 {
   if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
@@ -63,23 +63,6 @@ std::unique_ptr<CTexture> VIDEO::CVideoGeneratedImageFileLoader::Load(
   }
 
   std::string filePath = imageFile.GetTargetFile();
-  CFileItem item{filePath, false};
-
-  if (URIUtils::IsInRAR(filePath))
-    SetupRarOptions(item, filePath);
-
-  return CDVDFileInfo::ExtractThumbToTexture(item);
-}
-
-std::unique_ptr<CTexture> VIDEO::CVideoGeneratedImageFileLoader::Load(
-    const std::string& specialType, const std::string& filePath, unsigned int, unsigned int) const
-{
-  if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-          CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB))
-  {
-    return {};
-  }
-
   CFileItem item{filePath, false};
 
   if (URIUtils::IsInRAR(filePath))

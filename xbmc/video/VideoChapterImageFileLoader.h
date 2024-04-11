@@ -26,10 +26,6 @@ public:
   {
     return {};
   };
-  std::unique_ptr<CTexture> Load(const std::string& specialType,
-                                 const std::string& goofyChapterPath,
-                                 unsigned int preferredWidth,
-                                 unsigned int preferredHeight) const override;
 };
 
 } // namespace KODI::VIDEO

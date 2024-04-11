@@ -23,36 +23,3 @@ bool VIDEO::CVideoChapterImageFileLoader::CanLoad(const std::string& specialType
 {
   return specialType == "videochapter";
 }
-
-std::unique_ptr<CTexture> CVideoChapterImageFileLoader::Load(const std::string& specialType,
-                                                             const std::string& goofyChapterPath,
-                                                             unsigned int,
-                                                             unsigned int) const
-{
-  // "goofy" chapter path because these paths don't yet conform to 'image://' path standard
-
-  // 10 = length of "chapter://" string prefix from GUIDialogVideoBookmarks
-  size_t lastSlashPos = goofyChapterPath.rfind('/');
-  std::string cleanname = goofyChapterPath.substr(10, lastSlashPos - 10);
-
-  int chapterNum = 0;
-  try
-  {
-    chapterNum = std::stoi(goofyChapterPath.substr(lastSlashPos + 1));
-  }
-  catch (...)
-  {
-    // invalid_argument because these paths can come from anywhere
-    // out_of_range mostly for the same reason - 32k+ seems high for a chapter count
-    return {};
-  }
-  if (chapterNum < 1)
-  {
-    return {};
-  }
-
-  CFileItem item{cleanname, false};
-  return CDVDFileInfo::ExtractThumbToTexture(item, chapterNum);
-}
-
-} // namespace KODI::VIDEO

@@ -30,25 +30,6 @@ CSpecialImageLoaderFactory::CSpecialImageLoaderFactory()
   m_specialImageLoaders[5] = std::make_unique<PVR::CPVRChannelGroupImageFileLoader>();
 }
 
-std::unique_ptr<CTexture> CSpecialImageLoaderFactory::Load(const std::string& specialType,
-                                                           const std::string& filePath,
-                                                           unsigned int preferredWidth,
-                                                           unsigned int preferredHeight) const
-{
-  if (specialType.empty())
-    return {};
-  for (auto& loader : m_specialImageLoaders)
-  {
-    if (loader->CanLoad(specialType))
-    {
-      auto val = loader->Load(specialType, filePath, preferredWidth, preferredHeight);
-      if (val)
-        return val;
-    }
-  }
-  return {};
-}
-
 std::unique_ptr<CTexture> CSpecialImageLoaderFactory::Load(const CImageFileURL& imageFile) const
 {
   if (!imageFile.IsSpecialImage())

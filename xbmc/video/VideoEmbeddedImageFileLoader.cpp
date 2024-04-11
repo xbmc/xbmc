@@ -58,16 +58,4 @@ std::unique_ptr<CTexture> CVideoEmbeddedImageFileLoader::Load(
   return {};
 }
 
-std::unique_ptr<CTexture> VIDEO::CVideoEmbeddedImageFileLoader::Load(
-    const std::string& specialType,
-    const std::string& filePath,
-    unsigned int,
-    unsigned int) const
-{
-  EmbeddedArt art;
-  if (GetEmbeddedThumb(filePath, specialType.substr(6), art))
-    return CTexture::LoadFromFileInMemory(art.m_data.data(), art.m_size, art.m_mime);
-  return {};
-}
-
 } // namespace KODI::VIDEO
