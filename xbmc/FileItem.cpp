@@ -535,6 +535,7 @@ CFileItem& CFileItem::operator=(const CFileItem& item)
   m_specialSort = item.m_specialSort;
   m_bIsAlbum = item.m_bIsAlbum;
   m_doContentLookup = item.m_doContentLookup;
+  m_titlesJob = item.m_titlesJob;
   return *this;
 }
 
@@ -561,6 +562,7 @@ void CFileItem::Initialize()
   m_bCanQueue = true;
   m_specialSort = SortSpecialNone;
   m_doContentLookup = true;
+  m_titlesJob = 0;
 }
 
 void CFileItem::Reset()
@@ -1621,7 +1623,9 @@ bool CFileItem::IsAlbum() const
   return m_bIsAlbum;
 }
 
-void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
+void CFileItem::UpdateInfo(const CFileItem& item,
+                           bool replaceLabels /*=true*/,
+                           bool replaceEpisodes /* false */)
 {
   if (item.HasVideoInfoTag())
   { // copy info across
@@ -1684,12 +1688,91 @@ void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
     SetInvalid();
   }
   SetDynPath(item.GetDynPath());
-  if (replaceLabels && !item.GetLabel().empty())
-    SetLabel(item.GetLabel());
+
+  // Alter label to episode number(s) if requested
+  if (replaceLabels)
+  {
+    std::string label;
+    if (item.GetVideoContentType() == VideoDbContentType::EPISODES && replaceEpisodes &&
+        (item.IsDiscImage() || item.IsDVDFile() || item.IsBluray()))
+    {
+      // Get episodes on disc
+      CVideoDatabase database;
+      if (!database.Open())
+      {
+        CLog::LogF(LOGERROR, "Failed to open video database");
+        return;
+      }
+
+      std::vector<CVideoInfoTag> episodes;
+      database.GetEpisodesByFileId(item.GetVideoInfoTag()->m_iFileId, episodes);
+      if (!episodes.empty())
+      {
+        bool specials = false;
+        const int startEpisode =
+            (*std::min_element(episodes.begin(), episodes.end(),
+                               [&](const CVideoInfoTag& i, const CVideoInfoTag& j)
+                               {
+                                 if (i.m_iSeason == 0 && j.m_iSeason != 0)
+                                   return false;
+                                 if (i.m_iSeason != 0 && j.m_iSeason == 0)
+                                   return true;
+                                 return i.m_iEpisode < j.m_iEpisode;
+                               }))
+                .m_iEpisode;
+        const int endEpisode =
+            (*std::max_element(episodes.begin(), episodes.end(),
+                               [&](const CVideoInfoTag& i, const CVideoInfoTag& j)
+                               {
+                                 if (i.m_iSeason == 0 && j.m_iSeason != 0)
+                                   return true;
+                                 if (i.m_iSeason != 0 && j.m_iSeason == 0)
+                                   return false;
+                                 return i.m_iEpisode < j.m_iEpisode;
+                               }))
+                .m_iEpisode;
+        if (std::count_if(episodes.begin(), episodes.end(),
+                          [&](const CVideoInfoTag& i) { return i.m_iSeason == 0; }) > 0)
+          specials = true;
+
+        if (startEpisode == endEpisode)
+          label = StringUtils::Format("{} {}", g_localizeStrings.Get(20359) /* Episode */,
+                                      startEpisode);
+        else
+        {
+          label = StringUtils::Format("{} {}-{}", g_localizeStrings.Get(20360) /* Episodes */,
+                                      startEpisode, endEpisode);
+
+          // Get description of plot as more generic for multiple episodes
+          CVideoInfoTag details;
+          database.GetTvShowInfo(GetPath(), details, GetVideoInfoTag()->m_iIdShow);
+          std::string strParentDirectory;
+          URIUtils::GetParentPath(details.m_basePath, strParentDirectory);
+          CFileItemList dbItems;
+          database.GetItemsForPath("tvshows", strParentDirectory, dbItems);
+          const CFileItemPtr match = dbItems.Get(details.m_basePath);
+          m_videoInfoTag->m_strPlot = match->GetVideoInfoTag()->m_strPlot;
+        }
+
+        if (specials)
+          label += StringUtils::Format(" and Specials");
+
+        m_titlesJob = TITLES_JOB_ALL_EPISODES;
+      }
+    }
+    else if (!item.GetLabel().empty())
+    {
+      label = item.GetLabel();
+    }
+    if (!label.empty())
+      SetLabel(label);
+  }
+
   if (replaceLabels && !item.GetLabel2().empty())
     SetLabel2(item.GetLabel2());
   if (!item.GetArt().empty())
     SetArt(item.GetArt());
+
   AppendProperties(item);
   UpdateMimeType();
 }

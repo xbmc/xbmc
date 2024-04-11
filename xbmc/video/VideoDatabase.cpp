@@ -3463,6 +3463,27 @@ void CVideoDatabase::GetEpisodesByFile(const std::string& strFilenameAndPath, st
   }
 }
 
+void CVideoDatabase::GetEpisodesByFileId(const int& fileId, std::vector<CVideoInfoTag>& episodes)
+{
+  try
+  {
+    std::string strSQL =
+        PrepareSQL("select * from episode_view where idFile=%i order by c%02d, c%02d asc", fileId,
+                   VIDEODB_ID_EPISODE_SORTSEASON, VIDEODB_ID_EPISODE_SORTEPISODE);
+    m_pDS->query(strSQL);
+    while (!m_pDS->eof())
+    {
+      episodes.emplace_back(GetDetailsForEpisode(m_pDS));
+      m_pDS->next();
+    }
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "(FileId {}) failed", fileId);
+  }
+}
+
 //********************************************************************************************************************************
 void CVideoDatabase::AddBookMarkToFile(const std::string& strFilenameAndPath, const CBookmark &bookmark, CBookmark::EType type /*= CBookmark::STANDARD*/)
 {

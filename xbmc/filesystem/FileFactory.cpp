@@ -50,12 +50,13 @@
 #ifdef HAVE_LIBBLURAY
 #include "BlurayFile.h"
 #endif
-#include "PipeFile.h"
+#include "DVDFile.h"
+#include "MultiPathFile.h"
 #include "MusicDatabaseFile.h"
-#include "VideoDatabaseFile.h"
+#include "PipeFile.h"
 #include "PluginFile.h"
 #include "SpecialProtocolFile.h"
-#include "MultiPathFile.h"
+#include "VideoDatabaseFile.h"
 #if defined(HAS_UDFREAD)
 #include "UDFFile.h"
 #endif
@@ -147,6 +148,8 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #ifdef HAVE_LIBBLURAY
   else if (url.IsProtocol("bluray")) return new CBlurayFile();
 #endif
+  else if (url.IsProtocol("dvd"))
+    return new CDVDFile();
   else if (url.IsProtocol("resource")) return new CResourceFile();
 #ifdef TARGET_WINDOWS_STORE
   else if (CWinLibraryFile::IsValid(url)) return new CWinLibraryFile();

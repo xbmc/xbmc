@@ -558,6 +558,7 @@ public:
   int GetSeasonId(int idShow, int season);
 
   void GetEpisodesByFile(const std::string& strFilenameAndPath, std::vector<CVideoInfoTag>& episodes);
+  void GetEpisodesByFileId(const int& fileId, std::vector<CVideoInfoTag>& episodes);
 
   int SetDetailsForItem(CVideoInfoTag& details, const std::map<std::string, std::string> &artwork);
   int SetDetailsForItem(int id, const MediaType& mediaType, CVideoInfoTag& details, const std::map<std::string, std::string> &artwork);

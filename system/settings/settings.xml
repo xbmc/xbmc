@@ -395,10 +395,25 @@
           </constraints>
           <control type="spinner" format="string" />
         </setting>
+        <setting id="dvds.playback" type="integer" label="14085" help="37058">
+          <level>1</level>
+          <default>1</default> <!-- default -->
+          <constraints>
+            <options>
+              <option label="14104">0</option> <!-- show simplified menu -->
+              <option label="29806">1</option> <!-- show disc menu -->
+              <option label="14103">2</option> <!-- play main movie -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
         <setting id="dvds.automenu" type="boolean" label="21882" help="36196">
           <level>2</level>
           <default>false</default>
           <control type="toggle" />
+          <dependencies>
+            <dependency type="enable" setting="dvds.playback" operator="is">1</dependency>
+          </dependencies>
         </setting>
       </group>
       <group id="2" label="14234">

@@ -552,8 +552,9 @@ public:
    in the given item.
    \param item the item used to supplement information
    \param replaceLabels whether to replace labels (defaults to true)
+   \param replaceEpisodes whether to list all episodes on multi-episode disc (defaults to false)
    */
-  void UpdateInfo(const CFileItem &item, bool replaceLabels = true);
+  void UpdateInfo(const CFileItem& item, bool replaceLabels = true, bool replaceEpisodes = false);
 
   /*! \brief Merge an item with information from another item
   We take metadata/art information from the given item and supplement the current
@@ -605,6 +606,16 @@ public:
   std::string m_strLockCode;
   int m_iHasLock; // 0 - no lock 1 - lock, but unlocked 2 - locked
   int m_iBadPwdCount;
+
+  enum TITLES_JOB
+  {
+    TITLES_JOB_MAIN_TITLE = 0, // Default
+    TITLES_JOB_ALL_TITLES = 1,
+    TITLES_JOB_SINGLE_EPISODE = 2,
+    TITLES_JOB_ALL_EPISODES = 3
+  };
+
+  int m_titlesJob;
 
   void SetCueDocument(const CCueDocumentPtr& cuePtr);
   void LoadEmbeddedCue();
@@ -659,7 +670,6 @@ private:
   bool m_bIsAlbum;
   int64_t m_lStartOffset;
   int64_t m_lEndOffset;
-
   CCueDocumentPtr m_cueDocument;
 };
 

@@ -159,10 +159,15 @@ void CSaveFileState::DoWork(CFileItem& item,
           CFileItem dbItem(item);
 
           // Check whether the item's db streamdetails need updating
-          if (!videodatabase.GetStreamDetails(dbItem) ||
-              dbItem.GetVideoInfoTag()->m_streamDetails != item.GetVideoInfoTag()->m_streamDetails)
+          if ((!videodatabase.GetStreamDetails(dbItem) ||
+               dbItem.GetVideoInfoTag()->m_streamDetails !=
+                   item.GetVideoInfoTag()->m_streamDetails) &&
+              item.m_titlesJob !=
+                  CFileItem::
+                      TITLES_JOB_ALL_EPISODES) // Don't update if multi-episode disc and browsing through Videos -> Files ...
           {
-            videodatabase.SetStreamDetailsForFile(item.GetVideoInfoTag()->m_streamDetails, progressTrackingFile);
+            videodatabase.SetStreamDetailsForFile(item.GetVideoInfoTag()->m_streamDetails,
+                                                  progressTrackingFile);
             updateListing = true;
           }
         }

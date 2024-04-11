@@ -2424,12 +2424,12 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
     }
   }
 
-  // a disc image might be Blu-Ray disc
+  // a disc image might be DVD or Blu-Ray disc
   if (!(options.startpercent > 0.0 || options.starttime > 0.0) &&
-      (IsBDFile(item) || item.IsDiscImage()))
+      (IsBDFile(item) || IsDVDFile(item) || item.IsDiscImage()))
   {
     // No video selection when using external or remote players (they handle it if supported)
-    const bool isSimpleMenuAllowed = [&]()
+    const bool isPlaylistChoiceAllowed = [&]()
     {
       const std::string defaulPlayer{
           player.empty() ? m_ServiceManager->GetPlayerCoreFactory().GetDefaultPlayer(item)
@@ -2441,9 +2441,9 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
       return !isExternalPlayer && !isRemotePlayer;
     }();
 
-    if (isSimpleMenuAllowed)
+    if (isPlaylistChoiceAllowed)
     {
-      // Check if we must show the simplified bd menu.
+      // Check if we must show the simplified menu.
       if (!CGUIDialogSimpleMenu::ShowPlaySelection(item))
         return true;
     }
