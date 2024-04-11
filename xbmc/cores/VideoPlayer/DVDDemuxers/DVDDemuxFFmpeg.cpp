@@ -1647,42 +1647,49 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         st->colorRange = pStream->codecpar->color_range;
         st->hdr_type = DetermineHdrType(pStream);
 
-        // https://github.com/FFmpeg/FFmpeg/blob/release/5.0/doc/APIchanges
-        size_t size = 0;
-        uint8_t* side_data = nullptr;
+        // https://github.com/FFmpeg/FFmpeg/blob/release/7.0/doc/APIchanges
+        const AVPacketSideData* sideData = nullptr;
 
         if (st->hdr_type == StreamHdrType::HDR_TYPE_DOLBYVISION)
         {
-          side_data = av_stream_get_side_data(pStream, AV_PKT_DATA_DOVI_CONF, &size);
-          if (side_data && size)
+
+          sideData =
+              av_packet_side_data_get(pStream->codecpar->coded_side_data,
+                                      pStream->codecpar->nb_coded_side_data, AV_PKT_DATA_DOVI_CONF);
+          if (sideData && sideData->size)
           {
-            st->dovi = *reinterpret_cast<AVDOVIDecoderConfigurationRecord*>(side_data);
+            st->dovi = *reinterpret_cast<const AVDOVIDecoderConfigurationRecord*>(sideData->data);
           }
         }
 
-        side_data = av_stream_get_side_data(pStream, AV_PKT_DATA_MASTERING_DISPLAY_METADATA, &size);
-        if (side_data && size)
+        sideData = av_packet_side_data_get(pStream->codecpar->coded_side_data,
+                                           pStream->codecpar->nb_coded_side_data,
+                                           AV_PKT_DATA_MASTERING_DISPLAY_METADATA);
+        if (sideData && sideData->size)
         {
           st->masteringMetaData = std::make_shared<AVMasteringDisplayMetadata>(
-              *reinterpret_cast<AVMasteringDisplayMetadata*>(side_data));
+              *reinterpret_cast<const AVMasteringDisplayMetadata*>(sideData->data));
         }
 
-        side_data = av_stream_get_side_data(pStream, AV_PKT_DATA_CONTENT_LIGHT_LEVEL, &size);
-        if (side_data && size)
+        sideData = av_packet_side_data_get(pStream->codecpar->coded_side_data,
+                                           pStream->codecpar->nb_coded_side_data,
+                                           AV_PKT_DATA_CONTENT_LIGHT_LEVEL);
+        if (sideData && sideData->size)
         {
           st->contentLightMetaData = std::make_shared<AVContentLightMetadata>(
-              *reinterpret_cast<AVContentLightMetadata*>(side_data));
+              *reinterpret_cast<const AVContentLightMetadata*>(sideData->data));
         }
 
-        uint8_t* displayMatrixSideData =
-            av_stream_get_side_data(pStream, AV_PKT_DATA_DISPLAYMATRIX, nullptr);
-        if (displayMatrixSideData)
+        sideData = av_packet_side_data_get(pStream->codecpar->coded_side_data,
+                                           pStream->codecpar->nb_coded_side_data,
+                                           AV_PKT_DATA_DISPLAYMATRIX);
+        if (sideData)
         {
-          const double tetha =
-              av_display_rotation_get(reinterpret_cast<int32_t*>(displayMatrixSideData));
-          if (!std::isnan(tetha))
+          const double theta =
+              av_display_rotation_get(reinterpret_cast<const int32_t*>(sideData->data));
+          if (!std::isnan(theta))
           {
-            st->iOrientation = ((static_cast<int>(-tetha) % 360) + 360) % 360;
+            st->iOrientation = ((static_cast<int>(-theta) % 360) + 360) % 360;
           }
         }
 
@@ -2505,7 +2512,9 @@ StreamHdrType CDVDDemuxFFmpeg::DetermineHdrType(AVStream* pStream)
 {
   StreamHdrType hdrType = StreamHdrType::HDR_TYPE_NONE;
 
-  if (av_stream_get_side_data(pStream, AV_PKT_DATA_DOVI_CONF, nullptr)) // DoVi
+  if (av_packet_side_data_get(pStream->codecpar->coded_side_data,
+                              pStream->codecpar->nb_coded_side_data,
+                              AV_PKT_DATA_DOVI_CONF)) // DoVi
     hdrType = StreamHdrType::HDR_TYPE_DOLBYVISION;
   else if (pStream->codecpar->color_trc == AVCOL_TRC_SMPTE2084) // HDR10
     hdrType = StreamHdrType::HDR_TYPE_HDR10;
@@ -2513,7 +2522,9 @@ StreamHdrType CDVDDemuxFFmpeg::DetermineHdrType(AVStream* pStream)
     hdrType = StreamHdrType::HDR_TYPE_HLG;
   // file could be SMPTE2086 which FFmpeg currently returns as unknown
   // so use the presence of static metadata to detect it
-  else if (av_stream_get_side_data(pStream, AV_PKT_DATA_MASTERING_DISPLAY_METADATA, nullptr))
+  else if (av_packet_side_data_get(pStream->codecpar->coded_side_data,
+                                   pStream->codecpar->nb_coded_side_data,
+                                   AV_PKT_DATA_MASTERING_DISPLAY_METADATA))
     hdrType = StreamHdrType::HDR_TYPE_HDR10;
 
   return hdrType;
