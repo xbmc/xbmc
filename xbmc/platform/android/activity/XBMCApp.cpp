@@ -676,29 +676,6 @@ bool CXBMCApp::SetBuffersGeometry(int width, int height, int format)
   return false;
 }
 
-void CXBMCApp::SetRefreshRateCallback(void* rateVariant)
-{
-  CVariant* rateV = static_cast<CVariant*>(rateVariant);
-  float rate = rateV->asFloat();
-  delete rateV;
-
-  CJNIWindow window = getWindow();
-  if (window)
-  {
-    CJNIWindowManagerLayoutParams params = window.getAttributes();
-    if (fabs(params.getpreferredRefreshRate() - rate) > 0.001f)
-    {
-      params.setpreferredRefreshRate(rate);
-      if (params.getpreferredRefreshRate() > 0.0f)
-      {
-        window.setAttributes(params);
-        return;
-      }
-    }
-  }
-  CXBMCApp::Get().m_displayChangeEvent.Set();
-}
-
 void CXBMCApp::SetDisplayModeCallback(void* modeVariant)
 {
   CVariant* modeV = static_cast<CVariant*>(modeVariant);
@@ -717,30 +694,6 @@ void CXBMCApp::SetDisplayModeCallback(void* modeVariant)
     }
   }
   CXBMCApp::Get().m_displayChangeEvent.Set();
-}
-
-void CXBMCApp::SetRefreshRate(float rate)
-{
-  if (rate < 1.0f)
-    return;
-
-  CJNIWindow window = getWindow();
-  if (window)
-  {
-    CJNIWindowManagerLayoutParams params = window.getAttributes();
-    if (fabs(params.getpreferredRefreshRate() - rate) <= 0.001f)
-      return;
-  }
-
-  m_refreshRate = rate;
-  m_displayChangeEvent.Reset();
-
-  if (m_hdmiSource)
-    dynamic_cast<CWinSystemAndroid*>(CServiceBroker::GetWinSystem())->InitiateModeChange();
-
-  CVariant *variant = new CVariant(rate);
-  runNativeOnUiThread(SetRefreshRateCallback, variant);
-  m_displayChangeEvent.Wait(5000ms);
 }
 
 void CXBMCApp::SetDisplayMode(int mode, float rate)

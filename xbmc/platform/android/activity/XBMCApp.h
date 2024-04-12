@@ -179,7 +179,6 @@ public:
   static float GetSystemVolume();
   static void SetSystemVolume(float percent);
 
-  void SetRefreshRate(float rate);
   void SetDisplayMode(int mode, float rate);
   int GetDPI() const;
 
@@ -242,7 +241,6 @@ private:
   void run();
   void stop();
   void SetupEnv();
-  static void SetRefreshRateCallback(void* rateVariant);
   static void SetDisplayModeCallback(void* modeVariant);
   static void KeepScreenOnCallback(void* onVariant);
 
