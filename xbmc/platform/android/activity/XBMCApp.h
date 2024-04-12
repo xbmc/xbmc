@@ -257,7 +257,7 @@ private:
   bool m_hdmiSource{false};
   bool m_wakeUp{false};
   bool m_aeReset{false};
-  bool m_supportsHdmiAudioPlug{false};
+  bool m_hdmiPlugged{true};
   IInputDeviceCallbacks* m_inputDeviceCallbacks{nullptr};
   IInputDeviceEventHandler* m_inputDeviceEventHandler{nullptr};
   bool m_hasReqVisible{false};
