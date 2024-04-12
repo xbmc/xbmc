@@ -1026,7 +1026,6 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
   unsigned int maxFrames;
   int retry = 0;
   unsigned int written = 0;
-  uint8_t* p_mergeBuffer = nullptr;
   AEDelayStatus status;
 
   if (m_requestedFormat.m_dataFormat == AE_FMT_RAW)
@@ -1037,28 +1036,7 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
       if (frames > 0)
       {
         m_packer->Reset();
-        if (m_sinkFormat.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
-        {
-          if (frames == 61440)
-          {
-            for (int i = 0, of = 0; i < 12; i++)
-            {
-              // calculates length of each audio unit using raw data of stream
-              const uint16_t len = ((*(buffer[0] + of) & 0x0F) << 8 | *(buffer[0] + of + 1)) << 1;
-
-              m_packer->Pack(m_sinkFormat.m_streamInfo, buffer[0] + of, len);
-              of += len;
-            }
-          }
-          else
-          {
-            m_extError = true;
-            CLog::Log(LOGERROR, "CActiveAESink::OutputSamples - incomplete TrueHD buffer");
-            return 0;
-          }
-        }
-        else
-          m_packer->Pack(m_sinkFormat.m_streamInfo, buffer[0], frames);
+        m_packer->Pack(m_sinkFormat.m_streamInfo, buffer[0], frames);
       }
       else if (samples->pkt->pause_burst_ms > 0)
       {
@@ -1095,28 +1073,6 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
     }
     else // Android IEC packer (RAW)
     {
-      if (m_sinkFormat.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD && frames == 61440)
-      {
-        if (m_mergeBuffer.empty())
-          m_mergeBuffer.resize(MAX_IEC61937_PACKET);
-
-        p_mergeBuffer = m_mergeBuffer.data();
-        unsigned int size = 0;
-
-        for (int i = 0, of = 0; i < 24; i++)
-        {
-          // calculates length of each audio unit using raw data of stream
-          const uint16_t len = ((*(buffer[0] + of) & 0x0F) << 8 | *(buffer[0] + of + 1)) << 1;
-
-          memcpy(m_mergeBuffer.data() + of, buffer[0] + of, len);
-          size += len;
-          of += len;
-        }
-
-        buffer = &p_mergeBuffer;
-        totalFrames = size / m_sinkFormat.m_frameSize; // m_frameSize = 1
-        frames = totalFrames;
-      }
       if (samples->pkt->pause_burst_ms > 0)
       {
         m_sink->AddPause(samples->pkt->pause_burst_ms);

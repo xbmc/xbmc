@@ -10,6 +10,7 @@
 
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDStreamInfo.h"
+#include "cores/AudioEngine/Utils/PackerMAT.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -29,6 +30,14 @@ CDVDAudioCodecPassthrough::CDVDAudioCodecPassthrough(CProcessInfo &processInfo, 
 {
   m_format.m_streamInfo.m_type = streamType;
   m_deviceIsRAW = processInfo.WantsRawPassthrough();
+
+  if (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
+  {
+    m_trueHDBuffer.resize(TRUEHD_BUF_SIZE);
+
+    if (!m_deviceIsRAW)
+      m_packerMAT = std::make_unique<CPackerMAT>();
+  }
 }
 
 CDVDAudioCodecPassthrough::~CDVDAudioCodecPassthrough(void)
@@ -180,36 +189,46 @@ bool CDVDAudioCodecPassthrough::AddData(const DemuxPacket &packet)
 
   if (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
   {
-    if (m_trueHDBuffer.empty())
+    if (m_deviceIsRAW) // RAW
     {
-      m_trueHDBuffer.resize(TRUEHD_BUF_SIZE);
-      m_trueHDoffset = 0;
+      m_dataSize = PackTrueHD();
     }
-
-    if (m_trueHDoffset == 0)
-      m_trueHDframes = 0;
-
-    memcpy(m_trueHDBuffer.data() + m_trueHDoffset, m_buffer, m_dataSize);
-    m_trueHDoffset += m_dataSize;
-
-    m_trueHDframes++;
-
-    // Only 12 audio units are packed in the buffer to avoid overflows and reduce latency.
-    // Compensates for the small increased latency in CAEBitstreamPacker::PackTrueHD (IEC)
-    // Android IEC packer (RAW) needs 24 audio units.
-    const unsigned int nFrames = m_deviceIsRAW ? 24 : 12;
-
-    if (m_trueHDframes == nFrames)
+    else // IEC
     {
-      m_dataSize = TRUEHD_BUF_SIZE;
-      m_trueHDoffset = 0;
-      m_trueHDframes = 0;
+      if (m_packerMAT->PackTrueHD(m_buffer, m_dataSize))
+      {
+        m_trueHDBuffer = m_packerMAT->GetOutputFrame();
+        m_dataSize = TRUEHD_BUF_SIZE;
+      }
+      else
+        m_dataSize = 0;
     }
-    else
-      m_dataSize = 0;
   }
 
   return true;
+}
+
+unsigned int CDVDAudioCodecPassthrough::PackTrueHD()
+{
+  unsigned int dataSize{0};
+
+  if (m_trueHDoffset == 0)
+    m_trueHDframes = 0;
+
+  memcpy(m_trueHDBuffer.data() + m_trueHDoffset, m_buffer, m_dataSize);
+
+  m_trueHDoffset += m_dataSize;
+  m_trueHDframes++;
+
+  if (m_trueHDframes == 24)
+  {
+    dataSize = m_trueHDoffset;
+    m_trueHDoffset = 0;
+    m_trueHDframes = 0;
+    return dataSize;
+  }
+
+  return 0;
 }
 
 void CDVDAudioCodecPassthrough::GetData(DVDAudioFrame &frame)

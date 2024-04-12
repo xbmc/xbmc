@@ -36,8 +36,8 @@ public:
   static int PackDTS_512 (uint8_t *data, unsigned int size, uint8_t *dest, bool littleEndian);
   static int PackDTS_1024(uint8_t *data, unsigned int size, uint8_t *dest, bool littleEndian);
   static int PackDTS_2048(uint8_t *data, unsigned int size, uint8_t *dest, bool littleEndian);
-  static int PackTrueHD  (uint8_t *data, unsigned int size, uint8_t *dest);
-  static int PackDTSHD   (uint8_t *data, unsigned int size, uint8_t *dest, unsigned int period);
+  static int PackTrueHD(const uint8_t* data, unsigned int size, uint8_t* dest);
+  static int PackDTSHD(uint8_t* data, unsigned int size, uint8_t* dest, unsigned int period);
   static int PackPause(uint8_t *dest, unsigned int millis, unsigned int framesize, unsigned int samplerate, unsigned int rep_period, unsigned int encodedRate);
 private:
 

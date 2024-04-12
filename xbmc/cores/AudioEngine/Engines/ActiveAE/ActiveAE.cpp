@@ -153,13 +153,6 @@ void CEngineStats::GetDelay(AEDelayStatus& status, CActiveAEStream *stream)
     status.delay +=
         static_cast<double>(m_bufferedSamples) * m_sinkFormat.m_streamInfo.GetDuration() / 1000;
 
-  if (!m_pcmOutput && m_sinkNeedIecPack &&
-      m_sinkFormat.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
-  {
-    // take into account MAT packer latency (half duration of MAT frame)
-    status.delay += m_sinkFormat.m_streamInfo.GetDuration() / 1000 / 2;
-  }
-
   for (auto &str : m_streamStats)
   {
     if (str.m_streamId == stream->m_id)
@@ -185,13 +178,6 @@ void CEngineStats::GetSyncInfo(CAESyncInfo& info, CActiveAEStream *stream)
         static_cast<double>(m_bufferedSamples) * m_sinkFormat.m_streamInfo.GetDuration() / 1000;
 
   status.delay += static_cast<double>(m_sinkLatency);
-
-  if (!m_pcmOutput && m_sinkNeedIecPack &&
-      m_sinkFormat.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
-  {
-    // take into account MAT packer latency (half duration of MAT frame)
-    status.delay += m_sinkFormat.m_streamInfo.GetDuration() / 1000 / 2;
-  }
 
   for (auto &str : m_streamStats)
   {
