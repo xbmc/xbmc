@@ -13,8 +13,11 @@
 #include "Interface/DemuxPacket.h"
 #include "ServiceBroker.h"
 #include "application/Application.h"
+#include "filesystem/Directory.h"
+#include "filesystem/File.h"
 #include "guilib/GUIComponent.h"
 #include "music/tags/MusicInfoTag.h"
+#include "utils/Digest.h"
 #include "utils/log.h"
 
 #include <taglib/attachedpictureframe.h>
@@ -33,6 +36,9 @@ CVideoPlayerAudioID3::CVideoPlayerAudioID3(CProcessInfo& processInfo)
   : IDVDStreamPlayer(processInfo), CThread("VideoPlayerAudioID3"), m_messageQueue("id3")
 {
   CLog::Log(LOGDEBUG, "Audio ID3 tag processor - new {}", __FUNCTION__);
+
+  if (!XFILE::CDirectory::Exists(m_cacheDir))
+    XFILE::CDirectory::Create(m_cacheDir);
 }
 
 CVideoPlayerAudioID3::~CVideoPlayerAudioID3()
@@ -241,7 +247,8 @@ void CVideoPlayerAudioID3::ProcessID3v2(const ID3v2::Tag* tag) const
 {
   if (tag != nullptr && !tag->isEmpty())
   {
-    MUSIC_INFO::CMusicInfoTag* currentMusic = g_application.CurrentFileItem().GetMusicInfoTag();
+    CFileItem& currentMusicFile = g_application.CurrentFileItem();
+    MUSIC_INFO::CMusicInfoTag* currentMusic = currentMusicFile.GetMusicInfoTag();
     if (currentMusic)
     {
       bool changed = false;
@@ -249,83 +256,138 @@ void CVideoPlayerAudioID3::ProcessID3v2(const ID3v2::Tag* tag) const
       const ID3v2::FrameListMap& frameListMap = tag->frameListMap();
       for (const auto& it : frameListMap)
       {
-        if (!it.second.isEmpty())
+        if (it.first == "TIT2")
         {
-          if (it.first == "TIT2")
-          {
-            currentMusic->SetTitle(it.second.front()->toString().to8Bit(true));
-            changed = true;
-          }
+          const std::string str = it.second.front()->toString().to8Bit(true);
+          currentMusic->SetTitle(str);
+          changed = true;
+        }
 
-          else if (it.first == "TPE1")
-          {
-            currentMusic->SetArtist(GetID3v2StringList(it.second));
-            changed = true;
-          }
+        else if (it.first == "TPE1")
+        {
+          currentMusic->SetArtist(GetID3v2StringList(it.second), true);
+          changed = true;
+        }
 
-          else if (it.first == "TALB")
-          {
-            currentMusic->SetAlbum(it.second.front()->toString().to8Bit(true));
-            changed = true;
-          }
+        else if (it.first == "TALB")
+        {
+          const std::string str = it.second.front()->toString().to8Bit(true);
+          currentMusic->SetAlbum(str);
+          changed = true;
+        }
 
-          else if (it.first == "COMM")
+        else if (it.first == "COMM")
+        {
+          // Loop through and look for the main (no description) comment
+          for (const auto& ct : it.second)
           {
-            // Loop through and look for the main (no description) comment
-            for (const auto& ct : it.second)
+            auto commentsFrame = dynamic_cast<const ID3v2::CommentsFrame*>(ct);
+            if (commentsFrame && commentsFrame->description().isEmpty())
             {
-              auto commentsFrame = dynamic_cast<const ID3v2::CommentsFrame*>(ct);
-              if (commentsFrame && commentsFrame->description().isEmpty())
+              currentMusic->SetComment(commentsFrame->text().to8Bit(true));
+              changed = true;
+              break;
+            }
+          }
+        }
+
+        else if (it.first == "TCON")
+        {
+          currentMusic->SetGenre(GetID3v2StringList(it.second));
+          changed = true;
+        }
+
+        else if (it.first == "TYER")
+        {
+          currentMusic->SetYear(
+              static_cast<int>(strtol(it.second.front()->toString().toCString(true), nullptr, 10)));
+          changed = true;
+        }
+
+        else if (it.first == "TRCK")
+        {
+          currentMusic->SetTrackNumber(
+              static_cast<int>(strtol(it.second.front()->toString().toCString(true), nullptr, 10)));
+          changed = true;
+        }
+
+        // Support for setting the cover art image via CMusicInfoTag does not currently exist,
+        // the code sample below would check for an ID3v2 "APIC" tag of the proper type and
+        // convert the information into an EmbeddedArt object instance
+        //
+        else if (it.first == "APIC")
+        {
+          using KODI::UTILITY::CDigest;
+
+          // Loop through and look for the FrontCover picture frame
+          for (const auto& pi : it.second)
+          {
+            auto pictureFrame = dynamic_cast<ID3v2::AttachedPictureFrame*>(pi);
+            if (pictureFrame)
+            {
+              std::string ext;
+              if (pictureFrame->mimeType().to8Bit(true) == "image/png")
+                ext = "png";
+              else if (pictureFrame->mimeType().to8Bit(true) == "image/jpeg")
+                ext = "jpg";
+              else
+                continue;
+
+              const ID3v2::AttachedPictureFrame::Type type = pictureFrame->type();
+
+              int picTypeId;
+              std::string picTypeName;
+              ;
+              if (type == ID3v2::AttachedPictureFrame::FrontCover)
               {
-                currentMusic->SetComment(commentsFrame->text().to8Bit(true));
+                picTypeId = 0;
+                picTypeName = "fanart";
+              }
+              else if (type == ID3v2::AttachedPictureFrame::FileIcon)
+              {
+                picTypeId = 1;
+                picTypeName = "thumb";
+              }
+              else
+                continue;
+
+              const uint8_t* data =
+                  reinterpret_cast<const uint8_t*>(pictureFrame->picture().data());
+              const size_t size = pictureFrame->size();
+              const std::string md5 = CDigest::Calculate(CDigest::Type::MD5, data, size);
+
+              if (m_ImageTypeList[picTypeId].lastMD5 == md5)
+                continue;
+
+              std::string cacheDir = StringUtils::Format("{}/{}-{}.{}", m_cacheDir, picTypeName,
+                                                         m_ImageTypeList[picTypeId].toogleId, ext);
+
+              XFILE::CFile file;
+              if (file.OpenForWrite(cacheDir, true))
+              {
+                file.Write(reinterpret_cast<const uint8_t*>(pictureFrame->picture().data()),
+                           pictureFrame->size());
+                file.Close();
+
+                currentMusicFile.SetArt(picTypeName, cacheDir);
+
+                m_ImageTypeList[picTypeId].lastMD5 = md5;
+                m_ImageTypeList[picTypeId].toogleId = m_ImageTypeList[picTypeId].toogleId ? 0 : 1;
+
+                if (!m_ImageTypeList[picTypeId].lastExt.empty())
+                {
+                  cacheDir = StringUtils::Format("{}/{}-{}.{}", m_cacheDir, picTypeName,
+                                                 m_ImageTypeList[picTypeId].toogleId,
+                                                 m_ImageTypeList[picTypeId].lastExt);
+                  XFILE::CFile::Delete(cacheDir);
+                }
+
+                m_ImageTypeList[picTypeId].lastExt = ext;
+
                 changed = true;
-                break;
               }
             }
           }
-
-          else if (it.first == "TCON")
-          {
-            currentMusic->SetGenre(GetID3v2StringList(it.second));
-            changed = true;
-          }
-
-          else if (it.first == "TYER")
-          {
-            currentMusic->SetYear(static_cast<int>(
-                strtol(it.second.front()->toString().toCString(true), nullptr, 10)));
-            changed = true;
-          }
-
-          else if (it.first == "TRCK")
-          {
-            currentMusic->SetTrackNumber(static_cast<int>(
-                strtol(it.second.front()->toString().toCString(true), nullptr, 10)));
-            changed = true;
-          }
-
-          // Support for setting the cover art image via CMusicInfoTag does not currently exist,
-          // the code sample below would check for an ID3v2 "APIC" tag of the proper type and
-          // convert the information into an EmbeddedArt object instance
-          //
-          // else if (it.first == "APIC")
-          // {
-          //  // Loop through and look for the FrontCover picture frame
-          //  for (const auto& pi : it.second)
-          //  {
-          //    auto pictureFrame = dynamic_cast<ID3v2::AttachedPictureFrame*>(pi);
-          //    if (pictureFrame && pictureFrame->type() == ID3v2::AttachedPictureFrame::FrontCover)
-          //    {
-          //      EmbeddedArt coverArt(
-          //          reinterpret_cast<const uint8_t*>(pictureFrame->picture().data()),
-          //          pictureFrame->size(), pictureFrame->mimeType().to8Bit(true));
-
-          //      // Assumes "void CMusicInfoTag::SetCoverArt(const EmbeddedArt& art)" exists
-          //      currentMusic->SetCoverArt(coverArt);
-          //      changed = true;
-          //    }
-          //  }
-          // }
         }
       }
 

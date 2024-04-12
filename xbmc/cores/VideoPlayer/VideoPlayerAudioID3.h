@@ -55,4 +55,12 @@ private:
   int m_speed = DVD_PLAYSPEED_NORMAL;
   CCriticalSection m_critSection;
   CDVDMessageQueue m_messageQueue;
+
+  const std::string m_cacheDir = "special://temp/audio_id3";
+  mutable struct TOGGLE_DATA
+  {
+    int toogleId = 0;
+    std::string lastExt;
+    std::string lastMD5;
+  } m_ImageTypeList[2];
 };
