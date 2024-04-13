@@ -121,7 +121,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     std::string m_audioDefaultPlayer;
     float m_audioPlayCountMinimumPercent;
-    bool m_VideoPlayerIgnoreDTSinWAV;
     float m_limiterHold;
     float m_limiterRelease;
 
