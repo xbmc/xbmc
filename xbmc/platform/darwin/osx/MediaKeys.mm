@@ -17,24 +17,32 @@
 
 #import <AppKit/AppKit.h>
 #import <IOKit/hidsystem/ev_keymap.h>
+#import <dispatch/dispatch.h>
 
 namespace
 {
 CGEventRef MediaKeyCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void* refcon)
 {
-  auto tap = (__bridge CMediaKeyTap*)refcon;
-  NSEvent* nsEvent = [NSEvent eventWithCGEvent:event];
-  if (nsEvent.type == NSEventTypeSystemDefined && nsEvent.subtype == NX_SUBTYPE_AUX_CONTROL_BUTTONS)
-  {
-    const int keyCode = (([nsEvent data1] & 0xFFFF0000) >> 16);
-    const int keyFlags = ([nsEvent data1] & 0x0000FFFF);
-    const int keyState = (((keyFlags & 0xFF00) >> 8)) == 0xA;
-    if (keyState == 1) // if pressed
+  __block bool keyHandled = false;
+  dispatch_sync(dispatch_get_main_queue(), ^{
+    auto tap = (__bridge CMediaKeyTap*)refcon;
+    NSEvent* nsEvent = [NSEvent eventWithCGEvent:event];
+    if (nsEvent.type == NSEventTypeSystemDefined &&
+        nsEvent.subtype == NX_SUBTYPE_AUX_CONTROL_BUTTONS)
     {
-      if ([tap HandleMediaKey:keyCode])
-        return nullptr;
+      const int keyCode = (([nsEvent data1] & 0xFFFF0000) >> 16);
+      const int keyFlags = ([nsEvent data1] & 0x0000FFFF);
+      const int keyState = (((keyFlags & 0xFF00) >> 8)) == 0xA;
+      if (keyState == 1) // if pressed
+      {
+        if ([tap HandleMediaKey:keyCode])
+          keyHandled = true;
+      }
     }
-  }
+  });
+  if (keyHandled)
+    return nullptr;
+
   return event;
 }
 } // namespace
