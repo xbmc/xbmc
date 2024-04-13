@@ -136,12 +136,6 @@ public:
    */
   static std::string GetCachedPath(const std::string &file);
 
-  /*! \brief check whether an image:// URL may be cached
-   \param url the URL to the image
-   \return true if the given URL may be cached, false otherwise
-   */
-  static bool CanCacheImageURL(const CURL &url);
-
   /*! \brief Add this image to the database
    Thread-safe wrapper of CTextureDatabase::AddCachedTexture
    \param image url of the original image
