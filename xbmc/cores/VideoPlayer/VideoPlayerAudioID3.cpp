@@ -10,13 +10,18 @@
 
 #include "DVDStreamInfo.h"
 #include "GUIInfoManager.h"
+#include "GUIUserMessages.h"
 #include "Interface/DemuxPacket.h"
 #include "ServiceBroker.h"
 #include "application/Application.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
 #include "music/tags/MusicInfoTag.h"
+#include "pvr/channels/PVRChannel.h"
+#include "pvr/channels/PVRRadioRDSInfoTag.h"
 #include "utils/Digest.h"
 #include "utils/log.h"
 
@@ -29,6 +34,7 @@
 #include <taglib/textidentificationframe.h>
 
 using namespace TagLib;
+using namespace PVR;
 
 using namespace std::chrono_literals;
 
@@ -90,6 +96,10 @@ void CVideoPlayerAudioID3::CloseStream(bool bWaitForBuffers)
   StopThread();
 
   m_messageQueue.End();
+  m_currentRadiotext.reset();
+  if (m_currentPVRChannel)
+    m_currentPVRChannel->SetRadioRDSInfoTag(m_currentRadiotext);
+  m_currentPVRChannel.reset();
 }
 
 void CVideoPlayerAudioID3::SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priority)
@@ -155,6 +165,10 @@ void CVideoPlayerAudioID3::Process()
     else if (pMsg->IsType(CDVDMsg::PLAYER_SETSPEED))
     {
       m_speed = std::static_pointer_cast<CDVDMsgInt>(pMsg)->m_value;
+    }
+    else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH) || pMsg->IsType(CDVDMsg::GENERAL_RESET))
+    {
+      ResetCache();
     }
   }
 }
@@ -251,28 +265,83 @@ void CVideoPlayerAudioID3::ProcessID3v2(const ID3v2::Tag* tag) const
     MUSIC_INFO::CMusicInfoTag* currentMusic = currentMusicFile.GetMusicInfoTag();
     if (currentMusic)
     {
+      if (m_currentRadiotext)
+        m_currentRadiotext->SetPlayingRadioText(true);
+
       bool changed = false;
 
       const ID3v2::FrameListMap& frameListMap = tag->frameListMap();
       for (const auto& it : frameListMap)
       {
-        if (it.first == "TIT2")
+        if (it.first[0] == 'T')
         {
-          const std::string str = it.second.front()->toString().to8Bit(true);
-          currentMusic->SetTitle(str);
-          changed = true;
-        }
+          std::string str = it.second.front()->toString().to8Bit(true);
+          if (str == "!!!EMPTY!!!")
+            str = "";
 
-        else if (it.first == "TPE1")
-        {
-          currentMusic->SetArtist(GetID3v2StringList(it.second), true);
-          changed = true;
-        }
+          if (it.first == "TKDL")
+          {
+            if (m_currentRadiotext)
+              m_currentRadiotext->SetRadioText(str);
+          }
 
-        else if (it.first == "TALB")
-        {
-          const std::string str = it.second.front()->toString().to8Bit(true);
-          currentMusic->SetAlbum(str);
+          else if (it.first == "TKNO")
+          {
+            if (m_currentRadiotext)
+              m_currentRadiotext->SetProgNow(str);
+          }
+
+          else if (it.first == "TKNE")
+          {
+            if (m_currentRadiotext)
+              m_currentRadiotext->SetProgNext(str);
+          }
+
+          else if (it.first == "TIT2")
+          {
+            if (!str.empty())
+            {
+              currentMusic->SetTitle(str);
+              if (m_currentRadiotext)
+                m_currentRadiotext->SetTitle(str);
+            }
+            else
+            {
+              ClearPlayingTitle(currentMusic);
+            }
+          }
+
+          else if (it.first == "TPE1")
+          {
+            currentMusic->SetArtist(GetID3v2StringList(it.second), true);
+            if (m_currentRadiotext)
+              m_currentRadiotext->SetArtist(str);
+          }
+
+          else if (it.first == "TALB")
+          {
+            currentMusic->SetAlbum(str);
+            if (m_currentRadiotext)
+              m_currentRadiotext->SetAlbum(str);
+          }
+
+          else if (it.first == "TCON")
+          {
+            currentMusic->SetGenre(GetID3v2StringList(it.second));
+          }
+
+          else if (it.first == "TYER")
+          {
+            currentMusic->SetYear(
+                static_cast<int>(strtol(it.second.front()->toString().toCString(true), nullptr, 10)));
+          }
+
+          else if (it.first == "TRCK")
+          {
+            currentMusic->SetTrackNumber(
+                static_cast<int>(strtol(it.second.front()->toString().toCString(true), nullptr, 10)));
+          }
+
           changed = true;
         }
 
@@ -284,31 +353,15 @@ void CVideoPlayerAudioID3::ProcessID3v2(const ID3v2::Tag* tag) const
             auto commentsFrame = dynamic_cast<const ID3v2::CommentsFrame*>(ct);
             if (commentsFrame && commentsFrame->description().isEmpty())
             {
-              currentMusic->SetComment(commentsFrame->text().to8Bit(true));
+              const std::string str = it.second.front()->toString().to8Bit(true);
+              currentMusic->SetComment(str);
+
+              if (m_currentRadiotext)
+                m_currentRadiotext->SetComment(str);
               changed = true;
               break;
             }
           }
-        }
-
-        else if (it.first == "TCON")
-        {
-          currentMusic->SetGenre(GetID3v2StringList(it.second));
-          changed = true;
-        }
-
-        else if (it.first == "TYER")
-        {
-          currentMusic->SetYear(
-              static_cast<int>(strtol(it.second.front()->toString().toCString(true), nullptr, 10)));
-          changed = true;
-        }
-
-        else if (it.first == "TRCK")
-        {
-          currentMusic->SetTrackNumber(
-              static_cast<int>(strtol(it.second.front()->toString().toCString(true), nullptr, 10)));
-          changed = true;
         }
 
         // Support for setting the cover art image via CMusicInfoTag does not currently exist,
@@ -337,7 +390,7 @@ void CVideoPlayerAudioID3::ProcessID3v2(const ID3v2::Tag* tag) const
 
               int picTypeId;
               std::string picTypeName;
-              ;
+
               if (type == ID3v2::AttachedPictureFrame::FrontCover)
               {
                 picTypeId = 0;
@@ -412,4 +465,35 @@ std::vector<std::string> CVideoPlayerAudioID3::StringListToVectorString(
   for (const auto& value : stringList)
     values.emplace_back(value.to8Bit(true));
   return values;
+}
+
+void CVideoPlayerAudioID3::ResetCache()
+{
+  m_currentPVRChannel = g_application.CurrentFileItem().GetPVRChannelInfoTag();
+  if (m_currentPVRChannel)
+  {
+    m_currentRadiotext = std::make_shared<CPVRRadioRDSInfoTag>();
+    m_currentPVRChannel->SetRadioRDSInfoTag(m_currentRadiotext);
+  }
+
+  // send a message to all windows to tell them to update the radiotext
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
+  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
+}
+
+void CVideoPlayerAudioID3::ClearPlayingTitle(MUSIC_INFO::CMusicInfoTag* currentMusic) const
+{
+  currentMusic->SetTitle("");
+  currentMusic->SetArtist("");
+  currentMusic->SetAlbum("");
+  currentMusic->SetGenre("");
+  currentMusic->SetYear(0);
+  currentMusic->SetTrackNumber(0);
+
+  if (m_currentRadiotext)
+  {
+    m_currentRadiotext->SetTitle("");
+    m_currentRadiotext->SetArtist("");
+    m_currentRadiotext->SetAlbum("");
+  }
 }
