@@ -46,7 +46,7 @@ private:
   std::shared_ptr<const CFileItem> ChooseVideo(CGUIDialogSelect& dialog,
                                                int headingId,
                                                int buttonId,
-                                               const CFileItemList& itemsToDisplay,
+                                               CFileItemList& itemsToDisplay,
                                                const CFileItemList& itemsToSwitchTo);
 
   const std::shared_ptr<const CFileItem> m_item;
@@ -151,15 +151,13 @@ std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideoExtra()
 std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideo(CGUIDialogSelect& dialog,
                                                             int headingId,
                                                             int buttonId,
-                                                            const CFileItemList& itemsToDisplay,
+                                                            CFileItemList& itemsToDisplay,
                                                             const CFileItemList& itemsToSwitchTo)
 {
   CVideoThumbLoader thumbLoader;
+  thumbLoader.Load(itemsToDisplay);
   for (auto& item : itemsToDisplay)
-  {
-    thumbLoader.LoadItem(item.get());
     item->SetLabel2(item->GetVideoInfoTag()->m_strFileNameAndPath);
-  }
 
   dialog.Reset();
 
@@ -173,6 +171,9 @@ std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideo(CGUIDialogSelect& di
   dialog.SetItems(itemsToDisplay);
 
   dialog.Open();
+
+  if (thumbLoader.IsLoading())
+    thumbLoader.StopThread();
 
   m_switchType = dialog.IsButtonPressed();
   if (dialog.IsConfirmed())
