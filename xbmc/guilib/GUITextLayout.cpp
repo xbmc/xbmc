@@ -14,6 +14,9 @@
 #include "GUIFont.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
+
+#include <limits>
 
 CGUIString::CGUIString(iString start, iString end, bool carriageReturn)
 {
@@ -262,7 +265,7 @@ void CGUITextLayout::UpdateStyled(const vecText& text,
   m_colors = colors;
 
   // if we need to wrap the text, then do so
-  if (m_wrap && maxWidth > 0)
+  if (m_wrap)
     WrapText(text, maxWidth);
   else
     LineBreakText(text, m_lines);
@@ -540,75 +543,103 @@ void CGUITextLayout::WrapText(const vecText &text, float maxWidth)
   if (!m_font)
     return;
 
-  int nMaxLines = (m_maxHeight > 0 && m_font->GetLineHeight() > 0)?(int)ceilf(m_maxHeight / m_font->GetLineHeight()):-1;
-
   m_lines.clear();
+
+  if (maxWidth < 0)
+  {
+    CLog::LogF(LOGWARNING, "Cannot wrap the text due to invalid max width value.");
+    return;
+  }
+
+  if (maxWidth == 0) // Unlimited max width
+  {
+    LineBreakText(text, m_lines);
+    return;
+  }
 
   std::vector<CGUIString> lines;
   LineBreakText(text, lines);
 
-  for (unsigned int i = 0; i < lines.size(); i++)
+  size_t nMaxLines;
+  if (m_maxHeight > 0 && m_font->GetLineHeight() > 0)
+    nMaxLines = static_cast<size_t>(std::ceil(m_maxHeight / m_font->GetLineHeight()));
+  else
+    nMaxLines = std::numeric_limits<size_t>::max();
+
+  // Split lines that exceed the maximum width,
+  // lines can be split by last space char or if there are no spaces by character
+  // to mimics the line behavior of word processors
+  for (const CGUIString& line : lines)
   {
-    const CGUIString &line = lines[i];
-    vecText::const_iterator lastSpace = line.m_text.begin();
+    if (m_lines.size() >= nMaxLines)
+      return;
+
+    if (line.m_text.empty()) // Blank line
+    {
+      m_lines.emplace_back(line);
+      continue;
+    }
+
     vecText::const_iterator pos = line.m_text.begin();
-    unsigned int lastSpaceInLine = 0;
+    vecText::const_iterator lastBeginPos = line.m_text.begin();
+    vecText::const_iterator lastSpacePos = line.m_text.end();
     vecText curLine;
-    while (pos != line.m_text.end())
+
+    while (pos < line.m_text.end())
     {
       // Get the current letter in the string
-      character_t letter = *pos;
-      // check for a space
-      if (CanWrapAtLetter(letter))
+      const character_t& letter = *pos;
+
+      if (CanWrapAtLetter(letter)) // Check for a space char
+        lastSpacePos = pos;
+
+      curLine.emplace_back(letter);
+
+      const float currWidth = m_font->GetTextWidth(curLine);
+
+      if (currWidth > maxWidth)
       {
-        float width = m_font->GetTextWidth(curLine);
-        if (width > maxWidth)
+        if (lastSpacePos > pos) // No space char where split the line, so split by char
         {
-          if (lastSpace != line.m_text.begin() && lastSpaceInLine > 0)
-          {
-            CGUIString string(curLine.begin(), curLine.begin() + lastSpaceInLine, false);
-            m_lines.push_back(string);
-            // check for exceeding our number of lines
-            if (nMaxLines > 0 && m_lines.size() >= (size_t)nMaxLines)
-              return;
-            // skip over spaces
-            pos = lastSpace;
-            while (pos != line.m_text.end() && IsSpace(*pos))
-              ++pos;
-            curLine.clear();
-            lastSpaceInLine = 0;
-            lastSpace = line.m_text.begin();
-            continue;
-          }
+          // If the pos is equal to lastBeginPos, maxWidth is not large enough to contain 1 character
+          // Push a line with the single character and move on to the next character.
+          if (pos == lastBeginPos)
+            ++pos;
+
+          CGUIString linePart{lastBeginPos, pos, false};
+          m_lines.emplace_back(linePart);
         }
-        lastSpace = pos;
-        lastSpaceInLine = curLine.size();
+        else
+        {
+          CGUIString linePart{lastBeginPos, lastSpacePos, false};
+          m_lines.emplace_back(linePart);
+
+          pos = lastSpacePos + 1;
+          lastSpacePos = line.m_text.end();
+        }
+
+        curLine.clear();
+        lastBeginPos = pos;
+
+        if (m_lines.size() >= nMaxLines)
+          return;
+
+        continue;
       }
-      curLine.push_back(letter);
+
       ++pos;
     }
-    // now add whatever we have left to the string
-    float width = m_font->GetTextWidth(curLine);
-    if (width > maxWidth)
+
+    // Add the remaining text part
+    if (!curLine.empty())
     {
-      // too long - put up to the last space on if we can + remove it from what's left.
-      if (lastSpace != line.m_text.begin() && lastSpaceInLine > 0)
-      {
-        CGUIString string(curLine.begin(), curLine.begin() + lastSpaceInLine, false);
-        m_lines.push_back(string);
-        // check for exceeding our number of lines
-        if (nMaxLines > 0 && m_lines.size() >= (size_t)nMaxLines)
-          return;
-        curLine.erase(curLine.begin(), curLine.begin() + lastSpaceInLine);
-        while (curLine.size() && IsSpace(curLine.at(0)))
-          curLine.erase(curLine.begin());
-      }
+      CGUIString linePart{curLine.begin(), curLine.end(), false};
+      m_lines.emplace_back(linePart);
     }
-    CGUIString string(curLine.begin(), curLine.end(), true);
-    m_lines.push_back(string);
-    // check for exceeding our number of lines
-    if (nMaxLines > 0 && m_lines.size() >= (size_t)nMaxLines)
-      return;
+
+    // Restore carriage return marker for the end of paragraph
+    if (!m_lines.empty())
+      m_lines.back().m_carriageReturn = line.m_carriageReturn;
   }
 }
 
