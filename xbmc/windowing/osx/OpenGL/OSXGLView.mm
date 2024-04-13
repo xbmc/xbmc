@@ -20,8 +20,6 @@
   NSTrackingArea* m_trackingArea;
 }
 
-@synthesize glContextOwned;
-
 - (void)SendInputEvent:(NSEvent*)nsEvent
 {
   CWinSystemOSX* winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
@@ -88,14 +86,6 @@
 
 - (void)drawRect:(NSRect)rect
 {
-  // whenever the view/window is resized the glContext is made current to the main (rendering) thread.
-  // Since kodi does its rendering on the application main thread (not the macOS rendering thread), we
-  // need to store this so that on a subsquent frame render we get the ownership of the gl context again.
-  // doing this blindly without any sort of control may stall the main thread and lead to low GUI fps
-  // since the glContext ownership needs to be obtained from the rendering thread (diverged from the actual
-  // thread doing the rendering calls).
-  [self setGlContextOwned:TRUE];
-
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
     [self setOpenGLContext:m_glcontext];
@@ -215,17 +205,8 @@
 - (void)Update
 {
   assert(m_glcontext);
-  [self NotifyContext];
-  [m_glcontext update];
-}
-
-- (void)NotifyContext
-{
-  assert(m_glcontext);
-  // signals/notifies the context that this view is current (required if we render out of DrawRect)
-  // ownership of the context is transferred to the callee thread
   [m_glcontext makeCurrentContext];
-  [self setGlContextOwned:FALSE];
+  [m_glcontext update];
 }
 
 - (void)FlushBuffer
