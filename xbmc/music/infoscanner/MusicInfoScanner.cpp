@@ -2040,7 +2040,8 @@ bool CMusicInfoScanner::AddAlbumArtwork(CAlbum& album)
   {
     // When "prefer online album art" enabled and we have a thumb as embedded art
     // then replace it if we find a scraped cover
-    if (thumb != album.art.end() && StringUtils::StartsWith(thumb->second, "image://"))
+    if (thumb != album.art.end() &&
+        IMAGE_FILES::CImageFileURL(thumb->second).GetSpecialType() == "music")
       replaceThumb = true;
   }
 
