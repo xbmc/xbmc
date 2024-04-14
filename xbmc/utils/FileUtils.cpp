@@ -21,6 +21,7 @@
 #include "filesystem/StackDirectory.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/LocalizeStrings.h"
+#include "imagefiles/ImageFileURL.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -272,19 +273,12 @@ bool CFileUtils::CheckFileAccessAllowed(const std::string &filePath)
   auto kodiExtraWhitelist = CCompileInfo::GetWebserverExtraWhitelist();
   whitelist.insert(whitelist.end(), kodiExtraWhitelist.begin(), kodiExtraWhitelist.end());
 
-  // image urls come in the form of image://... sometimes with a / appended at the end
-  // and can be embedded in a music or video file image://music@...
-  // strip this off to get the real file path
   bool isImage = false;
   std::string decodePath = CURL::Decode(filePath);
-  size_t pos = decodePath.find("image://");
-  if (pos != std::string::npos)
+  if (URIUtils::IsProtocol(filePath, "image"))
   {
     isImage = true;
-    decodePath.erase(pos, 8);
-    URIUtils::RemoveSlashAtEnd(decodePath);
-    if (StringUtils::StartsWith(decodePath, "music@") || StringUtils::StartsWith(decodePath, "video@"))
-      decodePath.erase(pos, 6);
+    decodePath = IMAGE_FILES::CImageFileURL(filePath).GetTargetFile();
   }
 
   // check blacklist
