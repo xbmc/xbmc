@@ -21,10 +21,17 @@ namespace
 {
 constexpr unsigned int STARFISH_AUDIO_BUFFERS = 8;
 constexpr unsigned int AC3_SYNCFRAME_SIZE = 2560;
+constexpr unsigned int DTDHD_MA_MIN_SYNCFRAME_SIZE = 2012 + 2764;
 
 static constexpr auto ms_audioCodecMap = make_map<CAEStreamInfo::DataType, std::string_view>({
     {CAEStreamInfo::STREAM_TYPE_AC3, "AC3"},
     {CAEStreamInfo::STREAM_TYPE_EAC3, "AC3 PLUS"},
+    {CAEStreamInfo::STREAM_TYPE_DTS_512, "DTS"},
+    {CAEStreamInfo::STREAM_TYPE_DTS_1024, "DTS"},
+    {CAEStreamInfo::STREAM_TYPE_DTS_2048, "DTS"},
+    {CAEStreamInfo::STREAM_TYPE_DTSHD, "DTS"},
+    {CAEStreamInfo::STREAM_TYPE_DTSHD_CORE, "DTS"},
+    {CAEStreamInfo::STREAM_TYPE_DTSHD_MA, "DTS"},
 });
 
 } // namespace
@@ -63,6 +70,12 @@ void CAESinkStarfish::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
   info.m_deviceType = AE_DEVTYPE_IEC958;
   info.m_streamTypes.emplace_back(CAEStreamInfo::STREAM_TYPE_AC3);
   info.m_streamTypes.emplace_back(CAEStreamInfo::STREAM_TYPE_EAC3);
+  info.m_streamTypes.emplace_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
+  info.m_streamTypes.emplace_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
+  info.m_streamTypes.emplace_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
+  info.m_streamTypes.emplace_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
+  info.m_streamTypes.emplace_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
+  info.m_streamTypes.emplace_back(CAEStreamInfo::STREAM_TYPE_DTSHD_MA);
 
   info.m_sampleRates.emplace_back(32000);
   info.m_sampleRates.emplace_back(44100);
@@ -89,8 +102,6 @@ bool CAESinkStarfish::Initialize(AEAudioFormat& format, std::string& device)
   }
   m_format.m_frameSize = 1;
 
-  format = m_format;
-
   CVariant payload;
   payload["isAudioOnly"] = true;
   payload["mediaTransportType"] = "BUFFERSTREAM";
@@ -107,10 +118,10 @@ bool CAESinkStarfish::Initialize(AEAudioFormat& format, std::string& device)
   {
     case CAEStreamInfo::STREAM_TYPE_AC3:
     {
-      if (!format.m_streamInfo.m_ac3FrameSize)
-        format.m_streamInfo.m_ac3FrameSize = AC3_SYNCFRAME_SIZE;
-      format.m_frames = format.m_streamInfo.m_ac3FrameSize;
-      m_bufferSize = format.m_frames * STARFISH_AUDIO_BUFFERS;
+      if (!m_format.m_streamInfo.m_frameSize)
+        m_format.m_streamInfo.m_frameSize = AC3_SYNCFRAME_SIZE;
+      m_format.m_frames = m_format.m_streamInfo.m_frameSize;
+      m_bufferSize = m_format.m_frames * STARFISH_AUDIO_BUFFERS;
       break;
     }
     case CAEStreamInfo::STREAM_TYPE_EAC3:
@@ -119,10 +130,30 @@ bool CAESinkStarfish::Initialize(AEAudioFormat& format, std::string& device)
       payload["option"]["externalStreamingInfo"]["contents"]["ac3PlusInfo"]["frequency"] =
           static_cast<double>(m_format.m_streamInfo.m_sampleRate) / 1000;
 
-      if (!format.m_streamInfo.m_ac3FrameSize)
-        format.m_streamInfo.m_ac3FrameSize = AC3_SYNCFRAME_SIZE;
-      format.m_frames = format.m_streamInfo.m_ac3FrameSize;
-      m_bufferSize = format.m_frames * STARFISH_AUDIO_BUFFERS;
+      if (!m_format.m_streamInfo.m_frameSize)
+        m_format.m_streamInfo.m_frameSize = AC3_SYNCFRAME_SIZE;
+      m_format.m_frames = m_format.m_streamInfo.m_frameSize;
+      m_bufferSize = m_format.m_frames * STARFISH_AUDIO_BUFFERS;
+      break;
+    }
+    case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
+    case CAEStreamInfo::STREAM_TYPE_DTS_512:
+    case CAEStreamInfo::STREAM_TYPE_DTS_1024:
+    case CAEStreamInfo::STREAM_TYPE_DTS_2048:
+    case CAEStreamInfo::STREAM_TYPE_DTSHD:
+    case CAEStreamInfo::STREAM_TYPE_DTSHD_MA:
+    {
+      payload["option"]["externalStreamingInfo"]["contents"]["dtsInfo"]["channels"] =
+          m_format.m_streamInfo.m_channels;
+      payload["option"]["externalStreamingInfo"]["contents"]["dtsInfo"]["frequency"] =
+          static_cast<double>(m_format.m_streamInfo.m_sampleRate) / 1000;
+
+      m_format.m_frames = m_format.m_streamInfo.m_frameSize;
+
+      // DTSHD_MA has dynamic frame sizes but we need to ensure that the buffer is large enough
+      if (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD_MA)
+        m_format.m_frames = DTDHD_MA_MIN_SYNCFRAME_SIZE * 2 - 1;
+      m_bufferSize = m_format.m_frames * STARFISH_AUDIO_BUFFERS;
       break;
     }
     default:
@@ -140,7 +171,7 @@ bool CAESinkStarfish::Initialize(AEAudioFormat& format, std::string& device)
       m_bufferSize;
   // Internal buffer?
   payload["option"]["externalStreamingInfo"]["bufferingCtrInfo"]["srcBufferLevelAudio"]["minimum"] =
-      format.m_frames;
+      m_format.m_frames;
   payload["option"]["externalStreamingInfo"]["bufferingCtrInfo"]["srcBufferLevelAudio"]["maximum"] =
       m_bufferSize;
 
@@ -158,6 +189,8 @@ bool CAESinkStarfish::Initialize(AEAudioFormat& format, std::string& device)
     CLog::LogF(LOGERROR, "CAESinkStarfish: Load failed");
     return false;
   }
+
+  format = m_format;
 
   return true;
 }

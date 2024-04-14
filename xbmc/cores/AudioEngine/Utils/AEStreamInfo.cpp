@@ -369,7 +369,7 @@ bool CAEStreamParser::TrySyncAC3(uint8_t* data,
       // no need to resync => return true
       return true;
     }
-    m_info.m_ac3FrameSize = fsizeMain;
+    m_info.m_frameSize = fsizeMain;
     if (TrySyncAC3(data + fsizeMain, size - fsizeMain, resyncing, true))
     {
       // concatenate the main and dependent frames
@@ -393,7 +393,7 @@ bool CAEStreamParser::TrySyncAC3(uint8_t* data,
     m_info.m_channels = AC3Channels[acmod] + lfeon;
     m_syncFunc = &CAEStreamParser::SyncAC3;
     m_info.m_type = CAEStreamInfo::STREAM_TYPE_AC3;
-    m_info.m_ac3FrameSize += m_fsize;
+    m_info.m_frameSize += m_fsize;
     m_info.m_repeat = 1;
 
     CLog::Log(LOGINFO, "CAEStreamParser::TrySyncAC3 - AC3 stream detected ({} channels, {}Hz)",
@@ -452,7 +452,7 @@ bool CAEStreamParser::TrySyncAC3(uint8_t* data,
         // no need to resync => return true
         return true;
       }
-      m_info.m_ac3FrameSize = fsizeMain;
+      m_info.m_frameSize = fsizeMain;
       if (TrySyncAC3(data + fsizeMain, size - fsizeMain, resyncing, true))
       {
         // concatenate the main and dependent frames
@@ -469,7 +469,7 @@ bool CAEStreamParser::TrySyncAC3(uint8_t* data,
     m_info.m_channels = AC3Channels[acmod] + lfeon;
     m_syncFunc = &CAEStreamParser::SyncAC3;
     m_info.m_type = CAEStreamInfo::STREAM_TYPE_EAC3;
-    m_info.m_ac3FrameSize += m_fsize;
+    m_info.m_frameSize += m_fsize;
 
     CLog::Log(LOGINFO, "CAEStreamParser::TrySyncAC3 - E-AC3 stream detected ({} channels, {}Hz)",
               m_info.m_channels, m_info.m_sampleRate);
@@ -673,6 +673,7 @@ unsigned int CAEStreamParser::SyncDTS(uint8_t* data, unsigned int size)
       m_dtsBlocks = dtsBlocks;
       m_info.m_channels = DTSChannels[amode] + (lfe ? 1 : 0);
       m_syncFunc = &CAEStreamParser::SyncDTS;
+      m_info.m_frameSize = m_fsize;
       m_info.m_repeat = 1;
 
       if (dataType == CAEStreamInfo::STREAM_TYPE_DTSHD_MA)
@@ -812,6 +813,7 @@ unsigned int CAEStreamParser::SyncTrueHD(uint8_t* data, unsigned int size)
       m_fsize = length;
       m_info.m_type = CAEStreamInfo::STREAM_TYPE_TRUEHD;
       m_syncFunc = &CAEStreamParser::SyncTrueHD;
+      m_info.m_frameSize = length;
       m_info.m_repeat = 1;
       return skip;
     }
