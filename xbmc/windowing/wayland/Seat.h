@@ -121,7 +121,7 @@ public:
    * \param connection connection for retrieving additional globals
    */
   CSeat(std::uint32_t globalName, wayland::seat_t const& seat, CConnection& connection);
-  ~CSeat() noexcept;
+  virtual ~CSeat() noexcept;
 
   void AddRawInputHandlerKeyboard(IRawInputHandlerKeyboard* rawKeyboardHandler);
   void RemoveRawInputHandlerKeyboard(IRawInputHandlerKeyboard* rawKeyboardHandler);
@@ -172,7 +172,13 @@ public:
    * Parameters are identical wo wl_pointer.set_cursor().
    * If the seat does not currently have the pointer capability, this is a no-op.
    */
-  void SetCursor(std::uint32_t serial, wayland::surface_t const& surface, std::int32_t hotspotX, std::int32_t hotspotY);
+  virtual void SetCursor(std::uint32_t serial,
+                         wayland::surface_t const& surface,
+                         std::int32_t hotspotX,
+                         std::int32_t hotspotY);
+
+protected:
+  virtual void InstallKeyboardRepeatInfo();
 
 private:
   CSeat(CSeat const& other) = delete;

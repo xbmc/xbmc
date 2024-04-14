@@ -68,10 +68,12 @@ if(TARGET_WEBOS)
                               PROPERTIES GENERATED TRUE)
 
   list(APPEND SOURCES OSScreenSaverWebOS.cpp
+                      SeatWebOS.cpp
                       ShellSurfaceWebOSShell.cpp
                       WinSystemWaylandWebOS.cpp
                       ${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-webos-protocols.cpp)
   list(APPEND HEADERS OSScreenSaverWebOS.h
+                      SeatWebOS.h
                       ShellSurfaceWebOSShell.h
                       WinSystemWaylandWebOS.h
                       ${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-webos-protocols.hpp)

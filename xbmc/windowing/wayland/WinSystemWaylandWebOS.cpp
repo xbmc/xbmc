@@ -11,6 +11,7 @@
 #include "Connection.h"
 #include "OSScreenSaverWebOS.h"
 #include "Registry.h"
+#include "SeatWebOS.h"
 #include "ShellSurfaceWebOSShell.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
@@ -146,6 +147,11 @@ IShellSurface* CWinSystemWaylandWebOS::CreateShellSurface(const std::string& nam
 std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> CWinSystemWaylandWebOS::GetOSScreenSaverImpl()
 {
   return std::make_unique<COSScreenSaverWebOS>();
+}
+
+std::unique_ptr<CSeat> CWinSystemWaylandWebOS::CreateSeat(std::uint32_t name, wayland::seat_t& seat)
+{
+  return std::make_unique<CSeatWebOS>(name, seat, *GetConnection());
 }
 
 bool CWinSystemWaylandWebOS::OnAppLifecycleEventWrapper(LSHandle* sh, LSMessage* reply, void* ctx)
