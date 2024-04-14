@@ -50,9 +50,6 @@ CGUIDialogVideoManager::CGUIDialogVideoManager(int windowId)
     m_selectedVideoAsset(std::make_shared<CFileItem>())
 {
   m_loadType = KEEP_IN_MEMORY;
-
-  if (!m_database.Open())
-    CLog::LogF(LOGERROR, "Failed to open video database!");
 }
 
 bool CGUIDialogVideoManager::OnMessage(CGUIMessage& message)
@@ -114,6 +111,9 @@ bool CGUIDialogVideoManager::OnAction(const CAction& action)
 
 void CGUIDialogVideoManager::OnInitWindow()
 {
+  if (!m_database.IsOpen() && !m_database.Open())
+    CLog::LogF(LOGERROR, "Failed to open video database!");
+
   CGUIDialog::OnInitWindow();
 
   SET_CONTROL_LABEL(CONTROL_LABEL_TITLE,
@@ -124,6 +124,12 @@ void CGUIDialogVideoManager::OnInitWindow()
   OnMessage(msg);
 
   UpdateControls();
+}
+
+void CGUIDialogVideoManager::OnDeinitWindow(int nextWindowID)
+{
+  CGUIDialog::OnDeinitWindow(nextWindowID);
+  m_database.Close();
 }
 
 void CGUIDialogVideoManager::Clear()
@@ -197,6 +203,9 @@ void CGUIDialogVideoManager::UpdateControls()
 
 void CGUIDialogVideoManager::Refresh()
 {
+  if (!m_database.IsOpen() && !m_database.Open())
+    CLog::LogF(LOGERROR, "Failed to open video database!");
+
   Clear();
 
   const int dbId{m_videoAsset->GetVideoInfoTag()->m_iDbId};

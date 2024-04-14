@@ -31,6 +31,7 @@ public:
 
 protected:
   void OnInitWindow() override;
+  void OnDeinitWindow(int nextWindowID) override;
   bool OnMessage(CGUIMessage& message) override;
   bool OnAction(const CAction& action) override;
 
