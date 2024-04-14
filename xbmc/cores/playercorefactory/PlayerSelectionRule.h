@@ -55,6 +55,7 @@ private:
   std::string m_videoCodec;
   std::string m_videoResolution;
   std::string m_videoAspect;
+  std::string m_hdrType;
 
   std::string m_playerName;
 
