@@ -4674,6 +4674,14 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @return **True** if the current Season/Episode is a Special.
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.Property(SubtitleCount)`</b>,
+///                  \anchor ListItem_Property_SubtitleCount
+///                  _boolean_,
+///     @return The number of subtitles of the current item.
+///     <p><hr>
+///     @skinning_v22 **[New Info Label]** \link ListItem_Property_SubtitleCount `ListItem.Property(SubtitleCount)`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`ListItem.Property(DateLabel)`</b>,
 ///                  \anchor ListItem_Property_DateLabel
 ///                  _boolean_,
@@ -6953,6 +6961,13 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     <p><hr>
 ///     @skinning_v21 **[New Infolabel]** \link ListItem_HasVideoExtras `ListItem.HasVideoExtras`\endlink
 ///   }
+///   \table_row3{   <b>`ListItem.HasProperty(property)`</b>,
+///                  \anchor ListItem_HasProperty
+///                  _boolean_,
+///     @return **True** if the item has the property `property`, false otherwise
+///     <p><hr>
+///     @skinning_v22 **[New Infobool]** \link ListItem_HasProperty `ListItem.HasProperty(property)`\endlink
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -7174,6 +7189,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "isvideoextra",     LISTITEM_ISVIDEOEXTRA },
                                   { "videoversionname", LISTITEM_VIDEOVERSION_NAME },
                                   { "hasvideoextras",   LISTITEM_HASVIDEOEXTRAS },
+                                  { "hasproperty",   LISTITEM_HASPROPERTY },
 };
 // clang-format on
 
@@ -10658,11 +10674,8 @@ int CGUIInfoManager::TranslateListItem(const Property& cat, const Property& prop
       ret = LISTITEM_ART;
       data3 = "fanart";
     }
-    else if (prop.name == "property" ||
-             prop.name == "art" ||
-             prop.name == "rating" ||
-             prop.name == "votes" ||
-             prop.name == "ratingandvotes" ||
+    else if (prop.name == "hasproperty" || prop.name == "property" || prop.name == "art" ||
+             prop.name == "rating" || prop.name == "votes" || prop.name == "ratingandvotes" ||
              prop.name == "uniqueid")
     {
       data3 = prop.param();
@@ -10904,6 +10917,10 @@ bool CGUIInfoManager::GetMultiInfoBool(const CGUIInfo &info, int contextWindow, 
       {
         if (item->HasProperty(info.GetData3()))
           bReturn = item->GetProperty(info.GetData3()).asBoolean();
+      }
+      else if (condition == LISTITEM_HASPROPERTY)
+      {
+        bReturn = item->HasProperty(info.GetData3());
       }
       else
         bReturn = GetItemBool(item, contextWindow, condition);
