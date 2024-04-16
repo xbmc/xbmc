@@ -4973,22 +4973,19 @@ bool CVideoDatabase::GetArtForAsset(int assetId,
     if (nullptr == m_pDS2)
       return false; // using dataset 2 as we're likely called in loops on dataset 1
 
-    const std::string sqlFallback{fallback == ArtFallbackOptions::PARENT
-                                      ? StringUtils::Format("UNION "
-                                                            "SELECT idMedia, media_type "
-                                                            "FROM videoversion "
-                                                            "WHERE idFile = {} ",
-                                                            assetId)
-                                      : ""};
+    std::string sql{PrepareSQL("SELECT art.media_type, art.type, art.url "
+                               "FROM art "
+                               "WHERE media_id = %i AND media_type = '%s' ",
+                               assetId, MediaTypeVideoVersion)};
 
-    const std::string sql{PrepareSQL("SELECT art.media_type, art.type, art.url "
-                                     "FROM art "
-                                     "WHERE (media_id, media_type) "
-                                     "IN ("
-                                     "SELECT %i, '%s'"
-                                     "%s"
-                                     ")",
-                                     assetId, MediaTypeVideoVersion, sqlFallback.c_str())};
+    if (fallback == ArtFallbackOptions::PARENT)
+      sql.append(PrepareSQL("UNION "
+                            "SELECT art.media_type, art.type, art.url "
+                            "FROM art "
+                            "  JOIN videoversion as vv "
+                            "  ON art.media_id = vv.idMedia AND art.media_type = vv.media_type "
+                            "WHERE idFile = %i",
+                            assetId));
 
     m_pDS2->query(sql);
     while (!m_pDS2->eof())
