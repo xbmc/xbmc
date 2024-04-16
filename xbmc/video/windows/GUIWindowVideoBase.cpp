@@ -442,6 +442,12 @@ bool CGUIWindowVideoBase::ShowInfo(const CFileItemPtr& item2, const ScraperPtr& 
 
       if (item->IsVideoDb() && item->HasVideoInfoTag())
         item->SetPath(item->GetVideoInfoTag()->GetPath());
+      else if (!item->IsVideoDb() && item->m_bIsFolder)
+      {
+        // Info on folder containing a movie needs dyn path as path for refresh with correct name
+        //! @todo get rid of "videos with versions as folder" hack to be able to fix in CFileItem::GetBaseMoviePath()
+        item->SetPath(item->GetVideoInfoTag()->GetPath());
+      }
     }
   }
 
