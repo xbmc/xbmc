@@ -1,4 +1,5 @@
 set(SOURCES TestStacks.cpp
+            TestVideoFileItemClassify.cpp
             TestVideoInfoScanner.cpp
             TestVideoUtils.cpp)
 

@@ -40,6 +40,7 @@
 #include "utils/Variant.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
+#include "video/VideoFileItemClassify.h"
 #include "view/GUIViewState.h"
 
 #define CONTROL_BTNSORTASC          4
@@ -47,6 +48,7 @@
 
 using namespace XFILE;
 using namespace KODI::MESSAGING;
+using namespace KODI::VIDEO;
 
 using namespace std::chrono_literals;
 
@@ -294,7 +296,7 @@ bool CGUIWindowPictures::GetDirectory(const std::string &strDirectory, CFileItem
 
 bool CGUIWindowPictures::OnPlayMedia(int iItem, const std::string &player)
 {
-  if (m_vecItems->Get(iItem)->IsVideo())
+  if (IsVideo(*m_vecItems->Get(iItem)))
     return CGUIMediaWindow::OnPlayMedia(iItem);
 
   return ShowPicture(iItem, false);
@@ -327,7 +329,7 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
   {
     if (!pItem->m_bIsFolder &&
         !(URIUtils::IsRAR(pItem->GetPath()) || URIUtils::IsZIP(pItem->GetPath())) &&
-        (pItem->IsPicture() || (bShowVideos && pItem->IsVideo())))
+        (pItem->IsPicture() || (bShowVideos && IsVideo(*pItem))))
     {
       slideShow.Add(pItem.get());
     }

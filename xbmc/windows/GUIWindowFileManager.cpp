@@ -56,9 +56,11 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+#include "video/VideoFileItemClassify.h"
 
 using namespace XFILE;
 using namespace KODI::MESSAGING;
+using namespace KODI::VIDEO;
 
 #define CONTROL_BTNSELECTALL            1
 #define CONTROL_BTNFAVOURITES           2
@@ -655,7 +657,7 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem, const std::string &player)
     g_application.ProcessAndStartPlaylist(strPlayList, *pPlayList, PLAYLIST::TYPE_MUSIC);
     return;
   }
-  if (pItem->IsAudio() || pItem->IsVideo())
+  if (pItem->IsAudio() || IsVideo(*pItem))
   {
     CServiceBroker::GetPlaylistPlayer().Play(std::make_shared<CFileItem>(*pItem), player);
     return;

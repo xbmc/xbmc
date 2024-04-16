@@ -37,9 +37,11 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoFileItemClassify.h"
 
 using namespace PLAYLIST;
 using namespace KODI::MESSAGING;
+using namespace KODI::VIDEO;
 
 CPlayListPlayer::CPlayListPlayer(void)
 {
@@ -266,7 +268,7 @@ bool CPlayListPlayer::PlayItemIdx(int itemIdx)
 bool CPlayListPlayer::Play(const CFileItemPtr& pItem, const std::string& player)
 {
   Id playlistId;
-  bool isVideo{pItem->IsVideo()};
+  bool isVideo{IsVideo(*pItem)};
   bool isAudio{pItem->IsAudio()};
 
   if (isAudio && !isVideo)
@@ -949,7 +951,7 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
         Id playlistId = TYPE_MUSIC;
         for (int i = 0; i < list->Size(); i++)
         {
-          if ((*list)[i]->IsVideo())
+          if (IsVideo(*list->Get(i)))
           {
             playlistId = TYPE_VIDEO;
             break;
@@ -967,7 +969,7 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
           {
             return;
           }
-          if (item->IsAudio() || item->IsVideo())
+          if (item->IsAudio() || IsVideo(*item))
             Play(item, pMsg->strParam);
           else
             g_application.PlayMedia(*item, pMsg->strParam, playlistId);

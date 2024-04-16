@@ -38,6 +38,7 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/PlayerController.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoUtils.h"
 #include "video/guilib/VideoGUIUtils.h"
 #include "video/guilib/VideoSelectActionProcessor.h"
@@ -47,6 +48,8 @@
 #ifdef HAS_OPTICAL_DRIVE
 #include "Autorun.h"
 #endif
+
+using namespace KODI::VIDEO;
 
 /*! \brief Clear current playlist
  *  \param params (ignored)
@@ -434,7 +437,7 @@ void GetItemsForPlayList(const std::shared_ptr<CFileItem>& item, CFileItemList& 
 PLAYLIST::Id GetPlayListId(const CFileItem& item)
 {
   PLAYLIST::Id playlistId{PLAYLIST::TYPE_NONE};
-  if (item.IsVideo())
+  if (IsVideo(item))
     playlistId = PLAYLIST::TYPE_VIDEO;
   else if (item.IsAudio())
     playlistId = PLAYLIST::TYPE_MUSIC;
@@ -538,7 +541,7 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
       bool containsVideo = false;
       for (const auto& i : items)
       {
-        const bool isVideo = i->IsVideo();
+        const bool isVideo = IsVideo(*i);
         containsMusic |= !isVideo;
         containsVideo |= isVideo;
 
@@ -556,7 +559,7 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
         {
           for (int i = items.Size() - 1; i >= 0; i--) //remove music entries
           {
-            if (!items[i]->IsVideo())
+            if (!IsVideo(*items[i]))
               items.Remove(i);
           }
         }
@@ -615,7 +618,7 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
 
   if (forcePlay)
   {
-    if ((item.IsAudio() || item.IsVideo()) && !item.IsSmartPlayList() && !item.IsPVR())
+    if ((item.IsAudio() || IsVideo(item)) && !item.IsSmartPlayList() && !item.IsPVR())
     {
       if (!item.HasProperty("playlist_type_hint"))
         item.SetProperty("playlist_type_hint", GetPlayListId(item));

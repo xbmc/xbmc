@@ -28,6 +28,9 @@
 #include "utils/Variant.h"
 #include "video/Bookmark.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoFileItemClassify.h"
+
+using namespace KODI::VIDEO;
 
 void CSaveFileState::DoWork(CFileItem& item,
                             CBookmark& bookmark,
@@ -57,7 +60,7 @@ void CSaveFileState::DoWork(CFileItem& item,
       return;
     }
 #endif
-    if (item.IsVideo())
+    if (IsVideo(item))
     {
       std::string redactPath = CURL::GetRedacted(progressTrackingFile);
       CLog::Log(LOGDEBUG, "{} - Saving file state for video item {}", __FUNCTION__, redactPath);

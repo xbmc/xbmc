@@ -19,9 +19,12 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 
 #include <algorithm>
+
+using namespace KODI;
 
 CPlayerSelectionRule::CPlayerSelectionRule(TiXmlElement* pRule)
 {
@@ -116,7 +119,7 @@ void CPlayerSelectionRule::GetPlayers(const CFileItem& item, std::vector<std::st
     return;
   if (m_tAudio >= 0 && (m_tAudio > 0) != item.IsAudio())
     return;
-  if (m_tVideo >= 0 && (m_tVideo > 0) != item.IsVideo())
+  if (m_tVideo >= 0 && (m_tVideo > 0) != VIDEO::IsVideo(item))
     return;
   if (m_tGame >= 0 && (m_tGame > 0) != item.IsGame())
     return;

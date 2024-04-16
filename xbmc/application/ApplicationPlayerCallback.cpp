@@ -32,9 +32,12 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 
 #include <memory>
+
+using namespace KODI::VIDEO;
 
 CApplicationPlayerCallback::CApplicationPlayerCallback()
 {
@@ -80,7 +83,7 @@ void CApplicationPlayerCallback::OnPlayBackStarted(const CFileItem& file)
    * This should speed up player startup for files on internet filesystems (eg. webdav) and
    * increase performance on low powered systems (Atom/ARM).
    */
-  if (file.IsVideo() || file.IsGame())
+  if (IsVideo(file) || file.IsGame())
   {
     CServiceBroker::GetJobManager()->PauseJobs();
   }
@@ -128,7 +131,7 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
 
   if ((fileItem.IsAudio() && advancedSettings->m_audioPlayCountMinimumPercent > 0 &&
        percent >= advancedSettings->m_audioPlayCountMinimumPercent) ||
-      (fileItem.IsVideo() && advancedSettings->m_videoPlayCountMinimumPercent > 0 &&
+      (IsVideo(fileItem) && advancedSettings->m_videoPlayCountMinimumPercent > 0 &&
        percent >= advancedSettings->m_videoPlayCountMinimumPercent))
   {
     playCountUpdate = true;

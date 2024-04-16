@@ -28,6 +28,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 
 #include <algorithm>
@@ -38,6 +39,7 @@
 
 #include <Platinum/Source/Platinum/Platinum.h>
 
+using namespace KODI;
 using namespace MUSIC_INFO;
 using namespace XFILE;
 
@@ -203,7 +205,7 @@ NPT_String GetMimeType(const CFileItem& item, const PLT_HttpRequestContext* cont
   /* fallback to generic mime type if not found */
   if (mime.IsEmpty())
   {
-    if (item.IsVideo() || item.IsVideoDb())
+    if (VIDEO::IsVideo(item) || item.IsVideoDb())
       mime = "video/" + ext;
     else if (item.IsAudio() || item.IsMusicDb())
       mime = "audio/" + ext;
@@ -528,7 +530,7 @@ PLT_MediaObject* BuildObject(CFileItem& item,
         PopulateObjectFromTag(*tag, *object, &file_path, &resource, quirks, upnp_service);
       }
     }
-    else if (item.IsVideoDb() || item.IsVideo())
+    else if (item.IsVideoDb() || VIDEO::IsVideo(item))
     {
       object->m_ObjectClass.type = "object.item.videoItem";
 
@@ -818,7 +820,7 @@ PLT_MediaObject* BuildObject(CFileItem& item,
   // look for and add external subtitle if we are processing a video file and
   // we are being called by a UPnP player or renderer or the user has chosen
   // to look for external subtitles
-  if (upnp_server != NULL && item.IsVideo() &&
+  if (upnp_server != nullptr && VIDEO::IsVideo(item) &&
       (upnp_service == UPnPPlayer || upnp_service == UPnPRenderer ||
        settings->GetBool(CSettings::SETTING_SERVICES_UPNPLOOKFOREXTERNALSUBTITLES)))
   {

@@ -25,11 +25,14 @@
 #include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
+#include "video/VideoFileItemClassify.h"
 
 #include <mutex>
 #include <sstream>
 
 #define PLAYERCOREFACTORY_XML "playercorefactory.xml"
+
+using namespace KODI;
 
 CPlayerCoreFactory::CPlayerCoreFactory(const CProfileManager& profileManager)
   : m_settings(CServiceBroker::GetSettingsComponent()->GetSettings()),
@@ -141,7 +144,7 @@ void CPlayerCoreFactory::GetPlayers(const CFileItem& item, std::vector<std::stri
   // "videodefaultplayer"
   if (defaultInputstreamPlayerOverride == ForcedPlayer::VIDEO_DEFAULT ||
       (defaultInputstreamPlayerOverride == ForcedPlayer::NONE &&
-       (item.IsVideo() || (!item.IsAudio() && !item.IsGame()))))
+       (VIDEO::IsVideo(item) || (!item.IsAudio() && !item.IsGame()))))
   {
     int idx = GetPlayerIndex("videodefaultplayer");
     if (idx > -1)

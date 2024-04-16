@@ -13,10 +13,13 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoDbUrl.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 
 #include <map>
 #include <set>
+
+using namespace KODI;
 
 using SetMap = std::map<int, std::set<CFileItemPtr> >;
 
@@ -127,7 +130,7 @@ bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileI
 
         //accumulate the path for a multipath construction
         CFileItem video(movieInfo->m_basePath, false);
-        if (video.IsVideo())
+        if (VIDEO::IsVideo(video))
           pathSet.insert(URIUtils::GetParentPath(movieInfo->m_basePath));
         else
           pathSet.insert(movieInfo->m_basePath);

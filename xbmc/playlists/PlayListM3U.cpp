@@ -16,10 +16,12 @@
 #include "utils/CharsetConverter.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 
 #include <inttypes.h>
 
+using namespace KODI;
 using namespace PLAYLIST;
 using namespace XFILE;
 
@@ -183,7 +185,8 @@ bool CPlayListM3U::Load(const std::string& strFileName)
           if (iEndOffset)
             lDuration = static_cast<int>(CUtil::ConvertMilliSecsToSecsIntRounded(iEndOffset - iStartOffset));
         }
-        if (newItem->IsVideo() && !newItem->HasVideoInfoTag()) // File is a video and needs a VideoInfoTag
+        if (VIDEO::IsVideo(*newItem) &&
+            !newItem->HasVideoInfoTag()) // File is a video and needs a VideoInfoTag
           newItem->GetVideoInfoTag()->Reset(); // Force VideoInfoTag creation
         if (lDuration && newItem->IsAudio())
           newItem->GetMusicInfoTag()->SetDuration(lDuration);

@@ -156,13 +156,6 @@ public:
 
   bool Exists(bool bUseCache = true) const;
 
-  /*!
-   \brief Check whether an item is a video item. Note that this returns true for
-    anything with a video info tag, so that may include eg. folders.
-   \return true if item is video, false otherwise.
-   */
-  bool IsVideo() const;
-
   bool IsDiscStub() const;
 
   /*!

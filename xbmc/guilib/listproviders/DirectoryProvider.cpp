@@ -34,6 +34,7 @@
 #include "utils/XMLUtils.h"
 #include "utils/guilib/GUIContentUtils.h"
 #include "utils/log.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoThumbLoader.h"
 #include "video/VideoUtils.h"
@@ -47,6 +48,7 @@
 
 using namespace XFILE;
 using namespace KODI::MESSAGING;
+using namespace KODI::VIDEO;
 using namespace PVR;
 
 class CDirectoryJob : public CJob
@@ -133,7 +135,7 @@ public:
 
   std::shared_ptr<CThumbLoader> getThumbLoader(const CGUIStaticItemPtr& item)
   {
-    if (item->IsVideo())
+    if (IsVideo(*item))
     {
       initThumbLoader<CVideoThumbLoader>(InfoTagType::VIDEO);
       return m_thumbloaders[InfoTagType::VIDEO];

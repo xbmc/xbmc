@@ -31,6 +31,7 @@
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
+#include "video/VideoFileItemClassify.h"
 
 #include <stdlib.h>
 #ifndef TARGET_WINDOWS
@@ -51,6 +52,7 @@
 using namespace XFILE;
 using namespace MEDIA_DETECT;
 using namespace KODI::MESSAGING;
+using namespace KODI::VIDEO;
 using namespace std::chrono_literals;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
@@ -399,7 +401,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
     for (int i = 0; i < tempItems.Size(); i++)
     {
       CFileItemPtr pItem = tempItems[i];
-      if (!pItem->m_bIsFolder && pItem->IsVideo())
+      if (!pItem->m_bIsFolder && IsVideo(*pItem))
       {
         bPlaying = true;
         if (pItem->IsStack())

@@ -35,9 +35,12 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoUtils.h"
 #include "view/GUIViewState.h"
+
+using namespace KODI::VIDEO;
 
 namespace
 {
@@ -307,7 +310,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
     itemCopy->SetStartOffset(item->GetStartOffset());
     m_queuedItems.Add(itemCopy);
   }
-  else if (!item->IsNFO() && item->IsVideo())
+  else if (!item->IsNFO() && IsVideo(*item))
   {
     m_queuedItems.Add(item);
   }
@@ -571,7 +574,7 @@ bool IsItemPlayable(const CFileItem& item)
   {
     return true;
   }
-  else if ((!item.m_bIsFolder && item.IsVideo()) || item.IsDVD() || item.IsCDDA())
+  else if ((!item.m_bIsFolder && IsVideo(item)) || item.IsDVD() || item.IsCDDA())
   {
     return true;
   }
