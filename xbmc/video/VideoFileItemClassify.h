@@ -36,7 +36,7 @@ bool IsVideo(const CFileItem& item);
 //! \brief Check whether an item is a video database item.
 bool IsVideoDb(const CFileItem& item);
 
-//! \brief Check whether an item is a video extras item.
-bool IsVideoExtras(const CFileItem& item);
+//! \brief Check whether an item is a video extras folder item.
+bool IsVideoExtrasFolder(const CFileItem& item);
 
 } // namespace KODI::VIDEO

@@ -127,7 +127,7 @@ bool IsVideoDb(const CFileItem& item)
   return URIUtils::IsVideoDb(item.GetPath());
 }
 
-bool IsVideoExtras(const CFileItem& item)
+bool IsVideoExtrasFolder(const CFileItem& item)
 {
   return item.m_bIsFolder &&
          StringUtils::EqualsNoCase(URIUtils::GetFileOrFolderName(item.GetPath()), "extras");

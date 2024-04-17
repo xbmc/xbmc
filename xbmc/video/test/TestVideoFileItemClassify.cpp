@@ -203,10 +203,10 @@ TEST(TestVideoFileItemClassify, IsVideoDb)
   EXPECT_FALSE(VIDEO::IsVideoDb(CFileItem("/videodb/home/foo/Extraordinary/", true)));
 }
 
-TEST(TestVideoFileItemClassify, IsVideoExtras)
+TEST(TestVideoFileItemClassify, IsVideoExtrasFolder)
 {
-  EXPECT_TRUE(VIDEO::IsVideoExtras(CFileItem("/home/foo/Extras/", true)));
-  EXPECT_TRUE(VIDEO::IsVideoExtras(CFileItem("/home/foo/extras/", true)));
-  EXPECT_FALSE(VIDEO::IsVideoExtras(CFileItem("/home/foo/Extraordinary/", true)));
-  EXPECT_FALSE(VIDEO::IsVideoExtras(CFileItem("/home/foo/Extras/abc.mkv", false)));
+  EXPECT_TRUE(VIDEO::IsVideoExtrasFolder(CFileItem("/home/foo/Extras/", true)));
+  EXPECT_TRUE(VIDEO::IsVideoExtrasFolder(CFileItem("/home/foo/extras/", true)));
+  EXPECT_FALSE(VIDEO::IsVideoExtrasFolder(CFileItem("/home/foo/Extraordinary/", true)));
+  EXPECT_FALSE(VIDEO::IsVideoExtrasFolder(CFileItem("/home/foo/Extras/abc.mkv", false)));
 }
