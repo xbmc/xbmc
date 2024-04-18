@@ -465,6 +465,13 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       value = false;
 #endif
       return true;
+    case SYSTEM_PLATFORM_WEBOS:
+#if defined(TARGET_WEBOS)
+      value = true;
+#else
+      value = false;
+#endif
+      return true;
     case SYSTEM_MEDIA_DVD:
       value = CServiceBroker::GetMediaManager().IsDiscInDrive();
       return true;

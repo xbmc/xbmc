@@ -1424,6 +1424,14 @@ const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
 ///     @return **True** if Kodi is running on an android device.
 ///     <p>
 ///   }
+///   \table_row3{   <b>`System.Platform.WebOS`</b>,
+///                  \anchor System_PlatformWebOS
+///                  _boolean_,
+///     @return **True** if Kodi is running on a WebOS device.
+///     <p><hr>
+///     @skinning_v21 **[New Boolean Condition]** \link System_PlatformWebOS
+///     `System.Platform.WebOS`\endlink <p>
+///   }
 ///   \table_row3{   <b>`System.CanPowerDown`</b>,
 ///                  \anchor System_CanPowerDown
 ///                  _boolean_,
@@ -10576,6 +10584,8 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
         return SYSTEM_PLATFORM_DARWIN_TVOS;
       else if (platform == "android")
         return SYSTEM_PLATFORM_ANDROID;
+      else if (platform == "webos")
+        return SYSTEM_PLATFORM_WEBOS;
     }
     if (info[0].name == "musicplayer")
     { //! @todo these two don't allow duration(foo) and also don't allow more than this number of levels...
