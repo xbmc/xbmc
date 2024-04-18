@@ -2624,7 +2624,10 @@ int CVideoDatabase::SetDetailsForMovie(CVideoInfoTag& details,
       idMovie = GetMovieId(filePath);
 
     if (idMovie > -1)
-      DeleteMovie(idMovie, true); // true to keep the table entry
+    {
+      const int idFile{GetDbId(PrepareSQL("SELECT idFile FROM movie WHERE idMovie=%i", idMovie))};
+      DeleteStreamDetails(idFile);
+    }
     else
     {
       // only add a new movie if we don't already have a valid idMovie
@@ -3701,9 +3704,7 @@ void CVideoDatabase::DeleteBookMarkForEpisode(const CVideoInfoTag& tag)
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::DeleteMovie(int idMovie,
-                                 bool bKeepId /* = false */,
-                                 DeleteMovieCascadeAction ca /* = ALL_ASSETS */)
+void CVideoDatabase::DeleteMovie(int idMovie, DeleteMovieCascadeAction ca /* = ALL_ASSETS */)
 {
   if (idMovie < 0)
     return;
@@ -3717,55 +3718,46 @@ void CVideoDatabase::DeleteMovie(int idMovie,
 
     BeginTransaction();
 
-    int idFile = GetDbId(PrepareSQL("SELECT idFile FROM movie WHERE idMovie=%i", idMovie));
+    const int idFile{GetDbId(PrepareSQL("SELECT idFile FROM movie WHERE idMovie=%i", idMovie))};
     DeleteStreamDetails(idFile);
 
-    // keep the movie table entry, linking to tv shows, and bookmarks
-    // so we can update the data in place
-    // the ancillary tables are still purged
-    if (!bKeepId)
+    const std::string path = GetSingleValue(PrepareSQL(
+        "SELECT strPath FROM path JOIN files ON files.idPath=path.idPath WHERE files.idFile=%i",
+        idFile));
+    if (!path.empty())
+      InvalidatePathHash(path);
+
+    const std::string strSQL{PrepareSQL("DELETE FROM movie WHERE idMovie=%i", idMovie)};
+    m_pDS->exec(strSQL);
+
+    if (ca == DeleteMovieCascadeAction::ALL_ASSETS)
     {
-      const std::string path = GetSingleValue(PrepareSQL(
-          "SELECT strPath FROM path JOIN files ON files.idPath=path.idPath WHERE files.idFile=%i",
-          idFile));
-      if (!path.empty())
-        InvalidatePathHash(path);
+      // The default version of the movie was removed by a delete trigger.
+      // Clean up the other assets attached to the movie, if any.
 
-      const std::string strSQL = PrepareSQL("delete from movie where idMovie=%i", idMovie);
-      m_pDS->exec(strSQL);
+      // need local dataset due to nested DeleteVideoAsset query
+      const std::unique_ptr<Dataset> pDS{m_pDB->CreateDataset()};
 
-      if (ca == DeleteMovieCascadeAction::ALL_ASSETS)
+      pDS->query(PrepareSQL("SELECT idFile FROM videoversion WHERE idMedia=%i AND media_type='%s'",
+                            idMovie, MediaTypeMovie));
+
+      while (!pDS->eof())
       {
-        // The default version of the movie was removed by a delete trigger.
-        // Clean up the other assets attached to the movie, if any.
-
-        // need local dataset due to nested DeleteVideoAsset query
-        std::unique_ptr<Dataset> pDS{m_pDB->CreateDataset()};
-
-        pDS->query(
-            PrepareSQL("SELECT idFile FROM videoversion WHERE idMedia=%i AND media_type='%s'",
-                       idMovie, MediaTypeMovie));
-
-        while (!pDS->eof())
+        if (!DeleteVideoAsset(pDS->fv(0).get_asInt()))
         {
-          if (!DeleteVideoAsset(pDS->fv(0).get_asInt()))
-          {
-            RollbackTransaction();
-            pDS->close();
-            return;
-          }
-          pDS->next();
+          RollbackTransaction();
+          pDS->close();
+          return;
         }
-        pDS->close();
+        pDS->next();
       }
+      pDS->close();
     }
 
     //! @todo move this below CommitTransaction() once UPnP doesn't rely on this anymore
-    if (!bKeepId)
-      AnnounceRemove(MediaTypeMovie, idMovie);
+    AnnounceRemove(MediaTypeMovie, idMovie);
 
     CommitTransaction();
-
   }
   catch (...)
   {

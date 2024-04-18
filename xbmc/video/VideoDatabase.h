@@ -604,7 +604,6 @@ public:
   int UpdateDetailsForMovie(int idMovie, CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, const std::set<std::string> &updatedDetails);
 
   void DeleteMovie(int idMovie,
-                   bool bKeepId = false,
                    DeleteMovieCascadeAction action = DeleteMovieCascadeAction::ALL_ASSETS);
   void DeleteTvShow(int idTvShow, bool bKeepId = false);
   void DeleteTvShow(const std::string& strPath);
