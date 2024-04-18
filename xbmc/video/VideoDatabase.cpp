@@ -2623,16 +2623,9 @@ int CVideoDatabase::SetDetailsForMovie(CVideoInfoTag& details,
     if (idMovie < 0)
       idMovie = GetMovieId(filePath);
 
-    if (idMovie > -1)
-    {
-      const int idFile{GetDbId(PrepareSQL("SELECT idFile FROM movie WHERE idMovie=%i", idMovie))};
-      DeleteStreamDetails(idFile);
-    }
-    else
+    if (idMovie == -1)
     {
       // only add a new movie if we don't already have a valid idMovie
-      // (DeleteMovie is called with bKeepId == true so the movie won't
-      // be removed from the movie table)
       idMovie = AddNewMovie(details);
       if (idMovie < 0)
       {

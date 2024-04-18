@@ -591,6 +591,11 @@ public:
                               const std::map<std::string, std::string>& artwork,
                               int idMVideo = -1);
   int SetStreamDetailsForFile(const CStreamDetails& details, const std::string& strFileNameAndPath);
+  /*!
+   * \brief Clear any existing stream details and add the new provided details to a file.
+   * \param[in] details New stream details
+   * \param[in] idFile Identifier of the file
+   */
   void SetStreamDetailsForFileId(const CStreamDetails& details, int idFile);
 
   bool SetSingleValue(VideoDbContentType type, int dbId, int dbField, const std::string& strValue);
