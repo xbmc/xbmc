@@ -24,6 +24,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <chrono>
 #include <inttypes.h>
 #include <memory>
 
@@ -32,6 +33,7 @@
 #endif
 
 using namespace XFILE;
+using namespace std::chrono_literals;
 
 class CWriteRate
 {
@@ -298,7 +300,7 @@ void CFileCache::Process()
       if (limiter.Rate(m_writePos) < m_writeRate * readFactor)
         break;
 
-      if (m_seekEvent.Wait(m_processWait))
+      if (m_seekEvent.Wait(100ms))
       {
         if (!m_bStop)
           m_seekEvent.Set();
@@ -616,18 +618,6 @@ int CFileCache::IoControl(EIoControl request, void* param)
   if (request == IOCTRL_CACHE_SETRATE)
   {
     m_writeRate = *static_cast<uint32_t*>(param);
-
-    const double mBits = m_writeRate / 1024.0 / 1024.0 * 8.0; // Mbit/s
-
-    // calculates wait time inversely proportional to the bitrate
-    // and limited between 30 - 100 ms
-    const int wait = std::clamp(static_cast<int>(110.0 - mBits), 30, 100);
-
-    m_processWait = std::chrono::milliseconds(wait);
-
-    CLog::Log(LOGDEBUG,
-              "CFileCache::IoControl - setting maxRate to {:.2f} Mbit/s with processWait of {} ms",
-              mBits, wait);
     return 0;
   }
 
