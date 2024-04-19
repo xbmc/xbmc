@@ -140,7 +140,6 @@ bool CFileCache::Open(const CURL& url)
       // Use cache on disk
       m_pCache = std::make_unique<CSimpleFileCache>();
       m_forwardCacheSize = 0;
-      m_maxForward = m_fileSize;
     }
     else
     {
@@ -183,7 +182,6 @@ bool CFileCache::Open(const CURL& url)
 
       m_pCache = std::make_unique<CCircularCache>(front, back);
       m_forwardCacheSize = front;
-      m_maxForward = m_forwardCacheSize;
     }
 
     if (m_flags & READ_MULTI_STREAM)
@@ -237,9 +235,7 @@ void CFileCache::Process()
   if (!settings)
     return;
 
-  float readFactor = settings->GetInt(CSettings::SETTING_FILECACHE_READFACTOR) / 100.0f;
-
-  const bool useAdaptativeReadFactor = (readFactor < 1.0f);
+  const float readFactor = settings->GetInt(CSettings::SETTING_FILECACHE_READFACTOR) / 100.0f;
 
   CWriteRate limiter;
   CWriteRate average;
@@ -289,14 +285,6 @@ void CFileCache::Process()
       }
 
       m_seekEnded.Set();
-    }
-
-    // variable read factor based on cache level
-    if (useAdaptativeReadFactor)
-    {
-      // cache level [0.0 - 1.0]
-      const double level = static_cast<double>(m_writePos - m_readPos) / m_maxForward;
-      readFactor = static_cast<float>(level * -2.5 + 4.0); // read factor [4.0x - 1.5x]
     }
 
     while (m_writeRate)
@@ -615,7 +603,8 @@ int CFileCache::IoControl(EIoControl request, void* param)
   if (request == IOCTRL_CACHE_STATUS)
   {
     SCacheStatus* status = (SCacheStatus*)param;
-    status->maxforward = m_maxForward;
+    status->maxforward =
+        (m_forwardCacheSize != 0) ? m_forwardCacheSize : static_cast<uint64_t>(m_fileSize);
     status->forward = m_pCache->WaitForData(0, 0ms);
     status->maxrate = m_writeRate;
     status->currate = m_writeRateActual;
