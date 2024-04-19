@@ -183,6 +183,7 @@ namespace XBMCAddon
     String getLanguage(int format /* = CLangCodeExpander::ENGLISH_NAME */, bool region /*= false*/)
     {
       XBMC_TRACE;
+      const std::string LANGNAME_DELIM{" ("}; //Delimiter for ENGLISH_NAME (region)
       std::string lang = g_langInfo.GetEnglishLanguageName();
 
       switch (format)
@@ -199,6 +200,7 @@ namespace XBMCAddon
       case CLangCodeExpander::ISO_639_1:
         {
           std::string langCode;
+          lang = StringUtils::Split(lang, LANGNAME_DELIM)[0];
           g_LangCodeExpander.ConvertToISO6391(lang, langCode);
           if (region)
           {
@@ -213,6 +215,7 @@ namespace XBMCAddon
       case CLangCodeExpander::ISO_639_2:
         {
           std::string langCode;
+          lang = StringUtils::Split(lang, LANGNAME_DELIM)[0];
           g_LangCodeExpander.ConvertToISO6392B(lang, langCode);
           if (region)
           {
