@@ -393,6 +393,9 @@ bool CFile::ShouldUseStreamBuffer(const CURL& url)
   if (m_pFile->GetLength() > 200 * 1024 * 1024 && !URIUtils::IsDVD(url.GetShareName()))
     return true;
 
+  if (URIUtils::IsNetworkFilesystem(url.Get()))
+    return true;
+
   return false;
 }
 
