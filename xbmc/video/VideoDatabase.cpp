@@ -189,10 +189,11 @@ void CVideoDatabase::CreateTables()
 
   CLog::Log(LOGINFO, "create streaminfo table");
   m_pDS->exec("CREATE TABLE streamdetails (idFile integer, iStreamType integer, "
-    "strVideoCodec text, fVideoAspect float, iVideoWidth integer, iVideoHeight integer, "
-    "strAudioCodec text, iAudioChannels integer, strAudioLanguage text, "
-    "strSubtitleLanguage text, iVideoDuration integer, strStereoMode text, strVideoLanguage text, "
-    "strHdrType text)");
+              "strVideoCodec text, fVideoAspect float, iVideoWidth integer, iVideoHeight integer, "
+              "strAudioCodec text, iAudioChannels integer, strAudioLanguage text, "
+              "strSubtitleLanguage text, iVideoDuration integer, strStereoMode text, "
+              "strVideoLanguage text, "
+              "strHdrType text, strSubtitleCodec text, iSubtitleSourceType integer)");
 
   CLog::Log(LOGINFO, "create sets table");
   m_pDS->exec("CREATE TABLE sets ( idSet integer primary key, strSet text, strOverview text, "
@@ -3666,11 +3667,12 @@ bool CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
     }
     for (int i=1; i<=details.GetSubtitleStreamCount(); i++)
     {
-      m_pDS->exec(PrepareSQL("INSERT INTO streamdetails "
-                             "(idFile, iStreamType, strSubtitleLanguage) "
-                             "VALUES (%i,%i,'%s')",
-                             idFile, static_cast<int>(CStreamDetail::SUBTITLE),
-                             details.GetSubtitleLanguage(i).c_str()));
+      m_pDS->exec(PrepareSQL(
+          "INSERT INTO streamdetails "
+          "(idFile, iStreamType, strSubtitleLanguage, strSubtitleCodec, iSubtitleSourceType) "
+          "VALUES (%i,%i,'%s','%s',%i)",
+          idFile, static_cast<int>(CStreamDetail::SUBTITLE), details.GetSubtitleLanguage(i).c_str(),
+          details.GetSubtitleCodec(i).c_str(), static_cast<int>(details.GetSubtitleSourceType(i))));
     }
 
     // update the runtime information, if empty
@@ -4936,6 +4938,9 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag)
         {
           auto* p = new CStreamDetailSubtitle();
           p->m_strLanguage = pDS->fv(9).get_asString();
+          p->m_codec = pDS->fv(14).get_asString();
+          p->m_sourceType =
+              static_cast<KODI::SUBTITLES::SubtitleSourceType>(pDS->fv(15).get_asInt());
           details.AddStream(p);
           retVal = true;
           break;

@@ -618,6 +618,9 @@ void CVideoThumbLoader::DetectAndAddMissingItemData(CFileItem &item)
     {
       std::string index = std::to_string(i);
       item.SetProperty("SubtitleLanguage." + index, details.GetSubtitleLanguage(i).c_str());
+      item.SetProperty("SubtitleSourceType." + index,
+                       static_cast<int>(details.GetSubtitleSourceType(i)));
+      item.SetProperty("SubtitleCodec." + index, details.GetSubtitleCodec(i));
     }
   }
 

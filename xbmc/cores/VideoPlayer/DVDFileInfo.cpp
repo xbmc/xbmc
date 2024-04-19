@@ -37,6 +37,7 @@
 #include "DVDDemuxers/DVDDemuxVobsub.h"
 #include "DVDDemuxers/DVDFactoryDemuxer.h"
 #include "DVDInputStreams/DVDFactoryInputStream.h"
+#include "DVDSubtitles/SubtitleSourceType.h"
 #include "Process/ProcessInfo.h"
 #include "TextureCache.h"
 #include "Util.h"
@@ -411,6 +412,8 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
     {
       CStreamDetailSubtitle *p = new CStreamDetailSubtitle();
       p->m_strLanguage = stream->language;
+      p->m_codec = pDemux->GetStreamCodecName(stream->demuxerId, stream->uniqueId);
+      p->m_sourceType = SUBTITLES::SubtitleSourceType::MUXED;
       details.AddStream(p);
       retVal = true;
     }
@@ -479,6 +482,8 @@ bool CDVDFileInfo::AddExternalSubtitleToDetails(const std::string &path, CStream
       CStreamDetailSubtitle *dsub = new CStreamDetailSubtitle();
       std::string lang = stream->language;
       dsub->m_strLanguage = g_LangCodeExpander.ConvertToISO6392B(lang);
+      dsub->m_codec = v.GetStreamCodecName(stream->demuxerId, stream->uniqueId);
+      dsub->m_sourceType = SUBTITLES::SubtitleSourceType::EXTERNAL;
       details.AddStream(dsub);
     }
     return true;
@@ -493,6 +498,8 @@ bool CDVDFileInfo::AddExternalSubtitleToDetails(const std::string &path, CStream
   CStreamDetailSubtitle *dsub = new CStreamDetailSubtitle();
   ExternalStreamInfo info = CUtil::GetExternalStreamDetailsFromFilename(path, filename);
   dsub->m_strLanguage = g_LangCodeExpander.ConvertToISO6392B(info.language);
+  dsub->m_sourceType = SUBTITLES::SubtitleSourceType::EXTERNAL;
+  // m_codec is not set - will be empty string
   details.AddStream(dsub);
 
   return true;

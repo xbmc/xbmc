@@ -9,6 +9,7 @@
 #pragma once
 
 #include "ISerializable.h"
+#include "cores/VideoPlayer/DVDSubtitles/SubtitleSourceType.h"
 #include "cores/VideoPlayer/Interface/StreamInfo.h"
 #include "utils/IArchivable.h"
 
@@ -86,6 +87,8 @@ public:
   void Serialize(CVariant& value) const override;
   bool IsWorseThan(const CStreamDetail &that) const override;
 
+  std::string m_codec;
+  KODI::SUBTITLES::SubtitleSourceType m_sourceType{KODI::SUBTITLES::SubtitleSourceType::UNKNOWN};
   std::string m_strLanguage;
 };
 
@@ -124,6 +127,8 @@ public:
   int GetAudioChannels(int idx = 0) const;
 
   std::string GetSubtitleLanguage(int idx = 0) const;
+  std::string GetSubtitleCodec(int idx = 0) const;
+  KODI::SUBTITLES::SubtitleSourceType GetSubtitleSourceType(int idx = 0) const;
 
   void AddStream(CStreamDetail *item);
   void Reset(void);

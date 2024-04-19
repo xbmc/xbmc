@@ -150,15 +150,23 @@ void CStreamDetailSubtitle::Archive(CArchive& ar)
   if (ar.IsStoring())
   {
     ar << m_strLanguage;
+    ar << m_codec;
+    ar << static_cast<int>(m_sourceType);
   }
   else
   {
     ar >> m_strLanguage;
+    ar >> m_codec;
+    int tmpSourceType;
+    ar >> tmpSourceType;
+    m_sourceType = static_cast<KODI::SUBTITLES::SubtitleSourceType>(tmpSourceType);
   }
 }
 void CStreamDetailSubtitle::Serialize(CVariant& value) const
 {
   value["language"] = m_strLanguage;
+  value["codec"] = m_codec;
+  value["sourceType"] = static_cast<int>(m_sourceType);
 }
 
 bool CStreamDetailSubtitle::IsWorseThan(const CStreamDetail &that) const
@@ -182,6 +190,8 @@ CStreamDetailSubtitle& CStreamDetailSubtitle::operator=(const CStreamDetailSubti
   {
     this->m_pParent = that.m_pParent;
     this->m_strLanguage = that.m_strLanguage;
+    this->m_codec = that.m_codec;
+    this->m_sourceType = that.m_sourceType;
   }
   return *this;
 }
@@ -242,7 +252,9 @@ bool CStreamDetails::operator ==(const CStreamDetails &right) const
 
   for (int iStream=1; iStream<=GetSubtitleStreamCount(); iStream++)
   {
-    if (GetSubtitleLanguage(iStream) != right.GetSubtitleLanguage(iStream) )
+    if (GetSubtitleLanguage(iStream) != right.GetSubtitleLanguage(iStream) ||
+        GetSubtitleCodec(iStream) != right.GetSubtitleCodec(iStream) ||
+        GetSubtitleSourceType(iStream) != right.GetSubtitleSourceType(iStream))
       return false;
   }
 
@@ -483,6 +495,24 @@ std::string CStreamDetails::GetSubtitleLanguage(int idx) const
     return item->m_strLanguage;
   else
     return "";
+}
+
+std::string CStreamDetails::GetSubtitleCodec(int idx) const
+{
+  const CStreamDetailSubtitle* item =
+      dynamic_cast<const CStreamDetailSubtitle*>(GetNthStream(CStreamDetail::SUBTITLE, idx));
+  if (item)
+    return item->m_codec;
+  return {};
+}
+
+KODI::SUBTITLES::SubtitleSourceType CStreamDetails::GetSubtitleSourceType(int idx) const
+{
+  const CStreamDetailSubtitle* item =
+      dynamic_cast<const CStreamDetailSubtitle*>(GetNthStream(CStreamDetail::SUBTITLE, idx));
+  if (item)
+    return item->m_sourceType;
+  return KODI::SUBTITLES::SubtitleSourceType::UNKNOWN;
 }
 
 void CStreamDetails::Archive(CArchive& ar)
