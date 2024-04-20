@@ -692,7 +692,14 @@ float CWinSystemWin10::GetGuiSdrPeakLuminance() const
 */
 bool CWinSystemWin10::HasSystemSdrPeakLuminance()
 {
-  return CWIN32Util::GetSystemSdrWhiteLevel(std::wstring(), nullptr);
+  if (m_uiThreadId == GetCurrentThreadId())
+  {
+    const bool hasSystemSdrPeakLum = CWIN32Util::GetSystemSdrWhiteLevel(std::wstring(), nullptr);
+    m_cachedHasSystemSdrPeakLum = hasSystemSdrPeakLum;
+    return hasSystemSdrPeakLum;
+  }
+
+  return m_cachedHasSystemSdrPeakLum;
 }
 
 /*!
