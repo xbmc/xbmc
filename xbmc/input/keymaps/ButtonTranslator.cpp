@@ -10,6 +10,7 @@
 
 #include "AppTranslator.h"
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "filesystem/Directory.h"
 #include "guilib/WindowIDs.h"
 #include "input/WindowTranslator.h"

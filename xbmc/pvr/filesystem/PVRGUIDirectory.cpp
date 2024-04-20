@@ -9,6 +9,7 @@
 #include "PVRGUIDirectory.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"

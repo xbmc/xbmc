@@ -9,6 +9,7 @@
 #include "DVDInputStreamStack.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "filesystem/File.h"
 #include "filesystem/StackDirectory.h"
 #include "utils/log.h"

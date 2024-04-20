@@ -9,6 +9,7 @@
 #include "GameClientProperties.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GameClient.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"

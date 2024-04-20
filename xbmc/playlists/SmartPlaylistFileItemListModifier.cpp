@@ -9,6 +9,7 @@
 #include "SmartPlaylistFileItemListModifier.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "URL.h"
 #include "playlists/SmartPlayList.h"
 #include "utils/StringUtils.h"

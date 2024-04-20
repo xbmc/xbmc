@@ -8,6 +8,7 @@
 #include "AudioBookFileDirectory.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "TextureDatabase.h"
 #include "URL.h"
 #include "Util.h"

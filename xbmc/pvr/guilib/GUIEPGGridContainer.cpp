@@ -9,6 +9,7 @@
 #include "GUIEPGGridContainer.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "guilib/DirtyRegion.h"
 #include "guilib/GUIAction.h"

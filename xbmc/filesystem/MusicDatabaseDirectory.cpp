@@ -9,6 +9,7 @@
 #include "MusicDatabaseDirectory.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "MusicDatabaseDirectory/QueryParams.h"
 #include "ServiceBroker.h"
 #include "filesystem/File.h"

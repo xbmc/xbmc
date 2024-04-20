@@ -8,6 +8,7 @@
 
 #include "WindowXML.h"
 
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "WindowException.h"
 #include "WindowInterceptor.h"

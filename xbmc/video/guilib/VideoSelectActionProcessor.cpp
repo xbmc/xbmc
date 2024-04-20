@@ -9,6 +9,7 @@
 #include "VideoSelectActionProcessor.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogSelect.h"

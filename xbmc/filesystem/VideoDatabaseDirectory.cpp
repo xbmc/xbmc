@@ -10,6 +10,7 @@
 
 #include "File.h"
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "VideoDatabaseDirectory/QueryParams.h"
 #include "guilib/LocalizeStrings.h"

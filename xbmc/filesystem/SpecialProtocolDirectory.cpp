@@ -10,6 +10,7 @@
 
 #include "Directory.h"
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "SpecialProtocol.h"
 #include "URL.h"
 #include "utils/URIUtils.h"

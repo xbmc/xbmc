@@ -13,6 +13,7 @@
 #endif
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "NFSDirectory.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"

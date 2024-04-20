@@ -8,6 +8,7 @@
 
 #include "GUIFontManager.h"
 
+#include "FileItemList.h"
 #include "GUIComponent.h"
 #include "GUIFontTTF.h"
 #include "GUIWindowManager.h"

@@ -9,6 +9,7 @@
 
 #include "File.h"
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "LangInfo.h"
 #include "URL.h"
 #include "filesystem/BlurayCallback.h"

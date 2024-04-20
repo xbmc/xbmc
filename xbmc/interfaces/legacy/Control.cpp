@@ -9,6 +9,7 @@
 #include "Control.h"
 
 #include "AddonUtils.h"
+#include "FileItemList.h"
 #include "LanguageHook.h"
 #include "ServiceBroker.h"
 #include "WindowException.h"

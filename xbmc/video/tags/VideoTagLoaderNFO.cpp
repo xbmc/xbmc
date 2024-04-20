@@ -9,6 +9,7 @@
 #include "VideoTagLoaderNFO.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "NfoFile.h"
 #include "URL.h"
 #include "filesystem/Directory.h"

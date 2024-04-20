@@ -9,6 +9,7 @@
 #include "PlaylistDirectory.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "URL.h"

@@ -10,6 +10,7 @@
 
 #include "Autorun.h"
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIPassword.h"
 #include "ServiceBroker.h"
 #include "Util.h"

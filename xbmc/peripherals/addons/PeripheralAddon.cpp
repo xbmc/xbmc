@@ -9,6 +9,7 @@
 #include "PeripheralAddon.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "PeripheralAddonTranslator.h"
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonType.h"

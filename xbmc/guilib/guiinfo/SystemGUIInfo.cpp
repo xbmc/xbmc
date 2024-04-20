@@ -9,6 +9,7 @@
 #include "guilib/guiinfo/SystemGUIInfo.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIPassword.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"

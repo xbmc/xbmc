@@ -9,6 +9,7 @@
 #include "GUIDialogVideoManager.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIUserMessages.h"
 #include "MediaSource.h"
 #include "ServiceBroker.h"

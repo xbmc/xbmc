@@ -9,6 +9,7 @@
 #include "VideoThumbLoader.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "TextureCache.h"
 #include "URL.h"

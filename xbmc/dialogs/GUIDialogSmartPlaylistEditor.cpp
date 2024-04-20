@@ -9,6 +9,7 @@
 #include "GUIDialogSmartPlaylistEditor.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogSelect.h"
 #include "GUIDialogSmartPlaylistRule.h"

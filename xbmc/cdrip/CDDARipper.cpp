@@ -10,6 +10,7 @@
 
 #include "CDDARipJob.h"
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "addons/AddonManager.h"

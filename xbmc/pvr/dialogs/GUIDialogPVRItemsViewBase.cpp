@@ -10,6 +10,7 @@
 
 #include "ContextMenuManager.h"
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "input/actions/Action.h"

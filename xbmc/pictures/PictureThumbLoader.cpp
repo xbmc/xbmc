@@ -9,6 +9,7 @@
 #include "PictureThumbLoader.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "Picture.h"
 #include "ServiceBroker.h"
 #include "TextureCache.h"

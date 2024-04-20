@@ -9,6 +9,7 @@
 #include "SMBWSDiscovery.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "network/IWSDiscovery.h"
 #include "utils/StringUtils.h"

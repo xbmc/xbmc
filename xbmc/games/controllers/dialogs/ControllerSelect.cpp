@@ -9,6 +9,7 @@
 #include "ControllerSelect.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "games/controllers/Controller.h"

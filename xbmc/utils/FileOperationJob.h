@@ -9,6 +9,7 @@
 #pragma once
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "filesystem/IFileTypes.h"
 #include "utils/ProgressJob.h"
 

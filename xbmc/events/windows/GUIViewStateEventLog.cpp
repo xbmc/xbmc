@@ -9,6 +9,7 @@
 #include "GUIViewStateEventLog.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "guilib/WindowIDs.h"
 #include "view/ViewState.h"
 #include "windowing/GraphicContext.h"

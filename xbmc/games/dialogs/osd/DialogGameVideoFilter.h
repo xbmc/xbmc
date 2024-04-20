@@ -10,6 +10,7 @@
 
 #include "DialogGameVideoSelect.h"
 #include "FileItem.h"
+#include "FileItemList.h"
 
 namespace KODI
 {

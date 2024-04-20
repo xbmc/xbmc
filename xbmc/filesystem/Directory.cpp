@@ -12,6 +12,7 @@
 #include "DirectoryFactory.h"
 #include "FileDirectoryFactory.h"
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "PasswordManager.h"
 #include "ServiceBroker.h"
 #include "URL.h"

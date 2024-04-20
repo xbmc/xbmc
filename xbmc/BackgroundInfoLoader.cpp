@@ -9,6 +9,7 @@
 #include "BackgroundInfoLoader.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "URL.h"
 #include "threads/Thread.h"
 #include "utils/log.h"

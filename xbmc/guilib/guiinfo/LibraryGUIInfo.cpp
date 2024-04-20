@@ -9,6 +9,7 @@
 #include "guilib/guiinfo/LibraryGUIInfo.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "filesystem/Directory.h"

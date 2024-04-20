@@ -10,6 +10,7 @@
 
 #include "AutoSwitch.h"
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIPassword.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"

@@ -11,6 +11,7 @@
 #include "Album.h"
 #include "Artist.h"
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "MusicDatabase.h"
 #include "MusicThumbLoader.h"
 #include "ServiceBroker.h"

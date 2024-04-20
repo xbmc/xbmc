@@ -11,6 +11,7 @@
 #include "CurlFile.h"
 #include "FTPParse.h"
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "URL.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"

@@ -9,6 +9,7 @@
 #include "Skin.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "addons/addoninfo/AddonType.h"

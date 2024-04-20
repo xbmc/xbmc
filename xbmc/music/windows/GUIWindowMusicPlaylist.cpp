@@ -9,6 +9,7 @@
 #include "GUIWindowMusicPlaylist.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIUserMessages.h"
 #include "PartyModeManager.h"
 #include "PlayListPlayer.h"

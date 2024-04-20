@@ -9,6 +9,7 @@
 #include "PictureInfoLoader.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "PictureInfoTag.h"
 #include "ServiceBroker.h"
 #include "settings/Settings.h"

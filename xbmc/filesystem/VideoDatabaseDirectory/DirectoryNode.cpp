@@ -24,6 +24,7 @@
 #include "DirectoryNodeTitleTvShows.h"
 #include "DirectoryNodeTvShowsOverview.h"
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "QueryParams.h"
 #include "URL.h"
 #include "utils/StringUtils.h"

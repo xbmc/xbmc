@@ -10,6 +10,7 @@
 
 #include "ContextMenuManager.h"
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIDialogAddonInfo.h"
 #include "GUIUserMessages.h"
 #include "LangInfo.h"

@@ -9,6 +9,7 @@
 #include "DirectoryNodeAlbumTop100.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "music/MusicDatabase.h"
 #include "utils/StringUtils.h"
 
