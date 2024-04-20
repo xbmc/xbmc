@@ -42,8 +42,8 @@
 #include "video/VideoUtils.h"
 #include "view/GUIViewState.h"
 
-using namespace KODI;
-using namespace KODI::VIDEO;
+namespace KODI
+{
 
 namespace
 {
@@ -53,7 +53,7 @@ public:
   CAsyncGetItemsForPlaylist(const std::shared_ptr<CFileItem>& item, CFileItemList& queuedItems)
     : m_item(item),
       m_resume((item->GetStartOffset() == STARTOFFSET_RESUME) &&
-               VIDEO_UTILS::GetItemResumeInformation(*item).isResumable),
+               VIDEO::UTILS::GetItemResumeInformation(*item).isResumable),
       m_queuedItems(queuedItems)
   {
   }
@@ -140,7 +140,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
   if (item->m_bIsFolder)
   {
     // check if it's a folder with dvd or bluray files, then just add the relevant file
-    const std::string mediapath = VIDEO_UTILS::GetOpticalMediaPath(*item);
+    const std::string mediapath = VIDEO::UTILS::GetOpticalMediaPath(*item);
     if (!mediapath.empty())
     {
       m_queuedItems.Add(std::make_shared<CFileItem>(mediapath, false));
@@ -203,7 +203,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
       items.Sort(sortDesc);
     }
 
-    if (items.GetContent().empty() && !IsVideoDb(items) && !items.IsVirtualDirectoryRoot() &&
+    if (items.GetContent().empty() && !VIDEO::IsVideoDb(items) && !items.IsVirtualDirectoryRoot() &&
         !items.IsSourcesPath() && !items.IsLibraryFolder())
     {
       CVideoDatabase db;
@@ -305,7 +305,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
     // a playable python files
     m_queuedItems.Add(item);
   }
-  else if (IsVideoDb(*item))
+  else if (VIDEO::IsVideoDb(*item))
   {
     // this case is needed unless we allow IsVideo() to return true for videodb items,
     // but then we have issues with playlists of videodb items
@@ -313,7 +313,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
     itemCopy->SetStartOffset(item->GetStartOffset());
     m_queuedItems.Add(itemCopy);
   }
-  else if (!item->IsNFO() && IsVideo(*item))
+  else if (!item->IsNFO() && VIDEO::IsVideo(*item))
   {
     m_queuedItems.Add(item);
   }
@@ -337,7 +337,7 @@ void AddItemToPlayListAndPlay(const std::shared_ptr<CFileItem>& itemToQueue,
 {
   // recursively add items to list
   CFileItemList queuedItems;
-  VIDEO_UTILS::GetItemsForPlayList(itemToQueue, queuedItems);
+  VIDEO::UTILS::GetItemsForPlayList(itemToQueue, queuedItems);
 
   auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
   playlistPlayer.ClearPlaylist(PLAYLIST::TYPE_VIDEO);
@@ -370,7 +370,9 @@ void AddItemToPlayListAndPlay(const std::shared_ptr<CFileItem>& itemToQueue,
 
 } // unnamed namespace
 
-namespace VIDEO_UTILS
+} // namespace KODI
+
+namespace KODI::VIDEO::UTILS
 {
 void PlayItem(
     const std::shared_ptr<CFileItem>& itemIn,
@@ -620,4 +622,4 @@ std::string GetResumeString(const CFileItem& item)
   return {};
 }
 
-} // namespace VIDEO_UTILS
+} // namespace KODI::VIDEO::UTILS

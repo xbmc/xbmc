@@ -46,8 +46,8 @@
 #include <fstrcmp.h>
 
 using namespace XFILE;
+using namespace KODI;
 using namespace MUSIC_GRABBER;
-using namespace VIDEO;
 
 namespace ADDON
 {
@@ -1251,9 +1251,9 @@ std::vector<CMusicArtistInfo> CScraper::FindArtist(CCurlFile &fcurl, const std::
 }
 
 // fetch list of episodes from URL (from video database)
-EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl &scurl)
+VIDEO::EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile& fcurl, const CScraperUrl& scurl)
 {
-  EPISODELIST vcep;
+  VIDEO::EPISODELIST vcep;
   if (!scurl.HasUrls())
     return vcep;
 
@@ -1276,7 +1276,7 @@ EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl 
 
     for (int i = 0; i < items.Size(); ++i)
     {
-      EPISODE ep;
+      VIDEO::EPISODE ep;
       const auto& tag = *items[i]->GetVideoInfoTag();
       ep.strTitle = tag.m_strTitle;
       ep.iSeason = tag.m_iSeason;
@@ -1312,7 +1312,7 @@ EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl 
     for (TiXmlElement *pxeMovie = xhDoc.FirstChild("episodeguide").FirstChild("episode").Element();
          pxeMovie; pxeMovie = pxeMovie->NextSiblingElement())
     {
-      EPISODE ep;
+      VIDEO::EPISODE ep;
       TiXmlElement *pxeLink = pxeMovie->FirstChildElement("url");
       std::string strEpNum;
       if (pxeLink && XMLUtils::GetInt(pxeMovie, "season", ep.iSeason) &&

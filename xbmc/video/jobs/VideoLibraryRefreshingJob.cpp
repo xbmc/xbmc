@@ -37,8 +37,8 @@
 #include <memory>
 #include <utility>
 
+using namespace KODI;
 using namespace KODI::MESSAGING;
-using namespace VIDEO;
 
 CVideoLibraryRefreshingJob::CVideoLibraryRefreshingJob(std::shared_ptr<CFileItem> item,
                                                        bool forceRefresh,
@@ -109,9 +109,9 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
 
     if (!ignoreNfo)
     {
-      std::unique_ptr<IVideoInfoTagLoader> loader;
-      loader.reset(CVideoInfoTagLoaderFactory::CreateLoader(*m_item, scraper,
-                                                            scanSettings.parent_name_root, m_forceRefresh));
+      std::unique_ptr<VIDEO::IVideoInfoTagLoader> loader;
+      loader.reset(VIDEO::CVideoInfoTagLoaderFactory::CreateLoader(
+          *m_item, scraper, scanSettings.parent_name_root, m_forceRefresh));
       // check if there's an NFO for the item
       CInfoScanner::INFO_TYPE nfoResult = CInfoScanner::NO_NFO;
       if (loader)
@@ -182,7 +182,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       {
         CFileItemList items;
         items.Add(m_item);
-        CVideoInfoScanner scanner;
+        VIDEO::CVideoInfoScanner scanner;
         if (scanner.RetrieveVideoInfo(items, scanSettings.parent_name, scraper->Content(),
                                       !ignoreNfo, nullptr, m_refreshAll, GetProgressDialog()))
         {
@@ -360,7 +360,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     }
 
     // finally download the information for the item
-    CVideoInfoScanner scanner;
+    VIDEO::CVideoInfoScanner scanner;
     if (!scanner.RetrieveVideoInfo(items, scanSettings.parent_name,
                                    scraper->Content(), !ignoreNfo,
                                    scraperUrl.HasUrls() ? &scraperUrl : nullptr,

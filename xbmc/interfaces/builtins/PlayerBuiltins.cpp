@@ -51,8 +51,7 @@
 #include "Autorun.h"
 #endif
 
-using namespace KODI::MUSIC;
-using namespace KODI::VIDEO;
+using namespace KODI;
 
 /*! \brief Clear current playlist
  *  \param params (ignored)
@@ -431,8 +430,8 @@ namespace
 {
 void GetItemsForPlayList(const std::shared_ptr<CFileItem>& item, CFileItemList& queuedItems)
 {
-  if (VIDEO_UTILS::IsItemPlayable(*item))
-    VIDEO_UTILS::GetItemsForPlayList(item, queuedItems);
+  if (VIDEO::UTILS::IsItemPlayable(*item))
+    VIDEO::UTILS::GetItemsForPlayList(item, queuedItems);
   else if (MUSIC_UTILS::IsItemPlayable(*item))
     MUSIC_UTILS::GetItemsForPlayList(item, queuedItems);
 }
@@ -440,9 +439,9 @@ void GetItemsForPlayList(const std::shared_ptr<CFileItem>& item, CFileItemList& 
 PLAYLIST::Id GetPlayListId(const CFileItem& item)
 {
   PLAYLIST::Id playlistId{PLAYLIST::TYPE_NONE};
-  if (IsVideo(item))
+  if (VIDEO::IsVideo(item))
     playlistId = PLAYLIST::TYPE_VIDEO;
-  else if (IsAudio(item))
+  else if (MUSIC::IsAudio(item))
     playlistId = PLAYLIST::TYPE_MUSIC;
 
   return playlistId;
@@ -483,7 +482,7 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
     else if (StringUtils::EqualsNoCase(params[i], "resume"))
     {
       // force the item to resume (if applicable)
-      if (VIDEO_UTILS::GetItemResumeInformation(item).isResumable)
+      if (VIDEO::UTILS::GetItemResumeInformation(item).isResumable)
         item.SetStartOffset(STARTOFFSET_RESUME);
       else
         item.SetStartOffset(0);
@@ -544,7 +543,7 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
       bool containsVideo = false;
       for (const auto& i : items)
       {
-        const bool isVideo = IsVideo(*i);
+        const bool isVideo = VIDEO::IsVideo(*i);
         containsMusic |= !isVideo;
         containsVideo |= isVideo;
 
@@ -562,7 +561,7 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
         {
           for (int i = items.Size() - 1; i >= 0; i--) //remove music entries
           {
-            if (!IsVideo(*items[i]))
+            if (!VIDEO::IsVideo(*items[i]))
               items.Remove(i);
           }
         }
@@ -621,7 +620,7 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
 
   if (forcePlay)
   {
-    if ((IsAudio(item) || IsVideo(item)) && !item.IsSmartPlayList() && !item.IsPVR())
+    if ((MUSIC::IsAudio(item) || VIDEO::IsVideo(item)) && !item.IsSmartPlayList() && !item.IsPVR())
     {
       if (!item.HasProperty("playlist_type_hint"))
         item.SetProperty("playlist_type_hint", GetPlayListId(item));

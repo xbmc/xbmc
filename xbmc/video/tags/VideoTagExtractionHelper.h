@@ -12,9 +12,7 @@
 
 class CFileItem;
 
-namespace VIDEO
-{
-namespace TAGS
+namespace KODI::VIDEO::TAGS
 {
 class CVideoTagExtractionHelper
 {
@@ -37,5 +35,4 @@ public:
    */
   static std::string ExtractEmbeddedArtFor(const CFileItem& item, const std::string& artType);
 };
-} // namespace TAGS
-} // namespace VIDEO
+} // namespace KODI::VIDEO::TAGS

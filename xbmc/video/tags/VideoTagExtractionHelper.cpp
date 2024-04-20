@@ -17,7 +17,8 @@
 #include "video/VideoInfoTag.h"
 #include "video/tags/VideoTagLoaderFFmpeg.h"
 
-using namespace VIDEO::TAGS;
+namespace KODI::VIDEO::TAGS
+{
 
 bool CVideoTagExtractionHelper::IsExtractionSupportedFor(const CFileItem& item)
 {
@@ -39,3 +40,5 @@ std::string CVideoTagExtractionHelper::ExtractEmbeddedArtFor(const CFileItem& it
   }
   return {};
 }
+
+} // namespace KODI::VIDEO::TAGS

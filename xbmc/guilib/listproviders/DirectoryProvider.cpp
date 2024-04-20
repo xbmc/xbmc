@@ -48,9 +48,8 @@
 #include <utility>
 
 using namespace XFILE;
+using namespace KODI;
 using namespace KODI::MESSAGING;
-using namespace KODI::MUSIC;
-using namespace KODI::VIDEO;
 using namespace PVR;
 
 class CDirectoryJob : public CJob
@@ -137,12 +136,12 @@ public:
 
   std::shared_ptr<CThumbLoader> getThumbLoader(const CGUIStaticItemPtr& item)
   {
-    if (IsVideo(*item))
+    if (VIDEO::IsVideo(*item))
     {
       initThumbLoader<CVideoThumbLoader>(InfoTagType::VIDEO);
       return m_thumbloaders[InfoTagType::VIDEO];
     }
-    if (IsAudio(*item))
+    if (MUSIC::IsAudio(*item))
     {
       initThumbLoader<CMusicThumbLoader>(InfoTagType::AUDIO);
       return m_thumbloaders[InfoTagType::AUDIO];
@@ -600,7 +599,7 @@ bool CDirectoryProvider::OnPlay(const std::shared_ptr<CGUIListItem>& item)
 
   // video play action setting is for files and folders...
   if (targetItem.HasVideoInfoTag() ||
-      (targetItem.m_bIsFolder && VIDEO_UTILS::IsItemPlayable(targetItem)))
+      (targetItem.m_bIsFolder && VIDEO::UTILS::IsItemPlayable(targetItem)))
   {
     CVideoPlayActionProcessor proc{std::make_shared<CFileItem>(targetItem)};
     if (proc.ProcessDefaultAction())

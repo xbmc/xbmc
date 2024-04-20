@@ -802,7 +802,7 @@ void CFileItemList::StackFolders()
         // check for dvd folders
         if (!bMatch)
         {
-          std::string dvdPath = VIDEO_UTILS::GetOpticalMediaPath(*item);
+          std::string dvdPath = VIDEO::UTILS::GetOpticalMediaPath(*item);
 
           if (!dvdPath.empty())
           {

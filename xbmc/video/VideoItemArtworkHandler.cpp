@@ -30,9 +30,10 @@
 #include "video/VideoThumbLoader.h"
 #include "video/tags/VideoTagExtractionHelper.h"
 
-using namespace KODI::VIDEO;
-using namespace VIDEO;
 using namespace XFILE;
+
+namespace KODI::VIDEO
+{
 
 namespace
 {
@@ -555,3 +556,5 @@ std::unique_ptr<IVideoItemArtworkHandler> IVideoItemArtworkHandlerFactory::Creat
 
   return artHandler;
 }
+
+} // namespace KODI::VIDEO

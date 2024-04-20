@@ -27,6 +27,8 @@
 #include "video/guilib/VideoPlayActionProcessor.h"
 #include "video/guilib/VideoSelectActionProcessor.h"
 
+using namespace KODI;
+
 CGUIWindowFavourites::CGUIWindowFavourites()
   : CGUIMediaWindow(WINDOW_FAVOURITES, "MyFavourites.xml")
 {
@@ -167,7 +169,7 @@ bool CGUIWindowFavourites::OnAction(const CAction& action)
     const auto item{std::make_shared<CFileItem>(*target)};
 
     // video play action setting is for files and folders...
-    if (item->HasVideoInfoTag() || (item->m_bIsFolder && VIDEO_UTILS::IsItemPlayable(*item)))
+    if (item->HasVideoInfoTag() || (item->m_bIsFolder && VIDEO::UTILS::IsItemPlayable(*item)))
     {
       CVideoPlayActionProcessor proc{item};
       if (proc.ProcessDefaultAction())

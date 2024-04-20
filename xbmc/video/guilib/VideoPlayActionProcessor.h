@@ -14,9 +14,7 @@
 
 class CFileItem;
 
-namespace VIDEO
-{
-namespace GUILIB
+namespace KODI::VIDEO::GUILIB
 {
 class CVideoPlayActionProcessorBase
 {
@@ -44,5 +42,4 @@ protected:
 private:
   CVideoPlayActionProcessorBase() = delete;
 };
-} // namespace GUILIB
-} // namespace VIDEO
+} // namespace KODI::VIDEO::GUILIB

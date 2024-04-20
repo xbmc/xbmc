@@ -12,7 +12,7 @@
 
 class CFileItem;
 
-namespace VIDEO_UTILS
+namespace KODI::VIDEO::UTILS
 {
 /*!
  \brief Check whether an item is an optical media folder or its parent.
@@ -57,4 +57,4 @@ ResumeInformation GetItemResumeInformation(const CFileItem& item);
  */
 ResumeInformation GetStackPartResumeInformation(const CFileItem& item, unsigned int partNumber);
 
-} // namespace VIDEO_UTILS
+} // namespace KODI::VIDEO::UTILS

@@ -1160,7 +1160,7 @@ bool CFileItem::IsBluray() const
   if (URIUtils::IsBluray(m_strPath))
     return true;
 
-  CFileItem item = CFileItem(VIDEO_UTILS::GetOpticalMediaPath(*this), false);
+  CFileItem item = CFileItem(VIDEO::UTILS::GetOpticalMediaPath(*this), false);
 
   return IsBDFile(item);
 }

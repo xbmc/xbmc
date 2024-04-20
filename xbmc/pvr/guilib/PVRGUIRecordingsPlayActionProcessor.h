@@ -16,7 +16,8 @@
 
 namespace PVR
 {
-class CGUIPVRRecordingsPlayActionProcessor : public VIDEO::GUILIB::CVideoPlayActionProcessorBase
+class CGUIPVRRecordingsPlayActionProcessor
+  : public KODI::VIDEO::GUILIB::CVideoPlayActionProcessorBase
 {
 public:
   explicit CGUIPVRRecordingsPlayActionProcessor(const std::shared_ptr<CFileItem>& item)

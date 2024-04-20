@@ -16,7 +16,8 @@
 #include "video/guilib/VideoGUIUtils.h"
 #include "video/guilib/VideoVersionHelper.h"
 
-using namespace VIDEO::GUILIB;
+namespace KODI::VIDEO::GUILIB
+{
 
 Action CVideoPlayActionProcessorBase::GetDefaultAction()
 {
@@ -77,7 +78,7 @@ Action CVideoPlayActionProcessorBase::ChoosePlayOrResume(const CFileItem& item)
 {
   Action action = ACTION_PLAY_FROM_BEGINNING;
 
-  const std::string resumeString = VIDEO_UTILS::GetResumeString(item);
+  const std::string resumeString = VIDEO::UTILS::GetResumeString(item);
   if (!resumeString.empty())
   {
     CContextButtons choices;
@@ -90,3 +91,5 @@ Action CVideoPlayActionProcessorBase::ChoosePlayOrResume(const CFileItem& item)
 
   return action;
 }
+
+} // namespace KODI::VIDEO::GUILIB

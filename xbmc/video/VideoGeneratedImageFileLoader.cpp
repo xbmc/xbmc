@@ -20,9 +20,10 @@
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 
-using namespace KODI::VIDEO;
+namespace KODI::VIDEO
+{
 
-bool VIDEO::CVideoGeneratedImageFileLoader::CanLoad(const std::string& specialType) const
+bool CVideoGeneratedImageFileLoader::CanLoad(const std::string& specialType) const
 {
   return specialType == "video";
 }
@@ -67,3 +68,5 @@ std::unique_ptr<CTexture> VIDEO::CVideoGeneratedImageFileLoader::Load(
 
   return CDVDFileInfo::ExtractThumbToTexture(item);
 }
+
+} // namespace KODI::VIDEO

@@ -18,7 +18,7 @@ class CFileItem;
 class CVideoInfoTag;
 class EmbeddedArt;
 
-namespace VIDEO
+namespace KODI::VIDEO
 {
 
 //! \brief Base class for video tag loaders.

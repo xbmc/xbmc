@@ -10,7 +10,7 @@
 
 #include "imagefiles/SpecialImageFileLoader.h"
 
-namespace VIDEO
+namespace KODI::VIDEO
 {
 /*!
  * @brief Generates a texture for an image embedded in a video file.
@@ -28,4 +28,4 @@ public:
                                  unsigned int preferredHeight) const override;
 };
 
-} // namespace VIDEO
+} // namespace KODI::VIDEO

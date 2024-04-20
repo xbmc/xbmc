@@ -16,7 +16,8 @@
 #include "video/tags/IVideoInfoTagLoader.h"
 #include "video/tags/VideoInfoTagLoaderFactory.h"
 
-using namespace VIDEO;
+namespace KODI::VIDEO
+{
 
 bool CVideoEmbeddedImageFileLoader::CanLoad(const std::string& specialType) const
 {
@@ -47,10 +48,11 @@ bool GetEmbeddedThumb(const std::string& path, const std::string& type, Embedded
 }
 } // namespace
 
-std::unique_ptr<CTexture> CVideoEmbeddedImageFileLoader::Load(const std::string& specialType,
-                                                              const std::string& filePath,
-                                                              unsigned int preferredWidth,
-                                                              unsigned int preferredHeight) const
+std::unique_ptr<CTexture> VIDEO::CVideoEmbeddedImageFileLoader::Load(
+    const std::string& specialType,
+    const std::string& filePath,
+    unsigned int preferredWidth,
+    unsigned int preferredHeight) const
 {
   EmbeddedArt art;
   if (GetEmbeddedThumb(filePath, specialType.substr(6), art))
@@ -58,3 +60,5 @@ std::unique_ptr<CTexture> CVideoEmbeddedImageFileLoader::Load(const std::string&
                                           preferredHeight);
   return {};
 }
+
+} // namespace KODI::VIDEO

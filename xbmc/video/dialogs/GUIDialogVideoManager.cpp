@@ -37,6 +37,8 @@
 #include <algorithm>
 #include <string>
 
+using namespace KODI;
+
 static constexpr unsigned int CONTROL_LABEL_TITLE = 2;
 
 static constexpr unsigned int CONTROL_BUTTON_PLAY = 21;
@@ -287,7 +289,7 @@ private:
     const ContentUtils::PlayMode mode{m_item->GetProperty("CheckAutoPlayNextItem").asBoolean()
                                           ? ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM
                                           : ContentUtils::PlayMode::PLAY_ONLY_THIS};
-    VIDEO_UTILS::PlayItem(m_item, "", mode);
+    VIDEO::UTILS::PlayItem(m_item, "", mode);
   }
 };
 } // unnamed namespace

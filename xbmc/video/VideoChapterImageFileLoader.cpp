@@ -16,16 +16,18 @@
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
 
+namespace KODI::VIDEO
+{
+
 bool VIDEO::CVideoChapterImageFileLoader::CanLoad(const std::string& specialType) const
 {
   return specialType == "videochapter";
 }
 
-std::unique_ptr<CTexture> VIDEO::CVideoChapterImageFileLoader::Load(
-    const std::string& specialType,
-    const std::string& goofyChapterPath,
-    unsigned int,
-    unsigned int) const
+std::unique_ptr<CTexture> CVideoChapterImageFileLoader::Load(const std::string& specialType,
+                                                             const std::string& goofyChapterPath,
+                                                             unsigned int,
+                                                             unsigned int) const
 {
   // "goofy" chapter path because these paths don't yet conform to 'image://' path standard
 
@@ -52,3 +54,5 @@ std::unique_ptr<CTexture> VIDEO::CVideoChapterImageFileLoader::Load(
   CFileItem item{cleanname, false};
   return CDVDFileInfo::ExtractThumbToTexture(item, chapterNum);
 }
+
+} // namespace KODI::VIDEO

@@ -14,7 +14,8 @@
 #include "VideoTagLoaderPlugin.h"
 #include "video/tags/VideoTagExtractionHelper.h"
 
-using namespace VIDEO;
+namespace KODI::VIDEO
+{
 
 IVideoInfoTagLoader* CVideoInfoTagLoaderFactory::CreateLoader(const CFileItem& item,
                                                               const ADDON::ScraperPtr& info,
@@ -45,3 +46,5 @@ IVideoInfoTagLoader* CVideoInfoTagLoaderFactory::CreateLoader(const CFileItem& i
 
   return nullptr;
 }
+
+} // namespace KODI::VIDEO

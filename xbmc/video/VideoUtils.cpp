@@ -34,7 +34,7 @@ using namespace KODI::VIDEO;
 
 namespace
 {
-VIDEO_UTILS::ResumeInformation GetFolderItemResumeInformation(const CFileItem& item)
+KODI::VIDEO::UTILS::ResumeInformation GetFolderItemResumeInformation(const CFileItem& item)
 {
   if (!item.m_bIsFolder)
     return {};
@@ -84,7 +84,7 @@ VIDEO_UTILS::ResumeInformation GetFolderItemResumeInformation(const CFileItem& i
 
   if (folderItem.IsResumable())
   {
-    VIDEO_UTILS::ResumeInformation resumeInfo;
+    KODI::VIDEO::UTILS::ResumeInformation resumeInfo;
     resumeInfo.isResumable = true;
     return resumeInfo;
   }
@@ -92,7 +92,7 @@ VIDEO_UTILS::ResumeInformation GetFolderItemResumeInformation(const CFileItem& i
   return {};
 }
 
-VIDEO_UTILS::ResumeInformation GetNonFolderItemResumeInformation(const CFileItem& item)
+KODI::VIDEO::UTILS::ResumeInformation GetNonFolderItemResumeInformation(const CFileItem& item)
 {
   // do not resume nfo files
   if (item.IsNFO())
@@ -106,7 +106,7 @@ VIDEO_UTILS::ResumeInformation GetNonFolderItemResumeInformation(const CFileItem
   if (item.IsLiveTV() || item.IsDeleted())
     return {};
 
-  VIDEO_UTILS::ResumeInformation resumeInfo;
+  KODI::VIDEO::UTILS::ResumeInformation resumeInfo;
 
   if (item.GetCurrentResumeTimeAndPartNumber(resumeInfo.startOffset, resumeInfo.partNumber))
   {
@@ -182,7 +182,7 @@ VIDEO_UTILS::ResumeInformation GetNonFolderItemResumeInformation(const CFileItem
 
 } // unnamed namespace
 
-namespace VIDEO_UTILS
+namespace KODI::VIDEO::UTILS
 {
 std::string GetOpticalMediaPath(const CFileItem& item)
 {
@@ -281,4 +281,4 @@ ResumeInformation GetStackPartResumeInformation(const CFileItem& item, unsigned 
   return resumeInfo;
 }
 
-} // namespace VIDEO_UTILS
+} // namespace KODI::VIDEO::UTILS

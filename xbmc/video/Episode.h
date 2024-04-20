@@ -18,7 +18,7 @@
 class CFileItem;
 
 // single episode information
-namespace VIDEO
+namespace KODI::VIDEO
 {
   struct EPISODE
   {

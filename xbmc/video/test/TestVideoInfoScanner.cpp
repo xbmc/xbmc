@@ -11,7 +11,7 @@
 
 #include <gtest/gtest.h>
 
-using namespace VIDEO;
+using namespace KODI;
 using ::testing::Test;
 using ::testing::WithParamInterface;
 using ::testing::ValuesIn;
@@ -48,13 +48,13 @@ class TestVideoInfoScanner : public Test,
 TEST_P(TestVideoInfoScanner, EnumerateEpisodeItem)
 {
   const TestEntry& entry = GetParam();
-  CVideoInfoScanner scanner;
+  VIDEO::CVideoInfoScanner scanner;
   CFileItem item(entry.path, false);
-  EPISODELIST expected;
+  VIDEO::EPISODELIST expected;
   for (int i = 0; i < 3 && entry.episode[i]; i++)
     expected.emplace_back(entry.season, entry.episode[i], 0, false);
 
-  EPISODELIST result;
+  VIDEO::EPISODELIST result;
   ASSERT_TRUE(scanner.EnumerateEpisodeItem(&item, result));
   EXPECT_EQ(expected.size(), result.size());
   for (size_t i = 0; i < expected.size(); i++)
@@ -65,9 +65,9 @@ INSTANTIATE_TEST_SUITE_P(VideoInfoScanner, TestVideoInfoScanner, ValuesIn(TestDa
 
 TEST(TestVideoInfoScanner, EnumerateEpisodeItemByTitle)
 {
-  CVideoInfoScanner scanner;
+  VIDEO::CVideoInfoScanner scanner;
   CFileItem item("/foo.special.mp4", false);
-  EPISODELIST result;
+  VIDEO::EPISODELIST result;
   ASSERT_TRUE(scanner.EnumerateEpisodeItem(&item, result));
   ASSERT_EQ(result.size(), 1);
   ASSERT_EQ(result[0].strTitle, "foo");

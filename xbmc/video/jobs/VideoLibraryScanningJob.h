@@ -45,7 +45,7 @@ protected:
   bool Work(CVideoDatabase &db) override;
 
 private:
-  VIDEO::CVideoInfoScanner m_scanner;
+  KODI::VIDEO::CVideoInfoScanner m_scanner;
   std::string m_directory;
   bool m_showProgress;
   bool m_scanAll;

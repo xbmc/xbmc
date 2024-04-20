@@ -22,6 +22,7 @@
 #include "video/guilib/VideoGUIUtils.h"
 
 using namespace CONTEXTMENU;
+using namespace KODI;
 
 bool CFavouriteContextMenuAction::IsVisible(const CFileItem& item) const
 {
@@ -129,7 +130,7 @@ std::string CFavouritesTargetResume::GetLabel(const CFileItem& item) const
 {
   const std::shared_ptr<CFileItem> targetItem{ResolveFavouriteItem(item)};
   if (targetItem)
-    return VIDEO_UTILS::GetResumeString(*targetItem);
+    return VIDEO::UTILS::GetResumeString(*targetItem);
 
   return {};
 }
@@ -140,7 +141,7 @@ bool CFavouritesTargetResume::IsVisible(const CFileItem& item) const
   {
     const std::shared_ptr<CFileItem> targetItem{ResolveFavouriteItem(item)};
     if (targetItem)
-      return VIDEO_UTILS::GetItemResumeInformation(*targetItem).isResumable;
+      return VIDEO::UTILS::GetItemResumeInformation(*targetItem).isResumable;
   }
   return false;
 }
@@ -157,7 +158,7 @@ bool CFavouritesTargetResume::Execute(const std::shared_ptr<CFileItem>& item) co
 std::string CFavouritesTargetPlay::GetLabel(const CFileItem& item) const
 {
   const std::shared_ptr<CFileItem> targetItem{ResolveFavouriteItem(item)};
-  if (targetItem && VIDEO_UTILS::GetItemResumeInformation(*targetItem).isResumable)
+  if (targetItem && VIDEO::UTILS::GetItemResumeInformation(*targetItem).isResumable)
     return g_localizeStrings.Get(12021); // Play from beginning
 
   return g_localizeStrings.Get(208); // Play

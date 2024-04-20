@@ -14,9 +14,7 @@
 
 class CFileItem;
 
-namespace VIDEO
-{
-namespace GUILIB
+namespace KODI::VIDEO::GUILIB
 {
 class CVideoSelectActionProcessorBase : public CVideoPlayActionProcessorBase
 {
@@ -44,5 +42,4 @@ private:
   Action ChooseVideoItemSelectAction() const;
   unsigned int ChooseStackItemPartNumber() const;
 };
-} // namespace GUILIB
-} // namespace VIDEO
+} // namespace KODI::VIDEO::GUILIB
