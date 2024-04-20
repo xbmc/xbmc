@@ -546,12 +546,13 @@ void CGLContextEGL::QueryExtensions()
 int CGLContextEGL::GetBufferAge()
 {
 #ifdef EGL_BUFFER_AGE_EXT
-  EGLint age;
-  eglQuerySurface(m_eglDisplay, m_eglSurface, EGL_BUFFER_AGE_EXT, &age);
-  if (age < 1)
-    age = 2;
-  return static_cast<int>(age);
-#else
-  return 2;
+  if (m_bufferAgeSupport)
+  {
+    EGLint age;
+    eglQuerySurface(m_eglDisplay, m_eglSurface, EGL_BUFFER_AGE_EXT, &age);
+    return static_cast<int>(age);
+  }
 #endif
+
+  return 2;
 }
