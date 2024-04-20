@@ -71,7 +71,7 @@ bool CRenderBufferOpenGLES::UploadTexture()
       glTexSubImage2D(m_textureTarget, 0, 0, y, m_width, 1, m_pixelformat, m_pixeltype, pixels);
     }
   }
-  else if (m_context.IsExtSupported("GL_EXT_unpack_subimage"))
+  else if (m_context.IsExtSupported(GLEXTENSIONS::EXT_unpack_subimage))
   {
 #ifdef GL_UNPACK_ROW_LENGTH_EXT
     glPixelStorei(GL_UNPACK_ROW_LENGTH_EXT, stride / m_bpp);

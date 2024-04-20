@@ -233,7 +233,8 @@ bool CLinuxRendererGL::Configure(const VideoPicture &picture, float fps, unsigne
   m_nonLinStretchGui = false;
   m_pixelRatio = 1.0;
 
-  m_pboSupported = CServiceBroker::GetRenderSystem()->IsExtSupported("GL_ARB_pixel_buffer_object");
+  m_pboSupported =
+      CServiceBroker::GetRenderSystem()->IsExtSupported(GLEXTENSIONS::ARB_pixel_buffer_object);
 
   // setup the background colour
   m_clearColour = CServiceBroker::GetWinSystem()->UseLimitedColor() ? (16.0f / 0xff) : 0.0f;
@@ -2562,7 +2563,7 @@ bool CLinuxRendererGL::Supports(ERENDERFEATURE feature) const
 
 bool CLinuxRendererGL::SupportsMultiPassRendering()
 {
-  return m_renderSystem->IsExtSupported("GL_EXT_framebuffer_object");
+  return m_renderSystem->IsExtSupported(GLEXTENSIONS::EXT_framebuffer_object);
 }
 
 bool CLinuxRendererGL::Supports(ESCALINGMETHOD method) const
@@ -2601,7 +2602,7 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method) const
     if (major > 3 ||
         (major == 3 && minor >= 2))
       hasFramebuffer = true;
-    if (m_renderSystem->IsExtSupported("GL_EXT_framebuffer_object"))
+    if (m_renderSystem->IsExtSupported(GLEXTENSIONS::EXT_framebuffer_object))
       hasFramebuffer = true;
     if (hasFramebuffer  && (m_renderMethod & RENDER_GLSL))
       return true;

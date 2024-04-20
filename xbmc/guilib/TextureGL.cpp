@@ -10,6 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "guilib/TextureManager.h"
+#include "rendering/Extensions.h"
 #include "rendering/RenderSystem.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/GLUtils.h"
@@ -179,12 +180,15 @@ void CGLTexture::LoadToGPU()
       internalformat = pixelformat = GL_RGB;
       break;
     case XB_FMT_A8R8G8B8:
-      if (CServiceBroker::GetRenderSystem()->IsExtSupported("GL_EXT_texture_format_BGRA8888") ||
-          CServiceBroker::GetRenderSystem()->IsExtSupported("GL_IMG_texture_format_BGRA8888"))
+      if (CServiceBroker::GetRenderSystem()->IsExtSupported(
+              GLEXTENSIONS::EXT_texture_format_BGRA8888) ||
+          CServiceBroker::GetRenderSystem()->IsExtSupported(
+              GLEXTENSIONS::IMG_texture_format_BGRA8888))
       {
         internalformat = pixelformat = GL_BGRA_EXT;
       }
-      else if (CServiceBroker::GetRenderSystem()->IsExtSupported("GL_APPLE_texture_format_BGRA8888"))
+      else if (CServiceBroker::GetRenderSystem()->IsExtSupported(
+                   GLEXTENSIONS::APPLE_texture_format_BGRA8888))
       {
         // Apple's implementation does not conform to spec. Instead, they require
         // differing format/internalformat, more like GL.

@@ -9,6 +9,7 @@
 #pragma once
 
 #include "games/GameTypes.h"
+#include "rendering/Extensions.h"
 #include "utils/ColorUtils.h"
 #include "utils/Geometry.h"
 #include "windowing/Resolution.h"
@@ -62,6 +63,7 @@ public:
   void SetScissors(const CRect& rect);
   void ApplyStateBlock();
   bool IsExtSupported(const char* extension);
+  bool IsExtSupported(const GLEXTENSIONS::EXTENSION extension);
 
   // OpenGL(ES) rendering functions
   void EnableGUIShader(GL_SHADER_METHOD method);

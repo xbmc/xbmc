@@ -71,6 +71,11 @@ bool CRenderContext::IsExtSupported(const char* extension)
   return m_rendering->IsExtSupported(extension);
 }
 
+bool CRenderContext::IsExtSupported(const GLEXTENSIONS::EXTENSION extension)
+{
+  return m_rendering->IsExtSupported(extension);
+}
+
 #if defined(HAS_GL) || defined(HAS_GLES)
 namespace
 {

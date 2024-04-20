@@ -207,7 +207,7 @@ void LogGraphicsInfo()
 #define GL_GPU_MEMORY_INFO_EVICTION_COUNT_NVX            0x904A
 #define GL_GPU_MEMORY_INFO_EVICTED_MEMORY_NVX            0x904B
 
-  if (CServiceBroker::GetRenderSystem()->IsExtSupported("GL_NVX_gpu_memory_info"))
+  if (CServiceBroker::GetRenderSystem()->IsExtSupported(GLEXTENSIONS::NVX_gpu_memory_info))
   {
     GLint mem = 0;
 
