@@ -1296,13 +1296,16 @@ bool CGUIWindowManager::Render()
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiVisualizeDirtyRegions;
   if (visualizeDirtyRegions)
     bufferAge = 20;
-  m_tracker.CleanMarkedRegions(bufferAge);
+  if (bufferAge)
+    m_tracker.CleanMarkedRegions(bufferAge);
+
   CDirtyRegionList dirtyRegions = m_tracker.GetDirtyRegions();
   CServiceBroker::GetWinSystem()->SetDirtyRegions(dirtyRegions);
 
   bool hasRendered = false;
   // If we visualize the regions we will always render the entire viewport
-  if (visualizeDirtyRegions ||
+  // If the buffer age is zero, the current content is undefined and has to be rendered
+  if (visualizeDirtyRegions || bufferAge == 0 ||
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiAlgorithmDirtyRegions ==
           DIRTYREGION_SOLVER_FILL_VIEWPORT_ALWAYS)
   {
