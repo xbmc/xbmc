@@ -425,12 +425,22 @@ void CRenderSystemGLES::InitialiseShaders()
   }
 
   m_pShader[ShaderMethodGLES::SM_FONTS] =
-      std::make_unique<CGLESShader>("gles_shader_fonts.frag", defines);
+      std::make_unique<CGLESShader>("gles_shader_simple.vert", "gles_shader_fonts.frag", defines);
   if (!m_pShader[ShaderMethodGLES::SM_FONTS]->CompileAndLink())
   {
     m_pShader[ShaderMethodGLES::SM_FONTS]->Free();
     m_pShader[ShaderMethodGLES::SM_FONTS].reset();
     CLog::Log(LOGERROR, "GUI Shader gles_shader_fonts.frag - compile and link failed");
+  }
+
+  m_pShader[ShaderMethodGLES::SM_FONTS_SHADER_CLIP] =
+      std::make_unique<CGLESShader>("gles_shader_clip.vert", "gles_shader_fonts.frag", defines);
+  if (!m_pShader[ShaderMethodGLES::SM_FONTS_SHADER_CLIP]->CompileAndLink())
+  {
+    m_pShader[ShaderMethodGLES::SM_FONTS_SHADER_CLIP]->Free();
+    m_pShader[ShaderMethodGLES::SM_FONTS_SHADER_CLIP].reset();
+    CLog::Log(LOGERROR, "GUI Shader gles_shader_clip.vert + gles_shader_fonts.frag - compile "
+                        "and link failed");
   }
 
   m_pShader[ShaderMethodGLES::SM_TEXTURE_NOBLEND] =
@@ -527,6 +537,10 @@ void CRenderSystemGLES::ReleaseShaders()
   if (m_pShader[ShaderMethodGLES::SM_FONTS])
     m_pShader[ShaderMethodGLES::SM_FONTS]->Free();
   m_pShader[ShaderMethodGLES::SM_FONTS].reset();
+
+  if (m_pShader[ShaderMethodGLES::SM_FONTS_SHADER_CLIP])
+    m_pShader[ShaderMethodGLES::SM_FONTS_SHADER_CLIP]->Free();
+  m_pShader[ShaderMethodGLES::SM_FONTS_SHADER_CLIP].reset();
 
   if (m_pShader[ShaderMethodGLES::SM_TEXTURE_NOBLEND])
     m_pShader[ShaderMethodGLES::SM_TEXTURE_NOBLEND]->Free();
@@ -672,6 +686,30 @@ GLint CRenderSystemGLES::GUIShaderGetModel()
 {
   if (m_pShader[m_method])
     return m_pShader[m_method]->GetModelLoc();
+
+  return -1;
+}
+
+GLint CRenderSystemGLES::GUIShaderGetMatrix()
+{
+  if (m_pShader[m_method])
+    return m_pShader[m_method]->GetMatrixLoc();
+
+  return -1;
+}
+
+GLint CRenderSystemGLES::GUIShaderGetClip()
+{
+  if (m_pShader[m_method])
+    return m_pShader[m_method]->GetShaderClipLoc();
+
+  return -1;
+}
+
+GLint CRenderSystemGLES::GUIShaderGetCoordStep()
+{
+  if (m_pShader[m_method])
+    return m_pShader[m_method]->GetShaderCoordStepLoc();
 
   return -1;
 }

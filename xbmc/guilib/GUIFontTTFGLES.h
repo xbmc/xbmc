@@ -55,4 +55,5 @@ private:
   TextureStatus m_textureStatus{TEXTURE_VOID};
 
   static bool m_staticVertexBufferCreated;
+  bool m_scissorClip{false};
 };

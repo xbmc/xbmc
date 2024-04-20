@@ -382,7 +382,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
   uint32_t rawAlignment = alignment;
   bool dirtyCache(false);
 
-#if defined(HAS_GL)
+#if not defined(HAS_DX)
   // round coordinates to the pixel grid. otherwise, we might sample at the wrong positions.
   if (!scrolling)
     x = std::round(x);
@@ -392,7 +392,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
   y += dy;
 #endif
 
-#if defined(HAS_GL)
+#if not defined(HAS_DX)
   // GL can scissor and shader clip
   const bool hardwareClipping = true;
 #else
@@ -404,7 +404,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
   CGUIFontCacheStaticPosition staticPos(x, y);
   CGUIFontCacheDynamicPosition dynamicPos;
 
-#if defined(HAS_GL)
+#if not defined(HAS_DX)
   // dummy positions for the time being
   dynamicPos = CGUIFontCacheDynamicPosition(0.0f, 0.0f, 0.0f);
 #else
@@ -452,7 +452,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
 
     const std::vector<Glyph> glyphs = GetHarfBuzzShapedGlyphs(text);
     // save the origin, which is scaled separately
-#if defined(HAS_GL)
+#if not defined(HAS_DX)
     // the origin is now at [0,0], and not at "random" locations anymore. positioning is done in the vertex shader.
     m_originX = 0;
     m_originY = 0;
@@ -710,7 +710,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
                                 scrolling, std::chrono::steady_clock::now(), dirtyCache);
       CVertexBuffer newVertexBuffer = CreateVertexBuffer(*tempVertices);
       vertexBuffer = newVertexBuffer;
-#if defined(HAS_GL)
+#if not defined(HAS_DX)
       m_vertexTrans.emplace_back(x, y, 0.0f, &vertexBuffer, context.GetClipRegion(), dx, dy);
 #else
       m_vertexTrans.emplace_back(.0f, .0f, .0f, &vertexBuffer, context.GetClipRegion());
@@ -728,7 +728,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
   else
   {
     if (hardwareClipping)
-#if defined(HAS_GL)
+#if not defined(HAS_DX)
       m_vertexTrans.emplace_back(x, y, 0.0f, &vertexBuffer, context.GetClipRegion(), dx, dy);
 #else
       m_vertexTrans.emplace_back(dynamicPos.m_x, dynamicPos.m_y, dynamicPos.m_z, &vertexBuffer,
@@ -1139,7 +1139,7 @@ void CGUIFontTTF::RenderCharacter(CGraphicContext& context,
 
   // posX and posY are relative to our origin, and the textcell is offset
   // from our (posX, posY).  Plus, these are unscaled quantities compared to the underlying GUI resolution
-#if defined(HAS_GL)
+#if not defined(HAS_DX)
   CRect vertex((posX + ch->m_offsetX), (posY + ch->m_offsetY), (posX + ch->m_offsetX + width),
                (posY + ch->m_offsetY + height));
 #else
@@ -1151,7 +1151,7 @@ void CGUIFontTTF::RenderCharacter(CGraphicContext& context,
 #endif
   CRect texture(ch->m_left, ch->m_top, ch->m_right, ch->m_bottom);
 
-#if !defined(HAS_GL)
+#if defined(HAS_DX)
   if (!m_renderSystem->ScissorsCanEffectClipping())
     context.ClipRect(vertex, texture);
 
@@ -1262,7 +1262,7 @@ void CGUIFontTTF::RenderCharacter(CGraphicContext& context,
 
   v[3].u = tl;
   v[3].v = tb;
-#elif defined(HAS_GL)
+#else
   // GL / GLES uses triangle strips, not quads, so have to rearrange the vertex order
   // GL uses vertex shaders to manipulate text rotation/translation/scaling/clipping.
 
@@ -1296,30 +1296,6 @@ void CGUIFontTTF::RenderCharacter(CGraphicContext& context,
   v[3].x = vertex.x2 - xOffset + 0.5f;
   v[3].y = vertex.y2 - yOffset + 0.5f;
   v[3].z = 0;
-#else
-  v[0].u = tl;
-  v[0].v = tt;
-  v[0].x = x[0];
-  v[0].y = y[0];
-  v[0].z = z[0];
-
-  v[1].u = tl;
-  v[1].v = tb;
-  v[1].x = x[3];
-  v[1].y = y[3];
-  v[1].z = z[3];
-
-  v[2].u = tr;
-  v[2].v = tt;
-  v[2].x = x[1];
-  v[2].y = y[1];
-  v[2].z = z[1];
-
-  v[3].u = tr;
-  v[3].v = tb;
-  v[3].x = x[2];
-  v[3].y = y[2];
-  v[3].z = z[2];
 #endif
 }
 

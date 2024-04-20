@@ -25,6 +25,7 @@ enum class ShaderMethodGLES
   SM_TEXTURE,
   SM_MULTI,
   SM_FONTS,
+  SM_FONTS_SHADER_CLIP,
   SM_TEXTURE_NOBLEND,
   SM_MULTI_BLENDCOLOR,
   SM_TEXTURE_RGBA,
@@ -55,6 +56,7 @@ private:
       {ShaderMethodGLES::SM_TEXTURE, "texture"},
       {ShaderMethodGLES::SM_MULTI, "multi"},
       {ShaderMethodGLES::SM_FONTS, "fonts"},
+      {ShaderMethodGLES::SM_FONTS_SHADER_CLIP, "fonts with vertex shader based clipping"},
       {ShaderMethodGLES::SM_TEXTURE_NOBLEND, "texture no blending"},
       {ShaderMethodGLES::SM_MULTI_BLENDCOLOR, "multi blend colour"},
       {ShaderMethodGLES::SM_TEXTURE_RGBA, "texure rgba"},
@@ -124,6 +126,9 @@ public:
   GLint GUIShaderGetContrast();
   GLint GUIShaderGetBrightness();
   GLint GUIShaderGetModel();
+  GLint GUIShaderGetMatrix();
+  GLint GUIShaderGetClip();
+  GLint GUIShaderGetCoordStep();
 
 protected:
   virtual void SetVSyncImpl(bool enable) = 0;
