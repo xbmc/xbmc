@@ -61,6 +61,14 @@ bool CWinSystemWin10DX::CreateNewWindow(const std::string& name, bool fullScreen
   m_deviceResources = DX::DeviceResources::Get();
   m_deviceResources->SetWindow(m_coreWindow);
 
+  // saves threadId of current thread (UI thread)
+  m_uiThreadId = GetCurrentThreadId();
+
+  // calls these methods to make sure cached values are properly initialized
+  // and can be used later when called from other thread
+  IsHDRDisplay();
+  HasSystemSdrPeakLuminance();
+
   if (CWinSystemWin10::CreateNewWindow(name, fullScreen, res) && m_deviceResources->HasValidDevice())
   {
     CGenericTouchInputHandler::GetInstance().RegisterHandler(&CGenericTouchActionHandler::GetInstance());
@@ -166,7 +174,14 @@ void CWinSystemWin10DX::InitHooks(IDXGIOutput* pOutput)
 
 bool CWinSystemWin10DX::IsHDRDisplay()
 {
-  return (CWIN32Util::GetWindowsHDRStatus() != HDR_STATUS::HDR_UNSUPPORTED);
+  if (m_uiThreadId == GetCurrentThreadId())
+  {
+    const HDR_STATUS hdrStatus = CWIN32Util::GetWindowsHDRStatus();
+    m_cachedHdrStatus = hdrStatus;
+    return (hdrStatus != HDR_STATUS::HDR_UNSUPPORTED);
+  }
+
+  return (m_cachedHdrStatus != HDR_STATUS::HDR_UNSUPPORTED);
 }
 
 HDR_STATUS CWinSystemWin10DX::GetOSHDRStatus()

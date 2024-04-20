@@ -156,6 +156,10 @@ protected:
 
   bool m_validSystemSdrPeakLuminance{false};
   float m_systemSdrPeakLuminance{.0f};
+
+  DWORD m_uiThreadId{0};
+  HDR_STATUS m_cachedHdrStatus{HDR_STATUS::HDR_UNSUPPORTED};
+  bool m_cachedHasSystemSdrPeakLum{false};
 };
 
 #pragma pack(pop)
