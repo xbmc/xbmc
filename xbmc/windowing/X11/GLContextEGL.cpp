@@ -7,6 +7,7 @@
  */
 
 // always define GL_GLEXT_PROTOTYPES before include gl headers
+#include "commons/ilog.h"
 #if !defined(GL_GLEXT_PROTOTYPES)
   #define GL_GLEXT_PROTOTYPES
 #endif
@@ -540,4 +541,17 @@ void CGLContextEGL::QueryExtensions()
   m_extensions = std::string(" ") + extensions + " ";
 
   CLog::Log(LOGDEBUG, "EGL_EXTENSIONS:{}", m_extensions);
+}
+
+int CGLContextEGL::GetBufferAge()
+{
+#ifdef EGL_BUFFER_AGE_EXT
+  EGLint age;
+  eglQuerySurface(m_eglDisplay, m_eglSurface, EGL_BUFFER_AGE_EXT, &age);
+  if (age < 1)
+    age = 2;
+  return static_cast<int>(age);
+#else
+  return 2;
+#endif
 }
