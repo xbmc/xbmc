@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -65,7 +65,18 @@ bool CGUIFontTTFGL::FirstBegin()
     internalFormat = GL_R8;
   else
     internalFormat = GL_LUMINANCE;
+
   renderSystem->EnableShader(ShaderMethodGL::SM_FONTS);
+  if (renderSystem->ScissorsCanEffectClipping())
+  {
+    m_scissorClip = true;
+  }
+  else
+  {
+    m_scissorClip = false;
+    renderSystem->ResetScissors();
+    renderSystem->EnableShader(ShaderMethodGL::SM_FONTS_SHADER_CLIP);
+  }
 
   if (m_textureStatus == TEXTURE_REALLOCATED)
   {
@@ -129,6 +140,9 @@ bool CGUIFontTTFGL::FirstBegin()
 
 void CGUIFontTTFGL::LastEnd()
 {
+  // static vertex arrays are not supported anymore
+  assert(m_vertex.empty());
+
   CWinSystemBase* const winSystem = CServiceBroker::GetWinSystem();
   if (!winSystem)
     return;
@@ -138,7 +152,9 @@ void CGUIFontTTFGL::LastEnd()
   GLint posLoc = renderSystem->ShaderGetPos();
   GLint colLoc = renderSystem->ShaderGetCol();
   GLint tex0Loc = renderSystem->ShaderGetCoord0();
-  GLint modelLoc = renderSystem->ShaderGetModel();
+  GLint clipUniformLoc = renderSystem->ShaderGetClip();
+  GLint coordStepUniformLoc = renderSystem->ShaderGetCoordStep();
+  GLint matrixUniformLoc = renderSystem->ShaderGetMatrix();
 
   CreateStaticVertexBuffers();
 
@@ -146,44 +162,6 @@ void CGUIFontTTFGL::LastEnd()
   glEnableVertexAttribArray(posLoc);
   glEnableVertexAttribArray(colLoc);
   glEnableVertexAttribArray(tex0Loc);
-
-  if (!m_vertex.empty())
-  {
-
-    // Deal with vertices that had to use software clipping
-    std::vector<SVertex> vecVertices(6 * (m_vertex.size() / 4));
-    SVertex* vertices = &vecVertices[0];
-    for (size_t i = 0; i < m_vertex.size(); i += 4)
-    {
-      *vertices++ = m_vertex[i];
-      *vertices++ = m_vertex[i + 1];
-      *vertices++ = m_vertex[i + 2];
-
-      *vertices++ = m_vertex[i + 1];
-      *vertices++ = m_vertex[i + 3];
-      *vertices++ = m_vertex[i + 2];
-    }
-    vertices = &vecVertices[0];
-
-    GLuint VertexVBO;
-
-    glGenBuffers(1, &VertexVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VertexVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(SVertex) * vecVertices.size(), &vecVertices[0],
-                 GL_STATIC_DRAW);
-
-    glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(SVertex),
-                          reinterpret_cast<const GLvoid*>(offsetof(SVertex, x)));
-    glVertexAttribPointer(colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex),
-                          reinterpret_cast<const GLvoid*>(offsetof(SVertex, r)));
-    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, GL_FALSE, sizeof(SVertex),
-                          reinterpret_cast<const GLvoid*>(offsetof(SVertex, u)));
-
-    glDrawArrays(GL_TRIANGLES, 0, vecVertices.size());
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glDeleteBuffers(1, &VertexVBO);
-  }
 
   if (!m_vertexTrans.empty())
   {
@@ -211,14 +189,55 @@ void CGUIFontTTFGL::LastEnd()
         // skip empty clip
         if (clip.IsEmpty())
           continue;
-        renderSystem->SetScissors(clip);
       }
 
-      // Apply the translation to the currently active (top-of-stack) model view matrix
-      glMatrixModview.Push();
-      glMatrixModview.Get().Translatef(m_vertexTrans[i].m_translateX, m_vertexTrans[i].m_translateY,
-                                       m_vertexTrans[i].m_translateZ);
-      glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glMatrixModview.Get());
+      if (m_scissorClip)
+      {
+        // clip using scissors
+        renderSystem->SetScissors(clip);
+      }
+      else
+      {
+        // clip using vertex shader
+        renderSystem->ResetScissors();
+
+        float x1 =
+            m_vertexTrans[i].m_clip.x1 - m_vertexTrans[i].m_translateX - m_vertexTrans[i].m_offsetX;
+        float y1 =
+            m_vertexTrans[i].m_clip.y1 - m_vertexTrans[i].m_translateY - m_vertexTrans[i].m_offsetY;
+        float x2 =
+            m_vertexTrans[i].m_clip.x2 - m_vertexTrans[i].m_translateX - m_vertexTrans[i].m_offsetX;
+        float y2 =
+            m_vertexTrans[i].m_clip.y2 - m_vertexTrans[i].m_translateY - m_vertexTrans[i].m_offsetY;
+
+        glUniform4f(clipUniformLoc, x1, y1, x2, y2);
+
+        // setup texture step
+        float stepX = context.GetGUIScaleX() / (static_cast<float>(m_textureWidth));
+        float stepY = context.GetGUIScaleY() / (static_cast<float>(m_textureHeight));
+        glUniform4f(coordStepUniformLoc, stepX, stepY, 1.0f, 1.0f);
+      }
+
+      // calculate the fractional offset to the ideal position
+      float fractX =
+          context.ScaleFinalXCoord(m_vertexTrans[i].m_translateX, m_vertexTrans[i].m_translateY);
+      float fractY =
+          context.ScaleFinalYCoord(m_vertexTrans[i].m_translateX, m_vertexTrans[i].m_translateY);
+      fractX = -fractX + std::round(fractX);
+      fractY = -fractY + std::round(fractY);
+
+      // proj * model * gui * scroll * translation * scaling * correction factor
+      CMatrixGL matrix = glMatrixProject.Get();
+      matrix.MultMatrixf(glMatrixModview.Get());
+      matrix.MultMatrixf(CMatrixGL(context.GetGUIMatrix()));
+      matrix.Translatef(m_vertexTrans[i].m_offsetX, m_vertexTrans[i].m_offsetY, 0.0f);
+      matrix.Translatef(m_vertexTrans[i].m_translateX, m_vertexTrans[i].m_translateY, 0.0f);
+      // the gui matrix messes with the scale. correct it here for now.
+      matrix.Scalef(context.GetGUIScaleX(), context.GetGUIScaleY(), 1.0f);
+      // the gui matrix doesn't align to exact pixel coords atm. correct it here for now.
+      matrix.Translatef(fractX, fractY, 0.0f);
+
+      glUniformMatrix4fv(matrixUniformLoc, 1, GL_FALSE, matrix);
 
       // Bind the buffer to the OpenGL context's GL_ARRAY_BUFFER binding point
       glBindBuffer(GL_ARRAY_BUFFER, m_vertexTrans[i].m_vertexBuffer->bufferHandle);
@@ -245,13 +264,12 @@ void CGUIFontTTFGL::LastEnd()
 
         glDrawElements(GL_TRIANGLES, 6 * count, GL_UNSIGNED_SHORT, 0);
       }
-
-      glMatrixModview.Pop();
     }
+
     // Restore the original scissor rectangle
-    renderSystem->SetScissors(scissor);
-    // Restore the original model view matrix
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glMatrixModview.Get());
+    if (m_scissorClip)
+      renderSystem->SetScissors(scissor);
+
     // Unbind GL_ARRAY_BUFFER and GL_ELEMENT_ARRAY_BUFFER
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
