@@ -302,11 +302,6 @@ bool CEGLContextUtils::ChooseConfig(EGLint renderableType, EGLint visualId, bool
   }
 
   EGLint surfaceType = EGL_WINDOW_BIT;
-  // for the non-trivial dirty region modes, we need the EGL buffer to be preserved across updates
-  int guiAlgorithmDirtyRegions = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiAlgorithmDirtyRegions;
-  if (guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_COST_REDUCTION ||
-      guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_UNION)
-    surfaceType |= EGL_SWAP_BEHAVIOR_PRESERVED_BIT;
 
   CEGLAttributesVec attribs;
   attribs.Add({{EGL_RED_SIZE, 8},
@@ -465,10 +460,6 @@ void CEGLContextUtils::SurfaceAttrib()
   {
     throw std::logic_error("Setting surface attributes requires a surface");
   }
-
-  if (eglSurfaceAttrib(m_eglDisplay, m_eglSurface, EGL_SWAP_BEHAVIOR, EGL_BUFFER_DESTROYED) !=
-      EGL_TRUE)
-    CEGLUtils::Log(LOGERROR, "failed to set EGL_BUFFER_DESTROYED swap behavior");
 }
 
 void CEGLContextUtils::SurfaceAttrib(EGLint attribute, EGLint value)
