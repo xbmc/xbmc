@@ -45,6 +45,7 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "video/windows/GUIWindowVideoNav.h"
 #include "view/GUIViewState.h"
@@ -53,6 +54,7 @@ using namespace XFILE;
 using namespace PLAYLIST;
 using namespace MUSICDATABASEDIRECTORY;
 using namespace KODI::MESSAGING;
+using namespace KODI::VIDEO;
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -386,7 +388,7 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
   }
 
   // update our content in the info manager
-  if (StringUtils::StartsWithNoCase(strDirectory, "videodb://") || items.IsVideoDb())
+  if (StringUtils::StartsWithNoCase(strDirectory, "videodb://") || IsVideoDb(items))
   {
     CVideoDatabaseDirectory dir;
     VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(items.GetPath());
@@ -624,8 +626,8 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
 
       if (!item->IsParentFolder() && !dir.IsAllItem(item->GetPath()))
       {
-        if (item->m_bIsFolder && !item->IsVideoDb() &&
-          !item->IsPlugin() && !StringUtils::StartsWithNoCase(item->GetPath(), "musicsearch://"))
+        if (item->m_bIsFolder && !IsVideoDb(*item) && !item->IsPlugin() &&
+            !StringUtils::StartsWithNoCase(item->GetPath(), "musicsearch://"))
         {
           if (item->IsAlbum())
             // enable query all albums button only in album view
@@ -718,7 +720,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   {
   case CONTEXT_BUTTON_INFO:
     {
-      if (!item->IsVideoDb())
+      if (!IsVideoDb(*item))
         return CGUIWindowMusicBase::OnContextButton(itemNumber,button);
 
       // music videos - artists
@@ -807,7 +809,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
 
   case CONTEXT_BUTTON_RENAME:
-    if (!item->IsVideoDb() && !item->IsReadOnly())
+    if (!IsVideoDb(*item) && !item->IsReadOnly())
       OnRenameItem(itemNumber);
 
     CGUIDialogVideoInfo::UpdateVideoItemTitle(item);
@@ -823,7 +825,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       if (gui && gui->ConfirmDelete(item->GetPath()))
         CFileUtils::DeleteItem(item);
     }
-    else if (!item->IsVideoDb())
+    else if (!IsVideoDb(*item))
       OnDeleteItem(itemNumber);
     else
     {

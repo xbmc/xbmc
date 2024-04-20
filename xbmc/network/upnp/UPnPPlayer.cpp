@@ -225,7 +225,7 @@ int CUPnPPlayer::PlayFile(const CFileItem& file,
 
   NPT_CHECK_POINTER_LABEL_SEVERE(m_delegate, failed);
 
-  if (file.IsVideoDb())
+  if (VIDEO::IsVideoDb(file))
     thumb_loader = NPT_Reference<CThumbLoader>(new CVideoThumbLoader());
   else if (item.IsMusicDb())
     thumb_loader = NPT_Reference<CThumbLoader>(new CMusicThumbLoader());
@@ -419,7 +419,7 @@ bool CUPnPPlayer::QueueNextFile(const CFileItem& file)
   NPT_String path(file.GetPath().c_str());
   NPT_String tmp;
 
-  if (file.IsVideoDb())
+  if (VIDEO::IsVideoDb(file))
     thumb_loader = NPT_Reference<CThumbLoader>(new CVideoThumbLoader());
   else if (item.IsMusicDb())
     thumb_loader = NPT_Reference<CThumbLoader>(new CMusicThumbLoader());

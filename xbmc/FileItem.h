@@ -156,8 +156,6 @@ public:
 
   bool Exists(bool bUseCache = true) const;
 
-  bool IsDiscStub() const;
-
   /*!
    \brief Check whether an item is a picture item. Note that this returns true for
     anything with a picture info tag, so that may include eg. folders.
@@ -165,7 +163,6 @@ public:
    */
   bool IsPicture() const;
   bool IsLyrics() const;
-  bool IsSubtitle() const;
 
   /*!
    \brief Check whether an item is an audio item. Note that this returns true for
@@ -199,13 +196,9 @@ public:
   bool IsAddonsPath() const;
   bool IsSourcesPath() const;
   bool IsNFO() const;
-  bool IsVideoExtras() const;
   bool IsDiscImage() const;
   bool IsOpticalMediaFile() const;
-  bool IsDVDFile(bool bVobs = true, bool bIfos = true) const;
-  bool IsBDFile() const;
   bool IsBluray() const;
-  bool IsProtectedBlurayDisc() const;
   bool IsRAR() const;
   bool IsAPK() const;
   bool IsZIP() const;
@@ -225,7 +218,6 @@ public:
   bool IsFavourite() const;
   bool IsMultiPath() const;
   bool IsMusicDb() const;
-  bool IsVideoDb() const;
   bool IsEPG() const;
   bool IsPVRChannel() const;
   bool IsPVRChannelGroup() const;

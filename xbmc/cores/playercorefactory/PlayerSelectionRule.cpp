@@ -128,11 +128,11 @@ void CPlayerSelectionRule::GetPlayers(const CFileItem& item, std::vector<std::st
   if (m_tRemote >= 0 && (m_tRemote > 0) != item.IsRemote())
     return;
 
-  if (m_tBD >= 0 && (m_tBD > 0) != (item.IsBDFile() && item.IsOnDVD()))
+  if (m_tBD >= 0 && (m_tBD > 0) != (VIDEO::IsBDFile(item) && item.IsOnDVD()))
     return;
   if (m_tDVD >= 0 && (m_tDVD > 0) != item.IsDVD())
     return;
-  if (m_tDVDFile >= 0 && (m_tDVDFile > 0) != item.IsDVDFile())
+  if (m_tDVDFile >= 0 && (m_tDVDFile > 0) != VIDEO::IsDVDFile(item))
     return;
   if (m_tDiscImage >= 0 && (m_tDiscImage > 0) != item.IsDiscImage())
     return;

@@ -17,9 +17,11 @@
 #include "guilib/GUIWindowManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "video/VideoFileItemClassify.h"
 
 #include <mutex>
 
+using namespace KODI;
 using namespace std::chrono_literals;
 
 std::shared_ptr<const IPlayer> CApplicationPlayer::GetInternal() const
@@ -99,7 +101,7 @@ bool CApplicationPlayer::OpenFile(const CFileItem& item, const CPlayerOptions& o
   {
     bool needToClose = false;
 
-    if (item.IsDiscImage() || item.IsDVDFile())
+    if (item.IsDiscImage() || VIDEO::IsDVDFile(item))
       needToClose = true;
 
     if (player->m_name != newPlayer)

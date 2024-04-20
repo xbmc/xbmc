@@ -51,6 +51,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoDbUrl.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoScanner.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoItemArtworkHandler.h"
@@ -71,6 +72,7 @@
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 using namespace XFILE;
 using namespace KODI::MESSAGING;
+using namespace KODI::VIDEO;
 
 #define CONTROL_IMAGE                3
 #define CONTROL_TEXTAREA             4
@@ -1067,7 +1069,8 @@ std::string CGUIDialogVideoInfo::GetThumbnail() const
 
 int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
 {
-  if (item == nullptr || !item->IsVideoDb() || !item->HasVideoInfoTag() || item->GetVideoInfoTag()->m_iDbId < 0)
+  if (item == nullptr || !IsVideoDb(*item) || !item->HasVideoInfoTag() ||
+      item->GetVideoInfoTag()->m_iDbId < 0)
     return -1;
 
   CVideoDatabase database;

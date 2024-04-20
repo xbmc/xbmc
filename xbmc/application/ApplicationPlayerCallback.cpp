@@ -57,7 +57,7 @@ void CApplicationPlayerCallback::OnPlayBackStarted(const CFileItem& file)
   std::shared_ptr<CFileItem> itemCurrentFile;
 
   // check if VideoPlayer should set file item stream details from its current streams
-  const bool isBlu_dvd_image_or_stream = (URIUtils::IsBluray(file.GetPath()) || file.IsDVDFile() ||
+  const bool isBlu_dvd_image_or_stream = (URIUtils::IsBluray(file.GetPath()) || IsDVDFile(file) ||
                                           file.IsDiscImage() || file.IsInternetStream());
 
   const bool hasNoStreamDetails =

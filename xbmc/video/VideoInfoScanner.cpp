@@ -415,7 +415,7 @@ namespace VIDEO
         break;
 
       // add video extras to library
-      if (foundSomething && !m_ignoreVideoExtras && pItem->IsVideoExtras())
+      if (foundSomething && !m_ignoreVideoExtras && IsVideoExtrasFolder(*pItem))
       {
         if (AddVideoExtras(items, content, pItem->GetPath()))
         {

@@ -25,7 +25,10 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
+
+using namespace KODI;
 
 namespace
 {
@@ -54,7 +57,7 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item)
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_DISC_PLAYBACK) != BD_PLAYBACK_SIMPLE_MENU)
     return true;
 
-  if (item.IsBDFile())
+  if (VIDEO::IsBDFile(item))
   {
     std::string root = URIUtils::GetParentPath(item.GetDynPath());
     URIUtils::RemoveSlashAtEnd(root);

@@ -18,7 +18,10 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
+
+using namespace KODI;
 
 CExecString::CExecString(const std::string& execString)
 {
@@ -123,7 +126,7 @@ bool CExecString::Parse(const CFileItem& item, const std::string& contextWindow)
     Build("StartAndroidActivity", {StringUtils::Paramify(item.GetPath().substr(26))});
   else // assume a media file
   {
-    if (item.IsVideoDb() && item.HasVideoInfoTag())
+    if (VIDEO::IsVideoDb(item) && item.HasVideoInfoTag())
       BuildPlayMedia(item, StringUtils::Paramify(item.GetVideoInfoTag()->m_strFileNameAndPath));
     else if (item.IsMusicDb() && item.HasMusicInfoTag())
       BuildPlayMedia(item, StringUtils::Paramify(item.GetMusicInfoTag()->GetURL()));

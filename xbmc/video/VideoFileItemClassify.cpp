@@ -11,11 +11,71 @@
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "utils/FileExtensionProvider.h"
+#include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "video/VideoInfoTag.h"
 
 namespace KODI::VIDEO
 {
+
+bool IsBDFile(const CFileItem& item)
+{
+  const std::string strFileName = URIUtils::GetFileName(item.GetDynPath());
+  return (StringUtils::EqualsNoCase(strFileName, "index.bdmv") ||
+          StringUtils::EqualsNoCase(strFileName, "MovieObject.bdmv") ||
+          StringUtils::EqualsNoCase(strFileName, "INDEX.BDM") ||
+          StringUtils::EqualsNoCase(strFileName, "MOVIEOBJ.BDM"));
+}
+
+bool IsDiscStub(const CFileItem& item)
+{
+  if (IsVideoDb(item) && item.HasVideoInfoTag())
+  {
+    CFileItem dbItem(item.m_bIsFolder ? item.GetVideoInfoTag()->m_strPath
+                                      : item.GetVideoInfoTag()->m_strFileNameAndPath,
+                     item.m_bIsFolder);
+    return IsDiscStub(dbItem);
+  }
+
+  return URIUtils::HasExtension(item.GetPath(),
+                                CServiceBroker::GetFileExtensionProvider().GetDiscStubExtensions());
+}
+
+bool IsDVDFile(const CFileItem& item, bool bVobs /*= true*/, bool bIfos /*= true*/)
+{
+  const std::string strFileName = URIUtils::GetFileName(item.GetDynPath());
+  if (bIfos)
+  {
+    if (StringUtils::EqualsNoCase(strFileName, "video_ts.ifo"))
+      return true;
+    if (StringUtils::StartsWithNoCase(strFileName, "vts_") &&
+        StringUtils::EndsWithNoCase(strFileName, "_0.ifo") && strFileName.length() == 12)
+      return true;
+  }
+  if (bVobs)
+  {
+    if (StringUtils::EqualsNoCase(strFileName, "video_ts.vob"))
+      return true;
+    if (StringUtils::StartsWithNoCase(strFileName, "vts_") &&
+        StringUtils::EndsWithNoCase(strFileName, ".vob"))
+      return true;
+  }
+
+  return false;
+}
+
+bool IsProtectedBlurayDisc(const CFileItem& item)
+{
+  const std::string path = URIUtils::AddFileToFolder(item.GetPath(), "AACS", "Unit_Key_RO.inf");
+  return CFileUtils::Exists(path);
+}
+
+bool IsSubtitle(const CFileItem& item)
+{
+  return URIUtils::HasExtension(item.GetPath(),
+                                CServiceBroker::GetFileExtensionProvider().GetSubtitleExtensions());
+}
 
 bool IsVideo(const CFileItem& item)
 {
@@ -60,6 +120,17 @@ bool IsVideo(const CFileItem& item)
 
   return URIUtils::HasExtension(item.GetPath(),
                                 CServiceBroker::GetFileExtensionProvider().GetVideoExtensions());
+}
+
+bool IsVideoDb(const CFileItem& item)
+{
+  return URIUtils::IsVideoDb(item.GetPath());
+}
+
+bool IsVideoExtrasFolder(const CFileItem& item)
+{
+  return item.m_bIsFolder &&
+         StringUtils::EqualsNoCase(URIUtils::GetFileOrFolderName(item.GetPath()), "extras");
 }
 
 } // namespace KODI::VIDEO

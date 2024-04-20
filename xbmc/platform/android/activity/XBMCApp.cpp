@@ -47,6 +47,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WinEvents.h"
@@ -117,6 +118,7 @@
 using namespace ANNOUNCEMENT;
 using namespace jni;
 using namespace KODI::GUILIB;
+using namespace KODI::VIDEO;
 using namespace std::chrono_literals;
 
 std::shared_ptr<CNativeWindow> CNativeWindow::CreateFromSurface(CJNISurfaceHolder holder)
@@ -1451,7 +1453,7 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
     else
     {
       CFileItem* item = new CFileItem(targetFile, false);
-      if (item->IsVideoDb())
+      if (IsVideoDb(*item))
       {
         *(item->GetVideoInfoTag()) = XFILE::CVideoDatabaseFile::GetVideoTag(CURL(item->GetPath()));
         item->SetPath(item->GetVideoInfoTag()->m_strFileNameAndPath);

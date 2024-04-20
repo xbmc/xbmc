@@ -2307,7 +2307,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
       CUtil::ClearSubtitles();
   }
 
-  if (item.IsDiscStub())
+  if (IsDiscStub(item))
   {
     return CServiceBroker::GetMediaManager().playStubFile(item);
   }
@@ -2356,7 +2356,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
 
       std::string path = item.GetPath();
       std::string videoInfoTagPath(item.GetVideoInfoTag()->m_strFileNameAndPath);
-      if (videoInfoTagPath.find("removable://") == 0 || item.IsVideoDb())
+      if (videoInfoTagPath.find("removable://") == 0 || IsVideoDb(item))
         path = videoInfoTagPath;
 
       // Note that we need to load the tag from database also if the item already has a tag,
@@ -2426,7 +2426,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
 
   // a disc image might be Blu-Ray disc
   if (!(options.startpercent > 0.0 || options.starttime > 0.0) &&
-      (item.IsBDFile() || item.IsDiscImage()))
+      (IsBDFile(item) || item.IsDiscImage()))
   {
     // No video selection when using external or remote players (they handle it if supported)
     const bool isSimpleMenuAllowed = [&]()

@@ -75,7 +75,7 @@ bool CAudioDecoder::Create(const CFileItem &file, int64_t seekOffset)
     filecache = settings->GetInt(CSettings::SETTING_CACHE_HARDDISK);
   else if ( file.IsOnDVD() )
     filecache = settings->GetInt(CSettings::SETTING_CACHEAUDIO_DVDROM);
-  else if ( file.IsOnLAN() )
+  else if (file.IsOnLAN())
     filecache = settings->GetInt(CSettings::SETTING_CACHEAUDIO_LAN);
 
   // create our codec
