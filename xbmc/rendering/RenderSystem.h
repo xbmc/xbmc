@@ -9,6 +9,7 @@
 #pragma once
 
 #include "RenderSystemTypes.h"
+#include "rendering/Extensions.h"
 #include "utils/ColorUtils.h"
 #include "utils/Geometry.h"
 
@@ -39,6 +40,7 @@ public:
   virtual void PresentRender(bool rendered, bool videoLayer) = 0;
   virtual bool ClearBuffers(UTILS::COLOR::Color color) = 0;
   virtual bool IsExtSupported(const char* extension) const = 0;
+  virtual bool IsExtSupported(const GLEXTENSIONS::EXTENSION extension) { return false; }
 
   virtual void SetViewPort(const CRect& viewPort) = 0;
   virtual void GetViewPort(CRect& viewPort) = 0;

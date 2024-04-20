@@ -9,6 +9,7 @@
 #pragma once
 
 #include "GLShader.h"
+#include "rendering/Extensions.h"
 #include "rendering/RenderSystem.h"
 #include "utils/ColorUtils.h"
 #include "utils/Map.h"
@@ -75,6 +76,11 @@ public:
   void PresentRender(bool rendered, bool videoLayer) override;
   bool ClearBuffers(UTILS::COLOR::Color color) override;
   bool IsExtSupported(const char* extension) const override;
+  void QueryExtensions();
+  bool IsExtSupported(GLEXTENSIONS::EXTENSION extension) override
+  {
+    return m_extensionMap[extension];
+  }
 
   void SetVSync(bool vsync);
   void ResetVSync() { m_bVsyncInit = false; }
@@ -136,4 +142,5 @@ protected:
   std::map<ShaderMethodGL, std::unique_ptr<CGLShader>> m_pShader;
   ShaderMethodGL m_method = ShaderMethodGL::SM_DEFAULT;
   GLuint m_vertexArray = GL_NONE;
+  std::map<GLEXTENSIONS::EXTENSION, bool> m_extensionMap{};
 };

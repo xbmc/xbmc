@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "guilib/GUITextureGL.h"
+#include "rendering/Extensions.h"
 #include "rendering/MatrixGL.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
@@ -89,10 +90,12 @@ bool CRenderSystemGL::InitRenderSystem()
     m_glslMinor = 0;
   }
 
+  QueryExtensions();
+
 #if defined(GL_KHR_debug) && defined(TARGET_LINUX)
   if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_openGlDebugging)
   {
-    if (IsExtSupported("GL_KHR_debug"))
+    if (IsExtSupported(GLEXTENSIONS::KHR_debug))
     {
       auto glDebugMessageCallback =
           CEGLUtils::GetRequiredProcAddress<PFNGLDEBUGMESSAGECALLBACKPROC>(
@@ -188,7 +191,7 @@ bool CRenderSystemGL::ResetRenderSystem(int width, int height)
   glMatrixTexture->LoadIdentity();
   glMatrixTexture.Load();
 
-  if (IsExtSupported("GL_ARB_multitexture"))
+  if (IsExtSupported(GLEXTENSIONS::ARB_multitexture))
   {
     //clear error flags
     ResetGLErrors();
@@ -314,6 +317,13 @@ bool CRenderSystemGL::IsExtSupported(const char* extension) const
 bool CRenderSystemGL::SupportsNPOT(bool dxt) const
 {
   return true;
+}
+
+void CRenderSystemGL::QueryExtensions()
+{
+  for (auto extension = GLEXTENSIONS::stringMap.cbegin();
+       extension != GLEXTENSIONS::stringMap.cend(); ++extension)
+    m_extensionMap[extension->first] = IsExtSupported(std::string(extension->second).c_str());
 }
 
 void CRenderSystemGL::PresentRender(bool rendered, bool videoLayer)

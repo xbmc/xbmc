@@ -1,6 +1,7 @@
 set(SOURCES RenderSystem.cpp)
 
-set(HEADERS RenderSystem.h
+set(HEADERS Extensions.h
+            RenderSystem.h
             RenderSystemTypes.h)
 
 if(TARGET OpenGL::GL OR TARGET OpenGL::GLES)
