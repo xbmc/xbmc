@@ -218,10 +218,10 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
 
   m_AvgBytesPerSec = wfxex.Format.nAvgBytesPerSec;
 
-  unsigned int uiFrameCount = (int)(format.m_sampleRate * 0.015); //default to 15ms chunks
+  const unsigned int uiFrameCount = static_cast<int>(format.m_sampleRate * 0.050); // 50ms chunks
   m_dwFrameSize = wfxex.Format.nBlockAlign;
   m_dwChunkSize = m_dwFrameSize * uiFrameCount;
-  m_dwBufferLen = m_dwChunkSize * 12; //180ms total buffer
+  m_dwBufferLen = m_dwChunkSize * 8; // 400ms total buffer
 
   // fill in the secondary sound buffer descriptor
   DSBUFFERDESC dsbdesc = {};
