@@ -414,7 +414,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
     m_videoDatabase->Open();
 
     // @todo unify asset path for other items path
-    if (VIDEO::IsVideoAssetFile(item))
+    if (IsVideoAssetFile(item))
     {
       if (m_videoDatabase->GetArtForAsset(
               tag.m_iFileId,

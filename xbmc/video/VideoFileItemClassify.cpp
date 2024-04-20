@@ -10,6 +10,7 @@
 
 #include "FileItem.h"
 #include "ServiceBroker.h"
+#include "URL.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
@@ -120,6 +121,16 @@ bool IsVideo(const CFileItem& item)
 
   return URIUtils::HasExtension(item.GetPath(),
                                 CServiceBroker::GetFileExtensionProvider().GetVideoExtensions());
+}
+
+bool IsVideoAssetFile(const CFileItem& item)
+{
+  if (item.m_bIsFolder || !IsVideoDb(item))
+    return false;
+
+  // @todo maybe in the future look for prefix videodb://movies/videoversions in path instead
+  // @todo better encoding of video assets as path, they won't always be tied with movies.
+  return CURL(item.GetPath()).HasOption("videoversionid");
 }
 
 bool IsVideoDb(const CFileItem& item)
