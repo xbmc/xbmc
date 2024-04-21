@@ -1074,7 +1074,7 @@ public:
                              int dbId,
                              int idVideoVersion,
                              CFileItem& item);
-  bool RemoveVideoVersion(int dbId);
+  bool DeleteVideoAsset(int idFile);
   bool IsDefaultVideoVersion(int idFile);
   bool GetVideoVersionTypes(VideoDbContentType idContent,
                             VideoAssetType asset,

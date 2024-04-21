@@ -586,7 +586,7 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
       else
       {
         // @todo: should be in a database transaction with the addition as a new asset below
-        if (!m_database.RemoveVideoVersion(newAsset.m_idFile))
+        if (!m_database.DeleteVideoAsset(newAsset.m_idFile))
           return false;
       }
     }
