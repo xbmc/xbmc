@@ -71,7 +71,6 @@ public:
   void MoveToScreen(unsigned int screenIdx) override;
   void OnMove(int x, int y) override;
   void OnChangeScreen(unsigned int screenIdx) override;
-  CGraphicContext& GetGfxContext() const override;
   bool HasValidResolution() const;
 
   std::string GetClipboardText() override;
