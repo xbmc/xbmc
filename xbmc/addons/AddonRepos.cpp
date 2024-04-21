@@ -162,21 +162,23 @@ void CAddonRepos::AddAddonIfLatest(
     const std::shared_ptr<IAddon>& addonToAdd,
     std::map<std::string, std::map<std::string, std::shared_ptr<IAddon>>>& map) const
 {
-  const auto latestVersionByRepoIt = map.find(repoId);
+  bool doInsert{true};
 
-  if (latestVersionByRepoIt == map.end()) // repo not found
-  {
-    map[repoId].emplace(addonToAdd->ID(), addonToAdd);
-  }
-  else
+  const auto latestVersionByRepoIt = map.find(repoId);
+  if (latestVersionByRepoIt != map.end()) // we already have this repository in the outer map
   {
     const auto& latestVersionEntryByRepo = latestVersionByRepoIt->second;
     const auto latestKnownIt = latestVersionEntryByRepo.find(addonToAdd->ID());
 
-    if (latestKnownIt == latestVersionEntryByRepo.end() ||
-        addonToAdd->Version() > latestKnownIt->second->Version())
-      map[repoId][addonToAdd->ID()] = addonToAdd;
+    if (latestKnownIt != latestVersionEntryByRepo.end() &&
+        addonToAdd->Version() <= latestKnownIt->second->Version())
+    {
+      doInsert = false;
+    }
   }
+
+  if (doInsert)
+    map[repoId][addonToAdd->ID()] = addonToAdd;
 }
 
 void CAddonRepos::BuildUpdateOrOutdatedList(const std::vector<std::shared_ptr<IAddon>>& installed,
