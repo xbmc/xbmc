@@ -3720,19 +3720,38 @@ void CVideoDatabase::DeleteMovie(int idMovie,
     // the ancillary tables are still purged
     if (!bKeepId)
     {
-      std::string path = GetSingleValue(PrepareSQL("SELECT strPath FROM path JOIN files ON files.idPath=path.idPath WHERE files.idFile=%i", idFile));
+      const std::string path = GetSingleValue(PrepareSQL(
+          "SELECT strPath FROM path JOIN files ON files.idPath=path.idPath WHERE files.idFile=%i",
+          idFile));
       if (!path.empty())
         InvalidatePathHash(path);
 
-      std::string strSQL = PrepareSQL("delete from movie where idMovie=%i", idMovie);
+      const std::string strSQL = PrepareSQL("delete from movie where idMovie=%i", idMovie);
       m_pDS->exec(strSQL);
 
       if (ca == DeleteMovieCascadeAction::ALL_ASSETS)
       {
-        const std::string strSQL{
-            PrepareSQL("DELETE FROM videoversion WHERE idMedia = %i AND media_type = '%s'", idMovie,
-                       MediaTypeMovie)};
-        m_pDS->exec(strSQL);
+        // The default version of the movie was removed by a delete trigger.
+        // Clean up the other assets attached to the movie, if any.
+
+        // need local dataset due to nested DeleteVideoAsset query
+        std::unique_ptr<Dataset> pDS{m_pDB->CreateDataset()};
+
+        pDS->query(
+            PrepareSQL("SELECT idFile FROM videoversion WHERE idMedia=%i AND media_type='%s'",
+                       idMovie, MediaTypeMovie));
+
+        while (!pDS->eof())
+        {
+          if (!DeleteVideoAsset(pDS->fv(0).get_asInt()))
+          {
+            RollbackTransaction();
+            pDS->close();
+            return;
+          }
+          pDS->next();
+        }
+        pDS->close();
       }
     }
 
@@ -3745,7 +3764,7 @@ void CVideoDatabase::DeleteMovie(int idMovie,
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
+    CLog::LogF(LOGERROR, "failed");
     RollbackTransaction();
   }
 }
@@ -12461,31 +12480,48 @@ bool CVideoDatabase::IsDefaultVideoVersion(int idFile)
   return false;
 }
 
-bool CVideoDatabase::RemoveVideoVersion(int dbId)
+bool CVideoDatabase::DeleteVideoAsset(int idFile)
 {
   if (!m_pDB || !m_pDS)
     return false;
 
-  if (IsDefaultVideoVersion(dbId))
+  if (IsDefaultVideoVersion(idFile))
     return false;
+
+  const bool inTransaction{m_pDB->in_transaction()};
 
   try
   {
-    std::string path = GetSingleValue(PrepareSQL(
+    if (!inTransaction)
+      BeginTransaction();
+
+    const std::string path = GetSingleValue(PrepareSQL(
         "SELECT strPath FROM path JOIN files ON files.idPath=path.idPath WHERE files.idFile=%i",
-        dbId));
+        idFile));
     if (!path.empty())
       InvalidatePathHash(path);
 
-    m_pDS->exec(PrepareSQL("DELETE FROM videoversion WHERE idFile = %i", dbId));
+    /*! \todo replace with a delete trigger on videoversion */
+    m_pDS->exec(PrepareSQL("DELETE FROM art WHERE media_id=%i and media_type='%s'", idFile,
+                           MediaTypeVideoVersion));
+
+    /*! \todo replace with a delete trigger on videoversion */
+    DeleteStreamDetails(idFile);
+
+    m_pDS->exec(PrepareSQL("DELETE FROM videoversion WHERE idFile=%i", idFile));
+
+    if (!inTransaction)
+      CommitTransaction();
 
     return true;
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} failed for {}", __FUNCTION__, dbId);
+    CLog::LogF(LOGERROR, "failed for {}", idFile);
+    if (!inTransaction)
+      RollbackTransaction();
+    return false;
   }
-  return false;
 }
 
 void CVideoDatabase::SetVideoVersion(int idFile, int idVideoVersion)
