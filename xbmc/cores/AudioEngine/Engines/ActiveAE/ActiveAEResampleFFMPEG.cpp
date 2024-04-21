@@ -148,21 +148,21 @@ bool CActiveAEResampleFFMPEG::Init(SampleConfig dstConfig, SampleConfig srcConfi
       AVChannel outChan = av_channel_layout_channel_from_index(&dstChLayout, out);
       switch (outChan)
       {
-        case AV_CH_FRONT_LEFT:
-        case AV_CH_BACK_LEFT:
-        case AV_CH_SIDE_LEFT:
+        case AV_CHAN_FRONT_LEFT:
+        case AV_CHAN_BACK_LEFT:
+        case AV_CHAN_SIDE_LEFT:
           m_rematrix[out][0] = 1.0;
           break;
-        case AV_CH_FRONT_RIGHT:
-        case AV_CH_BACK_RIGHT:
-        case AV_CH_SIDE_RIGHT:
+        case AV_CHAN_FRONT_RIGHT:
+        case AV_CHAN_BACK_RIGHT:
+        case AV_CHAN_SIDE_RIGHT:
           m_rematrix[out][1] = 1.0;
           break;
-        case AV_CH_FRONT_CENTER:
+        case AV_CHAN_FRONT_CENTER:
           m_rematrix[out][0] = 0.5;
           m_rematrix[out][1] = 0.5;
           break;
-        case AV_CH_LOW_FREQUENCY:
+        case AV_CHAN_LOW_FREQUENCY:
           m_rematrix[out][0] = 0.5;
           m_rematrix[out][1] = 0.5;
           break;
