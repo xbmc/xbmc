@@ -33,13 +33,13 @@ bool OPTIONALS::ALSARegister()
 
 #ifdef HAS_PULSEAUDIO
 #include "cores/AudioEngine/Sinks/AESinkPULSE.h"
-bool OPTIONALS::PulseAudioRegister()
+bool OPTIONALS::PulseAudioRegister(bool allowPipeWireCompatServer)
 {
-  bool ret = CAESinkPULSE::Register();
+  bool ret = CAESinkPULSE::Register(allowPipeWireCompatServer);
   return ret;
 }
 #else
-bool OPTIONALS::PulseAudioRegister()
+bool OPTIONALS::PulseAudioRegister(bool)
 {
   return false;
 }
