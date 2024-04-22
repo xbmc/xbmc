@@ -320,20 +320,17 @@ static void SinkChangedCallback(pa_context *c, pa_subscription_event_type_t t, u
 
 struct ServerInfoStruct
 {
-  std::mutex m_mutex;
-  std::condition_variable m_cv;
+  pa_threaded_mainloop* m_mainloop;
   bool m_isInfoSet{false};
-
-  bool m_isPipeWireServer{}; ///< true if server name contains "PipeWire" in any casing
+  std::string m_serverName;
 };
 
 static void ServerInfoCallback(pa_context* c, const pa_server_info* i, void* userdata)
 {
   auto serverInfo = reinterpret_cast<ServerInfoStruct*>(userdata);
-  std::unique_lock l(serverInfo->m_mutex);
-  serverInfo->m_isPipeWireServer = StringUtils::Contains(i->server_name, "pipewire", true);
+  serverInfo->m_serverName = i->server_name;
   serverInfo->m_isInfoSet = true;
-  serverInfo->m_cv.notify_one();
+  pa_threaded_mainloop_signal(serverInfo->m_mainloop, 0);
 }
 
 struct SinkInfoStruct
@@ -685,23 +682,31 @@ bool CDriverMonitor::Start(bool allowPipeWireCompatServer)
     return false;
   }
 
+  pa_threaded_mainloop_lock(m_pMainLoop);
+
+  ServerInfoStruct serverInfo;
+  serverInfo.m_mainloop = m_pMainLoop;
+  pa_context_get_server_info(m_pContext, ServerInfoCallback, &serverInfo);
+  while (!serverInfo.m_isInfoSet)
+    pa_threaded_mainloop_wait(m_pMainLoop);
+
+  CLog::Log(LOGINFO, "PulseAudio: Server name: {}", serverInfo.m_serverName);
+
 #ifdef HAS_PIPEWIRE
   // If Kodi is build with PipeWire support we prefer native PipeWire over the
-  // PulseAudio compatibility layer IF PulseAudio isn't explicitly selected
+  // PulseAudio compatibility layer IF NOT PulseAudio is explicitly selected
   if (!allowPipeWireCompatServer)
   {
     // Check the PulseAudio server name. If it contains PipeWire in any form
     // it is the compatibility layer provided by PipeWire
-    ServerInfoStruct serverInfo;
-    std::unique_lock l(serverInfo.m_mutex);
-    pa_context_get_server_info(m_pContext, ServerInfoCallback, &serverInfo);
-    serverInfo.m_cv.wait(l, [&]() { return serverInfo.m_isInfoSet; });
-    if (serverInfo.m_isPipeWireServer)
+    if (StringUtils::Contains(serverInfo.m_serverName, "pipewire", true))
+    {
+      CLog::Log(LOGINFO, "PulseAudio: Server is PipeWire, bail and use native PipeWire interface");
+      pa_threaded_mainloop_unlock(m_pMainLoop);
       return false;
+    }
   }
 #endif
-
-  pa_threaded_mainloop_lock(m_pMainLoop);
 
   m_isInit = true;
 
