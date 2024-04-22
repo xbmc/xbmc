@@ -9,6 +9,7 @@
 #include "GUIWindowPVRTimerRules.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "pvr/timers/PVRTimersPath.h"
 #include "utils/URIUtils.h"
 

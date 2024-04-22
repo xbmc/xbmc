@@ -9,6 +9,7 @@
 #include "DVDSubtitlesLibass.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "filesystem/Directory.h"

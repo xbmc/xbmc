@@ -9,6 +9,7 @@
 #include "FontUtils.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "StringUtils.h"
 #include "URIUtils.h"
 #include "filesystem/Directory.h"

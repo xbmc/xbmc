@@ -21,6 +21,7 @@
 #include "TVOSDirectory.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "URL.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/URIUtils.h"

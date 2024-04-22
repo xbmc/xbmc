@@ -10,6 +10,7 @@
 
 #include "AutoSwitch.h"
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIDialogYesNo.h"

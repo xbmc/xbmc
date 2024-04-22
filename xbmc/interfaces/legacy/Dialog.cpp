@@ -7,6 +7,7 @@
  */
 #include "Dialog.h"
 
+#include "FileItemList.h"
 #include "LanguageHook.h"
 #include "ListItem.h"
 #include "ModuleXbmcgui.h"

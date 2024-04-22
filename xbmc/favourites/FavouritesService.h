@@ -9,6 +9,7 @@
 #pragma once
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "threads/CriticalSection.h"
 #include "utils/EventStream.h"
 

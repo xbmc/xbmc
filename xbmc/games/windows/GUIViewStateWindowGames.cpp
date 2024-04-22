@@ -9,6 +9,7 @@
 #include "GUIViewStateWindowGames.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "games/GameUtils.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"

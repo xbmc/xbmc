@@ -9,6 +9,7 @@
 #include "GUIViewStatePrograms.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "filesystem/Directory.h"
 #include "guilib/LocalizeStrings.h"

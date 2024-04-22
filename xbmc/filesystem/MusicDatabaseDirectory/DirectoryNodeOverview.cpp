@@ -9,6 +9,7 @@
 #include "DirectoryNodeOverview.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "guilib/LocalizeStrings.h"
 #include "music/MusicDatabase.h"
 #include "utils/StringUtils.h"

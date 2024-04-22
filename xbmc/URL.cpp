@@ -7,15 +7,17 @@
  */
 
 #include "URL.h"
-#include "utils/log.h"
-#include "utils/URIUtils.h"
-#include "utils/StringUtils.h"
+
+#include "FileItem.h"
+#include "FileItemList.h"
+#include "ServiceBroker.h"
 #include "Util.h"
 #include "filesystem/File.h"
-#include "FileItem.h"
 #include "filesystem/StackDirectory.h"
 #include "network/Network.h"
-#include "ServiceBroker.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/log.h"
 #ifndef TARGET_POSIX
 #include <sys\stat.h>
 #endif

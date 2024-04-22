@@ -9,6 +9,7 @@
 #include "PlayList.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "PlayListFactory.h"
 #include "ServiceBroker.h"
 #include "filesystem/File.h"

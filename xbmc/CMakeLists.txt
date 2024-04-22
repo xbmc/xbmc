@@ -8,6 +8,7 @@ set(SOURCES AutoSwitch.cpp
             DbUrl.cpp
             DynamicDll.cpp
             FileItem.cpp
+            FileItemList.cpp
             FileItemListModification.cpp
             GUIInfoManager.cpp
             GUILargeTextureManager.cpp
@@ -45,6 +46,7 @@ set(HEADERS AutoSwitch.h
             DllPaths_win32.h
             DynamicDll.h
             FileItem.h
+            FileItemList.h
             FileItemListModification.h
             GUIInfoManager.h
             GUILargeTextureManager.h

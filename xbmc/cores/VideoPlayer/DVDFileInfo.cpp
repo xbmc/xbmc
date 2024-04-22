@@ -11,6 +11,7 @@
 #include "DVDInputStreams/DVDInputStream.h"
 #include "DVDStreamInfo.h"
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "filesystem/StackDirectory.h"
 #include "guilib/Texture.h"

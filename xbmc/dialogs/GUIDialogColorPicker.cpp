@@ -9,6 +9,7 @@
 #include "GUIDialogColorPicker.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIColorManager.h"
 #include "guilib/GUIMessage.h"

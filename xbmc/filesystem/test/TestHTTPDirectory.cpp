@@ -7,6 +7,7 @@
  */
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "URL.h"
 #include "filesystem/CurlFile.h"
 #include "filesystem/HTTPDirectory.h"

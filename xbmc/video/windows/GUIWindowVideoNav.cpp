@@ -9,6 +9,7 @@
 #include "GUIWindowVideoNav.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIPassword.h"
 #include "PartyModeManager.h"
 #include "ServiceBroker.h"

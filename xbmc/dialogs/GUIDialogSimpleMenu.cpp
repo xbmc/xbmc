@@ -10,6 +10,7 @@
 #include "GUIDialogSimpleMenu.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIDialogSelect.h"
 #include "ServiceBroker.h"
 #include "URL.h"

@@ -9,6 +9,7 @@
 #include "GUIPortList.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIPortDefines.h"
 #include "GUIPortWindow.h"
 #include "ServiceBroker.h"

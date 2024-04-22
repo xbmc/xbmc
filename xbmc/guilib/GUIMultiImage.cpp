@@ -9,6 +9,7 @@
 #include "GUIMultiImage.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIMessage.h"
 #include "ServiceBroker.h"
 #include "TextureCache.h"

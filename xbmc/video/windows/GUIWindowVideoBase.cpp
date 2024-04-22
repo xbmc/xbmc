@@ -10,6 +10,7 @@
 
 #include "Autorun.h"
 #include "ContextMenuManager.h"
+#include "FileItemList.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
 #include "PartyModeManager.h"

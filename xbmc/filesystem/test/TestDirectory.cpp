@@ -7,6 +7,7 @@
  */
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "filesystem/Directory.h"
 #include "filesystem/IDirectory.h"
 #include "filesystem/SpecialProtocol.h"

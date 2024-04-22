@@ -9,6 +9,7 @@
 #include "GUIWindowPVRGuide.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "addons/Skin.h"

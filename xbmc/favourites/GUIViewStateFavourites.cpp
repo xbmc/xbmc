@@ -8,7 +8,7 @@
 
 #include "GUIViewStateFavourites.h"
 
-#include "FileItem.h"
+#include "FileItemList.h"
 #include "guilib/WindowIDs.h"
 
 CGUIViewStateFavourites::CGUIViewStateFavourites(const CFileItemList& items) : CGUIViewState(items)

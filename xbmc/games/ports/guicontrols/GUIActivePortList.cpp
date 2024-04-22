@@ -9,6 +9,7 @@
 #include "GUIActivePortList.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "addons/AddonEvents.h"
 #include "addons/AddonManager.h"

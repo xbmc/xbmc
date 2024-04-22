@@ -10,6 +10,7 @@
 
 #include "Directory.h"
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIInfoManager.h"
 #include "SmartPlaylistDirectory.h"
 #include "URL.h"

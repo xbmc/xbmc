@@ -11,6 +11,7 @@
 #include "Directory.h"
 #include "DirectoryFactory.h"
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "SourcesDirectory.h"
 #include "URL.h"

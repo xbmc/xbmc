@@ -9,6 +9,7 @@
 #include "AudioLibrary.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "TextureDatabase.h"
 #include "Util.h"

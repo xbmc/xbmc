@@ -9,6 +9,7 @@
 #include "GUIDialogMediaSource.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogYesNo.h"
 #include "PasswordManager.h"

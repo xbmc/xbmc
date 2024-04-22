@@ -10,6 +10,7 @@
 
 #include "AudioLibrary.h"
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "MediaSource.h"
 #include "ServiceBroker.h"
 #include "URL.h"
