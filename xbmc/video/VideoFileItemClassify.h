@@ -33,6 +33,11 @@ bool IsSubtitle(const CFileItem& item);
 //!          so that may include eg. folders.
 bool IsVideo(const CFileItem& item);
 
+//! \brief Is the item a video asset, excluding folders
+//! \param[in] item the item
+//! \return true if it is, false otherwise
+bool IsVideoAssetFile(const CFileItem& item);
+
 //! \brief Check whether an item is a video database item.
 bool IsVideoDb(const CFileItem& item);
 
