@@ -418,7 +418,6 @@ case $host in
 
     meson_system="darwin"
 
-    platform_cflags="-fheinous-gnu-extensions"
     platform_ldflags="-Wl,-search_paths_first"
 
     case $use_platform in
