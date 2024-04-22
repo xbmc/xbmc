@@ -214,14 +214,23 @@ void CXBMCApp::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
     else if (message == "OnStop")
       OnPlayBackStopped();
     else if (message == "OnSeek")
+    {
+      m_mediaSessionUpdated = false;
       UpdateSessionState();
+    }
     else if (message == "OnSpeedChanged")
+    {
+      m_mediaSessionUpdated = false;
       UpdateSessionState();
+    }
   }
   else if (flag & Info)
   {
     if (message == "OnChanged")
+    {
+      m_mediaSessionUpdated = false;
       UpdateSessionMetadata();
+    }
   }
 }
 
@@ -885,6 +894,7 @@ void CXBMCApp::UpdateSessionState()
   float speed = 0.0;
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  uint32_t oldPlayState = m_playback_state;
   if (m_playback_state != PLAYBACK_STATE_STOPPED)
   {
     if (appPlayer->HasVideo())
@@ -908,9 +918,13 @@ void CXBMCApp::UpdateSessionState()
   else
     state = CJNIPlaybackState::STATE_STOPPED;
 
-  builder.setState(state, pos, speed, CJNISystemClock::elapsedRealtime())
-      .setActions(CJNIPlaybackState::PLAYBACK_POSITION_UNKNOWN);
-  m_mediaSession->updatePlaybackState(builder.build());
+  if ((oldPlayState != m_playback_state) || !m_mediaSessionUpdated)
+  {
+    builder.setState(state, pos, speed, CJNISystemClock::elapsedRealtime())
+        .setActions(CJNIPlaybackState::PLAYBACK_POSITION_UNKNOWN);
+    m_mediaSession->updatePlaybackState(builder.build());
+    m_mediaSessionUpdated = true;
+  }
 }
 
 void CXBMCApp::OnPlayBackStarted()
@@ -928,6 +942,7 @@ void CXBMCApp::OnPlayBackStarted()
     m_playback_state |= PLAYBACK_STATE_CANNOT_PAUSE;
 
   m_mediaSession->activate(true);
+  m_mediaSessionUpdated = false;
   UpdateSessionState();
 
   CJNIIntent intent(ACTION_XBMC_RESUME, CJNIURI::EMPTY, *this, get_class(CJNIContext::get_raw()));
@@ -944,6 +959,7 @@ void CXBMCApp::OnPlayBackPaused()
   CLog::Log(LOGDEBUG, "{}", __PRETTY_FUNCTION__);
 
   m_playback_state &= ~PLAYBACK_STATE_PLAYING;
+  m_mediaSessionUpdated = false;
   UpdateSessionState();
 
   RequestVisibleBehind(false);
@@ -957,6 +973,7 @@ void CXBMCApp::OnPlayBackStopped()
   m_playback_state = PLAYBACK_STATE_STOPPED;
   UpdateSessionState();
   m_mediaSession->activate(false);
+  m_mediaSessionUpdated = false;
 
   RequestVisibleBehind(false);
   CAndroidKey::SetHandleMediaKeys(true);
@@ -977,7 +994,8 @@ std::vector<int> CXBMCApp::GetInputDeviceIds()
 
 void CXBMCApp::ProcessSlow()
 {
-  if ((m_playback_state & PLAYBACK_STATE_PLAYING) && m_mediaSession->isActive())
+  if ((m_playback_state & PLAYBACK_STATE_PLAYING) && !m_mediaSessionUpdated &&
+      m_mediaSession->isActive())
     UpdateSessionState();
 }
 
