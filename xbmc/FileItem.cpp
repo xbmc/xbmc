@@ -1694,7 +1694,7 @@ void CFileItem::UpdateInfo(const CFileItem& item,
   {
     std::string label;
     if (item.GetVideoContentType() == VideoDbContentType::EPISODES && replaceEpisodes &&
-        (item.IsDiscImage() || item.IsDVDFile() || item.IsBluray()))
+        (item.IsDiscImage() || IsDVDFile(item) || item.IsBluray()))
     {
       // Get episodes on disc
       CVideoDatabase database;

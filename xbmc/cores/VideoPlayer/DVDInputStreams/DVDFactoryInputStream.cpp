@@ -108,7 +108,7 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
   if (url.IsProtocol("dvd"))
     return std::make_shared<CDVDInputStreamNavigator>(pPlayer, fileitem);
 
-  if (VIDEO::fileitem, IsDVDFile(false, true))
+  if (VIDEO::IsDVDFile(fileitem,false, true))
     return std::make_shared<CDVDInputStreamNavigator>(pPlayer, fileitem);
   else if (URIUtils::IsPVRChannel(file))
     return std::make_shared<CInputStreamPVRChannel>(pPlayer, fileitem);

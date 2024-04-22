@@ -25,8 +25,8 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+#include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
-#include "video/VideoInfoTag.h"
 
 using namespace KODI;
 
@@ -90,7 +90,7 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item)
 {
   std::string directory{};
 
-  if (VIDEO::IsDVDFile(item))
+  if (KODI::VIDEO::IsDVDFile(item))
   {
     std::string root = URIUtils::GetParentPath(item.GetDynPath());
     URIUtils::RemoveSlashAtEnd(root);
@@ -103,7 +103,7 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item)
     }
   }
 
-  if (VIDEO::IsBDFile(item))
+  if (KODI::VIDEO::IsBDFile(item))
   {
     std::string root = URIUtils::GetParentPath(item.GetDynPath());
     URIUtils::RemoveSlashAtEnd(root);
