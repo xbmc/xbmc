@@ -9,7 +9,8 @@
         android:layout_height="match_parent"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
-        android:src="@drawable/applaunch_screen" />
+        android:src="@drawable/applaunch_screen"
+        android:contentDescription="@string/app_name" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
