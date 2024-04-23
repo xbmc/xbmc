@@ -9,6 +9,7 @@
 #include "Win32Directory.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "URL.h"
 #include "utils/CharsetConverter.h"
 #include "utils/SystemInfo.h"

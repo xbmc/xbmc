@@ -9,6 +9,7 @@
 #include "GUIAgentControllerList.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIAgentDefines.h"
 #include "GUIAgentWindow.h"
 #include "ServiceBroker.h"

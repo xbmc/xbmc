@@ -9,6 +9,7 @@
 #include "GUIWindowSlideShow.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIDialogPictureInfo.h"
 #include "GUIInfoManager.h"
 #include "GUIUserMessages.h"

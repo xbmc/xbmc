@@ -10,6 +10,7 @@
 
 #include "CompileInfo.h"
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "addons/AddonBuilder.h"

@@ -9,6 +9,7 @@
 #include "SavestateDatabase.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "SavestateFlatBuffer.h"
 #include "URL.h"
 #include "XBDateTime.h"

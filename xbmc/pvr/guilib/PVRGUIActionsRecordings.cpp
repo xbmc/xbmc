@@ -9,6 +9,7 @@
 #include "PVRGUIActionsRecordings.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "dialogs/GUIDialogBusy.h"

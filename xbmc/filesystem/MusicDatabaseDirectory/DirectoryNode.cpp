@@ -25,6 +25,7 @@
 #include "DirectoryNodeSongTop100.h"
 #include "DirectoryNodeTop100.h"
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "QueryParams.h"
 #include "URL.h"
 #include "utils/StringUtils.h"

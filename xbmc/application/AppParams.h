@@ -21,7 +21,7 @@ class CAppParams
 {
 public:
   CAppParams();
-  virtual ~CAppParams() = default;
+  virtual ~CAppParams();
 
   int GetLogLevel() const { return m_logLevel; }
   void SetLogLevel(int logLevel) { m_logLevel = logLevel; }

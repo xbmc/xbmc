@@ -9,6 +9,7 @@
 #include "addons/kodi-dev-kit/include/kodi/gui/Window.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUITranslator.h"
 #include "General.h"
 #include "ServiceBroker.h"

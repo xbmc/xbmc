@@ -9,6 +9,7 @@
 #include "PVRChannelGroupImageFileLoader.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "filesystem/PVRGUIDirectory.h"
 #include "guilib/Texture.h"
 #include "pictures/Picture.h"

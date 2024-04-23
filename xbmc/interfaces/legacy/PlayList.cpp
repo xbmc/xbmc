@@ -8,6 +8,7 @@
 
 #include "PlayList.h"
 
+#include "FileItemList.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "playlists/PlayListFactory.h"

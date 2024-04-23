@@ -12,6 +12,7 @@
 #include "AirPlayServer.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "application/ApplicationComponents.h"

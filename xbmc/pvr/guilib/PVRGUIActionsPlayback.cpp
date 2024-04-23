@@ -9,6 +9,7 @@
 #include "PVRGUIActionsPlayback.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "application/ApplicationEnums.h"
 #include "cores/DataCacheCore.h"

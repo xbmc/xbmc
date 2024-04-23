@@ -10,6 +10,7 @@
 
 #include "DatabaseManager.h"
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "application/Application.h"
 #include "filesystem/File.h"

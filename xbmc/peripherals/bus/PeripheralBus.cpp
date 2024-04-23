@@ -9,6 +9,7 @@
 #include "PeripheralBus.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "guilib/LocalizeStrings.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/devices/Peripheral.h"

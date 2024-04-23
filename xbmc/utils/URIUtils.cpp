@@ -6,19 +6,21 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "network/Network.h"
 #include "URIUtils.h"
+
 #include "FileItem.h"
+#include "FileItemList.h"
+#include "ServiceBroker.h"
+#include "StringUtils.h"
+#include "URL.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/StackDirectory.h"
 #include "network/DNSNameCache.h"
+#include "network/Network.h"
 #include "pvr/channels/PVRChannelsPath.h"
 #include "settings/AdvancedSettings.h"
-#include "URL.h"
 #include "utils/FileExtensionProvider.h"
-#include "ServiceBroker.h"
-#include "StringUtils.h"
 #include "utils/log.h"
 
 #if defined(TARGET_WINDOWS)

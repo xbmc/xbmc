@@ -9,6 +9,7 @@
 #include "ResourceDirectory.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "URL.h"
 #include "filesystem/Directory.h"
 #include "filesystem/ResourceFile.h"

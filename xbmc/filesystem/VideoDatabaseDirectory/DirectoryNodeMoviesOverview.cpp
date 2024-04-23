@@ -9,6 +9,7 @@
 #include "DirectoryNodeMoviesOverview.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 #include "video/VideoDatabase.h"

@@ -9,6 +9,7 @@
 #pragma once
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "guilib/GUIDialog.h"
 #include "threads/Event.h"
 

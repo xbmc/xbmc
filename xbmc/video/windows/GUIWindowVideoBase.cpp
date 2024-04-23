@@ -10,6 +10,7 @@
 
 #include "Autorun.h"
 #include "ContextMenuManager.h"
+#include "FileItemList.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
 #include "PartyModeManager.h"
@@ -427,7 +428,7 @@ bool CGUIWindowVideoBase::ShowInfo(const CFileItemPtr& item2, const ScraperPtr& 
   if (bHasInfo)
   {
     // @todo add support to refresh movie version information
-    if (!info || info->Content() == CONTENT_NONE || VIDEO::IsVideoAssetFile(*item))
+    if (!info || info->Content() == CONTENT_NONE || IsVideoAssetFile(*item))
       item->SetProperty("xxuniqueid", "xx" + movieDetails.GetUniqueID()); // disable refresh button
     item->SetProperty("CheckAutoPlayNextItem", IsActive());
     *item->GetVideoInfoTag() = movieDetails;

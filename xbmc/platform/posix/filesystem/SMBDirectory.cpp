@@ -20,6 +20,7 @@
 #include "SMBDirectory.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "PasswordManager.h"
 #include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
