@@ -13,6 +13,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace ADDON
@@ -30,14 +31,7 @@ enum class CheckAddonPath
   CHOICE_NO = false,
 };
 
-/**
- * Struct - CAddonWithUpdate
- */
-struct AddonWithUpdate
-{
-  std::shared_ptr<IAddon> m_installed;
-  std::shared_ptr<IAddon> m_update;
-};
+using AddonWithUpdate = std::pair<std::shared_ptr<IAddon>, std::shared_ptr<IAddon>>;
 
 /**
  * Class - CAddonRepos

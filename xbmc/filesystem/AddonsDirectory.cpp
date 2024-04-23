@@ -790,29 +790,27 @@ void CAddonsDirectory::GenerateAddonListing(const CURL& path,
                                                                     addon->Version());
     bool disabled = CServiceBroker::GetAddonMgr().IsAddonDisabled(addon->ID());
 
-    std::function<bool(bool)> CheckOutdatedOrUpdate = [&](bool checkOutdated) -> bool {
-      auto mapEntry = addonsWithUpdate.find(addon->ID());
-      if (mapEntry != addonsWithUpdate.end())
-      {
-        const std::shared_ptr<IAddon>& checkedObject =
-            checkOutdated ? mapEntry->second.m_installed : mapEntry->second.m_update;
-
-        return (checkedObject->Origin() == addon->Origin() &&
-                checkedObject->Version() == addon->Version());
-      }
-      return false;
-    };
-
-    bool isUpdate = CheckOutdatedOrUpdate(false); // check if it's an available update
-    bool hasUpdate = CheckOutdatedOrUpdate(true); // check if it's an outdated addon
-
+    bool isUpdate{false};
+    bool hasUpdate{false};
     std::string validUpdateVersion;
     std::string validUpdateOrigin;
-    if (hasUpdate)
+
+    auto _ = addonsWithUpdate.find(addon->ID());
+    if (_ != addonsWithUpdate.end())
     {
-      auto mapEntry = addonsWithUpdate.find(addon->ID());
-      validUpdateVersion = mapEntry->second.m_update->Version().asString();
-      validUpdateOrigin = mapEntry->second.m_update->Origin();
+      auto [installed, update] = _->second;
+
+      auto CheckAddon = [&addon](const std::shared_ptr<IAddon>& _)
+      { return _->Origin() == addon->Origin() && _->Version() == addon->Version(); };
+
+      isUpdate = CheckAddon(update); // check if listed add-on is update to an installed add-on
+      hasUpdate = CheckAddon(installed); // check if installed add-on has an update available
+
+      if (hasUpdate)
+      {
+        validUpdateVersion = update->Version().asString();
+        validUpdateOrigin = update->Origin();
+      }
     }
 
     bool fromOfficialRepo = CAddonRepos::IsFromOfficialRepo(addon, CheckAddonPath::CHOICE_NO);

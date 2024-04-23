@@ -16,6 +16,7 @@
 #include <mutex>
 #include <set>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace ADDON
@@ -37,10 +38,10 @@ using ADDON_INFO_LIST = std::map<std::string, AddonInfoPtr>;
 
 class IAddon;
 using AddonPtr = std::shared_ptr<IAddon>;
+using AddonWithUpdate = std::pair<std::shared_ptr<IAddon>, std::shared_ptr<IAddon>>;
 using VECADDONS = std::vector<AddonPtr>;
 
 struct AddonEvent;
-struct AddonWithUpdate;
 struct DependencyInfo;
 struct RepositoryDirInfo;
 
