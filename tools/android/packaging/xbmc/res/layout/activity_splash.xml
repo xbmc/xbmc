@@ -39,7 +39,7 @@
             android:layout_centerHorizontal="true"
             android:text=""
             android:textColor="@android:color/white"
-            android:textSize="16dp" />
+            android:textSize="16sp" />
     </RelativeLayout>
 
 </FrameLayout>
