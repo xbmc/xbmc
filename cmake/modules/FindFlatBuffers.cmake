@@ -4,11 +4,11 @@
 #
 # This will define the following target:
 #
-#   flatbuffers::flatbuffers - The flatbuffers headers
+#   flatbuffers::flatheaders - The flatbuffers headers
 
 find_package(FlatC REQUIRED)
 
-if(NOT TARGET flatbuffers::flatbuffers)
+if(NOT TARGET flatbuffers::flatheaders)
 
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
@@ -56,14 +56,14 @@ if(NOT TARGET flatbuffers::flatbuffers)
                                     REQUIRED_VARS FLATBUFFERS_INCLUDE_DIR
                                     VERSION_VAR FLATBUFFERS_VER)
 
-  add_library(flatbuffers::flatbuffers INTERFACE IMPORTED)
-  set_target_properties(flatbuffers::flatbuffers PROPERTIES
+  add_library(flatbuffers::flatheaders INTERFACE IMPORTED)
+  set_target_properties(flatbuffers::flatheaders PROPERTIES
                                                  INTERFACE_INCLUDE_DIRECTORIES "${FLATBUFFERS_INCLUDE_DIR}")
 
-  add_dependencies(flatbuffers::flatbuffers flatbuffers::flatc)
+  add_dependencies(flatbuffers::flatheaders flatbuffers::flatc)
 
   if(TARGET flatbuffers)
-    add_dependencies(flatbuffers::flatbuffers flatbuffers)
+    add_dependencies(flatbuffers::flatheaders flatbuffers)
   endif()
 
   # Add internal build target when a Multi Config Generator is used
@@ -82,5 +82,5 @@ if(NOT TARGET flatbuffers::flatbuffers)
     add_dependencies(build_internal_depends flatbuffers)
   endif()
 
-  set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP flatbuffers::flatbuffers)
+  set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP flatbuffers::flatheaders)
 endif()
