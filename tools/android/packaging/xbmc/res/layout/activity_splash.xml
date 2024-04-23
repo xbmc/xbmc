@@ -7,9 +7,7 @@
         android:id="@+id/imageView1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerHorizontal="true"
         android:adjustViewBounds="true"
-        android:layout_alignParentTop="true"
         android:scaleType="centerCrop"
         android:src="@drawable/applaunch_screen" />
 
