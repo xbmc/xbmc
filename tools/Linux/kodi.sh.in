@@ -171,6 +171,7 @@ if command_exists gdb; then
   fi
 fi
 
+ENV_ARGS=
 if [ -n "${KODI_AE_SINK}" ]; then
 
   echo "KODI_AE_SINK env variable is deprecated and will be removed in the future."
@@ -197,11 +198,11 @@ if [ -n "${KODI_GL_INTERFACE}" ]; then
   echo "Use the --gl-interface command line switch instead."
 
   if [ "${KODI_GL_INTERFACE}" = "GLX" ]; then
-    ENV_ARGS="--gl-interface=glx"
+    ENV_ARGS="${ENV_ARGS} --gl-interface=glx"
   elif [ "${KODI_GL_INTERFACE}" = "EGL" ]; then
-    ENV_ARGS="--gl-interface=egl"
+    ENV_ARGS="${ENV_ARGS} --gl-interface=egl"
   elif [ "${KODI_GL_INTERFACE}" = "EGL_PB" ]; then
-    ENV_ARGS="--gl-interface=egl-pb"
+    ENV_ARGS="${ENV_ARGS} --gl-interface=egl-pb"
   fi
 fi
 
