@@ -42,11 +42,11 @@
         android:required="false" />
 
     <application
-        android:banner="@drawable/banner"
+        android:banner="@mipmap/banner"
         android:hasCode="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:logo="@drawable/banner"
+        android:logo="@mipmap/banner"
         android:requestLegacyExternalStorage="true">
         <activity
             android:name=".Splash"
