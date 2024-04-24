@@ -352,6 +352,11 @@ void COverlayGlyphGLES::Render(SRenderState& state)
   GLint posLoc = renderSystem->GUIShaderGetPos();
   GLint colLoc = renderSystem->GUIShaderGetCol();
   GLint tex0Loc = renderSystem->GUIShaderGetCoord0();
+  GLint matrixUniformLoc = renderSystem->GUIShaderGetMatrix();
+
+  CMatrixGL matrix = glMatrixProject.Get();
+  matrix.MultMatrixf(glMatrixModview.Get());
+  glUniformMatrix4fv(matrixUniformLoc, 1, GL_FALSE, matrix);
 
   // stack object until VBOs will be used
   std::vector<VERTEX> vecVertices(6 * m_vertex.size() / 4);
