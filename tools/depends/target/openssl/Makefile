@@ -6,13 +6,12 @@ DEPS = ../../Makefile.include Makefile OPENSSL-VERSION ../../download-files.incl
 ifeq ($(OS), linux)
   # Need to export our vars to override "default" conf data of openssl
   TARGETOPT=--with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib
-  CONFIGURE=MACHINE=$(PLATFORM) ./config no-shared zlib no-tests no-asm $(TARGETOPT) --prefix=$(PREFIX) --libdir=lib
+  CONFIGURE=MACHINE=$(PLATFORM) ./config no-shared zlib no-tests no-asm no-module $(TARGETOPT) --prefix=$(PREFIX) --libdir=lib
 else
   ifeq ($(OS), android)
-    TARGETOPT=--with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib -D__ANDROID_API__=$(NDK_LEVEL)
-    # openssl 1.x incorrectly uses ANDROID_NDK_HOME, when openssl 3.x.x comes in use ANDROID_NDK_ROOT
-    # see https://github.com/openssl/openssl/pull/11206
-    export ANDROID_NDK_HOME=$(NDKROOT)
+    TARGETOPT=--with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib
+
+    export ANDROID_NDK_ROOT=$(NDKROOT)
     export PATH:=$(TOOLCHAIN)/bin:$(PATH)
     ifeq ($(MESON_CPU), aarch64)
       OPENSSLPLATFORM=android-arm64
@@ -24,18 +23,21 @@ else
     # LLVM 15 has raised this to error by default. drop back to warning
     CFLAGS+= -Wno-error=implicit-int
     export SDKROOT CFLAGS
-    OPENSSLPLATFORM=kodi-$(TARGET_PLATFORM)-$(CPU)
+    OPENSSLPLATFORM=ios64-cross
+
     ifeq ($(TARGET_PLATFORM),appletvos)
+      # Apple tv is the only platform we use a custom conf target
+      OPENSSLPLATFORM=kodi-appletvos-arm64
       # Need to add "no-async" to avoid "'setcontext' is unavailable: not available on tvOS" error
-      TARGETOPT=no-async
+      TARGETOPT=--config=$(PWD)/16-kodi.conf no-async
     endif
   endif
   ifeq ($(OS), osx)
-    OPENSSLPLATFORM=kodi-darwin64-$(CPU)
-    ASMFLAG=no-asm
+    OPENSSLPLATFORM=darwin64-$(CPU)
   endif
 
-  CONFIGURE=./Configure $(OPENSSLPLATFORM) no-shared $(ASMFLAG) zlib no-tests $(TARGETOPT) --prefix=$(PREFIX)
+  # Openssl 3.2.0 allows no-apps no-docs as options. Use when we update further
+  CONFIGURE=./Configure no-shared zlib $(TARGETOPT) no-tests no-module --prefix=$(PREFIX) $(OPENSSLPLATFORM)
 endif
 
 export CC CXX AR RANLIB
@@ -52,7 +54,6 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 ifeq ($(OS),android)
 	cd $(PLATFORM); patch -p1 -i ../001-android-getauxvalrevert.patch
 endif
-	cd $(PLATFORM); cp ../16-kodi.conf ./Configurations/
 	cd $(PLATFORM); $(CONFIGURE)
 	if test "$(OS)" = "darwin_embedded"; then \
 		sed -E -ie "s|static volatile sig_atomic_t intr_signal;|static volatile intr_signal;|" "$(PLATFORM)/crypto/ui/ui_openssl.c"; \
