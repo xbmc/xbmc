@@ -4,15 +4,27 @@ DEPS = ../../Makefile.include Makefile OPENSSL-VERSION ../../download-files.incl
 
 # configuration settings
 ifeq ($(OS), linux)
-  # Need to export our vars to override "default" conf data of openssl
   TARGETOPT=--with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib
-  CONFIGURE=MACHINE=$(PLATFORM) ./config no-shared zlib no-tests no-asm $(TARGETOPT) --prefix=$(PREFIX) --libdir=lib
+  CONFIGURE=./Configure no-shared zlib no-tests no-asm no-module  $(TARGETOPT) --prefix=$(PREFIX) --libdir=lib
+  ifeq ($(TARGET_PLATFORM),webos)
+    CONFIGURE+= linux-armv4
+  else
+    ifeq ($(CPU),aarch64)
+      CONFIGURE+= linux-aarch64
+    else ifeq ($(CPU),arm)
+      CONFIGURE+= linux-armv4
+    else ifeq ($(CPU),x86_64)
+      CONFIGURE+= linux-x86_64
+    else
+      # Fallback to base generic linux target
+      CONFIGURE+= linux-generic32
+    endif
+  endif
 else
   ifeq ($(OS), android)
-    TARGETOPT=--with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib -D__ANDROID_API__=$(NDK_LEVEL)
-    # openssl 1.x incorrectly uses ANDROID_NDK_HOME, when openssl 3.x.x comes in use ANDROID_NDK_ROOT
-    # see https://github.com/openssl/openssl/pull/11206
-    export ANDROID_NDK_HOME=$(NDKROOT)
+    TARGETOPT=--with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib
+
+    export ANDROID_NDK_ROOT=$(NDKROOT)
     export PATH:=$(TOOLCHAIN)/bin:$(PATH)
     ifeq ($(MESON_CPU), aarch64)
       OPENSSLPLATFORM=android-arm64
@@ -24,18 +36,21 @@ else
     # LLVM 15 has raised this to error by default. drop back to warning
     CFLAGS+= -Wno-error=implicit-int
     export SDKROOT CFLAGS
-    OPENSSLPLATFORM=kodi-$(TARGET_PLATFORM)-$(CPU)
+    OPENSSLPLATFORM=kodi-iphoneos-arm64
+
     ifeq ($(TARGET_PLATFORM),appletvos)
+      OPENSSLPLATFORM=kodi-appletvos-arm64
       # Need to add "no-async" to avoid "'setcontext' is unavailable: not available on tvOS" error
-      TARGETOPT=no-async
+      TARGETOPT+= no-async
     endif
   endif
   ifeq ($(OS), osx)
     OPENSSLPLATFORM=kodi-darwin64-$(CPU)
-    ASMFLAG=no-asm
   endif
 
-  CONFIGURE=./Configure $(OPENSSLPLATFORM) no-shared $(ASMFLAG) zlib no-tests $(TARGETOPT) --prefix=$(PREFIX)
+  # Openssl 3.2.0 allows no-apps no-docs as options. Use when we update further
+  # We explicitly use no-asm as there is a symbol clash with gnutls
+  CONFIGURE=./Configure no-shared zlib no-tests no-asm no-module  $(TARGETOPT) --prefix=$(PREFIX) $(OPENSSLPLATFORM)
 endif
 
 export CC CXX AR RANLIB
