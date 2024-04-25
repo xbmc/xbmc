@@ -237,6 +237,11 @@ void CGUIListItemLayout::FreeResources(bool immediately)
   m_group.FreeResources(immediately);
 }
 
+void CGUIListItemLayout::AssignDepth()
+{
+  m_group.AssignDepth();
+}
+
 #ifdef _DEBUG
 void CGUIListItemLayout::DumpTextureUse()
 {

@@ -1224,6 +1224,8 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetInt(pElement, "algorithmdirtyregions",     m_guiAlgorithmDirtyRegions);
     XMLUtils::GetBoolean(pElement, "smartredraw", m_guiSmartRedraw);
     XMLUtils::GetInt(pElement, "anisotropicfiltering", m_guiAnisotropicFiltering);
+    XMLUtils::GetBoolean(pElement, "fronttobackrendering", m_guiFrontToBackRendering);
+    XMLUtils::GetBoolean(pElement, "geometryclear", m_guiGeometryClear);
   }
 
   std::string seekSteps;

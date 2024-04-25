@@ -87,6 +87,7 @@ protected:
 
   bool Render(unsigned int flags, int renderBuffer);
   void ClearBackBuffer();
+  void ClearBackBufferQuad();
   void DrawBlackBars();
 
   bool ValidateRenderer();

@@ -116,7 +116,7 @@ CDebugRenderer::CRenderer::CRenderer() : OVERLAY::CRenderer()
 {
 }
 
-void CDebugRenderer::CRenderer::Render(int idx)
+void CDebugRenderer::CRenderer::Render(int idx, float depth)
 {
   std::vector<SElement>& list = m_buffers[idx];
   for (std::vector<SElement>::iterator it = list.begin(); it != list.end(); ++it)

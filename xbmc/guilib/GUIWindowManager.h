@@ -231,6 +231,12 @@ public:
 #endif
 private:
   void RenderPass() const;
+  /*! \brief Render in one back to front pass.
+   */
+  void RenderPassSingle() const;
+  /*! \brief Render opaque elements front to back, and transparent ones back to front
+   */
+  void RenderPassDual() const;
 
   void LoadNotOnDemandWindows();
   void UnloadNotOnDemandWindows();

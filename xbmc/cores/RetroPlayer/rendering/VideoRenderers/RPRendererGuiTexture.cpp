@@ -184,6 +184,7 @@ void CRPRendererGuiTexture::RenderInternal(bool clear, uint8_t alpha)
   GLint posLoc = m_context.GUIShaderGetPos();
   GLint tex0Loc = m_context.GUIShaderGetCoord0();
   GLint uniColLoc = m_context.GUIShaderGetUniCol();
+  GLint depthLoc = m_context.GUIShaderGetDepth();
 
   glGenBuffers(1, &vertexVBO);
   glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
@@ -212,6 +213,7 @@ void CRPRendererGuiTexture::RenderInternal(bool clear, uint8_t alpha)
 
   glUniform4f(uniColLoc, (colour[0] / 255.0f), (colour[1] / 255.0f), (colour[2] / 255.0f),
               (colour[3] / 255.0f));
+  glUniform1f(depthLoc, -1.0f);
 
   glGenBuffers(1, &indexVBO);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
@@ -246,6 +248,7 @@ void CRPRendererGuiTexture::RenderInternal(bool clear, uint8_t alpha)
   GLint posLoc = m_context.GUIShaderGetPos();
   GLint tex0Loc = m_context.GUIShaderGetCoord0();
   GLint uniColLoc = m_context.GUIShaderGetUniCol();
+  GLint depthLoc = m_context.GUIShaderGetDepth();
 
   glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, 0, ver);
   glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, tex);
@@ -275,6 +278,7 @@ void CRPRendererGuiTexture::RenderInternal(bool clear, uint8_t alpha)
 
   glUniform4f(uniColLoc, (col[0] / 255.0f), (col[1] / 255.0f), (col[2] / 255.0f),
               (col[3] / 255.0f));
+  glUniform1f(depthLoc, -1.0f);
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
 
   glDisableVertexAttribArray(posLoc);

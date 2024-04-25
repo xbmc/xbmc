@@ -9,6 +9,7 @@
 #include "GUIVideoControl.h"
 
 #include "GUIComponent.h"
+#include "GUITexture.h"
 #include "GUIWindowManager.h"
 #include "ServiceBroker.h"
 #include "application/ApplicationComponents.h"
@@ -17,6 +18,7 @@
 #include "input/actions/ActionIDs.h"
 #include "input/mouse/MouseEvent.h"
 #include "utils/ColorUtils.h"
+#include "windowing/GraphicContext.h"
 
 using namespace KODI;
 
@@ -41,6 +43,9 @@ void CGUIVideoControl::Process(unsigned int currentTime, CDirtyRegionList &dirty
 
 void CGUIVideoControl::Render()
 {
+  if (CServiceBroker::GetWinSystem()->GetGfxContext().GetRenderOrder() ==
+      RENDER_ORDER_FRONT_TO_BACK)
+    return;
   auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
   if (appPlayer->IsRenderingVideo())
@@ -64,7 +69,14 @@ void CGUIVideoControl::Render()
       CRect region = GetRenderRegion();
       region.Intersect(old);
       CServiceBroker::GetWinSystem()->GetGfxContext().SetScissors(region);
-      CServiceBroker::GetWinSystem()->GetGfxContext().Clear(0);
+
+      // with dual pass rendering, we need to "clear" with a quad, as we need to conserve the already rendered layers
+      if (CServiceBroker::GetWinSystem()->GetGfxContext().GetRenderOrder() ==
+          RENDER_ORDER_BACK_TO_FRONT)
+        CGUITexture::DrawQuad(region, 0x00000000, nullptr, nullptr, -1.0f, false);
+      else if (CServiceBroker::GetWinSystem()->GetGfxContext().GetRenderOrder() ==
+               RENDER_ORDER_ALL_BACK_TO_FRONT)
+        CServiceBroker::GetWinSystem()->GetGfxContext().Clear(0);
       CServiceBroker::GetWinSystem()->GetGfxContext().SetScissors(old);
     }
     else

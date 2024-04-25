@@ -555,6 +555,9 @@ void CGUISpinControl::Render()
 
 void CGUISpinControl::RenderText(float posX, float posY, float width, float height)
 {
+  if (CServiceBroker::GetWinSystem()->GetGfxContext().GetRenderOrder() ==
+      RENDER_ORDER_FRONT_TO_BACK)
+    return;
   m_label.SetMaxRect(posX, posY, width, height);
   m_label.SetColor(GetTextColor());
   m_label.Render();

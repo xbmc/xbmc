@@ -57,6 +57,13 @@ enum AdjustRefreshRate
   ADJUST_REFRESHRATE_ON_START,
 };
 
+enum RENDER_ORDER
+{
+  RENDER_ORDER_ALL_BACK_TO_FRONT = 0,
+  RENDER_ORDER_BACK_TO_FRONT,
+  RENDER_ORDER_FRONT_TO_BACK,
+};
+
 class CGraphicContext : public CCriticalSection
 {
 public:
@@ -99,8 +106,33 @@ public:
   void ResetScreenParameters(RESOLUTION res);
   void CaptureStateBlock();
   void ApplyStateBlock();
-  void Clear(UTILS::COLOR::Color color = 0);
+  /*! \brief Invalidates color buffer, clears the depth buffer (if used). 
+   Will result in undefined color buffer values which will have to be 
+   repainted. Has to be called at the beginning of a frame.
+   */
+  void Clear();
+  /*! \brief Clears the depth buffer (if used) and the color buffer. Guaranties
+   a defined color buffer value. Has to be called at the beginning of a frame.
+   \param color the specified color.
+   */
+  void Clear(UTILS::COLOR::Color color);
   void GetAllowedResolutions(std::vector<RESOLUTION> &res);
+  /*! \brief Sets the direction of the current rendering pass.
+   \param renderOrder direction of the pass
+   */
+  void SetRenderOrder(RENDER_ORDER renderOrder);
+  /*! \brief Returns the current render order mode
+   \returns RENDER_ORDER returns the mode
+   */
+  RENDER_ORDER GetRenderOrder() { return m_renderOrder; }
+  /*! \brief Resets the z-depth. Layer 0 and 1 are reserved as presentation (video) layer.
+   */
+  void ResetDepth() { m_layer = 2; }
+  /*! \brief Reserve layers for the caller to use
+   \param addLayers number of layers needed
+   \returns uint32_t returns the absolute layer hight
+   */
+  uint32_t GetDepth(uint32_t addLayers = 2);
 
   /* \brief Get UI scaling information from a given resolution to the screen resolution.
    Takes account of overscan and UI zooming.
@@ -134,6 +166,16 @@ public:
   void RestoreCameraPosition();
   void SetStereoFactor(float factor);
   void RestoreStereoFactor();
+  /*! \brief Gets the depth information of the current transform matrix
+   \param depthOffset adds an offset to the current depth
+   \returns float normalized -1 to 1
+   */
+  float GetTransformDepth(int32_t depthOffset = 0);
+  /*! \brief Gets the (normalized) depth information 
+   \param depth to be normalized
+   \returns float normalized -1 to 1
+   */
+  float GetNormalizedDepth(uint32_t depth);
   /*! \brief Set a region in which to clip all rendering
    Anything that is rendered after setting a clip region will be clipped so that no part renders
    outside of the clip region.  Successive calls to SetClipRegion intersect the clip region, which
@@ -234,4 +276,6 @@ protected:
   RENDER_STEREO_MODE m_nextStereoMode = RENDER_STEREO_MODE_OFF;
 
   bool m_isTransferPQ{false};
+  RENDER_ORDER m_renderOrder{RENDER_ORDER_ALL_BACK_TO_FRONT};
+  uint32_t m_layer{2};
 };

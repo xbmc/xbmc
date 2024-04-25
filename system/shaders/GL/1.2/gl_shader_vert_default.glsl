@@ -28,4 +28,5 @@ void main ()
 {
   mat4 mvp    = m_proj * m_model;
   gl_Position = mvp * m_attrpos;
+  gl_Position.z = -1. * gl_Position.w;
 }

@@ -21,6 +21,13 @@
  *   This interface is very basic since a lot of the actual details will go in to the derived classes
  */
 
+enum DEPTH_CULLING
+{
+  DEPTH_CULLING_OFF = 0,
+  DEPTH_CULLING_BACK_TO_FRONT,
+  DEPTH_CULLING_FRONT_TO_BACK,
+};
+
 class CGUIImage;
 class CGUITextLayout;
 
@@ -37,6 +44,7 @@ public:
   virtual bool BeginRender() = 0;
   virtual bool EndRender() = 0;
   virtual void PresentRender(bool rendered, bool videoLayer) = 0;
+  virtual void InvalidateColorBuffer() {}
   virtual bool ClearBuffers(UTILS::COLOR::Color color) = 0;
   virtual bool IsExtSupported(const char* extension) const = 0;
 
@@ -48,6 +56,8 @@ public:
   virtual CRect ClipRectToScissorRect(const CRect &rect) { return CRect(); }
   virtual void SetScissors(const CRect &rect) = 0;
   virtual void ResetScissors() = 0;
+
+  virtual void SetDepthCulling(DEPTH_CULLING culling) {}
 
   virtual void CaptureStateBlock() = 0;
   virtual void ApplyStateBlock() = 0;

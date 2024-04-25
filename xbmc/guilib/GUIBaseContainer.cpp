@@ -286,6 +286,8 @@ void CGUIBaseContainer::Render()
     float focusedPos = 0;
     std::shared_ptr<CGUIListItem> focusedItem;
     int current = offset - cacheBefore;
+
+    std::vector<RENDERITEM> renderitems;
     while (pos < end && m_items.size())
     {
       int itemNo = CorrectOffset(current, 0);
@@ -304,9 +306,9 @@ void CGUIBaseContainer::Render()
         else
         {
           if (m_orientation == VERTICAL)
-            RenderItem(origin.x, pos, item.get(), false);
+            renderitems.emplace_back(RENDERITEM{origin.x, pos, item, false});
           else
-            RenderItem(pos, origin.y, item.get(), false);
+            renderitems.emplace_back(RENDERITEM{pos, origin.y, item, false});
         }
       }
       // increment our position
@@ -317,9 +319,25 @@ void CGUIBaseContainer::Render()
     if (focusedItem)
     {
       if (m_orientation == VERTICAL)
-        RenderItem(origin.x, focusedPos, focusedItem.get(), true);
+        renderitems.emplace_back(RENDERITEM{origin.x, focusedPos, focusedItem, true});
       else
-        RenderItem(focusedPos, origin.y, focusedItem.get(), true);
+        renderitems.emplace_back(RENDERITEM{focusedPos, origin.y, focusedItem, true});
+    }
+
+    if (CServiceBroker::GetWinSystem()->GetGfxContext().GetRenderOrder() ==
+        RENDER_ORDER_FRONT_TO_BACK)
+    {
+      for (auto it = std::crbegin(renderitems); it != std::crend(renderitems); it++)
+      {
+        RenderItem(it->posX, it->posY, it->item.get(), it->focused);
+      }
+    }
+    else
+    {
+      for (const auto& renderitem : renderitems)
+      {
+        RenderItem(renderitem.posX, renderitem.posY, renderitem.item.get(), renderitem.focused);
+      }
     }
 
     CServiceBroker::GetWinSystem()->GetGfxContext().RestoreClipRegion();
@@ -1043,6 +1061,37 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
   }
 
   UpdateListProvider();
+}
+
+void CGUIBaseContainer::AssignDepth()
+{
+  std::shared_ptr<CGUIListItem> focusedItem = nullptr;
+  int32_t current = 0;
+
+  for (const auto& item : m_items)
+  {
+    bool focused = (current == GetOffset() + GetCursor());
+    if (focused)
+    {
+      focusedItem = item;
+    }
+    else
+    {
+      if (item->GetFocusedLayout())
+        item->GetFocusedLayout()->AssignDepth();
+      if (item->GetLayout())
+        item->GetLayout()->AssignDepth();
+    }
+    current++;
+  }
+
+  if (focusedItem)
+  {
+    if (focusedItem->GetFocusedLayout())
+      focusedItem->GetFocusedLayout()->AssignDepth();
+    if (focusedItem->GetLayout())
+      focusedItem->GetLayout()->AssignDepth();
+  }
 }
 
 void CGUIBaseContainer::UpdateListProvider(bool forceRefresh /* = false */)

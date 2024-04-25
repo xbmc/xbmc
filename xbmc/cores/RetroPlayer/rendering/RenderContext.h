@@ -69,6 +69,7 @@ public:
   int GUIShaderGetPos();
   int GUIShaderGetCoord0();
   int GUIShaderGetUniCol();
+  int GUIShaderGetDepth();
 
   // DirectX rendering functions
   CGUIShaderDX* GetGUIShader();

@@ -140,7 +140,9 @@ void CGUITextureD3D::Draw(float *x, float *y, float *z, const CRect &texture, co
 void CGUITextureD3D::DrawQuad(const CRect& rect,
                               UTILS::COLOR::Color color,
                               CTexture* texture,
-                              const CRect* texCoords)
+                              const CRect* texCoords,
+                              const float depth,
+                              const bool blending)
 {
   unsigned numViews = 0;
   ID3D11ShaderResourceView* views = nullptr;

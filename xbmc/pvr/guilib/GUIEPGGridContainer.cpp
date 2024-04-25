@@ -207,11 +207,23 @@ void CGUIEPGGridContainer::Process(unsigned int currentTime, CDirtyRegionList& d
 
 void CGUIEPGGridContainer::Render()
 {
-  RenderChannels();
-  RenderRulerDate();
-  RenderRuler();
-  RenderProgrammeGrid();
-  RenderProgressIndicator();
+  if (CServiceBroker::GetWinSystem()->GetGfxContext().GetRenderOrder() ==
+      RENDER_ORDER_FRONT_TO_BACK)
+  {
+    RenderProgressIndicator();
+    RenderProgrammeGrid();
+    RenderRuler();
+    RenderRulerDate();
+    RenderChannels();
+  }
+  else
+  {
+    RenderChannels();
+    RenderRulerDate();
+    RenderRuler();
+    RenderProgrammeGrid();
+    RenderProgressIndicator();
+  }
 
   CGUIControl::Render();
 }
@@ -316,7 +328,7 @@ void CGUIEPGGridContainer::RenderProgressIndicator()
   if (CServiceBroker::GetWinSystem()->GetGfxContext().SetClipRegion(m_rulerPosX, m_rulerPosY, GetProgressIndicatorWidth(), GetProgressIndicatorHeight()))
   {
     m_guiProgressIndicatorTexture->SetDiffuseColor(m_diffuseColor);
-    m_guiProgressIndicatorTexture->Render();
+    m_guiProgressIndicatorTexture->Render(0, m_guiProgressIndicatorTextureDepth);
     CServiceBroker::GetWinSystem()->GetGfxContext().RestoreClipRegion();
   }
 }
@@ -2090,7 +2102,10 @@ void CGUIEPGGridContainer::GetProgrammeCacheOffsets(int& cacheBefore, int& cache
   }
 }
 
-void CGUIEPGGridContainer::HandleChannels(bool bRender, unsigned int currentTime, CDirtyRegionList& dirtyregions)
+void CGUIEPGGridContainer::HandleChannels(bool bRender,
+                                          unsigned int currentTime,
+                                          CDirtyRegionList& dirtyregions,
+                                          bool bAssignDepth)
 {
   if (!m_focusedChannelLayout || !m_channelLayout)
     return;
@@ -2171,6 +2186,13 @@ void CGUIEPGGridContainer::HandleChannels(bool bRender, unsigned int currentTime
             RenderItem(pos, originChannel.y, item.get(), false);
         }
       }
+      else if (bAssignDepth)
+      {
+        if (focused)
+          focusedItem = item;
+        else
+          AssignItemDepth(item.get(), false);
+      }
       else
       {
         // process our item
@@ -2198,9 +2220,16 @@ void CGUIEPGGridContainer::HandleChannels(bool bRender, unsigned int currentTime
 
     CServiceBroker::GetWinSystem()->GetGfxContext().RestoreClipRegion();
   }
+  else if (bAssignDepth && focusedItem)
+  {
+    AssignItemDepth(focusedItem.get(), true);
+  }
 }
 
-void CGUIEPGGridContainer::HandleRulerDate(bool bRender, unsigned int currentTime, CDirtyRegionList& dirtyregions)
+void CGUIEPGGridContainer::HandleRulerDate(bool bRender,
+                                           unsigned int currentTime,
+                                           CDirtyRegionList& dirtyregions,
+                                           bool bAssignDepth)
 {
   if (!m_rulerDateLayout || m_gridModel->RulerItemsSize() <= 1 || m_gridModel->IsZeroGridDuration())
     return;
@@ -2214,6 +2243,10 @@ void CGUIEPGGridContainer::HandleRulerDate(bool bRender, unsigned int currentTim
     RenderItem(m_posX, m_posY, item.get(), false);
     CServiceBroker::GetWinSystem()->GetGfxContext().RestoreClipRegion();
   }
+  else if (bAssignDepth)
+  {
+    AssignItemDepth(item.get(), false);
+  }
   else
   {
     const int rulerOffset = GetProgrammeScrollOffset();
@@ -2224,7 +2257,10 @@ void CGUIEPGGridContainer::HandleRulerDate(bool bRender, unsigned int currentTim
   }
 }
 
-void CGUIEPGGridContainer::HandleRuler(bool bRender, unsigned int currentTime, CDirtyRegionList& dirtyregions)
+void CGUIEPGGridContainer::HandleRuler(bool bRender,
+                                       unsigned int currentTime,
+                                       CDirtyRegionList& dirtyregions,
+                                       bool bAssignDepth)
 {
   if (!m_rulerLayout || m_gridModel->RulerItemsSize() <= 1 || m_gridModel->IsZeroGridDuration())
     return;
@@ -2252,6 +2288,12 @@ void CGUIEPGGridContainer::HandleRuler(bool bRender, unsigned int currentTime, C
       CServiceBroker::GetWinSystem()->GetGfxContext().SetClipRegion(m_rulerPosX, m_rulerPosY, m_gridWidth, m_rulerHeight);
     else
       CServiceBroker::GetWinSystem()->GetGfxContext().SetClipRegion(m_rulerPosX, m_rulerPosY, m_rulerWidth, m_gridHeight);
+  }
+  else if (bAssignDepth)
+  {
+    if (!m_rulerDateLayout)
+      AssignItemDepth(item.get(), false);
+    GetProgrammeCacheOffsets(cacheBeforeRuler, cacheAfterRuler);
   }
   else
   {
@@ -2311,6 +2353,8 @@ void CGUIEPGGridContainer::HandleRuler(bool bRender, unsigned int currentTime, C
     {
       if (bRender)
         RenderItem(pos, originRuler.y, item.get(), false);
+      else if (bAssignDepth)
+        AssignItemDepth(item.get(), false);
       else
         ProcessItem(pos, originRuler.y, item, lastitem, false, m_rulerLayout, m_rulerLayout, currentTime, dirtyregions, m_rulerWidth);
 
@@ -2320,6 +2364,8 @@ void CGUIEPGGridContainer::HandleRuler(bool bRender, unsigned int currentTime, C
     {
       if (bRender)
         RenderItem(originRuler.x, pos, item.get(), false);
+      else if (bAssignDepth)
+        AssignItemDepth(item.get(), false);
       else
         ProcessItem(originRuler.x, pos, item, lastitem, false, m_rulerLayout, m_rulerLayout, currentTime, dirtyregions, m_rulerHeight);
 
@@ -2333,7 +2379,10 @@ void CGUIEPGGridContainer::HandleRuler(bool bRender, unsigned int currentTime, C
     CServiceBroker::GetWinSystem()->GetGfxContext().RestoreClipRegion();
 }
 
-void CGUIEPGGridContainer::HandleProgrammeGrid(bool bRender, unsigned int currentTime, CDirtyRegionList& dirtyregions)
+void CGUIEPGGridContainer::HandleProgrammeGrid(bool bRender,
+                                               unsigned int currentTime,
+                                               CDirtyRegionList& dirtyregions,
+                                               bool bAssignDepth)
 {
   if (!m_focusedProgrammeLayout || !m_programmeLayout || m_gridModel->RulerItemsSize() <= 1 || m_gridModel->IsZeroGridDuration())
     return;
@@ -2348,7 +2397,7 @@ void CGUIEPGGridContainer::HandleProgrammeGrid(bool bRender, unsigned int curren
   {
     CServiceBroker::GetWinSystem()->GetGfxContext().SetClipRegion(m_gridPosX, m_gridPosY, m_gridWidth, m_gridHeight);
   }
-  else
+  else if (!bAssignDepth)
   {
     int cacheBeforeChannel, cacheAfterChannel;
     GetChannelCacheOffsets(cacheBeforeChannel, cacheAfterChannel);
@@ -2460,6 +2509,24 @@ void CGUIEPGGridContainer::HandleProgrammeGrid(bool bRender, unsigned int curren
               RenderItem(posB, posA2, item.get(), focused);
           }
         }
+        else if (bAssignDepth)
+        {
+          // reset to grid start position if first item is out of grid view
+          if (posA2 < posA)
+            posA2 = posA;
+
+          // render our item
+          if (focused)
+          {
+            focusedPosX = posA2;
+            focusedPosY = posB;
+            focusedItem = item;
+          }
+          else
+          {
+            AssignItemDepth(item.get(), focused);
+          }
+        }
         else
         {
           // calculate the size to truncate if item is out of grid view
@@ -2511,5 +2578,36 @@ void CGUIEPGGridContainer::HandleProgrammeGrid(bool bRender, unsigned int curren
     }
 
     CServiceBroker::GetWinSystem()->GetGfxContext().RestoreClipRegion();
+  }
+  else if (bAssignDepth && focusedItem)
+  {
+    AssignItemDepth(focusedItem.get(), true);
+  }
+}
+
+void CGUIEPGGridContainer::AssignDepth()
+{
+  unsigned int dummyTime = 0;
+  CDirtyRegionList dummyRegions;
+  HandleChannels(false, dummyTime, dummyRegions, true);
+  HandleRuler(false, dummyTime, dummyRegions, true);
+  HandleRulerDate(false, dummyTime, dummyRegions, true);
+  HandleProgrammeGrid(false, dummyTime, dummyRegions, true);
+  m_guiProgressIndicatorTextureDepth = CServiceBroker::GetWinSystem()->GetGfxContext().GetDepth();
+}
+
+void CGUIEPGGridContainer::AssignItemDepth(CGUIListItem* item, bool focused)
+{
+  if (focused)
+  {
+    if (item->GetFocusedLayout())
+      item->GetFocusedLayout()->AssignDepth();
+  }
+  else
+  {
+    if (item->GetFocusedLayout() && item->GetFocusedLayout()->IsAnimating(ANIM_TYPE_UNFOCUS))
+      item->GetFocusedLayout()->AssignDepth();
+    else if (item->GetLayout())
+      item->GetLayout()->AssignDepth();
   }
 }

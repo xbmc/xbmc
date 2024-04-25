@@ -41,6 +41,7 @@ public:
   void FreeResources(bool immediately = false) override;
   void DynamicResourceAlloc(bool bOnOff) override;
   bool CanFocus() const override;
+  void AssignDepth() override;
 
   EVENT_RESULT SendMouseEvent(const CPoint& point, const KODI::MOUSE::CMouseEvent& event) override;
   void UnfocusFromPoint(const CPoint &point) override;

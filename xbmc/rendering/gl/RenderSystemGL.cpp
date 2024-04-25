@@ -222,8 +222,7 @@ bool CRenderSystemGL::ResetRenderSystem(int width, int height)
   }
 
   glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-  glEnable(GL_BLEND);          // Turn Blending On
-  glDisable(GL_DEPTH_TEST);
+  glEnable(GL_BLEND); // Turn Blending On
 
   return true;
 }
@@ -266,6 +265,30 @@ bool CRenderSystemGL::EndRender()
   return true;
 }
 
+void CRenderSystemGL::InvalidateColorBuffer()
+{
+  if (!m_bRenderCreated)
+    return;
+
+  /* clear is not affected by stipple pattern, so we can only clear on first frame */
+  if (m_stereoMode == RENDER_STEREO_MODE_INTERLACED && m_stereoView == RENDER_STEREO_VIEW_RIGHT)
+    return;
+
+  // some platforms prefer a clear, instead of rendering over
+  if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiGeometryClear)
+  {
+    ClearBuffers(0);
+    return;
+  }
+
+  if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiFrontToBackRendering)
+    return;
+
+  glClearDepthf(0);
+  glDepthMask(GL_TRUE);
+  glClear(GL_DEPTH_BUFFER_BIT);
+}
+
 bool CRenderSystemGL::ClearBuffers(UTILS::COLOR::Color color)
 {
   if (!m_bRenderCreated)
@@ -283,6 +306,14 @@ bool CRenderSystemGL::ClearBuffers(UTILS::COLOR::Color color)
   glClearColor(r, g, b, a);
 
   GLbitfield flags = GL_COLOR_BUFFER_BIT;
+
+  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiFrontToBackRendering)
+  {
+    glClearDepthf(0);
+    glDepthMask(GL_TRUE);
+    flags |= GL_DEPTH_BUFFER_BIT;
+  }
+
   glClear(flags);
 
   return true;
@@ -503,6 +534,27 @@ void CRenderSystemGL::SetScissors(const CRect &rect)
 void CRenderSystemGL::ResetScissors()
 {
   SetScissors(CRect(0, 0, (float)m_width, (float)m_height));
+}
+
+void CRenderSystemGL::SetDepthCulling(DEPTH_CULLING culling)
+{
+  if (culling == DEPTH_CULLING_OFF)
+  {
+    glDisable(GL_DEPTH_TEST);
+    glDepthMask(GL_FALSE);
+  }
+  else if (culling == DEPTH_CULLING_BACK_TO_FRONT)
+  {
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_FALSE);
+    glDepthFunc(GL_GEQUAL);
+  }
+  else if (culling == DEPTH_CULLING_FRONT_TO_BACK)
+  {
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
+    glDepthFunc(GL_GREATER);
+  }
 }
 
 void CRenderSystemGL::GetGLSLVersion(int& major, int& minor)
@@ -806,6 +858,14 @@ GLint CRenderSystemGL::ShaderGetCoord1()
 {
   if (m_pShader[m_method])
     return m_pShader[m_method]->GetCord1Loc();
+
+  return -1;
+}
+
+GLint CRenderSystemGL::ShaderGetDepth()
+{
+  if (m_pShader[m_method])
+    return m_pShader[m_method]->GetDepthLoc();
 
   return -1;
 }

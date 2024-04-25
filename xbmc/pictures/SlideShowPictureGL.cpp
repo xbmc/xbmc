@@ -81,6 +81,7 @@ void CSlideShowPicGL::Render(float* x, float* y, CTexture* pTexture, UTILS::COLO
   GLint posLoc = renderSystem->ShaderGetPos();
   GLint tex0Loc = renderSystem->ShaderGetCoord0();
   GLint uniColLoc = renderSystem->ShaderGetUniCol();
+  GLint depthLoc = renderSystem->ShaderGetDepth();
 
   glGenBuffers(1, &vertexVBO);
   glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
@@ -102,6 +103,7 @@ void CSlideShowPicGL::Render(float* x, float* y, CTexture* pTexture, UTILS::COLO
 
   glUniform4f(uniColLoc, (colour[0] / 255.0f), (colour[1] / 255.0f), (colour[2] / 255.0f),
               (colour[3] / 255.0f));
+  glUniform1f(depthLoc, -1.0f);
 
   glGenBuffers(1, &indexVBO);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);

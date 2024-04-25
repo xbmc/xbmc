@@ -53,6 +53,7 @@ void CSlideShowPicGLES::Render(float* x, float* y, CTexture* pTexture, UTILS::CO
   GLint posLoc = renderSystem->GUIShaderGetPos();
   GLint tex0Loc = renderSystem->GUIShaderGetCoord0();
   GLint uniColLoc = renderSystem->GUIShaderGetUniCol();
+  GLint depthLoc = renderSystem->GUIShaderGetDepth();
 
   glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, 0, ver);
   glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, tex);
@@ -88,6 +89,7 @@ void CSlideShowPicGLES::Render(float* x, float* y, CTexture* pTexture, UTILS::CO
 
   glUniform4f(uniColLoc, (col[0] / 255.0f), (col[1] / 255.0f), (col[2] / 255.0f),
               (col[3] / 255.0f));
+  glUniform1f(depthLoc, -1.0f);
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
 
   glDisableVertexAttribArray(posLoc);

@@ -184,6 +184,21 @@ int CRenderContext::GUIShaderGetUniCol()
   return -1;
 }
 
+int CRenderContext::GUIShaderGetDepth()
+{
+#if defined(HAS_GL)
+  CRenderSystemGL* renderingGL = dynamic_cast<CRenderSystemGL*>(m_rendering);
+  if (renderingGL != nullptr)
+    return static_cast<int>(renderingGL->ShaderGetDepth());
+#elif HAS_GLES >= 2
+  CRenderSystemGLES* renderingGLES = dynamic_cast<CRenderSystemGLES*>(m_rendering);
+  if (renderingGLES != nullptr)
+    return static_cast<int>(renderingGLES->GUIShaderGetDepth());
+#endif
+
+  return -1;
+}
+
 CGUIShaderDX* CRenderContext::GetGUIShader()
 {
 #if defined(HAS_DX)

@@ -17,6 +17,7 @@
 #include "GUILabel.h"
 #include "guilib/guiinfo/GUIInfoLabel.h"
 
+#include <cstdint>
 #include <vector>
 
 /*!
@@ -35,6 +36,7 @@ public:
   void Render() override;
   bool CanFocus() const override;
   bool OnMessage(CGUIMessage& message) override;
+  void AssignDepth() override;
 
   void SetInfo(const std::vector<KODI::GUILIB::GUIINFO::CGUIInfoLabel> &vecInfo);
   void SetScrolling(bool scroll) { m_scroll = scroll; }
@@ -74,5 +76,7 @@ protected:
   bool m_resetOnLabelChange;
   bool m_randomized;
   bool m_allLabelsShown = true;
+
+  uint32_t m_fadeDepth{0};
 };
 
