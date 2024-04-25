@@ -23,21 +23,20 @@ else
     # LLVM 15 has raised this to error by default. drop back to warning
     CFLAGS+= -Wno-error=implicit-int
     export SDKROOT CFLAGS
-    OPENSSLPLATFORM=ios64-cross
+    OPENSSLPLATFORM=kodi-iphoneos-arm64
 
     ifeq ($(TARGET_PLATFORM),appletvos)
-      # Apple tv is the only platform we use a custom conf target
       OPENSSLPLATFORM=kodi-appletvos-arm64
       # Need to add "no-async" to avoid "'setcontext' is unavailable: not available on tvOS" error
-      TARGETOPT=--config=$(PLATFORM)/../16-kodi.conf no-async
+      TARGETOPT=no-async
     endif
   endif
   ifeq ($(OS), osx)
-    OPENSSLPLATFORM=darwin64-$(CPU)
+    OPENSSLPLATFORM=kodi-darwin64-$(CPU)
   endif
 
   # Openssl 3.2.0 allows no-apps no-docs as options. Use when we update further
-  CONFIGURE=./Configure no-shared zlib $(TARGETOPT) no-tests no-module --prefix=$(PREFIX) $(OPENSSLPLATFORM)
+  CONFIGURE=./Configure no-shared zlib $(TARGETOPT) no-tests no-module --config=$(PLATFORM)/../16-kodi.conf --prefix=$(PREFIX) $(OPENSSLPLATFORM)
 endif
 
 export CC CXX AR RANLIB
