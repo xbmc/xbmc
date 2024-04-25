@@ -9,7 +9,8 @@ export PKG_CONFIG_PATH=$(PREFIX)/lib/pkgconfig
 APP=$(PLATFORM)/target/release/$(APPNAME)
 
 CARGO_ENV_VARS = RUSTUP_HOME=$(PREFIX)/.rustup \
-	CARGO_HOME=$(PREFIX)/.cargo
+	CARGO_HOME=$(PREFIX)/.cargo \
+	OPENSSL_DIR=$(PREFIX)
 CARGO = $(CARGO_ENV_VARS) $(PREFIX)/bin/cargo
 
 CLEANUP_CMD = [ -e $(PREFIX)/bin/cargo ] \
