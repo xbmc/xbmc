@@ -29,7 +29,7 @@ else
       # Apple tv is the only platform we use a custom conf target
       OPENSSLPLATFORM=kodi-appletvos-arm64
       # Need to add "no-async" to avoid "'setcontext' is unavailable: not available on tvOS" error
-      TARGETOPT=--config=$(PWD)/16-kodi.conf no-async
+      TARGETOPT=--config=$(PLATFORM)/../16-kodi.conf no-async
     endif
   endif
   ifeq ($(OS), osx)
