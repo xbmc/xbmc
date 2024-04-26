@@ -24,15 +24,15 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.util.Log;
 
+import @APP_PACKAGE@.content.XBMCFileContentProvider;
 import @APP_PACKAGE@.model.Album;
+import @APP_PACKAGE@.model.File;
+import @APP_PACKAGE@.model.Media;
 import @APP_PACKAGE@.model.Movie;
 import @APP_PACKAGE@.model.MusicVideo;
 import @APP_PACKAGE@.model.Song;
 import @APP_PACKAGE@.model.TVEpisode;
 import @APP_PACKAGE@.model.TVShow;
-import @APP_PACKAGE@.content.XBMCFileContentProvider;
-import @APP_PACKAGE@.model.File;
-import @APP_PACKAGE@.model.Media;
 
 public class XBMCJsonRPC
 {
@@ -63,6 +63,7 @@ public class XBMCJsonRPC
 
   private String m_xbmc_web_url = "http://localhost:8080";
   private HashSet<Integer> mRecomendationIds = new HashSet<Integer>();
+  private XBMCTextureCache mTextureCache = null;
 
   private int MAX_RECOMMENDATIONS = 3;
 
@@ -126,6 +127,7 @@ public class XBMCJsonRPC
   {
     String jsonPort = XBMCProperties.getStringProperty("xbmc.jsonPort", "8080");
     m_xbmc_web_url = "http://localhost:" + jsonPort;
+    mTextureCache = new XBMCTextureCache();
   }
 
   public String request_string(String jsonRequest)
@@ -864,7 +866,7 @@ public class XBMCJsonRPC
       String poster = extractKeyFromArtMap(details, "poster");
       if (poster != null && !poster.isEmpty())
       {
-        med.setCardImageUrl(XBMCFileContentProvider.buildUri(poster).toString());
+        med.setCardImageUrl(getImageUrl(poster));
         med.setCardImageAspectRatio("2:3");
       }
       // fallback to thumb
@@ -873,7 +875,7 @@ public class XBMCJsonRPC
         poster = extractKeyFromArtMap(details, "thumb");
         if (poster != null && !poster.isEmpty())
         {
-          med.setCardImageUrl(XBMCFileContentProvider.buildUri(poster).toString());
+          med.setCardImageUrl(getImageUrl(poster));
           med.setCardImageAspectRatio("16:9");
         }
       }
@@ -881,7 +883,7 @@ public class XBMCJsonRPC
       String fanart = extractKeyFromArtMap(details, "fanart");
       if (fanart != null && !fanart.isEmpty())
       {
-        med.setBackgroundImageUrl(XBMCFileContentProvider.buildUri(fanart).toString());
+        med.setBackgroundImageUrl(getImageUrl(fanart));
       }
 
       med.setXbmcUrl("videodb://movies/titles/" + details.get("movieid").getAsString() + "?showinfo=true");
@@ -935,7 +937,7 @@ public class XBMCJsonRPC
       String poster = extractKeyFromArtMap(details, "poster");
       if (poster != null && !poster.isEmpty())
       {
-        med.setCardImageUrl(XBMCFileContentProvider.buildUri(poster).toString());
+        med.setCardImageUrl(getImageUrl(poster));
         med.setCardImageAspectRatio("2:3");
       }
       // fallback to thumb
@@ -944,7 +946,7 @@ public class XBMCJsonRPC
         poster = extractKeyFromArtMap(details, "thumb");
         if (poster != null && !poster.isEmpty())
         {
-          med.setCardImageUrl(XBMCFileContentProvider.buildUri(poster).toString());
+          med.setCardImageUrl(getImageUrl(poster));
           med.setCardImageAspectRatio("16:9");
         }
       }
@@ -952,7 +954,7 @@ public class XBMCJsonRPC
       String fanart = extractKeyFromArtMap(details, "fanart");
       if (fanart != null && !fanart.isEmpty())
       {
-        med.setBackgroundImageUrl(XBMCFileContentProvider.buildUri(fanart).toString());
+        med.setBackgroundImageUrl(getImageUrl(fanart));
       }
       med.setXbmcUrl("videodb://tvshows/titles/" + details.get("tvshowid").getAsInt() + "/");
       med.setCategory(Media.MEDIA_TYPE_TVSHOW);
@@ -982,14 +984,14 @@ public class XBMCJsonRPC
       String thumb = extractKeyFromArtMap(details, "thumb");
       if (thumb != null && !thumb.isEmpty())
       {
-        med.setCardImageUrl(XBMCFileContentProvider.buildUri(thumb).toString());
+        med.setCardImageUrl(getImageUrl(thumb));
         med.setCardImageAspectRatio("16:9");
       }
       // fanart
       String fanart = extractKeyFromArtMap(details, "fanart");
       if (fanart != null && !fanart.isEmpty())
       {
-        med.setBackgroundImageUrl(XBMCFileContentProvider.buildUri(fanart).toString());
+        med.setBackgroundImageUrl(getImageUrl(fanart));
       }
 
       med.setXbmcUrl("videodb://tvshows/titles/" + details.get("tvshowid").getAsInt() + "/" + details.get("episodeid").getAsInt() + "?showinfo=true");
@@ -1029,14 +1031,14 @@ public class XBMCJsonRPC
       String thumb = extractKeyFromArtMap(details, "thumb");
       if (thumb != null && !thumb.isEmpty())
       {
-        med.setCardImageUrl(XBMCFileContentProvider.buildUri(thumb).toString());
+        med.setCardImageUrl(getImageUrl(thumb));
         med.setCardImageAspectRatio("1:1");
       }
       // fanart
       String fanart = extractKeyFromArtMap(details, "fanart");
       if (fanart != null && !fanart.isEmpty())
       {
-        med.setBackgroundImageUrl(XBMCFileContentProvider.buildUri(fanart).toString());
+        med.setBackgroundImageUrl(getImageUrl(fanart));
       }
 
       med.setXbmcUrl("musicdb://albums/" + details.get("albumid").getAsString() + "/");
@@ -1064,7 +1066,7 @@ public class XBMCJsonRPC
       String thumb = extractKeyFromArtMap(details, "album.thumb");
       if (thumb != null && !thumb.isEmpty())
       {
-        med.setCardImageUrl(XBMCFileContentProvider.buildUri(thumb).toString());
+        med.setCardImageUrl(getImageUrl(thumb));
         med.setCardImageAspectRatio("1:1");
       }
       // fallback to albumartist.thumb
@@ -1073,7 +1075,7 @@ public class XBMCJsonRPC
         thumb = extractKeyFromArtMap(details, "albumartist.thumb");
         if (thumb != null && !thumb.isEmpty())
         {
-          med.setCardImageUrl(XBMCFileContentProvider.buildUri(thumb).toString());
+          med.setCardImageUrl(getImageUrl(thumb));
           med.setCardImageAspectRatio("1:1");
         }
         else
@@ -1082,7 +1084,7 @@ public class XBMCJsonRPC
           thumb = extractKeyFromArtMap(details, "artist.thumb");
           if (thumb != null && !thumb.isEmpty())
           {
-            med.setCardImageUrl(XBMCFileContentProvider.buildUri(thumb).toString());
+            med.setCardImageUrl(getImageUrl(thumb));
             med.setCardImageAspectRatio("1:1");
           }
         }
@@ -1091,14 +1093,14 @@ public class XBMCJsonRPC
       String fanart = extractKeyFromArtMap(details, "albumartist.fanart");
       if (fanart != null && !fanart.isEmpty())
       {
-        med.setBackgroundImageUrl(XBMCFileContentProvider.buildUri(fanart).toString());
+        med.setBackgroundImageUrl(getImageUrl(fanart));
       }
       else
       {
         fanart = extractKeyFromArtMap(details, "artist.fanart");
         if (fanart != null && !fanart.isEmpty())
         {
-          med.setBackgroundImageUrl(XBMCFileContentProvider.buildUri(fanart).toString());
+          med.setBackgroundImageUrl(getImageUrl(fanart));
         }
       }
 
@@ -1145,21 +1147,21 @@ public class XBMCJsonRPC
       String thumb = extractKeyFromArtMap(details, "thumb");
       if (thumb != null && !thumb.isEmpty())
       {
-        med.setCardImageUrl(XBMCFileContentProvider.buildUri(thumb).toString());
+        med.setCardImageUrl(getImageUrl(thumb));
         med.setCardImageAspectRatio("1:1");
       }
       // fanart
       String fanart = extractKeyFromArtMap(details, "fanart");
       if (fanart != null && !fanart.isEmpty())
       {
-        med.setBackgroundImageUrl(XBMCFileContentProvider.buildUri(fanart).toString());
+        med.setBackgroundImageUrl(getImageUrl(fanart));
       }
 
       med.setXbmcUrl("videodb://musicvideos/titles/" + details.get("musicvideoid").getAsInt());
 
       String url = getDownloadUrl(details.get("file").getAsString());
       if (url != null && !url.isEmpty())
-        med.setVideoUrl(XBMCFileContentProvider.buildUri(url).toString());
+        med.setVideoUrl(getImageUrl(url));
 
       med.setCategory(Media.MEDIA_TYPE_MUSICVIDEO);
     }
@@ -1436,6 +1438,25 @@ public class XBMCJsonRPC
       return null;
 
     return String.valueOf(rating / 2.0);
+  }
+
+  private String getImageUrl(String sUrl)
+  {
+    Log.d(TAG, "getImageUrl: sUrl = " + sUrl);
+    if (sUrl.startsWith("image://video@") || sUrl.startsWith("image://music@"))
+    {
+      Log.d(TAG, "getImageUrl: " + sUrl + " is not unwrapped");
+      return XBMCFileContentProvider.buildUri(sUrl).toString();
+    }
+
+    String sUnwrapImageUrl = this.mTextureCache.unwrapImageURL(sUrl);
+    Log.d(TAG, "getImageUrl: sUnwrapImageUrl = " + sUnwrapImageUrl);
+    if (!sUnwrapImageUrl.startsWith("http"))
+    {
+      return XBMCFileContentProvider.buildUri(sUrl).toString();
+    }
+
+    return sUnwrapImageUrl;
   }
 
 }
