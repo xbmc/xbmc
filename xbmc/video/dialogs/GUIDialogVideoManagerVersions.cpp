@@ -606,7 +606,7 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
     if (idNewVideoVersion == -1)
       return false;
 
-    m_database.AddPrimaryVideoVersion(itemType, dbId, idNewVideoVersion, item);
+    m_database.AddVideoAsset(itemType, dbId, idNewVideoVersion, VideoAssetType::VERSION, item);
 
     return true;
   }
