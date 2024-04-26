@@ -111,8 +111,8 @@ private:
       HANDLE m_StreamEndEvent{0};
     };
 
-    bool InitializeInternal(std::string deviceId, AEAudioFormat &format);
-    bool IsUSBDevice();
+    bool InitializeInternal(std::string deviceId, AEAudioFormat& format);
+
     /*!
      * \brief Add a 1 frame long buffer with the end of stream flag to the voice.
      * \return true for success, false for failure

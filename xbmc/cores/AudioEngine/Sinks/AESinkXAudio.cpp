@@ -897,29 +897,6 @@ void CAESinkXAudio::Drain()
   m_running = false;
 }
 
-bool CAESinkXAudio::IsUSBDevice()
-{
-#if 0 // TODO
-  IPropertyStore *pProperty = nullptr;
-  PROPVARIANT varName;
-  PropVariantInit(&varName);
-  bool ret = false;
-
-  HRESULT hr = m_pDevice->OpenPropertyStore(STGM_READ, &pProperty);
-  if (!SUCCEEDED(hr))
-    return ret;
-  hr = pProperty->GetValue(PKEY_Device_EnumeratorName, &varName);
-
-  std::string str = localWideToUtf(varName.pwszVal);
-  StringUtils::ToUpper(str);
-  ret = (str == "USB");
-  PropVariantClear(&varName);
-  if (pProperty)
-    pProperty->Release();
-#endif
-  return false;
-}
-
 bool CAESinkXAudio::AddEndOfStreamPacket()
 {
   constexpr unsigned int frames{1};
