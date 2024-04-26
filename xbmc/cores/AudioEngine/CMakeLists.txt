@@ -105,17 +105,18 @@ endif()
 
 if(CORE_SYSTEM_NAME MATCHES windows)
   list(APPEND SOURCES Sinks/AESinkWASAPI.cpp
+                      Sinks/AESinkXAudio.cpp
                       Sinks/windows/AESinkFactoryWin.cpp)
   list(APPEND HEADERS Sinks/AESinkWASAPI.h
+                      Sinks/AESinkXAudio.h
                       Sinks/windows/AESinkFactoryWin.h)
+
   if(CORE_SYSTEM_NAME STREQUAL windowsstore)
-    list(APPEND SOURCES Sinks/AESinkXAudio.cpp
-                        Sinks/windows/AESinkFactoryWin10.cpp)
-    list(APPEND SOURCES Sinks/AESinkXAudio.h)
-  elseif(CORE_SYSTEM_NAME STREQUAL windows)
+    list(APPEND SOURCES Sinks/windows/AESinkFactoryWin10.cpp)
+  else()
     list(APPEND SOURCES Sinks/AESinkDirectSound.cpp
                         Sinks/windows/AESinkFactoryWin32.cpp)
-    list(APPEND SOURCES Sinks/AESinkDirectSound.h)
+    list(APPEND HEADERS Sinks/AESinkDirectSound.h)
   endif()
 endif()
 

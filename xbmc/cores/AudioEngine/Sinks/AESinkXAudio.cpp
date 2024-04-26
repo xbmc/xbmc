@@ -18,7 +18,9 @@
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
+#ifdef TARGET_WINDOWS_STORE
 #include "platform/win10/AsyncHelpers.h"
+#endif
 #include "platform/win32/CharsetConverter.h"
 
 #include <algorithm>
