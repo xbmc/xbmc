@@ -183,6 +183,8 @@ void CGUIWindowFullScreen::ClearBackground()
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
   if (appPlayer->IsRenderingVideoLayer())
     CServiceBroker::GetWinSystem()->GetGfxContext().Clear(0);
+  else if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiGeometryClear)
+    CServiceBroker::GetWinSystem()->GetGfxContext().Clear(0xff000000);
   else
     CServiceBroker::GetWinSystem()->GetGfxContext().Clear();
 }
