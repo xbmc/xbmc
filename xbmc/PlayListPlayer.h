@@ -55,19 +55,22 @@ public:
    * \brief Creates a new playlist for an item and starts playing it
    * \param pItem The item to play.
    * \param player The player name.
+   * \param forceSelection for Blurays, force simple menu to change playlist (default to false)
    * \return True if has success, otherwise false.
    */
-  bool Play(const CFileItemPtr& pItem, const std::string& player);
+  bool Play(const CFileItemPtr& pItem, const std::string& player, bool forceSelection = false);
 
   /*! \brief Start playing a particular entry in the current playlist
    \param index the index of the item to play. This value is modified to ensure it lies within the current playlist.
    \param replace whether this item should replace the currently playing item. See CApplication::PlayFile (defaults to false).
    \param playPreviousOnFail whether to go back to the previous item if playback fails (default to false)
+   \param forceSelection for Blurays, force simple menu to change playlist (default to false)
    */
   bool Play(int index,
             const std::string& player,
             bool replace = false,
-            bool playPreviousOnFail = false);
+            bool playPreviousOnFail = false,
+            bool forceSelection = false);
 
   /*! \brief Returns the index of the current item in active playlist.
    \return Current item in the active playlist.

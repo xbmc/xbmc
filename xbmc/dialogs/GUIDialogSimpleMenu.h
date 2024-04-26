@@ -20,7 +20,7 @@ class CGUIDialogSimpleMenu
 public:
 
   /*! \brief Show dialog allowing selection of wanted playback item */
-  static bool ShowPlaySelection(CFileItem& item);
+  static bool ShowPlaySelection(CFileItem& item, bool forceSelection = false);
   static bool ShowPlaySelection(CFileItem& item, const std::string& directory);
 
 protected:

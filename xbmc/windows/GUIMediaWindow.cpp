@@ -61,6 +61,7 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 #include "video/VideoFileItemClassify.h"
+#include "video/VideoInfoTag.h"
 #include "view/GUIViewState.h"
 
 #include <inttypes.h>
@@ -1528,40 +1529,34 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr& item, const std::s
   PLAYLIST::Id playlistId = m_guiState->GetPlaylist();
   if (playlistId != PLAYLIST::TYPE_NONE)
   {
+    // Remove ZIP, RAR files and folders
+    CFileItemList playlist;
+    playlist.Copy(*m_vecItems, true);
+    playlist.erase(std::remove_if(playlist.begin(), playlist.end(),
+                                  [](const std::shared_ptr<CFileItem>& i)
+                                  { return i->IsZIP() || i->IsRAR() || i->m_bIsFolder; }),
+                   playlist.end());
+
+    // Remove duplicates (eg. ISO/VIDEO_TS)
+    playlist.erase(
+        std::unique(playlist.begin(), playlist.end(),
+                    [](const std::shared_ptr<CFileItem>& i, const std::shared_ptr<CFileItem>& j) {
+                      return i->GetVideoInfoTag()->m_basePath == j->GetVideoInfoTag()->m_basePath;
+                    }),
+        playlist.end());
+
+    // Chosen item
+    int mediaToPlay =
+        std::distance(playlist.begin(), std::find_if(playlist.begin(), playlist.end(),
+                                                     [&item](const std::shared_ptr<CFileItem>& i) {
+                                                       return i->GetVideoInfoTag()->m_basePath ==
+                                                              item->GetVideoInfoTag()->m_basePath;
+                                                     }));
+
+    // Add to playlist
     CServiceBroker::GetPlaylistPlayer().ClearPlaylist(playlistId);
     CServiceBroker::GetPlaylistPlayer().Reset();
-    int mediaToPlay = 0;
-
-    // first try to find mainDVD file (VIDEO_TS.IFO).
-    // If we find this we should not allow to queue VOB files
-    std::string mainDVD;
-    for (int i = 0; i < m_vecItems->Size(); i++)
-    {
-      std::string path = URIUtils::GetFileName(m_vecItems->Get(i)->GetDynPath());
-      if (StringUtils::EqualsNoCase(path, "VIDEO_TS.IFO"))
-      {
-        mainDVD = path;
-        break;
-      }
-    }
-
-    // now queue...
-    for ( int i = 0; i < m_vecItems->Size(); i++ )
-    {
-      CFileItemPtr nItem = m_vecItems->Get(i);
-
-      if (nItem->m_bIsFolder)
-        continue;
-
-      if (!nItem->IsZIP() && !nItem->IsRAR() &&
-          (!IsDVDFile(*nItem) || (URIUtils::GetFileName(nItem->GetDynPath()) == mainDVD)))
-        CServiceBroker::GetPlaylistPlayer().Add(playlistId, nItem);
-
-      if (item->IsSamePath(nItem.get()))
-      { // item that was clicked
-        mediaToPlay = CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlistId).size() - 1;
-      }
-    }
+    CServiceBroker::GetPlaylistPlayer().Add(playlistId, playlist);
 
     // Save current window and directory to know where the selected item was
     if (m_guiState)

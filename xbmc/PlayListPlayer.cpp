@@ -266,7 +266,9 @@ bool CPlayListPlayer::PlayItemIdx(int itemIdx)
   return Play();
 }
 
-bool CPlayListPlayer::Play(const CFileItemPtr& pItem, const std::string& player)
+bool CPlayListPlayer::Play(const CFileItemPtr& pItem,
+                           const std::string& player,
+                           bool forceSelection /* = false */)
 {
   Id playlistId;
   bool isVideo{IsVideo(*pItem)};
@@ -304,13 +306,14 @@ bool CPlayListPlayer::Play(const CFileItemPtr& pItem, const std::string& player)
   SetCurrentPlaylist(playlistId);
   Add(playlistId, pItem);
 
-  return Play(0, player);
+  return Play(0, player, false, false, forceSelection);
 }
 
 bool CPlayListPlayer::Play(int iSong,
                            const std::string& player,
                            bool bAutoPlay /* = false */,
-                           bool bPlayPrevious /* = false */)
+                           bool bPlayPrevious /* = false */,
+                           bool forceSelection /* = false */)
 {
   if (m_iCurrentPlayList == TYPE_NONE)
     return false;
@@ -342,7 +345,7 @@ bool CPlayListPlayer::Play(int iSong,
   m_bPlaybackStarted = false;
 
   const auto playAttempt = std::chrono::steady_clock::now();
-  bool ret = g_application.PlayFile(*item, player, bAutoPlay);
+  bool ret = g_application.PlayFile(*item, player, bAutoPlay, forceSelection);
   if (!ret)
   {
     CLog::Log(LOGERROR, "Playlist Player: skipping unplayable item: {}, path [{}]", m_iCurrentSong,

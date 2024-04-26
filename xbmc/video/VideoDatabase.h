@@ -584,10 +584,12 @@ public:
                            const std::map<std::string, std::string>& artwork,
                            int idShow,
                            int idEpisode = -1);
+  bool SetFileForEpisode(const std::string& fileAndPath, int idEpisode, int idFile);
+  bool SetFileForMovie(const std::string& fileAndPath, int idMovie, int idFile);
   int SetDetailsForMusicVideo(CVideoInfoTag& details,
                               const std::map<std::string, std::string>& artwork,
                               int idMVideo = -1);
-  void SetStreamDetailsForFile(const CStreamDetails& details, const std::string &strFileNameAndPath);
+  int SetStreamDetailsForFile(const CStreamDetails& details, const std::string& strFileNameAndPath);
   void SetStreamDetailsForFileId(const CStreamDetails& details, int idFile);
 
   bool SetSingleValue(VideoDbContentType type, int dbId, int dbField, const std::string& strValue);
@@ -686,7 +688,7 @@ public:
   void DeleteBookMarkForEpisode(const CVideoInfoTag& tag);
   bool GetResumePoint(CVideoInfoTag& tag);
   bool GetStreamDetails(CFileItem& item);
-  bool GetStreamDetails(CVideoInfoTag& tag) const;
+  bool GetStreamDetails(CVideoInfoTag& tag);
   bool GetDetailsByTypeAndId(CFileItem& item, VideoDbContentType type, int id);
   CVideoInfoTag GetDetailsByTypeAndId(VideoDbContentType type, int id);
 
