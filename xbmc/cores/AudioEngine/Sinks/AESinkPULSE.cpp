@@ -19,6 +19,9 @@
 #include <memory>
 #include <mutex>
 
+#include <pulse/context.h>
+#include <pulse/introspect.h>
+
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
@@ -27,7 +30,7 @@ class CDriverMonitor
 public:
   CDriverMonitor() = default;
   virtual ~CDriverMonitor();
-  bool Start();
+  bool Start(bool allowPipeWireCompatServer);
   bool IsInitialized();
 
   CCriticalSection m_sec;
@@ -313,6 +316,21 @@ static void SinkChangedCallback(pa_context *c, pa_subscription_event_type_t t, u
       CLog::Log(LOGDEBUG, "Not subscribed to Event: {}", static_cast<int>(t));
     }
   }
+}
+
+struct ServerInfoStruct
+{
+  pa_threaded_mainloop* m_mainloop;
+  bool m_isInfoSet{false};
+  std::string m_serverName;
+};
+
+static void ServerInfoCallback(pa_context* c, const pa_server_info* i, void* userdata)
+{
+  auto serverInfo = reinterpret_cast<ServerInfoStruct*>(userdata);
+  serverInfo->m_serverName = i->server_name;
+  serverInfo->m_isInfoSet = true;
+  pa_threaded_mainloop_signal(serverInfo->m_mainloop, 0);
 }
 
 struct SinkInfoStruct
@@ -656,7 +674,7 @@ bool CDriverMonitor::IsInitialized()
   return m_isInit;
 }
 
-bool CDriverMonitor::Start()
+bool CDriverMonitor::Start(bool allowPipeWireCompatServer)
 {
   if (!SetupContext(nullptr, "KodiDriver", &m_pContext, &m_pMainLoop))
   {
@@ -665,6 +683,30 @@ bool CDriverMonitor::Start()
   }
 
   pa_threaded_mainloop_lock(m_pMainLoop);
+
+  ServerInfoStruct serverInfo;
+  serverInfo.m_mainloop = m_pMainLoop;
+  pa_context_get_server_info(m_pContext, ServerInfoCallback, &serverInfo);
+  while (!serverInfo.m_isInfoSet)
+    pa_threaded_mainloop_wait(m_pMainLoop);
+
+  CLog::Log(LOGINFO, "PulseAudio: Server name: {}", serverInfo.m_serverName);
+
+#ifdef HAS_PIPEWIRE
+  // If Kodi is build with PipeWire support we prefer native PipeWire over the
+  // PulseAudio compatibility layer IF NOT PulseAudio is explicitly selected
+  if (!allowPipeWireCompatServer)
+  {
+    // Check the PulseAudio server name. If it contains PipeWire in any form
+    // it is the compatibility layer provided by PipeWire
+    if (StringUtils::Contains(serverInfo.m_serverName, "pipewire", true))
+    {
+      CLog::Log(LOGINFO, "PulseAudio: Server is PipeWire, bail and use native PipeWire interface");
+      pa_threaded_mainloop_unlock(m_pMainLoop);
+      return false;
+    }
+  }
+#endif
 
   m_isInit = true;
 
@@ -687,7 +729,7 @@ bool CDriverMonitor::Start()
 
 std::unique_ptr<CDriverMonitor> CAESinkPULSE::m_pMonitor;
 
-bool CAESinkPULSE::Register()
+bool CAESinkPULSE::Register(bool allowPipeWireCompatServer)
 {
   // check if pulseaudio is actually available
   pa_simple *s;
@@ -708,7 +750,11 @@ bool CAESinkPULSE::Register()
   }
 
   m_pMonitor = std::make_unique<CDriverMonitor>();
-  m_pMonitor->Start();
+  if (!m_pMonitor->Start(allowPipeWireCompatServer))
+  {
+    m_pMonitor.reset();
+    return false;
+  }
 
   AE::AESinkRegEntry entry;
   entry.sinkName = "PULSE";
