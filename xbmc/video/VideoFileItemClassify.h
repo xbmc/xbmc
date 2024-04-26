@@ -25,6 +25,9 @@ bool IsDVDFile(const CFileItem& item, bool bVobs = true, bool bIfos = true);
 //! \brief Checks whether item points to a protected blu-ray disc.
 bool IsProtectedBlurayDisc(const CFileItem& item);
 
+//! \brief Checks whether item points to a blu-ray playlist (.mpls)
+bool IsBlurayPlaylist(const CFileItem& item);
+
 //! \brief Check whether an item is a subtitle file.
 bool IsSubtitle(const CFileItem& item);
 

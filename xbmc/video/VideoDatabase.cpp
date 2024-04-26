@@ -3020,6 +3020,49 @@ int CVideoDatabase::SetDetailsForSeason(const CVideoInfoTag& details, const std:
   return -1;
 }
 
+bool CVideoDatabase::SetFileForEpisode(const std::string& fileAndPath, int idEpisode, int idFile)
+{
+  try
+  {
+    BeginTransaction();
+    std::string sql = PrepareSQL("UPDATE episode SET c18='%s', idFile=%i WHERE idEpisode=%i",
+                                 fileAndPath.c_str(), idFile, idEpisode);
+    m_pDS->exec(sql);
+    CommitTransaction();
+
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, idEpisode);
+  }
+  RollbackTransaction();
+  return false;
+}
+
+bool CVideoDatabase::SetFileForMovie(const std::string& fileAndPath, int idMovie, int idFile)
+{
+  try
+  {
+    BeginTransaction();
+    std::string sql = PrepareSQL("UPDATE movie SET c22='%s', idFile=%i WHERE idMovie=%i",
+                                 fileAndPath.c_str(), idFile, idMovie);
+    m_pDS->exec(sql);
+    sql = PrepareSQL("UPDATE videoversion SET idFile=%i WHERE idMedia=%i AND media_type='movie'",
+                     idFile, idMovie);
+    m_pDS->exec(sql);
+    CommitTransaction();
+
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, idMovie);
+  }
+  RollbackTransaction();
+  return false;
+}
+
 int CVideoDatabase::SetDetailsForEpisode(CVideoInfoTag& details,
                                          const std::map<std::string, std::string>& artwork,
                                          int idShow,
@@ -3209,13 +3252,15 @@ int CVideoDatabase::SetDetailsForMusicVideo(CVideoInfoTag& details,
   return -1;
 }
 
-void CVideoDatabase::SetStreamDetailsForFile(const CStreamDetails& details, const std::string &strFileNameAndPath)
+int CVideoDatabase::SetStreamDetailsForFile(const CStreamDetails& details,
+                                            const std::string& strFileNameAndPath)
 {
   // AddFile checks to make sure the file isn't already in the DB first
   int idFile = AddFile(strFileNameAndPath);
   if (idFile < 0)
-    return;
+    return -1;
   SetStreamDetailsForFileId(details, idFile);
+  return idFile;
 }
 
 void CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, int idFile)
@@ -4175,7 +4220,6 @@ bool CVideoDatabase::GetStreamDetails(CFileItem& item)
 
   if (item.HasVideoInfoTag())
     fileId = item.GetVideoInfoTag()->m_iFileId;
-
   if (fileId < 0)
     fileId = GetFileId(item);
 
@@ -4187,9 +4231,17 @@ bool CVideoDatabase::GetStreamDetails(CFileItem& item)
   return GetStreamDetails(*item.GetVideoInfoTag());
 }
 
-bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag) const
+bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag)
 {
-  if (tag.m_iFileId < 0)
+
+  const std::string path = tag.m_strFileNameAndPath;
+  int fileId{-1};
+  if (URIUtils::GetExtension(path) == ".mpls")
+    fileId = GetFileId(path);
+  else
+    fileId = tag.m_iFileId;
+
+  if (fileId < 0)
     return false;
 
   bool retVal = false;
@@ -4200,7 +4252,7 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag) const
   std::unique_ptr<Dataset> pDS(m_pDB->CreateDataset());
   try
   {
-    std::string strSQL = PrepareSQL("SELECT * FROM streamdetails WHERE idFile = %i", tag.m_iFileId);
+    std::string strSQL = PrepareSQL("SELECT * FROM streamdetails WHERE idFile = %i", fileId);
     pDS->query(strSQL);
 
     while (!pDS->eof())
@@ -6530,7 +6582,10 @@ int CVideoDatabase::GetPlayCount(const std::string& strFilenameAndPath)
 
 int CVideoDatabase::GetPlayCount(const CFileItem &item)
 {
-  return GetPlayCount(GetFileId(item));
+  if (IsBlurayPlaylist(item))
+    return GetPlayCount(GetFileId(item.GetDynPath()));
+  else
+    return GetPlayCount(GetFileId(item));
 }
 
 CDateTime CVideoDatabase::GetLastPlayed(int iFileId)
@@ -6600,9 +6655,11 @@ void CVideoDatabase::UpdateFanart(const CFileItem& item, VideoDbContentType type
 
 CDateTime CVideoDatabase::SetPlayCount(const CFileItem& item, int count, const CDateTime& date)
 {
-  int id;
-  if (item.HasProperty("original_listitem_url") &&
-      URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
+  int id{-1};
+  if (IsBlurayPlaylist(item))
+    id = AddFile(item.GetDynPath());
+  else if (item.HasProperty("original_listitem_url") &&
+           URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
   {
     CFileItem item2(item);
     item2.SetPath(item.GetProperty("original_listitem_url").asString());

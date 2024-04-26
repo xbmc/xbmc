@@ -2286,7 +2286,10 @@ bool CApplication::PlayStack(CFileItem& item, bool bRestart)
   return PlayFile(selectedStackPart, "", true);
 }
 
-bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRestart)
+bool CApplication::PlayFile(CFileItem item,
+                            const std::string& player,
+                            bool bRestart /* = false */,
+                            bool forceSelection /* = false */)
 {
   // Ensure the MIME type has been retrieved for http:// and shout:// streams
   if (item.GetMimeType().empty())
@@ -2426,7 +2429,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
 
   // a disc image might be Blu-Ray disc
   if (!(options.startpercent > 0.0 || options.starttime > 0.0) &&
-      (IsBDFile(item) || item.IsDiscImage()))
+      (IsBDFile(item) || item.IsDiscImage() || (IsBlurayPlaylist(item) && forceSelection)))
   {
     // No video selection when using external or remote players (they handle it if supported)
     const bool isSimpleMenuAllowed = [&]()
@@ -2444,7 +2447,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
     if (isSimpleMenuAllowed)
     {
       // Check if we must show the simplified bd menu.
-      if (!CGUIDialogSimpleMenu::ShowPlaySelection(item))
+      if (!CGUIDialogSimpleMenu::ShowPlaySelection(item, forceSelection))
         return true;
     }
   }

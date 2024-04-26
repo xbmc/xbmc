@@ -142,6 +142,8 @@ public:
   const std::string &GetDynPath() const;
   void SetDynPath(const std::string &path);
 
+  std::string GetBlurayPath() const;
+
   /*! \brief reset class to it's default values as per construction.
    Free's all allocated memory.
    \sa Initialize

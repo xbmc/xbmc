@@ -29,6 +29,8 @@
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 
+std::string m_savePath;
+
 using namespace KODI;
 
 namespace
@@ -52,11 +54,17 @@ protected:
 };
 }
 
-
-bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item)
+bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item, bool forceSelection /* = false */)
 {
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_DISC_PLAYBACK) != BD_PLAYBACK_SIMPLE_MENU)
     return true;
+
+  m_savePath = "";
+  if (VIDEO::IsBlurayPlaylist(item) && forceSelection)
+  {
+    m_savePath = item.GetDynPath(); // save for screen refresh later
+    item.SetDynPath(item.GetBlurayPath());
+  }
 
   if (VIDEO::IsBDFile(item))
   {
@@ -127,10 +135,11 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item, const std::string&
 
     if (item_new->m_bIsFolder == false)
     {
-      std::string original_path = item.GetDynPath();
+      if (m_savePath.empty()) // If not set above (choose playlist selected)
+        m_savePath = item.GetDynPath();
       item.SetDynPath(item_new->GetDynPath());
       item.SetProperty("get_stream_details_from_player", true);
-      item.SetProperty("original_listitem_url", original_path);
+      item.SetProperty("original_listitem_url", m_savePath);
       return true;
     }
 
