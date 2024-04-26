@@ -36,12 +36,6 @@ using namespace Microsoft::WRL;
 
 extern const char *WASAPIErrToStr(HRESULT err);
 
-#define EXIT_ON_FAILURE(hr, reason, ...) \
-  if (FAILED(hr)) \
-  { \
-    CLog::Log(LOGERROR, reason " - {}", __VA_ARGS__, WASAPIErrToStr(hr)); \
-    goto failed; \
-  }
 #define XAUDIO_BUFFERS_IN_QUEUE 2
 
 template <class TVoice>
@@ -136,7 +130,7 @@ bool CAESinkXAudio::Initialize(AEAudioFormat &format, std::string &device)
 
   if (!InitializeInternal(device, format))
   {
-    CLog::Log(LOGINFO, __FUNCTION__": Could not Initialize voices with that format");
+    CLog::LogF(LOGINFO, "could not Initialize voices with that format");
     goto failed;
   }
 
@@ -150,7 +144,7 @@ bool CAESinkXAudio::Initialize(AEAudioFormat &format, std::string &device)
   return true;
 
 failed:
-  CLog::Log(LOGERROR, __FUNCTION__": XAudio initialization failed.");
+  CLog::LogF(LOGERROR, "XAudio initialization failed");
   return true;
 }
 
@@ -184,7 +178,7 @@ void CAESinkXAudio::Deinitialize()
     }
     catch (...)
     {
-      CLog::Log(LOGERROR, "{}: Invalidated source voice - Releasing", __FUNCTION__);
+      CLog::LogF(LOGERROR, "invalidated source voice - Releasing");
     }
   }
   m_running = false;
@@ -351,7 +345,7 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
   hr = XAudio2Create(xaudio2.ReleaseAndGetAddressOf(), eflags);
   if (FAILED(hr))
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__": Failed to activate XAudio for capability testing.");
+    CLog::LogF(LOGDEBUG, "failed to activate XAudio for capability testing");
     goto failed;
   }
 
@@ -381,9 +375,9 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
 
     if (FAILED(hr))
     {
-      CLog::Log(
-          LOGINFO, __FUNCTION__ ": stream type \"{}\" on device \"{}\" seems to be not supported.",
-          CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_DTSHD_MA), details.strDescription);
+      CLog::LogF(LOGINFO, "stream type \"{}\" on device \"{}\" seems to be not supported.",
+                 CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_DTSHD_MA),
+                 details.strDescription);
     }
     else
     {
@@ -410,9 +404,9 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
 
     if (FAILED(hr))
     {
-      CLog::Log(LOGINFO,
-                __FUNCTION__ ": stream type \"{}\" on device \"{}\" seems to be not supported.",
-                CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_DTSHD), details.strDescription);
+      CLog::LogF(LOGINFO, "stream type \"{}\" on device \"{}\" seems to be not supported.",
+                 CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_DTSHD),
+                 details.strDescription);
     }
     else
     {
@@ -429,9 +423,9 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format);
     if (FAILED(hr))
     {
-      CLog::Log(
-          LOGINFO, __FUNCTION__ ": stream type \"{}\" on device \"{}\" seems to be not supported.",
-          CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_TRUEHD), details.strDescription);
+      CLog::LogF(LOGINFO, "stream type \"{}\" on device \"{}\" seems to be not supported.",
+                 CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_TRUEHD),
+                 details.strDescription);
     }
     else
     {
@@ -453,9 +447,8 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
 
     if (FAILED(hr))
     {
-      CLog::Log(LOGINFO,
-                __FUNCTION__ ": stream type \"{}\" on device \"{}\" seems to be not supported.",
-                CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_EAC3), details.strDescription);
+      CLog::LogF(LOGINFO, "stream type \"{}\" on device \"{}\" seems to be not supported.",
+                 CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_EAC3), details.strDescription);
     }
     else
     {
@@ -477,9 +470,8 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format);
     if (FAILED(hr))
     {
-      CLog::Log(LOGINFO,
-                __FUNCTION__ ": stream type \"{}\" on device \"{}\" seems to be not supported.",
-                "STREAM_TYPE_DTS", details.strDescription);
+      CLog::LogF(LOGINFO, "stream type \"{}\" on device \"{}\" seems to be not supported.",
+                 "STREAM_TYPE_DTS", details.strDescription);
     }
     else
     {
@@ -496,9 +488,8 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format);
     if (FAILED(hr))
     {
-      CLog::Log(LOGINFO,
-                __FUNCTION__ ": stream type \"{}\" on device \"{}\" seems to be not supported.",
-                CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_AC3), details.strDescription);
+      CLog::LogF(LOGINFO, "stream type \"{}\" on device \"{}\" seems to be not supported.",
+                 CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_AC3), details.strDescription);
     }
     else
     {
@@ -566,9 +557,8 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
       else if (wfxex.Format.nSamplesPerSec == 192000 && add192)
       {
         deviceInfo.m_sampleRates.push_back(WASAPISampleRates[j]);
-        CLog::Log(LOGINFO,
-                  __FUNCTION__ ": sample rate 192khz on device \"{}\" seems to be not supported.",
-                  details.strDescription);
+        CLog::LogF(LOGINFO, "sample rate 192khz on device \"{}\" seems to be not supported.",
+                   details.strDescription);
       }
     }
     SafeDestroyVoice(&mSourceVoice);
@@ -603,8 +593,7 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
 failed:
 
   if (FAILED(hr))
-    CLog::Log(LOGERROR, __FUNCTION__ ": Failed to enumerate XAudio endpoint devices ({}).",
-              WASAPIErrToStr(hr));
+    CLog::LogF(LOGERROR, "failed to enumerate XAudio endpoint devices ({})", WASAPIErrToStr(hr));
 }
 
 /// ------------------- Private utility functions -----------------------------------
@@ -658,10 +647,10 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
   {
     if (!bdefault)
     {
-      CLog::Log(LOGINFO,
-                __FUNCTION__ ": Could not locate the device named \"{}\" in the list of Xaudio "
-                             "endpoint devices. Trying the default device...",
-                KODI::PLATFORM::WINDOWS::FromW(device));
+      CLog::LogF(LOGINFO,
+                 "could not locate the device named \"{}\" in the list of Xaudio endpoint devices. "
+                 "Trying the default device...",
+                 KODI::PLATFORM::WINDOWS::FromW(device));
     }
 
     // smartphone issue: providing device ID (even default ID) causes E_NOINTERFACE result
@@ -670,9 +659,8 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
                                           0, 0, nullptr, AudioCategory_Media);
     if (FAILED(hr) || !pMasterVoice)
     {
-      CLog::Log(LOGINFO,
-                __FUNCTION__ ": Could not retrieve the default XAudio audio endpoint ({}).",
-                WASAPIErrToStr(hr));
+      CLog::LogF(LOGINFO, "Could not retrieve the default XAudio audio endpoint ({}).",
+                 WASAPIErrToStr(hr));
       return false;
     }
   }
@@ -686,7 +674,7 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
   hr = m_xAudio2->CreateSourceVoice(&m_sourceVoice, &wfxex.Format, 0, XAUDIO2_DEFAULT_FREQ_RATIO, &m_voiceCallback);
   if (SUCCEEDED(hr))
   {
-    CLog::Log(LOGINFO, __FUNCTION__": Format is Supported - will attempt to Initialize");
+    CLog::LogF(LOGINFO, "Format is Supported - will attempt to Initialize");
     goto initialize;
   }
 
@@ -694,9 +682,9 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
     return false;
 
   if (CServiceBroker::GetLogging().CanLogComponent(LOGAUDIO))
-    CLog::Log(LOGDEBUG,
-              __FUNCTION__ ": CreateSourceVoice failed ({}) - trying to find a compatible format",
-              WASAPIErrToStr(hr));
+    CLog::LogFC(LOGDEBUG, LOGAUDIO,
+                "CreateSourceVoice failed ({}) - trying to find a compatible format",
+                WASAPIErrToStr(hr));
 
   requestedChannels = wfxex.Format.nChannels;
 
@@ -751,7 +739,7 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
         }
 
         if (FAILED(hr))
-          CLog::Log(LOGERROR, __FUNCTION__ ": creating voices failed ({})", WASAPIErrToStr(hr));
+          CLog::LogF(LOGERROR, "creating voices failed ({})", WASAPIErrToStr(hr));
       }
 
       if (closestMatch >= 0)
@@ -763,7 +751,8 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
     }
   }
 
-  CLog::Log(LOGERROR, __FUNCTION__": Unable to locate a supported output format for the device.  Check the speaker settings in the control panel.");
+  CLog::LogF(LOGERROR, "unable to locate a supported output format for the device. Check the "
+                       "speaker settings in the control panel.");
 
   /* We couldn't find anything supported. This should never happen      */
   /* unless the user set the wrong speaker setting in the control panel */
@@ -806,7 +795,7 @@ initialize:
   hr = m_sourceVoice->Start(0, XAUDIO2_COMMIT_NOW);
   if (FAILED(hr))
   {
-    CLog::Log(LOGERROR, __FUNCTION__ ": Voice start failed : {}", WASAPIErrToStr(hr));
+    CLog::LogF(LOGERROR, "Voice start failed : {}", WASAPIErrToStr(hr));
     CLog::Log(LOGDEBUG, "  Sample Rate     : {}", wfxex.Format.nSamplesPerSec);
     CLog::Log(LOGDEBUG, "  Sample Format   : {}", CAEUtil::DataFormatToStr(format.m_dataFormat));
     CLog::Log(LOGDEBUG, "  Bits Per Sample : {}", wfxex.Format.wBitsPerSample);
@@ -825,7 +814,7 @@ initialize:
   m_xAudio2->GetPerformanceData(&perfData);
   if (!perfData.TotalSourceVoiceCount)
   {
-    CLog::Log(LOGERROR, __FUNCTION__ ": GetPerformanceData Failed : {}", WASAPIErrToStr(hr));
+    CLog::LogF(LOGERROR, "GetPerformanceData Failed : {}", WASAPIErrToStr(hr));
     return false;
   }
 
@@ -835,9 +824,9 @@ initialize:
   m_dwBufferLen = m_dwChunkSize * 4;
   m_AvgBytesPerSec = wfxex.Format.nAvgBytesPerSec;
 
-  CLog::Log(LOGINFO, __FUNCTION__ ": XAudio Sink Initialized using: {}, {}, {}",
-            CAEUtil::DataFormatToStr(format.m_dataFormat), wfxex.Format.nSamplesPerSec,
-            wfxex.Format.nChannels);
+  CLog::LogF(LOGINFO, "XAudio Sink Initialized using: {}, {}, {}",
+             CAEUtil::DataFormatToStr(format.m_dataFormat), wfxex.Format.nSamplesPerSec,
+             wfxex.Format.nChannels);
 
   m_sourceVoice->Stop();
 
@@ -891,7 +880,7 @@ void CAESinkXAudio::Drain()
     }
     catch (...)
     {
-      CLog::Log(LOGERROR, "{}: Invalidated source voice - Releasing", __FUNCTION__);
+      CLog::LogF(LOGERROR, "invalidated source voice - Releasing");
     }
   }
   m_running = false;
