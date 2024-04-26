@@ -12480,30 +12480,16 @@ void CVideoDatabase::SetVideoVersion(int idFile, int idVideoVersion)
   }
 }
 
-void CVideoDatabase::AddPrimaryVideoVersion(VideoDbContentType itemType,
-                                            int dbId,
-                                            int idVideoVersion,
-                                            CFileItem& item)
-{
-  AddVideoVersion(itemType, dbId, idVideoVersion, VideoAssetType::VERSION, item);
-}
-
-void CVideoDatabase::AddExtrasVideoVersion(VideoDbContentType itemType,
-                                           int dbId,
-                                           int idVideoVersion,
-                                           CFileItem& item)
-{
-  AddVideoVersion(itemType, dbId, idVideoVersion, VideoAssetType::EXTRA, item);
-}
-
-void CVideoDatabase::AddVideoVersion(VideoDbContentType itemType,
-                                     int dbId,
-                                     int idVideoVersion,
-                                     VideoAssetType videoAssetType,
-                                     CFileItem& item)
+void CVideoDatabase::AddVideoAsset(VideoDbContentType itemType,
+                                   int dbId,
+                                   int idVideoVersion,
+                                   VideoAssetType videoAssetType,
+                                   CFileItem& item)
 {
   if (!m_pDB || !m_pDS)
     return;
+
+  assert(m_pDB->in_transaction() == false);
 
   MediaType mediaType;
   if (itemType == VideoDbContentType::MOVIES)
@@ -12519,6 +12505,8 @@ void CVideoDatabase::AddVideoVersion(VideoDbContentType itemType,
 
   try
   {
+    BeginTransaction();
+
     m_pDS->query(PrepareSQL("SELECT idFile FROM videoversion WHERE idFile = %i", idFile));
 
     if (m_pDS->num_rows() == 0)
@@ -12534,10 +12522,13 @@ void CVideoDatabase::AddVideoVersion(VideoDbContentType itemType,
 
     if (videoAssetType == VideoAssetType::VERSION)
       SetVideoVersionDefaultArt(idFile, item.GetVideoInfoTag()->m_iDbId, itemType);
+
+    CommitTransaction();
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} failed for video {}", __FUNCTION__, dbId);
+    CLog::LogF(LOGERROR, "failed for video {}", dbId);
+    RollbackTransaction();
   }
 }
 
