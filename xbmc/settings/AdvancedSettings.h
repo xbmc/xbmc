@@ -335,7 +335,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_guiSmartRedraw;
     int32_t m_guiAnisotropicFiltering{0};
     bool m_guiFrontToBackRendering{false};
-    bool m_guiGeometryClear{false};
+    bool m_guiGeometryClear{true};
     unsigned int m_addonPackageFolderSize;
 
     bool m_jsonOutputCompact;
