@@ -12,15 +12,17 @@
 #include "AEPackIEC61937.h"
 
 #include <list>
+#include <memory>
 #include <stdint.h>
 #include <vector>
 
 class CAEStreamInfo;
+class CPackerMAT;
 
 class CAEBitstreamPacker
 {
 public:
-  CAEBitstreamPacker();
+  CAEBitstreamPacker(const CAEStreamInfo& info);
   ~CAEBitstreamPacker();
 
   void Pack(CAEStreamInfo &info, uint8_t* data, int size);
@@ -32,24 +34,13 @@ public:
   static CAEChannelInfo GetOutputChannelMap(const CAEStreamInfo& info);
 
 private:
-  void PackTrueHD(CAEStreamInfo &info, uint8_t* data, int size);
+  void GetDataTrueHD();
   void PackDTSHD(CAEStreamInfo &info, uint8_t* data, int size);
   void PackEAC3(CAEStreamInfo &info, uint8_t* data, int size);
 
-  /* we keep the trueHD and dtsHD buffers separate so that we can handle a fast stream switch */
-  std::vector<uint8_t> m_trueHD[2];
+  std::unique_ptr<CPackerMAT> m_packerMAT;
 
-  struct TrueHD
-  {
-    int prevFrameSize;
-    int samplesPerFrame;
-    int bufferFilled;
-    int bufferIndex;
-    uint16_t prevFrameTime;
-    uint8_t* outputBuffer;
-  };
-
-  TrueHD m_thd{};
+  unsigned int m_dataCountTrueHD{0};
 
   std::vector<uint8_t> m_dtsHD;
   unsigned int m_dtsHDSize = 0;
