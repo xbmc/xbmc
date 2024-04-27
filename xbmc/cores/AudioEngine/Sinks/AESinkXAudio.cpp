@@ -102,31 +102,21 @@ bool CAESinkXAudio::Initialize(AEAudioFormat &format, std::string &device)
     return false;
 
   m_device = device;
-  bool bdefault = false;
-  HRESULT hr = S_OK;
 
   /* Save requested format */
-  /* Clear returned format */
-  sinkReqFormat = format.m_dataFormat;
-  sinkRetFormat = AE_FMT_INVALID;
+  AEDataFormat reqFormat = format.m_dataFormat;
 
   if (!InitializeInternal(device, format))
   {
-    CLog::LogF(LOGINFO, "could not Initialize voices with that format");
-    goto failed;
+    CLog::LogF(LOGINFO, "could not Initialize voices with format {}",
+               CAEUtil::DataFormatToStr(reqFormat));
+    CLog::LogF(LOGERROR, "XAudio initialization failed");
+    return false;
   }
 
-  format.m_frames       = m_uiBufferLen;
-  m_format              = format;
-  sinkRetFormat         = format.m_dataFormat;
-
   m_initialized = true;
-  m_isDirty     = false;
+  m_isDirty = false;
 
-  return true;
-
-failed:
-  CLog::LogF(LOGERROR, "XAudio initialization failed");
   return true;
 }
 
@@ -792,11 +782,14 @@ initialize:
     return false;
   }
 
-  m_uiBufferLen = (int)(format.m_sampleRate * 0.02);
+  const unsigned int bufferLen = static_cast<int>(format.m_sampleRate * 0.02); // 20 ms chunks
   m_dwFrameSize = wfxex.Format.nBlockAlign;
-  m_dwChunkSize = m_dwFrameSize * m_uiBufferLen;
-  m_dwBufferLen = m_dwChunkSize * 4;
+  m_dwChunkSize = m_dwFrameSize * bufferLen;
+  m_dwBufferLen = m_dwChunkSize * 4; // 80 ms buffer
   m_AvgBytesPerSec = wfxex.Format.nAvgBytesPerSec;
+
+  format.m_frames = bufferLen;
+  m_format = format;
 
   CLog::LogF(LOGINFO, "XAudio Sink Initialized using: {}, {}, {}",
              CAEUtil::DataFormatToStr(format.m_dataFormat), wfxex.Format.nSamplesPerSec,

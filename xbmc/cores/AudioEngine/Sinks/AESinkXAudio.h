@@ -139,10 +139,6 @@ private:
     CAEChannelInfo m_channelLayout;
     std::string m_device;
 
-    AEDataFormat sinkReqFormat{AE_FMT_INVALID};
-    AEDataFormat sinkRetFormat{AE_FMT_INVALID};
-
-    unsigned int m_uiBufferLen{0}; // xaudio endpoint buffer size, in frames
     unsigned int m_AvgBytesPerSec{0};
     unsigned int m_dwChunkSize{0};
     unsigned int m_dwFrameSize{0};
