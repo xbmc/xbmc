@@ -50,25 +50,7 @@ inline void SafeDestroyVoice(TVoice **ppVoice)
 
 ///  ----------------- CAESinkXAudio ------------------------
 
-CAESinkXAudio::CAESinkXAudio() :
-  m_masterVoice(nullptr),
-  m_sourceVoice(nullptr),
-  m_encodedChannels(0),
-  m_encodedSampleRate(0),
-  sinkReqFormat(AE_FMT_INVALID),
-  sinkRetFormat(AE_FMT_INVALID),
-  m_AvgBytesPerSec(0),
-  m_dwChunkSize(0),
-  m_dwFrameSize(0),
-  m_dwBufferLen(0),
-  m_sinkFrames(0),
-  m_framesInBuffers(0),
-  m_running(false),
-  m_initialized(false),
-  m_isSuspended(false),
-  m_isDirty(false),
-  m_uiBufferLen(0),
-  m_avgTimeWaiting(50)
+CAESinkXAudio::CAESinkXAudio()
 {
   m_channelLayout.Reset();
 
