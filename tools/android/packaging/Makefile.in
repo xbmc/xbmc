@@ -60,17 +60,10 @@ python: | xbmc/assets
 	cd xbmc/assets/python@PYTHON_VERSION@/lib/python@PYTHON_VERSION@/; rm -rf test config config-@PYTHON_VERSION@ lib-dynload ; find . -name "*.so" -exec rm -f {} \;
 
 res:
-	mkdir -p xbmc/res xbmc/res/values images
+	mkdir -p xbmc/res xbmc/res/values
+	cp -rfp media/mipmap-* xbmc/res/
 	cp -fp $(CMAKE_SOURCE_DIR)/media/applaunch_screen.png xbmc/res/drawable/
-	cp -fp media/drawable-hdpi/ic_launcher.png xbmc/res/drawable-hdpi/ic_launcher.png
-	cp -fp media/drawable-ldpi/ic_launcher.png xbmc/res/drawable-ldpi/ic_launcher.png
-	cp -fp media/drawable-mdpi/ic_launcher.png xbmc/res/drawable-mdpi/ic_launcher.png
-	cp -fp media/drawable-xhdpi/ic_launcher.png xbmc/res/drawable-xhdpi/ic_launcher.png
-	cp -fp media/drawable-xxhdpi/ic_launcher.png xbmc/res/drawable-xxhdpi/ic_launcher.png
 	cp -fp $(CMAKE_SOURCE_DIR)/media/applaunch_screen.png xbmc/res/drawable-xxxhdpi/
-	cp -fp media/drawable-xxxhdpi/ic_launcher.png xbmc/res/drawable-xxxhdpi/ic_launcher.png
-	cp -fp media/drawable-xhdpi/banner.png xbmc/res/drawable-xhdpi/banner.png
-	cp -fp $(CMAKE_SOURCE_DIR)/media/icon80x80.png xbmc/res/drawable/ic_recommendation_80dp.png
 	cp xbmc/strings.xml xbmc/res/values/
 	cp xbmc/colors.xml xbmc/res/values/
 	cp xbmc/searchable.xml xbmc/res/xml/
@@ -108,12 +101,12 @@ $(PREFIX)/lib/xbmc/lib@APP_NAME_LC@.so: $(SRCLIBS)
 $(SRCLIBS):
 
 apk-clean:
-	rm -rf images
 	rm -rf xbmc/java
 	rm -rf xbmc/lib
 	rm -rf xbmc/assets
 	rm -rf xbmc/obj
 	rm -rf xbmc/res/values
+	rm -rf xbmc/res/mipmap-*
 	rm -f xbmc/res/drawable/applaunch_screen.png
 	rm -f xbmc/res/drawable-xxxhdpi/applaunch_screen.png
 	rm -rf assets
