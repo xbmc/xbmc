@@ -101,8 +101,6 @@ bool CAESinkXAudio::Initialize(AEAudioFormat &format, std::string &device)
   if (m_initialized)
     return false;
 
-  m_device = device;
-
   /* Save requested format */
   AEDataFormat reqFormat = format.m_dataFormat;
 
@@ -318,8 +316,15 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     deviceInfo.m_channels.Reset();
     deviceInfo.m_dataFormats.clear();
     deviceInfo.m_sampleRates.clear();
+    deviceChannels.Reset();
 
-    std::wstring deviceId = KODI::PLATFORM::WINDOWS::ToW(details.strDeviceId);
+    for (unsigned int c = 0; c < WASAPI_SPEAKER_COUNT; c++)
+    {
+      if (details.uiChannelMask & WASAPIChannelOrder[c])
+        deviceChannels += AEChannelNames[c];
+    }
+
+    std::wstring deviceId = KODI::PLATFORM::WINDOWS::ToW(details.strDevicePath);
 
     /* Test format DTS-HD-MA */
     wfxex.Format.cbSize = sizeof(WAVEFORMATEXTENSIBLE) - sizeof(WAVEFORMATEX);
@@ -528,11 +533,11 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     SafeDestroyVoice(&mSourceVoice);
     SafeDestroyVoice(&mMasterVoice);
 
-    deviceInfo.m_deviceName = details.strDeviceId;
+    deviceInfo.m_deviceName = details.strDevicePath;
     deviceInfo.m_displayName = details.strWinDevType.append(details.strDescription);
     deviceInfo.m_displayNameExtra = std::string("XAudio: ").append(details.strDescription);
     deviceInfo.m_deviceType = details.eDeviceType;
-    deviceInfo.m_channels = layoutsByChCount[details.nChannels];
+    deviceInfo.m_channels = deviceChannels;
 
     /* Store the device info */
     deviceInfo.m_wantsIECPassthrough = true;

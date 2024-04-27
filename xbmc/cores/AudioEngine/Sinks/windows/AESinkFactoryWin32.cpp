@@ -147,6 +147,7 @@ std::vector<RendererDetail> CAESinkFactoryWin::GetRendererDetails()
       if (wstrDDID.compare(pwszID) == 0)
         details.bDefault = true;
 
+      details.strDevicePath = KODI::PLATFORM::WINDOWS::FromW(pwszID);
       CoTaskMemFree(pwszID);
     }
 

@@ -101,6 +101,9 @@ std::vector<RendererDetail> CAESinkFactoryWin::GetRendererDetails()
       details.strDescription = KODI::PLATFORM::WINDOWS::FromW(devInfo.Name().c_str());
       details.strDeviceId = KODI::PLATFORM::WINDOWS::FromW(devInfo.Id().c_str());
 
+      // on Windows UWP device Id is same as Path
+      details.strDevicePath = details.strDeviceId;
+
       details.bDefault = (devInfo.Id() == defaultId);
 
       list.push_back(details);

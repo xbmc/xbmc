@@ -137,7 +137,6 @@ private:
     unsigned int m_encodedChannels{0};
     unsigned int m_encodedSampleRate{0};
     CAEChannelInfo m_channelLayout;
-    std::string m_device;
 
     unsigned int m_AvgBytesPerSec{0};
     unsigned int m_dwChunkSize{0};
