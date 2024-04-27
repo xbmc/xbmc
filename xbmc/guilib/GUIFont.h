@@ -35,12 +35,15 @@ class CGraphicContext;
 ///
 /// Flags are used as bits to have several together, e.g. `XBFONT_LEFT | XBFONT_CENTER_Y`
 ///
+// clang-format off
 constexpr int XBFONT_LEFT = 0; ///< Align X left
 constexpr int XBFONT_RIGHT = (1 << 0); ///< Align X right
 constexpr int XBFONT_CENTER_X = (1 << 1); ///< Align X center
 constexpr int XBFONT_CENTER_Y = (1 << 2); ///< Align Y center
-constexpr int XBFONT_TRUNCATED = (1 << 3); ///< Truncated text
+constexpr int XBFONT_TRUNCATED = (1 << 3); ///< Truncated text from right (text end with ellipses)
 constexpr int XBFONT_JUSTIFIED = (1 << 4); ///< Justify text
+constexpr int XBFONT_TRUNCATED_LEFT = (1 << 5); ///< Truncated text from left (text start with ellipses)
+// clang-format on
 /// @}
 
 // flags for font style. lower 16 bits are the unicode code

@@ -130,10 +130,19 @@ void CGUILabel::Render()
     }
     else
     {
-      align |= XBFONT_TRUNCATED;
-      // Allow to text truncate (and relative ellipsis "...") on the left for use cases like edit controls (CGUIEditControl)
-      if (m_isReversedTruncate && (m_label.align & XBFONT_RIGHT))
+      if (m_overflowType == OVER_FLOW_TRUNCATE_LEFT)
+        align |= XBFONT_TRUNCATED_LEFT;
+      else
+        align |= XBFONT_TRUNCATED;
+
+      if (m_label.align & XBFONT_RIGHT)
         align |= XBFONT_RIGHT;
+
+      if (m_label.align & XBFONT_CENTER_X)
+      {
+        posX += m_renderRect.Width() * 0.5f; // hack for centered multiline text, same of above
+        align |= XBFONT_CENTER_X;
+      }
     }
     m_textLayout.Render(posX, posY, m_label.angle, color, m_label.shadowColor, align, m_overflowType == OVER_FLOW_CLIP ? m_textLayout.GetTextWidth() : m_renderRect.Width(), renderSolid);
   }

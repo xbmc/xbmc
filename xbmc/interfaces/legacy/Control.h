@@ -746,6 +746,7 @@ namespace XBMCAddon
     /// | XBFONT_CENTER_Y   | 0x00000004 | Align Y center
     /// | XBFONT_TRUNCATED  | 0x00000008 | Truncated text
     /// | XBFONT_JUSTIFIED  | 0x00000010 | Justify text
+    /// | XBFONT_TRUNCATED_LEFT | 0x00000020 | Truncated text from left
     /// @param hasPath              [opt] bool - True=stores a
     ///                                 path / False=no path
     /// @param angle                [opt] integer - angle of control.
@@ -887,6 +888,7 @@ namespace XBMCAddon
     /// | XBFONT_CENTER_Y   | 0x00000004 | Align Y center
     /// | XBFONT_TRUNCATED  | 0x00000008 | Truncated text
     /// | XBFONT_JUSTIFIED  | 0x00000010 | Justify text
+    /// | XBFONT_TRUNCATED_LEFT | 0x00000020 | Truncated text from left
     /// @param focusTexture         [opt] string - filename for focus texture.
     /// @param noFocusTexture       [opt] string - filename for no focus texture.
     ///
@@ -1126,6 +1128,7 @@ namespace XBMCAddon
     /// | XBFONT_CENTER_Y   | 0x00000004 | Align Y center
     /// | XBFONT_TRUNCATED  | 0x00000008 | Truncated text
     /// | XBFONT_JUSTIFIED  | 0x00000010 | Justify text
+    /// | XBFONT_TRUNCATED_LEFT | 0x00000020 | Truncated text from left
     /// @param shadowColor              [opt] hexstring - color of items
     ///                                     label's shadow. (e.g. '0xFF000000')
     ///
@@ -1660,6 +1663,7 @@ namespace XBMCAddon
     /// | XBFONT_CENTER_Y   | 0x00000004 | Align Y center
     /// | XBFONT_TRUNCATED  | 0x00000008 | Truncated text
     /// | XBFONT_JUSTIFIED  | 0x00000010 | Justify text
+    /// | XBFONT_TRUNCATED_LEFT | 0x00000020 | Truncated text from left
     ///
     /// @note You can use the above as keywords for arguments and skip certain
     ///       optional arguments.\n
@@ -2264,6 +2268,7 @@ namespace XBMCAddon
     /// | XBFONT_CENTER_Y   | 0x00000004 | Align Y center
     /// | XBFONT_TRUNCATED  | 0x00000008 | Truncated text
     /// | XBFONT_JUSTIFIED  | 0x00000010 | Justify text
+    /// | XBFONT_TRUNCATED_LEFT | 0x00000020 | Truncated text from left
     /// @param font                 [opt] string - font used for label text.
     ///                                 (e.g. 'font13')
     /// @param textColor            [opt] hexstring - color of enabled
@@ -2545,6 +2550,7 @@ namespace XBMCAddon
     /// | XBFONT_CENTER_Y   | 0x00000004 | Align Y center
     /// | XBFONT_TRUNCATED  | 0x00000008 | Truncated text
     /// | XBFONT_JUSTIFIED  | 0x00000010 | Justify text
+    /// | XBFONT_TRUNCATED_LEFT | 0x00000020 | Truncated text from left
     /// @param font                 [opt] string - font used for label text.
     ///                             (e.g. 'font13')
     /// @param textColor            [opt] hexstring - color of label when control
