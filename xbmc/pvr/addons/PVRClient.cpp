@@ -421,6 +421,17 @@ const std::string CPVRClient::GetFriendlyName() const
   return Name();
 }
 
+std::string CPVRClient::GetInstanceName() const
+{
+  if (Addon()->SupportsInstanceSettings())
+  {
+    std::string instanceName;
+    Addon()->GetSettingString(ADDON_SETTING_INSTANCE_NAME_VALUE, instanceName, InstanceId());
+    return instanceName;
+  }
+  return "";
+}
+
 PVR_ERROR CPVRClient::GetDriveSpace(uint64_t& iTotal, uint64_t& iUsed) const
 {
   /* default to 0 in case of error */

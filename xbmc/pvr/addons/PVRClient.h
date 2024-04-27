@@ -170,6 +170,12 @@ public:
   const std::string GetFriendlyName() const;
 
   /*!
+   * @brief The name used by the PVR client addon instance
+   * @return string that can be used in log messages and the GUI.
+   */
+  std::string GetInstanceName() const;
+
+  /*!
    * @brief Get the disk space reported by the server.
    * @param iTotal The total disk space.
    * @param iUsed The used disk space.

@@ -439,6 +439,14 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
       case LISTITEM_CHANNEL_NUMBER:
       case LISTITEM_PREMIERED:
         break; // obtain value from channel/epg
+      case LISTITEM_BACKEND_INSTANCE_NAME:
+      {
+        strValue = CServiceBroker::GetPVRManager()
+                       .Clients()
+                       ->GetCreatedClient(timer->ClientID())
+                       ->GetInstanceName();
+        return true;
+      }
       default:
         return false;
     }
@@ -558,6 +566,14 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
           return true;
         }
         return false;
+      case LISTITEM_BACKEND_INSTANCE_NAME:
+      {
+        strValue = CServiceBroker::GetPVRManager()
+                       .Clients()
+                       ->GetCreatedClient(recording->ClientID())
+                       ->GetInstanceName();
+        return true;
+      }
     }
     return false;
   }
@@ -755,6 +771,14 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
       case LISTITEM_PARENTAL_RATING_CODE:
         strValue = epgTag->ParentalRatingCode();
         return true;
+      case LISTITEM_BACKEND_INSTANCE_NAME:
+      {
+        strValue = CServiceBroker::GetPVRManager()
+                       .Clients()
+                       ->GetCreatedClient(epgTag->ClientID())
+                       ->GetInstanceName();
+        return true;
+      }
       case VIDEOPLAYER_PREMIERED:
       case LISTITEM_PREMIERED:
         if (epgTag->FirstAired().IsValid())
