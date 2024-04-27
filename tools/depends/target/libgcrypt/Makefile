@@ -1,13 +1,6 @@
 include ../../Makefile.include LIBGCRYPT-VERSION ../../download-files.include
 DEPS = ../../Makefile.include Makefile LIBGCRYPT-VERSION ../../download-files.include
 
-ifeq ($(OS),android)
-  # Just blanket disable neon support for non arm64 arch
-  ifneq ($(findstring arm64, $(CPU)), arm64)
-    CONFIGURE_FLAGS+= --disable-neon-support
-  endif
-endif
-
 ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
   # required to fix asm link failure due C_SYMBOL_NAME macro not prepending _ to exported symbol
   # exported symbols only have s single _ instead of double __
