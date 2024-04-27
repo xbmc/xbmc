@@ -92,24 +92,32 @@ bool URIUtils::HasExtension(const CURL& url, const std::string& strExtensions)
 
 bool URIUtils::HasExtension(const std::string& strFileName, const std::string& strExtensions)
 {
+  const std::vector<std::string> extList = StringUtils::Split(strExtensions, '|');
+  return HasExtension(strFileName, extList);
+}
+
+bool URIUtils::HasExtension(const CURL& url, const std::vector<std::string>& extList)
+{
+  return HasExtension(url.GetFileName(), extList);
+}
+
+bool URIUtils::HasExtension(const std::string& strFileName, const std::vector<std::string>& extList)
+{
   if (IsURL(strFileName))
   {
     const CURL url(strFileName);
-    return HasExtension(url.GetFileName(), strExtensions);
+    return HasExtension(url.GetFileName(), extList);
   }
 
   const size_t pos = strFileName.find_last_of("./\\");
   if (pos == std::string::npos || strFileName[pos] != '.')
     return false;
 
-  const std::string extensionLower = StringUtils::ToLower(strFileName.substr(pos));
+  const std::string extension = strFileName.substr(pos);
 
-  const std::vector<std::string> extensionsLower =
-      StringUtils::Split(StringUtils::ToLower(strExtensions), '|');
-
-  for (const auto& ext : extensionsLower)
+  for (const auto& ext : extList)
   {
-    if (StringUtils::EndsWith(ext, extensionLower))
+    if (StringUtils::EndsWithNoCase(ext, extension))
       return true;
   }
 
@@ -853,17 +861,34 @@ bool URIUtils::IsAPK(const std::string& strFile)
 
 bool URIUtils::IsZIP(const std::string& strFile) // also checks for comic books!
 {
-  return HasExtension(strFile, ".zip|.cbz");
+  static const std::vector<std::string> extensions = {
+    ".zip",
+    ".cbz"
+  };
+  return HasExtension(strFile, extensions);
 }
 
 bool URIUtils::IsArchive(const std::string& strFile)
 {
-  return HasExtension(strFile, ".zip|.rar|.apk|.cbz|.cbr");
+  static const std::vector<std::string> extensions = {
+    ".zip",
+    ".rar",
+    ".apk",
+    ".cbz",
+    ".cbr"
+  };
+  return HasExtension(strFile, extensions);
 }
 
 bool URIUtils::IsDiscImage(const std::string& file)
 {
-  return HasExtension(file, ".img|.iso|.nrg|.udf");
+  static const std::vector<std::string> extensions = {
+    ".img",
+    ".iso",
+    ".nrg",
+    ".udf"
+  };
+  return HasExtension(file, extensions);
 }
 
 bool URIUtils::IsDiscImageStack(const std::string& file)
