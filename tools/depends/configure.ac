@@ -200,7 +200,7 @@ case $build in
     # Android NDK currently only x86_64 prebuilts - Arctic Fox 2020.3.1
     android_toolchain_name="darwin-x86_64"
 
-    host_cxxflags="-std=c++17 -stdlib=libc++"
+    host_cxxflags="-std=c++17"
 
     if test "x$prefix" = "xNONE"; then
       prefix=/Users/Shared/xbmc-depends
@@ -418,7 +418,6 @@ case $host in
 
     meson_system="darwin"
 
-    platform_cflags="-fheinous-gnu-extensions"
     platform_ldflags="-Wl,-search_paths_first"
 
     case $use_platform in
@@ -493,8 +492,7 @@ case $host in
     platform_min_version="$target_platform-version-min=$target_minver"
 
     platform_includes="-arch $use_cpu -m$platform_min_version -isysroot $use_sdk_path"
-    platform_ldflags="${platform_ldflags} $platform_includes -stdlib=libc++"
-    platform_cxxflags="${platform_cxxflags} -stdlib=libc++"
+    platform_ldflags="${platform_ldflags} $platform_includes"
     deps_dir="${sdk_name}_${use_cpu}-target-${build_type}"
   ;;
   *)
