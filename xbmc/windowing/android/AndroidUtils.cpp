@@ -37,44 +37,44 @@ static void fetchDisplayModes()
     CJNIDisplayMode m = display.getMode();
     if (m)
     {
-      if (m.getPhysicalWidth() > m.getPhysicalHeight()) // Assume unusable if portrait is returned
+      const bool landscape = m.getPhysicalWidth() > m.getPhysicalHeight();
+      CLog::Log(LOGDEBUG, "CAndroidUtils: current mode: {}: {}x{}@{:f}", m.getModeId(),
+                m.getPhysicalWidth(), m.getPhysicalHeight(), m.getRefreshRate());
+      s_res_cur_displayMode.strId = std::to_string(m.getModeId());
+      s_res_cur_displayMode.iWidth = s_res_cur_displayMode.iScreenWidth =
+          landscape ? m.getPhysicalWidth() : m.getPhysicalHeight();
+      s_res_cur_displayMode.iHeight = s_res_cur_displayMode.iScreenHeight =
+          landscape ? m.getPhysicalHeight() : m.getPhysicalWidth();
+      s_res_cur_displayMode.fRefreshRate = m.getRefreshRate();
+      s_res_cur_displayMode.dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
+      s_res_cur_displayMode.bFullScreen = true;
+      s_res_cur_displayMode.iSubtitles = s_res_cur_displayMode.iHeight;
+      s_res_cur_displayMode.fPixelRatio = 1.0f;
+      s_res_cur_displayMode.strMode = StringUtils::Format(
+          "{}x{} @ {:.6f}{} - Full Screen", s_res_cur_displayMode.iScreenWidth,
+          s_res_cur_displayMode.iScreenHeight, s_res_cur_displayMode.fRefreshRate,
+          s_res_cur_displayMode.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
+
+      std::vector<CJNIDisplayMode> modes = display.getSupportedModes();
+      for (CJNIDisplayMode& m : modes)
       {
-        CLog::Log(LOGDEBUG, "CAndroidUtils: current mode: {}: {}x{}@{:f}", m.getModeId(),
+        CLog::Log(LOGDEBUG, "CAndroidUtils: available mode: {}: {}x{}@{:f}", m.getModeId(),
                   m.getPhysicalWidth(), m.getPhysicalHeight(), m.getRefreshRate());
-        s_res_cur_displayMode.strId = std::to_string(m.getModeId());
-        s_res_cur_displayMode.iWidth = s_res_cur_displayMode.iScreenWidth = m.getPhysicalWidth();
-        s_res_cur_displayMode.iHeight = s_res_cur_displayMode.iScreenHeight = m.getPhysicalHeight();
-        s_res_cur_displayMode.fRefreshRate = m.getRefreshRate();
-        s_res_cur_displayMode.dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
-        s_res_cur_displayMode.bFullScreen = true;
-        s_res_cur_displayMode.iSubtitles = s_res_cur_displayMode.iHeight;
-        s_res_cur_displayMode.fPixelRatio = 1.0f;
-        s_res_cur_displayMode.strMode = StringUtils::Format(
-            "{}x{} @ {:.6f}{} - Full Screen", s_res_cur_displayMode.iScreenWidth,
-            s_res_cur_displayMode.iScreenHeight, s_res_cur_displayMode.fRefreshRate,
-            s_res_cur_displayMode.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
 
-        std::vector<CJNIDisplayMode> modes = display.getSupportedModes();
-        for (CJNIDisplayMode& m : modes)
-        {
-          CLog::Log(LOGDEBUG, "CAndroidUtils: available mode: {}: {}x{}@{:f}", m.getModeId(),
-                    m.getPhysicalWidth(), m.getPhysicalHeight(), m.getRefreshRate());
+        RESOLUTION_INFO res;
+        res.strId = std::to_string(m.getModeId());
+        res.iWidth = res.iScreenWidth = landscape ? m.getPhysicalWidth() : m.getPhysicalHeight();
+        res.iHeight = res.iScreenHeight = landscape ? m.getPhysicalHeight() : m.getPhysicalWidth();
+        res.fRefreshRate = m.getRefreshRate();
+        res.dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
+        res.bFullScreen = true;
+        res.iSubtitles = res.iHeight;
+        res.fPixelRatio = 1.0f;
+        res.strMode = StringUtils::Format("{}x{} @ {:.6f}{} - Full Screen", res.iScreenWidth,
+                                          res.iScreenHeight, res.fRefreshRate,
+                                          res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
 
-          RESOLUTION_INFO res;
-          res.strId = std::to_string(m.getModeId());
-          res.iWidth = res.iScreenWidth = m.getPhysicalWidth();
-          res.iHeight = res.iScreenHeight = m.getPhysicalHeight();
-          res.fRefreshRate = m.getRefreshRate();
-          res.dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
-          res.bFullScreen = true;
-          res.iSubtitles = res.iHeight;
-          res.fPixelRatio = 1.0f;
-          res.strMode = StringUtils::Format("{}x{} @ {:.6f}{} - Full Screen", res.iScreenWidth,
-                                            res.iScreenHeight, res.fRefreshRate,
-                                            res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
-
-          s_res_displayModes.push_back(res);
-        }
+        s_res_displayModes.push_back(res);
       }
     }
   }
