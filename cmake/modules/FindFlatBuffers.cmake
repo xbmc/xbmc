@@ -4,11 +4,11 @@
 #
 # This will define the following target:
 #
-#   flatbuffers::flatbuffers - The flatbuffers headers
+#   flatbuffers::flatheaders - The flatbuffers headers
 
 find_package(FlatC REQUIRED)
 
-if(NOT TARGET flatbuffers::flatbuffers)
+if(NOT TARGET flatbuffers::flatheaders)
 
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
@@ -56,31 +56,38 @@ if(NOT TARGET flatbuffers::flatbuffers)
                                     REQUIRED_VARS FLATBUFFERS_INCLUDE_DIR
                                     VERSION_VAR FLATBUFFERS_VER)
 
-  add_library(flatbuffers::flatbuffers INTERFACE IMPORTED)
-  set_target_properties(flatbuffers::flatbuffers PROPERTIES
-                                                 INTERFACE_INCLUDE_DIRECTORIES "${FLATBUFFERS_INCLUDE_DIR}")
+  if(FlatBuffers_FOUND)
 
-  add_dependencies(flatbuffers::flatbuffers flatbuffers::flatc)
+    add_library(flatbuffers::flatheaders INTERFACE IMPORTED)
+    set_target_properties(flatbuffers::flatheaders PROPERTIES
+                                                   INTERFACE_INCLUDE_DIRECTORIES "${FLATBUFFERS_INCLUDE_DIR}")
 
-  if(TARGET flatbuffers)
-    add_dependencies(flatbuffers::flatbuffers flatbuffers)
-  endif()
+    add_dependencies(flatbuffers::flatheaders flatbuffers::flatc)
 
-  # Add internal build target when a Multi Config Generator is used
-  # We cant add a dependency based off a generator expression for targeted build types,
-  # https://gitlab.kitware.com/cmake/cmake/-/issues/19467
-  # therefore if the find heuristics only find the library, we add the internal build
-  # target to the project to allow user to manually trigger for any build type they need
-  # in case only a specific build type is actually available (eg Release found, Debug Required)
-  # This is mainly targeted for windows who required different runtime libs for different
-  # types, and they arent compatible
-  if(_multiconfig_generator)
-    if(NOT TARGET flatbuffers)
-      buildflatbuffers()
-      set_target_properties(flatbuffers PROPERTIES EXCLUDE_FROM_ALL TRUE)
+    if(TARGET flatbuffers)
+      add_dependencies(flatbuffers::flatheaders flatbuffers)
     endif()
-    add_dependencies(build_internal_depends flatbuffers)
-  endif()
 
-  set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP flatbuffers::flatbuffers)
+    # Add internal build target when a Multi Config Generator is used
+    # We cant add a dependency based off a generator expression for targeted build types,
+    # https://gitlab.kitware.com/cmake/cmake/-/issues/19467
+    # therefore if the find heuristics only find the library, we add the internal build
+    # target to the project to allow user to manually trigger for any build type they need
+    # in case only a specific build type is actually available (eg Release found, Debug Required)
+    # This is mainly targeted for windows who required different runtime libs for different
+    # types, and they arent compatible
+    if(_multiconfig_generator)
+      if(NOT TARGET flatbuffers)
+        buildflatbuffers()
+        set_target_properties(flatbuffers PROPERTIES EXCLUDE_FROM_ALL TRUE)
+      endif()
+      add_dependencies(build_internal_depends flatbuffers)
+    endif()
+
+    set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP flatbuffers::flatheaders)
+  else()
+    if(FlatBuffers_FIND_REQUIRED)
+      message(FATAL_ERROR "Flatbuffer schema headers were not found. You may want to try -DENABLE_INTERNAL_FLATBUFFERS=ON to build the internal headers package")
+    endif()
+  endif()
 endif()
