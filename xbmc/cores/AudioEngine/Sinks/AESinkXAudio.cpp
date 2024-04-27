@@ -797,6 +797,22 @@ initialize:
 
   m_sourceVoice->Stop();
 
+  CLog::LogF(LOGDEBUG, "Initializing XAudio with the following parameters:");
+  CLog::Log(LOGDEBUG, "  Audio Device    : {}", KODI::PLATFORM::WINDOWS::FromW(device));
+  CLog::Log(LOGDEBUG, "  Sample Rate     : {}", wfxex.Format.nSamplesPerSec);
+  CLog::Log(LOGDEBUG, "  Sample Format   : {}", CAEUtil::DataFormatToStr(format.m_dataFormat));
+  CLog::Log(LOGDEBUG, "  Bits Per Sample : {}", wfxex.Format.wBitsPerSample);
+  CLog::Log(LOGDEBUG, "  Valid Bits/Samp : {}", wfxex.Samples.wValidBitsPerSample);
+  CLog::Log(LOGDEBUG, "  Channel Count   : {}", wfxex.Format.nChannels);
+  CLog::Log(LOGDEBUG, "  Block Align     : {}", wfxex.Format.nBlockAlign);
+  CLog::Log(LOGDEBUG, "  Avg. Bytes Sec  : {}", wfxex.Format.nAvgBytesPerSec);
+  CLog::Log(LOGDEBUG, "  Samples/Block   : {}", wfxex.Samples.wSamplesPerBlock);
+  CLog::Log(LOGDEBUG, "  Format cBSize   : {}", wfxex.Format.cbSize);
+  CLog::Log(LOGDEBUG, "  Channel Layout  : {}", ((std::string)format.m_channelLayout));
+  CLog::Log(LOGDEBUG, "  Channel Mask    : {}", wfxex.dwChannelMask);
+  CLog::Log(LOGDEBUG, "  Frames          : {}", format.m_frames);
+  CLog::Log(LOGDEBUG, "  Frame Size      : {}", format.m_frameSize);
+
   return true;
 }
 
