@@ -23,6 +23,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "music/MusicFileItemClassify.h"
 #include "playlists/PlayList.h"
 #include "playlists/PlayListFactory.h"
 #include "profiles/ProfileManager.h"
@@ -41,6 +42,7 @@
 #include "video/VideoUtils.h"
 #include "view/GUIViewState.h"
 
+using namespace KODI;
 using namespace KODI::VIDEO;
 
 namespace
@@ -514,7 +516,7 @@ bool IsItemPlayable(const CFileItem& item)
     return true;
 
   // Exclude all music library items
-  if (item.IsMusicDb() || StringUtils::StartsWithNoCase(item.GetPath(), "library://music/"))
+  if (MUSIC::IsMusicDb(item) || StringUtils::StartsWithNoCase(item.GetPath(), "library://music/"))
     return false;
 
   // Exclude other components
@@ -575,7 +577,7 @@ bool IsItemPlayable(const CFileItem& item)
   {
     return true;
   }
-  else if ((!item.m_bIsFolder && IsVideo(item)) || item.IsDVD() || item.IsCDDA())
+  else if ((!item.m_bIsFolder && IsVideo(item)) || item.IsDVD() || MUSIC::IsCDDA(item))
   {
     return true;
   }

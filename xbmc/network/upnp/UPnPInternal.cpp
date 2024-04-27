@@ -17,6 +17,7 @@
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/StackDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
+#include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -207,7 +208,7 @@ NPT_String GetMimeType(const CFileItem& item, const PLT_HttpRequestContext* cont
   {
     if (VIDEO::IsVideo(item) || VIDEO::IsVideoDb(item))
       mime = "video/" + ext;
-    else if (item.IsAudio() || item.IsMusicDb())
+    else if (MUSIC::IsAudio(item) || MUSIC::IsMusicDb(item))
       mime = "audio/" + ext;
     else if (item.IsPicture())
       mime = "image/" + ext;
@@ -520,7 +521,7 @@ PLT_MediaObject* BuildObject(CFileItem& item,
     object->m_ObjectID = EncodeObjectId(item.GetPath());
 
     /* Setup object type */
-    if (item.IsMusicDb() || item.IsAudio())
+    if (MUSIC::IsMusicDb(item) || MUSIC::IsAudio(item))
     {
       object->m_ObjectClass.type = "object.item.audioItem.musicTrack";
 
@@ -616,7 +617,7 @@ PLT_MediaObject* BuildObject(CFileItem& item,
     container->m_ChildrenCount = -1;
 
     /* this might be overkill, but hey */
-    if (item.IsMusicDb())
+    if (MUSIC::IsMusicDb(item))
     {
       MUSICDATABASEDIRECTORY::NODE_TYPE node =
           CMusicDatabaseDirectory::GetDirectoryType(item.GetPath());

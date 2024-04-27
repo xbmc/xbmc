@@ -17,6 +17,7 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/helpers/DialogHelper.h"
+#include "music/MusicFileItemClassify.h"
 #include "music/MusicThumbLoader.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -227,7 +228,7 @@ int CUPnPPlayer::PlayFile(const CFileItem& file,
 
   if (VIDEO::IsVideoDb(file))
     thumb_loader = NPT_Reference<CThumbLoader>(new CVideoThumbLoader());
-  else if (item.IsMusicDb())
+  else if (MUSIC::IsMusicDb(item))
     thumb_loader = NPT_Reference<CThumbLoader>(new CMusicThumbLoader());
 
   obj = BuildObject(item, path, false, thumb_loader, NULL, CUPnP::GetServer(), UPnPPlayer);
@@ -389,7 +390,7 @@ bool CUPnPPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
   {
     m_hasVideo = true;
   }
-  else if (file.IsAudio())
+  else if (MUSIC::IsAudio(file))
   {
     m_hasAudio = true;
   }
@@ -421,7 +422,7 @@ bool CUPnPPlayer::QueueNextFile(const CFileItem& file)
 
   if (VIDEO::IsVideoDb(file))
     thumb_loader = NPT_Reference<CThumbLoader>(new CVideoThumbLoader());
-  else if (item.IsMusicDb())
+  else if (MUSIC::IsMusicDb(item))
     thumb_loader = NPT_Reference<CThumbLoader>(new CMusicThumbLoader());
 
   obj = BuildObject(item, path, false, thumb_loader, NULL, CUPnP::GetServer(), UPnPPlayer);

@@ -16,6 +16,7 @@
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/StackDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
+#include "music/MusicFileItemClassify.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -609,7 +610,7 @@ void CFileItemList::FilterCueItems()
     CFileItemPtr pItem = m_items[i];
     if (!pItem->m_bIsFolder)
     { // see if it's a .CUE sheet
-      if (pItem->IsCUESheet())
+      if (MUSIC::IsCUESheet(*pItem))
       {
         CCueDocumentPtr cuesheet(new CCueDocument);
         if (cuesheet->ParseFile(pItem->GetPath()))
@@ -639,7 +640,7 @@ void CFileItemList::FilterCueItems()
                 strMediaFile = pItem->GetPath();
                 URIUtils::RemoveExtension(strMediaFile);
                 CFileItem item(strMediaFile, false);
-                if (item.IsAudio() && Contains(strMediaFile))
+                if (MUSIC::IsAudio(item) && Contains(strMediaFile))
                 {
                   bFoundMediaFile = true;
                 }
@@ -652,7 +653,7 @@ void CFileItemList::FilterCueItems()
                   {
                     strMediaFile = URIUtils::ReplaceExtension(pItem->GetPath(), *i);
                     CFileItem item(strMediaFile, false);
-                    if (!item.IsCUESheet() && !item.IsPlayList() && Contains(strMediaFile))
+                    if (!MUSIC::IsCUESheet(item) && !item.IsPlayList() && Contains(strMediaFile))
                     {
                       bFoundMediaFile = true;
                       break;
@@ -1075,10 +1076,10 @@ std::string CFileItemList::GetDiscFileCache(int windowID) const
 
   uint32_t crc = Crc32::ComputeFromLowerCase(strPath);
 
-  if (IsCDDA() || IsOnDVD())
+  if (MUSIC::IsCDDA(*this) || IsOnDVD())
     return StringUtils::Format("special://temp/archive_cache/r-{:08x}.fi", crc);
 
-  if (IsMusicDb())
+  if (MUSIC::IsMusicDb(*this))
     return StringUtils::Format("special://temp/archive_cache/mdb-{:08x}.fi", crc);
 
   if (VIDEO::IsVideoDb(*this))
@@ -1096,7 +1097,7 @@ std::string CFileItemList::GetDiscFileCache(int windowID) const
 bool CFileItemList::AlwaysCache() const
 {
   // some database folders are always cached
-  if (IsMusicDb())
+  if (MUSIC::IsMusicDb(*this))
     return CMusicDatabaseDirectory::CanCache(GetPath());
   if (VIDEO::IsVideoDb(*this))
     return CVideoDatabaseDirectory::CanCache(GetPath());

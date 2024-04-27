@@ -133,7 +133,9 @@ TEST(TestVideoFileItemClassify, VideoExtensions)
   for (const auto& ext : StringUtils::Split(exts, "|"))
   {
     if (!ext.empty())
+    {
       EXPECT_TRUE(VIDEO::IsVideo(CFileItem(ext, false)));
+    }
   }
 }
 
@@ -190,7 +192,9 @@ TEST(TestVideoFileItemClassify, IsSubtitle)
   for (const auto& ext : StringUtils::Split(exts, "|"))
   {
     if (!ext.empty())
+    {
       EXPECT_TRUE(VIDEO::IsSubtitle(CFileItem("random" + ext, false)));
+    }
   }
 
   EXPECT_FALSE(VIDEO::IsSubtitle(CFileItem("random.notasub", false)));

@@ -164,14 +164,6 @@ public:
    \return true if item is picture, false otherwise.
    */
   bool IsPicture() const;
-  bool IsLyrics() const;
-
-  /*!
-   \brief Check whether an item is an audio item. Note that this returns true for
-    anything with a music info tag, so that may include eg. folders.
-   \return true if item is audio, false otherwise.
-   */
-  bool IsAudio() const;
 
   /*!
    \brief Check whether an item is 'deleted' (for example, a trashed pvr recording).
@@ -179,14 +171,7 @@ public:
    */
   bool IsDeleted() const;
 
-  /*!
-   \brief Check whether an item is an audio book item.
-   \return true if item is audiobook, false otherwise.
-   */
-  bool IsAudioBook() const;
-
   bool IsGame() const;
-  bool IsCUESheet() const;
   bool IsInternetStream(const bool bStrictCheck = false) const;
   bool IsStreamedFilesystem() const;
   bool IsPlayList() const;
@@ -207,7 +192,6 @@ public:
   bool IsCBZ() const;
   bool IsCBR() const;
   bool IsISO9660() const;
-  bool IsCDDA() const;
   bool IsDVD() const;
   bool IsOnDVD() const;
   bool IsOnLAN() const;
@@ -219,7 +203,6 @@ public:
   bool IsStack() const;
   bool IsFavourite() const;
   bool IsMultiPath() const;
-  bool IsMusicDb() const;
   bool IsEPG() const;
   bool IsPVRChannel() const;
   bool IsPVRChannelGroup() const;

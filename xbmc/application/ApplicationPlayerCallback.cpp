@@ -23,6 +23,7 @@
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/json-rpc/JSONUtils.h"
 #include "interfaces/python/XBPython.h"
+#include "music/MusicFileItemClassify.h"
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
@@ -37,6 +38,7 @@
 
 #include <memory>
 
+using namespace KODI;
 using namespace KODI::VIDEO;
 
 CApplicationPlayerCallback::CApplicationPlayerCallback()
@@ -129,7 +131,7 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
   const std::shared_ptr<CAdvancedSettings> advancedSettings =
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
 
-  if ((fileItem.IsAudio() && advancedSettings->m_audioPlayCountMinimumPercent > 0 &&
+  if ((MUSIC::IsAudio(fileItem) && advancedSettings->m_audioPlayCountMinimumPercent > 0 &&
        percent >= advancedSettings->m_audioPlayCountMinimumPercent) ||
       (IsVideo(fileItem) && advancedSettings->m_videoPlayCountMinimumPercent > 0 &&
        percent >= advancedSettings->m_videoPlayCountMinimumPercent))

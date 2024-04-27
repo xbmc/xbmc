@@ -29,6 +29,7 @@
 #include "music/Album.h"
 #include "music/Artist.h"
 #include "music/MusicDatabase.h"
+#include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
 #include "music/tags/MusicInfoTagLoaderFactory.h"
 #include "pictures/PictureInfoTag.h"
@@ -912,53 +913,12 @@ bool CFileItem::IsPVRTimer() const
   return HasPVRTimerInfoTag();
 }
 
-bool CFileItem::IsAudio() const
-{
-  /* check preset mime type */
-  if(StringUtils::StartsWithNoCase(m_mimetype, "audio/"))
-    return true;
-
-  if (HasMusicInfoTag())
-    return true;
-
-  if (HasVideoInfoTag())
-    return false;
-
-  if (HasPictureInfoTag())
-    return false;
-
-  if (HasGameInfoTag())
-    return false;
-
-  if (IsCDDA())
-    return true;
-
-  if(StringUtils::StartsWithNoCase(m_mimetype, "application/"))
-  { /* check for some standard types */
-    std::string extension = m_mimetype.substr(12);
-    if( StringUtils::EqualsNoCase(extension, "ogg")
-     || StringUtils::EqualsNoCase(extension, "mp4")
-     || StringUtils::EqualsNoCase(extension, "mxf") )
-     return true;
-  }
-
-  //! @todo If the file is a zip file, ask the game clients if any support this
-  // file before assuming it is audio
-
-  return URIUtils::HasExtension(m_strPath, CServiceBroker::GetFileExtensionProvider().GetMusicExtensions());
-}
-
 bool CFileItem::IsDeleted() const
 {
   if (HasPVRRecordingInfoTag())
     return GetPVRRecordingInfoTag()->IsDeleted();
 
   return false;
-}
-
-bool CFileItem::IsAudioBook() const
-{
-  return IsType(".m4b") || IsType(".mka");
 }
 
 bool CFileItem::IsGame() const
@@ -1011,16 +971,6 @@ bool CFileItem::IsPicture() const
   return false;
 }
 
-bool CFileItem::IsLyrics() const
-{
-  return URIUtils::HasExtension(m_strPath, ".cdg|.lrc");
-}
-
-bool CFileItem::IsCUESheet() const
-{
-  return URIUtils::HasExtension(m_strPath, ".cue");
-}
-
 bool CFileItem::IsInternetStream(const bool bStrictCheck /* = false */) const
 {
   if (HasProperty("IsHTTPDirectory"))
@@ -1054,16 +1004,13 @@ bool CFileItem::IsFileFolder(EFileFolderType types) const
 
   if(types & always_type)
   {
-    if(IsSmartPlayList()
-    || (IsPlayList() && CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_playlistAsFolders)
-    || IsAPK()
-    || IsZIP()
-    || IsRAR()
-    || IsRSS()
-    || IsAudioBook()
-    || IsType(".ogg|.oga|.xbt")
+    if (IsSmartPlayList() ||
+        (IsPlayList() &&
+         CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_playlistAsFolders) ||
+        IsAPK() || IsZIP() || IsRAR() || IsRSS() || MUSIC::IsAudioBook(*this) ||
+        IsType(".ogg|.oga|.xbt")
 #if defined(TARGET_ANDROID)
-    || IsType(".apk")
+        || IsType(".apk")
 #endif
     )
     return true;
@@ -1218,11 +1165,6 @@ bool CFileItem::IsBluray() const
   return IsBDFile(item);
 }
 
-bool CFileItem::IsCDDA() const
-{
-  return URIUtils::IsCDDA(m_strPath);
-}
-
 bool CFileItem::IsDVD() const
 {
   return URIUtils::IsDVD(m_strPath) || m_iDriveType == CMediaSource::SOURCE_TYPE_DVD;
@@ -1278,11 +1220,6 @@ bool CFileItem::IsHD() const
   return URIUtils::IsHD(m_strPath);
 }
 
-bool CFileItem::IsMusicDb() const
-{
-  return URIUtils::IsMusicDb(m_strPath);
-}
-
 bool CFileItem::IsVirtualDirectoryRoot() const
 {
   return (m_bIsFolder && m_strPath.empty());
@@ -1290,7 +1227,7 @@ bool CFileItem::IsVirtualDirectoryRoot() const
 
 bool CFileItem::IsRemovable() const
 {
-  return IsOnDVD() || IsCDDA() || m_iDriveType == CMediaSource::SOURCE_TYPE_REMOVABLE;
+  return IsOnDVD() || MUSIC::IsCDDA(*this) || m_iDriveType == CMediaSource::SOURCE_TYPE_REMOVABLE;
 }
 
 bool CFileItem::IsReadOnly() const
@@ -1361,7 +1298,7 @@ void CFileItem::FillInDefaultIcon()
         // PVR deleted recording
         SetArt("icon", "DefaultVideoDeleted.png");
       }
-      else if ( IsAudio() )
+      else if (MUSIC::IsAudio(*this))
       {
         // audio
         SetArt("icon", "DefaultAudio.png");
@@ -1586,7 +1523,7 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
       }
     }
   }
-  if (IsMusicDb() && HasMusicInfoTag())
+  if (MUSIC::IsMusicDb(*this) && HasMusicInfoTag())
   {
     CFileItem dbItem(m_musicInfoTag->GetURL(), false);
     if (HasProperty("item_start"))
@@ -1600,7 +1537,7 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
       dbItem.SetProperty("item_start", GetProperty("item_start"));
     return dbItem.IsSamePath(item);
   }
-  if (item->IsMusicDb() && item->HasMusicInfoTag())
+  if (MUSIC::IsMusicDb(*item) && item->HasMusicInfoTag())
   {
     CFileItem dbItem(item->m_musicInfoTag->GetURL(), false);
     if (item->HasProperty("item_start"))
@@ -2075,18 +2012,13 @@ bool CFileItem::LoadTracksFromCueDocument(CFileItemList& scannedItems)
 
 std::string CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */, bool fallbackToFolder /* = false */) const
 {
-  if (m_strPath.empty()
-   || StringUtils::StartsWithNoCase(m_strPath, "newsmartplaylist://")
-   || StringUtils::StartsWithNoCase(m_strPath, "newplaylist://")
-   || m_bIsShareOrDrive
-   || IsInternetStream()
-   || URIUtils::IsUPnP(m_strPath)
-   || (URIUtils::IsFTP(m_strPath) && !CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bFTPThumbs)
-   || IsPlugin()
-   || IsAddonsPath()
-   || IsLibraryFolder()
-   || IsParentFolder()
-   || IsMusicDb())
+  if (m_strPath.empty() || StringUtils::StartsWithNoCase(m_strPath, "newsmartplaylist://") ||
+      StringUtils::StartsWithNoCase(m_strPath, "newplaylist://") || m_bIsShareOrDrive ||
+      IsInternetStream() || URIUtils::IsUPnP(m_strPath) ||
+      (URIUtils::IsFTP(m_strPath) &&
+       !CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bFTPThumbs) ||
+      IsPlugin() || IsAddonsPath() || IsLibraryFolder() || IsParentFolder() ||
+      MUSIC::IsMusicDb(*this))
     return "";
 
   // we first check for <filename>.tbn or <foldername>.tbn
@@ -2509,7 +2441,7 @@ std::string CFileItem::GetLocalMetadataPath() const
 bool CFileItem::LoadMusicTag()
 {
   // not audio
-  if (!IsAudio())
+  if (!MUSIC::IsAudio(*this))
     return false;
   // already loaded?
   if (HasMusicInfoTag() && m_musicInfoTag->Loaded())
@@ -2536,7 +2468,7 @@ bool CFileItem::LoadMusicTag()
       return true;
   }
   // no tag - try some other things
-  if (IsCDDA())
+  if (MUSIC::IsCDDA(*this))
   {
     // we have the tracknumber...
     int iTrack = GetMusicInfoTag()->GetTrackNumber();
@@ -2693,7 +2625,7 @@ bool CFileItem::LoadDetails()
             return true;
           }
         }
-        else if (item->IsAudio())
+        else if (MUSIC::IsAudio(*item))
         {
           if (item->LoadMusicTag())
           {
@@ -2707,12 +2639,12 @@ bool CFileItem::LoadDetails()
     return false;
   }
 
-  if (IsAudio())
+  if (MUSIC::IsAudio(*this))
   {
     return LoadMusicTag();
   }
 
-  if (IsMusicDb())
+  if (MUSIC::IsMusicDb(*this))
   {
     if (HasMusicInfoTag())
       return true;

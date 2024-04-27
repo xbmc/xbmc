@@ -11,6 +11,7 @@
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "music/MusicFileItemClassify.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/RegExp.h"
@@ -117,7 +118,7 @@ void CPlayerSelectionRule::GetPlayers(const CFileItem& item, std::vector<std::st
 
   if (m_bStreamDetails && !item.HasVideoInfoTag())
     return;
-  if (m_tAudio >= 0 && (m_tAudio > 0) != item.IsAudio())
+  if (m_tAudio >= 0 && (m_tAudio > 0) != MUSIC::IsAudio(item))
     return;
   if (m_tVideo >= 0 && (m_tVideo > 0) != VIDEO::IsVideo(item))
     return;

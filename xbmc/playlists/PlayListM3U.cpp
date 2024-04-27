@@ -12,6 +12,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "filesystem/File.h"
+#include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
 #include "utils/CharsetConverter.h"
 #include "utils/URIUtils.h"
@@ -188,7 +189,7 @@ bool CPlayListM3U::Load(const std::string& strFileName)
         if (VIDEO::IsVideo(*newItem) &&
             !newItem->HasVideoInfoTag()) // File is a video and needs a VideoInfoTag
           newItem->GetVideoInfoTag()->Reset(); // Force VideoInfoTag creation
-        if (lDuration && newItem->IsAudio())
+        if (lDuration && MUSIC::IsAudio(*newItem))
           newItem->GetMusicInfoTag()->SetDuration(lDuration);
         for (auto &prop : properties)
         {

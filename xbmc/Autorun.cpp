@@ -26,6 +26,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/helpers/DialogHelper.h"
+#include "music/MusicFileItemClassify.h"
 #include "playlists/PlayList.h"
 #include "profiles/ProfileManager.h"
 #include "settings/Settings.h"
@@ -52,6 +53,7 @@
 
 using namespace XFILE;
 using namespace MEDIA_DETECT;
+using namespace KODI;
 using namespace KODI::MESSAGING;
 using namespace KODI::VIDEO;
 using namespace std::chrono_literals;
@@ -439,7 +441,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
     for (int i = 0; i < vecItems.Size(); i++)
     {
       CFileItemPtr pItem = vecItems[i];
-      if (!pItem->m_bIsFolder && pItem->IsAudio())
+      if (!pItem->m_bIsFolder && MUSIC::IsAudio(*pItem))
       {
         nAddedToPlaylist++;
         CServiceBroker::GetPlaylistPlayer().Add(PLAYLIST::TYPE_MUSIC, pItem);

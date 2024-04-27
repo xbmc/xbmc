@@ -60,6 +60,7 @@
 #include "filesystem/DirectoryFactory.h"
 #include "filesystem/DllLibCurl.h"
 #include "filesystem/File.h"
+#include "music/MusicFileItemClassify.h"
 #include "video/VideoFileItemClassify.h"
 #ifdef HAS_FILESYSTEM_NFS
 #include "filesystem/NFSFile.h"
@@ -2455,7 +2456,7 @@ bool CApplication::PlayFile(CFileItem item,
   // this really aught to be inside !bRestart, but since PlayStack
   // uses that to init playback, we have to keep it outside
   const PLAYLIST::Id playlistId = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
-  if (item.IsAudio() && playlistId == PLAYLIST::TYPE_MUSIC)
+  if (MUSIC::IsAudio(item) && playlistId == PLAYLIST::TYPE_MUSIC)
   { // playing from a playlist by the looks
     // don't switch to fullscreen if we are not playing the first item...
     options.fullscreen = !CServiceBroker::GetPlaylistPlayer().HasPlayedFirstFile() &&
@@ -2573,7 +2574,7 @@ void CApplication::PlaybackCleanup()
 
   // DVD ejected while playing in vis ?
   if (!appPlayer->IsPlayingAudio() &&
-      (m_itemCurrentFile->IsCDDA() || m_itemCurrentFile->IsOnDVD()) &&
+      (MUSIC::IsCDDA(*m_itemCurrentFile) || m_itemCurrentFile->IsOnDVD()) &&
       !CServiceBroker::GetMediaManager().IsDiscInDrive() &&
       CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VISUALISATION)
   {
@@ -2790,7 +2791,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       const auto appPlayer = GetComponent<CApplicationPlayer>();
       if (!IsVideo(file) && appPlayer->IsPlayingVideo())
         bNothingToQueue = true;
-      else if ((!file.IsAudio() || IsVideo(file)) && appPlayer->IsPlayingAudio())
+      else if ((!MUSIC::IsAudio(file) || IsVideo(file)) && appPlayer->IsPlayingAudio())
         bNothingToQueue = true;
 
       if (bNothingToQueue)
@@ -3058,7 +3059,7 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr,
     }
     else
 #endif
-        if (item.IsAudio() || IsVideo(item) || item.IsGame())
+        if (MUSIC::IsAudio(item) || IsVideo(item) || item.IsGame())
     { // an audio or video file
       PlayFile(item, "");
     }

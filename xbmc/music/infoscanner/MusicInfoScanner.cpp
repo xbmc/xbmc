@@ -37,6 +37,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
+#include "music/MusicFileItemClassify.h"
 #include "music/MusicLibraryQueue.h"
 #include "music/MusicThumbLoader.h"
 #include "music/MusicUtils.h"
@@ -56,6 +57,7 @@
 #include <algorithm>
 #include <utility>
 
+using namespace KODI;
 using namespace MUSIC_INFO;
 using namespace XFILE;
 using namespace MUSICDATABASEDIRECTORY;
@@ -578,7 +580,7 @@ CInfoScanner::INFO_RET CMusicInfoScanner::ScanTags(const CFileItemList& items,
     if (CUtil::ExcludeFileOrFolder(pItem->GetPath(), regexps))
       continue;
 
-    if (pItem->m_bIsFolder || pItem->IsPlayList() || pItem->IsPicture() || pItem->IsLyrics())
+    if (pItem->m_bIsFolder || pItem->IsPlayList() || pItem->IsPicture() || MUSIC::IsLyrics(*pItem))
       continue;
 
     m_currentItem++;
@@ -1272,7 +1274,7 @@ int CMusicInfoScanner::GetPathHash(const CFileItemList &items, std::string &hash
     digest.Update((unsigned char *)&pItem->m_dwSize, sizeof(pItem->m_dwSize));
     KODI::TIME::FileTime time = pItem->m_dateTime;
     digest.Update((unsigned char*)&time, sizeof(KODI::TIME::FileTime));
-    if (pItem->IsAudio() && !pItem->IsPlayList() && !pItem->IsNFO())
+    if (MUSIC::IsAudio(*pItem) && !pItem->IsPlayList() && !pItem->IsNFO())
       count++;
   }
   hash = digest.Finalize();
@@ -2332,7 +2334,7 @@ int CMusicInfoScanner::CountFiles(const CFileItemList &items, bool recursive)
 
     if (recursive && pItem->m_bIsFolder)
       count+=CountFilesRecursively(pItem->GetPath());
-    else if (pItem->IsAudio() && !pItem->IsPlayList() && !pItem->IsNFO())
+    else if (MUSIC::IsAudio(*pItem) && !pItem->IsPlayList() && !pItem->IsNFO())
       count++;
   }
   return count;

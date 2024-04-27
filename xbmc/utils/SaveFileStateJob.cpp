@@ -23,6 +23,7 @@
 #include "interfaces/AnnouncementManager.h"
 #include "log.h"
 #include "music/MusicDatabase.h"
+#include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
 #include "network/upnp/UPnP.h"
 #include "utils/Variant.h"
@@ -30,6 +31,7 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
 
+using namespace KODI;
 using namespace KODI::VIDEO;
 
 void CSaveFileState::DoWork(CFileItem& item,
@@ -208,7 +210,7 @@ void CSaveFileState::DoWork(CFileItem& item,
       }
     }
 
-    if (item.IsAudio())
+    if (MUSIC::IsAudio(item))
     {
       std::string redactPath = CURL::GetRedacted(progressTrackingFile);
       CLog::Log(LOGDEBUG, "{} - Saving file state for audio item {}", __FUNCTION__, redactPath);
@@ -231,7 +233,7 @@ void CSaveFileState::DoWork(CFileItem& item,
 
           // UPnP announce resume point changes to clients
           // however not if playcount is modified as that already announces
-          if (item.IsMusicDb())
+          if (MUSIC::IsMusicDb(item))
           {
             CVariant data;
             data["id"] = item.GetMusicInfoTag()->GetDatabaseId();
@@ -242,7 +244,7 @@ void CSaveFileState::DoWork(CFileItem& item,
         }
       }
 
-      if (item.IsAudioBook())
+      if (MUSIC::IsAudioBook(item))
       {
         musicdatabase.Open();
         musicdatabase.SetResumeBookmarkForAudioBook(

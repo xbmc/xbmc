@@ -12,6 +12,7 @@
 #include "PlayListFactory.h"
 #include "Util.h"
 #include "filesystem/File.h"
+#include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
@@ -139,7 +140,7 @@ bool CPlayListPLS::Load(const std::string &strFile)
         if (m_vecItems[idx - 1]->GetLabel().empty())
           m_vecItems[idx - 1]->SetLabel(URIUtils::GetFileName(strValue));
         CFileItem item(strValue, false);
-        if (bShoutCast && !item.IsAudio())
+        if (bShoutCast && !MUSIC::IsAudio(item))
           strValue.replace(0, 7, "shout://");
 
         strValue = URIUtils::SubstitutePath(strValue);
