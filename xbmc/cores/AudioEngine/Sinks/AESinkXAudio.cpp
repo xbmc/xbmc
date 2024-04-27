@@ -52,8 +52,6 @@ inline void SafeDestroyVoice(TVoice **ppVoice)
 
 CAESinkXAudio::CAESinkXAudio()
 {
-  m_channelLayout.Reset();
-
   HRESULT hr = XAudio2Create(m_xAudio2.ReleaseAndGetAddressOf(), 0);
   if (FAILED(hr))
   {
@@ -729,13 +727,9 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
 
 initialize:
 
-  CAESinkFactoryWin::AEChannelsFromSpeakerMask(m_channelLayout, wfxex.dwChannelMask);
-  format.m_channelLayout = m_channelLayout;
-
-  /* When the stream is raw, the values in the format structure are set to the link    */
-  /* parameters, so store the encoded stream values here for the IsCompatible function */
-  m_encodedChannels   = wfxex.Format.nChannels;
-  m_encodedSampleRate = (format.m_dataFormat == AE_FMT_RAW) ? format.m_streamInfo.m_sampleRate : format.m_sampleRate;
+  CAEChannelInfo channelLayout;
+  CAESinkFactoryWin::AEChannelsFromSpeakerMask(channelLayout, wfxex.dwChannelMask);
+  format.m_channelLayout = channelLayout;
 
   /* Set up returned sink format for engine */
   if (format.m_dataFormat != AE_FMT_RAW)

@@ -134,9 +134,6 @@ private:
     VoiceCallback m_voiceCallback;
 
     AEAudioFormat m_format;
-    unsigned int m_encodedChannels{0};
-    unsigned int m_encodedSampleRate{0};
-    CAEChannelInfo m_channelLayout;
 
     unsigned int m_AvgBytesPerSec{0};
     unsigned int m_dwChunkSize{0};
