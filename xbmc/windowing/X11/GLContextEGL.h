@@ -34,6 +34,11 @@ public:
   void SetVSync(bool enable) override;
   void SwapBuffers() override;
   void QueryExtensions() override;
+  void CheckBufferAgeSupport() override
+  {
+    m_bufferAgeSupport = IsExtSupported("EGL_EXT_buffer_age");
+  }
+  int GetBufferAge() override;
   uint64_t GetVblankTiming(uint64_t &msc, uint64_t &interval) override;
 
   EGLint m_renderingApi;
@@ -60,4 +65,5 @@ protected:
   CCriticalSection m_syncLock;
 
   bool m_usePB = false;
+  bool m_bufferAgeSupport{false};
 };

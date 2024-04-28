@@ -10,9 +10,11 @@
 
 #include "WinSystemX11.h"
 #include "rendering/gl/RenderSystemGL.h"
-#include "system_egl.h"
+#include "windowing/X11/GLContext.h"
 
 #include <memory>
+
+#include "system_egl.h"
 
 class CGLContext;
 class CVideoReferenceClock;
@@ -43,6 +45,7 @@ public:
   bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
   bool DestroyWindowSystem() override;
   bool DestroyWindow() override;
+  int GetBufferAge() override { return m_pGLContext->GetBufferAge(); }
 
   bool IsExtSupported(const char* extension) const override;
 
