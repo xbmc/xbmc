@@ -1,6 +1,6 @@
 --- a/crypto/armcap.c
 +++ b/crypto/armcap.c
-@@ -68,12 +68,6 @@
+@@ -74,12 +74,6 @@
  #   include <sys/auxv.h>
  #   define OSSL_IMPLEMENT_GETAUXVAL
  #  endif
@@ -13,7 +13,7 @@
  # endif
  # if defined(__FreeBSD__)
  #  include <sys/param.h>
-@@ -94,15 +88,6 @@
+@@ -100,15 +94,6 @@
  # endif
  
  /*
@@ -31,7 +31,7 @@
   */
 --- a/crypto/ppccap.c
 +++ b/crypto/ppccap.c
-@@ -211,12 +211,6 @@
+@@ -89,12 +89,6 @@
  # if __GLIBC_PREREQ(2, 16)
  #  include <sys/auxv.h>
  #  define OSSL_IMPLEMENT_GETAUXVAL
