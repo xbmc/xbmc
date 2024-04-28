@@ -17,7 +17,7 @@
 #include <vector>
 
 //! \brief Video tag loader from plugin source.
-class CVideoTagLoaderPlugin : public VIDEO::IVideoInfoTagLoader
+class CVideoTagLoaderPlugin : public KODI::VIDEO::IVideoInfoTagLoader
 {
 public:
   CVideoTagLoaderPlugin(const CFileItem& item, bool forceRefresh);

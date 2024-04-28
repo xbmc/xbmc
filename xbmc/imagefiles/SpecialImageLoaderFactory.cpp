@@ -17,6 +17,7 @@
 #include "video/VideoGeneratedImageFileLoader.h"
 
 using namespace IMAGE_FILES;
+using namespace KODI;
 
 CSpecialImageLoaderFactory::CSpecialImageLoaderFactory()
 {

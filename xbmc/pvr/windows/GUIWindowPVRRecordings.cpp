@@ -38,8 +38,8 @@
 #include <mutex>
 #include <string>
 
+using namespace KODI;
 using namespace PVR;
-using namespace VIDEO::GUILIB;
 
 CGUIWindowPVRRecordingsBase::CGUIWindowPVRRecordingsBase(bool bRadio,
                                                          int id,
@@ -258,7 +258,7 @@ protected:
 
   bool OnQueueSelected() override
   {
-    VIDEO_UTILS::QueueItem(m_item, VIDEO_UTILS::QueuePosition::POSITION_END);
+    VIDEO::UTILS::QueueItem(m_item, VIDEO::UTILS::QueuePosition::POSITION_END);
     return true;
   }
 
@@ -279,7 +279,7 @@ private:
   const int m_itemIndex{-1};
 };
 
-class CVideoPlayActionProcessor : public CVideoPlayActionProcessorBase
+class CVideoPlayActionProcessor : public VIDEO::GUILIB::CVideoPlayActionProcessorBase
 {
 public:
   explicit CVideoPlayActionProcessor(const std::shared_ptr<CFileItem>& item)

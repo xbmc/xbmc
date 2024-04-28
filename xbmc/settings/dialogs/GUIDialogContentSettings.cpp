@@ -43,7 +43,7 @@
 #define SETTING_ALL_EXTERNAL_AUDIO "allexternalaudio"
 
 using namespace ADDON;
-
+using namespace KODI;
 
 CGUIDialogContentSettings::CGUIDialogContentSettings()
   : CGUIDialogSettingsManualBase(WINDOW_DIALOG_CONTENT_SETTINGS, "DialogSettings.xml")

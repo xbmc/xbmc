@@ -129,7 +129,7 @@ public:
     const std::string &sAlbum, const std::string &sArtist = "");
   std::vector<MUSIC_GRABBER::CMusicArtistInfo> FindArtist(
     XFILE::CCurlFile &fcurl, const std::string &sArtist);
-  VIDEO::EPISODELIST GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl &scurl);
+  KODI::VIDEO::EPISODELIST GetEpisodeList(XFILE::CCurlFile& fcurl, const CScraperUrl& scurl);
 
   bool GetVideoDetails(XFILE::CCurlFile& fcurl,
                        const std::unordered_map<std::string, std::string>& uniqueIDs,

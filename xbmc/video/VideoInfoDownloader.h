@@ -59,7 +59,9 @@ public:
                   CVideoInfoTag& movieDetails,
                   CGUIDialogProgress* pProgress = NULL);
   bool GetEpisodeDetails(const CScraperUrl& url, CVideoInfoTag &movieDetails, CGUIDialogProgress *pProgress = NULL);
-  bool GetEpisodeList(const CScraperUrl& url, VIDEO::EPISODELIST& details, CGUIDialogProgress *pProgress = NULL);
+  bool GetEpisodeList(const CScraperUrl& url,
+                      KODI::VIDEO::EPISODELIST& details,
+                      CGUIDialogProgress* pProgress = NULL);
 
   static void ShowErrorDialog(const ADDON::CScraperError &sce);
 
@@ -77,7 +79,7 @@ protected:
   MOVIELIST           m_movieList;
   CVideoInfoTag       m_movieDetails;
   CScraperUrl         m_url;
-  VIDEO::EPISODELIST  m_episode;
+  KODI::VIDEO::EPISODELIST m_episode;
   LOOKUP_STATE m_state = DO_NOTHING;
   int m_found = 0;
   ADDON::ScraperPtr   m_info;

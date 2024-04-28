@@ -8,9 +8,7 @@
 
 #pragma once
 
-namespace VIDEO
-{
-namespace GUILIB
+namespace KODI::VIDEO::GUILIB
 {
 // Note: Do not change the numerical values of the elements. Some of them are used as values for
 //       the integer settings SETTING_MYVIDEOS_SELECTACTION and SETTING_MYVIDEOS_PLAYACTION.
@@ -25,5 +23,4 @@ enum Action
   ACTION_PLAYPART = 6,
   ACTION_QUEUE = 7,
 };
-} // namespace GUILIB
-} // namespace VIDEO
+} // namespace KODI::VIDEO::GUILIB

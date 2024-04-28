@@ -69,7 +69,7 @@ namespace ActiveAE
   class CActiveAE;
 }
 
-namespace VIDEO
+namespace KODI::VIDEO
 {
   class CVideoInfoScanner;
 }

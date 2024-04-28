@@ -14,7 +14,7 @@
 #include <map>
 #include <utility>
 
-namespace VIDEO
+namespace KODI::VIDEO
 {
   struct SScanSettings;
 }
@@ -35,7 +35,7 @@ public:
   const ADDON::ScraperPtr& GetScraper() const { return m_scraper; }
   void SetScraper(ADDON::ScraperPtr scraper) { m_scraper = std::move(scraper); }
 
-  void SetScanSettings(const VIDEO::SScanSettings &scanSettings);
+  void SetScanSettings(const KODI::VIDEO::SScanSettings& scanSettings);
   bool GetScanRecursive() const { return m_scanRecursive; }
   bool GetUseDirectoryNames() const { return m_useDirectoryNames; }
   bool GetContainsSingleItem() const { return m_containsSingleItem; }
@@ -44,7 +44,9 @@ public:
   bool GetUseAllExternalAudio() const { return m_allExternalAudio; }
 
   static bool Show(ADDON::ScraperPtr& scraper, CONTENT_TYPE content = CONTENT_NONE);
-  static bool Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings, CONTENT_TYPE content = CONTENT_NONE);
+  static bool Show(ADDON::ScraperPtr& scraper,
+                   KODI::VIDEO::SScanSettings& settings,
+                   CONTENT_TYPE content = CONTENT_NONE);
 
 protected:
   // specializations of CGUIWindow

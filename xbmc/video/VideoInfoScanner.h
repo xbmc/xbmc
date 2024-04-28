@@ -21,7 +21,7 @@ class CRegExp;
 class CFileItem;
 class CFileItemList;
 
-namespace VIDEO
+namespace KODI::VIDEO
 {
   class IVideoInfoTagLoader;
 
@@ -264,5 +264,4 @@ namespace VIDEO
      */
     static std::string GetArtTypeFromSize(unsigned int width, unsigned int height);
   };
-}
-
+  } // namespace KODI::VIDEO

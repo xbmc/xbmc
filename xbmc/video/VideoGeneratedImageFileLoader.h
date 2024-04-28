@@ -10,7 +10,7 @@
 
 #include "imagefiles/SpecialImageFileLoader.h"
 
-namespace VIDEO
+namespace KODI::VIDEO
 {
 /*!
  * @brief Generates a texture for a thumbnail of a video file, from a frame approx 1/3 into the video.
@@ -25,4 +25,4 @@ public:
                                  unsigned int preferredHeight) const override;
 };
 
-} // namespace VIDEO
+} // namespace KODI::VIDEO

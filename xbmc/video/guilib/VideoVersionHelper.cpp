@@ -26,8 +26,8 @@
 #include "video/VideoManagerTypes.h"
 #include "video/VideoThumbLoader.h"
 
-using namespace KODI::VIDEO;
-using namespace VIDEO::GUILIB;
+namespace KODI::VIDEO::GUILIB
+{
 
 namespace
 {
@@ -281,3 +281,5 @@ std::shared_ptr<CFileItem> CVideoVersionHelper::ChooseVideoFromAssets(
 
   return item;
 }
+
+} // namespace KODI::VIDEO::GUILIB

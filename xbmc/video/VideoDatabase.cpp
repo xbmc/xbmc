@@ -68,8 +68,8 @@
 
 using namespace dbiplus;
 using namespace XFILE;
-using namespace VIDEO;
 using namespace ADDON;
+using namespace KODI;
 using namespace KODI::MESSAGING;
 using namespace KODI::GUILIB;
 using namespace KODI::VIDEO;

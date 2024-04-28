@@ -61,7 +61,7 @@ using namespace KODI::VIDEO;
 using KODI::MESSAGING::HELPERS::DialogResponse;
 using KODI::UTILITY::CDigest;
 
-namespace VIDEO
+namespace KODI::VIDEO
 {
 
   CVideoInfoScanner::CVideoInfoScanner()

@@ -495,7 +495,7 @@ bool CGUIViewState::AutoPlayNextVideoItem() const
   if (GetPlaylist() != PLAYLIST::TYPE_VIDEO)
     return false;
 
-  return VIDEO_UTILS::IsAutoPlayNextItem(m_items.GetContent());
+  return VIDEO::UTILS::IsAutoPlayNextItem(m_items.GetContent());
 }
 
 void CGUIViewState::LoadViewState(const std::string &path, int windowID)

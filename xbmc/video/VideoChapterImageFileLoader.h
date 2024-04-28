@@ -10,7 +10,7 @@
 
 #include "imagefiles/SpecialImageFileLoader.h"
 
-namespace VIDEO
+namespace KODI::VIDEO
 {
 /*!
  * @brief Generates a texture for a thumbnail of a video chapter.
@@ -28,4 +28,4 @@ public:
                                  unsigned int preferredHeight) const override;
 };
 
-} // namespace VIDEO
+} // namespace KODI::VIDEO

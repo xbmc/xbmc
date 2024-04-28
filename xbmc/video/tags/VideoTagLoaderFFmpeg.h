@@ -21,7 +21,7 @@ namespace XFILE
 }
 
 //! \brief Video tag loader using FFMPEG.
-class CVideoTagLoaderFFmpeg : public VIDEO::IVideoInfoTagLoader
+class CVideoTagLoaderFFmpeg : public KODI::VIDEO::IVideoInfoTagLoader
 {
 public:
   //! \brief Constructor.

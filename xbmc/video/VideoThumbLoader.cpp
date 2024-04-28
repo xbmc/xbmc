@@ -39,9 +39,8 @@
 #include <cstdlib>
 #include <utility>
 
-using namespace KODI::VIDEO;
+using namespace KODI;
 using namespace XFILE;
-using namespace VIDEO;
 
 CVideoThumbLoader::CVideoThumbLoader() : CThumbLoader()
 {
@@ -186,7 +185,7 @@ bool CVideoThumbLoader::LoadItemCached(CFileItem* pItem)
     if ((pItem->HasVideoInfoTag() &&
          pItem->GetVideoInfoTag()->m_iFileId >= 0) // file (or maybe folder) is in the database
         || (!pItem->m_bIsFolder &&
-            IsVideo(
+            VIDEO::IsVideo(
                 *pItem))) // Some other video file for which we haven't yet got any database details
     {
       if (m_videoDatabase->GetStreamDetails(*pItem))
@@ -292,7 +291,7 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
   }
 
   // We can only extract flags/thumbs for file-like items
-  if (!pItem->m_bIsFolder && IsVideo(*pItem))
+  if (!pItem->m_bIsFolder && VIDEO::IsVideo(*pItem))
   {
     const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
     if (!pItem->HasArt("thumb"))
@@ -414,7 +413,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
     m_videoDatabase->Open();
 
     // @todo unify asset path for other items path
-    if (IsVideoAssetFile(item))
+    if (VIDEO::IsVideoAssetFile(item))
     {
       if (m_videoDatabase->GetArtForAsset(
               tag.m_iFileId,
@@ -555,7 +554,7 @@ std::string CVideoThumbLoader::GetLocalArt(const CFileItem &item, const std::str
 std::string CVideoThumbLoader::GetEmbeddedThumbURL(const CFileItem &item)
 {
   std::string path(item.GetPath());
-  if (IsVideoDb(item) && item.HasVideoInfoTag())
+  if (VIDEO::IsVideoDb(item) && item.HasVideoInfoTag())
     path = item.GetVideoInfoTag()->m_strFileNameAndPath;
   if (URIUtils::IsStack(path))
     path = CStackDirectory::GetFirstStackedFile(path);
@@ -601,7 +600,7 @@ void CVideoThumbLoader::DetectAndAddMissingItemData(CFileItem &item)
   if (stereoMode.empty())
   {
     std::string path = item.GetPath();
-    if (IsVideoDb(item) && item.HasVideoInfoTag())
+    if (VIDEO::IsVideoDb(item) && item.HasVideoInfoTag())
       path = item.GetVideoInfoTag()->GetPath();
 
     // check for custom stereomode setting in video settings

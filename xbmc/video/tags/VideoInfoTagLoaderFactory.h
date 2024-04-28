@@ -13,7 +13,7 @@
 
 class CFileItem;  // forward
 
-namespace VIDEO
+namespace KODI::VIDEO
 {
   class CVideoInfoTagLoaderFactory
   {
@@ -31,4 +31,4 @@ namespace VIDEO
     CVideoInfoTagLoaderFactory(void) = delete;
     virtual ~CVideoInfoTagLoaderFactory() = delete;
   };
-}
+  } // namespace KODI::VIDEO

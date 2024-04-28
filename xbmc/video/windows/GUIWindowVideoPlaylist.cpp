@@ -48,8 +48,7 @@
 #define CONTROL_BTNPREVIOUS 25
 #define CONTROL_BTNREPEAT 26
 
-using namespace KODI::VIDEO;
-using namespace VIDEO::GUILIB;
+using namespace KODI;
 
 CGUIWindowVideoPlaylist::CGUIWindowVideoPlaylist()
   : CGUIWindowVideoBase(WINDOW_VIDEO_PLAYLIST, "MyPlaylist.xml")
@@ -66,7 +65,7 @@ void CGUIWindowVideoPlaylist::OnPrepareFileItems(CFileItemList& items)
   if (items.IsEmpty())
     return;
 
-  if (!IsVideoDb(items) && !items.IsVirtualDirectoryRoot())
+  if (!VIDEO::IsVideoDb(items) && !items.IsVirtualDirectoryRoot())
   { // load info from the database
     std::string label;
     if (items.GetLabel().empty() &&
@@ -379,7 +378,7 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
 
 namespace
 {
-class CVideoPlayActionProcessor : public CVideoPlayActionProcessorBase
+class CVideoPlayActionProcessor : public VIDEO::GUILIB::CVideoPlayActionProcessorBase
 {
 public:
   CVideoPlayActionProcessor(const std::shared_ptr<CFileItem>& item,

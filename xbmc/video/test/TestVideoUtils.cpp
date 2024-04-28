@@ -19,6 +19,7 @@
 
 #include <gtest/gtest.h>
 
+using namespace KODI;
 namespace fs = KODI::PLATFORM::FILESYSTEM;
 
 using OptDef = std::pair<std::string, bool>;
@@ -39,9 +40,9 @@ TEST_P(OpticalMediaPathTest, GetOpticalMediaPath)
   }
   CFileItem item(temp_path, true);
   if (GetParam().second)
-    EXPECT_EQ(VIDEO_UTILS::GetOpticalMediaPath(item), file_path);
+    EXPECT_EQ(VIDEO::UTILS::GetOpticalMediaPath(item), file_path);
   else
-    EXPECT_EQ(VIDEO_UTILS::GetOpticalMediaPath(item), "");
+    EXPECT_EQ(VIDEO::UTILS::GetOpticalMediaPath(item), "");
 
   XFILE::CDirectory::RemoveRecursive(temp_path);
 }
