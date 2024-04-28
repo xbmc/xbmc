@@ -85,6 +85,7 @@ public:
   bool BeginRender() override;
   bool EndRender() override;
   void PresentRender(bool rendered, bool videoLayer) override;
+  void InvalidateColorBuffer() override;
   bool ClearBuffers(UTILS::COLOR::Color color) override;
   bool IsExtSupported(const char* extension) const override;
 
@@ -98,6 +99,8 @@ public:
   CRect ClipRectToScissorRect(const CRect &rect) override;
   void SetScissors(const CRect& rect) override;
   void ResetScissors() override;
+
+  void SetDepthCulling(DEPTH_CULLING culling) override;
 
   void CaptureStateBlock() override;
   void ApplyStateBlock() override;
@@ -129,6 +132,7 @@ public:
   GLint GUIShaderGetMatrix();
   GLint GUIShaderGetClip();
   GLint GUIShaderGetCoordStep();
+  GLint GUIShaderGetDepth();
 
 protected:
   virtual void SetVSyncImpl(bool enable) = 0;

@@ -56,9 +56,17 @@ void CGUIBorderedImage::Process(unsigned int currentTime, CDirtyRegionList &dirt
 
 void CGUIBorderedImage::Render()
 {
+  bool renderFrontToBack = CServiceBroker::GetWinSystem()->GetGfxContext().GetRenderOrder() ==
+                           RENDER_ORDER_FRONT_TO_BACK;
+
+  if (renderFrontToBack)
+    CGUIImage::Render();
+
   if (!m_borderImage->GetFileName().empty() && m_texture->ReadyToRender())
-    m_borderImage->Render();
-  CGUIImage::Render();
+    m_borderImage->Render(-1);
+
+  if (!renderFrontToBack)
+    CGUIImage::Render();
 }
 
 CRect CGUIBorderedImage::CalcRenderRegion() const

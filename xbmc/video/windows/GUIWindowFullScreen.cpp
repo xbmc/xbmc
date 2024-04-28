@@ -22,6 +22,7 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "input/mouse/MouseEvent.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -182,6 +183,10 @@ void CGUIWindowFullScreen::ClearBackground()
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
   if (appPlayer->IsRenderingVideoLayer())
     CServiceBroker::GetWinSystem()->GetGfxContext().Clear(0);
+  else if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiGeometryClear)
+    CServiceBroker::GetWinSystem()->GetGfxContext().Clear(0xff000000);
+  else
+    CServiceBroker::GetWinSystem()->GetGfxContext().Clear();
 }
 
 void CGUIWindowFullScreen::OnWindowLoaded()
@@ -377,11 +382,19 @@ void CGUIWindowFullScreen::Process(unsigned int currentTime, CDirtyRegionList &d
 
 void CGUIWindowFullScreen::Render()
 {
-  CServiceBroker::GetWinSystem()->GetGfxContext().SetRenderingResolution(CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution(), false);
-  auto& components = CServiceBroker::GetAppComponents();
-  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-  appPlayer->Render(true, 255);
-  CServiceBroker::GetWinSystem()->GetGfxContext().SetRenderingResolution(m_coordsRes, m_needsScaling);
+  if (CServiceBroker::GetWinSystem()->GetGfxContext().GetRenderOrder() !=
+      RENDER_ORDER_FRONT_TO_BACK)
+  {
+    CServiceBroker::GetWinSystem()->GetGfxContext().SetRenderingResolution(
+        CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution(), false);
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+    // FIXME: remove clearing pass from renderer, it should be its own, dedicated function.
+    bool clear = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiGeometryClear;
+    appPlayer->Render(clear, 255);
+    CServiceBroker::GetWinSystem()->GetGfxContext().SetRenderingResolution(m_coordsRes,
+                                                                           m_needsScaling);
+  }
   CGUIWindow::Render();
 }
 

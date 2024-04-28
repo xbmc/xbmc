@@ -128,6 +128,7 @@ void CGUIFadeLabelControl::Process(unsigned int currentTime, CDirtyRegionList &d
     m_fadeAnim.Animate(currentTime, true);
     m_fadeAnim.RenderAnimation(matrix);
     m_fadeMatrix = CServiceBroker::GetWinSystem()->GetGfxContext().AddTransform(matrix);
+    m_fadeMatrix.depth = m_fadeDepth;
 
     if (m_fadeAnim.GetState() == ANIM_STATE_APPLIED)
       m_fadeAnim.ResetAnimation();
@@ -170,6 +171,9 @@ bool CGUIFadeLabelControl::UpdateColors(const CGUIListItem* item)
 
 void CGUIFadeLabelControl::Render()
 {
+  if (CServiceBroker::GetWinSystem()->GetGfxContext().GetRenderOrder() ==
+      RENDER_ORDER_FRONT_TO_BACK)
+    return;
   if (!m_label.font)
   { // nothing to render
     CGUIControl::Render();
@@ -241,6 +245,12 @@ bool CGUIFadeLabelControl::OnMessage(CGUIMessage& message)
     }
   }
   return CGUIControl::OnMessage(message);
+}
+
+void CGUIFadeLabelControl::AssignDepth()
+{
+  CGUIControl::AssignDepth();
+  m_fadeDepth = m_cachedTransform.depth;
 }
 
 std::string CGUIFadeLabelControl::GetDescription() const

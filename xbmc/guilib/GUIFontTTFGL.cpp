@@ -155,6 +155,7 @@ void CGUIFontTTFGL::LastEnd()
   GLint clipUniformLoc = renderSystem->ShaderGetClip();
   GLint coordStepUniformLoc = renderSystem->ShaderGetCoordStep();
   GLint matrixUniformLoc = renderSystem->ShaderGetMatrix();
+  GLint depthLoc = renderSystem->ShaderGetDepth();
 
   CreateStaticVertexBuffers();
 
@@ -238,6 +239,10 @@ void CGUIFontTTFGL::LastEnd()
       matrix.Translatef(fractX, fractY, 0.0f);
 
       glUniformMatrix4fv(matrixUniformLoc, 1, GL_FALSE, matrix);
+
+      // Apply the depth value of the layer
+      float depth = CServiceBroker::GetWinSystem()->GetGfxContext().GetTransformDepth();
+      glUniform1f(depthLoc, depth);
 
       // Bind the buffer to the OpenGL context's GL_ARRAY_BUFFER binding point
       glBindBuffer(GL_ARRAY_BUFFER, m_vertexTrans[i].m_vertexBuffer->bufferHandle);

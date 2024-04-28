@@ -25,6 +25,7 @@ public:
   GLint GetColLoc()   { return m_hCol;   }
   GLint GetCord0Loc() { return m_hCord0; }
   GLint GetCord1Loc() { return m_hCord1; }
+  GLint GetDepthLoc() { return m_hDepth; }
   GLint GetUniColLoc() { return m_hUniCol; }
   GLint GetCoord0MatrixLoc() { return m_hCoord0Matrix; }
   GLint GetFieldLoc() { return m_hField; }
@@ -59,6 +60,7 @@ protected:
   GLint m_hStep = 0;
   GLint m_hContrast = 0;
   GLint m_hBrightness = 0;
+  GLint m_hDepth = 0;
 
   const GLfloat *m_proj;
   const GLfloat *m_model;

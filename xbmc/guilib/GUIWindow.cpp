@@ -1078,6 +1078,10 @@ void CGUIWindow::ClearBackground()
   UTILS::COLOR::Color color = m_clearBackground;
   if (color)
     CServiceBroker::GetWinSystem()->GetGfxContext().Clear(color);
+  else if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiGeometryClear)
+    CServiceBroker::GetWinSystem()->GetGfxContext().Clear(0xff000000);
+  else
+    CServiceBroker::GetWinSystem()->GetGfxContext().Clear();
 }
 
 void CGUIWindow::SetID(int id)

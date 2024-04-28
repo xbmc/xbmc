@@ -34,7 +34,7 @@ protected:
   {
   public:
     CRenderer();
-    void Render(int idx) override;
+    void Render(int idx, float depth = 1.0f) override;
     void CreateSubtitlesStyle();
 
   private:

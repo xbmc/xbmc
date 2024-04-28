@@ -224,8 +224,10 @@ void CRendererDRMPRIMEGLES::DrawBlackBars()
   renderSystem->EnableGUIShader(ShaderMethodGLES::SM_DEFAULT);
   GLint posLoc = renderSystem->GUIShaderGetPos();
   GLint uniCol = renderSystem->GUIShaderGetUniCol();
+  GLint depthLoc = renderSystem->GUIShaderGetDepth();
 
   glUniform4f(uniCol, m_clearColour / 255.0f, m_clearColour / 255.0f, m_clearColour / 255.0f, 1.0f);
+  glUniform1f(depthLoc, -1.0f);
 
   GLuint vertexVBO;
   glGenBuffers(1, &vertexVBO);
@@ -328,6 +330,7 @@ void CRendererDRMPRIMEGLES::Render(unsigned int flags, int index)
 
   GLint vertLoc = renderSystem->GUIShaderGetPos();
   GLint loc = renderSystem->GUIShaderGetCoord0();
+  GLint depthLoc = renderSystem->GUIShaderGetDepth();
 
   // top left
   vertex[0].x = m_rotatedDestCoords[0].x;
@@ -373,6 +376,8 @@ void CRendererDRMPRIMEGLES::Render(unsigned int flags, int index)
   glGenBuffers(1, &indexVBO);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte) * 4, idx, GL_STATIC_DRAW);
+
+  glUniform1f(depthLoc, -1.0f);
 
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
 

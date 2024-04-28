@@ -197,6 +197,10 @@ void CGUITextBox::Process(unsigned int currentTime, CDirtyRegionList &dirtyregio
 
 void CGUITextBox::Render()
 {
+  if (CServiceBroker::GetWinSystem()->GetGfxContext().GetRenderOrder() ==
+      RENDER_ORDER_FRONT_TO_BACK)
+    return;
+
   // render the repeat anim as appropriate
   if (m_autoScrollRepeatAnim)
     CServiceBroker::GetWinSystem()->GetGfxContext().SetTransform(m_cachedTextMatrix);
@@ -387,6 +391,12 @@ void CGUITextBox::ResetAutoScrolling()
   m_autoScrollDelayTime = 0;
   if (m_autoScrollRepeatAnim)
     m_autoScrollRepeatAnim->ResetAnimation();
+}
+
+void CGUITextBox::AssignDepth()
+{
+  CGUIControl::AssignDepth();
+  m_cachedTextMatrix.depth = m_cachedTransform.depth;
 }
 
 unsigned int CGUITextBox::GetRows() const

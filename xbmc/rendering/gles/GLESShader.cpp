@@ -57,6 +57,7 @@ void CGLESShader::OnCompiledAndLinked()
   m_hMatrix = glGetUniformLocation(ProgramHandle(), "m_matrix");
   m_hShaderClip = glGetUniformLocation(ProgramHandle(), "m_shaderClip");
   m_hCoordStep = glGetUniformLocation(ProgramHandle(), "m_cordStep");
+  m_hDepth = glGetUniformLocation(ProgramHandle(), "m_depth");
 
   // Vertex attributes
   m_hPos    = glGetAttribLocation(ProgramHandle(),  "m_attrpos");

@@ -548,6 +548,9 @@ void CGUIEditControl::ProcessText(unsigned int currentTime)
 
 void CGUIEditControl::RenderText()
 {
+  if (CServiceBroker::GetWinSystem()->GetGfxContext().GetRenderOrder() ==
+      RENDER_ORDER_FRONT_TO_BACK)
+    return;
   m_label.Render();
 
   if (CServiceBroker::GetWinSystem()->GetGfxContext().SetClipRegion(m_clipRect.x1, m_clipRect.y1, m_clipRect.Width(), m_clipRect.Height()))

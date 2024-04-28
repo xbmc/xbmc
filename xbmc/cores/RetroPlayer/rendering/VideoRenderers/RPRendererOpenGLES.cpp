@@ -128,8 +128,10 @@ void CRPRendererOpenGLES::DrawBlackBars()
   m_context.EnableGUIShader(GL_SHADER_METHOD::DEFAULT);
   GLint posLoc = m_context.GUIShaderGetPos();
   GLint uniCol = m_context.GUIShaderGetUniCol();
+  GLint depthLoc = m_context.GUIShaderGetDepth();
 
   glUniform4f(uniCol, m_clearColour / 255.0f, m_clearColour / 255.0f, m_clearColour / 255.0f, 1.0f);
+  glUniform1f(depthLoc, -1.0f);
 
   // top quad
   if (m_rotatedDestCoords[0].y > 0.0f)
@@ -268,6 +270,7 @@ void CRPRendererOpenGLES::Render(uint8_t alpha)
   GLint vertLoc = m_context.GUIShaderGetPos();
   GLint loc = m_context.GUIShaderGetCoord0();
   GLint uniColLoc = m_context.GUIShaderGetUniCol();
+  GLint depthLoc = m_context.GUIShaderGetDepth();
 
   // Setup color values
   colour[0] = UTILS::GL::GetChannelFromARGB(UTILS::GL::ColorChannel::R, color);
@@ -305,6 +308,7 @@ void CRPRendererOpenGLES::Render(uint8_t alpha)
 
   glUniform4f(uniColLoc, (colour[0] / 255.0f), (colour[1] / 255.0f), (colour[2] / 255.0f),
               (colour[3] / 255.0f));
+  glUniform1f(depthLoc, -1.0f);
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
 
   glDisableVertexAttribArray(vertLoc);

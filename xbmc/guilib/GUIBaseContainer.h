@@ -50,6 +50,7 @@ public:
   void AllocResources() override;
   void FreeResources(bool immediately = false) override;
   void UpdateVisibility(const CGUIListItem *item = NULL) override;
+  void AssignDepth() override;
 
   virtual unsigned int GetRows() const;
 
@@ -212,6 +213,14 @@ protected:
   bool          m_autoScrollIsReversed; // scroll backwards
 
   unsigned int m_lastRenderTime;
+
+  struct RENDERITEM
+  {
+    float posX;
+    float posY;
+    std::shared_ptr<CGUIListItem> item;
+    bool focused;
+  };
 
 private:
   bool OnContextMenu();

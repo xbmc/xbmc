@@ -73,7 +73,7 @@ void CRenderSystemBase::ShowSplash(const std::string& message)
   }
 
   CServiceBroker::GetWinSystem()->GetGfxContext().lock();
-  CServiceBroker::GetWinSystem()->GetGfxContext().Clear();
+  CServiceBroker::GetWinSystem()->GetGfxContext().Clear(0xff000000);
 
   RESOLUTION_INFO res = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
   CServiceBroker::GetWinSystem()->GetGfxContext().SetRenderingResolution(res, true);

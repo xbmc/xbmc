@@ -184,6 +184,7 @@ public:
   virtual float GetYPosition() const;
   virtual float GetWidth() const;
   virtual float GetHeight() const;
+  virtual void AssignDepth();
 
   void MarkDirtyRegion(const unsigned int dirtyState = DIRTY_STATE_CONTROL);
   bool IsControlDirty() const { return m_controlDirtyState != 0; }

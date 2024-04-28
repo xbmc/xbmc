@@ -99,7 +99,7 @@ namespace OVERLAY {
     void Notify(const Observable& obs, const ObservableMessage msg) override;
 
     void AddOverlay(std::shared_ptr<CDVDOverlay> o, double pts, int index);
-    virtual void Render(int idx);
+    virtual void Render(int idx, float depth = 0.0f);
 
     /*!
      * \brief Release resources

@@ -9,6 +9,7 @@
 #include "GUITexture.h"
 
 #include "GUILargeTextureManager.h"
+#include "Texture.h"
 #include "TextureManager.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
@@ -52,13 +53,20 @@ CGUITexture* CGUITexture::CreateTexture(
 void CGUITexture::DrawQuad(const CRect& coords,
                            UTILS::COLOR::Color color,
                            CTexture* texture,
-                           const CRect* texCoords)
+                           const CRect* texCoords,
+                           const float depth,
+                           const bool blending)
 {
+  // bail for now if we render front to back
+  if (CServiceBroker::GetWinSystem()->GetGfxContext().GetRenderOrder() ==
+      RENDER_ORDER_FRONT_TO_BACK)
+    return;
+
   if (!m_drawQuadFunc)
     throw std::runtime_error(
         "No GUITexture DrawQuad function available. Did you forget to register?");
 
-  m_drawQuadFunc(coords, color, texture, texCoords);
+  m_drawQuadFunc(coords, color, texture, texCoords, depth, blending);
 }
 
 CGUITexture::CGUITexture(
@@ -163,17 +171,10 @@ bool CGUITexture::Process(unsigned int currentTime)
   return changed;
 }
 
-void CGUITexture::Render()
+void CGUITexture::Render(int32_t depthOffset, int32_t overrideDepth)
 {
   if (!m_visible || !m_texture.size())
     return;
-
-  // see if we need to clip the image
-  if (m_vertex.Width() > m_width || m_vertex.Height() > m_height)
-  {
-    if (!CServiceBroker::GetWinSystem()->GetGfxContext().SetClipRegion(m_posX, m_posY, m_width, m_height))
-      return;
-  }
 
   // set our draw color
   #define MIX_ALPHA(a,c) (((a * (c >> 24)) / 255) << 24) | (c & 0x00ffffff)
@@ -181,10 +182,42 @@ void CGUITexture::Render()
   // diffuse color
   UTILS::COLOR::Color color =
       (m_info.diffuseColor) ? (UTILS::COLOR::Color)m_info.diffuseColor : m_diffuseColor;
+  // clang-format off
   if (m_alpha != 0xFF)
-	  color = MIX_ALPHA(m_alpha, color);
+    color = MIX_ALPHA(m_alpha, color);
+  // clang-format on
 
   color = CServiceBroker::GetWinSystem()->GetGfxContext().MergeColor(color);
+
+  if (overrideDepth >= 0)
+  {
+    m_depth = CServiceBroker::GetWinSystem()->GetGfxContext().GetNormalizedDepth(overrideDepth +
+                                                                                 depthOffset);
+  }
+  else
+  {
+    m_depth = CServiceBroker::GetWinSystem()->GetGfxContext().GetTransformDepth(depthOffset);
+  }
+
+  bool hasAlpha =
+      (((color >> 24) & 0xFF) != 0xFF || m_texture.m_textures[m_currentFrame]->HasAlpha());
+  if (m_diffuse.size())
+    hasAlpha |= m_diffuse.m_textures[0]->HasAlpha();
+
+  // bail if it is not the appropriate render pass
+  RENDER_ORDER renderOrder = CServiceBroker::GetWinSystem()->GetGfxContext().GetRenderOrder();
+  if (hasAlpha && renderOrder == RENDER_ORDER_FRONT_TO_BACK)
+    return;
+  if (!hasAlpha && renderOrder == RENDER_ORDER_BACK_TO_FRONT)
+    return;
+
+  // see if we need to clip the image
+  if (m_vertex.Width() > m_width || m_vertex.Height() > m_height)
+  {
+    if (!CServiceBroker::GetWinSystem()->GetGfxContext().SetClipRegion(m_posX, m_posY, m_width,
+                                                                       m_height))
+      return;
+  }
 
   // setup our renderer
   Begin(color);

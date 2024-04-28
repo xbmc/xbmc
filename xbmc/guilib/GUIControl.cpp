@@ -488,6 +488,11 @@ float CGUIControl::GetHeight() const
   return m_height;
 }
 
+void CGUIControl::AssignDepth()
+{
+  m_cachedTransform.depth = CServiceBroker::GetWinSystem()->GetGfxContext().GetDepth();
+}
+
 void CGUIControl::MarkDirtyRegion(const unsigned int dirtyState)
 {
   // if the control is culled, bail

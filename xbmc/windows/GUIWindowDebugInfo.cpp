@@ -179,7 +179,13 @@ void CGUIWindowDebugInfo::Process(unsigned int currentTime, CDirtyRegionList &di
 
 void CGUIWindowDebugInfo::Render()
 {
+  RENDER_ORDER renderOrder = CServiceBroker::GetWinSystem()->GetGfxContext().GetRenderOrder();
+  if (renderOrder == RENDER_ORDER_FRONT_TO_BACK)
+    return;
+  else if (renderOrder == RENDER_ORDER_BACK_TO_FRONT)
+    CServiceBroker::GetWinSystem()->GetGfxContext().SetRenderOrder(RENDER_ORDER_ALL_BACK_TO_FRONT);
   CServiceBroker::GetWinSystem()->GetGfxContext().SetRenderingResolution(CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(), false);
   if (m_layout)
     m_layout->RenderOutline(m_renderRegion.x1, m_renderRegion.y1, 0xffffffff, 0xff000000, 0, 0);
+  CServiceBroker::GetWinSystem()->GetGfxContext().SetRenderOrder(renderOrder);
 }

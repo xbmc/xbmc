@@ -138,7 +138,7 @@ void CRenderer::ReleaseUnused()
   }
 }
 
-void CRenderer::Render(int idx)
+void CRenderer::Render(int idx, float depth)
 {
   std::unique_lock<CCriticalSection> lock(m_section);
 
