@@ -56,15 +56,15 @@ public:
 
   /*! \brief return the size of one row in bytes. */
   uint32_t GetPitch() const { return GetPitch(m_textureWidth); }
-  /*! \brief return the number of rows. */
+  /*! \brief return the number of rows (number of blocks in the Y direction). */
   uint32_t GetRows() const { return GetRows(m_textureHeight); }
   /*! \brief return the total width of the texture, which might be scaled to fit its displayed size. */
   uint32_t GetTextureWidth() const { return m_textureWidth; }
   /*! \brief return the total height of the texture, which might be scaled to fit its displayed size. */
   uint32_t GetTextureHeight() const { return m_textureHeight; }
-  /*! \brief return the total width of "active" area, which might be equal or lower than the texture width. */
+  /*! \brief return the total width of "active" area, which might be equal or lower than the texture width due to alignment. */
   uint32_t GetWidth() const { return m_imageWidth; }
-  /*! \brief return the total height of "active" area, which might be equal or lower than the texture height. */
+  /*! \brief return the total height of "active" area, which might be equal or lower than the texture height due to alignment. */
   uint32_t GetHeight() const { return m_imageHeight; }
   /*! \brief return the original width of the image, before scaling/cropping */
   uint32_t GetOriginalWidth() const { return m_originalWidth; }

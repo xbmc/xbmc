@@ -147,6 +147,7 @@ uint32_t CTextureBase::GetPitch(uint32_t width) const
   uint32_t blockWidth = GetBlockWidth();
   uint32_t pitch = ((width + blockWidth - 1) / blockWidth) * GetBlockSize();
 
+  // For the GPU, RGB8 needs to be aligned to 32 bit
   if (m_textureFormat == KD_TEX_FMT_SDR_RGB8)
     pitch = ((pitch + 3) / 4) * 4;
 
