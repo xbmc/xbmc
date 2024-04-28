@@ -1,0 +1,28 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -169,15 +169,19 @@
+ endif()
+ 
+ # Build the brotli executable
+-add_executable(brotli c/tools/brotli.c)
+-target_link_libraries(brotli ${BROTLI_LIBRARIES})
++if(NOT BROTLI_DISABLE_EXE)
++  add_executable(brotli c/tools/brotli.c)
++  target_link_libraries(brotli ${BROTLI_LIBRARIES})
++endif()
+ 
+ # Installation
+ if(NOT BROTLI_BUNDLED_MODE)
+-  install(
+-    TARGETS brotli
+-    RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+-  )
++  if(NOT BROTLI_DISABLE_EXE)
++    install(
++      TARGETS brotli
++      RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
++    )
++  endif()
+ 
+   install(
+     TARGETS ${BROTLI_LIBRARIES_CORE}
