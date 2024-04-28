@@ -66,8 +66,6 @@ private:
 
   std::unique_ptr<HContext, int (*)(HContext*)> m_requestContext{new HContext(),
                                                                  HUnregisterServiceCallback};
-
-  bool m_resumePlayback{false};
 };
 
 } // namespace KODI::WINDOWING::WAYLAND
