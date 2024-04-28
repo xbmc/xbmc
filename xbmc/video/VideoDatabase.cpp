@@ -369,6 +369,10 @@ void CVideoDatabase::CreateAnalytics()
               "DELETE FROM videoversion WHERE idFile=old.idFile; "
               "DELETE FROM art WHERE media_id=old.idFile AND media_type='videoversion'; "
               "END");
+  m_pDS->exec("CREATE TRIGGER delete_videoversion AFTER DELETE ON videoversion FOR EACH ROW BEGIN "
+              "DELETE FROM art WHERE media_id=old.idFile AND media_type='videoversion'; "
+              "DELETE FROM streamdetails WHERE idFile=old.idFile; "
+              "END");
 
   CreateViews();
 }
@@ -6452,7 +6456,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 131;
+  return 132;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
@@ -12500,13 +12504,6 @@ bool CVideoDatabase::DeleteVideoAsset(int idFile)
         idFile));
     if (!path.empty())
       InvalidatePathHash(path);
-
-    /*! \todo replace with a delete trigger on videoversion */
-    m_pDS->exec(PrepareSQL("DELETE FROM art WHERE media_id=%i and media_type='%s'", idFile,
-                           MediaTypeVideoVersion));
-
-    /*! \todo replace with a delete trigger on videoversion */
-    DeleteStreamDetails(idFile);
 
     m_pDS->exec(PrepareSQL("DELETE FROM videoversion WHERE idFile=%i", idFile));
 
