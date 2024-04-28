@@ -157,14 +157,6 @@ void CAESinkXAudio::Deinitialize()
   m_initialized = false;
 }
 
-/**
- * @brief rescale uint64_t without overflowing on large values
- */
-static uint64_t rescale_u64(uint64_t val, uint64_t num, uint64_t den)
-{
-  return ((val / den) * num) + (((val % den) * num) / den);
-}
-
 void CAESinkXAudio::GetDelay(AEDelayStatus& status)
 {
   HRESULT hr = S_OK;
