@@ -79,7 +79,6 @@ void CTextureBase::Allocate(uint32_t width, uint32_t height, XB_FMT format)
 
   if (m_pixels == nullptr)
     CLog::Log(LOGERROR, "{} - Could not allocate {} bytes. Out of memory.", __FUNCTION__, size);
-  CLog::Log(LOGERROR, "{} - Could not allocate {} bytes. Out of memory.", __FUNCTION__, size);
 }
 
 uint32_t CTextureBase::PadPow2(uint32_t x)
