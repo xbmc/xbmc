@@ -14,11 +14,11 @@ CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
                       --without-libidn2 \
                       --with-ca-fallback \
                       --with-ssl=$(PREFIX) \
+                      --with-brotli=$(PREFIX) \
                       --with-nghttp2=$(PREFIX) \
                       --with-zlib \
                       --without-libpsl \
                       --without-zstd \
-                      --without-brotli \
                       --without-gssapi \
                       --without-gsasl \
                       --without-hyper \
