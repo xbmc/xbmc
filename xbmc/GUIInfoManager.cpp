@@ -1416,7 +1416,7 @@ const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
 ///                  _boolean_,
 ///     @return **True** if Kodi is running on a WebOS device.
 ///     <p><hr>
-///     @skinning_v22 **[New Boolean Condition]** \link System_PlatformWebOS
+///     @skinning_v21 **[New Boolean Condition]** \link System_PlatformWebOS
 ///     `System.Platform.WebOS`\endlink <p>
 ///   }
 ///   \table_row3{   <b>`System.CanPowerDown`</b>,
