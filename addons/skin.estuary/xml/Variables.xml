@@ -697,16 +697,16 @@
 		<value condition="!String.IsEmpty(Container(6).ListItem.Art(thumb))">$INFO[Container(6).ListItem.Art(thumb)]</value>
 		<value condition="!String.IsEmpty(Container(50).ListItem.Art(landscape))">$INFO[Container(50).ListItem.Art(landscape)]</value>
 		<value condition="!String.IsEmpty(Container(50).ListItem.Art(thumb))">$INFO[Container(50).ListItem.Art(thumb)]</value>
-		<value>$INFO[ListItem.Art(thumb)]</value>	
+		<value>$INFO[ListItem.Art(thumb)]</value>
 	</variable>
 	<variable name="VideoResolutionTypeVar">
 		<value condition="String.IsEqual(ListItem.VideoResolution,480)">SD</value>
 		<value condition="String.IsEqual(ListItem.VideoResolution,540)">SD</value>
 		<value condition="String.IsEqual(ListItem.VideoResolution,576)">SD</value>
 		<value condition="String.IsEqual(ListItem.VideoResolution,720)">HD</value>
-		<value condition="String.IsEqual(ListItem.VideoResolution,1080)">HD</value>			
+		<value condition="String.IsEqual(ListItem.VideoResolution,1080)">HD</value>
 		<value condition="String.IsEqual(ListItem.VideoResolution,4K)">UHD</value>
-		<value condition="String.IsEqual(ListItem.VideoResolution,8K)">UHD</value>	
+		<value condition="String.IsEqual(ListItem.VideoResolution,8K)">UHD</value>
 	</variable>
 	<variable name="VideoCodecVar">
 		<value condition="String.IsEqual(ListItem.VideoCodec,av1)">AV1</value>
@@ -797,5 +797,8 @@
 	<variable name="MediaInfoListLabel2Var">
 		<value condition="ListItem.IsStereoscopic">$INFO[ListItem.Duration,$LOCALIZE[180]: ][CR]$VAR[VideoCodecVar,, ]$INFO[ListItem.VideoResolution,| , ]$VAR[VideoResolutionTypeVar,, ]$VAR[VideoHDRVar,| , ]| 3D $INFO[ListItem.VideoAspect,| ,:1 ]$VAR[AudioCodecVar,| , ]$VAR[AudioChannelsVar]</value>
 		<value>$INFO[ListItem.Duration,$LOCALIZE[180]: ][CR]$VAR[VideoCodecVar,, ]$INFO[ListItem.VideoResolution,| , ]$VAR[VideoResolutionTypeVar,, ]$VAR[VideoHDRVar,| , ]$INFO[ListItem.VideoAspect,| ,:1 ]$VAR[AudioCodecVar,| , ]$VAR[AudioChannelsVar]</value>
+	</variable>
+	<variable name="PVRInstanceName">
+		<value condition="Integer.IsGreater(System.PVRCount,1)">$INFO[ListItem.BackendInstanceName,[COLOR grey]$LOCALIZE[31137]:[/COLOR] ,[CR]]</value>
 	</variable>
 </includes>
