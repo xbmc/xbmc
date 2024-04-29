@@ -5,6 +5,7 @@ DEPS = ../../Makefile.include Makefile CURL-VERSION ../../download-files.include
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) \
                       --disable-shared \
+                      --disable-docs \
                       --disable-ldap \
                       --without-libssh2 \
                       --disable-ntlm-wb \
