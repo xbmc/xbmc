@@ -283,22 +283,21 @@ unsigned int CAESinkXAudio::AddPackets(uint8_t **data, unsigned int frames, unsi
 
 void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool force)
 {
-  HRESULT hr = S_OK, hr2 = S_OK;
+  HRESULT hr = S_OK;
   CAEDeviceInfo deviceInfo;
   CAEChannelInfo deviceChannels;
   WAVEFORMATEXTENSIBLE wfxex = {};
-  bool add192 = false;
-
-  UINT32 eflags = 0;// XAUDIO2_DEBUG_ENGINE;
-
+  UINT32 eflags = 0; // XAUDIO2_DEBUG_ENGINE;
   IXAudio2MasteringVoice* mMasterVoice = nullptr;
   IXAudio2SourceVoice* mSourceVoice = nullptr;
   Microsoft::WRL::ComPtr<IXAudio2> xaudio2;
+
   hr = XAudio2Create(xaudio2.ReleaseAndGetAddressOf(), eflags);
   if (FAILED(hr))
   {
-    CLog::LogF(LOGDEBUG, "failed to activate XAudio for capability testing");
-    goto failed;
+    CLog::LogF(LOGERROR, "failed to activate XAudio for capability testing ({})",
+               WASAPIErrToStr(hr));
+    return;
   }
 
   for(RendererDetail& details : CAESinkFactoryWin::GetRendererDetails())
@@ -375,18 +374,15 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
       wfxex.Format.nSamplesPerSec = WASAPISampleRates[j];
       wfxex.Format.nAvgBytesPerSec = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
 
-      hr2 = xaudio2->CreateMasteringVoice(&mMasterVoice, wfxex.Format.nChannels, wfxex.Format.nSamplesPerSec,
-                                          0, deviceId.c_str(), nullptr, AudioCategory_Media);
+      xaudio2->CreateMasteringVoice(&mMasterVoice, wfxex.Format.nChannels,
+                                    wfxex.Format.nSamplesPerSec, 0, deviceId.c_str(), nullptr,
+                                    AudioCategory_Media);
       hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format);
+
       if (SUCCEEDED(hr))
         deviceInfo.m_sampleRates.push_back(WASAPISampleRates[j]);
-      else if (wfxex.Format.nSamplesPerSec == 192000 && add192)
-      {
-        deviceInfo.m_sampleRates.push_back(WASAPISampleRates[j]);
-        CLog::LogF(LOGINFO, "sample rate 192khz on device \"{}\" seems to be not supported.",
-                   details.strDescription);
-      }
     }
+
     SafeDestroyVoice(&mSourceVoice);
     SafeDestroyVoice(&mMasterVoice);
 
@@ -415,11 +411,6 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
       deviceInfoList.push_back(deviceInfo);
     }
   }
-
-failed:
-
-  if (FAILED(hr))
-    CLog::LogF(LOGERROR, "failed to enumerate XAudio endpoint devices ({})", WASAPIErrToStr(hr));
 }
 
 /// ------------------- Private utility functions -----------------------------------
