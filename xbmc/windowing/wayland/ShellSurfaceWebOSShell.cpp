@@ -18,6 +18,11 @@ using namespace std::placeholders;
 
 using namespace wayland;
 
+namespace
+{
+constexpr auto WEBOS_ACCESS_POLICY_KEYS_GUIDE = "_WEBOS_ACCESS_POLICY_KEYS_GUIDE";
+} // namespace
+
 CShellSurfaceWebOSShell::CShellSurfaceWebOSShell(IShellSurfaceHandler& handler,
                                                  CConnection& connection,
                                                  const wayland::surface_t& surface,
@@ -35,6 +40,7 @@ CShellSurfaceWebOSShell::CShellSurfaceWebOSShell(IShellSurfaceHandler& handler,
   m_shellSurface = m_shell.get_shell_surface(surface);
 
   m_webos_shellSurface = m_webos_shell.get_shell_surface(surface);
+  m_webos_shellSurface.set_property(WEBOS_ACCESS_POLICY_KEYS_GUIDE, "true");
 
   m_webos_shellSurface.on_exposed() = [this](const std::vector<std::int32_t>& rect) {
     if (rect.size() >= 4)
