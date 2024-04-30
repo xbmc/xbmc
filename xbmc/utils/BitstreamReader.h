@@ -47,6 +47,6 @@ constexpr uint32_t BS_RB24(const uint8_t* x)
 
 constexpr uint32_t BS_RB32(const uint8_t* x)
 {
-  return (x[1] << 24) | (x[1] << 16) | (x[2] << 8) | x[3];
+  return (x[0] << 24) | (x[1] << 16) | (x[2] << 8) | x[3];
 }
 
