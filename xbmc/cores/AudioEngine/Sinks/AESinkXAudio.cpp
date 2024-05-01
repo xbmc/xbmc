@@ -13,9 +13,6 @@
 #include "cores/AudioEngine/Sinks/windows/AESinkFactoryWin.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
-#include "utils/StringUtils.h"
-#include "utils/TimeUtils.h"
-#include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
 #ifdef TARGET_WINDOWS_STORE
@@ -34,9 +31,12 @@
 
 using namespace Microsoft::WRL;
 
-extern const char *WASAPIErrToStr(HRESULT err);
+namespace
+{
+constexpr int XAUDIO_BUFFERS_IN_QUEUE = 2;
+} // namespace
 
-#define XAUDIO_BUFFERS_IN_QUEUE 2
+extern const char* WASAPIErrToStr(HRESULT err);
 
 template <class TVoice>
 inline void SafeDestroyVoice(TVoice **ppVoice)
@@ -48,8 +48,6 @@ inline void SafeDestroyVoice(TVoice **ppVoice)
   }
 }
 
-///  ----------------- CAESinkXAudio ------------------------
-
 CAESinkXAudio::CAESinkXAudio()
 {
   HRESULT hr = XAudio2Create(m_xAudio2.ReleaseAndGetAddressOf(), 0);
@@ -57,7 +55,7 @@ CAESinkXAudio::CAESinkXAudio()
   {
     CLog::LogF(LOGERROR, "XAudio initialization failed.");
   }
-#ifdef  _DEBUG
+#ifdef _DEBUG
   else
   {
     XAUDIO2_DEBUG_CONFIGURATION config = {};
@@ -67,7 +65,7 @@ CAESinkXAudio::CAESinkXAudio()
     config.LogFunctionName = true;
     m_xAudio2->SetDebugConfiguration(&config, 0);
   }
-#endif //  _DEBUG
+#endif // _DEBUG
 }
 
 CAESinkXAudio::~CAESinkXAudio()
@@ -177,7 +175,7 @@ double CAESinkXAudio::GetCacheTotal()
   if (!m_initialized)
     return 0.0;
 
-  return XAUDIO_BUFFERS_IN_QUEUE * m_format.m_frames / (double)m_format.m_sampleRate;
+  return static_cast<double>(XAUDIO_BUFFERS_IN_QUEUE * m_format.m_frames) / m_format.m_sampleRate;
 }
 
 double CAESinkXAudio::GetLatency()
@@ -188,7 +186,7 @@ double CAESinkXAudio::GetLatency()
   XAUDIO2_PERFORMANCE_DATA perfData;
   m_xAudio2->GetPerformanceData(&perfData);
 
-  return perfData.CurrentLatencyInSamples / (double) m_format.m_sampleRate;
+  return static_cast<double>(perfData.CurrentLatencyInSamples) / m_format.m_sampleRate;
 }
 
 unsigned int CAESinkXAudio::AddPackets(uint8_t **data, unsigned int frames, unsigned int offset)
@@ -197,7 +195,6 @@ unsigned int CAESinkXAudio::AddPackets(uint8_t **data, unsigned int frames, unsi
     return 0;
 
   HRESULT hr = S_OK;
-  DWORD flags = 0;
 
   LARGE_INTEGER timerStart;
   LARGE_INTEGER timerStop;
@@ -234,8 +231,6 @@ unsigned int CAESinkXAudio::AddPackets(uint8_t **data, unsigned int frames, unsi
   QueryPerformanceCounter(&timerStart);
 
   /* Wait for Audio Driver to tell us it's got a buffer available */
-  //XAUDIO2_VOICE_STATE state;
-  //while (m_sourceVoice->GetState(&state), state.BuffersQueued >= XAUDIO_BUFFERS_IN_QUEUE)
   while (m_format.m_frames * XAUDIO_BUFFERS_IN_QUEUE <= m_framesInBuffers.load())
   {
     DWORD eventAudioCallback;
@@ -252,8 +247,8 @@ unsigned int CAESinkXAudio::AddPackets(uint8_t **data, unsigned int frames, unsi
     return 0;
 
   QueryPerformanceCounter(&timerStop);
-  LONGLONG timerDiff = timerStop.QuadPart - timerStart.QuadPart;
-  double timerElapsed = (double) timerDiff * 1000.0 / (double) timerFreq.QuadPart;
+  const LONGLONG timerDiff = timerStop.QuadPart - timerStart.QuadPart;
+  const double timerElapsed = static_cast<double>(timerDiff) * 1000.0 / timerFreq.QuadPart;
   m_avgTimeWaiting += (timerElapsed - m_avgTimeWaiting) * 0.5;
 
   if (m_avgTimeWaiting < 3.0)
@@ -308,7 +303,7 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
         deviceChannels += AEChannelNames[c];
     }
 
-    std::wstring deviceId = KODI::PLATFORM::WINDOWS::ToW(details.strDevicePath);
+    const std::wstring deviceId = KODI::PLATFORM::WINDOWS::ToW(details.strDevicePath);
 
     /* Test format for PCM format iteration */
     wfxex.Format.cbSize = sizeof(WAVEFORMATEXTENSIBLE) - sizeof(WAVEFORMATEX);
@@ -408,11 +403,9 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
   }
 }
 
-/// ------------------- Private utility functions -----------------------------------
-
 bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &format)
 {
-  std::wstring device = KODI::PLATFORM::WINDOWS::ToW(deviceId);
+  const std::wstring device = KODI::PLATFORM::WINDOWS::ToW(deviceId);
   WAVEFORMATEXTENSIBLE wfxex = {};
 
   if ( format.m_dataFormat <= AE_FMT_FLOAT
@@ -444,7 +437,7 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
     wfxex.SubFormat                   = KSDATAFORMAT_SUBTYPE_PCM;
   }
 
-  bool bdefault = StringUtils::EndsWithNoCase(deviceId, std::string("default"));
+  const bool bdefault = deviceId.find("default") != std::string::npos;
 
   HRESULT hr;
   IXAudio2MasteringVoice* pMasterVoice = nullptr;
