@@ -408,12 +408,7 @@ bool CAEStreamParser::TrySyncAC3(uint8_t* data,
       return false;
 
     if (strmtyp != 1 && wantEAC3dependent)
-    {
-      CLog::Log(LOGDEBUG,
-                "CAEStreamParser::TrySyncAC3 - Unexpected stream type: {} (wantEAC3dependent: {})",
-                strmtyp, wantEAC3dependent);
       return false;
-    }
 
     unsigned int framesize = (((data[2] & 0x7) << 8) | data[3]) + 1;
     uint8_t fscod = (data[4] >> 6) & 0x3;
