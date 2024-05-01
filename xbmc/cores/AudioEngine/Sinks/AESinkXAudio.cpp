@@ -159,10 +159,6 @@ void CAESinkXAudio::Deinitialize()
 
 void CAESinkXAudio::GetDelay(AEDelayStatus& status)
 {
-  HRESULT hr = S_OK;
-  uint64_t pos = 0, tick = 0;
-  int retries = 0;
-
   if (!m_initialized)
   {
     status.SetDelay(0.0);
@@ -172,8 +168,7 @@ void CAESinkXAudio::GetDelay(AEDelayStatus& status)
   XAUDIO2_VOICE_STATE state;
   m_sourceVoice->GetState(&state, 0);
 
-  double delay = (double)(m_sinkFrames - state.SamplesPlayed) / m_format.m_sampleRate;
-  status.SetDelay(delay);
+  status.SetDelay(static_cast<double>(m_sinkFrames - state.SamplesPlayed) / m_format.m_sampleRate);
   return;
 }
 
