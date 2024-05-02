@@ -17,6 +17,7 @@
 
 #include "platform/posix/filesystem/SMBWSDiscovery.h"
 
+#include <algorithm>
 #include <array>
 #include <chrono>
 #include <mutex>
