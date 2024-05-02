@@ -22,7 +22,7 @@ ifeq ($(OS), linux)
   endif
 else
   ifeq ($(OS), android)
-    TARGETOPT=--with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib
+    TARGETOPT=--with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib -U__ANDROID_API__ -D__ANDROID_API__=$(NDK_LEVEL)
 
     export ANDROID_NDK_ROOT=$(NDKROOT)
     export PATH:=$(TOOLCHAIN)/bin:$(PATH)
