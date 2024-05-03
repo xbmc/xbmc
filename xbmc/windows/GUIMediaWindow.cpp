@@ -60,11 +60,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
-#include "video/VideoFileItemClassify.h"
-#include "video/VideoInfoTag.h"
 #include "view/GUIViewState.h"
-
-#include <inttypes.h>
 
 #define CONTROL_BTNVIEWASICONS       2
 #define CONTROL_BTNSORTBY            3
@@ -1537,21 +1533,11 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr& item, const std::s
                                   { return i->IsZIP() || i->IsRAR() || i->m_bIsFolder; }),
                    playlist.end());
 
-    // Remove duplicates (eg. ISO/VIDEO_TS)
-    playlist.erase(
-        std::unique(playlist.begin(), playlist.end(),
-                    [](const std::shared_ptr<CFileItem>& i, const std::shared_ptr<CFileItem>& j) {
-                      return i->GetVideoInfoTag()->m_basePath == j->GetVideoInfoTag()->m_basePath;
-                    }),
-        playlist.end());
-
     // Chosen item
     int mediaToPlay =
         std::distance(playlist.begin(), std::find_if(playlist.begin(), playlist.end(),
-                                                     [&item](const std::shared_ptr<CFileItem>& i) {
-                                                       return i->GetVideoInfoTag()->m_basePath ==
-                                                              item->GetVideoInfoTag()->m_basePath;
-                                                     }));
+                                                     [&item](const std::shared_ptr<CFileItem>& i)
+                                                     { return i->GetPath() == item->GetPath(); }));
 
     // Add to playlist
     CServiceBroker::GetPlaylistPlayer().ClearPlaylist(playlistId);
