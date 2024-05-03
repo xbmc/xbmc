@@ -248,7 +248,7 @@ bool CNetworkWin32::PingHost(const struct sockaddr& host, unsigned int timeout_m
 
 bool CNetworkInterfaceWin32::GetHostMacAddress(unsigned long host, std::string& mac) const
 {
-  struct sockaddr sockHost;
+  sockaddr sockHost{};
   sockHost.sa_family = AF_INET;
   reinterpret_cast<struct sockaddr_in&>(sockHost).sin_addr.S_un.S_addr = host;
   return GetHostMacAddress(&sockHost, mac);
@@ -260,21 +260,19 @@ bool CNetworkInterfaceWin32::GetHostMacAddress(struct sockaddr* host, std::strin
   if (GetBestInterfaceEx(host, &InterfaceIndex) != NO_ERROR)
     return false;
 
-  NET_LUID luid = {};
+  NET_LUID luid{};
   if (ConvertInterfaceIndexToLuid(InterfaceIndex, &luid) != NO_ERROR)
     return false;
 
-  MIB_IPNET_ROW2 neighborIp = {};
+  MIB_IPNET_ROW2 neighborIp{};
   neighborIp.InterfaceLuid = luid;
-  neighborIp.InterfaceIndex;
-  neighborIp.Address.si_family = host->sa_family;
   switch (host->sa_family)
   {
     case AF_INET:
-      neighborIp.Address.Ipv4 = reinterpret_cast<const struct sockaddr_in&>(host);
+      memcpy(&neighborIp.Address.Ipv4, host, sizeof(sockaddr_in));
       break;
     case AF_INET6:
-      neighborIp.Address.Ipv6 = reinterpret_cast<const struct sockaddr_in6&>(host);
+      memcpy(&neighborIp.Address.Ipv6, host, sizeof(sockaddr_in6));
       break;
     default:
       return false;
