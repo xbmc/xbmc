@@ -278,13 +278,20 @@ bool CNetworkInterfaceWin32::GetHostMacAddress(struct sockaddr* host, std::strin
       return false;
   }
 
-  DWORD dwRetVal = ResolveIpNetEntry2(&neighborIp, nullptr);
+  DWORD dwRetVal = GetIpNetEntry2(&neighborIp);
+
+  if (dwRetVal != NO_ERROR)
+  {
+    CLog::LogF(LOGDEBUG, "Host not found in the cache (error {}), resolve the address.", dwRetVal);
+    dwRetVal = ResolveIpNetEntry2(&neighborIp, nullptr);
+  }
 
   if (dwRetVal != NO_ERROR)
   {
     CLog::LogF(LOGERROR, "ResolveIpNetEntry2 failed with error ({})", dwRetVal);
     return false;
   }
+
   if (neighborIp.PhysicalAddressLength < MAC_LENGTH)
   {
     CLog::LogF(LOGERROR,
