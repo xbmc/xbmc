@@ -313,8 +313,7 @@ void CGUIDialogVideoManager::Remove()
     return;
   }
 
-  //! @todo db refactor: should not be version, but asset
-  m_database.RemoveVideoVersion(m_selectedVideoAsset->GetVideoInfoTag()->m_iDbId);
+  m_database.DeleteVideoAsset(m_selectedVideoAsset->GetVideoInfoTag()->m_iDbId);
 
   // refresh data and controls
   Refresh();
