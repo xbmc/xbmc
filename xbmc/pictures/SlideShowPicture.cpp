@@ -85,6 +85,16 @@ bool CSlideShowPic::IsFinished() const
   return IsLoaded() && m_iCounter >= m_transitionEnd.start + m_transitionEnd.length;
 }
 
+bool CSlideShowPic::IsAnimating() const
+{
+  return !IsFinished() &&
+         (m_displayEffect != EFFECT_NO_TIMEOUT || // Special snowflake, doesn't work without this
+          m_iCounter < m_transitionStart.length || // Inside start transition
+          m_iCounter >= m_transitionEnd.start || // Inside end transition
+          (m_iCounter >= m_transitionTemp.start &&
+           m_iCounter < m_transitionTemp.start + m_transitionTemp.length)); // Inside display effect
+}
+
 void CSlideShowPic::SetTexture(int iSlideNumber,
                                std::unique_ptr<CTexture> pTexture,
                                DISPLAY_EFFECT dispEffect,
@@ -368,7 +378,7 @@ void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
   }
   if (m_iCounter >= m_transitionEnd.start)
     m_bDrawNextImage = true;
-  if (m_displayEffect != EFFECT_NO_TIMEOUT || m_iCounter < m_transitionStart.length || m_iCounter >= m_transitionEnd.start || (m_iCounter >= m_transitionTemp.start && m_iCounter < m_transitionTemp.start + m_transitionTemp.length))
+  if (IsAnimating())
   {
     /* this really annoying.  there's non-stop logging when viewing a pic outside of the slideshow
     if (m_displayEffect == EFFECT_NO_TIMEOUT)

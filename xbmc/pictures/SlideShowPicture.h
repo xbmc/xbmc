@@ -51,6 +51,7 @@ public:
   bool DisplayEffectNeedChange(DISPLAY_EFFECT newDispEffect) const;
   bool IsStarted() const { return m_iCounter > 0; }
   bool IsFinished() const;
+  bool IsAnimating() const;
   bool DrawNextImage() const { return m_bDrawNextImage; }
 
   int GetWidth() const { return (int)m_fWidth; }
