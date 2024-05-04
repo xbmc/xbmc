@@ -7289,6 +7289,9 @@ msgctxt "#13423"
 msgid "Remember for this path"
 msgstr ""
 
+#. Shown on context menu when a bluray:// or dvd:// playlist has already been saved
+#. Giving the user a chance to select a new one via the simple menu dialog
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#13424"
 msgid "Choose playlist"
 msgstr ""
