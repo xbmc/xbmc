@@ -65,6 +65,7 @@ public:
 
   void Zoom(float fZoomAmount, bool immediate = false);
   void Rotate(float fRotateAngle, bool immediate = false);
+  void UpdateAlpha();
   void Pause(bool bPause);
   void SetInSlideshow(bool slideshow);
   void SetOriginalSize(int iOriginalWidth, int iOriginalHeight, bool bFullSize);
