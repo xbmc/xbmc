@@ -105,7 +105,7 @@ protected:
   KD_TEX_FMT m_textureFormat{KD_TEX_FMT_UNKNOWN}; // new Kodi texture format
   KD_TEX_SWIZ m_textureSwizzle{KD_TEX_SWIZ_RGBA};
   KD_TEX_COL m_textureColorspace{KD_TEX_COL_REC709};
-  KD_TEX_GAMMA m_textureGamma{KD_TEX_GAMMA_SRGB};
+  KD_TEX_TRANSFER m_textureTransfer{KD_TEX_TRANSFER_SRGB};
   KD_TEX_ALPHA m_textureAlpha{KD_TEX_ALPHA_STRAIGHT};
 
   XB_FMT m_format{XB_FMT_UNKNOWN}; // legacy XB format, deprecated

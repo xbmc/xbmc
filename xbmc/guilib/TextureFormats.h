@@ -167,16 +167,17 @@ enum KD_TEX_COL
   KD_TEX_COL_MASK               = 0xF000000,
 };
 
-// Gamma
-enum KD_TEX_GAMMA
+// Transfer function
+enum KD_TEX_TRANSFER
 {
-  KD_TEX_GAMMA_SRGB             = 0x00000000, // sRGB Gamma
-  KD_TEX_GAMMA_REC709           = 0x10000000, // REC709 Gamma
-  KD_TEX_GAMMA_HLG              = 0x20000000, // HLG Gamma
-  KD_TEX_GAMMA_LINEAR           = 0x30000000, // Linear (1) Gamma
-  KD_TEX_GAMMA_SQUARED          = 0x40000000, // Squared (2) Gamma
+  KD_TEX_TRANSFER_SRGB          = 0x00000000,
+  KD_TEX_TRANSFER_REC709        = 0x10000000,
+  KD_TEX_TRANSFER_HLG           = 0x20000000,
+  KD_TEX_TRANSFER_LINEAR        = 0x30000000,
+  KD_TEX_TRANSFER_SQUARED       = 0x40000000,
+  KD_TEX_TRANSFER_PQ            = 0x50000000,
 
-  KD_TEX_GAMMA_MASK             = 0xF0000000,
+  KD_TEX_TRANSFER_MASK          = 0xF0000000,
 };
 
 // clang-format on
