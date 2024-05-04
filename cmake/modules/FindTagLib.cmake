@@ -71,7 +71,7 @@ if(NOT TARGET TagLib::TagLib)
     # Build Taglib
     buildTagLib()
   else()
-    if(PKG_CONFIG_FOUND)
+    if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWS_STORE))
       if(TagLib_FIND_VERSION)
         if(TagLib_FIND_VERSION_EXACT)
           set(TagLib_FIND_SPEC "=${TagLib_FIND_VERSION_COMPLETE}")
