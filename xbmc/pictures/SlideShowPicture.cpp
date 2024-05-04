@@ -38,7 +38,6 @@ static float zoomamount[10] = { 1.0f, 1.2f, 1.5f, 2.0f, 2.8f, 4.0f, 6.0f, 9.0f, 
 CSlideShowPic::CSlideShowPic() : m_pImage(nullptr)
 {
   m_bIsLoaded = false;
-  m_bIsFinished = false;
   m_bDrawNextImage = false;
   m_bTransitionImmediately = false;
 
@@ -56,7 +55,6 @@ void CSlideShowPic::Close()
   std::unique_lock<CCriticalSection> lock(m_textureAccess);
   m_pImage.reset();
   m_bIsLoaded = false;
-  m_bIsFinished = false;
   m_bDrawNextImage = false;
   m_bTransitionImmediately = false;
   m_bIsDirty = true;
@@ -79,6 +77,11 @@ bool CSlideShowPic::DisplayEffectNeedChange(DISPLAY_EFFECT newDispEffect) const
   if (newDispEffect == EFFECT_RANDOM && m_displayEffect != EFFECT_NONE && m_displayEffect != EFFECT_NO_TIMEOUT)
     return false;
   return true;
+}
+
+bool CSlideShowPic::IsFinished() const
+{
+  return IsLoaded() && m_iCounter >= m_transitionEnd.start + m_transitionEnd.length;
 }
 
 void CSlideShowPic::SetTexture(int iSlideNumber,
@@ -207,7 +210,6 @@ void CSlideShowPic::SetTexture_Internal(int iSlideNumber,
 
   m_transitionEnd.start = m_transitionStart.length + iFrames;
 
-  m_bIsFinished = false;
   m_bDrawNextImage = false;
   m_bIsLoaded = true;
 }
@@ -272,7 +274,8 @@ void CSlideShowPic::UpdateVertices(float cur_x[4], float cur_y[4], const float n
 
 void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
-  if (!m_pImage || !m_bIsLoaded || m_bIsFinished) return ;
+  if (!m_pImage || !m_bIsLoaded || IsFinished())
+    return;
   UTILS::COLOR::Color alpha = m_alpha;
   if (m_iCounter <= m_transitionStart.length)
   { // do start transition
@@ -411,8 +414,6 @@ void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
     */
     m_iCounter++;
   }
-  if (m_iCounter >= m_transitionEnd.start + m_transitionEnd.length)
-    m_bIsFinished = true;
 
   RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
 
