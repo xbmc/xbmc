@@ -1489,6 +1489,10 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     appPlayer->FlushRenderer();
     break;
 
+  case TMSG_RESTART_RENDERING:
+    CServiceBroker::GetGUI()->GetWindowManager().MarkDirty();
+    break;
+
   case TMSG_HIBERNATE:
     CServiceBroker::GetPowerManager().Hibernate();
     break;

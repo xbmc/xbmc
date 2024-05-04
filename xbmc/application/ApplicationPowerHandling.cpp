@@ -69,9 +69,7 @@ void CApplicationPowerHandling::SetRenderGUI(bool renderGUI)
 {
   if (renderGUI && !m_renderGUI)
   {
-    CGUIComponent* gui = CServiceBroker::GetGUI();
-    if (gui)
-      CServiceBroker::GetGUI()->GetWindowManager().MarkDirty();
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_RESTART_RENDERING);
   }
   m_renderGUI = renderGUI;
 }
