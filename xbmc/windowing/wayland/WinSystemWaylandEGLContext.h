@@ -43,6 +43,10 @@ public:
   bool DestroyWindow() override;
   bool DestroyWindowSystem() override;
 
+  bool BindTextureUploadContext() override;
+  bool UnbindTextureUploadContext() override;
+  bool HasContext() override;
+
 protected:
   /**
    * Inheriting classes should override InitWindowSystem() without parameters
