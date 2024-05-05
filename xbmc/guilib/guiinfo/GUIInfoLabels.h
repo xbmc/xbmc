@@ -224,6 +224,9 @@
 #define MUSICPLAYER_CONTENT         246
 #define MUSICPLAYER_ISMULTIDISC     247
 
+// More Musicplayer infolabels
+#define MUSICPLAYER_CHANNEL_LOGO 248
+
 // Videoplayer infolabels
 #define VIDEOPLAYER_HDR_TYPE          249
 // Keep videoplayer infolabels that work with offset and position together
@@ -317,6 +320,9 @@
 #define RETROPLAYER_VIDEO_FILTER      330
 #define RETROPLAYER_STRETCH_MODE      331
 #define RETROPLAYER_VIDEO_ROTATION    332
+
+// More PVR infolabels
+#define VIDEOPLAYER_CHANNEL_LOGO 333
 
 #define CONTAINER_HAS_PARENT_ITEM    341
 #define CONTAINER_CAN_FILTER         342
@@ -981,6 +987,7 @@ static constexpr unsigned int SYSTEM_LOCALE = 1012;
 #define LISTITEM_HASVIDEOEXTRAS     (LISTITEM_START + 216)
 #define LISTITEM_PVR_CLIENT_NAME    (LISTITEM_START + 217)
 #define LISTITEM_PVR_INSTANCE_NAME  (LISTITEM_START + 218)
+#define LISTITEM_CHANNEL_LOGO       (LISTITEM_START + 219)
 
 #define LISTITEM_END                (LISTITEM_START + 2500)
 

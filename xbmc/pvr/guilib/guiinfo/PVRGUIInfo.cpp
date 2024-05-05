@@ -425,6 +425,9 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
       case LISTITEM_CHANNEL_NAME:
         strValue = timer->ChannelName();
         return true;
+      case LISTITEM_CHANNEL_LOGO:
+        strValue = timer->ChannelIcon();
+        return true;
       case LISTITEM_PVR_CLIENT_NAME:
         strValue = CServiceBroker::GetPVRManager().GetClient(timer->ClientID())->GetClientName();
         return true;
@@ -485,7 +488,6 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
         if (recording->HasExpirationTime())
         {
           strValue = GetAsLocalizedTimeString(recording->ExpirationTimeAsLocalTime());
-          ;
           return true;
         }
         break;
@@ -519,6 +521,18 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
         if (groupMember)
         {
           strValue = groupMember->ChannelNumber().FormattedChannelNumber();
+          return true;
+        }
+        break;
+      }
+      case VIDEOPLAYER_CHANNEL_LOGO:
+      case LISTITEM_CHANNEL_LOGO:
+      {
+        const std::shared_ptr<const CPVRChannelGroupMember> groupMember =
+            CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().GetChannelGroupMember(*item);
+        if (groupMember)
+        {
+          strValue = groupMember->Channel()->IconPath();
           return true;
         }
         break;
@@ -815,12 +829,16 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
           if (!strValue.empty())
             return true;
         }
-        // fall-thru is intended
         [[fallthrough]];
       }
       case VIDEOPLAYER_CHANNEL_NAME:
       case LISTITEM_CHANNEL_NAME:
         strValue = channel->ChannelName();
+        return true;
+      case MUSICPLAYER_CHANNEL_LOGO:
+      case VIDEOPLAYER_CHANNEL_LOGO:
+      case LISTITEM_CHANNEL_LOGO:
+        strValue = channel->IconPath();
         return true;
       case MUSICPLAYER_CHANNEL_NUMBER:
       case VIDEOPLAYER_CHANNEL_NUMBER:
