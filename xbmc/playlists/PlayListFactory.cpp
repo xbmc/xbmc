@@ -9,6 +9,7 @@
 #include "PlayListFactory.h"
 
 #include "FileItem.h"
+#include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayListB4S.h"
 #include "playlists/PlayListM3U.h"
 #include "playlists/PlayListPLS.h"
@@ -19,6 +20,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
+using namespace KODI;
 using namespace PLAYLIST;
 
 CPlayList* CPlayListFactory::Create(const std::string& filename)
@@ -29,7 +31,7 @@ CPlayList* CPlayListFactory::Create(const std::string& filename)
 
 CPlayList* CPlayListFactory::Create(const CFileItem& item)
 {
-  if (item.IsInternetStream())
+  if (NETWORK::IsInternetStream(item))
   {
     // Ensure the MIME type has been retrieved for http:// and shout:// streams
     if (item.GetMimeType().empty())
@@ -71,7 +73,8 @@ CPlayList* CPlayListFactory::Create(const CFileItem& item)
   std::string extension = URIUtils::GetExtension(path);
   StringUtils::ToLower(extension);
 
-  if (extension == ".m3u" || (extension == ".m3u8" && !item.IsInternetStream()) || extension == ".strm")
+  if (extension == ".m3u" || (extension == ".m3u8" && !NETWORK::IsInternetStream(item)) ||
+      extension == ".strm")
     return new CPlayListM3U();
 
   if (extension == ".pls")
@@ -120,7 +123,7 @@ bool CPlayListFactory::IsPlaylist(const CFileItem& item)
 */
 
   // online m3u8 files are hls:// -- do not treat as playlist
-  if (item.IsInternetStream() && item.IsType(".m3u8"))
+  if (NETWORK::IsInternetStream(item) && item.IsType(".m3u8"))
     return false;
 
   if(strMimeType == "audio/x-pn-realaudio"

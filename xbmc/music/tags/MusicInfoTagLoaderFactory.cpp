@@ -19,6 +19,7 @@
 #include "addons/ExtsMimeSupportList.h"
 #include "addons/addoninfo/AddonType.h"
 #include "music/MusicFileItemClassify.h"
+#include "network/NetworkFileItemClassify.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
@@ -33,7 +34,7 @@ CMusicInfoTagLoaderFactory::~CMusicInfoTagLoaderFactory() = default;
 IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CFileItem& item)
 {
   // dont try to read the tags for streams & shoutcast
-  if (item.IsInternetStream())
+  if (NETWORK::IsInternetStream(item))
     return NULL;
 
   if (MUSIC::IsMusicDb(item))

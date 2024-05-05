@@ -31,6 +31,7 @@
 #include "music/MusicDbUrl.h"
 #include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
+#include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayList.h"
 #include "playlists/PlayListFactory.h"
 #include "profiles/ProfileManager.h"
@@ -601,7 +602,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
         GetItemsForPlaylist((*playList)[i]);
       }
     }
-    else if (item->IsInternetStream() && !MUSIC::IsMusicDb(*item))
+    else if (NETWORK::IsInternetStream(*item) && !MUSIC::IsMusicDb(*item))
     {
       // just queue the internet stream, it will be expanded on play
       m_queuedItems.Add(item);

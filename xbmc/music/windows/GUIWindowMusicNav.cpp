@@ -33,6 +33,7 @@
 #include "music/MusicLibraryQueue.h"
 #include "music/dialogs/GUIDialogInfoProviderSettings.h"
 #include "music/tags/MusicInfoTag.h"
+#include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayList.h"
 #include "playlists/PlayListFactory.h"
 #include "profiles/ProfileManager.h"
@@ -612,7 +613,8 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
       // Scan button for real folders containing files when navigating within music sources.
       // Blacklist the bespoke Kodi protocols as to many valid external protocols to whitelist
       if (m_vecItems->GetContent() == "files" && // Other content not scanned to library
-          !inPlaylists && !m_vecItems->IsInternetStream() && // Not playlists locations or streams
+          !inPlaylists &&
+          !NETWORK::IsInternetStream(*m_vecItems) && // Not playlists locations or streams
           !item->IsPath("add") && !item->IsParentFolder() && // Not ".." and "Add items
           item->m_bIsFolder && // Folders only, but playlists can be folders too
           !URIUtils::IsLibraryContent(item->GetPath()) && // database folder or .xsp files

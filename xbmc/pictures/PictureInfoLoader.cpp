@@ -12,6 +12,7 @@
 #include "FileItemList.h"
 #include "PictureInfoTag.h"
 #include "ServiceBroker.h"
+#include "network/NetworkFileItemClassify.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "video/VideoFileItemClassify.h"
@@ -55,7 +56,7 @@ bool CPictureInfoLoader::LoadItem(CFileItem* pItem)
 bool CPictureInfoLoader::LoadItemCached(CFileItem* pItem)
 {
   if (!pItem->IsPicture() || pItem->IsZIP() || pItem->IsRAR() || pItem->IsCBR() || pItem->IsCBZ() ||
-      pItem->IsInternetStream() || VIDEO::IsVideo(*pItem))
+      NETWORK::IsInternetStream(*pItem) || VIDEO::IsVideo(*pItem))
     return false;
 
   if (pItem->HasPictureInfoTag())
@@ -79,7 +80,7 @@ bool CPictureInfoLoader::LoadItemLookup(CFileItem* pItem)
     m_pProgressCallback->SetProgressAdvance();
 
   if (!pItem->IsPicture() || pItem->IsZIP() || pItem->IsRAR() || pItem->IsCBR() || pItem->IsCBZ() ||
-      pItem->IsInternetStream() || VIDEO::IsVideo(*pItem))
+      NETWORK::IsInternetStream(*pItem) || VIDEO::IsVideo(*pItem))
     return false;
 
   if (pItem->HasPictureInfoTag())

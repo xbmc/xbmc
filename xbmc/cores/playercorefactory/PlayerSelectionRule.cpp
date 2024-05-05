@@ -12,12 +12,12 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "music/MusicFileItemClassify.h"
+#include "network/NetworkFileItemClassify.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/RegExp.h"
 #include "utils/StreamDetails.h"
 #include "utils/StringUtils.h"
-#include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 #include "video/VideoFileItemClassify.h"
@@ -124,9 +124,9 @@ void CPlayerSelectionRule::GetPlayers(const CFileItem& item, std::vector<std::st
     return;
   if (m_tGame >= 0 && (m_tGame > 0) != item.IsGame())
     return;
-  if (m_tInternetStream >= 0 && (m_tInternetStream > 0) != item.IsInternetStream())
+  if (m_tInternetStream >= 0 && (m_tInternetStream > 0) != NETWORK::IsInternetStream(item))
     return;
-  if (m_tRemote >= 0 && (m_tRemote > 0) != item.IsRemote())
+  if (m_tRemote >= 0 && (m_tRemote > 0) != NETWORK::IsRemote(item))
     return;
 
   if (m_tBD >= 0 && (m_tBD > 0) != (VIDEO::IsBDFile(item) && item.IsOnDVD()))
@@ -207,5 +207,3 @@ void CPlayerSelectionRule::GetPlayers(const CFileItem& item, std::vector<std::st
     players.push_back(m_playerName);
   }
 }
-
-

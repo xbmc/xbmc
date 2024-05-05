@@ -26,6 +26,7 @@
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoHelper.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
+#include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayList.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingUtils.h"
@@ -66,7 +67,7 @@ bool CVideoGUIInfo::InitCurrentItem(CFileItem *item)
   if (item && VIDEO::IsVideo(*item))
   {
     // special case where .strm is used to start an audio stream
-    if (item->IsInternetStream() && m_appPlayer->IsPlayingAudio())
+    if (NETWORK::IsInternetStream(*item) && m_appPlayer->IsPlayingAudio())
       return false;
 
     CLog::Log(LOGDEBUG, "CVideoGUIInfo::InitCurrentItem({})", CURL::GetRedacted(item->GetPath()));
@@ -79,7 +80,7 @@ bool CVideoGUIInfo::InitCurrentItem(CFileItem *item)
     }
 
     // find a thumb for this stream
-    if (item->IsInternetStream())
+    if (NETWORK::IsInternetStream(*item))
     {
       if (!g_application.m_strPlayListFile.empty())
       {
