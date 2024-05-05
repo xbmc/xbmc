@@ -40,6 +40,9 @@ namespace XFILE
 /* indicate that caller want to reopen a file if its already open  */
   static const unsigned int READ_REOPEN = 0x100;
 
+/* indicate that caller want open a file without intermediate buffer regardless to file type */
+  static const unsigned int READ_NO_BUFFER = 0x200;
+
 struct SNativeIoControl
 {
   unsigned long int   request;

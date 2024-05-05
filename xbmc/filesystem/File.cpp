@@ -386,6 +386,9 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
 
 bool CFile::ShouldUseStreamBuffer(const CURL& url)
 {
+  if (m_flags & READ_NO_BUFFER)
+    return false;
+
   if (m_flags & READ_CHUNKED || m_pFile->GetChunkSize() > 0)
     return true;
 
