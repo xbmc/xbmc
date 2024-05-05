@@ -9,10 +9,12 @@
 #pragma once
 
 #include "GLContext.h"
-#include "system_egl.h"
 #include "threads/CriticalSection.h"
 
 #include <cstdint>
+#include <mutex>
+
+#include "system_egl.h"
 
 #include <EGL/eglext.h>
 #ifdef HAVE_EGLEXTANGLE
@@ -35,6 +37,10 @@ public:
   void SwapBuffers() override;
   void QueryExtensions() override;
   uint64_t GetVblankTiming(uint64_t &msc, uint64_t &interval) override;
+
+  bool BindTextureUploadContext();
+  bool UnbindTextureUploadContext();
+  bool HasContext();
 
   EGLint m_renderingApi;
   EGLDisplay m_eglDisplay = EGL_NO_DISPLAY;
@@ -60,4 +66,7 @@ protected:
   CCriticalSection m_syncLock;
 
   bool m_usePB = false;
+
+  EGLContext m_eglUploadContext = EGL_NO_CONTEXT;
+  mutable CCriticalSection m_textureUploadLock;
 };
