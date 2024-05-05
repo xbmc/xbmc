@@ -81,7 +81,7 @@ bool CPictureThumbLoader::LoadItemCached(CFileItem* pItem)
   else if (pItem->IsVideo() && !pItem->IsZIP() && !pItem->IsRAR() && !pItem->IsCBZ() && !pItem->IsCBR() && !pItem->IsPlayList())
   { // video
     CVideoThumbLoader loader;
-    loader.LoadItemCached(pItem);
+    loader.LoadItem(pItem);
   }
   else if (!pItem->HasArt("thumb"))
   { // folder, zip, cbz, rar, cbr, playlist may have a previously cached image
