@@ -9,8 +9,8 @@ WEBSITE http://kodi.tv
 VERSION_MAJOR 21
 VERSION_MINOR 0
 VERSION_TAG
-VERSION_CODE 21.0.0
-ADDON_API 21.0.0
+VERSION_CODE 21.0.1
+ADDON_API 21.0.1
 ADDON_REPOS repository.xbmc.org|https://mirrors.kodi.tv
 APP_PACKAGE org.xbmc.kodi
 PACKAGE_IDENTITY XBMCFoundation.Kodi
