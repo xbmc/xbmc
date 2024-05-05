@@ -429,7 +429,7 @@ std::string CPVRClient::GetInstanceName() const
     Addon()->GetSettingString(ADDON_SETTING_INSTANCE_NAME_VALUE, instanceName, InstanceId());
     return instanceName;
   }
-  return "";
+  return Name();
 }
 
 PVR_ERROR CPVRClient::GetDriveSpace(uint64_t& iTotal, uint64_t& iUsed) const
