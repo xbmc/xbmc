@@ -18,8 +18,11 @@
 #include "guilib/TextureBase.h"
 #include "guilib/iimage.h"
 #include "guilib/imagefactory.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "windowing/WinSystem.h"
 #if defined(TARGET_DARWIN_EMBEDDED)
 #include <ImageIO/ImageIO.h>
 #include "filesystem/File.h"
@@ -236,26 +239,59 @@ bool CTexture::LoadIImage(IImage* pImage,
                           unsigned int width,
                           unsigned int height)
 {
-  if(pImage != NULL && pImage->LoadImageFromMemory(buffer, bufSize, width, height))
+  if (pImage == nullptr)
+    return false;
+
+  if (!pImage->LoadImageFromMemory(buffer, bufSize, width, height))
+    return false;
+
+  if (pImage->Width() == 0 || pImage->Height() == 0)
+    return false;
+
+  Allocate(pImage->Width(), pImage->Height(), XB_FMT_A8R8G8B8);
+
+  if (m_pixels == nullptr)
+    return false;
+
+  if (!pImage->Decode(m_pixels, GetTextureWidth(), GetRows(), GetPitch(), XB_FMT_A8R8G8B8))
+    return false;
+
+  if (pImage->Orientation())
+    m_orientation = pImage->Orientation() - 1;
+
+  m_hasAlpha = pImage->hasAlpha();
+  m_originalWidth = pImage->originalWidth();
+  m_originalHeight = pImage->originalHeight();
+  m_imageWidth = pImage->Width();
+  m_imageHeight = pImage->Height();
+
+  ClampToEdge();
+
+  LoadToGPUAsync();
+
+  return true;
+}
+
+void CTexture::LoadToGPUAsync()
+{
+  if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiAsyncTextureUpload)
+    return;
+
+  // Already in main context?
+  if (CServiceBroker::GetWinSystem()->HasContext())
   {
-    if (pImage->Width() > 0 && pImage->Height() > 0)
-    {
-      Allocate(pImage->Width(), pImage->Height(), XB_FMT_A8R8G8B8);
-      if (m_pixels != nullptr && pImage->Decode(m_pixels, GetTextureWidth(), GetRows(), GetPitch(), XB_FMT_A8R8G8B8))
-      {
-        if (pImage->Orientation())
-          m_orientation = pImage->Orientation() - 1;
-        m_hasAlpha = pImage->hasAlpha();
-        m_originalWidth = pImage->originalWidth();
-        m_originalHeight = pImage->originalHeight();
-        m_imageWidth = pImage->Width();
-        m_imageHeight = pImage->Height();
-        ClampToEdge();
-        return true;
-      }
-    }
+    LoadToGPU();
+    return;
   }
-  return false;
+
+  if (!CServiceBroker::GetWinSystem()->BindTextureUploadContext())
+    return;
+
+  LoadToGPU();
+
+  SyncGPU();
+
+  CServiceBroker::GetWinSystem()->UnbindTextureUploadContext();
 }
 
 bool CTexture::LoadFromMemory(unsigned int width,

@@ -91,6 +91,10 @@ public:
   virtual void CreateTextureObject() = 0;
   virtual void DestroyTextureObject() = 0;
   virtual void LoadToGPU() = 0;
+  /*! 
+   * \brief Blocks execution until the previous GFX commands have been processed.
+   */
+  virtual void SyncGPU(){};
   virtual void BindToUnit(unsigned int unit) = 0;
 
 private:
@@ -106,4 +110,8 @@ protected:
                   unsigned int bufSize,
                   unsigned int width,
                   unsigned int height);
+  /*! 
+   * \brief Uploads the texture to the GPU. 
+   */
+  void LoadToGPUAsync();
 };

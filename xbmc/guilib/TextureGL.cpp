@@ -229,6 +229,11 @@ void CGLTexture::LoadToGPU()
   m_loadedToGPU = true;
 }
 
+void CGLTexture::SyncGPU()
+{
+  glFinish();
+}
+
 void CGLTexture::BindToUnit(unsigned int unit)
 {
   glActiveTexture(GL_TEXTURE0 + unit);

@@ -1226,6 +1226,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetInt(pElement, "anisotropicfiltering", m_guiAnisotropicFiltering);
     XMLUtils::GetBoolean(pElement, "fronttobackrendering", m_guiFrontToBackRendering);
     XMLUtils::GetBoolean(pElement, "geometryclear", m_guiGeometryClear);
+    XMLUtils::GetBoolean(pElement, "asynctextureupload", m_guiAsyncTextureUpload);
   }
 
   std::string seekSteps;
