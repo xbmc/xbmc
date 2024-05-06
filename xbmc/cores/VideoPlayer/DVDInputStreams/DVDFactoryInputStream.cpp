@@ -92,6 +92,11 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
     return std::make_shared<CDVDInputStreamNavigator>(pPlayer, fileitem);
   }
 
+  if (VIDEO::IsDVDPlaylist(fileitem))
+    return std::make_shared<CDVDInputStreamNavigator>(pPlayer, fileitem);
+  if (VIDEO::IsBlurayPlaylist(fileitem))
+    return std::make_shared<CDVDInputStreamBluray>(pPlayer, fileitem);
+
 #ifdef HAS_OPTICAL_DRIVE
   if (file.compare(CServiceBroker::GetMediaManager().TranslateDevicePath("")) == 0)
   {
@@ -104,6 +109,10 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
     return std::make_shared<CDVDInputStreamNavigator>(pPlayer, fileitem);
   }
 #endif
+
+  CURL url{file};
+  if (url.IsProtocol("dvd"))
+    return std::make_shared<CDVDInputStreamNavigator>(pPlayer, fileitem);
 
   if (VIDEO::IsDVDFile(fileitem, false, true))
     return std::make_shared<CDVDInputStreamNavigator>(pPlayer, fileitem);

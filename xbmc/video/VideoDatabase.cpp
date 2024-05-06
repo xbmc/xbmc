@@ -3024,13 +3024,17 @@ int CVideoDatabase::SetDetailsForSeason(const CVideoInfoTag& details, const std:
   return -1;
 }
 
-bool CVideoDatabase::SetFileForEpisode(const std::string& fileAndPath, int idEpisode, int idFile)
+bool CVideoDatabase::SetFileForEpisode(const std::string& fileAndPath,
+                                       int idEpisode,
+                                       int idFile,
+                                       int idOriginalFile)
 {
   try
   {
     BeginTransaction();
-    std::string sql = PrepareSQL("UPDATE episode SET c18='%s', idFile=%i WHERE idEpisode=%i",
-                                 fileAndPath.c_str(), idFile, idEpisode);
+    std::string sql =
+        PrepareSQL("UPDATE episode SET c18='%s', idFile=%i, c08=%i WHERE idEpisode=%i",
+                   fileAndPath.c_str(), idFile, idOriginalFile, idEpisode);
     m_pDS->exec(sql);
     CommitTransaction();
 
@@ -3493,12 +3497,48 @@ void CVideoDatabase::DeleteResumeBookMark(const CFileItem& item)
   }
 }
 
-void CVideoDatabase::GetEpisodesByFile(const std::string& strFilenameAndPath, std::vector<CVideoInfoTag>& episodes)
+void CVideoDatabase::GetEpisodesByFile(const std::string& strFilenameAndPath,
+                                       std::vector<CVideoInfoTag>& episodes)
+{
+  return GetEpisodesByFileId(GetFileId(strFilenameAndPath), episodes);
+}
+
+void CVideoDatabase::GetEpisodesByFileId(const int& fileId, std::vector<CVideoInfoTag>& episodes)
 {
   try
   {
-    std::string strSQL = PrepareSQL("select * from episode_view where idFile=%i order by c%02d, c%02d asc", GetFileId(strFilenameAndPath), VIDEODB_ID_EPISODE_SORTSEASON, VIDEODB_ID_EPISODE_SORTEPISODE);
+    std::string strSQL = PrepareSQL(
+        "select * from episode_view where idFile=%i or c%02d=%i order by c%02d, c%02d asc", fileId,
+        VIDEODB_ID_EPISODE_ORIGINALIDFILE, fileId, VIDEODB_ID_EPISODE_SORTSEASON,
+        VIDEODB_ID_EPISODE_SORTEPISODE);
     m_pDS->query(strSQL);
+
+    // Expect all original fileIds (if present) to be the same
+    int originalId{-1};
+    while (!m_pDS->eof())
+    {
+      const int currentOriginalId = m_pDS->fv(10).get_asInt();
+      if (originalId == -1)
+        originalId = currentOriginalId;
+      else if (originalId > 0 && currentOriginalId > 0 && originalId != currentOriginalId)
+      {
+        originalId = -1;
+        break;
+      }
+      m_pDS->next();
+    }
+    if (originalId > 0 && originalId != fileId)
+    {
+      // Use the original fileId to get all episodes on disc
+      strSQL = PrepareSQL(
+          "select * from episode_view where idFile=%i or c%02d=%i order by c%02d, c%02d asc",
+          originalId, VIDEODB_ID_EPISODE_ORIGINALIDFILE, originalId, VIDEODB_ID_EPISODE_SORTSEASON,
+          VIDEODB_ID_EPISODE_SORTEPISODE);
+      m_pDS->query(strSQL);
+    }
+    else
+      m_pDS->first();
+
     while (!m_pDS->eof())
     {
       episodes.emplace_back(GetDetailsForEpisode(m_pDS));
@@ -3508,7 +3548,7 @@ void CVideoDatabase::GetEpisodesByFile(const std::string& strFilenameAndPath, st
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strFilenameAndPath);
+    CLog::Log(LOGERROR, "File Id {} ({}) failed", __FUNCTION__, fileId);
   }
 }
 
@@ -4259,7 +4299,7 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag)
 
   const std::string path = tag.m_strFileNameAndPath;
   int fileId{-1};
-  if (URIUtils::GetExtension(path) == ".mpls")
+  if (URIUtils::IsBlurayPlaylist(path) || URIUtils::IsDVDPlaylist(path))
     fileId = GetFileId(path);
   else
     fileId = tag.m_iFileId;
@@ -6605,10 +6645,9 @@ int CVideoDatabase::GetPlayCount(const std::string& strFilenameAndPath)
 
 int CVideoDatabase::GetPlayCount(const CFileItem &item)
 {
-  if (IsBlurayPlaylist(item))
+  if (IsBlurayPlaylist(item) || IsDVDPlaylist(item))
     return GetPlayCount(GetFileId(item.GetDynPath()));
-  else
-    return GetPlayCount(GetFileId(item));
+  return GetPlayCount(GetFileId(item));
 }
 
 CDateTime CVideoDatabase::GetLastPlayed(int iFileId)
@@ -6679,7 +6718,7 @@ void CVideoDatabase::UpdateFanart(const CFileItem& item, VideoDbContentType type
 CDateTime CVideoDatabase::SetPlayCount(const CFileItem& item, int count, const CDateTime& date)
 {
   int id{-1};
-  if (IsBlurayPlaylist(item))
+  if (IsBlurayPlaylist(item) || IsDVDPlaylist(item))
     id = AddFile(item.GetDynPath());
   else if (item.HasProperty("original_listitem_url") &&
            URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))

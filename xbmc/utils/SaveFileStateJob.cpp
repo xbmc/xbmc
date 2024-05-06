@@ -45,8 +45,9 @@ void CSaveFileState::DoWork(CFileItem& item,
     progressTrackingFile =
         item.GetVideoInfoTag()
             ->m_strFileNameAndPath; // this variable contains removable:// suffixed by disc label+uniqueid or is empty if label not uniquely identified
-  else if (IsBlurayPlaylist(item) && (item.GetVideoContentType() == VideoDbContentType::MOVIES ||
-                                      item.GetVideoContentType() == VideoDbContentType::EPISODES))
+  else if ((IsBlurayPlaylist(item) || IsDVDPlaylist(item)) &&
+           (item.GetVideoContentType() == VideoDbContentType::MOVIES ||
+            item.GetVideoContentType() == VideoDbContentType::EPISODES))
     progressTrackingFile = item.GetDynPath();
   else if (item.HasVideoInfoTag() && IsVideoDb(item))
     progressTrackingFile =
@@ -170,8 +171,12 @@ void CSaveFileState::DoWork(CFileItem& item,
           CFileItem dbItem(item);
 
           // Check whether the item's db streamdetails need updating
-          if (!videodatabase.GetStreamDetails(dbItem) ||
-              dbItem.GetVideoInfoTag()->m_streamDetails != item.GetVideoInfoTag()->m_streamDetails)
+          if ((!videodatabase.GetStreamDetails(dbItem) ||
+               dbItem.GetVideoInfoTag()->m_streamDetails !=
+                   item.GetVideoInfoTag()->m_streamDetails) &&
+              item.m_titlesJob !=
+                  CFileItem::
+                      TITLES_JOB_ALL_EPISODES) // Don't update if multi-episode disc and browsing through Videos -> Files ...
           {
             const int idFile = videodatabase.SetStreamDetailsForFile(
                 item.GetVideoInfoTag()->m_streamDetails, item.GetDynPath());
@@ -180,7 +185,7 @@ void CSaveFileState::DoWork(CFileItem& item,
                                             idFile);
             else if (item.GetVideoContentType() == VideoDbContentType::EPISODES)
               videodatabase.SetFileForEpisode(item.GetDynPath(), item.GetVideoInfoTag()->m_iDbId,
-                                              idFile);
+                                              idFile, item.GetVideoInfoTag()->m_iFileId);
             updateListing = true;
           }
         }

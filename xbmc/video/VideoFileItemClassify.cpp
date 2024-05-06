@@ -77,6 +77,11 @@ bool IsBlurayPlaylist(const CFileItem& item)
   return StringUtils::EqualsNoCase(URIUtils::GetExtension(item.GetDynPath()), ".mpls");
 }
 
+bool IsDVDPlaylist(const CFileItem& item)
+{
+  return URIUtils::IsDVDPlaylist(item.GetPath()) || URIUtils::IsDVDPlaylist(item.GetDynPath());
+}
+
 bool IsSubtitle(const CFileItem& item)
 {
   return URIUtils::HasExtension(item.GetPath(),

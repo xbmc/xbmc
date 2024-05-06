@@ -291,7 +291,8 @@ void URIUtils::GetCommonPath(std::string& strParent, const std::string& strPath)
 bool URIUtils::HasParentInHostname(const CURL& url)
 {
   return url.IsProtocol("zip") || url.IsProtocol("apk") || url.IsProtocol("bluray") ||
-         url.IsProtocol("udf") || url.IsProtocol("iso9660") || url.IsProtocol("xbt") ||
+         url.IsProtocol("dvd") || url.IsProtocol("udf") || url.IsProtocol("iso9660") ||
+         url.IsProtocol("xbt") ||
          (CServiceBroker::IsAddonInterfaceUp() &&
           CServiceBroker::GetFileExtensionProvider().EncodedHostName(url.GetProtocol()));
 }
@@ -779,6 +780,11 @@ bool URIUtils::IsDVD(const std::string& strFile)
   return false;
 }
 
+bool URIUtils::IsDVDPlaylist(const std::string& strFile)
+{
+  return (IsProtocol(strFile, "dvd") && StringUtils::Contains(strFile, "/title/", false));
+}
+
 bool URIUtils::IsStack(const std::string& strFile)
 {
   return IsProtocol(strFile, "stack");
@@ -1173,6 +1179,11 @@ bool URIUtils::IsVideoDb(const std::string& strFile)
 bool URIUtils::IsBluray(const std::string& strFile)
 {
   return IsProtocol(strFile, "bluray");
+}
+
+bool URIUtils::IsBlurayPlaylist(const std::string& strFile)
+{
+  return (IsBluray(strFile) && GetExtension(strFile) == ".mpls");
 }
 
 bool URIUtils::IsAndroidApp(const std::string &path)

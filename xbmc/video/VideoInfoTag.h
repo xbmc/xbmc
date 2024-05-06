@@ -394,6 +394,7 @@ public:
   int m_iIdUniqueID;
   int m_iDbId;
   int m_iFileId;
+  int m_originalFileId;
   int m_iSpecialSortSeason;
   int m_iSpecialSortEpisode;
   int m_iTrack;

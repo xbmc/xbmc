@@ -145,6 +145,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
     if (!mediapath.empty())
     {
       m_queuedItems.Add(std::make_shared<CFileItem>(mediapath, false));
+      m_queuedItems.Get(m_queuedItems.Size() - 1)->m_titlesJob = item->m_titlesJob;
       return;
     }
 

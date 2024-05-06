@@ -76,6 +76,7 @@ void CVideoInfoTag::Reset()
   m_iUserRating = 0;
   m_iDbId = -1;
   m_iFileId = -1;
+  m_originalFileId = -1;
   m_iBookmarkId = -1;
   m_iTrack = -1;
   m_fanart.m_xml.clear();
@@ -431,7 +432,10 @@ void CVideoInfoTag::Merge(CVideoInfoTag& other)
   if (other.m_iDbId != -1)
     m_iDbId = other.m_iDbId;
   if (other.m_iFileId != -1)
+  {
     m_iFileId = other.m_iFileId;
+    m_originalFileId = other.m_originalFileId;
+  }
   if (other.m_iBookmarkId != -1)
     m_iBookmarkId = other.m_iBookmarkId;
   if (other.m_iTrack != -1)
@@ -562,6 +566,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_iUserRating;
     ar << m_iDbId;
     ar << m_iFileId;
+    ar << m_originalFileId;
     ar << m_iSpecialSortSeason;
     ar << m_iSpecialSortEpisode;
     ar << m_iBookmarkId;
@@ -682,6 +687,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_iUserRating;
     ar >> m_iDbId;
     ar >> m_iFileId;
+    ar >> m_originalFileId;
     ar >> m_iSpecialSortSeason;
     ar >> m_iSpecialSortEpisode;
     ar >> m_iBookmarkId;
@@ -793,6 +799,7 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   value["userrating"] = m_iUserRating;
   value["dbid"] = m_iDbId;
   value["fileid"] = m_iFileId;
+  value["originalfileid"] = m_originalFileId;
   value["track"] = m_iTrack;
   value["showlink"] = m_showLink;
   m_streamDetails.Serialize(value["streamdetails"]);

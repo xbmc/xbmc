@@ -9,6 +9,7 @@
 #pragma once
 
 #include "utils/Variant.h"
+#include "video/VideoInfoTag.h"
 
 #include <string>
 
@@ -40,7 +41,22 @@ namespace XFILE
     DIR_FLAG_READ_CACHE    = (2 << 4), ///< Force reading from the directory cache (if available)
     DIR_FLAG_BYPASS_CACHE  = (2 << 5)  ///< Completely bypass the directory cache (no reading, no writing)
   };
-/*!
+
+  enum GET_TITLES_JOB
+  {
+    GET_TITLES_ONE = 0,
+    GET_TITLES_MAIN = 1,
+    GET_TITLES_ALL = 2
+  };
+
+  enum SORT_TITLES_JOB
+  {
+    SORT_TITLES_NONE = 0,
+    SORT_TITLES_EPISODE = 1,
+    SORT_TITLES_MOVIE = 2
+  };
+
+  /*!
  \ingroup filesystem
  \brief Interface to the directory on a file system.
 
@@ -48,102 +64,113 @@ namespace XFILE
  access the directories on a filesystem.
  \sa CDirectoryFactory
  */
-class IDirectory
-{
-public:
-  static void RegisterProfileManager(const CProfileManager &profileManager);
-  static void UnregisterProfileManager();
+  class IDirectory
+  {
+  public:
+    static void RegisterProfileManager(const CProfileManager& profileManager);
+    static void UnregisterProfileManager();
 
-  IDirectory();
-  virtual ~IDirectory(void);
-  /*!
+    IDirectory();
+    virtual ~IDirectory(void);
+    /*!
    \brief Get the \e items of the directory \e strPath.
    \param url Directory to read.
    \param items Retrieves the directory entries.
    \return Returns \e true, if successful.
    \sa CDirectoryFactory
    */
-  virtual bool GetDirectory(const CURL& url, CFileItemList &items) = 0;
-  /*!
+    virtual bool GetDirectory(const CURL& url, CFileItemList& items) { return false; }
+
+    virtual bool GetEpisodeDirectory(const CURL& url,
+                                     const CFileItem& episode,
+                                     CFileItemList& items,
+                                     const std::vector<CVideoInfoTag>& episodesOnDisc)
+    {
+      return false;
+    }
+
+    virtual bool GetMainItem(const CURL& url, CFileItem& main) { return false; }
+
+    /*!
    \brief Retrieve the progress of the current directory fetch (if possible).
    \return the progress as a float in the range 0..100.
    \sa GetDirectory, CancelDirectory
    */
-  virtual float GetProgress() const { return 0.0f; }
-  /*!
+    virtual float GetProgress() const { return 0.0f; }
+    /*!
    \brief Cancel the current directory fetch (if possible).
    \sa GetDirectory
    */
-  virtual void CancelDirectory() {}
-  /*!
+    virtual void CancelDirectory() {}
+    /*!
   \brief Create the directory
   \param url Directory to create.
   \return Returns \e true, if directory is created or if it already exists
   \sa CDirectoryFactory
   */
-  virtual bool Create(const CURL& url) { return false; }
-  /*!
+    virtual bool Create(const CURL& url) { return false; }
+    /*!
   \brief Check for directory existence
   \param url Directory to check.
   \return Returns \e true, if directory exists
   \sa CDirectoryFactory
   */
-  virtual bool Exists(const CURL& url) { return false; }
-  /*!
+    virtual bool Exists(const CURL& url) { return false; }
+    /*!
   \brief Removes the directory
   \param url Directory to remove.
   \return Returns \e false if not successful
   */
-  virtual bool Remove(const CURL& url) { return false; }
+    virtual bool Remove(const CURL& url) { return false; }
 
-  /*!
+    /*!
   \brief Recursively removes the directory
   \param url Directory to remove.
   \return Returns \e false if not successful
   */
-  virtual bool RemoveRecursive(const CURL& url) { return false; }
+    virtual bool RemoveRecursive(const CURL& url) { return false; }
 
-  /*!
+    /*!
   \brief Whether this file should be listed
   \param url File to test.
   \return Returns \e true if the file should be listed
   */
-  virtual bool IsAllowed(const CURL& url) const;
+    virtual bool IsAllowed(const CURL& url) const;
 
-  /*! \brief Whether to allow all files/folders to be listed.
+    /*! \brief Whether to allow all files/folders to be listed.
    \return Returns \e true if all files/folder should be listed.
    */
-  virtual bool AllowAll() const { return false; }
+    virtual bool AllowAll() const { return false; }
 
-  /*!
+    /*!
   \brief How this directory should be cached
   \param url Directory at hand.
   \return Returns the cache type.
   */
-  virtual DIR_CACHE_TYPE GetCacheType(const CURL& url) const { return DIR_CACHE_ONCE; }
+    virtual DIR_CACHE_TYPE GetCacheType(const CURL& url) const { return DIR_CACHE_ONCE; }
 
-  void SetMask(const std::string& strMask);
-  void SetFlags(int flags);
+    void SetMask(const std::string& strMask);
+    void SetFlags(int flags);
 
-  /*! \brief Process additional requirements before the directory fetch is performed.
+    /*! \brief Process additional requirements before the directory fetch is performed.
    Some directory fetches may require authentication, keyboard input etc.  The IDirectory subclass
    should call GetKeyboardInput, SetErrorDialog or RequireAuthentication and then return false
    from the GetDirectory method. CDirectory will then prompt for input from the user, before
    re-calling the GetDirectory method.
    \sa GetKeyboardInput, SetErrorDialog, RequireAuthentication
    */
-  bool ProcessRequirements();
+    bool ProcessRequirements();
 
-  /*!
+    /*!
   \brief Resolves a given item to a playable item
   \note Some directories (e.g. dvd, bluray, plugins etc) need to be translated/resolved to the actual playback url
   \param item The item being manipulated (which the path points to a vfs protocol implementation)
   \return true if the item was resolved, false if it failed to resolve
   */
-  virtual bool Resolve(CFileItem& item) const { return true; };
+    virtual bool Resolve(CFileItem& item) const { return true; };
 
-protected:
-  /*! \brief Prompt the user for some keyboard input
+  protected:
+    /*! \brief Prompt the user for some keyboard input
    Call this method from the GetDirectory method to retrieve additional input from the user.
    If this function returns false then no input has been received, and the GetDirectory call
    should return false.
@@ -152,9 +179,9 @@ protected:
    \return true if keyboard input has been received. False if it hasn't.
    \sa ProcessRequirements
    */
-  bool GetKeyboardInput(const CVariant &heading, std::string &input, bool hiddenInput = false);
+    bool GetKeyboardInput(const CVariant& heading, std::string& input, bool hiddenInput = false);
 
-  /*! \brief Show an error dialog on failure of GetDirectory call
+    /*! \brief Show an error dialog on failure of GetDirectory call
    Call this method from the GetDirectory method to set an error message to be shown to the user
    \param heading an integer or string heading for the error dialog.
    \param line1 the first line to be displayed (integer or string).
@@ -162,23 +189,26 @@ protected:
    \param line3 the first line to be displayed (integer or string).
    \sa ProcessRequirements
    */
-  void SetErrorDialog(const CVariant &heading, const CVariant &line1, const CVariant &line2 = 0, const CVariant &line3 = 0);
+    void SetErrorDialog(const CVariant& heading,
+                        const CVariant& line1,
+                        const CVariant& line2 = 0,
+                        const CVariant& line3 = 0);
 
-  /*! \brief Prompt the user for authentication of a URL.
+    /*! \brief Prompt the user for authentication of a URL.
    Call this method from the GetDirectory method when authentication is required from the user, before returning
    false from the GetDirectory call. The user will be prompted for authentication, and GetDirectory will be
    re-called.
    \param url the URL to authenticate.
    \sa ProcessRequirements
    */
-  void RequireAuthentication(const CURL& url);
+    void RequireAuthentication(const CURL& url);
 
-  static const CProfileManager *m_profileManager;
+    static const CProfileManager* m_profileManager;
 
-  std::string m_strFileMask;  ///< Holds the file mask specified by SetMask()
+    std::string m_strFileMask; ///< Holds the file mask specified by SetMask()
 
-  int m_flags; ///< Directory flags - see DIR_FLAG
+    int m_flags; ///< Directory flags - see DIR_FLAG
 
-  CVariant m_requirements;
-};
+    CVariant m_requirements;
+  };
 }

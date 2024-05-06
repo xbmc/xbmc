@@ -318,7 +318,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_EPISODE_AIRED = 5,
   VIDEODB_ID_EPISODE_THUMBURL = 6,
   VIDEODB_ID_EPISODE_THUMBURL_SPOOF = 7,
-  VIDEODB_ID_EPISODE_PLAYCOUNT = 8, // unused - feel free to repurpose
+  VIDEODB_ID_EPISODE_ORIGINALIDFILE = 8,
   VIDEODB_ID_EPISODE_RUNTIME = 9,
   VIDEODB_ID_EPISODE_DIRECTOR = 10,
   VIDEODB_ID_EPISODE_PRODUCTIONCODE = 11,
@@ -334,30 +334,28 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_EPISODE_MAX
 } VIDEODB_EPISODE_IDS;
 
-const struct SDbTableOffsets DbEpisodeOffsets[] =
-{
-  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strTitle) },
-  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPlot) },
-  { VIDEODB_TYPE_UNUSED, 0 }, // unused
-  { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iIdRating) },
-  { VIDEODB_TYPE_STRINGARRAY, my_offsetof(CVideoInfoTag,m_writingCredits) },
-  { VIDEODB_TYPE_DATE, my_offsetof(CVideoInfoTag,m_firstAired) },
-  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_data) },
-  { VIDEODB_TYPE_UNUSED, 0 }, // unused
-  { VIDEODB_TYPE_UNUSED, 0 }, // unused
-  { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_duration) },
-  { VIDEODB_TYPE_STRINGARRAY, my_offsetof(CVideoInfoTag,m_director) },
-  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strProductionCode) },
-  { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iSeason) },
-  { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iEpisode) },
-  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strOriginalTitle)},
-  { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iSpecialSortSeason) },
-  { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iSpecialSortEpisode) },
-  { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iBookmarkId) },
-  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_basePath) },
-  { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_parentPathID) },
-  { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iIdUniqueID) }
-};
+const struct SDbTableOffsets DbEpisodeOffsets[] = {
+    {VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag, m_strTitle)},
+    {VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag, m_strPlot)},
+    {VIDEODB_TYPE_UNUSED, 0}, // unused
+    {VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag, m_iIdRating)},
+    {VIDEODB_TYPE_STRINGARRAY, my_offsetof(CVideoInfoTag, m_writingCredits)},
+    {VIDEODB_TYPE_DATE, my_offsetof(CVideoInfoTag, m_firstAired)},
+    {VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag, m_strPictureURL.m_data)},
+    {VIDEODB_TYPE_UNUSED, 0}, // unused
+    {VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag, m_originalFileId)},
+    {VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag, m_duration)},
+    {VIDEODB_TYPE_STRINGARRAY, my_offsetof(CVideoInfoTag, m_director)},
+    {VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag, m_strProductionCode)},
+    {VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag, m_iSeason)},
+    {VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag, m_iEpisode)},
+    {VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag, m_strOriginalTitle)},
+    {VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag, m_iSpecialSortSeason)},
+    {VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag, m_iSpecialSortEpisode)},
+    {VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag, m_iBookmarkId)},
+    {VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag, m_basePath)},
+    {VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag, m_parentPathID)},
+    {VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag, m_iIdUniqueID)}};
 
 typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
 {
@@ -558,6 +556,7 @@ public:
   int GetSeasonId(int idShow, int season);
 
   void GetEpisodesByFile(const std::string& strFilenameAndPath, std::vector<CVideoInfoTag>& episodes);
+  void GetEpisodesByFileId(const int& fileId, std::vector<CVideoInfoTag>& episodes);
 
   int SetDetailsForItem(CVideoInfoTag& details, const std::map<std::string, std::string> &artwork);
   int SetDetailsForItem(int id, const MediaType& mediaType, CVideoInfoTag& details, const std::map<std::string, std::string> &artwork);
@@ -584,7 +583,10 @@ public:
                            const std::map<std::string, std::string>& artwork,
                            int idShow,
                            int idEpisode = -1);
-  bool SetFileForEpisode(const std::string& fileAndPath, int idEpisode, int idFile);
+  bool SetFileForEpisode(const std::string& fileAndPath,
+                         int idEpisode,
+                         int idFile,
+                         int idOriginalFile);
   bool SetFileForMovie(const std::string& fileAndPath, int idMovie, int idFile);
   int SetDetailsForMusicVideo(CVideoInfoTag& details,
                               const std::map<std::string, std::string>& artwork,
