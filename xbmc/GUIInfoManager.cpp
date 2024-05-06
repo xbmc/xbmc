@@ -6492,7 +6492,6 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     replaces `ListItem.AddonBroken`.
 ///     <p>
 ///   }
-
 ///   \table_row3{   <b>`ListItem.AddonType`</b>,
 ///                  \anchor ListItem_AddonType
 ///                  _string_,
