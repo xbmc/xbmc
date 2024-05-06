@@ -86,9 +86,10 @@ bool CPackerMAT::PackTrueHD(const uint8_t* data, int size)
   {
     if (m_state.outputTimingValid && (info.outputTiming != m_state.outputTiming))
     {
-      CLog::LogF(LOGWARNING,
-                 "detected a stream discontinuity -> output timing expected: {}, found: {}",
-                 m_state.outputTiming, info.outputTiming);
+      CLog::Log(LOGWARNING,
+                "CPackerMAT::PackTrueHD: detected a stream discontinuity -> output timing "
+                "expected: {}, found: {}",
+                m_state.outputTiming, info.outputTiming);
     }
     m_state.outputTiming = info.outputTiming;
     m_state.outputTimingValid = true;
@@ -241,9 +242,10 @@ void CPackerMAT::WritePadding()
   if (!m_logPadding && m_state.padding > MAT_BUFFER_SIZE / 2)
   {
     m_logPadding = true;
-    CLog::LogF(LOGWARNING,
-               "a large padding block of {} bytes is required due to unusual timestamps",
-               m_state.padding);
+    CLog::Log(LOGWARNING,
+              "CPackerMAT::WritePadding: a large padding block of {} bytes is required due to "
+              "unusual timestamps",
+              m_state.padding);
   }
   else if (m_logPadding && m_state.padding < MAT_BUFFER_SIZE / 2)
     m_logPadding = false;
@@ -349,11 +351,6 @@ void CPackerMAT::FlushPacket()
 
   // push MAT packet to output queue
   m_outputQueue.emplace_back(std::move(m_buffer));
-
-  if (m_outputQueue.size() > 1)
-    CLog::LogF(LOGDEBUG,
-               "several MAT packets generated in a row, the size of the output queue is {}",
-               m_outputQueue.size());
 
   // we expect 24 frames per MAT frame, so calculate an offset from that
   // this is done after delivery, because it modifies the duration of the frame,
