@@ -46,6 +46,8 @@ bool CDVDInputStreamFile::Open()
   // If this file is audio and/or video (= not a subtitle) flag to caller
   if (!m_item.IsSubtitle())
     flags |= READ_AUDIO_VIDEO;
+  else
+    flags |= READ_NO_BUFFER; // disable CFileStreamBuffer for subtitles
 
   std::string content = m_item.GetMimeType();
 
