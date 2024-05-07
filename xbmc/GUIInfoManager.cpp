@@ -1334,15 +1334,6 @@ const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
 ///     @skinning_v17 **[New Boolean Condition]** \link System_HasPVRAddon
 ///     `System.HasPVRAddon`\endlink <p>
 ///   }
-///   \table_row3{   <b>`System.PVRCount`</b>,
-///                  \anchor System_PVRCount
-///                  _integer_,
-///     @return Number of PVR clients enabled.
-///     @note If a PVR is enabled but unreachable\, it is still counted.
-///     <p><hr>
-///     @skinning_v22 **[New Integer Value]** \link System_PVRCount `System.PVRCount`\endlink
-///     <p>
-///   }
 ///   \table_row3{   <b>`System.HasCMS`</b>,
 ///                  \anchor System_HasCMS
 ///                  _boolean_,
@@ -1984,7 +1975,6 @@ const infomap system_labels[] = {
     {"hascms", SYSTEM_HAS_CMS},
     {"privacypolicy", SYSTEM_PRIVACY_POLICY},
     {"haspvraddon", SYSTEM_HAS_PVR_ADDON},
-    {"pvrcount", SYSTEM_PVR_COUNT},
     {"addonupdatecount", SYSTEM_ADDON_UPDATE_COUNT},
     {"supportscpuusage", SYSTEM_SUPPORTS_CPU_USAGE},
     {"supportedhdrtypes", SYSTEM_SUPPORTED_HDR_TYPES},
@@ -8220,10 +8210,20 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
 ///                  _string_,
 ///     @return The icon of the currently playing epg event\, if any.
 ///     <p><hr>
-///     @skinning_v18 **[New Infolabel]** \link PVR_EpgEventIcon `PVR_EpgEventIcon`\endlink
+///     @skinning_v18 **[New Infolabel]** \link PVR_EpgEventIcon `PVR.EpgEventIcon`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`PVR.ClientCount`</b>,
+///                  \anchor PVR_ClientCount
+///                  _integer_,
+///     @return Number of PVR clients enabled.
+///     <p><hr>
+///     @skinning_v22 **[New Integer Value]** \link PVR_ClientCount `PVR.ClientCount`\endlink
+///     <p>
+///   }
+/// \table_end
 ///
+/// -----------------------------------------------------------------------------
 // clang-format off
 const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING },
                                   { "hastimer",                 PVR_HAS_TIMER },
@@ -8303,7 +8303,8 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "timeshiftprogressepgend",    PVR_TIMESHIFT_PROGRESS_EPG_END },
                                   { "timeshiftprogressbufferstart", PVR_TIMESHIFT_PROGRESS_BUFFER_START },
                                   { "timeshiftprogressbufferend", PVR_TIMESHIFT_PROGRESS_BUFFER_END },
-                                  { "epgeventicon",               PVR_EPG_EVENT_ICON }};
+                                  { "epgeventicon",               PVR_EPG_EVENT_ICON },
+                                  { "clientcount",                PVR_CLIENT_COUNT }};
 // clang-format on
 
 /// \page modules__infolabels_boolean_conditions

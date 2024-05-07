@@ -1342,6 +1342,9 @@ bool CPVRGUIInfo::GetPVRInt(const CFileItem* item, const CGUIInfo& info, int& iV
       else
         iValue = 0xFF;
       return true;
+    case PVR_CLIENT_COUNT:
+      iValue = CServiceBroker::GetPVRManager().Clients()->EnabledClientAmount();
+      return true;
   }
   return false;
 }
