@@ -14,39 +14,41 @@ namespace XFILE
 {
 
 /* indicate that caller can handle truncated reads, where function returns before entire buffer has been filled */
-  static const unsigned int READ_TRUNCATED = 0x01;
+static const unsigned int READ_TRUNCATED = 0x01;
 
 /* indicate that that caller support read in the minimum defined chunk size, this disables internal cache then */
-  static const unsigned int READ_CHUNKED = 0x02;
+static const unsigned int READ_CHUNKED = 0x02;
 
 /* use cache to access this file */
-  static const unsigned int READ_CACHED = 0x04;
+static const unsigned int READ_CACHED = 0x04;
 
 /* open without caching. regardless to file type. */
-  static const unsigned int READ_NO_CACHE = 0x08;
+static const unsigned int READ_NO_CACHE = 0x08;
 
 /* calculate bitrate for file while reading */
-  static const unsigned int READ_BITRATE = 0x10;
+static const unsigned int READ_BITRATE = 0x10;
 
 /* indicate to the caller we will seek between multiple streams in the file frequently */
-  static const unsigned int READ_MULTI_STREAM = 0x20;
+static const unsigned int READ_MULTI_STREAM = 0x20;
 
-/* indicate to the caller file is audio and/or video (and e.g. may grow) */
-  static const unsigned int READ_AUDIO_VIDEO = 0x40;
+// Indicate to the caller file is audio and/or video and is suitable for caching with FileCache or StreamBuffer.
+// The final method used will depend on the user's settings and file location, e.g. user can disable FileCache.
+// This flag ensures that at least the buffer size necessary to read with the appropriate chunk size will be used.
+static const unsigned int READ_AUDIO_VIDEO = 0x40;
 
 /* indicate that caller will do write operations before reading  */
-  static const unsigned int READ_AFTER_WRITE = 0x80;
+static const unsigned int READ_AFTER_WRITE = 0x80;
 
 /* indicate that caller want to reopen a file if its already open  */
-  static const unsigned int READ_REOPEN = 0x100;
+static const unsigned int READ_REOPEN = 0x100;
 
 /* indicate that caller want open a file without intermediate buffer regardless to file type */
-  static const unsigned int READ_NO_BUFFER = 0x200;
+static const unsigned int READ_NO_BUFFER = 0x200;
 
 struct SNativeIoControl
 {
-  unsigned long int   request;
-  void*               param;
+  unsigned long int request;
+  void* param;
 };
 
 struct SCacheStatus
