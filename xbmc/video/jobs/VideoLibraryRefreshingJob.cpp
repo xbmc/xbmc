@@ -181,6 +181,8 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       {
         CFileItemList items;
         items.Add(m_item);
+        items.SetPath(m_item->m_bIsFolder ? URIUtils::GetParentPath(m_item->GetPath())
+                                          : URIUtils::GetDirectory(m_item->GetPath()));
         CVideoInfoScanner scanner;
         if (scanner.RetrieveVideoInfo(items, scanSettings.parent_name, scraper->Content(),
                                       !ignoreNfo, nullptr, m_refreshAll, GetProgressDialog()))
