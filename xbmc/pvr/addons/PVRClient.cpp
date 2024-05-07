@@ -408,9 +408,22 @@ const std::string& CPVRClient::GetConnectionString() const
   return m_strConnectionString;
 }
 
+std::string CPVRClient::GetClientName() const
+{
+  return Name();
+}
+
+std::string CPVRClient::GetInstanceName() const
+{
+  std::string instanceName;
+  if (Addon()->SupportsInstanceSettings())
+    Addon()->GetSettingString(ADDON_SETTING_INSTANCE_NAME_VALUE, instanceName, InstanceId());
+
+  return instanceName;
+}
+
 std::string CPVRClient::GetFullClientName() const
 {
-
   if (Addon()->SupportsInstanceSettings())
   {
     std::string instanceName;
@@ -419,17 +432,6 @@ std::string CPVRClient::GetFullClientName() const
       return StringUtils::Format("{} ({})", Name(), instanceName);
   }
   return Name();
-}
-
-std::string CPVRClient::GetInstanceName() const
-{
-  if (Addon()->SupportsInstanceSettings())
-  {
-    std::string instanceName;
-    Addon()->GetSettingString(ADDON_SETTING_INSTANCE_NAME_VALUE, instanceName, InstanceId());
-    return instanceName;
-  }
-  return "";
 }
 
 PVR_ERROR CPVRClient::GetDriveSpace(uint64_t& iTotal, uint64_t& iUsed) const

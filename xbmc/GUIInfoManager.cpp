@@ -6928,14 +6928,6 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     <p><hr>
 ///     @skinning_v21 **[New Infolabel]** \link ListItem_SongVideoURL `ListItem.SongVideoURL`\endlink
 ///   }
-///   \table_row3{   <b>`ListItem.BackendInstanceName`</b>,
-///                  \anchor ListItem_BackendInstanceName
-///                  _string_,
-///     @return The name used by the PVR client addon instance for the selected item.
-///     <p><hr>
-///     @skinning_v22 **[New Infolabel]** \link ListItem_BackendInstanceName `ListItem.BackendInstanceName`\endlink
-///     <p>
-///   }
 ///   \table_row3{   <b>`ListItem.VideoWidth`</b>,
 ///                  \anchor ListItem_VideoWidth
 ///                  _string_,
@@ -6977,6 +6969,25 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @return **True** when the selected item has video extras.
 ///     <p><hr>
 ///     @skinning_v21 **[New Infolabel]** \link ListItem_HasVideoExtras `ListItem.HasVideoExtras`\endlink
+///   }
+///   \table_row3{   <b>`ListItem.PVRClientName`</b>,
+///                  \anchor ListItem_PVRClientName
+///                  _string_,
+///     @return If selected item is of type PVR (recording, timer, EPG), the name of the PVR client
+///     add-on, as specified by the add-on developer. Empty if theitem is not of type PVR.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link ListItem_PVRClientName `ListItem.PVRClientName`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.PVRInstanceName`</b>,
+///                  \anchor ListItem_PVRInstanceName
+///                  _string_,
+///     @return If selected item is of type PVR (recording, timer, EPG), the name of the instance
+///     of the PVR client add-on, as specified by the user in the add-on settings. Empty if the
+///     PVR client add-on does not support multiple instances or item is not of type PVR.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link ListItem_PVRInstanceName `ListItem.PVRInstanceName`\endlink
+///     <p>
 ///   }
 /// \table_end
 ///
@@ -7199,7 +7210,8 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "isvideoextra",     LISTITEM_ISVIDEOEXTRA },
                                   { "videoversionname", LISTITEM_VIDEOVERSION_NAME },
                                   { "hasvideoextras",   LISTITEM_HASVIDEOEXTRAS },
-                                  { "backendinstancename", LISTITEM_BACKEND_INSTANCE_NAME },
+                                  { "pvrclientname",    LISTITEM_PVR_CLIENT_NAME },
+                                  { "pvrinstancename",  LISTITEM_PVR_INSTANCE_NAME },
 };
 // clang-format on
 

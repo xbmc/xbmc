@@ -164,17 +164,24 @@ public:
   const std::string& GetConnectionString() const;
 
   /*!
+   * @brief The name of the PVR client, as specified by the addon developer.
+   * @return string that can be used in log messages and the GUI.
+   */
+  std::string GetClientName() const;
+
+  /*!
+   * @brief The name of the PVR client addon instance, as specified by the user in the addon
+   * settings. Empty if addon does not support multiple instances.
+   * @return string that can be used in log messages and the GUI.
+   */
+  std::string GetInstanceName() const;
+
+  /*!
    * @brief A name used to uniquely identify the client, inclusing addon name and instance
    * name, if multiple instances are supported by the client implementation.
    * @return string that can be used in log messages and the GUI.
    */
   std::string GetFullClientName() const;
-
-  /*!
-   * @brief The name used by the PVR client addon instance
-   * @return string that can be used in log messages and the GUI.
-   */
-  std::string GetInstanceName() const;
 
   /*!
    * @brief Get the disk space reported by the server.
