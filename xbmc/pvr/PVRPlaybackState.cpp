@@ -222,7 +222,7 @@ void CPVRPlaybackState::OnPlaybackStarted(const CFileItem& item)
     const std::shared_ptr<const CPVRClient> client =
         CServiceBroker::GetPVRManager().GetClient(m_playingClientId);
     if (client)
-      m_strPlayingClientName = client->GetFriendlyName();
+      m_strPlayingClientName = client->GetFullClientName();
   }
 }
 

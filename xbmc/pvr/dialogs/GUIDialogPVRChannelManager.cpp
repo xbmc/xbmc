@@ -840,7 +840,7 @@ void CGUIDialogPVRChannelManager::Update()
         CServiceBroker::GetPVRManager().GetClient(*channelFile);
     if (client)
     {
-      channelFile->SetProperty(PROPERTY_CLIENT_NAME, client->GetFriendlyName());
+      channelFile->SetProperty(PROPERTY_CLIENT_NAME, client->GetFullClientName());
       channelFile->SetProperty(PROPERTY_CLIENT_SUPPORTS_SETTINGS,
                                client->GetClientCapabilities().SupportsChannelSettings());
     }

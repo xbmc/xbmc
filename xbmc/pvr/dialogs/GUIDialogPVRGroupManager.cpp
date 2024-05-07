@@ -585,7 +585,7 @@ void CGUIDialogPVRGroupManager::Update()
     const std::shared_ptr<const CPVRClient> client =
         CServiceBroker::GetPVRManager().GetClient(*group);
     if (client)
-      group->SetProperty(PROPERTY_CLIENT_NAME, client->GetFriendlyName());
+      group->SetProperty(PROPERTY_CLIENT_NAME, client->GetFullClientName());
   }
 
   // Load group thumbnails

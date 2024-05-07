@@ -391,7 +391,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimersContainer& timers,
         {
           job->AddEvent(m_settings.GetBoolValue(CSettings::SETTING_PVRRECORD_TIMERNOTIFICATIONS),
                         EventLevel::Information, // info, no error
-                        client->GetFriendlyName(), entry.second, client->Icon());
+                        client->GetFullClientName(), entry.second, client->Icon());
         }
       }
 

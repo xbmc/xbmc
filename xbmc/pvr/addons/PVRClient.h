@@ -164,10 +164,11 @@ public:
   const std::string& GetConnectionString() const;
 
   /*!
-   * @brief A friendly name used to uniquely identify the addon instance
+   * @brief A name used to uniquely identify the client, inclusing addon name and instance
+   * name, if multiple instances are supported by the client implementation.
    * @return string that can be used in log messages and the GUI.
    */
-  const std::string GetFriendlyName() const;
+  std::string GetFullClientName() const;
 
   /*!
    * @brief The name used by the PVR client addon instance
