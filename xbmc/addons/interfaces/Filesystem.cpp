@@ -137,8 +137,6 @@ unsigned int Interface_Filesystem::TranslateFileReadBitsToKodi(unsigned int addo
 
   if (addonFlags & ADDON_READ_TRUNCATED)
     kodiFlags |= READ_TRUNCATED;
-  if (addonFlags & ADDON_READ_CHUNKED)
-    kodiFlags |= READ_CHUNKED;
   if (addonFlags & ADDON_READ_CACHED)
     kodiFlags |= READ_CACHED;
   if (addonFlags & ADDON_READ_NO_CACHE)
@@ -153,6 +151,8 @@ unsigned int Interface_Filesystem::TranslateFileReadBitsToKodi(unsigned int addo
     kodiFlags |= READ_AFTER_WRITE;
   if (addonFlags & READ_REOPEN)
     kodiFlags |= READ_REOPEN;
+  if (addonFlags & ADDON_READ_NO_BUFFER)
+    kodiFlags |= READ_NO_BUFFER;
 
   return kodiFlags;
 }
