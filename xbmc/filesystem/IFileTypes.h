@@ -16,9 +16,6 @@ namespace XFILE
 /* indicate that caller can handle truncated reads, where function returns before entire buffer has been filled */
 static const unsigned int READ_TRUNCATED = 0x01;
 
-/* indicate that that caller support read in the minimum defined chunk size, this disables internal cache then */
-static const unsigned int READ_CHUNKED = 0x02;
-
 /* use cache to access this file */
 static const unsigned int READ_CACHED = 0x04;
 

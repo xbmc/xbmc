@@ -66,7 +66,7 @@ bool CFile::Copy(const CURL& url2, const CURL& dest, XFILE::IFileCallback* pCall
   CURL url(url2);
   if (StringUtils::StartsWith(url.Get(), "zip://") || URIUtils::IsInAPK(url.Get()))
     url.SetOptions("?cache=no");
-  if (file.Open(url.Get(), READ_TRUNCATED | READ_CHUNKED))
+  if (file.Open(url.Get(), READ_TRUNCATED | READ_NO_BUFFER))
   {
 
     CFile newFile;
@@ -389,7 +389,7 @@ bool CFile::ShouldUseStreamBuffer(const CURL& url)
   if (m_flags & READ_NO_BUFFER)
     return false;
 
-  if (m_flags & READ_CHUNKED || m_pFile->GetChunkSize() > 0)
+  if (m_flags & READ_AUDIO_VIDEO)
     return true;
 
   // file size > 200 MB but not in optical disk

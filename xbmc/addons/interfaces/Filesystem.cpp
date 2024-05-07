@@ -138,7 +138,9 @@ unsigned int Interface_Filesystem::TranslateFileReadBitsToKodi(unsigned int addo
   if (addonFlags & ADDON_READ_TRUNCATED)
     kodiFlags |= READ_TRUNCATED;
   if (addonFlags & ADDON_READ_CHUNKED)
-    kodiFlags |= READ_CHUNKED;
+    CLog::Log(LOGWARNING,
+              "Interface_Filesystem::{} - detected use of deprecated 'ADDON_READ_CHUNKED' flag",
+              __FUNCTION__);
   if (addonFlags & ADDON_READ_CACHED)
     kodiFlags |= READ_CACHED;
   if (addonFlags & ADDON_READ_NO_CACHE)

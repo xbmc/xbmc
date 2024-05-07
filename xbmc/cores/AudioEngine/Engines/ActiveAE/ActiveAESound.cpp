@@ -110,7 +110,7 @@ CSoundPacket *CActiveAESound::GetSound(bool orig)
 
 bool CActiveAESound::Prepare()
 {
-  unsigned int flags = READ_TRUNCATED | READ_CHUNKED;
+  unsigned int flags = READ_TRUNCATED;
   m_pFile = new CFile();
 
   if (!m_pFile->Open(m_filename, flags))
