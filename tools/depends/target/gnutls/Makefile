@@ -1,8 +1,7 @@
 include ../../Makefile.include GNUTLS-VERSION ../../download-files.include
 DEPS = ../../Makefile.include Makefile ../../download-files.include \
                               add-dl-as-private-lib.patch \
-                              03-support-correct-cisdigit.patch \
-                              android-fpending.patch
+                              03-support-correct-cisdigit.patch
 
 # disable rpl_malloc and rpl_realloc symbols in glib
 # causes linking errors in libmicrohttpd and ffmpeg with missing symbols
@@ -48,7 +47,6 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../add-dl-as-private-lib.patch
 	cd $(PLATFORM); patch -p1 -i ../03-support-correct-cisdigit.patch
-	cd $(PLATFORM); patch -p1 -i ../android-fpending.patch
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
 
