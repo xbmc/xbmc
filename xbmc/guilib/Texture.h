@@ -88,6 +88,11 @@ public:
               const unsigned char* pixels,
               bool loadToGPU);
 
+  /*! 
+   * \brief Uploads the texture to the GPU. 
+   */
+  void LoadToGPUAsync();
+
   virtual void CreateTextureObject() = 0;
   virtual void DestroyTextureObject() = 0;
   virtual void LoadToGPU() = 0;
@@ -110,8 +115,4 @@ protected:
                   unsigned int bufSize,
                   unsigned int width,
                   unsigned int height);
-  /*! 
-   * \brief Uploads the texture to the GPU. 
-   */
-  void LoadToGPUAsync();
 };

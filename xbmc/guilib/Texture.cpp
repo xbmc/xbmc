@@ -18,8 +18,6 @@
 #include "guilib/TextureBase.h"
 #include "guilib/iimage.h"
 #include "guilib/imagefactory.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
@@ -267,22 +265,14 @@ bool CTexture::LoadIImage(IImage* pImage,
 
   ClampToEdge();
 
-  LoadToGPUAsync();
-
   return true;
 }
 
 void CTexture::LoadToGPUAsync()
 {
-  if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiAsyncTextureUpload)
-    return;
-
   // Already in main context?
   if (CServiceBroker::GetWinSystem()->HasContext())
-  {
-    LoadToGPU();
     return;
-  }
 
   if (!CServiceBroker::GetWinSystem()->BindTextureUploadContext())
     return;
