@@ -518,7 +518,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
         else
           nextWidth = textWidth + c->m_advance;
 
-        if (nextWidth > maxPixelWidth)
+        if (maxPixelWidth > 0 && nextWidth > maxPixelWidth)
         {
           // Start rendering from the glyph that does not exceed the maximum width
           startPosGlyph = std::distance(itRGlyph, glyphs.crend());
@@ -546,7 +546,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
         else
           nextWidth = textWidth + c->m_advance;
 
-        if (nextWidth > maxPixelWidth)
+        if (maxPixelWidth > 0 && nextWidth > maxPixelWidth)
           break;
 
         textWidth = nextWidth;
