@@ -24,7 +24,6 @@
 #include <atomic>
 #include <chrono>
 #include <memory>
-#include <optional>
 #include <string>
 #include <vector>
 
@@ -219,7 +218,6 @@ protected:
 
   std::chrono::time_point<std::chrono::steady_clock> m_lastRenderTime;
   bool m_skipGuiRender = false;
-  std::optional<bool> m_guiRenderLastState;
 
   std::unique_ptr<MUSIC_INFO::CMusicInfoScanner> m_musicInfoScanner;
 

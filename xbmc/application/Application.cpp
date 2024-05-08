@@ -810,16 +810,7 @@ void CApplication::Render()
     return;
 
   // render gui layer
-  const bool renderGUI = appPower->GetRenderGUI();
-  if (m_guiRenderLastState != std::nullopt && renderGUI && m_guiRenderLastState != renderGUI)
-  {
-    CGUIComponent* gui = CServiceBroker::GetGUI();
-    if (gui)
-      CServiceBroker::GetGUI()->GetWindowManager().MarkDirty();
-  }
-  m_guiRenderLastState = renderGUI;
-
-  if (renderGUI && !m_skipGuiRender)
+  if (appPower->GetRenderGUI() && !m_skipGuiRender)
   {
     if (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode())
     {
