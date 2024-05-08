@@ -12,7 +12,6 @@
 #include "threads/CriticalSection.h"
 
 #include <cstdint>
-#include <mutex>
 
 #include "system_egl.h"
 

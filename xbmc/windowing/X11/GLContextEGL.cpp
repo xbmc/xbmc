@@ -564,16 +564,14 @@ bool CGLContextEGL::BindTextureUploadContext()
 
   m_textureUploadLock.lock();
 
-  if (eglMakeCurrent(m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, m_eglUploadContext))
-  {
-    return true;
-  }
-  else
+  if (!eglMakeCurrent(m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, m_eglUploadContext))
   {
     m_textureUploadLock.unlock();
     CLog::LogF(LOGERROR, "Couldn't bind texture upload context.");
     return false;
   }
+
+  return true;
 }
 
 bool CGLContextEGL::UnbindTextureUploadContext()
@@ -584,11 +582,17 @@ bool CGLContextEGL::UnbindTextureUploadContext()
     m_textureUploadLock.unlock();
     return false;
   }
-  bool success = eglMakeCurrent(m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-  if (!success)
-    CLog::LogF(LOGERROR, "Couldn't release texture upload context.");
+
+  if (!eglMakeCurrent(m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT))
+  {
+    CLog::LogF(LOGERROR, "Couldn't release texture upload context");
+    m_textureUploadLock.unlock();
+    return false;
+  }
+
   m_textureUploadLock.unlock();
-  return success;
+
+  return true;
 }
 
 bool CGLContextEGL::HasContext()
