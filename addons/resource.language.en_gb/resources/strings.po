@@ -3922,7 +3922,13 @@ msgctxt "#853"
 msgid "Any channel from client \"{0:s}\""
 msgstr ""
 
-#empty strings from id 854 to 996
+#. Label for denoting any channel from any available client in timer settings dialog
+#: xbmc/pvr/dialogs/GUIDislogPVRTimerSettings.cpp
+msgctxt "#854"
+msgid "Any channel from any client"
+msgstr ""
+
+#empty strings from id 855 to 996
 
 #: xbmc/windows/GUIMediaWindow.cpp
 msgctxt "#997"

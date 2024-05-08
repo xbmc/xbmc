@@ -583,7 +583,8 @@ bool CPVRGUIActionsTimers::EditTimer(const CFileItem& item) const
   if (ShowTimerSettings(newTimer) &&
       (!timer->GetTimerType()->IsReadOnly() || timer->GetTimerType()->SupportsEnableDisable()))
   {
-    if (newTimer->GetTimerType() == timer->GetTimerType())
+    if (newTimer->GetTimerType() == timer->GetTimerType() &&
+        newTimer->ClientID() == timer->ClientID())
     {
       if (CServiceBroker::GetPVRManager().Timers()->UpdateTimer(newTimer))
         return true;
@@ -596,12 +597,15 @@ bool CPVRGUIActionsTimers::EditTimer(const CFileItem& item) const
     }
     else
     {
-      // timer type changed. delete the original timer, then create the new timer. this order is
-      // important. for instance, the new timer might be a rule which schedules the original timer.
-      // deleting the original timer after creating the rule would do literally this and we would
-      // end up with one timer missing wrt to the rule defined by the new timer.
+      // Timer type or client changed. delete the original timer, then create the new timer. This
+      // order is important. for instance, the new timer might be a rule which schedules the
+      // original timer. Deleting the original timer after creating the rule would do literally this
+      // and we would end up with one timer missing wrt to the rule defined by the new timer.
       if (DeleteTimer(timer, timer->IsRecording(), false))
       {
+        if (newTimer->IsTimerRule())
+          newTimer->ResetChildState();
+
         if (AddTimer(newTimer))
           return true;
 

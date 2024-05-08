@@ -42,7 +42,8 @@ class CPVRTimerInfoTag;
 class CPVRTimerType;
 class CPVRTimersContainer;
 
-#define PVR_INVALID_CLIENT_ID (-2)
+static constexpr int PVR_ANY_CLIENT_ID = -1;
+static constexpr int PVR_INVALID_CLIENT_ID = -2;
 
 /*!
  * Interface from Kodi to a PVR add-on.
