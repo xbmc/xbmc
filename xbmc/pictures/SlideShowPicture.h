@@ -50,7 +50,8 @@ public:
   DISPLAY_EFFECT DisplayEffect() const { return m_displayEffect; }
   bool DisplayEffectNeedChange(DISPLAY_EFFECT newDispEffect) const;
   bool IsStarted() const { return m_iCounter > 0; }
-  bool IsFinished() const { return m_bIsFinished; }
+  bool IsFinished() const;
+  bool IsAnimating() const;
   bool DrawNextImage() const { return m_bDrawNextImage; }
 
   int GetWidth() const { return (int)m_fWidth; }
@@ -65,6 +66,7 @@ public:
 
   void Zoom(float fZoomAmount, bool immediate = false);
   void Rotate(float fRotateAngle, bool immediate = false);
+  void UpdateAlpha();
   void Pause(bool bPause);
   void SetInSlideshow(bool slideshow);
   void SetOriginalSize(int iOriginalWidth, int iOriginalHeight, bool bFullSize);
@@ -95,7 +97,6 @@ private:
   int m_iOriginalHeight;
   int m_iSlideNumber;
   bool m_bIsLoaded;
-  bool m_bIsFinished;
   bool m_bDrawNextImage;
   bool m_bIsDirty;
   std::string m_strFileName;
