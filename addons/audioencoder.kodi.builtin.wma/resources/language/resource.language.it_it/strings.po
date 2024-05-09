@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-12-12 07:26+0000\n"
+"PO-Revision-Date: 2024-04-14 16:18+0000\n"
 "Last-Translator: Massimo Pissarello <mapi68@gmail.com>\n"
 "Language-Team: Italian <https://kodi.weblate.cloud/projects/kodi-core/audioencoder-kodi-builtin-wma/it_it/>\n"
 "Language: it_it\n"
@@ -15,15 +15,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.2\n"
+"X-Generator: Weblate 5.4.3\n"
 
 msgctxt "Addon Summary"
 msgid "WMA Audio Encoder"
-msgstr "Codificatore Audio WMA"
+msgstr "Codificatore audio WMA"
 
 msgctxt "Addon Description"
 msgid "Windows Media Audio, Microsoft’s lossy audio format."
-msgstr "Windows Media Audio, il formato Audio con perdita di dati di Microsoft."
+msgstr "Windows Media Audio, il formato audio con perdita di dati di Microsoft."
 
 #. Bitrate to use on for compression
 #: resources/settings.xml
@@ -35,7 +35,7 @@ msgstr "Bitrate"
 #: resources/settings.xml
 msgctxt "#30001"
 msgid "Select which bitrate to use for the WMA audio encoder for audio compression."
-msgstr "Seleziona quale bitrate utilizzare per il codificatore Audio WMA per la compressione Audio."
+msgstr "Seleziona quale bitrate usare per il codificatore audio WMA per la compressione audio."
 
 #. Value format for with bitrate edited field
 #: resources/settings.xml
