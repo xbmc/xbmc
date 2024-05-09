@@ -181,6 +181,7 @@ public:
 
   void SetDisplayMode(int mode, float rate);
   int GetDPI() const;
+  void SetDecorViewBackgroundColor(const int color);
 
   CRect MapRenderToDroid(const CRect& srcRect);
 
@@ -243,6 +244,7 @@ private:
   void SetupEnv();
   static void SetDisplayModeCallback(void* modeVariant);
   static void KeepScreenOnCallback(void* onVariant);
+  static void SetDecorViewBackgroundColorCallback(void* onVariant);
 
   static void RegisterDisplayListenerCallback(void*);
   void UnregisterDisplayListener();

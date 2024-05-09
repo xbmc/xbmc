@@ -666,6 +666,13 @@ bool CApplication::Initialize()
       }
     }
 
+#if defined(TARGET_ANDROID)
+    if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiLayoutTransparent)
+    {
+      CLog::Log(LOGINFO, "XBMCApp: Decorview Color was set to transparent.");
+      CXBMCApp::Get().SetDecorViewBackgroundColor(0);
+    }
+#endif
     // Start splashscreen and load skin
     CServiceBroker::GetRenderSystem()->ShowSplash("");
     skinHandling->m_confirmSkinChange = true;

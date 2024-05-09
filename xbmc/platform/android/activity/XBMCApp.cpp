@@ -1669,6 +1669,30 @@ std::shared_ptr<CNativeWindow> CXBMCApp::GetNativeWindow(int timeout) const
   return m_window;
 }
 
+void CXBMCApp::SetDecorViewBackgroundColorCallback(void* colorVariant)
+{
+  CVariant* colorV = static_cast<CVariant*>(colorVariant);
+  const int color = colorV->asInteger();
+  delete colorV;
+
+  CJNIWindow window = getWindow();
+  if (window)
+  {
+    CJNIView view = window.getDecorView();
+    if (view)
+    {
+      view.setBackgroundColor(color);
+    }
+  }
+}
+
+void CXBMCApp::SetDecorViewBackgroundColor(const int color)
+{
+  // this object is deallocated in the callback
+  CVariant* variant = new CVariant(color);
+  runNativeOnUiThread(SetDecorViewBackgroundColorCallback, variant);
+}
+
 void CXBMCApp::RegisterInputDeviceCallbacks(IInputDeviceCallbacks* handler)
 {
   if (handler != nullptr)
