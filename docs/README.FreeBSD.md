@@ -123,9 +123,12 @@ Change to build directory:
 cd $HOME/kodi-build
 ```
 
+> [!TIP]
+> FreeBSD doesnt have an port of kissfft available, so enable the internal build of kissfft for easier setup.
+
 Configure build:
 ```
-cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local
+cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DENABLE_INTERNAL_KISSFFT=ON
 ```
 
 ### 4.2. Build

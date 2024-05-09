@@ -139,6 +139,11 @@ sudo make -C tools/depends/target/rapidjson PREFIX=/usr/local
 sudo make -C tools/depends/target/waylandpp PREFIX=/usr/local
 ```
 
+As of Leap 15.5, kissfft is not provided as a package. Make sure to use the following CMake argument to build and use the internal kissfft library
+```
+-DENABLE_INTERNAL_KISSFFT=ON
+```
+
 **[back to top](#table-of-contents)** | **[back to section top](#3-install-the-required-packages)**
 
 ## 4. Build Kodi
