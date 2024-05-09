@@ -7606,7 +7606,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13518"
-msgid "When the speed change exceeds this threshold, a pitch-correction filter will be applied. This avoids the \"chipmonk voices\" that normally result from speeding up a video"
+msgid "When the speed change exceeds this threshold, a pitch-correction filter will be applied. This avoids the \"chipmunk voices\" that normally result from speeding up a video"
 msgstr ""
 
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
