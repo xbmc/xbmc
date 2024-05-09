@@ -29,19 +29,6 @@ if(NOT TARGET OpenGL::GLES)
                                     REQUIRED_VARS OPENGLES_gl_LIBRARY OPENGLES_INCLUDE_DIR)
 
   if(OPENGLES_FOUND)
-    if(CORE_SYSTEM_NAME STREQUAL darwin_embedded)
-      # Cmake only added support for Frameworks as the IMPORTED_LOCATION as of 3.28
-      # https://gitlab.kitware.com/cmake/cmake/-/merge_requests/8586
-      # Until we move to cmake 3.28 as minimum, explicitly set to binary inside framework
-      if(OPENGLES_gl_LIBRARY MATCHES "/([^/]+)\\.framework$")
-        set(_gles_fw "${OPENGLES_gl_LIBRARY}/${CMAKE_MATCH_1}")
-        if(EXISTS "${_gles_fw}.tbd")
-          string(APPEND _gles_fw ".tbd")
-        endif()
-        set(OPENGLES_gl_LIBRARY ${_gles_fw})
-      endif()
-    endif()
-
     if(${OPENGLES_gl_LIBRARY} MATCHES ".+\.so$")
       add_library(OpenGL::GLES SHARED IMPORTED)
     else()
