@@ -177,7 +177,7 @@ public:
     return {m_w, m_h};
   }
 
-  template<class U> explicit CSizeGen<T>(const CSizeGen<U>& rhs)
+  template<class U> explicit CSizeGen(const CSizeGen<U>& rhs)
   {
     CheckSet(static_cast<T> (rhs.m_w), static_cast<T> (rhs.m_h));
   }
