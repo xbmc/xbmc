@@ -8,7 +8,6 @@ endif
 DEPENDS = \
   brotli \
   bzip2 \
-  curl \
   dav1d \
   expat \
   ffmpeg \
