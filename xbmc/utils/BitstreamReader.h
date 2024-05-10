@@ -26,27 +26,4 @@ private:
   int m_posBits{0};
 };
 
-const uint8_t* find_start_code(const uint8_t *p, const uint8_t *end, uint32_t *state);
-
-////////////////////////////////////////////////////////////////////////////////////////////
-//! @todo refactor this so as not to need these ffmpeg routines.
-//! These are not exposed in ffmpeg's API so we dupe them here.
-
-/*
- *  AVC helper functions for muxers
- *  Copyright (c) 2006 Baptiste Coudurier <baptiste.coudurier@smartjog.com>
- *  This is part of FFmpeg
- *  
- *  SPDX-License-Identifier: LGPL-2.1-or-later
- *  See LICENSES/README.md for more information.
- */
-constexpr uint32_t BS_RB24(const uint8_t* x)
-{
-  return (x[0] << 16) | (x[1] << 8) | x[2];
-}
-
-constexpr uint32_t BS_RB32(const uint8_t* x)
-{
-  return (x[0] << 24) | (x[1] << 16) | (x[2] << 8) | x[3];
-}
-
+const uint8_t* find_start_code(const uint8_t* p, const uint8_t* end, uint32_t* state);
