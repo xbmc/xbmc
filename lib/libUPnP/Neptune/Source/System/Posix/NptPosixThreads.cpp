@@ -13,6 +13,7 @@
 #if defined(__SYMBIAN32__)
 #include <stdio.h>
 #endif
+#include <atomic>
 #include <pthread.h>
 #include <unistd.h>
 #include <time.h>
@@ -278,8 +279,7 @@ class NPT_PosixAtomicVariable : public NPT_AtomicVariableInterface
 
  private:
     // members
-    volatile int    m_Value;
-    pthread_mutex_t m_Mutex;
+    std::atomic_int m_Value;
 };
 
 /*----------------------------------------------------------------------
@@ -288,7 +288,6 @@ class NPT_PosixAtomicVariable : public NPT_AtomicVariableInterface
 NPT_PosixAtomicVariable::NPT_PosixAtomicVariable(int value) : 
     m_Value(value)
 {
-    pthread_mutex_init(&m_Mutex, NULL);
 }
 
 /*----------------------------------------------------------------------
@@ -296,7 +295,6 @@ NPT_PosixAtomicVariable::NPT_PosixAtomicVariable(int value) :
 +---------------------------------------------------------------------*/
 NPT_PosixAtomicVariable::~NPT_PosixAtomicVariable()
 {
-    pthread_mutex_destroy(&m_Mutex);
 }
 
 /*----------------------------------------------------------------------
@@ -307,9 +305,7 @@ NPT_PosixAtomicVariable::Increment()
 {
     int value;
 
-    pthread_mutex_lock(&m_Mutex);
     value = ++m_Value;
-    pthread_mutex_unlock(&m_Mutex);
     
     return value;
 }
@@ -322,9 +318,7 @@ NPT_PosixAtomicVariable::Decrement()
 {
     int value;
 
-    pthread_mutex_lock(&m_Mutex);
     value = --m_Value;
-    pthread_mutex_unlock(&m_Mutex);
     
     return value;
 }
@@ -335,7 +329,6 @@ NPT_PosixAtomicVariable::Decrement()
 int
 NPT_PosixAtomicVariable::GetValue()
 {
-    // we assume that int read/write are atomic on the platform
     return m_Value;
 }
 
@@ -345,9 +338,7 @@ NPT_PosixAtomicVariable::GetValue()
 void
 NPT_PosixAtomicVariable::SetValue(int value)
 {
-    pthread_mutex_lock(&m_Mutex);
     m_Value = value;
-    pthread_mutex_unlock(&m_Mutex);
 }
 
 /*----------------------------------------------------------------------
