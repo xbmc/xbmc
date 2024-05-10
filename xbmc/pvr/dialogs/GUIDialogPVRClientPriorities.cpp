@@ -43,7 +43,7 @@ std::string CGUIDialogPVRClientPriorities::GetSettingsLabel(
   int iClientId = std::atoi(pSetting->GetId().c_str());
   auto clientEntry = m_clients.find(iClientId);
   if (clientEntry != m_clients.end())
-    return clientEntry->second->GetFriendlyName();
+    return clientEntry->second->GetFullClientName();
 
   CLog::LogF(LOGERROR, "Unable to obtain pvr client with id '{}'", iClientId);
   return CGUIDialogSettingsManualBase::GetLocalizedString(13205); // Unknown

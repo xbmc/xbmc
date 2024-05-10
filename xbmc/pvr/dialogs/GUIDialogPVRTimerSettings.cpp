@@ -935,7 +935,7 @@ void CGUIDialogPVRTimerSettings::TypesFiller(const SettingConstPtr& setting,
 
       const auto client = clients->GetCreatedClient(typeEntry.second->GetClientId());
       if (client)
-        clientName = client->GetFriendlyName();
+        clientName = client->GetFullClientName();
 
       list.emplace_back(typeEntry.second->GetDescription(), clientName, typeEntry.first,
                         typeEntry.second->IsReminder() ? reminderTimerProps : recordingTimerProps);

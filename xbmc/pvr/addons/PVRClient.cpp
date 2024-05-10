@@ -408,9 +408,22 @@ const std::string& CPVRClient::GetConnectionString() const
   return m_strConnectionString;
 }
 
-const std::string CPVRClient::GetFriendlyName() const
+std::string CPVRClient::GetClientName() const
 {
+  return Name();
+}
 
+std::string CPVRClient::GetInstanceName() const
+{
+  std::string instanceName;
+  if (Addon()->SupportsInstanceSettings())
+    Addon()->GetSettingString(ADDON_SETTING_INSTANCE_NAME_VALUE, instanceName, InstanceId());
+
+  return instanceName;
+}
+
+std::string CPVRClient::GetFullClientName() const
+{
   if (Addon()->SupportsInstanceSettings())
   {
     std::string instanceName;
@@ -419,17 +432,6 @@ const std::string CPVRClient::GetFriendlyName() const
       return StringUtils::Format("{} ({})", Name(), instanceName);
   }
   return Name();
-}
-
-std::string CPVRClient::GetInstanceName() const
-{
-  if (Addon()->SupportsInstanceSettings())
-  {
-    std::string instanceName;
-    Addon()->GetSettingString(ADDON_SETTING_INSTANCE_NAME_VALUE, instanceName, InstanceId());
-    return instanceName;
-  }
-  return "";
 }
 
 PVR_ERROR CPVRClient::GetDriveSpace(uint64_t& iTotal, uint64_t& iUsed) const
@@ -1032,7 +1034,7 @@ PVR_ERROR CPVRClient::UpdateTimerTypes()
           CLog::LogF(LOGWARNING,
                      "Add-on {} does not support timer types. It will work, but not benefit from "
                      "the timer features introduced with PVR Addon API 2.0.0",
-                     GetFriendlyName());
+                     Name());
 
           // Create standard timer types (mostly) matching the timer functionality available in Isengard.
           // This is for migration only and does not make changes to the addons obsolete. Addons should
@@ -1859,7 +1861,7 @@ void CPVRClient::cb_recording_notification(void* kodiInstance,
     }
 
     const std::string strLine1 = StringUtils::Format(g_localizeStrings.Get(bOnOff ? 19197 : 19198),
-                                                     client->GetFriendlyName());
+                                                     client->GetFullClientName());
     std::string strLine2;
     if (strName)
       strLine2 = strName;
@@ -1872,7 +1874,7 @@ void CPVRClient::cb_recording_notification(void* kodiInstance,
     auto eventLog = CServiceBroker::GetEventLog();
     if (eventLog)
       eventLog->Add(EventPtr(
-          new CNotificationEvent(client->GetFriendlyName(), strLine1, client->Icon(), strLine2)));
+          new CNotificationEvent(client->GetFullClientName(), strLine1, client->Icon(), strLine2)));
 
     CLog::LogFC(LOGDEBUG, LOGPVR, "Recording {} on client {}. name='{}' filename='{}'",
                 bOnOff ? "started" : "finished", client->GetID(), strName, strFileName);

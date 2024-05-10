@@ -831,7 +831,7 @@ void AddEventLogEntry(const std::shared_ptr<const CPVRTimerInfoTag>& timer, int 
       CServiceBroker::GetPVRManager().GetClient(timer->GetTimerType()->GetClientId());
   if (client)
   {
-    name = client->GetFriendlyName();
+    name = client->GetFullClientName();
     icon = client->Icon();
   }
   else

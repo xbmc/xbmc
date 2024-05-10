@@ -282,7 +282,7 @@ bool CPVRGUIActionsChannels::StartChannelScan(int clientId)
     pDialog->SetHeading(CVariant{19119}); // "On which backend do you want to search?"
 
     for (const auto& client : possibleScanClients)
-      pDialog->Add(client->GetFriendlyName());
+      pDialog->Add(client->GetFullClientName());
 
     pDialog->Open();
 
@@ -307,7 +307,7 @@ bool CPVRGUIActionsChannels::StartChannelScan(int clientId)
 
   /* start the channel scan */
   CLog::LogFC(LOGDEBUG, LOGPVR, "Starting to scan for channels on client {}",
-              scanClient->GetFriendlyName());
+              scanClient->GetFullClientName());
   auto start = std::chrono::steady_clock::now();
 
   /* do the scan */

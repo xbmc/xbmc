@@ -799,6 +799,6 @@
 		<value>$INFO[ListItem.Duration,$LOCALIZE[180]: ][CR]$VAR[VideoCodecVar,, ]$INFO[ListItem.VideoResolution,| , ]$VAR[VideoResolutionTypeVar,, ]$VAR[VideoHDRVar,| , ]$INFO[ListItem.VideoAspect,| ,:1 ]$VAR[AudioCodecVar,| , ]$VAR[AudioChannelsVar]</value>
 	</variable>
 	<variable name="PVRInstanceName">
-		<value condition="Integer.IsGreater(System.PVRCount,1)">$INFO[ListItem.BackendInstanceName,[COLOR grey]$LOCALIZE[31137]:[/COLOR] ,[CR]]</value>
+		<value condition="Integer.IsGreater(PVR.ClientCount,1)">$INFO[ListItem.PVRClientName,[COLOR grey]$LOCALIZE[31137]:[/COLOR] ,]$INFO[ListItem.PVRInstanceName, (,)]</value>
 	</variable>
 </includes>
