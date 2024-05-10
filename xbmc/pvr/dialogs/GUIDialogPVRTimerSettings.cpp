@@ -890,7 +890,12 @@ void CGUIDialogPVRTimerSettings::InitializeChannelsList()
   {
     m_channelEntries.insert(
         {index, ChannelDescriptor(PVR_CHANNEL_INVALID_UID, client.second->GetID(),
-                                  g_localizeStrings.Get(809))}); // "Any channel"
+                                  clients.size() == 1
+                                      // Any channel
+                                      ? g_localizeStrings.Get(809)
+                                      // Any channel from client "X"
+                                      : StringUtils::Format(g_localizeStrings.Get(853),
+                                                            client.second->GetFullClientName()))});
     ++index;
   }
 

@@ -3916,7 +3916,13 @@ msgctxt "#852"
 msgid "Valid port range is 1024-65535"
 msgstr ""
 
-#empty strings from id 853 to 996
+#. Label for denoting any channel for a certain client in timer settings dialog
+#: xbmc/pvr/dialogs/GUIDislogPVRTimerSettings.cpp
+msgctxt "#853"
+msgid "Any channel from client \"{0:s}\""
+msgstr ""
+
+#empty strings from id 854 to 996
 
 #: xbmc/windows/GUIMediaWindow.cpp
 msgctxt "#997"
