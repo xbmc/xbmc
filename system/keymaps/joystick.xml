@@ -28,14 +28,29 @@
 <!--     <a holdtime="500">ContextMenu</a>                                   -->
 <!--   </joystick>                                                           -->
 <!--                                                                         -->
-<!-- Buttons can be also require hotkeys to be pressed:                      -->
+<!-- Buttons can be overloaded with hotkeys:                                 -->
 <!--   <joystick profile="game.controller.default">                          -->
-<!--     <start hotkey="back">Stop</start>                                   -->
+<!--     <a>Select</a>                                                       -->
+<!--     <a hotkey="back">ContextMenu</a>                                    -->
 <!--   </joystick>                                                           -->
 <!--                                                                         -->
-<!-- Due to limitations in the button mapper, buttons can be overloaded with -->
-<!-- different hold durations, but not different hotkeys for the same        -->
-<!-- duration.                                                               -->
+<!-- It is even possible to combine both hotkeys and hold durations:         -->
+<!--   <joystick profile="game.controller.default">                          -->
+<!--     <a>Select</a>                                                       -->
+<!--     <a hotkey="back">ContextMenu</a>                                    -->
+<!--     <a hotkey="back" holdtime="500">Stop</a>                            -->
+<!--   </joystick>                                                           -->
+<!--                                                                         -->
+<!-- Both hold duration and hotkeys can be the only stand alone variant of   -->
+<!-- an action:                                                              -->
+<!--   <joystick profile="game.controller.default">                          -->
+<!--     <a hotkey="back">ContextMenu</a>                                    -->
+<!--     <b holdtime="500">Stop</b>                                          -->
+<!--   </joystick>                                                           -->
+<!--                                                                         -->
+<!-- A limitation is that if a single press is mapped in a section, a        -->
+<!-- global "holdtime" overload will be ignored. The workaround is to        -->
+<!-- duplicate the holdtime overload in the section.                         -->
 <!--                                                                         -->
 <!-- More documentation on keymaps can be found on                           -->
 <!-- http://kodi.wiki/view/keymaps                                           -->
