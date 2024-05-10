@@ -81,7 +81,7 @@ namespace
 {
 void Play(const std::shared_ptr<CFileItem>& item, const std::string& player)
 {
-  item->SetProperty("playlist_type_hint", PLAYLIST::TYPE_MUSIC);
+  item->SetProperty("playlist_type_hint", static_cast<int>(PLAYLIST::Id::TYPE_MUSIC));
 
   const ContentUtils::PlayMode mode = item->GetProperty("CheckAutoPlayNextItem").asBoolean()
                                           ? ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM

@@ -28,7 +28,7 @@ namespace GUILIB
 namespace GUIINFO
 {
 
-std::string GetPlaylistLabel(int item, PLAYLIST::Id playlistid = PLAYLIST::TYPE_NONE);
+std::string GetPlaylistLabel(int item, PLAYLIST::Id playlistid = PLAYLIST::Id::TYPE_NONE);
 
 CGUIWindow* GetWindow(int contextWindow);
 CGUIControl* GetActiveContainer(int containerId, int contextWindow);

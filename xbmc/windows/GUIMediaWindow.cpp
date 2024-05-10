@@ -1495,7 +1495,7 @@ bool CGUIMediaWindow::OnPlayMedia(int iItem, const std::string &player)
   // Reset Playlistplayer, playback started now does
   // not use the playlistplayer.
   CServiceBroker::GetPlaylistPlayer().Reset();
-  CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST::TYPE_NONE);
+  CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST::Id::TYPE_NONE);
   CFileItemPtr pItem=m_vecItems->Get(iItem);
 
   CLog::Log(LOGDEBUG, "{} {}", __FUNCTION__, CURL::GetRedacted(pItem->GetPath()));
@@ -1524,7 +1524,7 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr& item, const std::s
 {
   //play and add current directory to temporary playlist
   PLAYLIST::Id playlistId = m_guiState->GetPlaylist();
-  if (playlistId != PLAYLIST::TYPE_NONE)
+  if (playlistId != PLAYLIST::Id::TYPE_NONE)
   {
     // Remove ZIP, RAR files and folders
     CFileItemList playlist;
@@ -1591,7 +1591,7 @@ void CGUIMediaWindow::UpdateFileList()
     PLAYLIST::Id playlistId = m_guiState->GetPlaylist();
     int nSong = CServiceBroker::GetPlaylistPlayer().GetCurrentItemIdx();
     CFileItem playlistItem;
-    if (nSong > -1 && playlistId != PLAYLIST::TYPE_NONE)
+    if (nSong > -1 && playlistId != PLAYLIST::Id::TYPE_NONE)
       playlistItem = *CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlistId)[nSong];
 
     CServiceBroker::GetPlaylistPlayer().ClearPlaylist(playlistId);

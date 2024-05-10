@@ -19,7 +19,7 @@ class CFileItemList;
 
 namespace PLAYLIST
 {
-using Id = int;
+enum class Id;
 } // namespace PLAYLIST
 
 class CGUIViewState

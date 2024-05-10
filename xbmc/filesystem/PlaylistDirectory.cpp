@@ -23,13 +23,13 @@ CPlaylistDirectory::~CPlaylistDirectory() = default;
 
 bool CPlaylistDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
-  PLAYLIST::Id playlistId = PLAYLIST::TYPE_NONE;
+  PLAYLIST::Id playlistId = PLAYLIST::Id::TYPE_NONE;
   if (url.IsProtocol("playlistmusic"))
-    playlistId = PLAYLIST::TYPE_MUSIC;
+    playlistId = PLAYLIST::Id::TYPE_MUSIC;
   else if (url.IsProtocol("playlistvideo"))
-    playlistId = PLAYLIST::TYPE_VIDEO;
+    playlistId = PLAYLIST::Id::TYPE_VIDEO;
 
-  if (playlistId == PLAYLIST::TYPE_NONE)
+  if (playlistId == PLAYLIST::Id::TYPE_NONE)
     return false;
 
   const PLAYLIST::CPlayList& playlist = CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlistId);
@@ -39,7 +39,7 @@ bool CPlaylistDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   {
     CFileItemPtr item = playlist[i];
     item->SetProperty("playlistposition", i);
-    item->SetProperty("playlisttype", playlistId);
+    item->SetProperty("playlisttype", static_cast<int>(playlistId));
     //item->m_iprogramCount = i; // the programCount is set as items are added!
     items.Add(item);
   }

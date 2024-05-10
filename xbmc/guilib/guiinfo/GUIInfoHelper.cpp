@@ -37,7 +37,7 @@ std::string GetPlaylistLabel(int item, PLAYLIST::Id playlistId /* = TYPE_NONE */
 {
   PLAYLIST::CPlayListPlayer& player = CServiceBroker::GetPlaylistPlayer();
 
-  if (playlistId == PLAYLIST::TYPE_NONE)
+  if (playlistId == PLAYLIST::Id::TYPE_NONE)
     playlistId = player.GetCurrentPlaylist();
 
   switch (item)

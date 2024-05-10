@@ -190,7 +190,7 @@ CGUIViewState::CGUIViewState(const CFileItemList& items) : m_items(items)
 {
   m_currentViewAsControl = 0;
   m_currentSortMethod = 0;
-  m_playlist = PLAYLIST::TYPE_NONE;
+  m_playlist = PLAYLIST::Id::TYPE_NONE;
 }
 
 CGUIViewState::~CGUIViewState() = default;
@@ -492,7 +492,7 @@ void CGUIViewState::SetSortOrder(SortOrder sortOrder)
 
 bool CGUIViewState::AutoPlayNextVideoItem() const
 {
-  if (GetPlaylist() != PLAYLIST::TYPE_VIDEO)
+  if (GetPlaylist() != PLAYLIST::Id::TYPE_VIDEO)
     return false;
 
   return VIDEO::UTILS::IsAutoPlayNextItem(m_items.GetContent());
@@ -581,9 +581,9 @@ CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGU
     {
       const auto plugin = std::static_pointer_cast<CPluginSource>(addon);
       if (plugin->Provides(CPluginSource::AUDIO))
-        m_playlist = PLAYLIST::TYPE_MUSIC;
+        m_playlist = PLAYLIST::Id::TYPE_MUSIC;
       if (plugin->Provides(CPluginSource::VIDEO))
-        m_playlist = PLAYLIST::TYPE_VIDEO;
+        m_playlist = PLAYLIST::Id::TYPE_VIDEO;
     }
   }
 

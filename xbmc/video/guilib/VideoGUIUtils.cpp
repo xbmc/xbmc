@@ -341,12 +341,12 @@ void AddItemToPlayListAndPlay(const std::shared_ptr<CFileItem>& itemToQueue,
   VIDEO::UTILS::GetItemsForPlayList(itemToQueue, queuedItems);
 
   auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
-  playlistPlayer.ClearPlaylist(PLAYLIST::TYPE_VIDEO);
+  playlistPlayer.ClearPlaylist(PLAYLIST::Id::TYPE_VIDEO);
   playlistPlayer.Reset();
-  playlistPlayer.Add(PLAYLIST::TYPE_VIDEO, queuedItems);
+  playlistPlayer.Add(PLAYLIST::Id::TYPE_VIDEO, queuedItems);
 
   // figure out where to start playback
-  PLAYLIST::CPlayList& playList = playlistPlayer.GetPlaylist(PLAYLIST::TYPE_VIDEO);
+  PLAYLIST::CPlayList& playList = playlistPlayer.GetPlaylist(PLAYLIST::Id::TYPE_VIDEO);
   int pos = 0;
   if (itemToPlay)
   {
@@ -359,13 +359,13 @@ void AddItemToPlayListAndPlay(const std::shared_ptr<CFileItem>& itemToQueue,
     }
   }
 
-  if (playlistPlayer.IsShuffled(PLAYLIST::TYPE_VIDEO))
+  if (playlistPlayer.IsShuffled(PLAYLIST::Id::TYPE_VIDEO))
   {
     playList.Swap(0, playList.FindOrder(pos));
     pos = 0;
   }
 
-  playlistPlayer.SetCurrentPlaylist(PLAYLIST::TYPE_VIDEO);
+  playlistPlayer.SetCurrentPlaylist(PLAYLIST::Id::TYPE_VIDEO);
   playlistPlayer.Play(pos, player);
 }
 
@@ -429,7 +429,7 @@ void PlayItem(
       // single item, play it
       auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
       playlistPlayer.Reset();
-      playlistPlayer.SetCurrentPlaylist(PLAYLIST::TYPE_NONE);
+      playlistPlayer.SetCurrentPlaylist(PLAYLIST::Id::TYPE_NONE);
       playlistPlayer.Play(item, player);
     }
   }
@@ -453,11 +453,11 @@ void QueueItem(const std::shared_ptr<CFileItem>& itemIn, QueuePosition pos)
 
   // Determine the proper list to queue this element
   PLAYLIST::Id playlistId = player.GetCurrentPlaylist();
-  if (playlistId == PLAYLIST::TYPE_NONE)
+  if (playlistId == PLAYLIST::Id::TYPE_NONE)
     playlistId = components.GetComponent<CApplicationPlayer>()->GetPreferredPlaylist();
 
-  if (playlistId == PLAYLIST::TYPE_NONE)
-    playlistId = PLAYLIST::TYPE_VIDEO;
+  if (playlistId == PLAYLIST::Id::TYPE_NONE)
+    playlistId = PLAYLIST::Id::TYPE_VIDEO;
 
   CFileItemList queuedItems;
   GetItemsForPlayList(item, queuedItems);

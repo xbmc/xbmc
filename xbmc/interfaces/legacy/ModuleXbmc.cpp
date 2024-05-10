@@ -578,11 +578,11 @@ namespace XBMCAddon
 
     int getPLAYLIST_MUSIC()
     {
-      return PLAYLIST::TYPE_MUSIC;
+      return static_cast<int>(PLAYLIST::Id::TYPE_MUSIC);
     }
     int getPLAYLIST_VIDEO()
     {
-      return PLAYLIST::TYPE_VIDEO;
+      return static_cast<int>(PLAYLIST::Id::TYPE_VIDEO);
     }
     int getTRAY_OPEN()
     {

@@ -23,7 +23,7 @@ class CPVREpgInfoTag;
 
 namespace PLAYLIST
 {
-using Id = int;
+enum class Id;
 enum class RepeatState;
 } // namespace PLAYLIST
 

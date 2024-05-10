@@ -195,14 +195,14 @@ protected:
   int m_iFailedSongs;
   std::chrono::time_point<std::chrono::steady_clock> m_failedSongsStart;
   int m_iCurrentSong;
-  PLAYLIST::Id m_iCurrentPlayList{PLAYLIST::TYPE_NONE};
+  PLAYLIST::Id m_iCurrentPlayList{PLAYLIST::Id::TYPE_NONE};
   CPlayList* m_PlaylistMusic;
   CPlayList* m_PlaylistVideo;
   CPlayList* m_PlaylistEmpty;
   std::map<PLAYLIST::Id, PLAYLIST::RepeatState> m_repeatState{
-      {PLAYLIST::TYPE_MUSIC, PLAYLIST::RepeatState::NONE},
-      {PLAYLIST::TYPE_VIDEO, PLAYLIST::RepeatState::NONE},
-      {PLAYLIST::TYPE_PICTURE, PLAYLIST::RepeatState::NONE},
+      {PLAYLIST::Id::TYPE_MUSIC, PLAYLIST::RepeatState::NONE},
+      {PLAYLIST::Id::TYPE_VIDEO, PLAYLIST::RepeatState::NONE},
+      {PLAYLIST::Id::TYPE_PICTURE, PLAYLIST::RepeatState::NONE},
   };
 };
 

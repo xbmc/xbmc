@@ -23,7 +23,7 @@ namespace PLAYLIST
 class CPlayList
 {
 public:
-  explicit CPlayList(PLAYLIST::Id id = PLAYLIST::TYPE_NONE);
+  explicit CPlayList(PLAYLIST::Id id = PLAYLIST::Id::TYPE_NONE);
   virtual ~CPlayList(void) = default;
   virtual bool Load(const std::string& strFileName);
   virtual bool LoadData(std::istream &stream);

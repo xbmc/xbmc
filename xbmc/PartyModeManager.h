@@ -17,7 +17,7 @@ class CFileItem; typedef std::shared_ptr<CFileItem> CFileItemPtr;
 class CFileItemList;
 namespace PLAYLIST
 {
-using Id = int;
+enum class Id;
 class CPlayList;
 }
 

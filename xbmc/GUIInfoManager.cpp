@@ -10532,14 +10532,14 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
           return ret;
         else
         {
-          PLAYLIST::Id playlistid = PLAYLIST::TYPE_NONE;
+          PLAYLIST::Id playlistid = PLAYLIST::Id::TYPE_NONE;
           if (StringUtils::EqualsNoCase(prop.param(), "video"))
-            playlistid = PLAYLIST::TYPE_VIDEO;
+            playlistid = PLAYLIST::Id::TYPE_VIDEO;
           else if (StringUtils::EqualsNoCase(prop.param(), "music"))
-            playlistid = PLAYLIST::TYPE_MUSIC;
+            playlistid = PLAYLIST::Id::TYPE_MUSIC;
 
-          if (playlistid != PLAYLIST::TYPE_NONE)
-            return AddMultiInfo(CGUIInfo(ret, playlistid, 1));
+          if (playlistid != PLAYLIST::Id::TYPE_NONE)
+            return AddMultiInfo(CGUIInfo(ret, static_cast<int>(playlistid), 1));
         }
       }
     }

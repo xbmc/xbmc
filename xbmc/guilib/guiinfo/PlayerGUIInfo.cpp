@@ -347,7 +347,8 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     case PLAYLIST_POSITION:
     case PLAYLIST_RANDOM:
     case PLAYLIST_REPEAT:
-      value = GUIINFO::GetPlaylistLabel(info.m_info, info.GetData1());
+      value =
+          GUIINFO::GetPlaylistLabel(info.m_info, PLAYLIST::Id{static_cast<int>(info.GetData1())});
       return true;
   }
 
@@ -546,8 +547,8 @@ bool CPlayerGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     case PLAYLIST_ISRANDOM:
     {
       PLAYLIST::CPlayListPlayer& player = CServiceBroker::GetPlaylistPlayer();
-      PLAYLIST::Id playlistid = info.GetData1();
-      if (info.GetData2() > 0 && playlistid != PLAYLIST::TYPE_NONE)
+      PLAYLIST::Id playlistid = PLAYLIST::Id{static_cast<int>(info.GetData1())};
+      if (info.GetData2() > 0 && playlistid != PLAYLIST::Id::TYPE_NONE)
         value = player.IsShuffled(playlistid);
       else
         value = player.IsShuffled(player.GetCurrentPlaylist());
@@ -556,8 +557,8 @@ bool CPlayerGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     case PLAYLIST_ISREPEAT:
     {
       PLAYLIST::CPlayListPlayer& player = CServiceBroker::GetPlaylistPlayer();
-      PLAYLIST::Id playlistid = info.GetData1();
-      if (info.GetData2() > 0 && playlistid != PLAYLIST::TYPE_NONE)
+      PLAYLIST::Id playlistid = PLAYLIST::Id{static_cast<int>(info.GetData1())};
+      if (info.GetData2() > 0 && playlistid != PLAYLIST::Id::TYPE_NONE)
         value = (player.GetRepeat(playlistid) == PLAYLIST::RepeatState::ALL);
       else
         value = player.GetRepeat(player.GetCurrentPlaylist()) == PLAYLIST::RepeatState::ALL;
@@ -566,8 +567,8 @@ bool CPlayerGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     case PLAYLIST_ISREPEATONE:
     {
       PLAYLIST::CPlayListPlayer& player = CServiceBroker::GetPlaylistPlayer();
-      PLAYLIST::Id playlistid = info.GetData1();
-      if (info.GetData2() > 0 && playlistid != PLAYLIST::TYPE_NONE)
+      PLAYLIST::Id playlistid = PLAYLIST::Id{static_cast<int>(info.GetData1())};
+      if (info.GetData2() > 0 && playlistid != PLAYLIST::Id::TYPE_NONE)
         value = (player.GetRepeat(playlistid) == PLAYLIST::RepeatState::ONE);
       else
         value = player.GetRepeat(player.GetCurrentPlaylist()) == PLAYLIST::RepeatState::ONE;
@@ -590,7 +591,7 @@ bool CPlayerGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       {
         if (item->HasProperty("playlistposition"))
         {
-          value = static_cast<int>(item->GetProperty("playlisttype").asInteger()) ==
+          value = PLAYLIST::Id{item->GetProperty("playlisttype").asInteger32()} ==
                       CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() &&
                   static_cast<int>(item->GetProperty("playlistposition").asInteger()) ==
                       CServiceBroker::GetPlaylistPlayer().GetCurrentItemIdx();

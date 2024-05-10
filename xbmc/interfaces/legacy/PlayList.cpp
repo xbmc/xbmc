@@ -24,10 +24,11 @@ namespace XBMCAddon
       iPlayList(playList), pPlayList(NULL)
     {
       // we do not create our own playlist, just using the ones from playlistplayer
-      if (iPlayList != PLAYLIST::TYPE_MUSIC && iPlayList != PLAYLIST::TYPE_VIDEO)
+      if (PLAYLIST::Id{iPlayList} != PLAYLIST::Id::TYPE_MUSIC &&
+          PLAYLIST::Id{iPlayList} != PLAYLIST::Id::TYPE_VIDEO)
         throw PlayListException("PlayList does not exist");
 
-      pPlayList = &CServiceBroker::GetPlaylistPlayer().GetPlaylist(playList);
+      pPlayList = &CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST::Id{playList});
       iPlayList = playList;
     }
 
@@ -76,7 +77,7 @@ namespace XBMCAddon
             return false;
 
           // clear current playlist
-          CServiceBroker::GetPlaylistPlayer().ClearPlaylist(this->iPlayList);
+          CServiceBroker::GetPlaylistPlayer().ClearPlaylist(PLAYLIST::Id{this->iPlayList});
 
           // add each item of the playlist to the playlistplayer
           for (int i=0; i < pPlayList->size(); ++i)

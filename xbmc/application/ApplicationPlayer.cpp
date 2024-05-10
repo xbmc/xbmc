@@ -228,12 +228,12 @@ bool CApplicationPlayer::HasGame() const
 PLAYLIST::Id CApplicationPlayer::GetPreferredPlaylist() const
 {
   if (IsPlayingVideo())
-    return PLAYLIST::TYPE_VIDEO;
+    return PLAYLIST::Id::TYPE_VIDEO;
 
   if (IsPlayingAudio())
-    return PLAYLIST::TYPE_MUSIC;
+    return PLAYLIST::Id::TYPE_MUSIC;
 
-  return PLAYLIST::TYPE_NONE;
+  return PLAYLIST::Id::TYPE_NONE;
 }
 
 bool CApplicationPlayer::HasRDS() const
