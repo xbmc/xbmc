@@ -56,6 +56,7 @@ class NPT_TimeStamp
     NPT_TimeStamp(NPT_Int64 nanoseconds) : m_NanoSeconds(nanoseconds) {}
     NPT_TimeStamp(float seconds);
     NPT_TimeStamp(double seconds);
+    NPT_TimeStamp& operator=(const NPT_TimeStamp&) = default;
     NPT_TimeStamp& operator+=(const NPT_TimeStamp& time_stamp);
     NPT_TimeStamp& operator-=(const NPT_TimeStamp& time_stamp);
     bool operator==(const NPT_TimeStamp& t) const { return m_NanoSeconds == t.m_NanoSeconds; }
