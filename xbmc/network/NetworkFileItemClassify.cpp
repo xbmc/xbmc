@@ -19,10 +19,7 @@ bool IsInternetStream(const CFileItem& item)
   if (item.HasProperty("IsHTTPDirectory"))
     return false;
 
-  if (!item.GetDynPath().empty())
-    return URIUtils::IsInternetStream(item.GetDynPath());
-
-  return URIUtils::IsInternetStream(item.GetPath());
+  return URIUtils::IsInternetStream(item.GetDynPath());
 }
 
 bool IsRemote(const CFileItem& item)
@@ -32,10 +29,7 @@ bool IsRemote(const CFileItem& item)
 
 bool IsStreamedFilesystem(const CFileItem& item)
 {
-  if (!item.GetDynPath().empty())
-    return URIUtils::IsStreamedFilesystem(item.GetDynPath());
-
-  return URIUtils::IsStreamedFilesystem(item.GetPath());
+  return URIUtils::IsStreamedFilesystem(item.GetDynPath());
 }
 
 } // namespace KODI::NETWORK
