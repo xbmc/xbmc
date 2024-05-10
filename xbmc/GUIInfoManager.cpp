@@ -3941,7 +3941,7 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///   \table_row3{   <b>`VideoPlayer.VideoVersionName`</b>,
 ///                  \anchor VideoPlayer_VideoVersionName
 ///                  _string_,
-///     @return String containing the version name of the currently playing video (movie) - empty if not a movie, version name is not set or not a version
+///     @return String containing the version name of the currently playing video (movie) - empty if not a movie\, version name is not set or not a version
 ///     <p><hr>
 ///     @skinning_v21 **[New Infolabel]** \link VideoPlayer_VideoVersionName `VideoPlayer.VideoVersionName`\endlink
 ///   }
@@ -6488,7 +6488,7 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///                  _string_,
 ///     @return From addon defined message text when it is marked as special condition inside repository.
 ///     <p><hr>
-///     @skinning_v19 **[New Infolabel]** \link ListItem_AddonLifecycleDesc `ListItem.AddonLifecycleDesc``\endlink
+///     @skinning_v19 **[New Infolabel]** \link ListItem_AddonLifecycleDesc `ListItem.AddonLifecycleDesc`\endlink
 ///     replaces `ListItem.AddonBroken`.
 ///     <p>
 ///   }
@@ -6910,7 +6910,7 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///   \table_row3{   <b>`ListItem.AlbumStatus`</b>,
 ///                  \anchor ListItem_AlbumStatus
 ///                  _string_,
-///     @return The Musicbrainz release status of the album (official, bootleg, promotion etc)
+///     @return The Musicbrainz release status of the album (official\, bootleg\, promotion etc)
 ///     <p><hr>
 ///     @skinning_v19 **[New Infolabel]** \link ListItem_AlbumStatus `ListItem.AlbumStatus`\endlink
 ///   }
