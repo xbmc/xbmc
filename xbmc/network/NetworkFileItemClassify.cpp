@@ -14,15 +14,15 @@
 namespace KODI::NETWORK
 {
 
-bool IsInternetStream(const CFileItem& item, const bool bStrictCheck /* = false */)
+bool IsInternetStream(const CFileItem& item)
 {
   if (item.HasProperty("IsHTTPDirectory"))
-    return bStrictCheck;
+    return false;
 
   if (!item.GetDynPath().empty())
-    return URIUtils::IsInternetStream(item.GetDynPath(), bStrictCheck);
+    return URIUtils::IsInternetStream(item.GetDynPath());
 
-  return URIUtils::IsInternetStream(item.GetPath(), bStrictCheck);
+  return URIUtils::IsInternetStream(item.GetPath());
 }
 
 bool IsRemote(const CFileItem& item)
