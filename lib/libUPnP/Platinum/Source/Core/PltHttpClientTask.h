@@ -97,13 +97,13 @@ template <class T>
 class PLT_HttpClientTask : public PLT_HttpClientSocketTask
 {
 public:
-    PLT_HttpClientTask<T>(const NPT_HttpUrl& url, T* data) : 
+    PLT_HttpClientTask(const NPT_HttpUrl& url, T* data) : 
         PLT_HttpClientSocketTask(new NPT_HttpRequest(url, 
                                                      "GET", 
                                                      NPT_HTTP_PROTOCOL_1_1)), 
                                  m_Data(data) {}
  protected:
-    ~PLT_HttpClientTask<T>() override {}
+    ~PLT_HttpClientTask() override {}
 
 protected:
     // PLT_HttpClientSocketTask method

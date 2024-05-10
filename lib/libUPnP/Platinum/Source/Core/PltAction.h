@@ -283,7 +283,7 @@ template <class T>
 class PLT_GetSCPDXMLIterator
 {
 public:
-    PLT_GetSCPDXMLIterator<T>(NPT_XmlElementNode* node) :
+    PLT_GetSCPDXMLIterator(NPT_XmlElementNode* node) :
         m_Node(node) {}
       
     NPT_Result operator()(T* const & data) const {

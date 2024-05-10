@@ -1,0 +1,179 @@
+From 8d184dfc8e75e87f4e0dd8433696e015b4f8e9e1 Mon Sep 17 00:00:00 2001
+From: Philipp Kerling <yol@casix.org>
+Date: Sat, 11 May 2024 00:29:27 +0200
+Subject: [PATCH 1/8] libUPnP: fix template definitions for c++20
+
+---
+ lib/.clang-format                                  |  2 ++
+ lib/libUPnP/Neptune/Source/Core/NptArray.h         | 12 ++++++------
+ lib/libUPnP/Neptune/Source/Core/NptList.h          |  6 +++---
+ lib/libUPnP/Neptune/Source/Core/NptMap.h           | 14 +++++++-------
+ lib/libUPnP/Neptune/Source/Core/NptQueue.h         |  2 +-
+ lib/libUPnP/Platinum/Source/Core/PltAction.h       |  2 +-
+ lib/libUPnP/Platinum/Source/Core/PltDeviceData.cpp |  2 +-
+ .../Platinum/Source/Core/PltHttpClientTask.h       |  4 ++--
+ .../Source/Devices/MediaServer/PltMediaCache.h     |  4 ++--
+ 9 files changed, 25 insertions(+), 23 deletions(-)
+ create mode 100644 lib/.clang-format
+
+diff --git a/lib/.clang-format b/lib/.clang-format
+new file mode 100644
+index 0000000000..47a38a93f2
+--- /dev/null
++++ b/lib/.clang-format
+@@ -0,0 +1,2 @@
++DisableFormat: true
++SortIncludes: Never
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptArray.h b/lib/libUPnP/Neptune/Source/Core/NptArray.h
+index 721bac8943..2592ac5dad 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptArray.h
++++ b/lib/libUPnP/Neptune/Source/Core/NptArray.h
+@@ -59,12 +59,12 @@ public:
+     typedef T* Iterator;
+ 
+     // methods
+-    NPT_Array<T>(): m_Capacity(0), m_ItemCount(0), m_Items(0) {}
+-    explicit NPT_Array<T>(NPT_Cardinal count);
+-    NPT_Array<T>(NPT_Cardinal count, const T& item);
+-    NPT_Array<T>(const T* items, NPT_Cardinal item_count);
+-   ~NPT_Array<T>();
+-    NPT_Array<T>(const NPT_Array<T>& copy);
++    NPT_Array() : m_Capacity(0), m_ItemCount(0), m_Items(0) {}
++    explicit NPT_Array(NPT_Cardinal count);
++    NPT_Array(NPT_Cardinal count, const T& item);
++    NPT_Array(const T* items, NPT_Cardinal item_count);
++    ~NPT_Array();
++    NPT_Array(const NPT_Array<T>& copy);
+     NPT_Array<T>& operator=(const NPT_Array<T>& copy);
+     bool          operator==(const NPT_Array<T>& other) const;
+     bool          operator!=(const NPT_Array<T>& other) const;
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptList.h b/lib/libUPnP/Neptune/Source/Core/NptList.h
+index 37d1802d05..29fcc7e2e9 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptList.h
++++ b/lib/libUPnP/Neptune/Source/Core/NptList.h
+@@ -109,9 +109,9 @@ public:
+     };
+ 
+     // methods
+-                 NPT_List<T>();
+-                 NPT_List<T>(const NPT_List<T>& list);
+-                ~NPT_List<T>();
++    NPT_List();
++    NPT_List(const NPT_List<T>& list);
++    ~NPT_List();
+     NPT_Result   Add(const T& data);
+     NPT_Result   Insert(const Iterator where, const T& data);
+     NPT_Result   Remove(const T& data, bool all=false);
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptMap.h b/lib/libUPnP/Neptune/Source/Core/NptMap.h
+index 75acbbed5f..cd3ead5bb7 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptMap.h
++++ b/lib/libUPnP/Neptune/Source/Core/NptMap.h
+@@ -76,11 +76,11 @@ public:
+     };
+ 
+     // constructors
+-    NPT_Map<K,V>() {}
+-    NPT_Map<K,V>(const NPT_Map<K,V>& copy);
++    NPT_Map() {}
++    NPT_Map(const NPT_Map<K, V>& copy);
+ 
+     // destructor
+-    ~NPT_Map<K,V>();
++    ~NPT_Map();
+ 
+     // methods
+     NPT_Result   Put(const K& key, const V& value);
+@@ -399,12 +399,12 @@ public:
+     };
+ 
+     // constructors
+-    NPT_HashMap<K,V,HF>();
+-    NPT_HashMap<K,V,HF>(const HF& hasher);
+-    NPT_HashMap<K,V,HF>(const NPT_HashMap<K,V,HF>& copy);
++    NPT_HashMap();
++    NPT_HashMap(const HF& hasher);
++    NPT_HashMap(const NPT_HashMap<K, V, HF>& copy);
+ 
+     // destructor
+-    ~NPT_HashMap<K,V,HF>();
++    ~NPT_HashMap();
+ 
+     // methods
+     NPT_Result   Put(const K& key, const V& value);
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptQueue.h b/lib/libUPnP/Neptune/Source/Core/NptQueue.h
+index ecfe1a92fd..b4f6baee1b 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptQueue.h
++++ b/lib/libUPnP/Neptune/Source/Core/NptQueue.h
+@@ -75,7 +75,7 @@ class NPT_Queue
+     // methods
+     NPT_Queue(NPT_Cardinal max_items = 0) :
+         m_Delegate(NPT_GenericQueue::CreateInstance(max_items)) {}
+-    virtual ~NPT_Queue<T>() { delete m_Delegate; }
++    virtual ~NPT_Queue() { delete m_Delegate; }
+     virtual NPT_Result Push(T* item, NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) {
+         return m_Delegate->Push(reinterpret_cast<NPT_QueueItem*>(item), timeout);
+     }
+diff --git a/lib/libUPnP/Platinum/Source/Core/PltAction.h b/lib/libUPnP/Platinum/Source/Core/PltAction.h
+index f457f3d7c1..63947eaea1 100644
+--- a/lib/libUPnP/Platinum/Source/Core/PltAction.h
++++ b/lib/libUPnP/Platinum/Source/Core/PltAction.h
+@@ -283,7 +283,7 @@ template <class T>
+ class PLT_GetSCPDXMLIterator
+ {
+ public:
+-    PLT_GetSCPDXMLIterator<T>(NPT_XmlElementNode* node) :
++    PLT_GetSCPDXMLIterator(NPT_XmlElementNode* node) :
+         m_Node(node) {}
+       
+     NPT_Result operator()(T* const & data) const {
+diff --git a/lib/libUPnP/Platinum/Source/Core/PltDeviceData.cpp b/lib/libUPnP/Platinum/Source/Core/PltDeviceData.cpp
+index a092b77833..a322bc4434 100644
+--- a/lib/libUPnP/Platinum/Source/Core/PltDeviceData.cpp
++++ b/lib/libUPnP/Platinum/Source/Core/PltDeviceData.cpp
+@@ -366,7 +366,7 @@ template <class T>
+ class PLT_GetDescriptionIterator
+ {
+ public:
+-    PLT_GetDescriptionIterator<T>(NPT_XmlElementNode* parent) :
++    PLT_GetDescriptionIterator(NPT_XmlElementNode* parent) :
+       m_Parent(parent) {}
+ 
+       NPT_Result operator()(T& data) const {
+diff --git a/lib/libUPnP/Platinum/Source/Core/PltHttpClientTask.h b/lib/libUPnP/Platinum/Source/Core/PltHttpClientTask.h
+index 62ac723cd0..8c7c7225e5 100644
+--- a/lib/libUPnP/Platinum/Source/Core/PltHttpClientTask.h
++++ b/lib/libUPnP/Platinum/Source/Core/PltHttpClientTask.h
+@@ -97,13 +97,13 @@ template <class T>
+ class PLT_HttpClientTask : public PLT_HttpClientSocketTask
+ {
+ public:
+-    PLT_HttpClientTask<T>(const NPT_HttpUrl& url, T* data) : 
++    PLT_HttpClientTask(const NPT_HttpUrl& url, T* data) : 
+         PLT_HttpClientSocketTask(new NPT_HttpRequest(url, 
+                                                      "GET", 
+                                                      NPT_HTTP_PROTOCOL_1_1)), 
+                                  m_Data(data) {}
+  protected:
+-    ~PLT_HttpClientTask<T>() override {}
++    ~PLT_HttpClientTask() override {}
+ 
+ protected:
+     // PLT_HttpClientSocketTask method
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaCache.h b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaCache.h
+index 8e365d807e..352e4bec30 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaCache.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaCache.h
+@@ -58,8 +58,8 @@ public:
+     typedef typename NPT_Map<NPT_String,T>::Entry ElementEntry;
+     typedef typename NPT_List<ElementEntry*>::Iterator ElementIterator;
+ 
+-    PLT_MediaCache<T,U>() {}
+-    virtual ~PLT_MediaCache<T,U>() {}
++    PLT_MediaCache() {}
++    virtual ~PLT_MediaCache() {}
+ 
+     NPT_Result Put(const char* root, const char* key, T& value, U* tag = NULL);
+     NPT_Result Get(const char* root, const char* key, T& value, U* tag = NULL);
+-- 
+2.44.0
+

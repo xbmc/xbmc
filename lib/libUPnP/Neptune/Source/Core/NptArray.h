@@ -59,12 +59,12 @@ public:
     typedef T* Iterator;
 
     // methods
-    NPT_Array<T>(): m_Capacity(0), m_ItemCount(0), m_Items(0) {}
-    explicit NPT_Array<T>(NPT_Cardinal count);
-    NPT_Array<T>(NPT_Cardinal count, const T& item);
-    NPT_Array<T>(const T* items, NPT_Cardinal item_count);
-   ~NPT_Array<T>();
-    NPT_Array<T>(const NPT_Array<T>& copy);
+    NPT_Array() : m_Capacity(0), m_ItemCount(0), m_Items(0) {}
+    explicit NPT_Array(NPT_Cardinal count);
+    NPT_Array(NPT_Cardinal count, const T& item);
+    NPT_Array(const T* items, NPT_Cardinal item_count);
+    ~NPT_Array();
+    NPT_Array(const NPT_Array<T>& copy);
     NPT_Array<T>& operator=(const NPT_Array<T>& copy);
     bool          operator==(const NPT_Array<T>& other) const;
     bool          operator!=(const NPT_Array<T>& other) const;

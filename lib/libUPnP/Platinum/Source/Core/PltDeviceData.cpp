@@ -366,7 +366,7 @@ template <class T>
 class PLT_GetDescriptionIterator
 {
 public:
-    PLT_GetDescriptionIterator<T>(NPT_XmlElementNode* parent) :
+    PLT_GetDescriptionIterator(NPT_XmlElementNode* parent) :
       m_Parent(parent) {}
 
       NPT_Result operator()(T& data) const {
