@@ -4,9 +4,9 @@
 #
 # This will define the following target:
 #
-#   fmt::fmt   - The Fmt library
+#   ${APP_NAME_LC}::Fmt   - The Fmt library
 
-if(NOT TARGET fmt::fmt)
+if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
@@ -58,43 +58,35 @@ if(NOT TARGET fmt::fmt)
 
       find_path(FMT_INCLUDE_DIR NAMES fmt/format.h
                                 HINTS ${DEPENDS_PATH}/include ${PC_FMT_INCLUDEDIR}
-                                ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
-                                NO_CACHE)
+                                ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
 
       find_library(FMT_LIBRARY_RELEASE NAMES fmt
                                        HINTS ${DEPENDS_PATH}/lib ${PC_FMT_LIBDIR}
-                                       ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
-                                       NO_CACHE)
+                                       ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
       find_library(FMT_LIBRARY_DEBUG NAMES fmtd
                                      HINTS ${DEPENDS_PATH}/lib ${PC_FMT_LIBDIR}
-                                     ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
-                                     NO_CACHE)
+                                     ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+    else()
+      # This is for the case where a distro provides a non standard (Debug/Release) config type
+      # eg Debian's config file is fmtConfigTargets-none.cmake
+      # convert this back to either DEBUG/RELEASE or just RELEASE
+      # we only do this because we use find_package_handle_standard_args for config time output
+      # and it isnt capable of handling TARGETS, so we have to extract the info
+      get_target_property(_FMT_CONFIGURATIONS fmt::fmt IMPORTED_CONFIGURATIONS)
+      foreach(_fmt_config IN LISTS _FMT_CONFIGURATIONS)
+        # Some non standard config (eg None on Debian)
+        # Just set to RELEASE var so select_library_configurations can continue to work its magic
+        string(TOUPPER ${_fmt_config} _fmt_config_UPPER)
+        if((NOT ${_fmt_config_UPPER} STREQUAL "RELEASE") AND
+           (NOT ${_fmt_config_UPPER} STREQUAL "DEBUG"))
+          get_target_property(FMT_LIBRARY_RELEASE fmt::fmt IMPORTED_LOCATION_${_fmt_config_UPPER})
+        else()
+          get_target_property(FMT_LIBRARY_${_fmt_config_UPPER} fmt::fmt IMPORTED_LOCATION_${_fmt_config_UPPER})
+        endif()
+      endforeach()
+
+      get_target_property(FMT_INCLUDE_DIR fmt::fmt INTERFACE_INCLUDE_DIRECTORIES)
     endif()
-  endif()
-
-  # fmt::fmt target exists and is of suitable versioning. the INTERNAL_FMT build
-  # is not created.
-  # We create variables based off TARGET data for use with FPHSA
-  if(TARGET fmt::fmt AND NOT TARGET fmt)
-    # This is for the case where a distro provides a non standard (Debug/Release) config type
-    # eg Debian's config file is fmtConfigTargets-none.cmake
-    # convert this back to either DEBUG/RELEASE or just RELEASE
-    # we only do this because we use find_package_handle_standard_args for config time output
-    # and it isnt capable of handling TARGETS, so we have to extract the info
-    get_target_property(_FMT_CONFIGURATIONS fmt::fmt IMPORTED_CONFIGURATIONS)
-    foreach(_fmt_config IN LISTS _FMT_CONFIGURATIONS)
-      # Some non standard config (eg None on Debian)
-      # Just set to RELEASE var so select_library_configurations can continue to work its magic
-      string(TOUPPER ${_fmt_config} _fmt_config_UPPER)
-      if((NOT ${_fmt_config_UPPER} STREQUAL "RELEASE") AND
-         (NOT ${_fmt_config_UPPER} STREQUAL "DEBUG"))
-        get_target_property(FMT_LIBRARY_RELEASE fmt::fmt IMPORTED_LOCATION_${_fmt_config_UPPER})
-      else()
-        get_target_property(FMT_LIBRARY_${_fmt_config_UPPER} fmt::fmt IMPORTED_LOCATION_${_fmt_config_UPPER})
-      endif()
-    endforeach()
-
-    get_target_property(FMT_INCLUDE_DIR fmt::fmt INTERFACE_INCLUDE_DIRECTORIES)
   endif()
 
   include(SelectLibraryConfigurations)
@@ -106,29 +98,30 @@ if(NOT TARGET fmt::fmt)
                                     REQUIRED_VARS FMT_LIBRARY FMT_INCLUDE_DIR
                                     VERSION_VAR FMT_VERSION)
   if(Fmt_FOUND)
-    if(TARGET fmt OR NOT TARGET fmt::fmt)
-      if(NOT TARGET fmt::fmt)
-        add_library(fmt::fmt UNKNOWN IMPORTED)
-      endif()
+    # cmake target and not building internal
+    if(TARGET fmt::fmt AND NOT TARGET fmt)
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS fmt::fmt)
+    else()
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
       if(FMT_LIBRARY_RELEASE)
-        set_target_properties(fmt::fmt PROPERTIES
-                                       IMPORTED_CONFIGURATIONS RELEASE
-                                       IMPORTED_LOCATION_RELEASE "${FMT_LIBRARY_RELEASE}")
+        set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                         IMPORTED_CONFIGURATIONS RELEASE
+                                                                         IMPORTED_LOCATION_RELEASE "${FMT_LIBRARY_RELEASE}")
       endif()
       if(FMT_LIBRARY_DEBUG)
-        set_target_properties(fmt::fmt PROPERTIES
-                                       IMPORTED_CONFIGURATIONS DEBUG
-                                       IMPORTED_LOCATION_DEBUG "${FMT_LIBRARY_DEBUG}")
+        set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                         IMPORTED_CONFIGURATIONS DEBUG
+                                                                         IMPORTED_LOCATION_DEBUG "${FMT_LIBRARY_DEBUG}")
       endif()
-      set_target_properties(fmt::fmt PROPERTIES
-                                     INTERFACE_INCLUDE_DIRECTORIES "${FMT_INCLUDE_DIR}")
+      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                       INTERFACE_INCLUDE_DIRECTORIES "${FMT_INCLUDE_DIR}")
     endif()
 
     if(TARGET fmt)
-      add_dependencies(fmt::fmt fmt)
+      add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} fmt)
       # We are building as a requirement, so set LIB_BUILD property to allow calling
       # modules to know we will be building, and they will want to rebuild as well.
-      set_target_properties(fmt::fmt PROPERTIES LIB_BUILD ON)
+      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES LIB_BUILD ON)
     endif()
 
     # Add internal build target when a Multi Config Generator is used
@@ -146,14 +139,9 @@ if(NOT TARGET fmt::fmt)
       endif()
       add_dependencies(build_internal_depends fmt)
     endif()
-  endif()
-
-  # Check whether we already have fmt::fmt target added to dep property list
-  get_property(CHECK_INTERNAL_DEPS GLOBAL PROPERTY INTERNAL_DEPS_PROP)
-  list(FIND CHECK_INTERNAL_DEPS "fmt::fmt" FMT_PROP_FOUND)
-
-  # list(FIND) returns -1 if search item not found
-  if(FMT_PROP_FOUND STREQUAL "-1")
-    set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP fmt::fmt)
+  else()
+    if(Fmt_FIND_REQUIRED)
+      message(FATAL_ERROR "Fmt libraries were not found. You may want to use -DENABLE_INTERNAL_FMT=ON")
+    endif()
   endif()
 endif()

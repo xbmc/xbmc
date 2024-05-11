@@ -324,7 +324,7 @@ list(APPEND install_data ${ADDON_INSTALL_DATA})
 add_library(compileinfo OBJECT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp)
 set_target_properties(compileinfo PROPERTIES FOLDER "Build Utilities")
 target_compile_options(compileinfo PRIVATE ${SYSTEM_DEFINES} ${ARCH_DEFINES})
-add_dependencies(compileinfo fmt::fmt)
+target_link_libraries(compileinfo PRIVATE ${APP_NAME_LC}::Fmt)
 
 if(NOT MSVC)
   target_compile_options(compileinfo PUBLIC ${CORE_COMPILE_OPTIONS})

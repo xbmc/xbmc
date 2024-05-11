@@ -42,7 +42,7 @@ macro(buildSpdlog)
 
   BUILD_DEP_TARGET()
 
-  add_dependencies(${MODULE_LC} fmt::fmt)
+  add_dependencies(${MODULE_LC} ${APP_NAME_LC}::Fmt)
 endmacro()
 
 if(NOT TARGET spdlog::spdlog)
@@ -55,9 +55,9 @@ if(NOT TARGET spdlog::spdlog)
     find_package(Fmt ${LIB_FMT_VER} MODULE REQUIRED)
   endif()
 
-  if(TARGET fmt::fmt)
+  if(TARGET ${APP_NAME_LC}::Fmt)
     # Check if we want to force a build due to a dependency rebuild
-    get_property(LIB_FORCE_REBUILD TARGET fmt::fmt PROPERTY LIB_BUILD)
+    get_property(LIB_FORCE_REBUILD TARGET ${APP_NAME_LC}::Fmt PROPERTY LIB_BUILD)
   endif()
 
   set(MODULE_LC spdlog)
