@@ -5,9 +5,9 @@
 #
 # This will define the following target:
 #
-#   Curl::Curl   - The Curl library
+#   ${APP_NAME_LC}::Curl   - The Curl library
 
-if(NOT TARGET Curl::Curl)
+if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
   macro(buildCurl)
@@ -120,7 +120,7 @@ if(NOT TARGET Curl::Curl)
       endif()
     else()
       # CURL::libcurl is an alias. We need to get the actual aias target, as we cant make an
-      # alias of an alias (ie our Curl::Curl cant be an alias of Curl::libcurl)
+      # alias of an alias (ie our ${APP_NAME_LC}::Curl cant be an alias of Curl::libcurl)
       get_target_property(_CURL_ALIASTARGET CURL::libcurl ALIASED_TARGET)
 
       # This is for the case where a distro provides a non standard (Debug/Release) config type
@@ -158,42 +158,42 @@ if(NOT TARGET Curl::Curl)
     # cmake target and not building internal
     if(TARGET CURL::libcurl AND NOT TARGET curl)
       # CURL::libcurl is an alias. We need to get the actual aias target, as we cant make an
-      # alias of an alias (ie our Curl::Curl cant be an alias of Curl::libcurl)
+      # alias of an alias (ie our ${APP_NAME_LC}::Curl cant be an alias of Curl::libcurl)
       if(NOT _CURL_ALIASTARGET)
         get_target_property(_CURL_ALIASTARGET CURL::libcurl ALIASED_TARGET)
       endif()
 
-      add_library(Curl::Curl ALIAS ${_CURL_ALIASTARGET})
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS ${_CURL_ALIASTARGET})
     else()
-      add_library(Curl::Curl UNKNOWN IMPORTED)
-      set_target_properties(Curl::Curl PROPERTIES
-                                       INTERFACE_INCLUDE_DIRECTORIES "${CURL_INCLUDE_DIR}")
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
+      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                       INTERFACE_INCLUDE_DIRECTORIES "${CURL_INCLUDE_DIR}")
 
       if(CURL_LIBRARY_RELEASE)
-        set_target_properties(Curl::Curl PROPERTIES
-                                         IMPORTED_CONFIGURATIONS RELEASE
-                                         IMPORTED_LOCATION_RELEASE "${CURL_LIBRARY_RELEASE}")
+        set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                         IMPORTED_CONFIGURATIONS RELEASE
+                                                                         IMPORTED_LOCATION_RELEASE "${CURL_LIBRARY_RELEASE}")
       endif()
       if(CURL_LIBRARY_DEBUG)
-        set_target_properties(Curl::Curl PROPERTIES
-                                         IMPORTED_CONFIGURATIONS DEBUG
-                                         IMPORTED_LOCATION_DEBUG "${CURL_LIBRARY_DEBUG}")
+        set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                         IMPORTED_CONFIGURATIONS DEBUG
+                                                                         IMPORTED_LOCATION_DEBUG "${CURL_LIBRARY_DEBUG}")
       endif()
 
       # Add link libraries for static lib usage found from pkg-config
       if(PC_CURL_LINK_LIBRARIES)
-        set_target_properties(Curl::Curl PROPERTIES
-                                         INTERFACE_LINK_LIBRARIES "${PC_CURL_LINK_LIBRARIES}")
+        set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                         INTERFACE_LINK_LIBRARIES "${PC_CURL_LINK_LIBRARIES}")
       endif()
 
       if(WIN32 OR WINDOWS_STORE)
-        set_property(TARGET Curl::Curl APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS "CURL_STATICLIB")
+        set_property(TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS "CURL_STATICLIB")
       endif()
 
     endif()
 
     if(TARGET curl)
-      add_dependencies(Curl::Curl curl)
+      add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} curl)
     endif()
 
     # Add internal build target when a Multi Config Generator is used
@@ -211,9 +211,6 @@ if(NOT TARGET Curl::Curl)
       endif()
       add_dependencies(build_internal_depends curl)
     endif()
-
-    set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP Curl::Curl)
-
   else()
     if(Curl_FIND_REQUIRED)
       message(FATAL_ERROR "Curl libraries were not found.")
