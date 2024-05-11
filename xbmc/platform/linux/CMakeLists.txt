@@ -27,7 +27,7 @@ if(TARGET ${APP_NAME_LC}::Alsa)
   list(APPEND HEADERS FDEventMonitor.h)
 endif()
 
-if(TARGET DBus::DBus)
+if(TARGET ${APP_NAME_LC}::DBus)
   list(APPEND SOURCES DBusMessage.cpp
                       DBusUtil.cpp)
   list(APPEND HEADERS DBusMessage.h

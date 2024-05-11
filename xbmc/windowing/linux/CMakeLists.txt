@@ -1,7 +1,7 @@
 set(SOURCES "")
 set(HEADERS "")
 
-if(TARGET DBus::DBus)
+if(TARGET ${APP_NAME_LC}::DBus)
   list(APPEND SOURCES OSScreenSaverFreedesktop.cpp)
   list(APPEND HEADERS OSScreenSaverFreedesktop.h)
 endif()

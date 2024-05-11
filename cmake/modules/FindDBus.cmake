@@ -5,9 +5,9 @@
 #
 # This will define the following target:
 #
-#   DBus::DBus   - The DBUS library
+#   ${APP_NAME_LC}::DBus   - The DBUS library
 
-if(NOT TARGET DBus::DBus)
+if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   find_package(PkgConfig)
   if(PKG_CONFIG_FOUND)
     pkg_check_modules(PC_DBUS dbus-1 QUIET)
@@ -31,13 +31,10 @@ if(NOT TARGET DBus::DBus)
                                     VERSION_VAR DBUS_VERSION)
 
   if(DBUS_FOUND)
-    add_library(DBus::DBus UNKNOWN IMPORTED)
-    set_target_properties(DBus::DBus PROPERTIES
-                                   IMPORTED_LOCATION "${DBUS_LIBRARY}"
-                                   INTERFACE_INCLUDE_DIRECTORIES "${DBUS_INCLUDE_DIR};${DBUS_ARCH_INCLUDE_DIR}"
-                                   INTERFACE_COMPILE_DEFINITIONS HAS_DBUS=1)
-    set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP DBus::DBus)
+    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
+    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                     IMPORTED_LOCATION "${DBUS_LIBRARY}"
+                                                                     INTERFACE_INCLUDE_DIRECTORIES "${DBUS_INCLUDE_DIR};${DBUS_ARCH_INCLUDE_DIR}"
+                                                                     INTERFACE_COMPILE_DEFINITIONS HAS_DBUS)
   endif()
-
-  mark_as_advanced(DBUS_INCLUDE_DIR DBUS_LIBRARY)
 endif()
