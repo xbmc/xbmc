@@ -983,6 +983,31 @@ void CGUIDialogPVRTimerSettings::ChannelsFiller(const SettingConstPtr& setting,
         foundCurrent = true;
       }
     }
+
+    if (foundCurrent)
+    {
+      // Verify m_channel is still valid. Update if not.
+      if (std::find_if(list.cbegin(), list.cend(),
+                       [&current](const auto& channel)
+                       { return channel.value == current; }) == list.cend())
+      {
+        // Set m_channel and current to first valid channel in list
+        const int first{list.front().value};
+        const auto it =
+            std::find_if(pThis->m_channelEntries.cbegin(), pThis->m_channelEntries.cend(),
+                         [first](const auto& channel) { return channel.first == first; });
+
+        if (it != pThis->m_channelEntries.cend())
+        {
+          current = (*it).first;
+          pThis->m_channel = (*it).second;
+        }
+        else
+        {
+          CLog::LogF(LOGERROR, "Unable to find channel to select");
+        }
+      }
+    }
   }
   else
     CLog::LogF(LOGERROR, "No dialog");
