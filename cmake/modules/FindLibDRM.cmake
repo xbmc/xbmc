@@ -5,10 +5,9 @@
 #
 # This will define the following target:
 #
-#   LibDRM::LibDRM   - The LibDRM library
+#   ${APP_NAME_LC}::LibDRM   - The LibDRM library
 
-if(NOT TARGET LIBDRM::LIBDRM)
-
+if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   if(LibDRM_FIND_VERSION)
     if(LibDRM_FIND_VERSION_EXACT)
       set(LibDRM_FIND_SPEC "=${LibDRM_FIND_VERSION_COMPLETE}")
@@ -24,11 +23,9 @@ if(NOT TARGET LIBDRM::LIBDRM)
 
   find_path(LIBDRM_INCLUDE_DIR NAMES drm.h
                                PATH_SUFFIXES libdrm drm
-                               HINTS ${PC_LIBDRM_INCLUDEDIR}
-                               NO_CACHE)
+                               HINTS ${PC_LIBDRM_INCLUDEDIR})
   find_library(LIBDRM_LIBRARY NAMES drm
-                              HINTS ${PC_LIBDRM_LIBDIR}
-                              NO_CACHE)
+                              HINTS ${PC_LIBDRM_LIBDIR})
 
   set(LIBDRM_VERSION ${PC_LIBDRM_VERSION})
 
@@ -51,20 +48,20 @@ if(NOT TARGET LIBDRM::LIBDRM)
   include(CheckSymbolExists)
   set(CMAKE_REQUIRED_LIBRARIES ${LIBDRM_LIBRARY})
   check_symbol_exists(drmGetFormatModifierName xf86drm.h LIBDRM_HAS_MODIFIER_NAME)
+  set(CMAKE_REQUIRED_LIBRARIES)
 
   if(LIBDRM_FOUND)
-    add_library(LIBDRM::LIBDRM UNKNOWN IMPORTED)
-    set_target_properties(LIBDRM::LIBDRM PROPERTIES
-                                         IMPORTED_LOCATION "${LIBDRM_LIBRARY}"
-                                         INTERFACE_INCLUDE_DIRECTORIES "${LIBDRM_INCLUDE_DIR}")
+    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
+    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                     IMPORTED_LOCATION "${LIBDRM_LIBRARY}"
+                                                                     INTERFACE_INCLUDE_DIRECTORIES "${LIBDRM_INCLUDE_DIR}")
     if(LIBDRM_HAS_HDR_OUTPUT_METADATA)
-      set_property(TARGET LIBDRM::LIBDRM APPEND PROPERTY
-                                                INTERFACE_COMPILE_DEFINITIONS HAVE_HDR_OUTPUT_METADATA=1)
+      set_property(TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY
+                                                                            INTERFACE_COMPILE_DEFINITIONS HAVE_HDR_OUTPUT_METADATA)
     endif()
     if(LIBDRM_HAS_MODIFIER_NAME)
-      set_property(TARGET LIBDRM::LIBDRM APPEND PROPERTY
-                                                INTERFACE_COMPILE_DEFINITIONS HAVE_DRM_MODIFIER_NAME=1)
+      set_property(TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY
+                                                                            INTERFACE_COMPILE_DEFINITIONS HAVE_DRM_MODIFIER_NAME)
     endif()
-    set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP LIBDRM::LIBDRM)
   endif()
 endif()
