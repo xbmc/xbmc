@@ -5,11 +5,11 @@
 #
 # This will define the following target:
 #
-#   HarfBuzz::HarfBuzz   - The HarfBuzz library
+#   ${APP_NAME_LC}::HarfBuzz   - The HarfBuzz library
 
-if(NOT TARGET HarfBuzz::HarfBuzz)
+if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   find_package(PkgConfig)
-  if(PKG_CONFIG_FOUND)
+  if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWS_STORE))
     pkg_check_modules(PC_HARFBUZZ harfbuzz QUIET)
   endif()
 
@@ -17,12 +17,10 @@ if(NOT TARGET HarfBuzz::HarfBuzz)
                                  HINTS ${DEPENDS_PATH}/include
                                        ${PC_HARFBUZZ_INCLUDEDIR}
                                        ${PC_HARFBUZZ_INCLUDE_DIRS}
-                                 ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
-                                 NO_CACHE)
+                                 ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
   find_library(HARFBUZZ_LIBRARY NAMES harfbuzz
                                 HINTS ${DEPENDS_PATH}/lib ${PC_HARFBUZZ_LIBDIR}
-                                ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
-                                NO_CACHE)
+                                ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
 
   set(HARFBUZZ_VERSION ${PC_HARFBUZZ_VERSION})
 
@@ -32,10 +30,13 @@ if(NOT TARGET HarfBuzz::HarfBuzz)
                                     VERSION_VAR HARFBUZZ_VERSION)
 
   if(HARFBUZZ_FOUND)
-    add_library(HarfBuzz::HarfBuzz UNKNOWN IMPORTED)
-    set_target_properties(HarfBuzz::HarfBuzz PROPERTIES
-                                             IMPORTED_LOCATION "${HARFBUZZ_LIBRARY}"
-                                             INTERFACE_INCLUDE_DIRECTORIES "${HARFBUZZ_INCLUDE_DIR}")
-    set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP HarfBuzz::HarfBuzz)
+    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
+    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                     IMPORTED_LOCATION "${HARFBUZZ_LIBRARY}"
+                                                                     INTERFACE_INCLUDE_DIRECTORIES "${HARFBUZZ_INCLUDE_DIR}")
+  else()
+    if(HarfBuzz_FIND_REQUIRED)
+      message(FATAL_ERROR "Harfbuzz libraries were not found.")
+    endif()
   endif()
 endif()
