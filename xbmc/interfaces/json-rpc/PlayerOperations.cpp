@@ -94,7 +94,7 @@ JSONRPC_STATUS CPlayerOperations::GetActivePlayers(const std::string &method, IT
   if (activePlayers & Video)
   {
     CVariant video = CVariant(CVariant::VariantTypeObject);
-    video["playerid"] = GetPlaylist(Video);
+    video["playerid"] = static_cast<int>(GetPlaylist(Video));
     video["type"] = "video";
     video["playertype"] = strPlayerType;
     result.append(video);
@@ -102,7 +102,7 @@ JSONRPC_STATUS CPlayerOperations::GetActivePlayers(const std::string &method, IT
   if (activePlayers & Audio)
   {
     CVariant audio = CVariant(CVariant::VariantTypeObject);
-    audio["playerid"] = GetPlaylist(Audio);
+    audio["playerid"] = static_cast<int>(GetPlaylist(Audio));
     audio["type"] = "audio";
     audio["playertype"] = strPlayerType;
     result.append(audio);
@@ -110,7 +110,7 @@ JSONRPC_STATUS CPlayerOperations::GetActivePlayers(const std::string &method, IT
   if (activePlayers & Picture)
   {
     CVariant picture = CVariant(CVariant::VariantTypeObject);
-    picture["playerid"] = GetPlaylist(Picture);
+    picture["playerid"] = static_cast<int>(GetPlaylist(Picture));
     picture["type"] = "picture";
     picture["playertype"] = "internal";
     result.append(picture);
@@ -800,9 +800,9 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
 
   if (parameterObject["item"].isMember("playlistid"))
   {
-    PLAYLIST::Id playlistid = parameterObject["item"]["playlistid"].asInteger();
+    PLAYLIST::Id playlistid = PLAYLIST::Id{parameterObject["item"]["playlistid"].asInteger32()};
 
-    if (playlistid == PLAYLIST::TYPE_MUSIC || playlistid == PLAYLIST::TYPE_VIDEO)
+    if (playlistid == PLAYLIST::Id::TYPE_MUSIC || playlistid == PLAYLIST::Id::TYPE_VIDEO)
     {
       // Apply the "shuffled" option if available
       if (optionShuffled.isBoolean())
@@ -817,13 +817,13 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
 
     switch (playlistid)
     {
-      case PLAYLIST::TYPE_MUSIC:
-      case PLAYLIST::TYPE_VIDEO:
-        CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, playlistid,
+      case PLAYLIST::Id::TYPE_MUSIC:
+      case PLAYLIST::Id::TYPE_VIDEO:
+        CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, static_cast<int>(playlistid),
                                                    playlistStartPosition);
         break;
 
-      case PLAYLIST::TYPE_PICTURE:
+      case PLAYLIST::Id::TYPE_PICTURE:
       {
         std::string firstPicturePath;
         if (playlistStartPosition > 0)
@@ -838,6 +838,8 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
         return StartSlideshow("", false, optionShuffled.isBoolean() && optionShuffled.asBoolean(), firstPicturePath);
         break;
       }
+      default:
+        break;
     }
 
     return ACK;
@@ -1094,7 +1096,8 @@ JSONRPC_STATUS CPlayerOperations::SetShuffle(const std::string &method, ITranspo
         if ((shuffle.isBoolean() && !shuffle.asBoolean()) ||
             (shuffle.isString() && shuffle.asString() == "toggle"))
         {
-          CServiceBroker::GetAppMessenger()->SendMsg(TMSG_PLAYLISTPLAYER_SHUFFLE, playlistid, 0);
+          CServiceBroker::GetAppMessenger()->SendMsg(TMSG_PLAYLISTPLAYER_SHUFFLE,
+                                                     static_cast<int>(playlistid), 0);
         }
       }
       else
@@ -1102,7 +1105,8 @@ JSONRPC_STATUS CPlayerOperations::SetShuffle(const std::string &method, ITranspo
         if ((shuffle.isBoolean() && shuffle.asBoolean()) ||
             (shuffle.isString() && shuffle.asString() == "toggle"))
         {
-          CServiceBroker::GetAppMessenger()->SendMsg(TMSG_PLAYLISTPLAYER_SHUFFLE, playlistid, 1);
+          CServiceBroker::GetAppMessenger()->SendMsg(TMSG_PLAYLISTPLAYER_SHUFFLE,
+                                                     static_cast<int>(playlistid), 1);
         }
       }
       break;
@@ -1162,8 +1166,8 @@ JSONRPC_STATUS CPlayerOperations::SetRepeat(const std::string &method, ITranspor
       else
         repeat = ParseRepeatState(parameterObject["repeat"]);
 
-      CServiceBroker::GetAppMessenger()->SendMsg(TMSG_PLAYLISTPLAYER_REPEAT, playlistid,
-                                                 static_cast<int>(repeat));
+      CServiceBroker::GetAppMessenger()->SendMsg(
+          TMSG_PLAYLISTPLAYER_REPEAT, static_cast<int>(playlistid), static_cast<int>(repeat));
       break;
     }
 
@@ -1440,20 +1444,20 @@ int CPlayerOperations::GetActivePlayers()
 
 PlayerType CPlayerOperations::GetPlayer(const CVariant &player)
 {
-  PLAYLIST::Id playerPlaylistId = player.asInteger();
+  PLAYLIST::Id playerPlaylistId = PLAYLIST::Id{player.asInteger32()};
   PlayerType playerID;
 
   switch (playerPlaylistId)
   {
-    case PLAYLIST::TYPE_VIDEO:
+    case PLAYLIST::Id::TYPE_VIDEO:
       playerID = Video;
       break;
 
-    case PLAYLIST::TYPE_MUSIC:
+    case PLAYLIST::Id::TYPE_MUSIC:
       playerID = Audio;
       break;
 
-    case PLAYLIST::TYPE_PICTURE:
+    case PLAYLIST::Id::TYPE_PICTURE:
       playerID = Picture;
       break;
 
@@ -1471,7 +1475,7 @@ PlayerType CPlayerOperations::GetPlayer(const CVariant &player)
 PLAYLIST::Id CPlayerOperations::GetPlaylist(PlayerType player)
 {
   PLAYLIST::Id playlistId = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
-  if (playlistId == PLAYLIST::TYPE_NONE) // No active playlist, try guessing
+  if (playlistId == PLAYLIST::Id::TYPE_NONE) // No active playlist, try guessing
   {
     const auto& components = CServiceBroker::GetAppComponents();
     const auto appPlayer = components.GetComponent<CApplicationPlayer>();
@@ -1481,13 +1485,13 @@ PLAYLIST::Id CPlayerOperations::GetPlaylist(PlayerType player)
   switch (player)
   {
     case Video:
-      return playlistId == PLAYLIST::TYPE_NONE ? PLAYLIST::TYPE_VIDEO : playlistId;
+      return playlistId == PLAYLIST::Id::TYPE_NONE ? PLAYLIST::Id::TYPE_VIDEO : playlistId;
 
     case Audio:
-      return playlistId == PLAYLIST::TYPE_NONE ? PLAYLIST::TYPE_MUSIC : playlistId;
+      return playlistId == PLAYLIST::Id::TYPE_NONE ? PLAYLIST::Id::TYPE_MUSIC : playlistId;
 
     case Picture:
-      return PLAYLIST::TYPE_PICTURE;
+      return PLAYLIST::Id::TYPE_PICTURE;
 
     default:
       return playlistId;
@@ -1715,7 +1719,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
   }
   else if (property == "playlistid")
   {
-    result = playlistId;
+    result = static_cast<int>(playlistId);
   }
   else if (property == "position")
   {

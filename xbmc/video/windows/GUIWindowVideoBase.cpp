@@ -102,8 +102,8 @@ bool CGUIWindowVideoBase::OnAction(const CAction &action)
     return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_SCAN);
   else if (action.GetID() == ACTION_SHOW_PLAYLIST)
   {
-    if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST::TYPE_VIDEO ||
-        CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST::TYPE_VIDEO).size() > 0)
+    if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST::Id::TYPE_VIDEO ||
+        CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST::Id::TYPE_VIDEO).size() > 0)
     {
       CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_VIDEO_PLAYLIST);
       return true;
@@ -977,7 +977,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(const std::shared_ptr<CFileItem>& pItem,
   // Reset Playlistplayer, playback started now does
   // not use the playlistplayer.
   CServiceBroker::GetPlaylistPlayer().Reset();
-  CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST::TYPE_NONE);
+  CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST::Id::TYPE_NONE);
 
   auto itemCopy = std::make_shared<CFileItem>(*pItem);
 
@@ -988,7 +988,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(const std::shared_ptr<CFileItem>& pItem,
   }
   CLog::Log(LOGDEBUG, "{} {}", __FUNCTION__, CURL::GetRedacted(itemCopy->GetPath()));
 
-  itemCopy->SetProperty("playlist_type_hint", m_guiState->GetPlaylist());
+  itemCopy->SetProperty("playlist_type_hint", static_cast<int>(m_guiState->GetPlaylist()));
 
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopAsync();
@@ -1015,7 +1015,7 @@ bool CGUIWindowVideoBase::OnPlayAndQueueMedia(const CFileItemPtr& item, const st
 {
   // Get the current playlist and make sure it is not shuffled
   PLAYLIST::Id playlistId = m_guiState->GetPlaylist();
-  if (playlistId != PLAYLIST::TYPE_NONE &&
+  if (playlistId != PLAYLIST::Id::TYPE_NONE &&
       CServiceBroker::GetPlaylistPlayer().IsShuffled(playlistId))
   {
     CServiceBroker::GetPlaylistPlayer().SetShuffle(playlistId, false);
@@ -1147,10 +1147,10 @@ bool CGUIWindowVideoBase::PlayItem(const std::shared_ptr<CFileItem>& pItem,
     CFileItemList queuedItems;
     VIDEO::UTILS::GetItemsForPlayList(item, queuedItems);
 
-    CServiceBroker::GetPlaylistPlayer().ClearPlaylist(PLAYLIST::TYPE_VIDEO);
+    CServiceBroker::GetPlaylistPlayer().ClearPlaylist(PLAYLIST::Id::TYPE_VIDEO);
     CServiceBroker::GetPlaylistPlayer().Reset();
-    CServiceBroker::GetPlaylistPlayer().Add(PLAYLIST::TYPE_VIDEO, queuedItems);
-    CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST::TYPE_VIDEO);
+    CServiceBroker::GetPlaylistPlayer().Add(PLAYLIST::Id::TYPE_VIDEO, queuedItems);
+    CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST::Id::TYPE_VIDEO);
     CServiceBroker::GetPlaylistPlayer().Play();
     return true;
   }
@@ -1159,7 +1159,7 @@ bool CGUIWindowVideoBase::PlayItem(const std::shared_ptr<CFileItem>& pItem,
     // Note: strm files being somehow special playlists need to be handled in OnPlay*Media
 
     // load the playlist the old way
-    LoadPlayList(pItem->GetDynPath(), PLAYLIST::TYPE_VIDEO);
+    LoadPlayList(pItem->GetDynPath(), PLAYLIST::Id::TYPE_VIDEO);
     return true;
   }
   else if (m_guiState.get() && m_guiState->AutoPlayNextItem() && !g_partyModeManager.IsEnabled())

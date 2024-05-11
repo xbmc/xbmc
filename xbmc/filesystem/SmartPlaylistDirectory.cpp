@@ -78,7 +78,7 @@ namespace XFILE
     std::string group = playlist.GetGroup();
     bool isGrouped = !group.empty() && !StringUtils::EqualsNoCase(group, "none") && !playlist.IsGroupMixed();
     // Hint for playlist files like STRM
-    PLAYLIST::Id playlistTypeHint = PLAYLIST::TYPE_NONE;
+    PLAYLIST::Id playlistTypeHint = PLAYLIST::Id::TYPE_NONE;
 
     // get all virtual folders and add them to the item list
     playlist.GetVirtualFolders(virtualFolders);
@@ -99,7 +99,7 @@ namespace XFILE
         playlist.GetType() == "tvshows" ||
         playlist.GetType() == "episodes")
     {
-      playlistTypeHint = PLAYLIST::TYPE_VIDEO;
+      playlistTypeHint = PLAYLIST::Id::TYPE_VIDEO;
       CVideoDatabase db;
       if (db.Open())
       {
@@ -155,7 +155,7 @@ namespace XFILE
     }
     else if (playlist.IsMusicType() || playlist.GetType().empty())
     {
-      playlistTypeHint = PLAYLIST::TYPE_MUSIC;
+      playlistTypeHint = PLAYLIST::Id::TYPE_MUSIC;
       CMusicDatabase db;
       if (db.Open())
       {
@@ -213,7 +213,7 @@ namespace XFILE
 
     if (playlist.GetType() == "musicvideos" || playlist.GetType() == "mixed")
     {
-      playlistTypeHint = PLAYLIST::TYPE_VIDEO;
+      playlistTypeHint = PLAYLIST::Id::TYPE_VIDEO;
       CVideoDatabase db;
       if (db.Open())
       {
@@ -302,7 +302,7 @@ namespace XFILE
     {
       CFileItemPtr item = items[i];
       item->m_iprogramCount = i;  // hack for playlist order
-      item->SetProperty("playlist_type_hint", playlistTypeHint);
+      item->SetProperty("playlist_type_hint", static_cast<int>(playlistTypeHint));
     }
 
     if (playlist.GetType() == "mixed")

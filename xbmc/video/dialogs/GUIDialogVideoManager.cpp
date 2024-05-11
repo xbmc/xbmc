@@ -285,7 +285,7 @@ protected:
 private:
   void Play()
   {
-    m_item->SetProperty("playlist_type_hint", PLAYLIST::TYPE_VIDEO);
+    m_item->SetProperty("playlist_type_hint", static_cast<int>(PLAYLIST::Id::TYPE_VIDEO));
     const ContentUtils::PlayMode mode{m_item->GetProperty("CheckAutoPlayNextItem").asBoolean()
                                           ? ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM
                                           : ContentUtils::PlayMode::PLAY_ONLY_THIS};

@@ -140,7 +140,7 @@ public:
       */
     bool clearcache(false);
     const PLAYLIST::CPlayList& playlist =
-        CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST::TYPE_MUSIC);
+        CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST::Id::TYPE_MUSIC);
 
     for (int i = 0; i < playlist.size(); ++i)
     {
@@ -669,12 +669,12 @@ void AddItemToPlayListAndPlay(const std::shared_ptr<CFileItem>& itemToQueue,
   MUSIC_UTILS::GetItemsForPlayList(itemToQueue, queuedItems);
 
   auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
-  playlistPlayer.ClearPlaylist(PLAYLIST::TYPE_MUSIC);
+  playlistPlayer.ClearPlaylist(PLAYLIST::Id::TYPE_MUSIC);
   playlistPlayer.Reset();
-  playlistPlayer.Add(PLAYLIST::TYPE_MUSIC, queuedItems);
+  playlistPlayer.Add(PLAYLIST::Id::TYPE_MUSIC, queuedItems);
 
   // figure out where to start playback
-  PLAYLIST::CPlayList& playList = playlistPlayer.GetPlaylist(PLAYLIST::TYPE_MUSIC);
+  PLAYLIST::CPlayList& playList = playlistPlayer.GetPlaylist(PLAYLIST::Id::TYPE_MUSIC);
   int pos = 0;
   if (itemToPlay)
   {
@@ -687,13 +687,13 @@ void AddItemToPlayListAndPlay(const std::shared_ptr<CFileItem>& itemToQueue,
     }
   }
 
-  if (playlistPlayer.IsShuffled(PLAYLIST::TYPE_MUSIC))
+  if (playlistPlayer.IsShuffled(PLAYLIST::Id::TYPE_MUSIC))
   {
     playList.Swap(0, playList.FindOrder(pos));
     pos = 0;
   }
 
-  playlistPlayer.SetCurrentPlaylist(PLAYLIST::TYPE_MUSIC);
+  playlistPlayer.SetCurrentPlaylist(PLAYLIST::Id::TYPE_MUSIC);
   playlistPlayer.Play(pos, player);
 }
 } // unnamed namespace
@@ -763,7 +763,7 @@ void PlayItem(const std::shared_ptr<CFileItem>& itemIn,
       // song, so just play it
       auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
       playlistPlayer.Reset();
-      playlistPlayer.SetCurrentPlaylist(PLAYLIST::TYPE_NONE);
+      playlistPlayer.SetCurrentPlaylist(PLAYLIST::Id::TYPE_NONE);
       playlistPlayer.Play(item, player);
     }
   }
@@ -785,14 +785,14 @@ void QueueItem(const std::shared_ptr<CFileItem>& itemIn, QueuePosition pos)
   auto& player = CServiceBroker::GetPlaylistPlayer();
 
   PLAYLIST::Id playlistId = player.GetCurrentPlaylist();
-  if (playlistId == PLAYLIST::TYPE_NONE)
+  if (playlistId == PLAYLIST::Id::TYPE_NONE)
   {
     const auto& components = CServiceBroker::GetAppComponents();
     playlistId = components.GetComponent<CApplicationPlayer>()->GetPreferredPlaylist();
   }
 
-  if (playlistId == PLAYLIST::TYPE_NONE)
-    playlistId = PLAYLIST::TYPE_MUSIC;
+  if (playlistId == PLAYLIST::Id::TYPE_NONE)
+    playlistId = PLAYLIST::Id::TYPE_MUSIC;
 
   // Check for the partymode playlist item, do nothing when "PartyMode.xsp" not exists
   if (item->IsSmartPlayList() && !CFileUtils::Exists(item->GetPath()))

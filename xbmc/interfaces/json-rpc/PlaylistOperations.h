@@ -16,7 +16,7 @@ class CVariant;
 
 namespace PLAYLIST
 {
-using Id = int;
+enum class Id;
 } // namespace PLAYLIST
 
 namespace JSONRPC

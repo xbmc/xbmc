@@ -765,7 +765,7 @@ private:
       item->m_bIsFolder = false;
     }
 
-    item->SetProperty("playlist_type_hint", PLAYLIST::TYPE_VIDEO);
+    item->SetProperty("playlist_type_hint", static_cast<int>(PLAYLIST::Id::TYPE_VIDEO));
     const ContentUtils::PlayMode mode{item->GetProperty("CheckAutoPlayNextItem").asBoolean()
                                           ? ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM
                                           : ContentUtils::PlayMode::PLAY_ONLY_THIS};

@@ -388,9 +388,9 @@ void CProfileManager::FinalizeLoadProfile()
 
   if (m_lastUsedProfile != m_currentProfile)
   {
-    playlistManager.ClearPlaylist(PLAYLIST::TYPE_VIDEO);
-    playlistManager.ClearPlaylist(PLAYLIST::TYPE_MUSIC);
-    playlistManager.SetCurrentPlaylist(PLAYLIST::TYPE_NONE);
+    playlistManager.ClearPlaylist(PLAYLIST::Id::TYPE_VIDEO);
+    playlistManager.ClearPlaylist(PLAYLIST::Id::TYPE_MUSIC);
+    playlistManager.SetCurrentPlaylist(PLAYLIST::Id::TYPE_NONE);
   }
 
   networkManager.NetworkMessage(CNetworkBase::SERVICES_UP, 1);

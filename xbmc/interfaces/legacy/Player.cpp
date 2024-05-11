@@ -48,19 +48,19 @@ namespace XBMCAddon
 {
   namespace xbmc
   {
-	PlayParameter Player::defaultPlayParameter;
+  PlayParameter Player::defaultPlayParameter;
 
-    Player::Player()
+  Player::Player()
+  {
+    iPlayList = static_cast<int>(PLAYLIST::Id::TYPE_MUSIC);
+
+    // now that we're done, register hook me into the system
+    if (languageHook)
     {
-      iPlayList = PLAYLIST::TYPE_MUSIC;
-
-      // now that we're done, register hook me into the system
-      if (languageHook)
-      {
-        DelayedCallGuard dc(languageHook);
-        languageHook->RegisterPlayerCallback(this);
-      }
+      DelayedCallGuard dc(languageHook);
+      languageHook->RegisterPlayerCallback(this);
     }
+  }
 
     Player::~Player()
     {
@@ -125,8 +125,8 @@ namespace XBMCAddon
       CMediaSettings::GetInstance().SetMediaStartWindowed(windowed);
 
       // play current file in playlist
-      if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() != iPlayList)
-        CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(iPlayList);
+      if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() != PLAYLIST::Id{iPlayList})
+        CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST::Id{iPlayList});
       CServiceBroker::GetAppMessenger()->SendMsg(
           TMSG_PLAYLISTPLAYER_PLAY, CServiceBroker::GetPlaylistPlayer().GetCurrentItemIdx());
     }
@@ -142,7 +142,7 @@ namespace XBMCAddon
 
         // play a python playlist (a playlist from playlistplayer.cpp)
         iPlayList = playlist->getPlayListId();
-        CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(iPlayList);
+        CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST::Id{iPlayList});
         if (startpos > -1)
           CServiceBroker::GetPlaylistPlayer().SetCurrentItemIdx(startpos);
         CServiceBroker::GetAppMessenger()->SendMsg(TMSG_PLAYLISTPLAYER_PLAY, startpos);
@@ -184,9 +184,9 @@ namespace XBMCAddon
       XBMC_TRACE;
       DelayedCallGuard dc(languageHook);
 
-      if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() != iPlayList)
+      if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() != PLAYLIST::Id{iPlayList})
       {
-        CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(iPlayList);
+        CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST::Id{iPlayList});
       }
       CServiceBroker::GetPlaylistPlayer().SetCurrentItemIdx(selected);
 

@@ -191,8 +191,9 @@ void CAnnouncementManager::DoAnnounce(AnnouncementFlag flag,
 
     if (data.isMember("player") && data["player"].isMember("playerid"))
     {
-      object["player"]["playerid"] =
-          channel->IsRadio() ? PLAYLIST::TYPE_MUSIC : PLAYLIST::TYPE_VIDEO;
+      object["player"]["playerid"] = channel->IsRadio()
+                                         ? static_cast<int>(PLAYLIST::Id::TYPE_MUSIC)
+                                         : static_cast<int>(PLAYLIST::Id::TYPE_VIDEO);
     }
   }
   else if (item->HasVideoInfoTag() && !item->HasPVRRecordingInfoTag())

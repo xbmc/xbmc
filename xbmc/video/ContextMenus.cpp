@@ -327,7 +327,7 @@ protected:
 private:
   void Play(const std::string& player = "")
   {
-    m_item->SetProperty("playlist_type_hint", PLAYLIST::TYPE_VIDEO);
+    m_item->SetProperty("playlist_type_hint", static_cast<int>(PLAYLIST::Id::TYPE_VIDEO));
     const ContentUtils::PlayMode mode{m_item->GetProperty("CheckAutoPlayNextItem").asBoolean()
                                           ? ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM
                                           : ContentUtils::PlayMode::PLAY_ONLY_THIS};
@@ -350,7 +350,7 @@ void SetPathAndPlay(const std::shared_ptr<CFileItem>& item, PlayMode mode)
 
   if (item->IsLiveTV()) // pvr tv or pvr radio?
   {
-    g_application.PlayMedia(*item, "", PLAYLIST::TYPE_VIDEO);
+    g_application.PlayMedia(*item, "", PLAYLIST::Id::TYPE_VIDEO);
   }
   else
   {

@@ -41,7 +41,7 @@ std::string CGUIViewStateWindowVideo::GetExtensions()
 
 PLAYLIST::Id CGUIViewStateWindowVideo::GetPlaylist() const
 {
-  return PLAYLIST::TYPE_VIDEO;
+  return PLAYLIST::Id::TYPE_VIDEO;
 }
 
 VECSOURCES& CGUIViewStateWindowVideo::GetSources()

@@ -33,7 +33,7 @@ using namespace MUSICDATABASEDIRECTORY;
 
 PLAYLIST::Id CGUIViewStateWindowMusic::GetPlaylist() const
 {
-  return PLAYLIST::TYPE_MUSIC;
+  return PLAYLIST::Id::TYPE_MUSIC;
 }
 
 bool CGUIViewStateWindowMusic::AutoPlayNextItem()
@@ -625,7 +625,7 @@ void CGUIViewStateWindowMusicPlaylist::SaveViewState()
 
 PLAYLIST::Id CGUIViewStateWindowMusicPlaylist::GetPlaylist() const
 {
-  return PLAYLIST::TYPE_MUSIC;
+  return PLAYLIST::Id::TYPE_MUSIC;
 }
 
 bool CGUIViewStateWindowMusicPlaylist::AutoPlayNextItem()

@@ -631,15 +631,15 @@ NPT_Result CUPnPRenderer::OnSetNextAVTransportURI(PLT_ActionReference& action)
       CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() != WINDOW_SLIDESHOW)
   {
 
-    PLAYLIST::Id playlistId = PLAYLIST::TYPE_MUSIC;
+    PLAYLIST::Id playlistId = PLAYLIST::Id::TYPE_MUSIC;
     if (IsVideo(*item))
-      playlistId = PLAYLIST::TYPE_VIDEO;
+      playlistId = PLAYLIST::Id::TYPE_VIDEO;
 
     // note: auto-deleted when the message is consumed
     auto playlist = new CFileItemList();
     playlist->AddFront(item, 0);
-    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_PLAYLISTPLAYER_ADD, playlistId, -1,
-                                               static_cast<void*>(playlist));
+    CServiceBroker::GetAppMessenger()->PostMsg(
+        TMSG_PLAYLISTPLAYER_ADD, static_cast<int>(playlistId), -1, static_cast<void*>(playlist));
 
     service->SetStateVariable("NextAVTransportURI", uri);
     service->SetStateVariable("NextAVTransportURIMetaData", meta);
