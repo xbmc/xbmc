@@ -15,7 +15,7 @@ set(HEADERS ../linux/AppParamParserLinux.cpp
             ../linux/TimeUtils.h
             PlatformFreebsd.h)
 
-if(TARGET ALSA::ALSA)
+if(TARGET ${APP_NAME_LC}::Alsa)
   list(APPEND SOURCES ../linux/FDEventMonitor.cpp)
   list(APPEND HEADERS ../linux/FDEventMonitor.h)
 endif()
