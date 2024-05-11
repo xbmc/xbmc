@@ -1,0 +1,42 @@
+From 002561b93ca719b5664bd63c7823b36d262377a6 Mon Sep 17 00:00:00 2001
+From: Philipp Kerling <yol@casix.org>
+Date: Sat, 11 May 2024 10:01:52 +0200
+Subject: [PATCH 2/8] libUPnP: Fix warning about double promotion for
+ NPT_TimeStamp
+
+---
+ lib/libUPnP/Neptune/Source/Core/NptTime.cpp | 5 +++++
+ lib/libUPnP/Neptune/Source/Core/NptTime.h   | 1 +
+ 2 files changed, 6 insertions(+)
+
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptTime.cpp b/lib/libUPnP/Neptune/Source/Core/NptTime.cpp
+index d842259e85..8615c71e43 100755
+--- a/lib/libUPnP/Neptune/Source/Core/NptTime.cpp
++++ b/lib/libUPnP/Neptune/Source/Core/NptTime.cpp
+@@ -72,6 +72,11 @@ NPT_TimeStamp::NPT_TimeStamp(const NPT_TimeStamp& timestamp)
+ /*----------------------------------------------------------------------
+ |   NPT_TimeStamp::NPT_TimeStamp
+ +---------------------------------------------------------------------*/
++NPT_TimeStamp::NPT_TimeStamp(float seconds)
++: NPT_TimeStamp(static_cast<double>(seconds))
++{
++}
++
+ NPT_TimeStamp::NPT_TimeStamp(double seconds)
+ {
+     m_NanoSeconds = (NPT_Int64)(seconds * 1e9);
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptTime.h b/lib/libUPnP/Neptune/Source/Core/NptTime.h
+index ae02a48c3d..8b58eefac6 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptTime.h
++++ b/lib/libUPnP/Neptune/Source/Core/NptTime.h
+@@ -54,6 +54,7 @@ class NPT_TimeStamp
+     NPT_TimeStamp(const NPT_TimeStamp& timestamp);
+     NPT_TimeStamp() : m_NanoSeconds(0) {}
+     NPT_TimeStamp(NPT_Int64 nanoseconds) : m_NanoSeconds(nanoseconds) {}
++    NPT_TimeStamp(float seconds);
+     NPT_TimeStamp(double seconds);
+     NPT_TimeStamp& operator+=(const NPT_TimeStamp& time_stamp);
+     NPT_TimeStamp& operator-=(const NPT_TimeStamp& time_stamp);
+-- 
+2.44.0
+
