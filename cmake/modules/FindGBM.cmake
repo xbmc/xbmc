@@ -4,20 +4,18 @@
 #
 # This will define the following target:
 #
-#   GBM::GBM   - The GBM library
+#   ${APP_NAME_LC}::GBM   - The GBM library
 
-if(NOT TARGET GBM::GBM)
+if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   find_package(PkgConfig)
   if(PKG_CONFIG_FOUND)
     pkg_check_modules(PC_GBM gbm QUIET)
   endif()
 
   find_path(GBM_INCLUDE_DIR NAMES gbm.h
-                            HINTS ${PC_GBM_INCLUDEDIR}
-                            NO_CACHE)
+                            HINTS ${PC_GBM_INCLUDEDIR})
   find_library(GBM_LIBRARY NAMES gbm
-                           HINTS ${PC_GBM_LIBDIR}
-                           NO_CACHE)
+                           HINTS ${PC_GBM_LIBDIR})
 
   set(GBM_VERSION ${PC_GBM_VERSION})
 
@@ -45,19 +43,18 @@ if(NOT TARGET GBM::GBM)
                            " GBM_HAS_MODIFIERS)
 
   if(GBM_FOUND)
-    add_library(GBM::GBM UNKNOWN IMPORTED)
-    set_target_properties(GBM::GBM PROPERTIES
-                                   IMPORTED_LOCATION "${GBM_LIBRARY}"
-                                   INTERFACE_INCLUDE_DIRECTORIES "${GBM_INCLUDE_DIR}"
-                                   INTERFACE_COMPILE_DEFINITIONS "HAVE_GBM=1")
+    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
+    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                     IMPORTED_LOCATION "${GBM_LIBRARY}"
+                                                                     INTERFACE_INCLUDE_DIRECTORIES "${GBM_INCLUDE_DIR}"
+                                                                     INTERFACE_COMPILE_DEFINITIONS "HAVE_GBM")
     if(GBM_HAS_BO_MAP)
-      set_property(TARGET GBM::GBM APPEND PROPERTY
-                                          INTERFACE_COMPILE_DEFINITIONS HAS_GBM_BO_MAP=1)
+      set_property(TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY
+                                                                            INTERFACE_COMPILE_DEFINITIONS HAS_GBM_BO_MAP)
     endif()
     if(GBM_HAS_MODIFIERS)
-      set_property(TARGET GBM::GBM APPEND PROPERTY
-                                          INTERFACE_COMPILE_DEFINITIONS HAS_GBM_MODIFIERS=1)
+      set_property(TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY
+                                                                            INTERFACE_COMPILE_DEFINITIONS HAS_GBM_MODIFIERS)
     endif()
-    set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP GBM::GBM)
   endif()
 endif()
