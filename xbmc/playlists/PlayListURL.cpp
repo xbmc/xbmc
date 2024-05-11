@@ -13,7 +13,6 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
-using namespace PLAYLIST;
 using namespace XFILE;
 
 // example url file
@@ -21,6 +20,9 @@ using namespace XFILE;
 //BASEURL=http://msdn2.microsoft.com/en-us/library/ms812698.aspx
 //[InternetShortcut]
 //URL=http://msdn2.microsoft.com/en-us/library/ms812698.aspx
+
+namespace KODI::PLAYLIST
+{
 
 CPlayListURL::CPlayListURL(void) = default;
 
@@ -67,3 +69,4 @@ bool CPlayListURL::Load(const std::string& strFileName)
   return true;
 }
 
+} // namespace KODI::PLAYLIST

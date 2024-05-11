@@ -12,13 +12,17 @@
 #include "utils/SortUtils.h"
 #include "utils/XBMCTinyXML.h"
 
-#include <memory>
 #include <set>
 #include <string>
 #include <vector>
 
+class CGUIDialogSmartPlaylistEditor;
+class CGUIDialogMediaFilter;
 class CURL;
 class CVariant;
+
+namespace KODI::PLAYLIST
+{
 
 class CSmartPlaylistRule : public CDatabaseQueryRule
 {
@@ -66,7 +70,11 @@ protected:
 
 private:
   std::string GetVideoResolutionQuery(const std::string &parameter) const;
-  static std::string FormatLinkQuery(const char *field, const char *table, const MediaType& mediaType, const std::string& mediaField, const std::string& parameter);
+  static std::string FormatLinkQuery(const char* field,
+                                     const char* table,
+                                     const MediaType& mediaType,
+                                     const std::string& mediaField,
+                                     const std::string& parameter);
   std::string FormatYearQuery(const std::string& field,
                               const std::string& param,
                               const std::string& parameter) const;
@@ -114,8 +122,16 @@ public:
   bool IsVideoType() const;
   bool IsMusicType() const;
 
-  void SetMatchAllRules(bool matchAll) { m_ruleCombination.SetType(matchAll ? CSmartPlaylistRuleCombination::CombinationAnd : CSmartPlaylistRuleCombination::CombinationOr); }
-  bool GetMatchAllRules() const { return m_ruleCombination.GetType() == CSmartPlaylistRuleCombination::CombinationAnd; }
+  void SetMatchAllRules(bool matchAll)
+  {
+    m_ruleCombination.SetType(matchAll ? CSmartPlaylistRuleCombination::CombinationAnd
+                                       : CSmartPlaylistRuleCombination::CombinationOr);
+  }
+
+  bool GetMatchAllRules() const
+  {
+    return m_ruleCombination.GetType() == CSmartPlaylistRuleCombination::CombinationAnd;
+  }
 
   void SetLimit(unsigned int limit) { m_limit = limit; }
   unsigned int GetLimit() const { return m_limit; }
@@ -160,9 +176,10 @@ public:
   // rule creation
   CDatabaseQueryRule *CreateRule() const override;
   CDatabaseQueryRuleCombination *CreateCombination() const override;
+
 private:
-  friend class CGUIDialogSmartPlaylistEditor;
-  friend class CGUIDialogMediaFilter;
+  friend class ::CGUIDialogSmartPlaylistEditor;
+  friend class ::CGUIDialogMediaFilter;
 
   const TiXmlNode* readName(const TiXmlNode *root);
   const TiXmlNode* readNameFromPath(const CURL &url);
@@ -184,3 +201,4 @@ private:
   CXBMCTinyXML m_xmlDoc;
 };
 
+} // namespace KODI::PLAYLIST

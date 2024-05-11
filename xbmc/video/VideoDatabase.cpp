@@ -11848,7 +11848,7 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
   auto option = options.find("xsp");
   if (option != options.end())
   {
-    CSmartPlaylist xsp;
+    PLAYLIST::CSmartPlaylist xsp;
     if (!xsp.LoadFromJson(option->second.asString()))
       return false;
 
@@ -11876,7 +11876,7 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
   option = options.find("filter");
   if (option != options.end())
   {
-    CSmartPlaylist xspFilter;
+    PLAYLIST::CSmartPlaylist xspFilter;
     if (!xspFilter.LoadFromJson(option->second.asString()))
       return false;
 

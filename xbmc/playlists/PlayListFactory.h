@@ -13,7 +13,7 @@
 class CFileItem;
 class CURL;
 
-namespace PLAYLIST
+namespace KODI::PLAYLIST
 {
   class CPlayList;
 

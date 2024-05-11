@@ -14,6 +14,8 @@
 #include "playlists/PlayListFactory.h"
 #include "utils/URIUtils.h"
 
+using namespace KODI;
+
 namespace XBMCAddon
 {
   namespace xbmc

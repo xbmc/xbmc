@@ -54,7 +54,6 @@
 #include "view/GUIViewState.h"
 
 using namespace XFILE;
-using namespace PLAYLIST;
 using namespace MUSICDATABASEDIRECTORY;
 using namespace KODI;
 using namespace KODI::MESSAGING;
@@ -864,7 +863,7 @@ bool CGUIWindowMusicNav::GetSongsFromPlayList(const std::string& strPlayList, CF
   items.SetPath(strPlayList);
   CLog::Log(LOGDEBUG, "CGUIWindowMusicNav, opening playlist [{}]", strPlayList);
 
-  std::unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPlayList));
+  std::unique_ptr<PLAYLIST::CPlayList> pPlayList(PLAYLIST::CPlayListFactory::Create(strPlayList));
   if (nullptr != pPlayList)
   {
     // load it
@@ -873,7 +872,7 @@ bool CGUIWindowMusicNav::GetSongsFromPlayList(const std::string& strPlayList, CF
       HELPERS::ShowOKDialogText(CVariant{6}, CVariant{477});
       return false; //hmmm unable to load playlist?
     }
-    CPlayList playlist = *pPlayList;
+    PLAYLIST::CPlayList playlist = *pPlayList;
     // convert playlist items to songs
     for (int i = 0; i < playlist.size(); ++i)
     {

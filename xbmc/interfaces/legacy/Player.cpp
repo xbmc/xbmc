@@ -25,6 +25,8 @@
 #include "messaging/ApplicationMessenger.h"
 #include "settings/MediaSettings.h"
 
+using namespace KODI;
+
 namespace
 {
 

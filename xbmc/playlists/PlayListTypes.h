@@ -8,7 +8,7 @@
 
 #pragma once
 
-namespace PLAYLIST
+namespace KODI::PLAYLIST
 {
 
 enum class Id : int
@@ -29,4 +29,4 @@ enum class RepeatState
   ALL
 };
 
-} // namespace PLAYLIST
+} // namespace KODI::PLAYLIST

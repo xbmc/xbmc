@@ -105,7 +105,7 @@ protected:
   bool OnPlayAndQueueMedia(const CFileItemPtr& item, const std::string& player = "") override;
   using CGUIMediaWindow::LoadPlayList;
   void LoadPlayList(const std::string& strPlayList,
-                    PLAYLIST::Id playlistId = PLAYLIST::Id::TYPE_VIDEO);
+                    KODI::PLAYLIST::Id playlistId = KODI::PLAYLIST::Id::TYPE_VIDEO);
   bool PlayItem(const std::shared_ptr<CFileItem>& item, const std::string& player);
 
   /*!

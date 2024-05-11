@@ -31,6 +31,8 @@
 
 #include <utility>
 
+using namespace KODI;
+
 #define CONTROL_HEADING         2
 #define CONTROL_RULE_LIST       10
 #define CONTROL_NAME            12
@@ -209,7 +211,8 @@ void CGUIDialogSmartPlaylistEditor::OnRuleList(int item)
     OnRuleAdd();
   else
   {
-    CSmartPlaylistRule rule = *std::static_pointer_cast<CSmartPlaylistRule>(m_playlist.m_ruleCombination.m_rules[item]);
+    auto rule = *std::static_pointer_cast<PLAYLIST::CSmartPlaylistRule>(
+        m_playlist.m_ruleCombination.m_rules[item]);
     if (CGUIDialogSmartPlaylistRule::EditRule(rule, m_playlist.GetType()))
       *m_playlist.m_ruleCombination.m_rules[item] = rule;
   }
@@ -268,10 +271,11 @@ void CGUIDialogSmartPlaylistEditor::OnCancel()
 void CGUIDialogSmartPlaylistEditor::OnMatch()
 {
   // toggle between AND and OR setting
-  if (m_playlist.m_ruleCombination.GetType() == CSmartPlaylistRuleCombination::CombinationOr)
-    m_playlist.m_ruleCombination.SetType(CSmartPlaylistRuleCombination::CombinationAnd);
+  if (m_playlist.m_ruleCombination.GetType() ==
+      PLAYLIST::CSmartPlaylistRuleCombination::CombinationOr)
+    m_playlist.m_ruleCombination.SetType(PLAYLIST::CSmartPlaylistRuleCombination::CombinationAnd);
   else
-    m_playlist.m_ruleCombination.SetType(CSmartPlaylistRuleCombination::CombinationOr);
+    m_playlist.m_ruleCombination.SetType(PLAYLIST::CSmartPlaylistRuleCombination::CombinationOr);
   UpdateButtons();
 }
 
@@ -327,12 +331,12 @@ void CGUIDialogSmartPlaylistEditor::OnType()
   m_playlist.SetType(ConvertType(allowedTypes[newSelected]));
   
   // Remove any invalid grouping left over when changing the type
-  Field currentGroup = CSmartPlaylistRule::TranslateGroup(m_playlist.GetGroup().c_str());
+  Field currentGroup = PLAYLIST::CSmartPlaylistRule::TranslateGroup(m_playlist.GetGroup().c_str());
   if (currentGroup != FieldNone && currentGroup != FieldUnknown)
   {
-    std::vector<Field> groups = CSmartPlaylistRule::GetGroups(m_playlist.GetType());
+    std::vector<Field> groups = PLAYLIST::CSmartPlaylistRule::GetGroups(m_playlist.GetType());
     if (std::find(groups.begin(), groups.end(), currentGroup) == groups.end())
-      m_playlist.SetGroup(CSmartPlaylistRule::TranslateGroup(FieldUnknown));
+      m_playlist.SetGroup(PLAYLIST::CSmartPlaylistRule::TranslateGroup(FieldUnknown));
   }
 
   UpdateButtons();
@@ -340,7 +344,7 @@ void CGUIDialogSmartPlaylistEditor::OnType()
 
 void CGUIDialogSmartPlaylistEditor::OnOrder()
 {
-  std::vector<SortBy> orders = CSmartPlaylistRule::GetOrders(m_playlist.GetType());
+  std::vector<SortBy> orders = PLAYLIST::CSmartPlaylistRule::GetOrders(m_playlist.GetType());
   CGUIDialogSelect* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   dialog->Reset();
   for (auto order: orders)
@@ -366,22 +370,22 @@ void CGUIDialogSmartPlaylistEditor::OnOrderDirection()
 
 void CGUIDialogSmartPlaylistEditor::OnGroupBy()
 {
-  std::vector<Field> groups = CSmartPlaylistRule::GetGroups(m_playlist.GetType());
-  Field currentGroup = CSmartPlaylistRule::TranslateGroup(m_playlist.GetGroup().c_str());
+  std::vector<Field> groups = PLAYLIST::CSmartPlaylistRule::GetGroups(m_playlist.GetType());
+  Field currentGroup = PLAYLIST::CSmartPlaylistRule::TranslateGroup(m_playlist.GetGroup().c_str());
   CGUIDialogSelect* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   dialog->Reset();
   for (auto group : groups)
-    dialog->Add(CSmartPlaylistRule::GetLocalizedGroup(group));
+    dialog->Add(PLAYLIST::CSmartPlaylistRule::GetLocalizedGroup(group));
   dialog->SetHeading(CVariant{ 21458 });
-  dialog->SetSelected(CSmartPlaylistRule::GetLocalizedGroup(currentGroup));
+  dialog->SetSelected(PLAYLIST::CSmartPlaylistRule::GetLocalizedGroup(currentGroup));
   dialog->Open();
   int newSelected = dialog->GetSelectedItem();
    // check if selection has changed
   if (!dialog->IsConfirmed() || newSelected < 0 || groups[newSelected] == currentGroup)
     return;
-  m_playlist.SetGroup(CSmartPlaylistRule::TranslateGroup(groups[newSelected]));
+  m_playlist.SetGroup(PLAYLIST::CSmartPlaylistRule::TranslateGroup(groups[newSelected]));
 
-  if (m_playlist.IsGroupMixed() && !CSmartPlaylistRule::CanGroupMix(currentGroup))
+  if (m_playlist.IsGroupMixed() && !PLAYLIST::CSmartPlaylistRule::CanGroupMix(currentGroup))
     m_playlist.SetGroupMixed(false);
 
   UpdateButtons();
@@ -407,7 +411,8 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
 
   UpdateRuleControlButtons();
 
-  if (m_playlist.m_ruleCombination.GetType() == CSmartPlaylistRuleCombination::CombinationOr)
+  if (m_playlist.m_ruleCombination.GetType() ==
+      PLAYLIST::CSmartPlaylistRuleCombination::CombinationOr)
     SET_CONTROL_LABEL2(CONTROL_MATCH, g_localizeStrings.Get(21426)); // one or more of the rules
   else
     SET_CONTROL_LABEL2(CONTROL_MATCH, g_localizeStrings.Get(21425)); // all of the rules
@@ -424,7 +429,8 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
   for (const auto& rule: m_playlist.m_ruleCombination.m_rules)
   {
     CFileItemPtr item(new CFileItem("", false));
-    item->SetLabel(std::static_pointer_cast<CSmartPlaylistRule>(rule)->GetLocalizedRule());
+    item->SetLabel(
+        std::static_pointer_cast<PLAYLIST::CSmartPlaylistRule>(rule)->GetLocalizedRule());
     m_ruleLabels->Add(item);
   }
   CFileItemPtr item(new CFileItem("", false));
@@ -447,9 +453,10 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
   SET_CONTROL_LABEL2(CONTROL_TYPE, GetLocalizedType(ConvertType(m_playlist.GetType())));
 
   // setup groups
-  std::vector<Field> groups = CSmartPlaylistRule::GetGroups(m_playlist.GetType());
-  Field currentGroup = CSmartPlaylistRule::TranslateGroup(m_playlist.GetGroup().c_str());
-  SET_CONTROL_LABEL2(CONTROL_GROUP_BY, CSmartPlaylistRule::GetLocalizedGroup(currentGroup));
+  std::vector<Field> groups = PLAYLIST::CSmartPlaylistRule::GetGroups(m_playlist.GetType());
+  Field currentGroup = PLAYLIST::CSmartPlaylistRule::TranslateGroup(m_playlist.GetGroup().c_str());
+  SET_CONTROL_LABEL2(CONTROL_GROUP_BY,
+                     PLAYLIST::CSmartPlaylistRule::GetLocalizedGroup(currentGroup));
   if (m_playlist.IsGroupMixed())
     CONTROL_SELECT(CONTROL_GROUP_MIXED);
   else
@@ -458,7 +465,7 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
   // disable the group controls if there's no group
   // or only one group which can't be mixed
   if (groups.empty() ||
-     (groups.size() == 1 && !CSmartPlaylistRule::CanGroupMix(groups[0])))
+      (groups.size() == 1 && !PLAYLIST::CSmartPlaylistRule::CanGroupMix(groups[0])))
   {
     CONTROL_DISABLE(CONTROL_GROUP_BY);
     CONTROL_DISABLE(CONTROL_GROUP_MIXED);
@@ -466,7 +473,8 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
   else
   {
     CONTROL_ENABLE(CONTROL_GROUP_BY);
-    CONTROL_ENABLE_ON_CONDITION(CONTROL_GROUP_MIXED, CSmartPlaylistRule::CanGroupMix(currentGroup));
+    CONTROL_ENABLE_ON_CONDITION(CONTROL_GROUP_MIXED,
+                                PLAYLIST::CSmartPlaylistRule::CanGroupMix(currentGroup));
   }
 }
 
@@ -601,7 +609,7 @@ void CGUIDialogSmartPlaylistEditor::OnRuleRemove(int item)
 
 void CGUIDialogSmartPlaylistEditor::OnRuleAdd()
 {
-  CSmartPlaylistRule rule;
+  PLAYLIST::CSmartPlaylistRule rule;
   if (CGUIDialogSmartPlaylistRule::EditRule(rule,m_playlist.GetType()))
     m_playlist.m_ruleCombination.AddRule(rule);
   UpdateButtons();
@@ -613,7 +621,7 @@ bool CGUIDialogSmartPlaylistEditor::NewPlaylist(const std::string &type)
   if (!editor) return false;
 
   editor->m_path = "";
-  editor->m_playlist = CSmartPlaylist();
+  editor->m_playlist = PLAYLIST::CSmartPlaylist();
   editor->m_mode = type;
   editor->Initialize();
   editor->Open();
@@ -631,7 +639,7 @@ bool CGUIDialogSmartPlaylistEditor::EditPlaylist(const std::string &path, const 
   if (URIUtils::PathEquals(path, CServiceBroker::GetSettingsComponent()->GetProfileManager()->GetUserDataItem("PartyMode-Video.xsp")))
     editor->m_mode = "partyvideo";
 
-  CSmartPlaylist playlist;
+  PLAYLIST::CSmartPlaylist playlist;
   bool loaded(playlist.Load(path));
   if (!loaded)
   { // failed to load

@@ -16,8 +16,6 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
-using namespace PLAYLIST;
-
 namespace
 {
 
@@ -40,6 +38,9 @@ std::string GetXMLText(const TiXmlElement* pXmlElement)
 }
 
 }
+
+namespace KODI::PLAYLIST
+{
 
 CPlayListXSPF::CPlayListXSPF(void) = default;
 
@@ -130,3 +131,5 @@ bool CPlayListXSPF::Load(const std::string& strFileName)
 
   return true;
 }
+
+} // namespace KODI::PLAYLIST

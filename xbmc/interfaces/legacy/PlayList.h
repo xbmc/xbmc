@@ -49,7 +49,7 @@ namespace XBMCAddon
     class PlayList : public AddonClass
     {
       int iPlayList;
-      PLAYLIST::CPlayList *pPlayList;
+      KODI::PLAYLIST::CPlayList* pPlayList;
 
     public:
       explicit PlayList(int playList);

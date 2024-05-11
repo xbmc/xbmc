@@ -38,7 +38,7 @@
 
 #include <Platinum/Source/Platinum/Platinum.h>
 
-using namespace KODI::VIDEO;
+using namespace KODI;
 
 NPT_SET_LOCAL_LOGGER("xbmc.upnp.renderer")
 
@@ -632,7 +632,7 @@ NPT_Result CUPnPRenderer::OnSetNextAVTransportURI(PLT_ActionReference& action)
   {
 
     PLAYLIST::Id playlistId = PLAYLIST::Id::TYPE_MUSIC;
-    if (IsVideo(*item))
+    if (VIDEO::IsVideo(*item))
       playlistId = PLAYLIST::Id::TYPE_VIDEO;
 
     // note: auto-deleted when the message is consumed

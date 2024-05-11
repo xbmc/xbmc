@@ -21,7 +21,6 @@
 #include <string>
 
 using namespace XFILE;
-using namespace PLAYLIST;
 
 /* ------------------------ example wpl playlist file ---------------------------------
   <?wpl version="1.0"?>
@@ -41,6 +40,9 @@ using namespace PLAYLIST;
   </smil>
 ------------------------ end of example wpl playlist file ---------------------------------*/
 //Note: File is utf-8 encoded by default
+
+namespace KODI::PLAYLIST
+{
 
 CPlayListWPL::CPlayListWPL(void) = default;
 
@@ -128,3 +130,5 @@ void CPlayListWPL::Save(const std::string& strFileName) const
   file.Write(write.c_str(), write.size());
   file.Close();
 }
+
+} // namespace KODI::PLAYLIST

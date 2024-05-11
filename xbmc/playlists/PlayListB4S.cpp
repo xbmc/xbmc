@@ -22,7 +22,6 @@
 #include <string>
 
 using namespace XFILE;
-using namespace PLAYLIST;
 
 /* ------------------------ example b4s playlist file ---------------------------------
  <?xml version="1.0" encoding='UTF-8' standalone="yes"?>
@@ -40,6 +39,10 @@ using namespace PLAYLIST;
   </playlist>
  </WinampXML>
 ------------------------ end of example b4s playlist file ---------------------------------*/
+
+namespace KODI::PLAYLIST
+{
+
 CPlayListB4S::CPlayListB4S(void) = default;
 
 CPlayListB4S::~CPlayListB4S(void) = default;
@@ -131,3 +134,5 @@ void CPlayListB4S::Save(const std::string& strFileName) const
   file.Write(write.c_str(), write.size());
   file.Close();
 }
+
+} // namespace KODI::PLAYLIST

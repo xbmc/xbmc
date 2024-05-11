@@ -64,6 +64,7 @@
 
 #include <inttypes.h>
 
+using namespace KODI;
 using namespace XFILE;
 using namespace MUSICDATABASEDIRECTORY;
 using namespace KODI::MESSAGING;
@@ -13287,7 +13288,7 @@ bool CMusicDatabase::GetFilter(CDbUrl& musicUrl, Filter& filter, SortDescription
   auto option = options.find("xsp");
   if (option != options.end())
   {
-    CSmartPlaylist xsp;
+    PLAYLIST::CSmartPlaylist xsp;
     if (!xsp.LoadFromJson(option->second.asString()))
       return false;
 
@@ -13870,7 +13871,7 @@ bool CMusicDatabase::GetFilter(CDbUrl& musicUrl, Filter& filter, SortDescription
   option = options.find("filter");
   if (option != options.end())
   {
-    CSmartPlaylist xspFilter;
+    PLAYLIST::CSmartPlaylist xspFilter;
     if (!xspFilter.LoadFromJson(option->second.asString()))
       return false;
 

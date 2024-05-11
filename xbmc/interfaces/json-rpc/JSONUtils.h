@@ -483,7 +483,7 @@ namespace JSONRPC
       else
         xspObj["rules"] = filter;
 
-      CSmartPlaylist playlist;
+      KODI::PLAYLIST::CSmartPlaylist playlist;
       return playlist.Load(xspObj) && playlist.SaveAsJson(xsp, false);
     }
   };

@@ -45,6 +45,7 @@
 
 #include <plist/plist.h>
 
+using namespace KODI;
 using KODI::UTILITY::CDigest;
 using namespace std::chrono_literals;
 

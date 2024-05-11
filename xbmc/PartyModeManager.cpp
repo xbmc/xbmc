@@ -35,6 +35,7 @@
 
 #include <algorithm>
 
+using namespace KODI;
 using namespace KODI::MESSAGING;
 
 #define QUEUE_DEPTH       10
@@ -49,7 +50,7 @@ CPartyModeManager::CPartyModeManager(void)
 bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUSIC*/, const std::string& strXspPath /*= ""*/)
 {
   // Filter using our PartyMode xml file
-  CSmartPlaylist playlist;
+  PLAYLIST::CSmartPlaylist playlist;
   std::string partyModePath;
   bool playlistLoaded;
 

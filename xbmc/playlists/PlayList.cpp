@@ -30,10 +30,11 @@
 #include <utility>
 #include <vector>
 
-using namespace KODI;
 using namespace MUSIC_INFO;
 using namespace XFILE;
-using namespace PLAYLIST;
+
+namespace KODI::PLAYLIST
+{
 
 CPlayList::CPlayList(Id id /* = PLAYLIST::TYPE_NONE */) : m_id(id)
 {
@@ -513,3 +514,5 @@ const std::string& CPlayList::ResolveURL(const std::shared_ptr<CFileItem>& item)
   else
     return item->GetDynPath();
 }
+
+} // namespace KODI::PLAYLIST
