@@ -511,7 +511,7 @@ bool CPVRTimers::UpdateEntries(int iMaxNotificationDelay)
       bool bDeleteTimer = false;
       if (!timer->IsOwnedByClient())
       {
-        if (timer->IsEpgBased())
+        if (timer->IsEpgBased() && timer->Channel())
         {
           // update epg tag
           const std::shared_ptr<const CPVREpg> epg =
