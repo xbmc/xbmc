@@ -6963,8 +6963,8 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///   \table_row3{   <b>`ListItem.PVRClientName`</b>,
 ///                  \anchor ListItem_PVRClientName
 ///                  _string_,
-///     @return If selected item is of type PVR (recording, timer, EPG), the name of the PVR client
-///     add-on, as specified by the add-on developer. Empty if theitem is not of type PVR.
+///     @return If selected item is of type PVR (recording\, timer\, EPG)\, the name of the PVR client
+///     add-on\, as specified by the add-on developer. Empty if theitem is not of type PVR.
 ///     <p><hr>
 ///     @skinning_v22 **[New Infolabel]** \link ListItem_PVRClientName `ListItem.PVRClientName`\endlink
 ///     <p>
@@ -6972,8 +6972,8 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///   \table_row3{   <b>`ListItem.PVRInstanceName`</b>,
 ///                  \anchor ListItem_PVRInstanceName
 ///                  _string_,
-///     @return If selected item is of type PVR (recording, timer, EPG), the name of the instance
-///     of the PVR client add-on, as specified by the user in the add-on settings. Empty if the
+///     @return If selected item is of type PVR (recording\, timer\, EPG)\, the name of the instance
+///     of the PVR client add-on\, as specified by the user in the add-on settings. Empty if the
 ///     PVR client add-on does not support multiple instances or item is not of type PVR.
 ///     <p><hr>
 ///     @skinning_v22 **[New Infolabel]** \link ListItem_PVRInstanceName `ListItem.PVRInstanceName`\endlink
