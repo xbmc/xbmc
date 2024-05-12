@@ -1,4 +1,4 @@
-if(TARGET MDNS::MDNS)
+if(TARGET ${APP_NAME_LC}::MDNS)
   set(SOURCES ZeroconfBrowserMDNS.cpp
               ZeroconfMDNS.cpp)
 
