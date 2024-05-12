@@ -124,7 +124,7 @@ set(HEADERS AddonsDirectory.h
             ZipFile.h
             ZipManager.h)
 
-if(ISO9660PP_FOUND)
+if(TARGET ${APP_NAME_LC}::Iso9660pp)
   list(APPEND SOURCES ISO9660Directory.cpp
                       ISO9660File.cpp)
   list(APPEND HEADERS ISO9660Directory.h

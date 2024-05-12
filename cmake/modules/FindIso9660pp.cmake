@@ -3,52 +3,66 @@
 # --------
 # Finds the iso9660++ library
 #
-# This will define the following variables::
+# This will define the following target:
 #
-# ISO9660PP_FOUND - system has iso9660++
-# ISO9660PP_INCLUDE_DIRS - the iso9660++ include directory
-# ISO9660PP_LIBRARIES - the iso9660++ libraries
-# ISO9660PP_DEFINITIONS  - the iso9660++ definitions
+#   ${APP_NAME_LC}::Iso9660pp - The Iso9660pp library
 
-if(Iso9660pp_FIND_VERSION)
-  if(Iso9660pp_FIND_VERSION_EXACT)
-    set(Iso9660pp_FIND_SPEC "=${Iso9660pp_FIND_VERSION_COMPLETE}")
+if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
+  find_package(Cdio)
+
+  if(Cdio_FOUND)
+    find_package(PkgConfig)
+    if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWS_STORE))
+      if(Iso9660pp_FIND_VERSION)
+        if(Iso9660pp_FIND_VERSION_EXACT)
+          set(Iso9660pp_FIND_SPEC "=${Iso9660pp_FIND_VERSION_COMPLETE}")
+        else()
+          set(Iso9660pp_FIND_SPEC ">=${Iso9660pp_FIND_VERSION_COMPLETE}")
+        endif()
+      endif()
+
+      pkg_check_modules(PC_ISO9660PP libiso9660++${Iso9660pp_FIND_SPEC} QUIET)
+      pkg_check_modules(PC_ISO9660 libiso9660${Iso9660pp_FIND_SPEC} QUIET)
+    endif()
+
+    find_path(ISO9660PP_INCLUDE_DIR NAMES cdio++/iso9660.hpp
+                                    HINTS ${DEPENDS_PATH}/include ${PC_ISO9660PP_INCLUDEDIR}
+                                    ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+
+    find_library(ISO9660PP_LIBRARY NAMES libiso9660++ iso9660++
+                                   HINTS ${DEPENDS_PATH}/lib ${PC_ISO9660PP_LIBDIR}
+                                   ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+
+    find_path(ISO9660_INCLUDE_DIR NAMES cdio/iso9660.h
+                                  HINTS ${DEPENDS_PATH}/include ${PC_ISO9660_INCLUDEDIR}
+                                  ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+
+    find_library(ISO9660_LIBRARY NAMES libiso9660 iso9660
+                                 HINTS ${DEPENDS_PATH}/lib ${PC_ISO9660_LIBDIR}
+                                 ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+
+    set(ISO9660PP_VERSION ${PC_ISO9660PP_VERSION})
+
+    include(FindPackageHandleStandardArgs)
+    find_package_handle_standard_args(Iso9660pp
+                                      REQUIRED_VARS ISO9660PP_LIBRARY ISO9660PP_INCLUDE_DIR ISO9660_LIBRARY ISO9660_INCLUDE_DIR
+                                      VERSION_VAR ISO9660PP_VERSION)
+
+    if(ISO9660PP_FOUND)
+      add_library(${APP_NAME_LC}::Iso9660 UNKNOWN IMPORTED)
+      set_target_properties(${APP_NAME_LC}::Iso9660 PROPERTIES
+                                                    IMPORTED_LOCATION "${ISO9660_LIBRARY}"
+                                                    INTERFACE_INCLUDE_DIRECTORIES "${ISO9660_INCLUDE_DIR}")
+
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
+      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                       IMPORTED_LOCATION "${ISO9660PP_LIBRARY}"
+                                                                       INTERFACE_INCLUDE_DIRECTORIES "${ISO9660PP_INCLUDE_DIR}"
+                                                                       INTERFACE_LINK_LIBRARIES "${APP_NAME_LC}::Iso9660;${APP_NAME_LC}::Cdio"
+                                                                       INTERFACE_COMPILE_DEFINITIONS HAS_ISO9660PP)
+    endif()
   else()
-    set(Iso9660pp_FIND_SPEC ">=${Iso9660pp_FIND_VERSION_COMPLETE}")
+    include(FindPackageMessage)
+    find_package_message(Iso9660pp "Iso9660pp: Can not find libcdio (REQUIRED)" "")
   endif()
 endif()
-
-find_package(PkgConfig)
-if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_ISO9660PP libiso9660++${Iso9660pp_FIND_SPEC} QUIET)
-  pkg_check_modules(PC_ISO9660 libiso9660${Iso9660pp_FIND_SPEC} QUIET)
-endif()
-
-find_package(Cdio)
-
-find_path(ISO9660PP_INCLUDE_DIR NAMES cdio++/iso9660.hpp
-                                HINTS ${PC_ISO9660PP_INCLUDEDIR})
-
-find_library(ISO9660PP_LIBRARY NAMES libiso9660++ iso9660++
-                               HINTS ${PC_ISO9660PP_LIBDIR})
-
-find_path(ISO9660_INCLUDE_DIR NAMES cdio/iso9660.h
-                              HINTS ${PC_ISO9660_INCLUDEDIR})
-
-find_library(ISO9660_LIBRARY NAMES libiso9660 iso9660
-                             HINTS ${PC_ISO9660_LIBDIR})
-
-set(ISO9660PP_VERSION ${PC_ISO9660PP_VERSION})
-
-include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(Iso9660pp
-                                  REQUIRED_VARS ISO9660PP_LIBRARY ISO9660PP_INCLUDE_DIR ISO9660_LIBRARY ISO9660_INCLUDE_DIR CDIO_LIBRARY CDIO_INCLUDE_DIR CDIOPP_INCLUDE_DIR
-                                  VERSION_VAR ISO9660PP_VERSION)
-
-if(ISO9660PP_FOUND)
-  set(ISO9660PP_LIBRARIES ${ISO9660PP_LIBRARY} ${ISO9660_LIBRARY} ${CDIO_LIBRARY})
-  set(ISO9660PP_INCLUDE_DIRS ${CDIO_INCLUDE_DIR} ${CDIOPP_INCLUDE_DIR} ${ISO9660_INCLUDE_DIR} ${ISO9660PP_INCLUDE_DIR})
-  set(ISO9660PP_DEFINITIONS -DHAS_ISO9660PP=1)
-endif()
-
-mark_as_advanced(ISO9660PP_INCLUDE_DIR ISO9660PP_LIBRARY ISO9660_INCLUDE_DIR ISO9660_LIBRARY)
