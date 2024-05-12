@@ -3461,8 +3461,7 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///   \table_row3{   <b>`VideoPlayer.Cast`</b>,
 ///                  \anchor VideoPlayer_Cast
 ///                  _string_,
-///     @return A concatenated string of cast members of the current movie\, if it's in
-///     the database.
+///     @return A list of cast members\, separated by carriage returns.
 ///     <p><hr>
 ///     @skinning_v15 **[Infolabel Updated]** \link VideoPlayer_Cast `VideoPlayer.Cast`\endlink
 ///     also supports EPG.
@@ -3471,8 +3470,8 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///   \table_row3{   <b>`VideoPlayer.CastAndRole`</b>,
 ///                  \anchor VideoPlayer_CastAndRole
 ///                  _string_,
-///     @return A concatenated string of cast members and roles of the current movie\,
-///     if it's in the database.
+///     @return A list of cast members and roles\, separated by carriage
+///     returns. Every cast/role combination is formatted 'cast' as 'role' where 'as' is localised.
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.Album`</b>,
@@ -5865,8 +5864,7 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///   \table_row3{   <b>`ListItem.Cast`</b>,
 ///                  \anchor ListItem_Cast
 ///                  _string_,
-///     @return A concatenated string of cast members of the currently selected
-///     movie\, for use in dialogvideoinfo.xml.
+///     @return A list of cast members\, separated by carriage returns.
 ///     <p><hr>
 ///     @skinning_v15 **[Infolabel Updated]** \link ListItem_Cast `ListItem.Cast`\endlink
 ///     also supports EPG.
@@ -5875,8 +5873,8 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///   \table_row3{   <b>`ListItem.CastAndRole`</b>,
 ///                  \anchor ListItem_CastAndRole
 ///                  _string_,
-///     @return A concatenated string of cast members and roles of the currently
-///     selected movie\, for use in dialogvideoinfo.xml.
+///     @return A list of cast members and roles\, separated by carriage
+///     returns. Every cast/role combination is formatted 'cast' as 'role' where 'as' is localised.
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Studio`</b>,
