@@ -34,7 +34,7 @@ if(TARGET ${APP_NAME_LC}::OpenGl)
   list(APPEND HEADERS SlideShowPictureGL.h)
 endif()
 
-if(TARGET OpenGL::GLES)
+if(TARGET ${APP_NAME_LC}::OpenGLES)
   list(APPEND SOURCES SlideShowPictureGLES.cpp)
   list(APPEND HEADERS SlideShowPictureGLES.h)
 endif()

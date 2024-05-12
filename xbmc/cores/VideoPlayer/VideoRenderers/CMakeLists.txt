@@ -29,7 +29,7 @@ if(CORE_SYSTEM_NAME STREQUAL windows OR CORE_SYSTEM_NAME STREQUAL windowsstore)
                       RenderCapture.h)
 endif()
 
-if(TARGET ${APP_NAME_LC}::OpenGl OR TARGET OpenGL::GLES)
+if(TARGET ${APP_NAME_LC}::OpenGl OR TARGET ${APP_NAME_LC}::OpenGLES)
   list(APPEND SOURCES FrameBufferObject.cpp)
   list(APPEND HEADERS FrameBufferObject.h)
 endif()
@@ -43,7 +43,7 @@ if(TARGET ${APP_NAME_LC}::OpenGl)
                       RenderCaptureGL.h)
 endif()
 
-if(TARGET OpenGL::GLES AND ("android" IN_LIST CORE_PLATFORM_NAME_LC OR
+if(TARGET ${APP_NAME_LC}::OpenGLES AND ("android" IN_LIST CORE_PLATFORM_NAME_LC OR
                             "ios" IN_LIST CORE_PLATFORM_NAME_LC OR
                             "tvos" IN_LIST CORE_PLATFORM_NAME_LC OR
                             "gbm" IN_LIST CORE_PLATFORM_NAME_LC OR
