@@ -158,7 +158,7 @@ if(ENABLE_OPTICAL)
                       DVDDirectory.h)
 endif()
 
-if(TARGET libnfs::nfs)
+if(TARGET ${APP_NAME_LC}::NFS)
   list(APPEND SOURCES NFSDirectory.cpp
                       NFSFile.cpp)
   list(APPEND HEADERS NFSDirectory.h

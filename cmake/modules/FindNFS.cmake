@@ -5,9 +5,9 @@
 #
 # This will define the following target:
 #
-#   NFS::NFS   - The libnfs library
+#   ${APP_NAME_LC}::NFS   - The libnfs library
 
-if(NOT TARGET libnfs::nfs)
+if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   macro(buildlibnfs)
     set(CMAKE_ARGS -DBUILD_SHARED_LIBS=OFF
@@ -48,52 +48,51 @@ if(NOT TARGET libnfs::nfs)
     # Build lib
     buildlibnfs()
   else()
-    if(NOT TARGET libnfs::nfs)
-
-      if(NFS_FIND_VERSION)
-        if(NFS_FIND_VERSION_EXACT)
-          set(NFS_FIND_SPEC "=${NFS_FIND_VERSION_COMPLETE}")
+    if(TARGET libnfs::nfs)
+      # This is for the case where a distro provides a non standard (Debug/Release) config type
+      # convert this back to either DEBUG/RELEASE or just RELEASE
+      # we only do this because we use find_package_handle_standard_args for config time output
+      # and it isnt capable of handling TARGETS, so we have to extract the info
+      get_target_property(_LIBNFS_CONFIGURATIONS libnfs::nfs IMPORTED_CONFIGURATIONS)
+      foreach(_libnfs_config IN LISTS _LIBNFS_CONFIGURATIONS)
+        # Just set to RELEASE var so select_library_configurations can continue to work its magic
+        string(TOUPPER ${_libnfs_config} _libnfs_config_UPPER)
+        if((NOT ${_libnfs_config_UPPER} STREQUAL "RELEASE") AND
+           (NOT ${_libnfs_config_UPPER} STREQUAL "DEBUG"))
+          get_target_property(LIBNFS_LIBRARY_RELEASE libnfs::nfs IMPORTED_LOCATION_${_libnfs_config_UPPER})
         else()
-          set(NFS_FIND_SPEC ">=${NFS_FIND_VERSION_COMPLETE}")
+          get_target_property(LIBNFS_LIBRARY_${_libnfs_config_UPPER} libnfs::nfs IMPORTED_LOCATION_${_libnfs_config_UPPER})
         endif()
-      endif()
+      endforeach()
 
+      # libnfs cmake config doesnt include INTERFACE_INCLUDE_DIRECTORIES
+      find_path(LIBNFS_INCLUDE_DIR NAMES nfsc/libnfs.h
+                                   HINTS ${DEPENDS_PATH}/include
+                                   ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+    else()
       find_package(PkgConfig)
       # Try pkgconfig based search as last resort
-      if(PKG_CONFIG_FOUND)
+      if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWS_STORE))
+        if(NFS_FIND_VERSION)
+          if(NFS_FIND_VERSION_EXACT)
+            set(NFS_FIND_SPEC "=${NFS_FIND_VERSION_COMPLETE}")
+          else()
+            set(NFS_FIND_SPEC ">=${NFS_FIND_VERSION_COMPLETE}")
+          endif()
+        endif()
+
         pkg_check_modules(PC_LIBNFS libnfs${NFS_FIND_SPEC} QUIET)
       endif()
 
       find_library(LIBNFS_LIBRARY_RELEASE NAMES nfs libnfs
                                           HINTS ${DEPENDS_PATH}/lib
                                                 ${PC_LIBNFS_LIBDIR}
-                                          ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG}
-                                          NO_CACHE)
+                                          ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+      find_path(LIBNFS_INCLUDE_DIR nfsc/libnfs.h HINTS ${PC_LIBNFS_INCLUDEDIR}
+                                                       ${DEPENDS_PATH}/include
+                                                       ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
       set(LIBNFS_VERSION ${PC_LIBNFS_VERSION})
     endif()
-
-    find_path(LIBNFS_INCLUDE_DIR nfsc/libnfs.h HINTS ${PC_LIBNFS_INCLUDEDIR}
-                                                     ${DEPENDS_PATH}/include
-                                               ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG}
-                                               NO_CACHE)
-  endif()
-
-  if(TARGET libnfs::nfs)
-    # This is for the case where a distro provides a non standard (Debug/Release) config type
-    # convert this back to either DEBUG/RELEASE or just RELEASE
-    # we only do this because we use find_package_handle_standard_args for config time output
-    # and it isnt capable of handling TARGETS, so we have to extract the info
-    get_target_property(_LIBNFS_CONFIGURATIONS libnfs::nfs IMPORTED_CONFIGURATIONS)
-    foreach(_libnfs_config IN LISTS _LIBNFS_CONFIGURATIONS)
-      # Just set to RELEASE var so select_library_configurations can continue to work its magic
-      string(TOUPPER ${_libnfs_config} _libnfs_config_UPPER)
-      if((NOT ${_libnfs_config_UPPER} STREQUAL "RELEASE") AND
-         (NOT ${_libnfs_config_UPPER} STREQUAL "DEBUG"))
-        get_target_property(LIBNFS_LIBRARY_RELEASE libnfs::nfs IMPORTED_LOCATION_${_libnfs_config_UPPER})
-      else()
-        get_target_property(LIBNFS_LIBRARY_${_libnfs_config_UPPER} libnfs::nfs IMPORTED_LOCATION_${_libnfs_config_UPPER})
-      endif()
-    endforeach()
   endif()
 
   include(SelectLibraryConfigurations)
@@ -142,25 +141,37 @@ if(NOT TARGET libnfs::nfs)
       unset(CMAKE_REQUIRED_LIBRARIES)
     endif()
 
-    if(NOT TARGET libnfs::nfs)
-      add_library(libnfs::nfs UNKNOWN IMPORTED)
-      set_target_properties(libnfs::nfs PROPERTIES
-                                        IMPORTED_LOCATION "${LIBNFS_LIBRARY}"
-                                        INTERFACE_INCLUDE_DIRECTORIES "${LIBNFS_INCLUDE_DIR}")
-    endif()
-
-    if(TARGET libnfs)
-      add_dependencies(libnfs::nfs libnfs)
-    endif()
-
     list(APPEND _nfs_definitions HAS_FILESYSTEM_NFS)
 
+    # cmake target and not building internal
+    if(TARGET libnfs::nfs AND NOT TARGET libnfs)
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS libnfs::nfs)
+    else()
+
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
+      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                       IMPORTED_LOCATION "${LIBNFS_LIBRARY}")
+    endif()
+
+    # Test if target is an alias. We cant set properties on alias targets, and must find
+    # the actual target.
+    get_property(aliased_target TARGET "${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME}" PROPERTY ALIASED_TARGET)
+    if("${aliased_target}" STREQUAL "")
+      set(_nfs_target "${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME}")
+    else()
+      set(_nfs_target "${aliased_target}")
+    endif()
+
     # We need to append in case the cmake config already has definitions
-    set_property(TARGET libnfs::nfs APPEND PROPERTY
-                                           INTERFACE_COMPILE_DEFINITIONS ${_nfs_definitions})
+    set_property(TARGET ${_nfs_target} APPEND PROPERTY
+                                              INTERFACE_COMPILE_DEFINITIONS ${_nfs_definitions})
 
     # Need to manually set this, as libnfs cmake config does not provide INTERFACE_INCLUDE_DIRECTORIES
-    set_target_properties(libnfs::nfs PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${LIBNFS_INCLUDE_DIR})
+    set_target_properties(${_nfs_target} PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${LIBNFS_INCLUDE_DIR})
+
+    if(TARGET libnfs)
+      add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} libnfs)
+    endif()
 
     # Add internal build target when a Multi Config Generator is used
     # We cant add a dependency based off a generator expression for targeted build types,
@@ -177,7 +188,5 @@ if(NOT TARGET libnfs::nfs)
       endif()
       add_dependencies(build_internal_depends libnfs)
     endif()
-
-    set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP libnfs::nfs)
   endif()
 endif()
