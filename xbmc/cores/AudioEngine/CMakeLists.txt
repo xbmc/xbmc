@@ -65,7 +65,7 @@ if(TARGET ${APP_NAME_LC}::Alsa)
   endif()
 endif()
 
-if(TARGET PulseAudio::PulseAudio)
+if(TARGET ${APP_NAME_LC}::PulseAudio)
   list(APPEND SOURCES Sinks/AESinkPULSE.cpp)
   list(APPEND HEADERS Sinks/AESinkPULSE.h)
 endif()
