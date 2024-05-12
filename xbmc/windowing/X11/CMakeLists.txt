@@ -16,7 +16,7 @@ set(HEADERS GLContext.h
             XRandR.h
             X11DPMSSupport.h)
 
-if(GLX_FOUND)
+if(TARGET ${APP_NAME_LC}::GLX)
   list(APPEND SOURCES GLContextGLX.cpp
                       VideoSyncGLX.cpp)
   list(APPEND HEADERS GLContextGLX.h
