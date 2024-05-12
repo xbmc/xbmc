@@ -38,7 +38,7 @@ if(TARGET ${APP_NAME_LC}::Plist)
   list(APPEND HEADERS AirPlayServer.h)
 endif()
 
-if(TARGET Shairplay::Shairplay)
+if(TARGET ${APP_NAME_LC}::Shairplay)
   list(APPEND SOURCES AirTunesServer.cpp)
   list(APPEND HEADERS AirTunesServer.h)
 endif()
