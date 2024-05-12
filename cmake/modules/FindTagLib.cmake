@@ -5,7 +5,7 @@
 #
 # This will define the following target:
 #
-#   TagLib::TagLib   - The TagLib library
+#   ${APP_NAME_LC}::TagLib   - The TagLib library
 #
 
 macro(buildTagLib)
@@ -46,9 +46,10 @@ macro(buildTagLib)
   BUILD_DEP_TARGET()
 
   add_dependencies(${MODULE_LC} ZLIB::ZLIB)
+  set(TAGLIB_LINK_LIBRARIES "ZLIB::ZLIB")
 endmacro()
 
-if(NOT TARGET TagLib::TagLib)
+if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
@@ -71,6 +72,7 @@ if(NOT TARGET TagLib::TagLib)
     # Build Taglib
     buildTagLib()
   else()
+    find_package(PkgConfig)
     if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWS_STORE))
       if(TagLib_FIND_VERSION)
         if(TagLib_FIND_VERSION_EXACT)
@@ -79,29 +81,18 @@ if(NOT TARGET TagLib::TagLib)
           set(TagLib_FIND_SPEC ">=${TagLib_FIND_VERSION_COMPLETE}")
         endif()
       endif()
-      pkg_check_modules(PC_TAGLIB taglib${TagLib_FIND_SPEC} QUIET)
-
-      set(TAGLIB_LINK_LIBS ${PC_TAGLIB_LIBRARIES})
+      pkg_check_modules(TAGLIB taglib${TagLib_FIND_SPEC} QUIET)
     endif()
 
     find_path(TAGLIB_INCLUDE_DIR NAMES taglib/tag.h
-                                 HINTS ${DEPENDS_PATH}/include ${PC_TAGLIB_INCLUDEDIR}
-                                 ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG}
-                                 NO_CACHE)
+                                 HINTS ${DEPENDS_PATH}/include ${TAGLIB_INCLUDEDIR}
+                                 ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
     find_library(TAGLIB_LIBRARY_RELEASE NAMES tag
-                                        HINTS ${DEPENDS_PATH}/lib ${PC_TAGLIB_LIBDIR}
-                                        ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG}
-                                        NO_CACHE)
+                                        HINTS ${DEPENDS_PATH}/lib ${TAGLIB_LIBDIR}
+                                        ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
     find_library(TAGLIB_LIBRARY_DEBUG NAMES tagd
-                                      HINTS ${DEPENDS_PATH}/lib ${PC_TAGLIB_LIBDIR}
-                                      ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG}
-                                      NO_CACHE)
-
-    if(TAGLIBCONFIG_VER)
-      set(TAGLIB_VERSION ${TAGLIBCONFIG_VER})
-    else()
-      set(TAGLIB_VERSION ${PC_TAGLIB_VERSION})
-    endif()
+                                      HINTS ${DEPENDS_PATH}/lib ${TAGLIB_LIBDIR}
+                                      ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
   endif()
 
   include(SelectLibraryConfigurations)
@@ -114,29 +105,29 @@ if(NOT TARGET TagLib::TagLib)
                                     VERSION_VAR TAGLIB_VERSION)
 
   if(TagLib_FOUND)
-    add_library(TagLib::TagLib UNKNOWN IMPORTED)
+    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
     if(TAGLIB_LIBRARY_RELEASE)
-      set_target_properties(TagLib::TagLib PROPERTIES
-                                           IMPORTED_CONFIGURATIONS RELEASE
-                                           IMPORTED_LOCATION_RELEASE "${TAGLIB_LIBRARY_RELEASE}")
+      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                       IMPORTED_CONFIGURATIONS RELEASE
+                                                                       IMPORTED_LOCATION_RELEASE "${TAGLIB_LIBRARY_RELEASE}")
     endif()
     if(TAGLIB_LIBRARY_DEBUG)
-      set_target_properties(TagLib::TagLib PROPERTIES
-                                           IMPORTED_CONFIGURATIONS DEBUG
-                                           IMPORTED_LOCATION_DEBUG "${TAGLIB_LIBRARY_DEBUG}")
+      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                       IMPORTED_LOCATION_DEBUG "${TAGLIB_LIBRARY_DEBUG}")
+      set_property(TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY
+                                                                            IMPORTED_CONFIGURATIONS DEBUG)
     endif()
-    set_target_properties(TagLib::TagLib PROPERTIES
-                                         INTERFACE_INCLUDE_DIRECTORIES "${TAGLIB_INCLUDE_DIR}")
+    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                     INTERFACE_INCLUDE_DIRECTORIES "${TAGLIB_INCLUDE_DIR}")
 
-    # if pkg-config returns link libs at to TARGET. For internal build, we use ZLIB::Zlib
-    # dependency explicitly
-    if(TAGLIB_LINK_LIBS)
-        set_target_properties(TagLib::TagLib PROPERTIES
-                                             INTERFACE_LINK_LIBRARIES "${TAGLIB_LINK_LIBS}")
+    # if pkg-config returns link libs add to TARGET.
+    if(TAGLIB_LINK_LIBRARIES)
+        set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                         INTERFACE_LINK_LIBRARIES "${TAGLIB_LINK_LIBRARIES}")
     endif()
 
     if(TARGET taglib)
-      add_dependencies(TagLib::TagLib taglib)
+      add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} taglib)
     endif()
 
     # Add internal build target when a Multi Config Generator is used
@@ -154,11 +145,9 @@ if(NOT TARGET TagLib::TagLib)
       endif()
       add_dependencies(build_internal_depends taglib)
     endif()
-
-    set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP TagLib::TagLib)
   else()
     if(TagLib_FIND_REQUIRED)
-      message(FATAL_ERROR "TagLib not found.")
+      message(FATAL_ERROR "TagLib not found. You may want to try -DENABLE_INTERNAL_TAGLIB=ON")
     endif()
   endif()
 endif()
