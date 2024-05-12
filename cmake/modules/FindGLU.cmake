@@ -28,8 +28,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
     set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
                                                                      IMPORTED_LOCATION "${GLU_LIBRARY}"
-                                                                     INTERFACE_INCLUDE_DIRECTORIES "${GLU_INCLUDE_DIR}"
-                                                                     INTERFACE_COMPILE_DEFINITIONS HAS_GLU)
+                                                                     INTERFACE_INCLUDE_DIRECTORIES "${GLU_INCLUDE_DIR}")
   endif()
 
 endif()
