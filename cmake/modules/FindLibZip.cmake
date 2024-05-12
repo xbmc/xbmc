@@ -19,7 +19,7 @@ find_package(libzip CONFIG QUIET
 
 if(NOT LIBZIP_FOUND OR libzip_VERSION VERSION_LESS ${${MODULE}_VER})
   # Check for dependencies
-  find_package(GnuTLS MODULE REQUIRED)
+  find_package(GnuTLS REQUIRED)
 
   # Eventually we will want Find modules for the following deps
   # bzip2 
