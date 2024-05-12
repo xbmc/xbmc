@@ -117,9 +117,9 @@ add_library(python_binding STATIC ${SOURCES})
 set_target_properties(python_binding PROPERTIES POSITION_INDEPENDENT_CODE TRUE
                                                 FOLDER "Build Utilities")
 set(core_DEPENDS python_binding ${core_DEPENDS} CACHE STRING "" FORCE)
-add_dependencies(python_binding ${GLOBAL_TARGET_DEPS})
-# This propagates target options from dependencies (eg spdlog definitions)
-target_link_libraries(python_binding PRIVATE ${GLOBAL_TARGET_DEPS})
+
+# This target is not run through our regular macro's. Explicitly link required target
+target_link_libraries(python_binding PRIVATE ${APP_NAME_LC}::Spdlog)
 
 if(CORE_SYSTEM_NAME STREQUAL windowsstore)
   set_target_properties(python_binding PROPERTIES STATIC_LIBRARY_FLAGS "/ignore:4264")
