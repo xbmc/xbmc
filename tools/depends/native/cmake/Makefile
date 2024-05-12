@@ -1,13 +1,6 @@
-include ../../Makefile.include
+include ../../Makefile.include CMAKE-VERSION  ../../download-files.include
 PLATFORM=$(NATIVEPLATFORM)
-DEPS = ../../Makefile.include Makefile ../../download-files.include
-
-APPNAME=cmake
-VERSION=3.26.4
-SOURCE=$(APPNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
-SHA512=fe817c8d5e247db3f0a9a58ee37c466a47220100d9e90711cd5d06c223cef87e41d1a756e75d1537e5f8cd010dcb8971cbeab4684b1ac12bcecf84bf7b720167
-include ../../download-files.include
+DEPS = ../../Makefile.include Makefile CMAKE-VERSION ../../download-files.include
 
 # configuration settings
 
