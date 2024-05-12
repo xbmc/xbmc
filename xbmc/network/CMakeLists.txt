@@ -43,7 +43,7 @@ if(TARGET ${APP_NAME_LC}::Shairplay)
   list(APPEND HEADERS AirTunesServer.h)
 endif()
 
-if(SMBCLIENT_FOUND)
+if(TARGET ${APP_NAME_LC}::SmbClient)
   list(APPEND HEADERS IWSDiscovery.h)
 endif()
 
