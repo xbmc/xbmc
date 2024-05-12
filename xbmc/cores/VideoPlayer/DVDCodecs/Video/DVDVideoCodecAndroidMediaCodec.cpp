@@ -28,7 +28,6 @@
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "utils/BitstreamConverter.h"
-#include "utils/BitstreamWriter.h"
 #include "utils/CPUInfo.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
@@ -57,6 +56,11 @@
 #include <androidjni/Surface.h>
 #include <androidjni/SurfaceTexture.h>
 #include <androidjni/UUID.h>
+
+extern "C"
+{
+#include <libavutil/intreadwrite.h>
+}
 
 using namespace KODI::MESSAGING;
 
@@ -632,10 +636,10 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
         offset += sizeof(annexL_hdr1);
         memcpy(m_hints.extradata.GetData() + offset, hints.extradata.GetData(), 4);
         offset += 4;
-        BS_WL32(buf, hints.height);
+        AV_WL32(buf, hints.height);
         memcpy(m_hints.extradata.GetData() + offset, buf, 4);
         offset += 4;
-        BS_WL32(buf, hints.width);
+        AV_WL32(buf, hints.width);
         memcpy(m_hints.extradata.GetData() + offset, buf, 4);
         offset += 4;
         memcpy(m_hints.extradata.GetData() + offset, annexL_hdr2, sizeof(annexL_hdr2));
