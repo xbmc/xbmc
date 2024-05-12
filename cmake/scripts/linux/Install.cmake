@@ -1,4 +1,4 @@
-if(X_FOUND)
+if(TARGET ${APP_NAME_LC}::X)
   set(USE_X11 1)
 else()
   set(USE_X11 0)
@@ -49,7 +49,7 @@ configure_file(${CMAKE_SOURCE_DIR}/tools/Linux/kodi.metainfo.xml.in
 install(TARGETS ${APP_NAME_LC}
         DESTINATION ${libdir}/${APP_NAME_LC}
         COMPONENT kodi-bin)
-if(TARGET X::X AND TARGET XRandR::XRandR)
+if(TARGET ${APP_NAME_LC}::X AND TARGET XRandR::XRandR)
   install(TARGETS ${APP_NAME_LC}-xrandr
           DESTINATION ${libdir}/${APP_NAME_LC}
           COMPONENT kodi-bin)
