@@ -32,7 +32,7 @@ macro(buildFFMPEG)
   # Check for dependencies - Must be done before SETUP_BUILD_VARS
   get_libversion_data("dav1d" "target")
   find_package(Dav1d ${LIB_DAV1D_VER} MODULE)
-  if(NOT TARGET dav1d::dav1d)
+  if(NOT TARGET ${APP_NAME_LC}::Dav1d)
     message(STATUS "dav1d not found, internal ffmpeg build will be missing AV1 support!")
   else()
     set(FFMPEG_OPTIONS -DENABLE_DAV1D=ON)
@@ -93,8 +93,8 @@ macro(buildFFMPEG)
 
   BUILD_DEP_TARGET()
 
-  if(TARGET dav1d::dav1d)
-    add_dependencies(ffmpeg dav1d::dav1d)
+  if(TARGET ${APP_NAME_LC}::Dav1d)
+    add_dependencies(ffmpeg ${APP_NAME_LC}::Dav1d)
   endif()
 
   find_program(BASH_COMMAND bash)
