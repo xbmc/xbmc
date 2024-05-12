@@ -5,11 +5,11 @@
 #
 # This will define the following target:
 #
-#  Sndio::Sndio - the sndio library
+#  ${APP_NAME_LC}::Sndio - the sndio library
 #
-if(NOT TARGET Sndio::Sndio)
-  find_path(SNDIO_INCLUDE_DIR sndio.h NO_CACHE)
-  find_library(SNDIO_LIBRARY sndio NO_CACHE)
+if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
+  find_path(SNDIO_INCLUDE_DIR sndio.h)
+  find_library(SNDIO_LIBRARY sndio)
 
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(Sndio
@@ -19,12 +19,10 @@ if(NOT TARGET Sndio::Sndio)
     list(APPEND AUDIO_BACKENDS_LIST "sndio")
     set(AUDIO_BACKENDS_LIST ${AUDIO_BACKENDS_LIST} PARENT_SCOPE)
 
-
-    add_library(Sndio::Sndio UNKNOWN IMPORTED)
-    set_target_properties(Sndio::Sndio PROPERTIES
-                                       IMPORTED_LOCATION "${SNDIO_LIBRARY}"
-                                       INTERFACE_INCLUDE_DIRECTORIES "${SNDIO_INCLUDE_DIR}"
-                                       INTERFACE_COMPILE_DEFINITIONS HAS_SNDIO=1)
-    set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP Sndio::Sndio)
+    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
+    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                     IMPORTED_LOCATION "${SNDIO_LIBRARY}"
+                                                                     INTERFACE_INCLUDE_DIRECTORIES "${SNDIO_INCLUDE_DIR}"
+                                                                     INTERFACE_COMPILE_DEFINITIONS HAS_SNDIO)
   endif()
 endif()
