@@ -20,7 +20,7 @@
 # --------
 # This will define the following target:
 #
-# ffmpeg::ffmpeg  - The FFmpeg interface target
+# ${APP_NAME_LC}::FFMPEG  - The FFmpeg interface target
 # --------
 #
 
@@ -306,24 +306,22 @@ endif()
 if(FFMPEG_FOUND)
   set(_ffmpeg_definitions FFMPEG_VER_SHA=${FFMPEG_VERSION})
 
-  if(NOT TARGET ffmpeg::ffmpeg)
-    add_library(ffmpeg::ffmpeg INTERFACE IMPORTED)
-    set_target_properties(ffmpeg::ffmpeg PROPERTIES
+  if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
+    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE IMPORTED)
+    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
                                          INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIRS}"
                                          INTERFACE_COMPILE_DEFINITIONS "${_ffmpeg_definitions}")
   endif()
 
-  target_link_libraries(ffmpeg::ffmpeg INTERFACE ffmpeg::libavcodec)
-  target_link_libraries(ffmpeg::ffmpeg INTERFACE ffmpeg::libavfilter)
-  target_link_libraries(ffmpeg::ffmpeg INTERFACE ffmpeg::libavformat)
-  target_link_libraries(ffmpeg::ffmpeg INTERFACE ffmpeg::libavutil)
-  target_link_libraries(ffmpeg::ffmpeg INTERFACE ffmpeg::libswscale)
-  target_link_libraries(ffmpeg::ffmpeg INTERFACE ffmpeg::libswresample)
-  target_link_libraries(ffmpeg::ffmpeg INTERFACE ffmpeg::libpostproc)
+  target_link_libraries(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE ffmpeg::libavcodec)
+  target_link_libraries(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE ffmpeg::libavfilter)
+  target_link_libraries(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE ffmpeg::libavformat)
+  target_link_libraries(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE ffmpeg::libavutil)
+  target_link_libraries(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE ffmpeg::libswscale)
+  target_link_libraries(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE ffmpeg::libswresample)
+  target_link_libraries(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE ffmpeg::libpostproc)
 
   if(TARGET ffmpeg)
-    add_dependencies(ffmpeg::ffmpeg ffmpeg)
+    add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ffmpeg)
   endif()
-
-  set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP ffmpeg::ffmpeg)
 endif()

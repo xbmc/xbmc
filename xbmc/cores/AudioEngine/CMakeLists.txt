@@ -98,7 +98,7 @@ if(TARGET ${APP_NAME_LC}::Sndio)
   list(APPEND HEADERS Sinks/AESinkSNDIO.h)
 endif()
 
-if(TARGET ffmpeg::ffmpeg)
+if(TARGET ${APP_NAME_LC}::FFMPEG)
   list(APPEND SOURCES Engines/ActiveAE/ActiveAEResampleFFMPEG.cpp)
   list(APPEND HEADERS Engines/ActiveAE/ActiveAEResampleFFMPEG.h)
 endif()
