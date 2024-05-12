@@ -1,7 +1,7 @@
 set(SOURCES "")
 set(HEADERS "")
 
-if(TARGET LIRCCLIENT::LIRCCLIENT)
+if(TARGET ${APP_NAME_LC}::LircClient)
   list(APPEND SOURCES LIRC.cpp)
   list(APPEND HEADERS LIRC.h)
 endif()
