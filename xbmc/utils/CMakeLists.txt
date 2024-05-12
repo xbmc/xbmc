@@ -183,7 +183,7 @@ set(HEADERS ActorProtocol.h
             XMLUtils.h
             XTimeUtils.h)
 
-if(TARGET XSLT::XSLT)
+if(TARGET ${APP_NAME_LC}::XSLT)
   list(APPEND SOURCES XSLTUtils.cpp)
   list(APPEND HEADERS XSLTUtils.h)
 endif()
