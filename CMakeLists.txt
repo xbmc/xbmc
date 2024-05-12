@@ -272,7 +272,7 @@ elseif(ENABLE_MYSQLCLIENT AND NOT ENABLE_MYSQLCLIENT STREQUAL AUTO)
 endif()
 
 core_optional_dep(MariaDBClient)
-if(NOT TARGET MariaDBClient::MariaDBClient)
+if(NOT TARGET ${APP_NAME_LC}::MariaDBClient)
   core_optional_dep(MySqlClient)
 endif()
 
