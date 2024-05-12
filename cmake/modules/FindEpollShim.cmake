@@ -2,30 +2,30 @@
 # -------------
 # Finds the epoll-shim library
 #
-# This will define the following variables::
+# This will define the following target:
 #
-# EPOLLSHIM_FOUND       - the system has epoll-shim
-# EPOLLSHIM_INCLUDE_DIR - the epoll-shim include directory
-# EPOLLSHIM_LIBRARY     - the epoll-shim library
+#   ${APP_NAME_LC}::EpollShim   - The epoll-shim library
 
-find_package(PkgConfig)
+if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
+  find_package(PkgConfig)
 
-if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_EPOLLSHIM epoll-shim QUIET)
+  if(PKG_CONFIG_FOUND)
+    pkg_check_modules(PC_EPOLLSHIM epoll-shim QUIET)
+  endif()
+
+  find_path(EPOLLSHIM_INCLUDE_DIR NAMES sys/epoll.h
+                                  HINTS ${PC_EPOLLSHIM_INCLUDE_DIRS})
+  find_library(EPOLLSHIM_LIBRARY NAMES epoll-shim
+                                 HINTS ${PC_EPOLLSHIM_LIBDIR})
+
+  include(FindPackageHandleStandardArgs)
+  find_package_handle_standard_args(EpollShim
+                                    REQUIRED_VARS EPOLLSHIM_LIBRARY EPOLLSHIM_INCLUDE_DIR)
+
+  if(EPOLLSHIM_FOUND)
+    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
+    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                     IMPORTED_LOCATION "${EPOLLSHIM_LIBRARY}"
+                                                                     INTERFACE_INCLUDE_DIRECTORIES "${EPOLLSHIM_INCLUDE_DIR}")
+  endif()
 endif()
-
-find_path(EPOLLSHIM_INCLUDE_DIR NAMES sys/epoll.h
-                                HINTS ${PC_EPOLLSHIM_INCLUDE_DIRS})
-find_library(EPOLLSHIM_LIBRARY NAMES epoll-shim
-                               HINTS ${PC_EPOLLSHIM_LIBDIR})
-
-include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(EpollShim
-                                  REQUIRED_VARS EPOLLSHIM_LIBRARY EPOLLSHIM_INCLUDE_DIR)
-
-if(EPOLLSHIM_FOUND)
-  set(EPOLLSHIM_INCLUDE_DIRS ${EPOLLSHIM_INCLUDE_DIR})
-  set(EPOLLSHIM_LIBRARIES ${EPOLLSHIM_LIBRARY})
-endif()
-
-mark_as_advanced(EPOLLSHIM_INCLUDE_DIR EPOLLSHIM_LIBRARY)
