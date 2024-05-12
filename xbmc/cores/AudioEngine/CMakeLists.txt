@@ -59,7 +59,7 @@ if(TARGET ${APP_NAME_LC}::Alsa)
     list(APPEND HEADERS Sinks/alsa/ALSAHControlMonitor.h)
   endif()
 
-  if(TARGET UDEV::UDEV)
+  if(TARGET ${APP_NAME_LC}::UDEV)
     list(APPEND SOURCES Sinks/alsa/ALSADeviceMonitor.cpp)
     list(APPEND HEADERS Sinks/alsa/ALSADeviceMonitor.h)
   endif()

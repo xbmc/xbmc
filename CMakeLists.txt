@@ -276,7 +276,7 @@ if(NOT TARGET ${APP_NAME_LC}::MariaDBClient)
   core_optional_dep(MySqlClient)
 endif()
 
-if(NOT TARGET UDEV::UDEV)
+if(NOT TARGET ${APP_NAME_LC}::UDEV)
   core_optional_dep(LibUSB)
 endif()
 

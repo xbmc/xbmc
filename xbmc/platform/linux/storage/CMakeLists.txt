@@ -9,7 +9,7 @@ if(TARGET ${APP_NAME_LC}::DBus)
                       UDisks2Provider.h)
 endif()
 
-if(TARGET UDEV::UDEV)
+if(TARGET ${APP_NAME_LC}::UDEV)
   list(APPEND SOURCES UDevProvider.cpp)
   list(APPEND HEADERS UDevProvider.h)
 endif()
