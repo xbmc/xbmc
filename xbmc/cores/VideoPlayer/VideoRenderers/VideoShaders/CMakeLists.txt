@@ -14,14 +14,14 @@ if(CORE_SYSTEM_NAME STREQUAL windows OR CORE_SYSTEM_NAME STREQUAL windowsstore)
 endif()
 
 
-if(TARGET OpenGL::GL OR TARGET OpenGL::GLES)
+if(TARGET ${APP_NAME_LC}::OpenGl OR TARGET OpenGL::GLES)
   list(APPEND SOURCES ConversionMatrix.cpp
                       ToneMappers.cpp)
   list(APPEND HEADERS ConversionMatrix.h
                       ToneMappers.h)
 endif()
 
-if(TARGET OpenGL::GL)
+if(TARGET ${APP_NAME_LC}::OpenGl)
   list(APPEND SOURCES GLSLOutput.cpp
                       VideoFilterShaderGL.cpp
                       YUV2RGBShaderGL.cpp)

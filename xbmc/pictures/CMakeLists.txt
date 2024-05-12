@@ -29,7 +29,7 @@ set(HEADERS interfaces/ISlideShowDelegate.h
             SlideShowDelegator.h
             SlideShowPicture.h)
 
-if(TARGET OpenGL::GL)
+if(TARGET ${APP_NAME_LC}::OpenGl)
   list(APPEND SOURCES SlideShowPictureGL.cpp)
   list(APPEND HEADERS SlideShowPictureGL.h)
 endif()

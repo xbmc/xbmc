@@ -1,4 +1,4 @@
-if(TARGET OpenGL::GL)
+if(TARGET ${APP_NAME_LC}::OpenGl)
   list(APPEND SOURCES OSXGLView.mm
                       WindowControllerMacOS.mm
                       WinSystemOSXGL.mm)

@@ -54,7 +54,7 @@ if(TARGET ${APP_NAME_LC}::EGL)
   list(APPEND HEADERS WinSystemWaylandEGLContext.h)
 endif()
 
-if(TARGET OpenGL::GL)
+if(TARGET ${APP_NAME_LC}::OpenGl)
   list(APPEND SOURCES WinSystemWaylandEGLContextGL.cpp)
   list(APPEND HEADERS WinSystemWaylandEGLContextGL.h)
 endif()
