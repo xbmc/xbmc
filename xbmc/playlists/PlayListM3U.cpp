@@ -22,9 +22,10 @@
 
 #include <inttypes.h>
 
-using namespace KODI;
-using namespace PLAYLIST;
 using namespace XFILE;
+
+namespace KODI::PLAYLIST
+{
 
 const char* CPlayListM3U::StartMarker = "#EXTCPlayListM3U::M3U";
 const char* CPlayListM3U::InfoMarker = "#EXTINF";
@@ -291,3 +292,4 @@ std::map< std::string, std::string > CPlayListM3U::ParseStreamLine(const std::st
   return params;
 }
 
+} // namespace KODI::PLAYLIST

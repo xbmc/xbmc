@@ -20,8 +20,8 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
-using namespace KODI;
-using namespace PLAYLIST;
+namespace KODI::PLAYLIST
+{
 
 CPlayList* CPlayListFactory::Create(const std::string& filename)
 {
@@ -146,3 +146,4 @@ bool CPlayListFactory::IsPlaylist(const std::string& filename)
                      ".m3u|.m3u8|.b4s|.pls|.strm|.wpl|.asx|.ram|.url|.pxml|.xspf");
 }
 
+} // namespace KODI::PLAYLIST

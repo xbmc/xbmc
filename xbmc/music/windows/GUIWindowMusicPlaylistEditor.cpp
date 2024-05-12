@@ -13,6 +13,7 @@
 #include "FileItemList.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
+#include "URL.h"
 #include "Util.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -38,6 +39,8 @@
 #define CONTROL_LIST              50
 #define CONTROL_PLAYLIST         100
 #define CONTROL_LABEL_PLAYLIST   101
+
+using namespace KODI;
 
 CGUIWindowMusicPlaylistEditor::CGUIWindowMusicPlaylistEditor(void)
     : CGUIWindowMusicBase(WINDOW_MUSIC_PLAYLIST_EDITOR, "MyMusicPlaylistEditor.xml")

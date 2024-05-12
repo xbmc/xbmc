@@ -28,12 +28,13 @@
 #include <string>
 #include <vector>
 
-using namespace KODI;
 using namespace XFILE;
-using namespace PLAYLIST;
 
 #define START_PLAYLIST_MARKER "[playlist]" // may be case-insensitive (equivalent to .ini file on win32)
 #define PLAYLIST_NAME     "PlaylistName"
+
+namespace KODI::PLAYLIST
+{
 
 /*----------------------------------------------------------------------
 [playlist]
@@ -427,3 +428,5 @@ bool CPlayListPLS::Resize(std::vector <int>::size_type newSize)
   }
   return true;
 }
+
+} // namespace KODI::PLAYLIST

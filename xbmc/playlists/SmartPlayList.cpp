@@ -35,6 +35,9 @@
 
 using namespace XFILE;
 
+namespace KODI::PLAYLIST
+{
+
 typedef struct
 {
   char string[17];
@@ -1608,3 +1611,5 @@ CDatabaseQueryRuleCombination *CSmartPlaylist::CreateCombination() const
 {
   return new CSmartPlaylistRuleCombination();
 }
+
+} // namespace KODI::PLAYLIST

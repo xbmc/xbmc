@@ -15,6 +15,7 @@
 #include "URL.h"
 #include "playlists/PlayList.h"
 
+using namespace KODI;
 using namespace XFILE;
 
 CPlaylistDirectory::CPlaylistDirectory() = default;

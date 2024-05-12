@@ -49,7 +49,7 @@
 
 using namespace XFILE;
 using namespace KODI::MESSAGING;
-using namespace KODI::VIDEO;
+using namespace KODI;
 
 using namespace std::chrono_literals;
 
@@ -297,7 +297,7 @@ bool CGUIWindowPictures::GetDirectory(const std::string &strDirectory, CFileItem
 
 bool CGUIWindowPictures::OnPlayMedia(int iItem, const std::string &player)
 {
-  if (IsVideo(*m_vecItems->Get(iItem)))
+  if (VIDEO::IsVideo(*m_vecItems->Get(iItem)))
     return CGUIMediaWindow::OnPlayMedia(iItem);
 
   return ShowPicture(iItem, false);
@@ -330,7 +330,7 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
   {
     if (!pItem->m_bIsFolder &&
         !(URIUtils::IsRAR(pItem->GetPath()) || URIUtils::IsZIP(pItem->GetPath())) &&
-        (pItem->IsPicture() || (bShowVideos && IsVideo(*pItem))))
+        (pItem->IsPicture() || (bShowVideos && VIDEO::IsVideo(*pItem))))
     {
       slideShow.Add(pItem.get());
     }

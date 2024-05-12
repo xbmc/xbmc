@@ -31,6 +31,8 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoDbUrl.h"
 
+using namespace KODI;
+
 #define CONTROL_HEADING             2
 
 #define CONTROL_OKAY_BUTTON        28
@@ -186,7 +188,8 @@ bool CGUIDialogMediaFilter::OnMessage(CGUIMessage& message)
   return CGUIDialogSettingsManualBase::OnMessage(message);
 }
 
-void CGUIDialogMediaFilter::ShowAndEditMediaFilter(const std::string &path, CSmartPlaylist &filter)
+void CGUIDialogMediaFilter::ShowAndEditMediaFilter(const std::string& path,
+                                                   PLAYLIST::CSmartPlaylist& filter)
 {
   CGUIDialogMediaFilter *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogMediaFilter>(WINDOW_DIALOG_MEDIA_FILTER);
   if (dialog == NULL)
@@ -411,7 +414,7 @@ void CGUIDialogMediaFilter::InitializeSettings()
     {
       if (rule->m_field == filter.field)
       {
-        filter.rule = static_cast<CSmartPlaylistRule*>(rule.get());
+        filter.rule = static_cast<PLAYLIST::CSmartPlaylistRule*>(rule.get());
         handledRules++;
         break;
       }
@@ -644,7 +647,7 @@ int CGUIDialogMediaFilter::GetItems(const Filter &filter, std::vector<std::strin
   CFileItemList selectItems;
 
   // remove the rule for the field of the filter we want to retrieve items for
-  CSmartPlaylist tmpFilter = *m_filter;
+  PLAYLIST::CSmartPlaylist tmpFilter = *m_filter;
   for (CDatabaseQueryRules::iterator rule = tmpFilter.m_ruleCombination.m_rules.begin();
        rule != tmpFilter.m_ruleCombination.m_rules.end(); ++rule)
   {
@@ -730,14 +733,17 @@ int CGUIDialogMediaFilter::GetItems(const Filter &filter, std::vector<std::strin
   return items.size();
 }
 
-CSmartPlaylistRule* CGUIDialogMediaFilter::AddRule(Field field, CDatabaseQueryRule::SEARCH_OPERATOR ruleOperator /* = CDatabaseQueryRule::OPERATOR_CONTAINS */)
+PLAYLIST::CSmartPlaylistRule* CGUIDialogMediaFilter::AddRule(
+    Field field,
+    CDatabaseQueryRule::SEARCH_OPERATOR ruleOperator /* = CDatabaseQueryRule::OPERATOR_CONTAINS */)
 {
-  CSmartPlaylistRule rule;
+  PLAYLIST::CSmartPlaylistRule rule;
   rule.m_field = field;
   rule.m_operator = ruleOperator;
 
   m_filter->m_ruleCombination.AddRule(rule);
-  return (CSmartPlaylistRule *)m_filter->m_ruleCombination.m_rules.back().get();
+  return static_cast<PLAYLIST::CSmartPlaylistRule*>(
+      m_filter->m_ruleCombination.m_rules.back().get());
 }
 
 void CGUIDialogMediaFilter::DeleteRule(Field field)

@@ -13,6 +13,7 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
+using namespace KODI;
 using namespace XFILE;
 
 CVideoDbUrl::CVideoDbUrl()
@@ -204,7 +205,7 @@ bool CVideoDbUrl::validateOption(const std::string &key, const CVariant &value)
   if (!value.isString())
     return false;
 
-  CSmartPlaylist xspFilter;
+  PLAYLIST::CSmartPlaylist xspFilter;
   if (!xspFilter.LoadFromJson(value.asString()))
     return false;
 

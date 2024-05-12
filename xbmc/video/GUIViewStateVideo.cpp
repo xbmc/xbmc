@@ -25,7 +25,7 @@
 #include "video/VideoFileItemClassify.h"
 #include "view/ViewStateSettings.h"
 
-using namespace KODI::VIDEO;
+using namespace KODI;
 using namespace XFILE;
 using namespace VIDEODATABASEDIRECTORY;
 
@@ -72,7 +72,7 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
 
     SetSortOrder(SortOrderNone);
   }
-  else if (IsVideoDb(items))
+  else if (VIDEO::IsVideoDb(items))
   {
     NODE_TYPE NodeType=CVideoDatabaseDirectory::GetDirectoryChildType(items.GetPath());
     CQueryParams params;
@@ -340,7 +340,7 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
 
 void CGUIViewStateWindowVideoNav::SaveViewState()
 {
-  if (IsVideoDb(m_items))
+  if (VIDEO::IsVideoDb(m_items))
   {
     NODE_TYPE NodeType = CVideoDatabaseDirectory::GetDirectoryChildType(m_items.GetPath());
     CQueryParams params;

@@ -77,6 +77,7 @@
 #define XML_NEXTID        "nextIdProfile"
 #define XML_PROFILE       "profile"
 
+using namespace KODI;
 using namespace XFILE;
 
 static CProfile EmptyProfile;

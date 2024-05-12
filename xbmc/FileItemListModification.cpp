@@ -12,9 +12,11 @@
 #include "playlists/SmartPlaylistFileItemListModifier.h"
 #include "video/windows/VideoFileItemListModifier.h"
 
+using namespace KODI;
+
 CFileItemListModification::CFileItemListModification()
 {
-  m_modifiers.insert(new CSmartPlaylistFileItemListModifier());
+  m_modifiers.insert(new PLAYLIST::CSmartPlaylistFileItemListModifier());
   m_modifiers.insert(new CMusicFileItemListModifier());
   m_modifiers.insert(new CVideoFileItemListModifier());
 }

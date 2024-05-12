@@ -21,8 +21,11 @@
 
 class CDbUrl;
 class CSetting;
+namespace KODI::PLAYLIST
+{
 class CSmartPlaylist;
 class CSmartPlaylistRule;
+} // namespace KODI::PLAYLIST
 struct StringSettingOption;
 
 class CGUIDialogMediaFilter : public CGUIDialogSettingsManualBase
@@ -34,7 +37,8 @@ public:
   // specializations of CGUIControl
   bool OnMessage(CGUIMessage &message) override;
 
-  static void ShowAndEditMediaFilter(const std::string &path, CSmartPlaylist &filter);
+  static void ShowAndEditMediaFilter(const std::string& path,
+                                     KODI::PLAYLIST::CSmartPlaylist& filter);
 
   struct Filter
   {
@@ -46,7 +50,7 @@ public:
     std::string controlFormat;
     CDatabaseQueryRule::SEARCH_OPERATOR ruleOperator;
     std::shared_ptr<CSetting> setting = nullptr;
-    CSmartPlaylistRule* rule = nullptr;
+    KODI::PLAYLIST::CSmartPlaylistRule* rule = nullptr;
     void* data = nullptr;
   };
 
@@ -77,7 +81,9 @@ protected:
   void GetRange(const Filter &filter, float &min, float &interval, float &max);
   bool GetMinMax(const std::string &table, const std::string &field, int &min, int &max, const CDatabase::Filter &filter = CDatabase::Filter());
 
-  CSmartPlaylistRule* AddRule(Field field, CDatabaseQueryRule::SEARCH_OPERATOR ruleOperator = CDatabaseQueryRule::OPERATOR_CONTAINS);
+  KODI::PLAYLIST::CSmartPlaylistRule* AddRule(
+      Field field,
+      CDatabaseQueryRule::SEARCH_OPERATOR ruleOperator = CDatabaseQueryRule::OPERATOR_CONTAINS);
   void DeleteRule(Field field);
 
   static void GetStringListOptions(const std::shared_ptr<const CSetting>& setting,
@@ -87,6 +93,6 @@ protected:
 
   CDbUrl* m_dbUrl;
   std::string m_mediaType;
-  CSmartPlaylist *m_filter;
+  KODI::PLAYLIST::CSmartPlaylist* m_filter;
   std::map<std::string, Filter> m_filters;
 };

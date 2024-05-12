@@ -18,7 +18,6 @@
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
-using namespace PLAYLIST;
 using namespace XFILE;
 
 /*
@@ -53,6 +52,8 @@ using namespace XFILE;
 </streams>
 */
 
+namespace KODI::PLAYLIST
+{
 
 CPlayListXML::CPlayListXML(void) = default;
 
@@ -195,3 +196,5 @@ void CPlayListXML::Save(const std::string& strFileName) const
   file.Write(write.c_str(), write.size());
   file.Close();
 }
+
+} // namespace KODI::PLAYLIST

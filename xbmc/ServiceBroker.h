@@ -37,7 +37,7 @@ namespace PVR
 class CPVRManager;
 }
 
-namespace PLAYLIST
+namespace KODI::PLAYLIST
 {
 class CPlayListPlayer;
 }
@@ -152,7 +152,7 @@ public:
   static CContextMenuManager& GetContextMenuManager();
   static CDataCacheCore& GetDataCacheCore();
   static CPlatform& GetPlatform();
-  static PLAYLIST::CPlayListPlayer& GetPlaylistPlayer();
+  static KODI::PLAYLIST::CPlayListPlayer& GetPlaylistPlayer();
   static CSlideShowDelegator& GetSlideShowDelegator();
   static KODI::GAME::CControllerManager& GetGameControllerManager();
   static KODI::GAME::CGameServices& GetGameServices();

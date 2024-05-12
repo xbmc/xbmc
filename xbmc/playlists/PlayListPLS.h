@@ -13,10 +13,9 @@
 #include <string>
 #include <vector>
 
-namespace PLAYLIST
+namespace KODI::PLAYLIST
 {
-class CPlayListPLS :
-      public CPlayList
+class CPlayListPLS : public CPlayList
 {
 public:
   CPlayListPLS(void);
@@ -39,6 +38,4 @@ class CPlayListRAM : public CPlayList
 public:
   bool LoadData(std::istream &stream) override;
 };
-
-
 }

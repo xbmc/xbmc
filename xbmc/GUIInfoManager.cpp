@@ -41,6 +41,7 @@
 #include <memory>
 #include <mutex>
 
+using namespace KODI;
 using namespace KODI::GUILIB;
 using namespace KODI::GUILIB::GUIINFO;
 using namespace INFO;

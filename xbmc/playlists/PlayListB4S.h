@@ -10,11 +10,10 @@
 
 #include "PlayList.h"
 
-namespace PLAYLIST
+namespace KODI::PLAYLIST
 {
 
-class CPlayListB4S :
-      public CPlayList
+class CPlayListB4S : public CPlayList
 {
 public:
   CPlayListB4S(void);
@@ -22,4 +21,4 @@ public:
   bool LoadData(std::istream& stream) override;
   void Save(const std::string& strFileName) const override;
 };
-}
+} // namespace KODI::PLAYLIST

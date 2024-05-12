@@ -9,12 +9,13 @@
 #pragma once
 
 #include "PlayList.h"
-#include "URL.h"
 
-namespace PLAYLIST
+#include <map>
+#include <string>
+
+namespace KODI::PLAYLIST
 {
-class CPlayListM3U :
-      public CPlayList
+class CPlayListM3U : public CPlayList
 {
 public:
   static const char *StartMarker;

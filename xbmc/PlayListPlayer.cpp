@@ -41,10 +41,11 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
 
-using namespace PLAYLIST;
-using namespace KODI;
 using namespace KODI::MESSAGING;
 using namespace KODI::VIDEO;
+
+namespace KODI::PLAYLIST
+{
 
 CPlayListPlayer::CPlayListPlayer(void)
 {
@@ -1081,3 +1082,5 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
     break;
   }
 }
+
+} // namespace KODI::PLAYLIST

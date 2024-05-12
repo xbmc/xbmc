@@ -65,31 +65,31 @@ void CJSONRPC::Initialize()
   CJSONServiceDescription::AddEnum("List.Filter.Operators", smartplaylistList);
 
   smartplaylistList.clear();
-  CSmartPlaylist::GetAvailableFields("movies", smartplaylistList);
+  PLAYLIST::CSmartPlaylist::GetAvailableFields("movies", smartplaylistList);
   CJSONServiceDescription::AddEnum("List.Filter.Fields.Movies", smartplaylistList);
 
   smartplaylistList.clear();
-  CSmartPlaylist::GetAvailableFields("tvshows", smartplaylistList);
+  PLAYLIST::CSmartPlaylist::GetAvailableFields("tvshows", smartplaylistList);
   CJSONServiceDescription::AddEnum("List.Filter.Fields.TVShows", smartplaylistList);
 
   smartplaylistList.clear();
-  CSmartPlaylist::GetAvailableFields("episodes", smartplaylistList);
+  PLAYLIST::CSmartPlaylist::GetAvailableFields("episodes", smartplaylistList);
   CJSONServiceDescription::AddEnum("List.Filter.Fields.Episodes", smartplaylistList);
 
   smartplaylistList.clear();
-  CSmartPlaylist::GetAvailableFields("musicvideos", smartplaylistList);
+  PLAYLIST::CSmartPlaylist::GetAvailableFields("musicvideos", smartplaylistList);
   CJSONServiceDescription::AddEnum("List.Filter.Fields.MusicVideos", smartplaylistList);
 
   smartplaylistList.clear();
-  CSmartPlaylist::GetAvailableFields("artists", smartplaylistList);
+  PLAYLIST::CSmartPlaylist::GetAvailableFields("artists", smartplaylistList);
   CJSONServiceDescription::AddEnum("List.Filter.Fields.Artists", smartplaylistList);
 
   smartplaylistList.clear();
-  CSmartPlaylist::GetAvailableFields("albums", smartplaylistList);
+  PLAYLIST::CSmartPlaylist::GetAvailableFields("albums", smartplaylistList);
   CJSONServiceDescription::AddEnum("List.Filter.Fields.Albums", smartplaylistList);
 
   smartplaylistList.clear();
-  CSmartPlaylist::GetAvailableFields("songs", smartplaylistList);
+  PLAYLIST::CSmartPlaylist::GetAvailableFields("songs", smartplaylistList);
   CJSONServiceDescription::AddEnum("List.Filter.Fields.Songs", smartplaylistList);
 
   smartplaylistList.clear();

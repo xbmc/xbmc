@@ -22,12 +22,11 @@
 
 #include <memory>
 #include <mutex>
-#include <stdio.h>
 
 #define LOOKUP_PROPERTY "database-lookup"
 
 using namespace ANNOUNCEMENT;
-using namespace KODI::VIDEO;
+using namespace KODI;
 
 const std::string CAnnouncementManager::ANNOUNCEMENT_SENDER = "xbmc";
 
@@ -299,7 +298,7 @@ void CAnnouncementManager::DoAnnounce(AnnouncementFlag flag,
         object["item"]["artist"] = item->GetMusicInfoTag()->GetArtist();
     }
   }
-  else if (IsVideo(*item))
+  else if (VIDEO::IsVideo(*item))
   {
     // video item but has no video info tag.
     type = "movie";

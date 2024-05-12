@@ -24,6 +24,7 @@
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
+using namespace KODI;
 using namespace XFILE;
 
 CLibraryDirectory::CLibraryDirectory(void) = default;
@@ -44,7 +45,7 @@ bool CLibraryDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       std::string type = XMLUtils::GetAttribute(node, "type");
       if (type == "filter")
       {
-        CSmartPlaylist playlist;
+        PLAYLIST::CSmartPlaylist playlist;
         std::string type, label;
         XMLUtils::GetString(node, "content", type);
         if (type.empty())

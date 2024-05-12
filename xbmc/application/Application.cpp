@@ -2176,7 +2176,7 @@ bool CApplication::PlayMedia(CFileItem& item, const std::string& player, PLAYLIS
     CUtil::GetRecursiveListing(item.GetPath(), items, "", DIR_FLAG_NO_FILE_DIRS);
     if (items.Size())
     {
-      CSmartPlaylist smartpl;
+      PLAYLIST::CSmartPlaylist smartpl;
       //get name and type of smartplaylist, this will always succeed as GetDirectory also did this.
       smartpl.OpenAndReadName(item.GetURL());
       PLAYLIST::CPlayList playlist;
