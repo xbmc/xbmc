@@ -526,6 +526,53 @@
 			<visible>!String.IsEmpty(PVR.ChannelNumberInput)</visible>
 		</control>
 	</include>
+	<include name="EpgEventDetails">
+		<definition>
+			<control type="group">
+				<top>0</top>
+				<left>350</left>
+				<right>$PARAM[right]</right>
+				<control type="label">
+					<width>100%</width>
+					<height>30</height>
+					<label>[B]$INFO[ListItem.EpgEventTitle][/B] $INFO[ListItem.Year,([COLOR grey],[/COLOR])]</label>
+				</control>
+				<control type="label">
+					<top>35</top>
+					<width>100%</width>
+					<height>30</height>
+					<label>$VAR[FlagDashLabel][I][COLOR grey]$VAR[SeasonEpisodeLabel][/COLOR]$INFO[ListItem.EpisodeName,[COLOR white],[/COLOR]][/I]</label>
+				</control>
+			</control>
+			<control type="textbox">
+				<left>350</left>
+				<top>85</top>
+				<right>$PARAM[right]</right>
+				<height>130</height>
+				<align>justify</align>
+				<label>$INFO[ListItem.Plot]</label>
+				<autoscroll delay="10000" time="3000" repeat="10000">Skin.HasSetting(AutoScroll)</autoscroll>
+			</control>
+			<control type="group">
+				<top>220</top>
+				<left>350</left>
+				<control type="label">
+					<top>0</top>
+					<width>25%</width>
+					<height>30</height>
+					<label>$INFO[ListItem.StartTime,[COLOR button_focus]$LOCALIZE[555]:[/COLOR] ]$INFO[ListItem.EndTime, - ]</label>
+				</control>
+				<control type="label">
+					<top>0</top>
+					<right>$PARAM[right]</right>
+					<width>75%</width>
+					<height>30</height>
+					<align>right</align>
+					<label>$INFO[ListItem.Genre,[COLOR button_focus]$LOCALIZE[515]:[/COLOR] ]</label>
+				</control>
+			</control>
+		</definition>
+	</include>
 	<include name="EpgGrid">
 		<definition>
 			<control type="epggrid" id="$PARAM[control_id]">

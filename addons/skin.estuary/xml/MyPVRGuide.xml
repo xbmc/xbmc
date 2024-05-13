@@ -178,47 +178,29 @@
 						<height>250</height>
 						<aspectratio align="center" aligny="center">keep</aspectratio>
 						<fadetime>400</fadetime>
-						<texture>$INFO[ListItem.Icon]</texture>
+						<texture>$INFO[ListItem.ChannelLogo]</texture>
 					</control>
 					<control type="group">
-						<top>0</top>
-						<left>350</left>
-						<control type="label">
-							<width>70%</width>
-							<height>30</height>
-							<label>[B]$INFO[ListItem.EpgEventTitle][/B] $INFO[ListItem.Year,([COLOR grey],[/COLOR])]</label>
-						</control>
-						<control type="label">
-							<top>0</top>
-							<right>30</right>
-							<width>30%</width>
-							<height>30</height>
-							<align>right</align>
-							<label>[COLOR button_focus]$INFO[ListItem.StartTime,[COLOR grey]$LOCALIZE[555]:[/COLOR] ][/COLOR]$INFO[ListItem.EndTime,[COLOR button_focus] - ,[/COLOR]]</label>
-						</control>
-						<control type="label">
-							<top>35</top>
-							<width>60%</width>
-							<height>30</height>
-							<label>$VAR[FlagDashLabel][I][COLOR grey]$VAR[SeasonEpisodeLabel][/COLOR]$INFO[ListItem.EpisodeName,[COLOR white],[/COLOR]][/I]</label>
-						</control>
-						<control type="label">
-							<top>35</top>
-							<right>30</right>
-							<width>40%</width>
-							<height>30</height>
-							<align>right</align>
-							<label>$INFO[ListItem.Genre,[COLOR grey]$LOCALIZE[515]:[/COLOR] ]</label>
-						</control>
+						<visible>String.IsEmpty(ListItem.EpgEventIcon)</visible>
+						<include content="EpgEventDetails">
+							<param name="right" value="30"/>
+						</include>
 					</control>
-					<control type="textbox">
-						<left>350</left>
-						<top>85</top>
+					<control type="group">
+						<visible>!String.IsEmpty(ListItem.EpgEventIcon)</visible>
+						<include content="EpgEventDetails">
+							<param name="right" value="350"/>
+						</include>
+					</control>
+					<control type="image">
+						<top>10</top>
 						<right>30</right>
-						<height>170</height>
-						<align>justify</align>
-						<label>$INFO[ListItem.Plot]</label>
-						<autoscroll delay="10000" time="3000" repeat="10000">Skin.HasSetting(AutoScroll)</autoscroll>
+						<width>290</width>
+						<height>250</height>
+						<aspectratio align="center" aligny="center">keep</aspectratio>
+						<fadetime>400</fadetime>
+						<texture>$INFO[ListItem.EpgEventIcon]</texture>
+						<visible>!String.IsEmpty(ListItem.EpgEventIcon)</visible>
 					</control>
 				</control>
 			</control>

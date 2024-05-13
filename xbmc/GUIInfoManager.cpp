@@ -2789,6 +2789,14 @@ const infomap musicpartymode[] = {{ "enabled",           MUSICPM_ENABLED },
 ///     @return The channel name of the radio programme that's currently playing (PVR).
 ///     <p>
 ///   }
+///   \table_row3{   <b>`MusicPlayer.ChannelLogo`</b>,
+///                  \anchor MusicPlayer_ChannelLogo
+///                  _string_,
+///     @return The path for the logo of the currently playing radio channel\, if available (PVR).
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link MusicPlayer_ChannelLogo `MusicPlayer.ChannelLogo`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`MusicPlayer.ChannelNumberLabel`</b>,
 ///                  \anchor MusicPlayer_ChannelNumberLabel
 ///                  _string_,
@@ -2878,6 +2886,7 @@ const infomap musicpartymode[] = {{ "enabled",           MUSICPM_ENABLED },
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
+// clang-format off
 const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
                                   { "album",            MUSICPLAYER_ALBUM },
                                   { "artist",           MUSICPLAYER_ARTIST },
@@ -2912,6 +2921,7 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
                                   { "playcount",        MUSICPLAYER_PLAYCOUNT },
                                   { "lastplayed",       MUSICPLAYER_LASTPLAYED },
                                   { "channelname",      MUSICPLAYER_CHANNEL_NAME },
+                                  { "channellogo",      MUSICPLAYER_CHANNEL_LOGO },
                                   { "channelnumberlabel", MUSICPLAYER_CHANNEL_NUMBER },
                                   { "channelgroup",     MUSICPLAYER_CHANNEL_GROUP },
                                   { "dbid",             MUSICPLAYER_DBID },
@@ -2923,6 +2933,7 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
                                   { "totaldiscs",       MUSICPLAYER_TOTALDISCS },
                                   { "station",          MUSICPLAYER_STATIONNAME }
 };
+// clang-format on
 
 /// \page modules__infolabels_boolean_conditions
 /// \subsection modules__infolabels_boolean_conditions_Videoplayer Video player
@@ -3850,6 +3861,14 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///     @return The name of the currently tuned channel (PVR).
 ///     <p>
 ///   }
+///   \table_row3{   <b>`VideoPlayer.ChannelLogo`</b>,
+///                  \anchor VideoPlayer_ChannelLogo
+///                  _string_,
+///     @return The path for the logo of the currently playing TV channel\, if available (PVR).
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_ChannelLogo `VideoPlayer.ChannelLogo`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`VideoPlayer.ChannelNumberLabel`</b>,
 ///                  \anchor VideoPlayer_ChannelNumberLabel
 ///                  _string_,
@@ -3996,6 +4015,7 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "nextendtime",      VIDEOPLAYER_NEXT_ENDTIME },
                                   { "nextduration",     VIDEOPLAYER_NEXT_DURATION },
                                   { "channelname",      VIDEOPLAYER_CHANNEL_NAME },
+                                  { "channellogo",      VIDEOPLAYER_CHANNEL_LOGO },
                                   { "channelnumberlabel", VIDEOPLAYER_CHANNEL_NUMBER },
                                   { "channelgroup",     VIDEOPLAYER_CHANNEL_GROUP },
                                   { "hasepg",           VIDEOPLAYER_HAS_EPG },
@@ -5973,6 +5993,14 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @return The name of current selected TV channel in a container.
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.ChannelLogo`</b>,
+///                  \anchor ListItem_ChannelLogo
+///                  _string_,
+///     @return The path for the logo of the currently selected radio or TV channel\, if available (PVR).
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link ListItem_ChannelLogo `ListItem.ChannelLogo`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`ListItem.VideoCodec`</b>,
 ///                  \anchor ListItem_VideoCodec
 ///                  _string_,
@@ -7126,6 +7154,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "nextenddate",      LISTITEM_NEXT_ENDDATE },
                                   { "nextduration",     LISTITEM_NEXT_DURATION },
                                   { "channelname",      LISTITEM_CHANNEL_NAME },
+                                  { "channellogo",      LISTITEM_CHANNEL_LOGO },
                                   { "channelnumberlabel", LISTITEM_CHANNEL_NUMBER },
                                   { "channelgroup",     LISTITEM_CHANNEL_GROUP },
                                   { "hasepg",           LISTITEM_HAS_EPG },
