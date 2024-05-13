@@ -107,11 +107,11 @@ bool CImageDecoder::LoadInfoTag(const std::string& fileName, CPictureInfoTag* ta
      * @todo Rework @ref CPictureInfoTag to not limit on fixed structures ExifInfo & IPTCInfo.
      */
 
-    tag->m_imageMetadata.exifInfo.Width = ifcTag.width;
-    tag->m_imageMetadata.exifInfo.Height = ifcTag.height;
+    tag->m_imageMetadata.width = ifcTag.width;
+    tag->m_imageMetadata.height = ifcTag.height;
     tag->m_imageMetadata.exifInfo.Distance = ifcTag.distance;
     tag->m_imageMetadata.exifInfo.Orientation = ifcTag.orientation;
-    tag->m_imageMetadata.exifInfo.IsColor = ifcTag.color == ADDON_IMG_COLOR_COLORED ? 1 : 0;
+    tag->m_imageMetadata.isColor = ifcTag.color == ADDON_IMG_COLOR_COLORED ? 1 : 0;
     tag->m_imageMetadata.exifInfo.ApertureFNumber = ifcTag.aperture_f_number;
     tag->m_imageMetadata.exifInfo.FlashUsed = ifcTag.flash_used ? 1 : 0;
     tag->m_imageMetadata.exifInfo.LightSource = ifcTag.light_source;

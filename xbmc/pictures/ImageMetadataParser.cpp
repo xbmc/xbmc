@@ -86,15 +86,15 @@ std::unique_ptr<ImageMetadata> CImageMetadataParser::ExtractMetadata(const std::
 void CImageMetadataParser::ExtractCommonMetadata(std::unique_ptr<Exiv2::Image>& image)
 {
   //! TODO: all these elements are generic should be moved out of the exif struct
-  m_imageMetadata->exifInfo.Height = image->pixelHeight();
-  m_imageMetadata->exifInfo.Width = image->pixelWidth();
-  m_imageMetadata->exifInfo.FileComment = image->comment();
+  m_imageMetadata->height = image->pixelHeight();
+  m_imageMetadata->width = image->pixelWidth();
+  m_imageMetadata->fileComment = image->comment();
 
   if (image->imageType() == Exiv2::ImageType::jpeg)
   {
     auto jpegImage = dynamic_cast<Exiv2::JpegImage*>(image.get());
-    m_imageMetadata->exifInfo.IsColor = jpegImage->numColorComponents() == 3;
-    m_imageMetadata->exifInfo.Process = jpegImage->encodingProcess();
+    m_imageMetadata->isColor = jpegImage->numColorComponents() == 3;
+    m_imageMetadata->encodingProcess = jpegImage->encodingProcess();
   }
 }
 

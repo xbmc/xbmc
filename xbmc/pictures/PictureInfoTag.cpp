@@ -101,15 +101,15 @@ void CPictureInfoTag::Archive(CArchive& ar)
     ar << m_imageMetadata.exifInfo.GpsAlt;
     ar << m_imageMetadata.exifInfo.GpsLat;
     ar << m_imageMetadata.exifInfo.GpsLong;
-    ar << m_imageMetadata.exifInfo.Height;
-    ar << m_imageMetadata.exifInfo.IsColor;
+    ar << m_imageMetadata.height;
+    ar << m_imageMetadata.isColor;
     ar << m_imageMetadata.exifInfo.ISOequivalent;
     ar << m_imageMetadata.exifInfo.LightSource;
     ar << m_imageMetadata.exifInfo.MeteringMode;
     ar << m_imageMetadata.exifInfo.Orientation;
-    ar << m_imageMetadata.exifInfo.Process;
+    ar << m_imageMetadata.encodingProcess;
     ar << m_imageMetadata.exifInfo.Whitebalance;
-    ar << m_imageMetadata.exifInfo.Width;
+    ar << m_imageMetadata.width;
     ar << m_dateTimeTaken;
 
     ar << m_imageMetadata.iptcInfo.Author;
@@ -161,15 +161,15 @@ void CPictureInfoTag::Archive(CArchive& ar)
     ar >> m_imageMetadata.exifInfo.GpsAlt;
     ar >> m_imageMetadata.exifInfo.GpsLat;
     ar >> m_imageMetadata.exifInfo.GpsLong;
-    ar >> m_imageMetadata.exifInfo.Height;
-    ar >> m_imageMetadata.exifInfo.IsColor;
+    ar >> m_imageMetadata.height;
+    ar >> m_imageMetadata.isColor;
     ar >> m_imageMetadata.exifInfo.ISOequivalent;
     ar >> m_imageMetadata.exifInfo.LightSource;
     ar >> m_imageMetadata.exifInfo.MeteringMode;
     ar >> m_imageMetadata.exifInfo.Orientation;
-    ar >> m_imageMetadata.exifInfo.Process;
+    ar >> m_imageMetadata.encodingProcess;
     ar >> m_imageMetadata.exifInfo.Whitebalance;
-    ar >> m_imageMetadata.exifInfo.Width;
+    ar >> m_imageMetadata.width;
     ar >> m_dateTimeTaken;
 
     ar >> m_imageMetadata.iptcInfo.Author;
@@ -221,15 +221,15 @@ void CPictureInfoTag::Serialize(CVariant& value) const
   value["gpsinfo"]["alt"] = m_imageMetadata.exifInfo.GpsAlt;
   value["gpsinfo"]["lat"] = m_imageMetadata.exifInfo.GpsLat;
   value["gpsinfo"]["long"] = m_imageMetadata.exifInfo.GpsLong;
-  value["height"] = m_imageMetadata.exifInfo.Height;
-  value["iscolor"] = m_imageMetadata.exifInfo.IsColor;
+  value["height"] = m_imageMetadata.height;
+  value["iscolor"] = m_imageMetadata.isColor;
   value["isoequivalent"] = m_imageMetadata.exifInfo.ISOequivalent;
   value["lightsource"] = m_imageMetadata.exifInfo.LightSource;
   value["meteringmode"] = m_imageMetadata.exifInfo.MeteringMode;
   value["orientation"] = m_imageMetadata.exifInfo.Orientation;
-  value["process"] = m_imageMetadata.exifInfo.Process;
+  value["process"] = m_imageMetadata.encodingProcess;
   value["whitebalance"] = m_imageMetadata.exifInfo.Whitebalance;
-  value["width"] = m_imageMetadata.exifInfo.Width;
+  value["width"] = m_imageMetadata.width;
 
   value["author"] = m_imageMetadata.iptcInfo.Author;
   value["byline"] = m_imageMetadata.iptcInfo.Byline;
@@ -272,20 +272,19 @@ const std::string CPictureInfoTag::GetInfo(int info) const
   switch (info)
   {
   case SLIDESHOW_RESOLUTION:
-    value = StringUtils::Format("{} x {}", m_imageMetadata.exifInfo.Width,
-                                m_imageMetadata.exifInfo.Height);
+    value = StringUtils::Format("{} x {}", m_imageMetadata.width, m_imageMetadata.height);
     break;
   case SLIDESHOW_COLOUR:
-    value = m_imageMetadata.exifInfo.IsColor ? "Colour" : "Black and White";
+    value = m_imageMetadata.isColor ? "Colour" : "Black and White";
     break;
   case SLIDESHOW_PROCESS:
   {
-    auto process = m_imageMetadata.exifInfo.Process;
+    auto process = m_imageMetadata.encodingProcess;
     value = !process.empty() ? process : "Unknown";
     break;
   }
   case SLIDESHOW_COMMENT:
-    value = m_imageMetadata.exifInfo.FileComment;
+    value = m_imageMetadata.fileComment;
     break;
   case SLIDESHOW_EXIF_COMMENT:
     value = m_imageMetadata.exifInfo.Comments;
@@ -620,8 +619,8 @@ void CPictureInfoTag::SetInfo(const std::string &key, const std::string& value)
       StringUtils::Tokenize(value, dimension, ",");
       if (dimension.size() == 2)
       {
-        m_imageMetadata.exifInfo.Width = std::atoi(dimension[0].c_str());
-        m_imageMetadata.exifInfo.Height = std::atoi(dimension[1].c_str());
+        m_imageMetadata.width = std::atoi(dimension[0].c_str());
+        m_imageMetadata.height = std::atoi(dimension[1].c_str());
         m_isInfoSetExternally =
             true; // Set the internal state to show metadata has been set by call to SetInfo
       }

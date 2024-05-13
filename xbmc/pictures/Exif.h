@@ -25,11 +25,7 @@ struct ExifInfo
   std::string CameraMake;
   std::string CameraModel;
   std::string DateTime;
-  int Height{};
-  int Width{};
   int Orientation{};
-  int IsColor{};
-  std::string Process{};
   int FlashUsed{};
   float FocalLength{};
   float ExposureTime{};
@@ -46,7 +42,6 @@ struct ExifInfo
   int ISOequivalent{};
   int LightSource{};
   std::string Comments;
-  std::string FileComment;
   std::string XPComment;
   std::string Description;
 
