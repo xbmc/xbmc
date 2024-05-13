@@ -8,12 +8,12 @@
 
 #include "PictureInfoTag.h"
 
-#include "ImageMetadataParser.h"
 #include "ServiceBroker.h"
 #include "addons/ExtsMimeSupportList.h"
 #include "addons/ImageDecoder.h"
 #include "addons/addoninfo/AddonType.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
+#include "pictures/metadata/ImageMetadataParser.h"
 #include "utils/Archive.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
