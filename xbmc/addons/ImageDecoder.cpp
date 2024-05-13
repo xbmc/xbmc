@@ -79,12 +79,6 @@ bool CImageDecoder::LoadInfoTag(const std::string& fileName, CPictureInfoTag* ta
      *   - std::string Comments;
      *   - std::string FileComment;
      *   - std::string XPComment;
-     *   - unsigned ThumbnailOffset{};
-     *   - unsigned ThumbnailSize{};
-     *   - unsigned LargestExifOffset{};
-     *   - char ThumbnailAtEnd{};
-     *   - int ThumbnailSizeOffset{};
-     *   - std::vector<int> DateTimeOffsets;
      *
      * struct IPTCInfo:
      *   - std::string RecordVersion;

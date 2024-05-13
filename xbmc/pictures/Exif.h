@@ -12,7 +12,6 @@
 #include <vector>
 
 constexpr unsigned int MAX_DATE_COPIES = 10;
-constexpr int EXIF_COMMENT_CHARSET_CONVERTED = -1;
 
 struct ExifInfo
 {
@@ -46,24 +45,10 @@ struct ExifInfo
   int ExposureMode{};
   int ISOequivalent{};
   int LightSource{};
-  //! TODO: Remove me, not needed anymore (still exposed to addon interface)
-  int CommentsCharset{};
-  //! TODO: Remove me, not needed anymore (still exposed to addon interface)
-  int XPCommentsCharset{};
   std::string Comments;
   std::string FileComment;
   std::string XPComment;
   std::string Description;
-
-  //! TODO: this is not used anywhere, just nuke it
-  unsigned ThumbnailOffset{};
-  unsigned ThumbnailSize{};
-  unsigned LargestExifOffset{};
-  //! TODO: this is not used anywhere, just nuke it
-  char ThumbnailAtEnd{};
-  int ThumbnailSizeOffset{};
-  //! TODO: this is not used anywhere, just nuke it
-  std::vector<int> DateTimeOffsets;
 
   int GpsInfoPresent{};
   std::string GpsLat;
