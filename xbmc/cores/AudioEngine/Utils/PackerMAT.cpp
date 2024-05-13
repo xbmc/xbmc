@@ -47,17 +47,16 @@ CPackerMAT::CPackerMAT()
   m_buffer.reserve(MAT_BUFFER_SIZE);
 }
 
+// On a high level, a MAT frame consists of a sequence of padded TrueHD frames
+// The size of the padded frame can be determined from the frame time/sequence code in the frame header,
+// since it varies to accommodate spikes in bitrate.
+// In average all frames are always padded to 2560 bytes, so that 24 frames fit in one MAT frame, however
+// due to bitrate spikes single sync frames have been observed to use up to twice that size, in which
+// case they'll be preceded by smaller frames to keep the average bitrate constant.
+// A constant padding to 2560 bytes can work (this is how the ffmpeg spdifenc module works), however
+// high-bitrate streams can overshoot this size and therefor require proper handling of dynamic padding.
 bool CPackerMAT::PackTrueHD(const uint8_t* data, int size)
 {
-  // On a high level, a MAT frame consists of a sequence of padded TrueHD frames
-  // The size of the padded frame can be determined from the frame time/sequence code in the frame header,
-  // since it varies to accommodate spikes in bitrate.
-  // In average all frames are always padded to 2560 bytes, so that 24 frames fit in one MAT frame, however
-  // due to bitrate spikes single sync frames have been observed to use up to twice that size, in which
-  // case they'll be preceded by smaller frames to keep the average bitrate constant.
-  // A constant padding to 2560 bytes can work (this is how the ffmpeg spdifenc module works), however
-  // high-bitrate streams can overshoot this size and therefor require proper handling of dynamic padding.
-
   TrueHDMajorSyncInfo info;
 
   // get the ratebits and output timing from the sync frame
@@ -112,7 +111,7 @@ bool CPackerMAT::PackTrueHD(const uint8_t* data, int size)
   // until the next major sync frame
   if (m_state.padding > MAT_BUFFER_SIZE * 5)
   {
-    CLog::LogF(LOGINFO, "seek detected, re-initializing MAT packer state");
+    CLog::Log(LOGINFO, "CPackerMAT::PackTrueHD: seek detected, re-initializing MAT packer state");
     m_state = {};
     m_state.init = true;
     m_buffer.clear();
