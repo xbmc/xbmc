@@ -156,7 +156,8 @@ void CPVRDatabase::CreateTables()
               "bHasArchive          bool, "
               "iClientProviderUid   integer, "
               "bIsUserSetHidden     bool, "
-              "iLastWatchedGroupId  integer"
+              "iLastWatchedGroupId  integer, "
+              "sDateTimeAdded       varchar(20)"
               ")");
 
   CLog::LogFC(LOGDEBUG, LOGPVR, "Creating table 'channelgroups'");
@@ -367,6 +368,12 @@ void CPVRDatabase::UpdateTables(int iVersion)
   {
     m_pDS->exec("ALTER TABLE channels ADD iLastWatchedGroupId integer");
     m_pDS->exec("UPDATE channels SET iLastWatchedGroupId = -1");
+  }
+
+  if (iVersion < 45)
+  {
+    m_pDS->exec("ALTER TABLE channels ADD sDateTimeAdded varchar(20)");
+    m_pDS->exec("UPDATE channels SET sDateTimeAdded = ''");
   }
 }
 
@@ -592,6 +599,9 @@ int CPVRDatabase::Get(bool bRadio,
         channel->m_iClientProviderUid = m_pDS->fv("iClientProviderUid").get_asInt();
         channel->m_bIsUserSetHidden = m_pDS->fv("bIsUserSetHidden").get_asBool();
         channel->m_lastWatchedGroupId = m_pDS->fv("iLastWatchedGroupId").get_asInt();
+        const std::string dateTimeAdded{m_pDS->fv("sDateTimeAdded").get_asString()};
+        if (!dateTimeAdded.empty())
+          channel->m_dateTimeAdded = CDateTime::FromDBDateTime(dateTimeAdded);
 
         channel->UpdateEncryptionName();
 
@@ -1024,6 +1034,10 @@ bool CPVRDatabase::Persist(CPVRChannel& channel, bool bCommit)
     return bReturn;
   }
 
+  std::string dateTimeAdded;
+  if (channel.DateTimeAdded().IsValid())
+    dateTimeAdded = channel.DateTimeAdded().GetAsDBDateTime();
+
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
   // Note: Do not use channel.ChannelID value to check presence of channel in channels table. It might not yet be set correctly.
@@ -1037,15 +1051,17 @@ bool CPVRDatabase::Persist(CPVRChannel& channel, bool bCommit)
         "INSERT INTO channels ("
         "iUniqueId, bIsRadio, bIsHidden, bIsUserSetIcon, bIsUserSetName, bIsLocked, "
         "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, iLastWatched, iClientId, "
-        "idEpg, bHasArchive, iClientProviderUid, bIsUserSetHidden, iLastWatchedGroupId) "
-        "VALUES (%i, %i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i, %i)",
+        "idEpg, bHasArchive, iClientProviderUid, bIsUserSetHidden, iLastWatchedGroupId, "
+        "sDateTimeAdded) "
+        "VALUES (%i, %i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i, %i, "
+        "'%s')",
         channel.UniqueID(), (channel.IsRadio() ? 1 : 0), (channel.IsHidden() ? 1 : 0),
         (channel.IsUserSetIcon() ? 1 : 0), (channel.IsUserSetName() ? 1 : 0),
         (channel.IsLocked() ? 1 : 0), channel.IconPath().c_str(), channel.ChannelName().c_str(), 0,
         (channel.EPGEnabled() ? 1 : 0), channel.EPGScraper().c_str(),
         static_cast<unsigned int>(channel.LastWatched()), channel.ClientID(), channel.EpgID(),
         channel.HasArchive(), channel.ClientProviderUid(), channel.IsUserSetHidden() ? 1 : 0,
-        channel.LastWatchedGroupId());
+        channel.LastWatchedGroupId(), dateTimeAdded.c_str());
   }
   else
   {
@@ -1054,8 +1070,10 @@ bool CPVRDatabase::Persist(CPVRChannel& channel, bool bCommit)
         "REPLACE INTO channels ("
         "iUniqueId, bIsRadio, bIsHidden, bIsUserSetIcon, bIsUserSetName, bIsLocked, "
         "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, iLastWatched, iClientId, "
-        "idChannel, idEpg, bHasArchive, iClientProviderUid, bIsUserSetHidden, iLastWatchedGroupId) "
-        "VALUES (%i, %i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %s, %i, %i, %i, %i, %i)",
+        "idChannel, idEpg, bHasArchive, iClientProviderUid, bIsUserSetHidden, iLastWatchedGroupId, "
+        "sDateTimeAdded) "
+        "VALUES (%i, %i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %s, %i, %i, %i, %i, %i, "
+        "'%s')",
         channel.UniqueID(), (channel.IsRadio() ? 1 : 0), (channel.IsHidden() ? 1 : 0),
         (channel.IsUserSetIcon() ? 1 : 0), (channel.IsUserSetName() ? 1 : 0),
         (channel.IsLocked() ? 1 : 0), channel.ClientIconPath().c_str(),
@@ -1063,7 +1081,7 @@ bool CPVRDatabase::Persist(CPVRChannel& channel, bool bCommit)
         channel.EPGScraper().c_str(), static_cast<unsigned int>(channel.LastWatched()),
         channel.ClientID(), strValue.c_str(), channel.EpgID(), channel.HasArchive(),
         channel.ClientProviderUid(), channel.IsUserSetHidden() ? 1 : 0,
-        channel.LastWatchedGroupId());
+        channel.LastWatchedGroupId(), dateTimeAdded.c_str());
   }
 
   if (QueueInsertQuery(strQuery))

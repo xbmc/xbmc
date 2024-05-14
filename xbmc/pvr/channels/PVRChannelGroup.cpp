@@ -609,6 +609,10 @@ bool CPVRChannelGroup::UpdateFromClient(const std::shared_ptr<CPVRChannelGroupMe
     if (groupMember->GroupID() == INVALID_GROUP_ID)
       groupMember->SetGroupID(GroupID());
 
+    // Seeing this channel for the very first time. Remember when it was added.
+    if (IsChannelsOwner() && !channel->DateTimeAdded().IsValid())
+      channel->SetDateTimeAdded(CDateTime::GetUTCDateTime());
+
     m_sortedMembers.emplace_back(groupMember);
     m_members.emplace(channel->StorageId(), groupMember);
 

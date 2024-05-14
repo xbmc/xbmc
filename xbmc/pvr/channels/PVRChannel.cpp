@@ -111,6 +111,7 @@ void CPVRChannel::Serialize(CVariant& value) const
   value["uniqueid"] = m_iUniqueId;
   CDateTime lastPlayed(m_iLastWatched);
   value["lastplayed"] = lastPlayed.IsValid() ? lastPlayed.GetAsDBDate() : "";
+  value["dateadded"] = m_dateTimeAdded.IsValid() ? m_dateTimeAdded.GetAsDBDate() : "";
 
   std::shared_ptr<CPVREpgInfoTag> epg = GetEPGNow();
   if (epg)
@@ -402,6 +403,20 @@ bool CPVRChannel::SetLastWatched(time_t lastWatched, int groupId)
   const std::shared_ptr<CPVRDatabase> database = CServiceBroker::GetPVRManager().GetTVDatabase();
   if (database)
     return database->UpdateLastWatched(*this, groupId);
+
+  return false;
+}
+
+bool CPVRChannel::SetDateTimeAdded(const CDateTime& dateTimeAdded)
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+
+  if (m_dateTimeAdded != dateTimeAdded)
+  {
+    m_dateTimeAdded = dateTimeAdded;
+    m_bChanged = true;
+    return true;
+  }
 
   return false;
 }
@@ -735,6 +750,12 @@ time_t CPVRChannel::LastWatched() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_iLastWatched;
+}
+
+CDateTime CPVRChannel::DateTimeAdded() const
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  return m_dateTimeAdded;
 }
 
 bool CPVRChannel::IsChanged() const
