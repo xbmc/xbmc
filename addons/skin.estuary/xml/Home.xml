@@ -443,6 +443,17 @@
 							<param name="widget_target" value="tvsearch"/>
 							<param name="list_id" value="12600"/>
 						</include>
+						<include content="WidgetListPVR" condition="System.HasPVRAddon">
+							<param name="content_path" value="pvr://channels/tv/*?view=dateadded"/>
+							<param name="sortby" value="dateadded"/>
+							<param name="sortorder" value="descending"/>
+							<param name="widget_header" value="$LOCALIZE[855]"/>
+							<param name="widget_target" value="tvchannels"/>
+							<param name="item_limit" value="15"/>
+							<param name="list_id" value="12700"/>
+							<param name="info_update" value="5000"/>
+							<param name="label2" value="$INFO[ListItem.DateAdded]"/>
+						</include>
 					</control>
 					<include content="ImageWidget" condition="!System.HasPVRAddon">
 						<param name="text_label" value="$LOCALIZE[31143]" />
@@ -514,6 +525,17 @@
 							<param name="widget_header" value="$LOCALIZE[19337]"/>
 							<param name="widget_target" value="radiosearch"/>
 							<param name="list_id" value="13600"/>
+						</include>
+						<include content="WidgetListPVR" condition="System.HasPVRAddon">
+							<param name="content_path" value="pvr://channels/radio/*?view=dateadded"/>
+							<param name="sortby" value="dateadded"/>
+							<param name="sortorder" value="descending"/>
+							<param name="widget_header" value="$LOCALIZE[855]"/>
+							<param name="widget_target" value="radiochannels"/>
+							<param name="item_limit" value="15"/>
+							<param name="list_id" value="13700"/>
+							<param name="info_update" value="5000"/>
+							<param name="label2" value="$INFO[ListItem.DateAdded]"/>
 						</include>
 					</control>
 					<include content="ImageWidget" condition="!System.HasPVRAddon">
