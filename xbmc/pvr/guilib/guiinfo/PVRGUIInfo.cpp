@@ -870,6 +870,13 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
         strValue =
             CServiceBroker::GetPVRManager().GetClient(channel->ClientID())->GetInstanceName();
         return true;
+      case LISTITEM_DATE_ADDED:
+        if (channel->DateTimeAdded().IsValid())
+        {
+          strValue = channel->DateTimeAdded().GetAsLocalizedDate();
+          return true;
+        }
+        break;
     }
   }
 
