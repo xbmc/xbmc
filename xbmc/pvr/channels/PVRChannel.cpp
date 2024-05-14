@@ -676,6 +676,8 @@ void CPVRChannel::ToSortable(SortItem& sortable, Field field) const
     sortable[FieldLastPlayed] =
         lastWatched.IsValid() ? lastWatched.GetAsDBDateTime() : StringUtils::Empty;
   }
+  else if (field == FieldDateAdded)
+    sortable[FieldDateAdded] = m_dateTimeAdded.GetAsDBDateTime();
   else if (field == FieldProvider)
     sortable[FieldProvider] = StringUtils::Format("{} {}", m_iClientId, m_iClientProviderUid);
 }

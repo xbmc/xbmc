@@ -34,6 +34,9 @@ CGUIViewStateWindowPVRChannels::CGUIViewStateWindowPVRChannels(const int windowI
   AddSortMethod(
       SortByLastPlayed, 568, // "Last played"
       LABEL_MASKS("%L", "%p", "%L", "%p")); // Filename, LastPlayed | Foldername, LastPlayed
+  AddSortMethod(SortByDateAdded, 570, // "Date added"
+                LABEL_MASKS("%L", "%a", "%L", "%a"), // Filename, DateAdded | Foldername, DateAdded
+                SortAttributeNone, SortOrderDescending);
   AddSortMethod(SortByClientChannelOrder, 19315, // "Backend number"
                 LABEL_MASKS("%L", "", "%L", "")); // Filename, empty | Foldername, empty
   AddSortMethod(SortByProvider, 19348, // "Provider"
@@ -107,6 +110,9 @@ CGUIViewStateWindowPVRGuide::CGUIViewStateWindowPVRGuide(const int windowId,
   AddSortMethod(
       SortByLastPlayed, SortAttributeIgnoreLabel, 568, // "Last played"
       LABEL_MASKS("%L", "%p", "%L", "%p")); // Filename, LastPlayed | Foldername, LastPlayed
+  AddSortMethod(SortByDateAdded, 570, // "Date added"
+                LABEL_MASKS("%L", "%a", "%L", "%a"), // Filename, DateAdded | Foldername, DateAdded
+                SortAttributeNone, SortOrderDescending);
   AddSortMethod(SortByClientChannelOrder, 19315, // "Backend number"
                 LABEL_MASKS("%L", "", "%L", "")); // Filename, empty | Foldername, empty
   AddSortMethod(SortByProvider, 19348, // "Provider"

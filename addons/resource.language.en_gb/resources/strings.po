@@ -2706,6 +2706,7 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
+#: xbmc/pvr/windows/GUIViewStatePVR.cpp
 msgctxt "#570"
 msgid "Date added"
 msgstr ""
