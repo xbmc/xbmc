@@ -11,6 +11,7 @@
 #include "FileItem.h"
 #include "PowerTypes.h"
 #include "ServiceBroker.h"
+#include "addons/RepositoryUpdater.h"
 #include "application/AppParams.h"
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"
@@ -198,6 +199,7 @@ void CPowerManager::OnSleep()
 
   g_application.StopPlaying();
   CServiceBroker::GetPVRManager().OnSleep();
+  CServiceBroker::GetRepositoryUpdater().OnSleep();
   auto& components = CServiceBroker::GetAppComponents();
   const auto appPower = components.GetComponent<CApplicationPowerHandling>();
   appPower->StopShutdownTimer();
@@ -237,6 +239,7 @@ void CPowerManager::OnWake()
   CServiceBroker::GetActiveAE()->Resume();
   g_application.UpdateLibraries();
   CServiceBroker::GetWeatherManager().Refresh();
+  CServiceBroker::GetRepositoryUpdater().OnWake();
   CServiceBroker::GetPVRManager().OnWake();
   RestorePlayerState();
 
