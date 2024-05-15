@@ -11,7 +11,6 @@
 
 #include "NfoFile.h"
 
-#include "FileItem.h"
 #include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
@@ -60,13 +59,12 @@ CInfoScanner::INFO_TYPE CNfoFile::Create(const std::string& strPath,
       int infos=0;
       while (m_headPos != std::string::npos && details.m_iEpisode != episode)
       {
-        m_headPos = m_doc.find("<episodedetails", m_headPos);
+        m_headPos = m_doc.find("<episodedetails", m_headPos + 1);
         if (m_headPos == std::string::npos)
           break;
 
         bNfo  = GetDetails(details);
         infos++;
-        m_headPos++;
       }
       if (details.m_iEpisode != episode)
       {
