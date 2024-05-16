@@ -127,7 +127,9 @@ set_target_properties(upnp PROPERTIES CXX_CPPCHECK "")
 set_target_properties(upnp PROPERTIES CXX_INCLUDE_WHAT_YOU_USE "")
 set_target_properties(upnp PROPERTIES FOLDER lib)
 source_group_by_folder(upnp)
-set(core_DEPENDS upnp ${core_DEPENDS} CACHE STRING "" FORCE)
+
+# Link this target lib to core
+target_link_libraries(lib${APP_NAME_LC} PUBLIC upnp)
 
 if(CORE_SYSTEM_NAME STREQUAL windowsstore)
 	set_target_properties(upnp PROPERTIES STATIC_LIBRARY_FLAGS "/ignore:4264")
