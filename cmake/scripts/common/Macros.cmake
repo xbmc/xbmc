@@ -440,12 +440,21 @@ function(core_optional_dep)
       set(_required True)
     endif()
 
-    if(${depup}_FOUND)
+    if(${depup}_FOUND OR TARGET kodi::${dep})
       list(APPEND SYSTEM_INCLUDES ${${depup}_INCLUDE_DIRS})
       list(APPEND DEPLIBS ${${depup}_LIBRARIES})
       list(APPEND DEP_DEFINES ${${depup}_DEFINITIONS})
       set(final_message ${final_message} "${depup} enabled: Yes")
       export_dep()
+
+      # We dont want to add a build tool
+      if (NOT ${depspec} IN_LIST optional_buildtools AND NOT ${depspec} IN_LIST required_buildtools)
+        # If dependency is found and is not in the list (eg mariadb/mysql) add to list
+        if (NOT ${depspec} IN_LIST optional_deps)
+          set(optional_deps  ${optional_deps} ${depspec} PARENT_SCOPE)
+        endif()
+      endif()
+
     elseif(_required)
       message(FATAL_ERROR "${depup} enabled but not found")
     else()
