@@ -70,7 +70,7 @@ if(TARGET ${APP_NAME_LC}::PulseAudio)
   list(APPEND HEADERS Sinks/AESinkPULSE.h)
 endif()
 
-if(PIPEWIRE_FOUND)
+if(TARGET ${APP_NAME_LC}::Pipewire)
   list(APPEND SOURCES Sinks/pipewire/AESinkPipewire.cpp
                       Sinks/pipewire/Pipewire.cpp
                       Sinks/pipewire/PipewireContext.cpp
