@@ -143,6 +143,7 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     case NETWORK_GATEWAY_ADDRESS:
     case NETWORK_DNS1_ADDRESS:
     case NETWORK_DNS2_ADDRESS:
+    case NETWORK_LINK_STATE:
     case SYSTEM_OS_VERSION_INFO:
     case SYSTEM_CPUFREQUENCY:
     case SYSTEM_INTERNET_STATE:
