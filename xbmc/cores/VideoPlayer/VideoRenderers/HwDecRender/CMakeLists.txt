@@ -5,7 +5,7 @@ if(CORE_SYSTEM_NAME STREQUAL windows OR CORE_SYSTEM_NAME STREQUAL windowsstore)
   list(APPEND HEADERS DXVAEnumeratorHD.h)
 endif()
 
-if(VAAPI_FOUND)
+if(TARGET ${APP_NAME_LC}::VAAPI)
   if(TARGET ${APP_NAME_LC}::OpenGl)
     list(APPEND SOURCES RendererVAAPIGL.cpp)
     list(APPEND HEADERS RendererVAAPIGL.h)

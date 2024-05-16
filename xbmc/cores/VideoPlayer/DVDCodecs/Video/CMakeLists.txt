@@ -21,7 +21,7 @@ if(TARGET ${APP_NAME_LC}::VDPAU)
   list(APPEND HEADERS VDPAU.h)
 endif()
 
-if(VAAPI_FOUND)
+if(TARGET ${APP_NAME_LC}::VAAPI)
   list(APPEND SOURCES VAAPI.cpp)
   list(APPEND HEADERS VAAPI.h)
 endif()
