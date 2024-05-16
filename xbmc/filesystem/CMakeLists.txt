@@ -140,7 +140,7 @@ if(TARGET ${APP_NAME_LC}::Udfread)
                       UDFFile.h)
 endif()
 
-if(BLURAY_FOUND)
+if(TARGET ${APP_NAME_LC}::Bluray)
   list(APPEND SOURCES BlurayCallback.cpp
                       BlurayDirectory.cpp
                       BlurayFile.cpp)

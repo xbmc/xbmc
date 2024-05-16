@@ -30,7 +30,7 @@ set(HEADERS BlurayStateSerializer.h
             InputStreamPVRChannel.h
             InputStreamPVRRecording.h)
 
-if(BLURAY_FOUND)
+if(TARGET ${APP_NAME_LC}::Bluray)
   list(APPEND SOURCES DVDInputStreamBluray.cpp)
   list(APPEND HEADERS DVDInputStreamBluray.h)
 endif()
