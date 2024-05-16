@@ -115,10 +115,6 @@ endforeach()
 add_library(python_binding STATIC ${SOURCES})
 set_target_properties(python_binding PROPERTIES POSITION_INDEPENDENT_CODE TRUE
                                                 FOLDER "Build Utilities")
-set(core_DEPENDS python_binding ${core_DEPENDS} CACHE STRING "" FORCE)
-
-# This target is not run through our regular macro's. Explicitly link required target
-target_link_libraries(python_binding PRIVATE ${APP_NAME_LC}::Spdlog)
 
 if(CORE_SYSTEM_NAME STREQUAL windowsstore)
   set_target_properties(python_binding PROPERTIES STATIC_LIBRARY_FLAGS "/ignore:4264")
@@ -127,3 +123,8 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL GNU)
   set_target_properties(python_binding PROPERTIES
                         COMPILE_FLAGS -Wno-cast-function-type) # from -Wextra
 endif()
+
+# Add target dependencies to lib
+core_target_link_libraries(python_binding)
+# Link this target lib to core
+target_link_libraries(lib${APP_NAME_LC} PUBLIC python_binding)
