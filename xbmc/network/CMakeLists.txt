@@ -47,7 +47,7 @@ if(TARGET ${APP_NAME_LC}::SmbClient)
   list(APPEND HEADERS IWSDiscovery.h)
 endif()
 
-if(MICROHTTPD_FOUND)
+if(TARGET ${APP_NAME_LC}::MicroHttpd)
   list(APPEND SOURCES WebServer.cpp)
   list(APPEND HEADERS WebServer.h)
 endif()

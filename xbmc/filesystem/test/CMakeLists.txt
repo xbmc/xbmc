@@ -4,7 +4,7 @@ set(SOURCES TestDirectory.cpp
             TestZipFile.cpp
             TestZipManager.cpp)
 
-if(MICROHTTPD_FOUND)
+if(TARGET ${APP_NAME_LC}::MicroHttpd)
   list(APPEND SOURCES TestHTTPDirectory.cpp)
 endif()
 
