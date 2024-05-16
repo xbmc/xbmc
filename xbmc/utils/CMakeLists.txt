@@ -240,7 +240,7 @@ if("gbm" IN_LIST CORE_PLATFORM_NAME_LC OR "wayland" IN_LIST CORE_PLATFORM_NAME_L
     list(APPEND HEADERS DRMHelpers.h)
   endif()
 
-  if(LIBDISPLAYINFO_FOUND)
+  if(TARGET ${APP_NAME_LC}::LibDisplayInfo)
     list(APPEND SOURCES DisplayInfo.cpp)
     list(APPEND HEADERS DisplayInfo.h)
   endif()
