@@ -9,7 +9,7 @@ if(TARGET ${APP_NAME_LC}::MicroHttpd)
               HTTPWebinterfaceHandler.cpp
               IHTTPRequestHandler.cpp)
 
-  if(PYTHON_FOUND)
+  if(TARGET ${APP_NAME_LC}::Python)
     list(APPEND SOURCES HTTPPythonHandler.cpp)
   endif()
 
@@ -22,7 +22,7 @@ if(TARGET ${APP_NAME_LC}::MicroHttpd)
               HTTPWebinterfaceAddonsHandler.h
               HTTPWebinterfaceHandler.h
               IHTTPRequestHandler.h)
-  if(PYTHON_FOUND)
+  if(TARGET ${APP_NAME_LC}::Python)
     list(APPEND HEADERS HTTPPythonHandler.h)
   endif()
 
