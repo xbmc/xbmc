@@ -110,7 +110,6 @@ set(GROOVY_DIR ${CMAKE_SOURCE_DIR}/tools/codegenerator/groovy)
 
 foreach(INPUT IN LISTS INPUTS)
   generate_file(${INPUT})
-  list(APPEND GEN_SRCS ${CMAKE_CURRENT_BINARY_DIR}/${INPUT}.cpp)
 endforeach()
 
 add_library(python_binding STATIC ${SOURCES})
