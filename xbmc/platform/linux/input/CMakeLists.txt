@@ -7,7 +7,7 @@ if(TARGET ${APP_NAME_LC}::LircClient)
 endif()
 
 if("gbm" IN_LIST CORE_PLATFORM_NAME_LC)
-  if(LIBINPUT_FOUND)
+  if(TARGET ${APP_NAME_LC}::LibInput)
     list(APPEND SOURCES LibInputHandler.cpp
                         LibInputKeyboard.cpp
                         LibInputPointer.cpp
