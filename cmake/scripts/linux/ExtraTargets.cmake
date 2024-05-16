@@ -24,8 +24,9 @@ if("wayland" IN_LIST CORE_PLATFORM_NAME_LC)
                     "${WAYLAND_PROTOCOLS_DIR}/unstable/idle-inhibit/idle-inhibit-unstable-v1.xml")
 
   add_custom_command(OUTPUT "${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-extra-protocols.hpp" "${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-extra-protocols.cpp"
-                     COMMAND "${WAYLANDPP_SCANNER}" ${PROTOCOL_XMLS} "${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-extra-protocols.hpp" "${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-extra-protocols.cpp"
-                     DEPENDS "${WAYLANDPP_SCANNER}" ${PROTOCOL_XMLS}
+                     COMMAND wayland::waylandppscanner
+                     ARGS ${PROTOCOL_XMLS} "${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-extra-protocols.hpp" "${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-extra-protocols.cpp"
+                     DEPENDS wayland::waylandppscanner ${PROTOCOL_XMLS}
                      COMMENT "Generating wayland-protocols C++ wrappers")
 
   if("webos" IN_LIST CORE_PLATFORM_NAME_LC)
