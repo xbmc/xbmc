@@ -688,6 +688,38 @@ const char* CAndroidJoystickTranslator::TranslateKeyCode(int keyCode)
       return "AKEYCODE_THUMBS_DOWN";
     case AKEYCODE_PROFILE_SWITCH:
       return "AKEYCODE_PROFILE_SWITCH";
+    case AKEYCODE_VIDEO_APP_1:
+      return "AKEYCODE_VIDEO_APP_1";
+    case AKEYCODE_VIDEO_APP_2:
+      return "AKEYCODE_VIDEO_APP_2";
+    case AKEYCODE_VIDEO_APP_3:
+      return "AKEYCODE_VIDEO_APP_3";
+    case AKEYCODE_VIDEO_APP_4:
+      return "AKEYCODE_VIDEO_APP_4";
+    case AKEYCODE_VIDEO_APP_5:
+      return "AKEYCODE_VIDEO_APP_5";
+    case AKEYCODE_VIDEO_APP_6:
+      return "AKEYCODE_VIDEO_APP_6";
+    case AKEYCODE_VIDEO_APP_7:
+      return "AKEYCODE_VIDEO_APP_7";
+    case AKEYCODE_VIDEO_APP_8:
+      return "AKEYCODE_VIDEO_APP_8";
+    case AKEYCODE_FEATURED_APP_1:
+      return "AKEYCODE_FEATURED_APP_1";
+    case AKEYCODE_FEATURED_APP_2:
+      return "AKEYCODE_FEATURED_APP_2";
+    case AKEYCODE_FEATURED_APP_3:
+      return "AKEYCODE_FEATURED_APP_3";
+    case AKEYCODE_FEATURED_APP_4:
+      return "AKEYCODE_FEATURED_APP_4";
+    case AKEYCODE_DEMO_APP_1:
+      return "AKEYCODE_DEMO_APP_1";
+    case AKEYCODE_DEMO_APP_2:
+      return "AKEYCODE_DEMO_APP_2";
+    case AKEYCODE_DEMO_APP_3:
+      return "AKEYCODE_DEMO_APP_3";
+    case AKEYCODE_DEMO_APP_4:
+      return "AKEYCODE_DEMO_APP_4";
     default:
       break;
   }
