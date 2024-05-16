@@ -31,7 +31,7 @@ using namespace PERIPHERALS;
 #define JOYSTICK_PROVIDER_ANDROID "android"
 
 // Set this to the final key code in android/keycodes.h
-const unsigned int KEY_CODE_FINAL = AKEYCODE_HELP;
+const unsigned int KEY_CODE_FINAL = AKEYCODE_DEMO_APP_4;
 
 static const std::string DeviceLocationPrefix = "android/inputdevice/";
 
@@ -304,8 +304,8 @@ bool CPeripheralBusAndroid::OnInputDeviceEvent(const AInputEvent* event)
   auto joystickState = m_joystickStates.find(deviceId);
   if (joystickState == m_joystickStates.end())
   {
-    CLog::Log(LOGWARNING,
-              "CPeripheralBusAndroid: ignoring input event for unknown input device with ID {}",
+    CLog::Log(LOGDEBUG,
+              "CPeripheralBusAndroid: ignoring input event for non-joystick device with ID {}",
               deviceId);
     return false;
   }
