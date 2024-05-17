@@ -342,15 +342,6 @@ function(copy_files_from_filelist_to_buildtree pattern)
   set(install_data ${install_data} PARENT_SCOPE)
 endfunction()
 
-# helper macro to set modified variables in parent scope
-macro(export_dep)
-  set(SYSTEM_INCLUDES ${SYSTEM_INCLUDES} PARENT_SCOPE)
-  set(DEPLIBS ${DEPLIBS} PARENT_SCOPE)
-  set(DEP_DEFINES ${DEP_DEFINES} PARENT_SCOPE)
-  set(${depup}_FOUND ${${depup}_FOUND} PARENT_SCOPE)
-  mark_as_advanced(${depup}_LIBRARIES)
-endmacro()
-
 # split dependency specification to name and version
 # Arguments:
 #   depspec dependency specification that can optionally include a required
@@ -393,17 +384,11 @@ endmacro()
 # Arguments:
 #   dep_list One or many dependency specifications (see split_dependency_specification)
 #            for syntax). The dependency name is used uppercased as variable prefix.
-# On return:
-#   dependencies added to ${SYSTEM_INCLUDES}, ${DEPLIBS} and ${DEP_DEFINES}
 function(core_require_dep)
   foreach(depspec ${ARGN})
     split_dependency_specification(${depspec} dep version)
     find_package_with_ver(${dep} ${version} REQUIRED)
     string(TOUPPER ${dep} depup)
-    list(APPEND SYSTEM_INCLUDES ${${depup}_INCLUDE_DIRS})
-    list(APPEND DEPLIBS ${${depup}_LIBRARIES})
-    list(APPEND DEP_DEFINES ${${depup}_DEFINITIONS})
-    export_dep()
 
     # We dont want to add a build tool
     if (NOT ${depspec} IN_LIST optional_buildtools AND NOT ${depspec} IN_LIST required_buildtools)
@@ -432,8 +417,6 @@ endmacro()
 # Arguments:
 #   dep_list One or many dependency specifications (see split_dependency_specification)
 #            for syntax). The dependency name is used uppercased as variable prefix.
-# On return:
-#   dependency optionally added to ${SYSTEM_INCLUDES}, ${DEPLIBS} and ${DEP_DEFINES}
 function(core_optional_dep)
   foreach(depspec ${ARGN})
     set(_required False)
@@ -446,12 +429,8 @@ function(core_optional_dep)
       set(_required True)
     endif()
 
-    if(${depup}_FOUND OR TARGET kodi::${dep})
-      list(APPEND SYSTEM_INCLUDES ${${depup}_INCLUDE_DIRS})
-      list(APPEND DEPLIBS ${${depup}_LIBRARIES})
-      list(APPEND DEP_DEFINES ${${depup}_DEFINITIONS})
+    if(TARGET kodi::${dep})
       set(final_message ${final_message} "${depup} enabled: Yes")
-      export_dep()
 
       # We dont want to add a build tool
       if (NOT ${depspec} IN_LIST optional_buildtools AND NOT ${depspec} IN_LIST required_buildtools)
