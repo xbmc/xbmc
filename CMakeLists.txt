@@ -377,7 +377,6 @@ if(NOT ${CORE_SYSTEM_NAME} MATCHES "windows")
   file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/system/players/VideoPlayer)
 endif()
 
-set(LIBCEC_SONAME "${CEC_SONAME}")
 if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL android AND NOT CORE_SYSTEM_NAME STREQUAL windowsstore)
   configure_file(${CMAKE_SOURCE_DIR}/xbmc/DllPaths_generated.h.in
                  ${CORE_BUILD_DIR}/DllPaths_generated.h @ONLY)
