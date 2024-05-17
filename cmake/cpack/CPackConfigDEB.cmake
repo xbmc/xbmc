@@ -1,6 +1,18 @@
 # include Macros.cmake to automate generation of time/date stamps, maintainer, etc.
 include(${CMAKE_SOURCE_DIR}/cmake/scripts/common/Macros.cmake)
 
+# Function only used in CPackConfigDEB
+
+# Generates an RFC2822 timestamp
+#
+# The following variable is set:
+#   RFC2822_TIMESTAMP
+function(rfc2822stamp)
+  execute_process(COMMAND date -R
+                  OUTPUT_VARIABLE RESULT)
+  set(RFC2822_TIMESTAMP ${RESULT} PARENT_SCOPE)
+endfunction()
+
 # find stuff we need
 find_program(LSB_RELEASE_CMD lsb_release)
 find_program(DPKG_CMD dpkg)

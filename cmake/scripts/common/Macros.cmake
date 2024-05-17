@@ -542,16 +542,6 @@ macro(core_add_optional_subdirs_from_filelist pattern)
   endforeach()
 endmacro()
 
-# Generates an RFC2822 timestamp
-#
-# The following variable is set:
-#   RFC2822_TIMESTAMP
-function(rfc2822stamp)
-  execute_process(COMMAND date -R
-                  OUTPUT_VARIABLE RESULT)
-  set(RFC2822_TIMESTAMP ${RESULT} PARENT_SCOPE)
-endfunction()
-
 # Generates an user stamp from git config info
 #
 # The following variable is set:
