@@ -542,28 +542,6 @@ macro(core_add_optional_subdirs_from_filelist pattern)
   endforeach()
 endmacro()
 
-# Generates an user stamp from git config info
-#
-# The following variable is set:
-#   PACKAGE_MAINTAINER - user stamp in the form of "username <username@example.com>"
-#                        if no git tree is found, value is set to "nobody <nobody@example.com>"
-function(userstamp)
-  find_package(Git)
-  if(GIT_FOUND AND EXISTS ${CMAKE_SOURCE_DIR}/.git)
-    execute_process(COMMAND ${GIT_EXECUTABLE} config user.name
-                    OUTPUT_VARIABLE username
-                    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-                    OUTPUT_STRIP_TRAILING_WHITESPACE)
-    execute_process(COMMAND ${GIT_EXECUTABLE} config user.email
-                    OUTPUT_VARIABLE useremail
-                    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-                    OUTPUT_STRIP_TRAILING_WHITESPACE)
-    set(PACKAGE_MAINTAINER "${username} <${useremail}>" PARENT_SCOPE)
-  else()
-    set(PACKAGE_MAINTAINER "nobody <nobody@example.com>" PARENT_SCOPE)
-  endif()
-endfunction()
-
 # Parses git info and sets variables used to identify the build
 # Arguments:
 #   stamp variable name to return

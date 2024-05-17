@@ -13,6 +13,28 @@ function(rfc2822stamp)
   set(RFC2822_TIMESTAMP ${RESULT} PARENT_SCOPE)
 endfunction()
 
+# Generates an user stamp from git config info
+#
+# The following variable is set:
+#   PACKAGE_MAINTAINER - user stamp in the form of "username <username@example.com>"
+#                        if no git tree is found, value is set to "nobody <nobody@example.com>"
+function(userstamp)
+  find_package(Git)
+  if(GIT_FOUND AND EXISTS ${CMAKE_SOURCE_DIR}/.git)
+    execute_process(COMMAND ${GIT_EXECUTABLE} config user.name
+                    OUTPUT_VARIABLE username
+                    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+                    OUTPUT_STRIP_TRAILING_WHITESPACE)
+    execute_process(COMMAND ${GIT_EXECUTABLE} config user.email
+                    OUTPUT_VARIABLE useremail
+                    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+                    OUTPUT_STRIP_TRAILING_WHITESPACE)
+    set(PACKAGE_MAINTAINER "${username} <${useremail}>" PARENT_SCOPE)
+  else()
+    set(PACKAGE_MAINTAINER "nobody <nobody@example.com>" PARENT_SCOPE)
+  endif()
+endfunction()
+
 # find stuff we need
 find_program(LSB_RELEASE_CMD lsb_release)
 find_program(DPKG_CMD dpkg)
