@@ -134,9 +134,6 @@ if(CORE_SYSTEM_NAME STREQUAL linux)
   option(ADDONS_CONFIGURE_AT_STARTUP "Configure binary addons at startup?" ON)
 endif()
 
-# set scope of INTERNAL_DEPS
-set_property(GLOBAL PROPERTY INTERNAL_DEPS_PROP)
-
 # Build static libraries per directory
 if(NOT CMAKE_GENERATOR MATCHES "Visual Studio" AND NOT CMAKE_GENERATOR STREQUAL Xcode)
   set(ENABLE_STATIC_LIBS TRUE)
@@ -389,9 +386,6 @@ elseif(CORE_SYSTEM_NAME STREQUAL android)
                  ${CORE_BUILD_DIR}/DllPaths_generated_android.h @ONLY)
 endif()
 
-get_property(INTERNAL_DEPS GLOBAL PROPERTY INTERNAL_DEPS_PROP)
-set(GLOBAL_TARGET_DEPS ${INTERNAL_DEPS} ${PLATFORM_GLOBAL_TARGET_DEPS})
-
 # main library (used for main binary and tests)
 if(CORE_SYSTEM_NAME STREQUAL "darwin_embedded")
   # $<TARGET_OBJECTS:> as at 3.26.4 provides incorrect paths for ios/tvos platforms
@@ -408,7 +402,6 @@ if(CORE_SYSTEM_NAME STREQUAL "darwin_embedded")
 else()
   add_library(lib${APP_NAME_LC} STATIC $<TARGET_OBJECTS:compileinfo>)
 endif()
-add_dependencies(lib${APP_NAME_LC} ${GLOBAL_TARGET_DEPS})
 set_target_properties(lib${APP_NAME_LC} PROPERTIES PREFIX "")
 
 # Other files (IDE)
@@ -425,7 +418,7 @@ core_add_subdirs_from_filelist(${CMAKE_SOURCE_DIR}/cmake/treedata/common/*.txt
 core_add_optional_subdirs_from_filelist(${CMAKE_SOURCE_DIR}/cmake/treedata/optional/common/*.txt
                                         ${CMAKE_SOURCE_DIR}/cmake/treedata/optional/${CORE_SYSTEM_NAME}/*.txt)
 
-target_link_libraries(lib${APP_NAME_LC} PUBLIC ${core_DEPENDS} ${SYSTEM_LDFLAGS} ${DEPLIBS} ${CMAKE_DL_LIBS} ${GLOBAL_TARGET_DEPS})
+target_link_libraries(lib${APP_NAME_LC} PUBLIC ${core_DEPENDS} ${SYSTEM_LDFLAGS} ${DEPLIBS} ${CMAKE_DL_LIBS})
 core_target_link_libraries(lib${APP_NAME_LC})
 set_target_properties(lib${APP_NAME_LC} PROPERTIES PROJECT_LABEL "xbmc")
 source_group_by_folder(lib${APP_NAME_LC} RELATIVE ${CMAKE_SOURCE_DIR}/xbmc)
@@ -504,9 +497,6 @@ add_custom_target(gen_skin_pack DEPENDS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${
 # Packaging target. This generates system addon, xbt creation, copy files to build tree
 add_custom_target(generate-packaging ALL
                   DEPENDS TexturePacker::TexturePacker::Executable export-files gen_skin_pack gen_system_addons)
-# Make sure we build any libs before we look to export-files.
-# We may need to export some shared libs/data (eg Python)
-add_dependencies(export-files ${GLOBAL_TARGET_DEPS})
 
 # Add to lib${APP_NAME_LC} solely for Win UWP. msix building doesnt seem to pick up the
 # generated buildtree if we do it later. Other platforms dont care when this happens.

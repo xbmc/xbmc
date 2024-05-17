@@ -72,12 +72,9 @@ function(core_add_library name)
     add_library(${name} STATIC ${SOURCES} ${HEADERS} ${OTHERS})
     set_target_properties(${name} PROPERTIES PREFIX "")
     set(core_DEPENDS ${name} ${core_DEPENDS} CACHE STRING "" FORCE)
-    add_dependencies(${name} ${GLOBAL_TARGET_DEPS})
 
     # Adds global target to library. This propagates dep lib info (eg include_dir locations)
     core_target_link_libraries(${name})
-    # ToDo: remove the next line when the GLOBAL_TARGET_DEPS is removed completely
-    target_link_libraries(${name} PRIVATE ${GLOBAL_TARGET_DEPS})
 
     set(CORE_LIBRARY ${name} PARENT_SCOPE)
 
@@ -106,7 +103,7 @@ function(core_add_test_library name)
     set_target_properties(${name} PROPERTIES PREFIX ""
                                              EXCLUDE_FROM_ALL 1
                                              FOLDER "Build Utilities/tests")
-    add_dependencies(${name} ${GLOBAL_TARGET_DEPS})
+
     set(test_archives ${test_archives} ${name} CACHE STRING "" FORCE)
 
     if(NOT MSVC)
