@@ -116,27 +116,19 @@ find_package_handle_standard_args(LibDvdRead
                                   VERSION_VAR LIBDVDREAD_VERSION)
 
 if(LIBDVDREAD_FOUND)
-  if(NOT TARGET LibDvdRead::LibDvdRead)
-    add_library(LibDvdRead::LibDvdRead UNKNOWN IMPORTED)
+  add_library(LibDvdRead::LibDvdRead UNKNOWN IMPORTED)
+  set_target_properties(LibDvdRead::LibDvdRead PROPERTIES
+                                               IMPORTED_LOCATION "${LIBDVDREAD_LIBRARY}"
+                                               INTERFACE_INCLUDE_DIRECTORIES "${LIBDVDREAD_INCLUDE_DIR}")
 
-    set_target_properties(LibDvdRead::LibDvdRead PROPERTIES
-                                                 IMPORTED_LOCATION "${LIBDVDREAD_LIBRARY}"
-                                                 INTERFACE_INCLUDE_DIRECTORIES "${LIBDVDREAD_INCLUDE_DIR}")
-
-    if(TARGET libdvdread)
-      add_dependencies(LibDvdRead::LibDvdRead libdvdread)
-    endif()
-    if(TARGET LibDvdCSS::LibDvdCSS)
-      add_dependencies(LibDvdRead::LibDvdRead LibDvdCSS::LibDvdCSS)
-      set_target_properties(LibDvdRead::LibDvdRead PROPERTIES
-                                                   INTERFACE_LINK_LIBRARIES "dvdcss")
-    endif()
+  if(TARGET libdvdread)
+    add_dependencies(LibDvdRead::LibDvdRead libdvdread)
   endif()
-
+  if(TARGET LibDvdCSS::LibDvdCSS)
+    target_link_libraries(LibDvdRead::LibDvdRead INTERFACE LibDvdCSS::LibDvdCSS)
+  endif()
 else()
-  if(LIBDVDREAD_FIND_REQUIRED)
+  if(LibDvdRead_FIND_REQUIRED)
     message(FATAL_ERROR "Libdvdread not found")
   endif()
 endif()
-
-mark_as_advanced(LIBDVDREAD_INCLUDE_DIR LIBDVDREAD_LIBRARY)
