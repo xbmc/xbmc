@@ -46,7 +46,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                                                      IMPORTED_LOCATION "${AVAHI_CLIENT_LIBRARY}"
                                                                      INTERFACE_INCLUDE_DIRECTORIES "${AVAHI_CLIENT_INCLUDE_DIR}"
                                                                      INTERFACE_COMPILE_DEFINITIONS "HAS_AVAHI;HAS_ZEROCONF"
-                                                                     INTERFACE_LINK_LIBRARIES Avahi::AvahiCommon)
+                                                                     INTERFACE_LINK_LIBRARIES ${APP_NAME_LC}::AvahiCommon)
 
   endif()
 endif()
