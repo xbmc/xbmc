@@ -1969,10 +1969,10 @@ bool CActiveAE::RunStages()
 
   // TrueHD is very jumpy, meaning the frames don't come in equidistantly. They are only smoothed
   // at the end when the IEC packing happens. Therefore adjust earlier.
-  const bool ignoreWL =
+  const bool isTrueHDPassthrough =
       (m_mode == MODE_RAW && m_sinkFormat.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD);
 
-  if ((m_stats.GetWaterLevel() < (MAX_WATER_LEVEL + 0.0001f) || ignoreWL) &&
+  if ((m_stats.GetWaterLevel() < (MAX_WATER_LEVEL + 0.0001f) || isTrueHDPassthrough) &&
       (m_mode != MODE_TRANSCODE || (m_encoderBuffers && !m_encoderBuffers->m_freeSamples.empty())))
   {
     // calculate sync error
@@ -1994,6 +1994,12 @@ bool CActiveAE::RunStages()
         double playingPts = pts - delay;
         double maxError = ((*it)->m_syncState == CAESyncInfo::SYNC_INSYNC) ? 1000 : 5000;
         double error = playingPts - (*it)->m_pClock->GetClock();
+
+        // underestimate error for TrueHD passthrough
+        // oscillations should be less than frametime 40ms to avoid unnecessary a/v sync corrections
+        if (isTrueHDPassthrough)
+          error *= 0.45;
+
         if (error > maxError)
         {
           CLog::Log(LOGWARNING, "ActiveAE - large audio sync error: {:f}", error);
