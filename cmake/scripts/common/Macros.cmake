@@ -75,6 +75,8 @@ function(core_add_library name)
     add_dependencies(${name} ${GLOBAL_TARGET_DEPS})
 
     # Adds global target to library. This propagates dep lib info (eg include_dir locations)
+    core_target_link_libraries(${name})
+    # ToDo: remove the next line when the GLOBAL_TARGET_DEPS is removed completely
     target_link_libraries(${name} PRIVATE ${GLOBAL_TARGET_DEPS})
 
     set(CORE_LIBRARY ${name} PARENT_SCOPE)
@@ -829,3 +831,21 @@ macro(find_addon_xml_in_files)
   # Append also versions.h to depends
   list(APPEND ADDON_XML_DEPENDS "${CORE_SOURCE_DIR}/xbmc/addons/kodi-dev-kit/include/kodi/versions.h")
 endmacro()
+
+# Iterate over optional/required dep lists and link any created targets
+# to the target supplied as first argument
+function(core_target_link_libraries core_lib)
+  foreach(_depspec ${required_deps})
+    split_dependency_specification(${_depspec} dep version)
+    if(TARGET ${APP_NAME_LC}::${dep})
+      target_link_libraries(${core_lib} PUBLIC ${APP_NAME_LC}::${dep})
+    endif()
+  endforeach()
+
+  foreach(_depspec ${optional_deps})
+    split_dependency_specification(${_depspec} dep version)
+    if(TARGET ${APP_NAME_LC}::${dep})
+      target_link_libraries(${core_lib} PUBLIC ${APP_NAME_LC}::${dep})
+    endif()
+  endforeach()
+endfunction()

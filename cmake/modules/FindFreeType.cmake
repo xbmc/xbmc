@@ -5,12 +5,12 @@
 #
 # This will define the following target:
 #
-#   FreeType::FreeType   - The FreeType library
+#   ${APP_NAME_LC}::FreeType   - The FreeType library
 
-if(NOT TARGET FreeType::FreeType)
+if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   find_package(PkgConfig)
   # Do not use pkgconfig on windows
-  if(PKG_CONFIG_FOUND AND NOT WIN32)
+  if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWS_STORE))
     pkg_check_modules(PC_FREETYPE freetype2 QUIET)
   endif()
 
@@ -19,12 +19,10 @@ if(NOT TARGET FreeType::FreeType)
                                        ${PC_FREETYPE_INCLUDEDIR}
                                        ${PC_FREETYPE_INCLUDE_DIRS}
                                  PATH_SUFFIXES freetype2
-                                 ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
-                                 NO_CACHE)
+                                 ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
   find_library(FREETYPE_LIBRARY NAMES freetype freetype246MT
                                 HINTS ${DEPENDS_PATH}/lib ${PC_FREETYPE_LIBDIR}
-                                ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
-                                NO_CACHE)
+                                ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
 
   set(FREETYPE_VERSION ${PC_FREETYPE_VERSION})
 
@@ -34,10 +32,13 @@ if(NOT TARGET FreeType::FreeType)
                                     VERSION_VAR FREETYPE_VERSION)
 
   if(FREETYPE_FOUND)
-    add_library(FreeType::FreeType UNKNOWN IMPORTED)
-    set_target_properties(FreeType::FreeType PROPERTIES
-                                             IMPORTED_LOCATION "${FREETYPE_LIBRARY}"
-                                             INTERFACE_INCLUDE_DIRECTORIES "${FREETYPE_INCLUDE_DIR}")
-    set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP FreeType::FreeType)
+    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
+    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                     IMPORTED_LOCATION "${FREETYPE_LIBRARY}"
+                                                                     INTERFACE_INCLUDE_DIRECTORIES "${FREETYPE_INCLUDE_DIR}")
+  else()
+    if(Freetype_FIND_REQUIRED)
+      message(FATAL_ERROR "Freetype libraries were not found.")
+    endif()
   endif()
 endif()

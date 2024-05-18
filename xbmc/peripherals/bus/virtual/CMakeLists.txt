@@ -4,7 +4,7 @@ set(SOURCES PeripheralBusAddon.cpp
 set(HEADERS PeripheralBusAddon.h
             PeripheralBusApplication.h)
 
-if(TARGET CEC::CEC)
+if(TARGET ${APP_NAME_LC}::CEC)
   list(APPEND SOURCES PeripheralBusCEC.cpp)
   list(APPEND HEADERS PeripheralBusCEC.h)
 endif()

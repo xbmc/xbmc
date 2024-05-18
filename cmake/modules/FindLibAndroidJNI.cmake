@@ -4,9 +4,9 @@
 #
 # This will define the following target:
 #
-#   libandroidjni::libandroidjni   - The LibAndroidJNI library
+#   ${APP_NAME_LC}::LibAndroidJNI   - The LibAndroidJNI library
 
-if(NOT TARGET libandroidjni::libandroidjni)
+if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
   set(MODULE_LC libandroidjni)
@@ -26,13 +26,11 @@ if(NOT TARGET libandroidjni::libandroidjni)
                                     REQUIRED_VARS LIBANDROIDJNI_LIBRARY LIBANDROIDJNI_INCLUDE_DIR
                                     VERSION_VAR LIBANDROIDJNI_VER)
 
-  add_library(libandroidjni::libandroidjni STATIC IMPORTED)
-  set_target_properties(libandroidjni::libandroidjni PROPERTIES
-                                                     FOLDER "External Projects"
-                                                     IMPORTED_LOCATION "${LIBANDROIDJNI_LIBRARY}"
-                                                     INTERFACE_INCLUDE_DIRECTORIES "${LIBANDROIDJNI_INCLUDE_DIR}")
+  add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} STATIC IMPORTED)
+  set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                   FOLDER "External Projects"
+                                                                   IMPORTED_LOCATION "${LIBANDROIDJNI_LIBRARY}"
+                                                                   INTERFACE_INCLUDE_DIRECTORIES "${LIBANDROIDJNI_INCLUDE_DIR}")
 
-  add_dependencies(libandroidjni::libandroidjni libandroidjni)
-
-  set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP libandroidjni::libandroidjni)
+  add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} libandroidjni)
 endif()

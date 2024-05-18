@@ -22,12 +22,12 @@ if(TARGET_WEBOS)
                       PlatformWebOS.h)
 endif()
 
-if(TARGET ALSA::ALSA)
+if(TARGET ${APP_NAME_LC}::Alsa)
   list(APPEND SOURCES FDEventMonitor.cpp)
   list(APPEND HEADERS FDEventMonitor.h)
 endif()
 
-if(TARGET DBus::DBus)
+if(TARGET ${APP_NAME_LC}::DBus)
   list(APPEND SOURCES DBusMessage.cpp
                       DBusUtil.cpp)
   list(APPEND HEADERS DBusMessage.h

@@ -4,9 +4,9 @@
 #
 # This will define the following target:
 #
-#   windows::Effects11   - The Effects11 library
+#   ${APP_NAME_LC}::Effects11   - The Effects11 library
 
-if(NOT TARGET windows::Effects11)
+if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
   macro(buildEffects11)
@@ -74,26 +74,26 @@ if(NOT TARGET windows::Effects11)
   if(Effects11_FOUND)
     
     if(TARGET Microsoft::Effects11 AND NOT TARGET effects11)
-      add_library(windows::Effects11 ALIAS Microsoft::Effects11)
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS Microsoft::Effects11)
     else()
-      add_library(windows::Effects11 UNKNOWN IMPORTED)
-      set_target_properties(windows::Effects11 PROPERTIES
-                                               INTERFACE_INCLUDE_DIRECTORIES "${EFFECTS11_INCLUDE_DIR}")
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
+      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                       INTERFACE_INCLUDE_DIRECTORIES "${EFFECTS11_INCLUDE_DIR}")
 
       if(EFFECTS11_LIBRARY_RELEASE)
-        set_target_properties(windows::Effects11 PROPERTIES
-                                                 IMPORTED_CONFIGURATIONS RELEASE
-                                                 IMPORTED_LOCATION_RELEASE "${EFFECTS11_LIBRARY_RELEASE}")
+        set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                         IMPORTED_CONFIGURATIONS RELEASE
+                                                                         IMPORTED_LOCATION_RELEASE "${EFFECTS11_LIBRARY_RELEASE}")
       endif()
       if(EFFECTS11_LIBRARY_DEBUG)
-        set_target_properties(windows::Effects11 PROPERTIES
-                                                 IMPORTED_CONFIGURATIONS DEBUG
-                                                 IMPORTED_LOCATION_DEBUG "${EFFECTS11_LIBRARY_DEBUG}")
+        set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                         IMPORTED_CONFIGURATIONS DEBUG
+                                                                         IMPORTED_LOCATION_DEBUG "${EFFECTS11_LIBRARY_DEBUG}")
       endif()
     endif()
 
     if(TARGET effects11)
-      add_dependencies(windows::Effects11 effects11)
+      add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} effects11)
     endif()
 
     # Add internal build target when a Multi Config Generator is used
@@ -111,8 +111,6 @@ if(NOT TARGET windows::Effects11)
       endif()
       add_dependencies(build_internal_depends effects11)
     endif()
-
-    set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP windows::Effects11)
   else()
     if(Effects11_FIND_REQUIRED)
       message(FATAL_ERROR "Could NOT find or build Effects11 library.")

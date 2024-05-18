@@ -5,21 +5,19 @@
 #
 # This will define the following target:
 #
-#   EGL::EGL   - The EGL library
+#   ${APP_NAME_LC}::EGL   - The EGL library
 
-if(NOT TARGET EGL::EGL)
+if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   find_package(PkgConfig)
   if(PKG_CONFIG_FOUND)
     pkg_check_modules(PC_EGL egl QUIET)
   endif()
 
   find_path(EGL_INCLUDE_DIR EGL/egl.h
-                            HINTS ${PC_EGL_INCLUDEDIR}
-                            NO_CACHE)
+                            HINTS ${PC_EGL_INCLUDEDIR})
 
   find_library(EGL_LIBRARY NAMES EGL egl
-                           HINTS ${PC_EGL_LIBDIR}
-                           NO_CACHE)
+                           HINTS ${PC_EGL_LIBDIR})
 
   set(EGL_VERSION ${PC_EGL_VERSION})
 
@@ -37,16 +35,15 @@ if(NOT TARGET EGL::EGL)
     check_include_files("EGL/egl.h;EGL/eglext.h;EGL/eglext_angle.h" HAVE_EGLEXTANGLE)
     unset(CMAKE_REQUIRED_INCLUDES)
 
-    add_library(EGL::EGL UNKNOWN IMPORTED)
-    set_target_properties(EGL::EGL PROPERTIES
-                                   IMPORTED_LOCATION "${EGL_LIBRARY}"
-                                   INTERFACE_INCLUDE_DIRECTORIES "${EGL_INCLUDE_DIR}"
-                                   INTERFACE_COMPILE_DEFINITIONS HAS_EGL=1)
+    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
+    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                     IMPORTED_LOCATION "${EGL_LIBRARY}"
+                                                                     INTERFACE_INCLUDE_DIRECTORIES "${EGL_INCLUDE_DIR}"
+                                                                     INTERFACE_COMPILE_DEFINITIONS HAS_EGL)
 
     if(HAVE_EGLEXTANGLE)
-      set_property(TARGET EGL::EGL APPEND PROPERTY
-                                          INTERFACE_COMPILE_DEFINITIONS HAVE_EGLEXTANGLE=1)
+      set_property(TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY
+                                                                            INTERFACE_COMPILE_DEFINITIONS HAVE_EGLEXTANGLE)
     endif()
-    set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP EGL::EGL)
   endif()
 endif()

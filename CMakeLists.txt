@@ -296,7 +296,7 @@ endif()
 set(outputFilterRegex "addons/xbmc.json")
 find_addon_xml_in_files(${outputFilterRegex})
 
-if(TARGET ALSA::ALSA AND TARGET PulseAudio::PulseAudio)
+if(TARGET ${APP_NAME_LC}::Alsa AND TARGET PulseAudio::PulseAudio)
   list(APPEND AUDIO_BACKENDS_LIST "alsa+pulseaudio")
 endif()
 
@@ -324,7 +324,7 @@ list(APPEND install_data ${ADDON_INSTALL_DATA})
 add_library(compileinfo OBJECT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp)
 set_target_properties(compileinfo PROPERTIES FOLDER "Build Utilities")
 target_compile_options(compileinfo PRIVATE ${SYSTEM_DEFINES} ${ARCH_DEFINES})
-add_dependencies(compileinfo fmt::fmt)
+target_link_libraries(compileinfo PRIVATE ${APP_NAME_LC}::Fmt)
 
 if(NOT MSVC)
   target_compile_options(compileinfo PUBLIC ${CORE_COMPILE_OPTIONS})
@@ -409,6 +409,7 @@ core_add_optional_subdirs_from_filelist(${CMAKE_SOURCE_DIR}/cmake/treedata/optio
                                         ${CMAKE_SOURCE_DIR}/cmake/treedata/optional/${CORE_SYSTEM_NAME}/*.txt)
 
 target_link_libraries(lib${APP_NAME_LC} PUBLIC ${core_DEPENDS} ${SYSTEM_LDFLAGS} ${DEPLIBS} ${CMAKE_DL_LIBS} ${GLOBAL_TARGET_DEPS})
+core_target_link_libraries(lib${APP_NAME_LC})
 set_target_properties(lib${APP_NAME_LC} PROPERTIES PROJECT_LABEL "xbmc")
 source_group_by_folder(lib${APP_NAME_LC} RELATIVE ${CMAKE_SOURCE_DIR}/xbmc)
 if(WIN32)
@@ -433,7 +434,7 @@ else()
 endif()
 add_dependencies(${APP_NAME_LC} ${APP_NAME_LC}-libraries)
 
-whole_archive(_MAIN_LIBRARIES ${FSTRCMP_LIBRARY} ${core_DEPENDS})
+whole_archive(_MAIN_LIBRARIES ${core_DEPENDS})
 target_link_libraries(${APP_NAME_LC} ${_MAIN_LIBRARIES} lib${APP_NAME_LC} ${DEPLIBS})
 unset(_MAIN_LIBRARIES)
 
