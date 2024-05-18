@@ -131,9 +131,9 @@ bool CGUIDialogVideoManagerExtras::AddVideoExtra()
 
     if (newAsset.m_idFile != -1 && newAsset.m_assetTypeId != -1)
     {
-      // The video already is an asset of the movie
-      if (newAsset.m_idMedia == dbId &&
-          newAsset.m_mediaType == m_videoAsset->GetVideoInfoTag()->m_type)
+      // The video already is an extra of the movie
+      if (newAsset.m_idMedia == dbId && newAsset.m_mediaType == mediaType &&
+          newAsset.m_assetType == VideoAssetType::EXTRA)
       {
         unsigned int msgid{};
 
@@ -153,9 +153,9 @@ bool CGUIDialogVideoManagerExtras::AddVideoExtra()
         return false;
       }
 
-      // The video is an asset of another movie
+      // The video is an asset of another movie or different asset type of same movie
 
-      // The video is a version, ask for confirmation
+      // The video is a version, ask for confirmation of the asset type change
       if (newAsset.m_assetType == VideoAssetType::VERSION &&
           !CGUIDialogYesNo::ShowAndGetInput(CVariant{40015},
                                             StringUtils::Format(g_localizeStrings.Get(40036))))
@@ -171,6 +171,7 @@ bool CGUIDialogVideoManagerExtras::AddVideoExtra()
       else
         return false;
 
+      if (newAsset.m_idMedia != dbId && newAsset.m_mediaType == mediaType)
       {
         unsigned int msgid{};
 
