@@ -110,8 +110,9 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       endif()
       if(FMT_LIBRARY_DEBUG)
         set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                         IMPORTED_CONFIGURATIONS DEBUG
                                                                          IMPORTED_LOCATION_DEBUG "${FMT_LIBRARY_DEBUG}")
+        set_property(TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY
+                                                                              IMPORTED_CONFIGURATIONS DEBUG)
       endif()
       set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
                                                                        INTERFACE_INCLUDE_DIRECTORIES "${FMT_INCLUDE_DIR}")
