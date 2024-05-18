@@ -31,9 +31,9 @@ COutput::COutput(std::uint32_t globalName,
   {
     std::unique_lock<CCriticalSection> lock(m_geometryCriticalSection);
     m_position = {x, y};
-    // Some monitors report invalid (negative) values that would cause an exception
-    // with CSizeInt
-    if (physWidth < 0 || physHeight < 0)
+    // Some monitors report invalid (non-positive) values that would cause an exception
+    // with CSizeInt and/or lead to nonsensical DPI values.
+    if (physWidth <= 0 || physHeight <= 0)
       m_physicalSize = {};
     else
       m_physicalSize = {physWidth, physHeight};
