@@ -558,8 +558,8 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
       {
         m_disconLearning = false;
         m_disconAdjustTimeMs = (static_cast<double>(m_disconAdjustTimeMs) * 1.15) + 5.0;
-        if (m_disconAdjustTimeMs > 100) // sanity check
-          m_disconAdjustTimeMs = 100;
+        if (m_disconAdjustTimeMs > 80) // sanity check
+          m_disconAdjustTimeMs = 80;
 
         CLog::LogF(LOGINFO, "Changed max allowed Out-Of-Sync value to {} ms due self-learning",
                    m_disconAdjustTimeMs);
