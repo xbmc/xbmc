@@ -12,6 +12,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClient.h"
 #include "pvr/addons/PVRClients.h"
+#include "utils/log.h"
 
 using namespace PVR;
 
@@ -35,15 +36,32 @@ CPVRChannelGroupFromClient::CPVRChannelGroupFromClient(
 bool CPVRChannelGroupFromClient::UpdateFromClients(
     const std::vector<std::shared_ptr<CPVRClient>>& clients)
 {
-  const auto it = std::find_if(clients.cbegin(), clients.cend(), [this](const auto& client) {
-    return client->GetID() == GetClientID();
-  });
-  if (it == clients.cend())
-    return true; // this group is not provided by one of the clients to get the group members for
+  std::shared_ptr<CPVRClient> client;
+  if (clients.empty())
+  {
+    // Requested to update groups from all clients
+    client = CServiceBroker::GetPVRManager().GetClient(GetClientID());
+    if (!client)
+    {
+      CLog::LogF(LOGERROR, "Unable to obtain client for group {}, clientid={}", GroupName(),
+                 GetClientID());
+      return false;
+    }
+  }
+  else
+  {
+    const auto it =
+        std::find_if(clients.cbegin(), clients.cend(),
+                     [this](const auto& client) { return client->GetID() == GetClientID(); });
+    if (it == clients.cend())
+      return true; // this group is not provided by one of the clients to get the group members for
+
+    client = *it;
+  }
 
   // get the channel group members from the backends.
   std::vector<std::shared_ptr<CPVRChannelGroupMember>> groupMembers;
-  CServiceBroker::GetPVRManager().Clients()->GetChannelGroupMembers({*it}, this, groupMembers,
+  CServiceBroker::GetPVRManager().Clients()->GetChannelGroupMembers({client}, this, groupMembers,
                                                                     m_failedClients);
   return UpdateGroupEntries(groupMembers);
 }
