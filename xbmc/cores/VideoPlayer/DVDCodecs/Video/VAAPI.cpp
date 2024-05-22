@@ -57,6 +57,7 @@ using namespace std::chrono_literals;
 
 constexpr auto SETTING_VIDEOPLAYER_USEVAAPI = "videoplayer.usevaapi";
 constexpr auto SETTING_VIDEOPLAYER_USEVAAPIAV1 = "videoplayer.usevaapiav1";
+constexpr auto SETTING_VIDEOPLAYER_USEVAAPIAVC = "videoplayer.usevaapiavc";
 constexpr auto SETTING_VIDEOPLAYER_USEVAAPIHEVC = "videoplayer.usevaapihevc";
 constexpr auto SETTING_VIDEOPLAYER_USEVAAPIMPEG2 = "videoplayer.usevaapimpeg2";
 constexpr auto SETTING_VIDEOPLAYER_USEVAAPIMPEG4 = "videoplayer.usevaapimpeg4";
@@ -542,6 +543,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
       {AV_CODEC_ID_VP9, SETTING_VIDEOPLAYER_USEVAAPIVP9},
       {AV_CODEC_ID_HEVC, SETTING_VIDEOPLAYER_USEVAAPIHEVC},
       {AV_CODEC_ID_AV1, SETTING_VIDEOPLAYER_USEVAAPIAV1},
+      {AV_CODEC_ID_H264, SETTING_VIDEOPLAYER_USEVAAPIAVC},
   };
 
   auto entry = settings_map.find(avctx->codec_id);
@@ -1277,12 +1279,12 @@ void CDecoder::Register(IVaapiWinSystem *winSystem, bool deepColor)
   if (!settings)
     return;
 
-  constexpr std::array<const char*, 9> vaapiSettings = {
+  constexpr std::array<const char*, 10> vaapiSettings = {
       SETTING_VIDEOPLAYER_USEVAAPI,     SETTING_VIDEOPLAYER_USEVAAPIMPEG4,
       SETTING_VIDEOPLAYER_USEVAAPIVC1,  SETTING_VIDEOPLAYER_USEVAAPIMPEG2,
       SETTING_VIDEOPLAYER_USEVAAPIVP8,  SETTING_VIDEOPLAYER_USEVAAPIVP9,
       SETTING_VIDEOPLAYER_USEVAAPIHEVC, SETTING_VIDEOPLAYER_PREFERVAAPIRENDER,
-      SETTING_VIDEOPLAYER_USEVAAPIAV1};
+      SETTING_VIDEOPLAYER_USEVAAPIAV1,  SETTING_VIDEOPLAYER_USEVAAPIAVC};
 
   for (const auto vaapiSetting : vaapiSettings)
   {
