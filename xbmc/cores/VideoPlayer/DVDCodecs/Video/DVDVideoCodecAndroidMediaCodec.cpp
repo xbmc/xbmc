@@ -1092,13 +1092,6 @@ bool CDVDVideoCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
                                          packet.cryptoInfo->numSubSamples);
 
         cryptoInfo = new CJNIMediaCodecCryptoInfo();
-        if (CJNIBase::GetSDKVersion() < 25 &&
-            packet.cryptoInfo->mode == CJNIMediaCodec::CRYPTO_MODE_AES_CBC)
-        {
-          CLog::LogF(LOGERROR, "Device API does not support CBCS decryption");
-          return false;
-        }
-
         cryptoInfo->set(
             packet.cryptoInfo->numSubSamples, clearBytes, cipherBytes,
             std::vector<char>(std::begin(packet.cryptoInfo->kid), std::end(packet.cryptoInfo->kid)),
