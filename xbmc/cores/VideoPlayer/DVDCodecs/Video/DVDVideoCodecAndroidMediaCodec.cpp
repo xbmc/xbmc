@@ -202,13 +202,6 @@ void CMediaCodecVideoBuffer::UpdateTexImage()
     xbmc_jnienv()->ExceptionDescribe();
     xbmc_jnienv()->ExceptionClear();
   }
-
-  if (xbmc_jnienv()->ExceptionCheck())
-  {
-    CLog::Log(LOGERROR, "CMediaCodecVideoBuffer::UpdateTexImage getTimestamp:ExceptionCheck");
-    xbmc_jnienv()->ExceptionDescribe();
-    xbmc_jnienv()->ExceptionClear();
-  }
 }
 
 void CMediaCodecVideoBuffer::RenderUpdate(const CRect &DestRect, int64_t displayTime)
