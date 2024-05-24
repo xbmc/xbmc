@@ -15,7 +15,7 @@ Default font lacks support for all characters
       <row>1234567890</row>
       <row>\|{}ّ[]</row>
       <row>؛:«»ةآأإيئؤ</row>
-      <row>/<>؟ٰك</row>
+      <row>/&lt;&gt;؟ٰك</row>
     </keyboard>
     <keyboard modifiers="symbol,shift+symbol">
       <row>)!@#$%^&amp;*(</row>
