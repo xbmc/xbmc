@@ -17,7 +17,11 @@
 #include <vector>
 
 class CDateTime;
-class TiXmlElement;
+
+namespace tinyxml2
+{
+class XMLElement;
+} // namespace tinyxml2
 
 namespace ADDON
 {
@@ -38,7 +42,7 @@ class CAddonInfoBuilder
 public:
   static AddonInfoPtr Generate(const std::string& id, AddonType type);
   static AddonInfoPtr Generate(const std::string& addonPath, bool platformCheck = true);
-  static AddonInfoPtr Generate(const TiXmlElement* baseElement,
+  static AddonInfoPtr Generate(const tinyxml2::XMLElement* baseElement,
                                const RepositoryDirInfo& repo,
                                bool platformCheck = true);
 
@@ -52,18 +56,20 @@ public:
 
 private:
   static bool ParseXML(const AddonInfoPtr& addon,
-                       const TiXmlElement* element,
+                       const tinyxml2::XMLElement* element,
                        const std::string& addonPath);
   static bool ParseXML(const AddonInfoPtr& addon,
-                       const TiXmlElement* element,
+                       const tinyxml2::XMLElement* element,
                        const std::string& addonPath,
                        const RepositoryDirInfo& repo);
   static bool ParseXMLTypes(CAddonType& addonType,
                             const AddonInfoPtr& info,
-                            const TiXmlElement* child);
-  static bool ParseXMLExtension(CAddonExtensions& addonExt, const TiXmlElement* element);
-  static bool GetTextList(const TiXmlElement* element, const std::string& tag, std::unordered_map<std::string, std::string>& translatedValues);
-  static const char* GetPlatformLibraryName(const TiXmlElement* element);
+                            const tinyxml2::XMLElement* child);
+  static bool ParseXMLExtension(CAddonExtensions& addonExt, const tinyxml2::XMLElement* element);
+  static bool GetTextList(const tinyxml2::XMLElement* element,
+                          const std::string& tag,
+                          std::unordered_map<std::string, std::string>& translatedValues);
+  static const char* GetPlatformLibraryName(const tinyxml2::XMLElement* element);
   static bool PlatformSupportsAddon(const AddonInfoPtr& addon);
 };
 

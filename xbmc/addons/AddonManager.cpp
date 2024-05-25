@@ -32,6 +32,7 @@
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
@@ -1359,14 +1360,15 @@ bool CAddonMgr::AddonsFromRepoXML(const RepositoryDirInfo& repo,
                                   const std::string& xml,
                                   std::vector<AddonInfoPtr>& addons)
 {
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   if (!doc.Parse(xml))
   {
     CLog::Log(LOGERROR, "CAddonMgr::{}: Failed to parse addons.xml", __func__);
     return false;
   }
 
-  if (doc.RootElement() == nullptr || doc.RootElement()->ValueStr() != "addons")
+  if (doc.RootElement() == nullptr ||
+      !StringUtils::EqualsNoCase(doc.RootElement()->Value(), "addons"))
   {
     CLog::Log(LOGERROR, "CAddonMgr::{}: Failed to parse addons.xml. Malformed", __func__);
     return false;
