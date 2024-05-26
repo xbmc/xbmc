@@ -10,7 +10,6 @@
 
 #include "AEPackIEC61937.h"
 #include "AEStreamInfo.h"
-#include "PackerMAT.h"
 #include "utils/log.h"
 
 #include <array>
@@ -27,9 +26,6 @@ constexpr auto EAC3_MAX_BURST_PAYLOAD_SIZE = 24576 - BURST_HEADER_SIZE;
 CAEBitstreamPacker::CAEBitstreamPacker(const CAEStreamInfo& info)
 {
   Reset();
-
-  if (info.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
-    m_packerMAT = std::make_unique<CPackerMAT>();
 }
 
 CAEBitstreamPacker::~CAEBitstreamPacker()
@@ -42,8 +38,8 @@ void CAEBitstreamPacker::Pack(CAEStreamInfo &info, uint8_t* data, int size)
   switch (info.m_type)
   {
     case CAEStreamInfo::STREAM_TYPE_TRUEHD:
-      m_packerMAT->PackTrueHD(data, size);
-      GetDataTrueHD();
+      m_dataSize = CAEPackIEC61937::PackTrueHD(data + IEC61937_DATA_OFFSET,
+                                               size - IEC61937_DATA_OFFSET, m_packedBuffer);
       break;
 
     case CAEStreamInfo::STREAM_TYPE_DTSHD:
@@ -129,29 +125,6 @@ void CAEBitstreamPacker::Reset()
   m_dataSize = 0;
   m_pauseDuration = 0;
   m_packedBuffer[0] = 0;
-}
-
-void CAEBitstreamPacker::GetDataTrueHD()
-{
-  // limits a bit MAT frames output speed as this is called every 1/1200 seconds and
-  // anyway only is possible obtain a MAT frame every 12 audio units (TrueHD has 24 units
-  // but are send to packer every 12 to reduce latency). As MAT packer can generate more than
-  // one MAT frame at time (but in average only one every 20 ms) this delays the output
-  // a little when thera are more that one frame at queue but still allows the queue to empty.
-  if (m_dataCountTrueHD > 0)
-  {
-    m_dataCountTrueHD--;
-    return;
-  }
-
-  if (m_packerMAT->HaveOutput())
-  {
-    const auto& mat = m_packerMAT->GetOutputFrame();
-
-    m_dataSize = CAEPackIEC61937::PackTrueHD(mat.data() + IEC61937_DATA_OFFSET,
-                                             mat.size() - IEC61937_DATA_OFFSET, m_packedBuffer);
-    m_dataCountTrueHD = 3;
-  }
 }
 
 void CAEBitstreamPacker::PackDTSHD(CAEStreamInfo &info, uint8_t* data, int size)

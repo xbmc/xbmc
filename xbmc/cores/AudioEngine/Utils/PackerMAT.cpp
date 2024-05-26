@@ -181,7 +181,8 @@ bool CPackerMAT::PackTrueHD(const uint8_t* data, int size)
   m_state.prevMatFramesize = m_state.matFramesize;
   m_state.matFramesize = 0;
 
-  return true;
+  // return true if have MAT packet
+  return !m_outputQueue.empty();
 }
 
 std::vector<uint8_t> CPackerMAT::GetOutputFrame()
@@ -237,17 +238,6 @@ void CPackerMAT::WritePadding()
 {
   if (m_state.padding == 0)
     return;
-
-  if (!m_logPadding && m_state.padding > MAT_BUFFER_SIZE / 2)
-  {
-    m_logPadding = true;
-    CLog::Log(LOGWARNING,
-              "CPackerMAT::WritePadding: a large padding block of {} bytes is required due to "
-              "unusual timestamps",
-              m_state.padding);
-  }
-  else if (m_logPadding && m_state.padding < MAT_BUFFER_SIZE / 2)
-    m_logPadding = false;
 
   // for padding not writes any data (nullptr) as buffer is already zeroed
   // only counts/skip bytes
