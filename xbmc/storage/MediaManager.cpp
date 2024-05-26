@@ -44,6 +44,7 @@
 #include "utils/JobManager.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
@@ -789,10 +790,10 @@ bool CMediaManager::playStubFile(const CFileItem& item)
   strLine1 = g_localizeStrings.Get(435).c_str();
   strLine2 = g_localizeStrings.Get(436).c_str();
 
-  CXBMCTinyXML discStubXML;
+  CXBMCTinyXML2 discStubXML;
   if (discStubXML.LoadFile(item.GetPath()))
   {
-    TiXmlElement* pRootElement = discStubXML.RootElement();
+    auto* pRootElement = discStubXML.RootElement();
     if (!pRootElement || StringUtils::CompareNoCase(pRootElement->Value(), "discstub") != 0)
       CLog::Log(LOGINFO, "No <discstub> node found for {}. Using default info dialog message",
                 item.GetPath());
