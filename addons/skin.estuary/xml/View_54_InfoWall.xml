@@ -163,19 +163,20 @@
 				<visible>!ListItem.IsParentFolder</visible>
 			</control>
 			<control type="label">
-				<left>31</left>
+				<left>30</left>
 				<top>178</top>
-				<width>260</width>
+				<width>220</width>
 				<label>$PARAM[thumb_label]</label>
 				<font>font20_title</font>
 				<shadowcolor>text_shadow</shadowcolor>
-				<align>right</align>
+				<align>left</align>
 			</control>
-			<control type="image">
-				<left>20</left>
+			<control type="image">		
+				<left>260</left>
 				<top>175</top>
 				<width>32</width>
 				<height>32</height>
+				<align>right</align>
 				<texture>$VAR[ItemStatusIconVar]</texture>
 			</control>
 			<control type="textbox">
