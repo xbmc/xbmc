@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -29,6 +29,9 @@ std::unique_ptr<CTexture> CTexture::CreateTexture(unsigned int width,
 CGLESTexture::CGLESTexture(unsigned int width, unsigned int height, XB_FMT format)
   : CTexture(width, height, format)
 {
+  unsigned int major, minor;
+  CServiceBroker::GetRenderSystem()->GetRenderVersion(major, minor);
+  m_isGLESVersion30orNewer = major >= 3;
 }
 
 CGLESTexture::~CGLESTexture()
@@ -93,20 +96,33 @@ void CGLESTexture::LoadToGPU()
 #endif
 
   unsigned int maxSize = CServiceBroker::GetRenderSystem()->GetMaxTextureSize();
+
   if (m_textureHeight > maxSize)
   {
-    CLog::Log(LOGERROR,
-              "GL: Image height {} too big to fit into single texture unit, truncating to {}",
-              m_textureHeight, maxSize);
+    CLog::LogF(LOGERROR,
+               "Image height {} too big to fit into single texture unit, truncating to {}",
+               m_textureHeight, maxSize);
     m_textureHeight = maxSize;
   }
+
   if (m_textureWidth > maxSize)
   {
-    CLog::Log(LOGERROR,
-              "GL: Image width {} too big to fit into single texture unit, truncating to {}",
-              m_textureWidth, maxSize);
+#if defined(GL_PACK_ROW_LENGTH)
+    if (m_isGLESVersion30orNewer)
+    {
+      CLog::LogF(LOGERROR,
+                 "Image width {} too big to fit into single texture unit, truncating to {}",
+                 m_textureWidth, maxSize);
 
-    m_textureWidth = maxSize;
+      glPixelStorei(GL_UNPACK_ROW_LENGTH, m_textureWidth);
+
+      m_textureWidth = maxSize;
+    }
+    else
+#endif
+    {
+      CLog::LogF(LOGERROR, "Image width {} too big, upload to GPU will fail", m_textureWidth);
+    }
   }
 
   // All incoming textures are BGRA, which GLES does not necessarily support.
@@ -151,6 +167,7 @@ void CGLESTexture::LoadToGPU()
       }
       break;
   }
+
   glTexImage2D(GL_TEXTURE_2D, 0, internalformat, m_textureWidth, m_textureHeight, 0, pixelformat,
                GL_UNSIGNED_BYTE, m_pixels);
 
@@ -158,6 +175,10 @@ void CGLESTexture::LoadToGPU()
   {
     glGenerateMipmap(GL_TEXTURE_2D);
   }
+
+#if defined(GL_UNPACK_ROW_LENGTH)
+  glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+#endif
 
   VerifyGLState();
 

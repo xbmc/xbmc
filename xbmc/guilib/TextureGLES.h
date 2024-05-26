@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -12,9 +12,6 @@
 
 #include "system_gl.h"
 
-/************************************************************************/
-/*    CGLESTexture                                                       */
-/************************************************************************/
 class CGLESTexture : public CTexture
 {
 public:
@@ -28,4 +25,5 @@ public:
 
 protected:
   GLuint m_texture = 0;
+  bool m_isGLESVersion30orNewer{false};
 };
