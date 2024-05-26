@@ -292,6 +292,7 @@ namespace addon
 ///   PVR_ERROR GetChannelsAmount(int& amount) override;
 ///   PVR_ERROR GetChannels(bool radio, std::vector<kodi::addon::PVRChannel>& channels) override;
 ///   PVR_ERROR GetChannelStreamProperties(const kodi::addon::PVRChannel&	channel,
+///                                        PVR_SOURCE source,
 ///                                        std::vector<kodi::addon::PVRStreamProperty>& properties) override;
 ///
 /// private:
@@ -351,6 +352,7 @@ namespace addon
 /// }
 ///
 /// PVR_ERROR CMyPVRClient::GetChannelStreamProperties(const kodi::addon::PVRChannel& channel,
+///                                                    PVR_SOURE source,
 ///                                                    std::vector<kodi::addon::PVRStreamProperty>& properties)
 /// {
 ///   if (channel.GetUniqueId() == 123)
@@ -968,6 +970,7 @@ public:
   /// @brief Get the stream properties for a channel from the backend.
   ///
   /// @param[in] channel The channel to get the stream properties for.
+  /// @param[in] source PVR_SOURCE_EPG_AS_LIVE if this call resulted from PVR_STREAM_PROPERTY_EPGPLAYBACKASLIVE being set from GetEPGTagStreamProperties(), DEFAULT otherwise
   /// @param[out] properties the properties required to play the stream.
   /// @return @ref PVR_ERROR_NO_ERROR if the stream is available.
   ///
@@ -988,6 +991,7 @@ public:
   /// ~~~~~~~~~~~~~{.cpp}
   /// ...
   /// PVR_ERROR CMyPVRInstance::GetChannelStreamProperties(const kodi::addon::PVRChannel& channel,
+  ///                                                      PVR_SOURCE source,
   ///                                                      std::vector<kodi::addon::PVRStreamProperty>& properties)
   /// {
   ///   ...
@@ -1002,6 +1006,7 @@ public:
   ///
   virtual PVR_ERROR GetChannelStreamProperties(
       const kodi::addon::PVRChannel& channel,
+      PVR_SOURCE source,
       std::vector<kodi::addon::PVRStreamProperty>& properties)
   {
     return PVR_ERROR_NOT_IMPLEMENTED;
@@ -2920,13 +2925,14 @@ private:
 
   inline static PVR_ERROR ADDON_GetChannelStreamProperties(const AddonInstance_PVR* instance,
                                                            const PVR_CHANNEL* channel,
+                                                           PVR_SOURCE sourec,
                                                            PVR_NAMED_VALUE* properties,
                                                            unsigned int* propertiesCount)
   {
     *propertiesCount = 0;
     std::vector<PVRStreamProperty> propertiesList;
     PVR_ERROR error = static_cast<CInstancePVRClient*>(instance->toAddon->addonInstance)
-                          ->GetChannelStreamProperties(channel, propertiesList);
+                          ->GetChannelStreamProperties(channel, source, propertiesList);
     if (error == PVR_ERROR_NO_ERROR)
     {
       for (const auto& property : propertiesList)

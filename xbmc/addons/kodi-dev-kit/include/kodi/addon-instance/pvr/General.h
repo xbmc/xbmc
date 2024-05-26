@@ -435,6 +435,7 @@ private:
 /// ...
 ///
 /// PVR_ERROR CMyPVRInstance::GetChannelStreamProperties(const kodi::addon::PVRChannel& channel,
+///                                                      PVR_SOURCE source,
 ///                                                      std::vector<kodi::addon::PVRStreamProperty>& properties)
 /// {
 ///   ...
@@ -451,6 +452,7 @@ private:
 /// ...
 ///
 /// PVR_ERROR CMyPVRInstance::GetChannelStreamProperties(const kodi::addon::PVRChannel& channel,
+///                                                      PVR_SOURCE source,
 ///                                                      std::vector<kodi::addon::PVRStreamProperty>& properties)
 /// {
 ///   ...

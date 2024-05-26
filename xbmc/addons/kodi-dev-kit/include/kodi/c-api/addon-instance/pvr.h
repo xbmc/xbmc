@@ -164,6 +164,7 @@ extern "C"
     enum PVR_ERROR(__cdecl* GetChannels)(const struct AddonInstance_PVR*, PVR_HANDLE, bool);
     enum PVR_ERROR(__cdecl* GetChannelStreamProperties)(const struct AddonInstance_PVR*,
                                                         const struct PVR_CHANNEL*,
+                                                        enum PVR_SOURCE,
                                                         struct PVR_NAMED_VALUE*,
                                                         unsigned int*);
     enum PVR_ERROR(__cdecl* GetSignalStatus)(const struct AddonInstance_PVR*,

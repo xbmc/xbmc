@@ -341,14 +341,15 @@ bool CPVRPlaybackState::OnPlaybackEnded(const CFileItem& item)
 
   std::unique_ptr<CFileItem> nextToPlay{GetNextAutoplayItem(item)};
   if (nextToPlay)
-    StartPlayback(nextToPlay.release());
+    StartPlayback(nextToPlay.release(), ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM,
+                  PVR_SOURCE::DEFAULT);
 
   return OnPlaybackStopped(item);
 }
 
-void CPVRPlaybackState::StartPlayback(
-    CFileItem* item,
-    ContentUtils::PlayMode mode /* = ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM */) const
+void CPVRPlaybackState::StartPlayback(CFileItem* item,
+                                      ContentUtils::PlayMode mode,
+                                      PVR_SOURCE source) const
 {
   // Obtain dynamic playback url and properties from the respective pvr client
   const std::shared_ptr<const CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(*item);
@@ -358,7 +359,7 @@ void CPVRPlaybackState::StartPlayback(
 
     if (item->IsPVRChannel())
     {
-      client->GetChannelStreamProperties(item->GetPVRChannelInfoTag(), props);
+      client->GetChannelStreamProperties(item->GetPVRChannelInfoTag(), source, props);
     }
     else if (item->IsPVRRecording())
     {
