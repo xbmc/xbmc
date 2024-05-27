@@ -1,4 +1,5 @@
-set(SOURCES TestPlayListB4S.cpp
+set(SOURCES TestPlayListASX.cpp
+            TestPlayListB4S.cpp
             TestPlayListFactory.cpp
             TestPlayListWPL.cpp
             TestPlayListXML.cpp
