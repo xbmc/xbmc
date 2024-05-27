@@ -56,7 +56,7 @@ bool CPlayListWPL::LoadData(std::istream& stream)
   stream >> xmlDoc;
   if (xmlDoc.Error())
   {
-    CLog::Log(LOGERROR, "Unable to parse B4S info Error: {}", xmlDoc.ErrorDesc());
+    CLog::Log(LOGERROR, "Unable to parse WPL info Error: {}", xmlDoc.ErrorDesc());
     return false;
   }
 

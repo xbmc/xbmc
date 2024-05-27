@@ -1,0 +1,18 @@
+<?wpl version="1.0"?>
+<smil>
+    <head>
+        <meta name="Generator" content="Microsoft Windows Media Player -- 11.0.5721.5145"/>
+        <meta name="AverageRating" content="33"/>
+        <meta name="TotalDuration" content="1102"/>
+        <meta name="ItemCount" content="3"/>
+        <author/>
+        <title>Title Organ Works</title>
+    </head>
+    <body>
+        <seq>
+            <media src="\\server\vol\music\Classical\Composer\OrganWorks\cd03\track01.mp3"/>
+            <media src="\\server\vol\music\Classical\Composer\OrganWorks\cd03\track02.mp3"/>
+            <media src="SR15.mp3" tid="{35B39D45-94D8-40E1-8FC2-9F6714191E47}"/>
+        </seq>
+    </body>
+</smil>
