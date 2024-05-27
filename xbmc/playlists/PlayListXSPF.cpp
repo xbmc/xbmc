@@ -13,7 +13,7 @@
 #include "URL.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/log.h"
 
 namespace
@@ -25,7 +25,7 @@ constexpr char const* TITLE_TAGNAME = "title";
 constexpr char const* TRACK_TAGNAME = "track";
 constexpr char const* TRACKLIST_TAGNAME = "trackList";
 
-std::string GetXMLText(const TiXmlElement* pXmlElement)
+std::string GetXMLText(const tinyxml2::XMLElement* pXmlElement)
 {
   std::string result;
   if (pXmlElement)
@@ -48,16 +48,16 @@ CPlayListXSPF::~CPlayListXSPF(void) = default;
 
 bool CPlayListXSPF::Load(const std::string& strFileName)
 {
-  CXBMCTinyXML xmlDoc;
+  CXBMCTinyXML2 xmlDoc;
 
   if (!xmlDoc.LoadFile(strFileName))
   {
-    CLog::Log(LOGERROR, "Error parsing XML file {} ({}, {}): {}", strFileName, xmlDoc.ErrorRow(),
-              xmlDoc.ErrorCol(), xmlDoc.ErrorDesc());
+    CLog::Log(LOGERROR, "Error parsing XML file {} ({}): {}", strFileName, xmlDoc.ErrorLineNum(),
+              xmlDoc.ErrorStr());
     return false;
   }
 
-  TiXmlElement* pPlaylist = xmlDoc.FirstChildElement(PLAYLIST_TAGNAME);
+  auto* pPlaylist = xmlDoc.FirstChildElement(PLAYLIST_TAGNAME);
   if (!pPlaylist)
   {
     CLog::Log(LOGERROR, "Error parsing XML file {}: missing root element {}", strFileName,
@@ -65,7 +65,7 @@ bool CPlayListXSPF::Load(const std::string& strFileName)
     return false;
   }
 
-  TiXmlElement* pTracklist = pPlaylist->FirstChildElement(TRACKLIST_TAGNAME);
+  auto* pTracklist = pPlaylist->FirstChildElement(TRACKLIST_TAGNAME);
   if (!pTracklist)
   {
     CLog::Log(LOGERROR, "Error parsing XML file {}: missing element {}", strFileName,
@@ -78,7 +78,7 @@ bool CPlayListXSPF::Load(const std::string& strFileName)
 
   m_strPlayListName = GetXMLText(pPlaylist->FirstChildElement(TITLE_TAGNAME));
 
-  TiXmlElement* pCurTrack = pTracklist->FirstChildElement(TRACK_TAGNAME);
+  auto* pCurTrack = pTracklist->FirstChildElement(TRACK_TAGNAME);
   while (pCurTrack)
   {
     std::string location = GetXMLText(pCurTrack->FirstChildElement(LOCATION_TAGNAME));
