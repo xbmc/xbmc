@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<streams>
+  <!-- Stream definition. To have multiple streams, just add another <stream>...</stream> set.  !-->
+  <stream>
+    <!-- Stream URL !-->
+    <url>mms://stream02.rambler.ru/eurosport</url>
+    <!-- Stream name - used for display !-->
+    <name>Евроспорт</name>
+    <!-- Stream category - currently only LIVETV is supported !-->
+    <category>LIVETV</category>
+    <!-- Stream language code !-->
+    <lang>RU</lang>
+    <!-- Stream channel number - will be used to select stream by channel number !-->
+    <channel>1</channel>
+    <!-- Stream is password-protected !-->
+    <lockpassword>123</lockpassword>
+  </stream>
+
+  <stream>
+    <url>mms://video.rfn.ru/vesti_24</url>
+    <category>LIVETV</category>
+    <channel>2</channel>
+  </stream>
+
+  <stream>
+    <url>mms://video.rfn.ru/stream3</url>
+    <name>Test Name</name>
+    <category>Sports</category>
+    <channel>6</channel>
+  </stream>
+
+</streams>
