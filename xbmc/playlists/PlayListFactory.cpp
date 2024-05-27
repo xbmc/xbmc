@@ -14,6 +14,7 @@
 #include "playlists/PlayListB4S.h"
 #include "playlists/PlayListM3U.h"
 #include "playlists/PlayListPLS.h"
+#include "playlists/PlayListRAM.h"
 #include "playlists/PlayListURL.h"
 #include "playlists/PlayListWPL.h"
 #include "playlists/PlayListXML.h"

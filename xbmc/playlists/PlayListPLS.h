@@ -24,10 +24,4 @@ public:
   void Save(const std::string& strFileName) const override;
   virtual bool Resize(std::vector<int>::size_type newSize);
 };
-
-class CPlayListRAM : public CPlayList
-{
-public:
-  bool LoadData(std::istream &stream) override;
-};
 }

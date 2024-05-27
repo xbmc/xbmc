@@ -4,6 +4,7 @@ set(SOURCES PlayList.cpp
             PlayListFactory.cpp
             PlayListM3U.cpp
             PlayListPLS.cpp
+            PlayListRAM.cpp
             PlayListURL.cpp
             PlayListWPL.cpp
             PlayListXML.cpp
@@ -17,6 +18,7 @@ set(HEADERS PlayList.h
             PlayListFactory.h
             PlayListM3U.h
             PlayListPLS.h
+            PlayListRAM.h
             PlayListTypes.h
             PlayListURL.h
             PlayListWPL.h
