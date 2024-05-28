@@ -10,7 +10,7 @@
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonInfoBuilder.h"
 #include "addons/addoninfo/AddonType.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 
 #include <set>
 
@@ -73,7 +73,7 @@ TEST_F(TestAddonInfoBuilder, TestGenerate_Id_Type)
 
 TEST_F(TestAddonInfoBuilder, TestGenerate_Repo)
 {
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   EXPECT_TRUE(doc.Parse(addonXML));
   ASSERT_NE(nullptr, doc.RootElement());
 

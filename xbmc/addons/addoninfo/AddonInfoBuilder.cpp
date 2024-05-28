@@ -20,7 +20,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -208,14 +208,12 @@ AddonInfoPtr CAddonInfoBuilder::Generate(const std::string& addonPath, bool plat
 {
   auto addonRealPath = CSpecialProtocol::TranslatePath(addonPath);
 
-  CXBMCTinyXML xmlDoc;
+  CXBMCTinyXML2 xmlDoc;
   if (!xmlDoc.LoadFile(URIUtils::AddFileToFolder(addonRealPath, "addon.xml")))
   {
-    CLog::Log(LOGERROR, "CAddonInfoBuilder::{}: Unable to load '{}', Line {}\n{}",
-                                               __FUNCTION__,
-                                               URIUtils::AddFileToFolder(addonRealPath, "addon.xml"),
-                                               xmlDoc.ErrorRow(),
-                                               xmlDoc.ErrorDesc());
+    CLog::Log(LOGERROR, "CAddonInfoBuilder::{}: Unable to load '{}', Line {}\n{}", __FUNCTION__,
+              URIUtils::AddFileToFolder(addonRealPath, "addon.xml"), xmlDoc.ErrorLineNum(),
+              xmlDoc.ErrorStr());
     return nullptr;
   }
 
@@ -229,7 +227,7 @@ AddonInfoPtr CAddonInfoBuilder::Generate(const std::string& addonPath, bool plat
   return nullptr;
 }
 
-AddonInfoPtr CAddonInfoBuilder::Generate(const TiXmlElement* baseElement,
+AddonInfoPtr CAddonInfoBuilder::Generate(const tinyxml2::XMLElement* baseElement,
                                          const RepositoryDirInfo& repo,
                                          bool platformCheck /*= true*/)
 {
@@ -256,14 +254,14 @@ void CAddonInfoBuilder::SetInstallData(const AddonInfoPtr& addon, const CDateTim
 }
 
 bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon,
-                                 const TiXmlElement* element,
+                                 const tinyxml2::XMLElement* element,
                                  const std::string& addonPath)
 {
   return ParseXML(addon, element, addonPath, {});
 }
 
 bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon,
-                                 const TiXmlElement* element,
+                                 const tinyxml2::XMLElement* element,
                                  const std::string& addonPath,
                                  const RepositoryDirInfo& repo)
 {
@@ -324,7 +322,7 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon,
    * Parse addon.xml:
    * <backwards-compatibility abi="???"/>
    */
-  const TiXmlElement* backwards = element->FirstChildElement("backwards-compatibility");
+  const auto* backwards = element->FirstChildElement("backwards-compatibility");
   if (backwards)
   {
     const std::string minVersion = StringUtils::CreateFromCString(backwards->Attribute("abi"));
@@ -337,10 +335,10 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon,
    *   <import addon="???" minversion="???" version="???" optional="???"/>
    * </requires>
    */
-  const TiXmlElement* _requires = element->FirstChildElement("requires");
+  const auto* _requires = element->FirstChildElement("requires");
   if (_requires)
   {
-    for (const TiXmlElement* child = _requires->FirstChildElement("import"); child != nullptr;
+    for (const auto* child = _requires->FirstChildElement("import"); child != nullptr;
          child = child->NextSiblingElement("import"))
     {
       if (child->Attribute("addon"))
@@ -379,7 +377,8 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon,
    *   ...
    * </extension>
    */
-  for (const TiXmlElement* child = element->FirstChildElement("extension"); child != nullptr; child = child->NextSiblingElement("extension"))
+  for (const auto* child = element->FirstChildElement("extension"); child != nullptr;
+       child = child->NextSiblingElement("extension"))
   {
     const std::string point = StringUtils::CreateFromCString(child->Attribute("point"));
 
@@ -415,10 +414,11 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon,
       /*
        * Parse addon.xml "<assets>...</assets>"
        */
-      const TiXmlElement* element = child->FirstChildElement("assets");
+      const auto* element = child->FirstChildElement("assets");
       if (element)
       {
-        for (const TiXmlElement* elementsAssets = element->FirstChildElement(); elementsAssets != nullptr; elementsAssets = elementsAssets->NextSiblingElement())
+        for (const auto* elementsAssets = element->FirstChildElement(); elementsAssets != nullptr;
+             elementsAssets = elementsAssets->NextSiblingElement())
         {
           std::string value = elementsAssets->Value();
           if (value == "icon")
@@ -621,7 +621,7 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon,
 
 bool CAddonInfoBuilder::ParseXMLTypes(CAddonType& addonType,
                                       const AddonInfoPtr& info,
-                                      const TiXmlElement* child)
+                                      const tinyxml2::XMLElement* child)
 {
   if (child)
   {
@@ -667,12 +667,13 @@ bool CAddonInfoBuilder::ParseXMLTypes(CAddonType& addonType,
   return false;
 }
 
-bool CAddonInfoBuilder::ParseXMLExtension(CAddonExtensions& addonExt, const TiXmlElement* element)
+bool CAddonInfoBuilder::ParseXMLExtension(CAddonExtensions& addonExt,
+                                          const tinyxml2::XMLElement* element)
 {
   addonExt.m_point = StringUtils::CreateFromCString(element->Attribute("point"));
 
   EXT_VALUE extension;
-  const TiXmlAttribute* attribute = element->FirstAttribute();
+  const auto* attribute = element->FirstAttribute();
   while (attribute)
   {
     std::string name = attribute->Name();
@@ -690,14 +691,14 @@ bool CAddonInfoBuilder::ParseXMLExtension(CAddonExtensions& addonExt, const TiXm
   if (!extension.empty())
     addonExt.m_values.emplace_back(std::pair<std::string, EXT_VALUE>("", std::move(extension)));
 
-  const TiXmlElement* childElement = element->FirstChildElement();
+  const auto* childElement = element->FirstChildElement();
   while (childElement)
   {
     const std::string id = StringUtils::CreateFromCString(childElement->Value());
     if (!id.empty())
     {
-      EXT_VALUE extension;
-      const TiXmlAttribute* attribute = childElement->FirstAttribute();
+      EXT_VALUE childExtension;
+      const auto* attribute = childElement->FirstAttribute();
       while (attribute)
       {
         std::string name = attribute->Name();
@@ -707,7 +708,7 @@ bool CAddonInfoBuilder::ParseXMLExtension(CAddonExtensions& addonExt, const TiXm
           if (!value.empty())
           {
             name = id + "@" + name;
-            extension.emplace_back(std::make_pair(name, SExtValue(value)));
+            childExtension.emplace_back(std::make_pair(name, SExtValue(value)));
           }
         }
         attribute = attribute->Next();
@@ -717,15 +718,15 @@ bool CAddonInfoBuilder::ParseXMLExtension(CAddonExtensions& addonExt, const TiXm
 
       if (!childElementText.empty())
       {
-        extension.emplace_back(std::make_pair(id, SExtValue(childElementText)));
+        childExtension.emplace_back(std::make_pair(id, SExtValue(childElementText)));
       }
 
-      if (!extension.empty())
-        addonExt.m_values.emplace_back(std::make_pair(id, std::move(extension)));
+      if (!childExtension.empty())
+        addonExt.m_values.emplace_back(std::make_pair(id, std::move(childExtension)));
 
       if (childElementText.empty())
       {
-        const TiXmlElement* childSubElement = childElement->FirstChildElement();
+        const tinyxml2::XMLElement* childSubElement = childElement->FirstChildElement();
         if (childSubElement)
         {
           CAddonExtensions subElement;
@@ -740,14 +741,17 @@ bool CAddonInfoBuilder::ParseXMLExtension(CAddonExtensions& addonExt, const TiXm
   return true;
 }
 
-bool CAddonInfoBuilder::GetTextList(const TiXmlElement* element, const std::string& tag, std::unordered_map<std::string, std::string>& translatedValues)
+bool CAddonInfoBuilder::GetTextList(const tinyxml2::XMLElement* element,
+                                    const std::string& tag,
+                                    std::unordered_map<std::string, std::string>& translatedValues)
 {
   if (!element)
     return false;
 
   translatedValues.clear();
 
-  for (const TiXmlElement* child = element->FirstChildElement(tag); child != nullptr; child = child->NextSiblingElement(tag))
+  for (const auto* child = element->FirstChildElement(tag.c_str()); child != nullptr;
+       child = child->NextSiblingElement(tag.c_str()))
   {
     const char* lang = child->Attribute("lang");
     const char* text = child->GetText();
@@ -766,7 +770,7 @@ bool CAddonInfoBuilder::GetTextList(const TiXmlElement* element, const std::stri
   return !translatedValues.empty();
 }
 
-const char* CAddonInfoBuilder::GetPlatformLibraryName(const TiXmlElement* element)
+const char* CAddonInfoBuilder::GetPlatformLibraryName(const tinyxml2::XMLElement* element)
 {
   const char* libraryName;
 #if defined(TARGET_ANDROID)
