@@ -43,7 +43,7 @@
 #include "utils/FileUtils.h"
 #include "utils/JobManager.h"
 #include "utils/StringUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
@@ -88,27 +88,27 @@ bool CMediaManager::LoadSources()
   m_locations.clear();
 
   // load xml file...
-  CXBMCTinyXML xmlDoc;
+  CXBMCTinyXML2 xmlDoc;
   if ( !xmlDoc.LoadFile( MEDIA_SOURCES_XML ) )
     return false;
 
-  TiXmlElement* pRootElement = xmlDoc.RootElement();
+  auto* pRootElement = xmlDoc.RootElement();
   if (!pRootElement || StringUtils::CompareNoCase(pRootElement->Value(), "mediasources") != 0)
   {
-    CLog::Log(LOGERROR, "Error loading {}, Line {} ({})", MEDIA_SOURCES_XML, xmlDoc.ErrorRow(),
-              xmlDoc.ErrorDesc());
+    CLog::Log(LOGERROR, "Error loading {}, Line {} ({})", MEDIA_SOURCES_XML, xmlDoc.ErrorLineNum(),
+              xmlDoc.ErrorStr());
     return false;
   }
 
   // load the <network> block
-  TiXmlNode *pNetwork = pRootElement->FirstChild("network");
+  auto* pNetwork = pRootElement->FirstChildElement("network");
   if (pNetwork)
   {
-    TiXmlElement *pLocation = pNetwork->FirstChildElement("location");
+    auto* pLocation = pNetwork->FirstChildElement("location");
     while (pLocation)
     {
       CNetworkLocation location;
-      pLocation->Attribute("id", &location.id);
+      location.id = pLocation->IntAttribute("id");
       if (pLocation->FirstChild())
       {
         location.path = pLocation->FirstChild()->Value();
@@ -123,25 +123,27 @@ bool CMediaManager::LoadSources()
 
 bool CMediaManager::SaveSources()
 {
-  CXBMCTinyXML xmlDoc;
-  TiXmlElement xmlRootElement("mediasources");
-  TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
-  if (!pRoot) return false;
+  CXBMCTinyXML2 doc;
+  auto* xmlRootElement = doc.NewElement("mediasources");
+  auto* rootNode = doc.InsertFirstChild(xmlRootElement);
 
-  TiXmlElement networkNode("network");
-  TiXmlNode *pNetworkNode = pRoot->InsertEndChild(networkNode);
-  if (pNetworkNode)
+  if (!rootNode)
+    return false;
+
+  auto* networkElement = doc.NewElement("network");
+  auto* networkNode = rootNode->InsertEndChild(networkElement);
+  if (networkNode)
   {
     for (std::vector<CNetworkLocation>::iterator it = m_locations.begin(); it != m_locations.end(); ++it)
     {
-      TiXmlElement locationNode("location");
-      locationNode.SetAttribute("id", (*it).id);
-      TiXmlText value((*it).path);
-      locationNode.InsertEndChild(value);
-      pNetworkNode->InsertEndChild(locationNode);
+      auto* locationNode = doc.NewElement("location");
+      locationNode->SetAttribute("id", (*it).id);
+      auto* value = doc.NewText((*it).path.c_str());
+      locationNode->InsertEndChild(value);
+      networkNode->InsertEndChild(locationNode);
     }
   }
-  return xmlDoc.SaveFile(MEDIA_SOURCES_XML);
+  return doc.SaveFile(MEDIA_SOURCES_XML);
 }
 
 void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
@@ -789,10 +791,10 @@ bool CMediaManager::playStubFile(const CFileItem& item)
   strLine1 = g_localizeStrings.Get(435).c_str();
   strLine2 = g_localizeStrings.Get(436).c_str();
 
-  CXBMCTinyXML discStubXML;
+  CXBMCTinyXML2 discStubXML;
   if (discStubXML.LoadFile(item.GetPath()))
   {
-    TiXmlElement* pRootElement = discStubXML.RootElement();
+    auto* pRootElement = discStubXML.RootElement();
     if (!pRootElement || StringUtils::CompareNoCase(pRootElement->Value(), "discstub") != 0)
       CLog::Log(LOGINFO, "No <discstub> node found for {}. Using default info dialog message",
                 item.GetPath());

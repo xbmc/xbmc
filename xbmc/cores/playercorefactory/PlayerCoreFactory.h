@@ -17,8 +17,6 @@
 #include <vector>
 
 // forward references
-
-class TiXmlElement;
 class CFileItem;
 class CPlayerCoreConfig;
 class CPlayerSelectionRule;
