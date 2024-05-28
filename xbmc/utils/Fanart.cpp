@@ -10,7 +10,7 @@
 
 #include "StringUtils.h"
 #include "URIUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
 
 #include <algorithm>
@@ -29,17 +29,24 @@ void CFanart::Pack()
 {
   // Take our data and pack it into the m_xml string
   m_xml.clear();
-  TiXmlElement fanart("fanart");
+  tinyxml2::XMLDocument doc(false);
+  auto fanartElement = doc.NewElement("fanart");
+  auto* fanartNode = doc.InsertEndChild(fanartElement);
   for (std::vector<SFanartData>::const_iterator it = m_fanart.begin(); it != m_fanart.end(); ++it)
   {
-    TiXmlElement thumb("thumb");
-    thumb.SetAttribute("colors", it->strColors.c_str());
-    thumb.SetAttribute("preview", it->strPreview.c_str());
-    TiXmlText text(it->strImage);
-    thumb.InsertEndChild(text);
-    fanart.InsertEndChild(thumb);
+    auto* thumbNode = doc.NewElement("thumb");
+    thumbNode->SetAttribute("colors", it->strColors.c_str());
+    thumbNode->SetAttribute("preview", it->strPreview.c_str());
+    auto* thumbText = doc.NewText(it->strImage.c_str());
+    thumbNode->InsertEndChild(thumbText);
+    fanartNode->InsertEndChild(thumbNode);
   }
-  m_xml << fanart;
+
+  // Setup printer for compact output (ie machine readable minimal whitespace)
+  tinyxml2::XMLPrinter printer(NULL, true);
+  doc.Print(&printer);
+
+  m_xml = printer.CStr();
 }
 
 void CFanart::AddFanart(const std::string& image, const std::string& preview, const std::string& colors)
@@ -59,16 +66,16 @@ void CFanart::Clear()
 
 bool CFanart::Unpack()
 {
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(m_xml);
 
   m_fanart.clear();
 
-  TiXmlElement *fanart = doc.FirstChildElement("fanart");
+  auto* fanart = doc.FirstChildElement("fanart");
   while (fanart)
   {
     std::string url = XMLUtils::GetAttribute(fanart, "url");
-    TiXmlElement *fanartThumb = fanart->FirstChildElement("thumb");
+    auto* fanartThumb = fanart->FirstChildElement("thumb");
     while (fanartThumb)
     {
       if (!fanartThumb->NoChildren())
@@ -76,12 +83,12 @@ bool CFanart::Unpack()
         SFanartData data;
         if (url.empty())
         {
-          data.strImage = fanartThumb->FirstChild()->ValueStr();
+          data.strImage = fanartThumb->FirstChild()->Value();
           data.strPreview = XMLUtils::GetAttribute(fanartThumb, "preview");
         }
         else
         {
-          data.strImage = URIUtils::AddFileToFolder(url, fanartThumb->FirstChild()->ValueStr());
+          data.strImage = URIUtils::AddFileToFolder(url, fanartThumb->FirstChild()->Value());
           if (fanartThumb->Attribute("preview"))
             data.strPreview = URIUtils::AddFileToFolder(url, fanartThumb->Attribute("preview"));
         }
