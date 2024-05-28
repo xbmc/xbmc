@@ -180,6 +180,8 @@
 #include <memory>
 #include <mutex>
 
+#include <tinyxml.h>
+
 //TODO: XInitThreads
 #ifdef HAVE_X11
 #include <X11/Xlib.h>

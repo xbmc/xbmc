@@ -19,6 +19,8 @@ typedef enum {
   BooleanLogicOperationAnd
 } BooleanLogicOperation;
 
+class TiXmlNode;
+
 class CBooleanLogicValue : public IXmlDeserializable
 {
 public:

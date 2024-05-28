@@ -15,8 +15,6 @@
 #include <memory>
 #include <string>
 
-class TiXmlElement;
-
 /*! \brief Skin timers are skin objects that dependent on time and can be fully controlled from skins either using boolean
  * conditions or builtin functions. This class represents the Skin Timer object.
  * \sa Skin_Timers

@@ -13,8 +13,6 @@
 #include <set>
 #include <string>
 
-class TiXmlElement;
-
 namespace ADDON
 {
 

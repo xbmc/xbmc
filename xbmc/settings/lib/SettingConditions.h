@@ -18,6 +18,7 @@
 
 class CSettingsManager;
 class CSetting;
+class TiXmlNode;
 
 using SettingConditionCheck = bool (*)(const std::string& condition,
                                        const std::string& value,

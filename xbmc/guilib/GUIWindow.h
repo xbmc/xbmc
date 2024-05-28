@@ -34,7 +34,6 @@ enum RenderOrder {
 };
 
 // forward
-class TiXmlNode;
 class TiXmlElement;
 class CXBMCTinyXML;
 class CVariant;

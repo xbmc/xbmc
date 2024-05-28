@@ -16,6 +16,7 @@
 class CGUIListItem;
 class CFileItem;
 class CLabelInfo;
+class TiXmlElement;
 
 class CGUIListItemLayout final
 {

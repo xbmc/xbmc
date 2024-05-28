@@ -21,6 +21,7 @@
 #include <map>
 #include <vector>
 
+class TiXmlElement;
 class TiXmlNode;
 class CFileItem;
 class CAlbum

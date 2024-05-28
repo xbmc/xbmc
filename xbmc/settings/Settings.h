@@ -16,6 +16,7 @@
 #include <string>
 
 class CSettingList;
+class TiXmlElement;
 class TiXmlNode;
 
 /*!

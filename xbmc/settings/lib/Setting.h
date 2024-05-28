@@ -34,6 +34,7 @@ enum class SettingOptionsType {
 };
 
 class CSetting;
+class TiXmlNode;
 using SettingPtr = std::shared_ptr<CSetting>;
 using SettingConstPtr = std::shared_ptr<const CSetting>;
 using SettingList = std::vector<SettingPtr>;

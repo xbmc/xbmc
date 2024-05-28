@@ -20,7 +20,6 @@
 class CEventLog;
 class CEventLogManager;
 class CSettings;
-class TiXmlNode;
 
 class CProfileManager : protected ISettingsHandler,
                          protected ISettingCallback

@@ -23,6 +23,7 @@ namespace
 {
 class CGetDirectoryItems;
 }
+class TiXmlElement;
 
 // base class for all media windows
 class CGUIMediaWindow : public CGUIWindow

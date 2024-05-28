@@ -26,6 +26,7 @@
 #define SETTING_XML_ATTR_HIDE_SEPARATOR "hideseparator"
 
 class CVariant;
+class TiXmlNode;
 
 class CSettingControlCreator : public ISettingControlCreator
 {

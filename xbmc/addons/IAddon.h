@@ -14,7 +14,6 @@
 #include <vector>
 
 class CDateTime;
-class TiXmlElement;
 
 namespace ADDON
 {
