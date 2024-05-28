@@ -33,7 +33,6 @@ public:
   ~CPackerMAT() = default;
 
   bool PackTrueHD(const uint8_t* data, int size);
-  bool HaveOutput() const { return !m_outputQueue.empty(); }
   std::vector<uint8_t> GetOutputFrame();
 
 private:
@@ -77,8 +76,6 @@ private:
   TrueHDMajorSyncInfo ParseTrueHDMajorSyncHeaders(const uint8_t* p, int buffsize) const;
 
   MATState m_state{};
-
-  bool m_logPadding{false};
 
   uint32_t m_bufferCount{0};
   std::vector<uint8_t> m_buffer;

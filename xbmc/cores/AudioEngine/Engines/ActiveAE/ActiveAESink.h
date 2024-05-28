@@ -144,8 +144,6 @@ protected:
     SKIP_SWAP,
   } m_swapState;
 
-  std::vector<uint8_t> m_mergeBuffer;
-
   std::string m_deviceFriendlyName;
   std::string m_device;
   std::vector<AE::AESinkInfo> m_sinkInfoList;
