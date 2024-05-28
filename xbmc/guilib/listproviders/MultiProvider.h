@@ -16,6 +16,8 @@
 
 typedef std::unique_ptr<IListProvider> IListProviderPtr;
 
+class TiXmlNode;
+
 /*!
  \ingroup listproviders
  \brief A listprovider that handles multiple individual providers.

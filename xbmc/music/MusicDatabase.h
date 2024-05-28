@@ -26,6 +26,7 @@
 class CArtist;
 class CFileItem;
 class CMusicDbUrl;
+class TiXmlNode;
 
 namespace dbiplus
 {

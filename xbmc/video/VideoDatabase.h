@@ -25,6 +25,7 @@ class CFileItemList;
 class CVideoSettings;
 class CGUIDialogProgress;
 class CGUIDialogProgressBarHandle;
+class TiXmlNode;
 
 struct VideoAssetInfo;
 

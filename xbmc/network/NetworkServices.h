@@ -25,6 +25,7 @@ class CHTTPWebinterfaceHandler;
 class CHTTPWebinterfaceAddonsHandler;
 #endif // HAS_WEB_INTERFACE
 #endif // HAS_WEB_SERVER
+class TiXmlNode;
 
 class CNetworkServices : public ISettingCallback
 {

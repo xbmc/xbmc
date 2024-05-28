@@ -22,6 +22,7 @@
 #define CREDIT_LINE_LENGTH 50
 
 class CSetting;
+class TiXmlElement;
 struct IntegerSettingOption;
 struct StringSettingOption;
 

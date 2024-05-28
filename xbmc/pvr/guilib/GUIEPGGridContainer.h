@@ -26,6 +26,7 @@ class CFileItem;
 class CFileItemList;
 class CGUIListItem;
 class CGUIListItemLayout;
+class TiXmlElement;
 
 namespace PVR
 {

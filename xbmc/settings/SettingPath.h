@@ -13,6 +13,7 @@
 #include <vector>
 
 class CFileExtensionProvider;
+class TiXmlNode;
 
 class CSettingPath : public CSettingString
 {

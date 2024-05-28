@@ -28,6 +28,7 @@
  */
 
 class IListProvider;
+class TiXmlElement;
 class TiXmlNode;
 class CGUIListItemLayout;
 

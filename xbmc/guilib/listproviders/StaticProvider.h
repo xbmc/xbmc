@@ -13,6 +13,8 @@
 
 #include <vector>
 
+class TiXmlElement;
+
 class CStaticListProvider : public IListProvider
 {
 public:

@@ -17,6 +17,7 @@
 #include <utility>
 #include <vector>
 
+class TiXmlElement;
 class TiXmlNode;
 class CAlbum;
 class CMusicDatabase;

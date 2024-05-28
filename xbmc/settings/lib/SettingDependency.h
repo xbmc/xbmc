@@ -37,6 +37,8 @@ enum class SettingDependencyTarget {
   Property
 };
 
+class TiXmlNode;
+
 class CSettingDependencyCondition : public CSettingConditionItem
 {
 public:

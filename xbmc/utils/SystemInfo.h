@@ -24,6 +24,7 @@
 
 #define REG_CURRENT_VERSION L"Software\\Microsoft\\Windows NT\\CurrentVersion"
 
+class TiXmlNode;
 
 class CSysData
 {

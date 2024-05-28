@@ -22,6 +22,7 @@
 
 class CTextureInfo; // forward
 class CAspectRatio;
+class TiXmlElement;
 class TiXmlNode;
 class CGUIAction;
 
