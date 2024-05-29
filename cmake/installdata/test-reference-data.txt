@@ -25,7 +25,10 @@ xbmc/filesystem/test/refRARstored.rar
 xbmc/network/test/data/test-ranges.txt
 xbmc/network/test/data/test.html
 xbmc/network/test/data/test.png
+xbmc/playlists/test/test.asx
 xbmc/playlists/test/test.b4s
+xbmc/playlists/test/test.pxml
+xbmc/playlists/test/test.wpl
 xbmc/playlists/test/test.xspf
 xbmc/settings/test/test-MediaSources.xml
 xbmc/video/test/testdata/moviestack_ab/Movie-(2001)/Movie-(2001)A.mp4

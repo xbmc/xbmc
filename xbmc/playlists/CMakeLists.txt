@@ -1,8 +1,10 @@
-set(SOURCES PlayListB4S.cpp
-            PlayList.cpp
+set(SOURCES PlayList.cpp
+            PlayListASX.cpp
+            PlayListB4S.cpp
             PlayListFactory.cpp
             PlayListM3U.cpp
             PlayListPLS.cpp
+            PlayListRAM.cpp
             PlayListURL.cpp
             PlayListWPL.cpp
             PlayListXML.cpp
@@ -11,10 +13,12 @@ set(SOURCES PlayListB4S.cpp
             SmartPlaylistFileItemListModifier.cpp)
 
 set(HEADERS PlayList.h
+            PlayListASX.h
             PlayListB4S.h
             PlayListFactory.h
             PlayListM3U.h
             PlayListPLS.h
+            PlayListRAM.h
             PlayListTypes.h
             PlayListURL.h
             PlayListWPL.h
