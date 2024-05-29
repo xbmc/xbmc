@@ -595,6 +595,20 @@ bool IsItemPlayable(const CFileItem& item)
   return false;
 }
 
+bool HasItemVideoDbInformation(const CFileItem& item)
+{
+  CVideoDatabase db;
+  if (!db.Open())
+  {
+    CLog::LogF(LOGERROR, "Cannot open VideoDatabase");
+    return false;
+  }
+
+  return db.HasMovieInfo(item.GetDynPath()) ||
+         db.HasTvShowInfo(URIUtils::GetDirectory(item.GetPath())) ||
+         db.HasEpisodeInfo(item.GetDynPath()) || db.HasMusicVideoInfo(item.GetDynPath());
+}
+
 std::string GetResumeString(const CFileItem& item)
 {
   const ResumeInformation resumeInfo = GetItemResumeInformation(item);
