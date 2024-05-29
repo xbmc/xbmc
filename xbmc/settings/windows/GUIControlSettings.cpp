@@ -1299,7 +1299,7 @@ CGUIControlEditSetting::CGUIControlEditSetting(CGUIEditControl* pEdit,
   else if (controlFormat == "md5")
     inputType = CGUIEditControl::INPUT_TYPE_PASSWORD_MD5;
 
-  m_pEdit->SetInputType(inputType, heading);
+  m_pEdit->SetInputType(inputType, localizer ? CVariant{localizer->Localize(heading)} : heading);
 
   // this will automatically trigger validation so it must be executed after
   // having set the value of the control based on the value of the setting
