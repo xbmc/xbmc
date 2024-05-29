@@ -22,6 +22,7 @@ extern "C"
 #include <libavutil/pixfmt.h>
 }
 
+class CFileItem;
 class CDataCacheCore;
 
 namespace KODI
@@ -146,6 +147,16 @@ public:
    */
   SCALINGMETHOD GetDefaultScalingMethod() const { return m_defaultScalingMethod; }
 
+  ///}
+
+  /// @name Item
+  ///{
+  /*!
+   * \brief Cache the current playing item
+   *
+   * \param item - the item to store
+   */
+  void SetFileItem(const CFileItem& item);
   ///}
 
   /// @name Player video info
