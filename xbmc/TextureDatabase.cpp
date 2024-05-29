@@ -11,6 +11,7 @@
 #include "URL.h"
 #include "XBDateTime.h"
 #include "dbwrappers/dataset.h"
+#include "imagefiles/ImageFileURL.h"
 #include "utils/DatabaseUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
@@ -95,7 +96,7 @@ std::string CTextureRule::FormatParameter(const std::string &operatorString,
 {
   std::string parameter(param);
   if (m_field == TF_Url)
-    parameter = CTextureUtils::UnwrapImageURL(param);
+    parameter = IMAGE_FILES::ToCacheKey(param);
   return CDatabaseQueryRule::FormatParameter(operatorString, parameter, db, strType);
 }
 
@@ -104,39 +105,6 @@ void CTextureRule::GetAvailableFields(std::vector<std::string> &fieldList)
   // start at 1 to skip TF_None
   for (unsigned int i = 1; i < NUM_FIELDS; i++)
     fieldList.emplace_back(fields[i].string);
-}
-
-std::string CTextureUtils::GetWrappedImageURL(const std::string &image, const std::string &type, const std::string &options)
-{
-  if (StringUtils::StartsWith(image, "image://"))
-    return image; // already wrapped
-
-  CURL url;
-  url.SetProtocol("image");
-  url.SetUserName(type);
-  url.SetHostName(image);
-  if (!options.empty())
-  {
-    url.SetFileName("transform");
-    url.SetOptions("?" + options);
-  }
-  return url.Get();
-}
-
-std::string CTextureUtils::GetWrappedThumbURL(const std::string &image)
-{
-  return GetWrappedImageURL(image, "", "size=thumb");
-}
-
-std::string CTextureUtils::UnwrapImageURL(const std::string &image)
-{
-  if (StringUtils::StartsWith(image, "image://"))
-  {
-    CURL url(image);
-    if (url.GetUserName().empty() && url.GetOptions().empty())
-      return url.GetHostName();
-  }
-  return image;
 }
 
 CTextureDatabase::CTextureDatabase() = default;

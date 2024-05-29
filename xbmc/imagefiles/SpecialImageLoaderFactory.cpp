@@ -9,10 +9,10 @@
 #include "SpecialImageLoaderFactory.h"
 
 #include "guilib/Texture.h"
+#include "imagefiles/ImageFileURL.h"
 #include "music/MusicEmbeddedImageFileLoader.h"
 #include "pictures/PictureFolderImageFileLoader.h"
 #include "pvr/PVRChannelGroupImageFileLoader.h"
-#include "video/VideoChapterImageFileLoader.h"
 #include "video/VideoEmbeddedImageFileLoader.h"
 #include "video/VideoGeneratedImageFileLoader.h"
 
@@ -25,22 +25,18 @@ CSpecialImageLoaderFactory::CSpecialImageLoaderFactory()
   m_specialImageLoaders[1] = std::make_unique<MUSIC_INFO::CMusicEmbeddedImageFileLoader>();
   m_specialImageLoaders[2] = std::make_unique<VIDEO::CVideoGeneratedImageFileLoader>();
   m_specialImageLoaders[3] = std::make_unique<CPictureFolderImageFileLoader>();
-  m_specialImageLoaders[4] = std::make_unique<VIDEO::CVideoChapterImageFileLoader>();
-  m_specialImageLoaders[5] = std::make_unique<PVR::CPVRChannelGroupImageFileLoader>();
+  m_specialImageLoaders[4] = std::make_unique<PVR::CPVRChannelGroupImageFileLoader>();
 }
 
-std::unique_ptr<CTexture> CSpecialImageLoaderFactory::Load(const std::string& specialType,
-                                                           const std::string& filePath,
-                                                           unsigned int preferredWidth,
-                                                           unsigned int preferredHeight) const
+std::unique_ptr<CTexture> CSpecialImageLoaderFactory::Load(const CImageFileURL& imageFile) const
 {
-  if (specialType.empty())
+  if (!imageFile.IsSpecialImage())
     return {};
   for (auto& loader : m_specialImageLoaders)
   {
-    if (loader->CanLoad(specialType))
+    if (loader->CanLoad(imageFile.GetSpecialType()))
     {
-      auto val = loader->Load(specialType, filePath, preferredWidth, preferredHeight);
+      auto val = loader->Load(imageFile);
       if (val)
         return val;
     }

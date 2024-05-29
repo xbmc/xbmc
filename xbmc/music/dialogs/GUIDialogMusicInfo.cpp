@@ -23,6 +23,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "imagefiles/ImageFileURL.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/helpers/DialogOKHelper.h"
@@ -886,14 +887,11 @@ void CGUIDialogMusicInfo::OnGetArt()
     std::string thumb(item->GetArt("thumb"));
     if (thumb.empty())
       continue;
-    CURL url(CTextureUtils::UnwrapImageURL(thumb));
+    CURL url(IMAGE_FILES::CImageFileURL(thumb).GetTargetFile());
     // Skip images from remote sources (current thumb could be remote)
     if (url.IsProtocol("http") || url.IsProtocol("https"))
       continue;
     CServiceBroker::GetTextureCache()->ClearCachedImage(thumb);
-    // Remove any thumbnail of local image too (created when browsing files)
-    std::string thumbthumb(CTextureUtils::GetWrappedThumbURL(thumb));
-    CServiceBroker::GetTextureCache()->ClearCachedImage(thumbthumb);
   }
 
   // Show list of possible art for user selection

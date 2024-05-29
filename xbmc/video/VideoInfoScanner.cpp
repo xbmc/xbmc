@@ -29,6 +29,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "imagefiles/ImageFileURL.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
@@ -1822,8 +1823,7 @@ namespace KODI::VIDEO
         if ((addAll || CVideoThumbLoader::IsArtTypeInWhitelist(it.m_type, artTypes, exactName)) &&
           art.find(it.m_type) == art.end())
         {
-          std::string thumb = CTextureUtils::GetWrappedImageURL(pItem->GetPath(),
-                                                                "video_" + it.m_type);
+          std::string thumb = IMAGE_FILES::URLFromFile(pItem->GetPath(), "video_" + it.m_type);
           art.insert(std::make_pair(it.m_type, thumb));
         }
       }

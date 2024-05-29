@@ -53,10 +53,7 @@ bool CImageFile::Exists(const CURL& url)
       CServiceBroker::GetTextureCache()->ClearCachedImage(url.Get());
   }
 
-  // need to check if the original can be cached on demand and that the file exists
-  if (!CTextureCache::CanCacheImageURL(url))
-    return false;
-
+  // check the original file if the image is not yet cached
   return CFile::Exists(url.GetHostName());
 }
 

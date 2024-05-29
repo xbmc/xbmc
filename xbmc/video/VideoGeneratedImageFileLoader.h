@@ -13,16 +13,14 @@
 namespace KODI::VIDEO
 {
 /*!
- * @brief Generates a texture for a thumbnail of a video file, from a frame approx 1/3 into the video.
+ * @brief Generates a texture for a thumbnail of a video file, for a specific chapter
+ * or from a frame approx 1/3 into the video.
 */
 class CVideoGeneratedImageFileLoader : public IMAGE_FILES::ISpecialImageFileLoader
 {
 public:
   bool CanLoad(const std::string& specialType) const override;
-  std::unique_ptr<CTexture> Load(const std::string& specialType,
-                                 const std::string& filePath,
-                                 unsigned int preferredWidth,
-                                 unsigned int preferredHeight) const override;
+  std::unique_ptr<CTexture> Load(const IMAGE_FILES::CImageFileURL& imageFile) const override;
 };
 
 } // namespace KODI::VIDEO

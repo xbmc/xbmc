@@ -15,6 +15,7 @@
 #include "TextureCache.h"
 #include "filesystem/Directory.h"
 #include "guilib/Texture.h"
+#include "imagefiles/ImageFileURL.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/FileExtensionProvider.h"
@@ -26,13 +27,11 @@ bool CPictureFolderImageFileLoader::CanLoad(const std::string& specialType) cons
   return specialType == "picturefolder";
 }
 
-std::unique_ptr<CTexture> CPictureFolderImageFileLoader::Load(const std::string& specialType,
-                                                              const std::string& filePath,
-                                                              unsigned int preferredWidth,
-                                                              unsigned int preferredHeight) const
+std::unique_ptr<CTexture> CPictureFolderImageFileLoader::Load(
+    const IMAGE_FILES::CImageFileURL& imageFile) const
 {
   CFileItemList imagesInFolder;
-  CDirectory::GetDirectory(filePath, imagesInFolder,
+  CDirectory::GetDirectory(imageFile.GetTargetFile(), imagesInFolder,
                            CServiceBroker::GetFileExtensionProvider().GetPictureExtensions(),
                            DIR_FLAG_NO_FILE_DIRS);
 

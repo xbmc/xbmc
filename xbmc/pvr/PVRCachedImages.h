@@ -37,13 +37,6 @@ public:
   static int Cleanup(const std::vector<PVRImagePattern>& urlPatterns,
                      const std::vector<std::string>& urlsToCheck,
                      bool clearTextureForPath = false);
-
-  /*!
-   * @brief Extract the wrapped URL from an image URL.
-   * @param url The URL to unwrap.
-   * @return The unwrapped URL if url is an image URL, url otherwise.
-   */
-  static std::string UnwrapImageURL(const std::string& url);
 };
 
 } // namespace PVR

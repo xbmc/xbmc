@@ -12,8 +12,8 @@
 #include "FileItemList.h"
 #include "filesystem/PVRGUIDirectory.h"
 #include "guilib/Texture.h"
+#include "imagefiles/ImageFileURL.h"
 #include "pictures/Picture.h"
-#include "pvr/PVRCachedImages.h"
 #include "utils/log.h"
 
 bool PVR::CPVRChannelGroupImageFileLoader::CanLoad(const std::string& specialType) const
@@ -21,12 +21,10 @@ bool PVR::CPVRChannelGroupImageFileLoader::CanLoad(const std::string& specialTyp
   return specialType == "pvr";
 }
 
-std::unique_ptr<CTexture> PVR::CPVRChannelGroupImageFileLoader::Load(const std::string& specialType,
-                                                                     const std::string& filePath,
-                                                                     unsigned int,
-                                                                     unsigned int) const
+std::unique_ptr<CTexture> PVR::CPVRChannelGroupImageFileLoader::Load(
+    const IMAGE_FILES::CImageFileURL& imageFile) const
 {
-  const CPVRGUIDirectory channelGroupDir(filePath);
+  const CPVRGUIDirectory channelGroupDir(imageFile.GetTargetFile());
   CFileItemList channels;
   if (!channelGroupDir.GetChannelsDirectory(channels))
   {
@@ -38,7 +36,7 @@ std::unique_ptr<CTexture> PVR::CPVRChannelGroupImageFileLoader::Load(const std::
   {
     const std::string& icon = channel->GetArt("icon");
     if (!icon.empty())
-      channelIcons.emplace_back(CPVRCachedImages::UnwrapImageURL(icon));
+      channelIcons.emplace_back(IMAGE_FILES::CImageFileURL(icon).GetTargetFile());
 
     if (channelIcons.size() == 9) // limit number of tiles
       break;

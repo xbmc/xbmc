@@ -22,6 +22,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
+#include "imagefiles/ImageFileURL.h"
 #include "interfaces/AnnouncementManager.h"
 #include "music/Artist.h"
 #include "music/MusicDatabase.h"
@@ -1505,7 +1506,7 @@ NPT_Result CUPnPServer::ServeFile(const NPT_HttpRequest& request,
 
   if (URIUtils::IsURL(static_cast<const char*>(file_path)))
   {
-    CURL url(CTextureUtils::UnwrapImageURL(static_cast<const char*>(file_path)));
+    CURL url(IMAGE_FILES::ToCacheKey(static_cast<const char*>(file_path)));
     std::string disp = "inline; filename=\"" + URIUtils::GetFileName(url) + "\"";
     response.GetHeaders().SetHeader("Content-Disposition", disp.c_str());
   }

@@ -15,6 +15,7 @@
 #include "addons/PluginSource.h"
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonType.h"
+#include "imagefiles/ImageFileURL.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
@@ -302,7 +303,7 @@ void CAddonsOperations::FillDetails(const std::shared_ptr<ADDON::IAddon>& addon,
       bool needsRecaching;
       std::string image = CServiceBroker::GetTextureCache()->CheckCachedImage(url, needsRecaching);
       if (!image.empty() || CFileUtils::Exists(url))
-        object[field] = CTextureUtils::GetWrappedImageURL(url);
+        object[field] = IMAGE_FILES::URLFromFile(url);
       else
         object[field] = "";
     }

@@ -17,6 +17,7 @@
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/StackDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
+#include "imagefiles/ImageFileURL.h"
 #include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
 #include "settings/AdvancedSettings.h"
@@ -797,8 +798,9 @@ PLT_MediaObject* BuildObject(CFileItem& item,
         art.dlna_profile = "JPEG_TN";
       }
 
+      std::string wrappedUrl = IMAGE_FILES::URLFromFile(thumb);
       art.uri = upnp_server->BuildSafeResourceUri(rooturi, (*ips.GetFirstItem()).ToString(),
-                                                  CTextureUtils::GetWrappedImageURL(thumb).c_str());
+                                                  wrappedUrl.c_str());
 
       object->m_ExtraInfo.album_arts.Add(art);
     }
@@ -807,7 +809,7 @@ PLT_MediaObject* BuildObject(CFileItem& item,
     {
       if (!itArtwork.first.empty() && !itArtwork.second.empty())
       {
-        std::string wrappedUrl = CTextureUtils::GetWrappedImageURL(itArtwork.second);
+        std::string wrappedUrl = IMAGE_FILES::URLFromFile(itArtwork.second);
         object->m_XbmcInfo.artwork.Add(
             itArtwork.first.c_str(),
             upnp_server->BuildSafeResourceUri(rooturi, (*ips.GetFirstItem()).ToString(),

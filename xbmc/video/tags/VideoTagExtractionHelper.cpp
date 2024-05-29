@@ -10,7 +10,7 @@
 
 #include "FileItem.h"
 #include "ServiceBroker.h"
-#include "TextureDatabase.h"
+#include "imagefiles/ImageFileURL.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
@@ -36,7 +36,7 @@ std::string CVideoTagExtractionHelper::ExtractEmbeddedArtFor(const CFileItem& it
   for (const auto& it : tag.m_coverArt)
   {
     if (it.m_type == artType)
-      return CTextureUtils::GetWrappedImageURL(item.GetDynPath(), "video_" + artType);
+      return IMAGE_FILES::URLFromFile(item.GetDynPath(), "video_" + artType);
   }
   return {};
 }

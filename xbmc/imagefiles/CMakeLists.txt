@@ -1,6 +1,8 @@
-set(SOURCES SpecialImageLoaderFactory.cpp)
+set(SOURCES ImageFileURL.cpp
+            SpecialImageLoaderFactory.cpp)
 
-set(HEADERS SpecialImageFileLoader.h
+set(HEADERS ImageFileURL.h
+            SpecialImageFileLoader.h
             SpecialImageLoaderFactory.h)
 
 core_add_library(imagefiles)

@@ -11,7 +11,6 @@
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "ServiceBroker.h"
-#include "TextureCache.h"
 #include "Util.h"
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"
@@ -21,6 +20,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "imagefiles/ImageFileURL.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
@@ -261,8 +261,9 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
     if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
             CSettings::SETTING_MYVIDEOS_EXTRACTCHAPTERTHUMBS))
     {
-      std::string chapterPath = StringUtils::Format("chapter://{}/{}", m_filePath, i);
-      item->SetArt("thumb", chapterPath);
+      auto chapterPath = IMAGE_FILES::CImageFileURL::FromFile(m_filePath, "video");
+      chapterPath.AddOption("chapter", std::to_string(i));
+      item->SetArt("thumb", chapterPath.ToCacheKey());
     }
 
     item->SetProperty("chapter", i);

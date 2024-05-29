@@ -14,7 +14,6 @@
 #include "GUIInfoManager.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
-#include "TextureDatabase.h"
 #include "URL.h"
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"
@@ -26,6 +25,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/Texture.h"
+#include "imagefiles/ImageFileURL.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "input/mouse/MouseEvent.h"
@@ -1418,7 +1418,7 @@ void CGUIWindowSlideShow::RunSlideShow(const std::vector<std::string>& paths, in
     std::vector<CFileItemPtr> items;
     items.reserve(paths.size());
     for (const auto& path : paths)
-      items.push_back(std::make_shared<CFileItem>(CTextureUtils::GetWrappedImageURL(path), false));
+      items.push_back(std::make_shared<CFileItem>(IMAGE_FILES::URLFromFile(path), false));
 
     dialog->Reset();
     dialog->m_bPause = true;

@@ -13,6 +13,7 @@
 #include "ServiceBroker.h"
 #include "TextureCache.h"
 #include "TextureDatabase.h"
+#include "imagefiles/ImageFileURL.h"
 #include "utils/Variant.h"
 
 #include <algorithm>
@@ -78,7 +79,7 @@ JSONRPC_STATUS CTextureOperations::GetTextures(const std::string &method, ITrans
       for (CVariant::iterator_array item = items.begin_array(); item != items.end_array(); ++item)
       {
         CVariant &cachedUrl = (*item)["url"];
-        cachedUrl = CTextureUtils::GetWrappedImageURL(cachedUrl.asString());
+        cachedUrl = IMAGE_FILES::URLFromFile(cachedUrl.asString());
       }
     }
   }

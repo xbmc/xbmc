@@ -12,6 +12,7 @@
 #include "TextureCache.h"
 #include "TextureDatabase.h"
 #include "URL.h"
+#include "imagefiles/ImageFileURL.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -70,7 +71,8 @@ int CPVRCachedImages::Cleanup(const std::vector<PVRImagePattern>& urlPatterns,
   for (unsigned int i = 0; i < items.size(); ++i)
   {
     // Unwrap the image:// URL returned from texture db.
-    const std::string textureURL = UnwrapImageURL(items[i]["url"].asString());
+    const std::string textureURL =
+        IMAGE_FILES::CImageFileURL(items[i]["url"].asString()).GetTargetFile();
 
     if (std::none_of(urlsToCheck.cbegin(), urlsToCheck.cend(),
                      [&textureURL](const std::string& url) { return url == textureURL; }))
@@ -86,9 +88,4 @@ int CPVRCachedImages::Cleanup(const std::vector<PVRImagePattern>& urlPatterns,
   }
 
   return iCleanedImages;
-}
-
-std::string CPVRCachedImages::UnwrapImageURL(const std::string& url)
-{
-  return StringUtils::StartsWith(url, "image://") ? CURL(url).GetHostName() : url;
 }

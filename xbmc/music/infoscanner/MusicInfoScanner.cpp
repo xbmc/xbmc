@@ -36,6 +36,7 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "imagefiles/ImageFileURL.h"
 #include "interfaces/AnnouncementManager.h"
 #include "music/MusicFileItemClassify.h"
 #include "music/MusicLibraryQueue.h"
@@ -1145,7 +1146,7 @@ void CMusicInfoScanner::FindArtForAlbums(VECALBUMS &albums, const std::string &p
       if (!art->strThumb.empty())
         albumArt = art->strThumb;
       else
-        albumArt = CTextureUtils::GetWrappedImageURL(art->strFileName, "music");
+        albumArt = IMAGE_FILES::URLFromFile(art->strFileName, "music");
     }
 
     if (!albumArt.empty())
@@ -1161,7 +1162,7 @@ void CMusicInfoScanner::FindArtForAlbums(VECALBUMS &albums, const std::string &p
       for (auto& k : album.songs)
       {
         if (k.strThumb.empty() && !k.embeddedArt.Empty())
-          k.strThumb = CTextureUtils::GetWrappedImageURL(k.strFileName, "music");
+          k.strThumb = IMAGE_FILES::URLFromFile(k.strFileName, "music");
       }
     }
   }
@@ -2039,7 +2040,8 @@ bool CMusicInfoScanner::AddAlbumArtwork(CAlbum& album)
   {
     // When "prefer online album art" enabled and we have a thumb as embedded art
     // then replace it if we find a scraped cover
-    if (thumb != album.art.end() && StringUtils::StartsWith(thumb->second, "image://"))
+    if (thumb != album.art.end() &&
+        IMAGE_FILES::CImageFileURL(thumb->second).GetSpecialType() == "music")
       replaceThumb = true;
   }
 

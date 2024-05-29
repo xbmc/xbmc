@@ -12,7 +12,6 @@
 #include "GUIInfoManager.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
-#include "TextureDatabase.h"
 #include "ThumbLoader.h"
 #include "UPnP.h"
 #include "UPnPInternal.h"
@@ -22,6 +21,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
+#include "imagefiles/ImageFileURL.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "interfaces/AnnouncementManager.h"
@@ -446,7 +446,7 @@ NPT_Result CUPnPRenderer::GetMetadata(NPT_String& meta)
     else
       thumb = CServiceBroker::GetGUI()->GetInfoManager().GetImage(VIDEOPLAYER_COVER, -1);
 
-    thumb = CTextureUtils::GetWrappedImageURL(thumb);
+    thumb = IMAGE_FILES::URLFromFile(thumb);
 
     NPT_String ip;
     if (CServiceBroker::GetNetwork().GetFirstConnectedInterface())
