@@ -1168,6 +1168,7 @@ void DX::DeviceResources::CheckDXVA2SharedDecoderSurfaces()
     return;
 
   VideoDriverInfo driver = GetVideoDriverVersion();
+  driver.Log();
 
   if (!m_NV12SharedTexturesSupport)
     return;
@@ -1200,18 +1201,26 @@ void DX::DeviceResources::CheckDXVA2SharedDecoderSurfaces()
     CLog::LogF(LOGINFO, "DXVA Video Super Resolution is potentially supported");
 }
 
-VideoDriverInfo DX::DeviceResources::GetVideoDriverVersion()
+VideoDriverInfo DX::DeviceResources::GetVideoDriverVersion() const
 {
+  if (!m_adapter)
+    return {};
+
+  VideoDriverInfo driver{};
   const DXGI_ADAPTER_DESC ad = GetAdapterDesc();
 
-  const VideoDriverInfo driver = CWIN32Util::GetVideoDriverInfo(ad.VendorId, ad.Description);
+  // Version retrieval with DXGI is more modern but requires WDDM >= 2.3 for guarantee of same
+  // version returned by all driver components. Fallback to older method for older drivers.
+  LARGE_INTEGER rawVersion{};
+  if (SUCCEEDED(m_adapter->CheckInterfaceSupport(__uuidof(IDXGIDevice), &rawVersion)) &&
+      static_cast<uint16_t>(rawVersion.QuadPart >> 48) >= 23)
+    driver = CWIN32Util::FormatVideoDriverInfo(ad.VendorId, rawVersion.QuadPart);
 
-  if (ad.VendorId == PCIV_NVIDIA)
-    CLog::LogF(LOGINFO, "video driver version is {} {}.{} ({})", GetGFXProviderName(ad.VendorId),
-               driver.majorVersion, driver.minorVersion, driver.version);
-  else
-    CLog::LogF(LOGINFO, "video driver version is {} {}", GetGFXProviderName(ad.VendorId),
-               driver.version);
+  if (!driver.valid)
+    driver = CWIN32Util::GetVideoDriverInfo(ad.VendorId, ad.Description);
+
+  if (!driver.valid)
+    driver = CWIN32Util::GetVideoDriverInfoDX(ad.VendorId, ad.AdapterLuid);
 
   return driver;
 }
@@ -1490,12 +1499,10 @@ bool DX::DeviceResources::IsGCNOrOlder() const
   if (CSysInfo::GetWindowsDeviceFamily() == CSysInfo::Xbox)
     return false;
 
-  const DXGI_ADAPTER_DESC ad = GetAdapterDesc();
+  const VideoDriverInfo driver = GetVideoDriverVersion();
 
-  if (ad.VendorId != PCIV_AMD)
+  if (driver.vendorId != PCIV_AMD)
     return false;
-
-  const VideoDriverInfo driver = CWIN32Util::GetVideoDriverInfo(ad.VendorId, ad.Description);
 
   if (driver.valid && CWIN32Util::IsDriverVersionAtLeast(driver.version, "31.0.22000.0"))
     return false;

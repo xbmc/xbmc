@@ -32,6 +32,7 @@
 #endif
 #include <array>
 #include <locale.h>
+#include <sstream>
 
 #include <shellapi.h>
 #include <shlobj.h>
@@ -59,6 +60,21 @@ using namespace winrt::Windows::Graphics::Display;
 using namespace winrt::Windows::Graphics::Display::Core;
 using namespace winrt::Windows::Storage;
 #endif
+
+void VideoDriverInfo::Log()
+{
+  if (!valid)
+  {
+    CLog::LogF(LOGERROR, "video driver version information is not valid");
+    return;
+  }
+
+  if (vendorId == PCIV_NVIDIA)
+    CLog::LogF(LOGINFO, "video driver version is {} {}.{} ({})", DX::GetGFXProviderName(vendorId),
+               majorVersion, minorVersion, version);
+  else
+    CLog::LogF(LOGINFO, "video driver version is {} {}", DX::GetGFXProviderName(vendorId), version);
+}
 
 CWIN32Util::CWIN32Util(void)
 {
@@ -1601,9 +1617,8 @@ VideoDriverInfo CWIN32Util::GetVideoDriverInfo(const UINT vendorId, const std::w
     subkey.append(L"\\");
     subkey.append(L"0000");
     DWORD lg;
-
     wchar_t desc[128] = {};
-    lg = sizeof(desc) / sizeof(wchar_t);
+    lg = sizeof(desc);
     if (ERROR_SUCCESS != RegGetValueW(HKEY_LOCAL_MACHINE, subkey.c_str(), L"DriverDesc",
                                       RRF_RT_REG_SZ, nullptr, desc, &lg))
       continue;
@@ -1613,33 +1628,110 @@ VideoDriverInfo CWIN32Util::GetVideoDriverInfo(const UINT vendorId, const std::w
       continue;
 
     // driver of interest found, we read version
-    wchar_t version[64] = {};
-    lg = sizeof(version) / sizeof(wchar_t);
+    wchar_t wversion[64] = {};
+    lg = sizeof(wversion);
     if (ERROR_SUCCESS != RegGetValueW(HKEY_LOCAL_MACHINE, subkey.c_str(), L"DriverVersion",
-                                      RRF_RT_REG_SZ, nullptr, version, &lg))
+                                      RRF_RT_REG_SZ, nullptr, wversion, &lg))
       continue;
 
-    info.valid = true;
-    info.version = FromW(std::wstring(version));
+    const std::string version = FromW(std::wstring(wversion));
 
-    // convert driver store version to Nvidia version
-    if (vendorId == PCIV_NVIDIA)
-    {
-      std::string ver(info.version);
-      StringUtils::Replace(ver, ".", "");
-      info.majorVersion = std::stoi(ver.substr(ver.length() - 5, 3));
-      info.minorVersion = std::stoi(ver.substr(ver.length() - 2, 2));
-    }
-    else // for Intel/AMD fill major version only. Single-digit for WDDM < 1.3.
-    {
-      info.majorVersion = std::stoi(info.version.substr(0, info.version.find('.')));
-    }
+    info = FormatVideoDriverInfo(vendorId, version);
 
   } while (sta == ERROR_SUCCESS && !info.valid);
 
   RegCloseKey(hKey);
 #endif
 
+  return info;
+}
+
+VideoDriverInfo CWIN32Util::GetVideoDriverInfoDX(const UINT vendorId, LUID adapterLuid)
+{
+  VideoDriverInfo info = {};
+
+#ifdef TARGET_WINDOWS_DESKTOP
+  HKEY hKey = nullptr;
+  const wchar_t* SUBKEY = L"SOFTWARE\\Microsoft\\DirectX";
+
+  if (ERROR_SUCCESS != RegOpenKeyExW(HKEY_LOCAL_MACHINE, SUBKEY, 0, KEY_ENUMERATE_SUB_KEYS, &hKey))
+    return {};
+
+  LSTATUS sta = ERROR_SUCCESS;
+  wchar_t keyName[128] = {};
+  DWORD index = 0;
+  DWORD len;
+
+  using KODI::PLATFORM::WINDOWS::FromW;
+
+  do
+  {
+    len = sizeof(keyName) / sizeof(wchar_t);
+    sta = RegEnumKeyExW(hKey, index, keyName, &len, nullptr, nullptr, nullptr, nullptr);
+    index++;
+
+    if (sta != ERROR_SUCCESS)
+      continue;
+
+    LUID luid = {};
+    DWORD qwordSize = sizeof(luid);
+
+    if (ERROR_SUCCESS !=
+        RegGetValueW(hKey, keyName, L"AdapterLuid", RRF_RT_QWORD, nullptr, &luid, &qwordSize))
+      continue;
+
+    if (luid.HighPart != adapterLuid.HighPart || luid.LowPart != adapterLuid.LowPart)
+      continue;
+
+    // driver of interest found, read the version
+    uint64_t rawDriverVersion{};
+    if (ERROR_SUCCESS != RegGetValueW(hKey, keyName, L"DriverVersion", RRF_RT_QWORD, nullptr,
+                                      &rawDriverVersion, &qwordSize))
+      continue;
+
+    info = FormatVideoDriverInfo(vendorId, rawDriverVersion);
+
+  } while (sta == ERROR_SUCCESS && !info.valid);
+
+  RegCloseKey(hKey);
+#endif
+
+  return info;
+}
+
+VideoDriverInfo CWIN32Util::FormatVideoDriverInfo(const UINT vendorId, uint64_t rawVersion)
+{
+  const unsigned int part1 = static_cast<unsigned int>(rawVersion >> 48);
+  const unsigned int part2 = static_cast<unsigned int>((rawVersion >> 32) & 0xFFFF);
+  const unsigned int part3 = static_cast<unsigned int>((rawVersion >> 16) & 0xFFFF);
+  const unsigned int part4 = static_cast<unsigned int>(rawVersion & 0xFFFF);
+
+  std::ostringstream ss;
+  ss << part1 << '.' << part2 << '.' << part3 << '.' << part4;
+
+  return FormatVideoDriverInfo(vendorId, ss.str());
+}
+
+VideoDriverInfo CWIN32Util::FormatVideoDriverInfo(const UINT vendorId, const std::string version)
+{
+  VideoDriverInfo info = {};
+
+  info.valid = true;
+  info.vendorId = vendorId;
+  info.version = version;
+
+  // convert driver store version to Nvidia version
+  if (vendorId == PCIV_NVIDIA)
+  {
+    std::string ver(version);
+    StringUtils::Replace(ver, ".", "");
+    info.majorVersion = std::stoi(ver.substr(ver.length() - 5, 3));
+    info.minorVersion = std::stoi(ver.substr(ver.length() - 2, 2));
+  }
+  else // for Intel/AMD fill major version only
+  {
+    info.majorVersion = std::stoi(version.substr(0, version.find('.')));
+  }
   return info;
 }
 
