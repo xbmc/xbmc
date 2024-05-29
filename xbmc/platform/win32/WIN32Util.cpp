@@ -1603,7 +1603,7 @@ VideoDriverInfo CWIN32Util::GetVideoDriverInfo(const UINT vendorId, const std::w
     DWORD lg;
 
     wchar_t desc[128] = {};
-    lg = sizeof(desc) / sizeof(wchar_t);
+    lg = sizeof(desc);
     if (ERROR_SUCCESS != RegGetValueW(HKEY_LOCAL_MACHINE, subkey.c_str(), L"DriverDesc",
                                       RRF_RT_REG_SZ, nullptr, desc, &lg))
       continue;
@@ -1614,7 +1614,7 @@ VideoDriverInfo CWIN32Util::GetVideoDriverInfo(const UINT vendorId, const std::w
 
     // driver of interest found, we read version
     wchar_t version[64] = {};
-    lg = sizeof(version) / sizeof(wchar_t);
+    lg = sizeof(version);
     if (ERROR_SUCCESS != RegGetValueW(HKEY_LOCAL_MACHINE, subkey.c_str(), L"DriverVersion",
                                       RRF_RT_REG_SZ, nullptr, version, &lg))
       continue;
