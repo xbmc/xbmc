@@ -15,11 +15,13 @@
 #include "filesystem/File.h"
 #include "filesystem/IFileTypes.h"
 #include "guilib/Texture.h"
+#include "imagefiles/ImageCacheCleaner.h"
 #include "imagefiles/ImageFileURL.h"
 #include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Crc32.h"
 #include "utils/Job.h"
+#include "utils/JobManager.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -27,12 +29,14 @@
 #include <chrono>
 #include <exception>
 #include <mutex>
+#include <optional>
 #include <string.h>
 
 using namespace XFILE;
 using namespace std::chrono_literals;
 
-CTextureCache::CTextureCache() : CJobQueue(false, 1, CJob::PRIORITY_LOW_PAUSABLE)
+CTextureCache::CTextureCache()
+  : CJobQueue(false, 1, CJob::PRIORITY_LOW_PAUSABLE), m_cleanTimer{[this]() { CleanTimer(); }}
 {
 }
 
@@ -40,6 +44,7 @@ CTextureCache::~CTextureCache() = default;
 
 void CTextureCache::Initialize()
 {
+  m_cleanTimer.Start(60s);
   std::unique_lock<CCriticalSection> lock(m_databaseSection);
   if (!m_database.IsOpen())
     m_database.Open();
@@ -343,4 +348,41 @@ bool CTextureCache::Export(const std::string &image, const std::string &destinat
     CLog::Log(LOGERROR, "{} failed exporting '{}' to '{}'", __FUNCTION__, cachedImage, destination);
   }
   return false;
+}
+
+void CTextureCache::CleanTimer()
+{
+  CServiceBroker::GetJobManager()->Submit(
+      [this]()
+      {
+        auto next = ScanOldestCache();
+        m_cleanTimer.Start(next);
+      },
+      CJob::PRIORITY_LOW_PAUSABLE);
+}
+
+std::chrono::milliseconds CTextureCache::ScanOldestCache()
+{
+  auto cleaner = IMAGE_FILES::CImageCacheCleaner::Create();
+  if (!cleaner)
+    return std::chrono::hours(1);
+
+  const unsigned int cleanAmount = 1000;
+  const auto result = cleaner->ScanOldestCache(cleanAmount);
+  for (const auto& image : result.imagesToClean)
+  {
+    ClearCachedImage(image);
+  }
+
+  // update in the next 6 - 48 hours depending on number of items processed
+  const auto minTime = 6;
+  const auto maxTime = 24;
+  const auto zeroItemTime = 48;
+  const unsigned int next =
+      result.processedCount == 0
+          ? zeroItemTime
+          : minTime + (maxTime - minTime) *
+                          (1 - (static_cast<float>(result.processedCount) / cleanAmount));
+  CLog::LogF(LOGDEBUG, "scheduling the next image cache cleaning in {} hours", next);
+  return std::chrono::hours(next);
 }

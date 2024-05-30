@@ -1,7 +1,9 @@
-set(SOURCES ImageFileURL.cpp
+set(SOURCES ImageCacheCleaner.cpp
+            ImageFileURL.cpp
             SpecialImageLoaderFactory.cpp)
 
-set(HEADERS ImageFileURL.h
+set(HEADERS ImageCacheCleaner.h
+            ImageFileURL.h
             SpecialImageFileLoader.h
             SpecialImageLoaderFactory.h)
 
