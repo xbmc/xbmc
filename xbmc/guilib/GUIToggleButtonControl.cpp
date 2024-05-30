@@ -11,6 +11,7 @@
 #include "GUIDialog.h"
 #include "GUIInfoManager.h"
 #include "GUIWindowManager.h"
+#include "guilib/GUIControl.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 
@@ -38,6 +39,7 @@ void CGUIToggleButtonControl::Process(unsigned int currentTime, CDirtyRegionList
     m_selectButton.SetPulseOnSelect(m_pulseOnSelect);
     ProcessToggle(currentTime);
     m_selectButton.DoProcess(currentTime, dirtyregions);
+    CGUIControl::Process(currentTime, dirtyregions);
   }
   else
     CGUIButtonControl::Process(currentTime, dirtyregions);
