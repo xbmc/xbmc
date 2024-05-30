@@ -131,6 +131,21 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_cmsOn = false;
 
   m_renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
+
+  int32_t intermediatePrecision = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+      CSettings::SETTING_VIDEOPLAYER_HQSCALERPRECISION);
+  if (intermediatePrecision == 16)
+  {
+    m_intermediateFormat = GL_RGBA16;
+    m_intermediateType = GL_SHORT;
+    m_intermediateGammaCorrection = true;
+  }
+  else if (intermediatePrecision == 10)
+  {
+    m_intermediateFormat = GL_RGB10_A2;
+    m_intermediateType = GL_UNSIGNED_INT_2_10_10_10_REV;
+    m_intermediateGammaCorrection = true;
+  }
 }
 
 CLinuxRendererGL::~CLinuxRendererGL()
@@ -872,7 +887,8 @@ void CLinuxRendererGL::UpdateVideoFilter()
         break;
       }
 
-      if (!m_fbo.fbo.CreateAndBindToTexture(GL_TEXTURE_2D, m_sourceWidth, m_sourceHeight, GL_RGBA16, GL_SHORT))
+      if (!m_fbo.fbo.CreateAndBindToTexture(GL_TEXTURE_2D, m_sourceWidth, m_sourceHeight,
+                                            m_intermediateFormat, m_intermediateType, GL_NEAREST))
       {
         CLog::Log(LOGERROR, "GL: Error creating texture and binding to FBO");
         break;
@@ -886,14 +902,14 @@ void CLinuxRendererGL::UpdateVideoFilter()
         m_cmsOn ? m_fullRange : false,
         m_cmsOn ? m_tCLUTTex : 0,
         m_CLUTsize);
-    m_pVideoFilterShader = new ConvolutionFilterShader(m_scalingMethod, m_nonLinStretch, out);
+    m_pVideoFilterShader = new ConvolutionFilterShader(m_scalingMethod, m_nonLinStretch,
+                                                       m_intermediateGammaCorrection, out);
     if (!m_pVideoFilterShader->CompileAndLink())
     {
       CLog::Log(LOGERROR, "GL: Error compiling and linking video filter shader");
       break;
     }
 
-    SetTextureFilter(GL_LINEAR);
     m_renderQuality = RQ_MULTIPASS;
     return;
 
@@ -982,9 +998,11 @@ void CLinuxRendererGL::LoadShaders(int field)
 
     if (!m_pYUVShader)
     {
-      m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget == GL_TEXTURE_RECTANGLE, shaderFormat,
-                                                  m_nonLinStretch && m_renderQuality == RQ_SINGLEPASS,
-                                                  AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries, m_toneMap, m_toneMapMethod, out);
+      m_pYUVShader = new YUV2RGBProgressiveShader(
+          m_textureTarget == GL_TEXTURE_RECTANGLE, shaderFormat,
+          m_nonLinStretch && m_renderQuality == RQ_SINGLEPASS, AVColorPrimaries::AVCOL_PRI_BT709,
+          m_srcPrimaries, m_toneMap, m_toneMapMethod, out,
+          m_intermediateGammaCorrection && m_renderQuality == RQ_MULTIPASS);
 
       if (!m_cmsOn)
         m_pYUVShader->SetConvertFullColorRange(m_fullRange);

@@ -7360,6 +7360,31 @@ msgid "Enable HQ scalers for scaling above"
 msgstr ""
 
 #: system/settings/settings.xml
+msgctxt "#39198"
+msgid "HQ upscaler intermediate format"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#39199"
+msgid "Sets the precision of the intermediate scaling buffer used in the GPU rendering path. 16 bit precision likely demands more performance. If the hardware is unable to support the selected format, Kodi will fall back to the next best format."
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#39200"
+msgid "8 bit per channel"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#39201"
+msgid "10 bit per channel"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#39202"
+msgid "16 bit per channel"
+msgstr ""
+
+#: system/settings/settings.xml
 msgctxt "#13436"
 msgid "Adjust display HDR mode"
 msgstr ""

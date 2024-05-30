@@ -48,7 +48,10 @@ BaseVideoFilterShader::~BaseVideoFilterShader()
 // ConvolutionFilterShader - base class for video filter shaders
 //////////////////////////////////////////////////////////////////////
 
-ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool stretch, GLSLOutput *output)
+ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method,
+                                                 bool stretch,
+                                                 bool gammaCorrection,
+                                                 GLSLOutput* output)
 {
   m_method = method;
 
@@ -92,6 +95,9 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool str
     defines += "#define XBMC_STRETCH 1\n";
   else
     defines += "#define XBMC_STRETCH 0\n";
+
+  if (gammaCorrection)
+    defines += "#define KODI_GAMMA_LINEARIZATION_FAST\n";
 
   // get defines from the output stage if used
   m_glslOutput = output;

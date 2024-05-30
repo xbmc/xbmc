@@ -67,5 +67,10 @@ vec4 process()
     line(xystart.y + stepxy.y * 3.0, xpos, linetaps) * columntaps.a;
 
   rgb.a = m_alpha;
+
+#if defined(KODI_GAMMA_LINEARIZATION_FAST)
+  rgb.rgb *= rgb.rgb;
+#endif
+
   return rgb;
 }
