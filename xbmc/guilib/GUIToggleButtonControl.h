@@ -26,8 +26,8 @@ public:
   ~CGUIToggleButtonControl(void) override;
   CGUIToggleButtonControl* Clone() const override { return new CGUIToggleButtonControl(*this); }
 
-  void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
-  void Render() override;
+  void DoProcess(unsigned int currentTime, CDirtyRegionList& dirtyregions) override;
+  void DoRender() override;
   bool OnAction(const CAction &action) override;
   void AllocResources() override;
   void FreeResources(bool immediately = false) override;
@@ -42,6 +42,11 @@ public:
   std::string GetDescription() const override;
   void SetToggleSelect(const std::string &toggleSelect);
   void SetAltClickActions(const CGUIAction &clickActions);
+  
+  void SetPulseOnSelect(bool pulseOnSelect) override;
+  void SetEnabled(bool enable) override;
+  void SetFocus(bool focus) override;
+  void SetVisible(bool visible, bool setVisState = false) override;
 
 protected:
   bool UpdateColors(const CGUIListItem* item) override;
