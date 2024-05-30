@@ -86,6 +86,20 @@ public:
 
   bool GetTextures(CVariant &items, const Filter &filter);
 
+  /*!
+   * @brief Get a list of the oldest cached images eligible for cleaning.
+   * @param maxImages the maximum number of images to return
+   * @return
+   */
+  std::vector<std::string> GetOldestCachedImages(unsigned int maxImages) const;
+
+  /*!
+   * @brief Set a list of images to be kept. Used to clean the image cache.
+   * @param imagesToKeep
+   * @return
+   */
+  bool SetKeepCachedImages(const std::vector<std::string>& imagesToKeep);
+
   // rule creation
   CDatabaseQueryRule *CreateRule() const override;
   CDatabaseQueryRuleCombination *CreateCombination() const override;
@@ -100,6 +114,6 @@ protected:
   void CreateTables() override;
   void CreateAnalytics() override;
   void UpdateTables(int version) override;
-  int GetSchemaVersion() const override { return 13; }
+  int GetSchemaVersion() const override { return 14; }
   const char* GetBaseDBName() const override { return "Textures"; }
 };

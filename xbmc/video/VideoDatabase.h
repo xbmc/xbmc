@@ -1113,6 +1113,13 @@ public:
   int GetFileIdByMovie(int idMovie);
   std::string GetFileBasePathById(int idFile);
 
+  /*!
+   * @brief Check the passed in list of images if used in this database. Used to clean the image cache.
+   * @param imagesToCheck
+   * @return a list of the passed in images used by this database.
+   */
+  std::vector<std::string> GetUsedImages(const std::vector<std::string>& imagesToCheck);
+
 protected:
   int AddNewMovie(CVideoInfoTag& details);
   int AddNewMusicVideo(CVideoInfoTag& details);

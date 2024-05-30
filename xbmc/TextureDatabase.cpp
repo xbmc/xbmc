@@ -119,7 +119,8 @@ bool CTextureDatabase::Open()
 void CTextureDatabase::CreateTables()
 {
   CLog::Log(LOGINFO, "create texture table");
-  m_pDS->exec("CREATE TABLE texture (id integer primary key, url text, cachedurl text, imagehash text, lasthashcheck text)");
+  m_pDS->exec("CREATE TABLE texture (id integer primary key, url text, cachedurl text, "
+              "imagehash text, lasthashcheck text, lastlibrarycheck text)");
 
   CLog::Log(LOGINFO, "create sizes table, index,  and trigger");
   m_pDS->exec("CREATE TABLE sizes (idtexture integer, size integer, width integer, height integer, usecount integer, lastusetime text)");
@@ -194,11 +195,18 @@ void CTextureDatabase::UpdateTables(int version)
     m_pDS->exec("CREATE TABLE texture (id integer primary key, url text, cachedurl text, imagehash text, lasthashcheck text)");
     m_pDS->exec("CREATE TABLE sizes (idtexture integer, size integer, width integer, height integer, usecount integer, lastusetime text)");
   }
+  if (version < 14)
+  {
+    m_pDS->exec("ALTER TABLE texture ADD lastlibrarycheck text");
+  }
 }
 
 bool CTextureDatabase::IncrementUseCount(const CTextureDetails &details)
 {
   std::string sql = PrepareSQL("UPDATE sizes SET usecount=usecount+1, lastusetime=CURRENT_TIMESTAMP WHERE idtexture=%u AND width=%u AND height=%u", details.id, details.width, details.height);
+  if (!ExecuteQuery(sql))
+    return false;
+  sql = PrepareSQL("UPDATE texture SET lastlibrarycheck=NULL WHERE id=%u", details.id);
   return ExecuteQuery(sql);
 }
 
@@ -281,6 +289,61 @@ bool CTextureDatabase::GetTextures(CVariant &items, const Filter &filter)
     CLog::Log(LOGERROR, "{}, failed", __FUNCTION__);
   }
   return false;
+}
+
+std::vector<std::string> CTextureDatabase::GetOldestCachedImages(unsigned int maxImages) const
+{
+  try
+  {
+    if (!m_pDB || !m_pDS)
+      return {};
+
+    // PVR manages own image cache, so exclude from here:
+    //   `WHERE url NOT LIKE 'image://pvr%%' AND url NOT LIKE 'image://epg%%'`
+    // "re-check" between minimum of 30 days and maximum of total time required to check all
+    //   current images by maxImages 4 times per day, in case of very many images in library.
+    std::string sql = PrepareSQL(
+        "SELECT url FROM texture JOIN sizes ON (texture.id=sizes.idtexture AND sizes.size=1) WHERE "
+        "url NOT LIKE 'image://pvr%%' AND url NOT LIKE 'image://epg%%' AND lastusetime < "
+        "datetime('now', '-30 days') AND (lastlibrarycheck IS NULL OR lastlibrarycheck < "
+        "datetime('now', '-'||min((select (count(*) / %u / 4) + 1 from texture WHERE url NOT LIKE "
+        "'image://pvr%%' AND url NOT LIKE 'image://epg%%'), max(30, (julianday(lastlibrarycheck) - "
+        "julianday(sizes.lastusetime)) / 2))||' days')) ORDER BY COALESCE(lastlibrarycheck, "
+        "lastusetime) ASC LIMIT %u",
+        maxImages, maxImages);
+
+    if (!m_pDS->query(sql))
+      return {};
+
+    std::vector<std::string> result;
+    while (!m_pDS->eof())
+    {
+      result.push_back(m_pDS->fv(0).get_asString());
+      m_pDS->next();
+    }
+    m_pDS->close();
+    return result;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "{}, failed", __FUNCTION__);
+  }
+  return {};
+}
+
+bool CTextureDatabase::SetKeepCachedImages(const std::vector<std::string>& imagesToKeep)
+{
+  if (!imagesToKeep.size())
+    return true;
+
+  std::string sql = "UPDATE texture SET lastlibrarycheck=CURRENT_TIMESTAMP WHERE url IN (";
+  for (const auto& image : imagesToKeep)
+  {
+    sql += PrepareSQL("'%s',", image.c_str());
+  }
+  sql.pop_back(); // remove last ','
+  sql += ")";
+  return ExecuteQuery(sql);
 }
 
 bool CTextureDatabase::SetCachedTextureValid(const std::string &url, bool updateable)
