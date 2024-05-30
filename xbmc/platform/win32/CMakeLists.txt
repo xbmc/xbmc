@@ -10,6 +10,7 @@ set(SOURCES CharsetConverter.cpp
             PlatformWin32.cpp
             WIN32Util.cpp
             WindowHelper.cpp
+            WinRtUtil.cpp
             XTimeUtils.cpp)
 
 set(HEADERS CharsetConverter.h
@@ -27,6 +28,7 @@ set(HEADERS CharsetConverter.h
             resource.h
             unistd.h
             WIN32Util.h
-            WindowHelper.h)
+            WindowHelper.h
+            WinRtUtil.h)
 
 core_add_library(platform_win32)

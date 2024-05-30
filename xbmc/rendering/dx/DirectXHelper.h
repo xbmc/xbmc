@@ -202,18 +202,4 @@ namespace DX
   const std::string DXGIColorSpaceTypeToString(DXGI_COLOR_SPACE_TYPE type);
   const std::string D3D11VideoProcessorFormatSupportToString(
       D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT value);
-}
-
-#ifdef TARGET_WINDOWS_DESKTOP
-namespace winrt
-{
-  namespace Windows
-  {
-    namespace Foundation
-    {
-      typedef DX::SizeGen<float>  Size;
-      typedef DX::SizeGen<int>    SizeInt;
-    }
-  }
-}
-#endif
+  } // namespace DX
