@@ -68,7 +68,16 @@ bool CVideoSelectActionProcessorBase::Process(Action action)
       return OnQueueSelected();
 
     case ACTION_INFO:
+    {
+      if (GetDefaultAction() == ACTION_INFO && !m_item->IsVideoDb() && !m_item->IsPlugin() &&
+          !m_item->IsScript() && !VIDEO_UTILS::HasItemVideoDbInformation(*m_item))
+      {
+        // for items without info fall back to default play action
+        return Process(CVideoPlayActionProcessorBase::GetDefaultAction());
+      }
+
       return OnInfoSelected();
+    }
 
     case ACTION_MORE:
       return OnMoreSelected();
