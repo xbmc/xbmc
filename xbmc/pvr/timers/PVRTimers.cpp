@@ -1218,8 +1218,10 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimers::GetTimerRule(
       for (const auto& tagsEntry : m_tags)
       {
         const auto it = std::find_if(tagsEntry.second.cbegin(), tagsEntry.second.cend(),
-                                     [iClientId, iParentClientIndex](const auto& timersEntry) {
-                                       return timersEntry->ClientID() == iClientId &&
+                                     [iClientId, iParentClientIndex](const auto& timersEntry)
+                                     {
+                                       return (timersEntry->ClientID() == PVR_ANY_CLIENT_ID ||
+                                               timersEntry->ClientID() == iClientId) &&
                                               timersEntry->ClientIndex() == iParentClientIndex;
                                      });
         if (it != tagsEntry.second.cend())

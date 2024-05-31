@@ -884,8 +884,14 @@ void CGUIDialogPVRTimerSettings::InitializeChannelsList()
 
   int index = 0;
 
-  // Add special "any channel" entries - one for every client (used for epg-based timer rules).
+  // Add special "any channel" entries - one for every client (used for epg-based timer rules),
+  // and for reminder rules another one representing any channel from any client.
   const CPVRClientMap clients = CServiceBroker::GetPVRManager().Clients()->GetCreatedClients();
+  if (clients.size() > 1)
+    m_channelEntries.insert({index++, ChannelDescriptor(PVR_CHANNEL_INVALID_UID, PVR_ANY_CLIENT_ID,
+                                                        // Any channel from any client
+                                                        g_localizeStrings.Get(854))});
+
   for (const auto& client : clients)
   {
     m_channelEntries.insert(
@@ -971,12 +977,18 @@ void CGUIDialogPVRTimerSettings::ChannelsFiller(const SettingConstPtr& setting,
     for (const auto& channelEntry : pThis->m_channelEntries)
     {
       // Only include channels for the currently selected timer type or all channels if type is client-independent.
-      if (pThis->m_timerType->GetClientId() == -1 || // client-independent
+      if (pThis->m_timerType->GetClientId() == PVR_ANY_CLIENT_ID || // client-independent
           pThis->m_timerType->GetClientId() == channelEntry.second.clientId)
       {
         // Do not add "any channel" entry if not supported by selected timer type.
         if (channelEntry.second.channelUid == PVR_CHANNEL_INVALID_UID &&
             !pThis->m_timerType->SupportsAnyChannel())
+          continue;
+
+        // Do not add "any channel from any client" entry for reminder rules.
+        if (channelEntry.second.channelUid == PVR_CHANNEL_INVALID_UID &&
+            channelEntry.second.clientId == PVR_ANY_CLIENT_ID &&
+            !pThis->m_timerType->IsReminder() && !pThis->m_timerType->IsTimerRule())
           continue;
 
         list.emplace_back(channelEntry.second.description, channelEntry.first);

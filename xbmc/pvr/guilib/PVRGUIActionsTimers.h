@@ -106,6 +106,20 @@ public:
   bool DeleteTimer(const CFileItem& item) const;
 
   /*!
+   * @brief Delete a timer or timer rule, showing a confirmation dialog in case a timer currently
+   * recording shall be deleted.
+   * @param timer containing a timer or timer rule to delete.
+   * @param bIsRecording denotes whether the timer is currently recording (controls correct
+   * confirmation dialog).
+   * @param bDeleteRule denotes to delete a timer rule. For convenience, one can pass a timer
+   * created by a rule.
+   * @return true, if the timer or timer rule was deleted successfully, false otherwise.
+   */
+  bool DeleteTimer(const std::shared_ptr<CPVRTimerInfoTag>& timer,
+                   bool bIsRecording,
+                   bool bDeleteRule) const;
+
+  /*!
    * @brief Delete a timer rule, always showing a confirmation dialog.
    * @param item containing a timer rule to delete. item must be a timer, an epg tag or a channel.
    * @return true, if the timer rule was deleted successfully, false otherwise.
@@ -183,20 +197,6 @@ private:
    * @return true, if the timer or timer rule was deleted successfully, false otherwise.
   */
   bool DeleteTimer(const CFileItem& item, bool bIsRecording, bool bDeleteRule) const;
-
-  /*!
-   * @brief Delete a timer or timer rule, showing a confirmation dialog in case a timer currently
-   * recording shall be deleted.
-   * @param timer containing a timer or timer rule to delete.
-   * @param bIsRecording denotes whether the timer is currently recording (controls correct
-   * confirmation dialog).
-   * @param bDeleteRule denotes to delete a timer rule. For convenience, one can pass a timer
-   * created by a rule.
-   * @return true, if the timer or timer rule was deleted successfully, false otherwise.
-   */
-  bool DeleteTimer(const std::shared_ptr<CPVRTimerInfoTag>& timer,
-                   bool bIsRecording,
-                   bool bDeleteRule) const;
 
   /*!
    * @brief Open a dialog to confirm timer delete.

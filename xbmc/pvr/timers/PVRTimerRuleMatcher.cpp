@@ -10,6 +10,7 @@
 
 #include "XBDateTime.h"
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_channels.h" // PVR_CHANNEL_INVALID_UID
+#include "pvr/addons/PVRClient.h" // PVR_ANY_CLIENT_ID
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "utils/RegExp.h"
@@ -90,8 +91,10 @@ bool CPVRTimerRuleMatcher::MatchSeriesLink(
 bool CPVRTimerRuleMatcher::MatchChannel(const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const
 {
   if (m_timerRule->GetTimerType()->SupportsAnyChannel() &&
-      m_timerRule->ClientChannelUID() == PVR_CHANNEL_INVALID_UID)
-    return true; // matches any channel
+      m_timerRule->ClientChannelUID() == PVR_CHANNEL_INVALID_UID &&
+      (m_timerRule->ClientID() == PVR_ANY_CLIENT_ID ||
+       m_timerRule->ClientID() == epgTag->ClientID()))
+    return true; // matches any channel from any client / any channel from a certain client
 
   if (m_timerRule->GetTimerType()->SupportsChannels())
     return m_timerRule->ClientChannelUID() != PVR_CHANNEL_INVALID_UID &&

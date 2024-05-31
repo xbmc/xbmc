@@ -15,6 +15,7 @@
 #include "guilib/WindowIDs.h"
 #include "input/WindowTranslator.h"
 #include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClient.h" // PVR_ANY_CLIENT_ID
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupMember.h"
@@ -648,7 +649,8 @@ bool GetTimersSubDirectory(const CPVRTimersPath& path,
 
   for (const auto& timer : timers)
   {
-    if ((timer->IsRadio() == bRadio) && timer->HasParent() && (timer->ClientID() == iClientId) &&
+    if ((timer->IsRadio() == bRadio) && timer->HasParent() &&
+        (iClientId == PVR_ANY_CLIENT_ID || timer->ClientID() == iClientId) &&
         (timer->ParentClientIndex() == iParentId) && (!bHideDisabled || !timer->IsDisabled()))
     {
       item = std::make_shared<CFileItem>(timer);

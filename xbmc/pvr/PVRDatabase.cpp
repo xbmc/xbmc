@@ -1114,7 +1114,7 @@ std::vector<std::shared_ptr<CPVRTimerInfoTag>> CPVRDatabase::GetTimers(
   std::string strQuery = "SELECT * FROM timers ";
   const std::string clientIds = GetClientIdsSQL(clients);
   if (!clientIds.empty())
-    strQuery += "WHERE " + clientIds;
+    strQuery += "WHERE " + clientIds + " OR (iClientId = -1)"; // always load client agnostic timers
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
   strQuery = PrepareSQL(strQuery);
