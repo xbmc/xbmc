@@ -145,6 +145,15 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING& recording, unsigned int iClien
       }
     }
   }
+  if (recording.mediaType == PVR_RECORDING_MEDIA_TYPE_RECORDING)
+    m_mediaType = RecordingMediaType::PVR_RECORDING_MEDIA_TYPE_RECORDING;
+  else if (recording.mediaType == PVR_RECORDING_MEDIA_TYPE_VOD)
+    m_mediaType = RecordingMediaType::PVR_RECORDING_MEDIA_TYPE_VOD;
+  else
+  {
+    CLog::Log(LOGWARNING, "Unhandled enum value, defaulting to PVR_RECORDING_MEDIA_TYPE_RECORDING");
+    m_mediaType = RecordingMediaType::PVR_RECORDING_MEDIA_TYPE_RECORDING;
+  }
 
   UpdatePath();
 }
@@ -169,7 +178,8 @@ bool CPVRRecording::operator==(const CPVRRecording& right) const
           m_iGenreSubType == right.m_iGenreSubType && m_firstAired == right.m_firstAired &&
           m_iFlags == right.m_iFlags && m_sizeInBytes == right.m_sizeInBytes &&
           m_strProviderName == right.m_strProviderName &&
-          m_iClientProviderUniqueId == right.m_iClientProviderUniqueId);
+          m_iClientProviderUniqueId == right.m_iClientProviderUniqueId &&
+          m_mediaType == right.m_mediaType);
 }
 
 bool CPVRRecording::operator!=(const CPVRRecording& right) const
@@ -214,6 +224,15 @@ void CPVRRecording::FillAddonData(PVR_RECORDING& recording) const
   recording.iChannelUid = ChannelUid();
   recording.channelType =
       IsRadio() ? PVR_RECORDING_CHANNEL_TYPE_RADIO : PVR_RECORDING_CHANNEL_TYPE_TV;
+  if (MediaType() == RecordingMediaType::PVR_RECORDING_MEDIA_TYPE_RECORDING)
+    recording.mediaType = PVR_RECORDING_MEDIA_TYPE_RECORDING;
+  else if (MediaType() == RecordingMediaType::PVR_RECORDING_MEDIA_TYPE_VOD)
+    recording.mediaType = PVR_RECORDING_MEDIA_TYPE_VOD;
+  else
+  {
+    CLog::Log(LOGWARNING, "Unhandled enum value, defaulting to PVR_RECORDING_MEDIA_TYPE_RECORDING");
+    recording.mediaType = PVR_RECORDING_MEDIA_TYPE_RECORDING;
+  }
   if (FirstAired().IsValid())
     strncpy(recording.strFirstAired, FirstAired().GetAsW3CDate().c_str(),
             sizeof(recording.strFirstAired) - 1);
@@ -286,6 +305,7 @@ void CPVRRecording::Reset()
   }
   m_strProviderName.clear();
   m_iClientProviderUniqueId = PVR_PROVIDER_INVALID_UID;
+  m_mediaType = RecordingMediaType::PVR_RECORDING_MEDIA_TYPE_RECORDING;
 
   m_recordingTime.Reset();
   CVideoInfoTag::Reset();
@@ -474,6 +494,7 @@ void CPVRRecording::Update(const CPVRRecording& tag, const CPVRClient& client)
     m_sizeInBytes = tag.m_sizeInBytes;
     m_strProviderName = tag.m_strProviderName;
     m_iClientProviderUniqueId = tag.m_iClientProviderUniqueId;
+    m_mediaType = tag.m_mediaType;
   }
 
   if (client.GetClientCapabilities().SupportsRecordingsPlayCount())

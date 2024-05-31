@@ -32,6 +32,12 @@ class CPVRClient;
 class CPVRProvider;
 class CPVRTimerInfoTag;
 
+enum class RecordingMediaType : int
+{
+  PVR_RECORDING_MEDIA_TYPE_RECORDING,
+  PVR_RECORDING_MEDIA_TYPE_VOD
+};
+
 /*!
    * @brief Representation of a CPVRRecording unique ID.
    */
@@ -238,6 +244,12 @@ public:
    * @return true if this is a radio recording, false if this is a tv recording
    */
   bool IsRadio() const { return m_bRadio; }
+
+  /*!
+   * @brief Retrieve the type of media this recording is
+   * @return PVR_RECORDING_MEDIA_TYPE_RECORDING if this is a pvr recording, PVR_RECORDING_MEDIA_TYPE_VOD if this is a VOD
+   */
+  RecordingMediaType MediaType() const { return m_mediaType; }
 
   /*!
    * @return Broadcast id of the EPG event associated with this recording or EPG_TAG_INVALID_UID
@@ -535,6 +547,8 @@ private:
   std::string m_strProviderName; /*!< name of the provider this recording is from */
   int m_iClientProviderUniqueId =
       PVR_PROVIDER_INVALID_UID; /*!< provider uid associated with this recording on the client */
+  RecordingMediaType m_mediaType = RecordingMediaType::
+      PVR_RECORDING_MEDIA_TYPE_RECORDING; /*!< The type of media this recording is */
 
   mutable CCriticalSection m_critSection;
 };
