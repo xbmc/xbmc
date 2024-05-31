@@ -59,6 +59,13 @@ bool GetItemsForPlayList(const std::shared_ptr<CFileItem>& item, CFileItemList& 
 bool IsItemPlayable(const CFileItem& item);
 
 /*!
+ \brief Check whether for the given item information is stored in the video database.
+ \param item The item to check
+ \return True if info is available, false otherwise.
+ */
+bool HasItemVideoDbInformation(const CFileItem& item);
+
+/*!
  \brief Get a localized resume string for the given item, if it is resumable.
  \param item The item to retrieve the resume string for
  \return The resume string or empty string in case the item is not resumable.
