@@ -38,13 +38,13 @@ bool CRenderBufferPoolOpenGLES::ConfigureInternal()
     case AV_PIX_FMT_0RGB32:
     {
       m_pixeltype = GL_UNSIGNED_BYTE;
-      if (m_context.IsExtSupported("GL_EXT_texture_format_BGRA8888") ||
-          m_context.IsExtSupported("GL_IMG_texture_format_BGRA8888"))
+      if (m_context.IsExtSupported(GLEXTENSIONS::EXT_texture_format_BGRA8888) ||
+          m_context.IsExtSupported(GLEXTENSIONS::IMG_texture_format_BGRA8888))
       {
         m_internalformat = GL_BGRA_EXT;
         m_pixelformat = GL_BGRA_EXT;
       }
-      else if (m_context.IsExtSupported("GL_APPLE_texture_format_BGRA8888"))
+      else if (m_context.IsExtSupported(GLEXTENSIONS::APPLE_texture_format_BGRA8888))
       {
         // Apple's implementation does not conform to spec. Instead, they require
         // differing format/internalformat, more like GL.

@@ -535,7 +535,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
     }
   }
 
-  if (!CServiceBroker::GetRenderSystem()->IsExtSupported("GL_NV_vdpau_interop"))
+  if (!CServiceBroker::GetRenderSystem()->IsExtSupported(GLEXTENSIONS::NV_vdpau_interop))
   {
     CLog::Log(LOGINFO, "VDPAU::Open: required extension GL_NV_vdpau_interop not found");
     return false;

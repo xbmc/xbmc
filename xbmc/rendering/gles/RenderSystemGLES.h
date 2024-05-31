@@ -88,6 +88,11 @@ public:
   void InvalidateColorBuffer() override;
   bool ClearBuffers(UTILS::COLOR::Color color) override;
   bool IsExtSupported(const char* extension) const override;
+  void QueryExtensions();
+  bool IsExtSupported(const GLEXTENSIONS::EXTENSION extension) override
+  {
+    return m_extensionMap.at(extension);
+  }
 
   void SetVSync(bool vsync);
   void ResetVSync() { m_bVsyncInit = false; }
@@ -149,4 +154,5 @@ protected:
   ShaderMethodGLES m_method = ShaderMethodGLES::SM_DEFAULT;
 
   GLint      m_viewPort[4];
+  std::map<GLEXTENSIONS::EXTENSION, bool> m_extensionMap{};
 };

@@ -10,6 +10,7 @@
 
 #include "guilib/DirtyRegion.h"
 #include "guilib/GUITextureGLES.h"
+#include "rendering/Extensions.h"
 #include "rendering/MatrixGL.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
@@ -82,10 +83,12 @@ bool CRenderSystemGLES::InitRenderSystem()
 
   m_RenderExtensions += " ";
 
+  QueryExtensions();
+
 #if defined(GL_KHR_debug) && defined(TARGET_LINUX)
   if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_openGlDebugging)
   {
-    if (IsExtSupported("GL_KHR_debug"))
+    if (IsExtSupported(GLEXTENSIONS::KHR_debug))
     {
       auto glDebugMessageCallback = CEGLUtils::GetRequiredProcAddress<PFNGLDEBUGMESSAGECALLBACKKHRPROC>("glDebugMessageCallbackKHR");
       auto glDebugMessageControl = CEGLUtils::GetRequiredProcAddress<PFNGLDEBUGMESSAGECONTROLKHRPROC>("glDebugMessageControlKHR");
@@ -253,6 +256,13 @@ bool CRenderSystemGLES::IsExtSupported(const char* extension) const
 
     return m_RenderExtensions.find(name) != std::string::npos;
   }
+}
+
+void CRenderSystemGLES::QueryExtensions()
+{
+  for (auto extension = GLEXTENSIONS::stringMap.cbegin();
+       extension != GLEXTENSIONS::stringMap.cend(); ++extension)
+    m_extensionMap[extension->first] = IsExtSupported(std::string(extension->second).c_str());
 }
 
 void CRenderSystemGLES::PresentRender(bool rendered, bool videoLayer)
@@ -541,7 +551,7 @@ void CRenderSystemGLES::InitialiseShaders()
     CLog::Log(LOGERROR, "GUI Shader gles_shader_rgba_bob.frag - compile and link failed");
   }
 
-  if (IsExtSupported("GL_OES_EGL_image_external"))
+  if (IsExtSupported(GLEXTENSIONS::OES_EGL_image_external))
   {
     m_pShader[ShaderMethodGLES::SM_TEXTURE_RGBA_OES] =
         std::make_unique<CGLESShader>("gles_shader_rgba_oes.frag", defines);

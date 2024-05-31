@@ -63,7 +63,7 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method)
   std::string shadername;
   std::string defines;
 
-  if (CServiceBroker::GetRenderSystem()->IsExtSupported("GL_EXT_color_buffer_float"))
+  if (CServiceBroker::GetRenderSystem()->IsExtSupported(GLEXTENSIONS::EXT_color_buffer_float))
   {
     m_floattex = true;
   }
