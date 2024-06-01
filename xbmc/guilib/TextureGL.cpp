@@ -76,12 +76,10 @@ void CGLTexture::LoadToGPU()
     GLenum mipmapFilter = (m_scalingMethod == TEXTURE_SCALING::NEAREST ? GL_LINEAR_MIPMAP_NEAREST : GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, mipmapFilter);
 
-#ifndef HAS_GLES
     // Lower LOD bias equals more sharpness, but less smooth animation
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -0.5f);
     if (!m_isOglVersion3orNewer)
       glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
-#endif
   }
   else
   {
@@ -115,13 +113,12 @@ void CGLTexture::LoadToGPU()
     CLog::Log(LOGERROR,
               "GL: Image width {} too big to fit into single texture unit, truncating to {}",
               m_textureWidth, maxSize);
-#ifndef HAS_GLES
+
     glPixelStorei(GL_UNPACK_ROW_LENGTH, m_textureWidth);
-#endif
+
     m_textureWidth = maxSize;
   }
 
-#ifndef HAS_GLES
   GLenum format = GL_BGRA;
   GLint numcomponents = GL_RGBA;
 
@@ -166,58 +163,6 @@ void CGLTexture::LoadToGPU()
 
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 
-#else	// GLES version
-
-  // All incoming textures are BGRA, which GLES does not necessarily support.
-  // Some (most?) hardware supports BGRA textures via an extension.
-  // If not, we convert to RGBA first to avoid having to swizzle in shaders.
-  // Explicitly define GL_BGRA_EXT here in the case that it's not defined by
-  // system headers, and trust the extension list instead.
-#ifndef GL_BGRA_EXT
-#define GL_BGRA_EXT 0x80E1
-#endif
-
-  GLint internalformat;
-  GLenum pixelformat;
-
-  switch (m_format)
-  {
-    default:
-    case XB_FMT_RGBA8:
-      internalformat = pixelformat = GL_RGBA;
-      break;
-    case XB_FMT_RGB8:
-      internalformat = pixelformat = GL_RGB;
-      break;
-    case XB_FMT_A8R8G8B8:
-      if (CServiceBroker::GetRenderSystem()->IsExtSupported("GL_EXT_texture_format_BGRA8888") ||
-          CServiceBroker::GetRenderSystem()->IsExtSupported("GL_IMG_texture_format_BGRA8888"))
-      {
-        internalformat = pixelformat = GL_BGRA_EXT;
-      }
-      else if (CServiceBroker::GetRenderSystem()->IsExtSupported("GL_APPLE_texture_format_BGRA8888"))
-      {
-        // Apple's implementation does not conform to spec. Instead, they require
-        // differing format/internalformat, more like GL.
-        internalformat = GL_RGBA;
-        pixelformat = GL_BGRA_EXT;
-      }
-      else
-      {
-        SwapBlueRed(m_pixels, m_textureHeight, GetPitch());
-        internalformat = pixelformat = GL_RGBA;
-      }
-      break;
-  }
-  glTexImage2D(GL_TEXTURE_2D, 0, internalformat, m_textureWidth, m_textureHeight, 0,
-    pixelformat, GL_UNSIGNED_BYTE, m_pixels);
-
-  if (IsMipmapped())
-  {
-    glGenerateMipmap(GL_TEXTURE_2D);
-  }
-
-#endif
   VerifyGLState();
 
   if (!m_bCacheMemory)
