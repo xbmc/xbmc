@@ -746,5 +746,17 @@ int CSMBFile::GetChunkSize()
 {
   const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
-  return settings ? (settings->GetInt(CSettings::SETTING_SMB_CHUNKSIZE) * 1024) : (128 * 1024);
+  if (!settings)
+    return (64 * 1024);
+
+  int chunkSize = settings->GetInt(CSettings::SETTING_SMB_CHUNKSIZE) * 1024;
+
+  if (settings->GetInt(CSettings::SETTING_SMB_MINPROTOCOL) == 1 &&
+      settings->GetInt(CSettings::SETTING_SMB_MAXPROTOCOL) == 1)
+  {
+    if (chunkSize > 64 * 1024)
+      chunkSize = 64 * 1024;
+  }
+
+  return chunkSize;
 }
