@@ -220,7 +220,6 @@ set(required_deps ASS>=0.15.0
                   Spdlog
                   Sqlite3
                   TagLib>=1.9.0
-                  TinyXML
                   TinyXML2
                   ZLIB
                   ${PLATFORM_REQUIRED_DEPS})
