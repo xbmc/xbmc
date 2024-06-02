@@ -111,15 +111,10 @@ public:
   };
   int GetSubCount() const { return m_iMatchCount - 1; } // PCRE returns the number of sub-patterns + 1
   int GetSubStart(int iSub) const;
-  int GetSubStart(const std::string& subName) const;
   int GetSubLength(int iSub) const;
-  int GetSubLength(const std::string& subName) const;
   int GetCaptureTotal() const;
   std::string GetMatch(int iSub = 0) const;
-  std::string GetMatch(const std::string& subName) const;
   const std::string& GetPattern() const { return m_pattern; }
-  bool GetNamedSubPattern(const char* strName, std::string& strMatch) const;
-  int GetNamedSubPatternNumber(const char* strName) const;
   void DumpOvector(int iLog);
   /**
    * Check is RegExp object is ready for matching
