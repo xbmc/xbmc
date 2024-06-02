@@ -1,0 +1,131 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2024-06-02 16:30+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. (itstool) path: component/name
+#: tools/Linux/kodi.metainfo.xml.in:4
+msgid "@APP_NAME@"
+msgstr ""
+
+#. (itstool) path: component/developer_name
+#: tools/Linux/kodi.metainfo.xml.in:7
+msgid "@DEV_NAME@"
+msgstr ""
+
+#. (itstool) path: component/summary
+#: tools/Linux/kodi.metainfo.xml.in:8
+msgid "Ultimate entertainment center"
+msgstr ""
+
+#. (itstool) path: description/p
+#: tools/Linux/kodi.metainfo.xml.in:18
+msgid "Kodi allows users to play and view videos, music, podcasts, and other digital media files from local storage, network storage and the internet. It's optimized for a 10-foot user interface to be used with televisions and remote controls."
+msgstr ""
+
+#. (itstool) path: description/p
+#: tools/Linux/kodi.metainfo.xml.in:23
+msgid "Kodi spawned from the love of media. It is an entertainment hub that brings all your digital media together into a beautiful and user friendly package. It is 100% free and open source, very customisable and runs on a wide variety of devices. It is supported by a dedicated team of volunteers and a huge community."
+msgstr ""
+
+#. (itstool) path: keywords/keyword
+#: tools/Linux/kodi.metainfo.xml.in:30
+msgid "Kodi"
+msgstr ""
+
+#. (itstool) path: keywords/keyword
+#: tools/Linux/kodi.metainfo.xml.in:31
+msgid "xbmc"
+msgstr ""
+
+#. (itstool) path: keywords/keyword
+#: tools/Linux/kodi.metainfo.xml.in:32
+msgid "audio"
+msgstr ""
+
+#. (itstool) path: keywords/keyword
+#: tools/Linux/kodi.metainfo.xml.in:33
+msgid "video"
+msgstr ""
+
+#. (itstool) path: keywords/keyword
+#: tools/Linux/kodi.metainfo.xml.in:34
+msgid "media"
+msgstr ""
+
+#. (itstool) path: keywords/keyword
+#: tools/Linux/kodi.metainfo.xml.in:35
+msgid "media center"
+msgstr ""
+
+#. (itstool) path: keywords/keyword
+#: tools/Linux/kodi.metainfo.xml.in:36
+msgid "music"
+msgstr ""
+
+#. (itstool) path: keywords/keyword
+#: tools/Linux/kodi.metainfo.xml.in:37
+msgid "tv"
+msgstr ""
+
+#. (itstool) path: keywords/keyword
+#: tools/Linux/kodi.metainfo.xml.in:38
+msgid "television"
+msgstr ""
+
+#. (itstool) path: keywords/keyword
+#: tools/Linux/kodi.metainfo.xml.in:39
+msgid "remote control"
+msgstr ""
+
+#. (itstool) path: screenshot/caption
+#: tools/Linux/kodi.metainfo.xml.in:45
+msgid "The homescreen keeps your media organized"
+msgstr ""
+
+#. (itstool) path: screenshot/caption
+#: tools/Linux/kodi.metainfo.xml.in:49
+msgid "Easily browse your movies and series"
+msgstr ""
+
+#. (itstool) path: screenshot/caption
+#: tools/Linux/kodi.metainfo.xml.in:53
+msgid "Get additional infos about your movies or series"
+msgstr ""
+
+#. (itstool) path: screenshot/caption
+#: tools/Linux/kodi.metainfo.xml.in:57
+msgid "Browse TV shows by seasons"
+msgstr ""
+
+#. (itstool) path: screenshot/caption
+#: tools/Linux/kodi.metainfo.xml.in:61
+msgid "Use the music library to organize and read about your artists"
+msgstr ""
+
+#. (itstool) path: screenshot/caption
+#: tools/Linux/kodi.metainfo.xml.in:65
+msgid "Use the EPG to manage your TV stations"
+msgstr ""
+
+#. (itstool) path: screenshot/caption
+#: tools/Linux/kodi.metainfo.xml.in:69
+msgid "Extend what Kodi can do, just use addons"
+msgstr ""
+
+#. (itstool) path: screenshot/caption
+#: tools/Linux/kodi.metainfo.xml.in:73
+msgid "Keep the weather in check"
+msgstr ""
+
+#. (itstool) path: screenshot/caption
+#: tools/Linux/kodi.metainfo.xml.in:77
+msgid "The webinterface enables you to manage your Kodi from other devices"
+msgstr ""
+
