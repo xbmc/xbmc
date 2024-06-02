@@ -30,6 +30,29 @@ TEST(TestRegExp, RegFind)
   EXPECT_EQ(-1, regex.RegFind("Test string."));
 }
 
+TEST(TestRegExp, InvalidPattern)
+{
+  CRegExp regex;
+
+  EXPECT_FALSE(regex.RegComp("+"));
+}
+
+TEST(TestRegExp, Unicode)
+{
+  CRegExp regex;
+
+  EXPECT_TRUE(regex.RegComp("Бог!$"));
+  EXPECT_EQ(12, regex.RegFind("С нами Бог!"));
+}
+
+TEST(TestRegExp, JIT)
+{
+  CRegExp regex;
+
+  EXPECT_TRUE(regex.RegComp(".JIT.", CRegExp::StudyWithJitComp));
+  EXPECT_EQ(12, regex.RegFind("Test string, JIT-matched."));
+}
+
 TEST(TestRegExp, GetReplaceString)
 {
   CRegExp regex;
