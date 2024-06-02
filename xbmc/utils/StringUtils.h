@@ -55,6 +55,9 @@ DEF_TO_STR_VALUE(foo) // outputs "4"
 #define DEF_TO_STR_NAME(x) #x
 #define DEF_TO_STR_VALUE(x) DEF_TO_STR_NAME(x)
 
+namespace KODI::UTILS
+{
+
 template<typename T, std::enable_if_t<!std::is_enum_v<T>, int> = 0>
 constexpr decltype(auto) EnumToInt(T&& arg) noexcept
 {
@@ -452,3 +455,18 @@ struct sortstringbyname
     return StringUtils::CompareNoCase(strItem1, strItem2) < 0;
   }
 };
+
+} // namespace KODI::UTILS
+
+// We make these utilities globally available by default, as it would be a massive
+// change to the codebase to refer to them by their fully qualified names or import
+// them everywhere. However, it is important that the symbols are declared inside the
+// KODI::UTILS namespace in order to avoid a name clash with p8platform. p8platform
+// declares StringUtils in the global namespace. If we declare StringUtils without a
+// namespace as well, this is a violation of the One Definition Rule and therefore
+// undefined behavior. With the switch to C++20 in Kodi and recent versions of the clang compiler,
+// this can cause crashes due to the `Empty` static constant being present in different ELF
+// sections depending on the compiler mode.
+// See also: https://github.com/llvm/llvm-project/issues/72361
+using KODI::UTILS::sortstringbyname;
+using KODI::UTILS::StringUtils;
