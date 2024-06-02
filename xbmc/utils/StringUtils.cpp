@@ -30,6 +30,7 @@
 #include "LangInfo.h"
 #include "StringUtils.h"
 #include "XBDateTime.h"
+#include "utils/RegExp.h"
 
 #include <algorithm>
 #include <array>
@@ -45,11 +46,6 @@
 
 #include <fstrcmp.h>
 #include <memory.h>
-
-// don't move or std functions end up in PCRE namespace
-// clang-format off
-#include "utils/RegExp.h"
-// clang-format on
 
 #define FORMAT_BLOCK_SIZE 512 // # of bytes for initial allocation for printf
 
