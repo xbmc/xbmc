@@ -199,6 +199,11 @@ set(optional_buildtools CCache
 core_optional_dep(${optional_buildtools})
 core_require_dep(${required_buildtools})
 
+# We want to explicitly ignore NATIVEPREFIX for any find calls to build target dependencies
+if(NATIVEPREFIX)
+  set(CMAKE_IGNORE_PREFIX_PATH ${NATIVEPREFIX})
+endif()
+
 # Required dependencies. Keep in alphabetical order please
 set(required_deps ASS>=0.15.0
                   Cdio
@@ -288,6 +293,13 @@ if(ENABLE_AIRTUNES)
   if(TARGET Shairplay::Shairplay)
     core_require_dep(Shairplay)
   endif()
+endif()
+
+# We unset this after the bulk of our find calls are complete. Ideally we would want this enabled
+# for anything that is build target related, and only remove for native buildtools, however
+# thats more complicated for the need right now.
+if(NATIVEPREFIX)
+  unset(CMAKE_IGNORE_PREFIX_PATH)
 endif()
 
 # find all folders containing addon.xml.in
