@@ -46,8 +46,6 @@ set(CMAKE_OSX_ARCHITECTURES ${CPU})
 # Additional SYSTEM_DEFINES
 list(APPEND SYSTEM_DEFINES -DHAS_POSIX_NETWORK -DHAS_OSX_NETWORK -DHAS_ZEROCONF)
 
-list(APPEND CMAKE_SYSTEM_PREFIX_PATH ${NATIVEPREFIX})
-
 list(APPEND DEPLIBS "-framework DiskArbitration" "-framework IOKit"
                     "-framework IOSurface" "-framework SystemConfiguration"
                     "-framework ApplicationServices" "-framework AppKit"
