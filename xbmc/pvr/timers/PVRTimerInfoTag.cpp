@@ -989,7 +989,7 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromEpg(
     if (timerType)
     {
       if (timerType->SupportsEpgTitleMatch())
-        newTag->m_strEpgSearchString = newTag->m_strTitle;
+        newTag->m_strEpgSearchString = tag->Title();
 
       if (timerType->SupportsWeekdays())
         newTag->m_iWeekdays = PVR_WEEKDAY_ALLDAYS;
