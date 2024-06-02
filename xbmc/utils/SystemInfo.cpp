@@ -313,10 +313,14 @@ CSysData::INTERNET_STATE CSysInfoJob::GetInternetState()
 std::string CSysInfoJob::GetMACAddress()
 {
   CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
+  std::string mac;
   if (iface)
-    return iface->GetMacAddress();
-
-  return "";
+  {
+    mac = iface->GetMacAddress();
+    if (mac.empty())
+      mac = g_localizeStrings.Get(10005); // Not available
+  }
+  return mac;
 }
 
 std::string CSysInfoJob::GetIPAddress()
