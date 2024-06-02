@@ -150,3 +150,18 @@ void CWinSystemGbmEGLContext::delete_CVaapiProxy::operator()(CVaapiProxy *p) con
 {
   VaapiProxyDelete(p);
 }
+
+bool CWinSystemGbmEGLContext::BindTextureUploadContext()
+{
+  return m_eglContext.BindTextureUploadContext();
+}
+
+bool CWinSystemGbmEGLContext::UnbindTextureUploadContext()
+{
+  return m_eglContext.UnbindTextureUploadContext();
+}
+
+bool CWinSystemGbmEGLContext::HasContext()
+{
+  return m_eglContext.HasContext();
+}

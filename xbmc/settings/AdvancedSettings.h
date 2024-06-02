@@ -336,6 +336,8 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int32_t m_guiAnisotropicFiltering{0};
     bool m_guiFrontToBackRendering{false};
     bool m_guiGeometryClear{true};
+    bool m_guiAsyncTextureUpload{false};
+
     unsigned int m_addonPackageFolderSize;
 
     bool m_jsonOutputCompact;

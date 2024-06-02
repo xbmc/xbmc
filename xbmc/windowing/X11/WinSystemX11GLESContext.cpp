@@ -92,6 +92,30 @@ EGLConfig CWinSystemX11GLESContext::GetEGLConfig() const
   return m_pGLContext->m_eglConfig;
 }
 
+bool CWinSystemX11GLESContext::BindTextureUploadContext()
+{
+  if (m_pGLContext)
+    return static_cast<CGLContextEGL*>(m_pGLContext)->BindTextureUploadContext();
+  else
+    return false;
+}
+
+bool CWinSystemX11GLESContext::UnbindTextureUploadContext()
+{
+  if (m_pGLContext)
+    return static_cast<CGLContextEGL*>(m_pGLContext)->UnbindTextureUploadContext();
+  else
+    return false;
+}
+
+bool CWinSystemX11GLESContext::HasContext()
+{
+  if (m_pGLContext)
+    return static_cast<CGLContextEGL*>(m_pGLContext)->HasContext();
+  else
+    return false;
+}
+
 bool CWinSystemX11GLESContext::SetWindow(int width, int height, bool fullscreen, const std::string& output, int* winstate)
 {
   int newwin = 0;

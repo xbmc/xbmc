@@ -58,6 +58,10 @@ public:
   EGLContext GetEGLContext() const;
   EGLConfig GetEGLConfig() const;
 
+  bool BindTextureUploadContext() override;
+  bool UnbindTextureUploadContext() override;
+  bool HasContext() override;
+
 protected:
   bool SetWindow(int width, int height, bool fullscreen, const std::string &output, int *winstate = NULL) override;
   void PresentRenderImpl(bool rendered) override;

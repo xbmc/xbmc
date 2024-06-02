@@ -13,6 +13,8 @@
 #include "commons/ilog.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/Texture.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/JobManager.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
@@ -65,6 +67,9 @@ bool CImageLoader::DoWork()
       if (needsChecking)
         CServiceBroker::GetTextureCache()->BackgroundCacheImage(texturePath);
 
+      if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiAsyncTextureUpload)
+        m_texture->LoadToGPUAsync();
+
       return true;
     }
 
@@ -77,7 +82,14 @@ bool CImageLoader::DoWork()
 
   // not in our texture cache or it failed to load from it, so try and load directly and then cache the result
   CServiceBroker::GetTextureCache()->CacheImage(texturePath, &m_texture);
-  return (m_texture != NULL);
+
+  if (!m_texture)
+    return false;
+
+  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiAsyncTextureUpload)
+    m_texture->LoadToGPUAsync();
+
+  return true;
 }
 
 CGUILargeTextureManager::CLargeTexture::CLargeTexture(const std::string &path):

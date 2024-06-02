@@ -260,6 +260,24 @@ public:
    */
   std::pair<bool, int> GetDitherSettings();
 
+  /*!
+   * \brief Binds a shared context to the current thread, in order to upload textures asynchronously.
+   * \return Return true if a texture upload context exists and the binding succeeds.
+   */
+  virtual bool BindTextureUploadContext() { return false; }
+
+  /*!
+   * \brief Unbinds the shared context.
+   * \return Return true if the texture upload context has been unbound.
+   */
+  virtual bool UnbindTextureUploadContext() { return false; }
+
+  /*!
+   * \brief Checks if a graphics context is already bound to the current thread.
+   * \return Return true if so.
+   */
+  virtual bool HasContext() { return false; }
+
 protected:
   void UpdateDesktopResolution(RESOLUTION_INFO& newRes, const std::string &output, int width, int height, float refreshRate, uint32_t dwFlags);
   void UpdateDesktopResolution(RESOLUTION_INFO& newRes,

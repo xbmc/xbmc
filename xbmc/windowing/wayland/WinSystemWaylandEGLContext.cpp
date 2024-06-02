@@ -102,6 +102,21 @@ bool CWinSystemWaylandEGLContext::DestroyWindowSystem()
   return CWinSystemWaylandImpl::DestroyWindowSystem();
 }
 
+bool CWinSystemWaylandEGLContext::BindTextureUploadContext()
+{
+  return m_eglContext.BindTextureUploadContext();
+}
+
+bool CWinSystemWaylandEGLContext::UnbindTextureUploadContext()
+{
+  return m_eglContext.UnbindTextureUploadContext();
+}
+
+bool CWinSystemWaylandEGLContext::HasContext()
+{
+  return m_eglContext.HasContext();
+}
+
 CSizeInt CWinSystemWaylandEGLContext::GetNativeWindowAttachedSize()
 {
   int width, height;

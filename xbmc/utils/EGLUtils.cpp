@@ -428,6 +428,12 @@ bool CEGLContextUtils::CreateContext(CEGLAttributesVec contextAttribs)
     return false;
   }
 
+  m_eglUploadContext =
+      eglCreateContext(m_eglDisplay, m_eglConfig, m_eglContext, contextAttribs.Get());
+
+  if (m_eglUploadContext == EGL_NO_CONTEXT)
+    CLog::Log(LOGWARNING, "Failed to create EGL upload context");
+
   return true;
 }
 
@@ -565,6 +571,12 @@ void CEGLContextUtils::DestroyContext()
     eglDestroyContext(m_eglDisplay, m_eglContext);
     m_eglContext = EGL_NO_CONTEXT;
   }
+
+  if (m_eglUploadContext)
+  {
+    eglDestroyContext(m_eglDisplay, m_eglUploadContext);
+    m_eglUploadContext = EGL_NO_CONTEXT;
+  }
 }
 
 void CEGLContextUtils::DestroySurface()
@@ -596,4 +608,50 @@ bool CEGLContextUtils::TrySwapBuffers()
   }
 
   return (eglSwapBuffers(m_eglDisplay, m_eglSurface) == EGL_TRUE);
+}
+
+bool CEGLContextUtils::BindTextureUploadContext()
+{
+  if (m_eglDisplay == EGL_NO_DISPLAY || m_eglUploadContext == EGL_NO_CONTEXT)
+  {
+    CLog::LogF(LOGERROR, "No texture upload context found.");
+    return false;
+  }
+
+  m_textureUploadLock.lock();
+
+  if (!eglMakeCurrent(m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, m_eglUploadContext))
+  {
+    m_textureUploadLock.unlock();
+    CLog::LogF(LOGERROR, "Couldn't bind texture upload context.");
+    return false;
+  }
+
+  return true;
+}
+
+bool CEGLContextUtils::UnbindTextureUploadContext()
+{
+  if (m_eglDisplay == EGL_NO_DISPLAY || m_eglUploadContext == EGL_NO_CONTEXT)
+  {
+    CLog::LogF(LOGERROR, "No texture upload context found.");
+    m_textureUploadLock.unlock();
+    return false;
+  }
+
+  if (!eglMakeCurrent(m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT))
+  {
+    CLog::LogF(LOGERROR, "Couldn't release texture upload context");
+    m_textureUploadLock.unlock();
+    return false;
+  }
+
+  m_textureUploadLock.unlock();
+
+  return true;
+}
+
+bool CEGLContextUtils::HasContext()
+{
+  return eglGetCurrentContext() != EGL_NO_CONTEXT;
 }

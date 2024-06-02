@@ -14,6 +14,7 @@
 #include "GLContextEGL.h"
 
 #include "ServiceBroker.h"
+#include "commons/ilog.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
@@ -21,11 +22,12 @@
 #include <clocale>
 #include <mutex>
 
-#include <EGL/eglext.h>
 #include <unistd.h>
 
 #include "PlatformDefs.h"
 #include "system_gl.h"
+
+#include <EGL/eglext.h>
 
 #define EGL_NO_CONFIG (EGLConfig)0
 
@@ -160,6 +162,8 @@ bool CGLContextEGL::Refresh(bool force, int screen, Window glWindow, bool &newCo
       EGL_NONE
   };
   m_eglContext = eglCreateContext(m_eglDisplay, m_eglConfig, EGL_NO_CONTEXT, contextAttributes);
+  m_eglUploadContext = eglCreateContext(m_eglDisplay, m_eglConfig, m_eglContext, contextAttributes);
+
   if (m_eglContext == EGL_NO_CONTEXT)
   {
     EGLint contextAttributes[] =
@@ -168,6 +172,8 @@ bool CGLContextEGL::Refresh(bool force, int screen, Window glWindow, bool &newCo
       EGL_NONE
     };
     m_eglContext = eglCreateContext(m_eglDisplay, m_eglConfig, EGL_NO_CONTEXT, contextAttributes);
+    m_eglUploadContext =
+        eglCreateContext(m_eglDisplay, m_eglConfig, m_eglContext, contextAttributes);
 
     if (m_eglContext == EGL_NO_CONTEXT)
     {
@@ -189,6 +195,9 @@ bool CGLContextEGL::Refresh(bool force, int screen, Window glWindow, bool &newCo
   }
 
   m_eglGetSyncValuesCHROMIUM = (PFNEGLGETSYNCVALUESCHROMIUMPROC)eglGetProcAddress("eglGetSyncValuesCHROMIUM");
+
+  if (m_eglUploadContext == EGL_NO_CONTEXT)
+    CLog::Log(LOGWARNING, "failed to create EGL upload context");
 
   m_usePB = false;
   return true;
@@ -286,6 +295,11 @@ bool CGLContextEGL::CreatePB()
     return false;
   }
 
+  m_eglUploadContext = eglCreateContext(m_eglDisplay, m_eglConfig, m_eglContext, contextAttributes);
+
+  if (m_eglUploadContext == EGL_NO_CONTEXT)
+    CLog::Log(LOGWARNING, "Failed to create EGL upload context");
+
   m_usePB = true;
   return true;
 }
@@ -298,6 +312,12 @@ void CGLContextEGL::Destroy()
     eglMakeCurrent(m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
     eglDestroyContext(m_eglDisplay, m_eglContext);
     m_eglContext = EGL_NO_CONTEXT;
+  }
+
+  if (m_eglUploadContext)
+  {
+    eglDestroyContext(m_eglDisplay, m_eglUploadContext);
+    m_eglUploadContext = EGL_NO_CONTEXT;
   }
 
   if (m_eglSurface)
@@ -532,6 +552,52 @@ uint64_t CGLContextEGL::GetVblankTiming(uint64_t &msc, uint64_t &interval)
   }
 
   return ret;
+}
+
+bool CGLContextEGL::BindTextureUploadContext()
+{
+  if (m_eglDisplay == EGL_NO_DISPLAY || m_eglUploadContext == EGL_NO_CONTEXT)
+  {
+    CLog::LogF(LOGERROR, "No texture upload context found.");
+    return false;
+  }
+
+  m_textureUploadLock.lock();
+
+  if (!eglMakeCurrent(m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, m_eglUploadContext))
+  {
+    m_textureUploadLock.unlock();
+    CLog::LogF(LOGERROR, "Couldn't bind texture upload context.");
+    return false;
+  }
+
+  return true;
+}
+
+bool CGLContextEGL::UnbindTextureUploadContext()
+{
+  if (m_eglDisplay == EGL_NO_DISPLAY || m_eglUploadContext == EGL_NO_CONTEXT)
+  {
+    CLog::LogF(LOGERROR, "No texture upload context found.");
+    m_textureUploadLock.unlock();
+    return false;
+  }
+
+  if (!eglMakeCurrent(m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT))
+  {
+    CLog::LogF(LOGERROR, "Couldn't release texture upload context");
+    m_textureUploadLock.unlock();
+    return false;
+  }
+
+  m_textureUploadLock.unlock();
+
+  return true;
+}
+
+bool CGLContextEGL::HasContext()
+{
+  return eglGetCurrentContext() != EGL_NO_CONTEXT;
 }
 
 void CGLContextEGL::QueryExtensions()
