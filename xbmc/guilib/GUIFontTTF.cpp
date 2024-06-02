@@ -365,7 +365,7 @@ void CGUIFontTTF::End()
 void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
                                    float x,
                                    float y,
-                                   const std::vector<UTILS::COLOR::Color>& colors,
+                                   const std::vector<KODI::UTILS::COLOR::Color>& colors,
                                    const vecText& text,
                                    uint32_t alignment,
                                    float maxPixelWidth,
@@ -632,7 +632,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
     {
       // If starting text on a new line, determine justification effects
       // Get the current letter in the CStdString
-      UTILS::COLOR::Color color = (text[itGlyph->m_glyphInfo.cluster] & 0xff0000) >> 16;
+      KODI::UTILS::COLOR::Color color = (text[itGlyph->m_glyphInfo.cluster] & 0xff0000) >> 16;
       if (color >= colors.size())
         color = 0;
       color = colors[color];
@@ -1124,7 +1124,7 @@ void CGUIFontTTF::RenderCharacter(CGraphicContext& context,
                                   float posX,
                                   float posY,
                                   const Character* ch,
-                                  UTILS::COLOR::Color color,
+                                  KODI::UTILS::COLOR::Color color,
                                   bool roundX,
                                   std::vector<SVertex>& vertices)
 {

@@ -113,26 +113,26 @@ public:
 
   // static methods
   static void DrawQuad(const CPoint points[4],
-                       UTILS::COLOR::Color color,
+                       KODI::UTILS::COLOR::Color color,
                        CD3DTexture* texture,
                        const CRect* texCoords,
                        SHADER_METHOD options = SHADER_METHOD_RENDER_TEXTURE_BLEND);
 
   static void DrawQuad(const CPoint points[4],
-                       UTILS::COLOR::Color color,
+                       KODI::UTILS::COLOR::Color color,
                        unsigned numViews,
                        ID3D11ShaderResourceView** view,
                        const CRect* texCoords,
                        SHADER_METHOD options = SHADER_METHOD_RENDER_TEXTURE_BLEND);
 
   static void DrawQuad(const CRect& coords,
-                       UTILS::COLOR::Color color,
+                       KODI::UTILS::COLOR::Color color,
                        CD3DTexture* texture,
                        const CRect* texCoords,
                        SHADER_METHOD options = SHADER_METHOD_RENDER_TEXTURE_BLEND);
 
   static void DrawQuad(const CRect& coords,
-                       UTILS::COLOR::Color color,
+                       KODI::UTILS::COLOR::Color color,
                        unsigned numViews,
                        ID3D11ShaderResourceView** view,
                        const CRect* texCoords,

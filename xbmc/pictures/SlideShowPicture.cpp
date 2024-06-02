@@ -36,6 +36,8 @@
 
 static float zoomamount[10] = { 1.0f, 1.2f, 1.5f, 2.0f, 2.8f, 4.0f, 6.0f, 9.0f, 13.5f, 20.0f };
 
+using KODI::UTILS::COLOR::Color;
+
 CSlideShowPic::CSlideShowPic() : m_pImage(nullptr)
 {
   m_bIsLoaded = false;
@@ -694,7 +696,7 @@ void CSlideShowPic::UpdateAlpha()
 {
   assert(m_iCounter >= 0);
 
-  UTILS::COLOR::Color alpha = m_alpha;
+  Color alpha = m_alpha;
 
   if (m_iCounter < m_transitionStart.length)
   { // do start transition
@@ -702,16 +704,15 @@ void CSlideShowPic::UpdateAlpha()
     {
       case CROSSFADE:
         // fade in at 1x speed
-        alpha =
-            static_cast<UTILS::COLOR::Color>(static_cast<float>(m_iCounter + 1) /
-                                             static_cast<float>(m_transitionStart.length) * 255.0f);
+        alpha = static_cast<Color>(static_cast<float>(m_iCounter + 1) /
+                                   static_cast<float>(m_transitionStart.length) * 255.0f);
         break;
       case FADEIN_FADEOUT:
         // fade in at 2x speed, then keep solid
-        alpha = std::min(static_cast<UTILS::COLOR::Color>(
-                             static_cast<float>(m_iCounter + 1) /
-                             static_cast<float>(m_transitionStart.length) * 255.0f * 2),
-                         UTILS::COLOR::Color{255});
+        alpha =
+            std::min(static_cast<Color>(static_cast<float>(m_iCounter + 1) /
+                                        static_cast<float>(m_transitionStart.length) * 255.0f * 2),
+                     Color{255});
         break;
       default:
         alpha = 255; // opaque
@@ -724,17 +725,17 @@ void CSlideShowPic::UpdateAlpha()
     {
       case CROSSFADE:
         // fade in at 1x speed
-        alpha = 255 - static_cast<UTILS::COLOR::Color>(
-                          static_cast<float>(m_iCounter - m_transitionEnd.start + 1) /
-                          static_cast<float>(m_transitionEnd.length) * 255.0f);
+        alpha =
+            255 - static_cast<Color>(static_cast<float>(m_iCounter - m_transitionEnd.start + 1) /
+                                     static_cast<float>(m_transitionEnd.length) * 255.0f);
         break;
       case FADEIN_FADEOUT:
         // fade in at 2x speed, then keep solid
-        alpha = std::min(static_cast<UTILS::COLOR::Color>(
-                             static_cast<float>(m_transitionEnd.length - m_iCounter +
-                                                m_transitionEnd.start + 1) /
-                             static_cast<float>(m_transitionEnd.length) * 255.0f * 2),
-                         UTILS::COLOR::Color{255});
+        alpha =
+            std::min(static_cast<Color>(static_cast<float>(m_transitionEnd.length - m_iCounter +
+                                                           m_transitionEnd.start + 1) /
+                                        static_cast<float>(m_transitionEnd.length) * 255.0f * 2),
+                     Color{255});
         break;
       default:
         alpha = 255; // opaque

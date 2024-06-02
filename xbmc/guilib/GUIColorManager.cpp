@@ -74,7 +74,7 @@ bool CGUIColorManager::LoadXML(CXBMCTinyXML &xmlDoc)
   {
     if (color->FirstChild() && color->Attribute("name"))
     {
-      UTILS::COLOR::Color value = 0xffffffff;
+      KODI::UTILS::COLOR::Color value = 0xffffffff;
       sscanf(color->FirstChild()->Value(), "%x", (unsigned int*) &value);
       std::string name = color->Attribute("name");
       const auto it = m_colors.find(name);
@@ -89,7 +89,7 @@ bool CGUIColorManager::LoadXML(CXBMCTinyXML &xmlDoc)
 }
 
 // lookup a color and return it's hex value
-UTILS::COLOR::Color CGUIColorManager::GetColor(const std::string& color) const
+KODI::UTILS::COLOR::Color CGUIColorManager::GetColor(const std::string& color) const
 {
   // look in our color map
   std::string trimmed(color);
@@ -99,14 +99,14 @@ UTILS::COLOR::Color CGUIColorManager::GetColor(const std::string& color) const
     return (*it).second;
 
   // try converting hex directly
-  UTILS::COLOR::Color value = 0;
+  KODI::UTILS::COLOR::Color value = 0;
   sscanf(trimmed.c_str(), "%x", &value);
   return value;
 }
 
 bool CGUIColorManager::LoadColorsListFromXML(
     const std::string& filePath,
-    std::vector<std::pair<std::string, UTILS::COLOR::ColorInfo>>& colors,
+    std::vector<std::pair<std::string, KODI::UTILS::COLOR::ColorInfo>>& colors,
     bool sortColors)
 {
   CLog::Log(LOGDEBUG, "Loading colors from file {}", filePath);
@@ -131,13 +131,13 @@ bool CGUIColorManager::LoadColorsListFromXML(
     if (xmlColor->FirstChild() && xmlColor->Attribute("name"))
     {
       colors.emplace_back(xmlColor->Attribute("name"),
-                          UTILS::COLOR::MakeColorInfo(xmlColor->FirstChild()->Value()));
+                          KODI::UTILS::COLOR::MakeColorInfo(xmlColor->FirstChild()->Value()));
     }
     xmlColor = xmlColor->NextSiblingElement("color");
   }
 
   if (sortColors)
-    std::sort(colors.begin(), colors.end(), UTILS::COLOR::comparePairColorInfo);
+    std::sort(colors.begin(), colors.end(), KODI::UTILS::COLOR::comparePairColorInfo);
 
   return true;
 }

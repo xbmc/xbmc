@@ -14,7 +14,8 @@
 #include <cmath>
 #include <cstdio>
 
-using namespace UTILS::COLOR;
+namespace KODI::UTILS::COLOR
+{
 
 namespace
 {
@@ -63,13 +64,13 @@ void GetHSLValues(ColorInfo& colorInfo)
 
 } // unnamed namespace
 
-Color UTILS::COLOR::ChangeOpacity(const Color argb, const float opacity)
+Color ChangeOpacity(const Color argb, const float opacity)
 {
   int newAlpha = static_cast<int>(std::ceil(((argb >> 24) & 0xff) * opacity));
   return (argb & 0x00FFFFFF) | (newAlpha << 24);
 };
 
-Color UTILS::COLOR::ConvertToRGBA(const Color argb)
+Color ConvertToRGBA(const Color argb)
 {
   return ((argb & 0x00FF0000) << 8) | //RR______
          ((argb & 0x0000FF00) << 8) | //__GG____
@@ -77,7 +78,7 @@ Color UTILS::COLOR::ConvertToRGBA(const Color argb)
          ((argb & 0xFF000000) >> 24); //______AA
 }
 
-Color UTILS::COLOR::ConvertToARGB(const Color rgba)
+Color ConvertToARGB(const Color rgba)
 {
   return ((rgba & 0x000000FF) << 24) | //AA_____
          ((rgba & 0xFF000000) >> 8) | //__RR____
@@ -85,26 +86,26 @@ Color UTILS::COLOR::ConvertToARGB(const Color rgba)
          ((rgba & 0x0000FF00) >> 8); //______BB
 }
 
-Color UTILS::COLOR::ConvertToBGR(const Color argb)
+Color ConvertToBGR(const Color argb)
 {
   return (argb & 0x00FF0000) >> 16 | //____RR
          (argb & 0x0000FF00) | //__GG__
          (argb & 0x000000FF) << 16; //BB____
 }
 
-Color UTILS::COLOR::ConvertHexToColor(const std::string& hexColor)
+Color ConvertHexToColor(const std::string& hexColor)
 {
   Color value = 0;
   std::sscanf(hexColor.c_str(), "%x", &value);
   return value;
 }
 
-Color UTILS::COLOR::ConvertIntToRGB(int r, int g, int b)
+Color ConvertIntToRGB(int r, int g, int b)
 {
   return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
 }
 
-ColorInfo UTILS::COLOR::MakeColorInfo(const Color& argb)
+ColorInfo MakeColorInfo(const Color& argb)
 {
   ColorInfo colorInfo;
   colorInfo.colorARGB = argb;
@@ -112,7 +113,7 @@ ColorInfo UTILS::COLOR::MakeColorInfo(const Color& argb)
   return colorInfo;
 }
 
-ColorInfo UTILS::COLOR::MakeColorInfo(const std::string& hexColor)
+ColorInfo MakeColorInfo(const std::string& hexColor)
 {
   ColorInfo colorInfo;
   colorInfo.colorARGB = ConvertHexToColor(hexColor);
@@ -120,8 +121,8 @@ ColorInfo UTILS::COLOR::MakeColorInfo(const std::string& hexColor)
   return colorInfo;
 }
 
-bool UTILS::COLOR::comparePairColorInfo(const std::pair<std::string, ColorInfo>& a,
-                                        const std::pair<std::string, ColorInfo>& b)
+bool comparePairColorInfo(const std::pair<std::string, ColorInfo>& a,
+                          const std::pair<std::string, ColorInfo>& b)
 {
   if (a.second.hue == b.second.hue)
   {
@@ -134,7 +135,7 @@ bool UTILS::COLOR::comparePairColorInfo(const std::pair<std::string, ColorInfo>&
     return (a.second.hue < b.second.hue);
 }
 
-ColorFloats UTILS::COLOR::ConvertToFloats(const Color argb)
+ColorFloats ConvertToFloats(const Color argb)
 {
   ColorFloats c;
   c.alpha = static_cast<float>((argb >> 24) & 0xFF) * (1.0f / 255.0f);
@@ -144,7 +145,9 @@ ColorFloats UTILS::COLOR::ConvertToFloats(const Color argb)
   return c;
 }
 
-std::string UTILS::COLOR::ConvertToHexRGB(const Color argb)
+std::string ConvertToHexRGB(const Color argb)
 {
   return StringUtils::Format("{:06X}", argb & ~0xFF000000);
 }
+
+} // namespace KODI::UTILS::COLOR

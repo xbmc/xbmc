@@ -34,7 +34,7 @@ public:
   bool BeginRender() override;
   bool EndRender() override;
   void PresentRender(bool rendered, bool videoLayer) override;
-  bool ClearBuffers(UTILS::COLOR::Color color) override;
+  bool ClearBuffers(KODI::UTILS::COLOR::Color color) override;
   void SetViewPort(const CRect& viewPort) override;
   void GetViewPort(CRect& viewPort) override;
   void RestoreViewPort() override;

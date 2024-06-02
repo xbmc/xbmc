@@ -68,7 +68,7 @@ class CGUITexture;
 using CreateGUITextureFunc = std::function<CGUITexture*(
     float posX, float posY, float width, float height, const CTextureInfo& texture)>;
 using DrawQuadFunc = std::function<void(const CRect& coords,
-                                        UTILS::COLOR::Color color,
+                                        KODI::UTILS::COLOR::Color color,
                                         CTexture* texture,
                                         const CRect* texCoords,
                                         const float depth,
@@ -87,7 +87,7 @@ public:
   virtual CGUITexture* Clone() const = 0;
 
   static void DrawQuad(const CRect& coords,
-                       UTILS::COLOR::Color color,
+                       KODI::UTILS::COLOR::Color color,
                        CTexture* texture = nullptr,
                        const CRect* texCoords = nullptr,
                        const float depth = 1.0,
@@ -103,7 +103,7 @@ public:
 
   bool SetVisible(bool visible);
   bool SetAlpha(unsigned char alpha);
-  bool SetDiffuseColor(UTILS::COLOR::Color color, const CGUIListItem* item = nullptr);
+  bool SetDiffuseColor(KODI::UTILS::COLOR::Color color, const CGUIListItem* item = nullptr);
   bool SetPosition(float x, float y);
   bool SetWidth(float width);
   bool SetHeight(float height);
@@ -162,7 +162,7 @@ protected:
   // functions that our implementation classes handle
   virtual void Allocate() {}; ///< called after our textures have been allocated
   virtual void Free() {};     ///< called after our textures have been freed
-  virtual void Begin(UTILS::COLOR::Color color) = 0;
+  virtual void Begin(KODI::UTILS::COLOR::Color color) = 0;
   virtual void Draw(float* x,
                     float* y,
                     float* z,
@@ -172,7 +172,7 @@ protected:
   virtual void End() = 0;
 
   bool m_visible;
-  UTILS::COLOR::Color m_diffuseColor;
+  KODI::UTILS::COLOR::Color m_diffuseColor;
 
   float m_posX;         // size of the frame
   float m_posY;

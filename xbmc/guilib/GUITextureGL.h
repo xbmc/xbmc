@@ -25,7 +25,7 @@ public:
       float posX, float posY, float width, float height, const CTextureInfo& texture);
 
   static void DrawQuad(const CRect& coords,
-                       UTILS::COLOR::Color color,
+                       KODI::UTILS::COLOR::Color color,
                        CTexture* texture = nullptr,
                        const CRect* texCoords = nullptr,
                        const float depth = 1.0,
@@ -37,7 +37,7 @@ public:
   CGUITextureGL* Clone() const override;
 
 protected:
-  void Begin(UTILS::COLOR::Color color) override;
+  void Begin(KODI::UTILS::COLOR::Color color) override;
   void Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, int orientation) override;
   void End() override;
 

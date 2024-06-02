@@ -49,7 +49,10 @@ bool CSlideShowPicDX::UpdateVertexBuffer(Vertex* vertices)
   return false;
 }
 
-void CSlideShowPicDX::Render(float* x, float* y, CTexture* pTexture, UTILS::COLOR::Color color)
+void CSlideShowPicDX::Render(float* x,
+                             float* y,
+                             CTexture* pTexture,
+                             KODI::UTILS::COLOR::Color color)
 {
   Vertex vertex[5];
   for (int i = 0; i < 4; i++)

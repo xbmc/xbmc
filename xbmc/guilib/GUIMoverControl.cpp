@@ -26,7 +26,7 @@ CGUIMoverControl::CGUIMoverControl(int parentID,
                                    float height,
                                    const CTextureInfo& textureFocus,
                                    const CTextureInfo& textureNoFocus,
-                                   UTILS::MOVING_SPEED::MapEventConfig& movingSpeedCfg)
+                                   KODI::UTILS::MOVING_SPEED::MapEventConfig& movingSpeedCfg)
   : CGUIControl(parentID, controlID, posX, posY, width, height),
     m_imgFocus(CGUITexture::CreateTexture(posX, posY, width, height, textureFocus)),
     m_imgNoFocus(CGUITexture::CreateTexture(posX, posY, width, height, textureNoFocus))

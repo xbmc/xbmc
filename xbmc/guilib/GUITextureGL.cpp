@@ -43,7 +43,7 @@ CGUITextureGL* CGUITextureGL::Clone() const
   return new CGUITextureGL(*this);
 }
 
-void CGUITextureGL::Begin(UTILS::COLOR::Color color)
+void CGUITextureGL::Begin(KODI::UTILS::COLOR::Color color)
 {
   CTexture* texture = m_texture.m_textures[m_currentFrame].get();
   texture->LoadToGPU();
@@ -256,7 +256,7 @@ void CGUITextureGL::Draw(float *x, float *y, float *z, const CRect &texture, con
 }
 
 void CGUITextureGL::DrawQuad(const CRect& rect,
-                             UTILS::COLOR::Color color,
+                             KODI::UTILS::COLOR::Color color,
                              CTexture* texture,
                              const CRect* texCoords,
                              const float depth,

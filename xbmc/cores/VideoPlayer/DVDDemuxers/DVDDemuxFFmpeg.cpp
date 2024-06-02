@@ -1804,7 +1804,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
           //! @todo: temporary font file management should be completely
           //! removed, by sending font data to the subtitle renderer and
           //! using libass ass_add_font to add the fonts directly in memory.
-          std::string filePath{UTILS::FONT::FONTPATH::TEMP};
+          std::string filePath{KODI::UTILS::FONT::FONTPATH::TEMP};
           XFILE::CDirectory::Create(filePath);
 
           AVDictionaryEntry* nameTag = av_dict_get(pStream->metadata, "filename", NULL, 0);

@@ -12,21 +12,24 @@
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 
-void UTILS::MOVING_SPEED::CMovingSpeed::AddEventConfig(uint32_t eventId,
-                                                       float acceleration,
-                                                       float maxVelocity,
-                                                       uint32_t resetTimeout)
+namespace KODI::UTILS::MOVING_SPEED
+{
+
+void CMovingSpeed::AddEventConfig(uint32_t eventId,
+                                  float acceleration,
+                                  float maxVelocity,
+                                  uint32_t resetTimeout)
 {
   EventCfg eventCfg{acceleration, maxVelocity, resetTimeout};
   m_eventsData.emplace(eventId, EventData{eventCfg});
 }
 
-void UTILS::MOVING_SPEED::CMovingSpeed::AddEventConfig(uint32_t eventId, EventCfg event)
+void CMovingSpeed::AddEventConfig(uint32_t eventId, EventCfg event)
 {
   m_eventsData.emplace(eventId, EventData{event});
 }
 
-void UTILS::MOVING_SPEED::CMovingSpeed::AddEventMapConfig(MapEventConfig& configs)
+void CMovingSpeed::AddEventMapConfig(MapEventConfig& configs)
 {
   for (auto& cfg : configs)
   {
@@ -34,7 +37,7 @@ void UTILS::MOVING_SPEED::CMovingSpeed::AddEventMapConfig(MapEventConfig& config
   }
 }
 
-void UTILS::MOVING_SPEED::CMovingSpeed::Reset()
+void CMovingSpeed::Reset()
 {
   m_currentEventId = 0;
   for (auto& eventPair : m_eventsData)
@@ -43,7 +46,7 @@ void UTILS::MOVING_SPEED::CMovingSpeed::Reset()
   }
 }
 
-void UTILS::MOVING_SPEED::CMovingSpeed::Reset(uint32_t eventId)
+void CMovingSpeed::Reset(uint32_t eventId)
 {
   auto mapIt = m_eventsData.find(eventId);
   if (mapIt == m_eventsData.end())
@@ -58,7 +61,7 @@ void UTILS::MOVING_SPEED::CMovingSpeed::Reset(uint32_t eventId)
   }
 }
 
-float UTILS::MOVING_SPEED::CMovingSpeed::GetUpdatedDistance(uint32_t eventId)
+float CMovingSpeed::GetUpdatedDistance(uint32_t eventId)
 {
   auto mapEventIt = m_eventsData.find(eventId);
 
@@ -104,7 +107,7 @@ float UTILS::MOVING_SPEED::CMovingSpeed::GetUpdatedDistance(uint32_t eventId)
   return distance;
 }
 
-UTILS::MOVING_SPEED::EventType UTILS::MOVING_SPEED::ParseEventType(std::string_view eventType)
+EventType ParseEventType(std::string_view eventType)
 {
   if (eventType == "up")
     return EventType::UP;
@@ -120,3 +123,5 @@ UTILS::MOVING_SPEED::EventType UTILS::MOVING_SPEED::ParseEventType(std::string_v
     return EventType::NONE;
   }
 }
+
+} // namespace KODI::UTILS::MOVING_SPEED

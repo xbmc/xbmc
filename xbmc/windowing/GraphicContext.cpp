@@ -29,6 +29,8 @@
 #include <cassert>
 #include <mutex>
 
+using KODI::UTILS::COLOR::Color;
+
 CGraphicContext::CGraphicContext() = default;
 CGraphicContext::~CGraphicContext() = default;
 
@@ -585,7 +587,7 @@ void CGraphicContext::Clear()
   CServiceBroker::GetRenderSystem()->InvalidateColorBuffer();
 }
 
-void CGraphicContext::Clear(UTILS::COLOR::Color color)
+void CGraphicContext::Clear(Color color)
 {
   CServiceBroker::GetRenderSystem()->ClearBuffers(color);
 }
@@ -922,14 +924,14 @@ float CGraphicContext::GetGUIScaleY() const
   return m_finalTransform.scaleY;
 }
 
-UTILS::COLOR::Color CGraphicContext::MergeAlpha(UTILS::COLOR::Color color) const
+Color CGraphicContext::MergeAlpha(Color color) const
 {
-  UTILS::COLOR::Color alpha = m_finalTransform.matrix.TransformAlpha((color >> 24) & 0xff);
+  Color alpha = m_finalTransform.matrix.TransformAlpha((color >> 24) & 0xff);
   if (alpha > 255) alpha = 255;
   return ((alpha << 24) & 0xff000000) | (color & 0xffffff);
 }
 
-UTILS::COLOR::Color CGraphicContext::MergeColor(UTILS::COLOR::Color color) const
+Color CGraphicContext::MergeColor(Color color) const
 {
   return m_finalTransform.matrix.TransformColor(color);
 }

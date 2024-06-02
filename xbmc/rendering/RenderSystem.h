@@ -45,7 +45,7 @@ public:
   virtual bool EndRender() = 0;
   virtual void PresentRender(bool rendered, bool videoLayer) = 0;
   virtual void InvalidateColorBuffer() {}
-  virtual bool ClearBuffers(UTILS::COLOR::Color color) = 0;
+  virtual bool ClearBuffers(KODI::UTILS::COLOR::Color color) = 0;
   virtual bool IsExtSupported(const char* extension) const = 0;
 
   virtual void SetViewPort(const CRect& viewPort) = 0;

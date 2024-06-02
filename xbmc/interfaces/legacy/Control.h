@@ -693,7 +693,7 @@ namespace XBMCAddon
 #endif
 
 #ifndef SWIG
-      UTILS::COLOR::Color color;
+      KODI::UTILS::COLOR::Color color;
       std::string strTextureUp;
       std::string strTextureDown;
       std::string strTextureUpFocus;
@@ -841,8 +841,8 @@ namespace XBMCAddon
 
       std::string strFont;
       std::string strText;
-      UTILS::COLOR::Color textColor;
-      UTILS::COLOR::Color disabledColor;
+      KODI::UTILS::COLOR::Color textColor;
+      KODI::UTILS::COLOR::Color disabledColor;
       uint32_t align;
       bool bHasPath = false;
       int iAngle = 0;
@@ -1038,8 +1038,8 @@ namespace XBMCAddon
       std::string strText;
       std::string strTextureFocus;
       std::string strTextureNoFocus;
-      UTILS::COLOR::Color textColor;
-      UTILS::COLOR::Color disabledColor;
+      KODI::UTILS::COLOR::Color textColor;
+      KODI::UTILS::COLOR::Color disabledColor;
       uint32_t align;
 
       CGUIControl* Create() override;
@@ -1608,8 +1608,8 @@ namespace XBMCAddon
       std::string strFont;
       AddonClass::Ref<ControlSpin> pControlSpin;
 
-      UTILS::COLOR::Color textColor;
-      UTILS::COLOR::Color selectedColor;
+      KODI::UTILS::COLOR::Color textColor;
+      KODI::UTILS::COLOR::Color selectedColor;
       std::string strTextureButton;
       std::string strTextureButtonFocus;
 
@@ -1761,7 +1761,7 @@ namespace XBMCAddon
 
 #ifndef SWIG
       std::string strFont;
-      UTILS::COLOR::Color textColor;
+      KODI::UTILS::COLOR::Color textColor;
       std::vector<std::string> vecLabels;
       uint32_t align;
 
@@ -1965,7 +1965,7 @@ namespace XBMCAddon
 
 #ifndef SWIG
       std::string strFont;
-      UTILS::COLOR::Color textColor;
+      KODI::UTILS::COLOR::Color textColor;
 
       CGUIControl* Create() override;
 
@@ -2082,7 +2082,7 @@ namespace XBMCAddon
 
       std::string strFileName;
       int aspectRatio = 0;
-      UTILS::COLOR::Color colorDiffuse;
+      KODI::UTILS::COLOR::Color colorDiffuse;
 
       CGUIControl* Create() override;
 #endif
@@ -2223,7 +2223,7 @@ namespace XBMCAddon
       std::string strTextureBg;
       std::string strTextureOverlay;
       int aspectRatio = 0;
-      UTILS::COLOR::Color colorDiffuse;
+      KODI::UTILS::COLOR::Color colorDiffuse;
 
       CGUIControl* Create() override;
       ControlProgress() = default;
@@ -2434,10 +2434,10 @@ namespace XBMCAddon
 
       int textOffsetX = 0;
       int textOffsetY = 0;
-      UTILS::COLOR::Color align;
+      KODI::UTILS::COLOR::Color align;
       std::string strFont;
-      UTILS::COLOR::Color textColor;
-      UTILS::COLOR::Color disabledColor;
+      KODI::UTILS::COLOR::Color textColor;
+      KODI::UTILS::COLOR::Color disabledColor;
       int iAngle = 0;
       int shadowColor = 0;
       int focusedColor = 0;
@@ -2738,14 +2738,14 @@ namespace XBMCAddon
       std::string strTextureRadioOffNoFocus;
       std::string strTextureRadioOnDisabled;
       std::string strTextureRadioOffDisabled;
-      UTILS::COLOR::Color textColor;
-      UTILS::COLOR::Color disabledColor;
+      KODI::UTILS::COLOR::Color textColor;
+      KODI::UTILS::COLOR::Color disabledColor;
       int textOffsetX = 0;
       int textOffsetY = 0;
      uint32_t align;
       int iAngle = 0;
-      UTILS::COLOR::Color shadowColor;
-      UTILS::COLOR::Color focusedColor;
+      KODI::UTILS::COLOR::Color shadowColor;
+      KODI::UTILS::COLOR::Color focusedColor;
 
       CGUIControl* Create() override;
 

@@ -326,7 +326,7 @@ bool CRenderSystemDX::EndRender()
   return true;
 }
 
-bool CRenderSystemDX::ClearBuffers(UTILS::COLOR::Color color)
+bool CRenderSystemDX::ClearBuffers(KODI::UTILS::COLOR::Color color)
 {
   if (!m_bRenderCreated)
     return false;

@@ -611,7 +611,7 @@ bool CGUIControlFactory::GetScroller(const TiXmlNode* control,
 
 bool CGUIControlFactory::GetColor(const TiXmlNode* control,
                                   const char* strTag,
-                                  UTILS::COLOR::Color& value)
+                                  KODI::UTILS::COLOR::Color& value)
 {
   const TiXmlElement* node = control->FirstChildElement(strTag);
   if (node && node->FirstChild())
@@ -745,7 +745,7 @@ std::string CGUIControlFactory::GetType(const TiXmlElement* pControlNode)
 
 bool CGUIControlFactory::GetMovingSpeedConfig(const TiXmlNode* pRootNode,
                                               const char* strTag,
-                                              UTILS::MOVING_SPEED::MapEventConfig& movingSpeedCfg)
+                                              KODI::UTILS::MOVING_SPEED::MapEventConfig& movingSpeedCfg)
 {
   const TiXmlElement* msNode = pRootNode->FirstChildElement(strTag);
   if (!msNode)
@@ -780,8 +780,8 @@ bool CGUIControlFactory::GetMovingSpeedConfig(const TiXmlNode* pRootNode,
     const char* deltaStr{configElement->Attribute("delta")};
     float delta = deltaStr ? StringUtils::ToFloat(deltaStr) : globalDelta;
 
-    UTILS::MOVING_SPEED::EventCfg eventCfg{acceleration, maxVelocity, resetTimeout, delta};
-    movingSpeedCfg.emplace(UTILS::MOVING_SPEED::ParseEventType(eventType), eventCfg);
+    KODI::UTILS::MOVING_SPEED::EventCfg eventCfg{acceleration, maxVelocity, resetTimeout, delta};
+    movingSpeedCfg.emplace(KODI::UTILS::MOVING_SPEED::ParseEventType(eventType), eventCfg);
   }
   return true;
 }
@@ -914,7 +914,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
   bool bPassword = false;
   std::string visibleCondition;
 
-  UTILS::MOVING_SPEED::MapEventConfig movingSpeedCfg;
+  KODI::UTILS::MOVING_SPEED::MapEventConfig movingSpeedCfg;
 
   /////////////////////////////////////////////////////////////////////////////
   // Read control properties from XML

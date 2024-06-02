@@ -19,7 +19,10 @@ std::unique_ptr<CSlideShowPic> CSlideShowPic::CreateSlideShowPicture()
   return std::make_unique<CSlideShowPicGLES>();
 }
 
-void CSlideShowPicGLES::Render(float* x, float* y, CTexture* pTexture, UTILS::COLOR::Color color)
+void CSlideShowPicGLES::Render(float* x,
+                               float* y,
+                               CTexture* pTexture,
+                               KODI::UTILS::COLOR::Color color)
 {
   CRenderSystemGLES* renderSystem =
       dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());

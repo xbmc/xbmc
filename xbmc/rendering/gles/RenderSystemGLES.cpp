@@ -211,7 +211,7 @@ void CRenderSystemGLES::InvalidateColorBuffer()
   glClear(GL_DEPTH_BUFFER_BIT);
 }
 
-bool CRenderSystemGLES::ClearBuffers(UTILS::COLOR::Color color)
+bool CRenderSystemGLES::ClearBuffers(KODI::UTILS::COLOR::Color color)
 {
   if (!m_bRenderCreated)
     return false;

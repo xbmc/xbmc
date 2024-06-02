@@ -13,12 +13,14 @@
 #include "rendering/gl/RenderSystemGL.h"
 #include "utils/GLUtils.h"
 
+using KODI::UTILS::COLOR::Color;
+
 std::unique_ptr<CSlideShowPic> CSlideShowPic::CreateSlideShowPicture()
 {
   return std::make_unique<CSlideShowPicGL>();
 }
 
-void CSlideShowPicGL::Render(float* x, float* y, CTexture* pTexture, UTILS::COLOR::Color color)
+void CSlideShowPicGL::Render(float* x, float* y, CTexture* pTexture, Color color)
 {
   CRenderSystemGL* renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
   if (pTexture)

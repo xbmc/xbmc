@@ -32,7 +32,7 @@ public:
                     float height,
                     const CTextureInfo& textureFocus,
                     const CTextureInfo& textureNoFocus,
-                    UTILS::MOVING_SPEED::MapEventConfig& movingSpeedCfg);
+                    KODI::UTILS::MOVING_SPEED::MapEventConfig& movingSpeedCfg);
 
   ~CGUIResizeControl() override = default;
   CGUIResizeControl* Clone() const override { return new CGUIResizeControl(*this); }
@@ -60,7 +60,7 @@ protected:
   std::unique_ptr<CGUITexture> m_imgFocus;
   std::unique_ptr<CGUITexture> m_imgNoFocus;
   unsigned int m_frameCounter;
-  UTILS::MOVING_SPEED::CMovingSpeed m_movingSpeed;
+  KODI::UTILS::MOVING_SPEED::CMovingSpeed m_movingSpeed;
   float m_fAnalogSpeed;
   float m_x1, m_x2, m_y1, m_y2;
 

@@ -76,7 +76,7 @@ public:
   bool EndRender() override;
   void PresentRender(bool rendered, bool videoLayer) override;
   void InvalidateColorBuffer() override;
-  bool ClearBuffers(UTILS::COLOR::Color color) override;
+  bool ClearBuffers(KODI::UTILS::COLOR::Color color) override;
   bool IsExtSupported(const char* extension) const override;
 
   void SetVSync(bool vsync);

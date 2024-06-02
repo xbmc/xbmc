@@ -1075,7 +1075,7 @@ void CGUIWindow::RunUnloadActions() const
 void CGUIWindow::ClearBackground()
 {
   m_clearBackground.Update();
-  UTILS::COLOR::Color color = m_clearBackground;
+  KODI::UTILS::COLOR::Color color = m_clearBackground;
   if (color)
     CServiceBroker::GetWinSystem()->GetGfxContext().Clear(color);
   else if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiGeometryClear)

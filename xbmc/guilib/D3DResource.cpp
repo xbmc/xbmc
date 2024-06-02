@@ -494,7 +494,7 @@ void CD3DTexture::GenerateMipmaps()
 
 // static methods
 void CD3DTexture::DrawQuad(const CPoint points[4],
-                           UTILS::COLOR::Color color,
+                           KODI::UTILS::COLOR::Color color,
                            CD3DTexture* texture,
                            const CRect* texCoords,
                            SHADER_METHOD options)
@@ -512,7 +512,7 @@ void CD3DTexture::DrawQuad(const CPoint points[4],
 }
 
 void CD3DTexture::DrawQuad(const CRect& rect,
-                           UTILS::COLOR::Color color,
+                           KODI::UTILS::COLOR::Color color,
                            CD3DTexture* texture,
                            const CRect* texCoords,
                            SHADER_METHOD options)
@@ -528,7 +528,7 @@ void CD3DTexture::DrawQuad(const CRect& rect,
 }
 
 void CD3DTexture::DrawQuad(const CPoint points[4],
-                           UTILS::COLOR::Color color,
+                           KODI::UTILS::COLOR::Color color,
                            unsigned numViews,
                            ID3D11ShaderResourceView** view,
                            const CRect* texCoords,
@@ -554,7 +554,7 @@ void CD3DTexture::DrawQuad(const CPoint points[4],
 }
 
 void CD3DTexture::DrawQuad(const CRect& rect,
-                           UTILS::COLOR::Color color,
+                           KODI::UTILS::COLOR::Color color,
                            unsigned numViews,
                            ID3D11ShaderResourceView** view,
                            const CRect* texCoords,
