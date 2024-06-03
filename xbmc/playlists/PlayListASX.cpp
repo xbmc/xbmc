@@ -12,7 +12,7 @@
 #include "PlayListFactory.h"
 #include "filesystem/File.h"
 #include "utils/StringUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 #include "video/VideoFileItemClassify.h"
@@ -20,6 +20,8 @@
 
 #include <iostream>
 #include <string>
+
+#include <tinyxml2.h>
 
 using namespace XFILE;
 
@@ -83,79 +85,73 @@ bool CPlayListASX::LoadData(std::istream& stream)
   else
   {
     std::string asxStream(std::istreambuf_iterator<char>(stream), {});
-    CXBMCTinyXML xmlDoc;
-    xmlDoc.Parse(asxStream, TIXML_DEFAULT_ENCODING);
+
+    CXBMCTinyXML2 xmlDoc;
+    xmlDoc.Parse(asxStream);
 
     if (xmlDoc.Error())
     {
-      CLog::Log(LOGERROR, "Unable to parse ASX info Error: {}", xmlDoc.ErrorDesc());
+      CLog::Log(LOGERROR, "Unable to parse ASX info Error: {}", xmlDoc.ErrorStr());
       return false;
     }
 
-    TiXmlElement* pRootElement = xmlDoc.RootElement();
+    auto* srcRootElement = xmlDoc.RootElement();
 
-    if (!pRootElement)
+    if (!srcRootElement)
       return false;
 
-    // lowercase every element
-    TiXmlNode* pNode = pRootElement;
-    TiXmlNode* pChild = NULL;
-    std::string value;
-    value = pNode->Value();
+    // lowercase every element - copy to second  temp doc
+    tinyxml2::XMLDocument targetDoc;
+    std::string value = srcRootElement->Value();
+
     StringUtils::ToLower(value);
-    pNode->SetValue(value);
-    while (pNode)
+    auto targetRootElement = targetDoc.NewElement(value.c_str());
+
+    auto* rootAttrib = srcRootElement->ToElement()->FirstAttribute();
+    while (rootAttrib)
     {
-      pChild = pNode->IterateChildren(pChild);
-      if (pChild)
-      {
-        if (pChild->Type() == TiXmlNode::TINYXML_ELEMENT)
-        {
-          value = pChild->Value();
-          StringUtils::ToLower(value);
-          pChild->SetValue(value);
-
-          TiXmlAttribute* pAttr = pChild->ToElement()->FirstAttribute();
-          while (pAttr)
-          {
-            value = pAttr->Name();
-            StringUtils::ToLower(value);
-            pAttr->SetName(value);
-            pAttr = pAttr->Next();
-          }
-        }
-
-        pNode = pChild;
-        pChild = NULL;
-        continue;
-      }
-
-      pChild = pNode;
-      pNode = pNode->Parent();
+      std::string attribName = rootAttrib->Name();
+      auto attribValue = rootAttrib->Value();
+      StringUtils::ToLower(attribName);
+      targetRootElement->SetAttribute(attribName.c_str(), attribValue);
+      rootAttrib = rootAttrib->Next();
     }
-    std::string roottitle;
-    TiXmlElement* pElement = pRootElement->FirstChildElement();
-    while (pElement)
+
+    auto* sourceNode = srcRootElement->FirstChild();
+    while (sourceNode)
     {
-      value = pElement->Value();
-      if (value == "title" && !pElement->NoChildren())
+      // Function to check all child elements and lowercase the elem/attrib names
+      recurseLowercaseNames(*targetRootElement, sourceNode);
+
+      sourceNode = sourceNode->NextSiblingElement();
+    }
+
+    targetDoc.InsertFirstChild(targetRootElement);
+
+    // now data is lowercased, we can parse contents
+    std::string roottitle;
+    auto* element = targetDoc.RootElement()->FirstChildElement();
+    while (element)
+    {
+      value = element->Value();
+      if (value == "title" && !element->NoChildren())
       {
-        roottitle = pElement->FirstChild()->ValueStr();
+        roottitle = element->FirstChild()->Value();
       }
       else if (value == "entry")
       {
         std::string title(roottitle);
 
-        TiXmlElement* pRef = pElement->FirstChildElement("ref");
-        TiXmlElement* pTitle = pElement->FirstChildElement("title");
+        auto* refElement = element->FirstChildElement("ref");
+        auto* titleElement = element->FirstChildElement("title");
 
-        if (pTitle && !pTitle->NoChildren())
-          title = pTitle->FirstChild()->ValueStr();
+        if (titleElement && !titleElement->NoChildren())
+          title = titleElement->FirstChild()->Value();
 
-        while (pRef)
+        while (refElement)
         { // multiple references may appear for one entry
           // duration may exist on this level too
-          value = XMLUtils::GetAttribute(pRef, "href");
+          value = XMLUtils::GetAttribute(refElement, "href");
           if (!value.empty())
           {
             if (title.empty())
@@ -166,12 +162,12 @@ bool CPlayListASX::LoadData(std::istream& stream)
             newItem->SetPath(value);
             Add(newItem);
           }
-          pRef = pRef->NextSiblingElement("ref");
+          refElement = refElement->NextSiblingElement("ref");
         }
       }
       else if (value == "entryref")
       {
-        value = XMLUtils::GetAttribute(pElement, "href");
+        value = XMLUtils::GetAttribute(element, "href");
         if (!value.empty())
         { // found an entryref, let's try loading that url
           std::unique_ptr<CPlayList> playlist(CPlayListFactory::Create(value));
@@ -180,10 +176,61 @@ bool CPlayListASX::LoadData(std::istream& stream)
               Add(*playlist);
         }
       }
-      pElement = pElement->NextSiblingElement();
+      element = element->NextSiblingElement();
     }
   }
 
   return true;
 }
+
+void CPlayListASX::recurseLowercaseNames(tinyxml2::XMLNode& targetNode,
+                                         tinyxml2::XMLNode* sourceNode)
+{
+  if (sourceNode->ToElement())
+  {
+    std::string strNodeValue = sourceNode->Value();
+    StringUtils::ToLower(strNodeValue);
+    auto* targetElement = targetNode.GetDocument()->NewElement(strNodeValue.c_str());
+
+    auto* attrib = sourceNode->ToElement()->FirstAttribute();
+    while (attrib)
+    {
+      std::string attribName = attrib->Name();
+      auto attribValue = attrib->Value();
+      StringUtils::ToLower(attribName);
+      targetElement->SetAttribute(attribName.c_str(), attribValue);
+      attrib = attrib->Next();
+    }
+
+    if (!sourceNode->NoChildren())
+    {
+      for (auto* child = sourceNode->FirstChild(); child != nullptr; child = child->NextSibling())
+      {
+        recurseLowercaseNames(*targetElement, child);
+      }
+    }
+
+    targetNode.InsertEndChild(targetElement);
+    return;
+  }
+  else if (sourceNode->ToText())
+  {
+    auto* sourceTextElement = sourceNode->ToText();
+    auto* sourceText = sourceTextElement->Value();
+    auto* targetText = targetNode.GetDocument()->NewText(sourceText);
+
+    if (!sourceNode->NoChildren())
+    {
+      for (auto* child = sourceNode->FirstChildElement(); child != nullptr;
+           child = child->NextSiblingElement())
+      {
+        recurseLowercaseNames(*targetText, child);
+      }
+    }
+
+    targetNode.InsertEndChild(targetText);
+    return;
+  }
+}
+
 } // namespace KODI::PLAYLIST

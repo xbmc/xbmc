@@ -1,8 +1,11 @@
-<asx version="3.0">
+<ASX version="3.0">
   <title>Example.com Live Stream</title>
  
   <entry>
     <title>Short Announcement to Play Before Main Stream</title>
+    <test>
+      <something>something test</something>
+    </test>
     <ref href="http://example.com/announcement.wma" />
     <param name="aParameterName" value="aParameterValue" />
   </entry>
@@ -14,10 +17,10 @@
     <copyright>Copyright © 2005 Example.com</copyright>
   </entry>
 
-  <Entry>
+  <ENTRY>
     <TITLE>Capital Title</TITLE>
-    <ref href="http://example3.com:8080" />
+    <REF HREF="http://example3.com:8080" />
     <AUTHOR>Capital Author</AUTHOR>
-    <copyright>Copyright © 2005 Example.com</copyright>
-  </Entry>
-</asx>
+    <COPYRIGHT>Copyright © 2005 Example.com</COPYRIGHT>
+  </ENTRY>
+</ASX>
