@@ -1,9 +1,10 @@
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -239,6 +239,26 @@
+@@ -254,6 +254,26 @@
+         target_compile_definitions(spdlog_header_only INTERFACE ${SPDLOG_OPTION})
      endif()
  endforeach()
- 
++
 +if(WIN32 OR WINDOWS_STORE)
 +  set_target_properties(spdlog
 +    PROPERTIES
@@ -23,11 +24,10 @@
 +      /debug:full
 +  )
 +endif()
-+
- if(SPDLOG_NO_EXCEPTIONS AND NOT MSVC)
-     target_compile_options(spdlog PRIVATE -fno-exceptions)
- endif()
-@@ -296,6 +316,22 @@
+ 
+ # ---------------------------------------------------------------------------------------
+ # If exceptions are disabled, disable them in the bundled fmt as well
+@@ -321,6 +341,22 @@
      endif()
  
      # ---------------------------------------------------------------------------------------
@@ -49,4 +49,4 @@
 +    # ---------------------------------------------------------------------------------------
      # Install pkg-config file
      # ---------------------------------------------------------------------------------------
-     get_target_property(PKG_CONFIG_DEFINES spdlog INTERFACE_COMPILE_DEFINITIONS)
+     if(IS_ABSOLUTE "${CMAKE_INSTALL_INCLUDEDIR}")
