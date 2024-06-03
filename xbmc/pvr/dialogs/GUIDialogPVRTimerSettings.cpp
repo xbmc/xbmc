@@ -120,7 +120,7 @@ void CGUIDialogPVRTimerSettings::SetTimer(const std::shared_ptr<CPVRTimerInfoTag
   m_firstDayLocalTime = m_timerInfoTag->FirstDayAsLocalTime();
 
   m_strEpgSearchString = m_timerInfoTag->m_strEpgSearchString;
-  if ((m_bIsNewTimer || !m_timerType->SupportsEpgTitleMatch()) && m_strEpgSearchString.empty())
+  if (!m_bIsNewTimer && m_strEpgSearchString.empty())
     m_strEpgSearchString = m_strTitle;
 
   m_bFullTextEpgSearch = m_timerInfoTag->m_bFullTextEpgSearch;
