@@ -190,7 +190,7 @@ case $build in
 
     # acquire build platform (native) sdk sysroot.
     build_platform=macosx
-    native_sdk_path=[`$use_xcrun --show-sdk-path`]
+    native_sdk_path=[`$use_xcrun --sdk macosx --show-sdk-path`]
     host_sysroot="$native_sdk_path"
     host_includes="${host_includes} -isysroot $native_sdk_path"
 
