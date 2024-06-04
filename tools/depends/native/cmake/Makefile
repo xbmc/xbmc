@@ -7,10 +7,6 @@ DEPS = ../../Makefile.include Makefile CMAKE-VERSION ../../download-files.includ
 SETENV=CC="$(CC_FOR_BUILD)" CXX="$(CXX_FOR_BUILD)" LD=$(LD_FOR_BUILD) CFLAGS="$(NATIVE_CFLAGS)" \
 	CXXFLAGS="$(NATIVE_CXXFLAGS)" LDFLAGS="$(NATIVE_LDFLAGS)"
 
-ifeq ($(NATIVE_OS), osx)
-  SETENV+=SDKROOT=$(shell xcrun --show-sdk-path)
-endif
-
 CONFIGURE=./bootstrap --prefix=$(NATIVEPREFIX) --system-curl
 ifeq ($(USE_CCACHE), yes)
 	CONFIGURE+=--enable-ccache
