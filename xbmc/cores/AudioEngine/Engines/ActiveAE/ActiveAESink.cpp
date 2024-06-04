@@ -911,7 +911,7 @@ void CActiveAESink::OpenSink()
     m_needIecPack = NeedIECPacking();
     if (m_needIecPack)
     {
-      m_packer = std::make_unique<CAEBitstreamPacker>(m_requestedFormat.m_streamInfo);
+      m_packer = std::make_unique<CAEBitstreamPacker>();
       m_requestedFormat.m_sampleRate = CAEBitstreamPacker::GetOutputRate(m_requestedFormat.m_streamInfo);
       m_requestedFormat.m_channelLayout = CAEBitstreamPacker::GetOutputChannelMap(m_requestedFormat.m_streamInfo);
     }

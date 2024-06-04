@@ -20,7 +20,7 @@ class CAEStreamInfo;
 class CAEBitstreamPacker
 {
 public:
-  CAEBitstreamPacker(const CAEStreamInfo& info);
+  CAEBitstreamPacker();
   ~CAEBitstreamPacker();
 
   void Pack(CAEStreamInfo &info, uint8_t* data, int size);
