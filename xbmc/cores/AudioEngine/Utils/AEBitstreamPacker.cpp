@@ -23,7 +23,7 @@ constexpr auto BURST_HEADER_SIZE = 8;
 constexpr auto EAC3_MAX_BURST_PAYLOAD_SIZE = 24576 - BURST_HEADER_SIZE;
 } // namespace
 
-CAEBitstreamPacker::CAEBitstreamPacker(const CAEStreamInfo& info)
+CAEBitstreamPacker::CAEBitstreamPacker()
 {
   Reset();
 }
