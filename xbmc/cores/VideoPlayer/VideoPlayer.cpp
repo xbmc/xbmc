@@ -582,8 +582,8 @@ void CVideoPlayer::CreatePlayers()
   if (m_players_created)
     return;
 
-  m_VideoPlayerVideo = new CVideoPlayerVideo(&m_clock, &m_overlayContainer, m_messenger, m_renderManager, *m_processInfo);
-  m_VideoPlayerAudio = new CVideoPlayerAudio(&m_clock, m_messenger, *m_processInfo);
+  m_VideoPlayerVideo = new CVideoPlayerVideo(&m_clock, &m_overlayContainer, m_messenger, m_renderManager, *m_processInfo, m_messageQueueTimeSize);
+  m_VideoPlayerAudio = new CVideoPlayerAudio(&m_clock, m_messenger, *m_processInfo, m_messageQueueTimeSize);
   m_VideoPlayerSubtitle = new CVideoPlayerSubtitle(&m_overlayContainer, *m_processInfo);
   m_VideoPlayerTeletext = new CDVDTeletextData(*m_processInfo);
   m_VideoPlayerRadioRDS = new CDVDRadioRDSData(*m_processInfo);
@@ -1239,6 +1239,13 @@ void CVideoPlayer::Prepare()
     m_bAbortRequest = true;
     m_error = true;
     return;
+  }
+
+  if (m_pInputStream->IsLowLatency()) {
+    m_processInfo->SetStateLowLatency(true);
+    m_messageQueueTimeSize = VP_MESSAGE_QUEUE_SIZE_LL;
+    // Force recreation of players with ll queue sizes
+    DestroyPlayers();
   }
 
   bool discStateRestored = false;
@@ -4677,7 +4684,7 @@ double CVideoPlayer::GetQueueTime()
 {
   int a = m_VideoPlayerAudio->GetLevel();
   int v = m_processInfo->GetLevelVQ();
-  return std::max(a, v) * 8000.0 / 100;
+  return std::max(a, v) * m_messageQueueTimeSize * 1000.0 / 100.0;
 }
 
 int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string& subfilename)
@@ -4921,6 +4928,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
     }
 
     m_processInfo->SetStateRealtime(realtime);
+    m_processInfo->SetStateLowLatency(m_pInputStream->IsLowLatency());
   }
 
   if (m_Edl.HasCuts())
