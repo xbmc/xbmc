@@ -2014,6 +2014,9 @@ void CVideoPlayer::HandlePlaySpeed()
     if (m_pInputStream->IsRealtime())
       threshold = 40;
 
+    if (m_pInputStream->IsLowLatency())
+      threshold = 2;
+
     bool video = m_CurrentVideo.id < 0 || (m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_WAITSYNC) ||
                  (m_CurrentVideo.packets == 0 && m_CurrentAudio.packets > threshold) ||
                  (!m_VideoPlayerAudio->AcceptsData() && m_processInfo->GetLevelVQ() < 10);
