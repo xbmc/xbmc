@@ -2010,19 +2010,56 @@ void CVideoPlayer::HandlePlaySpeed()
   if ((m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_WAITSYNC) ||
       (m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_WAITSYNC))
   {
+    bool lowLatency = m_pInputStream->IsLowLatency();
     unsigned int threshold = 20;
     if (m_pInputStream->IsRealtime())
       threshold = 40;
 
-    if (m_pInputStream->IsLowLatency())
+    if (lowLatency)
       threshold = 2;
 
+    // Decide if we need to sync:
+    // Normally we wait until audio and video are in SYNC_WAITSYNC state which is set when
+    // the first frame is decoded. But if we have a lot of audio packets and no video packets
+    // or vice versa, we can start syncing earlier.
+    // If we are in low latency mode, we ignore the syncstate of either audio or video and sync
+    // as soon as one of them has enough packets.
     bool video = m_CurrentVideo.id < 0 || (m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_WAITSYNC) ||
                  (m_CurrentVideo.packets == 0 && m_CurrentAudio.packets > threshold) ||
-                 (!m_VideoPlayerAudio->AcceptsData() && m_processInfo->GetLevelVQ() < 10);
+                 (!m_VideoPlayerAudio->AcceptsData() && m_processInfo->GetLevelVQ() < 10) ||
+                 ((m_CurrentVideo.packets == 0 && m_CurrentAudio.packets > threshold) && lowLatency);
+
     bool audio = m_CurrentAudio.id < 0 || (m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_WAITSYNC) ||
                  (m_CurrentAudio.packets == 0 && m_CurrentVideo.packets > threshold) ||
-                 (!m_VideoPlayerVideo->AcceptsData() && m_VideoPlayerAudio->GetLevel() < 10);
+                 (!m_VideoPlayerVideo->AcceptsData() && m_VideoPlayerAudio->GetLevel() < 10) ||
+                 ((m_CurrentAudio.packets == 0 && m_CurrentVideo.packets > threshold) && lowLatency);
+
+    // If we are in low latency mode and we have audio, go ahead and sync
+    if (!video && audio)
+      video = audio && lowLatency;
+
+    // If we are in low latency mode and we have video, go ahead and sync
+    if (!audio && video)
+      audio = video && lowLatency;
+
+    CLog::Log(LOGDEBUG, "VideoPlayer::Sync - Decide if we should sync: video: {}, audio: {}", video, audio);
+    CLog::Log(LOGDEBUG, "VideoPlayer::Sync - Audioinfo - pts: {}, cache: {}, totalcache: {}, packets: {}, syncState: {}, avsync: {}, treshold: {}",
+      m_CurrentAudio.starttime,
+      m_CurrentAudio.cachetime,
+      m_CurrentAudio.cachetotal,
+      m_CurrentAudio.packets,
+      m_CurrentAudio.syncState,
+      m_CurrentAudio.avsync,
+      threshold);
+
+    CLog::Log(LOGDEBUG, "VideoPlayer::Sync - Videoinfo - pts: {}, cache: {}, totalcache: {}, packets: {}, syncState: {}, avsync: {}, treshold: {}",
+      m_CurrentVideo.starttime,
+      m_CurrentVideo.cachetime,
+      m_CurrentVideo.cachetotal,
+      m_CurrentVideo.packets,
+      m_CurrentVideo.syncState,
+      m_CurrentVideo.avsync,
+      threshold);
 
     if (m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_WAITSYNC &&
         (m_CurrentAudio.avsync == CCurrentStream::AV_SYNC_CONT ||
