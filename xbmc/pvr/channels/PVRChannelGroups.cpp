@@ -359,14 +359,14 @@ bool CPVRChannelGroups::UpdateFromClients(const std::vector<std::shared_ptr<CPVR
         CLog::LogFC(LOGERROR, LOGPVR, "Failed to update channel group '{}'", group->GroupName());
         bReturn = false;
       }
-    }
 
-    if (bReturn && group->IsChannelsOwner() &&
-        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bPVRChannelIconsAutoScan)
-    {
-      CServiceBroker::GetPVRManager().TriggerSearchMissingChannelIcons(group);
+      if (bReturn && group->IsChannelsOwner() &&
+          CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bPVRChannelIconsAutoScan)
+        CServiceBroker::GetPVRManager().TriggerSearchMissingChannelIcons(group);
     }
   }
+
+  UpdateSystemChannelGroups();
 
   if (bChannelsOnly)
   {
@@ -379,6 +379,32 @@ bool CPVRChannelGroups::UpdateFromClients(const std::vector<std::shared_ptr<CPVR
 
   // persist changes
   return PersistAll() && bReturn;
+}
+
+void CPVRChannelGroups::UpdateSystemChannelGroups()
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+
+  // Update existing groups
+  for (const auto& group : m_groups)
+  {
+    group->UpdateGroupMembers(GetGroupAll(), m_groups);
+  }
+
+  // Determine new groups needed
+  const std::vector<std::shared_ptr<CPVRChannelGroup>> newGroups{
+      GetGroupFactory()->CreateMissingGroups(GetGroupAll(), m_groups)};
+
+  // Update new groups
+  for (const auto& group : newGroups)
+  {
+    group->UpdateGroupMembers(GetGroupAll(), m_groups);
+  }
+
+  if (!newGroups.empty())
+    m_groups.insert(m_groups.end(), newGroups.cbegin(), newGroups.cend());
+
+  SortGroups();
 }
 
 bool CPVRChannelGroups::UpdateChannelNumbersFromAllChannelsGroup()
@@ -616,6 +642,7 @@ void CPVRChannelGroups::GroupStateChanged(const std::shared_ptr<CPVRChannelGroup
   else
     group->Persist();
 
+  UpdateSystemChannelGroups();
   CServiceBroker::GetPVRManager().PublishEvent(PVREvent::ChannelGroupsInvalidated);
 }
 

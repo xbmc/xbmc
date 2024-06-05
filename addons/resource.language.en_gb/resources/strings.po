@@ -3996,7 +3996,13 @@ msgctxt "#858"
 msgid "User"
 msgstr ""
 
-#empty strings from id 859 to 996
+#. Label postfix for channel groups containing content from all channels (e.g. "PVR Client 1 [All channels]")
+#: xbmc/pvr/channels/PVRChannelGroupAllChannelsSingleClient.cpp
+msgctxt "#859"
+msgid "{0:s} [All channels]"
+msgstr ""
+
+#empty strings from id 860 to 996
 
 #: xbmc/windows/GUIMediaWindow.cpp
 msgctxt "#997"

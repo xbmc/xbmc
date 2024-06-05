@@ -294,6 +294,8 @@ private:
   void GroupStateChanged(const std::shared_ptr<CPVRChannelGroup>& group,
                          GroupState state = GroupState::CHANGED);
 
+  void UpdateSystemChannelGroups();
+
   bool m_bRadio{false};
   std::vector<std::shared_ptr<CPVRChannelGroup>> m_groups;
   mutable CCriticalSection m_critSection;

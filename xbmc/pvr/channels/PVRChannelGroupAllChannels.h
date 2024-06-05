@@ -62,7 +62,7 @@ public:
   /*!
    * @brief Return the type of this group.
    */
-  int GroupType() const override { return PVR_GROUP_TYPE_SYSTEM_ALL_CHANNELS; }
+  int GroupType() const override { return PVR_GROUP_TYPE_SYSTEM_ALL_CHANNELS_ALL_CLIENTS; }
 
   /*!
    * @brief Check whether this group could be deleted by the user.

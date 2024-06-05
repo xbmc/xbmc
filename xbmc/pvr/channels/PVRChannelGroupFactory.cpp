@@ -9,6 +9,7 @@
 #include "PVRChannelGroupFactory.h"
 
 #include "pvr/channels/PVRChannelGroupAllChannels.h"
+#include "pvr/channels/PVRChannelGroupAllChannelsSingleClient.h"
 #include "pvr/channels/PVRChannelGroupFromClient.h"
 #include "pvr/channels/PVRChannelGroupFromUser.h"
 #include "pvr/channels/PVRChannelsPath.h"
@@ -45,10 +46,12 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroupFactory::CreateGroup(
 {
   switch (groupType)
   {
-    case PVR_GROUP_TYPE_SYSTEM_ALL_CHANNELS:
+    case PVR_GROUP_TYPE_SYSTEM_ALL_CHANNELS_ALL_CLIENTS:
       return std::make_shared<CPVRChannelGroupAllChannels>(groupPath);
     case PVR_GROUP_TYPE_USER:
       return std::make_shared<CPVRChannelGroupFromUser>(groupPath, allChannels);
+    case PVR_GROUP_TYPE_SYSTEM_ALL_CHANNELS_SINGLE_CLIENT:
+      return std::make_shared<CPVRChannelGroupAllChannelsSingleClient>(groupPath, allChannels);
     case PVR_GROUP_TYPE_CLIENT:
       return std::make_shared<CPVRChannelGroupFromClient>(groupPath, allChannels);
     default:
@@ -63,13 +66,31 @@ int CPVRChannelGroupFactory::GetGroupTypePriority(
 {
   switch (group->GroupType())
   {
-    case PVR_GROUP_TYPE_SYSTEM_ALL_CHANNELS:
+    // System groups, created and managed by Kodi
+    case PVR_GROUP_TYPE_SYSTEM_ALL_CHANNELS_ALL_CLIENTS:
       return 0; // highest
-    case PVR_GROUP_TYPE_USER:
+    case PVR_GROUP_TYPE_SYSTEM_ALL_CHANNELS_SINGLE_CLIENT:
       return 1;
+
+    // User groups, created and managed by the user
+    case PVR_GROUP_TYPE_USER:
+      return 20;
+
+    // Client groups, created and managed by a PVR client add-on
     case PVR_GROUP_TYPE_CLIENT:
-      return 2;
+      return 40;
+
     default:
-      return 3;
+      CLog::LogFC(LOGWARNING, LOGPVR, "Using default priority for group '{}' with type {}'.",
+                  group->GroupName(), group->GroupType());
+      return 60;
   }
+}
+
+std::vector<std::shared_ptr<CPVRChannelGroup>> CPVRChannelGroupFactory::CreateMissingGroups(
+    const std::shared_ptr<CPVRChannelGroup>& allChannelsGroup,
+    const std::vector<std::shared_ptr<CPVRChannelGroup>>& allChannelGroups)
+{
+  return CPVRChannelGroupAllChannelsSingleClient::CreateMissingGroups(allChannelsGroup,
+                                                                      allChannelGroups);
 }

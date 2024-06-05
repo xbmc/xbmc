@@ -25,8 +25,9 @@ struct PVR_CHANNEL_GROUP;
 namespace PVR
 {
 static constexpr int PVR_GROUP_TYPE_CLIENT = 0;
-static constexpr int PVR_GROUP_TYPE_SYSTEM_ALL_CHANNELS = 1;
+static constexpr int PVR_GROUP_TYPE_SYSTEM_ALL_CHANNELS_ALL_CLIENTS = 1;
 static constexpr int PVR_GROUP_TYPE_USER = 2;
+static constexpr int PVR_GROUP_TYPE_SYSTEM_ALL_CHANNELS_SINGLE_CLIENT = 3;
 
 static constexpr int PVR_GROUP_CLIENT_ID_UNKNOWN = -2;
 static constexpr int PVR_GROUP_CLIENT_ID_LOCAL = -1;
@@ -525,6 +526,19 @@ public:
    */
   virtual bool ShouldBeIgnored(
       const std::vector<std::shared_ptr<CPVRChannelGroup>>& allChannelGroups) const;
+
+  /*!
+   * @brief Update all group members.
+   * @param allChannelsGroup The all channels group.
+   * @param allChannelGroups All available channel groups.
+   * @return True on success, false otherwise.
+   */
+  virtual bool UpdateGroupMembers(
+      const std::shared_ptr<CPVRChannelGroup>& allChannelsGroup,
+      const std::vector<std::shared_ptr<CPVRChannelGroup>>& allChannelGroups)
+  {
+    return true;
+  }
 
 protected:
   /*!
