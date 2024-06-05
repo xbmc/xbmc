@@ -44,6 +44,11 @@ bool CDVDInputStreamFFmpeg::Open()
       StringUtils::CompareNoCase(m_item.GetDynPath(), "rtp://", 6) == 0)
   {
     m_realtime = true;
+
+    CURL url = GetURL();
+    std::string lowlatency;
+    if (url.GetOption("lowlatency", lowlatency))
+      m_lowLatency = lowlatency == "true";
   }
 
   return true;

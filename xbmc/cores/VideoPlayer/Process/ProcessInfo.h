@@ -119,6 +119,9 @@ public:
   void SetVideoSettings(CVideoSettings &settings);
   CVideoSettingsLocked& GetVideoSettingsLocked();
 
+  void SetStateLowLatency(bool state);
+  bool IsLowLatencyStream();
+
 protected:
   CProcessInfo();
   static std::map<std::string, CreateProcessControl> m_processControls;
@@ -177,4 +180,6 @@ protected:
   CCriticalSection m_settingsSection;
   CVideoSettings m_videoSettings;
   std::unique_ptr<CVideoSettingsLocked> m_videoSettingsLocked;
+
+  bool m_lowLatencyStream;
 };

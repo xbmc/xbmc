@@ -676,6 +676,20 @@ int64_t CProcessInfo::GetMaxTime()
   return m_timeMax;
 }
 
+void CProcessInfo::SetStateLowLatency(bool state)
+{
+  CSingleLock lock(m_renderSection);
+
+  m_lowLatencyStream = state;
+}
+
+bool CProcessInfo::IsLowLatencyStream()
+{
+  CSingleLock lock(m_stateSection);
+
+  return m_lowLatencyStream;
+}
+
 //******************************************************************************
 // settings
 //******************************************************************************

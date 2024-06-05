@@ -16,6 +16,7 @@ CDVDInputStream::CDVDInputStream(DVDStreamType streamType, const CFileItem& file
   m_streamType = streamType;
   m_contentLookup = true;
   m_realtime = fileitem.GetProperty(STREAM_PROPERTY_ISREALTIMESTREAM).asBoolean(false);
+  m_lowLatency = false;
   m_item = fileitem;
 }
 
