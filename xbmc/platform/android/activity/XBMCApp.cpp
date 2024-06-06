@@ -91,6 +91,7 @@
 #include <androidjni/MediaStore.h>
 #include <androidjni/NetworkInfo.h>
 #include <androidjni/PackageManager.h>
+#include <androidjni/Resources.h>
 #include <androidjni/StatFs.h>
 #include <androidjni/System.h>
 #include <androidjni/SystemClock.h>
@@ -1725,6 +1726,40 @@ std::shared_ptr<CNativeWindow> CXBMCApp::GetNativeWindow(int timeout) const
     m_mainView->waitForSurface(timeout);
 
   return m_window;
+}
+
+// The map must contain keys "id" and "color", both are integers
+void CXBMCApp::SetViewBackgroundColorCallback(void* mapVariant)
+{
+  CVariant* mapV = static_cast<CVariant*>(mapVariant);
+  int viewId = (*mapV)["id"].asInteger();
+  int color = (*mapV)["color"].asInteger();
+
+  delete mapV;
+
+  CJNIView view = findViewById(viewId);
+  if (view)
+  {
+    view.setBackgroundColor(color);
+  }
+}
+
+void CXBMCApp::SetVideoLayoutBackgroundColor(const int color)
+{
+  CJNIResources resources = CJNIContext::getResources();
+  if (resources)
+  {
+    int id = resources.getIdentifier("VideoLayout", "id", CJNIContext::getPackageName());
+    if (id > 0)
+    {
+      // this object is deallocated in the callback
+      CVariant* msg = new CVariant(CVariant::VariantTypeObject);
+      (*msg)["id"] = id;
+      (*msg)["color"] = color;
+
+      runNativeOnUiThread(SetViewBackgroundColorCallback, msg);
+    }
+  }
 }
 
 void CXBMCApp::RegisterInputDeviceCallbacks(IInputDeviceCallbacks* handler)
