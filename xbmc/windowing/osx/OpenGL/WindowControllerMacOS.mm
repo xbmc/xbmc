@@ -22,8 +22,6 @@
 
 @implementation XBMCWindowControllerMacOS
 
-bool m_inFullscreenTransition = false;
-
 - (nullable instancetype)initWithTitle:(NSString*)title defaultSize:(NSSize)size
 {
   auto frame = NSMakeRect(0, 0, size.width, size.height);
@@ -81,9 +79,6 @@ bool m_inFullscreenTransition = false;
 
 - (void)windowWillStartLiveResize:(NSNotification*)notification
 {
-  if (m_inFullscreenTransition)
-    return;
-
   std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
   if (appPort)
   {
@@ -93,9 +88,6 @@ bool m_inFullscreenTransition = false;
 
 - (void)windowDidEndLiveResize:(NSNotification*)notification
 {
-  if (m_inFullscreenTransition)
-    return;
-
   std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
   if (appPort)
   {
@@ -196,14 +188,8 @@ bool m_inFullscreenTransition = false;
   return frameSize;
 }
 
-- (void)windowWillExitFullScreen:(NSNotification*)notification
-{
-  m_inFullscreenTransition = true;
-}
-
 - (void)windowWillEnterFullScreen:(NSNotification*)pNotification
 {
-  m_inFullscreenTransition = true;
   CWinSystemOSX* winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
   if (!winSystem)
     return;
@@ -241,7 +227,6 @@ bool m_inFullscreenTransition = false;
 
 - (void)windowDidExitFullScreen:(NSNotification*)pNotification
 {
-  m_inFullscreenTransition = false;
   auto winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
   if (!winSystem)
     return;
@@ -268,7 +253,6 @@ bool m_inFullscreenTransition = false;
 
 - (void)windowDidEnterFullScreen:(NSNotification*)notification
 {
-  m_inFullscreenTransition = false;
   auto winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
   if (!winSystem)
     return;

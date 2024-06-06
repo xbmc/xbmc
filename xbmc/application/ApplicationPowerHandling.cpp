@@ -67,12 +67,6 @@ void CApplicationPowerHandling::ResetNavigationTimer()
 
 void CApplicationPowerHandling::SetRenderGUI(bool renderGUI)
 {
-  if (renderGUI && !m_renderGUI)
-  {
-    CGUIComponent* gui = CServiceBroker::GetGUI();
-    if (gui)
-      CServiceBroker::GetGUI()->GetWindowManager().MarkDirty();
-  }
   m_renderGUI = renderGUI;
 }
 
