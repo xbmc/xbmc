@@ -12,6 +12,8 @@
 #include "utils/TimeUtils.h"
 #include "utils/XMLUtils.h"
 
+#include <cassert>
+
 CStaticListProvider::CStaticListProvider(const TiXmlElement *element, int parentID)
 : IListProvider(parentID),
   m_defaultItem(-1),

@@ -15,6 +15,8 @@
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 
+#include <cassert>
+
 using namespace KODI::GUILIB;
 
 CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileItem()
