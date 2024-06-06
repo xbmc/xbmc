@@ -1910,7 +1910,11 @@ void CVideoPlayer::HandlePlaySpeed()
     if (m_pInputStream->IsRealtime() &&
         (m_CurrentAudio.id < 0 || m_VideoPlayerAudio->GetLevel() >= levelTreshold))
     {
-      SetCaching(CACHESTATE_INIT);
+      // immediately set cache to done if we have audio data
+      if (m_pInputStream->IsLowLatency())
+        SetCaching(CACHESTATE_DONE);
+      else
+        SetCaching(CACHESTATE_INIT);
     }
   }
 
