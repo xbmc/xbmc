@@ -1945,7 +1945,7 @@ void CVideoPlayer::HandlePlaySpeed()
       SetCaching(CACHESTATE_DONE);
   }
 
-  if (m_caching == CACHESTATE_DONE)
+  if (m_caching == CACHESTATE_DONE && !m_pInputStream->IsLowLatency())
   {
     if (m_playSpeed == DVD_PLAYSPEED_NORMAL && !tolerateStall)
     {
