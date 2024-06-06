@@ -135,7 +135,7 @@ void CVideoPlayerAudio::OpenStream(CDVDStreamInfo& hints, std::unique_ptr<CDVDAu
   m_synctype = SYNC_DISCON;
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK))
     m_synctype = SYNC_RESAMPLE;
-  else if (m_processInfo.IsRealtimeStream())
+  else if (m_processInfo.IsRealtimeStream() && !m_processInfo.IsLowLatencyStream())
     m_synctype = SYNC_RESAMPLE;
 
   if (m_synctype == SYNC_DISCON)
@@ -482,11 +482,15 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
     // or switch to resample
     if (m_processInfo.IsRealtimeStream() && m_synctype != SYNC_RESAMPLE)
     {
-      m_synctype = SYNC_RESAMPLE;
-      if (SwitchCodecIfNeeded())
+      // Don't do this for low latency streams
+      if (!m_processInfo.IsLowLatencyStream())
       {
-        audioframe.nb_frames = 0;
-        return false;
+        m_synctype = SYNC_RESAMPLE;
+        if (SwitchCodecIfNeeded())
+        {
+          audioframe.nb_frames = 0;
+          return false;
+        }
       }
     }
 
@@ -651,7 +655,7 @@ bool CVideoPlayerAudio::SwitchCodecIfNeeded()
   m_displayReset = false;
 
   bool allowpassthrough = !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK);
-  if (m_processInfo.IsRealtimeStream() || m_synctype == SYNC_RESAMPLE)
+  if ((m_processInfo.IsRealtimeStream() && !m_processInfo.IsLowLatencyStream()) || m_synctype == SYNC_RESAMPLE)
     allowpassthrough = false;
 
   CAEStreamInfo::DataType streamType = m_audioSink.GetPassthroughStreamType(
