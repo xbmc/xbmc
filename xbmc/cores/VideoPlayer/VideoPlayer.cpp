@@ -1902,11 +1902,15 @@ void CVideoPlayer::HandlePlaySpeed()
         SetCaching(CACHESTATE_INIT);
     }
 
-    // if audio stream stalled, wait until demux queue filled 10%
+    int levelTreshold = 10;
+    if (m_pInputStream->IsLowLatency())
+      levelTreshold = 2;
+
+    // if audio stream stalled, wait until demux queue filled levelTreshold percent
     if (m_pInputStream->IsRealtime() &&
-        (m_CurrentAudio.id < 0 || m_VideoPlayerAudio->GetLevel() > 10))
+        (m_CurrentAudio.id < 0 || m_VideoPlayerAudio->GetLevel() >= levelTreshold))
     {
-      SetCaching(CACHESTATE_DONE);
+      SetCaching(CACHESTATE_INIT);
     }
   }
 
@@ -1922,7 +1926,7 @@ void CVideoPlayer::HandlePlaySpeed()
     if (m_CurrentAudio.id >= 0 && m_CurrentVideo.id >= 0)
     {
       if ((!m_VideoPlayerAudio->AcceptsData() || !m_VideoPlayerVideo->AcceptsData()) &&
-          m_cachingTimer.IsTimePast())
+          (m_cachingTimer.IsTimePast() || m_pInputStream->IsRealtime() || m_pInputStream->IsLowLatency()))
       {
         SetCaching(CACHESTATE_DONE);
       }
