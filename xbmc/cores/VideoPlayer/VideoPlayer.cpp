@@ -2104,7 +2104,12 @@ void CVideoPlayer::HandlePlaySpeed()
       }
       else if (m_CurrentAudio.starttime != DVD_NOPTS_VALUE && m_CurrentAudio.packets > 0)
       {
-        if (m_pInputStream->IsRealtime())
+        if (m_pInputStream->IsRealtime() && m_pInputStream->IsLowLatency())
+        {
+          // Do not add 400ms extradelay, but use cachetotal instead of cachetime to have more buffer
+          clock = m_CurrentAudio.starttime - m_CurrentAudio.cachetotal;
+        }
+        if (m_pInputStream->IsRealtime() && !m_pInputStream->IsLowLatency())
           clock = m_CurrentAudio.starttime - m_CurrentAudio.cachetotal - DVD_MSEC_TO_TIME(400);
         else
           clock = m_CurrentAudio.starttime - m_CurrentAudio.cachetime;
