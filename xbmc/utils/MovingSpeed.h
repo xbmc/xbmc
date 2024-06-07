@@ -44,6 +44,12 @@ struct EventCfg
   {
   }
 
+  bool operator==(const EventCfg& right) const
+  {
+    return m_acceleration == right.m_acceleration && m_maxVelocity == right.m_maxVelocity &&
+           m_resetTimeout == right.m_resetTimeout && m_delta == right.m_delta;
+  }
+
   float m_acceleration;
   float m_maxVelocity;
   uint32_t m_resetTimeout;
