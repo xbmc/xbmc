@@ -129,7 +129,7 @@ public:
                           const std::string& scrollerTag,
                           CScroller& scroller);
 
-private:
+protected:
   static std::string GetType(const TiXmlElement* pControlNode);
   static bool GetMovingSpeedConfig(const TiXmlNode* pRootNode,
                                    const char* strTag,
