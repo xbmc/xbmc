@@ -764,6 +764,7 @@ bool CGUIControlFactory::GetMovingSpeedConfig(const TiXmlNode* pRootNode,
     if (!eventType)
     {
       CLog::LogF(LOGERROR, "Failed to parse XML \"eventconfig\" tag missing \"type\" attribute");
+      configElement = configElement->NextSiblingElement("eventconfig");
       continue;
     }
 
