@@ -34,7 +34,13 @@ public:
     ratio = aspect;
     align = ASPECT_ALIGN_CENTER | ASPECT_ALIGNY_CENTER;
     scaleDiffuse = true;
-  };
+  }
+
+  CAspectRatio(ASPECT_RATIO aspect, uint32_t al, bool scaleD)
+    : ratio(aspect), align(al), scaleDiffuse(scaleD)
+  {
+  }
+
   bool operator!=(const CAspectRatio &right) const
   {
     if (ratio != right.ratio) return true;
