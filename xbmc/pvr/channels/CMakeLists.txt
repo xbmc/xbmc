@@ -5,6 +5,7 @@ set(SOURCES PVRChannel.cpp
             PVRChannelGroupAllChannelsSingleClient.cpp
             PVRChannelGroupFromClient.cpp
             PVRChannelGroupMember.cpp
+            PVRChannelGroupMergedByName.cpp
             PVRChannelGroupSettings.cpp
             PVRChannelGroups.cpp
             PVRChannelGroupsContainer.cpp
@@ -20,6 +21,7 @@ set(HEADERS PVRChannel.h
             PVRChannelGroupFromClient.h
             PVRChannelGroupFromUser.h
             PVRChannelGroupMember.h
+            PVRChannelGroupMergedByName.h
             PVRChannelGroupSettings.h
             PVRChannelGroups.h
             PVRChannelGroupsContainer.h

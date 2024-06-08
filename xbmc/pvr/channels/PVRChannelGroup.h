@@ -28,6 +28,7 @@ static constexpr int PVR_GROUP_TYPE_CLIENT = 0;
 static constexpr int PVR_GROUP_TYPE_SYSTEM_ALL_CHANNELS_ALL_CLIENTS = 1;
 static constexpr int PVR_GROUP_TYPE_USER = 2;
 static constexpr int PVR_GROUP_TYPE_SYSTEM_ALL_CHANNELS_SINGLE_CLIENT = 3;
+static constexpr int PVR_GROUP_TYPE_SYSTEM_MERGED_BY_NAME = 4;
 
 static constexpr int PVR_GROUP_CLIENT_ID_UNKNOWN = -2;
 static constexpr int PVR_GROUP_CLIENT_ID_LOCAL = -1;

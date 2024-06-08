@@ -3998,6 +3998,7 @@ msgstr ""
 
 #. Label postfix for channel groups containing content from all channels (e.g. "PVR Client 1 [All channels]")
 #: xbmc/pvr/channels/PVRChannelGroupAllChannelsSingleClient.cpp
+#: xbmc/pvr/channels/PVRChannelGroupMergedByName.cpp
 msgctxt "#859"
 msgid "{0:s} [All channels]"
 msgstr ""

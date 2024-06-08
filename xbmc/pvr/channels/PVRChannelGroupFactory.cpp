@@ -12,6 +12,7 @@
 #include "pvr/channels/PVRChannelGroupAllChannelsSingleClient.h"
 #include "pvr/channels/PVRChannelGroupFromClient.h"
 #include "pvr/channels/PVRChannelGroupFromUser.h"
+#include "pvr/channels/PVRChannelGroupMergedByName.h"
 #include "pvr/channels/PVRChannelsPath.h"
 #include "utils/log.h"
 
@@ -52,6 +53,8 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroupFactory::CreateGroup(
       return std::make_shared<CPVRChannelGroupFromUser>(groupPath, allChannels);
     case PVR_GROUP_TYPE_SYSTEM_ALL_CHANNELS_SINGLE_CLIENT:
       return std::make_shared<CPVRChannelGroupAllChannelsSingleClient>(groupPath, allChannels);
+    case PVR_GROUP_TYPE_SYSTEM_MERGED_BY_NAME:
+      return std::make_shared<CPVRChannelGroupMergedByName>(groupPath, allChannels);
     case PVR_GROUP_TYPE_CLIENT:
       return std::make_shared<CPVRChannelGroupFromClient>(groupPath, allChannels);
     default:
@@ -71,6 +74,8 @@ int CPVRChannelGroupFactory::GetGroupTypePriority(
       return 0; // highest
     case PVR_GROUP_TYPE_SYSTEM_ALL_CHANNELS_SINGLE_CLIENT:
       return 1;
+    case PVR_GROUP_TYPE_SYSTEM_MERGED_BY_NAME:
+      return 2;
 
     // User groups, created and managed by the user
     case PVR_GROUP_TYPE_USER:
@@ -91,6 +96,14 @@ std::vector<std::shared_ptr<CPVRChannelGroup>> CPVRChannelGroupFactory::CreateMi
     const std::shared_ptr<CPVRChannelGroup>& allChannelsGroup,
     const std::vector<std::shared_ptr<CPVRChannelGroup>>& allChannelGroups)
 {
-  return CPVRChannelGroupAllChannelsSingleClient::CreateMissingGroups(allChannelsGroup,
-                                                                      allChannelGroups);
+  std::vector<std::shared_ptr<CPVRChannelGroup>> newGroups{
+      CPVRChannelGroupAllChannelsSingleClient::CreateMissingGroups(allChannelsGroup,
+                                                                   allChannelGroups)};
+
+  std::vector<std::shared_ptr<CPVRChannelGroup>> newGroupsTmp{
+      CPVRChannelGroupMergedByName::CreateMissingGroups(allChannelsGroup, allChannelGroups)};
+  if (!newGroupsTmp.empty())
+    newGroups.insert(newGroups.end(), newGroupsTmp.cbegin(), newGroupsTmp.cend());
+
+  return newGroups;
 }
