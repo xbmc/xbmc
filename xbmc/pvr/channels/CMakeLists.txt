@@ -2,7 +2,6 @@ set(SOURCES PVRChannel.cpp
             PVRChannelGroup.cpp
             PVRChannelGroupAllChannels.cpp
             PVRChannelGroupFromClient.cpp
-            PVRChannelGroupFromUser.cpp
             PVRChannelGroupMember.cpp
             PVRChannelGroupSettings.cpp
             PVRChannelGroups.cpp

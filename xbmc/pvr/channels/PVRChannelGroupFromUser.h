@@ -22,7 +22,10 @@ public:
    * @param allChannelsGroup The channel group containing all TV or radio channels.
    */
   CPVRChannelGroupFromUser(const CPVRChannelsPath& path,
-                           const std::shared_ptr<const CPVRChannelGroup>& allChannelsGroup);
+                           const std::shared_ptr<const CPVRChannelGroup>& allChannelsGroup)
+    : CPVRChannelGroup(path, allChannelsGroup)
+  {
+  }
 
   /*!
    * @brief Check whether this group could be deleted by the user.
@@ -53,7 +56,10 @@ public:
    * @param clients The clients to fetch data from. Leave empty to fetch data from all created clients.
    * @return True on success, false otherwise.
    */
-  bool UpdateFromClients(const std::vector<std::shared_ptr<CPVRClient>>& clients) override;
+  bool UpdateFromClients(const std::vector<std::shared_ptr<CPVRClient>>& clients) override
+  {
+    return true; // Nothing to update from any client for locally managed groups.
+  }
 
 private:
   /*!
