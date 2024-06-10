@@ -29,10 +29,13 @@
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
 #include "utils/Variant.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
 #include <mutex>
+
+#include <tinyxml2.h>
 
 using namespace KODI;
 
@@ -125,15 +128,15 @@ bool CGUIWindow::Load(const std::string& strFileName, bool bContainsPath)
 bool CGUIWindow::LoadXML(const std::string &strPath, const std::string &strLowerPath)
 {
   // load window xml if we don't have it stored yet
-  if (!m_windowXMLRootElement)
+  if (!m_windowXMLDocument)
   {
-    CXBMCTinyXML xmlDoc;
+    CXBMCTinyXML2 xmlDoc;
     std::string strPathLower = strPath;
     StringUtils::ToLower(strPathLower);
     if (!xmlDoc.LoadFile(strPath) && !xmlDoc.LoadFile(strPathLower) && !xmlDoc.LoadFile(strLowerPath))
     {
-      CLog::Log(LOGERROR, "Unable to load window XML: {}. Line {}\n{}", strPath, xmlDoc.ErrorRow(),
-                xmlDoc.ErrorDesc());
+      CLog::Log(LOGERROR, "Unable to load window XML: {}. Line {}\n{}", strPath,
+                xmlDoc.ErrorLineNum(), xmlDoc.ErrorStr());
       SetID(WINDOW_INVALID);
       return false;
     }
@@ -147,30 +150,37 @@ bool CGUIWindow::LoadXML(const std::string &strPath, const std::string &strLower
     }
 
     // store XML for further processing if window's load type is LOAD_EVERY_TIME or a reload is needed
-    m_windowXMLRootElement.reset(static_cast<TiXmlElement*>(xmlDoc.RootElement()->Clone()));
+    auto cloneDoc = std::make_unique<tinyxml2::XMLDocument>();
+    xmlDoc.DeepCopy(cloneDoc->GetDocument());
+    m_windowXMLDocument.reset();
+    m_windowXMLDocument = std::move(cloneDoc);
   }
   else
     CLog::Log(LOGDEBUG, "Using already stored xml root node for {}", strPath);
 
-  return Load(Prepare(m_windowXMLRootElement).get());
+  // copy the root element as we will manipulate it
+  tinyxml2::XMLDocument preparedRoot;
+  m_windowXMLDocument->DeepCopy(preparedRoot.GetDocument());
+
+  if(!Prepare(preparedRoot.GetDocument()))
+    return false;
+
+  return Load(preparedRoot.RootElement());
 }
 
-std::unique_ptr<TiXmlElement> CGUIWindow::Prepare(const std::unique_ptr<TiXmlElement>& rootElement)
+bool CGUIWindow::Prepare(tinyxml2::XMLDocument* rootDocument)
 {
-  if (!rootElement)
-    return nullptr;
-
-  // copy the root element as we will manipulate it
-  auto preparedRoot = std::make_unique<TiXmlElement>(*rootElement);
+  if (!rootDocument)
+    return false;
 
   // Resolve any includes, constants, expressions that may be present
   // and save include's conditions to the given map
-  g_SkinInfo->ResolveIncludes(preparedRoot.get(), &m_xmlIncludeConditions);
+  g_SkinInfo->ResolveIncludes(rootDocument->RootElement(), &m_xmlIncludeConditions);
 
-  return preparedRoot;
+  return true;
 }
 
-bool CGUIWindow::Load(TiXmlElement *pRootElement)
+bool CGUIWindow::Load(tinyxml2::XMLElement* pRootElement)
 {
   if (!pRootElement)
     return false;
@@ -188,7 +198,7 @@ bool CGUIWindow::Load(TiXmlElement *pRootElement)
   CRect parentRect(0, 0, static_cast<float>(m_coordsRes.iWidth), static_cast<float>(m_coordsRes.iHeight));
   CGUIControlFactory::GetHitRect(pRootElement, m_hitRect, parentRect);
 
-  TiXmlElement *pChild = pRootElement->FirstChildElement();
+  auto* pChild = pRootElement->FirstChildElement();
   while (pChild)
   {
     std::string strValue = pChild->Value();
@@ -231,7 +241,7 @@ bool CGUIWindow::Load(TiXmlElement *pRootElement)
       XMLUtils::GetFloat(pChild, "left", m_posX);
       XMLUtils::GetFloat(pChild, "top", m_posY);
 
-      TiXmlElement *originElement = pChild->FirstChildElement("origin");
+      auto* originElement = pChild->FirstChildElement("origin");
       while (originElement)
       {
         COrigin origin;
@@ -256,7 +266,7 @@ bool CGUIWindow::Load(TiXmlElement *pRootElement)
     }
     else if (strValue == "controls")
     {
-      TiXmlElement *pControl = pChild->FirstChildElement();
+      auto* pControl = pChild->FirstChildElement();
       while (pControl)
       {
         if (StringUtils::EqualsNoCase(pControl->Value(), "control"))
@@ -273,7 +283,9 @@ bool CGUIWindow::Load(TiXmlElement *pRootElement)
   return true;
 }
 
-void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup, const CRect &rect)
+void CGUIWindow::LoadControl(tinyxml2::XMLElement* pControl,
+                             CGUIControlGroup* pGroup,
+                             const CRect& rect)
 {
   // get control type
   CGUIControlFactory factory;
@@ -301,7 +313,7 @@ void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup, c
     if (pGUIControl->IsGroup())
     {
       CGUIControlGroup *grp = static_cast<CGUIControlGroup*>(pGUIControl);
-      TiXmlElement *pSubControl = pControl->FirstChildElement("control");
+      auto* pSubControl = pControl->FirstChildElement("control");
       CRect grpRect(grp->GetXPosition(), grp->GetYPosition(),
                     grp->GetXPosition() + grp->GetWidth(), grp->GetYPosition() + grp->GetHeight());
       while (pSubControl)
@@ -799,7 +811,7 @@ void CGUIWindow::FreeResources(bool forceUnload /*= false */)
   if (m_loadType == LOAD_EVERY_TIME || forceUnload) ClearAll();
   if (forceUnload)
   {
-    m_windowXMLRootElement.reset();
+    m_windowXMLDocument.reset();
     m_xmlIncludeConditions.clear();
   }
 }

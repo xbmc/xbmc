@@ -14,9 +14,11 @@
 #include "guilib/guiinfo/GUIInfoLabel.h"
 #include "interfaces/info/SkinVariable.h"
 #include "utils/StringUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
+
+#include <tinyxml2.h>
 
 using namespace KODI::GUILIB;
 
@@ -110,104 +112,115 @@ bool CGUIIncludes::Load_Internal(const std::string &file)
   if (HasLoaded(file))
     return true;
 
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   if (!doc.LoadFile(file))
   {
-    CLog::Log(LOGINFO, "Error loading include file {}: {} (row: {}, col: {})", file,
-              doc.ErrorDesc(), doc.ErrorRow(), doc.ErrorCol());
+    CLog::Log(LOGINFO, "Error loading include file {}: {} (line: {})", file, doc.ErrorStr(),
+              doc.ErrorLineNum());
     return false;
   }
 
-  TiXmlElement *root = doc.RootElement();
+  auto* root = doc.RootElement();
   if (!root || !StringUtils::EqualsNoCase(root->Value(), "includes"))
   {
     CLog::Log(LOGERROR, "Error loading include file {}: Root element <includes> required.", file);
     return false;
   }
-
   // load components
   LoadDefaults(root);
   LoadConstants(root);
   LoadExpressions(root);
   LoadVariables(root);
   LoadIncludes(root);
-
   m_files.push_back(file);
 
   return true;
 }
 
-void CGUIIncludes::LoadDefaults(const TiXmlElement *node)
+void CGUIIncludes::LoadDefaults(const tinyxml2::XMLElement* node)
 {
   if (!node)
     return;
 
-  const TiXmlElement* child = node->FirstChildElement("default");
+  const auto* child = node->FirstChildElement("default");
   while (child)
   {
     const char *type = child->Attribute("type");
     if (type && child->FirstChild())
-      m_defaults.insert(std::make_pair(type, *child));
+    {
+      auto elementDoc = std::make_unique<tinyxml2::XMLDocument>();
+      auto* clonenode = child->DeepClone(elementDoc->ToDocument());
+      elementDoc->InsertFirstChild(clonenode);
+      m_defaults.insert(std::make_pair(std::string(type), std::move(elementDoc)));
+    }
 
     child = child->NextSiblingElement("default");
   }
 }
 
-void CGUIIncludes::LoadExpressions(const TiXmlElement *node)
+void CGUIIncludes::LoadExpressions(const tinyxml2::XMLElement* node)
 {
   if (!node)
     return;
 
-  const TiXmlElement* child = node->FirstChildElement("expression");
+  const auto* child = node->FirstChildElement("expression");
   while (child)
   {
     const char *tagName = child->Attribute("name");
     if (tagName && child->FirstChild())
-      m_expressions.insert(std::make_pair(tagName, "[" + child->FirstChild()->ValueStr() + "]"));
+    {
+      m_expressions.insert(std::make_pair(tagName, std::string("[") +
+                                                       std::string(child->FirstChild()->Value()) +
+                                                       std::string("]")));
+    }
 
     child = child->NextSiblingElement("expression");
   }
 }
 
-
-void CGUIIncludes::LoadConstants(const TiXmlElement *node)
+void CGUIIncludes::LoadConstants(const tinyxml2::XMLElement* node)
 {
   if (!node)
     return;
 
-  const TiXmlElement* child = node->FirstChildElement("constant");
+  const auto* child = node->FirstChildElement("constant");
   while (child)
   {
     const char *tagName = child->Attribute("name");
     if (tagName && child->FirstChild())
-      m_constants.insert(std::make_pair(tagName, child->FirstChild()->ValueStr()));
+      m_constants.insert(std::make_pair(tagName, child->FirstChild()->Value()));
 
     child = child->NextSiblingElement("constant");
   }
 }
 
-void CGUIIncludes::LoadVariables(const TiXmlElement *node)
+void CGUIIncludes::LoadVariables(const tinyxml2::XMLElement* node)
 {
   if (!node)
     return;
 
-  const TiXmlElement* child = node->FirstChildElement("variable");
+  const auto* child = node->FirstChildElement("variable");
   while (child)
   {
-    const char *tagName = child->Attribute("name");
+    const char* tagName = child->Attribute("name");
     if (tagName && child->FirstChild())
-      m_skinvariables.insert(std::make_pair(tagName, *child));
+    {
+      auto elementDoc = std::make_unique<tinyxml2::XMLDocument>();
+      auto* clonenode = child->DeepClone(elementDoc->GetDocument());
+      elementDoc->InsertFirstChild(clonenode);
+      m_skinvariables.insert(std::make_pair(std::string(tagName), std::move(elementDoc)));
+    }
 
     child = child->NextSiblingElement("variable");
   }
 }
 
-void CGUIIncludes::LoadIncludes(const TiXmlElement *node)
+void CGUIIncludes::LoadIncludes(const tinyxml2::XMLElement* node)
 {
   if (!node)
     return;
 
-  const TiXmlElement* child = node->FirstChildElement("include");
+  auto* child = node->FirstChildElement("include");
   while (child)
   {
     const char *tagName = child->Attribute("name");
@@ -215,8 +228,8 @@ void CGUIIncludes::LoadIncludes(const TiXmlElement *node)
     {
       // we'll parse and store parameter list with defaults when include definition is first encountered
       // if there's a <definition> tag only use its body as the actually included part
-      const TiXmlElement *definitionTag = child->FirstChildElement("definition");
-      const TiXmlElement *includeBody = definitionTag ? definitionTag : child;
+      const auto* definitionTag = child->FirstChildElement("definition");
+      auto* includeBody = definitionTag ? definitionTag : child;
 
       // if there's a <param> tag there also must be a <definition> tag
       Params defaultParams;
@@ -224,7 +237,13 @@ void CGUIIncludes::LoadIncludes(const TiXmlElement *node)
       if (haveParamTags && !definitionTag)
         CLog::Log(LOGWARNING, "Skin has invalid include definition: {}", tagName);
       else
-        m_includes.insert({ tagName, { *includeBody, std::move(defaultParams) } });
+      {
+        auto elementDoc = std::make_unique<tinyxml2::XMLDocument>();
+        auto* clonenode = includeBody->DeepClone(elementDoc->GetDocument());
+        elementDoc->InsertFirstChild(clonenode);
+        auto pair = std::make_pair(std::move(elementDoc), std::move(defaultParams));
+        m_includes.insert({std::string(tagName), std::move(pair)});
+      }
     }
     else if (child->Attribute("file"))
     {
@@ -279,12 +298,14 @@ void CGUIIncludes::FlattenSkinVariableConditions()
 {
   for (auto& variable : m_skinvariables)
   {
-    TiXmlElement* valueNode = variable.second.FirstChildElement("value");
+    auto* valueNode = variable.second->FirstChild()->FirstChildElement("value");
     while (valueNode)
     {
       const char *condition = valueNode->Attribute("condition");
       if (condition)
-        valueNode->SetAttribute("condition", ResolveExpressions(condition));
+      {
+        valueNode->SetAttribute("condition", ResolveExpressions(condition).c_str());
+      }
 
       valueNode = valueNode->NextSiblingElement("value");
     }
@@ -301,7 +322,8 @@ bool CGUIIncludes::HasLoaded(const std::string &file) const
   return false;
 }
 
-void CGUIIncludes::Resolve(TiXmlElement *node, std::map<INFO::InfoPtr, bool>* xmlIncludeConditions /* = NULL */)
+void CGUIIncludes::Resolve(tinyxml2::XMLElement* node,
+                           std::map<INFO::InfoPtr, bool>* xmlIncludeConditions /* = NULL */)
 {
   if (!node)
     return;
@@ -311,7 +333,7 @@ void CGUIIncludes::Resolve(TiXmlElement *node, std::map<INFO::InfoPtr, bool>* xm
   ResolveExpressions(node);
   ResolveIncludes(node, xmlIncludeConditions);
 
-  TiXmlElement *child = node->FirstChildElement();
+  auto* child = node->FirstChildElement();
   while (child)
   {
     // recursive call
@@ -320,9 +342,9 @@ void CGUIIncludes::Resolve(TiXmlElement *node, std::map<INFO::InfoPtr, bool>* xm
   }
 }
 
-void CGUIIncludes::SetDefaults(TiXmlElement *node)
+void CGUIIncludes::SetDefaults(tinyxml2::XMLElement* node)
 {
-  if (node->ValueStr() != "control")
+  if (strcmp(node->Value(), "control") != 0)
     return;
 
   std::string type = XMLUtils::GetAttribute(node, "type");
@@ -330,14 +352,16 @@ void CGUIIncludes::SetDefaults(TiXmlElement *node)
   if (it != m_defaults.end())
   {
     // we don't insert <left> et. al. if <posx> or <posy> is specified
-    bool hasPosX(node->FirstChild("posx") != nullptr);
-    bool hasPosY(node->FirstChild("posy") != nullptr);
+    bool hasPosX(node->FirstChildElement("posx") != nullptr);
+    bool hasPosY(node->FirstChildElement("posy") != nullptr);
 
-    const TiXmlElement &element = (*it).second;
-    const TiXmlElement *tag = element.FirstChildElement();
+    const auto& xmlDoc = (*it).second;
+    // As we use a doc for storage, the first element is <default>, we want its
+    // first child to iterate
+    auto* tag = xmlDoc->FirstChild()->FirstChildElement();
     while (tag)
     {
-      std::string value = tag->ValueStr();
+      std::string value = tag->Value();
       bool skip(false);
       if (hasPosX && (value == "left" || value == "right" || value == "centerleft" || value == "centerright"))
         skip = true;
@@ -345,64 +369,72 @@ void CGUIIncludes::SetDefaults(TiXmlElement *node)
         skip = true;
       // we insert at the end of block
       if (!skip)
-        node->InsertEndChild(*tag);
+      {
+        auto cloneTag = tag->DeepClone(node->GetDocument());
+        node->InsertEndChild(cloneTag);
+      }
       tag = tag->NextSiblingElement();
     }
   }
 }
 
-void CGUIIncludes::ResolveConstants(TiXmlElement *node)
+void CGUIIncludes::ResolveConstants(tinyxml2::XMLElement* node)
 {
   if (!node)
     return;
 
-  TiXmlNode *child = node->FirstChild();
-  if (child && child->Type() == TiXmlNode::TINYXML_TEXT && m_constantNodes.count(node->ValueStr()))
+  auto* child = node->FirstChild();
+  if (child && child->ToText() && m_constantNodes.count(node->Value()))
   {
-    child->SetValue(ResolveConstant(child->ValueStr()));
+    child->SetValue(ResolveConstant(child->Value()).c_str());
   }
   else
   {
-    TiXmlAttribute *attribute = node->FirstAttribute();
+    auto* attribute = node->FirstAttribute();
     while (attribute)
     {
       if (m_constantAttributes.count(attribute->Name()))
-        attribute->SetValue(ResolveConstant(attribute->ValueStr()));
+      {
+        node->SetAttribute(attribute->Name(), ResolveConstant(attribute->Value()).c_str());
+      }
 
       attribute = attribute->Next();
     }
   }
 }
 
-void CGUIIncludes::ResolveExpressions(TiXmlElement *node)
+void CGUIIncludes::ResolveExpressions(tinyxml2::XMLElement* node)
 {
   if (!node)
     return;
 
-  TiXmlNode *child = node->FirstChild();
-  if (child && child->Type() == TiXmlNode::TINYXML_TEXT && m_expressionNodes.count(node->ValueStr()))
+  auto* child = node->FirstChild();
+  if (child && child->ToText() && m_expressionNodes.count(node->Value()))
   {
-    child->SetValue(ResolveExpressions(child->ValueStr()));
+    child->SetValue(ResolveExpressions(child->Value()).c_str());
   }
   else
   {
-    TiXmlAttribute *attribute = node->FirstAttribute();
+    auto* attribute = node->FirstAttribute();
     while (attribute)
     {
       if (m_expressionAttributes.count(attribute->Name()))
-        attribute->SetValue(ResolveExpressions(attribute->ValueStr()));
+      {
+        node->SetAttribute(attribute->Name(), ResolveExpressions(attribute->Value()).c_str());
+      }
 
       attribute = attribute->Next();
     }
   }
 }
 
-void CGUIIncludes::ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, bool>* xmlIncludeConditions /* = NULL */)
+void CGUIIncludes::ResolveIncludes(tinyxml2::XMLElement* node,
+                                   std::map<INFO::InfoPtr, bool>* xmlIncludeConditions /* = NULL */)
 {
   if (!node)
     return;
 
-  TiXmlElement *include = node->FirstChildElement("include");
+  auto* include = node->FirstChildElement("include");
   while (include)
   {
     // file: load includes from specified XML file
@@ -452,12 +484,12 @@ void CGUIIncludes::ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, b
     }
     else
     {
-      const TiXmlNode *child = include->FirstChild();
-      if (child && child->Type() == TiXmlNode::TINYXML_TEXT)
+      const auto* child = include->FirstChild();
+      if (child && child->ToText())
       {
         // <include>MyControl</include>
         // old-style includes for backward compatibility
-        tagName = child->ValueStr();
+        tagName = child->Value();
       }
     }
 
@@ -465,30 +497,32 @@ void CGUIIncludes::ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, b
     auto it = m_includes.find(tagName);
     if (it != m_includes.end())
     {
-      const TiXmlElement *includeDefinition = &it->second.first;
+      auto includeDefinitionDoc = it->second.first.get();
 
       // combine passed include parameters with their default values into a single list (no overwrites)
       const Params& defaultParams = it->second.second;
       params.insert(defaultParams.begin(), defaultParams.end());
 
       // process include definition
-      const TiXmlElement *includeDefinitionChild = includeDefinition->FirstChildElement();
+      tinyxml2::XMLNode* includeDefinitionChild = includeDefinitionDoc->FirstChild()->FirstChildElement();
+      tinyxml2::XMLNode* insertAfter = include;
       while (includeDefinitionChild)
       {
-        // insert before <include> element to keep order of occurrence in xml file
-        TiXmlElement *insertedNode = static_cast<TiXmlElement*>(node->InsertBeforeChild(include, *includeDefinitionChild));
+        auto clonedIncludeDefinitionChild = includeDefinitionChild->DeepClone(node->GetDocument());
+        auto* insertedNode = node->InsertAfterChild(include, clonedIncludeDefinitionChild);
 
         // process nested
-        InsertNested(node, include, insertedNode);
+        InsertNested(node, include, insertedNode->ToElement());
 
         // resolve parameters even if parameter list is empty (to remove param references)
-        ResolveParametersForNode(insertedNode, params);
+        ResolveParametersForNode(insertedNode->ToElement(), params);
 
         includeDefinitionChild = includeDefinitionChild->NextSiblingElement();
+        insertAfter = insertedNode;
       }
 
       // remove the include element itself
-      node->RemoveChild(include);
+      node->DeleteChild(include);
 
       include = node->FirstChildElement("include");
     }
@@ -500,12 +534,14 @@ void CGUIIncludes::ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, b
   }
 }
 
-void CGUIIncludes::InsertNested(TiXmlElement *controls, TiXmlElement *include, TiXmlElement *node)
+void CGUIIncludes::InsertNested(tinyxml2::XMLElement* controls,
+                                tinyxml2::XMLElement* include,
+                                tinyxml2::XMLElement* node)
 {
-  TiXmlElement *target;
-  TiXmlElement *nested;
+  tinyxml2::XMLElement* target;
+  tinyxml2::XMLElement* nested;
 
-  if (node->ValueStr() == "nested")
+  if (strcmp(node->Value(), "nested") == 0)
   {
     nested = node;
     target = controls;
@@ -519,23 +555,24 @@ void CGUIIncludes::InsertNested(TiXmlElement *controls, TiXmlElement *include, T
   if (nested)
   {
     // copy all child elements except param elements
-    const TiXmlElement *child = include->FirstChildElement();
+    auto* child = include->FirstChildElement();
+    tinyxml2::XMLNode* insertAfter = nested;
     while (child)
     {
-      if (child->ValueStr() != "param")
+      if (strcmp(child->Value(), "param") != 0)
       {
-        // insert before <nested> element to keep order of occurrence in xml file
-        target->InsertBeforeChild(nested, *child);
+        insertAfter = target->InsertAfterChild(insertAfter, child);
       }
       child = child->NextSiblingElement();
     }
-    if (nested != node)
-      target->RemoveChild(nested);
+    target->DeleteChild(nested);
   }
 
 }
 
-bool CGUIIncludes::GetParameters(const TiXmlElement *include, const char *valueAttribute, Params& params)
+bool CGUIIncludes::GetParameters(const tinyxml2::XMLElement* include,
+                                 const char* valueAttribute,
+                                 Params& params)
 {
   bool foundAny = false;
 
@@ -548,7 +585,7 @@ bool CGUIIncludes::GetParameters(const TiXmlElement *include, const char *valueA
 
   if (include)
   {
-    const TiXmlElement *param = include->FirstChildElement("param");
+    const auto* param = include->FirstChildElement("param");
     foundAny = param != NULL;  // doesn't matter if param isn't entirely valid
     while (param)
     {
@@ -564,9 +601,9 @@ bool CGUIIncludes::GetParameters(const TiXmlElement *include, const char *valueA
         else
         {
           // <param name="posx">120</param>
-          const TiXmlNode *child = param->FirstChild();
-          if (child && child->Type() == TiXmlNode::TINYXML_TEXT)
-            paramValue = child->ValueStr();                           // and then tag value
+          const auto* child = param->FirstChild();
+          if (child && child->ToText())
+            paramValue = child->Value(); // and then tag value
         }
 
         params.insert({ paramName, paramValue });                     // no overwrites
@@ -578,16 +615,16 @@ bool CGUIIncludes::GetParameters(const TiXmlElement *include, const char *valueA
   return foundAny;
 }
 
-void CGUIIncludes::ResolveParametersForNode(TiXmlElement *node, const Params& params)
+void CGUIIncludes::ResolveParametersForNode(tinyxml2::XMLElement* node, const Params& params)
 {
   if (!node)
     return;
   std::string newValue;
   // run through this element's attributes, resolving any parameters
-  TiXmlAttribute *attribute = node->FirstAttribute();
+  auto* attribute = node->FirstAttribute();
   while (attribute)
   {
-    ResolveParamsResult result = ResolveParameters(attribute->ValueStr(), newValue, params);
+    ResolveParamsResult result = ResolveParameters(attribute->Value(), newValue, params);
     if (result == SINGLE_UNDEFINED_PARAM_RESOLVED && strcmp(node->Value(), "param") == 0 &&
         strcmp(attribute->Name(), "value") == 0 && node->Parent() && strcmp(node->Parent()->Value(), "include") == 0)
     {
@@ -595,40 +632,41 @@ void CGUIIncludes::ResolveParametersForNode(TiXmlElement *node, const Params& pa
       // this usually happens when trying to forward a missing parameter from the enclosing include to the nested include
       // problem: since 'undefinedParam' is not defined, it expands to <param name="someName" value="" /> and overrides any default value set with <param name="someName" default="someValue" /> in the nested include
       // to prevent this, we'll completely remove this parameter from the nested include call so that the default value can be correctly picked up later
-      node->Parent()->RemoveChild(node);
+      node->Parent()->DeleteChild(node);
       return;
     }
     else if (result != NO_PARAMS_FOUND)
-      attribute->SetValue(newValue);
+    {
+      node->SetAttribute(attribute->Name(), newValue.c_str());
+    }
     attribute = attribute->Next();
   }
   // run through this element's value and children, resolving any parameters
-  TiXmlNode *child = node->FirstChild();
+  auto* child = node->FirstChild();
   if (child)
   {
-    if (child->Type() == TiXmlNode::TINYXML_TEXT)
+    if (child->ToText())
     {
-      ResolveParamsResult result = ResolveParameters(child->ValueStr(), newValue, params);
+      ResolveParamsResult result = ResolveParameters(child->Value(), newValue, params);
       if (result == SINGLE_UNDEFINED_PARAM_RESOLVED && strcmp(node->Value(), "param") == 0 &&
           node->Parent() && strcmp(node->Parent()->Value(), "include") == 0)
       {
         // special case: passing <param name="someName">$PARAM[undefinedParam]</param> to the nested include
         // we'll remove the offending param tag same as above
-        node->Parent()->RemoveChild(node);
+        node->Parent()->DeleteChild(node);
       }
       else if (result != NO_PARAMS_FOUND)
-        child->SetValue(newValue);
+        child->SetValue(newValue.c_str());
     }
-    else if (child->Type() == TiXmlNode::TINYXML_ELEMENT ||
-             child->Type() == TiXmlNode::TINYXML_COMMENT)
+    else if (child->ToElement() || child->ToText())
     {
       do
       {
         // save next as current child might be removed from the tree
-        TiXmlElement* next = child->NextSiblingElement();
+        auto* next = child->NextSiblingElement();
 
-        if (child->Type() == TiXmlNode::TINYXML_ELEMENT)
-          ResolveParametersForNode(static_cast<TiXmlElement*>(child), params);
+        if (child->ToElement())
+          ResolveParametersForNode(child->ToElement(), params);
 
         child = next;
       }
@@ -697,8 +735,11 @@ std::string CGUIIncludes::ResolveExpressions(const std::string &expression) cons
 
 const INFO::CSkinVariableString* CGUIIncludes::CreateSkinVariable(const std::string& name, int context)
 {
-  std::map<std::string, TiXmlElement>::const_iterator it = m_skinvariables.find(name);
+  auto it = m_skinvariables.find(name);
   if (it != m_skinvariables.end())
-    return INFO::CSkinVariable::CreateFromXML(it->second, context);
+  {
+    auto child = it->second->FirstChild()->ToElement();
+    return INFO::CSkinVariable::CreateFromXML(*child, context);
+  }
   return NULL;
 }

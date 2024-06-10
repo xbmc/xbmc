@@ -14,9 +14,10 @@
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
-#include "utils/XBMCTinyXML.h"
 
 #include <algorithm>
+
+#include <tinyxml2.h>
 
 using namespace KODI::GUILIB;
 
@@ -361,19 +362,27 @@ void CGUITextBox::ScrollToOffset(int offset, bool autoScroll)
   m_offset = offset;
 }
 
-void CGUITextBox::SetAutoScrolling(const TiXmlNode *node)
+void CGUITextBox::SetAutoScrolling(const tinyxml2::XMLNode* node)
 {
   if (!node) return;
-  const TiXmlElement *scroll = node->FirstChildElement("autoscroll");
+  const auto* scroll = node->FirstChildElement("autoscroll");
   if (scroll)
   {
-    scroll->Attribute("delay", &m_autoScrollDelay);
-    scroll->Attribute("time", &m_autoScrollTime);
+    auto delay = scroll->Attribute("delay");
+    if (delay)
+      m_autoScrollDelay = std::stoi(delay);
+    auto time = scroll->Attribute("time");
+    if (time)
+      m_autoScrollTime = std::stoi(time);
     if (scroll->FirstChild())
-      m_autoScrollCondition = CServiceBroker::GetGUI()->GetInfoManager().Register(scroll->FirstChild()->ValueStr(), GetParentID());
-    int repeatTime;
-    if (scroll->Attribute("repeat", &repeatTime))
+      m_autoScrollCondition = CServiceBroker::GetGUI()->GetInfoManager().Register(
+          scroll->FirstChild()->Value(), GetParentID());
+    auto repeatTimeAttrib = scroll->Attribute("repeat");
+    if (repeatTimeAttrib)
+    {
+      int repeatTime = std::stoi(repeatTimeAttrib);
       m_autoScrollRepeatAnim = new CAnimation(CAnimation::CreateFader(100, 0, repeatTime, 1000));
+    }
   }
 }
 

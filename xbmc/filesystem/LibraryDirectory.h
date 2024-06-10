@@ -9,9 +9,15 @@
 #pragma once
 
 #include "IDirectory.h"
-#include "utils/XBMCTinyXML.h"
 
-class TiXmlElement;
+#include <memory>
+
+class CXBMCTinyXML2;
+
+namespace tinyxml2
+{
+class XMLElement;
+}
 
 namespace XFILE
 {
@@ -33,10 +39,10 @@ namespace XFILE
     /*! \brief load the XML file and return a pointer to the <node> root element.
      Checks visible attribute and only returns non-NULL for valid nodes that should be visible.
      \param xmlFile the XML file to load and parse
-     \return the TiXmlElement pointer to the node, if it should be visible.
+     \return the XMLElement pointer to the node, if it should be visible.
      */
-    TiXmlElement *LoadXML(const std::string &xmlFile);
+    tinyxml2::XMLElement* LoadXML(const std::string& xmlFile);
 
-    CXBMCTinyXML m_doc;
+    std::unique_ptr<CXBMCTinyXML2> m_doc;
   };
 }

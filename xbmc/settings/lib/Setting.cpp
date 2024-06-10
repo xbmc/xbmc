@@ -12,7 +12,7 @@
 #include "SettingDefinitions.h"
 #include "SettingsManager.h"
 #include "utils/StringUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
@@ -45,12 +45,13 @@ bool CheckSettingOptionsValidity(const TValue& value, const std::vector<TKey>& o
   return false;
 }
 
-bool DeserializeOptionsSort(const TiXmlElement* optionsElement, SettingOptionsSort& optionsSort)
+bool DeserializeOptionsSort(const tinyxml2::XMLElement* optionsElement,
+                            SettingOptionsSort& optionsSort)
 {
   optionsSort = SettingOptionsSort::NoSorting;
 
-  std::string sort;
-  if (optionsElement->QueryStringAttribute("sort", &sort) != TIXML_SUCCESS)
+  const char* sort = "";
+  if (optionsElement->QueryStringAttribute("sort", &sort) != tinyxml2::XML_SUCCESS)
     return true;
 
   if (StringUtils::EqualsNoCase(sort, "false") || StringUtils::EqualsNoCase(sort, "off") ||
@@ -98,7 +99,7 @@ void CSetting::MergeBasics(const CSetting& other)
   SetDependencies(other.GetDependencies());
 }
 
-bool CSetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
+bool CSetting::Deserialize(const tinyxml2::XMLNode* node, bool update /* = false */)
 {
   // handle <visible> conditions
   if (!ISetting::Deserialize(node, update))
@@ -125,10 +126,10 @@ bool CSetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
   if (m_level < SettingLevel::Basic || m_level > SettingLevel::Internal)
     m_level = SettingLevel::Standard;
 
-  auto dependencies = node->FirstChild(SETTING_XML_ELM_DEPENDENCIES);
+  auto dependencies = node->FirstChildElement(SETTING_XML_ELM_DEPENDENCIES);
   if (dependencies != nullptr)
   {
-    auto dependencyNode = dependencies->FirstChild(SETTING_XML_ELM_DEPENDENCY);
+    auto dependencyNode = dependencies->FirstChildElement(SETTING_XML_ELM_DEPENDENCY);
     while (dependencyNode != nullptr)
     {
       CSettingDependency dependency(m_settingsManager);
@@ -137,7 +138,7 @@ bool CSetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
       else
         s_logger->warn("error reading <{}> tag of \"{}\"", SETTING_XML_ELM_DEPENDENCY, m_id);
 
-      dependencyNode = dependencyNode->NextSibling(SETTING_XML_ELM_DEPENDENCY);
+      dependencyNode = dependencyNode->NextSiblingElement(SETTING_XML_ELM_DEPENDENCY);
     }
   }
 
@@ -165,7 +166,7 @@ bool CSetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
     return false;
   }
 
-  auto updates = node->FirstChild(SETTING_XML_ELM_UPDATES);
+  auto updates = node->FirstChildElement(SETTING_XML_ELM_UPDATES);
   if (updates != nullptr)
   {
     auto updateElem = updates->FirstChildElement(SETTING_XML_ELM_UPDATE);
@@ -281,7 +282,7 @@ void CSetting::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
   m_callback->OnSettingAction(setting);
 }
 
-bool CSetting::DeserializeIdentification(const TiXmlNode* node,
+bool CSetting::DeserializeIdentification(const tinyxml2::XMLNode* node,
                                          std::string& identification,
                                          bool& isReference)
 {
@@ -301,7 +302,7 @@ bool CSetting::DeserializeIdentification(const TiXmlNode* node,
 
 bool CSetting::OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
                                const char* oldSettingId,
-                               const TiXmlNode* oldSettingNode)
+                               const tinyxml2::XMLNode* oldSettingNode)
 {
   if (m_callback == nullptr)
     return false;
@@ -394,7 +395,7 @@ void CSettingList::MergeDetails(const CSetting& other)
     m_maximumItems = listSetting.m_maximumItems;
 }
 
-bool CSettingList::Deserialize(const TiXmlNode *node, bool update /* = false */)
+bool CSettingList::Deserialize(const tinyxml2::XMLNode* node, bool update /* = false */)
 {
   std::unique_lock<CSharedSection> lock(m_critical);
 
@@ -416,7 +417,7 @@ bool CSettingList::Deserialize(const TiXmlNode *node, bool update /* = false */)
   if (!m_definition->Deserialize(node, true))
     return false;
 
-  auto constraints = node->FirstChild(SETTING_XML_ELM_CONSTRAINTS);
+  auto constraints = node->FirstChildElement(SETTING_XML_ELM_CONSTRAINTS);
   if (constraints != nullptr)
   {
     // read the delimiter
@@ -701,7 +702,7 @@ void CSettingBool::MergeDetails(const CSetting& other)
     m_value = boolSetting.m_value;
 }
 
-bool CSettingBool::Deserialize(const TiXmlNode *node, bool update /* = false */)
+bool CSettingBool::Deserialize(const tinyxml2::XMLNode* node, bool update /* = false */)
 {
   std::unique_lock<CSharedSection> lock(m_critical);
 
@@ -896,7 +897,7 @@ void CSettingInt::MergeDetails(const CSetting& other)
     m_optionsSort = intSetting.m_optionsSort;
 }
 
-bool CSettingInt::Deserialize(const TiXmlNode *node, bool update /* = false */)
+bool CSettingInt::Deserialize(const tinyxml2::XMLNode* node, bool update /* = false */)
 {
   std::unique_lock<CSharedSection> lock(m_critical);
 
@@ -913,7 +914,7 @@ bool CSettingInt::Deserialize(const TiXmlNode *node, bool update /* = false */)
     return false;
   }
 
-  auto constraints = node->FirstChild(SETTING_XML_ELM_CONSTRAINTS);
+  auto constraints = node->FirstChildElement(SETTING_XML_ELM_CONSTRAINTS);
   if (constraints != nullptr)
   {
     // get the entries
@@ -924,9 +925,9 @@ bool CSettingInt::Deserialize(const TiXmlNode *node, bool update /* = false */)
         s_logger->warn("invalid \"sort\" attribute of <" SETTING_XML_ELM_OPTIONS "> for \"{}\"",
                        m_id);
 
-      if (options->FirstChild()->Type() == TiXmlNode::TINYXML_TEXT)
+      if (options->FirstChild()->ToText())
       {
-        m_optionsFillerName = options->FirstChild()->ValueStr();
+        m_optionsFillerName = options->FirstChild()->Value();
         if (!m_optionsFillerName.empty())
         {
           m_optionsFiller = reinterpret_cast<IntegerSettingOptionsFiller>(m_settingsManager->GetSettingOptionsFiller(shared_from_base<CSettingInt>()));
@@ -940,7 +941,7 @@ bool CSettingInt::Deserialize(const TiXmlNode *node, bool update /* = false */)
         {
           TranslatableIntegerSettingOption entry;
           if (optionElement->QueryIntAttribute(SETTING_XML_ATTR_LABEL, &entry.label) ==
-                  TIXML_SUCCESS &&
+                  tinyxml2::XML_SUCCESS &&
               entry.label > 0)
           {
             entry.value = strtol(optionElement->FirstChild()->Value(), nullptr, 10);
@@ -948,9 +949,9 @@ bool CSettingInt::Deserialize(const TiXmlNode *node, bool update /* = false */)
           }
           else
           {
-            std::string label;
+            const char* label = "";
             if (optionElement->QueryStringAttribute(SETTING_XML_ATTR_LABEL, &label) ==
-                TIXML_SUCCESS)
+                tinyxml2::XML_SUCCESS)
             {
               int value = strtol(optionElement->FirstChild()->Value(), nullptr, 10);
               m_options.emplace_back(label, value);
@@ -1219,7 +1220,7 @@ void CSettingNumber::MergeDetails(const CSetting& other)
     m_max = numberSetting.m_max;
 }
 
-bool CSettingNumber::Deserialize(const TiXmlNode *node, bool update /* = false */)
+bool CSettingNumber::Deserialize(const tinyxml2::XMLNode* node, bool update /* = false */)
 {
   std::unique_lock<CSharedSection> lock(m_critical);
 
@@ -1236,7 +1237,7 @@ bool CSettingNumber::Deserialize(const TiXmlNode *node, bool update /* = false *
     return false;
   }
 
-  auto constraints = node->FirstChild(SETTING_XML_ELM_CONSTRAINTS);
+  auto constraints = node->FirstChildElement(SETTING_XML_ELM_CONSTRAINTS);
   if (constraints != nullptr)
   {
     // get the minimum value
@@ -1419,14 +1420,14 @@ void CSettingString::MergeDetails(const CSetting& other)
     m_optionsSort = stringSetting.m_optionsSort;
 }
 
-bool CSettingString::Deserialize(const TiXmlNode *node, bool update /* = false */)
+bool CSettingString::Deserialize(const tinyxml2::XMLNode* node, bool update /* = false */)
 {
   std::unique_lock<CSharedSection> lock(m_critical);
 
   if (!CSetting::Deserialize(node, update))
     return false;
 
-  auto constraints = node->FirstChild(SETTING_XML_ELM_CONSTRAINTS);
+  auto constraints = node->FirstChildElement(SETTING_XML_ELM_CONSTRAINTS);
   if (constraints != nullptr)
   {
     // get allowempty (needs to be parsed before parsing the default value)
@@ -1443,9 +1444,9 @@ bool CSettingString::Deserialize(const TiXmlNode *node, bool update /* = false *
         s_logger->warn("invalid \"sort\" attribute of <" SETTING_XML_ELM_OPTIONS "> for \"{}\"",
                        m_id);
 
-      if (options->FirstChild()->Type() == TiXmlNode::TINYXML_TEXT)
+      if (options->FirstChild()->ToText())
       {
-        m_optionsFillerName = options->FirstChild()->ValueStr();
+        m_optionsFillerName = options->FirstChild()->Value();
         if (!m_optionsFillerName.empty())
         {
           m_optionsFiller = reinterpret_cast<StringSettingOptionsFiller>(m_settingsManager->GetSettingOptionsFiller(shared_from_base<CSettingString>()));
@@ -1458,7 +1459,9 @@ bool CSettingString::Deserialize(const TiXmlNode *node, bool update /* = false *
         while (optionElement != nullptr)
         {
           TranslatableStringSettingOption entry;
-          if (optionElement->QueryIntAttribute(SETTING_XML_ATTR_LABEL, &entry.first) == TIXML_SUCCESS && entry.first > 0)
+          if (optionElement->QueryIntAttribute(SETTING_XML_ATTR_LABEL, &entry.first) ==
+                  tinyxml2::XML_SUCCESS &&
+              entry.first > 0)
           {
             entry.second = optionElement->FirstChild()->Value();
             m_translatableOptions.push_back(entry);
@@ -1467,7 +1470,7 @@ bool CSettingString::Deserialize(const TiXmlNode *node, bool update /* = false *
           {
             const std::string value = optionElement->FirstChild()->Value();
             // if a specific "label" attribute is present use it otherwise use the value as label
-            std::string label = value;
+            const char* label = value.c_str();
             optionElement->QueryStringAttribute(SETTING_XML_ATTR_LABEL, &label);
 
             m_options.emplace_back(label, value);
@@ -1669,7 +1672,7 @@ void CSettingAction::MergeDetails(const CSetting& other)
     SetData(actionSetting.GetData());
 }
 
-bool CSettingAction::Deserialize(const TiXmlNode *node, bool update /* = false */)
+bool CSettingAction::Deserialize(const tinyxml2::XMLNode* node, bool update /* = false */)
 {
   std::shared_lock<CSharedSection> lock(m_critical);
 

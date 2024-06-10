@@ -14,7 +14,10 @@
 #include <string>
 #include <vector>
 
-class TiXmlNode;
+namespace tinyxml2
+{
+class XMLNode;
+}
 
 class CProfile
 {
@@ -42,8 +45,8 @@ public:
   CProfile(const std::string &directory = "", const std::string &name = "", const int id = -1);
   ~CProfile(void);
 
-  void Load(const TiXmlNode *node, int nextIdProfile);
-  void Save(TiXmlNode *root) const;
+  void Load(const tinyxml2::XMLNode* node, int nextIdProfile);
+  void Save(tinyxml2::XMLNode* root) const;
 
   const std::string& getDate() const { return m_date;}
   int getId() const { return m_id; }

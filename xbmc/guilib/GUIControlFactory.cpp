@@ -57,6 +57,8 @@
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
+#include <tinyxml2.h>
+
 using namespace KODI;
 using namespace KODI::GUILIB;
 using namespace PVR;
@@ -126,13 +128,13 @@ CGUIControlFactory::CGUIControlFactory(void) = default;
 
 CGUIControlFactory::~CGUIControlFactory(void) = default;
 
-bool CGUIControlFactory::GetIntRange(const TiXmlNode* pRootNode,
+bool CGUIControlFactory::GetIntRange(const tinyxml2::XMLNode* pRootNode,
                                      const char* strTag,
                                      int& iMinValue,
                                      int& iMaxValue,
                                      int& iIntervalValue)
 {
-  const TiXmlNode* pNode = pRootNode->FirstChild(strTag);
+  const auto* pNode = pRootNode->FirstChildElement(strTag);
   if (!pNode || !pNode->FirstChild())
     return false;
   iMinValue = atoi(pNode->FirstChild()->Value());
@@ -153,13 +155,13 @@ bool CGUIControlFactory::GetIntRange(const TiXmlNode* pRootNode,
   return true;
 }
 
-bool CGUIControlFactory::GetFloatRange(const TiXmlNode* pRootNode,
+bool CGUIControlFactory::GetFloatRange(const tinyxml2::XMLNode* pRootNode,
                                        const char* strTag,
                                        float& fMinValue,
                                        float& fMaxValue,
                                        float& fIntervalValue)
 {
-  const TiXmlNode* pNode = pRootNode->FirstChild(strTag);
+  const auto* pNode = pRootNode->FirstChildElement(strTag);
   if (!pNode || !pNode->FirstChild())
     return false;
   fMinValue = (float)atof(pNode->FirstChild()->Value());
@@ -194,12 +196,12 @@ float CGUIControlFactory::ParsePosition(const char* pos, const float parentSize)
   return value;
 }
 
-bool CGUIControlFactory::GetPosition(const TiXmlNode* node,
+bool CGUIControlFactory::GetPosition(const tinyxml2::XMLNode* node,
                                      const char* strTag,
                                      const float parentSize,
                                      float& value)
 {
-  const TiXmlElement* pNode = node->FirstChildElement(strTag);
+  const auto* pNode = node->FirstChildElement(strTag);
   if (!pNode || !pNode->FirstChild())
     return false;
 
@@ -207,13 +209,13 @@ bool CGUIControlFactory::GetPosition(const TiXmlNode* node,
   return true;
 }
 
-bool CGUIControlFactory::GetDimension(const TiXmlNode* pRootNode,
+bool CGUIControlFactory::GetDimension(const tinyxml2::XMLNode* pRootNode,
                                       const char* strTag,
                                       const float parentSize,
                                       float& value,
                                       float& min)
 {
-  const TiXmlElement* pNode = pRootNode->FirstChildElement(strTag);
+  const auto* pNode = pRootNode->FirstChildElement(strTag);
   if (!pNode || !pNode->FirstChild())
     return false;
   if (0 == StringUtils::CompareNoCase("auto", pNode->FirstChild()->Value(), 4))
@@ -228,7 +230,7 @@ bool CGUIControlFactory::GetDimension(const TiXmlNode* pRootNode,
   return true;
 }
 
-bool CGUIControlFactory::GetDimensions(const TiXmlNode* node,
+bool CGUIControlFactory::GetDimensions(const tinyxml2::XMLNode* node,
                                        const char* leftTag,
                                        const char* rightTag,
                                        const char* centerLeftTag,
@@ -317,12 +319,12 @@ bool CGUIControlFactory::GetDimensions(const TiXmlNode* node,
   return hasLeft && hasWidth;
 }
 
-bool CGUIControlFactory::GetAspectRatio(const TiXmlNode* pRootNode,
+bool CGUIControlFactory::GetAspectRatio(const tinyxml2::XMLNode* pRootNode,
                                         const char* strTag,
                                         CAspectRatio& aspect)
 {
   std::string ratio;
-  const TiXmlElement* node = pRootNode->FirstChildElement(strTag);
+  const auto* node = pRootNode->FirstChildElement(strTag);
   if (!node || !node->FirstChild())
     return false;
 
@@ -370,7 +372,7 @@ bool CGUIControlFactory::GetAspectRatio(const TiXmlNode* pRootNode,
   return true;
 }
 
-bool CGUIControlFactory::GetInfoTexture(const TiXmlNode* pRootNode,
+bool CGUIControlFactory::GetInfoTexture(const tinyxml2::XMLNode* pRootNode,
                                         const char* strTag,
                                         CTextureInfo& image,
                                         GUIINFO::CGUIInfoLabel& info,
@@ -382,11 +384,11 @@ bool CGUIControlFactory::GetInfoTexture(const TiXmlNode* pRootNode,
   return true;
 }
 
-bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode,
+bool CGUIControlFactory::GetTexture(const tinyxml2::XMLNode* pRootNode,
                                     const char* strTag,
                                     CTextureInfo& image)
 {
-  const TiXmlElement* pNode = pRootNode->FirstChildElement(strTag);
+  const auto* pNode = pRootNode->FirstChildElement(strTag);
   if (!pNode)
     return false;
   const char* border = pNode->Attribute("border");
@@ -432,11 +434,11 @@ void CGUIControlFactory::GetRectFromString(const std::string& string, CRect& rec
   }
 }
 
-bool CGUIControlFactory::GetAlignment(const TiXmlNode* pRootNode,
+bool CGUIControlFactory::GetAlignment(const tinyxml2::XMLNode* pRootNode,
                                       const char* strTag,
                                       uint32_t& alignment)
 {
-  const TiXmlNode* pNode = pRootNode->FirstChild(strTag);
+  const auto* pNode = pRootNode->FirstChildElement(strTag);
   if (!pNode || !pNode->FirstChild())
     return false;
 
@@ -452,17 +454,17 @@ bool CGUIControlFactory::GetAlignment(const TiXmlNode* pRootNode,
   return true;
 }
 
-bool CGUIControlFactory::GetAlignmentY(const TiXmlNode* pRootNode,
+bool CGUIControlFactory::GetAlignmentY(const tinyxml2::XMLNode* pRootNode,
                                        const char* strTag,
                                        uint32_t& alignment)
 {
-  const TiXmlNode* pNode = pRootNode->FirstChild(strTag);
-  if (!pNode || !pNode->FirstChild())
+  const auto* node = pRootNode->FirstChildElement(strTag);
+  if (!node || !node->FirstChild())
   {
     return false;
   }
 
-  std::string strAlign = pNode->FirstChild()->Value();
+  std::string strAlign = node->FirstChild()->Value();
 
   alignment = 0;
   if (strAlign == "center")
@@ -473,11 +475,11 @@ bool CGUIControlFactory::GetAlignmentY(const TiXmlNode* pRootNode,
   return true;
 }
 
-bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode* control,
+bool CGUIControlFactory::GetConditionalVisibility(const tinyxml2::XMLNode* control,
                                                   std::string& condition,
                                                   std::string& allowHiddenFocus)
 {
-  const TiXmlElement* node = control->FirstChildElement("visible");
+  const auto* node = control->FirstChildElement("visible");
   if (!node)
     return false;
   std::vector<std::string> conditions;
@@ -505,21 +507,23 @@ bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode* control,
   return true;
 }
 
-bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode* control, std::string& condition)
+bool CGUIControlFactory::GetConditionalVisibility(const tinyxml2::XMLNode* control,
+                                                  std::string& condition)
 {
   std::string allowHiddenFocus;
   return GetConditionalVisibility(control, condition, allowHiddenFocus);
 }
 
-bool CGUIControlFactory::GetAnimations(TiXmlNode* control,
+bool CGUIControlFactory::GetAnimations(tinyxml2::XMLNode* control,
                                        const CRect& rect,
                                        int context,
                                        std::vector<CAnimation>& animations)
 {
-  TiXmlElement* node = control->FirstChildElement("animation");
+  auto* node = control->FirstChildElement("animation");
   bool ret = false;
   if (node)
     animations.clear();
+
   while (node)
   {
     ret = true;
@@ -530,22 +534,23 @@ bool CGUIControlFactory::GetAnimations(TiXmlNode* control,
       animations.push_back(anim);
       if (StringUtils::CompareNoCase(node->FirstChild()->Value(), "VisibleChange") == 0)
       { // add the hidden one as well
-        TiXmlElement hidden(*node);
-        hidden.FirstChild()->SetValue("hidden");
-        const char* start = hidden.Attribute("start");
-        const char* end = hidden.Attribute("end");
+
+        auto* hidden = node->DeepClone(control->GetDocument())->ToElement();
+        hidden->FirstChild()->SetValue("hidden");
+        const char* start = hidden->Attribute("start");
+        const char* end = hidden->Attribute("end");
         if (start && end)
         {
           std::string temp = end;
-          hidden.SetAttribute("end", start);
-          hidden.SetAttribute("start", temp.c_str());
+          hidden->SetAttribute("end", start);
+          hidden->SetAttribute("start", temp.c_str());
         }
         else if (start)
-          hidden.SetAttribute("end", start);
+          hidden->SetAttribute("end", start);
         else if (end)
-          hidden.SetAttribute("start", end);
+          hidden->SetAttribute("start", end);
         CAnimation anim2;
-        anim2.Create(&hidden, rect, context);
+        anim2.Create(hidden, rect, context);
         animations.push_back(anim2);
       }
     }
@@ -554,12 +559,12 @@ bool CGUIControlFactory::GetAnimations(TiXmlNode* control,
   return ret;
 }
 
-bool CGUIControlFactory::GetActions(const TiXmlNode* pRootNode,
+bool CGUIControlFactory::GetActions(const tinyxml2::XMLNode* pRootNode,
                                     const char* strTag,
                                     CGUIAction& actions)
 {
   actions.Reset();
-  const TiXmlElement* pElement = pRootNode->FirstChildElement(strTag);
+  const auto* pElement = pRootNode->FirstChildElement(strTag);
   while (pElement)
   {
     if (pElement->FirstChild())
@@ -572,9 +577,11 @@ bool CGUIControlFactory::GetActions(const TiXmlNode* pRootNode,
   return actions.HasAnyActions();
 }
 
-bool CGUIControlFactory::GetHitRect(const TiXmlNode* control, CRect& rect, const CRect& parentRect)
+bool CGUIControlFactory::GetHitRect(const tinyxml2::XMLNode* control,
+                                    CRect& rect,
+                                    const CRect& parentRect)
 {
-  const TiXmlElement* node = control->FirstChildElement("hitrect");
+  const auto* node = control->FirstChildElement("hitrect");
   if (node)
   {
     rect.x1 = ParsePosition(node->Attribute("x"), parentRect.Width());
@@ -592,11 +599,11 @@ bool CGUIControlFactory::GetHitRect(const TiXmlNode* control, CRect& rect, const
   return false;
 }
 
-bool CGUIControlFactory::GetScroller(const TiXmlNode* control,
+bool CGUIControlFactory::GetScroller(const tinyxml2::XMLNode* control,
                                      const std::string& scrollerTag,
                                      CScroller& scroller)
 {
-  const TiXmlElement* node = control->FirstChildElement(scrollerTag);
+  const auto* node = control->FirstChildElement(scrollerTag.c_str());
   if (node)
   {
     unsigned int scrollTime;
@@ -609,11 +616,11 @@ bool CGUIControlFactory::GetScroller(const TiXmlNode* control,
   return false;
 }
 
-bool CGUIControlFactory::GetColor(const TiXmlNode* control,
+bool CGUIControlFactory::GetColor(const tinyxml2::XMLNode* control,
                                   const char* strTag,
                                   UTILS::COLOR::Color& value)
 {
-  const TiXmlElement* node = control->FirstChildElement(strTag);
+  const auto* node = control->FirstChildElement(strTag);
   if (node && node->FirstChild())
   {
     value = CServiceBroker::GetGUI()->GetColorManager().GetColor(node->FirstChild()->Value());
@@ -622,21 +629,21 @@ bool CGUIControlFactory::GetColor(const TiXmlNode* control,
   return false;
 }
 
-bool CGUIControlFactory::GetInfoColor(const TiXmlNode* control,
+bool CGUIControlFactory::GetInfoColor(const tinyxml2::XMLNode* control,
                                       const char* strTag,
                                       GUIINFO::CGUIInfoColor& value,
                                       int parentID)
 {
-  const TiXmlElement* node = control->FirstChildElement(strTag);
+  const auto* node = control->FirstChildElement(strTag);
   if (node && node->FirstChild())
   {
-    value.Parse(node->FirstChild()->ValueStr(), parentID);
+    value.Parse(node->FirstChild()->Value(), parentID);
     return true;
   }
   return false;
 }
 
-void CGUIControlFactory::GetInfoLabel(const TiXmlNode* pControlNode,
+void CGUIControlFactory::GetInfoLabel(const tinyxml2::XMLNode* pControlNode,
                                       const std::string& labelTag,
                                       GUIINFO::CGUIInfoLabel& infoLabel,
                                       int parentID)
@@ -647,7 +654,7 @@ void CGUIControlFactory::GetInfoLabel(const TiXmlNode* pControlNode,
     infoLabel = labels[0];
 }
 
-bool CGUIControlFactory::GetInfoLabelFromElement(const TiXmlElement* element,
+bool CGUIControlFactory::GetInfoLabelFromElement(const tinyxml2::XMLElement* element,
                                                  GUIINFO::CGUIInfoLabel& infoLabel,
                                                  int parentID)
 {
@@ -669,7 +676,7 @@ bool CGUIControlFactory::GetInfoLabelFromElement(const TiXmlElement* element,
   return true;
 }
 
-void CGUIControlFactory::GetInfoLabels(const TiXmlNode* pControlNode,
+void CGUIControlFactory::GetInfoLabels(const tinyxml2::XMLNode* pControlNode,
                                        const std::string& labelTag,
                                        std::vector<GUIINFO::CGUIInfoLabel>& infoLabels,
                                        int parentID)
@@ -686,15 +693,15 @@ void CGUIControlFactory::GetInfoLabels(const TiXmlNode* pControlNode,
     infoLabels.emplace_back(label);
     return; // done
   }
-  const TiXmlElement* labelNode = pControlNode->FirstChildElement(labelTag);
+  const auto* labelNode = pControlNode->FirstChildElement(labelTag.c_str());
   while (labelNode)
   {
     GUIINFO::CGUIInfoLabel label;
     if (GetInfoLabelFromElement(labelNode, label, parentID))
       infoLabels.push_back(label);
-    labelNode = labelNode->NextSiblingElement(labelTag);
+    labelNode = labelNode->NextSiblingElement(labelTag.c_str());
   }
-  const TiXmlNode* infoNode = pControlNode->FirstChild("info");
+  auto* infoNode = pControlNode->FirstChildElement("info");
   if (infoNode)
   { // <info> nodes override <label>'s (backward compatibility)
     std::string fallback;
@@ -708,7 +715,7 @@ void CGUIControlFactory::GetInfoLabels(const TiXmlNode* pControlNode,
         std::string info = StringUtils::Format("$INFO[{}]", infoNode->FirstChild()->Value());
         infoLabels.emplace_back(info, fallback, parentID);
       }
-      infoNode = infoNode->NextSibling("info");
+      infoNode = infoNode->NextSiblingElement("info");
     }
   }
 }
@@ -724,7 +731,7 @@ std::string CGUIControlFactory::FilterLabel(const std::string& label)
   return viewLabel;
 }
 
-bool CGUIControlFactory::GetString(const TiXmlNode* pRootNode,
+bool CGUIControlFactory::GetString(const tinyxml2::XMLNode* pRootNode,
                                    const char* strTag,
                                    std::string& text)
 {
@@ -735,7 +742,7 @@ bool CGUIControlFactory::GetString(const TiXmlNode* pRootNode,
   return true;
 }
 
-std::string CGUIControlFactory::GetType(const TiXmlElement* pControlNode)
+std::string CGUIControlFactory::GetType(const tinyxml2::XMLElement* pControlNode)
 {
   std::string type = XMLUtils::GetAttribute(pControlNode, "type");
   if (type.empty()) // backward compatibility - not desired
@@ -743,11 +750,11 @@ std::string CGUIControlFactory::GetType(const TiXmlElement* pControlNode)
   return type;
 }
 
-bool CGUIControlFactory::GetMovingSpeedConfig(const TiXmlNode* pRootNode,
+bool CGUIControlFactory::GetMovingSpeedConfig(const tinyxml2::XMLNode* pRootNode,
                                               const char* strTag,
                                               UTILS::MOVING_SPEED::MapEventConfig& movingSpeedCfg)
 {
-  const TiXmlElement* msNode = pRootNode->FirstChildElement(strTag);
+  const auto* msNode = pRootNode->FirstChildElement(strTag);
   if (!msNode)
     return false;
 
@@ -757,7 +764,7 @@ bool CGUIControlFactory::GetMovingSpeedConfig(const TiXmlNode* pRootNode,
       StringUtils::ToUint32(XMLUtils::GetAttribute(msNode, "resettimeout"))};
   float globalDelta{StringUtils::ToFloat(XMLUtils::GetAttribute(msNode, "delta"))};
 
-  const TiXmlElement* configElement{msNode->FirstChildElement("eventconfig")};
+  const auto* configElement{msNode->FirstChildElement("eventconfig")};
   while (configElement)
   {
     const char* eventType = configElement->Attribute("type");
@@ -790,7 +797,7 @@ bool CGUIControlFactory::GetMovingSpeedConfig(const TiXmlNode* pRootNode,
 
 CGUIControl* CGUIControlFactory::Create(int parentID,
                                         const CRect& rect,
-                                        TiXmlElement* pControlNode,
+                                        tinyxml2::XMLElement* pControlNode,
                                         bool insideContainer)
 {
   // get the control type
@@ -922,7 +929,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
   // Read control properties from XML
   //
 
-  if (!pControlNode->Attribute("id", &id))
+  if (!pControlNode->Attribute("id"))
     XMLUtils::GetInt(pControlNode, "id", id); // backward compatibility - not desired
   //! @todo Perhaps we should check here whether id is valid for focusable controls
   //! such as buttons etc.  For labels/fadelabels/images it does not matter
@@ -1190,7 +1197,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
     viewType = VIEW_TYPE_WRAP;
     viewLabel = g_localizeStrings.Get(541);
   }
-  TiXmlElement* itemElement = pControlNode->FirstChildElement("viewtype");
+  auto* itemElement = pControlNode->FirstChildElement("viewtype");
   if (itemElement && itemElement->FirstChild())
   {
     std::string type = itemElement->FirstChild()->Value();
@@ -1219,7 +1226,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
       viewLabel = GUIINFO::CGUIInfoLabel::GetLabel(FilterLabel(label), INFO::DEFAULT_CONTEXT);
   }
 
-  TiXmlElement* cam = pControlNode->FirstChildElement("camera");
+  auto* cam = pControlNode->FirstChildElement("camera");
   if (cam)
   {
     hasCamera = true;

@@ -11,8 +11,9 @@
 #include "ServiceBroker.h"
 #include "SettingDefinitions.h"
 #include "utils/StringUtils.h"
-#include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
+
+#include <tinyxml2.h>
 
 Logger ISettingControl::s_logger;
 
@@ -22,13 +23,13 @@ ISettingControl::ISettingControl()
     s_logger = CServiceBroker::GetLogging().GetLogger("ISettingControl");
 }
 
-bool ISettingControl::Deserialize(const TiXmlNode *node, bool update /* = false */)
+bool ISettingControl::Deserialize(const tinyxml2::XMLNode* node, bool update /* = false */)
 {
-  if (node == nullptr)
+  if (!node)
     return false;
 
   auto elem = node->ToElement();
-  if (elem == nullptr)
+  if (!elem)
     return false;
 
   auto strTmp = elem->Attribute(SETTING_XML_ATTR_FORMAT);

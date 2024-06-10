@@ -13,7 +13,11 @@ enum ANIMATION_STATE { ANIM_STATE_NONE = 0, ANIM_STATE_DELAYED, ANIM_STATE_IN_PR
 
 // forward definitions
 
-class TiXmlElement;
+namespace tinyxml2
+{
+class XMLElement;
+}
+
 class Tweener;
 class CGUIListItem;
 
@@ -53,7 +57,7 @@ public:
     EFFECT_TYPE_ZOOM
   };
 
-  CAnimEffect(const TiXmlElement *node, EFFECT_TYPE effect);
+  CAnimEffect(const tinyxml2::XMLElement* node, EFFECT_TYPE effect);
   CAnimEffect(unsigned int delay, unsigned int length, EFFECT_TYPE effect);
   CAnimEffect(const CAnimEffect &src);
 
@@ -68,7 +72,8 @@ public:
   const TransformMatrix& GetTransform() const { return m_matrix; }
   EFFECT_TYPE GetType() const { return m_effect; }
 
-  static std::shared_ptr<Tweener> GetTweener(const TiXmlElement *pAnimationNode);
+  static std::shared_ptr<Tweener> GetTweener(const tinyxml2::XMLElement* pAnimationNode);
+
 protected:
   TransformMatrix m_matrix;
   EFFECT_TYPE m_effect;
@@ -86,7 +91,7 @@ private:
 class CFadeEffect : public CAnimEffect
 {
 public:
-  CFadeEffect(const TiXmlElement* node, bool reverseDefaults, EFFECT_TYPE effect);
+  CFadeEffect(const tinyxml2::XMLElement* node, bool reverseDefaults, EFFECT_TYPE effect);
   CFadeEffect(float start, float end, unsigned int delay, unsigned int length);
   CFadeEffect(UTILS::COLOR::Color start,
               UTILS::COLOR::Color end,
@@ -105,7 +110,7 @@ private:
 class CSlideEffect : public CAnimEffect
 {
 public:
-  explicit CSlideEffect(const TiXmlElement *node);
+  explicit CSlideEffect(const tinyxml2::XMLElement* node);
   ~CSlideEffect() override = default;
 private:
   void ApplyEffect(float offset, const CPoint &center) override;
@@ -119,7 +124,7 @@ private:
 class CRotateEffect : public CAnimEffect
 {
 public:
-  CRotateEffect(const TiXmlElement *node, EFFECT_TYPE effect);
+  CRotateEffect(const tinyxml2::XMLElement* node, EFFECT_TYPE effect);
   ~CRotateEffect() override = default;
 private:
   void ApplyEffect(float offset, const CPoint &center) override;
@@ -134,7 +139,7 @@ private:
 class CZoomEffect : public CAnimEffect
 {
 public:
-  CZoomEffect(const TiXmlElement *node, const CRect &rect);
+  CZoomEffect(const tinyxml2::XMLElement* node, const CRect& rect);
   ~CZoomEffect() override = default;
 private:
   void ApplyEffect(float offset, const CPoint &center) override;
@@ -160,7 +165,7 @@ public:
 
   static CAnimation CreateFader(float start, float end, unsigned int delay, unsigned int length, ANIMATION_TYPE type = ANIM_TYPE_NONE);
 
-  void Create(const TiXmlElement *node, const CRect &rect, int context);
+  void Create(const tinyxml2::XMLElement* node, const CRect& rect, int context);
 
   void Animate(unsigned int time, bool startAnim);
   void ResetAnimation();
@@ -184,7 +189,7 @@ public:
 
 private:
   void Calculate(const CPoint &point);
-  void AddEffect(const std::string &type, const TiXmlElement *node, const CRect &rect);
+  void AddEffect(const std::string& type, const tinyxml2::XMLElement* node, const CRect& rect);
 
   enum ANIM_REPEAT { ANIM_REPEAT_NONE = 0, ANIM_REPEAT_PULSE, ANIM_REPEAT_LOOP };
 

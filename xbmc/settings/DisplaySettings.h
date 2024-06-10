@@ -19,7 +19,10 @@
 #include <utility>
 #include <vector>
 
-class TiXmlNode;
+namespace tinyxml2
+{
+class XMLNode;
+}
 struct IntegerSettingOption;
 struct StringSettingOption;
 
@@ -29,15 +32,15 @@ class CDisplaySettings : public ISettingCallback, public ISubSettings,
 public:
   static CDisplaySettings& GetInstance();
 
-  bool Load(const TiXmlNode *settings) override;
-  bool Save(TiXmlNode *settings) const override;
+  bool Load(const tinyxml2::XMLNode* settings) override;
+  bool Save(tinyxml2::XMLNode* settings) const override;
   void Clear() override;
 
   void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
   bool OnSettingChanging(const std::shared_ptr<const CSetting>& setting) override;
   bool OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
                        const char* oldSettingId,
-                       const TiXmlNode* oldSettingNode) override;
+                       const tinyxml2::XMLNode* oldSettingNode) override;
   void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
   /*!

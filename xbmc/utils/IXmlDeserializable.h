@@ -8,12 +8,15 @@
 
 #pragma once
 
-class TiXmlNode;
+namespace tinyxml2
+{
+class XMLNode;
+}
 
 class IXmlDeserializable
 {
 public:
   virtual ~IXmlDeserializable() = default;
 
-  virtual bool Deserialize(const TiXmlNode *node) = 0;
+  virtual bool Deserialize(const tinyxml2::XMLNode* node) = 0;
 };

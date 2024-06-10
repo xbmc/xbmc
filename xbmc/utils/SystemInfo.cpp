@@ -75,6 +75,8 @@ using namespace winrt::Windows::System::Profile;
 
 #include <system_error>
 
+#include <tinyxml2.h>
+
 /* Expand macro before stringify */
 #define STR_MACRO(x) #x
 #define XSTR_MACRO(x) STR_MACRO(x)
@@ -492,30 +494,32 @@ CSysInfo::CSysInfo(void) : CInfoLoader(15 * 1000)
 
 CSysInfo::~CSysInfo() = default;
 
-bool CSysInfo::Load(const TiXmlNode *settings)
+bool CSysInfo::Load(const tinyxml2::XMLNode* settings)
 {
   if (settings == NULL)
     return false;
 
-  const TiXmlElement *pElement = settings->FirstChildElement("general");
-  if (pElement)
-    XMLUtils::GetInt(pElement, "systemtotaluptime", m_iSystemTimeTotalUp, 0, INT_MAX);
+  const auto* element = settings->FirstChildElement("general");
+  if (element)
+    XMLUtils::GetInt(element, "systemtotaluptime", m_iSystemTimeTotalUp, 0, INT_MAX);
 
   return true;
 }
 
-bool CSysInfo::Save(TiXmlNode *settings) const
+bool CSysInfo::Save(tinyxml2::XMLNode* settings) const
 {
-  if (settings == NULL)
+  if (!settings)
     return false;
 
-  TiXmlNode *generalNode = settings->FirstChild("general");
-  if (generalNode == NULL)
+  auto* generalNode = settings->FirstChildElement("general");
+  if (!generalNode)
   {
-    TiXmlElement generalNodeNew("general");
-    generalNode = settings->InsertEndChild(generalNodeNew);
-    if (generalNode == NULL)
+    auto* generalElement = settings->GetDocument()->NewElement("general");
+    auto* generalNodeNew = settings->InsertEndChild(generalElement);
+    if (!generalNodeNew)
       return false;
+
+    generalNode = generalNodeNew->ToElement();
   }
   XMLUtils::SetInt(generalNode, "systemtotaluptime", m_iSystemTimeTotalUp);
 

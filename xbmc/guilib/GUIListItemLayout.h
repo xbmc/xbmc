@@ -16,7 +16,11 @@
 class CGUIListItem;
 class CFileItem;
 class CLabelInfo;
-class TiXmlElement;
+
+namespace tinyxml2
+{
+class XMLElement;
+}
 
 class CGUIListItemLayout final
 {
@@ -24,7 +28,8 @@ public:
   CGUIListItemLayout();
   explicit CGUIListItemLayout(const CGUIListItemLayout& from);
   explicit CGUIListItemLayout(const CGUIListItemLayout& from, CGUIControl* control);
-  void LoadLayout(TiXmlElement *layout, int context, bool focused, float maxWidth, float maxHeight);
+  void LoadLayout(
+      tinyxml2::XMLElement* layout, int context, bool focused, float maxWidth, float maxHeight);
   void Process(CGUIListItem *item, int parentID, unsigned int currentTime, CDirtyRegionList &dirtyregions);
   void Render(CGUIListItem *item, int parentID);
   float Size(ORIENTATION orientation) const;
@@ -52,7 +57,7 @@ public:
 #endif
   bool CheckCondition();
 protected:
-  void LoadControl(TiXmlElement *child, CGUIControlGroup *group);
+  void LoadControl(tinyxml2::XMLElement* child, CGUIControlGroup* group);
 
   CGUIListGroup m_group;
 

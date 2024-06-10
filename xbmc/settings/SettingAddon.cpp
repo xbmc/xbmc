@@ -12,11 +12,12 @@
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonType.h"
 #include "settings/lib/SettingsManager.h"
-#include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
 #include <mutex>
+
+#include <tinyxml2.h>
 
 CSettingAddon::CSettingAddon(const std::string &id, CSettingsManager *settingsManager /* = nullptr */)
   : CSettingString(id, settingsManager)
@@ -37,7 +38,7 @@ SettingPtr CSettingAddon::Clone(const std::string &id) const
   return std::make_shared<CSettingAddon>(id, *this);
 }
 
-bool CSettingAddon::Deserialize(const TiXmlNode *node, bool update /* = false */)
+bool CSettingAddon::Deserialize(const tinyxml2::XMLNode* node, bool update /* = false */)
 {
   std::unique_lock<CSharedSection> lock(m_critical);
 
@@ -53,7 +54,7 @@ bool CSettingAddon::Deserialize(const TiXmlNode *node, bool update /* = false */
 
   bool ok = false;
   std::string strAddonType;
-  auto constraints = node->FirstChild("constraints");
+  auto constraints = node->FirstChildElement("constraints");
   if (constraints != nullptr)
   {
     // get the addon type

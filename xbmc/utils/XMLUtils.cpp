@@ -12,12 +12,7 @@
 #include "URL.h"
 #include "XBDateTime.h"
 
-bool XMLUtils::GetHex(const TiXmlNode* pRootNode, const char* strTag, uint32_t& hexValue)
-{
-  const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
-  if (!pNode || !pNode->FirstChild()) return false;
-  return sscanf(pNode->FirstChild()->Value(), "%x", &hexValue) == 1;
-}
+#include <tinyxml2.h>
 
 bool XMLUtils::GetHex(const tinyxml2::XMLNode* rootNode, const char* tag, uint32_t& value)
 {
@@ -28,14 +23,6 @@ bool XMLUtils::GetHex(const tinyxml2::XMLNode* rootNode, const char* tag, uint32
   return sscanf(node->FirstChild()->Value(), "%x", &value) == 1;
 }
 
-bool XMLUtils::GetUInt(const TiXmlNode* pRootNode, const char* strTag, uint32_t& uintValue)
-{
-  const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
-  if (!pNode || !pNode->FirstChild()) return false;
-  uintValue = atol(pNode->FirstChild()->Value());
-  return true;
-}
-
 bool XMLUtils::GetUInt(const tinyxml2::XMLNode* rootNode, const char* tag, uint32_t& value)
 {
   auto* node = rootNode->FirstChildElement(tag);
@@ -44,17 +31,6 @@ bool XMLUtils::GetUInt(const tinyxml2::XMLNode* rootNode, const char* tag, uint3
 
   value = atol(node->FirstChild()->Value());
   return true;
-}
-
-bool XMLUtils::GetUInt(const TiXmlNode* pRootNode, const char* strTag, uint32_t &value, const uint32_t min, const uint32_t max)
-{
-  if (GetUInt(pRootNode, strTag, value))
-  {
-    if (value < min) value = min;
-    if (value > max) value = max;
-    return true;
-  }
-  return false;
 }
 
 bool XMLUtils::GetUInt(const tinyxml2::XMLNode* rootNode,
@@ -74,14 +50,6 @@ bool XMLUtils::GetUInt(const tinyxml2::XMLNode* rootNode,
   return false;
 }
 
-bool XMLUtils::GetLong(const TiXmlNode* pRootNode, const char* strTag, long& lLongValue)
-{
-  const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
-  if (!pNode || !pNode->FirstChild()) return false;
-  lLongValue = atol(pNode->FirstChild()->Value());
-  return true;
-}
-
 bool XMLUtils::GetLong(const tinyxml2::XMLNode* rootNode, const char* tag, long& value)
 {
   auto* node = rootNode->FirstChildElement(tag);
@@ -89,14 +57,6 @@ bool XMLUtils::GetLong(const tinyxml2::XMLNode* rootNode, const char* tag, long&
     return false;
 
   value = atol(node->FirstChild()->Value());
-  return true;
-}
-
-bool XMLUtils::GetInt(const TiXmlNode* pRootNode, const char* strTag, int& iIntValue)
-{
-  const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
-  if (!pNode || !pNode->FirstChild()) return false;
-  iIntValue = atoi(pNode->FirstChild()->Value());
   return true;
 }
 
@@ -108,17 +68,6 @@ bool XMLUtils::GetInt(const tinyxml2::XMLNode* rootNode, const char* tag, int& v
 
   value = atoi(node->FirstChild()->Value());
   return true;
-}
-
-bool XMLUtils::GetInt(const TiXmlNode* pRootNode, const char* strTag, int &value, const int min, const int max)
-{
-  if (GetInt(pRootNode, strTag, value))
-  {
-    if (value < min) value = min;
-    if (value > max) value = max;
-    return true;
-  }
-  return false;
 }
 
 bool XMLUtils::GetInt(
@@ -135,14 +84,6 @@ bool XMLUtils::GetInt(
   return false;
 }
 
-bool XMLUtils::GetDouble(const TiXmlNode* root, const char* tag, double& value)
-{
-  const TiXmlNode* node = root->FirstChild(tag);
-  if (!node || !node->FirstChild()) return false;
-  value = atof(node->FirstChild()->Value());
-  return true;
-}
-
 bool XMLUtils::GetDouble(const tinyxml2::XMLNode* rootNode, const char* tag, double& value)
 {
   auto* node = rootNode->FirstChildElement(tag);
@@ -150,14 +91,6 @@ bool XMLUtils::GetDouble(const tinyxml2::XMLNode* rootNode, const char* tag, dou
     return false;
 
   value = atof(node->FirstChild()->Value());
-  return true;
-}
-
-bool XMLUtils::GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value)
-{
-  const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
-  if (!pNode || !pNode->FirstChild()) return false;
-  value = (float)atof(pNode->FirstChild()->Value());
   return true;
 }
 
@@ -169,23 +102,6 @@ bool XMLUtils::GetFloat(const tinyxml2::XMLNode* rootNode, const char* tag, floa
 
   value = static_cast<float>(atof(node->FirstChild()->Value()));
   return true;
-}
-
-bool XMLUtils::GetFloat(const TiXmlNode* pRootNode,
-                        const char* tagName,
-                        float& fValue,
-                        const float fMin,
-                        const float fMax)
-{
-  if (GetFloat(pRootNode, tagName, fValue))
-  { // check range
-    if (fValue < fMin)
-      fValue = fMin;
-    if (fValue > fMax)
-      fValue = fMax;
-    return true;
-  }
-  return false;
 }
 
 bool XMLUtils::GetFloat(const tinyxml2::XMLNode* rootNode,
@@ -203,23 +119,6 @@ bool XMLUtils::GetFloat(const tinyxml2::XMLNode* rootNode,
     return true;
   }
   return false;
-}
-
-bool XMLUtils::GetBoolean(const TiXmlNode* pRootNode, const char* strTag, bool& bBoolValue)
-{
-  const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
-  if (!pNode || !pNode->FirstChild()) return false;
-  std::string strEnabled = pNode->FirstChild()->ValueStr();
-  StringUtils::ToLower(strEnabled);
-  if (strEnabled == "off" || strEnabled == "no" || strEnabled == "disabled" || strEnabled == "false" || strEnabled == "0" )
-    bBoolValue = false;
-  else
-  {
-    bBoolValue = true;
-    if (strEnabled != "on" && strEnabled != "yes" && strEnabled != "enabled" && strEnabled != "true")
-      return false; // invalid bool switch - it's probably some other string.
-  }
-  return true;
 }
 
 bool XMLUtils::GetBoolean(const tinyxml2::XMLNode* rootNode, const char* tag, bool& value)
@@ -244,24 +143,6 @@ bool XMLUtils::GetBoolean(const tinyxml2::XMLNode* rootNode, const char* tag, bo
   return true;
 }
 
-bool XMLUtils::GetString(const TiXmlNode* pRootNode, const char* strTag, std::string& strStringValue)
-{
-  const TiXmlElement* pElement = pRootNode->FirstChildElement(strTag);
-  if (!pElement) return false;
-
-  const char* encoded = pElement->Attribute("urlencoded");
-  const TiXmlNode* pNode = pElement->FirstChild();
-  if (pNode != NULL)
-  {
-    strStringValue = pNode->ValueStr();
-    if (encoded && StringUtils::CompareNoCase(encoded, "yes") == 0)
-      strStringValue = CURL::Decode(strStringValue);
-    return true;
-  }
-  strStringValue.clear();
-  return true;
-}
-
 bool XMLUtils::GetString(const tinyxml2::XMLNode* rootNode, const char* tag, std::string& value)
 {
   auto* element = rootNode->FirstChildElement(tag);
@@ -281,26 +162,11 @@ bool XMLUtils::GetString(const tinyxml2::XMLNode* rootNode, const char* tag, std
   return true;
 }
 
-std::string XMLUtils::GetString(const TiXmlNode* pRootNode, const char* strTag)
-{
-  std::string temp;
-  GetString(pRootNode, strTag, temp);
-  return temp;
-}
-
 std::string XMLUtils::GetString(const tinyxml2::XMLNode* rootNode, const char* tag)
 {
   std::string temp;
   GetString(rootNode, tag, temp);
   return temp;
-}
-
-bool XMLUtils::HasChild(const TiXmlNode* pRootNode, const char* strTag)
-{
-  const TiXmlElement* pElement = pRootNode->FirstChildElement(strTag);
-  if (!pElement) return false;
-  const TiXmlNode* pNode = pElement->FirstChild();
-  return (pNode != NULL);
 }
 
 bool XMLUtils::HasChild(const tinyxml2::XMLNode* rootNode, const char* tag)
@@ -311,33 +177,6 @@ bool XMLUtils::HasChild(const tinyxml2::XMLNode* rootNode, const char* tag)
 
   const auto* node = element->FirstChild();
   return (node != nullptr);
-}
-
-bool XMLUtils::GetAdditiveString(const TiXmlNode* pRootNode, const char* strTag,
-                                 const std::string& strSeparator, std::string& strStringValue,
-                                 bool clear)
-{
-  std::string strTemp;
-  const TiXmlElement* node = pRootNode->FirstChildElement(strTag);
-  bool bResult=false;
-  if (node && node->FirstChild() && clear)
-    strStringValue.clear();
-  while (node)
-  {
-    if (node->FirstChild())
-    {
-      bResult = true;
-      strTemp = node->FirstChild()->Value();
-      const char* clear=node->Attribute("clear");
-      if (strStringValue.empty() || (clear && StringUtils::CompareNoCase(clear, "true") == 0))
-        strStringValue = strTemp;
-      else
-        strStringValue += strSeparator+strTemp;
-    }
-    node = node->NextSiblingElement(strTag);
-  }
-
-  return bResult;
 }
 
 bool XMLUtils::GetAdditiveString(const tinyxml2::XMLNode* rootNode,
@@ -374,41 +213,6 @@ bool XMLUtils::GetAdditiveString(const tinyxml2::XMLNode* rootNode,
   Parses the XML for multiple tags of the given name.
   Does not clear the array to support chaining.
 */
-bool XMLUtils::GetStringArray(const TiXmlNode* pRootNode, const char* strTag, std::vector<std::string>& arrayValue, bool clear /* = false */, const std::string& separator /* = "" */)
-{
-  std::string strTemp;
-  const TiXmlElement* node = pRootNode->FirstChildElement(strTag);
-  bool bResult=false;
-  if (node && node->FirstChild() && clear)
-    arrayValue.clear();
-  while (node)
-  {
-    if (node->FirstChild())
-    {
-      bResult = true;
-      strTemp = node->FirstChild()->ValueStr();
-
-      const char* clearAttr = node->Attribute("clear");
-      if (clearAttr && StringUtils::CompareNoCase(clearAttr, "true") == 0)
-        arrayValue.clear();
-
-      if (strTemp.empty())
-        continue;
-
-      if (separator.empty())
-        arrayValue.push_back(strTemp);
-      else
-      {
-        std::vector<std::string> tempArray = StringUtils::Split(strTemp, separator);
-        arrayValue.insert(arrayValue.end(), tempArray.begin(), tempArray.end());
-      }
-    }
-    node = node->NextSiblingElement(strTag);
-  }
-
-  return bResult;
-}
-
 bool XMLUtils::GetStringArray(const tinyxml2::XMLNode* rootNode,
                               const char* tag,
                               std::vector<std::string>& value,
@@ -451,24 +255,6 @@ bool XMLUtils::GetStringArray(const tinyxml2::XMLNode* rootNode,
   return result;
 }
 
-bool XMLUtils::GetPath(const TiXmlNode* pRootNode, const char* strTag, std::string& strStringValue)
-{
-  const TiXmlElement* pElement = pRootNode->FirstChildElement(strTag);
-  if (!pElement) return false;
-
-  const char* encoded = pElement->Attribute("urlencoded");
-  const TiXmlNode* pNode = pElement->FirstChild();
-  if (pNode != NULL)
-  {
-    strStringValue = pNode->Value();
-    if (encoded && StringUtils::CompareNoCase(encoded, "yes") == 0)
-      strStringValue = CURL::Decode(strStringValue);
-    return true;
-  }
-  strStringValue.clear();
-  return false;
-}
-
 bool XMLUtils::GetPath(const tinyxml2::XMLNode* rootNode, const char* tag, std::string& value)
 {
   auto* element = rootNode->FirstChildElement(tag);
@@ -489,17 +275,6 @@ bool XMLUtils::GetPath(const tinyxml2::XMLNode* rootNode, const char* tag, std::
   return false;
 }
 
-bool XMLUtils::GetDate(const TiXmlNode* pRootNode, const char* strTag, CDateTime& date)
-{
-  std::string strDate;
-  if (GetString(pRootNode, strTag, strDate) && !strDate.empty())
-  {
-    date.SetFromDBDate(strDate);
-    return true;
-  }
-
-  return false;
-}
 
 bool XMLUtils::GetDate(const tinyxml2::XMLNode* rootNode, const char* tag, CDateTime& date)
 {
@@ -509,18 +284,6 @@ bool XMLUtils::GetDate(const tinyxml2::XMLNode* rootNode, const char* tag, CDate
     date.SetFromDBDate(strDate);
     return true;
   }
-  return false;
-}
-
-bool XMLUtils::GetDateTime(const TiXmlNode* pRootNode, const char* strTag, CDateTime& dateTime)
-{
-  std::string strDateTime;
-  if (GetString(pRootNode, strTag, strDateTime) && !strDateTime.empty())
-  {
-    dateTime.SetFromDBDateTime(strDateTime);
-    return true;
-  }
-
   return false;
 }
 
@@ -535,17 +298,6 @@ bool XMLUtils::GetDateTime(const tinyxml2::XMLNode* rootNode, const char* tag, C
   return false;
 }
 
-std::string XMLUtils::GetAttribute(const TiXmlElement *element, const char *tag)
-{
-  if (element)
-  {
-    const char *attribute = element->Attribute(tag);
-    if (attribute)
-      return attribute;
-  }
-  return "";
-}
-
 std::string XMLUtils::GetAttribute(const tinyxml2::XMLElement* element, const char* tag)
 {
   if (element)
@@ -555,13 +307,6 @@ std::string XMLUtils::GetAttribute(const tinyxml2::XMLElement* element, const ch
       return attribute;
   }
   return "";
-}
-
-void XMLUtils::SetAdditiveString(TiXmlNode* pRootNode, const char *strTag, const std::string& strSeparator, const std::string& strValue)
-{
-  std::vector<std::string> list = StringUtils::Split(strValue, strSeparator);
-  for (std::vector<std::string>::const_iterator i = list.begin(); i != list.end(); ++i)
-    SetString(pRootNode, strTag, *i);
 }
 
 void XMLUtils::SetAdditiveString(tinyxml2::XMLNode* rootNode,
@@ -574,30 +319,12 @@ void XMLUtils::SetAdditiveString(tinyxml2::XMLNode* rootNode,
     SetString(rootNode, tag, *i);
 }
 
-void XMLUtils::SetStringArray(TiXmlNode* pRootNode, const char *strTag, const std::vector<std::string>& arrayValue)
-{
-  for (unsigned int i = 0; i < arrayValue.size(); i++)
-    SetString(pRootNode, strTag, arrayValue.at(i));
-}
-
 void XMLUtils::SetStringArray(tinyxml2::XMLNode* rootNode,
                               const char* tag,
                               const std::vector<std::string>& value)
 {
   for (unsigned int i = 0; i < value.size(); i++)
     SetString(rootNode, tag, value.at(i));
-}
-
-TiXmlNode* XMLUtils::SetString(TiXmlNode* pRootNode, const char *strTag, const std::string& strValue)
-{
-  TiXmlElement newElement(strTag);
-  TiXmlNode *pNewNode = pRootNode->InsertEndChild(newElement);
-  if (pNewNode)
-  {
-    TiXmlText value(strValue);
-    pNewNode->InsertEndChild(value);
-  }
-  return pNewNode;
 }
 
 tinyxml2::XMLNode* XMLUtils::SetString(tinyxml2::XMLNode* rootNode,
@@ -613,22 +340,10 @@ tinyxml2::XMLNode* XMLUtils::SetString(tinyxml2::XMLNode* rootNode,
   return node;
 }
 
-TiXmlNode* XMLUtils::SetInt(TiXmlNode* pRootNode, const char *strTag, int value)
-{
-  std::string strValue = std::to_string(value);
-  return SetString(pRootNode, strTag, strValue);
-}
-
 tinyxml2::XMLNode* XMLUtils::SetInt(tinyxml2::XMLNode* rootNode, const char* tag, int value)
 {
   std::string strValue = std::to_string(value);
   return SetString(rootNode, tag, strValue);
-}
-
-void XMLUtils::SetLong(TiXmlNode* pRootNode, const char *strTag, long value)
-{
-  std::string strValue = std::to_string(value);
-  SetString(pRootNode, strTag, strValue);
 }
 
 void XMLUtils::SetLong(tinyxml2::XMLNode* rootNode, const char* tag, long value)
@@ -637,22 +352,10 @@ void XMLUtils::SetLong(tinyxml2::XMLNode* rootNode, const char* tag, long value)
   SetString(rootNode, tag, strValue);
 }
 
-TiXmlNode* XMLUtils::SetFloat(TiXmlNode* pRootNode, const char *strTag, float value)
-{
-  std::string strValue = StringUtils::Format("{:f}", value);
-  return SetString(pRootNode, strTag, strValue);
-}
-
 tinyxml2::XMLNode* XMLUtils::SetFloat(tinyxml2::XMLNode* rootNode, const char* tag, float value)
 {
   std::string strValue = StringUtils::Format("{:f}", value);
   return SetString(rootNode, tag, strValue);
-}
-
-TiXmlNode* XMLUtils::SetDouble(TiXmlNode* pRootNode, const char* strTag, double value)
-{
-  std::string strValue = StringUtils::Format("{:f}", value);
-  return SetString(pRootNode, strTag, strValue);
 }
 
 tinyxml2::XMLNode* XMLUtils::SetDouble(tinyxml2::XMLNode* rootNode, const char* tag, double value)
@@ -661,38 +364,15 @@ tinyxml2::XMLNode* XMLUtils::SetDouble(tinyxml2::XMLNode* rootNode, const char* 
   return SetString(rootNode, tag, strValue);
 }
 
-void XMLUtils::SetBoolean(TiXmlNode* pRootNode, const char *strTag, bool value)
-{
-  SetString(pRootNode, strTag, value ? "true" : "false");
-}
-
 void XMLUtils::SetBoolean(tinyxml2::XMLNode* rootNode, const char* tag, bool value)
 {
   SetString(rootNode, tag, value ? "true" : "false");
-}
-
-void XMLUtils::SetHex(TiXmlNode* pRootNode, const char *strTag, uint32_t value)
-{
-  std::string strValue = StringUtils::Format("{:x}", value);
-  SetString(pRootNode, strTag, strValue);
 }
 
 void XMLUtils::SetHex(tinyxml2::XMLNode* rootNode, const char* tag, uint32_t value)
 {
   std::string strValue = StringUtils::Format("{:x}", value);
   SetString(rootNode, tag, strValue);
-}
-
-void XMLUtils::SetPath(TiXmlNode* pRootNode, const char *strTag, const std::string& strValue)
-{
-  TiXmlElement newElement(strTag);
-  newElement.SetAttribute("pathversion", path_version);
-  TiXmlNode *pNewNode = pRootNode->InsertEndChild(newElement);
-  if (pNewNode)
-  {
-    TiXmlText value(strValue);
-    pNewNode->InsertEndChild(value);
-  }
 }
 
 void XMLUtils::SetPath(tinyxml2::XMLNode* rootNode, const char* tag, const std::string& value)
@@ -706,19 +386,9 @@ void XMLUtils::SetPath(tinyxml2::XMLNode* rootNode, const char* tag, const std::
   }
 }
 
-void XMLUtils::SetDate(TiXmlNode* pRootNode, const char *strTag, const CDateTime& date)
-{
-  SetString(pRootNode, strTag, date.IsValid() ? date.GetAsDBDate() : "");
-}
-
 void XMLUtils::SetDate(tinyxml2::XMLNode* rootNode, const char* tag, const CDateTime& date)
 {
   SetString(rootNode, tag, date.IsValid() ? date.GetAsDBDate() : "");
-}
-
-void XMLUtils::SetDateTime(TiXmlNode* pRootNode, const char *strTag, const CDateTime& dateTime)
-{
-  SetString(pRootNode, strTag, dateTime.IsValid() ? dateTime.GetAsDBDateTime() : "");
 }
 
 void XMLUtils::SetDateTime(tinyxml2::XMLNode* rootNode, const char* tag, const CDateTime& dateTime)

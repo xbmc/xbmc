@@ -16,8 +16,12 @@
 #include <string>
 
 class CSettingList;
-class TiXmlElement;
-class TiXmlNode;
+
+namespace tinyxml2
+{
+class XMLNode;
+class XMLElement;
+} // namespace tinyxml2
 
 /*!
  \brief Wrapper around CSettingsManager responsible for properly setting up
@@ -547,7 +551,7 @@ public:
   \param root XML element containing setting values
   \return True if the setting values were successfully loaded, false otherwise
   */
-  bool Load(const TiXmlElement* root);
+  bool Load(const tinyxml2::XMLElement* root);
   /*!
    \brief Loads setting values from the given XML element.
 
@@ -555,7 +559,10 @@ public:
    \param hide Whether to hide the loaded settings or not
    \return True if the setting values were successfully loaded, false otherwise
    */
-  bool LoadHidden(const TiXmlElement *root) { return CSettingsBase::LoadHiddenValuesFromXml(root); }
+  bool LoadHidden(const tinyxml2::XMLElement* root)
+  {
+    return CSettingsBase::LoadHiddenValuesFromXml(root);
+  }
 
   /*!
    \brief Saves the setting values to the given (XML) file.
@@ -570,7 +577,7 @@ public:
    \param root XML node
    \return True if the setting values were successfully saved, false otherwise
    */
-  bool Save(TiXmlNode* root) const override;
+  bool Save(tinyxml2::XMLNode* root) const override;
 
   /*!
    \brief Loads the setting being represented by the given XML node with the
@@ -580,7 +587,7 @@ public:
    \param settingId Setting identifier
    \return True if the setting was successfully loaded from the given XML node, false otherwise
    */
-  bool LoadSetting(const TiXmlNode *node, const std::string &settingId);
+  bool LoadSetting(const tinyxml2::XMLNode* node, const std::string& settingId);
 
   // overwrite (not override) from CSettingsBase
   bool GetBool(const std::string& id) const;
@@ -617,10 +624,10 @@ private:
   CSettings(const CSettings&) = delete;
   CSettings const& operator=(CSettings const&) = delete;
 
-  bool Load(const TiXmlElement* root, bool& updated);
+  bool Load(const tinyxml2::XMLElement* root, bool& updated);
 
   // implementation of ISubSettings
-  bool Load(const TiXmlNode* settings) override;
+  bool Load(const tinyxml2::XMLNode* settings) override;
 
   bool Initialize(const std::string &file);
   bool Reset();

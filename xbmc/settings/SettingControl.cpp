@@ -10,11 +10,12 @@
 
 #include "settings/lib/SettingDefinitions.h"
 #include "utils/StringUtils.h"
-#include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
 #include <vector>
+
+#include <tinyxml2.h>
 
 const char* SHOW_ADDONS_ALL = "all";
 const char* SHOW_ADDONS_INSTALLED = "installed";
@@ -51,7 +52,8 @@ bool CSettingControlCheckmark::SetFormat(const std::string &format)
   return format.empty() || StringUtils::EqualsNoCase(format, "boolean");
 }
 
-bool CSettingControlFormattedRange::Deserialize(const TiXmlNode *node, bool update /* = false */)
+bool CSettingControlFormattedRange::Deserialize(const tinyxml2::XMLNode* node,
+                                                bool update /* = false */)
 {
   if (!ISettingControl::Deserialize(node, update))
     return false;
@@ -64,16 +66,17 @@ bool CSettingControlFormattedRange::Deserialize(const TiXmlNode *node, bool upda
     auto settingNode = node->Parent();
     if (settingNode != nullptr)
     {
-      auto constraintsNode = settingNode->FirstChild(SETTING_XML_ELM_CONSTRAINTS);
+      auto constraintsNode = settingNode->FirstChildElement(SETTING_XML_ELM_CONSTRAINTS);
       if (constraintsNode != nullptr)
       {
-        auto minimumNode = constraintsNode->FirstChild(SETTING_XML_ELM_MINIMUM);
+        auto minimumNode = constraintsNode->FirstChildElement(SETTING_XML_ELM_MINIMUM);
         if (minimumNode != nullptr)
         {
           auto minimumElem = minimumNode->ToElement();
           if (minimumElem != nullptr)
           {
-            if (minimumElem->QueryIntAttribute(SETTING_XML_ATTR_LABEL, &m_minimumLabel) != TIXML_SUCCESS)
+            if (minimumElem->QueryIntAttribute(SETTING_XML_ATTR_LABEL, &m_minimumLabel) !=
+                tinyxml2::XML_SUCCESS)
               m_minimumLabel = -1;
           }
         }
@@ -104,7 +107,7 @@ bool CSettingControlSpinner::SetFormat(const std::string &format)
   return true;
 }
 
-bool CSettingControlEdit::Deserialize(const TiXmlNode *node, bool update /* = false */)
+bool CSettingControlEdit::Deserialize(const tinyxml2::XMLNode* node, bool update /* = false */)
 {
   if (!ISettingControl::Deserialize(node, update))
     return false;
@@ -132,7 +135,7 @@ bool CSettingControlEdit::SetFormat(const std::string &format)
   return true;
 }
 
-bool CSettingControlButton::Deserialize(const TiXmlNode *node, bool update /* = false */)
+bool CSettingControlButton::Deserialize(const tinyxml2::XMLNode* node, bool update /* = false */)
 {
   if (!ISettingControl::Deserialize(node, update))
     return false;
@@ -229,7 +232,7 @@ bool CSettingControlButton::SetFormat(const std::string &format)
   return true;
 }
 
-bool CSettingControlList::Deserialize(const TiXmlNode *node, bool update /* = false */)
+bool CSettingControlList::Deserialize(const tinyxml2::XMLNode* node, bool update /* = false */)
 {
   if (!CSettingControlFormattedRange::Deserialize(node, update))
     return false;
@@ -254,7 +257,7 @@ bool CSettingControlList::SetFormat(const std::string &format)
   return true;
 }
 
-bool CSettingControlSlider::Deserialize(const TiXmlNode *node, bool update /* = false */)
+bool CSettingControlSlider::Deserialize(const tinyxml2::XMLNode* node, bool update /* = false */)
 {
   if (!ISettingControl::Deserialize(node, update))
     return false;
@@ -299,7 +302,7 @@ std::string CSettingControlSlider::GetDefaultFormatString() const
   return "{}";
 }
 
-bool CSettingControlRange::Deserialize(const TiXmlNode *node, bool update /* = false */)
+bool CSettingControlRange::Deserialize(const tinyxml2::XMLNode* node, bool update /* = false */)
 {
   if (!ISettingControl::Deserialize(node, update))
     return false;
@@ -348,7 +351,7 @@ bool CSettingControlRange::SetFormat(const std::string &format)
   return true;
 }
 
-bool CSettingControlTitle::Deserialize(const TiXmlNode *node, bool update /* = false */)
+bool CSettingControlTitle::Deserialize(const tinyxml2::XMLNode* node, bool update /* = false */)
 {
   if (!ISettingControl::Deserialize(node, update))
     return false;

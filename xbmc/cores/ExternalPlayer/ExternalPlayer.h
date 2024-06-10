@@ -16,7 +16,11 @@
 #include <vector>
 
 class CGUIDialogOK;
-class TiXmlElement;
+
+namespace tinyxml2
+{
+class XMLElement;
+}
 
 class CExternalPlayer : public IPlayer, public CThread
 {
@@ -25,7 +29,7 @@ public:
 
   explicit CExternalPlayer(IPlayerCallback& callback);
   ~CExternalPlayer() override;
-  bool Initialize(TiXmlElement* pConfig) override;
+  bool Initialize(tinyxml2::XMLElement* pConfig) override;
   bool OpenFile(const CFileItem& file, const CPlayerOptions &options) override;
   bool CloseFile(bool reopen = false) override;
   bool IsPlaying() const override;
@@ -58,7 +62,8 @@ public:
 #endif
 
 private:
-  void GetCustomRegexpReplacers(TiXmlElement *pRootElement, std::vector<std::string>& settings);
+  void GetCustomRegexpReplacers(tinyxml2::XMLElement* pRootElement,
+                                std::vector<std::string>& settings);
   void Process() override;
 
   bool m_bAbortRequest;

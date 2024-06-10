@@ -14,7 +14,10 @@
 #include <string>
 #include <vector>
 
-class TiXmlElement;
+namespace tinyxml2
+{
+class XMLElement;
+}
 
 namespace INFO
 {
@@ -23,7 +26,7 @@ class CSkinVariableString;
 class CSkinVariable
 {
 public:
-  static const CSkinVariableString* CreateFromXML(const TiXmlElement& node, int context);
+  static const CSkinVariableString* CreateFromXML(const tinyxml2::XMLElement& node, int context);
 };
 
 class CSkinVariableString

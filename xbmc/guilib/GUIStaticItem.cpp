@@ -15,9 +15,13 @@
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 
+#include <cassert>
+
+#include <tinyxml2.h>
+
 using namespace KODI::GUILIB;
 
-CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileItem()
+CGUIStaticItem::CGUIStaticItem(const tinyxml2::XMLElement* item, int parentID) : CFileItem()
 {
   m_visState = false;
 
@@ -47,7 +51,7 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
     m_info.emplace_back(icon, "icon");
   m_iprogramCount = id ? atoi(id) : 0;
   // add any properties
-  const TiXmlElement *property = item->FirstChildElement("property");
+  const auto* property = item->FirstChildElement("property");
   while (property)
   {
     std::string name = XMLUtils::GetAttribute(property, "name");

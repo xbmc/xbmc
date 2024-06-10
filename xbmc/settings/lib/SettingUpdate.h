@@ -12,7 +12,10 @@
 
 #include <string>
 
-class TiXmlNode;
+namespace tinyxml2
+{
+class XMLNode;
+}
 
 enum class SettingUpdateType {
   Unknown = 0,
@@ -31,7 +34,7 @@ public:
     return m_type < rhs.m_type && m_value < rhs.m_value;
   }
 
-  virtual bool Deserialize(const TiXmlNode *node);
+  virtual bool Deserialize(const tinyxml2::XMLNode* node);
 
   SettingUpdateType GetType() const { return m_type; }
   const std::string& GetValue() const { return m_value; }

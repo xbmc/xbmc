@@ -11,7 +11,10 @@
 #include <memory>
 #include <vector>
 
-class TiXmlNode;
+namespace tinyxml2
+{
+class XMLNode;
+}
 class CGUIListItem;
 
 /*!
@@ -26,18 +29,19 @@ public:
   virtual ~IListProvider() = default;
 
   /*! \brief Factory to create list providers.
-   \param parent a parent TiXmlNode for the container.
+   \param parent a parent XMLNode for the container.
    \param parentID id of parent window for context.
    \return the list provider, empty pointer if none.
    */
-  static std::unique_ptr<IListProvider> Create(const TiXmlNode* parent, int parentID);
+  static std::unique_ptr<IListProvider> Create(const tinyxml2::XMLNode* parent, int parentID);
 
   /*! \brief Factory to create list providers.  Cannot create a multi-provider.
-   \param content the TiXmlNode for the content to create.
+   \param content the XMLNode for the content to create.
    \param parentID id of parent window for context.
    \return the list provider, empty pointer if none.
    */
-  static std::unique_ptr<IListProvider> CreateSingle(const TiXmlNode* content, int parentID);
+  static std::unique_ptr<IListProvider> CreateSingle(const tinyxml2::XMLNode* content,
+                                                     int parentID);
 
   /*! \brief Create an instance of the derived class. Allows for polymorphic copies.
    */

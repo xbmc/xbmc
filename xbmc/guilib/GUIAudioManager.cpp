@@ -22,7 +22,7 @@
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "utils/URIUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/log.h"
 
 #include <mutex>
@@ -58,7 +58,7 @@ void CGUIAudioManager::OnSettingChanged(const std::shared_ptr<const CSetting>& s
 
 bool CGUIAudioManager::OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
                                        const char* oldSettingId,
-                                       const TiXmlNode* oldSettingNode)
+                                       const tinyxml2::XMLNode* oldSettingNode)
 {
   if (setting == NULL)
     return false;
@@ -237,19 +237,19 @@ bool CGUIAudioManager::Load()
   std::string strSoundsXml = URIUtils::AddFileToFolder(m_strMediaDir, "sounds.xml");
 
   //  Load our xml file
-  CXBMCTinyXML xmlDoc;
+  CXBMCTinyXML2 xmlDoc;
 
   CLog::Log(LOGINFO, "Loading {}", strSoundsXml);
 
   //  Load the config file
   if (!xmlDoc.LoadFile(strSoundsXml))
   {
-    CLog::Log(LOGINFO, "{}, Line {}\n{}", strSoundsXml, xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    CLog::Log(LOGINFO, "{}, Line {}\n{}", strSoundsXml, xmlDoc.ErrorLineNum(), xmlDoc.ErrorStr());
     return false;
   }
 
-  TiXmlElement* pRoot = xmlDoc.RootElement();
-  std::string strValue = pRoot->Value();
+  auto* root = xmlDoc.RootElement();
+  std::string strValue = root->Value();
   if ( strValue != "sounds")
   {
     CLog::Log(LOGINFO, "{} Doesn't contain <sounds>", strSoundsXml);
@@ -257,24 +257,24 @@ bool CGUIAudioManager::Load()
   }
 
   //  Load sounds for actions
-  TiXmlElement* pActions = pRoot->FirstChildElement("actions");
-  if (pActions)
+  auto* actions = root->FirstChildElement("actions");
+  if (actions)
   {
-    TiXmlNode* pAction = pActions->FirstChild("action");
+    auto* action = actions->FirstChildElement("action");
 
-    while (pAction)
+    while (action)
     {
-      TiXmlNode* pIdNode = pAction->FirstChild("name");
+      auto* pIdNode = action->FirstChildElement("name");
       unsigned int id = ACTION_NONE;    // action identity
       if (pIdNode && pIdNode->FirstChild())
       {
         ACTION::CActionTranslator::TranslateString(pIdNode->FirstChild()->Value(), id);
       }
 
-      TiXmlNode* pFileNode = pAction->FirstChild("file");
+      auto* fileNode = action->FirstChildElement("file");
       std::string strFile;
-      if (pFileNode && pFileNode->FirstChild())
-        strFile += pFileNode->FirstChild()->Value();
+      if (fileNode && fileNode->FirstChild())
+        strFile += fileNode->FirstChild()->Value();
 
       if (id != ACTION_NONE && !strFile.empty())
       {
@@ -284,35 +284,35 @@ bool CGUIAudioManager::Load()
           m_actionSoundMap.emplace(id, std::move(sound));
       }
 
-      pAction = pAction->NextSibling();
+      action = action->NextSiblingElement("action");
     }
   }
 
   //  Load window specific sounds
-  TiXmlElement* pWindows = pRoot->FirstChildElement("windows");
-  if (pWindows)
+  auto* windows = root->FirstChildElement("windows");
+  if (windows)
   {
-    TiXmlNode* pWindow = pWindows->FirstChild("window");
+    auto* window = windows->FirstChildElement("window");
 
-    while (pWindow)
+    while (window)
     {
       int id = 0;
 
-      TiXmlNode* pIdNode = pWindow->FirstChild("name");
-      if (pIdNode)
+      auto* idNode = window->FirstChildElement("name");
+      if (idNode)
       {
-        if (pIdNode->FirstChild())
-          id = CWindowTranslator::TranslateWindow(pIdNode->FirstChild()->Value());
+        if (idNode->FirstChild())
+          id = CWindowTranslator::TranslateWindow(idNode->FirstChild()->Value());
       }
 
       CWindowSounds sounds;
-      sounds.initSound   = LoadWindowSound(pWindow, "activate"  );
-      sounds.deInitSound = LoadWindowSound(pWindow, "deactivate");
+      sounds.initSound = LoadWindowSound(window, "activate");
+      sounds.deInitSound = LoadWindowSound(window, "deactivate");
 
       if (id > 0)
         m_windowSoundMap.insert(std::pair<int, CWindowSounds>(id, sounds));
 
-      pWindow = pWindow->NextSibling();
+      window = window->NextSiblingElement("window");
     }
   }
 
@@ -346,15 +346,15 @@ std::shared_ptr<IAESound> CGUIAudioManager::LoadSound(const std::string& filenam
 }
 
 // \brief Load a window node of the config file (sounds.xml)
-std::shared_ptr<IAESound> CGUIAudioManager::LoadWindowSound(TiXmlNode* pWindowNode,
+std::shared_ptr<IAESound> CGUIAudioManager::LoadWindowSound(tinyxml2::XMLNode* windowNode,
                                                             const std::string& strIdentifier)
 {
-  if (!pWindowNode)
+  if (!windowNode)
     return NULL;
 
-  TiXmlNode* pFileNode = pWindowNode->FirstChild(strIdentifier);
-  if (pFileNode && pFileNode->FirstChild())
-    return LoadSound(URIUtils::AddFileToFolder(m_strMediaDir, pFileNode->FirstChild()->Value()));
+  auto* fileNode = windowNode->FirstChildElement(strIdentifier.c_str());
+  if (fileNode && fileNode->FirstChild())
+    return LoadSound(URIUtils::AddFileToFolder(m_strMediaDir, fileNode->FirstChild()->Value()));
 
   return NULL;
 }

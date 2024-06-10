@@ -30,8 +30,11 @@ class CSettingGroup;
 class CSettingSection;
 class CSettingUpdate;
 
-class TiXmlElement;
-class TiXmlNode;
+namespace tinyxml2
+{
+class XMLElement;
+class XMLNode;
+} // namespace tinyxml2
 
 /*!
  \ingroup settings
@@ -68,7 +71,7 @@ public:
    \param root XML element representing setting definitions/values
    \return Version of the setting definitions/values or 0 if no version has been specified
    */
-  uint32_t ParseVersion(const TiXmlElement* root) const;
+  uint32_t ParseVersion(const tinyxml2::XMLElement* root) const;
 
   /*!
    \brief Initializes the settings manager using the setting definitions
@@ -77,7 +80,7 @@ public:
    \param root XML element representing setting definitions
    \return True if the XML element was successfully deserialized into setting definitions, false otherwise
    */
-  bool Initialize(const TiXmlElement *root);
+  bool Initialize(const tinyxml2::XMLElement* root);
   /*!
    \brief Loads setting values from the given XML element.
 
@@ -87,7 +90,10 @@ public:
    \param loadedSettings A list to fill with all the successfully loaded settings
    \return True if the setting values were successfully loaded, false otherwise
    */
-  bool Load(const TiXmlElement *root, bool &updated, bool triggerEvents = true, std::map<std::string, std::shared_ptr<CSetting>> *loadedSettings = nullptr);
+  bool Load(const tinyxml2::XMLElement* root,
+            bool& updated,
+            bool triggerEvents = true,
+            std::map<std::string, std::shared_ptr<CSetting>>* loadedSettings = nullptr);
   /*!
    \brief Saves the setting values using the given serializer.
 
@@ -118,7 +124,7 @@ public:
   \param settingId Setting identifier
   \return True if the setting was successfully loaded from the given XML node, false otherwise
   */
-  bool LoadSetting(const TiXmlNode *node, const std::string &settingId);
+  bool LoadSetting(const tinyxml2::XMLNode* node, const std::string& settingId);
 
   /*!
    \brief Loads the setting being represented by the given XML node with the
@@ -129,7 +135,7 @@ public:
    \param updated Set to true if the setting's value was updated
    \return True if the setting was successfully loaded from the given XML node, false otherwise
    */
-  bool LoadSetting(const TiXmlNode *node, const std::string &settingId, bool &updated);
+  bool LoadSetting(const tinyxml2::XMLNode* node, const std::string& settingId, bool& updated);
 
   /*!
    \brief Tells the settings system that the initialization is complete.
@@ -459,7 +465,7 @@ private:
   void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
   bool OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
                        const char* oldSettingId,
-                       const TiXmlNode* oldSettingNode) override;
+                       const tinyxml2::XMLNode* oldSettingNode) override;
   void OnSettingPropertyChanged(const std::shared_ptr<const CSetting>& setting,
                                 const char* propertyName) override;
 
@@ -471,11 +477,15 @@ private:
   void OnSettingsSaved() const override;
   void OnSettingsCleared() override;
 
-  bool Serialize(TiXmlNode *parent) const;
-  bool Deserialize(const TiXmlNode *node, bool &updated, std::map<std::string, std::shared_ptr<CSetting>> *loadedSettings = nullptr);
+  bool Serialize(tinyxml2::XMLNode* parent) const;
+  bool Deserialize(const tinyxml2::XMLNode* node,
+                   bool& updated,
+                   std::map<std::string, std::shared_ptr<CSetting>>* loadedSettings = nullptr);
 
-  bool LoadSetting(const TiXmlNode* node, const std::shared_ptr<CSetting>& setting, bool& updated);
-  bool UpdateSetting(const TiXmlNode* node,
+  bool LoadSetting(const tinyxml2::XMLNode* node,
+                   const std::shared_ptr<CSetting>& setting,
+                   bool& updated);
+  bool UpdateSetting(const tinyxml2::XMLNode* node,
                      const std::shared_ptr<CSetting>& setting,
                      const CSettingUpdate& update);
   void UpdateSettingByDependency(const std::string &settingId, const CSettingDependency &dependency);

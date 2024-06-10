@@ -19,8 +19,11 @@ class CSetting;
 class CSettingSection;
 class CSettingsManager;
 class CVariant;
-class CXBMCTinyXML;
-class TiXmlElement;
+class CXBMCTinyXML2;
+namespace tinyxml2
+{
+class XMLElement;
+}
 
 /*!
  \brief Basic wrapper around CSettingsManager providing the framework for
@@ -235,7 +238,7 @@ protected:
   virtual void InitializeISettingCallbacks() { }
   virtual void UninitializeISettingCallbacks() { }
 
-  bool InitializeDefinitionsFromXml(const CXBMCTinyXML& xml);
+  bool InitializeDefinitionsFromXml(const CXBMCTinyXML2& xml);
 
   /*!
   \brief Loads setting values from the given document in XML format
@@ -244,14 +247,14 @@ protected:
   \param updated Output parameter indicating whether setting values had to be updated
   \return True if the setting values were successfully loaded, false otherwise
   */
-  bool LoadValuesFromXml(const CXBMCTinyXML& xml, bool& updated);
+  bool LoadValuesFromXml(const CXBMCTinyXML2& xml, bool& updated);
   /*!
   \brief Saves the setting values in XML format to the given document.
 
   \param xml Document to save the setting values in XML format into
   \return True if the setting values were successfully saved, false otherwise
   */
-  bool SaveValuesToXml(CXBMCTinyXML& xml) const;
+  bool SaveValuesToXml(CXBMCTinyXML2& xml) const;
 
   /*!
   \brief Loads setting values from the given XML element.
@@ -260,7 +263,7 @@ protected:
   \param updated Output parameter indicating whether setting values had to be updated
   \return True if the setting values were successfully loaded, false otherwise
   */
-  bool LoadValuesFromXml(const TiXmlElement* root, bool& updated);
+  bool LoadValuesFromXml(const tinyxml2::XMLElement* root, bool& updated);
 
   /*!
   \brief Loads hidden setting values from the given XML element.
@@ -268,7 +271,7 @@ protected:
   \param root XML element containing setting values
   \return True if the setting values were successfully loaded, false otherwise
   */
-  bool LoadHiddenValuesFromXml(const TiXmlElement* root);
+  bool LoadHiddenValuesFromXml(const tinyxml2::XMLElement* root);
 
   bool m_initialized = false;
   CSettingsManager* m_settingsManager;

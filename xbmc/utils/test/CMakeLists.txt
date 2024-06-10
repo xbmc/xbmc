@@ -44,7 +44,6 @@ set(SOURCES TestAlarmClock.cpp
             TestURIUtils.cpp
             TestUrlOptions.cpp
             TestVariant.cpp
-            TestXBMCTinyXML.cpp
             TestXBMCTinyXML2.cpp
             TestXMLUtils.cpp)
 

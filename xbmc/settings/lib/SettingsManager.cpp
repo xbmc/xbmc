@@ -13,7 +13,6 @@
 #include "SettingDefinitions.h"
 #include "SettingSection.h"
 #include "utils/StringUtils.h"
-#include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -22,6 +21,8 @@
 #include <shared_mutex>
 #include <unordered_set>
 #include <utility>
+
+#include <tinyxml2.h>
 
 const uint32_t CSettingsManager::Version = 2;
 const uint32_t CSettingsManager::MinimumSupportedVersion = 0;
@@ -69,7 +70,7 @@ CSettingsManager::~CSettingsManager()
   Clear();
 }
 
-uint32_t CSettingsManager::ParseVersion(const TiXmlElement* root) const
+uint32_t CSettingsManager::ParseVersion(const tinyxml2::XMLElement* root) const
 {
   // try to get and check the version
   uint32_t version = 0;
@@ -78,14 +79,14 @@ uint32_t CSettingsManager::ParseVersion(const TiXmlElement* root) const
   return version;
 }
 
-bool CSettingsManager::Initialize(const TiXmlElement *root)
+bool CSettingsManager::Initialize(const tinyxml2::XMLElement* root)
 {
   std::unique_lock<CSharedSection> lock(m_critical);
   std::unique_lock<CSharedSection> settingsLock(m_settingsCritical);
   if (m_initialized || root == nullptr)
     return false;
 
-  if (!StringUtils::EqualsNoCase(root->ValueStr(), SETTING_XML_ROOT))
+  if (!StringUtils::EqualsNoCase(root->Value(), SETTING_XML_ROOT))
   {
     m_logger->error("error reading settings definition: doesn't contain <" SETTING_XML_ROOT
                     "> tag");
@@ -110,7 +111,7 @@ bool CSettingsManager::Initialize(const TiXmlElement *root)
     return false;
   }
 
-  auto sectionNode = root->FirstChild(SETTING_XML_ELM_SECTION);
+  auto sectionNode = root->FirstChildElement(SETTING_XML_ELM_SECTION);
   while (sectionNode != nullptr)
   {
     std::string sectionId;
@@ -132,13 +133,16 @@ bool CSettingsManager::Initialize(const TiXmlElement *root)
       }
     }
 
-    sectionNode = sectionNode->NextSibling(SETTING_XML_ELM_SECTION);
+    sectionNode = sectionNode->NextSiblingElement(SETTING_XML_ELM_SECTION);
   }
 
   return true;
 }
 
-bool CSettingsManager::Load(const TiXmlElement *root, bool &updated, bool triggerEvents /* = true */, std::map<std::string, SettingPtr> *loadedSettings /* = nullptr */)
+bool CSettingsManager::Load(const tinyxml2::XMLElement* root,
+                            bool& updated,
+                            bool triggerEvents /* = true */,
+                            std::map<std::string, SettingPtr>* loadedSettings /* = nullptr */)
 {
   std::shared_lock<CSharedSection> lock(m_critical);
   std::unique_lock<CSharedSection> settingsLock(m_settingsCritical);
@@ -225,13 +229,15 @@ void CSettingsManager::Clear()
   m_initialized = false;
 }
 
-bool CSettingsManager::LoadSetting(const TiXmlNode *node, const std::string &settingId)
+bool CSettingsManager::LoadSetting(const tinyxml2::XMLNode* node, const std::string& settingId)
 {
   bool updated = false;
   return LoadSetting(node, settingId, updated);
 }
 
-bool CSettingsManager::LoadSetting(const TiXmlNode *node, const std::string &settingId, bool &updated)
+bool CSettingsManager::LoadSetting(const tinyxml2::XMLNode* node,
+                                   const std::string& settingId,
+                                   bool& updated)
 {
   updated = false;
 
@@ -735,7 +741,7 @@ void CSettingsManager::RemoveDynamicCondition(const std::string &identifier)
   m_conditions.RemoveDynamicCondition(identifier);
 }
 
-bool CSettingsManager::Serialize(TiXmlNode *parent) const
+bool CSettingsManager::Serialize(tinyxml2::XMLNode* parent) const
 {
   if (parent == nullptr)
     return false;
@@ -748,16 +754,16 @@ bool CSettingsManager::Serialize(TiXmlNode *parent) const
         setting.second.setting->GetType() == SettingType::Action)
       continue;
 
-    TiXmlElement settingElement(SETTING_XML_ELM_SETTING);
-    settingElement.SetAttribute(SETTING_XML_ATTR_ID, setting.second.setting->GetId());
+    auto* settingElement = parent->GetDocument()->NewElement(SETTING_XML_ELM_SETTING);
+    settingElement->SetAttribute(SETTING_XML_ATTR_ID, setting.second.setting->GetId().c_str());
 
     // add the default attribute
     if (setting.second.setting->IsDefault())
-      settingElement.SetAttribute(SETTING_XML_ELM_DEFAULT, "true");
+      settingElement->SetAttribute(SETTING_XML_ELM_DEFAULT, "true");
 
     // add the value
-    TiXmlText value(setting.second.setting->ToString());
-    settingElement.InsertEndChild(value);
+    auto* value = parent->GetDocument()->NewText(setting.second.setting->ToString().c_str());
+    settingElement->InsertEndChild(value);
 
     if (parent->InsertEndChild(settingElement) == nullptr)
     {
@@ -770,7 +776,10 @@ bool CSettingsManager::Serialize(TiXmlNode *parent) const
   return true;
 }
 
-bool CSettingsManager::Deserialize(const TiXmlNode *node, bool &updated, std::map<std::string, SettingPtr> *loadedSettings /* = nullptr */)
+bool CSettingsManager::Deserialize(
+    const tinyxml2::XMLNode* node,
+    bool& updated,
+    std::map<std::string, SettingPtr>* loadedSettings /* = nullptr */)
 {
   updated = false;
 
@@ -899,7 +908,7 @@ void CSettingsManager::OnSettingAction(const std::shared_ptr<const CSetting>& se
 
 bool CSettingsManager::OnSettingUpdate(const SettingPtr& setting,
                                        const char* oldSettingId,
-                                       const TiXmlNode* oldSettingNode)
+                                       const tinyxml2::XMLNode* oldSettingNode)
 {
   std::shared_lock<CSharedSection> lock(m_settingsCritical);
   if (setting == nullptr)
@@ -1048,7 +1057,9 @@ void CSettingsManager::OnSettingsCleared()
     settingsHandler->OnSettingsCleared();
 }
 
-bool CSettingsManager::LoadSetting(const TiXmlNode* node, const SettingPtr& setting, bool& updated)
+bool CSettingsManager::LoadSetting(const tinyxml2::XMLNode* node,
+                                   const SettingPtr& setting,
+                                   bool& updated)
 {
   updated = false;
 
@@ -1062,17 +1073,17 @@ bool CSettingsManager::LoadSetting(const TiXmlNode* node, const SettingPtr& sett
   if (setting->IsReference())
     settingId = setting->GetReferencedId();
 
-  const TiXmlElement* settingElement = nullptr;
+  const tinyxml2::XMLElement* settingElement = nullptr;
   // try to split the setting identifier into category and subsetting identifier (v1-)
   std::string categoryTag, settingTag;
   if (ParseSettingIdentifier(settingId, categoryTag, settingTag))
   {
     auto categoryNode = node;
     if (!categoryTag.empty())
-      categoryNode = node->FirstChild(categoryTag);
+      categoryNode = node->FirstChildElement(categoryTag.c_str());
 
     if (categoryNode != nullptr)
-      settingElement = categoryNode->FirstChildElement(settingTag);
+      settingElement = categoryNode->FirstChildElement(settingTag.c_str());
   }
 
   if (settingElement == nullptr)
@@ -1096,7 +1107,9 @@ bool CSettingsManager::LoadSetting(const TiXmlNode* node, const SettingPtr& sett
   auto isDefaultAttribute = settingElement->Attribute(SETTING_XML_ELM_DEFAULT);
   bool isDefault = isDefaultAttribute != nullptr && StringUtils::EqualsNoCase(isDefaultAttribute, "true");
 
-  if (!setting->FromString(settingElement->FirstChild() != nullptr ? settingElement->FirstChild()->ValueStr() : StringUtils::Empty))
+  if (!setting->FromString(settingElement->FirstChild() != nullptr
+                               ? settingElement->FirstChild()->Value()
+                               : StringUtils::Empty))
   {
     m_logger->warn("unable to read value of setting \"{}\"", settingId);
     return false;
@@ -1115,7 +1128,7 @@ bool CSettingsManager::LoadSetting(const TiXmlNode* node, const SettingPtr& sett
   return true;
 }
 
-bool CSettingsManager::UpdateSetting(const TiXmlNode* node,
+bool CSettingsManager::UpdateSetting(const tinyxml2::XMLNode* node,
                                      const SettingPtr& setting,
                                      const CSettingUpdate& update)
 {
@@ -1124,7 +1137,7 @@ bool CSettingsManager::UpdateSetting(const TiXmlNode* node,
 
   bool updated = false;
   const char *oldSetting = nullptr;
-  const TiXmlNode *oldSettingNode = nullptr;
+  const tinyxml2::XMLNode* oldSettingNode = nullptr;
   if (update.GetType() == SettingUpdateType::Rename)
   {
     if (update.GetValue().empty())
@@ -1138,16 +1151,18 @@ bool CSettingsManager::UpdateSetting(const TiXmlNode* node,
     auto categoryNode = node;
     if (!categoryTag.empty())
     {
-      categoryNode = node->FirstChild(categoryTag);
+      categoryNode = node->FirstChildElement(categoryTag.c_str());
       if (categoryNode == nullptr)
         return false;
     }
 
-    oldSettingNode = categoryNode->FirstChild(settingTag);
+    oldSettingNode = categoryNode->FirstChildElement(settingTag.c_str());
     if (oldSettingNode == nullptr)
       return false;
 
-    if (setting->FromString(oldSettingNode->FirstChild() != nullptr ? oldSettingNode->FirstChild()->ValueStr() : StringUtils::Empty))
+    if (setting->FromString(oldSettingNode->FirstChild() != nullptr
+                                ? oldSettingNode->FirstChild()->Value()
+                                : StringUtils::Empty))
       updated = true;
     else
       m_logger->warn("unable to update \"{}\" through automatically renaming from \"{}\"",

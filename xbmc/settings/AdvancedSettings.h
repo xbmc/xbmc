@@ -23,7 +23,11 @@ class CSettingsManager;
 class CVariant;
 struct IntegerSettingOption;
 
-class TiXmlElement;
+namespace tinyxml2
+{
+class XMLElement;
+}
+
 namespace ADDON
 {
   class IAddon;
@@ -115,9 +119,11 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     void AddSettingsFile(const std::string &filename);
     bool Load(const CProfileManager &profileManager);
 
-    static void GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_TVSHOWLIST& settings);
-    static void GetCustomRegexps(TiXmlElement *pRootElement, std::vector<std::string> &settings);
-    static void GetCustomExtensions(TiXmlElement *pRootElement, std::string& extensions);
+    static void GetCustomTVRegexps(tinyxml2::XMLElement* rootElement,
+                                   SETTINGS_TVSHOWLIST& settings);
+    static void GetCustomRegexps(tinyxml2::XMLElement* rootElement,
+                                 std::vector<std::string>& settings);
+    static void GetCustomExtensions(tinyxml2::XMLElement* rootElement, std::string& extensions);
 
     std::string m_audioDefaultPlayer;
     float m_audioPlayCountMinimumPercent;
@@ -378,5 +384,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
   private:
     void Initialize();
     void Clear();
-    void SetExtraArtwork(const TiXmlElement* arttypes, std::vector<std::string>& artworkMap);
+    void SetExtraArtwork(const tinyxml2::XMLElement* arttypes,
+                         std::vector<std::string>& artworkMap);
 };

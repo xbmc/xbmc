@@ -12,7 +12,11 @@
 #include <string>
 #include <vector>
 
-class TiXmlElement;
+namespace tinyxml2
+{
+class XMLElement;
+}
+
 namespace XFILE
 {
 class CCurlFile;
@@ -44,7 +48,7 @@ public:
 
   CScraperUrl();
   explicit CScraperUrl(const std::string& strUrl);
-  explicit CScraperUrl(const TiXmlElement* element);
+  explicit CScraperUrl(const tinyxml2::XMLElement* element);
   ~CScraperUrl();
 
   void Clear();
@@ -86,7 +90,7 @@ public:
 
   bool Parse();
   bool ParseFromData(const std::string& data); // copies by intention
-  bool ParseAndAppendUrl(const TiXmlElement* element);
+  bool ParseAndAppendUrl(const tinyxml2::XMLElement* element);
   bool ParseAndAppendUrlsFromEpisodeGuide(const std::string& episodeGuide); // copies by intention
   void AddParsedUrl(const std::string& url,
                     const std::string& aspect = "",

@@ -26,6 +26,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 #include "video/Bookmark.h"
@@ -546,7 +547,7 @@ bool CExternalPlayer::SetPlayerState(const std::string& state)
   return true;
 }
 
-bool CExternalPlayer::Initialize(TiXmlElement* pConfig)
+bool CExternalPlayer::Initialize(tinyxml2::XMLElement* pConfig)
 {
   XMLUtils::GetString(pConfig, "filename", m_filename);
   if (m_filename.length() > 0)
@@ -555,8 +556,9 @@ bool CExternalPlayer::Initialize(TiXmlElement* pConfig)
   }
   else
   {
-    std::string xml;
-    xml<<*pConfig;
+    tinyxml2::XMLPrinter printer;
+    pConfig->GetDocument()->Print(&printer);
+    std::string xml = printer.CStr();
     CLog::Log(LOGERROR, "ExternalPlayer Error: filename element missing from: {}", xml);
     return false;
   }
@@ -605,7 +607,7 @@ bool CExternalPlayer::Initialize(TiXmlElement* pConfig)
   m_filenameReplacers.push_back("^smb:\\\\\\\\ , smb:(\\\\\\\\[^\\\\]*\\\\) , \\1 , ");
 #endif
 
-  TiXmlElement* pReplacers = pConfig->FirstChildElement("replacers");
+  auto* pReplacers = pConfig->FirstChildElement("replacers");
   while (pReplacers)
   {
     GetCustomRegexpReplacers(pReplacers, m_filenameReplacers);
@@ -615,7 +617,7 @@ bool CExternalPlayer::Initialize(TiXmlElement* pConfig)
   return true;
 }
 
-void CExternalPlayer::GetCustomRegexpReplacers(TiXmlElement *pRootElement,
+void CExternalPlayer::GetCustomRegexpReplacers(tinyxml2::XMLElement* pRootElement,
                                                std::vector<std::string>& settings)
 {
   int iAction = 0; // overwrite
@@ -636,7 +638,7 @@ void CExternalPlayer::GetCustomRegexpReplacers(TiXmlElement *pRootElement,
   if (iAction == 0)
     settings.clear();
 
-  TiXmlElement* pReplacer = pRootElement->FirstChildElement("replacer");
+  auto* pReplacer = pRootElement->FirstChildElement("replacer");
   int i = 0;
   while (pReplacer)
   {

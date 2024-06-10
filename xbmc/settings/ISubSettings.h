@@ -8,7 +8,10 @@
 
 #pragma once
 
-class TiXmlNode;
+namespace tinyxml2
+{
+class XMLNode;
+}
 
 /*!
  \ingroup settings
@@ -26,14 +29,14 @@ public:
    \param settings XML node containing setting values
    \return True if loading the settings was successful, false otherwise.
    */
-  virtual bool Load(const TiXmlNode *settings) { return true; }
+  virtual bool Load(const tinyxml2::XMLNode* settings) { return true; }
   /*!
    \brief Save settings to the given XML node.
 
    \param settings XML node in which the settings will be saved
    \return True if saving the settings was successful, false otherwise.
    */
-  virtual bool Save(TiXmlNode *settings) const { return true; }
+  virtual bool Save(tinyxml2::XMLNode* settings) const { return true; }
   /*!
    \brief Clear any loaded setting values.
    */

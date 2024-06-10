@@ -32,6 +32,8 @@
 
 #include <utility>
 
+#include <tinyxml2.h>
+
 #ifdef TARGET_LINUX
 #include "Util.h"
 #endif
@@ -519,7 +521,7 @@ void CNetworkServices::OnSettingChanged(const std::shared_ptr<const CSetting>& s
 
 bool CNetworkServices::OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
                                        const char* oldSettingId,
-                                       const TiXmlNode* oldSettingNode)
+                                       const tinyxml2::XMLNode* oldSettingNode)
 {
   if (setting == NULL)
     return false;

@@ -15,7 +15,7 @@
 #include <unordered_map>
 #include <vector>
 
-class CXBMCTinyXML;
+class CXBMCTinyXML2;
 
 namespace ADDON
 {
@@ -453,7 +453,7 @@ protected:
    *
    * \sa SettingsToXML
    */
-  virtual bool SettingsFromXML(const CXBMCTinyXML& doc,
+  virtual bool SettingsFromXML(const CXBMCTinyXML2& doc,
                                bool loadDefaults,
                                AddonInstanceId id = ADDON_SETTINGS_ID);
 
@@ -467,7 +467,7 @@ protected:
    *
    * \sa SettingsFromXML
    */
-  virtual bool SettingsToXML(CXBMCTinyXML& doc, AddonInstanceId id = ADDON_SETTINGS_ID) const;
+  virtual bool SettingsToXML(CXBMCTinyXML2& doc, AddonInstanceId id = ADDON_SETTINGS_ID) const;
 
   const AddonInfoPtr m_addonInfo;
 

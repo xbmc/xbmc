@@ -22,9 +22,15 @@
 #define CREDIT_LINE_LENGTH 50
 
 class CSetting;
-class TiXmlElement;
+class CXBMCTinyXML2;
 struct IntegerSettingOption;
 struct StringSettingOption;
+
+namespace tinyxml2
+{
+class XMLElement;
+class XMLNode;
+} // namespace tinyxml2
 
 namespace ADDON
 {
@@ -36,16 +42,16 @@ class CSkinSetting
 public:
   virtual ~CSkinSetting() = default;
 
-  bool Serialize(TiXmlElement* parent) const;
+  bool Serialize(tinyxml2::XMLElement* parent) const;
 
   virtual std::string GetType() const = 0;
 
-  virtual bool Deserialize(const TiXmlElement* element);
+  virtual bool Deserialize(const tinyxml2::XMLElement* element);
 
   std::string name;
 
 protected:
-  virtual bool SerializeSetting(TiXmlElement* element) const = 0;
+  virtual bool SerializeSetting(tinyxml2::XMLElement* element) const = 0;
 };
 
 typedef std::shared_ptr<CSkinSetting> CSkinSettingPtr;
@@ -57,12 +63,12 @@ public:
 
   std::string GetType() const override { return "string"; }
 
-  bool Deserialize(const TiXmlElement* element) override;
+  bool Deserialize(const tinyxml2::XMLElement* element) override;
 
-  std::string value;
+  std::string m_value;
 
 protected:
-  bool SerializeSetting(TiXmlElement* element) const override;
+  bool SerializeSetting(tinyxml2::XMLElement* element) const override;
 };
 
 typedef std::shared_ptr<CSkinSettingString> CSkinSettingStringPtr;
@@ -74,12 +80,12 @@ public:
 
   std::string GetType() const override { return "bool"; }
 
-  bool Deserialize(const TiXmlElement* element) override;
+  bool Deserialize(const tinyxml2::XMLElement* element) override;
 
-  bool value = false;
+  bool m_value = false;
 
 protected:
-  bool SerializeSetting(TiXmlElement* element) const override;
+  bool SerializeSetting(tinyxml2::XMLElement* element) const override;
 };
 
 typedef std::shared_ptr<CSkinSettingBool> CSkinSettingBoolPtr;
@@ -155,7 +161,7 @@ public:
    */
   static bool TranslateResolution(const std::string &name, RESOLUTION_INFO &res);
 
-  void ResolveIncludes(TiXmlElement* node,
+  void ResolveIncludes(tinyxml2::XMLElement* node,
                        std::map<INFO::InfoPtr, bool>* xmlIncludeConditions = nullptr);
 
   float GetEffectsSlowdown() const { return m_effectsSlowDown; }
@@ -233,7 +239,7 @@ public:
   void Reset(const std::string &setting);
   void Reset();
 
-  static std::set<CSkinSettingPtr> ParseSettings(const TiXmlElement* rootElement);
+  static std::set<CSkinSettingPtr> ParseSettings(const tinyxml2::XMLElement* rootElement);
 
   void OnPreInstall() override;
   void OnPostInstall(bool update, bool modal) override;
@@ -265,13 +271,13 @@ public:
 protected:
   bool LoadStartupWindows(const AddonInfoPtr& addonInfo);
 
-  static CSkinSettingPtr ParseSetting(const TiXmlElement* element);
+  static CSkinSettingPtr ParseSetting(const tinyxml2::XMLElement* element);
 
   bool SettingsLoaded(AddonInstanceId id = ADDON_SETTINGS_ID) const override;
-  bool SettingsFromXML(const CXBMCTinyXML& doc,
+  bool SettingsFromXML(const CXBMCTinyXML2& doc,
                        bool loadDefaults,
                        AddonInstanceId id = ADDON_SETTINGS_ID) override;
-  bool SettingsToXML(CXBMCTinyXML& doc, AddonInstanceId id = ADDON_SETTINGS_ID) const override;
+  bool SettingsToXML(CXBMCTinyXML2& doc, AddonInstanceId id = ADDON_SETTINGS_ID) const override;
 
   RESOLUTION_INFO m_defaultRes;
   std::vector<RESOLUTION_INFO> m_resolutions;

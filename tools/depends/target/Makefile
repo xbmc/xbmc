@@ -44,7 +44,6 @@ DEPENDS = \
   pythonmodule-pycryptodome \
   pythonmodule-setuptools \
   sqlite3 \
-  tinyxml \
   udfread \
   xz
 

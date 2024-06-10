@@ -38,11 +38,14 @@
 #include "utils/FontUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
 #include <set>
+
+#include <tinyxml2.h>
 
 using namespace XFILE;
 using namespace ADDON;
@@ -51,7 +54,7 @@ namespace
 {
 constexpr const char* XML_FONTCACHE_FILENAME = "fontcache.xml";
 
-bool LoadXMLData(const std::string& filepath, CXBMCTinyXML& xmlDoc)
+bool LoadXMLData(const std::string& filepath, CXBMCTinyXML2& xmlDoc)
 {
   if (!CFileUtils::Exists(filepath))
   {
@@ -63,8 +66,8 @@ bool LoadXMLData(const std::string& filepath, CXBMCTinyXML& xmlDoc)
     CLog::LogF(LOGERROR, "Couldn't load '{}'", filepath);
     return false;
   }
-  TiXmlElement* pRootElement = xmlDoc.RootElement();
-  if (!pRootElement || pRootElement->ValueStr() != "fonts")
+  auto* rootElement = xmlDoc.RootElement();
+  if (!rootElement || strcmp(rootElement->Value(), "fonts") != 0)
   {
     CLog::LogF(LOGERROR, "Couldn't load '{}' XML content doesn't start with <fonts>", filepath);
     return false;
@@ -423,12 +426,12 @@ bool GUIFontManager::LoadFontsFromFile(const std::string& fontsetFilePath,
                                        const std::string& fontSet,
                                        std::string& firstFontset)
 {
-  CXBMCTinyXML xmlDoc;
+  CXBMCTinyXML2 xmlDoc;
   if (LoadXMLData(fontsetFilePath, xmlDoc))
   {
-    TiXmlElement* rootElement = xmlDoc.RootElement();
+    auto* rootElement = xmlDoc.RootElement();
     g_SkinInfo->ResolveIncludes(rootElement);
-    const TiXmlElement* fontsetElement = rootElement->FirstChildElement("fontset");
+    const auto* fontsetElement = rootElement->FirstChildElement("fontset");
     while (fontsetElement)
     {
       const char* idAttr = fontsetElement->Attribute("id");
@@ -443,7 +446,7 @@ bool GUIFontManager::LoadFontsFromFile(const std::string& fontsetFilePath,
           // Found the requested fontset, so load the fonts and return
           CLog::LogF(LOGINFO, "Loading <fontset> with name '{}' from '{}'", fontSet,
                      fontsetFilePath);
-          LoadFonts(fontsetElement->FirstChild("font"));
+          LoadFonts(fontsetElement->FirstChildElement("font"));
           return true;
         }
       }
@@ -484,7 +487,7 @@ void GUIFontManager::LoadFonts(const std::string& fontSet)
                fontsetFilePath);
 }
 
-void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
+void GUIFontManager::LoadFonts(const tinyxml2::XMLNode* fontNode)
 {
   while (fontNode)
   {
@@ -511,11 +514,11 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
       LoadTTF(fontName, fileName, textColor, shadowColor, iSize, iStyle, false, lineSpacing,
               aspect);
     }
-    fontNode = fontNode->NextSibling("font");
+    fontNode = fontNode->NextSiblingElement("font");
   }
 }
 
-void GUIFontManager::GetStyle(const TiXmlNode* fontNode, int& iStyle)
+void GUIFontManager::GetStyle(const tinyxml2::XMLNode* fontNode, int& iStyle)
 {
   std::string style;
   iStyle = FONT_STYLE_NORMAL;
@@ -582,30 +585,30 @@ void GUIFontManager::LoadUserFonts()
     return;
 
   CLog::LogF(LOGDEBUG, "Updating user fonts cache...");
-  CXBMCTinyXML xmlDoc;
+  CXBMCTinyXML2 xmlDoc;
   std::string userFontCacheFilepath =
       URIUtils::AddFileToFolder(UTILS::FONT::FONTPATH::USER, XML_FONTCACHE_FILENAME);
   if (LoadXMLData(userFontCacheFilepath, xmlDoc))
   {
     // Load in cache the fonts metadata previously stored in the XML
-    TiXmlElement* pRootElement = xmlDoc.RootElement();
+    auto* pRootElement = xmlDoc.RootElement();
     if (pRootElement)
     {
-      const TiXmlNode* fontNode = pRootElement->FirstChild("font");
+      const auto* fontNode = pRootElement->FirstChildElement("font");
       while (fontNode)
       {
         std::string filename;
         XMLUtils::GetString(fontNode, "filename", filename);
 
         std::set<std::string> familyNames;
-        for (const TiXmlElement* fnChildNode = fontNode->FirstChildElement("familyname");
-             fnChildNode; fnChildNode = fnChildNode->NextSiblingElement("familyname"))
+        for (const auto* fnChildNode = fontNode->FirstChildElement("familyname"); fnChildNode;
+             fnChildNode = fnChildNode->NextSiblingElement("familyname"))
         {
           familyNames.emplace(fnChildNode->GetText());
         }
 
         m_userFontsCache.emplace_back(filename, familyNames);
-        fontNode = fontNode->NextSibling("font");
+        fontNode = fontNode->NextSiblingElement("font");
       }
     }
   }
@@ -660,18 +663,17 @@ void GUIFontManager::LoadUserFonts()
   // If the cache is changed save an updated XML cache file
   if (isCacheChanged)
   {
-    CXBMCTinyXML xmlDoc;
-    TiXmlDeclaration decl("1.0", "UTF-8", "yes");
-    xmlDoc.InsertEndChild(decl);
-    TiXmlElement xmlMainElement("fonts");
+    CXBMCTinyXML2 xmlDoc;
+    xmlDoc.InsertEndChild(xmlDoc.NewDeclaration());
+    auto* xmlMainElement = xmlDoc.NewElement("fonts");
 
-    TiXmlNode* fontsNode = xmlDoc.InsertEndChild(xmlMainElement);
+    auto* fontsNode = xmlDoc.InsertEndChild(xmlMainElement);
     if (fontsNode)
     {
       for (const FontMetadata& fontMetadata : m_userFontsCache)
       {
-        TiXmlElement fontElement("font");
-        TiXmlNode* fontNode = fontsNode->InsertEndChild(fontElement);
+        auto* fontElement = xmlDoc.NewElement("font");
+        auto* fontNode = fontsNode->InsertEndChild(fontElement);
         XMLUtils::SetString(fontNode, "filename", fontMetadata.m_filename);
         for (const std::string& familyName : fontMetadata.m_familyNames)
         {

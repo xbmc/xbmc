@@ -180,8 +180,6 @@
 #include <memory>
 #include <mutex>
 
-#include <tinyxml.h>
-
 //TODO: XInitThreads
 #ifdef HAVE_X11
 #include <X11/Xlib.h>
@@ -223,8 +221,6 @@ CApplication::CApplication(void)
     m_itemCurrentFile(std::make_shared<CFileItem>()),
     m_playerEvent(true, true)
 {
-  TiXmlBase::SetCondenseWhiteSpace(false);
-
 #ifdef HAVE_X11
   XInitThreads();
 #endif

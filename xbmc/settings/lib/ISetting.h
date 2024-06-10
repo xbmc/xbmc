@@ -13,7 +13,11 @@
 #include <string>
 
 class CSettingsManager;
-class TiXmlNode;
+
+namespace tinyxml2
+{
+class XMLNode;
+}
 
 /*!
  \ingroup settings
@@ -42,7 +46,7 @@ public:
    \param update Whether to perform checks for mandatory properties or not
    \return True if deserialization was successful, false otherwise
    */
-  virtual bool Deserialize(const TiXmlNode *node, bool update = false);
+  virtual bool Deserialize(const tinyxml2::XMLNode* node, bool update = false);
 
   /*!
    \brief Gets the identifier of the setting object.
@@ -111,7 +115,7 @@ public:
    \param identification Will contain the deserialized setting object's identifier
    \return True if a setting object's identifier was deserialized, false otherwise
    */
-  static bool DeserializeIdentification(const TiXmlNode *node, std::string &identification);
+  static bool DeserializeIdentification(const tinyxml2::XMLNode* node, std::string& identification);
 
 protected:
   static constexpr int DefaultLabel = -1;
@@ -123,7 +127,7 @@ protected:
    \param identification Will contain the deserialized setting object's identifier
    \return True if a setting object's identifier was deserialized, false otherwise
    */
-  static bool DeserializeIdentificationFromAttribute(const TiXmlNode* node,
+  static bool DeserializeIdentificationFromAttribute(const tinyxml2::XMLNode* node,
                                                      const std::string& attribute,
                                                      std::string& identification);
 

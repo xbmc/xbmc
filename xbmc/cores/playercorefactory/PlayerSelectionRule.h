@@ -15,12 +15,16 @@
 
 class CFileItem;
 class CRegExp;
-class TiXmlElement;
+
+namespace tinyxml2
+{
+class XMLElement;
+}
 
 class CPlayerSelectionRule
 {
 public:
-  explicit CPlayerSelectionRule(TiXmlElement* rule);
+  explicit CPlayerSelectionRule(tinyxml2::XMLElement* rule);
   virtual ~CPlayerSelectionRule() = default;
 
   void GetPlayers(const CFileItem& item, std::vector<std::string>&validPlayers, std::vector<std::string>&players);
@@ -29,7 +33,7 @@ private:
   static int GetTristate(const char* szValue);
   static bool CompileRegExp(const std::string& str, CRegExp& regExp);
   static bool MatchesRegExp(const std::string& str, CRegExp& regExp);
-  void Initialize(TiXmlElement* pRule);
+  void Initialize(tinyxml2::XMLElement* pRule);
 
   std::string m_name;
 

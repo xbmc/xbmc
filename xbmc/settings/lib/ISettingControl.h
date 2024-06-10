@@ -12,7 +12,10 @@
 
 #include <string>
 
-class TiXmlNode;
+namespace tinyxml2
+{
+class XMLNode;
+}
 
 class ISettingControl
 {
@@ -25,7 +28,7 @@ public:
   bool GetDelayed() const { return m_delayed; }
   void SetDelayed(bool delayed) { m_delayed = delayed; }
 
-  virtual bool Deserialize(const TiXmlNode *node, bool update = false);
+  virtual bool Deserialize(const tinyxml2::XMLNode* node, bool update = false);
   virtual bool SetFormat(const std::string &format) { return true; }
 
 protected:

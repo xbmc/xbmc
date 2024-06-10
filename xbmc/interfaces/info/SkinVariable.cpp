@@ -11,12 +11,14 @@
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
-#include "utils/XBMCTinyXML.h"
+
+#include <tinyxml2.h>
 
 using namespace INFO;
 using namespace KODI;
 
-const CSkinVariableString* CSkinVariable::CreateFromXML(const TiXmlElement& node, int context)
+const CSkinVariableString* CSkinVariable::CreateFromXML(const tinyxml2::XMLElement& node,
+                                                        int context)
 {
   const char* name = node.Attribute("name");
   if (name)
@@ -24,7 +26,7 @@ const CSkinVariableString* CSkinVariable::CreateFromXML(const TiXmlElement& node
     CSkinVariableString* tmp = new CSkinVariableString;
     tmp->m_name = name;
     tmp->m_context = context;
-    const TiXmlElement* valuenode = node.FirstChildElement("value");
+    const auto* valuenode = node.FirstChildElement("value");
     while (valuenode)
     {
       CSkinVariableString::ConditionLabelPair pair;
@@ -32,7 +34,7 @@ const CSkinVariableString* CSkinVariable::CreateFromXML(const TiXmlElement& node
       if (condition)
         pair.m_condition = CServiceBroker::GetGUI()->GetInfoManager().Register(condition, context);
 
-      auto label = valuenode->FirstChild() ? valuenode->FirstChild()->ValueStr() : "";
+      auto label = valuenode->FirstChild() ? valuenode->FirstChild()->Value() : "";
       pair.m_label = GUILIB::GUIINFO::CGUIInfoLabel(label);
       tmp->m_conditionLabelPairs.push_back(pair);
       if (!pair.m_condition)

@@ -9,13 +9,14 @@
 #include "ViewStateSettings.h"
 
 #include "utils/SortUtils.h"
-#include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
 #include <cstring>
 #include <mutex>
 #include <utility>
+
+#include <tinyxml2.h>
 
 #define XML_VIEWSTATESETTINGS       "viewstates"
 #define XML_VIEWMODE                "viewmode"
@@ -65,14 +66,14 @@ CViewStateSettings& CViewStateSettings::GetInstance()
   return sViewStateSettings;
 }
 
-bool CViewStateSettings::Load(const TiXmlNode *settings)
+bool CViewStateSettings::Load(const tinyxml2::XMLNode* settings)
 {
-  if (settings == NULL)
+  if (!settings)
     return false;
 
   std::unique_lock<CCriticalSection> lock(m_critical);
-  const TiXmlNode *pElement = settings->FirstChildElement(XML_VIEWSTATESETTINGS);
-  if (pElement == NULL)
+  const auto* element = settings->FirstChildElement(XML_VIEWSTATESETTINGS);
+  if (!element)
   {
     CLog::Log(LOGWARNING, "CViewStateSettings: no <viewstates> tag found");
     return false;
@@ -80,52 +81,61 @@ bool CViewStateSettings::Load(const TiXmlNode *settings)
 
   for (std::map<std::string, CViewState*>::iterator viewState = m_viewStates.begin(); viewState != m_viewStates.end(); ++viewState)
   {
-    const TiXmlNode* pViewState = pElement->FirstChildElement(viewState->first);
-    if (pViewState == NULL)
+    const auto* viewStateElement = element->FirstChildElement(viewState->first.c_str());
+    if (!viewStateElement)
       continue;
 
-    XMLUtils::GetInt(pViewState, XML_VIEWMODE, viewState->second->m_viewMode, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX);
+    XMLUtils::GetInt(viewStateElement, XML_VIEWMODE, viewState->second->m_viewMode,
+                     DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX);
 
     // keep backwards compatibility to the old sorting methods
-    if (pViewState->FirstChild(XML_SORTATTRIBUTES) == NULL)
+    if (!viewStateElement->FirstChildElement(XML_SORTATTRIBUTES))
     {
       int sortMethod;
-      if (XMLUtils::GetInt(pViewState, XML_SORTMETHOD, sortMethod, SORT_METHOD_NONE, SORT_METHOD_MAX))
+      if (XMLUtils::GetInt(viewStateElement, XML_SORTMETHOD, sortMethod, SORT_METHOD_NONE,
+                           SORT_METHOD_MAX))
         viewState->second->m_sortDescription = SortUtils::TranslateOldSortMethod((SORT_METHOD)sortMethod);
     }
     else
     {
       int sortMethod;
-      if (XMLUtils::GetInt(pViewState, XML_SORTMETHOD, sortMethod, SortByNone, SortByLastUsed))
+      if (XMLUtils::GetInt(viewStateElement, XML_SORTMETHOD, sortMethod, SortByNone,
+                           SortByLastUsed))
         viewState->second->m_sortDescription.sortBy = (SortBy)sortMethod;
-      if (XMLUtils::GetInt(pViewState, XML_SORTATTRIBUTES, sortMethod, SortAttributeNone, SortAttributeIgnoreFolders))
+      if (XMLUtils::GetInt(viewStateElement, XML_SORTATTRIBUTES, sortMethod, SortAttributeNone,
+                           SortAttributeIgnoreFolders))
         viewState->second->m_sortDescription.sortAttributes = (SortAttribute)sortMethod;
     }
 
     int sortOrder;
-    if (XMLUtils::GetInt(pViewState, XML_SORTORDER, sortOrder, SortOrderNone, SortOrderDescending))
+    if (XMLUtils::GetInt(viewStateElement, XML_SORTORDER, sortOrder, SortOrderNone,
+                         SortOrderDescending))
       viewState->second->m_sortDescription.sortOrder = (SortOrder)sortOrder;
   }
 
-  pElement = settings->FirstChild(XML_GENERAL);
-  if (pElement != NULL)
+  element = settings->FirstChildElement(XML_GENERAL);
+  if (!element)
   {
     int settingLevel;
-    if (XMLUtils::GetInt(pElement, XML_SETTINGLEVEL, settingLevel, static_cast<int>(SettingLevel::Basic), static_cast<int>(SettingLevel::Expert)))
+    if (XMLUtils::GetInt(element, XML_SETTINGLEVEL, settingLevel,
+                         static_cast<int>(SettingLevel::Basic),
+                         static_cast<int>(SettingLevel::Expert)))
       m_settingLevel = (SettingLevel)settingLevel;
     else
       m_settingLevel = SettingLevel::Standard;
 
-    const TiXmlNode* pEventLogNode = pElement->FirstChild(XML_EVENTLOG);
-    if (pEventLogNode != NULL)
+    const auto* eventLogNode = element->FirstChildElement(XML_EVENTLOG);
+    if (!eventLogNode)
     {
       int eventLevel;
-      if (XMLUtils::GetInt(pEventLogNode, XML_EVENTLOG_LEVEL, eventLevel, static_cast<int>(EventLevel::Basic), static_cast<int>(EventLevel::Error)))
+      if (XMLUtils::GetInt(eventLogNode, XML_EVENTLOG_LEVEL, eventLevel,
+                           static_cast<int>(EventLevel::Basic),
+                           static_cast<int>(EventLevel::Error)))
         m_eventLevel = (EventLevel)eventLevel;
       else
         m_eventLevel = EventLevel::Basic;
 
-      if (!XMLUtils::GetBoolean(pEventLogNode, XML_EVENTLOG_LEVEL_HIGHER, m_eventShowHigherLevels))
+      if (!XMLUtils::GetBoolean(eventLogNode, XML_EVENTLOG_LEVEL_HIGHER, m_eventShowHigherLevels))
         m_eventShowHigherLevels = true;
     }
   }
@@ -133,16 +143,17 @@ bool CViewStateSettings::Load(const TiXmlNode *settings)
   return true;
 }
 
-bool CViewStateSettings::Save(TiXmlNode *settings) const
+bool CViewStateSettings::Save(tinyxml2::XMLNode* settings) const
 {
   if (settings == NULL)
     return false;
 
   std::unique_lock<CCriticalSection> lock(m_critical);
   // add the <viewstates> tag
-  TiXmlElement xmlViewStateElement(XML_VIEWSTATESETTINGS);
-  TiXmlNode *pViewStateNode = settings->InsertEndChild(xmlViewStateElement);
-  if (pViewStateNode == NULL)
+  auto doc = settings->GetDocument();
+  auto* xmlViewStateElement = doc->NewElement(XML_VIEWSTATESETTINGS);
+  auto* viewStateNode = settings->InsertEndChild(xmlViewStateElement);
+  if (!viewStateNode)
   {
     CLog::Log(LOGWARNING, "CViewStateSettings: could not create <viewstates> tag");
     return false;
@@ -150,34 +161,36 @@ bool CViewStateSettings::Save(TiXmlNode *settings) const
 
   for (std::map<std::string, CViewState*>::const_iterator viewState = m_viewStates.begin(); viewState != m_viewStates.end(); ++viewState)
   {
-    TiXmlElement newElement(viewState->first);
-    TiXmlNode *pNewNode = pViewStateNode->InsertEndChild(newElement);
-    if (pNewNode == NULL)
+    auto* newElement = doc->NewElement(viewState->first.c_str());
+    auto* newNode = viewStateNode->InsertEndChild(newElement);
+
+    if (!newNode)
       continue;
 
-    XMLUtils::SetInt(pNewNode, XML_VIEWMODE, viewState->second->m_viewMode);
-    XMLUtils::SetInt(pNewNode, XML_SORTMETHOD, (int)viewState->second->m_sortDescription.sortBy);
-    XMLUtils::SetInt(pNewNode, XML_SORTORDER, (int)viewState->second->m_sortDescription.sortOrder);
-    XMLUtils::SetInt(pNewNode, XML_SORTATTRIBUTES, (int)viewState->second->m_sortDescription.sortAttributes);
+    XMLUtils::SetInt(newNode, XML_VIEWMODE, viewState->second->m_viewMode);
+    XMLUtils::SetInt(newNode, XML_SORTMETHOD, (int)viewState->second->m_sortDescription.sortBy);
+    XMLUtils::SetInt(newNode, XML_SORTORDER, (int)viewState->second->m_sortDescription.sortOrder);
+    XMLUtils::SetInt(newNode, XML_SORTATTRIBUTES,
+                     (int)viewState->second->m_sortDescription.sortAttributes);
   }
 
-  TiXmlNode *generalNode = settings->FirstChild(XML_GENERAL);
-  if (generalNode == NULL)
+  auto* generalNode = settings->FirstChildElement(XML_GENERAL);
+  if (!generalNode)
   {
-    TiXmlElement generalElement(XML_GENERAL);
-    generalNode = settings->InsertEndChild(generalElement);
-    if (generalNode == NULL)
+    auto* generalElement = doc->NewElement(XML_GENERAL);
+    generalNode = settings->InsertEndChild(generalElement)->ToElement();
+    if (!generalNode)
       return false;
   }
 
   XMLUtils::SetInt(generalNode, XML_SETTINGLEVEL, (int)m_settingLevel);
 
-  TiXmlNode *eventLogNode = generalNode->FirstChild(XML_EVENTLOG);
-  if (eventLogNode == NULL)
+  auto* eventLogNode = generalNode->FirstChildElement(XML_EVENTLOG);
+  if (!eventLogNode)
   {
-    TiXmlElement eventLogElement(XML_EVENTLOG);
-    eventLogNode = generalNode->InsertEndChild(eventLogElement);
-    if (eventLogNode == NULL)
+    auto* eventLogElement = doc->NewElement(XML_EVENTLOG);
+    eventLogNode = generalNode->InsertEndChild(eventLogElement)->ToElement();
+    if (!eventLogNode)
       return false;
   }
 

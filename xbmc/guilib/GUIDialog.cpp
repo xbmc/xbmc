@@ -19,6 +19,8 @@
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
 
+#include <tinyxml2.h>
+
 CGUIDialog::CGUIDialog(int id, const std::string &xmlFile, DialogModalityType modalityType /* = DialogModalityType::MODAL */)
     : CGUIWindow(id, xmlFile)
 {
@@ -34,7 +36,7 @@ CGUIDialog::CGUIDialog(int id, const std::string &xmlFile, DialogModalityType mo
 
 CGUIDialog::~CGUIDialog(void) = default;
 
-bool CGUIDialog::Load(TiXmlElement* pRootElement)
+bool CGUIDialog::Load(tinyxml2::XMLElement* pRootElement)
 {
   return CGUIWindow::Load(pRootElement);
 }

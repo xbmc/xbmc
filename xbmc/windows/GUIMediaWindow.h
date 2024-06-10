@@ -23,7 +23,11 @@ namespace
 {
 class CGetDirectoryItems;
 }
-class TiXmlElement;
+
+namespace tinyxml2
+{
+class XMLElement;
+}
 
 // base class for all media windows
 class CGUIMediaWindow : public CGUIWindow
@@ -62,7 +66,7 @@ protected:
   // specializations of CGUIControlGroup
   CGUIControl *GetFirstFocusableControl(int id) override;
 
-  bool Load(TiXmlElement *pRootElement) override;
+  bool Load(tinyxml2::XMLElement* pRootElement) override;
 
   // custom methods
   virtual void SetupShares();

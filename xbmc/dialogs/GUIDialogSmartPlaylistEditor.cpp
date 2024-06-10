@@ -29,6 +29,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 
+#include <cassert>
 #include <utility>
 
 using namespace KODI;

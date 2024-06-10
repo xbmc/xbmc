@@ -20,9 +20,13 @@
 #include <vector>
 
 class CArchive;
-class TiXmlNode;
-class TiXmlElement;
 class CVariant;
+
+namespace tinyxml2
+{
+class XMLNode;
+class XMLElement;
+} // namespace tinyxml2
 
 enum class VideoAssetType;
 
@@ -71,8 +75,11 @@ public:
 
    \sa ParseNative
    */
-  bool Load(const TiXmlElement *element, bool append = false, bool prioritise = false);
-  bool Save(TiXmlNode *node, const std::string &tag, bool savePathInfo = true, const TiXmlElement *additionalNode = NULL);
+  bool Load(const tinyxml2::XMLElement* element, bool append = false, bool prioritise = false);
+  bool Save(tinyxml2::XMLNode* node,
+            const std::string& tag,
+            bool savePathInfo = true,
+            const tinyxml2::XMLElement* additionalNode = NULL);
   void Merge(CVideoInfoTag& other);
   void Archive(CArchive& ar) override;
   void Serialize(CVariant& value) const override;
@@ -225,13 +232,13 @@ public:
      * @brief Store all data to XML.
      * @param movie The XML element to write the data to.
      */
-    void Save(TiXmlNode* movie);
+    void Save(tinyxml2::XMLNode* movie);
 
     /*!
      * @brief Restore all data from XML.
      * @param movie The XML element containing the data.
      */
-    void ParseNative(const TiXmlElement* movie);
+    void ParseNative(const tinyxml2::XMLElement* movie);
 
     /*!
      * @brief Merge in all valid data from another asset info.
@@ -423,7 +430,7 @@ private:
    \param prioritise whether additive tags should be replaced (or prepended) by the content of the tags, or appended to.
    \sa Load
    */
-  void ParseNative(const TiXmlElement* element, bool prioritise);
+  void ParseNative(const tinyxml2::XMLElement* element, bool prioritise);
 
   std::string m_strDefaultRating;
   std::string m_strDefaultUniqueID;

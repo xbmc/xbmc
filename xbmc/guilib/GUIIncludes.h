@@ -17,7 +17,12 @@
 #include <vector>
 
 // forward definitions
-class TiXmlElement;
+namespace tinyxml2
+{
+class XMLDocument;
+class XMLElement;
+} // namespace tinyxml2
+
 namespace INFO
 {
   class CSkinVariableString;
@@ -50,7 +55,7 @@ public:
    \param node the node from where we start to resolve the include components
    \param includeConditions a map that holds the conditions for resolved includes
    */
-  void Resolve(TiXmlElement *node, std::map<INFO::InfoPtr, bool>* includeConditions = NULL);
+  void Resolve(tinyxml2::XMLElement* node, std::map<INFO::InfoPtr, bool>* includeConditions = NULL);
 
   /*!
    \brief Create a skin variable for the given \code{name} within the given \code{context}.
@@ -80,11 +85,11 @@ private:
 
   bool HasLoaded(const std::string &file) const;
 
-  void LoadDefaults(const TiXmlElement *node);
-  void LoadIncludes(const TiXmlElement *node);
-  void LoadVariables(const TiXmlElement *node);
-  void LoadConstants(const TiXmlElement *node);
-  void LoadExpressions(const TiXmlElement *node);
+  void LoadDefaults(const tinyxml2::XMLElement* node);
+  void LoadIncludes(const tinyxml2::XMLElement* node);
+  void LoadVariables(const tinyxml2::XMLElement* node);
+  void LoadConstants(const tinyxml2::XMLElement* node);
+  void LoadExpressions(const tinyxml2::XMLElement* node);
 
   /*!
    \brief Resolve all expressions containing other expressions to a single evaluatable expression.
@@ -104,24 +109,29 @@ private:
   */
   void FlattenSkinVariableConditions();
 
-  void SetDefaults(TiXmlElement *node);
-  void ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, bool>* xmlIncludeConditions = NULL);
-  void ResolveConstants(TiXmlElement *node);
-  void ResolveExpressions(TiXmlElement *node);
+  void SetDefaults(tinyxml2::XMLElement* node);
+  void ResolveIncludes(tinyxml2::XMLElement* node,
+                       std::map<INFO::InfoPtr, bool>* xmlIncludeConditions = NULL);
+  void ResolveConstants(tinyxml2::XMLElement* node);
+  void ResolveExpressions(tinyxml2::XMLElement* node);
 
   typedef std::map<std::string, std::string> Params;
-  static void InsertNested(TiXmlElement* controls, TiXmlElement* include, TiXmlElement* node);
-  static bool GetParameters(const TiXmlElement *include, const char *valueAttribute, Params& params);
-  static void ResolveParametersForNode(TiXmlElement *node, const Params& params);
+  static void InsertNested(tinyxml2::XMLElement* controls,
+                           tinyxml2::XMLElement* include,
+                           tinyxml2::XMLElement* node);
+  static bool GetParameters(const tinyxml2::XMLElement* include,
+                            const char* valueAttribute,
+                            Params& params);
+  static void ResolveParametersForNode(tinyxml2::XMLElement* node, const Params& params);
   static ResolveParamsResult ResolveParameters(const std::string& strInput, std::string& strOutput, const Params& params);
 
   std::string ResolveConstant(const std::string &constant) const;
   std::string ResolveExpressions(const std::string &expression) const;
 
   std::vector<std::string> m_files;
-  std::map<std::string, std::pair<TiXmlElement, Params>> m_includes;
-  std::map<std::string, TiXmlElement> m_defaults;
-  std::map<std::string, TiXmlElement> m_skinvariables;
+  std::map<std::string, std::pair<std::unique_ptr<tinyxml2::XMLDocument>, Params>> m_includes;
+  std::map<std::string, std::unique_ptr<tinyxml2::XMLDocument>> m_defaults;
+  std::map<std::string, std::unique_ptr<tinyxml2::XMLDocument>> m_skinvariables;
   std::map<std::string, std::string> m_constants;
   std::map<std::string, std::string> m_expressions;
 

@@ -1182,7 +1182,7 @@ void CSmartPlaylistRuleCombination::AddRule(const CSmartPlaylistRule &rule)
   m_rules.push_back(ptr);
 }
 
-CSmartPlaylist::CSmartPlaylist()
+CSmartPlaylist::CSmartPlaylist() : m_xmlDoc(std::make_unique<CXBMCTinyXML2>())
 {
   Reset();
 }
@@ -1195,12 +1195,12 @@ bool CSmartPlaylist::OpenAndReadName(const CURL &url)
   return !m_playlistName.empty();
 }
 
-const TiXmlNode* CSmartPlaylist::readName(const TiXmlNode *root)
+const tinyxml2::XMLNode* CSmartPlaylist::readName(const tinyxml2::XMLNode* root)
 {
   if (root == NULL)
     return NULL;
 
-  const TiXmlElement *rootElem = root->ToElement();
+  const auto* rootElem = root->ToElement();
   if (rootElem == NULL)
     return NULL;
 
@@ -1226,7 +1226,7 @@ const TiXmlNode* CSmartPlaylist::readName(const TiXmlNode *root)
   return root;
 }
 
-const TiXmlNode* CSmartPlaylist::readNameFromPath(const CURL &url)
+const tinyxml2::XMLNode* CSmartPlaylist::readNameFromPath(const CURL& url)
 {
   CFileStream file;
   if (!file.Open(url))
@@ -1235,10 +1235,12 @@ const TiXmlNode* CSmartPlaylist::readNameFromPath(const CURL &url)
     return NULL;
   }
 
-  m_xmlDoc.Clear();
-  file >> m_xmlDoc;
+  m_xmlDoc->Clear();
 
-  const TiXmlNode *root = readName(m_xmlDoc.RootElement());
+  std::string fileStream(std::istreambuf_iterator<char>(file), {});
+  m_xmlDoc->Parse(fileStream);
+
+  const auto* root = readName(m_xmlDoc->RootElement());
   if (m_playlistName.empty())
   {
     m_playlistName = CUtil::GetTitleFromPath(url.Get());
@@ -1249,7 +1251,7 @@ const TiXmlNode* CSmartPlaylist::readNameFromPath(const CURL &url)
   return root;
 }
 
-const TiXmlNode* CSmartPlaylist::readNameFromXml(const std::string &xml)
+const tinyxml2::XMLNode* CSmartPlaylist::readNameFromXml(const std::string& xml)
 {
   if (xml.empty())
   {
@@ -1257,20 +1259,20 @@ const TiXmlNode* CSmartPlaylist::readNameFromXml(const std::string &xml)
     return NULL;
   }
 
-  m_xmlDoc.Clear();
-  if (!m_xmlDoc.Parse(xml))
+  m_xmlDoc.reset();
+  if (!m_xmlDoc->Parse(xml))
   {
     CLog::Log(LOGERROR, "Error loading Smart playlist (failed to parse xml: {})",
-              m_xmlDoc.ErrorDesc());
+              m_xmlDoc->ErrorStr());
     return NULL;
   }
 
-  const TiXmlNode *root = readName(m_xmlDoc.RootElement());
+  const tinyxml2::XMLNode* root = readName(m_xmlDoc->RootElement());
 
   return root;
 }
 
-bool CSmartPlaylist::load(const TiXmlNode *root)
+bool CSmartPlaylist::load(const tinyxml2::XMLNode* root)
 {
   if (root == NULL)
     return false;
@@ -1343,7 +1345,7 @@ bool CSmartPlaylist::LoadFromXml(const std::string &xml)
   return load(readNameFromXml(xml));
 }
 
-bool CSmartPlaylist::LoadFromXML(const TiXmlNode *root, const std::string &encoding)
+bool CSmartPlaylist::LoadFromXML(const tinyxml2::XMLNode* root)
 {
   if (!root)
     return false;
@@ -1353,20 +1355,20 @@ bool CSmartPlaylist::LoadFromXML(const TiXmlNode *root, const std::string &encod
     m_ruleCombination.SetType(StringUtils::EqualsNoCase(tmp, "all") ? CSmartPlaylistRuleCombination::CombinationAnd : CSmartPlaylistRuleCombination::CombinationOr);
 
   // now the rules
-  const TiXmlNode *ruleNode = root->FirstChild("rule");
+  const auto* ruleNode = root->FirstChildElement("rule");
   while (ruleNode)
   {
     CSmartPlaylistRule rule;
-    if (rule.Load(ruleNode, encoding))
+    if (rule.Load(ruleNode))
       m_ruleCombination.AddRule(rule);
 
-    ruleNode = ruleNode->NextSibling("rule");
+    ruleNode = ruleNode->NextSiblingElement("rule");
   }
 
-  const TiXmlElement *groupElement = root->FirstChildElement("group");
+  const auto* groupElement = root->FirstChildElement("group");
   if (groupElement != NULL && groupElement->FirstChild() != NULL)
   {
-    m_group = groupElement->FirstChild()->ValueStr();
+    m_group = groupElement->FirstChild()->Value();
     const char* mixed = groupElement->Attribute("mixed");
     m_groupMixed = mixed != NULL && StringUtils::EqualsNoCase(mixed, "true");
   }
@@ -1377,7 +1379,7 @@ bool CSmartPlaylist::LoadFromXML(const TiXmlNode *root, const std::string &encod
 
   // and order
   // format is <order direction="ascending">field</order>
-  const TiXmlElement *order = root->FirstChildElement("order");
+  const auto* order = root->FirstChildElement("order");
   if (order && order->FirstChild())
   {
     const char *direction = order->Attribute("direction");
@@ -1407,13 +1409,13 @@ bool CSmartPlaylist::LoadFromJson(const std::string &json)
 
 bool CSmartPlaylist::Save(const std::string &path) const
 {
-  CXBMCTinyXML doc;
-  TiXmlDeclaration decl("1.0", "UTF-8", "yes");
+  CXBMCTinyXML2 doc;
+  auto* decl = doc.NewDeclaration();
   doc.InsertEndChild(decl);
 
-  TiXmlElement xmlRootElement("smartplaylist");
-  xmlRootElement.SetAttribute("type",m_playlistType.c_str());
-  TiXmlNode *pRoot = doc.InsertEndChild(xmlRootElement);
+  auto xmlRootElement = doc.NewElement("smartplaylist");
+  xmlRootElement->SetAttribute("type", m_playlistType.c_str());
+  auto* pRoot = doc.InsertEndChild(xmlRootElement);
   if (!pRoot)
     return false;
 
@@ -1429,11 +1431,11 @@ bool CSmartPlaylist::Save(const std::string &path) const
   // add <group> tag if necessary
   if (!m_group.empty())
   {
-    TiXmlElement nodeGroup("group");
+    auto nodeGroup = doc.NewElement("group");
     if (m_groupMixed)
-      nodeGroup.SetAttribute("mixed", "true");
-    TiXmlText group(m_group.c_str());
-    nodeGroup.InsertEndChild(group);
+      nodeGroup->SetAttribute("mixed", "true");
+    auto group = doc.NewText(m_group.c_str());
+    nodeGroup->InsertEndChild(group);
     pRoot->InsertEndChild(nodeGroup);
   }
 
@@ -1444,12 +1446,13 @@ bool CSmartPlaylist::Save(const std::string &path) const
   // add <order> tag
   if (m_orderField != SortByNone)
   {
-    TiXmlText order(CSmartPlaylistRule::TranslateOrder(m_orderField).c_str());
-    TiXmlElement nodeOrder("order");
-    nodeOrder.SetAttribute("direction", m_orderDirection == SortOrderDescending ? "descending" : "ascending");
+    auto* order = doc.NewText(CSmartPlaylistRule::TranslateOrder(m_orderField).c_str());
+    auto* nodeOrder = doc.NewElement("order");
+    nodeOrder->SetAttribute("direction",
+                            m_orderDirection == SortOrderDescending ? "descending" : "ascending");
     if (m_orderAttributes & SortAttributeIgnoreFolders)
-      nodeOrder.SetAttribute("ignorefolders", "true");
-    nodeOrder.InsertEndChild(order);
+      nodeOrder->SetAttribute("ignorefolders", "true");
+    nodeOrder->InsertEndChild(order);
     pRoot->InsertEndChild(nodeOrder);
   }
   return doc.SaveFile(path);

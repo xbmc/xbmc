@@ -21,7 +21,10 @@
 #include <utility>
 #include <vector>
 
-class TiXmlElement;
+namespace tinyxml2
+{
+class XMLElement;
+}
 
 /*!
  \ingroup lists,items
@@ -49,7 +52,7 @@ public:
    \param element XML element to construct from
    \param contextWindow window context to use for any info labels
    */
-  CGUIStaticItem(const TiXmlElement *element, int contextWindow);
+  CGUIStaticItem(const tinyxml2::XMLElement* element, int contextWindow);
   explicit CGUIStaticItem(const CFileItem &item); // for python
   explicit CGUIStaticItem(const CGUIStaticItem& other);
   ~CGUIStaticItem() override = default;

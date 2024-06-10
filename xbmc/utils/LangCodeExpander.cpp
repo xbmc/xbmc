@@ -11,10 +11,11 @@
 #include "LangInfo.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
-#include "utils/XBMCTinyXML.h"
 
 #include <algorithm>
 #include <array>
+
+#include <tinyxml2.h>
 
 #define MAKECODE(a, b, c, d) \
   ((((long)(a)) << 24) | (((long)(b)) << 16) | (((long)(c)) << 8) | (long)(d))
@@ -56,29 +57,29 @@ void CLangCodeExpander::Clear()
   m_mapUser.clear();
 }
 
-void CLangCodeExpander::LoadUserCodes(const TiXmlElement* pRootElement)
+void CLangCodeExpander::LoadUserCodes(const tinyxml2::XMLElement* rootElement)
 {
-  if (pRootElement != NULL)
+  if (rootElement)
   {
     m_mapUser.clear();
 
     std::string sShort, sLong;
 
-    const TiXmlNode* pLangCode = pRootElement->FirstChild("code");
-    while (pLangCode != NULL)
+    const auto* langCode = rootElement->FirstChildElement("code");
+    while (langCode)
     {
-      const TiXmlNode* pShort = pLangCode->FirstChildElement("short");
-      const TiXmlNode* pLong = pLangCode->FirstChildElement("long");
-      if (pShort != NULL && pLong != NULL)
+      const auto* shortElement = langCode->FirstChildElement("short");
+      const auto* longElement = langCode->FirstChildElement("long");
+      if (shortElement != NULL && longElement != NULL)
       {
-        sShort = pShort->FirstChild()->Value();
-        sLong = pLong->FirstChild()->Value();
+        sShort = shortElement->FirstChild()->Value();
+        sLong = longElement->FirstChild()->Value();
         StringUtils::ToLower(sShort);
 
         m_mapUser[sShort] = sLong;
       }
 
-      pLangCode = pLangCode->NextSibling();
+      langCode = langCode->NextSiblingElement();
     }
   }
 }

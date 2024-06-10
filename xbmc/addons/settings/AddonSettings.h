@@ -25,9 +25,14 @@ enum class SettingDependencyOperator;
 class CSettingCategory;
 class CSettingGroup;
 class CSettingDependency;
-class CXBMCTinyXML;
+class CXBMCTinyXML2;
 
 struct StringSettingOption;
+
+namespace tinyxml2
+{
+class XMLElement;
+}
 
 namespace ADDON
 {
@@ -62,9 +67,9 @@ public:
 
   const std::string& GetAddonId() const { return m_addonId; }
 
-  bool Initialize(const CXBMCTinyXML& doc, bool allowEmpty = false);
-  bool Load(const CXBMCTinyXML& doc);
-  bool Save(CXBMCTinyXML& doc) const;
+  bool Initialize(const CXBMCTinyXML2& doc, bool allowEmpty = false);
+  bool Load(const CXBMCTinyXML2& doc);
+  bool Save(CXBMCTinyXML2& doc) const;
 
   bool HasSettings() const;
 
@@ -86,85 +91,92 @@ protected:
 
 private:
   bool AddInstanceSettings();
-  bool InitializeDefinitions(const CXBMCTinyXML& doc);
+  bool InitializeDefinitions(const CXBMCTinyXML2& doc);
 
-  bool ParseSettingVersion(const CXBMCTinyXML& doc, uint32_t& version) const;
+  bool ParseSettingVersion(const CXBMCTinyXML2& doc, uint32_t& version) const;
 
   std::shared_ptr<CSettingGroup> ParseOldSettingElement(
-      const TiXmlElement* categoryElement,
+      const tinyxml2::XMLElement* categoryElement,
       const std::shared_ptr<CSettingCategory>& category,
       std::set<std::string>& settingIds);
 
-  std::shared_ptr<CSettingCategory> ParseOldCategoryElement(uint32_t& categoryId,
-                                                            const TiXmlElement* categoryElement,
-                                                            std::set<std::string>& settingIds);
+  std::shared_ptr<CSettingCategory> ParseOldCategoryElement(
+      uint32_t& categoryId,
+      const tinyxml2::XMLElement* categoryElement,
+      std::set<std::string>& settingIds);
 
-  bool InitializeFromOldSettingDefinitions(const CXBMCTinyXML& doc);
-  std::shared_ptr<CSetting> InitializeFromOldSettingAction(const std::string& settingId,
-                                                           const TiXmlElement* settingElement,
-                                                           const std::string& defaultValue);
+  bool InitializeFromOldSettingDefinitions(const CXBMCTinyXML2& doc);
+  std::shared_ptr<CSetting> InitializeFromOldSettingAction(
+      const std::string& settingId,
+      const tinyxml2::XMLElement* settingElement,
+      const std::string& defaultValue);
   std::shared_ptr<CSetting> InitializeFromOldSettingLabel();
   std::shared_ptr<CSetting> InitializeFromOldSettingBool(const std::string& settingId,
-                                                         const TiXmlElement* settingElement,
+                                                         const tinyxml2::XMLElement* settingElement,
                                                          const std::string& defaultValue);
   std::shared_ptr<CSetting> InitializeFromOldSettingTextIpAddress(
       const std::string& settingId,
       const std::string& settingType,
-      const TiXmlElement* settingElement,
+      const tinyxml2::XMLElement* settingElement,
       const std::string& defaultValue,
       const int settingLabel);
-  std::shared_ptr<CSetting> InitializeFromOldSettingNumber(const std::string& settingId,
-                                                           const TiXmlElement* settingElement,
-                                                           const std::string& defaultValue,
-                                                           const int settingLabel);
+  std::shared_ptr<CSetting> InitializeFromOldSettingNumber(
+      const std::string& settingId,
+      const tinyxml2::XMLElement* settingElement,
+      const std::string& defaultValue,
+      const int settingLabel);
   std::shared_ptr<CSetting> InitializeFromOldSettingPath(const std::string& settingId,
                                                          const std::string& settingType,
-                                                         const TiXmlElement* settingElement,
+                                                         const tinyxml2::XMLElement* settingElement,
                                                          const std::string& defaultValue,
                                                          const int settingLabel);
   std::shared_ptr<CSetting> InitializeFromOldSettingDate(const std::string& settingId,
-                                                         const TiXmlElement* settingElement,
+                                                         const tinyxml2::XMLElement* settingElement,
                                                          const std::string& defaultValue,
                                                          const int settingLabel);
   std::shared_ptr<CSetting> InitializeFromOldSettingTime(const std::string& settingId,
-                                                         const TiXmlElement* settingElement,
+                                                         const tinyxml2::XMLElement* settingElement,
                                                          const std::string& defaultValue,
                                                          const int settingLabel);
   std::shared_ptr<CSetting> InitializeFromOldSettingSelect(
       const std::string& settingId,
-      const TiXmlElement* settingElement,
+      const tinyxml2::XMLElement* settingElement,
       const std::string& defaultValue,
       const int settingLabel,
       const std::string& settingValues,
       const std::vector<std::string>& settingLValues);
-  std::shared_ptr<CSetting> InitializeFromOldSettingAddon(const std::string& settingId,
-                                                          const TiXmlElement* settingElement,
-                                                          const std::string& defaultValue,
-                                                          const int settingLabel);
+  std::shared_ptr<CSetting> InitializeFromOldSettingAddon(
+      const std::string& settingId,
+      const tinyxml2::XMLElement* settingElement,
+      const std::string& defaultValue,
+      const int settingLabel);
   std::shared_ptr<CSetting> InitializeFromOldSettingEnums(
       const std::string& settingId,
       const std::string& settingType,
-      const TiXmlElement* settingElement,
+      const tinyxml2::XMLElement* settingElement,
       const std::string& defaultValue,
       const std::string& settingValues,
       const std::vector<std::string>& settingLValues);
-  std::shared_ptr<CSetting> InitializeFromOldSettingFileEnum(const std::string& settingId,
-                                                             const TiXmlElement* settingElement,
-                                                             const std::string& defaultValue,
-                                                             const std::string& settingValues);
-  std::shared_ptr<CSetting> InitializeFromOldSettingRangeOfNum(const std::string& settingId,
-                                                               const TiXmlElement* settingElement,
-                                                               const std::string& defaultValue);
-  std::shared_ptr<CSetting> InitializeFromOldSettingSlider(const std::string& settingId,
-                                                           const TiXmlElement* settingElement,
-                                                           const std::string& defaultValue);
+  std::shared_ptr<CSetting> InitializeFromOldSettingFileEnum(
+      const std::string& settingId,
+      const tinyxml2::XMLElement* settingElement,
+      const std::string& defaultValue,
+      const std::string& settingValues);
+  std::shared_ptr<CSetting> InitializeFromOldSettingRangeOfNum(
+      const std::string& settingId,
+      const tinyxml2::XMLElement* settingElement,
+      const std::string& defaultValue);
+  std::shared_ptr<CSetting> InitializeFromOldSettingSlider(
+      const std::string& settingId,
+      const tinyxml2::XMLElement* settingElement,
+      const std::string& defaultValue);
   std::shared_ptr<CSetting> InitializeFromOldSettingFileWithSource(
       const std::string& settingId,
-      const TiXmlElement* settingElement,
+      const tinyxml2::XMLElement* settingElement,
       const std::string& defaultValue,
       std::string source);
 
-  bool LoadOldSettingValues(const CXBMCTinyXML& doc,
+  bool LoadOldSettingValues(const CXBMCTinyXML2& doc,
                             std::map<std::string, std::string>& settings) const;
 
   struct ConditionExpression
@@ -175,7 +187,9 @@ private:
     std::string m_value;
   };
 
-  bool ParseOldLabel(const TiXmlElement* element, const std::string& settingId, int& labelId);
+  bool ParseOldLabel(const tinyxml2::XMLElement* element,
+                     const std::string& settingId,
+                     int& labelId);
   bool ParseOldCondition(const std::shared_ptr<const CSetting>& setting,
                          const std::vector<std::shared_ptr<const CSetting>>& settings,
                          const std::string& condition,

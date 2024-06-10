@@ -16,15 +16,18 @@
 #include <set>
 #include <string>
 
-class TiXmlNode;
+namespace tinyxml2
+{
+class XMLNode;
+}
 
 class CSkinSettings : public ISubSettings
 {
 public:
   static CSkinSettings& GetInstance();
 
-  bool Load(const TiXmlNode *settings) override;
-  bool Save(TiXmlNode *settings) const override;
+  bool Load(const tinyxml2::XMLNode* settings) override;
+  bool Save(tinyxml2::XMLNode* settings) const override;
   void Clear() override;
 
   void MigrateSettings(const std::shared_ptr<ADDON::CSkinInfo>& skin);

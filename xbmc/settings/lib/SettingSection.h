@@ -18,7 +18,11 @@
 #include <vector>
 
 class CSettingsManager;
-class TiXmlNode;
+
+namespace tinyxml2
+{
+class XMLNode;
+}
 
 /*!
  \ingroup settings
@@ -39,7 +43,7 @@ public:
   ~CSettingGroup() override = default;
 
   // implementation of ISetting
-  bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool Deserialize(const tinyxml2::XMLNode* node, bool update = false) override;
 
   /*!
    \brief Gets the full list of settings belonging to the setting group.
@@ -104,7 +108,7 @@ public:
   ~CSettingCategory() override = default;
 
   // implementation of ISetting
-  bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool Deserialize(const tinyxml2::XMLNode* node, bool update = false) override;
 
   /*!
    \brief Gets the full list of setting groups belonging to the setting
@@ -163,7 +167,7 @@ public:
   ~CSettingSection() override = default;
 
   // implementation of ISetting
-  bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool Deserialize(const tinyxml2::XMLNode* node, bool update = false) override;
 
   /*!
    \brief Gets the full list of setting categories belonging to the setting

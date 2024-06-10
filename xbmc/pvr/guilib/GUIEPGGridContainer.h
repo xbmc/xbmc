@@ -26,7 +26,11 @@ class CFileItem;
 class CFileItemList;
 class CGUIListItem;
 class CGUIListItemLayout;
-class TiXmlElement;
+
+namespace tinyxml2
+{
+class XMLElement;
+}
 
 namespace PVR
 {
@@ -76,7 +80,7 @@ namespace PVR
     std::shared_ptr<CPVRChannelGroupMember> GetSelectedChannelGroupMember() const;
     CDateTime GetSelectedDate() const;
 
-    void LoadLayout(TiXmlElement* layout);
+    void LoadLayout(tinyxml2::XMLElement* layout);
     void SetPageControl(int id);
 
     /*! \brief Set the offset of the first item in the container from the container's position

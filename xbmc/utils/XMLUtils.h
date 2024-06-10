@@ -8,29 +8,22 @@
 
 #pragma once
 
-#include "utils/XBMCTinyXML.h"
-
 #include <stdint.h>
 #include <string>
 #include <vector>
 
-#include <tinyxml2.h>
-
 class CDateTime;
+
+namespace tinyxml2
+{
+class XMLElement;
+class XMLNode;
+}
 
 class XMLUtils
 {
 public:
-  static bool HasChild(const TiXmlNode* pRootNode, const char* strTag);
   static bool HasChild(const tinyxml2::XMLNode* rootNode, const char* tag);
-
-  static bool GetHex(const TiXmlNode* pRootNode, const char* strTag, uint32_t& dwHexValue);
-  static bool GetUInt(const TiXmlNode* pRootNode, const char* strTag, uint32_t& dwUIntValue);
-  static bool GetLong(const TiXmlNode* pRootNode, const char* strTag, long& lLongValue);
-  static bool GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value);
-  static bool GetDouble(const TiXmlNode* pRootNode, const char* strTag, double& value);
-  static bool GetInt(const TiXmlNode* pRootNode, const char* strTag, int& iIntValue);
-  static bool GetBoolean(const TiXmlNode* pRootNode, const char* strTag, bool& bBoolValue);
 
   static bool GetHex(const tinyxml2::XMLNode* rootNode, const char* tag, uint32_t& value);
   static bool GetUInt(const tinyxml2::XMLNode* rootNode, const char* tag, uint32_t& value);
@@ -49,7 +42,6 @@ public:
    \param[in,out] strStringValue  where to store the read string
    \return true on success, false if the tag isn't found
    */
-  static bool GetString(const TiXmlNode* pRootNode, const char* strTag, std::string& strStringValue);
   static bool GetString(const tinyxml2::XMLNode* rootNode, const char* tag, std::string& value);
 
   /*! \brief Get a string value from the xml tag
@@ -59,7 +51,6 @@ public:
 
    \return the value in the specified tag or an empty string if the tag isn't found
    */
-  static std::string GetString(const TiXmlNode* pRootNode, const char* strTag);
   static std::string GetString(const tinyxml2::XMLNode* rootNode, const char* tag);
   /*! \brief Get multiple tags, concatenating the values together.
    Transforms
@@ -75,15 +66,6 @@ public:
    \param value [out] the resulting string. Remains untouched if no <tag> is available, else is appended (or cleared based on the clear parameter).
    \param clear       if true, clears the string prior to adding tags, if tags are available. Defaults to false.
    */
-  static bool GetAdditiveString(const TiXmlNode* rootNode, const char* tag, const std::string& separator, std::string& value, bool clear = false);
-  static bool GetStringArray(const TiXmlNode* rootNode, const char* tag, std::vector<std::string>& arrayValue, bool clear = false, const std::string& separator = "");
-  static bool GetPath(const TiXmlNode* pRootNode, const char* strTag, std::string& strStringValue);
-  static bool GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value, const float min, const float max);
-  static bool GetUInt(const TiXmlNode* pRootNode, const char* strTag, uint32_t& dwUIntValue, const uint32_t min, const uint32_t max);
-  static bool GetInt(const TiXmlNode* pRootNode, const char* strTag, int& iIntValue, const int min, const int max);
-  static bool GetDate(const TiXmlNode* pRootNode, const char* strTag, CDateTime& date);
-  static bool GetDateTime(const TiXmlNode* pRootNode, const char* strTag, CDateTime& dateTime);
-
   static bool GetAdditiveString(const tinyxml2::XMLNode* rootNode,
                                 const char* tag,
                                 const std::string& separator,
@@ -114,21 +96,7 @@ public:
    \param tag the name of the attribute.
    \return the attribute, if it exists, else an empty string
    */
-  static std::string GetAttribute(const TiXmlElement *element, const char *tag);
   static std::string GetAttribute(const tinyxml2::XMLElement* element, const char* tag);
-
-  static TiXmlNode* SetString(TiXmlNode* pRootNode, const char *strTag, const std::string& strValue);
-  static void SetAdditiveString(TiXmlNode* pRootNode, const char *strTag, const std::string& strSeparator, const std::string& strValue);
-  static void SetStringArray(TiXmlNode* pRootNode, const char *strTag, const std::vector<std::string>& arrayValue);
-  static TiXmlNode* SetInt(TiXmlNode* pRootNode, const char *strTag, int value);
-  static TiXmlNode* SetFloat(TiXmlNode* pRootNode, const char *strTag, float value);
-  static TiXmlNode* SetDouble(TiXmlNode* pRootNode, const char* strTag, double value);
-  static void SetBoolean(TiXmlNode* pRootNode, const char *strTag, bool value);
-  static void SetHex(TiXmlNode* pRootNode, const char *strTag, uint32_t value);
-  static void SetPath(TiXmlNode* pRootNode, const char *strTag, const std::string& strValue);
-  static void SetLong(TiXmlNode* pRootNode, const char *strTag, long iValue);
-  static void SetDate(TiXmlNode* pRootNode, const char *strTag, const CDateTime& date);
-  static void SetDateTime(TiXmlNode* pRootNode, const char *strTag, const CDateTime& dateTime);
 
   static tinyxml2::XMLNode* SetString(tinyxml2::XMLNode* rootNode,
                                       const char* tag,
