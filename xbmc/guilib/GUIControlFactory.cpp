@@ -757,8 +757,8 @@ bool CGUIControlFactory::GetMovingSpeedConfig(const TiXmlNode* pRootNode,
       StringUtils::ToUint32(XMLUtils::GetAttribute(msNode, "resettimeout"))};
   float globalDelta{StringUtils::ToFloat(XMLUtils::GetAttribute(msNode, "delta"))};
 
-  const TiXmlElement* configElement{msNode->FirstChildElement("eventconfig")};
-  while (configElement)
+  for (const TiXmlElement* configElement{msNode->FirstChildElement("eventconfig")}; configElement;
+       configElement = configElement->NextSiblingElement("eventconfig"))
   {
     const char* eventType = configElement->Attribute("type");
     if (!eventType)
@@ -782,8 +782,6 @@ bool CGUIControlFactory::GetMovingSpeedConfig(const TiXmlNode* pRootNode,
 
     UTILS::MOVING_SPEED::EventCfg eventCfg{acceleration, maxVelocity, resetTimeout, delta};
     movingSpeedCfg.emplace(UTILS::MOVING_SPEED::ParseEventType(eventType), eventCfg);
-
-    configElement = configElement->NextSiblingElement("eventconfig");
   }
   return true;
 }
