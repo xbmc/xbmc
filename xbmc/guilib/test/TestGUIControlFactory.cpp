@@ -141,12 +141,12 @@ struct AlignmentTest
 };
 
 const auto AlignmentTests = std::array{
-    AlignmentTest{R"(<root><test>right</test</root>)"s, XBFONT_RIGHT},
-    AlignmentTest{R"(<root><test>bottom</test</root>)"s, XBFONT_RIGHT},
-    AlignmentTest{R"(<root><test>center</test</root>)"s, XBFONT_CENTER_X},
-    AlignmentTest{R"(<root><test>justify</test</root>)"s, XBFONT_JUSTIFIED},
-    AlignmentTest{R"(<root><test>left</test</root>)"s, XBFONT_LEFT},
-    AlignmentTest{R"(<root><test>foo</test</root>)"s, XBFONT_LEFT},
+    AlignmentTest{R"(<root><test>right</test></root>)"s, XBFONT_RIGHT},
+    AlignmentTest{R"(<root><test>bottom</test></root>)"s, XBFONT_RIGHT},
+    AlignmentTest{R"(<root><test>center</test></root>)"s, XBFONT_CENTER_X},
+    AlignmentTest{R"(<root><test>justify</test></root>)"s, XBFONT_JUSTIFIED},
+    AlignmentTest{R"(<root><test>left</test></root>)"s, XBFONT_LEFT},
+    AlignmentTest{R"(<root><test>foo</test></root>)"s, XBFONT_LEFT},
     AlignmentTest{R"(<root><test/></root>)"s, 0, false},
     AlignmentTest{R"(<root></root>)"s, 0, false},
 };
@@ -156,8 +156,8 @@ class TestAlignment : public testing::WithParamInterface<AlignmentTest>, public 
 };
 
 const auto AlignmentYTests = std::array{
-    AlignmentTest{R"(<root><test>center</test</root>)"s, XBFONT_CENTER_Y},
-    AlignmentTest{R"(<root><test>bottom</test</root>)"s, 0},
+    AlignmentTest{R"(<root><test>center</test></root>)"s, XBFONT_CENTER_Y},
+    AlignmentTest{R"(<root><test>bottom</test></root>)"s, 0},
     AlignmentTest{R"(<root><test/></root>)"s,
                   std::numeric_limits<uint32_t>::max(), false},
     AlignmentTest{R"(<root></root>)"s,
@@ -285,7 +285,7 @@ const auto DimensionsTests =  std::array{
                    0.01f, 0.1f - 0.1f * 50.f / 100.f - 0.01f, 0.f},
     DimensionsTest{R"(<root><center_left>0.025f</center_left><right>50%</right></root>)"s,
                    0.f, (0.05f - 0.025f) * 2, 0.f},
-    DimensionsTest{R"(<root><center_right>0.025f</center_right><width min="0.5" max="0.2">auto</right></root>)"s,
+    DimensionsTest{R"(<root><center_right>0.025f</center_right><width min="0.5" max="0.2">auto</width></root>)"s,
                    (0.1f - 0.025f) - 0.2f / 2, 0.2f, 0.5f},
 };
 
