@@ -23,6 +23,7 @@ class CGUIComponent
 {
 public:
   CGUIComponent();
+  explicit CGUIComponent(bool);
   virtual ~CGUIComponent();
   void Init();
   void Deinit();
