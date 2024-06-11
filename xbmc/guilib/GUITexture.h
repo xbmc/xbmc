@@ -59,6 +59,23 @@ class CTextureInfo
 public:
   CTextureInfo();
   explicit CTextureInfo(const std::string &file);
+  CTextureInfo(bool large,
+               CRect bord,
+               bool fill,
+               int orient,
+               std::string diff,
+               KODI::GUILIB::GUIINFO::CGUIInfoColor color,
+               std::string f)
+    : useLarge(large),
+      border(bord),
+      m_infill(fill),
+      orientation(orient),
+      diffuse(std::move(diff)),
+      diffuseColor(color),
+      filename(std::move(f))
+  {
+  }
+
   bool       useLarge;
   CRect      border;          // scaled  - unneeded if we get rid of scale on load
   bool m_infill{
