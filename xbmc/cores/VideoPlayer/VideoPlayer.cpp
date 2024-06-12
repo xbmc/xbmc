@@ -603,6 +603,12 @@ void CVideoPlayer::DestroyPlayers()
   delete m_VideoPlayerRadioRDS;
   m_VideoPlayerAudioID3.reset();
 
+  m_VideoPlayerVideo = nullptr;
+  m_VideoPlayerAudio = nullptr;
+  m_VideoPlayerSubtitle = nullptr;
+  m_VideoPlayerTeletext = nullptr;
+  m_VideoPlayerRadioRDS = nullptr;
+
   m_players_created = false;
 }
 
