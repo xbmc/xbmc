@@ -244,12 +244,15 @@ void CAdvancedSettings::Initialize()
                                         m_allExcludeFromScanRegExps.end());
 
   m_folderStackRegExps.clear();
-  m_folderStackRegExps.emplace_back("((cd|dvd|dis[ck])[0-9]+)$");
+  //m_folderStackRegExps.emplace_back("((cd|dvd|dis[ck])[0-9]+)$");
+  m_folderStackRegExps.emplace_back(
+      "(.*?)(?:[^\\/])((?:cd|dvd|p(?:(?:ar)?t)|dis[ck])[ _.-]*[0-9])$");
 
   m_videoStackRegExps.clear();
   m_videoStackRegExps.emplace_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck])[ _.-]*[0-9]+)(.*?)(\\.[^.]+)$");
-  m_videoStackRegExps.emplace_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck])[ _.-]*[a-d])(.*?)(\\.[^.]+)$");
-  m_videoStackRegExps.emplace_back("(.*?)([ ._-]*[a-d])(.*?)(\\.[^.]+)$");
+  m_videoStackRegExps.emplace_back(
+      "(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck])[ _.-]*[a-z])(.*?)(\\.[^.]+)$");
+  m_videoStackRegExps.emplace_back("^(.+)((?:[ ._-]|(?<=\\)))[a-z])()(\\.[^.]+)$");
   // This one is a bit too greedy to enable by default.  It will stack sequels
   // in a flat dir structure, but is perfectly safe in a dir-per-vid one.
   //m_videoStackRegExps.push_back("(.*?)([ ._-]*[0-9])(.*?)(\\.[^.]+)$");
@@ -430,6 +433,7 @@ void CAdvancedSettings::Initialize()
   m_subtitlesExtensions = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.text|.ssa|.aqt|.jss|"
                           ".ass|.vtt|.idx|.ifo|.zip|.sup";
   m_discStubExtensions = ".disc";
+  m_discImageExtensions = ".img|.iso|.nrg|.udf";
   // internal music extensions
   m_musicExtensions += "|.cdda";
   // internal video extensions

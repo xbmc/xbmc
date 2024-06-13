@@ -585,12 +585,13 @@ public:
                            const std::map<std::string, std::string>& artwork,
                            int idShow,
                            int idEpisode = -1);
-  bool SetFileForEpisode(const std::string& fileAndPath, int idEpisode, int idFile);
-  bool SetFileForMovie(const std::string& fileAndPath, int idMovie, int idFile);
+  bool SetFileForEpisode(const std::string& fileAndPath, const int idEpisode, const int oldIdFile);
+  bool SetFileForMovie(const std::string& fileAndPath, const int oldIdFile);
   int SetDetailsForMusicVideo(CVideoInfoTag& details,
                               const std::map<std::string, std::string>& artwork,
                               int idMVideo = -1);
-  int SetStreamDetailsForFile(const CStreamDetails& details, const std::string& strFileNameAndPath);
+  void SetStreamDetailsForFile(const CStreamDetails& details,
+                               const std::string& strFileNameAndPath);
   void SetStreamDetailsForFileId(const CStreamDetails& details, int idFile);
 
   bool SetSingleValue(VideoDbContentType type, int dbId, int dbField, const std::string& strValue);
@@ -603,6 +604,7 @@ public:
 
   int UpdateDetailsForMovie(int idMovie, CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, const std::set<std::string> &updatedDetails);
 
+  void DeleteFile(int idFile);
   void DeleteMovie(int idMovie,
                    bool bKeepId = false,
                    DeleteMovieCascadeAction action = DeleteMovieCascadeAction::ALL_ASSETS);
@@ -1097,9 +1099,11 @@ public:
   bool UpdateAssetsOwner(const std::string& mediaType, int dbIdSource, int dbIdTarget);
 
   int GetMovieId(const std::string& strFilenameAndPath);
+  int GetMovieId(const int fileId) const;
   std::string GetMovieTitle(int idMovie);
   void GetSameVideoItems(const CFileItem& item, CFileItemList& items);
-  int GetFileIdByMovie(int idMovie);
+  int GetFileIdByMovie(int idMovie) const;
+  int GetFileIdByEpisode(int idEpisode) const;
   std::string GetFileBasePathById(int idFile);
 
 protected:

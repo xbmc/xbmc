@@ -16621,7 +16621,27 @@ msgctxt "#25014"
 msgid "Manual"
 msgstr ""
 
-#empty strings from id 25015 to 29800
+#: application/ApplicationPlayerCallback.cpp
+msgctxt "#25015"
+msgid "Stacks"
+msgstr ""
+
+#: application/ApplicationPlayerCallback.cpp
+msgctxt "#25016"
+msgid "Continue to play next item in stack?"
+msgstr ""
+
+#: application/ApplicationPlayerCallback.cpp
+msgctxt "#25017"
+msgid "Continue"
+msgstr ""
+
+#: application/ApplicationPlayerCallback.cpp
+msgctxt "#25018"
+msgid "Stop"
+msgstr ""
+
+#empty strings from id 25019 to 29800
 
 #: unused
 msgctxt "#29801"

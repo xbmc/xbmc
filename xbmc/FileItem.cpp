@@ -1864,22 +1864,6 @@ void CFileItem::SetDynPath(const std::string &path)
   m_strDynPath = path;
 }
 
-std::string CFileItem::GetBlurayPath() const
-{
-  if (VIDEO::IsBlurayPlaylist(*this))
-  {
-    CURL url(GetDynPath());
-    CURL url2(url.GetHostName()); // strip bluray://
-    if (url2.IsProtocol("udf"))
-      // ISO
-      return url2.GetHostName(); // strip udf://
-    else if (url.IsProtocol("bluray"))
-      // BDMV
-      return url2.Get() + "BDMV/index.bdmv";
-  }
-  return GetDynPath();
-}
-
 void CFileItem::SetCueDocument(const CCueDocumentPtr& cuePtr)
 {
   m_cueDocument = cuePtr;
@@ -2157,10 +2141,7 @@ std::string CFileItem::GetLocalArtBaseFilename(bool& useFolder) const
   std::string strFile;
   if (IsStack())
   {
-    std::string strPath;
-    URIUtils::GetParentPath(m_strPath,strPath);
-    strFile = URIUtils::AddFileToFolder(
-        strPath, URIUtils::GetFileName(CStackDirectory::GetStackedTitlePath(m_strPath)));
+    strFile = CStackDirectory::GetStackedTitlePath(m_strPath);
   }
 
   std::string file = strFile.empty() ? m_strPath : strFile;
@@ -2175,7 +2156,7 @@ std::string CFileItem::GetLocalArtBaseFilename(bool& useFolder) const
   if (IsMultiPath())
     strFile = CMultiPathDirectory::GetFirstPath(m_strPath);
 
-  if (IsOpticalMediaFile())
+  if (IsOpticalMediaFile() && !IsStack())
   { // optical media files should be treated like folders
     useFolder = true;
     strFile = GetLocalMetadataPath();
@@ -2276,11 +2257,12 @@ std::string CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
     return GetLocalMetadataPath();
 
   if (bUseFolderNames &&
-     (!m_bIsFolder || URIUtils::IsInArchive(m_strPath) ||
-     (HasVideoInfoTag() && GetVideoInfoTag()->m_iDbId > 0 && !CMediaTypes::IsContainer(GetVideoInfoTag()->m_type))))
+      (!m_bIsFolder || URIUtils::IsInArchive(m_strPath) || URIUtils::IsStack(m_strPath) ||
+       (HasVideoInfoTag() && GetVideoInfoTag()->m_iDbId > 0 &&
+        !CMediaTypes::IsContainer(GetVideoInfoTag()->m_type))))
   {
     std::string name2(strMovieName);
-    URIUtils::GetParentPath(name2,strMovieName);
+    URIUtils::GetParentPath(name2, strMovieName);
     if (URIUtils::IsInArchive(m_strPath))
     {
       // Try to get archive itself, if empty take path before
@@ -2383,7 +2365,7 @@ std::string CFileItem::GetLocalMetadataPath() const
 
   std::string parent{};
   if (VIDEO::IsBlurayPlaylist(*this))
-    parent = URIUtils::GetParentPath(GetBlurayPath());
+    parent = URIUtils::GetParentPath(URIUtils::GetBlurayPath(GetDynPath()));
   else
     parent = URIUtils::GetParentPath(m_strPath);
   std::string parentFolder(parent);
