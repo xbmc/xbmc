@@ -540,9 +540,9 @@ void CPVRRecording::Update(const CPVRRecording& tag, const CPVRClient& client)
 
 void CPVRRecording::UpdatePath()
 {
-  m_strFileNameAndPath = CPVRRecordingsPath(m_bIsDeleted, m_bRadio, m_strDirectory, m_strTitle,
-                                            m_iSeason, m_iEpisode, GetYear(), m_strShowTitle,
-                                            m_strChannelName, m_recordingTime, m_strRecordingId);
+  m_strFileNameAndPath = CPVRRecordingsPath(
+      m_bIsDeleted, m_bRadio, m_mediaType, m_strDirectory, m_strTitle, m_iSeason, m_iEpisode,
+      GetYear(), m_strShowTitle, m_strChannelName, m_recordingTime, m_strRecordingId);
 }
 
 const CDateTime& CPVRRecording::RecordingTimeAsLocalTime() const

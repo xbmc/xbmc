@@ -10,6 +10,7 @@
 
 #include "URL.h"
 #include "XBDateTime.h"
+#include "pvr/recordings/PVRRecording.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -32,10 +33,12 @@ CPVRRecordingsPath::CPVRRecordingsPath(const std::string& strPath)
   std::string strVarPath(TrimSlashes(strPath));
   const std::vector<std::string> segments = URIUtils::SplitPath(strVarPath);
 
-  m_bValid = ((segments.size() >= 4) && // at least pvr://recordings/[tv|radio]/[active|deleted]
-              StringUtils::StartsWith(strVarPath, "pvr://") && (segments.at(1) == "recordings") &&
-              ((segments.at(2) == "tv") || (segments.at(2) == "radio")) &&
-              ((segments.at(3) == "active") || (segments.at(3) == "deleted")));
+  m_bValid =
+      ((segments.size() >= 4) && // at least pvr://recordings/[tv|radio]/[active|deleted]/[rec|vod]
+       StringUtils::StartsWith(strVarPath, "pvr://") && (segments.at(1) == "recordings") &&
+       ((segments.at(2) == "tv") || (segments.at(2) == "radio")) &&
+       ((segments.at(3) == "active") || (segments.at(3) == "deleted")) &&
+       ((segments.at(4) == "rec") || (segments.at(4) == "vod")));
   if (m_bValid)
   {
     m_bRoot = (segments.size() == 4);
@@ -67,18 +70,22 @@ CPVRRecordingsPath::CPVRRecordingsPath(const std::string& strPath)
   }
 }
 
-CPVRRecordingsPath::CPVRRecordingsPath(bool bDeleted, bool bRadio)
+CPVRRecordingsPath::CPVRRecordingsPath(bool bDeleted, bool bRadio, RecordingMediaType mediaType)
   : m_bValid(true),
     m_bRoot(true),
     m_bActive(!bDeleted),
     m_bRadio(bRadio),
     m_path(StringUtils::Format(
-        "pvr://recordings/{}/{}/", bRadio ? "radio" : "tv", bDeleted ? "deleted" : "active"))
+        "pvr://recordings/{}/{}/{}/",
+        bRadio ? "radio" : "tv",
+        bDeleted ? "deleted" : "active",
+        mediaType == RecordingMediaType::PVR_RECORDING_MEDIA_TYPE_RECORDING ? "rec" : "vod"))
 {
 }
 
 CPVRRecordingsPath::CPVRRecordingsPath(bool bDeleted,
                                        bool bRadio,
+                                       RecordingMediaType mediaType,
                                        const std::string& strDirectory,
                                        const std::string& strTitle,
                                        int iSeason,
@@ -123,8 +130,10 @@ CPVRRecordingsPath::CPVRRecordingsPath(bool bDeleted,
                                         strYearN, strSubtitleN);
   m_params = StringUtils::Format(", TV{}, {}, {}.pvr", strChannelNameN,
                                  recordingTime.GetAsSaveString(), strId);
-  m_path = StringUtils::Format("pvr://recordings/{}/{}/{}{}", bRadio ? "radio" : "tv",
-                               bDeleted ? "deleted" : "active", m_directoryPath, m_params);
+  m_path = StringUtils::Format(
+      "pvr://recordings/{}/{}/{}/{}{}", bRadio ? "radio" : "tv", bDeleted ? "deleted" : "active",
+      mediaType == RecordingMediaType::PVR_RECORDING_MEDIA_TYPE_RECORDING ? "rec" : "vod",
+      m_directoryPath, m_params);
 }
 
 std::string CPVRRecordingsPath::GetUnescapedDirectoryPath() const

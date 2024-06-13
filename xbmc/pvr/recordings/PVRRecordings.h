@@ -24,6 +24,7 @@ class CPVREpgInfoTag;
 class CPVRRecording;
 class CPVRRecordingUid;
 class CPVRRecordingsPath;
+enum class RecordingMediaType;
 
 class CPVRRecordings
 {
@@ -63,9 +64,13 @@ public:
   void UpdateInProgressSize();
 
   int GetNumTVRecordings() const;
+  int GetNumTVRecordings(RecordingMediaType mediaType) const;
   bool HasDeletedTVRecordings() const;
+  bool HasDeletedTVRecordings(RecordingMediaType mediaType) const;
   int GetNumRadioRecordings() const;
+  int GetNumRadioRecordings(RecordingMediaType mediaType) const;
   bool HasDeletedRadioRecordings() const;
+  bool HasDeletedRadioRecordings(RecordingMediaType mediaType) const;
 
   /*!
    * @brief Set a recording's watched state
@@ -83,10 +88,16 @@ public:
   bool ResetResumePoint(const std::shared_ptr<CPVRRecording>& recording);
 
   /*!
-   * @brief Get a list of all recordings
-   * @return the list of all recordings
+   * @brief Get a list of all recordings for the media type PVR_RECORDING_MEDIA_TYPE_RECORDING
+   * @return the list of all recordings for the media type PVR_RECORDING_MEDIA_TYPE_RECORDING
    */
   std::vector<std::shared_ptr<CPVRRecording>> GetAll() const;
+
+  /*!
+   * @brief Get a list of all recordings filtered by media type
+   * @return the list of all recordings filtered by media type
+   */
+  std::vector<std::shared_ptr<CPVRRecording>> GetAll(RecordingMediaType mediaType) const;
 
   std::shared_ptr<CPVRRecording> GetByPath(const std::string& path) const;
   std::shared_ptr<CPVRRecording> GetById(int iClientId, const std::string& strRecordingId) const;
@@ -148,7 +159,11 @@ private:
   std::unique_ptr<CVideoDatabase> m_database;
   bool m_bDeletedTVRecordings = false;
   bool m_bDeletedRadioRecordings = false;
+  std::map<RecordingMediaType, bool> m_hasDeletedTVRecordingsMap;
+  std::map<RecordingMediaType, bool> m_hasDeletedRadioRecordingsMap;
   unsigned int m_iTVRecordings = 0;
   unsigned int m_iRadioRecordings = 0;
+  std::map<RecordingMediaType, unsigned int> m_numTVRecordingsMap;
+  std::map<RecordingMediaType, unsigned int> m_numRadioRecordingsMap;
 };
 } // namespace PVR
