@@ -24,6 +24,7 @@
 #include "guilib/DispResource.h"
 #include "threads/SystemClock.h"
 #include "threads/Thread.h"
+#include "utils/StreamDetails.h"
 
 #include <atomic>
 #include <chrono>
@@ -475,7 +476,7 @@ protected:
   void UpdateContent();
   void UpdateContentState();
 
-  void UpdateFileItemStreamDetails(CFileItem& item);
+  void UpdateFileItemStreamDetails(CFileItem& item, const bool alwaysUpdate = false);
   int GetPreviousChapter();
 
   bool m_players_created;
@@ -490,6 +491,7 @@ protected:
   XbmcThreads::EndTime<> m_cachingTimer;
 
   std::unique_ptr<CProcessInfo> m_processInfo;
+  uint64_t m_longestTime{0};
 
   CCurrentStream m_CurrentAudio;
   CCurrentStream m_CurrentVideo;

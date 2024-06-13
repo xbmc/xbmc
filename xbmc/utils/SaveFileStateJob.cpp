@@ -45,6 +45,8 @@ void CSaveFileState::DoWork(CFileItem& item,
     progressTrackingFile =
         item.GetVideoInfoTag()
             ->m_strFileNameAndPath; // this variable contains removable:// suffixed by disc label+uniqueid or is empty if label not uniquely identified
+  else if (item.HasProperty("new_stack_path"))
+    progressTrackingFile = item.GetProperty("new_stack_path").asString();
   else if (IsBlurayPlaylist(item) && (item.GetVideoContentType() == VideoDbContentType::MOVIES ||
                                       item.GetVideoContentType() == VideoDbContentType::EPISODES))
     progressTrackingFile = item.GetDynPath();
@@ -165,6 +167,29 @@ void CSaveFileState::DoWork(CFileItem& item,
           }
         }
 
+        // Update database entry
+        const std::string fileName{item.HasProperty("new_stack_path")
+                                       ? item.GetProperty("new_stack_path").asString()
+                                       : item.GetDynPath()};
+
+        // Update file linking in case of bluray:// (or stack path containing bluray://)
+        if (URIUtils::IsProtocol(fileName, "bluray") || item.HasProperty("new_stack_path"))
+        {
+          if (item.GetVideoContentType() == VideoDbContentType::MOVIES)
+          {
+            const int currentFileId{
+                videodatabase.GetFileIdByMovie(item.GetVideoInfoTag()->m_iDbId)};
+            videodatabase.SetFileForMovie(fileName, currentFileId);
+          }
+          else if (item.GetVideoContentType() == VideoDbContentType::EPISODES)
+          {
+            const int currentFileId{
+                videodatabase.GetFileIdByEpisode(item.GetVideoInfoTag()->m_iDbId)};
+            videodatabase.SetFileForEpisode(fileName, item.GetVideoInfoTag()->m_iDbId,
+                                            currentFileId);
+          }
+        }
+
         if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->HasStreamDetails())
         {
           CFileItem dbItem(item);
@@ -173,14 +198,8 @@ void CSaveFileState::DoWork(CFileItem& item,
           if (!videodatabase.GetStreamDetails(dbItem) ||
               dbItem.GetVideoInfoTag()->m_streamDetails != item.GetVideoInfoTag()->m_streamDetails)
           {
-            const int idFile = videodatabase.SetStreamDetailsForFile(
-                item.GetVideoInfoTag()->m_streamDetails, item.GetDynPath());
-            if (item.GetVideoContentType() == VideoDbContentType::MOVIES)
-              videodatabase.SetFileForMovie(item.GetDynPath(), item.GetVideoInfoTag()->m_iDbId,
-                                            idFile);
-            else if (item.GetVideoContentType() == VideoDbContentType::EPISODES)
-              videodatabase.SetFileForEpisode(item.GetDynPath(), item.GetVideoInfoTag()->m_iDbId,
-                                              idFile);
+            videodatabase.SetStreamDetailsForFile(item.GetVideoInfoTag()->m_streamDetails,
+                                                  fileName);
             updateListing = true;
           }
         }
@@ -193,16 +212,11 @@ void CSaveFileState::DoWork(CFileItem& item,
           CFileItemPtr msgItem(new CFileItem(item));
           if (item.HasProperty("original_listitem_url"))
             msgItem->SetPath(item.GetProperty("original_listitem_url").asString());
+          msgItem->SetDynPath(fileName);
 
-          // Could be part of an ISO stack. In this case the bookmark is saved onto the part.
-          // In order to properly update the list, we need to refresh the stack's resume point
-          const auto& components = CServiceBroker::GetAppComponents();
-          const auto stackHelper = components.GetComponent<CApplicationStackHelper>();
-          if (stackHelper->HasRegisteredStack(item) &&
-              stackHelper->GetRegisteredStackTotalTimeMs(item) == 0)
-            videodatabase.GetResumePoint(*(msgItem->GetVideoInfoTag()));
-
-          CGUIMessage message(GUI_MSG_NOTIFY_ALL, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(), 0, GUI_MSG_UPDATE_ITEM, 0, msgItem);
+          CGUIMessage message(GUI_MSG_NOTIFY_ALL,
+                              CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(), 0,
+                              GUI_MSG_UPDATE_ITEM, 0, msgItem);
           CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
         }
 

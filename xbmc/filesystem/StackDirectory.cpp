@@ -18,8 +18,6 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
-#include <stdlib.h>
-
 namespace XFILE
 {
   CStackDirectory::CStackDirectory() = default;
@@ -44,105 +42,103 @@ namespace XFILE
     return true;
   }
 
-  std::string CStackDirectory::GetStackedTitlePath(const std::string &strPath)
+  // Used to derive a filename/path to look for NFO files and art for stacks
+  // For file stacks - movie part 1.mp4, movie part 2.mp4 -> movie.mp4
+  // For folder stacks - movie part 1/..., movie part 2/... -> movie/
+  std::string CStackDirectory::GetStackedTitlePath(const std::string& strPath)
   {
-    // Load up our REs
-    VECCREGEXP  RegExps;
-    CRegExp     tempRE(true, CRegExp::autoUtf8);
-    const std::vector<std::string>& strRegExps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoStackRegExps;
-    std::vector<std::string>::const_iterator itRegExp = strRegExps.begin();
-    while (itRegExp != strRegExps.end())
+    // Get our REs
+    VECCREGEXP folderRegExps;
+    VECCREGEXP fileRegExps;
+    LoadRegExps(fileRegExps, folderRegExps);
+
+    std::string stackPath{};
+    if (fileRegExps.empty() || folderRegExps.empty())
+      CLog::LogF(LOGDEBUG, "No stack expressions available. Skipping stack title path creation");
+    else
     {
-      (void)tempRE.RegComp(*itRegExp);
-      if (tempRE.GetCaptureTotal() == 4)
-        RegExps.push_back(tempRE);
-      else
-        CLog::Log(LOGERROR, "Invalid video stack RE ({}). Must have exactly 4 captures.",
-                  *itRegExp);
-      ++itRegExp;
-    }
-    return GetStackedTitlePath(strPath, RegExps);
-  }
+      CStackDirectory stack;
+      std::string stackTitle{};
+      CFileItemList parts;
+      const CURL pathToUrl(strPath);
+      const std::string commonPath{URIUtils::GetParentPath(strPath)};
 
-  std::string CStackDirectory::GetStackedTitlePath(const std::string &strPath, VECCREGEXP& RegExps)
-  {
-    CStackDirectory stack;
-    CFileItemList   files;
-    std::string      strStackTitlePath,
-                    strCommonDir        = URIUtils::GetParentPath(strPath);
+      stack.GetDirectory(pathToUrl, parts);
 
-    const CURL pathToUrl(strPath);
-    stack.GetDirectory(pathToUrl, files);
-
-    if (files.Size() > 1)
-    {
-      std::string strStackTitle;
-
-      std::string File1 = URIUtils::GetFileName(files[0]->GetPath());
-      std::string File2 = URIUtils::GetFileName(files[1]->GetPath());
-      // Check if source path uses URL encoding
-      if (URIUtils::HasEncodedFilename(CURL(strCommonDir)))
+      if (parts.Size() > 1)
       {
-        File1 = CURL::Decode(File1);
-        File2 = CURL::Decode(File2);
-      }
-
-      std::vector<CRegExp>::iterator itRegExp = RegExps.begin();
-      int offset = 0;
-
-      while (itRegExp != RegExps.end())
-      {
-        if (itRegExp->RegFind(File1, offset) != -1)
+        const bool isFolderStack = [&]
         {
-          std::string Title1     = itRegExp->GetMatch(1),
-                     Volume1    = itRegExp->GetMatch(2),
-                     Ignore1    = itRegExp->GetMatch(3),
-                     Extension1 = itRegExp->GetMatch(4);
-          if (offset)
-            Title1 = File1.substr(0, itRegExp->GetSubStart(2));
-          if (itRegExp->RegFind(File2, offset) != -1)
-          {
-            std::string Title2     = itRegExp->GetMatch(1),
-                       Volume2    = itRegExp->GetMatch(2),
-                       Ignore2    = itRegExp->GetMatch(3),
-                       Extension2 = itRegExp->GetMatch(4);
-            if (offset)
-              Title2 = File2.substr(0, itRegExp->GetSubStart(2));
-            if (StringUtils::EqualsNoCase(Title1, Title2))
-            {
-              if (!StringUtils::EqualsNoCase(Volume1, Volume2))
-              {
-                if (StringUtils::EqualsNoCase(Ignore1, Ignore2) &&
-                    StringUtils::EqualsNoCase(Extension1, Extension2))
-                {
-                  // got it
-                  strStackTitle = Title1 + Ignore1 + Extension1;
-                  // Check if source path uses URL encoding
-                  if (URIUtils::HasEncodedFilename(CURL(strCommonDir)))
-                    strStackTitle = CURL::Encode(strStackTitle);
+          std::string path{StringUtils::ToLower(parts[0]->GetBaseMoviePath(true))};
+          URIUtils::RemoveSlashAtEnd(path);
+          for (auto& regExp : folderRegExps)
+            if (regExp.RegFind(path) != -1)
+              return true;
+          return false;
+        }();
 
-                  itRegExp = RegExps.end();
-                  break;
-                }
-                else // Invalid stack
-                  break;
-              }
-              else // Early match, retry with offset
-              {
-                offset = itRegExp->GetSubStart(3);
-                continue;
-              }
+        std::vector<std::tuple<std::string, std::string>> stackParts;
+        for (const auto& part : parts)
+        {
+          if (isFolderStack)
+          {
+            // Folder stack
+            std::string path = URIUtils::GetBasePath(part->GetPath());
+            URIUtils::RemoveSlashAtEnd(path);
+            std::string last = URIUtils::GetFileName(path);
+            if (last == "BDMV" || last == "VIDEO_TS")
+            {
+              path = URIUtils::GetParentPath(path);
+              URIUtils::RemoveSlashAtEnd(path);
             }
+            path = URIUtils::GetFileName(path);
+
+            // Test each item against each RegExp and save parts
+            for (auto& regExp : folderRegExps)
+              if (regExp.RegFind(path) != -1)
+              {
+                stackParts.emplace_back(regExp.GetMatch(1), "");
+                break;
+              }
+          }
+          else
+          {
+            // File stack
+            std::string fileName{URIUtils::GetFileName(part->GetPath())};
+
+            // Check if source path uses URL encoding
+            if (URIUtils::HasEncodedFilename(CURL(commonPath)))
+              fileName = CURL::Decode(fileName);
+
+            // Test each item against each RegExp and save parts
+            for (auto& regExp : fileRegExps)
+              if (regExp.RegFind(fileName) != -1)
+              {
+                stackParts.emplace_back(regExp.GetMatch(1) /* Title */,
+                                        regExp.GetMatch(3) /* Ignore */);
+                break;
+              }
           }
         }
-        offset = 0;
-        ++itRegExp;
-      }
-      if (!strCommonDir.empty() && !strStackTitle.empty())
-        strStackTitlePath = strCommonDir + strStackTitle;
-    }
 
-    return strStackTitlePath;
+        // Check all equal
+        if (std::adjacent_find(stackParts.begin(), stackParts.end(), std::not_equal_to<>()) ==
+            stackParts.end())
+        {
+          // Create stacked title
+          stackTitle = std::get<0>(stackParts[0]) + std::get<1>(stackParts[0]) +
+                       (isFolderStack ? "/" : URIUtils::GetExtension(parts[0]->GetPath()));
+
+          // Check if source path uses URL encoding
+          if (!isFolderStack && URIUtils::HasEncodedFilename(CURL(commonPath)))
+            stackTitle = CURL::Encode(stackTitle);
+
+          if (!commonPath.empty() && !stackTitle.empty())
+            stackPath = commonPath + stackTitle;
+        }
+      }
+    }
+    return stackPath;
   }
 
   std::string CStackDirectory::GetFirstStackedFile(const std::string &strPath)
@@ -229,5 +225,58 @@ namespace XFILE
     }
     return true;
   }
-}
 
+  std::string CStackDirectory::GetParentPath(const std::string& stackPath)
+  {
+    std::vector<std::string> paths;
+    if (GetPaths(stackPath, paths))
+    {
+      bool first = true;
+      do
+      {
+        for (auto& path : paths)
+          if (first)
+            path = URIUtils::GetBaseMoviePath(path);
+          else
+            path = URIUtils::GetParentPath(path);
+        first = false;
+      } while (std::adjacent_find(paths.begin(), paths.end(), std::not_equal_to<>()) !=
+               paths.end());
+    }
+    return paths[0];
+  }
+
+  void CStackDirectory::LoadRegExps(VECCREGEXP& fileRegExps, VECCREGEXP& folderRegExps)
+  {
+    // Folder RegExps
+    CRegExp folderRegExp(true, CRegExp::autoUtf8);
+    const std::vector<std::string>& folderStackRegExps =
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_folderStackRegExps;
+    for (const auto& regExp : folderStackRegExps)
+    {
+      if (!folderRegExp.RegComp(regExp))
+        CLog::LogF(LOGERROR, "Invalid folder stack RegExp:'{}'", regExp);
+      else if (folderRegExp.GetCaptureTotal() != 2)
+        CLog::LogF(LOGERROR, "Invalid folder stack RE ({}). Must have 2 captures.",
+                   folderRegExp.GetPattern());
+      else
+        folderRegExps.emplace_back(folderRegExp);
+    }
+
+    // File RegExps
+    CRegExp fileRegExp(true, CRegExp::autoUtf8);
+    const std::vector<std::string>& fileStackRegExps =
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoStackRegExps;
+
+    for (const auto& regExp : fileStackRegExps)
+    {
+      if (!fileRegExp.RegComp(regExp))
+        CLog::LogF(LOGERROR, "Invalid folder stack RegExp:'{}'", regExp);
+      else if (fileRegExp.GetCaptureTotal() != 4)
+        CLog::LogF(LOGERROR, "Invalid video stack RE ({}). Must have 4 captures.",
+                   fileRegExp.GetPattern());
+      else
+        fileRegExps.emplace_back(fileRegExp);
+    }
+  }
+  } // namespace XFILE
