@@ -3426,7 +3426,7 @@ bool CVideoPlayer::GetSubtitleVisible() const
     return pStream->IsSubtitleStreamEnabled();
   }
 
-  return m_VideoPlayerVideo->IsSubtitleEnabled();
+  return m_VideoPlayerVideo && m_VideoPlayerVideo->IsSubtitleEnabled();
 }
 
 void CVideoPlayer::SetSubtitleVisible(bool bVisible)
@@ -5075,8 +5075,8 @@ void CVideoPlayer::SetVideoSettings(CVideoSettings& settings)
   m_renderManager.SetDelay(static_cast<int>(settings.m_AudioDelay * 1000.0f));
   m_renderManager.SetSubtitleVerticalPosition(settings.m_subtitleVerticalPosition,
                                               settings.m_subtitleVerticalPositionSave);
-  m_VideoPlayerVideo->EnableSubtitle(settings.m_SubtitleOn);
-  m_VideoPlayerVideo->SetSubtitleDelay(static_cast<int>(-settings.m_SubtitleDelay * DVD_TIME_BASE));
+  m_VideoPlayerVideo && m_VideoPlayerVideo->EnableSubtitle(settings.m_SubtitleOn);
+  m_VideoPlayerVideo && m_VideoPlayerVideo->SetSubtitleDelay(static_cast<int>(-settings.m_SubtitleDelay * DVD_TIME_BASE));
 }
 
 void CVideoPlayer::FrameMove()
