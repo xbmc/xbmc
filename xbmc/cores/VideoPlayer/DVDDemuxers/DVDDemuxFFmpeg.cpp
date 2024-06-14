@@ -1623,7 +1623,17 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         st->iChannelLayout = codecparChannelLayout;
         st->iSampleRate = pStream->codecpar->sample_rate;
         st->iBlockAlign = pStream->codecpar->block_align;
-        st->iBitRate = static_cast<int>(pStream->codecpar->bit_rate);
+
+        // Read bitrate from BPS tag for MKVs missing bitrate info in stream header
+        if (pStream->codecpar->bit_rate == 0 && av_dict_get(pStream->metadata, "BPS", NULL, 0))
+        {
+          st->iBitRate = static_cast<int>(
+              strtol(av_dict_get(pStream->metadata, "BPS", NULL, 0)->value, NULL, 10));
+        }
+        else
+        {
+          st->iBitRate = static_cast<int>(pStream->codecpar->bit_rate);
+        }
         st->iBitsPerSample = pStream->codecpar->bits_per_raw_sample;
         char buf[32] = {};
         // https://github.com/FFmpeg/FFmpeg/blob/6ccc3989d15/doc/APIchanges#L50-L53
@@ -1684,7 +1694,17 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
           st->fAspect *= (double)pStream->codecpar->width / pStream->codecpar->height;
         st->iOrientation = 0;
         st->iBitsPerPixel = pStream->codecpar->bits_per_coded_sample;
-        st->iBitRate = static_cast<int>(pStream->codecpar->bit_rate);
+
+        // Read bitrate from BPS tag for MKVs missing bitrate info in stream header
+        if (pStream->codecpar->bit_rate == 0 && av_dict_get(pStream->metadata, "BPS", NULL, 0))
+        {
+          st->iBitRate = static_cast<int>(
+              strtol(av_dict_get(pStream->metadata, "BPS", NULL, 0)->value, NULL, 10));
+        }
+        else
+        {
+          st->iBitRate = static_cast<int>(pStream->codecpar->bit_rate);
+        }
         st->bitDepth = 8;
         const AVPixFmtDescriptor* desc =
             av_pix_fmt_desc_get(static_cast<AVPixelFormat>(pStream->codecpar->format));
