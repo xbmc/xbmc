@@ -244,6 +244,16 @@ private:
 
   int GetGroupClientPriority(const std::shared_ptr<const CPVRChannelGroup>& group) const;
 
+  enum class Exclude
+  {
+    NONE,
+    IGNORED,
+  };
+  std::shared_ptr<CPVRChannelGroup> GetGroupByName(const std::string& name,
+                                                   int clientID,
+                                                   Exclude exclude) const;
+  std::shared_ptr<CPVRChannelGroup> GetGroupById(int groupId, Exclude exclude) const;
+
   bool m_bRadio{false};
   std::vector<std::shared_ptr<CPVRChannelGroup>> m_groups;
   mutable CCriticalSection m_critSection;

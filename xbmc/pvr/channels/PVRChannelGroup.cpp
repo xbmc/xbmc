@@ -245,6 +245,15 @@ void CPVRChannelGroup::UpdateClientPriorities()
     SortAndRenumber();
 }
 
+bool CPVRChannelGroup::ShouldBeIgnored(
+    const std::vector<std::shared_ptr<CPVRChannelGroup>>& allChannelGroups) const
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+
+  // Empty group should be ignored.
+  return m_members.empty();
+}
+
 bool CPVRChannelGroup::UpdateMembersClientPriority()
 {
   const std::shared_ptr<const CPVRClients> clients = CServiceBroker::GetPVRManager().Clients();
