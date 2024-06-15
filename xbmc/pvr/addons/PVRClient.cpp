@@ -710,31 +710,41 @@ PVR_ERROR CPVRClient::GetChannelGroupsAmount(int& iGroups) const
 
 PVR_ERROR CPVRClient::GetChannelGroups(CPVRChannelGroups* groups) const
 {
-  return DoAddonCall(__func__,
-                     [this, groups](const AddonInstance* addon) {
-                       PVR_HANDLE_STRUCT handle = {};
-                       handle.callerAddress = this;
-                       handle.dataAddress = groups;
-                       return addon->toAddon->GetChannelGroups(addon, &handle, groups->IsRadio());
-                     },
-                     m_clientCapabilities.SupportsChannelGroups());
+  const bool radio{groups->IsRadio()};
+  return DoAddonCall(
+      __func__,
+      [this, groups](const AddonInstance* addon)
+      {
+        PVR_HANDLE_STRUCT handle = {};
+        handle.callerAddress = this;
+        handle.dataAddress = groups;
+        return addon->toAddon->GetChannelGroups(addon, &handle, groups->IsRadio());
+      },
+      m_clientCapabilities.SupportsChannelGroups() &&
+          ((radio && m_clientCapabilities.SupportsRadio()) ||
+           (!radio && m_clientCapabilities.SupportsTV())));
 }
 
 PVR_ERROR CPVRClient::GetChannelGroupMembers(
     CPVRChannelGroup* group,
     std::vector<std::shared_ptr<CPVRChannelGroupMember>>& groupMembers) const
 {
-  return DoAddonCall(__func__,
-                     [this, group, &groupMembers](const AddonInstance* addon) {
-                       PVR_HANDLE_STRUCT handle = {};
-                       handle.callerAddress = this;
-                       handle.dataAddress = &groupMembers;
+  const bool radio{group->IsRadio()};
+  return DoAddonCall(
+      __func__,
+      [this, group, &groupMembers](const AddonInstance* addon)
+      {
+        PVR_HANDLE_STRUCT handle = {};
+        handle.callerAddress = this;
+        handle.dataAddress = &groupMembers;
 
-                       PVR_CHANNEL_GROUP tag;
-                       group->FillAddonData(tag);
-                       return addon->toAddon->GetChannelGroupMembers(addon, &handle, &tag);
-                     },
-                     m_clientCapabilities.SupportsChannelGroups());
+        PVR_CHANNEL_GROUP tag;
+        group->FillAddonData(tag);
+        return addon->toAddon->GetChannelGroupMembers(addon, &handle, &tag);
+      },
+      m_clientCapabilities.SupportsChannelGroups() &&
+          ((radio && m_clientCapabilities.SupportsRadio()) ||
+           (!radio && m_clientCapabilities.SupportsTV())));
 }
 
 PVR_ERROR CPVRClient::GetProvidersAmount(int& iProviders) const
