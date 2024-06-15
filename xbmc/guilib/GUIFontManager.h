@@ -78,8 +78,8 @@ public:
   void LoadFonts(const std::string& fontSet);
   CGUIFont* LoadTTF(const std::string& strFontName,
                     const std::string& strFilename,
-                    UTILS::COLOR::Color textColor,
-                    UTILS::COLOR::Color shadowColor,
+                    KODI::UTILS::COLOR::Color textColor,
+                    KODI::UTILS::COLOR::Color shadowColor,
                     const int iSize,
                     const int iStyle,
                     bool border = false,

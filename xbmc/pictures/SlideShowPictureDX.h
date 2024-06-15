@@ -22,7 +22,7 @@ public:
   ~CSlideShowPicDX() override = default;
 
 protected:
-  void Render(float* x, float* y, CTexture* pTexture, UTILS::COLOR::Color color) override;
+  void Render(float* x, float* y, CTexture* pTexture, KODI::UTILS::COLOR::Color color) override;
 
 private:
   bool UpdateVertexBuffer(Vertex* vertices);

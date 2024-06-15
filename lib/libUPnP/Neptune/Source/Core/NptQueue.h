@@ -75,7 +75,7 @@ class NPT_Queue
     // methods
     NPT_Queue(NPT_Cardinal max_items = 0) :
         m_Delegate(NPT_GenericQueue::CreateInstance(max_items)) {}
-    virtual ~NPT_Queue<T>() { delete m_Delegate; }
+    virtual ~NPT_Queue() { delete m_Delegate; }
     virtual NPT_Result Push(T* item, NPT_Timeout timeout = NPT_TIMEOUT_INFINITE) {
         return m_Delegate->Push(reinterpret_cast<NPT_QueueItem*>(item), timeout);
     }

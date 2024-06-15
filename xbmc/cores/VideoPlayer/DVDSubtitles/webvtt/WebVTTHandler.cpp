@@ -182,10 +182,10 @@ void TranslateEscapeChars(std::string& text)
     // U+200E for "&lrm;" and U+200F for "&rlm;"
     // but libass rendering assume the text as left-to-right,
     // to display text in the right order we have to use embedded codes
-    StringUtils::Replace(text, "&lrm;", u8"\u202a");
-    StringUtils::Replace(text, "&rlm;", u8"\u202b");
-    StringUtils::Replace(text, "&#x2068;", u8"\u2068");
-    StringUtils::Replace(text, "&#x2069;", u8"\u2069");
+    StringUtils::Replace(text, "&lrm;", "\u202a");
+    StringUtils::Replace(text, "&rlm;", "\u202b");
+    StringUtils::Replace(text, "&#x2068;", "\u2068");
+    StringUtils::Replace(text, "&#x2069;", "\u2069");
     StringUtils::Replace(text, "&amp;", "&");
     StringUtils::Replace(text, "&lt;", "<");
     StringUtils::Replace(text, "&gt;", ">");
@@ -480,12 +480,11 @@ void CWebVTTHandler::DecodeLine(std::string line, std::vector<subtitleData>* sub
 
         auto colorInfo =
             std::find_if(m_CSSColors.begin(), m_CSSColors.end(),
-                         [&](const std::pair<std::string, UTILS::COLOR::ColorInfo>& item) {
-                           return StringUtils::CompareNoCase(item.first, colorName) == 0;
-                         });
+                         [&](const std::pair<std::string, KODI::UTILS::COLOR::ColorInfo>& item)
+                         { return StringUtils::CompareNoCase(item.first, colorName) == 0; });
         if (colorInfo != m_CSSColors.end())
         {
-          const uint32_t color = UTILS::COLOR::ConvertToBGR(colorInfo->second.colorARGB);
+          const uint32_t color = KODI::UTILS::COLOR::ConvertToBGR(colorInfo->second.colorARGB);
           m_feedCssStyle.m_color = StringUtils::Format("{:6x}", color);
         }
       }
@@ -493,7 +492,7 @@ void CWebVTTHandler::DecodeLine(std::string line, std::vector<subtitleData>* sub
       if (!colorRGB.empty()) // From CSS Color numeric R,G,B values
       {
         const auto intValues = StringUtils::Split(colorRGB, ",");
-        uint32_t color = UTILS::COLOR::ConvertIntToRGB(
+        uint32_t color = KODI::UTILS::COLOR::ConvertIntToRGB(
             std::stoi(intValues[2]), std::stoi(intValues[1]), std::stoi(intValues[0]));
         m_feedCssStyle.m_color = StringUtils::Format("{:6x}", color);
       }

@@ -63,10 +63,10 @@ public:
 
   void PythonSetLabel(const std::string& strFont,
                       const std::string& strText,
-                      UTILS::COLOR::Color textColor,
-                      UTILS::COLOR::Color shadowColor,
-                      UTILS::COLOR::Color focusedColor);
-  void PythonSetDisabledColor(UTILS::COLOR::Color disabledColor);
+                      KODI::UTILS::COLOR::Color textColor,
+                      KODI::UTILS::COLOR::Color shadowColor,
+                      KODI::UTILS::COLOR::Color focusedColor);
+  void PythonSetDisabledColor(KODI::UTILS::COLOR::Color disabledColor);
 
   virtual void OnClick();
   bool HasClickActions() const { return m_clickActions.HasActionsMeetingCondition(); }

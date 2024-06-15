@@ -82,7 +82,7 @@ public:
   bool m_bCanMoveVertically;
 
 protected:
-  virtual void Render(float* x, float* y, CTexture* pTexture, UTILS::COLOR::Color color) = 0;
+  virtual void Render(float* x, float* y, CTexture* pTexture, KODI::UTILS::COLOR::Color color) = 0;
 
 private:
   void SetTexture_Internal(int iSlideNumber,
@@ -102,7 +102,7 @@ private:
   std::string m_strFileName;
   float m_fWidth;
   float m_fHeight;
-  UTILS::COLOR::Color m_alpha = 0;
+  KODI::UTILS::COLOR::Color m_alpha = 0;
   // stuff relative to middle position
   float m_fPosX;
   float m_fPosY;

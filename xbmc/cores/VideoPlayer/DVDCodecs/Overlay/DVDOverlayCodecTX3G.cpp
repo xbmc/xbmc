@@ -41,7 +41,7 @@ struct StyleRecord
   uint16_t fontID;
   uint8_t faceStyleFlags; // FaceStyleFlag
   uint8_t fontSize;
-  UTILS::COLOR::Color textColorARGB;
+  KODI::UTILS::COLOR::Color textColorARGB;
   unsigned int textColorAlphaCh;
 };
 
@@ -56,13 +56,13 @@ void ConvertStyleToTags(std::string& strUTF8, const StyleRecord& style, bool clo
     strUTF8.append(closingTags ? "{\\i0}" : "{\\i1}");
   if (style.faceStyleFlags & UNDERLINE)
     strUTF8.append(closingTags ? "{\\u0}" : "{\\u1}");
-  if (style.textColorARGB != UTILS::COLOR::WHITE)
+  if (style.textColorARGB != KODI::UTILS::COLOR::WHITE)
   {
     if (closingTags)
       strUTF8 += "{\\c}";
     else
     {
-      UTILS::COLOR::Color color = UTILS::COLOR::ConvertToBGR(style.textColorARGB);
+      KODI::UTILS::COLOR::Color color = KODI::UTILS::COLOR::ConvertToBGR(style.textColorARGB);
       strUTF8 += StringUtils::Format("{{\\c&H{:06x}&}}", color);
     }
   }
@@ -171,7 +171,8 @@ OverlayMessage CDVDOverlayCodecTX3G::Decode(DemuxPacket* pPacket)
         styleRec.fontID = sampleData.ReadNextUnsignedShort();
         styleRec.faceStyleFlags = sampleData.ReadNextUnsignedChar();
         styleRec.fontSize = sampleData.ReadNextUnsignedChar();
-        styleRec.textColorARGB = UTILS::COLOR::ConvertToARGB(sampleData.ReadNextUnsignedInt());
+        styleRec.textColorARGB =
+            KODI::UTILS::COLOR::ConvertToARGB(sampleData.ReadNextUnsignedInt());
         styleRec.textColorAlphaCh = (styleRec.textColorARGB & 0xFF000000) >> 24;
         // clamp bgnChar/bgnChar to textLength, we alloc enough space above and
         // this fixes broken encoders that do not handle endChar correctly.

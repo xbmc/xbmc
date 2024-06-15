@@ -58,8 +58,8 @@ public:
     typedef typename NPT_Map<NPT_String,T>::Entry ElementEntry;
     typedef typename NPT_List<ElementEntry*>::Iterator ElementIterator;
 
-    PLT_MediaCache<T,U>() {}
-    virtual ~PLT_MediaCache<T,U>() {}
+    PLT_MediaCache() {}
+    virtual ~PLT_MediaCache() {}
 
     NPT_Result Put(const char* root, const char* key, T& value, U* tag = NULL);
     NPT_Result Get(const char* root, const char* key, T& value, U* tag = NULL);

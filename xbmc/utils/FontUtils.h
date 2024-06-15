@@ -13,9 +13,7 @@
 #include <string>
 #include <vector>
 
-namespace UTILS
-{
-namespace FONT
+namespace KODI::UTILS::FONT
 {
 constexpr const char* SUPPORTED_EXTENSIONS_MASK = ".ttf|.ttc|.otf";
 
@@ -87,5 +85,4 @@ bool IsSupportedFontExtension(const std::string& filepath);
  */
 void ClearTemporaryFonts();
 
-} // namespace FONT
-} // namespace UTILS
+} // namespace KODI::UTILS::FONT

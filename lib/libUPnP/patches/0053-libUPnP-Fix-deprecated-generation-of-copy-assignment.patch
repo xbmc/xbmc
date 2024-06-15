@@ -1,0 +1,25 @@
+From 751f9dd094f01b5877af7c8278006aa84399a025 Mon Sep 17 00:00:00 2001
+From: Philipp Kerling <yol@casix.org>
+Date: Sat, 11 May 2024 00:45:18 +0200
+Subject: [PATCH 4/8] libUPnP: Fix deprecated generation of copy assignment
+ operator
+
+---
+ lib/libUPnP/Neptune/Source/Core/NptTime.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptTime.h b/lib/libUPnP/Neptune/Source/Core/NptTime.h
+index 8b58eefac6..64b244e69a 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptTime.h
++++ b/lib/libUPnP/Neptune/Source/Core/NptTime.h
+@@ -56,6 +56,7 @@ class NPT_TimeStamp
+     NPT_TimeStamp(NPT_Int64 nanoseconds) : m_NanoSeconds(nanoseconds) {}
+     NPT_TimeStamp(float seconds);
+     NPT_TimeStamp(double seconds);
++    NPT_TimeStamp& operator=(const NPT_TimeStamp&) = default;
+     NPT_TimeStamp& operator+=(const NPT_TimeStamp& time_stamp);
+     NPT_TimeStamp& operator-=(const NPT_TimeStamp& time_stamp);
+     bool operator==(const NPT_TimeStamp& t) const { return m_NanoSeconds == t.m_NanoSeconds; }
+-- 
+2.44.0
+

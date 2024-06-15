@@ -2,7 +2,8 @@ include ../../Makefile.include P8-PLATFORM-VERSION ../../download-files.include
 DEPS = ../../Makefile.include Makefile P8-PLATFORM-VERSION ../../download-files.include \
                               001-all-fix-c++17-support.patch \
                               002-all-fixcmakeinstall.patch \
-                              003-all-cmake_tweakversion.patch
+                              003-all-cmake_tweakversion.patch \
+                              004-all-fix-cxx-standard.patch
 
 LIBDYLIB=$(PLATFORM)/build/$(BYPRODUCT)
 
@@ -15,6 +16,7 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	cd $(PLATFORM); patch -p1 -i ../001-all-fix-c++17-support.patch
 	cd $(PLATFORM); patch -p1 -i ../002-all-fixcmakeinstall.patch
 	cd $(PLATFORM); patch -p1 -i ../003-all-cmake_tweakversion.patch
+	cd $(PLATFORM); patch -p1 -i ../004-all-fix-cxx-standard.patch
 	cd $(PLATFORM)/build; $(CMAKE) -DBUILD_SHARED_LIBS=0 ..
 
 $(LIBDYLIB): $(PLATFORM)

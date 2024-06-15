@@ -80,7 +80,7 @@ std::string escapeStringChunk(std::string& str, size_t& pos)
   if (codePoint == 0 || isSurrogateCodePoint(codePoint) ||
       isGreaterThanMaximumAllowedCodePoint(codePoint))
   {
-    result += u8"\uFFFD";
+    result += "\uFFFD";
   }
   else if (codePoint < 0x80)
   {

@@ -40,7 +40,7 @@ template<class Position>
 struct CGUIFontCacheKey
 {
   Position m_pos;
-  std::vector<UTILS::COLOR::Color>& m_colors;
+  std::vector<KODI::UTILS::COLOR::Color>& m_colors;
   vecText& m_text;
   uint32_t m_alignment;
   float m_maxPixelWidth;
@@ -50,7 +50,7 @@ struct CGUIFontCacheKey
   float m_scaleY;
 
   CGUIFontCacheKey(Position pos,
-                   std::vector<UTILS::COLOR::Color>& colors,
+                   std::vector<KODI::UTILS::COLOR::Color>& colors,
                    vecText& text,
                    uint32_t alignment,
                    float maxPixelWidth,
@@ -85,7 +85,7 @@ struct CGUIFontCacheEntry
                      std::chrono::steady_clock::time_point now)
     : m_cache(cache),
       m_key(key.m_pos,
-            *new std::vector<UTILS::COLOR::Color>,
+            *new std::vector<KODI::UTILS::COLOR::Color>,
             *new vecText,
             key.m_alignment,
             key.m_maxPixelWidth,
@@ -157,7 +157,7 @@ public:
 
   Value& Lookup(const CGraphicContext& context,
                 Position& pos,
-                const std::vector<UTILS::COLOR::Color>& colors,
+                const std::vector<KODI::UTILS::COLOR::Color>& colors,
                 const vecText& text,
                 uint32_t alignment,
                 float maxPixelWidth,

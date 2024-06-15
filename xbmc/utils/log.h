@@ -87,16 +87,13 @@ public:
   Logger GetLogger(const std::string& loggerName);
 
   template<typename... Args>
-  static inline void Log(int level, const std::string_view& format, Args&&... args)
+  static void Log(int level, fmt::format_string<Args...> format, Args&&... args)
   {
     Log(MapLogLevel(level), format, std::forward<Args>(args)...);
   }
 
   template<typename... Args>
-  static inline void Log(int level,
-                         uint32_t component,
-                         const std::string_view& format,
-                         Args&&... args)
+  static void Log(int level, uint32_t component, fmt::format_string<Args...> format, Args&&... args)
   {
     if (!GetInstance().CanLogComponent(component))
       return;
@@ -105,18 +102,18 @@ public:
   }
 
   template<typename... Args>
-  static inline void Log(spdlog::level::level_enum level,
-                         const std::string_view& format,
-                         Args&&... args)
+  static void Log(spdlog::level::level_enum level,
+                  fmt::format_string<Args...> format,
+                  Args&&... args)
   {
-    GetInstance().FormatAndLogInternal(level, format, std::forward<Args>(args)...);
+    GetInstance().FormatAndLogInternal(level, format, fmt::make_format_args(args...));
   }
 
   template<typename... Args>
-  static inline void Log(spdlog::level::level_enum level,
-                         uint32_t component,
-                         const std::string_view& format,
-                         Args&&... args)
+  static void Log(spdlog::level::level_enum level,
+                  uint32_t component,
+                  fmt::format_string<Args...> format,
+                  Args&&... args)
   {
     if (!GetInstance().CanLogComponent(component))
       return;
@@ -133,12 +130,11 @@ private:
 
   static spdlog::level::level_enum MapLogLevel(int level);
 
-  template<typename... Args>
-  inline void FormatAndLogInternal(spdlog::level::level_enum level,
-                                   const std::string_view& format,
-                                   Args&&... args)
+  void FormatAndLogInternal(spdlog::level::level_enum level,
+                            fmt::string_view format,
+                            fmt::format_args args)
   {
-    auto message = fmt::format(format, std::forward<Args>(args)...);
+    auto message = fmt::vformat(format, args);
 
     // fixup newline alignment, number of spaces should equal prefix length
     FormatLineBreaks(message);

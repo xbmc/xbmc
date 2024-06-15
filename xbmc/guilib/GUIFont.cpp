@@ -56,8 +56,8 @@ float CScrollInfo::GetPixelsPerFrame()
 
 CGUIFont::CGUIFont(const std::string& strFontName,
                    uint32_t style,
-                   UTILS::COLOR::Color textColor,
-                   UTILS::COLOR::Color shadowColor,
+                   KODI::UTILS::COLOR::Color textColor,
+                   KODI::UTILS::COLOR::Color shadowColor,
                    float lineSpacing,
                    float origHeight,
                    CGUIFontTTF* font)
@@ -87,8 +87,8 @@ std::string& CGUIFont::GetFontName()
 
 void CGUIFont::DrawText(float x,
                         float y,
-                        const std::vector<UTILS::COLOR::Color>& colors,
-                        UTILS::COLOR::Color shadowColor,
+                        const std::vector<KODI::UTILS::COLOR::Color>& colors,
+                        KODI::UTILS::COLOR::Color shadowColor,
                         const vecText& text,
                         uint32_t alignment,
                         float maxPixelWidth)
@@ -104,7 +104,7 @@ void CGUIFont::DrawText(float x,
     return;
 
   maxPixelWidth = ROUND(static_cast<double>(maxPixelWidth / context.GetGUIScaleX()));
-  std::vector<UTILS::COLOR::Color> renderColors;
+  std::vector<KODI::UTILS::COLOR::Color> renderColors;
   renderColors.reserve(colors.size());
   for (const auto& color : colors)
     renderColors.emplace_back(context.MergeColor(color ? color : m_textColor));
@@ -113,7 +113,7 @@ void CGUIFont::DrawText(float x,
   if (shadowColor)
   {
     shadowColor = context.MergeColor(shadowColor);
-    std::vector<UTILS::COLOR::Color> shadowColors;
+    std::vector<KODI::UTILS::COLOR::Color> shadowColors;
     shadowColors.reserve(renderColors.size());
     for (const auto& renderColor : renderColors)
       shadowColors.emplace_back((renderColor & 0xff000000) != 0 ? shadowColor : 0);
@@ -179,8 +179,8 @@ bool CGUIFont::UpdateScrollInfo(const vecText& text, CScrollInfo& scrollInfo)
 
 void CGUIFont::DrawScrollingText(float x,
                                  float y,
-                                 const std::vector<UTILS::COLOR::Color>& colors,
-                                 UTILS::COLOR::Color shadowColor,
+                                 const std::vector<KODI::UTILS::COLOR::Color>& colors,
+                                 KODI::UTILS::COLOR::Color shadowColor,
                                  const vecText& text,
                                  uint32_t alignment,
                                  float maxWidth,
@@ -219,7 +219,7 @@ void CGUIFont::DrawScrollingText(float x,
   else
     offset = scrollInfo.m_totalWidth - scrollInfo.m_pixelPos;
 
-  std::vector<UTILS::COLOR::Color> renderColors;
+  std::vector<KODI::UTILS::COLOR::Color> renderColors;
   renderColors.reserve(colors.size());
   for (const auto& color : colors)
     renderColors.emplace_back(context.MergeColor(color ? color : m_textColor));
@@ -228,7 +228,7 @@ void CGUIFont::DrawScrollingText(float x,
   if (shadowColor)
   {
     shadowColor = context.MergeColor(shadowColor);
-    std::vector<UTILS::COLOR::Color> shadowColors;
+    std::vector<KODI::UTILS::COLOR::Color> shadowColors;
     shadowColors.reserve(renderColors.size());
     for (const auto& renderColor : renderColors)
       shadowColors.emplace_back((renderColor & 0xff000000) != 0 ? shadowColor : 0);

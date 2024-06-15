@@ -12,9 +12,7 @@
 #include <stdint.h>
 #include <string_view>
 
-namespace UTILS
-{
-namespace MOVING_SPEED
+namespace KODI::UTILS::MOVING_SPEED
 {
 
 struct EventCfg
@@ -148,5 +146,4 @@ private:
  */
 EventType ParseEventType(std::string_view eventType);
 
-} // namespace MOVING_SPEED
-} // namespace UTILS
+} // namespace KODI::UTILS::MOVING_SPEED

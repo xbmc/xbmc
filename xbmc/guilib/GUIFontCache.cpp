@@ -84,7 +84,7 @@ public:
   explicit CGUIFontCacheImpl(CGUIFontCache<Position, Value>* parent) : m_parent(parent) {}
   Value& Lookup(const CGraphicContext& context,
                 Position& pos,
-                const std::vector<UTILS::COLOR::Color>& colors,
+                const std::vector<KODI::UTILS::COLOR::Color>& colors,
                 const vecText& text,
                 uint32_t alignment,
                 float maxPixelWidth,
@@ -131,7 +131,7 @@ CGUIFontCache<Position, Value>::~CGUIFontCache() = default;
 template<class Position, class Value>
 Value& CGUIFontCache<Position, Value>::Lookup(const CGraphicContext& context,
                                               Position& pos,
-                                              const std::vector<UTILS::COLOR::Color>& colors,
+                                              const std::vector<KODI::UTILS::COLOR::Color>& colors,
                                               const vecText& text,
                                               uint32_t alignment,
                                               float maxPixelWidth,
@@ -147,20 +147,21 @@ Value& CGUIFontCache<Position, Value>::Lookup(const CGraphicContext& context,
 }
 
 template<class Position, class Value>
-Value& CGUIFontCacheImpl<Position, Value>::Lookup(const CGraphicContext& context,
-                                                  Position& pos,
-                                                  const std::vector<UTILS::COLOR::Color>& colors,
-                                                  const vecText& text,
-                                                  uint32_t alignment,
-                                                  float maxPixelWidth,
-                                                  bool scrolling,
-                                                  std::chrono::steady_clock::time_point now,
-                                                  bool& dirtyCache)
+Value& CGUIFontCacheImpl<Position, Value>::Lookup(
+    const CGraphicContext& context,
+    Position& pos,
+    const std::vector<KODI::UTILS::COLOR::Color>& colors,
+    const vecText& text,
+    uint32_t alignment,
+    float maxPixelWidth,
+    bool scrolling,
+    std::chrono::steady_clock::time_point now,
+    bool& dirtyCache)
 {
-  const CGUIFontCacheKey<Position> key(pos, const_cast<std::vector<UTILS::COLOR::Color>&>(colors),
-                                       const_cast<vecText&>(text), alignment, maxPixelWidth,
-                                       scrolling, context.GetGUIMatrix(), context.GetGUIScaleX(),
-                                       context.GetGUIScaleY());
+  const CGUIFontCacheKey<Position> key(
+      pos, const_cast<std::vector<KODI::UTILS::COLOR::Color>&>(colors), const_cast<vecText&>(text),
+      alignment, maxPixelWidth, scrolling, context.GetGUIMatrix(), context.GetGUIScaleX(),
+      context.GetGUIScaleY());
 
   auto i = m_list.FindKey(key);
   if (i == m_list.hashMap.end())
@@ -226,7 +227,7 @@ template CGUIFontCacheStaticValue& CGUIFontCache<
     CGUIFontCacheStaticPosition,
     CGUIFontCacheStaticValue>::Lookup(const CGraphicContext& context,
                                       CGUIFontCacheStaticPosition&,
-                                      const std::vector<UTILS::COLOR::Color>&,
+                                      const std::vector<KODI::UTILS::COLOR::Color>&,
                                       const vecText&,
                                       uint32_t,
                                       float,
@@ -244,7 +245,7 @@ template CGUIFontCacheDynamicValue& CGUIFontCache<
     CGUIFontCacheDynamicPosition,
     CGUIFontCacheDynamicValue>::Lookup(const CGraphicContext& context,
                                        CGUIFontCacheDynamicPosition&,
-                                       const std::vector<UTILS::COLOR::Color>&,
+                                       const std::vector<KODI::UTILS::COLOR::Color>&,
                                        const vecText&,
                                        uint32_t,
                                        float,

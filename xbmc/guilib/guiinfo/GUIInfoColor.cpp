@@ -31,7 +31,7 @@ bool CGUIInfoColor::Update(const CGUIListItem* item /* = nullptr */)
   else
     infoLabel = CServiceBroker::GetGUI()->GetInfoManager().GetLabel(m_info, INFO::DEFAULT_CONTEXT);
 
-  UTILS::COLOR::Color color =
+  KODI::UTILS::COLOR::Color color =
       !infoLabel.empty() ? CServiceBroker::GetGUI()->GetColorManager().GetColor(infoLabel) : 0;
   if (m_color != color)
   {

@@ -1,0 +1,89 @@
+From 26b0002d2c181ca4e4b4ca5b253540b428273291 Mon Sep 17 00:00:00 2001
+From: Philipp Kerling <yol@casix.org>
+Date: Sat, 11 May 2024 00:44:57 +0200
+Subject: [PATCH 3/8] libUPnP: Remove deprecated volatile usage
+
+With the atomic_int, the mutex is no longer necessary as well.
+---
+ .../Neptune/Source/System/Posix/NptPosixThreads.cpp | 13 ++-----------
+ 1 file changed, 2 insertions(+), 11 deletions(-)
+
+diff --git a/lib/libUPnP/Neptune/Source/System/Posix/NptPosixThreads.cpp b/lib/libUPnP/Neptune/Source/System/Posix/NptPosixThreads.cpp
+index 510d3e9fbd..47ccd48241 100644
+--- a/lib/libUPnP/Neptune/Source/System/Posix/NptPosixThreads.cpp
++++ b/lib/libUPnP/Neptune/Source/System/Posix/NptPosixThreads.cpp
+@@ -13,6 +13,7 @@
+ #if defined(__SYMBIAN32__)
+ #include <stdio.h>
+ #endif
++#include <atomic>
+ #include <pthread.h>
+ #include <unistd.h>
+ #include <time.h>
+@@ -278,8 +279,7 @@ class NPT_PosixAtomicVariable : public NPT_AtomicVariableInterface
+ 
+  private:
+     // members
+-    volatile int    m_Value;
+-    pthread_mutex_t m_Mutex;
++    std::atomic_int m_Value;
+ };
+ 
+ /*----------------------------------------------------------------------
+@@ -288,7 +288,6 @@ class NPT_PosixAtomicVariable : public NPT_AtomicVariableInterface
+ NPT_PosixAtomicVariable::NPT_PosixAtomicVariable(int value) : 
+     m_Value(value)
+ {
+-    pthread_mutex_init(&m_Mutex, NULL);
+ }
+ 
+ /*----------------------------------------------------------------------
+@@ -296,7 +295,6 @@ NPT_PosixAtomicVariable::NPT_PosixAtomicVariable(int value) :
+ +---------------------------------------------------------------------*/
+ NPT_PosixAtomicVariable::~NPT_PosixAtomicVariable()
+ {
+-    pthread_mutex_destroy(&m_Mutex);
+ }
+ 
+ /*----------------------------------------------------------------------
+@@ -307,9 +305,7 @@ NPT_PosixAtomicVariable::Increment()
+ {
+     int value;
+ 
+-    pthread_mutex_lock(&m_Mutex);
+     value = ++m_Value;
+-    pthread_mutex_unlock(&m_Mutex);
+     
+     return value;
+ }
+@@ -322,9 +318,7 @@ NPT_PosixAtomicVariable::Decrement()
+ {
+     int value;
+ 
+-    pthread_mutex_lock(&m_Mutex);
+     value = --m_Value;
+-    pthread_mutex_unlock(&m_Mutex);
+     
+     return value;
+ }
+@@ -335,7 +329,6 @@ NPT_PosixAtomicVariable::Decrement()
+ int
+ NPT_PosixAtomicVariable::GetValue()
+ {
+-    // we assume that int read/write are atomic on the platform
+     return m_Value;
+ }
+ 
+@@ -345,9 +338,7 @@ NPT_PosixAtomicVariable::GetValue()
+ void
+ NPT_PosixAtomicVariable::SetValue(int value)
+ {
+-    pthread_mutex_lock(&m_Mutex);
+     m_Value = value;
+-    pthread_mutex_unlock(&m_Mutex);
+ }
+ 
+ /*----------------------------------------------------------------------
+-- 
+2.44.0
+

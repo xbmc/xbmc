@@ -51,7 +51,7 @@ CGUITexture* CGUITexture::CreateTexture(
 }
 
 void CGUITexture::DrawQuad(const CRect& coords,
-                           UTILS::COLOR::Color color,
+                           KODI::UTILS::COLOR::Color color,
                            CTexture* texture,
                            const CRect* texCoords,
                            const float depth,
@@ -180,8 +180,8 @@ void CGUITexture::Render(int32_t depthOffset, int32_t overrideDepth)
   #define MIX_ALPHA(a,c) (((a * (c >> 24)) / 255) << 24) | (c & 0x00ffffff)
 
   // diffuse color
-  UTILS::COLOR::Color color =
-      (m_info.diffuseColor) ? (UTILS::COLOR::Color)m_info.diffuseColor : m_diffuseColor;
+  KODI::UTILS::COLOR::Color color =
+      (m_info.diffuseColor) ? (KODI::UTILS::COLOR::Color)m_info.diffuseColor : m_diffuseColor;
   // clang-format off
   if (m_alpha != 0xFF)
     color = MIX_ALPHA(m_alpha, color);
@@ -597,7 +597,7 @@ bool CGUITexture::SetAlpha(unsigned char alpha)
   return changed;
 }
 
-bool CGUITexture::SetDiffuseColor(UTILS::COLOR::Color color,
+bool CGUITexture::SetDiffuseColor(KODI::UTILS::COLOR::Color color,
                                   const CGUIListItem* item /* = nullptr */)
 {
   bool changed = m_diffuseColor != color;

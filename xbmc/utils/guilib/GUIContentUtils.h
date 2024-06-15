@@ -10,9 +10,7 @@
 
 class CFileItem;
 
-namespace UTILS
-{
-namespace GUILIB
+namespace KODI::UTILS::GUILIB
 {
 class CGUIContentUtils
 {
@@ -29,5 +27,4 @@ public:
   */
   static bool ShowInfoForItem(const CFileItem& item);
 };
-} // namespace GUILIB
-} // namespace UTILS
+} // namespace KODI::UTILS::GUILIB

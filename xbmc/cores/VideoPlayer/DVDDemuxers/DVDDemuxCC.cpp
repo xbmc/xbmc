@@ -16,6 +16,8 @@
 
 #include <algorithm>
 
+namespace COLOR = KODI::UTILS::COLOR;
+
 namespace
 {
 /*!
@@ -35,34 +37,34 @@ enum class ColorFormat
  * \param[in] format - the color format
  * \return the corresponding Color in rgb
  */
-constexpr UTILS::COLOR::Color CCColorConversion(const uint8_t ccColor, ColorFormat format)
+constexpr COLOR::Color CCColorConversion(const uint8_t ccColor, ColorFormat format)
 {
-  UTILS::COLOR::Color color = UTILS::COLOR::NONE;
+  COLOR::Color color = COLOR::NONE;
   switch (ccColor)
   {
     case WHITE:
-      color = UTILS::COLOR::WHITE;
+      color = COLOR::WHITE;
       break;
     case GREEN:
-      color = UTILS::COLOR::GREEN;
+      color = COLOR::GREEN;
       break;
     case BLUE:
-      color = UTILS::COLOR::BLUE;
+      color = COLOR::BLUE;
       break;
     case CYAN:
-      color = UTILS::COLOR::CYAN;
+      color = COLOR::CYAN;
       break;
     case RED:
-      color = UTILS::COLOR::RED;
+      color = COLOR::RED;
       break;
     case YELLOW:
-      color = UTILS::COLOR::YELLOW;
+      color = COLOR::YELLOW;
       break;
     case MAGENTA:
-      color = UTILS::COLOR::MAGENTA;
+      color = COLOR::MAGENTA;
       break;
     case BLACK:
-      color = UTILS::COLOR::BLACK;
+      color = COLOR::BLACK;
       break;
     default:
       break;
@@ -94,7 +96,7 @@ void ApplyStyleModifiers(std::string& ccText, const cc_attribute_t& ccAttributes
   {
     ccText = StringUtils::Format(
         "<font color=#{}>{}</u>",
-        UTILS::COLOR::ConvertToHexRGB(CCColorConversion(ccAttributes.foreground, ColorFormat::RGB)),
+        COLOR::ConvertToHexRGB(CCColorConversion(ccAttributes.foreground, ColorFormat::RGB)),
         ccText);
   }
 }

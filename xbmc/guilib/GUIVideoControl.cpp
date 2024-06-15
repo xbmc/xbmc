@@ -61,7 +61,7 @@ void CGUIVideoControl::Render()
     TransformMatrix mat;
     CServiceBroker::GetWinSystem()->GetGfxContext().SetTransform(mat, 1.0, 1.0);
 
-    UTILS::COLOR::Color alpha =
+    KODI::UTILS::COLOR::Color alpha =
         CServiceBroker::GetWinSystem()->GetGfxContext().MergeAlpha(0xFF000000) >> 24;
     if (appPlayer->IsRenderingVideoLayer())
     {

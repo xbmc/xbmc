@@ -177,11 +177,11 @@ CFadeEffect::CFadeEffect(const TiXmlElement* node, bool reverseDefaults, EFFECT_
     const char* start = node->Attribute("start");
     const char* end = node->Attribute("end");
     if (start)
-      m_startColor = UTILS::COLOR::ConvertToFloats(
+      m_startColor = KODI::UTILS::COLOR::ConvertToFloats(
           CServiceBroker::GetGUI()->GetColorManager().GetColor(start));
     if (end)
-      m_endColor =
-          UTILS::COLOR::ConvertToFloats(CServiceBroker::GetGUI()->GetColorManager().GetColor(end));
+      m_endColor = KODI::UTILS::COLOR::ConvertToFloats(
+          CServiceBroker::GetGUI()->GetColorManager().GetColor(end));
   }
 }
 
@@ -191,13 +191,13 @@ CFadeEffect::CFadeEffect(float start, float end, unsigned int delay, unsigned in
   m_endAlpha = end;
 }
 
-CFadeEffect::CFadeEffect(UTILS::COLOR::Color start,
-                         UTILS::COLOR::Color end,
+CFadeEffect::CFadeEffect(KODI::UTILS::COLOR::Color start,
+                         KODI::UTILS::COLOR::Color end,
                          unsigned int delay,
                          unsigned int length)
   : CAnimEffect(delay, length, EFFECT_TYPE_FADE_DIFFUSE),
-    m_startColor(UTILS::COLOR::ConvertToFloats(start)),
-    m_endColor(UTILS::COLOR::ConvertToFloats(end))
+    m_startColor(KODI::UTILS::COLOR::ConvertToFloats(start)),
+    m_endColor(KODI::UTILS::COLOR::ConvertToFloats(end))
 {
   m_startAlpha = m_endAlpha = 1.0f;
 }

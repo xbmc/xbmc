@@ -35,7 +35,7 @@ public:
 
   void Load(const std::string &colorFile);
 
-  UTILS::COLOR::Color GetColor(const std::string& color) const;
+  KODI::UTILS::COLOR::Color GetColor(const std::string& color) const;
 
   void Clear();
 
@@ -45,12 +45,13 @@ public:
     \param sortColors if true the colors will be sorted in a hue scale
     \return true if success, otherwise false
   */
-  bool LoadColorsListFromXML(const std::string& filePath,
-                             std::vector<std::pair<std::string, UTILS::COLOR::ColorInfo>>& colors,
-                             bool sortColors);
+  bool LoadColorsListFromXML(
+      const std::string& filePath,
+      std::vector<std::pair<std::string, KODI::UTILS::COLOR::ColorInfo>>& colors,
+      bool sortColors);
 
 protected:
   bool LoadXML(CXBMCTinyXML& xmlDoc);
 
-  std::map<std::string, UTILS::COLOR::Color> m_colors;
+  std::map<std::string, KODI::UTILS::COLOR::Color> m_colors;
 };

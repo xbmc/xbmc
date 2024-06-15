@@ -231,6 +231,6 @@ private:
   std::map<WebvttSelector, std::map<std::string, webvttCssStyle>> m_cssSelectors;
 
   bool m_CSSColorsLoaded{false};
-  std::vector<std::pair<std::string, UTILS::COLOR::ColorInfo>> m_CSSColors;
+  std::vector<std::pair<std::string, KODI::UTILS::COLOR::ColorInfo>> m_CSSColors;
   double m_offset{0.0};
 };

@@ -72,6 +72,11 @@ NPT_TimeStamp::NPT_TimeStamp(const NPT_TimeStamp& timestamp)
 /*----------------------------------------------------------------------
 |   NPT_TimeStamp::NPT_TimeStamp
 +---------------------------------------------------------------------*/
+NPT_TimeStamp::NPT_TimeStamp(float seconds)
+: NPT_TimeStamp(static_cast<double>(seconds))
+{
+}
+
 NPT_TimeStamp::NPT_TimeStamp(double seconds)
 {
     m_NanoSeconds = (NPT_Int64)(seconds * 1e9);

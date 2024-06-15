@@ -175,7 +175,7 @@ public:
   bool IsVisibleFromSkin() const { return m_visibleFromSkinCondition; }
   virtual bool IsDisabled() const;
   virtual void SetPosition(float posX, float posY);
-  virtual void SetHitRect(const CRect& rect, const UTILS::COLOR::Color& color);
+  virtual void SetHitRect(const CRect& rect, const KODI::UTILS::COLOR::Color& color);
   virtual void SetCamera(const CPoint &camera);
   virtual void SetStereoFactor(const float &factor);
   bool SetColorDiffuse(const KODI::GUILIB::GUIINFO::CGUIInfoColor &color);
@@ -354,7 +354,7 @@ protected:
   float m_height;
   float m_width;
   CRect m_hitRect;
-  UTILS::COLOR::Color m_hitColor = 0xffffffff;
+  KODI::UTILS::COLOR::Color m_hitColor = 0xffffffff;
   KODI::GUILIB::GUIINFO::CGUIInfoColor m_diffuseColor;
   int m_controlID;
   int m_parentID;

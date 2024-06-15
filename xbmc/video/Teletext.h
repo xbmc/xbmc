@@ -40,7 +40,7 @@ public:
 
   bool NeedRendering() { return m_updateTexture; }
   void RenderingDone() { m_updateTexture = false; }
-  UTILS::COLOR::Color* GetTextureBuffer()
+  KODI::UTILS::COLOR::Color* GetTextureBuffer()
   {
     return m_TextureBuffer + (m_RenderInfo.Width * m_YOffset);
   }
@@ -84,25 +84,38 @@ private:
   void SetFontWidth(int newWidth);
   int GetCurFontWidth();
   void SetPosX(int column);
-  void ClearBB(UTILS::COLOR::Color Color);
-  void ClearFB(UTILS::COLOR::Color Color);
-  void FillBorder(UTILS::COLOR::Color Color);
-  void FillRect(
-      UTILS::COLOR::Color* buffer, int xres, int x, int y, int w, int h, UTILS::COLOR::Color Color);
-  void DrawVLine(
-      UTILS::COLOR::Color* lfb, int xres, int x, int y, int l, UTILS::COLOR::Color color);
-  void DrawHLine(
-      UTILS::COLOR::Color* lfb, int xres, int x, int y, int l, UTILS::COLOR::Color color);
-  void FillRectMosaicSeparated(UTILS::COLOR::Color* lfb,
+  void ClearBB(KODI::UTILS::COLOR::Color Color);
+  void ClearFB(KODI::UTILS::COLOR::Color Color);
+  void FillBorder(KODI::UTILS::COLOR::Color Color);
+  void FillRect(KODI::UTILS::COLOR::Color* buffer,
+                int xres,
+                int x,
+                int y,
+                int w,
+                int h,
+                KODI::UTILS::COLOR::Color Color);
+  void DrawVLine(KODI::UTILS::COLOR::Color* lfb,
+                 int xres,
+                 int x,
+                 int y,
+                 int l,
+                 KODI::UTILS::COLOR::Color color);
+  void DrawHLine(KODI::UTILS::COLOR::Color* lfb,
+                 int xres,
+                 int x,
+                 int y,
+                 int l,
+                 KODI::UTILS::COLOR::Color color);
+  void FillRectMosaicSeparated(KODI::UTILS::COLOR::Color* lfb,
                                int xres,
                                int x,
                                int y,
                                int w,
                                int h,
-                               UTILS::COLOR::Color fgcolor,
-                               UTILS::COLOR::Color bgcolor,
+                               KODI::UTILS::COLOR::Color fgcolor,
+                               KODI::UTILS::COLOR::Color bgcolor,
                                int set);
-  void FillTrapez(UTILS::COLOR::Color* lfb,
+  void FillTrapez(KODI::UTILS::COLOR::Color* lfb,
                   int xres,
                   int x0,
                   int y0,
@@ -110,11 +123,11 @@ private:
                   int xoffset1,
                   int h,
                   int l1,
-                  UTILS::COLOR::Color color);
-  void FlipHorz(UTILS::COLOR::Color* lfb, int xres, int x, int y, int w, int h);
-  void FlipVert(UTILS::COLOR::Color* lfb, int xres, int x, int y, int w, int h);
+                  KODI::UTILS::COLOR::Color color);
+  void FlipHorz(KODI::UTILS::COLOR::Color* lfb, int xres, int x, int y, int w, int h);
+  void FlipVert(KODI::UTILS::COLOR::Color* lfb, int xres, int x, int y, int w, int h);
   int ShapeCoord(int param, int curfontwidth, int curfontheight);
-  void DrawShape(UTILS::COLOR::Color* lfb,
+  void DrawShape(KODI::UTILS::COLOR::Color* lfb,
                  int xres,
                  int x,
                  int y,
@@ -122,19 +135,19 @@ private:
                  int curfontwidth,
                  int fontheight,
                  int curfontheight,
-                 UTILS::COLOR::Color fgcolor,
-                 UTILS::COLOR::Color bgcolor,
+                 KODI::UTILS::COLOR::Color fgcolor,
+                 KODI::UTILS::COLOR::Color bgcolor,
                  bool clear);
   void RenderDRCS(
       int xres,
       unsigned char* s, /* pointer to char data, parity undecoded */
-      UTILS::COLOR::Color* d, /* pointer to frame buffer of top left pixel */
+      KODI::UTILS::COLOR::Color* d, /* pointer to frame buffer of top left pixel */
       unsigned char* ax, /* array[0..12] of x-offsets, array[0..10] of y-offsets for each pixel */
-      UTILS::COLOR::Color fgcolor,
-      UTILS::COLOR::Color bgcolor);
+      KODI::UTILS::COLOR::Color fgcolor,
+      KODI::UTILS::COLOR::Color bgcolor);
   void RenderCharIntern(TextRenderInfo_t* RenderInfo, int Char, TextPageAttr_t *Attribute, int zoom, int yoffset);
   int RenderChar(
-      UTILS::COLOR::Color* buffer, // pointer to render buffer, min. fontheight*2*xres
+      KODI::UTILS::COLOR::Color* buffer, // pointer to render buffer, min. fontheight*2*xres
       int xres, // length of 1 line in render buffer
       int Char, // character to render
       int*
@@ -170,13 +183,13 @@ private:
   int SetNational(unsigned char sec);
   int NextHex(int i);
   void SetColors(const unsigned short *pcolormap, int offset, int number);
-  UTILS::COLOR::Color GetColorRGB(enumTeletextColor ttc);
+  KODI::UTILS::COLOR::Color GetColorRGB(enumTeletextColor ttc);
 
   static FT_Error MyFaceRequester(FTC_FaceID face_id, FT_Library library, FT_Pointer request_data, FT_Face *aface);
 
   std::string         m_teletextFont;     /* Path to teletext font */
   int                 m_YOffset;          /* Swap position for Front buffer and Back buffer */
-  UTILS::COLOR::Color* m_TextureBuffer; /* Texture buffer to hold generated data */
+  KODI::UTILS::COLOR::Color* m_TextureBuffer; /* Texture buffer to hold generated data */
   bool                m_updateTexture;    /* Update the texture if set */
   char                prevHeaderPage;     /* Needed for texture update if header is changed */
   char                prevTimeSec;        /* Needed for Time string update */

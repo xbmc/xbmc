@@ -109,9 +109,9 @@ public:
     };
 
     // methods
-                 NPT_List<T>();
-                 NPT_List<T>(const NPT_List<T>& list);
-                ~NPT_List<T>();
+    NPT_List();
+    NPT_List(const NPT_List<T>& list);
+    ~NPT_List();
     NPT_Result   Add(const T& data);
     NPT_Result   Insert(const Iterator where, const T& data);
     NPT_Result   Remove(const T& data, bool all=false);

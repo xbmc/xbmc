@@ -159,7 +159,7 @@ bool HasSubtitlesFontExtensions(const std::string& condition,
   if (!settingStr)
     return false;
 
-  return UTILS::FONT::IsSupportedFontExtension(settingStr->GetValue());
+  return KODI::UTILS::FONT::IsSupportedFontExtension(settingStr->GetValue());
 }
 
 bool ProfileCanWriteDatabase(const std::string& condition,

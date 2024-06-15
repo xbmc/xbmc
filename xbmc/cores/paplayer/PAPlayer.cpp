@@ -216,7 +216,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     std::unique_lock<CCriticalSection> lock(m_streamsLock);
     m_jobCounter++;
   }
-  CServiceBroker::GetJobManager()->Submit([=]() { QueueNextFileEx(file, false); }, this,
+  CServiceBroker::GetJobManager()->Submit([=, this]() { QueueNextFileEx(file, false); }, this,
                                           CJob::PRIORITY_NORMAL);
 
   std::unique_lock<CCriticalSection> lock(m_streamsLock);
