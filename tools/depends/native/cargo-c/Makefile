@@ -1,5 +1,6 @@
 include ../../Makefile.include CARGO-C-VERSION ../../download-files.include
-DEPS = ../../Makefile.include Makefile CARGO-C-VERSION ../../download-files.include
+DEPS = ../../Makefile.include Makefile CARGO-C-VERSION ../../download-files.include \
+                                        Cargo.lock
 
 PREFIX=$(NATIVEPREFIX)
 PLATFORM=$(NATIVEPLATFORM)
@@ -21,12 +22,13 @@ all: .installed-$(PLATFORM)
 $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	cp Cargo.lock $(PLATFORM)/Cargo.lock
 
 $(APP): $(PLATFORM)
-	$(CARGO) build --release --manifest-path $(PLATFORM)/Cargo.toml
+	$(CARGO) build --release --manifest-path $(PLATFORM)/Cargo.toml --locked
 
 .installed-$(PLATFORM): $(APP)
-	$(CARGO) install --profile release --path $(PLATFORM)
+	$(CARGO) install --profile release --path $(PLATFORM)  --locked
 
 	touch $@
 
