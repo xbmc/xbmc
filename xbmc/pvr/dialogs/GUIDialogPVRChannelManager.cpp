@@ -979,12 +979,18 @@ bool CGUIDialogPVRChannelManager::UpdateChannelData(const std::shared_ptr<CFileI
     }
 
     // make sure the channel is part of the group
-    group->AppendToGroup(groupMember);
+    CServiceBroker::GetPVRManager()
+        .ChannelGroups()
+        ->Get(m_bIsRadio)
+        ->AppendToGroup(group, groupMember);
   }
   else
   {
     // remove the hidden channel from the group
-    group->RemoveFromGroup(groupMember);
+    CServiceBroker::GetPVRManager()
+        .ChannelGroups()
+        ->Get(m_bIsRadio)
+        ->RemoveFromGroup(group, groupMember);
   }
 
   const auto channel = groupMember->Channel();

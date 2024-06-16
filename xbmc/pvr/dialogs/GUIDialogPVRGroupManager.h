@@ -41,7 +41,6 @@ private:
   void Clear();
   void ClearSelectedGroupsThumbnail();
   void Update();
-  bool PersistChanges();
   bool ActionButtonOk(const CGUIMessage& message);
   bool ActionButtonNewGroup(const CGUIMessage& message);
   bool ActionButtonDeleteGroup(const CGUIMessage& message);
