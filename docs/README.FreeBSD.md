@@ -1,7 +1,7 @@
 ![Kodi Logo](resources/banner_slim.png)
 
 # FreeBSD build guide
-This guide has been tested with FreeBSD 12.1 x86_64. Please read it in full before you proceed to familiarize yourself with the build procedure.
+This guide has been tested with FreeBSD 14.1 x86_64. Please read it in full before you proceed to familiarize yourself with the build procedure.
 
 Several other distributions have **[specific build guides](README.md)** and a general **[Linux build guide](README.Linux.md)** is also available.
 
@@ -38,9 +38,9 @@ Commands that contain strings enclosed in angle brackets denote something you ne
 git clone -b <branch-name> https://github.com/xbmc/xbmc kodi
 ```
 
-**Example:** Clone Kodi's current Krypton branch:
+**Example:** Clone Kodi's current Omega branch:
 ```
-git clone -b Krypton https://github.com/xbmc/xbmc kodi
+git clone -b Omega https://github.com/xbmc/xbmc kodi
 ```
 
 Several different strategies are used to draw your attention to certain pieces of information. In order of how critical the information is, these items are marked as a note, tip, or warning. For example:
@@ -82,7 +82,7 @@ If you get a `package not found` type of message with the below command, remove 
 
 Install build dependencies:
 ```
-sudo pkg install autoconf automake avahi-app binutils cmake curl dbus doxygen e2fsprogs-libuuid enca encodings flac flatbuffers font-util fontconfig freetype2 fribidi fstrcmp gawk gettext-tools giflib git glew gmake gmp gnutls googletest gperf gstreamer1-vaapi hal jpeg-turbo libaacs libass libbdplus libbluray libcapn libcdio libcec libedit libfmt libgcrypt libgpg-error libidn libinotify libmicrohttpd libnfs libogg libplist librtmp libtool libudev-devd libva libvdpau libvorbis libxslt lirc lzo2 m4 mesa-libs mysql57-client nasm openjdk8 p8-platform pkgconf python3 rapidjson shairplay sndio sqlite3 swig30 taglib tiff tinyxml tinyxml2 xf86-input-keyboard xf86-input-mouse xorg-server xrandr zip
+sudo pkg install autoconf automake avahi-app binutils cmake curl dbus doxygen e2fsprogs-libuuid enca encodings evdev-proto ffmpeg flac flatbuffers font-util fontconfig freetype2 fribidi fstrcmp gawk gettext-tools giflib git glew gmake gmp gnutls googletest gperf gstreamer1-vaapi jpeg-turbo libaacs libass libbdplus libbluray libcapn libcdio libcec libdisplay-info libedit libfmt libgcrypt libgpg-error libidn libinotify libinput libmicrohttpd libnfs libogg libplist librtmp libtool libudev-devd libva libvdpau libvorbis libxkbcommon libxslt lirc lzo2 m4 mariadb-connector-c-3.3.8_1 mesa-libs nasm openjdk21 p8-platform pkgconf python3 rapidjson shairplay sndio spdlog sqlite3 swig taglib tiff tinyxml tinyxml2 wayland-protocols waylandpp xf86-input-keyboard xf86-input-mouse xorg-server xrandr zip
 ```
 
 > [!WARNING]  
@@ -125,8 +125,11 @@ cd $HOME/kodi-build
 
 Configure build:
 ```
-cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local
+cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DENABLE_INTERNAL_PCRE=ON -DAPP_RENDER_SYSTEM="gl"
 ```
+> [!NOTE]  
+> You can use `gles` instead of `gl` if you want to build with `GLES`.
+> Building internal PCRE is recommended since system pcre libs are EOLed by upstream.
 
 ### 4.2. Build
 ```
@@ -137,7 +140,7 @@ cmake --build . -- VERBOSE=1 -j$(sysctl hw.ncpu | awk '{print $2}')
 
 After the build process completes successfully you can test your shiny new Kodi build while in the build directory:
 ```
-./kodi-x11
+./kodi.bin
 ```
 
 If everything was OK during your test you can now install the binaries to their place, in this example */usr/local*.
