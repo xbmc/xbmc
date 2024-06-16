@@ -82,7 +82,7 @@ If you get a `package not found` type of message with the below command, remove 
 
 Install build dependencies:
 ```
-sudo pkg install autoconf automake avahi-app binutils cmake curl dbus doxygen e2fsprogs-libuuid enca encodings evdev-proto ffmpeg flac flatbuffers font-util fontconfig freetype2 fribidi fstrcmp gawk gettext-tools giflib git glew gmake gmp gnutls googletest gperf gstreamer1-vaapi jpeg-turbo libaacs libass libbdplus libbluray libcapn libcdio libcec libdisplay-info libedit libfmt libgcrypt libgpg-error libidn libinotify libinput libmicrohttpd libnfs libogg libplist librtmp libtool libudev-devd libva libvdpau libvorbis libxkbcommon libxslt lirc lzo2 m4 mariadb-connector-c-3.3.8_1 mesa-libs nasm openjdk21 p8-platform pcre2 pkgconf python3 rapidjson shairplay sndio spdlog sqlite3 swig taglib tiff tinyxml tinyxml2 wayland-protocols waylandpp xf86-input-keyboard xf86-input-mouse xorg-server xrandr zip
+sudo pkg install autoconf automake avahi-app binutils cmake curl dbus doxygen e2fsprogs-libuuid enca encodings evdev-proto exiv2 ffmpeg flac flatbuffers font-util fontconfig freetype2 fribidi fstrcmp gawk gettext-tools giflib git glew gmake gmp gnutls googletest gperf gstreamer1-vaapi jpeg-turbo libaacs libass libbdplus libbluray libcapn libcdio libcec libdisplay-info libedit libfmt libgcrypt libgpg-error libidn libinotify libinput libmicrohttpd libnfs libogg libplist librtmp libtool libudev-devd libva libvdpau libvorbis libxkbcommon libxslt lirc lzo2 m4 mariadb-connector-c-3.3.8_1 mesa-libs nasm openjdk21 p8-platform pcre2 pkgconf python3 rapidjson shairplay sndio spdlog sqlite3 swig taglib tiff tinyxml tinyxml2 wayland-protocols waylandpp xf86-input-keyboard xf86-input-mouse xorg-server xrandr zip
 ```
 
 > [!WARNING]  
