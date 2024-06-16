@@ -8,7 +8,10 @@
 
 #include "PlatformAndroid.h"
 
+#include "ServiceBroker.h"
 #include "filesystem/SpecialProtocol.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "windowing/android/WinSystemAndroidGLESContext.h"
 
@@ -36,6 +39,20 @@ bool CPlatformAndroid::InitStageOne()
   CWinSystemAndroidGLESContext::Register();
 
   CAndroidPowerSyscall::Register();
+
+  return true;
+}
+
+bool CPlatformAndroid::InitStageThree()
+{
+  if (!CPlatformPosix::InitStageThree())
+    return false;
+
+  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiVideoLayoutTransparent)
+  {
+    CLog::Log(LOGINFO, "XBMCApp: VideoLayout view was set to transparent.");
+    CXBMCApp::Get().SetVideoLayoutBackgroundColor(0);
+  }
 
   return true;
 }
