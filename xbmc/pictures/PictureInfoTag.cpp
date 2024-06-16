@@ -317,8 +317,6 @@ const std::string CPictureInfoTag::GetInfo(int info) const
   case SLIDESHOW_EXIF_CAMERA_MODEL:
     value = m_imageMetadata.exifInfo.CameraModel;
     break;
-    //  case SLIDESHOW_EXIF_SOFTWARE:
-    //    value = m_imageMetadata.exifInfo.Software;
   case SLIDESHOW_EXIF_APERTURE:
     if (m_imageMetadata.exifInfo.ApertureFNumber)
       value = StringUtils::Format("{:3.1f}", m_imageMetadata.exifInfo.ApertureFNumber);
@@ -560,8 +558,8 @@ int CPictureInfoTag::TranslateString(const std::string &info)
   else if (StringUtils::EqualsNoCase(info, "exifdescription")) return SLIDESHOW_EXIF_DESCRIPTION;
   else if (StringUtils::EqualsNoCase(info, "cameramake")) return SLIDESHOW_EXIF_CAMERA_MAKE;
   else if (StringUtils::EqualsNoCase(info, "cameramodel")) return SLIDESHOW_EXIF_CAMERA_MODEL;
-  else if (StringUtils::EqualsNoCase(info, "exifcomment")) return SLIDESHOW_EXIF_COMMENT;
-  else if (StringUtils::EqualsNoCase(info, "exifsoftware")) return SLIDESHOW_EXIF_SOFTWARE;
+  else if (StringUtils::EqualsNoCase(info, "exifcomment"))
+    return SLIDESHOW_EXIF_COMMENT;
   else if (StringUtils::EqualsNoCase(info, "aperture")) return SLIDESHOW_EXIF_APERTURE;
   else if (StringUtils::EqualsNoCase(info, "focallength")) return SLIDESHOW_EXIF_FOCAL_LENGTH;
   else if (StringUtils::EqualsNoCase(info, "focusdistance")) return SLIDESHOW_EXIF_FOCUS_DIST;
