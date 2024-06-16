@@ -201,9 +201,11 @@ void CVideoPlayerAudio::OnStartup()
 
 void CVideoPlayerAudio::UpdatePlayerInfo()
 {
+  const int level = m_messageQueue.GetLevel();
   std::ostringstream s;
-  s << "aq:"     << std::setw(2) << std::min(99,m_messageQueue.GetLevel()) << "%";
-  s << ", Kb/s:" << std::fixed << std::setprecision(2) << m_audioStats.GetBitrate() / 1024.0;
+  s << "aq:" << std::setw(2) << std::min(99, level);
+  s << "% " << std::fixed << std::setprecision(3) << m_messageQueueTimeSize * level / 100.0;
+  s << "s, Kb/s:" << std::fixed << std::setprecision(2) << m_audioStats.GetBitrate() / 1024.0;
 
   // print a/v discontinuity adjustments counter when audio is not resampled (passthrough mode)
   if (m_synctype == SYNC_DISCON)
