@@ -86,7 +86,7 @@ int CAEPackIEC61937::PackDTS_2048(uint8_t *data, unsigned int size, uint8_t *des
   return PackDTS(data, size, dest, littleEndian, OUT_FRAMESTOBYTES(DTS3_FRAME_SIZE), IEC61937_TYPE_DTS3);
 }
 
-int CAEPackIEC61937::PackTrueHD(uint8_t *data, unsigned int size, uint8_t *dest)
+int CAEPackIEC61937::PackTrueHD(const uint8_t* data, unsigned int size, uint8_t* dest)
 {
   if (size == 0)
     return OUT_FRAMESTOBYTES(TRUEHD_FRAME_SIZE);
@@ -95,8 +95,8 @@ int CAEPackIEC61937::PackTrueHD(uint8_t *data, unsigned int size, uint8_t *dest)
   struct IEC61937Packet *packet = (struct IEC61937Packet*)dest;
   packet->m_preamble1 = IEC61937_PREAMBLE1;
   packet->m_preamble2 = IEC61937_PREAMBLE2;
-  packet->m_type      = IEC61937_TYPE_TRUEHD;
-  packet->m_length    = size;
+  packet->m_type = IEC61937_TYPE_TRUEHD;
+  packet->m_length = 61424;
 
   if (data == NULL)
     data = packet->m_data;
