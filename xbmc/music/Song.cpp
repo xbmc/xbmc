@@ -369,8 +369,3 @@ bool CSong::ArtMatches(const CSong &right) const
   return (right.strThumb == strThumb &&
           embeddedArt.Matches(right.embeddedArt));
 }
-
-const std::string CSong::GetDiscSubtitle() const
-{
-  return strDiscSubtitle;
-}

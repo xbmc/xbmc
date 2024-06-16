@@ -42,7 +42,7 @@ public:
   void SetScreenSaverLockFailed() { m_iScreenSaveLock = -1; }
   void SetScreenSaverUnlocked() { m_iScreenSaveLock = 1; }
   void StopScreenSaverTimer();
-  std::string ScreensaverIdInUse() const { return m_screensaverIdInUse; }
+  const std::string& ScreensaverIdInUse() const { return m_screensaverIdInUse; }
 
   bool GetRenderGUI() const { return m_renderGUI; }
   void SetRenderGUI(bool renderGUI);
