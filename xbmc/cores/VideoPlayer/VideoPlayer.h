@@ -32,6 +32,8 @@
 #include <utility>
 #include <vector>
 
+constexpr auto VP_MESSAGE_QUEUE_SIZE_STANDARD = 8.0;
+constexpr auto VP_MESSAGE_QUEUE_SIZE_LL = 1.0; // goal is to get it down to 0.2 or lower
 struct SPlayerState
 {
   SPlayerState() { Clear(); }
@@ -591,4 +593,6 @@ protected:
   bool m_UpdateStreamDetails;
 
   std::atomic<bool> m_displayLost;
+
+  double m_messageQueueTimeSize = VP_MESSAGE_QUEUE_SIZE_STANDARD;
 };

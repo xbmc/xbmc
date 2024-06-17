@@ -196,6 +196,9 @@ public:
 
   void SetRealtime(bool realtime) { m_realtime = realtime; }
 
+  virtual bool IsLowLatency() { return m_lowLatency; }
+  void SetLowLatency(bool lowLatency) { m_lowLatency = lowLatency; }
+
   // interfaces
   virtual IDemux* GetIDemux() { return nullptr; }
   virtual IPosTime* GetIPosTime() { return nullptr; }
@@ -212,4 +215,5 @@ protected:
   CFileItem m_item;
   bool m_contentLookup;
   bool m_realtime;
+  bool m_lowLatency;
 };

@@ -49,7 +49,8 @@ public:
                  ,CDVDOverlayContainer* pOverlayContainer
                  ,CDVDMessageQueue& parent
                  ,CRenderManager& renderManager,
-                 CProcessInfo &processInfo);
+                 CProcessInfo &processInfo,
+                 const double messageQueueTimeSize);
   ~CVideoPlayerVideo() override;
 
   bool OpenStream(CDVDStreamInfo hint) override;
@@ -141,4 +142,6 @@ protected:
   VideoPicture m_picture;
 
   EOutputState m_outputSate;
+
+  const double m_messageQueueTimeSize;
 };
