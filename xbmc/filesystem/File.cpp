@@ -994,6 +994,7 @@ ssize_t CFile::LoadFile(const std::string& filename, std::vector<uint8_t>& outpu
 }
 
 ssize_t CFile::LoadFile(const CURL& file, std::vector<uint8_t>& outputBuffer)
+try
 {
   static const size_t max_file_size = 0x7FFFFFFF;
   static const size_t min_chunk_size = 64 * 1024U;
@@ -1057,6 +1058,12 @@ ssize_t CFile::LoadFile(const CURL& file, std::vector<uint8_t>& outputBuffer)
   outputBuffer.resize(total_read);
 
   return total_read;
+}
+catch (const std::bad_alloc&)
+{
+  outputBuffer.clear();
+  CLog::LogF(LOGERROR, "Failed to load {}: out of memory", file.GetFileName());
+  return -1;
 }
 
 double CFile::GetDownloadSpeed()
