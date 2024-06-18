@@ -41,7 +41,7 @@ bool CPlayerUtils::IsItemPlayable(const CFileItem& itemIn)
   return false;
 }
 
-void CPlayerUtils::AdvanceTempoStep(std::shared_ptr<CApplicationPlayer> appPlayer,
+void CPlayerUtils::AdvanceTempoStep(const std::shared_ptr<CApplicationPlayer>& appPlayer,
                                     TempoStepChange change)
 {
   const auto step = 0.1f;
