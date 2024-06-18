@@ -43,17 +43,18 @@ public:
   CDVDStreamInfo  m_hints;
 };
 
-
-CVideoPlayerVideo::CVideoPlayerVideo(CDVDClock* pClock
-                                ,CDVDOverlayContainer* pOverlayContainer
-                                ,CDVDMessageQueue& parent
-                                ,CRenderManager& renderManager
-                                ,CProcessInfo &processInfo)
-: CThread("VideoPlayerVideo")
-, IDVDStreamPlayerVideo(processInfo)
-, m_messageQueue("video")
-, m_messageParent(parent)
-, m_renderManager(renderManager)
+CVideoPlayerVideo::CVideoPlayerVideo(CDVDClock* pClock,
+                                     CDVDOverlayContainer* pOverlayContainer,
+                                     CDVDMessageQueue& parent,
+                                     CRenderManager& renderManager,
+                                     CProcessInfo& processInfo,
+                                     double messageQueueTimeSize)
+  : CThread("VideoPlayerVideo"),
+    IDVDStreamPlayerVideo(processInfo),
+    m_messageQueue("video"),
+    m_messageParent(parent),
+    m_renderManager(renderManager),
+    m_messageQueueTimeSize(messageQueueTimeSize)
 {
   m_pClock = pClock;
   m_pOverlayContainer = pOverlayContainer;
@@ -67,9 +68,9 @@ CVideoPlayerVideo::CVideoPlayerVideo(CDVDClock* pClock
   m_iDroppedRequest = 0;
   m_fForcedAspectRatio = 0;
 
-  // 128 MB allows max bitrate of 128 Mbit/s (e.g. UHD Blu-Ray) during 8 seconds
-  m_messageQueue.SetMaxDataSize(128 * 1024 * 1024);
-  m_messageQueue.SetMaxTimeSize(8.0);
+  // allows max bitrate of 128 Mbit/s (e.g. UHD Blu-Ray) during m_messageQueueTimeSize seconds
+  m_messageQueue.SetMaxDataSize(128 * m_messageQueueTimeSize / 8 * 1024 * 1024);
+  m_messageQueue.SetMaxTimeSize(m_messageQueueTimeSize);
 
   m_iDroppedFrames = 0;
   m_fFrameRate = 25;
@@ -952,10 +953,13 @@ CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(const VideoPict
 
 std::string CVideoPlayerVideo::GetPlayerInfo()
 {
+  const int level = m_processInfo.GetLevelVQ();
   std::ostringstream s;
-  s << "vq:"   << std::setw(2) << std::min(99, m_processInfo.GetLevelVQ()) << "%";
-  s << ", Mb/s:" << std::fixed << std::setprecision(2) << (double)GetVideoBitrate() / (1024.0*1024.0);
-  s << ", fr:"     << std::fixed << std::setprecision(3) << m_fFrameRate;
+  s << "vq:" << std::setw(2) << std::min(99, level);
+  s << "% " << std::fixed << std::setprecision(3) << m_messageQueueTimeSize * level / 100.0;
+  s << "s, Mb/s:" << std::fixed << std::setprecision(2)
+    << static_cast<double>(GetVideoBitrate()) / (1024.0 * 1024.0);
+  s << ", fr:" << std::fixed << std::setprecision(3) << m_fFrameRate;
   s << ", drop:" << m_iDroppedFrames;
   s << ", skip:" << m_renderManager.GetSkippedFrames();
 

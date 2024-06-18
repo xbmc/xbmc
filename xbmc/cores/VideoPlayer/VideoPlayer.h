@@ -591,4 +591,6 @@ protected:
   bool m_UpdateStreamDetails;
 
   std::atomic<bool> m_displayLost;
+
+  double m_messageQueueTimeSize{0.0};
 };

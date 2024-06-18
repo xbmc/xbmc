@@ -43,12 +43,16 @@ public:
   CDVDStreamInfo  m_hints;
 };
 
-
-CVideoPlayerAudio::CVideoPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent, CProcessInfo &processInfo)
-: CThread("VideoPlayerAudio"), IDVDStreamPlayerAudio(processInfo)
-, m_messageQueue("audio")
-, m_messageParent(parent)
-, m_audioSink(pClock)
+CVideoPlayerAudio::CVideoPlayerAudio(CDVDClock* pClock,
+                                     CDVDMessageQueue& parent,
+                                     CProcessInfo& processInfo,
+                                     double messageQueueTimeSize)
+  : CThread("VideoPlayerAudio"),
+    IDVDStreamPlayerAudio(processInfo),
+    m_messageQueue("audio"),
+    m_messageParent(parent),
+    m_audioSink(pClock),
+    m_messageQueueTimeSize(messageQueueTimeSize)
 {
   m_pClock = pClock;
   m_audioClock = 0;
@@ -61,9 +65,10 @@ CVideoPlayerAudio::CVideoPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent
   m_prevskipped = false;
   m_maxspeedadjust = 0.0;
 
-  // 18 MB allows max bitrate of 18 Mbit/s (TrueHD max peak) during 8 seconds
-  m_messageQueue.SetMaxDataSize(18 * 1024 * 1024);
-  m_messageQueue.SetMaxTimeSize(8.0);
+  // allows max bitrate of 18 Mbit/s (TrueHD max peak) during m_messageQueueTimeSize seconds
+  m_messageQueue.SetMaxDataSize(18 * m_messageQueueTimeSize / 8 * 1024 * 1024);
+  m_messageQueue.SetMaxTimeSize(m_messageQueueTimeSize);
+
   m_disconAdjustTimeMs = processInfo.GetMaxPassthroughOffSyncDuration();
 }
 
@@ -196,9 +201,11 @@ void CVideoPlayerAudio::OnStartup()
 
 void CVideoPlayerAudio::UpdatePlayerInfo()
 {
+  const int level = m_messageQueue.GetLevel();
   std::ostringstream s;
-  s << "aq:"     << std::setw(2) << std::min(99,m_messageQueue.GetLevel()) << "%";
-  s << ", Kb/s:" << std::fixed << std::setprecision(2) << m_audioStats.GetBitrate() / 1024.0;
+  s << "aq:" << std::setw(2) << std::min(99, level);
+  s << "% " << std::fixed << std::setprecision(3) << m_messageQueueTimeSize * level / 100.0;
+  s << "s, Kb/s:" << std::fixed << std::setprecision(2) << m_audioStats.GetBitrate() / 1024.0;
 
   // print a/v discontinuity adjustments counter when audio is not resampled (passthrough mode)
   if (m_synctype == SYNC_DISCON)
