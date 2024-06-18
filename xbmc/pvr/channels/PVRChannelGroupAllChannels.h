@@ -8,17 +8,12 @@
 
 #pragma once
 
-#include "pvr/channels/PVRChannelGroupFromUser.h"
-
-#include <memory>
-#include <vector>
+#include "pvr/channels/PVRChannelGroup.h"
 
 namespace PVR
 {
-class CPVRChannel;
-class CPVRChannelNumber;
 
-class CPVRChannelGroupAllChannels : public CPVRChannelGroupFromUser
+class CPVRChannelGroupAllChannels : public CPVRChannelGroup
 {
 public:
   CPVRChannelGroupAllChannels() = delete;
@@ -63,6 +58,18 @@ public:
    * @return True if the group could be deleted, false otherwise.
    */
   bool SupportsDelete() const override { return false; }
+
+  /*!
+   * @brief Check whether members could be added to this group by the user.
+   * @return True if members could be added, false otherwise.
+   */
+  bool SupportsMemberAdd() const override { return true; }
+
+  /*!
+   * @brief Check whether members could be removed from this group by the user.
+   * @return True if members could be removed, false otherwise.
+   */
+  bool SupportsMemberRemove() const override { return true; }
 
   /*!
    * @brief Check whether this group is owner of the channel instances it contains.
