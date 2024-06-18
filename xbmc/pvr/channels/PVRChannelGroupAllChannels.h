@@ -54,6 +54,12 @@ public:
   void CheckGroupName();
 
   /*!
+   * @brief Get the group's origin.
+   * @return The origin.
+   */
+  Origin GetOrigin() const override { return Origin::SYSTEM; }
+
+  /*!
    * @brief Check whether this group could be deleted by the user.
    * @return True if the group could be deleted, false otherwise.
    */
@@ -97,6 +103,6 @@ private:
   /*!
    * @brief Return the type of this group.
    */
-  int GroupType() const override { return PVR_GROUP_TYPE_ALL_CHANNELS; }
+  int GroupType() const override { return PVR_GROUP_TYPE_SYSTEM_ALL_CHANNELS; }
 };
 } // namespace PVR

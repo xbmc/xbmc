@@ -35,6 +35,12 @@ public:
                              const std::shared_ptr<const CPVRChannelGroup>& allChannelsGroup);
 
   /*!
+   * @brief Get the group's origin.
+   * @return The origin.
+   */
+  Origin GetOrigin() const override { return Origin::CLIENT; }
+
+  /*!
    * @brief Check whether this group could be deleted by the user.
    * @return True if the group could be deleted, false otherwise.
    */
@@ -69,6 +75,6 @@ private:
   /*!
    * @brief Return the type of this group.
    */
-  int GroupType() const override { return PVR_GROUP_TYPE_REMOTE; }
+  int GroupType() const override { return PVR_GROUP_TYPE_CLIENT; }
 };
 } // namespace PVR

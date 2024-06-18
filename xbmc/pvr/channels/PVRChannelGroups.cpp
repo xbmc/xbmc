@@ -170,11 +170,11 @@ int CPVRChannelGroups::GetGroupTypePriority(
 {
   switch (group->GroupType())
   {
-    case PVR_GROUP_TYPE_ALL_CHANNELS:
+    case PVR_GROUP_TYPE_SYSTEM_ALL_CHANNELS:
       return 0; // highest
-    case PVR_GROUP_TYPE_LOCAL:
+    case PVR_GROUP_TYPE_USER:
       return 1;
-    case PVR_GROUP_TYPE_REMOTE:
+    case PVR_GROUP_TYPE_CLIENT:
       return 2;
     default:
       return 3;
@@ -379,9 +379,9 @@ bool CPVRChannelGroups::UpdateChannelNumbersFromAllChannelsGroup()
 std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::CreateChannelGroup(
     int iType, const CPVRChannelsPath& path)
 {
-  if (iType == PVR_GROUP_TYPE_ALL_CHANNELS)
+  if (iType == PVR_GROUP_TYPE_SYSTEM_ALL_CHANNELS)
     return std::make_shared<CPVRChannelGroupAllChannels>(path);
-  else if (iType == PVR_GROUP_TYPE_LOCAL)
+  else if (iType == PVR_GROUP_TYPE_USER)
     return std::make_shared<CPVRChannelGroupFromUser>(path, GetGroupAll());
   else
     return std::make_shared<CPVRChannelGroupFromClient>(path, GetGroupAll());
@@ -614,7 +614,7 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::AddGroup(const std::string&
     if (!group)
     {
       // create a new local group
-      group = CreateChannelGroup(PVR_GROUP_TYPE_LOCAL,
+      group = CreateChannelGroup(PVR_GROUP_TYPE_USER,
                                  CPVRChannelsPath(m_bRadio, strName, PVR_GROUP_CLIENT_ID_LOCAL));
 
       m_groups.emplace_back(group);
