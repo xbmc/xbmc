@@ -236,6 +236,7 @@ bool CAndroidJoystickState::ProcessEvent(const AInputEvent* event)
         {
           // get all potential values
           std::vector<float> values;
+          values.reserve(axis.ids.size());
           for (const auto& axisId : axis.ids)
             values.push_back(AMotionEvent_getAxisValue(event, axisId, pointer));
 
