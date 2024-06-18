@@ -27,6 +27,7 @@
 #include "utils/log.h"
 
 #include <cassert>
+#include <memory>
 #include <stdexcept>
 
 #include <androidjni/ByteBuffer.h>
@@ -208,7 +209,7 @@ bool CDVDAudioCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       mimeTypes = codec_info.getSupportedTypes();
       if (std::find(mimeTypes.begin(), mimeTypes.end(), m_mime) != mimeTypes.end())
       {
-        m_codec = std::shared_ptr<CJNIMediaCodec>(new CJNIMediaCodec(CJNIMediaCodec::createByCodecName(codecName)));
+        m_codec = std::make_shared<CJNIMediaCodec>(CJNIMediaCodec::createByCodecName(codecName));
         if (xbmc_jnienv()->ExceptionCheck())
         {
           xbmc_jnienv()->ExceptionDescribe();
@@ -288,16 +289,15 @@ PROCESSDECODER:
       {
         CLog::Log(LOGDEBUG, "CDVDAudioCodecAndroidMediaCodec::Open Prefer the Google raw decoder "
                             "over the MediaTek one");
-        m_codec = std::shared_ptr<CJNIMediaCodec>(
-            new CJNIMediaCodec(CJNIMediaCodec::createByCodecName("OMX.google.raw.decoder")));
+        m_codec = std::make_shared<CJNIMediaCodec>(
+            CJNIMediaCodec::createByCodecName("OMX.google.raw.decoder"));
       }
       else
       {
         CLog::Log(
             LOGDEBUG,
             "CDVDAudioCodecAndroidMediaCodec::Open Use the raw decoder proposed by the platform");
-        m_codec = std::shared_ptr<CJNIMediaCodec>(
-            new CJNIMediaCodec(CJNIMediaCodec::createDecoderByType(m_mime)));
+        m_codec = std::make_shared<CJNIMediaCodec>(CJNIMediaCodec::createDecoderByType(m_mime));
       }
       if (xbmc_jnienv()->ExceptionCheck())
       {
