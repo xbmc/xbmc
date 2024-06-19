@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "cores/Direction.h"
 #include "cores/EdlEdit.h"
 
 #include <string>
@@ -141,7 +142,7 @@ public:
   */
   EDL::Action GetLastEditActionType() const;
 
-  bool GetNextSceneMarker(EDL::EditDirection direction, int clock, int* sceneMarker);
+  bool GetNextSceneMarker(Direction direction, int clock, int* sceneMarker);
 
   static std::string MillisecondsToTimeString(int milliSeconds);
 

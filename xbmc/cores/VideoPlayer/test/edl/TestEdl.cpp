@@ -86,14 +86,14 @@ TEST_F(TestEdl, TestParsingMplayerTimeBasedEDL)
   // We should have a scenemarker at the commbreak start and another on commbreak end
   int time;
   // lets cycle to the next scenemarker if starting from 1 msec before the start (or end) of the commbreak
-  EXPECT_EQ(edl.GetNextSceneMarker(EDL::EditDirection::FORWARD, commbreak.start - 1, &time), true);
+  EXPECT_EQ(edl.GetNextSceneMarker(Direction::FORWARD, commbreak.start - 1, &time), true);
   EXPECT_EQ(edl.GetTimeWithoutCuts(time), commbreak.start);
-  EXPECT_EQ(edl.GetNextSceneMarker(EDL::EditDirection::FORWARD, commbreak.end - 1, &time), true);
+  EXPECT_EQ(edl.GetNextSceneMarker(Direction::FORWARD, commbreak.end - 1, &time), true);
   EXPECT_EQ(edl.GetTimeWithoutCuts(time), commbreak.end);
   // same if we cycle backwards
-  EXPECT_EQ(edl.GetNextSceneMarker(EDL::EditDirection::BACKWARD, commbreak.start + 1, &time), true);
+  EXPECT_EQ(edl.GetNextSceneMarker(Direction::BACKWARD, commbreak.start + 1, &time), true);
   EXPECT_EQ(edl.GetTimeWithoutCuts(time), commbreak.start);
-  EXPECT_EQ(edl.GetNextSceneMarker(EDL::EditDirection::BACKWARD, commbreak.end + 1, &time), true);
+  EXPECT_EQ(edl.GetNextSceneMarker(Direction::BACKWARD, commbreak.end + 1, &time), true);
   EXPECT_EQ(edl.GetTimeWithoutCuts(time), commbreak.end);
   // We should be in an edit if we are in the middle of a commbreak...
   // lets check and confirm the edits match (after restoring cuts)

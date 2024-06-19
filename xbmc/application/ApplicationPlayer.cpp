@@ -327,7 +327,7 @@ bool CApplicationPlayer::CanSeek() const
   return (player && player->CanSeek());
 }
 
-bool CApplicationPlayer::SeekScene(PlayerSeekDirection seekDirection)
+bool CApplicationPlayer::SeekScene(Direction seekDirection)
 {
   std::shared_ptr<IPlayer> player = GetInternal();
   return (player && player->SeekScene(seekDirection));

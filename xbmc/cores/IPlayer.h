@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "Direction.h"
 #include "IPlayerCallback.h"
 #include "Interface/StreamInfo.h"
 #include "MenuType.h"
@@ -84,15 +85,6 @@ enum ERENDERFEATURE
   RENDERFEATURE_TONEMAP
 };
 
-/*!
- * @brief Specify the Seek Direction
-*/
-enum class PlayerSeekDirection
-{
-  FORWARD, /*!< Seek forward */
-  BACKWARD /*!< Seek backwards */
-};
-
 class IPlayer
 {
 public:
@@ -114,7 +106,7 @@ public:
   virtual bool IsPassthrough() const { return false;}
   virtual bool CanSeek() const { return true; }
   virtual void Seek(bool bPlus = true, bool bLargeStep = false, bool bChapterOverride = false) = 0;
-  virtual bool SeekScene(PlayerSeekDirection seekDirection) { return false; }
+  virtual bool SeekScene(Direction seekDirection) { return false; }
   virtual void SeekPercentage(float fPercent = 0){}
   virtual float GetCachePercentage() const { return 0; }
   virtual void SetMute(bool bOnOff){}
