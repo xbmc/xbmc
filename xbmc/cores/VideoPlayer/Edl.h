@@ -20,10 +20,7 @@ class CEdl
 public:
   CEdl();
 
-  // FIXME: remove const modifier for fFramesPerSecond as it makes no sense as it means nothing
-  // for the reader of the interface, but limits the implementation
-  // to not modify the parameter on stack
-  bool ReadEditDecisionLists(const CFileItem& fileItem, const float fFramesPerSecond);
+  bool ReadEditDecisionLists(const CFileItem& fileItem, float fps);
   void Clear();
 
   /*!
@@ -170,21 +167,12 @@ private:
   */
   EDL::Action m_lastEditActionType{EDL::EDL_ACTION_NONE};
 
-  // FIXME: remove const modifier for fFramesPerSecond as it makes no sense as it means nothing
-  // for the reader of the interface, but limits the implementation
-  // to not modify the parameter on stack
-  bool ReadEdl(const std::string& strMovie, const float fFramesPerSecond);
-  // FIXME: remove const modifier for fFramesPerSecond as it makes no sense as it means nothing
-  // for the reader of the interface, but limits the implementation
-  // to not modify the parameter on stack
-  bool ReadComskip(const std::string& strMovie, const float fFramesPerSecond);
-  // FIXME: remove const modifier for strMovie as it makes no sense as it means nothing
-  // for the reader of the interface, but limits the implementation
-  // to not modify the parameter on stack
+  bool ReadEdl(const std::string& strMovie, float fps);
+
+  bool ReadComskip(const std::string& strMovie, float fps);
+
   bool ReadVideoReDo(const std::string& strMovie);
-  // FIXME: remove const modifier for strMovie as it makes no sense as it means nothing
-  // for the reader of the interface, but limits the implementation
-  // to not modify the parameter on stack
+
   bool ReadBeyondTV(const std::string& strMovie);
   bool ReadPvr(const CFileItem& fileItem);
 
@@ -195,10 +183,7 @@ private:
   */
   bool AddEdit(const EDL::Edit& newEdit);
 
-  // FIXME: remove const modifier for strMovie as it makes no sense as it means nothing
-  // for the reader of the interface, but limits the implementation
-  // to not modify the parameter on stack
-  bool AddSceneMarker(const int sceneMarker);
+  bool AddSceneMarker(int sceneMarker);
 
   void MergeShortCommBreaks();
 

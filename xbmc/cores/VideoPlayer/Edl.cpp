@@ -43,7 +43,7 @@ void CEdl::Clear()
   m_lastEditTime = -1;
 }
 
-bool CEdl::ReadEditDecisionLists(const CFileItem& fileItem, const float fFramesPerSecond)
+bool CEdl::ReadEditDecisionLists(const CFileItem& fileItem, float fps)
 {
   bool bFound = false;
 
@@ -66,10 +66,10 @@ bool CEdl::ReadEditDecisionLists(const CFileItem& fileItem, const float fFramesP
       bFound = ReadVideoReDo(strMovie);
 
     if (!bFound)
-      bFound = ReadEdl(strMovie, fFramesPerSecond);
+      bFound = ReadEdl(strMovie, fps);
 
     if (!bFound)
-      bFound = ReadComskip(strMovie, fFramesPerSecond);
+      bFound = ReadComskip(strMovie, fps);
 
     if (!bFound)
       bFound = ReadBeyondTV(strMovie);
@@ -88,7 +88,7 @@ bool CEdl::ReadEditDecisionLists(const CFileItem& fileItem, const float fFramesP
   return bFound;
 }
 
-bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
+bool CEdl::ReadEdl(const std::string& strMovie, float fps)
 {
   Clear();
 
@@ -190,10 +190,10 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
       }
       else if (strFields[i][0] == '#') // #12345 format for frame number
       {
-        if (fFramesPerSecond > 0.0f)
+        if (fps > 0.0f)
         {
-          editStartEnd[i] = static_cast<int64_t>(std::atol(strFields[i].substr(1).c_str()) /
-                                                 fFramesPerSecond * 1000); // frame number to ms
+          editStartEnd[i] = static_cast<int64_t>(std::atol(strFields[i].substr(1).c_str()) / fps *
+                                                 1000); // frame number to ms
         }
         else
         {
@@ -281,7 +281,7 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
   }
 }
 
-bool CEdl::ReadComskip(const std::string& strMovie, const float fFramesPerSecond)
+bool CEdl::ReadComskip(const std::string& strMovie, float fps)
 {
   Clear();
 
@@ -315,9 +315,9 @@ bool CEdl::ReadComskip(const std::string& strMovie, const float fFramesPerSecond
     /*
      * Not all generated Comskip files have the frame rate information.
      */
-    if (fFramesPerSecond > 0.0f)
+    if (fps > 0.0f)
     {
-      fFrameRate = fFramesPerSecond;
+      fFrameRate = fps;
       CLog::Log(LOGWARNING,
                 "Edl::ReadComskip - Frame rate not in Comskip file. Using detected frames per "
                 "second: {:.3f}",
@@ -707,7 +707,7 @@ bool CEdl::AddEdit(const Edit& newEdit)
   return true;
 }
 
-bool CEdl::AddSceneMarker(const int iSceneMarker)
+bool CEdl::AddSceneMarker(int iSceneMarker)
 {
   Edit edit;
 
