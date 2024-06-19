@@ -141,10 +141,7 @@ public:
   */
   EDL::Action GetLastEditActionType() const;
 
-  // FIXME: remove const modifier for iClock as it makes no sense as it means nothing
-  // for the reader of the interface, but limits the implementation
-  // to not modify the parameter on stack
-  bool GetNextSceneMarker(EDL::EditDirection direction, const int iClock, int* iSceneMarker);
+  bool GetNextSceneMarker(EDL::EditDirection direction, int clock, int* sceneMarker);
 
   static std::string MillisecondsToTimeString(int milliSeconds);
 

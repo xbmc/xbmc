@@ -45,47 +45,48 @@ void CEdl::Clear()
 
 bool CEdl::ReadEditDecisionLists(const CFileItem& fileItem, float fps)
 {
-  bool bFound = false;
+  bool found = false;
 
   /*
    * Only check for edit decision lists if the movie is on the local hard drive, or accessed over a
    * network share (even if from a different private network).
    */
-  const std::string& strMovie = fileItem.GetDynPath();
-  if ((URIUtils::IsHD(strMovie) || URIUtils::IsOnLAN(strMovie, LanCheckMode::ANY_PRIVATE_SUBNET)) &&
-      !URIUtils::IsInternetStream(strMovie))
+  const std::string& mediaFilePath = fileItem.GetDynPath();
+  if ((URIUtils::IsHD(mediaFilePath) ||
+       URIUtils::IsOnLAN(mediaFilePath, LanCheckMode::ANY_PRIVATE_SUBNET)) &&
+      !URIUtils::IsInternetStream(mediaFilePath))
   {
     CLog::Log(LOGDEBUG,
               "{} - Checking for edit decision lists (EDL) on local drive or remote share for: {}",
-              __FUNCTION__, CURL::GetRedacted(strMovie));
+              __FUNCTION__, CURL::GetRedacted(mediaFilePath));
 
     /*
      * Read any available file format until a valid EDL related file is found.
      */
-    if (!bFound)
-      bFound = ReadVideoReDo(strMovie);
+    if (!found)
+      found = ReadVideoReDo(mediaFilePath);
 
-    if (!bFound)
-      bFound = ReadEdl(strMovie, fps);
+    if (!found)
+      found = ReadEdl(mediaFilePath, fps);
 
-    if (!bFound)
-      bFound = ReadComskip(strMovie, fps);
+    if (!found)
+      found = ReadComskip(mediaFilePath, fps);
 
-    if (!bFound)
-      bFound = ReadBeyondTV(strMovie);
+    if (!found)
+      found = ReadBeyondTV(mediaFilePath);
   }
   else
   {
-    bFound = ReadPvr(fileItem);
+    found = ReadPvr(fileItem);
   }
 
-  if (bFound)
+  if (found)
   {
     MergeShortCommBreaks();
     AddSceneMarkersAtStartAndEndOfEdits();
   }
 
-  return bFound;
+  return found;
 }
 
 bool CEdl::ReadEdl(const std::string& mediaFilePath, float fps)
@@ -883,25 +884,25 @@ EDL::Action CEdl::GetLastEditActionType() const
   return m_lastEditActionType;
 }
 
-bool CEdl::GetNextSceneMarker(EDL::EditDirection direction, const int iClock, int* iSceneMarker)
+bool CEdl::GetNextSceneMarker(EDL::EditDirection direction, int clock, int* sceneMarker)
 {
   if (!HasSceneMarker())
     return false;
 
-  int iSeek = GetTimeAfterRestoringCuts(iClock);
+  const int seekTime = GetTimeAfterRestoringCuts(clock);
 
-  int iDiff = 10 * 60 * 60 * 1000; // 10 hours to ms.
-  bool bFound = false;
+  int diff = 10 * 60 * 60 * 1000; // 10 hours to ms.
+  bool found = false;
 
   if (direction == EDL::EditDirection::FORWARD) // Find closest scene forwards
   {
     for (int i = 0; i < (int)m_vecSceneMarkers.size(); i++)
     {
-      if ((m_vecSceneMarkers[i] > iSeek) && ((m_vecSceneMarkers[i] - iSeek) < iDiff))
+      if ((m_vecSceneMarkers[i] > seekTime) && ((m_vecSceneMarkers[i] - seekTime) < diff))
       {
-        iDiff = m_vecSceneMarkers[i] - iSeek;
-        *iSceneMarker = m_vecSceneMarkers[i];
-        bFound = true;
+        diff = m_vecSceneMarkers[i] - seekTime;
+        *sceneMarker = m_vecSceneMarkers[i];
+        found = true;
       }
     }
   }
@@ -909,11 +910,11 @@ bool CEdl::GetNextSceneMarker(EDL::EditDirection direction, const int iClock, in
   {
     for (int i = 0; i < (int)m_vecSceneMarkers.size(); i++)
     {
-      if ((m_vecSceneMarkers[i] < iSeek) && ((iSeek - m_vecSceneMarkers[i]) < iDiff))
+      if ((m_vecSceneMarkers[i] < seekTime) && ((seekTime - m_vecSceneMarkers[i]) < diff))
       {
-        iDiff = iSeek - m_vecSceneMarkers[i];
-        *iSceneMarker = m_vecSceneMarkers[i];
-        bFound = true;
+        diff = seekTime - m_vecSceneMarkers[i];
+        *sceneMarker = m_vecSceneMarkers[i];
+        found = true;
       }
     }
   }
@@ -923,10 +924,10 @@ bool CEdl::GetNextSceneMarker(EDL::EditDirection direction, const int iClock, in
    * picked up when scene markers are added.
    */
   Edit edit;
-  if (bFound && InEdit(*iSceneMarker, &edit) && edit.action == Action::CUT)
-    *iSceneMarker = edit.end;
+  if (found && InEdit(*sceneMarker, &edit) && edit.action == Action::CUT)
+    *sceneMarker = edit.end;
 
-  return bFound;
+  return found;
 }
 
 std::string CEdl::MillisecondsToTimeString(int milliSeconds)
