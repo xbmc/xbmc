@@ -88,11 +88,11 @@ bool CEdl::ReadEditDecisionLists(const CFileItem& fileItem, float fps)
   return bFound;
 }
 
-bool CEdl::ReadEdl(const std::string& strMovie, float fps)
+bool CEdl::ReadEdl(const std::string& mediaFilePath, float fps)
 {
   Clear();
 
-  std::string edlFilename(URIUtils::ReplaceExtension(strMovie, ".edl"));
+  const std::string edlFilename(URIUtils::ReplaceExtension(mediaFilePath, ".edl"));
   if (!CFile::Exists(edlFilename))
     return false;
 
@@ -281,11 +281,11 @@ bool CEdl::ReadEdl(const std::string& strMovie, float fps)
   }
 }
 
-bool CEdl::ReadComskip(const std::string& strMovie, float fps)
+bool CEdl::ReadComskip(const std::string& mediaFilePath, float fps)
 {
   Clear();
 
-  std::string comskipFilename(URIUtils::ReplaceExtension(strMovie, ".txt"));
+  const std::string comskipFilename(URIUtils::ReplaceExtension(mediaFilePath, ".txt"));
   if (!CFile::Exists(comskipFilename))
     return false;
 
@@ -376,7 +376,7 @@ bool CEdl::ReadComskip(const std::string& strMovie, float fps)
   }
 }
 
-bool CEdl::ReadVideoReDo(const std::string& strMovie)
+bool CEdl::ReadVideoReDo(const std::string& mediaFilePath)
 {
   /*
    * VideoReDo file is strange. Tags are XML like, but it isn't an XML file.
@@ -385,7 +385,7 @@ bool CEdl::ReadVideoReDo(const std::string& strMovie)
    */
 
   Clear();
-  std::string videoReDoFilename(URIUtils::ReplaceExtension(strMovie, ".Vprj"));
+  const std::string videoReDoFilename(URIUtils::ReplaceExtension(mediaFilePath, ".Vprj"));
   if (!CFile::Exists(videoReDoFilename))
     return false;
 
@@ -474,11 +474,12 @@ bool CEdl::ReadVideoReDo(const std::string& strMovie)
   }
 }
 
-bool CEdl::ReadBeyondTV(const std::string& strMovie)
+bool CEdl::ReadBeyondTV(const std::string& mediaFilePath)
 {
   Clear();
 
-  std::string beyondTVFilename(URIUtils::ReplaceExtension(strMovie, URIUtils::GetExtension(strMovie) + ".chapters.xml"));
+  const std::string beyondTVFilename(URIUtils::ReplaceExtension(
+      mediaFilePath, URIUtils::GetExtension(mediaFilePath) + ".chapters.xml"));
   if (!CFile::Exists(beyondTVFilename))
     return false;
 
