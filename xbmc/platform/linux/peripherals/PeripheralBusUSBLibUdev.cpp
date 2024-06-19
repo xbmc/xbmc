@@ -108,7 +108,9 @@ bool CPeripheralBusUSB::PerformDeviceScan(PeripheralScanResults &results)
 
     if (bContinue)
     {
-      dev = udev_device_get_parent(udev_device_get_parent(parent));
+      dev = udev_device_get_parent(parent);
+      if (dev)
+        dev = udev_device_get_parent(dev);
       if (!dev || !udev_device_get_sysattr_value(dev,"idVendor") || !udev_device_get_sysattr_value(dev, "idProduct"))
         bContinue = false;
     }
