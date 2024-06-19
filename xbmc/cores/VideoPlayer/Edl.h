@@ -163,13 +163,9 @@ private:
   EDL::Action m_lastEditActionType{EDL::EDL_ACTION_NONE};
 
   bool ReadEdl(const std::string& mediaFilePath, float fps);
-
   bool ReadComskip(const std::string& mediaFilePath, float fps);
-
   bool ReadVideoReDo(const std::string& mediaFilePath);
-
   bool ReadBeyondTV(const std::string& mediaFilePath);
-
   bool ReadPvr(const CFileItem& fileItem);
 
   /*!
