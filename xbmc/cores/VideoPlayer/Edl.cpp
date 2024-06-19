@@ -883,7 +883,7 @@ EDL::Action CEdl::GetLastEditActionType() const
   return m_lastEditActionType;
 }
 
-bool CEdl::GetNextSceneMarker(bool bPlus, const int iClock, int *iSceneMarker)
+bool CEdl::GetNextSceneMarker(EDL::EditDirection direction, const int iClock, int* iSceneMarker)
 {
   if (!HasSceneMarker())
     return false;
@@ -893,7 +893,7 @@ bool CEdl::GetNextSceneMarker(bool bPlus, const int iClock, int *iSceneMarker)
   int iDiff = 10 * 60 * 60 * 1000; // 10 hours to ms.
   bool bFound = false;
 
-  if (bPlus) // Find closest scene forwards
+  if (direction == EDL::EditDirection::FORWARD) // Find closest scene forwards
   {
     for (int i = 0; i < (int)m_vecSceneMarkers.size(); i++)
     {
@@ -905,7 +905,7 @@ bool CEdl::GetNextSceneMarker(bool bPlus, const int iClock, int *iSceneMarker)
       }
     }
   }
-  else // Find closest scene backwards
+  else if (direction == EDL::EditDirection::BACKWARD) // Find closest scene backwards
   {
     for (int i = 0; i < (int)m_vecSceneMarkers.size(); i++)
     {

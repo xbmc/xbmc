@@ -28,4 +28,13 @@ struct Edit
   Action action = Action::CUT;
 };
 
+/*!
+ * @brief Specify the search direction for an EDL edit
+*/
+enum class EditDirection
+{
+  FORWARD, /*!< Search forward */
+  BACKWARD /*!< Search backwards */
+};
+
 } // namespace EDL
