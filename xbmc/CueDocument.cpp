@@ -75,10 +75,7 @@ class FileReader
   : public CueReader
 {
 public:
-  explicit FileReader(const std::string &strFile) : m_szBuffer{}
-  {
-    m_opened = m_file.Open(strFile);
-  }
+  explicit FileReader(const std::string& strFile) { m_opened = m_file.Open(strFile); }
   bool ReadLine(std::string &line) override
   {
     // Read the next line.
@@ -106,7 +103,7 @@ public:
 private:
   CFile m_file;
   bool m_opened;
-  char m_szBuffer[1024];
+  char m_szBuffer[1024]{};
 };
 
 class BufferReader

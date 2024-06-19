@@ -306,7 +306,7 @@ protected:
   struct SRenderInfo
   {
     bool m_isClockSync;
-  } m_renderInfo;
+  } m_renderInfo{};
 
   mutable CCriticalSection m_stateSection;
   bool m_playerStateChanged = false;

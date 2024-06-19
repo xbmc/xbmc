@@ -14,12 +14,8 @@
 #include <mutex>
 #include <utility>
 
-CDataCacheCore::CDataCacheCore() :
-  m_playerVideoInfo {},
-  m_playerAudioInfo {},
-  m_contentInfo {},
-  m_renderInfo {},
-  m_stateInfo {}
+CDataCacheCore::CDataCacheCore()
+  : m_playerVideoInfo{}, m_playerAudioInfo{}, m_contentInfo{}, m_stateInfo{}
 {
 }
 
