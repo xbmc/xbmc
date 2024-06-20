@@ -152,6 +152,7 @@ bool CActiveAEBufferPoolResample::Create(
   m_remap = remap;
   m_stereoUpmix = upmix;
   m_mixSubLevel = mixSubLevel * M_SQRT1_2;
+  CLog::LogF(LOGWARNING, "Mixing Level: {}", mixSubLevel);
 
   m_normalize = true;
   if ((m_format.m_channelLayout.Count() < m_inputFormat.m_channelLayout.Count() && !normalize))

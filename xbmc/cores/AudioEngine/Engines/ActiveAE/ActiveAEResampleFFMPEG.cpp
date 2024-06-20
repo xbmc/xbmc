@@ -85,6 +85,8 @@ bool CActiveAEResampleFFMPEG::Init(SampleConfig dstConfig,
     return false;
   }
 
+  CLog::LogF(LOGWARNING, "Mixing Level: {}", mixSubLevel);
+
   if (mixSubLevel > 0.0f)
     av_opt_set_double(m_pContext, "lfe_mix_level", mixSubLevel, 0);
 

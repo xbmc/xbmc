@@ -593,6 +593,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
                                               &m_settings.silenceTimeoutMinutes, sizeof(int));
           m_sink.m_controlPort.SendOutMessage(CSinkControlProtocol::SETMIXSUBLEVEL,
                                               &m_settings.mixSubLevel, sizeof(float));
+          CLog::LogF(LOGWARNING, "Mixing Level: {}", mixSubLevel);
           ChangeResamplers();
           if (!NeedReconfigureBuffers() && !NeedReconfigureSink())
             return;
