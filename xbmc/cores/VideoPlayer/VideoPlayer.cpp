@@ -3361,6 +3361,17 @@ float CVideoPlayer::GetSubTitleDelay()
   return (float) -m_VideoPlayerVideo->GetSubtitleDelay() / DVD_TIME_BASE;
 }
 
+void CVideoPlayer::SetSubtitleCompensateFPS(bool bDoCompensate)
+{
+  m_processInfo->GetVideoSettingsLocked().SetSubtitleCompensateFPS(bDoCompensate);
+  m_VideoPlayerVideo->SetSubtitleCompensateFPS(bDoCompensate);
+}
+
+bool CVideoPlayer::GetSubtitleCompensateFPS() const
+{
+  return m_VideoPlayerVideo->GetSubtitleCompensateFPS();
+}
+
 bool CVideoPlayer::GetSubtitleVisible() const
 {
   if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))

@@ -46,6 +46,7 @@
 
 #define SETTING_SUBTITLE_ENABLE                "subtitles.enable"
 #define SETTING_SUBTITLE_DELAY                 "subtitles.delay"
+#define SETTING_SUBTITLE_FPS                   "subtitles.fps"
 #define SETTING_SUBTITLE_STREAM                "subtitles.stream"
 #define SETTING_SUBTITLE_BROWSER               "subtitles.browser"
 #define SETTING_SUBTITLE_SEARCH                "subtitles.search"
@@ -110,6 +111,11 @@ void CGUIDialogSubtitleSettings::OnSettingChanged(const std::shared_ptr<const CS
   {
     float value = static_cast<float>(std::static_pointer_cast<const CSettingNumber>(setting)->GetValue());
     appPlayer->SetSubTitleDelay(value);
+  }
+  else if (settingId == SETTING_SUBTITLE_FPS)
+  {
+    bool value = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
+    appPlayer->SetSubtitleCompensateFPS(value);
   }
   else if (settingId == SETTING_SUBTITLE_STREAM)
   {
@@ -301,6 +307,13 @@ void CGUIDialogSubtitleSettings::InitializeSettings()
   {
     std::shared_ptr<CSettingNumber> settingSubtitleDelay = AddSlider(groupSubtitles, SETTING_SUBTITLE_DELAY, 22006, SettingLevel::Basic, videoSettings.m_SubtitleDelay, 0, -CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubsDelayRange, 0.1f, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubsDelayRange, 22006, usePopup);
     std::static_pointer_cast<CSettingControlSlider>(settingSubtitleDelay->GetControl())->SetFormatter(SettingFormatterDelay);
+  }
+
+  if (SupportsSubtitleFeature(IPC_SUBS_STRETCH))
+  {
+    m_subtitleCompensateFPS = appPlayer->GetSubtitleCompensateFPS();
+    AddToggle(groupSubtitles, SETTING_SUBTITLE_FPS, 39202, SettingLevel::Basic,
+              m_subtitleCompensateFPS);
   }
 
   // subtitle stream setting

@@ -210,6 +210,7 @@ public:
   float m_VolumeAmplification;
   int m_SubtitleStream;
   float m_SubtitleDelay;
+  double m_subtitleCompensateFPS;
   int m_subtitleVerticalPosition{0};
   bool m_subtitleVerticalPositionSave{false};
   bool m_SubtitleOn;
@@ -246,6 +247,7 @@ public:
   void SetVideoStream(int stream);
   void SetAudioDelay(float delay);
   void SetSubtitleDelay(float delay);
+  void SetSubtitleCompensateFPS(bool doCompensate);
 
   /*!
    * \brief Set the subtitle vertical position,
