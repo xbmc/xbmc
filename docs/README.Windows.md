@@ -1,7 +1,7 @@
 ![Kodi Logo](resources/banner_slim.png)
 
 # Windows build guide
-This guide has been tested with Windows 10 Pro x64, version 21H2, build 19044.1415. Please read it in full before you proceed to familiarize yourself with the build procedure.
+This guide has been tested with Windows 10 Pro x64, version 22H2, build 19045.4529. Please read it in full before you proceed to familiarize yourself with the build procedure.
 
 ## Table of Contents
 1. **[Document conventions](#1-document-conventions)**
@@ -83,6 +83,7 @@ Default options are fine.
 Start the Visual Studio installer and click **Workloads** select
 * Under **Desktop & Mobile** section select
   * `Desktop development with C++`
+    * Select the optional element Windows 11 SDK (10.0.22621.0)
   * `Universal Windows Platform development` (if compiling for UWP or UWP-ARM)
 
 Click in **Individual components** select
