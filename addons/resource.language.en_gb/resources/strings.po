@@ -7366,31 +7366,6 @@ msgid "Enable HQ scalers for scaling above"
 msgstr ""
 
 #: system/settings/settings.xml
-msgctxt "#39198"
-msgid "HQ upscaler intermediate format"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#39199"
-msgid "Sets the precision of the intermediate scaling buffer used in the GPU rendering path. 16 bit precision likely demands more performance. If the hardware is unable to support the selected format, Kodi will fall back to the next best format."
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#39200"
-msgid "8 bit per channel"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#39201"
-msgid "10 bit per channel"
-msgstr ""
-
-#: system/settings/settings.xml
-msgctxt "#39202"
-msgid "16 bit per channel"
-msgstr ""
-
-#: system/settings/settings.xml
 msgctxt "#13436"
 msgid "Adjust display HDR mode"
 msgstr ""
@@ -7578,7 +7553,36 @@ msgctxt "#13471"
 msgid "Enable this option to use hardware acceleration for the AVC codec. If disabled the CPU will be used instead."
 msgstr ""
 
-#empty strings from id 13468 to 13504
+#: system/settings/settings.xml
+msgctxt "#13472"
+msgid "HQ upscaler intermediate format"
+msgstr ""
+
+#. Description of setting with label #13472 "HQ upscaler intermediate format"
+#: system/settings/settings.xml
+msgctxt "#13473"
+msgid "Sets the precision of the intermediate scaling buffer used in the GPU rendering path. 16 bit precision likely demands more performance. If the hardware is unable to support the selected format, Kodi will fall back to the next best format."
+msgstr ""
+
+#. Value of setting with label #13472 "HQ upscaler intermediate format"
+#: system/settings/settings.xml
+msgctxt "#13474"
+msgid "8 bit per channel"
+msgstr ""
+
+#. Value of setting with label #13472 "HQ upscaler intermediate format"
+#: system/settings/settings.xml
+msgctxt "#13475"
+msgid "10 bit per channel"
+msgstr ""
+
+#. Value of setting with label #13472 "HQ upscaler intermediate format"
+#: system/settings/settings.xml
+msgctxt "#13476"
+msgid "16 bit per channel"
+msgstr ""
+
+#empty strings from id 13477 to 13504
 
 #: system/settings/settings.xml
 msgctxt "#13505"
@@ -23823,6 +23827,8 @@ msgstr ""
 msgctxt "#39201"
 msgid "HDR10+"
 msgstr ""
+
+#empty strings from id 39202 to 39999
 
 # 40000 to 40800 are reserved for Video Versions feature
 
