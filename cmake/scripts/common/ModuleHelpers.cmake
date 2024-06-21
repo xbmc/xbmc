@@ -309,7 +309,7 @@ macro(BUILD_DEP_TARGET)
       if(NOT ${MODULE}_GENERATOR)
         set(${MODULE}_GENERATOR CMAKE_GENERATOR "${CMAKE_GENERATOR}")
       endif()
-      if(NOT ${MODULE}_GENERATOR_PLATFORM)
+      if(NOT DEFINED ${MODULE}_GENERATOR_PLATFORM)
         set(${MODULE}_GENERATOR_PLATFORM CMAKE_GENERATOR_PLATFORM ${CMAKE_GENERATOR_PLATFORM})
       endif()
     endif()
@@ -320,7 +320,7 @@ macro(BUILD_DEP_TARGET)
   endif()
 
   if(CONFIGURE_COMMAND)
-    if(NOT CMAKE_ARGS AND DEP_BUILDENV)
+    if(NOT CMAKE_ARGS AND (NOT BYPASS_DEP_BUILDENV AND DEP_BUILDENV))
       # DEP_BUILDENV only used for non cmake externalproject_add builds
       # iterate through CONFIGURE_COMMAND looking for multiple COMMAND, we need to
       # add DEP_BUILDENV for each distinct COMMAND

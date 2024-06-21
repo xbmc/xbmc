@@ -1,0 +1,1422 @@
+--- a/Modules/_ctypes/_ctypes.c
++++ b/Modules/_ctypes/_ctypes.c
+@@ -108,6 +108,9 @@
+ #include "Python.h"
+ // windows.h must be included before pycore internal headers
+ #ifdef MS_WIN32
++#ifndef WIN32_LEAN_AND_MEAN
++#define WIN32_LEAN_AND_MEAN
++#endif
+ #  include <windows.h>
+ #endif
+ 
+--- a/Modules/_ctypes/callproc.c
++++ b/Modules/_ctypes/callproc.c
+@@ -1043,6 +1043,7 @@
+ 
+ 
+ #ifdef MS_WIN32
++#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+ 
+ static PyObject *
+ GetComError(HRESULT errcode, GUID *riid, IUnknown *pIunk)
+@@ -1112,6 +1113,7 @@
+     return NULL;
+ }
+ #endif
++#endif
+ 
+ #if (defined(__x86_64__) && (defined(__MINGW64__) || defined(__CYGWIN__))) || \
+     defined(__aarch64__) || defined(__riscv)
+@@ -1278,9 +1280,11 @@
+ 
+ #ifdef MS_WIN32
+     if (iid && pIunk) {
++#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+         if (*(int *)resbuf & 0x80000000)
+             retval = GetComError(*(HRESULT *)resbuf, iid, pIunk);
+         else
++#endif
+             retval = PyLong_FromLong(*(int *)resbuf);
+     } else if (flags & FUNCFLAG_HRESULT) {
+         if (*(int *)resbuf & 0x80000000)
+@@ -1360,7 +1364,11 @@
+     /* bpo-36085: Limit DLL search directories to avoid pre-loading
+      * attacks and enable use of the AddDllDirectory function.
+      */
++#ifdef MS_DESKTOP
+     hMod = LoadLibraryExW(name, NULL, (DWORD)load_flags);
++#else
++	hMod = LoadPackagedLibrary(name, 0);
++#endif
+     err = hMod ? 0 : GetLastError();
+     Py_END_ALLOW_THREADS
+ 
+--- a/Modules/_ctypes/ctypes.h
++++ b/Modules/_ctypes/ctypes.h
+@@ -26,6 +26,14 @@
+   #endif
+ #endif
+ 
++#ifdef MS_WINDOWS
++#ifndef WIN32_LEAN_AND_MEAN
++#define WIN32_LEAN_AND_MEAN
++#endif
++#include <Windows.h>
++#include <Unknwn.h>
++#endif
++
+ typedef struct tagPyCArgObject PyCArgObject;
+ typedef struct tagCDataObject CDataObject;
+ typedef PyObject *(* GETFUNC)(void *, Py_ssize_t size);
+--- a/Modules/_io/winconsoleio.c
++++ b/Modules/_io/winconsoleio.c
+@@ -46,6 +46,12 @@
+    of less than one character */
+ #define SMALLBUF 4
+ 
++#ifdef MS_WINDOWS
++/* defined in fileutils.c */
++PyAPI_FUNC(HANDLE) _Py_win_create_file(LPCWSTR, DWORD, DWORD, LPSECURITY_ATTRIBUTES,
++										DWORD, DWORD, HANDLE);
++#endif
++
+ char _get_console_type(HANDLE handle) {
+     DWORD mode, peek_count;
+ 
+@@ -351,10 +357,10 @@
+            on the specific access. This is required for modern names
+            CONIN$ and CONOUT$, which allow reading/writing state as
+            well as reading/writing content. */
+-        handle = CreateFileW(name, GENERIC_READ | GENERIC_WRITE,
++        handle = _Py_win_create_file(name, GENERIC_READ | GENERIC_WRITE,
+             FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
+         if (handle == INVALID_HANDLE_VALUE)
+-            handle = CreateFileW(name, access,
++            handle = _Py_win_create_file(name, access,
+                 FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
+         Py_END_ALLOW_THREADS
+ 
+--- a/Modules/_localemodule.c
++++ b/Modules/_localemodule.c
+@@ -443,6 +443,9 @@
+ 
+ #if defined(MS_WINDOWS)
+ 
++int
++PyOS_snwprintf(wchar_t*, size_t, const wchar_t*, ...);
++
+ /*[clinic input]
+ _locale._getdefaultlocale
+ 
+@@ -452,31 +455,31 @@
+ _locale__getdefaultlocale_impl(PyObject *module)
+ /*[clinic end generated code: output=e6254088579534c2 input=003ea41acd17f7c7]*/
+ {
+-    char encoding[20];
+-    char locale[100];
++    wchar_t encoding[100];
++    wchar_t locale[100];
+ 
+-    PyOS_snprintf(encoding, sizeof(encoding), "cp%u", GetACP());
++    PyOS_snwprintf(encoding, sizeof(encoding), L"cp%u", GetACP());
+ 
+-    if (GetLocaleInfo(LOCALE_USER_DEFAULT,
++    if (GetLocaleInfoW(LOCALE_USER_DEFAULT,
+                       LOCALE_SISO639LANGNAME,
+-                      locale, sizeof(locale))) {
+-        Py_ssize_t i = strlen(locale);
++                      locale,  sizeof(locale) / sizeof(wchar_t))) {
++        Py_ssize_t i = wcslen(locale);
+         locale[i++] = '_';
+-        if (GetLocaleInfo(LOCALE_USER_DEFAULT,
++        if (GetLocaleInfoW(LOCALE_USER_DEFAULT,
+                           LOCALE_SISO3166CTRYNAME,
+-                          locale+i, (int)(sizeof(locale)-i)))
+-            return Py_BuildValue("ss", locale, encoding);
++                          locale+i, (int)(sizeof(locale)-i) / sizeof(wchar_t)))
++            return Py_BuildValue("uu", locale, encoding);
+     }
+ 
+     /* If we end up here, this windows version didn't know about
+        ISO639/ISO3166 names (it's probably Windows 95).  Return the
+        Windows language identifier instead (a hexadecimal number) */
+ 
+-    locale[0] = '0';
+-    locale[1] = 'x';
+-    if (GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_IDEFAULTLANGUAGE,
++    locale[0] = L'0';
++    locale[1] = L'x';
++    if (GetLocaleInfoW(LOCALE_USER_DEFAULT, LOCALE_IDEFAULTLANGUAGE,
+                       locale+2, sizeof(locale)-2)) {
+-        return Py_BuildValue("ss", locale, encoding);
++        return Py_BuildValue("uu", locale, encoding);
+     }
+ 
+     /* cannot determine the language code (very unlikely) */
+--- a/Modules/_pickle.c
++++ b/Modules/_pickle.c
+@@ -44,6 +44,11 @@
+ #define LONG LONG_
+ #endif
+ 
++#ifdef UNICODE
++#define REDEFINE_UNICODE 1
++#undef UNICODE
++#endif
++
+ /* Pickle opcodes. These must be kept updated with pickle.py.
+    Extensive docs are in pickletools.py. */
+ enum opcode {
+@@ -125,6 +130,11 @@
+     READONLY_BUFFER  = '\x98'
+ };
+ 
++#ifdef REDEFINE_UNICODE
++#define UNICODE 1
++#undef REDEFINE_UNICODE
++#endif
++
+ enum {
+    /* Keep in synch with pickle.Pickler._BATCHSIZE.  This is how many elements
+       batch_list/dict() pumps out before doing APPENDS/SETITEMS.  Nothing will
+--- a/Modules/_randommodule.c
++++ b/Modules/_randommodule.c
+@@ -76,6 +76,13 @@
+ #  include <process.h>            // getpid()
+ #endif
+ 
++#ifdef MS_WINDOWS
++#ifndef WIN32_LEAN_AND_MEAN
++#define WIN32_LEAN_AND_MEAN
++#endif
++#include <Windows.h>
++#endif
++
+ /* Period parameters -- These are all magic.  Don't change. */
+ #define N 624
+ #define M 397
+@@ -258,11 +265,7 @@
+     key[0] = (uint32_t)(now & 0xffffffffU);
+     key[1] = (uint32_t)(now >> 32);
+ 
+-#ifdef HAVE_GETPID
+-    key[2] = (uint32_t)getpid();
+-#else
+-    key[2] = 0;
+-#endif
++    key[2] = (uint32_t)GetCurrentProcessId();
+ 
+     now = _PyTime_GetMonotonicClock();
+     key[3] = (uint32_t)(now & 0xffffffffU);
+--- a/Modules/_ssl.c
++++ b/Modules/_ssl.c
+@@ -61,6 +61,14 @@
+ #include "openssl/bio.h"
+ #include "openssl/dh.h"
+ 
++#ifdef MS_WINDOWS
++#include <wincrypt.h>
++
++// undef windows def to make sure we use openssl's header def
++#undef X509_NAME
++#include "openssl/ossl_typ.h"
++#endif
++
+ #ifndef OPENSSL_THREADS
+ #  error "OPENSSL_THREADS is not defined, Python requires thread-safe OpenSSL"
+ #endif
+--- a/Modules/_winapi.c
++++ b/Modules/_winapi.c
+@@ -39,8 +39,11 @@
+ #include "structmember.h"         // PyMemberDef
+ 
+ 
++#ifndef WINDOWS_LEAN_AND_MEAN
+ #define WINDOWS_LEAN_AND_MEAN
+-#include "windows.h"
++#endif
++#include <windows.h>
++#include <winioctl.h>
+ #include <crtdbg.h>
+ #include "winreparse.h"
+ 
+@@ -63,23 +66,6 @@
+ 
+ #define T_HANDLE T_POINTER
+ 
+-/* Grab CancelIoEx dynamically from kernel32 */
+-static int has_CancelIoEx = -1;
+-static BOOL (CALLBACK *Py_CancelIoEx)(HANDLE, LPOVERLAPPED);
+-
+-static int
+-check_CancelIoEx()
+-{
+-    if (has_CancelIoEx == -1)
+-    {
+-        HINSTANCE hKernel32 = GetModuleHandle("KERNEL32");
+-        * (FARPROC *) &Py_CancelIoEx = GetProcAddress(hKernel32,
+-                                                      "CancelIoEx");
+-        has_CancelIoEx = (Py_CancelIoEx != NULL);
+-    }
+-    return has_CancelIoEx;
+-}
+-
+ typedef struct {
+     PyTypeObject *overlapped_type;
+ } WinApiState;
+@@ -134,9 +120,7 @@
+ 
+     PyObject_GC_UnTrack(self);
+     if (self->pending) {
+-        if (check_CancelIoEx() &&
+-            Py_CancelIoEx(self->handle, &self->overlapped) &&
+-            GetOverlappedResult(self->handle, &self->overlapped, &bytes, TRUE))
++        if (GetOverlappedResult(self->handle, &self->overlapped, &bytes, TRUE))
+         {
+             /* The operation is no longer pending -- nothing to do. */
+         }
+@@ -307,10 +291,7 @@
+ 
+     if (self->pending) {
+         Py_BEGIN_ALLOW_THREADS
+-        if (check_CancelIoEx())
+-            res = Py_CancelIoEx(self->handle, &self->overlapped);
+-        else
+-            res = CancelIo(self->handle);
++        res = CancelIo(self->handle);
+         Py_END_ALLOW_THREADS
+     }
+ 
+@@ -446,6 +427,17 @@
+ 
+     Py_RETURN_NONE;
+ }
++
++HANDLE
++_Py_win_create_file(
++	_In_ LPCWSTR lpFileName,
++	_In_ DWORD dwDesiredAccess,
++	_In_ DWORD dwShareMode,
++	_In_opt_ LPSECURITY_ATTRIBUTES lpSecurityAttributes,
++	_In_ DWORD dwCreationDisposition,
++	_In_ DWORD dwFlagsAndAttributes,
++	_In_opt_ HANDLE hTemplateFile
++);
+ 
+ /*[clinic input]
+ _winapi.CreateFile -> HANDLE
+@@ -461,7 +453,7 @@
+ [clinic start generated code]*/
+ 
+ static HANDLE
+-_winapi_CreateFile_impl(PyObject *module, LPCTSTR file_name,
++_winapi_CreateFile_impl(PyObject *module, LPCWSTR file_name,
+                         DWORD desired_access, DWORD share_mode,
+                         LPSECURITY_ATTRIBUTES security_attributes,
+                         DWORD creation_disposition,
+@@ -477,10 +469,10 @@
+     }
+ 
+     Py_BEGIN_ALLOW_THREADS
+-    handle = CreateFile(file_name, desired_access,
+-                        share_mode, security_attributes,
+-                        creation_disposition,
+-                        flags_and_attributes, template_file);
++    handle = _Py_win_create_file(file_name, desired_access,
++        share_mode, security_attributes,
++        creation_disposition,
++        flags_and_attributes, template_file);
+     Py_END_ALLOW_THREADS
+ 
+     if (handle == INVALID_HANDLE_VALUE)
+@@ -539,6 +531,9 @@
+                             LPCWSTR dst_path)
+ /*[clinic end generated code: output=44b3f5e9bbcc4271 input=963d29b44b9384a7]*/
+ {
++#ifdef MS_APP
++	Py_RETURN_NOTIMPLEMENTED;
++#else
+     /* Privilege adjustment */
+     HANDLE token = NULL;
+     TOKEN_PRIVILEGES tp;
+@@ -664,6 +659,7 @@
+         return PyErr_SetFromWindowsErr(ret);
+ 
+     Py_RETURN_NONE;
++#endif
+ }
+ 
+ /*[clinic input]
+@@ -943,7 +939,7 @@
+     Py_XDECREF(value_fast);
+     return ret;
+ }
+-
++#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+ typedef struct {
+     LPPROC_THREAD_ATTRIBUTE_LIST attribute_list;
+     LPHANDLE handle_list;
+@@ -1178,6 +1174,8 @@
+ 
+     return ret;
+ }
++
++#endif
+ 
+ /*[clinic input]
+ _winapi.DuplicateHandle -> HANDLE
+@@ -1379,7 +1377,16 @@
+ #pragma warning(disable:4996)
+ 
+ {
+-    return GetVersion();
++	OSVERSIONINFOW version_info;
++	version_info.dwOSVersionInfoSize = sizeof(version_info);
++
++	if (GetVersionExW(&version_info)) {
++		return version_info.dwMinorVersion |
++			(version_info.dwMajorVersion << 8) |
++			(version_info.dwBuildNumber << 16);
++	}
++
++	return 0;
+ }
+ 
+ #pragma warning(pop)
+@@ -2016,6 +2023,9 @@
+                                               PyObject *on_type_read)
+ /*[clinic end generated code: output=20829f00bebce55b input=cd357896d6501f68]*/
+ {
++#ifdef MS_APP
++	Py_RETURN_NOTIMPLEMENTED;
++#else
+ #define CCH_EXT 128
+ #define CB_TYPE 510
+     struct {
+@@ -2105,6 +2115,7 @@
+     Py_RETURN_NONE;
+ #undef CCH_EXT
+ #undef CB_TYPE
++#endif
+ }
+ 
+ 
+@@ -2115,8 +2126,10 @@
+     _WINAPI_CREATEFILEMAPPING_METHODDEF
+     _WINAPI_CREATENAMEDPIPE_METHODDEF
+     _WINAPI_CREATEPIPE_METHODDEF
++#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+     _WINAPI_CREATEPROCESS_METHODDEF
+     _WINAPI_CREATEJUNCTION_METHODDEF
++#endif
+     _WINAPI_DUPLICATEHANDLE_METHODDEF
+     _WINAPI_EXITPROCESS_METHODDEF
+     _WINAPI_GETCURRENTPROCESS_METHODDEF
+@@ -2239,8 +2252,13 @@
+     WINAPI_CONSTANT(F_DWORD, SEC_NOCACHE);
+     WINAPI_CONSTANT(F_DWORD, SEC_RESERVE);
+     WINAPI_CONSTANT(F_DWORD, SEC_WRITECOMBINE);
++#ifdef MS_DESKTOP
+     WINAPI_CONSTANT(F_DWORD, STARTF_USESHOWWINDOW);
+     WINAPI_CONSTANT(F_DWORD, STARTF_USESTDHANDLES);
++#else
++    PyDict_SetItemString(d, "STARTF_USESHOWWINDOW", Py_BuildValue("k", 0x00000001));
++    PyDict_SetItemString(d, "STARTF_USESTDHANDLES", Py_BuildValue("k", 0x00000100));
++#endif
+     WINAPI_CONSTANT(F_DWORD, STD_INPUT_HANDLE);
+     WINAPI_CONSTANT(F_DWORD, STD_OUTPUT_HANDLE);
+     WINAPI_CONSTANT(F_DWORD, STD_ERROR_HANDLE);
+--- a/Modules/clinic/_winapi.c.h
++++ b/Modules/clinic/_winapi.c.h
+@@ -132,7 +132,7 @@
+     {"CreateFile", _PyCFunction_CAST(_winapi_CreateFile), METH_FASTCALL, _winapi_CreateFile__doc__},
+ 
+ static HANDLE
+-_winapi_CreateFile_impl(PyObject *module, LPCTSTR file_name,
++_winapi_CreateFile_impl(PyObject *module, LPCWSTR file_name,
+                         DWORD desired_access, DWORD share_mode,
+                         LPSECURITY_ATTRIBUTES security_attributes,
+                         DWORD creation_disposition,
+@@ -142,7 +142,7 @@
+ _winapi_CreateFile(PyObject *module, PyObject *const *args, Py_ssize_t nargs)
+ {
+     PyObject *return_value = NULL;
+-    LPCTSTR file_name;
++    LPCWSTR file_name;
+     DWORD desired_access;
+     DWORD share_mode;
+     LPSECURITY_ATTRIBUTES security_attributes;
+@@ -151,7 +151,7 @@
+     HANDLE template_file;
+     HANDLE _return_value;
+ 
+-    if (!_PyArg_ParseStack(args, nargs, "skk" F_POINTER "kk" F_HANDLE ":CreateFile",
++    if (!_PyArg_ParseStack(args, nargs, "ukk" F_POINTER "kk" F_HANDLE ":CreateFile",
+         &file_name, &desired_access, &share_mode, &security_attributes, &creation_disposition, &flags_and_attributes, &template_file)) {
+         goto exit;
+     }
+@@ -360,6 +360,7 @@
+     return return_value;
+ }
+ 
++#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+ PyDoc_STRVAR(_winapi_CreateProcess__doc__,
+ "CreateProcess($module, application_name, command_line, proc_attrs,\n"
+ "              thread_attrs, inherit_handles, creation_flags,\n"
+@@ -422,6 +423,7 @@
+ 
+     return return_value;
+ }
++#endif
+ 
+ PyDoc_STRVAR(_winapi_DuplicateHandle__doc__,
+ "DuplicateHandle($module, source_process_handle, source_handle,\n"
+--- a/Modules/faulthandler.c
++++ b/Modules/faulthandler.c
+@@ -518,7 +518,7 @@
+         handler->enabled = 1;
+     }
+ 
+-#ifdef MS_WINDOWS
++#if defined(MS_WINDOWS) && defined(MS_DESKTOP)
+     assert(fatal_error.exc_handler == NULL);
+     fatal_error.exc_handler = AddVectoredExceptionHandler(1, faulthandler_exc_handler);
+ #endif
+@@ -570,7 +570,7 @@
+             faulthandler_disable_fatal_handler(handler);
+         }
+     }
+-#ifdef MS_WINDOWS
++#if defined(MS_WINDOWS) && defined(MS_DESKTOP)
+     if (fatal_error.exc_handler != NULL) {
+         RemoveVectoredExceptionHandler(fatal_error.exc_handler);
+         fatal_error.exc_handler = NULL;
+@@ -996,7 +996,7 @@
+ static void
+ faulthandler_suppress_crash_report(void)
+ {
+-#ifdef MS_WINDOWS
++#if defined(MS_WINDOWS) && WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+     UINT mode;
+ 
+     /* Configure Windows to not display the Windows Error Reporting dialog */
+--- a/Modules/mmapmodule.c
++++ b/Modules/mmapmodule.c
+@@ -109,7 +109,7 @@
+ #ifdef MS_WINDOWS
+     HANDLE      map_handle;
+     HANDLE      file_handle;
+-    char *      tagname;
++    wchar_t *   tagname;
+ #endif
+ 
+ #ifdef UNIX
+@@ -446,20 +446,17 @@
+ 
+ #ifdef MS_WINDOWS
+     if (self->file_handle != INVALID_HANDLE_VALUE) {
+-        DWORD low,high;
+-        long long size;
+-        low = GetFileSize(self->file_handle, &high);
+-        if (low == INVALID_FILE_SIZE) {
++        LARGE_INTEGER size;
++        if (!GetFileSizeEx(self->file_handle, &size)) {
+             /* It might be that the function appears to have failed,
+                when indeed its size equals INVALID_FILE_SIZE */
+             DWORD error = GetLastError();
+             if (error != NO_ERROR)
+                 return PyErr_SetFromWindowsErr(error);
+         }
+-        if (!high && low < LONG_MAX)
+-            return PyLong_FromLong((long)low);
+-        size = (((long long)high)<<32) + low;
+-        return PyLong_FromLongLong(size);
++        if (!size.HighPart && size.LowPart < LONG_MAX)
++            return PyLong_FromLong((long)size.LowPart);
++        return PyLong_FromLongLong(size.QuadPart);
+     } else {
+         return PyLong_FromSsize_t(self->size);
+     }
+@@ -543,7 +540,7 @@
+ 
+         /* create a new file mapping and map a new view */
+         /* FIXME: call CreateFileMappingW with wchar_t tagname */
+-        self->map_handle = CreateFileMapping(
++        self->map_handle = CreateFileMappingW(
+             self->file_handle,
+             NULL,
+             PAGE_READWRITE,
+@@ -821,7 +818,7 @@
+ 
+     res = _PyObject_SIZE(Py_TYPE(self));
+     if (self->tagname)
+-        res += strlen(self->tagname) + 1;
++        res += wcslen(self->tagname) + 1;
+     return PyLong_FromSsize_t(res);
+ }
+ #endif
+@@ -1366,7 +1363,7 @@
+     DWORD off_lo;       /* lower 32 bits of offset */
+     DWORD size_hi;      /* upper 32 bits of size */
+     DWORD size_lo;      /* lower 32 bits of size */
+-    const char *tagname = "";
++    const wchar_t *tagname = NULL;
+     DWORD dwErr = 0;
+     int fileno;
+     HANDLE fh = 0;
+@@ -1376,7 +1373,7 @@
+                                 "tagname",
+                                 "access", "offset", NULL };
+ 
+-    if (!PyArg_ParseTupleAndKeywords(args, kwdict, "in|ziL", keywords,
++    if (!PyArg_ParseTupleAndKeywords(args, kwdict, "in|uiL", keywords,
+                                      &fileno, &map_size,
+                                      &tagname, &access, &offset)) {
+         return NULL;
+@@ -1463,17 +1460,13 @@
+             return NULL;
+         }
+         if (!map_size) {
+-            DWORD low,high;
+-            low = GetFileSize(fh, &high);
+-            /* low might just happen to have the value INVALID_FILE_SIZE;
+-               so we need to check the last error also. */
+-            if (low == INVALID_FILE_SIZE &&
+-                (dwErr = GetLastError()) != NO_ERROR) {
++            LARGE_INTEGER sizeStruct;
++            if (!GetFileSizeEx(fh, &sizeStruct)) {
+                 Py_DECREF(m_obj);
+                 return PyErr_SetFromWindowsErr(dwErr);
+             }
+ 
+-            size = (((long long) high) << 32) + low;
++            size = sizeStruct.QuadPart;
+             if (size == 0) {
+                 PyErr_SetString(PyExc_ValueError,
+                                 "cannot mmap an empty file");
+@@ -1509,14 +1502,14 @@
+     m_obj->weakreflist = NULL;
+     m_obj->exports = 0;
+     /* set the tag name */
+-    if (tagname != NULL && *tagname != '\0') {
+-        m_obj->tagname = PyMem_Malloc(strlen(tagname)+1);
++    if (tagname != NULL && *tagname != L'\0') {
++        m_obj->tagname = PyMem_Malloc((wcslen(tagname)+1) * sizeof(wchar_t));
+         if (m_obj->tagname == NULL) {
+             PyErr_NoMemory();
+             Py_DECREF(m_obj);
+             return NULL;
+         }
+-        strcpy(m_obj->tagname, tagname);
++        wcscpy(m_obj->tagname, tagname);
+     }
+     else
+         m_obj->tagname = NULL;
+@@ -1528,7 +1521,7 @@
+     off_lo = (DWORD)(offset & 0xFFFFFFFF);
+     /* For files, it would be sufficient to pass 0 as size.
+        For anonymous maps, we have to pass the size explicitly. */
+-    m_obj->map_handle = CreateFileMapping(m_obj->file_handle,
++    m_obj->map_handle = CreateFileMappingW(m_obj->file_handle,
+                                           NULL,
+                                           flProtect,
+                                           size_hi,
+--- a/Modules/overlapped.c
++++ b/Modules/overlapped.c
+@@ -61,6 +61,10 @@
+ /*[clinic end generated code: output=da39a3ee5e6b4b0d input=92e5a799db35b96c]*/
+ 
+ 
++#if !defined(HasOverlappedIoCompleted)
++#define HasOverlappedIoCompleted(lpOverlapped) (lpOverlapped)->Internal != STATUS_PENDING
++#endif
++
+ enum {TYPE_NONE, TYPE_NOT_STARTED, TYPE_READ, TYPE_READINTO, TYPE_WRITE,
+       TYPE_ACCEPT, TYPE_CONNECT, TYPE_DISCONNECT, TYPE_CONNECT_NAMED_PIPE,
+       TYPE_WAIT_NAMED_PIPE_AND_CONNECT, TYPE_TRANSMIT_FILE, TYPE_READ_FROM,
+@@ -349,6 +353,9 @@
+                                        DWORD Milliseconds)
+ /*[clinic end generated code: output=c2ace732e447fe45 input=2dd4efee44abe8ee]*/
+ {
++#ifdef MS_APP
++  Py_RETURN_NOTIMPLEMENTED;
++#else
+     HANDLE NewWaitObject;
+     struct PostCallbackData data = {CompletionPort, Overlapped}, *pdata;
+ 
+@@ -362,7 +369,7 @@
+     *pdata = data;
+ 
+     if (!RegisterWaitForSingleObject(
+-            &NewWaitObject, Object, PostToQueueCallback, pdata, Milliseconds,
++            &NewWaitObject, Object, (WAITORTIMERCALLBACK)PostToQueueCallback, pdata, Milliseconds,
+             WT_EXECUTEINWAITTHREAD | WT_EXECUTEONLYONCE))
+     {
+         PyMem_RawFree(pdata);
+@@ -370,6 +377,7 @@
+     }
+ 
+     return Py_BuildValue(F_HANDLE, NewWaitObject);
++#endif
+ }
+ 
+ /*[clinic input]
+@@ -385,6 +393,9 @@
+ _overlapped_UnregisterWait_impl(PyObject *module, HANDLE WaitHandle)
+ /*[clinic end generated code: output=ec90cd955a9a617d input=a56709544cb2df0f]*/
+ {
++#ifdef MS_APP
++  Py_RETURN_NOTIMPLEMENTED;
++#else
+     BOOL ret;
+ 
+     Py_BEGIN_ALLOW_THREADS
+@@ -394,6 +405,7 @@
+     if (!ret)
+         return SetFromWindowsErr(0);
+     Py_RETURN_NONE;
++#endif
+ }
+ 
+ /*[clinic input]
+@@ -411,6 +423,9 @@
+                                   HANDLE Event)
+ /*[clinic end generated code: output=2e3d84c1d5f65b92 input=953cddc1de50fab9]*/
+ {
++#ifdef MS_APP
++  Py_RETURN_NOTIMPLEMENTED;
++#else
+     BOOL ret;
+ 
+     Py_BEGIN_ALLOW_THREADS
+@@ -420,6 +435,7 @@
+     if (!ret)
+         return SetFromWindowsErr(0);
+     Py_RETURN_NONE;
++#endif
+ }
+ 
+ /*
+@@ -1523,6 +1539,17 @@
+ Transmit file data over a connected socket.
+ [clinic start generated code]*/
+ 
++PyAPI_FUNC(HANDLE)
++_Py_win_create_file(
++	_In_ LPCWSTR lpFileName,
++	_In_ DWORD dwDesiredAccess,
++	_In_ DWORD dwShareMode,
++	_In_opt_ LPSECURITY_ATTRIBUTES lpSecurityAttributes,
++	_In_ DWORD dwCreationDisposition,
++	_In_ DWORD dwFlagsAndAttributes,
++	_In_opt_ HANDLE hTemplateFile
++);
++
+ static PyObject *
+ _overlapped_Overlapped_TransmitFile_impl(OverlappedObject *self,
+                                          HANDLE Socket, HANDLE File,
+@@ -1612,6 +1639,17 @@
+ Connect to the pipe for asynchronous I/O (overlapped).
+ [clinic start generated code]*/
+ 
++PyAPI_FUNC(HANDLE)
++_Py_win_create_file(
++    _In_ LPCWSTR lpFileName,
++    _In_ DWORD dwDesiredAccess,
++    _In_ DWORD dwShareMode,
++    _In_opt_ LPSECURITY_ATTRIBUTES lpSecurityAttributes,
++    _In_ DWORD dwCreationDisposition,
++    _In_ DWORD dwFlagsAndAttributes,
++    _In_opt_ HANDLE hTemplateFile
++);
++
+ static PyObject *
+ _overlapped_Overlapped_ConnectPipe_impl(OverlappedObject *self,
+                                         const Py_UNICODE *Address)
+@@ -1620,7 +1658,7 @@
+     HANDLE PipeHandle;
+ 
+     Py_BEGIN_ALLOW_THREADS
+-    PipeHandle = CreateFileW(Address,
++    PipeHandle = _Py_win_create_file(Address,
+                              GENERIC_READ | GENERIC_WRITE,
+                              0, NULL, OPEN_EXISTING,
+                              FILE_FLAG_OVERLAPPED, NULL);
+--- a/Modules/posixmodule.c
++++ b/Modules/posixmodule.c
+@@ -17,6 +17,7 @@
+ #  include <windows.h>
+ #  include <pathcch.h>
+ #  include <lmcons.h>             // UNLEN
++#include <winioctl.h>
+ #  include "osdefs.h"             // SEP
+ #  define HAVE_SYMLINK
+ #endif
+@@ -338,6 +339,7 @@
+ #  include <process.h>
+ #else
+ #  ifdef _MSC_VER
++#ifdef MS_DESKTOP
+      /* Microsoft compiler */
+ #    define HAVE_GETPPID    1
+ #    define HAVE_GETLOGIN   1
+@@ -350,6 +352,7 @@
+ #    define HAVE_CWAIT      1
+ #    define HAVE_FSYNC      1
+ #    define fsync _commit
++#endif
+ #  endif  /* _MSC_VER */
+ #endif  /* ! __WATCOMC__ || __QNX__ */
+ 
+@@ -661,9 +664,16 @@
+ 
+ #ifdef MS_WINDOWS
+ /* defined in fileutils.c */
+-void _Py_time_t_to_FILE_TIME(time_t, int, FILETIME *);
+-void _Py_attribute_data_to_stat(BY_HANDLE_FILE_INFORMATION *,
+-                                            ULONG, struct _Py_stat_struct *);
++PyAPI_FUNC(void)
++_Py_attribute_data_to_stat(FILE_BASIC_INFO* basic_info,
++                           FILE_STANDARD_INFO* standard_info,
++                           ULONG reparse_tag,
++                           struct _Py_stat_struct* result);
++PyAPI_FUNC(void) _Py_time_t_to_FILE_TIME(time_t, int, FILETIME *);
++PyAPI_FUNC(void) _Py_find_data_to_stat(WIN32_FIND_DATAW *, struct _Py_stat_struct *);
++PyAPI_FUNC(HANDLE) _Py_win_create_file(LPCWSTR, DWORD, DWORD, LPSECURITY_ATTRIBUTES, DWORD, DWORD, HANDLE);
++PyAPI_FUNC(int) _Py_stat_from_file_handle(HANDLE h, struct _Py_stat_struct* result, BOOL set_ino);
++
+ #endif
+ 
+ 
+@@ -1832,28 +1842,9 @@
+ #define HAVE_STAT_NSEC 1
+ #define HAVE_STRUCT_STAT_ST_FILE_ATTRIBUTES 1
+ #define HAVE_STRUCT_STAT_ST_REPARSE_TAG 1
+-
+-static void
+-find_data_to_file_info(WIN32_FIND_DATAW *pFileData,
+-                       BY_HANDLE_FILE_INFORMATION *info,
+-                       ULONG *reparse_tag)
+-{
+-    memset(info, 0, sizeof(*info));
+-    info->dwFileAttributes = pFileData->dwFileAttributes;
+-    info->ftCreationTime   = pFileData->ftCreationTime;
+-    info->ftLastAccessTime = pFileData->ftLastAccessTime;
+-    info->ftLastWriteTime  = pFileData->ftLastWriteTime;
+-    info->nFileSizeHigh    = pFileData->nFileSizeHigh;
+-    info->nFileSizeLow     = pFileData->nFileSizeLow;
+-/*  info->nNumberOfLinks   = 1; */
+-    if (pFileData->dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT)
+-        *reparse_tag = pFileData->dwReserved0;
+-    else
+-        *reparse_tag = 0;
+-}
+ 
+ static BOOL
+-attributes_from_dir(LPCWSTR pszFile, BY_HANDLE_FILE_INFORMATION *info, ULONG *reparse_tag)
++attributes_from_dir(LPCWSTR pszFile, struct _Py_stat_struct *result, ULONG *reparse_tag)
+ {
+     HANDLE hFindFile;
+     WIN32_FIND_DATAW FileData;
+@@ -1880,7 +1871,7 @@
+         return FALSE;
+     }
+     FindClose(hFindFile);
+-    find_data_to_file_info(&FileData, info, reparse_tag);
++    _Py_find_data_to_stat(&FileData, result);
+     return TRUE;
+ }
+ 
+@@ -1889,7 +1880,6 @@
+                  BOOL traverse)
+ {
+     HANDLE hFile;
+-    BY_HANDLE_FILE_INFORMATION fileInfo;
+     FILE_ATTRIBUTE_TAG_INFO tagInfo = { 0 };
+     DWORD fileType, error;
+     BOOL isUnhandledTag = FALSE;
+@@ -1901,7 +1891,7 @@
+         flags |= FILE_FLAG_OPEN_REPARSE_POINT;
+     }
+ 
+-    hFile = CreateFileW(path, access, 0, NULL, OPEN_EXISTING, flags, NULL);
++    hFile = _Py_win_create_file(path, access, 0, NULL, OPEN_EXISTING, flags, NULL);
+     if (hFile == INVALID_HANDLE_VALUE) {
+         /* Either the path doesn't exist, or the caller lacks access. */
+         error = GetLastError();
+@@ -1909,7 +1899,7 @@
+         case ERROR_ACCESS_DENIED:     /* Cannot sync or read attributes. */
+         case ERROR_SHARING_VIOLATION: /* It's a paging file. */
+             /* Try reading the parent directory. */
+-            if (!attributes_from_dir(path, &fileInfo, &tagInfo.ReparseTag)) {
++            if (!attributes_from_dir(path, result, &tagInfo.ReparseTag)) {
+                 /* Cannot read the parent directory. */
+                 switch (GetLastError()) {
+                 case ERROR_FILE_NOT_FOUND: /* File cannot be found */
+@@ -1924,7 +1914,7 @@
+ 
+                 return -1;
+             }
+-            if (fileInfo.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) {
++            if (result->st_file_attributes & FILE_ATTRIBUTE_REPARSE_POINT) {
+                 if (traverse ||
+                     !IsReparseTagNameSurrogate(tagInfo.ReparseTag)) {
+                     /* The stat call has to traverse but cannot, so fail. */
+@@ -1936,7 +1926,7 @@
+ 
+         case ERROR_INVALID_PARAMETER:
+             /* \\.\con requires read or write access. */
+-            hFile = CreateFileW(path, access | GENERIC_READ,
++            hFile = _Py_win_create_file(path, access | GENERIC_READ,
+                         FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
+                         OPEN_EXISTING, flags, NULL);
+             if (hFile == INVALID_HANDLE_VALUE) {
+@@ -1950,7 +1940,7 @@
+             if (traverse) {
+                 traverse = FALSE;
+                 isUnhandledTag = TRUE;
+-                hFile = CreateFileW(path, access, 0, NULL, OPEN_EXISTING,
++                hFile = _Py_win_create_file(path, access, 0, NULL, OPEN_EXISTING,
+                             flags | FILE_FLAG_OPEN_REPARSE_POINT, NULL);
+             }
+             if (hFile == INVALID_HANDLE_VALUE) {
+@@ -2024,25 +2014,13 @@
+             }
+         }
+ 
+-        if (!GetFileInformationByHandle(hFile, &fileInfo)) {
+-            switch (GetLastError()) {
+-            case ERROR_INVALID_PARAMETER:
+-            case ERROR_INVALID_FUNCTION:
+-            case ERROR_NOT_SUPPORTED:
+-                /* Volumes and physical disks are block devices, e.g.
+-                   \\.\C: and \\.\PhysicalDrive0. */
+-                memset(result, 0, sizeof(*result));
+-                result->st_mode = 0x6000; /* S_IFBLK */
+-                goto cleanup;
+-            }
++        if (_Py_stat_from_file_handle(hFile, result, FALSE)) {
+             retval = -1;
+             goto cleanup;
+         }
+     }
+ 
+-    _Py_attribute_data_to_stat(&fileInfo, tagInfo.ReparseTag, result);
+-
+-    if (!(fileInfo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
++    if (!(result->st_mode & _S_IFDIR)) {
+         /* Fix the file execute permissions. This hack sets S_IEXEC if
+            the filename has an extension that is commonly used by files
+            that CreateProcessW can execute. A real implementation calls
+@@ -3994,12 +3972,16 @@
+     }
+ 
+ #ifdef MS_WINDOWS
++#ifdef MS_APP
++	Py_RETURN_NOTIMPLEMENTED;
++#else
+     Py_BEGIN_ALLOW_THREADS
+     result = CreateHardLinkW(dst->wide, src->wide, NULL);
+     Py_END_ALLOW_THREADS
+ 
+     if (!result)
+         return path_error2(src, dst);
++#endif
+ #else
+     Py_BEGIN_ALLOW_THREADS
+ #ifdef HAVE_LINKAT
+@@ -4396,7 +4378,7 @@
+     PyObject *result;
+ 
+     Py_BEGIN_ALLOW_THREADS
+-    hFile = CreateFileW(
++    hFile = _Py_win_create_file(
+         path->wide,
+         0, /* desired access */
+         0, /* share mode */
+@@ -4467,6 +4449,9 @@
+ os__getvolumepathname_impl(PyObject *module, path_t *path)
+ /*[clinic end generated code: output=804c63fd13a1330b input=722b40565fa21552]*/
+ {
++#ifdef MS_APP
++	Py_RETURN_NOTIMPLEMENTED;
++#else
+     PyObject *result;
+     wchar_t *mountpath=NULL;
+     size_t buflen;
+@@ -4500,6 +4485,7 @@
+ exit:
+     PyMem_Free(mountpath);
+     return result;
++#endif
+ }
+ 
+ 
+@@ -4620,6 +4606,27 @@
+     }
+ 
+ #ifdef MS_WINDOWS
++
++#ifdef MS_APP
++    DWORD dwAttrib = GetFileAttributesW(path->wide);
++
++    // return quick if directory alredy exists
++    if (dwAttrib != INVALID_FILE_ATTRIBUTES && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY))
++        return path_error(path);
++
++    // create only in AppData
++    if (wcsstr(path->wide, L"AppData"))
++    {
++        Py_BEGIN_ALLOW_THREADS
++        result = CreateDirectoryW(path->wide, NULL);
++        Py_END_ALLOW_THREADS
++        if (!result)
++            return path_error(path);
++    }
++
++    Py_RETURN_NONE;
++#endif
++
+     Py_BEGIN_ALLOW_THREADS
+     result = CreateDirectoryW(path->wide, NULL);
+     Py_END_ALLOW_THREADS
+@@ -5574,7 +5581,7 @@
+ 
+ #ifdef MS_WINDOWS
+     Py_BEGIN_ALLOW_THREADS
+-    hFile = CreateFileW(path->wide, FILE_WRITE_ATTRIBUTES, 0,
++    hFile = _Py_win_create_file(path->wide, FILE_WRITE_ATTRIBUTES, 0,
+                         NULL, OPEN_EXISTING,
+                         FILE_FLAG_BACKUP_SEMANTICS, NULL);
+     Py_END_ALLOW_THREADS
+@@ -6528,6 +6535,9 @@
+ os_spawnv_impl(PyObject *module, int mode, path_t *path, PyObject *argv)
+ /*[clinic end generated code: output=71cd037a9d96b816 input=43224242303291be]*/
+ {
++#ifdef MS_APP
++	Py_RETURN_NOTIMPLEMENTED;
++#else
+     EXECV_CHAR **argvlist;
+     int i;
+     Py_ssize_t argc;
+@@ -6611,6 +6621,7 @@
+         return NULL;
+     }
+     return Py_BuildValue(_Py_PARSE_INTPTR, spawnval);
++#endif
+ }
+ 
+ /*[clinic input]
+@@ -7617,7 +7628,7 @@
+ os_getpid_impl(PyObject *module)
+ /*[clinic end generated code: output=9ea6fdac01ed2b3c input=5a9a00f0ab68aa00]*/
+ {
+-    return PyLong_FromPid(getpid());
++    return PyLong_FromPid(GetCurrentProcessId());
+ }
+ #endif /* HAVE_GETPID */
+ 
+@@ -7925,6 +7936,9 @@
+ static PyObject*
+ win32_getppid()
+ {
++#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
++	return PyLong_FromPid((pid_t)GetCurrentProcessId());
++#else
+     HANDLE snapshot;
+     pid_t mypid;
+     PyObject* result = NULL;
+@@ -7958,6 +7972,7 @@
+     CloseHandle(snapshot);
+ 
+     return result;
++#endif
+ }
+ #endif /*MS_WINDOWS*/
+ 
+@@ -7997,6 +8012,7 @@
+ {
+     PyObject *result = NULL;
+ #ifdef MS_WINDOWS
++#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+     wchar_t user_name[UNLEN + 1];
+     DWORD num_chars = Py_ARRAY_LENGTH(user_name);
+ 
+@@ -8006,6 +8022,9 @@
+     }
+     else
+         result = PyErr_SetFromWindowsErr(GetLastError());
++#else
++	result = PyUnicode_FromWideChar(L"N/A", 4);
++#endif
+ #else
+     char *name;
+     int old_errno = errno;
+@@ -8757,7 +8776,7 @@
+ 
+     /* First get a handle to the reparse point */
+     Py_BEGIN_ALLOW_THREADS
+-    reparse_point_handle = CreateFileW(
++    reparse_point_handle = _Py_win_create_file(
+         path->wide,
+         0,
+         0,
+@@ -8944,6 +8963,7 @@
+     }
+ 
+ #ifdef MS_WINDOWS
++#ifdef MS_DESKTOP
+ 
+     if (windows_has_symlink_unprivileged_flag) {
+         /* Allow non-admin symlinks if system allows it. */
+@@ -8988,8 +9008,10 @@
+ 
+     if (!result)
+         return path_error2(src, dst);
+-
+ #else
++    Py_RETURN_NOTIMPLEMENTED;
++#endif
++#else
+ 
+     if ((src->narrow && dst->wide) || (src->wide && dst->narrow)) {
+         PyErr_SetString(PyExc_ValueError,
+@@ -12684,6 +12706,9 @@
+ static int
+ check_ShellExecute()
+ {
++#ifdef MS_APP
++	return FALSE;
++#else
+     HINSTANCE hShell32;
+ 
+     /* only recheck */
+@@ -12704,6 +12729,7 @@
+         Py_END_ALLOW_THREADS
+     }
+     return has_ShellExecute;
++#endif
+ }
+ 
+ 
+@@ -13452,7 +13478,13 @@
+ {
+     int ncpu = 0;
+ #ifdef MS_WINDOWS
++#ifdef MS_DESKTOP
+     ncpu = GetActiveProcessorCount(ALL_PROCESSOR_GROUPS);
++#else
++    SYSTEM_INFO sysinfo;
++    GetSystemInfo(&sysinfo);
++    ncpu = sysinfo.dwNumberOfProcessors;
++#endif
+ #elif defined(__hpux)
+     ncpu = mpctl(MPC_GETNUMSPUS, NULL, NULL);
+ #elif defined(HAVE_SYSCONF) && defined(_SC_NPROCESSORS_ONLN)
+@@ -13536,6 +13568,7 @@
+ os_get_handle_inheritable_impl(PyObject *module, intptr_t handle)
+ /*[clinic end generated code: output=36be5afca6ea84d8 input=cfe99f9c05c70ad1]*/
+ {
++#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+     DWORD flags;
+ 
+     if (!GetHandleInformation((HANDLE)handle, &flags)) {
+@@ -13544,6 +13577,9 @@
+     }
+ 
+     return flags & HANDLE_FLAG_INHERIT;
++#else
++	return 0;
++#endif
+ }
+ 
+ 
+@@ -13561,12 +13597,16 @@
+                                int inheritable)
+ /*[clinic end generated code: output=021d74fe6c96baa3 input=7a7641390d8364fc]*/
+ {
++#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+     DWORD flags = inheritable ? HANDLE_FLAG_INHERIT : 0;
+     if (!SetHandleInformation((HANDLE)handle, HANDLE_FLAG_INHERIT, flags)) {
+         PyErr_SetFromWindowsErr(0);
+         return NULL;
+     }
+     Py_RETURN_NONE;
++#else
++	Py_RETURN_NONE;
++#endif
+ }
+ #endif /* MS_WINDOWS */
+ 
+@@ -14075,8 +14115,6 @@
+ DirEntry_from_find_data(PyObject *module, path_t *path, WIN32_FIND_DATAW *dataW)
+ {
+     DirEntry *entry;
+-    BY_HANDLE_FILE_INFORMATION file_info;
+-    ULONG reparse_tag;
+     wchar_t *joined_path;
+ 
+     PyObject *DirEntryType = get_posix_state(module)->DirEntryType;
+@@ -14112,8 +14150,7 @@
+             goto error;
+     }
+ 
+-    find_data_to_file_info(dataW, &file_info, &reparse_tag);
+-    _Py_attribute_data_to_stat(&file_info, reparse_tag, &entry->win32_lstat);
++    _Py_find_data_to_stat(dataW, &entry->win32_lstat);
+ 
+     return (PyObject *)entry;
+ 
+@@ -14717,9 +14754,10 @@
+ /* bpo-36085: Helper functions for managing DLL search directories
+  * on win32
+  */
+-
++#ifdef MS_DESKTOP
+ typedef DLL_DIRECTORY_COOKIE (WINAPI *PAddDllDirectory)(PCWSTR newDirectory);
+ typedef BOOL (WINAPI *PRemoveDllDirectory)(DLL_DIRECTORY_COOKIE cookie);
++#endif
+ 
+ /*[clinic input]
+ os._add_dll_directory
+@@ -14740,6 +14778,9 @@
+ os__add_dll_directory_impl(PyObject *module, path_t *path)
+ /*[clinic end generated code: output=80b025daebb5d683 input=1de3e6c13a5808c8]*/
+ {
++#ifdef MS_APP
++    Py_RETURN_NONE;
++#else
+     HMODULE hKernel32;
+     PAddDllDirectory AddDllDirectory;
+     DLL_DIRECTORY_COOKIE cookie = 0;
+@@ -14767,6 +14808,7 @@
+     }
+ 
+     return PyCapsule_New(cookie, "DLL directory cookie", NULL);
++#endif
+ }
+ 
+ /*[clinic input]
+@@ -14785,6 +14827,9 @@
+ os__remove_dll_directory_impl(PyObject *module, PyObject *cookie)
+ /*[clinic end generated code: output=594350433ae535bc input=c1d16a7e7d9dc5dc]*/
+ {
++#ifdef MS_APP
++    Py_RETURN_NONE;
++#else
+     HMODULE hKernel32;
+     PRemoveDllDirectory RemoveDllDirectory;
+     DLL_DIRECTORY_COOKIE cookieValue;
+@@ -14821,6 +14866,7 @@
+     }
+ 
+     Py_RETURN_NONE;
++#endif
+ }
+ 
+ #endif
+@@ -15652,11 +15698,19 @@
+ #endif
+ 
+ #ifdef MS_WINDOWS
++#  ifdef MS_DESKTOP
+     if (PyModule_AddIntConstant(m, "_LOAD_LIBRARY_SEARCH_DEFAULT_DIRS", LOAD_LIBRARY_SEARCH_DEFAULT_DIRS)) return -1;
+     if (PyModule_AddIntConstant(m, "_LOAD_LIBRARY_SEARCH_APPLICATION_DIR", LOAD_LIBRARY_SEARCH_APPLICATION_DIR)) return -1;
+     if (PyModule_AddIntConstant(m, "_LOAD_LIBRARY_SEARCH_SYSTEM32", LOAD_LIBRARY_SEARCH_SYSTEM32)) return -1;
+     if (PyModule_AddIntConstant(m, "_LOAD_LIBRARY_SEARCH_USER_DIRS", LOAD_LIBRARY_SEARCH_USER_DIRS)) return -1;
+     if (PyModule_AddIntConstant(m, "_LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR", LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR)) return -1;
++#  else
++    if (PyModule_AddIntConstant(m, "_LOAD_LIBRARY_SEARCH_DEFAULT_DIRS", 0x00001000)) return -1;
++    if (PyModule_AddIntConstant(m, "_LOAD_LIBRARY_SEARCH_APPLICATION_DIR", 0x00000200)) return -1;
++    if (PyModule_AddIntConstant(m, "_LOAD_LIBRARY_SEARCH_SYSTEM32", 0x00000800)) return -1;
++    if (PyModule_AddIntConstant(m, "_LOAD_LIBRARY_SEARCH_USER_DIRS", 0x00000400)) return -1;
++    if (PyModule_AddIntConstant(m, "_LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR", 0x00000100)) return -1;
++#  endif
+ #endif
+ 
+     return 0;
+--- a/Modules/selectmodule.c
++++ b/Modules/selectmodule.c
+@@ -58,7 +58,7 @@
+ 
+ #ifdef MS_WINDOWS
+ #  define WIN32_LEAN_AND_MEAN
+-#  include <winsock.h>
++#  include <winsock2.h>
+ #else
+ #  define SOCKET int
+ #endif
+--- a/Modules/socketmodule.c
++++ b/Modules/socketmodule.c
+@@ -339,6 +339,7 @@
+ static int
+ remove_unusable_flags(PyObject *m)
+ {
++#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+     PyObject *dict;
+     OSVERSIONINFOEX info;
+     DWORDLONG dwlConditionMask;
+@@ -384,6 +385,7 @@
+         }
+     }
+     return 0;
++#endif
+ }
+ 
+ #endif
+@@ -491,12 +493,13 @@
+ #endif
+ 
+ #ifdef MS_WINDOWS
++#ifdef MS_DESKTOP
+ #define sockaddr_rc SOCKADDR_BTH_REDEF
+-
+ #define USE_BLUETOOTH 1
+ #define AF_BLUETOOTH AF_BTH
+ #define BTPROTO_RFCOMM BTHPROTO_RFCOMM
+ #define _BT_RC_MEMB(sa, memb) ((sa)->memb)
++#endif
+ #endif
+ 
+ /* Convert "sock_addr_t *" to "struct sockaddr *". */
+@@ -2761,11 +2765,13 @@
+     newfd = ctx.result;
+ 
+ #ifdef MS_WINDOWS
++#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+     if (!SetHandleInformation((HANDLE)newfd, HANDLE_FLAG_INHERIT, 0)) {
+         PyErr_SetFromWindowsErr(0);
+         SOCKETCLOSE(newfd);
+         goto finally;
+     }
++#endif
+ #else
+ 
+ #if defined(HAVE_ACCEPT4) && defined(SOCK_CLOEXEC)
+@@ -5352,11 +5358,13 @@
+         }
+ 
+         if (!support_wsa_no_inherit) {
++#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+             if (!SetHandleInformation((HANDLE)fd, HANDLE_FLAG_INHERIT, 0)) {
+                 PyErr_SetFromWindowsErr(0);
+                 closesocket(fd);
+                 return -1;
+             }
++#endif
+         }
+ #else
+         /* UNIX */
+@@ -5468,7 +5476,7 @@
+         return NULL;
+     }
+ 
+-#ifdef MS_WINDOWS
++#if defined(MS_WINDOWS) && WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+     /* Don't use winsock's gethostname, as this returns the ANSI
+        version of the hostname, whereas we need a Unicode string.
+        Otherwise, gethostname apparently also returns the DNS name. */
+@@ -6086,11 +6094,13 @@
+     if (newfd == INVALID_SOCKET)
+         return set_error();
+ 
++#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+     if (!SetHandleInformation((HANDLE)newfd, HANDLE_FLAG_INHERIT, 0)) {
+         PyErr_SetFromWindowsErr(0);
+         closesocket(newfd);
+         return NULL;
+     }
++#endif
+ #else
+     /* On UNIX, dup can be used to duplicate the file descriptor of a socket */
+     newfd = _Py_dup(fd);
+@@ -6833,6 +6843,9 @@
+         return NULL;
+     }
+ #ifdef MS_WINDOWS
++#ifdef MS_APP
++    return list;
++#else
+     PMIB_IF_TABLE2 tbl;
+     int ret;
+     if ((ret = GetIfTable2Ex(MibIfTableRaw, &tbl)) != NO_ERROR) {
+@@ -6861,6 +6874,7 @@
+     }
+     FreeMibTable(tbl);
+     return list;
++#endif
+ #else
+     int i;
+     struct if_nameindex *ni;
+@@ -6920,6 +6934,9 @@
+ #else
+     unsigned long index;
+ #endif
++#ifdef MS_APP
++    Py_RETURN_NOTIMPLEMENTED;
++#else
+     if (!PyArg_ParseTuple(args, "O&:if_nametoindex",
+                           PyUnicode_FSConverter, &oname))
+         return NULL;
+@@ -6933,6 +6950,7 @@
+     }
+ 
+     return PyLong_FromUnsignedLong(index);
++#endif
+ }
+ 
+ PyDoc_STRVAR(if_nametoindex_doc,
+@@ -6948,6 +6966,9 @@
+ #else
+     unsigned long index;
+ #endif
++#ifdef MS_APP
++    Py_RETURN_NOTIMPLEMENTED;
++#else
+     char name[IF_NAMESIZE + 1];
+ 
+     index = PyLong_AsUnsignedLong(arg);
+@@ -6960,6 +6981,7 @@
+     }
+ 
+     return PyUnicode_DecodeFSDefault(name);
++#endif
+ }
+ 
+ PyDoc_STRVAR(if_indextoname_doc,
+@@ -7248,7 +7270,11 @@
+ 
+ #ifdef MS_WINDOWS
+     if (support_wsa_no_inherit == -1) {
++#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+         support_wsa_no_inherit = IsWindows7SP1OrGreater();
++#else
++		support_wsa_no_inherit = 1;
++#endif
+     }
+ #endif
+ 
+--- a/Modules/timemodule.c
++++ b/Modules/timemodule.c
+@@ -1744,7 +1744,9 @@
+      */
+ #ifdef HAVE_DECL_TZNAME
+     PyObject *otz0, *otz1;
++#ifdef MS_DESKTOP
+     tzset();
++#endif
+     PyModule_AddIntConstant(m, "timezone", _Py_timezone);
+ #ifdef HAVE_ALTZONE
+     PyModule_AddIntConstant(m, "altzone", altzone);
+--- a/Objects/methodobject.c
++++ b/Objects/methodobject.c
+@@ -28,7 +28,7 @@
+     PyObject *func, PyObject *args, PyObject *kwargs);
+ 
+ 
+-PyObject *
++PyAPI_FUNC(PyObject *)
+ PyCFunction_New(PyMethodDef *ml, PyObject *self)
+ {
+     return PyCFunction_NewEx(ml, self, NULL);

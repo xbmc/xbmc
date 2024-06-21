@@ -2,7 +2,9 @@ include ../../Makefile.include PYTHONMODULE-PYCRYPTODOME-VERSION ../../download-
 DEPS= ../../Makefile.include Makefile PYTHONMODULE-PYCRYPTODOME-VERSION ../../download-files.include \
                              01-nosetuptool.patch \
                              02-revert-ctype.pythonapi-use.patch \
-                             03-android-dlopen.patch
+                             03-android-dlopen.patch \
+                             10-win-cmake.patch \
+                             11-win-arm64-buildfix.patch
 
 LDSHARED=$(CC) -shared
 
@@ -23,7 +25,6 @@ endif
 
 export CC CFLAGS
 export LDSHARED LDFLAGS
-export PYTHONPATH=$(PYTHON_SITE_PKG)
 export SETUPTOOLS_EXT_SUFFIX=.so
 
 all: .installed-$(PLATFORM)
@@ -37,6 +38,8 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 ifeq ($(OS),android)
 	cd $(PLATFORM); patch -p1 -i ../03-android-dlopen.patch
 endif
+	cd $(PLATFORM); patch -p1 -i ../10-win-cmake.patch
+	cd $(PLATFORM); patch -p1 -i ../11-win-arm64-buildfix.patch
 
 .installed-$(PLATFORM): $(PLATFORM)
 	cd $(PLATFORM); touch .separate_namespace && $(NATIVEPREFIX)/bin/python3 setup.py build_ext --plat-name $(OS)-$(CPU)

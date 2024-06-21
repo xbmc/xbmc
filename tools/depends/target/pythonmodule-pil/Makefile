@@ -1,8 +1,10 @@
 include ../../Makefile.include PYTHONMODULE-PIL-VERSION ../../download-files.include
-DEPS= ../../Makefile.include Makefile PYTHONMODULE-PIL-VERSION ../../download-files.include pillow-crosscompile.patch
+DEPS= ../../Makefile.include Makefile PYTHONMODULE-PIL-VERSION ../../download-files.include \
+                            pillow-crosscompile.patch \
+                            10-win-cmake.patch \
+                            11-win-uwp.patch
 
-PYTHONPATH=$(PYTHON_SITE_PKG)
-PILPATH=$(PYTHONPATH)
+PILPATH=$(PYTHON_SITE_PKG)
 LDSHARED=$(CC) -shared
 
 # Clear pkg-config data, as it will pull from Native pkg-config incorrectly
@@ -15,12 +17,10 @@ endif
 ifeq ($(OS),android)
   PILPATH=$(PREFIX)/share/$(APP_NAME)/addons/script.module.pil
   PILPATHLIB=$(PILPATH)/lib
-  PYTHONPATH=$(PILPATH):$(PYTHON_SITE_PKG)
   LDFLAGS+= -L$(PREFIX)/lib/dummy-lib$(APP_NAME)/ -l$(APP_NAME) -lm
 else ifeq ($(OS),darwin_embedded)
   PILPATH=$(PREFIX)/share/$(APP_NAME)/addons/script.module.pil
   PILPATHLIB=$(PILPATH)/lib
-  PYTHONPATH=$(PILPATH):$(PYTHON_SITE_PKG)
 else ifeq ($(TARGET_PLATFORM),webos)
   PILPATHLIB=$(PYTHON_SITE_PKG)/..
 endif
@@ -57,7 +57,7 @@ BUILD_OPTS=--plat-name $(OS)-$(CPU) --disable-jpeg2000 --disable-webp --disable-
 
 export CC CFLAGS
 export PYTHONXINCLUDE=$(PREFIX)/include/python$(PYTHON_VERSION)
-export LDSHARED LDFLAGS PYTHONPATH
+export LDSHARED LDFLAGS
 export SETUPTOOLS_EXT_SUFFIX=.so
 
 all: .installed-$(PLATFORM)
@@ -67,6 +67,8 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../pillow-crosscompile.patch
+	cd $(PLATFORM); patch -p1 -i ../10-win-cmake.patch
+	cd $(PLATFORM); patch -p1 -i ../11-win-uwp.patch
 
 $(PILPATHLIB):
 ifeq ($(OS),android)
