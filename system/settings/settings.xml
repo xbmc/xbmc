@@ -123,15 +123,15 @@
             <formatlabel>14047</formatlabel>
           </control>
         </setting>
-        <setting id="videoplayer.hqscalerprecision" type="integer" label="39198" help="39199">
+        <setting id="videoplayer.hqscalerprecision" type="integer" label="13472" help="13473">
           <requirement>HAS_GL</requirement>
           <level>2</level>
           <default>10</default>
           <constraints>
             <options>
-              <option label="39200">8</option>
-              <option label="39201">10</option>
-              <option label="39202">16</option>
+              <option label="13474">8</option>
+              <option label="13475">10</option>
+              <option label="13476">16</option>
             </options>
           </constraints>
           <control type="spinner" format="string" />
