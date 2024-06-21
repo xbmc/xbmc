@@ -21,6 +21,7 @@ public:
   void CreateTextureObject() override;
   void DestroyTextureObject() override;
   void LoadToGPU() override;
+  void SyncGPU() override;
   void BindToUnit(unsigned int unit) override;
 
 protected:
