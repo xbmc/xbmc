@@ -51,8 +51,7 @@ using GroupMemberPair =
 
 class CPVRChannelGroup : public IChannelGroupSettingsCallback
 {
-  friend class CPVRChannelGroups; // for GroupType()
-  friend class CPVRDatabase; // for GroupType()
+  friend class CPVRDatabase;
 
 public:
   static const int INVALID_GROUP_ID = -1;
@@ -472,6 +471,11 @@ public:
   virtual Origin GetOrigin() const = 0;
 
   /*!
+   * @brief Return the type of this group.
+   */
+  virtual int GroupType() const = 0;
+
+  /*!
    * @brief Check whether this group could be deleted by the user.
    * @return True if the group could be deleted, false otherwise.
    */
@@ -550,11 +554,6 @@ protected:
   static std::weak_ptr<CPVRChannelGroupSettings> m_settingsSingleton;
 
 private:
-  /*!
-   * @brief Return the type of this group.
-   */
-  virtual int GroupType() const = 0;
-
   /*!
    * @brief Load the channel group members stored in the database.
    * @param clients The PVR clients to load data for. Leave empty for all clients.

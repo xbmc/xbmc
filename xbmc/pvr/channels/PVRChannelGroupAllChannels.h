@@ -60,6 +60,11 @@ public:
   Origin GetOrigin() const override { return Origin::SYSTEM; }
 
   /*!
+   * @brief Return the type of this group.
+   */
+  int GroupType() const override { return PVR_GROUP_TYPE_SYSTEM_ALL_CHANNELS; }
+
+  /*!
    * @brief Check whether this group could be deleted by the user.
    * @return True if the group could be deleted, false otherwise.
    */
@@ -98,11 +103,5 @@ protected:
    * @return True on success, false otherwise.
    */
   bool UpdateFromClients(const std::vector<std::shared_ptr<CPVRClient>>& clients) override;
-
-private:
-  /*!
-   * @brief Return the type of this group.
-   */
-  int GroupType() const override { return PVR_GROUP_TYPE_SYSTEM_ALL_CHANNELS; }
 };
 } // namespace PVR

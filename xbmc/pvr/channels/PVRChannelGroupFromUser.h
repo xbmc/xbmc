@@ -34,6 +34,11 @@ public:
   Origin GetOrigin() const override { return Origin::USER; }
 
   /*!
+   * @brief Return the type of this group.
+   */
+  int GroupType() const override { return PVR_GROUP_TYPE_USER; }
+
+  /*!
    * @brief Check whether this group could be deleted by the user.
    * @return True if the group could be deleted, false otherwise.
    */
@@ -66,11 +71,5 @@ public:
   {
     return true; // Nothing to update from any client for locally managed groups.
   }
-
-private:
-  /*!
-   * @brief Return the type of this group.
-   */
-  int GroupType() const override { return PVR_GROUP_TYPE_USER; }
 };
 } // namespace PVR
