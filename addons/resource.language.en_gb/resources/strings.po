@@ -19900,7 +19900,7 @@ msgstr ""
 #. Description of setting with label #746 "Background Opacity"
 #: system/settings/settings.xml
 msgctxt "#36230"
-msgid "Set the the subtitle background opacity."
+msgid "Set the subtitle background opacity."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -20263,7 +20263,7 @@ msgstr ""
 #. Description of setting with label #752 "Opacity"
 #: system/settings/settings.xml
 msgctxt "#36295"
-msgid "Set the the subtitle opacity."
+msgid "Set the subtitle opacity."
 msgstr ""
 
 #: system/settings/settings.xml
