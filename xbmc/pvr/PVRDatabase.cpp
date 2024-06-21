@@ -12,6 +12,7 @@
 #include "dbwrappers/dataset.h"
 #include "pvr/addons/PVRClient.h"
 #include "pvr/channels/PVRChannel.h"
+#include "pvr/channels/PVRChannelGroupFactory.h"
 #include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/providers/PVRProvider.h"
@@ -721,10 +722,11 @@ int CPVRDatabase::GetGroups(CPVRChannelGroups& results, const std::string& query
     {
       while (!m_pDS->eof())
       {
-        const std::shared_ptr<CPVRChannelGroup> group = results.CreateChannelGroup(
+        const std::shared_ptr<CPVRChannelGroup> group = results.GetGroupFactory()->CreateGroup(
             m_pDS->fv("iGroupType").get_asInt(),
             CPVRChannelsPath(m_pDS->fv("bIsRadio").get_asBool(), m_pDS->fv("sName").get_asString(),
-                             m_pDS->fv("iClientId").get_asInt()));
+                             m_pDS->fv("iClientId").get_asInt()),
+            results.GetGroupAll());
 
         group->m_iGroupId = m_pDS->fv("idGroup").get_asInt();
         group->m_iLastWatched = static_cast<time_t>(m_pDS->fv("iLastWatched").get_asInt());
