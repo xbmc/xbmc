@@ -111,6 +111,7 @@ void CPVRChannel::Serialize(CVariant& value) const
   value["uniqueid"] = m_iUniqueId;
   CDateTime lastPlayed(m_iLastWatched);
   value["lastplayed"] = lastPlayed.IsValid() ? lastPlayed.GetAsDBDate() : "";
+  value["dateadded"] = m_dateTimeAdded.IsValid() ? m_dateTimeAdded.GetAsDBDate() : "";
 
   std::shared_ptr<CPVREpgInfoTag> epg = GetEPGNow();
   if (epg)
@@ -406,6 +407,20 @@ bool CPVRChannel::SetLastWatched(time_t lastWatched, int groupId)
   return false;
 }
 
+bool CPVRChannel::SetDateTimeAdded(const CDateTime& dateTimeAdded)
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+
+  if (m_dateTimeAdded != dateTimeAdded)
+  {
+    m_dateTimeAdded = dateTimeAdded;
+    m_bChanged = true;
+    return true;
+  }
+
+  return false;
+}
+
 /********** Client related channel methods **********/
 
 bool CPVRChannel::SetClientID(int iClientId)
@@ -661,6 +676,8 @@ void CPVRChannel::ToSortable(SortItem& sortable, Field field) const
     sortable[FieldLastPlayed] =
         lastWatched.IsValid() ? lastWatched.GetAsDBDateTime() : StringUtils::Empty;
   }
+  else if (field == FieldDateAdded)
+    sortable[FieldDateAdded] = m_dateTimeAdded.GetAsDBDateTime();
   else if (field == FieldProvider)
     sortable[FieldProvider] = StringUtils::Format("{} {}", m_iClientId, m_iClientProviderUid);
 }
@@ -735,6 +752,12 @@ time_t CPVRChannel::LastWatched() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_iLastWatched;
+}
+
+CDateTime CPVRChannel::DateTimeAdded() const
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  return m_dateTimeAdded;
 }
 
 bool CPVRChannel::IsChanged() const

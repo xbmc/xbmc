@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "XBDateTime.h"
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_channels.h"
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_providers.h"
 #include "pvr/PVRCachedImage.h"
@@ -219,6 +220,18 @@ public:
    * @return True if the something changed, false otherwise.
    */
   bool SetLastWatched(time_t lastWatched, int groupId);
+
+  /*!
+   * @return the date and time this channel was added to the TV database.
+   */
+  CDateTime DateTimeAdded() const;
+
+  /*!
+   * @brief Set the date and time the channel was added to the TV database.
+   * @param dateTimeAdded The date and time.
+   * @return True if the something changed, false otherwise.
+   */
+  bool SetDateTimeAdded(const CDateTime& dateTimeAdded);
 
   /*!
    * @brief Check whether this channel has unpersisted data changes.
@@ -551,6 +564,7 @@ private:
       PVR_PROVIDER_INVALID_UID; /*!< the unique id for this provider from the client */
   int m_lastWatchedGroupId{
       -1}; /*!< the id of the channel group the channel was watched from the last time */
+  CDateTime m_dateTimeAdded; /*!< the date and time the channel was added to the TV datebase */
   //@}
 
   mutable CCriticalSection m_critSection;

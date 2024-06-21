@@ -311,9 +311,10 @@ void CDirectoryProvider::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
     {
       if (message == "OnPlay" || message == "OnResume" || message == "OnStop")
       {
-        if (m_currentSort.sortBy == SortByNone || // not nice, but many directories that need to be refreshed on start/stop have no special sort order (e.g. in progress movies)
+        if (m_currentSort.sortBy ==
+                SortByNone || // not nice, but many directories that need to be refreshed on start/stop have no special sort order (e.g. in progress movies)
             m_currentSort.sortBy == SortByLastPlayed ||
-            m_currentSort.sortBy == SortByPlaycount ||
+            m_currentSort.sortBy == SortByDateAdded || m_currentSort.sortBy == SortByPlaycount ||
             m_currentSort.sortBy == SortByLastUsed)
           m_updateState = INVALIDATED;
       }

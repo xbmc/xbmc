@@ -2706,6 +2706,7 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
+#: xbmc/pvr/windows/GUIViewStatePVR.cpp
 msgctxt "#570"
 msgid "Date added"
 msgstr ""
@@ -3928,7 +3929,13 @@ msgctxt "#854"
 msgid "Any channel from any client"
 msgstr ""
 
-#empty strings from id 855 to 996
+#. Label for Estuary 'Recently added channels' 'home screen widget
+#: addons/skin.estuary/xml/Home.xml
+msgctxt "#855"
+msgid "Recently added channels"
+msgstr ""
+
+#empty strings from id 856 to 996
 
 #: xbmc/windows/GUIMediaWindow.cpp
 msgctxt "#997"

@@ -591,6 +591,7 @@ bool CPVRGUIDirectory::GetChannelsDirectory(CFileItemList& results) const
     else if (path.IsChannelGroup())
     {
       const bool playedOnly{(m_url.HasOption("view") && (m_url.GetOption("view") == "lastplayed"))};
+      const bool dateAdded{(m_url.HasOption("view") && (m_url.GetOption("view") == "dateadded"))};
       const bool showHiddenChannels{path.IsHiddenChannelGroup()};
       const std::vector<std::shared_ptr<CPVRChannelGroupMember>> groupMembers{
           GetChannelGroupMembers(path)};
@@ -600,6 +601,10 @@ bool CPVRGUIDirectory::GetChannelsDirectory(CFileItemList& results) const
           continue;
 
         if (playedOnly && !groupMember->Channel()->LastWatched())
+          continue;
+
+        if (dateAdded && (!groupMember->Channel()->DateTimeAdded().IsValid() ||
+                          groupMember->Channel()->LastWatched()))
           continue;
 
         results.Add(std::make_shared<CFileItem>(groupMember));
