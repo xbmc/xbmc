@@ -13,16 +13,8 @@
 #include <string>
 #include <vector>
 
-/* make sure stdlib.h is included before including pcre.h inside the
-   namespace; this works around stdlib.h definitions also living in
-   the PCRE namespace */
-#include <stdlib.h>
-
-namespace PCRE {
-struct real_pcre_jit_stack; // forward declaration for PCRE without JIT
-typedef struct real_pcre_jit_stack pcre_jit_stack;
-#include <pcre.h>
-}
+#define PCRE2_CODE_UNIT_WIDTH 8
+#include <pcre2.h>
 
 class CRegExp
 {
@@ -111,15 +103,10 @@ public:
   };
   int GetSubCount() const { return m_iMatchCount - 1; } // PCRE returns the number of sub-patterns + 1
   int GetSubStart(int iSub) const;
-  int GetSubStart(const std::string& subName) const;
   int GetSubLength(int iSub) const;
-  int GetSubLength(const std::string& subName) const;
   int GetCaptureTotal() const;
   std::string GetMatch(int iSub = 0) const;
-  std::string GetMatch(const std::string& subName) const;
   const std::string& GetPattern() const { return m_pattern; }
-  bool GetNamedSubPattern(const char* strName, std::string& strMatch) const;
-  int GetNamedSubPatternNumber(const char* strName) const;
   void DumpOvector(int iLog);
   /**
    * Check is RegExp object is ready for matching
@@ -143,17 +130,17 @@ private:
   void Cleanup();
   inline bool IsValidSubNumber(int iSub) const;
 
-  PCRE::pcre* m_re;
-  PCRE::pcre_extra* m_sd;
+  pcre2_code* m_re;
+  pcre2_match_context* m_ctxt;
   static const int OVECCOUNT=(m_MaxNumOfBackrefrences + 1) * 3;
   unsigned int m_offset;
-  int         m_iOvector[OVECCOUNT];
+  PCRE2_SIZE* m_iOvector;
   utf8Mode    m_utf8Mode;
   int         m_iMatchCount;
-  int         m_iOptions;
+  uint32_t m_iOptions;
   bool        m_jitCompiled;
   bool        m_bMatched;
-  PCRE::pcre_jit_stack* m_jitStack;
+  pcre2_jit_stack* m_jitStack;
   std::string m_subject;
   std::string m_pattern;
   static int  m_Utf8Supported;

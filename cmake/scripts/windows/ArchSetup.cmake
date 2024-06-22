@@ -38,7 +38,7 @@ set(DEPS_FOLDER_RELATIVE project/BuildDependencies)
 # ToDo: currently host build tools are hardcoded to win32
 # If we ever allow package.native other than 0_package.native-win32.list we will want to
 # adapt this based on host
-set(NATIVEPREFIX ${CMAKE_SOURCE_DIR}/${DEPS_FOLDER_RELATIVE}/win32)
+set(NATIVEPREFIX ${CMAKE_SOURCE_DIR}/${DEPS_FOLDER_RELATIVE}/tools)
 set(DEPENDS_PATH ${CMAKE_SOURCE_DIR}/${DEPS_FOLDER_RELATIVE}/${ARCH})
 set(MINGW_LIBS_DIR ${CMAKE_SOURCE_DIR}/${DEPS_FOLDER_RELATIVE}/mingwlibs/${ARCH})
 

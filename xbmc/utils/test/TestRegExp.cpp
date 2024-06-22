@@ -30,6 +30,29 @@ TEST(TestRegExp, RegFind)
   EXPECT_EQ(-1, regex.RegFind("Test string."));
 }
 
+TEST(TestRegExp, InvalidPattern)
+{
+  CRegExp regex;
+
+  EXPECT_FALSE(regex.RegComp("+"));
+}
+
+TEST(TestRegExp, Unicode)
+{
+  CRegExp regex;
+
+  EXPECT_TRUE(regex.RegComp("Бог!$"));
+  EXPECT_EQ(12, regex.RegFind("С нами Бог!"));
+}
+
+TEST(TestRegExp, JIT)
+{
+  CRegExp regex;
+
+  EXPECT_TRUE(regex.RegComp(".JIT.", CRegExp::StudyWithJitComp));
+  EXPECT_EQ(12, regex.RegFind("Test string, JIT-matched."));
+}
+
 TEST(TestRegExp, GetReplaceString)
 {
   CRegExp regex;
@@ -96,19 +119,6 @@ TEST(TestRegExp, GetPattern)
   EXPECT_STREQ("^(Test)\\s*(.*)\\.", regex.GetPattern().c_str());
 }
 
-TEST(TestRegExp, GetNamedSubPattern)
-{
-  CRegExp regex;
-  std::string match;
-
-  EXPECT_TRUE(regex.RegComp("^(?<first>Test)\\s*(?<second>.*)\\."));
-  EXPECT_EQ(0, regex.RegFind("Test string."));
-  EXPECT_TRUE(regex.GetNamedSubPattern("first", match));
-  EXPECT_STREQ("Test", match.c_str());
-  EXPECT_TRUE(regex.GetNamedSubPattern("second", match));
-  EXPECT_STREQ("string", match.c_str());
-}
-
 TEST(TestRegExp, operatorEqual)
 {
   CRegExp regex, regexcopy;
@@ -117,10 +127,6 @@ TEST(TestRegExp, operatorEqual)
   EXPECT_TRUE(regex.RegComp("^(?<first>Test)\\s*(?<second>.*)\\."));
   regexcopy = regex;
   EXPECT_EQ(0, regexcopy.RegFind("Test string."));
-  EXPECT_TRUE(regexcopy.GetNamedSubPattern("first", match));
-  EXPECT_STREQ("Test", match.c_str());
-  EXPECT_TRUE(regexcopy.GetNamedSubPattern("second", match));
-  EXPECT_STREQ("string", match.c_str());
 }
 
 class TestRegExpLog : public testing::Test

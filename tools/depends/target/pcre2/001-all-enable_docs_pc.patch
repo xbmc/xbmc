@@ -1,0 +1,18 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1095,6 +1095,7 @@
+ configure_file(${PCRE2_CONFIG_VERSION_IN} ${PCRE2_CONFIG_VERSION_OUT} @ONLY)
+ install(FILES ${PCRE2_CONFIG_OUT} ${PCRE2_CONFIG_VERSION_OUT} DESTINATION cmake)
+
++if(ENABLE_DOCS)
+ FILE(GLOB html ${PROJECT_SOURCE_DIR}/doc/html/*.html)
+ FILE(GLOB man1 ${PROJECT_SOURCE_DIR}/doc/*.1)
+ FILE(GLOB man3 ${PROJECT_SOURCE_DIR}/doc/*.3)
+@@ -1102,6 +1103,7 @@
+ INSTALL(FILES ${man1} DESTINATION man/man1)
+ INSTALL(FILES ${man3} DESTINATION man/man3)
+ INSTALL(FILES ${html} DESTINATION share/doc/pcre2/html)
++endif()
+
+ IF(MSVC AND INSTALL_MSVC_PDB)
+  INSTALL(FILES ${dll_pdb_files} DESTINATION bin CONFIGURATIONS RelWithDebInfo)
