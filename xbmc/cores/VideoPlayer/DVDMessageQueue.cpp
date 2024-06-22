@@ -333,14 +333,14 @@ int CDVDMessageQueue::GetLevel() const
   return level;
 }
 
-int CDVDMessageQueue::GetTimeSize() const
+double CDVDMessageQueue::GetTimeSize() const
 {
   std::unique_lock<CCriticalSection> lock(m_section);
 
   if (IsDataBased())
-    return 0;
+    return 0.0;
   else
-    return (int)((m_TimeFront - m_TimeBack) / DVD_TIME_BASE);
+    return (m_TimeFront - m_TimeBack) / DVD_TIME_BASE;
 }
 
 bool CDVDMessageQueue::IsDataBased() const

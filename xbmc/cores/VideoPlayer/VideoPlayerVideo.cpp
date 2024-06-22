@@ -54,8 +54,7 @@ CVideoPlayerVideo::CVideoPlayerVideo(CDVDClock* pClock,
     IDVDStreamPlayerVideo(processInfo),
     m_messageQueue("video"),
     m_messageParent(parent),
-    m_renderManager(renderManager),
-    m_messageQueueTimeSize(messageQueueTimeSize)
+    m_renderManager(renderManager)
 {
   m_pClock = pClock;
   m_pOverlayContainer = pOverlayContainer;
@@ -73,7 +72,7 @@ CVideoPlayerVideo::CVideoPlayerVideo(CDVDClock* pClock,
       CSettings::SETTING_VIDEOPLAYER_QUEUEDATASIZE);
 
   m_messageQueue.SetMaxDataSize(sizeMB * 1024 * 1024);
-  m_messageQueue.SetMaxTimeSize(m_messageQueueTimeSize);
+  m_messageQueue.SetMaxTimeSize(messageQueueTimeSize);
 
   m_iDroppedFrames = 0;
   m_fFrameRate = 25;
@@ -956,10 +955,9 @@ CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(const VideoPict
 
 std::string CVideoPlayerVideo::GetPlayerInfo()
 {
-  const int level = m_processInfo.GetLevelVQ();
   std::ostringstream s;
-  s << "vq:" << std::setw(2) << std::min(99, level);
-  s << "% " << std::fixed << std::setprecision(3) << m_messageQueueTimeSize * level / 100.0;
+  s << "vq:" << std::setw(2) << std::min(99, m_processInfo.GetLevelVQ());
+  s << "% " << std::fixed << std::setprecision(3) << m_messageQueue.GetTimeSize();
   s << "s, Mb/s:" << std::fixed << std::setprecision(2)
     << static_cast<double>(GetVideoBitrate()) / (1024.0 * 1024.0);
   s << ", fr:" << std::fixed << std::setprecision(3) << m_fFrameRate;
