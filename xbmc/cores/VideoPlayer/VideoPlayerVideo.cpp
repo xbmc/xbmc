@@ -16,6 +16,7 @@
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/MathUtils.h"
 #include "utils/log.h"
@@ -68,8 +69,10 @@ CVideoPlayerVideo::CVideoPlayerVideo(CDVDClock* pClock,
   m_iDroppedRequest = 0;
   m_fForcedAspectRatio = 0;
 
-  // allows max bitrate of 128 Mbit/s (e.g. UHD Blu-Ray) during m_messageQueueTimeSize seconds
-  m_messageQueue.SetMaxDataSize(128 * m_messageQueueTimeSize / 8 * 1024 * 1024);
+  const int sizeMB = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+      CSettings::SETTING_VIDEOPLAYER_QUEUEDATASIZE);
+
+  m_messageQueue.SetMaxDataSize(sizeMB * 1024 * 1024);
   m_messageQueue.SetMaxTimeSize(m_messageQueueTimeSize);
 
   m_iDroppedFrames = 0;
