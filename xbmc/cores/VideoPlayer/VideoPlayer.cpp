@@ -3267,14 +3267,15 @@ bool CVideoPlayer::SeekScene(Direction seekDirection)
   if (seekDirection == Direction::BACKWARD && clock > 5 * 1000) // 5 seconds
     clock -= 5 * 1000;
 
-  int iScenemarker;
-  if (m_Edl.GetNextSceneMarker(seekDirection, clock, &iScenemarker))
+  const std::optional<int> sceneMarker =
+      m_Edl.GetNextSceneMarker(seekDirection, static_cast<int>(clock));
+  if (sceneMarker)
   {
     /*
      * Seeking is flushed and inaccurate, just like Seek()
      */
     CDVDMsgPlayerSeek::CMode mode;
-    mode.time = iScenemarker;
+    mode.time = sceneMarker.value();
     mode.backward = seekDirection == Direction::BACKWARD;
     mode.accurate = false;
     mode.restore = false;

@@ -11,6 +11,7 @@
 #include "cores/Direction.h"
 #include "cores/EdlEdit.h"
 
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -142,7 +143,13 @@ public:
   */
   EDL::Action GetLastEditActionType() const;
 
-  bool GetNextSceneMarker(Direction direction, int clock, int* sceneMarker);
+  /*!
+   * @brief Get the next scene marker with respect to the provided clock time
+   * @param direction (the direction of the search - backward or forward)
+   * @param clock the current position of the clock
+   * @return the position of the scenemarker (nullopt if none)
+  */
+  std::optional<int> GetNextSceneMarker(Direction direction, int clock);
 
   static std::string MillisecondsToTimeString(int milliSeconds);
 

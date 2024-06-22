@@ -884,15 +884,15 @@ EDL::Action CEdl::GetLastEditActionType() const
   return m_lastEditActionType;
 }
 
-bool CEdl::GetNextSceneMarker(Direction direction, int clock, int* sceneMarker)
+std::optional<int> CEdl::GetNextSceneMarker(Direction direction, int clock)
 {
   if (!HasSceneMarker())
-    return false;
+    return std::nullopt;
 
+  std::optional<int> sceneMarker;
   const int seekTime = GetTimeAfterRestoringCuts(clock);
 
   int diff = 10 * 60 * 60 * 1000; // 10 hours to ms.
-  bool found = false;
 
   if (direction == Direction::FORWARD) // Find closest scene forwards
   {
@@ -901,8 +901,7 @@ bool CEdl::GetNextSceneMarker(Direction direction, int clock, int* sceneMarker)
       if ((m_vecSceneMarkers[i] > seekTime) && ((m_vecSceneMarkers[i] - seekTime) < diff))
       {
         diff = m_vecSceneMarkers[i] - seekTime;
-        *sceneMarker = m_vecSceneMarkers[i];
-        found = true;
+        sceneMarker = m_vecSceneMarkers[i];
       }
     }
   }
@@ -913,8 +912,7 @@ bool CEdl::GetNextSceneMarker(Direction direction, int clock, int* sceneMarker)
       if ((m_vecSceneMarkers[i] < seekTime) && ((seekTime - m_vecSceneMarkers[i]) < diff))
       {
         diff = seekTime - m_vecSceneMarkers[i];
-        *sceneMarker = m_vecSceneMarkers[i];
-        found = true;
+        sceneMarker = m_vecSceneMarkers[i];
       }
     }
   }
@@ -924,10 +922,10 @@ bool CEdl::GetNextSceneMarker(Direction direction, int clock, int* sceneMarker)
    * picked up when scene markers are added.
    */
   Edit edit;
-  if (found && InEdit(*sceneMarker, &edit) && edit.action == Action::CUT)
-    *sceneMarker = edit.end;
+  if (sceneMarker && InEdit(sceneMarker.value(), &edit) && edit.action == Action::CUT)
+    sceneMarker = edit.end;
 
-  return found;
+  return sceneMarker;
 }
 
 std::string CEdl::MillisecondsToTimeString(int milliSeconds)
