@@ -11,6 +11,7 @@ set(SOURCES CPUInfoWin10.cpp
             ../win32/MemUtils.cpp
             ../win32/pch.cpp
             ../win32/WIN32Util.cpp
+            ../win32/WinRtUtil.cpp
             ../win32/XTimeUtils.cpp)
 
 set(HEADERS AsyncHelpers.h
@@ -29,6 +30,7 @@ set(HEADERS AsyncHelpers.h
             ../win32/PlatformDefs.h
             ../win32/resource.h
             ../win32/unistd.h
-            ../win32/WIN32Util.h)
+            ../win32/WIN32Util.h
+            ../win32/WinRtUtil.h)
 
 core_add_library(platform_win10)

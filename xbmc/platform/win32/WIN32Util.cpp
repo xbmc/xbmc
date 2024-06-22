@@ -11,6 +11,7 @@
 #include "CompileInfo.h"
 #include "ServiceBroker.h"
 #include "Util.h"
+#include "WinRtUtil.h"
 #include "WindowHelper.h"
 #include "guilib/LocalizeStrings.h"
 #include "my_ntddscsi.h"
@@ -1347,53 +1348,13 @@ HDR_STATUS CWIN32Util::ToggleWindowsHDR(DXGI_MODE_DESC& modeDesc)
   return status;
 }
 
-HDR_STATUS CWIN32Util::GetWindowsHDRStatus()
+HDR_STATUS CWIN32Util::GetWindowsHDRStatusWin32()
 {
+  HDR_STATUS status = HDR_STATUS::HDR_UNKNOWN;
+
+#ifdef TARGET_WINDOWS_DESKTOP
   bool advancedColorSupported = false;
   bool advancedColorEnabled = false;
-  HDR_STATUS status = HDR_STATUS::HDR_UNSUPPORTED;
-
-#ifdef TARGET_WINDOWS_STORE
-  auto displayInformation = DisplayInformation::GetForCurrentView();
-
-  if (displayInformation)
-  {
-    auto advancedColorInfo = displayInformation.GetAdvancedColorInfo();
-
-    if (advancedColorInfo)
-    {
-      if (advancedColorInfo.CurrentAdvancedColorKind() == AdvancedColorKind::HighDynamicRange)
-      {
-        advancedColorSupported = true;
-        advancedColorEnabled = true;
-      }
-    }
-  }
-  // Try to find out if the display supports HDR even if Windows HDR switch is OFF
-  if (!advancedColorEnabled)
-  {
-    auto displayManager = DisplayManager::Create(DisplayManagerOptions::None);
-
-    if (displayManager)
-    {
-      auto targets = displayManager.GetCurrentTargets();
-
-      for (const auto& target : targets)
-      {
-        if (target.IsConnected())
-        {
-          auto displayMonitor = target.TryGetMonitor();
-          if (displayMonitor.MaxLuminanceInNits() >= 400.0f)
-          {
-            advancedColorSupported = true;
-            break;
-          }
-        }
-      }
-      displayManager.Close();
-    }
-  }
-#else
   uint32_t pathCount = 0;
   uint32_t modeCount = 0;
 
@@ -1451,7 +1412,6 @@ HDR_STATUS CWIN32Util::GetWindowsHDRStatus()
       }
     }
   }
-#endif
 
   if (!advancedColorSupported)
   {
@@ -1466,8 +1426,33 @@ HDR_STATUS CWIN32Util::GetWindowsHDRStatus()
       CLog::LogF(LOGDEBUG, "Display is HDR capable and current HDR status is {}",
                  advancedColorEnabled ? "ON" : "OFF");
   }
+#endif // TARGET_WINDOWS_DESKTOP
 
   return status;
+}
+
+HDR_STATUS CWIN32Util::GetWindowsHDRStatus()
+{
+  HDR_STATUS status = HDR_STATUS::HDR_UNKNOWN;
+
+#ifdef TARGET_WINDOWS_STORE
+  if (CSysInfo::GetWindowsDeviceFamily() == CSysInfo::Xbox &&
+      HDR_STATUS::HDR_UNKNOWN != (status = CWinRtUtil::GetWindowsHDRStatus()))
+    return status;
+
+  // Not Xbox or detection failure: fallback to traditional UWP method
+  status = CWinRtUtil::GetWindowsHDRStatusUWP();
+  return status == HDR_STATUS::HDR_UNKNOWN ? HDR_STATUS::HDR_UNSUPPORTED : status;
+#else
+  // WinRT detection available for Win 11 22621 and above.
+  if (CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin11_22H2) &&
+      HDR_STATUS::HDR_UNKNOWN != (status = CWinRtUtil::GetWindowsHDRStatus()))
+    return status;
+
+  // Not Win11 or detection failure: fallback to traditional Win32 method
+  status = GetWindowsHDRStatusWin32();
+  return status == HDR_STATUS::HDR_UNKNOWN ? HDR_STATUS::HDR_UNSUPPORTED : status;
+#endif
 }
 
 /*!

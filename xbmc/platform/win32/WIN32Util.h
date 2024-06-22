@@ -105,4 +105,7 @@ public:
    * Undefined results when the strings are not formatted properly.
   */
   static bool IsDriverVersionAtLeast(const std::string& version1, const std::string& version2);
+
+private:
+  static HDR_STATUS GetWindowsHDRStatusWin32();
 };
