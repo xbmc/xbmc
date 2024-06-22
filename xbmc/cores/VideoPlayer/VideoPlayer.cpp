@@ -3254,7 +3254,7 @@ void CVideoPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
   m_callback.OnPlayBackSeek(seekTarget, seekTarget - time);
 }
 
-bool CVideoPlayer::SeekScene(bool bPlus)
+bool CVideoPlayer::SeekScene(Direction seekDirection)
 {
   if (!m_Edl.HasSceneMarker())
     return false;
@@ -3264,18 +3264,19 @@ bool CVideoPlayer::SeekScene(bool bPlus)
    * grace period applied it is impossible to go backwards past a scene marker.
    */
   int64_t clock = GetTime();
-  if (!bPlus && clock > 5 * 1000) // 5 seconds
+  if (seekDirection == Direction::BACKWARD && clock > 5 * 1000) // 5 seconds
     clock -= 5 * 1000;
 
-  int iScenemarker;
-  if (m_Edl.GetNextSceneMarker(bPlus, clock, &iScenemarker))
+  const std::optional<int> sceneMarker =
+      m_Edl.GetNextSceneMarker(seekDirection, static_cast<int>(clock));
+  if (sceneMarker)
   {
     /*
      * Seeking is flushed and inaccurate, just like Seek()
      */
     CDVDMsgPlayerSeek::CMode mode;
-    mode.time = iScenemarker;
-    mode.backward = !bPlus;
+    mode.time = sceneMarker.value();
+    mode.backward = seekDirection == Direction::BACKWARD;
     mode.accurate = false;
     mode.restore = false;
     mode.trickplay = false;
@@ -4527,7 +4528,7 @@ bool CVideoPlayer::OnAction(const CAction &action)
         m_processInfo->SeekFinished(0);
         return true;
       }
-      else if (SeekScene(true))
+      else if (SeekScene(Direction::FORWARD))
         return true;
       else
         break;
@@ -4538,7 +4539,7 @@ bool CVideoPlayer::OnAction(const CAction &action)
         m_processInfo->SeekFinished(0);
         return true;
       }
-      else if (SeekScene(false))
+      else if (SeekScene(Direction::BACKWARD))
         return true;
       else
         break;

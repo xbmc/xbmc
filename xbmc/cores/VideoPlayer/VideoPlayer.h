@@ -264,7 +264,7 @@ public:
   bool IsPassthrough() const override;
   bool CanSeek() const override;
   void Seek(bool bPlus, bool bLargeStep, bool bChapterOverride) override;
-  bool SeekScene(bool bPlus = true) override;
+  bool SeekScene(Direction seekDirection) override;
   void SeekPercentage(float iPercent) override;
   float GetCachePercentage() const override;
 

@@ -311,12 +311,12 @@ bool CSeekHandler::OnAction(const CAction &action)
     }
     case ACTION_NEXT_SCENE:
     {
-      appPlayer->SeekScene(true);
+      appPlayer->SeekScene(Direction::FORWARD);
       return true;
     }
     case ACTION_PREV_SCENE:
     {
-      appPlayer->SeekScene(false);
+      appPlayer->SeekScene(Direction::BACKWARD);
       return true;
     }
     case ACTION_ANALOG_SEEK_FORWARD:

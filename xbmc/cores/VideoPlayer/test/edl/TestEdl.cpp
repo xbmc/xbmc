@@ -84,17 +84,20 @@ TEST_F(TestEdl, TestParsingMplayerTimeBasedEDL)
   const auto commbreak = edl.GetEditList().at(1);
   EXPECT_EQ(commbreak.action, Action::COMM_BREAK);
   // We should have a scenemarker at the commbreak start and another on commbreak end
-  int time;
+  std::optional<int> time = edl.GetNextSceneMarker(Direction::FORWARD, commbreak.start - 1);
   // lets cycle to the next scenemarker if starting from 1 msec before the start (or end) of the commbreak
-  EXPECT_EQ(edl.GetNextSceneMarker(true, commbreak.start - 1, &time), true);
-  EXPECT_EQ(edl.GetTimeWithoutCuts(time), commbreak.start);
-  EXPECT_EQ(edl.GetNextSceneMarker(true, commbreak.end - 1, &time), true);
-  EXPECT_EQ(edl.GetTimeWithoutCuts(time), commbreak.end);
+  EXPECT_NE(time, std::nullopt);
+  EXPECT_EQ(edl.GetTimeWithoutCuts(time.value()), commbreak.start);
+  time = edl.GetNextSceneMarker(Direction::FORWARD, commbreak.end - 1);
+  EXPECT_NE(time, std::nullopt);
+  EXPECT_EQ(edl.GetTimeWithoutCuts(time.value()), commbreak.end);
   // same if we cycle backwards
-  EXPECT_EQ(edl.GetNextSceneMarker(false, commbreak.start + 1, &time), true);
-  EXPECT_EQ(edl.GetTimeWithoutCuts(time), commbreak.start);
-  EXPECT_EQ(edl.GetNextSceneMarker(false, commbreak.end + 1, &time), true);
-  EXPECT_EQ(edl.GetTimeWithoutCuts(time), commbreak.end);
+  time = edl.GetNextSceneMarker(Direction::BACKWARD, commbreak.start + 1);
+  EXPECT_NE(time, std::nullopt);
+  EXPECT_EQ(edl.GetTimeWithoutCuts(time.value()), commbreak.start);
+  time = edl.GetNextSceneMarker(Direction::BACKWARD, commbreak.end + 1);
+  EXPECT_NE(time, std::nullopt);
+  EXPECT_EQ(edl.GetTimeWithoutCuts(time.value()), commbreak.end);
   // We should be in an edit if we are in the middle of a commbreak...
   // lets check and confirm the edits match (after restoring cuts)
   Edit thisEdit;

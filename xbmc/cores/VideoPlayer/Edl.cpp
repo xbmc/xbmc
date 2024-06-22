@@ -43,56 +43,57 @@ void CEdl::Clear()
   m_lastEditTime = -1;
 }
 
-bool CEdl::ReadEditDecisionLists(const CFileItem& fileItem, const float fFramesPerSecond)
+bool CEdl::ReadEditDecisionLists(const CFileItem& fileItem, float fps)
 {
-  bool bFound = false;
+  bool found = false;
 
   /*
    * Only check for edit decision lists if the movie is on the local hard drive, or accessed over a
    * network share (even if from a different private network).
    */
-  const std::string& strMovie = fileItem.GetDynPath();
-  if ((URIUtils::IsHD(strMovie) || URIUtils::IsOnLAN(strMovie, LanCheckMode::ANY_PRIVATE_SUBNET)) &&
-      !URIUtils::IsInternetStream(strMovie))
+  const std::string& mediaFilePath = fileItem.GetDynPath();
+  if ((URIUtils::IsHD(mediaFilePath) ||
+       URIUtils::IsOnLAN(mediaFilePath, LanCheckMode::ANY_PRIVATE_SUBNET)) &&
+      !URIUtils::IsInternetStream(mediaFilePath))
   {
     CLog::Log(LOGDEBUG,
               "{} - Checking for edit decision lists (EDL) on local drive or remote share for: {}",
-              __FUNCTION__, CURL::GetRedacted(strMovie));
+              __FUNCTION__, CURL::GetRedacted(mediaFilePath));
 
     /*
      * Read any available file format until a valid EDL related file is found.
      */
-    if (!bFound)
-      bFound = ReadVideoReDo(strMovie);
+    if (!found)
+      found = ReadVideoReDo(mediaFilePath);
 
-    if (!bFound)
-      bFound = ReadEdl(strMovie, fFramesPerSecond);
+    if (!found)
+      found = ReadEdl(mediaFilePath, fps);
 
-    if (!bFound)
-      bFound = ReadComskip(strMovie, fFramesPerSecond);
+    if (!found)
+      found = ReadComskip(mediaFilePath, fps);
 
-    if (!bFound)
-      bFound = ReadBeyondTV(strMovie);
+    if (!found)
+      found = ReadBeyondTV(mediaFilePath);
   }
   else
   {
-    bFound = ReadPvr(fileItem);
+    found = ReadPvr(fileItem);
   }
 
-  if (bFound)
+  if (found)
   {
     MergeShortCommBreaks();
     AddSceneMarkersAtStartAndEndOfEdits();
   }
 
-  return bFound;
+  return found;
 }
 
-bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
+bool CEdl::ReadEdl(const std::string& mediaFilePath, float fps)
 {
   Clear();
 
-  std::string edlFilename(URIUtils::ReplaceExtension(strMovie, ".edl"));
+  const std::string edlFilename(URIUtils::ReplaceExtension(mediaFilePath, ".edl"));
   if (!CFile::Exists(edlFilename))
     return false;
 
@@ -190,10 +191,10 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
       }
       else if (strFields[i][0] == '#') // #12345 format for frame number
       {
-        if (fFramesPerSecond > 0.0f)
+        if (fps > 0.0f)
         {
-          editStartEnd[i] = static_cast<int64_t>(std::atol(strFields[i].substr(1).c_str()) /
-                                                 fFramesPerSecond * 1000); // frame number to ms
+          editStartEnd[i] = static_cast<int64_t>(std::atol(strFields[i].substr(1).c_str()) / fps *
+                                                 1000); // frame number to ms
         }
         else
         {
@@ -281,11 +282,11 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
   }
 }
 
-bool CEdl::ReadComskip(const std::string& strMovie, const float fFramesPerSecond)
+bool CEdl::ReadComskip(const std::string& mediaFilePath, float fps)
 {
   Clear();
 
-  std::string comskipFilename(URIUtils::ReplaceExtension(strMovie, ".txt"));
+  const std::string comskipFilename(URIUtils::ReplaceExtension(mediaFilePath, ".txt"));
   if (!CFile::Exists(comskipFilename))
     return false;
 
@@ -315,9 +316,9 @@ bool CEdl::ReadComskip(const std::string& strMovie, const float fFramesPerSecond
     /*
      * Not all generated Comskip files have the frame rate information.
      */
-    if (fFramesPerSecond > 0.0f)
+    if (fps > 0.0f)
     {
-      fFrameRate = fFramesPerSecond;
+      fFrameRate = fps;
       CLog::Log(LOGWARNING,
                 "Edl::ReadComskip - Frame rate not in Comskip file. Using detected frames per "
                 "second: {:.3f}",
@@ -376,7 +377,7 @@ bool CEdl::ReadComskip(const std::string& strMovie, const float fFramesPerSecond
   }
 }
 
-bool CEdl::ReadVideoReDo(const std::string& strMovie)
+bool CEdl::ReadVideoReDo(const std::string& mediaFilePath)
 {
   /*
    * VideoReDo file is strange. Tags are XML like, but it isn't an XML file.
@@ -385,7 +386,7 @@ bool CEdl::ReadVideoReDo(const std::string& strMovie)
    */
 
   Clear();
-  std::string videoReDoFilename(URIUtils::ReplaceExtension(strMovie, ".Vprj"));
+  const std::string videoReDoFilename(URIUtils::ReplaceExtension(mediaFilePath, ".Vprj"));
   if (!CFile::Exists(videoReDoFilename))
     return false;
 
@@ -474,11 +475,12 @@ bool CEdl::ReadVideoReDo(const std::string& strMovie)
   }
 }
 
-bool CEdl::ReadBeyondTV(const std::string& strMovie)
+bool CEdl::ReadBeyondTV(const std::string& mediaFilePath)
 {
   Clear();
 
-  std::string beyondTVFilename(URIUtils::ReplaceExtension(strMovie, URIUtils::GetExtension(strMovie) + ".chapters.xml"));
+  const std::string beyondTVFilename(URIUtils::ReplaceExtension(
+      mediaFilePath, URIUtils::GetExtension(mediaFilePath) + ".chapters.xml"));
   if (!CFile::Exists(beyondTVFilename))
     return false;
 
@@ -707,7 +709,7 @@ bool CEdl::AddEdit(const Edit& newEdit)
   return true;
 }
 
-bool CEdl::AddSceneMarker(const int iSceneMarker)
+bool CEdl::AddSceneMarker(int iSceneMarker)
 {
   Edit edit;
 
@@ -882,37 +884,35 @@ EDL::Action CEdl::GetLastEditActionType() const
   return m_lastEditActionType;
 }
 
-bool CEdl::GetNextSceneMarker(bool bPlus, const int iClock, int *iSceneMarker)
+std::optional<int> CEdl::GetNextSceneMarker(Direction direction, int clock)
 {
   if (!HasSceneMarker())
-    return false;
+    return std::nullopt;
 
-  int iSeek = GetTimeAfterRestoringCuts(iClock);
+  std::optional<int> sceneMarker;
+  const int seekTime = GetTimeAfterRestoringCuts(clock);
 
-  int iDiff = 10 * 60 * 60 * 1000; // 10 hours to ms.
-  bool bFound = false;
+  int diff = 10 * 60 * 60 * 1000; // 10 hours to ms.
 
-  if (bPlus) // Find closest scene forwards
+  if (direction == Direction::FORWARD) // Find closest scene forwards
   {
     for (int i = 0; i < (int)m_vecSceneMarkers.size(); i++)
     {
-      if ((m_vecSceneMarkers[i] > iSeek) && ((m_vecSceneMarkers[i] - iSeek) < iDiff))
+      if ((m_vecSceneMarkers[i] > seekTime) && ((m_vecSceneMarkers[i] - seekTime) < diff))
       {
-        iDiff = m_vecSceneMarkers[i] - iSeek;
-        *iSceneMarker = m_vecSceneMarkers[i];
-        bFound = true;
+        diff = m_vecSceneMarkers[i] - seekTime;
+        sceneMarker = m_vecSceneMarkers[i];
       }
     }
   }
-  else // Find closest scene backwards
+  else if (direction == Direction::BACKWARD) // Find closest scene backwards
   {
     for (int i = 0; i < (int)m_vecSceneMarkers.size(); i++)
     {
-      if ((m_vecSceneMarkers[i] < iSeek) && ((iSeek - m_vecSceneMarkers[i]) < iDiff))
+      if ((m_vecSceneMarkers[i] < seekTime) && ((seekTime - m_vecSceneMarkers[i]) < diff))
       {
-        iDiff = iSeek - m_vecSceneMarkers[i];
-        *iSceneMarker = m_vecSceneMarkers[i];
-        bFound = true;
+        diff = seekTime - m_vecSceneMarkers[i];
+        sceneMarker = m_vecSceneMarkers[i];
       }
     }
   }
@@ -922,16 +922,17 @@ bool CEdl::GetNextSceneMarker(bool bPlus, const int iClock, int *iSceneMarker)
    * picked up when scene markers are added.
    */
   Edit edit;
-  if (bFound && InEdit(*iSceneMarker, &edit) && edit.action == Action::CUT)
-    *iSceneMarker = edit.end;
+  if (sceneMarker && InEdit(sceneMarker.value(), &edit) && edit.action == Action::CUT)
+    sceneMarker = edit.end;
 
-  return bFound;
+  return sceneMarker;
 }
 
-std::string CEdl::MillisecondsToTimeString(const int iMilliseconds)
+std::string CEdl::MillisecondsToTimeString(int milliSeconds)
 {
-  std::string strTimeString = StringUtils::SecondsToTimeString((long)(iMilliseconds / 1000), TIME_FORMAT_HH_MM_SS); // milliseconds to seconds
-  strTimeString += StringUtils::Format(".{:03}", iMilliseconds % 1000);
+  std::string strTimeString = StringUtils::SecondsToTimeString(
+      static_cast<long>(milliSeconds / 1000), TIME_FORMAT_HH_MM_SS); // milliseconds to seconds
+  strTimeString += StringUtils::Format(".{:03}", milliSeconds % 1000);
   return strTimeString;
 }
 

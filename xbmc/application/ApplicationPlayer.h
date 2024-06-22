@@ -144,7 +144,7 @@ public:
   void Seek(bool bPlus = true, bool bLargeStep = false, bool bChapterOverride = false);
   int SeekChapter(int iChapter);
   void SeekPercentage(float fPercent = 0);
-  bool SeekScene(bool bPlus = true);
+  bool SeekScene(Direction seekDirection);
   void SeekTime(int64_t iTime = 0);
   void SeekTimeRelative(int64_t iTime = 0);
   void SetAudioStream(int iStream);

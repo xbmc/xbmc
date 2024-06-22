@@ -327,10 +327,10 @@ bool CApplicationPlayer::CanSeek() const
   return (player && player->CanSeek());
 }
 
-bool CApplicationPlayer::SeekScene(bool bPlus)
+bool CApplicationPlayer::SeekScene(Direction seekDirection)
 {
   std::shared_ptr<IPlayer> player = GetInternal();
-  return (player && player->SeekScene(bPlus));
+  return (player && player->SeekScene(seekDirection));
 }
 
 void CApplicationPlayer::SeekTime(int64_t iTime)
