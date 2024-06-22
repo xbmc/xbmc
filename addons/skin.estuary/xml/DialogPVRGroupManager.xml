@@ -11,7 +11,7 @@
 			<include content="DialogBackgroundCommons">
 				<param name="width" value="1820" />
 				<param name="height" value="995" />
-				<param name="header_label" value="$VAR[PVRGroupMgrHeader]$INFO[Container(13).NumItems, (,)]" />
+				<param name="header_label" value="$VAR[PVRGroupMgrHeader]$INFO[Container(13).ListItem.Label, - ,]" />
 				<param name="header_id" value="1" />
 			</include>
 			<control type="group">
