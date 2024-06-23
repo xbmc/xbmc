@@ -63,6 +63,11 @@ public:
     */
     void SetAction(const std::string& action);
 
+    bool operator==(const CExecutableAction& right) const
+    {
+      return m_condition == right.m_condition && m_action == right.m_action;
+    }
+
   private:
     /**
     * Executable action default constructor
@@ -122,6 +127,11 @@ public:
    * Prune any executable actions stored in the CGUIAction
    */
   void Reset();
+
+  bool operator==(const CGUIAction& rhs) const
+  {
+    return m_actions == rhs.m_actions && m_sendThreadMessages == rhs.m_sendThreadMessages;
+  }
 
 private:
   std::vector<CExecutableAction> m_actions;

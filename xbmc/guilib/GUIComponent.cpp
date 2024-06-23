@@ -32,6 +32,10 @@ CGUIComponent::CGUIComponent()
 {
 }
 
+CGUIComponent::CGUIComponent(bool)
+{
+}
+
 CGUIComponent::~CGUIComponent()
 {
   Deinit();
@@ -50,7 +54,8 @@ void CGUIComponent::Deinit()
 {
   CServiceBroker::UnregisterGUI();
 
-  m_pWindowManager->DeInitialize();
+  if (m_pWindowManager)
+    m_pWindowManager->DeInitialize();
 }
 
 CGUIWindowManager& CGUIComponent::GetWindowManager()
