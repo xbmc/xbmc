@@ -1,11 +1,7 @@
-set(SOURCES ExifParse.cpp
-            GUIDialogPictureInfo.cpp
+set(SOURCES GUIDialogPictureInfo.cpp
             GUIViewStatePictures.cpp
             GUIWindowPictures.cpp
             GUIWindowSlideShow.cpp
-            IptcParse.cpp
-            JpegParse.cpp
-            libexif.cpp
             Picture.cpp
             PictureFolderImageFileLoader.cpp
             PictureInfoLoader.cpp

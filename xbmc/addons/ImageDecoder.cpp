@@ -79,12 +79,6 @@ bool CImageDecoder::LoadInfoTag(const std::string& fileName, CPictureInfoTag* ta
      *   - std::string Comments;
      *   - std::string FileComment;
      *   - std::string XPComment;
-     *   - unsigned ThumbnailOffset{};
-     *   - unsigned ThumbnailSize{};
-     *   - unsigned LargestExifOffset{};
-     *   - char ThumbnailAtEnd{};
-     *   - int ThumbnailSizeOffset{};
-     *   - std::vector<int> DateTimeOffsets;
      *
      * struct IPTCInfo:
      *   - std::string RecordVersion;
@@ -113,63 +107,63 @@ bool CImageDecoder::LoadInfoTag(const std::string& fileName, CPictureInfoTag* ta
      * @todo Rework @ref CPictureInfoTag to not limit on fixed structures ExifInfo & IPTCInfo.
      */
 
-    tag->m_exifInfo.Width = ifcTag.width;
-    tag->m_exifInfo.Height = ifcTag.height;
-    tag->m_exifInfo.Distance = ifcTag.distance;
-    tag->m_exifInfo.Orientation = ifcTag.orientation;
-    tag->m_exifInfo.IsColor = ifcTag.color == ADDON_IMG_COLOR_COLORED ? 1 : 0;
-    tag->m_exifInfo.ApertureFNumber = ifcTag.aperture_f_number;
-    tag->m_exifInfo.FlashUsed = ifcTag.flash_used ? 1 : 0;
-    tag->m_exifInfo.LightSource = ifcTag.light_source;
-    tag->m_exifInfo.FocalLength = ifcTag.focal_length;
-    tag->m_exifInfo.FocalLength35mmEquiv = ifcTag.focal_length_in_35mm_format;
-    tag->m_exifInfo.MeteringMode = ifcTag.metering_mode;
-    tag->m_exifInfo.DigitalZoomRatio = ifcTag.digital_zoom_ratio;
-    tag->m_exifInfo.ExposureTime = ifcTag.exposure_time;
-    tag->m_exifInfo.ExposureBias = ifcTag.exposure_bias;
-    tag->m_exifInfo.ExposureProgram = ifcTag.exposure_program;
-    tag->m_exifInfo.ExposureMode = ifcTag.exposure_mode;
-    tag->m_exifInfo.ISOequivalent = static_cast<int>(ifcTag.iso_speed);
+    tag->m_imageMetadata.width = ifcTag.width;
+    tag->m_imageMetadata.height = ifcTag.height;
+    tag->m_imageMetadata.exifInfo.Distance = ifcTag.distance;
+    tag->m_imageMetadata.exifInfo.Orientation = ifcTag.orientation;
+    tag->m_imageMetadata.isColor = ifcTag.color == ADDON_IMG_COLOR_COLORED ? 1 : 0;
+    tag->m_imageMetadata.exifInfo.ApertureFNumber = ifcTag.aperture_f_number;
+    tag->m_imageMetadata.exifInfo.FlashUsed = ifcTag.flash_used ? 1 : 0;
+    tag->m_imageMetadata.exifInfo.LightSource = ifcTag.light_source;
+    tag->m_imageMetadata.exifInfo.FocalLength = ifcTag.focal_length;
+    tag->m_imageMetadata.exifInfo.FocalLength35mmEquiv = ifcTag.focal_length_in_35mm_format;
+    tag->m_imageMetadata.exifInfo.MeteringMode = ifcTag.metering_mode;
+    tag->m_imageMetadata.exifInfo.DigitalZoomRatio = ifcTag.digital_zoom_ratio;
+    tag->m_imageMetadata.exifInfo.ExposureTime = ifcTag.exposure_time;
+    tag->m_imageMetadata.exifInfo.ExposureBias = ifcTag.exposure_bias;
+    tag->m_imageMetadata.exifInfo.ExposureProgram = ifcTag.exposure_program;
+    tag->m_imageMetadata.exifInfo.ExposureMode = ifcTag.exposure_mode;
+    tag->m_imageMetadata.exifInfo.ISOequivalent = static_cast<int>(ifcTag.iso_speed);
     CDateTime dt;
     dt.SetFromUTCDateTime(ifcTag.time_created);
-    tag->m_iptcInfo.TimeCreated = dt.GetAsLocalizedDateTime();
     tag->m_dateTimeTaken = dt;
-    tag->m_exifInfo.GpsInfoPresent = ifcTag.gps_info_present;
-    if (tag->m_exifInfo.GpsInfoPresent)
+    tag->m_imageMetadata.iptcInfo.TimeCreated = dt.GetAsLocalizedDateTime();
+    tag->m_imageMetadata.exifInfo.GpsInfoPresent = ifcTag.gps_info_present;
+    if (tag->m_imageMetadata.exifInfo.GpsInfoPresent)
     {
-      tag->m_exifInfo.GpsLat =
+      tag->m_imageMetadata.exifInfo.GpsLat =
           StringUtils::Format("{}{:.0f}°{:.0f}'{:.2f}\"", ifcTag.latitude_ref, ifcTag.latitude[0],
                               ifcTag.latitude[1], ifcTag.latitude[2]);
-      tag->m_exifInfo.GpsLong =
+      tag->m_imageMetadata.exifInfo.GpsLong =
           StringUtils::Format("{}{:.0f}°{:.0f}'{:.2f}\"", ifcTag.longitude_ref, ifcTag.longitude[0],
                               ifcTag.longitude[1], ifcTag.longitude[2]);
-      tag->m_exifInfo.GpsAlt =
+      tag->m_imageMetadata.exifInfo.GpsAlt =
           StringUtils::Format("{}{:.2f} m", ifcTag.altitude_ref ? '-' : '+', ifcTag.altitude);
     }
 
     if (ifcTag.camera_manufacturer)
     {
-      tag->m_exifInfo.CameraMake = ifcTag.camera_manufacturer;
+      tag->m_imageMetadata.exifInfo.CameraMake = ifcTag.camera_manufacturer;
       free(ifcTag.camera_manufacturer);
     }
     if (ifcTag.camera_model)
     {
-      tag->m_exifInfo.CameraModel = ifcTag.camera_model;
+      tag->m_imageMetadata.exifInfo.CameraModel = ifcTag.camera_model;
       free(ifcTag.camera_model);
     }
     if (ifcTag.author)
     {
-      tag->m_iptcInfo.Author = ifcTag.author;
+      tag->m_imageMetadata.iptcInfo.Author = ifcTag.author;
       free(ifcTag.author);
     }
     if (ifcTag.description)
     {
-      tag->m_exifInfo.Description = ifcTag.description;
+      tag->m_imageMetadata.exifInfo.Description = ifcTag.description;
       free(ifcTag.description);
     }
     if (ifcTag.copyright)
     {
-      tag->m_iptcInfo.CopyrightNotice = ifcTag.copyright;
+      tag->m_imageMetadata.iptcInfo.CopyrightNotice = ifcTag.copyright;
       free(ifcTag.copyright);
     }
   }

@@ -1,0 +1,169 @@
+From 0a626d3e54d5db1193e42b505db5cac9e65967af Mon Sep 17 00:00:00 2001
+From: Miguel Borges de Freitas <92enen@gmail.com>
+Date: Fri, 24 Nov 2023 11:56:11 +0000
+Subject: [PATCH 2/2] Set conditional HTTP depending on EXIV2_ENABLE_WEBREADY
+
+---
+ include/exiv2/exiv2.hpp | 2 ++
+ include/meson.build     | 5 ++++-
+ meson.build             | 8 +++++++-
+ meson_options.txt       | 5 +++++
+ src/CMakeLists.txt      | 6 ++++--
+ src/basicio.cpp         | 2 ++
+ src/image.cpp           | 4 +++-
+ 7 files changed, 27 insertions(+), 5 deletions(-)
+
+diff --git a/include/exiv2/exiv2.hpp b/include/exiv2/exiv2.hpp
+index bae5614d2..35bdb1ab9 100644
+--- a/include/exiv2/exiv2.hpp
++++ b/include/exiv2/exiv2.hpp
+@@ -19,7 +19,9 @@
+ #include "exiv2/exif.hpp"
+ #include "exiv2/futils.hpp"
+ #include "exiv2/gifimage.hpp"
++#ifdef EXV_ENABLE_WEBREADY
+ #include "exiv2/http.hpp"
++#endif
+ #include "exiv2/image.hpp"
+ #include "exiv2/iptc.hpp"
+ #include "exiv2/jp2image.hpp"
+diff --git a/include/meson.build b/include/meson.build
+index 7bbb3800f..abcb4a4d6 100644
+--- a/include/meson.build
++++ b/include/meson.build
+@@ -14,7 +14,6 @@ headers = files(
+   'exiv2/exiv2.hpp',
+   'exiv2/futils.hpp',
+   'exiv2/gifimage.hpp',
+-  'exiv2/http.hpp',
+   'exiv2/image.hpp',
+   'exiv2/image_types.hpp',
+   'exiv2/iptc.hpp',
+@@ -47,6 +46,10 @@ if get_option('video')
+   headers += files('exiv2/asfvideo.hpp', 'exiv2/matroskavideo.hpp', 'exiv2/quicktimevideo.hpp', 'exiv2/riffvideo.hpp')
+ endif
+ 
++if get_option('webready')
++  headers += files('exiv2/http.hpp')
++endif
++
+ if zlib_dep.found()
+   headers += files('exiv2/pngimage.hpp')
+ endif
+diff --git a/meson.build b/meson.build
+index 1b141d5cf..b69fada34 100644
+--- a/meson.build
++++ b/meson.build
+@@ -67,7 +67,12 @@ if brotli_dep.found()
+   deps += brotli_dep
+ endif
+ 
+-curl_dep = dependency('libcurl', disabler: true, required: get_option('curl'))
++if get_option('webready')
++  curl_dep = dependency('libcurl', disabler: true, required: get_option('curl'))
++else
++  curl_dep = dependency('', disabler: true, required: false)
++endif
++
+ if curl_dep.found()
+   deps += curl_dep
+ endif
+@@ -113,6 +118,7 @@ cdata.set('EXV_HAVE_XMP_TOOLKIT', expat_dep.found())
+ cdata.set('EXV_HAVE_BROTLI', brotli_dep.found())
+ cdata.set('EXV_HAVE_ICONV', iconv_dep.found())
+ cdata.set('EXV_HAVE_LIBZ', zlib_dep.found())
++cdata.set('EXV_ENABLE_WEBREADY', get_option('webready'))
+ cdata.set('EXV_USE_CURL', curl_dep.found())
+ cdata.set('EXV_ENABLE_NLS', intl_dep.found())
+ cdata.set('EXV_ENABLE_WEBREADY', curl_dep.found())
+diff --git a/meson_options.txt b/meson_options.txt
+index f80430a70..ca03706ea 100644
+--- a/meson_options.txt
++++ b/meson_options.txt
+@@ -44,3 +44,8 @@ option('xmp', type : 'feature',
+ option('unitTests', type : 'feature',
+   description : 'Build and run unit tests',
+ )
++
++option('webready', type : 'boolean',
++  value: true,
++  description : 'Build with support for webready',
++)
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index f1b27b861..348a0bfb1 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -48,7 +48,6 @@ set(PUBLIC_HEADERS
+     ../include/exiv2/exiv2.hpp
+     ../include/exiv2/futils.hpp
+     ../include/exiv2/gifimage.hpp
+-    ../include/exiv2/http.hpp
+     ../include/exiv2/image.hpp
+     ../include/exiv2/image_types.hpp
+     ../include/exiv2/iptc.hpp
+@@ -92,7 +91,6 @@ add_library( exiv2lib
+     futils.cpp
+     fff.h
+     gifimage.cpp
+-    http.cpp
+     image.cpp
+     iptc.cpp
+     jp2image.cpp
+@@ -129,6 +127,10 @@ generate_export_header(exiv2lib
+ 
+ # Conditional addition of sources to library targets
+ # ---------------------------------------------------------
++if(EXIV2_ENABLE_WEBREADY)
++  set(PUBLIC_HEADERS ${PUBLIC_HEADERS} ../include/exiv2/http.hpp)
++  target_sources(exiv2lib PRIVATE http.cpp ../include/exiv2/http.hpp)
++endif()
+ 
+ if( EXIV2_ENABLE_PNG )
+     set(PUBLIC_HEADERS ${PUBLIC_HEADERS} ../include/exiv2/pngimage.hpp)
+diff --git a/src/basicio.cpp b/src/basicio.cpp
+index 36509b16b..5f3a9abb3 100644
+--- a/src/basicio.cpp
++++ b/src/basicio.cpp
+@@ -1386,6 +1386,7 @@ void RemoteIo::populateFakeData() {
+   }
+ }
+ 
++#ifdef EXV_ENABLE_WEBREADY
+ //! Internal Pimpl structure of class HttpIo.
+ class HttpIo::HttpImpl : public Impl {
+  public:
+@@ -1525,6 +1526,7 @@ void HttpIo::HttpImpl::writeRemote(const byte* data, size_t size, size_t from, s
+ HttpIo::HttpIo(const std::string& url, size_t blockSize) {
+   p_ = std::make_unique<HttpImpl>(url, blockSize);
+ }
++#endif
+ 
+ #ifdef EXV_USE_CURL
+ //! Internal Pimpl structure of class RemoteIo.
+diff --git a/src/image.cpp b/src/image.cpp
+index 9bbe1f272..e65ec7464 100644
+--- a/src/image.cpp
++++ b/src/image.cpp
+@@ -777,7 +777,7 @@ ImageType ImageFactory::getType(BasicIo& io) {
+ }
+ 
+ BasicIo::UniquePtr ImageFactory::createIo(const std::string& path, bool useCurl) {
+-  Protocol fProt = fileProtocol(path);
++  [[maybe_unused]] Protocol fProt = fileProtocol(path);
+ 
+ #ifdef EXV_USE_CURL
+   if (useCurl && (fProt == pHttp || fProt == pHttps || fProt == pFtp)) {
+@@ -785,8 +785,10 @@ BasicIo::UniquePtr ImageFactory::createIo(const std::string& path, bool useCurl)
+   }
+ #endif
+ 
++#ifdef EXV_ENABLE_WEBREADY
+   if (fProt == pHttp)
+     return std::make_unique<HttpIo>(path);  // may throw
++#endif
+ #ifdef EXV_ENABLE_FILESYSTEM
+   if (fProt == pFileUri)
+     return std::make_unique<FileIo>(pathOfFileUrl(path));
+-- 
+2.39.3 (Apple Git-146)
+

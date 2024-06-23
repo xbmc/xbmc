@@ -13,6 +13,7 @@
 #include "addons/ImageDecoder.h"
 #include "addons/addoninfo/AddonType.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
+#include "pictures/metadata/ImageMetadataParser.h"
 #include "utils/Archive.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
@@ -24,103 +25,9 @@
 
 using namespace KODI::ADDONS;
 
-CPictureInfoTag::ExifInfo::ExifInfo(const ExifInfo_t& other)
-  : CameraMake(other.CameraMake),
-    CameraModel(other.CameraModel),
-    DateTime(other.DateTime),
-    Height(other.Height),
-    Width(other.Width),
-    Orientation(other.Orientation),
-    IsColor(other.IsColor),
-    Process(other.Process),
-    FlashUsed(other.FlashUsed),
-    FocalLength(other.FocalLength),
-    ExposureTime(other.ExposureTime),
-    ApertureFNumber(other.ApertureFNumber),
-    Distance(other.Distance),
-    CCDWidth(other.CCDWidth),
-    ExposureBias(other.ExposureBias),
-    DigitalZoomRatio(other.DigitalZoomRatio),
-    FocalLength35mmEquiv(other.FocalLength35mmEquiv),
-    Whitebalance(other.Whitebalance),
-    MeteringMode(other.MeteringMode),
-    ExposureProgram(other.ExposureProgram),
-    ExposureMode(other.ExposureMode),
-    ISOequivalent(other.ISOequivalent),
-    LightSource(other.LightSource),
-    CommentsCharset(EXIF_COMMENT_CHARSET_CONVERTED),
-    XPCommentsCharset(EXIF_COMMENT_CHARSET_CONVERTED),
-    Comments(Convert(other.CommentsCharset, other.Comments)),
-    FileComment(Convert(EXIF_COMMENT_CHARSET_UNKNOWN, other.FileComment)),
-    XPComment(Convert(other.XPCommentsCharset, other.XPComment)),
-    Description(other.Description),
-    ThumbnailOffset(other.ThumbnailOffset),
-    ThumbnailSize(other.ThumbnailSize),
-    LargestExifOffset(other.LargestExifOffset),
-    ThumbnailAtEnd(other.ThumbnailAtEnd),
-    ThumbnailSizeOffset(other.ThumbnailSizeOffset),
-    DateTimeOffsets(other.DateTimeOffsets, other.DateTimeOffsets + other.numDateTimeTags),
-    GpsInfoPresent(other.GpsInfoPresent),
-    GpsLat(other.GpsLat),
-    GpsLong(other.GpsLong),
-    GpsAlt(other.GpsAlt)
-{
-}
-
-std::string CPictureInfoTag::ExifInfo::Convert(int charset, const char* data)
-{
-  std::string value;
-
-  // The charset used for the UserComment is stored in CommentsCharset:
-  // Ascii, Unicode (UCS2), JIS (X208-1990), Unknown (application specific)
-  if (charset == EXIF_COMMENT_CHARSET_UNICODE)
-  {
-    g_charsetConverter.ucs2ToUTF8(std::u16string(reinterpret_cast<const char16_t*>(data)), value);
-  }
-  else
-  {
-    // Ascii doesn't need to be converted (EXIF_COMMENT_CHARSET_ASCII)
-    // Unknown data can't be converted as it could be any codec (EXIF_COMMENT_CHARSET_UNKNOWN)
-    // JIS data can't be converted as CharsetConverter and iconv lacks support (EXIF_COMMENT_CHARSET_JIS)
-    g_charsetConverter.unknownToUTF8(data, value);
-  }
-
-  return value;
-}
-
-CPictureInfoTag::IPTCInfo::IPTCInfo(const IPTCInfo_t& other)
-  : RecordVersion(other.RecordVersion),
-    SupplementalCategories(other.SupplementalCategories),
-    Keywords(other.Keywords),
-    Caption(other.Caption),
-    Author(other.Author),
-    Headline(other.Headline),
-    SpecialInstructions(other.SpecialInstructions),
-    Category(other.Category),
-    Byline(other.Byline),
-    BylineTitle(other.BylineTitle),
-    Credit(other.Credit),
-    Source(other.Source),
-    CopyrightNotice(other.CopyrightNotice),
-    ObjectName(other.ObjectName),
-    City(other.City),
-    State(other.State),
-    Country(other.Country),
-    TransmissionReference(other.TransmissionReference),
-    Date(other.Date),
-    Urgency(other.Urgency),
-    ReferenceService(other.ReferenceService),
-    CountryCode(other.CountryCode),
-    TimeCreated(other.TimeCreated),
-    SubLocation(other.SubLocation),
-    ImageType(other.ImageType)
-{
-}
-
 void CPictureInfoTag::Reset()
 {
-  m_exifInfo = {};
-  m_iptcInfo = {};
+  m_imageMetadata = {};
   m_isLoaded = false;
   m_isInfoSetExternally = false;
   m_dateTimeTaken.Reset();
@@ -155,13 +62,10 @@ bool CPictureInfoTag::Load(const std::string &path)
   // Load by Kodi's included own way
   if (!m_isLoaded)
   {
-    ExifInfo_t exifInfo;
-    IPTCInfo_t iptcInfo;
-
-    if (process_jpeg(path.c_str(), &exifInfo, &iptcInfo))
+    std::unique_ptr<ImageMetadata> metadata = CImageMetadataParser::ExtractMetadata(path);
+    if (metadata)
     {
-      m_exifInfo = ExifInfo(exifInfo);
-      m_iptcInfo = IPTCInfo(iptcInfo);
+      m_imageMetadata = *(metadata.release());
       m_isLoaded = true;
     }
   }
@@ -177,223 +81,180 @@ void CPictureInfoTag::Archive(CArchive& ar)
   {
     ar << m_isLoaded;
     ar << m_isInfoSetExternally;
-    ar << m_exifInfo.ApertureFNumber;
-    ar << m_exifInfo.CameraMake;
-    ar << m_exifInfo.CameraModel;
-    ar << m_exifInfo.CCDWidth;
-    ar << m_exifInfo.Comments;
-    ar << m_exifInfo.Description;
-    ar << m_exifInfo.DateTime;
-    for (std::vector<int>::size_type i = 0; i < MAX_DATE_COPIES; ++i)
-    {
-      if (i < m_exifInfo.DateTimeOffsets.size())
-        ar << m_exifInfo.DateTimeOffsets[i];
-      else
-        ar << static_cast<int>(0);
-    }
-    ar << m_exifInfo.DigitalZoomRatio;
-    ar << m_exifInfo.Distance;
-    ar << m_exifInfo.ExposureBias;
-    ar << m_exifInfo.ExposureMode;
-    ar << m_exifInfo.ExposureProgram;
-    ar << m_exifInfo.ExposureTime;
-    ar << m_exifInfo.FlashUsed;
-    ar << m_exifInfo.FocalLength;
-    ar << m_exifInfo.FocalLength35mmEquiv;
-    ar << m_exifInfo.GpsInfoPresent;
-    ar << m_exifInfo.GpsAlt;
-    ar << m_exifInfo.GpsLat;
-    ar << m_exifInfo.GpsLong;
-    ar << m_exifInfo.Height;
-    ar << m_exifInfo.IsColor;
-    ar << m_exifInfo.ISOequivalent;
-    ar << m_exifInfo.LargestExifOffset;
-    ar << m_exifInfo.LightSource;
-    ar << m_exifInfo.MeteringMode;
-    ar << static_cast<int>(m_exifInfo.DateTimeOffsets.size());
-    ar << m_exifInfo.Orientation;
-    ar << m_exifInfo.Process;
-    ar << m_exifInfo.ThumbnailAtEnd;
-    ar << m_exifInfo.ThumbnailOffset;
-    ar << m_exifInfo.ThumbnailSize;
-    ar << m_exifInfo.ThumbnailSizeOffset;
-    ar << m_exifInfo.Whitebalance;
-    ar << m_exifInfo.Width;
+    ar << m_imageMetadata.exifInfo.ApertureFNumber;
+    ar << m_imageMetadata.exifInfo.CameraMake;
+    ar << m_imageMetadata.exifInfo.CameraModel;
+    ar << m_imageMetadata.exifInfo.CCDWidth;
+    ar << m_imageMetadata.exifInfo.Comments;
+    ar << m_imageMetadata.exifInfo.Description;
+    ar << m_imageMetadata.exifInfo.DateTime;
+    ar << m_imageMetadata.exifInfo.DigitalZoomRatio;
+    ar << m_imageMetadata.exifInfo.Distance;
+    ar << m_imageMetadata.exifInfo.ExposureBias;
+    ar << m_imageMetadata.exifInfo.ExposureMode;
+    ar << m_imageMetadata.exifInfo.ExposureProgram;
+    ar << m_imageMetadata.exifInfo.ExposureTime;
+    ar << m_imageMetadata.exifInfo.FlashUsed;
+    ar << m_imageMetadata.exifInfo.FocalLength;
+    ar << m_imageMetadata.exifInfo.FocalLength35mmEquiv;
+    ar << m_imageMetadata.exifInfo.GpsInfoPresent;
+    ar << m_imageMetadata.exifInfo.GpsAlt;
+    ar << m_imageMetadata.exifInfo.GpsLat;
+    ar << m_imageMetadata.exifInfo.GpsLong;
+    ar << m_imageMetadata.height;
+    ar << m_imageMetadata.isColor;
+    ar << m_imageMetadata.exifInfo.ISOequivalent;
+    ar << m_imageMetadata.exifInfo.LightSource;
+    ar << m_imageMetadata.exifInfo.MeteringMode;
+    ar << m_imageMetadata.exifInfo.Orientation;
+    ar << m_imageMetadata.encodingProcess;
+    ar << m_imageMetadata.exifInfo.Whitebalance;
+    ar << m_imageMetadata.width;
     ar << m_dateTimeTaken;
 
-    ar << m_iptcInfo.Author;
-    ar << m_iptcInfo.Byline;
-    ar << m_iptcInfo.BylineTitle;
-    ar << m_iptcInfo.Caption;
-    ar << m_iptcInfo.Category;
-    ar << m_iptcInfo.City;
-    ar << m_iptcInfo.Urgency;
-    ar << m_iptcInfo.CopyrightNotice;
-    ar << m_iptcInfo.Country;
-    ar << m_iptcInfo.CountryCode;
-    ar << m_iptcInfo.Credit;
-    ar << m_iptcInfo.Date;
-    ar << m_iptcInfo.Headline;
-    ar << m_iptcInfo.Keywords;
-    ar << m_iptcInfo.ObjectName;
-    ar << m_iptcInfo.ReferenceService;
-    ar << m_iptcInfo.Source;
-    ar << m_iptcInfo.SpecialInstructions;
-    ar << m_iptcInfo.State;
-    ar << m_iptcInfo.SupplementalCategories;
-    ar << m_iptcInfo.TransmissionReference;
-    ar << m_iptcInfo.TimeCreated;
-    ar << m_iptcInfo.SubLocation;
-    ar << m_iptcInfo.ImageType;
+    ar << m_imageMetadata.iptcInfo.Author;
+    ar << m_imageMetadata.iptcInfo.Byline;
+    ar << m_imageMetadata.iptcInfo.BylineTitle;
+    ar << m_imageMetadata.iptcInfo.Caption;
+    ar << m_imageMetadata.iptcInfo.Category;
+    ar << m_imageMetadata.iptcInfo.City;
+    ar << m_imageMetadata.iptcInfo.Urgency;
+    ar << m_imageMetadata.iptcInfo.CopyrightNotice;
+    ar << m_imageMetadata.iptcInfo.Country;
+    ar << m_imageMetadata.iptcInfo.CountryCode;
+    ar << m_imageMetadata.iptcInfo.Credit;
+    ar << m_imageMetadata.iptcInfo.Date;
+    ar << m_imageMetadata.iptcInfo.Headline;
+    ar << m_imageMetadata.iptcInfo.Keywords;
+    ar << m_imageMetadata.iptcInfo.ObjectName;
+    ar << m_imageMetadata.iptcInfo.ReferenceService;
+    ar << m_imageMetadata.iptcInfo.Source;
+    ar << m_imageMetadata.iptcInfo.SpecialInstructions;
+    ar << m_imageMetadata.iptcInfo.State;
+    ar << m_imageMetadata.iptcInfo.SupplementalCategories;
+    ar << m_imageMetadata.iptcInfo.TransmissionReference;
+    ar << m_imageMetadata.iptcInfo.TimeCreated;
+    ar << m_imageMetadata.iptcInfo.SubLocation;
+    ar << m_imageMetadata.iptcInfo.ImageType;
   }
   else
   {
     ar >> m_isLoaded;
     ar >> m_isInfoSetExternally;
-    ar >> m_exifInfo.ApertureFNumber;
-    ar >> m_exifInfo.CameraMake;
-    ar >> m_exifInfo.CameraModel;
-    ar >> m_exifInfo.CCDWidth;
-    ar >> m_exifInfo.Comments;
-    m_exifInfo.CommentsCharset = EXIF_COMMENT_CHARSET_CONVERTED; // Store and restore the comment charset converted
-    ar >> m_exifInfo.Description;
-    ar >> m_exifInfo.DateTime;
-    m_exifInfo.DateTimeOffsets.clear();
-    m_exifInfo.DateTimeOffsets.reserve(MAX_DATE_COPIES);
-    for (std::vector<int>::size_type i = 0; i < MAX_DATE_COPIES; ++i)
-    {
-      int dateTimeOffset;
-      ar >> dateTimeOffset;
-      m_exifInfo.DateTimeOffsets.push_back(dateTimeOffset);
-    }
-    ar >> m_exifInfo.DigitalZoomRatio;
-    ar >> m_exifInfo.Distance;
-    ar >> m_exifInfo.ExposureBias;
-    ar >> m_exifInfo.ExposureMode;
-    ar >> m_exifInfo.ExposureProgram;
-    ar >> m_exifInfo.ExposureTime;
-    ar >> m_exifInfo.FlashUsed;
-    ar >> m_exifInfo.FocalLength;
-    ar >> m_exifInfo.FocalLength35mmEquiv;
-    ar >> m_exifInfo.GpsInfoPresent;
-    ar >> m_exifInfo.GpsAlt;
-    ar >> m_exifInfo.GpsLat;
-    ar >> m_exifInfo.GpsLong;
-    ar >> m_exifInfo.Height;
-    ar >> m_exifInfo.IsColor;
-    ar >> m_exifInfo.ISOequivalent;
-    ar >> m_exifInfo.LargestExifOffset;
-    ar >> m_exifInfo.LightSource;
-    ar >> m_exifInfo.MeteringMode;
-    int numDateTimeTags;
-    ar >> numDateTimeTags;
-    m_exifInfo.DateTimeOffsets.resize(numDateTimeTags);
-    ar >> m_exifInfo.Orientation;
-    ar >> m_exifInfo.Process;
-    ar >> m_exifInfo.ThumbnailAtEnd;
-    ar >> m_exifInfo.ThumbnailOffset;
-    ar >> m_exifInfo.ThumbnailSize;
-    ar >> m_exifInfo.ThumbnailSizeOffset;
-    ar >> m_exifInfo.Whitebalance;
-    ar >> m_exifInfo.Width;
+    ar >> m_imageMetadata.exifInfo.ApertureFNumber;
+    ar >> m_imageMetadata.exifInfo.CameraMake;
+    ar >> m_imageMetadata.exifInfo.CameraModel;
+    ar >> m_imageMetadata.exifInfo.CCDWidth;
+    ar >> m_imageMetadata.exifInfo.Comments;
+    ar >> m_imageMetadata.exifInfo.Description;
+    ar >> m_imageMetadata.exifInfo.DateTime;
+    ar >> m_imageMetadata.exifInfo.DigitalZoomRatio;
+    ar >> m_imageMetadata.exifInfo.Distance;
+    ar >> m_imageMetadata.exifInfo.ExposureBias;
+    ar >> m_imageMetadata.exifInfo.ExposureMode;
+    ar >> m_imageMetadata.exifInfo.ExposureProgram;
+    ar >> m_imageMetadata.exifInfo.ExposureTime;
+    ar >> m_imageMetadata.exifInfo.FlashUsed;
+    ar >> m_imageMetadata.exifInfo.FocalLength;
+    ar >> m_imageMetadata.exifInfo.FocalLength35mmEquiv;
+    ar >> m_imageMetadata.exifInfo.GpsInfoPresent;
+    ar >> m_imageMetadata.exifInfo.GpsAlt;
+    ar >> m_imageMetadata.exifInfo.GpsLat;
+    ar >> m_imageMetadata.exifInfo.GpsLong;
+    ar >> m_imageMetadata.height;
+    ar >> m_imageMetadata.isColor;
+    ar >> m_imageMetadata.exifInfo.ISOequivalent;
+    ar >> m_imageMetadata.exifInfo.LightSource;
+    ar >> m_imageMetadata.exifInfo.MeteringMode;
+    ar >> m_imageMetadata.exifInfo.Orientation;
+    ar >> m_imageMetadata.encodingProcess;
+    ar >> m_imageMetadata.exifInfo.Whitebalance;
+    ar >> m_imageMetadata.width;
     ar >> m_dateTimeTaken;
 
-    ar >> m_iptcInfo.Author;
-    ar >> m_iptcInfo.Byline;
-    ar >> m_iptcInfo.BylineTitle;
-    ar >> m_iptcInfo.Caption;
-    ar >> m_iptcInfo.Category;
-    ar >> m_iptcInfo.City;
-    ar >> m_iptcInfo.Urgency;
-    ar >> m_iptcInfo.CopyrightNotice;
-    ar >> m_iptcInfo.Country;
-    ar >> m_iptcInfo.CountryCode;
-    ar >> m_iptcInfo.Credit;
-    ar >> m_iptcInfo.Date;
-    ar >> m_iptcInfo.Headline;
-    ar >> m_iptcInfo.Keywords;
-    ar >> m_iptcInfo.ObjectName;
-    ar >> m_iptcInfo.ReferenceService;
-    ar >> m_iptcInfo.Source;
-    ar >> m_iptcInfo.SpecialInstructions;
-    ar >> m_iptcInfo.State;
-    ar >> m_iptcInfo.SupplementalCategories;
-    ar >> m_iptcInfo.TransmissionReference;
-    ar >> m_iptcInfo.TimeCreated;
-    ar >> m_iptcInfo.SubLocation;
-    ar >> m_iptcInfo.ImageType;
+    ar >> m_imageMetadata.iptcInfo.Author;
+    ar >> m_imageMetadata.iptcInfo.Byline;
+    ar >> m_imageMetadata.iptcInfo.BylineTitle;
+    ar >> m_imageMetadata.iptcInfo.Caption;
+    ar >> m_imageMetadata.iptcInfo.Category;
+    ar >> m_imageMetadata.iptcInfo.City;
+    ar >> m_imageMetadata.iptcInfo.Urgency;
+    ar >> m_imageMetadata.iptcInfo.CopyrightNotice;
+    ar >> m_imageMetadata.iptcInfo.Country;
+    ar >> m_imageMetadata.iptcInfo.CountryCode;
+    ar >> m_imageMetadata.iptcInfo.Credit;
+    ar >> m_imageMetadata.iptcInfo.Date;
+    ar >> m_imageMetadata.iptcInfo.Headline;
+    ar >> m_imageMetadata.iptcInfo.Keywords;
+    ar >> m_imageMetadata.iptcInfo.ObjectName;
+    ar >> m_imageMetadata.iptcInfo.ReferenceService;
+    ar >> m_imageMetadata.iptcInfo.Source;
+    ar >> m_imageMetadata.iptcInfo.SpecialInstructions;
+    ar >> m_imageMetadata.iptcInfo.State;
+    ar >> m_imageMetadata.iptcInfo.SupplementalCategories;
+    ar >> m_imageMetadata.iptcInfo.TransmissionReference;
+    ar >> m_imageMetadata.iptcInfo.TimeCreated;
+    ar >> m_imageMetadata.iptcInfo.SubLocation;
+    ar >> m_imageMetadata.iptcInfo.ImageType;
   }
 }
 
 void CPictureInfoTag::Serialize(CVariant& value) const
 {
-  value["aperturefnumber"] = m_exifInfo.ApertureFNumber;
-  value["cameramake"] = m_exifInfo.CameraMake;
-  value["cameramodel"] = m_exifInfo.CameraModel;
-  value["ccdwidth"] = m_exifInfo.CCDWidth;
-  value["comments"] = m_exifInfo.Comments;
-  value["description"] = m_exifInfo.Description;
-  value["datetime"] = m_exifInfo.DateTime;
-  for (std::vector<int>::size_type i = 0; i < MAX_DATE_COPIES; ++i)
-  {
-    if (i < m_exifInfo.DateTimeOffsets.size())
-      value["datetimeoffsets"][static_cast<int>(i)] = m_exifInfo.DateTimeOffsets[i];
-    else
-      value["datetimeoffsets"][static_cast<int>(i)] = static_cast<int>(0);
-  }
-  value["digitalzoomratio"] = m_exifInfo.DigitalZoomRatio;
-  value["distance"] = m_exifInfo.Distance;
-  value["exposurebias"] = m_exifInfo.ExposureBias;
-  value["exposuremode"] = m_exifInfo.ExposureMode;
-  value["exposureprogram"] = m_exifInfo.ExposureProgram;
-  value["exposuretime"] = m_exifInfo.ExposureTime;
-  value["flashused"] = m_exifInfo.FlashUsed;
-  value["focallength"] = m_exifInfo.FocalLength;
-  value["focallength35mmequiv"] = m_exifInfo.FocalLength35mmEquiv;
-  value["gpsinfopresent"] = m_exifInfo.GpsInfoPresent;
-  value["gpsinfo"]["alt"] = m_exifInfo.GpsAlt;
-  value["gpsinfo"]["lat"] = m_exifInfo.GpsLat;
-  value["gpsinfo"]["long"] = m_exifInfo.GpsLong;
-  value["height"] = m_exifInfo.Height;
-  value["iscolor"] = m_exifInfo.IsColor;
-  value["isoequivalent"] = m_exifInfo.ISOequivalent;
-  value["largestexifoffset"] = m_exifInfo.LargestExifOffset;
-  value["lightsource"] = m_exifInfo.LightSource;
-  value["meteringmode"] = m_exifInfo.MeteringMode;
-  value["numdatetimetags"] = static_cast<int>(m_exifInfo.DateTimeOffsets.size());
-  value["orientation"] = m_exifInfo.Orientation;
-  value["process"] = m_exifInfo.Process;
-  value["thumbnailatend"] = m_exifInfo.ThumbnailAtEnd;
-  value["thumbnailoffset"] = m_exifInfo.ThumbnailOffset;
-  value["thumbnailsize"] = m_exifInfo.ThumbnailSize;
-  value["thumbnailsizeoffset"] = m_exifInfo.ThumbnailSizeOffset;
-  value["whitebalance"] = m_exifInfo.Whitebalance;
-  value["width"] = m_exifInfo.Width;
+  value["aperturefnumber"] = m_imageMetadata.exifInfo.ApertureFNumber;
+  value["cameramake"] = m_imageMetadata.exifInfo.CameraMake;
+  value["cameramodel"] = m_imageMetadata.exifInfo.CameraModel;
+  value["ccdwidth"] = m_imageMetadata.exifInfo.CCDWidth;
+  value["comments"] = m_imageMetadata.exifInfo.Comments;
+  value["description"] = m_imageMetadata.exifInfo.Description;
+  value["datetime"] = m_imageMetadata.exifInfo.DateTime;
+  value["digitalzoomratio"] = m_imageMetadata.exifInfo.DigitalZoomRatio;
+  value["distance"] = m_imageMetadata.exifInfo.Distance;
+  value["exposurebias"] = m_imageMetadata.exifInfo.ExposureBias;
+  value["exposuremode"] = m_imageMetadata.exifInfo.ExposureMode;
+  value["exposureprogram"] = m_imageMetadata.exifInfo.ExposureProgram;
+  value["exposuretime"] = m_imageMetadata.exifInfo.ExposureTime;
+  value["flashused"] = m_imageMetadata.exifInfo.FlashUsed;
+  value["focallength"] = m_imageMetadata.exifInfo.FocalLength;
+  value["focallength35mmequiv"] = m_imageMetadata.exifInfo.FocalLength35mmEquiv;
+  value["gpsinfopresent"] = m_imageMetadata.exifInfo.GpsInfoPresent;
+  value["gpsinfo"]["alt"] = m_imageMetadata.exifInfo.GpsAlt;
+  value["gpsinfo"]["lat"] = m_imageMetadata.exifInfo.GpsLat;
+  value["gpsinfo"]["long"] = m_imageMetadata.exifInfo.GpsLong;
+  value["height"] = m_imageMetadata.height;
+  value["iscolor"] = m_imageMetadata.isColor;
+  value["isoequivalent"] = m_imageMetadata.exifInfo.ISOequivalent;
+  value["lightsource"] = m_imageMetadata.exifInfo.LightSource;
+  value["meteringmode"] = m_imageMetadata.exifInfo.MeteringMode;
+  value["orientation"] = m_imageMetadata.exifInfo.Orientation;
+  value["process"] = m_imageMetadata.encodingProcess;
+  value["whitebalance"] = m_imageMetadata.exifInfo.Whitebalance;
+  value["width"] = m_imageMetadata.width;
 
-  value["author"] = m_iptcInfo.Author;
-  value["byline"] = m_iptcInfo.Byline;
-  value["bylinetitle"] = m_iptcInfo.BylineTitle;
-  value["caption"] = m_iptcInfo.Caption;
-  value["category"] = m_iptcInfo.Category;
-  value["city"] = m_iptcInfo.City;
-  value["urgency"] = m_iptcInfo.Urgency;
-  value["copyrightnotice"] = m_iptcInfo.CopyrightNotice;
-  value["country"] = m_iptcInfo.Country;
-  value["countrycode"] = m_iptcInfo.CountryCode;
-  value["credit"] = m_iptcInfo.Credit;
-  value["date"] = m_iptcInfo.Date;
-  value["headline"] = m_iptcInfo.Headline;
-  value["keywords"] = m_iptcInfo.Keywords;
-  value["objectname"] = m_iptcInfo.ObjectName;
-  value["referenceservice"] = m_iptcInfo.ReferenceService;
-  value["source"] = m_iptcInfo.Source;
-  value["specialinstructions"] = m_iptcInfo.SpecialInstructions;
-  value["state"] = m_iptcInfo.State;
-  value["supplementalcategories"] = m_iptcInfo.SupplementalCategories;
-  value["transmissionreference"] = m_iptcInfo.TransmissionReference;
-  value["timecreated"] = m_iptcInfo.TimeCreated;
-  value["sublocation"] = m_iptcInfo.SubLocation;
-  value["imagetype"] = m_iptcInfo.ImageType;
+  value["author"] = m_imageMetadata.iptcInfo.Author;
+  value["byline"] = m_imageMetadata.iptcInfo.Byline;
+  value["bylinetitle"] = m_imageMetadata.iptcInfo.BylineTitle;
+  value["caption"] = m_imageMetadata.iptcInfo.Caption;
+  value["category"] = m_imageMetadata.iptcInfo.Category;
+  value["city"] = m_imageMetadata.iptcInfo.City;
+  value["urgency"] = m_imageMetadata.iptcInfo.Urgency;
+  value["copyrightnotice"] = m_imageMetadata.iptcInfo.CopyrightNotice;
+  value["country"] = m_imageMetadata.iptcInfo.Country;
+  value["countrycode"] = m_imageMetadata.iptcInfo.CountryCode;
+  value["credit"] = m_imageMetadata.iptcInfo.Credit;
+  value["date"] = m_imageMetadata.iptcInfo.Date;
+  value["headline"] = m_imageMetadata.iptcInfo.Headline;
+  value["keywords"] = m_imageMetadata.iptcInfo.Keywords;
+  value["objectname"] = m_imageMetadata.iptcInfo.ObjectName;
+  value["referenceservice"] = m_imageMetadata.iptcInfo.ReferenceService;
+  value["source"] = m_imageMetadata.iptcInfo.Source;
+  value["specialinstructions"] = m_imageMetadata.iptcInfo.SpecialInstructions;
+  value["state"] = m_imageMetadata.iptcInfo.State;
+  value["supplementalcategories"] = m_imageMetadata.iptcInfo.SupplementalCategories;
+  value["transmissionreference"] = m_imageMetadata.iptcInfo.TransmissionReference;
+  value["timecreated"] = m_imageMetadata.iptcInfo.TimeCreated;
+  value["sublocation"] = m_imageMetadata.iptcInfo.SubLocation;
+  value["imagetype"] = m_imageMetadata.iptcInfo.ImageType;
 }
 
 void CPictureInfoTag::ToSortable(SortItem& sortable, Field field) const
@@ -411,42 +272,25 @@ const std::string CPictureInfoTag::GetInfo(int info) const
   switch (info)
   {
   case SLIDESHOW_RESOLUTION:
-    value = StringUtils::Format("{} x {}", m_exifInfo.Width, m_exifInfo.Height);
+    value = StringUtils::Format("{} x {}", m_imageMetadata.width, m_imageMetadata.height);
     break;
   case SLIDESHOW_COLOUR:
-    value = m_exifInfo.IsColor ? "Colour" : "Black and White";
+    value = m_imageMetadata.isColor ? "Colour" : "Black and White";
     break;
   case SLIDESHOW_PROCESS:
-    switch (m_exifInfo.Process)
-    {
-      case M_SOF0:
-        // don't show it if its the plain old boring 'baseline' process, but do
-        // show it if its something else, like 'progressive' (used on web sometimes)
-        value = "Baseline";
-      break;
-      case M_SOF1:    value = "Extended sequential";      break;
-      case M_SOF2:    value = "Progressive";      break;
-      case M_SOF3:    value = "Lossless";      break;
-      case M_SOF5:    value = "Differential sequential";      break;
-      case M_SOF6:    value = "Differential progressive";      break;
-      case M_SOF7:    value = "Differential lossless";      break;
-      case M_SOF9:    value = "Extended sequential, arithmetic coding";      break;
-      case M_SOF10:   value = "Progressive, arithmetic coding";     break;
-      case M_SOF11:   value = "Lossless, arithmetic coding";     break;
-      case M_SOF13:   value = "Differential sequential, arithmetic coding";     break;
-      case M_SOF14:   value = "Differential progressive, arithmetic coding";     break;
-      case M_SOF15:   value = "Differential lossless, arithmetic coding";     break;
-      default:        value = "Unknown";   break;
-    }
+  {
+    auto process = m_imageMetadata.encodingProcess;
+    value = !process.empty() ? process : "Unknown";
     break;
+  }
   case SLIDESHOW_COMMENT:
-    value = m_exifInfo.FileComment;
+    value = m_imageMetadata.fileComment;
     break;
   case SLIDESHOW_EXIF_COMMENT:
-    value = m_exifInfo.Comments;
+    value = m_imageMetadata.exifInfo.Comments;
     break;
   case SLIDESHOW_EXIF_XPCOMMENT:
-    value = m_exifInfo.XPComment;
+    value = m_imageMetadata.exifInfo.XPComment;
     break;
   case SLIDESHOW_EXIF_LONG_DATE_TIME:
     if (m_dateTimeTaken.IsValid())
@@ -465,22 +309,20 @@ const std::string CPictureInfoTag::GetInfo(int info) const
       value = m_dateTimeTaken.GetAsLocalizedDate();
     break;
   case SLIDESHOW_EXIF_DESCRIPTION:
-    value = m_exifInfo.Description;
+    value = m_imageMetadata.exifInfo.Description;
     break;
   case SLIDESHOW_EXIF_CAMERA_MAKE:
-    value = m_exifInfo.CameraMake;
+    value = m_imageMetadata.exifInfo.CameraMake;
     break;
   case SLIDESHOW_EXIF_CAMERA_MODEL:
-    value = m_exifInfo.CameraModel;
+    value = m_imageMetadata.exifInfo.CameraModel;
     break;
-//  case SLIDESHOW_EXIF_SOFTWARE:
-//    value = m_exifInfo.Software;
   case SLIDESHOW_EXIF_APERTURE:
-    if (m_exifInfo.ApertureFNumber)
-      value = StringUtils::Format("{:3.1f}", m_exifInfo.ApertureFNumber);
+    if (m_imageMetadata.exifInfo.ApertureFNumber)
+      value = StringUtils::Format("{:3.1f}", m_imageMetadata.exifInfo.ApertureFNumber);
     break;
   case SLIDESHOW_EXIF_ORIENTATION:
-    switch (m_exifInfo.Orientation)
+    switch (m_imageMetadata.exifInfo.Orientation)
     {
       case 1:   value = "Top Left";     break;
       case 2:   value = "Top Right";    break;
@@ -493,21 +335,22 @@ const std::string CPictureInfoTag::GetInfo(int info) const
     }
     break;
   case SLIDESHOW_EXIF_FOCAL_LENGTH:
-    if (m_exifInfo.FocalLength)
+    if (m_imageMetadata.exifInfo.FocalLength)
     {
-      value = StringUtils::Format("{:4.2f}mm", m_exifInfo.FocalLength);
-      if (m_exifInfo.FocalLength35mmEquiv != 0)
-        value += StringUtils::Format("  (35mm Equivalent = {}mm)", m_exifInfo.FocalLength35mmEquiv);
+      value = StringUtils::Format("{:4.2f}mm", m_imageMetadata.exifInfo.FocalLength);
+      if (m_imageMetadata.exifInfo.FocalLength35mmEquiv != 0)
+        value += StringUtils::Format("  (35mm Equivalent = {}mm)",
+                                     m_imageMetadata.exifInfo.FocalLength35mmEquiv);
     }
     break;
   case SLIDESHOW_EXIF_FOCUS_DIST:
-    if (m_exifInfo.Distance < 0)
+    if (m_imageMetadata.exifInfo.Distance < 0)
       value = "Infinite";
-    else if (m_exifInfo.Distance > 0)
-      value = StringUtils::Format("{:4.2f}m", m_exifInfo.Distance);
+    else if (m_imageMetadata.exifInfo.Distance > 0)
+      value = StringUtils::Format("{:4.2f}m", m_imageMetadata.exifInfo.Distance);
     break;
   case SLIDESHOW_EXIF_EXPOSURE:
-    switch (m_exifInfo.ExposureProgram)
+    switch (m_imageMetadata.exifInfo.ExposureProgram)
     {
       case 1:  value = "Manual";              break;
       case 2:  value = "Program (Auto)";     break;
@@ -520,22 +363,23 @@ const std::string CPictureInfoTag::GetInfo(int info) const
     }
     break;
   case SLIDESHOW_EXIF_EXPOSURE_TIME:
-    if (m_exifInfo.ExposureTime)
+    if (m_imageMetadata.exifInfo.ExposureTime)
     {
-      if (m_exifInfo.ExposureTime < 0.010f)
-        value = StringUtils::Format("{:6.4f}s", m_exifInfo.ExposureTime);
+      if (m_imageMetadata.exifInfo.ExposureTime < 0.010f)
+        value = StringUtils::Format("{:6.4f}s", m_imageMetadata.exifInfo.ExposureTime);
       else
-        value = StringUtils::Format("{:5.3f}s", m_exifInfo.ExposureTime);
-      if (m_exifInfo.ExposureTime <= 0.5f)
-        value += StringUtils::Format(" (1/{})", static_cast<int>(0.5f + 1 / m_exifInfo.ExposureTime));
+        value = StringUtils::Format("{:5.3f}s", m_imageMetadata.exifInfo.ExposureTime);
+      if (m_imageMetadata.exifInfo.ExposureTime <= 0.5f)
+        value += StringUtils::Format(
+            " (1/{})", static_cast<int>(0.5f + 1 / m_imageMetadata.exifInfo.ExposureTime));
     }
     break;
   case SLIDESHOW_EXIF_EXPOSURE_BIAS:
-    if (m_exifInfo.ExposureBias != 0)
-      value = StringUtils::Format("{:4.2f} EV", m_exifInfo.ExposureBias);
+    if (m_imageMetadata.exifInfo.ExposureBias != 0)
+      value = StringUtils::Format("{:4.2f} EV", m_imageMetadata.exifInfo.ExposureBias);
     break;
   case SLIDESHOW_EXIF_EXPOSURE_MODE:
-    switch (m_exifInfo.ExposureMode)
+    switch (m_imageMetadata.exifInfo.ExposureMode)
     {
       case 0:  value = "Automatic";          break;
       case 1:  value = "Manual";             break;
@@ -543,12 +387,12 @@ const std::string CPictureInfoTag::GetInfo(int info) const
     }
     break;
   case SLIDESHOW_EXIF_FLASH_USED:
-    if (m_exifInfo.FlashUsed >= 0)
+    if (m_imageMetadata.exifInfo.FlashUsed >= 0)
     {
-      if (m_exifInfo.FlashUsed & 1)
+      if (m_imageMetadata.exifInfo.FlashUsed & 1)
       {
         value = "Yes";
-        switch (m_exifInfo.FlashUsed)
+        switch (m_imageMetadata.exifInfo.FlashUsed)
         {
           case 0x5:  value = "Yes (Strobe light not detected)";                break;
           case 0x7:  value = "Yes (Strobe light detected)";                  break;
@@ -570,13 +414,13 @@ const std::string CPictureInfoTag::GetInfo(int info) const
         }
       }
       else
-        value = m_exifInfo.FlashUsed == 0x18 ? "No (Auto)" : "No";
+        value = m_imageMetadata.exifInfo.FlashUsed == 0x18 ? "No (Auto)" : "No";
     }
     break;
   case SLIDESHOW_EXIF_WHITE_BALANCE:
-    return m_exifInfo.Whitebalance ? "Manual" : "Auto";
+    return m_imageMetadata.exifInfo.Whitebalance ? "Manual" : "Auto";
   case SLIDESHOW_EXIF_LIGHT_SOURCE:
-    switch (m_exifInfo.LightSource)
+    switch (m_imageMetadata.exifInfo.LightSource)
     {
       case 1:   value = "Daylight";       break;
       case 2:   value = "Fluorescent";    break;
@@ -590,7 +434,7 @@ const std::string CPictureInfoTag::GetInfo(int info) const
     }
     break;
   case SLIDESHOW_EXIF_METERING_MODE:
-    switch (m_exifInfo.MeteringMode)
+    switch (m_imageMetadata.exifInfo.MeteringMode)
     {
       case 2:  value = "Center weight"; break;
       case 3:  value = "Spot";   break;
@@ -598,50 +442,98 @@ const std::string CPictureInfoTag::GetInfo(int info) const
     }
     break;
   case SLIDESHOW_EXIF_ISO_EQUIV:
-    if (m_exifInfo.ISOequivalent)
-      value = StringUtils::Format("{:2}", m_exifInfo.ISOequivalent);
+    if (m_imageMetadata.exifInfo.ISOequivalent)
+      value = StringUtils::Format("{:2}", m_imageMetadata.exifInfo.ISOequivalent);
     break;
   case SLIDESHOW_EXIF_DIGITAL_ZOOM:
-    if (m_exifInfo.DigitalZoomRatio)
-      value = StringUtils::Format("{:1.3f}x", m_exifInfo.DigitalZoomRatio);
+    if (m_imageMetadata.exifInfo.DigitalZoomRatio)
+      value = StringUtils::Format("{:1.3f}x", m_imageMetadata.exifInfo.DigitalZoomRatio);
     break;
   case SLIDESHOW_EXIF_CCD_WIDTH:
-    if (m_exifInfo.CCDWidth)
-      value = StringUtils::Format("{:4.2f}mm", m_exifInfo.CCDWidth);
+    if (m_imageMetadata.exifInfo.CCDWidth)
+      value = StringUtils::Format("{:4.2f}mm", m_imageMetadata.exifInfo.CCDWidth);
     break;
   case SLIDESHOW_EXIF_GPS_LATITUDE:
-    value = m_exifInfo.GpsLat;
+    value = m_imageMetadata.exifInfo.GpsLat;
     break;
   case SLIDESHOW_EXIF_GPS_LONGITUDE:
-    value = m_exifInfo.GpsLong;
+    value = m_imageMetadata.exifInfo.GpsLong;
     break;
   case SLIDESHOW_EXIF_GPS_ALTITUDE:
-    value = m_exifInfo.GpsAlt;
+    value = m_imageMetadata.exifInfo.GpsAlt;
     break;
-  case SLIDESHOW_IPTC_SUP_CATEGORIES:   value = m_iptcInfo.SupplementalCategories;  break;
-  case SLIDESHOW_IPTC_KEYWORDS:         value = m_iptcInfo.Keywords;                break;
-  case SLIDESHOW_IPTC_CAPTION:          value = m_iptcInfo.Caption;                 break;
-  case SLIDESHOW_IPTC_AUTHOR:           value = m_iptcInfo.Author;                  break;
-  case SLIDESHOW_IPTC_HEADLINE:         value = m_iptcInfo.Headline;                break;
-  case SLIDESHOW_IPTC_SPEC_INSTR:       value = m_iptcInfo.SpecialInstructions;     break;
-  case SLIDESHOW_IPTC_CATEGORY:         value = m_iptcInfo.Category;                break;
-  case SLIDESHOW_IPTC_BYLINE:           value = m_iptcInfo.Byline;                  break;
-  case SLIDESHOW_IPTC_BYLINE_TITLE:     value = m_iptcInfo.BylineTitle;             break;
-  case SLIDESHOW_IPTC_CREDIT:           value = m_iptcInfo.Credit;                  break;
-  case SLIDESHOW_IPTC_SOURCE:           value = m_iptcInfo.Source;                  break;
-  case SLIDESHOW_IPTC_COPYRIGHT_NOTICE: value = m_iptcInfo.CopyrightNotice;         break;
-  case SLIDESHOW_IPTC_OBJECT_NAME:      value = m_iptcInfo.ObjectName;              break;
-  case SLIDESHOW_IPTC_CITY:             value = m_iptcInfo.City;                    break;
-  case SLIDESHOW_IPTC_STATE:            value = m_iptcInfo.State;                   break;
-  case SLIDESHOW_IPTC_COUNTRY:          value = m_iptcInfo.Country;                 break;
-  case SLIDESHOW_IPTC_TX_REFERENCE:     value = m_iptcInfo.TransmissionReference;   break;
-  case SLIDESHOW_IPTC_DATE:             value = m_iptcInfo.Date;                    break;
-  case SLIDESHOW_IPTC_URGENCY:          value = m_iptcInfo.Urgency;                 break;
-  case SLIDESHOW_IPTC_COUNTRY_CODE:     value = m_iptcInfo.CountryCode;             break;
-  case SLIDESHOW_IPTC_REF_SERVICE:      value = m_iptcInfo.ReferenceService;        break;
-  case SLIDESHOW_IPTC_TIMECREATED:      value = m_iptcInfo.TimeCreated;             break;
-  case SLIDESHOW_IPTC_SUBLOCATION:      value = m_iptcInfo.SubLocation;             break;
-  case SLIDESHOW_IPTC_IMAGETYPE:        value = m_iptcInfo.ImageType;               break;
+  case SLIDESHOW_IPTC_SUP_CATEGORIES:
+    value = m_imageMetadata.iptcInfo.SupplementalCategories;
+    break;
+  case SLIDESHOW_IPTC_KEYWORDS:
+    value = m_imageMetadata.iptcInfo.Keywords;
+    break;
+  case SLIDESHOW_IPTC_CAPTION:
+    value = m_imageMetadata.iptcInfo.Caption;
+    break;
+  case SLIDESHOW_IPTC_AUTHOR:
+    value = m_imageMetadata.iptcInfo.Author;
+    break;
+  case SLIDESHOW_IPTC_HEADLINE:
+    value = m_imageMetadata.iptcInfo.Headline;
+    break;
+  case SLIDESHOW_IPTC_SPEC_INSTR:
+    value = m_imageMetadata.iptcInfo.SpecialInstructions;
+    break;
+  case SLIDESHOW_IPTC_CATEGORY:
+    value = m_imageMetadata.iptcInfo.Category;
+    break;
+  case SLIDESHOW_IPTC_BYLINE:
+    value = m_imageMetadata.iptcInfo.Byline;
+    break;
+  case SLIDESHOW_IPTC_BYLINE_TITLE:
+    value = m_imageMetadata.iptcInfo.BylineTitle;
+    break;
+  case SLIDESHOW_IPTC_CREDIT:
+    value = m_imageMetadata.iptcInfo.Credit;
+    break;
+  case SLIDESHOW_IPTC_SOURCE:
+    value = m_imageMetadata.iptcInfo.Source;
+    break;
+  case SLIDESHOW_IPTC_COPYRIGHT_NOTICE:
+    value = m_imageMetadata.iptcInfo.CopyrightNotice;
+    break;
+  case SLIDESHOW_IPTC_OBJECT_NAME:
+    value = m_imageMetadata.iptcInfo.ObjectName;
+    break;
+  case SLIDESHOW_IPTC_CITY:
+    value = m_imageMetadata.iptcInfo.City;
+    break;
+  case SLIDESHOW_IPTC_STATE:
+    value = m_imageMetadata.iptcInfo.State;
+    break;
+  case SLIDESHOW_IPTC_COUNTRY:
+    value = m_imageMetadata.iptcInfo.Country;
+    break;
+  case SLIDESHOW_IPTC_TX_REFERENCE:
+    value = m_imageMetadata.iptcInfo.TransmissionReference;
+    break;
+  case SLIDESHOW_IPTC_DATE:
+    value = m_imageMetadata.iptcInfo.Date;
+    break;
+  case SLIDESHOW_IPTC_URGENCY:
+    value = m_imageMetadata.iptcInfo.Urgency;
+    break;
+  case SLIDESHOW_IPTC_COUNTRY_CODE:
+    value = m_imageMetadata.iptcInfo.CountryCode;
+    break;
+  case SLIDESHOW_IPTC_REF_SERVICE:
+    value = m_imageMetadata.iptcInfo.ReferenceService;
+    break;
+  case SLIDESHOW_IPTC_TIMECREATED:
+    value = m_imageMetadata.iptcInfo.TimeCreated;
+    break;
+  case SLIDESHOW_IPTC_SUBLOCATION:
+    value = m_imageMetadata.iptcInfo.SubLocation;
+    break;
+  case SLIDESHOW_IPTC_IMAGETYPE:
+    value = m_imageMetadata.iptcInfo.ImageType;
+    break;
   default:
     break;
   }
@@ -666,8 +558,8 @@ int CPictureInfoTag::TranslateString(const std::string &info)
   else if (StringUtils::EqualsNoCase(info, "exifdescription")) return SLIDESHOW_EXIF_DESCRIPTION;
   else if (StringUtils::EqualsNoCase(info, "cameramake")) return SLIDESHOW_EXIF_CAMERA_MAKE;
   else if (StringUtils::EqualsNoCase(info, "cameramodel")) return SLIDESHOW_EXIF_CAMERA_MODEL;
-  else if (StringUtils::EqualsNoCase(info, "exifcomment")) return SLIDESHOW_EXIF_COMMENT;
-  else if (StringUtils::EqualsNoCase(info, "exifsoftware")) return SLIDESHOW_EXIF_SOFTWARE;
+  else if (StringUtils::EqualsNoCase(info, "exifcomment"))
+    return SLIDESHOW_EXIF_COMMENT;
   else if (StringUtils::EqualsNoCase(info, "aperture")) return SLIDESHOW_EXIF_APERTURE;
   else if (StringUtils::EqualsNoCase(info, "focallength")) return SLIDESHOW_EXIF_FOCAL_LENGTH;
   else if (StringUtils::EqualsNoCase(info, "focusdistance")) return SLIDESHOW_EXIF_FOCUS_DIST;
@@ -725,15 +617,16 @@ void CPictureInfoTag::SetInfo(const std::string &key, const std::string& value)
       StringUtils::Tokenize(value, dimension, ",");
       if (dimension.size() == 2)
       {
-        m_exifInfo.Width = atoi(dimension[0].c_str());
-        m_exifInfo.Height = atoi(dimension[1].c_str());
-        m_isInfoSetExternally = true; // Set the internal state to show metadata has been set by call to SetInfo
+        m_imageMetadata.width = std::atoi(dimension[0].c_str());
+        m_imageMetadata.height = std::atoi(dimension[1].c_str());
+        m_isInfoSetExternally =
+            true; // Set the internal state to show metadata has been set by call to SetInfo
       }
       break;
     }
   case SLIDESHOW_EXIF_DATE_TIME:
     {
-      m_exifInfo.DateTime = value;
+      m_imageMetadata.exifInfo.DateTime = value;
       m_isInfoSetExternally = true; // Set the internal state to show metadata has been set by call to SetInfo
       ConvertDateTime();
       break;
@@ -750,7 +643,7 @@ const CDateTime& CPictureInfoTag::GetDateTimeTaken() const
 
 void CPictureInfoTag::ConvertDateTime()
 {
-  const std::string& dateTime = m_exifInfo.DateTime;
+  const std::string& dateTime = m_imageMetadata.exifInfo.DateTime;
   if (dateTime.length() >= 19 && dateTime[0] != ' ')
   {
     int year  = atoi(dateTime.substr(0, 4).c_str());

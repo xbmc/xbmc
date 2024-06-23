@@ -4284,6 +4284,7 @@ msgid "Video"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaSource.cpp
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#1213"
 msgid "Pictures"
 msgstr ""
@@ -7286,6 +7287,8 @@ msgstr ""
 
 #: system/settings/settings.xml
 #: xbmc/cores/VideoPlayer/VideoRenderers/BaseRenderer.cpp
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#13419"
 msgid "Software"
 msgstr ""
@@ -14951,145 +14954,198 @@ msgstr ""
 
 #empty strings from id 21603 to 21799
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
 msgctxt "#21800"
 msgid "File name"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
 msgctxt "#21801"
 msgid "File path"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
 msgctxt "#21802"
 msgid "File size"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
 msgctxt "#21803"
 msgid "File date / time"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
 msgctxt "#21804"
 msgid "Slide index"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21805"
 msgid "Resolution"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
 msgctxt "#21806"
 msgid "Comment"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21807"
 msgid "Colour / B&W"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21808"
 msgid "JPEG process"
 msgstr ""
 
 #empty strings from id 21809 to 21819
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21820"
 msgid "Date / Time"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21821"
 msgid "Description"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21822"
 msgid "Camera make"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
 #: addons/skin.estuary/xml/Variables.xml
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21823"
 msgid "Camera model"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
 msgctxt "#21824"
 msgid "EXIF comment"
 msgstr ""
 
-msgctxt "#21825"
-msgid "Firmware"
-msgstr ""
+#empty string with id 21825
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
 #: addons/skin.estuary/xml/Variables.xml
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21826"
 msgid "Aperture"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
 #: addons/skin.estuary/xml/Variables.xml
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21827"
 msgid "Focal length"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21828"
 msgid "Focus distance"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21829"
 msgid "Exposure"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
 #: addons/skin.estuary/xml/Variables.xml
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21830"
 msgid "Exposure time"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21831"
 msgid "Exposure bias"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21832"
 msgid "Exposure mode"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21833"
 msgid "Flash used"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
 msgctxt "#21834"
 msgid "White-balance"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
 msgctxt "#21835"
 msgid "Light source"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
 msgctxt "#21836"
 msgid "Metering mode"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21837"
 msgid "ISO"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21838"
 msgid "Digital zoom"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21839"
 msgid "CCD width"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21840"
 msgid "GPS latitude"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21841"
 msgid "GPS longitude"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21842"
 msgid "GPS altitude"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21843"
 msgid "Orientation"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
 msgctxt "#21844"
 msgid "XP comment"
 msgstr ""
@@ -15102,100 +15158,137 @@ msgstr ""
 
 #empty strings from id 21846 to 21856
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
 msgctxt "#21857"
 msgid "Sub-location"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21858"
 msgid "Image type"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
 msgctxt "#21859"
 msgid "Time created"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
 msgctxt "#21860"
 msgid "Supplemental categories"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21861"
 msgid "Keywords"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21862"
 msgid "Caption"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21863"
 msgid "Author"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21864"
 msgid "Headline"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
 msgctxt "#21865"
 msgid "Special instructions"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21866"
 msgid "Category"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21867"
 msgid "Byline"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21868"
 msgid "Byline title"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21869"
 msgid "Credit"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
 msgctxt "#21870"
 msgid "Source"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21871"
 msgid "Copyright notice"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
 msgctxt "#21872"
 msgid "Object name"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21873"
 msgid "City"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
 msgctxt "#21874"
 msgid "State"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
 #: addons/skin.estuary/xml/DialogVideoInfo.xml
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21875"
 msgid "Country"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
 msgctxt "#21876"
 msgid "Original TX reference"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
 #: xbmc/playlist/SmartPlayList.cpp
 msgctxt "#21877"
 msgid "Date created"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
 msgctxt "#21878"
 msgid "Urgency"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21879"
 msgid "Country code"
 msgstr ""
 
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
 msgctxt "#21880"
 msgid "Reference service"
 msgstr ""
