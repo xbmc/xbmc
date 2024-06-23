@@ -57,42 +57,24 @@ CPackerMAT::CPackerMAT()
 // high-bitrate streams can overshoot this size and therefor require proper handling of dynamic padding.
 bool CPackerMAT::PackTrueHD(const uint8_t* data, int size)
 {
-  TrueHDMajorSyncInfo info;
+  // discard too small packets (cannot be valid)
+  if (size < 10)
+    return false;
 
-  // get the ratebits and output timing from the sync frame
+  // get the ratebits from the major sync frame
   if (AV_RB32(data + 4) == FORMAT_MAJOR_SYNC)
   {
-    info = ParseTrueHDMajorSyncHeaders(data, size);
-
-    if (!info.valid)
-      return false;
-
-    m_state.ratebits = info.ratebits;
+    // read audio_sampling_frequency (high nibble after format major sync)
+    m_state.ratebits = data[8] >> 4;
   }
-  else if (m_state.prevFrametimeValid == false)
+  else if (!m_state.prevFrametimeValid)
   {
     // only start streaming on a major sync frame
-    m_state.numberOfSamplesOffset = 0;
     return false;
   }
 
   const uint16_t frameTime = AV_RB16(data + 2);
   uint32_t spaceSize = 0;
-  const uint16_t frameSamples = 40 << (m_state.ratebits & 7);
-  m_state.outputTiming += frameSamples;
-
-  if (info.outputTimingPresent)
-  {
-    if (m_state.outputTimingValid && (info.outputTiming != m_state.outputTiming))
-    {
-      CLog::Log(LOGWARNING,
-                "CPackerMAT::PackTrueHD: detected a stream discontinuity -> output timing "
-                "expected: {}, found: {}",
-                m_state.outputTiming, info.outputTiming);
-    }
-    m_state.outputTiming = info.outputTiming;
-    m_state.outputTimingValid = true;
-  }
 
   // compute final padded size for the previous frame, if any
   if (m_state.prevFrametimeValid)
@@ -152,9 +134,6 @@ bool CPackerMAT::PackTrueHD(const uint8_t* data, int size)
       WriteHeader();
     }
   }
-
-  // count the number of samples in this frame
-  m_state.samples += frameSamples;
 
   // write actual audio data to the buffer
   int remaining = FillDataBuffer(data, size, Type::DATA);
@@ -334,96 +313,9 @@ void CPackerMAT::FlushPacket()
 
   assert(GetCount() == MAT_BUFFER_SIZE);
 
-  // normal number of samples per frame
-  const uint16_t frameSamples = 40 << (m_state.ratebits & 7);
-  const uint32_t MATSamples = (frameSamples * 24);
-
   // push MAT packet to output queue
   m_outputQueue.emplace_back(std::move(m_buffer));
 
-  // we expect 24 frames per MAT frame, so calculate an offset from that
-  // this is done after delivery, because it modifies the duration of the frame,
-  //  eg. the start of the next frame
-  if (MATSamples != m_state.samples)
-    m_state.numberOfSamplesOffset += m_state.samples - MATSamples;
-
-  m_state.samples = 0;
-
   m_buffer.clear();
   m_bufferCount = 0;
-}
-
-TrueHDMajorSyncInfo CPackerMAT::ParseTrueHDMajorSyncHeaders(const uint8_t* p, int buffsize) const
-{
-  TrueHDMajorSyncInfo info;
-
-  if (buffsize < 32)
-    return {};
-
-  // parse major sync and look for a restart header
-  int majorSyncSize = 28;
-  if (p[29] & 1) // restart header exists
-  {
-    int extensionSize = p[30] >> 4; // calculate headers size
-    majorSyncSize += 2 + extensionSize * 2;
-  }
-
-  CBitStream bs(p + 4, buffsize - 4);
-
-  bs.SkipBits(32); // format_sync
-
-  info.ratebits = bs.ReadBits(4); // ratebits
-  info.valid = true;
-
-  //  (1) 6ch_multichannel_type
-  //  (1) 8ch_multichannel_type
-  //  (2) reserved
-  //  (2) 2ch_presentation_channel_modifier
-  //  (2) 6ch_presentation_channel_modifier
-  //  (5) 6ch_presentation_channel_assignment
-  //  (2) 8ch_presentation_channel_modifier
-  // (13) 8ch_presentation_channel_assignment
-  // (16) signature
-  // (16) flags
-  // (16) reserved
-  //  (1) variable_rate
-  // (15) peak_data_rate
-  bs.SkipBits(1 + 1 + 2 + 2 + 2 + 5 + 2 + 13 + 16 + 16 + 16 + 1 + 15);
-
-  const int numSubstreams = bs.ReadBits(4);
-
-  bs.SkipBits(4 + (majorSyncSize - 17) * 8);
-
-  // substream directory
-  for (int i = 0; i < numSubstreams; i++)
-  {
-    int extraSubstreamWord = bs.ReadBits(1);
-    //  (1) restart_nonexistent
-    //  (1) crc_present
-    //  (1) reserved
-    // (12) substream_end_ptr
-    bs.SkipBits(15);
-    if (extraSubstreamWord)
-      bs.SkipBits(16); // drc_gain_update, drc_time_update, reserved
-  }
-
-  // substream segments
-  for (int i = 0; i < numSubstreams; i++)
-  {
-    if (bs.ReadBits(1))
-    { // block_header_exists
-      if (bs.ReadBits(1))
-      { // restart_header_exists
-        bs.SkipBits(14); // restart_sync_word
-        info.outputTiming = bs.ReadBits(16);
-        info.outputTimingPresent = true;
-        // XXX: restart header
-      }
-      // XXX: Block header
-    }
-    // XXX: All blocks, all substreams?
-    break;
-  }
-
-  return info;
 }
