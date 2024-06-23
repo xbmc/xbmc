@@ -24,9 +24,9 @@ struct PVR_CHANNEL_GROUP;
 
 namespace PVR
 {
-static constexpr int PVR_GROUP_TYPE_REMOTE = 0;
-static constexpr int PVR_GROUP_TYPE_ALL_CHANNELS = 1;
-static constexpr int PVR_GROUP_TYPE_LOCAL = 2;
+static constexpr int PVR_GROUP_TYPE_CLIENT = 0;
+static constexpr int PVR_GROUP_TYPE_SYSTEM_ALL_CHANNELS = 1;
+static constexpr int PVR_GROUP_TYPE_USER = 2;
 
 static constexpr int PVR_GROUP_CLIENT_ID_UNKNOWN = -2;
 static constexpr int PVR_GROUP_CLIENT_ID_LOCAL = -1;
@@ -51,8 +51,7 @@ using GroupMemberPair =
 
 class CPVRChannelGroup : public IChannelGroupSettingsCallback
 {
-  friend class CPVRChannelGroups; // for GroupType()
-  friend class CPVRDatabase; // for GroupType()
+  friend class CPVRDatabase;
 
 public:
   static const int INVALID_GROUP_ID = -1;
@@ -459,6 +458,23 @@ public:
    */
   void UpdateClientPriorities();
 
+  enum class Origin
+  {
+    USER, // created and managed by the user
+    SYSTEM, // created and managed by Kodi
+    CLIENT, // created and managed by PVR client add-on
+  };
+  /*!
+   * @brief Get the group's origin.
+   * @return The origin.
+   */
+  virtual Origin GetOrigin() const = 0;
+
+  /*!
+   * @brief Return the type of this group.
+   */
+  virtual int GroupType() const = 0;
+
   /*!
    * @brief Check whether this group could be deleted by the user.
    * @return True if the group could be deleted, false otherwise.
@@ -538,11 +554,6 @@ protected:
   static std::weak_ptr<CPVRChannelGroupSettings> m_settingsSingleton;
 
 private:
-  /*!
-   * @brief Return the type of this group.
-   */
-  virtual int GroupType() const = 0;
-
   /*!
    * @brief Load the channel group members stored in the database.
    * @param clients The PVR clients to load data for. Leave empty for all clients.

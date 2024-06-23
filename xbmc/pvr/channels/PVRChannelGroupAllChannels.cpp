@@ -29,13 +29,13 @@
 using namespace PVR;
 
 CPVRChannelGroupAllChannels::CPVRChannelGroupAllChannels(bool bRadio)
-  : CPVRChannelGroupFromUser(
+  : CPVRChannelGroup(
         CPVRChannelsPath(bRadio, g_localizeStrings.Get(19287), PVR_GROUP_CLIENT_ID_LOCAL), nullptr)
 {
 }
 
 CPVRChannelGroupAllChannels::CPVRChannelGroupAllChannels(const CPVRChannelsPath& path)
-  : CPVRChannelGroupFromUser(path, nullptr)
+  : CPVRChannelGroup(path, nullptr)
 {
 }
 

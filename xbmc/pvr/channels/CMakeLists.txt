@@ -1,8 +1,8 @@
 set(SOURCES PVRChannel.cpp
             PVRChannelGroup.cpp
             PVRChannelGroupAllChannels.cpp
+            PVRChannelGroupFactory.cpp
             PVRChannelGroupFromClient.cpp
-            PVRChannelGroupFromUser.cpp
             PVRChannelGroupMember.cpp
             PVRChannelGroupSettings.cpp
             PVRChannelGroups.cpp
@@ -14,6 +14,7 @@ set(SOURCES PVRChannel.cpp
 set(HEADERS PVRChannel.h
             PVRChannelGroup.h
             PVRChannelGroupAllChannels.h
+            PVRChannelGroupFactory.h
             PVRChannelGroupFromClient.h
             PVRChannelGroupFromUser.h
             PVRChannelGroupMember.h

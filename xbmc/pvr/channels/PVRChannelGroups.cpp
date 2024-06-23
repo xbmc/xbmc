@@ -16,9 +16,7 @@
 #include "pvr/addons/PVRClientUID.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
-#include "pvr/channels/PVRChannelGroupAllChannels.h"
-#include "pvr/channels/PVRChannelGroupFromClient.h"
-#include "pvr/channels/PVRChannelGroupFromUser.h"
+#include "pvr/channels/PVRChannelGroupFactory.h"
 #include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/channels/PVRChannelsPath.h"
 #include "settings/AdvancedSettings.h"
@@ -41,7 +39,9 @@
 using namespace PVR;
 
 CPVRChannelGroups::CPVRChannelGroups(bool bRadio)
-  : m_bRadio(bRadio), m_settings({CSettings::SETTING_PVRMANAGER_BACKENDCHANNELGROUPSORDER})
+  : m_bRadio(bRadio),
+    m_settings({CSettings::SETTING_PVRMANAGER_BACKENDCHANNELGROUPSORDER}),
+    m_channelGroupFactory(new CPVRChannelGroupFactory)
 {
   m_settings.RegisterCallback(this);
 }
@@ -79,6 +79,7 @@ void CPVRChannelGroups::Unload()
 
   m_groups.clear();
   m_allChannelsGroup.reset();
+  m_channelGroupFactory.reset(new CPVRChannelGroupFactory);
   m_failedClientsForChannelGroups.clear();
 }
 
@@ -165,22 +166,6 @@ bool CPVRChannelGroups::Update(const std::shared_ptr<CPVRChannelGroup>& group,
   return true;
 }
 
-int CPVRChannelGroups::GetGroupTypePriority(
-    const std::shared_ptr<const CPVRChannelGroup>& group) const
-{
-  switch (group->GroupType())
-  {
-    case PVR_GROUP_TYPE_ALL_CHANNELS:
-      return 0; // highest
-    case PVR_GROUP_TYPE_LOCAL:
-      return 1;
-    case PVR_GROUP_TYPE_REMOTE:
-      return 2;
-    default:
-      return 3;
-  }
-}
-
 int CPVRChannelGroups::GetGroupClientPriority(
     const std::shared_ptr<const CPVRChannelGroup>& group) const
 {
@@ -193,22 +178,26 @@ void CPVRChannelGroups::SortGroupsByBackendOrder()
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
+  const auto& gF = GetGroupFactory();
+
   // sort by group type, then by client priority, then by position, last by name
-  std::sort(m_groups.begin(), m_groups.end(), [this](const auto& group1, const auto& group2) {
-    if (GetGroupTypePriority(group1) == GetGroupTypePriority(group2))
-    {
-      if (GetGroupClientPriority(group1) == GetGroupClientPriority(group2))
-      {
-        if (group1->GetClientPosition() == group2->GetClientPosition())
-        {
-          return group1->GroupName() < group2->GroupName();
-        }
-        return group1->GetClientPosition() < group2->GetClientPosition();
-      }
-      return GetGroupClientPriority(group1) < GetGroupClientPriority(group2);
-    }
-    return GetGroupTypePriority(group1) < GetGroupTypePriority(group2);
-  });
+  std::sort(m_groups.begin(), m_groups.end(),
+            [this, &gF](const auto& group1, const auto& group2)
+            {
+              if (gF->GetGroupTypePriority(group1) == gF->GetGroupTypePriority(group2))
+              {
+                if (GetGroupClientPriority(group1) == GetGroupClientPriority(group2))
+                {
+                  if (group1->GetClientPosition() == group2->GetClientPosition())
+                  {
+                    return group1->GroupName() < group2->GroupName();
+                  }
+                  return group1->GetClientPosition() < group2->GetClientPosition();
+                }
+                return GetGroupClientPriority(group1) < GetGroupClientPriority(group2);
+              }
+              return gF->GetGroupTypePriority(group1) < gF->GetGroupTypePriority(group2);
+            });
 }
 
 void CPVRChannelGroups::SortGroupsByLocalOrder()
@@ -376,17 +365,6 @@ bool CPVRChannelGroups::UpdateChannelNumbersFromAllChannelsGroup()
       });
 }
 
-std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::CreateChannelGroup(
-    int iType, const CPVRChannelsPath& path)
-{
-  if (iType == PVR_GROUP_TYPE_ALL_CHANNELS)
-    return std::make_shared<CPVRChannelGroupAllChannels>(path);
-  else if (iType == PVR_GROUP_TYPE_LOCAL)
-    return std::make_shared<CPVRChannelGroupFromUser>(path, GetGroupAll());
-  else
-    return std::make_shared<CPVRChannelGroupFromClient>(path, GetGroupAll());
-}
-
 bool CPVRChannelGroups::LoadFromDatabase(const std::vector<std::shared_ptr<CPVRClient>>& clients)
 {
   const std::shared_ptr<const CPVRDatabase> database(
@@ -400,7 +378,7 @@ bool CPVRChannelGroups::LoadFromDatabase(const std::vector<std::shared_ptr<CPVRC
   // created before loading contents from database.
   if (m_groups.empty())
   {
-    const auto internalGroup = std::make_shared<CPVRChannelGroupAllChannels>(m_bRadio);
+    const auto internalGroup = GetGroupFactory()->CreateAllChannelsGroup(IsRadio());
     m_groups.emplace_back(internalGroup);
     m_allChannelsGroup = internalGroup;
   }
@@ -614,8 +592,7 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::AddGroup(const std::string&
     if (!group)
     {
       // create a new local group
-      group = CreateChannelGroup(PVR_GROUP_TYPE_LOCAL,
-                                 CPVRChannelsPath(m_bRadio, strName, PVR_GROUP_CLIENT_ID_LOCAL));
+      group = GetGroupFactory()->CreateUserGroup(IsRadio(), strName, GetGroupAll());
 
       m_groups.emplace_back(group);
       SortGroups();

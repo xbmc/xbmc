@@ -23,6 +23,7 @@ namespace PVR
 enum class PVREvent;
 
 class CPVRChannel;
+class CPVRChannelGroupFactory;
 class CPVRClient;
 
 /** A container class for channel groups */
@@ -53,12 +54,10 @@ public:
   bool LoadFromDatabase(const std::vector<std::shared_ptr<CPVRClient>>& clients);
 
   /*!
-   * @brief Create a channel group matching the given type.
-   * @param iType The type for the group.
-   * @param path The path of the group.
-   * @return The new group.
+   * @brief Get the channel group factory
+   * @return The factory.
    */
-  std::shared_ptr<CPVRChannelGroup> CreateChannelGroup(int iType, const CPVRChannelsPath& path);
+  std::shared_ptr<CPVRChannelGroupFactory> GetGroupFactory() const { return m_channelGroupFactory; }
 
   /*!
    * @return Amount of groups in this container
@@ -243,7 +242,6 @@ private:
 
   void OnPVRManagerEvent(const PVR::PVREvent& event);
 
-  int GetGroupTypePriority(const std::shared_ptr<const CPVRChannelGroup>& group) const;
   int GetGroupClientPriority(const std::shared_ptr<const CPVRChannelGroup>& group) const;
 
   bool m_bRadio{false};
@@ -253,5 +251,6 @@ private:
   bool m_isSubscribed{false};
   CPVRSettings m_settings;
   std::shared_ptr<CPVRChannelGroup> m_allChannelsGroup;
+  std::shared_ptr<CPVRChannelGroupFactory> m_channelGroupFactory;
 };
 } // namespace PVR
