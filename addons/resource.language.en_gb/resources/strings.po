@@ -3252,10 +3252,10 @@ msgctxt "#689"
 msgid "Set the border colour."
 msgstr ""
 
-#. Description of setting with label #39173 "Border blur"
+#. Description of setting with label #39173 "Blur"
 #: system/settings/settings.xml
 msgctxt "#690"
-msgid "Set the border blur."
+msgid "Set the blur."
 msgstr ""
 
 #. Description of setting with label #39171 "Shadow colour"
@@ -23794,7 +23794,7 @@ msgstr ""
 #. Subtitle blur setting
 #: system/settings/settings.xml
 msgctxt "#39173"
-msgid "Border blur"
+msgid "Blur"
 msgstr ""
 
 #. SystemInfo string for the display's supported HDR types
