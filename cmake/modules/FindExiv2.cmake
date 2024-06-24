@@ -14,12 +14,15 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
     # Note: Please drop once a release based on master is made. First 2 are already upstream.
     set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/0001-Add-EXIV2_ENABLE_FILESYSTEM_ACCESS-option.patch"
-    "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/0002-Set-conditional-HTTP-depending-on-EXIV2_ENABLE_WEBRE.patch"
-    "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/0003-UWP-Disable-getLoadedLibraries.patch")
+                "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/0002-Set-conditional-HTTP-depending-on-EXIV2_ENABLE_WEBRE.patch"
+                "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/0003-UWP-Disable-getLoadedLibraries.patch"
+                "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/0004-WIN-lib-postfix.patch")
 
     generate_patchcommand("${patches}")
 
     if(WIN32 OR WINDOWS_STORE)
+      set(EXIV2_DEBUG_POSTFIX d)
+
       # Exiv2 cant be built using /RTC1, so we alter and disable the auto addition of flags
       # using WIN_DISABLE_PROJECT_FLAGS
       string(REPLACE "/RTC1" "" EXIV2_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG} )
