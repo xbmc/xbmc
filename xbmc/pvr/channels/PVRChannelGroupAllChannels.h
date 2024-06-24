@@ -88,6 +88,18 @@ public:
    */
   bool IsChannelsOwner() const override { return true; }
 
+  /*!
+   * @brief Check whether this group should be ignored, e.g. not presented to the user and API.
+   * @param allChannelGroups All available channel groups.
+   * @return True if to be ignored, false otherwise.
+   */
+  bool ShouldBeIgnored(
+      const std::vector<std::shared_ptr<CPVRChannelGroup>>& allChannelGroups) const override
+  {
+    // "All channels" groups must always be present.
+    return false;
+  }
+
 protected:
   /*!
    * @brief Remove deleted group members from this group. Delete stale channels.

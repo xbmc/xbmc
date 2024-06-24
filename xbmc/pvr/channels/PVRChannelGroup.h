@@ -499,6 +499,15 @@ public:
    */
   virtual bool IsChannelsOwner() const = 0;
 
+  /*!
+   * @brief Check whether this group should be ignored, e.g. not presented to the user and API.
+   * @param allChannelGroups All available channel groups. This information might be needed by
+   * implementations to calculate the ignore state.
+   * @return True if to be ignored, false otherwise.
+   */
+  virtual bool ShouldBeIgnored(
+      const std::vector<std::shared_ptr<CPVRChannelGroup>>& allChannelGroups) const;
+
 protected:
   /*!
    * @brief Remove deleted group members from this group.

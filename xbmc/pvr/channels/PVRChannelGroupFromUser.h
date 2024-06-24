@@ -63,6 +63,18 @@ public:
   bool IsChannelsOwner() const override { return false; }
 
   /*!
+   * @brief Check whether this group should be ignored, e.g. not presented to the user and API.
+   * @param allChannelGroups All available channel groups.
+   * @return True if to be ignored, false otherwise.
+   */
+  bool ShouldBeIgnored(
+      const std::vector<std::shared_ptr<CPVRChannelGroup>>& allChannelGroups) const override
+  {
+    // User-created groups shall always be present.
+    return false;
+  }
+
+  /*!
    * @brief Update data with channel group members from the given clients, sync with local data.
    * @param clients The clients to fetch data from. Leave empty to fetch data from all created clients.
    * @return True on success, false otherwise.
