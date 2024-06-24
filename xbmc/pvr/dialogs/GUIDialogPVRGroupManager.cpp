@@ -637,6 +637,10 @@ void CGUIDialogPVRGroupManager::Update()
 
     CONTROL_ENABLE_ON_CONDITION(BUTTON_DELGROUP, m_selectedGroup->SupportsDelete());
 
+    CONTROL_ENABLE_ON_CONDITION(CONTROL_LIST_CHANNELS_LEFT, m_selectedGroup->SupportsMemberAdd());
+    CONTROL_ENABLE_ON_CONDITION(CONTROL_LIST_CHANNELS_RIGHT,
+                                m_selectedGroup->SupportsMemberRemove());
+
     SET_CONTROL_LABEL(CONTROL_UNGROUPED_LABEL, g_localizeStrings.Get(19219));
     SET_CONTROL_LABEL(
         CONTROL_IN_GROUP_LABEL,
