@@ -24,7 +24,7 @@ public:
 
 private:
   CImageMetadataParser();
-  void ExtractCommonMetadata(std::unique_ptr<Exiv2::Image>& image);
+  void ExtractCommonMetadata(Exiv2::Image& image);
   void ExtractExif(Exiv2::ExifData& exifData);
   void ExtractIPTC(Exiv2::IptcData& iptcData);
 
