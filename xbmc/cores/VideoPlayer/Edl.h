@@ -45,7 +45,7 @@ public:
    * because of EDL cuts
    * @return the total cut time
   */
-  int GetTotalCutTime() const;
+  std::chrono::milliseconds GetTotalCutTime() const;
 
   /*!
    * @brief Providing a given seek time, return the actual time without
@@ -55,7 +55,7 @@ public:
    * @param seek the desired seek time
    * @return the seek time without considering EDL cut blocks
   */
-  int GetTimeWithoutCuts(int seek) const;
+  std::chrono::milliseconds GetTimeWithoutCuts(std::chrono::milliseconds seekTime) const;
 
   /*!
    * @brief Provided a given seek time, return the time after correction with
@@ -66,7 +66,7 @@ public:
    * @return the seek time after applying the cut blocks already surpassed by the
    * provided seek time
   */
-  double GetTimeAfterRestoringCuts(double seek) const;
+  std::chrono::milliseconds GetTimeAfterRestoringCuts(std::chrono::milliseconds seekTime) const;
 
   /*!
    * @brief Get the raw EDL edit list.
@@ -90,7 +90,7 @@ public:
    * has multiple cuts, the positions of subsquent cuts are automatically corrected by
    * substracting the previous cut durations.
   */
-  const std::vector<int64_t> GetCutMarkers() const;
+  const std::vector<std::chrono::milliseconds> GetCutMarkers() const;
 
   /*!
    * @brief Get the list of EDL scene markers.
@@ -99,7 +99,7 @@ public:
    * has multiple cuts, the positions of scene markers are automatically corrected by
    * substracting the surpassed cut durations until the scene marker point.
   */
-  const std::vector<int64_t> GetSceneMarkers() const;
+  const std::vector<std::chrono::milliseconds> GetSceneMarkers() const;
 
   /*!
    * @brief Check if for the provided seek time is contained within an EDL
@@ -109,24 +109,24 @@ public:
    * @param seekTime The seek time (on the original timeline)
    * @return a pointer to the edit struct if seekTime is within an edit, nullopt otherwise
   */
-  std::optional<std::unique_ptr<EDL::Edit>> InEdit(int seekTime);
+  std::optional<std::unique_ptr<EDL::Edit>> InEdit(std::chrono::milliseconds seekTime);
 
   /*!
    * @brief Get the last processed edit time (set during playback when a given
    * edit is surpassed)
-   * @return The last processed edit time (ms) or -1 if not any
+   * @return The last processed edit time or nullopt if not any
   */
-  int GetLastEditTime() const;
+  std::optional<std::chrono::milliseconds> GetLastEditTime() const;
 
   /*!
    * @brief Set the last processed edit time (set during playback when a given
    * edit is surpassed)
-   * @param editTime The last processed EDL edit time (ms)
+   * @param editTime The last processed EDL edit time
   */
-  void SetLastEditTime(int editTime);
+  void SetLastEditTime(std::chrono::milliseconds editTime);
 
   /*!
-   * @brief Reset the last recorded edit time (-1)
+   * @brief Reset the last recorded edit time (nullopt)
   */
   void ResetLastEditTime();
 
@@ -149,20 +149,21 @@ public:
    * @param clock the current position of the clock
    * @return the position of the scenemarker (nullopt if none)
   */
-  std::optional<int> GetNextSceneMarker(Direction direction, int clock);
+  std::optional<std::chrono::milliseconds> GetNextSceneMarker(Direction direction,
+                                                              std::chrono::milliseconds clockTime);
 
-  static std::string MillisecondsToTimeString(int milliSeconds);
+  static std::string MillisecondsToTimeString(std::chrono::milliseconds milliSeconds);
 
 private:
   // total cut time (edl cuts) in ms
-  int m_totalCutTime;
+  std::chrono::milliseconds m_totalCutTime;
   std::vector<EDL::Edit> m_vecEdits;
-  std::vector<int> m_vecSceneMarkers;
+  std::vector<std::chrono::milliseconds> m_vecSceneMarkers;
 
   /*!
    * @brief Last processed EDL edit time (ms)
   */
-  int m_lastEditTime;
+  std::optional<std::chrono::milliseconds> m_lastEditTime;
 
   /*!
    * @brief Last processed EDL edit action type
@@ -182,7 +183,7 @@ private:
   */
   bool AddEdit(const EDL::Edit& newEdit);
 
-  bool AddSceneMarker(int sceneMarker);
+  bool AddSceneMarker(std::chrono::milliseconds sceneMarker);
 
   void MergeShortCommBreaks();
 

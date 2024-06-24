@@ -32,6 +32,7 @@
 #include "utils/log.h"
 
 #include <charconv>
+#include <chrono>
 #include <cmath>
 #include <memory>
 
@@ -672,8 +673,8 @@ std::vector<std::pair<float, float>> CPlayerGUIInfo::GetEditList(const CDataCach
   const std::vector<EDL::Edit>& edits = data.GetEditList();
   for (const auto& edit : edits)
   {
-    float editStart = edit.start * 100.0f / duration;
-    float editEnd = edit.end * 100.0f / duration;
+    float editStart = edit.start.count() * 100.0f / duration;
+    float editEnd = edit.end.count() * 100.0f / duration;
     ranges.emplace_back(editStart, editEnd);
   }
   return ranges;
@@ -684,11 +685,11 @@ std::vector<std::pair<float, float>> CPlayerGUIInfo::GetCuts(const CDataCacheCor
 {
   std::vector<std::pair<float, float>> ranges;
 
-  const std::vector<int64_t>& cuts = data.GetCuts();
+  const std::vector<std::chrono::milliseconds>& cuts = data.GetCuts();
   float lastMarker = 0.0f;
   for (const auto& cut : cuts)
   {
-    float marker = cut * 100.0f / duration;
+    float marker = cut.count() * 100.0f / duration;
     if (marker != 0)
       ranges.emplace_back(lastMarker, marker);
 
@@ -702,11 +703,11 @@ std::vector<std::pair<float, float>> CPlayerGUIInfo::GetSceneMarkers(const CData
 {
   std::vector<std::pair<float, float>> ranges;
 
-  const std::vector<int64_t>& scenes = data.GetSceneMarkers();
+  const std::vector<std::chrono::milliseconds>& scenes = data.GetSceneMarkers();
   float lastMarker = 0.0f;
   for (const auto& scene : scenes)
   {
-    float marker = scene * 100.0f / duration;
+    float marker = scene.count() * 100.0f / duration;
     if (marker != 0)
       ranges.emplace_back(lastMarker, marker);
 

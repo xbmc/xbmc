@@ -13,10 +13,12 @@
 #include "settings/SettingsComponent.h"
 #include "test/TestUtils.h"
 
+#include <chrono>
 #include <cmath>
 
 #include <gtest/gtest.h>
 
+using namespace std::chrono_literals;
 using namespace EDL;
 
 
@@ -49,16 +51,16 @@ TEST_F(TestEdl, TestParsingMplayerTimeBasedEDL)
   // file has only 1 cut starting at 5.3 secs and ending at 7.1 secs
   // so total cut time should be 1.8 seconds (1800 msec)
   EXPECT_EQ(edl.HasCuts(), true);
-  EXPECT_EQ(edl.GetTotalCutTime(), 1.8 * 1000);
+  EXPECT_EQ(edl.GetTotalCutTime(), 1800ms);
   EXPECT_EQ(edl.GetCutMarkers().size(), 1);
-  EXPECT_EQ(edl.GetCutMarkers().at(0), 5.3 * 1000); // 5.3 secs
+  EXPECT_EQ(edl.GetCutMarkers().at(0), 5300ms);
   // When removing or restoring cuts, EDL adds (or removes) 1 msec to jump over the start or end boundary of the edit
   EXPECT_EQ(edl.GetTimeWithoutCuts(edl.GetRawEditList().at(0).start),
-            edl.GetRawEditList().at(0).start + 1);
+            edl.GetRawEditList().at(0).start + 1ms);
   EXPECT_EQ(edl.GetTimeAfterRestoringCuts(edl.GetRawEditList().at(0).start),
             edl.GetRawEditList().at(0).start);
-  EXPECT_EQ(edl.GetTimeAfterRestoringCuts(edl.GetRawEditList().at(0).start + 2),
-            edl.GetRawEditList().at(0).end + 2);
+  EXPECT_EQ(edl.GetTimeAfterRestoringCuts(edl.GetRawEditList().at(0).start + 2ms),
+            edl.GetRawEditList().at(0).end + 2ms);
 
   // the first edit (note editlist does not contain cuts) is a mute section starting at 15 seconds
   // of the real file this should correspond to 13.2 secs on the kodi VideoPlayer timeline (start - cuttime)
@@ -75,32 +77,36 @@ TEST_F(TestEdl, TestParsingMplayerTimeBasedEDL)
 
   // scene markers
   // one of the scenemarkers (the first) have start and end times defined, kodi should assume the marker at the END position (255.3 secs)
-  EXPECT_EQ(edl.GetSceneMarkers().at(0), edl.GetTimeWithoutCuts(255.3 * 1000));
+  EXPECT_EQ(edl.GetSceneMarkers().at(0),
+            edl.GetTimeWithoutCuts(duration_cast<std::chrono::milliseconds>(255.3s)));
   // one of them only has start defined, at 720.1 secs
-  EXPECT_EQ(edl.GetSceneMarkers().at(1), edl.GetTimeWithoutCuts(720.1 * 1000));
+  EXPECT_EQ(edl.GetSceneMarkers().at(1),
+            edl.GetTimeWithoutCuts(duration_cast<std::chrono::milliseconds>(720.1s)));
 
   // commbreaks
   // the second edit on the file is a commbreak
   const auto commbreak = edl.GetEditList().at(1);
   EXPECT_EQ(commbreak.action, Action::COMM_BREAK);
   // We should have a scenemarker at the commbreak start and another on commbreak end
-  std::optional<int> time = edl.GetNextSceneMarker(Direction::FORWARD, commbreak.start - 1);
+  std::optional<std::chrono::milliseconds> time =
+      edl.GetNextSceneMarker(Direction::FORWARD, commbreak.start - 1ms);
   // lets cycle to the next scenemarker if starting from 1 msec before the start (or end) of the commbreak
   EXPECT_NE(time, std::nullopt);
   EXPECT_EQ(edl.GetTimeWithoutCuts(time.value()), commbreak.start);
-  time = edl.GetNextSceneMarker(Direction::FORWARD, commbreak.end - 1);
+  time = edl.GetNextSceneMarker(Direction::FORWARD, commbreak.end - 1ms);
   EXPECT_NE(time, std::nullopt);
   EXPECT_EQ(edl.GetTimeWithoutCuts(time.value()), commbreak.end);
   // same if we cycle backwards
-  time = edl.GetNextSceneMarker(Direction::BACKWARD, commbreak.start + 1);
+  time = edl.GetNextSceneMarker(Direction::BACKWARD, commbreak.start + 1ms);
   EXPECT_NE(time, std::nullopt);
   EXPECT_EQ(edl.GetTimeWithoutCuts(time.value()), commbreak.start);
-  time = edl.GetNextSceneMarker(Direction::BACKWARD, commbreak.end + 1);
+  time = edl.GetNextSceneMarker(Direction::BACKWARD, commbreak.end + 1ms);
   EXPECT_NE(time, std::nullopt);
   EXPECT_EQ(edl.GetTimeWithoutCuts(time.value()), commbreak.end);
   // We should be in an edit if we are in the middle of a commbreak...
   // lets check and confirm the edits match (after restoring cuts)
-  const int middleOfCommbreak = commbreak.start + (commbreak.end - commbreak.start) / 2;
+  const std::chrono::milliseconds middleOfCommbreak =
+      commbreak.start + (commbreak.end - commbreak.start) / 2;
   const auto hasEdit = edl.InEdit(edl.GetTimeWithoutCuts(middleOfCommbreak));
   EXPECT_NE(hasEdit, std::nullopt);
   const auto& edit = hasEdit.value();
@@ -126,9 +132,9 @@ TEST_F(TestEdl, TestParsingMplayerTimeBasedInterleavedCutsEDL)
   EXPECT_EQ(edl.HasEdits(), true);
   EXPECT_EQ(edl.GetCutMarkers().size(), 2);
   // lets check the total cut time matches the sum of the two cut durations defined in the file
-  EXPECT_EQ(edl.GetTotalCutTime(), ((7.1 - 5.3) + (19 - 18)) * 1000);
+  EXPECT_EQ(edl.GetTotalCutTime(), 2800ms); // (7.1s - 5.3s) + (19s - 18s)
   // the first edit is after the first cut, so lets check the start time was adjusted exactly by the cut duration
-  EXPECT_EQ(edl.GetEditList().at(0).start, edl.GetRawEditList().at(1).start - ((7.1 - 5.3) * 1000));
+  EXPECT_EQ(edl.GetEditList().at(0).start, edl.GetRawEditList().at(1).start - (7.1s - 5.3s));
   EXPECT_EQ(edl.GetEditList().at(0).start,
             edl.GetTimeWithoutCuts(edl.GetRawEditList().at(1).start));
   EXPECT_EQ(edl.GetEditList().at(1).start,
@@ -157,9 +163,13 @@ TEST_F(TestEdl, TestParsingMplayerFrameBasedEDL)
   EXPECT_EQ(edl.GetEditList().size(), 2);
   // check edit times are correctly calculated provided the fps
   EXPECT_EQ(edl.GetEditList().at(0).start,
-            static_cast<int64_t>((360 / fps) * 1000) - edl.GetTotalCutTime());
+            std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::duration<double, std::ratio<1>>{360 / fps}) -
+                edl.GetTotalCutTime());
   EXPECT_EQ(edl.GetSceneMarkers().at(0),
-            static_cast<int64_t>((6127 / fps) * 1000) - edl.GetTotalCutTime());
+            std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::duration<double, std::ratio<1>>{6127 / fps}) -
+                edl.GetTotalCutTime());
 }
 
 TEST_F(TestEdl, TestParsingMplayerTimeBasedMixedEDL)
@@ -182,7 +192,7 @@ TEST_F(TestEdl, TestParsingMplayerTimeBasedMixedEDL)
   // check we have correctly parsed the scene with 12:00.1 start point
   for (const auto& scene : edl.GetSceneMarkers())
   {
-    if (scene == (12 * 60 + 0.1) * 1000 - edl.GetTotalCutTime())
+    if (scene == (12 * 60s + 0.1s) - edl.GetTotalCutTime())
     {
       sceneFound = true;
       break;
@@ -190,7 +200,7 @@ TEST_F(TestEdl, TestParsingMplayerTimeBasedMixedEDL)
   }
   EXPECT_EQ(sceneFound, true);
   // check that the first ordered edit starts at 15 secs
-  EXPECT_EQ(edl.GetEditList().front().start, (15 * 1000) - edl.GetTotalCutTime());
+  EXPECT_EQ(edl.GetEditList().front().start, 15s - edl.GetTotalCutTime());
 }
 
 TEST_F(TestEdl, TestParsingVideoRedoEDL)
@@ -213,7 +223,7 @@ TEST_F(TestEdl, TestParsingVideoRedoEDL)
   EXPECT_EQ(edl.GetCutMarkers().size(), 3);
   // in videoredo time processing is ms * 10000
   // first cut in the file is at 4235230000 - let's confirm this corresponds to second 423.523
-  EXPECT_EQ(edl.GetCutMarkers().front(), 423.523 * 1000);
+  EXPECT_EQ(edl.GetCutMarkers().front(), 423.523s);
 }
 
 TEST_F(TestEdl, TestSnapStreamEDL)
@@ -233,8 +243,8 @@ TEST_F(TestEdl, TestSnapStreamEDL)
   EXPECT_EQ(edl.GetSceneMarkers().size(), 3 * 2); // start and end of each commbreak
   // snapstream beyond tv uses ms * 10000
   // check if first commbreak (4235230000 - 5936600000) is 423.523 sec - 593.660 sec
-  EXPECT_EQ(edl.GetEditList().front().start, std::lround(423.523 * 1000));
-  EXPECT_EQ(edl.GetEditList().front().end, std::lround(593.660 * 1000));
+  EXPECT_EQ(edl.GetEditList().front().start, 423.523s);
+  EXPECT_EQ(edl.GetEditList().front().end, 593.660s);
 }
 
 TEST_F(TestEdl, TestComSkipVersion1EDL)
@@ -257,8 +267,12 @@ TEST_F(TestEdl, TestComSkipVersion1EDL)
   EXPECT_EQ(edl.GetCutMarkers().empty(), true);
   EXPECT_EQ(edl.GetEditList().size(), 3);
   EXPECT_EQ(edl.GetSceneMarkers().size(), 3 * 2); // start and end of each commbreak
-  EXPECT_EQ(edl.GetEditList().front().start, std::lround(12693 / fps * 1000));
-  EXPECT_EQ(edl.GetEditList().front().end, std::lround(17792 / fps * 1000));
+  EXPECT_EQ(edl.GetEditList().front().start,
+            std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::duration<double, std::ratio<1>>{12693 / fps}));
+  EXPECT_EQ(edl.GetEditList().front().end,
+            std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::duration<double, std::ratio<1>>{17792 / fps}));
 }
 
 TEST_F(TestEdl, TestComSkipVersion2EDL)
@@ -274,23 +288,27 @@ TEST_F(TestEdl, TestComSkipVersion2EDL)
   EXPECT_EQ(found, true);
   // fps is obtained from the file as it always takes precedence (note we supplied 0 above),
   // the EDL file has the value of 2500 for fps. kodi converts this to 25 fps by dividing by a factor of 100
-  const float fpsInEdlFile = 2500 / 100;
+  const double fpsInEdlFile = 2500 / 100;
   // this format only supports commbreak types
   EXPECT_EQ(edl.HasEdits(), true);
   EXPECT_EQ(edl.GetCutMarkers().empty(), true);
   EXPECT_EQ(edl.GetEditList().size(), 3);
   EXPECT_EQ(edl.GetSceneMarkers().size(), 3 * 2); // start and end of each commbreak
-  EXPECT_EQ(edl.GetEditList().front().start, std::lround(12693 / fpsInEdlFile * 1000));
-  EXPECT_EQ(edl.GetEditList().front().end, std::lround(17792 / fpsInEdlFile * 1000));
+  EXPECT_EQ(edl.GetEditList().front().start,
+            std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::duration<double, std::ratio<1>>{12693 / fpsInEdlFile}));
+  EXPECT_EQ(edl.GetEditList().front().end,
+            std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::duration<double, std::ratio<1>>{17792 / fpsInEdlFile}));
 }
 
 TEST_F(TestEdl, TestRuntimeSetEDL)
 {
   // this is a simple test for SetLastEditTime, SetLastEditActionType and corresponding getters
   CEdl edl;
-  edl.SetLastEditTime(1000);
+  edl.SetLastEditTime(1000ms);
   edl.SetLastEditActionType(Action::COMM_BREAK);
-  EXPECT_EQ(edl.GetLastEditTime(), 1000);
+  EXPECT_EQ(edl.GetLastEditTime(), 1000ms);
   EXPECT_EQ(edl.GetLastEditActionType(), Action::COMM_BREAK);
 }
 
@@ -325,17 +343,17 @@ TEST_F(TestEdl, TestCommBreakAdvancedSettings)
   EXPECT_EQ(found, true);
   // confirm the start and end times of all the commbreaks match
   EXPECT_EQ(edl.GetEditList().size(), 5);
-  EXPECT_EQ(edl.GetEditList().at(0).start, 10 * 1000);
-  EXPECT_EQ(edl.GetEditList().at(0).end, 22 * 1000);
-  EXPECT_EQ(edl.GetEditList().at(1).start, 30 * 1000);
-  EXPECT_EQ(edl.GetEditList().at(1).end, 32 * 1000);
-  EXPECT_EQ(edl.GetEditList().at(2).start, 37 * 1000);
-  EXPECT_EQ(edl.GetEditList().at(2).end, 50 * 1000);
-  EXPECT_EQ(edl.GetEditList().at(3).start, 52 * 1000);
-  EXPECT_EQ(edl.GetEditList().at(3).end, 60 * 1000);
-  EXPECT_EQ(edl.GetEditList().at(4).start, 62 * 1000);
-  EXPECT_EQ(edl.GetEditList().at(4).end, std::lround(65.1 * 1000));
-  // now lets change autowait and autowind and check the edits are correcly adjusted
+  EXPECT_EQ(edl.GetEditList().at(0).start, 10s);
+  EXPECT_EQ(edl.GetEditList().at(0).end, 22s);
+  EXPECT_EQ(edl.GetEditList().at(1).start, 30s);
+  EXPECT_EQ(edl.GetEditList().at(1).end, 32s);
+  EXPECT_EQ(edl.GetEditList().at(2).start, 37s);
+  EXPECT_EQ(edl.GetEditList().at(2).end, 50s);
+  EXPECT_EQ(edl.GetEditList().at(3).start, 52s);
+  EXPECT_EQ(edl.GetEditList().at(3).end, 60s);
+  EXPECT_EQ(edl.GetEditList().at(4).start, 62s);
+  EXPECT_EQ(edl.GetEditList().at(4).end, 65100ms);
+  // now lets change autowait and autowind and check the edits are correctly adjusted
   edl.Clear();
   advancedSettings->m_iEdlCommBreakAutowait = 3; // secs
   advancedSettings->m_iEdlCommBreakAutowind = 3; // secs
@@ -345,23 +363,23 @@ TEST_F(TestEdl, TestCommBreakAdvancedSettings)
   EXPECT_EQ(edl.GetEditList().size(), 5);
   // the second edit has a duration smaller than the autowait
   // this moves the start time to the end of the edit
-  EXPECT_EQ(edl.GetEditList().at(1).start, 32 * 1000);
+  EXPECT_EQ(edl.GetEditList().at(1).start, 32s);
   EXPECT_EQ(edl.GetEditList().at(1).end, edl.GetEditList().at(1).start);
   // the others should be adjusted + 3 secs at the start and -3 secs at the end
   // due to the provided values for autowait and autowind.
-  EXPECT_EQ(edl.GetEditList().at(0).start, (10 + 3) * 1000);
-  EXPECT_EQ(edl.GetEditList().at(0).end, (22 - 3) * 1000);
-  EXPECT_EQ(edl.GetEditList().at(2).start, (37 + 3) * 1000);
-  EXPECT_EQ(edl.GetEditList().at(2).end, (50 - 3) * 1000);
-  EXPECT_EQ(edl.GetEditList().at(3).start, (52 + 3) * 1000);
-  EXPECT_EQ(edl.GetEditList().at(3).end, (60 - 3) * 1000);
+  EXPECT_EQ(edl.GetEditList().at(0).start, 10s + 3s);
+  EXPECT_EQ(edl.GetEditList().at(0).end, 22s - 3s);
+  EXPECT_EQ(edl.GetEditList().at(2).start, 37s + 3s);
+  EXPECT_EQ(edl.GetEditList().at(2).end, 50s - 3s);
+  EXPECT_EQ(edl.GetEditList().at(3).start, 52s + 3s);
+  EXPECT_EQ(edl.GetEditList().at(3).end, 60s - 3s);
   // since we adjust the start to second 65 and the autowind is 3 seconds kodi should
   // shift the end time not by 3 seconds but by the "excess" time (in this case 0.1 sec)
   // this means start and end will be exactly the same. The commbreak would be removed if
   // mergeshortcommbreaks was active and advancedsetting m_iEdlMinCommBreakLength
   // was set to a reasonable threshold.
-  EXPECT_EQ(edl.GetEditList().at(4).start, (62 + 3) * 1000);
-  EXPECT_EQ(edl.GetEditList().at(4).end, (65.1 - 0.1) * 1000);
+  EXPECT_EQ(edl.GetEditList().at(4).start, 62s + 3s);
+  EXPECT_EQ(edl.GetEditList().at(4).end, 65.1s - 0.1s);
   EXPECT_EQ(edl.GetEditList().at(4).start, edl.GetEditList().at(4).end);
 }
 
@@ -425,8 +443,8 @@ TEST_F(TestEdl, TestMergeSmallCommbreaks)
   // kodi should merge all commbreaks into a single one starting at the first point (0)
   // and ending at the last edit time
   EXPECT_EQ(edl.GetEditList().size(), 1);
-  EXPECT_EQ(edl.GetEditList().at(0).start, 0);
-  EXPECT_EQ(edl.GetEditList().at(0).end, std::lround(65.1 * 1000));
+  EXPECT_EQ(edl.GetEditList().at(0).start, 0ms);
+  EXPECT_EQ(edl.GetEditList().at(0).end, 65100ms);
 }
 
 TEST_F(TestEdl, TestMergeSmallCommbreaksAdvanced)
@@ -458,8 +476,7 @@ TEST_F(TestEdl, TestMergeSmallCommbreaksAdvanced)
   // kodi should merge all commbreaks into two
   EXPECT_EQ(edl.GetEditList().size(), 2);
   // second edit of the original file + third one
-  EXPECT_EQ(edl.GetEditList().at(0).end - edl.GetEditList().at(0).start, (32 - 10) * 1000);
+  EXPECT_EQ(edl.GetEditList().at(0).end - edl.GetEditList().at(0).start, 32s - 10s);
   // 4th, 5th and 6th commbreaks joined
-  EXPECT_EQ(edl.GetEditList().at(1).end - edl.GetEditList().at(1).start,
-            std::lround((65.1 - 37) * 1000));
+  EXPECT_EQ(edl.GetEditList().at(1).end - edl.GetEditList().at(1).start, 65100ms - 37s);
 }

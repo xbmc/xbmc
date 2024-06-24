@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <chrono>
+
 namespace EDL
 {
 
@@ -23,8 +25,8 @@ enum class Action
 
 struct Edit
 {
-  int start = 0; // ms
-  int end = 0; // ms
+  std::chrono::milliseconds start{0};
+  std::chrono::milliseconds end{0};
   Action action = Action::CUT;
 };
 
