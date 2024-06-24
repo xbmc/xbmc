@@ -95,14 +95,21 @@ public:
   std::shared_ptr<CPVRChannelGroup> GetGroupAll(bool bRadio) const;
 
   /*!
-   * @brief Get a group given it's ID.
+   * @brief Get a group given its path.
+   * @param path The path to the channel group.
+   * @return The channel group, or nullptr if not found.
+   */
+  std::shared_ptr<CPVRChannelGroup> GetGroupByPath(const std::string& path) const;
+
+  /*!
+   * @brief Get a group given its ID.
    * @param iGroupId The ID of the group.
    * @return The requested group or NULL if it wasn't found.
    */
   std::shared_ptr<CPVRChannelGroup> GetByIdFromAll(int iGroupId) const;
 
   /*!
-   * @brief Get a channel given it's database ID.
+   * @brief Get a channel given its database ID.
    * @param iChannelId The ID of the channel.
    * @return The channel or NULL if it wasn't found.
    */
@@ -117,14 +124,14 @@ public:
       const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const;
 
   /*!
-   * @brief Get a channel given it's path.
+   * @brief Get a channel given its path.
    * @param strPath The path.
    * @return The channel or nullptr if it wasn't found.
    */
   std::shared_ptr<CPVRChannel> GetByPath(const std::string& strPath) const;
 
   /*!
-   * @brief Get a channel group member given it's path.
+   * @brief Get a channel group member given its path.
    * @param strPath The path.
    * @return The channel group member or nullptr if it wasn't found.
    */
@@ -132,7 +139,7 @@ public:
       const std::string& strPath) const;
 
   /*!
-   * @brief Get a channel given it's channel ID from all containers.
+   * @brief Get a channel given its channel ID from all containers.
    * @param iUniqueChannelId The unique channel id on the client.
    * @param iClientID The ID of the client.
    * @return The channel or NULL if it wasn't found.

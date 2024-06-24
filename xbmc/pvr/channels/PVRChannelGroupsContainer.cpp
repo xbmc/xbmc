@@ -78,6 +78,18 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroupsContainer::GetGroupAll(bool b
   return Get(bRadio)->GetGroupAll();
 }
 
+std::shared_ptr<CPVRChannelGroup> CPVRChannelGroupsContainer::GetGroupByPath(
+    const std::string& path) const
+{
+  const CPVRChannelsPath channelsPath{path};
+  if (channelsPath.IsValid() && channelsPath.IsChannelGroup())
+    return Get(channelsPath.IsRadio())->GetGroupByPath(path);
+  else
+    CLog::LogFC(LOGERROR, LOGPVR, "Invalid path '{}'", path);
+
+  return {};
+}
+
 std::shared_ptr<CPVRChannelGroup> CPVRChannelGroupsContainer::GetByIdFromAll(int iGroupId) const
 {
   std::shared_ptr<CPVRChannelGroup> group = m_groupsTV->GetById(iGroupId);
