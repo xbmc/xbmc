@@ -11,6 +11,7 @@
 #include "cores/Direction.h"
 #include "cores/EdlEdit.h"
 
+#include <memory>
 #include <optional>
 #include <string>
 #include <vector>
@@ -102,14 +103,13 @@ public:
 
   /*!
    * @brief Check if for the provided seek time is contained within an EDL
-   * edit and fill pEdit with the respective edit struct.
+   * edit
    * @note seek time refers to the time in the original file timeline (i.e. without
    * considering cut blocks)
-   * @param iSeek The seek time (on the original timeline)
-   * @param[in,out] pEdit The edit pointer (or nullptr if iSeek not within an edit)
-   * @return true if iSeek is within an edit, false otherwise
+   * @param seekTime The seek time (on the original timeline)
+   * @return a pointer to the edit struct if seekTime is within an edit, nullopt otherwise
   */
-  bool InEdit(int iSeek, EDL::Edit* pEdit = nullptr);
+  std::optional<std::unique_ptr<EDL::Edit>> InEdit(int seekTime);
 
   /*!
    * @brief Get the last processed edit time (set during playback when a given
