@@ -1,0 +1,33 @@
+From 667922032fa22607697ca4b5eb81c1f8c96e2161 Mon Sep 17 00:00:00 2001
+From: Peter <peter.vicman@gmail.com>
+Date: Tue, 25 Jun 2024 10:57:31 +0200
+Subject: [PATCH] libUPnP: Fix memory allocation of size 0
+
+In member function 'ReallocateBuffer',
+    inlined from 'SetBufferSize' at ../../kodi-e495e26f477d4de8a7e6c2fac4acbe1a15e22242/.aarch64-libreelec-linux-gnu/../lib/libUPnP/Neptune/Source/Core/NptDataBuffer.cpp:172:32,
+    inlined from 'Load' at ../../kodi-e495e26f477d4de8a7e6c2fac4acbe1a15e22242/.aarch64-libreelec-linux-gnu/../lib/libUPnP/Neptune/Source/Core/NptStreams.cpp:106:33:
+../../kodi-e495e26f477d4de8a7e6c2fac4acbe1a15e22242/.aarch64-libreelec-linux-gnu/../lib/libUPnP/Neptune/Source/Core/NptDataBuffer.cpp:245:23: warning: '__builtin_memcpy' writing between 1 and 4294967295 bytes into a region of size 0 [-Wstringop-overflow=]
+../../kodi-e495e26f477d4de8a7e6c2fac4acbe1a15e22242/.aarch64-libreelec-linux-gnu/../lib/libUPnP/Neptune/Source/Core/NptDataBuffer.cpp:241:44: note: destination object of size 0 allocated by 'operator new []'
+
+---
+ lib/libUPnP/Neptune/Source/Core/NptDataBuffer.cpp | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptDataBuffer.cpp b/lib/libUPnP/Neptune/Source/Core/NptDataBuffer.cpp
+index f5ab03c..c0b1c80 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptDataBuffer.cpp
++++ b/lib/libUPnP/Neptune/Source/Core/NptDataBuffer.cpp
+@@ -237,7 +237,9 @@ NPT_DataBuffer::ReallocateBuffer(NPT_Size size)
+     // check that the existing data fits
+     if (m_DataSize > size) return NPT_ERROR_INVALID_PARAMETERS;
+ 
+-    // allocate a new buffer
++    // allocate a new buffer only if size is not zero
++    if (!size) return NPT_ERROR_INVALID_PARAMETERS;
++
+     NPT_Byte* newBuffer = new NPT_Byte[size];
+ 
+     // copy the contents of the previous buffer, if any
+-- 
+2.41.0.dirty
+
