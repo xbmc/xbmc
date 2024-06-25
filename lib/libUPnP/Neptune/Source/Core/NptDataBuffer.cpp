@@ -237,7 +237,9 @@ NPT_DataBuffer::ReallocateBuffer(NPT_Size size)
     // check that the existing data fits
     if (m_DataSize > size) return NPT_ERROR_INVALID_PARAMETERS;
 
-    // allocate a new buffer
+    // allocate a new buffer only if size is not zero
+    if (!size) return NPT_ERROR_INVALID_PARAMETERS;
+
     NPT_Byte* newBuffer = new NPT_Byte[size];
 
     // copy the contents of the previous buffer, if any
