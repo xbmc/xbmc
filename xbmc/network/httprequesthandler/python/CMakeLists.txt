@@ -1,4 +1,4 @@
-if(MICROHTTPD_FOUND AND PYTHON_FOUND)
+if(TARGET ${APP_NAME_LC}::MicroHttpd AND TARGET ${APP_NAME_LC}::Python)
   set(SOURCES HTTPPythonInvoker.cpp
               HTTPPythonWsgiInvoker.cpp)
 

@@ -14,14 +14,14 @@ if(CORE_SYSTEM_NAME STREQUAL windows OR CORE_SYSTEM_NAME STREQUAL windowsstore)
 endif()
 
 
-if(TARGET OpenGL::GL OR TARGET OpenGL::GLES)
+if(TARGET ${APP_NAME_LC}::OpenGl OR TARGET ${APP_NAME_LC}::OpenGLES)
   list(APPEND SOURCES ConversionMatrix.cpp
                       ToneMappers.cpp)
   list(APPEND HEADERS ConversionMatrix.h
                       ToneMappers.h)
 endif()
 
-if(TARGET OpenGL::GL)
+if(TARGET ${APP_NAME_LC}::OpenGl)
   list(APPEND SOURCES GLSLOutput.cpp
                       VideoFilterShaderGL.cpp
                       YUV2RGBShaderGL.cpp)
@@ -30,7 +30,7 @@ if(TARGET OpenGL::GL)
                       YUV2RGBShaderGL.h)
 endif()
 
-if(TARGET OpenGL::GLES AND ("android" IN_LIST CORE_PLATFORM_NAME_LC OR
+if(TARGET ${APP_NAME_LC}::OpenGLES AND ("android" IN_LIST CORE_PLATFORM_NAME_LC OR
                             "ios" IN_LIST CORE_PLATFORM_NAME_LC OR
                             "tvos" IN_LIST CORE_PLATFORM_NAME_LC OR
                             "gbm" IN_LIST CORE_PLATFORM_NAME_LC OR

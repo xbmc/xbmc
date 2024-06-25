@@ -5,10 +5,10 @@
 #
 # This will define the following target:
 #
-#   dav1d::dav1d   - The dav1d library
+#   ${APP_NAME_LC}::Dav1d   - The dav1d library
 
-if(NOT TARGET dav1d::dav1d)
-  if(ENABLE_INTERNAL_DAV1D)
+if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
+  if(ENABLE_INTERNAL_DAV1D AND NOT (WIN32 OR WINDOWS_STORE))
     include(cmake/scripts/common/ModuleHelpers.cmake)
 
     set(MODULE_LC dav1d)
@@ -43,13 +43,11 @@ if(NOT TARGET dav1d::dav1d)
 
     find_library(DAV1D_LIBRARY NAMES dav1d libdav1d
                                HINTS ${DEPENDS_PATH}/lib ${PC_DAV1D_LIBDIR}
-                               ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
-                               NO_CACHE)
+                               ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
 
     find_path(DAV1D_INCLUDE_DIR NAMES dav1d/dav1d.h
                                 HINTS ${DEPENDS_PATH}/include ${PC_DAV1D_INCLUDEDIR}
-                                ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
-                                NO_CACHE)
+                                ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
 
     set(DAV1D_VERSION ${PC_DAV1D_VERSION})
   endif()
@@ -60,14 +58,13 @@ if(NOT TARGET dav1d::dav1d)
                                     VERSION_VAR DAV1D_VERSION)
 
   if(DAV1D_FOUND)
-    add_library(dav1d::dav1d UNKNOWN IMPORTED)
-    set_target_properties(dav1d::dav1d PROPERTIES
-                                             IMPORTED_LOCATION "${DAV1D_LIBRARY}"
-                                             INTERFACE_INCLUDE_DIRECTORIES "${DAV1D_INCLUDE_DIR}")
-    set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP dav1d::dav1d)
+    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
+    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                     IMPORTED_LOCATION "${DAV1D_LIBRARY}"
+                                                                     INTERFACE_INCLUDE_DIRECTORIES "${DAV1D_INCLUDE_DIR}")
 
     if(TARGET dav1d)
-      add_dependencies(dav1d::dav1d dav1d)
+      add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} dav1d)
     endif()
   endif()
 endif()

@@ -1,4 +1,4 @@
-if(X_FOUND)
+if(TARGET ${APP_NAME_LC}::X)
   set(USE_X11 1)
 else()
   set(USE_X11 0)
@@ -13,7 +13,7 @@ set(APP_INCLUDE_DIR ${includedir}/${APP_NAME_LC})
 
 # Set XBMC_STANDALONE_SH_PULSE so we can insert PulseAudio block into kodi-standalone
 if(EXISTS ${CMAKE_SOURCE_DIR}/tools/Linux/kodi-standalone.sh.pulse)
-  if(ENABLE_PULSEAUDIO AND TARGET PulseAudio::PulseAudio)
+  if(ENABLE_PULSEAUDIO AND TARGET ${APP_NAME_LC}::PulseAudio)
     file(READ "${CMAKE_SOURCE_DIR}/tools/Linux/kodi-standalone.sh.pulse" pulse_content)
     set(XBMC_STANDALONE_SH_PULSE ${pulse_content})
   endif()
@@ -49,7 +49,7 @@ configure_file(${CMAKE_SOURCE_DIR}/tools/Linux/kodi.metainfo.xml.in
 install(TARGETS ${APP_NAME_LC}
         DESTINATION ${libdir}/${APP_NAME_LC}
         COMPONENT kodi-bin)
-if(TARGET X::X AND TARGET XRandR::XRandR)
+if(TARGET ${APP_NAME_LC}::X AND TARGET ${APP_NAME_LC}::XRandR)
   install(TARGETS ${APP_NAME_LC}-xrandr
           DESTINATION ${libdir}/${APP_NAME_LC}
           COMPONENT kodi-bin)
@@ -275,7 +275,7 @@ if(ENABLE_EVENTCLIENTS)
           DESTINATION ${bindir}
           COMPONENT kodi-eventclients-ps3)
 
-  if(TARGET ${APP_NAME_LC}::Bluetooth AND CWIID_FOUND AND GLU_FOUND)
+  if(TARGET ${APP_NAME_LC}::Bluetooth AND ${APP_NAME_LC}::CWiid AND GLU_FOUND)
     # Install kodi-eventclients-wiiremote
     install(PROGRAMS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/WiiRemote/${APP_NAME_LC}-wiiremote
             DESTINATION ${bindir}

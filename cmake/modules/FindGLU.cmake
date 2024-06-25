@@ -3,33 +3,32 @@
 # -----
 # Finds the GLU library
 #
-# This will define the following variables::
+# This will define the following target:
 #
-# GLU_FOUND - system has GLU
-# GLU_INCLUDE_DIRS - the GLU include directory
-# GLU_LIBRARIES - the GLU libraries
-# GLU_DEFINITIONS - the GLU definitions
-#
+#   ${APP_NAME_LC}::GLU   - The GLU library
 
-find_package(PkgConfig)
+if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
-if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_GLU glu QUIET)
+  find_package(PkgConfig)
+
+  if(PKG_CONFIG_FOUND)
+    pkg_check_modules(PC_GLU glu QUIET)
+  endif()
+
+  find_path(GLU_INCLUDE_DIR NAMES GL/glu.h
+                            HINTS ${PC_GLU_INCLUDEDIR})
+  find_library(GLU_LIBRARY NAMES GLU
+                           HINTS ${PC_GLU_LIBDIR})
+
+  include(FindPackageHandleStandardArgs)
+  find_package_handle_standard_args(GLU
+                                    REQUIRED_VARS GLU_LIBRARY GLU_INCLUDE_DIR)
+
+  if(GLU_FOUND)
+    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
+    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                     IMPORTED_LOCATION "${GLU_LIBRARY}"
+                                                                     INTERFACE_INCLUDE_DIRECTORIES "${GLU_INCLUDE_DIR}")
+  endif()
+
 endif()
-
-find_path(GLU_INCLUDE_DIR NAMES GL/glu.h
-                          HINTS ${PC_GLU_INCLUDEDIR})
-find_library(GLU_LIBRARY NAMES GLU
-                         HINTS ${PC_GLU_LIBDIR})
-
-include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(GLU
-                                  REQUIRED_VARS GLU_LIBRARY GLU_INCLUDE_DIR)
-
-if(GLU_FOUND)
-  set(GLU_LIBRARIES ${GLU_LIBRARY})
-  set(GLU_INCLUDE_DIRS ${GLU_INCLUDE_DIR})
-  set(GLU_DEFINITIONS -DHAS_GLU=1)
-endif()
-
-mark_as_advanced(GLU_INCLUDE_DIR GLU_LIBRARY)

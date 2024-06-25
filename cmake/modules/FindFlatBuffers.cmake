@@ -4,11 +4,11 @@
 #
 # This will define the following target:
 #
-#   flatbuffers::flatheaders - The flatbuffers headers
+#   ${APP_NAME_LC}::FlatBuffers - The flatbuffers headers
 
 find_package(FlatC REQUIRED)
 
-if(NOT TARGET flatbuffers::flatheaders)
+if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
@@ -58,14 +58,14 @@ if(NOT TARGET flatbuffers::flatheaders)
 
   if(FlatBuffers_FOUND)
 
-    add_library(flatbuffers::flatheaders INTERFACE IMPORTED)
-    set_target_properties(flatbuffers::flatheaders PROPERTIES
-                                                   INTERFACE_INCLUDE_DIRECTORIES "${FLATBUFFERS_INCLUDE_DIR}")
+    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE IMPORTED)
+    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                     INTERFACE_INCLUDE_DIRECTORIES "${FLATBUFFERS_INCLUDE_DIR}")
 
-    add_dependencies(flatbuffers::flatheaders flatbuffers::flatc)
+    add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} flatbuffers::flatc)
 
     if(TARGET flatbuffers)
-      add_dependencies(flatbuffers::flatheaders flatbuffers)
+      add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} flatbuffers)
     endif()
 
     # Add internal build target when a Multi Config Generator is used
@@ -83,8 +83,6 @@ if(NOT TARGET flatbuffers::flatheaders)
       endif()
       add_dependencies(build_internal_depends flatbuffers)
     endif()
-
-    set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP flatbuffers::flatheaders)
   else()
     if(FlatBuffers_FIND_REQUIRED)
       message(FATAL_ERROR "Flatbuffer schema headers were not found. You may want to try -DENABLE_INTERNAL_FLATBUFFERS=ON to build the internal headers package")

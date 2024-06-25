@@ -8,7 +8,6 @@
 # ARCH - the system architecture
 # ARCH_DEFINES - list of compiler definitions for this architecture
 # SYSTEM_DEFINES - list of compiler definitions for this system
-# DEP_DEFINES - compiler definitions for system dependencies (e.g. LIRC)
 # + the results of compiler tests etc.
 
 # workaround a bug in older cmake, where binutils wouldn't be set after deleting CMakeCache.txt

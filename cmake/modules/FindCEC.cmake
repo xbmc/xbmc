@@ -42,7 +42,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                     COMMAND ${INSTALL_NAME_TOOL} -id ${CEC_LIBRARY} ${CEC_LIBRARY})
     endif()
 
-    add_dependencies(cec P8Platform::P8Platform)
+    add_dependencies(cec ${APP_NAME_LC}::P8Platform)
   endmacro()
 
   # We only need to check p8-platform if we have any intention to build internal
@@ -51,7 +51,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     get_libversion_data("p8-platform" "target")
     find_package(P8Platform ${LIB_P8-PLATFORM_VER} MODULE QUIET REQUIRED)
     # Check if we want to force a build due to a dependency rebuild
-    get_property(LIB_FORCE_REBUILD TARGET P8Platform::P8Platform PROPERTY LIB_BUILD)
+    get_property(LIB_FORCE_REBUILD TARGET ${APP_NAME_LC}::P8Platform PROPERTY LIB_BUILD)
   endif()
 
   set(MODULE_LC cec)

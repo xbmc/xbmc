@@ -16,75 +16,76 @@
 #
 # --------
 #
-# This module will define the following variables:
+# This will define the following targets:
 #
-# PYTHON_FOUND - system has PYTHON
-# PYTHON_VERSION - Python version number (Major.Minor)
-# PYTHON_INCLUDE_DIRS - the python include directory
-# PYTHON_LIBRARIES - The python libraries
-# PYTHON_LDFLAGS - Python provided link options
-#
-# --------
-#
+#   ${APP_NAME_LC}::Python - The Python library
 
-# for Depends/Windows builds, set search root dir to libdir path
-if(KODI_DEPENDSBUILD
-   OR CMAKE_SYSTEM_NAME STREQUAL WINDOWS
-   OR CMAKE_SYSTEM_NAME STREQUAL WindowsStore)
-  set(Python3_USE_STATIC_LIBS TRUE)
-  set(Python3_ROOT_DIR ${libdir})
+if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
+  # for Depends/Windows builds, set search root dir to libdir path
+  if(KODI_DEPENDSBUILD
+     OR CMAKE_SYSTEM_NAME STREQUAL WINDOWS
+     OR CMAKE_SYSTEM_NAME STREQUAL WindowsStore)
+    set(Python3_USE_STATIC_LIBS TRUE)
+    set(Python3_ROOT_DIR ${libdir})
 
-  if(KODI_DEPENDSBUILD)
-    # Force set to tools/depends python version
-    set(PYTHON_VER 3.11)
-  endif()
-endif()
-
-# Provide root dir to search for Python if provided
-if(PYTHON_PATH)
-  set(Python3_ROOT_DIR ${PYTHON_PATH})
-
-  # unset cache var so we can generate again with a different dir (or none) if desired
-  unset(PYTHON_PATH CACHE)
-endif()
-
-# Set specific version of Python to find if provided
-if(PYTHON_VER)
-  set(VERSION ${PYTHON_VER})
-  set(EXACT_VER "EXACT")
-
-  # unset cache var so we can generate again with a different ver (or none) if desired
-  unset(PYTHON_VER CACHE)
-endif()
-
-find_package(Python3 ${VERSION} ${EXACT_VER} COMPONENTS Development)
-
-if(KODI_DEPENDSBUILD)
-  find_library(FFI_LIBRARY ffi REQUIRED)
-  find_library(EXPAT_LIBRARY expat REQUIRED)
-  find_library(INTL_LIBRARY intl REQUIRED)
-  find_library(GMP_LIBRARY gmp REQUIRED)
-  find_library(LZMA_LIBRARY lzma REQUIRED)
-
-  if(NOT CORE_SYSTEM_NAME STREQUAL android)
-    set(PYTHON_DEP_LIBRARIES pthread dl util)
-    if(CORE_SYSTEM_NAME STREQUAL linux)
-      # python archive built via depends requires librt for _posixshmem library
-      list(APPEND PYTHON_DEP_LIBRARIES rt)
+    if(KODI_DEPENDSBUILD)
+      # Force set to tools/depends python version
+      set(PYTHON_VER 3.11)
     endif()
   endif()
 
-  list(APPEND Python3_LIBRARIES ${LZMA_LIBRARY} ${FFI_LIBRARY} ${EXPAT_LIBRARY} ${INTL_LIBRARY} ${GMP_LIBRARY} ${PYTHON_DEP_LIBRARIES})
-endif()
+  # Provide root dir to search for Python if provided
+  if(PYTHON_PATH)
+    set(Python3_ROOT_DIR ${PYTHON_PATH})
 
-if(Python3_FOUND)
-  list(APPEND PYTHON_DEFINITIONS -DHAS_PYTHON=1)
-  # These are all set for easy integration with the rest of our build system
-  set(PYTHON_FOUND ${Python3_FOUND})
-  set(PYTHON_INCLUDE_DIRS ${Python3_INCLUDE_DIRS})
-  set(PYTHON_LIBRARIES ${Python3_LIBRARIES})
-  set(PYTHON_VERSION "${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}" CACHE INTERNAL "" FORCE)
-  set(PYTHON_LDFLAGS ${Python3_LINK_OPTIONS})
-endif()
+    # unset cache var so we can generate again with a different dir (or none) if desired
+    unset(PYTHON_PATH CACHE)
+  endif()
 
-mark_as_advanced(PYTHON_EXECUTABLE PYTHON_VERSION PYTHON_INCLUDE_DIRS PYTHON_LDFLAGS LZMA_LIBRARY FFI_LIBRARY EXPAT_LIBRARY INTL_LIBRARY GMP_LIBRARY)
+  # Set specific version of Python to find if provided
+  if(PYTHON_VER)
+    set(VERSION ${PYTHON_VER})
+    set(EXACT_VER "EXACT")
+
+    # unset cache var so we can generate again with a different ver (or none) if desired
+    unset(PYTHON_VER CACHE)
+  endif()
+
+  find_package(Python3 ${VERSION} ${EXACT_VER} COMPONENTS Development)
+
+  if(Python3_FOUND)
+    if(KODI_DEPENDSBUILD)
+      find_library(EXPAT_LIBRARY expat REQUIRED)
+      find_library(FFI_LIBRARY ffi REQUIRED)
+      find_library(GMP_LIBRARY gmp REQUIRED)
+      find_library(INTL_LIBRARY intl REQUIRED)
+      find_library(LZMA_LIBRARY lzma REQUIRED)
+
+      if(NOT CORE_SYSTEM_NAME STREQUAL android)
+        set(PYTHON_DEP_LIBRARIES pthread dl util)
+        if(CORE_SYSTEM_NAME STREQUAL linux)
+          # python archive built via depends requires librt for _posixshmem library
+          list(APPEND PYTHON_DEP_LIBRARIES rt)
+        endif()
+      endif()
+
+      set(Py_LINK_LIBRARIES ${EXPAT_LIBRARY} ${FFI_LIBRARY} ${GMP_LIBRARY} ${INTL_LIBRARY} ${LZMA_LIBRARY} ${PYTHON_DEP_LIBRARIES})
+    endif()
+
+    # We use this all over the place. Maybe it would be nice to keep it as a TARGET property
+    # but for now a cached variable will do
+    set(PYTHON_VERSION "${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}" CACHE INTERNAL "" FORCE)
+
+    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
+    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                     IMPORTED_LOCATION "${Python3_LIBRARIES}"
+                                                                     INTERFACE_INCLUDE_DIRECTORIES "${Python3_INCLUDE_DIRS}"
+                                                                     INTERFACE_LINK_OPTIONS "${Python3_LINK_OPTIONS}"
+                                                                     INTERFACE_COMPILE_DEFINITIONS HAS_PYTHON)
+
+    if(Py_LINK_LIBRARIES)
+      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                       INTERFACE_LINK_LIBRARIES "${Py_LINK_LIBRARIES}")
+    endif()
+  endif()
+endif()

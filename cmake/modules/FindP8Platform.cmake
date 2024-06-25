@@ -4,11 +4,11 @@
 #
 # This will define the following target:
 #
-#   P8Platform::P8Platform   - The P8-Platform library
+#   ${APP_NAME_LC}::P8Platform   - The P8-Platform library
 
 # If find_package REQUIRED, check again to make sure any potential versions
 # supplied in the call match what we can find/build
-if(NOT P8Platform::P8Platform OR P8Platform_FIND_REQUIRED)
+if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} OR P8Platform_FIND_REQUIRED)
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
   macro(buildlibp8platform)
@@ -60,12 +60,10 @@ if(NOT P8Platform::P8Platform OR P8Platform_FIND_REQUIRED)
     set(P8Platform_FIND_VERSION "2.1")
     find_library(P8-PLATFORM_LIBRARY NAMES p8-platform
                                      HINTS ${DEPENDS_PATH}/lib ${PC_P8PLATFORM_LIBDIR}
-                                     ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
-                                     NO_CACHE)
+                                     ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
     find_path(P8-PLATFORM_INCLUDE_DIR NAMES p8-platform/os.h
                                       HINTS ${DEPENDS_PATH}/include ${PC_P8PLATFORM_INCLUDEDIR}
-                                      ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
-                                      NO_CACHE)
+                                      ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
   endif()
 
   include(FindPackageHandleStandardArgs)
@@ -74,21 +72,21 @@ if(NOT P8Platform::P8Platform OR P8Platform_FIND_REQUIRED)
                                     VERSION_VAR P8-PLATFORM_VERSION)
 
   if(P8PLATFORM_FOUND)
-    add_library(P8Platform::P8Platform UNKNOWN IMPORTED)
-    set_target_properties(P8Platform::P8Platform PROPERTIES
-                                                 IMPORTED_LOCATION "${P8-PLATFORM_LIBRARY}"
-                                                 INTERFACE_INCLUDE_DIRECTORIES "${P8-PLATFORM_INCLUDE_DIR}")
+    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
+    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                     IMPORTED_LOCATION "${P8-PLATFORM_LIBRARY}"
+                                                                     INTERFACE_INCLUDE_DIRECTORIES "${P8-PLATFORM_INCLUDE_DIR}")
 
     if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
-      set_target_properties(P8Platform::P8Platform PROPERTIES
-                                                   INTERFACE_LINK_LIBRARIES "-framework CoreVideo")
+      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                       INTERFACE_LINK_LIBRARIES "-framework CoreVideo")
     endif()
 
     if(TARGET build-p8-platform)
-      add_dependencies(P8Platform::P8Platform build-p8-platform)
+      add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} build-p8-platform)
       # If the build target exists here, set LIB_BUILD property to allow calling modules
       # know that this will be rebuilt, and they will need to rebuild as well
-      set_target_properties(P8Platform::P8Platform PROPERTIES LIB_BUILD ON)
+      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES LIB_BUILD ON)
     endif()
 
     # Add internal build target when a Multi Config Generator is used
@@ -107,7 +105,7 @@ if(NOT P8Platform::P8Platform OR P8Platform_FIND_REQUIRED)
       add_dependencies(build_internal_depends build-p8-platform)
     endif()
   else()
-    if(P8PLATFORM_FIND_REQUIRED)
+    if(P8Platform_FIND_REQUIRED)
       message(FATAL_ERROR "P8-PLATFORM not found.")
     endif()
   endif()

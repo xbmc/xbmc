@@ -1,4 +1,4 @@
-if(TARGET UDEV::UDEV)
+if(TARGET ${APP_NAME_LC}::UDEV)
   list(APPEND SOURCES PeripheralBusUSBLibUdev.cpp)
   list(APPEND HEADERS PeripheralBusUSBLibUdev.h)
 elseif(TARGET ${APP_NAME_LC}::LibUSB)

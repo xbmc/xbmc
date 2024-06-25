@@ -4,7 +4,7 @@
 #
 # This will define the following target:
 #
-#   spdlog::spdlog   - The Spdlog library
+#   ${APP_NAME_LC}::Spdlog   - The Spdlog library
 
 macro(buildSpdlog)
   if(APPLE)
@@ -45,7 +45,7 @@ macro(buildSpdlog)
   add_dependencies(${MODULE_LC} ${APP_NAME_LC}::Fmt)
 endmacro()
 
-if(NOT TARGET spdlog::spdlog)
+if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
   # Check for dependencies - Must be done before SETUP_BUILD_VARS
@@ -74,57 +74,53 @@ if(NOT TARGET spdlog::spdlog)
 
     buildSpdlog()
   else()
-    if(NOT TARGET spdlog::spdlog)
+    if(TARGET spdlog::spdlog)
+      # This is for the case where a distro provides a non standard (Debug/Release) config type
+      # eg Debian's config file is spdlogConfigTargets-none.cmake
+      # convert this back to either DEBUG/RELEASE or just RELEASE
+      # we only do this because we use find_package_handle_standard_args for config time output
+      # and it isnt capable of handling TARGETS, so we have to extract the info
+      get_target_property(_SPDLOG_CONFIGURATIONS spdlog::spdlog IMPORTED_CONFIGURATIONS)
+      foreach(_spdlog_config IN LISTS _SPDLOG_CONFIGURATIONS)
+        # Some non standard config (eg None on Debian)
+        # Just set to RELEASE var so select_library_configurations can continue to work its magic
+        string(TOUPPER ${_spdlog_config} _spdlog_config_UPPER)
+        if((NOT ${_spdlog_config_UPPER} STREQUAL "RELEASE") AND
+           (NOT ${_spdlog_config_UPPER} STREQUAL "DEBUG"))
+          get_target_property(SPDLOG_LIBRARY_RELEASE spdlog::spdlog IMPORTED_LOCATION_${_spdlog_config_UPPER})
+        else()
+          get_target_property(SPDLOG_LIBRARY_${_spdlog_config_UPPER} spdlog::spdlog IMPORTED_LOCATION_${_spdlog_config_UPPER})
+        endif()
+      endforeach()
+
+      get_target_property(SPDLOG_INCLUDE_DIR spdlog::spdlog INTERFACE_INCLUDE_DIRECTORIES)
+    else()
       find_package(PkgConfig)
       # Fallback to pkg-config and individual lib/include file search
       if(PKG_CONFIG_FOUND)
         pkg_check_modules(PC_SPDLOG spdlog QUIET)
+
+        # Only add -D definitions. Skip -I include as we do a find_path for the header anyway
+        foreach(_spdlog_cflag IN LISTS PC_SPDLOG_CFLAGS)
+          if(${_spdlog_cflag} MATCHES "^-D(.*)")
+            list(APPEND _spdlog_definitions ${CMAKE_MATCH_1})
+          endif()
+        endforeach()
+
         set(SPDLOG_VERSION ${PC_SPDLOG_VERSION})
       endif()
 
       find_path(SPDLOG_INCLUDE_DIR NAMES spdlog/spdlog.h
                                    HINTS ${DEPENDS_PATH}/include ${PC_SPDLOG_INCLUDEDIR}
-                                   ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
-                                   NO_CACHE)
+                                   ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
 
       find_library(SPDLOG_LIBRARY_RELEASE NAMES spdlog
                                           HINTS ${DEPENDS_PATH}/lib ${PC_SPDLOG_LIBDIR}
-                                          ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
-                                          NO_CACHE)
+                                          ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
       find_library(SPDLOG_LIBRARY_DEBUG NAMES spdlogd
                                         HINTS ${DEPENDS_PATH}/lib ${PC_SPDLOG_LIBDIR}
-                                        ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
-                                        NO_CACHE)
-
-      # Only add -D definitions. Skip -I include as we do a find_path for the header anyway
-      foreach(_spdlog_cflag IN LISTS PC_SPDLOG_CFLAGS)
-        if(${_spdlog_cflag} MATCHES "^-D(.*)")
-          list(APPEND _spdlog_definitions ${CMAKE_MATCH_1})
-        endif()
-      endforeach()
+                                        ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
     endif()
-  endif()
-
-  if(TARGET spdlog::spdlog)
-    # This is for the case where a distro provides a non standard (Debug/Release) config type
-    # eg Debian's config file is spdlogConfigTargets-none.cmake
-    # convert this back to either DEBUG/RELEASE or just RELEASE
-    # we only do this because we use find_package_handle_standard_args for config time output
-    # and it isnt capable of handling TARGETS, so we have to extract the info
-    get_target_property(_SPDLOG_CONFIGURATIONS spdlog::spdlog IMPORTED_CONFIGURATIONS)
-    foreach(_spdlog_config IN LISTS _SPDLOG_CONFIGURATIONS)
-      # Some non standard config (eg None on Debian)
-      # Just set to RELEASE var so select_library_configurations can continue to work its magic
-      string(TOUPPER ${_spdlog_config} _spdlog_config_UPPER)
-      if((NOT ${_spdlog_config_UPPER} STREQUAL "RELEASE") AND
-         (NOT ${_spdlog_config_UPPER} STREQUAL "DEBUG"))
-        get_target_property(SPDLOG_LIBRARY_RELEASE spdlog::spdlog IMPORTED_LOCATION_${_spdlog_config_UPPER})
-      else()
-        get_target_property(SPDLOG_LIBRARY_${_spdlog_config_UPPER} spdlog::spdlog IMPORTED_LOCATION_${_spdlog_config_UPPER})
-      endif()
-    endforeach()
-
-    get_target_property(SPDLOG_INCLUDE_DIR spdlog::spdlog INTERFACE_INCLUDE_DIRECTORIES)
   endif()
 
   include(SelectLibraryConfigurations)
@@ -137,34 +133,35 @@ if(NOT TARGET spdlog::spdlog)
                                     VERSION_VAR SPDLOG_VERSION)
 
   if(Spdlog_FOUND)
-    if(NOT TARGET spdlog::spdlog)
-      # Ideally we probably shouldnt be overriding these. We should trust the cmake config file
-      list(APPEND _spdlog_definitions SPDLOG_DEBUG_ON
-                                      SPDLOG_NO_ATOMIC_LEVELS)
+    # cmake target and not building internal
+    if(TARGET spdlog::spdlog AND NOT TARGET spdlog)
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS spdlog::spdlog)
 
-      add_library(spdlog::spdlog UNKNOWN IMPORTED)
+    else()
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
       if(SPDLOG_LIBRARY_RELEASE)
-        set_target_properties(spdlog::spdlog PROPERTIES
-                                             IMPORTED_CONFIGURATIONS RELEASE
-                                             IMPORTED_LOCATION_RELEASE "${SPDLOG_LIBRARY_RELEASE}")
+        set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                         IMPORTED_CONFIGURATIONS RELEASE
+                                                                         IMPORTED_LOCATION_RELEASE "${SPDLOG_LIBRARY_RELEASE}")
       endif()
       if(SPDLOG_LIBRARY_DEBUG)
-        set_target_properties(spdlog::spdlog PROPERTIES
-                                             IMPORTED_CONFIGURATIONS DEBUG
-                                             IMPORTED_LOCATION_DEBUG "${SPDLOG_LIBRARY_DEBUG}")
+        set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                         IMPORTED_LOCATION_DEBUG "${SPDLOG_LIBRARY_DEBUG}")
+        set_property(TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY
+                                                                              IMPORTED_CONFIGURATIONS DEBUG)
       endif()
-      set_target_properties(spdlog::spdlog PROPERTIES
-                                           INTERFACE_INCLUDE_DIRECTORIES "${SPDLOG_INCLUDE_DIR}")
+      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                       INTERFACE_INCLUDE_DIRECTORIES "${SPDLOG_INCLUDE_DIR}")
 
-      # We need to append in case the cmake config already has definitions
-      set_property(TARGET spdlog::spdlog APPEND PROPERTY
-                                                INTERFACE_COMPILE_DEFINITIONS "${_spdlog_definitions}")
+      if(_spdlog_definitions)
+        # We need to append in case the cmake config already has definitions
+        set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                         INTERFACE_COMPILE_DEFINITIONS "${_spdlog_definitions}")
+      endif()
     endif()
 
-    set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP spdlog::spdlog)
-
     if(TARGET spdlog)
-      add_dependencies(spdlog::spdlog spdlog)
+      add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} spdlog)
     endif()
 
     # Add internal build target when a Multi Config Generator is used
@@ -181,6 +178,10 @@ if(NOT TARGET spdlog::spdlog)
         set_target_properties(spdlog PROPERTIES EXCLUDE_FROM_ALL TRUE)
       endif()
       add_dependencies(build_internal_depends spdlog)
+    endif()
+  else()
+    if(Spdlog_FIND_REQUIRED)
+      message(FATAL_ERROR "Spdlog libraries were not found. You may want to try -DENABLE_INTERNAL_SPDLOG=ON")
     endif()
   endif()
 endif()

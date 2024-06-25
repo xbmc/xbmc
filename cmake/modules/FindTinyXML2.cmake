@@ -5,7 +5,7 @@
 #
 # This will define the following target:
 #
-#   tinyxml2::tinyxml2   - The TinyXML2 library
+#   ${APP_NAME_LC}::TinyXML2   - The TinyXML2 library
 
 macro(buildTinyXML2)
   set(TINYXML2_VERSION ${${MODULE}_VER})
@@ -41,70 +41,62 @@ macro(buildTinyXML2)
   BUILD_DEP_TARGET()
 endmacro()
 
-if(NOT TARGET tinyxml2::tinyxml2)
+if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
   set(MODULE_LC tinyxml2)
 
   SETUP_BUILD_VARS()
 
-  find_package(TINYXML2 CONFIG QUIET
+  find_package(tinyxml2 CONFIG QUIET
                                HINTS ${DEPENDS_PATH}/lib/cmake
                                ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 
   # Check for existing TINYXML2. If version >= TINYXML2-VERSION file version, dont build
   # A corner case, but if a linux/freebsd user WANTS to build internal tinyxml2, build anyway
-  if((TINYXML2_VERSION VERSION_LESS ${${MODULE}_VER} AND ENABLE_INTERNAL_TINYXML2) OR
+  if((tinyxml2_VERSION VERSION_LESS ${${MODULE}_VER} AND ENABLE_INTERNAL_TINYXML2) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_TINYXML2))
 
     buildTinyXML2()
   else()
-    # This is the fallback case where linux distro's dont ship cmake config files
-    # use the old find_library way. Only do this if we didnt find a cmake config 
-    # in the event of the version < depends version
-    if(NOT TARGET tinyxml2::tinyxml2)
+    if(TARGET tinyxml2::tinyxml2)
+      # This is for the case where a distro provides a non standard (Debug/Release) config type
+      # eg Debian's config file is tinyxml2ConfigTargets-none.cmake
+      # convert this back to either DEBUG/RELEASE or just RELEASE
+      # we only do this because we use find_package_handle_standard_args for config time output
+      # and it isnt capable of handling TARGETS, so we have to extract the info
+      get_target_property(_TINYXML2_CONFIGURATIONS tinyxml2::tinyxml2 IMPORTED_CONFIGURATIONS)
+      foreach(_tinyxml2_config IN LISTS _TINYXML2_CONFIGURATIONS)
+        # Some non standard config (eg None on Debian)
+        # Just set to RELEASE var so select_library_configurations can continue to work its magic
+        string(TOUPPER ${_tinyxml2_config} _tinyxml2_config_UPPER)
+        if((NOT ${_tinyxml2_config_UPPER} STREQUAL "RELEASE") AND
+           (NOT ${_tinyxml2_config_UPPER} STREQUAL "DEBUG"))
+          get_target_property(TINYXML2_LIBRARY_RELEASE tinyxml2::tinyxml2 IMPORTED_LOCATION_${_tinyxml2_config_UPPER})
+        else()
+          get_target_property(TINYXML2_LIBRARY_${_tinyxml2_config_UPPER} tinyxml2::tinyxml2 IMPORTED_LOCATION_${_tinyxml2_config_UPPER})
+        endif()
+      endforeach()
+
+      # Need this, as we may only get the existing TARGET from system and not build or use pkg-config
+      get_target_property(TINYXML2_INCLUDE_DIR tinyxml2::tinyxml2 INTERFACE_INCLUDE_DIRECTORIES)
+    else()
       if(PKG_CONFIG_FOUND)
         pkg_check_modules(PC_TINYXML2 tinyxml2 QUIET)
       endif()
 
       find_path(TINYXML2_INCLUDE_DIR NAMES tinyxml2.h
                                      HINTS ${DEPENDS_PATH}/include ${PC_TINYXML2_INCLUDEDIR}
-                                     ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
-                                     NO_CACHE)
+                                     ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
       find_library(TINYXML2_LIBRARY_RELEASE NAMES tinyxml2
                                             HINTS ${DEPENDS_PATH}/lib ${PC_TINYXML2_LIBDIR}
-                                            ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
-                                            NO_CACHE)
+                                            ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
       find_library(TINYXML2_LIBRARY_DEBUG NAMES tinyxml2d
                                           HINTS ${DEPENDS_PATH}/lib ${PC_TINYXML2_LIBDIR}
-                                          ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
-                                          NO_CACHE)
+                                          ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
 
       set(TINYXML2_VERSION ${PC_TINYXML2_VERSION})
     endif()
-  endif()
-
-  if(TARGET tinyxml2::tinyxml2)
-    # This is for the case where a distro provides a non standard (Debug/Release) config type
-    # eg Debian's config file is tinyxml2ConfigTargets-none.cmake
-    # convert this back to either DEBUG/RELEASE or just RELEASE
-    # we only do this because we use find_package_handle_standard_args for config time output
-    # and it isnt capable of handling TARGETS, so we have to extract the info
-    get_target_property(_TINYXML2_CONFIGURATIONS tinyxml2::tinyxml2 IMPORTED_CONFIGURATIONS)
-    foreach(_tinyxml2_config IN LISTS _TINYXML2_CONFIGURATIONS)
-      # Some non standard config (eg None on Debian)
-      # Just set to RELEASE var so select_library_configurations can continue to work its magic
-      string(TOUPPER ${_tinyxml2_config} _tinyxml2_config_UPPER)
-      if((NOT ${_tinyxml2_config_UPPER} STREQUAL "RELEASE") AND
-         (NOT ${_tinyxml2_config_UPPER} STREQUAL "DEBUG"))
-        get_target_property(TINYXML2_LIBRARY_RELEASE tinyxml2::tinyxml2 IMPORTED_LOCATION_${_tinyxml2_config_UPPER})
-      else()
-        get_target_property(TINYXML2_LIBRARY_${_tinyxml2_config_UPPER} tinyxml2::tinyxml2 IMPORTED_LOCATION_${_tinyxml2_config_UPPER})
-      endif()
-    endforeach()
-
-    # Need this, as we may only get the existing TARGET from system and not build or use pkg-config
-    get_target_property(TINYXML2_INCLUDE_DIR tinyxml2::tinyxml2 INTERFACE_INCLUDE_DIRECTORIES)
   endif()
 
   include(SelectLibraryConfigurations)
@@ -117,24 +109,28 @@ if(NOT TARGET tinyxml2::tinyxml2)
                                     VERSION_VAR TINYXML2_VERSION)
 
   if(TinyXML2_FOUND)
-    if(NOT TARGET tinyxml2::tinyxml2)
-      add_library(tinyxml2::tinyxml2 UNKNOWN IMPORTED)
+    # cmake target and not building internal
+    if(TARGET tinyxml2::tinyxml2 AND NOT TARGET tinyxml2)
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS tinyxml2::tinyxml2)
+    else()
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
       if(TINYXML2_LIBRARY_RELEASE)
-        set_target_properties(tinyxml2::tinyxml2 PROPERTIES
-                                                 IMPORTED_CONFIGURATIONS RELEASE
-                                                 IMPORTED_LOCATION_RELEASE "${TINYXML2_LIBRARY_RELEASE}")
+        set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                         IMPORTED_CONFIGURATIONS RELEASE
+                                                                         IMPORTED_LOCATION_RELEASE "${TINYXML2_LIBRARY_RELEASE}")
       endif()
       if(TINYXML2_LIBRARY_DEBUG)
-        set_target_properties(tinyxml2::tinyxml2 PROPERTIES
-                                                 IMPORTED_CONFIGURATIONS DEBUG
-                                                 IMPORTED_LOCATION_DEBUG "${TINYXML2_LIBRARY_DEBUG}")
+        set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                         IMPORTED_LOCATION_DEBUG "${TINYXML2_LIBRARY_DEBUG}")
+        set_property(TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY
+                                                                              IMPORTED_CONFIGURATIONS DEBUG)
       endif()
-      set_target_properties(tinyxml2::tinyxml2 PROPERTIES
-                                               INTERFACE_INCLUDE_DIRECTORIES "${TINYXML2_INCLUDE_DIR}")
+      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                       INTERFACE_INCLUDE_DIRECTORIES "${TINYXML2_INCLUDE_DIR}")
     endif()
 
     if(TARGET tinyxml2)
-      add_dependencies(tinyxml2::tinyxml2 tinyxml2)
+      add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} tinyxml2)
     endif()
 
     # Add internal build target when a Multi Config Generator is used
@@ -152,8 +148,9 @@ if(NOT TARGET tinyxml2::tinyxml2)
       endif()
       add_dependencies(build_internal_depends tinyxml2)
     endif()
-
+  else()
+    if(TinyXML2_FIND_REQUIRED)
+      message(FATAL_ERROR "TinyXML2 libraries were not found. You may want to try -DENABLE_INTERNAL_TINYXML2=ON")
+    endif()
   endif()
-
-  set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP tinyxml2::tinyxml2)
 endif()

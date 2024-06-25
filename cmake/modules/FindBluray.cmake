@@ -5,9 +5,9 @@
 #
 # This will define the following target:
 #
-#   Bluray::Bluray   - The libbluray library
+#   ${APP_NAME_LC}::Bluray   - The libbluray library
 
-if(NOT TARGET Bluray::Bluray)
+if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   find_package(PkgConfig)
 
@@ -50,11 +50,11 @@ if(NOT TARGET Bluray::Bluray)
                                     VERSION_VAR BLURAY_VERSION)
 
   if(BLURAY_FOUND)
-    add_library(Bluray::Bluray UNKNOWN IMPORTED)
-    set_target_properties(Bluray::Bluray PROPERTIES
-                                         IMPORTED_LOCATION "${BLURAY_LIBRARY}"
-                                         INTERFACE_COMPILE_DEFINITIONS "HAVE_LIBBLURAY=1"
-                                         INTERFACE_INCLUDE_DIRECTORIES "${BLURAY_INCLUDEDIR}")
+    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
+    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                     IMPORTED_LOCATION "${BLURAY_LIBRARY}"
+                                                                     INTERFACE_COMPILE_DEFINITIONS "HAVE_LIBBLURAY=1"
+                                                                     INTERFACE_INCLUDE_DIRECTORIES "${BLURAY_INCLUDEDIR}")
 
     # Add link libraries for static lib usage
     if(${BLURAY_LIBRARY} MATCHES ".+\.a$" AND BLURAY_LINK_LIBRARIES)
@@ -64,15 +64,13 @@ if(NOT TARGET Bluray::Bluray)
       # Remove own library - eg libbluray.a
       list(FILTER BLURAY_LINK_LIBRARIES EXCLUDE REGEX ".*bluray.*\.a$")
 
-      set_target_properties(Bluray::Bluray PROPERTIES
-                                           INTERFACE_LINK_LIBRARIES "${BLURAY_LINK_LIBRARIES}")
+      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                       INTERFACE_LINK_LIBRARIES "${BLURAY_LINK_LIBRARIES}")
     endif()
 
     if(NOT CORE_PLATFORM_NAME_LC STREQUAL windowsstore)
-      set_property(TARGET Bluray::Bluray APPEND PROPERTY
-                                                INTERFACE_COMPILE_DEFINITIONS "HAVE_LIBBLURAY_BDJ")
+      set_property(TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY
+                                                                            INTERFACE_COMPILE_DEFINITIONS "HAVE_LIBBLURAY_BDJ")
     endif()
-
-    set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP Bluray::Bluray)
   endif()
 endif()

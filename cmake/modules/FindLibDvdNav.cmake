@@ -67,7 +67,12 @@ if(NOT TARGET LibDvdNav::LibDvdNav)
                    ${LIBDVD_ADDITIONAL_ARGS})
   else()
 
-    string(APPEND LIBDVDNAV_CFLAGS " -I$<TARGET_PROPERTY:LibDvdRead::LibDvdRead,INTERFACE_INCLUDE_DIRECTORIES>")
+    # INTERFACE_INCLUDE_DIRECTORIES may have multiple paths. We need to separate these
+    # individually to then set the -I argument correctly with each path
+    get_target_property(_interface_include_dirs LibDvdRead::LibDvdRead INTERFACE_INCLUDE_DIRECTORIES)
+    foreach(_interface_include_dir ${_interface_include_dirs})
+      string(APPEND LIBDVDNAV_CFLAGS " -I${_interface_include_dir}")
+    endforeach()
 
     if(TARGET LibDvdCSS::LibDvdCSS)
       string(APPEND LIBDVDNAV_CFLAGS " -I$<TARGET_PROPERTY:LibDvdCSS::LibDvdCSS,INTERFACE_INCLUDE_DIRECTORIES> $<$<TARGET_EXISTS:LibDvdCSS::LibDvdCSS>:-D$<TARGET_PROPERTY:LibDvdCSS::LibDvdCSS,INTERFACE_COMPILE_DEFINITIONS>>")
@@ -114,25 +119,19 @@ find_package_handle_standard_args(LibDvdNav
                                   VERSION_VAR LIBDVDNAV_VERSION)
 
 if(LIBDVDNAV_FOUND)
-  if(NOT TARGET LibDvdNav::LibDvdNav)
-    add_library(LibDvdNav::LibDvdNav UNKNOWN IMPORTED)
+  add_library(LibDvdNav::LibDvdNav UNKNOWN IMPORTED)
+  set_target_properties(LibDvdNav::LibDvdNav PROPERTIES
+                                             IMPORTED_LOCATION "${LIBDVDNAV_LIBRARY}"
+                                             INTERFACE_INCLUDE_DIRECTORIES "${LIBDVDNAV_INCLUDE_DIR}")
 
-    set_target_properties(LibDvdNav::LibDvdNav PROPERTIES
-                                               IMPORTED_LOCATION "${LIBDVDNAV_LIBRARY}"
-                                               INTERFACE_INCLUDE_DIRECTORIES "${LIBDVDNAV_INCLUDE_DIR}")
-
-    if(TARGET libdvdnav)
-      add_dependencies(LibDvdNav::LibDvdNav libdvdnav)
-    endif()
-    if(TARGET LibDvdRead::LibDvdRead)
-      add_dependencies(LibDvdNav::LibDvdNav LibDvdRead::LibDvdRead)
-    endif()
+  if(TARGET libdvdnav)
+    add_dependencies(LibDvdNav::LibDvdNav libdvdnav)
   endif()
-  set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP LibDvdNav::LibDvdNav)
+  if(TARGET LibDvdRead::LibDvdRead)
+    target_link_libraries(LibDvdNav::LibDvdNav INTERFACE LibDvdRead::LibDvdRead)
+  endif()
 else()
-  if(LIBDVDNAV_FIND_REQUIRED)
+  if(LibDvdNav_FIND_REQUIRED)
     message(FATAL_ERROR "Libdvdnav not found")
   endif()
 endif()
-
-mark_as_advanced(LIBDVDNAV_INCLUDE_DIR LIBDVDNAV_LIBRARY)

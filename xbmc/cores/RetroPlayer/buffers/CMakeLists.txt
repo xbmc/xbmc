@@ -10,14 +10,14 @@ set(HEADERS BaseRenderBuffer.h
             RenderBufferManager.h
 )
 
-if(TARGET OpenGL::GL OR TARGET OpenGL::GLES)
+if(TARGET ${APP_NAME_LC}::OpenGl OR TARGET ${APP_NAME_LC}::OpenGLES)
   list(APPEND SOURCES RenderBufferOpenGLES.cpp
                       RenderBufferPoolOpenGLES.cpp)
   list(APPEND HEADERS RenderBufferOpenGLES.h
                       RenderBufferPoolOpenGLES.h)
 endif()
 
-if(TARGET OpenGL::GL)
+if(TARGET ${APP_NAME_LC}::OpenGl)
   list(APPEND SOURCES RenderBufferOpenGL.cpp
                       RenderBufferPoolOpenGL.cpp)
   list(APPEND HEADERS RenderBufferOpenGL.h

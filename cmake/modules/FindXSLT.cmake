@@ -5,21 +5,23 @@
 #
 # This will define the following target:
 #
-#   XSLT::XSLT - The XSLT library
+#   ${APP_NAME_LC}::XSLT - The XSLT library
 
-if(NOT TARGET XSLT::XSLT)
+if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   find_package(LibXml2 REQUIRED)
   find_package(PkgConfig)
 
-  if(PKG_CONFIG_FOUND)
+  if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWS_STORE))
     pkg_check_modules(PC_XSLT libxslt QUIET)
   endif()
 
   find_path(XSLT_INCLUDE_DIR NAMES libxslt/xslt.h
-                             HINTS ${PC_XSLT_INCLUDEDIR})
+                             HINTS ${DEPENDS_PATH}/include ${PC_XSLT_INCLUDEDIR}
+                             ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
   find_library(XSLT_LIBRARY NAMES xslt libxslt
-                            HINTS ${PC_XSLT_LIBDIR})
+                            HINTS ${DEPENDS_PATH}/lib ${PC_XSLT_LIBDIR}
+                            ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 
   set(XSLT_VERSION ${PC_XSLT_VERSION})
 
@@ -29,13 +31,12 @@ if(NOT TARGET XSLT::XSLT)
                                     VERSION_VAR XSLT_VERSION)
 
   if(XSLT_FOUND)
-    add_library(XSLT::XSLT UNKNOWN IMPORTED)
-    set_target_properties(XSLT::XSLT PROPERTIES
-                                     IMPORTED_LOCATION "${XSLT_LIBRARY}"
-                                     INTERFACE_INCLUDE_DIRECTORIES "${XSLT_INCLUDE_DIR}"
-                                     INTERFACE_COMPILE_DEFINITIONS HAVE_LIBXSLT=1)
+    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
+    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                     IMPORTED_LOCATION "${XSLT_LIBRARY}"
+                                                                     INTERFACE_INCLUDE_DIRECTORIES "${XSLT_INCLUDE_DIR}"
+                                                                     INTERFACE_COMPILE_DEFINITIONS HAVE_LIBXSLT)
 
-    target_link_libraries(XSLT::XSLT INTERFACE LibXml2::LibXml2)
-    set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP XSLT::XSLT)
+    target_link_libraries(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE LibXml2::LibXml2)
   endif()
 endif()

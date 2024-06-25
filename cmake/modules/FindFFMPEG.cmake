@@ -20,7 +20,7 @@
 # --------
 # This will define the following target:
 #
-# ffmpeg::ffmpeg  - The FFmpeg interface target
+# ${APP_NAME_LC}::FFMPEG  - The FFmpeg interface target
 # --------
 #
 
@@ -32,7 +32,7 @@ macro(buildFFMPEG)
   # Check for dependencies - Must be done before SETUP_BUILD_VARS
   get_libversion_data("dav1d" "target")
   find_package(Dav1d ${LIB_DAV1D_VER} MODULE)
-  if(NOT TARGET dav1d::dav1d)
+  if(NOT TARGET ${APP_NAME_LC}::Dav1d)
     message(STATUS "dav1d not found, internal ffmpeg build will be missing AV1 support!")
   else()
     set(FFMPEG_OPTIONS -DENABLE_DAV1D=ON)
@@ -93,8 +93,8 @@ macro(buildFFMPEG)
 
   BUILD_DEP_TARGET()
 
-  if(TARGET dav1d::dav1d)
-    add_dependencies(ffmpeg dav1d::dav1d)
+  if(TARGET ${APP_NAME_LC}::Dav1d)
+    add_dependencies(ffmpeg ${APP_NAME_LC}::Dav1d)
   endif()
 
   find_program(BASH_COMMAND bash)
@@ -306,24 +306,22 @@ endif()
 if(FFMPEG_FOUND)
   set(_ffmpeg_definitions FFMPEG_VER_SHA=${FFMPEG_VERSION})
 
-  if(NOT TARGET ffmpeg::ffmpeg)
-    add_library(ffmpeg::ffmpeg INTERFACE IMPORTED)
-    set_target_properties(ffmpeg::ffmpeg PROPERTIES
+  if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
+    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE IMPORTED)
+    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
                                          INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIRS}"
                                          INTERFACE_COMPILE_DEFINITIONS "${_ffmpeg_definitions}")
   endif()
 
-  target_link_libraries(ffmpeg::ffmpeg INTERFACE ffmpeg::libavcodec)
-  target_link_libraries(ffmpeg::ffmpeg INTERFACE ffmpeg::libavfilter)
-  target_link_libraries(ffmpeg::ffmpeg INTERFACE ffmpeg::libavformat)
-  target_link_libraries(ffmpeg::ffmpeg INTERFACE ffmpeg::libavutil)
-  target_link_libraries(ffmpeg::ffmpeg INTERFACE ffmpeg::libswscale)
-  target_link_libraries(ffmpeg::ffmpeg INTERFACE ffmpeg::libswresample)
-  target_link_libraries(ffmpeg::ffmpeg INTERFACE ffmpeg::libpostproc)
+  target_link_libraries(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE ffmpeg::libavcodec)
+  target_link_libraries(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE ffmpeg::libavfilter)
+  target_link_libraries(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE ffmpeg::libavformat)
+  target_link_libraries(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE ffmpeg::libavutil)
+  target_link_libraries(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE ffmpeg::libswscale)
+  target_link_libraries(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE ffmpeg::libswresample)
+  target_link_libraries(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE ffmpeg::libpostproc)
 
   if(TARGET ffmpeg)
-    add_dependencies(ffmpeg::ffmpeg ffmpeg)
+    add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ffmpeg)
   endif()
-
-  set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP ffmpeg::ffmpeg)
 endif()

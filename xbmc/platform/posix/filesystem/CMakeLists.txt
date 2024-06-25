@@ -4,7 +4,7 @@ set(SOURCES PosixDirectory.cpp
 set(HEADERS PosixDirectory.h
             PosixFile.h)
 
-if(SMBCLIENT_FOUND)
+if(TARGET ${APP_NAME_LC}::SmbClient)
   list(APPEND SOURCES SMBDirectory.cpp
                       SMBFile.cpp
                       SMBWSDiscovery.cpp
