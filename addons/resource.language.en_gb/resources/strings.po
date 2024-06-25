@@ -9146,8 +9146,8 @@ msgctxt "#16028"
 msgid "Enter value"
 msgstr ""
 
-#. PVR error messages dialog text.
-#: xbmc/pvr/dialogs/GUIDialogPVRChannelManager.cpp
+#. General error messages dialog text.
+#: xbmc/cores/VideoPlayer/VideoPlayer.cpp
 msgctxt "#16029"
 msgid "Check the log for more information about this message."
 msgstr ""
@@ -9774,12 +9774,12 @@ msgstr ""
 #. message box text stating that a pvr channel could not be played.
 #: xbmc/pvr/guilib/PVRGUIActionsPlayback.cpp
 msgctxt "#19035"
-msgid "{0:s} can't be played. Check the log for more information about this message."
+msgid "{0:s} can't be played."
 msgstr ""
 
 #: @@@ unused?
 msgctxt "#19036"
-msgid "This recording can't be played. Check the log for more information about this message."
+msgid "This recording can't be played."
 msgstr ""
 
 #. pvr settings "show signal quality" label
@@ -9825,12 +9825,12 @@ msgstr ""
 
 #: @@@ unused?
 msgctxt "#19044"
-msgid "Please check your configuration. Check the log for more information about this message."
+msgid "Please check your configuration."
 msgstr ""
 
 #: @@@ unused?
 msgctxt "#19045"
-msgid "No PVR clients have been started yet. Wait for the PVR clients to start up. Check the log for more information about this message."
+msgid "No PVR clients have been started yet. Wait for the PVR clients to start up."
 msgstr ""
 
 #: @@@ unused?
@@ -10236,19 +10236,19 @@ msgstr ""
 #. message box text stating that a timer could not be saved
 #: xbmc/pvr/guilib/PVRGUIActionsTimers.cpp
 msgctxt "#19109"
-msgid "Could not save the timer. Check the log for more information about this message."
+msgid "Could not save the timer."
 msgstr ""
 
 #. message box text stating that a timer could not be deleted
 #: xbmc/pvr/guilib/PVRGUIActionsTimers.cpp
 msgctxt "#19110"
-msgid "Could not delete the timer. Check the log for more information about this message."
+msgid "Could not delete the timer."
 msgstr ""
 
 #. message box text stating that a PVR backend error occurred
 #: xbmc/pvr/guilib/PVRGUIActionsRecordings.cpp
 msgctxt "#19111"
-msgid "PVR backend error. Check the log for more information about this message."
+msgid "PVR backend error."
 msgstr ""
 
 #. delete recordings confirmation message box text
@@ -10558,7 +10558,7 @@ msgstr ""
 #. error box text stating that recording could not be started
 #: xbmc/pvr/guilib/PVRGUIActionsTimers.cpp
 msgctxt "#19164"
-msgid "Could not start recording. Check the log for more information about this message."
+msgid "Could not start recording."
 msgstr ""
 
 #. Label for "switch to channel" button""
@@ -10597,7 +10597,7 @@ msgstr ""
 #. error box text stating that recording could not be stopped
 #: xbmc/pvr/guilib/PVRGUIActionsTimers.cpp
 msgctxt "#19170"
-msgid "Could not stop recording. Check the log for more information about this message."
+msgid "Could not stop recording."
 msgstr ""
 
 #. pvr settings "start playback full screen" setting label
@@ -10741,7 +10741,7 @@ msgstr ""
 #. error message box text stating that a given pvr channel could not be played
 #: xbmc/pvr/guilib/PVRGUIActionsChannels.cpp
 msgctxt "#19193"
-msgid "The channel scan can't be started. Check the log for more information about this message."
+msgid "The channel scan can't be started."
 msgstr ""
 
 #. unused?
@@ -11149,7 +11149,7 @@ msgstr ""
 #. message box text stating that a timer could not be updated
 #: xbmc/pvr/guilib/PVRGUIActionsTimers.cpp
 msgctxt "#19263"
-msgid "Could not update the timer. Check the log for more information about this message."
+msgid "Could not update the timer."
 msgstr ""
 
 #. label for 'incorrect pin' error dialog header

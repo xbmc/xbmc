@@ -82,10 +82,8 @@ private:
       if (CServiceBroker::GetPVRManager().Timers()->UpdateTimer(m_newTimer))
         return;
 
-      HELPERS::ShowOKDialogText(
-          CVariant{257},
-          CVariant{
-              19263}); // "Error", "Could not update the timer. Check the log for more information about this message."
+      HELPERS::ShowOKDialogText(CVariant{257},
+                                CVariant{19263}); // "Error", "Could not update the timer."
       m_success = false;
       return;
     }
@@ -266,10 +264,8 @@ bool CPVRGUIActionsTimers::AddTimer(const std::shared_ptr<CPVRTimerInfoTag>& ite
   if (!item->Channel() && !item->GetTimerType()->IsEpgBasedTimerRule())
   {
     CLog::LogF(LOGERROR, "No channel given");
-    HELPERS::ShowOKDialogText(
-        CVariant{257},
-        CVariant{
-            19109}); // "Error", "Could not save the timer. Check the log for more information about this message."
+    HELPERS::ShowOKDialogText(CVariant{257},
+                              CVariant{19109}); // "Error", "Could not save the timer."
     return false;
   }
 
@@ -287,10 +283,8 @@ bool CPVRGUIActionsTimers::AddTimer(const std::shared_ptr<CPVRTimerInfoTag>& ite
 
   if (!CServiceBroker::GetPVRManager().Timers()->AddTimer(item))
   {
-    HELPERS::ShowOKDialogText(
-        CVariant{257},
-        CVariant{
-            19109}); // "Error", "Could not save the timer. Check the log for more information about this message."
+    HELPERS::ShowOKDialogText(CVariant{257},
+                              CVariant{19109}); // "Error", "Could not save the timer"
     return false;
   }
 
@@ -574,10 +568,8 @@ bool CPVRGUIActionsTimers::SetRecordingOnChannel(const std::shared_ptr<CPVRChann
         bReturn = CServiceBroker::GetPVRManager().Timers()->AddTimer(newTimer);
 
       if (!bReturn)
-        HELPERS::ShowOKDialogText(
-            CVariant{257},
-            CVariant{
-                19164}); // "Error", "Could not start recording. Check the log for more information about this message."
+        HELPERS::ShowOKDialogText(CVariant{257},
+                                  CVariant{19164}); // "Error", "Could not start recording."
     }
     else if (!bOnOff && CServiceBroker::GetPVRManager().Timers()->IsRecordingOnChannel(*channel))
     {
@@ -586,10 +578,8 @@ bool CPVRGUIActionsTimers::SetRecordingOnChannel(const std::shared_ptr<CPVRChann
           CServiceBroker::GetPVRManager().Timers()->DeleteTimersOnChannel(channel, true, true);
 
       if (!bReturn)
-        HELPERS::ShowOKDialogText(
-            CVariant{257},
-            CVariant{
-                19170}); // "Error", "Could not stop recording. Check the log for more information about this message."
+        HELPERS::ShowOKDialogText(CVariant{257},
+                                  CVariant{19170}); // "Error", "Could not stop recording."
     }
   }
 
@@ -627,10 +617,8 @@ bool CPVRGUIActionsTimers::ToggleTimerState(const CFileItem& item) const
   if (CServiceBroker::GetPVRManager().Timers()->UpdateTimer(timer))
     return true;
 
-  HELPERS::ShowOKDialogText(
-      CVariant{257},
-      CVariant{
-          19263}); // "Error", "Could not update the timer. Check the log for more information about this message."
+  HELPERS::ShowOKDialogText(CVariant{257},
+                            CVariant{19263}); // "Error", "Could not update the timer."
   return false;
 }
 
@@ -727,10 +715,8 @@ bool CPVRGUIActionsTimers::DeleteTimer(const CFileItem& item,
           TimerOperationResult::OK)
         return true;
 
-      HELPERS::ShowOKDialogText(
-          CVariant{257},
-          CVariant{
-              19170}); // "Error", "Could not stop recording. Check the log for more information about this message."
+      HELPERS::ShowOKDialogText(CVariant{257},
+                                CVariant{19170}); // "Error", "Could not stop recording."
       return false;
     }
   }
@@ -773,10 +759,8 @@ bool CPVRGUIActionsTimers::DeleteTimer(const std::shared_ptr<CPVRTimerInfoTag>& 
     }
     case TimerOperationResult::FAILED:
     {
-      HELPERS::ShowOKDialogText(
-          CVariant{257},
-          CVariant{
-              19110}); // "Error", "Could not delete the timer. Check the log for more information about this message."
+      HELPERS::ShowOKDialogText(CVariant{257},
+                                CVariant{19110}); // "Error", "Could not delete the timer."
       return false;
     }
     default:

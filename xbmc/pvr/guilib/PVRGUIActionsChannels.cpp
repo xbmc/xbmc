@@ -311,10 +311,8 @@ bool CPVRGUIActionsChannels::StartChannelScan(int clientId)
 
   /* do the scan */
   if (scanClient->StartChannelScan() != PVR_ERROR_NO_ERROR)
-    HELPERS::ShowOKDialogText(
-        CVariant{257}, // "Error"
-        CVariant{
-            19193}); // "The channel scan can't be started. Check the log for more information about this message."
+    HELPERS::ShowOKDialogText(CVariant{257}, // "Error"
+                              CVariant{19193}); // "The channel scan can't be started."
 
   auto end = std::chrono::steady_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
