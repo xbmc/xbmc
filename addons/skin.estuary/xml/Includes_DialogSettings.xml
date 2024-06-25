@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+	<include name="DialogSettingsOSDVisible">
+		<visible>!Window.IsActive(DialogSettings.xml) + !Window.IsActive(DialogSlider.xml) + !Window.IsActive(GameVideoFilter) + !Window.IsActive(GameStretchMode) + !Window.IsActive(GameControllers) + !Window.IsActive(GameVideoRotation)</visible>
+	</include>
+	<include name="DialogSettingsOSDContent">
+		<control type="button" id="11111">
+			<include>DialogSettingButton</include>
+			<label>$LOCALIZE[13396]</label>
+			<onclick>ActivateWindow(osdaudiosettings)</onclick>
+		</control>
+		<control type="button" id="11106">
+			<include>DialogSettingButton</include>
+			<label>$LOCALIZE[24133]</label>
+			<onclick>ActivateWindow(osdsubtitlesettings)</onclick>
+		</control>
+		<control type="button" id="11102">
+			<include>DialogSettingButton</include>
+			<label>$LOCALIZE[13395]</label>
+			<onclick>ActivateWindow(osdvideosettings)</onclick>
+		</control>
+		<control type="button" id="11103">
+			<include>DialogSettingButton</include>
+			<label>$LOCALIZE[36560]</label>
+			<onclick>ActivateWindow(osdcmssettings)</onclick>
+			<visible>System.HasCMS</visible>
+		</control>
+		<control type="button" id="11104">
+			<include>DialogSettingButton</include>
+			<label>$LOCALIZE[31112]</label>
+			<label2>[B]$INFO[VideoPlayer.AudioLanguage][/B]</label2>
+			<onclick>AudioNextLanguage</onclick>
+			<visible>Integer.IsGreater(VideoPlayer.AudioStreamCount,1)</visible>
+		</control>
+		<control type="button" id="11108">
+			<include>DialogSettingButton</include>
+			<label>$LOCALIZE[31115]</label>
+			<label2>$VAR[ActiveVideoPlayerSubtitleLanguage]</label2>
+			<onclick>NextSubtitle</onclick>
+			<visible>VideoPlayer.HasSubtitles</visible>
+		</control>
+		<control type="button" id="11105">
+			<include>DialogSettingButton</include>
+			<label>$LOCALIZE[31132]</label>
+			<onclick>PlayerProgramSelect</onclick>
+			<visible>Player.HasPrograms</visible>
+		</control>
+		<control type="button" id="11107">
+			<include>DialogSettingButton</include>
+			<label>$LOCALIZE[31133]</label>
+			<onclick>PlayerResolutionSelect</onclick>
+			<visible>Player.HasResolutions</visible>
+		</control>
+		<control type="button" id="7">
+			<include>DialogSettingButton</include>
+			<label>$LOCALIZE[31142]</label>
+			<onclick>Dialog.Close(1101)</onclick>
+			<onclick>ActivateWindow(1110)</onclick>
+			<visible>Player.TempoEnabled</visible>
+		</control>
+	</include>
+	<include name="DialogSettings3DContent">
+		<control type="radiobutton" id="13101">
+			<include>DialogSettingButton</include>
+			<radioposx>590</radioposx>
+			<label>$LOCALIZE[24022]</label>
+			<onclick>ToggleStereoMode</onclick>
+			<selected>Integer.IsGreater(System.StereoscopicMode,0)</selected>
+		</control>
+		<control type="button" id="13102">
+			<include>DialogSettingButton</include>
+			<label>$LOCALIZE[31004]</label>
+			<label2>[B]$INFO[VideoPlayer.StereoscopicMode][/B]</label2>
+			<onclick>StereoMode</onclick>
+		</control>
+		<control type="radiobutton" id="13103">
+			<include>DialogSettingButton</include>
+			<radioposx>590</radioposx>
+			<label>$LOCALIZE[31005]</label>
+			<onclick>StereoModeToMono</onclick>
+			<selected>Integer.IsEqual(System.StereoscopicMode,9)</selected>
+		</control>
+	</include>
+	<include name="DialogSettingsGameContent">
+		<control type="button" id="14101">
+			<description>Video filter button</description>
+			<include>DialogSettingButton</include>
+			<label>$LOCALIZE[35225]</label>
+			<onclick>ActivateWindow(GameVideoFilter)</onclick>
+		</control>
+		<control type="button" id="14102">
+			<description>Stretch mode button</description>
+			<include>DialogSettingButton</include>
+			<label>$LOCALIZE[35233]</label>
+			<onclick>ActivateWindow(GameStretchMode)</onclick>
+		</control>
+		<control type="button" id="14106">
+			<description>Video rotation button</description>
+			<include>DialogSettingButton</include>
+			<label>$LOCALIZE[35227]</label>
+			<onclick>ActivateWindow(GameVideoRotation)</onclick>
+		</control>
+		<control type="button" id="14104">
+			<description>Volume button</description>
+			<include>DialogSettingButton</include>
+			<label>$LOCALIZE[13376]</label>
+			<label2>[COLOR grey]$FEATURE[select,game.controller.snes] + $FEATURE[rightstick,game.controller.default][/COLOR]</label2>
+			<onclick>ActivateWindow(GameVolume)</onclick>
+		</control>
+		<control type="button" id="14103">
+			<description>Controller settings button</description>
+			<include>DialogSettingButton</include>
+			<label>$LOCALIZE[35234]</label>
+			<onclick>ActivateWindow(GameControllers)</onclick>
+		</control>
+		<control type="button" id="14107">
+			<description>Controller port configuration</description>
+			<include>DialogSettingButton</include>
+			<label>$LOCALIZE[35110]</label>
+			<onclick>ActivateWindow(GamePorts)</onclick>
+		</control>
+		<control type="button" id="14105">
+			<description>Advanced settings</description>
+			<include>DialogSettingButton</include>
+			<label>$LOCALIZE[35226]</label>
+			<onclick>ActivateWindow(GameAdvancedSettings)</onclick>
+		</control>
+	</include>
+	<include name="DialogSettingsMusicOSDContent">
+		<control type="radiobutton" id="5001">
+			<include>DialogSettingButton</include>
+			<label>$LOCALIZE[31163]</label>
+			<onclick>Skin.ToggleSetting(hide_background_fanart)</onclick>
+			<selected>!Skin.HasSetting(hide_background_fanart)</selected>
+		</control>
+		<control type="radiobutton" id="5002">
+			<label>$LOCALIZE[31167]</label>
+			<include>DialogSettingButton</include>
+			<onclick>Skin.ToggleSetting(animate_background_fanart)</onclick>
+			<selected>Skin.HasSetting(animate_background_fanart)</selected>
+		</control>
+		<control type="button" id="5004">
+			<include>DialogSettingButton</include>
+			<label>$LOCALIZE[250]</label>
+			<label2>[B]$INFO[Visualisation.Name][/B]</label2>
+			<onclick>Dialog.Close(all)</onclick>
+			<onclick>SendClick(500)</onclick>
+		</control>
+		<control type="button" id="5005">
+			<include>DialogSettingButton</include>
+			<label>$LOCALIZE[31084]</label>
+			<onclick>Addon.Default.OpenSettings(xbmc.player.musicviz)</onclick>
+		</control>
+		<control type="button" id="5006">
+			<include>DialogSettingButton</include>
+			<label>$LOCALIZE[31068]</label>
+			<onclick>ActivateWindow(visualisationpresetlist)</onclick>
+			<visible>Visualisation.HasPresets</visible>
+		</control>
+		<control type="button" id="5007">
+			<include>DialogSettingButton</include>
+			<label>$LOCALIZE[31082]</label>
+			<label2>[B]$INFO[Skin.String(LyricScript_Path)][/B]</label2>
+			<onclick>Skin.SetAddon(LyricScript_Path,xbmc.python.lyrics)</onclick>
+		</control>
+		<control type="button" id="5008">
+			<include>DialogSettingButton</include>
+			<label>$LOCALIZE[31083]</label>
+			<onclick>Addon.OpenSettings($INFO[Skin.String(LyricScript_Path)])</onclick>
+			<visible>!String.IsEmpty(Skin.String(LyricScript_Path))</visible>
+		</control>
+	</include>
+</includes>

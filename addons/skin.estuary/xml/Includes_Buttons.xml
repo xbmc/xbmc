@@ -60,11 +60,13 @@
 		</definition>
 	</include>
 	<include name="DialogSettingButton">
+		<param name="width">700</param>
 		<param name="height">70</param>
 		<param name="textoffsetx">40</param>
 		<definition>
 			<textoffsetx>$PARAM[textoffsetx]</textoffsetx>
 			<top>0</top>
+			<width>$PARAM[width]</width>
 			<height>$PARAM[height]</height>
 			<aligny>center</aligny>
 			<invalidcolor>invalid</invalidcolor>
