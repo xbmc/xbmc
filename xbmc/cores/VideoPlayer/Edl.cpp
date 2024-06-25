@@ -711,9 +711,8 @@ bool CEdl::AddEdit(const Edit& newEdit)
 
 bool CEdl::AddSceneMarker(int iSceneMarker)
 {
-  Edit edit;
-
-  if (InEdit(iSceneMarker, &edit) && edit.action == Action::CUT) // Only works for current cuts.
+  const auto edit = InEdit(iSceneMarker);
+  if (edit && edit.value()->action == Action::CUT) // Only works for current cuts.
     return false;
 
   CLog::Log(LOGDEBUG, "{} - Inserting new scene marker: {}", __FUNCTION__,
@@ -841,22 +840,18 @@ bool CEdl::HasSceneMarker() const
   return !m_vecSceneMarkers.empty();
 }
 
-bool CEdl::InEdit(const int iSeek, Edit* pEdit)
+std::optional<std::unique_ptr<EDL::Edit>> CEdl::InEdit(const int seekTime)
 {
   for (size_t i = 0; i < m_vecEdits.size(); ++i)
   {
-    if (iSeek < m_vecEdits[i].start) // Early exit if not even up to the edit start time.
-      return false;
+    if (seekTime < m_vecEdits[i].start) // Early exit if not even up to the edit start time.
+      return std::nullopt;
 
-    if (iSeek >= m_vecEdits[i].start && iSeek <= m_vecEdits[i].end) // Inside edit.
-    {
-      if (pEdit)
-        *pEdit = m_vecEdits[i];
-      return true;
-    }
+    if (seekTime >= m_vecEdits[i].start && seekTime <= m_vecEdits[i].end) // Inside edit.
+      return std::make_unique<EDL::Edit>(m_vecEdits[i]);
   }
 
-  return false;
+  return std::nullopt;
 }
 
 int CEdl::GetLastEditTime() const
@@ -921,9 +916,14 @@ std::optional<int> CEdl::GetNextSceneMarker(Direction direction, int clock)
    * If the scene marker is in a cut then return the end of the cut. Can't guarantee that this is
    * picked up when scene markers are added.
    */
-  Edit edit;
-  if (sceneMarker && InEdit(sceneMarker.value(), &edit) && edit.action == Action::CUT)
-    sceneMarker = edit.end;
+  if (sceneMarker)
+  {
+    auto edit = InEdit(sceneMarker.value());
+    if (edit && edit.value()->action == Action::CUT)
+    {
+      sceneMarker = edit.value()->end;
+    }
+  }
 
   return sceneMarker;
 }

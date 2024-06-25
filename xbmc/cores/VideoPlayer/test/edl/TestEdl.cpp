@@ -70,8 +70,8 @@ TEST_F(TestEdl, TestParsingMplayerTimeBasedEDL)
   EXPECT_EQ(edl.GetTimeWithoutCuts(mute.start), mute.start - edl.GetTotalCutTime());
   EXPECT_EQ(edl.GetTimeAfterRestoringCuts(mute.start - edl.GetTotalCutTime()), mute.start);
   EXPECT_EQ(muteRaw.start - edl.GetTotalCutTime(), mute.start);
-  EXPECT_EQ(edl.InEdit(muteRaw.start, nullptr), true);
-  EXPECT_EQ(edl.InEdit(mute.start, nullptr), false);
+  EXPECT_NE(edl.InEdit(muteRaw.start), std::nullopt);
+  EXPECT_EQ(edl.InEdit(mute.start), std::nullopt);
 
   // scene markers
   // one of the scenemarkers (the first) have start and end times defined, kodi should assume the marker at the END position (255.3 secs)
@@ -100,12 +100,13 @@ TEST_F(TestEdl, TestParsingMplayerTimeBasedEDL)
   EXPECT_EQ(edl.GetTimeWithoutCuts(time.value()), commbreak.end);
   // We should be in an edit if we are in the middle of a commbreak...
   // lets check and confirm the edits match (after restoring cuts)
-  Edit thisEdit;
   const int middleOfCommbreak = commbreak.start + (commbreak.end - commbreak.start) / 2;
-  EXPECT_EQ(edl.InEdit(edl.GetTimeWithoutCuts(middleOfCommbreak), &thisEdit), true);
-  EXPECT_EQ(thisEdit.action, Action::COMM_BREAK);
-  EXPECT_EQ(thisEdit.start, edl.GetTimeAfterRestoringCuts(commbreak.start));
-  EXPECT_EQ(thisEdit.end, edl.GetTimeAfterRestoringCuts(commbreak.end));
+  const auto hasEdit = edl.InEdit(edl.GetTimeWithoutCuts(middleOfCommbreak));
+  EXPECT_NE(hasEdit, std::nullopt);
+  const auto& edit = hasEdit.value();
+  EXPECT_EQ(edit->action, Action::COMM_BREAK);
+  EXPECT_EQ(edit->start, edl.GetTimeAfterRestoringCuts(commbreak.start));
+  EXPECT_EQ(edit->end, edl.GetTimeAfterRestoringCuts(commbreak.end));
 }
 
 TEST_F(TestEdl, TestParsingMplayerTimeBasedInterleavedCutsEDL)
