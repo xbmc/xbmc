@@ -15,6 +15,13 @@ class CFileItem;
 namespace KODI::ART
 {
 
+/*!
+ \brief Get the local fanart for item if it exists
+ \return path to the local fanart for this item, or empty if none exists
+ \sa GetFolderThumb, GetTBNFile
+ */
+std::string GetLocalFanart(const CFileItem& item);
+
 // Gets the .tbn file associated with an item
 std::string GetTBNFile(const CFileItem& item);
 
