@@ -5,17 +5,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2023-11-23 17:23+0000\n"
-"Last-Translator: José Antonio Alvarado <jalvarado0.eses@gmail.com>\n"
+"PO-Revision-Date: 2024-06-21 17:23+0000\n"
+"Last-Translator: roliverosc <roliverosc@hotmail.com>\n"
 "Language-Team: Spanish (Spain) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/es_es/>\n"
 "Language: es_es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.1\n"
+"X-Generator: Weblate 5.6\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -23,7 +23,7 @@ msgstr "Skin Estuary por phil65. (skin por defecto de Kodi)"
 
 msgctxt "Addon Description"
 msgid "Estuary is the default skin for Kodi 17.0 and above. It attempts to be easy for first time Kodi users to understand and use."
-msgstr "Estuary es el skin por defecto para Kodi 17.0 o superior. Su objetivo es la facilidad de comprensión y uso para usuarios primerizos de Kodi."
+msgstr "Estuary es el skin por defecto para Kodi 17.0 o superior. Intenta ser fácil de entender y utilizar para los usuarios primerizos de Kodi."
 
 msgctxt "Addon Disclaimer"
 msgid "Estuary is the default skin for Kodi, removing it may cause issues"
@@ -83,7 +83,7 @@ msgstr "Álbumes aleatorios"
 
 msgctxt "#31013"
 msgid "Random artists"
-msgstr "Intérpretes aleatorios"
+msgstr "Artistas aleatorios"
 
 msgctxt "#31014"
 msgid "Unplayed albums"
@@ -101,7 +101,7 @@ msgstr "Canales reproducidos recientemente"
 
 msgctxt "#31017"
 msgid "Rated"
-msgstr "Puntuados"
+msgstr "Valorado"
 
 #. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
@@ -150,7 +150,7 @@ msgstr "Mostrar fanart"
 
 msgctxt "#31029"
 msgid "Last logged in"
-msgstr "Última sesión el"
+msgstr "Último inicio de sesión"
 
 #. Label to show the system memory usage
 msgctxt "#31030"
@@ -167,7 +167,7 @@ msgstr "Ordenar"
 
 msgctxt "#31033"
 msgid "Your rating"
-msgstr "Su puntuación"
+msgstr "Tu valoración"
 
 msgctxt "#31034"
 msgid "Extended info"
@@ -203,7 +203,7 @@ msgstr "Opciones de lista de reproducción"
 
 msgctxt "#31043"
 msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
-msgstr "Escoja el tipo y añada reglas para crear listas de reproducción inteligentes. Estas listas son dinámicas e incluyen aquellos elementos de su base de datos en los que aplican las reglas escogidas."
+msgstr "Establezca el tipo y agregue reglas para crear una lista de reproducción inteligente. Estas listas de reproducción son dinámicas e incluyen todos los elementos de su base de datos que se ajusten a las reglas escogidas."
 
 msgctxt "#31044"
 msgid "Add group"
@@ -215,7 +215,7 @@ msgstr "Renombrar grupo"
 
 msgctxt "#31046"
 msgid "Delete group"
-msgstr "Borrar grupo"
+msgstr "Eliminar grupo"
 
 msgctxt "#31048"
 msgid "Available"
@@ -255,7 +255,7 @@ msgstr "Elementos del menú principal"
 
 msgctxt "#31062"
 msgid "Choose weather fanart pack"
-msgstr "Elegir pack de fanart para la meteorología"
+msgstr "Elegir paquete de fanarts para meteorología"
 
 msgctxt "#31063"
 msgid "Sections"
@@ -299,7 +299,7 @@ msgstr "Duración total"
 
 msgctxt "#31075"
 msgid "Movie sets"
-msgstr "Sagas de películas"
+msgstr "Colecciones de películas"
 
 msgctxt "#31079"
 msgid "Cast not available"
@@ -339,7 +339,7 @@ msgstr "Usar animaciones de desplazamiento"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
-msgstr "Subtítulos locales disponibles"
+msgstr "Subtítulo local disponible"
 
 msgctxt "#31097"
 msgid "Channel options"
@@ -375,11 +375,11 @@ msgstr "Introduzca el texto aquí..."
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
-msgstr "Su biblioteca está actualmente vacía. Para llenarlo con sus medios personales, ingrese a la sección \"Archivos\", agregue una fuente de medios y configúrelo. Una vez agregada e indexada la fuente, podrá navegar por su biblioteca."
+msgstr "Su biblioteca está actualmente vacía. Para llenarla con su contenido personal, vaya a la sección \"Archivos\", añada una fuente de contenido y configúrelo. Una vez que la fuente haya sido agregada e indexada, podrá navegar por su biblioteca."
 
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
-msgstr "Agregue fuentes de video y establezca el tipo de contenido apropiado para llenar sus bibliotecas de vídeo."
+msgstr "Agregue fuentes de vídeo y establezca el tipo de contenido apropiado para completar sus bibliotecas de vídeo."
 
 msgctxt "#31106"
 msgid "Teletext"
@@ -392,11 +392,11 @@ msgstr "Lista amplia"
 
 msgctxt "#31110"
 msgid "Enter files section"
-msgstr "Entrar en la sección Archivos"
+msgstr "Entrar en la sección archivos"
 
 msgctxt "#31111"
 msgid "View your personal pictures or download one of the many image add-ons from the official repository."
-msgstr "Vea sus imágenes personales o descargue uno de los múltiples add-ons de imágenes del repositorio oficial."
+msgstr "Vea sus imágenes personales o descargue uno de los muchos complementos de imágenes del repositorio oficial."
 
 msgctxt "#31112"
 msgid "Toggle audio stream"
@@ -404,7 +404,7 @@ msgstr "Activar canal de audio"
 
 msgctxt "#31113"
 msgid "Search local library"
-msgstr "Buscar en la colección local"
+msgstr "Buscar en la biblioteca local"
 
 msgctxt "#31114"
 msgid "Search YouTube"
@@ -416,7 +416,7 @@ msgstr "Cambiar subtítulos"
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
-msgstr "Eliminar este elemento del menú principal"
+msgstr "Quitar este elemento del menú principal"
 
 msgctxt "#31117"
 msgid "Edit nodes"
@@ -428,11 +428,11 @@ msgstr "Entrar en el navegador de add-on"
 
 msgctxt "#31119"
 msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
-msgstr "Aún no tienes add-ons instalados. Visite nuestro navegador de add-on para navegar a través de nuestra colección y mejorar la experiencia de Kodi."
+msgstr "Aún no tienes add-ons instalados. Visita nuestro explorador de add-on para navegar a través de nuestra colección y mejorar la experiencia Kodi."
 
 msgctxt "#31120"
 msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
-msgstr "No ha configurado aún un proveedor de meteorología. Para poder consultar la meteorología, elija un proveedor y establezca su ubicación."
+msgstr "Aún no has configurado un proveedor meteorológico. Para ver información meteorológica, elije un proveedor meteorológico y configura tu ubicación."
 
 msgctxt "#31121"
 msgid "Set weather provider"
@@ -464,23 +464,23 @@ msgstr "Colaboradores"
 
 msgctxt "#31129"
 msgid "General settings applying to all areas of the skin."
-msgstr "Los ajustes generales aplican a todas las áreas del skin."
+msgstr "Los ajustes generales se aplican a todas las áreas del skin."
 
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
-msgstr "Ajustes relativos al menú principal: configure la pantalla principal a su gusto."
+msgstr "Ajustes relacionados con el menú principal: Configura la pantalla de inicio a tu gusto."
 
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
-msgstr "Elegir pack de fanart de skin"
+msgstr "Elegir paquete de fanart para el skin"
 
 msgctxt "#31132"
 msgid "Select Program"
-msgstr "Elija Programa"
+msgstr "Elija programa"
 
 msgctxt "#31133"
 msgid "Select Resolution"
-msgstr "Seleccionar Resolución"
+msgstr "Seleccionar resolución"
 
 msgctxt "#31134"
 msgid "Remaining"
@@ -492,7 +492,7 @@ msgstr "Binario"
 
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
-msgstr "Pulse aquí para ver los cambios más recientes..."
+msgstr "Haga clic aquí para ver los últimos cambios..."
 
 #. Label to show PVR info page
 msgctxt "#31137"
@@ -512,11 +512,11 @@ msgstr "Decodificador de vídeo"
 #. Label to show the video pixel format
 msgctxt "#31140"
 msgid "Pixel format"
-msgstr "Formato de Píxel"
+msgstr "Formato de píxel"
 
 msgctxt "#31141"
 msgid "Changes for version"
-msgstr "Cambios para versión"
+msgstr "Cambios para la versión"
 
 msgctxt "#31142"
 msgid "Play speed"
@@ -524,11 +524,11 @@ msgstr "Velocidad de reproducción"
 
 msgctxt "#31143"
 msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
-msgstr "Aún no se ha ajustado el PVR. Para usar PVR, elige un add-on de cliente PVR y configúralo. Por favor, visita http://kodi.wiki/view/PVR para obtener más información."
+msgstr "Aún no has configurado PVR. Para utilizar PVR, elije un complemento de cliente PVR y configuralo. Por favor, visita http://kodi.wiki/view/PVR para obtener más información."
 
 msgctxt "#31144"
 msgid "Enter add-on browser"
-msgstr "Entrar en el navegador de add-ons"
+msgstr "Entrar en el explorador de add-ons"
 
 msgctxt "#31145"
 msgid "Search add-ons"
@@ -548,7 +548,7 @@ msgstr "Categorías"
 
 msgctxt "#31149"
 msgid "Select genre fanart pack"
-msgstr "Elegir pack de fanart para los géneros"
+msgstr "Elegir paquete de fanart para géneros"
 
 msgctxt "#31150"
 msgid "Origin"
@@ -564,7 +564,7 @@ msgstr "Vídeos musicales aleatorios"
 
 msgctxt "#31153"
 msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
-msgstr "No tiene ningun Add-on de este tipo instalado. Visite nuestro navegador de Add-ons para descargar alguno creado por nuestra comunidad."
+msgstr "No tienes ningun Add-on de este tipo instalado. Visita nuestro explorador de Add-ons para descargar alguno creado por nuestra comunidad."
 
 msgctxt "#31154"
 msgid "Press OK to switch between locations"
@@ -576,7 +576,7 @@ msgstr "No se han creado marcadores aún."
 
 msgctxt "#31156"
 msgid "Choose background pattern"
-msgstr "Elegir patrón del fondo"
+msgstr "Elegir el patrón de fondo"
 
 msgctxt "#31157"
 msgid "Edit categories"
@@ -600,11 +600,11 @@ msgstr "Teclado numérico"
 
 msgctxt "#31162"
 msgid "Play your personal games or download one of the many game add-ons from the official repository."
-msgstr "Juegue a sus juegos o descargue alguno de los múltiples add-ons del repositorio oficial."
+msgstr "Juega a tus juegos o descarga alguno de los múltiples add-ons del repositorio oficial."
 
 msgctxt "#31163"
 msgid "Show Fanart background"
-msgstr "Mostrar fondo fanart"
+msgstr "Mostrar fanart de fondo"
 
 #. Choose profile identifier
 msgctxt "#31164"
@@ -629,12 +629,12 @@ msgstr "Animar fondo"
 #. Label of a setting
 msgctxt "#31168"
 msgid "Show posters instead of thumbs for musicvideos"
-msgstr "Mostrar carteles en lugar de miniaturas para vídeos musicales"
+msgstr "Mostrar pósters en lugar de miniaturas para vídeos musicales"
 
 #. Description label for skin settings area
 msgctxt "#31169"
 msgid "Artwork related settings."
-msgstr "Ajustes relacionados con el arte."
+msgstr "Ajustes relacionados con las ilustraciones."
 
 #. Label for OSD settings category
 msgctxt "#31170"
@@ -654,22 +654,22 @@ msgstr "Cerrar automáticamente OSD de vídeo"
 #. Setting auto close time for video osd
 msgctxt "#31173"
 msgid "Video OSD autoclose time (seconds)"
-msgstr "Tiempo para cerrar OSD de Vídeo (segundos)"
+msgstr "Tiempo para cierre de OSD de vídeo (segundos)"
 
 #. Setting to control what happens when clicking a music album on the home screen
 msgctxt "#31174"
 msgid "Default select action for albums on the home screen"
-msgstr "Acción por defecto al elegir álbumes en la pantalla inicial"
+msgstr "Acción por defecto al elegir álbumes en la pantalla de inicio"
 
 #. Setting to control what happens when clicking a TV show on the home screen
 msgctxt "#31175"
 msgid "Default select action for TV shows on the home screen"
-msgstr "Acción por defecto al seleccionar series de TV en la pantalla inicial"
+msgstr "Acción por defecto al seleccionar series de TV en la pantalla de inicio"
 
 #. Setting to control what happens when clicking a movie set on the home screen
 msgctxt "#31176"
 msgid "Default select action for movie sets on the home screen"
-msgstr "Acción por defecto al seleccionar películas en la pantalla inicial"
+msgstr "Acción por defecto al seleccionar películas en la pantalla de inicio"
 
 # empty strings from id 31170 to 31599
 #. Label to show the video codec name
@@ -680,7 +680,7 @@ msgstr "Códec de vídeo"
 #. Label to show the video resolution
 msgctxt "#31601"
 msgid "Video resolution"
-msgstr "Resolución de Vídeo"
+msgstr "Resolución de vídeo"
 
 #. Label to show the video aspect
 msgctxt "#31602"

@@ -5,16 +5,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Spanish (Spain) (http://www.transifex.com/projects/p/kodi-main/language/es_ES/)\n"
-"Language: es_ES\n"
+"PO-Revision-Date: 2024-05-21 07:19+0000\n"
+"Last-Translator: roliverosc <roliverosc@hotmail.com>\n"
+"Language-Team: Spanish (Spain) <https://kodi.weblate.cloud/projects/kodi-core/screensaver-xbmc-builtin-dim/es_es/>\n"
+"Language: es_es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.5.4\n"
 
 msgctxt "Addon Summary"
 msgid "Screensaver that dims your screen"
@@ -22,7 +23,7 @@ msgstr "Un salvapantallas que atenúa tu pantalla"
 
 msgctxt "Addon Description"
 msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
-msgstr "Dim es un sencillo salvapantallas que atenúa tu pantalla. El valor es configurable entre el 20% y el 100%."
+msgstr "El protector de pantalla Dim es un protector de pantalla simple que atenuará (pasar a negro) su pantalla a un valor configurable entre 20 y 100%."
 
 #. Setting name for edit screen dim in percentage (0% = black, 100% = no dim)
 msgctxt "#30000"
@@ -32,7 +33,7 @@ msgstr "Nivel de brillo"
 #. Setting help text
 msgctxt "#30001"
 msgid "Level in percent of how strongly the screen remains illuminated."
-msgstr "Nivel en porcentaje de cómo de iluminada se queda la pantalla."
+msgstr "Nivel en porcentaje de la intensidad con la que permanece iluminada la pantalla."
 
 #. Setting category name
 msgctxt "#30002"
