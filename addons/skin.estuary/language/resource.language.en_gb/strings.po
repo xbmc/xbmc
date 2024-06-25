@@ -232,7 +232,10 @@ msgctxt "#31039"
 msgid "Fast forward"
 msgstr ""
 
-#empty string with id 31040
+#: /xml/SkinSettings.xml
+msgctxt "#31040"
+msgid "Edit widgets"
+msgstr ""
 
 #: /xml/Variables.xml /xml/MyPics.xml
 msgctxt "#31041"

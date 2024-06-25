@@ -32,6 +32,12 @@
 					<include condition="String.IsEqual(window(home).Property(dialogsettings_content),3d)">DialogSettings3DContent</include>
 					<include condition="String.IsEqual(window(home).Property(dialogsettings_content),games)">DialogSettingsGameContent</include>
 					<include condition="String.IsEqual(window(home).Property(dialogsettings_content),musicosd)">DialogSettingsMusicOSDContent</include>
+					<include condition="String.IsEqual(window(home).Property(dialogsettings_content),moviewidgets)">DialogSettingsMovieWidgetsContent</include>
+					<include condition="String.IsEqual(window(home).Property(dialogsettings_content),tvshowwidgets)">DialogSettingsTVShowWidgetsContent</include>
+					<include condition="String.IsEqual(window(home).Property(dialogsettings_content),musicwidgets)">DialogSettingsMusicWidgetsContent</include>
+					<include condition="String.IsEqual(window(home).Property(dialogsettings_content),musicvideowidgets)">DialogSettingsMusicVideoWidgetsContent</include>
+					<include condition="String.IsEqual(window(home).Property(dialogsettings_content),tvwidgets)">DialogSettingsTVWidgetsContent</include>
+					<include condition="String.IsEqual(window(home).Property(dialogsettings_content),radiowidgets)">DialogSettingsRadioWidgetsContent</include>
 				</control>
 			</control>
 		</control>
