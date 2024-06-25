@@ -143,39 +143,39 @@ AVPixelFormat TranslatePixelFormat(PixelFormat pixelFormat)
 /*!
  * \brief Translate the video rotation (RetroPlayer to FlatBuffers)
  */
-VideoRotation TranslateRotation(unsigned int rotationCCW)
+VideoRotationSaveState TranslateRotation(unsigned int rotationCCW)
 {
   switch (rotationCCW)
   {
     case 0:
-      return VideoRotation_CCW_0;
+      return VideoRotationSaveState_CCW_0;
     case 90:
-      return VideoRotation_CCW_90;
+      return VideoRotationSaveState_CCW_90;
     case 180:
-      return VideoRotation_CCW_180;
+      return VideoRotationSaveState_CCW_180;
     case 270:
-      return VideoRotation_CCW_270;
+      return VideoRotationSaveState_CCW_270;
     default:
       break;
   }
 
-  return VideoRotation_CCW_0;
+  return VideoRotationSaveState_CCW_0;
 }
 
 /*!
  * \brief Translate the video rotation (RetroPlayer to FlatBuffers)
  */
-unsigned int TranslateRotation(VideoRotation rotationCCW)
+unsigned int TranslateRotation(VideoRotationSaveState rotationCCW)
 {
   switch (rotationCCW)
   {
-    case VideoRotation_CCW_0:
+    case VideoRotationSaveState_CCW_0:
       return 0;
-    case VideoRotation_CCW_90:
+    case VideoRotationSaveState_CCW_90:
       return 90;
-    case VideoRotation_CCW_180:
+    case VideoRotationSaveState_CCW_180:
       return 180;
-    case VideoRotation_CCW_270:
+    case VideoRotationSaveState_CCW_270:
       return 270;
     default:
       break;

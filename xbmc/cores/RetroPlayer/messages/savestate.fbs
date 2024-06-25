@@ -55,7 +55,7 @@ table Savestate {
   video_data:[uint8] (id: 18);
   video_width:uint16 (id: 19);
   video_height:uint16 (id: 20);
-  rotation_ccw:VideoRotation (id: 21);
+  rotation_ccw:VideoRotationSaveState (id: 21);
 
   // Memory properties
   memory_data:[uint8] (id: 10);

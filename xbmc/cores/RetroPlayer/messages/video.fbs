@@ -35,7 +35,7 @@ enum PixelFormat : uint8 {
   RGB_555_LE,
 }
 
-enum VideoRotation : uint8 {
+enum VideoRotationSaveState : uint8 {
   CCW_0,
   CCW_90,
   CCW_180,
