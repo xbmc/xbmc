@@ -25,6 +25,7 @@
 #include "application/ApplicationPlayer.h"
 #include "music/MusicFileItemClassify.h"
 #include "network/NetworkFileItemClassify.h"
+#include "playlists/PlayListFileItemClassify.h"
 #include "video/VideoFileItemClassify.h"
 #ifdef HAS_CDDA_RIPPER
 #include "cdrip/CDDARipper.h"
@@ -78,7 +79,6 @@ using namespace MUSIC_INFO;
 using namespace KODI;
 using namespace KODI::MESSAGING;
 using KODI::MESSAGING::HELPERS::DialogResponse;
-using namespace KODI::VIDEO;
 
 using namespace std::chrono_literals;
 
@@ -303,7 +303,7 @@ void CGUIWindowMusicBase::OnItemInfo(int iItem)
   CFileItemPtr item = m_vecItems->Get(iItem);
 
   // Match visibility test of CMusicInfo::IsVisible
-  if (IsVideoDb(*item) && item->HasVideoInfoTag() &&
+  if (VIDEO::IsVideoDb(*item) && item->HasVideoInfoTag() &&
       (item->HasProperty("artist_musicid") || item->HasProperty("album_musicid")))
   {
     // Music video artist or album (navigation by music > music video > artist))
@@ -311,7 +311,7 @@ void CGUIWindowMusicBase::OnItemInfo(int iItem)
     return;
   }
 
-  if (IsVideo(*item) && item->HasVideoInfoTag() &&
+  if (VIDEO::IsVideo(*item) && item->HasVideoInfoTag() &&
       item->GetVideoInfoTag()->m_type == MediaTypeMusicVideo)
   { // Music video on a mixed current playlist or navigation by music > music video > artist > video
     CGUIDialogVideoInfo::ShowFor(*item);
@@ -354,8 +354,8 @@ void CGUIWindowMusicBase::RetrieveMusicInfo()
   for (int i = 0; i < m_vecItems->Size(); ++i)
   {
     CFileItemPtr pItem = (*m_vecItems)[i];
-    if (pItem->m_bIsFolder || pItem->IsPlayList() || pItem->IsPicture() ||
-        MUSIC::IsLyrics(*pItem) || IsVideo(*pItem))
+    if (pItem->m_bIsFolder || PLAYLIST::IsPlayList(*pItem) || pItem->IsPicture() ||
+        MUSIC::IsLyrics(*pItem) || VIDEO::IsVideo(*pItem))
       continue;
 
     CMusicInfoTag& tag = *pItem->GetMusicInfoTag();
@@ -435,7 +435,7 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
 
     // Check for the partymode playlist item.
     // When "PartyMode.xsp" not exist, only context menu button is edit
-    if (item->IsSmartPlayList() &&
+    if (PLAYLIST::IsSmartPlayList(*item) &&
         (item->GetPath() == profileManager->GetUserDataItem("PartyMode.xsp")) &&
         !CFileUtils::Exists(item->GetPath()))
     {
@@ -448,12 +448,12 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
       //! @todo get rid of IsAddonsPath and IsScript check. CanQueue should be enough!
       if (item->CanQueue() && !item->IsAddonsPath() && !item->IsScript())
       {
-        if (item->IsSmartPlayList())
+        if (PLAYLIST::IsSmartPlayList(*item))
           buttons.Add(CONTEXT_BUTTON_PLAY_PARTYMODE, 15216); // Play in Partymode
 
-        if (item->IsSmartPlayList() || m_vecItems->IsSmartPlayList())
+        if (PLAYLIST::IsSmartPlayList(*item) || PLAYLIST::IsSmartPlayList(*m_vecItems))
           buttons.Add(CONTEXT_BUTTON_EDIT_SMART_PLAYLIST, 586);
-        else if (item->IsPlayList() || m_vecItems->IsPlayList())
+        else if (PLAYLIST::IsPlayList(*item) || PLAYLIST::IsPlayList(*m_vecItems))
           buttons.Add(CONTEXT_BUTTON_EDIT, 586);
       }
 #ifdef HAS_OPTICAL_DRIVE
@@ -505,7 +505,10 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
     case CONTEXT_BUTTON_EDIT:
     {
-      std::string playlist = item->IsPlayList() ? item->GetPath() : m_vecItems->GetPath(); // save path as activatewindow will destroy our items
+      std::string playlist =
+          PLAYLIST::IsPlayList(*item)
+              ? item->GetPath()
+              : m_vecItems->GetPath(); // save path as activatewindow will destroy our items
       CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_MUSIC_PLAYLIST_EDITOR, playlist);
       // need to update
       m_vecItems->RemoveDiscCache(GetID());
@@ -514,7 +517,10 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   case CONTEXT_BUTTON_EDIT_SMART_PLAYLIST:
     {
-      std::string playlist = item->IsSmartPlayList() ? item->GetPath() : m_vecItems->GetPath(); // save path as activatewindow will destroy our items
+      const std::string playlist =
+          PLAYLIST::IsSmartPlayList(*item)
+              ? item->GetPath()
+              : m_vecItems->GetPath(); // save path as activatewindow will destroy our items
       if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist, "music"))
         Refresh(true); // need to update
       return true;
@@ -610,7 +616,7 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
 #endif
 
   // Check for the partymode playlist item, do nothing when "PartyMode.xsp" not exist
-  if (pItem->IsSmartPlayList())
+  if (PLAYLIST::IsSmartPlayList(*pItem))
   {
     const std::shared_ptr<CProfileManager> profileManager =
         CServiceBroker::GetSettingsComponent()->GetProfileManager();
@@ -655,7 +661,7 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
     // play!
     CServiceBroker::GetPlaylistPlayer().Play();
   }
-  else if (pItem->IsPlayList())
+  else if (PLAYLIST::IsPlayList(*pItem))
   {
     // load the playlist the old way
     LoadPlayList(pItem->GetPath());
@@ -712,7 +718,7 @@ bool CGUIWindowMusicBase::OnPlayMedia(int iItem, const std::string &player)
     g_partyModeManager.AddUserSongs(playlistTemp, !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICPLAYER_QUEUEBYDEFAULT));
     return true;
   }
-  else if (!pItem->IsPlayList() && !NETWORK::IsInternetStream(*pItem))
+  else if (!PLAYLIST::IsPlayList(*pItem) && !NETWORK::IsInternetStream(*pItem))
   { // single music file - if we get here then we have autoplaynextitem turned off or queuebydefault
     // turned on, but we still want to use the playlist player in order to handle more queued items
     // following etc.
@@ -734,7 +740,7 @@ bool CGUIWindowMusicBase::OnPlayMedia(int iItem, const std::string &player)
 void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
 {
   // No need to attempt to read music file tags for music videos
-  if (IsVideoDb(items))
+  if (VIDEO::IsVideoDb(items))
     return;
   if (items.GetFolderCount() == items.Size() || MUSIC::IsMusicDb(items) ||
       (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
@@ -1046,7 +1052,7 @@ void CGUIWindowMusicBase::OnPrepareFileItems(CFileItemList &items)
 {
   CGUIMediaWindow::OnPrepareFileItems(items);
 
-  if (!MUSIC::IsMusicDb(items) && !items.IsSmartPlayList())
+  if (!MUSIC::IsMusicDb(items) && !PLAYLIST::IsSmartPlayList(items))
     RetrieveMusicInfo();
 }
 

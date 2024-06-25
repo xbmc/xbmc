@@ -14,6 +14,7 @@
 #include "Util.h"
 #include "filesystem/Directory.h"
 #include "filesystem/VideoDatabaseDirectory/QueryParams.h"
+#include "playlists/PlayListFileItemClassify.h"
 #include "settings/SettingUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -30,7 +31,7 @@
 #include <cstdint>
 #include <vector>
 
-using namespace KODI::VIDEO;
+using namespace KODI;
 
 namespace
 {
@@ -99,7 +100,7 @@ KODI::VIDEO::UTILS::ResumeInformation GetNonFolderItemResumeInformation(const CF
     return {};
 
   // do not resume playlists, except strm files
-  if (!item.IsType(".strm") && item.IsPlayList())
+  if (!item.IsType(".strm") && PLAYLIST::IsPlayList(item))
     return {};
 
   // do not resume Live TV and 'deleted' items (e.g. trashed pvr recordings)
@@ -128,13 +129,13 @@ KODI::VIDEO::UTILS::ResumeInformation GetNonFolderItemResumeInformation(const CF
     }
 
     std::string path = item.GetPath();
-    if (IsVideoDb(item) || item.IsDVD())
+    if (VIDEO::IsVideoDb(item) || item.IsDVD())
     {
       if (item.HasVideoInfoTag())
       {
         path = item.GetVideoInfoTag()->m_strFileNameAndPath;
       }
-      else if (IsVideoDb(item))
+      else if (VIDEO::IsVideoDb(item))
       {
         // Obtain path+filename from video db
         XFILE::VIDEODATABASEDIRECTORY::CQueryParams params;

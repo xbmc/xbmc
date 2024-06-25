@@ -40,6 +40,7 @@
 #include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayList.h"
 #include "playlists/PlayListFactory.h"
+#include "playlists/PlayListFileItemClassify.h"
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -213,7 +214,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 bool CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem)
 {
   if (fileItem.IsParentFolder() || fileItem.m_bIsShareOrDrive || fileItem.IsPath("add") ||
-      (fileItem.IsPlayList() && !URIUtils::HasExtension(fileItem.GetDynPath(), ".strm")))
+      (PLAYLIST::IsPlayList(fileItem) && !URIUtils::HasExtension(fileItem.GetDynPath(), ".strm")))
     return false;
 
   // "Videos/Video Add-ons" lists addons in the video window
@@ -303,7 +304,7 @@ bool CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem)
                                                             ->m_moviesExcludeFromScanRegExps;
       for (const auto& i : items)
       {
-        if (VIDEO::IsVideo(*i) && !i->IsPlayList() &&
+        if (VIDEO::IsVideo(*i) && !PLAYLIST::IsPlayList(*i) &&
             !CUtil::ExcludeFileOrFolder(i->GetPath(), excludeFromScan))
         {
           item.SetPath(i->GetPath());
@@ -817,7 +818,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
         }
       }
 
-      if (item->IsSmartPlayList())
+      if (PLAYLIST::IsSmartPlayList(*item))
       {
         buttons.Add(CONTEXT_BUTTON_PLAY_PARTYMODE, 15216); // Play in Partymode
       }
@@ -834,7 +835,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
         else
           buttons.Add(CONTEXT_BUTTON_PLAY_AND_QUEUE, 13412);
       }
-      if (item->IsSmartPlayList() || m_vecItems->IsSmartPlayList())
+      if (PLAYLIST::IsSmartPlayList(*item) || PLAYLIST::IsSmartPlayList(*m_vecItems))
         buttons.Add(CONTEXT_BUTTON_EDIT_SMART_PLAYLIST, 586);
       if (VIDEO::IsBlurayPlaylist(*item))
         buttons.Add(CONTEXT_BUTTON_CHOOSE_PLAYLIST, 13424);
@@ -937,7 +938,10 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return true;
   case CONTEXT_BUTTON_EDIT_SMART_PLAYLIST:
     {
-      std::string playlist = m_vecItems->Get(itemNumber)->IsSmartPlayList() ? m_vecItems->Get(itemNumber)->GetPath() : m_vecItems->GetPath(); // save path as activatewindow will destroy our items
+      const std::string playlist =
+          PLAYLIST::IsSmartPlayList(*m_vecItems->Get(itemNumber))
+              ? m_vecItems->Get(itemNumber)->GetPath()
+              : m_vecItems->GetPath(); // save path as activatewindow will destroy our items
       if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist, "video"))
         Refresh(true); // need to update
       return true;
@@ -1152,7 +1156,7 @@ bool CGUIWindowVideoBase::PlayItem(const std::shared_ptr<CFileItem>& pItem,
     CServiceBroker::GetPlaylistPlayer().Play();
     return true;
   }
-  else if (pItem->IsPlayList() && !pItem->IsType(".strm"))
+  else if (PLAYLIST::IsPlayList(*pItem) && !pItem->IsType(".strm"))
   {
     // Note: strm files being somehow special playlists need to be handled in OnPlay*Media
 

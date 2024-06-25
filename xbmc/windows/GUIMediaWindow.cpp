@@ -25,6 +25,7 @@
 #include "application/Application.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/NetworkFileItemClassify.h"
+#include "playlists/PlayListFileItemClassify.h"
 #if defined(TARGET_ANDROID)
 #include "platform/android/activity/XBMCApp.h"
 #endif
@@ -1501,7 +1502,7 @@ bool CGUIMediaWindow::OnPlayMedia(int iItem, const std::string &player)
   CLog::Log(LOGDEBUG, "{} {}", __FUNCTION__, CURL::GetRedacted(pItem->GetPath()));
 
   bool bResult = false;
-  if (NETWORK::IsInternetStream(*pItem) || pItem->IsPlayList())
+  if (NETWORK::IsInternetStream(*pItem) || PLAYLIST::IsPlayList(*pItem))
     bResult = g_application.PlayMedia(*pItem, player, m_guiState->GetPlaylist());
   else
     bResult = g_application.PlayFile(*pItem, player);
@@ -1603,7 +1604,7 @@ void CGUIMediaWindow::UpdateFileList()
       if (pItem->m_bIsFolder)
         continue;
 
-      if (!pItem->IsPlayList() && !pItem->IsZIP() && !pItem->IsRAR())
+      if (!PLAYLIST::IsPlayList(*pItem) && !pItem->IsZIP() && !pItem->IsRAR())
         CServiceBroker::GetPlaylistPlayer().Add(playlistId, pItem);
 
       if (pItem->GetPath() == playlistItem.GetPath() &&
@@ -1619,7 +1620,7 @@ void CGUIMediaWindow::OnDeleteItem(int iItem)
   if ( iItem < 0 || iItem >= m_vecItems->Size()) return;
   CFileItemPtr item = m_vecItems->Get(iItem);
 
-  if (item->IsPlayList())
+  if (PLAYLIST::IsPlayList(*item))
     item->m_bIsFolder = false;
 
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();

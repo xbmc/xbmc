@@ -62,6 +62,7 @@
 #include "filesystem/File.h"
 #include "music/MusicFileItemClassify.h"
 #include "network/NetworkFileItemClassify.h"
+#include "playlists/PlayListFileItemClassify.h"
 #include "video/VideoFileItemClassify.h"
 #ifdef HAS_FILESYSTEM_NFS
 #include "filesystem/NFSFile.h"
@@ -2172,7 +2173,7 @@ bool CApplication::PlayMedia(CFileItem& item, const std::string& player, PLAYLIS
   if (URIUtils::HasPluginPath(item) && !XFILE::CPluginDirectory::GetResolvedPluginResult(item))
     return false;
 
-  if (item.IsSmartPlayList())
+  if (PLAYLIST::IsSmartPlayList(item))
   {
     CFileItemList items;
     CUtil::GetRecursiveListing(item.GetPath(), items, "", DIR_FLAG_NO_FILE_DIRS);
@@ -2192,7 +2193,7 @@ bool CApplication::PlayMedia(CFileItem& item, const std::string& player, PLAYLIS
       return ProcessAndStartPlaylist(smartpl.GetName(), playlist, smartplPlaylistId);
     }
   }
-  else if (item.IsPlayList() || NETWORK::IsInternetStream(item))
+  else if (PLAYLIST::IsPlayList(item) || NETWORK::IsInternetStream(item))
   {
     // Not owner. Dialog auto-deletes itself.
     CGUIDialogCache* dlgCache =
@@ -2317,7 +2318,7 @@ bool CApplication::PlayFile(CFileItem item,
     return CServiceBroker::GetMediaManager().playStubFile(item);
   }
 
-  if (item.IsPlayList())
+  if (PLAYLIST::IsPlayList(item))
     return false;
 
   // Translate/Resolve the url if needed
@@ -2842,7 +2843,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       std::unique_ptr<CFileItem> trailerItem =
           ContentUtils::GeneratePlayableTrailerItem(*item, g_localizeStrings.Get(20410));
 
-      if (item->IsPlayList())
+      if (PLAYLIST::IsPlayList(*item))
       {
         std::unique_ptr<CFileItemList> fileitemList = std::make_unique<CFileItemList>();
         fileitemList->Add(std::move(trailerItem));

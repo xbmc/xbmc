@@ -34,6 +34,7 @@
 #include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayList.h"
 #include "playlists/PlayListFactory.h"
+#include "playlists/PlayListFileItemClassify.h"
 #include "profiles/ProfileManager.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -581,7 +582,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
   }
   else
   {
-    if (item->IsPlayList())
+    if (PLAYLIST::IsPlayList(*item))
     {
       const std::unique_ptr<PLAYLIST::CPlayList> playList(
           PLAYLIST::CPlayListFactory::Create(*item));
@@ -795,7 +796,7 @@ void QueueItem(const std::shared_ptr<CFileItem>& itemIn, QueuePosition pos)
     playlistId = PLAYLIST::Id::TYPE_MUSIC;
 
   // Check for the partymode playlist item, do nothing when "PartyMode.xsp" not exists
-  if (item->IsSmartPlayList() && !CFileUtils::Exists(item->GetPath()))
+  if (PLAYLIST::IsSmartPlayList(*item) && !CFileUtils::Exists(item->GetPath()))
   {
     const auto profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
     if (item->GetPath() == profileManager->GetUserDataItem("PartyMode.xsp"))
@@ -863,7 +864,7 @@ namespace
 {
 bool IsNonExistingUserPartyModePlaylist(const CFileItem& item)
 {
-  if (!item.IsSmartPlayList())
+  if (!PLAYLIST::IsSmartPlayList(item))
     return false;
 
   const std::string& path{item.GetPath()};
@@ -892,7 +893,7 @@ bool IsItemPlayable(const CFileItem& item)
     return false;
 
   // Include playlists located at one of the possible music playlist locations
-  if (item.IsPlayList())
+  if (PLAYLIST::IsPlayList(item))
   {
     if (StringUtils::StartsWithNoCase(item.GetMimeType(), "audio/"))
       return true;

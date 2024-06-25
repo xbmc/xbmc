@@ -32,6 +32,7 @@
 #include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
 #include "playlists/PlayList.h"
+#include "playlists/PlayListFileItemClassify.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
@@ -973,7 +974,7 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
 
         ClearPlaylist(playlistId);
         SetCurrentPlaylist(playlistId);
-        if (list->Size() == 1 && !(*list)[0]->IsPlayList())
+        if (list->Size() == 1 && !IsPlayList(*list->Get(0)))
         {
           CFileItemPtr item = (*list)[0];
           // if the item is a plugin we need to resolve the URL to ensure the infotags are filled.

@@ -16,10 +16,12 @@
 #include "filesystem/Directory.h"
 #include "guilib/Texture.h"
 #include "imagefiles/ImageFileURL.h"
+#include "playlists/PlayListFileItemClassify.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/FileExtensionProvider.h"
 
+using namespace KODI;
 using namespace XFILE;
 
 bool CPictureFolderImageFileLoader::CanLoad(const std::string& specialType) const
@@ -38,7 +40,7 @@ std::unique_ptr<CTexture> CPictureFolderImageFileLoader::Load(
   for (int i = 0; i < imagesInFolder.Size();)
   {
     if (!imagesInFolder[i]->IsPicture() || imagesInFolder[i]->IsZIP() ||
-        imagesInFolder[i]->IsRAR() || imagesInFolder[i]->IsPlayList())
+        imagesInFolder[i]->IsRAR() || PLAYLIST::IsPlayList(*imagesInFolder[i]))
     {
       imagesInFolder.Remove(i);
     }

@@ -21,6 +21,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "music/MusicFileItemClassify.h"
+#include "playlists/PlayListFileItemClassify.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Job.h"
@@ -287,7 +288,7 @@ bool CDirectory::GetDirectory(const CURL& url,
     //  Should any of the files we read be treated as a directory?
     //  Disable for database folders, as they already contain the extracted items
     if (!(hints.flags & DIR_FLAG_NO_FILE_DIRS) && !MUSIC::IsMusicDb(items) &&
-        !VIDEO::IsVideoDb(items) && !items.IsSmartPlayList())
+        !VIDEO::IsVideoDb(items) && !PLAYLIST::IsSmartPlayList(items))
       FilterFileDirectories(items, hints.mask);
 
     // Correct items for path substitution
