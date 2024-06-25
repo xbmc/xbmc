@@ -1253,6 +1253,10 @@ void CFileItem::FillInDefaultIcon()
         // PVR deleted recording
         SetArt("icon", "DefaultVideoDeleted.png");
       }
+      else if (PLAYLIST::IsPlayList(*this) || PLAYLIST::IsSmartPlayList(*this))
+      {
+        SetArt("icon", "DefaultPlaylist.png");
+      }
       else if (MUSIC::IsAudio(*this))
       {
         // audio
@@ -1271,10 +1275,6 @@ void CFileItem::FillInDefaultIcon()
       {
         // picture
         SetArt("icon", "DefaultPicture.png");
-      }
-      else if (PLAYLIST::IsPlayList(*this) || PLAYLIST::IsSmartPlayList(*this))
-      {
-        SetArt("icon", "DefaultPlaylist.png");
       }
       else if ( IsPythonScript() )
       {
