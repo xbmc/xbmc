@@ -52,6 +52,7 @@
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "utils/Archive.h"
+#include "utils/ArtUtils.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/Mime.h"
 #include "utils/RegExp.h"
@@ -1926,7 +1927,7 @@ std::string CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */, b
     return "";
 
   // we first check for <filename>.tbn or <foldername>.tbn
-  std::string fileThumb(GetTBNFile());
+  std::string fileThumb(ART::GetTBNFile(*this));
   if (CFile::Exists(fileThumb))
     return fileThumb;
 
@@ -1982,53 +1983,6 @@ std::string CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */, b
   }
   // No thumb found
   return "";
-}
-
-// Gets the .tbn filename from a file or folder name.
-// <filename>.ext -> <filename>.tbn
-// <foldername>/ -> <foldername>.tbn
-std::string CFileItem::GetTBNFile() const
-{
-  std::string thumbFile;
-  std::string strFile = m_strPath;
-
-  if (IsStack())
-  {
-    std::string strPath, strReturn;
-    URIUtils::GetParentPath(m_strPath,strPath);
-    CFileItem item(CStackDirectory::GetFirstStackedFile(strFile),false);
-    std::string strTBNFile = item.GetTBNFile();
-    strReturn = URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(strTBNFile));
-    if (CFile::Exists(strReturn))
-      return strReturn;
-
-    strFile = URIUtils::AddFileToFolder(strPath,URIUtils::GetFileName(CStackDirectory::GetStackedTitlePath(strFile)));
-  }
-
-  if (URIUtils::IsInRAR(strFile) || URIUtils::IsInZIP(strFile))
-  {
-    std::string strPath = URIUtils::GetDirectory(strFile);
-    std::string strParent;
-    URIUtils::GetParentPath(strPath,strParent);
-    strFile = URIUtils::AddFileToFolder(strParent, URIUtils::GetFileName(m_strPath));
-  }
-
-  CURL url(strFile);
-  strFile = url.GetFileName();
-
-  if (m_bIsFolder && !IsFileFolder())
-    URIUtils::RemoveSlashAtEnd(strFile);
-
-  if (!strFile.empty())
-  {
-    if (m_bIsFolder && !IsFileFolder())
-      thumbFile = strFile + ".tbn"; // folder, so just add ".tbn"
-    else
-      thumbFile = URIUtils::ReplaceExtension(strFile, ".tbn");
-    url.SetFileName(thumbFile);
-    thumbFile = url.Get();
-  }
-  return thumbFile;
 }
 
 bool CFileItem::SkipLocalArt() const
@@ -2257,7 +2211,7 @@ std::string CFileItem::GetLocalFanart() const
     strPath2 = dir.GetStackedTitlePath(strFile);
     strFile = URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(strPath2));
     CFileItem item(dir.GetFirstStackedFile(m_strPath),false);
-    std::string strTBNFile(URIUtils::ReplaceExtension(item.GetTBNFile(), "-fanart"));
+    std::string strTBNFile(URIUtils::ReplaceExtension(ART::GetTBNFile(item), "-fanart"));
     strFile2 = URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(strTBNFile));
   }
   if (URIUtils::IsInRAR(strFile) || URIUtils::IsInZIP(strFile))
@@ -2663,7 +2617,7 @@ std::string CFileItem::FindTrailer() const
     strPath2 = dir.GetStackedTitlePath(strFile);
     strFile = URIUtils::AddFileToFolder(strPath,URIUtils::GetFileName(strPath2));
     CFileItem item(dir.GetFirstStackedFile(m_strPath),false);
-    std::string strTBNFile(URIUtils::ReplaceExtension(item.GetTBNFile(), "-trailer"));
+    std::string strTBNFile(URIUtils::ReplaceExtension(ART::GetTBNFile(item), "-trailer"));
     strFile2 = URIUtils::AddFileToFolder(strPath,URIUtils::GetFileName(strTBNFile));
   }
   if (URIUtils::IsInRAR(strFile) || URIUtils::IsInZIP(strFile))
