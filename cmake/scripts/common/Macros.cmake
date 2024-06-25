@@ -429,7 +429,7 @@ function(core_optional_dep)
       set(_required True)
     endif()
 
-    if(TARGET kodi::${dep} OR (${depup}_FOUND AND ${depspec} IN_LIST optional_buildtools))
+    if(TARGET ${APP_NAME_LC}::${dep} OR (${depup}_FOUND AND ${depspec} IN_LIST optional_buildtools))
       set(final_message ${final_message} "${depup} enabled: Yes")
 
       # We dont want to add a build tool
