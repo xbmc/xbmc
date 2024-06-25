@@ -48,6 +48,7 @@
 #include "Util.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "music/tags/MusicInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/CharsetConverter.h"
@@ -482,3 +483,61 @@ bool CCueDocument::ResolvePath(std::string &strPath, const std::string &strBase)
   return true;
 }
 
+bool CCueDocument::LoadTracks(CFileItemList& scannedItems, const CFileItem& item)
+{
+  const auto& tag = *item.GetMusicInfoTag();
+
+  VECSONGS tracks;
+  this->GetSongs(tracks);
+
+  bool oneFilePerTrack = this->IsOneFilePerTrack();
+
+  int tracksFound = 0;
+  for (auto& song : tracks)
+  {
+    if (song.strFileName == item.GetPath())
+    {
+      if (tag.Loaded())
+      {
+        if (song.strAlbum.empty() && !tag.GetAlbum().empty())
+          song.strAlbum = tag.GetAlbum();
+        //Pass album artist to final MusicInfoTag object via setting song album artist vector.
+        if (song.GetAlbumArtist().empty() && !tag.GetAlbumArtist().empty())
+          song.SetAlbumArtist(tag.GetAlbumArtist());
+        if (song.genre.empty() && !tag.GetGenre().empty())
+          song.genre = tag.GetGenre();
+        //Pass artist to final MusicInfoTag object via setting song artist description string only.
+        //Artist credits not used during loading from cue sheet.
+        if (song.strArtistDesc.empty() && !tag.GetArtistString().empty())
+          song.strArtistDesc = tag.GetArtistString();
+        if (tag.GetDiscNumber())
+          song.iTrack |= (tag.GetDiscNumber() << 16); // see CMusicInfoTag::GetDiscNumber()
+        if (!tag.GetCueSheet().empty())
+          song.strCueSheet = tag.GetCueSheet();
+
+        if (tag.GetYear())
+          song.strReleaseDate = tag.GetReleaseDate();
+        if (song.embeddedArt.Empty() && !tag.GetCoverArtInfo().Empty())
+          song.embeddedArt = tag.GetCoverArtInfo();
+      }
+
+      if (!song.iDuration && tag.GetDuration() > 0)
+      { // must be the last song
+        song.iDuration = CUtil::ConvertMilliSecsToSecsIntRounded(
+            CUtil::ConvertSecsToMilliSecs(tag.GetDuration()) - song.iStartOffset);
+      }
+      if (tag.Loaded() && oneFilePerTrack &&
+          !(tag.GetAlbum().empty() || tag.GetArtist().empty() || tag.GetTitle().empty()))
+      {
+        // If there are multiple files in a cue file, the tags from the files should be preferred if they exist.
+        scannedItems.Add(std::make_shared<CFileItem>(song, tag));
+      }
+      else
+      {
+        scannedItems.Add(std::make_shared<CFileItem>(song));
+      }
+      ++tracksFound;
+    }
+  }
+  return tracksFound != 0;
+}

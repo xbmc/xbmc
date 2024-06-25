@@ -1,4 +1,5 @@
 set(SOURCES TestBasicEnvironment.cpp
+            TestCueDocument.cpp
             TestFileItem.cpp
             TestURL.cpp
             TestUtil.cpp
