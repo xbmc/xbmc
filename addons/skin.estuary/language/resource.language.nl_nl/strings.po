@@ -5,17 +5,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2023-12-04 09:42+0000\n"
-"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"PO-Revision-Date: 2024-05-20 15:13+0000\n"
+"Last-Translator: Mark Peters <forkless@gmail.com>\n"
 "Language-Team: Dutch <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/nl_nl/>\n"
 "Language: nl_nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.2.1\n"
+"X-Generator: Weblate 5.5.4\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -55,11 +55,11 @@ msgstr "Bekijk als 2D"
 
 msgctxt "#31006"
 msgid "Random movies"
-msgstr "Willekeurige films"
+msgstr "Willekeurige speelfilms"
 
 msgctxt "#31007"
 msgid "Unwatched movies"
-msgstr "Niet-bekeken films"
+msgstr "Niet-bekeken speelfilms"
 
 msgctxt "#31008"
 msgid "Enable category widgets"
@@ -67,11 +67,11 @@ msgstr "Activeer categoriewidgets"
 
 msgctxt "#31009"
 msgid "Download icons"
-msgstr "Download pictogrammen"
+msgstr "Download iconen"
 
 msgctxt "#31010"
 msgid "In progress movies"
-msgstr "Gedeeltelijk bekeken films"
+msgstr "Gedeeltelijk bekeken speelfilms"
 
 msgctxt "#31011"
 msgid "Most played albums"
@@ -126,7 +126,7 @@ msgstr "Sorteer op"
 
 msgctxt "#31023"
 msgid "Viewtype"
-msgstr "Viewtype"
+msgstr "Weergavetype"
 
 msgctxt "#31024"
 msgid "Choose rating to display for media items"
@@ -271,7 +271,7 @@ msgstr "Muziekafspeellijst"
 
 msgctxt "#31067"
 msgid "Event log"
-msgstr "Gebeurtenisregistratie"
+msgstr "Gebeurtenislogboek"
 
 msgctxt "#31068"
 msgid "Choose presets"
@@ -408,7 +408,7 @@ msgstr "Zoek in lokale bibliotheek"
 
 msgctxt "#31114"
 msgid "Search YouTube"
-msgstr "Zoek in YouTube"
+msgstr "Zoek op YouTube"
 
 msgctxt "#31115"
 msgid "Toggle subtitle"
@@ -468,7 +468,7 @@ msgstr "Algemene instellingen die van toepassing zijn op alle onderdelen van de 
 
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
-msgstr "Hoofdmenu gerelateerde instellingen: Configureer het homescreen naar wens."
+msgstr "Hoofdmenu gerelateerde instellingen: Configureer het startscherm naar wens."
 
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
@@ -524,7 +524,7 @@ msgstr "Afspeelsnelheid"
 
 msgctxt "#31143"
 msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
-msgstr "U heeft nog geen PVR ingesteld. Om gebruikt te kinen maken van PVR, kieze een PVR cliënt addon en configureer deze. Bezoek http://kodi.wiki/view/PVR om meer te weten tekomen."
+msgstr "U heeft nog geen PVR ingesteld. Om gebruikt te kunnen maken van PVR, kies een PVR cliënt addon en configureer deze. Bezoek https://kodi.wiki/view/PVR om meer te weten te komen."
 
 msgctxt "#31144"
 msgid "Enter add-on browser"
@@ -556,15 +556,15 @@ msgstr "Bron"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
-msgstr "Niet bekeken muziekvideo`s"
+msgstr "Niet bekeken muziekvideo's"
 
 msgctxt "#31152"
 msgid "Random music videos"
-msgstr "Willekeurige muziekvideo`s"
+msgstr "Willekeurige muziekvideo's"
 
 msgctxt "#31153"
 msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
-msgstr "U heeft nog geen enkele add-on van dit type geïnstalleerd. Bezoek de add-onverkenner om add-ons te downloaden gecreëerd door onze community."
+msgstr "Je hebt nog geen enkele add-on van dit type geïnstalleerd. Bezoek de add-onverkenner om add-ons te downloaden gecreëerd door onze community."
 
 msgctxt "#31154"
 msgid "Press OK to switch between locations"
@@ -634,7 +634,7 @@ msgstr "Laat posters zien in plaats van miniatuur voor muziekvideo's"
 #. Description label for skin settings area
 msgctxt "#31169"
 msgid "Artwork related settings."
-msgstr ""
+msgstr "Artwork gerelateerde instellingen"
 
 #. Label for OSD settings category
 msgctxt "#31170"
@@ -654,22 +654,22 @@ msgstr "Video OSD automatisch sluiten"
 #. Setting auto close time for video osd
 msgctxt "#31173"
 msgid "Video OSD autoclose time (seconds)"
-msgstr ""
+msgstr "Video OSD verbergtijd (seconden)"
 
 #. Setting to control what happens when clicking a music album on the home screen
 msgctxt "#31174"
 msgid "Default select action for albums on the home screen"
-msgstr ""
+msgstr "Standaard selectie voor albums op het start scherm"
 
 #. Setting to control what happens when clicking a TV show on the home screen
 msgctxt "#31175"
 msgid "Default select action for TV shows on the home screen"
-msgstr ""
+msgstr "Standaard selectie voor series op het start scherm"
 
 #. Setting to control what happens when clicking a movie set on the home screen
 msgctxt "#31176"
 msgid "Default select action for movie sets on the home screen"
-msgstr ""
+msgstr "Standaard selectie voor speelfilm sets op het start scherm"
 
 # empty strings from id 31170 to 31599
 #. Label to show the video codec name
@@ -690,7 +690,7 @@ msgstr "Beeldverhouding"
 #. Label to show the video bitrate
 msgctxt "#31603"
 msgid "Video bitrate"
-msgstr ""
+msgstr "Video bitsnelheid"
 
 #. Label to show the audio codec name
 msgctxt "#31604"
@@ -705,7 +705,7 @@ msgstr "Audiokanalen"
 #. Label to show the audio bitrate
 msgctxt "#31606"
 msgid "Audio bitrate"
-msgstr ""
+msgstr "Audio bitsnelheid"
 
 #. Label to show the screen resolution
 msgctxt "#31607"
