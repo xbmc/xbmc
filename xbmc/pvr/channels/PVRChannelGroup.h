@@ -156,8 +156,9 @@ public:
    * @brief Change the name of this group.
    * @param strGroupName The new group name.
    * @param isUserSetName Whether the name was set by the user.
+   * @return True if the group name was changed, false otherwise.
    */
-  void SetGroupName(const std::string& strGroupName, bool isUserSetName = false);
+  bool SetGroupName(const std::string& strGroupName, bool isUserSetName = false);
 
   /*!
    * @brief Set the name this group has on the client.
@@ -381,7 +382,17 @@ public:
    */
   std::shared_ptr<CPVRChannelGroupMember> GetByUniqueID(const std::pair<int, int>& id) const;
 
+  /*!
+   * @brief Set the hidden state of this group.
+   * @param bHidden True to set hidden state, false to unhide the group.
+   * @return True if hidden state was changed, false otherwise.
+   */
   bool SetHidden(bool bHidden);
+
+  /*!
+   * @brief Check whether this group is hidden.
+   * @return True if group is hidden, false otherwise.
+   */
   bool IsHidden() const;
 
   /*!
@@ -393,8 +404,9 @@ public:
   /*!
    * @brief Set the local position of this group.
    * @param iPosition The new local group position.
+   * @return True if position has changed, false otherwise.
    */
-  void SetPosition(int iPosition);
+  bool SetPosition(int iPosition);
 
   /*!
    * @brief Get the position of this group as supplied by the PVR client.
@@ -434,6 +446,12 @@ public:
    * @brief Remove this group from database.
    */
   void Delete();
+
+  /*!
+   * @brief Remove the given group member from the database.
+   * @param member The member to remove from the database.
+   */
+  void DeleteGroupMember(const std::shared_ptr<CPVRChannelGroupMember>& member);
 
   /*!
    * @brief Whether this group is deleted.

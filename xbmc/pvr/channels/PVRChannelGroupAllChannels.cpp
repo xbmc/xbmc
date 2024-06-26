@@ -49,7 +49,10 @@ void CPVRChannelGroupAllChannels::CheckGroupName()
 
   // Ensure the group name is still correct, or channels may fail to load after a locale change
   if (!IsUserSetName())
-    SetGroupName(g_localizeStrings.Get(19287));
+  {
+    if (SetGroupName(g_localizeStrings.Get(19287)))
+      Persist();
+  }
 }
 
 bool CPVRChannelGroupAllChannels::UpdateFromClients(

@@ -215,10 +215,9 @@ bool CPVRGUIActionsChannels::HideChannel(const CFileItem& item) const
           CVariant{""}, CVariant{channel->ChannelName()}))
     return false;
 
-  if (!CServiceBroker::GetPVRManager()
-           .ChannelGroups()
-           ->GetGroupAll(channel->IsRadio())
-           ->RemoveFromGroup(groupMember))
+  const auto groups{CServiceBroker::GetPVRManager().ChannelGroups()};
+  if (!groups->Get(channel->IsRadio())
+           ->RemoveFromGroup(groups->GetGroupAll(channel->IsRadio()), groupMember))
     return false;
 
   CGUIWindowPVRBase* pvrWindow =

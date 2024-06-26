@@ -605,9 +605,23 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetNextGroup(
   return GetFirstGroup();
 }
 
+void CPVRChannelGroups::GroupStateChanged(const std::shared_ptr<CPVRChannelGroup>& group,
+                                          GroupState state /* = GroupState::CHANGED */)
+{
+  if (state == GroupState::DELETED)
+  {
+    if (group->GroupID() > 0)
+      group->Delete(); // delete the group from the database
+  }
+  else
+    group->Persist();
+
+  CServiceBroker::GetPVRManager().PublishEvent(PVREvent::ChannelGroupsInvalidated);
+}
+
 std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::AddGroup(const std::string& strName)
 {
-  bool bPersist(false);
+  bool changed{false};
   std::shared_ptr<CPVRChannelGroup> group;
 
   {
@@ -615,22 +629,18 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::AddGroup(const std::string&
 
     // check if there's another local group with the same name already
     group = GetGroupByName(strName, PVR_GROUP_CLIENT_ID_LOCAL, Exclude::NONE);
-    if (!group)
+    if (!group || group->GetOrigin() != CPVRChannelGroup::Origin::USER)
     {
       // create a new local group
       group = GetGroupFactory()->CreateUserGroup(IsRadio(), strName, GetGroupAll());
 
       m_groups.emplace_back(group);
-      SortGroups();
-      bPersist = true;
-
-      CServiceBroker::GetPVRManager().PublishEvent(PVREvent::ChannelGroupsInvalidated);
+      changed = true;
     }
   }
 
-  // persist in the db if a new group was added
-  if (bPersist)
-    group->Persist();
+  if (changed)
+    GroupStateChanged(group);
 
   return group;
 }
@@ -643,7 +653,7 @@ bool CPVRChannelGroups::DeleteGroup(const std::shared_ptr<CPVRChannelGroup>& gro
     return false;
   }
 
-  bool bFound(false);
+  bool changed{false};
 
   // delete the group in this container
   {
@@ -653,35 +663,116 @@ bool CPVRChannelGroups::DeleteGroup(const std::shared_ptr<CPVRChannelGroup>& gro
       if (*it == group || (group->GroupID() > 0 && (*it)->GroupID() == group->GroupID()))
       {
         m_groups.erase(it);
-        bFound = true;
+        changed = true;
         break;
       }
     }
   }
 
-  if (bFound && group->GroupID() > 0)
-  {
-    // delete the group from the database
-    group->Delete();
-    CServiceBroker::GetPVRManager().PublishEvent(PVREvent::ChannelGroupsInvalidated);
-  }
-  return bFound;
+  if (changed)
+    GroupStateChanged(group, GroupState::DELETED);
+
+  return changed;
 }
 
 bool CPVRChannelGroups::HideGroup(const std::shared_ptr<CPVRChannelGroup>& group, bool bHide)
 {
-  bool bReturn = false;
+  if (group && group->SetHidden(bHide))
+  {
+    GroupStateChanged(group);
+    return true;
+  }
+  return false;
+}
 
+bool CPVRChannelGroups::SetGroupName(const std::shared_ptr<CPVRChannelGroup>& group,
+                                     const std::string& newGroupName,
+                                     bool isUserSetName)
+{
+  if (group && group->SetGroupName(newGroupName, isUserSetName))
+  {
+    GroupStateChanged(group);
+    return true;
+  }
+  return false;
+}
+
+bool CPVRChannelGroups::AppendToGroup(
+    const std::shared_ptr<CPVRChannelGroup>& group,
+    const std::shared_ptr<const CPVRChannelGroupMember>& groupMember)
+{
   if (group)
   {
-    if (group->SetHidden(bHide))
+    if (!group->SupportsMemberAdd())
+    {
+      CLog::LogF(LOGERROR, "Channel group {} does not support adding members", group->GroupName());
+      return false;
+    }
+
+    if (group->AppendToGroup(groupMember))
+    {
+      GroupStateChanged(group);
+      return true;
+    }
+  }
+  return false;
+}
+
+bool CPVRChannelGroups::RemoveFromGroup(const std::shared_ptr<CPVRChannelGroup>& group,
+                                        const std::shared_ptr<CPVRChannelGroupMember>& groupMember)
+{
+  if (group)
+  {
+    if (!group->SupportsMemberRemove())
+    {
+      CLog::LogF(LOGERROR, "Channel group {} does not support removing members",
+                 group->GroupName());
+      return false;
+    }
+
+    if (group->RemoveFromGroup(groupMember))
+    {
+      group->DeleteGroupMember(groupMember);
+      GroupStateChanged(group);
+      return true;
+    }
+  }
+  return false;
+}
+
+bool CPVRChannelGroups::ResetGroupPositions(const std::vector<std::string>& sortedGroupPaths)
+{
+  static constexpr int START_POSITION{1};
+  int pos{START_POSITION};
+
+  bool success{true};
+  bool changed{false};
+
+  for (const auto& path : sortedGroupPaths)
+  {
+    const auto group{GetGroupByPath(path)};
+    if (!group)
+    {
+      CLog::LogFC(LOGERROR, LOGPVR, "Unable to obtain group with path '{}‘, Skipping it.", path);
+      success = false;
+      continue;
+    }
+
+    if (group->SetPosition(pos++))
     {
       // state changed
-      CServiceBroker::GetPVRManager().PublishEvent(PVREvent::ChannelGroupsInvalidated);
+      changed = true;
     }
-    bReturn = true;
   }
-  return bReturn;
+
+  if (changed)
+  {
+    PersistAll();
+    SortGroups();
+    CServiceBroker::GetPVRManager().PublishEvent(PVREvent::ChannelGroupsInvalidated);
+  }
+
+  return success;
 }
 
 int CPVRChannelGroups::CleanupCachedImages()
