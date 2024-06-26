@@ -8,9 +8,12 @@
 
 #include "AndroidJoystickTranslator.h"
 
+#include "games/controllers/DefaultController.h"
+
 #include <android/input.h>
 #include <android/keycodes.h>
 
+using namespace KODI;
 using namespace PERIPHERALS;
 
 const char* CAndroidJoystickTranslator::TranslateAxis(int axisId)
@@ -725,4 +728,53 @@ const char* CAndroidJoystickTranslator::TranslateKeyCode(int keyCode)
   }
 
   return "unknown";
+}
+
+const char* CAndroidJoystickTranslator::TranslateJoystickButton(int buttonKeycode)
+{
+  switch (buttonKeycode)
+  {
+    case AKEYCODE_BUTTON_A:
+    case AKEYCODE_DPAD_CENTER:
+      return GAME::CDefaultController::FEATURE_A;
+    case AKEYCODE_BUTTON_B:
+      return GAME::CDefaultController::FEATURE_B;
+    case AKEYCODE_BUTTON_X:
+      return GAME::CDefaultController::FEATURE_X;
+    case AKEYCODE_BUTTON_Y:
+      return GAME::CDefaultController::FEATURE_Y;
+    case AKEYCODE_BUTTON_START:
+    case AKEYCODE_MENU:
+      return GAME::CDefaultController::FEATURE_START;
+    case AKEYCODE_BUTTON_SELECT:
+    case AKEYCODE_BACK:
+      return GAME::CDefaultController::FEATURE_BACK;
+    case AKEYCODE_BUTTON_MODE:
+    case AKEYCODE_HOME:
+      return GAME::CDefaultController::FEATURE_GUIDE;
+    case AKEYCODE_DPAD_UP:
+      return GAME::CDefaultController::FEATURE_UP;
+    case AKEYCODE_DPAD_RIGHT:
+      return GAME::CDefaultController::FEATURE_RIGHT;
+    case AKEYCODE_DPAD_DOWN:
+      return GAME::CDefaultController::FEATURE_DOWN;
+    case AKEYCODE_DPAD_LEFT:
+      return GAME::CDefaultController::FEATURE_LEFT;
+    case AKEYCODE_BUTTON_L1:
+      return GAME::CDefaultController::FEATURE_LEFT_BUMPER;
+    case AKEYCODE_BUTTON_R1:
+      return GAME::CDefaultController::FEATURE_RIGHT_BUMPER;
+    case AKEYCODE_BUTTON_L2:
+      return GAME::CDefaultController::FEATURE_LEFT_TRIGGER;
+    case AKEYCODE_BUTTON_R2:
+      return GAME::CDefaultController::FEATURE_RIGHT_TRIGGER;
+    case AKEYCODE_BUTTON_THUMBL:
+      return GAME::CDefaultController::FEATURE_LEFT_THUMB;
+    case AKEYCODE_BUTTON_THUMBR:
+      return GAME::CDefaultController::FEATURE_RIGHT_THUMB;
+    default:
+      break;
+  }
+
+  return "";
 }

@@ -16,6 +16,7 @@
 #include "utils/log.h"
 
 #include "platform/android/activity/XBMCApp.h"
+#include "platform/android/peripherals/AndroidJoystickState.h"
 
 #include <algorithm>
 #include <mutex>
@@ -120,6 +121,50 @@ bool CPeripheralBusAndroid::InitializeProperties(CPeripheral& peripheral)
   return true;
 }
 
+bool CPeripheralBusAndroid::InitializeButtonMap(const CPeripheral& peripheral,
+                                                JOYSTICK::IButtonMap& buttonMap) const
+{
+  int deviceId;
+  if (!GetDeviceId(peripheral.Location(), deviceId))
+  {
+    CLog::Log(LOGWARNING,
+              "CPeripheralBusAndroid: failed to initialize buttonmap due to unknown device ID for "
+              "peripheral \"{}\"",
+              peripheral.Location());
+    return false;
+  }
+
+  // get the joystick state
+  auto it = m_joystickStates.find(deviceId);
+  if (it == m_joystickStates.end())
+  {
+    CLog::Log(LOGWARNING,
+              "CPeripheralBusAndroid: joystick with device ID {} not found for peripheral \"{}\"",
+              deviceId, peripheral.Location());
+    return false;
+  }
+
+  const CAndroidJoystickState& joystick = it->second;
+  if (joystick.GetButtonCount() == 0 && joystick.GetAxisCount() == 0)
+  {
+    CLog::Log(LOGDEBUG,
+              "CPeripheralBusAndroid: joystick has no buttons or axes for peripheral \"{}\"",
+              peripheral.Location());
+    return false;
+  }
+
+  if (!joystick.InitializeButtonMap(buttonMap))
+  {
+    CLog::Log(
+        LOGDEBUG,
+        "CPeripheralBusAndroid: failed to initialize joystick buttonmap for peripheral \"{}\"",
+        peripheral.Location());
+    return false;
+  }
+
+  return true;
+}
+
 void CPeripheralBusAndroid::Initialise(void)
 {
   CPeripheralBus::Initialise();
@@ -208,7 +253,7 @@ void CPeripheralBusAndroid::OnInputDeviceAdded(int deviceId)
     PeripheralScanResult result;
     if (!ConvertToPeripheralScanResult(device, result))
       return;
-    m_scanResults.m_results.push_back(result);
+    m_scanResults.m_results.emplace_back(std::move(result));
   }
 
   CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: input device with ID {} added", deviceId);
@@ -345,7 +390,7 @@ PeripheralScanResults CPeripheralBusAndroid::GetInputDevices()
       continue;
 
     CLog::Log(LOGINFO, "CPeripheralBusAndroid: added input device");
-    results.m_results.push_back(result);
+    results.m_results.emplace_back(std::move(result));
   }
 
   return results;

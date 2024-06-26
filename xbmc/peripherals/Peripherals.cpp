@@ -917,7 +917,7 @@ void CPeripherals::ResetButtonMaps(const std::string& controllerId)
     PeripheralAddonPtr addon;
     if (addonBus->GetAddonWithButtonMap(peripheral.get(), addon))
     {
-      CAddonButtonMap buttonMap(peripheral.get(), addon, controllerId);
+      CAddonButtonMap buttonMap(peripheral.get(), addon, controllerId, *this);
       buttonMap.Reset();
     }
   }
