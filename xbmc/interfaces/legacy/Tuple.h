@@ -35,7 +35,8 @@ namespace XBMCAddon
   template<typename T1> class Tuple<T1, tuple_null_type, tuple_null_type, tuple_null_type, tuple_null_type> : public TupleBase
   {
   private:
-    T1 v1;
+    T1 v1{};
+
   public:
     explicit inline Tuple(T1 p1) : TupleBase(1), v1(p1) {}
     inline Tuple() : TupleBase(0) {}
@@ -49,8 +50,8 @@ namespace XBMCAddon
   // Tuple that holds two values
   template<typename T1, typename T2> class Tuple<T1, T2, tuple_null_type, tuple_null_type, tuple_null_type> : public Tuple<T1>
   {
-  protected:
-    T2 v2;
+  private:
+    T2 v2{};
 
   public:
     inline Tuple(T1 p1, T2 p2) : Tuple<T1>(p1), v2(p2) { TupleBase::nvs(2); }
@@ -67,7 +68,8 @@ namespace XBMCAddon
   template<typename T1, typename T2, typename T3> class Tuple<T1, T2, T3, tuple_null_type, tuple_null_type> : public Tuple<T1,T2>
   {
   private:
-    T3 v3;
+    T3 v3{};
+
   public:
     inline Tuple(T1 p1, T2 p2, T3 p3) : Tuple<T1,T2>(p1,p2), v3(p3) { TupleBase::nvs(3); }
     inline Tuple(T1 p1, T2 p2) : Tuple<T1,T2>(p1,p2) {}
@@ -83,7 +85,8 @@ namespace XBMCAddon
   template<typename T1, typename T2, typename T3, typename T4> class Tuple<T1, T2, T3, T4, tuple_null_type> : public Tuple<T1,T2,T3>
   {
   private:
-    T4 v4;
+    T4 v4{};
+
   public:
     inline Tuple(T1 p1, T2 p2, T3 p3, T4 p4) : Tuple<T1,T2,T3>(p1,p2,p3), v4(p4) { TupleBase::nvs(4); }
     inline Tuple(T1 p1, T2 p2, T3 p3) : Tuple<T1,T2,T3>(p1,p2,p3) {}
