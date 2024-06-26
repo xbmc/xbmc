@@ -188,10 +188,7 @@ void CGUIDialogVideoBookmarks::Delete(int item)
   {
     CVideoDatabase videoDatabase;
     videoDatabase.Open();
-    std::string path(g_application.CurrentFile());
-    if (g_application.CurrentFileItem().HasProperty("original_listitem_url") &&
-       !URIUtils::IsVideoDb(g_application.CurrentFileItem().GetProperty("original_listitem_url").asString()))
-      path = g_application.CurrentFileItem().GetProperty("original_listitem_url").asString();
+    const std::string path{g_application.CurrentFileItem().GetDynPath()};
     videoDatabase.ClearBookMarkOfFile(path, m_bookmarks[item], m_bookmarks[item].type);
     videoDatabase.Close();
     CUtil::DeleteVideoDatabaseDirectoryCache();
@@ -205,10 +202,7 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
   std::vector<CFileItemPtr> items;
 
   // open the d/b and retrieve the bookmarks for the current movie
-  m_filePath = g_application.CurrentFile();
-  if (g_application.CurrentFileItem().HasProperty("original_listitem_url") &&
-     !URIUtils::IsVideoDb(g_application.CurrentFileItem().GetProperty("original_listitem_url").asString()))
-     m_filePath = g_application.CurrentFileItem().GetProperty("original_listitem_url").asString();
+  m_filePath = g_application.CurrentFileItem().GetDynPath();
 
   CVideoDatabase videoDatabase;
   videoDatabase.Open();
@@ -355,10 +349,7 @@ void CGUIDialogVideoBookmarks::ClearBookmarks()
 {
   CVideoDatabase videoDatabase;
   videoDatabase.Open();
-  std::string path = g_application.CurrentFile();
-  if (g_application.CurrentFileItem().HasProperty("original_listitem_url") &&
-     !URIUtils::IsVideoDb(g_application.CurrentFileItem().GetProperty("original_listitem_url").asString()))
-    path = g_application.CurrentFileItem().GetProperty("original_listitem_url").asString();
+  const std::string path{g_application.CurrentFileItem().GetDynPath()};
   videoDatabase.ClearBookMarksOfFile(path, CBookmark::STANDARD);
   videoDatabase.ClearBookMarksOfFile(path, CBookmark::RESUME);
   videoDatabase.ClearBookMarksOfFile(path, CBookmark::EPISODE);
@@ -471,10 +462,7 @@ bool CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
     videoDatabase.AddBookMarkForEpisode(*tag, bookmark);
   else
   {
-    std::string path = g_application.CurrentFile();
-    if (g_application.CurrentFileItem().HasProperty("original_listitem_url") &&
-       !URIUtils::IsVideoDb(g_application.CurrentFileItem().GetProperty("original_listitem_url").asString()))
-      path = g_application.CurrentFileItem().GetProperty("original_listitem_url").asString();
+    const std::string path{g_application.CurrentFileItem().GetDynPath()};
     videoDatabase.AddBookMarkToFile(path, bookmark, CBookmark::STANDARD);
   }
   videoDatabase.Close();
