@@ -151,7 +151,7 @@ bool CActiveAEBufferPoolResample::Create(
 
   m_remap = remap;
   m_stereoUpmix = upmix;
-  m_mixSubLevel = mixSubLevel * M_SQRT1_2;
+  m_mixSubLevel = mixSubLevel * static_cast<float>(M_SQRT1_2);
   CLog::LogF(LOGWARNING, "Mixing Level: {}", mixSubLevel);
 
   m_normalize = true;
