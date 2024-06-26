@@ -8398,7 +8398,19 @@ msgctxt "#14128"
 msgid "Allow double refresh rates"
 msgstr ""
 
-#empty strings from id 14129 to 14199
+#empty strings from id 14129 to 14186
+
+#: system/settings/settings.xml
+msgctxt "#14187"
+msgid "Advanced"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#14188"
+msgid "Player audio/video queues"
+msgstr ""
+
+#empty strings from id 14189 to 14199
 
 #: system/settings/settings.xml
 msgctxt "#14200"
@@ -22496,17 +22508,57 @@ msgstr ""
 
 #. Value of setting - MByte
 #: xbmc/settings/SevicesSettings.cpp
+#: xbmc/settings/PlayerSettings.cpp
 msgctxt "#37122"
 msgid "{0:d} MB"
 msgstr ""
 
 #. Value of setting - GByte
 #: xbmc/settings/SevicesSettings.cpp
+#: xbmc/settings/PlayerSettings.cpp
 msgctxt "#37123"
 msgid "{0:d} GB"
 msgstr ""
 
-#empty strings from id 37124 to 38010
+#empty strings from id 37124 to 37127
+
+#. Value of setting - second
+#: xbmc/settings/PlayerSettings.cpp
+msgctxt "#37128"
+msgid "{0:d} second"
+msgstr ""
+
+#. Value of setting - seconds
+#: xbmc/settings/PlayerSettings.cpp
+msgctxt "#37129"
+msgid "{0:d} seconds"
+msgstr ""
+
+#. Setting "Audio/video queue time"
+#: system/settings/settings.xml
+msgctxt "#37130"
+msgid "Audio/video queue time"
+msgstr ""
+
+#. Description of setting with label #37130 "Audio/video queue time"
+#: system/settings/settings.xml
+msgctxt "#37131"
+msgid "Duration in seconds of audio/video queues. The duration determines the amount of data stored in memory."
+msgstr ""
+
+#. Setting "Video queue maximum size"
+#: system/settings/settings.xml
+msgctxt "#37132"
+msgid "Video queue maximum size"
+msgstr ""
+
+#. Description of setting with label #37132 "Video queue maximum size"
+#: system/settings/settings.xml
+msgctxt "#37133"
+msgid "Limits the maximum memory usage for the video queue. The amount of memory used depends on the video bitrate and the length of the queue. If the memory limit is reached, the queue time is reduced as necessary."
+msgstr ""
+
+#empty strings from id 37134 to 38010
 
 #. Setting #38011 "Show All Items entry"
 #: system/settings/settings.xml
@@ -22918,7 +22970,13 @@ msgctxt "#38112"
 msgid "Automatically go to the visualisation window when audio playback starts"
 msgstr ""
 
-#empty strings from id 38113 to 38189
+#. Description of category #14187 "Advanced"
+#: system/settings/settings.xml
+msgctxt "#38113"
+msgid "This category contains the advanced settings for video playback"
+msgstr ""
+
+#empty strings from id 38114 to 38189
 
 msgctxt "#38190"
 msgid "Extract thumbnails from video files"

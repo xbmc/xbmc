@@ -142,6 +142,4 @@ protected:
   VideoPicture m_picture;
 
   EOutputState m_outputSate{OUTPUT_NORMAL};
-
-  double m_messageQueueTimeSize{0.0};
 };

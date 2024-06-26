@@ -891,6 +891,26 @@
         </setting>
       </group>
     </category>
+    <category id="advanced" label="14187" help="38113">
+      <group id="1" label="14188">
+        <setting id="videoplayer.queuetimesize" type="integer" label="37130" help="37131">
+          <level>2</level>
+          <default>40</default> <!-- 4.0 s -->
+          <constraints>
+            <options>playerqueuetimesizes</options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
+        <setting id="videoplayer.queuedatasize" type="integer" label="37132" help="37133">
+          <level>2</level>
+          <default>256</default> <!-- 256 MB -->
+          <constraints>
+            <options>playerqueuedatasizes</options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
+      </group>
+    </category>
   </section>
   <section id="media" label="14211" help="38101">
     <category id="library" label="14202" help="39004">
