@@ -429,11 +429,11 @@ function(core_optional_dep)
       set(_required True)
     endif()
 
-    if(TARGET kodi::${dep})
+    if(TARGET ${APP_NAME_LC}::${dep} OR (${depup}_FOUND AND ${depspec} IN_LIST optional_buildtools))
       set(final_message ${final_message} "${depup} enabled: Yes")
 
       # We dont want to add a build tool
-      if (NOT ${depspec} IN_LIST optional_buildtools AND NOT ${depspec} IN_LIST required_buildtools)
+      if (NOT ${depspec} IN_LIST optional_buildtools)
         # If dependency is found and is not in the list (eg mariadb/mysql) add to list
         if (NOT ${depspec} IN_LIST optional_deps)
           set(optional_deps  ${optional_deps} ${depspec} PARENT_SCOPE)
