@@ -256,10 +256,7 @@ bool CPVRGUIActionsRecordings::DeleteRecording(const CFileItem& item) const
 
   if (!AsyncDeleteRecording().Execute(item))
   {
-    HELPERS::ShowOKDialogText(
-        CVariant{257},
-        CVariant{
-            19111}); // "Error", "PVR backend error. Check the log for more information about this message."
+    HELPERS::ShowOKDialogText(CVariant{257}, CVariant{19111}); // "Error", "PVR backend error."
     return false;
   }
 
@@ -289,10 +286,7 @@ bool CPVRGUIActionsRecordings::DeleteWatchedRecordings(const CFileItem& item) co
 
   if (!AsyncDeleteRecording(true).Execute(item))
   {
-    HELPERS::ShowOKDialogText(
-        CVariant{257},
-        CVariant{
-            19111}); // "Error", "PVR backend error. Check the log for more information about this message."
+    HELPERS::ShowOKDialogText(CVariant{257}, CVariant{19111}); // "Error", "PVR backend error."
     return false;
   }
 
@@ -333,10 +327,7 @@ bool CPVRGUIActionsRecordings::UndeleteRecording(const CFileItem& item) const
 
   if (!AsyncUndeleteRecording().Execute(item))
   {
-    HELPERS::ShowOKDialogText(
-        CVariant{257},
-        CVariant{
-            19111}); // "Error", "PVR backend error. Check the log for more information about this message."
+    HELPERS::ShowOKDialogText(CVariant{257}, CVariant{19111}); // "Error", "PVR backend error."
     return false;
   }
 
