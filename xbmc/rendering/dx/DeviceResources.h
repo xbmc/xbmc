@@ -150,7 +150,7 @@ namespace DX
     void HandleOutputChange(const std::function<bool(DXGI_OUTPUT_DESC)>& cmpFunc);
     bool CreateFactory();
     void CheckNV12SharedTexturesSupport();
-    VideoDriverInfo GetVideoDriverVersion();
+    VideoDriverInfo GetVideoDriverVersion() const;
     void CheckDXVA2SharedDecoderSurfaces();
 
     HWND m_window{ nullptr };
