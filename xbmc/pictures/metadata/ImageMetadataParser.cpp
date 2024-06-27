@@ -16,6 +16,14 @@
 #include <limits>
 #include <vector>
 
+#if (EXIV2_MAJOR_VERSION == 0) && (EXIV2_MINOR_VERSION < 28)
+#define EXIV_toUint32 toLong
+#define EXIV_toInt64 toLong
+#else
+#define EXIV_toUint32 toUint32
+#define EXIV_toInt64 toInt64
+#endif
+
 using namespace XFILE;
 
 namespace
@@ -75,7 +83,7 @@ std::unique_ptr<ImageMetadata> CImageMetadataParser::ExtractMetadata(const std::
   CImageMetadataParser parser;
 
   // extract metadata
-  parser.ExtractCommonMetadata(image);
+  parser.ExtractCommonMetadata(*image);
 
   parser.ExtractExif(image->exifData());
   parser.ExtractIPTC(image->iptcData());
@@ -83,19 +91,20 @@ std::unique_ptr<ImageMetadata> CImageMetadataParser::ExtractMetadata(const std::
   return std::move(parser.m_imageMetadata);
 }
 
-void CImageMetadataParser::ExtractCommonMetadata(std::unique_ptr<Exiv2::Image>& image)
+void CImageMetadataParser::ExtractCommonMetadata(Exiv2::Image& image)
 {
   //! TODO: all these elements are generic should be moved out of the exif struct
-  m_imageMetadata->height = image->pixelHeight();
-  m_imageMetadata->width = image->pixelWidth();
-  m_imageMetadata->fileComment = image->comment();
-
-  if (image->imageType() == Exiv2::ImageType::jpeg)
+  m_imageMetadata->height = image.pixelHeight();
+  m_imageMetadata->width = image.pixelWidth();
+  m_imageMetadata->fileComment = image.comment();
+#if (EXIV2_MAJOR_VERSION >= 0) && (EXIV2_MINOR_VERSION >= 28) && (EXIV2_PATCH_VERSION >= 2)
+  if (image.imageType() == Exiv2::ImageType::jpeg)
   {
-    auto jpegImage = dynamic_cast<Exiv2::JpegImage*>(image.get());
+    auto jpegImage = dynamic_cast<Exiv2::JpegImage*>(&image);
     m_imageMetadata->isColor = jpegImage->numColorComponents() == 3;
     m_imageMetadata->encodingProcess = jpegImage->encodingProcess();
   }
+#endif
 }
 
 void CImageMetadataParser::ExtractExif(Exiv2::ExifData& exifData)
@@ -121,7 +130,7 @@ void CImageMetadataParser::ExtractExif(Exiv2::ExifData& exifData)
     }
     else if (exifKey == "Exif.Image.Orientation")
     {
-      const int orientationValue = it->value().toUint32();
+      const int orientationValue = it->value().EXIV_toUint32();
       if (orientationValue < 0 || orientationValue > 8)
       {
         CLog::LogF(LOGWARNING, "Exif: Undefined rotation value {}",
@@ -145,11 +154,11 @@ void CImageMetadataParser::ExtractExif(Exiv2::ExifData& exifData)
     }
     else if (exifKey == "Exif.Photo.ExposureProgram")
     {
-      m_imageMetadata->exifInfo.ExposureProgram = it->value().toUint32();
+      m_imageMetadata->exifInfo.ExposureProgram = it->value().EXIV_toUint32();
     }
     else if (exifKey == "Exif.Photo.ISOSpeedRatings")
     {
-      m_imageMetadata->exifInfo.ISOequivalent = it->value().toUint32();
+      m_imageMetadata->exifInfo.ISOequivalent = it->value().EXIV_toUint32();
     }
     else if (exifKey == "Exif.Photo.DateTimeOriginal")
     {
@@ -184,11 +193,11 @@ void CImageMetadataParser::ExtractExif(Exiv2::ExifData& exifData)
     }
     else if (exifKey == "Exif.Photo.MeteringMode")
     {
-      m_imageMetadata->exifInfo.MeteringMode = it->value().toUint32();
+      m_imageMetadata->exifInfo.MeteringMode = it->value().EXIV_toUint32();
     }
     else if (exifKey == "Exif.Photo.Flash")
     {
-      m_imageMetadata->exifInfo.FlashUsed = it->value().toUint32();
+      m_imageMetadata->exifInfo.FlashUsed = it->value().EXIV_toUint32();
     }
     else if (exifKey == "Exif.Photo.FocalLength")
     {
@@ -211,7 +220,7 @@ void CImageMetadataParser::ExtractExif(Exiv2::ExifData& exifData)
       // Use largest of height and width to deal with images that have been
       // rotated to portrait format.
       {
-        const int value = static_cast<int>(it->value().toInt64());
+        const int value = static_cast<int>(it->value().EXIV_toInt64());
         if (m_imageWidth < value)
         {
           m_imageWidth = value;
@@ -224,7 +233,7 @@ void CImageMetadataParser::ExtractExif(Exiv2::ExifData& exifData)
     }
     else if (exifKey == "Exif.Photo.FocalPlaneResolutionUnit")
     {
-      const uint32_t value = it->value().toUint32();
+      const uint32_t value = it->value().EXIV_toUint32();
       // see: https://exiftool.org/TagNames/EXIF.html
       switch (value)
       {
@@ -247,15 +256,15 @@ void CImageMetadataParser::ExtractExif(Exiv2::ExifData& exifData)
     }
     else if (exifKey == "Exif.Photo.ExposureMode")
     {
-      m_imageMetadata->exifInfo.ExposureMode = it->value().toUint32();
+      m_imageMetadata->exifInfo.ExposureMode = it->value().EXIV_toUint32();
     }
     else if (exifKey == "Exif.Photo.WhiteBalance")
     {
-      m_imageMetadata->exifInfo.Whitebalance = it->value().toUint32();
+      m_imageMetadata->exifInfo.Whitebalance = it->value().EXIV_toUint32();
     }
     else if (exifKey == "Exif.Photo.LightSource")
     {
-      m_imageMetadata->exifInfo.LightSource = it->value().toUint32();
+      m_imageMetadata->exifInfo.LightSource = it->value().EXIV_toUint32();
     }
     else if (exifKey == "Exif.Photo.DigitalZoomRatio")
     {
@@ -266,7 +275,7 @@ void CImageMetadataParser::ExtractExif(Exiv2::ExifData& exifData)
       // The focal length equivalent 35 mm is a 2.2 tag (defined as of April 2002)
       // if its present, use it to compute equivalent focal length instead of
       // computing it from sensor geometry and actual focal length.
-      m_imageMetadata->exifInfo.FocalLength35mmEquiv = it->value().toUint32();
+      m_imageMetadata->exifInfo.FocalLength35mmEquiv = it->value().EXIV_toUint32();
     }
     else if (exifKey == "Exif.GPSInfo.GPSLatitudeRef")
     {
@@ -308,7 +317,7 @@ void CImageMetadataParser::ExtractExif(Exiv2::ExifData& exifData)
     }
     else if (exifKey == "Exif.GPSInfo.GPSAltitudeRef")
     {
-      auto value = it->value().toUint32();
+      auto value = it->value().EXIV_toUint32();
       if (value == 1) // below sea level
       {
         m_imageMetadata->exifInfo.GpsAlt = "-" + m_imageMetadata->exifInfo.GpsAlt;

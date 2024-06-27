@@ -46,9 +46,11 @@ TEST_F(TestMetadataExtraction, TestGPSImage)
   EXPECT_EQ(metadata->width, 1);
   EXPECT_EQ(metadata->height, 1);
   EXPECT_TRUE(metadata->fileComment.empty());
+#if (EXIV2_MAJOR_VERSION >= 0) && (EXIV2_MINOR_VERSION >= 28) && (EXIV2_PATCH_VERSION >= 2)
   // format specific (but common) metadata
   EXPECT_TRUE(metadata->isColor);
   EXPECT_EQ(metadata->encodingProcess, "Baseline DCT, Huffman coding");
+#endif
 }
 
 TEST_F(TestMetadataExtraction, TestIPTC)
@@ -74,7 +76,9 @@ TEST_F(TestMetadataExtraction, TestIPTC)
   EXPECT_EQ(metadata->width, 1);
   EXPECT_EQ(metadata->height, 1);
   EXPECT_TRUE(metadata->fileComment.empty());
+#if (EXIV2_MAJOR_VERSION >= 0) && (EXIV2_MINOR_VERSION >= 28) && (EXIV2_PATCH_VERSION >= 2)
   // format specific (but common) metadata
   EXPECT_TRUE(metadata->isColor);
   EXPECT_EQ(metadata->encodingProcess, "Baseline DCT, Huffman coding");
+#endif
 }
