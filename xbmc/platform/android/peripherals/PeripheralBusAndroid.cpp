@@ -112,6 +112,8 @@ bool CPeripheralBusAndroid::InitializeProperties(CPeripheral& peripheral)
   joystick.SetButtonCount(state.GetButtonCount());
   joystick.SetAxisCount(state.GetAxisCount());
 
+  std::unique_lock<CCriticalSection> lock(m_critSectionStates);
+
   // remember the joystick state
   m_joystickStates.insert(std::make_pair(deviceId, std::move(state)));
 
@@ -133,6 +135,8 @@ bool CPeripheralBusAndroid::InitializeButtonMap(const CPeripheral& peripheral,
               peripheral.Location());
     return false;
   }
+
+  std::unique_lock<CCriticalSection> lock(m_critSectionStates);
 
   // get the joystick state
   auto it = m_joystickStates.find(deviceId);
@@ -325,7 +329,10 @@ void CPeripheralBusAndroid::OnInputDeviceRemoved(int deviceId)
 
   if (removed)
   {
-    m_joystickStates.erase(deviceId);
+    {
+      std::unique_lock<CCriticalSection> lock(m_critSectionStates);
+      m_joystickStates.erase(deviceId);
+    }
 
     OnDeviceRemoved(deviceLocation);
   }
