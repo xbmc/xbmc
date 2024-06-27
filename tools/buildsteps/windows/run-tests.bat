@@ -43,6 +43,11 @@ ECHO ------------------------------------------------------------
 ECHO Running testsuite...
   "%buildconfig%\%APP_NAME%-test.exe" --gtest_output=xml:%WORKSPACE%\gtestresults.xml
 
+  IF NOT EXIST %WORKSPACE%\gtestresults.xml (
+    set DIETEXT="%APP_NAME%-test.exe failed to execute or output test results!"
+    goto DIE
+  )
+
   rem Adapt gtest xml output to be conform with junit xml
   rem this basically looks for lines which have "notrun" in the <testcase /> tag
   rem and adds a <skipped/> subtag into it. For example:
