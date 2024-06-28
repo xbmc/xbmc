@@ -145,7 +145,7 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
       if (StringUtils::CompareNoCase(szGUID, strDeviceGUID) == 0)
       {
         deviceGUID = (*itt).lpGuid;
-        deviceFriendlyName = (*itt).name.c_str();
+        deviceFriendlyName = (*itt).name;
         break;
       }
     }
