@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -112,26 +112,10 @@ EGLConfig CWinSystemX11GLContext::GetEGLConfig() const
   return static_cast<CGLContextEGL*>(m_pGLContext)->m_eglConfig;
 }
 
-bool CWinSystemX11GLContext::BindTextureUploadContext()
+bool CWinSystemX11GLContext::BindSecondaryGPUContext(const unsigned int& id)
 {
   if (m_pGLContext)
-    return static_cast<CGLContextEGL*>(m_pGLContext)->BindTextureUploadContext();
-  else
-    return false;
-}
-
-bool CWinSystemX11GLContext::UnbindTextureUploadContext()
-{
-  if (m_pGLContext)
-    return static_cast<CGLContextEGL*>(m_pGLContext)->UnbindTextureUploadContext();
-  else
-    return false;
-}
-
-bool CWinSystemX11GLContext::HasContext()
-{
-  if (m_pGLContext)
-    return static_cast<CGLContextEGL*>(m_pGLContext)->HasContext();
+    return static_cast<CGLContextEGL*>(m_pGLContext)->BindSecondaryGPUContext(id);
   else
     return false;
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -10,7 +10,6 @@
 
 #include "guilib/TextureManager.h"
 #include "threads/CriticalSection.h"
-#include "utils/Job.h"
 
 #include <memory>
 #include <string>
@@ -20,27 +19,31 @@
 class CTexture;
 
 /*!
- \ingroup textures,jobs
+ \ingroup textures
  \brief Image loader job class
 
  Used by the CGUILargeTextureManager to perform asynchronous loading of textures.
 
- \sa CGUILargeTextureManager and CJob
+ \sa CGUILargeTextureManager
  */
-class CImageLoader : public CJob
+class CImageLoader
 {
 public:
-  CImageLoader(const std::string &path, const bool useCache);
-  ~CImageLoader() override;
+  CImageLoader(const std::string& path, const bool useCache, CGUILargeTextureManager* callback);
+  ~CImageLoader();
 
   /*!
    \brief Work function that loads in a particular image.
+
+   \param immediatelyUpload true uploads the texture to the GPU immediately. Stalls until complete.
    */
-  bool DoWork() override;
+  bool DoWork(bool immediatelyUpload);
 
   bool          m_use_cache; ///< Whether or not to use any caching with this image
   std::string    m_path; ///< path of image to load
   std::unique_ptr<CTexture> m_texture; ///< Texture object to load the image into \sa CTexture.
+  CGUILargeTextureManager* m_callback;
+  unsigned int m_imageID{0};
 };
 
 /*!
@@ -50,22 +53,22 @@ public:
  Used to load textures for the user interface asynchronously, allowing fluid framerates
  while background loading textures.
 
- \sa IJobCallback, CGUITexture
+ \sa CGUITexture
  */
-class CGUILargeTextureManager : public IJobCallback
+class CGUILargeTextureManager
 {
 public:
   CGUILargeTextureManager();
-  ~CGUILargeTextureManager() override;
+  ~CGUILargeTextureManager();
 
   /*!
    \brief Callback from CImageLoader on completion of a loaded image
 
    Transfers texture information from the loading job to our allocated texture list.
 
-   \sa CImageLoader, IJobCallback
+   \sa CImageLoader
    */
-  void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
+  void OnLoadComplete(CImageLoader* image);
 
   /*!
    \brief Request a texture to be loaded in the background.

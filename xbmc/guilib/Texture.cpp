@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -266,22 +266,6 @@ bool CTexture::LoadIImage(IImage* pImage,
   ClampToEdge();
 
   return true;
-}
-
-void CTexture::LoadToGPUAsync()
-{
-  // Already in main context?
-  if (CServiceBroker::GetWinSystem()->HasContext())
-    return;
-
-  if (!CServiceBroker::GetWinSystem()->BindTextureUploadContext())
-    return;
-
-  LoadToGPU();
-
-  SyncGPU();
-
-  CServiceBroker::GetWinSystem()->UnbindTextureUploadContext();
 }
 
 bool CTexture::LoadFromMemory(unsigned int width,

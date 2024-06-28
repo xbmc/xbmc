@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -394,6 +394,11 @@ void CServiceBroker::UnregisterJobManager()
 std::shared_ptr<CJobManager> CServiceBroker::GetJobManager()
 {
   return g_serviceBroker.m_jobManager;
+}
+
+KODI::GUILIB::CGUITextureJobManager& CServiceBroker::GetTextureJobManager()
+{
+  return g_application.m_ServiceManager->GetTextureJobManager();
 }
 
 void CServiceBroker::RegisterAppMessenger(

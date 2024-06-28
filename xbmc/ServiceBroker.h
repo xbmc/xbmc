@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -108,6 +108,11 @@ namespace RETRO
 {
 class CGUIGameRenderManager;
 }
+
+namespace GUILIB
+{
+class CGUITextureJobManager;
+}
 } // namespace KODI
 
 namespace PERIPHERALS
@@ -149,6 +154,7 @@ public:
   static WSDiscovery::IWSDiscovery& GetWSDiscovery();
   static MEDIA_DETECT::CDetectDVDMedia& GetDetectDVDMedia();
   static PVR::CPVRManager& GetPVRManager();
+  static KODI::GUILIB::CGUITextureJobManager& GetTextureJobManager();
   static CContextMenuManager& GetContextMenuManager();
   static CDataCacheCore& GetDataCacheCore();
   static CPlatform& GetPlatform();

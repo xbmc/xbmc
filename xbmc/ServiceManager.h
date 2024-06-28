@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -67,6 +67,11 @@ namespace RETRO
 {
 class CGUIGameRenderManager;
 }
+
+namespace GUILIB
+{
+class CGUITextureJobManager;
+}
 } // namespace KODI
 
 namespace MEDIA_DETECT
@@ -117,6 +122,7 @@ public:
   WSDiscovery::IWSDiscovery& GetWSDiscovery();
 #endif
   PVR::CPVRManager& GetPVRManager();
+  KODI::GUILIB::CGUITextureJobManager& GetTextureJobManager();
   CContextMenuManager& GetContextMenuManager();
   CDataCacheCore& GetDataCacheCore();
   /**\brief Get the platform object. This is save to be called after Init1() was called
@@ -164,6 +170,7 @@ protected:
   std::unique_ptr<XBPython> m_XBPython;
 #endif
   std::unique_ptr<PVR::CPVRManager> m_PVRManager;
+  std::unique_ptr<KODI::GUILIB::CGUITextureJobManager> m_textureJobManager;
   std::unique_ptr<CContextMenuManager> m_contextMenuManager;
   std::unique_ptr<CDataCacheCore> m_dataCacheCore;
   std::unique_ptr<CPlatform> m_Platform;
