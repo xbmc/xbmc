@@ -125,8 +125,8 @@ void CPVRChannelSwitchingInputHandler::SwitchToChannel(const CPVRChannelNumber& 
         if (!groupMember)
         {
           // channel number present in any group?
-          const CPVRChannelGroups* groupAccess =
-              CServiceBroker::GetPVRManager().ChannelGroups()->Get(bRadio);
+          const std::shared_ptr<const CPVRChannelGroups> groupAccess{
+              CServiceBroker::GetPVRManager().ChannelGroups()->Get(bRadio)};
           const std::vector<std::shared_ptr<CPVRChannelGroup>> groups =
               groupAccess->GetMembers(true);
           for (const auto& currentGroup : groups)

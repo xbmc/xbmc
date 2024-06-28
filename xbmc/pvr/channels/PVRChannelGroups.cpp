@@ -239,7 +239,7 @@ std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroups::GetChannelGroupMember
 }
 
 std::vector<std::shared_ptr<CPVRChannelGroupMember>> CPVRChannelGroups::GetMembersAvailableForGroup(
-    const std::shared_ptr<const CPVRChannelGroup>& group)
+    const std::shared_ptr<const CPVRChannelGroup>& group) const
 {
   std::vector<std::shared_ptr<CPVRChannelGroupMember>> result;
 

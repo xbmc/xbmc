@@ -133,8 +133,8 @@ bool CGUIDialogPVRChannelsOSD::OnAction(const CAction& action)
       SaveControlStates();
 
       // switch to next or previous group
-      const CPVRChannelGroups* groups =
-          CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_group->IsRadio());
+      const std::shared_ptr<const CPVRChannelGroups> groups{
+          CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_group->IsRadio())};
       const std::shared_ptr<CPVRChannelGroup> nextGroup = action.GetID() == ACTION_NEXT_CHANNELGROUP
                                                               ? groups->GetNextGroup(*m_group)
                                                               : groups->GetPreviousGroup(*m_group);
