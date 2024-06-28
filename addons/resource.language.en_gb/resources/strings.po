@@ -3247,7 +3247,43 @@ msgctxt "#687"
 msgid "From metadata"
 msgstr ""
 
-#empty strings from id 688 to 699
+#. Description of setting with label #39159 "Border size"
+#: system/settings/settings.xml
+msgctxt "#688"
+msgid "Set the border size."
+msgstr ""
+
+#. Description of setting with label #39160 "Border colour"
+#: system/settings/settings.xml
+msgctxt "#689"
+msgid "Set the border colour."
+msgstr ""
+
+#. Description of setting with label #39173 "Blur"
+#: system/settings/settings.xml
+msgctxt "#690"
+msgid "Set the blur."
+msgstr ""
+
+#. Description of setting with label #39171 "Shadow colour"
+#: system/settings/settings.xml
+msgctxt "#691"
+msgid "Set the shadow colour."
+msgstr ""
+
+#. Description of setting with label #39172 "Shadow opacity"
+#: system/settings/settings.xml
+msgctxt "#692"
+msgid "Set the shadow opacity."
+msgstr ""
+
+#. Description of setting with label #39170 "Shadow size"
+#: system/settings/settings.xml
+msgctxt "#693"
+msgid "Set the shadow size."
+msgstr ""
+
+#empty strings from id 694 to 699
 
 #: xbmc/interfaces/builtins/LibraryBuiltins.cpp
 #: xbmc/music/MusicLibraryQueue.cpp
