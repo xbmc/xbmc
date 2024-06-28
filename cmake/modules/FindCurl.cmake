@@ -11,10 +11,9 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
   macro(buildCurl)
-
+    find_package(Brotli REQUIRED QUIET)
     find_package(NGHttp2 REQUIRED QUIET)
     find_package(OpenSSL REQUIRED QUIET)
-    find_package(Brotli REQUIRED QUIET)
 
     # Darwin platforms link against toolchain provided zlib regardless
     # They will fail when searching for static. All other platforms, prefer static
@@ -23,7 +22,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     if(NOT CMAKE_SYSTEM_NAME MATCHES "Darwin" AND NOT (WIN32 OR WINDOWS_STORE))
       set(ZLIB_USE_STATIC_LIBS ON)
     endif()
-    find_package(ZLIB REQUIRED)
+    find_package(Zlib REQUIRED)
     unset(ZLIB_USE_STATIC_LIBS)
 
     set(CURL_VERSION ${${MODULE}_VER})
@@ -61,14 +60,14 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     BUILD_DEP_TARGET()
 
     # Link libraries for target interface
-    set(PC_CURL_LINK_LIBRARIES Brotli::Brotli OpenSSL::Crypto OpenSSL::SSL NGHttp2::NGHttp2 ZLIB::ZLIB ${PLATFORM_LINK_LIBS})
+    set(PC_CURL_LINK_LIBRARIES Brotli::Brotli NGHttp2::NGHttp2 OpenSSL::Crypto OpenSSL::SSL ZLIB::ZLIB ${PLATFORM_LINK_LIBS})
 
     # Add dependencies to build target
+    add_dependencies(${MODULE_LC} Brotli::Brotli)
     add_dependencies(${MODULE_LC} NGHttp2::NGHttp2)
     add_dependencies(${MODULE_LC} OpenSSL::SSL)
     add_dependencies(${MODULE_LC} OpenSSL::Crypto)
     add_dependencies(${MODULE_LC} ZLIB::ZLIB)
-    add_dependencies(${MODULE_LC} Brotli::Brotli)
   endmacro()
 
   set(MODULE_LC curl)

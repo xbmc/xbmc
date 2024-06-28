@@ -10,6 +10,13 @@ if(POLICY CMP0069)
   cmake_policy(SET CMP0069 NEW)
 endif()
 
+# https://cmake.org/cmake/help/latest/policy/CMP0074.html
+# find_package() uses <PackageName>_ROOT variables
+if(POLICY CMP0074)
+  set(CMAKE_POLICY_DEFAULT_CMP0074 NEW)
+  cmake_policy(SET CMP0074 NEW)
+endif()
+
 if(POLICY CMP0079)
   set(CMAKE_POLICY_DEFAULT_CMP0079 NEW)
   cmake_policy(SET CMP0079 NEW)
