@@ -39,7 +39,7 @@ protected:
 
 private:
   void Clear();
-  void ClearSelectedGroupsThumbnail();
+  void ClearGroupThumbnails(const CFileItem& changedItem);
   void Update();
   bool ActionButtonOk(const CGUIMessage& message);
   bool ActionButtonNewGroup(const CGUIMessage& message);
