@@ -1,0 +1,10 @@
+--- a/src/futils.cpp
++++ b/src/futils.cpp
+@@ -11,6 +11,7 @@
+ // + standard includes
+ #include <algorithm>
+ #include <array>
++#include <cstdint>
+ #include <cstring>
+ #include <sstream>
+ #include <stdexcept>
