@@ -27,6 +27,7 @@ position, size, transparency and contents of the image to be displayed.
       <texture>$INFO[MusicPlayer.Cover]</texture>
       <aspectratio>keep</aspectratio>
       <imagefilter>linear</imagefilter>
+      <diffusefilter>linear</diffusefilter>
 </control>
 ~~~~~~~~~~~~~
 
@@ -73,6 +74,7 @@ important, as `xml` tags are case-sensitive.
 | fadetime      | This specifies a crossfade time that will be used whenever the underlying <b>`<texture>`</b> filename changes. The previous image will be held until the new image is ready, and then they will be crossfaded. This is particularly useful for a large thumbnail image showing the focused item in a list, or for fanart or other large backdrops.
 | background    | For images inside a container, you can specify background="true" to load the textures in a background worker thread. [See here for additional information about background loading](http://kodi.wiki/view/Background_Image_Loader).
 | imagefilter   | This can take two values: <b>`linear`</b> or <b>`nearest`</b>. Linear scaling is the default, and smoothly blurs between pixels. Nearest neighbor scaling will apply a pixelated effect to the image.
+| diffusefilter | Equivalent of <b>`imagefilter`</b> for the diffuse texture.
 
 For the tags "texture" and "bordertexture", the following attributes are available.
 
@@ -88,6 +90,7 @@ For the tags "texture" and "bordertexture", the following attributes are availab
 
 @skinning_v20 <b>infill</b> New texture attribute added.
 @skinning_v22 <b>imagefilter</b> New tag added.
+@skinning_v22 <b>diffusefilter</b> New tag added.
 
 --------------------------------------------------------------------------------
 \section Image_Control_sect4 See also

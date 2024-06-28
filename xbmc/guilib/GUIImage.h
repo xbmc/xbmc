@@ -75,12 +75,14 @@ public:
   virtual void SetFileName(const std::string& strFileName, bool setConstant = false, const bool useCache = true);
   virtual void SetAspectRatio(const CAspectRatio &aspect);
   virtual void SetScalingMethod(TEXTURE_SCALING scalingMethod);
+  virtual void SetDiffuseScalingMethod(TEXTURE_SCALING scalingMethod);
   void SetWidth(float width) override;
   void SetHeight(float height) override;
   void SetPosition(float posX, float posY) override;
   std::string GetDescription() const override;
   void SetCrossFade(unsigned int time);
   void SetImageFilter(const KODI::GUILIB::GUIINFO::CGUIInfoLabel& imageFilter);
+  void SetDiffuseFilter(const KODI::GUILIB::GUIINFO::CGUIInfoLabel& diffuseFilter);
 
   const std::string& GetFileName() const;
   float GetTextureWidth() const;
@@ -110,6 +112,7 @@ protected:
   void UpdateDiffuseColor(const CGUIListItem* item);
 
   void UpdateImageFilter(KODI::GUILIB::IMAGE_FILTER imageFilter);
+  void UpdateDiffuseFilter(KODI::GUILIB::IMAGE_FILTER diffuseFilter);
 
   bool m_bDynamicResourceAlloc;
 
@@ -135,4 +138,7 @@ protected:
 
   KODI::GUILIB::GUIINFO::CGUIInfoLabel m_imageFilterInfo;
   KODI::GUILIB::IMAGE_FILTER m_imageFilter{KODI::GUILIB::IMAGE_FILTER::UNKNOWN};
+
+  KODI::GUILIB::GUIINFO::CGUIInfoLabel m_diffuseFilterInfo;
+  KODI::GUILIB::IMAGE_FILTER m_diffuseFilter{KODI::GUILIB::IMAGE_FILTER::UNKNOWN};
 };
