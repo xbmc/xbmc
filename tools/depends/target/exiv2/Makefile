@@ -2,7 +2,9 @@ include ../../Makefile.include EXIV2-VERSION ../../download-files.include
 DEPS = ../../Makefile.include Makefile EXIV2-VERSION ../../download-files.include \
             0001-Add-EXIV2_ENABLE_FILESYSTEM_ACCESS-option.patch \
             0002-Set-conditional-HTTP-depending-on-EXIV2_ENABLE_WEBRE.patch \
-            0003-UWP-Disable-getLoadedLibraries.patch
+            0003-UWP-Disable-getLoadedLibraries.patch \
+            0004-WIN-lib-postfix.patch \
+            0005-GCC13-cstdint.patch
 
 # configuration settings
 CMAKE_OPTIONS=-DCMAKE_INSTALL_PREFIX=$(PREFIX) \
@@ -30,6 +32,8 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	cd $(PLATFORM); patch -p1 -i ../0001-Add-EXIV2_ENABLE_FILESYSTEM_ACCESS-option.patch
 	cd $(PLATFORM); patch -p1 -i ../0002-Set-conditional-HTTP-depending-on-EXIV2_ENABLE_WEBRE.patch
 	cd $(PLATFORM); patch -p1 -i ../0003-UWP-Disable-getLoadedLibraries.patch
+	cd $(PLATFORM); patch -p1 -i ../0004-WIN-lib-postfix.patch
+	cd $(PLATFORM); patch -p1 -i ../0005-GCC13-cstdint.patch
 	cd $(PLATFORM)/build; $(CMAKE) $(CMAKE_OPTIONS) ..
 
 $(LIBDYLIB): $(PLATFORM)
