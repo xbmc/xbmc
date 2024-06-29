@@ -551,6 +551,12 @@ bool CPVRTimers::UpdateEntries(int iMaxNotificationDelay)
                 }
               }
             }
+            else if (!timer->IsTimerRule())
+            {
+              // epg event no longer present. delete the timer
+              bDeleteTimer = true;
+              timer->DeleteFromDatabase();
+            }
           }
         }
 
