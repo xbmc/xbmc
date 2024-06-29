@@ -161,14 +161,6 @@
 					<onclick>ActivateWindow(1101)</onclick>
 					<enable>!Skin.HasSetting(HomeMenuNoMovieButton)</enable>
 				</control>
-				<control type="button" id="6110">
-					<label>- $LOCALIZE[31157]</label>
-					<include>DefaultSettingButton</include>
-					<onclick condition="System.AddonIsEnabled(plugin.library.node.editor)">ActivateWindow(programs,plugin://plugin.library.node.editor/?ltype=video,return)</onclick>
-					<onclick condition="System.HasAddon(plugin.library.node.editor) + !System.AddonIsEnabled(plugin.library.node.editor)">EnableAddon(plugin.library.node.editor)</onclick>
-					<onclick condition="!System.HasAddon(plugin.library.node.editor)">InstallAddon(plugin.library.node.editor)</onclick>
-					<enable>!Skin.HasSetting(HomeMenuNoMovieButton)</enable>
-				</control>
 				<control type="button" id="627">
 					<label>- $LOCALIZE[31176]</label>
 					<include>DefaultSettingButton</include>
@@ -190,14 +182,6 @@
 					<onclick>ActivateWindow(1101)</onclick>
 					<enable>!Skin.HasSetting(HomeMenuNoTVShowButton)</enable>
 				</control>
-				<control type="button" id="6120">
-					<label>- $LOCALIZE[31157]</label>
-					<include>DefaultSettingButton</include>
-					<onclick condition="System.AddonIsEnabled(plugin.library.node.editor)">ActivateWindow(programs,plugin://plugin.library.node.editor/?ltype=video,return)</onclick>
-					<onclick condition="System.HasAddon(plugin.library.node.editor) + !System.AddonIsEnabled(plugin.library.node.editor)">EnableAddon(plugin.library.node.editor)</onclick>
-					<onclick condition="!System.HasAddon(plugin.library.node.editor)">InstallAddon(plugin.library.node.editor)</onclick>
-					<enable>!Skin.HasSetting(HomeMenuNoTVShowButton)</enable>
-				</control>
 				<control type="button" id="626">
 					<label>- $LOCALIZE[31175]</label>
 					<include>DefaultSettingButton</include>
@@ -217,14 +201,6 @@
 					<onclick>SetProperty(dialogsettings_header,$LOCALIZE[31040] - $LOCALIZE[2],home)</onclick>
 					<onclick>SetProperty(dialogsettings_content,musicwidgets,home)</onclick>
 					<onclick>ActivateWindow(1101)</onclick>
-					<enable>!Skin.HasSetting(HomeMenuNoMusicButton)</enable>
-				</control>
-				<control type="button" id="6130">
-					<label>- $LOCALIZE[31157]</label>
-					<include>DefaultSettingButton</include>
-					<onclick condition="System.AddonIsEnabled(plugin.library.node.editor)">ActivateWindow(programs,plugin://plugin.library.node.editor/?ltype=music,return)</onclick>
-					<onclick condition="System.HasAddon(plugin.library.node.editor) + !System.AddonIsEnabled(plugin.library.node.editor)">EnableAddon(plugin.library.node.editor)</onclick>
-					<onclick condition="!System.HasAddon(plugin.library.node.editor)">InstallAddon(plugin.library.node.editor)</onclick>
 					<enable>!Skin.HasSetting(HomeMenuNoMusicButton)</enable>
 				</control>
 				<control type="button" id="625">

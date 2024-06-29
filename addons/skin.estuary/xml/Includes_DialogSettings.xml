@@ -177,6 +177,15 @@
 			<onclick>Skin.ToggleSetting(home_movies_categories_widget)</onclick>
 			<selected>!Skin.HasSetting(home_movies_categories_widget)</selected>
 		</control>
+		<control type="button" id="22108">
+			<label>- $LOCALIZE[31157]</label>
+			<include>DialogSettingButton</include>
+			<onclick condition="System.AddonIsEnabled(plugin.library.node.editor)">Dialog.Close(1101)</onclick>
+			<onclick condition="System.AddonIsEnabled(plugin.library.node.editor)">ActivateWindow(programs,plugin://plugin.library.node.editor/?ltype=video,return)</onclick>
+			<onclick condition="System.HasAddon(plugin.library.node.editor) + !System.AddonIsEnabled(plugin.library.node.editor)">EnableAddon(plugin.library.node.editor)</onclick>
+			<onclick condition="!System.HasAddon(plugin.library.node.editor)">InstallAddon(plugin.library.node.editor)</onclick>
+			<enable>!Skin.HasSetting(home_movies_categories_widget)</enable>
+		</control>
 		<control type="radiobutton" id="22102">
 			<include>DialogSettingButton</include>
 			<label>$LOCALIZE[31010]</label>
@@ -221,6 +230,15 @@
 			<onclick>Skin.ToggleSetting(home_tvshows_categories_widget)</onclick>
 			<selected>!Skin.HasSetting(home_tvshows_categories_widget)</selected>
 		</control>
+		<control type="button" id="22108">
+			<label>- $LOCALIZE[31157]</label>
+			<include>DialogSettingButton</include>
+			<onclick condition="System.AddonIsEnabled(plugin.library.node.editor)">Dialog.Close(1101)</onclick>
+			<onclick condition="System.AddonIsEnabled(plugin.library.node.editor)">ActivateWindow(programs,plugin://plugin.library.node.editor/?ltype=video,return)</onclick>
+			<onclick condition="System.HasAddon(plugin.library.node.editor) + !System.AddonIsEnabled(plugin.library.node.editor)">EnableAddon(plugin.library.node.editor)</onclick>
+			<onclick condition="!System.HasAddon(plugin.library.node.editor)">InstallAddon(plugin.library.node.editor)</onclick>
+			<enable>!Skin.HasSetting(home_tvshows_categories_widget)</enable>
+		</control>
 		<control type="radiobutton" id="22102">
 			<include>DialogSettingButton</include>
 			<label>$LOCALIZE[626]</label>
@@ -258,6 +276,15 @@
 			<label>$LOCALIZE[31148]</label>
 			<onclick>Skin.ToggleSetting(home_music_categories_widget)</onclick>
 			<selected>!Skin.HasSetting(home_music_categories_widget)</selected>
+		</control>
+		<control type="button" id="22108">
+			<label>- $LOCALIZE[31157]</label>
+			<include>DialogSettingButton</include>
+			<onclick condition="System.AddonIsEnabled(plugin.library.node.editor)">Dialog.Close(1101)</onclick>
+			<onclick condition="System.AddonIsEnabled(plugin.library.node.editor)">ActivateWindow(programs,plugin://plugin.library.node.editor/?ltype=music,return)</onclick>
+			<onclick condition="System.HasAddon(plugin.library.node.editor) + !System.AddonIsEnabled(plugin.library.node.editor)">EnableAddon(plugin.library.node.editor)</onclick>
+			<onclick condition="!System.HasAddon(plugin.library.node.editor)">InstallAddon(plugin.library.node.editor)</onclick>
+			<enable>!Skin.HasSetting(home_music_categories_widget)</enable>
 		</control>
 		<control type="radiobutton" id="22102">
 			<include>DialogSettingButton</include>
