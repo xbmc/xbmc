@@ -141,9 +141,6 @@
 					<scrolltime tween="sine">200</scrolltime>
 					<orientation>horizontal</orientation>
 					<onup>87</onup>
-					<ondown condition="Control.HasFocus(70043)">11104</ondown>
-					<ondown condition="Control.HasFocus(704)">12104</ondown>
-					<ondown condition="Control.HasFocus(255)">13103</ondown>
 					<onleft>608</onleft>
 					<onright>600</onright>
 					<control type="radiobutton" id="804">
