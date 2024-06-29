@@ -342,7 +342,6 @@
 							<description>Label for Saved with: text</description>
 							<top>14</top>
 							<height>20</height>
-							<font>font16</font>
 							<shadowcolor>text_shadow</shadowcolor>
 							<label>35255</label>
 							<align>center</align>
