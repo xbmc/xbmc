@@ -3978,7 +3978,25 @@ msgctxt "#855"
 msgid "Recently added channels"
 msgstr ""
 
-#empty strings from id 856 to 996
+#. Label for the origin of a channel group (provided by a PVR client add-on).
+#: xbmc/pvr/guilib/guiinfo/PVRGUIInfo.cpp
+msgctxt "#856"
+msgid "Client"
+msgstr ""
+
+#. Label for the origin of a channel group (automatically created by Kodi).
+#: xbmc/pvr/guilib/guiinfo/PVRGUIInfo.cpp
+msgctxt "#857"
+msgid "System"
+msgstr ""
+
+#. Label for the origin of a channel group (manually created by the user).
+#: xbmc/pvr/guilib/guiinfo/PVRGUIInfo.cpp
+msgctxt "#858"
+msgid "User"
+msgstr ""
+
+#empty strings from id 859 to 996
 
 #: xbmc/windows/GUIMediaWindow.cpp
 msgctxt "#997"

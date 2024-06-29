@@ -7006,6 +7006,15 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @skinning_v22 **[New Infolabel]** \link ListItem_PVRInstanceName `ListItem.PVRInstanceName`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.PVRGroupOrigin`</b>,
+///                  \anchor ListItem_PVRGroupOrigin
+///                  _string_,
+///     @return If selected item is of type PVR channel group, the creator (user, system, client) of
+///     the group.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link ListItem_PVRGroupOrigin `ListItem.PVRGroupOrigin`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -7230,6 +7239,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "hasvideoextras",   LISTITEM_HASVIDEOEXTRAS },
                                   { "pvrclientname",    LISTITEM_PVR_CLIENT_NAME },
                                   { "pvrinstancename",  LISTITEM_PVR_INSTANCE_NAME },
+                                  { "pvrgrouporigin",   LISTITEM_PVR_GROUP_ORIGIN },
 };
 // clang-format on
 

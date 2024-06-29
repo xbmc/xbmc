@@ -19,9 +19,8 @@
 
 using namespace PVR;
 
-CPVRChannelGroupsContainer::CPVRChannelGroupsContainer() :
-    m_groupsRadio(new CPVRChannelGroups(true)),
-    m_groupsTV(new CPVRChannelGroups(false))
+CPVRChannelGroupsContainer::CPVRChannelGroupsContainer()
+  : m_groupsRadio(new CPVRChannelGroups(true)), m_groupsTV(new CPVRChannelGroups(false))
 {
 }
 
@@ -79,6 +78,18 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroupsContainer::GetGroupAll(bool b
   return Get(bRadio)->GetGroupAll();
 }
 
+std::shared_ptr<CPVRChannelGroup> CPVRChannelGroupsContainer::GetGroupByPath(
+    const std::string& path) const
+{
+  const CPVRChannelsPath channelsPath{path};
+  if (channelsPath.IsValid() && channelsPath.IsChannelGroup())
+    return Get(channelsPath.IsRadio())->GetGroupByPath(path);
+  else
+    CLog::LogFC(LOGERROR, LOGPVR, "Invalid path '{}'", path);
+
+  return {};
+}
+
 std::shared_ptr<CPVRChannelGroup> CPVRChannelGroupsContainer::GetByIdFromAll(int iGroupId) const
 {
   std::shared_ptr<CPVRChannelGroup> group = m_groupsTV->GetById(iGroupId);
@@ -103,7 +114,9 @@ std::shared_ptr<CPVRChannel> CPVRChannelGroupsContainer::GetChannelForEpgTag(
   if (!epgTag)
     return {};
 
-  return Get(epgTag->IsRadio())->GetGroupAll()->GetByUniqueID(epgTag->UniqueChannelID(), epgTag->ClientID());
+  return Get(epgTag->IsRadio())
+      ->GetGroupAll()
+      ->GetByUniqueID(epgTag->UniqueChannelID(), epgTag->ClientID());
 }
 
 std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroupsContainer::GetChannelGroupMemberByPath(
@@ -126,7 +139,8 @@ std::shared_ptr<CPVRChannel> CPVRChannelGroupsContainer::GetByPath(const std::st
   return {};
 }
 
-std::shared_ptr<CPVRChannel> CPVRChannelGroupsContainer::GetByUniqueID(int iUniqueChannelId, int iClientID) const
+std::shared_ptr<CPVRChannel> CPVRChannelGroupsContainer::GetByUniqueID(int iUniqueChannelId,
+                                                                       int iClientID) const
 {
   std::shared_ptr<CPVRChannel> channel;
   std::shared_ptr<CPVRChannelGroup> channelgroup = GetGroupAllTV();
