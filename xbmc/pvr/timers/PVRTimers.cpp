@@ -550,6 +550,23 @@ bool CPVRTimers::UpdateEntries(int iMaxNotificationDelay)
                   timer->Persist();
                 }
               }
+
+              // check for epg tag uids that were re-used for a different event (which is actually
+              // an add-on/a backend bug)
+              if (!timer->IsTimerRule() && (epgTag->Title() != timer->Title()))
+              {
+                const std::shared_ptr<CPVRTimerInfoTag> parent{GetTimerRule(timer)};
+                if (parent)
+                {
+                  const CPVRTimerRuleMatcher matcher{parent, now};
+                  if (!matcher.Matches(epgTag))
+                  {
+                    // epg event no longer matches the rule. delete the timer
+                    bDeleteTimer = true;
+                    timer->DeleteFromDatabase();
+                  }
+                }
+              }
             }
             else if (!timer->IsTimerRule())
             {
