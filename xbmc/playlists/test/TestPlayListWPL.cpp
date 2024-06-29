@@ -8,6 +8,7 @@
 
 #include "FileItem.h"
 #include "URL.h"
+#include "Util.h"
 #include "music/tags/MusicInfoTag.h"
 #include "playlists/PlayListWPL.h"
 #include "test/TestUtils.h"
@@ -37,8 +38,18 @@ TEST(TestPlayListWPL, LoadData)
 
   EXPECT_EQ(playlist.size(), 3);
   EXPECT_STREQ(playlist[0]->GetLabel().c_str(), "track01.mp3");
+
+  std::string track_url = "\\\\server\\vol\\music\\Classical\\Composer\\OrganWorks\\cd03\\track01.mp3";
+  std::string track_path = "";
+  CUtil::GetQualifiedFilename(track_path, track_url);
+
   EXPECT_STREQ(playlist[0]->GetURL().Get().c_str(),
-               "/server/vol/music/Classical/Composer/OrganWorks/cd03/track01.mp3");
+               (track_path + track_url).c_str());
+
+
+  track_url = "\\\\server\\vol\\music\\Classical\\Composer\\OrganWorks\\cd03\\track02.mp3";
+  track_path = "";
+  CUtil::GetQualifiedFilename(track_path, track_url);
   EXPECT_STREQ(playlist[1]->GetURL().Get().c_str(),
-               "/server/vol/music/Classical/Composer/OrganWorks/cd03/track02.mp3");
+               (track_path + track_url).c_str());
 }
