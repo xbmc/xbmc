@@ -542,10 +542,6 @@
 	<variable name="BreadcrumbsGameVar">
 		<value>$LOCALIZE[15016]</value>
 	</variable>
-	<variable name="RepeatButtonColordiffuseVar">
-		<value condition="Control.HasFocus(704)">button_focus</value>
-		<value>FFFFFFFF</value>
-	</variable>
 	<variable name="PVRChannelMgrHeader">
 		<value condition="!String.IsEmpty(Window.Property(IsRadio))">$LOCALIZE[19199] - $LOCALIZE[19024]</value>
 		<value>$LOCALIZE[19199] - $LOCALIZE[19023]</value>
