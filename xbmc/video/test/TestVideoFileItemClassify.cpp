@@ -113,9 +113,9 @@ TEST_P(VideoTest, IsVideo)
 const auto video_tests = std::array{
     VideoClassifyTest{"/home/user/video.avi", true, "video/avi"},
     VideoClassifyTest{"/home/user/video.avi", true, "", 1},
-    VideoClassifyTest{"/home/user/video.avi", false, "", 2},
-    VideoClassifyTest{"/home/user/video.avi", false, "", 3},
-    VideoClassifyTest{"/home/user/video.avi", false, "", 4},
+    VideoClassifyTest{"/home/user/video.gam", false, "", 2},
+    VideoClassifyTest{"/home/user/video.mus", false, "", 3},
+    VideoClassifyTest{"/home/user/video.pic", false, "", 4},
     VideoClassifyTest{"pvr://recordings/tv/1", true},
     VideoClassifyTest{"pvr://123", false},
     VideoClassifyTest{"dvd://VIDEO_TS/video_ts.ifo", true},
