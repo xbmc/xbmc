@@ -24,42 +24,42 @@ namespace KODI::ART
 std::string GetTBNFile(const CFileItem& item)
 {
   std::string thumbFile;
-  std::string strFile = item.GetPath();
+  std::string file = item.GetPath();
 
   if (item.IsStack())
   {
-    std::string strPath, strReturn;
-    URIUtils::GetParentPath(item.GetPath(), strPath);
-    CFileItem item(CStackDirectory::GetFirstStackedFile(strFile), false);
-    std::string strTBNFile = GetTBNFile(item);
-    strReturn = URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(strTBNFile));
-    if (CFile::Exists(strReturn))
-      return strReturn;
+    std::string path, returnPath;
+    URIUtils::GetParentPath(item.GetPath(), path);
+    CFileItem item(CStackDirectory::GetFirstStackedFile(file), false);
+    const std::string TBNFile = GetTBNFile(item);
+    returnPath = URIUtils::AddFileToFolder(path, URIUtils::GetFileName(TBNFile));
+    if (CFile::Exists(returnPath))
+      return returnPath;
 
-    strFile = URIUtils::AddFileToFolder(
-        strPath, URIUtils::GetFileName(CStackDirectory::GetStackedTitlePath(strFile)));
+    const std::string& stackPath = CStackDirectory::GetStackedTitlePath(file);
+    file = URIUtils::AddFileToFolder(path, URIUtils::GetFileName(stackPath));
   }
 
-  if (URIUtils::IsInRAR(strFile) || URIUtils::IsInZIP(strFile))
+  if (URIUtils::IsInRAR(file) || URIUtils::IsInZIP(file))
   {
-    std::string strPath = URIUtils::GetDirectory(strFile);
-    std::string strParent;
-    URIUtils::GetParentPath(strPath, strParent);
-    strFile = URIUtils::AddFileToFolder(strParent, URIUtils::GetFileName(item.GetPath()));
+    const std::string path = URIUtils::GetDirectory(file);
+    std::string parent;
+    URIUtils::GetParentPath(path, parent);
+    file = URIUtils::AddFileToFolder(parent, URIUtils::GetFileName(item.GetPath()));
   }
 
-  CURL url(strFile);
-  strFile = url.GetFileName();
+  CURL url(file);
+  file = url.GetFileName();
 
   if (item.m_bIsFolder && !item.IsFileFolder())
-    URIUtils::RemoveSlashAtEnd(strFile);
+    URIUtils::RemoveSlashAtEnd(file);
 
-  if (!strFile.empty())
+  if (!file.empty())
   {
     if (item.m_bIsFolder && !item.IsFileFolder())
-      thumbFile = strFile + ".tbn"; // folder, so just add ".tbn"
+      thumbFile = file + ".tbn"; // folder, so just add ".tbn"
     else
-      thumbFile = URIUtils::ReplaceExtension(strFile, ".tbn");
+      thumbFile = URIUtils::ReplaceExtension(file, ".tbn");
     url.SetFileName(thumbFile);
     thumbFile = url.Get();
   }
