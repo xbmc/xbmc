@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
-	<include name="DialogSettingsOSDVisible">
+	<include name="SettingsDialogOSDVisible">
 		<visible>!Window.IsActive(DialogSettings.xml) + !Window.IsActive(DialogSlider.xml) + !Window.IsActive(GameVideoFilter) + !Window.IsActive(GameStretchMode) + !Window.IsActive(GameControllers) + !Window.IsActive(GameVideoRotation)</visible>
 	</include>
-	<include name="DialogSettingsOSDContent">
+	<include name="SettingsDialogOSDContent">
 		<control type="button" id="11111">
 			<include>DialogSettingButton</include>
 			<label>$LOCALIZE[13396]</label>
@@ -59,7 +59,7 @@
 			<visible>Player.TempoEnabled</visible>
 		</control>
 	</include>
-	<include name="DialogSettings3DContent">
+	<include name="SettingsDialog3DContent">
 		<control type="radiobutton" id="13101">
 			<include>DialogSettingButton</include>
 			<radioposx>590</radioposx>
@@ -81,7 +81,7 @@
 			<selected>Integer.IsEqual(System.StereoscopicMode,9)</selected>
 		</control>
 	</include>
-	<include name="DialogSettingsGameContent">
+	<include name="SettingsDialogGameContent">
 		<control type="button" id="14101">
 			<description>Video filter button</description>
 			<include>DialogSettingButton</include>
@@ -126,7 +126,7 @@
 			<onclick>ActivateWindow(GameAdvancedSettings)</onclick>
 		</control>
 	</include>
-	<include name="DialogSettingsMusicOSDContent">
+	<include name="SettingsDialogMusicOSDContent">
 		<control type="radiobutton" id="5001">
 			<include>DialogSettingButton</include>
 			<label>$LOCALIZE[31163]</label>
@@ -170,7 +170,7 @@
 			<visible>!String.IsEmpty(Skin.String(LyricScript_Path))</visible>
 		</control>
 	</include>
-	<include name="DialogSettingsMovieWidgetsContent">
+	<include name="SettingsDialogMovieWidgetsContent">
 		<control type="radiobutton" id="22101">
 			<include>DialogSettingButton</include>
 			<label>$LOCALIZE[31148]</label>
@@ -223,7 +223,7 @@
 			<selected>!Skin.HasSetting(home_movies_sets_widget)</selected>
 		</control>
 	</include>
-	<include name="DialogSettingsTVShowWidgetsContent">
+	<include name="SettingsDialogTVShowWidgetsContent">
 		<control type="radiobutton" id="22101">
 			<include>DialogSettingButton</include>
 			<label>$LOCALIZE[31148]</label>
@@ -270,7 +270,7 @@
 			<selected>!Skin.HasSetting(home_tvshows_studios_widget)</selected>
 		</control>
 	</include>
-	<include name="DialogSettingsMusicWidgetsContent">
+	<include name="SettingsDialogMusicWidgetsContent">
 		<control type="radiobutton" id="22101">
 			<include>DialogSettingButton</include>
 			<label>$LOCALIZE[31148]</label>
@@ -323,7 +323,7 @@
 			<selected>!Skin.HasSetting(home_music_mostplayedalbums_widget)</selected>
 		</control>
 	</include>
-	<include name="DialogSettingsMusicVideoWidgetsContent">
+	<include name="SettingsDialogMusicVideoWidgetsContent">
 		<control type="radiobutton" id="22101">
 			<include>DialogSettingButton</include>
 			<label>$LOCALIZE[31148]</label>
@@ -361,7 +361,7 @@
 			<selected>!Skin.HasSetting(home_musicvideos_studios_widget)</selected>
 		</control>
 	</include>
-	<include name="DialogSettingsTVWidgetsContent">
+	<include name="SettingsDialogTVWidgetsContent">
 		<control type="radiobutton" id="22101">
 			<include>DialogSettingButton</include>
 			<label>$LOCALIZE[31148]</label>
@@ -405,7 +405,7 @@
 			<selected>!Skin.HasSetting(home_tv_recentlyaddedchannels_widget)</selected>
 		</control>
 	</include>
-	<include name="DialogSettingsRadioWidgetsContent">
+	<include name="SettingsDialogRadioWidgetsContent">
 		<control type="radiobutton" id="22101">
 			<include>DialogSettingButton</include>
 			<label>$LOCALIZE[31148]</label>

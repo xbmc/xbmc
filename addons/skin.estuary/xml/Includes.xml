@@ -7,9 +7,9 @@
 	<include file="Includes_MediaMenu.xml" />
 	<include file="Includes_Buttons.xml" />
 	<include file="Includes_DialogSelect.xml" />
-	<include file="Includes_DialogSettings.xml" />
 	<include file="Includes_MusicInfo.xml" />
 	<include file="Includes_PVR.xml" />
+	<include file="Includes_SettingsDialog.xml" />
 	<include file="View_50_List.xml" />
 	<include file="View_51_Poster.xml" />
 	<include file="View_52_IconWall.xml" />

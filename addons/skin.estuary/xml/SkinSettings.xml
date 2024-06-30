@@ -156,8 +156,8 @@
 				<control type="button" id="6111">
 					<label>- $LOCALIZE[31040]</label>
 					<include>DefaultSettingButton</include>
-					<onclick>SetProperty(dialogsettings_header,$LOCALIZE[31040] - $LOCALIZE[342],home)</onclick>
-					<onclick>SetProperty(dialogsettings_content,moviewidgets,home)</onclick>
+					<onclick>SetProperty(settingsdialog_header,$LOCALIZE[31040] - $LOCALIZE[342],home)</onclick>
+					<onclick>SetProperty(settingsdialog_content,moviewidgets,home)</onclick>
 					<onclick>ActivateWindow(1101)</onclick>
 					<enable>!Skin.HasSetting(HomeMenuNoMovieButton)</enable>
 				</control>
@@ -177,8 +177,8 @@
 				<control type="button" id="6121">
 					<label>- $LOCALIZE[31040]</label>
 					<include>DefaultSettingButton</include>
-					<onclick>SetProperty(dialogsettings_header,$LOCALIZE[31040] - $LOCALIZE[20343],home)</onclick>
-					<onclick>SetProperty(dialogsettings_content,tvshowwidgets,home)</onclick>
+					<onclick>SetProperty(settingsdialog_header,$LOCALIZE[31040] - $LOCALIZE[20343],home)</onclick>
+					<onclick>SetProperty(settingsdialog_content,tvshowwidgets,home)</onclick>
 					<onclick>ActivateWindow(1101)</onclick>
 					<enable>!Skin.HasSetting(HomeMenuNoTVShowButton)</enable>
 				</control>
@@ -198,8 +198,8 @@
 				<control type="button" id="6132">
 					<label>- $LOCALIZE[31040]</label>
 					<include>DefaultSettingButton</include>
-					<onclick>SetProperty(dialogsettings_header,$LOCALIZE[31040] - $LOCALIZE[2],home)</onclick>
-					<onclick>SetProperty(dialogsettings_content,musicwidgets,home)</onclick>
+					<onclick>SetProperty(settingsdialog_header,$LOCALIZE[31040] - $LOCALIZE[2],home)</onclick>
+					<onclick>SetProperty(settingsdialog_content,musicwidgets,home)</onclick>
 					<onclick>ActivateWindow(1101)</onclick>
 					<enable>!Skin.HasSetting(HomeMenuNoMusicButton)</enable>
 				</control>
@@ -219,8 +219,8 @@
 				<control type="button" id="6133">
 					<label>- $LOCALIZE[31040]</label>
 					<include>DefaultSettingButton</include>
-					<onclick>SetProperty(dialogsettings_header,$LOCALIZE[31040] - $LOCALIZE[20389],home)</onclick>
-					<onclick>SetProperty(dialogsettings_content,musicvideowidgets,home)</onclick>
+					<onclick>SetProperty(settingsdialog_header,$LOCALIZE[31040] - $LOCALIZE[20389],home)</onclick>
+					<onclick>SetProperty(settingsdialog_content,musicvideowidgets,home)</onclick>
 					<onclick>ActivateWindow(1101)</onclick>
 					<enable>!Skin.HasSetting(HomeMenuNoMusicVideoButton)</enable>
 				</control>
@@ -233,8 +233,8 @@
 				<control type="button" id="6181">
 					<label>- $LOCALIZE[31040]</label>
 					<include>DefaultSettingButton</include>
-					<onclick>SetProperty(dialogsettings_header,$LOCALIZE[31040] - $LOCALIZE[19020],home)</onclick>
-					<onclick>SetProperty(dialogsettings_content,tvwidgets,home)</onclick>
+					<onclick>SetProperty(settingsdialog_header,$LOCALIZE[31040] - $LOCALIZE[19020],home)</onclick>
+					<onclick>SetProperty(settingsdialog_content,tvwidgets,home)</onclick>
 					<onclick>ActivateWindow(1101)</onclick>
 					<enable>!Skin.HasSetting(HomeMenuNoTVButton)</enable>
 				</control>
@@ -247,8 +247,8 @@
 				<control type="button" id="6190">
 					<label>- $LOCALIZE[31040]</label>
 					<include>DefaultSettingButton</include>
-					<onclick>SetProperty(dialogsettings_header,$LOCALIZE[31040] - $LOCALIZE[19021],home)</onclick>
-					<onclick>SetProperty(dialogsettings_content,radiowidgets,home)</onclick>
+					<onclick>SetProperty(settingsdialog_header,$LOCALIZE[31040] - $LOCALIZE[19021],home)</onclick>
+					<onclick>SetProperty(settingsdialog_content,radiowidgets,home)</onclick>
 					<onclick>ActivateWindow(1101)</onclick>
 					<enable>!Skin.HasSetting(HomeMenuNoRadioButton)</enable>
 				</control>
