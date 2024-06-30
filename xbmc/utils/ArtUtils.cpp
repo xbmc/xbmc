@@ -40,44 +40,44 @@ std::string GetLocalFanart(const CFileItem& item)
     return GetLocalFanart(dbItem);
   }
 
-  std::string strFile2;
-  std::string strFile = item.GetPath();
+  std::string file2;
+  std::string file = item.GetPath();
   if (item.IsStack())
   {
-    std::string strPath;
-    URIUtils::GetParentPath(item.GetPath(), strPath);
+    std::string path;
+    URIUtils::GetParentPath(item.GetPath(), path);
     CStackDirectory dir;
-    std::string strPath2;
-    strPath2 = dir.GetStackedTitlePath(strFile);
-    strFile = URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(strPath2));
+    std::string path2;
+    path2 = dir.GetStackedTitlePath(file);
+    file = URIUtils::AddFileToFolder(path, URIUtils::GetFileName(path2));
     CFileItem fan_item(dir.GetFirstStackedFile(item.GetPath()), false);
-    std::string strTBNFile(URIUtils::ReplaceExtension(GetTBNFile(fan_item), "-fanart"));
-    strFile2 = URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(strTBNFile));
+    std::string TBNFile(URIUtils::ReplaceExtension(GetTBNFile(fan_item), "-fanart"));
+    file2 = URIUtils::AddFileToFolder(path, URIUtils::GetFileName(TBNFile));
   }
 
-  if (URIUtils::IsInRAR(strFile) || URIUtils::IsInZIP(strFile))
+  if (URIUtils::IsInRAR(file) || URIUtils::IsInZIP(file))
   {
-    std::string strPath = URIUtils::GetDirectory(strFile);
-    std::string strParent;
-    URIUtils::GetParentPath(strPath, strParent);
-    strFile = URIUtils::AddFileToFolder(strParent, URIUtils::GetFileName(item.GetPath()));
+    std::string path = URIUtils::GetDirectory(file);
+    std::string parent;
+    URIUtils::GetParentPath(path, parent);
+    file = URIUtils::AddFileToFolder(parent, URIUtils::GetFileName(item.GetPath()));
   }
 
   // no local fanart available for these
-  if (NETWORK::IsInternetStream(item) || URIUtils::IsUPnP(strFile) || URIUtils::IsBluray(strFile) ||
+  if (NETWORK::IsInternetStream(item) || URIUtils::IsUPnP(file) || URIUtils::IsBluray(file) ||
       item.IsLiveTV() || item.IsPlugin() || item.IsAddonsPath() || item.IsDVD() ||
-      (URIUtils::IsFTP(strFile) &&
+      (URIUtils::IsFTP(file) &&
        !CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bFTPThumbs) ||
       item.GetPath().empty())
     return "";
 
-  std::string strDir = URIUtils::GetDirectory(strFile);
+  std::string dir = URIUtils::GetDirectory(file);
 
-  if (strDir.empty())
+  if (dir.empty())
     return "";
 
   CFileItemList items;
-  CDirectory::GetDirectory(strDir, items,
+  CDirectory::GetDirectory(dir, items,
                            CServiceBroker::GetFileExtensionProvider().GetPictureExtensions(),
                            DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
   if (item.IsOpticalMediaFile())
@@ -91,13 +91,12 @@ std::string GetLocalFanart(const CFileItem& item)
 
   std::vector<std::string> fanarts = {"fanart"};
 
-  strFile = URIUtils::ReplaceExtension(strFile, "-fanart");
-  fanarts.insert(item.m_bIsFolder ? fanarts.end() : fanarts.begin(),
-                 URIUtils::GetFileName(strFile));
+  file = URIUtils::ReplaceExtension(file, "-fanart");
+  fanarts.insert(item.m_bIsFolder ? fanarts.end() : fanarts.begin(), URIUtils::GetFileName(file));
 
-  if (!strFile2.empty())
+  if (!file2.empty())
     fanarts.insert(item.m_bIsFolder ? fanarts.end() : fanarts.begin(),
-                   URIUtils::GetFileName(strFile2));
+                   URIUtils::GetFileName(file2));
 
   for (const auto& fanart : fanarts)
   {
@@ -105,9 +104,9 @@ std::string GetLocalFanart(const CFileItem& item)
     {
       std::string strCandidate = URIUtils::GetFileName(item->GetPath());
       URIUtils::RemoveExtension(strCandidate);
-      std::string strFanart = fanart;
-      URIUtils::RemoveExtension(strFanart);
-      if (StringUtils::EqualsNoCase(strCandidate, strFanart))
+      std::string fanart2 = fanart;
+      URIUtils::RemoveExtension(fanart2);
+      if (StringUtils::EqualsNoCase(strCandidate, fanart2))
         return item->GetPath();
     }
   }
