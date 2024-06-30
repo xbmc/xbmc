@@ -9,7 +9,6 @@ EXCLUDED_ADDONS =
 
 CMAKE_SOURCE_DIR = $(shell cd $(CURDIR)/../../..; pwd)
 APP_PACKAGE_DIR = $(subst .,/,@APP_PACKAGE@)
-COPYDIRS = system addons media
 
 ifeq ($(KODI_ANDROID_STORE_FILE),)
 export KODI_ANDROID_STORE_FILE:=$(HOME)/.android/debug.keystore
@@ -31,8 +30,6 @@ endif
 STLLIB=$(TOOLCHAIN)/sysroot/usr/lib/$(HOST)/libc++_shared.so
 
 SRCLIBS = $(addprefix $(PREFIX)/lib/,$(OBJS))
-DSTLIBS = $(CPU)/lib/lib@APP_NAME_LC@.so $(addprefix $(CPU)/lib/,$(OBJS))
-libs= $(DSTLIBS)
 
 all: apk
 
