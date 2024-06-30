@@ -8,12 +8,10 @@
 
 #pragma once
 
-#include <map>
 #include <string>
 
-class CURL;
-
 class CFileItem;
+class CURL;
 
 class CMime
 {
@@ -41,6 +39,4 @@ public:
 
 private:
   static bool parseMimeType(const std::string& mimeType, std::string& type, std::string& subtype);
-
-  static const std::map<std::string, std::string> m_mimetypes;
 };
