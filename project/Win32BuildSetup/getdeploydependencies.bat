@@ -9,6 +9,11 @@ PUSHD %~dp0
 
 if not exist %DOWNLOAD_FOLDER% mkdir %DOWNLOAD_FOLDER%
 
+:: Remove file if is older of 30 days - refresh Visual C++ Redistributable
+if exist %DOWNLOAD_FOLDER%\%DOWNLOAD_FILE% (
+  forfiles /P %DOWNLOAD_FOLDER% /D -30 /C "cmd /c del @path" 2>nul
+)
+
 if not exist %DOWNLOAD_FOLDER%\%DOWNLOAD_FILE% (
   echo Downloading vc143 redist...
   curl --retry 5 --retry-all-errors --retry-connrefused --retry-delay 5 --location --output %DOWNLOAD_FOLDER%\%DOWNLOAD_FILE% %DOWNLOAD_URL%
