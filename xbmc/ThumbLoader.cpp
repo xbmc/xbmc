@@ -11,7 +11,10 @@
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "TextureCache.h"
+#include "utils/ArtUtils.h"
 #include "utils/FileUtils.h"
+
+using namespace KODI;
 
 CThumbLoader::CThumbLoader() :
   CBackgroundInfoLoader()
@@ -117,7 +120,7 @@ std::string CProgramThumbLoader::GetLocalThumb(const CFileItem &item)
   }
   else
   {
-    std::string fileThumb(item.GetTBNFile());
+    std::string fileThumb(ART::GetTBNFile(item));
     if (CFileUtils::Exists(fileThumb))
       return fileThumb;
   }
