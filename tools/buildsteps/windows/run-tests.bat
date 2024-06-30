@@ -11,7 +11,6 @@ REM read the version values from version.txt
 FOR /f "tokens=1,2" %%i IN (%WORKSPACE%\version.txt) DO IF "%%i" == "APP_NAME" SET APP_NAME=%%j
 
 CLS
-COLOR 1B
 TITLE %APP_NAME% testsuite Build-/Runscript
 
 rem -------------------------------------------------------------
