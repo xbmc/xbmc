@@ -17,6 +17,7 @@
 #include "video/VideoInfoTag.h"
 
 #include <algorithm>
+#include <cctype>
 #include <unordered_map>
 
 namespace
@@ -534,7 +535,7 @@ std::string CMime::GetMimeType(const std::string &extension)
   size_t posNotPoint = ext.find_first_not_of('.');
   if (posNotPoint != std::string::npos && posNotPoint > 0)
     ext = extension.substr(posNotPoint);
-  transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+  std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
 
   const auto& mime_map = GetMap();
   const auto it = mime_map.find(ext);
