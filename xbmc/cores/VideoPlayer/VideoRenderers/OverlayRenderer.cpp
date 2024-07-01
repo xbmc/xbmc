@@ -398,6 +398,7 @@ void CRenderer::CreateSubtitlesStyle()
                        static_cast<double>(settings->GetVerticalMarginPerc()));
 
   m_overlayStyle->blur = settings->GetBlurSize();
+  m_overlayStyle->lineSpacing = settings->GetLineSpacing();
 }
 
 std::shared_ptr<COverlay> CRenderer::ConvertLibass(
