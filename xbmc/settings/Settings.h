@@ -160,6 +160,7 @@ public:
   static constexpr auto SETTING_SUBTITLES_BORDERCOLOR = "subtitles.bordercolorpick";
   static constexpr auto SETTING_SUBTITLES_OPACITY = "subtitles.opacity";
   static constexpr auto SETTING_SUBTITLES_BLUR = "subtitles.blur";
+  static constexpr auto SETTING_SUBTITLES_LINE_SPACING = "subtitles.linespacing";
   static constexpr auto SETTING_SUBTITLES_BACKGROUNDTYPE = "subtitles.backgroundtype";
   static constexpr auto SETTING_SUBTITLES_SHADOWCOLOR = "subtitles.shadowcolor";
   static constexpr auto SETTING_SUBTITLES_SHADOWOPACITY = "subtitles.shadowopacity";
