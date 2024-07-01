@@ -52,9 +52,8 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method,
                                                  bool stretch,
                                                  bool gammaCorrection,
                                                  GLSLOutput* output)
+  : m_method(method)
 {
-  m_method = method;
-
   std::string shadername;
   std::string defines;
 

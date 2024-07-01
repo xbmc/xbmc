@@ -165,20 +165,20 @@ void ID3DResource::Unregister()
 }
 
 CD3DTexture::CD3DTexture()
+  : m_width(),
+    m_height(),
+    m_mipLevels(),
+    m_usage(D3D11_USAGE_DEFAULT),
+    m_format(DXGI_FORMAT_B8G8R8A8_UNORM),
+    m_texture(),
+    m_data(),
+    m_pitch(),
+    m_bindFlags(),
+    m_cpuFlags(),
+    m_viewIdx(),
 {
-  m_width = 0;
-  m_height = 0;
-  m_mipLevels = 0;
-  m_usage = D3D11_USAGE_DEFAULT;
-  m_format = DXGI_FORMAT_B8G8R8A8_UNORM;
-  m_texture = nullptr;
   m_renderTargets[0] = nullptr;
   m_renderTargets[1] = nullptr;
-  m_data = nullptr;
-  m_pitch = 0;
-  m_bindFlags = 0;
-  m_cpuFlags = 0;
-  m_viewIdx = 0;
   m_views.clear();
 }
 
@@ -571,10 +571,10 @@ void CD3DTexture::DrawQuad(const CRect& rect,
 }
 
 CD3DEffect::CD3DEffect()
+: m_effect(),
+  m_techniquie(),
+  m_currentPass()
 {
-  m_effect = nullptr;
-  m_techniquie = nullptr;
-  m_currentPass = nullptr;
 }
 
 CD3DEffect::~CD3DEffect()
@@ -818,13 +818,13 @@ bool CD3DEffect::CreateEffect()
 }
 
 CD3DBuffer::CD3DBuffer()
+: m_length(),
+  m_stride(),
+  m_usage(D3D11_USAGE_DEFAULT),
+  m_format(DXGI_FORMAT_UNKNOWN),
+  m_buffer(),
+  m_data()
 {
-  m_length = 0;
-  m_stride = 0;
-  m_usage  = D3D11_USAGE_DEFAULT;
-  m_format = DXGI_FORMAT_UNKNOWN;
-  m_buffer = nullptr;
-  m_data   = nullptr;
 }
 
 CD3DBuffer::~CD3DBuffer()
@@ -957,13 +957,13 @@ bool CD3DBuffer::CreateBuffer(const void* pData)
 /*          D3D Vertex Shader Class                 */
 /****************************************************/
 CD3DVertexShader::CD3DVertexShader()
+: m_VS(),
+  m_vertexLayout(),
+  m_VSBuffer(),
+  m_inputLayout(),
+  m_vertexLayoutSize(),
+  m_inited()
 {
-  m_VS = nullptr;
-  m_vertexLayout = nullptr;
-  m_VSBuffer = nullptr;
-  m_inputLayout = nullptr;
-  m_vertexLayoutSize = 0;
-  m_inited = false;
 }
 
 CD3DVertexShader::~CD3DVertexShader()
@@ -1122,10 +1122,10 @@ void CD3DVertexShader::OnDestroyDevice(bool fatal)
 /*           D3D Pixel Shader Class                 */
 /****************************************************/
 CD3DPixelShader::CD3DPixelShader()
+: m_PS(),
+  m_PSBuffer(),
+  m_inited()
 {
-  m_PS = nullptr;
-  m_PSBuffer = nullptr;
-  m_inited = false;
 }
 
 CD3DPixelShader::~CD3DPixelShader()

@@ -57,9 +57,8 @@ bool BaseVideoFilterShader::OnEnabled()
 }
 
 ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method)
+  : m_method(method)
 {
-  m_method = method;
-
   std::string shadername;
   std::string defines;
 

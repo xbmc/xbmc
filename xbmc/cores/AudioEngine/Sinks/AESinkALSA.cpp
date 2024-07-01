@@ -1154,7 +1154,7 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
         && strcmp(name, "null") != 0)
     {
       std::string baseName = std::string(name);
-      baseName = baseName.substr(0, baseName.find(':'));
+      baseName = baseName.resize(baseName.find(':'));
 
       if (strcmp(name, "default") == 0)
       {

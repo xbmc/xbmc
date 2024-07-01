@@ -83,9 +83,9 @@ public:
     source(STREAM_SOURCE_NONE),
     iDuration(),
     pPrivate(),
+    flags(StreamFlags::FLAG_NONE),
     disabled(),
-    changes(),
-    flags(StreamFlags::FLAG_NONE)
+    changes()
   {
   }
 
