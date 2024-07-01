@@ -187,9 +187,9 @@ namespace SOCKETS
   {
   public:
     CPosixUDPSocket()
+    :  m_iSock(INVALID_SOCKET),
+       m_ipv6Socket()
       {
-        m_iSock = INVALID_SOCKET;
-        m_ipv6Socket = false;
       }
 
     bool Bind(bool localOnly, int port, int range=0) override;

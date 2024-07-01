@@ -27,7 +27,7 @@ public:
    * Gets the exported window name. May return an empty string on non wayland-webos-foreign devices (pre webOS 5)
    * @return Exported window name
    */
-  std::string GetExportedWindowName();
+  const std::string& GetExportedWindowName();
 
   /**
    * Sets up the an exported window for display. The display engine will merge the exported window with the UI layer.

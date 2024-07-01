@@ -71,7 +71,7 @@ void CGUITexture::DrawQuad(const CRect& coords,
 
 CGUITexture::CGUITexture(
     float posX, float posY, float width, float height, const CTextureInfo& texture)
-  : m_height(height), m_info(texture)
+  : m_diffuseColor(0xffffffff), m_height(height), m_info(texture)
 {
   m_posX = posX;
   m_posY = posY;
@@ -79,7 +79,6 @@ CGUITexture::CGUITexture(
 
   // defaults
   m_visible = true;
-  m_diffuseColor = 0xffffffff;
   m_alpha = 0xff;
 
   m_vertex.SetRect(m_posX, m_posY, m_posX + m_width, m_posY + m_height);

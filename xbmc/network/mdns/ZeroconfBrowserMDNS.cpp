@@ -30,8 +30,8 @@ using namespace std::chrono_literals;
 extern HWND g_hWnd;
 
 CZeroconfBrowserMDNS::CZeroconfBrowserMDNS()
+: m_browser()
 {
-  m_browser = NULL;
 }
 
 CZeroconfBrowserMDNS::~CZeroconfBrowserMDNS()

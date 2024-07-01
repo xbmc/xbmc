@@ -131,7 +131,7 @@ public:
 
   ~CDVDMsgType() override = default;
 
-  operator T() { return m_value; }
+  operator const T&() const { return m_value; }
   T m_value;
 };
 

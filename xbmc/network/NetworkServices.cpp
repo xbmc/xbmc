@@ -88,8 +88,9 @@ using namespace UPNP;
 using KODI::MESSAGING::HELPERS::DialogResponse;
 
 CNetworkServices::CNetworkServices()
+  : m_settings(CServiceBroker::GetSettingsComponent()->GetSettings()),
 #ifdef HAS_WEB_SERVER
-  : m_webserver(*new CWebServer),
+  m_webserver(*new CWebServer),
   m_httpImageHandler(*new CHTTPImageHandler),
   m_httpImageTransformationHandler(*new CHTTPImageTransformationHandler),
   m_httpVfsHandler(*new CHTTPVfsHandler),
@@ -145,7 +146,6 @@ CNetworkServices::CNetworkServices()
       CSettings::SETTING_SMB_LEGACYSECURITY,
       CSettings::SETTING_SERVICES_WSDISCOVERY,
   };
-  m_settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   m_settings->GetSettingsManager()->RegisterCallback(this, settingSet);
 }
 

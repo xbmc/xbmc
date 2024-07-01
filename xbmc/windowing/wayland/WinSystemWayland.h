@@ -155,7 +155,7 @@ private:
     CSizeInt bufferSize;
     CSizeInt configuredSize;
   };
-  Sizes CalculateSizes(CSizeInt size, int scale, IShellSurface::StateBitset state, bool sizeIncludesDecoration);
+  Sizes CalculateSizes(CSizeInt size, int scale, const IShellSurface::StateBitset& state, bool sizeIncludesDecoration);
   struct SizeUpdateInformation
   {
     bool surfaceSizeChanged : 1;
@@ -163,7 +163,7 @@ private:
     bool configuredSizeChanged : 1;
     bool bufferScaleChanged : 1;
   };
-  SizeUpdateInformation UpdateSizeVariables(CSizeInt size, int scale, IShellSurface::StateBitset state, bool sizeIncludesDecoration);
+  SizeUpdateInformation UpdateSizeVariables(CSizeInt size, int scale, const IShellSurface::StateBitset& state, bool sizeIncludesDecoration);
   void ApplySizeUpdate(SizeUpdateInformation update);
   void ApplyNextState();
 
@@ -179,7 +179,7 @@ private:
   void ApplyOpaqueRegion();
   void ApplyWindowGeometry();
   void UpdateTouchDpi();
-  void ApplyShellSurfaceState(IShellSurface::StateBitset state);
+  void ApplyShellSurfaceState(const IShellSurface::StateBitset& state);
 
   void ProcessMessages();
   void AckConfigure(std::uint32_t serial);
