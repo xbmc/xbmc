@@ -52,7 +52,7 @@ public:
     Close();
     return CFile::Delete(m_ptempFilePath);
   };
-  std::string getTempFilePath() const
+  const std::string& getTempFilePath() const
   {
     return m_ptempFilePath;
   }
