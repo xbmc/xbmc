@@ -79,7 +79,7 @@ void CPVRChannelGroups::Unload()
 
   m_groups.clear();
   m_allChannelsGroup.reset();
-  m_channelGroupFactory.reset(new CPVRChannelGroupFactory);
+  m_channelGroupFactory = std::make_shared<CPVRChannelGroupFactory>();
   m_failedClientsForChannelGroups.clear();
 }
 
