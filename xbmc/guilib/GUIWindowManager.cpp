@@ -1475,7 +1475,10 @@ bool CGUIWindowManager::ProcessRenderLoop(bool renderOnly)
     m_iNested++;
     if (!renderOnly)
       m_pCallback->Process();
-    m_pCallback->FrameMove(!renderOnly);
+    {
+      CSingleExit leaveIt(CServiceBroker::GetWinSystem()->GetGfxContext());
+      m_pCallback->FrameMove(!renderOnly);
+    }
     m_pCallback->Render();
     m_iNested--;
   }
