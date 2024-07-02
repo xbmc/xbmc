@@ -45,20 +45,6 @@ void CTextureBase::Allocate(uint32_t width, uint32_t height, XB_FMT format)
     m_textureWidth = ((m_textureWidth + 3) / 4) * 4;
     m_textureHeight = ((m_textureHeight + 3) / 4) * 4;
   }
-  else
-  {
-    // align all textures so that they have an even width
-    // in some circumstances when we downsize a thumbnail
-    // which has an uneven number of pixels in width
-    // we crash in CPicture::ScaleImage in ffmpegs swscale
-    // because it tries to access beyond the source memory
-    // (happens on osx and ios)
-    // UPDATE: don't just update to be on an even width;
-    // ffmpegs swscale relies on a 16-byte stride on some systems
-    // so the textureWidth needs to be a multiple of 16. see ffmpeg
-    // swscale headers for more info.
-    m_textureWidth = ((m_textureWidth + 15) / 16) * 16;
-  }
 
   // check for max texture size
   m_textureWidth = std::min(m_textureWidth, CServiceBroker::GetRenderSystem()->GetMaxTextureSize());
