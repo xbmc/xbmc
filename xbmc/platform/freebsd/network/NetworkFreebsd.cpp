@@ -27,7 +27,7 @@
 #include <sys/wait.h>
 
 CNetworkInterfaceFreebsd::CNetworkInterfaceFreebsd(CNetworkPosix* network,
-                                                   std::string interfaceName,
+                                                   const std::string& interfaceName,
                                                    char interfaceMacAddrRaw[6])
   : CNetworkInterfacePosix(network, interfaceName, interfaceMacAddrRaw)
 {

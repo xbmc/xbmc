@@ -189,43 +189,43 @@ public:
    * @brief Get the title of this event.
    * @return The title.
    */
-  std::string Title() const;
+  const std::string& Title() const;
 
   /*!
    * @brief Get the plot outline of this event.
    * @return The plot outline.
    */
-  std::string PlotOutline() const;
+  const std::string& PlotOutline() const;
 
   /*!
    * @brief Get the plot of this event.
    * @return The plot.
    */
-  std::string Plot() const;
+  const std::string& Plot() const;
 
   /*!
    * @brief Get the original title of this event.
    * @return The original title.
    */
-  std::string OriginalTitle() const;
+  const std::string& OriginalTitle() const;
 
   /*!
    * @brief Get the cast of this event.
    * @return The cast.
    */
-  const std::vector<std::string> Cast() const;
+  const std::vector<std::string>& Cast() const;
 
   /*!
    * @brief Get the director(s) of this event.
    * @return The director(s).
    */
-  const std::vector<std::string> Directors() const;
+  const std::vector<std::string>& Directors() const;
 
   /*!
    * @brief Get the writer(s) of this event.
    * @return The writer(s).
    */
-  const std::vector<std::string> Writers() const;
+  const std::vector<std::string>& Writers() const;
 
   /*!
    * @brief Get the cast of this event as formatted string.
@@ -261,7 +261,7 @@ public:
    * @brief Get the imdbnumber of this event.
    * @return The imdbnumber.
    */
-  std::string IMDBNumber() const;
+  const std::string& IMDBNumber() const;
 
   /*!
    * @brief Get the genre type ID of this event.
@@ -279,7 +279,7 @@ public:
    * @brief Get the genre description of this event.
    * @return The genre.
    */
-  std::string GenreDescription() const;
+  const std::string& GenreDescription() const;
 
   /*!
    * @brief Get the genre as human readable string.
@@ -303,7 +303,7 @@ public:
    * @brief Get the parental rating code of this event.
    * @return The parental rating code.
    */
-  std::string ParentalRatingCode() const;
+  const std::string& ParentalRatingCode() const;
 
   /*!
    * @brief Get the star rating of this event.
@@ -321,7 +321,7 @@ public:
    * @brief The series link for this event.
    * @return The series link or empty string, if not available.
    */
-  std::string SeriesLink() const;
+  const std::string& SeriesLink() const;
 
   /*!
    * @brief The episode number of this event.
@@ -339,7 +339,7 @@ public:
    * @brief The episode name of this event.
    * @return The episode name.
    */
-  std::string EpisodeName() const;
+  const std::string& EpisodeName() const;
 
   /*!
    * @brief Get the path to the icon for this event used by Kodi.

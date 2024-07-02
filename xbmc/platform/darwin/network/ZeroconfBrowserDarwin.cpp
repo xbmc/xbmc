@@ -112,9 +112,9 @@ namespace
 }
 
 CZeroconfBrowserDarwin::CZeroconfBrowserDarwin()
-{
   //acquire the main threads event loop
-  m_runloop = CFRunLoopGetMain();
+  : m_runloop(CFRunLoopGetMain())
+{
 }
 
 CZeroconfBrowserDarwin::~CZeroconfBrowserDarwin()

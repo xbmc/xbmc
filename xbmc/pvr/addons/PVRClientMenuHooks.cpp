@@ -79,7 +79,7 @@ bool CPVRClientMenuHook::IsSettingsHook() const
   return m_hook->category == PVR_MENUHOOK_SETTING;
 }
 
-std::string CPVRClientMenuHook::GetAddonId() const
+const std::string& CPVRClientMenuHook::GetAddonId() const
 {
   return m_addonId;
 }

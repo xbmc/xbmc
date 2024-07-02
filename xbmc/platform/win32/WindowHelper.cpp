@@ -12,10 +12,8 @@ extern HWND g_hWnd;
 
 CWHelper g_windowHelper;
 
-CWHelper::CWHelper(void) : CThread("WindowHelper")
+CWHelper::CWHelper(void) : CThread("WindowHelper"), m_hwnd(), m_hProcess()
 {
-  m_hwnd = NULL;
-  m_hProcess = NULL;
 }
 
 CWHelper::~CWHelper(void)

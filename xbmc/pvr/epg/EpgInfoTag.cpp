@@ -323,37 +323,37 @@ int CPVREpgInfoTag::GetDuration() const
   return end - start > 0 ? end - start : 3600;
 }
 
-std::string CPVREpgInfoTag::Title() const
+const std::string& CPVREpgInfoTag::Title() const
 {
   return m_strTitle;
 }
 
-std::string CPVREpgInfoTag::PlotOutline() const
+const std::string& CPVREpgInfoTag::PlotOutline() const
 {
   return m_strPlotOutline;
 }
 
-std::string CPVREpgInfoTag::Plot() const
+const std::string& CPVREpgInfoTag::Plot() const
 {
   return m_strPlot;
 }
 
-std::string CPVREpgInfoTag::OriginalTitle() const
+const std::string& CPVREpgInfoTag::OriginalTitle() const
 {
   return m_strOriginalTitle;
 }
 
-const std::vector<std::string> CPVREpgInfoTag::Cast() const
+const std::vector<std::string>& CPVREpgInfoTag::Cast() const
 {
   return m_cast;
 }
 
-const std::vector<std::string> CPVREpgInfoTag::Directors() const
+const std::vector<std::string>& CPVREpgInfoTag::Directors() const
 {
   return m_directors;
 }
 
-const std::vector<std::string> CPVREpgInfoTag::Writers() const
+const std::vector<std::string>& CPVREpgInfoTag::Writers() const
 {
   return m_writers;
 }
@@ -393,7 +393,7 @@ int CPVREpgInfoTag::Year() const
   return m_iYear;
 }
 
-std::string CPVREpgInfoTag::IMDBNumber() const
+const std::string& CPVREpgInfoTag::IMDBNumber() const
 {
   return m_strIMDBNumber;
 }
@@ -408,7 +408,7 @@ int CPVREpgInfoTag::GenreSubType() const
   return m_iGenreSubType;
 }
 
-std::string CPVREpgInfoTag::GenreDescription() const
+const std::string& CPVREpgInfoTag::GenreDescription() const
 {
   return m_strGenreDescription;
 }
@@ -445,7 +445,7 @@ int CPVREpgInfoTag::ParentalRating() const
   return m_iParentalRating;
 }
 
-std::string CPVREpgInfoTag::ParentalRatingCode() const
+const std::string& CPVREpgInfoTag::ParentalRatingCode() const
 {
   return m_strParentalRatingCode;
 }
@@ -460,7 +460,7 @@ int CPVREpgInfoTag::SeriesNumber() const
   return m_iSeriesNumber;
 }
 
-std::string CPVREpgInfoTag::SeriesLink() const
+const std::string& CPVREpgInfoTag::SeriesLink() const
 {
   return m_strSeriesLink;
 }
@@ -475,7 +475,7 @@ int CPVREpgInfoTag::EpisodePart() const
   return m_iEpisodePart;
 }
 
-std::string CPVREpgInfoTag::EpisodeName() const
+const std::string& CPVREpgInfoTag::EpisodeName() const
 {
   return m_strEpisodeName;
 }
