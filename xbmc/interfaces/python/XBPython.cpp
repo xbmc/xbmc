@@ -57,7 +57,13 @@ XBPython::~XBPython()
 #if PY_VERSION_HEX >= 0x03070000
   if (Py_IsInitialized())
   {
+    // Switch to the main interpreter thread before finalizing
     PyThreadState_Swap(PyInterpreterState_ThreadHead(PyInterpreterState_Main()));
+
+    // Clear all loaded modules to prevent circular references
+    PyObject* modules = PyImport_GetModuleDict();
+    PyDict_Clear(modules);
+
     Py_Finalize();
   }
 #endif
