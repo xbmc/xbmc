@@ -59,6 +59,7 @@ public:
     m_cStructure->channelType = PVR_RECORDING_CHANNEL_TYPE_UNKNOWN;
     m_cStructure->iFlags = 0;
     m_cStructure->sizeInBytes = PVR_RECORDING_VALUE_NOT_AVAILABLE;
+    m_cStructure->iParentalRating = 0;
   }
   PVRRecording(const PVRRecording& recording) : CStructHdl(recording) {}
   /*! \endcond */
@@ -100,6 +101,10 @@ public:
   /// | **Size in bytes** | `std::string` | @ref PVRRecording::SetSizeInBytes "SetSizeInBytes" | @ref PVRRecording::GetSizeInBytes "GetSizeInBytes" | *optional*
   /// | **Client provider unique identifier** | `int` | @ref PVRChannel::SetClientProviderUid "SetClientProviderUid" | @ref PVRTimer::GetClientProviderUid "GetClientProviderUid" | *optional*
   /// | **Provider name** | `std::string` | @ref PVRChannel::SetProviderName "SetProviderlName" | @ref PVRChannel::GetProviderName "GetProviderName" | *optional*
+  /// | **Parental rating age** | `int` | @ref PVRRecording::SetParentalRating "SetParentalRating" | @ref PVRRecording::GetParentalRating "GetParentalRating" | *optional*
+  /// | **Parental rating code** | `std::string` | @ref PVRRecording::SetParentalRatingCode "SetParentalRatingCode" | @ref PVRRecording::GetParentalRatingCode "GetParentalRatingCode" | *optional*
+  /// | **Parental rating icon** | `std::string` | @ref PVRRecording::SetParentalRatingIcon "SetParentalRatingIcon" | @ref PVRRecording::GetParentalRatingIcon "GetParentalRatingIcon" | *optional*
+  /// | **Parental rating source** | `std::string` | @ref PVRRecording::SetParentalRatingSource "SetParentalRatingSource" | @ref PVRRecording::GetParentalRatingSource "GetParentalRatingSource" | *optional*
 
   /// @addtogroup cpp_kodi_addon_pvr_Defs_Recording_PVRRecording
   ///@{
@@ -491,6 +496,49 @@ public:
 
   /// @brief To get with @ref SetProviderName changed values.
   std::string GetProviderName() const { return m_cStructure->strProviderName; }
+
+  /// @brief **optional**\n
+  /// Age rating for the recording.
+  void SetParentalRating(unsigned int iParentalRating)
+  {
+    m_cStructure->iParentalRating = iParentalRating;
+  }
+
+  /// @brief To get with @ref SetParentalRating changed values
+  unsigned int GetParentalRating() const { return m_cStructure->iParentalRating; }
+
+  /// @brief **optional**\n
+  /// Parental rating code for this recording.
+  void SetParentalRatingCode(const std::string& ratingCode)
+  {
+    strncpy(m_cStructure->strParentalRatingCode, ratingCode.c_str(),
+            sizeof(m_cStructure->strParentalRatingCode) - 1);
+  }
+
+  /// @brief To get with @ref SetParentalRatingCode changed values.
+  std::string GetParentalRatingCode() const { return m_cStructure->strParentalRatingCode; }
+
+  /// @brief **optional**\n
+  /// Parental rating icon path for this recording.
+  void SetParentalRatingIcon(const std::string& ratingIcon)
+  {
+    strncpy(m_cStructure->strParentalRatingIcon, ratingIcon.c_str(),
+            sizeof(m_cStructure->strParentalRatingIcon) - 1);
+  }
+
+  /// @brief To get with @ref SetParentalRatingIcon changed values.
+  std::string GetParentalRatingIcon() const { return m_cStructure->strParentalRatingIcon; }
+
+  /// @brief **optional**\n
+  /// Parental rating source for this recording.
+  void SetParentalRatingSource(const std::string& ratingSource)
+  {
+    strncpy(m_cStructure->strParentalRatingSource, ratingSource.c_str(),
+            sizeof(m_cStructure->strParentalRatingSource) - 1);
+  }
+
+  /// @brief To get with @ref SetParentalRatingSource changed values.
+  std::string GetParentalRatingSource() const { return m_cStructure->strParentalRatingSource; }
 
 private:
   PVRRecording(const PVR_RECORDING* recording) : CStructHdl(recording) {}
