@@ -668,16 +668,6 @@ namespace XBMCAddon
 
         while (bModal && !g_application.m_bStop)
         {
-//! @todo garbear added this code to the python window.cpp class and
-//!  commented in XBPyThread.cpp. I'm not sure how to handle this
-//! in this native implementation.
-//          // Check if XBPyThread::stop() raised a SystemExit exception
-//          if (PyThreadState_Get()->async_exc == PyExc_SystemExit)
-//          {
-//            CLog::Log(LOGDEBUG, "PYTHON: doModal() encountered a SystemExit exception, closing window and returning");
-//            Window_Close(self, NULL);
-//            break;
-//          }
           languageHook->MakePendingCalls(); // MakePendingCalls
 
           bool stillWaiting;
@@ -687,6 +677,14 @@ namespace XBMCAddon
               DelayedCallGuard dcguard(languageHook);
               stillWaiting = WaitForActionEvent(100) ? false : true;
             }
+
+            // If application has quit, close the window
+            if (bModal && g_application.m_bStop)
+            {
+              CLog::Log(LOGDEBUG, "PYTHON: Application quit inside doModal(), closing window");
+              close();
+            }
+
             languageHook->MakePendingCalls();
           } while (stillWaiting);
         }
