@@ -84,7 +84,7 @@ public:
   int GetLevel() const;
 
   void SetMaxDataSize(int iMaxDataSize) { m_iMaxDataSize = iMaxDataSize; }
-  void SetMaxTimeSize(double sec) { m_TimeSize  = 1.0 / std::max(1.0, sec); }
+  void SetMaxTimeSize(double sec) { m_TimeSize = 1.0 / sec; }
   int GetMaxDataSize() const { return m_iMaxDataSize; }
   double GetMaxTimeSize() const { return m_TimeSize; }
   bool IsInited() const { return m_bInitialized; }
