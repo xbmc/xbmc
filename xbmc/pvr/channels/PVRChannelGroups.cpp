@@ -79,7 +79,7 @@ void CPVRChannelGroups::Unload()
 
   m_groups.clear();
   m_allChannelsGroup.reset();
-  m_channelGroupFactory.reset(new CPVRChannelGroupFactory);
+  m_channelGroupFactory = std::make_shared<CPVRChannelGroupFactory>();
   m_failedClientsForChannelGroups.clear();
 }
 
@@ -468,7 +468,7 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetLastGroup() const
   std::unique_lock<CCriticalSection> lock(m_critSection);
   for (auto it = m_groups.crbegin(); it != m_groups.crend(); ++it)
   {
-    const auto group{*it};
+    const auto& group{*it};
     if (!group->ShouldBeIgnored(m_groups))
       return group;
   }
@@ -548,7 +548,7 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetPreviousGroup(
     std::unique_lock<CCriticalSection> lock(m_critSection);
     for (auto it = m_groups.crbegin(); it != m_groups.crend(); ++it)
     {
-      const auto currentGroup{*it};
+      const auto& currentGroup{*it};
 
       // return this entry
       if (bReturnNext && !currentGroup->IsHidden() && !currentGroup->ShouldBeIgnored(m_groups))
@@ -562,7 +562,7 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetPreviousGroup(
     // no match return last visible group
     for (auto it = m_groups.crbegin(); it != m_groups.crend(); ++it)
     {
-      const auto currentGroup{*it};
+      const auto& currentGroup{*it};
       if (!currentGroup->IsHidden() && !currentGroup->ShouldBeIgnored(m_groups))
         return currentGroup;
     }
@@ -581,7 +581,7 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetNextGroup(
     std::unique_lock<CCriticalSection> lock(m_critSection);
     for (auto it = m_groups.cbegin(); it != m_groups.cend(); ++it)
     {
-      const auto currentGroup{*it};
+      const auto& currentGroup{*it};
 
       // return this entry
       if (bReturnNext && !currentGroup->IsHidden() && !currentGroup->ShouldBeIgnored(m_groups))
@@ -595,7 +595,7 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetNextGroup(
     // no match return first visible group
     for (auto it = m_groups.cbegin(); it != m_groups.cend(); ++it)
     {
-      const auto currentGroup{*it};
+      const auto& currentGroup{*it};
       if (!currentGroup->IsHidden() && !currentGroup->ShouldBeIgnored(m_groups))
         return currentGroup;
     }
