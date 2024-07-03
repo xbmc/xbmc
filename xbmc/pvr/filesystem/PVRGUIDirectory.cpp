@@ -439,8 +439,8 @@ bool CPVRGUIDirectory::GetChannelGroupsDirectory(bool bRadio,
                                                  bool bExcludeHidden,
                                                  CFileItemList& results)
 {
-  const CPVRChannelGroups* channelGroups =
-      CServiceBroker::GetPVRManager().ChannelGroups()->Get(bRadio);
+  const std::shared_ptr<const CPVRChannelGroups> channelGroups{
+      CServiceBroker::GetPVRManager().ChannelGroups()->Get(bRadio)};
   if (channelGroups)
   {
     std::shared_ptr<CFileItem> item;
@@ -477,7 +477,7 @@ std::shared_ptr<CPVRChannelGroupMember> GetLastWatchedChannelGroupMember(
 std::shared_ptr<CPVRChannelGroupMember> GetFirstMatchingGroupMember(
     const std::shared_ptr<CPVRChannel>& channel)
 {
-  CPVRChannelGroups* groups{
+  const std::shared_ptr<const CPVRChannelGroups> groups{
       CServiceBroker::GetPVRManager().ChannelGroups()->Get(channel->IsRadio())};
   if (groups)
   {

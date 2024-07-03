@@ -60,20 +60,20 @@ public:
    * @brief Get the TV channel groups.
    * @return The TV channel groups.
    */
-  CPVRChannelGroups* GetTV() const { return Get(false); }
+  std::shared_ptr<CPVRChannelGroups> GetTV() const { return Get(false); }
 
   /*!
    * @brief Get the radio channel groups.
    * @return The radio channel groups.
    */
-  CPVRChannelGroups* GetRadio() const { return Get(true); }
+  std::shared_ptr<CPVRChannelGroups> GetRadio() const { return Get(true); }
 
   /*!
    * @brief Get the radio or TV channel groups.
    * @param bRadio If true, get the radio channel groups. Get the TV channel groups otherwise.
    * @return The requested groups.
    */
-  CPVRChannelGroups* Get(bool bRadio) const;
+  std::shared_ptr<CPVRChannelGroups> Get(bool bRadio) const;
 
   /*!
    * @brief Get the group containing all TV channels.
@@ -169,8 +169,8 @@ private:
    */
   bool LoadFromDatabase(const std::vector<std::shared_ptr<CPVRClient>>& clients);
 
-  CPVRChannelGroups* m_groupsRadio; /*!< all radio channel groups */
-  CPVRChannelGroups* m_groupsTV; /*!< all TV channel groups */
+  std::shared_ptr<CPVRChannelGroups> m_groupsRadio; /*!< all radio channel groups */
+  std::shared_ptr<CPVRChannelGroups> m_groupsTV; /*!< all TV channel groups */
   CCriticalSection m_critSection;
   bool m_bIsUpdating = false;
 };

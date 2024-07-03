@@ -27,8 +27,6 @@ CPVRChannelGroupsContainer::CPVRChannelGroupsContainer()
 CPVRChannelGroupsContainer::~CPVRChannelGroupsContainer()
 {
   Unload();
-  delete m_groupsRadio;
-  delete m_groupsTV;
 }
 
 bool CPVRChannelGroupsContainer::Update(const std::vector<std::shared_ptr<CPVRClient>>& clients)
@@ -68,7 +66,7 @@ void CPVRChannelGroupsContainer::Unload()
   m_groupsTV->Unload();
 }
 
-CPVRChannelGroups* CPVRChannelGroupsContainer::Get(bool bRadio) const
+std::shared_ptr<CPVRChannelGroups> CPVRChannelGroupsContainer::Get(bool bRadio) const
 {
   return bRadio ? m_groupsRadio : m_groupsTV;
 }
