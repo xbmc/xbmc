@@ -12,7 +12,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   macro(buildPCRE2)
     set(PCRE2_VERSION ${${MODULE}_VER})
     if(WIN32)
-      set(PCRE_DEBUG_POSTFIX d)
+      set(PCRE2_DEBUG_POSTFIX d)
     endif()
 
     set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/001-all-enable_docs_pc.patch"
@@ -20,19 +20,23 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
     generate_patchcommand("${patches}")
 
+    if(CORE_SYSTEM_NAME STREQUAL darwin_embedded OR WINDOWS_STORE)
+      set(EXTRA_ARGS -DPCRE2_SUPPORT_JIT=OFF)
+    else()
+      set(EXTRA_ARGS -DPCRE2_SUPPORT_JIT=ON)
+    endif()
+
     set(CMAKE_ARGS -DBUILD_STATIC_LIBS=ON
+                   -DPCRE2_STATIC_PIC=ON
                    -DPCRE2_BUILD_PCRE2_8=ON
                    -DPCRE2_BUILD_PCRE2_16=OFF
                    -DPCRE2_BUILD_PCRE2_32=OFF
-                   -DPCRE2_SUPPORT_JIT=ON
+                   -DPCRE_NEWLINE=ANYCRLF
                    -DPCRE2_SUPPORT_UNICODE=ON
                    -DPCRE2_BUILD_PCRE2GREP=OFF
                    -DPCRE2_BUILD_TESTS=OFF
-                   -DENABLE_DOCS=OFF)
-
-    if(CORE_SYSTEM_NAME STREQUAL darwin_embedded)
-      list(APPEND CMAKE_ARGS -DPCRE2_SUPPORT_JIT=OFF)
-    endif()
+                   -DENABLE_DOCS=OFF
+                   ${EXTRA_ARGS})
 
     set(${CMAKE_FIND_PACKAGE_NAME}_COMPILEDEFINITIONS PCRE2_STATIC)
 
