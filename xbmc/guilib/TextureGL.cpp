@@ -9,6 +9,8 @@
 #include "TextureGL.h"
 
 #include "ServiceBroker.h"
+#include "guilib/TextureFormats.h"
+#include "guilib/TextureGLFormatMap.h"
 #include "guilib/TextureManager.h"
 #include "rendering/RenderSystem.h"
 #include "settings/AdvancedSettings.h"
@@ -33,6 +35,8 @@ CGLTexture::CGLTexture(unsigned int width, unsigned int height, XB_FMT format)
   CServiceBroker::GetRenderSystem()->GetRenderVersion(major, minor);
   if (major >= 3)
     m_isOglVersion3orNewer = true;
+  if (major > 3 || (major == 3 && minor >= 3))
+    m_isOglVersion33orNewer = true;
 }
 
 CGLTexture::~CGLTexture()
@@ -119,49 +123,30 @@ void CGLTexture::LoadToGPU()
     m_textureWidth = maxSize;
   }
 
-  GLenum format = GL_BGRA;
-  GLint numcomponents = GL_RGBA;
+  SetSwizzle();
 
-  switch (m_format)
+  textureFormatGL glFormat = GetFormatGL(m_textureFormat);
+
+  if (glFormat.format == GL_FALSE)
   {
-  case XB_FMT_DXT1:
-    format = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-    break;
-  case XB_FMT_DXT3:
-    format = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
-    break;
-  case XB_FMT_DXT5:
-  case XB_FMT_DXT5_YCoCg:
-    format = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
-    break;
-  case XB_FMT_RGB8:
-    format = GL_RGB;
-    numcomponents = GL_RGB;
-    break;
-  case XB_FMT_A8R8G8B8:
-  default:
-    break;
+    CLog::LogF(LOGDEBUG, "Failed to load texture. Unsupported format {}", m_textureFormat);
+    m_loadedToGPU = true;
+    return;
   }
 
-  if ((m_format & XB_FMT_DXT_MASK) == 0)
+  if ((m_textureFormat & KD_TEX_FMT_SDR) || (m_textureFormat & KD_TEX_FMT_HDR))
   {
-    glTexImage2D(GL_TEXTURE_2D, 0, numcomponents,
-                 m_textureWidth, m_textureHeight, 0,
-                 format, GL_UNSIGNED_BYTE, m_pixels);
+    glTexImage2D(GL_TEXTURE_2D, 0, glFormat.internalFormat, m_textureWidth, m_textureHeight, 0,
+                 glFormat.format, glFormat.type, m_pixels);
   }
   else
   {
-    glCompressedTexImage2D(GL_TEXTURE_2D, 0, format,
-                           m_textureWidth, m_textureHeight, 0,
-                           GetPitch() * GetRows(), m_pixels);
+    glCompressedTexImage2D(GL_TEXTURE_2D, 0, glFormat.internalFormat, m_textureWidth,
+                           m_textureHeight, 0, GetPitch() * GetRows(), m_pixels);
   }
 
   if (IsMipmapped() && m_isOglVersion3orNewer)
-  {
     glGenerateMipmap(GL_TEXTURE_2D);
-  }
-
-  glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 
   VerifyGLState();
 
@@ -185,3 +170,41 @@ void CGLTexture::BindToUnit(unsigned int unit)
   glBindTexture(GL_TEXTURE_2D, m_texture);
 }
 
+void CGLTexture::SetSwizzle()
+{
+  if (!swizzleMapGl.contains(m_textureSwizzle))
+    return;
+
+  textureswizzleGL swiz = swizzleMapGl.at(m_textureSwizzle);
+
+  // GL_TEXTURE_SWIZZLE_RGBA and GL_TEXTURE_SWIZZLE_RGBA_EXT should be the same
+  // token, but just to be sure...
+#if defined(GL_VERSION_3_3) || (GL_ARB_texture_swizzle)
+  if (m_isOglVersion33orNewer ||
+      CServiceBroker::GetRenderSystem()->IsExtSupported("GL_ARB_texture_swizzle"))
+  {
+    glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, &swiz.r);
+    return;
+  }
+#endif
+#if defined(GL_EXT_texture_swizzle)
+  if (CServiceBroker::GetRenderSystem()->IsExtSupported("GL_EXT_texture_swizzle"))
+  {
+    glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA_EXT, &swiz.r);
+    return;
+  }
+#endif
+}
+
+textureFormatGL CGLTexture::GetFormatGL(KD_TEX_FMT textureFormat)
+{
+  textureFormatGL glFormat;
+
+  const auto it = textureMappingGL.find(textureFormat);
+  if (it != textureMappingGL.cend())
+  {
+    glFormat = it->second;
+  }
+
+  return glFormat;
+}
