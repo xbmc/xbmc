@@ -9,6 +9,7 @@
 #pragma once
 
 #include "Texture.h"
+#include "guilib/TextureGLESFormatMap.h"
 
 #include "system_gl.h"
 
@@ -24,6 +25,11 @@ public:
   void BindToUnit(unsigned int unit) override;
 
 protected:
+  void SetSwizzle(bool swapRB);
+  void SwapBlueRedSwizzle(GLint& component);
+  textureFormatGLES GetFormatGLES20(KD_TEX_FMT textureFormat);
+  textureFormatGLES GetFormatGLES30(KD_TEX_FMT textureFormat);
+
   GLuint m_texture = 0;
   bool m_isGLESVersion30orNewer{false};
 };

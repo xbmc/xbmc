@@ -9,6 +9,8 @@
 #include "TextureGLES.h"
 
 #include "ServiceBroker.h"
+#include "guilib/TextureFormats.h"
+#include "guilib/TextureGLESFormatMap.h"
 #include "guilib/TextureManager.h"
 #include "rendering/RenderSystem.h"
 #include "settings/AdvancedSettings.h"
@@ -125,52 +127,42 @@ void CGLESTexture::LoadToGPU()
     }
   }
 
-  // All incoming textures are BGRA, which GLES does not necessarily support.
-  // Some (most?) hardware supports BGRA textures via an extension.
-  // If not, we convert to RGBA first to avoid having to swizzle in shaders.
-  // Explicitly define GL_BGRA_EXT here in the case that it's not defined by
-  // system headers, and trust the extension list instead.
-#ifndef GL_BGRA_EXT
-#define GL_BGRA_EXT 0x80E1
-#endif
-
-  GLint internalformat;
-  GLenum pixelformat;
-
-  switch (m_format)
+  textureFormatGLES glesFormat;
+  if (m_isGLESVersion30orNewer)
   {
-    default:
-    case XB_FMT_RGBA8:
-      internalformat = pixelformat = GL_RGBA;
-      break;
-    case XB_FMT_RGB8:
-      internalformat = pixelformat = GL_RGB;
-      break;
-    case XB_FMT_A8R8G8B8:
-      if (CServiceBroker::GetRenderSystem()->IsExtSupported("GL_EXT_texture_format_BGRA8888") ||
-          CServiceBroker::GetRenderSystem()->IsExtSupported("GL_IMG_texture_format_BGRA8888"))
-      {
-        internalformat = pixelformat = GL_BGRA_EXT;
-      }
-      else if (CServiceBroker::GetRenderSystem()->IsExtSupported(
-                   "GL_APPLE_texture_format_BGRA8888"))
-      {
-        // Apple's implementation does not conform to spec. Instead, they require
-        // differing format/internalformat, more like GL.
-        internalformat = GL_RGBA;
-        pixelformat = GL_BGRA_EXT;
-      }
-      else
-      {
-        SwapBlueRed(m_pixels, m_textureHeight, GetPitch());
-        internalformat = pixelformat = GL_RGBA;
-      }
-      break;
+    KD_TEX_FMT textureFormat = m_textureFormat;
+    bool swapRB = false;
+    // Support for BGRA is hit and miss, swizzle instead
+    if (textureFormat == KD_TEX_FMT_SDR_BGRA8)
+    {
+      textureFormat = KD_TEX_FMT_SDR_RGBA8;
+      swapRB = true;
+    }
+    SetSwizzle(swapRB);
+    glesFormat = GetFormatGLES30(textureFormat);
+  }
+  else
+  {
+    glesFormat = GetFormatGLES20(m_textureFormat);
   }
 
-  glTexImage2D(GL_TEXTURE_2D, 0, internalformat, m_textureWidth, m_textureHeight, 0, pixelformat,
-               GL_UNSIGNED_BYTE, m_pixels);
+  if (glesFormat.internalFormat == GL_FALSE)
+  {
+    CLog::LogF(LOGDEBUG, "Failed to load texture. Unsupported format {}", m_textureFormat);
+    m_loadedToGPU = true;
+    return;
+  }
 
+  if ((m_textureFormat & KD_TEX_FMT_SDR) || (m_textureFormat & KD_TEX_FMT_HDR))
+  {
+    glTexImage2D(GL_TEXTURE_2D, 0, glesFormat.internalFormat, m_textureWidth, m_textureHeight, 0,
+                 glesFormat.format, glesFormat.type, m_pixels);
+  }
+  else
+  {
+    glCompressedTexImage2D(GL_TEXTURE_2D, 0, glesFormat.internalFormat, m_textureWidth,
+                           m_textureHeight, 0, GetPitch() * GetRows(), m_pixels);
+  }
   if (IsMipmapped())
   {
     glGenerateMipmap(GL_TEXTURE_2D);
@@ -195,4 +187,114 @@ void CGLESTexture::BindToUnit(unsigned int unit)
 {
   glActiveTexture(GL_TEXTURE0 + unit);
   glBindTexture(GL_TEXTURE_2D, m_texture);
+}
+
+void CGLESTexture::SetSwizzle(bool swapRB)
+{
+#if defined(GL_ES_VERSION_3_0)
+  textureSwizzleGLES swiz;
+
+  const auto it = swizzleMapGLES.find(m_textureSwizzle);
+  if (it != swizzleMapGLES.cend())
+    swiz = it->second;
+
+  if (swapRB)
+  {
+    SwapBlueRedSwizzle(swiz.r);
+    SwapBlueRedSwizzle(swiz.g);
+    SwapBlueRedSwizzle(swiz.b);
+    SwapBlueRedSwizzle(swiz.a);
+  }
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_R, swiz.r);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_G, swiz.g);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_B, swiz.b);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_A, swiz.a);
+#endif
+}
+
+void CGLESTexture::SwapBlueRedSwizzle(GLint& component)
+{
+  if (component == GL_RED)
+    component = GL_BLUE;
+  else if (component == GL_BLUE)
+    component = GL_RED;
+}
+
+textureFormatGLES CGLESTexture::GetFormatGLES20(KD_TEX_FMT textureFormat)
+{
+  textureFormatGLES glFormat;
+
+  // GLES 2.0 does not support swizzling. But for some Kodi formats+swizzles,
+  // we can map GLES formats (Luminance, Luminance-Alpha, BGRA). Other swizzles
+  // would have to be supported in the shader, or converted before upload.
+
+  if (m_textureFormat == KD_TEX_FMT_SDR_R8 && m_textureSwizzle == KD_TEX_SWIZ_RRR1)
+  {
+    glFormat.format = glFormat.internalFormat = GL_LUMINANCE;
+  }
+  else if (m_textureFormat == KD_TEX_FMT_SDR_RG8 && m_textureSwizzle == KD_TEX_SWIZ_RRRG)
+  {
+    glFormat.format = glFormat.internalFormat = GL_LUMINANCE_ALPHA;
+  }
+  else if (m_textureFormat == KD_TEX_FMT_SDR_BGRA8 && m_textureSwizzle == KD_TEX_SWIZ_RGBA &&
+           !CServiceBroker::GetRenderSystem()->IsExtSupported("GL_EXT_texture_format_BGRA8888") &&
+           !CServiceBroker::GetRenderSystem()->IsExtSupported("GL_IMG_texture_format_BGRA8888"))
+  {
+#if defined(GL_APPLE_texture_format_BGRA8888)
+    if (CServiceBroker::GetRenderSystem()->IsExtSupported("GL_APPLE_texture_format_BGRA8888"))
+    {
+      glFormat.internalFormat = GL_RGBA;
+      glFormat.format = GL_BGRA_EXT;
+    }
+    else
+#endif
+    {
+      SwapBlueRed(m_pixels, m_textureHeight, GetPitch());
+      glFormat.format = glFormat.internalFormat = GL_RGBA;
+    }
+  }
+  else if (textureFormat & KD_TEX_FMT_SDR || textureFormat & KD_TEX_FMT_HDR ||
+           textureFormat & KD_TEX_FMT_ETC1)
+  {
+    const auto it = textureMappingGLES20.find(textureFormat);
+    if (it != textureMappingGLES20.cend())
+      glFormat = it->second;
+    glFormat.format = glFormat.internalFormat;
+  }
+  else
+  {
+    const auto it = textureMappingGLESExtensions.find(textureFormat);
+    if (it != textureMappingGLESExtensions.cend())
+      glFormat = it->second;
+  }
+
+  return glFormat;
+}
+
+textureFormatGLES CGLESTexture::GetFormatGLES30(KD_TEX_FMT textureFormat)
+{
+  textureFormatGLES glFormat;
+
+  if (textureFormat & KD_TEX_FMT_SDR || textureFormat & KD_TEX_FMT_HDR)
+  {
+#if defined(GL_ES_VERSION_3_0)
+    const auto it = textureMappingGLES30.find(KD_TEX_FMT_SDR_RGBA8);
+    if (it != textureMappingGLES30.cend())
+      glFormat = it->second;
+#else
+    const auto it = textureMappingGLES20.find(textureFormat);
+    if (it != textureMappingGLES20.cend())
+      glFormat = it->second;
+    glFormat.format = glFormat.internalFormat;
+#endif
+  }
+  else
+  {
+    const auto it = textureMappingGLESExtensions.find(textureFormat);
+    if (it != textureMappingGLESExtensions.cend())
+      glFormat = it->second;
+  }
+
+  return glFormat;
 }
