@@ -550,6 +550,29 @@ bool CPVRTimers::UpdateEntries(int iMaxNotificationDelay)
                   timer->Persist();
                 }
               }
+
+              // check for epg tag uids that were re-used for a different event (which is actually
+              // an add-on/a backend bug)
+              if (!timer->IsTimerRule() && (epgTag->Title() != timer->Title()))
+              {
+                const std::shared_ptr<CPVRTimerInfoTag> parent{GetTimerRule(timer)};
+                if (parent)
+                {
+                  const CPVRTimerRuleMatcher matcher{parent, now};
+                  if (!matcher.Matches(epgTag))
+                  {
+                    // epg event no longer matches the rule. delete the timer
+                    bDeleteTimer = true;
+                    timer->DeleteFromDatabase();
+                  }
+                }
+              }
+            }
+            else if (!timer->IsTimerRule())
+            {
+              // epg event no longer present. delete the timer
+              bDeleteTimer = true;
+              timer->DeleteFromDatabase();
             }
           }
         }
@@ -645,6 +668,13 @@ bool CPVRTimers::UpdateEntries(int iMaxNotificationDelay)
       ++it;
   }
 
+  // reinsert timers with changed timer start
+  for (const auto& timer : timersToReinsert)
+  {
+    InsertEntry(timer);
+    timer->Persist();
+  }
+
   // create new children of local epg-based reminder timer rules
   for (const auto& epgMapEntry : epgMap)
   {
@@ -671,14 +701,7 @@ bool CPVRTimers::UpdateEntries(int iMaxNotificationDelay)
     }
   }
 
-  // reinsert timers with changed timer start
-  for (const auto& timer : timersToReinsert)
-  {
-    InsertEntry(timer);
-    timer->Persist();
-  }
-
-  // insert new children of time-based local timer rules
+  // persist and insert/update new children of local time-based and epg-based reminder timer rules
   for (const auto& timerPair : childTimersToInsert)
   {
     PersistAndUpdateLocalTimer(timerPair.second, timerPair.first);
