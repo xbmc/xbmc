@@ -6,7 +6,7 @@
 //  See LICENSES/README.md for more information.
 //
 
-namespace KODI.RETRO;
+namespace KODI.RETRO.SAVESTATE;
 
 enum PixelFormat : uint8 {
   /// @brief Value for unknown pixel formats

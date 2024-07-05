@@ -34,31 +34,31 @@ const size_t INITIAL_FLATBUFFER_SIZE = 1024;
 /*!
  * \brief Translate the save type (RetroPlayer to FlatBuffers)
  */
-SaveType TranslateType(SAVE_TYPE type)
+SAVESTATE::SaveType TranslateType(SAVE_TYPE type)
 {
   switch (type)
   {
     case SAVE_TYPE::AUTO:
-      return SaveType_Auto;
+      return SAVESTATE::SaveType_Auto;
     case SAVE_TYPE::MANUAL:
-      return SaveType_Manual;
+      return SAVESTATE::SaveType_Manual;
     default:
       break;
   }
 
-  return SaveType_Unknown;
+  return SAVESTATE::SaveType_Unknown;
 }
 
 /*!
  * \brief Translate the save type (FlatBuffers to RetroPlayer)
  */
-SAVE_TYPE TranslateType(SaveType type)
+SAVE_TYPE TranslateType(SAVESTATE::SaveType type)
 {
   switch (type)
   {
-    case SaveType_Auto:
+    case SAVESTATE::SaveType_Auto:
       return SAVE_TYPE::AUTO;
-    case SaveType_Manual:
+    case SAVESTATE::SaveType_Manual:
       return SAVE_TYPE::MANUAL;
     default:
       break;
@@ -70,67 +70,67 @@ SAVE_TYPE TranslateType(SaveType type)
 /*!
  * \brief Translate the video pixel format (RetroPlayer to FlatBuffers)
  */
-PixelFormat TranslatePixelFormat(AVPixelFormat pixelFormat)
+SAVESTATE::PixelFormat TranslatePixelFormat(AVPixelFormat pixelFormat)
 {
   switch (pixelFormat)
   {
     case AV_PIX_FMT_RGBA:
-      return PixelFormat_RGBA_8888;
+      return SAVESTATE::PixelFormat_RGBA_8888;
 
     case AV_PIX_FMT_0RGB32:
 #if defined(__BIG_ENDIAN__)
-      return PixelFormat_XRGB_8888;
+      return SAVESTATE::PixelFormat_XRGB_8888;
 #else
-      return PixelFormat_BGRX_8888;
+      return SAVESTATE::PixelFormat_BGRX_8888;
 #endif
 
     case AV_PIX_FMT_RGB565:
 #if defined(__BIG_ENDIAN__)
-      return PixelFormat_RGB_565_BE;
+      return SAVESTATE::PixelFormat_RGB_565_BE;
 #else
-      return PixelFormat_RGB_565_LE;
+      return SAVESTATE::PixelFormat_RGB_565_LE;
 #endif
 
     case AV_PIX_FMT_RGB555:
 #if defined(__BIG_ENDIAN__)
-      return PixelFormat_RGB_555_BE;
+      return SAVESTATE::PixelFormat_RGB_555_BE;
 #else
-      return PixelFormat_RGB_555_LE;
+      return SAVESTATE::PixelFormat_RGB_555_LE;
 #endif
 
     default:
       break;
   }
 
-  return PixelFormat_Unknown;
+  return SAVESTATE::PixelFormat_Unknown;
 }
 
 /*!
  * \brief Translate the video pixel format (FlatBuffers to RetroPlayer)
  */
-AVPixelFormat TranslatePixelFormat(PixelFormat pixelFormat)
+AVPixelFormat TranslatePixelFormat(SAVESTATE::PixelFormat pixelFormat)
 {
   switch (pixelFormat)
   {
-    case PixelFormat_RGBA_8888:
+    case SAVESTATE::PixelFormat_RGBA_8888:
       return AV_PIX_FMT_RGBA;
 
-    case PixelFormat_XRGB_8888:
+    case SAVESTATE::PixelFormat_XRGB_8888:
       return AV_PIX_FMT_0RGB;
 
-    case PixelFormat_BGRX_8888:
+    case SAVESTATE::PixelFormat_BGRX_8888:
       return AV_PIX_FMT_BGR0;
 
-    case PixelFormat_RGB_565_BE:
+    case SAVESTATE::PixelFormat_RGB_565_BE:
       return AV_PIX_FMT_RGB565BE;
 
-    case PixelFormat_RGB_565_LE:
+    case SAVESTATE::PixelFormat_RGB_565_LE:
       return AV_PIX_FMT_RGB565LE;
 
-    case PixelFormat_RGB_555_BE:
+    case SAVESTATE::PixelFormat_RGB_555_BE:
       return AV_PIX_FMT_RGB555BE;
 
-    case PixelFormat_RGB_555_LE:
+    case SAVESTATE::PixelFormat_RGB_555_LE:
       return AV_PIX_FMT_RGB555LE;
 
     default:
@@ -143,39 +143,39 @@ AVPixelFormat TranslatePixelFormat(PixelFormat pixelFormat)
 /*!
  * \brief Translate the video rotation (RetroPlayer to FlatBuffers)
  */
-VideoRotation TranslateRotation(unsigned int rotationCCW)
+SAVESTATE::VideoRotation TranslateRotation(unsigned int rotationCCW)
 {
   switch (rotationCCW)
   {
     case 0:
-      return VideoRotation_CCW_0;
+      return SAVESTATE::VideoRotation_CCW_0;
     case 90:
-      return VideoRotation_CCW_90;
+      return SAVESTATE::VideoRotation_CCW_90;
     case 180:
-      return VideoRotation_CCW_180;
+      return SAVESTATE::VideoRotation_CCW_180;
     case 270:
-      return VideoRotation_CCW_270;
+      return SAVESTATE::VideoRotation_CCW_270;
     default:
       break;
   }
 
-  return VideoRotation_CCW_0;
+  return SAVESTATE::VideoRotation_CCW_0;
 }
 
 /*!
  * \brief Translate the video rotation (RetroPlayer to FlatBuffers)
  */
-unsigned int TranslateRotation(VideoRotation rotationCCW)
+unsigned int TranslateRotation(SAVESTATE::VideoRotation rotationCCW)
 {
   switch (rotationCCW)
   {
-    case VideoRotation_CCW_0:
+    case SAVESTATE::VideoRotation_CCW_0:
       return 0;
-    case VideoRotation_CCW_90:
+    case SAVESTATE::VideoRotation_CCW_90:
       return 90;
-    case VideoRotation_CCW_180:
+    case SAVESTATE::VideoRotation_CCW_180:
       return 180;
-    case VideoRotation_CCW_270:
+    case SAVESTATE::VideoRotation_CCW_270:
       return 270;
     default:
       break;
@@ -529,7 +529,7 @@ uint8_t* CSavestateFlatBuffer::GetMemoryBuffer(size_t size)
 void CSavestateFlatBuffer::Finalize()
 {
   // Helper class to build the nested Savestate table
-  SavestateBuilder savestateBuilder(*m_builder);
+  SAVESTATE::SavestateBuilder savestateBuilder(*m_builder);
 
   savestateBuilder.add_version(SCHEMA_VERSION);
 
@@ -612,15 +612,15 @@ void CSavestateFlatBuffer::Finalize()
   auto savestate = savestateBuilder.Finish();
   FinishSavestateBuffer(*m_builder, savestate);
 
-  m_savestate = GetSavestate(m_builder->GetBufferPointer());
+  m_savestate = SAVESTATE::GetSavestate(m_builder->GetBufferPointer());
 }
 
 bool CSavestateFlatBuffer::Deserialize(std::vector<uint8_t> data)
 {
   flatbuffers::Verifier verifier(data.data(), data.size());
-  if (VerifySavestateBuffer(verifier))
+  if (SAVESTATE::VerifySavestateBuffer(verifier))
   {
-    const Savestate* savestate = GetSavestate(data.data());
+    const SAVESTATE::Savestate* savestate = SAVESTATE::GetSavestate(data.data());
 
     if (savestate->version() < SCHEMA_MIN_VERSION)
     {
@@ -631,7 +631,7 @@ bool CSavestateFlatBuffer::Deserialize(std::vector<uint8_t> data)
     else
     {
       m_data = std::move(data);
-      m_savestate = GetSavestate(m_data.data());
+      m_savestate = SAVESTATE::GetSavestate(m_data.data());
       return true;
     }
   }
