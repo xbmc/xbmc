@@ -31,7 +31,7 @@ public:
   CAESinkPULSE();
   ~CAESinkPULSE() override;
 
-  static bool Register();
+  static bool Register(bool allowPipeWireCompatServer);
   static std::unique_ptr<IAESink> Create(std::string& device, AEAudioFormat& desiredFormat);
   static void EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
   static void Cleanup();

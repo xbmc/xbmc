@@ -23,7 +23,7 @@ bool ALSARegister();
 
 namespace OPTIONALS
 {
-bool PulseAudioRegister();
+bool PulseAudioRegister(bool allowPipeWireCompatServer);
 }
 
 //-----------------------------------------------------------------------------

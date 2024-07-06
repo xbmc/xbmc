@@ -89,7 +89,7 @@ bool CPlatformFreebsd::InitStageOne()
   }
   else if (sink == "pulseaudio")
   {
-    OPTIONALS::PulseAudioRegister();
+    OPTIONALS::PulseAudioRegister(true);
   }
   else if (sink == "oss")
   {
@@ -102,11 +102,11 @@ bool CPlatformFreebsd::InitStageOne()
   else if (sink == "alsa+pulseaudio")
   {
     OPTIONALS::ALSARegister();
-    OPTIONALS::PulseAudioRegister();
+    OPTIONALS::PulseAudioRegister(true);
   }
   else
   {
-    if (!OPTIONALS::PulseAudioRegister())
+    if (!OPTIONALS::PulseAudioRegister(false))
     {
       if (!OPTIONALS::ALSARegister())
       {
