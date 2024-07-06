@@ -127,6 +127,7 @@ void CTextureBase::ClampToEdge()
       for (uint32_t x = imagePitch; x < texturePitch; x += blockSize)
         memcpy(dst + x, src, blockSize);
       dst += texturePitch;
+      src += texturePitch;
     }
   }
 
