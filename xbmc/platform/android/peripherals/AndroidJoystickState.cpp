@@ -469,6 +469,10 @@ bool CAndroidJoystickState::MapButton(JOYSTICK::IButtonMap& buttonMap, int butto
   if (controllerButton.empty())
     return false;
 
+  // Check if feature is already mapped
+  if (buttonMap.GetFeatureType(controllerButton) != JOYSTICK::FEATURE_TYPE::UNKNOWN)
+    return false;
+
   // Map the button
   CLog::Log(LOGDEBUG, "Automatically mapping {} to {}", controllerButton,
             buttonPrimitive.ToString());

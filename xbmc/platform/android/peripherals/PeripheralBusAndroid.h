@@ -66,7 +66,7 @@ private:
 
   mutable std::map<int, CAndroidJoystickState> m_joystickStates;
   PeripheralScanResults m_scanResults;
-  CCriticalSection m_critSectionStates;
+  mutable CCriticalSection m_critSectionStates;
   CCriticalSection m_critSectionResults;
 };
 using PeripheralBusAndroidPtr = std::shared_ptr<CPeripheralBusAndroid>;
