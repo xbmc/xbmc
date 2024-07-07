@@ -58,7 +58,7 @@ void CGameLoop::Process(void)
   {
     if (m_speedFactor == 0.0)
     {
-      m_lastFrameMs = 0.0;
+      m_lastFrameUs = 0;
       m_sleepEvent.Wait(5000ms);
     }
     else
@@ -68,63 +68,52 @@ void CGameLoop::Process(void)
       else if (m_speedFactor < 0.0)
         m_callback->RewindEvent();
 
-      if (m_lastFrameMs > 0.0)
+      if (m_lastFrameUs > 0)
       {
-        m_lastFrameMs += FrameTimeMs();
-        m_adjustTime = m_lastFrameMs - NowMs();
+        int64_t frameTimeUs = FrameTimeUs();
+
+        // difference between actual and optimal clamped to frame time
+        m_adjustTime = std::clamp(m_lastFrameUs + frameTimeUs - NowUs(), -frameTimeUs, frameTimeUs);
       }
       else
-      {
-        m_lastFrameMs = NowMs();
-        m_adjustTime = 0.0;
-      }
+        m_adjustTime = 0;
+
+      m_lastFrameUs = NowUs();
 
       // Calculate sleep time
-      double sleepTimeMs = SleepTimeMs();
+      int64_t sleepTimeUs = SleepTimeUs();
 
-      // Sleep at least 1 ms to avoid sleeping forever
-      while (sleepTimeMs > 1.0)
-      {
-        m_sleepEvent.Wait(std::chrono::milliseconds(static_cast<unsigned int>(sleepTimeMs)));
-
-        if (m_bStop)
-          break;
-
-        // Speed may have changed, update sleep time
-        sleepTimeMs = SleepTimeMs();
-      }
+      if (sleepTimeUs > 0)
+        m_sleepEvent.Wait(std::chrono::microseconds(sleepTimeUs));
     }
   }
 }
 
-double CGameLoop::FrameTimeMs() const
+int64_t CGameLoop::FrameTimeUs() const
 {
   if (m_speedFactor != 0.0)
-    return 1000.0 / m_fps / std::abs(m_speedFactor);
+    return round(1000000 / m_fps / std::abs(m_speedFactor));
   else
-    return 1000.0 / m_fps / 1.0;
+    return round(1000000 / m_fps / 1);
 }
 
-double CGameLoop::SleepTimeMs() const
+int64_t inline CGameLoop::SleepTimeUs() const
 {
   // Calculate next frame time
-  const double nextFrameMs = m_lastFrameMs + FrameTimeMs();
+  const int64_t nextFrameUs = m_lastFrameUs + FrameTimeUs();
 
-  // Calculate sleep time
-  double sleepTimeMs = (nextFrameMs - NowMs()) + m_adjustTime;
+  // Calculate sleep time adjusting toward optimal
+  int64_t sleepTimeUs = (nextFrameUs - NowUs()) + m_adjustTime;
 
   // Reset adjust time
-  m_adjustTime = 0.0;
+  m_adjustTime = 0;
 
-  // Positive or zero
-  sleepTimeMs = (sleepTimeMs >= 0.0 ? sleepTimeMs : 0.0);
-
-  return sleepTimeMs;
+  return std::clamp(sleepTimeUs, static_cast<int64_t>(0), FrameTimeUs());
 }
 
-double CGameLoop::NowMs() const
+int64_t CGameLoop::NowUs() const
 {
-  return std::chrono::duration<double, std::milli>(
+  return std::chrono::duration<double, std::micro>(
              std::chrono::steady_clock::now().time_since_epoch())
       .count();
 }

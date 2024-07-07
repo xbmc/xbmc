@@ -54,15 +54,15 @@ protected:
   void Process() override;
 
 private:
-  double FrameTimeMs() const;
-  double SleepTimeMs() const;
-  double NowMs() const;
+  int64_t FrameTimeUs() const;
+  int64_t inline SleepTimeUs() const;
+  int64_t NowUs() const;
 
   IGameLoopCallback* const m_callback;
   const double m_fps;
   std::atomic<double> m_speedFactor;
-  double m_lastFrameMs = 0.0;
-  mutable double m_adjustTime = 0.0;
+  int64_t m_lastFrameUs = 0;
+  mutable int64_t m_adjustTime = 0;
   CEvent m_sleepEvent;
 };
 } // namespace RETRO
