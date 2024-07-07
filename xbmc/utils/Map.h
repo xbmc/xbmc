@@ -34,7 +34,7 @@ class CMap
 {
 public:
   template<typename Iterable>
-  constexpr CMap(Iterable begin, Iterable end)
+  consteval CMap(Iterable begin, Iterable end)
   {
     std::move(begin, end, m_map.begin());
 
@@ -97,7 +97,7 @@ private:
  *
  */
 template<typename Key, typename Value, std::size_t Size>
-constexpr auto make_map(std::pair<Key, Value>(&&m)[Size]) -> CMap<Key, Value, Size>
+consteval auto make_map(std::pair<Key, Value> (&&m)[Size]) -> CMap<Key, Value, Size>
 {
   return CMap<Key, Value, Size>(std::begin(m), std::end(m));
 }
