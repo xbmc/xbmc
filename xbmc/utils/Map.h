@@ -36,26 +36,7 @@ public:
   template<typename Iterable>
   constexpr CMap(Iterable begin, Iterable end)
   {
-    size_t index = 0;
-    while (begin != end)
-    {
-      // c++17 doesn't have constexpr assignment operator for std::pair
-      auto& first = m_map[index].first;
-      auto& second = m_map[index].second;
-      ++index;
-
-      first = std::move(begin->first);
-      second = std::move(begin->second);
-      ++begin;
-
-      //! @todo: c++20 can use constexpr assignment operator instead
-      // auto& p = data[index];
-      // ++index;
-
-      // p = std::move(*begin);
-      // ++begin;
-      //
-    }
+    std::move(begin, end, m_map.begin());
 
     if constexpr (requires(Key k) { std::less<>{}(k, k); })
     {
