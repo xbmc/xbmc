@@ -654,15 +654,15 @@
 	</variable>
 	<variable name="PVRListItemSubLabel">
 		<value condition="ListItem.IsFolder">[COLOR grey]$INFO[ListItem.Timertype][/COLOR]</value>
-		<value condition="$EXP[listitem_has_episode_info] + !String.IsEmpty(ListItem.EpgEventTitle) + !String.StartsWith(ListItem.EpisodeName,ListItem.EpgEventTitle)">$INFO[ListItem.EpgEventTitle] | [COLOR grey]$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName][/COLOR]</value>
+		<value condition="$EXP[listitem_has_episode_info] + !String.IsEmpty(ListItem.EpgEventTitle) + !String.StartsWith(ListItem.EpisodeName,ListItem.EpgEventTitle) + !String.IsEqual(ListItem.EpgEventTitle,ListItem.Label)">$INFO[ListItem.EpgEventTitle] | [COLOR grey]$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName][/COLOR]</value>
 		<value condition="$EXP[listitem_has_episode_info]">[COLOR grey]$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName][/COLOR]</value>
-		<value>$INFO[ListItem.EpgEventTitle]</value>
+		<value condition="!String.IsEqual(ListItem.EpgEventTitle,ListItem.Label)">$INFO[ListItem.EpgEventTitle]</value>
 	</variable>
 	<variable name="PVRListItemSubLabelFocused">
 		<value condition="ListItem.IsFolder">$INFO[ListItem.Timertype]</value>
-		<value condition="$EXP[listitem_has_episode_info] + !String.IsEmpty(ListItem.EpgEventTitle) + !String.StartsWith(ListItem.EpisodeName,ListItem.EpgEventTitle)">$INFO[ListItem.EpgEventTitle] | $VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName]</value>
+		<value condition="$EXP[listitem_has_episode_info] + !String.IsEmpty(ListItem.EpgEventTitle) + !String.StartsWith(ListItem.EpisodeName,ListItem.EpgEventTitle) + !String.IsEqual(ListItem.EpgEventTitle,ListItem.Label)">$INFO[ListItem.EpgEventTitle] | [COLOR grey]$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName][/COLOR]</value>
 		<value condition="$EXP[listitem_has_episode_info]">$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName]</value>
-		<value>$INFO[ListItem.EpgEventTitle]</value>
+		<value condition="!String.IsEqual(ListItem.EpgEventTitle,ListItem.Label)">$INFO[ListItem.EpgEventTitle]</value>
 	</variable>
 	<variable name="PVRInfoPanelDateDurationLabel">
 		<value condition="!String.IsEmpty(ListItem.StartDate) + !String.IsEmpty(ListItem.StartTime)">$INFO[ListItem.StartDate,[COLOR grey]$LOCALIZE[552]:[/COLOR] ,[CR]]$INFO[ListItem.StartTime,[COLOR grey]$LOCALIZE[555]:[/COLOR] ,[CR]]$INFO[ListItem.Duration,[COLOR grey]$LOCALIZE[180]:[/COLOR] ]</value>
