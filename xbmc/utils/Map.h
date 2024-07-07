@@ -26,7 +26,8 @@
  *        This class is useful for mapping enum values to strings that can be
  *        compile time checked. This also helps with heap usage.
  *
- *        Lookups have linear complexity, so should not be used for "big" maps.
+ *        Lookups have log(n) complexity if Key is comparable using std::less<>,
+ *        otherwise it's linear.
  */
 template<typename Key, typename Value, size_t Size>
 class CMap
@@ -55,6 +56,12 @@ public:
       // ++begin;
       //
     }
+
+    if constexpr (requires(Key k) { std::less<>{}(k, k); })
+    {
+      std::sort(m_map.begin(), m_map.end(),
+                [](const auto& a, const auto& b) { return std::less<>{}(a.first, b.first); });
+    }
   }
 
   ~CMap() = default;
@@ -74,8 +81,21 @@ public:
 
   constexpr auto find(const Key& key) const
   {
-    return std::find_if(m_map.cbegin(), m_map.cend(),
-                        [&key](const auto& pair) { return pair.first == key; });
+    if constexpr (requires(Key k) { std::less<>{}(k, k); })
+    {
+      const auto iter =
+          std::lower_bound(m_map.cbegin(), m_map.cend(), key,
+                           [](const auto& a, const auto& b) { return std::less<>{}(a.first, b); });
+      if (iter != m_map.end() && !(key < iter->first))
+        return iter;
+      else
+        return m_map.end();
+    }
+    else
+    {
+      return std::find_if(m_map.cbegin(), m_map.cend(),
+                          [&key](const auto& pair) { return pair.first == key; });
+    }
   }
 
   constexpr size_t size() const { return Size; }
