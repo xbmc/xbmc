@@ -20,6 +20,12 @@
 
 #include <cstring>
 #include <memory>
+#include <regex>
+
+namespace
+{
+constexpr const char* ASS_SCRIPT_TYPE_RE = "^ScriptType:\\s*v4\\.00\\+?";
+}
 
 CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(std::string& strFile)
 {
@@ -31,6 +37,8 @@ CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(std::string& strFile)
   {
     return nullptr;
   }
+
+  const std::regex reAssScriptType{ASS_SCRIPT_TYPE_RE};
 
   for (int t = 0; t < 256; t++)
   {
@@ -55,10 +63,9 @@ CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(std::string& strFile)
         return new CDVDSubtitleParserVplayer(std::move(pStream), strFile);
       }
       else if (!StringUtils::CompareNoCase(line, "!: This is a Sub Station Alpha v", 32) ||
-               !StringUtils::CompareNoCase(line, "ScriptType: v4.00", 17) ||
-               !StringUtils::CompareNoCase(line, "Dialogue: Marked", 16) ||
-               !StringUtils::CompareNoCase(line, "Dialogue: ", 10) ||
-               !StringUtils::CompareNoCase(line, "[Events]", 8))
+               std::regex_match(line, reAssScriptType) ||
+               !StringUtils::CompareNoCase(line, "[Events]", 8) ||
+               !StringUtils::CompareNoCase(line, "Dialogue:", 9))
       {
         return new CDVDSubtitleParserSSA(std::move(pStream), strFile);
       }
