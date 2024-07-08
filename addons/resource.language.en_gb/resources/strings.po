@@ -8226,7 +8226,11 @@ msgctxt "#14084"
 msgid "Queue songs on selection"
 msgstr ""
 
-#empty string with id 14085
+#. Name of a setting for DVD playback mode
+#: system/settings/settings.xml
+msgctxt "#14085"
+msgid "DVD playback mode"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14086"
@@ -16811,7 +16815,27 @@ msgctxt "#25014"
 msgid "Manual"
 msgstr ""
 
-#empty strings from id 25015 to 29800
+#: application/ApplicationPlayerCallback.cpp
+msgctxt "#25015"
+msgid "Stacks"
+msgstr ""
+
+#: application/ApplicationPlayerCallback.cpp
+msgctxt "#25016"
+msgid "Continue to play next item in stack?"
+msgstr ""
+
+#: application/ApplicationPlayerCallback.cpp
+msgctxt "#25017"
+msgid "Continue"
+msgstr ""
+
+#: application/ApplicationPlayerCallback.cpp
+msgctxt "#25018"
+msgid "Stop"
+msgstr ""
+
+#empty strings from id 25019 to 29800
 
 #: unused
 msgctxt "#29801"
@@ -16840,7 +16864,14 @@ msgctxt "#29805"
 msgid "This Blu-ray disc (or file) is encrypted and can't be played."
 msgstr ""
 
-#empty strings from id 29806 to 29899
+#. A DVD playback mode and a option in the simplified DVD menu
+#: xbmc/filesystem/DVDDirectory.cpp
+#: system/settings/settings.xml
+msgctxt "#29806"
+msgid "Show DVD menu"
+msgstr ""
+
+#empty strings from id 29807 to 29899
 
 #. Header string on RDS Radiotext+ Info dialog
 #: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
@@ -22457,7 +22488,13 @@ msgctxt "#37057"
 msgid "Data chunk size used on SMB connections"
 msgstr ""
 
-#empty strings from id 37058 to 37100
+#. Description of setting #14129 DVD playback mode
+#: system/settings/settings.xml
+msgctxt "#37058"
+msgid "Specifies how DVDs should be opened / played back. Note: Some disc menus are not fully supported and may cause problems."
+msgstr ""
+
+#empty strings from id 37059 to 37100
 
 #. Settings / Services "Caching" category label
 #: system/settings/settings.xml

@@ -62,6 +62,8 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+#include "video/VideoFileItemClassify.h"
+#include "video/VideoInfoTag.h"
 #include "view/GUIViewState.h"
 
 #define CONTROL_BTNVIEWASICONS       2

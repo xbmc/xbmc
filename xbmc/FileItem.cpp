@@ -538,6 +538,7 @@ CFileItem& CFileItem::operator=(const CFileItem& item)
   m_specialSort = item.m_specialSort;
   m_bIsAlbum = item.m_bIsAlbum;
   m_doContentLookup = item.m_doContentLookup;
+  m_multipleTitles = item.m_multipleTitles;
   return *this;
 }
 
@@ -564,6 +565,7 @@ void CFileItem::Initialize()
   m_bCanQueue = true;
   m_specialSort = SortSpecialNone;
   m_doContentLookup = true;
+  m_multipleTitles = false;
 }
 
 void CFileItem::Reset()
@@ -1136,6 +1138,12 @@ bool CFileItem::IsDVD() const
   return URIUtils::IsDVD(m_strPath) || m_iDriveType == CMediaSource::SOURCE_TYPE_DVD;
 }
 
+bool CFileItem::IsDVDChapter() const
+{
+  CRegExp tc{true, CRegExp::autoUtf8, R"(title\/\d+\/chapter[s]?\/\d+)"};
+  return URIUtils::IsProtocol(GetDynPath(), "dvd") && tc.RegFind(GetDynPath()) != -1;
+}
+
 bool CFileItem::IsOnDVD() const
 {
   return URIUtils::IsOnDVD(m_strPath) || m_iDriveType == CMediaSource::SOURCE_TYPE_DVD;
@@ -1448,6 +1456,8 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
   if (!item)
     return false;
 
+  if (VIDEO::IsBlurayPlaylist(*item) || VIDEO::IsDVDPlaylist(*item))
+    return (GetDynPath() == item->GetDynPath());
   if (!m_strPath.empty() && item->GetPath() == m_strPath)
   {
     if (item->HasProperty("item_start") || HasProperty("item_start"))
@@ -1517,7 +1527,9 @@ bool CFileItem::IsAlbum() const
   return m_bIsAlbum;
 }
 
-void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
+void CFileItem::UpdateInfo(const CFileItem& item,
+                           bool replaceLabels /*=true*/,
+                           bool replaceEpisodes /* false */)
 {
   if (item.HasVideoInfoTag())
   { // copy info across
@@ -1580,12 +1592,92 @@ void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
     SetInvalid();
   }
   SetDynPath(item.GetDynPath());
-  if (replaceLabels && !item.GetLabel().empty())
-    SetLabel(item.GetLabel());
+
+  // Alter label to episode number(s) if requested
+  if (replaceLabels)
+  {
+    std::string label;
+    if (item.GetVideoContentType() == VideoDbContentType::EPISODES && replaceEpisodes &&
+        (item.IsDiscImage() || VIDEO::IsDVDFile(item) || item.IsBluray()))
+    {
+      // Get episodes on disc
+      CVideoDatabase database;
+      if (!database.Open())
+      {
+        CLog::LogF(LOGERROR, "Failed to open video database");
+        return;
+      }
+
+      std::vector<CVideoInfoTag> episodes;
+      database.GetEpisodesByFileId(item.GetVideoInfoTag()->m_iFileId, episodes);
+      if (!episodes.empty())
+      {
+        bool specials = false;
+        const int startEpisode =
+            (*std::min_element(episodes.begin(), episodes.end(),
+                               [&](const CVideoInfoTag& i, const CVideoInfoTag& j)
+                               {
+                                 if (i.m_iSeason == 0 && j.m_iSeason != 0)
+                                   return false;
+                                 if (i.m_iSeason != 0 && j.m_iSeason == 0)
+                                   return true;
+                                 return i.m_iEpisode < j.m_iEpisode;
+                               }))
+                .m_iEpisode;
+        const int endEpisode =
+            (*std::max_element(episodes.begin(), episodes.end(),
+                               [&](const CVideoInfoTag& i, const CVideoInfoTag& j)
+                               {
+                                 if (i.m_iSeason == 0 && j.m_iSeason != 0)
+                                   return true;
+                                 if (i.m_iSeason != 0 && j.m_iSeason == 0)
+                                   return false;
+                                 return i.m_iEpisode < j.m_iEpisode;
+                               }))
+                .m_iEpisode;
+        if (std::count_if(episodes.begin(), episodes.end(),
+                          [&](const CVideoInfoTag& i) { return i.m_iSeason == 0; }) > 0)
+          specials = true;
+
+        if (startEpisode == endEpisode)
+          label = StringUtils::Format("{} {}", g_localizeStrings.Get(20359) /* Episode */,
+                                      startEpisode);
+        else
+        {
+          label = StringUtils::Format("{} {}-{}", g_localizeStrings.Get(20360) /* Episodes */,
+                                      startEpisode, endEpisode);
+
+          // Get description of plot as more generic for multiple episodes
+          CVideoInfoTag details;
+          database.GetTvShowInfo(GetPath(), details, GetVideoInfoTag()->m_iIdShow);
+          std::string strParentDirectory;
+          URIUtils::GetParentPath(details.m_basePath, strParentDirectory);
+          CFileItemList dbItems;
+          database.GetItemsForPath("tvshows", strParentDirectory, dbItems);
+          const CFileItemPtr match = dbItems.Get(details.m_basePath);
+          m_videoInfoTag->m_strPlot = match->GetVideoInfoTag()->m_strPlot;
+        }
+
+        if (specials)
+          label += StringUtils::Format(" and Specials");
+
+        m_multipleTitles = true;
+        m_bIsFolder = false;
+      }
+    }
+    else if (!item.GetLabel().empty())
+    {
+      label = item.GetLabel();
+    }
+    if (!label.empty())
+      SetLabel(label);
+  }
+
   if (replaceLabels && !item.GetLabel2().empty())
     SetLabel2(item.GetLabel2());
   if (!item.GetArt().empty())
     SetArt(item.GetArt());
+
   AppendProperties(item);
   UpdateMimeType();
 }
@@ -1854,22 +1946,6 @@ void CFileItem::SetDynPath(const std::string &path)
   m_strDynPath = path;
 }
 
-std::string CFileItem::GetBlurayPath() const
-{
-  if (VIDEO::IsBlurayPlaylist(*this))
-  {
-    CURL url(GetDynPath());
-    CURL url2(url.GetHostName()); // strip bluray://
-    if (url2.IsProtocol("udf"))
-      // ISO
-      return url2.GetHostName(); // strip udf://
-    else if (url.IsProtocol("bluray"))
-      // BDMV
-      return url2.Get() + "BDMV/index.bdmv";
-  }
-  return GetDynPath();
-}
-
 void CFileItem::SetCueDocument(const CCueDocumentPtr& cuePtr)
 {
   m_cueDocument = cuePtr;
@@ -2049,10 +2125,7 @@ std::string CFileItem::GetLocalArtBaseFilename(bool& useFolder) const
   std::string strFile;
   if (IsStack())
   {
-    std::string strPath;
-    URIUtils::GetParentPath(m_strPath,strPath);
-    strFile = URIUtils::AddFileToFolder(
-        strPath, URIUtils::GetFileName(CStackDirectory::GetStackedTitlePath(m_strPath)));
+    strFile = CStackDirectory::GetStackedTitlePath(m_strPath);
   }
 
   std::string file = strFile.empty() ? m_strPath : strFile;
@@ -2067,7 +2140,7 @@ std::string CFileItem::GetLocalArtBaseFilename(bool& useFolder) const
   if (IsMultiPath())
     strFile = CMultiPathDirectory::GetFirstPath(m_strPath);
 
-  if (IsOpticalMediaFile())
+  if (IsOpticalMediaFile() && !IsStack())
   { // optical media files should be treated like folders
     useFolder = true;
     strFile = GetLocalMetadataPath();
@@ -2168,11 +2241,12 @@ std::string CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
     return GetLocalMetadataPath();
 
   if (bUseFolderNames &&
-     (!m_bIsFolder || URIUtils::IsInArchive(m_strPath) ||
-     (HasVideoInfoTag() && GetVideoInfoTag()->m_iDbId > 0 && !CMediaTypes::IsContainer(GetVideoInfoTag()->m_type))))
+      (!m_bIsFolder || URIUtils::IsInArchive(m_strPath) || URIUtils::IsStack(m_strPath) ||
+       (HasVideoInfoTag() && GetVideoInfoTag()->m_iDbId > 0 &&
+        !CMediaTypes::IsContainer(GetVideoInfoTag()->m_type))))
   {
     std::string name2(strMovieName);
-    URIUtils::GetParentPath(name2,strMovieName);
+    URIUtils::GetParentPath(name2, strMovieName);
     if (URIUtils::IsInArchive(m_strPath))
     {
       // Try to get archive itself, if empty take path before
@@ -2275,7 +2349,9 @@ std::string CFileItem::GetLocalMetadataPath() const
 
   std::string parent{};
   if (VIDEO::IsBlurayPlaylist(*this))
-    parent = URIUtils::GetParentPath(GetBlurayPath());
+    parent = URIUtils::GetParentPath(URIUtils::GetBlurayPath(GetDynPath()));
+  else if (VIDEO::IsDVDPlaylist(*this))
+    parent = URIUtils::GetParentPath(URIUtils::GetDVDPath(GetDynPath()));
   else
     parent = URIUtils::GetParentPath(m_strPath);
   std::string parentFolder(parent);
