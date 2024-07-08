@@ -86,25 +86,25 @@ public:
    * @brief Set the list of cut markers in cache.
    * @return The list of cuts or an empty list if no cuts exist
    */
-  void SetCuts(const std::vector<int64_t>& cuts);
+  void SetCuts(const std::vector<std::chrono::milliseconds>& cuts);
 
   /*!
    * @brief Get the list of cut markers from cache.
    * @return The list of cut markers or an empty vector if no cuts exist.
    */
-  const std::vector<int64_t>& GetCuts() const;
+  const std::vector<std::chrono::milliseconds>& GetCuts() const;
 
   /*!
    * @brief Set the list of scene markers in cache.
    * @return The list of scene markers or an empty list if no scene markers exist
    */
-  void SetSceneMarkers(const std::vector<int64_t>& sceneMarkers);
+  void SetSceneMarkers(const std::vector<std::chrono::milliseconds>& sceneMarkers);
 
   /*!
    * @brief Get the list of scene markers markers from cache.
    * @return The list of scene markers or an empty vector if no scene exist.
    */
-  const std::vector<int64_t>& GetSceneMarkers() const;
+  const std::vector<std::chrono::milliseconds>& GetSceneMarkers() const;
 
   void SetChapters(const std::vector<std::pair<std::string, int64_t>>& chapters);
 
@@ -242,19 +242,19 @@ protected:
       * @brief Save the list of cut markers in cache.
       * @param cuts the list of cut markers to store in cache
       */
-    void SetCuts(const std::vector<int64_t>& cuts) { m_cuts = cuts; }
+    void SetCuts(const std::vector<std::chrono::milliseconds>& cuts) { m_cuts = cuts; }
 
     /*!
       * @brief Get the list of cut markers in cache.
       * @return the list of cut markers in cache
       */
-    const std::vector<int64_t>& GetCuts() const { return m_cuts; }
+    const std::vector<std::chrono::milliseconds>& GetCuts() const { return m_cuts; }
 
     /*!
       * @brief Save the list of scene markers in cache.
       * @param sceneMarkers the list of scene markers to store in cache
       */
-    void SetSceneMarkers(const std::vector<int64_t>& sceneMarkers)
+    void SetSceneMarkers(const std::vector<std::chrono::milliseconds>& sceneMarkers)
     {
       m_sceneMarkers = sceneMarkers;
     }
@@ -263,7 +263,7 @@ protected:
       * @brief Get the list of scene markers in cache.
       * @return the list of scene markers in cache
       */
-    const std::vector<int64_t>& GetSceneMarkers() const { return m_sceneMarkers; }
+    const std::vector<std::chrono::milliseconds>& GetSceneMarkers() const { return m_sceneMarkers; }
 
     /*!
       * @brief Save the chapter list in cache.
@@ -297,9 +297,9 @@ protected:
     /*!< name and position for chapters */
     std::vector<std::pair<std::string, int64_t>> m_chapters;
     /*!< position for EDL cuts */
-    std::vector<int64_t> m_cuts;
+    std::vector<std::chrono::milliseconds> m_cuts;
     /*!< position for EDL scene markers */
-    std::vector<int64_t> m_sceneMarkers;
+    std::vector<std::chrono::milliseconds> m_sceneMarkers;
   } m_contentInfo;
 
   CCriticalSection m_renderSection;

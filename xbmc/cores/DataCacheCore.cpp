@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "cores/EdlEdit.h"
 
+#include <chrono>
 #include <mutex>
 #include <utility>
 
@@ -271,25 +272,25 @@ const std::vector<EDL::Edit>& CDataCacheCore::GetEditList() const
   return m_contentInfo.GetEditList();
 }
 
-void CDataCacheCore::SetCuts(const std::vector<int64_t>& cuts)
+void CDataCacheCore::SetCuts(const std::vector<std::chrono::milliseconds>& cuts)
 {
   std::unique_lock<CCriticalSection> lock(m_contentSection);
   m_contentInfo.SetCuts(cuts);
 }
 
-const std::vector<int64_t>& CDataCacheCore::GetCuts() const
+const std::vector<std::chrono::milliseconds>& CDataCacheCore::GetCuts() const
 {
   std::unique_lock<CCriticalSection> lock(m_contentSection);
   return m_contentInfo.GetCuts();
 }
 
-void CDataCacheCore::SetSceneMarkers(const std::vector<int64_t>& sceneMarkers)
+void CDataCacheCore::SetSceneMarkers(const std::vector<std::chrono::milliseconds>& sceneMarkers)
 {
   std::unique_lock<CCriticalSection> lock(m_contentSection);
   m_contentInfo.SetSceneMarkers(sceneMarkers);
 }
 
-const std::vector<int64_t>& CDataCacheCore::GetSceneMarkers() const
+const std::vector<std::chrono::milliseconds>& CDataCacheCore::GetSceneMarkers() const
 {
   std::unique_lock<CCriticalSection> lock(m_contentSection);
   return m_contentInfo.GetSceneMarkers();

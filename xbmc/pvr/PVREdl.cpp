@@ -15,6 +15,8 @@
 #include "pvr/recordings/PVRRecording.h"
 #include "utils/log.h"
 
+#include <chrono>
+
 namespace PVR
 {
 
@@ -38,8 +40,8 @@ std::vector<EDL::Edit> CPVREdl::GetEdits(const CFileItem& item)
   for (const auto& entry : edl)
   {
     EDL::Edit edit;
-    edit.start = entry.start;
-    edit.end = entry.end;
+    edit.start = std::chrono::milliseconds(entry.start);
+    edit.end = std::chrono::milliseconds(entry.end);
 
     switch (entry.type)
     {
