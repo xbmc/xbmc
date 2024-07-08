@@ -509,6 +509,8 @@ add_custom_target(gen_skin_pack DEPENDS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${
 add_custom_target(generate-packaging ALL
                   DEPENDS TexturePacker::TexturePacker::Executable export-files gen_skin_pack gen_system_addons)
 
+core_target_add_dependencies(export-files)
+
 # Add to lib${APP_NAME_LC} solely for Win UWP. msix building doesnt seem to pick up the
 # generated buildtree if we do it later. Other platforms dont care when this happens.
 add_dependencies(lib${APP_NAME_LC} generate-packaging)

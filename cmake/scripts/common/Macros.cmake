@@ -797,3 +797,21 @@ function(core_target_link_libraries core_lib)
     endif()
   endforeach()
 endfunction()
+
+# Iterate over optional/required dep lists and create dependency
+# to the target supplied as first argument
+function(core_target_add_dependencies core_target)
+  foreach(_depspec ${required_deps})
+    split_dependency_specification(${_depspec} dep version)
+    if(TARGET ${APP_NAME_LC}::${dep})
+      add_dependencies(${core_target} ${APP_NAME_LC}::${dep})
+    endif()
+  endforeach()
+
+  foreach(_depspec ${optional_deps})
+    split_dependency_specification(${_depspec} dep version)
+    if(TARGET ${APP_NAME_LC}::${dep})
+      add_dependencies(${core_target} ${APP_NAME_LC}::${dep})
+    endif()
+  endforeach()
+endfunction()
