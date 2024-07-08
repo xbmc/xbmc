@@ -414,6 +414,12 @@ enum class DeleteMovieCascadeAction
   ALL_ASSETS
 };
 
+enum class DeleteMovieHashAction
+{
+  HASH_DELETE,
+  HASH_PRESERVE
+};
+
 #define COMPARE_PERCENTAGE     0.90f // 90%
 #define COMPARE_PERCENTAGE_MIN 0.50f // 50%
 
@@ -591,6 +597,11 @@ public:
                               const std::map<std::string, std::string>& artwork,
                               int idMVideo = -1);
   int SetStreamDetailsForFile(const CStreamDetails& details, const std::string& strFileNameAndPath);
+  /*!
+   * \brief Clear any existing stream details and add the new provided details to a file.
+   * \param[in] details New stream details
+   * \param[in] idFile Identifier of the file
+   */
   void SetStreamDetailsForFileId(const CStreamDetails& details, int idFile);
 
   bool SetSingleValue(VideoDbContentType type, int dbId, int dbField, const std::string& strValue);
@@ -604,8 +615,8 @@ public:
   int UpdateDetailsForMovie(int idMovie, CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, const std::set<std::string> &updatedDetails);
 
   void DeleteMovie(int idMovie,
-                   bool bKeepId = false,
-                   DeleteMovieCascadeAction action = DeleteMovieCascadeAction::ALL_ASSETS);
+                   DeleteMovieCascadeAction action = DeleteMovieCascadeAction::ALL_ASSETS,
+                   DeleteMovieHashAction hashAction = DeleteMovieHashAction::HASH_DELETE);
   void DeleteTvShow(int idTvShow, bool bKeepId = false);
   void DeleteTvShow(const std::string& strPath);
   void DeleteSeason(int idSeason, bool bKeepId = false);
