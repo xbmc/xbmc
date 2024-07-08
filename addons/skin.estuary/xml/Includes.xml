@@ -1242,7 +1242,8 @@
 			<depth>DepthBackground</depth>
 			<include>FullScreenDimensions</include>
 			<aspectratio>scale</aspectratio>
-			<texture colordiffuse="secondary_background" fallback="special://skin/extras/backgrounds/pattern1.jpg">$INFO[Skin.String(background_overlay),special://skin/extras/backgrounds/pattern,.jpg]</texture>
+			<texture colordiffuse="secondary_background" fallback="special://skin/extras/backgrounds/pattern1.png">$INFO[Skin.String(background_overlay),special://skin/extras/backgrounds/pattern,.png]</texture>
+			<visible>!String.IsEqual(Skin.String(background_overlay),0)</visible>
 		</control>
 	</include>
 	<include name="DefaultBackground">
