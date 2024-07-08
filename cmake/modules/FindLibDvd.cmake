@@ -20,3 +20,4 @@ endif()
 add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE IMPORTED)
 set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
                                                                  INTERFACE_LINK_LIBRARIES "LibDvdNav::LibDvdNav")
+add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} LibDvdNav::LibDvdNav)
