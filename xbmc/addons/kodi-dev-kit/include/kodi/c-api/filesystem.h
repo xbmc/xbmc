@@ -128,6 +128,7 @@ extern "C"
     /// | <b>`user-agent`</b>                 | Set the "user-agent" header
     /// | <b>`seekable`</b>                   | Set the stream seekable. 1: enable, 0: disable
     /// | <b>`sslcipherlist`</b>              | Set list of accepted SSL ciphers.
+    /// | <b>`verifypeer`</b>                 | Set to false if curl must skip checking the authenticity of the SSL CA certificate.
     ///
     ADDON_CURL_OPTION_PROTOCOL,
 
