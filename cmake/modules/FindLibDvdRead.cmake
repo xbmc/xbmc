@@ -10,11 +10,7 @@
 if(NOT TARGET LibDvdRead::LibDvdRead)
 
   if(ENABLE_DVDCSS)
-    # Check for existing LIBDVDCSS.
-    # Suppress mismatch warning, see https://cmake.org/cmake/help/latest/module/FindPackageHandleStandardArgs.html
-    set(FPHSA_NAME_MISMATCHED 1)
     find_package(LibDvdCSS MODULE REQUIRED)
-    unset(FPHSA_NAME_MISMATCHED)
   endif()
 
   include(cmake/scripts/common/ModuleHelpers.cmake)
@@ -43,12 +39,10 @@ if(NOT TARGET LibDvdRead::LibDvdRead)
   if(CORE_SYSTEM_NAME STREQUAL android)
     if(ARCH STREQUAL arm)
       set(HOST_ARCH arm-linux-androideabi)
-    elseif(ARCH STREQUAL aarch64)
-      set(HOST_ARCH aarch64-linux-android)
     elseif(ARCH STREQUAL i486-linux)
       set(HOST_ARCH i686-linux-android)
-    elseif(ARCH STREQUAL x86_64)
-      set(HOST_ARCH x86_64-linux-android)
+    else()
+      set(HOST_ARCH ${ARCH}-linux-android)
     endif()
   elseif(CORE_SYSTEM_NAME STREQUAL windowsstore)
     set(LIBDVD_ADDITIONAL_ARGS "-DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME}" "-DCMAKE_SYSTEM_VERSION=${CMAKE_SYSTEM_VERSION}")
@@ -71,7 +65,7 @@ if(NOT TARGET LibDvdRead::LibDvdRead)
 
     if(TARGET LibDvdCSS::LibDvdCSS)
       string(APPEND LIBDVDREAD_CFLAGS " -I$<TARGET_PROPERTY:LibDvdCSS::LibDvdCSS,INTERFACE_INCLUDE_DIRECTORIES> $<$<TARGET_EXISTS:LibDvdCSS::LibDvdCSS>:-D$<TARGET_PROPERTY:LibDvdCSS::LibDvdCSS,INTERFACE_COMPILE_DEFINITIONS>>")
-      string(APPEND with-css "--with-libdvdcss")
+      set(with-css "--with-libdvdcss")
     endif()
 
     find_program(AUTORECONF autoreconf REQUIRED)
@@ -105,30 +99,28 @@ if(NOT TARGET LibDvdRead::LibDvdRead)
   if(TARGET LibDvdCSS::LibDvdCSS)
     add_dependencies(libdvdread LibDvdCSS::LibDvdCSS)
   endif()
-endif()
 
-include(SelectLibraryConfigurations)
-select_library_configurations(LibDvdRead)
+  include(FindPackageHandleStandardArgs)
+  find_package_handle_standard_args(LibDvdRead
+                                    REQUIRED_VARS LIBDVDREAD_LIBRARY LIBDVDREAD_INCLUDE_DIR
+                                    VERSION_VAR LIBDVDREAD_VERSION)
 
-include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(LibDvdRead
-                                  REQUIRED_VARS LIBDVDREAD_LIBRARY LIBDVDREAD_INCLUDE_DIR
-                                  VERSION_VAR LIBDVDREAD_VERSION)
+  if(LibDvdRead_FOUND)
+    add_library(LibDvdRead::LibDvdRead STATIC IMPORTED)
+    set_target_properties(LibDvdRead::LibDvdRead PROPERTIES
+                                                 IMPORTED_LOCATION "${LIBDVDREAD_LIBRARY}"
+                                                 INTERFACE_INCLUDE_DIRECTORIES "${LIBDVDREAD_INCLUDE_DIR}")
 
-if(LIBDVDREAD_FOUND)
-  add_library(LibDvdRead::LibDvdRead UNKNOWN IMPORTED)
-  set_target_properties(LibDvdRead::LibDvdRead PROPERTIES
-                                               IMPORTED_LOCATION "${LIBDVDREAD_LIBRARY}"
-                                               INTERFACE_INCLUDE_DIRECTORIES "${LIBDVDREAD_INCLUDE_DIR}")
+    if(TARGET LibDvdCSS::LibDvdCSS)
+      set_target_properties(LibDvdRead::LibDvdRead PROPERTIES
+                                                   INTERFACE_LINK_LIBRARIES LibDvdCSS::LibDvdCSS)
+      add_dependencies(LibDvdRead::LibDvdRead LibDvdCSS::LibDvdCSS)
+    endif()
 
-  if(TARGET libdvdread)
     add_dependencies(LibDvdRead::LibDvdRead libdvdread)
-  endif()
-  if(TARGET LibDvdCSS::LibDvdCSS)
-    target_link_libraries(LibDvdRead::LibDvdRead INTERFACE LibDvdCSS::LibDvdCSS)
-  endif()
-else()
-  if(LibDvdRead_FIND_REQUIRED)
-    message(FATAL_ERROR "Libdvdread not found")
+  else()
+    if(LibDvdRead_FIND_REQUIRED)
+      message(FATAL_ERROR "Libdvdread not found")
+    endif()
   endif()
 endif()
