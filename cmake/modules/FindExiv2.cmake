@@ -12,12 +12,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   macro(buildexiv2)
     find_package(Iconv REQUIRED)
 
-    # Note: Please drop once a release based on master is made. First 2 are already upstream.
-    set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/0001-Add-EXIV2_ENABLE_FILESYSTEM_ACCESS-option.patch"
-                "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/0002-Set-conditional-HTTP-depending-on-EXIV2_ENABLE_WEBRE.patch"
-                "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/0003-UWP-Disable-getLoadedLibraries.patch"
-                "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/0004-WIN-lib-postfix.patch"
-                "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/0005-GCC13-cstdint.patch")
+    # Patch pending review upstream (https://github.com/Exiv2/exiv2/pull/3004)
+    set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/0001-WIN-lib-postfix.patch")
 
     generate_patchcommand("${patches}")
 
