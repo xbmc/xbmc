@@ -1801,7 +1801,10 @@ void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
   if (!item.GetArt().empty())
     SetArt(item.GetArt());
   AppendProperties(item);
-  UpdateMimeType();
+
+  SetContentLookup(item.m_doContentLookup);
+  SetMimeType(item.m_mimetype);
+  UpdateMimeType(m_doContentLookup);
 }
 
 void CFileItem::MergeInfo(const CFileItem& item)
@@ -1871,7 +1874,10 @@ void CFileItem::MergeInfo(const CFileItem& item)
       SetArt(item.GetArt());
   }
   AppendProperties(item);
-  UpdateMimeType();
+
+  SetContentLookup(item.m_doContentLookup);
+  SetMimeType(item.m_mimetype);
+  UpdateMimeType(m_doContentLookup);
 }
 
 void CFileItem::SetFromVideoInfoTag(const CVideoInfoTag &video)
