@@ -6596,8 +6596,8 @@ void CVideoDatabase::UpdateTables(int iVersion)
     // Movies
     m_pDS->query(PrepareSQL(
         "SELECT movie.idMovie, movie.idFile, movie.c%02d, files.idPath FROM movie LEFT JOIN "
-        "files ON files.idFile = movie.idFile WHERE movie.c%02d LIKE 'bluray://%'",
-        VIDEODB_ID_BASEPATH, VIDEODB_ID_BASEPATH));
+        "files ON files.idFile = movie.idFile WHERE movie.c%02d LIKE '%s'",
+        VIDEODB_ID_BASEPATH, VIDEODB_ID_BASEPATH, "bluray://%"));
 
     while (!m_pDS->eof())
     {
@@ -6640,8 +6640,8 @@ void CVideoDatabase::UpdateTables(int iVersion)
     m_pDS->query(
         PrepareSQL("SELECT episode.idEpisode, episode.idFile, episode.c%02d, files.idPath FROM "
                    "episode LEFT JOIN "
-                   "files ON files.idFile = episode.idFile WHERE episode.c%02d LIKE 'bluray://%'",
-                   VIDEODB_ID_EPISODE_BASEPATH, VIDEODB_ID_EPISODE_BASEPATH));
+                   "files ON files.idFile = episode.idFile WHERE episode.c%02d LIKE '%s'",
+                   VIDEODB_ID_EPISODE_BASEPATH, VIDEODB_ID_EPISODE_BASEPATH, "bluray://%"));
 
     while (!m_pDS->eof())
     {
