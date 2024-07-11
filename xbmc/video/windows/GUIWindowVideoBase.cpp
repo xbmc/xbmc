@@ -416,7 +416,7 @@ bool CGUIWindowVideoBase::ShowInfo(const CFileItemPtr& item2, const ScraperPtr& 
     }
     m_database.Close();
   }
-  else if(item->HasVideoInfoTag())
+  else if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->IsEmpty())
   {
     bHasInfo = true;
     movieDetails = *item->GetVideoInfoTag();
