@@ -32,7 +32,7 @@ void CTextureBase::Allocate(uint32_t width, uint32_t height, XB_FMT format)
   m_textureWidth = m_imageWidth;
   m_textureHeight = m_imageHeight;
 
-  if (!CServiceBroker::GetRenderSystem()->SupportsNPOT((m_textureFormat & KD_TEX_FMT_TYPE_MASK) !=
+  if (!CServiceBroker::GetRenderSystem()->SupportsNPOT((m_textureFormat & KD_TEX_FMT_TYPE_MASK) ==
                                                        KD_TEX_FMT_S3TC))
   {
     m_textureWidth = PadPow2(m_textureWidth);
