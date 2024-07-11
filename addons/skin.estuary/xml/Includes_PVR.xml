@@ -209,12 +209,23 @@
 				</control>
 				<control type="label">
 					<left>20</left>
+					<top>5</top>
 					<right>70</right>
-					<height>70</height>
+					<height>30</height>
+					<font>font12</font>
 					<aligny>center</aligny>
-					<font>font27</font>
 					<textcolor>grey</textcolor>
-					<label>$INFO[ListItem.ChannelNumberLabel,[B],[/B] - ]$INFO[ListItem.ChannelName]</label>
+					<label>[B]$INFO[ListItem.ChannelNumberLabel,, - ]$INFO[ListItem.ChannelName][/B]</label>
+				</control>
+				<control type="label">
+					<left>20</left>
+					<top>35</top>
+					<right>70</right>
+					<height>30</height>
+					<font>font10</font>
+					<aligny>center</aligny>
+					<textcolor>grey</textcolor>
+					<label>[I]$INFO[ListItem.PVRClientName]$INFO[ListItem.PVRInstanceName, (,)][/I]</label>
 				</control>
 			</itemlayout>
 			<focusedlayout height="70" width="470">
@@ -237,11 +248,21 @@
 				</control>
 				<control type="label">
 					<left>20</left>
+					<top>5</top>
 					<right>70</right>
-					<height>70</height>
-					<font>font27</font>
+					<height>30</height>
+					<font>font12</font>
 					<aligny>center</aligny>
-					<label>$INFO[ListItem.ChannelNumberLabel,[B],[/B] - ]$INFO[ListItem.ChannelName]</label>
+					<label>[B]$INFO[ListItem.ChannelNumberLabel,, - ]$INFO[ListItem.ChannelName][/B]</label>
+				</control>
+				<control type="label">
+					<left>20</left>
+					<top>35</top>
+					<right>70</right>
+					<height>30</height>
+					<font>font10</font>
+					<aligny>center</aligny>
+					<label>[I]$INFO[ListItem.PVRClientName]$INFO[ListItem.PVRInstanceName, (,)][/I]</label>
 				</control>
 			</focusedlayout>
 		</control>
