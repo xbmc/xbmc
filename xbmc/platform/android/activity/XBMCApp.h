@@ -173,8 +173,7 @@ public:
    * \param type optional type. Possible values are "", "files", "music", "videos", "pictures", "photos, "downloads"
    * \return true if external storage is available and a valid path has been stored in the path parameter
    */
-  static bool GetExternalStorage(std::string &path, const std::string &type = "");
-  static bool GetStorageUsage(const std::string &path, std::string &usage);
+  static bool GetExternalStorage(std::string& path, const std::string& type = "");
   static int GetMaxSystemVolume();
   static float GetSystemVolume();
   static void SetSystemVolume(float percent);

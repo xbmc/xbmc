@@ -37,4 +37,6 @@ private:
 
   static std::set<std::string> GetRemovableDrives();
   static std::set<std::string> GetRemovableDrivesLinux();
+
+  bool GetStorageUsage(const std::string& path, std::string& usage);
 };
