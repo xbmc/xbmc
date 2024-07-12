@@ -14,20 +14,22 @@
 
 #include "system_gl.h"
 
-struct textureFormatGLES
+namespace KODI::GUILIB::GLES
 {
-  GLenum internalFormat = GL_FALSE;
-  GLenum internalFormatSRGB = GL_FALSE;
-  GLint format = GL_FALSE;
-  GLenum type = GL_UNSIGNED_BYTE;
+struct TextureFormatGLES
+{
+  GLenum internalFormat{GL_FALSE};
+  GLenum internalFormatSRGB{GL_FALSE};
+  GLint format{GL_FALSE};
+  GLenum type{GL_UNSIGNED_BYTE};
 };
 
-struct textureSwizzleGLES
+struct TextureSwizzleGLES
 {
-  GLint r = GL_RED;
-  GLint g = GL_GREEN;
-  GLint b = GL_BLUE;
-  GLint a = GL_ALPHA;
+  GLint r{GL_RED};
+  GLint g{GL_GREEN};
+  GLint b{GL_BLUE};
+  GLint a{GL_ALPHA};
 };
 
 // clang-format off
@@ -35,7 +37,7 @@ struct textureSwizzleGLES
 // GLES 2.0 texture formats.
 // Any extension used here is in the core 3.0 profile (except BGRA)
 // format = (unsized) internalFormat (with core 2.0)
-static const std::map<KD_TEX_FMT, textureFormatGLES> textureMappingGLES20
+static const std::map<KD_TEX_FMT, TextureFormatGLES> TextureMappingGLES20
 {
 #if defined (GL_EXT_texture_rg)
   {KD_TEX_FMT_SDR_R8, {GL_RED_EXT}},
@@ -70,7 +72,7 @@ static const std::map<KD_TEX_FMT, textureFormatGLES> textureMappingGLES20
 
 // GLES 3.0 texture formats.
 #if defined (GL_ES_VERSION_3_0)
-std::map<KD_TEX_FMT, textureFormatGLES> textureMappingGLES30
+std::map<KD_TEX_FMT, TextureFormatGLES> TextureMappingGLES30
 {
 #if defined (GL_EXT_texture_sRGB_R8) && (GL_EXT_texture_sRGB_RG8) // in gl2ext.h, but spec says >= 3.0
   {KD_TEX_FMT_SDR_R8, {GL_R8, GL_SR8_EXT, GL_RED}},
@@ -103,7 +105,7 @@ std::map<KD_TEX_FMT, textureFormatGLES> textureMappingGLES30
 #endif// GL_ES_VERSION_3_0
 
 // Common GLES extensions (texture compression)
-static const std::map<KD_TEX_FMT, textureFormatGLES> textureMappingGLESExtensions
+static const std::map<KD_TEX_FMT, TextureFormatGLES> TextureMappingGLESExtensions
 {
 #if defined (GL_EXT_texture_compression_s3tc) && (GL_EXT_texture_compression_s3tc_srgb)
   {KD_TEX_FMT_S3TC_RGB8, {GL_COMPRESSED_RGB_S3TC_DXT1_EXT, GL_COMPRESSED_SRGB_S3TC_DXT1_EXT}},
@@ -163,7 +165,7 @@ static const std::map<KD_TEX_FMT, textureFormatGLES> textureMappingGLESExtension
 #endif
 };
 
-static const std::map<KD_TEX_SWIZ, textureSwizzleGLES> swizzleMapGLES
+static const std::map<KD_TEX_SWIZ, TextureSwizzleGLES> SwizzleMapGLES
 {
   {KD_TEX_SWIZ_RGBA, {GL_RED, GL_GREEN, GL_BLUE, GL_ALPHA}},
   {KD_TEX_SWIZ_RGB1, {GL_RED, GL_GREEN, GL_BLUE, GL_ONE}},
@@ -177,3 +179,4 @@ static const std::map<KD_TEX_SWIZ, textureSwizzleGLES> swizzleMapGLES
   {KD_TEX_SWIZ_GGGG, {GL_GREEN, GL_GREEN, GL_GREEN, GL_GREEN}},
 };
 // clang-format on
+} // namespace KODI::GUILIB::GLES

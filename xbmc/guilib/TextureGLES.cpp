@@ -127,7 +127,7 @@ void CGLESTexture::LoadToGPU()
     }
   }
 
-  textureFormatGLES glesFormat;
+  TextureFormatGLES glesFormat;
   if (m_isGLESVersion30orNewer)
   {
     KD_TEX_FMT textureFormat = m_textureFormat;
@@ -192,10 +192,10 @@ void CGLESTexture::BindToUnit(unsigned int unit)
 void CGLESTexture::SetSwizzle(bool swapRB)
 {
 #if defined(GL_ES_VERSION_3_0)
-  textureSwizzleGLES swiz;
+  TextureSwizzleGLES swiz;
 
-  const auto it = swizzleMapGLES.find(m_textureSwizzle);
-  if (it != swizzleMapGLES.cend())
+  const auto it = SwizzleMapGLES.find(m_textureSwizzle);
+  if (it != SwizzleMapGLES.cend())
     swiz = it->second;
 
   if (swapRB)
@@ -221,9 +221,9 @@ void CGLESTexture::SwapBlueRedSwizzle(GLint& component)
     component = GL_RED;
 }
 
-textureFormatGLES CGLESTexture::GetFormatGLES20(KD_TEX_FMT textureFormat)
+TextureFormatGLES CGLESTexture::GetFormatGLES20(KD_TEX_FMT textureFormat)
 {
-  textureFormatGLES glFormat;
+  TextureFormatGLES glFormat;
 
   // GLES 2.0 does not support swizzling. But for some Kodi formats+swizzles,
   // we can map GLES formats (Luminance, Luminance-Alpha, BGRA). Other swizzles
@@ -257,42 +257,42 @@ textureFormatGLES CGLESTexture::GetFormatGLES20(KD_TEX_FMT textureFormat)
   else if (textureFormat & KD_TEX_FMT_SDR || textureFormat & KD_TEX_FMT_HDR ||
            textureFormat & KD_TEX_FMT_ETC1)
   {
-    const auto it = textureMappingGLES20.find(textureFormat);
-    if (it != textureMappingGLES20.cend())
+    const auto it = TextureMappingGLES20.find(textureFormat);
+    if (it != TextureMappingGLES20.cend())
       glFormat = it->second;
     glFormat.format = glFormat.internalFormat;
   }
   else
   {
-    const auto it = textureMappingGLESExtensions.find(textureFormat);
-    if (it != textureMappingGLESExtensions.cend())
+    const auto it = TextureMappingGLESExtensions.find(textureFormat);
+    if (it != TextureMappingGLESExtensions.cend())
       glFormat = it->second;
   }
 
   return glFormat;
 }
 
-textureFormatGLES CGLESTexture::GetFormatGLES30(KD_TEX_FMT textureFormat)
+TextureFormatGLES CGLESTexture::GetFormatGLES30(KD_TEX_FMT textureFormat)
 {
-  textureFormatGLES glFormat;
+  TextureFormatGLES glFormat;
 
   if (textureFormat & KD_TEX_FMT_SDR || textureFormat & KD_TEX_FMT_HDR)
   {
 #if defined(GL_ES_VERSION_3_0)
-    const auto it = textureMappingGLES30.find(KD_TEX_FMT_SDR_RGBA8);
-    if (it != textureMappingGLES30.cend())
+    const auto it = TextureMappingGLES30.find(KD_TEX_FMT_SDR_RGBA8);
+    if (it != TextureMappingGLES30.cend())
       glFormat = it->second;
 #else
-    const auto it = textureMappingGLES20.find(textureFormat);
-    if (it != textureMappingGLES20.cend())
+    const auto it = TextureMappingGLES20.find(textureFormat);
+    if (it != TextureMappingGLES20.cend())
       glFormat = it->second;
     glFormat.format = glFormat.internalFormat;
 #endif
   }
   else
   {
-    const auto it = textureMappingGLESExtensions.find(textureFormat);
-    if (it != textureMappingGLESExtensions.cend())
+    const auto it = TextureMappingGLESExtensions.find(textureFormat);
+    if (it != TextureMappingGLESExtensions.cend())
       glFormat = it->second;
   }
 

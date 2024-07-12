@@ -14,24 +14,26 @@
 
 #include "system_gl.h"
 
-struct textureFormatGL
+namespace KODI::GUILIB::GL
 {
-  GLenum internalFormat = GL_FALSE;
-  GLenum internalFormatSRGB = GL_FALSE;
-  GLint format = GL_FALSE;
-  GLenum type = GL_UNSIGNED_BYTE;
+struct TextureFormatGL
+{
+  GLenum internalFormat{GL_FALSE};
+  GLenum internalFormatSRGB{GL_FALSE};
+  GLint format{GL_FALSE};
+  GLenum type{GL_UNSIGNED_BYTE};
 };
 
-struct textureswizzleGL
+struct TextureswizzleGL
 {
-  GLint r = GL_RED;
-  GLint g = GL_GREEN;
-  GLint b = GL_BLUE;
-  GLint a = GL_ALPHA;
+  GLint r{GL_RED};
+  GLint g{GL_GREEN};
+  GLint b{GL_BLUE};
+  GLint a{GL_ALPHA};
 };
 
 // clang-format off
-static const std::map<KD_TEX_FMT, textureFormatGL> textureMappingGL
+static const std::map<KD_TEX_FMT, TextureFormatGL> TextureMappingGL
 {
 #if defined(GL_EXT_texture_sRGB_R8) && (GL_EXT_texture_sRGB_RG8)
   {KD_TEX_FMT_SDR_R8, {GL_R8, GL_SR8_EXT, GL_RED}},
@@ -124,7 +126,7 @@ static const std::map<KD_TEX_FMT, textureFormatGL> textureMappingGL
 #endif
 };
 
-static const std::map<KD_TEX_SWIZ, textureswizzleGL> swizzleMapGl
+static const std::map<KD_TEX_SWIZ, TextureswizzleGL> SwizzleMapGl
 {
   {KD_TEX_SWIZ_RGBA, {GL_RED, GL_GREEN, GL_BLUE, GL_ALPHA}},
   {KD_TEX_SWIZ_RGB1, {GL_RED, GL_GREEN, GL_BLUE, GL_ONE}},
@@ -138,3 +140,4 @@ static const std::map<KD_TEX_SWIZ, textureswizzleGL> swizzleMapGl
   {KD_TEX_SWIZ_GGGG, {GL_GREEN, GL_GREEN, GL_GREEN, GL_GREEN}},
 };
 // clang-format on
+} // namespace KODI::GUILIB::GL

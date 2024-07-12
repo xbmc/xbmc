@@ -13,6 +13,8 @@
 
 #include "system_gl.h"
 
+using namespace KODI::GUILIB::GLES;
+
 class CGLESTexture : public CTexture
 {
 public:
@@ -27,8 +29,8 @@ public:
 protected:
   void SetSwizzle(bool swapRB);
   void SwapBlueRedSwizzle(GLint& component);
-  textureFormatGLES GetFormatGLES20(KD_TEX_FMT textureFormat);
-  textureFormatGLES GetFormatGLES30(KD_TEX_FMT textureFormat);
+  TextureFormatGLES GetFormatGLES20(KD_TEX_FMT textureFormat);
+  TextureFormatGLES GetFormatGLES30(KD_TEX_FMT textureFormat);
 
   GLuint m_texture = 0;
   bool m_isGLESVersion30orNewer{false};

@@ -13,6 +13,8 @@
 
 #include "system_gl.h"
 
+using namespace KODI::GUILIB::GL;
+
 /************************************************************************/
 /*    CGLTexture                                                       */
 /************************************************************************/
@@ -30,7 +32,7 @@ public:
 
 protected:
   void SetSwizzle();
-  textureFormatGL GetFormatGL(KD_TEX_FMT textureFormat);
+  TextureFormatGL GetFormatGL(KD_TEX_FMT textureFormat);
 
   GLuint m_texture{0};
   bool m_isOglVersion3orNewer{false};

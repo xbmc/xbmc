@@ -125,7 +125,7 @@ void CGLTexture::LoadToGPU()
 
   SetSwizzle();
 
-  textureFormatGL glFormat = GetFormatGL(m_textureFormat);
+  TextureFormatGL glFormat = GetFormatGL(m_textureFormat);
 
   if (glFormat.format == GL_FALSE)
   {
@@ -172,10 +172,10 @@ void CGLTexture::BindToUnit(unsigned int unit)
 
 void CGLTexture::SetSwizzle()
 {
-  if (!swizzleMapGl.contains(m_textureSwizzle))
+  if (!SwizzleMapGl.contains(m_textureSwizzle))
     return;
 
-  textureswizzleGL swiz = swizzleMapGl.at(m_textureSwizzle);
+  TextureswizzleGL swiz = SwizzleMapGl.at(m_textureSwizzle);
 
   // GL_TEXTURE_SWIZZLE_RGBA and GL_TEXTURE_SWIZZLE_RGBA_EXT should be the same
   // token, but just to be sure...
@@ -196,12 +196,12 @@ void CGLTexture::SetSwizzle()
 #endif
 }
 
-textureFormatGL CGLTexture::GetFormatGL(KD_TEX_FMT textureFormat)
+TextureFormatGL CGLTexture::GetFormatGL(KD_TEX_FMT textureFormat)
 {
-  textureFormatGL glFormat;
+  TextureFormatGL glFormat;
 
-  const auto it = textureMappingGL.find(textureFormat);
-  if (it != textureMappingGL.cend())
+  const auto it = TextureMappingGL.find(textureFormat);
+  if (it != TextureMappingGL.cend())
   {
     glFormat = it->second;
   }
