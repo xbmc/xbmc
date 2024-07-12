@@ -129,22 +129,24 @@ std::string CGUIDialogSubtitleSettings::BrowseForSubtitle()
 
   std::string strPath;
   const CFileItem& fileItem = g_application.CurrentFileItem();
-  const std::string path{fileItem.GetPath()};
+  const std::string dynPath{fileItem.GetDynPath()};
 
-  // NOTE: On playlists (e.g. STRM) that contains a single non-media file (e.g. streaming manifest)
-  // the GetPath return the playlist file, instead the DynPath can contains a web address
-  // but is not browsable, so allow get subtitles from local storage by using playlist path.
-  if (URIUtils::IsDatabase(path))
+  // Playlists can contains media urls that are not browsable (web hosted files)
+  // or urls of non-media files that are to be played by the InputStream add-ons
+  // so when the dynpath is not a sharing protocol (e.g. FTP, SMB)
+  // start browse files from the original playlist file path
+  if (fileItem.HasProperty("original_playlist_filepath") &&
+      !(!URIUtils::IsHTTP(dynPath) && URIUtils::IsNetworkFilesystem(dynPath)))
   {
-    strPath = fileItem.GetDynPath();
+    strPath = fileItem.GetProperty("original_playlist_filepath").asString();
   }
-  else if (URIUtils::IsInRAR(path) || URIUtils::IsInZIP(path))
+  else if (URIUtils::IsInRAR(dynPath) || URIUtils::IsInZIP(dynPath))
   {
-    strPath = CURL(path).GetHostName();
+    strPath = CURL(dynPath).GetHostName();
   }
-  else if (!URIUtils::IsPlugin(path))
+  else if (!URIUtils::IsPlugin(dynPath))
   {
-    strPath = path;
+    strPath = dynPath;
   }
 
   std::string strMask =
