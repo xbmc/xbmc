@@ -43,6 +43,7 @@
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/epg/EpgSearchFilter.h"
 #include "pvr/guilib/PVRGUIActionsChannels.h"
+#include "pvr/guilib/PVRGUIActionsEPG.h"
 #include "pvr/guilib/PVRGUIActionsUtils.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
@@ -124,36 +125,17 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
   SetFromVideoInfoTag(movie);
 }
 
-namespace
-{
-std::string GetEpgTagTitle(const std::shared_ptr<const CPVREpgInfoTag>& epgTag)
-{
-  if (CServiceBroker::GetPVRManager().IsParentalLocked(epgTag))
-    return g_localizeStrings.Get(19266); // Parental locked
-  else if (epgTag->Title().empty() &&
-           !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-               CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
-    return g_localizeStrings.Get(19055); // no information available
-  else
-    return epgTag->Title();
-}
-} // unnamed namespace
-
 void CFileItem::FillMusicInfoTag(const std::shared_ptr<const CPVREpgInfoTag>& tag)
 {
   CMusicInfoTag* musictag = GetMusicInfoTag(); // create (!) the music tag.
 
+  musictag->SetTitle(CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().GetTitleForEpgTag(tag));
+
   if (tag)
   {
-    musictag->SetTitle(GetEpgTagTitle(tag));
     musictag->SetGenre(tag->Genre());
     musictag->SetDuration(tag->GetDuration());
     musictag->SetURL(tag->Path());
-  }
-  else if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-               CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
-  {
-    musictag->SetTitle(g_localizeStrings.Get(19055)); // no information available
   }
 
   musictag->SetLoaded(true);
@@ -167,7 +149,7 @@ CFileItem::CFileItem(const std::shared_ptr<CPVREpgInfoTag>& tag)
   m_epgInfoTag = tag;
   m_strPath = tag->Path();
   m_bCanQueue = false;
-  SetLabel(GetEpgTagTitle(tag));
+  SetLabel(CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().GetTitleForEpgTag(tag));
   m_dateTime = tag->StartAsLocalTime();
 
   if (!tag->IconPath().empty())
