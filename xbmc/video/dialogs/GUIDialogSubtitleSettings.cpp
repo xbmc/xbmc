@@ -128,14 +128,23 @@ std::string CGUIDialogSubtitleSettings::BrowseForSubtitle()
   }
 
   std::string strPath;
-  const std::string dynPath{g_application.CurrentFileItem().GetDynPath()};
-  if (URIUtils::IsInRAR(dynPath) || URIUtils::IsInZIP(dynPath))
+  const CFileItem& fileItem = g_application.CurrentFileItem();
+  const std::string path{fileItem.GetPath()};
+
+  // NOTE: On playlists (e.g. STRM) that contains a single non-media file (e.g. streaming manifest)
+  // the GetPath return the playlist file, instead the DynPath can contains a web address
+  // but is not browsable, so allow get subtitles from local storage by using playlist path.
+  if (URIUtils::IsDatabase(path))
   {
-    strPath = CURL(dynPath).GetHostName();
+    strPath = fileItem.GetDynPath();
   }
-  else if (!URIUtils::IsPlugin(dynPath))
+  else if (URIUtils::IsInRAR(path) || URIUtils::IsInZIP(path))
   {
-    strPath = dynPath;
+    strPath = CURL(path).GetHostName();
+  }
+  else if (!URIUtils::IsPlugin(path))
+  {
+    strPath = path;
   }
 
   std::string strMask =
