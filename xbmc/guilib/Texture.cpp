@@ -246,7 +246,21 @@ bool CTexture::LoadIImage(IImage* pImage,
   if (pImage->Width() == 0 || pImage->Height() == 0)
     return false;
 
-  Allocate(pImage->Width(), pImage->Height(), XB_FMT_A8R8G8B8);
+  // align all textures so that they have an even width
+  // in some circumstances when we downsize a thumbnail
+  // which has an uneven number of pixels in width
+  // we crash in CPicture::ScaleImage in ffmpegs swscale
+  // because it tries to access beyond the source memory
+  // (happens on osx and ios)
+  // UPDATE: don't just update to be on an even width;
+  // ffmpegs swscale relies on a 16-byte stride on some systems
+  // so the textureWidth needs to be a multiple of 16. see ffmpeg
+  // swscale headers for more info.
+  unsigned int textureWidth = ((pImage->Width() + 15) / 16) * 16;
+
+  Allocate(textureWidth, pImage->Height(), XB_FMT_A8R8G8B8);
+
+  m_imageWidth = std::min(m_imageWidth, textureWidth);
 
   if (m_pixels == nullptr)
     return false;
