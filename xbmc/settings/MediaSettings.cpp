@@ -10,6 +10,7 @@
 
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
+#include "TextureCache.h"
 #include "cores/RetroPlayer/RetroPlayerUtils.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "guilib/LocalizeStrings.h"
@@ -366,6 +367,10 @@ void CMediaSettings::OnSettingAction(const std::shared_ptr<const CSetting>& sett
       videodatabase.ImportFromXML(path);
       videodatabase.Close();
     }
+  }
+  else if (settingId == CSettings::SETTING_MAINTENANCE_CLEANIMAGECACHE)
+  {
+    CServiceBroker::GetTextureCache()->CleanAllUnusedImages();
   }
 }
 

@@ -15,12 +15,14 @@
 #include "threads/Timer.h"
 #include "utils/JobManager.h"
 
+#include <atomic>
 #include <chrono>
 #include <memory>
 #include <set>
 #include <string>
 #include <vector>
 
+class CGUIDialogProgress;
 class CJob;
 class CURL;
 class CTexture;
@@ -155,6 +157,8 @@ public:
   bool Export(const std::string &image, const std::string &destination, bool overwrite);
   bool Export(const std::string &image, const std::string &destination); //! @todo BACKWARD COMPATIBILITY FOR MUSIC THUMBS
 
+  bool CleanAllUnusedImages();
+
 private:
   // private construction, and no assignments; use the provided singleton methods
   CTextureCache(const CTextureCache&) = delete;
@@ -218,7 +222,9 @@ private:
 
   void CleanTimer();
   std::chrono::milliseconds ScanOldestCache();
+  bool CleanAllUnusedImagesJob(CGUIDialogProgress* progress);
 
+  std::atomic_flag m_cleaningInProgress;
   CTimer m_cleanTimer;
   CCriticalSection m_databaseSection;
   CTextureDatabase m_database;

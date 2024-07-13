@@ -12,8 +12,11 @@
 #include "TextureCacheJob.h"
 #include "URL.h"
 #include "commons/ilog.h"
+#include "dialogs/GUIDialogProgress.h"
 #include "filesystem/File.h"
 #include "filesystem/IFileTypes.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
 #include "guilib/Texture.h"
 #include "imagefiles/ImageCacheCleaner.h"
 #include "imagefiles/ImageFileURL.h"
@@ -350,12 +353,87 @@ bool CTextureCache::Export(const std::string &image, const std::string &destinat
   return false;
 }
 
+bool CTextureCache::CleanAllUnusedImages()
+{
+  if (m_cleaningInProgress.test_and_set())
+    return false;
+
+  auto progress = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(
+      WINDOW_DIALOG_PROGRESS);
+  if (progress)
+  {
+    progress->SetHeading(CVariant{14281}); //"Clean image cache"
+    progress->SetText(CVariant{313}); //"Cleaning database"
+    progress->SetPercentage(0);
+    progress->Open();
+    progress->ShowProgressBar(true);
+  }
+
+  bool failure = false;
+  CServiceBroker::GetJobManager()->Submit([this, progress, &failure]()
+                                          { failure = CleanAllUnusedImagesJob(progress); });
+
+  // Wait for clean to complete or be canceled, but render every 10ms so that the
+  // pointer movements work on dialog even when clean is reporting progress infrequently
+  if (progress)
+    progress->Wait();
+
+  m_cleaningInProgress.clear();
+  return !failure;
+}
+
+bool CTextureCache::CleanAllUnusedImagesJob(CGUIDialogProgress* progress)
+{
+  auto cleaner = IMAGE_FILES::CImageCacheCleaner::Create();
+  if (!cleaner)
+  {
+    if (progress)
+      progress->Close();
+    return false;
+  }
+
+  const unsigned int cleanAmount = 1000000;
+  const auto result = cleaner->ScanOldestCache(cleanAmount);
+  if (progress && progress->IsCanceled())
+  {
+    progress->Close();
+    return false;
+  }
+
+  const auto total = result.imagesToClean.size();
+  unsigned int current = 0;
+  for (const auto& image : result.imagesToClean)
+  {
+    ClearCachedImage(image);
+    if (progress)
+    {
+      if (progress->IsCanceled())
+      {
+        progress->Close();
+        return false;
+      }
+      int percentage = static_cast<unsigned long long>(current) * 100 / total;
+      if (progress->GetPercentage() != percentage)
+      {
+        progress->SetPercentage(percentage);
+        progress->Progress();
+      }
+      current++;
+    }
+  }
+
+  if (progress)
+    progress->Close();
+  return true;
+}
+
 void CTextureCache::CleanTimer()
 {
   CServiceBroker::GetJobManager()->Submit(
       [this]()
       {
-        auto next = ScanOldestCache();
+        auto next = m_cleaningInProgress.test_and_set() ? std::chrono::hours(1) : ScanOldestCache();
+        m_cleaningInProgress.clear();
         m_cleanTimer.Start(next);
       },
       CJob::PRIORITY_LOW_PAUSABLE);
