@@ -28,6 +28,7 @@ set(SOURCES TestAlarmClock.cpp
             TestLangCodeExpander.cpp
             TestLocale.cpp
             Testlog.cpp
+            TestMap.cpp
             TestMathUtils.cpp
             TestMime.cpp
             TestPOUtils.cpp
