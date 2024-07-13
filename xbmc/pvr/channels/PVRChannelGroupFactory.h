@@ -9,6 +9,7 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 
 struct PVR_CHANNEL_GROUP;
 
@@ -73,5 +74,15 @@ public:
    * @return The group's type priority.
    */
   int GetGroupTypePriority(const std::shared_ptr<const CPVRChannelGroup>& group) const;
+
+  /*!
+   * @brief Create any missing channel groups (e.g. after an update of groups/members/clients).
+   * @param allChannelsGroup The all channels group.
+   * @param allChannelGroups All channel groups.
+   * @return The newly created groups, if any.
+   */
+  std::vector<std::shared_ptr<CPVRChannelGroup>> CreateMissingGroups(
+      const std::shared_ptr<CPVRChannelGroup>& allChannelsGroup,
+      const std::vector<std::shared_ptr<CPVRChannelGroup>>& allChannelGroups);
 };
 } // namespace PVR
