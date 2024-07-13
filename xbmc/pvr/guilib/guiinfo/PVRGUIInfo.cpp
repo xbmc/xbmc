@@ -34,6 +34,7 @@
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/epg/EpgSearchFilter.h"
 #include "pvr/guilib/PVRGUIActionsChannels.h"
+#include "pvr/guilib/PVRGUIActionsEPG.h"
 #include "pvr/providers/PVRProvider.h"
 #include "pvr/providers/PVRProviders.h"
 #include "pvr/recordings/PVRRecording.h"
@@ -361,23 +362,6 @@ std::string GetAsLocalizedDateTimeString(const CDateTime& datetime)
   return datetime.IsValid() ? datetime.GetAsLocalizedDateTime(false, false) : "";
 }
 
-std::string GetEpgTagTitle(const std::shared_ptr<const CPVREpgInfoTag>& epgTag)
-{
-  if (epgTag)
-  {
-    if (CServiceBroker::GetPVRManager().IsParentalLocked(epgTag))
-      return g_localizeStrings.Get(19266); // Parental locked
-    else if (!epgTag->Title().empty())
-      return epgTag->Title();
-  }
-
-  if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-          CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
-    return g_localizeStrings.Get(19055); // no information available
-
-  return {};
-}
-
 } // unnamed namespace
 
 bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
@@ -683,7 +667,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
       case LISTITEM_EPG_EVENT_TITLE:
         // Note: in difference to LISTITEM_TITLE, LISTITEM_EPG_EVENT_TITLE returns the title
         // associated with the epg event of a timer, if any, and not the title of the timer.
-        strValue = GetEpgTagTitle(epgTag);
+        strValue = CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().GetTitleForEpgTag(epgTag);
         return true;
     }
   }
@@ -1303,8 +1287,11 @@ bool CPVRGUIInfo::GetFallbackLabel(std::string& value,
       /////////////////////////////////////////////////////////////////////////////////////////////
       case VIDEOPLAYER_TITLE:
       case MUSICPLAYER_TITLE:
-        value = GetEpgTagTitle(CPVRItem(item).GetEpgInfoTag());
+      {
+        const std::shared_ptr<const CPVREpgInfoTag> tag{CPVRItem(item).GetEpgInfoTag()};
+        value = CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().GetTitleForEpgTag(tag);
         return !value.empty();
+      }
       default:
         break;
     }
