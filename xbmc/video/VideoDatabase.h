@@ -596,7 +596,8 @@ public:
   int SetDetailsForMusicVideo(CVideoInfoTag& details,
                               const std::map<std::string, std::string>& artwork,
                               int idMVideo = -1);
-  void SetStreamDetailsForFile(const CStreamDetails& details, const std::string& strFileNameAndPath);
+  void SetStreamDetailsForFile(const CStreamDetails& details,
+                               const std::string& strFileNameAndPath);
   /*!
    * \brief Clear any existing stream details and add the new provided details to a file.
    * \param[in] details New stream details
