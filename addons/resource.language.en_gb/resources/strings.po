@@ -16812,21 +16812,25 @@ msgid "Manual"
 msgstr ""
 
 #: application/ApplicationPlayerCallback.cpp
+#. Dialog box title
 msgctxt "#25015"
 msgid "Stacks"
 msgstr ""
 
 #: application/ApplicationPlayerCallback.cpp
+#. Dialog displayed after a Bluray/DVD item in a stack is played
 msgctxt "#25016"
 msgid "Continue to play next item in stack?"
 msgstr ""
 
 #: application/ApplicationPlayerCallback.cpp
+#. Option for #25016
 msgctxt "#25017"
 msgid "Continue"
 msgstr ""
 
 #: application/ApplicationPlayerCallback.cpp
+#. Option for #25016
 msgctxt "#25018"
 msgid "Stop"
 msgstr ""

@@ -16,7 +16,6 @@
 #include "URL.h"
 #include "Util.h"
 #include "application/ApplicationComponents.h"
-#include "application/ApplicationStackHelper.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
@@ -209,7 +208,7 @@ void CSaveFileState::DoWork(CFileItem& item,
         if (updateListing)
         {
           CUtil::DeleteVideoDatabaseDirectoryCache();
-          CFileItemPtr msgItem(new CFileItem(item));
+          const std::shared_ptr<CFileItem> msgItem(new CFileItem(item));
           if (item.HasProperty("original_listitem_url"))
             msgItem->SetPath(item.GetProperty("original_listitem_url").asString());
           msgItem->SetDynPath(fileName);

@@ -179,7 +179,8 @@ private:
   std::string GetDiscFileCache(int windowID) const;
 
   void ConvertDiscFoldersToFiles();
-  void ConvertDiscFolderToFile(const std::shared_ptr<CFileItem>& item, const std::string& playPath);
+  std::shared_ptr<CFileItem> CreateDiscFolderFileItem(const std::shared_ptr<CFileItem>& item,
+                                                      const std::string& playPath);
 
   VECFILEITEMS m_items;
   MAPFILEITEMS m_map;

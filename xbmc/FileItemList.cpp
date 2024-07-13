@@ -707,23 +707,23 @@ void CFileItemList::RemoveExtensions()
 
 void CFileItemList::ConvertDiscFoldersToFiles()
 {
-  for (const auto& item : m_items)
+  for (auto& item : m_items)
   {
     const std::string playPath = VIDEO::UTILS::GetOpticalMediaPath(*item);
     if (!playPath.empty())
-      ConvertDiscFolderToFile(item, playPath);
+      item = CreateDiscFolderFileItem(item, playPath);
   }
 }
 
-void CFileItemList::ConvertDiscFolderToFile(const std::shared_ptr<CFileItem>& item,
-                                            const std::string& playPath)
+std::shared_ptr<CFileItem> CFileItemList::CreateDiscFolderFileItem(
+    const std::shared_ptr<CFileItem>& item, const std::string& playPath)
 {
-
-  item->SetPath(playPath); // updated path (for DVD/Bluray files)
-  item->m_bIsFolder = false;
-  item->SetLabel2("");
-  item->SetLabelPreformatted(true);
+  std::shared_ptr<CFileItem> fileItem{item};
+  fileItem->SetPath(playPath); // updated path (for DVD/Bluray files)
+  fileItem->m_bIsFolder = false;
+  fileItem->SetLabelPreformatted(true);
   m_sortDescription.sortBy = SortByNone; // sorting is now broken
+  return fileItem;
 }
 
 static constexpr int FOLDER_CANDIDATE = 1;
@@ -755,9 +755,14 @@ void CFileItemList::Stack()
   else
   {
     // Find stack candidates (ie. any file or directory that matches a RegEx)
+    // stackCandidates - vector of <a,b,c,d>
+    //                     a - type of item (file or folder)
+    //                     b - title (eg. name of movie)
+    //                     c - volume/part
+    //                     d - offset in m_items
     std::vector<std::tuple<int, std::string, std::string, int, int64_t>> stackCandidates;
 
-    for (const auto& item : m_items)
+    for (auto& item : m_items)
     {
       // Fast sources
       // RARs and ZIPs may be on slow sources? is this supposed to be allowed?
@@ -789,7 +794,7 @@ void CFileItemList::Stack()
 
               // Only expect one disc image per folder (if >1 should be a file stack)
               if (items.GetFileCount() == 1)
-                ConvertDiscFolderToFile(item, items[0]->GetPath());
+                item = CreateDiscFolderFileItem(item, items[0]->GetPath());
               else
                 fileFound = false;
             }
@@ -797,15 +802,15 @@ void CFileItemList::Stack()
             {
               // Add to stack vector
               stackCandidates.emplace_back(FOLDER_CANDIDATE, regExp.GetMatch(1) /* title */,
-                                           regExp.GetMatch(2) /* volume */, &item - &m_items[0],
-                                           item->m_dwSize);
+                                           regExp.GetMatch(2) /* volume */,
+                                           static_cast<int>(&item - &m_items[0]), item->m_dwSize);
               break;
             }
           }
         }
       }
       else if (!(item->m_bIsFolder || item->IsParentFolder() || item->IsNFO() ||
-                 item->IsPlayList()))
+                 PLAYLIST::IsPlayList(*item)))
       {
         // File stacking
         std::string file{};
@@ -821,8 +826,8 @@ void CFileItemList::Stack()
           {
             // Get components of file name
             stackCandidates.emplace_back(FILE_CANDIDATE, regExp.GetMatch(1) /* Title */,
-                                         regExp.GetMatch(2) /* Volume */, &item - &m_items[0],
-                                         item->m_dwSize);
+                                         regExp.GetMatch(2) /* Volume */,
+                                         static_cast<int>(&item - &m_items[0]), item->m_dwSize);
             break;
           }
         }
@@ -845,6 +850,9 @@ void CFileItemList::Stack()
               });
 
     // Count stack candidates
+    // countCandidates - <a,b>
+    //                    a - type (file/folder)
+    //                    b - title (eg. movie name)
     std::map<std::pair<int, std::string>, int> countCandidates;
     for (const auto& s : stackCandidates)
       ++countCandidates[std::make_pair(std::get<0>(s), std::get<1>(s))];
@@ -896,6 +904,7 @@ void CFileItemList::Stack()
     }
 
     // Delete unneeded items
+    // Sort and delete from last to first (otherwise index is no longer correct)
     std::sort(deleteItems.begin(), deleteItems.end(),
               [](const int i, const int j) { return i > j; });
     for (int i : deleteItems)

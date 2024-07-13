@@ -2478,10 +2478,10 @@ bool CApplication::PlayFile(CFileItem item,
     if (isSimpleMenuAllowed)
     {
       // Check if we must show the simplified bd menu.
-      m_CancelPlayback = true;
+      m_cancelPlayback = true;
       if (!CGUIDialogSimpleMenu::ShowPlaySelection(item, forceSelection))
         return true;
-      m_CancelPlayback = false;
+      m_cancelPlayback = false;
     }
   }
 
@@ -2938,7 +2938,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
                                              CVariant{25018}, CVariant{25017}))
         {
           PlayFile(stackHelper->SetNextStackPartCurrentFileItem(), "", true);
-          if (!m_CancelPlayback)
+          if (!m_cancelPlayback)
             return true;
 
           // Selection of next part cancelled so

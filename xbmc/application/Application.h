@@ -216,7 +216,7 @@ protected:
 
   int m_nextPlaylistItem = -1;
 
-  bool m_CancelPlayback{false};
+  bool m_cancelPlayback{false};
 
   std::chrono::time_point<std::chrono::steady_clock> m_lastRenderTime;
   bool m_skipGuiRender = false;
