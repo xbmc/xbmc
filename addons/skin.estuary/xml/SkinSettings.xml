@@ -261,8 +261,8 @@
 				<control type="radiobutton" id="6140">
 					<label>- $LOCALIZE[31008]</label>
 					<include>DefaultSettingButton</include>
-					<selected>!Skin.HasSetting(home_addons_categories_widget)</selected>
-					<onclick>Skin.ToggleSetting(home_addons_categories_widget)</onclick>
+					<selected>!Skin.HasSetting(home_no_addons_categories_widget)</selected>
+					<onclick>Skin.ToggleSetting(home_no_addons_categories_widget)</onclick>
 					<enable>!Skin.HasSetting(HomeMenuNoProgramsButton)</enable>
 				</control>
 				<control type="radiobutton" id="615">
