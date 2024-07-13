@@ -173,14 +173,26 @@ void CSaveFileState::DoWork(CFileItem& item,
           if (!videodatabase.GetStreamDetails(dbItem) ||
               dbItem.GetVideoInfoTag()->m_streamDetails != item.GetVideoInfoTag()->m_streamDetails)
           {
-            const int idFile = videodatabase.SetStreamDetailsForFile(
-                item.GetVideoInfoTag()->m_streamDetails, item.GetDynPath());
-            if (item.GetVideoContentType() == VideoDbContentType::MOVIES)
-              videodatabase.SetFileForMovie(item.GetDynPath(), item.GetVideoInfoTag()->m_iDbId,
-                                            idFile);
-            else if (item.GetVideoContentType() == VideoDbContentType::EPISODES)
-              videodatabase.SetFileForEpisode(item.GetDynPath(), item.GetVideoInfoTag()->m_iDbId,
-                                              idFile);
+            videodatabase.SetStreamDetailsForFile(item.GetVideoInfoTag()->m_streamDetails,
+                                                  item.GetDynPath());
+
+            // Update file linking in case of bluray://
+            if (URIUtils::IsProtocol(item.GetDynPath(), "bluray"))
+            {
+              if (item.GetVideoContentType() == VideoDbContentType::MOVIES)
+              {
+                const int currentFileId{
+                    videodatabase.GetFileIdByMovie(item.GetVideoInfoTag()->m_iDbId)};
+                videodatabase.SetFileForMovie(item.GetDynPath(), currentFileId);
+              }
+              else if (item.GetVideoContentType() == VideoDbContentType::EPISODES)
+              {
+                const int currentFileId{
+                    videodatabase.GetFileIdByEpisode(item.GetVideoInfoTag()->m_iDbId)};
+                videodatabase.SetFileForEpisode(item.GetDynPath(), item.GetVideoInfoTag()->m_iDbId,
+                                                currentFileId);
+              }
+            }
             updateListing = true;
           }
         }
