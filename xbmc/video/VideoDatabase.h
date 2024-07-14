@@ -1061,20 +1061,12 @@ public:
   int AddVideoVersionType(const std::string& typeVideoVersion,
                           VideoAssetTypeOwner owner,
                           VideoAssetType assetType);
-  void AddVideoVersion(VideoDbContentType itemType,
-                       int dbId,
-                       int idVideoVersion,
-                       VideoAssetType videoAssetType,
-                       CFileItem& item);
-  void AddPrimaryVideoVersion(VideoDbContentType itemType,
-                              int dbId,
-                              int idVideoVersion,
-                              CFileItem& item);
-  void AddExtrasVideoVersion(VideoDbContentType itemType,
-                             int dbId,
-                             int idVideoVersion,
-                             CFileItem& item);
-  bool RemoveVideoVersion(int dbId);
+  void AddVideoAsset(VideoDbContentType itemType,
+                     int dbId,
+                     int idVideoVersion,
+                     VideoAssetType videoAssetType,
+                     CFileItem& item);
+  bool DeleteVideoAsset(int idFile);
   bool IsDefaultVideoVersion(int idFile);
   bool GetVideoVersionTypes(VideoDbContentType idContent,
                             VideoAssetType asset,

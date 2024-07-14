@@ -214,12 +214,6 @@ bool CGUIDialogVideoManagerExtras::AddVideoExtra()
         return m_database.ConvertVideoToVersion(itemType, newAsset.m_idMedia, dbId,
                                                 idNewVideoVersion, VideoAssetType::EXTRA);
       }
-      else
-      {
-        // @todo: should be in a database transaction with the addition as a new asset below
-        if (!m_database.RemoveVideoVersion(newAsset.m_idFile))
-          return false;
-      }
     }
 
     CFileItem item{path, false};
@@ -238,7 +232,7 @@ bool CGUIDialogVideoManagerExtras::AddVideoExtra()
     if (idNewVideoVersion == -1)
       return false;
 
-    m_database.AddExtrasVideoVersion(itemType, dbId, idNewVideoVersion, item);
+    m_database.AddVideoAsset(itemType, dbId, idNewVideoVersion, VideoAssetType::EXTRA, item);
 
     return true;
   }

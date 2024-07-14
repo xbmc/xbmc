@@ -2484,8 +2484,9 @@ namespace VIDEO
           const int idVideoVersion = m_database.AddVideoVersionType(
               typeVideoVersion, VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRA);
 
-          m_database.AddExtrasVideoVersion(ContentToVideoDbType(content), dbId, idVideoVersion,
-                                           *item.get());
+          m_database.AddVideoAsset(ContentToVideoDbType(content), dbId, idVideoVersion,
+                                   VideoAssetType::EXTRA, *item.get());
+
           CLog::Log(LOGDEBUG, "VideoInfoScanner: Added video extras {}",
                     CURL::GetRedacted(item->GetPath()));
         },
