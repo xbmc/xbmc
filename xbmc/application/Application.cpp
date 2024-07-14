@@ -2416,7 +2416,7 @@ bool CApplication::PlayFile(CFileItem item,
   if (isStack)
   {
     // Save info needed from stack item
-    bool Resume{item.GetStartOffset() == STARTOFFSET_RESUME};
+    bool resume{item.GetStartOffset() == STARTOFFSET_RESUME};
     const CVideoInfoTag tag{*item.GetVideoInfoTag()};
 
     // Get individual stack part as item
@@ -2444,7 +2444,7 @@ bool CApplication::PlayFile(CFileItem item,
       item = stackHelper->GetCurrentStackPartFileItem();
 
       // Save resume state (needed for correct bluray playback)
-      if (Resume)
+      if (resume)
         item.SetStartOffset(STARTOFFSET_RESUME);
 
       // Adjust bookmark start
