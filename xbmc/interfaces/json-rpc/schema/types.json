@@ -2576,6 +2576,7 @@
         "progress",
         "progresspercentage",
         "genre",
+        "episode",
         "episodename",
         "episodenum",
         "episodepart",
@@ -2599,6 +2600,7 @@
         "isplayable",
         "clientid",
         "hasreminder",
+        "season",
         "seasonnum"
       ]
     }
@@ -2640,8 +2642,12 @@
       "episodename": {
         "type": "string"
       },
-      "episodenum": {
+      "episode": {
         "type": "integer"
+      },
+      "episodenum": {
+        "type": "integer",
+        "description": "Deprecated - Use episode"
       },
       "episodepart": {
         "type": "integer"
@@ -2707,8 +2713,12 @@
       "hasreminder": {
         "type": "boolean"
       },
-      "seasonnum": {
+      "season": {
         "type": "integer"
+      },
+      "seasonnum": {
+        "type": "integer",
+        "description": "Deprecated - Use season"
       }
     }
   },
@@ -3881,6 +3891,8 @@
         "firstaired",
         "season",
         "episode",
+        "episodepart",
+        "episodename",
         "showtitle",
         "thumbnail",
         "file",

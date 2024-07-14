@@ -188,8 +188,10 @@ void CPVREpgInfoTag::Serialize(CVariant& value) const
   value["progress"] = Progress();
   value["progresspercentage"] = ProgressPercentage();
   value["episodename"] = m_strEpisodeName;
+  value["episode"] = m_iEpisodeNumber;
   value["episodenum"] = m_iEpisodeNumber;
   value["episodepart"] = m_iEpisodePart;
+  value["season"] = m_iSeriesNumber;
   value["seasonnum"] = m_iSeriesNumber;
   value["isactive"] = IsActive();
   value["wasactive"] = WasActive();
