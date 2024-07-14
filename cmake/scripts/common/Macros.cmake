@@ -438,6 +438,10 @@ function(core_optional_dep)
         if (NOT ${depspec} IN_LIST optional_deps)
           set(optional_deps  ${optional_deps} ${depspec} PARENT_SCOPE)
         endif()
+      else()
+        # Propagate _FOUND variable for build tool optional deps. We dont use targets
+        # for build tools in general, and still rely on variables
+        set(${depup}_FOUND ${${depup}_FOUND} PARENT_SCOPE)
       endif()
 
     elseif(_required)
