@@ -105,7 +105,7 @@ bool CVideoDatabaseDirectory::GetDirectory(const CURL& url, CFileItemList &items
       if (!strImage.empty() && CServiceBroker::GetGUI()->GetTextureManager().HasTexture(strImage))
         item->SetArt("icon", strImage);
     }
-    if (item->GetVideoInfoTag())
+    if (item->HasVideoInfoTag())
     {
       item->SetDynPath(item->GetVideoInfoTag()->GetPath());
     }
