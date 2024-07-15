@@ -619,7 +619,7 @@
           <default>100</default>
           <control type="slider" format="percentage" range="0,100" />
         </setting>
-        <setting id="subtitles.bordersize" type="integer" label="39159">
+        <setting id="subtitles.bordersize" type="integer" label="39159" help="688">
           <level>3</level>
           <default>25</default>
           <dependencies>
@@ -627,7 +627,7 @@
           </dependencies>
           <control type="slider" format="percentage" range="0,100" />
         </setting>
-        <setting id="subtitles.bordercolorpick" type="string" label="39160">
+        <setting id="subtitles.bordercolorpick" type="string" label="39160" help="689">
           <level>3</level>
           <default>FF000000</default> <!-- Black -->
           <dependencies>
@@ -635,7 +635,7 @@
           </dependencies>
           <control type="colorbutton" />
         </setting>
-        <setting id="subtitles.blur" type="integer" label="39173">
+        <setting id="subtitles.blur" type="integer" label="39173" help="690">
           <level>3</level>
           <default>0</default>
           <control type="slider" format="percentage" range="0,100" />
@@ -679,7 +679,7 @@
           </dependencies>
           <control type="slider" format="percentage" range="0,100" />
         </setting>
-        <setting id="subtitles.shadowcolor" type="string" parent="subtitles.backgroundtype" label="39171">
+        <setting id="subtitles.shadowcolor" type="string" parent="subtitles.backgroundtype" label="39171" help="691">
           <level>3</level>
           <default>FF000000</default> <!-- Black -->
           <dependencies>
@@ -692,7 +692,7 @@
           </dependencies>
           <control type="colorbutton" />
         </setting>
-        <setting id="subtitles.shadowopacity" type="integer" parent="subtitles.backgroundtype" label="39172">
+        <setting id="subtitles.shadowopacity" type="integer" parent="subtitles.backgroundtype" label="39172" help="692">
           <level>3</level>
           <default>100</default>
           <dependencies>
@@ -705,7 +705,7 @@
           </dependencies>
           <control type="slider" format="percentage" range="0,100" />
         </setting>
-        <setting id="subtitles.shadowsize" type="integer" parent="subtitles.backgroundtype" label="39170">
+        <setting id="subtitles.shadowsize" type="integer" parent="subtitles.backgroundtype" label="39170" help="693">
           <level>3</level>
           <default>15</default>
           <dependencies>
