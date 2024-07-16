@@ -83,7 +83,7 @@
 		<value condition="ListItem.HasVideoVersions + Window.IsActive(videoplaylist)">$INFO[ListItem.Label]$INFO[ListItem.VideoVersionName, [I](,)[/I]]</value>
 		<value condition="String.IsEqual(ListItem.DbType,episode) + Window.IsActive(videoplaylist)">$INFO[ListItem.TVShowtitle,,: ]$INFO[ListItem.Season,,x]$INFO[ListItem.Episode,,. ]$INFO[ListItem.Title]</value>
 		<value condition="String.IsEqual(ListItem.DbType,musicvideo) + Window.IsActive(videoplaylist)">$INFO[ListItem.Artist,, - ]$INFO[ListItem.Title]</value>
-		<value condition="[!String.IsEmpty(ListItem.Season) | !String.IsEmpty(ListItem.Episode) | !String.IsEmpty(ListItem.EpisodeName)] + Window.IsActive(videoplaylist)">$INFO[ListItem.Title,,: ]$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName]</value>
+		<value condition="[!String.IsEmpty(ListItem.Season) | !String.IsEmpty(ListItem.Episode) | !String.IsEmpty(ListItem.EpisodeName)] + Window.IsActive(videoplaylist)">$INFO[ListItem.Title,,: ]$VAR[SeasonEpisodeLabel]</value>
 		<value>$INFO[ListItem.Label]</value>
 	</variable>
 	<variable name="ListLabel2Var">
@@ -414,12 +414,9 @@
 	<variable name="OSDSubLabelVar">
 		<value condition="Window.IsActive(visualisation) + Integer.IsGreater(Playlist.Length(music),1) + Integer.IsGreater(Playlist.Position(music),0)">$LOCALIZE[554] $INFO[Playlist.Position] / $INFO[Playlist.Length]</value>
 		<value condition="VideoPlayer.Content(musicvideos)">$VAR[NowPlayingSublabelVar,,[CR]]$INFO[player.chapter,[COLOR button_focus]$LOCALIZE[21396]: [/COLOR]]$INFO[Player.ChapterCount,/]$INFO[Player.ChapterName, - ]</value>
-		<value condition="VideoPlayer.Content(episodes) + !player.chaptercount + ![String.IsEmpty(VideoPlayer.Episode) | String.IsEmpty(VideoPlayer.Title)]">[COLOR button_focus][CAPITALIZE]$LOCALIZE[36906]:[/CAPITALIZE][/COLOR] $INFO[VideoPlayer.Season,S]$INFO[VideoPlayer.Episode,E,: ]$INFO[VideoPlayer.Title]</value>
-		<value condition="VideoPlayer.Content(episodes) + player.chaptercount + ![String.IsEmpty(VideoPlayer.Episode) | String.IsEmpty(VideoPlayer.Title)]">[COLOR button_focus][CAPITALIZE]$LOCALIZE[36906]:[/CAPITALIZE][/COLOR] $INFO[VideoPlayer.Season,S]$INFO[VideoPlayer.Episode,E, - ]$INFO[VideoPlayer.Title,,[CR]]$INFO[player.chapter,[COLOR button_focus]$LOCALIZE[21396]:[/COLOR] ]$INFO[Player.ChapterCount,/]$INFO[Player.ChapterName, - ]</value>
-		<value condition="[VideoPlayer.Content(LiveTV) | PVR.IsPlayingEpgTag] + !String.IsEmpty(VideoPlayer.EpisodeName) + !String.IsEmpty(VideoPlayer.EpisodePart)">[COLOR button_focus][CAPITALIZE]$LOCALIZE[36906]:[/CAPITALIZE][/COLOR] $INFO[VideoPlayer.Season,S]$INFO[VideoPlayer.Episode,E]$INFO[VideoPlayer.EpisodePart,/, - ]$INFO[VideoPlayer.EpisodeName]</value>
-		<value condition="[VideoPlayer.Content(LiveTV) | PVR.IsPlayingEpgTag] + !String.IsEmpty(VideoPlayer.EpisodePart)">[COLOR button_focus][CAPITALIZE]$LOCALIZE[36906]:[/CAPITALIZE][/COLOR] $INFO[VideoPlayer.Season,S]$INFO[VideoPlayer.Episode,E]$INFO[VideoPlayer.EpisodePart,/]</value>
-		<value condition="[VideoPlayer.Content(LiveTV) | PVR.IsPlayingRecording | PVR.IsPlayingEpgTag] + !String.IsEmpty(VideoPlayer.EpisodeName)">[COLOR button_focus][CAPITALIZE]$LOCALIZE[36906]:[/CAPITALIZE][/COLOR] $INFO[VideoPlayer.Season,S]$INFO[VideoPlayer.Episode,E, - ]$INFO[VideoPlayer.EpisodeName]</value>
-		<value condition="VideoPlayer.Content(LiveTV) | PVR.IsPlayingRecording | PVR.IsPlayingEpgTag + !String.IsEmpty(VideoPlayer.Episode)">[COLOR button_focus][CAPITALIZE]$LOCALIZE[36906]:[/CAPITALIZE][/COLOR] $INFO[VideoPlayer.Season,S]$INFO[VideoPlayer.Episode,E]</value>
+		<value condition="VideoPlayer.Content(episodes) + !player.chaptercount + ![String.IsEmpty(VideoPlayer.Episode) | String.IsEmpty(VideoPlayer.Title)]">[COLOR button_focus][CAPITALIZE]$LOCALIZE[36906]:[/CAPITALIZE][/COLOR] $INFO[VideoPlayer.Season,S]$INFO[VideoPlayer.Episode,E]$INFO[VideoPlayer.Title, - ]</value>
+		<value condition="VideoPlayer.Content(episodes) + player.chaptercount + ![String.IsEmpty(VideoPlayer.Episode) | String.IsEmpty(VideoPlayer.Title)]">[COLOR button_focus][CAPITALIZE]$LOCALIZE[36906]:[/CAPITALIZE][/COLOR] $INFO[VideoPlayer.Season,S]$INFO[VideoPlayer.Episode,E]$INFO[VideoPlayer.Title, - ,[CR]]$INFO[player.chapter,[COLOR button_focus]$LOCALIZE[21396]:[/COLOR] ]$INFO[Player.ChapterCount,/]$INFO[Player.ChapterName, - ]</value>
+		<value condition="[VideoPlayer.Content(LiveTV) | PVR.IsPlayingRecording | PVR.IsPlayingEpgTag] ">$VAR[VideoPlayerSeasonEpisodeLabel,[COLOR button_focus][CAPITALIZE]$LOCALIZE[36906]:[/CAPITALIZE][/COLOR]]</value>
 		<value condition="player.chaptercount + [!VideoPlayer.Content(episodes) + !VideoPlayer.Content(LiveTV)]">$INFO[player.chapter,[COLOR button_focus]$LOCALIZE[21396]:[/COLOR] ]$INFO[Player.ChapterCount,/]$INFO[Player.ChapterName, - ]</value>
 		<value>$INFO[VideoPlayer.Genre]</value>
 	</variable>
@@ -607,8 +604,13 @@
 	</variable>
 	<variable name="SeasonEpisodeLabel">
 		<value condition="String.IsEmpty(ListItem.EpisodeName)">$INFO[ListItem.Season,S]$INFO[ListItem.Episode,E]$INFO[ListItem.EpisodePart,/]</value>
-		<value condition="!String.IsEmpty(ListItem.EpisodePart)">$INFO[ListItem.Season,S]$INFO[ListItem.Episode,E]$INFO[ListItem.EpisodePart,/,: ]</value>
+		<value condition="!String.IsEmpty(ListItem.EpisodeName) + !String.IsEmpty(ListItem.EpisodePart)">$INFO[ListItem.Season,S]$INFO[ListItem.Episode,E]$INFO[ListItem.EpisodePart,/,: ]</value>
 		<value>$INFO[ListItem.Season,S]$INFO[ListItem.Episode,E,: ]</value>
+	</variable>
+	<variable name="VideoPlayerSeasonEpisodeLabel">
+		<value condition="!String.IsEmpty(VideoPlayer.Season)"> $INFO[VideoPlayer.Season,S]$INFO[VideoPlayer.Episode,E]$INFO[VideoPlayer.EpisodePart,/]$INFO[VideoPlayer.EpisodeName, - ]</value>
+		<value condition="!String.IsEmpty(VideoPlayer.Episode)"> $INFO[VideoPlayer.Episode]$INFO[VideoPlayer.EpisodePart,/]$INFO[VideoPlayer.EpisodeName, - ]</value>
+		<value condition="!String.IsEmpty(VideoPlayer.EpisodeName)"> $INFO[VideoPlayer.EpisodeName]</value>
 	</variable>
 	<variable name="FirstAiredLabel">
 		<value condition="String.IsEqual(ListItem.DBType,movie)">$LOCALIZE[20473]</value>
@@ -662,7 +664,7 @@
 	</variable>
 	<variable name="PVRListItemSubLabelFocused">
 		<value condition="ListItem.IsFolder">$INFO[ListItem.Timertype]</value>
-		<value condition="$EXP[listitem_has_episode_info] + !String.IsEmpty(ListItem.EpgEventTitle) + !String.StartsWith(ListItem.EpisodeName,ListItem.EpgEventTitle)">$INFO[ListItem.EpgEventTitle] | $VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName]</value>
+		<value condition="$EXP[listitem_has_episode_info] + !String.IsEmpty(ListItem.EpgEventTitle) + !String.StartsWith(ListItem.EpisodeName,ListItem.EpgEventTitle)">$INFO[ListItem.EpgEventTitle] | [COLOR grey]$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName][/COLOR]</value>
 		<value condition="$EXP[listitem_has_episode_info]">$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName]</value>
 		<value>$INFO[ListItem.EpgEventTitle]</value>
 	</variable>
