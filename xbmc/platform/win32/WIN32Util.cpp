@@ -370,16 +370,6 @@ std::string CWIN32Util::GetSpecialFolder(int csidl)
 }
 #endif
 
-std::string CWIN32Util::GetSystemPath()
-{
-#ifdef TARGET_WINDOWS_STORE
-  // access to system folder is not allowed in a UWP app
-  return "";
-#else
-  return GetSpecialFolder(CSIDL_SYSTEM);
-#endif
-}
-
 std::string CWIN32Util::GetProfilePath(const bool platformDirectories)
 {
   std::string strProfilePath;
