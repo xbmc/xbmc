@@ -70,7 +70,6 @@
 #include <android/log.h>
 #include <android/native_window.h>
 #include <android/native_window_jni.h>
-#include <androidjni/ActivityManager.h>
 #include <androidjni/ApplicationInfo.h>
 #include <androidjni/BitmapFactory.h>
 #include <androidjni/BroadcastReceiver.h>
@@ -262,8 +261,6 @@ void CXBMCApp::onStart()
     intentFilter.addAction(CJNIConnectivityManager::CONNECTIVITY_ACTION);
     registerReceiver(*this, intentFilter);
     m_mediaSession = std::make_unique<CJNIXBMCMediaSession>();
-    m_activityManager =
-        std::make_unique<CJNIActivityManager>(getSystemService(CJNIContext::ACTIVITY_SERVICE));
     m_inputHandler.setDPI(GetDPI());
     runNativeOnUiThread(RegisterDisplayListenerCallback, nullptr);
   }
@@ -1557,27 +1554,6 @@ float CXBMCApp::GetFrameLatencyMs() const
 bool CXBMCApp::WaitVSync(unsigned int milliSeconds)
 {
   return m_vsyncEvent.Wait(std::chrono::milliseconds(milliSeconds));
-}
-
-bool CXBMCApp::GetMemoryInfo(long& availMem, long& totalMem)
-{
-  if (m_activityManager)
-  {
-    CJNIActivityManager::MemoryInfo info;
-    m_activityManager->getMemoryInfo(info);
-    if (xbmc_jnienv()->ExceptionCheck())
-    {
-      xbmc_jnienv()->ExceptionClear();
-      return false;
-    }
-
-    availMem = info.availMem();
-    totalMem = info.totalMem();
-
-    return true;
-  }
-
-  return false;
 }
 
 void CXBMCApp::SetupEnv()

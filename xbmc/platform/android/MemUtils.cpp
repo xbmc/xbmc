@@ -8,9 +8,10 @@
 
 #include "utils/MemUtils.h"
 
-#include "platform/android/activity/XBMCApp.h"
-
 #include <stdlib.h>
+
+#include <androidjni/ActivityManager.h>
+#include <androidjni/Context.h>
 
 namespace KODI
 {
@@ -35,16 +36,24 @@ void GetMemoryStatus(MemoryStatus* buffer)
   if (!buffer)
     return;
 
-  long availMem = 0;
-  long totalMem = 0;
+  auto activityManager = std::make_unique<CJNIActivityManager>(
+      CJNIContext::getSystemService(CJNIContext::ACTIVITY_SERVICE));
 
-  if (CXBMCApp::Get().GetMemoryInfo(availMem, totalMem))
+  if (activityManager)
   {
+    CJNIActivityManager::MemoryInfo info;
+    activityManager->getMemoryInfo(info);
+    if (xbmc_jnienv()->ExceptionCheck())
+    {
+      xbmc_jnienv()->ExceptionClear();
+      return;
+    }
+
     *buffer = {};
-    buffer->totalPhys = static_cast<unsigned long>(totalMem);
-    buffer->availPhys = static_cast<unsigned long>(availMem);
+    buffer->totalPhys = static_cast<unsigned long>(info.totalMem());
+    buffer->availPhys = static_cast<unsigned long>(info.availMem());
   }
 }
 
-}
-}
+} // namespace MEMORY
+} // namespace KODI
