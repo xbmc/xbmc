@@ -151,14 +151,15 @@ private:
 /// @copydetails cpp_kodi_addon_pvr_Defs_ChannelGroup_PVRChannelGroupMember_Help
 ///
 ///@{
-class PVRChannelGroupMember : public CStructHdl<PVRChannelGroupMember, PVR_CHANNEL_GROUP_MEMBER>
+class PVRChannelGroupMember
+  : public DynamicCStructHdl<PVRChannelGroupMember, PVR_CHANNEL_GROUP_MEMBER>
 {
   friend class CInstancePVRClient;
 
 public:
   /*! \cond PRIVATE */
   PVRChannelGroupMember() { memset(m_cStructure, 0, sizeof(PVR_CHANNEL_GROUP_MEMBER)); }
-  PVRChannelGroupMember(const PVRChannelGroupMember& channel) : CStructHdl(channel) {}
+  PVRChannelGroupMember(const PVRChannelGroupMember& member) : DynamicCStructHdl(member) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_pvr_Defs_ChannelGroup_PVRChannelGroupMember_Help Value Help
@@ -181,7 +182,7 @@ public:
   /// Name of the channel group to add the channel to.
   void SetGroupName(const std::string& groupName)
   {
-    strncpy(m_cStructure->strGroupName, groupName.c_str(), sizeof(m_cStructure->strGroupName) - 1);
+    ReallocAndCopyString(&m_cStructure->strGroupName, groupName.c_str());
   }
 
   /// @brief To get with @ref SetGroupName changed values.
@@ -226,9 +227,17 @@ public:
 
   ///@}
 
+  static void AllocResources(const PVR_CHANNEL_GROUP_MEMBER* source,
+                             PVR_CHANNEL_GROUP_MEMBER* target)
+  {
+    target->strGroupName = AllocAndCopyString(source->strGroupName);
+  }
+
+  static void FreeResources(PVR_CHANNEL_GROUP_MEMBER* target) { FreeString(target->strGroupName); }
+
 private:
-  PVRChannelGroupMember(const PVR_CHANNEL_GROUP_MEMBER* channel) : CStructHdl(channel) {}
-  PVRChannelGroupMember(PVR_CHANNEL_GROUP_MEMBER* channel) : CStructHdl(channel) {}
+  PVRChannelGroupMember(const PVR_CHANNEL_GROUP_MEMBER* member) : DynamicCStructHdl(member) {}
+  PVRChannelGroupMember(PVR_CHANNEL_GROUP_MEMBER* member) : DynamicCStructHdl(member) {}
 };
 ///@}
 //------------------------------------------------------------------------------
