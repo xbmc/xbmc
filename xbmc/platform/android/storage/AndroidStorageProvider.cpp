@@ -27,6 +27,8 @@
 
 #include <androidjni/Context.h>
 #include <androidjni/Environment.h>
+#include <androidjni/File.h>
+#include <androidjni/StatFs.h>
 #include <androidjni/StorageManager.h>
 #include <androidjni/StorageVolume.h>
 
@@ -378,19 +380,19 @@ std::vector<std::string> CAndroidStorageProvider::GetDiskUsage()
 
   std::string usage;
   // add header
-  CXBMCApp::GetStorageUsage("", usage);
+  GetStorageUsage("", usage);
   result.push_back(usage);
 
   usage.clear();
   // add rootfs
-  if (CXBMCApp::GetStorageUsage("/", usage) && !usage.empty())
+  if (GetStorageUsage("/", usage) && !usage.empty())
     result.push_back(usage);
 
   usage.clear();
   // add external storage if available
   std::string path;
-  if (CXBMCApp::GetExternalStorage(path) && !path.empty() &&
-      CXBMCApp::GetStorageUsage(path, usage) && !usage.empty())
+  if (CXBMCApp::GetExternalStorage(path) && !path.empty() && GetStorageUsage(path, usage) &&
+      !usage.empty())
     result.push_back(usage);
 
   // add removable storage
@@ -399,7 +401,7 @@ std::vector<std::string> CAndroidStorageProvider::GetDiskUsage()
   for (unsigned int i = 0; i < drives.size(); i++)
   {
     usage.clear();
-    if (CXBMCApp::GetStorageUsage(drives[i].strPath, usage) && !usage.empty())
+    if (GetStorageUsage(drives[i].strPath, usage) && !usage.empty())
       result.push_back(usage);
   }
 
@@ -413,4 +415,39 @@ bool CAndroidStorageProvider::PumpDriveChangeEvents(IStorageEventsCallback *call
   bool changed = m_removableDrives != drives;
   m_removableDrives = std::move(drives);
   return changed;
+}
+
+namespace
+{
+constexpr float GIGABYTES = 1073741824;
+constexpr int PATH_MAXLEN = 38;
+} // namespace
+
+bool CAndroidStorageProvider::GetStorageUsage(const std::string& path, std::string& usage)
+{
+  if (path.empty())
+  {
+    usage = StringUtils::Format("{:<{}}{:>12}{:>12}{:>12}{:>12}", "Filesystem", PATH_MAXLEN, "Size",
+                                "Used", "Avail", "Use %");
+    return false;
+  }
+
+  CJNIStatFs fileStat(path);
+  const int blockSize = fileStat.getBlockSize();
+  const int blockCount = fileStat.getBlockCount();
+  const int freeBlocks = fileStat.getFreeBlocks();
+
+  if (blockSize <= 0 || blockCount <= 0 || freeBlocks < 0)
+    return false;
+
+  const float totalSize = static_cast<float>(blockSize) * blockCount / GIGABYTES;
+  const float freeSize = static_cast<float>(blockSize) * freeBlocks / GIGABYTES;
+  const float usedSize = totalSize - freeSize;
+  const float usedPercentage = usedSize / totalSize * 100;
+
+  usage = StringUtils::Format(
+      "{:<{}}{:>11.1f}{}{:>11.1f}{}{:>11.1f}{}{:>11.0f}{}",
+      path.size() < PATH_MAXLEN - 1 ? path : StringUtils::Left(path, PATH_MAXLEN - 4) + "...",
+      PATH_MAXLEN, totalSize, "G", usedSize, "G", freeSize, "G", usedPercentage, "%");
+  return true;
 }
