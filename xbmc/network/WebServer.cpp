@@ -1192,7 +1192,7 @@ bool CWebServer::LoadCert(std::string& skey, std::string& scert)
 struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
 {
   unsigned int timeout = 60 * 60 * 24;
-  const char* ciphers = "NORMAL:-VERS-TLS1.0";
+  const char* ciphers = "PFS:-VERS-TLS1.0:-VERS-TLS1.1";
 
   MHD_set_panic_func(&panicHandlerForMHD, nullptr);
 
