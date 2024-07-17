@@ -10,6 +10,8 @@
 
 #include "pvr/channels/PVRChannelGroup.h"
 
+struct PVR_CHANNEL_GROUP;
+
 namespace PVR
 {
 

@@ -55,6 +55,25 @@ extern "C"
 }
 
 using namespace ADDON;
+using namespace PVR;
+
+namespace
+{
+class CAddonChannelGroup : public PVR_CHANNEL_GROUP
+{
+public:
+  explicit CAddonChannelGroup(const CPVRChannelGroup& group) : m_groupName(group.ClientGroupName())
+  {
+    bIsRadio = group.IsRadio();
+    strGroupName = m_groupName.c_str();
+    iPosition = group.GetClientPosition();
+  }
+  virtual ~CAddonChannelGroup() = default;
+
+private:
+  const std::string m_groupName;
+};
+} // unnamed namespace
 
 namespace PVR
 {
@@ -750,9 +769,8 @@ PVR_ERROR CPVRClient::GetChannelGroupMembers(
         handle.callerAddress = this;
         handle.dataAddress = &groupMembers;
 
-        PVR_CHANNEL_GROUP tag;
-        group->FillAddonData(tag);
-        return addon->toAddon->GetChannelGroupMembers(addon, &handle, &tag);
+        const CAddonChannelGroup addonGroup{*group};
+        return addon->toAddon->GetChannelGroupMembers(addon, &handle, &addonGroup);
       },
       m_clientCapabilities.SupportsChannelGroups() &&
           ((radio && m_clientCapabilities.SupportsRadio()) ||

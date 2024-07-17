@@ -34,14 +34,14 @@ namespace addon
 /// @copydetails cpp_kodi_addon_pvr_Defs_ChannelGroup_PVRChannelGroup_Help
 ///
 ///@{
-class PVRChannelGroup : public CStructHdl<PVRChannelGroup, PVR_CHANNEL_GROUP>
+class PVRChannelGroup : public DynamicCStructHdl<PVRChannelGroup, PVR_CHANNEL_GROUP>
 {
   friend class CInstancePVRClient;
 
 public:
   /*! \cond PRIVATE */
   PVRChannelGroup() { memset(m_cStructure, 0, sizeof(PVR_CHANNEL_GROUP)); }
-  PVRChannelGroup(const PVRChannelGroup& channel) : CStructHdl(channel) {}
+  PVRChannelGroup(const PVRChannelGroup& group) : DynamicCStructHdl(group) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_pvr_Defs_ChannelGroup_PVRChannelGroup_Help Value Help
@@ -62,7 +62,7 @@ public:
   /// Name of this channel group.
   void SetGroupName(const std::string& groupName)
   {
-    strncpy(m_cStructure->strGroupName, groupName.c_str(), sizeof(m_cStructure->strGroupName) - 1);
+    ReallocAndCopyString(&m_cStructure->strGroupName, groupName.c_str());
   }
 
   /// @brief To get with @ref SetGroupName changed values.
@@ -85,9 +85,16 @@ public:
 
   ///@}
 
+  static void AllocResources(const PVR_CHANNEL_GROUP* source, PVR_CHANNEL_GROUP* target)
+  {
+    target->strGroupName = AllocAndCopyString(source->strGroupName);
+  }
+
+  static void FreeResources(PVR_CHANNEL_GROUP* target) { FreeString(target->strGroupName); }
+
 private:
-  PVRChannelGroup(const PVR_CHANNEL_GROUP* channel) : CStructHdl(channel) {}
-  PVRChannelGroup(PVR_CHANNEL_GROUP* channel) : CStructHdl(channel) {}
+  PVRChannelGroup(const PVR_CHANNEL_GROUP* group) : DynamicCStructHdl(group) {}
+  PVRChannelGroup(PVR_CHANNEL_GROUP* group) : DynamicCStructHdl(group) {}
 };
 ///@}
 //------------------------------------------------------------------------------
