@@ -49,12 +49,6 @@ public:
   bool operator==(const CPVRChannel& right) const;
   bool operator!=(const CPVRChannel& right) const;
 
-  /*!
-   * @brief Copy over data to the given PVR_CHANNEL instance.
-   * @param channel The channel instance to fill.
-   */
-  void FillAddonData(PVR_CHANNEL& channel) const;
-
   void Serialize(CVariant& value) const override;
 
   /*! @name Kodi related channel methods

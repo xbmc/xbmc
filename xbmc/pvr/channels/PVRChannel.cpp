@@ -59,16 +59,16 @@ CPVRChannel::CPVRChannel(bool bRadio, const std::string& iconPath)
 CPVRChannel::CPVRChannel(const PVR_CHANNEL& channel, unsigned int iClientId)
   : m_bIsRadio(channel.bIsRadio),
     m_bIsHidden(channel.bIsHidden),
-    m_iconPath(channel.strIconPath,
+    m_iconPath(channel.strIconPath ? channel.strIconPath : "",
                StringUtils::Format(IMAGE_OWNER_PATTERN, channel.bIsRadio ? "radio" : "tv")),
-    m_strChannelName(channel.strChannelName),
+    m_strChannelName(channel.strChannelName ? channel.strChannelName : ""),
     m_bHasArchive(channel.bHasArchive),
     m_bEPGEnabled(!channel.bIsHidden),
     m_iUniqueId(channel.iUniqueId),
     m_iClientId(iClientId),
     m_clientChannelNumber(channel.iChannelNumber, channel.iSubChannelNumber),
-    m_strClientChannelName(channel.strChannelName),
-    m_strMimeType(channel.strMimeType),
+    m_strClientChannelName(channel.strChannelName ? channel.strChannelName : ""),
+    m_strMimeType(channel.strMimeType ? channel.strMimeType : ""),
     m_iClientEncryptionSystem(channel.iEncryptionSystem),
     m_iClientOrder(channel.iOrder),
     m_iClientProviderUid(channel.iClientProviderUid)
@@ -82,22 +82,6 @@ CPVRChannel::CPVRChannel(const PVR_CHANNEL& channel, unsigned int iClientId)
 CPVRChannel::~CPVRChannel()
 {
   ResetEPG();
-}
-
-void CPVRChannel::FillAddonData(PVR_CHANNEL& channel) const
-{
-  channel = {};
-  channel.iUniqueId = UniqueID();
-  channel.iChannelNumber = ClientChannelNumber().GetChannelNumber();
-  channel.iSubChannelNumber = ClientChannelNumber().GetSubChannelNumber();
-  strncpy(channel.strChannelName, ClientChannelName().c_str(), sizeof(channel.strChannelName) - 1);
-  strncpy(channel.strIconPath, ClientIconPath().c_str(), sizeof(channel.strIconPath) - 1);
-  channel.iEncryptionSystem = EncryptionSystem();
-  channel.bIsRadio = IsRadio();
-  channel.bIsHidden = IsHidden();
-  strncpy(channel.strMimeType, MimeType().c_str(), sizeof(channel.strMimeType) - 1);
-  channel.iClientProviderUid = ClientProviderUid();
-  channel.bHasArchive = HasArchive();
 }
 
 void CPVRChannel::Serialize(CVariant& value) const

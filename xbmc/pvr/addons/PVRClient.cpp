@@ -73,6 +73,34 @@ public:
 private:
   const std::string m_groupName;
 };
+
+class CAddonChannel : public PVR_CHANNEL
+{
+public:
+  CAddonChannel(const CPVRChannel& channel, const std::string& newChannelName = "")
+    : m_channelName(newChannelName.empty() ? channel.ClientChannelName() : newChannelName),
+      m_mimeType(channel.MimeType()),
+      m_iconPath(channel.ClientIconPath())
+  {
+    iUniqueId = channel.UniqueID();
+    iChannelNumber = channel.ClientChannelNumber().GetChannelNumber();
+    iSubChannelNumber = channel.ClientChannelNumber().GetSubChannelNumber();
+    strChannelName = m_channelName.c_str();
+    strIconPath = m_iconPath.c_str();
+    iEncryptionSystem = channel.EncryptionSystem();
+    bIsRadio = channel.IsRadio();
+    bIsHidden = channel.IsHidden();
+    strMimeType = m_mimeType.c_str();
+    iClientProviderUid = channel.ClientProviderUid();
+    bHasArchive = channel.HasArchive();
+  }
+  virtual ~CAddonChannel() = default;
+
+private:
+  const std::string m_channelName;
+  const std::string m_mimeType;
+  const std::string m_iconPath;
+};
 } // unnamed namespace
 
 namespace PVR
@@ -483,9 +511,9 @@ PVR_ERROR CPVRClient::OpenDialogChannelAdd(const std::shared_ptr<const CPVRChann
 {
   return DoAddonCall(
       __func__,
-      [channel](const AddonInstance* addon) {
-        PVR_CHANNEL addonChannel;
-        channel->FillAddonData(addonChannel);
+      [channel](const AddonInstance* addon)
+      {
+        const CAddonChannel addonChannel{*channel};
         return addon->toAddon->OpenDialogChannelAdd(addon, &addonChannel);
       },
       m_clientCapabilities.SupportsChannelSettings());
@@ -495,9 +523,9 @@ PVR_ERROR CPVRClient::OpenDialogChannelSettings(const std::shared_ptr<const CPVR
 {
   return DoAddonCall(
       __func__,
-      [channel](const AddonInstance* addon) {
-        PVR_CHANNEL addonChannel;
-        channel->FillAddonData(addonChannel);
+      [channel](const AddonInstance* addon)
+      {
+        const CAddonChannel addonChannel{*channel};
         return addon->toAddon->OpenDialogChannelSettings(addon, &addonChannel);
       },
       m_clientCapabilities.SupportsChannelSettings());
@@ -507,9 +535,9 @@ PVR_ERROR CPVRClient::DeleteChannel(const std::shared_ptr<const CPVRChannel>& ch
 {
   return DoAddonCall(
       __func__,
-      [channel](const AddonInstance* addon) {
-        PVR_CHANNEL addonChannel;
-        channel->FillAddonData(addonChannel);
+      [channel](const AddonInstance* addon)
+      {
+        const CAddonChannel addonChannel{*channel};
         return addon->toAddon->DeleteChannel(addon, &addonChannel);
       },
       m_clientCapabilities.SupportsChannelSettings());
@@ -519,11 +547,9 @@ PVR_ERROR CPVRClient::RenameChannel(const std::shared_ptr<const CPVRChannel>& ch
 {
   return DoAddonCall(
       __func__,
-      [channel](const AddonInstance* addon) {
-        PVR_CHANNEL addonChannel;
-        channel->FillAddonData(addonChannel);
-        strncpy(addonChannel.strChannelName, channel->ChannelName().c_str(),
-                sizeof(addonChannel.strChannelName) - 1);
+      [channel](const AddonInstance* addon)
+      {
+        const CAddonChannel addonChannel{*channel, channel->ChannelName()};
         return addon->toAddon->RenameChannel(addon, &addonChannel);
       },
       m_clientCapabilities.SupportsChannelSettings());
@@ -1254,15 +1280,14 @@ PVR_ERROR CPVRClient::GetChannelStreamProperties(const std::shared_ptr<const CPV
     if (!CanPlayChannel(channel))
       return PVR_ERROR_NO_ERROR; // no error, but no need to obtain the values from the addon
 
-    PVR_CHANNEL tag = {};
-    channel->FillAddonData(tag);
+    const CAddonChannel addonChannel{*channel};
 
     unsigned int iPropertyCount = STREAM_MAX_PROPERTY_COUNT;
     std::unique_ptr<PVR_NAMED_VALUE[]> properties(new PVR_NAMED_VALUE[iPropertyCount]);
     memset(properties.get(), 0, iPropertyCount * sizeof(PVR_NAMED_VALUE));
 
-    PVR_ERROR error =
-        addon->toAddon->GetChannelStreamProperties(addon, &tag, properties.get(), &iPropertyCount);
+    const PVR_ERROR error{addon->toAddon->GetChannelStreamProperties(
+        addon, &addonChannel, properties.get(), &iPropertyCount)};
     if (error == PVR_ERROR_NO_ERROR)
       WriteStreamProperties(properties.get(), iPropertyCount, props);
 
@@ -1448,10 +1473,9 @@ PVR_ERROR CPVRClient::OpenLiveStream(const std::shared_ptr<const CPVRChannel>& c
     else
     {
       CLog::LogFC(LOGDEBUG, LOGPVR, "Opening live stream for channel '{}'", channel->ChannelName());
-      PVR_CHANNEL tag;
-      channel->FillAddonData(tag);
-      return addon->toAddon->OpenLiveStream(addon, &tag) ? PVR_ERROR_NO_ERROR
-                                                         : PVR_ERROR_NOT_IMPLEMENTED;
+      const CAddonChannel addonChannel{*channel};
+      return addon->toAddon->OpenLiveStream(addon, &addonChannel) ? PVR_ERROR_NO_ERROR
+                                                                  : PVR_ERROR_NOT_IMPLEMENTED;
     }
   });
 }
@@ -1601,17 +1625,18 @@ PVR_ERROR CPVRClient::CallEpgTagMenuHook(const CPVRClientMenuHook& hook,
 PVR_ERROR CPVRClient::CallChannelMenuHook(const CPVRClientMenuHook& hook,
                                           const std::shared_ptr<const CPVRChannel>& channel)
 {
-  return DoAddonCall(__func__, [&hook, &channel](const AddonInstance* addon) {
-    PVR_CHANNEL tag;
-    channel->FillAddonData(tag);
+  return DoAddonCall(__func__,
+                     [&hook, &channel](const AddonInstance* addon)
+                     {
+                       const CAddonChannel addonChannel{*channel};
 
-    PVR_MENUHOOK menuHook;
-    menuHook.category = PVR_MENUHOOK_CHANNEL;
-    menuHook.iHookId = hook.GetId();
-    menuHook.iLocalizedStringId = hook.GetLabelId();
+                       PVR_MENUHOOK menuHook;
+                       menuHook.category = PVR_MENUHOOK_CHANNEL;
+                       menuHook.iHookId = hook.GetId();
+                       menuHook.iLocalizedStringId = hook.GetLabelId();
 
-    return addon->toAddon->CallChannelMenuHook(addon, &menuHook, &tag);
-  });
+                       return addon->toAddon->CallChannelMenuHook(addon, &menuHook, &addonChannel);
+                     });
 }
 
 PVR_ERROR CPVRClient::CallRecordingMenuHook(const CPVRClientMenuHook& hook,

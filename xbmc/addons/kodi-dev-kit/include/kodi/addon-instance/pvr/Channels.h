@@ -35,7 +35,7 @@ namespace addon
 /// @copydetails cpp_kodi_addon_pvr_Defs_Channel_PVRChannel_Help
 ///
 ///@{
-class PVRChannel : public CStructHdl<PVRChannel, PVR_CHANNEL>
+class PVRChannel : public DynamicCStructHdl<PVRChannel, PVR_CHANNEL>
 {
   friend class CInstancePVRClient;
 
@@ -46,7 +46,7 @@ public:
     memset(m_cStructure, 0, sizeof(PVR_CHANNEL));
     m_cStructure->iClientProviderUid = PVR_PROVIDER_INVALID_UID;
   }
-  PVRChannel(const PVRChannel& channel) : CStructHdl(channel) {}
+  PVRChannel(const PVRChannel& channel) : DynamicCStructHdl(channel) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_pvr_Defs_Channel_PVRChannel_Help Value Help
@@ -110,8 +110,7 @@ public:
   /// Channel name given to this channel.
   void SetChannelName(const std::string& channelName)
   {
-    strncpy(m_cStructure->strChannelName, channelName.c_str(),
-            sizeof(m_cStructure->strChannelName) - 1);
+    ReallocAndCopyString(&m_cStructure->strChannelName, channelName.c_str());
   }
 
   /// @brief To get with @ref SetChannelName changed values.
@@ -125,7 +124,7 @@ public:
   ///
   void SetMimeType(const std::string& inputFormat)
   {
-    strncpy(m_cStructure->strMimeType, inputFormat.c_str(), sizeof(m_cStructure->strMimeType) - 1);
+    ReallocAndCopyString(&m_cStructure->strMimeType, inputFormat.c_str());
   }
 
   /// @brief To get with @ref SetMimeType changed values.
@@ -150,7 +149,7 @@ public:
   /// Path to the channel icon (if present).
   void SetIconPath(const std::string& iconPath)
   {
-    strncpy(m_cStructure->strIconPath, iconPath.c_str(), sizeof(m_cStructure->strIconPath) - 1);
+    ReallocAndCopyString(&m_cStructure->strIconPath, iconPath.c_str());
   }
 
   /// @brief To get with @ref SetIconPath changed values.
@@ -190,9 +189,23 @@ public:
   /// @brief To get with @ref SetClientProviderUid changed values
   int GetClientProviderUid() const { return m_cStructure->iClientProviderUid; }
 
+  static void AllocResources(const PVR_CHANNEL* source, PVR_CHANNEL* target)
+  {
+    target->strChannelName = AllocAndCopyString(source->strChannelName);
+    target->strMimeType = AllocAndCopyString(source->strMimeType);
+    target->strIconPath = AllocAndCopyString(source->strIconPath);
+  }
+
+  static void FreeResources(PVR_CHANNEL* target)
+  {
+    FreeString(target->strChannelName);
+    FreeString(target->strMimeType);
+    FreeString(target->strIconPath);
+  }
+
 private:
-  PVRChannel(const PVR_CHANNEL* channel) : CStructHdl(channel) {}
-  PVRChannel(PVR_CHANNEL* channel) : CStructHdl(channel) {}
+  PVRChannel(const PVR_CHANNEL* channel) : DynamicCStructHdl(channel) {}
+  PVRChannel(PVR_CHANNEL* channel) : DynamicCStructHdl(channel) {}
 };
 ///@}
 //------------------------------------------------------------------------------

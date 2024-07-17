@@ -43,10 +43,10 @@ extern "C"
     bool bIsRadio;
     unsigned int iChannelNumber;
     unsigned int iSubChannelNumber;
-    char strChannelName[PVR_ADDON_NAME_STRING_LENGTH];
-    char strMimeType[PVR_ADDON_INPUT_FORMAT_STRING_LENGTH];
+    const char* strChannelName;
+    const char* strMimeType;
     unsigned int iEncryptionSystem;
-    char strIconPath[PVR_ADDON_URL_STRING_LENGTH];
+    const char* strIconPath;
     bool bIsHidden;
     bool bHasArchive;
     int iOrder;
