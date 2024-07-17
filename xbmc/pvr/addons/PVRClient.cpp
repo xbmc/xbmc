@@ -101,6 +101,81 @@ private:
   const std::string m_mimeType;
   const std::string m_iconPath;
 };
+
+class CAddonRecording : public PVR_RECORDING
+{
+public:
+  explicit CAddonRecording(const CPVRRecording& recording)
+    : m_recordingId(recording.ClientRecordingID()),
+      m_title(recording.m_strTitle),
+      m_episodeName(recording.m_strShowTitle),
+      m_directory(recording.Directory()),
+      m_plotOutline(recording.m_strPlotOutline),
+      m_plot(recording.m_strPlot),
+      m_genreDescription(recording.GetGenresLabel()),
+      m_channelName(recording.ChannelName()),
+      m_iconPath(recording.ClientIconPath()),
+      m_thumbnailPath(recording.ClientThumbnailPath()),
+      m_fanartPath(recording.ClientFanartPath()),
+      m_firstAired(recording.FirstAired().GetAsW3CDate()),
+      m_providerName(recording.ProviderName())
+  {
+    time_t recTime;
+    recording.RecordingTimeAsUTC().GetAsTime(recTime);
+
+    strRecordingId = m_recordingId.c_str();
+    strTitle = m_title.c_str();
+    strEpisodeName = m_episodeName.c_str();
+    iSeriesNumber = recording.m_iSeason;
+    iEpisodeNumber = recording.m_iEpisode;
+    iYear = recording.GetYear();
+    strDirectory = m_directory.c_str();
+    strPlotOutline = m_plotOutline.c_str();
+    strPlot = m_plot.c_str();
+    strGenreDescription = m_genreDescription.c_str();
+    strChannelName = m_channelName.c_str();
+    strIconPath = m_iconPath.c_str();
+    strThumbnailPath = m_thumbnailPath.c_str();
+    strFanartPath = m_fanartPath.c_str();
+    recordingTime =
+        recTime -
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection;
+    iDuration = recording.GetDuration();
+    iPriority = recording.Priority();
+    iLifetime = recording.LifeTime();
+    iGenreType = recording.GenreType();
+    iGenreSubType = recording.GenreSubType();
+    iPlayCount = recording.GetLocalPlayCount();
+    iLastPlayedPosition = std::lrint(recording.GetLocalResumePoint().timeInSeconds);
+    bIsDeleted = recording.IsDeleted();
+    iEpgEventId = recording.BroadcastUid();
+    iChannelUid = recording.ChannelUid();
+    channelType =
+        recording.IsRadio() ? PVR_RECORDING_CHANNEL_TYPE_RADIO : PVR_RECORDING_CHANNEL_TYPE_TV;
+    if (recording.FirstAired().IsValid())
+      strFirstAired = m_firstAired.c_str();
+    iFlags = recording.Flags();
+    sizeInBytes = recording.GetSizeInBytes();
+    strProviderName = m_providerName.c_str();
+    iClientProviderUid = recording.ClientProviderUniqueId();
+  }
+  virtual ~CAddonRecording() = default;
+
+private:
+  const std::string m_recordingId;
+  const std::string m_title;
+  const std::string m_episodeName;
+  const std::string m_directory;
+  const std::string m_plotOutline;
+  const std::string m_plot;
+  const std::string m_genreDescription;
+  const std::string m_channelName;
+  const std::string m_iconPath;
+  const std::string m_thumbnailPath;
+  const std::string m_fanartPath;
+  const std::string m_firstAired;
+  const std::string m_providerName;
+};
 } // unnamed namespace
 
 namespace PVR
@@ -874,9 +949,9 @@ PVR_ERROR CPVRClient::DeleteRecording(const CPVRRecording& recording)
 {
   return DoAddonCall(
       __func__,
-      [&recording](const AddonInstance* addon) {
-        PVR_RECORDING tag;
-        recording.FillAddonData(tag);
+      [&recording](const AddonInstance* addon)
+      {
+        const CAddonRecording tag{recording};
         return addon->toAddon->DeleteRecording(addon, &tag);
       },
       m_clientCapabilities.SupportsRecordings() && m_clientCapabilities.SupportsRecordingsDelete());
@@ -886,9 +961,9 @@ PVR_ERROR CPVRClient::UndeleteRecording(const CPVRRecording& recording)
 {
   return DoAddonCall(
       __func__,
-      [&recording](const AddonInstance* addon) {
-        PVR_RECORDING tag;
-        recording.FillAddonData(tag);
+      [&recording](const AddonInstance* addon)
+      {
+        const CAddonRecording tag{recording};
         return addon->toAddon->UndeleteRecording(addon, &tag);
       },
       m_clientCapabilities.SupportsRecordingsUndelete());
@@ -908,9 +983,9 @@ PVR_ERROR CPVRClient::RenameRecording(const CPVRRecording& recording)
 {
   return DoAddonCall(
       __func__,
-      [&recording](const AddonInstance* addon) {
-        PVR_RECORDING tag;
-        recording.FillAddonData(tag);
+      [&recording](const AddonInstance* addon)
+      {
+        const CAddonRecording tag{recording};
         return addon->toAddon->RenameRecording(addon, &tag);
       },
       m_clientCapabilities.SupportsRecordings());
@@ -920,9 +995,9 @@ PVR_ERROR CPVRClient::SetRecordingLifetime(const CPVRRecording& recording)
 {
   return DoAddonCall(
       __func__,
-      [&recording](const AddonInstance* addon) {
-        PVR_RECORDING tag;
-        recording.FillAddonData(tag);
+      [&recording](const AddonInstance* addon)
+      {
+        const CAddonRecording tag{recording};
         return addon->toAddon->SetRecordingLifetime(addon, &tag);
       },
       m_clientCapabilities.SupportsRecordingsLifetimeChange());
@@ -932,9 +1007,9 @@ PVR_ERROR CPVRClient::SetRecordingPlayCount(const CPVRRecording& recording, int 
 {
   return DoAddonCall(
       __func__,
-      [&recording, count](const AddonInstance* addon) {
-        PVR_RECORDING tag;
-        recording.FillAddonData(tag);
+      [&recording, count](const AddonInstance* addon)
+      {
+        const CAddonRecording tag{recording};
         return addon->toAddon->SetRecordingPlayCount(addon, &tag, count);
       },
       m_clientCapabilities.SupportsRecordingsPlayCount());
@@ -945,9 +1020,9 @@ PVR_ERROR CPVRClient::SetRecordingLastPlayedPosition(const CPVRRecording& record
 {
   return DoAddonCall(
       __func__,
-      [&recording, lastplayedposition](const AddonInstance* addon) {
-        PVR_RECORDING tag;
-        recording.FillAddonData(tag);
+      [&recording, lastplayedposition](const AddonInstance* addon)
+      {
+        const CAddonRecording tag{recording};
         return addon->toAddon->SetRecordingLastPlayedPosition(addon, &tag, lastplayedposition);
       },
       m_clientCapabilities.SupportsRecordingsLastPlayedPosition());
@@ -959,9 +1034,9 @@ PVR_ERROR CPVRClient::GetRecordingLastPlayedPosition(const CPVRRecording& record
   iPosition = -1;
   return DoAddonCall(
       __func__,
-      [&recording, &iPosition](const AddonInstance* addon) {
-        PVR_RECORDING tag;
-        recording.FillAddonData(tag);
+      [&recording, &iPosition](const AddonInstance* addon)
+      {
+        const CAddonRecording tag{recording};
         return addon->toAddon->GetRecordingLastPlayedPosition(addon, &tag, &iPosition);
       },
       m_clientCapabilities.SupportsRecordingsLastPlayedPosition());
@@ -973,9 +1048,9 @@ PVR_ERROR CPVRClient::GetRecordingEdl(const CPVRRecording& recording,
   edls.clear();
   return DoAddonCall(
       __func__,
-      [&recording, &edls](const AddonInstance* addon) {
-        PVR_RECORDING tag;
-        recording.FillAddonData(tag);
+      [&recording, &edls](const AddonInstance* addon)
+      {
+        const CAddonRecording tag{recording};
 
         PVR_EDL_ENTRY edl_array[PVR_ADDON_EDL_LENGTH];
         int size = PVR_ADDON_EDL_LENGTH;
@@ -995,9 +1070,9 @@ PVR_ERROR CPVRClient::GetRecordingSize(const CPVRRecording& recording, int64_t& 
 {
   return DoAddonCall(
       __func__,
-      [&recording, &sizeInBytes](const AddonInstance* addon) {
-        PVR_RECORDING tag;
-        recording.FillAddonData(tag);
+      [&recording, &sizeInBytes](const AddonInstance* addon)
+      {
+        const CAddonRecording tag{recording};
         return addon->toAddon->GetRecordingSize(addon, &tag, &sizeInBytes);
       },
       m_clientCapabilities.SupportsRecordingsSize());
@@ -1302,8 +1377,7 @@ PVR_ERROR CPVRClient::GetRecordingStreamProperties(
     if (!m_clientCapabilities.SupportsRecordings())
       return PVR_ERROR_NO_ERROR; // no error, but no need to obtain the values from the addon
 
-    PVR_RECORDING tag = {};
-    recording->FillAddonData(tag);
+    const CAddonRecording tag(*recording);
 
     unsigned int iPropertyCount = STREAM_MAX_PROPERTY_COUNT;
     std::unique_ptr<PVR_NAMED_VALUE[]> properties(new PVR_NAMED_VALUE[iPropertyCount]);
@@ -1490,8 +1564,7 @@ PVR_ERROR CPVRClient::OpenRecordedStream(const std::shared_ptr<const CPVRRecordi
       [this, recording](const AddonInstance* addon) {
         CloseRecordedStream();
 
-        PVR_RECORDING tag;
-        recording->FillAddonData(tag);
+        const CAddonRecording tag(*recording);
         CLog::LogFC(LOGDEBUG, LOGPVR, "Opening stream for recording '{}'", recording->m_strTitle);
         return addon->toAddon->OpenRecordedStream(addon, &tag) ? PVR_ERROR_NO_ERROR
                                                                : PVR_ERROR_NOT_IMPLEMENTED;
@@ -1643,17 +1716,19 @@ PVR_ERROR CPVRClient::CallRecordingMenuHook(const CPVRClientMenuHook& hook,
                                             const std::shared_ptr<const CPVRRecording>& recording,
                                             bool bDeleted)
 {
-  return DoAddonCall(__func__, [&hook, &recording, &bDeleted](const AddonInstance* addon) {
-    PVR_RECORDING tag;
-    recording->FillAddonData(tag);
+  return DoAddonCall(__func__,
+                     [&hook, &recording, &bDeleted](const AddonInstance* addon)
+                     {
+                       const CAddonRecording tag(*recording);
 
-    PVR_MENUHOOK menuHook;
-    menuHook.category = bDeleted ? PVR_MENUHOOK_DELETED_RECORDING : PVR_MENUHOOK_RECORDING;
-    menuHook.iHookId = hook.GetId();
-    menuHook.iLocalizedStringId = hook.GetLabelId();
+                       PVR_MENUHOOK menuHook;
+                       menuHook.category =
+                           bDeleted ? PVR_MENUHOOK_DELETED_RECORDING : PVR_MENUHOOK_RECORDING;
+                       menuHook.iHookId = hook.GetId();
+                       menuHook.iLocalizedStringId = hook.GetLabelId();
 
-    return addon->toAddon->CallRecordingMenuHook(addon, &menuHook, &tag);
-  });
+                       return addon->toAddon->CallRecordingMenuHook(addon, &menuHook, &tag);
+                     });
 }
 
 PVR_ERROR CPVRClient::CallTimerMenuHook(const CPVRClientMenuHook& hook,

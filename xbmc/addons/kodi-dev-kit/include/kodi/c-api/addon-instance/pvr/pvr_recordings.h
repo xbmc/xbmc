@@ -108,20 +108,20 @@ extern "C"
    */
   typedef struct PVR_RECORDING
   {
-    char strRecordingId[PVR_ADDON_NAME_STRING_LENGTH];
-    char strTitle[PVR_ADDON_NAME_STRING_LENGTH];
-    char strEpisodeName[PVR_ADDON_NAME_STRING_LENGTH];
+    const char* strRecordingId;
+    const char* strTitle;
+    const char* strEpisodeName;
     int iSeriesNumber;
     int iEpisodeNumber;
     int iYear;
-    char strDirectory[PVR_ADDON_URL_STRING_LENGTH];
-    char strPlotOutline[PVR_ADDON_DESC_STRING_LENGTH];
-    char strPlot[PVR_ADDON_DESC_STRING_LENGTH];
-    char strGenreDescription[PVR_ADDON_DESC_STRING_LENGTH];
-    char strChannelName[PVR_ADDON_NAME_STRING_LENGTH];
-    char strIconPath[PVR_ADDON_URL_STRING_LENGTH];
-    char strThumbnailPath[PVR_ADDON_URL_STRING_LENGTH];
-    char strFanartPath[PVR_ADDON_URL_STRING_LENGTH];
+    const char* strDirectory;
+    const char* strPlotOutline;
+    const char* strPlot;
+    const char* strGenreDescription;
+    const char* strChannelName;
+    const char* strIconPath;
+    const char* strThumbnailPath;
+    const char* strFanartPath;
     time_t recordingTime;
     int iDuration;
     int iPriority;
@@ -134,11 +134,11 @@ extern "C"
     unsigned int iEpgEventId;
     int iChannelUid;
     enum PVR_RECORDING_CHANNEL_TYPE channelType;
-    char strFirstAired[PVR_ADDON_DATE_STRING_LENGTH];
+    const char* strFirstAired;
     unsigned int iFlags;
     int64_t sizeInBytes;
     int iClientProviderUid;
-    char strProviderName[PVR_ADDON_NAME_STRING_LENGTH];
+    const char* strProviderName;
   } PVR_RECORDING;
 
 #ifdef __cplusplus
