@@ -38,11 +38,11 @@ CPVRProvider::CPVRProvider(int iUniqueId, int iClientId)
 CPVRProvider::CPVRProvider(const PVR_PROVIDER& provider, int iClientId)
   : m_iUniqueId(provider.iUniqueId),
     m_iClientId(iClientId),
-    m_strName(provider.strName),
+    m_strName(provider.strName ? provider.strName : ""),
     m_type(provider.type),
-    m_iconPath(provider.strIconPath, IMAGE_OWNER_PATTERN),
-    m_strCountries(provider.strCountries),
-    m_strLanguages(provider.strLanguages),
+    m_iconPath(provider.strIconPath ? provider.strIconPath : "", IMAGE_OWNER_PATTERN),
+    m_strCountries(provider.strCountries ? provider.strCountries : ""),
+    m_strLanguages(provider.strLanguages ? provider.strLanguages : ""),
     m_thumbPath(IMAGE_OWNER_PATTERN)
 {
 }
