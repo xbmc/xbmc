@@ -176,6 +176,64 @@ private:
   const std::string m_firstAired;
   const std::string m_providerName;
 };
+
+class CAddonTimer : public PVR_TIMER
+{
+public:
+  explicit CAddonTimer(const CPVRTimerInfoTag& timer)
+    : m_title(timer.Title()),
+      m_epgSearchString(timer.EpgSearchString()),
+      m_directory(timer.Directory()),
+      m_summary(timer.Summary()),
+      m_seriesLink(timer.SeriesLink())
+  {
+    time_t start;
+    timer.StartAsUTC().GetAsTime(start);
+    time_t end;
+    timer.EndAsUTC().GetAsTime(end);
+    time_t firstDay;
+    timer.FirstDayAsUTC().GetAsTime(firstDay);
+    const std::shared_ptr<const CPVREpgInfoTag> epgTag{timer.GetEpgInfoTag()};
+    const int timeCorrection{
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection};
+
+    iClientIndex = timer.ClientIndex();
+    iParentClientIndex = timer.ParentClientIndex();
+    state = timer.State();
+    iTimerType = timer.GetTimerType()->GetTypeId();
+    iClientChannelUid = timer.ClientChannelUID();
+    strTitle = m_title.c_str();
+    strEpgSearchString = m_epgSearchString.c_str();
+    bFullTextEpgSearch = timer.IsFullTextEpgSearch();
+    strDirectory = m_directory.c_str();
+    iPriority = timer.Priority();
+    iLifetime = timer.Lifetime();
+    iMaxRecordings = timer.MaxRecordings();
+    iPreventDuplicateEpisodes = timer.PreventDupEpisodesPolicy();
+    iRecordingGroup = timer.RecordingGroup();
+    iWeekdays = timer.WeekDays();
+    startTime = start - timeCorrection;
+    endTime = end - timeCorrection;
+    bStartAnyTime = timer.IsStartAnyTime();
+    bEndAnyTime = timer.IsEndAnyTime();
+    firstDay = firstDay - timeCorrection;
+    iEpgUid = epgTag ? epgTag->UniqueBroadcastID() : PVR_TIMER_NO_EPG_UID;
+    strSummary = m_summary.c_str();
+    iMarginStart = timer.MarginStart();
+    iMarginEnd = timer.MarginEnd();
+    iGenreType = epgTag ? epgTag->GenreType() : 0;
+    iGenreSubType = epgTag ? epgTag->GenreSubType() : 0;
+    strSeriesLink = m_seriesLink.c_str();
+  }
+  virtual ~CAddonTimer() = default;
+
+private:
+  const std::string m_title;
+  const std::string m_epgSearchString;
+  const std::string m_directory;
+  const std::string m_summary;
+  const std::string m_seriesLink;
+};
 } // unnamed namespace
 
 namespace PVR
@@ -1105,9 +1163,9 @@ PVR_ERROR CPVRClient::AddTimer(const CPVRTimerInfoTag& timer)
 {
   return DoAddonCall(
       __func__,
-      [&timer](const AddonInstance* addon) {
-        PVR_TIMER tag;
-        timer.FillAddonData(tag);
+      [&timer](const AddonInstance* addon)
+      {
+        const CAddonTimer tag{timer};
         return addon->toAddon->AddTimer(addon, &tag);
       },
       m_clientCapabilities.SupportsTimers());
@@ -1117,9 +1175,9 @@ PVR_ERROR CPVRClient::DeleteTimer(const CPVRTimerInfoTag& timer, bool bForce /* 
 {
   return DoAddonCall(
       __func__,
-      [&timer, bForce](const AddonInstance* addon) {
-        PVR_TIMER tag;
-        timer.FillAddonData(tag);
+      [&timer, bForce](const AddonInstance* addon)
+      {
+        const CAddonTimer tag{timer};
         return addon->toAddon->DeleteTimer(addon, &tag, bForce);
       },
       m_clientCapabilities.SupportsTimers());
@@ -1129,9 +1187,9 @@ PVR_ERROR CPVRClient::UpdateTimer(const CPVRTimerInfoTag& timer)
 {
   return DoAddonCall(
       __func__,
-      [&timer](const AddonInstance* addon) {
-        PVR_TIMER tag;
-        timer.FillAddonData(tag);
+      [&timer](const AddonInstance* addon)
+      {
+        const CAddonTimer tag{timer};
         return addon->toAddon->UpdateTimer(addon, &tag);
       },
       m_clientCapabilities.SupportsTimers());
@@ -1734,17 +1792,18 @@ PVR_ERROR CPVRClient::CallRecordingMenuHook(const CPVRClientMenuHook& hook,
 PVR_ERROR CPVRClient::CallTimerMenuHook(const CPVRClientMenuHook& hook,
                                         const std::shared_ptr<const CPVRTimerInfoTag>& timer)
 {
-  return DoAddonCall(__func__, [&hook, &timer](const AddonInstance* addon) {
-    PVR_TIMER tag;
-    timer->FillAddonData(tag);
+  return DoAddonCall(__func__,
+                     [&hook, &timer](const AddonInstance* addon)
+                     {
+                       const CAddonTimer tag(*timer);
 
-    PVR_MENUHOOK menuHook;
-    menuHook.category = PVR_MENUHOOK_TIMER;
-    menuHook.iHookId = hook.GetId();
-    menuHook.iLocalizedStringId = hook.GetLabelId();
+                       PVR_MENUHOOK menuHook;
+                       menuHook.category = PVR_MENUHOOK_TIMER;
+                       menuHook.iHookId = hook.GetId();
+                       menuHook.iLocalizedStringId = hook.GetLabelId();
 
-    return addon->toAddon->CallTimerMenuHook(addon, &menuHook, &tag);
-  });
+                       return addon->toAddon->CallTimerMenuHook(addon, &menuHook, &tag);
+                     });
 }
 
 PVR_ERROR CPVRClient::CallSettingsMenuHook(const CPVRClientMenuHook& hook)

@@ -35,7 +35,7 @@ namespace addon
 /// @copydetails cpp_kodi_addon_pvr_Defs_Timer_PVRTimer_Help
 ///
 ///@{
-class PVRTimer : public CStructHdl<PVRTimer, PVR_TIMER>
+class PVRTimer : public DynamicCStructHdl<PVRTimer, PVR_TIMER>
 {
   friend class CInstancePVRClient;
 
@@ -66,7 +66,7 @@ public:
     m_cStructure->iGenreType = PVR_TIMER_VALUE_NOT_AVAILABLE;
     m_cStructure->iGenreSubType = PVR_TIMER_VALUE_NOT_AVAILABLE;
   }
-  PVRTimer(const PVRTimer& data) : CStructHdl(data) {}
+  PVRTimer(const PVRTimer& timer) : DynamicCStructHdl(timer) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_pvr_Defs_Timer_PVRTimer_Help Value Help
@@ -167,7 +167,7 @@ public:
   /// A title for this timer.
   void SetTitle(const std::string& title)
   {
-    strncpy(m_cStructure->strTitle, title.c_str(), sizeof(m_cStructure->strTitle) - 1);
+    ReallocAndCopyString(&m_cStructure->strTitle, title.c_str());
   }
 
   /// @brief To get with @ref SetTitle changed values.
@@ -241,8 +241,7 @@ public:
   /// Format is backend-dependent, for example regexp.
   void SetEPGSearchString(const std::string& epgSearchString)
   {
-    strncpy(m_cStructure->strEpgSearchString, epgSearchString.c_str(),
-            sizeof(m_cStructure->strEpgSearchString) - 1);
+    ReallocAndCopyString(&m_cStructure->strEpgSearchString, epgSearchString.c_str());
   }
 
   /// @brief To get with @ref SetEPGSearchString changed values
@@ -263,7 +262,7 @@ public:
   /// The (relative) directory where the recording will be stored in.
   void SetDirectory(const std::string& directory)
   {
-    strncpy(m_cStructure->strDirectory, directory.c_str(), sizeof(m_cStructure->strDirectory) - 1);
+    ReallocAndCopyString(&m_cStructure->strDirectory, directory.c_str());
   }
 
   /// @brief To get with @ref SetDirectory changed values.
@@ -273,7 +272,7 @@ public:
   /// The summary for this timer.
   void SetSummary(const std::string& summary)
   {
-    strncpy(m_cStructure->strSummary, summary.c_str(), sizeof(m_cStructure->strSummary) - 1);
+    ReallocAndCopyString(&m_cStructure->strSummary, summary.c_str());
   }
 
   /// @brief To get with @ref SetDirectory changed values.
@@ -458,17 +457,34 @@ public:
   /// checking with here, instead of @ref SetTitle() (and @ref SetFullTextEpgSearch()).
   void SetSeriesLink(const std::string& seriesLink)
   {
-    strncpy(m_cStructure->strSeriesLink, seriesLink.c_str(),
-            sizeof(m_cStructure->strSeriesLink) - 1);
+    ReallocAndCopyString(&m_cStructure->strSeriesLink, seriesLink.c_str());
   }
 
   /// @brief To get with @ref SetSeriesLink changed values.
   std::string GetSeriesLink() const { return m_cStructure->strSeriesLink; }
   ///@}
 
+  static void AllocResources(const PVR_TIMER* source, PVR_TIMER* target)
+  {
+    target->strTitle = AllocAndCopyString(source->strTitle);
+    target->strEpgSearchString = AllocAndCopyString(source->strEpgSearchString);
+    target->strDirectory = AllocAndCopyString(source->strDirectory);
+    target->strSummary = AllocAndCopyString(source->strSummary);
+    target->strSeriesLink = AllocAndCopyString(source->strSeriesLink);
+  }
+
+  static void FreeResources(PVR_TIMER* target)
+  {
+    FreeString(target->strTitle);
+    FreeString(target->strEpgSearchString);
+    FreeString(target->strDirectory);
+    FreeString(target->strSummary);
+    FreeString(target->strSeriesLink);
+  }
+
 private:
-  PVRTimer(const PVR_TIMER* data) : CStructHdl(data) {}
-  PVRTimer(PVR_TIMER* data) : CStructHdl(data) {}
+  PVRTimer(const PVR_TIMER* timer) : DynamicCStructHdl(timer) {}
+  PVRTimer(PVR_TIMER* timer) : DynamicCStructHdl(timer) {}
 };
 
 ///@}

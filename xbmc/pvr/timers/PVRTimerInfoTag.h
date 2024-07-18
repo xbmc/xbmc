@@ -45,12 +45,6 @@ public:
   bool operator==(const CPVRTimerInfoTag& right) const;
   bool operator!=(const CPVRTimerInfoTag& right) const;
 
-  /*!
-   * @brief Copy over data to the given PVR_TIMER instance.
-   * @param timer The timer instance to fill.
-   */
-  void FillAddonData(PVR_TIMER& timer) const;
-
   // ISerializable implementation
   void Serialize(CVariant& value) const override;
 
@@ -483,6 +477,42 @@ public:
    * @return The series link or empty string, if not available.
    */
   const std::string& SeriesLink() const;
+
+  /*!
+   * @brief The directory for the recordings for this timer.
+   * @return The directory.
+   */
+  const std::string& Directory() const { return m_strDirectory; }
+
+  /*!
+   * @brief The priority for this timer.
+   * @return The priority.
+   */
+  int Priority() const { return m_iPriority; }
+
+  /*!
+   * @brief The life time for this timer.
+   * @return The life time.
+   */
+  int Lifetime() const { return m_iLifetime; }
+
+  /*!
+   * @brief The maximum number of recordings for this timer.
+   * @return The number of maximum recordings.
+   */
+  int MaxRecordings() const { return m_iMaxRecordings; }
+
+  /*!
+   * @brief The policy to be used to prevent duplicate episodes for this timer.
+   * @return The policy for preventing duplicate episodes.
+   */
+  int PreventDupEpisodesPolicy() const { return m_iPreventDupEpisodes; }
+
+  /*!
+   * @brief The recording group for this timer.
+   * @return The recording group.
+   */
+  int RecordingGroup() const { return m_iRecordingGroup; }
 
   /*!
    * @brief Get the UID of the epg event associated with this timer tag, if any.

@@ -347,11 +347,11 @@ extern "C"
     bool bEndAnyTime;
     enum PVR_TIMER_STATE state;
     unsigned int iTimerType;
-    char strTitle[PVR_ADDON_NAME_STRING_LENGTH];
-    char strEpgSearchString[PVR_ADDON_NAME_STRING_LENGTH];
+    const char* strTitle;
+    const char* strEpgSearchString;
     bool bFullTextEpgSearch;
-    char strDirectory[PVR_ADDON_URL_STRING_LENGTH];
-    char strSummary[PVR_ADDON_DESC_STRING_LENGTH];
+    const char* strDirectory;
+    const char* strSummary;
     int iPriority;
     int iLifetime;
     int iMaxRecordings;
@@ -364,7 +364,7 @@ extern "C"
     unsigned int iMarginEnd;
     int iGenreType;
     int iGenreSubType;
-    char strSeriesLink[PVR_ADDON_URL_STRING_LENGTH];
+    const char* strSeriesLink;
   } PVR_TIMER;
 
   /*!
