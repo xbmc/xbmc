@@ -842,13 +842,14 @@ PVR_ERROR CPVRClient::IsPlayable(const std::shared_ptr<const CPVREpgInfoTag>& ta
       m_clientCapabilities.SupportsEPG());
 }
 
-void CPVRClient::WriteStreamProperties(const PVR_NAMED_VALUE* properties,
+void CPVRClient::WriteStreamProperties(PVR_NAMED_VALUE** properties,
                                        unsigned int iPropertyCount,
                                        CPVRStreamProperties& props)
 {
   for (unsigned int i = 0; i < iPropertyCount; ++i)
   {
-    props.emplace_back(std::make_pair(properties[i].strName, properties[i].strValue));
+    const PVR_NAMED_VALUE* prop{properties[i]};
+    props.emplace_back(std::make_pair(prop->strName, prop->strValue));
   }
 }
 
@@ -858,15 +859,14 @@ PVR_ERROR CPVRClient::GetEpgTagStreamProperties(const std::shared_ptr<const CPVR
   return DoAddonCall(__func__, [&tag, &props](const AddonInstance* addon) {
     CAddonEpgTag addonTag(tag);
 
-    unsigned int iPropertyCount = STREAM_MAX_PROPERTY_COUNT;
-    std::unique_ptr<PVR_NAMED_VALUE[]> properties(new PVR_NAMED_VALUE[iPropertyCount]);
-    memset(properties.get(), 0, iPropertyCount * sizeof(PVR_NAMED_VALUE));
-
-    PVR_ERROR error = addon->toAddon->GetEPGTagStreamProperties(addon, &addonTag, properties.get(),
-                                                                &iPropertyCount);
+    PVR_NAMED_VALUE** property_array{nullptr};
+    unsigned int size{0};
+    const PVR_ERROR error{
+        addon->toAddon->GetEPGTagStreamProperties(addon, &addonTag, &property_array, &size)};
     if (error == PVR_ERROR_NO_ERROR)
-      WriteStreamProperties(properties.get(), iPropertyCount, props);
+      WriteStreamProperties(property_array, size, props);
 
+    addon->toAddon->FreeProperties(addon, property_array, size);
     return error;
   });
 }
@@ -1426,15 +1426,14 @@ PVR_ERROR CPVRClient::GetChannelStreamProperties(const std::shared_ptr<const CPV
 
     const CAddonChannel addonChannel{*channel};
 
-    unsigned int iPropertyCount = STREAM_MAX_PROPERTY_COUNT;
-    std::unique_ptr<PVR_NAMED_VALUE[]> properties(new PVR_NAMED_VALUE[iPropertyCount]);
-    memset(properties.get(), 0, iPropertyCount * sizeof(PVR_NAMED_VALUE));
-
-    const PVR_ERROR error{addon->toAddon->GetChannelStreamProperties(
-        addon, &addonChannel, properties.get(), &iPropertyCount)};
+    PVR_NAMED_VALUE** property_array{nullptr};
+    unsigned int size{0};
+    const PVR_ERROR error{
+        addon->toAddon->GetChannelStreamProperties(addon, &addonChannel, &property_array, &size)};
     if (error == PVR_ERROR_NO_ERROR)
-      WriteStreamProperties(properties.get(), iPropertyCount, props);
+      WriteStreamProperties(property_array, size, props);
 
+    addon->toAddon->FreeProperties(addon, property_array, size);
     return error;
   });
 }
@@ -1446,17 +1445,16 @@ PVR_ERROR CPVRClient::GetRecordingStreamProperties(
     if (!m_clientCapabilities.SupportsRecordings())
       return PVR_ERROR_NO_ERROR; // no error, but no need to obtain the values from the addon
 
-    const CAddonRecording tag(*recording);
+    const CAddonRecording addonRecording(*recording);
 
-    unsigned int iPropertyCount = STREAM_MAX_PROPERTY_COUNT;
-    std::unique_ptr<PVR_NAMED_VALUE[]> properties(new PVR_NAMED_VALUE[iPropertyCount]);
-    memset(properties.get(), 0, iPropertyCount * sizeof(PVR_NAMED_VALUE));
-
-    PVR_ERROR error = addon->toAddon->GetRecordingStreamProperties(addon, &tag, properties.get(),
-                                                                   &iPropertyCount);
+    PVR_NAMED_VALUE** property_array{nullptr};
+    unsigned int size{0};
+    const PVR_ERROR error{addon->toAddon->GetRecordingStreamProperties(addon, &addonRecording,
+                                                                       &property_array, &size)};
     if (error == PVR_ERROR_NO_ERROR)
-      WriteStreamProperties(properties.get(), iPropertyCount, props);
+      WriteStreamProperties(property_array, size, props);
 
+    addon->toAddon->FreeProperties(addon, property_array, size);
     return error;
   });
 }

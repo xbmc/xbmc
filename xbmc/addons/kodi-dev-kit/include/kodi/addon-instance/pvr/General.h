@@ -504,13 +504,13 @@ private:
 /// ~~~~~~~~~~~~~
 ///
 ///@{
-class PVRStreamProperty : public CStructHdl<PVRStreamProperty, PVR_NAMED_VALUE>
+class PVRStreamProperty : public DynamicCStructHdl<PVRStreamProperty, PVR_NAMED_VALUE>
 {
   friend class CInstancePVRClient;
 
 public:
   /*! \cond PRIVATE */
-  PVRStreamProperty(const PVRStreamProperty& data) : CStructHdl(data) {}
+  PVRStreamProperty(const PVRStreamProperty& property) : DynamicCStructHdl(property) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_pvr_Defs_General_Inputstream_PVRStreamProperty_Help Value Help
@@ -545,7 +545,7 @@ public:
   /// @brief To set with the identification name.
   void SetName(const std::string& name)
   {
-    strncpy(m_cStructure->strName, name.c_str(), sizeof(m_cStructure->strName) - 1);
+    ReallocAndCopyString(&m_cStructure->strName, name.c_str());
   }
 
   /// @brief To get with the identification name.
@@ -554,16 +554,28 @@ public:
   /// @brief To set with the used property value.
   void SetValue(const std::string& value)
   {
-    strncpy(m_cStructure->strValue, value.c_str(), sizeof(m_cStructure->strValue) - 1);
+    ReallocAndCopyString(&m_cStructure->strValue, value.c_str());
   }
 
   /// @brief To get with the used property value.
   std::string GetValue() const { return m_cStructure->strValue; }
   ///@}
 
+  static void AllocResources(const PVR_NAMED_VALUE* source, PVR_NAMED_VALUE* target)
+  {
+    target->strName = AllocAndCopyString(source->strName);
+    target->strValue = AllocAndCopyString(source->strValue);
+  }
+
+  static void FreeResources(PVR_NAMED_VALUE* target)
+  {
+    FreeString(target->strName);
+    FreeString(target->strValue);
+  }
+
 private:
-  PVRStreamProperty(const PVR_NAMED_VALUE* data) : CStructHdl(data) {}
-  PVRStreamProperty(PVR_NAMED_VALUE* data) : CStructHdl(data) {}
+  PVRStreamProperty(const PVR_NAMED_VALUE* property) : DynamicCStructHdl(property) {}
+  PVRStreamProperty(PVR_NAMED_VALUE* property) : DynamicCStructHdl(property) {}
 };
 ///@}
 //------------------------------------------------------------------------------

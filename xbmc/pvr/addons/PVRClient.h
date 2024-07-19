@@ -831,11 +831,11 @@ private:
 
   /*!
    * @brief Write the given addon properties to the given properties container.
-   * @param properties Pointer to an array of addon properties.
+   * @param properties Pointer to an array of addon properties pointers.
    * @param iPropertyCount The number of properties contained in the addon properties array.
    * @param props The container the addon properties shall be written to.
    */
-  static void WriteStreamProperties(const PVR_NAMED_VALUE* properties,
+  static void WriteStreamProperties(PVR_NAMED_VALUE** properties,
                                     unsigned int iPropertyCount,
                                     CPVRStreamProperties& props);
 

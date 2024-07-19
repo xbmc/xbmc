@@ -48,8 +48,8 @@ extern "C"
    */
   typedef struct PVR_NAMED_VALUE
   {
-    char strName[PVR_ADDON_NAME_STRING_LENGTH];
-    char strValue[PVR_ADDON_NAME_STRING_LENGTH];
+    const char* strName;
+    const char* strValue;
   } PVR_NAMED_VALUE;
 
   /*!

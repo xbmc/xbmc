@@ -108,6 +108,46 @@ inline void ATTR_DLL_LOCAL ReallocAndCopyString(const char** stringToRealloc,
   *stringToRealloc = AllocAndCopyString(stringToCopy);
 }
 
+/*!
+ * @brief Internally used helper to convert c-struct data contained in a vector to an array of c-struct pointers.
+ */
+template<typename CPP_CLASS, typename C_STRUCT>
+inline static ATTR_DLL_LOCAL C_STRUCT** AllocAndCopyPointerArray(
+    std::vector<CPP_CLASS>& sourceVector, unsigned int& targetArraySize)
+{
+  targetArraySize = static_cast<unsigned int>(sourceVector.size());
+  if (targetArraySize > 0)
+  {
+    C_STRUCT** targetArray = new C_STRUCT* [targetArraySize] {};
+
+    unsigned int i{0};
+    for (auto& entry : sourceVector)
+    {
+      // Assign data to target array. Take pointer ownership.
+      C_STRUCT** arrayElem{&targetArray[i]};
+      *arrayElem = entry.release();
+      ++i;
+    }
+    return targetArray;
+  }
+  return nullptr;
+}
+
+/*!
+ * @brief Internally used helper to free an array of of c-struct pointers.
+ */
+template<typename CPP_CLASS, typename C_STRUCT>
+inline static void FreeDynamicPointerArray(C_STRUCT** targetArray, unsigned int targetArraySize)
+{
+  for (unsigned int i = 0; i < targetArraySize; ++i)
+  {
+    C_STRUCT** arrayElem{&targetArray[i]};
+    CPP_CLASS::FreeResources(*arrayElem);
+    delete *arrayElem;
+  }
+  delete[] targetArray;
+}
+
 /*
  * Internally used helper class to manage processing of a "C" structure in "CPP"
  * class.
@@ -298,6 +338,12 @@ public:
   operator const C_STRUCT*() const { return m_cStructure; }
 
   const C_STRUCT* GetCStructure() const { return m_cStructure; }
+
+  C_STRUCT* release()
+  {
+    m_owner = false;
+    return m_cStructure;
+  }
 
 protected:
   C_STRUCT* m_cStructure = nullptr;
