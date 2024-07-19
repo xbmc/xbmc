@@ -9,10 +9,8 @@
 #include "CPUInfoAndroid.h"
 
 #include "URL.h"
+#include "cpu-features.h"
 #include "utils/StringUtils.h"
-#include "utils/Temperature.h"
-
-#include "platform/android/activity/AndroidFeatures.h"
 
 #include <array>
 
@@ -54,7 +52,7 @@ CCPUInfoAndroid::CCPUInfoAndroid() : m_posixFile(std::make_unique<CPosixFile>())
     m_posixFile->Close();
   }
 
-  m_cpuCount = CAndroidFeatures::GetCPUCount();
+  m_cpuCount = GetCPUCount();
 
   for (int i = 0; i < m_cpuCount; i++)
   {
@@ -63,7 +61,7 @@ CCPUInfoAndroid::CCPUInfoAndroid() : m_posixFile(std::make_unique<CPosixFile>())
     m_cores.emplace_back(core);
   }
 
-  if (CAndroidFeatures::HasNeon())
+  if (HasNeon())
     m_cpuFeatures |= CPU_FEATURE_NEON;
 }
 
@@ -85,4 +83,26 @@ float CCPUInfoAndroid::GetCPUFrequency()
   }
 
   return freq;
+}
+
+int CCPUInfoAndroid::GetCPUCount()
+{
+  static int count = -1;
+
+  if (count == -1)
+    count = android_getCpuCount();
+
+  return count;
+}
+
+bool CCPUInfoAndroid::HasNeon()
+{
+  // All ARMv8-based devices support Neon - https://developer.android.com/ndk/guides/cpu-arm-neon
+  if (android_getCpuFamily() == ANDROID_CPU_FAMILY_ARM64)
+    return true;
+
+  if (android_getCpuFamily() == ANDROID_CPU_FAMILY_ARM)
+    return ((android_getCpuFeatures() & ANDROID_CPU_ARM_FEATURE_NEON) != 0);
+
+  return false;
 }
