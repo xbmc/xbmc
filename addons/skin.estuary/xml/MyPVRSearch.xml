@@ -30,6 +30,8 @@
 						<param name="only_label_condition" value="String.IsEmpty(ListItem.Date)" />
 						<param name="label1" value="$VAR[PVRMySearchLabel1Var]" />
 						<param name="label2" value="$INFO[ListItem.Date]" />
+						<param name="label3" value="$VAR[PVRListItemSubLabel]" />
+						<param name="label3_focused" value="$VAR[PVRListItemSubLabelFocused]" />
 					</include>
 				</control>
 			</control>

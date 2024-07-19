@@ -26,6 +26,8 @@
 					<include content="PVRListItemLayouts">
 						<param name="list_id" value="11" />
 						<param name="label1" value="$INFO[ListItem.Label]" />
+						<param name="label3" value="$VAR[PVRListItemSubLabel]" />
+						<param name="label3_focused" value="$VAR[PVRListItemSubLabelFocused]" />
 						<param name="has_status_icon" value="true" />
 						<param name="info_update" value="5000" />
 					</include>

@@ -120,7 +120,7 @@
 					<param name="label0" value="[COLOR grey]$INFO[ListItem.ChannelNumberLabel][/COLOR]" />
 					<param name="label1" value="$PARAM[label1]" />
 					<param name="label2" value="$PARAM[label2]" />
-					<param name="label3" value="$VAR[PVRListItemSubLabel]" />
+					<param name="label3" value="$PARAM[label3]" />
 					<param name="label4" value="[COLOR grey]$INFO[ListItem.Comment][/COLOR]" />
 				</include>
 			</itemlayout>
@@ -150,7 +150,7 @@
 					<param name="label0" value="$INFO[ListItem.ChannelNumberLabel]" />
 					<param name="label1" value="$PARAM[label1]" />
 					<param name="label2" value="$PARAM[label2]" />
-					<param name="label3" value="$VAR[PVRListItemSubLabelFocused]" />
+					<param name="label3" value="$PARAM[label3_focused]" />
 					<param name="label4" value="$INFO[ListItem.Comment]" />
 				</include>
 			</focusedlayout>

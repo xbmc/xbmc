@@ -29,6 +29,8 @@
 						<param name="has_info_icon" value="true" />
 						<param name="label1" value="$INFO[ListItem.Label]" />
 						<param name="label2" value="$INFO[ListItem.Date]" />
+						<param name="label3" value="$VAR[PVRTimerListItemSubLabel]" />
+						<param name="label3_focused" value="$VAR[PVRTimerListItemSubLabelFocused]" />
 					</include>
 				</control>
 			</control>
