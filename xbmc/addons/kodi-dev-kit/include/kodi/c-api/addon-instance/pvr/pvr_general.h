@@ -290,7 +290,7 @@ extern "C"
     bool bSupportsRecordingsDelete;
 
     unsigned int iRecordingsLifetimesSize;
-    struct PVR_ATTRIBUTE_INT_VALUE recordingsLifetimeValues[PVR_ADDON_ATTRIBUTE_VALUES_ARRAY_SIZE];
+    struct PVR_ATTRIBUTE_INT_VALUE* recordingsLifetimeValues;
   } PVR_ADDON_CAPABILITIES;
 
 #ifdef __cplusplus

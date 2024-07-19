@@ -151,13 +151,14 @@ private:
 /// @copydetails cpp_kodi_addon_pvr_Defs_PVRCapabilities_Help
 ///
 ///@{
-class PVRCapabilities
+class PVRCapabilities : public DynamicCStructHdl<PVRCapabilities, PVR_ADDON_CAPABILITIES>
 {
   friend class CInstancePVRClient;
 
 public:
   /*! \cond PRIVATE */
-  explicit PVRCapabilities() = delete;
+  PVRCapabilities() { memset(m_cStructure, 0, sizeof(PVR_ADDON_CAPABILITIES)); }
+  PVRCapabilities(const PVRCapabilities& capabilities) : DynamicCStructHdl(capabilities) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_pvr_Defs_PVRCapabilities_Help Value Help
@@ -198,56 +199,56 @@ public:
   ///@{
 
   /// @brief Set **true** if the add-on provides EPG information.
-  void SetSupportsEPG(bool supportsEPG) { m_capabilities->bSupportsEPG = supportsEPG; }
+  void SetSupportsEPG(bool supportsEPG) { m_cStructure->bSupportsEPG = supportsEPG; }
 
   /// @brief To get with @ref SetSupportsEPG changed values.
-  bool GetSupportsEPG() const { return m_capabilities->bSupportsEPG; }
+  bool GetSupportsEPG() const { return m_cStructure->bSupportsEPG; }
 
   /// @brief Set **true** if the backend supports retrieving an edit decision
   /// list for an EPG tag.
-  void SetSupportsEPGEdl(bool supportsEPGEdl) { m_capabilities->bSupportsEPGEdl = supportsEPGEdl; }
+  void SetSupportsEPGEdl(bool supportsEPGEdl) { m_cStructure->bSupportsEPGEdl = supportsEPGEdl; }
 
   /// @brief To get with @ref SetSupportsEPGEdl changed values.
-  bool GetSupportsEPGEdl() const { return m_capabilities->bSupportsEPGEdl; }
+  bool GetSupportsEPGEdl() const { return m_cStructure->bSupportsEPGEdl; }
 
   /// @brief Set **true** if this add-on provides TV channels.
-  void SetSupportsTV(bool supportsTV) { m_capabilities->bSupportsTV = supportsTV; }
+  void SetSupportsTV(bool supportsTV) { m_cStructure->bSupportsTV = supportsTV; }
 
   /// @brief To get with @ref SetSupportsTV changed values.
-  bool GetSupportsTV() const { return m_capabilities->bSupportsTV; }
+  bool GetSupportsTV() const { return m_cStructure->bSupportsTV; }
 
   /// @brief Set **true** if this add-on provides TV channels.
-  void SetSupportsRadio(bool supportsRadio) { m_capabilities->bSupportsRadio = supportsRadio; }
+  void SetSupportsRadio(bool supportsRadio) { m_cStructure->bSupportsRadio = supportsRadio; }
 
   /// @brief To get with @ref SetSupportsRadio changed values.
-  bool GetSupportsRadio() const { return m_capabilities->bSupportsRadio; }
+  bool GetSupportsRadio() const { return m_cStructure->bSupportsRadio; }
 
   /// @brief **true** if this add-on supports playback of recordings stored on
   /// the backend.
   void SetSupportsRecordings(bool supportsRecordings)
   {
-    m_capabilities->bSupportsRecordings = supportsRecordings;
+    m_cStructure->bSupportsRecordings = supportsRecordings;
   }
 
   /// @brief To get with @ref SetSupportsRecordings changed values.
-  bool GetSupportsRecordings() const { return m_capabilities->bSupportsRecordings; }
+  bool GetSupportsRecordings() const { return m_cStructure->bSupportsRecordings; }
 
   /// @brief Set **true** if this add-on supports undelete of recordings stored
   /// on the backend.
   void SetSupportsRecordingsUndelete(bool supportsRecordingsUndelete)
   {
-    m_capabilities->bSupportsRecordingsUndelete = supportsRecordingsUndelete;
+    m_cStructure->bSupportsRecordingsUndelete = supportsRecordingsUndelete;
   }
 
   /// @brief To get with @ref SetSupportsRecordings changed values.
-  bool GetSupportsRecordingsUndelete() const { return m_capabilities->bSupportsRecordingsUndelete; }
+  bool GetSupportsRecordingsUndelete() const { return m_cStructure->bSupportsRecordingsUndelete; }
 
   /// @brief Set **true** if this add-on supports the creation and editing of
   /// timers.
-  void SetSupportsTimers(bool supportsTimers) { m_capabilities->bSupportsTimers = supportsTimers; }
+  void SetSupportsTimers(bool supportsTimers) { m_cStructure->bSupportsTimers = supportsTimers; }
 
   /// @brief To get with @ref SetSupportsTimers changed values.
-  bool GetSupportsTimers() const { return m_capabilities->bSupportsTimers; }
+  bool GetSupportsTimers() const { return m_cStructure->bSupportsTimers; }
 
   /// @brief Set **true** if this add-on supports providers.
   ///
@@ -256,11 +257,11 @@ public:
   /// - @ref kodi::addon::CInstancePVRClient::GetProviders()
   void SetSupportsProviders(bool supportsProviders)
   {
-    m_capabilities->bSupportsProviders = supportsProviders;
+    m_cStructure->bSupportsProviders = supportsProviders;
   }
 
   /// @brief To get with @ref SetSupportsProviders changed values.
-  bool GetSupportsProviders() const { return m_capabilities->bSupportsProviders; }
+  bool GetSupportsProviders() const { return m_cStructure->bSupportsProviders; }
 
   /// @brief Set **true** if this add-on supports channel groups.
   ///
@@ -270,11 +271,11 @@ public:
   /// - @ref kodi::addon::CInstancePVRClient::GetChannelGroupMembers()
   void SetSupportsChannelGroups(bool supportsChannelGroups)
   {
-    m_capabilities->bSupportsChannelGroups = supportsChannelGroups;
+    m_cStructure->bSupportsChannelGroups = supportsChannelGroups;
   }
 
   /// @brief To get with @ref SetSupportsChannelGroups changed values.
-  bool GetSupportsChannelGroups() const { return m_capabilities->bSupportsChannelGroups; }
+  bool GetSupportsChannelGroups() const { return m_cStructure->bSupportsChannelGroups; }
 
   /// @brief Set **true** if this add-on support scanning for new channels on
   /// the backend.
@@ -283,11 +284,11 @@ public:
   /// - @ref kodi::addon::CInstancePVRClient::OpenDialogChannelScan()
   void SetSupportsChannelScan(bool supportsChannelScan)
   {
-    m_capabilities->bSupportsChannelScan = supportsChannelScan;
+    m_cStructure->bSupportsChannelScan = supportsChannelScan;
   }
 
   /// @brief To get with @ref SetSupportsChannelScan changed values.
-  bool GetSupportsChannelScan() const { return m_capabilities->bSupportsChannelScan; }
+  bool GetSupportsChannelScan() const { return m_cStructure->bSupportsChannelScan; }
 
   /// @brief Set **true** if this add-on supports channel edit.
   ///
@@ -298,122 +299,122 @@ public:
   /// - @ref kodi::addon::CInstancePVRClient::OpenDialogChannelAdd()
   void SetSupportsChannelSettings(bool supportsChannelSettings)
   {
-    m_capabilities->bSupportsChannelSettings = supportsChannelSettings;
+    m_cStructure->bSupportsChannelSettings = supportsChannelSettings;
   }
 
   /// @brief To get with @ref SetSupportsChannelSettings changed values.
-  bool GetSupportsChannelSettings() const { return m_capabilities->bSupportsChannelSettings; }
+  bool GetSupportsChannelSettings() const { return m_cStructure->bSupportsChannelSettings; }
 
   /// @brief Set **true** if this add-on provides an input stream. false if Kodi
   /// handles the stream.
   void SetHandlesInputStream(bool handlesInputStream)
   {
-    m_capabilities->bHandlesInputStream = handlesInputStream;
+    m_cStructure->bHandlesInputStream = handlesInputStream;
   }
 
   /// @brief To get with @ref SetHandlesInputStream changed values.
-  bool GetHandlesInputStream() const { return m_capabilities->bHandlesInputStream; }
+  bool GetHandlesInputStream() const { return m_cStructure->bHandlesInputStream; }
 
   /// @brief Set **true** if this add-on demultiplexes packets.
   void SetHandlesDemuxing(bool handlesDemuxing)
   {
-    m_capabilities->bHandlesDemuxing = handlesDemuxing;
+    m_cStructure->bHandlesDemuxing = handlesDemuxing;
   }
 
   /// @brief To get with @ref SetHandlesDemuxing changed values.
-  bool GetHandlesDemuxing() const { return m_capabilities->bHandlesDemuxing; }
+  bool GetHandlesDemuxing() const { return m_cStructure->bHandlesDemuxing; }
 
   /// @brief Set **true** if the backend supports play count for recordings.
   void SetSupportsRecordingPlayCount(bool supportsRecordingPlayCount)
   {
-    m_capabilities->bSupportsRecordingPlayCount = supportsRecordingPlayCount;
+    m_cStructure->bSupportsRecordingPlayCount = supportsRecordingPlayCount;
   }
 
   /// @brief To get with @ref SetSupportsRecordingPlayCount changed values.
-  bool GetSupportsRecordingPlayCount() const { return m_capabilities->bSupportsRecordingPlayCount; }
+  bool GetSupportsRecordingPlayCount() const { return m_cStructure->bSupportsRecordingPlayCount; }
 
   /// @brief Set **true** if the backend supports store/retrieve of last played
   /// position for recordings.
   void SetSupportsLastPlayedPosition(bool supportsLastPlayedPosition)
   {
-    m_capabilities->bSupportsLastPlayedPosition = supportsLastPlayedPosition;
+    m_cStructure->bSupportsLastPlayedPosition = supportsLastPlayedPosition;
   }
 
   /// @brief To get with @ref SetSupportsLastPlayedPosition changed values.
-  bool GetSupportsLastPlayedPosition() const { return m_capabilities->bSupportsLastPlayedPosition; }
+  bool GetSupportsLastPlayedPosition() const { return m_cStructure->bSupportsLastPlayedPosition; }
 
   /// @brief Set **true** if the backend supports retrieving an edit decision
   /// list for recordings.
   void SetSupportsRecordingEdl(bool supportsRecordingEdl)
   {
-    m_capabilities->bSupportsRecordingEdl = supportsRecordingEdl;
+    m_cStructure->bSupportsRecordingEdl = supportsRecordingEdl;
   }
 
   /// @brief To get with @ref SetSupportsRecordingEdl changed values.
-  bool GetSupportsRecordingEdl() const { return m_capabilities->bSupportsRecordingEdl; }
+  bool GetSupportsRecordingEdl() const { return m_cStructure->bSupportsRecordingEdl; }
 
   /// @brief Set **true** if the backend supports renaming recordings.
   void SetSupportsRecordingsRename(bool supportsRecordingsRename)
   {
-    m_capabilities->bSupportsRecordingsRename = supportsRecordingsRename;
+    m_cStructure->bSupportsRecordingsRename = supportsRecordingsRename;
   }
 
   /// @brief To get with @ref SetSupportsRecordingsRename changed values.
-  bool GetSupportsRecordingsRename() const { return m_capabilities->bSupportsRecordingsRename; }
+  bool GetSupportsRecordingsRename() const { return m_cStructure->bSupportsRecordingsRename; }
 
   /// @brief Set **true** if the backend supports changing lifetime for
   /// recordings.
   void SetSupportsRecordingsLifetimeChange(bool supportsRecordingsLifetimeChange)
   {
-    m_capabilities->bSupportsRecordingsLifetimeChange = supportsRecordingsLifetimeChange;
+    m_cStructure->bSupportsRecordingsLifetimeChange = supportsRecordingsLifetimeChange;
   }
 
   /// @brief To get with @ref SetSupportsRecordingsLifetimeChange changed
   /// values.
   bool GetSupportsRecordingsLifetimeChange() const
   {
-    return m_capabilities->bSupportsRecordingsLifetimeChange;
+    return m_cStructure->bSupportsRecordingsLifetimeChange;
   }
 
   /// @brief Set **true** if the backend supports descramble information for
   /// playing channels.
   void SetSupportsDescrambleInfo(bool supportsDescrambleInfo)
   {
-    m_capabilities->bSupportsDescrambleInfo = supportsDescrambleInfo;
+    m_cStructure->bSupportsDescrambleInfo = supportsDescrambleInfo;
   }
 
   /// @brief To get with @ref SetSupportsDescrambleInfo changed values.
-  bool GetSupportsDescrambleInfo() const { return m_capabilities->bSupportsDescrambleInfo; }
+  bool GetSupportsDescrambleInfo() const { return m_cStructure->bSupportsDescrambleInfo; }
 
   /// @brief Set **true** if this addon-on supports asynchronous transfer of epg
   /// events to Kodi using the callback function
   /// @ref kodi::addon::CInstancePVRClient::EpgEventStateChange().
   void SetSupportsAsyncEPGTransfer(bool supportsAsyncEPGTransfer)
   {
-    m_capabilities->bSupportsAsyncEPGTransfer = supportsAsyncEPGTransfer;
+    m_cStructure->bSupportsAsyncEPGTransfer = supportsAsyncEPGTransfer;
   }
 
   /// @brief To get with @ref SetSupportsAsyncEPGTransfer changed values.
-  bool GetSupportsAsyncEPGTransfer() const { return m_capabilities->bSupportsAsyncEPGTransfer; }
+  bool GetSupportsAsyncEPGTransfer() const { return m_cStructure->bSupportsAsyncEPGTransfer; }
 
   /// @brief Set **true** if this addon-on supports retrieving size of recordings.
   void SetSupportsRecordingSize(bool supportsRecordingSize)
   {
-    m_capabilities->bSupportsRecordingSize = supportsRecordingSize;
+    m_cStructure->bSupportsRecordingSize = supportsRecordingSize;
   }
 
   /// @brief To get with @ref SetSupportsRecordingSize changed values.
-  bool GetSupportsRecordingSize() const { return m_capabilities->bSupportsRecordingSize; }
+  bool GetSupportsRecordingSize() const { return m_cStructure->bSupportsRecordingSize; }
 
   /// @brief Set **true** if this add-on supports delete of recordings stored
   /// on the backend.
   void SetSupportsRecordingsDelete(bool supportsRecordingsDelete)
   {
-    m_capabilities->bSupportsRecordingsDelete = supportsRecordingsDelete;
+    m_cStructure->bSupportsRecordingsDelete = supportsRecordingsDelete;
   }
 
   /// @brief To get with @ref SetSupportsRecordingsDelete changed values.
-  bool GetSupportsRecordingsDelete() const { return m_capabilities->bSupportsRecordingsDelete; }
+  bool GetSupportsRecordingsDelete() const { return m_cStructure->bSupportsRecordingsDelete; }
 
   /// @brief **optional**\n
   /// Set array containing the possible values for @ref PVRRecording::SetLifetime().
@@ -423,36 +424,53 @@ public:
   /// @copydetails cpp_kodi_addon_pvr_Defs_PVRTypeIntValue_Help
   void SetRecordingsLifetimeValues(const std::vector<PVRTypeIntValue>& recordingsLifetimeValues)
   {
-    PVRTypeIntValue::FreeResources(m_capabilities->recordingsLifetimeValues,
-                                   m_capabilities->iRecordingsLifetimesSize);
-    m_capabilities->iRecordingsLifetimesSize =
+    PVRTypeIntValue::FreeResources(m_cStructure->recordingsLifetimeValues,
+                                   m_cStructure->iRecordingsLifetimesSize);
+    delete[] m_cStructure->recordingsLifetimeValues;
+    m_cStructure->recordingsLifetimeValues = nullptr;
+
+    m_cStructure->iRecordingsLifetimesSize =
         static_cast<unsigned int>(recordingsLifetimeValues.size());
-    PVRTypeIntValue::CopyData(recordingsLifetimeValues, m_capabilities->recordingsLifetimeValues,
-                              m_capabilities->iRecordingsLifetimesSize);
+    if (m_cStructure->iRecordingsLifetimesSize)
+    {
+      m_cStructure->recordingsLifetimeValues =
+          new PVR_ATTRIBUTE_INT_VALUE[m_cStructure->iRecordingsLifetimesSize]{};
+      PVRTypeIntValue::CopyData(recordingsLifetimeValues, m_cStructure->recordingsLifetimeValues,
+                                m_cStructure->iRecordingsLifetimesSize);
+    }
   }
 
   /// @brief To get with @ref SetRecordingsLifetimeValues changed values.
   std::vector<PVRTypeIntValue> GetRecordingsLifetimeValues() const
   {
     std::vector<PVRTypeIntValue> recordingsLifetimeValues;
-    for (unsigned int i = 0; i < m_capabilities->iRecordingsLifetimesSize; ++i)
+    for (unsigned int i = 0; i < m_cStructure->iRecordingsLifetimesSize; ++i)
       recordingsLifetimeValues.emplace_back(
-          m_capabilities->recordingsLifetimeValues[i].iValue,
-          m_capabilities->recordingsLifetimeValues[i].strDescription);
+          m_cStructure->recordingsLifetimeValues[i].iValue,
+          m_cStructure->recordingsLifetimeValues[i].strDescription);
     return recordingsLifetimeValues;
   }
   ///@}
 
-  static void FreeResources(PVR_ADDON_CAPABILITIES* capabilities)
+  static void AllocResources(const PVR_ADDON_CAPABILITIES* source, PVR_ADDON_CAPABILITIES* target)
   {
-    PVRTypeIntValue::FreeResources(capabilities->recordingsLifetimeValues,
-                                   capabilities->iRecordingsLifetimesSize);
+    PVRTypeIntValue::AllocResources(source->recordingsLifetimeValues,
+                                    target->recordingsLifetimeValues,
+                                    target->iRecordingsLifetimesSize);
+  }
+
+  static void FreeResources(PVR_ADDON_CAPABILITIES* target)
+  {
+    PVRTypeIntValue::FreeResources(target->recordingsLifetimeValues,
+                                   target->iRecordingsLifetimesSize);
+    delete[] target->recordingsLifetimeValues;
+    target->recordingsLifetimeValues = nullptr;
+    target->iRecordingsLifetimesSize = 0;
   }
 
 private:
-  PVRCapabilities(PVR_ADDON_CAPABILITIES* capabilities) : m_capabilities(capabilities) {}
-
-  PVR_ADDON_CAPABILITIES* m_capabilities;
+  PVRCapabilities(const PVR_ADDON_CAPABILITIES* capabilities) : DynamicCStructHdl(capabilities) {}
+  PVRCapabilities(PVR_ADDON_CAPABILITIES* capabilities) : DynamicCStructHdl(capabilities) {}
 };
 ///@}
 //------------------------------------------------------------------------------
