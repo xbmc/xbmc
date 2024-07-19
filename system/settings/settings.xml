@@ -1018,6 +1018,12 @@
           <control type="button" format="action" />
         </setting>
       </group>
+      <group id="4" label="14280">
+        <setting id="maintenance.cleanimagecache" type="action" label="14281" help="14282">
+          <level>3</level>
+          <control type="button" format="action" />
+        </setting>
+      </group>
     </category>
     <category id="filelists" label="16000" help="36121">
       <group id="1" label="593">

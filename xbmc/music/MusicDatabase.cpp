@@ -13953,3 +13953,56 @@ bool CMusicDatabase::GetResumeBookmarkForAudioBook(const CFileItem& item, int& b
   bookmark = m_pDS->fv(0).get_asInt();
   return true;
 }
+
+std::vector<std::string> CMusicDatabase::GetUsedImages(
+    const std::vector<std::string>& imagesToCheck) const
+{
+  try
+  {
+    if (!m_pDB || !m_pDS)
+      return imagesToCheck;
+
+    if (!imagesToCheck.size())
+      return {};
+
+    int artworkLevel = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+        CSettings::SETTING_MUSICLIBRARY_ARTWORKLEVEL);
+    if (artworkLevel == CSettings::MUSICLIBRARY_ARTWORK_LEVEL_NONE)
+    {
+      return {};
+    }
+
+    std::string sql = "SELECT DISTINCT url FROM art WHERE url IN (";
+    for (const auto& image : imagesToCheck)
+    {
+      sql += PrepareSQL("'%s',", image.c_str());
+    }
+    sql.pop_back(); // remove last ','
+    sql += ")";
+
+    // add arttype filters if set to "Basic"
+    if (artworkLevel == CSettings::MUSICLIBRARY_ARTWORK_LEVEL_BASIC)
+    {
+      sql += PrepareSQL(" AND (media_type = 'album' AND type = 'thumb' OR media_type = 'artist' "
+                        "AND type IN ('thumb', 'fanart'))");
+    }
+
+    if (!m_pDS->query(sql))
+      return {};
+
+    std::vector<std::string> result;
+    while (!m_pDS->eof())
+    {
+      result.push_back(m_pDS->fv(0).get_asString());
+      m_pDS->next();
+    }
+    m_pDS->close();
+
+    return result;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "{}, failed", __FUNCTION__);
+  }
+  return {};
+}

@@ -1252,3 +1252,45 @@ bool CAddonDatabase::AddInstalledAddon(const std::shared_ptr<CAddonInfo>& addon,
 
   return true;
 }
+
+namespace
+{
+bool IsAddonImageChecked(const std::string& addonImage,
+                         const std::vector<std::string>& imagesToCheck)
+{
+  if (addonImage.empty())
+    return false;
+
+  auto found = std::find(imagesToCheck.begin(), imagesToCheck.end(), addonImage);
+  return found != imagesToCheck.end();
+}
+} // namespace
+
+std::vector<std::string> CAddonDatabase::GetUsedImages(
+    const std::vector<std::string>& imagesToCheck) const
+{
+  if (!imagesToCheck.size())
+    return {};
+
+  VECADDONS allAddons;
+  if (!GetRepositoryContent(allAddons))
+    return imagesToCheck;
+
+  std::vector<std::string> result;
+  for (const auto& addon : allAddons)
+  {
+    if (IsAddonImageChecked(addon->Icon(), imagesToCheck))
+      result.push_back(addon->Icon());
+    for (const auto& screenshot : addon->Screenshots())
+    {
+      if (IsAddonImageChecked(screenshot, imagesToCheck))
+        result.push_back(screenshot);
+    }
+    for (const auto& artPair : addon->Art())
+    {
+      if (IsAddonImageChecked(artPair.second, imagesToCheck))
+        result.push_back(artPair.second);
+    }
+  }
+  return result;
+}

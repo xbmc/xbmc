@@ -230,6 +230,13 @@ public:
    */
   bool AddInstalledAddon(const std::shared_ptr<CAddonInfo>& addon, const std::string& origin);
 
+  /*!
+   * @brief Check the passed in list of images if used in this database. Used to clean the image cache.
+   * @param imagesToCheck
+   * @return a list of the passed in images used by this database.
+   */
+  std::vector<std::string> GetUsedImages(const std::vector<std::string>& imagesToCheck) const;
+
 protected:
   void CreateTables() override;
   void CreateAnalytics() override;

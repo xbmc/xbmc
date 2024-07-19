@@ -1508,6 +1508,7 @@ msgid "(0=auto)"
 msgstr ""
 
 #. generic "cleaning database" label used in different places
+#: xbmc/TextureCache.cpp
 #: xbmc/music/MusicDatabase.cpp
 #: xbmc/pvr/guilib/PVRGUIActionsDatabase.cpp
 #: xbmc/settings/MediaSettings.cpp
@@ -8772,7 +8773,25 @@ msgctxt "#14277"
 msgid "Allow remote control from applications on other systems"
 msgstr ""
 
-#empty strings from id 14278 to 14300
+#empty strings from id 14278 to 14279
+
+#: system/settings/settings.xml
+msgctxt "#14280"
+msgid "Maintenance"
+msgstr ""
+
+#: system/settings/settings.xml
+#: xbmc/TextureCache.cpp
+msgctxt "#14281"
+msgid "Clean image cache"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#14282"
+msgid "Immediately remove unused images from the cache - images not associated with an item in the media library nor viewed recently. Kodi does this over time in the background."
+msgstr ""
+
+#empty strings from id 14283 to 14300
 
 #. pvr "channels" settings group label
 #: system/settings/settings.xml

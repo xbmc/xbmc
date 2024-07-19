@@ -282,6 +282,7 @@ public:
   static constexpr auto SETTING_MUSICLIBRARY_EXPORT_ARTWORK = "musiclibrary.exportartwork";
   static constexpr auto SETTING_MUSICLIBRARY_EXPORT_SKIPNFO = "musiclibrary.exportskipnfo";
   static constexpr auto SETTING_MUSICLIBRARY_IMPORT = "musiclibrary.import";
+  static constexpr auto SETTING_MAINTENANCE_CLEANIMAGECACHE = "maintenance.cleanimagecache";
   static constexpr auto SETTING_MUSICPLAYER_AUTOPLAYNEXTITEM = "musicplayer.autoplaynextitem";
   static constexpr auto SETTING_MUSICPLAYER_QUEUEBYDEFAULT = "musicplayer.queuebydefault";
   static constexpr auto SETTING_MUSICPLAYER_SEEKSTEPS = "musicplayer.seeksteps";

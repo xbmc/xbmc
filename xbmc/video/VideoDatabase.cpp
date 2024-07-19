@@ -33,6 +33,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
+#include "imagefiles/ImageFileURL.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/Artist.h"
@@ -12749,4 +12750,132 @@ void CVideoDatabase::SetVideoVersionDefaultArt(int dbId, int idFrom, VideoDbCont
     for (const auto& it : art)
       SetArtForItem(dbId, MediaTypeVideoVersion, it.first, it.second);
   }
+}
+
+std::vector<std::string> CVideoDatabase::GetUsedImages(
+    const std::vector<std::string>& imagesToCheck)
+{
+  try
+  {
+    if (!m_pDB || !m_pDS)
+      return imagesToCheck;
+
+    if (!imagesToCheck.size())
+      return {};
+
+    int artworkLevel = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+        CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL);
+    if (artworkLevel == CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_NONE)
+    {
+      return {};
+    }
+
+    // first check the art table
+
+    std::string sql = "SELECT DISTINCT url FROM art WHERE url IN (";
+    for (const auto& image : imagesToCheck)
+    {
+      sql += PrepareSQL("'%s',", image.c_str());
+    }
+    sql.pop_back(); // remove last ','
+    sql += ")";
+
+    // add arttype filters if not set to "Maximum"
+    if (artworkLevel != CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_ALL)
+    {
+      static std::array<std::string, 7> mediatypes = {
+          MediaTypeEpisode,         MediaTypeTvShow,     MediaTypeSeason,      MediaTypeMovie,
+          MediaTypeVideoCollection, MediaTypeMusicVideo, MediaTypeVideoVersion};
+
+      std::string arttypeSQL;
+      for (const auto& mediatype : mediatypes)
+      {
+        const auto& arttypes = CVideoThumbLoader::GetArtTypes(mediatype);
+        if (arttypes.empty())
+          continue;
+
+        if (!arttypeSQL.empty())
+          arttypeSQL += ") OR ";
+        arttypeSQL += PrepareSQL("media_type = '%s' AND (", mediatype.c_str());
+        bool workingNext = false;
+        for (const auto& arttype : arttypes)
+        {
+          if (workingNext)
+            arttypeSQL += " OR ";
+          workingNext = true;
+          if (artworkLevel == CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_BASIC)
+          {
+            // for basic match exact artwork type
+            arttypeSQL += PrepareSQL("type = '%s'", arttype.c_str());
+          }
+          else
+          {
+            // otherwise check for arttype 'families', like fanart, fanart1, fanart13;
+            // still avoid most "happens to start with" like fanartstuff
+            arttypeSQL +=
+                PrepareSQL("type BETWEEN '%s' AND '%s999'", arttype.c_str(), arttype.c_str());
+          }
+        }
+      }
+
+      if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+              CSettings::SETTING_VIDEOLIBRARY_ACTORTHUMBS))
+      {
+        if (!arttypeSQL.empty())
+          arttypeSQL += ") OR ";
+        arttypeSQL += "media_type = 'actor'";
+      }
+
+      if (!arttypeSQL.empty())
+        sql += " AND (" + arttypeSQL + ")";
+    }
+
+    std::vector<std::string> result;
+    if (m_pDS->query(sql))
+    {
+      while (!m_pDS->eof())
+      {
+        result.push_back(m_pDS->fv(0).get_asString());
+        m_pDS->next();
+      }
+      m_pDS->close();
+    }
+
+    // then check any chapter thumbnails against path and file tables
+
+    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+            CSettings::SETTING_MYVIDEOS_EXTRACTCHAPTERTHUMBS))
+    {
+      std::vector<std::string> foundVideoFiles;
+      for (const auto& image : imagesToCheck)
+      {
+        auto imageFile = IMAGE_FILES::CImageFileURL(image);
+        if (imageFile.GetSpecialType() == "video" && !imageFile.GetOption("chapter").empty())
+        {
+          auto target = imageFile.GetTargetFile();
+          auto quickFind = std::find(foundVideoFiles.begin(), foundVideoFiles.end(), target);
+          if (quickFind != foundVideoFiles.end())
+          {
+            result.push_back(image);
+          }
+          else
+          {
+            int fileId = GetFileId(target);
+            if (fileId != -1)
+            {
+              result.push_back(image);
+              foundVideoFiles.push_back(target);
+            }
+          }
+        }
+      }
+    }
+
+    return result;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "failed");
+  }
+  return {};
 }

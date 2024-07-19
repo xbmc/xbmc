@@ -882,6 +882,12 @@ public:
   std::string GetAlbumsLastModified();
   std::string GetArtistsLastModified();
 
+  /*!
+   * @brief Check the passed in list of images if used in this database. Used to clean the image cache.
+   * @param imagesToCheck
+   * @return a list of the passed in images used by this database.
+   */
+  std::vector<std::string> GetUsedImages(const std::vector<std::string>& imagesToCheck) const;
 
 protected:
   std::map<std::string, int> m_genreCache;
