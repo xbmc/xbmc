@@ -379,26 +379,26 @@ extern "C"
   {
     unsigned int iId;
     uint64_t iAttributes;
-    char strDescription[PVR_ADDON_TIMERTYPE_STRING_LENGTH];
+    const char* strDescription;
 
     unsigned int iPrioritiesSize;
-    struct PVR_ATTRIBUTE_INT_VALUE priorities[PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE];
+    struct PVR_ATTRIBUTE_INT_VALUE* priorities;
     int iPrioritiesDefault;
 
     unsigned int iLifetimesSize;
-    struct PVR_ATTRIBUTE_INT_VALUE lifetimes[PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE];
+    struct PVR_ATTRIBUTE_INT_VALUE* lifetimes;
     int iLifetimesDefault;
 
     unsigned int iPreventDuplicateEpisodesSize;
-    struct PVR_ATTRIBUTE_INT_VALUE preventDuplicateEpisodes[PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE];
+    struct PVR_ATTRIBUTE_INT_VALUE* preventDuplicateEpisodes;
     unsigned int iPreventDuplicateEpisodesDefault;
 
     unsigned int iRecordingGroupSize;
-    struct PVR_ATTRIBUTE_INT_VALUE recordingGroup[PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE];
+    struct PVR_ATTRIBUTE_INT_VALUE* recordingGroup;
     unsigned int iRecordingGroupDefault;
 
     unsigned int iMaxRecordingsSize;
-    struct PVR_ATTRIBUTE_INT_VALUE maxRecordings[PVR_ADDON_TIMERTYPE_VALUES_ARRAY_SIZE_SMALL];
+    struct PVR_ATTRIBUTE_INT_VALUE* maxRecordings;
     int iMaxRecordingsDefault;
   } PVR_TIMER_TYPE;
 

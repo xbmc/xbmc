@@ -624,8 +624,7 @@ public:
   /// REPEATING and MANUAL. (e.g. "Repeating EPG-based.")
   void SetDescription(const std::string& description)
   {
-    strncpy(m_cStructure->strDescription, description.c_str(),
-            sizeof(m_cStructure->strDescription) - 1);
+    ReallocAndCopyString(&m_cStructure->strDescription, description.c_str());
   }
 
   /// @brief To get with @ref SetDescription changed values.
@@ -647,9 +646,8 @@ public:
   /// @copydetails cpp_kodi_addon_pvr_Defs_PVRTypeIntValue_Help
   void SetPriorities(const std::vector<PVRTypeIntValue>& priorities, int prioritiesDefault = -1)
   {
-    PVRTypeIntValue::FreeResources(m_cStructure->priorities, m_cStructure->iPrioritiesSize);
-    m_cStructure->iPrioritiesSize = static_cast<unsigned int>(priorities.size());
-    PVRTypeIntValue::CopyData(priorities, m_cStructure->priorities, m_cStructure->iPrioritiesSize);
+    PVRTypeIntValue::ReallocAndCopyData(&m_cStructure->priorities, &m_cStructure->iPrioritiesSize,
+                                        priorities);
     if (prioritiesDefault != -1)
       m_cStructure->iPrioritiesDefault = prioritiesDefault;
   }
@@ -693,9 +691,8 @@ public:
   /// @copydetails cpp_kodi_addon_pvr_Defs_PVRTypeIntValue_Help
   void SetLifetimes(const std::vector<PVRTypeIntValue>& lifetimes, int lifetimesDefault = -1)
   {
-    PVRTypeIntValue::FreeResources(m_cStructure->lifetimes, m_cStructure->iLifetimesSize);
-    m_cStructure->iLifetimesSize = static_cast<unsigned int>(lifetimes.size());
-    PVRTypeIntValue::CopyData(lifetimes, m_cStructure->lifetimes, m_cStructure->iLifetimesSize);
+    PVRTypeIntValue::ReallocAndCopyData(&m_cStructure->lifetimes, &m_cStructure->iLifetimesSize,
+                                        lifetimes);
     if (lifetimesDefault != -1)
       m_cStructure->iLifetimesDefault = lifetimesDefault;
   }
@@ -742,12 +739,9 @@ public:
   void SetPreventDuplicateEpisodes(const std::vector<PVRTypeIntValue>& preventDuplicateEpisodes,
                                    int preventDuplicateEpisodesDefault = -1)
   {
-    PVRTypeIntValue::FreeResources(m_cStructure->preventDuplicateEpisodes,
-                                   m_cStructure->iPreventDuplicateEpisodesSize);
-    m_cStructure->iPreventDuplicateEpisodesSize =
-        static_cast<unsigned int>(preventDuplicateEpisodes.size());
-    PVRTypeIntValue::CopyData(preventDuplicateEpisodes, m_cStructure->preventDuplicateEpisodes,
-                              m_cStructure->iPreventDuplicateEpisodesSize);
+    PVRTypeIntValue::ReallocAndCopyData(&m_cStructure->preventDuplicateEpisodes,
+                                        &m_cStructure->iPreventDuplicateEpisodesSize,
+                                        preventDuplicateEpisodes);
     if (preventDuplicateEpisodesDefault != -1)
       m_cStructure->iPreventDuplicateEpisodesDefault = preventDuplicateEpisodesDefault;
   }
@@ -793,10 +787,8 @@ public:
   void SetRecordingGroups(const std::vector<PVRTypeIntValue>& recordingGroup,
                           int recordingGroupDefault = -1)
   {
-    PVRTypeIntValue::FreeResources(m_cStructure->recordingGroup, m_cStructure->iRecordingGroupSize);
-    m_cStructure->iRecordingGroupSize = static_cast<unsigned int>(recordingGroup.size());
-    PVRTypeIntValue::CopyData(recordingGroup, m_cStructure->recordingGroup,
-                              m_cStructure->iRecordingGroupSize);
+    PVRTypeIntValue::ReallocAndCopyData(&m_cStructure->recordingGroup,
+                                        &m_cStructure->iRecordingGroupSize, recordingGroup);
     if (recordingGroupDefault != -1)
       m_cStructure->iRecordingGroupDefault = recordingGroupDefault;
   }
@@ -839,10 +831,8 @@ public:
   void SetMaxRecordings(const std::vector<PVRTypeIntValue>& maxRecordings,
                         int maxRecordingsDefault = -1)
   {
-    PVRTypeIntValue::FreeResources(m_cStructure->maxRecordings, m_cStructure->iMaxRecordingsSize);
-    m_cStructure->iMaxRecordingsSize = static_cast<unsigned int>(maxRecordings.size());
-    PVRTypeIntValue::CopyData(maxRecordings, m_cStructure->maxRecordings,
-                              m_cStructure->iMaxRecordingsSize);
+    PVRTypeIntValue::ReallocAndCopyData(&m_cStructure->maxRecordings,
+                                        &m_cStructure->iMaxRecordingsSize, maxRecordings);
     if (maxRecordingsDefault != -1)
       m_cStructure->iMaxRecordingsDefault = maxRecordingsDefault;
   }
@@ -872,26 +862,64 @@ public:
 
   static void AllocResources(const PVR_TIMER_TYPE* source, PVR_TIMER_TYPE* target)
   {
-    PVRTypeIntValue::AllocResources(source->priorities, target->priorities,
-                                    target->iPrioritiesSize);
-    PVRTypeIntValue::AllocResources(source->lifetimes, target->lifetimes, target->iLifetimesSize);
-    PVRTypeIntValue::AllocResources(source->preventDuplicateEpisodes,
-                                    target->preventDuplicateEpisodes,
-                                    target->iPreventDuplicateEpisodesSize);
-    PVRTypeIntValue::AllocResources(source->recordingGroup, target->recordingGroup,
-                                    target->iRecordingGroupSize);
-    PVRTypeIntValue::AllocResources(source->maxRecordings, target->maxRecordings,
-                                    target->iMaxRecordingsSize);
+    target->strDescription = AllocAndCopyString(source->strDescription);
+
+    if (target->iPrioritiesSize)
+    {
+      target->priorities =
+          PVRTypeIntValue::AllocAndCopyData(source->priorities, source->iPrioritiesSize);
+    }
+
+    if (target->iLifetimesSize)
+    {
+      target->lifetimes =
+          PVRTypeIntValue::AllocAndCopyData(source->lifetimes, source->iLifetimesSize);
+    }
+
+    if (target->iPreventDuplicateEpisodesSize)
+    {
+      target->preventDuplicateEpisodes = PVRTypeIntValue::AllocAndCopyData(
+          source->preventDuplicateEpisodes, source->iPreventDuplicateEpisodesSize);
+    }
+
+    if (target->iRecordingGroupSize)
+    {
+      target->recordingGroup =
+          PVRTypeIntValue::AllocAndCopyData(source->recordingGroup, source->iRecordingGroupSize);
+    }
+
+    if (target->iMaxRecordingsSize)
+    {
+      target->maxRecordings =
+          PVRTypeIntValue::AllocAndCopyData(source->maxRecordings, source->iMaxRecordingsSize);
+    }
   }
 
   static void FreeResources(PVR_TIMER_TYPE* target)
   {
+    FreeString(target->strDescription);
+    target->strDescription = nullptr;
+
     PVRTypeIntValue::FreeResources(target->priorities, target->iPrioritiesSize);
+    target->priorities = nullptr;
+    target->iPrioritiesSize = 0;
+
     PVRTypeIntValue::FreeResources(target->lifetimes, target->iLifetimesSize);
+    target->lifetimes = nullptr;
+    target->iLifetimesSize = 0;
+
     PVRTypeIntValue::FreeResources(target->preventDuplicateEpisodes,
                                    target->iPreventDuplicateEpisodesSize);
+    target->preventDuplicateEpisodes = nullptr;
+    target->iPreventDuplicateEpisodesSize = 0;
+
     PVRTypeIntValue::FreeResources(target->recordingGroup, target->iRecordingGroupSize);
+    target->recordingGroup = nullptr;
+    target->iRecordingGroupSize = 0;
+
     PVRTypeIntValue::FreeResources(target->maxRecordings, target->iMaxRecordingsSize);
+    target->maxRecordings = nullptr;
+    target->iMaxRecordingsSize = 0;
   }
 
 private:

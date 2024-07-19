@@ -85,15 +85,27 @@ public:
   std::string GetDescription() const { return m_cStructure->strDescription; }
   ///@}
 
-  static void CopyData(const std::vector<PVRTypeIntValue>& source,
-                       PVR_ATTRIBUTE_INT_VALUE* values,
-                       unsigned int size)
+  static PVR_ATTRIBUTE_INT_VALUE* AllocAndCopyData(const std::vector<PVRTypeIntValue>& source)
   {
-    for (unsigned int i = 0; i < size; ++i)
+    PVR_ATTRIBUTE_INT_VALUE* values = new PVR_ATTRIBUTE_INT_VALUE[source.size()]{};
+    for (unsigned int i = 0; i < source.size(); ++i)
     {
       values[i].iValue = source[i].GetCStructure()->iValue;
-      values[i].strDescription = AllocAndCopyString(source[i].GetCStructure()->strDescription);
+      AllocResources(source[i].GetCStructure(), &values[i]);
     }
+    return values;
+  }
+
+  static PVR_ATTRIBUTE_INT_VALUE* AllocAndCopyData(const PVR_ATTRIBUTE_INT_VALUE* source,
+                                                   unsigned int size)
+  {
+    PVR_ATTRIBUTE_INT_VALUE* values = new PVR_ATTRIBUTE_INT_VALUE[size]{};
+    for (unsigned int i = 0; i < size; ++i)
+    {
+      values[i].iValue = source[i].iValue;
+      AllocResources(&source[i], &values[i]);
+    }
+    return values;
   }
 
   static void AllocResources(const PVR_ATTRIBUTE_INT_VALUE* source, PVR_ATTRIBUTE_INT_VALUE* target)
@@ -107,22 +119,24 @@ public:
     target->strDescription = nullptr;
   }
 
-  static void AllocResources(const PVR_ATTRIBUTE_INT_VALUE* source,
-                             PVR_ATTRIBUTE_INT_VALUE* values,
-                             unsigned int size)
-  {
-    for (unsigned int i = 0; i < size; ++i)
-    {
-      AllocResources(&source[i], &values[i]);
-    }
-  }
-
   static void FreeResources(PVR_ATTRIBUTE_INT_VALUE* values, unsigned int size)
   {
     for (unsigned int i = 0; i < size; ++i)
     {
       FreeResources(&values[i]);
     }
+    delete[] values;
+  }
+
+  static void ReallocAndCopyData(PVR_ATTRIBUTE_INT_VALUE** source,
+                                 unsigned int* size,
+                                 const std::vector<PVRTypeIntValue>& values)
+  {
+    FreeResources(*source, *size);
+    *source = nullptr;
+    *size = values.size();
+    if (*size)
+      *source = AllocAndCopyData(values);
   }
 
 private:
@@ -424,20 +438,9 @@ public:
   /// @copydetails cpp_kodi_addon_pvr_Defs_PVRTypeIntValue_Help
   void SetRecordingsLifetimeValues(const std::vector<PVRTypeIntValue>& recordingsLifetimeValues)
   {
-    PVRTypeIntValue::FreeResources(m_cStructure->recordingsLifetimeValues,
-                                   m_cStructure->iRecordingsLifetimesSize);
-    delete[] m_cStructure->recordingsLifetimeValues;
-    m_cStructure->recordingsLifetimeValues = nullptr;
-
-    m_cStructure->iRecordingsLifetimesSize =
-        static_cast<unsigned int>(recordingsLifetimeValues.size());
-    if (m_cStructure->iRecordingsLifetimesSize)
-    {
-      m_cStructure->recordingsLifetimeValues =
-          new PVR_ATTRIBUTE_INT_VALUE[m_cStructure->iRecordingsLifetimesSize]{};
-      PVRTypeIntValue::CopyData(recordingsLifetimeValues, m_cStructure->recordingsLifetimeValues,
-                                m_cStructure->iRecordingsLifetimesSize);
-    }
+    PVRTypeIntValue::ReallocAndCopyData(&m_cStructure->recordingsLifetimeValues,
+                                        &m_cStructure->iRecordingsLifetimesSize,
+                                        recordingsLifetimeValues);
   }
 
   /// @brief To get with @ref SetRecordingsLifetimeValues changed values.
@@ -454,16 +457,17 @@ public:
 
   static void AllocResources(const PVR_ADDON_CAPABILITIES* source, PVR_ADDON_CAPABILITIES* target)
   {
-    PVRTypeIntValue::AllocResources(source->recordingsLifetimeValues,
-                                    target->recordingsLifetimeValues,
-                                    target->iRecordingsLifetimesSize);
+    if (target->iRecordingsLifetimesSize)
+    {
+      target->recordingsLifetimeValues = PVRTypeIntValue::AllocAndCopyData(
+          source->recordingsLifetimeValues, source->iRecordingsLifetimesSize);
+    }
   }
 
   static void FreeResources(PVR_ADDON_CAPABILITIES* target)
   {
     PVRTypeIntValue::FreeResources(target->recordingsLifetimeValues,
                                    target->iRecordingsLifetimesSize);
-    delete[] target->recordingsLifetimeValues;
     target->recordingsLifetimeValues = nullptr;
     target->iRecordingsLifetimesSize = 0;
   }
