@@ -159,7 +159,6 @@ extern "C"
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Channel interface functions
-
     enum PVR_ERROR(__cdecl* GetChannelsAmount)(const struct AddonInstance_PVR*, int*);
     enum PVR_ERROR(__cdecl* GetChannels)(const struct AddonInstance_PVR*, PVR_HANDLE, bool);
     enum PVR_ERROR(__cdecl* GetChannelStreamProperties)(const struct AddonInstance_PVR*,
@@ -267,7 +266,7 @@ extern "C"
     // Timer interface functions
     enum PVR_ERROR(__cdecl* GetTimerTypes)(const struct AddonInstance_PVR*,
                                            struct PVR_TIMER_TYPE[],
-                                           int*);
+                                           unsigned int*);
     enum PVR_ERROR(__cdecl* GetTimersAmount)(const struct AddonInstance_PVR*, int*);
     enum PVR_ERROR(__cdecl* GetTimers)(const struct AddonInstance_PVR*, PVR_HANDLE);
     enum PVR_ERROR(__cdecl* AddTimer)(const struct AddonInstance_PVR*, const struct PVR_TIMER*);
@@ -323,6 +322,14 @@ extern "C"
     enum PVR_ERROR(__cdecl* GetStreamTimes)(const struct AddonInstance_PVR*,
                                             struct PVR_STREAM_TIMES*);
     enum PVR_ERROR(__cdecl* GetStreamReadChunkSize)(const struct AddonInstance_PVR*, int*);
+
+    //--==----==----==----==----==----==----==----==----==----==----==----==----==
+    // Resource deallocation interface functions
+    enum PVR_ERROR(__cdecl* FreeCapabilities)(const struct AddonInstance_PVR*,
+                                              struct PVR_ADDON_CAPABILITIES*);
+    enum PVR_ERROR(__cdecl* FreeTimerTypes)(const struct AddonInstance_PVR*,
+                                            struct PVR_TIMER_TYPE*,
+                                            unsigned int);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // New functions becomes added below and can be on another API change (where

@@ -2825,6 +2825,9 @@ private:
     instance->pvr->toAddon->SetSpeed = ADDON_SetSpeed;
     instance->pvr->toAddon->FillBuffer = ADDON_FillBuffer;
     instance->pvr->toAddon->GetStreamTimes = ADDON_GetStreamTimes;
+    //--==----==----==----==----==----==----==----==----==----==----==----==----==
+    instance->pvr->toAddon->FreeCapabilities = ADDON_FreeCapabilities;
+    instance->pvr->toAddon->FreeTimerTypes = ADDON_FreeTimerTypes;
 
     m_instanceData = instance->pvr;
     m_instanceData->toAddon->addonInstance = this;
@@ -2836,6 +2839,13 @@ private:
     PVRCapabilities cppCapabilities(capabilities);
     return static_cast<CInstancePVRClient*>(instance->toAddon->addonInstance)
         ->GetCapabilities(cppCapabilities);
+  }
+
+  inline static PVR_ERROR ADDON_FreeCapabilities(const AddonInstance_PVR* instance,
+                                                 PVR_ADDON_CAPABILITIES* capabilities)
+  {
+    PVRCapabilities::FreeResources(capabilities);
+    return PVR_ERROR_NO_ERROR;
   }
 
   inline static PVR_ERROR ADDON_GetBackendName(const AddonInstance_PVR* instance,
@@ -3299,7 +3309,7 @@ private:
 
   inline static PVR_ERROR ADDON_GetTimerTypes(const AddonInstance_PVR* instance,
                                               PVR_TIMER_TYPE* types,
-                                              int* typesCount)
+                                              unsigned int* typesCount)
   {
     *typesCount = 0;
     std::vector<PVRTimerType> timerTypes;
@@ -3310,12 +3320,25 @@ private:
       for (const auto& timerType : timerTypes)
       {
         types[*typesCount] = *timerType;
+        PVRTimerType::AllocResources(timerType, &types[*typesCount]);
         ++*typesCount;
         if (*typesCount >= PVR_ADDON_TIMERTYPE_ARRAY_SIZE)
           break;
       }
     }
     return error;
+  }
+
+  inline static PVR_ERROR ADDON_FreeTimerTypes(const AddonInstance_PVR* instance,
+                                               PVR_TIMER_TYPE* types,
+                                               unsigned int typesCount)
+  {
+    for (unsigned int i = 0; i < typesCount; ++i)
+    {
+      PVR_TIMER_TYPE* type = &types[i];
+      PVRTimerType::FreeResources(type);
+    }
+    return PVR_ERROR_NO_ERROR;
   }
 
   inline static PVR_ERROR ADDON_GetTimersAmount(const AddonInstance_PVR* instance, int* amount)

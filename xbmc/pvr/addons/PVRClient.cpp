@@ -494,13 +494,20 @@ bool CPVRClient::GetAddonProperties()
       },
       true, false);
 
-  if (retVal != PVR_ERROR_NO_ERROR)
-    return false;
+  if (retVal == PVR_ERROR_NO_ERROR)
+  {
+    std::unique_lock<CCriticalSection> lock(m_critSection);
+    m_clientCapabilities = addonCapabilities;
+  }
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
-  m_clientCapabilities = addonCapabilities;
+  /* free the resources of the capabilities instance */
+  DoAddonCall(
+      __func__,
+      [&addonCapabilities](const AddonInstance* addon)
+      { return addon->toAddon->FreeCapabilities(addon, &addonCapabilities); },
+      true, false);
 
-  return true;
+  return (retVal == PVR_ERROR_NO_ERROR);
 }
 
 bool CPVRClient::GetAddonNameStringProperties()
@@ -1210,7 +1217,7 @@ PVR_ERROR CPVRClient::UpdateTimerTypes()
       [this, &timerTypes](const AddonInstance* addon) {
         std::unique_ptr<PVR_TIMER_TYPE[]> types_array(
             new PVR_TIMER_TYPE[PVR_ADDON_TIMERTYPE_ARRAY_SIZE]);
-        int size = PVR_ADDON_TIMERTYPE_ARRAY_SIZE;
+        unsigned int size = PVR_ADDON_TIMERTYPE_ARRAY_SIZE;
 
         PVR_ERROR retval = addon->toAddon->GetTimerTypes(addon, types_array.get(), &size);
 
@@ -1272,7 +1279,7 @@ PVR_ERROR CPVRClient::UpdateTimerTypes()
         if (retval == PVR_ERROR_NO_ERROR)
         {
           timerTypes.reserve(size);
-          for (int i = 0; i < size; ++i)
+          for (unsigned int i = 0; i < size; ++i)
           {
             if (types_array[i].iId == PVR_TIMER_TYPE_NONE)
             {
@@ -1282,6 +1289,10 @@ PVR_ERROR CPVRClient::UpdateTimerTypes()
             timerTypes.emplace_back(std::make_shared<CPVRTimerType>(types_array[i], m_iClientId));
           }
         }
+
+        /* free the resources of the timer types array */
+        addon->toAddon->FreeTimerTypes(addon, types_array.get(), size);
+
         return retval;
       },
       m_clientCapabilities.SupportsTimers(), false);

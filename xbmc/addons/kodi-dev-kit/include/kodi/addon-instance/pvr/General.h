@@ -31,13 +31,13 @@ namespace addon
 /// @copydetails cpp_kodi_addon_pvr_Defs_PVRTypeIntValue_Help
 ///
 ///@{
-class PVRTypeIntValue : public CStructHdl<PVRTypeIntValue, PVR_ATTRIBUTE_INT_VALUE>
+class PVRTypeIntValue : public DynamicCStructHdl<PVRTypeIntValue, PVR_ATTRIBUTE_INT_VALUE>
 {
   friend class CInstancePVRClient;
 
 public:
   /*! \cond PRIVATE */
-  PVRTypeIntValue(const PVRTypeIntValue& data) : CStructHdl(data) {}
+  PVRTypeIntValue(const PVRTypeIntValue& data) : DynamicCStructHdl(data) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_pvr_Defs_PVRTypeIntValue_Help Value Help
@@ -78,17 +78,56 @@ public:
   /// @brief To set with the description text of the value.
   void SetDescription(const std::string& description)
   {
-    strncpy(m_cStructure->strDescription, description.c_str(),
-            sizeof(m_cStructure->strDescription) - 1);
+    ReallocAndCopyString(&m_cStructure->strDescription, description.c_str());
   }
 
   /// @brief To get with the description text of the value.
   std::string GetDescription() const { return m_cStructure->strDescription; }
   ///@}
 
+  static void CopyData(const std::vector<PVRTypeIntValue>& source,
+                       PVR_ATTRIBUTE_INT_VALUE* values,
+                       unsigned int size)
+  {
+    for (unsigned int i = 0; i < size; ++i)
+    {
+      values[i].iValue = source[i].GetCStructure()->iValue;
+      values[i].strDescription = AllocAndCopyString(source[i].GetCStructure()->strDescription);
+    }
+  }
+
+  static void AllocResources(const PVR_ATTRIBUTE_INT_VALUE* source, PVR_ATTRIBUTE_INT_VALUE* target)
+  {
+    target->strDescription = AllocAndCopyString(source->strDescription);
+  }
+
+  static void FreeResources(PVR_ATTRIBUTE_INT_VALUE* target)
+  {
+    FreeString(target->strDescription);
+    target->strDescription = nullptr;
+  }
+
+  static void AllocResources(const PVR_ATTRIBUTE_INT_VALUE* source,
+                             PVR_ATTRIBUTE_INT_VALUE* values,
+                             unsigned int size)
+  {
+    for (unsigned int i = 0; i < size; ++i)
+    {
+      AllocResources(&source[i], &values[i]);
+    }
+  }
+
+  static void FreeResources(PVR_ATTRIBUTE_INT_VALUE* values, unsigned int size)
+  {
+    for (unsigned int i = 0; i < size; ++i)
+    {
+      FreeResources(&values[i]);
+    }
+  }
+
 private:
-  PVRTypeIntValue(const PVR_ATTRIBUTE_INT_VALUE* data) : CStructHdl(data) {}
-  PVRTypeIntValue(PVR_ATTRIBUTE_INT_VALUE* data) : CStructHdl(data) {}
+  PVRTypeIntValue(const PVR_ATTRIBUTE_INT_VALUE* data) : DynamicCStructHdl(data) {}
+  PVRTypeIntValue(PVR_ATTRIBUTE_INT_VALUE* data) : DynamicCStructHdl(data) {}
 };
 ///@}
 //------------------------------------------------------------------------------
@@ -384,18 +423,12 @@ public:
   /// @copydetails cpp_kodi_addon_pvr_Defs_PVRTypeIntValue_Help
   void SetRecordingsLifetimeValues(const std::vector<PVRTypeIntValue>& recordingsLifetimeValues)
   {
-    m_capabilities->iRecordingsLifetimesSize = 0;
-    for (unsigned int i = 0; i < recordingsLifetimeValues.size() &&
-                             i < sizeof(m_capabilities->recordingsLifetimeValues);
-         ++i)
-    {
-      m_capabilities->recordingsLifetimeValues[i].iValue =
-          recordingsLifetimeValues[i].GetCStructure()->iValue;
-      strncpy(m_capabilities->recordingsLifetimeValues[i].strDescription,
-              recordingsLifetimeValues[i].GetCStructure()->strDescription,
-              sizeof(m_capabilities->recordingsLifetimeValues[i].strDescription) - 1);
-      ++m_capabilities->iRecordingsLifetimesSize;
-    }
+    PVRTypeIntValue::FreeResources(m_capabilities->recordingsLifetimeValues,
+                                   m_capabilities->iRecordingsLifetimesSize);
+    m_capabilities->iRecordingsLifetimesSize =
+        static_cast<unsigned int>(recordingsLifetimeValues.size());
+    PVRTypeIntValue::CopyData(recordingsLifetimeValues, m_capabilities->recordingsLifetimeValues,
+                              m_capabilities->iRecordingsLifetimesSize);
   }
 
   /// @brief To get with @ref SetRecordingsLifetimeValues changed values.
@@ -409,6 +442,12 @@ public:
     return recordingsLifetimeValues;
   }
   ///@}
+
+  static void FreeResources(PVR_ADDON_CAPABILITIES* capabilities)
+  {
+    PVRTypeIntValue::FreeResources(capabilities->recordingsLifetimeValues,
+                                   capabilities->iRecordingsLifetimesSize);
+  }
 
 private:
   PVRCapabilities(PVR_ADDON_CAPABILITIES* capabilities) : m_capabilities(capabilities) {}
