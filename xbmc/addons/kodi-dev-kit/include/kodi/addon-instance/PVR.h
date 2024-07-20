@@ -3309,36 +3309,25 @@ private:
   //--==----==----==----==----==----==----==----==----==----==----==----==----==
 
   inline static PVR_ERROR ADDON_GetTimerTypes(const AddonInstance_PVR* instance,
-                                              PVR_TIMER_TYPE* types,
+                                              PVR_TIMER_TYPE*** types,
                                               unsigned int* typesCount)
   {
     *typesCount = 0;
     std::vector<PVRTimerType> timerTypes;
     PVR_ERROR error = static_cast<CInstancePVRClient*>(instance->toAddon->addonInstance)
                           ->GetTimerTypes(timerTypes);
-    if (error == PVR_ERROR_NO_ERROR)
+    if (error == PVR_ERROR_NO_ERROR && !timerTypes.empty())
     {
-      for (const auto& timerType : timerTypes)
-      {
-        types[*typesCount] = *timerType;
-        PVRTimerType::AllocResources(timerType, &types[*typesCount]);
-        ++*typesCount;
-        if (*typesCount >= PVR_ADDON_TIMERTYPE_ARRAY_SIZE)
-          break;
-      }
+      *types = AllocAndCopyPointerArray<PVRTimerType, PVR_TIMER_TYPE>(timerTypes, *typesCount);
     }
     return error;
   }
 
   inline static PVR_ERROR ADDON_FreeTimerTypes(const AddonInstance_PVR* instance,
-                                               PVR_TIMER_TYPE* types,
+                                               PVR_TIMER_TYPE** types,
                                                unsigned int typesCount)
   {
-    for (unsigned int i = 0; i < typesCount; ++i)
-    {
-      PVR_TIMER_TYPE* type = &types[i];
-      PVRTimerType::FreeResources(type);
-    }
+    FreeDynamicPointerArray<PVRTimerType, PVR_TIMER_TYPE>(types, typesCount);
     return PVR_ERROR_NO_ERROR;
   }
 

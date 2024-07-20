@@ -1216,14 +1216,14 @@ PVR_ERROR CPVRClient::UpdateTimerTypes()
 
   PVR_ERROR retVal = DoAddonCall(
       __func__,
-      [this, &timerTypes](const AddonInstance* addon) {
-        std::unique_ptr<PVR_TIMER_TYPE[]> types_array(
-            new PVR_TIMER_TYPE[PVR_ADDON_TIMERTYPE_ARRAY_SIZE]);
-        unsigned int size = PVR_ADDON_TIMERTYPE_ARRAY_SIZE;
+      [this, &timerTypes](const AddonInstance* addon)
+      {
+        PVR_TIMER_TYPE** types_array{nullptr};
+        unsigned int size{0};
+        PVR_ERROR retval{addon->toAddon->GetTimerTypes(addon, &types_array, &size)};
 
-        PVR_ERROR retval = addon->toAddon->GetTimerTypes(addon, types_array.get(), &size);
-
-        if (retval == PVR_ERROR_NOT_IMPLEMENTED)
+        const bool array_owner{retval == PVR_ERROR_NOT_IMPLEMENTED};
+        if (array_owner)
         {
           // begin compat section
           CLog::LogF(LOGWARNING,
@@ -1238,40 +1238,39 @@ PVR_ERROR CPVRClient::UpdateTimerTypes()
           // Isengard. Also, new features (like epg search) are not available to addons automatically.
           // This code can be removed once all addons actually support the respective PVR Addon API version.
 
-          size = 0;
+          size = 2;
+          if (m_clientCapabilities.SupportsEPG())
+            size++;
+
+          types_array = new PVR_TIMER_TYPE*[size];
+
           // manual one time
-          memset(&types_array[size], 0, sizeof(types_array[size]));
-          types_array[size].iId = size + 1;
-          types_array[size].iAttributes =
+          (*types_array)[0].iId = 1;
+          (*types_array)[0].iAttributes =
               PVR_TIMER_TYPE_IS_MANUAL | PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
               PVR_TIMER_TYPE_SUPPORTS_CHANNELS | PVR_TIMER_TYPE_SUPPORTS_START_TIME |
               PVR_TIMER_TYPE_SUPPORTS_END_TIME | PVR_TIMER_TYPE_SUPPORTS_PRIORITY |
               PVR_TIMER_TYPE_SUPPORTS_LIFETIME | PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
-          ++size;
 
           // manual timer rule
-          memset(&types_array[size], 0, sizeof(types_array[size]));
-          types_array[size].iId = size + 1;
-          types_array[size].iAttributes =
+          (*types_array)[1].iId = 2;
+          (*types_array)[1].iAttributes =
               PVR_TIMER_TYPE_IS_MANUAL | PVR_TIMER_TYPE_IS_REPEATING |
               PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE | PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
               PVR_TIMER_TYPE_SUPPORTS_START_TIME | PVR_TIMER_TYPE_SUPPORTS_END_TIME |
               PVR_TIMER_TYPE_SUPPORTS_PRIORITY | PVR_TIMER_TYPE_SUPPORTS_LIFETIME |
               PVR_TIMER_TYPE_SUPPORTS_FIRST_DAY | PVR_TIMER_TYPE_SUPPORTS_WEEKDAYS |
               PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
-          ++size;
 
           if (m_clientCapabilities.SupportsEPG())
           {
             // One-shot epg-based
-            memset(&types_array[size], 0, sizeof(types_array[size]));
-            types_array[size].iId = size + 1;
-            types_array[size].iAttributes =
+            (*types_array)[2].iId = 3;
+            (*types_array)[2].iAttributes =
                 PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE | PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE |
                 PVR_TIMER_TYPE_SUPPORTS_CHANNELS | PVR_TIMER_TYPE_SUPPORTS_START_TIME |
                 PVR_TIMER_TYPE_SUPPORTS_END_TIME | PVR_TIMER_TYPE_SUPPORTS_PRIORITY |
                 PVR_TIMER_TYPE_SUPPORTS_LIFETIME | PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
-            ++size;
           }
 
           retval = PVR_ERROR_NO_ERROR;
@@ -1283,17 +1282,27 @@ PVR_ERROR CPVRClient::UpdateTimerTypes()
           timerTypes.reserve(size);
           for (unsigned int i = 0; i < size; ++i)
           {
-            if (types_array[i].iId == PVR_TIMER_TYPE_NONE)
+            if (types_array[i]->iId == PVR_TIMER_TYPE_NONE)
             {
               CLog::LogF(LOGERROR, "Invalid timer type supplied by add-on {}.", GetID());
               continue;
             }
-            timerTypes.emplace_back(std::make_shared<CPVRTimerType>(types_array[i], m_iClientId));
+            timerTypes.emplace_back(std::make_shared<CPVRTimerType>(*types_array[i], m_iClientId));
           }
         }
 
         /* free the resources of the timer types array */
-        addon->toAddon->FreeTimerTypes(addon, types_array.get(), size);
+        if (array_owner)
+        {
+          // begin compat section
+          delete[] types_array;
+          // end compat section
+        }
+        else
+        {
+          addon->toAddon->FreeTimerTypes(addon, types_array, size);
+        }
+        types_array = nullptr;
 
         return retval;
       },

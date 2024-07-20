@@ -265,7 +265,7 @@ extern "C"
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Timer interface functions
     enum PVR_ERROR(__cdecl* GetTimerTypes)(const struct AddonInstance_PVR*,
-                                           struct PVR_TIMER_TYPE[],
+                                           struct PVR_TIMER_TYPE***,
                                            unsigned int*);
     enum PVR_ERROR(__cdecl* GetTimersAmount)(const struct AddonInstance_PVR*, int*);
     enum PVR_ERROR(__cdecl* GetTimers)(const struct AddonInstance_PVR*, PVR_HANDLE);
@@ -328,7 +328,7 @@ extern "C"
     enum PVR_ERROR(__cdecl* FreeCapabilities)(const struct AddonInstance_PVR*,
                                               struct PVR_ADDON_CAPABILITIES*);
     enum PVR_ERROR(__cdecl* FreeTimerTypes)(const struct AddonInstance_PVR*,
-                                            struct PVR_TIMER_TYPE*,
+                                            struct PVR_TIMER_TYPE**,
                                             unsigned int);
     enum PVR_ERROR(__cdecl* FreeProperties)(const struct AddonInstance_PVR*,
                                             struct PVR_NAMED_VALUE**,

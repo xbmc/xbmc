@@ -26,7 +26,6 @@ extern "C"
   ///@{
 #define PVR_ADDON_NAME_STRING_LENGTH 1024
 #define PVR_ADDON_EDL_LENGTH 64
-#define PVR_ADDON_TIMERTYPE_ARRAY_SIZE 32
   ///@}
 
   /*!
