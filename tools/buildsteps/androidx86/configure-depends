@@ -3,7 +3,7 @@ XBMC_PLATFORM_DIR=android
 . $WORKSPACE/tools/buildsteps/defaultenv
 
 #the following path must exist on the slave and use the defined scheme here!
-NDK_PATH=$ANDROID_DEV_ROOT/android-ndk-r$NDK_VERSION
+NDK_PATH=$SDK_PATH/ndk/$NDK_VERSION
 
 if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ]
 then
