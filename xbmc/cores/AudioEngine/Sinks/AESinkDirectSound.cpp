@@ -124,6 +124,7 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
   if (m_initialized)
     return false;
 
+  bool deviceIsBluetooth = false;
   LPGUID deviceGUID = nullptr;
   RPC_WSTR wszUuid  = nullptr;
   HRESULT hr = E_FAIL;
@@ -150,6 +151,21 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
       }
     }
     if (hr == RPC_S_OK) RpcStringFree(&wszUuid);
+  }
+
+  // Detect a Bluetooth device
+  for (const auto& device : CAESinkFactoryWin::GetRendererDetails())
+  {
+    if (StringUtils::CompareNoCase(device.strDeviceId, strDeviceGUID) != 0)
+      continue;
+
+    if (device.strDeviceEnumerator == "BTHENUM")
+    {
+      deviceIsBluetooth = true;
+      CLog::LogF(LOGDEBUG, "Audio device '{}' is detected as Bluetooth device", deviceFriendlyName);
+    }
+
+    break;
   }
 
   hr = DirectSoundCreate(deviceGUID, m_pDSound.ReleaseAndGetAddressOf(), nullptr);
@@ -218,10 +234,13 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
 
   m_AvgBytesPerSec = wfxex.Format.nAvgBytesPerSec;
 
-  unsigned int uiFrameCount = (int)(format.m_sampleRate * 0.015); //default to 15ms chunks
+  const unsigned int chunkDurationMs = deviceIsBluetooth ? 50 : 20;
+  const unsigned int uiFrameCount = format.m_sampleRate * chunkDurationMs / 1000U;
   m_dwFrameSize = wfxex.Format.nBlockAlign;
   m_dwChunkSize = m_dwFrameSize * uiFrameCount;
-  m_dwBufferLen = m_dwChunkSize * 12; //180ms total buffer
+
+  // BT: 500ms total buffer (50 * 10); non-BT: 200ms total buffer (20 * 10)
+  m_dwBufferLen = m_dwChunkSize * 10;
 
   // fill in the secondary sound buffer descriptor
   DSBUFFERDESC dsbdesc = {};
