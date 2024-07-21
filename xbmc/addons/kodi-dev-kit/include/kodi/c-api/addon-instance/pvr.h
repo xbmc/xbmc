@@ -335,6 +335,8 @@ extern "C"
                                             unsigned int);
     enum PVR_ERROR(__cdecl* FreeDescrambleInfo)(const struct AddonInstance_PVR*,
                                                 struct PVR_DESCRAMBLE_INFO*);
+    enum PVR_ERROR(__cdecl* FreeSignalStatus)(const struct AddonInstance_PVR*,
+                                              struct PVR_SIGNAL_STATUS*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // New functions becomes added below and can be on another API change (where

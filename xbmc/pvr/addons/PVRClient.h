@@ -38,6 +38,7 @@ class CPVREpg;
 class CPVREpgInfoTag;
 class CPVRRecording;
 class CPVRRecordings;
+class CPVRSignalStatus;
 class CPVRStreamProperties;
 class CPVRTimerInfoTag;
 class CPVRTimerType;
@@ -572,7 +573,7 @@ public:
    * @param qualityinfo The signal quality.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
-  PVR_ERROR SignalQuality(int channelUid, PVR_SIGNAL_STATUS& qualityinfo) const;
+  PVR_ERROR SignalQuality(int channelUid, CPVRSignalStatus& qualityinfo) const;
 
   /*!
    * @brief Get the descramble information of the stream that's currently open.

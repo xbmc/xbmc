@@ -27,6 +27,7 @@ set(HEADERS IPVRComponent.h
             PVRItem.h
             PVRManager.h
             PVRPlaybackState.h
+            PVRSignalStatus.h
             PVRStreamProperties.h
             PVRThumbLoader.h)
 

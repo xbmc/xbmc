@@ -262,14 +262,14 @@ private:
 /// @copydetails cpp_kodi_addon_pvr_Defs_Channel_PVRSignalStatus_Help
 ///
 ///@{
-class PVRSignalStatus : public CStructHdl<PVRSignalStatus, PVR_SIGNAL_STATUS>
+class PVRSignalStatus : public DynamicCStructHdl<PVRSignalStatus, PVR_SIGNAL_STATUS>
 {
   friend class CInstancePVRClient;
 
 public:
   /*! \cond PRIVATE */
   PVRSignalStatus() = default;
-  PVRSignalStatus(const PVRSignalStatus& type) : CStructHdl(type) {}
+  PVRSignalStatus(const PVRSignalStatus& status) : DynamicCStructHdl(status) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_pvr_Defs_Channel_PVRSignalStatus_Help Value Help
@@ -296,8 +296,7 @@ public:
   /// Name of the adapter that's being used.
   void SetAdapterName(const std::string& adapterName)
   {
-    strncpy(m_cStructure->strAdapterName, adapterName.c_str(),
-            sizeof(m_cStructure->strAdapterName) - 1);
+    ReallocAndCopyString(&m_cStructure->strAdapterName, adapterName.c_str());
   }
 
   /// @brief To get with @ref SetAdapterName changed values.
@@ -307,8 +306,7 @@ public:
   /// Status of the adapter that's being used.
   void SetAdapterStatus(const std::string& adapterStatus)
   {
-    strncpy(m_cStructure->strAdapterStatus, adapterStatus.c_str(),
-            sizeof(m_cStructure->strAdapterStatus) - 1);
+    ReallocAndCopyString(&m_cStructure->strAdapterStatus, adapterStatus.c_str());
   }
 
   /// @brief To get with @ref SetAdapterStatus changed values.
@@ -318,8 +316,7 @@ public:
   /// Name of the current service.
   void SetServiceName(const std::string& serviceName)
   {
-    strncpy(m_cStructure->strServiceName, serviceName.c_str(),
-            sizeof(m_cStructure->strServiceName) - 1);
+    ReallocAndCopyString(&m_cStructure->strServiceName, serviceName.c_str());
   }
 
   /// @brief To get with @ref SetServiceName changed values.
@@ -329,8 +326,7 @@ public:
   /// Name of the current service's provider.
   void SetProviderName(const std::string& providerName)
   {
-    strncpy(m_cStructure->strProviderName, providerName.c_str(),
-            sizeof(m_cStructure->strProviderName) - 1);
+    ReallocAndCopyString(&m_cStructure->strProviderName, providerName.c_str());
   }
 
   /// @brief To get with @ref SetProviderName changed values.
@@ -340,7 +336,7 @@ public:
   /// Name of the current mux.
   void SetMuxName(const std::string& muxName)
   {
-    strncpy(m_cStructure->strMuxName, muxName.c_str(), sizeof(m_cStructure->strMuxName) - 1);
+    ReallocAndCopyString(&m_cStructure->strMuxName, muxName.c_str());
   }
 
   /// @brief To get with @ref SetMuxName changed values.
@@ -379,9 +375,27 @@ public:
   long GetUNC() const { return m_cStructure->iUNC; }
   ///@}
 
+  static void AllocResources(const PVR_SIGNAL_STATUS* source, PVR_SIGNAL_STATUS* target)
+  {
+    target->strAdapterName = AllocAndCopyString(source->strAdapterName);
+    target->strAdapterStatus = AllocAndCopyString(source->strAdapterStatus);
+    target->strServiceName = AllocAndCopyString(source->strServiceName);
+    target->strProviderName = AllocAndCopyString(source->strProviderName);
+    target->strMuxName = AllocAndCopyString(source->strMuxName);
+  }
+
+  static void FreeResources(PVR_SIGNAL_STATUS* target)
+  {
+    FreeString(target->strAdapterName);
+    FreeString(target->strAdapterStatus);
+    FreeString(target->strServiceName);
+    FreeString(target->strProviderName);
+    FreeString(target->strMuxName);
+  }
+
 private:
-  PVRSignalStatus(const PVR_SIGNAL_STATUS* type) : CStructHdl(type) {}
-  PVRSignalStatus(PVR_SIGNAL_STATUS* type) : CStructHdl(type) {}
+  PVRSignalStatus(const PVR_SIGNAL_STATUS* status) : DynamicCStructHdl(status) {}
+  PVRSignalStatus(PVR_SIGNAL_STATUS* status) : DynamicCStructHdl(status) {}
 };
 ///@}
 //------------------------------------------------------------------------------

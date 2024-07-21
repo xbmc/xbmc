@@ -62,11 +62,11 @@ extern "C"
    */
   typedef struct PVR_SIGNAL_STATUS
   {
-    char strAdapterName[PVR_ADDON_NAME_STRING_LENGTH];
-    char strAdapterStatus[PVR_ADDON_NAME_STRING_LENGTH];
-    char strServiceName[PVR_ADDON_NAME_STRING_LENGTH];
-    char strProviderName[PVR_ADDON_NAME_STRING_LENGTH];
-    char strMuxName[PVR_ADDON_NAME_STRING_LENGTH];
+    const char* strAdapterName;
+    const char* strAdapterStatus;
+    const char* strServiceName;
+    const char* strProviderName;
+    const char* strMuxName;
     int iSNR;
     int iSignal;
     long iBER;

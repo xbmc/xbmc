@@ -20,6 +20,7 @@
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRDescrambleInfo.h"
 #include "pvr/PVRManager.h"
+#include "pvr/PVRSignalStatus.h"
 #include "pvr/PVRStreamProperties.h"
 #include "pvr/addons/PVRClientMenuHooks.h"
 #include "pvr/addons/PVRClients.h"
@@ -1401,11 +1402,20 @@ PVR_ERROR CPVRClient::GetRecordedStreamLength(int64_t& iLength) const
   });
 }
 
-PVR_ERROR CPVRClient::SignalQuality(int channelUid, PVR_SIGNAL_STATUS& qualityinfo) const
+PVR_ERROR CPVRClient::SignalQuality(int channelUid, CPVRSignalStatus& qualityinfo) const
 {
-  return DoAddonCall(__func__, [channelUid, &qualityinfo](const AddonInstance* addon) {
-    return addon->toAddon->GetSignalStatus(addon, channelUid, &qualityinfo);
-  });
+  return DoAddonCall(__func__,
+                     [channelUid, &qualityinfo](const AddonInstance* addon)
+                     {
+                       PVR_SIGNAL_STATUS info{};
+                       const PVR_ERROR error{
+                           addon->toAddon->GetSignalStatus(addon, channelUid, &info)};
+                       if (error == PVR_ERROR_NO_ERROR)
+                         qualityinfo = info;
+
+                       addon->toAddon->FreeSignalStatus(addon, &info);
+                       return error;
+                     });
 }
 
 PVR_ERROR CPVRClient::GetDescrambleInfo(int channelUid, CPVRDescrambleInfo& descrambleinfo) const

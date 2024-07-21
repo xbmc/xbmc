@@ -2830,6 +2830,7 @@ private:
     instance->pvr->toAddon->FreeTimerTypes = ADDON_FreeTimerTypes;
     instance->pvr->toAddon->FreeProperties = ADDON_FreeProperties;
     instance->pvr->toAddon->FreeDescrambleInfo = ADDON_FreeDescrambleInfo;
+    instance->pvr->toAddon->FreeSignalStatus = ADDON_FreeSignalStatus;
 
     m_instanceData = instance->pvr;
     m_instanceData->toAddon->addonInstance = this;
@@ -2954,6 +2955,13 @@ private:
     PVRSignalStatus cppSignalStatus(signalStatus);
     return static_cast<CInstancePVRClient*>(instance->toAddon->addonInstance)
         ->GetSignalStatus(channelUid, cppSignalStatus);
+  }
+
+  inline static PVR_ERROR ADDON_FreeSignalStatus(const AddonInstance_PVR* instance,
+                                                 PVR_SIGNAL_STATUS* signalStatus)
+  {
+    PVRSignalStatus::FreeResources(signalStatus);
+    return PVR_ERROR_NO_ERROR;
   }
 
   inline static PVR_ERROR ADDON_GetDescrambleInfo(const AddonInstance_PVR* instance,
