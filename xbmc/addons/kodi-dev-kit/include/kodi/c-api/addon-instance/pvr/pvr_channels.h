@@ -95,10 +95,10 @@ extern "C"
     int iProvid;
     int iEcmTime;
     int iHops;
-    char strCardSystem[PVR_ADDON_DESCRAMBLE_INFO_STRING_LENGTH];
-    char strReader[PVR_ADDON_DESCRAMBLE_INFO_STRING_LENGTH];
-    char strFrom[PVR_ADDON_DESCRAMBLE_INFO_STRING_LENGTH];
-    char strProtocol[PVR_ADDON_DESCRAMBLE_INFO_STRING_LENGTH];
+    const char* strCardSystem;
+    const char* strReader;
+    const char* strFrom;
+    const char* strProtocol;
   } PVR_DESCRAMBLE_INFO;
 
 #ifdef __cplusplus

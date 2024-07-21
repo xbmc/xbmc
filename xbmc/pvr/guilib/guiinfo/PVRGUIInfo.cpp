@@ -114,7 +114,7 @@ void CPVRGUIInfo::ClearQualityInfo(PVR_SIGNAL_STATUS& qualityInfo)
           PVR_ADDON_NAME_STRING_LENGTH - 1);
 }
 
-void CPVRGUIInfo::ClearDescrambleInfo(PVR_DESCRAMBLE_INFO& descrambleInfo)
+void CPVRGUIInfo::ClearDescrambleInfo(CPVRDescrambleInfo& descrambleInfo)
 {
   descrambleInfo = {};
 }
@@ -264,7 +264,7 @@ void CPVRGUIInfo::UpdateDescrambleData()
   if (!playbackState)
     return;
 
-  PVR_DESCRAMBLE_INFO descrambleInfo;
+  CPVRDescrambleInfo descrambleInfo;
   ClearDescrambleInfo(descrambleInfo);
 
   const int channelUid = playbackState->GetPlayingChannelUniqueID();
@@ -1954,10 +1954,10 @@ void CPVRGUIInfo::CharInfoPlayingClientName(std::string& strValue) const
 
 void CPVRGUIInfo::CharInfoEncryption(std::string& strValue) const
 {
-  if (m_descrambleInfo.iCaid != PVR_DESCRAMBLE_INFO_NOT_AVAILABLE)
+  if (m_descrambleInfo.Caid() != PVR_DESCRAMBLE_INFO_NOT_AVAILABLE)
   {
     // prefer dynamically updated info, if available
-    strValue = CPVRChannel::GetEncryptionName(m_descrambleInfo.iCaid);
+    strValue = CPVRChannel::GetEncryptionName(m_descrambleInfo.Caid());
     return;
   }
   else

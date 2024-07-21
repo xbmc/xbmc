@@ -401,7 +401,7 @@ private:
 /// @copydetails cpp_kodi_addon_pvr_Defs_Channel_PVRDescrambleInfo_Help
 ///
 ///@{
-class PVRDescrambleInfo : public CStructHdl<PVRDescrambleInfo, PVR_DESCRAMBLE_INFO>
+class PVRDescrambleInfo : public DynamicCStructHdl<PVRDescrambleInfo, PVR_DESCRAMBLE_INFO>
 {
   friend class CInstancePVRClient;
 
@@ -415,7 +415,7 @@ public:
     m_cStructure->iEcmTime = PVR_DESCRAMBLE_INFO_NOT_AVAILABLE;
     m_cStructure->iHops = PVR_DESCRAMBLE_INFO_NOT_AVAILABLE;
   }
-  PVRDescrambleInfo(const PVRDescrambleInfo& type) : CStructHdl(type) {}
+  PVRDescrambleInfo(const PVRDescrambleInfo& info) : DynamicCStructHdl(info) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_pvr_Defs_Channel_PVRDescrambleInfo_Help Value Help
@@ -496,8 +496,7 @@ public:
   /// Empty string if not available.
   void SetCardSystem(const std::string& cardSystem)
   {
-    strncpy(m_cStructure->strCardSystem, cardSystem.c_str(),
-            sizeof(m_cStructure->strCardSystem) - 1);
+    ReallocAndCopyString(&m_cStructure->strCardSystem, cardSystem.c_str());
   }
 
   /// @brief To get with @ref SetCardSystem changed values.
@@ -507,7 +506,7 @@ public:
   /// Empty string if not available.
   void SetReader(const std::string& reader)
   {
-    strncpy(m_cStructure->strReader, reader.c_str(), sizeof(m_cStructure->strReader) - 1);
+    ReallocAndCopyString(&m_cStructure->strReader, reader.c_str());
   }
 
   /// @brief To get with @ref SetReader changed values.
@@ -517,7 +516,7 @@ public:
   /// Empty string if not available.
   void SetFrom(const std::string& from)
   {
-    strncpy(m_cStructure->strFrom, from.c_str(), sizeof(m_cStructure->strFrom) - 1);
+    ReallocAndCopyString(&m_cStructure->strFrom, from.c_str());
   }
 
   /// @brief To get with @ref SetFrom changed values.
@@ -527,16 +526,32 @@ public:
   /// Empty string if not available.
   void SetProtocol(const std::string& protocol)
   {
-    strncpy(m_cStructure->strProtocol, protocol.c_str(), sizeof(m_cStructure->strProtocol) - 1);
+    ReallocAndCopyString(&m_cStructure->strProtocol, protocol.c_str());
   }
 
   /// @brief To get with @ref SetProtocol changed values.
   std::string GetProtocol() const { return m_cStructure->strProtocol; }
   ///@}
 
+  static void AllocResources(const PVR_DESCRAMBLE_INFO* source, PVR_DESCRAMBLE_INFO* target)
+  {
+    target->strCardSystem = AllocAndCopyString(source->strCardSystem);
+    target->strReader = AllocAndCopyString(source->strReader);
+    target->strFrom = AllocAndCopyString(source->strFrom);
+    target->strProtocol = AllocAndCopyString(source->strProtocol);
+  }
+
+  static void FreeResources(PVR_DESCRAMBLE_INFO* target)
+  {
+    FreeString(target->strCardSystem);
+    FreeString(target->strReader);
+    FreeString(target->strFrom);
+    FreeString(target->strProtocol);
+  }
+
 private:
-  PVRDescrambleInfo(const PVR_DESCRAMBLE_INFO* type) : CStructHdl(type) {}
-  PVRDescrambleInfo(PVR_DESCRAMBLE_INFO* type) : CStructHdl(type) {}
+  PVRDescrambleInfo(const PVR_DESCRAMBLE_INFO* info) : DynamicCStructHdl(info) {}
+  PVRDescrambleInfo(PVR_DESCRAMBLE_INFO* info) : DynamicCStructHdl(info) {}
 };
 ///@}
 //------------------------------------------------------------------------------

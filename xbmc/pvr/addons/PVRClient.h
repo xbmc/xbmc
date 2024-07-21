@@ -33,6 +33,7 @@ class CPVRProvider;
 class CPVRProvidersContainer;
 class CPVRClientMenuHook;
 class CPVRClientMenuHooks;
+class CPVRDescrambleInfo;
 class CPVREpg;
 class CPVREpgInfoTag;
 class CPVRRecording;
@@ -579,7 +580,7 @@ public:
    * @param descrambleinfo The descramble information.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
-  PVR_ERROR GetDescrambleInfo(int channelUid, PVR_DESCRAMBLE_INFO& descrambleinfo) const;
+  PVR_ERROR GetDescrambleInfo(int channelUid, CPVRDescrambleInfo& descrambleinfo) const;
 
   /*!
    * @brief Fill the given container with the properties required for playback of the given channel. Values are obtained from the PVR backend.

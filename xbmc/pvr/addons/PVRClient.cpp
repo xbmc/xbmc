@@ -18,6 +18,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/LocalizeStrings.h"
 #include "pvr/PVRDatabase.h"
+#include "pvr/PVRDescrambleInfo.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRStreamProperties.h"
 #include "pvr/addons/PVRClientMenuHooks.h"
@@ -1407,12 +1408,19 @@ PVR_ERROR CPVRClient::SignalQuality(int channelUid, PVR_SIGNAL_STATUS& qualityin
   });
 }
 
-PVR_ERROR CPVRClient::GetDescrambleInfo(int channelUid, PVR_DESCRAMBLE_INFO& descrambleinfo) const
+PVR_ERROR CPVRClient::GetDescrambleInfo(int channelUid, CPVRDescrambleInfo& descrambleinfo) const
 {
   return DoAddonCall(
       __func__,
-      [channelUid, &descrambleinfo](const AddonInstance* addon) {
-        return addon->toAddon->GetDescrambleInfo(addon, channelUid, &descrambleinfo);
+      [channelUid, &descrambleinfo](const AddonInstance* addon)
+      {
+        PVR_DESCRAMBLE_INFO info{};
+        const PVR_ERROR error{addon->toAddon->GetDescrambleInfo(addon, channelUid, &info)};
+        if (error == PVR_ERROR_NO_ERROR)
+          descrambleinfo = info;
+
+        addon->toAddon->FreeDescrambleInfo(addon, &info);
+        return error;
       },
       m_clientCapabilities.SupportsDescrambleInfo());
 }
