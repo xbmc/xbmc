@@ -129,6 +129,17 @@ std::vector<RendererDetail> CAESinkFactoryWin::GetRendererDetails()
     details.uiChannelMask = std::max(varName.uintVal, (unsigned int)KSAUDIO_SPEAKER_STEREO);
     PropVariantClear(&varName);
 
+    hr = pProperty->GetValue(PKEY_Device_EnumeratorName, &varName);
+    if (FAILED(hr))
+    {
+      CLog::LogF(LOGERROR, "Retrieval of endpoint enumerator name failed.");
+      goto failed;
+    }
+
+    details.strDeviceEnumerator = KODI::PLATFORM::WINDOWS::FromW(varName.pwszVal);
+    StringUtils::ToUpper(details.strDeviceEnumerator);
+    PropVariantClear(&varName);
+
     if (pDevice->GetId(&pwszID) == S_OK)
     {
       if (wstrDDID.compare(pwszID) == 0)

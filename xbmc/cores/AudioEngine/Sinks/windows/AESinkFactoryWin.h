@@ -178,6 +178,7 @@ struct RendererDetail
   std::string strDeviceId;
   std::string strDescription;
   std::string strWinDevType;
+  std::string strDeviceEnumerator;
   AEDeviceType eDeviceType;
   unsigned int nChannels;
   unsigned int uiChannelMask;
