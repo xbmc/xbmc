@@ -502,10 +502,10 @@ void CTCPServer::Deinitialize()
 }
 
 CTCPServer::CTCPClient::CTCPClient()
+: m_socket(INVALID_SOCKET)
 {
   m_new = true;
   m_announcementflags = ANNOUNCEMENT::ANNOUNCE_ALL;
-  m_socket = INVALID_SOCKET;
   m_beginBrackets = 0;
   m_endBrackets = 0;
   m_beginChar = 0;
