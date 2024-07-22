@@ -16,9 +16,9 @@
 #include <string>
 
 CZeroconfDarwin::CZeroconfDarwin()
-{
   //acquire the main threads event loop
-  m_runloop = CFRunLoopGetMain();
+  : m_runloop(CFRunLoopGetMain())
+{
 }
 
 CZeroconfDarwin::~CZeroconfDarwin()

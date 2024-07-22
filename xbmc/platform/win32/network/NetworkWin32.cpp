@@ -31,8 +31,8 @@ constexpr auto MAC_LENGTH = 6; // fixed MAC length used in CNetworkInterface
 }
 
 CNetworkInterfaceWin32::CNetworkInterfaceWin32(const IP_ADAPTER_ADDRESSES& adapter)
+  : m_adapter(adapter)
 {
-  m_adapter = adapter;
 }
 
 CNetworkInterfaceWin32::~CNetworkInterfaceWin32(void)

@@ -17,7 +17,7 @@ class CNetworkInterfaceFreebsd : public CNetworkInterfacePosix
 {
 public:
   CNetworkInterfaceFreebsd(CNetworkPosix* network,
-                           std::string interfaceName,
+                           const std::string& interfaceName,
                            char interfaceMacAddrRaw[6]);
   ~CNetworkInterfaceFreebsd() override = default;
 
