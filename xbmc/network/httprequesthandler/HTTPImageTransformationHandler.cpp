@@ -33,14 +33,13 @@ CHTTPImageTransformationHandler::CHTTPImageTransformationHandler()
     m_responseData()
 { }
 
-CHTTPImageTransformationHandler::CHTTPImageTransformationHandler(const HTTPRequest &request)
+CHTTPImageTransformationHandler::CHTTPImageTransformationHandler(const HTTPRequest& request)
   : IHTTPRequestHandler(request),
-    m_url(),
+    m_url(m_request.pathUrl.substr(ImageBasePath.size())),
     m_lastModified(),
     m_buffer(NULL),
     m_responseData()
 {
-  m_url = m_request.pathUrl.substr(ImageBasePath.size());
   if (m_url.empty())
   {
     m_response.status = MHD_HTTP_BAD_REQUEST;
