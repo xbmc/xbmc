@@ -42,7 +42,7 @@ class CPVRContextMenuManager
 public:
   static CPVRContextMenuManager& GetInstance();
 
-  std::vector<std::shared_ptr<IContextMenuItem>> GetMenuItems() const { return m_items; }
+  const std::vector<std::shared_ptr<IContextMenuItem>>& GetMenuItems() const { return m_items; }
 
   void AddMenuHook(const CPVRClientMenuHook& hook);
   void RemoveMenuHook(const CPVRClientMenuHook& hook);
