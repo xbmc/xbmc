@@ -558,12 +558,12 @@ bool CGUIDialogMediaFilter::SetPath(const std::string &path)
 
   delete m_dbUrl;
   bool video = false;
-  if (path.find("videodb://") == 0)
+  if (path.starts_with("videodb://"))
   {
     m_dbUrl = new CVideoDbUrl();
     video = true;
   }
-  else if (path.find("musicdb://") == 0)
+  else if (path.starts_with("musicdb://"))
     m_dbUrl = new CMusicDbUrl();
   else
   {
