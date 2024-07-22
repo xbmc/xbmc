@@ -681,13 +681,13 @@ bool CWindowDecorator::IsDecorationActive() const
   return StateHasWindowDecorations(m_windowState);
 }
 
-bool CWindowDecorator::StateHasWindowDecorations(IShellSurface::StateBitset state) const
+bool CWindowDecorator::StateHasWindowDecorations(const IShellSurface::StateBitset& state) const
 {
   // No decorations possible if subcompositor not available
   return m_subcompositor && !state.test(IShellSurface::STATE_FULLSCREEN);
 }
 
-CSizeInt CWindowDecorator::CalculateMainSurfaceSize(CSizeInt size, IShellSurface::StateBitset state) const
+CSizeInt CWindowDecorator::CalculateMainSurfaceSize(CSizeInt size, const IShellSurface::StateBitset& state) const
 {
   if (StateHasWindowDecorations(state))
   {
@@ -701,7 +701,7 @@ CSizeInt CWindowDecorator::CalculateMainSurfaceSize(CSizeInt size, IShellSurface
   }
 }
 
-CSizeInt CWindowDecorator::CalculateFullSurfaceSize(CSizeInt size, IShellSurface::StateBitset state) const
+CSizeInt CWindowDecorator::CalculateFullSurfaceSize(CSizeInt size, const IShellSurface::StateBitset& state) const
 {
   if (StateHasWindowDecorations(state))
   {
@@ -715,7 +715,7 @@ CSizeInt CWindowDecorator::CalculateFullSurfaceSize(CSizeInt size, IShellSurface
   }
 }
 
-void CWindowDecorator::SetState(CSizeInt size, int scale, IShellSurface::StateBitset state)
+void CWindowDecorator::SetState(CSizeInt size, int scale, const IShellSurface::StateBitset& state)
 {
   CSizeInt mainSurfaceSize{CalculateMainSurfaceSize(size, state)};
   std::unique_lock<CCriticalSection> lock(m_mutex);
