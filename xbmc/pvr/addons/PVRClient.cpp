@@ -544,16 +544,22 @@ bool CPVRClient::GetAddonProperties()
 
 bool CPVRClient::GetAddonNameStringProperties()
 {
-  char strBackendName[PVR_ADDON_NAME_STRING_LENGTH] = {};
-  char strConnectionString[PVR_ADDON_NAME_STRING_LENGTH] = {};
-  char strBackendVersion[PVR_ADDON_NAME_STRING_LENGTH] = {};
-  char strBackendHostname[PVR_ADDON_NAME_STRING_LENGTH] = {};
+  std::string backendName;
+  std::string connectionString;
+  std::string backendVersion;
+  std::string backendHostname;
 
   /* get the name of the backend */
   PVR_ERROR retVal = DoAddonCall(
       __func__,
-      [&strBackendName](const AddonInstance* addon) {
-        return addon->toAddon->GetBackendName(addon, strBackendName, sizeof(strBackendName));
+      [&backendName](const AddonInstance* addon)
+      {
+        char* strBackendName{nullptr};
+        const PVR_ERROR error{addon->toAddon->GetBackendName(addon, &strBackendName)};
+        if (error == PVR_ERROR_NO_ERROR && strBackendName != nullptr)
+          backendName = strBackendName;
+        addon->toAddon->FreeString(addon, strBackendName);
+        return error;
       },
       true, false);
 
@@ -563,9 +569,14 @@ bool CPVRClient::GetAddonNameStringProperties()
   /* get the connection string */
   retVal = DoAddonCall(
       __func__,
-      [&strConnectionString](const AddonInstance* addon) {
-        return addon->toAddon->GetConnectionString(addon, strConnectionString,
-                                                   sizeof(strConnectionString));
+      [&connectionString](const AddonInstance* addon)
+      {
+        char* strConnectionString{nullptr};
+        const PVR_ERROR error{addon->toAddon->GetConnectionString(addon, &strConnectionString)};
+        if (error == PVR_ERROR_NO_ERROR && strConnectionString != nullptr)
+          connectionString = strConnectionString;
+        addon->toAddon->FreeString(addon, strConnectionString);
+        return error;
       },
       true, false);
 
@@ -575,9 +586,14 @@ bool CPVRClient::GetAddonNameStringProperties()
   /* backend version number */
   retVal = DoAddonCall(
       __func__,
-      [&strBackendVersion](const AddonInstance* addon) {
-        return addon->toAddon->GetBackendVersion(addon, strBackendVersion,
-                                                 sizeof(strBackendVersion));
+      [&backendVersion](const AddonInstance* addon)
+      {
+        char* strBackendVersion{nullptr};
+        const PVR_ERROR error{addon->toAddon->GetBackendVersion(addon, &strBackendVersion)};
+        if (error == PVR_ERROR_NO_ERROR && strBackendVersion != nullptr)
+          backendVersion = strBackendVersion;
+        addon->toAddon->FreeString(addon, strBackendVersion);
+        return error;
       },
       true, false);
 
@@ -587,9 +603,14 @@ bool CPVRClient::GetAddonNameStringProperties()
   /* backend hostname */
   retVal = DoAddonCall(
       __func__,
-      [&strBackendHostname](const AddonInstance* addon) {
-        return addon->toAddon->GetBackendHostname(addon, strBackendHostname,
-                                                  sizeof(strBackendHostname));
+      [&backendHostname](const AddonInstance* addon)
+      {
+        char* strBackendHostname{nullptr};
+        const PVR_ERROR error{addon->toAddon->GetBackendHostname(addon, &strBackendHostname)};
+        if (error == PVR_ERROR_NO_ERROR && strBackendHostname != nullptr)
+          backendHostname = strBackendHostname;
+        addon->toAddon->FreeString(addon, strBackendHostname);
+        return error;
       },
       true, false);
 
@@ -598,10 +619,10 @@ bool CPVRClient::GetAddonNameStringProperties()
 
   /* update the members */
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  m_strBackendName = strBackendName;
-  m_strConnectionString = strConnectionString;
-  m_strBackendVersion = strBackendVersion;
-  m_strBackendHostname = strBackendHostname;
+  m_strBackendName = backendName;
+  m_strConnectionString = connectionString;
+  m_strBackendVersion = backendVersion;
+  m_strBackendHostname = backendHostname;
 
   return true;
 }

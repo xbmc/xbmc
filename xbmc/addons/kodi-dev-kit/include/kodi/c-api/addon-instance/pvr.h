@@ -149,10 +149,10 @@ extern "C"
     // General interface functions
     enum PVR_ERROR(__cdecl* GetCapabilities)(const struct AddonInstance_PVR*,
                                              struct PVR_ADDON_CAPABILITIES*);
-    enum PVR_ERROR(__cdecl* GetBackendName)(const struct AddonInstance_PVR*, char*, int);
-    enum PVR_ERROR(__cdecl* GetBackendVersion)(const struct AddonInstance_PVR*, char*, int);
-    enum PVR_ERROR(__cdecl* GetBackendHostname)(const struct AddonInstance_PVR*, char*, int);
-    enum PVR_ERROR(__cdecl* GetConnectionString)(const struct AddonInstance_PVR*, char*, int);
+    enum PVR_ERROR(__cdecl* GetBackendName)(const struct AddonInstance_PVR*, char**);
+    enum PVR_ERROR(__cdecl* GetBackendVersion)(const struct AddonInstance_PVR*, char**);
+    enum PVR_ERROR(__cdecl* GetBackendHostname)(const struct AddonInstance_PVR*, char**);
+    enum PVR_ERROR(__cdecl* GetConnectionString)(const struct AddonInstance_PVR*, char**);
     enum PVR_ERROR(__cdecl* GetDriveSpace)(const struct AddonInstance_PVR*, uint64_t*, uint64_t*);
     enum PVR_ERROR(__cdecl* CallSettingsMenuHook)(const struct AddonInstance_PVR*,
                                                   const struct PVR_MENUHOOK*);
@@ -340,6 +340,7 @@ extern "C"
     enum PVR_ERROR(__cdecl* FreeEdlEntries)(const struct AddonInstance_PVR*,
                                             struct PVR_EDL_ENTRY**,
                                             unsigned int);
+    enum PVR_ERROR(__cdecl* FreeString)(const struct AddonInstance_PVR*, char*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // New functions becomes added below and can be on another API change (where

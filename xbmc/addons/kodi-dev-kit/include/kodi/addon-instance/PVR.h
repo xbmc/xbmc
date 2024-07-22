@@ -2832,6 +2832,7 @@ private:
     instance->pvr->toAddon->FreeDescrambleInfo = ADDON_FreeDescrambleInfo;
     instance->pvr->toAddon->FreeSignalStatus = ADDON_FreeSignalStatus;
     instance->pvr->toAddon->FreeEdlEntries = ADDON_FreeEdlEntries;
+    instance->pvr->toAddon->FreeString = ADDON_FreeString;
 
     m_instanceData = instance->pvr;
     m_instanceData->toAddon->addonInstance = this;
@@ -2852,51 +2853,43 @@ private:
     return PVR_ERROR_NO_ERROR;
   }
 
-  inline static PVR_ERROR ADDON_GetBackendName(const AddonInstance_PVR* instance,
-                                               char* str,
-                                               int memSize)
+  inline static PVR_ERROR ADDON_GetBackendName(const AddonInstance_PVR* instance, char** str)
   {
     std::string backendName;
     PVR_ERROR err = static_cast<CInstancePVRClient*>(instance->toAddon->addonInstance)
                         ->GetBackendName(backendName);
     if (err == PVR_ERROR_NO_ERROR)
-      strncpy(str, backendName.c_str(), memSize);
+      *str = AllocAndCopyString(backendName.c_str());
     return err;
   }
 
-  inline static PVR_ERROR ADDON_GetBackendVersion(const AddonInstance_PVR* instance,
-                                                  char* str,
-                                                  int memSize)
+  inline static PVR_ERROR ADDON_GetBackendVersion(const AddonInstance_PVR* instance, char** str)
   {
     std::string backendVersion;
     PVR_ERROR err = static_cast<CInstancePVRClient*>(instance->toAddon->addonInstance)
                         ->GetBackendVersion(backendVersion);
     if (err == PVR_ERROR_NO_ERROR)
-      strncpy(str, backendVersion.c_str(), memSize);
+      *str = AllocAndCopyString(backendVersion.c_str());
     return err;
   }
 
-  inline static PVR_ERROR ADDON_GetBackendHostname(const AddonInstance_PVR* instance,
-                                                   char* str,
-                                                   int memSize)
+  inline static PVR_ERROR ADDON_GetBackendHostname(const AddonInstance_PVR* instance, char** str)
   {
     std::string backendHostname;
     PVR_ERROR err = static_cast<CInstancePVRClient*>(instance->toAddon->addonInstance)
                         ->GetBackendHostname(backendHostname);
     if (err == PVR_ERROR_NO_ERROR)
-      strncpy(str, backendHostname.c_str(), memSize);
+      *str = AllocAndCopyString(backendHostname.c_str());
     return err;
   }
 
-  inline static PVR_ERROR ADDON_GetConnectionString(const AddonInstance_PVR* instance,
-                                                    char* str,
-                                                    int memSize)
+  inline static PVR_ERROR ADDON_GetConnectionString(const AddonInstance_PVR* instance, char** str)
   {
     std::string connectionString;
     PVR_ERROR err = static_cast<CInstancePVRClient*>(instance->toAddon->addonInstance)
                         ->GetConnectionString(connectionString);
     if (err == PVR_ERROR_NO_ERROR)
-      strncpy(str, connectionString.c_str(), memSize);
+      *str = AllocAndCopyString(connectionString.c_str());
     return err;
   }
 
@@ -3551,6 +3544,12 @@ private:
     PVRStreamTimes cppTimes(times);
     return static_cast<CInstancePVRClient*>(instance->toAddon->addonInstance)
         ->GetStreamTimes(cppTimes);
+  }
+
+  inline static PVR_ERROR ADDON_FreeString(const AddonInstance_PVR* instance, char* str)
+  {
+    FreeString(str);
+    return PVR_ERROR_NO_ERROR;
   }
   ///@}
 

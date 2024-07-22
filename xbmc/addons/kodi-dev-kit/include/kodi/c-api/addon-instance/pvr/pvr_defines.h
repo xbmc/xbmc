@@ -20,14 +20,6 @@ extern "C"
 #endif /* __cplusplus */
 
   /*!
-   * @brief API array sizes which are used for data exchange between
-   * Kodi and addon.
-   */
-  ///@{
-#define PVR_ADDON_NAME_STRING_LENGTH 1024
-  ///@}
-
-  /*!
    * @brief "C" Representation of a general attribute integer value.
    */
   typedef struct PVR_ATTRIBUTE_INT_VALUE
