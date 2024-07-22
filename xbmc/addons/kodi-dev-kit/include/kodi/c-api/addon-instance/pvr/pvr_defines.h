@@ -25,7 +25,6 @@ extern "C"
    */
   ///@{
 #define PVR_ADDON_NAME_STRING_LENGTH 1024
-#define PVR_ADDON_EDL_LENGTH 64
   ///@}
 
   /*!

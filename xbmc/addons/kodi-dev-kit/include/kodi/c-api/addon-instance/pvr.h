@@ -213,8 +213,8 @@ extern "C"
                                               bool*);
     enum PVR_ERROR(__cdecl* GetEPGTagEdl)(const struct AddonInstance_PVR*,
                                           const struct EPG_TAG*,
-                                          struct PVR_EDL_ENTRY[],
-                                          int*);
+                                          struct PVR_EDL_ENTRY***,
+                                          unsigned int*);
     enum PVR_ERROR(__cdecl* GetEPGTagStreamProperties)(const struct AddonInstance_PVR*,
                                                        const struct EPG_TAG*,
                                                        struct PVR_NAMED_VALUE***,
@@ -249,8 +249,8 @@ extern "C"
                                                             int*);
     enum PVR_ERROR(__cdecl* GetRecordingEdl)(const struct AddonInstance_PVR*,
                                              const struct PVR_RECORDING*,
-                                             struct PVR_EDL_ENTRY[],
-                                             int*);
+                                             struct PVR_EDL_ENTRY***,
+                                             unsigned int*);
     enum PVR_ERROR(__cdecl* GetRecordingSize)(const struct AddonInstance_PVR*,
                                               const PVR_RECORDING*,
                                               int64_t*);
@@ -337,6 +337,9 @@ extern "C"
                                                 struct PVR_DESCRAMBLE_INFO*);
     enum PVR_ERROR(__cdecl* FreeSignalStatus)(const struct AddonInstance_PVR*,
                                               struct PVR_SIGNAL_STATUS*);
+    enum PVR_ERROR(__cdecl* FreeEdlEntries)(const struct AddonInstance_PVR*,
+                                            struct PVR_EDL_ENTRY**,
+                                            unsigned int);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // New functions becomes added below and can be on another API change (where

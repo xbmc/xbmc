@@ -148,6 +148,20 @@ inline static void FreeDynamicPointerArray(C_STRUCT** targetArray, unsigned int 
   delete[] targetArray;
 }
 
+/*!
+ * @brief Internally used helper to free an array of of c-struct pointers.
+ */
+template<typename CPP_CLASS, typename C_STRUCT>
+inline static void FreeStaticPointerArray(C_STRUCT** targetArray, unsigned int targetArraySize)
+{
+  for (unsigned int i = 0; i < targetArraySize; ++i)
+  {
+    C_STRUCT** arrayElem{&targetArray[i]};
+    delete *arrayElem;
+  }
+  delete[] targetArray;
+}
+
 /*
  * Internally used helper class to manage processing of a "C" structure in "CPP"
  * class.
@@ -253,6 +267,12 @@ public:
   operator const C_STRUCT*() const { return m_cStructure; }
 
   const C_STRUCT* GetCStructure() const { return m_cStructure; }
+
+  C_STRUCT* release()
+  {
+    m_owner = false;
+    return m_cStructure;
+  }
 
 protected:
   C_STRUCT* m_cStructure = nullptr;

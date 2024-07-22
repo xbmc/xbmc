@@ -912,15 +912,16 @@ PVR_ERROR CPVRClient::GetEpgTagEdl(const std::shared_ptr<const CPVREpgInfoTag>& 
       [&epgTag, &edls](const AddonInstance* addon) {
         CAddonEpgTag addonTag(epgTag);
 
-        PVR_EDL_ENTRY edl_array[PVR_ADDON_EDL_LENGTH];
-        int size = PVR_ADDON_EDL_LENGTH;
-        PVR_ERROR error = addon->toAddon->GetEPGTagEdl(addon, &addonTag, edl_array, &size);
+        PVR_EDL_ENTRY** edl_array{nullptr};
+        unsigned int size{0};
+        const PVR_ERROR error{addon->toAddon->GetEPGTagEdl(addon, &addonTag, &edl_array, &size)};
         if (error == PVR_ERROR_NO_ERROR)
         {
           edls.reserve(size);
-          for (int i = 0; i < size; ++i)
-            edls.emplace_back(ConvertAddonEdl(edl_array[i]));
+          for (unsigned int i = 0; i < size; ++i)
+            edls.emplace_back(ConvertAddonEdl(*edl_array[i]));
         }
+        addon->toAddon->FreeEdlEntries(addon, edl_array, size);
         return error;
       },
       m_clientCapabilities.SupportsEpgTagEdl());
@@ -1149,15 +1150,16 @@ PVR_ERROR CPVRClient::GetRecordingEdl(const CPVRRecording& recording,
       {
         const CAddonRecording tag{recording};
 
-        PVR_EDL_ENTRY edl_array[PVR_ADDON_EDL_LENGTH];
-        int size = PVR_ADDON_EDL_LENGTH;
-        PVR_ERROR error = addon->toAddon->GetRecordingEdl(addon, &tag, edl_array, &size);
+        PVR_EDL_ENTRY** edl_array{nullptr};
+        unsigned int size{0};
+        const PVR_ERROR error{addon->toAddon->GetRecordingEdl(addon, &tag, &edl_array, &size)};
         if (error == PVR_ERROR_NO_ERROR)
         {
           edls.reserve(size);
-          for (int i = 0; i < size; ++i)
-            edls.emplace_back(ConvertAddonEdl(edl_array[i]));
+          for (unsigned int i = 0; i < size; ++i)
+            edls.emplace_back(ConvertAddonEdl(*edl_array[i]));
         }
+        addon->toAddon->FreeEdlEntries(addon, edl_array, size);
         return error;
       },
       m_clientCapabilities.SupportsRecordingsEdl());
