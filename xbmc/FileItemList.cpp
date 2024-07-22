@@ -1154,7 +1154,7 @@ void CFileItemList::AddSortMethod(SortBy sortBy,
   AddSortMethod(sorting, buttonLabel, labelMasks);
 }
 
-void CFileItemList::AddSortMethod(SortDescription sortDescription,
+void CFileItemList::AddSortMethod(const SortDescription& sortDescription,
                                   int buttonLabel,
                                   const LABEL_MASKS& labelMasks)
 {

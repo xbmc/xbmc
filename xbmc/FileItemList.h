@@ -143,7 +143,7 @@ public:
                      SortAttribute sortAttributes,
                      int buttonLabel,
                      const LABEL_MASKS& labelMasks);
-  void AddSortMethod(SortDescription sortDescription,
+  void AddSortMethod(const SortDescription& sortDescription,
                      int buttonLabel,
                      const LABEL_MASKS& labelMasks);
   bool HasSortDetails() const { return m_sortDetails.size() != 0; }
