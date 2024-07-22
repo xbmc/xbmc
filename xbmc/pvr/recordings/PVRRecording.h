@@ -22,7 +22,11 @@
 
 class CVideoDatabase;
 
-struct PVR_EDL_ENTRY;
+namespace EDL
+{
+struct Edit;
+}
+
 struct PVR_RECORDING;
 
 namespace PVR
@@ -155,7 +159,7 @@ public:
    * @brief Retrieve the edit decision list (EDL) of a recording on the backend.
    * @return The edit decision list (empty on error)
    */
-  std::vector<PVR_EDL_ENTRY> GetEdl() const;
+  std::vector<EDL::Edit> GetEdl() const;
 
   /*!
    * @brief Get the resume point and play count from the database if the

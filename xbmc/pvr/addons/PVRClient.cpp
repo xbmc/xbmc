@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/binary-addons/AddonDll.h"
+#include "cores/EdlEdit.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxUtils.h"
 #include "dialogs/GUIDialogKaiToast.h" //! @todo get rid of GUI in core
 #include "events/EventLog.h"
@@ -45,6 +46,7 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include <chrono>
 #include <map>
 #include <memory>
 #include <mutex>
@@ -236,6 +238,34 @@ private:
   const std::string m_summary;
   const std::string m_seriesLink;
 };
+
+EDL::Edit ConvertAddonEdl(const PVR_EDL_ENTRY& entry)
+{
+  EDL::Edit edit;
+  edit.start = std::chrono::milliseconds(entry.start);
+  edit.end = std::chrono::milliseconds(entry.end);
+
+  switch (entry.type)
+  {
+    case PVR_EDL_TYPE_CUT:
+      edit.action = EDL::Action::CUT;
+      break;
+    case PVR_EDL_TYPE_MUTE:
+      edit.action = EDL::Action::MUTE;
+      break;
+    case PVR_EDL_TYPE_SCENE:
+      edit.action = EDL::Action::SCENE;
+      break;
+    case PVR_EDL_TYPE_COMBREAK:
+      edit.action = EDL::Action::COMM_BREAK;
+      break;
+    default:
+      CLog::LogF(LOGWARNING, "Ignoring entry of unknown EDL type: {}", entry.type);
+      break;
+  }
+
+  return edit;
+}
 } // unnamed namespace
 
 namespace PVR
@@ -874,7 +904,7 @@ PVR_ERROR CPVRClient::GetEpgTagStreamProperties(const std::shared_ptr<const CPVR
 }
 
 PVR_ERROR CPVRClient::GetEpgTagEdl(const std::shared_ptr<const CPVREpgInfoTag>& epgTag,
-                                   std::vector<PVR_EDL_ENTRY>& edls) const
+                                   std::vector<EDL::Edit>& edls) const
 {
   edls.clear();
   return DoAddonCall(
@@ -889,7 +919,7 @@ PVR_ERROR CPVRClient::GetEpgTagEdl(const std::shared_ptr<const CPVREpgInfoTag>& 
         {
           edls.reserve(size);
           for (int i = 0; i < size; ++i)
-            edls.emplace_back(edl_array[i]);
+            edls.emplace_back(ConvertAddonEdl(edl_array[i]));
         }
         return error;
       },
@@ -1110,7 +1140,7 @@ PVR_ERROR CPVRClient::GetRecordingLastPlayedPosition(const CPVRRecording& record
 }
 
 PVR_ERROR CPVRClient::GetRecordingEdl(const CPVRRecording& recording,
-                                      std::vector<PVR_EDL_ENTRY>& edls) const
+                                      std::vector<EDL::Edit>& edls) const
 {
   edls.clear();
   return DoAddonCall(
@@ -1126,7 +1156,7 @@ PVR_ERROR CPVRClient::GetRecordingEdl(const CPVRRecording& recording,
         {
           edls.reserve(size);
           for (int i = 0; i < size; ++i)
-            edls.emplace_back(edl_array[i]);
+            edls.emplace_back(ConvertAddonEdl(edl_array[i]));
         }
         return error;
       },

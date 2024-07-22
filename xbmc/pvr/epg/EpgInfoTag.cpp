@@ -9,6 +9,7 @@
 #include "EpgInfoTag.h"
 
 #include "ServiceBroker.h"
+#include "cores/EdlEdit.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
 #include "pvr/addons/PVRClient.h"
@@ -570,9 +571,9 @@ bool CPVREpgInfoTag::QueuePersistQuery(const std::shared_ptr<CPVREpgDatabase>& d
   return database->QueuePersistQuery(*this);
 }
 
-std::vector<PVR_EDL_ENTRY> CPVREpgInfoTag::GetEdl() const
+std::vector<EDL::Edit> CPVREpgInfoTag::GetEdl() const
 {
-  std::vector<PVR_EDL_ENTRY> edls;
+  std::vector<EDL::Edit> edls;
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
   const std::shared_ptr<const CPVRClient> client =

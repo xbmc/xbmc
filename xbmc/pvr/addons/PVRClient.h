@@ -23,6 +23,11 @@
 
 struct DemuxPacket;
 
+namespace EDL
+{
+struct Edit;
+}
+
 namespace PVR
 {
 class CPVRChannel;
@@ -447,7 +452,7 @@ public:
    * @param edls The edit decision list (empty on error).
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
-  PVR_ERROR GetRecordingEdl(const CPVRRecording& recording, std::vector<PVR_EDL_ENTRY>& edls) const;
+  PVR_ERROR GetRecordingEdl(const CPVRRecording& recording, std::vector<EDL::Edit>& edls) const;
 
   /*!
    * @brief Retrieve the size of a recording on the backend.
@@ -464,7 +469,7 @@ public:
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
   PVR_ERROR GetEpgTagEdl(const std::shared_ptr<const CPVREpgInfoTag>& epgTag,
-                         std::vector<PVR_EDL_ENTRY>& edls) const;
+                         std::vector<EDL::Edit>& edls) const;
 
   //@}
   /** @name PVR timer methods */
