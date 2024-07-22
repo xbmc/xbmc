@@ -194,7 +194,7 @@ public:
   int GetAddButtonLabel() const { return m_addButtonLabel; }
   void SetAddButtonLabel(int label) { m_addButtonLabel = label; }
 
-  SettingControlListValueFormatter GetFormatter() const { return m_formatter; }
+  const SettingControlListValueFormatter& GetFormatter() const { return m_formatter; }
   void SetFormatter(SettingControlListValueFormatter formatter) { m_formatter = formatter; }
 
   bool UseDetails() const { return m_useDetails; }
@@ -238,7 +238,7 @@ public:
   void SetFormatString(const std::string &formatString) { m_formatString = formatString; }
   std::string GetDefaultFormatString() const;
 
-  SettingControlSliderFormatter GetFormatter() const { return m_formatter; }
+  const SettingControlSliderFormatter& GetFormatter() const { return m_formatter; }
   void SetFormatter(SettingControlSliderFormatter formatter) { m_formatter = formatter; }
 
 protected:
