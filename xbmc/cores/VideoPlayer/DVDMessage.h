@@ -131,7 +131,7 @@ public:
 
   ~CDVDMsgType() override = default;
 
-  operator T() { return m_value; }
+  operator const T& () const { return m_value; }
   T m_value;
 };
 
@@ -184,7 +184,7 @@ public:
   explicit CDVDMsgPlayerSetState(const std::string& state) : CDVDMsg(PLAYER_SET_STATE), m_state(state) {}
   ~CDVDMsgPlayerSetState() override = default;
 
-  std::string GetState() { return m_state; }
+  const std::string& GetState() { return m_state; }
 private:
   std::string m_state;
 };

@@ -36,6 +36,7 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect,
                                              bool toneMap,
                                              ETONEMAPMETHOD toneMapMethod,
                                              std::shared_ptr<GLSLOutput> output)
+  : m_glslOutput(std::move(output))
 {
   m_width = 1;
   m_height = 1;
@@ -46,7 +47,6 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect,
   m_stretch = 0.0f;
 
   // get defines from the output stage if used
-  m_glslOutput = std::move(output);
   if (m_glslOutput)
   {
     m_defines += m_glslOutput->GetDefines();
@@ -312,9 +312,9 @@ YUV2RGBFilterShader4::YUV2RGBFilterShader4(bool rect,
                           srcPrimaries,
                           toneMap,
                           toneMapMethod,
-                          std::move(output))
+                          std::move(output)),
+    m_scaling(method)
 {
-  m_scaling = method;
   PixelShader()->LoadSource("gl_yuv2rgb_filter4.glsl", m_defines);
   PixelShader()->AppendSource("gl_output.glsl");
 

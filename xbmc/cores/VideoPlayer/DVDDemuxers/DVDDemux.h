@@ -72,21 +72,21 @@ enum StreamSource
 class CDemuxStream
 {
 public:
-  CDemuxStream()
+  CDemuxStream() :
+    uniqueId(),
+    dvdNavId(),
+    demuxerId(-1),
+    codec_fourcc(),
+    profile(FF_PROFILE_UNKNOWN),
+    level(FF_LEVEL_UNKNOWN),
+    type(STREAM_NONE),
+    source(STREAM_SOURCE_NONE),
+    iDuration(),
+    pPrivate(),
+    flags(StreamFlags::FLAG_NONE),
+    disabled(),
+    changes()
   {
-    uniqueId = 0;
-    dvdNavId = 0;
-    demuxerId = -1;
-    codec_fourcc = 0;
-    profile = FF_PROFILE_UNKNOWN;
-    level = FF_LEVEL_UNKNOWN;
-    type = STREAM_NONE;
-    source = STREAM_SOURCE_NONE;
-    iDuration = 0;
-    pPrivate = NULL;
-    disabled = false;
-    changes = 0;
-    flags = StreamFlags::FLAG_NONE;
   }
 
   virtual ~CDemuxStream() = default;
