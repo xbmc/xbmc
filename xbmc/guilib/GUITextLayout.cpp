@@ -33,10 +33,10 @@ std::string CGUIString::GetAsString() const
 }
 
 CGUITextLayout::CGUITextLayout(CGUIFont *font, bool wrap, float fHeight, CGUIFont *borderFont)
+: m_textColor()
 {
   m_varFont = m_font = font;
   m_borderFont = borderFont;
-  m_textColor = 0;
   m_wrap = wrap;
   m_maxHeight = fHeight;
   m_textWidth = 0;
