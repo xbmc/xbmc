@@ -17,7 +17,7 @@ CFTPParse::CFTPParse()
   m_size = 0;
 }
 
-std::string CFTPParse::getName()
+const std::string& CFTPParse::getName()
 {
   return m_name;
 }
