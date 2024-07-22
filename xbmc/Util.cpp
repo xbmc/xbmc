@@ -158,7 +158,7 @@ std::string GetHomePath(const std::string& strTarget, std::string strPath)
   strPath = CUtil::ResolveExecutablePath();
   auto last_sep = strPath.find_last_of(PATH_SEPARATOR_CHAR);
   if (last_sep != std::string::npos)
-      strPath = strPath.substr(0, last_sep);
+    strPath.resize(last_sep);
 
   g_charsetConverter.utf8ToW(strPath, strPathW);
   if (IsDirectoryValidRoot(strPathW))
