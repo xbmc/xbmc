@@ -86,7 +86,7 @@ namespace XBMCAddon
       ///
       getName();
 #else
-      String getName() const { return m_name; }
+      const String& getName() const { return m_name; }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -103,7 +103,7 @@ namespace XBMCAddon
       ///
       getRole();
 #else
-      String getRole() const { return m_role; }
+      const String& getRole() const { return m_role; }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -137,7 +137,7 @@ namespace XBMCAddon
       ///
       getThumbnail();
 #else
-      String getThumbnail() const { return m_thumbnail; }
+      const String& getThumbnail() const { return m_thumbnail; }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -367,7 +367,7 @@ namespace XBMCAddon
       ///
       getCodec();
 #else
-      String getCodec() const { return m_codec; }
+      const String& getCodec() const { return m_codec; }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -384,7 +384,7 @@ namespace XBMCAddon
       ///
       getStereoMode();
 #else
-      String getStereoMode() const { return m_stereoMode; }
+      const String& getStereoMode() const { return m_stereoMode; }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -401,7 +401,7 @@ namespace XBMCAddon
       ///
       getLanguage();
 #else
-      String getLanguage() const { return m_language; }
+      const String& getLanguage() const { return m_language; }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -418,7 +418,7 @@ namespace XBMCAddon
       ///
       getHDRType();
 #else
-      String getHDRType() const { return m_hdrType; }
+      const String& getHDRType() const { return m_hdrType; }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -658,7 +658,7 @@ namespace XBMCAddon
       ///
       getCodec();
 #else
-      String getCodec() const { return m_codec; }
+      const String& getCodec() const { return m_codec; }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -675,7 +675,7 @@ namespace XBMCAddon
       ///
       getLanguage();
 #else
-      String getLanguage() const { return m_language; }
+      const String& getLanguage() const { return m_language; }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -803,7 +803,7 @@ namespace XBMCAddon
       ///
       getLanguage();
 #else
-      String getLanguage() const { return m_language; }
+      const String& getLanguage() const { return m_language; }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
