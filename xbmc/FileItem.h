@@ -226,7 +226,6 @@ public:
 
   void RemoveExtension();
   void CleanString();
-  void FillInDefaultIcon();
   void SetFileSizeLabel();
   void SetLabel(const std::string &strLabel) override;
   VideoDbContentType GetVideoContentType() const;

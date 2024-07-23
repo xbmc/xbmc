@@ -23,6 +23,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ArtUtils.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
@@ -100,7 +101,7 @@ bool CPictureThumbLoader::LoadItemCached(CFileItem* pItem)
     CServiceBroker::GetTextureCache()->BackgroundCacheImage(thumb);
     pItem->SetArt("thumb", thumb);
   }
-  pItem->FillInDefaultIcon();
+  ART::FillInDefaultIcon(*pItem);
   return true;
 }
 
@@ -215,6 +216,6 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
       }
     }
     // refill in the icon to get it to update
-    pItem->FillInDefaultIcon();
+    ART::FillInDefaultIcon(*pItem);
   }
 }
