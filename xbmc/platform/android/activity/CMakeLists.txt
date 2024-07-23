@@ -1,5 +1,4 @@
 set(SOURCES android_main.cpp
-            AndroidFeatures.cpp
             AndroidJoyStick.cpp
             AndroidKey.cpp
             AndroidMouse.cpp
@@ -22,11 +21,9 @@ set(SOURCES android_main.cpp
             JNIXBMCSpeechRecognitionListener.cpp
             JNIXBMCConnectivityManagerNetworkCallback.cpp
             JNIXBMCBroadcastReceiver.cpp
-            ${NDKROOT}/sources/android/native_app_glue/android_native_app_glue.c
-            ${NDKROOT}/sources/android/cpufeatures/cpu-features.c)
+            ${NDKROOT}/sources/android/native_app_glue/android_native_app_glue.c)
 
-set(HEADERS AndroidFeatures.h
-            AndroidJoyStick.h
+set(HEADERS AndroidJoyStick.h
             AndroidKey.h
             AndroidMouse.h
             AndroidTouch.h
@@ -53,5 +50,4 @@ set(HEADERS AndroidFeatures.h
 
 core_add_library(platform_android_activity)
 target_include_directories(${CORE_LIBRARY} SYSTEM
-                           PRIVATE ${NDKROOT}/sources/android/native_app_glue
-                                   ${NDKROOT}/sources/android/cpufeatures)
+                           PRIVATE ${NDKROOT}/sources/android/native_app_glue)
