@@ -26,6 +26,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "playlists/PlayListTypes.h"
 #include "settings/SkinSettings.h"
+#include "utils/ArtUtils.h"
 #include "utils/CharsetConverter.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
@@ -11215,7 +11216,7 @@ void CGUIInfoManager::UpdateCurrentItem(const CFileItem &item)
 void CGUIInfoManager::SetCurrentItem(const CFileItem &item)
 {
   *m_currentFile = item;
-  m_currentFile->FillInDefaultIcon();
+  ART::FillInDefaultIcon(*m_currentFile);
 
   m_infoProviders.InitCurrentItem(m_currentFile);
 
@@ -11229,7 +11230,7 @@ void CGUIInfoManager::SetCurrentAlbumThumb(const std::string &thumbFileName)
   else
   {
     m_currentFile->SetArt("thumb", "");
-    m_currentFile->FillInDefaultIcon();
+    ART::FillInDefaultIcon(*m_currentFile);
   }
 }
 
