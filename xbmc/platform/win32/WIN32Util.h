@@ -46,7 +46,6 @@ public:
   static int GetDesktopColorDepth();
   static size_t GetSystemMemorySize();
 
-  static std::string GetSystemPath();
   static std::string GetProfilePath(const bool platformDirectories);
   static std::string UncToSmb(const std::string &strPath);
   static std::string SmbToUnc(const std::string &strPath);
@@ -68,7 +67,7 @@ public:
   static BOOL IsCurrentUserLocalAdministrator();
 
 #ifdef TARGET_WINDOWS_DESKTOP
-  static std::string GetSpecialFolder(int csidl);
+  static std::string GetAppDataFolder();
   static LONG UtilRegGetValue( const HKEY hKey, const char *const pcKey, DWORD *const pdwType, char **const ppcBuffer, DWORD *const pdwSizeBuff, const DWORD dwSizeAdd );
   static bool UtilRegOpenKeyEx( const HKEY hKeyParent, const char *const pcKey, const REGSAM rsAccessRights, HKEY *hKey, const bool bReadX64= false );
   static bool GetFocussedProcess(std::string &strProcessFile);

@@ -349,37 +349,6 @@ size_t CWIN32Util::GetSystemMemorySize()
 #endif
 }
 
-#ifdef TARGET_WINDOWS_DESKTOP
-std::string CWIN32Util::GetSpecialFolder(int csidl)
-{
-  std::string strProfilePath;
-  static const int bufSize = MAX_PATH;
-  WCHAR* buf = new WCHAR[bufSize];
-
-  if(SUCCEEDED(SHGetFolderPathW(NULL, csidl, NULL, SHGFP_TYPE_CURRENT, buf)))
-  {
-    buf[bufSize-1] = 0;
-    g_charsetConverter.wToUTF8(buf, strProfilePath);
-    strProfilePath = UncToSmb(strProfilePath);
-  }
-  else
-    strProfilePath = "";
-
-  delete[] buf;
-  return strProfilePath;
-}
-#endif
-
-std::string CWIN32Util::GetSystemPath()
-{
-#ifdef TARGET_WINDOWS_STORE
-  // access to system folder is not allowed in a UWP app
-  return "";
-#else
-  return GetSpecialFolder(CSIDL_SYSTEM);
-#endif
-}
-
 std::string CWIN32Util::GetProfilePath(const bool platformDirectories)
 {
   std::string strProfilePath;
@@ -390,7 +359,7 @@ std::string CWIN32Util::GetProfilePath(const bool platformDirectories)
   std::string strHomePath = CUtil::GetHomePath();
 
   if (platformDirectories)
-    strProfilePath = URIUtils::AddFileToFolder(GetSpecialFolder(CSIDL_APPDATA|CSIDL_FLAG_CREATE), CCompileInfo::GetAppName());
+    strProfilePath = URIUtils::AddFileToFolder(GetAppDataFolder(), CCompileInfo::GetAppName());
   else
     strProfilePath = URIUtils::AddFileToFolder(strHomePath , "portable_data");
 
@@ -401,6 +370,39 @@ std::string CWIN32Util::GetProfilePath(const bool platformDirectories)
 #endif
   return strProfilePath;
 }
+
+#ifdef TARGET_WINDOWS_DESKTOP
+std::string CWIN32Util::GetAppDataFolder()
+{
+  std::string profilePath;
+  WCHAR* path = nullptr;
+
+  // First get the roaming appdata location.
+  // All current users use this folder, must not break their setup.
+  if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_CREATE, NULL, &path)))
+  {
+    g_charsetConverter.wToUTF8(path, profilePath);
+    // We do not support appdata on a UNC path.
+    if (profilePath.starts_with("\\\\"))
+      profilePath.clear();
+  }
+
+  // Must always free, even if failed. This handles NULL, no need to check.
+  CoTaskMemFree(path);
+  path = nullptr;
+
+  // If we still do not have the data folder, get the local appdata path.
+  // This will only happen for new users with redirected roaming appdata.
+  if (profilePath.empty())
+  {
+    if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_LocalAppData, KF_FLAG_CREATE, NULL, &path)))
+      g_charsetConverter.wToUTF8(path, profilePath);
+    CoTaskMemFree(path);
+  }
+
+  return profilePath;
+}
+#endif
 
 std::string CWIN32Util::UncToSmb(const std::string &strPath)
 {
