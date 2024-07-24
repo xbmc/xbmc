@@ -1682,7 +1682,7 @@ public:
   ///
   inline void EpgEventStateChange(kodi::addon::PVREPGTag& tag, EPG_EVENT_STATE newState)
   {
-    m_instanceData->toKodi->EpgEventStateChange(m_instanceData->toKodi->kodiInstance, tag.GetTag(),
+    m_instanceData->toKodi->EpgEventStateChange(m_instanceData->toKodi->kodiInstance, tag,
                                                 newState);
   }
   //----------------------------------------------------------------------------
