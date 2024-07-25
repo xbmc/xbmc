@@ -227,6 +227,13 @@ CRepository::FetchStatus CRepository::FetchIfChanged(const std::string& oldCheck
                                                      std::vector<AddonInfoPtr>& addons,
                                                      int& recheckAfter) const
 {
+  
+  // Disable update check for Kodi core
+  if (m_addonId == "xbmc.core")
+  {
+    return STATUS_NOT_MODIFIED;
+  }
+  
   checksum = "";
   std::vector<std::tuple<DirInfo const&, std::string>> dirChecksums;
   std::vector<int> recheckAfterTimes;
