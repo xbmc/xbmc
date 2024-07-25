@@ -227,55 +227,7 @@ CRepository::FetchStatus CRepository::FetchIfChanged(const std::string& oldCheck
                                                      std::vector<AddonInfoPtr>& addons,
                                                      int& recheckAfter) const
 {
-  
-  // Disable update check for Kodi core
-  if (m_addonId == "xbmc.core")
-  {
-    return STATUS_NOT_MODIFIED;
-  }
-  
-  checksum = "";
-  std::vector<std::tuple<DirInfo const&, std::string>> dirChecksums;
-  std::vector<int> recheckAfterTimes;
-
-  for (const auto& dir : m_dirs)
-  {
-    if (!dir.checksum.empty())
-    {
-      std::string part;
-      int recheckAfterThisDir;
-      if (!FetchChecksum(dir.checksum, part, recheckAfterThisDir))
-      {
-        recheckAfter = 1 * 60 * 60; // retry after 1 hour
-        CLog::Log(LOGERROR, "CRepository: failed read '%s'", dir.checksum.c_str());
-        return STATUS_ERROR;
-      }
-      dirChecksums.emplace_back(dir, part);
-      recheckAfterTimes.push_back(recheckAfterThisDir);
-      checksum += part;
-    }
-  }
-
-  // Default interval: 24 h
-  recheckAfter = 24 * 60 * 60;
-  if (dirChecksums.size() == m_dirs.size() && !dirChecksums.empty())
-  {
-    // Use smallest update interval out of all received (individual intervals per directory are
-    // not possible)
-    recheckAfter = *std::min_element(recheckAfterTimes.begin(), recheckAfterTimes.end());
-    // If all directories have checksums and they match the last one, nothing has changed
-    if (dirChecksums.size() == m_dirs.size() && oldChecksum == checksum)
-      return STATUS_NOT_MODIFIED;
-  }
-
-  for (const auto& dirTuple : dirChecksums)
-  {
-    std::vector<AddonInfoPtr> tmp;
-    if (!FetchIndex(std::get<0>(dirTuple), std::get<1>(dirTuple), tmp))
-      return STATUS_ERROR;
-    addons.insert(addons.end(), tmp.begin(), tmp.end());
-  }
-  return STATUS_OK;
+  return STATUS_NOT_MODIFIED;
 }
 
 CRepository::DirInfo CRepository::ParseDirConfiguration(const CAddonExtensions& configuration)
