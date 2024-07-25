@@ -313,6 +313,13 @@ void CGUIDialogAddonInfo::OnUpdate()
   const AddonVersion& version =
       static_cast<AddonVersion>(m_item->GetProperty("Addon.ValidUpdateVersion").asString());
 
+  // Disable update for Kodi itself
+  if (m_item->GetProperty("Addon.ID").asString() == "xbmc.core")
+  {
+    HELPERS::ShowOKDialogText(CVariant{24000}, CVariant{"Kodi core updates are disabled."});
+    return;
+  }
+
   Close();
   if (!m_depsInstalledWithAvailable.empty() &&
       !ShowDependencyList(Reactivate::NO, EntryPoint::UPDATE))
