@@ -319,6 +319,12 @@ void CGUIDialogAddonInfo::OnUpdate()
     HELPERS::ShowOKDialogText(CVariant{24000}, CVariant{"Kodi core updates are disabled."});
     return;
   }
+  // Disable update for Kodi itself
+  if (addonId == "xbmc.core")
+  {
+    HELPERS::ShowOKDialogText(CVariant{24000}, CVariant{"Kodi core updates are disabled."});
+    return;
+  }
 
   Close();
   if (!m_depsInstalledWithAvailable.empty() &&
