@@ -110,16 +110,6 @@ void CRepositoryUpdater::OnJobComplete(unsigned int jobID, bool success, CJob* j
 
 bool CRepositoryUpdater::CheckForUpdates(bool showProgress)
 {
-  VECADDONS addons;
-  if (m_addonMgr.GetAddons(addons, ADDON_REPOSITORY) && !addons.empty())
-  {
-    CSingleLock lock(m_criticalSection);
-    for (const auto& addon : addons)
-      CheckForUpdates(std::static_pointer_cast<ADDON::CRepository>(addon), showProgress);
-
-    return true;
-  }
-
   return false;
 }
 
