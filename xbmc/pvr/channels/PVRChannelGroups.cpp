@@ -261,7 +261,8 @@ std::vector<std::shared_ptr<CPVRChannelGroupMember>> CPVRChannelGroups::GetMembe
     const auto allGroupMembers = GetGroupAll()->GetMembers();
     for (const auto& groupMember : allGroupMembers)
     {
-      if (!group->IsGroupMember(groupMember))
+      if (!group->IsGroupMember(groupMember) &&
+          (group->IsChannelsOwner() || !groupMember->Channel()->IsHidden()))
         result.emplace_back(groupMember);
     }
   }
