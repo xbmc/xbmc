@@ -1046,10 +1046,9 @@ void CGUIDialogPVRChannelManager::SaveList()
   pDlgProgress->SetPercentage(0);
 
   /* persist all channels */
-  std::shared_ptr<CPVRChannelGroup> group =
-      CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(m_bIsRadio);
-  if (!group)
-    return;
+  const std::shared_ptr<const CPVRChannelGroupsContainer> groupsContainer{
+      CServiceBroker::GetPVRManager().ChannelGroups()};
+  const std::shared_ptr<CPVRChannelGroup> group{groupsContainer->GetGroupAll(m_bIsRadio)};
 
   for (int iListPtr = 0; iListPtr < m_channelItems->Size(); ++iListPtr)
   {
@@ -1080,11 +1079,7 @@ void CGUIDialogPVRChannelManager::SaveList()
   }
 
   group->SortAndRenumber();
-
-  const std::shared_ptr<CPVRChannelGroups> channelGroups{
-      CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio)};
-  channelGroups->UpdateChannelNumbersFromAllChannelsGroup();
-  channelGroups->PersistAll();
+  groupsContainer->Get(m_bIsRadio)->PersistAll();
   pDlgProgress->Close();
 
   CONTROL_DISABLE(BUTTON_APPLY);
