@@ -92,8 +92,8 @@ public:
     return fmt::format(fmt::runtime(format), EnumToInt(std::forward<Args>(args))...);
   }
 
-  static std::string FormatV(PRINTF_FORMAT_STRING const char *fmt, va_list args);
-  static std::wstring FormatV(PRINTF_FORMAT_STRING const wchar_t *fmt, va_list args);
+  [[nodiscard]] static std::string FormatV(PRINTF_FORMAT_STRING const char* fmt, va_list args);
+  [[nodiscard]] static std::wstring FormatV(PRINTF_FORMAT_STRING const wchar_t* fmt, va_list args);
   static std::string ToUpper(const std::string& str);
   static std::wstring ToUpper(const std::wstring& str);
   static void ToUpper(std::string &str);
