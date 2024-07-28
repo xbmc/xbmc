@@ -39,6 +39,7 @@
 #include <inttypes.h>
 #include <iomanip>
 #include <math.h>
+#include <numeric>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -530,15 +531,14 @@ std::string& StringUtils::TrimRight(std::string &str, const char* const chars)
   return str;
 }
 
-int StringUtils::ReturnDigits(const std::string& str)
+int StringUtils::ReturnDigits(std::string_view str) noexcept
 {
-  std::stringstream ss;
-  for (const auto& character : str)
-  {
-    if (isdigit(character))
-      ss << character;
-  }
-  return atoi(ss.str().c_str());
+  return std::accumulate(str.begin(), str.end(), int64_t{},
+                         [](int64_t i, char c)
+                         {
+                           int tmp = c - '0';
+                           return (tmp >= 0 && tmp <= 9) ? (i * 10) + tmp : i;
+                         });
 }
 
 std::string& StringUtils::RemoveDuplicatedSpacesAndTabs(std::string& str)
