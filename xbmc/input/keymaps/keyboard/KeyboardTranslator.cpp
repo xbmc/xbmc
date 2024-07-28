@@ -51,10 +51,10 @@ uint32_t CKeyboardTranslator::TranslateButton(const tinyxml2::XMLElement* pButto
     button_id = TranslateString(szButton);
 
   // Process the ctrl/shift/alt modifiers
-  const char* strMod;
-  if (pButton->QueryStringAttribute("mod", &strMod) == tinyxml2::XML_SUCCESS)
+  const char* cstrMod;
+  if (pButton->QueryStringAttribute("mod", &cstrMod) == tinyxml2::XML_SUCCESS)
   {
-    StringUtils::ToLower(strMod);
+    const std::string strMod = StringUtils::ToLower(cstrMod);
 
     std::vector<std::string> modArray = StringUtils::Split(strMod, ",");
     for (auto substr : modArray)
