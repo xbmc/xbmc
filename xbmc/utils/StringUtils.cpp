@@ -459,15 +459,15 @@ int StringUtils::CompareNoCase(std::string_view str1,
          ::tolower(static_cast<unsigned char>(*diff.in2));
 }
 
-std::string StringUtils::Left(const std::string &str, size_t count)
+std::string StringUtils::Left(std::string_view str, size_t count)
 {
   count = std::max((size_t)0, std::min(count, str.size()));
-  return str.substr(0, count);
+  return {str, 0, count};
 }
 
-std::string StringUtils::Mid(const std::string &str, size_t first, size_t count /* = string::npos */)
+std::string StringUtils::Mid(std::string_view str, size_t first, size_t count /* = string::npos */)
 {
-  if (first + count > str.size())
+  if (count == str.npos || first + count > str.size())
     count = str.size() - first;
 
   if (first > str.size())
@@ -475,13 +475,13 @@ std::string StringUtils::Mid(const std::string &str, size_t first, size_t count 
 
   assert(first + count <= str.size());
 
-  return str.substr(first, count);
+  return {str, first, count};
 }
 
-std::string StringUtils::Right(const std::string &str, size_t count)
+std::string StringUtils::Right(std::string_view str, size_t count)
 {
   count = std::max((size_t)0, std::min(count, str.size()));
-  return str.substr(str.size() - count);
+  return {str, str.size() - count, count};
 }
 
 std::string& StringUtils::Trim(std::string &str)

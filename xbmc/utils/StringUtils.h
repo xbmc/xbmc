@@ -109,9 +109,11 @@ public:
                                          std::string_view str2,
                                          size_t n = 0) noexcept;
   [[nodiscard]] static int ReturnDigits(std::string_view str) noexcept;
-  static std::string Left(const std::string &str, size_t count);
-  static std::string Mid(const std::string &str, size_t first, size_t count = std::string::npos);
-  static std::string Right(const std::string &str, size_t count);
+  [[nodiscard]] static std::string Left(std::string_view str, size_t count);
+  [[nodiscard]] static std::string Mid(std::string_view str,
+                                       size_t first,
+                                       size_t count = std::string_view::npos);
+  [[nodiscard]] static std::string Right(std::string_view str, size_t count);
   static std::string& Trim(std::string &str);
   static std::string& Trim(std::string &str, const char* const chars);
   static std::string& TrimLeft(std::string &str);
