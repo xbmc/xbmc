@@ -40,6 +40,7 @@
 #include <iomanip>
 #include <math.h>
 #include <numeric>
+#include <ranges>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -484,13 +485,13 @@ std::string StringUtils::Right(std::string_view str, size_t count)
   return {str, str.size() - count, count};
 }
 
-std::string& StringUtils::Trim(std::string &str)
+std::string& StringUtils::Trim(std::string& str) noexcept
 {
   TrimLeft(str);
   return TrimRight(str);
 }
 
-std::string& StringUtils::Trim(std::string &str, const char* const chars)
+std::string& StringUtils::Trim(std::string& str, std::string_view chars) noexcept
 {
   TrimLeft(str, chars);
   return TrimRight(str, chars);
@@ -503,28 +504,28 @@ static int isspace_c(char c)
   return (c & 0x80) == 0 && ::isspace(c);
 }
 
-std::string& StringUtils::TrimLeft(std::string &str)
+std::string& StringUtils::TrimLeft(std::string& str) noexcept
 {
-  str.erase(str.begin(),
-            std::find_if(str.begin(), str.end(), [](char s) { return isspace_c(s) == 0; }));
+  str.erase(str.begin(), std::ranges::find_if(str, [](char s) { return isspace_c(s) == 0; }));
   return str;
 }
 
-std::string& StringUtils::TrimLeft(std::string &str, const char* const chars)
+std::string& StringUtils::TrimLeft(std::string& str, std::string_view chars) noexcept
 {
   size_t nidx = str.find_first_not_of(chars);
   str.erase(0, nidx);
   return str;
 }
 
-std::string& StringUtils::TrimRight(std::string &str)
+std::string& StringUtils::TrimRight(std::string& str) noexcept
 {
-  str.erase(std::find_if(str.rbegin(), str.rend(), [](char s) { return isspace_c(s) == 0; }).base(),
+  str.erase(std::ranges::find_if(std::views::reverse(str), [](char s) { return isspace_c(s) == 0; })
+                .base(),
             str.end());
   return str;
 }
 
-std::string& StringUtils::TrimRight(std::string &str, const char* const chars)
+std::string& StringUtils::TrimRight(std::string& str, std::string_view chars) noexcept
 {
   size_t nidx = str.find_last_not_of(chars);
   str.erase(str.npos == nidx ? 0 : ++nidx);
