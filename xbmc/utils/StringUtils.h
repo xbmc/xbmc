@@ -94,16 +94,16 @@ public:
 
   [[nodiscard]] static std::string FormatV(PRINTF_FORMAT_STRING const char* fmt, va_list args);
   [[nodiscard]] static std::wstring FormatV(PRINTF_FORMAT_STRING const wchar_t* fmt, va_list args);
-  static std::string ToUpper(const std::string& str);
-  static std::wstring ToUpper(const std::wstring& str);
-  static void ToUpper(std::string &str);
-  static void ToUpper(std::wstring &str);
-  static std::string ToLower(const std::string& str);
-  static std::wstring ToLower(const std::wstring& str);
-  static void ToLower(std::string &str);
-  static void ToLower(std::wstring &str);
-  static void ToCapitalize(std::string &str);
-  static void ToCapitalize(std::wstring &str);
+  [[nodiscard]] static std::string ToUpper(std::string_view str);
+  [[nodiscard]] static std::wstring ToUpper(std::wstring_view str);
+  static void ToUpper(std::string& str) noexcept;
+  static void ToUpper(std::wstring& str) noexcept;
+  [[nodiscard]] static std::string ToLower(std::string_view str);
+  [[nodiscard]] static std::wstring ToLower(std::wstring_view str);
+  static void ToLower(std::string& str) noexcept;
+  static void ToLower(std::wstring& str) noexcept;
+  static void ToCapitalize(std::string& str) noexcept;
+  static void ToCapitalize(std::wstring& str) noexcept;
   static bool EqualsNoCase(const std::string &str1, const std::string &str2);
   static bool EqualsNoCase(const std::string &str1, const char *s2);
   static bool EqualsNoCase(const char *s1, const char *s2);
