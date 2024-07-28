@@ -131,9 +131,9 @@ public:
   [[nodiscard]] static bool IsSpecialCharacter(char c) noexcept;
 
   [[nodiscard]] static std::string ReplaceSpecialCharactersWithSpace(std::string_view str);
-  static int Replace(std::string &str, char oldChar, char newChar);
-  static int Replace(std::string &str, const std::string &oldStr, const std::string &newStr);
-  static int Replace(std::wstring &str, const std::wstring &oldStr, const std::wstring &newStr);
+  static int Replace(std::string& str, char oldChar, char newChar) noexcept;
+  static int Replace(std::string& str, std::string_view oldStr, std::string_view newStr);
+  static int Replace(std::wstring& str, std::wstring_view oldStr, std::wstring_view newStr);
   static bool StartsWith(const std::string &str1, const std::string &str2);
   static bool StartsWith(const std::string &str1, const char *s2);
   static bool StartsWith(const char *s1, const char *s2);

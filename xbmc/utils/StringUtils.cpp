@@ -581,7 +581,7 @@ std::string StringUtils::ReplaceSpecialCharactersWithSpace(std::string_view str)
   return result;
 }
 
-int StringUtils::Replace(std::string &str, char oldChar, char newChar)
+int StringUtils::Replace(std::string& str, char oldChar, char newChar) noexcept
 {
   int replacedChars = 0;
   for (std::string::iterator it = str.begin(); it != str.end(); ++it)
@@ -596,7 +596,7 @@ int StringUtils::Replace(std::string &str, char oldChar, char newChar)
   return replacedChars;
 }
 
-int StringUtils::Replace(std::string &str, const std::string &oldStr, const std::string &newStr)
+int StringUtils::Replace(std::string& str, std::string_view oldStr, std::string_view newStr)
 {
   if (oldStr.empty())
     return 0;
@@ -614,7 +614,7 @@ int StringUtils::Replace(std::string &str, const std::string &oldStr, const std:
   return replacedChars;
 }
 
-int StringUtils::Replace(std::wstring &str, const std::wstring &oldStr, const std::wstring &newStr)
+int StringUtils::Replace(std::wstring& str, std::wstring_view oldStr, std::wstring_view newStr)
 {
   if (oldStr.empty())
     return 0;
