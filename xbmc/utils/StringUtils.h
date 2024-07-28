@@ -140,11 +140,14 @@ public:
   [[nodiscard]] static bool EndsWithNoCase(std::string_view str1, std::string_view str2) noexcept;
 
   template<typename CONTAINER>
-  static std::string Join(const CONTAINER &strings, const std::string& delimiter)
+  [[nodiscard]] static std::string Join(const CONTAINER& strings, std::string_view delimiter)
   {
     std::string result;
     for (const auto& str : strings)
-      result += str + delimiter;
+    {
+      result += str;
+      result += delimiter;
+    }
 
     if (!result.empty())
       result.erase(result.size() - delimiter.size());
