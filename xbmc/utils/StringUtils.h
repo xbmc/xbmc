@@ -108,7 +108,7 @@ public:
   [[nodiscard]] static int CompareNoCase(std::string_view str1,
                                          std::string_view str2,
                                          size_t n = 0) noexcept;
-  static int ReturnDigits(const std::string &str);
+  [[nodiscard]] static int ReturnDigits(std::string_view str) noexcept;
   static std::string Left(const std::string &str, size_t count);
   static std::string Mid(const std::string &str, size_t first, size_t count = std::string::npos);
   static std::string Right(const std::string &str, size_t count);
