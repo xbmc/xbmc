@@ -134,16 +134,10 @@ public:
   static int Replace(std::string& str, char oldChar, char newChar) noexcept;
   static int Replace(std::string& str, std::string_view oldStr, std::string_view newStr);
   static int Replace(std::wstring& str, std::wstring_view oldStr, std::wstring_view newStr);
-  static bool StartsWith(const std::string &str1, const std::string &str2);
-  static bool StartsWith(const std::string &str1, const char *s2);
-  static bool StartsWith(const char *s1, const char *s2);
-  static bool StartsWithNoCase(const std::string &str1, const std::string &str2);
-  static bool StartsWithNoCase(const std::string &str1, const char *s2);
-  static bool StartsWithNoCase(const char *s1, const char *s2);
-  static bool EndsWith(const std::string &str1, const std::string &str2);
-  static bool EndsWith(const std::string &str1, const char *s2);
-  static bool EndsWithNoCase(const std::string &str1, const std::string &str2);
-  static bool EndsWithNoCase(const std::string &str1, const char *s2);
+  [[nodiscard]] static bool StartsWith(std::string_view str1, std::string_view str2) noexcept;
+  [[nodiscard]] static bool StartsWithNoCase(std::string_view str1, std::string_view str2) noexcept;
+  [[nodiscard]] static bool EndsWith(std::string_view str1, std::string_view str2) noexcept;
+  [[nodiscard]] static bool EndsWithNoCase(std::string_view str1, std::string_view str2) noexcept;
 
   template<typename CONTAINER>
   static std::string Join(const CONTAINER &strings, const std::string& delimiter)
