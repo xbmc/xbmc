@@ -128,7 +128,7 @@ public:
 
    \param c Input character to be checked
    */
-  static bool IsSpecialCharacter(char c);
+  [[nodiscard]] static bool IsSpecialCharacter(char c) noexcept;
 
   static std::string ReplaceSpecialCharactersWithSpace(const std::string& str);
   static int Replace(std::string &str, char oldChar, char newChar);
