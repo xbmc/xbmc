@@ -114,12 +114,12 @@ public:
                                        size_t first,
                                        size_t count = std::string_view::npos);
   [[nodiscard]] static std::string Right(std::string_view str, size_t count);
-  static std::string& Trim(std::string &str);
-  static std::string& Trim(std::string &str, const char* const chars);
-  static std::string& TrimLeft(std::string &str);
-  static std::string& TrimLeft(std::string &str, const char* const chars);
-  static std::string& TrimRight(std::string &str);
-  static std::string& TrimRight(std::string &str, const char* const chars);
+  static std::string& Trim(std::string& str) noexcept;
+  static std::string& Trim(std::string& str, std::string_view chars) noexcept;
+  static std::string& TrimLeft(std::string& str) noexcept;
+  static std::string& TrimLeft(std::string& str, std::string_view chars) noexcept;
+  static std::string& TrimRight(std::string& str) noexcept;
+  static std::string& TrimRight(std::string& str, std::string_view chars) noexcept;
   static std::string& RemoveDuplicatedSpacesAndTabs(std::string& str);
 
   /*! \brief Check if the character is a special character.
