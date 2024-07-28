@@ -111,16 +111,16 @@ private:
   const std::string wsd_instance_address;
 
   // Number of sends for UDP messages
-  const int retries = 4;
+  static constexpr int retries{4};
 
   // Max udp packet size (+ UDP header + IP header overhead = 65535)
-  const int UDPBUFFSIZE = 65507;
+  static constexpr int UDPBUFFSIZE{65507};
 
   // Port for unicast/multicast WSD traffic
-  const int wsdUDP = 3702;
+  static constexpr int wsdUDP{3702};
 
   // ipv4 multicast group WSD - https://specs.xmlsoap.org/ws/2005/04/discovery/ws-discovery.pdf
-  const char* WDSIPv4MultiGroup = "239.255.255.250";
+  static constexpr char WDSIPv4MultiGroup[]{"239.255.255.250"};
 
   // ToDo: ipv6 broadcast address
   // const char* WDSIPv6MultiGroup = "FF02::C"
