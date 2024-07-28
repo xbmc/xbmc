@@ -632,95 +632,30 @@ int StringUtils::Replace(std::wstring& str, std::wstring_view oldStr, std::wstri
   return replacedChars;
 }
 
-bool StringUtils::StartsWith(const std::string &str1, const std::string &str2)
+bool StringUtils::StartsWith(std::string_view str1, std::string_view str2) noexcept
 {
-  return str1.compare(0, str2.size(), str2) == 0;
+  return str1.starts_with(str2);
 }
 
-bool StringUtils::StartsWith(const std::string &str1, const char *s2)
-{
-  return StartsWith(str1.c_str(), s2);
-}
-
-bool StringUtils::StartsWith(const char *s1, const char *s2)
-{
-  while (*s2 != '\0')
-  {
-    if (*s1 != *s2)
-      return false;
-    s1++;
-    s2++;
-  }
-  return true;
-}
-
-bool StringUtils::StartsWithNoCase(const std::string &str1, const std::string &str2)
-{
-  return StartsWithNoCase(str1.c_str(), str2.c_str());
-}
-
-bool StringUtils::StartsWithNoCase(const std::string &str1, const char *s2)
-{
-  return StartsWithNoCase(str1.c_str(), s2);
-}
-
-bool StringUtils::StartsWithNoCase(const char *s1, const char *s2)
-{
-  while (*s2 != '\0')
-  {
-    if (::tolower(*s1) != ::tolower(*s2))
-      return false;
-    s1++;
-    s2++;
-  }
-  return true;
-}
-
-bool StringUtils::EndsWith(const std::string &str1, const std::string &str2)
+bool StringUtils::StartsWithNoCase(std::string_view str1, std::string_view str2) noexcept
 {
   if (str1.size() < str2.size())
     return false;
-  return str1.compare(str1.size() - str2.size(), str2.size(), str2) == 0;
+
+  return EqualsNoCase(str1.substr(0, str2.size()), str2);
 }
 
-bool StringUtils::EndsWith(const std::string &str1, const char *s2)
+bool StringUtils::EndsWith(std::string_view str1, std::string_view str2) noexcept
 {
-  size_t len2 = strlen(s2);
-  if (str1.size() < len2)
-    return false;
-  return str1.compare(str1.size() - len2, len2, s2) == 0;
+  return str1.ends_with(str2);
 }
 
-bool StringUtils::EndsWithNoCase(const std::string &str1, const std::string &str2)
+bool StringUtils::EndsWithNoCase(std::string_view str1, std::string_view str2) noexcept
 {
   if (str1.size() < str2.size())
     return false;
-  const char *s1 = str1.c_str() + str1.size() - str2.size();
-  const char *s2 = str2.c_str();
-  while (*s2 != '\0')
-  {
-    if (::tolower(*s1) != ::tolower(*s2))
-      return false;
-    s1++;
-    s2++;
-  }
-  return true;
-}
 
-bool StringUtils::EndsWithNoCase(const std::string &str1, const char *s2)
-{
-  size_t len2 = strlen(s2);
-  if (str1.size() < len2)
-    return false;
-  const char *s1 = str1.c_str() + str1.size() - len2;
-  while (*s2 != '\0')
-  {
-    if (::tolower(*s1) != ::tolower(*s2))
-      return false;
-    s1++;
-    s2++;
-  }
-  return true;
+  return EqualsNoCase(str1.substr(str1.size() - str2.size()), str2);
 }
 
 std::vector<std::string> StringUtils::Split(const std::string& input, const std::string& delimiter, unsigned int iMaxStrings)
