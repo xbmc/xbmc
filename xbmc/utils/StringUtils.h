@@ -130,7 +130,7 @@ public:
    */
   [[nodiscard]] static bool IsSpecialCharacter(char c) noexcept;
 
-  static std::string ReplaceSpecialCharactersWithSpace(const std::string& str);
+  [[nodiscard]] static std::string ReplaceSpecialCharactersWithSpace(std::string_view str);
   static int Replace(std::string &str, char oldChar, char newChar);
   static int Replace(std::string &str, const std::string &oldStr, const std::string &newStr);
   static int Replace(std::wstring &str, const std::wstring &oldStr, const std::wstring &newStr);

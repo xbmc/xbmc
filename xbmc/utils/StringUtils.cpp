@@ -557,7 +557,7 @@ bool StringUtils::IsSpecialCharacter(char c) noexcept
   return std::ranges::any_of(view, [c](char ch) { return ch == c; });
 }
 
-std::string StringUtils::ReplaceSpecialCharactersWithSpace(const std::string& str)
+std::string StringUtils::ReplaceSpecialCharactersWithSpace(std::string_view str)
 {
   std::string result;
   bool prevCharWasSpecial = false;
