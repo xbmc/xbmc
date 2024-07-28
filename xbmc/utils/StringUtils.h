@@ -104,11 +104,10 @@ public:
   static void ToLower(std::wstring& str) noexcept;
   static void ToCapitalize(std::string& str) noexcept;
   static void ToCapitalize(std::wstring& str) noexcept;
-  static bool EqualsNoCase(const std::string &str1, const std::string &str2);
-  static bool EqualsNoCase(const std::string &str1, const char *s2);
-  static bool EqualsNoCase(const char *s1, const char *s2);
-  static int CompareNoCase(const std::string& str1, const std::string& str2, size_t n = 0);
-  static int CompareNoCase(const char* s1, const char* s2, size_t n = 0);
+  [[nodiscard]] static bool EqualsNoCase(std::string_view str1, std::string_view str2) noexcept;
+  [[nodiscard]] static int CompareNoCase(std::string_view str1,
+                                         std::string_view str2,
+                                         size_t n = 0) noexcept;
   static int ReturnDigits(const std::string &str);
   static std::string Left(const std::string &str, size_t count);
   static std::string Mid(const std::string &str, size_t first, size_t count = std::string::npos);

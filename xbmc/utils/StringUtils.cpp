@@ -432,52 +432,30 @@ void StringUtils::ToCapitalize(std::wstring& str) noexcept
   }
 }
 
-bool StringUtils::EqualsNoCase(const std::string &str1, const std::string &str2)
+bool StringUtils::EqualsNoCase(std::string_view str1, std::string_view str2) noexcept
 {
-  // before we do the char-by-char comparison, first compare sizes of both strings.
-  // This led to a 33% improvement in benchmarking on average. (size() just returns a member of std::string)
-  if (str1.size() != str2.size())
-    return false;
-  return EqualsNoCase(str1.c_str(), str2.c_str());
+  return std::ranges::equal(str1, str2,
+                            [](unsigned char c1, unsigned char c2)
+                            { return c1 == c2 || ::tolower(c1) == ::tolower(c2); });
 }
 
-bool StringUtils::EqualsNoCase(const std::string &str1, const char *s2)
+int StringUtils::CompareNoCase(std::string_view str1,
+                               std::string_view str2,
+                               size_t n /* = 0 */) noexcept
 {
-  return EqualsNoCase(str1.c_str(), s2);
-}
-
-bool StringUtils::EqualsNoCase(const char *s1, const char *s2)
-{
-  char c2; // we need only one char outside the loop
-  do
-  {
-    const char c1 = *s1++; // const local variable should help compiler to optimize
-    c2 = *s2++;
-    if (c1 != c2 && ::tolower(c1) != ::tolower(c2)) // This includes the possibility that one of the characters is the null-terminator, which implies a string mismatch.
-      return false;
-  } while (c2 != '\0'); // At this point, we know c1 == c2, so there's no need to test them both.
-  return true;
-}
-
-int StringUtils::CompareNoCase(const std::string& str1, const std::string& str2, size_t n /* = 0 */)
-{
-  return CompareNoCase(str1.c_str(), str2.c_str(), n);
-}
-
-int StringUtils::CompareNoCase(const char* s1, const char* s2, size_t n /* = 0 */)
-{
-  char c2; // we need only one char outside the loop
-  size_t index = 0;
-  do
-  {
-    const char c1 = *s1++; // const local variable should help compiler to optimize
-    c2 = *s2++;
-    index++;
-    if (c1 != c2 && ::tolower(c1) != ::tolower(c2)) // This includes the possibility that one of the characters is the null-terminator, which implies a string mismatch.
-      return ::tolower(c1) - ::tolower(c2);
-  } while (c2 != '\0' &&
-           index != n); // At this point, we know c1 == c2, so there's no need to test them both.
-  return 0;
+  str1 = n ? str1.substr(0, std::min(n, str1.length())) : str1;
+  str2 = n ? str2.substr(0, std::min(n, str2.length())) : str2;
+  auto diff = std::ranges::mismatch(str1, str2,
+                                    [](unsigned char c1, unsigned char c2)
+                                    { return c1 == c2 || ::tolower(c1) == ::tolower(c2); });
+  if (diff.in1 == str1.end() && diff.in2 == str2.end())
+    return 0;
+  if (diff.in1 == str1.end())
+    return '\0' - ::tolower(static_cast<unsigned char>(*diff.in2));
+  if (diff.in2 == str2.end())
+    return ::tolower(static_cast<unsigned char>(*diff.in1)) - '\0';
+  return ::tolower(static_cast<unsigned char>(*diff.in1)) -
+         ::tolower(static_cast<unsigned char>(*diff.in2));
 }
 
 std::string StringUtils::Left(const std::string &str, size_t count)
