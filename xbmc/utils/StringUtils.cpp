@@ -353,61 +353,61 @@ wchar_t toupperUnicode(const wchar_t& c)
   return c;
 }
 
-template<typename Str, typename Fn>
-void transformString(const Str& input, Str& output, Fn fn)
+template<typename StrIn, typename StrOut, typename Fn>
+void transformString(const StrIn& input, StrOut& output, Fn fn)
 {
   std::transform(input.begin(), input.end(), output.begin(), fn);
 }
 
-std::string StringUtils::ToUpper(const std::string& str)
+std::string StringUtils::ToUpper(std::string_view str)
 {
   std::string result(str.size(), '\0');
   transformString(str, result, ::toupper);
   return result;
 }
 
-std::wstring StringUtils::ToUpper(const std::wstring& str)
+std::wstring StringUtils::ToUpper(std::wstring_view str)
 {
   std::wstring result(str.size(), '\0');
   transformString(str, result, toupperUnicode);
   return result;
 }
 
-void StringUtils::ToUpper(std::string &str)
+void StringUtils::ToUpper(std::string& str) noexcept
 {
   transformString(str, str, ::toupper);
 }
 
-void StringUtils::ToUpper(std::wstring &str)
+void StringUtils::ToUpper(std::wstring& str) noexcept
 {
   transformString(str, str, toupperUnicode);
 }
 
-std::string StringUtils::ToLower(const std::string& str)
+std::string StringUtils::ToLower(std::string_view str)
 {
   std::string result(str.size(), '\0');
   transformString(str, result, ::tolower);
   return result;
 }
 
-std::wstring StringUtils::ToLower(const std::wstring& str)
+std::wstring StringUtils::ToLower(std::wstring_view str)
 {
   std::wstring result(str.size(), '\0');
   transformString(str, result, tolowerUnicode);
   return result;
 }
 
-void StringUtils::ToLower(std::string &str)
+void StringUtils::ToLower(std::string& str) noexcept
 {
   transformString(str, str, ::tolower);
 }
 
-void StringUtils::ToLower(std::wstring &str)
+void StringUtils::ToLower(std::wstring& str) noexcept
 {
   transformString(str, str, tolowerUnicode);
 }
 
-void StringUtils::ToCapitalize(std::string &str)
+void StringUtils::ToCapitalize(std::string& str) noexcept
 {
   std::wstring wstr;
   g_charsetConverter.utf8ToW(str, wstr);
@@ -415,7 +415,7 @@ void StringUtils::ToCapitalize(std::string &str)
   g_charsetConverter.wToUTF8(wstr, str);
 }
 
-void StringUtils::ToCapitalize(std::wstring &str)
+void StringUtils::ToCapitalize(std::wstring& str) noexcept
 {
   const std::locale& loc = g_langInfo.GetSystemLocale();
   bool isFirstLetter = true;
