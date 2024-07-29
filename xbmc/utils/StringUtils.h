@@ -19,12 +19,13 @@
 //
 //------------------------------------------------------------------------
 
+#include <locale>
+#include <span>
+#include <sstream>
 #include <stdarg.h>
 #include <stdint.h>
 #include <string>
 #include <vector>
-#include <sstream>
-#include <locale>
 
 // workaround for broken [[deprecated]] in coverity
 #if defined(__COVERITY__)
@@ -162,9 +163,16 @@ public:
    \param delimiter Delimiter to be used to split the input string
    \param iMaxStrings (optional) Maximum number of splitted strings
    */
-  static std::vector<std::string> Split(const std::string& input, const std::string& delimiter, unsigned int iMaxStrings = 0);
-  static std::vector<std::string> Split(const std::string& input, const char delimiter, size_t iMaxStrings = 0);
-  static std::vector<std::string> Split(const std::string& input, const std::vector<std::string> &delimiters);
+  [[nodiscard]] static std::vector<std::string> Split(std::string_view input,
+                                                      std::string_view delimiter,
+                                                      unsigned int iMaxStrings = 0);
+  [[nodiscard]] static std::vector<std::string> Split(std::string_view input,
+                                                      char delimiter,
+                                                      size_t iMaxStrings = 0);
+  [[nodiscard]] static std::vector<std::string> Split(std::string_view input,
+                                                      std::span<const std::string> delimiters);
+  [[nodiscard]] static std::vector<std::string> Split(std::string_view input,
+                                                      std::span<const std::string_view> delimiters);
   /*! \brief Splits the given input string using the given delimiter into separate strings.
 
    If the given input string is empty nothing will be put into the target iterator.
@@ -177,7 +185,10 @@ public:
    *       that was put there
    */
   template<typename OutputIt>
-  static OutputIt SplitTo(OutputIt d_first, const std::string& input, const std::string& delimiter, unsigned int iMaxStrings = 0)
+  static OutputIt SplitTo(OutputIt d_first,
+                          std::string_view input,
+                          std::string_view delimiter,
+                          unsigned int iMaxStrings = 0)
   {
     OutputIt dest = d_first;
 
@@ -185,7 +196,7 @@ public:
       return dest;
     if (delimiter.empty())
     {
-      *d_first++ = input;
+      *d_first++ = std::string(input);
       return dest;
     }
 
@@ -196,23 +207,28 @@ public:
     {
       if (--iMaxStrings == 0)
       {
-        *dest++ = input.substr(textPos);
+        *dest++ = std::string(input.substr(textPos));
         break;
       }
       nextDelim = input.find(delimiter, textPos);
-      *dest++ = input.substr(textPos, nextDelim - textPos);
+      *dest++ = std::string(input.substr(textPos, nextDelim - textPos));
       textPos = nextDelim + delimLen;
     } while (nextDelim != std::string::npos);
 
     return dest;
   }
   template<typename OutputIt>
-  static OutputIt SplitTo(OutputIt d_first, const std::string& input, const char delimiter, size_t iMaxStrings = 0)
+  static OutputIt SplitTo(OutputIt d_first,
+                          std::string_view input,
+                          char delimiter,
+                          size_t iMaxStrings = 0)
   {
-    return SplitTo(d_first, input, std::string(1, delimiter), iMaxStrings);
+    return SplitTo(d_first, input, std::string_view(&delimiter, 1), iMaxStrings);
   }
-  template<typename OutputIt>
-  static OutputIt SplitTo(OutputIt d_first, const std::string& input, const std::vector<std::string> &delimiters)
+  template<typename OutputIt, typename StringLike>
+  static OutputIt SplitTo(OutputIt d_first,
+                          std::string_view input,
+                          std::span<StringLike> delimiters)
   {
     OutputIt dest = d_first;
     if (input.empty())
@@ -220,10 +236,10 @@ public:
 
     if (delimiters.empty())
     {
-      *dest++ = input;
+      *dest++ = std::string(input);
       return dest;
     }
-    std::string str = input;
+    std::string str(input);
     for (size_t di = 1; di < delimiters.size(); di++)
       StringUtils::Replace(str, delimiters[di], delimiters[0]);
     return SplitTo(dest, str, delimiters[0]);
