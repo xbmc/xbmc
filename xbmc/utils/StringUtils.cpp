@@ -658,21 +658,34 @@ bool StringUtils::EndsWithNoCase(std::string_view str1, std::string_view str2) n
   return EqualsNoCase(str1.substr(str1.size() - str2.size()), str2);
 }
 
-std::vector<std::string> StringUtils::Split(const std::string& input, const std::string& delimiter, unsigned int iMaxStrings)
+std::vector<std::string> StringUtils::Split(std::string_view input,
+                                            std::string_view delimiter,
+                                            unsigned int iMaxStrings)
 {
   std::vector<std::string> result;
   SplitTo(std::back_inserter(result), input, delimiter, iMaxStrings);
   return result;
 }
 
-std::vector<std::string> StringUtils::Split(const std::string& input, const char delimiter, size_t iMaxStrings)
+std::vector<std::string> StringUtils::Split(std::string_view input,
+                                            char delimiter,
+                                            size_t iMaxStrings)
 {
   std::vector<std::string> result;
   SplitTo(std::back_inserter(result), input, delimiter, iMaxStrings);
   return result;
 }
 
-std::vector<std::string> StringUtils::Split(const std::string& input, const std::vector<std::string>& delimiters)
+std::vector<std::string> StringUtils::Split(std::string_view input,
+                                            std::span<const std::string> delimiters)
+{
+  std::vector<std::string> result;
+  SplitTo(std::back_inserter(result), input, delimiters);
+  return result;
+}
+
+std::vector<std::string> StringUtils::Split(std::string_view input,
+                                            std::span<const std::string_view> delimiters)
 {
   std::vector<std::string> result;
   SplitTo(std::back_inserter(result), input, delimiters);
