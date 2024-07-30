@@ -281,7 +281,7 @@ public:
                                                  const void* pKey1,
                                                  int nKey2,
                                                  const void* pKey2) noexcept;
-  static long TimeStringToSeconds(const std::string &timeString);
+  [[nodiscard]] static long TimeStringToSeconds(std::string_view timeString);
   static void RemoveCRLF(std::string& strLine);
 
   /*! \brief utf8 version of strlen - skips any non-starting bytes in the count, thus returning the number of utf8 characters

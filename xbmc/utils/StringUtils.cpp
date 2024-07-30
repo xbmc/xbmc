@@ -1386,7 +1386,7 @@ std::string StringUtils::ISODateToLocalizedDate(const std::string& strIsoDate)
   return formattedDate;
 }
 
-long StringUtils::TimeStringToSeconds(const std::string &timeString)
+long StringUtils::TimeStringToSeconds(std::string_view timeString)
 {
   std::string strCopy(timeString);
   StringUtils::Trim(strCopy);
