@@ -296,7 +296,8 @@ public:
    \return the formatted time
    \sa TIME_FORMAT
    */
-  static std::string SecondsToTimeString(long seconds, TIME_FORMAT format = TIME_FORMAT_GUESS);
+  [[nodiscard]] static std::string SecondsToTimeString(long seconds,
+                                                       TIME_FORMAT format = TIME_FORMAT_GUESS);
 
   /*! \brief convert a milliseconds value to a time string in the TIME_FORMAT_HH_MM_SS format
    \param milliSeconds time in milliseconds
