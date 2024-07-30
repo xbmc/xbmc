@@ -274,7 +274,7 @@ public:
   [[nodiscard]] static std::vector<std::string> SplitMulti(std::span<const std::string_view> input,
                                                            std::span<const std::string> delimiters,
                                                            size_t iMaxStrings = 0);
-  static int FindNumber(const std::string& strInput, const std::string &strFind);
+  [[nodiscard]] static int FindNumber(std::string_view strInput, std::string_view strFind) noexcept;
   static int64_t AlphaNumericCompare(const wchar_t *left, const wchar_t *right);
   static int AlphaNumericCollation(int nKey1, const void* pKey1, int nKey2, const void* pKey2);
   static long TimeStringToSeconds(const std::string &timeString);
