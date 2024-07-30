@@ -692,14 +692,15 @@ std::vector<std::string> StringUtils::Split(std::string_view input,
   return result;
 }
 
-std::vector<std::string> StringUtils::SplitMulti(const std::vector<std::string>& input,
-                                                 const std::vector<std::string>& delimiters,
-                                                 size_t iMaxStrings /* = 0 */)
+template<typename StringLikeA, typename StringLikeB>
+[[nodiscard]] std::vector<std::string> SplitMultiT(std::span<const StringLikeA> input,
+                                                   std::span<const StringLikeB> delimiters,
+                                                   size_t iMaxStrings /* = 0 */)
 {
   if (input.empty())
     return std::vector<std::string>();
 
-  std::vector<std::string> results(input);
+  std::vector<std::string> results(input.begin(), input.end());
 
   if (delimiters.empty() || (iMaxStrings > 0 && iMaxStrings <= input.size()))
     return results;
@@ -745,6 +746,34 @@ std::vector<std::string> StringUtils::SplitMulti(const std::vector<std::string>&
       break;  //Stop trying any more delimiters
   }
   return results;
+}
+
+std::vector<std::string> StringUtils::SplitMulti(std::span<const std::string> input,
+                                                 std::span<const std::string> delimiters,
+                                                 size_t iMaxStrings /* = 0 */)
+{
+  return SplitMultiT(input, delimiters, iMaxStrings);
+}
+
+std::vector<std::string> StringUtils::SplitMulti(std::span<const std::string_view> input,
+                                                 std::span<const std::string_view> delimiters,
+                                                 size_t iMaxStrings /*= 0*/)
+{
+  return SplitMultiT(input, delimiters, iMaxStrings);
+}
+
+std::vector<std::string> StringUtils::SplitMulti(std::span<const std::string_view> input,
+                                                 std::span<const std::string> delimiters,
+                                                 size_t iMaxStrings /*= 0*/)
+{
+  return SplitMultiT(input, delimiters, iMaxStrings);
+}
+
+std::vector<std::string> StringUtils::SplitMulti(std::span<const std::string> input,
+                                                 std::span<const std::string_view> delimiters,
+                                                 size_t iMaxStrings /*= 0*/)
+{
+  return SplitMultiT(input, delimiters, iMaxStrings);
 }
 
 // returns the number of occurrences of strFind in strInput.
