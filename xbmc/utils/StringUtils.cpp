@@ -1449,7 +1449,7 @@ std::string StringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
   return strHMS;
 }
 
-bool StringUtils::IsNaturalNumber(const std::string& str)
+bool StringUtils::IsNaturalNumber(std::string_view str) noexcept
 {
   size_t i = 0, n = 0;
   // allow whitespace,digits,whitespace
@@ -1464,7 +1464,7 @@ bool StringUtils::IsNaturalNumber(const std::string& str)
   return i == str.size() && n > 0;
 }
 
-bool StringUtils::IsInteger(const std::string& str)
+bool StringUtils::IsInteger(std::string_view str) noexcept
 {
   size_t i = 0, n = 0;
   // allow whitespace,-,digits,whitespace
