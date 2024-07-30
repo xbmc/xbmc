@@ -288,7 +288,7 @@ public:
    \param s c-string to find the length of.
    \return the number of utf8 characters in the string.
    */
-  static size_t utf8_strlen(const char *s);
+  [[nodiscard]] static size_t utf8_strlen(std::string_view s) noexcept;
 
   /*! \brief convert a time in seconds to a string based on the given time format
    \param seconds time in seconds
