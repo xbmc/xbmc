@@ -277,7 +277,10 @@ public:
   [[nodiscard]] static int FindNumber(std::string_view strInput, std::string_view strFind) noexcept;
   [[nodiscard]] static int64_t AlphaNumericCompare(std::wstring_view left,
                                                    std::wstring_view right) noexcept;
-  static int AlphaNumericCollation(int nKey1, const void* pKey1, int nKey2, const void* pKey2);
+  [[nodiscard]] static int AlphaNumericCollation(int nKey1,
+                                                 const void* pKey1,
+                                                 int nKey2,
+                                                 const void* pKey2) noexcept;
   static long TimeStringToSeconds(const std::string &timeString);
   static void RemoveCRLF(std::string& strLine);
 
