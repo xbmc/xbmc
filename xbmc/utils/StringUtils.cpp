@@ -1214,7 +1214,10 @@ static uint32_t UTF8ToUnicode(const unsigned char* z, int nKey, unsigned char& b
   every pair comparison made. That approach was found to be 10 times slower than using this
   separate routine.
 */
-int StringUtils::AlphaNumericCollation(int nKey1, const void* pKey1, int nKey2, const void* pKey2)
+int StringUtils::AlphaNumericCollation(int nKey1,
+                                       const void* pKey1,
+                                       int nKey2,
+                                       const void* pKey2) noexcept
 {
   // Get exact matches of shorter text to start of larger test fast
   int n = std::min(nKey1, nKey2);
