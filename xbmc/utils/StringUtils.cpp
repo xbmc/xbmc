@@ -1048,29 +1048,29 @@ static wchar_t GetCollationWeight(const wchar_t& r)
 // returns negative if left < right, positive if left > right
 // and 0 if they are identical.
 // See also the equivalent StringUtils::AlphaNumericCollation() for UFT8 data
-int64_t StringUtils::AlphaNumericCompare(const wchar_t* left, const wchar_t* right)
+int64_t StringUtils::AlphaNumericCompare(std::wstring_view left, std::wstring_view right) noexcept
 {
-  const wchar_t *l = left;
-  const wchar_t *r = right;
-  const wchar_t *ld, *rd;
+  auto l = left.begin();
+  auto r = right.begin();
+  std::wstring_view::const_iterator ld, rd;
   wchar_t lc, rc;
   int64_t lnum, rnum;
   bool lsym, rsym;
-  while (*l != 0 && *r != 0)
+  while (l != left.end() && r != right.end())
   {
     // check if we have a numerical value
     if (*l >= L'0' && *l <= L'9' && *r >= L'0' && *r <= L'9')
     {
       ld = l;
       lnum = *ld++ - L'0';
-      while (*ld >= L'0' && *ld <= L'9' && ld < l + 15)
+      while (ld != left.end() && *ld >= L'0' && *ld <= L'9' && ld < l + 15)
       { // compare only up to 15 digits
         lnum *= 10;
         lnum += *ld++ - L'0';
       }
       rd = r;
       rnum = *rd++ - L'0';
-      while (*rd >= L'0' && *rd <= L'9' && rd < r + 15)
+      while (rd != right.end() && *rd >= L'0' && *rd <= L'9' && rd < r + 15)
       { // compare only up to 15 digits
         rnum *= 10;
         rnum += *rd++ - L'0';
@@ -1147,11 +1147,11 @@ int64_t StringUtils::AlphaNumericCompare(const wchar_t* left, const wchar_t* rig
     }
     l++; r++;
   }
-  if (*r)
+  if (r != right.end())
   { // r is longer
     return -1;
   }
-  else if (*l)
+  else if (l != left.end())
   { // l is longer
     return 1;
   }
