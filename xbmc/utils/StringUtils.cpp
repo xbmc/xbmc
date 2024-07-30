@@ -1508,8 +1508,7 @@ int StringUtils::asciixdigitvalue(char chr)
   return -1;
 }
 
-
-void StringUtils::RemoveCRLF(std::string& strLine)
+void StringUtils::RemoveCRLF(std::string& strLine) noexcept
 {
   StringUtils::TrimRight(strLine, "\n\r");
 }
