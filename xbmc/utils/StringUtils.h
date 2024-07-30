@@ -275,7 +275,8 @@ public:
                                                            std::span<const std::string> delimiters,
                                                            size_t iMaxStrings = 0);
   [[nodiscard]] static int FindNumber(std::string_view strInput, std::string_view strFind) noexcept;
-  static int64_t AlphaNumericCompare(const wchar_t *left, const wchar_t *right);
+  [[nodiscard]] static int64_t AlphaNumericCompare(std::wstring_view left,
+                                                   std::wstring_view right) noexcept;
   static int AlphaNumericCollation(int nKey1, const void* pKey1, int nKey2, const void* pKey2);
   static long TimeStringToSeconds(const std::string &timeString);
   static void RemoveCRLF(std::string& strLine);
