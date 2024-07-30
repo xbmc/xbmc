@@ -1745,15 +1745,9 @@ bool StringUtils::ContainsKeyword(const std::string &str, const std::vector<std:
   return false;
 }
 
-size_t StringUtils::utf8_strlen(const char *s)
+size_t StringUtils::utf8_strlen(std::string_view s) noexcept
 {
-  size_t length = 0;
-  while (*s)
-  {
-    if ((*s++ & 0xC0) != 0x80)
-      length++;
-  }
-  return length;
+  return std::count_if(s.begin(), s.end(), [](char c) { return (c & 0xC0) != 0x80; });
 }
 
 std::string StringUtils::Paramify(const std::string &param)
