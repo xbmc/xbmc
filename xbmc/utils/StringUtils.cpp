@@ -777,7 +777,7 @@ std::vector<std::string> StringUtils::SplitMulti(std::span<const std::string> in
 }
 
 // returns the number of occurrences of strFind in strInput.
-int StringUtils::FindNumber(const std::string& strInput, const std::string &strFind)
+int StringUtils::FindNumber(std::string_view strInput, std::string_view strFind) noexcept
 {
   size_t pos = strInput.find(strFind, 0);
   int numfound = 0;
