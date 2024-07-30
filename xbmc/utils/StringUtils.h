@@ -282,7 +282,7 @@ public:
                                                  int nKey2,
                                                  const void* pKey2) noexcept;
   [[nodiscard]] static long TimeStringToSeconds(std::string_view timeString);
-  static void RemoveCRLF(std::string& strLine);
+  static void RemoveCRLF(std::string& strLine) noexcept;
 
   /*! \brief utf8 version of strlen - skips any non-starting bytes in the count, thus returning the number of utf8 characters
    \param s c-string to find the length of.
