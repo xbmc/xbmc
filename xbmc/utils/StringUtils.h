@@ -260,9 +260,20 @@ public:
   \param delimiters Delimiter strings to be used to split the input strings
   \param iMaxStrings (optional) Maximum number of resulting split strings
   */
-  static std::vector<std::string> SplitMulti(const std::vector<std::string>& input,
-                                             const std::vector<std::string>& delimiters,
-                                             size_t iMaxStrings = 0);
+  [[nodiscard]] static std::vector<std::string> SplitMulti(std::span<const std::string> input,
+                                                           std::span<const std::string> delimiters,
+                                                           size_t iMaxStrings = 0);
+  [[nodiscard]] static std::vector<std::string> SplitMulti(
+      std::span<const std::string_view> input,
+      std::span<const std::string_view> delimiters,
+      size_t iMaxStrings = 0);
+  [[nodiscard]] static std::vector<std::string> SplitMulti(
+      std::span<const std::string> input,
+      std::span<const std::string_view> delimiters,
+      size_t iMaxStrings = 0);
+  [[nodiscard]] static std::vector<std::string> SplitMulti(std::span<const std::string_view> input,
+                                                           std::span<const std::string> delimiters,
+                                                           size_t iMaxStrings = 0);
   static int FindNumber(const std::string& strInput, const std::string &strFind);
   static int64_t AlphaNumericCompare(const wchar_t *left, const wchar_t *right);
   static int AlphaNumericCollation(int nKey1, const void* pKey1, int nKey2, const void* pKey2);

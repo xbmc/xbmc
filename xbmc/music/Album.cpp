@@ -19,6 +19,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <string_view>
 
 using namespace MUSIC_INFO;
 
@@ -66,6 +67,7 @@ void CAlbum::SetArtistCredits(const std::vector<std::string>& names, const std::
                               const std::vector<std::string>& artistnames, const std::vector<std::string>& artisthints,
                               const std::vector<std::string>& artistmbids)
 {
+  using namespace std::literals;
   std::vector<std::string> albumartistHints = hints;
   //Split the artist sort string to try and get sort names for individual artists
   auto artistSort = StringUtils::Split(strArtistSort, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
@@ -150,7 +152,9 @@ void CAlbum::SetArtistCredits(const std::vector<std::string>& names, const std::
     // Try to get number of artist sort names and musicbrainz ids to match. Split sort names
     // further using multiple possible delimiters, over single separator applied in Tag loader
     if (artistSort.size() != mbids.size())
-      artistSort = StringUtils::SplitMulti(artistSort, { ";", ":", "|", "#" });
+    {
+      artistSort = StringUtils::SplitMulti(artistSort, {{";"sv, ":"sv, "|"sv, "#"sv}});
+    }
 
     for (size_t i = 0; i < mbids.size(); i++)
     {
@@ -192,8 +196,10 @@ void CAlbum::SetArtistCredits(const std::vector<std::string>& names, const std::
       albumArtists = StringUtils::SplitMulti(albumArtists, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicArtistSeparators);
 
     if (artistSort.size() != albumArtists.size())
+    {
       // Split artist sort names further using multiple possible delimiters, over single separator applied in Tag loader
-      artistSort = StringUtils::SplitMulti(artistSort, { ";", ":", "|", "#" });
+      artistSort = StringUtils::SplitMulti(artistSort, {{";"sv, ":"sv, "|"sv, "#"sv}});
+    }
 
     for (size_t i = 0; i < albumArtists.size(); i++)
     {

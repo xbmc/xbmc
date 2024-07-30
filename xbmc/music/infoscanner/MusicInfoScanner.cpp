@@ -58,6 +58,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <string_view>
 #include <utility>
 
 using namespace KODI;
@@ -847,8 +848,11 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
       //Split the albumartist sort string to try and get sort names for individual artists
       std::vector<std::string> sortnames = StringUtils::Split(albumartistsort, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
       if (sortnames.size() != common.size())
-          // Split artist sort names further using multiple possible delimiters, over single separator applied in Tag loader
-        sortnames = StringUtils::SplitMulti(sortnames, { ";", ":", "|", "#" });
+      {
+        // Split artist sort names further using multiple possible delimiters, over single separator applied in Tag loader
+        using namespace std::literals;
+        sortnames = StringUtils::SplitMulti(sortnames, {{";"sv, ":"sv, "|"sv, "#"sv}});
+      }
 
       for (size_t i = 0; i < common.size(); i++)
       {
