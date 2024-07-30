@@ -311,14 +311,14 @@ public:
    \param str the string to check
    \return true if the string is a natural number, false otherwise.
    */
-  static bool IsNaturalNumber(const std::string& str);
+  [[nodiscard]] static bool IsNaturalNumber(std::string_view str) noexcept;
 
   /*! \brief check whether a string is an integer.
    Matches [ \t]*[\-]*[0-9]+[ \t]*
    \param str the string to check
    \return true if the string is an integer, false otherwise.
    */
-  static bool IsInteger(const std::string& str);
+  [[nodiscard]] static bool IsInteger(std::string_view str) noexcept;
 
   /* The next several isasciiXX and asciiXXvalue functions are locale independent (US-ASCII only),
    * as opposed to standard ::isXX (::isalpha, ::isdigit...) which are locale dependent.
