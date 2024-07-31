@@ -1487,7 +1487,7 @@ bool StringUtils::IsInteger(std::string_view str) noexcept
   return i == str.size() && n > 0;
 }
 
-int StringUtils::asciidigitvalue(char chr)
+int StringUtils::asciidigitvalue(char chr) noexcept
 {
   if (!isasciidigit(chr))
     return -1;
@@ -1495,7 +1495,7 @@ int StringUtils::asciidigitvalue(char chr)
   return chr - '0';
 }
 
-int StringUtils::asciixdigitvalue(char chr)
+int StringUtils::asciixdigitvalue(char chr) noexcept
 {
   int v = asciidigitvalue(chr);
   if (v >= 0)
