@@ -323,25 +323,25 @@ public:
   /* The next several isasciiXX and asciiXXvalue functions are locale independent (US-ASCII only),
    * as opposed to standard ::isXX (::isalpha, ::isdigit...) which are locale dependent.
    * Next functions get parameter as char and don't need double cast ((int)(unsigned char) is required for standard functions). */
-  inline static bool isasciidigit(char chr) // locale independent
+  [[nodiscard]] inline static bool isasciidigit(char chr) noexcept // locale independent
   {
     return chr >= '0' && chr <= '9';
   }
-  inline static bool isasciixdigit(char chr) // locale independent
+  [[nodiscard]] inline static bool isasciixdigit(char chr) noexcept // locale independent
   {
     return (chr >= '0' && chr <= '9') || (chr >= 'a' && chr <= 'f') || (chr >= 'A' && chr <= 'F');
   }
-  static int asciidigitvalue(char chr); // locale independent
-  static int asciixdigitvalue(char chr); // locale independent
-  inline static bool isasciiuppercaseletter(char chr) // locale independent
+  [[nodiscard]] static int asciidigitvalue(char chr) noexcept; // locale independent
+  [[nodiscard]] static int asciixdigitvalue(char chr) noexcept; // locale independent
+  [[nodiscard]] inline static bool isasciiuppercaseletter(char chr) noexcept // locale independent
   {
     return (chr >= 'A' && chr <= 'Z');
   }
-  inline static bool isasciilowercaseletter(char chr) // locale independent
+  [[nodiscard]] inline static bool isasciilowercaseletter(char chr) noexcept // locale independent
   {
     return (chr >= 'a' && chr <= 'z');
   }
-  inline static bool isasciialphanum(char chr) // locale independent
+  [[nodiscard]] inline static bool isasciialphanum(char chr) noexcept // locale independent
   {
     return isasciiuppercaseletter(chr) || isasciilowercaseletter(chr) || isasciidigit(chr);
   }
