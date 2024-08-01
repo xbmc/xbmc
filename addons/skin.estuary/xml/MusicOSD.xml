@@ -240,7 +240,9 @@
 					<include content="OSDButton">
 						<param name="texture" value="osd/fullscreen/buttons/settings.png"/>
 					</include>
-					<onclick>ActivateWindow(1105)</onclick>
+					<onclick>SetProperty(settingsdialog_content,musicosd,home)</onclick>
+					<onclick>SetProperty(settingsdialog_header,$LOCALIZE[5],home)</onclick>
+					<onclick>ActivateWindow(1101)</onclick>
 				</control>
 			</control>
 			<control type="label">

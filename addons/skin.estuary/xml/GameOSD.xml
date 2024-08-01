@@ -237,8 +237,8 @@
 								<description>Settings button</description>
 								<label>$LOCALIZE[5]</label>
 								<icon>osd/fullscreen/buttons/settings.png</icon>
-								<onclick>SetProperty(settingslist_content,games,home)</onclick>
-								<onclick>SetProperty(settingslist_header,$LOCALIZE[5],home)</onclick>
+								<onclick>SetProperty(settingsdialog_content,games,home)</onclick>
+								<onclick>SetProperty(settingsdialog_header,$LOCALIZE[5],home)</onclick>
 								<onclick>ActivateWindow(1101)</onclick>
 							</item>
 						</content>

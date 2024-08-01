@@ -147,24 +147,18 @@
 				<pagecontrol>60</pagecontrol>
 				<ondown>610</ondown>
 				<visible>Container(9000).HasFocus(2)</visible>
-				<control type="radiobutton" id="621">
-					<label>$LOCALIZE[31008]</label>
-					<include>DefaultSettingButton</include>
-					<selected>!Skin.HasSetting(home_no_categories_widget)</selected>
-					<onclick>Skin.ToggleSetting(home_no_categories_widget)</onclick>
-				</control>
 				<control type="radiobutton" id="611">
 					<label>$LOCALIZE[342]</label>
 					<include>DefaultSettingButton</include>
 					<selected>!Skin.HasSetting(HomeMenuNoMovieButton)</selected>
 					<onclick>Skin.ToggleSetting(HomeMenuNoMovieButton)</onclick>
 				</control>
-				<control type="button" id="6110">
-					<label>- $LOCALIZE[31157]</label>
+				<control type="button" id="6111">
+					<label>- $LOCALIZE[31040]</label>
 					<include>DefaultSettingButton</include>
-					<onclick condition="System.AddonIsEnabled(plugin.library.node.editor)">ActivateWindow(programs,plugin://plugin.library.node.editor/?ltype=video,return)</onclick>
-					<onclick condition="System.HasAddon(plugin.library.node.editor) + !System.AddonIsEnabled(plugin.library.node.editor)">EnableAddon(plugin.library.node.editor)</onclick>
-					<onclick condition="!System.HasAddon(plugin.library.node.editor)">InstallAddon(plugin.library.node.editor)</onclick>
+					<onclick>SetProperty(settingsdialog_header,$LOCALIZE[31040] - $LOCALIZE[342],home)</onclick>
+					<onclick>SetProperty(settingsdialog_content,moviewidgets,home)</onclick>
+					<onclick>ActivateWindow(1101)</onclick>
 					<enable>!Skin.HasSetting(HomeMenuNoMovieButton)</enable>
 				</control>
 				<control type="button" id="627">
@@ -180,12 +174,12 @@
 					<selected>!Skin.HasSetting(HomeMenuNoTVShowButton)</selected>
 					<onclick>Skin.ToggleSetting(HomeMenuNoTVShowButton)</onclick>
 				</control>
-				<control type="button" id="6120">
-					<label>- $LOCALIZE[31157]</label>
+				<control type="button" id="6121">
+					<label>- $LOCALIZE[31040]</label>
 					<include>DefaultSettingButton</include>
-					<onclick condition="System.AddonIsEnabled(plugin.library.node.editor)">ActivateWindow(programs,plugin://plugin.library.node.editor/?ltype=video,return)</onclick>
-					<onclick condition="System.HasAddon(plugin.library.node.editor) + !System.AddonIsEnabled(plugin.library.node.editor)">EnableAddon(plugin.library.node.editor)</onclick>
-					<onclick condition="!System.HasAddon(plugin.library.node.editor)">InstallAddon(plugin.library.node.editor)</onclick>
+					<onclick>SetProperty(settingsdialog_header,$LOCALIZE[31040] - $LOCALIZE[20343],home)</onclick>
+					<onclick>SetProperty(settingsdialog_content,tvshowwidgets,home)</onclick>
+					<onclick>ActivateWindow(1101)</onclick>
 					<enable>!Skin.HasSetting(HomeMenuNoTVShowButton)</enable>
 				</control>
 				<control type="button" id="626">
@@ -201,12 +195,12 @@
 					<selected>!Skin.HasSetting(HomeMenuNoMusicButton)</selected>
 					<onclick>Skin.ToggleSetting(HomeMenuNoMusicButton)</onclick>
 				</control>
-				<control type="button" id="6130">
-					<label>- $LOCALIZE[31157]</label>
+				<control type="button" id="6132">
+					<label>- $LOCALIZE[31040]</label>
 					<include>DefaultSettingButton</include>
-					<onclick condition="System.AddonIsEnabled(plugin.library.node.editor)">ActivateWindow(programs,plugin://plugin.library.node.editor/?ltype=music,return)</onclick>
-					<onclick condition="System.HasAddon(plugin.library.node.editor) + !System.AddonIsEnabled(plugin.library.node.editor)">EnableAddon(plugin.library.node.editor)</onclick>
-					<onclick condition="!System.HasAddon(plugin.library.node.editor)">InstallAddon(plugin.library.node.editor)</onclick>
+					<onclick>SetProperty(settingsdialog_header,$LOCALIZE[31040] - $LOCALIZE[2],home)</onclick>
+					<onclick>SetProperty(settingsdialog_content,musicwidgets,home)</onclick>
+					<onclick>ActivateWindow(1101)</onclick>
 					<enable>!Skin.HasSetting(HomeMenuNoMusicButton)</enable>
 				</control>
 				<control type="button" id="625">
@@ -222,11 +216,27 @@
 					<selected>!Skin.HasSetting(HomeMenuNoMusicVideoButton)</selected>
 					<onclick>Skin.ToggleSetting(HomeMenuNoMusicVideoButton)</onclick>
 				</control>
+				<control type="button" id="6133">
+					<label>- $LOCALIZE[31040]</label>
+					<include>DefaultSettingButton</include>
+					<onclick>SetProperty(settingsdialog_header,$LOCALIZE[31040] - $LOCALIZE[20389],home)</onclick>
+					<onclick>SetProperty(settingsdialog_content,musicvideowidgets,home)</onclick>
+					<onclick>ActivateWindow(1101)</onclick>
+					<enable>!Skin.HasSetting(HomeMenuNoMusicVideoButton)</enable>
+				</control>
 				<control type="radiobutton" id="618">
 					<label>$LOCALIZE[19020]</label>
 					<include>DefaultSettingButton</include>
 					<selected>!Skin.HasSetting(HomeMenuNoTVButton)</selected>
 					<onclick>Skin.ToggleSetting(HomeMenuNoTVButton)</onclick>
+				</control>
+				<control type="button" id="6181">
+					<label>- $LOCALIZE[31040]</label>
+					<include>DefaultSettingButton</include>
+					<onclick>SetProperty(settingsdialog_header,$LOCALIZE[31040] - $LOCALIZE[19020],home)</onclick>
+					<onclick>SetProperty(settingsdialog_content,tvwidgets,home)</onclick>
+					<onclick>ActivateWindow(1101)</onclick>
+					<enable>!Skin.HasSetting(HomeMenuNoTVButton)</enable>
 				</control>
 				<control type="radiobutton" id="619">
 					<label>$LOCALIZE[19021]</label>
@@ -234,11 +244,26 @@
 					<selected>!Skin.HasSetting(HomeMenuNoRadioButton)</selected>
 					<onclick>Skin.ToggleSetting(HomeMenuNoRadioButton)</onclick>
 				</control>
+				<control type="button" id="6190">
+					<label>- $LOCALIZE[31040]</label>
+					<include>DefaultSettingButton</include>
+					<onclick>SetProperty(settingsdialog_header,$LOCALIZE[31040] - $LOCALIZE[19021],home)</onclick>
+					<onclick>SetProperty(settingsdialog_content,radiowidgets,home)</onclick>
+					<onclick>ActivateWindow(1101)</onclick>
+					<enable>!Skin.HasSetting(HomeMenuNoRadioButton)</enable>
+				</control>
 				<control type="radiobutton" id="614">
 					<label>$LOCALIZE[24001]</label>
 					<include>DefaultSettingButton</include>
 					<selected>!Skin.HasSetting(HomeMenuNoProgramsButton)</selected>
 					<onclick>Skin.ToggleSetting(HomeMenuNoProgramsButton)</onclick>
+				</control>
+				<control type="radiobutton" id="6140">
+					<label>- $LOCALIZE[31008]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(home_no_addons_categories_widget)</selected>
+					<onclick>Skin.ToggleSetting(home_no_addons_categories_widget)</onclick>
+					<enable>!Skin.HasSetting(HomeMenuNoProgramsButton)</enable>
 				</control>
 				<control type="radiobutton" id="615">
 					<label>$LOCALIZE[1]</label>
