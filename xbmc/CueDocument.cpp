@@ -233,7 +233,7 @@ void CCueDocument::GetMediaFiles(std::vector<std::string>& mediaFiles)
     mediaFiles.push_back(*it);
 }
 
-std::string CCueDocument::GetMediaTitle()
+const std::string& CCueDocument::GetMediaTitle() const
 {
   return m_strAlbum;
 }
