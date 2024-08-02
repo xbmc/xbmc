@@ -58,7 +58,10 @@ void CGUIWindowPVRRecordingsBase::OnWindowLoaded()
 
 std::string CGUIWindowPVRRecordingsBase::GetDirectoryPath()
 {
-  const std::string basePath = CPVRRecordingsPath(m_bShowDeletedRecordings, m_bRadio);
+  const std::string basePath = CPVRRecordingsPath(
+      m_bShowDeletedRecordings, m_bRadio,
+      RecordingMediaType::
+          PVR_RECORDING_MEDIA_TYPE_RECORDING); //TODO Need to decide how to handle Recordings vs VOD here in the UI
   return URIUtils::PathHasParent(m_vecItems->GetPath(), basePath) ? m_vecItems->GetPath()
                                                                   : basePath;
 }
@@ -512,10 +515,16 @@ bool CGUIWindowPVRRecordingsBase::GetFilteredItems(const std::string& filter, CF
 
 std::string CGUIWindowPVRTVRecordings::GetRootPath() const
 {
-  return CPVRRecordingsPath(m_bShowDeletedRecordings, false);
+  return CPVRRecordingsPath(
+      m_bShowDeletedRecordings, false,
+      RecordingMediaType::
+          PVR_RECORDING_MEDIA_TYPE_RECORDING); //TODO Need to decide how to handle Recordings vs VOD here in the UI
 }
 
 std::string CGUIWindowPVRRadioRecordings::GetRootPath() const
 {
-  return CPVRRecordingsPath(m_bShowDeletedRecordings, true);
+  return CPVRRecordingsPath(
+      m_bShowDeletedRecordings, true,
+      RecordingMediaType::
+          PVR_RECORDING_MEDIA_TYPE_RECORDING); //TODO Need to decide how to handle Recordings vs VOD here in the UI
 }

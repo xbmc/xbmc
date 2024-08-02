@@ -14,6 +14,8 @@ class CDateTime;
 
 namespace PVR
 {
+enum class RecordingMediaType;
+
 class CPVRRecordingsPath
 {
 public:
@@ -24,9 +26,10 @@ public:
   static const std::string PATH_DELETED_RADIO_RECORDINGS;
 
   explicit CPVRRecordingsPath(const std::string& strPath);
-  CPVRRecordingsPath(bool bDeleted, bool bRadio);
+  CPVRRecordingsPath(bool bDeleted, bool bRadio, RecordingMediaType mediaType);
   CPVRRecordingsPath(bool bDeleted,
                      bool bRadio,
+                     PVR::RecordingMediaType mediaType,
                      const std::string& strDirectory,
                      const std::string& strTitle,
                      int iSeason,

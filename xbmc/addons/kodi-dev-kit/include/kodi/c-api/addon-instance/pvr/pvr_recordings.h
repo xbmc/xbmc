@@ -99,6 +99,26 @@ extern "C"
   ///@}
   //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @defgroup cpp_kodi_addon_pvr_Defs_Recording_PVR_RECORDING_MEDIA_TYPE enum PVR_RECORDING_MEDIA_TYPE
+  /// @ingroup cpp_kodi_addon_pvr_Defs_Recording
+  /// @brief **PVR recording media types**\n
+  /// Used on @ref kodi::addon::PVRRecording::SetMediaType() value to set related
+  /// type.
+  ///
+  ///@{
+  typedef enum PVR_RECORDING_MEDIA_TYPE
+  {
+    /// @brief __0__ : Recording media.
+    PVR_RECORDING_MEDIA_TYPE_RECORDING = 0,
+
+    /// @brief __1__ : VOD media.
+    PVR_RECORDING_MEDIA_TYPE_VOD = 1,
+
+  } PVR_RECORDING_MEDIA_TYPE;
+  ///@}
+  //----------------------------------------------------------------------------
+
   /*!
    * @brief "C" PVR add-on recording.
    *
@@ -134,6 +154,7 @@ extern "C"
     unsigned int iEpgEventId;
     int iChannelUid;
     enum PVR_RECORDING_CHANNEL_TYPE channelType;
+    enum PVR_RECORDING_MEDIA_TYPE mediaType;
     char strFirstAired[PVR_ADDON_DATE_STRING_LENGTH];
     unsigned int iFlags;
     int64_t sizeInBytes;

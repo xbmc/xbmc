@@ -57,6 +57,7 @@ public:
     m_cStructure->iEpgEventId = 0;
     m_cStructure->iChannelUid = PVR_RECORDING_VALUE_NOT_AVAILABLE;
     m_cStructure->channelType = PVR_RECORDING_CHANNEL_TYPE_UNKNOWN;
+    m_cStructure->mediaType = PVR_RECORDING_MEDIA_TYPE_RECORDING;
     m_cStructure->iFlags = 0;
     m_cStructure->sizeInBytes = PVR_RECORDING_VALUE_NOT_AVAILABLE;
   }
@@ -95,6 +96,7 @@ public:
   /// | **EPG event id** | `unsigned int` | @ref PVRRecording::SetEPGEventId "SetEPGEventId" | @ref PVRRecording::GetEPGEventId "GetEPGEventId" | *optional*
   /// | **Channel unique id** | `int` | @ref PVRRecording::SetChannelUid "SetChannelUid" | @ref PVRRecording::GetChannelUid "GetChannelUid" | *optional*
   /// | **Channel type** | @ref PVR_RECORDING_CHANNEL_TYPE | @ref PVRRecording::SetChannelType "SetChannelType" | @ref PVRRecording::GetChannelType "GetChannelType" | *optional*
+  /// | **Media type** | @ref PVR_RECORDING_MEDIA_TYPE | @ref PVRRecording::SetMediaType "SetMediaType" | @ref PVRRecording::GetMediaType "GetMediaType" | *optional*
   /// | **First aired** | `std::string` | @ref PVRRecording::SetFirstAired "SetFirstAired" | @ref PVRRecording::GetFirstAired "GetFirstAired" | *optional*
   /// | **Flags** | `std::string` | @ref PVRRecording::SetFlags "SetFlags" | @ref PVRRecording::GetFlags "GetFlags" | *optional*
   /// | **Size in bytes** | `std::string` | @ref PVRRecording::SetSizeInBytes "SetSizeInBytes" | @ref PVRRecording::GetSizeInBytes "GetSizeInBytes" | *optional*
@@ -423,6 +425,28 @@ public:
 
   /// @brief To get with @ref SetChannelType changed values
   PVR_RECORDING_CHANNEL_TYPE GetChannelType() const { return m_cStructure->channelType; }
+
+  /// @brief **optional**\n
+  /// Media type.
+  ///
+  /// By default set to @ref PVR_RECORDING_MEDIA_TYPE_RECORDING.
+  /// See @ref cpp_kodi_addon_pvr_Defs_Recording_PVR_RECORDING_MEDIA_TYPE for
+  /// all availble values. Media Type should always be known to the client.
+  ///
+  /// --------------------------------------------------------------------------
+  ///
+  /// @copydetails cpp_kodi_addon_pvr_Defs_Recording_PVR_RECORDING_MEDIA_TYPE
+  ///
+  /// Example:
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// kodi::addon::PVRRecording tag;
+  /// tag.SetMediaType(PVR_RECORDING_MEDIA_TYPE_RECORDING);
+  /// ~~~~~~~~~~~~~
+  ///
+  void SetMediaType(PVR_RECORDING_MEDIA_TYPE mediaType) { m_cStructure->mediaType = mediaType; }
+
+  /// @brief To get with @ref SetMediaType changed values
+  PVR_RECORDING_MEDIA_TYPE GetMediaType() const { return m_cStructure->mediaType; }
 
   /// @brief **optional**\n
   /// First aired date of this recording.

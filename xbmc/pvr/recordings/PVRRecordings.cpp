@@ -29,7 +29,17 @@
 
 using namespace PVR;
 
-CPVRRecordings::CPVRRecordings() = default;
+CPVRRecordings::CPVRRecordings()
+{
+  m_hasDeletedTVRecordingsMap = {{RecordingMediaType::PVR_RECORDING_MEDIA_TYPE_RECORDING, false},
+                                 {RecordingMediaType::PVR_RECORDING_MEDIA_TYPE_VOD, false}};
+  m_hasDeletedRadioRecordingsMap = {{RecordingMediaType::PVR_RECORDING_MEDIA_TYPE_RECORDING, false},
+                                    {RecordingMediaType::PVR_RECORDING_MEDIA_TYPE_VOD, false}};
+  m_numTVRecordingsMap = {{RecordingMediaType::PVR_RECORDING_MEDIA_TYPE_RECORDING, 0},
+                          {RecordingMediaType::PVR_RECORDING_MEDIA_TYPE_VOD, 0}};
+  m_numRadioRecordingsMap = {{RecordingMediaType::PVR_RECORDING_MEDIA_TYPE_RECORDING, 0},
+                             {RecordingMediaType::PVR_RECORDING_MEDIA_TYPE_VOD, 0}};
+}
 
 CPVRRecordings::~CPVRRecordings()
 {
@@ -78,8 +88,16 @@ void CPVRRecordings::Unload()
   std::unique_lock<CCriticalSection> lock(m_critSection);
   m_bDeletedTVRecordings = false;
   m_bDeletedRadioRecordings = false;
+  m_hasDeletedTVRecordingsMap[RecordingMediaType::PVR_RECORDING_MEDIA_TYPE_RECORDING] = false;
+  m_hasDeletedTVRecordingsMap[RecordingMediaType::PVR_RECORDING_MEDIA_TYPE_VOD] = false;
+  m_hasDeletedRadioRecordingsMap[RecordingMediaType::PVR_RECORDING_MEDIA_TYPE_RECORDING] = false;
+  m_hasDeletedRadioRecordingsMap[RecordingMediaType::PVR_RECORDING_MEDIA_TYPE_VOD] = false;
   m_iTVRecordings = 0;
   m_iRadioRecordings = 0;
+  m_numTVRecordingsMap[RecordingMediaType::PVR_RECORDING_MEDIA_TYPE_RECORDING] = 0;
+  m_numTVRecordingsMap[RecordingMediaType::PVR_RECORDING_MEDIA_TYPE_VOD] = 0;
+  m_numRadioRecordingsMap[RecordingMediaType::PVR_RECORDING_MEDIA_TYPE_RECORDING] = 0;
+  m_numRadioRecordingsMap[RecordingMediaType::PVR_RECORDING_MEDIA_TYPE_VOD] = 0;
   m_recordings.clear();
 }
 
@@ -112,10 +130,22 @@ int CPVRRecordings::GetNumTVRecordings() const
   return m_iTVRecordings;
 }
 
+int CPVRRecordings::GetNumTVRecordings(RecordingMediaType mediaType) const
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  return m_numTVRecordingsMap.at(mediaType);
+}
+
 bool CPVRRecordings::HasDeletedTVRecordings() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_bDeletedTVRecordings;
+}
+
+bool CPVRRecordings::HasDeletedTVRecordings(RecordingMediaType mediaType) const
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  return m_hasDeletedTVRecordingsMap.at(mediaType);
 }
 
 int CPVRRecordings::GetNumRadioRecordings() const
@@ -124,19 +154,40 @@ int CPVRRecordings::GetNumRadioRecordings() const
   return m_iRadioRecordings;
 }
 
+int CPVRRecordings::GetNumRadioRecordings(RecordingMediaType mediaType) const
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  return m_numRadioRecordingsMap.at(mediaType);
+}
+
 bool CPVRRecordings::HasDeletedRadioRecordings() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_bDeletedRadioRecordings;
 }
 
+bool CPVRRecordings::HasDeletedRadioRecordings(RecordingMediaType mediaType) const
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  return m_hasDeletedRadioRecordingsMap.at(mediaType);
+}
+
 std::vector<std::shared_ptr<CPVRRecording>> CPVRRecordings::GetAll() const
+{
+  return GetAll(RecordingMediaType::PVR_RECORDING_MEDIA_TYPE_RECORDING);
+}
+
+std::vector<std::shared_ptr<CPVRRecording>> CPVRRecordings::GetAll(
+    RecordingMediaType mediaType) const
 {
   std::vector<std::shared_ptr<CPVRRecording>> recordings;
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  std::transform(m_recordings.cbegin(), m_recordings.cend(), std::back_inserter(recordings),
-                 [](const auto& recordingEntry) { return recordingEntry.second; });
+  for (auto const& recordingEntry : m_recordings)
+  {
+    if (recordingEntry.second->MediaType() == mediaType)
+      recordings.push_back(recordingEntry.second);
+  }
 
   return recordings;
 }
@@ -195,9 +246,15 @@ void CPVRRecordings::UpdateFromClient(const std::shared_ptr<CPVRRecording>& tag,
   if (tag->IsDeleted())
   {
     if (tag->IsRadio())
+    {
       m_bDeletedRadioRecordings = true;
+      m_hasDeletedRadioRecordingsMap[tag->MediaType()] = true;
+    }
     else
+    {
       m_bDeletedTVRecordings = true;
+      m_hasDeletedTVRecordingsMap[tag->MediaType()] = true;
+    }
   }
 
   std::shared_ptr<CPVRRecording> existingTag = GetById(tag->ClientID(), tag->ClientRecordingID());
@@ -212,9 +269,15 @@ void CPVRRecordings::UpdateFromClient(const std::shared_ptr<CPVRRecording>& tag,
     tag->SetRecordingID(++m_iLastId);
     m_recordings.insert({CPVRRecordingUid(tag->ClientID(), tag->ClientRecordingID()), tag});
     if (tag->IsRadio())
+    {
       ++m_iRadioRecordings;
+      ++m_numRadioRecordingsMap[tag->MediaType()];
+    }
     else
+    {
       ++m_iTVRecordings;
+      ++m_numRadioRecordingsMap[tag->MediaType()];
+    }
   }
 }
 
