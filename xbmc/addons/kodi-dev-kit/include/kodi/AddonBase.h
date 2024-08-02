@@ -78,7 +78,7 @@ struct ATTR_DLL_LOCAL CPrivateBase
 /*!
  * @brief Internally used helper to dynamically allocate and fill a char array.
  */
-inline char* ATTR_DLL_LOCAL AllocAndCopyString(const char* source)
+inline char* AllocAndCopyString(const char* source)
 {
   if (source)
   {
@@ -93,7 +93,7 @@ inline char* ATTR_DLL_LOCAL AllocAndCopyString(const char* source)
 /*!
  * @brief Internally used helper to delete a string that was allocated via AllocAndCopyString.
  */
-inline void ATTR_DLL_LOCAL FreeString(const char* str)
+inline void FreeString(const char* str)
 {
   delete[] str;
 }
@@ -101,8 +101,7 @@ inline void ATTR_DLL_LOCAL FreeString(const char* str)
 /*!
  * @brief Internally used helper to dynamically reallocate and fill a char array.
  */
-inline void ATTR_DLL_LOCAL ReallocAndCopyString(const char** stringToRealloc,
-                                                const char* stringToCopy)
+inline void ReallocAndCopyString(const char** stringToRealloc, const char* stringToCopy)
 {
   FreeString(*stringToRealloc);
   *stringToRealloc = AllocAndCopyString(stringToCopy);
@@ -112,8 +111,8 @@ inline void ATTR_DLL_LOCAL ReallocAndCopyString(const char** stringToRealloc,
  * @brief Internally used helper to convert c-struct data contained in a vector to an array of c-struct pointers.
  */
 template<typename CPP_CLASS, typename C_STRUCT>
-inline static ATTR_DLL_LOCAL C_STRUCT** AllocAndCopyPointerArray(
-    std::vector<CPP_CLASS>& sourceVector, unsigned int& targetArraySize)
+inline static C_STRUCT** AllocAndCopyPointerArray(std::vector<CPP_CLASS>& sourceVector,
+                                                  unsigned int& targetArraySize)
 {
   targetArraySize = static_cast<unsigned int>(sourceVector.size());
   if (targetArraySize > 0)
