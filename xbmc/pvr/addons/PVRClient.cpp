@@ -121,7 +121,7 @@ public:
       m_iconPath(recording.ClientIconPath()),
       m_thumbnailPath(recording.ClientThumbnailPath()),
       m_fanartPath(recording.ClientFanartPath()),
-      m_firstAired(recording.FirstAired().GetAsW3CDate()),
+      m_firstAired(recording.FirstAired().IsValid() ? recording.FirstAired().GetAsW3CDate() : ""),
       m_providerName(recording.ProviderName())
   {
     time_t recTime;
@@ -156,8 +156,7 @@ public:
     iChannelUid = recording.ChannelUid();
     channelType =
         recording.IsRadio() ? PVR_RECORDING_CHANNEL_TYPE_RADIO : PVR_RECORDING_CHANNEL_TYPE_TV;
-    if (recording.FirstAired().IsValid())
-      strFirstAired = m_firstAired.c_str();
+    strFirstAired = m_firstAired.c_str();
     iFlags = recording.Flags();
     sizeInBytes = recording.GetSizeInBytes();
     strProviderName = m_providerName.c_str();
