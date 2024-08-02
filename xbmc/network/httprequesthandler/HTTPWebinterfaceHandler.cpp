@@ -83,7 +83,7 @@ bool CHTTPWebinterfaceHandler::ResolveAddon(const std::string &url, ADDON::Addon
   std::string path = url;
 
   // check if the URL references a specific addon
-  if (url.find("/addons/") == 0 && url.size() > 8)
+  if (url.starts_with("/addons/") && url.size() > 8)
   {
     std::vector<std::string> components;
     StringUtils::Tokenize(path, components, WEBSERVER_DIRECTORY_SEPARATOR);
