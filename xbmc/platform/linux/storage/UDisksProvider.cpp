@@ -168,16 +168,6 @@ bool CUDiskDevice::IsMounted() const
   return m_isMounted;
 }
 
-std::string CUDiskDevice::GetDisplayName() const
-{
-  return m_Label;
-}
-
-std::string CUDiskDevice::GetMountPoint() const
-{
-  return m_MountPath;
-}
-
 bool CUDiskDevice::IsSystemInternal() const
 {
   return m_isSystemInternal;

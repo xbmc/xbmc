@@ -177,7 +177,7 @@ namespace
 {
 bool ExecuteAction(const CExecString& execute)
 {
-  const std::string execStr{execute.GetExecString()};
+  const std::string& execStr{execute.GetExecString()};
   if (!execStr.empty())
   {
     CGUIMessage message(GUI_MSG_EXECUTE, 0, 0);

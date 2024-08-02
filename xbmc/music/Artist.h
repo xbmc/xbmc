@@ -163,9 +163,9 @@ public:
     return false;
   }
 
-  std::string GetArtist() const                { return m_strArtist; }
-  std::string GetSortName() const              { return m_strSortName; }
-  std::string GetMusicBrainzArtistID() const   { return m_strMusicBrainzArtistID; }
+  const std::string& GetArtist() const { return m_strArtist; }
+  const std::string& GetSortName() const { return m_strSortName; }
+  const std::string& GetMusicBrainzArtistID() const { return m_strMusicBrainzArtistID; }
   int         GetArtistId() const              { return idArtist; }
   bool HasScrapedMBID() const { return m_bScrapedMBID; }
   void SetArtist(const std::string &strArtist) { m_strArtist = strArtist; }
@@ -207,8 +207,8 @@ public:
       idArtist(ArtistId)
   {
   }
-  std::string GetArtist() const { return m_strArtist; }
-  std::string GetRoleDesc() const { return m_strRole; }
+  const std::string& GetArtist() const { return m_strArtist; }
+  const std::string& GetRoleDesc() const { return m_strRole; }
   int GetRoleId() const { return idRole; }
   int GetArtistId() const { return idArtist; }
   void SetArtistId(int iArtistId) { idArtist = iArtistId;  }

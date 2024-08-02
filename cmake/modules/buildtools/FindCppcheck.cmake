@@ -21,7 +21,10 @@ if(CPPCHECK_FOUND)
   # but cppcheck doesn't support Objective-C and Objective-C++.
   # CMake >= 3.16 added support for Objective-C and Objective-C++ language,
   # but doesn't support OBJC and OBJCXX for <LANG>_CLANG_TIDY.
-  file(WRITE "${CMAKE_BINARY_DIR}/cppcheck" "case \"$@\" in *.m|*.mm) exit 0; esac\nexec \"${CPPCHECK_EXECUTABLE}\" --enable=performance --quiet --relative-paths=\"${CMAKE_SOURCE_DIR}\" \"$@\"\n")
+  if(CPPCHECK_VERSION VERSION_GREATER_EQUAL 2.14)
+    set(check-level --check-level=exhaustive)
+  endif()
+  file(WRITE "${CMAKE_BINARY_DIR}/cppcheck" "#!/bin/sh\ncase \"$@\" in *.m|*.mm) exit 0; esac\nexec \"${CPPCHECK_EXECUTABLE}\" ${check-level} --enable=performance --quiet --relative-paths=\"${CMAKE_SOURCE_DIR}\" \"$@\"\n")
   execute_process(COMMAND chmod +x "${CMAKE_BINARY_DIR}/cppcheck")
 
   # Supports Unix Makefiles and Ninja

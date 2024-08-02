@@ -100,8 +100,8 @@ namespace XBMCAddon
       if (!exec.IsValid())
         return;
 
-      const std::string execute = exec.GetFunction();
-      const std::vector<std::string> params = exec.GetParams();
+      const std::string& execute = exec.GetFunction();
+      const std::vector<std::string>& params = exec.GetParams();
 
       if (StringUtils::EqualsNoCase(execute, "activatewindow") ||
           StringUtils::EqualsNoCase(execute, "closedialog"))

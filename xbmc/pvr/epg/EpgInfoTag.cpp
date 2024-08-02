@@ -326,41 +326,6 @@ int CPVREpgInfoTag::GetDuration() const
   return end - start > 0 ? end - start : 3600;
 }
 
-std::string CPVREpgInfoTag::Title() const
-{
-  return m_strTitle;
-}
-
-std::string CPVREpgInfoTag::PlotOutline() const
-{
-  return m_strPlotOutline;
-}
-
-std::string CPVREpgInfoTag::Plot() const
-{
-  return m_strPlot;
-}
-
-std::string CPVREpgInfoTag::OriginalTitle() const
-{
-  return m_strOriginalTitle;
-}
-
-const std::vector<std::string> CPVREpgInfoTag::Cast() const
-{
-  return m_cast;
-}
-
-const std::vector<std::string> CPVREpgInfoTag::Directors() const
-{
-  return m_directors;
-}
-
-const std::vector<std::string> CPVREpgInfoTag::Writers() const
-{
-  return m_writers;
-}
-
 const std::string CPVREpgInfoTag::GetCastLabel() const
 {
   // Note: see CVideoInfoTag::GetCast for reference implementation.
@@ -396,11 +361,6 @@ int CPVREpgInfoTag::Year() const
   return m_iYear;
 }
 
-std::string CPVREpgInfoTag::IMDBNumber() const
-{
-  return m_strIMDBNumber;
-}
-
 int CPVREpgInfoTag::GenreType() const
 {
   return m_iGenreType;
@@ -409,11 +369,6 @@ int CPVREpgInfoTag::GenreType() const
 int CPVREpgInfoTag::GenreSubType() const
 {
   return m_iGenreSubType;
-}
-
-std::string CPVREpgInfoTag::GenreDescription() const
-{
-  return m_strGenreDescription;
 }
 
 const std::vector<std::string> CPVREpgInfoTag::Genre() const
@@ -448,11 +403,6 @@ int CPVREpgInfoTag::ParentalRating() const
   return m_iParentalRating;
 }
 
-std::string CPVREpgInfoTag::ParentalRatingCode() const
-{
-  return m_strParentalRatingCode;
-}
-
 int CPVREpgInfoTag::StarRating() const
 {
   return m_iStarRating;
@@ -463,11 +413,6 @@ int CPVREpgInfoTag::SeriesNumber() const
   return m_iSeriesNumber;
 }
 
-std::string CPVREpgInfoTag::SeriesLink() const
-{
-  return m_strSeriesLink;
-}
-
 int CPVREpgInfoTag::EpisodeNumber() const
 {
   return m_iEpisodeNumber;
@@ -476,11 +421,6 @@ int CPVREpgInfoTag::EpisodeNumber() const
 int CPVREpgInfoTag::EpisodePart() const
 {
   return m_iEpisodePart;
-}
-
-std::string CPVREpgInfoTag::EpisodeName() const
-{
-  return m_strEpisodeName;
 }
 
 std::string CPVREpgInfoTag::IconPath() const

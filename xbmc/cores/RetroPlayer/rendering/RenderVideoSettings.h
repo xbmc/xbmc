@@ -46,7 +46,7 @@ public:
   unsigned int GetRenderRotation() const { return m_rotationDegCCW; }
   void SetRenderRotation(unsigned int rotationDegCCW) { m_rotationDegCCW = rotationDegCCW; }
 
-  std::string GetPixels() const { return m_pixelPath; }
+  const std::string& GetPixels() const { return m_pixelPath; }
   void SetPixels(const std::string& pixelPath) { m_pixelPath = pixelPath; }
   void ResetPixels();
 

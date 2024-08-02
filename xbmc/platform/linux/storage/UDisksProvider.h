@@ -54,12 +54,12 @@ public:
   /*! \brief Get the device display name/label
     * @return the device display name/label
   */
-  std::string GetDisplayName() const;
+  const std::string& GetDisplayName() const { return m_Label; }
 
   /*! \brief Get the device mount point
     * @return the device mount point
   */
-  std::string GetMountPoint() const;
+  const std::string& GetMountPoint() const { return m_MountPath; }
 
   /*! \brief Get a representation of the device as a readable string
     * @return device as a string

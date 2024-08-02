@@ -58,10 +58,10 @@ public:
   */
   std::string ToCacheKey() const;
 
-  std::string GetTargetFile() const { return m_filePath; }
+  const std::string& GetTargetFile() const { return m_filePath; }
 
   bool IsSpecialImage() const { return !m_specialType.empty(); }
-  std::string GetSpecialType() const { return m_specialType; }
+  const std::string& GetSpecialType() const { return m_specialType; }
 
   bool flipped{false};
 

@@ -39,7 +39,7 @@ public:
   bool ParseTag(const std::string &strContent);
   void GetSongs(VECSONGS &songs);
   std::string GetMediaPath();
-  std::string GetMediaTitle();
+  const std::string& GetMediaTitle() const { return m_strAlbum; }
   void GetMediaFiles(std::vector<std::string>& mediaFiles);
   void UpdateMediaFile(const std::string& oldMediaFile, const std::string& mediaFile);
   bool IsOneFilePerTrack() const;

@@ -121,7 +121,7 @@ public:
   }
 
   trackinfo GetTrackInformation( int nTrack ) { return m_ti[nTrack -1]; }
-  xbmc_cdtext_t GetDiscCDTextInformation() { return m_cdtext; }
+  const xbmc_cdtext_t& GetDiscCDTextInformation() const { return m_cdtext; }
 
   bool HasDataTracks() { return (m_nNumData > 0); }
   bool HasAudioTracks() { return (m_nNumAudio > 0); }
@@ -133,7 +133,7 @@ public:
   int GetAudioTrackCount() { return m_nNumAudio; }
   uint32_t GetCddbDiscId() { return m_ulCddbDiscId; }
   int GetDiscLength() { return m_nLength; }
-  std::string GetDiscLabel(){ return m_strDiscLabel; }
+  const std::string& GetDiscLabel() const { return m_strDiscLabel; }
 
   // CD-ROM with ISO 9660 filesystem
   bool IsIso9660( int nTrack ) { return ((m_ti[nTrack - 1].nfsInfo & FS_MASK) == FS_ISO_9660); }

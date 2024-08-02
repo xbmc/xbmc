@@ -259,7 +259,7 @@ void CURL::Parse(std::string strURL1)
   // if [] found, let's store string inside as hostname
   // and remove that parsed part from strHostNameAndPort
   size_t iBrk = strHostNameAndPort.rfind(']');
-  if (iBrk != std::string::npos && strHostNameAndPort.find('[') == 0)
+  if (iBrk != std::string::npos && strHostNameAndPort.starts_with('['))
   {
     m_strHostName = strHostNameAndPort.substr(1, iBrk-1);
     strHostNameAndPort.erase(0, iBrk+1);

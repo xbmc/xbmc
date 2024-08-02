@@ -17,11 +17,6 @@ CFTPParse::CFTPParse()
   m_size = 0;
 }
 
-std::string CFTPParse::getName()
-{
-  return m_name;
-}
-
 int CFTPParse::getFlagtrycwd()
 {
   return m_flagtrycwd;

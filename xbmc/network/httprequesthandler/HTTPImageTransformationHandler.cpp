@@ -95,7 +95,7 @@ CHTTPImageTransformationHandler::~CHTTPImageTransformationHandler()
 bool CHTTPImageTransformationHandler::CanHandleRequest(const HTTPRequest &request) const
 {
   if ((request.method != GET && request.method != HEAD) ||
-    request.pathUrl.find(ImageBasePath) != 0 || request.pathUrl.size() <= ImageBasePath.size())
+      !request.pathUrl.starts_with(ImageBasePath) || request.pathUrl.size() <= ImageBasePath.size())
     return false;
 
   // get the transformation options

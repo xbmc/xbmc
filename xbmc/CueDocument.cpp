@@ -233,11 +233,6 @@ void CCueDocument::GetMediaFiles(std::vector<std::string>& mediaFiles)
     mediaFiles.push_back(*it);
 }
 
-std::string CCueDocument::GetMediaTitle()
-{
-  return m_strAlbum;
-}
-
 bool CCueDocument::IsLoaded() const
 {
   return !m_tracks.empty();

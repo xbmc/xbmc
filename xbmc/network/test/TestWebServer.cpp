@@ -180,7 +180,7 @@ protected:
 
     // check the protocol line for the expected HTTP status
     std::string httpStatusString = StringUtils::Format(" {} ", httpStatus);
-    std::string protocolLine = httpHeader.GetProtoLine();
+    const std::string& protocolLine = httpHeader.GetProtoLine();
     ASSERT_TRUE(protocolLine.find(httpStatusString) != std::string::npos);
 
     // Content-Type must be "text/html"
@@ -215,7 +215,7 @@ protected:
 
     // check the protocol line for the expected HTTP status
     std::string httpStatusString = StringUtils::Format(" {} ", MHD_HTTP_PARTIAL_CONTENT);
-    std::string protocolLine = httpHeader.GetProtoLine();
+    const std::string& protocolLine = httpHeader.GetProtoLine();
     ASSERT_TRUE(protocolLine.find(httpStatusString) != std::string::npos);
 
     // Accept-Ranges must be "bytes"
