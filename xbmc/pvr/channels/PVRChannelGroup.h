@@ -20,8 +20,6 @@
 #include <utility>
 #include <vector>
 
-struct PVR_CHANNEL_GROUP;
-
 namespace PVR
 {
 static constexpr int PVR_GROUP_TYPE_CLIENT = 0;
@@ -70,12 +68,6 @@ public:
 
   bool operator==(const CPVRChannelGroup& right) const;
   bool operator!=(const CPVRChannelGroup& right) const;
-
-  /*!
-   * @brief Copy over data to the given PVR_CHANNEL_GROUP instance.
-   * @param group The group instance to fill.
-   */
-  void FillAddonData(PVR_CHANNEL_GROUP& group) const;
 
   /*!
    * @brief Query the events available for CEventStream

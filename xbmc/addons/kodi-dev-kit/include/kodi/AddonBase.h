@@ -75,6 +75,93 @@ struct ATTR_DLL_LOCAL CPrivateBase
   static AddonGlobalInterface* m_interface;
 };
 
+/*!
+ * @brief Internally used helper to dynamically allocate and fill a char array.
+ */
+inline char* ATTR_DLL_LOCAL AllocAndCopyString(const char* source)
+{
+  if (source)
+  {
+    const size_t len{strlen(source) + 1};
+    char* target = new char[len];
+    memcpy(target, source, len);
+    return target;
+  }
+  return nullptr;
+}
+
+/*!
+ * @brief Internally used helper to delete a string that was allocated via AllocAndCopyString.
+ */
+inline void ATTR_DLL_LOCAL FreeString(const char* str)
+{
+  delete[] str;
+}
+
+/*!
+ * @brief Internally used helper to dynamically reallocate and fill a char array.
+ */
+inline void ATTR_DLL_LOCAL ReallocAndCopyString(const char** stringToRealloc,
+                                                const char* stringToCopy)
+{
+  FreeString(*stringToRealloc);
+  *stringToRealloc = AllocAndCopyString(stringToCopy);
+}
+
+/*!
+ * @brief Internally used helper to convert c-struct data contained in a vector to an array of c-struct pointers.
+ */
+template<typename CPP_CLASS, typename C_STRUCT>
+inline static ATTR_DLL_LOCAL C_STRUCT** AllocAndCopyPointerArray(
+    std::vector<CPP_CLASS>& sourceVector, unsigned int& targetArraySize)
+{
+  targetArraySize = static_cast<unsigned int>(sourceVector.size());
+  if (targetArraySize > 0)
+  {
+    C_STRUCT** targetArray = new C_STRUCT* [targetArraySize] {};
+
+    unsigned int i{0};
+    for (auto& entry : sourceVector)
+    {
+      // Assign data to target array. Take pointer ownership.
+      C_STRUCT** arrayElem{&targetArray[i]};
+      *arrayElem = entry.release();
+      ++i;
+    }
+    return targetArray;
+  }
+  return nullptr;
+}
+
+/*!
+ * @brief Internally used helper to free an array of of c-struct pointers.
+ */
+template<typename CPP_CLASS, typename C_STRUCT>
+inline static void FreeDynamicPointerArray(C_STRUCT** targetArray, unsigned int targetArraySize)
+{
+  for (unsigned int i = 0; i < targetArraySize; ++i)
+  {
+    C_STRUCT** arrayElem{&targetArray[i]};
+    CPP_CLASS::FreeResources(*arrayElem);
+    delete *arrayElem;
+  }
+  delete[] targetArray;
+}
+
+/*!
+ * @brief Internally used helper to free an array of of c-struct pointers.
+ */
+template<typename CPP_CLASS, typename C_STRUCT>
+inline static void FreeStaticPointerArray(C_STRUCT** targetArray, unsigned int targetArraySize)
+{
+  for (unsigned int i = 0; i < targetArraySize; ++i)
+  {
+    C_STRUCT** arrayElem{&targetArray[i]};
+    delete *arrayElem;
+  }
+  delete[] targetArray;
+}
+
 /*
  * Internally used helper class to manage processing of a "C" structure in "CPP"
  * class.
@@ -180,6 +267,103 @@ public:
   operator const C_STRUCT*() const { return m_cStructure; }
 
   const C_STRUCT* GetCStructure() const { return m_cStructure; }
+
+  C_STRUCT* release()
+  {
+    m_owner = false;
+    return m_cStructure;
+  }
+
+protected:
+  C_STRUCT* m_cStructure = nullptr;
+
+private:
+  bool m_owner = false;
+};
+
+template<class CPP_CLASS, typename C_STRUCT>
+class DynamicCStructHdl
+{
+public:
+  DynamicCStructHdl() : m_cStructure(new C_STRUCT()), m_owner(true) {}
+
+  DynamicCStructHdl(const CPP_CLASS& cppClass)
+    : m_cStructure(new C_STRUCT(*cppClass.m_cStructure)), m_owner(true)
+  {
+    CPP_CLASS::AllocResources(cppClass.m_cStructure, m_cStructure);
+  }
+
+  DynamicCStructHdl(const C_STRUCT* cStructure)
+    : m_cStructure(new C_STRUCT(*cStructure)), m_owner(true)
+  {
+    CPP_CLASS::AllocResources(cStructure, m_cStructure);
+  }
+
+  DynamicCStructHdl(C_STRUCT* cStructure) : m_cStructure(cStructure) { assert(cStructure); }
+
+  const DynamicCStructHdl& operator=(const DynamicCStructHdl& right)
+  {
+    if (this == &right)
+      return *this;
+
+    CPP_CLASS::FreeResources(m_cStructure);
+    if (m_cStructure && !m_owner)
+    {
+      memcpy(m_cStructure, right.m_cStructure, sizeof(C_STRUCT));
+    }
+    else
+    {
+      if (m_owner)
+        delete m_cStructure;
+      m_owner = true;
+      m_cStructure = new C_STRUCT(*right.m_cStructure);
+    }
+    CPP_CLASS::AllocResources(right.m_cStructure, m_cStructure);
+    return *this;
+  }
+
+  const DynamicCStructHdl& operator=(const C_STRUCT& right)
+  {
+    assert(&right);
+
+    if (m_cStructure == &right)
+      return *this;
+
+    CPP_CLASS::FreeResources(m_cStructure);
+    if (m_cStructure && !m_owner)
+    {
+      memcpy(m_cStructure, &right, sizeof(C_STRUCT));
+    }
+    else
+    {
+      if (m_owner)
+        delete m_cStructure;
+      m_owner = true;
+      m_cStructure = new C_STRUCT(*right);
+    }
+    CPP_CLASS::AllocResources(&right, m_cStructure);
+    return *this;
+  }
+
+  virtual ~DynamicCStructHdl()
+  {
+    if (m_owner)
+    {
+      CPP_CLASS::FreeResources(m_cStructure);
+      delete m_cStructure;
+    }
+  }
+
+  operator C_STRUCT*() { return m_cStructure; }
+  operator const C_STRUCT*() const { return m_cStructure; }
+
+  const C_STRUCT* GetCStructure() const { return m_cStructure; }
+
+  C_STRUCT* release()
+  {
+    m_owner = false;
+    return m_cStructure;
+  }
 
 protected:
   C_STRUCT* m_cStructure = nullptr;

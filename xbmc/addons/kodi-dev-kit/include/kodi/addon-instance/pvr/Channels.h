@@ -35,7 +35,7 @@ namespace addon
 /// @copydetails cpp_kodi_addon_pvr_Defs_Channel_PVRChannel_Help
 ///
 ///@{
-class PVRChannel : public CStructHdl<PVRChannel, PVR_CHANNEL>
+class PVRChannel : public DynamicCStructHdl<PVRChannel, PVR_CHANNEL>
 {
   friend class CInstancePVRClient;
 
@@ -46,7 +46,7 @@ public:
     memset(m_cStructure, 0, sizeof(PVR_CHANNEL));
     m_cStructure->iClientProviderUid = PVR_PROVIDER_INVALID_UID;
   }
-  PVRChannel(const PVRChannel& channel) : CStructHdl(channel) {}
+  PVRChannel(const PVRChannel& channel) : DynamicCStructHdl(channel) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_pvr_Defs_Channel_PVRChannel_Help Value Help
@@ -110,8 +110,7 @@ public:
   /// Channel name given to this channel.
   void SetChannelName(const std::string& channelName)
   {
-    strncpy(m_cStructure->strChannelName, channelName.c_str(),
-            sizeof(m_cStructure->strChannelName) - 1);
+    ReallocAndCopyString(&m_cStructure->strChannelName, channelName.c_str());
   }
 
   /// @brief To get with @ref SetChannelName changed values.
@@ -125,7 +124,7 @@ public:
   ///
   void SetMimeType(const std::string& inputFormat)
   {
-    strncpy(m_cStructure->strMimeType, inputFormat.c_str(), sizeof(m_cStructure->strMimeType) - 1);
+    ReallocAndCopyString(&m_cStructure->strMimeType, inputFormat.c_str());
   }
 
   /// @brief To get with @ref SetMimeType changed values.
@@ -150,7 +149,7 @@ public:
   /// Path to the channel icon (if present).
   void SetIconPath(const std::string& iconPath)
   {
-    strncpy(m_cStructure->strIconPath, iconPath.c_str(), sizeof(m_cStructure->strIconPath) - 1);
+    ReallocAndCopyString(&m_cStructure->strIconPath, iconPath.c_str());
   }
 
   /// @brief To get with @ref SetIconPath changed values.
@@ -190,9 +189,23 @@ public:
   /// @brief To get with @ref SetClientProviderUid changed values
   int GetClientProviderUid() const { return m_cStructure->iClientProviderUid; }
 
+  static void AllocResources(const PVR_CHANNEL* source, PVR_CHANNEL* target)
+  {
+    target->strChannelName = AllocAndCopyString(source->strChannelName);
+    target->strMimeType = AllocAndCopyString(source->strMimeType);
+    target->strIconPath = AllocAndCopyString(source->strIconPath);
+  }
+
+  static void FreeResources(PVR_CHANNEL* target)
+  {
+    FreeString(target->strChannelName);
+    FreeString(target->strMimeType);
+    FreeString(target->strIconPath);
+  }
+
 private:
-  PVRChannel(const PVR_CHANNEL* channel) : CStructHdl(channel) {}
-  PVRChannel(PVR_CHANNEL* channel) : CStructHdl(channel) {}
+  PVRChannel(const PVR_CHANNEL* channel) : DynamicCStructHdl(channel) {}
+  PVRChannel(PVR_CHANNEL* channel) : DynamicCStructHdl(channel) {}
 };
 ///@}
 //------------------------------------------------------------------------------
@@ -249,14 +262,14 @@ private:
 /// @copydetails cpp_kodi_addon_pvr_Defs_Channel_PVRSignalStatus_Help
 ///
 ///@{
-class PVRSignalStatus : public CStructHdl<PVRSignalStatus, PVR_SIGNAL_STATUS>
+class PVRSignalStatus : public DynamicCStructHdl<PVRSignalStatus, PVR_SIGNAL_STATUS>
 {
   friend class CInstancePVRClient;
 
 public:
   /*! \cond PRIVATE */
   PVRSignalStatus() = default;
-  PVRSignalStatus(const PVRSignalStatus& type) : CStructHdl(type) {}
+  PVRSignalStatus(const PVRSignalStatus& status) : DynamicCStructHdl(status) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_pvr_Defs_Channel_PVRSignalStatus_Help Value Help
@@ -283,8 +296,7 @@ public:
   /// Name of the adapter that's being used.
   void SetAdapterName(const std::string& adapterName)
   {
-    strncpy(m_cStructure->strAdapterName, adapterName.c_str(),
-            sizeof(m_cStructure->strAdapterName) - 1);
+    ReallocAndCopyString(&m_cStructure->strAdapterName, adapterName.c_str());
   }
 
   /// @brief To get with @ref SetAdapterName changed values.
@@ -294,8 +306,7 @@ public:
   /// Status of the adapter that's being used.
   void SetAdapterStatus(const std::string& adapterStatus)
   {
-    strncpy(m_cStructure->strAdapterStatus, adapterStatus.c_str(),
-            sizeof(m_cStructure->strAdapterStatus) - 1);
+    ReallocAndCopyString(&m_cStructure->strAdapterStatus, adapterStatus.c_str());
   }
 
   /// @brief To get with @ref SetAdapterStatus changed values.
@@ -305,8 +316,7 @@ public:
   /// Name of the current service.
   void SetServiceName(const std::string& serviceName)
   {
-    strncpy(m_cStructure->strServiceName, serviceName.c_str(),
-            sizeof(m_cStructure->strServiceName) - 1);
+    ReallocAndCopyString(&m_cStructure->strServiceName, serviceName.c_str());
   }
 
   /// @brief To get with @ref SetServiceName changed values.
@@ -316,8 +326,7 @@ public:
   /// Name of the current service's provider.
   void SetProviderName(const std::string& providerName)
   {
-    strncpy(m_cStructure->strProviderName, providerName.c_str(),
-            sizeof(m_cStructure->strProviderName) - 1);
+    ReallocAndCopyString(&m_cStructure->strProviderName, providerName.c_str());
   }
 
   /// @brief To get with @ref SetProviderName changed values.
@@ -327,7 +336,7 @@ public:
   /// Name of the current mux.
   void SetMuxName(const std::string& muxName)
   {
-    strncpy(m_cStructure->strMuxName, muxName.c_str(), sizeof(m_cStructure->strMuxName) - 1);
+    ReallocAndCopyString(&m_cStructure->strMuxName, muxName.c_str());
   }
 
   /// @brief To get with @ref SetMuxName changed values.
@@ -366,9 +375,27 @@ public:
   long GetUNC() const { return m_cStructure->iUNC; }
   ///@}
 
+  static void AllocResources(const PVR_SIGNAL_STATUS* source, PVR_SIGNAL_STATUS* target)
+  {
+    target->strAdapterName = AllocAndCopyString(source->strAdapterName);
+    target->strAdapterStatus = AllocAndCopyString(source->strAdapterStatus);
+    target->strServiceName = AllocAndCopyString(source->strServiceName);
+    target->strProviderName = AllocAndCopyString(source->strProviderName);
+    target->strMuxName = AllocAndCopyString(source->strMuxName);
+  }
+
+  static void FreeResources(PVR_SIGNAL_STATUS* target)
+  {
+    FreeString(target->strAdapterName);
+    FreeString(target->strAdapterStatus);
+    FreeString(target->strServiceName);
+    FreeString(target->strProviderName);
+    FreeString(target->strMuxName);
+  }
+
 private:
-  PVRSignalStatus(const PVR_SIGNAL_STATUS* type) : CStructHdl(type) {}
-  PVRSignalStatus(PVR_SIGNAL_STATUS* type) : CStructHdl(type) {}
+  PVRSignalStatus(const PVR_SIGNAL_STATUS* status) : DynamicCStructHdl(status) {}
+  PVRSignalStatus(PVR_SIGNAL_STATUS* status) : DynamicCStructHdl(status) {}
 };
 ///@}
 //------------------------------------------------------------------------------
@@ -388,7 +415,7 @@ private:
 /// @copydetails cpp_kodi_addon_pvr_Defs_Channel_PVRDescrambleInfo_Help
 ///
 ///@{
-class PVRDescrambleInfo : public CStructHdl<PVRDescrambleInfo, PVR_DESCRAMBLE_INFO>
+class PVRDescrambleInfo : public DynamicCStructHdl<PVRDescrambleInfo, PVR_DESCRAMBLE_INFO>
 {
   friend class CInstancePVRClient;
 
@@ -402,7 +429,7 @@ public:
     m_cStructure->iEcmTime = PVR_DESCRAMBLE_INFO_NOT_AVAILABLE;
     m_cStructure->iHops = PVR_DESCRAMBLE_INFO_NOT_AVAILABLE;
   }
-  PVRDescrambleInfo(const PVRDescrambleInfo& type) : CStructHdl(type) {}
+  PVRDescrambleInfo(const PVRDescrambleInfo& info) : DynamicCStructHdl(info) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_pvr_Defs_Channel_PVRDescrambleInfo_Help Value Help
@@ -483,8 +510,7 @@ public:
   /// Empty string if not available.
   void SetCardSystem(const std::string& cardSystem)
   {
-    strncpy(m_cStructure->strCardSystem, cardSystem.c_str(),
-            sizeof(m_cStructure->strCardSystem) - 1);
+    ReallocAndCopyString(&m_cStructure->strCardSystem, cardSystem.c_str());
   }
 
   /// @brief To get with @ref SetCardSystem changed values.
@@ -494,7 +520,7 @@ public:
   /// Empty string if not available.
   void SetReader(const std::string& reader)
   {
-    strncpy(m_cStructure->strReader, reader.c_str(), sizeof(m_cStructure->strReader) - 1);
+    ReallocAndCopyString(&m_cStructure->strReader, reader.c_str());
   }
 
   /// @brief To get with @ref SetReader changed values.
@@ -504,7 +530,7 @@ public:
   /// Empty string if not available.
   void SetFrom(const std::string& from)
   {
-    strncpy(m_cStructure->strFrom, from.c_str(), sizeof(m_cStructure->strFrom) - 1);
+    ReallocAndCopyString(&m_cStructure->strFrom, from.c_str());
   }
 
   /// @brief To get with @ref SetFrom changed values.
@@ -514,16 +540,32 @@ public:
   /// Empty string if not available.
   void SetProtocol(const std::string& protocol)
   {
-    strncpy(m_cStructure->strProtocol, protocol.c_str(), sizeof(m_cStructure->strProtocol) - 1);
+    ReallocAndCopyString(&m_cStructure->strProtocol, protocol.c_str());
   }
 
   /// @brief To get with @ref SetProtocol changed values.
   std::string GetProtocol() const { return m_cStructure->strProtocol; }
   ///@}
 
+  static void AllocResources(const PVR_DESCRAMBLE_INFO* source, PVR_DESCRAMBLE_INFO* target)
+  {
+    target->strCardSystem = AllocAndCopyString(source->strCardSystem);
+    target->strReader = AllocAndCopyString(source->strReader);
+    target->strFrom = AllocAndCopyString(source->strFrom);
+    target->strProtocol = AllocAndCopyString(source->strProtocol);
+  }
+
+  static void FreeResources(PVR_DESCRAMBLE_INFO* target)
+  {
+    FreeString(target->strCardSystem);
+    FreeString(target->strReader);
+    FreeString(target->strFrom);
+    FreeString(target->strProtocol);
+  }
+
 private:
-  PVRDescrambleInfo(const PVR_DESCRAMBLE_INFO* type) : CStructHdl(type) {}
-  PVRDescrambleInfo(PVR_DESCRAMBLE_INFO* type) : CStructHdl(type) {}
+  PVRDescrambleInfo(const PVR_DESCRAMBLE_INFO* info) : DynamicCStructHdl(info) {}
+  PVRDescrambleInfo(PVR_DESCRAMBLE_INFO* info) : DynamicCStructHdl(info) {}
 };
 ///@}
 //------------------------------------------------------------------------------

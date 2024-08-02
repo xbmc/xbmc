@@ -172,11 +172,11 @@ CPVRTimerType::CPVRTimerType() :
 {
 }
 
-CPVRTimerType::CPVRTimerType(const PVR_TIMER_TYPE& type, int iClientId) :
-  m_iClientId(iClientId),
-  m_iTypeId(type.iId),
-  m_iAttributes(type.iAttributes),
-  m_strDescription(type.strDescription)
+CPVRTimerType::CPVRTimerType(const PVR_TIMER_TYPE& type, int iClientId)
+  : m_iClientId(iClientId),
+    m_iTypeId(type.iId),
+    m_iAttributes(type.iAttributes),
+    m_strDescription(type.strDescription ? type.strDescription : "")
 {
   InitDescription();
   InitAttributeValues(type);
@@ -277,13 +277,15 @@ void CPVRTimerType::InitPriorityValues(const PVR_TIMER_TYPE& type)
   {
     for (unsigned int i = 0; i < type.iPrioritiesSize; ++i)
     {
-      std::string strDescr(type.priorities[i].strDescription);
+      const int value{type.priorities[i].iValue};
+      const char* desc{type.priorities[i].strDescription};
+      std::string strDescr{desc ? desc : ""};
       if (strDescr.empty())
       {
         // No description given by addon. Create one from value.
-        strDescr = std::to_string(type.priorities[i].iValue);
+        strDescr = std::to_string(value);
       }
-      m_priorityValues.emplace_back(strDescr, type.priorities[i].iValue);
+      m_priorityValues.emplace_back(strDescr, value);
     }
 
     m_iPriorityDefault = type.iPrioritiesDefault;
@@ -314,14 +316,15 @@ void CPVRTimerType::InitLifetimeValues(const PVR_TIMER_TYPE& type)
   {
     for (unsigned int i = 0; i < type.iLifetimesSize; ++i)
     {
-      int iValue = type.lifetimes[i].iValue;
-      std::string strDescr(type.lifetimes[i].strDescription);
+      const int value{type.lifetimes[i].iValue};
+      const char* desc{type.lifetimes[i].strDescription};
+      std::string strDescr{desc ? desc : ""};
       if (strDescr.empty())
       {
         // No description given by addon. Create one from value.
-        strDescr = std::to_string(iValue);
+        strDescr = std::to_string(value);
       }
-      m_lifetimeValues.emplace_back(strDescr, iValue);
+      m_lifetimeValues.emplace_back(strDescr, value);
     }
 
     m_iLifetimeDefault = type.iLifetimesDefault;
@@ -354,13 +357,15 @@ void CPVRTimerType::InitMaxRecordingsValues(const PVR_TIMER_TYPE& type)
   {
     for (unsigned int i = 0; i < type.iMaxRecordingsSize; ++i)
     {
-      std::string strDescr(type.maxRecordings[i].strDescription);
+      const int value{type.maxRecordings[i].iValue};
+      const char* desc{type.maxRecordings[i].strDescription};
+      std::string strDescr{desc ? desc : ""};
       if (strDescr.empty())
       {
         // No description given by addon. Create one from value.
-        strDescr = std::to_string(type.maxRecordings[i].iValue);
+        strDescr = std::to_string(value);
       }
-      m_maxRecordingsValues.emplace_back(strDescr, type.maxRecordings[i].iValue);
+      m_maxRecordingsValues.emplace_back(strDescr, value);
     }
 
     m_iMaxRecordingsDefault = type.iMaxRecordingsDefault;
@@ -378,13 +383,15 @@ void CPVRTimerType::InitPreventDuplicateEpisodesValues(const PVR_TIMER_TYPE& typ
   {
     for (unsigned int i = 0; i < type.iPreventDuplicateEpisodesSize; ++i)
     {
-      std::string strDescr(type.preventDuplicateEpisodes[i].strDescription);
+      const int value{type.preventDuplicateEpisodes[i].iValue};
+      const char* desc{type.preventDuplicateEpisodes[i].strDescription};
+      std::string strDescr{desc ? desc : ""};
       if (strDescr.empty())
       {
         // No description given by addon. Create one from value.
-        strDescr = std::to_string(type.preventDuplicateEpisodes[i].iValue);
+        strDescr = std::to_string(value);
       }
-      m_preventDupEpisodesValues.emplace_back(strDescr, type.preventDuplicateEpisodes[i].iValue);
+      m_preventDupEpisodesValues.emplace_back(strDescr, value);
     }
 
     m_iPreventDupEpisodesDefault = type.iPreventDuplicateEpisodesDefault;
@@ -415,15 +422,17 @@ void CPVRTimerType::InitRecordingGroupValues(const PVR_TIMER_TYPE& type)
   {
     for (unsigned int i = 0; i < type.iRecordingGroupSize; ++i)
     {
-      std::string strDescr(type.recordingGroup[i].strDescription);
+      const int value{type.recordingGroup[i].iValue};
+      const char* desc{type.recordingGroup[i].strDescription};
+      std::string strDescr{desc ? desc : ""};
       if (strDescr.empty())
       {
         // No description given by addon. Create one from value.
         strDescr = StringUtils::Format("{} {}",
                                        g_localizeStrings.Get(811), // Recording group
-                                       type.recordingGroup[i].iValue);
+                                       value);
       }
-      m_recordingGroupValues.emplace_back(strDescr, type.recordingGroup[i].iValue);
+      m_recordingGroupValues.emplace_back(strDescr, value);
     }
 
     m_iRecordingGroupDefault = type.iRecordingGroupDefault;

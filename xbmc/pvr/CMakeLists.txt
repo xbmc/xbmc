@@ -21,11 +21,13 @@ set(HEADERS IPVRComponent.h
             PVRComponentRegistration.h
             PVRContextMenus.h
             PVRDatabase.h
+            PVRDescrambleInfo.h
             PVREdl.h
             PVREventLogJob.h
             PVRItem.h
             PVRManager.h
             PVRPlaybackState.h
+            PVRSignalStatus.h
             PVRStreamProperties.h
             PVRThumbLoader.h)
 

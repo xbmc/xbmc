@@ -63,14 +63,6 @@ bool CPVRChannelGroup::operator!=(const CPVRChannelGroup& right) const
   return !(*this == right);
 }
 
-void CPVRChannelGroup::FillAddonData(PVR_CHANNEL_GROUP& group) const
-{
-  group = {};
-  group.bIsRadio = IsRadio();
-  strncpy(group.strGroupName, ClientGroupName().c_str(), sizeof(group.strGroupName) - 1);
-  group.iPosition = GetClientPosition();
-}
-
 CCriticalSection CPVRChannelGroup::m_settingsSingletonCritSection;
 std::weak_ptr<CPVRChannelGroupSettings> CPVRChannelGroup::m_settingsSingleton;
 

@@ -90,10 +90,10 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */)
 CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER& timer,
                                    const std::shared_ptr<CPVRChannel>& channel,
                                    unsigned int iClientId)
-  : m_strTitle(timer.strTitle),
-    m_strEpgSearchString(timer.strEpgSearchString),
+  : m_strTitle(timer.strTitle ? timer.strTitle : ""),
+    m_strEpgSearchString(timer.strEpgSearchString ? timer.strEpgSearchString : ""),
     m_bFullTextEpgSearch(timer.bFullTextEpgSearch),
-    m_strDirectory(timer.strDirectory),
+    m_strDirectory(timer.strDirectory ? timer.strDirectory : ""),
     m_state(timer.state),
     m_iClientId(iClientId),
     m_iClientIndex(timer.iClientIndex),
@@ -115,7 +115,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER& timer,
     m_iMarginStart(timer.iMarginStart),
     m_iMarginEnd(timer.iMarginEnd),
     m_iEpgUid(timer.iEpgUid),
-    m_strSeriesLink(timer.strSeriesLink),
+    m_strSeriesLink(timer.strSeriesLink ? timer.strSeriesLink : ""),
     m_StartTime(
         timer.startTime +
         CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection),
@@ -227,47 +227,6 @@ bool CPVRTimerInfoTag::operator==(const CPVRTimerInfoTag& right) const
 bool CPVRTimerInfoTag::operator!=(const CPVRTimerInfoTag& right) const
 {
   return !(*this == right);
-}
-
-void CPVRTimerInfoTag::FillAddonData(PVR_TIMER& timer) const
-{
-  time_t start, end, firstDay;
-  StartAsUTC().GetAsTime(start);
-  EndAsUTC().GetAsTime(end);
-  FirstDayAsUTC().GetAsTime(firstDay);
-  const std::shared_ptr<const CPVREpgInfoTag> epgTag = GetEpgInfoTag();
-  const int iPVRTimeCorrection =
-      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection;
-
-  timer = {};
-  timer.iClientIndex = m_iClientIndex;
-  timer.iParentClientIndex = m_iParentClientIndex;
-  timer.state = m_state;
-  timer.iTimerType = GetTimerType()->GetTypeId();
-  timer.iClientChannelUid = m_iClientChannelUid;
-  strncpy(timer.strTitle, m_strTitle.c_str(), sizeof(timer.strTitle) - 1);
-  strncpy(timer.strEpgSearchString, m_strEpgSearchString.c_str(),
-          sizeof(timer.strEpgSearchString) - 1);
-  timer.bFullTextEpgSearch = m_bFullTextEpgSearch;
-  strncpy(timer.strDirectory, m_strDirectory.c_str(), sizeof(timer.strDirectory) - 1);
-  timer.iPriority = m_iPriority;
-  timer.iLifetime = m_iLifetime;
-  timer.iMaxRecordings = m_iMaxRecordings;
-  timer.iPreventDuplicateEpisodes = m_iPreventDupEpisodes;
-  timer.iRecordingGroup = m_iRecordingGroup;
-  timer.iWeekdays = m_iWeekdays;
-  timer.startTime = start - iPVRTimeCorrection;
-  timer.endTime = end - iPVRTimeCorrection;
-  timer.bStartAnyTime = m_bStartAnyTime;
-  timer.bEndAnyTime = m_bEndAnyTime;
-  timer.firstDay = firstDay - iPVRTimeCorrection;
-  timer.iEpgUid = epgTag ? epgTag->UniqueBroadcastID() : PVR_TIMER_NO_EPG_UID;
-  strncpy(timer.strSummary, m_strSummary.c_str(), sizeof(timer.strSummary) - 1);
-  timer.iMarginStart = m_iMarginStart;
-  timer.iMarginEnd = m_iMarginEnd;
-  timer.iGenreType = epgTag ? epgTag->GenreType() : 0;
-  timer.iGenreSubType = epgTag ? epgTag->GenreSubType() : 0;
-  strncpy(timer.strSeriesLink, SeriesLink().c_str(), sizeof(timer.strSeriesLink) - 1);
 }
 
 void CPVRTimerInfoTag::Serialize(CVariant& value) const

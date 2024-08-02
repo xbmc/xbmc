@@ -36,7 +36,7 @@ namespace addon
 /// @copydetails cpp_kodi_addon_pvr_Defs_epg_PVREPGTag_Help
 ///
 ///@{
-class PVREPGTag : public CStructHdl<PVREPGTag, EPG_TAG>
+class PVREPGTag : public DynamicCStructHdl<PVREPGTag, EPG_TAG>
 {
   friend class CInstancePVRClient;
 
@@ -49,24 +49,7 @@ public:
     m_cStructure->iEpisodeNumber = EPG_TAG_INVALID_SERIES_EPISODE;
     m_cStructure->iEpisodePartNumber = EPG_TAG_INVALID_SERIES_EPISODE;
   }
-  PVREPGTag(const PVREPGTag& epg)
-    : CStructHdl(epg),
-      m_title(epg.m_title),
-      m_plotOutline(epg.m_plotOutline),
-      m_plot(epg.m_plot),
-      m_originalTitle(epg.m_originalTitle),
-      m_cast(epg.m_cast),
-      m_director(epg.m_director),
-      m_writer(epg.m_writer),
-      m_IMDBNumber(epg.m_IMDBNumber),
-      m_episodeName(epg.m_episodeName),
-      m_iconPath(epg.m_iconPath),
-      m_seriesLink(epg.m_seriesLink),
-      m_genreDescription(epg.m_genreDescription),
-      m_parentalRatingCode(epg.m_parentalRatingCode),
-      m_firstAired(epg.m_firstAired)
-  {
-  }
+  PVREPGTag(const PVREPGTag& epg) : DynamicCStructHdl(epg) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_pvr_Defs_epg_PVREPGTag_Help Value Help
@@ -129,10 +112,13 @@ public:
 
   /// @brief **required**\n
   /// This event's title.
-  void SetTitle(const std::string& title) { m_title = title; }
+  void SetTitle(const std::string& title)
+  {
+    ReallocAndCopyString(&m_cStructure->strTitle, title.c_str());
+  }
 
   /// @brief To get with @ref SetTitle changed values.
-  std::string GetTitle() const { return m_title; }
+  std::string GetTitle() const { return m_cStructure->strTitle; }
 
   /// @brief **required**\n
   /// Start time in UTC.
@@ -154,51 +140,69 @@ public:
 
   /// @brief **optional**\n
   /// Plot outline name.
-  void SetPlotOutline(const std::string& plotOutline) { m_plotOutline = plotOutline; }
+  void SetPlotOutline(const std::string& plotOutline)
+  {
+    ReallocAndCopyString(&m_cStructure->strPlotOutline, plotOutline.c_str());
+  }
 
   /// @brief To get with @ref SetPlotOutline changed values.
-  std::string GetPlotOutline() const { return m_plotOutline; }
+  std::string GetPlotOutline() const { return m_cStructure->strPlotOutline; }
 
   /// @brief **optional**\n
   /// Plot name.
-  void SetPlot(const std::string& plot) { m_plot = plot; }
+  void SetPlot(const std::string& plot)
+  {
+    ReallocAndCopyString(&m_cStructure->strPlot, plot.c_str());
+  }
 
   /// @brief To get with @ref GetPlot changed values.
-  std::string GetPlot() const { return m_plot; }
+  std::string GetPlot() const { return m_cStructure->strPlot; }
 
   /// @brief **optional**\n
   /// Original title.
-  void SetOriginalTitle(const std::string& originalTitle) { m_originalTitle = originalTitle; }
+  void SetOriginalTitle(const std::string& originalTitle)
+  {
+    ReallocAndCopyString(&m_cStructure->strOriginalTitle, originalTitle.c_str());
+  }
 
   /// @brief To get with @ref SetOriginalTitle changed values
-  std::string GetOriginalTitle() const { return m_originalTitle; }
+  std::string GetOriginalTitle() const { return m_cStructure->strOriginalTitle; }
 
   /// @brief **optional**\n
   /// Cast name(s).
   ///
   /// @note Use @ref EPG_STRING_TOKEN_SEPARATOR to separate different persons.
-  void SetCast(const std::string& cast) { m_cast = cast; }
+  void SetCast(const std::string& cast)
+  {
+    ReallocAndCopyString(&m_cStructure->strCast, cast.c_str());
+  }
 
   /// @brief To get with @ref SetCast changed values
-  std::string GetCast() const { return m_cast; }
+  std::string GetCast() const { return m_cStructure->strCast; }
 
   /// @brief **optional**\n
   /// Director name(s).
   ///
   /// @note Use @ref EPG_STRING_TOKEN_SEPARATOR to separate different persons.
-  void SetDirector(const std::string& director) { m_director = director; }
+  void SetDirector(const std::string& director)
+  {
+    ReallocAndCopyString(&m_cStructure->strDirector, director.c_str());
+  }
 
   /// @brief To get with @ref SetDirector changed values.
-  std::string GetDirector() const { return m_director; }
+  std::string GetDirector() const { return m_cStructure->strDirector; }
 
   /// @brief **optional**\n
   /// Writer name(s).
   ///
   /// @note Use @ref EPG_STRING_TOKEN_SEPARATOR to separate different persons.
-  void SetWriter(const std::string& writer) { m_writer = writer; }
+  void SetWriter(const std::string& writer)
+  {
+    ReallocAndCopyString(&m_cStructure->strWriter, writer.c_str());
+  }
 
   /// @brief To get with @ref SetDirector changed values
-  std::string GetWriter() const { return m_writer; }
+  std::string GetWriter() const { return m_cStructure->strWriter; }
 
   /// @brief **optional**\n
   /// Year.
@@ -209,17 +213,23 @@ public:
 
   /// @brief **optional**\n
   /// [IMDB](https://en.wikipedia.org/wiki/IMDb) identification number.
-  void SetIMDBNumber(const std::string& IMDBNumber) { m_IMDBNumber = IMDBNumber; }
+  void SetIMDBNumber(const std::string& IMDBNumber)
+  {
+    ReallocAndCopyString(&m_cStructure->strIMDBNumber, IMDBNumber.c_str());
+  }
 
   /// @brief To get with @ref SetIMDBNumber changed values.
-  std::string GetIMDBNumber() const { return m_IMDBNumber; }
+  std::string GetIMDBNumber() const { return m_cStructure->strIMDBNumber; }
 
   /// @brief **optional**\n
   /// Icon path.
-  void SetIconPath(const std::string& iconPath) { m_iconPath = iconPath; }
+  void SetIconPath(const std::string& iconPath)
+  {
+    ReallocAndCopyString(&m_cStructure->strIconPath, iconPath.c_str());
+  }
 
   /// @brief To get with @ref SetIconPath changed values.
-  std::string GetIconPath() const { return m_iconPath; }
+  std::string GetIconPath() const { return m_cStructure->strIconPath; }
 
   /// @brief **optional**\n
   /// Genre type.
@@ -313,18 +323,21 @@ public:
   ///
   void SetGenreDescription(const std::string& genreDescription)
   {
-    m_genreDescription = genreDescription;
+    ReallocAndCopyString(&m_cStructure->strGenreDescription, genreDescription.c_str());
   }
 
   /// @brief To get with @ref SetGenreDescription changed values.
-  std::string GetGenreDescription() const { return m_genreDescription; }
+  std::string GetGenreDescription() const { return m_cStructure->strGenreDescription; }
 
   /// @brief **optional**\n
   /// First aired in UTC.
-  void SetFirstAired(const std::string& firstAired) { m_firstAired = firstAired; }
+  void SetFirstAired(const std::string& firstAired)
+  {
+    ReallocAndCopyString(&m_cStructure->strFirstAired, firstAired.c_str());
+  }
 
   /// @brief To get with @ref SetFirstAired changed values.
-  std::string GetFirstAired() const { return m_firstAired; }
+  std::string GetFirstAired() const { return m_cStructure->strFirstAired; }
 
   /// @brief **optional**\n
   /// Parental rating.
@@ -337,11 +350,11 @@ public:
   /// This event's parental rating code.
   void SetParentalRatingCode(const std::string& parentalRatingCode)
   {
-    m_parentalRatingCode = parentalRatingCode;
+    ReallocAndCopyString(&m_cStructure->strParentalRatingCode, parentalRatingCode.c_str());
   }
 
   /// @brief To get with @ref SetParentalRatingCode changed values.
-  std::string GetParentalRatingCode() const { return m_parentalRatingCode; }
+  std::string GetParentalRatingCode() const { return m_cStructure->strParentalRatingCode; }
 
   /// @brief **optional**\n
   /// Star rating.
@@ -376,10 +389,13 @@ public:
 
   /// @brief **optional**\n
   /// Episode name.
-  void SetEpisodeName(const std::string& episodeName) { m_episodeName = episodeName; }
+  void SetEpisodeName(const std::string& episodeName)
+  {
+    ReallocAndCopyString(&m_cStructure->strEpisodeName, episodeName.c_str());
+  }
 
   /// @brief To get with @ref SetEpisodeName changed values.
-  std::string GetEpisodeName() const { return m_episodeName; }
+  std::string GetEpisodeName() const { return m_cStructure->strEpisodeName; }
 
   /// @brief **optional**\n
   /// Bit field of independent flags associated with the EPG entry.
@@ -397,74 +413,55 @@ public:
 
   /// @brief **optional**\n
   /// Series link for this event.
-  void SetSeriesLink(const std::string& seriesLink) { m_seriesLink = seriesLink; }
+  void SetSeriesLink(const std::string& seriesLink)
+  {
+    ReallocAndCopyString(&m_cStructure->strSeriesLink, seriesLink.c_str());
+  }
 
   /// @brief To get with @ref SetSeriesLink changed values.
-  std::string GetSeriesLink() const { return m_seriesLink; }
+  std::string GetSeriesLink() const { return m_cStructure->strSeriesLink; }
 
   ///@}
 
-  // Internal used, as this have own memory for strings and to translate them to "C"
-  EPG_TAG* GetTag() const
+  static void AllocResources(const EPG_TAG* source, EPG_TAG* target)
   {
-    m_cStructure->strTitle = m_title.c_str();
-    m_cStructure->strPlotOutline = m_plotOutline.c_str();
-    m_cStructure->strPlot = m_plot.c_str();
-    m_cStructure->strOriginalTitle = m_originalTitle.c_str();
-    m_cStructure->strCast = m_cast.c_str();
-    m_cStructure->strDirector = m_director.c_str();
-    m_cStructure->strWriter = m_writer.c_str();
-    m_cStructure->strIMDBNumber = m_IMDBNumber.c_str();
-    m_cStructure->strIconPath = m_iconPath.c_str();
-    m_cStructure->strGenreDescription = m_genreDescription.c_str();
-    m_cStructure->strParentalRatingCode = m_parentalRatingCode.c_str();
-    m_cStructure->strEpisodeName = m_episodeName.c_str();
-    m_cStructure->strSeriesLink = m_seriesLink.c_str();
-    m_cStructure->strFirstAired = m_firstAired.c_str();
+    target->strTitle = AllocAndCopyString(source->strTitle);
+    target->strPlotOutline = AllocAndCopyString(source->strPlotOutline);
+    target->strPlot = AllocAndCopyString(source->strPlot);
+    target->strOriginalTitle = AllocAndCopyString(source->strOriginalTitle);
+    target->strCast = AllocAndCopyString(source->strCast);
+    target->strDirector = AllocAndCopyString(source->strDirector);
+    target->strWriter = AllocAndCopyString(source->strWriter);
+    target->strIMDBNumber = AllocAndCopyString(source->strIMDBNumber);
+    target->strIconPath = AllocAndCopyString(source->strIconPath);
+    target->strGenreDescription = AllocAndCopyString(source->strGenreDescription);
+    target->strParentalRatingCode = AllocAndCopyString(source->strParentalRatingCode);
+    target->strEpisodeName = AllocAndCopyString(source->strEpisodeName);
+    target->strSeriesLink = AllocAndCopyString(source->strSeriesLink);
+    target->strFirstAired = AllocAndCopyString(source->strFirstAired);
+  }
 
-    return m_cStructure;
+  static void FreeResources(EPG_TAG* target)
+  {
+    FreeString(target->strTitle);
+    FreeString(target->strPlotOutline);
+    FreeString(target->strPlot);
+    FreeString(target->strOriginalTitle);
+    FreeString(target->strCast);
+    FreeString(target->strDirector);
+    FreeString(target->strWriter);
+    FreeString(target->strIMDBNumber);
+    FreeString(target->strIconPath);
+    FreeString(target->strGenreDescription);
+    FreeString(target->strParentalRatingCode);
+    FreeString(target->strEpisodeName);
+    FreeString(target->strSeriesLink);
+    FreeString(target->strFirstAired);
   }
 
 private:
-  PVREPGTag(const EPG_TAG* epg) : CStructHdl(epg) { SetData(epg); }
-  PVREPGTag(EPG_TAG* epg) : CStructHdl(epg) { SetData(epg); }
-
-  const PVREPGTag& operator=(const PVREPGTag& right);
-  const PVREPGTag& operator=(const EPG_TAG& right);
-  operator EPG_TAG*();
-
-  std::string m_title;
-  std::string m_plotOutline;
-  std::string m_plot;
-  std::string m_originalTitle;
-  std::string m_cast;
-  std::string m_director;
-  std::string m_writer;
-  std::string m_IMDBNumber;
-  std::string m_episodeName;
-  std::string m_iconPath;
-  std::string m_seriesLink;
-  std::string m_genreDescription;
-  std::string m_parentalRatingCode;
-  std::string m_firstAired;
-
-  void SetData(const EPG_TAG* tag)
-  {
-    m_title = tag->strTitle == nullptr ? "" : tag->strTitle;
-    m_plotOutline = tag->strPlotOutline == nullptr ? "" : tag->strPlotOutline;
-    m_plot = tag->strPlot == nullptr ? "" : tag->strPlot;
-    m_originalTitle = tag->strOriginalTitle == nullptr ? "" : tag->strOriginalTitle;
-    m_cast = tag->strCast == nullptr ? "" : tag->strCast;
-    m_director = tag->strDirector == nullptr ? "" : tag->strDirector;
-    m_writer = tag->strWriter == nullptr ? "" : tag->strWriter;
-    m_IMDBNumber = tag->strIMDBNumber == nullptr ? "" : tag->strIMDBNumber;
-    m_iconPath = tag->strIconPath == nullptr ? "" : tag->strIconPath;
-    m_genreDescription = tag->strGenreDescription == nullptr ? "" : tag->strGenreDescription;
-    m_parentalRatingCode = tag->strParentalRatingCode == nullptr ? "" : tag->strParentalRatingCode;
-    m_episodeName = tag->strEpisodeName == nullptr ? "" : tag->strEpisodeName;
-    m_seriesLink = tag->strSeriesLink == nullptr ? "" : tag->strSeriesLink;
-    m_firstAired = tag->strFirstAired == nullptr ? "" : tag->strFirstAired;
-  }
+  PVREPGTag(const EPG_TAG* epg) : DynamicCStructHdl(epg) {}
+  PVREPGTag(EPG_TAG* epg) : DynamicCStructHdl(epg) {}
 };
 ///@}
 //------------------------------------------------------------------------------
@@ -497,7 +494,7 @@ public:
   /// @param[in] tag The to transferred data.
   void Add(const kodi::addon::PVREPGTag& tag)
   {
-    m_instance->toKodi->TransferEpgEntry(m_instance->toKodi->kodiInstance, m_handle, tag.GetTag());
+    m_instance->toKodi->TransferEpgEntry(m_instance->toKodi->kodiInstance, m_handle, tag);
   }
 
   ///@}

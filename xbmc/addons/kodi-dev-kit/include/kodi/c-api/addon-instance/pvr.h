@@ -149,22 +149,21 @@ extern "C"
     // General interface functions
     enum PVR_ERROR(__cdecl* GetCapabilities)(const struct AddonInstance_PVR*,
                                              struct PVR_ADDON_CAPABILITIES*);
-    enum PVR_ERROR(__cdecl* GetBackendName)(const struct AddonInstance_PVR*, char*, int);
-    enum PVR_ERROR(__cdecl* GetBackendVersion)(const struct AddonInstance_PVR*, char*, int);
-    enum PVR_ERROR(__cdecl* GetBackendHostname)(const struct AddonInstance_PVR*, char*, int);
-    enum PVR_ERROR(__cdecl* GetConnectionString)(const struct AddonInstance_PVR*, char*, int);
+    enum PVR_ERROR(__cdecl* GetBackendName)(const struct AddonInstance_PVR*, char**);
+    enum PVR_ERROR(__cdecl* GetBackendVersion)(const struct AddonInstance_PVR*, char**);
+    enum PVR_ERROR(__cdecl* GetBackendHostname)(const struct AddonInstance_PVR*, char**);
+    enum PVR_ERROR(__cdecl* GetConnectionString)(const struct AddonInstance_PVR*, char**);
     enum PVR_ERROR(__cdecl* GetDriveSpace)(const struct AddonInstance_PVR*, uint64_t*, uint64_t*);
     enum PVR_ERROR(__cdecl* CallSettingsMenuHook)(const struct AddonInstance_PVR*,
                                                   const struct PVR_MENUHOOK*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Channel interface functions
-
     enum PVR_ERROR(__cdecl* GetChannelsAmount)(const struct AddonInstance_PVR*, int*);
     enum PVR_ERROR(__cdecl* GetChannels)(const struct AddonInstance_PVR*, PVR_HANDLE, bool);
     enum PVR_ERROR(__cdecl* GetChannelStreamProperties)(const struct AddonInstance_PVR*,
                                                         const struct PVR_CHANNEL*,
-                                                        struct PVR_NAMED_VALUE*,
+                                                        struct PVR_NAMED_VALUE***,
                                                         unsigned int*);
     enum PVR_ERROR(__cdecl* GetSignalStatus)(const struct AddonInstance_PVR*,
                                              int,
@@ -214,11 +213,11 @@ extern "C"
                                               bool*);
     enum PVR_ERROR(__cdecl* GetEPGTagEdl)(const struct AddonInstance_PVR*,
                                           const struct EPG_TAG*,
-                                          struct PVR_EDL_ENTRY[],
-                                          int*);
+                                          struct PVR_EDL_ENTRY***,
+                                          unsigned int*);
     enum PVR_ERROR(__cdecl* GetEPGTagStreamProperties)(const struct AddonInstance_PVR*,
                                                        const struct EPG_TAG*,
-                                                       struct PVR_NAMED_VALUE*,
+                                                       struct PVR_NAMED_VALUE***,
                                                        unsigned int*);
     enum PVR_ERROR(__cdecl* SetEPGMaxPastDays)(const struct AddonInstance_PVR*, int);
     enum PVR_ERROR(__cdecl* SetEPGMaxFutureDays)(const struct AddonInstance_PVR*, int);
@@ -250,14 +249,14 @@ extern "C"
                                                             int*);
     enum PVR_ERROR(__cdecl* GetRecordingEdl)(const struct AddonInstance_PVR*,
                                              const struct PVR_RECORDING*,
-                                             struct PVR_EDL_ENTRY[],
-                                             int*);
+                                             struct PVR_EDL_ENTRY***,
+                                             unsigned int*);
     enum PVR_ERROR(__cdecl* GetRecordingSize)(const struct AddonInstance_PVR*,
                                               const PVR_RECORDING*,
                                               int64_t*);
     enum PVR_ERROR(__cdecl* GetRecordingStreamProperties)(const struct AddonInstance_PVR*,
                                                           const struct PVR_RECORDING*,
-                                                          struct PVR_NAMED_VALUE*,
+                                                          struct PVR_NAMED_VALUE***,
                                                           unsigned int*);
     enum PVR_ERROR(__cdecl* CallRecordingMenuHook)(const struct AddonInstance_PVR*,
                                                    const struct PVR_MENUHOOK*,
@@ -266,8 +265,8 @@ extern "C"
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Timer interface functions
     enum PVR_ERROR(__cdecl* GetTimerTypes)(const struct AddonInstance_PVR*,
-                                           struct PVR_TIMER_TYPE[],
-                                           int*);
+                                           struct PVR_TIMER_TYPE***,
+                                           unsigned int*);
     enum PVR_ERROR(__cdecl* GetTimersAmount)(const struct AddonInstance_PVR*, int*);
     enum PVR_ERROR(__cdecl* GetTimers)(const struct AddonInstance_PVR*, PVR_HANDLE);
     enum PVR_ERROR(__cdecl* AddTimer)(const struct AddonInstance_PVR*, const struct PVR_TIMER*);
@@ -323,6 +322,25 @@ extern "C"
     enum PVR_ERROR(__cdecl* GetStreamTimes)(const struct AddonInstance_PVR*,
                                             struct PVR_STREAM_TIMES*);
     enum PVR_ERROR(__cdecl* GetStreamReadChunkSize)(const struct AddonInstance_PVR*, int*);
+
+    //--==----==----==----==----==----==----==----==----==----==----==----==----==
+    // Resource deallocation interface functions
+    enum PVR_ERROR(__cdecl* FreeCapabilities)(const struct AddonInstance_PVR*,
+                                              struct PVR_ADDON_CAPABILITIES*);
+    enum PVR_ERROR(__cdecl* FreeTimerTypes)(const struct AddonInstance_PVR*,
+                                            struct PVR_TIMER_TYPE**,
+                                            unsigned int);
+    enum PVR_ERROR(__cdecl* FreeProperties)(const struct AddonInstance_PVR*,
+                                            struct PVR_NAMED_VALUE**,
+                                            unsigned int);
+    enum PVR_ERROR(__cdecl* FreeDescrambleInfo)(const struct AddonInstance_PVR*,
+                                                struct PVR_DESCRAMBLE_INFO*);
+    enum PVR_ERROR(__cdecl* FreeSignalStatus)(const struct AddonInstance_PVR*,
+                                              struct PVR_SIGNAL_STATUS*);
+    enum PVR_ERROR(__cdecl* FreeEdlEntries)(const struct AddonInstance_PVR*,
+                                            struct PVR_EDL_ENTRY**,
+                                            unsigned int);
+    enum PVR_ERROR(__cdecl* FreeString)(const struct AddonInstance_PVR*, char*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // New functions becomes added below and can be on another API change (where

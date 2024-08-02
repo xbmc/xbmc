@@ -17,8 +17,12 @@
 #include <string>
 #include <vector>
 
+namespace EDL
+{
+struct Edit;
+}
+
 struct EPG_TAG;
-struct PVR_EDL_ENTRY;
 
 namespace PVR
 {
@@ -391,7 +395,7 @@ public:
    * @brief Retrieve the edit decision list (EDL) of an EPG tag.
    * @return The edit decision list (empty on error)
    */
-  std::vector<PVR_EDL_ENTRY> GetEdl() const;
+  std::vector<EDL::Edit> GetEdl() const;
 
   /*!
    * @brief Check whether this tag has any series attributes.

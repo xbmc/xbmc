@@ -35,7 +35,7 @@ namespace addon
 /// @copydetails cpp_kodi_addon_pvr_Defs_Timer_PVRTimer_Help
 ///
 ///@{
-class PVRTimer : public CStructHdl<PVRTimer, PVR_TIMER>
+class PVRTimer : public DynamicCStructHdl<PVRTimer, PVR_TIMER>
 {
   friend class CInstancePVRClient;
 
@@ -66,7 +66,7 @@ public:
     m_cStructure->iGenreType = PVR_TIMER_VALUE_NOT_AVAILABLE;
     m_cStructure->iGenreSubType = PVR_TIMER_VALUE_NOT_AVAILABLE;
   }
-  PVRTimer(const PVRTimer& data) : CStructHdl(data) {}
+  PVRTimer(const PVRTimer& timer) : DynamicCStructHdl(timer) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_pvr_Defs_Timer_PVRTimer_Help Value Help
@@ -167,7 +167,7 @@ public:
   /// A title for this timer.
   void SetTitle(const std::string& title)
   {
-    strncpy(m_cStructure->strTitle, title.c_str(), sizeof(m_cStructure->strTitle) - 1);
+    ReallocAndCopyString(&m_cStructure->strTitle, title.c_str());
   }
 
   /// @brief To get with @ref SetTitle changed values.
@@ -241,8 +241,7 @@ public:
   /// Format is backend-dependent, for example regexp.
   void SetEPGSearchString(const std::string& epgSearchString)
   {
-    strncpy(m_cStructure->strEpgSearchString, epgSearchString.c_str(),
-            sizeof(m_cStructure->strEpgSearchString) - 1);
+    ReallocAndCopyString(&m_cStructure->strEpgSearchString, epgSearchString.c_str());
   }
 
   /// @brief To get with @ref SetEPGSearchString changed values
@@ -263,7 +262,7 @@ public:
   /// The (relative) directory where the recording will be stored in.
   void SetDirectory(const std::string& directory)
   {
-    strncpy(m_cStructure->strDirectory, directory.c_str(), sizeof(m_cStructure->strDirectory) - 1);
+    ReallocAndCopyString(&m_cStructure->strDirectory, directory.c_str());
   }
 
   /// @brief To get with @ref SetDirectory changed values.
@@ -273,7 +272,7 @@ public:
   /// The summary for this timer.
   void SetSummary(const std::string& summary)
   {
-    strncpy(m_cStructure->strSummary, summary.c_str(), sizeof(m_cStructure->strSummary) - 1);
+    ReallocAndCopyString(&m_cStructure->strSummary, summary.c_str());
   }
 
   /// @brief To get with @ref SetDirectory changed values.
@@ -458,17 +457,34 @@ public:
   /// checking with here, instead of @ref SetTitle() (and @ref SetFullTextEpgSearch()).
   void SetSeriesLink(const std::string& seriesLink)
   {
-    strncpy(m_cStructure->strSeriesLink, seriesLink.c_str(),
-            sizeof(m_cStructure->strSeriesLink) - 1);
+    ReallocAndCopyString(&m_cStructure->strSeriesLink, seriesLink.c_str());
   }
 
   /// @brief To get with @ref SetSeriesLink changed values.
   std::string GetSeriesLink() const { return m_cStructure->strSeriesLink; }
   ///@}
 
+  static void AllocResources(const PVR_TIMER* source, PVR_TIMER* target)
+  {
+    target->strTitle = AllocAndCopyString(source->strTitle);
+    target->strEpgSearchString = AllocAndCopyString(source->strEpgSearchString);
+    target->strDirectory = AllocAndCopyString(source->strDirectory);
+    target->strSummary = AllocAndCopyString(source->strSummary);
+    target->strSeriesLink = AllocAndCopyString(source->strSeriesLink);
+  }
+
+  static void FreeResources(PVR_TIMER* target)
+  {
+    FreeString(target->strTitle);
+    FreeString(target->strEpgSearchString);
+    FreeString(target->strDirectory);
+    FreeString(target->strSummary);
+    FreeString(target->strSeriesLink);
+  }
+
 private:
-  PVRTimer(const PVR_TIMER* data) : CStructHdl(data) {}
-  PVRTimer(PVR_TIMER* data) : CStructHdl(data) {}
+  PVRTimer(const PVR_TIMER* timer) : DynamicCStructHdl(timer) {}
+  PVRTimer(PVR_TIMER* timer) : DynamicCStructHdl(timer) {}
 };
 
 ///@}
@@ -526,7 +542,7 @@ private:
 /// @copydetails cpp_kodi_addon_pvr_Defs_Timer_PVRTimerType_Help
 ///
 ///@{
-class PVRTimerType : public CStructHdl<PVRTimerType, PVR_TIMER_TYPE>
+class PVRTimerType : public DynamicCStructHdl<PVRTimerType, PVR_TIMER_TYPE>
 {
   friend class CInstancePVRClient;
 
@@ -541,7 +557,7 @@ public:
     m_cStructure->iRecordingGroupDefault = -1;
     m_cStructure->iMaxRecordingsDefault = -1;
   }
-  PVRTimerType(const PVRTimerType& type) : CStructHdl(type) {}
+  PVRTimerType(const PVRTimerType& type) : DynamicCStructHdl(type) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_pvr_Defs_Timer_PVRTimerType_Help Value Help
@@ -608,8 +624,7 @@ public:
   /// REPEATING and MANUAL. (e.g. "Repeating EPG-based.")
   void SetDescription(const std::string& description)
   {
-    strncpy(m_cStructure->strDescription, description.c_str(),
-            sizeof(m_cStructure->strDescription) - 1);
+    ReallocAndCopyString(&m_cStructure->strDescription, description.c_str());
   }
 
   /// @brief To get with @ref SetDescription changed values.
@@ -631,15 +646,8 @@ public:
   /// @copydetails cpp_kodi_addon_pvr_Defs_PVRTypeIntValue_Help
   void SetPriorities(const std::vector<PVRTypeIntValue>& priorities, int prioritiesDefault = -1)
   {
-    m_cStructure->iPrioritiesSize = static_cast<unsigned int>(priorities.size());
-    for (unsigned int i = 0;
-         i < m_cStructure->iPrioritiesSize && i < sizeof(m_cStructure->priorities); ++i)
-    {
-      m_cStructure->priorities[i].iValue = priorities[i].GetCStructure()->iValue;
-      strncpy(m_cStructure->priorities[i].strDescription,
-              priorities[i].GetCStructure()->strDescription,
-              sizeof(m_cStructure->priorities[i].strDescription) - 1);
-    }
+    PVRTypeIntValue::ReallocAndCopyData(&m_cStructure->priorities, &m_cStructure->iPrioritiesSize,
+                                        priorities);
     if (prioritiesDefault != -1)
       m_cStructure->iPrioritiesDefault = prioritiesDefault;
   }
@@ -683,15 +691,8 @@ public:
   /// @copydetails cpp_kodi_addon_pvr_Defs_PVRTypeIntValue_Help
   void SetLifetimes(const std::vector<PVRTypeIntValue>& lifetimes, int lifetimesDefault = -1)
   {
-    m_cStructure->iLifetimesSize = static_cast<unsigned int>(lifetimes.size());
-    for (unsigned int i = 0;
-         i < m_cStructure->iLifetimesSize && i < sizeof(m_cStructure->lifetimes); ++i)
-    {
-      m_cStructure->lifetimes[i].iValue = lifetimes[i].GetCStructure()->iValue;
-      strncpy(m_cStructure->lifetimes[i].strDescription,
-              lifetimes[i].GetCStructure()->strDescription,
-              sizeof(m_cStructure->lifetimes[i].strDescription) - 1);
-    }
+    PVRTypeIntValue::ReallocAndCopyData(&m_cStructure->lifetimes, &m_cStructure->iLifetimesSize,
+                                        lifetimes);
     if (lifetimesDefault != -1)
       m_cStructure->iLifetimesDefault = lifetimesDefault;
   }
@@ -738,18 +739,9 @@ public:
   void SetPreventDuplicateEpisodes(const std::vector<PVRTypeIntValue>& preventDuplicateEpisodes,
                                    int preventDuplicateEpisodesDefault = -1)
   {
-    m_cStructure->iPreventDuplicateEpisodesSize =
-        static_cast<unsigned int>(preventDuplicateEpisodes.size());
-    for (unsigned int i = 0; i < m_cStructure->iPreventDuplicateEpisodesSize &&
-                             i < sizeof(m_cStructure->preventDuplicateEpisodes);
-         ++i)
-    {
-      m_cStructure->preventDuplicateEpisodes[i].iValue =
-          preventDuplicateEpisodes[i].GetCStructure()->iValue;
-      strncpy(m_cStructure->preventDuplicateEpisodes[i].strDescription,
-              preventDuplicateEpisodes[i].GetCStructure()->strDescription,
-              sizeof(m_cStructure->preventDuplicateEpisodes[i].strDescription) - 1);
-    }
+    PVRTypeIntValue::ReallocAndCopyData(&m_cStructure->preventDuplicateEpisodes,
+                                        &m_cStructure->iPreventDuplicateEpisodesSize,
+                                        preventDuplicateEpisodes);
     if (preventDuplicateEpisodesDefault != -1)
       m_cStructure->iPreventDuplicateEpisodesDefault = preventDuplicateEpisodesDefault;
   }
@@ -795,15 +787,8 @@ public:
   void SetRecordingGroups(const std::vector<PVRTypeIntValue>& recordingGroup,
                           int recordingGroupDefault = -1)
   {
-    m_cStructure->iRecordingGroupSize = static_cast<unsigned int>(recordingGroup.size());
-    for (unsigned int i = 0;
-         i < m_cStructure->iRecordingGroupSize && i < sizeof(m_cStructure->recordingGroup); ++i)
-    {
-      m_cStructure->recordingGroup[i].iValue = recordingGroup[i].GetCStructure()->iValue;
-      strncpy(m_cStructure->recordingGroup[i].strDescription,
-              recordingGroup[i].GetCStructure()->strDescription,
-              sizeof(m_cStructure->recordingGroup[i].strDescription) - 1);
-    }
+    PVRTypeIntValue::ReallocAndCopyData(&m_cStructure->recordingGroup,
+                                        &m_cStructure->iRecordingGroupSize, recordingGroup);
     if (recordingGroupDefault != -1)
       m_cStructure->iRecordingGroupDefault = recordingGroupDefault;
   }
@@ -846,15 +831,8 @@ public:
   void SetMaxRecordings(const std::vector<PVRTypeIntValue>& maxRecordings,
                         int maxRecordingsDefault = -1)
   {
-    m_cStructure->iMaxRecordingsSize = static_cast<unsigned int>(maxRecordings.size());
-    for (unsigned int i = 0;
-         i < m_cStructure->iMaxRecordingsSize && i < sizeof(m_cStructure->maxRecordings); ++i)
-    {
-      m_cStructure->maxRecordings[i].iValue = maxRecordings[i].GetCStructure()->iValue;
-      strncpy(m_cStructure->maxRecordings[i].strDescription,
-              maxRecordings[i].GetCStructure()->strDescription,
-              sizeof(m_cStructure->maxRecordings[i].strDescription) - 1);
-    }
+    PVRTypeIntValue::ReallocAndCopyData(&m_cStructure->maxRecordings,
+                                        &m_cStructure->iMaxRecordingsSize, maxRecordings);
     if (maxRecordingsDefault != -1)
       m_cStructure->iMaxRecordingsDefault = maxRecordingsDefault;
   }
@@ -882,9 +860,71 @@ public:
   int GetMaxRecordingsDefault() const { return m_cStructure->iMaxRecordingsDefault; }
   ///@}
 
+  static void AllocResources(const PVR_TIMER_TYPE* source, PVR_TIMER_TYPE* target)
+  {
+    target->strDescription = AllocAndCopyString(source->strDescription);
+
+    if (target->iPrioritiesSize)
+    {
+      target->priorities =
+          PVRTypeIntValue::AllocAndCopyData(source->priorities, source->iPrioritiesSize);
+    }
+
+    if (target->iLifetimesSize)
+    {
+      target->lifetimes =
+          PVRTypeIntValue::AllocAndCopyData(source->lifetimes, source->iLifetimesSize);
+    }
+
+    if (target->iPreventDuplicateEpisodesSize)
+    {
+      target->preventDuplicateEpisodes = PVRTypeIntValue::AllocAndCopyData(
+          source->preventDuplicateEpisodes, source->iPreventDuplicateEpisodesSize);
+    }
+
+    if (target->iRecordingGroupSize)
+    {
+      target->recordingGroup =
+          PVRTypeIntValue::AllocAndCopyData(source->recordingGroup, source->iRecordingGroupSize);
+    }
+
+    if (target->iMaxRecordingsSize)
+    {
+      target->maxRecordings =
+          PVRTypeIntValue::AllocAndCopyData(source->maxRecordings, source->iMaxRecordingsSize);
+    }
+  }
+
+  static void FreeResources(PVR_TIMER_TYPE* target)
+  {
+    FreeString(target->strDescription);
+    target->strDescription = nullptr;
+
+    PVRTypeIntValue::FreeResources(target->priorities, target->iPrioritiesSize);
+    target->priorities = nullptr;
+    target->iPrioritiesSize = 0;
+
+    PVRTypeIntValue::FreeResources(target->lifetimes, target->iLifetimesSize);
+    target->lifetimes = nullptr;
+    target->iLifetimesSize = 0;
+
+    PVRTypeIntValue::FreeResources(target->preventDuplicateEpisodes,
+                                   target->iPreventDuplicateEpisodesSize);
+    target->preventDuplicateEpisodes = nullptr;
+    target->iPreventDuplicateEpisodesSize = 0;
+
+    PVRTypeIntValue::FreeResources(target->recordingGroup, target->iRecordingGroupSize);
+    target->recordingGroup = nullptr;
+    target->iRecordingGroupSize = 0;
+
+    PVRTypeIntValue::FreeResources(target->maxRecordings, target->iMaxRecordingsSize);
+    target->maxRecordings = nullptr;
+    target->iMaxRecordingsSize = 0;
+  }
+
 private:
-  PVRTimerType(const PVR_TIMER_TYPE* type) : CStructHdl(type) {}
-  PVRTimerType(PVR_TIMER_TYPE* type) : CStructHdl(type) {}
+  PVRTimerType(const PVR_TIMER_TYPE* type) : DynamicCStructHdl(type) {}
+  PVRTimerType(PVR_TIMER_TYPE* type) : DynamicCStructHdl(type) {}
 };
 ///@}
 //------------------------------------------------------------------------------

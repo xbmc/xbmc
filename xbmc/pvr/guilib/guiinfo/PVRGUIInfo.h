@@ -8,8 +8,9 @@
 
 #pragma once
 
-#include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_channels.h"
 #include "guilib/guiinfo/GUIInfoProvider.h"
+#include "pvr/PVRDescrambleInfo.h"
+#include "pvr/PVRSignalStatus.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/guilib/guiinfo/PVRGUITimerInfo.h"
 #include "pvr/guilib/guiinfo/PVRGUITimesInfo.h"
@@ -89,8 +90,8 @@ public:
 
 private:
   void ResetProperties();
-  void ClearQualityInfo(PVR_SIGNAL_STATUS& qualityInfo);
-  void ClearDescrambleInfo(PVR_DESCRAMBLE_INFO& descrambleInfo);
+  void ClearQualityInfo(CPVRSignalStatus& qualityInfo);
+  void ClearDescrambleInfo(CPVRDescrambleInfo& descrambleInfo);
 
   void Process() override;
 
@@ -195,8 +196,8 @@ private:
 
   //@}
 
-  PVR_SIGNAL_STATUS m_qualityInfo; /*!< stream quality information */
-  PVR_DESCRAMBLE_INFO m_descrambleInfo; /*!< stream descramble information */
+  CPVRSignalStatus m_qualityInfo; /*!< stream quality information */
+  CPVRDescrambleInfo m_descrambleInfo; /*!< stream descramble information */
   std::vector<SBackend> m_backendProperties;
 
   std::string m_channelNumberInput;

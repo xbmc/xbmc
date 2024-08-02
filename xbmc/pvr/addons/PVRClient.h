@@ -23,6 +23,11 @@
 
 struct DemuxPacket;
 
+namespace EDL
+{
+struct Edit;
+}
+
 namespace PVR
 {
 class CPVRChannel;
@@ -33,10 +38,12 @@ class CPVRProvider;
 class CPVRProvidersContainer;
 class CPVRClientMenuHook;
 class CPVRClientMenuHooks;
+class CPVRDescrambleInfo;
 class CPVREpg;
 class CPVREpgInfoTag;
 class CPVRRecording;
 class CPVRRecordings;
+class CPVRSignalStatus;
 class CPVRStreamProperties;
 class CPVRTimerInfoTag;
 class CPVRTimerType;
@@ -445,7 +452,7 @@ public:
    * @param edls The edit decision list (empty on error).
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
-  PVR_ERROR GetRecordingEdl(const CPVRRecording& recording, std::vector<PVR_EDL_ENTRY>& edls) const;
+  PVR_ERROR GetRecordingEdl(const CPVRRecording& recording, std::vector<EDL::Edit>& edls) const;
 
   /*!
    * @brief Retrieve the size of a recording on the backend.
@@ -462,7 +469,7 @@ public:
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
   PVR_ERROR GetEpgTagEdl(const std::shared_ptr<const CPVREpgInfoTag>& epgTag,
-                         std::vector<PVR_EDL_ENTRY>& edls) const;
+                         std::vector<EDL::Edit>& edls) const;
 
   //@}
   /** @name PVR timer methods */
@@ -571,7 +578,7 @@ public:
    * @param qualityinfo The signal quality.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
-  PVR_ERROR SignalQuality(int channelUid, PVR_SIGNAL_STATUS& qualityinfo) const;
+  PVR_ERROR SignalQuality(int channelUid, CPVRSignalStatus& qualityinfo) const;
 
   /*!
    * @brief Get the descramble information of the stream that's currently open.
@@ -579,7 +586,7 @@ public:
    * @param descrambleinfo The descramble information.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
-  PVR_ERROR GetDescrambleInfo(int channelUid, PVR_DESCRAMBLE_INFO& descrambleinfo) const;
+  PVR_ERROR GetDescrambleInfo(int channelUid, CPVRDescrambleInfo& descrambleinfo) const;
 
   /*!
    * @brief Fill the given container with the properties required for playback of the given channel. Values are obtained from the PVR backend.
@@ -831,11 +838,11 @@ private:
 
   /*!
    * @brief Write the given addon properties to the given properties container.
-   * @param properties Pointer to an array of addon properties.
+   * @param properties Pointer to an array of addon properties pointers.
    * @param iPropertyCount The number of properties contained in the addon properties array.
    * @param props The container the addon properties shall be written to.
    */
-  static void WriteStreamProperties(const PVR_NAMED_VALUE* properties,
+  static void WriteStreamProperties(PVR_NAMED_VALUE** properties,
                                     unsigned int iPropertyCount,
                                     CPVRStreamProperties& props);
 

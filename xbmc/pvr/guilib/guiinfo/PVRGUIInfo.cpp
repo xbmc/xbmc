@@ -105,16 +105,12 @@ void CPVRGUIInfo::ResetProperties()
   m_bRegistered = false;
 }
 
-void CPVRGUIInfo::ClearQualityInfo(PVR_SIGNAL_STATUS& qualityInfo)
+void CPVRGUIInfo::ClearQualityInfo(CPVRSignalStatus& qualityInfo)
 {
-  memset(&qualityInfo, 0, sizeof(qualityInfo));
-  strncpy(qualityInfo.strAdapterName, g_localizeStrings.Get(13106).c_str(),
-          PVR_ADDON_NAME_STRING_LENGTH - 1);
-  strncpy(qualityInfo.strAdapterStatus, g_localizeStrings.Get(13106).c_str(),
-          PVR_ADDON_NAME_STRING_LENGTH - 1);
+  qualityInfo = {g_localizeStrings.Get(13106).c_str(), g_localizeStrings.Get(13106).c_str()};
 }
 
-void CPVRGUIInfo::ClearDescrambleInfo(PVR_DESCRAMBLE_INFO& descrambleInfo)
+void CPVRGUIInfo::ClearDescrambleInfo(CPVRDescrambleInfo& descrambleInfo)
 {
   descrambleInfo = {};
 }
@@ -240,7 +236,7 @@ void CPVRGUIInfo::UpdateQualityData()
   if (!playbackState)
     return;
 
-  PVR_SIGNAL_STATUS qualityInfo;
+  CPVRSignalStatus qualityInfo;
   ClearQualityInfo(qualityInfo);
 
   const int channelUid = playbackState->GetPlayingChannelUniqueID();
@@ -264,7 +260,7 @@ void CPVRGUIInfo::UpdateDescrambleData()
   if (!playbackState)
     return;
 
-  PVR_DESCRAMBLE_INFO descrambleInfo;
+  CPVRDescrambleInfo descrambleInfo;
   ClearDescrambleInfo(descrambleInfo);
 
   const int channelUid = playbackState->GetPlayingChannelUniqueID();
@@ -1374,10 +1370,10 @@ bool CPVRGUIInfo::GetPVRInt(const CFileItem* item, const CGUIInfo& info, int& iV
       iValue = GetTimeShiftSeekPercent();
       return true;
     case PVR_ACTUAL_STREAM_SIG_PROGR:
-      iValue = std::lrintf(static_cast<float>(m_qualityInfo.iSignal) / 0xFFFF * 100);
+      iValue = std::lrintf(static_cast<float>(m_qualityInfo.Signal()) / 0xFFFF * 100);
       return true;
     case PVR_ACTUAL_STREAM_SNR_PROGR:
-      iValue = std::lrintf(static_cast<float>(m_qualityInfo.iSNR) / 0xFFFF * 100);
+      iValue = std::lrintf(static_cast<float>(m_qualityInfo.SNR()) / 0xFFFF * 100);
       return true;
     case PVR_BACKEND_DISKSPACE_PROGR:
       if (m_iBackendDiskTotal > 0)
@@ -1839,38 +1835,36 @@ void CPVRGUIInfo::CharInfoTotalDiskSpace(std::string& strValue) const
 
 void CPVRGUIInfo::CharInfoSignal(std::string& strValue) const
 {
-  strValue = StringUtils::Format("{} %", m_qualityInfo.iSignal / 655);
+  strValue = StringUtils::Format("{} %", m_qualityInfo.Signal() / 655);
 }
 
 void CPVRGUIInfo::CharInfoSNR(std::string& strValue) const
 {
-  strValue = StringUtils::Format("{} %", m_qualityInfo.iSNR / 655);
+  strValue = StringUtils::Format("{} %", m_qualityInfo.SNR() / 655);
 }
 
 void CPVRGUIInfo::CharInfoBER(std::string& strValue) const
 {
-  strValue = StringUtils::Format("{:08X}", m_qualityInfo.iBER);
+  strValue = StringUtils::Format("{:08X}", m_qualityInfo.BER());
 }
 
 void CPVRGUIInfo::CharInfoUNC(std::string& strValue) const
 {
-  strValue = StringUtils::Format("{:08X}", m_qualityInfo.iUNC);
+  strValue = StringUtils::Format("{:08X}", m_qualityInfo.UNC());
 }
 
 void CPVRGUIInfo::CharInfoFrontendName(std::string& strValue) const
 {
-  if (!strlen(m_qualityInfo.strAdapterName))
+  strValue = m_qualityInfo.AdapterName();
+  if (strValue.empty())
     strValue = g_localizeStrings.Get(13205);
-  else
-    strValue = m_qualityInfo.strAdapterName;
 }
 
 void CPVRGUIInfo::CharInfoFrontendStatus(std::string& strValue) const
 {
-  if (!strlen(m_qualityInfo.strAdapterStatus))
+  strValue = m_qualityInfo.AdapterStatus();
+  if (strValue.empty())
     strValue = g_localizeStrings.Get(13205);
-  else
-    strValue = m_qualityInfo.strAdapterStatus;
 }
 
 void CPVRGUIInfo::CharInfoBackendName(std::string& strValue) const
@@ -1954,10 +1948,10 @@ void CPVRGUIInfo::CharInfoPlayingClientName(std::string& strValue) const
 
 void CPVRGUIInfo::CharInfoEncryption(std::string& strValue) const
 {
-  if (m_descrambleInfo.iCaid != PVR_DESCRAMBLE_INFO_NOT_AVAILABLE)
+  if (m_descrambleInfo.Caid() != PVR_DESCRAMBLE_INFO_NOT_AVAILABLE)
   {
     // prefer dynamically updated info, if available
-    strValue = CPVRChannel::GetEncryptionName(m_descrambleInfo.iCaid);
+    strValue = CPVRChannel::GetEncryptionName(m_descrambleInfo.Caid());
     return;
   }
   else
@@ -1976,26 +1970,23 @@ void CPVRGUIInfo::CharInfoEncryption(std::string& strValue) const
 
 void CPVRGUIInfo::CharInfoService(std::string& strValue) const
 {
-  if (!strlen(m_qualityInfo.strServiceName))
+  strValue = m_qualityInfo.ServiceName();
+  if (strValue.empty())
     strValue = g_localizeStrings.Get(13205);
-  else
-    strValue = m_qualityInfo.strServiceName;
 }
 
 void CPVRGUIInfo::CharInfoMux(std::string& strValue) const
 {
-  if (!strlen(m_qualityInfo.strMuxName))
+  strValue = m_qualityInfo.MuxName();
+  if (strValue.empty())
     strValue = g_localizeStrings.Get(13205);
-  else
-    strValue = m_qualityInfo.strMuxName;
 }
 
 void CPVRGUIInfo::CharInfoProvider(std::string& strValue) const
 {
-  if (!strlen(m_qualityInfo.strProviderName))
+  strValue = m_qualityInfo.ProviderName();
+  if (strValue.empty())
     strValue = g_localizeStrings.Get(13205);
-  else
-    strValue = m_qualityInfo.strProviderName;
 }
 
 void CPVRGUIInfo::UpdateBackendCache()

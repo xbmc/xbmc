@@ -35,7 +35,7 @@ namespace addon
 /// @copydetails cpp_kodi_addon_pvr_Defs_Recording_PVRRecording_Help
 ///
 ///@{
-class PVRRecording : public CStructHdl<PVRRecording, PVR_RECORDING>
+class PVRRecording : public DynamicCStructHdl<PVRRecording, PVR_RECORDING>
 {
   friend class CInstancePVRClient;
 
@@ -60,7 +60,7 @@ public:
     m_cStructure->iFlags = 0;
     m_cStructure->sizeInBytes = PVR_RECORDING_VALUE_NOT_AVAILABLE;
   }
-  PVRRecording(const PVRRecording& recording) : CStructHdl(recording) {}
+  PVRRecording(const PVRRecording& recording) : DynamicCStructHdl(recording) {}
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_pvr_Defs_Recording_PVRRecording_Help Value Help
@@ -108,8 +108,7 @@ public:
   /// Unique identifier of the recording on the client.
   void SetRecordingId(const std::string& recordingId)
   {
-    strncpy(m_cStructure->strRecordingId, recordingId.c_str(),
-            sizeof(m_cStructure->strRecordingId) - 1);
+    ReallocAndCopyString(&m_cStructure->strRecordingId, recordingId.c_str());
   }
 
   /// @brief To get with @ref SetRecordingId changed values.
@@ -119,7 +118,7 @@ public:
   /// The title of this recording.
   void SetTitle(const std::string& title)
   {
-    strncpy(m_cStructure->strTitle, title.c_str(), sizeof(m_cStructure->strTitle) - 1);
+    ReallocAndCopyString(&m_cStructure->strTitle, title.c_str());
   }
 
   /// @brief To get with @ref SetTitle changed values.
@@ -129,8 +128,7 @@ public:
   /// Episode name (also known as subtitle).
   void SetEpisodeName(const std::string& episodeName)
   {
-    strncpy(m_cStructure->strEpisodeName, episodeName.c_str(),
-            sizeof(m_cStructure->strEpisodeName) - 1);
+    ReallocAndCopyString(&m_cStructure->strEpisodeName, episodeName.c_str());
   }
 
   /// @brief To get with @ref SetEpisodeName changed values.
@@ -169,7 +167,7 @@ public:
   /// Directory of this recording on the client.
   void SetDirectory(const std::string& directory)
   {
-    strncpy(m_cStructure->strDirectory, directory.c_str(), sizeof(m_cStructure->strDirectory) - 1);
+    ReallocAndCopyString(&m_cStructure->strDirectory, directory.c_str());
   }
 
   /// @brief To get with @ref SetDirectory changed values.
@@ -179,8 +177,7 @@ public:
   /// Plot outline name.
   void SetPlotOutline(const std::string& plotOutline)
   {
-    strncpy(m_cStructure->strPlotOutline, plotOutline.c_str(),
-            sizeof(m_cStructure->strPlotOutline) - 1);
+    ReallocAndCopyString(&m_cStructure->strPlotOutline, plotOutline.c_str());
   }
 
   /// @brief To get with @ref SetPlotOutline changed values.
@@ -190,7 +187,7 @@ public:
   /// Plot name.
   void SetPlot(const std::string& plot)
   {
-    strncpy(m_cStructure->strPlot, plot.c_str(), sizeof(m_cStructure->strPlot) - 1);
+    ReallocAndCopyString(&m_cStructure->strPlot, plot.c_str());
   }
 
   /// @brief To get with @ref SetPlot changed values.
@@ -200,8 +197,7 @@ public:
   /// Channel name.
   void SetChannelName(const std::string& channelName)
   {
-    strncpy(m_cStructure->strChannelName, channelName.c_str(),
-            sizeof(m_cStructure->strChannelName) - 1);
+    ReallocAndCopyString(&m_cStructure->strChannelName, channelName.c_str());
   }
 
   /// @brief To get with @ref SetChannelName changed values.
@@ -211,7 +207,7 @@ public:
   /// Channel logo (icon) path.
   void SetIconPath(const std::string& iconPath)
   {
-    strncpy(m_cStructure->strIconPath, iconPath.c_str(), sizeof(m_cStructure->strIconPath) - 1);
+    ReallocAndCopyString(&m_cStructure->strIconPath, iconPath.c_str());
   }
 
   /// @brief To get with @ref SetIconPath changed values.
@@ -221,8 +217,7 @@ public:
   /// Thumbnail path.
   void SetThumbnailPath(const std::string& thumbnailPath)
   {
-    strncpy(m_cStructure->strThumbnailPath, thumbnailPath.c_str(),
-            sizeof(m_cStructure->strThumbnailPath) - 1);
+    ReallocAndCopyString(&m_cStructure->strThumbnailPath, thumbnailPath.c_str());
   }
 
   /// @brief To get with @ref SetThumbnailPath changed values.
@@ -232,8 +227,7 @@ public:
   /// Fanart path.
   void SetFanartPath(const std::string& fanartPath)
   {
-    strncpy(m_cStructure->strFanartPath, fanartPath.c_str(),
-            sizeof(m_cStructure->strFanartPath) - 1);
+    ReallocAndCopyString(&m_cStructure->strFanartPath, fanartPath.c_str());
   }
 
   /// @brief To get with @ref SetFanartPath changed values.
@@ -356,8 +350,7 @@ public:
   ///
   void SetGenreDescription(const std::string& genreDescription)
   {
-    strncpy(m_cStructure->strGenreDescription, genreDescription.c_str(),
-            sizeof(m_cStructure->strGenreDescription) - 1);
+    ReallocAndCopyString(&m_cStructure->strGenreDescription, genreDescription.c_str());
   }
 
   /// @brief To get with @ref SetGenreDescription changed values.
@@ -439,8 +432,7 @@ public:
   ///
   void SetFirstAired(const std::string& firstAired)
   {
-    strncpy(m_cStructure->strFirstAired, firstAired.c_str(),
-            sizeof(m_cStructure->strFirstAired) - 1);
+    ReallocAndCopyString(&m_cStructure->strFirstAired, firstAired.c_str());
   }
 
   /// @brief To get with @ref SetFirstAired changed values
@@ -485,16 +477,49 @@ public:
   /// Name for the provider of this channel.
   void SetProviderName(const std::string& providerName)
   {
-    strncpy(m_cStructure->strProviderName, providerName.c_str(),
-            sizeof(m_cStructure->strProviderName) - 1);
+    ReallocAndCopyString(&m_cStructure->strProviderName, providerName.c_str());
   }
 
   /// @brief To get with @ref SetProviderName changed values.
   std::string GetProviderName() const { return m_cStructure->strProviderName; }
 
+  static void AllocResources(const PVR_RECORDING* source, PVR_RECORDING* target)
+  {
+    target->strRecordingId = AllocAndCopyString(source->strRecordingId);
+    target->strTitle = AllocAndCopyString(source->strTitle);
+    target->strEpisodeName = AllocAndCopyString(source->strEpisodeName);
+    target->strDirectory = AllocAndCopyString(source->strDirectory);
+    target->strPlotOutline = AllocAndCopyString(source->strPlotOutline);
+    target->strPlot = AllocAndCopyString(source->strPlot);
+    target->strGenreDescription = AllocAndCopyString(source->strGenreDescription);
+    target->strChannelName = AllocAndCopyString(source->strChannelName);
+    target->strIconPath = AllocAndCopyString(source->strIconPath);
+    target->strThumbnailPath = AllocAndCopyString(source->strThumbnailPath);
+    target->strFanartPath = AllocAndCopyString(source->strFanartPath);
+    target->strFirstAired = AllocAndCopyString(source->strFirstAired);
+    target->strProviderName = AllocAndCopyString(source->strProviderName);
+  }
+
+  static void FreeResources(PVR_RECORDING* target)
+  {
+    FreeString(target->strRecordingId);
+    FreeString(target->strTitle);
+    FreeString(target->strEpisodeName);
+    FreeString(target->strDirectory);
+    FreeString(target->strPlotOutline);
+    FreeString(target->strPlot);
+    FreeString(target->strGenreDescription);
+    FreeString(target->strChannelName);
+    FreeString(target->strIconPath);
+    FreeString(target->strThumbnailPath);
+    FreeString(target->strFanartPath);
+    FreeString(target->strFirstAired);
+    FreeString(target->strProviderName);
+  }
+
 private:
-  PVRRecording(const PVR_RECORDING* recording) : CStructHdl(recording) {}
-  PVRRecording(PVR_RECORDING* recording) : CStructHdl(recording) {}
+  PVRRecording(const PVR_RECORDING* recording) : DynamicCStructHdl(recording) {}
+  PVRRecording(PVR_RECORDING* recording) : DynamicCStructHdl(recording) {}
 };
 ///@}
 //------------------------------------------------------------------------------
