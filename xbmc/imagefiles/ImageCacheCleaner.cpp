@@ -22,7 +22,7 @@ std::optional<IMAGE_FILES::CImageCacheCleaner> CImageCacheCleaner::Create()
 {
   auto result = CImageCacheCleaner();
   if (result.m_valid)
-    return std::move(result);
+    return result;
   return {};
 }
 
