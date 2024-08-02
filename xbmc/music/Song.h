@@ -93,22 +93,22 @@ public:
    and is stored in album artist credits
   \return album artist names as a vector of strings
   */
-  const std::vector<std::string> GetAlbumArtist() const { return m_albumArtist; }
+  const std::vector<std::string>& GetAlbumArtist() const { return m_albumArtist; }
 
   /*! \brief Get album artist sort name string
   \return album artist sort name as a single string
   */
-  const std::string GetAlbumArtistSort() const { return m_strAlbumArtistSort; }
+  const std::string& GetAlbumArtistSort() const { return m_strAlbumArtistSort; }
 
   /*! \brief Get disc subtitle string where one exists
   \return disc subtitle as a single string
   */
-  const std::string GetDiscSubtitle() const;
+  const std::string& GetDiscSubtitle() const { return strDiscSubtitle; }
 
   /*! \brief Get composer sort name string
   \return composer sort name as a single string
   */
-  const std::string GetComposerSort() const { return m_strComposerSort; }
+  const std::string& GetComposerSort() const { return m_strComposerSort; }
 
   /*! \brief Get the full list of artist names and the role each played for those
     that contributed to the recording. Given in music file tags other than ARTIST

@@ -79,25 +79,25 @@ public:
   void SetTitle(const std::string& title) { m_title = title; }
 
   /// @brief Get title name
-  std::string GetTitle() const { return m_title; }
+  const std::string& GetTitle() const { return m_title; }
 
   /// @brief Set artist name
   void SetArtist(const std::string& artist) { m_artist = artist; }
 
   /// @brief Get artist name
-  std::string GetArtist() const { return m_artist; }
+  const std::string& GetArtist() const { return m_artist; }
 
   /// @brief Set album name
   void SetAlbum(const std::string& album) { m_album = album; }
 
   /// @brief Set album name
-  std::string GetAlbum() const { return m_album; }
+  const std::string& GetAlbum() const { return m_album; }
 
   /// @brief Set album artist name
   void SetAlbumArtist(const std::string& albumArtist) { m_album_artist = albumArtist; }
 
   /// @brief Get album artist name
-  std::string GetAlbumArtist() const { return m_album_artist; }
+  const std::string& GetAlbumArtist() const { return m_album_artist; }
 
   /// @brief Set the media type of the music item.
   ///
@@ -112,13 +112,13 @@ public:
   void SetMediaType(const std::string& mediaType) { m_media_type = mediaType; }
 
   /// @brief Get the media type of the music item.
-  std::string GetMediaType() const { return m_media_type; }
+  const std::string& GetMediaType() const { return m_media_type; }
 
   /// @brief Set genre name from music as string if present.
   void SetGenre(const std::string& genre) { m_genre = genre; }
 
   /// @brief Get genre name from music as string if present.
-  std::string GetGenre() const { return m_genre; }
+  const std::string& GetGenre() const { return m_genre; }
 
   /// @brief Set the duration of music as integer from info.
   void SetDuration(int duration) { m_duration = duration; }
@@ -142,7 +142,7 @@ public:
   void SetDiscSubtitle(const std::string& discSubtitle) { m_disc_subtitle = discSubtitle; }
 
   /// @brief Get disk subtitle name (if present) from music info.
-  std::string GetDiscSubtitle() const { return m_disc_subtitle; }
+  const std::string& GetDiscSubtitle() const { return m_disc_subtitle; }
 
   /// @brief Set disks amount quantity (if present) from music info as integer.
   void SetDiscTotal(int discTotal) { m_disc_total = discTotal; }
@@ -155,13 +155,13 @@ public:
   void SetReleaseDate(const std::string& releaseDate) { m_release_date = releaseDate; }
 
   /// @brief Get release date as string from music info (if present).
-  std::string GetReleaseDate() const { return m_release_date; }
+  const std::string& GetReleaseDate() const { return m_release_date; }
 
   /// @brief Set string from lyrics.
   void SetLyrics(const std::string& lyrics) { m_lyrics = lyrics; }
 
   /// @brief Get string from lyrics.
-  std::string GetLyrics() const { return m_lyrics; }
+  const std::string& GetLyrics() const { return m_lyrics; }
 
   /// @brief Set related stream samplerate.
   void SetSamplerate(int samplerate) { m_samplerate = samplerate; }
@@ -185,7 +185,7 @@ public:
   void SetComment(const std::string& comment) { m_comment = comment; }
 
   /// @brief Get additional information comment (if present).
-  std::string GetComment() const { return m_comment; }
+  const std::string& GetComment() const { return m_comment; }
 
   /// @brief Set cover art image by path.
   ///
@@ -201,7 +201,7 @@ public:
   /// @note Only be available if set before by @ref SetCoverArtByPath.
   /// Cannot be combined with @ref SetCoverArtByMem and @ref GetCoverArtByMem.
   ///
-  std::string GetCoverArtByPath() const { return m_cover_art_path; }
+  const std::string& GetCoverArtByPath() const { return m_cover_art_path; }
 
   /// @brief Set cover art image by memory.
   ///

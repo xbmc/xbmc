@@ -1929,11 +1929,6 @@ void CCurlFile::SetRequestHeader(const std::string& header, long value)
   m_requestheaders[header] = std::to_string(value);
 }
 
-std::string CCurlFile::GetURL(void)
-{
-  return m_url;
-}
-
 std::string CCurlFile::GetRedirectURL()
 {
   return GetInfoString(CURLINFO_REDIRECT_URL);

@@ -35,7 +35,7 @@ namespace PVR
     bool IsDeletedRecordingHook() const;
     bool IsSettingsHook() const;
 
-    std::string GetAddonId() const;
+    const std::string& GetAddonId() const { return m_addonId; }
     unsigned int GetId() const;
     unsigned int GetLabelId() const;
     std::string GetLabel() const;

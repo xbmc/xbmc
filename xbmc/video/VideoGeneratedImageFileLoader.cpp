@@ -64,7 +64,7 @@ std::unique_ptr<CTexture> CVideoGeneratedImageFileLoader::Load(
     return {};
   }
 
-  std::string filePath = imageFile.GetTargetFile();
+  const std::string& filePath = imageFile.GetTargetFile();
   CFileItem item{filePath, false};
 
   if (URIUtils::IsInRAR(filePath))

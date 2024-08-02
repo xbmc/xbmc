@@ -93,8 +93,8 @@ public:
 
   void Reset(void);
   void ReinitTo(const std::string& sourceCharset, const std::string& targetCharset, unsigned int targetSingleCharMaxLen = 1);
-  std::string GetSourceCharset(void) const  { return m_sourceCharset; }
-  std::string GetTargetCharset(void) const  { return m_targetCharset; }
+  const std::string& GetSourceCharset() const { return m_sourceCharset; }
+  const std::string& GetTargetCharset() const { return m_targetCharset; }
   unsigned int GetTargetSingleCharMaxLen(void) const  { return m_targetSingleCharMaxLen; }
 
 private:

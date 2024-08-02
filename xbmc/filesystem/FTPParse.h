@@ -17,7 +17,7 @@ class CFTPParse
 public:
   CFTPParse();
   int FTPParse(const std::string& str);
-  std::string getName();
+  const std::string& getName() const { return m_name; }
   int getFlagtrycwd();
   int getFlagtryretr();
   uint64_t getSize();

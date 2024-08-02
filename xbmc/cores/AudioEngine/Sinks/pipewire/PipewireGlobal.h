@@ -35,7 +35,7 @@ public:
     return *this;
   }
 
-  std::string GetName() const { return m_name; }
+  const std::string& GetName() const { return m_name; }
 
   CPipewireGlobal& SetDescription(const std::string& description)
   {
@@ -43,7 +43,7 @@ public:
     return *this;
   }
 
-  std::string GetDescription() const { return m_description; }
+  const std::string& GetDescription() const { return m_description; }
 
   CPipewireGlobal& SetID(uint32_t id)
   {
@@ -67,7 +67,7 @@ public:
     return *this;
   }
 
-  std::string GetType() const { return m_type; }
+  const std::string& GetType() const { return m_type; }
 
   CPipewireGlobal& SetVersion(uint32_t version)
   {

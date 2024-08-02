@@ -264,7 +264,7 @@ public:
    * @brief Get the recording ID as upplied by the client
    * @return the recording identifier
    */
-  std::string ClientRecordingID() const { return m_strRecordingId; }
+  const std::string& ClientRecordingID() const { return m_strRecordingId; }
 
   /*!
    * @brief Get the recording ID as upplied by the client
@@ -282,7 +282,7 @@ public:
    * @brief Get the directory for this recording
    * @return the directory
    */
-  std::string Directory() const { return m_strDirectory; }
+  const std::string& Directory() const { return m_strDirectory; }
 
   /*!
    * @brief Get the priority for this recording
@@ -306,7 +306,7 @@ public:
    * @brief Get the channel name for this recording
    * @return the channel name
    */
-  std::string ChannelName() const { return m_strChannelName; }
+  const std::string& ChannelName() const { return m_strChannelName; }
 
   /*!
    * @brief Return the icon path as given by the client.
@@ -348,7 +348,7 @@ public:
    * @brief Retrieve the recording Episode Name
    * @note Returns an empty string if no Episode Name was provided by the PVR client
    */
-  std::string EpisodeName() const { return m_strShowTitle; }
+  const std::string& EpisodeName() const { return m_strShowTitle; }
 
   /*!
    * @brief check whether this recording is currently in progress
@@ -386,7 +386,7 @@ public:
    * @brief Get the genre as human readable string.
    * @return The genre.
    */
-  const std::vector<std::string> Genre() const { return m_genre; }
+  const std::vector<std::string>& Genre() const { return m_genre; }
 
   /*!
    * @brief Get the genre(s) of this recording as formatted string.

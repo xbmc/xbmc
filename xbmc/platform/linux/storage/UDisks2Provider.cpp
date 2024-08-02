@@ -108,16 +108,6 @@ MEDIA_DETECT::STORAGE::Type CUDisks2Provider::Filesystem::GetStorageType() const
   return MEDIA_DETECT::STORAGE::Type::UNKNOWN;
 }
 
-std::string CUDisks2Provider::Filesystem::GetMountPoint() const
-{
-  return m_mountPoint;
-}
-
-std::string CUDisks2Provider::Filesystem::GetObject() const
-{
-  return m_object;
-}
-
 void CUDisks2Provider::Filesystem::ResetMountPoint()
 {
   m_mountPoint.clear();

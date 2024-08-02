@@ -12852,7 +12852,7 @@ std::vector<std::string> CVideoDatabase::GetUsedImages(
         auto imageFile = IMAGE_FILES::CImageFileURL(image);
         if (imageFile.GetSpecialType() == "video" && !imageFile.GetOption("chapter").empty())
         {
-          auto target = imageFile.GetTargetFile();
+          const auto& target = imageFile.GetTargetFile();
           auto quickFind = std::find(foundVideoFiles.begin(), foundVideoFiles.end(), target);
           if (quickFind != foundVideoFiles.end())
           {

@@ -104,7 +104,7 @@ class CUDisks2Provider : public IStorageProvider
     /*! \brief Get the device mount point
      * @return the device mount point
     */
-    std::string GetMountPoint() const;
+    const std::string& GetMountPoint() const { return m_mountPoint; }
 
     /*! \brief Reset the device mount point
     */
@@ -118,7 +118,7 @@ class CUDisks2Provider : public IStorageProvider
     /*! \brief Get the device dbus object
      * @return the device dbus object
     */
-    std::string GetObject() const;
+    const std::string& GetObject() const { return m_object; }
 
     /*! \brief Get a representation of the device as a readable string
      * @return device as a string

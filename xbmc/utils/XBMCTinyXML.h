@@ -46,8 +46,8 @@ public:
   bool SaveFile(const std::string& filename) const;
   bool Parse(const std::string& data, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING);
   bool Parse(const std::string& data, const std::string& dataCharset);
-  inline std::string GetSuggestedCharset(void) const { return m_SuggestedCharset; }
-  inline std::string GetUsedCharset(void) const      { return m_UsedCharset; }
+  inline const std::string& GetSuggestedCharset() const { return m_SuggestedCharset; }
+  inline const std::string& GetUsedCharset() const { return m_UsedCharset; }
   static bool Test();
 protected:
   using TiXmlDocument::Parse;

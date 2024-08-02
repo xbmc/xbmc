@@ -704,7 +704,7 @@ bool CInputManager::AlwaysProcess(const CAction& action)
     const CExecString exec(action.GetName());
     if (exec.IsValid())
     {
-      const std::string builtInFunction = exec.GetFunction();
+      const std::string& builtInFunction = exec.GetFunction();
 
       // should this button be handled normally or just cancel the screensaver?
       if (builtInFunction == "powerdown" || builtInFunction == "reboot" ||

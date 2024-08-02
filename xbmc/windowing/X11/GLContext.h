@@ -31,7 +31,7 @@ public:
   virtual uint64_t GetVblankTiming(uint64_t& msc, uint64_t& interval) { return 0; }
   bool IsExtSupported(const char* extension) const;
 
-  std::string ExtPrefix() { return m_extPrefix; }
+  const std::string& ExtPrefix() const { return m_extPrefix; }
   std::string m_extPrefix;
   std::string m_extensions;
 

@@ -24,12 +24,12 @@ public:
 
   virtual ~CExecString() = default;
 
-  std::string GetExecString() const { return m_execString; }
+  const std::string& GetExecString() const { return m_execString; }
 
   bool IsValid() const { return m_valid; }
 
-  std::string GetFunction() const { return m_function; }
-  std::vector<std::string> GetParams() const { return m_params; }
+  const std::string& GetFunction() const { return m_function; }
+  const std::vector<std::string>& GetParams() const { return m_params; }
 
 private:
   bool Parse(const std::string& execString);
