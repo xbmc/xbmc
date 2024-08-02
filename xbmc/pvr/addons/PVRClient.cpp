@@ -1230,26 +1230,30 @@ PVR_ERROR CPVRClient::GetDescrambleInfo(int channelUid, PVR_DESCRAMBLE_INFO& des
 }
 
 PVR_ERROR CPVRClient::GetChannelStreamProperties(const std::shared_ptr<const CPVRChannel>& channel,
+                                                 PVR_SOURCE source,
                                                  CPVRStreamProperties& props) const
 {
-  return DoAddonCall(__func__, [this, &channel, &props](const AddonInstance* addon) {
-    if (!CanPlayChannel(channel))
-      return PVR_ERROR_NO_ERROR; // no error, but no need to obtain the values from the addon
+  return DoAddonCall(
+      __func__,
+      [this, &channel, source, &props](const AddonInstance* addon)
+      {
+        if (!CanPlayChannel(channel))
+          return PVR_ERROR_NO_ERROR; // no error, but no need to obtain the values from the addon
 
-    PVR_CHANNEL tag = {};
-    channel->FillAddonData(tag);
+        PVR_CHANNEL tag = {};
+        channel->FillAddonData(tag);
 
-    unsigned int iPropertyCount = STREAM_MAX_PROPERTY_COUNT;
-    std::unique_ptr<PVR_NAMED_VALUE[]> properties(new PVR_NAMED_VALUE[iPropertyCount]);
-    memset(properties.get(), 0, iPropertyCount * sizeof(PVR_NAMED_VALUE));
+        unsigned int iPropertyCount = STREAM_MAX_PROPERTY_COUNT;
+        std::unique_ptr<PVR_NAMED_VALUE[]> properties(new PVR_NAMED_VALUE[iPropertyCount]);
+        memset(properties.get(), 0, iPropertyCount * sizeof(PVR_NAMED_VALUE));
 
-    PVR_ERROR error =
-        addon->toAddon->GetChannelStreamProperties(addon, &tag, properties.get(), &iPropertyCount);
-    if (error == PVR_ERROR_NO_ERROR)
-      WriteStreamProperties(properties.get(), iPropertyCount, props);
+        PVR_ERROR error = addon->toAddon->GetChannelStreamProperties(
+            addon, &tag, source, properties.get(), &iPropertyCount);
+        if (error == PVR_ERROR_NO_ERROR)
+          WriteStreamProperties(properties.get(), iPropertyCount, props);
 
-    return error;
-  });
+        return error;
+      });
 }
 
 PVR_ERROR CPVRClient::GetRecordingStreamProperties(
@@ -1280,6 +1284,12 @@ PVR_ERROR CPVRClient::GetStreamProperties(PVR_STREAM_PROPERTIES* props) const
   return DoAddonCall(__func__, [&props](const AddonInstance* addon) {
     return addon->toAddon->GetStreamProperties(addon, props);
   });
+}
+
+PVR_ERROR CPVRClient::StreamClosed() const
+{
+  return DoAddonCall(__func__, [](const AddonInstance* addon)
+                     { return addon->toAddon->StreamClosed(addon); });
 }
 
 PVR_ERROR CPVRClient::DemuxReset()

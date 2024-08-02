@@ -38,6 +38,12 @@ public:
    * @return true if it should be played back as live, false otherwise.
    */
   bool EPGPlaybackAsLive() const;
+
+  /*!
+   * @brief If props are from an channel indicates if playback should be as a video playback would be
+   * @return true if it should be played back as live, false otherwise.
+   */
+  bool LivePlaybackAsEPG() const;
 };
 
 } // namespace PVR
