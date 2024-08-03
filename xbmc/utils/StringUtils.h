@@ -389,7 +389,7 @@ public:
    *
    * example: "abc\n" -> "6162630a"
    */
-  static std::string ToHexadecimal(const std::string& in);
+  [[nodiscard]] static std::string ToHexadecimal(std::string_view in);
   /*! \brief Format the string with locale separators.
 
   Format the string with locale separators.
