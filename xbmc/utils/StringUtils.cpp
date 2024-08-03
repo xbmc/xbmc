@@ -1690,7 +1690,7 @@ std::string StringUtils::CreateUUID()
   auto guid = guidGenerator.newGuid();
 
   std::stringstream strGuid; strGuid << guid;
-  return strGuid.str();
+  return std::move(strGuid).str();
 #endif
 }
 
