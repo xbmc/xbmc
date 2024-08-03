@@ -359,7 +359,7 @@ public:
                                           int startPos = 0) noexcept;
   [[nodiscard]] static int DateStringToYYYYMMDD(std::string_view dateString);
   [[nodiscard]] static std::string ISODateToLocalizedDate(std::string_view strIsoDate);
-  static void WordToDigits(std::string &word);
+  static void WordToDigits(std::string& word) noexcept;
   static std::string CreateUUID();
   static bool ValidateUUID(const std::string &uuid); // NB only validates syntax
   static double CompareFuzzy(const std::string &left, const std::string &right);

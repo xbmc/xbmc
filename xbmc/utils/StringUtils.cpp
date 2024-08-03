@@ -1664,7 +1664,7 @@ int StringUtils::FindEndBracket(std::string_view str,
   return (int)std::string::npos;
 }
 
-void StringUtils::WordToDigits(std::string &word)
+void StringUtils::WordToDigits(std::string& word) noexcept
 {
   static const char word_to_letter[] = "22233344455566677778889999";
   StringUtils::ToLower(word);
