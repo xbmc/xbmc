@@ -341,9 +341,13 @@ public:
   {
     return (chr >= 'a' && chr <= 'z');
   }
+  [[nodiscard]] inline static bool isasciiletter(char chr) noexcept // locale independent
+  {
+    return isasciiuppercaseletter(chr) || isasciilowercaseletter(chr);
+  }
   [[nodiscard]] inline static bool isasciialphanum(char chr) noexcept // locale independent
   {
-    return isasciiuppercaseletter(chr) || isasciilowercaseletter(chr) || isasciidigit(chr);
+    return isasciiletter(chr) || isasciidigit(chr);
   }
   [[nodiscard]] static std::string SizeToString(int64_t size);
   static const std::string Empty;
