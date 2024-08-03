@@ -1644,18 +1644,21 @@ size_t StringUtils::FindWords(std::string_view str, std::string_view wordLowerCa
 }
 
 // assumes it is called from after the first open bracket is found
-int StringUtils::FindEndBracket(const std::string &str, char opener, char closer, int startPos)
+int StringUtils::FindEndBracket(std::string_view str,
+                                char opener,
+                                char closer,
+                                int startPos /*=0*/) noexcept
 {
   int blocks = 1;
-  for (unsigned int i = startPos; i < str.size(); i++)
+  for (auto iter = str.begin() + startPos; iter != str.end(); ++iter)
   {
-    if (str[i] == opener)
+    if (*iter == opener)
       blocks++;
-    else if (str[i] == closer)
+    else if (*iter == closer)
     {
       blocks--;
       if (!blocks)
-        return i;
+        return std::distance(str.begin(), iter);
     }
   }
 
