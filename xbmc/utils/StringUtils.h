@@ -481,7 +481,7 @@ public:
    * For example: 1024 bytes will be formatted as "1.00kB", 10240 bytes as "10.0kB" and
    * 102400 bytes as "100kB". See TestStringUtils for more examples.
    */
-  static std::string FormatFileSize(uint64_t bytes);
+  [[nodiscard]] static std::string FormatFileSize(uint64_t bytes);
 
   /*! \brief Converts a cstring pointer (const char*) to a std::string.
              In case nullptr is passed the result is an empty string.
