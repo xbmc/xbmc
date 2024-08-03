@@ -496,9 +496,9 @@ public:
    * \param keyword The string to search for
    * \return True if the keyword if found.
    */
-  static bool Contains(std::string_view str,
-                       std::string_view keyword,
-                       bool isCaseInsensitive = true);
+  [[nodiscard]] static bool Contains(std::string_view str,
+                                     std::string_view keyword,
+                                     bool isCaseInsensitive = true) noexcept;
 
 private:
   /*!
