@@ -382,7 +382,7 @@ public:
   \param param String to convert
   \return Converted string
   */
-  static std::string BinaryStringToString(const std::string& in);
+  [[nodiscard]] static std::string BinaryStringToString(std::string_view in);
   /**
    * Convert each character in the string to its hexadecimal
    * representation and return the concatenated result
