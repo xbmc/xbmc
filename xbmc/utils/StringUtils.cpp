@@ -1899,7 +1899,7 @@ std::string StringUtils::FormatFileSize(uint64_t bytes)
 
 bool StringUtils::Contains(std::string_view str,
                            std::string_view keyword,
-                           bool isCaseInsensitive /* = true */)
+                           bool isCaseInsensitive /* = true */) noexcept
 {
   if (isCaseInsensitive)
   {
