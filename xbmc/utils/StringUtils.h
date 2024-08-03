@@ -351,7 +351,8 @@ public:
   }
   [[nodiscard]] static std::string SizeToString(int64_t size);
   static const std::string Empty;
-  static size_t FindWords(const char *str, const char *wordLowerCase);
+  [[nodiscard]] static size_t FindWords(std::string_view str,
+                                        std::string_view wordLowerCase) noexcept;
   static int FindEndBracket(const std::string &str, char opener, char closer, int startPos = 0);
   static int DateStringToYYYYMMDD(const std::string &dateString);
   static std::string ISODateToLocalizedDate (const std::string& strIsoDate);

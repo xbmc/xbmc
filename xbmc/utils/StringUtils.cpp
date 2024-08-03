@@ -35,6 +35,7 @@
 #include <algorithm>
 #include <array>
 #include <assert.h>
+#include <cctype>
 #include <functional>
 #include <inttypes.h>
 #include <iomanip>
@@ -1576,21 +1577,23 @@ std::string StringUtils::ToHexadecimal(const std::string& in)
 }
 
 // return -1 if not, else return the utf8 char length.
-int IsUTF8Letter(const unsigned char *str)
+[[nodiscard]] int IsUTF8Letter(std::string_view::const_iterator strIter,
+                               std::string_view::const_iterator strIterEnd) noexcept
 {
   // reference:
   // unicode -> utf8 table: http://www.utf8-chartable.de/
   // latin characters in unicode: http://en.wikipedia.org/wiki/Latin_characters_in_Unicode
-  unsigned char ch = str[0];
-  if (!ch)
+  if (strIter == strIterEnd)
     return -1;
-  if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z'))
+  unsigned char ch = *strIter;
+  if (StringUtils::isasciiletter(ch))
     return 1;
   if (!(ch & 0x80))
     return -1;
-  unsigned char ch2 = str[1];
-  if (!ch2)
+  ++strIter;
+  if (strIter == strIterEnd)
     return -1;
+  unsigned char ch2 = *strIter;
   // check latin 1 letter table: http://en.wikipedia.org/wiki/C1_Controls_and_Latin-1_Supplement
   if (ch == 0xC3 && ch2 >= 0x80 && ch2 <= 0xBF && ch2 != 0x97 && ch2 != 0xB7)
     return 2;
@@ -1605,46 +1608,37 @@ int IsUTF8Letter(const unsigned char *str)
   return -1;
 }
 
-size_t StringUtils::FindWords(const char *str, const char *wordLowerCase)
+size_t StringUtils::FindWords(std::string_view str, std::string_view wordLowerCase) noexcept
 {
   // NOTE: This assumes word is lowercase!
-  const unsigned char *s = (const unsigned char *)str;
-  do
+  std::string_view::const_iterator strIter = str.begin();
+  while (static_cast<size_t>(std::distance(strIter, str.end())) >= wordLowerCase.length())
   {
     // start with a compare
-    const unsigned char *c = s;
-    const unsigned char *w = (const unsigned char *)wordLowerCase;
-    bool same = true;
-    while (same && *c && *w)
     {
-      unsigned char lc = *c++;
-      if (lc >= 'A' && lc <= 'Z')
-        lc += 'a'-'A';
+      const auto [_, wordCmpEnd] =
+          std::mismatch(strIter, str.end(), wordLowerCase.begin(), wordLowerCase.end(),
+                        [](unsigned char a, unsigned char b) { return ::tolower(a) == b; });
 
-      if (lc != *w++) // different
-        same = false;
+      if (wordCmpEnd == wordLowerCase.end())
+        return std::distance(str.begin(), strIter);
     }
-    if (same && *w == 0)  // only the same if word has been exhausted
-      return (const char *)s - str;
 
     // otherwise, skip current word (composed by latin letters) or number
-    int l;
-    if (*s >= '0' && *s <= '9')
+    if (::isdigit(static_cast<unsigned char>(*strIter))) // skip digits
+      strIter = std::find_if_not(strIter, str.end(), [](unsigned char c) { return ::isdigit(c); });
+    else if (int l = IsUTF8Letter(strIter, str.end()); l > 0) // skip letters
     {
-      ++s;
-      while (*s >= '0' && *s <= '9') ++s;
-    }
-    else if ((l = IsUTF8Letter(s)) > 0)
-    {
-      s += l;
-      while ((l = IsUTF8Letter(s)) > 0) s += l;
+      strIter += l;
+      while ((l = IsUTF8Letter(strIter, str.end())) > 0)
+        strIter += l;
     }
     else
-      ++s;
-    while (*s && *s == ' ') s++;
+      ++strIter;
 
-    // and repeat until we're done
-  } while (*s);
+    // skip spaces
+    strIter = std::find_if_not(strIter, str.end(), [](unsigned char c) { return ::isspace(c); });
+  }
 
   return std::string::npos;
 }
