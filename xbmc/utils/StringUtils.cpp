@@ -1348,20 +1348,19 @@ int StringUtils::DateStringToYYYYMMDD(std::string_view dateString)
     return -1;
 }
 
-std::string StringUtils::ISODateToLocalizedDate(const std::string& strIsoDate)
+std::string StringUtils::ISODateToLocalizedDate(std::string_view strIsoDate)
 {
   // Convert ISO8601 date strings YYYY, YYYY-MM, or YYYY-MM-DD to (partial) localized date strings
   CDateTime date;
-  std::string formattedDate = strIsoDate;
-  if (formattedDate.size() == 10)
+  if (strIsoDate.size() == 10)
   {
-    date.SetFromDBDate(strIsoDate);
-    formattedDate = date.GetAsLocalizedDate();
+    date.SetFromDBDate(std::string(strIsoDate));
+    return date.GetAsLocalizedDate();
   }
-  else if (formattedDate.size() == 7)
+  else if (strIsoDate.size() == 7)
   {
-    std::string strFormat = date.GetAsLocalizedDate(false);
-    std::string tempdate;
+    const std::string strFormat = date.GetAsLocalizedDate(false);
+    std::string result;
     // find which date separator we are using.  Can be -./
     size_t pos = strFormat.find_first_of("-./");
     if (pos != std::string::npos)
@@ -1370,21 +1369,21 @@ std::string StringUtils::ISODateToLocalizedDate(const std::string& strIsoDate)
       std::string sep = strFormat.substr(pos, 1);
       if (yearFirst)
       { // build formatted date with year first, then separator and month
-        tempdate = formattedDate.substr(0, 4);
-        tempdate += sep;
-        tempdate += formattedDate.substr(5, 2);
+        result = strIsoDate.substr(0, 4);
+        result += sep;
+        result += strIsoDate.substr(5, 2);
       }
       else
       {
-        tempdate = formattedDate.substr(5, 2);
-        tempdate += sep;
-        tempdate += formattedDate.substr(0, 4);
+        result = strIsoDate.substr(5, 2);
+        result += sep;
+        result += strIsoDate.substr(0, 4);
       }
-      formattedDate = tempdate;
+      return result;
     }
   // return either just the year or the locally formatted version of the ISO date
   }
-  return formattedDate;
+  return std::string{strIsoDate};
 }
 
 long StringUtils::TimeStringToSeconds(std::string_view timeString)

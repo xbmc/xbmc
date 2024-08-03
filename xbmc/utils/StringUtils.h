@@ -358,7 +358,7 @@ public:
                                           char closer,
                                           int startPos = 0) noexcept;
   [[nodiscard]] static int DateStringToYYYYMMDD(std::string_view dateString);
-  static std::string ISODateToLocalizedDate (const std::string& strIsoDate);
+  [[nodiscard]] static std::string ISODateToLocalizedDate(std::string_view strIsoDate);
   static void WordToDigits(std::string &word);
   static std::string CreateUUID();
   static bool ValidateUUID(const std::string &uuid); // NB only validates syntax
