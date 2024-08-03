@@ -1714,13 +1714,16 @@ double StringUtils::CompareFuzzy(std::string_view left, std::string_view right) 
          2.0;
 }
 
-int StringUtils::FindBestMatch(const std::string &str, const std::vector<std::string> &strings, double &matchscore)
+template<typename StringLike>
+[[nodiscard]] int FindBestMatchT(std::string_view str,
+                                 std::span<StringLike> strings,
+                                 double& matchscore) noexcept
 {
   int best = -1;
   matchscore = 0;
 
   int i = 0;
-  for (std::vector<std::string>::const_iterator it = strings.begin(); it != strings.end(); ++it, i++)
+  for (auto it = strings.begin(); it != strings.end(); ++it, i++)
   {
     int maxlength = std::max(str.length(), it->length());
     double score = StringUtils::CompareFuzzy(str, *it) / maxlength;
@@ -1731,6 +1734,20 @@ int StringUtils::FindBestMatch(const std::string &str, const std::vector<std::st
     }
   }
   return best;
+}
+
+int StringUtils::FindBestMatch(std::string_view str,
+                               std::span<const std::string_view> strings,
+                               double& matchscore) noexcept
+{
+  return FindBestMatchT(str, strings, matchscore);
+}
+
+int StringUtils::FindBestMatch(std::string_view str,
+                               std::span<const std::string> strings,
+                               double& matchscore) noexcept
+{
+  return FindBestMatchT(str, strings, matchscore);
 }
 
 bool StringUtils::ContainsKeyword(const std::string &str, const std::vector<std::string> &keywords)
