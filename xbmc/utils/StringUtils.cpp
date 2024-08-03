@@ -1750,14 +1750,27 @@ int StringUtils::FindBestMatch(std::string_view str,
   return FindBestMatchT(str, strings, matchscore);
 }
 
-bool StringUtils::ContainsKeyword(const std::string &str, const std::vector<std::string> &keywords)
+template<typename StringLike>
+[[nodiscard]] bool ContainsKeywordT(std::string_view str, std::span<StringLike> keywords) noexcept
 {
-  for (std::vector<std::string>::const_iterator it = keywords.begin(); it != keywords.end(); ++it)
+  for (auto it = keywords.begin(); it != keywords.end(); ++it)
   {
     if (str.find(*it) != str.npos)
       return true;
   }
   return false;
+}
+
+bool StringUtils::ContainsKeyword(std::string_view str,
+                                  std::span<const std::string_view> keywords) noexcept
+{
+  return ContainsKeywordT(str, keywords);
+}
+
+bool StringUtils::ContainsKeyword(std::string_view str,
+                                  std::span<const std::string> keywords) noexcept
+{
+  return ContainsKeywordT(str, keywords);
 }
 
 size_t StringUtils::utf8_strlen(std::string_view s) noexcept
