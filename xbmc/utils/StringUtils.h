@@ -514,6 +514,10 @@ struct sortstringbyname
   {
     return StringUtils::CompareNoCase(strItem1, strItem2) < 0;
   }
+  bool operator()(std::string_view strItem1, std::string_view strItem2) const
+  {
+    return StringUtils::CompareNoCase(strItem1, strItem2) < 0;
+  }
 };
 
 } // namespace KODI::UTILS
