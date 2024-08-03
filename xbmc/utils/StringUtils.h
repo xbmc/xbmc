@@ -353,7 +353,10 @@ public:
   static const std::string Empty;
   [[nodiscard]] static size_t FindWords(std::string_view str,
                                         std::string_view wordLowerCase) noexcept;
-  static int FindEndBracket(const std::string &str, char opener, char closer, int startPos = 0);
+  [[nodiscard]] static int FindEndBracket(std::string_view str,
+                                          char opener,
+                                          char closer,
+                                          int startPos = 0) noexcept;
   static int DateStringToYYYYMMDD(const std::string &dateString);
   static std::string ISODateToLocalizedDate (const std::string& strIsoDate);
   static void WordToDigits(std::string &word);
