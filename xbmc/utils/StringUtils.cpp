@@ -1707,9 +1707,11 @@ bool StringUtils::ValidateUUID(const std::string &uuid)
   return (guidRE.RegFind(uuid.c_str()) == 0);
 }
 
-double StringUtils::CompareFuzzy(const std::string &left, const std::string &right)
+double StringUtils::CompareFuzzy(std::string_view left, std::string_view right) noexcept
 {
-  return (0.5 + fstrcmp(left.c_str(), right.c_str()) * (left.length() + right.length())) / 2.0;
+  return (0.5 + fmemcmp(left.data(), left.size(), right.data(), right.size()) *
+                    (left.length() + right.length())) /
+         2.0;
 }
 
 int StringUtils::FindBestMatch(const std::string &str, const std::vector<std::string> &strings, double &matchscore)
