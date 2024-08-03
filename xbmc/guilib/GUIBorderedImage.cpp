@@ -39,12 +39,12 @@ CGUIBorderedImage::CGUIBorderedImage(const CGUIBorderedImage& right)
 void CGUIBorderedImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   CGUIImage::Process(currentTime, dirtyregions);
-  if (!m_borderImage->GetFileName().empty() && m_texture->ReadyToRender())
+  if (!m_borderImage->GetFileName().empty() && m_textureCurrent->ReadyToRender())
   {
-    CRect rect = CRect(m_texture->GetXPosition(), m_texture->GetYPosition(),
-                       m_texture->GetXPosition() + m_texture->GetWidth(),
-                       m_texture->GetYPosition() + m_texture->GetHeight());
-    rect.Intersect(m_texture->GetRenderRect());
+    CRect rect = CRect(m_textureCurrent->GetXPosition(), m_textureCurrent->GetYPosition(),
+                       m_textureCurrent->GetXPosition() + m_textureCurrent->GetWidth(),
+                       m_textureCurrent->GetYPosition() + m_textureCurrent->GetHeight());
+    rect.Intersect(m_textureCurrent->GetRenderRect());
     m_borderImage->SetPosition(rect.x1 - m_borderSize.x1, rect.y1 - m_borderSize.y1);
     m_borderImage->SetWidth(rect.Width() + m_borderSize.x1 + m_borderSize.x2);
     m_borderImage->SetHeight(rect.Height() + m_borderSize.y1 + m_borderSize.y2);
@@ -62,7 +62,7 @@ void CGUIBorderedImage::Render()
   if (renderFrontToBack)
     CGUIImage::Render();
 
-  if (!m_borderImage->GetFileName().empty() && m_texture->ReadyToRender())
+  if (!m_borderImage->GetFileName().empty() && m_textureCurrent->ReadyToRender())
     m_borderImage->Render(-1);
 
   if (!renderFrontToBack)
