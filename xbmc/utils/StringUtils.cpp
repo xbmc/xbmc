@@ -1335,7 +1335,7 @@ int StringUtils::AlphaNumericCollation(int nKey1,
   return (nKey1 - nKey2);
 }
 
-int StringUtils::DateStringToYYYYMMDD(const std::string &dateString)
+int StringUtils::DateStringToYYYYMMDD(std::string_view dateString)
 {
   std::vector<std::string> days = StringUtils::Split(dateString, '-');
   if (days.size() == 1)
