@@ -1814,47 +1814,51 @@ std::string StringUtils::DeParamify(std::string param)
   return param;
 }
 
-std::vector<std::string> StringUtils::Tokenize(const std::string &input, const std::string &delimiters)
+std::vector<std::string> StringUtils::Tokenize(std::string_view input, std::string_view delimiters)
 {
   std::vector<std::string> tokens;
   Tokenize(input, tokens, delimiters);
   return tokens;
 }
 
-void StringUtils::Tokenize(const std::string& input, std::vector<std::string>& tokens, const std::string& delimiters)
+void StringUtils::Tokenize(std::string_view input,
+                           std::vector<std::string>& tokens,
+                           std::string_view delimiters)
 {
   tokens.clear();
   // Skip delimiters at beginning.
-  std::string::size_type dataPos = input.find_first_not_of(delimiters);
-  while (dataPos != std::string::npos)
+  std::string_view::size_type dataPos = input.find_first_not_of(delimiters);
+  while (dataPos != std::string_view::npos)
   {
     // Find next delimiter
-    const std::string::size_type nextDelimPos = input.find_first_of(delimiters, dataPos);
+    const std::string_view::size_type nextDelimPos = input.find_first_of(delimiters, dataPos);
     // Found a token, add it to the vector.
-    tokens.push_back(input.substr(dataPos, nextDelimPos - dataPos));
+    tokens.emplace_back(input.substr(dataPos, nextDelimPos - dataPos));
     // Skip delimiters.  Note the "not_of"
     dataPos = input.find_first_not_of(delimiters, nextDelimPos);
   }
 }
 
-std::vector<std::string> StringUtils::Tokenize(const std::string &input, const char delimiter)
+std::vector<std::string> StringUtils::Tokenize(std::string_view input, const char delimiter)
 {
   std::vector<std::string> tokens;
   Tokenize(input, tokens, delimiter);
   return tokens;
 }
 
-void StringUtils::Tokenize(const std::string& input, std::vector<std::string>& tokens, const char delimiter)
+void StringUtils::Tokenize(std::string_view input,
+                           std::vector<std::string>& tokens,
+                           const char delimiter)
 {
   tokens.clear();
   // Skip delimiters at beginning.
-  std::string::size_type dataPos = input.find_first_not_of(delimiter);
-  while (dataPos != std::string::npos)
+  std::string_view::size_type dataPos = input.find_first_not_of(delimiter);
+  while (dataPos != std::string_view::npos)
   {
     // Find next delimiter
-    const std::string::size_type nextDelimPos = input.find(delimiter, dataPos);
+    const std::string_view::size_type nextDelimPos = input.find(delimiter, dataPos);
     // Found a token, add it to the vector.
-    tokens.push_back(input.substr(dataPos, nextDelimPos - dataPos));
+    tokens.emplace_back(input.substr(dataPos, nextDelimPos - dataPos));
     // Skip delimiters.  Note the "not_of"
     dataPos = input.find_first_not_of(delimiter, nextDelimPos);
   }
