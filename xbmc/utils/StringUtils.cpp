@@ -1782,36 +1782,36 @@ size_t StringUtils::utf8_strlen(std::string_view s) noexcept
   return std::count_if(s.begin(), s.end(), [](char c) { return (c & 0xC0) != 0x80; });
 }
 
-std::string StringUtils::Paramify(const std::string &param)
+std::string StringUtils::Paramify(std::string param)
 {
-  std::string result = param;
   // escape backspaces
-  StringUtils::Replace(result, "\\", "\\\\");
+  StringUtils::Replace(param, "\\", "\\\\");
   // escape double quotes
-  StringUtils::Replace(result, "\"", "\\\"");
+  StringUtils::Replace(param, "\"", "\\\"");
 
   // add double quotes around the whole string
-  return "\"" + result + "\"";
+  param.insert(param.begin(), '"');
+  param.push_back('"');
+
+  return param;
 }
 
-std::string StringUtils::DeParamify(const std::string& param)
+std::string StringUtils::DeParamify(std::string param)
 {
-  std::string result = param;
-
   // remove double quotes around the whole string
-  if (StringUtils::StartsWith(result, "\"") && StringUtils::EndsWith(result, "\""))
+  if (StringUtils::StartsWith(param, "\"") && StringUtils::EndsWith(param, "\""))
   {
-    result.erase(0, 1);
-    result.pop_back();
+    param.erase(param.begin());
+    param.pop_back();
 
     // unescape double quotes
-    StringUtils::Replace(result, "\\\"", "\"");
+    StringUtils::Replace(param, "\\\"", "\"");
 
     // unescape backspaces
-    StringUtils::Replace(result, "\\\\", "\\");
+    StringUtils::Replace(param, "\\\\", "\\");
   }
 
-  return result;
+  return param;
 }
 
 std::vector<std::string> StringUtils::Tokenize(const std::string &input, const std::string &delimiters)

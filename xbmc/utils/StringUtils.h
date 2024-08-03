@@ -420,7 +420,7 @@ public:
    \param param String to escape/paramify
    \return Escaped/Paramified string
    */
-  static std::string Paramify(const std::string &param);
+  [[nodiscard]] static std::string Paramify(std::string param);
 
   /*! \brief Unescapes the given string.
 
@@ -429,7 +429,7 @@ public:
    \param param String to unescape/deparamify
    \return Unescaped/Deparamified string
    */
-  static std::string DeParamify(const std::string& param);
+  [[nodiscard]] static std::string DeParamify(std::string param);
 
   /*! \brief Split a string by the specified delimiters.
    Splits a string using one or more delimiting characters, ignoring empty tokens.
