@@ -126,9 +126,17 @@ void CPVRClients::UpdateClients(
             instanceEnabled = client->IsEnabled();
 
           if (instanceEnabled)
+          {
+            CLog::LogF(LOGINFO, "Creating PVR client: addonId={}, instanceId={}, clientId={}",
+                       addon->ID(), instanceId, clientId);
             clientsToCreate.emplace_back(client);
+          }
           else if (isKnownClient)
+          {
+            CLog::LogF(LOGINFO, "Destroying PVR client: addonId={}, instanceId={}, clientId={}",
+                       addon->ID(), instanceId, clientId);
             clientsToDestroy.emplace_back(clientId);
+          }
         }
         else if (IsCreatedClient(clientId))
         {
@@ -140,9 +148,17 @@ void CPVRClients::UpdateClients(
           }
 
           if (instanceEnabled)
+          {
+            CLog::LogF(LOGINFO, "Recreating PVR client: addonId={}, instanceId={}, clientId={}",
+                       addon->ID(), instanceId, clientId);
             clientsToReCreate.emplace_back(clientId, addon->Name());
+          }
           else
+          {
+            CLog::LogF(LOGINFO, "Destroying PVR client: addonId={}, instanceId={}, clientId={}",
+                       addon->ID(), instanceId, clientId);
             clientsToDestroy.emplace_back(clientId);
+          }
         }
       }
     }
