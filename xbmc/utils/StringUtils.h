@@ -399,7 +399,7 @@ public:
   \return Formatted string
   */
   template<typename T>
-  static std::string FormatNumber(T num)
+  [[nodiscard]] static std::string FormatNumber(T num)
   {
     std::stringstream ss;
 // ifdef is needed because when you set _ITERATOR_DEBUG_LEVEL=0 and you use custom numpunct you will get runtime error in debug mode
@@ -409,7 +409,7 @@ public:
 #endif
     ss.precision(1);
     ss << std::fixed << num;
-    return ss.str();
+    return std::move(ss).str();
   }
 
   /*! \brief Escapes the given string to be able to be used as a parameter.
