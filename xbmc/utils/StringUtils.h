@@ -363,7 +363,12 @@ public:
   [[nodiscard]] static std::string CreateUUID();
   [[nodiscard]] static bool ValidateUUID(const std::string& uuid); // NB only validates syntax
   [[nodiscard]] static double CompareFuzzy(std::string_view left, std::string_view right) noexcept;
-  static int FindBestMatch(const std::string &str, const std::vector<std::string> &strings, double &matchscore);
+  [[nodiscard]] static int FindBestMatch(std::string_view str,
+                                         std::span<const std::string_view> strings,
+                                         double& matchscore) noexcept;
+  [[nodiscard]] static int FindBestMatch(std::string_view str,
+                                         std::span<const std::string> strings,
+                                         double& matchscore) noexcept;
   static bool ContainsKeyword(const std::string &str, const std::vector<std::string> &keywords);
 
   /*! \brief Convert the string of binary chars to the actual string.
