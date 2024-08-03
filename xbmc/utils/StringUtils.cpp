@@ -1882,7 +1882,7 @@ float StringUtils::ToFloat(std::string_view str, float fallback /* = 0.0f */)
 
 std::string StringUtils::FormatFileSize(uint64_t bytes)
 {
-  const std::array<std::string, 6> units{{"B", "kB", "MB", "GB", "TB", "PB"}};
+  static constexpr std::array<std::string_view, 6> units{{"B", "kB", "MB", "GB", "TB", "PB"}};
   if (bytes < 1000)
     return Format("{}B", bytes);
 
