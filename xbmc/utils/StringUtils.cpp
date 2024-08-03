@@ -16,6 +16,7 @@
 //
 //------------------------------------------------------------------------
 
+#include <charconv>
 #ifdef HAVE_NEW_CROSSGUID
 #include <crossguid/guid.hpp>
 #else
@@ -1542,20 +1543,23 @@ std::string StringUtils::SizeToString(int64_t size)
   return strLabel;
 }
 
-std::string StringUtils::BinaryStringToString(const std::string& in)
+std::string StringUtils::BinaryStringToString(std::string_view in)
 {
   std::string out;
   out.reserve(in.size() / 2);
-  for (const char *cur = in.c_str(), *end = cur + in.size(); cur != end; ++cur) {
+  for (auto cur = in.begin(); cur != in.end(); ++cur)
+  {
     if (*cur == '\\') {
       ++cur;
-      if (cur == end) {
+      if (cur == in.end())
         break;
-      }
-      if (isdigit(*cur)) {
-        char* end;
-        unsigned long num = strtol(cur, &end, 10);
-        cur = end - 1;
+      if (isdigit(static_cast<unsigned char>(*cur)))
+      {
+        const char* start = in.data() + std::distance(in.begin(), cur);
+        const char* end = in.data() + in.length();
+        unsigned long num{};
+        std::from_chars_result res = std::from_chars(start, end, num);
+        cur += res.ptr - start - 1;
         out.push_back(num);
         continue;
       }
