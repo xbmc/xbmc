@@ -345,7 +345,7 @@ public:
   {
     return isasciiuppercaseletter(chr) || isasciilowercaseletter(chr) || isasciidigit(chr);
   }
-  static std::string SizeToString(int64_t size);
+  [[nodiscard]] static std::string SizeToString(int64_t size);
   static const std::string Empty;
   static size_t FindWords(const char *str, const char *wordLowerCase);
   static int FindEndBracket(const std::string &str, char opener, char closer, int startPos = 0);
