@@ -488,7 +488,7 @@ public:
       \param cstr the const pointer to char
       \return the resulting std::string or ""
    */
-  static std::string CreateFromCString(const char* cstr);
+  [[nodiscard]] static std::string CreateFromCString(const char* cstr);
 
   /*!
    * \brief Check if a keyword string is contained on another string.
