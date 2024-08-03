@@ -438,10 +438,16 @@ public:
     2. Empty tokens are ignored.
    \return a vector of tokens
    */
-  static std::vector<std::string> Tokenize(const std::string& input, const std::string& delimiters);
-  static void Tokenize(const std::string& input, std::vector<std::string>& tokens, const std::string& delimiters);
-  static std::vector<std::string> Tokenize(const std::string& input, const char delimiter);
-  static void Tokenize(const std::string& input, std::vector<std::string>& tokens, const char delimiter);
+  [[nodiscard]] static std::vector<std::string> Tokenize(std::string_view input,
+                                                         std::string_view delimiters);
+  static void Tokenize(std::string_view input,
+                       std::vector<std::string>& tokens,
+                       std::string_view delimiters);
+  [[nodiscard]] static std::vector<std::string> Tokenize(std::string_view input,
+                                                         const char delimiter);
+  static void Tokenize(std::string_view input,
+                       std::vector<std::string>& tokens,
+                       const char delimiter);
 
   /*!
    * \brief Converts a string to a unsigned int number.
