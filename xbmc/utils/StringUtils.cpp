@@ -1569,14 +1569,14 @@ std::string StringUtils::BinaryStringToString(std::string_view in)
   return out;
 }
 
-std::string StringUtils::ToHexadecimal(const std::string& in)
+std::string StringUtils::ToHexadecimal(std::string_view in)
 {
   std::ostringstream ss;
   ss << std::hex;
   for (unsigned char ch : in) {
     ss << std::setw(2) << std::setfill('0') << static_cast<unsigned long> (ch);
   }
-  return ss.str();
+  return std::move(ss).str();
 }
 
 // return -1 if not, else return the utf8 char length.
