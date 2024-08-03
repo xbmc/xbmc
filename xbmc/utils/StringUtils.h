@@ -369,7 +369,10 @@ public:
   [[nodiscard]] static int FindBestMatch(std::string_view str,
                                          std::span<const std::string> strings,
                                          double& matchscore) noexcept;
-  static bool ContainsKeyword(const std::string &str, const std::vector<std::string> &keywords);
+  [[nodiscard]] static bool ContainsKeyword(std::string_view str,
+                                            std::span<const std::string_view> keywords) noexcept;
+  [[nodiscard]] static bool ContainsKeyword(std::string_view str,
+                                            std::span<const std::string> keywords) noexcept;
 
   /*! \brief Convert the string of binary chars to the actual string.
 
