@@ -65,9 +65,10 @@ namespace
  * \return The converted number, otherwise fallback if conversion fails
  */
 template<typename T>
-T NumberFromSS(std::string_view str, T fallback) noexcept
+T NumberFromSS(std::string_view str, T fallback)
 {
-  std::istringstream iss{str.data()};
+  std::string strCopy{str}; // TODO: Remove with C++26
+  std::istringstream iss{std::move(strCopy)};
   T result{fallback};
   iss >> result;
   return result;
