@@ -89,13 +89,16 @@ void CSong::SetArtistCredits(const std::vector<std::string>& names, const std::v
   artistCredits.clear();
   std::vector<std::string> artistHints = hints;
   //Split the artist sort string to try and get sort names for individual artists
-  std::vector<std::string> artistSort = StringUtils::Split(strArtistSort, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
+  std::vector<std::string> artistSort = StringUtils::Split(
+      strArtistSort,
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
+
+  // Vector of possible separators in the order least likely to be part of artist name
+  static const std::vector<std::string> separators{
+      " feat. ", " ft. ", " Feat. ", " Ft. ", ";", ":", "|", "#", "/", " with ", "&"};
 
   if (!mbids.empty())
   { // Have musicbrainz artist info, so use it
-
-    // Vector of possible separators in the order least likely to be part of artist name
-    const std::vector<std::string> separators{ " feat. ", " ft. ", " Feat. "," Ft. ", ";", ":", "|", "#", "/", " with ", ",", "&" };
 
     // Establish tag consistency - do the number of musicbrainz ids and number of names in hints or artist match
     if (mbids.size() != artistHints.size() && mbids.size() != names.size())
@@ -147,7 +150,7 @@ void CSong::SetArtistCredits(const std::vector<std::string>& names, const std::v
     // Try to get number of artist sort names and musicbrainz ids to match. Split sort names
     // further using multiple possible delimiters, over single separator applied in Tag loader
     if (artistSort.size() != mbids.size())
-      artistSort = StringUtils::SplitMulti(artistSort, { ";", ":", "|", "#" });
+      artistSort = StringUtils::SplitMulti(artistSort, separators);
 
     for (size_t i = 0; i < mbids.size(); i++)
     {
@@ -185,7 +188,7 @@ void CSong::SetArtistCredits(const std::vector<std::string>& names, const std::v
 
     if (artistSort.size() != artists.size())
       // Split artist sort names further using multiple possible delimiters, over single separator applied in Tag loader
-      artistSort = StringUtils::SplitMulti(artistSort, { ";", ":", "|", "#" });
+      artistSort = StringUtils::SplitMulti(artistSort, separators);
 
     for (size_t i = 0; i < artists.size(); i++)
     {
