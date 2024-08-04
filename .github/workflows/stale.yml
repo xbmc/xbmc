@@ -1,0 +1,23 @@
+name: 'Close stale issues and PRs'
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */2 * * *'
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          days-before-stale: 365
+          stale-issue-message: 'This issue is now marked stale because it has been open over a year without activity. Remove the stale label or add a comment to reset the stale state.'
+          stale-issue-label: Stale
+          stale-pr-message: 'This pull request is now marked stale because it has been open over a year without activity. Remove the stale label or add a comment to reset the stale state.'
+          stale-pr-label: Stale
+          operations-per-run: 100
+          debug-only: true
