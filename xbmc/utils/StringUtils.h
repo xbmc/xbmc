@@ -120,7 +120,7 @@ public:
   static std::string& TrimLeft(std::string& str, std::string_view chars) noexcept;
   static std::string& TrimRight(std::string& str) noexcept;
   static std::string& TrimRight(std::string& str, std::string_view chars) noexcept;
-  static std::string& RemoveDuplicatedSpacesAndTabs(std::string& str);
+  static std::string& RemoveDuplicatedSpacesAndTabs(std::string& str) noexcept;
 
   /*! \brief Check if the character is a special character.
 

@@ -542,30 +542,12 @@ int StringUtils::ReturnDigits(std::string_view str) noexcept
                          });
 }
 
-std::string& StringUtils::RemoveDuplicatedSpacesAndTabs(std::string& str)
+std::string& StringUtils::RemoveDuplicatedSpacesAndTabs(std::string& str) noexcept
 {
-  std::string::iterator it = str.begin();
-  bool onSpace = false;
-  while(it != str.end())
-  {
-    if (*it == '\t')
-      *it = ' ';
-
-    if (*it == ' ')
-    {
-      if (onSpace)
-      {
-        it = str.erase(it);
-        continue;
-      }
-      else
-        onSpace = true;
-    }
-    else
-      onSpace = false;
-
-    ++it;
-  }
+  StringUtils::Replace(str, '\t', ' ');
+  const auto [first, last] =
+      std::ranges::unique(str, [](char a, char b) { return a == ' ' && b == ' '; });
+  str.erase(first, last);
   return str;
 }
 
