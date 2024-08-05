@@ -9,7 +9,6 @@
 #include "PVRChannelGroupMember.h"
 
 #include "ServiceBroker.h"
-#include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClient.h"
 #include "pvr/channels/PVRChannel.h"
@@ -131,13 +130,4 @@ void CPVRChannelGroupMember::SetOrder(int iOrder)
     m_iOrder = iOrder;
     m_bNeedsSave = true;
   }
-}
-
-bool CPVRChannelGroupMember::QueueDelete()
-{
-  const std::shared_ptr<CPVRDatabase> database = CServiceBroker::GetPVRManager().GetTVDatabase();
-  if (!database)
-    return false;
-
-  return database->QueueDeleteQuery(*this);
 }
