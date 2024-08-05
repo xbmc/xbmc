@@ -2,7 +2,7 @@ name: 'Close stale issues and PRs'
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 2 * * *'
+    - cron: '0 */2 * * *'
 
 permissions:
   issues: write
@@ -26,5 +26,5 @@ jobs:
           exempt-issue-labels: Roadmap
           exempt-pr-labels: Roadmap
           
-          operations-per-run: 100
+          operations-per-run: 200
           debug-only: false
