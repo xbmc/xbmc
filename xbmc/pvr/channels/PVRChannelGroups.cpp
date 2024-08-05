@@ -764,8 +764,6 @@ bool CPVRChannelGroups::RemoveFromGroup(const std::shared_ptr<CPVRChannelGroup>&
 
     if (group->RemoveFromGroup(groupMember))
     {
-      group->DeleteGroupMember(groupMember);
-
       // Changes in the all channels group may require resorting/renumbering of other groups.
       if (group->IsChannelsOwner())
         UpdateChannelNumbersFromAllChannelsGroup();
