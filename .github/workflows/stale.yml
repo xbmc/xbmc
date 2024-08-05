@@ -16,9 +16,14 @@ jobs:
         with:
           days-before-stale: 365
           days-before-close: -1
+          
           stale-issue-message: 'This issue is now marked stale because it has been open over a year without activity. Remove the stale label or add a comment to reset the stale state.'
           stale-issue-label: Stale
           stale-pr-message: 'This pull request is now marked stale because it has been open over a year without activity. Remove the stale label or add a comment to reset the stale state.'
           stale-pr-label: Stale
+
+          exempt-issue-labels: Roadmap
+          exempt-pr-labels: Roadmap
+          
           operations-per-run: 100
-          debug-only: true
+          debug-only: false
