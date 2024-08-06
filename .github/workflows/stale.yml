@@ -26,5 +26,5 @@ jobs:
           exempt-issue-labels: Roadmap
           exempt-pr-labels: Roadmap
           
-          operations-per-run: 200
+          operations-per-run: 1000
           debug-only: false
