@@ -135,8 +135,7 @@ void CEGLFence::WaitSyncCPU()
 
   EGLint status{EGL_FALSE};
 
-  while (status != EGL_CONDITION_SATISFIED_KHR)
-    status = m_eglClientWaitSyncKHR(m_display, m_kmsFence, 0, EGL_FOREVER_KHR);
+  status = m_eglClientWaitSyncKHR(m_display, m_kmsFence, 0, EGL_FOREVER_KHR);
 
   m_eglDestroySyncKHR(m_display, m_kmsFence);
 }
