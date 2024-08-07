@@ -407,8 +407,6 @@ void CVideoDatabase::CreateViews()
                                       "    files.idFile=episode.idFile"
                                       "  JOIN tvshow ON"
                                       "    tvshow.idShow=episode.idShow"
-                                      "  JOIN seasons ON"
-                                      "    seasons.idSeason=episode.idSeason"
                                       "  JOIN path ON"
                                       "    files.idPath=path.idPath"
                                       "  LEFT JOIN bookmark ON"
@@ -6444,11 +6442,20 @@ void CVideoDatabase::UpdateTables(int iVersion)
     }
     m_pDS->close();
   }
+
+  if (iVersion < 133)
+  {
+    // Remove episodes with invalid idSeason values.
+    // Since 2015 they were masked from episode_view and are not going to be missed.
+    // Those records would be misses in database converted in 2015 (see videodb version 99).
+
+    m_pDS->exec("DELETE FROM episode WHERE idSeason NOT IN (SELECT idSeason from seasons)");
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 132;
+  return 133;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
