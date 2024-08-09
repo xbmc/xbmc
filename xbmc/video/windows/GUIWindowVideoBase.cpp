@@ -605,7 +605,7 @@ protected:
 
   bool OnInfoSelected() override { return m_window.OnItemInfo(*m_item); }
 
-  bool OnMoreSelected() override
+  bool OnChooseSelected() override
   {
     // window only shows the default version, so no window specific context menu items available
     if (m_item->HasVideoVersions() && !m_item->GetVideoInfoTag()->IsDefaultVideoVersion())
