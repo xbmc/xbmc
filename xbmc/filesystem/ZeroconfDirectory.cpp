@@ -13,12 +13,14 @@
 #include "FileItemList.h"
 #include "URL.h"
 #include "network/ZeroconfBrowser.h"
+#include "utils/ArtUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
 #include <cassert>
 #include <stdexcept>
 
+using namespace KODI;
 using namespace XFILE;
 
 CZeroconfDirectory::CZeroconfDirectory()
@@ -137,7 +139,7 @@ bool GetDirectoryFromTxtRecords(const CZeroconfBrowser::ZeroconfService& zerocon
 
       item->SetLabelPreformatted(true);
       //just set the default folder icon
-      item->FillInDefaultIcon();
+      ART::FillInDefaultIcon(*item);
       item->m_bIsShareOrDrive=true;
       items.Add(item);
       ret = true;
@@ -173,7 +175,7 @@ bool CZeroconfDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         item->SetLabel(it.GetName() + " (" + protocol + ")");
         item->SetLabelPreformatted(true);
         //just set the default folder icon
-        item->FillInDefaultIcon();
+        ART::FillInDefaultIcon(*item);
         items.Add(item);
       }
     }
