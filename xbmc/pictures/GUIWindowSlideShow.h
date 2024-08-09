@@ -10,6 +10,7 @@
 
 #include "SlideShowPicture.h"
 #include "guilib/GUIDialog.h"
+#include "interfaces/IAnnouncer.h"
 #include "interfaces/ISlideShowDelegate.h"
 #include "threads/Event.h"
 #include "threads/Thread.h"
@@ -48,7 +49,9 @@ private:
   CGUIWindowSlideShow* m_pCallback = nullptr;
 };
 
-class CGUIWindowSlideShow : public CGUIDialog, public ISlideShowDelegate
+class CGUIWindowSlideShow : public CGUIDialog,
+                            public ISlideShowDelegate,
+                            public ANNOUNCEMENT::IAnnouncer
 {
 public:
   CGUIWindowSlideShow(void);
@@ -86,6 +89,12 @@ public:
                    const std::string& strExtensions = "") override;
   void Shuffle() override;
   int GetDirection() const override { return m_iDirection; }
+
+  // implementation of IAnnouncer
+  void Announce(ANNOUNCEMENT::AnnouncementFlag flag,
+                const std::string& sender,
+                const std::string& message,
+                const CVariant& data) override;
 
   bool OnMessage(CGUIMessage& message) override;
   EVENT_RESULT OnMouseEvent(const CPoint& point, const KODI::MOUSE::CMouseEvent& event) override;
