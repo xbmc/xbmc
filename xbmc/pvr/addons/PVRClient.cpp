@@ -1297,16 +1297,18 @@ PVR_ERROR CPVRClient::UpdateTimerTypes()
           types_array = new PVR_TIMER_TYPE*[size];
 
           // manual one time
-          (*types_array)[0].iId = 1;
-          (*types_array)[0].iAttributes =
+          types_array[0] = new PVR_TIMER_TYPE{};
+          types_array[0]->iId = 1;
+          types_array[0]->iAttributes =
               PVR_TIMER_TYPE_IS_MANUAL | PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
               PVR_TIMER_TYPE_SUPPORTS_CHANNELS | PVR_TIMER_TYPE_SUPPORTS_START_TIME |
               PVR_TIMER_TYPE_SUPPORTS_END_TIME | PVR_TIMER_TYPE_SUPPORTS_PRIORITY |
               PVR_TIMER_TYPE_SUPPORTS_LIFETIME | PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
 
           // manual timer rule
-          (*types_array)[1].iId = 2;
-          (*types_array)[1].iAttributes =
+          types_array[1] = new PVR_TIMER_TYPE{};
+          types_array[1]->iId = 2;
+          types_array[1]->iAttributes =
               PVR_TIMER_TYPE_IS_MANUAL | PVR_TIMER_TYPE_IS_REPEATING |
               PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE | PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
               PVR_TIMER_TYPE_SUPPORTS_START_TIME | PVR_TIMER_TYPE_SUPPORTS_END_TIME |
@@ -1317,8 +1319,9 @@ PVR_ERROR CPVRClient::UpdateTimerTypes()
           if (m_clientCapabilities.SupportsEPG())
           {
             // One-shot epg-based
-            (*types_array)[2].iId = 3;
-            (*types_array)[2].iAttributes =
+            types_array[2] = new PVR_TIMER_TYPE{};
+            types_array[2]->iId = 3;
+            types_array[2]->iAttributes =
                 PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE | PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE |
                 PVR_TIMER_TYPE_SUPPORTS_CHANNELS | PVR_TIMER_TYPE_SUPPORTS_START_TIME |
                 PVR_TIMER_TYPE_SUPPORTS_END_TIME | PVR_TIMER_TYPE_SUPPORTS_PRIORITY |
@@ -1339,7 +1342,8 @@ PVR_ERROR CPVRClient::UpdateTimerTypes()
               CLog::LogF(LOGERROR, "Invalid timer type supplied by add-on {}.", GetID());
               continue;
             }
-            timerTypes.emplace_back(std::make_shared<CPVRTimerType>(*types_array[i], m_iClientId));
+            timerTypes.emplace_back(
+                std::make_shared<CPVRTimerType>(*(types_array[i]), m_iClientId));
           }
         }
 
@@ -1347,6 +1351,9 @@ PVR_ERROR CPVRClient::UpdateTimerTypes()
         if (array_owner)
         {
           // begin compat section
+          for (unsigned int i = 0; i < size; ++i)
+            delete types_array[i];
+
           delete[] types_array;
           // end compat section
         }
