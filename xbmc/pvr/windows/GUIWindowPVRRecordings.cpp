@@ -267,7 +267,7 @@ protected:
     return true;
   }
 
-  bool OnMoreSelected() override
+  bool OnChooseSelected() override
   {
     m_window.OnPopupMenu(m_itemIndex);
     return true;
