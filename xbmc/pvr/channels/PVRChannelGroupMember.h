@@ -77,12 +77,6 @@ public:
 
   bool IsRadio() const { return m_bIsRadio; }
 
-  /*!
-   * @brief Delete this group member from the database.
-   * @return True if it was deleted successfully, false otherwise.
-   */
-  bool QueueDelete();
-
 private:
   int m_iGroupID = -1;
   int m_iGroupClientID = -1;

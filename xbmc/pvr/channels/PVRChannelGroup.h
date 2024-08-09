@@ -442,12 +442,6 @@ public:
   void Delete();
 
   /*!
-   * @brief Remove the given group member from the database.
-   * @param member The member to remove from the database.
-   */
-  void DeleteGroupMember(const std::shared_ptr<CPVRChannelGroupMember>& member);
-
-  /*!
    * @brief Whether this group is deleted.
    * @return True, if deleted, false otherwise.
    */

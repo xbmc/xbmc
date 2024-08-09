@@ -562,7 +562,7 @@ void CPVRChannelGroup::DeleteGroupMembersFromDb(
 
     for (const auto& member : membersToDelete)
     {
-      commitPending |= member->QueueDelete();
+      commitPending |= database->QueueDeleteQuery(*member);
 
       size_t queryCount = database->GetDeleteQueriesCount();
       if (queryCount > CHANNEL_COMMIT_QUERY_COUNT_LIMIT)
@@ -783,9 +783,12 @@ bool CPVRChannelGroup::RemoveFromGroup(
     }
   }
 
-  // no need to renumber if nothing was removed
+  // no need to delete and renumber if nothing was removed
   if (bReturn)
+  {
+    DeleteGroupMembersFromDb({std::make_shared<CPVRChannelGroupMember>(*groupMember)});
     Renumber();
+  }
 
   return bReturn;
 }
@@ -876,11 +879,6 @@ void CPVRChannelGroup::Delete()
     if (database->Delete(*this))
       m_bDeleted = true;
   }
-}
-
-void CPVRChannelGroup::DeleteGroupMember(const std::shared_ptr<CPVRChannelGroupMember>& member)
-{
-  DeleteGroupMembersFromDb({member});
 }
 
 bool CPVRChannelGroup::Renumber(RenumberMode mode /* = NORMAL */)
