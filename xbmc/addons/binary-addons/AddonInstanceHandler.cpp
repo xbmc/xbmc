@@ -79,6 +79,11 @@ std::string IAddonInstanceHandler::ID() const
   return m_addon ? m_addon->ID() : "";
 }
 
+AddonInstanceId IAddonInstanceHandler::InstanceID() const
+{
+  return m_instanceId;
+}
+
 std::string IAddonInstanceHandler::Name() const
 {
   return m_addon ? m_addon->Name() : "";

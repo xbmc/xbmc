@@ -70,6 +70,7 @@ public:
   const std::string& UniqueWorkID() { return m_uniqueWorkID; }
 
   std::string ID() const;
+  AddonInstanceId InstanceID() const;
   std::string Name() const;
   std::string Author() const;
   std::string Icon() const;

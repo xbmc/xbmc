@@ -64,7 +64,7 @@ namespace PVR
      * @brief Get the minimal database version that is required to operate correctly.
      * @return The minimal database version.
      */
-    int GetSchemaVersion() const override { return 45; }
+    int GetSchemaVersion() const override { return 46; }
 
     /*!
      * @brief Get the default sqlite database filename.
@@ -101,6 +101,14 @@ namespace PVR
      * @return The priority.
      */
     int GetPriority(const CPVRClient& client) const;
+
+    /*!
+     * @brief Get the numeric client ID for given addon ID and instance ID from the database.
+     * @param addonID The addon ID.
+     * @param instanceID The instance ID.
+     * @return The client ID on success, -1 otherwise.
+     */
+    int GetClientID(const std::string& addonID, unsigned int instanceID);
 
     /*! @name Channel methods */
     //@{
@@ -326,6 +334,8 @@ namespace PVR
     bool PersistChannels(const CPVRChannelGroup& group);
 
     bool RemoveChannelsFromGroup(const CPVRChannelGroup& group);
+
+    void FixupClientIDs();
 
     mutable CCriticalSection m_critSection;
   };
