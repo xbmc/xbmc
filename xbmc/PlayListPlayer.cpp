@@ -95,7 +95,8 @@ bool CPlayListPlayer::OnMessage(CGUIMessage &message)
       for (Id playlistId : {Id::TYPE_MUSIC, Id::TYPE_VIDEO})
       {
         CPlayList& playlist = GetPlaylist(playlistId);
-        CFileItemPtr item = std::static_pointer_cast<CFileItem>(message.GetItem());
+        const std::shared_ptr<CFileItem> item =
+            std::static_pointer_cast<CFileItem>(message.GetItem());
         playlist.UpdateItem(item.get());
       }
     }
@@ -344,7 +345,7 @@ bool CPlayListPlayer::Play(int iSong,
   }
 
   m_iCurrentSong = iSong;
-  CFileItemPtr item = playlist[m_iCurrentSong];
+  const std::shared_ptr<CFileItem> item = playlist[m_iCurrentSong];
   if (IsVideoDb(*item) && !item->HasVideoInfoTag())
     *(item->GetVideoInfoTag()) = XFILE::CVideoDatabaseFile::GetVideoTag(CURL(item->GetDynPath()));
 
@@ -946,7 +947,11 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
     {
       // Discard the current playlist, if TMSG_MEDIA_PLAY gets posted with just a single item.
       // Otherwise items may fail to play, when started while a playlist is playing.
-      Reset();
+      // But a single item in a stack is allowed.
+      CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
+      const std::shared_ptr<CFileItem> pitem = playlist[m_iCurrentSong];
+      if (!URIUtils::IsStack(pitem->GetDynPath()))
+        Reset();
 
       CFileItem *item = static_cast<CFileItem*>(pMsg->lpVoid);
       g_application.PlayFile(*item, "", pMsg->param1 != 0);
@@ -976,7 +981,7 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
         SetCurrentPlaylist(playlistId);
         if (list->Size() == 1 && !IsPlayList(*list->Get(0)))
         {
-          CFileItemPtr item = (*list)[0];
+          const std::shared_ptr<CFileItem> item = (*list)[0];
           // if the item is a plugin we need to resolve the URL to ensure the infotags are filled.
           if (URIUtils::HasPluginPath(*item) &&
               !XFILE::CPluginDirectory::GetResolvedPluginResult(*item))
