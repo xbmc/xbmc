@@ -184,7 +184,7 @@
 		</control>
 		<control type="label" id="2">
 			<description>breadcrumbs label</description>
-			<visible>False</visible>
+			<visible>false</visible>
 		</control>
 	</controls>
 </window>

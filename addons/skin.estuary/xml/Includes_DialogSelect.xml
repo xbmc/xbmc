@@ -61,7 +61,7 @@
 						<top>22</top>
 						<width>80</width>
 						<height>80</height>
-						<aspectratio align="top">keep</aspectratio>
+						<aspectratio>keep</aspectratio>
 						<aligny>center</aligny>
 						<texture>icons/pvr/timers/recording.png</texture>
 						<visible>ListItem.Property(PVR.IsRecordingTimer)</visible>
@@ -71,7 +71,7 @@
 						<top>22</top>
 						<width>80</width>
 						<height>80</height>
-						<aspectratio align="top">keep</aspectratio>
+						<aspectratio>keep</aspectratio>
 						<aligny>center</aligny>
 						<texture>icons/pvr/timers/bell.png</texture>
 						<visible>ListItem.Property(PVR.IsRemindingTimer)</visible>
@@ -118,7 +118,7 @@
 						<top>22</top>
 						<width>80</width>
 						<height>80</height>
-						<aspectratio align="top">keep</aspectratio>
+						<aspectratio>keep</aspectratio>
 						<aligny>center</aligny>
 						<texture>icons/pvr/timers/recording.png</texture>
 						<visible>ListItem.Property(PVR.IsRecordingTimer)</visible>
@@ -128,7 +128,7 @@
 						<top>22</top>
 						<width>80</width>
 						<height>80</height>
-						<aspectratio align="top">keep</aspectratio>
+						<aspectratio>keep</aspectratio>
 						<aligny>center</aligny>
 						<texture>icons/pvr/timers/bell.png</texture>
 						<visible>ListItem.Property(PVR.IsRemindingTimer)</visible>
@@ -342,7 +342,6 @@
 							<description>Label for Saved with: text</description>
 							<top>14</top>
 							<height>20</height>
-							<font>font16</font>
 							<shadowcolor>text_shadow</shadowcolor>
 							<label>35255</label>
 							<align>center</align>

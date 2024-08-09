@@ -54,31 +54,31 @@
 		<include condition="!Skin.HasSetting(no_slide_animations)">Vis_FadeSlide_Right</include>
 	</include>
 	<include name="Animation_TopSlide">
-		<animation type="WindowOpen" reversible="False">
+		<animation type="WindowOpen" reversible="false">
 			<effect type="fade" start="0" end="100" time="300"/>
 			<effect type="slide" start="0,-200" end="0,0" time="300" tween="cubic" easing="out" />
 		</animation>
-		<animation type="WindowClose" reversible="False">
+		<animation type="WindowClose" reversible="false">
 			<effect type="fade" start="100" end="0" time="300"/>
 			<effect type="slide" start="0,0" end="0,-200" time="300" tween="cubic" easing="out" />
 		</animation>
 	</include>
 	<include name="Animation_BottomSlide">
-		<animation type="WindowOpen" reversible="False">
+		<animation type="WindowOpen" reversible="false">
 			<effect type="fade" start="0" end="100" time="300"/>
 			<effect type="slide" start="0,200" end="0,0" time="300" tween="cubic" easing="out" />
 		</animation>
-		<animation type="WindowClose" reversible="False">
+		<animation type="WindowClose" reversible="false">
 			<effect type="fade" start="100" end="0" time="300"/>
 			<effect type="slide" start="0,0" end="0,200" time="300" tween="cubic" easing="out" />
 		</animation>
 	</include>
 	<include name="Vis_FadeSlide_Right">
-		<animation type="Visible" reversible="False">
+		<animation type="Visible" reversible="false">
 			<effect type="fade" start="0" end="100" time="300" tween="sine" easing="out"/>
 			<effect type="slide" start="320" end="0" time="400" tween="cubic" easing="out" />
 		</animation>
-		<animation type="Hidden" reversible="False">
+		<animation type="Hidden" reversible="false">
 			<effect type="fade" start="100" end="0" time="300" tween="sine" easing="out" />
 			<effect type="slide" start="0" end="320" time="300" tween="cubic" easing="out" />
 		</animation>
@@ -88,11 +88,11 @@
 		<include condition="!Skin.HasSetting(no_slide_animations)">Vis_FadeSlide_Left</include>
 	</include>
 	<include name="Vis_FadeSlide_Left">
-		<animation type="Visible" reversible="False">
+		<animation type="Visible" reversible="false">
 			<effect type="fade" start="0" end="100" time="300" tween="sine" easing="out" />
 			<effect type="slide" start="-320" end="0" time="400" tween="cubic" easing="out" />
 		</animation>
-		<animation type="Hidden" reversible="False">
+		<animation type="Hidden" reversible="false">
 			<effect type="fade" start="100" end="0" time="300" tween="sine" easing="out" />
 			<effect type="slide" start="0" end="-320" time="300" tween="cubic" easing="out" />
 		</animation>

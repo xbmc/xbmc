@@ -77,7 +77,6 @@
 				<control type="group" id="2000">
 					<top>80</top>
 					<control type="list" id="1103">
-						<defaultcontrol always="true">2101</defaultcontrol>
 						<height>560</height>
 						<orientation>vertical</orientation>
 						<itemlayout condition="!Control.IsVisible(2200)" width="700" height="80">

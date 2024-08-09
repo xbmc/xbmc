@@ -106,7 +106,7 @@
 		<font></font>
 	</include>
 	<include name="RatingCircle">
-		<param name="animation">False</param>
+		<param name="animation">false</param>
 		<definition>
 			<control type="group">
 				<animation effect="fade" time="0" condition="$PARAM[animation]">VisibleChange</animation>
@@ -1299,7 +1299,7 @@
 		</definition>
 	</include>
 	<include name="BottomBar">
-		<param name="info_visible">False</param>
+		<param name="info_visible">false</param>
 		<definition>
 			<control type="group">
 				<animation effect="slide" end="0,112" time="300" tween="sine" easing="inout" condition="$EXP[infodialog_active]">conditional</animation>
