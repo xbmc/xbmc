@@ -52,7 +52,7 @@ public:
   const char* GetType() const override { return "cdrip"; }
   bool operator==(const CJob* job) const override;
   bool DoWork() override;
-  std::string GetOutput() const { return m_output; }
+  const std::string& GetOutput() const { return m_output; }
 
 protected:
   /*!
