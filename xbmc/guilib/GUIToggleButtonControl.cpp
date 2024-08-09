@@ -19,55 +19,30 @@ CGUIToggleButtonControl::CGUIToggleButtonControl(int parentID, int controlID, fl
     , m_selectButton(parentID, controlID, posX, posY, width, height, altTextureFocus, altTextureNoFocus, labelInfo, wrapMultiLine)
 {
   ControlType = GUICONTROL_TOGGLEBUTTON;
+  // set parent, so that the dirty state can propagade
+  m_selectButton.SetParentControl(GetParentControl());
 }
 
 CGUIToggleButtonControl::~CGUIToggleButtonControl(void) = default;
 
-void CGUIToggleButtonControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+void CGUIToggleButtonControl::DoProcess(unsigned int currentTime, CDirtyRegionList& dirtyregions)
 {
   // ask our infoManager whether we are selected or not...
   if (m_toggleSelect)
     m_bSelected = m_toggleSelect->Get(INFO::DEFAULT_CONTEXT);
 
   if (m_bSelected)
-  {
-    // render our Alternate textures...
-    m_selectButton.SetFocus(HasFocus());
-    m_selectButton.SetVisible(IsVisible());
-    m_selectButton.SetEnabled(!IsDisabled());
-    m_selectButton.SetPulseOnSelect(m_pulseOnSelect);
-    ProcessToggle(currentTime);
     m_selectButton.DoProcess(currentTime, dirtyregions);
-  }
   else
-    CGUIButtonControl::Process(currentTime, dirtyregions);
+    CGUIButtonControl::DoProcess(currentTime, dirtyregions);
 }
 
-void CGUIToggleButtonControl::ProcessToggle(unsigned int currentTime)
-{
-  bool changed = false;
-
-  changed |= m_label.SetMaxRect(m_posX, m_posY, GetWidth(), m_height);
-  changed |= m_label.SetText(GetDescription());
-  changed |= m_label.SetColor(GetTextColor());
-  changed |= m_label.SetScrolling(HasFocus());
-  changed |= m_label.Process(currentTime);
-
-  if (changed)
-    MarkDirtyRegion();
-}
-
-void CGUIToggleButtonControl::Render()
+void CGUIToggleButtonControl::DoRender()
 {
   if (m_bSelected)
-  {
-    m_selectButton.Render();
-    CGUIControl::Render();
-  }
+    m_selectButton.DoRender();
   else
-  { // render our Normal textures...
-    CGUIButtonControl::Render();
-  }
+    CGUIButtonControl::DoRender();
 }
 
 bool CGUIToggleButtonControl::OnAction(const CAction &action)
@@ -159,6 +134,30 @@ std::string CGUIToggleButtonControl::GetDescription() const
 void CGUIToggleButtonControl::SetAltClickActions(const CGUIAction &clickActions)
 {
   m_selectButton.SetClickActions(clickActions);
+}
+
+void CGUIToggleButtonControl::SetPulseOnSelect(bool pulseOnSelect)
+{
+  CGUIButtonControl::SetPulseOnSelect(pulseOnSelect);
+  m_selectButton.SetPulseOnSelect(pulseOnSelect);
+}
+
+void CGUIToggleButtonControl::SetEnabled(bool enabled)
+{
+  CGUIButtonControl::SetEnabled(!enabled);
+  m_selectButton.SetEnabled(enabled);
+}
+
+void CGUIToggleButtonControl::SetFocus(bool focus)
+{
+  CGUIButtonControl::SetFocus(focus);
+  m_selectButton.SetFocus(focus);
+}
+
+void CGUIToggleButtonControl::SetVisible(bool visible, bool setVisState)
+{
+  CGUIButtonControl::SetVisible(visible, setVisState);
+  m_selectButton.SetVisible(visible, setVisState);
 }
 
 void CGUIToggleButtonControl::OnClick()
