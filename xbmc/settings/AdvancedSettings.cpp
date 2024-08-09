@@ -415,6 +415,8 @@ void CAdvancedSettings::Initialize()
   m_guiVisualizeDirtyRegions = false;
   m_guiAlgorithmDirtyRegions = 3;
   m_guiSmartRedraw = false;
+  m_guiMipMapping = false;
+  m_guiMipMappingSharpen = 0.65f;
   m_airTunesPort = 36666;
   m_airPlayPort = 36667;
 
@@ -1228,6 +1230,8 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetBoolean(pElement, "geometryclear", m_guiGeometryClear);
     XMLUtils::GetBoolean(pElement, "asynctextureupload", m_guiAsyncTextureUpload);
     XMLUtils::GetBoolean(pElement, "transparentvideolayout", m_guiVideoLayoutTransparent);
+    XMLUtils::GetBoolean(pElement, "mipmapping", m_guiMipMapping);
+    XMLUtils::GetFloat(pElement, "mipmappingsharpen", m_guiMipMappingSharpen, 0.0f, 3.0f);
   }
 
   std::string seekSteps;
