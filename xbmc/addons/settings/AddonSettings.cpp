@@ -223,8 +223,8 @@ void CAddonSettings::OnSettingAction(const std::shared_ptr<const CSetting>& sett
 
 bool CAddonSettings::AddInstanceSettings()
 {
-  if (GetSetting(ADDON_SETTING_INSTANCE_NAME_VALUE) ||
-      GetSetting(ADDON_SETTING_INSTANCE_ENABLED_VALUE))
+  if (GetSetting(ADDON_SETTING_INSTANCE_NAME_VALUE, false) ||
+      GetSetting(ADDON_SETTING_INSTANCE_ENABLED_VALUE, false))
   {
     CLog::Log(
         LOGDEBUG,
@@ -441,7 +441,7 @@ bool CAddonSettings::Save()
   std::shared_ptr<IAddon> addon = m_addon.lock();
   assert(addon);
   if (addon)
-    return addon->SaveSettings();
+    return addon->SaveSettings(m_instanceId);
   else
     return false;
 }
