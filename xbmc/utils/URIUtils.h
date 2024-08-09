@@ -155,6 +155,7 @@ public:
   static bool IsPVRTVRecordingFileOrFolder(const std::string& strFile);
   static bool IsPVRRadioRecordingFileOrFolder(const std::string& strFile);
   static bool IsMultiPath(const std::string& strPath);
+  static bool IsDatabase(const std::string& strFile);
   static bool IsMusicDb(const std::string& strFile);
   static bool IsNfs(const std::string& strFile);
   static bool IsOnDVD(const std::string& strFile);
