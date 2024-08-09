@@ -161,6 +161,12 @@ public:
   int GetBlurSize();
 
   /*!
+   * \brief Get line spacing
+   * \return The line spacing
+   */
+  double GetLineSpacing();
+
+  /*!
    * \brief Get background type
    * \return The background type
    */
