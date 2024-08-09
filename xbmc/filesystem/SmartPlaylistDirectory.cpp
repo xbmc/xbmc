@@ -297,9 +297,23 @@ namespace XFILE
       items.SetProperty(PROPERTY_GROUP_MIXED, playlist.IsGroupMixed());
     }
 
-    // sort grouped list by label
+    // sort grouped list by label unless random was specified for musicvideo artists
     if (items.Size() > 1 && !group.empty())
-      items.Sort(SortByLabel, SortOrderAscending, CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
+    {
+      if (playlist.GetOrder() == SortByRandom && group == "actors" &&
+          playlist.GetType() == "musicvideos")
+        items.Sort(SortByRandom, SortOrderAscending,
+                   CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                       CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING)
+                       ? SortAttributeIgnoreArticle
+                       : SortAttributeNone);
+      else
+        items.Sort(SortByLabel, SortOrderAscending,
+                   CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                       CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING)
+                       ? SortAttributeIgnoreArticle
+                       : SortAttributeNone);
+    }
 
     // go through and set the playlist order
     for (int i = 0; i < items.Size(); i++)
