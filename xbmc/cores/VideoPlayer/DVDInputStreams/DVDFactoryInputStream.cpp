@@ -16,7 +16,6 @@
 #include "DVDInputStreamFFmpeg.h"
 #include "DVDInputStreamFile.h"
 #include "DVDInputStreamNavigator.h"
-#include "DVDInputStreamStack.h"
 #include "FileItem.h"
 #include "InputStreamAddon.h"
 #include "InputStreamMultiSource.h"
@@ -92,6 +91,11 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
     return std::make_shared<CDVDInputStreamNavigator>(pPlayer, fileitem);
   }
 
+  if (VIDEO::IsDVDPlaylist(fileitem))
+    return std::make_shared<CDVDInputStreamNavigator>(pPlayer, fileitem);
+  if (VIDEO::IsBlurayPlaylist(fileitem))
+    return std::make_shared<CDVDInputStreamBluray>(pPlayer, fileitem);
+
 #ifdef HAS_OPTICAL_DRIVE
   if (file.compare(CServiceBroker::GetMediaManager().TranslateDevicePath("")) == 0)
   {
@@ -104,6 +108,10 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
     return std::make_shared<CDVDInputStreamNavigator>(pPlayer, fileitem);
   }
 #endif
+
+  CURL url{file};
+  if (url.IsProtocol("dvd"))
+    return std::make_shared<CDVDInputStreamNavigator>(pPlayer, fileitem);
 
   if (VIDEO::IsDVDFile(fileitem, false, true))
     return std::make_shared<CDVDInputStreamNavigator>(pPlayer, fileitem);
@@ -135,8 +143,6 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
   {
     return std::make_shared<CDVDInputStreamFFmpeg>(fileitem);
   }
-  else if(StringUtils::StartsWithNoCase(file, "stack://"))
-    return std::make_shared<CDVDInputStreamStack>(fileitem);
 
   CFileItem finalFileitem(fileitem);
 

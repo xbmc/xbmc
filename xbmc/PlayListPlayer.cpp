@@ -18,6 +18,7 @@
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "application/ApplicationPowerHandling.h"
+#include "application/ApplicationStackHelper.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/PluginDirectory.h"
 #include "filesystem/VideoDatabaseFile.h"
@@ -946,7 +947,11 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
     {
       // Discard the current playlist, if TMSG_MEDIA_PLAY gets posted with just a single item.
       // Otherwise items may fail to play, when started while a playlist is playing.
-      Reset();
+      // But a single item in a stack is allowed.
+      CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
+      CFileItemPtr pitem = playlist[m_iCurrentSong];
+      if (!URIUtils::IsStack(pitem->GetDynPath()))
+        Reset();
 
       CFileItem *item = static_cast<CFileItem*>(pMsg->lpVoid);
       g_application.PlayFile(*item, "", pMsg->param1 != 0);
