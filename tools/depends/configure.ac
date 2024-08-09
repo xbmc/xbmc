@@ -415,6 +415,11 @@ case $host in
     platform_os="linux"
     meson_system="linux"
     ffmpeg_options_default="--enable-vaapi --enable-vdpau --cpu=$use_cpu"
+    case $host in
+      *steamdeck*)
+        app_rendersystem="gl"
+        ;;
+    esac
     target_platform="x11 wayland gbm"
   ;;
   *darwin*)
