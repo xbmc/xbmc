@@ -2362,7 +2362,7 @@ bool CApplication::PlayFile(CFileItem item,
 
       std::string path = item.GetPath();
       std::string videoInfoTagPath(item.GetVideoInfoTag()->m_strFileNameAndPath);
-      if (videoInfoTagPath.find("removable://") == 0 || VIDEO::IsVideoDb(item))
+      if (videoInfoTagPath.starts_with("removable://") || VIDEO::IsVideoDb(item))
         path = videoInfoTagPath;
 
       // Note that we need to load the tag from database also if the item already has a tag,
