@@ -150,15 +150,21 @@ void CStreamDetailSubtitle::Archive(CArchive& ar)
   if (ar.IsStoring())
   {
     ar << m_strLanguage;
+    ar << m_codec;
+    ar << m_type;
   }
   else
   {
     ar >> m_strLanguage;
+    ar >> m_codec;
+    ar >> m_type;
   }
 }
 void CStreamDetailSubtitle::Serialize(CVariant& value) const
 {
   value["language"] = m_strLanguage;
+  value["codec"] = m_codec;
+  value["type"] = m_type;
 }
 
 bool CStreamDetailSubtitle::IsWorseThan(const CStreamDetail &that) const
@@ -482,6 +488,24 @@ std::string CStreamDetails::GetSubtitleLanguage(int idx) const
     return item->m_strLanguage;
   else
     return "";
+}
+
+std::string CStreamDetails::GetSubtitleCodec(int idx) const
+{
+  const CStreamDetailSubtitle* item =
+      dynamic_cast<const CStreamDetailSubtitle*>(GetNthStream(CStreamDetail::SUBTITLE, idx));
+  if (item)
+    return item->m_type;
+  return {};
+}
+
+std::string CStreamDetails::GetSubtitleType(int idx) const
+{
+  const CStreamDetailSubtitle* item =
+      dynamic_cast<const CStreamDetailSubtitle*>(GetNthStream(CStreamDetail::SUBTITLE, idx));
+  if (item)
+    return item->m_codec;
+  return {};
 }
 
 void CStreamDetails::Archive(CArchive& ar)

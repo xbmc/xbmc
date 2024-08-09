@@ -181,10 +181,11 @@ void CVideoDatabase::CreateTables()
 
   CLog::Log(LOGINFO, "create streaminfo table");
   m_pDS->exec("CREATE TABLE streamdetails (idFile integer, iStreamType integer, "
-    "strVideoCodec text, fVideoAspect float, iVideoWidth integer, iVideoHeight integer, "
-    "strAudioCodec text, iAudioChannels integer, strAudioLanguage text, "
-    "strSubtitleLanguage text, iVideoDuration integer, strStereoMode text, strVideoLanguage text, "
-    "strHdrType text)");
+              "strVideoCodec text, fVideoAspect float, iVideoWidth integer, iVideoHeight integer, "
+              "strAudioCodec text, iAudioChannels integer, strAudioLanguage text, "
+              "strSubtitleLanguage text, iVideoDuration integer, strStereoMode text, "
+              "strVideoLanguage text, "
+              "strHdrType text, strSubtitleCodec text, strSubtitleType text)");
 
   CLog::Log(LOGINFO, "create sets table");
   m_pDS->exec("CREATE TABLE sets ( idSet integer primary key, strSet text, strOverview text)");
@@ -3299,11 +3300,12 @@ void CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
     }
     for (int i=1; i<=details.GetSubtitleStreamCount(); i++)
     {
-      m_pDS->exec(PrepareSQL("INSERT INTO streamdetails "
-        "(idFile, iStreamType, strSubtitleLanguage) "
-        "VALUES (%i,%i,'%s')",
-        idFile, (int)CStreamDetail::SUBTITLE,
-        details.GetSubtitleLanguage(i).c_str()));
+      m_pDS->exec(PrepareSQL(
+          "INSERT INTO streamdetails "
+          "(idFile, iStreamType, strSubtitleLanguage, strSubtitleCodec, strSubtitleType) "
+          "VALUES (%i,%i,'%s','%s','%s')",
+          idFile, static_cast<int>(CStreamDetail::SUBTITLE), details.GetSubtitleLanguage(i).c_str(),
+          details.GetSubtitleCodec(i).c_str(), details.GetSubtitleType(i).c_str()));
     }
 
     // update the runtime information, if empty
@@ -4307,6 +4309,8 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag)
         {
           CStreamDetailSubtitle *p = new CStreamDetailSubtitle();
           p->m_strLanguage = pDS->fv(9).get_asString();
+          p->m_codec = pDS->fv(14).get_asString();
+          p->m_type = pDS->fv(15).get_asString();
           details.AddStream(p);
           retVal = true;
           break;
@@ -6443,6 +6447,12 @@ void CVideoDatabase::UpdateTables(int iVersion)
       m_pDS->next();
     }
     m_pDS->close();
+  }
+
+  if (iVersion < 132)
+  {
+    m_pDS->exec("ALTER TABLE streamdetails ADD strSubtitleCodec text");
+    m_pDS->exec("ALTER TABLE streamdetails ADD strSubtitleType text");
   }
 }
 
