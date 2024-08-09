@@ -228,7 +228,7 @@ protected:
     return true;
   }
 
-  bool OnMoreSelected() override
+  bool OnChooseSelected() override
   {
     CONTEXTMENU::ShowFor(m_item, CContextMenuManager::MAIN);
     return true;

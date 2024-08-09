@@ -15675,7 +15675,6 @@ msgstr ""
 #. Label to denote that there is something 'more'
 #. xbmc/favourites/ContextMenus.h
 #: xbmc/guilib/listproviders/DirectoryProvider.cpp
-#: xbmc/video/guilib/VideoSelectActionProcessor.cpp
 #: system/settings/settings.xml
 msgctxt "#22082"
 msgid "More..."

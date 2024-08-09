@@ -90,7 +90,7 @@ protected:
     return UTILS::GUILIB::CGUIContentUtils::ShowInfoForItem(*m_item);
   }
 
-  bool OnMoreSelected() override
+  bool OnChooseSelected() override
   {
     CONTEXTMENU::ShowFor(m_item, CContextMenuManager::MAIN);
     return true;
