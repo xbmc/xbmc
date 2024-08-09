@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -10,6 +10,7 @@
 
 #include "ContextMenuManager.h"
 #include "DatabaseManager.h"
+#include "GUITextureJobManager.h"
 #include "PlayListPlayer.h"
 #include "addons/AddonManager.h"
 #include "addons/BinaryAddonCache.h"
@@ -212,6 +213,8 @@ bool CServiceManager::InitStageThree(const std::shared_ptr<CProfileManager>& pro
 
   m_playerCoreFactory = std::make_unique<CPlayerCoreFactory>(*profileManager);
 
+  m_textureJobManager = std::make_unique<KODI::GUILIB::CGUITextureJobManager>();
+
   if (!m_Platform->InitStageThree())
     return false;
 
@@ -344,6 +347,11 @@ MEDIA_DETECT::CDetectDVDMedia& CServiceManager::GetDetectDVDMedia()
 PVR::CPVRManager& CServiceManager::GetPVRManager()
 {
   return *m_PVRManager;
+}
+
+KODI::GUILIB::CGUITextureJobManager& CServiceManager::GetTextureJobManager()
+{
+  return *m_textureJobManager;
 }
 
 CContextMenuManager& CServiceManager::GetContextMenuManager()

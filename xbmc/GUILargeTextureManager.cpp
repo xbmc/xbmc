@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -8,14 +8,12 @@
 
 #include "GUILargeTextureManager.h"
 
+#include "GUITextureJobManager.h"
 #include "ServiceBroker.h"
 #include "TextureCache.h"
 #include "commons/ilog.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/Texture.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/SettingsComponent.h"
-#include "utils/JobManager.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
@@ -26,15 +24,17 @@
 #include <exception>
 #include <mutex>
 
-CImageLoader::CImageLoader(const std::string& path, const bool useCache)
-  : m_path(path), m_texture(nullptr)
+CImageLoader::CImageLoader(const std::string& path,
+                           const bool useCache,
+                           CGUILargeTextureManager* callback)
+  : m_path(path), m_texture(nullptr), m_callback(callback)
 {
   m_use_cache = useCache;
 }
 
 CImageLoader::~CImageLoader() = default;
 
-bool CImageLoader::DoWork()
+bool CImageLoader::DoWork(bool immediatelyUpload)
 {
   bool needsChecking = false;
   std::string loadPath;
@@ -67,8 +67,11 @@ bool CImageLoader::DoWork()
       if (needsChecking)
         CServiceBroker::GetTextureCache()->BackgroundCacheImage(texturePath);
 
-      if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiAsyncTextureUpload)
-        m_texture->LoadToGPUAsync();
+      if (immediatelyUpload)
+      {
+        m_texture->LoadToGPU();
+        m_texture->SyncGPU();
+      }
 
       return true;
     }
@@ -86,8 +89,11 @@ bool CImageLoader::DoWork()
   if (!m_texture)
     return false;
 
-  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiAsyncTextureUpload)
-    m_texture->LoadToGPUAsync();
+  if (immediatelyUpload)
+  {
+    m_texture->LoadToGPU();
+    m_texture->SyncGPU();
+  }
 
   return true;
 }
@@ -208,7 +214,7 @@ void CGUILargeTextureManager::ReleaseImage(const std::string &path, bool immedia
     if (image->GetPath() == path && image->DecrRef(true))
     {
       // cancel this job
-      CServiceBroker::GetJobManager()->CancelJob(id);
+      CServiceBroker::GetTextureJobManager().CancelImageLoad(id);
       m_queued.erase(it);
       return;
     }
@@ -234,20 +240,20 @@ void CGUILargeTextureManager::QueueImage(const std::string &path, bool useCache)
 
   // queue the item
   CLargeTexture *image = new CLargeTexture(path);
-  unsigned int jobID = CServiceBroker::GetJobManager()->AddJob(new CImageLoader(path, useCache),
-                                                               this, CJob::PRIORITY_NORMAL);
+  unsigned int jobID = CServiceBroker::GetTextureJobManager().AddImageToQueue(
+      new CImageLoader(path, useCache, this));
   m_queued.emplace_back(jobID, image);
 }
 
-void CGUILargeTextureManager::OnJobComplete(unsigned int jobID, bool success, CJob *job)
+void CGUILargeTextureManager::OnLoadComplete(CImageLoader* image)
 {
   // see if we still have this job id
   std::unique_lock<CCriticalSection> lock(m_listSection);
   for (queueIterator it = m_queued.begin(); it != m_queued.end(); ++it)
   {
-    if (it->first == jobID)
+    if (it->first == image->m_imageID)
     { // found our job
-      CImageLoader *loader = static_cast<CImageLoader*>(job);
+      CImageLoader* loader = static_cast<CImageLoader*>(image);
       CLargeTexture *image = it->second;
       image->SetTexture(std::move(loader->m_texture));
       loader->m_texture = NULL; // we want to keep the texture, and jobs are auto-deleted.

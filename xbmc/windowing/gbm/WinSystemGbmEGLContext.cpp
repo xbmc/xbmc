@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -151,17 +151,7 @@ void CWinSystemGbmEGLContext::delete_CVaapiProxy::operator()(CVaapiProxy *p) con
   VaapiProxyDelete(p);
 }
 
-bool CWinSystemGbmEGLContext::BindTextureUploadContext()
+bool CWinSystemGbmEGLContext::BindSecondaryGPUContext(const unsigned int& id)
 {
-  return m_eglContext.BindTextureUploadContext();
-}
-
-bool CWinSystemGbmEGLContext::UnbindTextureUploadContext()
-{
-  return m_eglContext.UnbindTextureUploadContext();
-}
-
-bool CWinSystemGbmEGLContext::HasContext()
-{
-  return m_eglContext.HasContext();
+  return m_eglContext.BindSecondaryGPUContext(id);
 }

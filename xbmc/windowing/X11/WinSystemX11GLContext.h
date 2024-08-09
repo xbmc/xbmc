@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -58,9 +58,7 @@ public:
   EGLContext GetEGLContext() const;
   EGLConfig GetEGLConfig() const;
 
-  bool BindTextureUploadContext() override;
-  bool UnbindTextureUploadContext() override;
-  bool HasContext() override;
+  bool BindSecondaryGPUContext(const unsigned int& id) override;
 
 protected:
   bool SetWindow(int width, int height, bool fullscreen, const std::string &output, int *winstate = NULL) override;
