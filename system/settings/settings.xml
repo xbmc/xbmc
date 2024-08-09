@@ -2620,7 +2620,7 @@
           <control type="toggle" />
         </setting>
         <setting id="gamesgeneral.rewindtime" type="integer" label="35205" help="35206">
-          <level>2</level>
+          <level>0</level>
           <default>60</default>
           <constraints>
             <minimum>10</minimum>
