@@ -13,6 +13,7 @@
 #include "GUIInfoManager.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
+#include "SetInfoTag.h"
 #include "TextureCache.h"
 #include "URL.h"
 #include "Util.h"
@@ -37,6 +38,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "tags/SetInfoTagLoaderFactory.h"
 #include "tags/VideoInfoTagLoaderFactory.h"
 #include "utils/Digest.h"
 #include "utils/FileExtensionProvider.h"
@@ -417,6 +419,10 @@ namespace KODI::VIDEO
       if (m_bStop)
         break;
 
+      // See if set needs updating
+      if (content == CONTENT_MOVIES)
+        UpdateSet(pItem);
+
       // add video extras to library
       if (foundSomething && !m_ignoreVideoExtras && IsVideoExtrasFolder(*pItem))
       {
@@ -442,6 +448,112 @@ namespace KODI::VIDEO
       }
     }
     return !m_bStop;
+  }
+
+  void CVideoInfoScanner::UpdateSet(const std::shared_ptr<CFileItem>& item)
+  {
+    // see if movie set.nfo preset and/or artwork empty and could be updated locally from
+    // the movie set information folder
+    if (!URIUtils::GetFileName(item->GetPath()).empty() && !URIUtils::IsPlugin(item->GetDynPath()))
+    {
+      CVideoInfoTag movieDetails;
+      if (m_database.GetMovieInfo(item->GetPath(), movieDetails))
+      {
+        if (!movieDetails.m_set.title.empty())
+        {
+          const int dbId{movieDetails.m_set.id};
+          movieDetails.m_set.title = m_database.GetOriginalSetById(dbId); // Original title
+          if (UpdateSetInTag(movieDetails)) // Returned in tag
+          {
+            m_database.AddSet(movieDetails.m_set.title, movieDetails.m_set.overview,
+                              movieDetails.m_set.originalTitle,
+                              movieDetails.GetUpdateSetOverview()); // Update set
+            CGUIListItem::ArtMap movieSetArt;
+            auto urls = movieDetails.m_strPictureURL.GetUrls();
+            for (auto& url : urls)
+              if (StringUtils::StartsWith(url.m_aspect, "set."))
+                movieSetArt.insert({url.m_aspect.substr(4), url.m_url});
+            m_database.SetArtForItem(dbId, MediaTypeVideoCollection, movieSetArt);
+          }
+        }
+      }
+    }
+  }
+
+  bool CVideoInfoScanner::UpdateSetInTag(CVideoInfoTag& tag)
+  {
+    // Uses the set information in m_set from a tag of a movie
+    // If there is a set, see if the details need to be updated from the
+    // Movie Set Information Folder
+    bool setUpdated{false};
+    if (!tag.m_set.title.empty())
+    {
+      const std::string movieSetInfoPath = GetMovieSetInfoFolder(tag.m_set.title);
+      if (!movieSetInfoPath.empty())
+      {
+        // look for Set.NFO
+        if (const std::unique_ptr setLoader{
+                CSetInfoTagLoaderFactory::CreateLoader(tag.m_set.title)};
+            setLoader)
+        {
+          CSetInfoTag setTag;
+          INFO_TYPE result{setLoader->Load(setTag, false)};
+          if (result && !setTag.IsEmpty())
+          {
+            tag.m_set.originalTitle = tag.m_set.title;
+            if (!setTag.GetTitle().empty())
+              tag.m_set.title = setTag.GetTitle();
+            if (!setTag.GetOverview().empty())
+            {
+              tag.m_set.overview = setTag.GetOverview();
+              tag.SetUpdateSetOverview(true);
+            }
+            setUpdated = true;
+          }
+        }
+
+        // Now look for art
+        CGUIListItem::ArtMap movieSetArt;
+        const std::vector<std::string> movieSetArtTypes =
+            CVideoThumbLoader::GetArtTypes(MediaTypeVideoCollection);
+        AddLocalItemArtwork(movieSetArt, movieSetArtTypes, movieSetInfoPath, true, false);
+        if (!movieSetArt.empty())
+        {
+          tag.m_strPictureURL.Parse();
+          auto urls = tag.m_strPictureURL.GetUrls();
+
+          // Clear existing art (if any) from cache and VideoInfoTag
+          CTextureDatabase textureDb;
+          if (textureDb.Open())
+          {
+            for (const auto& url : urls)
+              if (StringUtils::StartsWith(url.m_aspect, "set."))
+                textureDb.InvalidateCachedTexture(url.m_url);
+            textureDb.Close();
+          }
+
+          // Remove existing set art from VideoInfoTag
+          urls.erase(std::remove_if(urls.begin(), urls.end(),
+                                    [](const auto& url)
+                                    { return StringUtils::StartsWith(url.m_aspect, "set."); }),
+                     urls.end());
+
+          // Add found art
+          for (auto& art : movieSetArt)
+          {
+            CScraperUrl::SUrlEntry surl;
+            surl.m_url = art.second;
+            surl.m_aspect = StringUtils::Format("set.{}", art.first);
+            urls.emplace_back(surl);
+          }
+
+          // Add art back
+          tag.m_strPictureURL.SetUrls(urls);
+          setUpdated = true;
+        }
+      }
+    }
+    return setUpdated;
   }
 
   bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, CONTENT_TYPE content, bool useLocal, CScraperUrl* pURL, bool fetchEpisodes, CGUIDialogProgress* pDlgProgress)
@@ -755,6 +867,7 @@ namespace KODI::VIDEO
     }
     if (result == CInfoScanner::FULL_NFO)
     {
+      UpdateSetInTag(*pItem->GetVideoInfoTag());
       const int dbId = AddVideo(pItem, info2->Content(), bDirNames, true);
       if (dbId < 0)
         return INFO_ERROR;
@@ -790,6 +903,7 @@ namespace KODI::VIDEO
                          : nullptr,
                      pDlgProgress))
       {
+        UpdateSetInTag(*pItem->GetVideoInfoTag());
         const int dbId = AddVideo(pItem, info2->Content(), bDirNames, useLocal);
         if (dbId < 0)
           return INFO_ERROR;
@@ -813,6 +927,7 @@ namespace KODI::VIDEO
                        : nullptr,
                    pDlgProgress))
     {
+      UpdateSetInTag(*pItem->GetVideoInfoTag());
       const int dbId = AddVideo(pItem, info2->Content(), bDirNames, useLocal);
       if (dbId < 0)
         return INFO_ERROR;
