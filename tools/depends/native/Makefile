@@ -94,6 +94,7 @@ tar: xz automake
 TexturePacker: cmake libpng liblzo2 giflib libjpeg-turbo
 wayland-scanner: expat ninja pkg-config
 waylandpp-scanner: cmake pugixml
+zlib: cmake
 
 # python installs are not thread safe when using easy_install method.
 # MarkupSafe doesn't really depend on ninja but we need to make the
