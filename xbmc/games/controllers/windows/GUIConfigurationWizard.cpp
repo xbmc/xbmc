@@ -293,8 +293,8 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
         }
         else
         {
-          CLog::Log(LOGDEBUG, "{}: mapping feature \"{}\" for device {}", m_strControllerId,
-                    feature.Name(), buttonMap->Location());
+          CLog::Log(LOGDEBUG, "{}: mapping feature \"{}\" for device {} to \"{}\"",
+                    m_strControllerId, feature.Name(), buttonMap->Location(), primitive.ToString());
 
           switch (feature.Type())
           {

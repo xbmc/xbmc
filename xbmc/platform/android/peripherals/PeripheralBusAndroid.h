@@ -35,6 +35,8 @@ public:
 
   // specialisation of CPeripheralBus
   bool InitializeProperties(CPeripheral& peripheral) override;
+  bool InitializeButtonMap(const CPeripheral& peripheral,
+                           KODI::JOYSTICK::IButtonMap& buttonMap) const override;
   void Initialise(void) override;
   void ProcessEvents() override;
 
@@ -64,7 +66,7 @@ private:
 
   mutable std::map<int, CAndroidJoystickState> m_joystickStates;
   PeripheralScanResults m_scanResults;
-  CCriticalSection m_critSectionStates;
+  mutable CCriticalSection m_critSectionStates;
   CCriticalSection m_critSectionResults;
 };
 using PeripheralBusAndroidPtr = std::shared_ptr<CPeripheralBusAndroid>;

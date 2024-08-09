@@ -12,6 +12,7 @@
 #include "games/GameServices.h"
 #include "games/GameSettings.h"
 #include "games/controllers/ControllerIDs.h"
+#include "games/controllers/DefaultController.h"
 #include "guilib/GUIAudioManager.h"
 #include "guilib/WindowIDs.h"
 
@@ -22,16 +23,16 @@ const std::map<std::string, std::vector<FeatureName>> CJoystickEasterEgg::m_sequ
     {
         DEFAULT_CONTROLLER_ID,
         {
-            "up",
-            "up",
-            "down",
-            "down",
-            "left",
-            "right",
-            "left",
-            "right",
-            "b",
-            "a",
+            GAME::CDefaultController::FEATURE_UP,
+            GAME::CDefaultController::FEATURE_UP,
+            GAME::CDefaultController::FEATURE_DOWN,
+            GAME::CDefaultController::FEATURE_DOWN,
+            GAME::CDefaultController::FEATURE_LEFT,
+            GAME::CDefaultController::FEATURE_RIGHT,
+            GAME::CDefaultController::FEATURE_LEFT,
+            GAME::CDefaultController::FEATURE_RIGHT,
+            GAME::CDefaultController::FEATURE_B,
+            GAME::CDefaultController::FEATURE_A,
         },
     },
     {
