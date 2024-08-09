@@ -19,6 +19,7 @@
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
+#include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "pvr/guilib/PVRGUIActionsEPG.h"
 #include "pvr/guilib/PVRGUIActionsPlayback.h"
 #include "pvr/guilib/PVRGUIActionsRecordings.h"
@@ -83,6 +84,7 @@ DECL_STATICCONTEXTMENUITEM(RenameSearch);
 DECL_STATICCONTEXTMENUITEM(ChooseIconForSearch);
 DECL_STATICCONTEXTMENUITEM(DuplicateSearch);
 DECL_STATICCONTEXTMENUITEM(DeleteSearch);
+DECL_STATICCONTEXTMENUITEM(HideChannel);
 
 class PVRClientMenuHook : public IContextMenuItem
 {
@@ -767,6 +769,19 @@ bool DeleteSearch::Execute(const std::shared_ptr<CFileItem>& item) const
   return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().DeleteSavedSearch(*item);
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// Hide channel
+
+bool HideChannel::IsVisible(const CFileItem& item) const
+{
+  return item.IsPVRChannel() && item.GetProperty("hideable").asBoolean(false);
+}
+
+bool HideChannel::Execute(const std::shared_ptr<CFileItem>& item) const
+{
+  return CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().HideChannel(*item);
+}
+
 } // namespace CONTEXTMENUITEM
 
 CPVRContextMenuManager& CPVRContextMenuManager::GetInstance()
@@ -802,6 +817,7 @@ CPVRContextMenuManager::CPVRContextMenuManager()
         std::make_shared<CONTEXTMENUITEM::ChooseIconForSearch>(19284), /* Choose icon */
         std::make_shared<CONTEXTMENUITEM::DuplicateSearch>(19355), /* Duplicate */
         std::make_shared<CONTEXTMENUITEM::DeleteSearch>(117), /* Delete */
+        std::make_shared<CONTEXTMENUITEM::HideChannel>(19054), /* Hide channel */
     })
 {
 }

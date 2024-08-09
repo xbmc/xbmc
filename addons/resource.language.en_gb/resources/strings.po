@@ -10052,7 +10052,8 @@ msgctxt "#19053"
 msgid "Recording information"
 msgstr ""
 
-#. header label for hide channel confirmation message box
+#. Header label for hide channel confirmation message box and context menu item label
+#: xbmc/pvr/PVRContextMenus.cpp
 #: xbmc/pvr/guilib/PVRGUIActionsChannels.cpp
 msgctxt "#19054"
 msgid "Hide channel"
