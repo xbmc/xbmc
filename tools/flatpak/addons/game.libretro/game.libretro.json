@@ -1,0 +1,92 @@
+{
+    "name": "game.libretro",
+    "buildsystem": "cmake-ninja",
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ],
+    "cleanup": [
+        "/include",
+        "*.a",
+        "*.la"
+    ],
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/kodi-game/game.libretro",
+            "commit": "18c025eaa54192ea47977431d0456c904558fbe0"
+        }
+    ],
+    "modules": [
+        {
+            "name": "tinyxml",
+            "cleanup": [
+                "/include",
+                "/share/doc",
+                "*.a",
+                "*.la",
+                "/lib/*.so"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "http://mirrors.kodi.tv/build-deps/sources/tinyxml-2.6.2_2.tar.gz",
+                    "sha256": "8164c9ad48b9028667768a584d62f7760cfbfb90d0dd6214ad174403058da10c"
+                },
+                {
+                    "type": "script",
+                    "dest-filename": "autogen.sh",
+                    "commands": [
+                        "autoreconf -vfi"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "libretro-common",
+            "buildsystem": "cmake-ninja",
+            "build-options": {
+                "no-debuginfo": true,
+                "cflags": "-g0 -fPIC",
+                "cxxflags": "-g0 -fPIC"
+            },
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://github.com/libretro/libretro-common/archive/50c15a88eb741cbe675743a282d8cc4c89421e3f.tar.gz",
+                    "sha256": "042986fad22dc37188df7a186d17a258edfe8e552353f9b509a47418e8dfa623"
+                },
+                {
+                    "type": "file",
+                    "url": "https://raw.githubusercontent.com/kodi-game/game.libretro/Omega/depends/common/libretro-common/CMakeLists.txt",
+                    "sha256": "fe0698a56bf869f8c6af2cbd0cc3dc9c05c370141009fa4777373538c1a41af1"
+                }
+            ]
+        },
+        {
+            "name": "rcheevos",
+            "buildsystem": "cmake-ninja",
+            "build-options": {
+                "no-debuginfo": true,
+                "cflags": "-g0 -fPIC",
+                "cxxflags": "-g0 -fPIC"
+            },
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://github.com/RetroAchievements/rcheevos/archive/v9.2.0.tar.gz",
+                    "sha256": "c8ed6ca74f905ea0c256250e46cced579922880001337e7c3d3d68179ad89d4e"
+                },
+                {
+                    "type": "file",
+                    "url": "https://raw.githubusercontent.com/kodi-game/game.libretro/Omega/depends/common/rcheevos/CMakeLists.txt",
+                    "sha256": "33662a2bfff8a17d7707c5b8a0239bb00d559302975e7b9b7e0eac1f2e6c10c5"
+                }
+            ]
+        }
+    ]
+}
