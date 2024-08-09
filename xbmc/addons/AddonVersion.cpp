@@ -175,7 +175,7 @@ bool CAddonVersion::SplitFileName(std::string& ID,
     return false;
   ID = filename.substr(0, dpos);
   version = filename.substr(dpos + 1);
-  version = version.substr(0, version.size() - 4);
+  version.resize(version.size() - 4);
 
   return true;
 }

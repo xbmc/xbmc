@@ -772,7 +772,7 @@ bool CAddonInfoBuilder::GetTextList(const tinyxml2::XMLElement* element,
 
 const char* CAddonInfoBuilder::GetPlatformLibraryName(const tinyxml2::XMLElement* element)
 {
-  const char* libraryName;
+  const char* libraryName = nullptr;
 #if defined(TARGET_ANDROID)
   libraryName = element->Attribute("library_android");
 #elif defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
