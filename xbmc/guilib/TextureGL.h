@@ -9,8 +9,11 @@
 #pragma once
 
 #include "Texture.h"
+#include "guilib/TextureGLFormatMap.h"
 
 #include "system_gl.h"
+
+using namespace KODI::GUILIB::GL;
 
 /************************************************************************/
 /*    CGLTexture                                                       */
@@ -28,7 +31,11 @@ public:
   void BindToUnit(unsigned int unit) override;
 
 protected:
-  GLuint m_texture = 0;
-  bool m_isOglVersion3orNewer = false;
+  void SetSwizzle();
+  TextureFormatGL GetFormatGL(KD_TEX_FMT textureFormat);
+
+  GLuint m_texture{0};
+  bool m_isOglVersion3orNewer{false};
+  bool m_isOglVersion33orNewer{false};
 };
 

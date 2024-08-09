@@ -9,8 +9,11 @@
 #pragma once
 
 #include "Texture.h"
+#include "guilib/TextureGLESFormatMap.h"
 
 #include "system_gl.h"
+
+using namespace KODI::GUILIB::GLES;
 
 class CGLESTexture : public CTexture
 {
@@ -24,6 +27,11 @@ public:
   void BindToUnit(unsigned int unit) override;
 
 protected:
+  void SetSwizzle(bool swapRB);
+  void SwapBlueRedSwizzle(GLint& component);
+  TextureFormatGLES GetFormatGLES20(KD_TEX_FMT textureFormat);
+  TextureFormatGLES GetFormatGLES30(KD_TEX_FMT textureFormat);
+
   GLuint m_texture = 0;
   bool m_isGLESVersion30orNewer{false};
 };
