@@ -86,7 +86,7 @@ bool CPlayListPLS::Load(const std::string &strFile)
   // if we find another http stream, then load it.
   while (true)
   {
-    if ( !file.ReadString(szLine, sizeof(szLine) ) )
+    if (!file.ReadString(szLine, sizeof(szLine) - 1))
     {
       file.Close();
       return size() > 0;
@@ -102,7 +102,7 @@ bool CPlayListPLS::Load(const std::string &strFile)
   }
 
   bool bFailed = false;
-  while (file.ReadString(szLine, sizeof(szLine) ) )
+  while (file.ReadString(szLine, sizeof(szLine) - 1))
   {
     strLine = szLine;
     StringUtils::RemoveCRLF(strLine);
