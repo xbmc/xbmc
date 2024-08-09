@@ -39,7 +39,7 @@ public:
   */
   void LoadColors(const std::string& filePath);
   /*! \brief Get the hex value of the selected color */
-  std::string GetSelectedColor() const;
+  const std::string& GetSelectedColor() const;
   /*! \brief Set the selected color by hex value */
   void SetSelectedColor(const std::string& hexColor);
   /*! \brief Set the focus to the control button */
