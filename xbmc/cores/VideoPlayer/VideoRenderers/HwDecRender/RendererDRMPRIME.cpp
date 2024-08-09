@@ -77,8 +77,10 @@ CBaseRenderer* CRendererDRMPRIME::Create(CVideoBuffer* buffer)
     if (!plane)
       return nullptr;
 
-    if (!plane->SupportsFormatAndModifier(format, modifier))
+    if (!drm->FindPlanes(format, modifier))
       return nullptr;
+
+    drm->SortPlanes();
 
     return new CRendererDRMPRIME();
   }

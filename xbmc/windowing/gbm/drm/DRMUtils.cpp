@@ -181,20 +181,23 @@ bool CDRMUtils::FindPreferredMode()
   return true;
 }
 
-bool CDRMUtils::FindPlanes()
+bool CDRMUtils::FindPlanes(uint32_t format, uint64_t modifier)
 {
   for (size_t i = 0; i < m_crtcs.size(); i++)
   {
     if (!(m_encoder->GetPossibleCrtcs() & (1 << i)))
       continue;
 
-    auto videoPlane = std::find_if(m_planes.begin(), m_planes.end(), [&i](auto& plane) {
-      if (plane->GetPossibleCrtcs() & (1 << i))
-      {
-        return plane->SupportsFormat(DRM_FORMAT_NV12);
-      }
-      return false;
-    });
+    auto videoPlane =
+        std::find_if(m_planes.begin(), m_planes.end(),
+                     [&i, &format, &modifier](auto& plane)
+                     {
+                       if (plane->GetPossibleCrtcs() & (1 << i))
+                       {
+                         return plane->SupportsFormatAndModifier(format, modifier);
+                       }
+                       return false;
+                     });
 
     uint32_t videoPlaneId{0};
 
@@ -467,7 +470,7 @@ bool CDRMUtils::InitDrm()
   if (!FindCrtc())
     return false;
 
-  if (!FindPlanes())
+  if (!FindPlanes(DRM_FORMAT_NV12, DRM_FORMAT_MOD_LINEAR))
     return false;
 
   if (!FindPreferredMode())

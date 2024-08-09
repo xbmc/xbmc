@@ -61,6 +61,49 @@ bool CDRMAtomic::SetScalingFilter(CDRMObject* object, const char* name, const ch
   return true;
 }
 
+void CDRMAtomic::SortPlanes()
+{
+  bool supports_zpos = m_gui_plane->SupportsProperty("zpos");
+  bool zpos_immutable = supports_zpos && m_gui_plane->IsPropertyImmutable("zpos").value();
+
+  auto crtc_offset = std::distance(
+      m_crtcs.begin(),
+      std::find_if(m_crtcs.begin(), m_crtcs.end(),
+                   [this](auto& crtc) { return crtc->GetCrtcId() == m_crtc->GetCrtcId(); }));
+
+  // Disable unused planes after planes are re-selected in the active crtc
+  for (auto& plane : m_planes)
+  {
+    if (!(plane.get()->GetPossibleCrtcs() & (1 << crtc_offset)))
+      continue;
+
+    if ((m_video_plane == nullptr || m_video_plane->GetId() != plane.get()->GetId()) &&
+        (m_gui_plane == nullptr || m_gui_plane->GetId() != plane.get()->GetId()))
+    {
+      CLog::Log(LOGDEBUG, "CDRMUtils::{} - disabled plane {}", __FUNCTION__,
+                plane.get()->GetPlaneId());
+      AddProperty(plane.get(), "FB_ID", 0);
+      AddProperty(plane.get(), "CRTC_ID", 0);
+    }
+  }
+
+  if (!supports_zpos || zpos_immutable)
+    return;
+
+  // re-sort the video and gui planes
+  std::optional<uint64_t*> limits = m_gui_plane->GetRangePropertyLimits("zpos");
+
+  if (!limits)
+    return;
+
+  m_gui_plane->SetProperty("zpos", limits.value()[1]);
+  m_video_plane->SetProperty("zpos", limits.value()[0]);
+  CLog::Log(LOGDEBUG, "CDRMUtils::{} - gui plane id,zpos: {}, {}", __FUNCTION__,
+            m_gui_plane->GetId(), limits.value()[0] + 1);
+  CLog::Log(LOGDEBUG, "CDRMUtils::{} - video plane id,zpos: {}, {}", __FUNCTION__,
+            m_video_plane->GetId(), limits.value()[0]);
+}
+
 void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool videoLayer)
 {
   uint32_t blob_id;

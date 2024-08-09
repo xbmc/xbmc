@@ -105,6 +105,25 @@ std::optional<uint64_t> CDRMObject::GetPropertyValue(std::string_view name,
   return {};
 }
 
+std::optional<uint64_t*> CDRMObject::GetRangePropertyLimits(std::string_view name)
+{
+  auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(),
+                               [&name](const auto& prop) { return prop->name == name; });
+
+  if (property == m_propsInfo.end())
+    return {};
+
+  auto prop = property->get();
+
+  if (!static_cast<bool>(drm_property_type_is(prop, DRM_MODE_PROP_RANGE)))
+    return {};
+
+  if (prop->count_values != 2)
+    return {};
+
+  return prop->values;
+}
+
 bool CDRMObject::SetProperty(const std::string& name, uint64_t value)
 {
   auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(),
@@ -129,4 +148,15 @@ bool CDRMObject::SupportsProperty(const std::string& name)
     return true;
 
   return false;
+}
+
+std::optional<bool> CDRMObject::IsPropertyImmutable(const std::string& name)
+{
+  auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(),
+                               [&name](const auto& prop) { return prop->name == name; });
+
+  if (property == m_propsInfo.end())
+    return {};
+
+  return static_cast<bool>(drm_property_type_is(property->get(), DRM_MODE_PROP_IMMUTABLE));
 }

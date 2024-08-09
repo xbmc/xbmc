@@ -75,6 +75,8 @@ public:
 
   unsigned int iWidth;
   unsigned int iHeight;
+  unsigned int iXOffset;
+  unsigned int iYOffset;
   unsigned int iDisplayWidth;           //< width of the picture without black bars
   unsigned int iDisplayHeight;          //< height of the picture without black bars
 
