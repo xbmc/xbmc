@@ -382,43 +382,42 @@ void CVideoDatabase::CreateAnalytics()
 void CVideoDatabase::CreateViews()
 {
   CLog::Log(LOGINFO, "create episode_view");
-  std::string episodeview = PrepareSQL("CREATE VIEW episode_view AS SELECT "
-                                      "  episode.*,"
-                                      "  files.strFileName AS strFileName,"
-                                      "  path.strPath AS strPath,"
-                                      "  files.playCount AS playCount,"
-                                      "  files.lastPlayed AS lastPlayed,"
-                                      "  files.dateAdded AS dateAdded,"
-                                      "  tvshow.c%02d AS strTitle,"
-                                      "  tvshow.c%02d AS genre,"
-                                      "  tvshow.c%02d AS studio,"
-                                      "  tvshow.c%02d AS premiered,"
-                                      "  tvshow.c%02d AS mpaa,"
-                                      "  bookmark.timeInSeconds AS resumeTimeInSeconds, "
-                                      "  bookmark.totalTimeInSeconds AS totalTimeInSeconds, "
-                                      "  bookmark.playerState AS playerState, "
-                                      "  rating.rating AS rating, "
-                                      "  rating.votes AS votes, "
-                                      "  rating.rating_type AS rating_type, "
-                                      "  uniqueid.value AS uniqueid_value, "
-                                      "  uniqueid.type AS uniqueid_type "
-                                      "FROM episode"
-                                      "  JOIN files ON"
-                                      "    files.idFile=episode.idFile"
-                                      "  JOIN tvshow ON"
-                                      "    tvshow.idShow=episode.idShow"
-                                      "  JOIN path ON"
-                                      "    files.idPath=path.idPath"
-                                      "  LEFT JOIN bookmark ON"
-                                      "    bookmark.idFile=episode.idFile AND bookmark.type=1"
-                                      "  LEFT JOIN rating ON"
-                                      "    rating.rating_id=episode.c%02d"
-                                      "  LEFT JOIN uniqueid ON"
-                                      "    uniqueid.uniqueid_id=episode.c%02d",
-                                      VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_GENRE,
-                                      VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_PREMIERED,
-                                      VIDEODB_ID_TV_MPAA, VIDEODB_ID_EPISODE_RATING_ID,
-                                      VIDEODB_ID_EPISODE_IDENT_ID);
+  std::string episodeview = PrepareSQL(
+      "CREATE VIEW episode_view AS SELECT "
+      "  episode.*,"
+      "  files.strFileName AS strFileName,"
+      "  path.strPath AS strPath,"
+      "  files.playCount AS playCount,"
+      "  files.lastPlayed AS lastPlayed,"
+      "  files.dateAdded AS dateAdded,"
+      "  tvshow.c%02d AS strTitle,"
+      "  tvshow.c%02d AS genre,"
+      "  tvshow.c%02d AS studio,"
+      "  tvshow.c%02d AS premiered,"
+      "  tvshow.c%02d AS mpaa,"
+      "  bookmark.timeInSeconds AS resumeTimeInSeconds, "
+      "  bookmark.totalTimeInSeconds AS totalTimeInSeconds, "
+      "  bookmark.playerState AS playerState, "
+      "  rating.rating AS rating, "
+      "  rating.votes AS votes, "
+      "  rating.rating_type AS rating_type, "
+      "  uniqueid.value AS uniqueid_value, "
+      "  uniqueid.type AS uniqueid_type "
+      "FROM episode"
+      "  JOIN files ON"
+      "    files.idFile=episode.idFile"
+      "  JOIN tvshow ON"
+      "    tvshow.idShow=episode.idShow"
+      "  JOIN path ON"
+      "    files.idPath=path.idPath"
+      "  LEFT JOIN bookmark ON"
+      "    bookmark.idFile=episode.idFile AND bookmark.type=1"
+      "  LEFT JOIN rating ON"
+      "    rating.rating_id=episode.c%02d"
+      "  LEFT JOIN uniqueid ON"
+      "    uniqueid.uniqueid_id=episode.c%02d",
+      VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_GENRE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_PREMIERED,
+      VIDEODB_ID_TV_MPAA, VIDEODB_ID_EPISODE_RATING_ID, VIDEODB_ID_EPISODE_IDENT_ID);
   m_pDS->exec(episodeview);
 
   CLog::Log(LOGINFO, "create tvshowcounts");
