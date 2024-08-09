@@ -181,8 +181,6 @@ bool CPlayListM3U::Load(const std::string& strFileName)
           newItem->m_lStartPartNumber = 1;
           newItem->SetProperty("item_start", iStartOffset);
           newItem->SetEndOffset(iEndOffset);
-          // Prevent load message from file and override offset set here
-          newItem->GetMusicInfoTag()->SetLoaded();
           newItem->GetMusicInfoTag()->SetTitle(strInfo);
           if (iEndOffset)
             lDuration = static_cast<int>(CUtil::ConvertMilliSecsToSecsIntRounded(iEndOffset - iStartOffset));
