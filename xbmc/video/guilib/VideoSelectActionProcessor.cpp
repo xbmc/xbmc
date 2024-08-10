@@ -10,7 +10,6 @@
 
 #include "FileItem.h"
 #include "ServiceBroker.h"
-#include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
@@ -20,7 +19,6 @@
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#include "video/VideoInfoTag.h"
 #include "video/VideoUtils.h"
 
 using namespace VIDEO::GUILIB;
@@ -44,16 +42,7 @@ bool CVideoSelectActionProcessorBase::Process(Action action)
   switch (action)
   {
     case ACTION_CHOOSE:
-    {
-      const Action selectedAction = ChooseVideoItemSelectAction();
-      if (selectedAction < 0)
-      {
-        m_userCancelled = true;
-        return true; // User cancelled the select menu. We're done.
-      }
-
-      return Process(selectedAction);
-    }
+      return OnChooseSelected();
 
     case ACTION_PLAYPART:
     {
@@ -78,9 +67,6 @@ bool CVideoSelectActionProcessorBase::Process(Action action)
 
       return OnInfoSelected();
     }
-
-    case ACTION_MORE:
-      return OnMoreSelected();
 
     default:
       break;
@@ -109,26 +95,4 @@ unsigned int CVideoSelectActionProcessorBase::ChooseStackItemPartNumber() const
     return 0; // User cancelled the dialog.
 
   return dialog->GetSelectedItem() + 1; // part numbers are 1-based
-}
-
-Action CVideoSelectActionProcessorBase::ChooseVideoItemSelectAction() const
-{
-  CContextButtons choices;
-
-  const std::string resumeString = VIDEO_UTILS::GetResumeString(*m_item);
-  if (!resumeString.empty())
-  {
-    choices.Add(ACTION_RESUME, resumeString);
-    choices.Add(ACTION_PLAY_FROM_BEGINNING, 12021); // Play from beginning
-  }
-  else
-  {
-    choices.Add(ACTION_PLAY_FROM_BEGINNING, 208); // Play
-  }
-
-  choices.Add(ACTION_INFO, 22081); // Show information
-  choices.Add(ACTION_QUEUE, 13347); // Queue item
-  choices.Add(ACTION_MORE, 22082); // More
-
-  return static_cast<Action>(CGUIDialogContextMenu::ShowAndGetChoice(choices));
 }
