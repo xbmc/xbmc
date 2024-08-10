@@ -1081,14 +1081,14 @@
       <group id="1" label="593">
         <setting id="myvideos.selectaction" type="integer" label="22079" help="36177">
           <level>0</level>
-          <default>1</default> <!-- SELECT_ACTION_PLAY_OR_RESUME -->
+          <default>1</default> <!-- ACTION_PLAY_OR_RESUME -->
           <constraints>
             <options>
-              <option label="22080">0</option> <!-- SELECT_ACTION_CHOOSE -->
-              <option label="208">1</option> <!-- SELECT_ACTION_PLAY_OR_RESUME -->
-              <option label="13404">2</option> <!-- SELECT_ACTION_RESUME -->
-              <option label="22081">3</option> <!-- SELECT_ACTION_INFO -->
-              <option label="13347">7</option> <!-- SELECT_ACTION_QUEUE -->
+              <option label="22080">0</option> <!-- ACTION_CHOOSE -->
+              <option label="208">1</option> <!-- ACTION_PLAY_OR_RESUME -->
+              <option label="13404">2</option> <!-- ACTION_RESUME -->
+              <option label="22081">3</option> <!-- ACTION_INFO -->
+              <option label="13347">7</option> <!-- ACTION_QUEUE -->
             </options>
           </constraints>
           <control type="list" format="string" />
@@ -1100,11 +1100,11 @@
         </setting>
         <setting id="myvideos.playaction" type="integer" label="22076" help="36204">
           <level>0</level>
-          <default>1</default> <!-- PLAY_ACTION_PLAY_OR_RESUME -->
+          <default>1</default> <!-- ACTION_PLAY_OR_RESUME -->
           <constraints>
             <options>
-              <option label="22077">1</option> <!-- PLAY_ACTION_PLAY_OR_RESUME -->
-              <option label="22078">2</option> <!-- PLAY_ACTION_RESUME -->
+              <option label="22077">1</option> <!-- ACTION_PLAY_OR_RESUME -->
+              <option label="22078">2</option> <!-- ACTION_RESUME -->
             </options>
           </constraints>
           <control type="list" format="string" />

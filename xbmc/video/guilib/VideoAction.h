@@ -18,7 +18,7 @@ enum Action
   ACTION_PLAY_OR_RESUME = 1, // if resume is possible, ask user. play from beginning otherwise
   ACTION_RESUME = 2, // resume if possibly, play from beginning otherwise
   ACTION_INFO = 3,
-  ACTION_MORE = 4,
+  // 4 unused
   ACTION_PLAY_FROM_BEGINNING = 5, // play from beginning, also if resume would be possible
   ACTION_PLAYPART = 6,
   ACTION_QUEUE = 7,

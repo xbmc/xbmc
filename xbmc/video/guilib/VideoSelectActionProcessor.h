@@ -35,11 +35,10 @@ protected:
   virtual bool OnPlayPartSelected(unsigned int part) = 0;
   virtual bool OnQueueSelected() = 0;
   virtual bool OnInfoSelected() = 0;
-  virtual bool OnMoreSelected() = 0;
+  virtual bool OnChooseSelected() = 0;
 
 private:
   CVideoSelectActionProcessorBase() = delete;
-  Action ChooseVideoItemSelectAction() const;
   unsigned int ChooseStackItemPartNumber() const;
 };
 } // namespace KODI::VIDEO::GUILIB

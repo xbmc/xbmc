@@ -516,7 +516,7 @@ protected:
     return true;
   }
 
-  bool OnMoreSelected() override
+  bool OnChooseSelected() override
   {
     m_provider.OnContextMenu(m_item);
     return true;
