@@ -9,8 +9,12 @@
 #include "PVRDatabase.h"
 
 #include "ServiceBroker.h"
+#include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "dbwrappers/dataset.h"
 #include "pvr/addons/PVRClient.h"
+#include "pvr/addons/PVRClientUID.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/channels/PVRChannelGroups.h"
@@ -28,6 +32,7 @@
 #include <memory>
 #include <mutex>
 #include <string>
+#include <tuple>
 #include <utility>
 #include <vector>
 
@@ -156,7 +161,8 @@ void CPVRDatabase::CreateTables()
               "bHasArchive          bool, "
               "iClientProviderUid   integer, "
               "bIsUserSetHidden     bool, "
-              "iLastWatchedGroupId  integer"
+              "iLastWatchedGroupId  integer, "
+              "sDateTimeAdded       varchar(20)"
               ")");
 
   CLog::LogFC(LOGDEBUG, LOGPVR, "Creating table 'channelgroups'");
@@ -189,12 +195,12 @@ void CPVRDatabase::CreateTables()
   );
 
   CLog::LogFC(LOGDEBUG, LOGPVR, "Creating table 'clients'");
-  m_pDS->exec(
-      "CREATE TABLE clients ("
-        "idClient  integer primary key, "
-        "iPriority integer"
-      ")"
-  );
+  m_pDS->exec("CREATE TABLE clients ("
+              "idClient  integer primary key, "
+              "iPriority integer, "
+              "sAddonID TEXT, "
+              "iInstanceID integer"
+              ")");
 
   CLog::LogFC(LOGDEBUG, LOGPVR, "Creating table 'timers'");
   m_pDS->exec(sqlCreateTimersTable);
@@ -368,6 +374,20 @@ void CPVRDatabase::UpdateTables(int iVersion)
     m_pDS->exec("ALTER TABLE channels ADD iLastWatchedGroupId integer");
     m_pDS->exec("UPDATE channels SET iLastWatchedGroupId = -1");
   }
+
+  if (iVersion < 45)
+  {
+    m_pDS->exec("ALTER TABLE channels ADD sDateTimeAdded varchar(20)");
+    m_pDS->exec("UPDATE channels SET sDateTimeAdded = ''");
+  }
+
+  if (iVersion < 46)
+  {
+    m_pDS->exec("ALTER TABLE clients ADD sAddonID TEXT");
+    m_pDS->exec("ALTER TABLE clients ADD iInstanceID integer");
+
+    FixupClientIDs();
+  }
 }
 
 /********** Client methods **********/
@@ -389,10 +409,10 @@ bool CPVRDatabase::Persist(const CPVRClient& client)
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
-  const std::string strQuery = PrepareSQL("REPLACE INTO clients (idClient, iPriority) VALUES (%i, %i);",
-                                          client.GetID(), client.GetPriority());
-
-  return ExecuteQuery(strQuery);
+  const std::string sql{PrepareSQL(
+      "REPLACE INTO clients (idClient, iPriority, sAddonID, iInstanceID) VALUES (%i, %i, '%s', %i)",
+      client.GetID(), client.GetPriority(), client.ID().c_str(), client.InstanceID())};
+  return ExecuteQuery(sql);
 }
 
 bool CPVRDatabase::Delete(const CPVRClient& client)
@@ -426,6 +446,113 @@ int CPVRDatabase::GetPriority(const CPVRClient& client) const
     return 0;
 
   return atoi(strValue.c_str());
+}
+
+void CPVRDatabase::FixupClientIDs()
+{
+  // Get enabled and disabled PVR client addon infos
+  std::vector<ADDON::AddonInfoPtr> addonInfos;
+  CServiceBroker::GetAddonMgr().GetAddonInfos(addonInfos, false, ADDON::AddonType::PVRDLL);
+
+  std::vector<std::tuple<std::string, ADDON::AddonInstanceId, std::string>> clientInfos;
+  for (const auto& addonInfo : addonInfos)
+  {
+    const std::vector<ADDON::AddonInstanceId> instanceIds{addonInfo->GetKnownInstanceIds()};
+    for (const auto instanceId : instanceIds)
+    {
+      clientInfos.emplace_back(addonInfo->ID(), instanceId, addonInfo->Name());
+    }
+  }
+
+  for (const auto& [addonID, instanceID, addonName] : clientInfos)
+  {
+    // Entry with legacy client id present in clients or channels table?
+    const CPVRClientUID uid{addonID, instanceID};
+    int legacyID{uid.GetLegacyUID()};
+    std::string sql{PrepareSQL("idClient = %i", legacyID)};
+    int id{GetSingleValueInt("clients", "idClient", sql)};
+    if (id == legacyID)
+    {
+      // Add addon id and instance id to existing clients table entry.
+      sql = PrepareSQL("UPDATE clients SET sAddonID = '%s', iInstanceID = %i WHERE idClient = %i",
+                       addonID.c_str(), instanceID, legacyID);
+      ExecuteQuery(sql);
+    }
+    else
+    {
+      sql = PrepareSQL("iClientId = %i", legacyID);
+      id = GetSingleValueInt("channels", "iClientId", sql);
+      if (id == legacyID)
+      {
+        // Create a new entry with the legacy client id in clients table.
+        sql = PrepareSQL("REPLACE INTO clients (idClient, iPriority, sAddonID, iInstanceID) VALUES "
+                         "(%i, %i, '%s', %i)",
+                         legacyID, 0, addonID.c_str(), instanceID);
+        ExecuteQuery(sql);
+      }
+      else
+      {
+        // The legacy id was not found in channels table. This happens if the std::hash
+        // implementation changed (for example after a Kodi update), which according to std::hash
+        // documentation can happen: "Hash functions are only required to produce the same result
+        // for the same input within a single execution of a program"
+
+        // We can only fix some of the ids in this case: We can try to find the legacy id via the
+        // addon's name in the providers table. This is not guaranteed to always work (theoretically
+        // addon name might have changed) and cannot work if providers table contains more than one
+        // entry for the same multi-instance addon.
+
+        sql = PrepareSQL("SELECT iClientId FROM providers WHERE iType = 1 AND sName = '%s'",
+                         addonName.c_str());
+
+        if (ResultQuery(sql))
+        {
+          if (m_pDS->num_rows() != 1)
+          {
+            CLog::Log(LOGERROR, "Unable to fixup client id {} for addon '{}', instance {}!",
+                      legacyID, addonID.c_str(), instanceID);
+          }
+          else
+          {
+            // There is exactly one provider with the addon name in question.
+            // Its client id is the legacy id we're looking for!
+            try
+            {
+              legacyID = m_pDS->fv("iClientId").get_asInt();
+              sql = PrepareSQL(
+                  "REPLACE INTO clients (idClient, iPriority, sAddonID, iInstanceID) VALUES "
+                  "(%i, %i, '%s', %i)",
+                  legacyID, 0, addonID.c_str(), instanceID);
+              ExecuteQuery(sql);
+            }
+            catch (...)
+            {
+              CLog::LogF(LOGERROR, "Couldn't obtain providers for addon '{}'.", addonID);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+int CPVRDatabase::GetClientID(const std::string& addonID, unsigned int instanceID)
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+
+  // Client id already present in clients table?
+  std::string sql{PrepareSQL("sAddonID = '%s' AND iInstanceID = %i", addonID.c_str(), instanceID)};
+  const std::string idString{GetSingleValue("clients", "idClient", sql)};
+  if (!idString.empty())
+    return std::atoi(idString.c_str());
+
+  // Create a new entry with a new client id in clients table.
+  sql = PrepareSQL("INSERT INTO clients (iPriority, sAddonID, iInstanceID) VALUES (%i, '%s', %i)",
+                   0, addonID.c_str(), instanceID);
+  if (ExecuteQuery(sql))
+    return static_cast<int>(m_pDS->lastinsertid());
+
+  return -1;
 }
 
 /********** Channel provider methods **********/
@@ -1037,15 +1164,17 @@ bool CPVRDatabase::Persist(CPVRChannel& channel, bool bCommit)
         "INSERT INTO channels ("
         "iUniqueId, bIsRadio, bIsHidden, bIsUserSetIcon, bIsUserSetName, bIsLocked, "
         "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, iLastWatched, iClientId, "
-        "idEpg, bHasArchive, iClientProviderUid, bIsUserSetHidden, iLastWatchedGroupId) "
-        "VALUES (%i, %i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i, %i)",
+        "idEpg, bHasArchive, iClientProviderUid, bIsUserSetHidden, iLastWatchedGroupId, "
+        "sDateTimeAdded) "
+        "VALUES (%i, %i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i, %i, "
+        "'%s')",
         channel.UniqueID(), (channel.IsRadio() ? 1 : 0), (channel.IsHidden() ? 1 : 0),
         (channel.IsUserSetIcon() ? 1 : 0), (channel.IsUserSetName() ? 1 : 0),
         (channel.IsLocked() ? 1 : 0), channel.IconPath().c_str(), channel.ChannelName().c_str(), 0,
         (channel.EPGEnabled() ? 1 : 0), channel.EPGScraper().c_str(),
         static_cast<unsigned int>(channel.LastWatched()), channel.ClientID(), channel.EpgID(),
         channel.HasArchive(), channel.ClientProviderUid(), channel.IsUserSetHidden() ? 1 : 0,
-        channel.LastWatchedGroupId());
+        channel.LastWatchedGroupId(), "");
   }
   else
   {
@@ -1054,8 +1183,10 @@ bool CPVRDatabase::Persist(CPVRChannel& channel, bool bCommit)
         "REPLACE INTO channels ("
         "iUniqueId, bIsRadio, bIsHidden, bIsUserSetIcon, bIsUserSetName, bIsLocked, "
         "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, iLastWatched, iClientId, "
-        "idChannel, idEpg, bHasArchive, iClientProviderUid, bIsUserSetHidden, iLastWatchedGroupId) "
-        "VALUES (%i, %i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %s, %i, %i, %i, %i, %i)",
+        "idChannel, idEpg, bHasArchive, iClientProviderUid, bIsUserSetHidden, iLastWatchedGroupId, "
+        "sDateTimeAdded) "
+        "VALUES (%i, %i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %s, %i, %i, %i, %i, %i, "
+        "'%s')",
         channel.UniqueID(), (channel.IsRadio() ? 1 : 0), (channel.IsHidden() ? 1 : 0),
         (channel.IsUserSetIcon() ? 1 : 0), (channel.IsUserSetName() ? 1 : 0),
         (channel.IsLocked() ? 1 : 0), channel.ClientIconPath().c_str(),
@@ -1063,7 +1194,7 @@ bool CPVRDatabase::Persist(CPVRChannel& channel, bool bCommit)
         channel.EPGScraper().c_str(), static_cast<unsigned int>(channel.LastWatched()),
         channel.ClientID(), strValue.c_str(), channel.EpgID(), channel.HasArchive(),
         channel.ClientProviderUid(), channel.IsUserSetHidden() ? 1 : 0,
-        channel.LastWatchedGroupId());
+        channel.LastWatchedGroupId(), "");
   }
 
   if (QueueInsertQuery(strQuery))
