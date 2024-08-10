@@ -373,6 +373,7 @@ enum VIDEODB_SEASON_IDS // this enum MUST match the offset struct further down!!
   VIDEODB_ID_SEASON_EPISODES_WATCHED = 13,
   VIDEODB_ID_SEASON_PREMIERED = 14,
   VIDEODB_ID_SEASON_EPISODES_INPROGRESS = 15,
+  VIDEODB_ID_SEASON_PLOT = 16,
   VIDEODB_ID_SEASON_MAX
 };
 
@@ -1256,11 +1257,13 @@ public:
   bool GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription &sorting) override;
 
   /*! \brief Will check if the season exists and if that is not the case add it to the database.
-  \param showID The id of the show in question.
-  \param season The season number we want to add.
+  \param[in] showID The id of the show in question.
+  \param[in] season The season number we want to add.
+  \param[in] name Name of the season
+  \param[in] plot Plot of the season
   \return The dbId of the season.
   */
-  int AddSeason(int showID, int season, const std::string& name = "");
+  int AddSeason(int showID, int season, const std::string& name = "", const std::string& plot = "");
   int AddSet(const std::string& strSet,
              const std::string& strOverview = "",
              const std::string& strOriginalSet = "",
