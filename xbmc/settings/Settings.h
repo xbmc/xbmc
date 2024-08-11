@@ -233,6 +233,7 @@ public:
   static constexpr auto SETTING_PVRRECORD_MARGINSTART = "pvrrecord.marginstart";
   static constexpr auto SETTING_PVRRECORD_MARGINEND = "pvrrecord.marginend";
   static constexpr auto SETTING_PVRRECORD_TIMERNOTIFICATIONS = "pvrrecord.timernotifications";
+  static constexpr auto SETTING_PVRRECORD_DELETEAFTERWATCH = "pvrrecord.deleteafterwatch";
   static constexpr auto SETTING_PVRRECORD_GROUPRECORDINGS = "pvrrecord.grouprecordings";
   static constexpr auto SETTING_PVRREMINDERS_AUTOCLOSEDELAY = "pvrreminders.autoclosedelay";
   static constexpr auto SETTING_PVRREMINDERS_AUTORECORD = "pvrreminders.autorecord";

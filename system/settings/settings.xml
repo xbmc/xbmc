@@ -2015,6 +2015,18 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="pvrrecord.deleteafterwatch" type="integer" label="860" help="861">
+          <level>2</level>
+          <default>0</default>
+          <constraints>
+            <options>
+              <option label="862">0</option>   <!-- No delete -->
+              <option label="863">1</option>   <!-- Ask to delete -->
+              <option label="864">2</option>   <!-- Delete -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
         <setting id="pvrrecord.grouprecordings" type="boolean" label="" help="">
           <default>true</default>
           <level>4</level>
