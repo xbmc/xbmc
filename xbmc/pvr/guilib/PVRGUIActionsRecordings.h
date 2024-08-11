@@ -73,6 +73,21 @@ public:
    */
   bool UndeleteRecording(const CFileItem& item) const;
 
+  /*!
+   * @brief Increment the play count of a recording.
+   * @param item containing a recording for which the play count shall be incremented.
+   * @return true, if the recording's play count was incremented successfully, false otherwise.
+   */
+  bool IncrementPlayCount(const CFileItem& item) const;
+
+  /*!
+   * @brief Mark a recording watched or unwatched.
+   * @param item containing a recording to be marked watched or unwatched.
+   * @param watched Whether to mark the recording watched or unwatched.
+   * @return true, if the recording's watched state was changed successfully, false otherwise.
+   */
+  bool MarkWatched(const CFileItem& item, bool watched) const;
+
 private:
   CPVRGUIActionsRecordings(const CPVRGUIActionsRecordings&) = delete;
   CPVRGUIActionsRecordings const& operator=(CPVRGUIActionsRecordings const&) = delete;

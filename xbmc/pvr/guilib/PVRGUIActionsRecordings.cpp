@@ -26,6 +26,7 @@
 #include "pvr/dialogs/GUIDialogPVRRecordingInfo.h"
 #include "pvr/dialogs/GUIDialogPVRRecordingSettings.h"
 #include "pvr/recordings/PVRRecording.h"
+#include "pvr/recordings/PVRRecordings.h"
 #include "settings/Settings.h"
 #include "threads/IRunnable.h"
 #include "utils/Variant.h"
@@ -350,4 +351,21 @@ bool CPVRGUIActionsRecordings::ShowRecordingSettings(
   pDlgInfo->Open();
 
   return pDlgInfo->IsConfirmed();
+}
+
+bool CPVRGUIActionsRecordings::IncrementPlayCount(const CFileItem& item) const
+{
+  if (!item.IsPVRRecording())
+    return false;
+
+  return item.GetPVRRecordingInfoTag()->IncrementPlayCount();
+}
+
+bool CPVRGUIActionsRecordings::MarkWatched(const CFileItem& item, bool watched) const
+{
+  if (!item.IsPVRRecording())
+    return false;
+
+  return CServiceBroker::GetPVRManager().Recordings()->MarkWatched(item.GetPVRRecordingInfoTag(),
+                                                                   watched);
 }
