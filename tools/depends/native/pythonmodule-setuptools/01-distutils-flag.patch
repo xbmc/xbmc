@@ -1,0 +1,15 @@
+--- a/setuptools/_distutils/sysconfig.py
++++ b/setuptools/_distutils/sysconfig.py
+@@ -317,6 +317,12 @@
+             'AR',
+             'ARFLAGS',
+         )
++
++        # get_config_vars returns host vars. clear cflags, ldshared for crosscompile use
++        cflags = ""
++        cppflags = ""
++        ldflags = ""
++        ldshared = cc + " -shared"
+ 
+         if 'CC' in os.environ:
+             newcc = os.environ['CC']

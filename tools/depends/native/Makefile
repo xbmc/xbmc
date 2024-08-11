@@ -89,6 +89,7 @@ openssl: zlib
 pcre2: cmake
 pugixml: cmake
 python3: $(EXPAT) $(LIBFFI) pkg-config zlib openssl autoconf-archive
+pythonmodule-setuptools: python3
 swig: bison cmake pcre2
 tar: xz automake
 TexturePacker: cmake libpng liblzo2 giflib libjpeg-turbo
