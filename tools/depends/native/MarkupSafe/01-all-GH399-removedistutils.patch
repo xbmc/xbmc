@@ -1,0 +1,48 @@
+From 1f6697fcb27824fefd02b5c0890a319cf17fa3de Mon Sep 17 00:00:00 2001
+From: David Lord <davidism@gmail.com>
+Date: Thu, 7 Sep 2023 10:17:17 -0700
+Subject: [PATCH] import from setuptools instead of distutils
+
+---
+ setup.py    | 14 +++++++-------
+ 1 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/setup.py b/setup.py
+index 7208cdd7..d19a4faa 100644
+--- a/setup.py
++++ b/setup.py
+@@ -2,12 +2,12 @@
+ import platform
+ import sys
+ 
+-from distutils.errors import CCompilerError
+-from distutils.errors import DistutilsExecError
+-from distutils.errors import DistutilsPlatformError
+ from setuptools import Extension
+ from setuptools import setup
+ from setuptools.command.build_ext import build_ext
++from setuptools.errors import CCompilerError
++from setuptools.errors import ExecError
++from setuptools.errors import PlatformError
+ 
+ ext_modules = [Extension("markupsafe._speedups", ["src/markupsafe/_speedups.c"])]
+ 
+@@ -21,14 +21,14 @@ class ve_build_ext(build_ext):
+ 
+     def run(self):
+         try:
+-            build_ext.run(self)
+-        except DistutilsPlatformError as e:
++            super().run()
++        except PlatformError as e:
+             raise BuildFailed() from e
+ 
+     def build_extension(self, ext):
+         try:
+-            build_ext.build_extension(self, ext)
+-        except (CCompilerError, DistutilsExecError, DistutilsPlatformError) as e:
++            super().build_extension(ext)
++        except (CCompilerError, ExecError, PlatformError) as e:
+             raise BuildFailed() from e
+         except ValueError as e:
+             # this can happen on Windows 64 bit, see Python issue 7511

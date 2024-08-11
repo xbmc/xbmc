@@ -28,12 +28,3 @@
    # On QNX 6.3.2, defining _XOPEN_SOURCE prevents netdb.h from
    # defining NI_NUMERICHOST.
    QNX/6.3.2)
-@@ -2947,7 +2947,7 @@
-       	  return 1;
-       }
-     }
--    ]])],[ac_osx_32bit=yes],[ac_osx_32bit=no],[ac_osx_32bit=yes])
-+    ]])],[ac_osx_32bit=yes],[ac_osx_32bit=no],[ac_osx_32bit=no])
- 
-     if test "${ac_osx_32bit}" = "yes"; then
-     	case `/usr/bin/arch` in

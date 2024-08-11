@@ -1,0 +1,71 @@
+From a867732a619e1cc02369cf0185b53a484d049369 Mon Sep 17 00:00:00 2001
+From: Neil Schemenauer <nas@arctrix.com>
+Date: Mon, 6 May 2024 10:02:17 -0700
+Subject: [PATCH] Fix merge, move _PyMem_init_obmalloc() calls.
+
+---
+ Python/pylifecycle.c | 30 +++++++++++++++---------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
+
+diff --git a/Python/pylifecycle.c b/Python/pylifecycle.c
+index fb833ba61cbd9b..31a24d4a65aebf 100644
+--- a/Python/pylifecycle.c
++++ b/Python/pylifecycle.c
+@@ -637,13 +637,6 @@ pycore_create_interpreter(_PyRuntimeState *runtime,
+         return status;
+     }
+ 
+-    // initialize the interp->obmalloc state.  This must be done after
+-    // the settings are loaded (so that feature_flags are set) but before
+-    // any calls are made to obmalloc functions.
+-    if (_PyMem_init_obmalloc(interp) < 0) {
+-        return  _PyStatus_NO_MEMORY();
+-    }
+-
+     /* Auto-thread-state API */
+     status = _PyGILState_Init(interp);
+     if (_PyStatus_EXCEPTION(status)) {
+@@ -658,6 +651,13 @@ pycore_create_interpreter(_PyRuntimeState *runtime,
+         return status;
+     }
+ 
++    // initialize the interp->obmalloc state.  This must be done after
++    // the settings are loaded (so that feature_flags are set) but before
++    // any calls are made to obmalloc functions.
++    if (_PyMem_init_obmalloc(interp) < 0) {
++        return  _PyStatus_NO_MEMORY();
++    }
++
+     PyThreadState *tstate = _PyThreadState_New(interp);
+     if (tstate == NULL) {
+         return _PyStatus_ERR("can't make first thread");
+@@ -2059,14 +2059,6 @@ new_interpreter(PyThreadState **tstate_p, const PyInterpreterConfig *config)
+         return _PyStatus_OK();
+     }
+ 
+-    // initialize the interp->obmalloc state.  This must be done after
+-    // the settings are loaded (so that feature_flags are set) but before
+-    // any calls are made to obmalloc functions.
+-    if (_PyMem_init_obmalloc(interp) < 0) {
+-        status = _PyStatus_NO_MEMORY();
+-        goto error;
+-    }
+-
+     PyThreadState *tstate = _PyThreadState_New(interp);
+     if (tstate == NULL) {
+         PyInterpreterState_Delete(interp);
+@@ -2110,6 +2102,14 @@ new_interpreter(PyThreadState **tstate_p, const PyInterpreterConfig *config)
+         goto error;
+     }
+ 
++    // initialize the interp->obmalloc state.  This must be done after
++    // the settings are loaded (so that feature_flags are set) but before
++    // any calls are made to obmalloc functions.
++    if (_PyMem_init_obmalloc(interp) < 0) {
++        status = _PyStatus_NO_MEMORY();
++        goto error;
++    }
++
+     status = init_interp_create_gil(tstate, config->gil);
+     if (_PyStatus_EXCEPTION(status)) {
+         goto error;

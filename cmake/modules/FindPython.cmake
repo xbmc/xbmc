@@ -30,7 +30,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
     if(KODI_DEPENDSBUILD)
       # Force set to tools/depends python version
-      set(PYTHON_VER 3.11)
+      set(PYTHON_VER 3.12)
     endif()
   endif()
 
