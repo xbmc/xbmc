@@ -26,6 +26,7 @@ NATIVE= \
   openssl \
   pcre2 \
   perlmodule-parseyapp \
+  pythonmodule-setuptools \
   pkg-config \
   python3 \
   swig \
@@ -83,7 +84,7 @@ libjpeg-turbo: cmake nasm
 libpng: zlib automake
 libtool: automake
 Mako: MarkupSafe
-meson: python3
+meson: python3 pythonmodule-setuptools
 ninja: meson
 openssl: zlib
 pcre2: cmake
