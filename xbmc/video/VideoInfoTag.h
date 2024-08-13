@@ -336,6 +336,7 @@ public:
   * by a scraper the Overview will be overwritten.
   */
   bool GetUpdateSetOverview() const { return m_updateSetOverview; }
+  void SetUpdateSetOverview(const bool value) { m_updateSetOverview = value; }
 
   /*!
    * @brief Set this videos's resume point.
@@ -367,6 +368,7 @@ public:
     std::string title; //!< Title of the movie set
     int id; //!< ID of movie set in database
     std::string overview; //!< Overview/description of the movie set
+    std::string originalTitle; //<! Original title of the movie set
   };
   SetInfo m_set; //!< Assigned movie set
   std::vector<std::string> m_tags;
