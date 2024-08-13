@@ -43,6 +43,7 @@ void CVideoInfoTag::Reset()
   m_set.title.clear();
   m_set.id = -1;
   m_set.overview.clear();
+  m_set.originalTitle.clear();
   m_tags.clear();
   m_assetInfo.Clear();
   m_hasVideoVersions = false;
@@ -222,7 +223,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
   if (!m_set.title.empty())
   {
     TiXmlElement set("set");
-    XMLUtils::SetString(&set, "name", m_set.title);
+    XMLUtils::SetString(&set, "name", m_set.originalTitle);
     if (!m_set.overview.empty())
       XMLUtils::SetString(&set, "overview", m_set.overview);
     movie->InsertEndChild(set);
@@ -368,6 +369,8 @@ void CVideoInfoTag::Merge(CVideoInfoTag& other)
     m_set.id = other.m_set.id;
   if (!other.m_set.overview.empty())
     m_set.overview = other.m_set.overview;
+  if (!other.m_set.originalTitle.empty())
+    m_set.originalTitle = other.m_set.originalTitle;
   if (!other.m_tags.empty())
     m_tags = other.m_tags;
 
@@ -519,6 +522,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_set.title;
     ar << m_set.id;
     ar << m_set.overview;
+    ar << m_set.originalTitle;
     ar << m_tags;
     m_assetInfo.Archive(ar);
     ar << m_hasVideoVersions;
@@ -625,6 +629,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_set.title;
     ar >> m_set.id;
     ar >> m_set.overview;
+    ar >> m_set.originalTitle;
     ar >> m_tags;
     m_assetInfo.Archive(ar);
     ar >> m_hasVideoVersions;
@@ -748,6 +753,7 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   value["set"] = m_set.title;
   value["setid"] = m_set.id;
   value["setoverview"] = m_set.overview;
+  value["originalSet"] = m_set.originalTitle;
   value["tag"] = m_tags;
   m_assetInfo.Serialize(value);
   value["hasvideoversions"] = m_hasVideoVersions;
