@@ -69,6 +69,13 @@ public:
   bool RenameSavedSearch(const CFileItem& item);
 
   /*!
+   * @brief Choose an icon for a saved search. Opens an art chooser dialog.
+   * @param item The item containing a search filter.
+   * @return True on success, false otherwise.
+   */
+  bool ChooseIconForSavedSearch(const CFileItem& item);
+
+  /*!
    * @brief Delete a saved search. Opens confirmation dialog before deleting.
    * @param item The item containing a search filter.
    * @return True on success, false otherwise.

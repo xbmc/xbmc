@@ -123,6 +123,9 @@ namespace PVR
     const std::string& GetTitle() const { return m_title; }
     void SetTitle(const std::string& title);
 
+    const std::string& GetIconPath() const { return m_iconPath; }
+    void SetIconPath(const std::string& iconPath);
+
     const CDateTime& GetLastExecutedDateTime() const { return m_lastExecutedDateTime; }
     void SetLastExecutedDateTime(const CDateTime& lastExecutedDateTime);
 
@@ -166,6 +169,7 @@ namespace PVR
 
     int m_iDatabaseId = -1;
     std::string m_title;
+    std::string m_iconPath;
     CDateTime m_lastExecutedDateTime;
   };
 }

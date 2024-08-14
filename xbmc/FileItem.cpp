@@ -190,7 +190,11 @@ CFileItem::CFileItem(const std::shared_ptr<PVR::CPVREpgSearchFilter>& filter)
   if (lastExec.IsValid())
     m_dateTime.SetFromUTCDateTime(lastExec);
 
-  SetArt("icon", "DefaultPVRSearch.png");
+  const std::string iconPath = filter->GetIconPath();
+  if (!iconPath.empty())
+    SetArt("icon", iconPath);
+  else
+    SetArt("icon", "DefaultPVRSearch.png");
 
   // Speedup FillInDefaultIcon()
   SetProperty("icon_never_overlay", true);

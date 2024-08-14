@@ -80,6 +80,7 @@ DECL_STATICCONTEXTMENUITEM(AddReminder);
 DECL_STATICCONTEXTMENUITEM(ExecuteSearch);
 DECL_STATICCONTEXTMENUITEM(EditSearch);
 DECL_STATICCONTEXTMENUITEM(RenameSearch);
+DECL_STATICCONTEXTMENUITEM(ChooseIconForSearch);
 DECL_STATICCONTEXTMENUITEM(DeleteSearch);
 
 class PVRClientMenuHook : public IContextMenuItem
@@ -735,6 +736,19 @@ bool RenameSearch::Execute(const std::shared_ptr<CFileItem>& item) const
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// Choose icon for saved search
+
+bool ChooseIconForSearch::IsVisible(const CFileItem& item) const
+{
+  return item.HasEPGSearchFilter();
+}
+
+bool ChooseIconForSearch::Execute(const std::shared_ptr<CFileItem>& item) const
+{
+  return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ChooseIconForSavedSearch(*item);
+}
+
+///////////////////////////////////////////////////////////////////////////////
 // Delete saved search
 
 bool DeleteSearch::IsVisible(const CFileItem& item) const
@@ -779,6 +793,7 @@ CPVRContextMenuManager::CPVRContextMenuManager()
         std::make_shared<CONTEXTMENUITEM::ExecuteSearch>(137), /* Search */
         std::make_shared<CONTEXTMENUITEM::EditSearch>(21450), /* Edit */
         std::make_shared<CONTEXTMENUITEM::RenameSearch>(118), /* Rename */
+        std::make_shared<CONTEXTMENUITEM::ChooseIconForSearch>(19284), /* Choose icon */
         std::make_shared<CONTEXTMENUITEM::DeleteSearch>(117), /* Delete */
     })
 {

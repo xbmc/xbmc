@@ -9,7 +9,9 @@
 #include "PVRGUIActionsEPG.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
+#include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
@@ -27,6 +29,7 @@
 #include "pvr/windows/GUIWindowPVRSearch.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "storage/MediaManager.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
@@ -198,6 +201,51 @@ bool CPVRGUIActionsEPG::RenameSavedSearch(const CFileItem& item)
     return true;
   }
   return false;
+}
+
+bool CPVRGUIActionsEPG::ChooseIconForSavedSearch(const CFileItem& item)
+{
+  const auto searchFilter{item.GetEPGSearchFilter()};
+
+  if (!searchFilter)
+  {
+    CLog::LogF(LOGERROR, "Wrong item type. No EPG search filter present.");
+    return false;
+  }
+
+  // setup our icon list
+  CFileItemList items;
+
+  // Add the current icon, if available.
+  const std::string iconPath{searchFilter->GetIconPath()};
+  auto current{std::make_shared<CFileItem>("icon://Current", false)};
+  current->SetArt("icon", iconPath.empty() ? "DefaultPVRSearch.png" : iconPath);
+  current->SetLabel(g_localizeStrings.Get(19282)); // Current icon
+  items.Add(std::move(current));
+
+  // And add a "No icon" entry as well.
+  auto nothumb{std::make_shared<CFileItem>("icon://None", false)};
+  nothumb->SetArt("icon", "DefaultPVRSearch.png");
+  nothumb->SetLabel(g_localizeStrings.Get(19283)); // No icon
+  items.Add(std::move(nothumb));
+
+  std::string icon;
+  VECSOURCES sources;
+  CServiceBroker::GetMediaManager().GetLocalDrives(sources);
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources,
+                                              g_localizeStrings.Get(19285), // Browse for icon
+                                              icon))
+    return false;
+
+  if (icon == "icon://Current")
+    return true;
+
+  if (icon == "icon://None")
+    icon.clear();
+
+  searchFilter->SetIconPath(icon);
+  CServiceBroker::GetPVRManager().EpgContainer().PersistSavedSearch(*searchFilter);
+  return true;
 }
 
 bool CPVRGUIActionsEPG::DeleteSavedSearch(const CFileItem& item)
