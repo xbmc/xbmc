@@ -113,6 +113,7 @@ extern "C"
     const char* strEpisodeName;
     int iSeriesNumber;
     int iEpisodeNumber;
+    int iEpisodePartNumber;
     int iYear;
     const char* strDirectory;
     const char* strPlotOutline;

@@ -135,6 +135,7 @@ public:
     strEpisodeName = m_episodeName.c_str();
     iSeriesNumber = recording.m_iSeason;
     iEpisodeNumber = recording.m_iEpisode;
+    iEpisodePartNumber = PVR_RECORDING_INVALID_SERIES_EPISODE; //! @todo
     iYear = recording.GetYear();
     strDirectory = m_directory.c_str();
     strPlotOutline = m_plotOutline.c_str();

@@ -45,6 +45,7 @@ public:
   {
     m_cStructure->iSeriesNumber = PVR_RECORDING_INVALID_SERIES_EPISODE;
     m_cStructure->iEpisodeNumber = PVR_RECORDING_INVALID_SERIES_EPISODE;
+    m_cStructure->iEpisodePartNumber = PVR_RECORDING_INVALID_SERIES_EPISODE;
     m_cStructure->iDuration = PVR_RECORDING_VALUE_NOT_AVAILABLE;
     m_cStructure->iPriority = PVR_RECORDING_VALUE_NOT_AVAILABLE;
     m_cStructure->iLifetime = PVR_RECORDING_VALUE_NOT_AVAILABLE;
@@ -70,6 +71,7 @@ public:
   /// | **Episode name** | `std::string` | @ref PVRRecording::SetEpisodeName "SetEpisodeName" | @ref PVRRecording::GetEpisodeName "GetEpisodeName" | *optional*
   /// | **Series number** | `int` | @ref PVRRecording::SetSeriesNumber "SetSeriesNumber" | @ref PVRRecording::GetSeriesNumber "GetSeriesNumber" | *optional*
   /// | **Episode number** | `int` | @ref PVRRecording::SetEpisodeNumber "SetEpisodeNumber" | @ref PVRRecording::GetEpisodeNumber "GetEpisodeNumber" | *optional*
+  /// | **Episode part number** | `int` | @ref PVRRecording::SetEpisodePartNumber "SetEpisodePartNumber" | @ref PVRRecording::GetEpisodePartNumber "GetEpisodePartNumber" | *optional*
   /// | **Year** | `int` | @ref PVRRecording::SetYear "SetYear" | @ref PVRRecording::GetYear "GetYear" | *optional*
   /// | **Directory** | `std::string` | @ref PVRRecording::SetDirectory "SetDirectory" | @ref PVRRecording::GetDirectory "GetDirectory" | *optional*
   /// | **Plot outline** | `std::string` | @ref PVRRecording::SetPlotOutline "SetPlotOutline" | @ref PVRRecording::GetPlotOutline "GetPlotOutline" | *optional*
@@ -157,6 +159,16 @@ public:
 
   /// @brief To get with @ref SetEpisodeNumber changed values.
   int GetEpisodeNumber() const { return m_cStructure->iEpisodeNumber; }
+
+  /// @brief **optional**\n
+  /// Episode part number.
+  void SetEpisodePartNumber(int episodePartNumber)
+  {
+    m_cStructure->iEpisodePartNumber = episodePartNumber;
+  }
+
+  /// @brief To get with @ref SetEpisodePartNumber changed values.
+  int GetEpisodePartNumber() const { return m_cStructure->iEpisodePartNumber; }
 
   /// @brief **optional**\n
   /// Year of first release (use to identify a specific movie re-make) / first
