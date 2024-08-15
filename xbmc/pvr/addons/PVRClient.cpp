@@ -81,7 +81,7 @@ private:
 class CAddonChannel : public PVR_CHANNEL
 {
 public:
-  CAddonChannel(const CPVRChannel& channel, const std::string& newChannelName = "")
+  explicit CAddonChannel(const CPVRChannel& channel, const std::string& newChannelName = "")
     : m_channelName(newChannelName.empty() ? channel.ClientChannelName() : newChannelName),
       m_mimeType(channel.MimeType()),
       m_iconPath(channel.ClientIconPath())
@@ -194,8 +194,8 @@ public:
     timer.StartAsUTC().GetAsTime(start);
     time_t end;
     timer.EndAsUTC().GetAsTime(end);
-    time_t firstDay;
-    timer.FirstDayAsUTC().GetAsTime(firstDay);
+    time_t first;
+    timer.FirstDayAsUTC().GetAsTime(first);
     const std::shared_ptr<const CPVREpgInfoTag> epgTag{timer.GetEpgInfoTag()};
     const int timeCorrection{
         CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection};
@@ -219,7 +219,7 @@ public:
     endTime = end - timeCorrection;
     bStartAnyTime = timer.IsStartAnyTime();
     bEndAnyTime = timer.IsEndAnyTime();
-    firstDay = firstDay - timeCorrection;
+    firstDay = first - timeCorrection;
     iEpgUid = epgTag ? epgTag->UniqueBroadcastID() : PVR_TIMER_NO_EPG_UID;
     strSummary = m_summary.c_str();
     iMarginStart = timer.MarginStart();
