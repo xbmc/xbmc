@@ -96,6 +96,10 @@ public:
   /// | **Size in bytes** | `std::string` | @ref PVRRecording::SetSizeInBytes "SetSizeInBytes" | @ref PVRRecording::GetSizeInBytes "GetSizeInBytes" | *optional*
   /// | **Client provider unique identifier** | `int` | @ref PVRChannel::SetClientProviderUid "SetClientProviderUid" | @ref PVRTimer::GetClientProviderUid "GetClientProviderUid" | *optional*
   /// | **Provider name** | `std::string` | @ref PVRChannel::SetProviderName "SetProviderlName" | @ref PVRChannel::GetProviderName "GetProviderName" | *optional*
+  /// | **Parental rating age** | `unsigned int` | @ref PVRRecording::SetParentalRating "SetParentalRating" | @ref PVRRecording::GetParentalRating "GetParentalRating" | *optional*
+  /// | **Parental rating code** | `std::string` | @ref PVRRecording::SetParentalRatingCode "SetParentalRatingCode" | @ref PVRRecording::GetParentalRatingCode "GetParentalRatingCode" | *optional*
+  /// | **Parental rating icon** | `std::string` | @ref PVRRecording::SetParentalRatingIcon "SetParentalRatingIcon" | @ref PVRRecording::GetParentalRatingIcon "GetParentalRatingIcon" | *optional*
+  /// | **Parental rating source** | `std::string` | @ref PVRRecording::SetParentalRatingSource "SetParentalRatingSource" | @ref PVRRecording::GetParentalRatingSource "GetParentalRatingSource" | *optional*
 
   /// @addtogroup cpp_kodi_addon_pvr_Defs_Recording_PVRRecording
   ///@{
@@ -512,6 +516,55 @@ public:
     return m_cStructure->strProviderName ? m_cStructure->strProviderName : "";
   }
 
+  /// @brief **optional**\n
+  /// Age rating for the recording.
+  void SetParentalRating(unsigned int iParentalRating)
+  {
+    m_cStructure->iParentalRating = iParentalRating;
+  }
+
+  /// @brief To get with @ref SetParentalRating changed values
+  unsigned int GetParentalRating() const { return m_cStructure->iParentalRating; }
+
+  /// @brief **optional**\n
+  /// Parental rating code for this recording.
+  void SetParentalRatingCode(const std::string& ratingCode)
+  {
+    ReallocAndCopyString(&m_cStructure->strParentalRatingCode, ratingCode.c_str());
+  }
+
+  /// @brief To get with @ref SetParentalRatingCode changed values.
+  std::string GetParentalRatingCode() const
+  {
+    return m_cStructure->strParentalRatingCode ? m_cStructure->strParentalRatingCode : "";
+  }
+
+  /// @brief **optional**\n
+  /// Parental rating icon for this recording.
+  void SetParentalRatingIcon(const std::string& ratingIcon)
+  {
+    ReallocAndCopyString(&m_cStructure->strParentalRatingIcon, ratingIcon.c_str());
+  }
+
+  /// @brief To get with @ref SetParentalRatingIcon changed values.
+  std::string GetParentalRatingIcon() const
+  {
+    return m_cStructure->strParentalRatingIcon ? m_cStructure->strParentalRatingIcon : "";
+  }
+
+  /// @brief **optional**\n
+  /// Parental rating source for this recording.
+  void SetParentalRatingSource(const std::string& ratingSource)
+  {
+    ReallocAndCopyString(&m_cStructure->strParentalRatingSource, ratingSource.c_str());
+  }
+
+  /// @brief To get with @ref SetParentalRatingSource changed values.
+  std::string GetParentalRatingSource() const
+  {
+    return m_cStructure->strParentalRatingSource ? m_cStructure->strParentalRatingSource : "";
+  }
+
   static void AllocResources(const PVR_RECORDING* source, PVR_RECORDING* target)
   {
     target->strRecordingId = AllocAndCopyString(source->strRecordingId);
@@ -527,6 +580,9 @@ public:
     target->strFanartPath = AllocAndCopyString(source->strFanartPath);
     target->strFirstAired = AllocAndCopyString(source->strFirstAired);
     target->strProviderName = AllocAndCopyString(source->strProviderName);
+    target->strParentalRatingCode = AllocAndCopyString(source->strParentalRatingCode);
+    target->strParentalRatingIcon = AllocAndCopyString(source->strParentalRatingIcon);
+    target->strParentalRatingSource = AllocAndCopyString(source->strParentalRatingSource);
   }
 
   static void FreeResources(PVR_RECORDING* target)
@@ -544,6 +600,9 @@ public:
     FreeString(target->strFanartPath);
     FreeString(target->strFirstAired);
     FreeString(target->strProviderName);
+    FreeString(target->strParentalRatingCode);
+    FreeString(target->strParentalRatingIcon);
+    FreeString(target->strParentalRatingSource);
   }
 
 private:

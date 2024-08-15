@@ -122,7 +122,10 @@ public:
       m_thumbnailPath(recording.ClientThumbnailPath()),
       m_fanartPath(recording.ClientFanartPath()),
       m_firstAired(recording.FirstAired().IsValid() ? recording.FirstAired().GetAsW3CDate() : ""),
-      m_providerName(recording.ProviderName())
+      m_providerName(recording.ProviderName()),
+      m_parentalRatingCode(""), //! @todo
+      m_parentalRatingIcon(""), //! @todo
+      m_parentalRatingSource("") //! @todo
   {
     time_t recTime;
     recording.RecordingTimeAsUTC().GetAsTime(recTime);
@@ -161,6 +164,9 @@ public:
     sizeInBytes = recording.GetSizeInBytes();
     strProviderName = m_providerName.c_str();
     iClientProviderUid = recording.ClientProviderUniqueId();
+    strParentalRatingCode = m_parentalRatingCode.c_str();
+    strParentalRatingIcon = m_parentalRatingIcon.c_str();
+    strParentalRatingSource = m_parentalRatingSource.c_str();
   }
   virtual ~CAddonRecording() = default;
 
@@ -178,6 +184,9 @@ private:
   const std::string m_fanartPath;
   const std::string m_firstAired;
   const std::string m_providerName;
+  const std::string m_parentalRatingCode;
+  const std::string m_parentalRatingIcon;
+  const std::string m_parentalRatingSource;
 };
 
 class CAddonTimer : public PVR_TIMER

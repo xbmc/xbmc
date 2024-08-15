@@ -139,6 +139,10 @@ extern "C"
     int64_t sizeInBytes;
     int iClientProviderUid;
     const char* strProviderName;
+    unsigned int iParentalRating;
+    const char* strParentalRatingCode;
+    const char* strParentalRatingIcon;
+    const char* strParentalRatingSource;
   } PVR_RECORDING;
 
 #ifdef __cplusplus
