@@ -41,11 +41,7 @@ class PVRChannel : public DynamicCStructHdl<PVRChannel, PVR_CHANNEL>
 
 public:
   /*! \cond PRIVATE */
-  PVRChannel()
-  {
-    memset(m_cStructure, 0, sizeof(PVR_CHANNEL));
-    m_cStructure->iClientProviderUid = PVR_PROVIDER_INVALID_UID;
-  }
+  PVRChannel() { m_cStructure->iClientProviderUid = PVR_PROVIDER_INVALID_UID; }
   PVRChannel(const PVRChannel& channel) : DynamicCStructHdl(channel) {}
   /*! \endcond */
 
@@ -114,7 +110,10 @@ public:
   }
 
   /// @brief To get with @ref SetChannelName changed values.
-  std::string GetChannelName() const { return m_cStructure->strChannelName; }
+  std::string GetChannelName() const
+  {
+    return m_cStructure->strChannelName ? m_cStructure->strChannelName : "";
+  }
 
   /// @brief **optional**\n
   /// Input format mime type.
@@ -128,7 +127,10 @@ public:
   }
 
   /// @brief To get with @ref SetMimeType changed values.
-  std::string GetMimeType() const { return m_cStructure->strMimeType; }
+  std::string GetMimeType() const
+  {
+    return m_cStructure->strMimeType ? m_cStructure->strMimeType : "";
+  }
 
   /// @brief **optional**\n
   /// The encryption ID or CaID of this channel (Conditional access systems).
@@ -153,7 +155,10 @@ public:
   }
 
   /// @brief To get with @ref SetIconPath changed values.
-  std::string GetIconPath() const { return m_cStructure->strIconPath; }
+  std::string GetIconPath() const
+  {
+    return m_cStructure->strIconPath ? m_cStructure->strIconPath : "";
+  }
 
   /// @brief **optional**\n
   /// **true** if this channel is marked as hidden.
@@ -300,7 +305,10 @@ public:
   }
 
   /// @brief To get with @ref SetAdapterName changed values.
-  std::string GetAdapterName() const { return m_cStructure->strAdapterName; }
+  std::string GetAdapterName() const
+  {
+    return m_cStructure->strAdapterName ? m_cStructure->strAdapterName : "";
+  }
 
   /// @brief **optional**\n
   /// Status of the adapter that's being used.
@@ -310,7 +318,10 @@ public:
   }
 
   /// @brief To get with @ref SetAdapterStatus changed values.
-  std::string GetAdapterStatus() const { return m_cStructure->strAdapterStatus; }
+  std::string GetAdapterStatus() const
+  {
+    return m_cStructure->strAdapterStatus ? m_cStructure->strAdapterStatus : "";
+  }
 
   /// @brief **optional**\n
   /// Name of the current service.
@@ -320,7 +331,10 @@ public:
   }
 
   /// @brief To get with @ref SetServiceName changed values.
-  std::string GetServiceName() const { return m_cStructure->strServiceName; }
+  std::string GetServiceName() const
+  {
+    return m_cStructure->strServiceName ? m_cStructure->strServiceName : "";
+  }
 
   /// @brief **optional**\n
   /// Name of the current service's provider.
@@ -330,7 +344,10 @@ public:
   }
 
   /// @brief To get with @ref SetProviderName changed values.
-  std::string GetProviderName() const { return m_cStructure->strProviderName; }
+  std::string GetProviderName() const
+  {
+    return m_cStructure->strProviderName ? m_cStructure->strProviderName : "";
+  }
 
   /// @brief **optional**\n
   /// Name of the current mux.
@@ -340,7 +357,10 @@ public:
   }
 
   /// @brief To get with @ref SetMuxName changed values.
-  std::string GetMuxName() const { return m_cStructure->strMuxName; }
+  std::string GetMuxName() const
+  {
+    return m_cStructure->strMuxName ? m_cStructure->strMuxName : "";
+  }
 
   /// @brief **optional**\n
   /// Signal/noise ratio.
@@ -514,7 +534,10 @@ public:
   }
 
   /// @brief To get with @ref SetCardSystem changed values.
-  std::string GetCardSystem() const { return m_cStructure->strCardSystem; }
+  std::string GetCardSystem() const
+  {
+    return m_cStructure->strCardSystem ? m_cStructure->strCardSystem : "";
+  }
 
   /// @brief **optional**\n
   /// Empty string if not available.
@@ -524,7 +547,7 @@ public:
   }
 
   /// @brief To get with @ref SetReader changed values.
-  std::string GetReader() const { return m_cStructure->strReader; }
+  std::string GetReader() const { return m_cStructure->strReader ? m_cStructure->strReader : ""; }
 
   /// @brief **optional**\n
   /// Empty string if not available.
@@ -534,7 +557,7 @@ public:
   }
 
   /// @brief To get with @ref SetFrom changed values.
-  std::string GetFrom() const { return m_cStructure->strFrom; }
+  std::string GetFrom() const { return m_cStructure->strFrom ? m_cStructure->strFrom : ""; }
 
   /// @brief **optional**\n
   /// Empty string if not available.
@@ -544,7 +567,10 @@ public:
   }
 
   /// @brief To get with @ref SetProtocol changed values.
-  std::string GetProtocol() const { return m_cStructure->strProtocol; }
+  std::string GetProtocol() const
+  {
+    return m_cStructure->strProtocol ? m_cStructure->strProtocol : "";
+  }
   ///@}
 
   static void AllocResources(const PVR_DESCRAMBLE_INFO* source, PVR_DESCRAMBLE_INFO* target)

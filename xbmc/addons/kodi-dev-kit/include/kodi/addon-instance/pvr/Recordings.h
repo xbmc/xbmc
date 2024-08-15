@@ -45,7 +45,6 @@ public:
   {
     m_cStructure->iSeriesNumber = PVR_RECORDING_INVALID_SERIES_EPISODE;
     m_cStructure->iEpisodeNumber = PVR_RECORDING_INVALID_SERIES_EPISODE;
-    m_cStructure->recordingTime = 0;
     m_cStructure->iDuration = PVR_RECORDING_VALUE_NOT_AVAILABLE;
     m_cStructure->iPriority = PVR_RECORDING_VALUE_NOT_AVAILABLE;
     m_cStructure->iLifetime = PVR_RECORDING_VALUE_NOT_AVAILABLE;
@@ -53,11 +52,8 @@ public:
     m_cStructure->iGenreSubType = PVR_RECORDING_VALUE_NOT_AVAILABLE;
     m_cStructure->iPlayCount = PVR_RECORDING_VALUE_NOT_AVAILABLE;
     m_cStructure->iLastPlayedPosition = PVR_RECORDING_VALUE_NOT_AVAILABLE;
-    m_cStructure->bIsDeleted = false;
-    m_cStructure->iEpgEventId = 0;
     m_cStructure->iChannelUid = PVR_RECORDING_VALUE_NOT_AVAILABLE;
     m_cStructure->channelType = PVR_RECORDING_CHANNEL_TYPE_UNKNOWN;
-    m_cStructure->iFlags = 0;
     m_cStructure->sizeInBytes = PVR_RECORDING_VALUE_NOT_AVAILABLE;
   }
   PVRRecording(const PVRRecording& recording) : DynamicCStructHdl(recording) {}
@@ -112,7 +108,10 @@ public:
   }
 
   /// @brief To get with @ref SetRecordingId changed values.
-  std::string GetRecordingId() const { return m_cStructure->strRecordingId; }
+  std::string GetRecordingId() const
+  {
+    return m_cStructure->strRecordingId ? m_cStructure->strRecordingId : "";
+  }
 
   /// @brief **required**\n
   /// The title of this recording.
@@ -122,7 +121,7 @@ public:
   }
 
   /// @brief To get with @ref SetTitle changed values.
-  std::string GetTitle() const { return m_cStructure->strTitle; }
+  std::string GetTitle() const { return m_cStructure->strTitle ? m_cStructure->strTitle : ""; }
 
   /// @brief **optional**\n
   /// Episode name (also known as subtitle).
@@ -132,7 +131,10 @@ public:
   }
 
   /// @brief To get with @ref SetEpisodeName changed values.
-  std::string GetEpisodeName() const { return m_cStructure->strEpisodeName; }
+  std::string GetEpisodeName() const
+  {
+    return m_cStructure->strEpisodeName ? m_cStructure->strEpisodeName : "";
+  }
 
   /// @brief **optional**\n
   /// Series number (usually called season).
@@ -171,7 +173,10 @@ public:
   }
 
   /// @brief To get with @ref SetDirectory changed values.
-  std::string GetDirectory() const { return m_cStructure->strDirectory; }
+  std::string GetDirectory() const
+  {
+    return m_cStructure->strDirectory ? m_cStructure->strDirectory : "";
+  }
 
   /// @brief **optional**\n
   /// Plot outline name.
@@ -181,7 +186,10 @@ public:
   }
 
   /// @brief To get with @ref SetPlotOutline changed values.
-  std::string GetPlotOutline() const { return m_cStructure->strPlotOutline; }
+  std::string GetPlotOutline() const
+  {
+    return m_cStructure->strPlotOutline ? m_cStructure->strPlotOutline : "";
+  }
 
   /// @brief **optional**\n
   /// Plot name.
@@ -191,7 +199,7 @@ public:
   }
 
   /// @brief To get with @ref SetPlot changed values.
-  std::string GetPlot() const { return m_cStructure->strPlot; }
+  std::string GetPlot() const { return m_cStructure->strPlot ? m_cStructure->strPlot : ""; }
 
   /// @brief **optional**\n
   /// Channel name.
@@ -201,7 +209,10 @@ public:
   }
 
   /// @brief To get with @ref SetChannelName changed values.
-  std::string GetChannelName() const { return m_cStructure->strChannelName; }
+  std::string GetChannelName() const
+  {
+    return m_cStructure->strChannelName ? m_cStructure->strChannelName : "";
+  }
 
   /// @brief **optional**\n
   /// Channel logo (icon) path.
@@ -211,7 +222,10 @@ public:
   }
 
   /// @brief To get with @ref SetIconPath changed values.
-  std::string GetIconPath() const { return m_cStructure->strIconPath; }
+  std::string GetIconPath() const
+  {
+    return m_cStructure->strIconPath ? m_cStructure->strIconPath : "";
+  }
 
   /// @brief **optional**\n
   /// Thumbnail path.
@@ -221,7 +235,10 @@ public:
   }
 
   /// @brief To get with @ref SetThumbnailPath changed values.
-  std::string GetThumbnailPath() const { return m_cStructure->strThumbnailPath; }
+  std::string GetThumbnailPath() const
+  {
+    return m_cStructure->strThumbnailPath ? m_cStructure->strThumbnailPath : "";
+  }
 
   /// @brief **optional**\n
   /// Fanart path.
@@ -231,7 +248,10 @@ public:
   }
 
   /// @brief To get with @ref SetFanartPath changed values.
-  std::string GetFanartPath() const { return m_cStructure->strFanartPath; }
+  std::string GetFanartPath() const
+  {
+    return m_cStructure->strFanartPath ? m_cStructure->strFanartPath : "";
+  }
 
   /// @brief **optional**\n
   /// Start time of the recording.
@@ -354,7 +374,10 @@ public:
   }
 
   /// @brief To get with @ref SetGenreDescription changed values.
-  std::string GetGenreDescription() const { return m_cStructure->strGenreDescription; }
+  std::string GetGenreDescription() const
+  {
+    return m_cStructure->strGenreDescription ? m_cStructure->strGenreDescription : "";
+  }
 
   /// @brief **optional**\n
   /// Play count of this recording on the client.
@@ -436,7 +459,10 @@ public:
   }
 
   /// @brief To get with @ref SetFirstAired changed values
-  std::string GetFirstAired() const { return m_cStructure->strFirstAired; }
+  std::string GetFirstAired() const
+  {
+    return m_cStructure->strFirstAired ? m_cStructure->strFirstAired : "";
+  }
 
   /// @brief **optional**\n
   /// Bit field of independent flags associated with the recording.
@@ -481,7 +507,10 @@ public:
   }
 
   /// @brief To get with @ref SetProviderName changed values.
-  std::string GetProviderName() const { return m_cStructure->strProviderName; }
+  std::string GetProviderName() const
+  {
+    return m_cStructure->strProviderName ? m_cStructure->strProviderName : "";
+  }
 
   static void AllocResources(const PVR_RECORDING* source, PVR_RECORDING* target)
   {

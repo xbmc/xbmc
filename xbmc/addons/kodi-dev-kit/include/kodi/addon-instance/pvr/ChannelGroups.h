@@ -40,7 +40,7 @@ class PVRChannelGroup : public DynamicCStructHdl<PVRChannelGroup, PVR_CHANNEL_GR
 
 public:
   /*! \cond PRIVATE */
-  PVRChannelGroup() { memset(m_cStructure, 0, sizeof(PVR_CHANNEL_GROUP)); }
+  PVRChannelGroup() = default;
   PVRChannelGroup(const PVRChannelGroup& group) : DynamicCStructHdl(group) {}
   /*! \endcond */
 
@@ -66,7 +66,10 @@ public:
   }
 
   /// @brief To get with @ref SetGroupName changed values.
-  std::string GetGroupName() const { return m_cStructure->strGroupName; }
+  std::string GetGroupName() const
+  {
+    return m_cStructure->strGroupName ? m_cStructure->strGroupName : "";
+  }
 
   /// @brief **required**\n
   /// **true** If this is a radio channel group, **false** otherwise.
@@ -158,7 +161,7 @@ class PVRChannelGroupMember
 
 public:
   /*! \cond PRIVATE */
-  PVRChannelGroupMember() { memset(m_cStructure, 0, sizeof(PVR_CHANNEL_GROUP_MEMBER)); }
+  PVRChannelGroupMember() = default;
   PVRChannelGroupMember(const PVRChannelGroupMember& member) : DynamicCStructHdl(member) {}
   /*! \endcond */
 
@@ -186,7 +189,10 @@ public:
   }
 
   /// @brief To get with @ref SetGroupName changed values.
-  std::string GetGroupName() const { return m_cStructure->strGroupName; }
+  std::string GetGroupName() const
+  {
+    return m_cStructure->strGroupName ? m_cStructure->strGroupName : "";
+  }
 
   /// @brief **required**\n
   /// Unique id of the member.

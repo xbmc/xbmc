@@ -284,7 +284,10 @@ template<class CPP_CLASS, typename C_STRUCT>
 class DynamicCStructHdl
 {
 public:
-  DynamicCStructHdl() : m_cStructure(new C_STRUCT()), m_owner(true) {}
+  DynamicCStructHdl() : m_cStructure(new C_STRUCT()), m_owner(true)
+  {
+    memset(m_cStructure, 0, sizeof(C_STRUCT));
+  }
 
   DynamicCStructHdl(const CPP_CLASS& cppClass)
     : m_cStructure(new C_STRUCT(*cppClass.m_cStructure)), m_owner(true)

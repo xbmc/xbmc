@@ -55,8 +55,6 @@ public:
   ///@{
 
   /// @brief Default class constructor.
-  ///
-  /// @note Values must be set afterwards.
   PVRTypeIntValue() = default;
 
   /// @brief Class constructor with integrated value set.
@@ -82,7 +80,10 @@ public:
   }
 
   /// @brief To get with the description text of the value.
-  std::string GetDescription() const { return m_cStructure->strDescription; }
+  std::string GetDescription() const
+  {
+    return m_cStructure->strDescription ? m_cStructure->strDescription : "";
+  }
   ///@}
 
   static PVR_ATTRIBUTE_INT_VALUE* AllocAndCopyData(const std::vector<PVRTypeIntValue>& source)
@@ -171,7 +172,7 @@ class PVRCapabilities : public DynamicCStructHdl<PVRCapabilities, PVR_ADDON_CAPA
 
 public:
   /*! \cond PRIVATE */
-  PVRCapabilities() { memset(m_cStructure, 0, sizeof(PVR_ADDON_CAPABILITIES)); }
+  PVRCapabilities() = default;
   PVRCapabilities(const PVRCapabilities& capabilities) : DynamicCStructHdl(capabilities) {}
   /*! \endcond */
 
@@ -550,8 +551,6 @@ public:
   ///@{
 
   /// @brief Default class constructor.
-  ///
-  /// @note Values must be set afterwards.
   PVRStreamProperty() = default;
 
   /// @brief Class constructor with integrated value set.
@@ -571,7 +570,7 @@ public:
   }
 
   /// @brief To get with the identification name.
-  std::string GetName() const { return m_cStructure->strName; }
+  std::string GetName() const { return m_cStructure->strName ? m_cStructure->strName : ""; }
 
   /// @brief To set with the used property value.
   void SetValue(const std::string& value)
@@ -580,7 +579,7 @@ public:
   }
 
   /// @brief To get with the used property value.
-  std::string GetValue() const { return m_cStructure->strValue; }
+  std::string GetValue() const { return m_cStructure->strValue ? m_cStructure->strValue : ""; }
   ///@}
 
   static void AllocResources(const PVR_NAMED_VALUE* source, PVR_NAMED_VALUE* target)
