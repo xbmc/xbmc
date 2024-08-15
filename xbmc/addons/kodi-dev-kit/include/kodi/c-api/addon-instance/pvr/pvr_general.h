@@ -113,6 +113,27 @@ extern "C"
   //----------------------------------------------------------------------------
 
   //============================================================================
+  /// @defgroup cpp_kodi_addon_pvr_Defs_General_PVR_SOURCE enum PVR_SOURCE
+  /// @ingroup cpp_kodi_addon_pvr_Defs_General
+  /// @brief **PVR add-on playback source**\n
+  /// Used in call to GetChannelStreamProperties() to indicate where the playback
+  /// call initiated.
+  ///
+  /// - @ref kodi::addon::CInstancePVRClient::GetChannelStreamProperties()
+  ///
+  ///@{
+  typedef enum PVR_SOURCE
+  {
+    /// @brief __0__ : Regular live playback
+    DEFAULT = 0,
+
+    /// @brief __1__ : From EPG, but playing back as live
+    PVR_SOURCE_EPG_AS_LIVE = 1,
+  } PVR_SOURCE;
+  ///@}
+  //----------------------------------------------------------------------------
+
+  //============================================================================
   /// @defgroup cpp_kodi_addon_pvr_Defs_General_PVR_STREAM_PROPERTY definition PVR_STREAM_PROPERTY
   /// @ingroup cpp_kodi_addon_pvr_Defs_General_Inputstream
   /// @brief **PVR related stream property values**\n
@@ -134,6 +155,7 @@ extern "C"
   /// ...
   ///
   /// PVR_ERROR CMyPVRInstance::GetChannelStreamProperties(const kodi::addon::PVRChannel& channel,
+  ///                                                      PVR_SOURCE source,
   ///                                                      std::vector<PVRStreamProperty>& properties)
   /// {
   ///   ...
@@ -249,6 +271,14 @@ extern "C"
   /// play as normal video.
   ///
 #define PVR_STREAM_PROPERTY_EPGPLAYBACKASLIVE "epgplaybackaslive"
+
+  /// @brief <b>"true"</b> to denote that if the stream is from a channel but should
+  /// be played as an EPG tag.
+  ///
+  /// It should be played as an epg/catchup stream. Otherwise if it's a channel it will
+  /// played as live stream.
+  ///
+#define PVR_STREAM_PROPERTY_LIVEPLAYBACKASEPG "liveplaybackasepg"
 
   /// @brief Special value for @ref PVR_STREAM_PROPERTY_INPUTSTREAM to use
   /// ffmpeg to directly play a stream URL.

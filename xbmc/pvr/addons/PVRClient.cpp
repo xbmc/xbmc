@@ -1530,8 +1530,8 @@ PVR_ERROR CPVRClient::GetChannelStreamProperties(const std::shared_ptr<const CPV
 
     PVR_NAMED_VALUE** property_array{nullptr};
     unsigned int size{0};
-    const PVR_ERROR error{
-        addon->toAddon->GetChannelStreamProperties(addon, &addonChannel, &property_array, &size)};
+    const PVR_ERROR error{addon->toAddon->GetChannelStreamProperties(
+        addon, &addonChannel, PVR_SOURCE::DEFAULT, &property_array, &size)};
     if (error == PVR_ERROR_NO_ERROR)
       WriteStreamProperties(property_array, size, props);
 
