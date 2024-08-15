@@ -639,8 +639,10 @@ extern "C"
     int iGenreSubType;
     const char* strGenreDescription;
     const char* strFirstAired;
-    int iParentalRating;
+    unsigned int iParentalRating;
     const char* strParentalRatingCode;
+    const char* strParentalRatingIcon;
+    const char* strParentalRatingSource;
     int iStarRating;
     int iSeriesNumber;
     int iEpisodeNumber;

@@ -812,7 +812,9 @@ public:
       m_strIconPath(kodiTag->ClientIconPath()),
       m_strSeriesLink(kodiTag->SeriesLink()),
       m_strGenreDescription(kodiTag->GenreDescription()),
-      m_strParentalRatingCode(kodiTag->ParentalRatingCode())
+      m_strParentalRatingCode(kodiTag->ParentalRatingCode()),
+      m_strParentalRatingIcon(""), //! @todo
+      m_strParentalRatingSource("") //! @todo
   {
     time_t t;
     kodiTag->StartAsUTC().GetAsTime(t);
@@ -849,6 +851,8 @@ public:
     strGenreDescription = m_strGenreDescription.c_str();
     strFirstAired = m_strFirstAired.c_str();
     strParentalRatingCode = m_strParentalRatingCode.c_str();
+    strParentalRatingIcon = m_strParentalRatingIcon.c_str();
+    strParentalRatingSource = m_strParentalRatingSource.c_str();
   }
 
   virtual ~CAddonEpgTag() = default;
@@ -868,6 +872,8 @@ private:
   std::string m_strGenreDescription;
   std::string m_strFirstAired;
   std::string m_strParentalRatingCode;
+  std::string m_strParentalRatingIcon;
+  std::string m_strParentalRatingSource;
 };
 
 PVR_ERROR CPVRClient::IsRecordable(const std::shared_ptr<const CPVREpgInfoTag>& tag,

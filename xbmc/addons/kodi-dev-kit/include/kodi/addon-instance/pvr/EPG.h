@@ -75,8 +75,10 @@ public:
   /// | **Genre sub type** | `int` | @ref PVREPGTag::SetGenreSubType "SetGenreSubType" | @ref PVREPGTag::GetGenreSubType "GetGenreSubType" | *optional*
   /// | **Genre description** | `std::string` | @ref PVREPGTag::SetGenreDescription "SetGenreDescription" | @ref PVREPGTag::GetGenreDescription "GetGenreDescription" | *optional*
   /// | **First aired** | `time_t` | @ref PVREPGTag::SetFirstAired "SetFirstAired" | @ref PVREPGTag::GetFirstAired "GetFirstAired" | *optional*
-  /// | **Parental rating** | `int` | @ref PVREPGTag::SetParentalRating "SetParentalRating" | @ref PVREPGTag::GetParentalRating "GetParentalRating" | *optional*
-  /// | **Parental rating code** | `int` | @ref PVREPGTag::SetParentalRatingCode "SetParentalRatingCode" | @ref PVREPGTag::GetParentalRatingCode "GetParentalRatingCode" | *optional*
+  /// | **Parental rating** | `unsigned int` | @ref PVREPGTag::SetParentalRating "SetParentalRating" | @ref PVREPGTag::GetParentalRating "GetParentalRating" | *optional*
+  /// | **Parental rating code** | `std::string` | @ref PVREPGTag::SetParentalRatingCode "SetParentalRatingCode" | @ref PVREPGTag::GetParentalRatingCode "GetParentalRatingCode" | *optional*
+  /// | **Parental rating icon** | `std::string` | @ref PVREPGTag::SetParentalRatingIcon "SetParentalRatingIcon" | @ref PVREPGTag::GetParentalRatingIcon "GetParentalRatingIcon" | *optional*
+  /// | **Parental rating source** | `std::string` | @ref PVREPGTag::SetParentalRatingSource "SetParentalRatingSource" | @ref PVREPGTag::GetParentalRatingSource "GetParentalRatingSource" | *optional*
   /// | **Star rating** | `int` | @ref PVREPGTag::SetStarRating "SetStarRating" | @ref PVREPGTag::GetStarRating "GetStarRating" | *optional*
   /// | **Series number** | `int` | @ref PVREPGTag::SetSeriesNumber "SetSeriesNumber" | @ref PVREPGTag::GetSeriesNumber "GetSeriesNumber" | *optional*
   /// | **Episode number** | `int` | @ref PVREPGTag::SetEpisodeNumber "SetEpisodeNumber" | @ref PVREPGTag::GetEpisodeNumber "GetEpisodeNumber" | *optional*
@@ -361,12 +363,15 @@ public:
 
   /// @brief **optional**\n
   /// Parental rating.
-  void SetParentalRating(int parentalRating) { m_cStructure->iParentalRating = parentalRating; }
+  void SetParentalRating(unsigned int parentalRating)
+  {
+    m_cStructure->iParentalRating = parentalRating;
+  }
 
   /// @brief To get with @ref SetParentalRatinge changed values.
-  int GetParentalRating() const { return m_cStructure->iParentalRating; }
+  unsigned int GetParentalRating() const { return m_cStructure->iParentalRating; }
 
-  /// @brief **required**\n
+  /// @brief **optional**\n
   /// This event's parental rating code.
   void SetParentalRatingCode(const std::string& parentalRatingCode)
   {
@@ -377,6 +382,33 @@ public:
   std::string GetParentalRatingCode() const
   {
     return m_cStructure->strParentalRatingCode ? m_cStructure->strParentalRatingCode : "";
+  }
+
+  /// @brief **optional**\n
+  /// This event's parental rating icon.
+  void SetParentalRatingIcon(const std::string& parentalRatingIcon)
+  {
+    ReallocAndCopyString(&m_cStructure->strParentalRatingIcon, parentalRatingIcon.c_str());
+  }
+
+  /// @brief To get with @ref SetParentalRatingIcon changed values.
+  std::string GetParentalRatingIcon() const
+  {
+    return m_cStructure->strParentalRatingIcon ? m_cStructure->strParentalRatingIcon : "";
+  }
+
+  /// @brief **optional**\n
+  /// The event's parental rating source.
+  void SetParentalRatingSource(const std::string& parentalRatingSource)
+  {
+    //m_parentalRatingSource = parentalRatingSource;
+    ReallocAndCopyString(&m_cStructure->strParentalRatingSource, parentalRatingSource.c_str());
+  }
+
+  /// @brief To get with @ref SetParentalRatingSource changed values.
+  std::string GetParentalRatingSource() const
+  {
+    return m_cStructure->strParentalRatingSource ? m_cStructure->strParentalRatingSource : "";
   }
 
   /// @brief **optional**\n
@@ -465,6 +497,8 @@ public:
     target->strIconPath = AllocAndCopyString(source->strIconPath);
     target->strGenreDescription = AllocAndCopyString(source->strGenreDescription);
     target->strParentalRatingCode = AllocAndCopyString(source->strParentalRatingCode);
+    target->strParentalRatingIcon = AllocAndCopyString(source->strParentalRatingIcon);
+    target->strParentalRatingSource = AllocAndCopyString(source->strParentalRatingSource);
     target->strEpisodeName = AllocAndCopyString(source->strEpisodeName);
     target->strSeriesLink = AllocAndCopyString(source->strSeriesLink);
     target->strFirstAired = AllocAndCopyString(source->strFirstAired);
@@ -483,6 +517,8 @@ public:
     FreeString(target->strIconPath);
     FreeString(target->strGenreDescription);
     FreeString(target->strParentalRatingCode);
+    FreeString(target->strParentalRatingIcon);
+    FreeString(target->strParentalRatingSource);
     FreeString(target->strEpisodeName);
     FreeString(target->strSeriesLink);
     FreeString(target->strFirstAired);
