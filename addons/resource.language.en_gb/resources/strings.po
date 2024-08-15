@@ -11354,23 +11354,27 @@ msgstr ""
 
 #. Label for a select option or list item, representing an icon graphic (like a TV channel icon)
 #: xbmc/pvr/dialogs/GUIDialogPVRChannelManager.cpp
+#: xbmc/pvr/guilib/PVRGUIActionsEPG.cpp
 msgctxt "#19282"
 msgid "Current icon"
 msgstr ""
 
 #. Label for a select option or list item, representing an icon graphic (like a TV channel icon)
 #: xbmc/pvr/dialogs/GUIDialogPVRChannelManager.cpp
+#: xbmc/pvr/guilib/PVRGUIActionsEPG.cpp
 msgctxt "#19283"
 msgid "No icon"
 msgstr ""
 
-#. used by several skins
+#. used by several skins and PVR
+#: xbmc/pvr/PVRContextMenus.cpp
 msgctxt "#19284"
 msgid "Choose icon"
 msgstr ""
 
 #. Label for a select/menu option to select an icon graphic
 #: xbmc/pvr/dialogs/GUIDialogPVRChannelManager.cpp
+#: xbmc/pvr/guilib/PVRGUIActionsEPG.cpp
 msgctxt "#19285"
 msgid "Browse for icon"
 msgstr ""

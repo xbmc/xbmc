@@ -128,8 +128,9 @@ void CPVREpgDatabase::CreateTables()
               "bIgnoreFutureBroadcasts   bool, "
               "bFreeToAirOnly            bool, "
               "bIgnorePresentTimers      bool, "
-              "bIgnorePresentRecordings  bool,"
-              "iChannelGroup             integer"
+              "bIgnorePresentRecordings  bool, "
+              "iChannelGroup             integer, "
+              "sIconPath                 varchar(255)"
               ")");
 }
 
@@ -323,6 +324,12 @@ void CPVREpgDatabase::UpdateTables(int iVersion)
   {
     m_pDS->exec("ALTER TABLE savedsearches ADD iChannelGroup integer;");
     m_pDS->exec("UPDATE savedsearches SET iChannelGroup = -1");
+  }
+
+  if (iVersion < 17)
+  {
+    m_pDS->exec("ALTER TABLE savedsearches ADD sIconPath varchar(255);");
+    m_pDS->exec("UPDATE savedsearches SET sIconPath = ''");
   }
 }
 
@@ -1321,6 +1328,7 @@ std::shared_ptr<CPVREpgSearchFilter> CPVREpgDatabase::CreateEpgSearchFilter(
     newSearch->SetIgnorePresentTimers(m_pDS->fv("bIgnorePresentTimers").get_asBool());
     newSearch->SetIgnorePresentRecordings(m_pDS->fv("bIgnorePresentRecordings").get_asBool());
     newSearch->SetChannelGroupID(m_pDS->fv("iChannelGroup").get_asInt());
+    newSearch->SetIconPath(m_pDS->fv("sIconPath").get_asString());
 
     newSearch->SetChanged(false);
 
@@ -1392,9 +1400,9 @@ bool CPVREpgDatabase::Persist(CPVREpgSearchFilter& epgSearch)
         "iGenreType, bIncludeUnknownGenres, sStartDateTime, sEndDateTime, iMinimumDuration, "
         "iMaximumDuration, bIsRadio, iClientId, iChannelUid, bRemoveDuplicates, "
         "bIgnoreFinishedBroadcasts, bIgnoreFutureBroadcasts, bFreeToAirOnly, bIgnorePresentTimers, "
-        "bIgnorePresentRecordings, iChannelGroup) "
+        "bIgnorePresentRecordings, iChannelGroup, sIconPath) "
         "VALUES ('%s', '%s', '%s', %i, %i, %i, %i, '%s', '%s', %i, %i, %i, %i, %i, %i, %i, %i, "
-        "%i, %i, %i, %i);",
+        "%i, %i, %i, %i, '%s');",
         epgSearch.GetTitle().c_str(),
         epgSearch.GetLastExecutedDateTime().IsValid()
             ? epgSearch.GetLastExecutedDateTime().GetAsDBDateTime().c_str()
@@ -1413,7 +1421,8 @@ bool CPVREpgDatabase::Persist(CPVREpgSearchFilter& epgSearch)
         epgSearch.ShouldIgnoreFinishedBroadcasts() ? 1 : 0,
         epgSearch.ShouldIgnoreFutureBroadcasts() ? 1 : 0, epgSearch.IsFreeToAirOnly() ? 1 : 0,
         epgSearch.ShouldIgnorePresentTimers() ? 1 : 0,
-        epgSearch.ShouldIgnorePresentRecordings() ? 1 : 0, epgSearch.GetChannelGroupID());
+        epgSearch.ShouldIgnorePresentRecordings() ? 1 : 0, epgSearch.GetChannelGroupID(),
+        epgSearch.GetIconPath().c_str());
   else
     strQuery = PrepareSQL(
         "REPLACE INTO savedsearches "
@@ -1421,9 +1430,9 @@ bool CPVREpgDatabase::Persist(CPVREpgSearchFilter& epgSearch)
         "bIsCaseSensitive, iGenreType, bIncludeUnknownGenres, sStartDateTime, sEndDateTime, "
         "iMinimumDuration, iMaximumDuration, bIsRadio, iClientId, iChannelUid, bRemoveDuplicates, "
         "bIgnoreFinishedBroadcasts, bIgnoreFutureBroadcasts, bFreeToAirOnly, bIgnorePresentTimers, "
-        "bIgnorePresentRecordings, iChannelGroup) "
+        "bIgnorePresentRecordings, iChannelGroup, sIconPath) "
         "VALUES (%i, '%s', '%s', '%s', %i, %i, %i, %i, '%s', '%s', %i, %i, %i, %i, %i, %i, %i, %i, "
-        "%i, %i, %i, %i);",
+        "%i, %i, %i, %i, '%s');",
         epgSearch.GetDatabaseId(), epgSearch.GetTitle().c_str(),
         epgSearch.GetLastExecutedDateTime().IsValid()
             ? epgSearch.GetLastExecutedDateTime().GetAsDBDateTime().c_str()
@@ -1442,7 +1451,8 @@ bool CPVREpgDatabase::Persist(CPVREpgSearchFilter& epgSearch)
         epgSearch.ShouldIgnoreFinishedBroadcasts() ? 1 : 0,
         epgSearch.ShouldIgnoreFutureBroadcasts() ? 1 : 0, epgSearch.IsFreeToAirOnly() ? 1 : 0,
         epgSearch.ShouldIgnorePresentTimers() ? 1 : 0,
-        epgSearch.ShouldIgnorePresentRecordings() ? 1 : 0, epgSearch.GetChannelGroupID());
+        epgSearch.ShouldIgnorePresentRecordings() ? 1 : 0, epgSearch.GetChannelGroupID(),
+        epgSearch.GetIconPath().c_str());
 
   bool bReturn = ExecuteQuery(strQuery);
 

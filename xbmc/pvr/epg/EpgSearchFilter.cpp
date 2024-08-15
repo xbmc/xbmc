@@ -251,6 +251,15 @@ void CPVREpgSearchFilter::SetTitle(const std::string& title)
   }
 }
 
+void CPVREpgSearchFilter::SetIconPath(const std::string& iconPath)
+{
+  if (m_iconPath != iconPath)
+  {
+    m_iconPath = iconPath;
+    m_bChanged = true;
+  }
+}
+
 void CPVREpgSearchFilter::SetLastExecutedDateTime(const CDateTime& lastExecutedDateTime)
 {
   // Note: No need to set m_bChanged here
