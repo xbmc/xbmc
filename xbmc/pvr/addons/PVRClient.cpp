@@ -248,6 +248,91 @@ private:
   const std::string m_seriesLink;
 };
 
+class CAddonEpgTag : public EPG_TAG
+{
+public:
+  explicit CAddonEpgTag(const CPVREpgInfoTag& tag)
+    : m_title(tag.Title()),
+      m_plotOutline(tag.PlotOutline()),
+      m_plot(tag.Plot()),
+      m_originalTitle(tag.OriginalTitle()),
+      m_cast(tag.DeTokenize(tag.Cast())),
+      m_director(tag.DeTokenize(tag.Directors())),
+      m_writer(tag.DeTokenize(tag.Writers())),
+      m_IMDBNumber(tag.IMDBNumber()),
+      m_episodeName(tag.EpisodeName()),
+      m_iconPath(tag.ClientIconPath()),
+      m_seriesLink(tag.SeriesLink()),
+      m_genreDescription(tag.GenreDescription()),
+      m_firstAired(GetFirstAired(tag)),
+      m_parentalRatingCode(tag.ParentalRatingCode()),
+      m_parentalRatingIcon(""), //! @todo
+      m_parentalRatingSource("") //! @todo
+  {
+    time_t t;
+    tag.StartAsUTC().GetAsTime(t);
+    startTime = t;
+    tag.EndAsUTC().GetAsTime(t);
+    endTime = t;
+
+    iUniqueBroadcastId = tag.UniqueBroadcastID();
+    iUniqueChannelId = tag.UniqueChannelID();
+    iParentalRating = tag.ParentalRating();
+    iSeriesNumber = tag.SeriesNumber();
+    iEpisodeNumber = tag.EpisodeNumber();
+    iEpisodePartNumber = tag.EpisodePart();
+    iStarRating = tag.StarRating();
+    iYear = tag.Year();
+    iFlags = tag.Flags();
+    iGenreType = tag.GenreType();
+    iGenreSubType = tag.GenreSubType();
+    strTitle = m_title.c_str();
+    strPlotOutline = m_plotOutline.c_str();
+    strPlot = m_plot.c_str();
+    strOriginalTitle = m_originalTitle.c_str();
+    strCast = m_cast.c_str();
+    strDirector = m_director.c_str();
+    strWriter = m_writer.c_str();
+    strIMDBNumber = m_IMDBNumber.c_str();
+    strEpisodeName = m_episodeName.c_str();
+    strIconPath = m_iconPath.c_str();
+    strSeriesLink = m_seriesLink.c_str();
+    strGenreDescription = m_genreDescription.c_str();
+    strFirstAired = m_firstAired.c_str();
+    strParentalRatingCode = m_parentalRatingCode.c_str();
+    strParentalRatingIcon = m_parentalRatingIcon.c_str();
+    strParentalRatingSource = m_parentalRatingSource.c_str();
+  }
+
+  virtual ~CAddonEpgTag() = default;
+
+private:
+  static std::string GetFirstAired(const CPVREpgInfoTag& tag)
+  {
+    const CDateTime firstAired{tag.FirstAired()};
+    if (firstAired.IsValid())
+      return firstAired.GetAsW3CDate();
+    return {};
+  }
+
+  const std::string m_title;
+  const std::string m_plotOutline;
+  const std::string m_plot;
+  const std::string m_originalTitle;
+  const std::string m_cast;
+  const std::string m_director;
+  const std::string m_writer;
+  const std::string m_IMDBNumber;
+  const std::string m_episodeName;
+  const std::string m_iconPath;
+  const std::string m_seriesLink;
+  const std::string m_genreDescription;
+  const std::string m_firstAired;
+  const std::string m_parentalRatingCode;
+  const std::string m_parentalRatingIcon;
+  const std::string m_parentalRatingSource;
+};
+
 EDL::Edit ConvertAddonEdl(const PVR_EDL_ENTRY& entry)
 {
   EDL::Edit edit;
@@ -800,93 +885,6 @@ PVR_ERROR CPVRClient::SetEPGMaxFutureDays(int iFutureDays)
       m_clientCapabilities.SupportsEPG());
 }
 
-// This class wraps an EPG_TAG (PVR Addon API struct) to ensure that the string members of
-// that struct, which are const char pointers, stay valid until the EPG_TAG gets destructed.
-// Please note that this struct is also used to transfer huge amount of EPG_TAGs from
-// addon to Kodi. Thus, changing the struct to contain char arrays is not recommended,
-// because this would lead to huge amount of string copies when transferring epg data
-// from addon to Kodi.
-class CAddonEpgTag : public EPG_TAG
-{
-public:
-  CAddonEpgTag() = delete;
-  explicit CAddonEpgTag(const std::shared_ptr<const CPVREpgInfoTag>& kodiTag)
-    : m_strTitle(kodiTag->Title()),
-      m_strPlotOutline(kodiTag->PlotOutline()),
-      m_strPlot(kodiTag->Plot()),
-      m_strOriginalTitle(kodiTag->OriginalTitle()),
-      m_strCast(kodiTag->DeTokenize(kodiTag->Cast())),
-      m_strDirector(kodiTag->DeTokenize(kodiTag->Directors())),
-      m_strWriter(kodiTag->DeTokenize(kodiTag->Writers())),
-      m_strIMDBNumber(kodiTag->IMDBNumber()),
-      m_strEpisodeName(kodiTag->EpisodeName()),
-      m_strIconPath(kodiTag->ClientIconPath()),
-      m_strSeriesLink(kodiTag->SeriesLink()),
-      m_strGenreDescription(kodiTag->GenreDescription()),
-      m_strParentalRatingCode(kodiTag->ParentalRatingCode()),
-      m_strParentalRatingIcon(""), //! @todo
-      m_strParentalRatingSource("") //! @todo
-  {
-    time_t t;
-    kodiTag->StartAsUTC().GetAsTime(t);
-    startTime = t;
-    kodiTag->EndAsUTC().GetAsTime(t);
-    endTime = t;
-
-    const CDateTime firstAired = kodiTag->FirstAired();
-    if (firstAired.IsValid())
-      m_strFirstAired = firstAired.GetAsW3CDate();
-
-    iUniqueBroadcastId = kodiTag->UniqueBroadcastID();
-    iUniqueChannelId = kodiTag->UniqueChannelID();
-    iParentalRating = kodiTag->ParentalRating();
-    iSeriesNumber = kodiTag->SeriesNumber();
-    iEpisodeNumber = kodiTag->EpisodeNumber();
-    iEpisodePartNumber = kodiTag->EpisodePart();
-    iStarRating = kodiTag->StarRating();
-    iYear = kodiTag->Year();
-    iFlags = kodiTag->Flags();
-    iGenreType = kodiTag->GenreType();
-    iGenreSubType = kodiTag->GenreSubType();
-    strTitle = m_strTitle.c_str();
-    strPlotOutline = m_strPlotOutline.c_str();
-    strPlot = m_strPlot.c_str();
-    strOriginalTitle = m_strOriginalTitle.c_str();
-    strCast = m_strCast.c_str();
-    strDirector = m_strDirector.c_str();
-    strWriter = m_strWriter.c_str();
-    strIMDBNumber = m_strIMDBNumber.c_str();
-    strEpisodeName = m_strEpisodeName.c_str();
-    strIconPath = m_strIconPath.c_str();
-    strSeriesLink = m_strSeriesLink.c_str();
-    strGenreDescription = m_strGenreDescription.c_str();
-    strFirstAired = m_strFirstAired.c_str();
-    strParentalRatingCode = m_strParentalRatingCode.c_str();
-    strParentalRatingIcon = m_strParentalRatingIcon.c_str();
-    strParentalRatingSource = m_strParentalRatingSource.c_str();
-  }
-
-  virtual ~CAddonEpgTag() = default;
-
-private:
-  std::string m_strTitle;
-  std::string m_strPlotOutline;
-  std::string m_strPlot;
-  std::string m_strOriginalTitle;
-  std::string m_strCast;
-  std::string m_strDirector;
-  std::string m_strWriter;
-  std::string m_strIMDBNumber;
-  std::string m_strEpisodeName;
-  std::string m_strIconPath;
-  std::string m_strSeriesLink;
-  std::string m_strGenreDescription;
-  std::string m_strFirstAired;
-  std::string m_strParentalRatingCode;
-  std::string m_strParentalRatingIcon;
-  std::string m_strParentalRatingSource;
-};
-
 PVR_ERROR CPVRClient::IsRecordable(const std::shared_ptr<const CPVREpgInfoTag>& tag,
                                    bool& bIsRecordable) const
 {
@@ -894,7 +892,7 @@ PVR_ERROR CPVRClient::IsRecordable(const std::shared_ptr<const CPVREpgInfoTag>& 
       __func__,
       [tag, &bIsRecordable](const AddonInstance* addon)
       {
-        CAddonEpgTag addonTag(tag);
+        CAddonEpgTag addonTag(*tag);
         return addon->toAddon->IsEPGTagRecordable(addon, &addonTag, &bIsRecordable);
       },
       m_clientCapabilities.SupportsRecordings() && m_clientCapabilities.SupportsEPG());
@@ -907,7 +905,7 @@ PVR_ERROR CPVRClient::IsPlayable(const std::shared_ptr<const CPVREpgInfoTag>& ta
       __func__,
       [tag, &bIsPlayable](const AddonInstance* addon)
       {
-        CAddonEpgTag addonTag(tag);
+        CAddonEpgTag addonTag(*tag);
         return addon->toAddon->IsEPGTagPlayable(addon, &addonTag, &bIsPlayable);
       },
       m_clientCapabilities.SupportsEPG());
@@ -930,7 +928,7 @@ PVR_ERROR CPVRClient::GetEpgTagStreamProperties(const std::shared_ptr<const CPVR
   return DoAddonCall(__func__,
                      [&tag, &props](const AddonInstance* addon)
                      {
-                       CAddonEpgTag addonTag(tag);
+                       CAddonEpgTag addonTag(*tag);
 
                        PVR_NAMED_VALUE** property_array{nullptr};
                        unsigned int size{0};
@@ -952,7 +950,7 @@ PVR_ERROR CPVRClient::GetEpgTagEdl(const std::shared_ptr<const CPVREpgInfoTag>& 
       __func__,
       [&epgTag, &edls](const AddonInstance* addon)
       {
-        CAddonEpgTag addonTag(epgTag);
+        CAddonEpgTag addonTag(*epgTag);
 
         PVR_EDL_ENTRY** edl_array{nullptr};
         unsigned int size{0};
@@ -1904,7 +1902,7 @@ PVR_ERROR CPVRClient::CallEpgTagMenuHook(const CPVRClientMenuHook& hook,
   return DoAddonCall(__func__,
                      [&hook, &tag](const AddonInstance* addon)
                      {
-                       CAddonEpgTag addonTag(tag);
+                       CAddonEpgTag addonTag(*tag);
 
                        PVR_MENUHOOK menuHook;
                        menuHook.category = PVR_MENUHOOK_EPG;
