@@ -23,6 +23,7 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/channels/PVRChannelsPath.h"
 #include "pvr/epg/EpgContainer.h"
+#include "pvr/epg/EpgSearch.h"
 #include "pvr/epg/EpgSearchFilter.h"
 #include "pvr/epg/EpgSearchPath.h"
 #include "pvr/recordings/PVRRecording.h"
@@ -224,6 +225,8 @@ bool CPVRGUIDirectory::GetDirectory(CFileItemList& results) const
     {
       if (path.IsSavedSearchesRoot())
         return GetSavedSearchesDirectory(path.IsRadio(), results);
+      else if (path.IsSavedSearch())
+        return GetSavedSearchResults(path.IsRadio(), path.GetId(), results);
     }
     return true;
   }
@@ -433,6 +436,24 @@ bool CPVRGUIDirectory::GetSavedSearchesDirectory(bool bRadio, CFileItemList& res
     results.Add(std::make_shared<CFileItem>(search));
   }
   return true;
+}
+
+bool CPVRGUIDirectory::GetSavedSearchResults(bool isRadio, int id, CFileItemList& results) const
+{
+  auto& epgContainer{CServiceBroker::GetPVRManager().EpgContainer()};
+  const std::shared_ptr<CPVREpgSearchFilter> filter{epgContainer.GetSavedSearchById(isRadio, id)};
+  if (filter)
+  {
+    CPVREpgSearch search(*filter);
+    search.Execute();
+    const auto tags{search.GetResults()};
+    for (const auto& tag : tags)
+    {
+      results.Add(std::make_shared<CFileItem>(tag));
+    }
+    return true;
+  }
+  return false;
 }
 
 bool CPVRGUIDirectory::GetChannelGroupsDirectory(bool bRadio,

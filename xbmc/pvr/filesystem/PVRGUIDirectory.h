@@ -100,6 +100,7 @@ private:
   bool GetTimersDirectory(CFileItemList& results) const;
   bool GetRecordingsDirectory(CFileItemList& results) const;
   bool GetSavedSearchesDirectory(bool bRadio, CFileItemList& results) const;
+  bool GetSavedSearchResults(bool isRadio, int id, CFileItemList& results) const;
 
   const CURL m_url;
 };

@@ -224,7 +224,7 @@ namespace PVR
      * @param bRadio Whether to fetch saved searches for radio or TV.
      * @return The searches.
      */
-    std::vector<std::shared_ptr<CPVREpgSearchFilter>> GetSavedSearches(bool bRadio);
+    std::vector<std::shared_ptr<CPVREpgSearchFilter>> GetSavedSearches(bool bRadio) const;
 
     /*!
      * @brief Get the saved search matching the given id.
@@ -232,7 +232,7 @@ namespace PVR
      * @param iId The id.
      * @return The saved search or nullptr if not found.
      */
-    std::shared_ptr<CPVREpgSearchFilter> GetSavedSearchById(bool bRadio, int iId);
+    std::shared_ptr<CPVREpgSearchFilter> GetSavedSearchById(bool bRadio, int iId) const;
 
     /*!
      * @brief Persist a saved search in the database.

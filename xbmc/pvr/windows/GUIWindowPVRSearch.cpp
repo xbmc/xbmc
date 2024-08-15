@@ -26,6 +26,7 @@
 #include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
+#include "pvr/epg/EpgSearch.h"
 #include "pvr/epg/EpgSearchFilter.h"
 #include "pvr/epg/EpgSearchPath.h"
 #include "pvr/guilib/PVRGUIActionsEPG.h"
@@ -71,27 +72,10 @@ bool AsyncSearchAction::Execute()
 
 void AsyncSearchAction::Run()
 {
-  std::vector<std::shared_ptr<CPVREpgInfoTag>> results =
-      CServiceBroker::GetPVRManager().EpgContainer().GetTags(m_filter->GetEpgSearchData());
-  m_filter->SetEpgSearchDataFiltered();
-
-  // Tags can still contain false positives, for search criteria that cannot be handled via
-  // database. So, run extended search filters on what we got from the database.
-  for (auto it = results.begin(); it != results.end();)
-  {
-    it = results.erase(std::remove_if(results.begin(), results.end(),
-                                      [this](const std::shared_ptr<CPVREpgInfoTag>& entry) {
-                                        return !m_filter->FilterEntry(entry);
-                                      }),
-                       results.end());
-  }
-
-  if (m_filter->ShouldRemoveDuplicates())
-    m_filter->RemoveDuplicates(results);
-
-  m_filter->SetLastExecutedDateTime(CDateTime::GetUTCDateTime());
-
-  for (const auto& tag : results)
+  CPVREpgSearch search(*m_filter);
+  search.Execute();
+  const auto tags{search.GetResults()};
+  for (const auto& tag : tags)
   {
     m_items->Add(std::make_shared<CFileItem>(tag));
   }
