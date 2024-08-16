@@ -43,26 +43,13 @@ public:
   /*! \cond PRIVATE */
   PVRTimer()
   {
-    m_cStructure->iClientIndex = 0;
     m_cStructure->state = PVR_TIMER_STATE_NEW;
     m_cStructure->iTimerType = PVR_TIMER_TYPE_NONE;
-    m_cStructure->iParentClientIndex = 0;
     m_cStructure->iClientChannelUid = PVR_TIMER_VALUE_NOT_AVAILABLE;
-    m_cStructure->startTime = 0;
-    m_cStructure->endTime = 0;
-    m_cStructure->bStartAnyTime = false;
-    m_cStructure->bEndAnyTime = false;
-    m_cStructure->bFullTextEpgSearch = false;
     m_cStructure->iPriority = PVR_TIMER_VALUE_NOT_AVAILABLE;
     m_cStructure->iLifetime = PVR_TIMER_VALUE_NOT_AVAILABLE;
     m_cStructure->iMaxRecordings = PVR_TIMER_VALUE_NOT_AVAILABLE;
-    m_cStructure->iRecordingGroup = 0;
-    m_cStructure->firstDay = 0;
     m_cStructure->iWeekdays = PVR_WEEKDAY_NONE;
-    m_cStructure->iPreventDuplicateEpisodes = 0;
-    m_cStructure->iEpgUid = 0;
-    m_cStructure->iMarginStart = 0;
-    m_cStructure->iMarginEnd = 0;
     m_cStructure->iGenreType = PVR_TIMER_VALUE_NOT_AVAILABLE;
     m_cStructure->iGenreSubType = PVR_TIMER_VALUE_NOT_AVAILABLE;
   }
@@ -171,7 +158,7 @@ public:
   }
 
   /// @brief To get with @ref SetTitle changed values.
-  std::string GetTitle() const { return m_cStructure->strTitle; }
+  std::string GetTitle() const { return m_cStructure->strTitle ? m_cStructure->strTitle : ""; }
 
   /// @brief **optional**\n
   /// For timers scheduled by a repeating timer.
@@ -245,7 +232,10 @@ public:
   }
 
   /// @brief To get with @ref SetEPGSearchString changed values
-  std::string GetEPGSearchString() const { return m_cStructure->strEpgSearchString; }
+  std::string GetEPGSearchString() const
+  {
+    return m_cStructure->strEpgSearchString ? m_cStructure->strEpgSearchString : "";
+  }
 
   /// @brief **optional**\n
   /// Indicates, whether @ref SetEPGSearchString() is to match against the epg
@@ -266,7 +256,10 @@ public:
   }
 
   /// @brief To get with @ref SetDirectory changed values.
-  std::string GetDirectory() const { return m_cStructure->strDirectory; }
+  std::string GetDirectory() const
+  {
+    return m_cStructure->strDirectory ? m_cStructure->strDirectory : "";
+  }
 
   /// @brief **optional**\n
   /// The summary for this timer.
@@ -276,7 +269,10 @@ public:
   }
 
   /// @brief To get with @ref SetDirectory changed values.
-  std::string GetSummary() const { return m_cStructure->strSummary; }
+  std::string GetSummary() const
+  {
+    return m_cStructure->strSummary ? m_cStructure->strSummary : "";
+  }
 
   /// @brief **optional**\n
   /// The priority of this timer.
@@ -461,7 +457,10 @@ public:
   }
 
   /// @brief To get with @ref SetSeriesLink changed values.
-  std::string GetSeriesLink() const { return m_cStructure->strSeriesLink; }
+  std::string GetSeriesLink() const
+  {
+    return m_cStructure->strSeriesLink ? m_cStructure->strSeriesLink : "";
+  }
   ///@}
 
   static void AllocResources(const PVR_TIMER* source, PVR_TIMER* target)
@@ -550,7 +549,6 @@ public:
   /*! \cond PRIVATE */
   PVRTimerType()
   {
-    memset(m_cStructure, 0, sizeof(PVR_TIMER_TYPE));
     m_cStructure->iPrioritiesDefault = -1;
     m_cStructure->iLifetimesDefault = -1;
     m_cStructure->iPreventDuplicateEpisodesDefault = -1;
@@ -628,7 +626,10 @@ public:
   }
 
   /// @brief To get with @ref SetDescription changed values.
-  std::string GetDescription() const { return m_cStructure->strDescription; }
+  std::string GetDescription() const
+  {
+    return m_cStructure->strDescription ? m_cStructure->strDescription : "";
+  }
 
   //----------------------------------------------------------------------------
 

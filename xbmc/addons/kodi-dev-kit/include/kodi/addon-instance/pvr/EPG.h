@@ -44,7 +44,6 @@ public:
   /*! \cond PRIVATE */
   PVREPGTag()
   {
-    memset(m_cStructure, 0, sizeof(EPG_TAG));
     m_cStructure->iSeriesNumber = EPG_TAG_INVALID_SERIES_EPISODE;
     m_cStructure->iEpisodeNumber = EPG_TAG_INVALID_SERIES_EPISODE;
     m_cStructure->iEpisodePartNumber = EPG_TAG_INVALID_SERIES_EPISODE;
@@ -76,8 +75,10 @@ public:
   /// | **Genre sub type** | `int` | @ref PVREPGTag::SetGenreSubType "SetGenreSubType" | @ref PVREPGTag::GetGenreSubType "GetGenreSubType" | *optional*
   /// | **Genre description** | `std::string` | @ref PVREPGTag::SetGenreDescription "SetGenreDescription" | @ref PVREPGTag::GetGenreDescription "GetGenreDescription" | *optional*
   /// | **First aired** | `time_t` | @ref PVREPGTag::SetFirstAired "SetFirstAired" | @ref PVREPGTag::GetFirstAired "GetFirstAired" | *optional*
-  /// | **Parental rating** | `int` | @ref PVREPGTag::SetParentalRating "SetParentalRating" | @ref PVREPGTag::GetParentalRating "GetParentalRating" | *optional*
-  /// | **Parental rating code** | `int` | @ref PVREPGTag::SetParentalRatingCode "SetParentalRatingCode" | @ref PVREPGTag::GetParentalRatingCode "GetParentalRatingCode" | *optional*
+  /// | **Parental rating** | `unsigned int` | @ref PVREPGTag::SetParentalRating "SetParentalRating" | @ref PVREPGTag::GetParentalRating "GetParentalRating" | *optional*
+  /// | **Parental rating code** | `std::string` | @ref PVREPGTag::SetParentalRatingCode "SetParentalRatingCode" | @ref PVREPGTag::GetParentalRatingCode "GetParentalRatingCode" | *optional*
+  /// | **Parental rating icon** | `std::string` | @ref PVREPGTag::SetParentalRatingIcon "SetParentalRatingIcon" | @ref PVREPGTag::GetParentalRatingIcon "GetParentalRatingIcon" | *optional*
+  /// | **Parental rating source** | `std::string` | @ref PVREPGTag::SetParentalRatingSource "SetParentalRatingSource" | @ref PVREPGTag::GetParentalRatingSource "GetParentalRatingSource" | *optional*
   /// | **Star rating** | `int` | @ref PVREPGTag::SetStarRating "SetStarRating" | @ref PVREPGTag::GetStarRating "GetStarRating" | *optional*
   /// | **Series number** | `int` | @ref PVREPGTag::SetSeriesNumber "SetSeriesNumber" | @ref PVREPGTag::GetSeriesNumber "GetSeriesNumber" | *optional*
   /// | **Episode number** | `int` | @ref PVREPGTag::SetEpisodeNumber "SetEpisodeNumber" | @ref PVREPGTag::GetEpisodeNumber "GetEpisodeNumber" | *optional*
@@ -118,7 +119,7 @@ public:
   }
 
   /// @brief To get with @ref SetTitle changed values.
-  std::string GetTitle() const { return m_cStructure->strTitle; }
+  std::string GetTitle() const { return m_cStructure->strTitle ? m_cStructure->strTitle : ""; }
 
   /// @brief **required**\n
   /// Start time in UTC.
@@ -146,7 +147,10 @@ public:
   }
 
   /// @brief To get with @ref SetPlotOutline changed values.
-  std::string GetPlotOutline() const { return m_cStructure->strPlotOutline; }
+  std::string GetPlotOutline() const
+  {
+    return m_cStructure->strPlotOutline ? m_cStructure->strPlotOutline : "";
+  }
 
   /// @brief **optional**\n
   /// Plot name.
@@ -156,7 +160,7 @@ public:
   }
 
   /// @brief To get with @ref GetPlot changed values.
-  std::string GetPlot() const { return m_cStructure->strPlot; }
+  std::string GetPlot() const { return m_cStructure->strPlot ? m_cStructure->strPlot : ""; }
 
   /// @brief **optional**\n
   /// Original title.
@@ -166,7 +170,10 @@ public:
   }
 
   /// @brief To get with @ref SetOriginalTitle changed values
-  std::string GetOriginalTitle() const { return m_cStructure->strOriginalTitle; }
+  std::string GetOriginalTitle() const
+  {
+    return m_cStructure->strOriginalTitle ? m_cStructure->strOriginalTitle : "";
+  }
 
   /// @brief **optional**\n
   /// Cast name(s).
@@ -178,7 +185,7 @@ public:
   }
 
   /// @brief To get with @ref SetCast changed values
-  std::string GetCast() const { return m_cStructure->strCast; }
+  std::string GetCast() const { return m_cStructure->strCast ? m_cStructure->strCast : ""; }
 
   /// @brief **optional**\n
   /// Director name(s).
@@ -190,7 +197,10 @@ public:
   }
 
   /// @brief To get with @ref SetDirector changed values.
-  std::string GetDirector() const { return m_cStructure->strDirector; }
+  std::string GetDirector() const
+  {
+    return m_cStructure->strDirector ? m_cStructure->strDirector : "";
+  }
 
   /// @brief **optional**\n
   /// Writer name(s).
@@ -202,7 +212,7 @@ public:
   }
 
   /// @brief To get with @ref SetDirector changed values
-  std::string GetWriter() const { return m_cStructure->strWriter; }
+  std::string GetWriter() const { return m_cStructure->strWriter ? m_cStructure->strWriter : ""; }
 
   /// @brief **optional**\n
   /// Year.
@@ -219,7 +229,10 @@ public:
   }
 
   /// @brief To get with @ref SetIMDBNumber changed values.
-  std::string GetIMDBNumber() const { return m_cStructure->strIMDBNumber; }
+  std::string GetIMDBNumber() const
+  {
+    return m_cStructure->strIMDBNumber ? m_cStructure->strIMDBNumber : "";
+  }
 
   /// @brief **optional**\n
   /// Icon path.
@@ -229,7 +242,10 @@ public:
   }
 
   /// @brief To get with @ref SetIconPath changed values.
-  std::string GetIconPath() const { return m_cStructure->strIconPath; }
+  std::string GetIconPath() const
+  {
+    return m_cStructure->strIconPath ? m_cStructure->strIconPath : "";
+  }
 
   /// @brief **optional**\n
   /// Genre type.
@@ -327,7 +343,10 @@ public:
   }
 
   /// @brief To get with @ref SetGenreDescription changed values.
-  std::string GetGenreDescription() const { return m_cStructure->strGenreDescription; }
+  std::string GetGenreDescription() const
+  {
+    return m_cStructure->strGenreDescription ? m_cStructure->strGenreDescription : "";
+  }
 
   /// @brief **optional**\n
   /// First aired in UTC.
@@ -337,16 +356,22 @@ public:
   }
 
   /// @brief To get with @ref SetFirstAired changed values.
-  std::string GetFirstAired() const { return m_cStructure->strFirstAired; }
+  std::string GetFirstAired() const
+  {
+    return m_cStructure->strFirstAired ? m_cStructure->strFirstAired : "";
+  }
 
   /// @brief **optional**\n
   /// Parental rating.
-  void SetParentalRating(int parentalRating) { m_cStructure->iParentalRating = parentalRating; }
+  void SetParentalRating(unsigned int parentalRating)
+  {
+    m_cStructure->iParentalRating = parentalRating;
+  }
 
   /// @brief To get with @ref SetParentalRatinge changed values.
-  int GetParentalRating() const { return m_cStructure->iParentalRating; }
+  unsigned int GetParentalRating() const { return m_cStructure->iParentalRating; }
 
-  /// @brief **required**\n
+  /// @brief **optional**\n
   /// This event's parental rating code.
   void SetParentalRatingCode(const std::string& parentalRatingCode)
   {
@@ -354,7 +379,37 @@ public:
   }
 
   /// @brief To get with @ref SetParentalRatingCode changed values.
-  std::string GetParentalRatingCode() const { return m_cStructure->strParentalRatingCode; }
+  std::string GetParentalRatingCode() const
+  {
+    return m_cStructure->strParentalRatingCode ? m_cStructure->strParentalRatingCode : "";
+  }
+
+  /// @brief **optional**\n
+  /// This event's parental rating icon.
+  void SetParentalRatingIcon(const std::string& parentalRatingIcon)
+  {
+    ReallocAndCopyString(&m_cStructure->strParentalRatingIcon, parentalRatingIcon.c_str());
+  }
+
+  /// @brief To get with @ref SetParentalRatingIcon changed values.
+  std::string GetParentalRatingIcon() const
+  {
+    return m_cStructure->strParentalRatingIcon ? m_cStructure->strParentalRatingIcon : "";
+  }
+
+  /// @brief **optional**\n
+  /// The event's parental rating source.
+  void SetParentalRatingSource(const std::string& parentalRatingSource)
+  {
+    //m_parentalRatingSource = parentalRatingSource;
+    ReallocAndCopyString(&m_cStructure->strParentalRatingSource, parentalRatingSource.c_str());
+  }
+
+  /// @brief To get with @ref SetParentalRatingSource changed values.
+  std::string GetParentalRatingSource() const
+  {
+    return m_cStructure->strParentalRatingSource ? m_cStructure->strParentalRatingSource : "";
+  }
 
   /// @brief **optional**\n
   /// Star rating.
@@ -395,7 +450,10 @@ public:
   }
 
   /// @brief To get with @ref SetEpisodeName changed values.
-  std::string GetEpisodeName() const { return m_cStructure->strEpisodeName; }
+  std::string GetEpisodeName() const
+  {
+    return m_cStructure->strEpisodeName ? m_cStructure->strEpisodeName : "";
+  }
 
   /// @brief **optional**\n
   /// Bit field of independent flags associated with the EPG entry.
@@ -419,7 +477,10 @@ public:
   }
 
   /// @brief To get with @ref SetSeriesLink changed values.
-  std::string GetSeriesLink() const { return m_cStructure->strSeriesLink; }
+  std::string GetSeriesLink() const
+  {
+    return m_cStructure->strSeriesLink ? m_cStructure->strSeriesLink : "";
+  }
 
   ///@}
 
@@ -436,6 +497,8 @@ public:
     target->strIconPath = AllocAndCopyString(source->strIconPath);
     target->strGenreDescription = AllocAndCopyString(source->strGenreDescription);
     target->strParentalRatingCode = AllocAndCopyString(source->strParentalRatingCode);
+    target->strParentalRatingIcon = AllocAndCopyString(source->strParentalRatingIcon);
+    target->strParentalRatingSource = AllocAndCopyString(source->strParentalRatingSource);
     target->strEpisodeName = AllocAndCopyString(source->strEpisodeName);
     target->strSeriesLink = AllocAndCopyString(source->strSeriesLink);
     target->strFirstAired = AllocAndCopyString(source->strFirstAired);
@@ -454,6 +517,8 @@ public:
     FreeString(target->strIconPath);
     FreeString(target->strGenreDescription);
     FreeString(target->strParentalRatingCode);
+    FreeString(target->strParentalRatingIcon);
+    FreeString(target->strParentalRatingSource);
     FreeString(target->strEpisodeName);
     FreeString(target->strSeriesLink);
     FreeString(target->strFirstAired);

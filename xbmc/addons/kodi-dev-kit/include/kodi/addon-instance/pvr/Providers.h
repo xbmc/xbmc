@@ -42,7 +42,7 @@ class PVRProvider : public DynamicCStructHdl<PVRProvider, PVR_PROVIDER>
 
 public:
   /*! \cond PRIVATE */
-  PVRProvider() { memset(m_cStructure, 0, sizeof(PVR_PROVIDER)); }
+  PVRProvider() = default;
   PVRProvider(const PVRProvider& provider) : DynamicCStructHdl(provider) {}
   /*! \endcond */
 
@@ -78,7 +78,7 @@ public:
   }
 
   /// @brief To get with @ref SetName changed values.
-  std::string GetName() const { return m_cStructure->strName; }
+  std::string GetName() const { return m_cStructure->strName ? m_cStructure->strName : ""; }
 
   /// @brief **optional**\n
   /// Provider type.
@@ -107,7 +107,10 @@ public:
   }
 
   /// @brief To get with @ref SetIconPath changed values.
-  std::string GetIconPath() const { return m_cStructure->strIconPath; }
+  std::string GetIconPath() const
+  {
+    return m_cStructure->strIconPath ? m_cStructure->strIconPath : "";
+  }
   ///@}
 
   /// @brief **optional**\n
@@ -124,7 +127,10 @@ public:
   /// @brief To get with @ref SetCountries changed values.
   std::vector<std::string> GetCountries() const
   {
-    return tools::StringUtils::Split(m_cStructure->strCountries, PROVIDER_STRING_TOKEN_SEPARATOR);
+    if (m_cStructure->strCountries)
+      return tools::StringUtils::Split(m_cStructure->strCountries, PROVIDER_STRING_TOKEN_SEPARATOR);
+    else
+      return {};
   }
   ///@}
 
@@ -142,7 +148,10 @@ public:
   /// @brief To get with @ref SetLanguages changed values.
   std::vector<std::string> GetLanguages() const
   {
-    return tools::StringUtils::Split(m_cStructure->strLanguages, PROVIDER_STRING_TOKEN_SEPARATOR);
+    if (m_cStructure->strLanguages)
+      return tools::StringUtils::Split(m_cStructure->strLanguages, PROVIDER_STRING_TOKEN_SEPARATOR);
+    else
+      return {};
   }
   ///@}
 

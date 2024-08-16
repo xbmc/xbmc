@@ -122,7 +122,10 @@ public:
       m_thumbnailPath(recording.ClientThumbnailPath()),
       m_fanartPath(recording.ClientFanartPath()),
       m_firstAired(recording.FirstAired().IsValid() ? recording.FirstAired().GetAsW3CDate() : ""),
-      m_providerName(recording.ProviderName())
+      m_providerName(recording.ProviderName()),
+      m_parentalRatingCode(""), //! @todo
+      m_parentalRatingIcon(""), //! @todo
+      m_parentalRatingSource("") //! @todo
   {
     time_t recTime;
     recording.RecordingTimeAsUTC().GetAsTime(recTime);
@@ -132,6 +135,7 @@ public:
     strEpisodeName = m_episodeName.c_str();
     iSeriesNumber = recording.m_iSeason;
     iEpisodeNumber = recording.m_iEpisode;
+    iEpisodePartNumber = PVR_RECORDING_INVALID_SERIES_EPISODE; //! @todo
     iYear = recording.GetYear();
     strDirectory = m_directory.c_str();
     strPlotOutline = m_plotOutline.c_str();
@@ -161,6 +165,9 @@ public:
     sizeInBytes = recording.GetSizeInBytes();
     strProviderName = m_providerName.c_str();
     iClientProviderUid = recording.ClientProviderUniqueId();
+    strParentalRatingCode = m_parentalRatingCode.c_str();
+    strParentalRatingIcon = m_parentalRatingIcon.c_str();
+    strParentalRatingSource = m_parentalRatingSource.c_str();
   }
   virtual ~CAddonRecording() = default;
 
@@ -178,6 +185,9 @@ private:
   const std::string m_fanartPath;
   const std::string m_firstAired;
   const std::string m_providerName;
+  const std::string m_parentalRatingCode;
+  const std::string m_parentalRatingIcon;
+  const std::string m_parentalRatingSource;
 };
 
 class CAddonTimer : public PVR_TIMER
@@ -812,7 +822,9 @@ public:
       m_strIconPath(kodiTag->ClientIconPath()),
       m_strSeriesLink(kodiTag->SeriesLink()),
       m_strGenreDescription(kodiTag->GenreDescription()),
-      m_strParentalRatingCode(kodiTag->ParentalRatingCode())
+      m_strParentalRatingCode(kodiTag->ParentalRatingCode()),
+      m_strParentalRatingIcon(""), //! @todo
+      m_strParentalRatingSource("") //! @todo
   {
     time_t t;
     kodiTag->StartAsUTC().GetAsTime(t);
@@ -849,6 +861,8 @@ public:
     strGenreDescription = m_strGenreDescription.c_str();
     strFirstAired = m_strFirstAired.c_str();
     strParentalRatingCode = m_strParentalRatingCode.c_str();
+    strParentalRatingIcon = m_strParentalRatingIcon.c_str();
+    strParentalRatingSource = m_strParentalRatingSource.c_str();
   }
 
   virtual ~CAddonEpgTag() = default;
@@ -868,6 +882,8 @@ private:
   std::string m_strGenreDescription;
   std::string m_strFirstAired;
   std::string m_strParentalRatingCode;
+  std::string m_strParentalRatingIcon;
+  std::string m_strParentalRatingSource;
 };
 
 PVR_ERROR CPVRClient::IsRecordable(const std::shared_ptr<const CPVREpgInfoTag>& tag,
@@ -1514,8 +1530,8 @@ PVR_ERROR CPVRClient::GetChannelStreamProperties(const std::shared_ptr<const CPV
 
     PVR_NAMED_VALUE** property_array{nullptr};
     unsigned int size{0};
-    const PVR_ERROR error{
-        addon->toAddon->GetChannelStreamProperties(addon, &addonChannel, &property_array, &size)};
+    const PVR_ERROR error{addon->toAddon->GetChannelStreamProperties(
+        addon, &addonChannel, PVR_SOURCE::DEFAULT, &property_array, &size)};
     if (error == PVR_ERROR_NO_ERROR)
       WriteStreamProperties(property_array, size, props);
 
