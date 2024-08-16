@@ -10,6 +10,7 @@
 #include "cores/VideoPlayer/VideoRenderers/VideoShaders/ConversionMatrix.h"
 #include "xbmc/utils/MathUtils.h"
 
+#include <iomanip>
 #include <iostream>
 
 #include <gtest/gtest.h>
