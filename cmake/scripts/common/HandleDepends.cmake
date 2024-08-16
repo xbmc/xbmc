@@ -271,7 +271,7 @@ function(add_addon_depends addon searchpath)
 
             externalproject_add(${id}
                                 URL ${url}
-                                "${URL_HASH_COMMAND}"
+                                ${URL_HASH_COMMAND}
                                 DOWNLOAD_DIR ${DOWNLOAD_DIR}
                                 CONFIGURE_COMMAND ${CONFIGURE_COMMAND}
                                 ${EXTERNALPROJECT_SETUP})
