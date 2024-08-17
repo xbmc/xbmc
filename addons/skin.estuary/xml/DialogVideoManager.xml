@@ -84,7 +84,6 @@
 				<height>565</height>
 				<onleft condition="Integer.IsGreater(Container(50).NumItems,0)">100</onleft>
 				<itemgap>dialogbuttons_itemgap</itemgap>
-				<align>top</align>
 				<scrolltime tween="quadratic">200</scrolltime>
 				<include content="DefaultDialogButton">
 					<param name="id" value="21" />
