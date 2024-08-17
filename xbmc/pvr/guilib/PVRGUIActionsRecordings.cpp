@@ -17,8 +17,11 @@
 #include "filesystem/IDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#include "pvr/PVREventLogJob.h"
 #include "pvr/PVRItem.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClient.h"
@@ -26,8 +29,10 @@
 #include "pvr/dialogs/GUIDialogPVRRecordingInfo.h"
 #include "pvr/dialogs/GUIDialogPVRRecordingSettings.h"
 #include "pvr/recordings/PVRRecording.h"
+#include "pvr/recordings/PVRRecordings.h"
 #include "settings/Settings.h"
 #include "threads/IRunnable.h"
+#include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
@@ -40,6 +45,14 @@ using namespace KODI::MESSAGING;
 
 namespace
 {
+enum PVRRECORD_DELETE_AFTER_WATCH
+{
+  // Values must match those defined in settings.xml -> pvrrecord.deleteafterwatch
+  NO = 0,
+  ASK = 1,
+  YES = 2,
+};
+
 class AsyncRecordingAction : private IRunnable
 {
 public:
@@ -181,6 +194,11 @@ private:
 };
 
 } // unnamed namespace
+
+CPVRGUIActionsRecordings::CPVRGUIActionsRecordings()
+  : m_settings({CSettings::SETTING_PVRRECORD_DELETEAFTERWATCH})
+{
+}
 
 bool CPVRGUIActionsRecordings::ShowRecordingInfo(const CFileItem& item) const
 {
@@ -350,4 +368,85 @@ bool CPVRGUIActionsRecordings::ShowRecordingSettings(
   pDlgInfo->Open();
 
   return pDlgInfo->IsConfirmed();
+}
+
+bool CPVRGUIActionsRecordings::ProcessDeleteAfterWatch(const CFileItem& item) const
+{
+  bool deleteRecording{false};
+
+  const int action{m_settings.GetIntValue(CSettings::SETTING_PVRRECORD_DELETEAFTERWATCH)};
+  switch (action)
+  {
+    case PVRRECORD_DELETE_AFTER_WATCH::NO:
+      deleteRecording = false;
+      break;
+
+    case PVRRECORD_DELETE_AFTER_WATCH::ASK:
+      deleteRecording = (HELPERS::ShowYesNoDialogLines(
+                             CVariant{860}, // "Delete after watching"
+                             CVariant{865}, // "Do you want to delete this recording?"
+                             CVariant{""}, CVariant{item.GetPVRRecordingInfoTag()->GetTitle()}) ==
+                         HELPERS::DialogResponse::CHOICE_YES);
+      break;
+
+    case PVRRECORD_DELETE_AFTER_WATCH::YES:
+      deleteRecording = true;
+      break;
+
+    default:
+      CLog::LogF(LOGERROR, "Unhandled delete after watch action! Defaulting to 'no delete'.");
+      deleteRecording = false;
+      break;
+  }
+
+  if (deleteRecording)
+  {
+    if (AsyncDeleteRecording().Execute(item))
+    {
+      CPVREventLogJob* job = new CPVREventLogJob;
+      job->AddEvent(true, // display a toast, and log event
+                    EventLevel::Information, // info, no error
+                    g_localizeStrings.Get(860), // "Delete after watching"
+                    StringUtils::Format(g_localizeStrings.Get(866), // Recording deleted: <title>
+                                        item.GetPVRRecordingInfoTag()->GetTitle()),
+                    item.GetPVRRecordingInfoTag()->IconPath());
+      CServiceBroker::GetJobManager()->AddJob(job, nullptr);
+    }
+    else
+    {
+      HELPERS::ShowOKDialogText(CVariant{257}, // "Error"
+                                CVariant{19111}); // "PVR backend error."
+      return false;
+    }
+  }
+  return true;
+}
+
+bool CPVRGUIActionsRecordings::IncrementPlayCount(const CFileItem& item) const
+{
+  if (!item.IsPVRRecording())
+    return false;
+
+  if (item.GetPVRRecordingInfoTag()->IncrementPlayCount())
+  {
+    // Item must now be watched (because play count > 0).
+    return ProcessDeleteAfterWatch(item);
+  }
+  return false;
+}
+
+bool CPVRGUIActionsRecordings::MarkWatched(const CFileItem& item, bool watched) const
+{
+  if (!item.IsPVRRecording())
+    return false;
+
+  if (CServiceBroker::GetPVRManager().Recordings()->MarkWatched(item.GetPVRRecordingInfoTag(),
+                                                                watched))
+  {
+    if (watched)
+      return ProcessDeleteAfterWatch(item);
+
+    return true;
+  }
+  return false;
 }

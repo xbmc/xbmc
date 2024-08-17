@@ -9,6 +9,7 @@
 #pragma once
 
 #include "pvr/IPVRComponent.h"
+#include "pvr/settings/PVRSettings.h"
 
 #include <memory>
 
@@ -21,7 +22,7 @@ class CPVRRecording;
 class CPVRGUIActionsRecordings : public IPVRComponent
 {
 public:
-  CPVRGUIActionsRecordings() = default;
+  CPVRGUIActionsRecordings();
   ~CPVRGUIActionsRecordings() override = default;
 
   /*!
@@ -73,6 +74,21 @@ public:
    */
   bool UndeleteRecording(const CFileItem& item) const;
 
+  /*!
+   * @brief Increment the play count of a recording. Process "Delete after watching" action.
+   * @param item containing a recording for which the play count shall be incremented.
+   * @return true, if the recording's play count was incremented successfully, false otherwise.
+   */
+  bool IncrementPlayCount(const CFileItem& item) const;
+
+  /*!
+   * @brief Mark a recording watched or unwatched. Process "Delete after watching" action.
+   * @param item containing a recording to be marked watched or unwatched.
+   * @param watched Whether to mark the recording watched or unwatched.
+   * @return true, if the recording's watched state was changed successfully, false otherwise.
+   */
+  bool MarkWatched(const CFileItem& item, bool watched) const;
+
 private:
   CPVRGUIActionsRecordings(const CPVRGUIActionsRecordings&) = delete;
   CPVRGUIActionsRecordings const& operator=(CPVRGUIActionsRecordings const&) = delete;
@@ -103,6 +119,15 @@ private:
    * @return true, if the dialog was ended successfully, false otherwise.
    */
   bool ShowRecordingSettings(const std::shared_ptr<CPVRRecording>& recording) const;
+
+  /*!
+   * @brief Process action according to "Delete after watching" setting value.
+   * @param item The watched recording.
+   * @return true on success, false otherwise.
+   */
+  bool ProcessDeleteAfterWatch(const CFileItem& item) const;
+
+  CPVRSettings m_settings;
 };
 
 namespace GUI
