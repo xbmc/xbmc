@@ -15,7 +15,7 @@
 #include "guilib/WindowIDs.h"
 #include "input/WindowTranslator.h"
 #include "pvr/PVRManager.h"
-#include "pvr/addons/PVRClient.h" // PVR_ANY_CLIENT_ID
+#include "pvr/addons/PVRClient.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupMember.h"
@@ -624,9 +624,26 @@ bool CPVRGUIDirectory::GetChannelsDirectory(CFileItemList& results) const
         if (playedOnly && !groupMember->Channel()->LastWatched())
           continue;
 
-        if (dateAdded && (!groupMember->Channel()->DateTimeAdded().IsValid() ||
-                          groupMember->Channel()->LastWatched()))
-          continue;
+        if (dateAdded)
+        {
+          if (groupMember->Channel()->LastWatched())
+            continue;
+
+          const CDateTime dtChannelAdded{groupMember->Channel()->DateTimeAdded()};
+          if (!dtChannelAdded.IsValid())
+            continue;
+
+          const std::shared_ptr<const CPVRClient> client{
+              CServiceBroker::GetPVRManager().GetClient(groupMember->ChannelClientID())};
+          if (client)
+          {
+            const CDateTime& dtFirstChannelsAdded{client->GetDateTimeFirstChannelsAdded()};
+            if (dtFirstChannelsAdded.IsValid() && (dtChannelAdded <= dtFirstChannelsAdded))
+            {
+              continue; // Ignore channels added on very first GetChannels call for the client.
+            }
+          }
+        }
 
         results.Add(std::make_shared<CFileItem>(groupMember));
       }

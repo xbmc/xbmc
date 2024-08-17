@@ -1053,7 +1053,20 @@ PVR_ERROR CPVRClient::GetChannels(bool radio,
         PVR_HANDLE_STRUCT handle = {};
         handle.callerAddress = this;
         handle.dataAddress = &channels;
-        return addon->toAddon->GetChannels(addon, &handle, radio);
+        const PVR_ERROR error{addon->toAddon->GetChannels(addon, &handle, radio)};
+
+        if (error == PVR_ERROR_NO_ERROR)
+        {
+          const CDateTime& dateTime{GetDateTimeFirstChannelsAdded()};
+          if (!dateTime.IsValid())
+          {
+            // Remember when first channels were added for this client.
+            const_cast<CPVRClient*>(this)->SetDateTimeFirstChannelsAdded(
+                CDateTime::GetUTCDateTime());
+          }
+        }
+
+        return error;
       },
       (radio && m_clientCapabilities.SupportsRadio()) ||
           (!radio && m_clientCapabilities.SupportsTV()));
@@ -2002,6 +2015,30 @@ int CPVRClient::GetPriority() const
     m_priority = CServiceBroker::GetPVRManager().GetTVDatabase()->GetPriority(*this);
   }
   return *m_priority;
+}
+
+const CDateTime& CPVRClient::GetDateTimeFirstChannelsAdded() const
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  if (!m_firstChannelsAdded.has_value() && m_iClientId > PVR_INVALID_CLIENT_ID)
+  {
+    m_firstChannelsAdded =
+        CServiceBroker::GetPVRManager().GetTVDatabase()->GetDateTimeFirstChannelsAdded(*this);
+  }
+  return *m_firstChannelsAdded;
+}
+
+void CPVRClient::SetDateTimeFirstChannelsAdded(const CDateTime& dateTime)
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  if (m_firstChannelsAdded != dateTime)
+  {
+    m_firstChannelsAdded = dateTime;
+    if (m_iClientId > PVR_INVALID_CLIENT_ID)
+    {
+      CServiceBroker::GetPVRManager().GetTVDatabase()->Persist(*this);
+    }
+  }
 }
 
 void CPVRClient::HandleAddonCallback(const char* strFunctionName,

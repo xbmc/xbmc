@@ -14,6 +14,8 @@
 #include <map>
 #include <vector>
 
+class CDateTime;
+
 namespace PVR
 {
   class CPVRChannel;
@@ -64,7 +66,7 @@ namespace PVR
      * @brief Get the minimal database version that is required to operate correctly.
      * @return The minimal database version.
      */
-    int GetSchemaVersion() const override { return 46; }
+    int GetSchemaVersion() const override { return 47; }
 
     /*!
      * @brief Get the default sqlite database filename.
@@ -101,6 +103,13 @@ namespace PVR
      * @return The priority.
      */
     int GetPriority(const CPVRClient& client) const;
+
+    /*!
+     * @brief Get the date and time first channels were added for the given client.
+     * @param client The client.
+     * @return The date and time first channels were added.
+     */
+    CDateTime GetDateTimeFirstChannelsAdded(const CPVRClient& client) const;
 
     /*!
      * @brief Get the numeric client ID for given addon ID and instance ID from the database.

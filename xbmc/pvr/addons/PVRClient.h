@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "XBDateTime.h"
 #include "addons/binary-addons/AddonInstanceHandler.h"
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr.h"
 #include "pvr/addons/PVRClientCapabilities.h"
@@ -806,6 +807,18 @@ public:
   void SetPriority(int iPriority);
 
   /*!
+   * @brief Get the date and time first channels were added for this client.
+   * @return The date and time first channels were added.
+   */
+  const CDateTime& GetDateTimeFirstChannelsAdded() const;
+
+  /*!
+   * @brief Set the date and time first channels were added for this client.
+   * @param dateTime The date and time first channels were added.
+   */
+  void SetDateTimeFirstChannelsAdded(const CDateTime& dateTime);
+
+  /*!
    * @brief Obtain the chunk size to use when reading streams.
    * @param iChunkSize the chunk size in bytes.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
@@ -1066,6 +1079,8 @@ private:
   std::vector<std::shared_ptr<CPVRTimerType>>
       m_timertypes; /*!< timer types supported by this backend */
   mutable std::optional<int> m_priority; /*!< priority of the client */
+  mutable std::optional<CDateTime>
+      m_firstChannelsAdded; /*!< date and time the first channels were added for this client */
 
   /* cached data */
   std::string m_strBackendName; /*!< the cached backend version */
