@@ -840,8 +840,6 @@ void CGUIDialogPVRChannelManager::Update()
   for (const auto& member : groupMembers)
   {
     channelFile = std::make_shared<CFileItem>(member);
-    if (!channelFile)
-      continue;
     const std::shared_ptr<const CPVRChannel> channel(channelFile->GetPVRChannelInfoTag());
 
     channelFile->SetProperty(PROPERTY_CHANNEL_ENABLED, !channel->IsHidden());

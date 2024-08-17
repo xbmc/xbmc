@@ -264,6 +264,9 @@ bool CGUIDialogPVRGroupManager::ActionButtonUngroupedChannels(const CGUIMessage&
 
   if (m_viewUngroupedChannels.HasControl(iControl)) // list/thumb control
   {
+    if (!m_selectedGroup)
+      return bReturn;
+
     m_iSelectedUngroupedChannel = m_viewUngroupedChannels.GetSelectedItem();
     if (m_selectedGroup->SupportsMemberAdd())
     {
@@ -304,6 +307,9 @@ bool CGUIDialogPVRGroupManager::ActionButtonGroupMembers(const CGUIMessage& mess
 
   if (m_viewGroupMembers.HasControl(iControl)) // list/thumb control
   {
+    if (!m_selectedGroup)
+      return bReturn;
+
     m_iSelectedGroupMember = m_viewGroupMembers.GetSelectedItem();
     if (m_selectedGroup->SupportsMemberRemove())
     {
@@ -311,7 +317,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonGroupMembers(const CGUIMessage& mess
 
       if (actionID == ACTION_SELECT_ITEM || actionID == ACTION_MOUSE_LEFT_CLICK)
       {
-        if (m_selectedGroup && m_groupMembers->GetFileCount() > 0)
+        if (m_groupMembers->GetFileCount() > 0)
         {
           const auto itemChannel = m_groupMembers->Get(m_iSelectedGroupMember);
           ClearGroupThumbnails(*itemChannel);

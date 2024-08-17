@@ -114,11 +114,6 @@ void CPVRClients::UpdateClients(
           else
           {
             client = std::make_shared<CPVRClient>(addon, instanceId, clientId);
-            if (!client)
-            {
-              CLog::LogF(LOGERROR, "Severe error, incorrect add-on type");
-              continue;
-            }
           }
 
           // determine actual enabled state of instance
