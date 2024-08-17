@@ -812,12 +812,6 @@ public:
    */
   PVR_ERROR GetStreamReadChunkSize(int& iChunkSize) const;
 
-  /*!
-   * @brief Get the interface table used between addon and Kodi.
-   * @todo This function will be removed after old callback library system is removed.
-   */
-  AddonInstance_PVR* GetInstanceInterface() { return m_ifc.pvr; }
-
 private:
   /*!
    * @brief Resets all class members to their defaults, accept the client id.
