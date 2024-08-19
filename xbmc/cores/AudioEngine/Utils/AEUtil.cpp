@@ -607,3 +607,25 @@ int CAEUtil::GetAVChannelIndex(enum AEChannel aechannel, uint64_t layout)
   av_channel_layout_uninit(&ch_layout);
   return idx;
 }
+
+void CAEUtil::GenerateSilence(AEDataFormat format,
+                              unsigned int frameSize,
+                              void* buffer,
+                              unsigned int frames)
+
+{
+  const unsigned int dataLength{frames * frameSize};
+
+  switch (format)
+  {
+    case AV_SAMPLE_FMT_U8:
+    case AV_SAMPLE_FMT_U8P:
+      memset(buffer, 0x80, dataLength);
+      break;
+
+    default:
+      // binary representation of 0 in all other formats regardless of number of bits per sample
+      // is a concatenation of 0 bytes.
+      memset(buffer, 0, dataLength);
+  }
+}

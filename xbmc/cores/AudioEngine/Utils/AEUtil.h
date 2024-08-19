@@ -178,4 +178,8 @@ public:
   static uint64_t GetAVChannelMask(enum AEChannel aechannel);
   static enum AVChannel GetAVChannel(enum AEChannel aechannel);
   static int GetAVChannelIndex(enum AEChannel aechannel, uint64_t layout);
+  static void GenerateSilence(AEDataFormat format,
+                              unsigned int frameSize,
+                              void* buffer,
+                              unsigned int frames);
 };
