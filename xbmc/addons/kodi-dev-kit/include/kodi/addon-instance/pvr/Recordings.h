@@ -56,6 +56,7 @@ public:
     m_cStructure->iChannelUid = PVR_RECORDING_VALUE_NOT_AVAILABLE;
     m_cStructure->channelType = PVR_RECORDING_CHANNEL_TYPE_UNKNOWN;
     m_cStructure->sizeInBytes = PVR_RECORDING_VALUE_NOT_AVAILABLE;
+    m_cStructure->iClientProviderUid = PVR_PROVIDER_INVALID_UID;
   }
   PVRRecording(const PVRRecording& recording) : DynamicCStructHdl(recording) {}
   /*! \endcond */
