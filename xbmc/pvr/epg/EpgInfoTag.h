@@ -301,14 +301,25 @@ public:
    * @brief Get the parental rating of this event.
    * @return The parental rating.
    */
-  int ParentalRating() const;
+  unsigned int ParentalRating() const;
 
   /*!
    * @brief Get the parental rating code of this event.
    * @return The parental rating code.
    */
-  const std::string& ParentalRatingCode() const { return m_strParentalRatingCode; }
+  const std::string& ParentalRatingCode() const { return m_parentalRatingCode; }
 
+  /*!
+   * @brief Get the parental rating icon path of this event.
+   * @return Path to the parental rating icon.
+   */
+  const std::string& ParentalRatingIcon() const { return m_parentalRatingIcon; }
+
+  /*!
+   * @brief Get the parental rating source of this event.
+   * @return The parental rating source.
+   */
+  const std::string& ParentalRatingSource() const { return m_parentalRatingSource; }
   /*!
    * @brief Get the star rating of this event.
    * @return The star rating.
@@ -484,8 +495,10 @@ private:
   int m_iGenreType = 0; /*!< genre type */
   int m_iGenreSubType = 0; /*!< genre subtype */
   std::string m_strGenreDescription; /*!< genre description */
-  int m_iParentalRating = 0; /*!< parental rating */
-  std::string m_strParentalRatingCode; /*!< parental rating code */
+  unsigned int m_parentalRating = 0; /*!< parental rating */
+  std::string m_parentalRatingCode; /*!< Parental rating code */
+  std::string m_parentalRatingIcon; /*!< parental rating icon path */
+  std::string m_parentalRatingSource; /*!< parental rating source */
   int m_iStarRating = 0; /*!< star rating */
   int m_iSeriesNumber = -1; /*!< series number */
   int m_iEpisodeNumber = -1; /*!< episode number */
