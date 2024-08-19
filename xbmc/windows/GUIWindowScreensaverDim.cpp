@@ -68,6 +68,11 @@ void CGUIWindowScreensaverDim::Process(unsigned int currentTime, CDirtyRegionLis
 
 void CGUIWindowScreensaverDim::Render()
 {
+  RENDER_ORDER renderOrder = CServiceBroker::GetWinSystem()->GetGfxContext().GetRenderOrder();
+  if (renderOrder == RENDER_ORDER_FRONT_TO_BACK)
+    return;
+  else if (renderOrder == RENDER_ORDER_BACK_TO_FRONT)
+    CServiceBroker::GetWinSystem()->GetGfxContext().SetRenderOrder(RENDER_ORDER_ALL_BACK_TO_FRONT);
   // draw a translucent black quad - fading is handled by the window animation
   KODI::UTILS::COLOR::Color color =
       (static_cast<KODI::UTILS::COLOR::Color>(m_dimLevel * 2.55f) & 0xff) << 24;
@@ -75,4 +80,5 @@ void CGUIWindowScreensaverDim::Render()
   CRect rect(0, 0, (float)CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth(), (float)CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight());
   CGUITexture::DrawQuad(rect, color);
   CGUIDialog::Render();
+  CServiceBroker::GetWinSystem()->GetGfxContext().SetRenderOrder(renderOrder);
 }
