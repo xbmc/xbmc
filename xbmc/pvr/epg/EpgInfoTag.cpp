@@ -68,7 +68,7 @@ CPVREpgInfoTag::CPVREpgInfoTag(const EPG_TAG& data,
                                int iEpgID)
   : m_iGenreType(data.iGenreType),
     m_iGenreSubType(data.iGenreSubType),
-    m_iParentalRating(data.iParentalRating),
+    m_parentalRating(data.iParentalRating),
     m_iStarRating(data.iStarRating),
     m_iSeriesNumber(data.iSeriesNumber),
     m_iEpisodeNumber(data.iEpisodeNumber),
@@ -130,7 +130,11 @@ CPVREpgInfoTag::CPVREpgInfoTag(const EPG_TAG& data,
   if (data.strSeriesLink)
     m_strSeriesLink = data.strSeriesLink;
   if (data.strParentalRatingCode)
-    m_strParentalRatingCode = data.strParentalRatingCode;
+    m_parentalRatingCode = data.strParentalRatingCode;
+  if (data.strParentalRatingIcon)
+    m_parentalRatingIcon = data.strParentalRatingIcon;
+  if (data.strParentalRatingSource)
+    m_parentalRatingSource = data.strParentalRatingSource;
 }
 
 void CPVREpgInfoTag::SetChannelData(const std::shared_ptr<CPVREpgChannelData>& data)
@@ -167,8 +171,10 @@ void CPVREpgInfoTag::Serialize(CVariant& value) const
   std::unique_lock<CCriticalSection> lock(m_critSection);
   value["broadcastid"] = m_iDatabaseID; // Use DB id here as it is unique across PVR clients
   value["channeluid"] = m_channelData->UniqueClientChannelId();
-  value["parentalrating"] = m_iParentalRating;
-  value["parentalratingcode"] = m_strParentalRatingCode;
+  value["parentalrating"] = m_parentalRating;
+  value["parentalratingcode"] = m_parentalRatingCode;
+  value["parentalratingicon"] = m_parentalRatingIcon;
+  value["parentalratingsource"] = m_parentalRatingSource;
   value["rating"] = m_iStarRating;
   value["title"] = m_strTitle;
   value["plotoutline"] = m_strPlotOutline;
@@ -398,9 +404,9 @@ CDateTime CPVREpgInfoTag::FirstAired() const
   return m_firstAired;
 }
 
-int CPVREpgInfoTag::ParentalRating() const
+unsigned int CPVREpgInfoTag::ParentalRating() const
 {
-  return m_iParentalRating;
+  return m_parentalRating;
 }
 
 int CPVREpgInfoTag::StarRating() const
@@ -449,11 +455,12 @@ bool CPVREpgInfoTag::Update(const CPVREpgInfoTag& tag, bool bUpdateBroadcastId /
        m_startTime != tag.m_startTime || m_endTime != tag.m_endTime ||
        m_iGenreType != tag.m_iGenreType || m_iGenreSubType != tag.m_iGenreSubType ||
        m_strGenreDescription != tag.m_strGenreDescription || m_firstAired != tag.m_firstAired ||
-       m_iParentalRating != tag.m_iParentalRating ||
-       m_strParentalRatingCode != tag.m_strParentalRatingCode ||
-       m_iStarRating != tag.m_iStarRating || m_iEpisodeNumber != tag.m_iEpisodeNumber ||
-       m_iEpisodePart != tag.m_iEpisodePart || m_iSeriesNumber != tag.m_iSeriesNumber ||
-       m_strEpisodeName != tag.m_strEpisodeName ||
+       m_parentalRating != tag.m_parentalRating ||
+       m_parentalRatingCode != tag.m_parentalRatingCode ||
+       m_parentalRatingIcon != tag.m_parentalRatingIcon ||
+       m_parentalRatingSource != tag.m_parentalRatingSource || m_iStarRating != tag.m_iStarRating ||
+       m_iEpisodeNumber != tag.m_iEpisodeNumber || m_iEpisodePart != tag.m_iEpisodePart ||
+       m_iSeriesNumber != tag.m_iSeriesNumber || m_strEpisodeName != tag.m_strEpisodeName ||
        m_iUniqueBroadcastID != tag.m_iUniqueBroadcastID || m_iEpgID != tag.m_iEpgID ||
        m_genre != tag.m_genre || m_iconPath != tag.m_iconPath || m_iFlags != tag.m_iFlags ||
        m_strSeriesLink != tag.m_strSeriesLink || m_channelData != tag.m_channelData);
@@ -485,8 +492,10 @@ bool CPVREpgInfoTag::Update(const CPVREpgInfoTag& tag, bool bUpdateBroadcastId /
     m_iFlags = tag.m_iFlags;
     m_strSeriesLink = tag.m_strSeriesLink;
     m_firstAired = tag.m_firstAired;
-    m_iParentalRating = tag.m_iParentalRating;
-    m_strParentalRatingCode = tag.m_strParentalRatingCode;
+    m_parentalRating = tag.m_parentalRating;
+    m_parentalRatingCode = tag.m_parentalRatingCode;
+    m_parentalRatingIcon = tag.m_parentalRatingIcon;
+    m_parentalRatingSource = tag.m_parentalRatingSource;
     m_iStarRating = tag.m_iStarRating;
     m_iEpisodeNumber = tag.m_iEpisodeNumber;
     m_iEpisodePart = tag.m_iEpisodePart;

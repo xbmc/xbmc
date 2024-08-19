@@ -66,38 +66,38 @@ void CPVREpgDatabase::CreateTables()
   );
 
   CLog::LogFC(LOGDEBUG, LOGEPG, "Creating table 'epgtags'");
-  m_pDS->exec(
-      "CREATE TABLE epgtags ("
-        "idBroadcast     integer primary key, "
-        "iBroadcastUid   integer, "
-        "idEpg           integer, "
-        "sTitle          varchar(128), "
-        "sPlotOutline    text, "
-        "sPlot           text, "
-        "sOriginalTitle  varchar(128), "
-        "sCast           varchar(255), "
-        "sDirector       varchar(255), "
-        "sWriter         varchar(255), "
-        "iYear           integer, "
-        "sIMDBNumber     varchar(50), "
-        "sIconPath       varchar(255), "
-        "iStartTime      integer, "
-        "iEndTime        integer, "
-        "iGenreType      integer, "
-        "iGenreSubType   integer, "
-        "sGenre          varchar(128), "
-        "sFirstAired     varchar(32), "
-        "iParentalRating integer, "
-        "iStarRating     integer, "
-        "iSeriesId       integer, "
-        "iEpisodeId      integer, "
-        "iEpisodePart    integer, "
-        "sEpisodeName    varchar(128), "
-        "iFlags          integer, "
-        "sSeriesLink     varchar(255), "
-        "sParentalRatingCode varchar(64)"
-      ")"
-  );
+  m_pDS->exec("CREATE TABLE epgtags ("
+              "idBroadcast     integer primary key, "
+              "iBroadcastUid   integer, "
+              "idEpg           integer, "
+              "sTitle          varchar(128), "
+              "sPlotOutline    text, "
+              "sPlot           text, "
+              "sOriginalTitle  varchar(128), "
+              "sCast           varchar(255), "
+              "sDirector       varchar(255), "
+              "sWriter         varchar(255), "
+              "iYear           integer, "
+              "sIMDBNumber     varchar(50), "
+              "sIconPath       varchar(255), "
+              "iStartTime      integer, "
+              "iEndTime        integer, "
+              "iGenreType      integer, "
+              "iGenreSubType   integer, "
+              "sGenre          varchar(128), "
+              "sFirstAired     varchar(32), "
+              "iParentalRating integer, "
+              "iStarRating     integer, "
+              "iSeriesId       integer, "
+              "iEpisodeId      integer, "
+              "iEpisodePart    integer, "
+              "sEpisodeName    varchar(128), "
+              "iFlags          integer, "
+              "sSeriesLink     varchar(255), "
+              "sParentalRatingCode varchar(64),"
+              "sParentalRatingIcon varchar(512),"
+              "sParentalRatingSource varchar(128)"
+              ")");
 
   CLog::LogFC(LOGDEBUG, LOGEPG, "Creating table 'lastepgscan'");
   m_pDS->exec("CREATE TABLE lastepgscan ("
@@ -331,6 +331,12 @@ void CPVREpgDatabase::UpdateTables(int iVersion)
     m_pDS->exec("ALTER TABLE savedsearches ADD sIconPath varchar(255);");
     m_pDS->exec("UPDATE savedsearches SET sIconPath = ''");
   }
+
+  if (iVersion < 18)
+  {
+    m_pDS->exec("ALTER TABLE epgtags ADD sParentalRatingIcon varchar(512);");
+    m_pDS->exec("ALTER TABLE epgtags ADD sParentalRatingSource varchar(128);");
+  }
 }
 
 bool CPVREpgDatabase::DeleteEpg()
@@ -449,7 +455,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::CreateEpgTag(
     newTag->m_writers = newTag->Tokenize(m_pDS->fv("sWriter").get_asString());
     newTag->m_iYear = m_pDS->fv("iYear").get_asInt();
     newTag->m_strIMDBNumber = m_pDS->fv("sIMDBNumber").get_asString();
-    newTag->m_iParentalRating = m_pDS->fv("iParentalRating").get_asInt();
+    newTag->m_parentalRating = m_pDS->fv("iParentalRating").get_asInt();
     newTag->m_iStarRating = m_pDS->fv("iStarRating").get_asInt();
     newTag->m_iEpisodeNumber = m_pDS->fv("iEpisodeId").get_asInt();
     newTag->m_iEpisodePart = m_pDS->fv("iEpisodePart").get_asInt();
@@ -457,7 +463,9 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::CreateEpgTag(
     newTag->m_iSeriesNumber = m_pDS->fv("iSeriesId").get_asInt();
     newTag->m_iFlags = m_pDS->fv("iFlags").get_asInt();
     newTag->m_strSeriesLink = m_pDS->fv("sSeriesLink").get_asString();
-    newTag->m_strParentalRatingCode = m_pDS->fv("sParentalRatingCode").get_asString();
+    newTag->m_parentalRatingCode = m_pDS->fv("sParentalRatingCode").get_asString();
+    newTag->m_parentalRatingIcon = m_pDS->fv("sParentalRatingIcon").get_asString();
+    newTag->m_parentalRatingSource = m_pDS->fv("sParentalRatingSource").get_asString();
     newTag->m_iGenreType = m_pDS->fv("iGenreType").get_asInt();
     newTag->m_iGenreSubType = m_pDS->fv("iGenreSubType").get_asInt();
     newTag->m_strGenreDescription = m_pDS->fv("sGenre").get_asString();
@@ -1237,9 +1245,9 @@ bool CPVREpgDatabase::QueuePersistQuery(const CPVREpgInfoTag& tag)
         "sIconPath, iGenreType, iGenreSubType, sGenre, sFirstAired, iParentalRating, iStarRating, "
         "iSeriesId, "
         "iEpisodeId, iEpisodePart, sEpisodeName, iFlags, sSeriesLink, sParentalRatingCode, "
-        "iBroadcastUid) "
+        "iBroadcastUid, sParentalRatingIcon, sParentalRatingSource) "
         "VALUES (%u, %u, %u, '%s', '%s', '%s', '%s', '%s', '%s', '%s', %i, '%s', '%s', %i, %i, "
-        "'%s', '%s', %i, %i, %i, %i, %i, '%s', %i, '%s', '%s', %i);",
+        "'%s', '%s', %i, %i, %i, %i, %i, '%s', %i, '%s', '%s', %i, '%s', '%s');",
         tag.EpgID(), static_cast<unsigned int>(iStartTime), static_cast<unsigned int>(iEndTime),
         tag.Title().c_str(), tag.PlotOutline().c_str(), tag.Plot().c_str(),
         tag.OriginalTitle().c_str(), tag.DeTokenize(tag.Cast()).c_str(),
@@ -1248,7 +1256,8 @@ bool CPVREpgDatabase::QueuePersistQuery(const CPVREpgInfoTag& tag)
         tag.GenreDescription().c_str(), sFirstAired.c_str(), tag.ParentalRating(), tag.StarRating(),
         tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName().c_str(),
         tag.Flags(), tag.SeriesLink().c_str(), tag.ParentalRatingCode().c_str(),
-        tag.UniqueBroadcastID());
+        tag.UniqueBroadcastID(), tag.ParentalRatingIcon().c_str(),
+        tag.ParentalRatingSource().c_str());
   }
   else
   {
@@ -1259,9 +1268,9 @@ bool CPVREpgDatabase::QueuePersistQuery(const CPVREpgInfoTag& tag)
         "sIconPath, iGenreType, iGenreSubType, sGenre, sFirstAired, iParentalRating, iStarRating, "
         "iSeriesId, "
         "iEpisodeId, iEpisodePart, sEpisodeName, iFlags, sSeriesLink, sParentalRatingCode, "
-        "iBroadcastUid, idBroadcast) "
+        "iBroadcastUid, idBroadcast, sParentalRatingIcon, sParentalRatingSource) "
         "VALUES (%u, %u, %u, '%s', '%s', '%s', '%s', '%s', '%s', '%s', %i, '%s', '%s', %i, %i, "
-        "'%s', '%s', %i, %i, %i, %i, %i, '%s', %i, '%s', '%s', %i, %i);",
+        "'%s', '%s', %i, %i, %i, %i, %i, '%s', %i, '%s', '%s', %i, %i, '%s', '%s');",
         tag.EpgID(), static_cast<unsigned int>(iStartTime), static_cast<unsigned int>(iEndTime),
         tag.Title().c_str(), tag.PlotOutline().c_str(), tag.Plot().c_str(),
         tag.OriginalTitle().c_str(), tag.DeTokenize(tag.Cast()).c_str(),
@@ -1270,7 +1279,8 @@ bool CPVREpgDatabase::QueuePersistQuery(const CPVREpgInfoTag& tag)
         tag.GenreDescription().c_str(), sFirstAired.c_str(), tag.ParentalRating(), tag.StarRating(),
         tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName().c_str(),
         tag.Flags(), tag.SeriesLink().c_str(), tag.ParentalRatingCode().c_str(),
-        tag.UniqueBroadcastID(), iBroadcastId);
+        tag.UniqueBroadcastID(), iBroadcastId, tag.ParentalRatingIcon().c_str(),
+        tag.ParentalRatingSource().c_str());
   }
 
   QueueInsertQuery(strQuery);

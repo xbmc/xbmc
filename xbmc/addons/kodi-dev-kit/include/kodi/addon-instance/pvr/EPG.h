@@ -368,7 +368,7 @@ public:
     m_cStructure->iParentalRating = parentalRating;
   }
 
-  /// @brief To get with @ref SetParentalRatinge changed values.
+  /// @brief To get with @ref SetParentalRating changed values.
   unsigned int GetParentalRating() const { return m_cStructure->iParentalRating; }
 
   /// @brief **optional**\n
