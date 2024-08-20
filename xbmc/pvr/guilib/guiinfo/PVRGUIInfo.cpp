@@ -425,6 +425,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
       case LISTITEM_SEASON:
       case LISTITEM_EPISODE:
       case LISTITEM_EPISODENAME:
+      case LISTITEM_EPISODEPART:
       case LISTITEM_DIRECTOR:
       case LISTITEM_CHANNEL_NUMBER:
       case LISTITEM_PREMIERED:
@@ -784,6 +785,11 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
           return true;
         }
         return false;
+      case VIDEOPLAYER_EPISODEPART:
+      case LISTITEM_EPISODEPART:
+        if (epgTag->EpisodeNumber() >= 0 && epgTag->EpisodePart() > 0)
+          strValue = std::to_string(epgTag->EpisodePart());
+        return true;
       case VIDEOPLAYER_EPISODENAME:
       case LISTITEM_EPISODENAME:
         if (!CServiceBroker::GetPVRManager().IsParentalLocked(epgTag))

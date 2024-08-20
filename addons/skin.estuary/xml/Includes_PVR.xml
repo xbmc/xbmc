@@ -537,7 +537,7 @@
 					<top>35</top>
 					<width>100%</width>
 					<height>30</height>
-					<label>$VAR[FlagDashLabel][I][COLOR grey]$VAR[SeasonEpisodeLabel][/COLOR]$INFO[ListItem.EpisodeName,[COLOR white],[/COLOR]][/I]</label>
+					<label>$VAR[FlagDashLabel]$VAR[SeasonEpisodeLabel,[COLOR grey],[/COLOR]]$INFO[ListItem.EpisodeName]</label>
 				</control>
 			</control>
 			<control type="textbox">
