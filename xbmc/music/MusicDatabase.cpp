@@ -13234,6 +13234,13 @@ int CMusicDatabase::GetOrderFilter(const std::string& type,
     }
   }
 
+  // Get the right tableview as if we are using strArtistSort the column name is ambiguous
+  std::string table;
+  if (StringUtils::StartsWithNoCase(type, "album"))
+    table = "albumview.";
+  else if (StringUtils::StartsWithNoCase(type, "song"))
+    table = "songview.";
+
   // Convert field names into order by statement elements
   for (auto& name : orderfields)
   {
@@ -13242,7 +13249,8 @@ int CMusicDatabase::GetOrderFilter(const std::string& type,
     if (StringUtils::EndsWith(name, "strArtists") || StringUtils::EndsWith(name, "strArtist"))
     {
       if (StringUtils::EndsWith(name, "strArtists"))
-        sortSQL = SortnameBuildSQL("artistsortname", sorting.sortAttributes, name, "strArtistSort");
+        sortSQL = SortnameBuildSQL("artistsortname", sorting.sortAttributes, name,
+                                   table + "strArtistSort");
       else
         sortSQL = SortnameBuildSQL("artistsortname", sorting.sortAttributes, name, "strSortName");
       if (!sortSQL.empty())
