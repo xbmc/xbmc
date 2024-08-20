@@ -10,6 +10,7 @@
 
 #include "XBDateTime.h"
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_providers.h"
+#include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_recordings.h"
 #include "pvr/PVRCachedImage.h"
 #include "threads/CriticalSection.h"
 #include "threads/SystemClock.h"
@@ -523,6 +524,12 @@ public:
    */
   const std::string& GetParentalRatingSource() const;
 
+  /*!
+   * @brief Get the episode part number of this recording.
+   * @return The episode part number.
+   */
+  int EpisodePart() const;
+
 private:
   CPVRRecording(const CPVRRecording& tag) = delete;
   CPVRRecording& operator=(const CPVRRecording& other) = delete;
@@ -561,6 +568,7 @@ private:
   std::string m_parentalRatingCode; /*!< Parental rating code */
   std::string m_parentalRatingIcon; /*!< parental rating icon path */
   std::string m_parentalRatingSource; /*!< parental rating source */
+  int m_episodePartNumber{PVR_RECORDING_INVALID_SERIES_EPISODE}; /*!< episode part number */
 
   mutable CCriticalSection m_critSection;
 };
