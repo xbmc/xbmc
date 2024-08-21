@@ -61,12 +61,13 @@ extern "C"
   //============================================================================
   /// @ingroup cpp_kodi_addon_pvr_Defs_Recording_PVRRecording
   /// @brief Special @ref kodi::addon::PVRRecording::SetSeriesNumber() and
-  /// @ref kodi::addon::PVRRecording::SetEpisodeNumber() value to indicate it is
-  /// not to be used.
+  /// @ref kodi::addon::PVRRecording::SetEpisodeNumber() and
+  /// @ref kodi::addon::PVRRecording::SetEpisodePartNumber() value to indicate
+  /// it is not to be used.
   ///
   /// Used if recording has no valid season and/or episode info.
   ///
-#define PVR_RECORDING_INVALID_SERIES_EPISODE EPG_TAG_INVALID_SERIES_EPISODE
+#define PVR_RECORDING_INVALID_SERIES_EPISODE -1
   //----------------------------------------------------------------------------
 
   //============================================================================

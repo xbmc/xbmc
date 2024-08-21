@@ -582,8 +582,8 @@
 		<value condition="Player.HasAudio">[COLOR grey]$INFO[MusicPlayer.Album][/COLOR]$INFO[MusicPlayer.Year, [,] ]</value>
 	</variable>
 	<variable name="PlayerLabel3">
-		<value condition="VideoPlayer.Content(livetv) + !String.IsEmpty(VideoPlayer.Episode) + String.IsEmpty(VideoPlayer.EpisodePart)">$INFO[VideoPlayer.Season,$LOCALIZE[20373]: , ]$INFO[VideoPlayer.Episode,$LOCALIZE[20359]: ]</value>
-		<value condition="VideoPlayer.Content(livetv) + !String.IsEmpty(VideoPlayer.Episode) + !String.IsEmpty(VideoPlayer.EpisodePart)">$INFO[VideoPlayer.Season,$LOCALIZE[20373]: , ]$INFO[VideoPlayer.Episode,$LOCALIZE[20359]: ]$INFO[VideoPlayer.EpisodePart,/]</value>
+		<value condition="VideoPlayer.Content(livetv) | PVR.IsPlayingRecording + !String.IsEmpty(VideoPlayer.Episode) + String.IsEmpty(VideoPlayer.EpisodePart)">$INFO[VideoPlayer.Season,$LOCALIZE[20373]: , ]$INFO[VideoPlayer.Episode,$LOCALIZE[20359]: ]</value>
+		<value condition="VideoPlayer.Content(livetv) | PVR.IsPlayingRecording + !String.IsEmpty(VideoPlayer.Episode) + !String.IsEmpty(VideoPlayer.EpisodePart)">$INFO[VideoPlayer.Season,$LOCALIZE[20373]: , ]$INFO[VideoPlayer.Episode,$LOCALIZE[20359]: ]$INFO[VideoPlayer.EpisodePart,/]</value>
 		<value condition="VideoPlayer.Content(movies) | VideoPlayer.Content(livetv) + String.IsEmpty(VideoPlayer.Episode)">$INFO[VideoPlayer.Genre]</value>
 		<value condition="VideoPlayer.Content(episodes)">$INFO[VideoPlayer.TvShowTitle]</value>
 		<value condition="Player.HasAudio">$INFO[MusicPlayer.TrackNumber,,: ][COLOR=grey]$INFO[Player.Title][/COLOR]</value>

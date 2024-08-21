@@ -593,6 +593,13 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
       case LISTITEM_PARENTAL_RATING_SOURCE:
         strValue = recording->GetParentalRatingSource();
         return true;
+      case VIDEOPLAYER_EPISODEPART:
+      case LISTITEM_EPISODEPART:
+        if (recording->m_iEpisode > 0 && recording->EpisodePart() > 0)
+        {
+          strValue = std::to_string(recording->EpisodePart());
+          return true;
+        }
     }
     return false;
   }
