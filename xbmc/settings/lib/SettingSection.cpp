@@ -168,7 +168,7 @@ SettingList CSettingGroup::GetSettings(SettingLevel level) const
 bool CSettingGroup::ContainsVisibleSettings(const SettingLevel level) const
 {
   return std::any_of(m_settings.begin(), m_settings.end(), [&level](const SettingPtr& setting) {
-    return setting->GetLevel() <= level && setting->MeetsRequirements() && setting->IsVisible();
+    return setting->GetLevel() <= level && (setting->MeetsRequirements() || setting->IsVisible());
   });
 }
 
@@ -263,7 +263,7 @@ SettingGroupList CSettingCategory::GetGroups(SettingLevel level) const
   SettingGroupList groups;
   for (const auto& group : m_groups)
   {
-    if (group->MeetsRequirements() && group->IsVisible() && group->ContainsVisibleSettings(level))
+    if ((group->MeetsRequirements() || group->IsVisible()) && group->ContainsVisibleSettings(level))
       groups.push_back(group);
   }
 
