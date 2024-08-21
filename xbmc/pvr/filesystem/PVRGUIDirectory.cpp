@@ -16,6 +16,7 @@
 #include "input/WindowTranslator.h"
 #include "pvr/PVRConstants.h" // PVR_CLIENT_INVALID_UID
 #include "pvr/PVRManager.h"
+#include "pvr/PVRPathUtils.h"
 #include "pvr/addons/PVRClient.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
@@ -310,9 +311,39 @@ bool IsDirectoryMember(const std::string& strDirectory,
     return StringUtils::StartsWithNoCase(strUseEntryDirectory, strUseDirectory);
 }
 
-void GetSubDirectories(const CPVRRecordingsPath& recParentPath,
-                       const std::vector<std::shared_ptr<CPVRRecording>>& recordings,
-                       CFileItemList& results)
+template<class T>
+class CByClientAndProviderFilter
+{
+public:
+  explicit CByClientAndProviderFilter(const CURL& url)
+    : m_applyFilter(UTILS::GetClientAndProviderFromPath(url, m_clientId, m_providerId))
+  {
+  }
+
+  bool Filter(const std::shared_ptr<T>& item) const
+  {
+    if (m_applyFilter)
+    {
+      if (item->ClientID() != m_clientId)
+        return true;
+
+      if ((m_providerId != PVR_PROVIDER_INVALID_UID) && (item->ClientProviderUid() != m_providerId))
+        return true;
+    }
+    return false;
+  }
+
+private:
+  int m_clientId{PVR_CLIENT_INVALID_UID};
+  int m_providerId{PVR_PROVIDER_INVALID_UID};
+  bool m_applyFilter{false};
+};
+
+template<typename T>
+void GetGetRecordingsSubDirectories(const CPVRRecordingsPath& recParentPath,
+                                    const std::vector<std::shared_ptr<CPVRRecording>>& recordings,
+                                    const CByClientAndProviderFilter<T>& byClientAndProviderFilter,
+                                    CFileItemList& results)
 {
   // Only active recordings are fetched to provide sub directories.
   // Not applicable for deleted view which is supposed to be flattened.
@@ -321,6 +352,9 @@ void GetSubDirectories(const CPVRRecordingsPath& recParentPath,
 
   for (const auto& recording : recordings)
   {
+    if (byClientAndProviderFilter.Filter(recording))
+      continue;
+
     if (recording->IsDeleted())
       continue;
 
@@ -425,17 +459,24 @@ bool CPVRGUIDirectory::GetRecordingsDirectory(CFileItemList& results) const
   const CPVRRecordingsPath recPath(m_url.GetWithoutOptions());
   if (recPath.IsValid())
   {
+    // Filter by client id/provider id ?
+    const CByClientAndProviderFilter<CPVRRecording> byClientAndProviderFilter{m_url};
+
     // Get the directory structure if in non-flatten mode
     // Deleted view is always flatten. So only for an active view
     const std::string strDirectory = recPath.GetUnescapedDirectoryPath();
     if (!recPath.IsDeleted() && bGrouped)
-      GetSubDirectories(recPath, recordings, results);
+      GetGetRecordingsSubDirectories(recPath, recordings, byClientAndProviderFilter, results);
 
     // get all files of the current directory or recursively all files starting at the current directory if in flatten mode
     std::shared_ptr<CFileItem> item;
     for (const auto& recording : recordings)
     {
       // Omit recordings not matching criteria
+
+      if (byClientAndProviderFilter.Filter(recording))
+        continue;
+
       if (recording->IsDeleted() != recPath.IsDeleted() ||
           recording->IsRadio() != recPath.IsRadio() ||
           !IsDirectoryMember(strDirectory, recording->Directory(), bGrouped))
@@ -636,6 +677,7 @@ bool CPVRGUIDirectory::GetChannelsDirectory(CFileItemList& results) const
     }
     else if (path.IsChannelGroup())
     {
+      const CByClientAndProviderFilter<const CPVRChannel> byClientAndProviderFilter{m_url};
       const bool playedOnly{(m_url.HasOption("view") && (m_url.GetOption("view") == "lastplayed"))};
       const bool dateAdded{(m_url.HasOption("view") && (m_url.GetOption("view") == "dateadded"))};
       const bool showHiddenChannels{path.IsHiddenChannelGroup()};
@@ -643,18 +685,23 @@ bool CPVRGUIDirectory::GetChannelsDirectory(CFileItemList& results) const
           GetChannelGroupMembers(path)};
       for (const auto& groupMember : groupMembers)
       {
-        if (showHiddenChannels != groupMember->Channel()->IsHidden())
+        const std::shared_ptr<const CPVRChannel> channel{groupMember->Channel()};
+
+        if (byClientAndProviderFilter.Filter(channel))
           continue;
 
-        if (playedOnly && !groupMember->Channel()->LastWatched())
+        if (showHiddenChannels != channel->IsHidden())
+          continue;
+
+        if (playedOnly && !channel->LastWatched())
           continue;
 
         if (dateAdded)
         {
-          if (groupMember->Channel()->LastWatched())
+          if (channel->LastWatched())
             continue;
 
-          const CDateTime dtChannelAdded{groupMember->Channel()->DateTimeAdded()};
+          const CDateTime dtChannelAdded{channel->DateTimeAdded()};
           if (!dtChannelAdded.IsValid())
             continue;
 
