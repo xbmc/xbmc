@@ -455,7 +455,7 @@ public:
    * \param fallback [OPT] The number to return when the conversion fails
    * \return The converted number, otherwise fallback if conversion fails
    */
-  static uint32_t ToUint32(std::string_view str, uint32_t fallback = 0) noexcept;
+  static uint32_t ToUint32(std::string_view str, uint32_t fallback = 0);
 
   /*!
    * \brief Converts a string to a unsigned long long number.
@@ -463,7 +463,7 @@ public:
    * \param fallback [OPT] The number to return when the conversion fails
    * \return The converted number, otherwise fallback if conversion fails
    */
-  static uint64_t ToUint64(std::string_view str, uint64_t fallback = 0) noexcept;
+  static uint64_t ToUint64(std::string_view str, uint64_t fallback = 0);
 
   /*!
    * \brief Converts a string to a float number.
@@ -471,7 +471,7 @@ public:
    * \param fallback [OPT] The number to return when the conversion fails
    * \return The converted number, otherwise fallback if conversion fails
    */
-  static float ToFloat(std::string_view str, float fallback = 0.0f) noexcept;
+  static float ToFloat(std::string_view str, float fallback = 0.0f);
 
   /*!
    * Returns bytes in a human readable format using the smallest unit that will fit `bytes` in at

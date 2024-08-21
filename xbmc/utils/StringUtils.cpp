@@ -1865,17 +1865,17 @@ void StringUtils::Tokenize(std::string_view input,
   }
 }
 
-uint32_t StringUtils::ToUint32(std::string_view str, uint32_t fallback /* = 0 */) noexcept
+uint32_t StringUtils::ToUint32(std::string_view str, uint32_t fallback /* = 0 */)
 {
   return NumberFromSS(str, fallback);
 }
 
-uint64_t StringUtils::ToUint64(std::string_view str, uint64_t fallback /* = 0 */) noexcept
+uint64_t StringUtils::ToUint64(std::string_view str, uint64_t fallback /* = 0 */)
 {
   return NumberFromSS(str, fallback);
 }
 
-float StringUtils::ToFloat(std::string_view str, float fallback /* = 0.0f */) noexcept
+float StringUtils::ToFloat(std::string_view str, float fallback /* = 0.0f */)
 {
   return NumberFromSS(str, fallback);
 }
