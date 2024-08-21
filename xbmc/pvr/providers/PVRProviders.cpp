@@ -82,10 +82,32 @@ std::vector<std::shared_ptr<CPVRProvider>> CPVRProvidersContainer::GetProvidersL
   return m_providers;
 }
 
-std::size_t CPVRProvidersContainer::GetNumProviders() const
+std::vector<std::shared_ptr<CPVRProvider>> CPVRProviders::GetProviders() const
+{
+  std::vector<std::shared_ptr<CPVRProvider>> providers;
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+
+  //! @todo optimize; get rid of iteration.
+  providers.reserve(m_providers.size());
+  for (const auto& provider : m_providers)
+  {
+    if (provider->IsClientProvider())
+    {
+      // Ignore non installed / disabled client providers
+      const std::shared_ptr<const CPVRClient> client{
+          CServiceBroker::GetPVRManager().GetClient(provider->GetClientId())};
+      if (!client)
+        continue;
+    }
+    providers.emplace_back(provider);
+  }
+  return providers;
+}
+
+std::size_t CPVRProviders::GetNumProviders() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  return m_providers.size();
+  return GetProviders().size();
 }
 
 bool CPVRProviders::Update(const std::vector<std::shared_ptr<CPVRClient>>& clients)
@@ -137,7 +159,7 @@ bool CPVRProviders::UpdateFromClients(const std::vector<std::shared_ptr<CPVRClie
   for (const auto& clientInfo : clientProviderInfos)
   {
     auto addonProvider = std::make_shared<CPVRProvider>(
-        clientInfo["clientid"].asInteger32(), clientInfo["name"].asString(),
+        clientInfo["clientid"].asInteger32(), clientInfo["fullname"].asString(),
         clientInfo["icon"].asString(), clientInfo["thumb"].asString());
 
     newAddonProviderList.CheckAndAddEntry(addonProvider, ProviderUpdateMode::BY_CLIENT);

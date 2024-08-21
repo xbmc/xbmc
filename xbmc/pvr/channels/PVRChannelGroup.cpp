@@ -307,6 +307,33 @@ std::shared_ptr<CPVRChannel> CPVRChannelGroup::GetByChannelID(int iChannelID) co
   return it != m_members.cend() ? (*it).second->Channel() : std::shared_ptr<CPVRChannel>();
 }
 
+namespace
+{
+bool MatchProvider(const std::shared_ptr<CPVRChannel>& channel, int clientId, int providerId)
+{
+  return channel->ClientID() == clientId &&
+         (providerId == PVR_PROVIDER_INVALID_UID || channel->ClientProviderUid() == providerId);
+}
+} // unnamed namespace
+
+bool CPVRChannelGroup::HasChannelForProvider(int clientId, int providerId) const
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  return std::any_of(m_members.cbegin(), m_members.cend(),
+                     [clientId, providerId](const auto& member)
+                     { return MatchProvider(member.second->Channel(), clientId, providerId); });
+}
+
+unsigned int CPVRChannelGroup::GetChannelCountByProvider(int clientId, int providerId) const
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  auto channels =
+      std::count_if(m_members.cbegin(), m_members.cend(),
+                    [clientId, providerId](const auto& member)
+                    { return MatchProvider(member.second->Channel(), clientId, providerId); });
+  return static_cast<unsigned int>(channels);
+}
+
 std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroup::GetLastPlayedChannelGroupMember(
     int iCurrentChannel /* = -1 */) const
 {

@@ -56,6 +56,7 @@ class CPVRChannel;
 class CPVRChannelGroupMember;
 class CPVREpgInfoTag;
 class CPVREpgSearchFilter;
+class CPVRProvider;
 class CPVRRecording;
 class CPVRTimerInfoTag;
 }
@@ -123,6 +124,7 @@ public:
   explicit CFileItem(const std::shared_ptr<PVR::CPVRChannelGroupMember>& channelGroupMember);
   explicit CFileItem(const std::shared_ptr<PVR::CPVRRecording>& record);
   explicit CFileItem(const std::shared_ptr<PVR::CPVRTimerInfoTag>& timer);
+  explicit CFileItem(const std::string& path, const std::shared_ptr<PVR::CPVRProvider>& provider);
   explicit CFileItem(const CMediaSource& share);
   explicit CFileItem(std::shared_ptr<const ADDON::IAddon> addonInfo);
   explicit CFileItem(const EventPtr& eventLogEntry);
@@ -205,6 +207,7 @@ public:
   bool IsDeletedPVRRecording() const;
   bool IsInProgressPVRRecording() const;
   bool IsPVRTimer() const;
+  bool IsPVRProvider() const;
   bool IsType(const char *ext) const;
   bool IsVirtualDirectoryRoot() const;
   bool IsReadOnly() const;
@@ -299,6 +302,13 @@ public:
   inline const std::shared_ptr<PVR::CPVRTimerInfoTag> GetPVRTimerInfoTag() const
   {
     return m_pvrTimerInfoTag;
+  }
+
+  inline bool HasPVRProviderInfoTag() const { return m_pvrProviderInfoTag != nullptr; }
+
+  inline const std::shared_ptr<PVR::CPVRProvider> GetPVRProviderInfoTag() const
+  {
+    return m_pvrProviderInfoTag;
   }
 
   /*!
@@ -622,6 +632,7 @@ private:
   std::shared_ptr<PVR::CPVRRecording> m_pvrRecordingInfoTag;
   std::shared_ptr<PVR::CPVRTimerInfoTag> m_pvrTimerInfoTag;
   std::shared_ptr<PVR::CPVRChannelGroupMember> m_pvrChannelGroupMemberInfoTag;
+  std::shared_ptr<PVR::CPVRProvider> m_pvrProviderInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
   std::shared_ptr<const ADDON::IAddon> m_addonInfo;
   KODI::GAME::CGameInfoTag* m_gameInfoTag;

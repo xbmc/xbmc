@@ -168,6 +168,26 @@ std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroupsContainer::
   return channelTV;
 }
 
+bool CPVRChannelGroupsContainer::HasChannelForProvider(bool isRadio,
+                                                       int clientId,
+                                                       int providerId) const
+{
+  if (isRadio)
+    return m_groupsRadio->GetGroupAll()->HasChannelForProvider(clientId, providerId);
+  else
+    return m_groupsTV->GetGroupAll()->HasChannelForProvider(clientId, providerId);
+}
+
+unsigned int CPVRChannelGroupsContainer::GetChannelCountByProvider(bool isRadio,
+                                                                   int clientId,
+                                                                   int providerId) const
+{
+  if (isRadio)
+    return m_groupsRadio->GetGroupAll()->GetChannelCountByProvider(clientId, providerId);
+  else
+    return m_groupsTV->GetGroupAll()->GetChannelCountByProvider(clientId, providerId);
+}
+
 int CPVRChannelGroupsContainer::CleanupCachedImages()
 {
   return m_groupsTV->CleanupCachedImages() + m_groupsRadio->CleanupCachedImages();

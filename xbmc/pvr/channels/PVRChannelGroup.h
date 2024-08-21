@@ -377,6 +377,22 @@ public:
   std::shared_ptr<CPVRChannelGroupMember> GetByUniqueID(const std::pair<int, int>& id) const;
 
   /*!
+   * @brief Check whether at least one channel of this group is offered by the given provider.
+   * @param clientId The clientId to check.
+   * @param providerId The providerId to check.
+   * @return True, if the group countains at least one channel offered by the provider, false otherwise.
+   */
+  bool HasChannelForProvider(int clientId, int providerId) const;
+
+  /*!
+   * @brief Get the total count of channels of this group offered by the given provider.
+   * @param clientId The clientId of the provider.
+   * @param providerId The providerId.
+   * @return The total count of matching channels.
+   */
+  unsigned int GetChannelCountByProvider(int clientId, int providerId) const;
+
+  /*!
    * @brief Set the hidden state of this group.
    * @param bHidden True to set hidden state, false to unhide the group.
    * @return True if hidden state was changed, false otherwise.

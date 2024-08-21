@@ -153,6 +153,24 @@ public:
   std::shared_ptr<CPVRChannelGroupMember> GetLastPlayedChannelGroupMember() const;
 
   /*!
+   * @brief Check whether at least one channel is offered by the given provider.
+   * @param isRadio Check radio or TV channels.
+   * @param clientId The clientId to check.
+   * @param providerId The providerId to check.
+   * @return True, if at least one matching channel is offered by the provider, false otherwise.
+   */
+  bool HasChannelForProvider(bool isRadio, int clientId, int providerId) const;
+
+  /*!
+   * @brief Get the total count of channels offered by the given provider.
+   * @param isRadio Check radio or TV channels.
+   * @param clientId The clientId of the provider.
+   * @param providerId The providerId.
+   * @return The total count of matching channels.
+   */
+  unsigned int GetChannelCountByProvider(bool isRadio, int clientId, int providerId) const;
+
+  /*!
    * @brief Erase stale texture db entries and image files.
    * @return number of cleaned up images.
    */
