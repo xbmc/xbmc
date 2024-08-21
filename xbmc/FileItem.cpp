@@ -812,6 +812,9 @@ void CFileItem::ToSortable(SortItem &sortable, Field field) const
   if (HasPVRChannelGroupMemberInfoTag())
     GetPVRChannelGroupMemberInfoTag()->ToSortable(sortable, field);
 
+  if (HasPVRProviderInfoTag())
+    GetPVRProviderInfoTag()->ToSortable(sortable, field);
+
   if (HasAddonInfo())
   {
     switch (field)

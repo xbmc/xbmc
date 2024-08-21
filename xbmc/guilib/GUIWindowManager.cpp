@@ -113,6 +113,7 @@
 #include "video/dialogs/GUIDialogVideoSettings.h"
 
 /* PVR related include Files */
+#include "dialogs/GUIDialogSlider.h"
 #include "pvr/dialogs/GUIDialogPVRChannelGuide.h"
 #include "pvr/dialogs/GUIDialogPVRChannelManager.h"
 #include "pvr/dialogs/GUIDialogPVRChannelsOSD.h"
@@ -127,13 +128,12 @@
 #include "pvr/dialogs/GUIDialogPVRTimerSettings.h"
 #include "pvr/windows/GUIWindowPVRChannels.h"
 #include "pvr/windows/GUIWindowPVRGuide.h"
+#include "pvr/windows/GUIWindowPVRProviders.h"
 #include "pvr/windows/GUIWindowPVRRecordings.h"
 #include "pvr/windows/GUIWindowPVRSearch.h"
 #include "pvr/windows/GUIWindowPVRTimerRules.h"
 #include "pvr/windows/GUIWindowPVRTimers.h"
-
 #include "video/dialogs/GUIDialogTeletext.h"
-#include "dialogs/GUIDialogSlider.h"
 #ifdef HAS_OPTICAL_DRIVE
 #include "dialogs/GUIDialogPlayEject.h"
 #endif
@@ -269,12 +269,14 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIWindowPVRTVTimers);
   Add(new CGUIWindowPVRTVTimerRules);
   Add(new CGUIWindowPVRTVSearch);
+  Add(new CGUIWindowPVRTVProviders);
   Add(new CGUIWindowPVRRadioChannels);
   Add(new CGUIWindowPVRRadioRecordings);
   Add(new CGUIWindowPVRRadioGuide);
   Add(new CGUIWindowPVRRadioTimers);
   Add(new CGUIWindowPVRRadioTimerRules);
   Add(new CGUIWindowPVRRadioSearch);
+  Add(new CGUIWindowPVRRadioProviders);
   Add(new CGUIDialogPVRRadioRDSInfo);
   Add(new CGUIDialogPVRGuideInfo);
   Add(new CGUIDialogPVRRecordingInfo);
@@ -393,12 +395,14 @@ bool CGUIWindowManager::DestroyWindows()
     DestroyWindow(WINDOW_TV_TIMERS);
     DestroyWindow(WINDOW_TV_TIMER_RULES);
     DestroyWindow(WINDOW_TV_SEARCH);
+    DestroyWindow(WINDOW_TV_PROVIDERS);
     DestroyWindow(WINDOW_RADIO_CHANNELS);
     DestroyWindow(WINDOW_RADIO_RECORDINGS);
     DestroyWindow(WINDOW_RADIO_GUIDE);
     DestroyWindow(WINDOW_RADIO_TIMERS);
     DestroyWindow(WINDOW_RADIO_TIMER_RULES);
     DestroyWindow(WINDOW_RADIO_SEARCH);
+    DestroyWindow(WINDOW_RADIO_PROVIDERS);
     DestroyWindow(WINDOW_DIALOG_PVR_GUIDE_INFO);
     DestroyWindow(WINDOW_DIALOG_PVR_RECORDING_INFO);
     DestroyWindow(WINDOW_DIALOG_PVR_TIMER_SETTING);

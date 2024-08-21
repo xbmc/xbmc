@@ -391,3 +391,11 @@ std::string CPVRProvider::GetClientThumbPath() const
   std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_thumbPath.GetClientImage();
 }
+
+void CPVRProvider::ToSortable(SortItem& sortable, Field field) const
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  if (field == FieldProvider)
+    sortable[FieldProvider] = StringUtils::Format(
+        "{} {} {} {}", m_iClientId, m_type == PVR_PROVIDER_TYPE_ADDON ? 0 : 1, m_type, m_strName);
+}

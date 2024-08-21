@@ -12,6 +12,7 @@
 #include "pvr/PVRCachedImage.h"
 #include "threads/CriticalSection.h"
 #include "utils/ISerializable.h"
+#include "utils/ISortable.h"
 
 #include <memory>
 #include <string>
@@ -29,7 +30,7 @@ enum class ProviderUpdateMode
 static constexpr int PVR_PROVIDER_ADDON_UID = -1;
 static constexpr int PVR_PROVIDER_INVALID_DB_ID = -1;
 
-class CPVRProvider final : public ISerializable
+class CPVRProvider final : public ISerializable, public ISortable
 {
 public:
   static const std::string IMAGE_OWNER_PATTERN;
@@ -45,6 +46,9 @@ public:
   bool operator!=(const CPVRProvider& right) const;
 
   void Serialize(CVariant& value) const override;
+
+  // ISortable implementation
+  void ToSortable(SortItem& sortable, Field field) const override;
 
   /*!
    * @brief The database id of this provider

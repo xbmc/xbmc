@@ -25,10 +25,7 @@
 					<scrolltime tween="cubic" easing="out">500</scrolltime>
 					<include content="PVRListItemLayouts">
 						<param name="list_id" value="50" />
-						<param name="info_icon" value="$VAR[ListPVRRecordingsIconVar]" />
-						<param name="has_info_icon" value="true" />
 						<param name="label1" value="$INFO[ListItem.Label]" />
-						<param name="label2" value="$VAR[ListLabel2Var]" />
 					</include>
 				</control>
 			</control>
@@ -54,42 +51,16 @@
 					<animation effect="zoom" start="100,100" end="50,100" center="-50,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(73)">conditional</animation>
 				</control>
 				<include content="PVRInfoPanel">
-					<param name="folder_sortby" value="date" />
-					<param name="folder_sortorder" value="descending" />
+					<param name="folder_sortby" value="label" />
+					<param name="folder_sortorder" value="ascending" />
 				</include>
 			</control>
 			<include content="TopBar">
-				<param name="breadcrumbs_label" value="$VAR[BreadcrumbsPVRRecordingsVar]" />
+				<param name="breadcrumbs_label" value="$VAR[BreadcrumbsPVRProvidersVar]" />
 			</include>
 			<include content="BottomBar">
 				<param name="info_visible" value="true" />
 			</include>
-			<control type="group">
-				<depth>DepthBars</depth>
-				<right>20</right>
-				<width>850</width>
-				<include>OpenClose_Right</include>
-				<bottom>0</bottom>
-				<height>60</height>
-				<control type="label">
-					<right>220</right>
-					<width>610</width>
-					<height>20</height>
-					<label>$INFO[PVR.backenddiskspace]</label>
-					<shadowcolor>black</shadowcolor>
-					<align>right</align>
-					<font>font27</font>
-					<visible>!Integer.IsGreater(PVR.backenddiskspaceprogr,100)</visible>
-				</control>
-				<control type="progress">
-					<right>0</right>
-					<top>17</top>
-					<width>200</width>
-					<height>12</height>
-					<info>PVR.backenddiskspaceprogr</info>
-					<visible>!Integer.IsGreater(PVR.backenddiskspaceprogr,100)</visible>
-				</control>
-			</control>
 			<control type="group">
 				<include>MediaMenuCommon</include>
 				<include>PVRSideBar</include>

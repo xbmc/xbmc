@@ -462,25 +462,45 @@
 					<orientation>vertical</orientation>
 					<focusedlayout height="100" width="780">
 						<control type="label">
+							<visible>!String.IsEqual(ListItem.ChannelName, ListItem.Label)</visible>
 							<left>10</left>
 							<height>90</height>
 							<width>830</width>
 							<aligny>center</aligny>
-							<label>$VAR[RecordingDateSizeLabel]$INFO[ListItem.Label]$INFO[ListItem.EpisodeName, (,)]</label>
+							<label>$VAR[RecordingDateSizeLabel]$INFO[ListItem.Label]$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName, (,)]$INFO[ListItem.Property(totalcount), (, $LOCALIZE[31036])]</label>
+							<shadowcolor>text_shadow</shadowcolor>
+						</control>
+						<control type="label">
+							<visible>String.IsEqual(ListItem.ChannelName, ListItem.Label)</visible>
+							<left>10</left>
+							<height>90</height>
+							<width>830</width>
+							<aligny>center</aligny>
+							<label>[COLOR grey]$INFO[ListItem.ChannelName,,[CR]][/COLOR]$INFO[ListItem.EpgEventTitle]$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName, (,)]</label>
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 					</focusedlayout>
 					<itemlayout height="100" width="780">
 						<control type="label">
+							<visible>!String.IsEqual(ListItem.ChannelName, ListItem.Label)</visible>
 							<left>10</left>
 							<height>90</height>
 							<width>830</width>
 							<aligny>center</aligny>
-							<label>$VAR[RecordingDateSizeLabel]$INFO[ListItem.Label]$INFO[ListItem.EpisodeName, (,)]</label>
+							<label>$VAR[RecordingDateSizeLabel]$INFO[ListItem.Label]$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName, (,)]$INFO[ListItem.Property(totalcount), (, $LOCALIZE[31036])]</label>
+							<shadowcolor>text_shadow</shadowcolor>
+						</control>
+						<control type="label">
+							<visible>String.IsEqual(ListItem.ChannelName, ListItem.Label)</visible>
+							<left>10</left>
+							<height>90</height>
+							<width>830</width>
+							<aligny>center</aligny>
+							<label>[COLOR grey]$INFO[ListItem.ChannelName,,[CR]][/COLOR]$INFO[ListItem.EpgEventTitle]$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName, (,)]</label>
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 					</itemlayout>
-					<content sortby="date" sortorder="$PARAM[folder_sortorder]">$INFO[ListItem.FilenameAndPath]</content>
+					<content sortby="$PARAM[folder_sortby]" sortorder="$PARAM[folder_sortorder]">$INFO[ListItem.FilenameAndPath]</content>
 				</control>
 			</control>
 		</control>
