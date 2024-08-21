@@ -130,14 +130,16 @@ std::vector<RendererDetail> CAESinkFactoryWin::GetRendererDetails()
     PropVariantClear(&varName);
 
     hr = pProperty->GetValue(PKEY_Device_EnumeratorName, &varName);
-    if (FAILED(hr))
+    if (SUCCEEDED(hr) && varName.pwszVal != nullptr)
     {
-      CLog::LogF(LOGERROR, "Retrieval of endpoint enumerator name failed.");
-      goto failed;
+      details.strDeviceEnumerator = KODI::PLATFORM::WINDOWS::FromW(varName.pwszVal);
+      StringUtils::ToUpper(details.strDeviceEnumerator);
     }
-
-    details.strDeviceEnumerator = KODI::PLATFORM::WINDOWS::FromW(varName.pwszVal);
-    StringUtils::ToUpper(details.strDeviceEnumerator);
+    else
+    {
+      CLog::LogF(LOGDEBUG, "Retrieval of endpoint enumerator name failed: {}.",
+                 (FAILED(hr)) ? "'GetValue' has failed" : "'varName.pwszVal' is NULL");
+    }
     PropVariantClear(&varName);
 
     if (pDevice->GetId(&pwszID) == S_OK)
