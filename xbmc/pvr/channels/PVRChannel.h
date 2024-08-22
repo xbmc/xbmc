@@ -446,8 +446,8 @@ public:
   int ClientOrder() const { return m_iClientOrder; }
 
   /*!
-   * @brief Get the client provider Uid for this channel
-   * @return m_iClientProviderUid The provider Uid for this channel
+   * @brief Get the uid of the provider on the client which this channel is from
+   * @return the client uid of the provider or PVR_PROVIDER_INVALID_UID
    */
   int ClientProviderUid() const { return m_iClientProviderUid; }
 

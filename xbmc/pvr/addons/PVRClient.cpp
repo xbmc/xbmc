@@ -177,7 +177,7 @@ public:
     iFlags = recording.Flags();
     sizeInBytes = recording.GetSizeInBytes();
     strProviderName = m_providerName.c_str();
-    iClientProviderUid = recording.ClientProviderUniqueId();
+    iClientProviderUid = recording.ClientProviderUid();
     strParentalRatingCode = m_parentalRatingCode.c_str();
     strParentalRatingIcon = m_parentalRatingIcon.c_str();
     strParentalRatingSource = m_parentalRatingSource.c_str();

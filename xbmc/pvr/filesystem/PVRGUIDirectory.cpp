@@ -878,7 +878,7 @@ bool CPVRGUIDirectory::GetProvidersDirectory(CFileItemList& results) const
         if (recording->ClientID() != path.GetClientId())
           continue;
 
-        if (checkUid && recording->ClientProviderUniqueId() != path.GetProviderUid())
+        if (checkUid && recording->ClientProviderUid() != path.GetProviderUid())
           continue;
 
         results.Add(std::make_shared<CFileItem>(recording));
