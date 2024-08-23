@@ -12,6 +12,7 @@
 #include "FileItemList.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
+#include "URL.h"
 #include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonType.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
@@ -558,6 +559,18 @@ void CGUIWindowPVRBase::SetChannelGroup(std::shared_ptr<CPVRChannelGroup> &&grou
   {
     CServiceBroker::GetPVRManager().PlaybackState()->SetActiveChannelGroup(updateChannelGroup);
     Update(GetDirectoryPath());
+  }
+}
+
+void CGUIWindowPVRBase::SetChannelGroupPath(const std::string& path)
+{
+  const CURL url{path};
+  const std::string pathWithoutOptions{url.GetWithoutOptions()};
+
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  if (m_channelGroupPath != pathWithoutOptions)
+  {
+    m_channelGroupPath = pathWithoutOptions;
   }
 }
 

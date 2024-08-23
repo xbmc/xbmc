@@ -25,6 +25,10 @@ public:
   bool OnMessage(CGUIMessage& message) override;
   bool OnAction(const CAction& action) override;
   void UpdateButtons() override;
+
+private:
+  void ActivateChannelsWindow(const CPVRProvidersPath& selectedPath);
+  void ActivateRecordingsWindow(const CPVRProvidersPath& selectedPath);
 };
 
 class CGUIWindowPVRTVProviders : public CGUIWindowPVRProvidersBase
