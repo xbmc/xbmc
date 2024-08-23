@@ -200,7 +200,8 @@ void CPVRDatabase::CreateTables()
               "idClient  integer primary key, "
               "iPriority integer, "
               "sAddonID TEXT, "
-              "iInstanceID integer"
+              "iInstanceID integer,"
+              "sDateTimeFirstChannelsAdded varchar(20)"
               ")");
 
   CLog::LogFC(LOGDEBUG, LOGPVR, "Creating table 'timers'");
@@ -389,6 +390,12 @@ void CPVRDatabase::UpdateTables(int iVersion)
 
     FixupClientIDs();
   }
+
+  if (iVersion < 47)
+  {
+    m_pDS->exec("ALTER TABLE clients ADD sDateTimeFirstChannelsAdded varchar(20)");
+    m_pDS->exec("UPDATE clients SET sDateTimeFirstChannelsAdded = ''");
+  }
 }
 
 /********** Client methods **********/
@@ -408,11 +415,18 @@ bool CPVRDatabase::Persist(const CPVRClient& client)
 
   CLog::LogFC(LOGDEBUG, LOGPVR, "Persisting client {} to database", client.GetID());
 
+  const CDateTime& dateTime{client.GetDateTimeFirstChannelsAdded()};
+  std::string dateTimeAdded;
+  if (dateTime.IsValid())
+    dateTimeAdded = dateTime.GetAsDBDateTime();
+
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
-  const std::string sql{PrepareSQL(
-      "REPLACE INTO clients (idClient, iPriority, sAddonID, iInstanceID) VALUES (%i, %i, '%s', %i)",
-      client.GetID(), client.GetPriority(), client.ID().c_str(), client.InstanceID())};
+  const std::string sql{
+      PrepareSQL("REPLACE INTO clients (idClient, iPriority, sAddonID, iInstanceID, "
+                 "sDateTimeFirstChannelsAdded) VALUES (%i, %i, '%s', %i, '%s')",
+                 client.GetID(), client.GetPriority(), client.ID().c_str(), client.InstanceID(),
+                 dateTimeAdded.c_str())};
   return ExecuteQuery(sql);
 }
 
@@ -447,6 +461,26 @@ int CPVRDatabase::GetPriority(const CPVRClient& client) const
     return 0;
 
   return atoi(strValue.c_str());
+}
+
+CDateTime CPVRDatabase::GetDateTimeFirstChannelsAdded(const CPVRClient& client) const
+{
+  if (client.GetID() == PVR_INVALID_CLIENT_ID)
+    return {};
+
+  CLog::LogFC(LOGDEBUG, LOGPVR,
+              "Getting datetime first channels added for client {} from the database",
+              client.GetID());
+
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+
+  const std::string whereClause{PrepareSQL("idClient = %i", client.GetID())};
+  const std::string value{GetSingleValue("clients", "sDateTimeFirstChannelsAdded", whereClause)};
+
+  if (value.empty())
+    return {};
+
+  return CDateTime::FromDBDateTime(value);
 }
 
 void CPVRDatabase::FixupClientIDs()
@@ -548,8 +582,10 @@ int CPVRDatabase::GetClientID(const std::string& addonID, unsigned int instanceI
     return std::atoi(idString.c_str());
 
   // Create a new entry with a new client id in clients table.
-  sql = PrepareSQL("INSERT INTO clients (iPriority, sAddonID, iInstanceID) VALUES (%i, '%s', %i)",
-                   0, addonID.c_str(), instanceID);
+  // Priority and ChannelsAdded fields will be populated with real values later, on-demand.
+  sql = PrepareSQL("INSERT INTO clients (iPriority, sAddonID, iInstanceID, "
+                   "sDateTimeFirstChannelsAdded) VALUES (%i, '%s', %i, '%s')",
+                   0, addonID.c_str(), instanceID, "");
   if (ExecuteQuery(sql))
     return static_cast<int>(m_pDS->lastinsertid());
 
