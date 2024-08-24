@@ -433,6 +433,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
       case LISTITEM_PARENTAL_RATING_CODE:
       case LISTITEM_PARENTAL_RATING_ICON:
       case LISTITEM_PARENTAL_RATING_SOURCE:
+      case LISTITEM_MEDIAPROVIDERS:
         break; // obtain value from channel/epg
       default:
         return false;
@@ -602,6 +603,20 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
           strValue = std::to_string(recording->EpisodePart());
           return true;
         }
+        return false;
+      case MUSICPLAYER_MEDIAPROVIDERS:
+      case VIDEOPLAYER_MEDIAPROVIDERS:
+      case LISTITEM_MEDIAPROVIDERS:
+        if (recording->HasClientProvider())
+        {
+          const std::shared_ptr<const CPVRProvider> provider{recording->GetProvider()};
+          if (provider)
+          {
+            strValue = provider->GetName();
+            return true;
+          }
+        }
+        return false;
     }
     return false;
   }
@@ -938,6 +953,19 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
         {
           strValue = channel->DateTimeAdded().GetAsLocalizedDate();
           return true;
+        }
+        break;
+      case MUSICPLAYER_MEDIAPROVIDERS:
+      case VIDEOPLAYER_MEDIAPROVIDERS:
+      case LISTITEM_MEDIAPROVIDERS:
+        if (channel->HasClientProvider())
+        {
+          const std::shared_ptr<const CPVRProvider> provider{channel->GetProvider()};
+          if (provider)
+          {
+            strValue = provider->GetName();
+            return true;
+          }
         }
         break;
     }

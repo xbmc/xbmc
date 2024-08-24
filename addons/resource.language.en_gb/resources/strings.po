@@ -11723,6 +11723,8 @@ msgid "Switched to channel for auto-closed PVR reminder for channel '{0:s}' at '
 msgstr ""
 
 #. generic label for pvr providers used in different places
+#: addons/skin.estuary/xml/DialogPVRInfo.xml
+#: addons/skin.estuary/xml/Includes_PVR.xml
 #: xbmc/pvr/filesystem/PVRGUIDirectory.cpp
 #: xbmc/pvr/guilib/PVRGUIActionsDatabase.cpp
 #: xbmc/windows/GUIWindowSystemInfo.cpp
@@ -11808,7 +11810,7 @@ msgctxt "#19347"
 msgid "None of the active PVR clients provide client-specific settings."
 msgstr ""
 
-#. label for 'by provider' sort method
+#. generic label for a pvr provider used in different places
 #: xbmc/pvr/windows/GUIViewStatePVR.cpp
 #: xbmc/utils/SortUtils.cpp
 msgctxt "#19348"
