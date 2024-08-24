@@ -1,0 +1,584 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- OSMC remotes use i and c keys that stop functioning with some keyboard languages   -->
+<!-- in OSMC. We have remapped those keys in OSMC to kpleftparen and kprightparen with  -->
+<!-- udev to overcome this issue. This file maps those keys to Kodi actions and adds    -->
+<!-- tweaks to provide enhanced function.The buttons map in Kodi as follows...          -->
+<!--                                                                                    -->
+<!-- OSMC with udev remap                          Stock layout                         -->
+<!-- Home  = escape           <key id="61467">     Home  = escape                       -->
+<!-- Info  = leftbracket      <key id="61480">     Info  = i                            -->
+<!-- Up    = up               <key id="61568">     Up    = up                           -->
+<!-- Down  = down             <key id="61569">     Down  = down                         -->
+<!-- Left  = left             <key id="61570">     Left  = left                         -->
+<!-- Right = right            <key id="61571">     Right = right                        -->
+<!-- OK    = return           <key id="61453">     OK    = return                       -->
+<!-- Back  = browser_back     <key id="61616">     Back  = browser_back                 -->
+<!-- Menu  = rightbracket     <key id="61481">     Menu  = c                            -->
+<!-- Play  = play_pause       <key id="61629">     Play  = play_pause                   -->
+<!-- Stop  = stop             <key id="61628">     Stop  = stop                         -->
+<!-- Vol-  = volume_down      <key id="61624">     Vol-  = volume_down                  -->
+<!-- Vol+  = volume_up        <key id="61625">     Vol+  = volume_up                    -->
+<!--                                                                                    -->
+<!-- Keymap created by DarwinDesign version 24-08-24                                    -->
+<!--                                                                                    -->
+<keymap>
+	<global>
+		<keyboard>
+			<escape>PreviousMenu</escape>
+			<home>PreviousMenu</home>
+			<escape mod="longpress">fullscreen</escape>
+			<home mod="longpress">fullscreen</home>
+			<leftbracket>Info</leftbracket>
+			<i>Info</i>
+			<leftbracket mod="longpress">noop</leftbracket> <!-- stops cycling -->
+			<i mod="longpress">noop</i> <!-- stops cycling -->
+			<left>Left</left>
+			<right>Right</right>
+			<up>Up</up>
+			<down>Down</down>
+			<return>Select</return>
+			<return mod="longpress">noop</return> <!-- removes default context menu & stops cycling -->
+			<browser_back>Back</browser_back>
+			<rightbracket>ContextMenu</rightbracket>
+			<c>ContextMenu</c>
+			<rightbracket mod="longpress">Menu</rightbracket>
+			<c mod="longpress">Menu</c>
+			<play_pause>PlayPause</play_pause>
+			<p>PlayPause</p>
+			<play_pause mod="longpress">noop</play_pause> <!-- removes default info & stops cycling -->
+			<p mod="longpress">noop</p>
+			<stop>Stop</stop>
+			<x>Stop</x>
+			<volume_down>VolumeDown</volume_down>
+			<volume_up>VolumeUp</volume_up>
+			<f1>VoiceRecognizer</f1> <!-- Mic Button -->
+			<browser_search>RunScript(script.globalsearch)</browser_search> <!-- OSMC Button -->
+			<f2>Notification(OSMC $LOCALIZE[790],$LOCALIZE[13050],5000,DefaultIconerror.png)</f2> <!-- OSMC Remote Control, Running low on battery -->
+			<f3>Notification(OSMC $LOCALIZE[790],$LOCALIZE[38373],5000)</f3> <!-- OSMC Remote Control, Battery is charging -->
+			<f4>Notification(OSMC $LOCALIZE[790],$LOCALIZE[38374],5000)</f4> <!-- OSMC Remote Control, Battery is fully charged -->
+			<f5>Notification(OSMC $LOCALIZE[790],$LOCALIZE[38375],5000)</f5> <!-- OSMC Remote Control, Battery charger removed -->
+		</keyboard>
+	</global>
+	<Home>
+		<keyboard>
+			<escape>CECActivateSource</escape>
+			<home>CECActivateSource</home>
+			<escape mod="longpress">CECStandby</escape>
+			<home mod="longpress">CECStandby</home>
+			<leftbracket>info</leftbracket>
+			<i>info</i>
+			<browser_back mod="longpress">ActivateWindow(ShutdownMenu)</browser_back>
+			<return mod="longpress">ReloadSkin()</return>
+			<play_pause mod="longpress">UpdateLibrary(video)</play_pause>
+			<p mod="longpress">UpdateLibrary(video)</p>
+		</keyboard>
+	</Home>
+	<VirtualKeyboard>
+		<keyboard>
+			<rightbracket mod="longpress">noop</rightbracket>
+			<c mod="longpress">noop</c>
+			<up mod="longpress">Shift</up>
+			<down mod="longpress">Symbols</down>
+			<return mod="longpress">Enter</return>
+		</keyboard>
+	</VirtualKeyboard>
+	<FileManager>
+		<keyboard>
+			<right mod="longpress">Highlight</right>
+			<left mod="longpress">Highlight</left>
+		</keyboard>
+	</FileManager>
+	<FullscreenVideo>
+		<keyboard>
+			<escape>ActivateWindow(videobookmarks)</escape>
+			<home>ActivateWindow(videobookmarks)</home>
+			<escape mod="longpress">playerdebug</escape>
+			<home mod="longpress">playerdebug</home>
+			<leftbracket>info</leftbracket>
+			<i>info</i>
+			<leftbracket mod="longpress">playerprocessinfo</leftbracket>
+			<i mod="longpress">playerprocessinfo</i>
+			<return mod="longpress">Playlist</return>
+			<up mod="longpress">SkipNext</up>
+			<down mod="longpress">SkipPrevious</down>
+			<left mod="longpress">AudioDelay</left>
+			<right mod="longpress">subtitledelay</right>
+			<rightbracket>ActivateWindow(osdvideosettings)</rightbracket>
+			<c>ActivateWindow(osdvideosettings)</c>
+			<rightbracket mod="longpress">ActivateWindow(osdaudiosettings)</rightbracket>
+			<c mod="longpress">ActivateWindow(osdaudiosettings)</c>
+			<play_pause mod="longpress">showsubtitles</play_pause>
+			<p mod="longpress">showsubtitles</p>
+			<stop mod="longpress">ActivateWindow(osdsubtitlesettings)</stop>
+			<x mod="longpress">ActivateWindow(osdsubtitlesettings)</x>
+		</keyboard>
+	</FullscreenVideo>
+	<FullscreenGame>
+		<keyboard>
+			<leftbracket>info</leftbracket>
+			<i>info</i>
+			<leftbracket mod="longpress">playerprocessinfo</leftbracket>
+			<i mod="longpress">playerprocessinfo</i>
+			<rightbracket>OSD</rightbracket>
+			<c>OSD</c>
+		</keyboard>
+	</FullscreenGame>
+	<FullscreenInfo>
+		<keyboard>
+			<leftbracket>Back</leftbracket>
+			<i>Back</i>
+			<leftbracket mod="longpress">playerprocessinfo</leftbracket>
+			<i mod="longpress">playerprocessinfo</i>
+			<rightbracket>Back</rightbracket>
+			<c>Back</c>
+		</keyboard>
+	</FullscreenInfo>
+	<Visualisation>
+		<keyboard>
+			<leftbracket>info</leftbracket>
+			<i>info</i>
+			<leftbracket mod="longpress">playerprocessinfo</leftbracket>
+			<i mod="longpress">playerprocessinfo</i>
+			<escape>ActivateWindow(Home)</escape>
+			<home>ActivateWindow(Home)</home>
+			<escape mod="longpress">fullscreen</escape>
+			<home mod="longpress">fullscreen</home>
+			<return mod="longpress">ActivateWindow(MusicPlaylist)</return>
+			<rightbracket>Addon.Default.OpenSettings(xbmc.player.musicviz)</rightbracket>
+			<c>Addon.Default.OpenSettings(xbmc.player.musicviz)</c>
+			<rightbracket mod="longpress">ActivateWindow(VisualisationPresetList)</rightbracket>
+			<c mod="longpress">ActivateWindow(VisualisationPresetList)</c>
+			<p/>
+		</keyboard>
+	</Visualisation>
+	<MusicOSD>
+		<keyboard>
+			<escape>back</escape>
+			<home>back</home>
+			<leftbracket>info</leftbracket>
+			<i>info</i>
+			<leftbracket mod="longpress">playerprocessinfo</leftbracket>
+			<i mod="longpress">playerprocessinfo</i>
+			<return mod="longpress">back</return>
+			<rightbracket>Addon.Default.OpenSettings(xbmc.player.musicviz)</rightbracket>
+			<c>Addon.Default.OpenSettings(xbmc.player.musicviz)</c>
+			<rightbracket mod="longpress">ActivateWindow(VisualisationPresetList)</rightbracket>
+			<c mod="longpress">ActivateWindow(VisualisationPresetList)</c>
+			<p/>
+		</keyboard>
+	</MusicOSD>
+	<VisualisationPresetList>
+		<keyboard>
+			<leftbracket>info</leftbracket>
+			<i>info</i>
+			<leftbracket mod="longpress">playerprocessinfo</leftbracket>
+			<i mod="longpress">playerprocessinfo</i>
+			<rightbracket>back</rightbracket>
+			<c>back</c>
+			<p/>
+		</keyboard>
+	</VisualisationPresetList>
+	<slideshow>
+		<keyboard>
+			<escape>back</escape>
+			<home>back</home>
+			<leftbracket>info</leftbracket>
+			<i>info</i>
+			<play_pause>pause</play_pause>
+			<p>pause</p>
+			<up mod="longpress">ZoomIn</up>
+			<down mod="longpress">ZoomOut</down>
+			<return mod="longpress">ZoomNormal</return>
+			<rightbracket></rightbracket> <!-- removes mapping from osmc-classic -->
+		</keyboard>
+	</slideshow>
+	<VideoOSD>
+		<keyboard>
+			<escape>ActivateWindow(videobookmarks)</escape>
+			<home>ActivateWindow(videobookmarks)</home>
+			<escape mod="longpress">playerdebug</escape>
+			<home mod="longpress">playerdebug</home>
+			<leftbracket>info</leftbracket>
+			<i>info</i>
+			<leftbracket mod="longpress">playerprocessinfo</leftbracket>
+			<i mod="longpress">playerprocessinfo</i>
+			<up mod="longpress">SkipNext</up>
+			<down mod="longpress">SkipPrevious</down>
+			<left mod="longpress">AudioDelay</left>
+			<right mod="longpress">subtitledelay</right>
+			<rightbracket>ActivateWindow(osdvideosettings)</rightbracket>
+			<return mod="longpress">back</return>
+			<c>ActivateWindow(osdvideosettings)</c>
+			<rightbracket mod="longpress">ActivateWindow(osdaudiosettings)</rightbracket>
+			<c mod="longpress">ActivateWindow(osdaudiosettings)</c>
+			<play_pause mod="longpress">showsubtitles</play_pause>
+			<p mod="longpress">showsubtitles</p>
+			<stop mod="longpress">ActivateWindow(osdsubtitlesettings)</stop>
+			<x mod="longpress">ActivateWindow(osdsubtitlesettings)</x>
+		</keyboard>
+	</VideoOSD>
+	<VideoMenu>
+		<keyboard>
+			<escape>ActivateWindow(Home)</escape>
+			<home>ActivateWindow(Home)</home>
+			<escape mod="longpress">fullscreen</escape>
+			<home mod="longpress">fullscreen</home>
+			<leftbracket>info</leftbracket>
+			<i>info</i>
+			<leftbracket mod="longpress">playerprocessinfo</leftbracket>
+			<i mod="longpress">playerprocessinfo</i>
+			<rightbracket></rightbracket> <!-- removes mapping from osmc-classic -->
+		</keyboard>
+	</VideoMenu>
+	<OSDVideoSettings>
+		<keyboard>
+			<leftbracket>info</leftbracket>
+			<i>info</i>
+			<leftbracket mod="longpress">playerprocessinfo</leftbracket>
+			<i mod="longpress">playerprocessinfo</i>
+			<rightbracket>back</rightbracket>
+			<c>back</c>
+			<stop>back</stop>
+			<x>back</x>
+		</keyboard>
+	</OSDVideoSettings>
+	<OSDAudioSettings>
+		<keyboard>
+			<leftbracket>info</leftbracket>
+			<i>info</i>
+			<leftbracket mod="longpress">playerprocessinfo</leftbracket>
+			<i mod="longpress">playerprocessinfo</i>
+			<rightbracket>back</rightbracket>
+			<c>back</c>
+			<stop>back</stop>
+			<x>back</x>
+		</keyboard>
+	</OSDAudioSettings>
+	<osdsubtitlesettings>
+		<keyboard>
+			<leftbracket>info</leftbracket>
+			<i>info</i>
+			<leftbracket mod="longpress">playerprocessinfo</leftbracket>
+			<i mod="longpress">playerprocessinfo</i>
+			<rightbracket>back</rightbracket>
+			<c>back</c>
+			<stop>back</stop>
+			<x>back</x>
+		</keyboard>
+	</osdsubtitlesettings>
+	<VideoBookmarks>
+		<keyboard>
+			<escape>back</escape>
+			<home>back</home>
+			<rightbracket mod="longpress">back</rightbracket>
+			<c mod="longpress">back</c>
+		</keyboard>
+	</VideoBookmarks>
+	<Videos>
+		<keyboard>
+			<escape>ActivateWindow(Home)</escape>
+			<home>ActivateWindow(Home)</home>
+			<escape mod="longpress">fullscreen</escape>
+			<home mod="longpress">fullscreen</home>
+			<return mod="longpress">SendClick(14)</return> <!-- Toggle view between unwatched and all videos -->
+			<play_pause mod="longpress">togglewatched</play_pause>
+			<p mod="longpress">togglewatched</p>
+			<browser_search>SendClick(8)</browser_search> <!-- Search -->
+		</keyboard>
+	</Videos>
+	<VideoPlaylist>
+		<keyboard>
+			<escape>ActivateWindow(Home)</escape>
+			<home>ActivateWindow(Home)</home>
+			<escape mod="longpress">fullscreen</escape>
+			<home mod="longpress">fullscreen</home>
+			<return mod="longpress">Back</return>
+		</keyboard>
+	</VideoPlaylist>
+	<ContextMenu>
+		<keyboard>
+			<rightbracket>Back</rightbracket>
+			<c>Back</c>
+		</keyboard>
+	</ContextMenu>
+	<MusicInformation>
+		<keyboard>
+			<escape>back</escape>
+			<home>back</home>
+			<leftbracket>Back</leftbracket>
+			<i>Back</i>
+			<leftbracket mod="longpress">noop</leftbracket> <!-- stops cycling -->
+			<i mod="longpress">noop</i> <!-- stops cycling -->
+			<rightbracket>Back</rightbracket>
+			<c>Back</c>
+		</keyboard>
+	</MusicInformation>
+	<MusicPlaylist>
+		<keyboard>
+			<escape>ActivateWindow(Home)</escape>
+			<home>ActivateWindow(Home)</home>
+			<escape mod="longpress">fullscreen</escape>
+			<home mod="longpress">fullscreen</home>
+			<return mod="longpress">back</return>
+		</keyboard>
+	</MusicPlaylist>
+	<SongInformation>
+		<keyboard>
+			<escape>back</escape>
+			<home>back</home>
+			<leftbracket>Back</leftbracket>
+			<i>Back</i>
+			<leftbracket mod="longpress">noop</leftbracket> <!-- stops cycling -->
+			<i mod="longpress">noop</i> <!-- stops cycling -->
+			<rightbracket>Back</rightbracket>
+			<c>Back</c>
+		</keyboard>
+	</SongInformation>
+	<MovieInformation>
+		<keyboard>
+			<escape>back</escape>
+			<home>back</home>
+			<leftbracket>Back</leftbracket>
+			<i>Back</i>
+			<leftbracket mod="longpress">noop</leftbracket> <!-- stops cycling -->
+			<i mod="longpress">noop</i> <!-- stops cycling -->
+			<rightbracket>Back</rightbracket>
+			<c>Back</c>
+		</keyboard>
+	</MovieInformation>
+	<PictureInfo>
+		<keyboard>
+			<escape>back</escape>
+			<home>back</home>
+			<leftbracket>Back</leftbracket>
+			<i>Back</i>
+			<leftbracket mod="longpress">noop</leftbracket> <!-- stops cycling -->
+			<i mod="longpress">noop</i> <!-- stops cycling -->
+			<rightbracket>Back</rightbracket>
+			<c>Back</c>
+		</keyboard>
+	</PictureInfo>
+	<FullscreenLiveTV>
+		<keyboard>
+			<rightbracket>ActivateWindow(PVROSDChannels)</rightbracket>
+			<c>ActivateWindow(PVROSDChannels)</c>
+			<leftbracket>info</leftbracket>
+			<i>info</i>
+			<leftbracket mod="longpress">playerprocessinfo</leftbracket>
+			<i mod="longpress">playerprocessinfo</i>
+			<left mod="longpress">AudioDelay</left>
+			<right mod="longpress">subtitledelay</right>
+			<return mod="longpress">Record</return>
+			<play_pause mod="longpress">showsubtitles</play_pause>
+			<p mod="longpress">showsubtitles</p>
+			<stop mod="longpress">ActivateWindow(Teletext)</stop>
+			<x mod="longpress">ActivateWindow(Teletext)</x>
+		</keyboard>
+	</FullscreenLiveTV>
+	<TVGuide>
+		<keyboard>
+			<return mod="longpress">Record</return>
+		</keyboard>
+	</TVGuide>
+	<FullscreenRadio>
+		<keyboard>
+			<rightbracket>ActivateWindow(PVROSDChannels)</rightbracket>
+			<c>ActivateWindow(PVROSDChannels)</c>
+		</keyboard>
+	</FullscreenRadio>
+	<AddonInformation>
+		<keyboard>
+			<escape>back</escape>
+			<home>back</home>
+			<leftbracket>Back</leftbracket>
+			<i>Back</i>
+			<leftbracket mod="longpress">noop</leftbracket> <!-- stops cycling -->
+			<i mod="longpress">noop</i> <!-- stops cycling -->
+			<rightbracket>Back</rightbracket>
+			<c>Back</c>
+		</keyboard>
+	</AddonInformation>
+	<PlayerProcessInfo>
+		<keyboard>
+			<leftbracket>back</leftbracket>
+			<i>back</i>
+			<rightbracket>ActivateWindow(osdvideosettings)</rightbracket>
+			<c>ActivateWindow(osdvideosettings)</c>
+			<rightbracket mod="longpress">noop</rightbracket>
+			<c mod="longpress">noop</c>
+			<stop mod="longpress">ActivateWindow(osdsubtitlesettings)</stop>
+			<x mod="longpress">ActivateWindow(osdsubtitlesettings)</x>
+		</keyboard>
+	</PlayerProcessInfo>
+	<yesnodialog> <!-- Added to allow CEC when update dialog box appears -->
+		<keyboard>
+			<escape>CECActivateSource</escape>
+			<home>CECActivateSource</home>
+			<escape mod="longpress">CECStandby</escape>
+			<home mod="longpress">CECStandby</home>
+		</keyboard>
+	</yesnodialog>
+	<selectdialog>
+		<keyboard>
+			<escape>back</escape>
+			<home>back</home>
+		</keyboard>
+	</selectdialog>
+	<contextmenu>
+		<keyboard>
+			<escape>back</escape>
+			<home>back</home>
+		</keyboard>
+	</contextmenu>
+	<addonsettings>
+		<keyboard>
+			<escape>back</escape>
+			<home>back</home>
+		</keyboard>
+	</addonsettings>
+	<addonbrowser>
+		<keyboard>
+			<escape>ActivateWindow(Home)</escape>
+			<home>ActivateWindow(Home)</home>
+			<escape mod="longpress">fullscreen</escape>
+			<home mod="longpress">fullscreen</home>
+		</keyboard>
+	</addonbrowser>
+	<filemanager>
+		<keyboard>
+			<escape>ActivateWindow(Home)</escape>
+			<home>ActivateWindow(Home)</home>
+			<escape mod="longpress">fullscreen</escape>
+			<home mod="longpress">fullscreen</home>
+		</keyboard>
+	</filemanager>
+	<interfacesettings>
+		<keyboard>
+			<escape>ActivateWindow(Home)</escape>
+			<home>ActivateWindow(Home)</home>
+			<escape mod="longpress">fullscreen</escape>
+			<home mod="longpress">fullscreen</home>
+		</keyboard>
+	</interfacesettings>
+	<systeminfo>
+		<keyboard>
+			<escape>ActivateWindow(Home)</escape>
+			<home>ActivateWindow(Home)</home>
+			<escape mod="longpress">fullscreen</escape>
+			<home mod="longpress">fullscreen</home>
+		</keyboard>
+	</systeminfo>
+	<eventlog>
+		<keyboard>
+			<escape>ActivateWindow(Home)</escape>
+			<home>ActivateWindow(Home)</home>
+			<escape mod="longpress">fullscreen</escape>
+			<home mod="longpress">fullscreen</home>
+		</keyboard>
+	</eventlog>
+	<playersettings>
+		<keyboard>
+			<escape>ActivateWindow(Home)</escape>
+			<home>ActivateWindow(Home)</home>
+			<escape mod="longpress">fullscreen</escape>
+			<home mod="longpress">fullscreen</home>
+		</keyboard>
+	</playersettings>
+	<mediasettings>
+		<keyboard>
+			<escape>ActivateWindow(Home)</escape>
+			<home>ActivateWindow(Home)</home>
+			<escape mod="longpress">fullscreen</escape>
+			<home mod="longpress">fullscreen</home>
+		</keyboard>
+	</mediasettings>
+	<pvrsettings>
+		<keyboard>
+			<escape>ActivateWindow(Home)</escape>
+			<home>ActivateWindow(Home)</home>
+			<escape mod="longpress">fullscreen</escape>
+			<home mod="longpress">fullscreen</home>
+		</keyboard>
+	</pvrsettings>
+	<servicesettings>
+		<keyboard>
+			<escape>ActivateWindow(Home)</escape>
+			<home>ActivateWindow(Home)</home>
+			<escape mod="longpress">fullscreen</escape>
+			<home mod="longpress">fullscreen</home>
+		</keyboard>
+	</servicesettings>
+	<gamesettings>
+		<keyboard>
+			<escape>ActivateWindow(Home)</escape>
+			<home>ActivateWindow(Home)</home>
+			<escape mod="longpress">fullscreen</escape>
+			<home mod="longpress">fullscreen</home>
+		</keyboard>
+	</gamesettings>
+	<profiles>
+		<keyboard>
+			<escape>ActivateWindow(Home)</escape>
+			<home>ActivateWindow(Home)</home>
+			<escape mod="longpress">fullscreen</escape>
+			<home mod="longpress">fullscreen</home>
+		</keyboard>
+	</profiles>
+	<systemsettings>
+		<keyboard>
+			<escape>ActivateWindow(Home)</escape>
+			<home>ActivateWindow(Home)</home>
+			<escape mod="longpress">fullscreen</escape>
+			<home mod="longpress">fullscreen</home>
+		</keyboard>
+	</systemsettings>
+	<music>
+		<keyboard>
+			<escape>ActivateWindow(Home)</escape>
+			<home>ActivateWindow(Home)</home>
+			<escape mod="longpress">fullscreen</escape>
+			<home mod="longpress">fullscreen</home>
+			<browser_search>SendClick(8)</browser_search> <!-- Search -->
+		</keyboard>
+	</music>
+	<pictures>
+		<keyboard>
+			<escape>ActivateWindow(Home)</escape>
+			<home>ActivateWindow(Home)</home>
+			<escape mod="longpress">fullscreen</escape>
+			<home mod="longpress">fullscreen</home>
+		</keyboard>
+	</pictures>
+	<skinsettings>
+		<keyboard>
+			<escape>ActivateWindow(Home)</escape>
+			<home>ActivateWindow(Home)</home>
+			<escape mod="longpress">fullscreen</escape>
+			<home mod="longpress">fullscreen</home>
+		</keyboard>
+	</skinsettings>
+	<musicplaylisteditor>
+		<keyboard>
+			<escape>ActivateWindow(Home)</escape>
+			<home>ActivateWindow(Home)</home>
+			<escape mod="longpress">fullscreen</escape>
+			<home mod="longpress">fullscreen</home>
+		</keyboard>
+	</musicplaylisteditor>
+	<games>
+		<keyboard>
+			<escape>ActivateWindow(Home)</escape>
+			<home>ActivateWindow(Home)</home>
+			<escape mod="longpress">fullscreen</escape>
+			<home mod="longpress">fullscreen</home>
+		</keyboard>
+	</games>
+	<programs>
+		<keyboard>
+			<escape>ActivateWindow(Home)</escape>
+			<home>ActivateWindow(Home)</home>
+			<escape mod="longpress">fullscreen</escape>
+			<home mod="longpress">fullscreen</home>
+		</keyboard>
+	</programs>
+	</keymap>
