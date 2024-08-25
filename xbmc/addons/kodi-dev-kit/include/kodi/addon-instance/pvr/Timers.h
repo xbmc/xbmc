@@ -88,6 +88,7 @@ public:
   /// | **Genre type** | `int` | @ref PVRTimer::SetGenreType "SetGenreType" | @ref PVRTimer::GetGenreType "GetGenreType" | *optional*
   /// | **Genre sub type** | `int` | @ref PVRTimer::SetGenreSubType "SetGenreSubType" | @ref PVRTimer::GetGenreSubType "GetGenreSubType" | *optional*
   /// | **Series link** | `std::string` | @ref PVRTimer::SetSeriesLink "SetSeriesLink" | @ref PVRTimer::GetSeriesLink "GetSeriesLink" | *optional*
+  /// | **Custom properties** | @ref cpp_kodi_addon_pvr_Defs_PVRSettingKeyValuePair "PVRSettingKeyValuePair" | @ref PVRTimer::SetCustomProperties "SetCustomProperties" | @ref PVRTimer::GetCustomProperties "GetCustomProperties" | *optional*
 
   /// @addtogroup cpp_kodi_addon_pvr_Defs_Timer_PVRTimer
   ///@{
@@ -461,6 +462,39 @@ public:
   {
     return m_cStructure->strSeriesLink ? m_cStructure->strSeriesLink : "";
   }
+
+  //----------------------------------------------------------------------------
+
+  /// @brief **optional**\n
+  /// Array containing the custom properties.
+  ///
+  /// @param[in] properties List of properties.
+  ///
+  /// --------------------------------------------------------------------------
+  ///
+  /// @copydetails cpp_kodi_addon_pvr_Defs_General_PVRSettingKeyValuePair_Help
+  void SetCustomProperties(const std::vector<PVRSettingKeyValuePair>& properties)
+  {
+    PVRSettingKeyValuePair::ReallocAndCopyData(&m_cStructure->customProps,
+                                               &m_cStructure->iCustomPropsSize, properties);
+  }
+
+  /// @brief To get with @ref SetCustomProperties changed values
+  std::vector<PVRSettingKeyValuePair> GetCustomProperties() const
+  {
+    std::vector<PVRSettingKeyValuePair> ret;
+    if (m_cStructure->iCustomPropsSize)
+    {
+      ret.reserve(m_cStructure->iCustomPropsSize);
+      for (unsigned int i = 0; i < m_cStructure->iCustomPropsSize; ++i)
+      {
+        ret.emplace_back(m_cStructure->customProps[i].iKey, m_cStructure->customProps[i].eType,
+                         m_cStructure->customProps[i].iValue,
+                         m_cStructure->customProps[i].strValue);
+      }
+    }
+    return ret;
+  }
   ///@}
 
   static void AllocResources(const PVR_TIMER* source, PVR_TIMER* target)
@@ -470,6 +504,10 @@ public:
     target->strDirectory = AllocAndCopyString(source->strDirectory);
     target->strSummary = AllocAndCopyString(source->strSummary);
     target->strSeriesLink = AllocAndCopyString(source->strSeriesLink);
+
+    target->customProps =
+        PVRSettingKeyValuePair::AllocAndCopyData(source->customProps, source->iCustomPropsSize);
+    target->iCustomPropsSize = source->iCustomPropsSize;
   }
 
   static void FreeResources(PVR_TIMER* target)
@@ -479,6 +517,10 @@ public:
     FreeString(target->strDirectory);
     FreeString(target->strSummary);
     FreeString(target->strSeriesLink);
+
+    PVRSettingKeyValuePair::FreeResources(target->customProps, target->iCustomPropsSize);
+    target->customProps = nullptr;
+    target->iCustomPropsSize = 0;
   }
 
 private:
@@ -583,6 +625,8 @@ public:
   /// | | | | | |
   /// | **Max recordings selection** | @ref cpp_kodi_addon_pvr_Defs_PVRTypeIntValue "PVRTypeIntValue" | @ref PVRTimerType::SetMaxRecordings "SetMaxRecordings" | @ref PVRTimerType::GetMaxRecordings "GetMaxRecordings" | *optional*
   /// | **Max recordings default** | `int`| @ref PVRTimerType::SetMaxRecordingsDefault "SetMaxRecordingsDefault" | @ref PVRTimerType::GetMaxRecordingsDefault "GetMaxRecordingsDefault" | *optional*
+  /// | | | | | |
+  /// | **Custom setting definitions**|  @ref cpp_kodi_addon_pvr_Defs_PVRSettingDefinition "PVRSettingDefinition" | @ref PVRTimerType::SetCustomSettingDefinitions "SetCustomSettingDefinitions" | @ref PVRTimerType::GetCustomSettingDefinitions "GetCustomSettingDefinitions" | *optional*
   ///
 
   /// @addtogroup cpp_kodi_addon_pvr_Defs_Timer_PVRTimerType
@@ -822,7 +866,7 @@ public:
   /// @brief **optional**\n
   /// Array containing the possible values of @ref PVRTimer::SetMaxRecordings().
   ///
-  /// @param[in] maxRecordings List of lifetimes values
+  /// @param[in] maxRecordings List of max recordings values
   /// @param[in] maxRecordingsDefault [opt] The default value in list, can also be
   ///                                 set by @ref SetMaxRecordingsDefault()
   ///
@@ -859,6 +903,78 @@ public:
 
   /// @brief To get with @ref SetMaxRecordingsDefault changed values
   int GetMaxRecordingsDefault() const { return m_cStructure->iMaxRecordingsDefault; }
+
+  //----------------------------------------------------------------------------
+
+  /// @brief **optional**\n
+  /// Array containing the possible custom integer setting definitions.
+  ///
+  /// @param[in] defs List of integer setting definitions.
+  ///
+  /// --------------------------------------------------------------------------
+  ///
+  /// @copydetails cpp_kodi_addon_pvr_Defs_General_PVRIntSettingDefinition_Help
+  void SetCustomSettingDefinitions(const std::vector<PVRSettingDefinition>& defs)
+  {
+    PVRSettingDefinition::ReallocAndCopyData(&m_cStructure->customSettingDefs,
+                                             &m_cStructure->iCustomSettingDefsSize, defs);
+  }
+
+  /// @brief To get with @ref SetCustomSettingDefinitions changed values
+  std::vector<PVRSettingDefinition> GetCustomSettingDefinitions() const
+  {
+    std::vector<PVRSettingDefinition> ret;
+    if (m_cStructure->iCustomSettingDefsSize)
+    {
+      ret.reserve(m_cStructure->iCustomSettingDefsSize);
+      for (unsigned int i = 0; i < m_cStructure->iCustomSettingDefsSize; ++i)
+      {
+        const PVR_SETTING_DEFINITION* def{m_cStructure->customSettingDefs[i]};
+
+        PVRIntSettingDefinition intDef;
+        if (def->intSettingDefinition)
+        {
+          const PVR_INT_SETTING_DEFINITION* intSettingDef{def->intSettingDefinition};
+
+          std::vector<PVRTypeIntValue> intValues;
+          if (intSettingDef->iValuesSize)
+          {
+            intValues.reserve(intSettingDef->iValuesSize);
+            for (unsigned int j = 0; j < intSettingDef->iValuesSize; ++j)
+            {
+              intValues.emplace_back(intSettingDef->values[j].iValue,
+                                     intSettingDef->values[j].strDescription);
+            }
+          }
+          intDef = {intValues, intSettingDef->iDefaultValue, intSettingDef->iMinValue,
+                    intSettingDef->iStep, intSettingDef->iMaxValue};
+        }
+
+        PVRStringSettingDefinition stringDef;
+        if (def->stringSettingDefinition)
+        {
+          const PVR_STRING_SETTING_DEFINITION* stringSettingDef{def->stringSettingDefinition};
+
+          std::vector<PVRTypeStringValue> stringValues;
+          if (stringSettingDef->iValuesSize)
+          {
+            stringValues.reserve(stringSettingDef->iValuesSize);
+            for (unsigned int j = 0; j < stringSettingDef->iValuesSize; ++j)
+            {
+              stringValues.emplace_back(stringSettingDef->values[j].strValue,
+                                        stringSettingDef->values[j].strDescription);
+            }
+          }
+          stringDef = {stringValues, stringSettingDef->strDefaultValue,
+                       stringSettingDef->bAllowEmptyValue};
+        }
+
+        ret.emplace_back(def->iId, def->strName, def->eType, def->iReadonlyConditions, intDef,
+                         stringDef);
+      }
+    }
+    return ret;
+  }
   ///@}
 
   static void AllocResources(const PVR_TIMER_TYPE* source, PVR_TIMER_TYPE* target)
@@ -894,6 +1010,12 @@ public:
       target->maxRecordings =
           PVRTypeIntValue::AllocAndCopyData(source->maxRecordings, source->iMaxRecordingsSize);
     }
+
+    if (target->iCustomSettingDefsSize)
+    {
+      target->customSettingDefs = PVRSettingDefinition::AllocAndCopyData(
+          source->customSettingDefs, source->iCustomSettingDefsSize);
+    }
   }
 
   static void FreeResources(PVR_TIMER_TYPE* target)
@@ -921,6 +1043,10 @@ public:
     PVRTypeIntValue::FreeResources(target->maxRecordings, target->iMaxRecordingsSize);
     target->maxRecordings = nullptr;
     target->iMaxRecordingsSize = 0;
+
+    PVRSettingDefinition::FreeResources(target->customSettingDefs, target->iCustomSettingDefsSize);
+    target->customSettingDefs = nullptr;
+    target->iCustomSettingDefsSize = 0;
   }
 
 private:

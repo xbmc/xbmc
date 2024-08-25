@@ -298,7 +298,7 @@ extern "C"
     /// @brief __1__ : The timer is scheduled for recording.
     PVR_TIMER_STATE_SCHEDULED = 1,
 
-    /// @brief __2__ : The timer is currently recordings.
+    /// @brief __2__ : The timer is currently recording.
     PVR_TIMER_STATE_RECORDING = 2,
 
     /// @brief __3__ : The recording completed successfully.
@@ -310,19 +310,17 @@ extern "C"
     /// @brief __5__ : The timer was scheduled, but was canceled.
     PVR_TIMER_STATE_CANCELLED = 5,
 
-    /// @brief __6__ : The scheduled timer conflicts with another one, but will be
-    /// recorded.
+    /// @brief __6__ : The scheduled timer conflicts with another one, but will be recorded.
     PVR_TIMER_STATE_CONFLICT_OK = 6,
 
-    /// @brief __7__ : The scheduled timer conflicts with another one and won't be
-    /// recorded.
+    /// @brief __7__ : The scheduled timer conflicts with another one and won't be recorded.
     PVR_TIMER_STATE_CONFLICT_NOK = 7,
 
     /// @brief __8__ : The timer is scheduled, but can't be recorded for some reason.
     PVR_TIMER_STATE_ERROR = 8,
 
-    /// @brief __9__ : The timer was disabled by the user, can be enabled via setting
-    /// the state to @ref PVR_TIMER_STATE_SCHEDULED.
+    /// @brief __9__ : The timer was disabled by the user, can be enabled via setting the state to
+    /// @ref PVR_TIMER_STATE_SCHEDULED.
     PVR_TIMER_STATE_DISABLED = 9,
   } PVR_TIMER_STATE;
   ///@}
@@ -365,10 +363,12 @@ extern "C"
     int iGenreType;
     int iGenreSubType;
     const char* strSeriesLink;
+    unsigned int iCustomPropsSize;
+    struct PVR_SETTING_KEY_VALUE_PAIR* customProps;
   } PVR_TIMER;
 
   /*!
-   * @brief "C" PVR add-on timer event type.
+   * @brief "C" PVR add-on timer type.
    *
    * Structure used to interface in "C" between Kodi and Addon.
    *
@@ -400,6 +400,9 @@ extern "C"
     unsigned int iMaxRecordingsSize;
     struct PVR_ATTRIBUTE_INT_VALUE* maxRecordings;
     int iMaxRecordingsDefault;
+
+    unsigned int iCustomSettingDefsSize;
+    struct PVR_SETTING_DEFINITION** customSettingDefs;
   } PVR_TIMER_TYPE;
 
 #ifdef __cplusplus

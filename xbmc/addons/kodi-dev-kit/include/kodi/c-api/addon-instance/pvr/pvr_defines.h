@@ -20,13 +20,22 @@ extern "C"
 #endif /* __cplusplus */
 
   /*!
-   * @brief "C" Representation of a general attribute integer value.
+   * @brief "C" Representation of an integer value, including a description.
    */
   typedef struct PVR_ATTRIBUTE_INT_VALUE
   {
     int iValue;
     const char* strDescription;
   } PVR_ATTRIBUTE_INT_VALUE;
+
+  /*!
+   * @brief "C" Representation of a string value, including a description
+   */
+  typedef struct PVR_ATTRIBUTE_STRING_VALUE
+  {
+    const char* strValue;
+    const char* strDescription;
+  } PVR_ATTRIBUTE_STRING_VALUE;
 
   /*!
    * @brief "C" Representation of a named value.
