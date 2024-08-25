@@ -3889,6 +3889,33 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///     @return The parental rating of the currently playing programme (PVR).
 ///     <p>
 ///   }
+///   \table_row3{   <b>`VideoPlayer.ParentalRatingCode`</b>,
+///                  \anchor VideoPlayer_ParentalRatingCode
+///                  _string_,
+///     @return The parental rating code (eg: 'PG'\, etc) of the currently playing programme (PVR).
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_ParentalRatingCode `VideoPlayer.ParentalRatingCode`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`VideoPlayer.ParentalRatingIcon`</b>,
+///                  \anchor VideoPlayer_ParentalRatingIcon
+///                  _string_,
+///     @return The parental rating icon path of the currently playing programme (PVR).
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_ParentalRatingIcon `VideoPlayer.ParentalRatingIcon`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`VideoPlayer.ParentalRatingSource`</b>,
+///                  \anchor VideoPlayer_ParentalRatingSource
+///                  _string_,
+///     @return The source used to determine the parental rating of the currently playing programme (PVR).
+///     Values could include the Country alpha-3 code or the name/abbreviation
+///     of the authority issuing the rating code.  Can be used with
+///     the \link VideoPlayer_ParentalRatingCode `ParentalRatingCode`\endlink for skin-derived icons if required.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_ParentalRatingSource `VideoPlayer.ParentalRatingSource`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`VideoPlayer.DBID`</b>,
 ///                  \anchor VideoPlayer_DBID
 ///                  _string_,
@@ -4029,6 +4056,9 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "channelgroup",     VIDEOPLAYER_CHANNEL_GROUP },
                                   { "hasepg",           VIDEOPLAYER_HAS_EPG },
                                   { "parentalrating",   VIDEOPLAYER_PARENTAL_RATING },
+                                  { "parentalratingcode",   VIDEOPLAYER_PARENTAL_RATING_CODE },
+                                  { "parentalratingicon",   VIDEOPLAYER_PARENTAL_RATING_ICON },
+                                  { "parentalratingsource", VIDEOPLAYER_PARENTAL_RATING_SOURCE },
                                   { "isstereoscopic",   VIDEOPLAYER_IS_STEREOSCOPIC },
                                   { "stereoscopicmode", VIDEOPLAYER_STEREOSCOPIC_MODE },
                                   { "canresumelivetv",  VIDEOPLAYER_CAN_RESUME_LIVE_TV },

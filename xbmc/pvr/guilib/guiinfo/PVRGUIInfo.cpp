@@ -429,7 +429,6 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
       case LISTITEM_DIRECTOR:
       case LISTITEM_CHANNEL_NUMBER:
       case LISTITEM_PREMIERED:
-      case VIDEOPLAYER_PARENTAL_RATING:
       case LISTITEM_PARENTAL_RATING:
       case LISTITEM_PARENTAL_RATING_CODE:
       case LISTITEM_PARENTAL_RATING_ICON:
@@ -584,12 +583,15 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
         }
         return false;
       }
+      case VIDEOPLAYER_PARENTAL_RATING_CODE:
       case LISTITEM_PARENTAL_RATING_CODE:
         strValue = recording->GetParentalRatingCode();
         return true;
+      case VIDEOPLAYER_PARENTAL_RATING_ICON:
       case LISTITEM_PARENTAL_RATING_ICON:
         strValue = recording->GetParentalRatingIcon();
         return true;
+      case VIDEOPLAYER_PARENTAL_RATING_SOURCE:
       case LISTITEM_PARENTAL_RATING_SOURCE:
         strValue = recording->GetParentalRatingSource();
         return true;
@@ -832,6 +834,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
         }
         return false;
       }
+      case VIDEOPLAYER_PARENTAL_RATING_CODE:
       case LISTITEM_PARENTAL_RATING_CODE:
         strValue = epgTag->ParentalRatingCode();
         return true;
@@ -841,9 +844,11 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
       case LISTITEM_PVR_INSTANCE_NAME:
         strValue = CServiceBroker::GetPVRManager().GetClient(epgTag->ClientID())->GetInstanceName();
         return true;
+      case VIDEOPLAYER_PARENTAL_RATING_ICON:
       case LISTITEM_PARENTAL_RATING_ICON:
         strValue = epgTag->ParentalRatingIcon();
         return true;
+      case VIDEOPLAYER_PARENTAL_RATING_SOURCE:
       case LISTITEM_PARENTAL_RATING_SOURCE:
         strValue = epgTag->ParentalRatingSource();
         return true;
