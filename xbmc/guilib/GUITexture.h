@@ -165,6 +165,11 @@ protected:
   float m_height;
   float m_depth{0};
 
+  // size used to get and release image from LargeTextureManager
+  int m_requestWidth = REQUEST_SIZE_UNSET;
+  int m_requestHeight = REQUEST_SIZE_UNSET;
+  static constexpr int REQUEST_SIZE_UNSET = -1;
+
   CRect m_vertex;       // vertex coords to render
   bool m_invalid;       // if true, we need to recalculate
   bool m_use_cache;

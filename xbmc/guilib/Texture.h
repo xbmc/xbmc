@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "guilib/AspectRatio.h"
 #include "guilib/TextureBase.h"
 #include "guilib/TextureFormats.h"
 
@@ -43,14 +44,16 @@ public:
    \param texturePath the path of the texture to load.
    \param idealWidth the ideal width of the texture (defaults to 0, no ideal width).
    \param idealHeight the ideal height of the texture (defaults to 0, no ideal height).
+   \param aspectRatio the aspect ratio mode of the texture (defaults to "center").
    \param strMimeType mimetype of the given texture if available (defaults to empty)
    \return a CTexture std::unique_ptr to the created texture - nullptr if the texture failed to load.
    */
-  static std::unique_ptr<CTexture> LoadFromFile(const std::string& texturePath,
-                                                unsigned int idealWidth = 0,
-                                                unsigned int idealHeight = 0,
-                                                bool requirePixels = false,
-                                                const std::string& strMimeType = "");
+  static std::unique_ptr<CTexture> LoadFromFile(
+      const std::string& texturePath,
+      unsigned int idealWidth = 0,
+      unsigned int idealHeight = 0,
+      CAspectRatio::AspectRatio aspectRatio = CAspectRatio::CENTER,
+      const std::string& strMimeType = "");
 
   /*! \brief Load a texture from a file in memory
    Loads a texture from a file in memory, restricting in size if needed based on maxHeight and maxWidth.
@@ -60,13 +63,16 @@ public:
    \param mimeType the mime type of the file in buffer.
    \param idealWidth the ideal width of the texture (defaults to 0, no ideal width).
    \param idealHeight the ideal height of the texture (defaults to 0, no ideal height).
+   \param aspectRatio the aspect ratio mode of the texture (defaults to "center").
    \return a CTexture std::unique_ptr to the created texture - nullptr if the texture failed to load.
    */
-  static std::unique_ptr<CTexture> LoadFromFileInMemory(unsigned char* buffer,
-                                                        size_t bufferSize,
-                                                        const std::string& mimeType,
-                                                        unsigned int idealWidth = 0,
-                                                        unsigned int idealHeight = 0);
+  static std::unique_ptr<CTexture> LoadFromFileInMemory(
+      unsigned char* buffer,
+      size_t bufferSize,
+      const std::string& mimeType,
+      unsigned int idealWidth = 0,
+      unsigned int idealHeight = 0,
+      CAspectRatio::AspectRatio aspectRatio = CAspectRatio::CENTER);
 
   bool LoadFromMemory(unsigned int width,
                       unsigned int height,
@@ -135,12 +141,21 @@ private:
   CTexture(const CTexture& copy) = delete;
 
 protected:
-  bool LoadFromFileInMem(unsigned char* buffer, size_t size, const std::string& mimeType,
-                         unsigned int maxWidth, unsigned int maxHeight);
-  bool LoadFromFileInternal(const std::string& texturePath, unsigned int maxWidth, unsigned int maxHeight, bool requirePixels, const std::string& strMimeType = "");
+  bool LoadFromFileInMem(unsigned char* buffer,
+                         size_t size,
+                         const std::string& mimeType,
+                         unsigned int idealWidth,
+                         unsigned int idealHeight,
+                         CAspectRatio::AspectRatio aspectRatio);
+  bool LoadFromFileInternal(const std::string& texturePath,
+                            unsigned int idealWidth,
+                            unsigned int idealHeight,
+                            CAspectRatio::AspectRatio aspectRatio,
+                            const std::string& strMimeType = "");
   bool LoadIImage(IImage* pImage,
                   unsigned char* buffer,
                   unsigned int bufSize,
-                  unsigned int width,
-                  unsigned int height);
+                  unsigned int idealWidth,
+                  unsigned int idealHeight,
+                  CAspectRatio::AspectRatio aspectRatio);
 };

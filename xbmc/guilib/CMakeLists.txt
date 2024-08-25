@@ -72,7 +72,8 @@ set(SOURCES DDSImage.cpp
             XBTF.cpp
             XBTFReader.cpp)
 
-set(HEADERS DDSImage.h
+set(HEADERS AspectRatio.h
+            DDSImage.h
             DirtyRegion.h
             DirtyRegionSolvers.h
             DirtyRegionTracker.h
