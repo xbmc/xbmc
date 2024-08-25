@@ -12,6 +12,7 @@
 #include "GUIColorManager.h"
 #include "GUIInfoManager.h"
 #include "GUILargeTextureManager.h"
+#include "GUITextureCallbackManager.h"
 #include "GUIWindowManager.h"
 #include "ServiceBroker.h"
 #include "StereoscopicsManager.h"
@@ -26,6 +27,7 @@ CGUIComponent::CGUIComponent()
   : m_pWindowManager(std::make_unique<CGUIWindowManager>()),
     m_pTextureManager(std::make_unique<CGUITextureManager>()),
     m_pLargeTextureManager(std::make_unique<CGUILargeTextureManager>()),
+    m_pTextureCallbackManager(std::make_unique<CGUITextureCallbackManager>()),
     m_stereoscopicsManager(std::make_unique<CStereoscopicsManager>()),
     m_guiInfoManager(std::make_unique<CGUIInfoManager>()),
     m_guiColorManager(std::make_unique<CGUIColorManager>()),
@@ -73,6 +75,11 @@ CGUITextureManager& CGUIComponent::GetTextureManager()
 CGUILargeTextureManager& CGUIComponent::GetLargeTextureManager()
 {
   return *m_pLargeTextureManager;
+}
+
+CGUITextureCallbackManager& CGUIComponent::GetTextureCallbackManager()
+{
+  return *m_pTextureCallbackManager;
 }
 
 CStereoscopicsManager &CGUIComponent::GetStereoscopicsManager()

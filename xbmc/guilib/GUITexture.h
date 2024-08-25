@@ -85,6 +85,7 @@ public:
   bool AllocResources();
   void FreeResources(bool immediately = false);
   void SetInvalid();
+  void OnWindowResize();
 
   bool SetVisible(bool visible);
   bool SetAlpha(unsigned char alpha);
