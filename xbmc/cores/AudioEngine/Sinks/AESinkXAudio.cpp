@@ -163,12 +163,26 @@ void CAESinkXAudio::Deinitialize()
     {
       m_sourceVoice->Stop();
       m_sourceVoice->FlushSourceBuffers();
+
+      // Stop and FlushSourceBuffers are async, wait for queued buffers to be released by XAudio2.
+      // callbacks don't seem to be called otherwise, with memory leakage.
+      XAUDIO2_VOICE_STATE state{};
+      do
+      {
+        if (WAIT_OBJECT_0 != WaitForSingleObject(m_voiceCallback.mBufferEnd.get(), 500))
+        {
+          CLog::LogF(LOGERROR, "timeout waiting for buffer flush - possible buffer memory leak");
+          break;
+        }
+        m_sourceVoice->GetState(&state, 0);
+      } while (state.BuffersQueued > 0);
+
       m_sinkFrames = 0;
       m_framesInBuffers = 0;
     }
     catch (...)
     {
-      CLog::Log(LOGDEBUG, "{}: Invalidated source voice - Releasing", __FUNCTION__);
+      CLog::Log(LOGERROR, "{}: Invalidated source voice - Releasing", __FUNCTION__);
     }
   }
   m_running = false;
