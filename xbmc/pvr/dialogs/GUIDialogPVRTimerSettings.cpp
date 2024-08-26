@@ -22,6 +22,7 @@
 #include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
+#include "pvr/settings/PVRCustomTimerSettings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimerType.h"
 #include "settings/SettingUtils.h"
@@ -147,6 +148,9 @@ void CGUIDialogPVRTimerSettings::SetTimer(const std::shared_ptr<CPVRTimerInfoTag
 
   InitializeChannelsList();
   InitializeTypesList();
+
+  m_customTimerSettings = std::make_unique<CPVRCustomTimerSettings>(
+      *m_timerType, m_timerInfoTag->m_customProps, m_typeEntries);
 
   // Channel
   m_channel = ChannelDescriptor();
@@ -400,6 +404,55 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
                     RecordingGroupFiller, 811);
   AddTypeDependentVisibilityCondition(setting, SETTING_TMR_REC_GROUP);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_REC_GROUP);
+
+  // Add-on supplied custom settings
+  m_customTimerSettings->AddSettings(*this, group);
+}
+
+void CGUIDialogPVRTimerSettings::AddMultiIntSetting(const std::shared_ptr<CSettingGroup>& group,
+                                                    const std::string& settingName,
+                                                    int settingValue)
+{
+  const std::shared_ptr<CSetting> setting{AddList(group, settingName, 16028, SettingLevel::Basic,
+                                                  settingValue, CustomIntSettingDefinitionsFiller,
+                                                  16028)};
+  AddTypeDependentVisibilityCondition(setting, settingName);
+  AddTypeDependentEnableCondition(setting, settingName);
+}
+
+void CGUIDialogPVRTimerSettings::AddSingleIntSetting(const std::shared_ptr<CSettingGroup>& group,
+                                                     const std::string& settingName,
+                                                     int settingValue,
+                                                     int minValue,
+                                                     int step,
+                                                     int maxValue)
+{
+  const std::shared_ptr<CSetting> setting{AddEdit(group, settingName, 16028, SettingLevel::Basic,
+                                                  settingValue, minValue, step, maxValue)};
+  AddTypeDependentVisibilityCondition(setting, settingName);
+  AddTypeDependentEnableCondition(setting, settingName);
+}
+
+void CGUIDialogPVRTimerSettings::AddMultiStringSetting(const std::shared_ptr<CSettingGroup>& group,
+                                                       const std::string& settingName,
+                                                       const std::string& settingValue)
+{
+  const std::shared_ptr<CSetting> setting{AddList(group, settingName, 16028, SettingLevel::Basic,
+                                                  settingValue,
+                                                  CustomStringSettingDefinitionsFiller, 16028)};
+  AddTypeDependentVisibilityCondition(setting, settingName);
+  AddTypeDependentEnableCondition(setting, settingName);
+}
+
+void CGUIDialogPVRTimerSettings::AddSingleStringSetting(const std::shared_ptr<CSettingGroup>& group,
+                                                        const std::string& settingName,
+                                                        const std::string& settingValue,
+                                                        bool allowEmptyValue)
+{
+  const std::shared_ptr<CSetting> setting{
+      AddEdit(group, settingName, 16028, SettingLevel::Basic, settingValue, allowEmptyValue)};
+  AddTypeDependentVisibilityCondition(setting, settingName);
+  AddTypeDependentEnableCondition(setting, settingName);
 }
 
 int CGUIDialogPVRTimerSettings::GetWeekdaysFromSetting(const SettingConstPtr& setting)
@@ -445,6 +498,7 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(const std::shared_ptr<const CS
     if (it != m_typeEntries.end())
     {
       m_timerType = it->second;
+      m_customTimerSettings->SetTimerType(*m_timerType);
 
       // reset certain settings to the defaults of the new timer type
 
@@ -559,6 +613,14 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(const std::shared_ptr<const CS
   {
     m_iRecordingGroup = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
   }
+  else if (m_customTimerSettings->IsCustomIntSetting(settingId))
+  {
+    m_customTimerSettings->UpdateIntProperty(setting);
+  }
+  else if (m_customTimerSettings->IsCustomStringSetting(settingId))
+  {
+    m_customTimerSettings->UpdateStringProperty(setting);
+  }
 }
 
 void CGUIDialogPVRTimerSettings::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
@@ -627,6 +689,16 @@ bool CGUIDialogPVRTimerSettings::Validate()
   }
 
   return true;
+}
+
+std::string CGUIDialogPVRTimerSettings::GetSettingsLabel(const std::shared_ptr<ISetting>& setting)
+{
+  // Special handling for add-on supplied custom settings.
+  const std::string label{m_customTimerSettings->GetSettingsLabel(setting->GetId())};
+  if (!label.empty())
+    return label;
+
+  return CGUIDialogSettingsManualBase::GetSettingsLabel(setting);
 }
 
 bool CGUIDialogPVRTimerSettings::Save()
@@ -739,6 +811,9 @@ bool CGUIDialogPVRTimerSettings::Save()
 
   // Recording group
   m_timerInfoTag->m_iRecordingGroup = m_iRecordingGroup;
+
+  // Custom properties
+  m_timerInfoTag->m_customProps = m_customTimerSettings->GetProperties();
 
   // Set the timer's title to the channel name if it's empty or 'New Timer'
   if (m_strTitle.empty() || m_strTitle == g_localizeStrings.Get(19056))
@@ -1303,6 +1378,44 @@ void CGUIDialogPVRTimerSettings::MarginTimeFiller(const SettingConstPtr& setting
     CLog::LogF(LOGERROR, "No dialog");
 }
 
+void CGUIDialogPVRTimerSettings::CustomIntSettingDefinitionsFiller(
+    const std::shared_ptr<const CSetting>& setting,
+    std::vector<IntegerSettingOption>& list,
+    int& current,
+    void* data)
+{
+  CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  if (pThis)
+  {
+    list.clear();
+
+    const std::string settingId{setting->GetId()};
+    if (pThis->m_customTimerSettings->IsCustomIntSetting(settingId))
+      pThis->m_customTimerSettings->IntSettingDefinitionsFiller(settingId, list, current);
+  }
+  else
+    CLog::LogF(LOGERROR, "No dialog");
+}
+
+void CGUIDialogPVRTimerSettings::CustomStringSettingDefinitionsFiller(
+    const std::shared_ptr<const CSetting>& setting,
+    std::vector<StringSettingOption>& list,
+    std::string& current,
+    void* data)
+{
+  CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
+  if (pThis)
+  {
+    list.clear();
+
+    const std::string settingId{setting->GetId()};
+    if (pThis->m_customTimerSettings->IsCustomStringSetting(settingId))
+      pThis->m_customTimerSettings->StringSettingDefinitionsFiller(settingId, list, current);
+  }
+  else
+    CLog::LogF(LOGERROR, "No dialog");
+}
+
 std::string CGUIDialogPVRTimerSettings::WeekdaysValueFormatter(const SettingConstPtr& setting)
 {
   return CPVRTimerInfoTag::GetWeekdaysString(GetWeekdaysFromSetting(setting), true, true);
@@ -1368,6 +1481,12 @@ bool CGUIDialogPVRTimerSettings::TypeReadOnlyCondition(const std::string& condit
         cond == SETTING_TMR_START_DAY || cond == SETTING_TMR_BEGIN || SETTING_TMR_PRIORITY ||
         cond == SETTING_TMR_DIR)
       return false;
+  }
+
+  if (pThis->m_customTimerSettings->IsCustomSetting(cond))
+  {
+    return !pThis->m_customTimerSettings->IsSettingReadonlyForTimerState(
+        cond, pThis->m_timerInfoTag->State());
   }
 
   // Let the PVR client decide...
@@ -1456,6 +1575,8 @@ bool CGUIDialogPVRTimerSettings::TypeSupportsCondition(const std::string& condit
       return entry->second->SupportsRecordingFolders();
     else if (cond == SETTING_TMR_REC_GROUP)
       return entry->second->SupportsRecordingGroup();
+    else if (pThis->m_customTimerSettings->IsCustomSetting(cond))
+      return pThis->m_customTimerSettings->IsSettingSupportedForTimerType(cond, *entry->second);
     else
       CLog::LogF(LOGERROR, "Unknown condition");
   }

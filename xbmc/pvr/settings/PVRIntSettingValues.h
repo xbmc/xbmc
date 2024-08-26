@@ -21,7 +21,8 @@ using SettingIntValue = std::pair<std::string, int>;
 class CPVRIntSettingValues
 {
 public:
-  CPVRIntSettingValues(int defaultValue) : m_defaultValue(defaultValue) {}
+  CPVRIntSettingValues() = default;
+  explicit CPVRIntSettingValues(int defaultValue);
   CPVRIntSettingValues(struct PVR_ATTRIBUTE_INT_VALUE* values,
                        unsigned int valuesSize,
                        int defaultValue,
@@ -34,10 +35,7 @@ public:
 
   virtual ~CPVRIntSettingValues() = default;
 
-  bool operator==(const CPVRIntSettingValues& right) const
-  {
-    return (m_defaultValue == right.m_defaultValue && m_values == right.m_values);
-  }
+  bool operator==(const CPVRIntSettingValues& right) const;
 
   const std::vector<SettingIntValue>& GetValues() const { return m_values; }
   int GetDefaultValue() const { return m_defaultValue; }

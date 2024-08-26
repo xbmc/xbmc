@@ -44,6 +44,10 @@ CPVRIntSettingValues::CPVRIntSettingValues(struct PVR_ATTRIBUTE_INT_VALUE* value
   }
 }
 
+CPVRIntSettingValues::CPVRIntSettingValues(int defaultValue) : m_defaultValue(defaultValue)
+{
+}
+
 CPVRIntSettingValues::CPVRIntSettingValues(struct PVR_ATTRIBUTE_INT_VALUE* values,
                                            unsigned int valuesSize,
                                            unsigned int defaultValue,
@@ -59,4 +63,8 @@ CPVRIntSettingValues::CPVRIntSettingValues(const std::vector<SettingIntValue>& v
 {
 }
 
+bool CPVRIntSettingValues::operator==(const CPVRIntSettingValues& right) const
+{
+  return (m_defaultValue == right.m_defaultValue && m_values == right.m_values);
+}
 } // namespace PVR

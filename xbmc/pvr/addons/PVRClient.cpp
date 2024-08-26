@@ -10,6 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
+#include "addons/AddonVersion.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "cores/EdlEdit.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxUtils.h"
@@ -254,6 +255,24 @@ public:
     iGenreType = epgTag ? epgTag->GenreType() : 0;
     iGenreSubType = epgTag ? epgTag->GenreSubType() : 0;
     strSeriesLink = m_seriesLink.c_str();
+
+    const auto& props{timer.GetCustomProperties()};
+    iCustomPropsSize = static_cast<unsigned int>(props.size());
+    if (iCustomPropsSize)
+    {
+      m_customProps = std::make_unique<PVR_SETTING_KEY_VALUE_PAIR[]>(iCustomPropsSize);
+      int idx{0};
+      for (const auto& entry : props)
+      {
+        PVR_SETTING_KEY_VALUE_PAIR& prop{m_customProps[idx]};
+        prop.iKey = entry.first;
+        prop.eType = entry.second.type;
+        prop.iValue = entry.second.value.asInteger32();
+        prop.strValue = entry.second.value.asString().c_str();
+        ++idx;
+      }
+      customProps = m_customProps.get();
+    }
   }
   virtual ~CAddonTimer() = default;
 
@@ -263,6 +282,7 @@ private:
   const std::string m_directory;
   const std::string m_summary;
   const std::string m_seriesLink;
+  std::unique_ptr<PVR_SETTING_KEY_VALUE_PAIR[]> m_customProps;
 };
 
 class CAddonEpgTag : public EPG_TAG
@@ -1398,8 +1418,8 @@ PVR_ERROR CPVRClient::UpdateTimerTypes()
               CLog::LogF(LOGERROR, "Invalid timer type supplied by add-on {}.", GetID());
               continue;
             }
-            timerTypes.emplace_back(
-                std::make_shared<CPVRTimerType>(*(types_array[i]), m_iClientId));
+            timerTypes.emplace_back(std::make_shared<CPVRTimerType>(
+                *(types_array[i]), m_iClientId, Addon()->GetTypeVersionDll(ADDON_INSTANCE_PVR)));
           }
         }
 
@@ -2259,7 +2279,9 @@ void CPVRClient::cb_transfer_timer_entry(void* kodiInstance,
 
                         // transfer this entry to the timers container
                         const std::shared_ptr<CPVRTimerInfoTag> transferTimer =
-                            std::make_shared<CPVRTimerInfoTag>(*timer, channel, client->GetID());
+                            std::make_shared<CPVRTimerInfoTag>(
+                                *timer, channel, client->GetID(),
+                                client->Addon()->GetTypeVersionDll(ADDON_INSTANCE_PVR));
                         CPVRTimersContainer* timers =
                             static_cast<CPVRTimersContainer*>(handle->dataAddress);
                         timers->UpdateFromClient(transferTimer);
