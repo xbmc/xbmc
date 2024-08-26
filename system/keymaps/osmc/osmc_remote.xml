@@ -18,7 +18,7 @@
 <!-- Vol-  = volume_down   <key id="61624">          RW    = rewind             Vol-  = minus              Vol-  = minus                 -->
 <!-- Vol+  = volume_up     <key id="61625">          FF    = fastforward        Vol+  = equals             Vol+  = equals                -->
 <!--                                                                                                                                     -->
-<!-- Keymap created by DarwinDesign version 20-11-02                                                                                     -->
+<!-- Keymap created by DarwinDesign version 24-08-24                                                                                     -->
 <!--                                                                                                                                     -->
 <keymap>
 	<global>
@@ -50,7 +50,7 @@
 			<x>Stop</x>
 			<volume_down>VolumeDown</volume_down>
 			<volume_up>VolumeUp</volume_up>
-			<f2>Notification(OSMC Remote Controller, Low Battery Please Replace,5000)</f2>
+			<f2>Notification(OSMC $LOCALIZE[790],$LOCALIZE[13050],5000,DefaultIconerror.png)</f2> <!-- OSMC Remote Control, Running low on battery -->
 		</keyboard>
 	</global>
 	<Home>
