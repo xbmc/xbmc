@@ -10,6 +10,7 @@
 
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_timers.h"
 #include "pvr/PVRConstants.h" // PVR_CLIENT_INVALID_UID
+#include "pvr/settings/PVRIntSettingValues.h"
 
 #include <memory>
 #include <string>
@@ -384,63 +385,81 @@ public:
 
   /*!
    * @brief Obtain a list with all possible values for the priority attribute.
-   * @param list out, the list with the values or an empty list, if priority is not supported by this type.
+   * @return the list with the values or an empty list, if priority is not supported by this type.
    */
-  void GetPriorityValues(std::vector<std::pair<std::string, int>>& list) const;
+  const std::vector<SettingIntValue>& GetPriorityValues() const
+  {
+    return m_lifetimeValues.GetValues();
+  }
 
   /*!
    * @brief Obtain the default value for the priority attribute.
    * @return the default value.
    */
-  int GetPriorityDefault() const { return m_iPriorityDefault; }
+  int GetPriorityDefault() const { return m_priorityValues.GetDefaultValue(); }
 
   /*!
    * @brief Obtain a list with all possible values for the lifetime attribute.
-   * @param list out, the list with the values or an empty list, if lifetime is not supported by this type.
+   * @return the list with the values or an empty list, if lifetime is not supported by this type.
    */
-  void GetLifetimeValues(std::vector<std::pair<std::string, int>>& list) const;
+  const std::vector<SettingIntValue>& GetLifetimeValues() const
+  {
+    return m_lifetimeValues.GetValues();
+  }
 
   /*!
    * @brief Obtain the default value for the lifetime attribute.
    * @return the default value.
    */
-  int GetLifetimeDefault() const { return m_iLifetimeDefault; }
+  int GetLifetimeDefault() const { return m_lifetimeValues.GetDefaultValue(); }
 
   /*!
    * @brief Obtain a list with all possible values for the MaxRecordings attribute.
-   * @param list out, the list with the values or an empty list, if MaxRecordings is not supported by this type.
+   * @return the list with the values or an empty list, if MaxRecordings is not supported by this type.
    */
-  void GetMaxRecordingsValues(std::vector<std::pair<std::string, int>>& list) const;
+  const std::vector<SettingIntValue>& GetMaxRecordingsValues() const
+  {
+    return m_maxRecordingsValues.GetValues();
+  }
 
   /*!
    * @brief Obtain the default value for the MaxRecordings attribute.
    * @return the default value.
    */
-  int GetMaxRecordingsDefault() const { return m_iMaxRecordingsDefault; }
+  int GetMaxRecordingsDefault() const { return m_maxRecordingsValues.GetDefaultValue(); }
 
   /*!
    * @brief Obtain a list with all possible values for the duplicate episode prevention attribute.
-   * @param list out, the list with the values or an empty list, if duplicate episode prevention is not supported by this type.
+   * @return the list with the values or an empty list, if duplicate episode prevention is not supported by this type.
    */
-  void GetPreventDuplicateEpisodesValues(std::vector<std::pair<std::string, int>>& list) const;
+  const std::vector<SettingIntValue>& GetPreventDuplicateEpisodesValues() const
+  {
+    return m_preventDupEpisodesValues.GetValues();
+  }
 
   /*!
    * @brief Obtain the default value for the duplicate episode prevention attribute.
    * @return the default value.
    */
-  int GetPreventDuplicateEpisodesDefault() const { return m_iPreventDupEpisodesDefault; }
+  int GetPreventDuplicateEpisodesDefault() const
+  {
+    return m_preventDupEpisodesValues.GetDefaultValue();
+  }
 
   /*!
    * @brief Obtain a list with all possible values for the recording group attribute.
-   * @param list out, the list with the values or an empty list, if recording group is not supported by this type.
+   * @return the list with the values or an empty list, if recording group is not supported by this type.
    */
-  void GetRecordingGroupValues(std::vector<std::pair<std::string, int>>& list) const;
+  const std::vector<SettingIntValue>& GetRecordingGroupValues() const
+  {
+    return m_recordingGroupValues.GetValues();
+  }
 
   /*!
    * @brief Obtain the default value for the Recording Group attribute.
    * @return the default value.
    */
-  int GetRecordingGroupDefault() const { return m_iRecordingGroupDefault; }
+  int GetRecordingGroupDefault() const { return m_recordingGroupValues.GetDefaultValue(); }
 
 private:
   void InitDescription();
@@ -455,15 +474,10 @@ private:
   unsigned int m_iTypeId;
   uint64_t m_iAttributes;
   std::string m_strDescription;
-  std::vector<std::pair<std::string, int>> m_priorityValues;
-  int m_iPriorityDefault = DEFAULT_RECORDING_PRIORITY;
-  std::vector<std::pair<std::string, int>> m_lifetimeValues;
-  int m_iLifetimeDefault = DEFAULT_RECORDING_LIFETIME;
-  std::vector<std::pair<std::string, int>> m_maxRecordingsValues;
-  int m_iMaxRecordingsDefault = 0;
-  std::vector<std::pair<std::string, int>> m_preventDupEpisodesValues;
-  unsigned int m_iPreventDupEpisodesDefault = DEFAULT_RECORDING_DUPLICATEHANDLING;
-  std::vector<std::pair<std::string, int>> m_recordingGroupValues;
-  unsigned int m_iRecordingGroupDefault = 0;
+  CPVRIntSettingValues m_priorityValues{DEFAULT_RECORDING_PRIORITY};
+  CPVRIntSettingValues m_lifetimeValues{DEFAULT_RECORDING_LIFETIME};
+  CPVRIntSettingValues m_maxRecordingsValues{0};
+  CPVRIntSettingValues m_preventDupEpisodesValues{DEFAULT_RECORDING_DUPLICATEHANDLING};
+  CPVRIntSettingValues m_recordingGroupValues{0};
 };
 } // namespace PVR
