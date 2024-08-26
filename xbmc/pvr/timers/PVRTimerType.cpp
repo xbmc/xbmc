@@ -34,71 +34,52 @@ const std::vector<std::shared_ptr<CPVRTimerType>> CPVRTimerType::GetAllTypes()
   int iTypeId = PVR_TIMER_TYPE_NONE;
 
   // one time time-based reminder
-  allTypes.emplace_back(std::make_shared<CPVRTimerType>(++iTypeId,
-                                                        PVR_TIMER_TYPE_IS_MANUAL |
-                                                        PVR_TIMER_TYPE_IS_REMINDER |
-                                                        PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
-                                                        PVR_TIMER_TYPE_SUPPORTS_START_TIME |
-                                                        PVR_TIMER_TYPE_SUPPORTS_END_TIME));
+  allTypes.emplace_back(std::make_shared<CPVRTimerType>(
+      ++iTypeId, PVR_TIMER_TYPE_IS_MANUAL | PVR_TIMER_TYPE_IS_REMINDER |
+                     PVR_TIMER_TYPE_SUPPORTS_CHANNELS | PVR_TIMER_TYPE_SUPPORTS_START_TIME |
+                     PVR_TIMER_TYPE_SUPPORTS_END_TIME));
 
   // one time epg-based reminder
-  allTypes.emplace_back(std::make_shared<CPVRTimerType>(++iTypeId,
-                                                        PVR_TIMER_TYPE_IS_REMINDER |
-                                                        PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE |
-                                                        PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
-                                                        PVR_TIMER_TYPE_SUPPORTS_START_TIME |
-                                                        PVR_TIMER_TYPE_SUPPORTS_START_MARGIN));
+  allTypes.emplace_back(std::make_shared<CPVRTimerType>(
+      ++iTypeId, PVR_TIMER_TYPE_IS_REMINDER | PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE |
+                     PVR_TIMER_TYPE_SUPPORTS_CHANNELS | PVR_TIMER_TYPE_SUPPORTS_START_TIME |
+                     PVR_TIMER_TYPE_SUPPORTS_START_MARGIN));
 
   // time-based reminder rule
-  allTypes.emplace_back(std::make_shared<CPVRTimerType>(++iTypeId,
-                                                        PVR_TIMER_TYPE_IS_REPEATING |
-                                                        PVR_TIMER_TYPE_IS_MANUAL |
-                                                        PVR_TIMER_TYPE_IS_REMINDER |
-                                                        PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
-                                                        PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
-                                                        PVR_TIMER_TYPE_SUPPORTS_START_TIME |
-                                                        PVR_TIMER_TYPE_SUPPORTS_END_TIME |
-                                                        PVR_TIMER_TYPE_SUPPORTS_FIRST_DAY |
-                                                        PVR_TIMER_TYPE_SUPPORTS_WEEKDAYS));
+  allTypes.emplace_back(std::make_shared<CPVRTimerType>(
+      ++iTypeId, PVR_TIMER_TYPE_IS_REPEATING | PVR_TIMER_TYPE_IS_MANUAL |
+                     PVR_TIMER_TYPE_IS_REMINDER | PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
+                     PVR_TIMER_TYPE_SUPPORTS_CHANNELS | PVR_TIMER_TYPE_SUPPORTS_START_TIME |
+                     PVR_TIMER_TYPE_SUPPORTS_END_TIME | PVR_TIMER_TYPE_SUPPORTS_FIRST_DAY |
+                     PVR_TIMER_TYPE_SUPPORTS_WEEKDAYS));
 
   // one time read-only time-based reminder (created by timer rule)
-  allTypes.emplace_back(std::make_shared<CPVRTimerType>(++iTypeId,
-                                                        PVR_TIMER_TYPE_IS_MANUAL |
-                                                        PVR_TIMER_TYPE_IS_REMINDER |
-                                                        PVR_TIMER_TYPE_IS_READONLY |
-                                                        PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
-                                                        PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
-                                                        PVR_TIMER_TYPE_SUPPORTS_START_TIME |
-                                                        PVR_TIMER_TYPE_SUPPORTS_END_TIME,
-                                                        g_localizeStrings.Get(819))); // One time (Scheduled by timer rule)
+  allTypes.emplace_back(std::make_shared<CPVRTimerType>(
+      ++iTypeId,
+      PVR_TIMER_TYPE_IS_MANUAL | PVR_TIMER_TYPE_IS_REMINDER | PVR_TIMER_TYPE_IS_READONLY |
+          PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE | PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
+          PVR_TIMER_TYPE_SUPPORTS_START_TIME | PVR_TIMER_TYPE_SUPPORTS_END_TIME,
+      g_localizeStrings.Get(819))); // One time (Scheduled by timer rule)
 
   // epg-based reminder rule
-  allTypes.emplace_back(std::make_shared<CPVRTimerType>(++iTypeId,
-                                                        PVR_TIMER_TYPE_IS_REPEATING |
-                                                        PVR_TIMER_TYPE_IS_REMINDER |
-                                                        PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
-                                                        PVR_TIMER_TYPE_SUPPORTS_TITLE_EPG_MATCH |
-                                                        PVR_TIMER_TYPE_SUPPORTS_FULLTEXT_EPG_MATCH |
-                                                        PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
-                                                        PVR_TIMER_TYPE_SUPPORTS_ANY_CHANNEL |
-                                                        PVR_TIMER_TYPE_SUPPORTS_START_TIME |
-                                                        PVR_TIMER_TYPE_SUPPORTS_START_ANYTIME |
-                                                        PVR_TIMER_TYPE_SUPPORTS_END_TIME |
-                                                        PVR_TIMER_TYPE_SUPPORTS_END_ANYTIME |
-                                                        PVR_TIMER_TYPE_SUPPORTS_FIRST_DAY |
-                                                        PVR_TIMER_TYPE_SUPPORTS_WEEKDAYS |
-                                                        PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN));
+  allTypes.emplace_back(std::make_shared<CPVRTimerType>(
+      ++iTypeId, PVR_TIMER_TYPE_IS_REPEATING | PVR_TIMER_TYPE_IS_REMINDER |
+                     PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
+                     PVR_TIMER_TYPE_SUPPORTS_TITLE_EPG_MATCH |
+                     PVR_TIMER_TYPE_SUPPORTS_FULLTEXT_EPG_MATCH | PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
+                     PVR_TIMER_TYPE_SUPPORTS_ANY_CHANNEL | PVR_TIMER_TYPE_SUPPORTS_START_TIME |
+                     PVR_TIMER_TYPE_SUPPORTS_START_ANYTIME | PVR_TIMER_TYPE_SUPPORTS_END_TIME |
+                     PVR_TIMER_TYPE_SUPPORTS_END_ANYTIME | PVR_TIMER_TYPE_SUPPORTS_FIRST_DAY |
+                     PVR_TIMER_TYPE_SUPPORTS_WEEKDAYS | PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN));
 
   // one time read-only epg-based reminder (created by timer rule)
-  allTypes.emplace_back(std::make_shared<CPVRTimerType>(++iTypeId,
-                                                        PVR_TIMER_TYPE_IS_REMINDER |
-                                                        PVR_TIMER_TYPE_IS_READONLY |
-                                                        PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE |
-                                                        PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
-                                                        PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
-                                                        PVR_TIMER_TYPE_SUPPORTS_START_TIME |
-                                                        PVR_TIMER_TYPE_SUPPORTS_START_MARGIN,
-                                                        g_localizeStrings.Get(819))); // One time (Scheduled by timer rule)
+  allTypes.emplace_back(std::make_shared<CPVRTimerType>(
+      ++iTypeId,
+      PVR_TIMER_TYPE_IS_REMINDER | PVR_TIMER_TYPE_IS_READONLY |
+          PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE | PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
+          PVR_TIMER_TYPE_SUPPORTS_CHANNELS | PVR_TIMER_TYPE_SUPPORTS_START_TIME |
+          PVR_TIMER_TYPE_SUPPORTS_START_MARGIN,
+      g_localizeStrings.Get(819))); // One time (Scheduled by timer rule)
 
   return allTypes;
 }
@@ -121,9 +102,9 @@ std::shared_ptr<CPVRTimerType> CPVRTimerType::CreateFromIds(unsigned int iTypeId
 {
   const std::vector<std::shared_ptr<CPVRTimerType>> types = GetAllTypes();
   const auto it =
-      std::find_if(types.cbegin(), types.cend(), [iClientId, iTypeId](const auto& type) {
-        return type->GetClientId() == iClientId && type->GetTypeId() == iTypeId;
-      });
+      std::find_if(types.cbegin(), types.cend(),
+                   [iClientId, iTypeId](const auto& type)
+                   { return type->GetClientId() == iClientId && type->GetTypeId() == iTypeId; });
   if (it != types.cend())
     return (*it);
 
@@ -145,7 +126,8 @@ std::shared_ptr<CPVRTimerType> CPVRTimerType::CreateFromAttributes(uint64_t iMus
 {
   const std::vector<std::shared_ptr<CPVRTimerType>> types = GetAllTypes();
   const auto it = std::find_if(types.cbegin(), types.cend(),
-                               [iClientId, iMustHaveAttr, iMustNotHaveAttr](const auto& type) {
+                               [iClientId, iMustHaveAttr, iMustNotHaveAttr](const auto& type)
+                               {
                                  return type->GetClientId() == iClientId &&
                                         (type->GetAttributes() & iMustHaveAttr) == iMustHaveAttr &&
                                         (type->GetAttributes() & iMustNotHaveAttr) == 0;
@@ -167,9 +149,8 @@ std::shared_ptr<CPVRTimerType> CPVRTimerType::CreateFromAttributes(uint64_t iMus
   return {};
 }
 
-CPVRTimerType::CPVRTimerType() :
-  m_iTypeId(PVR_TIMER_TYPE_NONE),
-  m_iAttributes(PVR_TIMER_TYPE_ATTRIBUTE_NONE)
+CPVRTimerType::CPVRTimerType()
+  : m_iTypeId(PVR_TIMER_TYPE_NONE), m_iAttributes(PVR_TIMER_TYPE_ATTRIBUTE_NONE)
 {
 }
 
@@ -193,12 +174,10 @@ CPVRTimerType::CPVRTimerType(unsigned int iTypeId,
 
 CPVRTimerType::~CPVRTimerType() = default;
 
-bool CPVRTimerType::operator ==(const CPVRTimerType& right) const
+bool CPVRTimerType::operator==(const CPVRTimerType& right) const
 {
-  return (m_iClientId == right.m_iClientId &&
-          m_iTypeId == right.m_iTypeId &&
-          m_iAttributes == right.m_iAttributes &&
-          m_strDescription == right.m_strDescription &&
+  return (m_iClientId == right.m_iClientId && m_iTypeId == right.m_iTypeId &&
+          m_iAttributes == right.m_iAttributes && m_strDescription == right.m_strDescription &&
           m_priorityValues == right.m_priorityValues &&
           m_iPriorityDefault == right.m_iPriorityDefault &&
           m_lifetimeValues == right.m_lifetimeValues &&
@@ -211,7 +190,7 @@ bool CPVRTimerType::operator ==(const CPVRTimerType& right) const
           m_iRecordingGroupDefault == right.m_iRecordingGroupDefault);
 }
 
-bool CPVRTimerType::operator !=(const CPVRTimerType& right) const
+bool CPVRTimerType::operator!=(const CPVRTimerType& right) const
 {
   return !(*this == right);
 }
@@ -242,23 +221,20 @@ void CPVRTimerType::InitDescription()
     int id;
     if (m_iAttributes & PVR_TIMER_TYPE_IS_REPEATING)
     {
-      id = (m_iAttributes & PVR_TIMER_TYPE_IS_MANUAL)
-        ? 822  // "Timer rule"
-        : 823; // "Timer rule (guide-based)"
+      id = (m_iAttributes & PVR_TIMER_TYPE_IS_MANUAL) ? 822 // "Timer rule"
+                                                      : 823; // "Timer rule (guide-based)"
     }
     else
     {
-      id = (m_iAttributes & PVR_TIMER_TYPE_IS_MANUAL)
-        ? 820  // "One time"
-        : 821; // "One time (guide-based)
+      id = (m_iAttributes & PVR_TIMER_TYPE_IS_MANUAL) ? 820 // "One time"
+                                                      : 821; // "One time (guide-based)
     }
     m_strDescription = g_localizeStrings.Get(id);
   }
 
   // add reminder/recording prefix
-  int prefixId = (m_iAttributes & PVR_TIMER_TYPE_IS_REMINDER)
-    ? 824  // Reminder: ...
-    : 825; // Recording: ...
+  int prefixId = (m_iAttributes & PVR_TIMER_TYPE_IS_REMINDER) ? 824 // Reminder: ...
+                                                              : 825; // Recording: ...
 
   m_strDescription = StringUtils::Format(g_localizeStrings.Get(prefixId), m_strDescription);
 }
@@ -401,7 +377,8 @@ void CPVRTimerType::InitPreventDuplicateEpisodesValues(const PVR_TIMER_TYPE& typ
   {
     // No values given by addon, but prevent duplicate episodes supported. Use default values 0..1
     m_preventDupEpisodesValues.emplace_back(g_localizeStrings.Get(815), 0); // "Record all episodes"
-    m_preventDupEpisodesValues.emplace_back(g_localizeStrings.Get(816), 1); // "Record only new episodes"
+    m_preventDupEpisodesValues.emplace_back(g_localizeStrings.Get(816),
+                                            1); // "Record only new episodes"
     m_iPreventDupEpisodesDefault = DEFAULT_RECORDING_DUPLICATEHANDLING;
   }
   else
@@ -411,7 +388,8 @@ void CPVRTimerType::InitPreventDuplicateEpisodesValues(const PVR_TIMER_TYPE& typ
   }
 }
 
-void CPVRTimerType::GetPreventDuplicateEpisodesValues(std::vector<std::pair<std::string, int>>& list) const
+void CPVRTimerType::GetPreventDuplicateEpisodesValues(
+    std::vector<std::pair<std::string, int>>& list) const
 {
   std::copy(m_preventDupEpisodesValues.cbegin(), m_preventDupEpisodesValues.cend(),
             std::back_inserter(list));
@@ -440,7 +418,7 @@ void CPVRTimerType::InitRecordingGroupValues(const PVR_TIMER_TYPE& type)
   }
 }
 
-void CPVRTimerType::GetRecordingGroupValues(std::vector< std::pair<std::string, int>>& list) const
+void CPVRTimerType::GetRecordingGroupValues(std::vector<std::pair<std::string, int>>& list) const
 {
   std::copy(m_recordingGroupValues.cbegin(), m_recordingGroupValues.cend(),
             std::back_inserter(list));
