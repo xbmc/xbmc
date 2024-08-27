@@ -9,6 +9,7 @@
 #pragma once
 
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_timers.h"
+#include "pvr/PVRConstants.h" // PVR_CLIENT_INVALID_UID
 
 #include <memory>
 #include <string>
@@ -400,7 +401,7 @@ namespace PVR
     void InitPreventDuplicateEpisodesValues(const PVR_TIMER_TYPE& type);
     void InitRecordingGroupValues(const PVR_TIMER_TYPE& type);
 
-    int m_iClientId = -1;
+    int m_iClientId = PVR_CLIENT_INVALID_UID;
     unsigned int m_iTypeId;
     uint64_t m_iAttributes;
     std::string m_strDescription;

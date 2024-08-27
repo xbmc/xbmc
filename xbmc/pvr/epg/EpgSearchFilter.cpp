@@ -45,7 +45,7 @@ void CPVREpgSearchFilter::Reset()
   m_bRemoveDuplicates = false;
 
   /* pvr specific filters */
-  m_iClientID = -1;
+  m_iClientID = PVR_CLIENT_INVALID_UID;
   m_iChannelGroupID = -1;
   m_iChannelUID = -1;
   m_bFreeToAirOnly = false;
@@ -363,7 +363,7 @@ void CPVREpgSearchFilter::RemoveDuplicates(std::vector<std::shared_ptr<CPVREpgIn
 bool CPVREpgSearchFilter::MatchChannel(const std::shared_ptr<const CPVREpgInfoTag>& tag) const
 {
   return tag && (tag->IsRadio() == m_bIsRadio) &&
-         (m_iClientID == -1 || tag->ClientID() == m_iClientID) &&
+         (m_iClientID == PVR_CLIENT_INVALID_UID || tag->ClientID() == m_iClientID) &&
          (m_iChannelUID == -1 || tag->UniqueChannelID() == m_iChannelUID) &&
          CServiceBroker::GetPVRManager().Clients()->IsCreatedClient(tag->ClientID());
 }

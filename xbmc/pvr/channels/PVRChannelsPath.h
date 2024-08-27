@@ -9,6 +9,7 @@
 #pragma once
 
 #include "addons/IAddon.h"
+#include "pvr/PVRConstants.h" // PVR_CLIENT_INVALID_UID
 
 class CDateTime;
 
@@ -71,7 +72,7 @@ namespace PVR
     bool m_bRadio = false;;
     std::string m_path;
     std::string m_groupName;
-    int m_groupClientID{-1};
+    int m_groupClientID{PVR_CLIENT_INVALID_UID};
     std::string m_addonID;
     ADDON::AddonInstanceId m_instanceID{ADDON::ADDON_SINGLETON_INSTANCE_ID};
     int m_iChannelUID = -1;

@@ -533,7 +533,8 @@ bool CPVREpg::IsValid() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   if (ScraperName() == "client")
-    return m_channelData->ClientId() != -1 && m_channelData->UniqueClientChannelId() != PVR_CHANNEL_INVALID_UID;
+    return m_channelData->ClientId() != PVR_CLIENT_INVALID_UID &&
+           m_channelData->UniqueClientChannelId() != PVR_CHANNEL_INVALID_UID;
 
   return true;
 }

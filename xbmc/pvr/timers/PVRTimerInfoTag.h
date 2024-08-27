@@ -227,7 +227,7 @@ public:
 
   /*!
    * @brief The ID of the client for this timer.
-   * @return The client ID or -1  if this is a local timer.
+   * @return The client ID or PVR_CLIENT_INVALID_UID  if this is a local timer.
    */
   int ClientID() const { return m_iClientId; }
 

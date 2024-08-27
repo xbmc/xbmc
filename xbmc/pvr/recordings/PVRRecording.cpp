@@ -252,7 +252,7 @@ void CPVRRecording::ToSortable(SortItem& sortable, Field field) const
 void CPVRRecording::Reset()
 {
   m_strRecordingId.clear();
-  m_iClientId = -1;
+  m_iClientId = PVR_CLIENT_INVALID_UID;
   m_strChannelName.clear();
   m_strDirectory.clear();
   m_iPriority = -1;

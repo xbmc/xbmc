@@ -40,7 +40,7 @@ namespace PVR
 class CEpgUpdateRequest
 {
 public:
-  CEpgUpdateRequest() : CEpgUpdateRequest(-1, PVR_CHANNEL_INVALID_UID) {}
+  CEpgUpdateRequest() : CEpgUpdateRequest(PVR_CLIENT_INVALID_UID, PVR_CHANNEL_INVALID_UID) {}
   CEpgUpdateRequest(int iClientID, int iUniqueChannelID) : m_iClientID(iClientID), m_iUniqueChannelID(iUniqueChannelID) {}
 
   void Deliver(const std::shared_ptr<CPVREpg>& epg);

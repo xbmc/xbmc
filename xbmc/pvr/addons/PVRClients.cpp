@@ -394,7 +394,7 @@ int CPVRClients::GetFirstCreatedClientID() const
   std::unique_lock<CCriticalSection> lock(m_critSection);
   const auto it = std::find_if(m_clientMap.cbegin(), m_clientMap.cend(),
                                [](const auto& client) { return client.second->ReadyToUse(); });
-  return it != m_clientMap.cend() ? (*it).second->GetID() : -1;
+  return it != m_clientMap.cend() ? (*it).second->GetID() : PVR_CLIENT_INVALID_UID;
 }
 
 PVR_ERROR CPVRClients::GetCallableClients(CPVRClientMap& clientsReady,
