@@ -69,7 +69,7 @@ void CPVRPlaybackState::ReInit()
 
   Clear();
 
-  if (m_playingClientId != -1)
+  if (m_playingClientId != PVR_CLIENT_INVALID_UID)
   {
     if (m_playingChannelUniqueId != -1)
     {
@@ -123,7 +123,7 @@ void CPVRPlaybackState::ClearData()
   m_strPlayingRecordingUniqueId.clear();
   m_playingEpgTagChannelUniqueId = -1;
   m_playingEpgTagUniqueId = 0;
-  m_playingClientId = -1;
+  m_playingClientId = PVR_CLIENT_INVALID_UID;
   m_strPlayingClientName.clear();
 }
 
@@ -217,7 +217,7 @@ void CPVRPlaybackState::OnPlaybackStarted(const CFileItem& item)
     CLog::LogFC(LOGERROR, LOGPVR, "Channel item without channel group member!");
   }
 
-  if (m_playingClientId != -1)
+  if (m_playingClientId != PVR_CLIENT_INVALID_UID)
   {
     const std::shared_ptr<const CPVRClient> client =
         CServiceBroker::GetPVRManager().GetClient(m_playingClientId);

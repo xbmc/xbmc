@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "pvr/PVRConstants.h" // PVR_CLIENT_INVALID_UID
 #include "pvr/channels/PVRChannelNumber.h"
 #include "utils/ISerializable.h"
 #include "utils/ISortable.h"
@@ -79,8 +80,8 @@ public:
 
 private:
   int m_iGroupID = -1;
-  int m_iGroupClientID = -1;
-  int m_iChannelClientID = -1;
+  int m_iGroupClientID = PVR_CLIENT_INVALID_UID;
+  int m_iChannelClientID = PVR_CLIENT_INVALID_UID;
   int m_iChannelUID = -1;
   int m_iChannelDatabaseID = -1;
   bool m_bIsRadio = false;

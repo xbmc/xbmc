@@ -297,7 +297,8 @@ void CGUIDialogPVRGuideSearch::UpdateSearchFilter()
   m_searchFilter->SetMaximumDuration(GetSpinValue(CONTROL_SPIN_MAX_DURATION));
 
   auto it = m_channelsMap.find(GetSpinValue(CONTROL_SPIN_CHANNELS));
-  m_searchFilter->SetClientID(it == m_channelsMap.end() ? -1 : (*it).second->ChannelClientID());
+  m_searchFilter->SetClientID(it == m_channelsMap.end() ? PVR_CLIENT_INVALID_UID
+                                                        : (*it).second->ChannelClientID());
   m_searchFilter->SetChannelUID(it == m_channelsMap.end() ? -1 : (*it).second->ChannelUID());
   m_searchFilter->SetChannelGroupID(GetSpinValue(CONTROL_SPIN_GROUPS));
 

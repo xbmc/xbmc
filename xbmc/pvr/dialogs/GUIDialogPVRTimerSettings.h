@@ -10,6 +10,7 @@
 
 #include "XBDateTime.h"
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_channels.h" // PVR_CHANNEL_INVALID_UID
+#include "pvr/PVRConstants.h" // PVR_CLIENT_INVALID_UID
 #include "settings/SettingConditions.h"
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
 #include "settings/lib/SettingDependency.h"
@@ -148,7 +149,7 @@ private:
     std::string description;
 
     ChannelDescriptor(int _channelUid = PVR_CHANNEL_INVALID_UID,
-                      int _clientId = -1,
+                      int _clientId = PVR_CLIENT_INVALID_UID,
                       const std::string& _description = "")
       : channelUid(_channelUid), clientId(_clientId), description(_description)
     {

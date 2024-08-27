@@ -12,6 +12,7 @@
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_channels.h"
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_providers.h"
 #include "pvr/PVRCachedImage.h"
+#include "pvr/PVRConstants.h" // PVR_CLIENT_INVALID_UID
 #include "pvr/channels/PVRChannelNumber.h"
 #include "threads/CriticalSection.h"
 #include "utils/ISerializable.h"
@@ -544,7 +545,8 @@ private:
    */
   //@{
   int m_iUniqueId = -1; /*!< the unique identifier for this channel */
-  int m_iClientId = -1; /*!< the identifier of the client that serves this channel */
+  int m_iClientId =
+      PVR_CLIENT_INVALID_UID; /*!< the identifier of the client that serves this channel */
   CPVRChannelNumber m_clientChannelNumber; /*!< the channel number on the client */
   std::string m_strClientChannelName; /*!< the name of this channel on the client */
   std::string

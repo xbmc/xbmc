@@ -529,7 +529,7 @@ std::string CPVRTimerInfoTag::GetWeekdaysString() const
 
 bool CPVRTimerInfoTag::IsOwnedByClient() const
 {
-  return m_timerType->GetClientId() > -1;
+  return m_timerType->GetClientId() > PVR_CLIENT_INVALID_UID;
 }
 
 bool CPVRTimerInfoTag::AddToClient() const

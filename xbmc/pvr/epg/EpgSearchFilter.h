@@ -9,6 +9,7 @@
 #pragma once
 
 #include "XBDateTime.h"
+#include "pvr/PVRConstants.h" // PVR_CLIENT_INVALID_UID
 #include "pvr/epg/EpgSearchData.h"
 
 #include <memory>
@@ -158,7 +159,7 @@ namespace PVR
 
     // PVR specific filters
     bool m_bIsRadio; /*!< True to filter radio channels only, false to tv only */
-    int m_iClientID = -1; /*!< The client id */
+    int m_iClientID = PVR_CLIENT_INVALID_UID; /*!< The client id */
     int m_iChannelGroupID{-1}; /*! The channel group id */
     int m_iChannelUID = -1; /*!< The channel uid */
     bool m_bFreeToAirOnly; /*!< Include free to air channels only */

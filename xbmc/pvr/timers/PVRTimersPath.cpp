@@ -8,6 +8,7 @@
 
 #include "PVRTimersPath.h"
 
+#include "pvr/PVRConstants.h" // PVR_CLIENT_INVALID_UID
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
@@ -69,7 +70,7 @@ bool CPVRTimersPath::Init(const std::string& strPath)
 
   if (!m_bValid || m_bRoot)
   {
-    m_iClientId = -1;
+    m_iClientId = PVR_CLIENT_INVALID_UID;
     m_iParentId = 0;
   }
   else

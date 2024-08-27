@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "pvr/PVRConstants.h" // PVR_CLIENT_INVALID_UID
+
 #include <ctime>
 #include <string>
 
@@ -46,7 +48,7 @@ public:
 
 private:
   const bool m_bIsRadio = false;
-  const int m_iClientId = -1;
+  const int m_iClientId = PVR_CLIENT_INVALID_UID;
   const int m_iUniqueClientChannelId = -1;
 
   bool m_bIsHidden = false;

@@ -18,6 +18,7 @@
 #include "events/NotificationEvent.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/LocalizeStrings.h"
+#include "pvr/PVRConstants.h" // PVR_CLIENT_INVALID_UID
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRDescrambleInfo.h"
 #include "pvr/PVRManager.h"
@@ -1999,7 +2000,7 @@ void CPVRClient::SetPriority(int iPriority)
   if (m_priority != iPriority)
   {
     m_priority = iPriority;
-    if (m_iClientId > PVR_INVALID_CLIENT_ID)
+    if (m_iClientId != PVR_CLIENT_INVALID_UID)
     {
       CServiceBroker::GetPVRManager().GetTVDatabase()->Persist(*this);
     }
@@ -2010,7 +2011,7 @@ void CPVRClient::SetPriority(int iPriority)
 int CPVRClient::GetPriority() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  if (!m_priority.has_value() && m_iClientId > PVR_INVALID_CLIENT_ID)
+  if (!m_priority.has_value() && m_iClientId != PVR_CLIENT_INVALID_UID)
   {
     m_priority = CServiceBroker::GetPVRManager().GetTVDatabase()->GetPriority(*this);
   }
@@ -2020,7 +2021,7 @@ int CPVRClient::GetPriority() const
 const CDateTime& CPVRClient::GetDateTimeFirstChannelsAdded() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  if (!m_firstChannelsAdded.has_value() && m_iClientId > PVR_INVALID_CLIENT_ID)
+  if (!m_firstChannelsAdded.has_value() && m_iClientId != PVR_CLIENT_INVALID_UID)
   {
     m_firstChannelsAdded =
         CServiceBroker::GetPVRManager().GetTVDatabase()->GetDateTimeFirstChannelsAdded(*this);
@@ -2034,7 +2035,7 @@ void CPVRClient::SetDateTimeFirstChannelsAdded(const CDateTime& dateTime)
   if (m_firstChannelsAdded != dateTime)
   {
     m_firstChannelsAdded = dateTime;
-    if (m_iClientId > PVR_INVALID_CLIENT_ID)
+    if (m_iClientId != PVR_CLIENT_INVALID_UID)
     {
       CServiceBroker::GetPVRManager().GetTVDatabase()->Persist(*this);
     }

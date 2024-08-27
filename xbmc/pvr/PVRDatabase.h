@@ -115,7 +115,7 @@ namespace PVR
      * @brief Get the numeric client ID for given addon ID and instance ID from the database.
      * @param addonID The addon ID.
      * @param instanceID The instance ID.
-     * @return The client ID on success, -1 otherwise.
+     * @return The client ID on success, PVR_CLIENT_INVALID_UID otherwise.
      */
     int GetClientID(const std::string& addonID, unsigned int instanceID);
 

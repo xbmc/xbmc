@@ -8,6 +8,7 @@
 
 #include "PVRClientUID.h"
 
+#include "pvr/PVRConstants.h" // PVR_CLIENT_INVALID_UID
 #include "pvr/PVRDatabase.h"
 #include "utils/log.h"
 
@@ -40,14 +41,14 @@ int CPVRClientUID::GetUID() const
       if (!db.Open())
       {
         CLog::LogF(LOGERROR, "Unable to open TV database!");
-        return -1;
+        return PVR_CLIENT_INVALID_UID;
       }
 
       m_uid = db.GetClientID(m_addonID, m_instanceID);
-      if (m_uid == -1)
+      if (m_uid == PVR_CLIENT_INVALID_UID)
       {
         CLog::LogF(LOGERROR, "Unable to get client id from TV database!");
-        return -1;
+        return PVR_CLIENT_INVALID_UID;
       }
 
       s_idMap.insert({{m_addonID, m_instanceID}, m_uid});
