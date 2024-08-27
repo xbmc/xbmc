@@ -13,6 +13,7 @@
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonType.h"
 #include "dbwrappers/dataset.h"
+#include "pvr/PVRConstants.h" // PVR_CLIENT_INVALID_UID
 #include "pvr/addons/PVRClient.h"
 #include "pvr/addons/PVRClientUID.h"
 #include "pvr/channels/PVRChannel.h"
@@ -410,7 +411,7 @@ bool CPVRDatabase::DeleteClients()
 
 bool CPVRDatabase::Persist(const CPVRClient& client)
 {
-  if (client.GetID() == PVR_INVALID_CLIENT_ID)
+  if (client.GetID() == PVR_CLIENT_INVALID_UID)
     return false;
 
   CLog::LogFC(LOGDEBUG, LOGPVR, "Persisting client {} to database", client.GetID());
@@ -432,7 +433,7 @@ bool CPVRDatabase::Persist(const CPVRClient& client)
 
 bool CPVRDatabase::Delete(const CPVRClient& client)
 {
-  if (client.GetID() == PVR_INVALID_CLIENT_ID)
+  if (client.GetID() == PVR_CLIENT_INVALID_UID)
     return false;
 
   CLog::LogFC(LOGDEBUG, LOGPVR, "Deleting client {} from the database", client.GetID());
@@ -447,7 +448,7 @@ bool CPVRDatabase::Delete(const CPVRClient& client)
 
 int CPVRDatabase::GetPriority(const CPVRClient& client) const
 {
-  if (client.GetID() == PVR_INVALID_CLIENT_ID)
+  if (client.GetID() == PVR_CLIENT_INVALID_UID)
     return 0;
 
   CLog::LogFC(LOGDEBUG, LOGPVR, "Getting priority for client {} from the database", client.GetID());
@@ -465,7 +466,7 @@ int CPVRDatabase::GetPriority(const CPVRClient& client) const
 
 CDateTime CPVRDatabase::GetDateTimeFirstChannelsAdded(const CPVRClient& client) const
 {
-  if (client.GetID() == PVR_INVALID_CLIENT_ID)
+  if (client.GetID() == PVR_CLIENT_INVALID_UID)
     return {};
 
   CLog::LogFC(LOGDEBUG, LOGPVR,

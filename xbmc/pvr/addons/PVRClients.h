@@ -148,7 +148,7 @@ struct SBackend
 
     /*!
      * @brief Get the ID of the first created client.
-     * @return the ID or -1 if no clients are created;
+     * @return the ID or PVR_CLIENT_INVALID_UID if no clients are created;
      */
     int GetFirstCreatedClientID() const;
 

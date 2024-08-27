@@ -127,10 +127,10 @@ std::shared_ptr<CPVRTimerType> CPVRTimerType::CreateFromIds(unsigned int iTypeId
   if (it != types.cend())
     return (*it);
 
-  if (iClientId != -1)
+  if (iClientId != PVR_CLIENT_INVALID_UID)
   {
     // fallback. try to obtain local timer type.
-    std::shared_ptr<CPVRTimerType> type = CreateFromIds(iTypeId, -1);
+    std::shared_ptr<CPVRTimerType> type = CreateFromIds(iTypeId, PVR_CLIENT_INVALID_UID);
     if (type)
       return type;
   }
@@ -153,10 +153,11 @@ std::shared_ptr<CPVRTimerType> CPVRTimerType::CreateFromAttributes(uint64_t iMus
   if (it != types.cend())
     return (*it);
 
-  if (iClientId != -1)
+  if (iClientId != PVR_CLIENT_INVALID_UID)
   {
     // fallback. try to obtain local timer type.
-    std::shared_ptr<CPVRTimerType> type = CreateFromAttributes(iMustHaveAttr, iMustNotHaveAttr, -1);
+    std::shared_ptr<CPVRTimerType> type =
+        CreateFromAttributes(iMustHaveAttr, iMustNotHaveAttr, PVR_CLIENT_INVALID_UID);
     if (type)
       return type;
   }

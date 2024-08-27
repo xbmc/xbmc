@@ -9,6 +9,7 @@
 #include "PVRTimers.h"
 
 #include "ServiceBroker.h"
+#include "pvr/PVRConstants.h" // PVR_CLIENT_INVALID_UID
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVREventLogJob.h"
 #include "pvr/PVRManager.h"
@@ -1243,7 +1244,7 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimers::GetTimerRule(
         const auto it = std::find_if(tagsEntry.second.cbegin(), tagsEntry.second.cend(),
                                      [iClientId, iParentClientIndex](const auto& timersEntry)
                                      {
-                                       return (timersEntry->ClientID() == PVR_ANY_CLIENT_ID ||
+                                       return (timersEntry->ClientID() == PVR_CLIENT_INVALID_UID ||
                                                timersEntry->ClientID() == iClientId) &&
                                               timersEntry->ClientIndex() == iParentClientIndex;
                                      });

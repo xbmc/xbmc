@@ -14,6 +14,7 @@
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "pvr/PVRComponentRegistration.h"
+#include "pvr/PVRConstants.h" // PVR_CLIENT_INVALID_UID
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRPlaybackState.h"
 #include "pvr/addons/PVRClient.h"
@@ -281,7 +282,7 @@ std::shared_ptr<CPVRClients> CPVRManager::Clients() const
 
 std::shared_ptr<CPVRClient> CPVRManager::GetClient(const CFileItem& item) const
 {
-  int iClientID = PVR_INVALID_CLIENT_ID;
+  int iClientID = PVR_CLIENT_INVALID_UID;
 
   if (item.HasPVRChannelInfoTag())
     iClientID = item.GetPVRChannelInfoTag()->ClientID();

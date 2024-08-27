@@ -14,6 +14,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "input/WindowTranslator.h"
+#include "pvr/PVRConstants.h" // PVR_CLIENT_INVALID_UID
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClient.h"
 #include "pvr/addons/PVRClients.h"
@@ -693,7 +694,7 @@ bool GetTimersSubDirectory(const CPVRTimersPath& path,
   for (const auto& timer : timers)
   {
     if ((timer->IsRadio() == bRadio) && timer->HasParent() &&
-        (iClientId == PVR_ANY_CLIENT_ID || timer->ClientID() == iClientId) &&
+        (iClientId == PVR_CLIENT_INVALID_UID || timer->ClientID() == iClientId) &&
         (timer->ParentClientIndex() == iParentId) && (!bHideDisabled || !timer->IsDisabled()))
     {
       item = std::make_shared<CFileItem>(timer);

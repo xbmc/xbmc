@@ -66,7 +66,7 @@ CPVRChannelsPath::CPVRChannelsPath(const std::string& strPath)
         {
           m_kind = Kind::GROUP; // pvr://channels/(tv|radio)/<all-channels-wildcard>@-1
           m_groupName = segment;
-          m_groupClientID = -1; // local
+          m_groupClientID = PVR_CLIENT_INVALID_UID; // local
           break;
         }
 
@@ -79,7 +79,7 @@ CPVRChannelsPath::CPVRChannelsPath(const std::string& strPath)
           if (groupClientID.find_first_not_of("-0123456789") == std::string::npos)
           {
             m_groupClientID = std::atoi(groupClientID.c_str());
-            if (m_groupClientID >= -1)
+            if (m_groupClientID >= PVR_CLIENT_INVALID_UID)
             {
               m_kind = Kind::GROUP; // pvr://channels/(tv|radio)/<groupname>@<clientid>
               break;
@@ -195,7 +195,8 @@ CPVRChannelsPath::CPVRChannelsPath(bool bRadio,
                                    int iChannelUID)
   : m_bRadio(bRadio)
 {
-  if (!strGroupName.empty() && iGroupClientID >= -1 && !strAddonID.empty() && iChannelUID >= 0)
+  if (!strGroupName.empty() && iGroupClientID >= PVR_CLIENT_INVALID_UID && !strAddonID.empty() &&
+      iChannelUID >= 0)
   {
     m_kind = Kind::CHANNEL;
     m_groupName = strGroupName;
