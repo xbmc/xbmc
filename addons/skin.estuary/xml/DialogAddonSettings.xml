@@ -123,6 +123,44 @@
 					<param name="label" value="" />
 				</include>
 			</control>
+			<control type="group">
+				<description>Currently-playing emulator name and icon</description>
+				<visible>Player.HasGame + String.IsEqual(Window(addonsettings).Property(Addon.Type),kodi.gameclient)</visible>
+				<left>1510</left>
+				<width>300</width>
+				<top>528</top>
+				<height>260</height>
+				<control type="label">
+					<description>Emulator name</description>
+					<height>30</height>
+					<font>font23_narrow</font>
+					<textoffsetx>20</textoffsetx>
+					<textcolor>button_focus</textcolor>
+					<shadowcolor>text_shadow</shadowcolor>
+					<align>center</align>
+					<label>$INFO[Window(addonsettings).Property(GameClient.Name)]</label>
+				</control>
+				<control type="label">
+					<description>Emulator version</description>
+					<top>30</top>
+					<height>30</height>
+					<font>font23_narrow</font>
+					<textoffsetx>20</textoffsetx>
+					<textcolor>button_focus</textcolor>
+					<shadowcolor>text_shadow</shadowcolor>
+					<align>center</align>
+					<label>$INFO[Window(addonsettings).Property(Addon.Version)]</label>
+				</control>
+				<control type="image">
+					<description>Emulator icon</description>
+					<left>50</left>
+					<top>70</top>
+					<height>200</height>
+					<width>200</width>
+					<aspectratio>keep</aspectratio>
+					<texture>$INFO[Window(addonsettings).Property(Addon.Icon)]</texture>
+				</control>
+			</control>
 			<control type="radiobutton" id="20">
 				<left>29</left>
 				<top>700</top>
