@@ -69,6 +69,16 @@ namespace JSONRPC
     static JSONRPC_STATUS GetAdditionalSongDetails(const CVariant& parameterObject,
                                                    const CFileItemList& items,
                                                    CMusicDatabase& musicdatabase);
+    static JSONRPC_STATUS RefreshArtist(const std::string& method,
+                                        ITransportLayer* transport,
+                                        IClient* client,
+                                        const CVariant& parameterObject,
+                                        CVariant& result);
+    static JSONRPC_STATUS RefreshAlbum(const std::string& method,
+                                       ITransportLayer* transport,
+                                       IClient* client,
+                                       const CVariant& parameterObject,
+                                       CVariant& result);
 
   private:
     static void FillAlbumItem(const CAlbum& album,
