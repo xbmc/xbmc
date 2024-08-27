@@ -15,6 +15,7 @@
 #include "addons/addoninfo/AddonType.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
+#include "pvr/PVRConstants.h" // PVR_CLIENT_INVALID_UID
 #include "pvr/PVREventLogJob.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
@@ -290,7 +291,7 @@ void CPVRClients::OnAddonEvent(const AddonEvent& event)
 
 std::shared_ptr<CPVRClient> CPVRClients::GetClient(int clientId) const
 {
-  if (clientId <= PVR_INVALID_CLIENT_ID)
+  if (clientId == PVR_CLIENT_INVALID_UID)
     return {};
 
   std::unique_lock<CCriticalSection> lock(m_critSection);

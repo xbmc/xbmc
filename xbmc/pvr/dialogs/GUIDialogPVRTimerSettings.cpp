@@ -13,6 +13,7 @@
 #include "guilib/GUIMessage.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#include "pvr/PVRConstants.h" // PVR_CLIENT_INVALID_UID
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClient.h"
 #include "pvr/addons/PVRClients.h"
@@ -888,9 +889,10 @@ void CGUIDialogPVRTimerSettings::InitializeChannelsList()
   // and for reminder rules another one representing any channel from any client.
   const CPVRClientMap clients = CServiceBroker::GetPVRManager().Clients()->GetCreatedClients();
   if (clients.size() > 1)
-    m_channelEntries.insert({index++, ChannelDescriptor(PVR_CHANNEL_INVALID_UID, PVR_ANY_CLIENT_ID,
-                                                        // Any channel from any client
-                                                        g_localizeStrings.Get(854))});
+    m_channelEntries.insert(
+        {index++, ChannelDescriptor(PVR_CHANNEL_INVALID_UID, PVR_CLIENT_INVALID_UID,
+                                    // Any channel from any client
+                                    g_localizeStrings.Get(854))});
 
   for (const auto& client : clients)
   {
@@ -977,7 +979,7 @@ void CGUIDialogPVRTimerSettings::ChannelsFiller(const SettingConstPtr& setting,
     for (const auto& channelEntry : pThis->m_channelEntries)
     {
       // Only include channels for the currently selected timer type or all channels if type is client-independent.
-      if (pThis->m_timerType->GetClientId() == PVR_ANY_CLIENT_ID || // client-independent
+      if (pThis->m_timerType->GetClientId() == PVR_CLIENT_INVALID_UID || // client-independent
           pThis->m_timerType->GetClientId() == channelEntry.second.clientId)
       {
         // Do not add "any channel" entry if not supported by selected timer type.
@@ -987,7 +989,7 @@ void CGUIDialogPVRTimerSettings::ChannelsFiller(const SettingConstPtr& setting,
 
         // Do not add "any channel from any client" entry for reminder rules.
         if (channelEntry.second.channelUid == PVR_CHANNEL_INVALID_UID &&
-            channelEntry.second.clientId == PVR_ANY_CLIENT_ID &&
+            channelEntry.second.clientId == PVR_CLIENT_INVALID_UID &&
             !pThis->m_timerType->IsReminder() && !pThis->m_timerType->IsTimerRule())
           continue;
 
