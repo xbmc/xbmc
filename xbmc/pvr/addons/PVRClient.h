@@ -589,10 +589,12 @@ public:
   /*!
    * @brief Fill the given container with the properties required for playback of the given channel. Values are obtained from the PVR backend.
    * @param channel The channel.
+   * @param source PVR_SOURCE_EPG_AS_LIVE if this call resulted from PVR_STREAM_PROPERTY_EPGPLAYBACKASLIVE being set from GetEPGTagStreamProperties(), PVR_SOURCE_SWITCH_LIVE otherwise.
    * @param props The container to be filled with the stream properties.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
   PVR_ERROR GetChannelStreamProperties(const std::shared_ptr<const CPVRChannel>& channel,
+                                       PVR_SOURCE source,
                                        CPVRStreamProperties& props) const;
 
   /*!

@@ -1554,11 +1554,12 @@ PVR_ERROR CPVRClient::GetDescrambleInfo(int channelUid, CPVRDescrambleInfo& desc
 }
 
 PVR_ERROR CPVRClient::GetChannelStreamProperties(const std::shared_ptr<const CPVRChannel>& channel,
+                                                 PVR_SOURCE source,
                                                  CPVRStreamProperties& props) const
 {
   return DoAddonCall(
       __func__,
-      [this, &channel, &props](const AddonInstance* addon)
+      [this, &channel, source, &props](const AddonInstance* addon)
       {
         if (!CanPlayChannel(channel))
           return PVR_ERROR_NO_ERROR; // no error, but no need to obtain the values from the addon
@@ -1568,7 +1569,7 @@ PVR_ERROR CPVRClient::GetChannelStreamProperties(const std::shared_ptr<const CPV
         PVR_NAMED_VALUE** property_array{nullptr};
         unsigned int size{0};
         const PVR_ERROR error{addon->toAddon->GetChannelStreamProperties(
-            addon, &addonChannel, PVR_SOURCE::DEFAULT, &property_array, &size)};
+            addon, &addonChannel, source, &property_array, &size)};
         if (error == PVR_ERROR_NO_ERROR)
           WriteStreamProperties(property_array, size, props);
 
