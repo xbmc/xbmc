@@ -341,13 +341,13 @@ bool CPVRPlaybackState::OnPlaybackEnded(const CFileItem& item)
 
   std::unique_ptr<CFileItem> nextToPlay{GetNextAutoplayItem(item)};
   if (nextToPlay)
-    StartPlayback(nextToPlay.release(), ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM,
+    StartPlayback(nextToPlay, ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM,
                   PVR_SOURCE::DEFAULT);
 
   return OnPlaybackStopped(item);
 }
 
-void CPVRPlaybackState::StartPlayback(CFileItem* item,
+void CPVRPlaybackState::StartPlayback(std::unique_ptr<CFileItem>& item,
                                       ContentUtils::PlayMode mode,
                                       PVR_SOURCE source) const
 {
@@ -374,8 +374,7 @@ void CPVRPlaybackState::StartPlayback(CFileItem* item,
         const std::shared_ptr<CPVREpgInfoTag> epgTag = item->GetPVRChannelInfoTag()->GetEPGNow();
         if (epgTag)
         {
-          delete item;
-          item = new CFileItem(epgTag);
+          item = std::make_unique<CFileItem>(epgTag);
         }
       }
     }
@@ -422,7 +421,8 @@ void CPVRPlaybackState::StartPlayback(CFileItem* item,
     }
   }
 
-  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 0, 0,
+                                             static_cast<void*>(item.release()));
 }
 
 bool CPVRPlaybackState::IsPlaying() const

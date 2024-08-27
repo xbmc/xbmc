@@ -76,7 +76,9 @@ public:
    * @param item containing a channel, a recording or an epg tag.
    * @param mode playback mode.
    */
-  void StartPlayback(CFileItem* item, ContentUtils::PlayMode mode, PVR_SOURCE source) const;
+  void StartPlayback(std::unique_ptr<CFileItem>& item,
+                     ContentUtils::PlayMode mode,
+                     PVR_SOURCE source) const;
 
   /*!
    * @brief Check if a TV channel, radio channel or recording is playing.
