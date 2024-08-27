@@ -69,6 +69,10 @@ class CAddonChannelGroup : public PVR_CHANNEL_GROUP
 public:
   explicit CAddonChannelGroup(const CPVRChannelGroup& group) : m_groupName(group.ClientGroupName())
   {
+    // zero-init base struct members
+    PVR_CHANNEL_GROUP* base = static_cast<PVR_CHANNEL_GROUP*>(this);
+    *base = {};
+
     bIsRadio = group.IsRadio();
     strGroupName = m_groupName.c_str();
     iPosition = group.GetClientPosition();
@@ -87,6 +91,10 @@ public:
       m_mimeType(channel.MimeType()),
       m_iconPath(channel.ClientIconPath())
   {
+    // zero-init base struct members
+    PVR_CHANNEL* base = static_cast<PVR_CHANNEL*>(this);
+    *base = {};
+
     iUniqueId = channel.UniqueID();
     iChannelNumber = channel.ClientChannelNumber().GetChannelNumber();
     iSubChannelNumber = channel.ClientChannelNumber().GetSubChannelNumber();
@@ -128,6 +136,10 @@ public:
       m_parentalRatingIcon(""), //! @todo
       m_parentalRatingSource("") //! @todo
   {
+    // zero-init base struct members
+    PVR_RECORDING* base = static_cast<PVR_RECORDING*>(this);
+    *base = {};
+
     time_t recTime;
     recording.RecordingTimeAsUTC().GetAsTime(recTime);
 
@@ -201,6 +213,10 @@ public:
       m_summary(timer.Summary()),
       m_seriesLink(timer.SeriesLink())
   {
+    // zero-init base struct members
+    PVR_TIMER* base = static_cast<PVR_TIMER*>(this);
+    *base = {};
+
     time_t start;
     timer.StartAsUTC().GetAsTime(start);
     time_t end;
@@ -270,6 +286,10 @@ public:
       m_parentalRatingIcon(""), //! @todo
       m_parentalRatingSource("") //! @todo
   {
+    // zero-init base struct members
+    EPG_TAG* base = static_cast<EPG_TAG*>(this);
+    *base = {};
+
     time_t t;
     tag.StartAsUTC().GetAsTime(t);
     startTime = t;
