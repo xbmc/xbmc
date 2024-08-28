@@ -162,9 +162,10 @@ bool CPVRGUIActionsPlayback::PlayRecording(const CFileItem& item, bool bCheckRes
     }
     else
     {
-      CFileItem* itemToPlay = new CFileItem(recording);
+      std::unique_ptr<CFileItem> itemToPlay{std::make_unique<CFileItem>(recording)};
       itemToPlay->SetStartOffset(item.GetStartOffset());
-      CServiceBroker::GetPVRManager().PlaybackState()->StartPlayback(itemToPlay);
+      CServiceBroker::GetPVRManager().PlaybackState()->StartPlayback(
+          itemToPlay, ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM, PVR_SOURCE::DEFAULT);
     }
     CheckAndSwitchToFullscreen(true);
   }
@@ -213,9 +214,15 @@ bool CPVRGUIActionsPlayback::PlayEpgTag(
     return false;
 
   CPVRStreamProperties props;
+  PVR_ERROR retVal = client->StreamClosed();
+  if (retVal != PVR_ERROR_NO_ERROR)
+    CLog::LogFC(LOGERROR, LOGPVR, "Client error on call to StreamClosed(): {}",
+                CPVRClient::ToString(retVal));
+
   client->GetEpgTagStreamProperties(epgTag, props);
 
-  CFileItem* itemToPlay = nullptr;
+  std::unique_ptr<CFileItem> itemToPlay;
+  PVR_SOURCE source = DEFAULT;
   if (props.EPGPlaybackAsLive())
   {
     const std::shared_ptr<CPVRChannelGroupMember> groupMember =
@@ -223,14 +230,15 @@ bool CPVRGUIActionsPlayback::PlayEpgTag(
     if (!groupMember)
       return false;
 
-    itemToPlay = new CFileItem(groupMember);
+    source = PVR_SOURCE_EPG_AS_LIVE;
+    itemToPlay = std::make_unique<CFileItem>(groupMember);
   }
   else
   {
-    itemToPlay = new CFileItem(epgTag);
+    itemToPlay = std::make_unique<CFileItem>(epgTag);
   }
 
-  CServiceBroker::GetPVRManager().PlaybackState()->StartPlayback(itemToPlay, mode);
+  CServiceBroker::GetPVRManager().PlaybackState()->StartPlayback(itemToPlay, mode, source);
   CheckAndSwitchToFullscreen(true);
   return true;
 }
@@ -313,7 +321,9 @@ bool CPVRGUIActionsPlayback::SwitchToChannel(const CFileItem& item, bool bCheckR
     if (!groupMember)
       return false;
 
-    CServiceBroker::GetPVRManager().PlaybackState()->StartPlayback(new CFileItem(groupMember));
+    std::unique_ptr<CFileItem> itemToPlay{std::make_unique<CFileItem>(groupMember)};
+    CServiceBroker::GetPVRManager().PlaybackState()->StartPlayback(
+        itemToPlay, ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM, PVR_SOURCE::DEFAULT);
     CheckAndSwitchToFullscreen(bFullscreen);
     return true;
   }

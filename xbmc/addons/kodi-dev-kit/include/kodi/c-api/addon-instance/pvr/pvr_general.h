@@ -215,6 +215,7 @@ extern "C"
   ///
   /// // On PVR instance of addon
   /// PVR_ERROR CMyPVRInstance::GetChannelStreamProperties(const kodi::addon::PVRChannel& channel,
+  ///                                                      PVR_SOURCE source,
   ///                                                      std::vector<PVRStreamProperty>& properties)
   /// {
   ///   ...

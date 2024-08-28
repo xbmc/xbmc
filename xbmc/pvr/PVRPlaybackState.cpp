@@ -341,14 +341,15 @@ bool CPVRPlaybackState::OnPlaybackEnded(const CFileItem& item)
 
   std::unique_ptr<CFileItem> nextToPlay{GetNextAutoplayItem(item)};
   if (nextToPlay)
-    StartPlayback(nextToPlay.release());
+    StartPlayback(nextToPlay, ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM,
+                  PVR_SOURCE::DEFAULT);
 
   return OnPlaybackStopped(item);
 }
 
-void CPVRPlaybackState::StartPlayback(
-    CFileItem* item,
-    ContentUtils::PlayMode mode /* = ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM */) const
+void CPVRPlaybackState::StartPlayback(std::unique_ptr<CFileItem>& item,
+                                      ContentUtils::PlayMode mode,
+                                      PVR_SOURCE source) const
 {
   // Obtain dynamic playback url and properties from the respective pvr client
   const std::shared_ptr<const CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(*item);
@@ -358,7 +359,24 @@ void CPVRPlaybackState::StartPlayback(
 
     if (item->IsPVRChannel())
     {
-      client->GetChannelStreamProperties(item->GetPVRChannelInfoTag(), props);
+      if (source == PVR_SOURCE::DEFAULT)
+      {
+        PVR_ERROR retVal = client->StreamClosed();
+        if (retVal != PVR_ERROR_NO_ERROR)
+          CLog::LogFC(LOGERROR, LOGPVR, "Client error on call to StreamClosed(): {}",
+                      CPVRClient::ToString(retVal));
+      }
+
+      client->GetChannelStreamProperties(item->GetPVRChannelInfoTag(), source, props);
+
+      if (props.LivePlaybackAsEPG())
+      {
+        const std::shared_ptr<CPVREpgInfoTag> epgTag = item->GetPVRChannelInfoTag()->GetEPGNow();
+        if (epgTag)
+        {
+          item = std::make_unique<CFileItem>(epgTag);
+        }
+      }
     }
     else if (item->IsPVRRecording())
     {
@@ -366,6 +384,11 @@ void CPVRPlaybackState::StartPlayback(
     }
     else if (item->IsEPG())
     {
+      PVR_ERROR retVal = client->StreamClosed();
+      if (retVal != PVR_ERROR_NO_ERROR)
+        CLog::LogFC(LOGERROR, LOGPVR, "Client error on call to StreamClosed(): {}",
+                    CPVRClient::ToString(retVal));
+
       client->GetEpgTagStreamProperties(item->GetEPGInfoTag(), props);
 
       if (mode == ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM)
@@ -398,7 +421,8 @@ void CPVRPlaybackState::StartPlayback(
     }
   }
 
-  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 0, 0,
+                                             static_cast<void*>(item.release()));
 }
 
 bool CPVRPlaybackState::IsPlaying() const

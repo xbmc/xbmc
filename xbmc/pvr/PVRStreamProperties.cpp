@@ -38,3 +38,11 @@ bool CPVRStreamProperties::EPGPlaybackAsLive() const
   });
   return it != cend() ? StringUtils::EqualsNoCase((*it).second, "true") : false;
 }
+
+bool CPVRStreamProperties::LivePlaybackAsEPG() const
+{
+  const auto it = std::find_if(cbegin(), cend(),
+                               [](const auto& prop)
+                               { return prop.first == PVR_STREAM_PROPERTY_LIVEPLAYBACKASEPG; });
+  return it != cend() ? StringUtils::EqualsNoCase((*it).second, "true") : false;
+}

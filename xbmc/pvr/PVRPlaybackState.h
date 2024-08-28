@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_general.h"
 #include "pvr/PVRConstants.h" // PVR_CLIENT_INVALID_UID
 #include "threads/CriticalSection.h"
 #include "utils/ContentUtils.h"
@@ -75,9 +76,9 @@ public:
    * @param item containing a channel, a recording or an epg tag.
    * @param mode playback mode.
    */
-  void StartPlayback(
-      CFileItem* item,
-      ContentUtils::PlayMode mode = ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM) const;
+  void StartPlayback(std::unique_ptr<CFileItem>& item,
+                     ContentUtils::PlayMode mode,
+                     PVR_SOURCE source) const;
 
   /*!
    * @brief Check if a TV channel, radio channel or recording is playing.
