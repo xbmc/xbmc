@@ -597,7 +597,7 @@ void CPeripheral::RegisterInputHandler(IInputHandler* handler, bool bPromiscuous
     if (addon)
     {
       std::unique_ptr<CAddonInputHandling> addonInput = std::make_unique<CAddonInputHandling>(
-          this, std::move(addon), handler, GetDriverReceiver());
+          m_manager, this, std::move(addon), handler, GetDriverReceiver());
       if (addonInput->Load())
       {
         RegisterJoystickDriverHandler(addonInput.get(), bPromiscuous);
@@ -638,7 +638,7 @@ void CPeripheral::RegisterKeyboardHandler(KEYBOARD::IKeyboardInputHandler* handl
       if (addon)
       {
         std::unique_ptr<CAddonInputHandling> addonInput =
-            std::make_unique<CAddonInputHandling>(this, std::move(addon), handler);
+            std::make_unique<CAddonInputHandling>(m_manager, this, std::move(addon), handler);
         if (addonInput->Load())
           keyboardDriverHandler = std::move(addonInput);
       }
@@ -689,7 +689,7 @@ void CPeripheral::RegisterMouseHandler(MOUSE::IMouseInputHandler* handler,
       if (addon)
       {
         std::unique_ptr<CAddonInputHandling> addonInput =
-            std::make_unique<CAddonInputHandling>(this, std::move(addon), handler);
+            std::make_unique<CAddonInputHandling>(m_manager, this, std::move(addon), handler);
         if (addonInput->Load())
           mouseDriverHandler = std::move(addonInput);
       }

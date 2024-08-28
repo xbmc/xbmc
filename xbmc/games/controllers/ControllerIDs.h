@@ -13,3 +13,14 @@
 #define DEFAULT_KEYBOARD_ID "game.controller.keyboard"
 #define DEFAULT_MOUSE_ID "game.controller.mouse"
 #define DEFAULT_REMOTE_ID "game.controller.remote"
+
+namespace KODI
+{
+namespace GAME
+{
+
+// Used to set the appearance of PlayStation controllers
+constexpr const char* CONTROLLER_ID_PLAYSTATION = "game.controller.ps.dualanalog";
+
+} // namespace GAME
+} // namespace KODI

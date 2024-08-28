@@ -16,6 +16,7 @@
 #include "utils/log.h"
 
 #include "platform/android/activity/XBMCApp.h"
+#include "platform/android/peripherals/AndroidJoystickState.h"
 
 #include <algorithm>
 #include <mutex>
@@ -31,7 +32,7 @@ using namespace PERIPHERALS;
 #define JOYSTICK_PROVIDER_ANDROID "android"
 
 // Set this to the final key code in android/keycodes.h
-const unsigned int KEY_CODE_FINAL = AKEYCODE_HELP;
+const unsigned int KEY_CODE_FINAL = AKEYCODE_PROFILE_SWITCH;
 
 static const std::string DeviceLocationPrefix = "android/inputdevice/";
 
@@ -111,11 +112,59 @@ bool CPeripheralBusAndroid::InitializeProperties(CPeripheral& peripheral)
   joystick.SetButtonCount(state.GetButtonCount());
   joystick.SetAxisCount(state.GetAxisCount());
 
+  std::unique_lock<CCriticalSection> lock(m_critSectionStates);
+
   // remember the joystick state
   m_joystickStates.insert(std::make_pair(deviceId, std::move(state)));
 
   CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: Device has {} buttons and {} axes",
             joystick.ButtonCount(), joystick.AxisCount());
+
+  return true;
+}
+
+bool CPeripheralBusAndroid::InitializeButtonMap(const CPeripheral& peripheral,
+                                                JOYSTICK::IButtonMap& buttonMap) const
+{
+  int deviceId;
+  if (!GetDeviceId(peripheral.Location(), deviceId))
+  {
+    CLog::Log(LOGWARNING,
+              "CPeripheralBusAndroid: failed to initialize buttonmap due to unknown device ID for "
+              "peripheral \"{}\"",
+              peripheral.Location());
+    return false;
+  }
+
+  std::unique_lock<CCriticalSection> lock(m_critSectionStates);
+
+  // get the joystick state
+  auto it = m_joystickStates.find(deviceId);
+  if (it == m_joystickStates.end())
+  {
+    CLog::Log(LOGWARNING,
+              "CPeripheralBusAndroid: joystick with device ID {} not found for peripheral \"{}\"",
+              deviceId, peripheral.Location());
+    return false;
+  }
+
+  const CAndroidJoystickState& joystick = it->second;
+  if (joystick.GetButtonCount() == 0 && joystick.GetAxisCount() == 0)
+  {
+    CLog::Log(LOGDEBUG,
+              "CPeripheralBusAndroid: joystick has no buttons or axes for peripheral \"{}\"",
+              peripheral.Location());
+    return false;
+  }
+
+  if (!joystick.InitializeButtonMap(buttonMap))
+  {
+    CLog::Log(
+        LOGDEBUG,
+        "CPeripheralBusAndroid: failed to initialize joystick buttonmap for peripheral \"{}\"",
+        peripheral.Location());
+    return false;
+  }
 
   return true;
 }
@@ -208,7 +257,7 @@ void CPeripheralBusAndroid::OnInputDeviceAdded(int deviceId)
     PeripheralScanResult result;
     if (!ConvertToPeripheralScanResult(device, result))
       return;
-    m_scanResults.m_results.push_back(result);
+    m_scanResults.m_results.emplace_back(std::move(result));
   }
 
   CLog::Log(LOGDEBUG, "CPeripheralBusAndroid: input device with ID {} added", deviceId);
@@ -280,7 +329,10 @@ void CPeripheralBusAndroid::OnInputDeviceRemoved(int deviceId)
 
   if (removed)
   {
-    m_joystickStates.erase(deviceId);
+    {
+      std::unique_lock<CCriticalSection> lock(m_critSectionStates);
+      m_joystickStates.erase(deviceId);
+    }
 
     OnDeviceRemoved(deviceLocation);
   }
@@ -304,8 +356,8 @@ bool CPeripheralBusAndroid::OnInputDeviceEvent(const AInputEvent* event)
   auto joystickState = m_joystickStates.find(deviceId);
   if (joystickState == m_joystickStates.end())
   {
-    CLog::Log(LOGWARNING,
-              "CPeripheralBusAndroid: ignoring input event for unknown input device with ID {}",
+    CLog::Log(LOGDEBUG,
+              "CPeripheralBusAndroid: ignoring input event for non-joystick device with ID {}",
               deviceId);
     return false;
   }
@@ -345,7 +397,7 @@ PeripheralScanResults CPeripheralBusAndroid::GetInputDevices()
       continue;
 
     CLog::Log(LOGINFO, "CPeripheralBusAndroid: added input device");
-    results.m_results.push_back(result);
+    results.m_results.emplace_back(std::move(result));
   }
 
   return results;
