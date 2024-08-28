@@ -1091,8 +1091,8 @@ void CGUIDialogPVRTimerSettings::DupEpisodesFiller(const SettingConstPtr& settin
   {
     list.clear();
 
-    std::vector<std::pair<std::string, int>> values;
-    pThis->m_timerType->GetPreventDuplicateEpisodesValues(values);
+    const std::vector<SettingIntValue>& values{
+        pThis->m_timerType->GetPreventDuplicateEpisodesValues()};
     std::transform(values.cbegin(), values.cend(), std::back_inserter(list), [](const auto& value) {
       return IntegerSettingOption(value.first, value.second);
     });
@@ -1136,8 +1136,7 @@ void CGUIDialogPVRTimerSettings::PrioritiesFiller(const SettingConstPtr& setting
   {
     list.clear();
 
-    std::vector<std::pair<std::string, int>> values;
-    pThis->m_timerType->GetPriorityValues(values);
+    const std::vector<SettingIntValue>& values{pThis->m_timerType->GetPriorityValues()};
     std::transform(values.cbegin(), values.cend(), std::back_inserter(list), [](const auto& value) {
       return IntegerSettingOption(value.first, value.second);
     });
@@ -1173,8 +1172,7 @@ void CGUIDialogPVRTimerSettings::LifetimesFiller(const SettingConstPtr& setting,
   {
     list.clear();
 
-    std::vector<std::pair<std::string, int>> values;
-    pThis->m_timerType->GetLifetimeValues(values);
+    const std::vector<SettingIntValue>& values{pThis->m_timerType->GetLifetimeValues()};
     std::transform(values.cbegin(), values.cend(), std::back_inserter(list), [](const auto& value) {
       return IntegerSettingOption(value.first, value.second);
     });
@@ -1212,8 +1210,7 @@ void CGUIDialogPVRTimerSettings::MaxRecordingsFiller(const SettingConstPtr& sett
   {
     list.clear();
 
-    std::vector<std::pair<std::string, int>> values;
-    pThis->m_timerType->GetMaxRecordingsValues(values);
+    const std::vector<SettingIntValue>& values{pThis->m_timerType->GetMaxRecordingsValues()};
     std::transform(values.cbegin(), values.cend(), std::back_inserter(list), [](const auto& value) {
       return IntegerSettingOption(value.first, value.second);
     });
@@ -1249,8 +1246,7 @@ void CGUIDialogPVRTimerSettings::RecordingGroupFiller(const SettingConstPtr& set
   {
     list.clear();
 
-    std::vector<std::pair<std::string, int>> values;
-    pThis->m_timerType->GetRecordingGroupValues(values);
+    const std::vector<SettingIntValue>& values{pThis->m_timerType->GetRecordingGroupValues()};
     std::transform(values.cbegin(), values.cend(), std::back_inserter(list), [](const auto& value) {
       return IntegerSettingOption(value.first, value.second);
     });
