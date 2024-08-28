@@ -29,8 +29,8 @@ class CTexture;
 class CImageLoader
 {
 public:
-  CImageLoader(const std::string& path, const bool useCache, CGUILargeTextureManager* callback);
-  ~CImageLoader();
+  CImageLoader(const std::string& path, bool useCache, CGUILargeTextureManager* callback);
+  virtual ~CImageLoader() = default;
 
   /*!
    \brief Work function that loads in a particular image.
@@ -58,8 +58,8 @@ public:
 class CGUILargeTextureManager
 {
 public:
-  CGUILargeTextureManager();
-  ~CGUILargeTextureManager();
+  CGUILargeTextureManager() = default;
+  virtual ~CGUILargeTextureManager() = default;
 
   /*!
    \brief Callback from CImageLoader on completion of a loaded image
@@ -143,4 +143,3 @@ private:
 
   CCriticalSection m_listSection;
 };
-

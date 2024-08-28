@@ -151,7 +151,7 @@ void CWinSystemGbmEGLContext::delete_CVaapiProxy::operator()(CVaapiProxy *p) con
   VaapiProxyDelete(p);
 }
 
-bool CWinSystemGbmEGLContext::BindSecondaryGPUContext(const unsigned int& id)
+bool CWinSystemGbmEGLContext::BindSecondaryGPUContext(unsigned int id)
 {
   return m_eglContext.BindSecondaryGPUContext(id);
 }

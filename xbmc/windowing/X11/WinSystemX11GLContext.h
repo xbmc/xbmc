@@ -58,7 +58,7 @@ public:
   EGLContext GetEGLContext() const;
   EGLConfig GetEGLConfig() const;
 
-  bool BindSecondaryGPUContext(const unsigned int& id) override;
+  bool BindSecondaryGPUContext(unsigned int id) override;
 
 protected:
   bool SetWindow(int width, int height, bool fullscreen, const std::string &output, int *winstate = NULL) override;

@@ -611,7 +611,7 @@ bool CEGLContextUtils::TrySwapBuffers()
   return (eglSwapBuffers(m_eglDisplay, m_eglSurface) == EGL_TRUE);
 }
 
-bool CEGLContextUtils::BindSecondaryGPUContext(const unsigned int& id)
+bool CEGLContextUtils::BindSecondaryGPUContext(unsigned int id)
 {
   if (id > m_eglSecondaryContexts.size())
   {

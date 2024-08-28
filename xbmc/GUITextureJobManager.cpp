@@ -14,37 +14,36 @@
 #include "windowing/WinSystem.h"
 
 using namespace std::chrono_literals;
-
 using namespace KODI::GUILIB;
 
 CGUITextureLoaderThread::CGUITextureLoaderThread(CGUITextureJobManager* manager,
                                                  unsigned int threadID)
-  : CThread("TextureLoader")
+  : CThread("TextureLoader"), m_threadID(threadID), m_manager(manager)
 {
-  m_manager = manager;
-  m_threadID = threadID;
   Create();
   SetPriority(ThreadPriority::LOWEST);
 }
 
+void CGUITextureLoaderThread::OnStartup()
+{
+  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiAsyncTextureUpload)
+    m_hasContext = CServiceBroker::GetWinSystem()->BindSecondaryGPUContext(m_threadID);
+}
+
 void CGUITextureLoaderThread::Process()
 {
-  bool hasContext = false;
-
-  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiAsyncTextureUpload)
-    hasContext = CServiceBroker::GetWinSystem()->BindSecondaryGPUContext(m_threadID);
-
   while (!m_bStop)
   {
     CImageLoader* image = m_manager->GetNextImage();
     if (image)
     {
-      image->DoWork(hasContext);
+      image->DoWork(m_hasContext);
       image->m_callback->OnLoadComplete(image);
     }
     else
     {
-      CThread::Sleep(THREAD_SLEEP_DURATION);
+      // sleep for a frame, assuming 60fps
+      CThread::Sleep(16ms);
     }
   }
 }
@@ -55,15 +54,14 @@ CGUITextureJobManager::CGUITextureJobManager()
 
   uint32_t maxThreads =
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiTextureThreads;
-  for (uint32_t i = 0; i < maxThreads; i++)
-    m_textureThread.push_back(new CGUITextureLoaderThread(this, i));
+  for (uint32_t i = 0; i < maxThreads; ++i)
+    m_textureThread.emplace_back(std::make_unique<CGUITextureLoaderThread>(this, i));
 }
 
 CGUITextureJobManager::~CGUITextureJobManager()
 {
   std::unique_lock<CCriticalSection> lock(m_section);
-  for (const auto& thread : m_textureThread)
-    delete thread;
+  m_textureThread.clear();
 }
 
 unsigned int CGUITextureJobManager::AddImageToQueue(CImageLoader* image)
@@ -72,12 +70,12 @@ unsigned int CGUITextureJobManager::AddImageToQueue(CImageLoader* image)
 
   image->m_imageID = m_imageIDCounter;
 
-  m_imageQueue.push_back(image);
+  m_imageQueue.emplace_back(image);
 
   return m_imageIDCounter++;
 }
 
-void CGUITextureJobManager::CancelImageLoad(const unsigned int& imageID)
+void CGUITextureJobManager::CancelImageLoad(unsigned int imageID)
 {
   std::unique_lock<CCriticalSection> lock(m_section);
 

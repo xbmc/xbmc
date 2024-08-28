@@ -221,7 +221,7 @@ public:
     return m_eglConfig;
   }
 
-  bool BindSecondaryGPUContext(const unsigned int& id);
+  bool BindSecondaryGPUContext(unsigned int id);
 
 private:
   void SurfaceAttrib();

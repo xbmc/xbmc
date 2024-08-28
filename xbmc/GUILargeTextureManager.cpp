@@ -25,14 +25,12 @@
 #include <mutex>
 
 CImageLoader::CImageLoader(const std::string& path,
-                           const bool useCache,
+                           bool useCache,
                            CGUILargeTextureManager* callback)
   : m_path(path), m_texture(nullptr), m_callback(callback)
 {
   m_use_cache = useCache;
 }
-
-CImageLoader::~CImageLoader() = default;
 
 bool CImageLoader::DoWork(bool immediatelyUpload)
 {
@@ -151,10 +149,6 @@ void CGUILargeTextureManager::CLargeTexture::SetTexture(std::unique_ptr<CTexture
     m_texture.Set(std::move(texture), width, height);
   }
 }
-
-CGUILargeTextureManager::CGUILargeTextureManager() = default;
-
-CGUILargeTextureManager::~CGUILargeTextureManager() = default;
 
 void CGUILargeTextureManager::CleanupUnusedImages(bool immediately)
 {

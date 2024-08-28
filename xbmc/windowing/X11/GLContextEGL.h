@@ -38,7 +38,7 @@ public:
   void QueryExtensions() override;
   uint64_t GetVblankTiming(uint64_t &msc, uint64_t &interval) override;
 
-  bool BindSecondaryGPUContext(const unsigned int& id);
+  bool BindSecondaryGPUContext(unsigned int id);
 
   EGLint m_renderingApi;
   EGLDisplay m_eglDisplay = EGL_NO_DISPLAY;

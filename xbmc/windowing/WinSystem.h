@@ -266,7 +266,7 @@ public:
    * \param id id of the requesting context
    * \return Return true if a texture upload context exists and the binding succeeds
    */
-  virtual bool BindSecondaryGPUContext(const unsigned int& id) { return false; }
+  virtual bool BindSecondaryGPUContext(unsigned int id) { return false; }
 
 protected:
   void UpdateDesktopResolution(RESOLUTION_INFO& newRes, const std::string &output, int width, int height, float refreshRate, uint32_t dwFlags);

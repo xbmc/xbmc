@@ -559,7 +559,7 @@ uint64_t CGLContextEGL::GetVblankTiming(uint64_t &msc, uint64_t &interval)
   return ret;
 }
 
-bool CGLContextEGL::BindSecondaryGPUContext(const unsigned int& id)
+bool CGLContextEGL::BindSecondaryGPUContext(unsigned int id)
 {
   if (id > m_eglSecondaryContexts.size())
   {

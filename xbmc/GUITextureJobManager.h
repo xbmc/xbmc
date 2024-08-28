@@ -14,31 +14,30 @@
 
 #include <deque>
 
-using namespace std::chrono_literals;
-
 namespace KODI::GUILIB
 {
 
 class CGUITextureJobManager;
-class CGUITextureLoaderThread : protected CThread
+class CGUITextureLoaderThread : CThread
 {
 public:
   CGUITextureLoaderThread(CGUITextureJobManager* manager, unsigned int threadID);
 
 protected:
+  void OnStartup() override;
   void Process() override;
 
 private:
-  static constexpr auto THREAD_SLEEP_DURATION{16ms};
-  unsigned int m_threadID;
+  unsigned int m_threadID{0};
   CGUITextureJobManager* m_manager{nullptr};
+  bool m_hasContext{false};
 };
 
 class CGUITextureJobManager
 {
 public:
   CGUITextureJobManager();
-  ~CGUITextureJobManager();
+  virtual ~CGUITextureJobManager();
 
   /*!
    \brief Adds a image to the processing queue.
@@ -52,7 +51,7 @@ public:
 
    \param imageID image to cancel
    */
-  void CancelImageLoad(const unsigned int& imageID);
+  void CancelImageLoad(unsigned int imageID);
   /*!
    \brief Gets a image next in queue.
 
@@ -62,8 +61,8 @@ public:
 
 private:
   mutable CCriticalSection m_section;
-  unsigned int m_imageIDCounter;
-  std::vector<CGUITextureLoaderThread*> m_textureThread;
+  unsigned int m_imageIDCounter{0};
+  std::vector<std::unique_ptr<CGUITextureLoaderThread>> m_textureThread;
   std::deque<CImageLoader*> m_imageQueue{};
 };
 

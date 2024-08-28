@@ -92,7 +92,7 @@ EGLConfig CWinSystemX11GLESContext::GetEGLConfig() const
   return m_pGLContext->m_eglConfig;
 }
 
-bool CWinSystemX11GLESContext::BindSecondaryGPUContext(const unsigned int& id)
+bool CWinSystemX11GLESContext::BindSecondaryGPUContext(unsigned int id)
 {
   if (m_pGLContext)
     return static_cast<CGLContextEGL*>(m_pGLContext)->BindSecondaryGPUContext(id);

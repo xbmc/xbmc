@@ -102,7 +102,7 @@ bool CWinSystemWaylandEGLContext::DestroyWindowSystem()
   return CWinSystemWaylandImpl::DestroyWindowSystem();
 }
 
-bool CWinSystemWaylandEGLContext::BindSecondaryGPUContext(const unsigned int& id)
+bool CWinSystemWaylandEGLContext::BindSecondaryGPUContext(unsigned int id)
 {
   return m_eglContext.BindSecondaryGPUContext(id);
 }

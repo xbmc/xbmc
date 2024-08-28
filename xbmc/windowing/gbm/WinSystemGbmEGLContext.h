@@ -35,7 +35,7 @@ public:
                        RESOLUTION_INFO& res) override;
   bool DestroyWindow() override;
 
-  bool BindSecondaryGPUContext(const unsigned int& id) override;
+  bool BindSecondaryGPUContext(unsigned int id) override;
 
 protected:
   CWinSystemGbmEGLContext(EGLenum platform, std::string const& platformExtension)
