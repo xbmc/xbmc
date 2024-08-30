@@ -2883,6 +2883,14 @@ const infomap musicpartymode[] = {{ "enabled",           MUSICPM_ENABLED },
 ///     @skinning_v19 **[New Infolabel]** \link MusicPlayer_Station `MusicPlayer.Station`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`MusicPlayer.MediaProviders`</b>,
+///                  \anchor MusicPlayer_MediaProviders
+///                  _string_,
+///     @return string containing the names of the providers of the currently playing media\, separated by commas if muliple are present.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link MusicPlayer_MediaProviders `MusicPlayer.MediaProviders`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -2931,7 +2939,8 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
                                   { "bpm",              MUSICPLAYER_BPM },
                                   { "ismultidisc",      MUSICPLAYER_ISMULTIDISC },
                                   { "totaldiscs",       MUSICPLAYER_TOTALDISCS },
-                                  { "station",          MUSICPLAYER_STATIONNAME }
+                                  { "station",          MUSICPLAYER_STATIONNAME },
+                                  { "mediaproviders",   MUSICPLAYER_MEDIAPROVIDERS },
 };
 // clang-format on
 
@@ -3989,7 +3998,15 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///     @skinning_v22 **[Infolabel Updated]** \link VideoPlayer_EpisodePart `VideoPlayer.EpisodePart`\endlink
 ///     also supports EPG.
 ///     <p>
-///   }///
+///   }
+///   \table_row3{   <b>`VideoPlayer.MediaProviders`</b>,
+///                  \anchor VideoPlayer_MediaProviders
+///                  _string_,
+///     @return string containing the names of the providers of the currently playing media\, separated by commas if muliple are present.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_MediaProviders `VideoPlayer.MediaProviders`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -4072,7 +4089,8 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "art",              VIDEOPLAYER_ART},
                                   { "videoversionname", VIDEOPLAYER_VIDEOVERSION_NAME},
                                   { "hasvideoversions", VIDEOPLAYER_HAS_VIDEOVERSIONS},
-                                  { "episodepart",      VIDEOPLAYER_EPISODEPART}
+                                  { "episodepart",      VIDEOPLAYER_EPISODEPART},
+                                  { "mediaproviders",   VIDEOPLAYER_MEDIAPROVIDERS },
 };
 // clang-format on
 
@@ -7082,6 +7100,14 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @skinning_v22 **[New Infolabel]** \link ListItem_EpisodePart `ListItem.EpisodePart`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.MediaProviders`</b>,
+///                  \anchor ListItem_MediaProviders
+///                  _string_,
+///     @return string containing the names of the media providers of the item\, separated by commas if muliple are present.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link ListItem_MediaProviders `ListItem.MediaProviders`\endlink
+///     <p>
+///   }
 ///
 /// \table_end
 ///
@@ -7311,6 +7337,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "pvrinstancename",  LISTITEM_PVR_INSTANCE_NAME },
                                   { "pvrgrouporigin",   LISTITEM_PVR_GROUP_ORIGIN },
                                   { "episodepart",      LISTITEM_EPISODEPART },
+                                  { "mediaproviders",   LISTITEM_MEDIAPROVIDERS },
 };
 // clang-format on
 

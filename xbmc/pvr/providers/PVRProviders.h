@@ -44,12 +44,6 @@ public:
      */
   std::vector<std::shared_ptr<CPVRProvider>> GetProvidersList() const;
 
-  /*!
-     * Get the number of providers in this container
-     * @return The total number of providers
-     */
-  std::size_t GetNumProviders() const;
-
 protected:
   void InsertEntry(const std::shared_ptr<CPVRProvider>& newProvider, ProviderUpdateMode updateMode);
 
@@ -63,6 +57,18 @@ class CPVRProviders : public CPVRProvidersContainer
 public:
   CPVRProviders() = default;
   ~CPVRProviders() = default;
+
+  /*!
+   * Get all enabled providers
+   * @return The list of all enabled providers
+   */
+  std::vector<std::shared_ptr<CPVRProvider>> GetProviders() const;
+
+  /*!
+   * Get the number of enabled providers
+   * @return The total number of enabled providers
+   */
+  std::size_t GetNumProviders() const;
 
   /**
    * @brief Update all providers from PVR database and from given clients.

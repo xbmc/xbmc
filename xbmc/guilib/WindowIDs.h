@@ -134,7 +134,9 @@
 #define WINDOW_RADIO_SEARCH               (WINDOW_PVR_ID_START+9)
 #define WINDOW_TV_TIMER_RULES             (WINDOW_PVR_ID_START+10)
 #define WINDOW_RADIO_TIMER_RULES          (WINDOW_PVR_ID_START+11)
-#define WINDOW_PVR_ID_END                 WINDOW_RADIO_TIMER_RULES
+#define WINDOW_TV_PROVIDERS (WINDOW_PVR_ID_START + 12)
+#define WINDOW_RADIO_PROVIDERS (WINDOW_PVR_ID_START + 13)
+#define WINDOW_PVR_ID_END WINDOW_RADIO_PROVIDERS
 
 // virtual windows for PVR specific keymap bindings in fullscreen playback
 #define WINDOW_FULLSCREEN_LIVETV          10800

@@ -370,9 +370,17 @@ std::vector<CVariant> CPVRClients::GetClientProviderInfos() const
     for (const auto& instanceId : instanceIds)
     {
       CVariant clientProviderInfo(CVariant::VariantTypeObject);
-      clientProviderInfo["clientid"] = CPVRClientUID(addonInfo->ID(), instanceId).GetUID();
+      const int clientId{CPVRClientUID(addonInfo->ID(), instanceId).GetUID()};
+      clientProviderInfo["clientid"] = clientId;
       clientProviderInfo["addonid"] = addonInfo->ID();
       clientProviderInfo["instanceid"] = instanceId;
+      std::string fullName;
+      const std::shared_ptr<const CPVRClient> client{GetClient(clientId)};
+      if (client)
+        fullName = client->GetFullClientName();
+      else
+        fullName = addonInfo->Name();
+      clientProviderInfo["fullname"] = fullName;
       clientProviderInfo["enabled"] =
           !CServiceBroker::GetAddonMgr().IsAddonDisabled(addonInfo->ID());
       clientProviderInfo["name"] = addonInfo->Name();

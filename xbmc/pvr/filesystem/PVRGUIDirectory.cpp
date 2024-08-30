@@ -16,6 +16,7 @@
 #include "input/WindowTranslator.h"
 #include "pvr/PVRConstants.h" // PVR_CLIENT_INVALID_UID
 #include "pvr/PVRManager.h"
+#include "pvr/PVRPathUtils.h"
 #include "pvr/addons/PVRClient.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
@@ -27,6 +28,9 @@
 #include "pvr/epg/EpgSearch.h"
 #include "pvr/epg/EpgSearchFilter.h"
 #include "pvr/epg/EpgSearchPath.h"
+#include "pvr/providers/PVRProvider.h"
+#include "pvr/providers/PVRProviders.h"
+#include "pvr/providers/PVRProvidersPath.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
@@ -105,6 +109,19 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
                                          bRadio ? WINDOW_RADIO_RECORDINGS : WINDOW_TV_RECORDINGS));
     item->SetArt("icon", "DefaultPVRRecordings.png");
     results.Add(item);
+  }
+
+  // Providers
+  if (CServiceBroker::GetPVRManager().Providers()->GetNumProviders() > 1)
+  {
+    item = std::make_shared<CFileItem>(bRadio ? CPVRProvidersPath::PATH_RADIO_PROVIDERS
+                                              : CPVRProvidersPath::PATH_TV_PROVIDERS,
+                                       true);
+    item->SetLabel(g_localizeStrings.Get(19334)); // Providers
+    item->SetProperty("node.target", CWindowTranslator::TranslateWindow(
+                                         bRadio ? WINDOW_RADIO_PROVIDERS : WINDOW_TV_PROVIDERS));
+    item->SetArt("icon", "DefaultPVRProviders.png");
+    results.Add(std::move(item));
   }
 
   // Timers/Timer rules
@@ -210,6 +227,14 @@ bool CPVRGUIDirectory::GetDirectory(CFileItemList& results) const
     }
     return true;
   }
+  else if (StringUtils::StartsWith(fileName, "providers"))
+  {
+    if (CServiceBroker::GetPVRManager().IsStarted())
+    {
+      return GetProvidersDirectory(results);
+    }
+    return true;
+  }
   else if (StringUtils::StartsWith(fileName, "timers"))
   {
     if (CServiceBroker::GetPVRManager().IsStarted())
@@ -286,9 +311,39 @@ bool IsDirectoryMember(const std::string& strDirectory,
     return StringUtils::StartsWithNoCase(strUseEntryDirectory, strUseDirectory);
 }
 
-void GetSubDirectories(const CPVRRecordingsPath& recParentPath,
-                       const std::vector<std::shared_ptr<CPVRRecording>>& recordings,
-                       CFileItemList& results)
+template<class T>
+class CByClientAndProviderFilter
+{
+public:
+  explicit CByClientAndProviderFilter(const CURL& url)
+    : m_applyFilter(UTILS::GetClientAndProviderFromPath(url, m_clientId, m_providerId))
+  {
+  }
+
+  bool Filter(const std::shared_ptr<T>& item) const
+  {
+    if (m_applyFilter)
+    {
+      if (item->ClientID() != m_clientId)
+        return true;
+
+      if ((m_providerId != PVR_PROVIDER_INVALID_UID) && (item->ClientProviderUid() != m_providerId))
+        return true;
+    }
+    return false;
+  }
+
+private:
+  int m_clientId{PVR_CLIENT_INVALID_UID};
+  int m_providerId{PVR_PROVIDER_INVALID_UID};
+  bool m_applyFilter{false};
+};
+
+template<typename T>
+void GetGetRecordingsSubDirectories(const CPVRRecordingsPath& recParentPath,
+                                    const std::vector<std::shared_ptr<CPVRRecording>>& recordings,
+                                    const CByClientAndProviderFilter<T>& byClientAndProviderFilter,
+                                    CFileItemList& results)
 {
   // Only active recordings are fetched to provide sub directories.
   // Not applicable for deleted view which is supposed to be flattened.
@@ -297,6 +352,9 @@ void GetSubDirectories(const CPVRRecordingsPath& recParentPath,
 
   for (const auto& recording : recordings)
   {
+    if (byClientAndProviderFilter.Filter(recording))
+      continue;
+
     if (recording->IsDeleted())
       continue;
 
@@ -401,17 +459,24 @@ bool CPVRGUIDirectory::GetRecordingsDirectory(CFileItemList& results) const
   const CPVRRecordingsPath recPath(m_url.GetWithoutOptions());
   if (recPath.IsValid())
   {
+    // Filter by client id/provider id ?
+    const CByClientAndProviderFilter<CPVRRecording> byClientAndProviderFilter{m_url};
+
     // Get the directory structure if in non-flatten mode
     // Deleted view is always flatten. So only for an active view
     const std::string strDirectory = recPath.GetUnescapedDirectoryPath();
     if (!recPath.IsDeleted() && bGrouped)
-      GetSubDirectories(recPath, recordings, results);
+      GetGetRecordingsSubDirectories(recPath, recordings, byClientAndProviderFilter, results);
 
     // get all files of the current directory or recursively all files starting at the current directory if in flatten mode
     std::shared_ptr<CFileItem> item;
     for (const auto& recording : recordings)
     {
       // Omit recordings not matching criteria
+
+      if (byClientAndProviderFilter.Filter(recording))
+        continue;
+
       if (recording->IsDeleted() != recPath.IsDeleted() ||
           recording->IsRadio() != recPath.IsRadio() ||
           !IsDirectoryMember(strDirectory, recording->Directory(), bGrouped))
@@ -612,6 +677,7 @@ bool CPVRGUIDirectory::GetChannelsDirectory(CFileItemList& results) const
     }
     else if (path.IsChannelGroup())
     {
+      const CByClientAndProviderFilter<const CPVRChannel> byClientAndProviderFilter{m_url};
       const bool playedOnly{(m_url.HasOption("view") && (m_url.GetOption("view") == "lastplayed"))};
       const bool dateAdded{(m_url.HasOption("view") && (m_url.GetOption("view") == "dateadded"))};
       const bool showHiddenChannels{path.IsHiddenChannelGroup()};
@@ -619,18 +685,23 @@ bool CPVRGUIDirectory::GetChannelsDirectory(CFileItemList& results) const
           GetChannelGroupMembers(path)};
       for (const auto& groupMember : groupMembers)
       {
-        if (showHiddenChannels != groupMember->Channel()->IsHidden())
+        const std::shared_ptr<const CPVRChannel> channel{groupMember->Channel()};
+
+        if (byClientAndProviderFilter.Filter(channel))
           continue;
 
-        if (playedOnly && !groupMember->Channel()->LastWatched())
+        if (showHiddenChannels != channel->IsHidden())
+          continue;
+
+        if (playedOnly && !channel->LastWatched())
           continue;
 
         if (dateAdded)
         {
-          if (groupMember->Channel()->LastWatched())
+          if (channel->LastWatched())
             continue;
 
-          const CDateTime dtChannelAdded{groupMember->Channel()->DateTimeAdded()};
+          const CDateTime dtChannelAdded{channel->DateTimeAdded()};
           if (!dtChannelAdded.IsValid())
             continue;
 
@@ -748,5 +819,119 @@ bool CPVRGUIDirectory::GetTimersDirectory(CFileItemList& results) const
     }
   }
 
+  return false;
+}
+
+bool CPVRGUIDirectory::GetProvidersDirectory(CFileItemList& results) const
+{
+  const CPVRProvidersPath path(m_url.GetWithoutOptions());
+  if (path.IsValid())
+  {
+    if (path.IsProvidersRoot())
+    {
+      const std::shared_ptr<const CPVRChannelGroupsContainer> groups{
+          CServiceBroker::GetPVRManager().ChannelGroups()};
+      const std::shared_ptr<const CPVRRecordings> recordings{
+          CServiceBroker::GetPVRManager().Recordings()};
+      const std::vector<std::shared_ptr<CPVRProvider>> providers{
+          CServiceBroker::GetPVRManager().Providers()->GetProviders()};
+      for (const auto& provider : providers)
+      {
+        if (!groups->HasChannelForProvider(path.IsRadio(), provider->GetClientId(),
+                                           provider->GetUniqueId()) &&
+            !recordings->HasRecordingForProvider(path.IsRadio(), provider->GetClientId(),
+                                                 provider->GetUniqueId()))
+          continue;
+
+        const CPVRProvidersPath providerPath{path.GetKind(), provider->GetClientId(),
+                                             provider->GetUniqueId()};
+        results.Add(std::make_shared<CFileItem>(providerPath, provider));
+      }
+      return true;
+    }
+    else if (path.IsProvider())
+    {
+      // Add items for channels and recordings, if at least one matching is available.
+
+      const std::shared_ptr<const CPVRChannelGroupsContainer> groups{
+          CServiceBroker::GetPVRManager().ChannelGroups()};
+      const unsigned int channelCount{groups->GetChannelCountByProvider(
+          path.IsRadio(), path.GetClientId(), path.GetProviderUid())};
+      if (channelCount > 0)
+      {
+        const CPVRProvidersPath channelsPath{path.GetKind(), path.GetClientId(),
+                                             path.GetProviderUid(), CPVRProvidersPath::CHANNELS};
+        auto channelsItem{std::make_shared<CFileItem>(channelsPath, true)};
+        channelsItem->SetLabel(g_localizeStrings.Get(19019)); // Channels
+        channelsItem->SetArt("icon", "DefaultPVRChannels.png");
+        channelsItem->SetProperty("totalcount", channelCount);
+        results.Add(std::move(channelsItem));
+      }
+
+      const std::shared_ptr<const CPVRRecordings> recordings{
+          CServiceBroker::GetPVRManager().Recordings()};
+      const unsigned int recordingCount{recordings->GetRecordingCountByProvider(
+          path.IsRadio(), path.GetClientId(), path.GetProviderUid())};
+      if (recordingCount > 0)
+      {
+        const CPVRProvidersPath recordingsPath{path.GetKind(), path.GetClientId(),
+                                               path.GetProviderUid(),
+                                               CPVRProvidersPath::RECORDINGS};
+        auto recordingsItem{std::make_shared<CFileItem>(recordingsPath, true)};
+        recordingsItem->SetLabel(g_localizeStrings.Get(19017)); // Recordings
+        recordingsItem->SetArt("icon", "DefaultPVRRecordings.png");
+        recordingsItem->SetProperty("totalcount", recordingCount);
+        results.Add(std::move(recordingsItem));
+      }
+
+      return true;
+    }
+    else if (path.IsChannels())
+    {
+      // Add all channels served by this provider.
+      const std::shared_ptr<const CPVRChannelGroup> group{
+          CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(path.IsRadio())};
+      if (group)
+      {
+        const bool checkUid{path.GetProviderUid() != PVR_PROVIDER_INVALID_UID};
+        const std::vector<std::shared_ptr<CPVRChannelGroupMember>> allGroupMembers{
+            group->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE)};
+        for (const auto& allGroupMember : allGroupMembers)
+        {
+          const std::shared_ptr<const CPVRChannel> channel{allGroupMember->Channel()};
+
+          if (channel->ClientID() != path.GetClientId())
+            continue;
+
+          if (checkUid && channel->ClientProviderUid() != path.GetProviderUid())
+            continue;
+
+          results.Add(std::make_shared<CFileItem>(allGroupMember));
+        }
+        return true;
+      }
+    }
+    else if (path.IsRecordings())
+    {
+      // Add all recordings served by this provider.
+      const bool checkUid{path.GetProviderUid() != PVR_PROVIDER_INVALID_UID};
+      const std::vector<std::shared_ptr<CPVRRecording>> recordings{
+          CServiceBroker::GetPVRManager().Recordings()->GetAll()};
+      for (const auto& recording : recordings)
+      {
+        if (recording->IsRadio() != path.IsRadio())
+          continue;
+
+        if (recording->ClientID() != path.GetClientId())
+          continue;
+
+        if (checkUid && recording->ClientProviderUid() != path.GetProviderUid())
+          continue;
+
+        results.Add(std::make_shared<CFileItem>(recording));
+      }
+      return true;
+    }
+  }
   return false;
 }

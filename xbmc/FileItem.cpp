@@ -45,6 +45,7 @@
 #include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "pvr/guilib/PVRGUIActionsEPG.h"
 #include "pvr/guilib/PVRGUIActionsUtils.h"
+#include "pvr/providers/PVRProvider.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "settings/AdvancedSettings.h"
@@ -299,6 +300,31 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRTimerInfoTag>& timer)
   FillInMimeType(false);
 }
 
+CFileItem::CFileItem(const std::string& path, const std::shared_ptr<CPVRProvider>& provider)
+{
+  Initialize();
+
+  m_strPath = path;
+  m_bIsFolder = true;
+  m_pvrProviderInfoTag = provider;
+  SetLabel(provider->GetName());
+  m_bCanQueue = false;
+
+  // Set art
+  if (!provider->GetIconPath().empty())
+    SetArt("icon", provider->GetIconPath());
+  else
+    SetArt("icon", "DefaultPVRProvider.png");
+
+  if (!provider->GetThumbPath().empty())
+    SetArt("thumb", provider->GetThumbPath());
+
+  // Speedup FillInDefaultIcon()
+  SetProperty("icon_never_overlay", true);
+
+  FillInMimeType(false);
+}
+
 CFileItem::CFileItem(const CArtist& artist)
 {
   Initialize();
@@ -504,6 +530,7 @@ CFileItem& CFileItem::operator=(const CFileItem& item)
   m_pvrChannelGroupMemberInfoTag = item.m_pvrChannelGroupMemberInfoTag;
   m_pvrRecordingInfoTag = item.m_pvrRecordingInfoTag;
   m_pvrTimerInfoTag = item.m_pvrTimerInfoTag;
+  m_pvrProviderInfoTag = item.m_pvrProviderInfoTag;
   m_addonInfo = item.m_addonInfo;
   m_eventLogEntry = item.m_eventLogEntry;
 
@@ -578,6 +605,7 @@ void CFileItem::Reset()
   m_pvrChannelGroupMemberInfoTag.reset();
   m_pvrRecordingInfoTag.reset();
   m_pvrTimerInfoTag.reset();
+  m_pvrProviderInfoTag.reset();
   delete m_pictureInfoTag;
   m_pictureInfoTag=NULL;
   delete m_gameInfoTag;
@@ -784,6 +812,9 @@ void CFileItem::ToSortable(SortItem &sortable, Field field) const
   if (HasPVRChannelGroupMemberInfoTag())
     GetPVRChannelGroupMemberInfoTag()->ToSortable(sortable, field);
 
+  if (HasPVRProviderInfoTag())
+    GetPVRProviderInfoTag()->ToSortable(sortable, field);
+
   if (HasAddonInfo())
   {
     switch (field)
@@ -896,6 +927,11 @@ bool CFileItem::IsPVRTimer() const
   return HasPVRTimerInfoTag();
 }
 
+bool CFileItem::IsPVRProvider() const
+{
+  return HasPVRProviderInfoTag();
+}
+
 bool CFileItem::IsDeleted() const
 {
   if (HasPVRRecordingInfoTag())
@@ -945,7 +981,8 @@ bool CFileItem::IsPicture() const
     return false;
 
   if (HasPVRTimerInfoTag() || HasPVRChannelInfoTag() || HasPVRChannelGroupMemberInfoTag() ||
-      HasPVRRecordingInfoTag() || HasEPGInfoTag() || HasEPGSearchFilter())
+      HasPVRRecordingInfoTag() || HasEPGInfoTag() || HasEPGSearchFilter() ||
+      HasPVRProviderInfoTag())
     return false;
 
   if (!m_strPath.empty())
@@ -1239,6 +1276,10 @@ void CFileItem::FillInDefaultIcon()
       {
         // PVR deleted recording
         SetArt("icon", "DefaultVideoDeleted.png");
+      }
+      else if (IsPVRProvider())
+      {
+        SetArt("icon", "DefaultPVRProvider.png");
       }
       else if (PLAYLIST::IsPlayList(*this) || PLAYLIST::IsSmartPlayList(*this))
       {
@@ -1555,6 +1596,11 @@ void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
     m_pvrTimerInfoTag = item.m_pvrTimerInfoTag;
     SetInvalid();
   }
+  if (item.HasPVRProviderInfoTag())
+  {
+    m_pvrProviderInfoTag = item.m_pvrProviderInfoTag;
+    SetInvalid();
+  }
   if (item.HasEPGInfoTag())
   {
     m_epgInfoTag = item.m_epgInfoTag;
@@ -1621,6 +1667,11 @@ void CFileItem::MergeInfo(const CFileItem& item)
   if (item.HasPVRTimerInfoTag())
   {
     m_pvrTimerInfoTag = item.m_pvrTimerInfoTag;
+    SetInvalid();
+  }
+  if (item.HasPVRProviderInfoTag())
+  {
+    m_pvrProviderInfoTag = item.m_pvrProviderInfoTag;
     SetInvalid();
   }
   if (item.HasEPGInfoTag())

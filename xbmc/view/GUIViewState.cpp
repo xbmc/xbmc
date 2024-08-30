@@ -146,6 +146,9 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (windowId == WINDOW_TV_SEARCH)
     return new CGUIViewStateWindowPVRSearch(windowId, items);
 
+  if (windowId == WINDOW_TV_PROVIDERS)
+    return new CGUIViewStateWindowPVRProviders(windowId, items);
+
   if (windowId == WINDOW_RADIO_CHANNELS)
       return new CGUIViewStateWindowPVRChannels(windowId, items);
 
@@ -163,6 +166,9 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
 
   if (windowId == WINDOW_RADIO_SEARCH)
     return new CGUIViewStateWindowPVRSearch(windowId, items);
+
+  if (windowId == WINDOW_RADIO_PROVIDERS)
+    return new CGUIViewStateWindowPVRProviders(windowId, items);
 
   if (windowId == WINDOW_PICTURES)
     return new CGUIViewStateWindowPictures(items);

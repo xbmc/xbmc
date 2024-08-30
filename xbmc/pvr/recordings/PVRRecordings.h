@@ -93,6 +93,24 @@ public:
   std::shared_ptr<CPVRRecording> GetById(unsigned int iId) const;
 
   /*!
+   * @brief Check whether at least one recording is offered by the given provider.
+   * @param isRadio Check radio or TV recordings.
+   * @param clientId The clientId to check.
+   * @param providerId The providerId to check.
+   * @return True, if at least one matching recording is offered by the provider, false otherwise.
+   */
+  bool HasRecordingForProvider(bool isRadio, int clientId, int providerId) const;
+
+  /*!
+   * @brief Get the total count of recordings offered by the given provider.
+   * @param isRadio Check radio or TV recordings.
+   * @param clientId The clientId of the provider.
+   * @param providerId The providerId.
+   * @return The total count of matching recordings.
+   */
+  unsigned int GetRecordingCountByProvider(bool isRadio, int clientId, int providerId) const;
+
+  /*!
    * @brief Get the recording for the given epg tag, if any.
    * @param epgTag The epg tag.
    * @return The requested recording, or an empty recordingptr if none was found.

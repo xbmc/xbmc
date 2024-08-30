@@ -118,12 +118,12 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING& recording, unsigned int iClien
     m_sizeInBytes = recording.sizeInBytes;
   if (recording.strProviderName)
     m_strProviderName = recording.strProviderName;
-  m_iClientProviderUniqueId = recording.iClientProviderUid;
+  m_iClientProviderUid = recording.iClientProviderUid;
 
   // Workaround for C++ PVR Add-on API wrapper not initializing this value correctly until API 9.0.1
   //! @todo Remove with next incompatible API bump.
-  if (m_iClientProviderUniqueId == 0)
-    m_iClientProviderUniqueId = PVR_PROVIDER_INVALID_UID;
+  if (m_iClientProviderUid == 0)
+    m_iClientProviderUid = PVR_PROVIDER_INVALID_UID;
 
   SetGenre(recording.iGenreType, recording.iGenreSubType,
            recording.strGenreDescription ? recording.strGenreDescription : "");
@@ -193,7 +193,7 @@ bool CPVRRecording::operator==(const CPVRRecording& right) const
           m_iGenreSubType == right.m_iGenreSubType && m_firstAired == right.m_firstAired &&
           m_iFlags == right.m_iFlags && m_sizeInBytes == right.m_sizeInBytes &&
           m_strProviderName == right.m_strProviderName &&
-          m_iClientProviderUniqueId == right.m_iClientProviderUniqueId &&
+          m_iClientProviderUid == right.m_iClientProviderUid &&
           m_parentalRating == right.m_parentalRating &&
           m_parentalRatingCode == right.m_parentalRatingCode &&
           m_parentalRatingIcon == right.m_parentalRatingIcon &&
@@ -244,7 +244,7 @@ void CPVRRecording::ToSortable(SortItem& sortable, Field field) const
   if (field == FieldSize)
     sortable[FieldSize] = m_sizeInBytes;
   else if (field == FieldProvider)
-    sortable[FieldProvider] = StringUtils::Format("{} {}", m_iClientId, m_iClientProviderUniqueId);
+    sortable[FieldProvider] = StringUtils::Format("{} {}", m_iClientId, m_iClientProviderUid);
   else
     CVideoInfoTag::ToSortable(sortable, field);
 }
@@ -274,7 +274,7 @@ void CPVRRecording::Reset()
     m_sizeInBytes = 0;
   }
   m_strProviderName.clear();
-  m_iClientProviderUniqueId = PVR_PROVIDER_INVALID_UID;
+  m_iClientProviderUid = PVR_PROVIDER_INVALID_UID;
 
   m_recordingTime.Reset();
 
@@ -473,7 +473,7 @@ void CPVRRecording::Update(const CPVRRecording& tag, const CPVRClient& client)
     std::unique_lock<CCriticalSection> lock(m_critSection);
     m_sizeInBytes = tag.m_sizeInBytes;
     m_strProviderName = tag.m_strProviderName;
-    m_iClientProviderUniqueId = tag.m_iClientProviderUniqueId;
+    m_iClientProviderUid = tag.m_iClientProviderUid;
   }
 
   if (client.GetClientCapabilities().SupportsRecordingsPlayCount())
@@ -697,10 +697,10 @@ int64_t CPVRRecording::GetSizeInBytes() const
   return m_sizeInBytes;
 }
 
-int CPVRRecording::ClientProviderUniqueId() const
+int CPVRRecording::ClientProviderUid() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  return m_iClientProviderUniqueId;
+  return m_iClientProviderUid;
 }
 
 std::string CPVRRecording::ProviderName() const
@@ -718,13 +718,13 @@ std::shared_ptr<CPVRProvider> CPVRRecording::GetDefaultProvider() const
 bool CPVRRecording::HasClientProvider() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  return m_iClientProviderUniqueId != PVR_PROVIDER_INVALID_UID;
+  return m_iClientProviderUid != PVR_PROVIDER_INVALID_UID;
 }
 
 std::shared_ptr<CPVRProvider> CPVRRecording::GetProvider() const
 {
-  auto provider = CServiceBroker::GetPVRManager().Providers()->GetByClient(
-      m_iClientId, m_iClientProviderUniqueId);
+  auto provider =
+      CServiceBroker::GetPVRManager().Providers()->GetByClient(m_iClientId, m_iClientProviderUid);
 
   if (!provider)
     provider = GetDefaultProvider();

@@ -11,6 +11,7 @@
 #include "FileItemList.h"
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
+#include "URL.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIRadioButtonControl.h"
@@ -19,6 +20,7 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "pvr/PVRManager.h"
+#include "pvr/PVRPathUtils.h"
 #include "pvr/guilib/PVRGUIActionsPlayback.h"
 #include "pvr/guilib/PVRGUIActionsRecordings.h"
 #include "pvr/recordings/PVRRecording.h"
@@ -54,6 +56,22 @@ CGUIWindowPVRRecordingsBase::~CGUIWindowPVRRecordingsBase() = default;
 void CGUIWindowPVRRecordingsBase::OnWindowLoaded()
 {
   CONTROL_SELECT(CONTROL_BTNGROUPITEMS);
+}
+
+void CGUIWindowPVRRecordingsBase::OnDeinitWindow(int nextWindowID)
+{
+  if (UTILS::HasClientAndProvider(m_vecItems->GetPath()))
+    m_vecItems->SetPath(""); // Open default listing next time.
+
+  CGUIWindowPVRBase::OnDeinitWindow(nextWindowID);
+}
+
+std::string CGUIWindowPVRRecordingsBase::GetRootPath() const
+{
+  const CURL url{m_vecItems->GetPath()};
+  std::string rootPath{CPVRRecordingsPath(m_bShowDeletedRecordings, m_bRadio)};
+  rootPath += url.GetOptions();
+  return rootPath;
 }
 
 std::string CGUIWindowPVRRecordingsBase::GetDirectoryPath()
@@ -214,9 +232,9 @@ void CGUIWindowPVRRecordingsBase::UpdateButtons()
   }
 
   CGUIWindowPVRBase::UpdateButtons();
-  SET_CONTROL_LABEL(CONTROL_LABEL_HEADER1, m_bShowDeletedRecordings
-                                               ? g_localizeStrings.Get(19179)
-                                               : ""); /* Deleted recordings trash */
+
+  // If we are filtering by client id / provider id, expose provider's name.
+  SET_CONTROL_LABEL(CONTROL_LABEL_HEADER1, UTILS::GetProviderNameFromPath(m_vecItems->GetPath()));
 
   const CPVRRecordingsPath path(m_vecItems->GetPath());
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER2,
@@ -508,14 +526,4 @@ bool CGUIWindowPVRRecordingsBase::GetFilteredItems(const std::string& filter, CF
     items.Remove(0);
 
   return listchanged;
-}
-
-std::string CGUIWindowPVRTVRecordings::GetRootPath() const
-{
-  return CPVRRecordingsPath(m_bShowDeletedRecordings, false);
-}
-
-std::string CGUIWindowPVRRadioRecordings::GetRootPath() const
-{
-  return CPVRRecordingsPath(m_bShowDeletedRecordings, true);
 }

@@ -471,7 +471,7 @@ public:
    * @brief Get the uid of the provider on the client which this recording is from
    * @return the client uid of the provider or PVR_PROVIDER_INVALID_UID
    */
-  int ClientProviderUniqueId() const;
+  int ClientProviderUid() const;
 
   /*!
    * @brief Get the client provider name for this recording
@@ -562,7 +562,7 @@ private:
   int64_t m_sizeInBytes = 0; /*!< the size of the recording in bytes */
   bool m_bDirty = false;
   std::string m_strProviderName; /*!< name of the provider this recording is from */
-  int m_iClientProviderUniqueId =
+  int m_iClientProviderUid =
       PVR_PROVIDER_INVALID_UID; /*!< provider uid associated with this recording on the client */
   unsigned int m_parentalRating{0}; /*!< parental rating */
   std::string m_parentalRatingCode; /*!< Parental rating code */

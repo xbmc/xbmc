@@ -110,10 +110,11 @@ namespace PVR
      */
     void SetChannelGroup(std::shared_ptr<CPVRChannelGroup> &&group, bool bUpdate = true);
 
+    void SetChannelGroupPath(const std::string& path);
+
     virtual void UpdateSelectedItemPath();
 
     CCriticalSection m_critSection;
-    std::string m_channelGroupPath;
     bool m_bRadio;
     std::atomic_bool m_bUpdating = {false};
 
@@ -135,5 +136,6 @@ namespace PVR
     XbmcThreads::EndTime<> m_refreshTimeout;
     CGUIDialogProgressBarHandle* m_progressHandle =
         nullptr; /*!< progress dialog that is displayed while the pvr manager is loading */
+    std::string m_channelGroupPath;
   };
 }

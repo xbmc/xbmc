@@ -2,6 +2,7 @@ set(SOURCES GUIViewStatePVR.cpp
             GUIWindowPVRBase.cpp
             GUIWindowPVRChannels.cpp
             GUIWindowPVRGuide.cpp
+            GUIWindowPVRProviders.cpp
             GUIWindowPVRRecordings.cpp
             GUIWindowPVRSearch.cpp
             GUIWindowPVRTimers.cpp
@@ -12,6 +13,7 @@ set(HEADERS GUIViewStatePVR.h
             GUIWindowPVRBase.h
             GUIWindowPVRChannels.h
             GUIWindowPVRGuide.h
+            GUIWindowPVRProviders.h
             GUIWindowPVRRecordings.h
             GUIWindowPVRSearch.h
             GUIWindowPVRTimerRules.h

@@ -96,6 +96,13 @@ public:
    */
   bool GetChannelsDirectory(CFileItemList& results) const;
 
+  /*!
+   * @brief Get the list of providers.
+   * @param results The file list to store the results in.
+   * @return True on success, false otherwise..
+   */
+  bool GetProvidersDirectory(CFileItemList& results) const;
+
 private:
   bool GetTimersDirectory(CFileItemList& results) const;
   bool GetRecordingsDirectory(CFileItemList& results) const;

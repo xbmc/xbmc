@@ -24,6 +24,7 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "pvr/PVRManager.h"
+#include "pvr/PVRPathUtils.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroup.h"
 #include "pvr/channels/PVRChannelGroupMember.h"
@@ -37,6 +38,7 @@
 #include "pvr/guilib/PVRGUIActionsEPG.h"
 #include "pvr/guilib/PVRGUIActionsPlayback.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "utils/Variant.h"
 
 #include <mutex>
@@ -56,6 +58,15 @@ CGUIWindowPVRChannelsBase::~CGUIWindowPVRChannelsBase()
 {
   CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().DeregisterChannelNumberInputHandler(
       this);
+}
+
+std::string CGUIWindowPVRChannelsBase::GetDirectoryPath()
+{
+  const std::string basePath{CPVRChannelsPath(m_bRadio, m_bShowHiddenChannels,
+                                              GetChannelGroup()->GroupName(),
+                                              GetChannelGroup()->GetClientID())};
+  return URIUtils::PathHasParent(m_vecItems->GetPath(), basePath) ? m_vecItems->GetPath()
+                                                                  : basePath;
 }
 
 std::string CGUIWindowPVRChannelsBase::GetRootPath() const
@@ -121,8 +132,12 @@ void CGUIWindowPVRChannelsBase::UpdateButtons()
   }
 
   CGUIWindowPVRBase::UpdateButtons();
+
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER1, m_bShowHiddenChannels ? g_localizeStrings.Get(19022)
                                                                  : GetChannelGroup()->GroupName());
+
+  // If we are filtering by client id / provider id, expose provider's name.
+  SET_CONTROL_LABEL(CONTROL_LABEL_HEADER2, UTILS::GetProviderNameFromPath(m_vecItems->GetPath()));
 }
 
 bool CGUIWindowPVRChannelsBase::OnAction(const CAction& action)
@@ -167,11 +182,11 @@ bool CGUIWindowPVRChannelsBase::OnMessage(CGUIMessage& message)
           // Replace wildcard with real group name
           const auto group =
               CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(path.IsRadio());
-          m_channelGroupPath = group->GetPath();
+          SetChannelGroupPath(group->GetPath());
         }
         else
         {
-          m_channelGroupPath = message.GetStringParam(0);
+          SetChannelGroupPath(message.GetStringParam(0));
         }
       }
       break;
@@ -411,19 +426,7 @@ CGUIWindowPVRTVChannels::CGUIWindowPVRTVChannels()
 {
 }
 
-std::string CGUIWindowPVRTVChannels::GetDirectoryPath()
-{
-  return CPVRChannelsPath(false, m_bShowHiddenChannels, GetChannelGroup()->GroupName(),
-                          GetChannelGroup()->GetClientID());
-}
-
 CGUIWindowPVRRadioChannels::CGUIWindowPVRRadioChannels()
   : CGUIWindowPVRChannelsBase(true, WINDOW_RADIO_CHANNELS, "MyPVRChannels.xml")
 {
-}
-
-std::string CGUIWindowPVRRadioChannels::GetDirectoryPath()
-{
-  return CPVRChannelsPath(true, m_bShowHiddenChannels, GetChannelGroup()->GroupName(),
-                          GetChannelGroup()->GetClientID());
 }

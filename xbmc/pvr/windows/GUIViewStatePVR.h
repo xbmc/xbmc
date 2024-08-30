@@ -75,4 +75,14 @@ protected:
   void SaveViewState() override;
   bool HideParentDirItems() override;
 };
+
+class CGUIViewStateWindowPVRProviders : public CGUIViewStatePVR
+{
+public:
+  CGUIViewStateWindowPVRProviders(const int windowId, const CFileItemList& items);
+
+protected:
+  void SaveViewState() override;
+  bool HideParentDirItems() override;
+};
 } // namespace PVR

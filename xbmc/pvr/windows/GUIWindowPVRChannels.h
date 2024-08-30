@@ -34,6 +34,9 @@ public:
   void GetChannelNumbers(std::vector<std::string>& channelNumbers) override;
   void OnInputDone() override;
 
+protected:
+  std::string GetDirectoryPath() override;
+
 private:
   bool OnContextButtonManage(const CFileItemPtr& item, CONTEXT_BUTTON button);
 
@@ -49,17 +52,11 @@ class CGUIWindowPVRTVChannels : public CGUIWindowPVRChannelsBase
 {
 public:
   CGUIWindowPVRTVChannels();
-
-protected:
-  std::string GetDirectoryPath() override;
 };
 
 class CGUIWindowPVRRadioChannels : public CGUIWindowPVRChannelsBase
 {
 public:
   CGUIWindowPVRRadioChannels();
-
-protected:
-  std::string GetDirectoryPath() override;
 };
 } // namespace PVR

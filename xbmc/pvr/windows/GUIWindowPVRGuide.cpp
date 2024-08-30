@@ -402,7 +402,7 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
       {
         // if a path to a channel group is given we must init
         // that group instead of last played/selected group
-        m_channelGroupPath = message.GetStringParam(0);
+        SetChannelGroupPath(message.GetStringParam(0));
       }
       break;
     }
