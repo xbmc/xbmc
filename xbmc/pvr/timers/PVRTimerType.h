@@ -389,7 +389,7 @@ public:
    */
   const std::vector<SettingIntValue>& GetPriorityValues() const
   {
-    return m_lifetimeValues.GetValues();
+    return m_priorityValues.GetValues();
   }
 
   /*!
