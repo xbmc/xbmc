@@ -106,20 +106,26 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
                                        item->GetMusicInfoTag()->GetTitle()));
     item->SetStartOffset(CUtil::ConvertSecsToMilliSecs(m_fctx->chapters[i]->start *
                                                        av_q2d(m_fctx->chapters[i]->time_base)));
-    item->SetEndOffset(m_fctx->chapters[i]->end * av_q2d(m_fctx->chapters[i]->time_base));
+    item->SetEndOffset(CUtil::ConvertSecsToMilliSecs(m_fctx->chapters[i]->end *
+                                                     av_q2d(m_fctx->chapters[i]->time_base)));
     int compare = m_fctx->streams[0]->duration * av_q2d(m_fctx->streams[0]->time_base);
-    if (item->GetEndOffset() < 0 || item->GetEndOffset() > compare)
+    if (item->GetEndOffset() < 0 ||
+        item->GetEndOffset() > CUtil::ConvertMilliSecsToSecs(m_fctx->duration))
     {
-      if (i < m_fctx->nb_chapters-1)
-        item->SetEndOffset(m_fctx->chapters[i + 1]->start *
-                           av_q2d(m_fctx->chapters[i + 1]->time_base));
+      if (i < m_fctx->nb_chapters - 1)
+        item->SetEndOffset(CUtil::ConvertSecsToMilliSecs(
+            m_fctx->chapters[i + 1]->start * av_q2d(m_fctx->chapters[i + 1]->time_base)));
       else
-        item->SetEndOffset(compare);
+      {
+        item->SetEndOffset(m_fctx->duration); // mka file
+        if (item->GetEndOffset() < 0)
+          item->SetEndOffset(compare); // m4b file
+      }
     }
-    item->SetEndOffset(CUtil::ConvertSecsToMilliSecs(item->GetEndOffset()));
     item->GetMusicInfoTag()->SetDuration(
         CUtil::ConvertMilliSecsToSecsInt(item->GetEndOffset() - item->GetStartOffset()));
     item->SetProperty("item_start", item->GetStartOffset());
+    item->SetProperty("audio_bookmark", item->GetStartOffset());
     if (!thumb.empty())
       item->SetArt("thumb", thumb);
     items.Add(item);

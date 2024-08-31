@@ -47,6 +47,8 @@
 #include "input/actions/ActionIDs.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#include "music/MusicFileItemClassify.h"
+#include "music/tags/MusicInfoTag.h"
 #include "network/Network.h"
 #include "playlists/PlayList.h"
 #include "profiles/ProfileManager.h"
@@ -1546,6 +1548,19 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr& item, const std::s
         std::distance(playlist.begin(), std::find_if(playlist.begin(), playlist.end(),
                                                      [&item](const std::shared_ptr<CFileItem>& i)
                                                      { return i->GetPath() == item->GetPath(); }));
+    /* For .mka albums, all tracks are in the same file so using path as above will always play the
+     * first track.  Use the track and disk number to ensure we start playback on the correct track.
+     * This only applies to mka or m4b items played back via files view. Music library takes
+     * a different play path.
+     */
+    if (MUSIC::IsAudioBook(*item))
+      mediaToPlay = std::distance(
+          playlist.begin(), std::find_if(playlist.begin(), playlist.end(),
+                                         [&item](const std::shared_ptr<CFileItem>& i)
+                                         {
+                                           return i->GetMusicInfoTag()->GetTrackAndDiscNumber() ==
+                                                  item->GetMusicInfoTag()->GetTrackAndDiscNumber();
+                                         }));
 
     // Add to playlist
     CServiceBroker::GetPlaylistPlayer().ClearPlaylist(playlistId);
