@@ -3063,6 +3063,34 @@
     ],
     "returns": "string"
   },
+  "AudioLibrary.RefreshArtist": {
+    "type": "method",
+    "description": "Refresh the given artist in the library",
+    "transport": "Response",
+    "permission": "UpdateData",
+    "params": [
+      {
+        "name": "artistid",
+        "$ref": "Library.Id",
+        "required": true
+      }
+    ],
+    "returns": "string"
+  },
+  "AudioLibrary.RefreshAlbum": {
+    "type": "method",
+    "description": "Refresh the given album in the library",
+    "transport": "Response",
+    "permission": "UpdateData",
+    "params": [
+      {
+        "name": "albumid",
+        "$ref": "Library.Id",
+        "required": true
+      }
+    ],
+    "returns": "string"
+  },
   "AudioLibrary.Scan": {
     "type": "method",
     "description": "Scans the audio sources for new library items",

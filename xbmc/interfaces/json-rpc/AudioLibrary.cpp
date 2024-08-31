@@ -32,6 +32,8 @@
 
 #include <memory>
 
+#include <music/MusicLibraryQueue.h>
+
 using namespace MUSIC_INFO;
 using namespace JSONRPC;
 using namespace XFILE;
@@ -1352,6 +1354,60 @@ JSONRPC_STATUS CAudioLibrary::GetAdditionalSongDetails(const CVariant& parameter
   }
 
   return OK;
+}
+
+JSONRPC_STATUS CAudioLibrary::RefreshArtist(const std::string& method,
+                                            ITransportLayer* transport,
+                                            IClient* client,
+                                            const CVariant& parameterObject,
+                                            CVariant& result)
+{
+  int artistID = (int)parameterObject["artistid"].asInteger();
+
+  CMusicDbUrl musicUrl;
+  if (!musicUrl.FromString("musicdb://artists/"))
+    return InternalError;
+
+  CMusicDatabase musicdatabase;
+  if (!musicdatabase.Open())
+    return InternalError;
+
+  //checking if artistID is a valid one
+  if (!musicdatabase.GetArtistExists(artistID))
+    return InvalidParams;
+
+  //set the artist id on the musicdb url
+  musicUrl.AddOption("artistid", artistID);
+
+  //executing the StartArtistScan for refreshing the artist scraped informations
+  CMusicLibraryQueue::GetInstance().StartArtistScan(musicUrl.ToString(), true);
+
+  return ACK;
+}
+
+JSONRPC_STATUS CAudioLibrary::RefreshAlbum(const std::string& method,
+                                           ITransportLayer* transport,
+                                           IClient* client,
+                                           const CVariant& parameterObject,
+                                           CVariant& result)
+{
+  int albumID = (int)parameterObject["albumid"].asInteger();
+
+  CMusicDatabase musicdatabase;
+  if (!musicdatabase.Open())
+    return InternalError;
+
+  //check if albumID is a valid one
+  CAlbum album;
+  if (!musicdatabase.GetAlbum(albumID, album, false))
+    return InvalidParams;
+
+  std::string path = StringUtils::Format("musicdb://albums/{}/", albumID);
+
+  //execute the album refresh job
+  CMusicLibraryQueue::GetInstance().StartAlbumScan(path, true);
+
+  return ACK;
 }
 
 bool CAudioLibrary::CheckForAdditionalProperties(const CVariant &properties, const std::set<std::string> &checkProperties, std::set<std::string> &foundProperties)
