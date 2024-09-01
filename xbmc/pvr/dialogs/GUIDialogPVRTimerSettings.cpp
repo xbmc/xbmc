@@ -1361,6 +1361,15 @@ bool CGUIDialogPVRTimerSettings::TypeReadOnlyCondition(const std::string& condit
       return true;
   }
 
+  /* Handle recordings in progress. */
+  if (pThis->m_timerInfoTag->State() == PVR_TIMER_STATE_RECORDING)
+  {
+    if (cond == SETTING_TMR_TYPE || cond == SETTING_TMR_CHANNEL || cond == SETTING_TMR_BEGIN_PRE ||
+        cond == SETTING_TMR_START_DAY || cond == SETTING_TMR_BEGIN || SETTING_TMR_PRIORITY ||
+        cond == SETTING_TMR_DIR)
+      return false;
+  }
+
   // Let the PVR client decide...
   int idx = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
   const auto entry = pThis->m_typeEntries.find(idx);
