@@ -49,115 +49,14 @@
 						<label>[COLOR red][B]$LOCALIZE[19158][/B][/COLOR]</label>
 					</control>
 				</control>
-				<control type="grouplist">
-					<right>20</right>
-					<centertop>125</centertop>
-					<width>800</width>
-					<height>50</height>
-					<align>right</align>
-					<include>Animation_BottomSlide</include>
-					<orientation>horizontal</orientation>
-					<itemgap>5</itemgap>
-					<visible>[Player.ShowInfo | Window.IsActive(fullscreeninfo)] + !Player.ChannelPreviewActive + Window.IsActive(fullscreenvideo)</visible>
-					<animation effect="fade" start="0" end="100" time="200" delay="1000">Visible</animation>
-					<include content="MediaFlag">
-						<param name="texture" value="$INFO[VideoPlayer.VideoCodec,flags/videocodec/,.png]" />
-						<param name="visible" value="!String.IsEmpty(VideoPlayer.VideoCodec)" />
-					</include>
-					<include content="MediaFlag">
-						<param name="texture" value="$INFO[VideoPlayer.VideoResolution,flags/videoresolution/,.png]" />
-						<param name="visible" value="!String.IsEmpty(VideoPlayer.VideoResolution)" />
-					</include>
-					<include content="MediaFlag">
-						<param name="texture" value="$INFO[VideoPlayer.HdrType,flags/videohdr/,.png]" />
-						<param name="visible" value="!String.IsEmpty(VideoPlayer.HdrType)" />
-					</include>
-					<include content="MediaFlag">
-						<param name="texture" value="$INFO[VideoPlayer.VideoAspect,flags/aspectratio/,.png]" />
-						<param name="visible" value="!String.IsEmpty(VideoPlayer.VideoAspect)" />
-					</include>
-					<include content="MediaFlag">
-						<param name="texture" value="$INFO[VideoPlayer.AudioCodec,flags/audiocodec/,.png]" />
-						<param name="visible" value="!String.IsEmpty(VideoPlayer.AudioCodec)" />
-					</include>
-					<include content="MediaFlag">
-						<param name="texture" value="$INFO[VideoPlayer.AudioChannels,flags/audiochannel/,.png]" />
-						<param name="visible" value="!String.IsEmpty(VideoPlayer.AudioChannels)" />
-					</include>
-				</control>
-				<control type="grouplist">
-					<right>20</right>
-					<centertop>125</centertop>
-					<width>800</width>
-					<height>50</height>
-					<align>right</align>
-					<include>Animation_BottomSlide</include>
-					<orientation>horizontal</orientation>
-					<itemgap>10</itemgap>
-					<visible>Player.ShowInfo + !Player.ChannelPreviewActive + Window.IsActive(visualisation)</visible>
-					<animation effect="fade" start="0" end="100" time="200" delay="1000">Visible</animation>
-					<include content="MediaFlag">
-						<param name="texture" value="flags/rds/rds.png" />
-						<param name="visible" value="RDS.HasRDS" />
-					</include>
-					<include content="MediaFlag">
-						<param name="texture" value="$INFO[MusicPlayer.Codec,flags/audiocodec/,.png]" />
-						<param name="visible" value="!String.IsEmpty(MusicPlayer.Codec)" />
-					</include>
-					<include content="MediaFlag">
-						<param name="texture" value="$INFO[MusicPlayer.Channels,flags/audiochannel/,.png]" />
-						<param name="visible" value="!String.IsEmpty(MusicPlayer.Channels)" />
-					</include>
-					<control type="group">
-						<visible>!String.IsEmpty(MusicPlayer.SampleRate)</visible>
-						<width>115</width>
-						<control type="label">
-							<width>115</width>
-							<height>60</height>
-							<align>center</align>
-							<aligny>center</aligny>
-							<label>$INFO[MusicPlayer.SampleRate, ,kHz]</label>
-							<font>font_flag</font>
-						</control>
-						<include content="MediaFlag">
-							<param name="texture" value="flags/flag.png" />
-						</include>
-					</control>
-					<control type="group">
-						<visible>!String.IsEmpty(MusicPlayer.BitRate)</visible>
-						<width>115</width>
-						<control type="label">
-							<width>115</width>
-							<height>60</height>
-							<align>center</align>
-							<aligny>center</aligny>
-							<label>$INFO[MusicPlayer.BitRate, ,kbps ]</label>
-							<font>font_flag</font>
-						</control>
-						<include content="MediaFlag">
-							<param name="texture" value="flags/flag.png" />
-						</include>
-					</control>
-					<control type="group">
-						<visible>!String.IsEmpty(MusicPlayer.BitsPerSample)</visible>
-						<width>115</width>
-						<control type="label">
-							<width>115</width>
-							<height>60</height>
-							<align>center</align>
-							<aligny>center</aligny>
-							<label>$INFO[MusicPlayer.BitsPerSample, ,bit]</label>
-							<font>font_flag</font>
-						</control>
-						<include content="MediaFlag">
-							<param name="texture" value="flags/flag.png" />
-						</include>
-					</control>
+				<control type="group">
+					<top>195</top>
+					<include condition="!Skin.HasSetting(hide_mediaflags)">MediaFlags</include>
 				</control>
 			</control>
 			<control type="label">
 				<centerleft>50%</centerleft>
-				<centertop>125</centertop>
+				<centertop>120</centertop>
 				<width>50%</width>
 				<height>60</height>
 				<align>center</align>
@@ -170,8 +69,8 @@
 			<control type="label" id="40000">
 				<centerleft>50%</centerleft>
 				<centertop>175</centertop>
-				<width>50%</width>
-				<height>50</height>
+				<width>380</width>
+				<height>60</height>
 				<align>center</align>
 				<aligny>top</aligny>
 				<label>$VAR[SeekLabel]</label>
