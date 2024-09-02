@@ -78,6 +78,9 @@ private:
   void AddProxyDll(const GameClientPtr& gameClient);
   bool HasProxyDll(const std::string& strLibPath) const;
 
+  // Utility functions
+  static bool InstallDependencies(const std::vector<std::string>& addons);
+
   // Construction parameters
   const CGameClient& m_parent;
   AddonProps_Game& m_properties;
