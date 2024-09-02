@@ -3065,7 +3065,7 @@
   },
   "AudioLibrary.RefreshArtist": {
     "type": "method",
-    "description": "Refresh the given artist in the library",
+    "description": "Refresh the additional information for the given artist",
     "transport": "Response",
     "permission": "UpdateData",
     "params": [
@@ -3079,7 +3079,7 @@
   },
   "AudioLibrary.RefreshAlbum": {
     "type": "method",
-    "description": "Refresh the given album in the library",
+    "description": "Refresh the additional information for the given album",
     "transport": "Response",
     "permission": "UpdateData",
     "params": [
