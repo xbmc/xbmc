@@ -187,6 +187,7 @@ private:
   inline bool CanWrapAtLetter(character_t letter) const XBMC_FORCE_INLINE
   {
     character_t ch = letter & 0xffff;
+    //! @todo: unicode spaces are not handled, to check also all other GUI parts
     return ch == L' ';
   };
   static void AppendToUTF32(const std::string &utf8, character_t colStyle, vecText &utf32);
