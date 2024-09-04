@@ -169,8 +169,7 @@ if(TARGET ${APP_NAME_LC}::OpenGl OR TARGET ${APP_NAME_LC}::OpenGLES)
                         TextureGL.cpp)
     list(APPEND HEADERS GUIFontTTFGL.h
                         GUITextureGL.h
-                        TextureGL.h
-                        TextureGLFormatMap.h)
+                        TextureGL.h)
   endif()
 
   if(TARGET ${APP_NAME_LC}::OpenGLES)
@@ -179,8 +178,7 @@ if(TARGET ${APP_NAME_LC}::OpenGl OR TARGET ${APP_NAME_LC}::OpenGLES)
                         TextureGLES.cpp)
     list(APPEND HEADERS GUIFontTTFGLES.h
                         GUITextureGLES.h
-                        TextureGLES.h
-                        TextureGLESFormatMap.h)
+                        TextureGLES.h)
   endif()
 
 endif()

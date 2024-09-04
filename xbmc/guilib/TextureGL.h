@@ -9,11 +9,24 @@
 #pragma once
 
 #include "Texture.h"
-#include "guilib/TextureGLFormatMap.h"
 
 #include "system_gl.h"
 
-using namespace KODI::GUILIB::GL;
+struct TextureFormat
+{
+  GLenum internalFormat{GL_FALSE};
+  GLenum internalFormatSRGB{GL_FALSE};
+  GLint format{GL_FALSE};
+  GLenum type{GL_UNSIGNED_BYTE};
+};
+
+struct Textureswizzle
+{
+  GLint r{GL_RED};
+  GLint g{GL_GREEN};
+  GLint b{GL_BLUE};
+  GLint a{GL_ALPHA};
+};
 
 /************************************************************************/
 /*    CGLTexture                                                       */
@@ -32,7 +45,7 @@ public:
 
 protected:
   void SetSwizzle();
-  TextureFormatGL GetFormatGL(KD_TEX_FMT textureFormat);
+  TextureFormat GetFormatGL(KD_TEX_FMT textureFormat);
 
   GLuint m_texture{0};
   bool m_isOglVersion3orNewer{false};
