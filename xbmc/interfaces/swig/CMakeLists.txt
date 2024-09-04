@@ -1,9 +1,9 @@
 function(generate_file file)
-  set(classpath ${groovy_SOURCE_DIR}/lib/*
-                ${apache-commons-lang_SOURCE_DIR}/*
-                ${apache-commons-text_SOURCE_DIR}/*
-                ${CMAKE_SOURCE_DIR}/tools/codegenerator
-                ${CMAKE_CURRENT_SOURCE_DIR}/../python)
+  file(GLOB classpath ${groovy_SOURCE_DIR}/lib/*
+                      ${apache-commons-lang_SOURCE_DIR}/*
+                      ${apache-commons-text_SOURCE_DIR}/*
+                      ${CMAKE_SOURCE_DIR}/tools/codegenerator
+                      ${CMAKE_CURRENT_SOURCE_DIR}/../python)
   if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL windowsstore)
     set(devnull "/dev/null")
     string(REPLACE ";" ":" classpath "${classpath}")
