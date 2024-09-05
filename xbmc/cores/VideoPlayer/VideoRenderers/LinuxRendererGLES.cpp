@@ -584,6 +584,8 @@ void CLinuxRendererGLES::UpdateVideoFilter()
   }
 
   m_scalingMethodGui = m_videoSettings.m_ScalingMethod;
+  if (m_scalingMethod != m_scalingMethodGui)
+    m_reloadShaders = true;
   m_scalingMethod = m_scalingMethodGui;
   m_viewRect = viewRect;
 
@@ -616,6 +618,8 @@ void CLinuxRendererGLES::UpdateVideoFilter()
     return;
   }
   case VS_SCALINGMETHOD_LINEAR:
+  case VS_SCALINGMETHOD_LANCZOS3_FAST:
+  case VS_SCALINGMETHOD_SPLINE36_FAST:
   {
     CLog::Log(LOGINFO, "GLES: Selecting single pass rendering");
     SetTextureFilter(GL_LINEAR);
@@ -623,8 +627,6 @@ void CLinuxRendererGLES::UpdateVideoFilter()
     return;
   }
   case VS_SCALINGMETHOD_LANCZOS2:
-  case VS_SCALINGMETHOD_SPLINE36_FAST:
-  case VS_SCALINGMETHOD_LANCZOS3_FAST:
   case VS_SCALINGMETHOD_SPLINE36:
   case VS_SCALINGMETHOD_LANCZOS3:
   case VS_SCALINGMETHOD_CUBIC_B_SPLINE:
@@ -709,9 +711,19 @@ void CLinuxRendererGLES::LoadShaders(int field)
 
           EShaderFormat shaderFormat = GetShaderFormat();
           m_toneMapMethod = m_videoSettings.m_ToneMapMethod;
-          m_pYUVProgShader = new YUV2RGBProgressiveShader(
-              shaderFormat, m_passthroughHDR ? m_srcPrimaries : AVColorPrimaries::AVCOL_PRI_BT709,
-              m_srcPrimaries, m_toneMap, m_toneMapMethod);
+          if (m_scalingMethod == VS_SCALINGMETHOD_LANCZOS3_FAST ||
+              m_scalingMethod == VS_SCALINGMETHOD_SPLINE36_FAST)
+          {
+            m_pYUVProgShader = new YUV2RGBFilterShader(
+                shaderFormat, m_passthroughHDR ? m_srcPrimaries : AVColorPrimaries::AVCOL_PRI_BT709,
+                m_srcPrimaries, m_toneMap, m_toneMapMethod, m_scalingMethod);
+          }
+          else
+          {
+            m_pYUVProgShader = new YUV2RGBProgressiveShader(
+                shaderFormat, m_passthroughHDR ? m_srcPrimaries : AVColorPrimaries::AVCOL_PRI_BT709,
+                m_srcPrimaries, m_toneMap, m_toneMapMethod);
+          }
           m_pYUVProgShader->SetConvertFullColorRange(m_fullRange);
           m_pYUVBobShader = new YUV2RGBBobShader(
               shaderFormat, m_passthroughHDR ? m_srcPrimaries : AVColorPrimaries::AVCOL_PRI_BT709,
@@ -1790,6 +1802,18 @@ bool CLinuxRendererGLES::Supports(ESCALINGMETHOD method) const
       method == VS_SCALINGMETHOD_SPLINE36 ||
       method == VS_SCALINGMETHOD_LANCZOS3)
   {
+    if (method == VS_SCALINGMETHOD_SPLINE36_FAST || method == VS_SCALINGMETHOD_LANCZOS3_FAST)
+    {
+#if defined(GL_ES_VERSION_3_0)
+      // we need GLES 3.0 headers for GL_RGBA16f, but GLES 3.1 for the shader
+      uint32_t major, minor;
+      m_renderSystem->GetRenderVersion(major, minor);
+      if (major < 3 || minor == 0)
+        return false;
+#else
+      return false;
+#endif
+    }
     // if scaling is below level, avoid hq scaling
     float scaleX = fabs((static_cast<float>(m_sourceWidth) - m_destRect.Width()) / m_sourceWidth) * 100;
     float scaleY = fabs((static_cast<float>(m_sourceHeight) - m_destRect.Height()) / m_sourceHeight) * 100;

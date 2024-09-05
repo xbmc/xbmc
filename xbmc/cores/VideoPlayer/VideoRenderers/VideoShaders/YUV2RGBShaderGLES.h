@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007-2018 Team Kodi
+ *  Copyright (C) 2007-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -133,6 +133,26 @@ class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
     GLint m_hStepX = -1;
     GLint m_hStepY = -1;
     GLint m_hField = -1;
+  };
+
+  class YUV2RGBFilterShader : public BaseYUV2RGBGLSLShader
+  {
+  public:
+    YUV2RGBFilterShader(EShaderFormat format,
+                        AVColorPrimaries dstPrimaries,
+                        AVColorPrimaries srcPrimaries,
+                        bool toneMap,
+                        ETONEMAPMETHOD toneMapMethod,
+                        ESCALINGMETHOD method);
+    ~YUV2RGBFilterShader() override;
+
+  protected:
+    void OnCompiledAndLinked() override;
+    bool OnEnabled() override;
+
+    GLuint m_kernelTex = 0;
+    GLint m_hKernTex = -1;
+    ESCALINGMETHOD m_scaling = VS_SCALINGMETHOD_LANCZOS3_FAST;
   };
 
   } // namespace GLES

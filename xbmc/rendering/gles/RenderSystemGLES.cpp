@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -8,11 +8,13 @@
 
 #include "RenderSystemGLES.h"
 
+#include "URL.h"
 #include "guilib/DirtyRegion.h"
 #include "guilib/GUITextureGLES.h"
 #include "rendering/MatrixGL.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/FileUtils.h"
 #include "utils/GLUtils.h"
 #include "utils/MathUtils.h"
 #include "utils/SystemInfo.h"
@@ -773,4 +775,19 @@ GLint CRenderSystemGLES::GUIShaderGetCoordStep()
     return m_pShader[m_method]->GetShaderCoordStepLoc();
 
   return -1;
+}
+
+std::string CRenderSystemGLES::GetShaderPath(const std::string& filename)
+{
+  std::string path = "GLES/2.0/";
+
+  if (m_RenderVersionMajor >= 3 && m_RenderVersionMinor >= 1)
+  {
+    std::string file = "special://xbmc/system/shaders/GLES/3.1/" + filename;
+    const CURL pathToUrl(file);
+    if (CFileUtils::Exists(pathToUrl.Get()))
+      return "GLES/3.1/";
+  }
+
+  return path;
 }
