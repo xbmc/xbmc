@@ -8,6 +8,9 @@
 
 #include "TextureDX.h"
 
+#include "ServiceBroker.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/MemUtils.h"
 #include "utils/log.h"
 
@@ -87,12 +90,12 @@ void CDXTexture::LoadToGPU()
     if (m_format != XB_FMT_RGB8)
     {
       // this is faster way to create texture with initial data instead of create empty and then copy to it
-      m_texture.Create(m_textureWidth, m_textureHeight, IsMipmapped() ? 0 : 1, usage, GetFormat(), m_pixels, GetPitch());
+      m_texture.Create(m_textureWidth, m_textureHeight, IsMipmapped() || CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiMipMapping ? 0 : 1, usage, GetFormat(), m_pixels, GetPitch());
       if (m_texture.Get() != nullptr)
         needUpdate = false;
     }
     else
-      m_texture.Create(m_textureWidth, m_textureHeight, IsMipmapped() ? 0 : 1, usage, GetFormat());
+      m_texture.Create(m_textureWidth, m_textureHeight, IsMipmapped() || CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiMipMapping ? 0 : 1, usage, GetFormat());
 
     if (m_texture.Get() == nullptr)
     {
@@ -114,7 +117,7 @@ void CDXTexture::LoadToGPU()
       m_texture.Release();
       usage = D3D11_USAGE_DYNAMIC;
 
-      m_texture.Create(m_textureWidth, m_textureHeight, IsMipmapped() ? 0 : 1, usage, GetFormat(), m_pixels, GetPitch());
+      m_texture.Create(m_textureWidth, m_textureHeight, IsMipmapped() || CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiMipMapping ? 0 : 1, usage, GetFormat(), m_pixels, GetPitch());
       if (m_texture.Get() == nullptr)
       {
         CLog::Log(LOGDEBUG, "CDXTexture::CDXTexture: Error creating new texture for size {} x {}.",
@@ -175,7 +178,7 @@ void CDXTexture::LoadToGPU()
       CLog::LogF(LOGERROR, "failed to lock texture.");
     }
     m_texture.UnlockRect(0);
-    if (usage != D3D11_USAGE_STAGING && IsMipmapped())
+    if (usage != D3D11_USAGE_STAGING && (IsMipmapped() || CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiMipMapping))
       m_texture.GenerateMipmaps();
   }
 
