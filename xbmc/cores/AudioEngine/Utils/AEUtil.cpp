@@ -618,8 +618,8 @@ void CAEUtil::GenerateSilence(AEDataFormat format,
 
   switch (format)
   {
-    case AV_SAMPLE_FMT_U8:
-    case AV_SAMPLE_FMT_U8P:
+    case AE_FMT_U8:
+    case AE_FMT_U8P:
       memset(buffer, 0x80, dataLength);
       break;
 
