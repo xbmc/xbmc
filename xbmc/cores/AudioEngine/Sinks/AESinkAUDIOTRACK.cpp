@@ -329,10 +329,17 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
     m_encoding = AEStreamFormatToATFormat(m_format.m_streamInfo.m_type);
     m_format.m_channelLayout = AE_CH_LAYOUT_2_0;
 
-    if (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD_MA ||
-        m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
+    if (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD_MA)
+    {
+      // we keep the 48 khz sample rate, reason: Androids packer only packs DTS Core
+      // even if we ask for DTS-HD-MA it seems.
+      m_format.m_channelLayout = AE_CH_LAYOUT_7_1;
+    }
+
+    if (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
     {
       m_format.m_channelLayout = AE_CH_LAYOUT_7_1;
+      m_sink_sampleRate = 192000;
     }
 
     // EAC3 needs real samplerate not the modulation
@@ -1073,6 +1080,8 @@ void CAESinkAUDIOTRACK::UpdateAvailablePassthroughCapabilities(bool isRaw)
   m_info.m_wantsIECPassthrough = false;
   m_info.m_dataFormats.push_back(AE_FMT_RAW);
   m_info.m_streamTypes.clear();
+  bool supports_192khz = m_sink_sampleRates.find(192000) != m_sink_sampleRates.end();
+
   if (isRaw)
   {
     bool canDoAC3 = false;
@@ -1126,9 +1135,9 @@ void CAESinkAUDIOTRACK::UpdateAvailablePassthroughCapabilities(bool isRaw)
         m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_MA);
       }
     }
-    if (CJNIAudioFormat::ENCODING_DOLBY_TRUEHD != -1)
+    if (CJNIAudioFormat::ENCODING_DOLBY_TRUEHD != -1 && supports_192khz)
     {
-      if (VerifySinkConfiguration(48000, AEChannelMapToAUDIOTRACKChannelMask(AE_CH_LAYOUT_7_1),
+      if (VerifySinkConfiguration(192000, AEChannelMapToAUDIOTRACKChannelMask(AE_CH_LAYOUT_7_1),
                                   CJNIAudioFormat::ENCODING_DOLBY_TRUEHD, true))
       {
         CLog::Log(LOGDEBUG, "Firmware implements TrueHD RAW");
@@ -1146,7 +1155,6 @@ void CAESinkAUDIOTRACK::UpdateAvailablePassthroughCapabilities(bool isRaw)
                                                   CJNIAudioFormat::ENCODING_IEC61937);
       if (supports_iec)
       {
-        bool supports_192khz = m_sink_sampleRates.find(192000) != m_sink_sampleRates.end();
         m_info.m_wantsIECPassthrough = true;
         m_info.m_streamTypes.clear();
         m_info.m_dataFormats.push_back(AE_FMT_RAW);
