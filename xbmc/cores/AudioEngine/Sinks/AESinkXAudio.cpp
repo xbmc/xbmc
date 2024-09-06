@@ -619,13 +619,8 @@ initialize:
     return false;
   }
 
-  const unsigned int bufferLen = static_cast<int>(format.m_sampleRate * 0.02); // 20 ms chunks
-  m_dwFrameSize = wfxex.Format.nBlockAlign;
-  m_dwChunkSize = m_dwFrameSize * bufferLen;
-  m_dwBufferLen = m_dwChunkSize * 4; // 80 ms buffer
-  m_AvgBytesPerSec = wfxex.Format.nAvgBytesPerSec;
+  format.m_frames = static_cast<int>(format.m_sampleRate * 0.02); // 20 ms chunks
 
-  format.m_frames = bufferLen;
   m_format = format;
 
   CLog::LogF(LOGINFO, "XAudio Sink Initialized using: {}, {}, {}",

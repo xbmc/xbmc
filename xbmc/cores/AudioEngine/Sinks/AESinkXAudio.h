@@ -135,10 +135,6 @@ private:
 
     AEAudioFormat m_format;
 
-    unsigned int m_AvgBytesPerSec{0};
-    unsigned int m_dwChunkSize{0};
-    unsigned int m_dwFrameSize{0};
-    unsigned int m_dwBufferLen{0};
     uint64_t m_sinkFrames{0};
     std::atomic<uint16_t> m_framesInBuffers{0};
 
