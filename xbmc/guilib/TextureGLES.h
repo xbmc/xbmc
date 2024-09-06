@@ -12,6 +12,22 @@
 
 #include "system_gl.h"
 
+struct TextureFormat
+{
+  GLenum internalFormat{GL_FALSE};
+  GLenum internalFormatSRGB{GL_FALSE};
+  GLint format{GL_FALSE};
+  GLenum type{GL_UNSIGNED_BYTE};
+};
+
+struct TextureSwizzle
+{
+  GLint r{GL_RED};
+  GLint g{GL_GREEN};
+  GLint b{GL_BLUE};
+  GLint a{GL_ALPHA};
+};
+
 class CGLESTexture : public CTexture
 {
 public:
@@ -24,6 +40,11 @@ public:
   void BindToUnit(unsigned int unit) override;
 
 protected:
+  void SetSwizzle(bool swapRB);
+  void SwapBlueRedSwizzle(GLint& component);
+  TextureFormat GetFormatGLES20(KD_TEX_FMT textureFormat);
+  TextureFormat GetFormatGLES30(KD_TEX_FMT textureFormat);
+
   GLuint m_texture = 0;
   bool m_isGLESVersion30orNewer{false};
 };
