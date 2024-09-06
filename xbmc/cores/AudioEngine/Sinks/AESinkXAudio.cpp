@@ -163,12 +163,26 @@ void CAESinkXAudio::Deinitialize()
     {
       m_sourceVoice->Stop();
       m_sourceVoice->FlushSourceBuffers();
+
+      // Stop and FlushSourceBuffers are async, wait for queued buffers to be released by XAudio2.
+      // callbacks don't seem to be called otherwise, with memory leakage.
+      XAUDIO2_VOICE_STATE state{};
+      do
+      {
+        if (WAIT_OBJECT_0 != WaitForSingleObject(m_voiceCallback.mBufferEnd.get(), 500))
+        {
+          CLog::LogF(LOGERROR, "timeout waiting for buffer flush - possible buffer memory leak");
+          break;
+        }
+        m_sourceVoice->GetState(&state, 0);
+      } while (state.BuffersQueued > 0);
+
       m_sinkFrames = 0;
       m_framesInBuffers = 0;
     }
     catch (...)
     {
-      CLog::Log(LOGDEBUG, "{}: Invalidated source voice - Releasing", __FUNCTION__);
+      CLog::Log(LOGERROR, "{}: Invalidated source voice - Releasing", __FUNCTION__);
     }
   }
   m_running = false;
@@ -239,18 +253,8 @@ unsigned int CAESinkXAudio::AddPackets(uint8_t **data, unsigned int frames, unsi
   LARGE_INTEGER timerStop;
   LARGE_INTEGER timerFreq;
 #endif
-  size_t dataLenght = frames * m_format.m_frameSize;
 
-  struct buffer_ctx *ctx = new buffer_ctx;
-  ctx->data = new uint8_t[dataLenght];
-  ctx->frames = frames;
-  ctx->sink = this;
-  memcpy(ctx->data, data[0] + offset * m_format.m_frameSize, dataLenght);
-
-  XAUDIO2_BUFFER xbuffer = {};
-  xbuffer.AudioBytes = dataLenght;
-  xbuffer.pAudioData = ctx->data;
-  xbuffer.pContext = ctx;
+  XAUDIO2_BUFFER xbuffer = BuildXAudio2Buffer(data, frames, offset);
 
   if (!m_running) //first time called, pre-fill buffer then start voice
   {
@@ -259,7 +263,7 @@ unsigned int CAESinkXAudio::AddPackets(uint8_t **data, unsigned int frames, unsi
     if (FAILED(hr))
     {
       CLog::LogF(LOGERROR, "voice submit buffer failed due to {}", WASAPIErrToStr(hr));
-      delete ctx;
+      delete xbuffer.pContext;
       return 0;
     }
     hr = m_sourceVoice->Start(0, XAUDIO2_COMMIT_NOW);
@@ -267,7 +271,7 @@ unsigned int CAESinkXAudio::AddPackets(uint8_t **data, unsigned int frames, unsi
     {
       CLog::LogF(LOGERROR, "voice start failed due to {}", WASAPIErrToStr(hr));
       m_isDirty = true; //flag new device or re-init needed
-      delete ctx;
+      delete xbuffer.pContext;
       return INT_MAX;
     }
     m_sinkFrames += frames;
@@ -292,7 +296,7 @@ unsigned int CAESinkXAudio::AddPackets(uint8_t **data, unsigned int frames, unsi
     if (eventAudioCallback != WAIT_OBJECT_0)
     {
       CLog::LogF(LOGERROR, "voice buffer timed out");
-      delete ctx;
+      delete xbuffer.pContext;
       return INT_MAX;
     }
   }
@@ -319,7 +323,7 @@ unsigned int CAESinkXAudio::AddPackets(uint8_t **data, unsigned int frames, unsi
     #ifdef _DEBUG
     CLog::LogF(LOGERROR, "submiting buffer failed due to {}", WASAPIErrToStr(hr));
 #endif
-    delete ctx;
+    delete xbuffer.pContext;
     return INT_MAX;
   }
 
@@ -843,23 +847,49 @@ void CAESinkXAudio::Drain()
   if(!m_sourceVoice)
     return;
 
-  AEDelayStatus status;
-  GetDelay(status);
-
-  KODI::TIME::Sleep(std::chrono::milliseconds(static_cast<int>(status.GetDelay() * 500)));
-
   if (m_running)
   {
     try
     {
+      // Contrary to MS doc, the voice must play a buffer with end of stream flag for the voice
+      // SamplesPlayed counter to be reset.
+      // Per MS doc, Discontinuity() may not take effect until after the entire buffer queue is
+      // consumed, which wouldn't invoke the callback or reset the voice stats.
+      // Solution: submit a 1 sample buffer with end of stream flag and wait for StreamEnd callback
+      // The StreamEnd event is manual reset so that it cannot be missed even if raised before this
+      // code starts waiting for it
+
+      AddEndOfStreamPacket();
+
+      constexpr uint32_t waitSafety = 100; // extra ms wait in case of scheduler issue
+      DWORD waitRc =
+          WaitForSingleObject(m_voiceCallback.m_StreamEndEvent,
+                              m_framesInBuffers * 1000 / m_format.m_sampleRate + waitSafety);
+
+      if (waitRc != WAIT_OBJECT_0)
+      {
+        if (waitRc == WAIT_FAILED)
+        {
+          //! @todo use FormatMessage for a human readable error message
+          CLog::LogF(LOGERROR,
+                     "error WAIT_FAILED while waiting for queued buffers to drain. GetLastError:{}",
+                     GetLastError());
+        }
+        else
+        {
+          CLog::LogF(LOGERROR, "error {} while waiting for queued buffers to drain.", waitRc);
+        }
+      }
+
       m_sourceVoice->Stop();
-      m_sourceVoice->FlushSourceBuffers();
+      ResetEvent(m_voiceCallback.m_StreamEndEvent);
+
       m_sinkFrames = 0;
       m_framesInBuffers = 0;
     }
     catch (...)
     {
-      CLog::Log(LOGDEBUG, "{}: Invalidated source voice - Releasing", __FUNCTION__);
+      CLog::Log(LOGERROR, "{}: Invalidated source voice - Releasing", __FUNCTION__);
     }
   }
   m_running = false;
@@ -886,4 +916,49 @@ bool CAESinkXAudio::IsUSBDevice()
     pProperty->Release();
 #endif
   return false;
+}
+
+bool CAESinkXAudio::AddEndOfStreamPacket()
+{
+  constexpr unsigned int frames{1};
+
+  XAUDIO2_BUFFER xbuffer = BuildXAudio2Buffer(nullptr, frames, 0);
+  xbuffer.Flags = XAUDIO2_END_OF_STREAM;
+
+  HRESULT hr = m_sourceVoice->SubmitSourceBuffer(&xbuffer);
+
+  if (hr != S_OK)
+  {
+    CLog::LogF(LOGERROR, "SubmitSourceBuffer failed due to {:X}", hr);
+    delete xbuffer.pContext;
+    return false;
+  }
+
+  m_sinkFrames += frames;
+  m_framesInBuffers += frames;
+  return true;
+}
+
+XAUDIO2_BUFFER CAESinkXAudio::BuildXAudio2Buffer(uint8_t** data,
+                                                 unsigned int frames,
+                                                 unsigned int offset)
+{
+  const unsigned int dataLength{frames * m_format.m_frameSize};
+
+  struct buffer_ctx* ctx = new buffer_ctx;
+  ctx->data = new uint8_t[dataLength];
+  ctx->frames = frames;
+  ctx->sink = this;
+
+  if (data)
+    memcpy(ctx->data, data[0] + offset * m_format.m_frameSize, dataLength);
+  else
+    CAEUtil::GenerateSilence(m_format.m_dataFormat, m_format.m_frameSize, ctx->data, frames);
+
+  XAUDIO2_BUFFER xbuffer{};
+  xbuffer.AudioBytes = dataLength;
+  xbuffer.pAudioData = ctx->data;
+  xbuffer.pContext = ctx;
+
+  return xbuffer;
 }
