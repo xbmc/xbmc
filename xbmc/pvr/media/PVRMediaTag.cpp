@@ -69,7 +69,8 @@ const std::string CPVRMediaTag::IMAGE_OWNER_PATTERN = "pvrmediatag";
 CPVRMediaTag::CPVRMediaTag()
   : m_iconPath(IMAGE_OWNER_PATTERN),
     m_thumbnailPath(IMAGE_OWNER_PATTERN),
-    m_fanartPath(IMAGE_OWNER_PATTERN)
+    m_fanartPath(IMAGE_OWNER_PATTERN),
+    m_parentalRatingIcon(IMAGE_OWNER_PATTERN)
 {
   Reset();
 }
@@ -78,7 +79,9 @@ CPVRMediaTag::CPVRMediaTag(const PVR_MEDIA_TAG& mediaTag, unsigned int iClientId
   : m_iconPath(mediaTag.strIconPath ? mediaTag.strIconPath : "", IMAGE_OWNER_PATTERN),
     m_thumbnailPath(mediaTag.strThumbnailPath ? mediaTag.strThumbnailPath : "",
                     IMAGE_OWNER_PATTERN),
-    m_fanartPath(mediaTag.strFanartPath ? mediaTag.strFanartPath : "", IMAGE_OWNER_PATTERN)
+    m_fanartPath(mediaTag.strFanartPath ? mediaTag.strFanartPath : "", IMAGE_OWNER_PATTERN),
+    m_parentalRatingIcon(mediaTag.strParentalRatingIcon ? mediaTag.strParentalRatingIcon : "",
+                         IMAGE_OWNER_PATTERN)
 {
   Reset();
 
@@ -128,8 +131,6 @@ CPVRMediaTag::CPVRMediaTag(const PVR_MEDIA_TAG& mediaTag, unsigned int iClientId
   m_parentalRating = mediaTag.iParentalRating;
   if (mediaTag.strParentalRatingCode)
     m_parentalRatingCode = mediaTag.strParentalRatingCode;
-  if (mediaTag.strParentalRatingIcon)
-    m_parentalRatingIcon = mediaTag.strParentalRatingIcon;
   if (mediaTag.strParentalRatingSource)
     m_parentalRatingSource = mediaTag.strParentalRatingSource;
 
@@ -220,7 +221,7 @@ void CPVRMediaTag::Serialize(CVariant& value) const
   value["genre"] = m_genre;
   value["parentalrating"] = m_parentalRating;
   value["parentalratingcode"] = m_parentalRatingCode;
-  value["parentalratingicon"] = m_parentalRatingIcon;
+  value["parentalratingicon"] = ClientParentalRatingIconPath();
   value["parentalratingsource"] = m_parentalRatingSource;
   value["episodepart"] = m_episodePartNumber;
 
@@ -271,7 +272,6 @@ void CPVRMediaTag::Reset()
 
   m_parentalRating = 0;
   m_parentalRatingCode.clear();
-  m_parentalRatingIcon.clear();
   m_parentalRatingSource.clear();
 
   CVideoInfoTag::Reset();
@@ -622,7 +622,7 @@ const std::string& CPVRMediaTag::GetParentalRatingCode() const
 const std::string& CPVRMediaTag::GetParentalRatingIcon() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  return m_parentalRatingIcon;
+  return m_parentalRatingIcon.GetLocalImage();
 }
 
 const std::string& CPVRMediaTag::GetParentalRatingSource() const

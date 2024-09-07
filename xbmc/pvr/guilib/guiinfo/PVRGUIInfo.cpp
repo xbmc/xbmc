@@ -35,6 +35,8 @@
 #include "pvr/epg/EpgSearchFilter.h"
 #include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "pvr/guilib/PVRGUIActionsEPG.h"
+#include "pvr/media/PVRMedia.h"
+#include "pvr/media/PVRMediaTag.h"
 #include "pvr/providers/PVRProvider.h"
 #include "pvr/providers/PVRProviders.h"
 #include "pvr/recordings/PVRRecording.h"
@@ -1210,6 +1212,9 @@ bool CPVRGUIInfo::GetPVRLabel(const CFileItem* item,
     case PVR_BACKEND_DELETED_RECORDINGS:
       CharInfoBackendDeletedRecordings(strValue);
       return true;
+    case PVR_BACKEND_MEDIA:
+      CharInfoBackendMedia(strValue);
+      return true;
     case PVR_BACKEND_NUMBER:
       CharInfoBackendNumber(strValue);
       return true;
@@ -2051,6 +2056,12 @@ void CPVRGUIInfo::CharInfoBackendDeletedRecordings(std::string& strValue) const
   strValue = m_strBackendDeletedRecordings;
 }
 
+void CPVRGUIInfo::CharInfoBackendMedia(std::string& strValue) const
+{
+  m_updateBackendCacheRequested = true;
+  strValue = m_strBackendMedia;
+}
+
 void CPVRGUIInfo::CharInfoPlayingClientName(std::string& strValue) const
 {
   if (m_strPlayingClientName.empty())
@@ -2132,6 +2143,7 @@ void CPVRGUIInfo::UpdateBackendCache()
   m_strBackendTimers = g_localizeStrings.Get(13205);
   m_strBackendRecordings = g_localizeStrings.Get(13205);
   m_strBackendDeletedRecordings = g_localizeStrings.Get(13205);
+  m_strBackendMedia = g_localizeStrings.Get(13205);
   m_iBackendDiskTotal = 0;
   m_iBackendDiskUsed = 0;
 
@@ -2164,6 +2176,9 @@ void CPVRGUIInfo::UpdateBackendCache()
 
     if (backend.numDeletedRecordings >= 0)
       m_strBackendDeletedRecordings = std::to_string(backend.numDeletedRecordings);
+
+    if (backend.numMedia >= 0)
+      m_strBackendMedia = StringUtils::Format("%i", backend.numMedia);
 
     m_iBackendDiskTotal = backend.diskTotal;
     m_iBackendDiskUsed = backend.diskUsed;

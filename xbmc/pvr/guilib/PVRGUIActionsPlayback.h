@@ -57,6 +57,31 @@ public:
   bool PlayRecordingFolder(const CFileItem& item, bool bCheckResume) const;
 
   /*!
+   * @brief Resume a previously not completely played media tag.
+   * @param item containing a media tag.
+   * @param bFallbackToPlay controls whether playback of the media tag should be started at the
+   * beginning ig no resume data are available.
+   * @return true on success, false otherwise.
+   */
+  bool ResumePlayMediaTag(const CFileItem& item, bool bFallbackToPlay) const;
+
+  /*!
+   * @brief Play media tag.
+   * @param item containing a media tag.
+   * @param bCheckResume controls resume check.
+   * @return true on success, false otherwise.
+   */
+  bool PlayMediaTag(const CFileItem& item, bool bCheckResume) const;
+
+  /*!
+   * @brief Play a media tag folder.
+   * @param item containing a media tag folder.
+   * @param bCheckResume controls resume check.
+   * @return true on success, false otherwise.
+   */
+  bool PlayMediaTagFolder(const CFileItem& item, bool bCheckResume) const;
+
+  /*!
    * @brief Play EPG tag.
    * @param item containing an epg tag.
    * @param mode playback mode.
@@ -123,6 +148,14 @@ private:
    * @return true, to play/resume the item, false otherwise.
    */
   bool CheckResumeRecording(const CFileItem& item) const;
+
+  /*!
+   * @brief Check whether resume play is possible for a given item, display "resume from ..."/"play
+   * from start" context menu in case.
+   * @param item containing a media tag.
+   * @return true, to play/resume the item, false otherwise.
+   */
+  bool CheckResumeMediaTag(const CFileItem& item) const;
 
   /*!
    * @brief Check "play minimized" settings value and switch to fullscreen if not set.

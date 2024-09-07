@@ -261,12 +261,14 @@ int CPVRMedia::CleanupCachedImages()
       urlsToCheck.emplace_back(mediaTag.second->ClientIconPath());
       urlsToCheck.emplace_back(mediaTag.second->ClientThumbnailPath());
       urlsToCheck.emplace_back(mediaTag.second->ClientFanartPath());
+      urlsToCheck.emplace_back(mediaTag.second->ClientParentalRatingIconPath());
       urlsToCheck.emplace_back(mediaTag.second->m_strFileNameAndPath);
     }
   }
 
   static const std::vector<PVRImagePattern> urlPatterns = {
-      {CPVRMediaTag::IMAGE_OWNER_PATTERN, ""}, // client-supplied icon, thumbnail, fanart
+      {CPVRMediaTag::IMAGE_OWNER_PATTERN,
+       ""}, // client-supplied icon, thumbnail, fanart, parental rating icon
       {"video", "pvr://media/"}, // kodi-generated video thumbnail
   };
   return CPVRCachedImages::Cleanup(urlPatterns, urlsToCheck);
