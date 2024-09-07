@@ -8589,6 +8589,9 @@ msgid "Profile settings"
 msgstr ""
 
 #: system/settings/settings.xml
+#: addons/skin.estuary/xml/Variables.xml
+#: xbmc/pvr/PVRGUIDirectory.cpp
+#: xbmc/windows/GUIWindowSystemInfo.cpp
 msgctxt "#14211"
 msgid "Media"
 msgstr ""
@@ -11859,7 +11862,6 @@ msgstr ""
 #: xbmc/pvr/PVRContextMenus.cpp
 msgctxt "#19354"
 msgid "Play only this programme"
-msgstr ""
 
 #. Label of a context menu entry to create a copy of an EPG saved saerch
 #: xbmc/pvr/PVRContextMenus.cpp
@@ -11873,7 +11875,19 @@ msgctxt "#19356"
 msgid "Copy of '{0:s}'"
 msgstr ""
 
-#empty strings from id 19357 to 19498
+#. label 'loading media' for progress dialog text
+#: xbmc/pvr/PVRManager.cpp
+msgctxt "#19357"
+msgid "Loading media from clients"
+msgstr ""
+
+#: xbmc/music/MusicDatabase.cpp
+#: xbmc/pvr/PVRContextMenus.cpp
+msgctxt "#19358"
+msgid "Media information"
+msgstr ""
+
+#empty strings from id 19359 to 19498
 
 #. label for epg genre value
 #: xbmc/pvr/epg/Epg.cpp
@@ -12468,7 +12482,13 @@ msgctxt "#19687"
 msgid "Play recording"
 msgstr ""
 
-#empty strings from id 19688 to 19689
+#: xbmc/pvr/PVRContextMenus.cpp
+#: xbmc/pvr/PVRGUIActions.cpp
+msgctxt "#19688"
+msgid "Play media"
+msgstr ""
+
+#empty strings from id 19689 to 19689
 
 #. Text for shutdown confirmation dialog
 #: xbmc/pvr/guilib/PVRGUIActionsPowerManagement.cpp
@@ -15655,7 +15675,9 @@ msgctxt "#22017"
 msgid "By group"
 msgstr ""
 
-#empty string with id 22018
+msgctxt "#22018"
+msgid "All media"
+msgstr ""
 
 msgctxt "#22019"
 msgid "Recordings by title"
