@@ -1,6 +1,6 @@
 /*
  *  Copyright (c) 2007 d4rk
- *  Copyright (C) 2007-2018 Team Kodi
+ *  Copyright (C) 2007-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -10,6 +10,7 @@
 #include "YUV2RGBShaderGLES.h"
 
 #include "../RenderFlags.h"
+#include "ConvolutionKernels.h"
 #include "ToneMappers.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/GLUtils.h"
@@ -266,4 +267,72 @@ bool YUV2RGBBobShader::OnEnabled()
   glUniform1f(m_hStepY, 1.0f / (float)m_height);
   VerifyGLState();
   return true;
+}
+
+//------------------------------------------------------------------------------
+// YUV2RGBFilterShader
+//------------------------------------------------------------------------------
+
+YUV2RGBFilterShader::YUV2RGBFilterShader(EShaderFormat format,
+                                         AVColorPrimaries dstPrimaries,
+                                         AVColorPrimaries srcPrimaries,
+                                         bool toneMap,
+                                         ETONEMAPMETHOD toneMapMethod,
+                                         ESCALINGMETHOD method)
+  : BaseYUV2RGBGLSLShader(format, dstPrimaries, srcPrimaries, toneMap, toneMapMethod)
+{
+  m_scaling = method;
+  PixelShader()->LoadSource("gles310_yuv2rgb_filter.frag", m_defines);
+  VertexShader()->LoadSource("gles310_yuv2rgb.vert");
+  PixelShader()->AppendSource("gl_output.glsl");
+
+  PixelShader()->InsertSource("gl_tonemap.glsl", "void main()");
+}
+
+YUV2RGBFilterShader::~YUV2RGBFilterShader()
+{
+  if (m_kernelTex)
+    glDeleteTextures(1, &m_kernelTex);
+  m_kernelTex = 0;
+}
+
+void YUV2RGBFilterShader::OnCompiledAndLinked()
+{
+  BaseYUV2RGBGLSLShader::OnCompiledAndLinked();
+  m_hKernTex = glGetUniformLocation(ProgramHandle(), "m_kernelTex");
+
+  if (m_scaling != VS_SCALINGMETHOD_LANCZOS3_FAST && m_scaling != VS_SCALINGMETHOD_SPLINE36_FAST)
+    m_scaling = VS_SCALINGMETHOD_LANCZOS3_FAST;
+
+  CConvolutionKernel kernel(m_scaling, 256);
+
+  if (m_kernelTex)
+  {
+    glDeleteTextures(1, &m_kernelTex);
+    m_kernelTex = 0;
+  }
+  glGenTextures(1, &m_kernelTex);
+
+  glActiveTexture(GL_TEXTURE3);
+  glBindTexture(GL_TEXTURE_2D, m_kernelTex);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+
+  GLvoid* data = (GLvoid*)kernel.GetFloatPixels();
+#if defined(GL_ES_VERSION_3_0)
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, kernel.GetSize(), 1, 0, GL_RGBA, GL_FLOAT, data);
+#endif
+  glActiveTexture(GL_TEXTURE0);
+  VerifyGLState();
+}
+
+bool YUV2RGBFilterShader::OnEnabled()
+{
+  glActiveTexture(GL_TEXTURE3);
+  glBindTexture(GL_TEXTURE_2D, m_kernelTex);
+  glUniform1i(m_hKernTex, 3);
+  glActiveTexture(GL_TEXTURE0);
+
+  return BaseYUV2RGBGLSLShader::OnEnabled();
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -111,7 +111,7 @@ public:
 
   void Project(float &x, float &y, float &z) override;
 
-  std::string GetShaderPath(const std::string &filename) override { return "GLES/2.0/"; }
+  std::string GetShaderPath(const std::string& filename) override;
 
   void InitialiseShaders();
   void ReleaseShaders();
