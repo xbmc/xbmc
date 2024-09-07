@@ -145,6 +145,7 @@
                                                       "c-api/addon-instance/pvr/pvr_recordings.h" \
                                                       "c-api/addon-instance/pvr/pvr_stream.h" \
                                                       "c-api/addon-instance/pvr/pvr_timers.h" \
+                                                      "c-api/addon-instance/pvr/pvr_media.h" \
                                                       "addon-instance/PVR.h" \
                                                       "addon-instance/pvr/ChannelGroups.h" \
                                                       "addon-instance/pvr/Channels.h" \

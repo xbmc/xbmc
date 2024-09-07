@@ -1114,6 +1114,12 @@ public:
   /// | **Supports recordings delete** | `boolean` | @ref PVRCapabilities::SetSupportsRecordingsDelete "SetSupportsRecordingsDelete" | @ref PVRCapabilities::GetSupportsRecordingsDelete "SetSupportsRecordingsDelete"
   /// | **Supports multiple recorded streams** | `boolean` | @ref PVRCapabilities::SetSupportsMultipleRecordedStreams "SetSupportsMultipleRecordedStreams" | @ref PVRCapabilities::GetSupportsMultipleRecordedStreams "GetSupportsMultipleRecordedStreams"
   /// | **Recordings lifetime values** | @ref cpp_kodi_addon_pvr_Defs_PVRTypeIntValue "PVRTypeIntValue" | @ref PVRCapabilities::SetRecordingsLifetimeValues "SetRecordingsLifetimeValues" | @ref PVRCapabilities::GetRecordingsLifetimeValues "GetRecordingsLifetimeValues"
+  /// | **Supports media** | `boolean` | @ref PVRCapabilities::SetSupportsMedia "SetSupportsMedia" | @ref PVRCapabilities::GetSupportsMedia "GetSupportsMedia"
+  /// | **Supports mediaTag play count** | `boolean` | @ref PVRCapabilities::SetSupportsMediaTagPlayCount "SetSupportsMediaTagPlayCount" | @ref PVRCapabilities::GetSupportsMediaTagPlayCount "GetSupportsMediaTagPlayCount"
+  /// | **Supports last played position** | `boolean` | @ref PVRCapabilities::SetSupportsLastPlayedPosition "SetSupportsLastPlayedPosition" | @ref PVRCapabilities::GetSupportsLastPlayedPosition "GetSupportsLastPlayedPosition"
+  /// | **Supports mediaTag EDL** | `boolean` | @ref PVRCapabilities::SetSupportsMediaTagEdl "SetSupportsMediaTagEdl" | @ref PVRCapabilities::GetSupportsMediaTagEdl "GetSupportsMediaTagEdl"
+  /// | **Supports mediaTag size** | `boolean` | @ref PVRCapabilities::SetSupportsMediaTagSize "SetSupportsMediaTagSize" | @ref PVRCapabilities::GetSupportsMediaTagSize "GetSupportsMediaTagSize"
+
   ///
   /// @warning This class can not be used outside of @ref kodi::addon::CInstancePVRClient::GetCapabilities()
   ///
@@ -1350,6 +1356,54 @@ public:
   {
     return m_cStructure->bSupportsMultipleRecordedStreams;
   }
+
+  /// @brief **true** if this add-on supports playback of media stored on
+  /// the backend.
+  void SetSupportsMedia(bool supportsMedia) { m_cStructure->bSupportsMedia = supportsMedia; }
+
+  /// @brief To get with @ref SetSupportsMedia changed values.
+  bool GetSupportsMedia() const { return m_cStructure->bSupportsMedia; }
+
+  /// @brief Set **true** if the backend supports play count for media.
+  void SetSupportsMediaTagPlayCount(bool supportsMediaTagPlayCount)
+  {
+    m_cStructure->bSupportsMediaTagPlayCount = supportsMediaTagPlayCount;
+  }
+
+  /// @brief To get with @ref SetSupportsMediaTagPlayCount changed values.
+  bool GetSupportsMediaTagPlayCount() const { return m_cStructure->bSupportsMediaTagPlayCount; }
+
+  /// @brief Set **true** if the backend supports store/retrieve of last played
+  /// position for mediaTag.
+  void SetSupportsMediaTagLastPlayedPosition(bool supportsMediaTagLastPlayedPosition)
+  {
+    m_cStructure->bSupportsMediaTagLastPlayedPosition = supportsMediaTagLastPlayedPosition;
+  }
+
+  /// @brief To get with @ref SetSupportsMediaTagLastPlayedPosition changed values.
+  bool GetSupportsMediaTagLastPlayedPosition() const
+  {
+    return m_cStructure->bSupportsMediaTagLastPlayedPosition;
+  }
+
+  /// @brief Set **true** if the backend supports retrieving an edit decision
+  /// list for media.
+  void SetSupportsMediaTagEdl(bool supportsMediaTagEdl)
+  {
+    m_cStructure->bSupportsMediaTagEdl = supportsMediaTagEdl;
+  }
+
+  /// @brief To get with @ref SetSupportsMediaTagEdl changed values.
+  bool GetSupportsMediaTagEdl() const { return m_cStructure->bSupportsMediaTagEdl; }
+
+  /// @brief Set **true** if this addon-on supports retrieving size of media.
+  void SetSupportsMediaTagSize(bool supportsMediaTagSize)
+  {
+    m_cStructure->bSupportsMediaTagSize = supportsMediaTagSize;
+  }
+
+  /// @brief To get with @ref SetSupportsMediaTagSize changed values.
+  bool GetSupportsMediaTagSize() const { return m_cStructure->bSupportsMediaTagSize; }
 
   /// @brief **optional**\n
   /// Set array containing the possible values for @ref PVRRecording::SetLifetime().
