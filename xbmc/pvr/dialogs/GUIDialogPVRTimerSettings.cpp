@@ -1365,8 +1365,8 @@ bool CGUIDialogPVRTimerSettings::TypeReadOnlyCondition(const std::string& condit
   if (pThis->m_timerInfoTag->State() == PVR_TIMER_STATE_RECORDING)
   {
     if (cond == SETTING_TMR_TYPE || cond == SETTING_TMR_CHANNEL || cond == SETTING_TMR_BEGIN_PRE ||
-        cond == SETTING_TMR_START_DAY || cond == SETTING_TMR_BEGIN || SETTING_TMR_PRIORITY ||
-        cond == SETTING_TMR_DIR)
+        cond == SETTING_TMR_START_DAY || cond == SETTING_TMR_BEGIN ||
+        cond == SETTING_TMR_PRIORITY || cond == SETTING_TMR_DIR)
       return false;
   }
 
