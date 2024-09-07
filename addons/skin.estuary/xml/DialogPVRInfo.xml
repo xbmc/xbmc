@@ -88,6 +88,13 @@
 					</include>
 					<include content="InfoDialogButton">
 						<param name="width" value="275" />
+						<param name="id" value="8" />
+						<param name="icon" value="icons/infodialogs/play_media.png" />
+						<param name="label" value="$LOCALIZE[19688]" />
+						<param name="visible" value="Window.IsActive(PVRMediaTagInfo)" />
+					</include>
+					<include content="InfoDialogButton">
+						<param name="width" value="275" />
 						<param name="id" value="6" />
 						<param name="icon" value="icons/infodialogs/record.png" />
 						<param name="visible" value="Window.IsActive(PVRGuideInfo)" />
@@ -111,7 +118,7 @@
 						<param name="id" value="4" />
 						<param name="icon" value="icons/infodialogs/similar.png" />
 						<param name="label" value="$LOCALIZE[19003]" />
-						<param name="visible" value="Window.IsActive(PVRGuideInfo) | Window.IsActive(PVRRecordingInfo)" />
+						<param name="visible" value="Window.IsActive(PVRGuideInfo) | Window.IsActive(PVRRecordingInfo) | Window.IsActive(PVRMediaTagInfo)" />
 					</include>
 				</control>
 			</control>
