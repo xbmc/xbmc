@@ -22,6 +22,7 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
+#include <chrono>
 #include <memory>
 #include <mutex>
 #include <string>
@@ -245,27 +246,36 @@ float CPVREpgInfoTag::ProgressPercentage() const
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(currentTime);
   m_startTime.GetAsTime(startTime);
   m_endTime.GetAsTime(endTime);
-  int iDuration = endTime - startTime > 0 ? endTime - startTime : 3600;
 
   if (currentTime >= startTime && currentTime <= endTime)
-    fReturn = static_cast<float>(currentTime - startTime) * 100.0f / iDuration;
+  {
+    const std::chrono::duration<float> current{currentTime - startTime};
+    const std::chrono::duration<float> total{endTime - startTime > 0 ? endTime - startTime
+                                                                     : 3600.0f};
+    fReturn = current.count() * 100.0f / total.count();
+  }
   else if (currentTime > endTime)
+  {
     fReturn = 100.0f;
-
+  }
   return fReturn;
 }
 
-int CPVREpgInfoTag::Progress() const
+unsigned int CPVREpgInfoTag::Progress() const
 {
   time_t currentTime, startTime;
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(currentTime);
   m_startTime.GetAsTime(startTime);
-  int iDuration = currentTime - startTime;
 
-  if (iDuration <= 0)
+  if (currentTime > startTime)
+  {
+    const std::chrono::duration<unsigned int> duration{currentTime - startTime};
+    return duration.count();
+  }
+  else
+  {
     return 0;
-
-  return iDuration;
+  }
 }
 
 void CPVREpgInfoTag::SetUniqueBroadcastID(unsigned int iUniqueBroadcastID)
@@ -324,12 +334,21 @@ void CPVREpgInfoTag::SetEndFromUTC(const CDateTime& end)
   m_endTime = end;
 }
 
-int CPVREpgInfoTag::GetDuration() const
+unsigned int CPVREpgInfoTag::GetDuration() const
 {
   time_t start, end;
   m_startTime.GetAsTime(start);
   m_endTime.GetAsTime(end);
-  return end - start > 0 ? end - start : 3600;
+
+  if (end > start)
+  {
+    const std::chrono::duration<unsigned int> duration{end - start};
+    return duration.count();
+  }
+  else
+  {
+    return 3600;
+  }
 }
 
 const std::string CPVREpgInfoTag::GetCastLabel() const

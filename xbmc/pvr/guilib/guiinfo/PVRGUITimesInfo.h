@@ -81,7 +81,7 @@ namespace PVR
     time_t m_iTimeshiftStartTime;
     time_t m_iTimeshiftEndTime;
     time_t m_iTimeshiftPlayTime;
-    unsigned int m_iTimeshiftOffset;
+    int64_t m_iTimeshiftOffset;
 
     time_t m_iTimeshiftProgressStartTime;
     time_t m_iTimeshiftProgressEndTime;

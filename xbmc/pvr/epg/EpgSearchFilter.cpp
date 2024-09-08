@@ -296,10 +296,10 @@ bool CPVREpgSearchFilter::MatchDuration(const std::shared_ptr<const CPVREpgInfoT
   bool bReturn(true);
 
   if (m_iMinimumDuration != EPG_SEARCH_UNSET)
-    bReturn = (tag->GetDuration() > m_iMinimumDuration * 60);
+    bReturn = (tag->GetDuration() > static_cast<unsigned int>(m_iMinimumDuration) * 60);
 
   if (bReturn && m_iMaximumDuration != EPG_SEARCH_UNSET)
-    bReturn = (tag->GetDuration() < m_iMaximumDuration * 60);
+    bReturn = (tag->GetDuration() < static_cast<unsigned int>(m_iMaximumDuration) * 60);
 
   return bReturn;
 }

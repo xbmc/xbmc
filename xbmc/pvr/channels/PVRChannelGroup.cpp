@@ -567,7 +567,7 @@ int CPVRChannelGroup::LoadFromDatabase(const std::vector<std::shared_ptr<CPVRCli
 
   DeleteGroupMembersFromDb(membersToDelete);
 
-  return results.size() - membersToDelete.size();
+  return static_cast<int>(results.size() - membersToDelete.size());
 }
 
 void CPVRChannelGroup::DeleteGroupMembersFromDb(

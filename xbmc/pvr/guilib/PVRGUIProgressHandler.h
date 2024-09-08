@@ -41,7 +41,7 @@ namespace PVR
      * @param iCurrent The new current progress value, must be less or equal iMax.
      * @param iMax The new maximum progress value, must be greater or equal iCurrent.
      */
-    void UpdateProgress(const std::string& strText, int iCurrent, int iMax);
+    void UpdateProgress(const std::string& strText, unsigned int iCurrent, unsigned int iMax);
 
   protected:
     // CThread implementation

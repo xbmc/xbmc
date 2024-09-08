@@ -335,8 +335,8 @@ bool CPVRRecording::SetResumePoint(const CBookmark& resumePoint)
   const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
   if (client && client->GetClientCapabilities().SupportsRecordingsLastPlayedPosition())
   {
-    if (client->SetRecordingLastPlayedPosition(*this, lrint(resumePoint.timeInSeconds)) !=
-        PVR_ERROR_NO_ERROR)
+    if (client->SetRecordingLastPlayedPosition(
+            *this, static_cast<int>(std::lrint(resumePoint.timeInSeconds))) != PVR_ERROR_NO_ERROR)
       return false;
   }
 
@@ -350,7 +350,8 @@ bool CPVRRecording::SetResumePoint(double timeInSeconds,
   const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
   if (client && client->GetClientCapabilities().SupportsRecordingsLastPlayedPosition())
   {
-    if (client->SetRecordingLastPlayedPosition(*this, lrint(timeInSeconds)) != PVR_ERROR_NO_ERROR)
+    if (client->SetRecordingLastPlayedPosition(
+            *this, static_cast<int>(std::lrint(timeInSeconds))) != PVR_ERROR_NO_ERROR)
       return false;
   }
 

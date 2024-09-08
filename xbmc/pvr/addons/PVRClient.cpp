@@ -168,7 +168,8 @@ public:
     iGenreType = recording.GenreType();
     iGenreSubType = recording.GenreSubType();
     iPlayCount = recording.GetLocalPlayCount();
-    iLastPlayedPosition = std::lrint(recording.GetLocalResumePoint().timeInSeconds);
+    iLastPlayedPosition =
+        static_cast<int>(std::lrint(recording.GetLocalResumePoint().timeInSeconds));
     bIsDeleted = recording.IsDeleted();
     iEpgEventId = recording.BroadcastUid();
     iChannelUid = recording.ChannelUid();

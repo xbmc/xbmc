@@ -283,7 +283,7 @@ CFileItemPtr CGUIWindowPVRGuideBase::GetCurrentListItem(int offset /*= 0*/)
 
 int CGUIWindowPVRGuideBase::GetCurrentListItemIndex(const std::shared_ptr<const CFileItem>& item)
 {
-  return item ? item->GetProperty("TimelineIndex").asInteger() : -1;
+  return item ? item->GetProperty("TimelineIndex").asInteger32() : -1;
 }
 
 bool CGUIWindowPVRGuideBase::ShouldNavigateToGridContainer(int iAction)
@@ -630,7 +630,7 @@ public:
 
   void Add(bool (A::*function)(), unsigned int resId)
   {
-    CContextButtons::Add(size(), resId);
+    CContextButtons::Add(static_cast<unsigned int>(size()), resId);
     m_functions.emplace_back(std::bind(function, m_instance));
   }
 
