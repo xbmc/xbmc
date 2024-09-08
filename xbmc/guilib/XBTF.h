@@ -29,7 +29,7 @@ public:
   void SetWidth(uint32_t width);
 
   XB_FMT GetFormat(bool raw = false) const;
-  void SetFormat(XB_FMT format);
+  void SetFormat(uint32_t format);
 
   uint32_t GetHeight() const;
   void SetHeight(uint32_t height);
@@ -51,10 +51,15 @@ public:
   bool IsPacked() const;
   bool HasAlpha() const;
 
+  KD_TEX_FMT GetKDFormat() const;
+  KD_TEX_FMT GetKDFormatType() const;
+  KD_TEX_ALPHA GetKDAlpha() const;
+  KD_TEX_SWIZ GetKDSwizzle() const;
+
 private:
   uint32_t m_width;
   uint32_t m_height;
-  XB_FMT m_format;
+  uint32_t m_format;
   uint64_t m_packedSize;
   uint64_t m_unpackedSize;
   uint64_t m_offset;

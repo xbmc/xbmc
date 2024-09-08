@@ -43,6 +43,10 @@ public:
   uint32_t GetImageWidth() const;
   uint32_t GetImageHeight() const;
   XB_FMT GetImageFormat() const;
+  KD_TEX_FMT GetKDFormat() const;
+  KD_TEX_FMT GetKDFormatType() const;
+  KD_TEX_ALPHA GetKDAlpha() const;
+  KD_TEX_SWIZ GetKDSwizzle() const;
   bool HasImageAlpha() const;
 
 private:

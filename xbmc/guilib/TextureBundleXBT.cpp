@@ -16,6 +16,7 @@
 #include "commons/ilog.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/XbtManager.h"
+#include "guilib/TextureFormats.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
@@ -237,9 +238,18 @@ std::unique_ptr<CTexture> CTextureBundleXBT::ConvertFrameToTexture(const std::st
 
   // create an xbmc texture
   std::unique_ptr<CTexture> texture = CTexture::CreateTexture();
-  texture->LoadFromMemory(frame.GetWidth(), frame.GetHeight(), 0, frame.GetFormat(),
-                          frame.HasAlpha(), buffer.data());
 
+  if (frame.GetKDFormatType())
+  {
+    texture->UploadFromMemory(frame.GetWidth(), frame.GetHeight(), 0, buffer.data(),
+                              frame.GetKDFormat(), frame.GetKDAlpha(), frame.GetKDSwizzle());
+  }
+  else if (frame.GetFormat() == XB_FMT_A8R8G8B8)
+  {
+    KD_TEX_ALPHA alpha = frame.HasAlpha() ? KD_TEX_ALPHA_STRAIGHT : KD_TEX_ALPHA_OPAQUE;
+    texture->UploadFromMemory(frame.GetWidth(), frame.GetHeight(), 0, buffer.data(),
+                              KD_TEX_FMT_SDR_BGRA8, alpha, KD_TEX_SWIZ_RGBA);
+  }
   return texture;
 }
 

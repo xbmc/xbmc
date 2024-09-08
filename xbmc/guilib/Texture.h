@@ -74,6 +74,24 @@ public:
                       XB_FMT format,
                       bool hasAlpha,
                       const unsigned char* pixels);
+  /*! \brief Attempts to upload a texture directly from a provided buffer
+   Unlike LoadFromMemory() which copies the texture into an intermediate buffer, the texture gets uploaded directly to
+   the GPU if circumstances allow.
+   \param width the width of the texture.
+   \param height the height of the texture.
+   \param pitch the pitch of the texture.
+   \param pixels pointer to the texture buffer.
+   \param format the format of the texture.
+   \param alpha the alpha type of the texture.
+   \param swizzle the swizzle pattern of the texture.
+   */
+  bool UploadFromMemory(unsigned int width,
+                        unsigned int height,
+                        unsigned int pitch,
+                        unsigned char* pixels,
+                        KD_TEX_FMT format = KD_TEX_FMT_SDR_RGBA8,
+                        KD_TEX_ALPHA alpha = KD_TEX_ALPHA_OPAQUE,
+                        KD_TEX_SWIZ swizzle = KD_TEX_SWIZ_RGBA);
   bool LoadPaletted(unsigned int width,
                     unsigned int height,
                     unsigned int pitch,
@@ -101,6 +119,16 @@ public:
    */
   virtual void SyncGPU(){};
   virtual void BindToUnit(unsigned int unit) = 0;
+
+  /*! 
+   * \brief Checks if the processing pipeline can handle the texture format/swizzle
+   \param format the format of the texture.
+   \return true if the texturing pipeline supports the format
+   */
+  virtual bool SupportsFormat(KD_TEX_FMT textureFormat, KD_TEX_SWIZ textureSwizzle)
+  {
+    return !(textureFormat & KD_TEX_FMT_TYPE_MASK) && textureSwizzle == KD_TEX_SWIZ_RGBA;
+  }
 
 private:
   // no copy constructor

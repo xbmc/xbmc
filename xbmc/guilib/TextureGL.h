@@ -43,6 +43,11 @@ public:
   void SyncGPU() override;
   void BindToUnit(unsigned int unit) override;
 
+  bool SupportsFormat(KD_TEX_FMT textureFormat, KD_TEX_SWIZ textureSwizzle) override
+  {
+    return true;
+  }
+
 protected:
   void SetSwizzle();
   TextureFormat GetFormatGL(KD_TEX_FMT textureFormat);

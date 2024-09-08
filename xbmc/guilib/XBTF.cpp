@@ -72,14 +72,14 @@ void CXBTFFrame::SetUnpackedSize(uint64_t size)
   m_unpackedSize = size;
 }
 
-void CXBTFFrame::SetFormat(XB_FMT format)
+void CXBTFFrame::SetFormat(uint32_t format)
 {
   m_format = format;
 }
 
 XB_FMT CXBTFFrame::GetFormat(bool raw) const
 {
-  return raw ? m_format : static_cast<XB_FMT>(m_format & XB_FMT_MASK);
+  return static_cast<XB_FMT>(raw ? m_format : m_format & XB_FMT_MASK);
 }
 
 uint64_t CXBTFFrame::GetOffset() const
@@ -114,6 +114,26 @@ uint64_t CXBTFFrame::GetHeaderSize() const
     sizeof(m_duration);
 
   return result;
+}
+
+KD_TEX_FMT CXBTFFrame::GetKDFormat() const
+{
+  return static_cast<KD_TEX_FMT>(m_format & KD_TEX_FMT_MASK);
+}
+
+KD_TEX_FMT CXBTFFrame::GetKDFormatType() const
+{
+  return static_cast<KD_TEX_FMT>(m_format & KD_TEX_FMT_TYPE_MASK);
+}
+
+KD_TEX_ALPHA CXBTFFrame::GetKDAlpha() const
+{
+  return static_cast<KD_TEX_ALPHA>(m_format & KD_TEX_ALPHA_MASK);
+}
+
+KD_TEX_SWIZ CXBTFFrame::GetKDSwizzle() const
+{
+  return static_cast<KD_TEX_SWIZ>(m_format & KD_TEX_SWIZ_MASK);
 }
 
 CXBTFFile::CXBTFFile()
