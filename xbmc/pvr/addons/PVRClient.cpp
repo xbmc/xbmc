@@ -1570,7 +1570,7 @@ PVR_ERROR CPVRClient::SignalQuality(int channelUid, CPVRSignalStatus& qualityinf
                        const PVR_ERROR error{
                            addon->toAddon->GetSignalStatus(addon, channelUid, &info)};
                        if (error == PVR_ERROR_NO_ERROR)
-                         qualityinfo = info;
+                         qualityinfo = CPVRSignalStatus{info};
 
                        addon->toAddon->FreeSignalStatus(addon, &info);
                        return error;
@@ -1586,7 +1586,7 @@ PVR_ERROR CPVRClient::GetDescrambleInfo(int channelUid, CPVRDescrambleInfo& desc
         PVR_DESCRAMBLE_INFO info{};
         const PVR_ERROR error{addon->toAddon->GetDescrambleInfo(addon, channelUid, &info)};
         if (error == PVR_ERROR_NO_ERROR)
-          descrambleinfo = info;
+          descrambleinfo = CPVRDescrambleInfo{info};
 
         addon->toAddon->FreeDescrambleInfo(addon, &info);
         return error;

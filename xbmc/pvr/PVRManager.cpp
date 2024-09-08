@@ -717,7 +717,7 @@ bool CPVRManager::UpdateComponents(ManagerState stateToCheck,
   if (progressHandler)
     progressHandler->UpdateProgress(g_localizeStrings.Get(19236), 0); // Loading channels and groups
 
-  if (!m_providers->Update(newClients) || (stateToCheck != GetState()))
+  if (!m_providers->Update(newClients))
   {
     CLog::LogF(LOGERROR, "Failed to load PVR providers.");
     m_knownClients.clear(); // start over
@@ -725,7 +725,10 @@ bool CPVRManager::UpdateComponents(ManagerState stateToCheck,
     return false;
   }
 
-  if (!m_channelGroups->Update(newClients) || (stateToCheck != GetState()))
+  if (stateToCheck != GetState())
+    return false;
+
+  if (!m_channelGroups->Update(newClients))
   {
     CLog::LogF(LOGERROR, "Failed to load PVR channels / groups.");
     m_knownClients.clear(); // start over
@@ -737,7 +740,7 @@ bool CPVRManager::UpdateComponents(ManagerState stateToCheck,
   if (progressHandler)
     progressHandler->UpdateProgress(g_localizeStrings.Get(19237), 50); // Loading timers
 
-  if (!m_timers->Update(newClients) || (stateToCheck != GetState()))
+  if (!m_timers->Update(newClients))
   {
     CLog::LogF(LOGERROR, "Failed to load PVR timers.");
     m_knownClients.clear(); // start over
@@ -749,7 +752,7 @@ bool CPVRManager::UpdateComponents(ManagerState stateToCheck,
   if (progressHandler)
     progressHandler->UpdateProgress(g_localizeStrings.Get(19238), 75); // Loading recordings
 
-  if (!m_recordings->Update(newClients) || (stateToCheck != GetState()))
+  if (!m_recordings->Update(newClients))
   {
     CLog::LogF(LOGERROR, "Failed to load PVR recordings.");
     m_knownClients.clear(); // start over

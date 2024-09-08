@@ -27,7 +27,7 @@ public:
     m_info.iHops = PVR_DESCRAMBLE_INFO_NOT_AVAILABLE;
   }
 
-  CPVRDescrambleInfo(const PVR_DESCRAMBLE_INFO& info)
+  explicit CPVRDescrambleInfo(const PVR_DESCRAMBLE_INFO& info)
     : m_info(info),
       m_cardSystem(info.strCardSystem ? info.strCardSystem : ""),
       m_reader(info.strReader ? info.strReader : ""),

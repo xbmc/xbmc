@@ -25,7 +25,7 @@ public:
   {
   }
 
-  CPVRSignalStatus(const PVR_SIGNAL_STATUS& status)
+  explicit CPVRSignalStatus(const PVR_SIGNAL_STATUS& status)
     : m_status(status),
       m_adapterName(status.strAdapterName ? status.strAdapterName : ""),
       m_adapterStatus(status.strAdapterStatus ? status.strAdapterStatus : ""),
