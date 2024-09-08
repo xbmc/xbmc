@@ -57,7 +57,7 @@ EventLevel CEventLog::EventLevelFromString(const std::string& level)
   return EventLevel::Information;
 }
 
-Events CEventLog::Get() const
+const Events& CEventLog::Get() const
 {
   return m_events;
 }
