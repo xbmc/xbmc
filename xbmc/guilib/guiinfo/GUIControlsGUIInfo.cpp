@@ -204,17 +204,19 @@ bool CGUIControlsGUIInfo::GetLabel(std::string& value, const CFileItem *item, in
       {
         int count = 0;
         const CFileItemList& items = window->CurrentDirectory();
-        for (const auto& item : items)
+        for (const auto& i : items)
         {
           // Iterate through container and count watched, unwatched and total duration.
-          if (info.m_info == CONTAINER_TOTALWATCHED && item->HasVideoInfoTag() && item->GetVideoInfoTag()->GetPlayCount() > 0)
+          if (info.m_info == CONTAINER_TOTALWATCHED && i->HasVideoInfoTag() &&
+              i->GetVideoInfoTag()->GetPlayCount() > 0)
             count += 1;
-          else if (info.m_info == CONTAINER_TOTALUNWATCHED && item->HasVideoInfoTag() && item->GetVideoInfoTag()->GetPlayCount() == 0)
+          else if (info.m_info == CONTAINER_TOTALUNWATCHED && i->HasVideoInfoTag() &&
+                   i->GetVideoInfoTag()->GetPlayCount() == 0)
             count += 1;
-          else if (info.m_info == CONTAINER_TOTALTIME && item->HasMusicInfoTag())
-            count += item->GetMusicInfoTag()->GetDuration();
-          else if (info.m_info == CONTAINER_TOTALTIME && item->HasVideoInfoTag())
-            count += item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration();
+          else if (info.m_info == CONTAINER_TOTALTIME && i->HasMusicInfoTag())
+            count += i->GetMusicInfoTag()->GetDuration();
+          else if (info.m_info == CONTAINER_TOTALTIME && i->HasVideoInfoTag())
+            count += i->GetVideoInfoTag()->m_streamDetails.GetVideoDuration();
         }
         if (info.m_info == CONTAINER_TOTALTIME && count > 0)
         {
@@ -531,9 +533,9 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
       }
       if (content.empty())
       {
-        CGUIMediaWindow* window = GUIINFO::GetMediaWindow(contextWindow);
-        if (window)
-          content = window->CurrentDirectory().GetContent();
+        CGUIMediaWindow* mediaWindow = GUIINFO::GetMediaWindow(contextWindow);
+        if (mediaWindow)
+          content = mediaWindow->CurrentDirectory().GetContent();
       }
       value = StringUtils::EqualsNoCase(info.GetData3(), content);
       return true;

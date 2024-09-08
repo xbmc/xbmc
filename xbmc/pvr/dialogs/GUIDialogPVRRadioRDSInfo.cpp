@@ -81,36 +81,40 @@ bool CGUIDialogPVRRadioRDSInfo::OnMessage(CGUIMessage& message)
       if (!textbox)
         return false;
 
+      std::string text;
       switch (spin->GetValue())
       {
         case INFO_NEWS:
-          textbox->SetInfo(currentRDS->GetInfoNews());
+          text = currentRDS->GetInfoNews();
           break;
         case INFO_NEWS_LOCAL:
-          textbox->SetInfo(currentRDS->GetInfoNewsLocal());
+          text = currentRDS->GetInfoNewsLocal();
           break;
         case INFO_SPORT:
-          textbox->SetInfo(currentRDS->GetInfoSport());
+          text = currentRDS->GetInfoSport();
           break;
         case INFO_WEATHER:
-          textbox->SetInfo(currentRDS->GetInfoWeather());
+          text = currentRDS->GetInfoWeather();
           break;
         case INFO_LOTTERY:
-          textbox->SetInfo(currentRDS->GetInfoLottery());
+          text = currentRDS->GetInfoLottery();
           break;
         case INFO_STOCK:
-          textbox->SetInfo(currentRDS->GetInfoStock());
+          text = currentRDS->GetInfoStock();
           break;
         case INFO_OTHER:
-          textbox->SetInfo(currentRDS->GetInfoOther());
+          text = currentRDS->GetInfoOther();
           break;
         case INFO_CINEMA:
-          textbox->SetInfo(currentRDS->GetInfoCinema());
+          text = currentRDS->GetInfoCinema();
           break;
         case INFO_HOROSCOPE:
-          textbox->SetInfo(currentRDS->GetInfoHoroscope());
+          text = currentRDS->GetInfoHoroscope();
           break;
       }
+
+      if (!text.empty())
+        textbox->SetInfo(KODI::GUILIB::GUIINFO::CGUIInfoLabel{text});
 
       SET_CONTROL_VISIBLE(CONTROL_INFO_LIST);
     }
@@ -210,7 +214,7 @@ bool CGUIDialogPVRRadioRDSInfo::InfoControl::Update(const std::string& textboxVa
     {
       m_spinControl->SetValue(m_iSpinControlId);
       m_textboxValue = textboxValue;
-      m_textbox->SetInfo(textboxValue);
+      m_textbox->SetInfo(KODI::GUILIB::GUIINFO::CGUIInfoLabel{textboxValue});
       return true;
     }
   }
