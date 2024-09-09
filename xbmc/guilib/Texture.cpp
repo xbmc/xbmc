@@ -377,7 +377,7 @@ bool CTexture::UploadFromMemory(unsigned int width,
       CLog::LogF(LOGERROR, "Could not allocate {} bytes. Out of memory.", size);
       return false;
     }
-    memcpy(m_pixels, pixels, size);
+    std::memcpy(m_pixels, pixels, size);
   }
 
   return true;
