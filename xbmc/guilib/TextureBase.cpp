@@ -432,16 +432,16 @@ bool CTextureBase::ConvertToLegacy(uint32_t width, uint32_t height, uint8_t* src
     for (int32_t i = size - 1; i >= 0; i--)
     {
       m_pixels[i * 4 + 3] = src[i];
-      m_pixels[i * 4 + 2] = char(0xff);
-      m_pixels[i * 4 + 1] = char(0xff);
-      m_pixels[i * 4] = char(0xff);
+      m_pixels[i * 4 + 2] = 0xff;
+      m_pixels[i * 4 + 1] = 0xff;
+      m_pixels[i * 4] = 0xff;
     }
   }
   else if (m_textureSwizzle == KD_TEX_SWIZ_RRR1)
   {
     for (int32_t i = size - 1; i >= 0; i--)
     {
-      m_pixels[i * 4 + 3] = char(0xff);
+      m_pixels[i * 4 + 3] = 0xff;
       m_pixels[i * 4 + 2] = src[i];
       m_pixels[i * 4 + 1] = src[i];
       m_pixels[i * 4] = src[i];
