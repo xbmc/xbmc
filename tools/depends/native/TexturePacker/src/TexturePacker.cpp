@@ -75,6 +75,11 @@ const char* GetFormatString(KD_TEX_FMT format)
 
 void Usage()
 {
+  puts("Texture Packer Version 3");
+  puts("");
+  puts("Tool to pack XBT 3 texture files, used in Kodi Piers (v22).");
+  puts("Accepts the following file formats as input: PNG (preferred), JPG and GIF.");
+  puts("");
   puts("Usage:");
   puts("  -help            Show this screen.");
   puts("  -input <dir>     Input directory. Default: current dir");
