@@ -11,6 +11,7 @@
 #include "XBDateTime.h"
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_channels.h" // PVR_CHANNEL_INVALID_UID
 #include "pvr/PVRConstants.h" // PVR_CLIENT_INVALID_UID
+#include "pvr/settings/IPVRSettingsContainer.h"
 #include "settings/SettingConditions.h"
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
 #include "settings/lib/SettingDependency.h"
@@ -23,13 +24,15 @@
 class CSetting;
 
 struct IntegerSettingOption;
+struct StringSettingOption;
 
 namespace PVR
 {
+class CPVRCustomTimerSettings;
 class CPVRTimerInfoTag;
 class CPVRTimerType;
 
-class CGUIDialogPVRTimerSettings : public CGUIDialogSettingsManualBase
+class CGUIDialogPVRTimerSettings : public CGUIDialogSettingsManualBase, public IPVRSettingsContainer
 {
 public:
   CGUIDialogPVRTimerSettings();
@@ -39,6 +42,24 @@ public:
 
   void SetTimer(const std::shared_ptr<CPVRTimerInfoTag>& timer);
 
+  // implementation of IPVRSettingsContainer
+  void AddMultiIntSetting(const std::shared_ptr<CSettingGroup>& group,
+                          const std::string& settingName,
+                          int settingValue) override;
+  void AddSingleIntSetting(const std::shared_ptr<CSettingGroup>& group,
+                           const std::string& settingName,
+                           int settingValue,
+                           int minValue,
+                           int step,
+                           int maxValue) override;
+  void AddMultiStringSetting(const std::shared_ptr<CSettingGroup>& group,
+                             const std::string& settingName,
+                             const std::string& settingValue) override;
+  void AddSingleStringSetting(const std::shared_ptr<CSettingGroup>& group,
+                              const std::string& settingName,
+                              const std::string& settingValue,
+                              bool allowEmptyValue) override;
+
 protected:
   // implementation of ISettingCallback
   void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
@@ -46,6 +67,7 @@ protected:
 
   // specialization of CGUIDialogSettingsBase
   bool AllowResettingSettings() const override { return false; }
+  std::string GetSettingsLabel(const std::shared_ptr<ISetting>& setting) override;
   bool Save() override;
   void SetupView() override;
 
@@ -104,6 +126,14 @@ private:
                                std::vector<IntegerSettingOption>& list,
                                int& current,
                                void* data);
+  static void CustomIntSettingDefinitionsFiller(const std::shared_ptr<const CSetting>& setting,
+                                                std::vector<IntegerSettingOption>& list,
+                                                int& current,
+                                                void* data);
+  static void CustomStringSettingDefinitionsFiller(const std::shared_ptr<const CSetting>& setting,
+                                                   std::vector<StringSettingOption>& list,
+                                                   std::string& current,
+                                                   void* data);
 
   static std::string WeekdaysValueFormatter(const std::shared_ptr<const CSetting>& setting);
 
@@ -164,6 +194,8 @@ private:
   } ChannelDescriptor;
 
   typedef std::map<int, ChannelDescriptor> ChannelEntriesMap;
+
+  std::unique_ptr<CPVRCustomTimerSettings> m_customTimerSettings;
 
   std::shared_ptr<CPVRTimerInfoTag> m_timerInfoTag;
   TypeEntriesMap m_typeEntries;

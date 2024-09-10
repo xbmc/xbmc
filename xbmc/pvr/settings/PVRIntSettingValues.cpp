@@ -29,19 +29,23 @@ CPVRIntSettingValues::CPVRIntSettingValues(struct PVR_ATTRIBUTE_INT_VALUE* value
     {
       const int value{values[i].iValue};
       const char* desc{values[i].strDescription};
-      std::string strDescr{desc ? desc : ""};
-      if (strDescr.empty())
+      std::string description{desc ? desc : ""};
+      if (description.empty())
       {
         // No description given by addon. Create one from value.
         if (defaultDescriptionResourceId > 0)
-          strDescr = StringUtils::Format(
+          description = StringUtils::Format(
               "{} {}", g_localizeStrings.Get(defaultDescriptionResourceId), value);
         else
-          strDescr = std::to_string(value);
+          description = std::to_string(value);
       }
-      m_values.emplace_back(strDescr, value);
+      m_values.emplace_back(description, value);
     }
   }
+}
+
+CPVRIntSettingValues::CPVRIntSettingValues(int defaultValue) : m_defaultValue(defaultValue)
+{
 }
 
 CPVRIntSettingValues::CPVRIntSettingValues(struct PVR_ATTRIBUTE_INT_VALUE* values,
@@ -59,4 +63,8 @@ CPVRIntSettingValues::CPVRIntSettingValues(const std::vector<SettingIntValue>& v
 {
 }
 
+bool CPVRIntSettingValues::operator==(const CPVRIntSettingValues& right) const
+{
+  return (m_defaultValue == right.m_defaultValue && m_values == right.m_values);
+}
 } // namespace PVR
