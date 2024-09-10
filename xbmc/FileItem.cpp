@@ -1868,7 +1868,7 @@ std::string CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */, b
     for (const auto& i : thumbs)
     {
       std::string strFileName = i.asString();
-      std::string folderThumb(GetFolderThumb(strFileName));
+      std::string folderThumb(ART::GetFolderThumb(*this, strFileName));
       if (CFile::Exists(folderThumb))   // folder.jpg
         return folderThumb;
       size_t period = strFileName.find_last_of('.');
@@ -2026,26 +2026,6 @@ std::string CFileItem::GetLocalArt(const std::string& artFile, bool useFolder) c
       return URIUtils::ReplaceExtension(strFile, "-" + artFile);
   }
   return "";
-}
-
-std::string CFileItem::GetFolderThumb(const std::string &folderJPG /* = "folder.jpg" */) const
-{
-  std::string strFolder = m_strPath;
-
-  if (IsStack() ||
-      URIUtils::IsInRAR(strFolder) ||
-      URIUtils::IsInZIP(strFolder))
-  {
-    URIUtils::GetParentPath(m_strPath,strFolder);
-  }
-
-  if (IsMultiPath())
-    strFolder = CMultiPathDirectory::GetFirstPath(m_strPath);
-
-  if (IsPlugin())
-    return "";
-
-  return URIUtils::AddFileToFolder(strFolder, folderJPG);
 }
 
 std::string CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const

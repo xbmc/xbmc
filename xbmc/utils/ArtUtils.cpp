@@ -13,6 +13,7 @@
 #include "ServiceBroker.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "filesystem/MultiPathDirectory.h"
 #include "filesystem/StackDirectory.h"
 #include "music/MusicFileItemClassify.h"
 #include "network/NetworkFileItemClassify.h"
@@ -151,6 +152,24 @@ void FillInDefaultIcon(CFileItem& item)
     else if (URIUtils::IsInZIP(item.GetPath()))
       item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_ZIP);
   }
+}
+
+std::string GetFolderThumb(const CFileItem& item, const std::string& folderJPG /* = "folder.jpg" */)
+{
+  std::string strFolder = item.GetPath();
+
+  if (item.IsStack() || URIUtils::IsInRAR(strFolder) || URIUtils::IsInZIP(strFolder))
+  {
+    URIUtils::GetParentPath(item.GetPath(), strFolder);
+  }
+
+  if (item.IsMultiPath())
+    strFolder = CMultiPathDirectory::GetFirstPath(item.GetPath());
+
+  if (item.IsPlugin())
+    return "";
+
+  return URIUtils::AddFileToFolder(strFolder, folderJPG);
 }
 
 std::string GetLocalFanart(const CFileItem& item)
