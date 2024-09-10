@@ -14,7 +14,10 @@
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/StackDirectory.h"
+#include "music/MusicFileItemClassify.h"
 #include "network/NetworkFileItemClassify.h"
+#include "playlists/PlayListFileItemClassify.h"
+#include "pvr/channels/PVRChannel.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/FileExtensionProvider.h"
@@ -27,6 +30,126 @@ using namespace XFILE;
 
 namespace KODI::ART
 {
+
+void FillInDefaultIcon(CFileItem& item)
+{
+  if (URIUtils::IsPVRGuideItem(item.GetPath()))
+  {
+    // epg items never have a default icon. no need to execute this expensive method.
+    // when filling epg grid window, easily tens of thousands of epg items are processed.
+    return;
+  }
+
+  // find the default icon for a file or folder item
+  // for files this can be the (depending on the file type)
+  //   default picture for photo's
+  //   default picture for songs
+  //   default picture for videos
+  //   default picture for shortcuts
+  //   default picture for playlists
+  //
+  // for folders
+  //   for .. folders the default picture for parent folder
+  //   for other folders the defaultFolder.png
+
+  if (item.GetArt("icon").empty())
+  {
+    if (!item.m_bIsFolder)
+    {
+      /* To reduce the average runtime of this code, this list should
+       * be ordered with most frequently seen types first.  Also bear
+       * in mind the complexity of the code behind the check in the
+       * case of IsWhatever() returns false.
+       * @todo get rid of PVR compile time dependency
+       */
+      if (item.IsPVRChannel())
+      {
+        if (item.GetPVRChannelInfoTag()->IsRadio())
+          item.SetArt("icon", "DefaultMusicSongs.png");
+        else
+          item.SetArt("icon", "DefaultTVShows.png");
+      }
+      else if (item.IsLiveTV())
+      {
+        // Live TV Channel
+        item.SetArt("icon", "DefaultTVShows.png");
+      }
+      else if (URIUtils::IsArchive(item.GetPath()))
+      { // archive
+        item.SetArt("icon", "DefaultFile.png");
+      }
+      else if (item.IsUsablePVRRecording())
+      {
+        // PVR recording
+        item.SetArt("icon", "DefaultVideo.png");
+      }
+      else if (item.IsDeletedPVRRecording())
+      {
+        // PVR deleted recording
+        item.SetArt("icon", "DefaultVideoDeleted.png");
+      }
+      else if (PLAYLIST::IsPlayList(item) || PLAYLIST::IsSmartPlayList(item))
+      {
+        item.SetArt("icon", "DefaultPlaylist.png");
+      }
+      else if (MUSIC::IsAudio(item))
+      {
+        // audio
+        item.SetArt("icon", "DefaultAudio.png");
+      }
+      else if (VIDEO::IsVideo(item))
+      {
+        // video
+        item.SetArt("icon", "DefaultVideo.png");
+      }
+      else if (item.IsPVRTimer())
+      {
+        item.SetArt("icon", "DefaultVideo.png");
+      }
+      else if (item.IsPicture())
+      {
+        // picture
+        item.SetArt("icon", "DefaultPicture.png");
+      }
+      else if (item.IsPythonScript())
+      {
+        item.SetArt("icon", "DefaultScript.png");
+      }
+      else if (item.IsFavourite())
+      {
+        item.SetArt("icon", "DefaultFavourites.png");
+      }
+      else
+      {
+        // default icon for unknown file type
+        item.SetArt("icon", "DefaultFile.png");
+      }
+    }
+    else
+    {
+      if (PLAYLIST::IsPlayList(item) || PLAYLIST::IsSmartPlayList(item))
+      {
+        item.SetArt("icon", "DefaultPlaylist.png");
+      }
+      else if (item.IsParentFolder())
+      {
+        item.SetArt("icon", "DefaultFolderBack.png");
+      }
+      else
+      {
+        item.SetArt("icon", "DefaultFolder.png");
+      }
+    }
+  }
+  // Set the icon overlays (if applicable)
+  if (!item.HasOverlay() && !item.HasProperty("icon_never_overlay"))
+  {
+    if (URIUtils::IsInRAR(item.GetPath()))
+      item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_RAR);
+    else if (URIUtils::IsInZIP(item.GetPath()))
+      item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_ZIP);
+  }
+}
 
 std::string GetLocalFanart(const CFileItem& item)
 {

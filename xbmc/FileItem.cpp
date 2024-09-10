@@ -116,7 +116,7 @@ CFileItem::CFileItem(const CMusicInfoTag& music)
   m_strPath = music.GetURL();
   m_bIsFolder = URIUtils::HasSlashAtEnd(m_strPath);
   *GetMusicInfoTag() = music;
-  FillInDefaultIcon();
+  ART::FillInDefaultIcon(*this);
   FillInMimeType(false);
 }
 
@@ -1220,130 +1220,6 @@ bool CFileItem::IsReadOnly() const
   return !CUtil::SupportsWriteFileOperations(m_strPath);
 }
 
-void CFileItem::FillInDefaultIcon()
-{
-  if (URIUtils::IsPVRGuideItem(m_strPath))
-  {
-    // epg items never have a default icon. no need to execute this expensive method.
-    // when filling epg grid window, easily tens of thousands of epg items are processed.
-    return;
-  }
-
-  //CLog::Log(LOGINFO, "FillInDefaultIcon({})", pItem->GetLabel());
-  // find the default icon for a file or folder item
-  // for files this can be the (depending on the file type)
-  //   default picture for photo's
-  //   default picture for songs
-  //   default picture for videos
-  //   default picture for shortcuts
-  //   default picture for playlists
-  //
-  // for folders
-  //   for .. folders the default picture for parent folder
-  //   for other folders the defaultFolder.png
-
-  if (GetArt("icon").empty())
-  {
-    if (!m_bIsFolder)
-    {
-      /* To reduce the average runtime of this code, this list should
-       * be ordered with most frequently seen types first.  Also bear
-       * in mind the complexity of the code behind the check in the
-       * case of IsWhatever() returns false.
-       */
-      if (IsPVRChannel())
-      {
-        if (GetPVRChannelInfoTag()->IsRadio())
-          SetArt("icon", "DefaultMusicSongs.png");
-        else
-          SetArt("icon", "DefaultTVShows.png");
-      }
-      else if ( IsLiveTV() )
-      {
-        // Live TV Channel
-        SetArt("icon", "DefaultTVShows.png");
-      }
-      else if ( URIUtils::IsArchive(m_strPath) )
-      { // archive
-        SetArt("icon", "DefaultFile.png");
-      }
-      else if ( IsUsablePVRRecording() )
-      {
-        // PVR recording
-        SetArt("icon", "DefaultVideo.png");
-      }
-      else if ( IsDeletedPVRRecording() )
-      {
-        // PVR deleted recording
-        SetArt("icon", "DefaultVideoDeleted.png");
-      }
-      else if (IsPVRProvider())
-      {
-        SetArt("icon", "DefaultPVRProvider.png");
-      }
-      else if (PLAYLIST::IsPlayList(*this) || PLAYLIST::IsSmartPlayList(*this))
-      {
-        SetArt("icon", "DefaultPlaylist.png");
-      }
-      else if (MUSIC::IsAudio(*this))
-      {
-        // audio
-        SetArt("icon", "DefaultAudio.png");
-      }
-      else if (VIDEO::IsVideo(*this))
-      {
-        // video
-        SetArt("icon", "DefaultVideo.png");
-      }
-      else if (IsPVRTimer())
-      {
-        SetArt("icon", "DefaultVideo.png");
-      }
-      else if ( IsPicture() )
-      {
-        // picture
-        SetArt("icon", "DefaultPicture.png");
-      }
-      else if ( IsPythonScript() )
-      {
-        SetArt("icon", "DefaultScript.png");
-      }
-      else if (IsFavourite())
-      {
-        SetArt("icon", "DefaultFavourites.png");
-      }
-      else
-      {
-        // default icon for unknown file type
-        SetArt("icon", "DefaultFile.png");
-      }
-    }
-    else
-    {
-      if (PLAYLIST::IsPlayList(*this) || PLAYLIST::IsSmartPlayList(*this))
-      {
-        SetArt("icon", "DefaultPlaylist.png");
-      }
-      else if (IsParentFolder())
-      {
-        SetArt("icon", "DefaultFolderBack.png");
-      }
-      else
-      {
-        SetArt("icon", "DefaultFolder.png");
-      }
-    }
-  }
-  // Set the icon overlays (if applicable)
-  if (!HasOverlay() && !HasProperty("icon_never_overlay"))
-  {
-    if (URIUtils::IsInRAR(m_strPath))
-      SetOverlayImage(CGUIListItem::ICON_OVERLAY_RAR);
-    else if (URIUtils::IsInZIP(m_strPath))
-      SetOverlayImage(CGUIListItem::ICON_OVERLAY_ZIP);
-  }
-}
-
 void CFileItem::RemoveExtension()
 {
   if (m_bIsFolder)
@@ -1726,7 +1602,7 @@ void CFileItem::SetFromVideoInfoTag(const CVideoInfoTag &video)
 
   if (video.m_iSeason == 0)
     SetProperty("isspecial", "true");
-  FillInDefaultIcon();
+  ART::FillInDefaultIcon(*this);
   FillInMimeType(false);
 }
 
@@ -1794,7 +1670,7 @@ void CFileItem::SetFromMusicInfoTag(const MUSIC_INFO::CMusicInfoTag& music)
     SetArt("thumb", thumb.GetValueToSave(GetArt("thumb")));
 
   *GetMusicInfoTag() = music;
-  FillInDefaultIcon();
+  ART::FillInDefaultIcon(*this);
   FillInMimeType(false);
 }
 

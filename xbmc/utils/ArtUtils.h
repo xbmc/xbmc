@@ -15,6 +15,9 @@ class CFileItem;
 namespace KODI::ART
 {
 
+//! \brief Set default icon for item.
+void FillInDefaultIcon(CFileItem& item);
+
 /*!
  \brief Get the local fanart for item if it exists
  \return path to the local fanart for this item, or empty if none exists

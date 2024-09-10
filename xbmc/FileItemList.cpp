@@ -23,6 +23,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Archive.h"
+#include "utils/ArtUtils.h"
 #include "utils/Crc32.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/Random.h"
@@ -545,7 +546,7 @@ void CFileItemList::FillInDefaultIcons()
   for (int i = 0; i < (int)m_items.size(); ++i)
   {
     CFileItemPtr pItem = m_items[i];
-    pItem->FillInDefaultIcon();
+    ART::FillInDefaultIcon(*pItem);
   }
 }
 

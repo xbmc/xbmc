@@ -76,6 +76,42 @@ const auto local_fanart_tests = std::array{
     FanartTest{"videodb://movies/1", "foo-fanart.jpg"},
 };
 
+struct IconTest
+{
+  std::string path;
+  std::string icon;
+  std::string overlay{};
+  bool isFolder = false;
+  bool valid = true;
+  bool no_overlay = false;
+};
+
+class FillInDefaultIconTest : public testing::WithParamInterface<IconTest>, public testing::Test
+{
+};
+
+const auto icon_tests = std::array{
+    IconTest{"pvr://guide", "", "", false, false},
+    IconTest{"/home/user/test.pvr", "DefaultTVShows.png"},
+    IconTest{"/home/user/test.zip", "DefaultFile.png"},
+    IconTest{"/home/user/test.mp3", "DefaultAudio.png"},
+    IconTest{"/home/user/test.avi", "DefaultVideo.png"},
+    IconTest{"/home/user/test.jpg", "DefaultPicture.png"},
+    IconTest{"/home/user/test.m3u", "DefaultPlaylist.png"},
+    IconTest{"/home/user/test.xsp", "DefaultPlaylist.png"},
+    IconTest{"/home/user/test.py", "DefaultScript.png"},
+    IconTest{"favourites://1", "DefaultFavourites.png"},
+    IconTest{"/home/user/test.fil", "DefaultFile.png"},
+    IconTest{"/home/user/test.m3u", "DefaultPlaylist.png", "", true},
+    IconTest{"/home/user/test.xsp", "DefaultPlaylist.png", "", true},
+    IconTest{"..", "DefaultFolderBack.png", "", true},
+    IconTest{"/home/user/test/", "DefaultFolder.png", "", true},
+    IconTest{"zip://%2fhome%2fuser%2fbar.zip/foo.avi", "DefaultVideo.png", "OverlayZIP.png"},
+    IconTest{"zip://%2fhome%2fuser%2fbar.zip/foo.avi", "DefaultVideo.png", "", false, true, true},
+    IconTest{"rar://%2fhome%2fuser%2fbar.rar/foo.avi", "DefaultVideo.png", "OverlayRAR.png"},
+    IconTest{"rar://%2fhome%2fuser%2fbar.rar/foo.avi", "DefaultVideo.png", "", false, true, true},
+};
+
 struct TbnTest
 {
   std::string path;
@@ -88,6 +124,21 @@ class GetTbnTest : public testing::WithParamInterface<TbnTest>, public testing::
 };
 
 } // namespace
+
+TEST_P(FillInDefaultIconTest, FillInDefaultIcon)
+{
+  CFileItem item(GetParam().path, GetParam().isFolder);
+  if (!GetParam().valid)
+    item.SetArt("icon", "InvalidImage.png");
+  item.SetLabel(GetParam().path);
+  if (GetParam().no_overlay)
+    item.SetProperty("icon_never_overlay", true);
+  ART::FillInDefaultIcon(item);
+  EXPECT_EQ(item.GetArt("icon"), GetParam().valid ? GetParam().icon : "InvalidImage.png");
+  EXPECT_EQ(item.GetOverlayImage(), GetParam().overlay);
+}
+
+INSTANTIATE_TEST_SUITE_P(TestArtUtils, FillInDefaultIconTest, testing::ValuesIn(icon_tests));
 
 TEST_P(GetLocalFanartTest, GetLocalFanart)
 {
