@@ -29,17 +29,17 @@ CPVRStringSettingValues::CPVRStringSettingValues(struct PVR_ATTRIBUTE_STRING_VAL
     {
       const std::string value{values[i].strValue ? values[i].strValue : ""};
       const char* desc{values[i].strDescription};
-      std::string strDescr{desc ? desc : ""};
-      if (strDescr.empty())
+      std::string description{desc ? desc : ""};
+      if (description.empty())
       {
         // No description given by addon. Create one from value.
         if (defaultDescriptionResourceId > 0)
-          strDescr = StringUtils::Format(
+          description = StringUtils::Format(
               "{} {}", g_localizeStrings.Get(defaultDescriptionResourceId), value);
         else
-          strDescr = value;
+          description = value;
       }
-      m_values.emplace_back(strDescr, value);
+      m_values.emplace_back(description, value);
     }
   }
 }
