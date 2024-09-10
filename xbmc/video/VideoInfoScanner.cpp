@@ -38,6 +38,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "tags/VideoInfoTagLoaderFactory.h"
+#include "utils/ArtUtils.h"
 #include "utils/Digest.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/RegExp.h"
@@ -1792,14 +1793,21 @@ namespace KODI::VIDEO
     {
       if (!pItem->SkipLocalArt())
       {
+        bool useFolder = false;
         if (bApplyToDir && (content == CONTENT_MOVIES || content == CONTENT_MUSICVIDEOS))
         {
-          std::string filename = pItem->GetLocalArtBaseFilename();
+          std::string filename = ART::GetLocalArtBaseFilename(*pItem, useFolder);
           std::string directory = URIUtils::GetDirectory(filename);
           if (filename != directory)
             AddLocalItemArtwork(art, artTypes, directory, addAll, exactName);
         }
-        AddLocalItemArtwork(art, artTypes, pItem->GetLocalArtBaseFilename(), addAll, exactName);
+
+        // Reset useFolder to false as GetLocalArtBaseFilename may modify it in
+        // the previous call.
+        useFolder = false;
+
+        AddLocalItemArtwork(art, artTypes, ART::GetLocalArtBaseFilename(*pItem, useFolder), addAll,
+                            exactName);
       }
 
       if (moviePartOfSet)
