@@ -86,6 +86,10 @@ void FillInDefaultIcon(CFileItem& item)
         // PVR deleted recording
         item.SetArt("icon", "DefaultVideoDeleted.png");
       }
+      else if (item.IsPVRProvider())
+      {
+        item.SetArt("icon", "DefaultPVRProvider.png");
+      }
       else if (PLAYLIST::IsPlayList(item) || PLAYLIST::IsSmartPlayList(item))
       {
         item.SetArt("icon", "DefaultPlaylist.png");
