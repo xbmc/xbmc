@@ -184,6 +184,7 @@ public:
   static bool IsLibraryContent(const std::string& strFile);
   static bool IsPVR(const std::string& strFile);
   static bool IsPVRChannel(const std::string& strFile);
+  static bool IsPVRRadioChannel(const std::string& strFile);
   static bool IsPVRChannelGroup(const std::string& strFile);
   static bool IsPVRGuideItem(const std::string& strFile);
 
