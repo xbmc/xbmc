@@ -37,6 +37,8 @@ class CPVRDatabase;
 class CPVRGUIInfo;
 class CPVRGUIProgressHandler;
 class CPVRManagerJobQueue;
+class CPVRMediaTag;
+class CPVRMedia;
 class CPVRPlaybackState;
 class CPVRRecording;
 class CPVRRecordings;
@@ -69,6 +71,9 @@ enum class PVREvent
   AnnounceReminder,
   Timers,
   TimersInvalidated,
+
+  // Media events
+  MediaInvalidated,
 
   // Client events
   ClientsPrioritiesInvalidated,
@@ -146,6 +151,12 @@ public:
   std::shared_ptr<CPVRTimers> Timers() const;
 
   /*!
+    * @brief Get the media container.
+    * @return The media container.
+    */
+  std::shared_ptr<CPVRMedia> Media() const;
+
+  /*!
    * @brief Get the timers container.
    * @return The timers container.
    */
@@ -153,7 +164,8 @@ public:
 
   /*!
    * @brief Get the instance of a client that matches the given item.
-   * @param item The item containing a PVR recording, a PVR channel, a PVR timer or a PVR EPG event.
+   * @param item The item containing a PVR recording, a PVR channel, a PVR timer,
+   *              a PVR EPG event or a PVR mediaTag.
    * @return the requested client on success, nullptr otherwise.
    */
   std::shared_ptr<CPVRClient> GetClient(const CFileItem& item) const;
@@ -260,6 +272,13 @@ public:
    */
   void TriggerTimersUpdate(int clientId);
   void TriggerTimersUpdate();
+
+  /*!
+    * @brief Let the background thread update the media list.
+    * @param clientId The id of the PVR client to update.
+    */
+  void TriggerMediaUpdate(int clientId);
+  void TriggerMediaUpdate();
 
   /*!
    * @brief Let the background thread update the channel list.
@@ -402,7 +421,7 @@ private:
                         const std::unique_ptr<CPVRGUIProgressHandler>& progressHandler);
 
   /*!
-   * @brief Unload all PVR data (recordings, timers, channelgroups).
+   * @brief Unload all PVR data (media, recordings, timers, channelgroups).
    */
   void UnloadComponents();
 
@@ -439,6 +458,7 @@ private:
       m_channelGroups; /*!< pointer to the channel groups container */
   std::shared_ptr<CPVRRecordings> m_recordings; /*!< pointer to the recordings container */
   std::shared_ptr<CPVRTimers> m_timers; /*!< pointer to the timers container */
+  std::shared_ptr<CPVRMedia> m_media; /*!< pointer to the media container */
   std::shared_ptr<CPVRClients> m_addons; /*!< pointer to the pvr addon container */
   std::unique_ptr<CPVRGUIInfo> m_guiInfo; /*!< pointer to the guiinfo data */
   std::shared_ptr<CPVRComponentRegistration> m_components; /*!< pointer to the PVR components */

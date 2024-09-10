@@ -235,6 +235,7 @@ public:
   static constexpr auto SETTING_PVRRECORD_TIMERNOTIFICATIONS = "pvrrecord.timernotifications";
   static constexpr auto SETTING_PVRRECORD_DELETEAFTERWATCH = "pvrrecord.deleteafterwatch";
   static constexpr auto SETTING_PVRRECORD_GROUPRECORDINGS = "pvrrecord.grouprecordings";
+  static constexpr auto SETTING_PVRMEDIA_GROUPMEDIA = "pvrmedia.groupmedia";
   static constexpr auto SETTING_PVRREMINDERS_AUTOCLOSEDELAY = "pvrreminders.autoclosedelay";
   static constexpr auto SETTING_PVRREMINDERS_AUTORECORD = "pvrreminders.autorecord";
   static constexpr auto SETTING_PVRREMINDERS_AUTOSWITCH = "pvrreminders.autoswitch";

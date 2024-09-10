@@ -32,6 +32,8 @@
 #include "pvr/guilib/PVRGUIChannelIconUpdater.h"
 #include "pvr/guilib/PVRGUIProgressHandler.h"
 #include "pvr/guilib/guiinfo/PVRGUIInfo.h"
+#include "pvr/media/PVRMedia.h"
+#include "pvr/media/PVRMediaTag.h"
 #include "pvr/providers/PVRProvider.h"
 #include "pvr/providers/PVRProviders.h"
 #include "pvr/recordings/PVRRecording.h"
@@ -198,6 +200,7 @@ CPVRManager::CPVRManager()
     m_channelGroups(new CPVRChannelGroupsContainer),
     m_recordings(new CPVRRecordings),
     m_timers(new CPVRTimers),
+    m_media(new CPVRMedia),
     m_addons(new CPVRClients),
     m_guiInfo(new CPVRGUIInfo),
     m_components(new CPVRComponentRegistration),
@@ -274,6 +277,12 @@ std::shared_ptr<CPVRTimers> CPVRManager::Timers() const
   return m_timers;
 }
 
+std::shared_ptr<CPVRMedia> CPVRManager::Media() const
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  return m_media;
+}
+
 std::shared_ptr<CPVRClients> CPVRManager::Clients() const
 {
   // note: m_addons is const (only set/reset in ctor/dtor). no need for a lock here.
@@ -290,6 +299,8 @@ std::shared_ptr<CPVRClient> CPVRManager::GetClient(const CFileItem& item) const
     iClientID = item.GetPVRRecordingInfoTag()->ClientID();
   else if (item.HasPVRTimerInfoTag())
     iClientID = item.GetPVRTimerInfoTag()->ClientID();
+  else if (item.HasPVRMediaInfoTag())
+    iClientID = item.GetPVRMediaInfoTag()->ClientID();
   else if (item.HasEPGInfoTag())
     iClientID = item.GetEPGInfoTag()->ClientID();
   else if (URIUtils::IsPVRChannel(item.GetPath()))
@@ -308,6 +319,12 @@ std::shared_ptr<CPVRClient> CPVRManager::GetClient(const CFileItem& item) const
     const std::shared_ptr<const CPVRRecording> recording = m_recordings->GetByPath(item.GetPath());
     if (recording)
       iClientID = recording->ClientID();
+  }
+  else if (URIUtils::IsPVRMediaTag(item.GetPath()))
+  {
+    const std::shared_ptr<CPVRMediaTag> mediaTag = m_media->GetByPath(item.GetPath());
+    if (mediaTag)
+      iClientID = mediaTag->ClientID();
   }
   return GetClient(iClientID);
 }
@@ -337,6 +354,7 @@ void CPVRManager::Clear()
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
   m_guiInfo.reset();
+  m_media.reset();
   m_timers.reset();
   m_recordings.reset();
   m_providers.reset();
@@ -355,6 +373,7 @@ void CPVRManager::ResetProperties()
   m_channelGroups = std::make_shared<CPVRChannelGroupsContainer>();
   m_recordings = std::make_shared<CPVRRecordings>();
   m_timers = std::make_shared<CPVRTimers>();
+  m_media = std::make_shared<CPVRMedia>();
   m_guiInfo = std::make_unique<CPVRGUIInfo>();
   m_parentalTimer = std::make_unique<CStopWatch>();
   m_knownClients.clear();
@@ -657,6 +676,7 @@ void CPVRManager::OnWake()
   TriggerChannelsUpdate();
   TriggerRecordingsUpdate();
   TriggerTimersUpdate();
+  TriggerMediaUpdate();
 }
 
 void CPVRManager::UpdateComponents(ManagerState stateToCheck)
@@ -757,6 +777,18 @@ bool CPVRManager::UpdateComponents(ManagerState stateToCheck,
     return false;
   }
 
+  // Load all media
+  if (progressHandler)
+    progressHandler->UpdateProgress(g_localizeStrings.Get(19357), 80); // Loading media from clients
+
+  if (!m_media->Update(newClients) || (stateToCheck != GetState()))
+  {
+    CLog::LogF(LOGERROR, "Failed to load PVR media.");
+    m_knownClients.clear(); // start over
+    PublishEvent(PVREvent::ClientsInvalidated);
+    return false;
+  }
+
   // reinit playbackstate as new client may provide new last opened group / last played channel
   m_playbackState->ReInit();
 
@@ -766,6 +798,7 @@ bool CPVRManager::UpdateComponents(ManagerState stateToCheck,
 
 void CPVRManager::UnloadComponents()
 {
+  m_media->Unload();
   m_recordings->Unload();
   m_timers->Unload();
   m_channelGroups->Unload();
@@ -940,6 +973,25 @@ void CPVRManager::TriggerChannelsUpdate(int clientId)
     if (client)
       ChannelGroups()->UpdateFromClients({client}, true);
   });
+}
+
+void CPVRManager::TriggerMediaUpdate(int clientId)
+{
+  m_pendingUpdates->Append("pvr-update-media-" + std::to_string(clientId),
+                           [this, clientId]()
+                           {
+                             if (!IsKnownClient(clientId))
+                               return;
+
+                             const std::shared_ptr<CPVRClient> client = GetClient(clientId);
+                             if (client)
+                               Media()->UpdateFromClients({client});
+                           });
+}
+
+void CPVRManager::TriggerMediaUpdate()
+{
+  m_pendingUpdates->Append("pvr-update-media", [this]() { Media()->UpdateFromClients({}); });
 }
 
 void CPVRManager::TriggerChannelsUpdate()

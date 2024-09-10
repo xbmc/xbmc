@@ -245,6 +245,57 @@ public:
 
   /////////////////////////////////////////////////////////////////////////////////
   //
+  // Media
+  //
+  /////////////////////////////////////////////////////////////////////////////////
+
+  /*!
+   * @brief Check whether this add-on supports media.
+   * @return True if supported, false otherwise.
+   */
+  bool SupportsMedia() const { return m_addonCapabilities && m_addonCapabilities->bSupportsMedia; }
+
+  /*!
+   * @brief Check whether this add-on supports play count for media.
+   * @return True if supported, false otherwise.
+   */
+  bool SupportsMediaPlayCount() const
+  {
+    return m_addonCapabilities && m_addonCapabilities->bSupportsMedia &&
+           m_addonCapabilities->bSupportsMediaTagPlayCount;
+  }
+
+  /*!
+   * @brief Check whether this add-on supports store/retrieve of last played position for media..
+   * @return True if supported, false otherwise.
+   */
+  bool SupportsMediaLastPlayedPosition() const
+  {
+    return m_addonCapabilities && m_addonCapabilities->bSupportsMedia &&
+           m_addonCapabilities->bSupportsLastPlayedPosition;
+  }
+
+  /*!
+   * @brief Check whether this add-on supports retrieving an edit decision list for media.
+   * @return True if supported, false otherwise.
+   */
+  bool SupportsMediaEdl() const
+  {
+    return m_addonCapabilities && m_addonCapabilities->bSupportsMedia &&
+           m_addonCapabilities->bSupportsMediaTagEdl;
+  }
+  /*!
+   * @brief Check whether this add-on supports retrieving the size media..
+   * @return True if supported, false otherwise.
+   */
+  bool SupportsMediaSize() const
+  {
+    return m_addonCapabilities && m_addonCapabilities->bSupportsMedia &&
+           m_addonCapabilities->bSupportsMediaTagSize;
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////
+  //
   // Streams
   //
   /////////////////////////////////////////////////////////////////////////////////

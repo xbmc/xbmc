@@ -682,6 +682,7 @@ static constexpr unsigned int SYSTEM_LOCALE = 1012;
 #define PVR_TIMESHIFT_SEEKBAR             (PVR_STRINGS_START + 73)
 #define PVR_BACKEND_PROVIDERS             (PVR_STRINGS_START + 74)
 #define PVR_BACKEND_CHANNEL_GROUPS        (PVR_STRINGS_START + 75)
+#define PVR_BACKEND_MEDIA                 (PVR_STRINGS_START + 76)
 
 #define PVR_INTS_START  1300
 #define PVR_CLIENT_COUNT  (PVR_INTS_START)

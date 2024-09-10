@@ -28,6 +28,9 @@
 #include "pvr/epg/EpgSearch.h"
 #include "pvr/epg/EpgSearchFilter.h"
 #include "pvr/epg/EpgSearchPath.h"
+#include "pvr/media/PVRMedia.h"
+#include "pvr/media/PVRMediaPath.h"
+#include "pvr/media/PVRMediaTag.h"
 #include "pvr/providers/PVRProvider.h"
 #include "pvr/providers/PVRProviders.h"
 #include "pvr/providers/PVRProvidersPath.h"
@@ -64,7 +67,7 @@ bool CPVRGUIDirectory::SupportsWriteFileOperations() const
     return false;
 
   const std::string filename = m_url.GetFileName();
-  return URIUtils::IsPVRRecording(filename);
+  return URIUtils::IsPVRRecording(filename) || URIUtils::IsPVRMediaTag(filename);
 }
 
 namespace
@@ -108,6 +111,18 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
     item->SetProperty("node.target", CWindowTranslator::TranslateWindow(
                                          bRadio ? WINDOW_RADIO_RECORDINGS : WINDOW_TV_RECORDINGS));
     item->SetArt("icon", "DefaultPVRRecordings.png");
+    results.Add(item);
+  }
+
+  // Media
+  if (clients->AnyClientSupportingMedia())
+  {
+    item = std::make_shared<CFileItem>(
+        bRadio ? CPVRMediaPath::PATH_RADIO_MEDIA : CPVRMediaPath::PATH_TV_MEDIA, true);
+    item->SetLabel(g_localizeStrings.Get(14211)); // Media
+    item->SetProperty("node.target", CWindowTranslator::TranslateWindow(bRadio ? WINDOW_RADIO_MEDIA
+                                                                               : WINDOW_TV_MEDIA));
+    item->SetArt("icon", "DefaultPVRMedia.png");
     results.Add(item);
   }
 
@@ -190,6 +205,11 @@ bool CPVRGUIDirectory::GetDirectory(CFileItemList& results) const
       item->SetLabelPreformatted(true);
       results.Add(item);
 
+      item = std::make_shared<CFileItem>(base + "media/", true);
+      item->SetLabel(g_localizeStrings.Get(14211)); // Media
+      item->SetLabelPreformatted(true);
+      results.Add(item);
+
       // Sort by name only. Labels are preformatted.
       results.AddSortMethod(SortByLabel, 551 /* Name */, LABEL_MASKS("%L", "", "%L", ""));
     }
@@ -216,6 +236,14 @@ bool CPVRGUIDirectory::GetDirectory(CFileItemList& results) const
     if (CServiceBroker::GetPVRManager().IsStarted())
     {
       return GetRecordingsDirectory(results);
+    }
+    return true;
+  }
+  else if (StringUtils::StartsWith(fileName, "media"))
+  {
+    if (CServiceBroker::GetPVRManager().IsStarted())
+    {
+      return GetMediaDirectory(results);
     }
     return true;
   }
@@ -282,6 +310,18 @@ bool CPVRGUIDirectory::HasDeletedRadioRecordings()
 {
   return CServiceBroker::GetPVRManager().IsStarted() &&
          CServiceBroker::GetPVRManager().Recordings()->HasDeletedRadioRecordings();
+}
+
+bool CPVRGUIDirectory::HasTVMedia()
+{
+  return CServiceBroker::GetPVRManager().IsStarted() &&
+         CServiceBroker::GetPVRManager().Media()->GetNumTVMedia() > 0;
+}
+
+bool CPVRGUIDirectory::HasRadioMedia()
+{
+  return CServiceBroker::GetPVRManager().IsStarted() &&
+         CServiceBroker::GetPVRManager().Media()->GetNumRadioMedia() > 0;
 }
 
 namespace
@@ -427,6 +467,84 @@ void GetGetRecordingsSubDirectories(const CPVRRecordingsPath& recParentPath,
     item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED);
 }
 
+void GetSubDirectories(const CPVRMediaPath& mediaTagParentPath,
+                       const std::vector<std::shared_ptr<CPVRMediaTag>>& media,
+                       CFileItemList& results)
+{
+  std::set<std::shared_ptr<CFileItem>> unwatchedFolders;
+  bool bRadio = mediaTagParentPath.IsRadio();
+
+  for (const auto& mediaTag : media)
+  {
+    if (mediaTag->IsRadio() != bRadio)
+      continue;
+
+    const std::string strCurrent =
+        mediaTagParentPath.GetUnescapedSubDirectoryPath(mediaTag->Directory());
+    if (strCurrent.empty())
+      continue;
+
+    CPVRMediaPath recChildPath(mediaTagParentPath);
+    recChildPath.AppendSegment(strCurrent);
+    const std::string strFilePath = recChildPath;
+
+    std::shared_ptr<CFileItem> item;
+    if (!results.Contains(strFilePath))
+    {
+      item.reset(new CFileItem(strCurrent, true));
+      item->SetPath(strFilePath);
+      item->SetLabel(strCurrent);
+      item->SetLabelPreformatted(true);
+      item->m_dateTime = mediaTag->MediaTagTimeAsLocalTime();
+      item->SetProperty("totalepisodes", 0);
+      item->SetProperty("watchedepisodes", 0);
+      item->SetProperty("unwatchedepisodes", 0);
+      item->SetProperty("inprogressepisodes", 0);
+      item->SetProperty("sizeinbytes", UINT64_C(0));
+
+      // Assume all folders are watched, we'll change the overlay later
+      item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED);
+      results.Add(item);
+    }
+    else
+    {
+      item = results.Get(strFilePath);
+      if (item->m_dateTime < mediaTag->MediaTagTimeAsLocalTime())
+        item->m_dateTime = mediaTag->MediaTagTimeAsLocalTime();
+    }
+
+    item->IncrementProperty("totalepisodes", 1);
+    if (mediaTag->GetPlayCount() == 0)
+    {
+      unwatchedFolders.insert(item);
+      item->IncrementProperty("unwatchedepisodes", 1);
+    }
+    else
+    {
+      item->IncrementProperty("watchedepisodes", 1);
+    }
+    if (mediaTag->GetResumePoint().IsPartWay())
+    {
+      item->IncrementProperty("inprogressepisodes", 1);
+    }
+    item->IncrementProperty("sizeinbytes", mediaTag->GetSizeInBytes());
+  }
+
+  // Replace the incremental size of the media with a string equivalent
+  for (auto& item : results.GetList())
+  {
+    int64_t size = item->GetProperty("sizeinbytes").asInteger();
+    item->ClearProperty("sizeinbytes");
+    item->m_dwSize = size; // We'll also sort media folders by size
+    if (size > 0)
+      item->SetProperty("mediatagsize", StringUtils::SizeToString(size));
+  }
+
+  // Change the watched overlay to unwatched for folders containing unwatched entries
+  for (auto& item : unwatchedFolders)
+    item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED);
+}
+
 } // unnamed namespace
 
 bool CPVRGUIDirectory::GetRecordingsDirectory(CFileItemList& results) const
@@ -490,6 +608,60 @@ bool CPVRGUIDirectory::GetRecordingsDirectory(CFileItemList& results) const
   }
 
   return recPath.IsValid();
+}
+
+bool CPVRGUIDirectory::GetMediaDirectory(CFileItemList& results) const
+{
+  bool bGrouped = false;
+  const std::vector<std::shared_ptr<CPVRMediaTag>> media =
+      CServiceBroker::GetPVRManager().Media()->GetAll();
+
+  if (m_url.HasOption("view"))
+  {
+    const std::string view = m_url.GetOption("view");
+    if (view == "grouped")
+      bGrouped = true;
+    else if (view == "flat")
+      bGrouped = false;
+    else
+    {
+      CLog::LogF(LOGERROR, "Unsupported value '{}' for url parameter 'view'", view);
+      return false;
+    }
+  }
+  else
+  {
+    bGrouped = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+        CSettings::SETTING_PVRMEDIA_GROUPMEDIA);
+  }
+
+  const CPVRMediaPath mediaTagPath(m_url.GetWithoutOptions());
+  if (mediaTagPath.IsValid())
+  {
+    // Get the directory structure if in non-flatten mode
+    // Deleted view is always flatten. So only for an active view
+    const std::string strDirectory = mediaTagPath.GetUnescapedDirectoryPath();
+    if (bGrouped)
+      GetSubDirectories(mediaTagPath, media, results);
+
+    // get all files of the current directory or recursively all files starting at the current directory if in flatten mode
+    std::shared_ptr<CFileItem> item;
+    for (const auto& mediaTag : media)
+    {
+      // Omit media not matching criteria
+      if (mediaTag->IsRadio() != mediaTagPath.IsRadio() ||
+          !IsDirectoryMember(strDirectory, mediaTag->Directory(), bGrouped))
+        continue;
+
+      item = std::make_shared<CFileItem>(mediaTag);
+      item->SetOverlayImage(mediaTag->GetPlayCount() > 0 ? CGUIListItem::ICON_OVERLAY_WATCHED
+                                                         : CGUIListItem::ICON_OVERLAY_UNWATCHED);
+
+      results.Add(item);
+    }
+  }
+
+  return mediaTagPath.IsValid();
 }
 
 bool CPVRGUIDirectory::GetSavedSearchesDirectory(bool bRadio, CFileItemList& results) const

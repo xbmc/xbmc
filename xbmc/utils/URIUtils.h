@@ -15,7 +15,7 @@ class CURL;
 class CAdvancedSettings;
 class CFileItem;
 
-/*! \brief Defines the methodology to find hosts on a given subnet 
+/*! \brief Defines the methodology to find hosts on a given subnet
     \sa IsHostOnLAN
 */
 enum class LanCheckMode
@@ -154,6 +154,10 @@ public:
   static bool IsPVRRecordingFileOrFolder(const std::string& strFile);
   static bool IsPVRTVRecordingFileOrFolder(const std::string& strFile);
   static bool IsPVRRadioRecordingFileOrFolder(const std::string& strFile);
+  static bool IsPVRMediaTag(const std::string& strFile);
+  static bool IsPVRMediaTagFileOrFolder(const std::string& strFile);
+  static bool IsPVRTVMediaTagFileOrFolder(const std::string& strFile);
+  static bool IsPVRRadioMediaTagFileOrFolder(const std::string& strFile);
   static bool IsMultiPath(const std::string& strPath);
   static bool IsMusicDb(const std::string& strFile);
   static bool IsNfs(const std::string& strFile);

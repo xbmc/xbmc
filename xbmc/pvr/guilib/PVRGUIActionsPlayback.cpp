@@ -191,6 +191,126 @@ bool CPVRGUIActionsPlayback::PlayRecordingFolder(const CFileItem& item, bool bCh
   return true;
 }
 
+bool CPVRGUIActionsPlayback::CheckResumeMediaTag(const CFileItem& item) const
+{
+  bool bPlayIt(true);
+
+  const VIDEO::GUILIB::Action action =
+      VIDEO::GUILIB::CVideoSelectActionProcessorBase::ChoosePlayOrResume(item);
+  if (action == VIDEO::GUILIB::ACTION_RESUME)
+  {
+    const_cast<CFileItem*>(&item)->SetStartOffset(STARTOFFSET_RESUME);
+  }
+  else if (action == VIDEO::GUILIB::ACTION_PLAY_FROM_BEGINNING)
+  {
+    const_cast<CFileItem*>(&item)->SetStartOffset(0);
+  }
+  else
+  {
+    // The Resume dialog was closed without any choice
+    bPlayIt = false;
+  }
+
+  return bPlayIt;
+}
+
+bool CPVRGUIActionsPlayback::ResumePlayMediaTag(const CFileItem& item, bool bFallbackToPlay) const
+{
+  if (VIDEO::UTILS::GetItemResumeInformation(item).isResumable)
+  {
+    const_cast<CFileItem*>(&item)->SetStartOffset(STARTOFFSET_RESUME);
+  }
+  else
+  {
+    if (bFallbackToPlay)
+      const_cast<CFileItem*>(&item)->SetStartOffset(0);
+    else
+      return false;
+  }
+
+  return PlayMediaTag(item, false /* skip resume check */);
+}
+
+bool CPVRGUIActionsPlayback::PlayMediaTag(const CFileItem& item, bool bCheckResume) const
+{
+  const std::shared_ptr<CPVRMediaTag> mediaTag(CPVRItem(item).GetMediaTag());
+  if (!mediaTag)
+    return false;
+
+  if (CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingMediaTag(mediaTag))
+  {
+    CGUIMessage msg(GUI_MSG_FULLSCREEN, 0,
+                    CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow());
+    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
+    return true;
+  }
+
+  if (!bCheckResume || CheckResumeMediaTag(item))
+  {
+    if (!item.m_bIsFolder && VIDEO::UTILS::IsAutoPlayNextItem(item))
+    {
+      // recursively add items located in the same folder as item to play list, starting with item
+      std::string parentPath = item.GetProperty("ParentPath").asString();
+      if (parentPath.empty())
+        URIUtils::GetParentPath(item.GetPath(), parentPath);
+
+      if (parentPath.empty())
+      {
+        CLog::LogF(LOGERROR, "Unable to obtain parent path for '{}'", item.GetPath());
+        return false;
+      }
+
+      const auto parentItem = std::make_shared<CFileItem>(parentPath, true);
+      if (item.GetStartOffset() == STARTOFFSET_RESUME)
+        parentItem->SetStartOffset(STARTOFFSET_RESUME);
+
+      auto queuedItems = std::make_unique<CFileItemList>();
+      VIDEO::UTILS::GetItemsForPlayList(parentItem, *queuedItems);
+
+      // figure out where to start playback
+      int pos = 0;
+      for (const std::shared_ptr<CFileItem>& queuedItem : *queuedItems)
+      {
+        if (queuedItem->IsSamePath(&item))
+          break;
+
+        pos++;
+      }
+
+      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, pos, -1,
+                                                 static_cast<void*>(queuedItems.release()));
+    }
+    else
+    {
+      std::unique_ptr<CFileItem> itemToPlay{std::make_unique<CFileItem>(mediaTag)};
+      itemToPlay->SetStartOffset(item.GetStartOffset());
+      CServiceBroker::GetPVRManager().PlaybackState()->StartPlayback(
+          itemToPlay, ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM, PVR_SOURCE::DEFAULT);
+    }
+    CheckAndSwitchToFullscreen(true);
+  }
+  return true;
+}
+
+bool CPVRGUIActionsPlayback::PlayMediaTagFolder(const CFileItem& item, bool bCheckResume) const
+{
+  if (!item.m_bIsFolder)
+    return false;
+
+  if (!bCheckResume || CheckResumeMediaTag(item))
+  {
+    // recursively add items to list
+    const auto itemToQueue = std::make_shared<CFileItem>(item);
+    auto queuedItems = std::make_unique<CFileItemList>();
+    VIDEO::UTILS::GetItemsForPlayList(itemToQueue, *queuedItems);
+
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 0, -1,
+                                               static_cast<void*>(queuedItems.release()));
+    CheckAndSwitchToFullscreen(true);
+  }
+  return true;
+}
+
 bool CPVRGUIActionsPlayback::PlayEpgTag(
     const CFileItem& item,
     ContentUtils::PlayMode mode /* = ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM */) const

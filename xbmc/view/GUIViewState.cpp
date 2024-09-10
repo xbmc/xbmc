@@ -134,6 +134,9 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (windowId == WINDOW_TV_RECORDINGS)
     return new CGUIViewStateWindowPVRRecordings(windowId, items);
 
+  if (windowId == WINDOW_TV_MEDIA)
+    return new CGUIViewStateWindowPVRMedia(windowId, items);
+
   if (windowId == WINDOW_TV_GUIDE)
     return new CGUIViewStateWindowPVRGuide(windowId, items);
 
@@ -154,6 +157,9 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
 
   if (windowId == WINDOW_RADIO_RECORDINGS)
     return new CGUIViewStateWindowPVRRecordings(windowId, items);
+
+  if (windowId == WINDOW_RADIO_MEDIA)
+    return new CGUIViewStateWindowPVRMedia(windowId, items);
 
   if (windowId == WINDOW_RADIO_GUIDE)
     return new CGUIViewStateWindowPVRGuide(windowId, items);

@@ -38,6 +38,7 @@ class CPVREpg;
 class CPVRRecordings;
 class CPVRTimerType;
 class CPVRTimersContainer;
+class CPVRMedia;
 
 typedef std::map<int, std::shared_ptr<CPVRClient>> CPVRClientMap;
 
@@ -52,6 +53,7 @@ struct SBackend
   int numTimers = 0;
   int numRecordings = 0;
   int numDeletedRecordings = 0;
+  int numMedia = 0;
   int numProviders = 0;
   int numChannelGroups = 0;
   int numChannels = 0;
@@ -251,6 +253,22 @@ struct SBackend
 
     //@}
 
+    /*! @name MediaTag methods */
+    //@{
+
+    /*!
+     * @brief Get all media from the given clients
+     * @param clients The clients to fetch data from. Leave empty to fetch data from all created clients.
+     * @param media Store the media in this container.
+     * @param failedClients in case of errors will contain the ids of the clients for which the media could not be obtained.
+     * @return PVR_ERROR_NO_ERROR if the operation succeeded, the respective PVR_ERROR value otherwise.
+     */
+    PVR_ERROR GetMedia(const std::vector<std::shared_ptr<CPVRClient>>& clients,
+                       CPVRMedia* media,
+                       std::vector<int>& failedClients) const;
+
+    //@}
+
     /*! @name EPG methods */
     //@{
 
@@ -357,6 +375,12 @@ struct SBackend
     bool AnyClientSupportingRecordingsSize() const;
 
     /*!
+     * @brief Get whether or not any client supports mediaTag size.
+     * @return True if any client supports mediaTag size.
+     */
+    bool AnyClientSupportingMediaSize() const;
+
+    /*!
      * @brief Get whether or not any client supports EPG.
      * @return True if any client supports EPG.
      */
@@ -374,6 +398,13 @@ struct SBackend
      * @return True if any client supports recordings delete.
      */
     bool AnyClientSupportingRecordingsDelete() const;
+    //@}
+
+    /*!
+     * @brief Get whether or not any client supports media.
+     * @return True if any client supports media.
+     */
+    bool AnyClientSupportingMedia() const;
     //@}
 
     /*! @name Power management methods */

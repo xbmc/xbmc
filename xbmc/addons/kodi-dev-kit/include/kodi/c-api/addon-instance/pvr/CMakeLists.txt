@@ -8,6 +8,7 @@ set(HEADERS
   pvr_edl.h
   pvr_epg.h
   pvr_general.h
+  pvr_media.h
   pvr_menu_hook.h
   pvr_providers.h
   pvr_recordings.h

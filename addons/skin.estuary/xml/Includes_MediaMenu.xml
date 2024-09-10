@@ -160,7 +160,7 @@
 					<include>MediaMenuItemsCommon</include>
 					<label>$LOCALIZE[20367]</label>
 					<label2>[B]$INFO[Container.NumNonFolderItems][/B]</label2>
-					<visible>Window.IsActive(MyPVRRecordings.xml)</visible>
+					<visible>Window.IsActive(MyPVRRecordings.xml) | Window.IsActive(MyPVRMedia.xml)</visible>
 				</control>
 				<control type="label" id="300">
 					<label>$LOCALIZE[31021]</label>
@@ -178,7 +178,7 @@
 					<description>Group recording items by folder structure</description>
 					<include>MediaMenuItemsCommon</include>
 					<label>$LOCALIZE[19270]</label>
-					<visible>Window.IsActive(MyPVRRecordings.xml)</visible>
+					<visible>Window.IsActive(MyPVRRecordings.xml) | Window.IsActive(MyPVRMedia.xml)</visible>
 				</control>
 				<control type="radiobutton" id="6">
 					<description>Show hidden channels</description>

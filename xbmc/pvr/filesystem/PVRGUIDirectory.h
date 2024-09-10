@@ -81,6 +81,18 @@ public:
   static bool HasDeletedRadioRecordings();
 
   /*!
+   * @brief Check if any TV media are existing.
+   * @return True if TV media exists, false otherwise.
+   */
+  static bool HasTVMedia();
+
+  /*!
+   * @brief Check if any radio media are existing.
+   * @return True if radio media exists, false otherwise.
+   */
+  static bool HasRadioMedia();
+
+  /*!
    * @brief Get the list of channel groups.
    * @param bRadio If true, obtain radio groups, tv groups otherwise.
    * @param bExcludeHidden If true exclude hidden groups, include hidden groups otherwise.
@@ -106,6 +118,7 @@ public:
 private:
   bool GetTimersDirectory(CFileItemList& results) const;
   bool GetRecordingsDirectory(CFileItemList& results) const;
+  bool GetMediaDirectory(CFileItemList& results) const;
   bool GetSavedSearchesDirectory(bool bRadio, CFileItemList& results) const;
   bool GetSavedSearchResults(bool isRadio, int id, CFileItemList& results) const;
 

@@ -20,9 +20,13 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/guilib/PVRGUIActionsEPG.h"
+#include "pvr/guilib/PVRGUIActionsMedia.h"
 #include "pvr/guilib/PVRGUIActionsPlayback.h"
 #include "pvr/guilib/PVRGUIActionsRecordings.h"
 #include "pvr/guilib/PVRGUIActionsTimers.h"
+#include "pvr/media/PVRMedia.h"
+#include "pvr/media/PVRMediaPath.h"
+#include "pvr/media/PVRMediaTag.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
@@ -61,6 +65,7 @@ namespace CONTEXTMENUITEM
 DECL_STATICCONTEXTMENUITEM(PlayEpgTag);
 DECL_CONTEXTMENUITEM(PlayEpgTagFromHere);
 DECL_STATICCONTEXTMENUITEM(PlayRecording);
+DECL_STATICCONTEXTMENUITEM(PlayMediaTag);
 DECL_CONTEXTMENUITEM(ShowInformation);
 DECL_STATICCONTEXTMENUITEM(ShowChannelGuide);
 DECL_STATICCONTEXTMENUITEM(FindSimilar);
@@ -180,12 +185,29 @@ bool PlayRecording::Execute(const CFileItemPtr& item) const
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// Play media tag
+
+bool PlayMediaTag::IsVisible(const CFileItem& item) const
+{
+  return item.GetPVRMediaInfoTag() != nullptr;
+}
+
+bool PlayMediaTag::Execute(const CFileItemPtr& item) const
+{
+  return CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayMediaTag(
+      *item, true /* bCheckResume */);
+}
+
+///////////////////////////////////////////////////////////////////////////////
 // Show information (epg, recording)
 
 std::string ShowInformation::GetLabel(const CFileItem& item) const
 {
   if (item.GetPVRRecordingInfoTag())
     return g_localizeStrings.Get(19053); /* Recording Information */
+
+  if (item.GetPVRMediaInfoTag())
+    return g_localizeStrings.Get(19355); /* Media Information */
 
   return g_localizeStrings.Get(19047); /* Programme information */
 }
@@ -206,6 +228,9 @@ bool ShowInformation::IsVisible(const CFileItem& item) const
   if (item.GetPVRRecordingInfoTag())
     return true;
 
+  if (item.GetPVRMediaInfoTag())
+    return true;
+
   return false;
 }
 
@@ -213,6 +238,9 @@ bool ShowInformation::Execute(const CFileItemPtr& item) const
 {
   if (item->GetPVRRecordingInfoTag())
     return CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().ShowRecordingInfo(*item);
+
+  if (item->GetPVRMediaInfoTag())
+    return CServiceBroker::GetPVRManager().Get<PVR::GUI::Media>().ShowMediaTagInfo(*item);
 
   return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ShowEPGInfo(*item);
 }
@@ -253,6 +281,10 @@ bool FindSimilar::IsVisible(const CFileItem& item) const
   const std::shared_ptr<const CPVRRecording> recording(item.GetPVRRecordingInfoTag());
   if (recording)
     return !recording->IsDeleted();
+
+  const std::shared_ptr<const CPVRMediaTag> mediaTag(item.GetPVRMediaInfoTag());
+  if (mediaTag)
+    return true;
 
   return false;
 }
@@ -668,6 +700,8 @@ bool PVRClientMenuHook::IsVisible(const CFileItem& item) const
     return item.IsDeletedPVRRecording();
   else if (m_hook.IsRecordingHook())
     return item.IsUsablePVRRecording();
+  else if (m_hook.IsMediaTagHook())
+    return item.IsUsablePVRMediaTag();
   else if (m_hook.IsTimerHook())
     return item.IsPVRTimer();
   else
@@ -690,6 +724,8 @@ bool PVRClientMenuHook::Execute(const CFileItemPtr& item) const
   else if (item->IsUsablePVRRecording())
     return client->CallRecordingMenuHook(m_hook, item->GetPVRRecordingInfoTag(), false) ==
            PVR_ERROR_NO_ERROR;
+  else if (item->IsUsablePVRMediaTag())
+    return client->CallMediaTagMenuHook(m_hook, item->GetPVRMediaInfoTag()) == PVR_ERROR_NO_ERROR;
   else if (item->IsPVRTimer())
     return client->CallTimerMenuHook(m_hook, item->GetPVRTimerInfoTag()) == PVR_ERROR_NO_ERROR;
   else
@@ -774,6 +810,7 @@ CPVRContextMenuManager::CPVRContextMenuManager()
         std::make_shared<CONTEXTMENUITEM::PlayEpgTag>(19190), /* Play programme */
         std::make_shared<CONTEXTMENUITEM::PlayEpgTagFromHere>(),
         std::make_shared<CONTEXTMENUITEM::PlayRecording>(19687), /* Play recording */
+        std::make_shared<CONTEXTMENUITEM::PlayMediaTag>(19688), /* Play media tag */
         std::make_shared<CONTEXTMENUITEM::ShowInformation>(),
         std::make_shared<CONTEXTMENUITEM::ShowChannelGuide>(19686), /* Channel guide */
         std::make_shared<CONTEXTMENUITEM::FindSimilar>(19003), /* Find similar */

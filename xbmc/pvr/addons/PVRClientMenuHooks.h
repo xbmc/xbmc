@@ -34,6 +34,7 @@ namespace PVR
     bool IsRecordingHook() const;
     bool IsDeletedRecordingHook() const;
     bool IsSettingsHook() const;
+    bool IsMediaTagHook() const;
 
     const std::string& GetAddonId() const { return m_addonId; }
     unsigned int GetId() const;
@@ -62,6 +63,7 @@ namespace PVR
     std::vector<CPVRClientMenuHook> GetRecordingHooks() const;
     std::vector<CPVRClientMenuHook> GetDeletedRecordingHooks() const;
     std::vector<CPVRClientMenuHook> GetSettingsHooks() const;
+    std::vector<CPVRClientMenuHook> GetMediaTagHooks() const;
 
   private:
     std::vector<CPVRClientMenuHook> GetHooks(

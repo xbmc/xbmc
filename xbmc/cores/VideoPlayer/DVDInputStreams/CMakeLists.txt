@@ -11,6 +11,7 @@ set(SOURCES BlurayStateSerializer.cpp
             InputStreamMultiSource.cpp
             InputStreamPVRBase.cpp
             InputStreamPVRChannel.cpp
+            InputStreamPVRMedia.cpp
             InputStreamPVRRecording.cpp)
 
 set(HEADERS BlurayStateSerializer.h
@@ -28,6 +29,7 @@ set(HEADERS BlurayStateSerializer.h
             InputStreamMultiSource.h
             InputStreamPVRBase.h
             InputStreamPVRChannel.h
+            InputStreamPVRMedia.h
             InputStreamPVRRecording.h)
 
 if(TARGET ${APP_NAME_LC}::Bluray)

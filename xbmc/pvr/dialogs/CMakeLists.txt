@@ -5,6 +5,8 @@ set(SOURCES GUIDialogPVRChannelManager.cpp
             GUIDialogPVRChannelGuide.cpp
             GUIDialogPVRGuideControls.cpp
             GUIDialogPVRGuideSearch.cpp
+            GUIDialogPVRMediaTagInfo.cpp
+            GUIDialogPVRMediaTagSettings.cpp
             GUIDialogPVRRadioRDSInfo.cpp
             GUIDialogPVRRecordingInfo.cpp
             GUIDialogPVRRecordingSettings.cpp
@@ -19,6 +21,8 @@ set(HEADERS GUIDialogPVRChannelManager.h
             GUIDialogPVRChannelGuide.h
             GUIDialogPVRGuideControls.h
             GUIDialogPVRGuideSearch.h
+            GUIDialogPVRMediaTagInfo.h
+            GUIDialogPVRMediaTagSettings.h
             GUIDialogPVRRadioRDSInfo.h
             GUIDialogPVRRecordingInfo.h
             GUIDialogPVRRecordingSettings.h

@@ -16,6 +16,7 @@
 #include "pvr/pvr_edl.h"
 #include "pvr/pvr_epg.h"
 #include "pvr/pvr_general.h"
+#include "pvr/pvr_media.h"
 #include "pvr/pvr_menu_hook.h"
 #include "pvr/pvr_providers.h"
 #include "pvr/pvr_recordings.h"
@@ -92,7 +93,6 @@ extern "C"
     void (*EpgEventStateChange)(void* kodiInstance,
                                 struct EPG_TAG* tag,
                                 enum EPG_EVENT_STATE newState);
-
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Transfer functions where give data back to Kodi, e.g. GetChannels calls TransferChannelEntry
     void (*TransferChannelEntry)(void* kodiInstance,
@@ -116,6 +116,9 @@ extern "C"
     void (*TransferTimerEntry)(void* kodiInstance,
                                const PVR_HANDLE handle,
                                const struct PVR_TIMER* timer);
+    void (*TransferMediaTagEntry)(void* kodiInstance,
+                                  const PVR_HANDLE handle,
+                                  const struct PVR_MEDIA_TAG* mediaTag);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Kodi inform interface functions
@@ -125,6 +128,7 @@ extern "C"
     void (*TriggerEpgUpdate)(void* kodiInstance, unsigned int iChannelUid);
     void (*TriggerRecordingUpdate)(void* kodiInstance);
     void (*TriggerTimerUpdate)(void* kodiInstance);
+    void (*TriggerMediaUpdate)(void* kodiInstance);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Stream demux interface functions
@@ -280,6 +284,34 @@ extern "C"
                                                const struct PVR_TIMER*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
+    // Recording interface functions
+    enum PVR_ERROR(__cdecl* GetMediaAmount)(const struct AddonInstance_PVR*, int*);
+    enum PVR_ERROR(__cdecl* GetMedia)(const struct AddonInstance_PVR*, PVR_HANDLE);
+    enum PVR_ERROR(__cdecl* SetMediaTagPlayCount)(const struct AddonInstance_PVR*,
+                                                  const struct PVR_MEDIA_TAG*,
+                                                  int);
+    enum PVR_ERROR(__cdecl* SetMediaTagLastPlayedPosition)(const struct AddonInstance_PVR*,
+                                                           const struct PVR_MEDIA_TAG*,
+                                                           int);
+    enum PVR_ERROR(__cdecl* GetMediaTagLastPlayedPosition)(const struct AddonInstance_PVR*,
+                                                           const struct PVR_MEDIA_TAG*,
+                                                           int*);
+    enum PVR_ERROR(__cdecl* GetMediaTagEdl)(const struct AddonInstance_PVR*,
+                                            const struct PVR_MEDIA_TAG*,
+                                            struct PVR_EDL_ENTRY***,
+                                            unsigned int*);
+    enum PVR_ERROR(__cdecl* GetMediaTagSize)(const struct AddonInstance_PVR*,
+                                             const PVR_MEDIA_TAG*,
+                                             int64_t*);
+    enum PVR_ERROR(__cdecl* GetMediaTagStreamProperties)(const struct AddonInstance_PVR*,
+                                                         const struct PVR_MEDIA_TAG*,
+                                                         struct PVR_NAMED_VALUE***,
+                                                         unsigned int*);
+    enum PVR_ERROR(__cdecl* CallMediaTagMenuHook)(const struct AddonInstance_PVR*,
+                                                  const struct PVR_MENUHOOK*,
+                                                  const struct PVR_MEDIA_TAG*);
+
+    //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Powersaving interface functions
     enum PVR_ERROR(__cdecl* OnSystemSleep)(const struct AddonInstance_PVR*);
     enum PVR_ERROR(__cdecl* OnSystemWake)(const struct AddonInstance_PVR*);
@@ -301,6 +333,14 @@ extern "C"
     int(__cdecl* ReadRecordedStream)(const struct AddonInstance_PVR*, unsigned char*, unsigned int);
     int64_t(__cdecl* SeekRecordedStream)(const struct AddonInstance_PVR*, int64_t, int);
     int64_t(__cdecl* LengthRecordedStream)(const struct AddonInstance_PVR*);
+
+    //--==----==----==----==----==----==----==----==----==----==----==----==----==
+    // MediaTag stream read interface functions
+    bool(__cdecl* OpenMediaStream)(const struct AddonInstance_PVR*, const struct PVR_MEDIA_TAG*);
+    void(__cdecl* CloseMediaStream)(const struct AddonInstance_PVR*);
+    int(__cdecl* ReadMediaStream)(const struct AddonInstance_PVR*, unsigned char*, unsigned int);
+    int64_t(__cdecl* SeekMediaStream)(const struct AddonInstance_PVR*, int64_t, int);
+    int64_t(__cdecl* LengthMediaStream)(const struct AddonInstance_PVR*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Stream demux interface functions

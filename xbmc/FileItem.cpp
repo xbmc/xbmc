@@ -45,6 +45,7 @@
 #include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "pvr/guilib/PVRGUIActionsEPG.h"
 #include "pvr/guilib/PVRGUIActionsUtils.h"
+#include "pvr/media/PVRMediaTag.h"
 #include "pvr/providers/PVRProvider.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
@@ -300,6 +301,62 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRTimerInfoTag>& timer)
   FillInMimeType(false);
 }
 
+CFileItem::CFileItem(const std::shared_ptr<CPVRMediaTag>& mediaTag)
+{
+  Initialize();
+
+  m_bIsFolder = false;
+  m_pvrMediaInfoTag = mediaTag;
+  m_strPath = mediaTag->m_strFileNameAndPath;
+  SetLabel(mediaTag->m_strTitle);
+  m_dateTime = mediaTag->MediaTagTimeAsLocalTime();
+  m_dwSize = mediaTag->GetSizeInBytes();
+
+  // Set art
+  if (!mediaTag->IconPath().empty())
+  {
+    SetArt("icon", mediaTag->IconPath());
+  }
+  else
+  {
+    switch (mediaTag->MediaTagType())
+    {
+      case PVR_MEDIA_TAG_TYPE_MOVIE:
+        SetArt("icon", "DefaultMovies.png");
+        break;
+      case PVR_MEDIA_TAG_TYPE_TV_SHOW:
+        SetArt("icon", "DefaultTVShows.png");
+        break;
+      case PVR_MEDIA_TAG_TYPE_MUSIC_VIDEO:
+        SetArt("icon", "DefaultMusicVideos.png");
+        break;
+      case PVR_MEDIA_TAG_TYPE_MUSIC:
+        SetArt("icon", "DefaultMusicSongs.png");
+        break;
+      case PVR_MEDIA_TAG_TYPE_RADIO_SHOW:
+        SetArt("icon", "DefaultRadioShows.png");
+        break;
+      case PVR_MEDIA_TAG_TYPE_PODCAST:
+        SetArt("icon", "DefaultPodcasts.png");
+        break;
+      default:
+        SetArt("icon", "DefaultMusicMedia.png");
+        break;
+    }
+  }
+
+  if (!mediaTag->ThumbnailPath().empty())
+    SetArt("thumb", mediaTag->ThumbnailPath());
+
+  if (!mediaTag->FanartPath().empty())
+    SetArt("fanart", mediaTag->FanartPath());
+
+  // Speedup FillInDefaultIcon()
+  SetProperty("icon_never_overlay", true);
+
+  FillInMimeType(false);
+}
+
 CFileItem::CFileItem(const std::string& path, const std::shared_ptr<CPVRProvider>& provider)
 {
   Initialize();
@@ -318,11 +375,6 @@ CFileItem::CFileItem(const std::string& path, const std::shared_ptr<CPVRProvider
 
   if (!provider->GetThumbPath().empty())
     SetArt("thumb", provider->GetThumbPath());
-
-  // Speedup FillInDefaultIcon()
-  SetProperty("icon_never_overlay", true);
-
-  FillInMimeType(false);
 }
 
 CFileItem::CFileItem(const CArtist& artist)
@@ -528,6 +580,7 @@ CFileItem& CFileItem::operator=(const CFileItem& item)
   m_epgInfoTag = item.m_epgInfoTag;
   m_epgSearchFilter = item.m_epgSearchFilter;
   m_pvrChannelGroupMemberInfoTag = item.m_pvrChannelGroupMemberInfoTag;
+  m_pvrMediaInfoTag = item.m_pvrMediaInfoTag;
   m_pvrRecordingInfoTag = item.m_pvrRecordingInfoTag;
   m_pvrTimerInfoTag = item.m_pvrTimerInfoTag;
   m_pvrProviderInfoTag = item.m_pvrProviderInfoTag;
@@ -603,6 +656,7 @@ void CFileItem::Reset()
   m_epgInfoTag.reset();
   m_epgSearchFilter.reset();
   m_pvrChannelGroupMemberInfoTag.reset();
+  m_pvrMediaInfoTag.reset();
   m_pvrRecordingInfoTag.reset();
   m_pvrTimerInfoTag.reset();
   m_pvrProviderInfoTag.reset();
@@ -925,6 +979,16 @@ bool CFileItem::IsInProgressPVRRecording() const
 bool CFileItem::IsPVRTimer() const
 {
   return HasPVRTimerInfoTag();
+}
+
+bool CFileItem::IsPVRMediaTag() const
+{
+  return HasPVRMediaInfoTag();
+}
+
+bool CFileItem::IsUsablePVRMediaTag() const
+{
+  return m_pvrMediaInfoTag != nullptr;
 }
 
 bool CFileItem::IsPVRProvider() const
@@ -1442,6 +1506,7 @@ void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
     }
 
     m_pvrRecordingInfoTag = item.m_pvrRecordingInfoTag;
+    m_pvrMediaInfoTag = item.m_pvrMediaInfoTag;
 
     SetOverlayImage(GetVideoInfoTag()->GetPlayCount() > 0 ? CGUIListItem::ICON_OVERLAY_WATCHED
                                                           : CGUIListItem::ICON_OVERLAY_UNWATCHED);
@@ -1515,6 +1580,7 @@ void CFileItem::MergeInfo(const CFileItem& item)
     }
 
     m_pvrRecordingInfoTag = item.m_pvrRecordingInfoTag;
+    m_pvrMediaInfoTag = item.m_pvrMediaInfoTag;
 
     SetOverlayImage(GetVideoInfoTag()->GetPlayCount() > 0 ? CGUIListItem::ICON_OVERLAY_WATCHED
                                                           : CGUIListItem::ICON_OVERLAY_UNWATCHED);
@@ -2065,6 +2131,15 @@ std::string CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
       return title;
   }
 
+  if (m_pvrMediaInfoTag)
+    return m_pvrMediaInfoTag->m_strTitle;
+  else if (URIUtils::IsPVRMediaTag(m_strPath))
+  {
+    std::string title = CPVRMediaTag::GetTitleFromURL(m_strPath);
+    if (!title.empty())
+      return title;
+  }
+
   std::string strMovieName;
   if (URIUtils::IsStack(m_strPath))
     strMovieName = CStackDirectory::GetStackedTitlePath(m_strPath);
@@ -2389,15 +2464,18 @@ bool CFileItem::LoadDetails()
 
 bool CFileItem::HasVideoInfoTag() const
 {
-  // Note: CPVRRecording is derived from CVideoInfoTag
-  return m_pvrRecordingInfoTag.get() != nullptr || m_videoInfoTag != nullptr;
+  // Note: CPVRRecording and CPVRMediaTag are derived from CVideoInfoTag
+  return m_pvrRecordingInfoTag.get() != nullptr || m_pvrMediaInfoTag.get() != nullptr ||
+         m_videoInfoTag != nullptr;
 }
 
 CVideoInfoTag* CFileItem::GetVideoInfoTag()
 {
-  // Note: CPVRRecording is derived from CVideoInfoTag
+  // Note: CPVRRecording and CPVRMediaTag are derived from CVideoInfoTag
   if (m_pvrRecordingInfoTag)
     return m_pvrRecordingInfoTag.get();
+  else if (m_pvrMediaInfoTag)
+    return m_pvrMediaInfoTag.get();
   else if (!m_videoInfoTag)
     m_videoInfoTag = new CVideoInfoTag;
 
@@ -2406,8 +2484,14 @@ CVideoInfoTag* CFileItem::GetVideoInfoTag()
 
 const CVideoInfoTag* CFileItem::GetVideoInfoTag() const
 {
-  // Note: CPVRRecording is derived from CVideoInfoTag
-  return m_pvrRecordingInfoTag ? m_pvrRecordingInfoTag.get() : m_videoInfoTag;
+  // Note: CPVRRecording and CPVRMediaTag are derived from CVideoInfoTag
+
+  if (m_pvrRecordingInfoTag)
+    return m_pvrRecordingInfoTag.get();
+  else if (m_pvrMediaInfoTag)
+    return m_pvrMediaInfoTag.get();
+
+  return m_videoInfoTag;
 }
 
 CPictureInfoTag* CFileItem::GetPictureInfoTag()

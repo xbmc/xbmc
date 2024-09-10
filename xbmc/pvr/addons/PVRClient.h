@@ -49,6 +49,8 @@ class CPVRStreamProperties;
 class CPVRTimerInfoTag;
 class CPVRTimerType;
 class CPVRTimersContainer;
+class CPVRMediaTag;
+class CPVRMedia;
 
 /*!
  * Interface from Kodi to a PVR add-on.
@@ -528,6 +530,64 @@ public:
   const std::vector<std::shared_ptr<CPVRTimerType>>& GetTimerTypes() const;
 
   //@}
+  /** @name PVR mediaTag methods */
+  //@{
+
+  /*!
+   * @brief Get the total amount of media from the backend.
+   * @param iMedia The total amount of media on the server or -1 on error.
+   * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
+   */
+  PVR_ERROR GetMediaAmount(int& iMedia) const;
+
+  /*!
+   * @brief Request the list of all media from the backend.
+   * @param results The container to add the media to.
+   * @return PVR_ERROR_NO_ERROR if the list has been fetched successfully.
+   */
+  PVR_ERROR GetMedia(CPVRMedia* results) const;
+
+  /*!
+   * @brief Set the play count of a mediaTag on the backend.
+   * @param mediaTag The mediaTag to set the play count.
+   * @param count Play count.
+   * @return PVR_ERROR_NO_ERROR if the mediaTag's play count has been set successfully.
+   */
+  PVR_ERROR SetMediaTagPlayCount(const CPVRMediaTag& mediaTag, int count);
+
+  /*!
+   * @brief Set the last watched position of a mediaTag on the backend.
+   * @param mediaTag The mediaTag.
+   * @param lastplayedposition The last watched position in seconds
+   * @return PVR_ERROR_NO_ERROR if the position has been stored successfully.
+   */
+  PVR_ERROR SetMediaTagLastPlayedPosition(const CPVRMediaTag& mediaTag, int lastplayedposition);
+
+  /*!
+   * @brief Retrieve the last watched position of a mediaTag on the backend.
+   * @param mediaTag The mediaTag.
+   * @param iPosition The last watched position in seconds or -1 on error
+   * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
+   */
+  PVR_ERROR GetMediaTagLastPlayedPosition(const CPVRMediaTag& mediaTag, int& iPosition) const;
+
+  /*!
+   * @brief Retrieve the edit decision list (EDL) from the backend.
+   * @param mediaTag The mediaTag.
+   * @param edls The edit decision list (empty on error).
+   * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
+   */
+  PVR_ERROR GetMediaTagEdl(const CPVRMediaTag& mediaTag, std::vector<EDL::Edit>& edls) const;
+
+  /*!
+   * @brief Retrieve the size of a mediaTag on the backend.
+   * @param mediaTag The mediaTag.
+   * @param sizeInBytes The size in bytes
+   * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
+   */
+  PVR_ERROR GetMediaTagSize(const CPVRMediaTag& mediaTag, int64_t& sizeInBytes) const;
+
+  //@}
   /** @name PVR live stream methods */
   //@{
 
@@ -695,6 +755,57 @@ public:
                                          CPVRStreamProperties& props) const;
 
   //@}
+  /** @name PVR mediaTag stream methods */
+  //@{
+
+  /*!
+   * @brief Open a mediaTag on the server.
+   * @param mediaTag The mediaTag to open.
+   * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
+   */
+  PVR_ERROR OpenMediaStream(const std::shared_ptr<CPVRMediaTag>& mediaTag);
+
+  /*!
+   * @brief Close an open mediaTag stream.
+   * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
+   */
+  PVR_ERROR CloseMediaStream();
+
+  /*!
+   * @brief Read from an open mediaTag stream.
+   * @param lpBuf The buffer to store the data in.
+   * @param uiBufSize The amount of bytes to read.
+   * @param iRead The amount of bytes that were actually read from the stream.
+   * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
+   */
+  PVR_ERROR ReadMediaStream(void* lpBuf, int64_t uiBufSize, int& iRead);
+
+  /*!
+   * @brief Seek in a mediaTag stream on a backend.
+   * @param iFilePosition The position to seek to.
+   * @param iWhence ?
+   * @param iPosition The new position or -1 on error.
+   * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
+   */
+  PVR_ERROR SeekMediaStream(int64_t iFilePosition, int iWhence, int64_t& iPosition);
+
+  /*!
+   * @brief Get the lenght of the currently playing mediaTag stream, if any.
+   * @param iLength The total length of the stream that's currently being read or -1 on error.
+   * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
+   */
+  PVR_ERROR GetMediaStreamLength(int64_t& iLength);
+
+  /*!
+   * @brief Fill the given container with the properties required for playback of the given mediaTag. Values are obtained from the PVR backend.
+   * @param mediaTag The mediaTag.
+   * @param props The container to be filled with the stream properties.
+   * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
+   */
+  PVR_ERROR GetMediaTagStreamProperties(const std::shared_ptr<const CPVRMediaTag>& mediaTag,
+                                        CPVRStreamProperties& props) const;
+
+  //@}
   /** @name PVR demultiplexer methods */
   //@{
 
@@ -773,6 +884,15 @@ public:
   PVR_ERROR CallRecordingMenuHook(const CPVRClientMenuHook& hook,
                                   const std::shared_ptr<const CPVRRecording>& recording,
                                   bool bDeleted);
+
+  /*!
+   * @brief Call one of the mediaTag menu hooks of the client.
+   * @param hook The hook to call.
+   * @param tag The mediaTag associated with the hook to be called.
+   * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
+   */
+  PVR_ERROR CallMediaTagMenuHook(const CPVRClientMenuHook& hook,
+                                 const std::shared_ptr<CPVRMediaTag>& mediaTag);
 
   /*!
    * @brief Call one of the timer menu hooks of the client.
@@ -972,6 +1092,16 @@ private:
                                           const PVR_RECORDING* entry);
 
   /*!
+   * @brief Transfer a mediaTag entry from the add-on to Kodi
+   * @param kodiInstance Pointer to Kodi's CPVRClient class
+   * @param handle The handle parameter that Kodi used when requesting the mediaTag list
+   * @param entry The entry to transfer to Kodi
+   */
+  static void cb_transfer_media_entry(void* kodiInstance,
+                                      const PVR_HANDLE handle,
+                                      const PVR_MEDIA_TAG* entry);
+
+  /*!
    * @brief Add or replace a menu hook for the context menu for this add-on
    * @param kodiInstance Pointer to Kodi's CPVRClient class
    * @param hook The hook to add.
@@ -1013,6 +1143,12 @@ private:
    * @param kodiInstance Pointer to Kodi's CPVRClient class
    */
   static void cb_trigger_recording_update(void* kodiInstance);
+
+  /*!
+   * @brief Request Kodi to update it's list of media
+   * @param kodiInstance Pointer to Kodi's CPVRClient class
+   */
+  static void cb_trigger_media_update(void* kodiInstance);
 
   /*!
    * @brief Request Kodi to update it's list of channel groups
