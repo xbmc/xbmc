@@ -158,9 +158,15 @@ std::string GetFolderThumb(const CFileItem& item, const std::string& folderJPG /
 {
   std::string strFolder = item.GetPath();
 
-  if (item.IsStack() || URIUtils::IsInRAR(strFolder) || URIUtils::IsInZIP(strFolder))
+  if (item.IsStack())
   {
     URIUtils::GetParentPath(item.GetPath(), strFolder);
+  }
+
+  if (URIUtils::IsInRAR(strFolder) || URIUtils::IsInZIP(strFolder))
+  {
+    const CURL url(strFolder);
+    strFolder = URIUtils::GetDirectory(url.GetHostName());
   }
 
   if (item.IsMultiPath())

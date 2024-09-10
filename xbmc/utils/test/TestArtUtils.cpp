@@ -138,10 +138,7 @@ const auto folder_thumb_tests = std::array{
                "/home/user/bar/folder.jpg"},
     FolderTest{"stack:///home/user/cd1/foo-cd1.avi , /home/user/cd2/foo-cd2.avi", "artist.jpg",
                "/home/user/artist.jpg"},
-    FolderTest{"zip://%2fhome%2fuser%2fbar.zip/foo.avi", "cover.png",
-               "zip://%2fhome%2fuser%2fbar.zip/cover.png"},
-    FolderTest{"rar://%2fhome%2fuser%2fbar.rar/foo.avi", "cover.png",
-               "rar://%2fhome%2fuser%2fbar.rar/cover.png"},
+    FolderTest{"zip://%2fhome%2fuser%2fbar.zip/foo.avi", "cover.png", "/home/user/cover.png"},
     FolderTest{"multipath://%2fhome%2fuser%2fbar%2f/%2fhome%2fuser%2ffoo%2f", "folder.jpg",
                "/home/user/bar/folder.jpg"},
 };
