@@ -17,7 +17,6 @@
 #include "music/MusicFileItemClassify.h"
 #include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayListFileItemClassify.h"
-#include "pvr/channels/PVRChannel.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/FileExtensionProvider.h"
@@ -60,11 +59,10 @@ void FillInDefaultIcon(CFileItem& item)
        * be ordered with most frequently seen types first.  Also bear
        * in mind the complexity of the code behind the check in the
        * case of IsWhatever() returns false.
-       * @todo get rid of PVR compile time dependency
        */
       if (item.IsPVRChannel())
       {
-        if (item.GetPVRChannelInfoTag()->IsRadio())
+        if (URIUtils::IsPVRRadioChannel(item.GetPath()))
           item.SetArt("icon", "DefaultMusicSongs.png");
         else
           item.SetArt("icon", "DefaultTVShows.png");

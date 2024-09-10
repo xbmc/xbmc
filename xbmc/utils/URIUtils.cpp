@@ -998,6 +998,19 @@ bool URIUtils::IsPVRChannel(const std::string& strFile)
   return IsProtocol(strFile, "pvr") && CPVRChannelsPath(strFile).IsChannel();
 }
 
+bool URIUtils::IsPVRRadioChannel(const std::string& strFile)
+{
+  if (IsStack(strFile))
+    return IsPVRRadioChannel(CStackDirectory::GetFirstStackedFile(strFile));
+
+  if (IsProtocol(strFile, "pvr"))
+  {
+    const CPVRChannelsPath path{strFile};
+    return path.IsChannel() && path.IsRadio();
+  }
+  return false;
+}
+
 bool URIUtils::IsPVRChannelGroup(const std::string& strFile)
 {
   if (IsStack(strFile))
