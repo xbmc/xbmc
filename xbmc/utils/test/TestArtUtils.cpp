@@ -123,6 +123,33 @@ class GetTbnTest : public testing::WithParamInterface<TbnTest>, public testing::
 {
 };
 
+struct FolderTest
+{
+  std::string path;
+  std::string thumb;
+  std::string result;
+};
+
+const auto folder_thumb_tests = std::array{
+    FolderTest{"c:\\dir\\", "art.jpg", "c:\\dir\\art.jpg"},
+    FolderTest{"/home/user/", "folder.jpg", "/home/user/folder.jpg"},
+    FolderTest{"plugin://plugin.video.foo/", "folder.jpg", ""},
+    FolderTest{"stack:///home/user/bar/foo-cd1.avi , /home/user/bar/foo-cd2.avi", "folder.jpg",
+               "/home/user/bar/folder.jpg"},
+    FolderTest{"stack:///home/user/cd1/foo-cd1.avi , /home/user/cd2/foo-cd2.avi", "artist.jpg",
+               "/home/user/artist.jpg"},
+    FolderTest{"zip://%2fhome%2fuser%2fbar.zip/foo.avi", "cover.png",
+               "zip://%2fhome%2fuser%2fbar.zip/cover.png"},
+    FolderTest{"rar://%2fhome%2fuser%2fbar.rar/foo.avi", "cover.png",
+               "rar://%2fhome%2fuser%2fbar.rar/cover.png"},
+    FolderTest{"multipath://%2fhome%2fuser%2fbar%2f/%2fhome%2fuser%2ffoo%2f", "folder.jpg",
+               "/home/user/bar/folder.jpg"},
+};
+
+class FolderThumbTest : public testing::WithParamInterface<FolderTest>, public testing::Test
+{
+};
+
 } // namespace
 
 TEST_P(FillInDefaultIconTest, FillInDefaultIcon)
@@ -139,6 +166,15 @@ TEST_P(FillInDefaultIconTest, FillInDefaultIcon)
 }
 
 INSTANTIATE_TEST_SUITE_P(TestArtUtils, FillInDefaultIconTest, testing::ValuesIn(icon_tests));
+
+TEST_P(FolderThumbTest, GetFolderThumb)
+{
+  CFileItem item(GetParam().path, true);
+  const std::string thumb = ART::GetFolderThumb(item, GetParam().thumb);
+  EXPECT_EQ(thumb, GetParam().result);
+}
+
+INSTANTIATE_TEST_SUITE_P(TestArtUtils, FolderThumbTest, testing::ValuesIn(folder_thumb_tests));
 
 TEST_P(GetLocalFanartTest, GetLocalFanart)
 {

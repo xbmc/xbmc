@@ -35,6 +35,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
+#include "utils/ArtUtils.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -387,7 +388,7 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
         items.Add(current);
       }
       // see if there's a local thumb for this item
-      std::string folderThumb = item->GetFolderThumb();
+      std::string folderThumb = ART::GetFolderThumb(*item);
       if (CFileUtils::Exists(folderThumb))
       {
         CFileItemPtr local(new CFileItem("thumb://Local", false));
