@@ -10748,7 +10748,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
         }
         for (const auto &i : artwork)
         {
-          std::string savedThumb = item.GetLocalArt(i.first, false);
+          std::string savedThumb = ART::GetLocalArt(item, i.first, false);
           CServiceBroker::GetTextureCache()->Export(i.second, savedThumb, overwrite);
         }
         if (actorThumbs)
@@ -10894,7 +10894,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
         }
         for (const auto &i : artwork)
         {
-          std::string savedThumb = item.GetLocalArt(i.first, false);
+          std::string savedThumb = ART::GetLocalArt(item, i.first, false);
           CServiceBroker::GetTextureCache()->Export(i.second, savedThumb, overwrite);
         }
       }
@@ -10992,7 +10992,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
 
         for (const auto &i : artwork)
         {
-          std::string savedThumb = item.GetLocalArt(i.first, true);
+          std::string savedThumb = ART::GetLocalArt(item, i.first, true);
           CServiceBroker::GetTextureCache()->Export(i.second, savedThumb, overwrite);
         }
 
@@ -11011,7 +11011,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
             seasonThumb = StringUtils::Format("season{:02}", i.first);
           for (const auto &j : i.second)
           {
-            std::string savedThumb(item.GetLocalArt(seasonThumb + "-" + j.first, true));
+            std::string savedThumb(ART::GetLocalArt(item, seasonThumb + "-" + j.first, true));
             if (!i.second.empty())
               CServiceBroker::GetTextureCache()->Export(j.second, savedThumb, overwrite);
           }
@@ -11094,7 +11094,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
           }
           for (const auto &i : artwork)
           {
-            std::string savedThumb = item.GetLocalArt(i.first, false);
+            std::string savedThumb = ART::GetLocalArt(item, i.first, false);
             CServiceBroker::GetTextureCache()->Export(i.second, savedThumb, overwrite);
           }
           if (actorThumbs)

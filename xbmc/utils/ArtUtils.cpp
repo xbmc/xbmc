@@ -178,6 +178,31 @@ std::string GetFolderThumb(const CFileItem& item, const std::string& folderJPG /
   return URIUtils::AddFileToFolder(strFolder, folderJPG);
 }
 
+std::string GetLocalArt(const CFileItem& item, const std::string& artFile, bool useFolder)
+{
+  // no retrieving of empty art files from folders
+  if (useFolder && artFile.empty())
+    return "";
+
+  std::string strFile = GetLocalArtBaseFilename(item, useFolder);
+  if (strFile.empty()) // empty filepath -> nothing to find
+    return "";
+
+  if (useFolder)
+  {
+    if (!artFile.empty())
+      return URIUtils::AddFileToFolder(strFile, artFile);
+  }
+  else
+  {
+    if (artFile.empty()) // old thumbnail matching
+      return URIUtils::ReplaceExtension(strFile, ".tbn");
+    else
+      return URIUtils::ReplaceExtension(strFile, "-" + artFile);
+  }
+  return "";
+}
+
 std::string GetLocalArtBaseFilename(const CFileItem& item, bool& useFolder)
 {
   std::string strFile;
