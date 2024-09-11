@@ -818,13 +818,9 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         {
           buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
         }
-
         if (node == NODE_TYPE_ACTOR && !dir.IsAllItem(item->GetPath()) && item->m_bIsFolder)
         {
-          if (StringUtils::StartsWithNoCase(m_vecItems->GetPath(), "videodb://musicvideos")) // mvids
-            buttons.Add(CONTEXT_BUTTON_SET_ARTIST_THUMB, 13359);
-          else
-            buttons.Add(CONTEXT_BUTTON_SET_ACTOR_THUMB, 20403);
+          buttons.Add(CONTEXT_BUTTON_SET_ART, 13511); // Choose art
         }
       }
 
@@ -907,19 +903,11 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       }
       return true;
     }
-
-  case CONTEXT_BUTTON_SET_ACTOR_THUMB:
-  case CONTEXT_BUTTON_SET_ARTIST_THUMB:
+    case CONTEXT_BUTTON_SET_ART:
     {
-      std::string type = MediaTypeSeason;
-      if (button == CONTEXT_BUTTON_SET_ACTOR_THUMB)
-        type = "actor";
-      else if (button == CONTEXT_BUTTON_SET_ARTIST_THUMB)
-        type = MediaTypeArtist;
-
-      bool result = CGUIDialogVideoInfo::ManageVideoItemArtwork(m_vecItems->Get(itemNumber), type);
+      const bool result{
+          CGUIDialogVideoInfo::ChooseAndManageVideoItemArtwork(m_vecItems->Get(itemNumber))};
       Refresh();
-
       return result;
     }
   case CONTEXT_BUTTON_GO_TO_ARTIST:
