@@ -178,7 +178,7 @@ void CGUIDialogColorPicker::LoadColors(const std::string& filePath)
               __FUNCTION__);
 }
 
-std::string CGUIDialogColorPicker::GetSelectedColor() const
+const std::string& CGUIDialogColorPicker::GetSelectedColor() const
 {
   return m_selectedColor;
 }
