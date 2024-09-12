@@ -29,7 +29,8 @@
 
 #if defined(__GNUC__)
 #if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 95)
-#if (__GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 4)) && !defined(__clang__)
+#if (__GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 4)) && !defined(__clang__) && \
+    !defined(__arm__) && !defined(__aarch64__)
 #define ATTRIBUTE_PACKED __attribute__((packed, gcc_struct))
 #else
 #define ATTRIBUTE_PACKED __attribute__((packed))
