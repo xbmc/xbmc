@@ -131,13 +131,16 @@ void CURL::Parse(std::string strURL1)
   // ones that come to mind are iso9660, cdda, musicdb, etc.
   // they are all local protocols and have no server part, port number, special options, etc.
   // this removes the need for special handling below.
+  // clang-format off
   if (
     IsProtocol("stack") ||
     IsProtocol("virtualpath") ||
     IsProtocol("multipath") ||
     IsProtocol("special") ||
-    IsProtocol("resource")
+    IsProtocol("resource") ||
+    IsProtocol("file")
     )
+  // clang-format on
   {
     SetFileName(std::move(strURL).substr(iPos));
     return;
