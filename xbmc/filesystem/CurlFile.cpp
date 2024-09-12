@@ -1097,7 +1097,15 @@ bool CCurlFile::Open(const CURL& url)
 
   m_httpresponse = m_state->Connect(m_bufferSize);
 
-  if (m_httpresponse <= 0 || (m_failOnError && m_httpresponse >= 400))
+  long hte = 0;
+
+  // Allow HTTP response code 0 for file:// protocol
+  if (url2.IsProtocol("file"))
+  {
+    hte = -1;
+  }
+
+  if (m_httpresponse <= hte || (m_failOnError && m_httpresponse >= 400))
   {
     std::string error;
     if (m_httpresponse >= 400 && CServiceBroker::GetLogging().CanLogComponent(LOGCURL))
