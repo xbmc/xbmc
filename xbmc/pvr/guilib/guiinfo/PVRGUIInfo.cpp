@@ -1450,14 +1450,17 @@ bool CPVRGUIInfo::GetPVRInt(const CFileItem* item, const CGUIInfo& info, int& iV
       iValue = GetTimeShiftSeekPercent();
       return true;
     case PVR_ACTUAL_STREAM_SIG_PROGR:
-      iValue = std::lrintf(static_cast<float>(m_qualityInfo.Signal()) / 0xFFFF * 100);
+      iValue =
+          static_cast<int>(std::lrintf(static_cast<float>(m_qualityInfo.Signal()) / 0xFFFF * 100));
       return true;
     case PVR_ACTUAL_STREAM_SNR_PROGR:
-      iValue = std::lrintf(static_cast<float>(m_qualityInfo.SNR()) / 0xFFFF * 100);
+      iValue =
+          static_cast<int>(std::lrintf(static_cast<float>(m_qualityInfo.SNR()) / 0xFFFF * 100));
       return true;
     case PVR_BACKEND_DISKSPACE_PROGR:
       if (m_iBackendDiskTotal > 0)
-        iValue = std::lrintf(static_cast<float>(m_iBackendDiskUsed) / m_iBackendDiskTotal * 100);
+        iValue = static_cast<int>(
+            std::lrintf(static_cast<float>(m_iBackendDiskUsed) / m_iBackendDiskTotal * 100));
       else
         iValue = 0xFF;
       return true;
@@ -2176,7 +2179,7 @@ int CPVRGUIInfo::GetTimeShiftSeekPercent() const
     float percentPerSecond = 100.0f / totalTime;
     float percent = progress + percentPerSecond * seekSize;
     percent = std::max(0.0f, std::min(percent, 100.0f));
-    return std::lrintf(percent);
+    return static_cast<int>(std::lrintf(percent));
   }
   return progress;
 }

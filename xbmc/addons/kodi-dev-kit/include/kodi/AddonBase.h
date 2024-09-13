@@ -207,14 +207,17 @@ class CStructHdl
 public:
   CStructHdl() : m_cStructure(new C_STRUCT()), m_owner(true) {}
 
-  CStructHdl(const CPP_CLASS& cppClass)
+  CStructHdl(const CStructHdl& cppClass)
     : m_cStructure(new C_STRUCT(*cppClass.m_cStructure)), m_owner(true)
   {
   }
 
-  CStructHdl(const C_STRUCT* cStructure) : m_cStructure(new C_STRUCT(*cStructure)), m_owner(true) {}
+  explicit CStructHdl(const C_STRUCT* cStructure)
+    : m_cStructure(new C_STRUCT(*cStructure)), m_owner(true)
+  {
+  }
 
-  CStructHdl(C_STRUCT* cStructure) : m_cStructure(cStructure) { assert(cStructure); }
+  explicit CStructHdl(C_STRUCT* cStructure) : m_cStructure(cStructure) { assert(cStructure); }
 
   const CStructHdl& operator=(const CStructHdl& right)
   {
@@ -289,19 +292,22 @@ public:
     memset(m_cStructure, 0, sizeof(C_STRUCT));
   }
 
-  DynamicCStructHdl(const CPP_CLASS& cppClass)
+  DynamicCStructHdl(const DynamicCStructHdl& cppClass)
     : m_cStructure(new C_STRUCT(*cppClass.m_cStructure)), m_owner(true)
   {
     CPP_CLASS::AllocResources(cppClass.m_cStructure, m_cStructure);
   }
 
-  DynamicCStructHdl(const C_STRUCT* cStructure)
+  explicit DynamicCStructHdl(const C_STRUCT* cStructure)
     : m_cStructure(new C_STRUCT(*cStructure)), m_owner(true)
   {
     CPP_CLASS::AllocResources(cStructure, m_cStructure);
   }
 
-  DynamicCStructHdl(C_STRUCT* cStructure) : m_cStructure(cStructure) { assert(cStructure); }
+  explicit DynamicCStructHdl(C_STRUCT* cStructure) : m_cStructure(cStructure)
+  {
+    assert(cStructure);
+  }
 
   const DynamicCStructHdl& operator=(const DynamicCStructHdl& right)
   {

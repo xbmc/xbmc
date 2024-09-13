@@ -109,7 +109,7 @@ public:
    * @brief Get the progress of this tag in seconds.
    * @return The current progress of this tag in seconds.
    */
-  int Progress() const;
+  unsigned int Progress() const;
 
   /*!
    * @brief Get EPG ID of this tag.
@@ -187,7 +187,7 @@ public:
    * @brief Get the duration of this event in seconds.
    * @return The duration.
    */
-  int GetDuration() const;
+  unsigned int GetDuration() const;
 
   /*!
    * @brief Get the title of this event.

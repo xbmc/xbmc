@@ -654,7 +654,8 @@ CDateTime CPVRPlaybackState::GetPlaybackTime(int iClientID, int iUniqueChannelID
   {
     // playing an epg tag on requested channel
     return epgTag->StartAsUTC() +
-           CDateTimeSpan(0, 0, 0, CServiceBroker::GetDataCacheCore().GetPlayTime() / 1000);
+           CDateTimeSpan(0, 0, 0,
+                         static_cast<int>(CServiceBroker::GetDataCacheCore().GetPlayTime()) / 1000);
   }
 
   // not playing / playing live / playing timeshifted

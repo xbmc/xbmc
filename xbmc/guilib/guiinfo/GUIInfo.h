@@ -35,49 +35,31 @@ public:
   }
 
   explicit CGUIInfo(int info, uint32_t data1 = 0, int data2 = 0, uint32_t flag = 0)
-  : m_info(info),
-    m_data1(data1),
-    m_data2(data2),
-    m_data4(0)
+    : m_info(info), m_data1(data1), m_data2(data2)
   {
     if (flag)
       SetInfoFlag(flag);
   }
 
   CGUIInfo(int info, uint32_t data1, int data2, const std::string& data3)
-    : m_info(info), m_data1(data1), m_data2(data2), m_data3(data3), m_data4(0)
+    : m_info(info), m_data1(data1), m_data2(data2), m_data3(data3)
   {
   }
 
   CGUIInfo(int info, uint32_t data1, const std::string& data3)
-  : m_info(info),
-    m_data1(data1),
-    m_data2(0),
-    m_data3(data3),
-    m_data4(0)
+    : m_info(info), m_data1(data1), m_data3(data3)
   {
   }
 
-  CGUIInfo(int info, const std::string& data3)
-  : m_info(info),
-    m_data1(0),
-    m_data2(0),
-    m_data3(data3),
-    m_data4(0)
-  {
-  }
+  CGUIInfo(int info, const std::string& data3) : m_info(info), m_data3(data3) {}
 
   CGUIInfo(int info, const std::string& data3, int data2)
-  : m_info(info),
-    m_data1(0),
-    m_data2(data2),
-    m_data3(data3),
-    m_data4(0)
+    : m_info(info), m_data2(data2), m_data3(data3)
   {
   }
 
   CGUIInfo(int info, const std::string& data3, const std::string& data5)
-    : m_info(info), m_data1(0), m_data3(data3), m_data4(0), m_data5(data5)
+    : m_info(info), m_data3(data3), m_data5(data5)
   {
   }
 
@@ -98,10 +80,10 @@ public:
 private:
   void SetInfoFlag(uint32_t flag);
 
-  uint32_t m_data1;
-  int m_data2;
+  uint32_t m_data1{0};
+  int m_data2{0};
   std::string m_data3;
-  int m_data4;
+  int m_data4{0};
   std::string m_data5;
 };
 

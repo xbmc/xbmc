@@ -161,12 +161,12 @@ bool CGUIWindowFavourites::OnAction(const CAction& action)
 
   if (action.GetID() == ACTION_PLAYER_PLAY)
   {
-    const auto target{
+    const auto targetItem{
         CServiceBroker::GetFavouritesService().ResolveFavourite(*(*m_vecItems)[selectedItem])};
-    if (!target)
+    if (!targetItem)
       return false;
 
-    const auto item{std::make_shared<CFileItem>(*target)};
+    const auto item{std::make_shared<CFileItem>(*targetItem)};
 
     // video play action setting is for files and folders...
     if (item->HasVideoInfoTag() || (item->m_bIsFolder && VIDEO::UTILS::IsItemPlayable(*item)))

@@ -32,9 +32,9 @@ class CGUIInfoLabel
 {
 public:
   CGUIInfoLabel() = default;
-  CGUIInfoLabel(const std::string& label,
-                const std::string& fallback = "",
-                int context = INFO::DEFAULT_CONTEXT);
+  explicit CGUIInfoLabel(const std::string& label,
+                         const std::string& fallback = "",
+                         int context = INFO::DEFAULT_CONTEXT);
 
   void SetLabel(const std::string& label,
                 const std::string& fallback,
