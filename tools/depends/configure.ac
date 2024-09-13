@@ -797,6 +797,7 @@ cpp = $MESON_CXX
 ar = '$AR'
 strip = '$STRIP'
 pkgconfig = '$prefix/$tool_dir/bin/pkg-config'
+pkg-config = '$prefix/$tool_dir/bin/pkg-config'
 
 [host_machine]
 system = '$meson_system'

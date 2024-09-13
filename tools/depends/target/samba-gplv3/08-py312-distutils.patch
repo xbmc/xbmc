@@ -1,0 +1,11 @@
+--- a/third_party/waf/waflib/Tools/python.py
++++ b/third_party/waf/waflib/Tools/python.py
+@@ -53,7 +53,7 @@
+ Piece of Python code used in :py:class:`waflib.Tools.python.pyo` and :py:class:`waflib.Tools.python.pyc` for byte-compiling python files
+ """
+ 
+-DISTUTILS_IMP = ['from distutils.sysconfig import get_config_var, get_python_lib']
++DISTUTILS_IMP = ['import setuptools\nfrom distutils.sysconfig import get_config_var, get_python_lib']
+ 
+ @before_method('process_source')
+ @feature('py')

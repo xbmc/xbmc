@@ -1,7 +1,6 @@
 include ../../Makefile.include PYTHON3-VERSION ../../download-files.include
 PLATFORM=$(NATIVEPLATFORM)
-DEPS = ../../Makefile.include Makefile PYTHON3-VERSION ../../download-files.include \
-                                01-distutil-flags.patch
+DEPS = ../../Makefile.include Makefile PYTHON3-VERSION ../../download-files.include
 
 CONFIGURE=./configure --prefix=$(NATIVEPREFIX) \
                       --disable-shared \
@@ -32,11 +31,7 @@ $(LIBDYLIB): $(PLATFORM)
 	cd $(PLATFORM); $(MAKE)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
-	cd $(PLATFORM); patch -p1 -i ../01-distutil-flags.patch
 	cd $(PLATFORM); $(MAKE) install
-# Sed patch setuptools that is installed via ensurepip as we cant patch the source
-	cd $(NATIVE_SITEPACKAGES); sed -ie "s|cflags = cflags + ' ' + os.environ\['CFLAGS'\]|cflags = os.environ\['CFLAGS'\]|" setuptools/_distutils/sysconfig.py
-	touch $(LIBDYLIB)
 	touch $@
 
 clean:

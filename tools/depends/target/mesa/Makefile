@@ -1,5 +1,6 @@
 include ../../Makefile.include
-DEPS =../../Makefile.include Makefile ../../download-files.include
+DEPS =../../Makefile.include Makefile ../../download-files.include \
+                      01-all-py312-setuptools.patch
 
 LIBNAME=mesa
 VERSION=23.0.1
@@ -46,13 +47,13 @@ CONFIGURE = $(NATIVEPREFIX)/bin/python3 $(NATIVEPREFIX)/bin/meson \
 	-Dbuild-tests=false \
 	-Dselinux=false \
 	-Dosmesa=false \
-	-Ddri3=false \
+	-Ddri3=disabled \
 	-Dglx=disabled \
 	-Dglvnd=false \
 	-Dllvm=false \
-	-Dgallium-vdpau=false \
-	-Dgallium-va=false \
-	-Dgallium-xa=false \
+	-Dgallium-vdpau=disabled \
+	-Dgallium-va=disabled \
+	-Dgallium-xa=disabled \
 	-Dgles1=disabled \
 	-Dgles2=enabled \
 	$(MESA_EXTRA)
@@ -76,6 +77,7 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); rm -rf build; mkdir -p build
+	cd $(PLATFORM); patch -p1 -i ../01-all-py312-setuptools.patch
 	cd $(PLATFORM); $(CONFIGURE) . build
 
 $(LIBDYLIB): $(PLATFORM)

@@ -1,0 +1,36 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -4906,7 +4906,7 @@
+   copy_file_range ctermid dup dup3 execv explicit_bzero explicit_memset \
+   faccessat fchmod fchmodat fchown fchownat fdopendir fdwalk fexecve \
+   fork fork1 fpathconf fstatat ftime ftruncate futimens futimes futimesat \
+-  gai_strerror getegid getentropy geteuid getgid getgrgid getgrgid_r \
++  gai_strerror getegid getentropy geteuid getgid getgrent getgrgid getgrgid_r \
+   getgrnam_r getgrouplist getgroups gethostname getitimer getloadavg getlogin \
+   getpeername getpgid getpid getppid getpriority _getpty \
+   getpwent getpwnam_r getpwuid getpwuid_r getresgid getresuid getrusage getsid getspent \
+@@ -7445,7 +7445,9 @@
+                     -a "$ac_cv_header_netinet_in_h" = "yes"]))
+ 
+ dnl platform specific extensions
+-PY_STDLIB_MOD([grp], [], [test "$ac_cv_func_getgrgid" = yes -o "$ac_cv_func_getgrgid_r" = yes])
++PY_STDLIB_MOD([grp], [],
++  [test "$ac_cv_func_getgrent" = "yes" &&
++   { test "$ac_cv_func_getgrgid" = "yes" || test "$ac_cv_func_getgrgid_r" = "yes"; }])
+ PY_STDLIB_MOD([ossaudiodev],
+   [], [test "$ac_cv_header_linux_soundcard_h" = yes -o "$ac_cv_header_sys_soundcard_h" = yes],
+   [], [$OSSAUDIODEV_LIBS])
+diff --git a/pyconfig.h.in b/pyconfig.h.in
+index d8a9f68951afbd..36a46b1d14909f 100644
+--- a/pyconfig.h.in
++++ b/pyconfig.h.in
+@@ -477,6 +477,9 @@
+ /* Define to 1 if you have the `getgid' function. */
+ #undef HAVE_GETGID
+ 
++/* Define to 1 if you have the `getgrent' function. */
++#undef HAVE_GETGRENT
++
+ /* Define to 1 if you have the `getgrgid' function. */
+ #undef HAVE_GETGRGID
+ 
