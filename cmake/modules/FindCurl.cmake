@@ -34,10 +34,6 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       set(PLATFORM_LINK_LIBS crypt32.lib)
     endif()
 
-    set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/01-win-nghttp2-add-name.patch")
-
-    generate_patchcommand("${patches}")
-
     set(CMAKE_ARGS -DBUILD_CURL_EXE=OFF
                    -DBUILD_SHARED_LIBS=OFF
                    -DBUILD_STATIC_LIBS=ON
