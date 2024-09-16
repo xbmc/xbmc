@@ -145,4 +145,6 @@ private:
     bool m_initialized{false};
     bool m_isSuspended{false}; // sink is in a suspended state - release audio device
     bool m_isDirty{false}; // sink output failed - needs re-init or new device
+
+    LARGE_INTEGER m_timerFreq{}; // performance counter frequency for latency calculations
 };

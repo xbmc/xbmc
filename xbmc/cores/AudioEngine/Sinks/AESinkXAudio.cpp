@@ -66,6 +66,9 @@ CAESinkXAudio::CAESinkXAudio()
     m_xAudio2->SetDebugConfiguration(&config, 0);
   }
 #endif // _DEBUG
+
+  // Get performance counter frequency for latency calculations
+  QueryPerformanceFrequency(&m_timerFreq);
 }
 
 CAESinkXAudio::~CAESinkXAudio()
@@ -198,7 +201,6 @@ unsigned int CAESinkXAudio::AddPackets(uint8_t **data, unsigned int frames, unsi
 
   LARGE_INTEGER timerStart;
   LARGE_INTEGER timerStop;
-  LARGE_INTEGER timerFreq;
 
   XAUDIO2_BUFFER xbuffer = BuildXAudio2Buffer(data, frames, offset);
 
@@ -227,7 +229,6 @@ unsigned int CAESinkXAudio::AddPackets(uint8_t **data, unsigned int frames, unsi
   }
 
   /* Get clock time for latency checks */
-  QueryPerformanceFrequency(&timerFreq);
   QueryPerformanceCounter(&timerStart);
 
   /* Wait for Audio Driver to tell us it's got a buffer available */
@@ -248,7 +249,7 @@ unsigned int CAESinkXAudio::AddPackets(uint8_t **data, unsigned int frames, unsi
 
   QueryPerformanceCounter(&timerStop);
   const LONGLONG timerDiff = timerStop.QuadPart - timerStart.QuadPart;
-  const double timerElapsed = static_cast<double>(timerDiff) * 1000.0 / timerFreq.QuadPart;
+  const double timerElapsed = static_cast<double>(timerDiff) * 1000.0 / m_timerFreq.QuadPart;
   m_avgTimeWaiting += (timerElapsed - m_avgTimeWaiting) * 0.5;
 
   if (m_avgTimeWaiting < 3.0)
