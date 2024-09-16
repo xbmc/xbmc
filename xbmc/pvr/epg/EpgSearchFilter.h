@@ -13,7 +13,6 @@
 #include "pvr/epg/EpgSearchData.h"
 
 #include <memory>
-#include <optional>
 #include <string>
 #include <vector>
 
@@ -165,8 +164,6 @@ namespace PVR
     bool m_bFreeToAirOnly; /*!< Include free to air channels only */
     bool m_bIgnorePresentTimers; /*!< True to ignore currently present timers (future recordings), false if not */
     bool m_bIgnorePresentRecordings; /*!< True to ignore currently active recordings, false if not */
-
-    mutable std::optional<bool> m_groupIdMatches;
 
     int m_iDatabaseId = -1;
     std::string m_title;
