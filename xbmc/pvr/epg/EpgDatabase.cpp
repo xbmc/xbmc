@@ -547,6 +547,8 @@ class CSearchTermConverter
 public:
   explicit CSearchTermConverter(const std::string& strSearchTerm) { Parse(strSearchTerm); }
 
+  bool HasSearchTerm() const { return !m_fragments.empty(); }
+
   std::string ToSQL(const std::string& strFieldName) const
   {
     std::string result = "(";
@@ -739,10 +741,9 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTags(
   // search term
   /////////////////////////////////////////////////////////////////////////////////////////////
 
-  if (!searchData.m_strSearchTerm.empty())
+  const CSearchTermConverter conv{searchData.m_strSearchTerm};
+  if (conv.HasSearchTerm())
   {
-    const CSearchTermConverter conv(searchData.m_strSearchTerm);
-
     // title
     std::string strWhere = conv.ToSQL("sTitle");
 
