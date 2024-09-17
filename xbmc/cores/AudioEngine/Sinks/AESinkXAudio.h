@@ -111,8 +111,8 @@ private:
       HANDLE m_StreamEndEvent{0};
     };
 
-    bool InitializeInternal(std::string deviceId, AEAudioFormat &format);
-    bool IsUSBDevice();
+    bool InitializeInternal(std::string deviceId, AEAudioFormat& format);
+
     /*!
      * \brief Add a 1 frame long buffer with the end of stream flag to the voice.
      * \return true for success, false for failure
@@ -129,31 +129,22 @@ private:
     XAUDIO2_BUFFER BuildXAudio2Buffer(uint8_t** data, unsigned int frames, unsigned int offset);
 
     Microsoft::WRL::ComPtr<IXAudio2> m_xAudio2;
-    IXAudio2MasteringVoice* m_masterVoice;
-    IXAudio2SourceVoice* m_sourceVoice;
+    IXAudio2MasteringVoice* m_masterVoice{nullptr};
+    IXAudio2SourceVoice* m_sourceVoice{nullptr};
     VoiceCallback m_voiceCallback;
 
     AEAudioFormat m_format;
-    unsigned int m_encodedChannels;
-    unsigned int m_encodedSampleRate;
-    CAEChannelInfo m_channelLayout;
-    std::string m_device;
 
-    enum AEDataFormat sinkReqFormat;
-    enum AEDataFormat sinkRetFormat;
+    uint64_t m_sinkFrames{0};
+    std::atomic<uint16_t> m_framesInBuffers{0};
 
-    unsigned int m_uiBufferLen;    /* xaudio endpoint buffer size, in frames */
-    unsigned int m_AvgBytesPerSec;
-    unsigned int m_dwChunkSize;
-    unsigned int m_dwFrameSize;
-    unsigned int m_dwBufferLen;
-    uint64_t m_sinkFrames;
-    std::atomic<uint16_t> m_framesInBuffers;
+    // time between next buffer of data from SoftAE and driver call for data
+    double m_avgTimeWaiting{50.0};
 
-    double m_avgTimeWaiting;       /* time between next buffer of data from SoftAE and driver call for data */
+    bool m_running{false};
+    bool m_initialized{false};
+    bool m_isSuspended{false}; // sink is in a suspended state - release audio device
+    bool m_isDirty{false}; // sink output failed - needs re-init or new device
 
-    bool m_running;
-    bool m_initialized;
-    bool m_isSuspended;            /* sink is in a suspended state - release audio device */
-    bool m_isDirty;                /* sink output failed - needs re-init or new device */
+    LARGE_INTEGER m_timerFreq{}; // performance counter frequency for latency calculations
 };
