@@ -56,40 +56,30 @@
 namespace
 {
 
-const char *GetFormatString(unsigned int format)
+const char* GetFormatString(KD_TEX_FMT format)
 {
   switch (format)
   {
-  case XB_FMT_DXT1:
-    return "DXT1 ";
-  case XB_FMT_DXT3:
-    return "DXT3 ";
-  case XB_FMT_DXT5:
-    return "DXT5 ";
-  case XB_FMT_DXT5_YCoCg:
-    return "YCoCg";
-  case XB_FMT_A8R8G8B8:
-    return "ARGB ";
-  case XB_FMT_A8:
-    return "A8   ";
-  default:
-    return "?????";
+    case KD_TEX_FMT_SDR_R8:
+      return "R8   ";
+    case KD_TEX_FMT_SDR_RG8:
+      return "RG8  ";
+    case KD_TEX_FMT_SDR_RGBA8:
+      return "RGBA8";
+    case KD_TEX_FMT_SDR_BGRA8:
+      return "BGRA8";
+    default:
+      return "?????";
   }
-}
-
-bool HasAlpha(unsigned char* argb, unsigned int width, unsigned int height)
-{
-  unsigned char* p = argb + 3; // offset of alpha
-  for (unsigned int i = 0; i < 4 * width * height; i += 4)
-  {
-    if (p[i] != 0xff)
-      return true;
-  }
-  return false;
 }
 
 void Usage()
 {
+  puts("Texture Packer Version 3");
+  puts("");
+  puts("Tool to pack XBT 3 texture files, used in Kodi Piers (v22).");
+  puts("Accepts the following file formats as input: PNG (preferred), JPG and GIF.");
+  puts("");
   puts("Usage:");
   puts("  -help            Show this screen.");
   puts("  -input <dir>     Input directory. Default: current dir");
@@ -121,6 +111,10 @@ private:
   CXBTFFrame CreateXBTFFrame(DecodedFrame& decodedFrame, CXBTFWriter& writer) const;
 
   bool CheckDupe(MD5Context* ctx, unsigned int pos);
+
+  void ConvertToSingleChannel(RGBAImage& image, uint32_t channel);
+  void ConvertToDualChannel(RGBAImage& image);
+  void ReduceChannels(RGBAImage& image);
 
   DecoderManager decoderManager;
 
@@ -196,11 +190,12 @@ CXBTFFrame TexturePacker::CreateXBTFFrame(DecodedFrame& decodedFrame, CXBTFWrite
   const unsigned int delay = decodedFrame.delay;
   const unsigned int width = decodedFrame.rgbaImage.width;
   const unsigned int height = decodedFrame.rgbaImage.height;
-  const unsigned int size = width * height * 4;
-  const XB_FMT format = XB_FMT_A8R8G8B8;
+  const uint32_t bpp = decodedFrame.rgbaImage.bbp;
+  const unsigned int size = width * height * (bpp / 8);
+  const uint32_t format = static_cast<uint32_t>(decodedFrame.rgbaImage.textureFormat) |
+                          static_cast<uint32_t>(decodedFrame.rgbaImage.textureAlpha) |
+                          static_cast<uint32_t>(decodedFrame.rgbaImage.textureSwizzle);
   unsigned char* data = (unsigned char*)decodedFrame.rgbaImage.pixels.data();
-
-  const bool hasAlpha = HasAlpha(data, width, height);
 
   CXBTFFrame frame;
   lzo_uint packedSize = size;
@@ -246,7 +241,7 @@ CXBTFFrame TexturePacker::CreateXBTFFrame(DecodedFrame& decodedFrame, CXBTFWrite
   frame.SetUnpackedSize(size);
   frame.SetWidth(width);
   frame.SetHeight(height);
-  frame.SetFormat(hasAlpha ? format : static_cast<XB_FMT>(format | XB_FMT_OPAQUE));
+  frame.SetFormat(format);
   frame.SetDuration(delay);
   return frame;
 }
@@ -276,6 +271,111 @@ bool TexturePacker::CheckDupe(MD5Context* ctx,
   m_dupes[pos] = pos;
 
   return false;
+}
+
+void TexturePacker::ConvertToSingleChannel(RGBAImage& image, uint32_t channel)
+{
+  uint32_t size = (image.width * image.height);
+  for (uint32_t i = 0; i < size; i++)
+  {
+    image.pixels[i] = image.pixels[i * 4 + channel];
+  }
+
+  image.textureFormat = KD_TEX_FMT_SDR_R8;
+
+  image.bbp = 8;
+  image.pitch = 1 * image.width;
+}
+
+void TexturePacker::ConvertToDualChannel(RGBAImage& image)
+{
+  uint32_t size = (image.width * image.height);
+  for (uint32_t i = 0; i < size; i++)
+  {
+    image.pixels[i * 2] = image.pixels[i * 4];
+    image.pixels[i * 2 + 1] = image.pixels[i * 4 + 3];
+  }
+  image.textureFormat = KD_TEX_FMT_SDR_RG8;
+  image.bbp = 16;
+  image.pitch = 2 * image.width;
+}
+
+void TexturePacker::ReduceChannels(RGBAImage& image)
+{
+  if (image.textureFormat != KD_TEX_FMT_SDR_BGRA8)
+    return;
+
+  uint32_t size = (image.width * image.height);
+  uint8_t red = image.pixels[0];
+  uint8_t green = image.pixels[1];
+  uint8_t blue = image.pixels[2];
+  uint8_t alpha = image.pixels[3];
+  bool uniformRed = true;
+  bool uniformGreen = true;
+  bool uniformBlue = true;
+  bool uniformAlpha = true;
+  bool isGrey = true;
+  bool isIntensity = true;
+
+  // Checks each pixel for various properties.
+  for (uint32_t i = 0; i < size; i++)
+  {
+    if (image.pixels[i * 4] != red)
+      uniformRed = false;
+    if (image.pixels[i * 4 + 1] != green)
+      uniformGreen = false;
+    if (image.pixels[i * 4 + 2] != blue)
+      uniformBlue = false;
+    if (image.pixels[i * 4 + 3] != alpha)
+      uniformAlpha = false;
+    if (image.pixels[i * 4] != image.pixels[i * 4 + 1] ||
+        image.pixels[i * 4] != image.pixels[i * 4 + 2])
+      isGrey = false;
+    if (image.pixels[i * 4] != image.pixels[i * 4 + 1] ||
+        image.pixels[i * 4] != image.pixels[i * 4 + 2] ||
+        image.pixels[i * 4] != image.pixels[i * 4 + 3])
+      isIntensity = false;
+  }
+
+  if (uniformAlpha && alpha != 0xff)
+    printf("WARNING: uniform alpha detected! Consider using diffusecolor!\n");
+
+  bool isWhite = red == 0xff && green == 0xff && blue == 0xff;
+  if (uniformRed && uniformGreen && uniformBlue && !isWhite)
+    printf("WARNING: uniform color detected! Consider using diffusecolor!\n");
+
+  if (isIntensity)
+  {
+    // this is an intensity (GL_INTENSITY) texture
+    ConvertToSingleChannel(image, 0);
+    image.textureSwizzle = KD_TEX_SWIZ_RRRR;
+  }
+  else if (uniformAlpha && alpha == 0xff)
+  {
+    // we have a opaque texture, L or RGBX
+    if (isGrey)
+    {
+      ConvertToSingleChannel(image, 1);
+      image.textureSwizzle = KD_TEX_SWIZ_RRR1;
+    }
+    image.textureAlpha = KD_TEX_ALPHA_OPAQUE;
+  }
+  else if (uniformRed && uniformGreen && uniformBlue && isWhite)
+  {
+    // an alpha only texture
+    ConvertToSingleChannel(image, 3);
+    image.textureSwizzle = KD_TEX_SWIZ_111R;
+  }
+  else if (isGrey)
+  {
+    // a LA texture
+    ConvertToDualChannel(image);
+    image.textureSwizzle = KD_TEX_SWIZ_RRRG;
+  }
+  else
+  {
+    // BGRA
+  }
 }
 
 int TexturePacker::createBundle(const std::string& InputDir, const std::string& OutputFile)
@@ -312,6 +412,9 @@ int TexturePacker::createBundle(const std::string& InputDir, const std::string& 
       continue;
     }
 
+    for (unsigned int j = 0; j < frames.frameList.size(); j++)
+      ReduceChannels(frames.frameList[j].rgbaImage);
+
     printf("%s\n", output.c_str());
     bool skip=false;
     if (m_dupecheck)
@@ -342,7 +445,7 @@ int TexturePacker::createBundle(const std::string& InputDir, const std::string& 
         file.GetFrames().push_back(frame);
         printf("    frame %4i (delay:%4i)                         %s%c (%d,%d @ %" PRIu64
                " bytes)\n",
-               j, frame.GetDuration(), GetFormatString(frame.GetFormat()),
+               j, frame.GetDuration(), GetFormatString(frame.GetKDFormat()),
                frame.HasAlpha() ? ' ' : '*', frame.GetWidth(), frame.GetHeight(),
                frame.GetUnpackedSize());
       }

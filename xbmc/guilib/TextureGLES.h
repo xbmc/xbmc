@@ -38,6 +38,7 @@ public:
   void DestroyTextureObject() override;
   void LoadToGPU() override;
   void BindToUnit(unsigned int unit) override;
+  bool SupportsFormat(KD_TEX_FMT textureFormat, KD_TEX_SWIZ textureSwizzle) override;
 
 protected:
   void SetSwizzle(bool swapRB);

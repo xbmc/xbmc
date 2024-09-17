@@ -12,6 +12,7 @@
 #include "filesystem/File.h"
 #include "filesystem/XbtManager.h"
 #include "guilib/TextureBundleXBT.h"
+#include "guilib/TextureFormats.h"
 #include "guilib/XBTFReader.h"
 #include "utils/StringUtils.h"
 
@@ -312,6 +313,42 @@ XB_FMT CXbtFile::GetImageFormat() const
     return XB_FMT_UNKNOWN;
 
   return frame.GetFormat();
+}
+
+KD_TEX_FMT CXbtFile::GetKDFormat() const
+{
+  CXBTFFrame frame;
+  if (!GetFirstFrame(frame))
+    return KD_TEX_FMT_UNKNOWN;
+
+  return frame.GetKDFormat();
+}
+
+KD_TEX_FMT CXbtFile::GetKDFormatType() const
+{
+  CXBTFFrame frame;
+  if (!GetFirstFrame(frame))
+    return KD_TEX_FMT_UNKNOWN;
+
+  return frame.GetKDFormatType();
+}
+
+KD_TEX_ALPHA CXbtFile::GetKDAlpha() const
+{
+  CXBTFFrame frame;
+  if (!GetFirstFrame(frame))
+    return KD_TEX_ALPHA_OPAQUE;
+
+  return frame.GetKDAlpha();
+}
+
+KD_TEX_SWIZ CXbtFile::GetKDSwizzle() const
+{
+  CXBTFFrame frame;
+  if (!GetFirstFrame(frame))
+    return KD_TEX_SWIZ_RGBA;
+
+  return frame.GetKDSwizzle();
 }
 
 bool CXbtFile::HasImageAlpha() const

@@ -16,8 +16,10 @@
 #include "filesystem/ResourceFile.h"
 #include "filesystem/XbtFile.h"
 #include "guilib/TextureBase.h"
+#include "guilib/TextureFormats.h"
 #include "guilib/iimage.h"
 #include "guilib/imagefactory.h"
+#include "messaging/ApplicationMessenger.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
@@ -184,9 +186,21 @@ bool CTexture::LoadFromFileInternal(const std::string& texturePath,
     XFILE::CXbtFile xbtFile;
     if (!xbtFile.Open(url))
       return false;
-
-    return LoadFromMemory(xbtFile.GetImageWidth(), xbtFile.GetImageHeight(), 0,
-                          xbtFile.GetImageFormat(), xbtFile.HasImageAlpha(), buf.data());
+    if (xbtFile.GetKDFormatType())
+    {
+      return UploadFromMemory(xbtFile.GetImageWidth(), xbtFile.GetImageHeight(), 0, buf.data(),
+                              xbtFile.GetKDFormat(), xbtFile.GetKDAlpha(), xbtFile.GetKDSwizzle());
+    }
+    else if (xbtFile.GetImageFormat() == XB_FMT_A8R8G8B8)
+    {
+      KD_TEX_ALPHA alpha = xbtFile.HasImageAlpha() ? KD_TEX_ALPHA_STRAIGHT : KD_TEX_ALPHA_OPAQUE;
+      return UploadFromMemory(xbtFile.GetImageWidth(), xbtFile.GetImageHeight(), 0, buf.data(),
+                              KD_TEX_FMT_SDR_BGRA8, alpha, KD_TEX_SWIZ_RGBA);
+    }
+    else
+    {
+      return false;
+    }
   }
 
   IImage* pImage;
@@ -271,7 +285,7 @@ bool CTexture::LoadIImage(IImage* pImage,
   if (pImage->Orientation())
     m_orientation = pImage->Orientation() - 1;
 
-  m_hasAlpha = pImage->hasAlpha();
+  m_textureAlpha = pImage->hasAlpha() ? KD_TEX_ALPHA_STRAIGHT : KD_TEX_ALPHA_OPAQUE;
   m_originalWidth = pImage->originalWidth();
   m_originalHeight = pImage->originalHeight();
   m_imageWidth = pImage->Width();
@@ -308,8 +322,64 @@ bool CTexture::LoadFromMemory(unsigned int width,
   m_imageWidth = m_originalWidth = width;
   m_imageHeight = m_originalHeight = height;
   m_format = format;
-  m_hasAlpha = hasAlpha;
+  m_textureAlpha = hasAlpha ? KD_TEX_ALPHA_STRAIGHT : KD_TEX_ALPHA_OPAQUE;
   Update(width, height, pitch, format, pixels, false);
+  return true;
+}
+
+bool CTexture::UploadFromMemory(unsigned int width,
+                                unsigned int height,
+                                unsigned int pitch,
+                                unsigned char* pixels,
+                                KD_TEX_FMT format,
+                                KD_TEX_ALPHA alpha,
+                                KD_TEX_SWIZ swizzle)
+{
+  m_imageWidth = m_textureWidth = m_originalWidth = width;
+  m_imageHeight = m_textureHeight = m_originalHeight = height;
+  m_textureFormat = format;
+  m_textureAlpha = alpha;
+  m_textureSwizzle = swizzle;
+
+  if (!SupportsFormat(m_textureFormat, m_textureSwizzle) && !ConvertToLegacy(width, height, pixels))
+  {
+    CLog::LogF(
+        LOGERROR,
+        "Failed to upload texture. Format {} and swizzle {} not supported by the texture pipeline.",
+        m_textureFormat, m_textureSwizzle);
+
+    m_loadedToGPU = true;
+    return false;
+  }
+
+  if (CServiceBroker::GetAppMessenger()->IsProcessThread())
+  {
+    if (m_pixels)
+    {
+      LoadToGPU();
+    }
+    else
+    {
+      // just a borrowed buffer
+      m_pixels = pixels;
+      m_bCacheMemory = true;
+      LoadToGPU();
+      m_bCacheMemory = false;
+      m_pixels = nullptr;
+    }
+  }
+  else if (!m_pixels)
+  {
+    size_t size = GetPitch() * GetRows();
+    m_pixels = static_cast<unsigned char*>(KODI::MEMORY::AlignedMalloc(size, 32));
+    if (m_pixels == nullptr)
+    {
+      CLog::LogF(LOGERROR, "Could not allocate {} bytes. Out of memory.", size);
+      return false;
+    }
+    std::memcpy(m_pixels, pixels, size);
+  }
+
   return true;
 }
 

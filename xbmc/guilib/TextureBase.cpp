@@ -398,3 +398,77 @@ void CTextureBase::SetKDFormat(XB_FMT xbFMT)
       return;
   }
 }
+
+bool CTextureBase::ConvertToLegacy(uint32_t width, uint32_t height, uint8_t* src)
+{
+  if (m_textureFormat == KD_TEX_FMT_SDR_BGRA8 && m_textureSwizzle == KD_TEX_SWIZ_RGBA)
+  {
+    m_format = XB_FMT_A8R8G8B8;
+    return true;
+  }
+
+  if (m_textureFormat == KD_TEX_FMT_SDR_R8)
+  {
+    if (m_textureSwizzle != KD_TEX_SWIZ_111R && m_textureSwizzle != KD_TEX_SWIZ_RRR1 &&
+        m_textureSwizzle != KD_TEX_SWIZ_RRRR)
+      return false;
+  }
+  else if (m_textureFormat == KD_TEX_FMT_SDR_RG8)
+  {
+    if (m_textureSwizzle != KD_TEX_SWIZ_RRRG)
+      return false;
+  }
+  else
+  {
+    return false;
+  }
+
+  size_t size = GetPitch() * GetRows();
+
+  Allocate(width, height, XB_FMT_A8R8G8B8);
+
+  if (m_textureSwizzle == KD_TEX_SWIZ_111R)
+  {
+    for (int32_t i = size - 1; i >= 0; i--)
+    {
+      m_pixels[i * 4 + 3] = src[i];
+      m_pixels[i * 4 + 2] = 0xff;
+      m_pixels[i * 4 + 1] = 0xff;
+      m_pixels[i * 4] = 0xff;
+    }
+  }
+  else if (m_textureSwizzle == KD_TEX_SWIZ_RRR1)
+  {
+    for (int32_t i = size - 1; i >= 0; i--)
+    {
+      m_pixels[i * 4 + 3] = 0xff;
+      m_pixels[i * 4 + 2] = src[i];
+      m_pixels[i * 4 + 1] = src[i];
+      m_pixels[i * 4] = src[i];
+    }
+  }
+  else if (m_textureSwizzle == KD_TEX_SWIZ_RRRR)
+  {
+    for (int32_t i = size - 1; i >= 0; i--)
+    {
+      m_pixels[i * 4 + 3] = src[i];
+      m_pixels[i * 4 + 2] = src[i];
+      m_pixels[i * 4 + 1] = src[i];
+      m_pixels[i * 4] = src[i];
+    }
+  }
+  else if (m_textureSwizzle == KD_TEX_SWIZ_RRRG)
+  {
+    for (int32_t i = size / 2 - 1; i >= 0; i--)
+    {
+      m_pixels[i * 4 + 3] = src[i * 2 + 1];
+      m_pixels[i * 4 + 2] = src[i * 2];
+      m_pixels[i * 4 + 1] = src[i * 2];
+      m_pixels[i * 4] = src[i * 2];
+    }
+  }
+
+  m_textureFormat = KD_TEX_FMT_SDR_BGRA8;
+  m_textureSwizzle = KD_TEX_SWIZ_RGBA;
+  return true;
+}

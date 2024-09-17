@@ -29,6 +29,17 @@ static bool ReadString(FILE* file, char* str, size_t max_length)
   return (fread(str, max_length, 1, file) == 1);
 }
 
+static bool ReadChar(FILE* file, char& value)
+{
+  if (file == nullptr)
+    return false;
+
+  if (fread(&value, sizeof(char), 1, file) != 1)
+    return false;
+
+  return true;
+}
+
 static bool ReadUInt32(FILE* file, uint32_t& value)
 {
   if (file == nullptr)
@@ -89,11 +100,11 @@ bool CXBTFReader::Open(const std::string& path)
     return false;
 
   // read the version
-  char version[1];
-  if (!ReadString(m_file, version, sizeof(version)))
+  char version;
+  if (!ReadChar(m_file, version))
     return false;
 
-  if (strncmp(XBTF_VERSION.c_str(), version, sizeof(version)) != 0)
+  if (version < XBTF_VERSION_MIN)
     return false;
 
   unsigned int nofFiles;

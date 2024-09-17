@@ -234,6 +234,13 @@ void CGLTexture::LoadToGPU()
     m_textureWidth = maxSize;
   }
 
+  // there might not be any padding for the following formats, so we have to
+  // read one/two bytes at the time.
+  if (m_textureFormat == KD_TEX_FMT_SDR_R8)
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+  if (m_textureFormat == KD_TEX_FMT_SDR_RG8)
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 2);
+
   SetSwizzle();
 
   TextureFormat glFormat = GetFormatGL(m_textureFormat);

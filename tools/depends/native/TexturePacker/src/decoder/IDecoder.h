@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "guilib/TextureFormats.h"
+
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -52,8 +54,11 @@ public:
   std::vector<uint8_t> pixels;
   int width = 0; // width
   int height = 0; // height
-  int bbp = 0; // bits per pixel
+  int bbp = 32; // bits per pixel
   int pitch = 0; // rowsize in bytes
+  KD_TEX_FMT textureFormat{KD_TEX_FMT_SDR_BGRA8};
+  KD_TEX_ALPHA textureAlpha{KD_TEX_ALPHA_STRAIGHT};
+  KD_TEX_SWIZ textureSwizzle{KD_TEX_SWIZ_RGBA};
 };
 
 class DecodedFrame
