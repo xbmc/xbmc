@@ -165,7 +165,7 @@ bool CRepository::FetchChecksum(const std::string& url,
     ss.write(temp, read);
   if (read <= -1)
     return false;
-  checksum = ss.str();
+  checksum = std::move(ss).str();
   std::size_t pos = checksum.find_first_of(" \n");
   if (pos != std::string::npos)
   {
