@@ -596,6 +596,9 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
             WASAPISampleRates[j] > XAUDIO2_MAX_SAMPLE_RATE)
           continue;
 
+        SafeDestroyVoice(&m_sourceVoice);
+        SafeDestroyVoice(&m_masterVoice);
+
         wfxex.Format.nSamplesPerSec    = WASAPISampleRates[i];
         wfxex.Format.nAvgBytesPerSec   = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
 
@@ -622,9 +625,19 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
 
       if (closestMatch >= 0)
       {
+        // Closest match may be different from the last successful sample rate tested
+        SafeDestroyVoice(&m_sourceVoice);
+        SafeDestroyVoice(&m_masterVoice);
+
         wfxex.Format.nSamplesPerSec    = WASAPISampleRates[closestMatch];
         wfxex.Format.nAvgBytesPerSec   = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
-        goto initialize;
+
+        if (SUCCEEDED(m_xAudio2->CreateMasteringVoice(&m_masterVoice, wfxex.Format.nChannels,
+                                                      wfxex.Format.nSamplesPerSec, 0,
+                                                      device.c_str(), nullptr, streamCategory)) &&
+            SUCCEEDED(m_xAudio2->CreateSourceVoice(&m_sourceVoice, &wfxex.Format, 0,
+                                                   XAUDIO2_DEFAULT_FREQ_RATIO, &m_voiceCallback)))
+          goto initialize;
       }
     }
   }
