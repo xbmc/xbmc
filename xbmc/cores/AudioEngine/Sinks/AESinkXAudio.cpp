@@ -88,7 +88,7 @@ CAESinkXAudio::CAESinkXAudio()
   HRESULT hr = KXAudio2Create(m_xAudio2.ReleaseAndGetAddressOf(), 0);
   if (FAILED(hr))
   {
-    CLog::LogF(LOGERROR, "XAudio initialization failed.");
+    CLog::LogF(LOGERROR, "XAudio initialization failed, error {:X}.", hr);
   }
 #ifdef _DEBUG
   else
@@ -124,6 +124,13 @@ void CAESinkXAudio::Register()
 std::unique_ptr<IAESink> CAESinkXAudio::Create(std::string& device, AEAudioFormat& desiredFormat)
 {
   auto sink = std::make_unique<CAESinkXAudio>();
+
+  if (!sink->m_xAudio2)
+  {
+    CLog::LogF(LOGERROR, "XAudio2 not loaded.");
+    return {};
+  }
+
   if (sink->Initialize(desiredFormat, device))
     return sink;
 
@@ -412,13 +419,15 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
       wfxex.Format.nSamplesPerSec = WASAPISampleRates[j];
       wfxex.Format.nAvgBytesPerSec = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
 
-      xaudio2->CreateMasteringVoice(&mMasterVoice, wfxex.Format.nChannels,
-                                    wfxex.Format.nSamplesPerSec, 0, deviceId.c_str(), nullptr,
-                                    streamCategory);
-      hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format);
+      if (SUCCEEDED(xaudio2->CreateMasteringVoice(&mMasterVoice, wfxex.Format.nChannels,
+                                                  wfxex.Format.nSamplesPerSec, 0, deviceId.c_str(),
+                                                  nullptr, streamCategory)))
+      {
+        hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format);
 
-      if (SUCCEEDED(hr))
-        deviceInfo.m_sampleRates.push_back(WASAPISampleRates[j]);
+        if (SUCCEEDED(hr))
+          deviceInfo.m_sampleRates.push_back(WASAPISampleRates[j]);
+      }
     }
 
     SafeDestroyVoice(&mSourceVoice);
