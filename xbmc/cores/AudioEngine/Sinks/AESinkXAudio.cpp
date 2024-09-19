@@ -413,6 +413,10 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
 
     for (int j = 0; j < WASAPISampleRateCount; j++)
     {
+      if (WASAPISampleRates[j] < XAUDIO2_MIN_SAMPLE_RATE ||
+          WASAPISampleRates[j] > XAUDIO2_MAX_SAMPLE_RATE)
+        continue;
+
       SafeDestroyVoice(&mSourceVoice);
       SafeDestroyVoice(&mMasterVoice);
 
@@ -588,6 +592,10 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
 
       for (int i = 0 ; i < WASAPISampleRateCount; i++)
       {
+        if (WASAPISampleRates[j] < XAUDIO2_MIN_SAMPLE_RATE ||
+            WASAPISampleRates[j] > XAUDIO2_MAX_SAMPLE_RATE)
+          continue;
+
         wfxex.Format.nSamplesPerSec    = WASAPISampleRates[i];
         wfxex.Format.nAvgBytesPerSec   = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
 
