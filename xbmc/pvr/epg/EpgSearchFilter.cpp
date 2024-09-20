@@ -149,11 +149,29 @@ void CPVREpgSearchFilter::SetStartDateTime(const CDateTime& startDateTime)
   }
 }
 
+void CPVREpgSearchFilter::SetStartAnyTime(bool startAnyTime)
+{
+  if (m_searchData.m_startAnyTime != startAnyTime)
+  {
+    m_searchData.m_startAnyTime = startAnyTime;
+    m_bChanged = true;
+  }
+}
+
 void CPVREpgSearchFilter::SetEndDateTime(const CDateTime& endDateTime)
 {
   if (m_searchData.m_endDateTime != endDateTime)
   {
     m_searchData.m_endDateTime = endDateTime;
+    m_bChanged = true;
+  }
+}
+
+void CPVREpgSearchFilter::SetEndAnyTime(bool endAnyTime)
+{
+  if (m_searchData.m_endAnyTime != endAnyTime)
+  {
+    m_searchData.m_endAnyTime = endAnyTime;
     m_bChanged = true;
   }
 }

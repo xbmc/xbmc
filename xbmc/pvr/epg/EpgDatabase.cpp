@@ -130,7 +130,9 @@ void CPVREpgDatabase::CreateTables()
               "bIgnorePresentTimers      bool, "
               "bIgnorePresentRecordings  bool, "
               "iChannelGroup             integer, "
-              "sIconPath                 varchar(255)"
+              "sIconPath                 varchar(255), "
+              "bStartAnyTime             bool, "
+              "bEndAnyTime               bool"
               ")");
 }
 
@@ -336,6 +338,14 @@ void CPVREpgDatabase::UpdateTables(int iVersion)
   {
     m_pDS->exec("ALTER TABLE epgtags ADD sParentalRatingIcon varchar(512);");
     m_pDS->exec("ALTER TABLE epgtags ADD sParentalRatingSource varchar(128);");
+  }
+
+  if (iVersion < 19)
+  {
+    m_pDS->exec("ALTER TABLE savedsearches ADD bStartAnyTime bool;");
+    m_pDS->exec("ALTER TABLE savedsearches ADD bEndAnyTime bool;");
+    m_pDS->exec("UPDATE savedsearches SET bStartAnyTime = 1;");
+    m_pDS->exec("UPDATE savedsearches SET bEndAnyTime = 1;");
   }
 }
 
@@ -694,11 +704,25 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTags(
   // min start datetime
   /////////////////////////////////////////////////////////////////////////////////////////////
 
+  static constexpr unsigned int ONE_DAY{60 * 60 * 24};
+
   if (searchData.m_startDateTime.IsValid())
   {
     time_t minStart;
     searchData.m_startDateTime.GetAsTime(minStart);
-    filter.AppendWhere(PrepareSQL("iStartTime >= %u", static_cast<unsigned int>(minStart)));
+
+    if (searchData.m_startAnyTime)
+    {
+      filter.AppendWhere(PrepareSQL("iStartTime >= %u", static_cast<unsigned int>(minStart)));
+    }
+    else
+    {
+      const unsigned int startDate{static_cast<unsigned int>(minStart) / ONE_DAY};
+      filter.AppendWhere(PrepareSQL("(iStartTime / %u) >= %u", ONE_DAY, startDate));
+
+      const unsigned int startTime{static_cast<unsigned int>(minStart) % ONE_DAY};
+      filter.AppendWhere(PrepareSQL("(iStartTime %% %u) >= %u", ONE_DAY, startTime));
+    }
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////
@@ -709,7 +733,19 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTags(
   {
     time_t maxEnd;
     searchData.m_endDateTime.GetAsTime(maxEnd);
-    filter.AppendWhere(PrepareSQL("iEndTime <= %u", static_cast<unsigned int>(maxEnd)));
+
+    if (searchData.m_endAnyTime)
+    {
+      filter.AppendWhere(PrepareSQL("iEndTime <= %u", static_cast<unsigned int>(maxEnd)));
+    }
+    else
+    {
+      const unsigned int endDate{static_cast<unsigned int>(maxEnd) / ONE_DAY};
+      filter.AppendWhere(PrepareSQL("(iEndTime / %u) <= %u", ONE_DAY, endDate));
+
+      const unsigned int endTime{static_cast<unsigned int>(maxEnd) % ONE_DAY};
+      filter.AppendWhere(PrepareSQL("(iEndTime %% %u) <= %u", ONE_DAY, endTime));
+    }
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////
@@ -1340,6 +1376,8 @@ std::shared_ptr<CPVREpgSearchFilter> CPVREpgDatabase::CreateEpgSearchFilter(
     newSearch->SetIgnorePresentRecordings(m_pDS->fv("bIgnorePresentRecordings").get_asBool());
     newSearch->SetChannelGroupID(m_pDS->fv("iChannelGroup").get_asInt());
     newSearch->SetIconPath(m_pDS->fv("sIconPath").get_asString());
+    newSearch->SetStartAnyTime(m_pDS->fv("bStartAnyTime").get_asBool());
+    newSearch->SetEndAnyTime(m_pDS->fv("bEndAnyTime").get_asBool());
 
     newSearch->SetChanged(false);
 
@@ -1411,9 +1449,9 @@ bool CPVREpgDatabase::Persist(CPVREpgSearchFilter& epgSearch)
         "iGenreType, bIncludeUnknownGenres, sStartDateTime, sEndDateTime, iMinimumDuration, "
         "iMaximumDuration, bIsRadio, iClientId, iChannelUid, bRemoveDuplicates, "
         "bIgnoreFinishedBroadcasts, bIgnoreFutureBroadcasts, bFreeToAirOnly, bIgnorePresentTimers, "
-        "bIgnorePresentRecordings, iChannelGroup, sIconPath) "
+        "bIgnorePresentRecordings, iChannelGroup, sIconPath, bStartAnyTime, bEndAnyTime) "
         "VALUES ('%s', '%s', '%s', %i, %i, %i, %i, '%s', '%s', %i, %i, %i, %i, %i, %i, %i, %i, "
-        "%i, %i, %i, %i, '%s');",
+        "%i, %i, %i, %i, '%s', %i, %i);",
         epgSearch.GetTitle().c_str(),
         epgSearch.GetLastExecutedDateTime().IsValid()
             ? epgSearch.GetLastExecutedDateTime().GetAsDBDateTime().c_str()
@@ -1433,7 +1471,8 @@ bool CPVREpgDatabase::Persist(CPVREpgSearchFilter& epgSearch)
         epgSearch.ShouldIgnoreFutureBroadcasts() ? 1 : 0, epgSearch.IsFreeToAirOnly() ? 1 : 0,
         epgSearch.ShouldIgnorePresentTimers() ? 1 : 0,
         epgSearch.ShouldIgnorePresentRecordings() ? 1 : 0, epgSearch.GetChannelGroupID(),
-        epgSearch.GetIconPath().c_str());
+        epgSearch.GetIconPath().c_str(), epgSearch.IsStartAnyTime() ? 1 : 0,
+        epgSearch.IsEndAnyTime() ? 1 : 0);
   else
     strQuery = PrepareSQL(
         "REPLACE INTO savedsearches "
@@ -1441,9 +1480,9 @@ bool CPVREpgDatabase::Persist(CPVREpgSearchFilter& epgSearch)
         "bIsCaseSensitive, iGenreType, bIncludeUnknownGenres, sStartDateTime, sEndDateTime, "
         "iMinimumDuration, iMaximumDuration, bIsRadio, iClientId, iChannelUid, bRemoveDuplicates, "
         "bIgnoreFinishedBroadcasts, bIgnoreFutureBroadcasts, bFreeToAirOnly, bIgnorePresentTimers, "
-        "bIgnorePresentRecordings, iChannelGroup, sIconPath) "
+        "bIgnorePresentRecordings, iChannelGroup, sIconPath, bStartAnyTime, bEndAnyTime) "
         "VALUES (%i, '%s', '%s', '%s', %i, %i, %i, %i, '%s', '%s', %i, %i, %i, %i, %i, %i, %i, %i, "
-        "%i, %i, %i, %i, '%s');",
+        "%i, %i, %i, %i, '%s', %i, %i);",
         epgSearch.GetDatabaseId(), epgSearch.GetTitle().c_str(),
         epgSearch.GetLastExecutedDateTime().IsValid()
             ? epgSearch.GetLastExecutedDateTime().GetAsDBDateTime().c_str()
@@ -1463,7 +1502,8 @@ bool CPVREpgDatabase::Persist(CPVREpgSearchFilter& epgSearch)
         epgSearch.ShouldIgnoreFutureBroadcasts() ? 1 : 0, epgSearch.IsFreeToAirOnly() ? 1 : 0,
         epgSearch.ShouldIgnorePresentTimers() ? 1 : 0,
         epgSearch.ShouldIgnorePresentRecordings() ? 1 : 0, epgSearch.GetChannelGroupID(),
-        epgSearch.GetIconPath().c_str());
+        epgSearch.GetIconPath().c_str(), epgSearch.IsStartAnyTime() ? 1 : 0,
+        epgSearch.IsEndAnyTime() ? 1 : 0);
 
   bool bReturn = ExecuteQuery(strQuery);
 
