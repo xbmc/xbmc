@@ -76,6 +76,13 @@ public:
   bool ChooseIconForSavedSearch(const CFileItem& item);
 
   /*!
+   * @brief Duplicate a saved search.
+   * @param item The item containing a search filter.
+   * @return True on success, false otherwise.
+   */
+  bool DuplicateSavedSearch(const CFileItem& item);
+
+  /*!
    * @brief Delete a saved search. Opens confirmation dialog before deleting.
    * @param item The item containing a search filter.
    * @return True on success, false otherwise.

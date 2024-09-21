@@ -11855,7 +11855,19 @@ msgctxt "#19354"
 msgid "Play only this programme"
 msgstr ""
 
-#empty strings from id 19355 to 19498
+#. Label of a context menu entry to create a copy of an EPG saved saerch
+#: xbmc/pvr/PVRContextMenus.cpp
+msgctxt "#19355"
+msgid "Duplicate"
+msgstr ""
+
+#. Initial title of a duplicated EPG saved search.
+#: xbmc/pvr/PVRContextMenus.cpp
+msgctxt "#19356"
+msgid "Copy of '{0:s}'"
+msgstr ""
+
+#empty strings from id 19357 to 19498
 
 #. label for epg genre value
 #: xbmc/pvr/epg/Epg.cpp

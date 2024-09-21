@@ -81,6 +81,7 @@ DECL_STATICCONTEXTMENUITEM(ExecuteSearch);
 DECL_STATICCONTEXTMENUITEM(EditSearch);
 DECL_STATICCONTEXTMENUITEM(RenameSearch);
 DECL_STATICCONTEXTMENUITEM(ChooseIconForSearch);
+DECL_STATICCONTEXTMENUITEM(DuplicateSearch);
 DECL_STATICCONTEXTMENUITEM(DeleteSearch);
 
 class PVRClientMenuHook : public IContextMenuItem
@@ -749,6 +750,19 @@ bool ChooseIconForSearch::Execute(const std::shared_ptr<CFileItem>& item) const
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// Duplicate a saved search
+
+bool DuplicateSearch::IsVisible(const CFileItem& item) const
+{
+  return item.HasEPGSearchFilter();
+}
+
+bool DuplicateSearch::Execute(const std::shared_ptr<CFileItem>& item) const
+{
+  return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().DuplicateSavedSearch(*item);
+}
+
+///////////////////////////////////////////////////////////////////////////////
 // Delete saved search
 
 bool DeleteSearch::IsVisible(const CFileItem& item) const
@@ -794,6 +808,7 @@ CPVRContextMenuManager::CPVRContextMenuManager()
         std::make_shared<CONTEXTMENUITEM::EditSearch>(21450), /* Edit */
         std::make_shared<CONTEXTMENUITEM::RenameSearch>(118), /* Rename */
         std::make_shared<CONTEXTMENUITEM::ChooseIconForSearch>(19284), /* Choose icon */
+        std::make_shared<CONTEXTMENUITEM::DuplicateSearch>(19355), /* Duplicate */
         std::make_shared<CONTEXTMENUITEM::DeleteSearch>(117), /* Delete */
     })
 {
