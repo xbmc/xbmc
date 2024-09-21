@@ -396,7 +396,10 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     deviceInfo.m_channels.Reset();
     deviceInfo.m_dataFormats.clear();
     deviceInfo.m_sampleRates.clear();
+    deviceInfo.m_streamTypes.clear();
     deviceChannels.Reset();
+    add192 = false;
+    add48 = false;
 
     for (unsigned int c = 0; c < WASAPI_SPEAKER_COUNT; c++)
     {
