@@ -595,8 +595,23 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
       wfxex.dwChannelMask               = KSAUDIO_SPEAKER_STEREO;
       wfxex.Format.wFormatTag           = WAVE_FORMAT_EXTENSIBLE;
       wfxex.SubFormat                   = KSDATAFORMAT_SUBTYPE_PCM;
-      wfxex.Format.wBitsPerSample       = 16;
-      wfxex.Samples.wValidBitsPerSample = 16;
+
+      // 16 bits is most widely supported and likely to have the widest range of sample rates
+      if (deviceInfo.m_dataFormats.empty() ||
+          std::find(deviceInfo.m_dataFormats.cbegin(), deviceInfo.m_dataFormats.cend(),
+                    AE_FMT_S16NE) != deviceInfo.m_dataFormats.cend())
+      {
+        wfxex.Format.wBitsPerSample = 16;
+        wfxex.Samples.wValidBitsPerSample = 16;
+      }
+      else
+      {
+        const AEDataFormat fmt = deviceInfo.m_dataFormats.front();
+        wfxex.Format.wBitsPerSample = CAEUtil::DataFormatToBits(fmt);
+        wfxex.Samples.wValidBitsPerSample =
+            (fmt == AE_FMT_S24NE4MSB ? 24 : wfxex.Format.wBitsPerSample);
+      }
+
       wfxex.Format.nChannels            = 2;
       wfxex.Format.nBlockAlign          = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
       wfxex.Format.nAvgBytesPerSec      = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
