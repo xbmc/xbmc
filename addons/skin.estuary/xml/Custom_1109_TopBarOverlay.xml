@@ -16,7 +16,7 @@
 				<top>0</top>
 				<width>100%</width>
 				<height>55</height>
-				<texture colordiffuse="D0FFFFFF" border="0,55,0,0">frame/osdfade.png</texture>
+				<texture colordiffuse="C7000000">colors/white.png</texture>
 			</control>
 			<control type="label">
 				<left>25</left>
@@ -175,6 +175,7 @@
 				<width>100%</width>
 				<height>170</height>
 				<texture>frame/osdfade.png</texture>
+				<colordiffuse>FF000000</colordiffuse>
 			</control>
 			<control type="group">
 				<animation effect="slide" end="90,0" time="0" condition="Skin.HasSetting(touchmode)">conditional</animation>

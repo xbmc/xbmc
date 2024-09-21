@@ -119,6 +119,7 @@
 				<width>100%</width>
 				<height>115</height>
 				<texture flipy="true">frame/InfoBar.png</texture>
+				<colordiffuse>FF000000</colordiffuse>
 			</control>
 			<control type="group">
 				<include>Animation_TopSlide</include>
@@ -127,6 +128,7 @@
 					<width>780</width>
 					<height>110</height>
 					<texture>frame/InfoBar.png</texture>
+					<colordiffuse>FF000000</colordiffuse>
 				</control>
 				<control type="label" id="2">
 					<description>header label</description>

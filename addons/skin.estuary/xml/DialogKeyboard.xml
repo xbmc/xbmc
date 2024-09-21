@@ -16,6 +16,7 @@
 				<width>100%</width>
 				<height>300%</height>
 				<texture flipy="true">frame/osdfade.png</texture>
+				<colordiffuse>FF000000</colordiffuse>
 			</control>
 			<control type="image">
 				<left>0</left>
