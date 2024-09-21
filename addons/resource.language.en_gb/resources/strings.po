@@ -3704,6 +3704,7 @@ msgid "Any channel"
 msgstr ""
 
 #. Label of "Start any time" radio button in PVR timer settings dialog
+#: addons/skin.estuary/xml/DialogPVRGuideSearch.xml
 #: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 msgctxt "#810"
 msgid "Start any time"
@@ -3750,6 +3751,7 @@ msgid "Record only new episodes"
 msgstr ""
 
 #. Label of "End any time" radio button in PVR timer settings dialog
+#: addons/skin.estuary/xml/DialogPVRGuideSearch.xml
 #: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 msgctxt "#817"
 msgid "End any time"

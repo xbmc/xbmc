@@ -5,12 +5,12 @@
 	<controls>
 		<control type="group">
 			<centertop>50%</centertop>
-			<height>890</height>
+			<height>960</height>
 			<centerleft>50%</centerleft>
 			<width>1780</width>
 			<include content="DialogBackgroundCommons">
 				<param name="width" value="1780" />
-				<param name="height" value="890" />
+				<param name="height" value="960" />
 				<param name="header_label" value="$LOCALIZE[19142]" />
 				<param name="header_id" value="2" />
 			</include>
@@ -41,7 +41,7 @@
 				<left>10</left>
 				<top>210</top>
 				<width>1460</width>
-				<height>675</height>
+				<height>740</height>
 				<texture border="40">buttons/dialogbutton-nofo.png</texture>
 			</control>
 			<control type="grouplist" id="5000">
@@ -69,16 +69,23 @@
 				<control type="edit" id="14">
 					<description>Start Date</description>
 					<width>710</width>
-					<onright>16</onright>
+					<onright>15</onright>
 					<include>DefaultSettingButton</include>
 					<label>$LOCALIZE[19128]</label>
 				</control>
-				<control type="edit" id="15">
-					<description>Stop Date</description>
+				<control type="radiobutton" id="32">
+					<description>Start any time</description>
+					<width>710</width>
+					<onright>33</onright>
+					<include>DefaultSettingButton</include>
+					<label>$LOCALIZE[810]</label>
+				</control>
+				<control type="edit" id="16">
+					<description>Start time</description>
 					<width>710</width>
 					<onright>17</onright>
 					<include>DefaultSettingButton</include>
-					<label>$LOCALIZE[19129]</label>
+					<label>$LOCALIZE[19126]</label>
 				</control>
 				<control type="radiobutton" id="30">
 					<description>Ignore finished broadcasts</description>
@@ -138,17 +145,24 @@
 					<include>DefaultSettingButton</include>
 					<label>$LOCALIZE[19131]</label>
 				</control>
-				<control type="edit" id="16">
-					<description>Start time</description>
+				<control type="edit" id="15">
+					<description>Stop Date</description>
 					<width>710</width>
 					<onleft>14</onleft>
 					<include>DefaultSettingButton</include>
-					<label>$LOCALIZE[19126]</label>
+					<label>$LOCALIZE[19129]</label>
+				</control>
+				<control type="radiobutton" id="33">
+					<description>End any time</description>
+					<width>710</width>
+					<onleft>32</onleft>
+					<include>DefaultSettingButton</include>
+					<label>$LOCALIZE[817]</label>
 				</control>
 				<control type="edit" id="17">
 					<description>Stop time</description>
 					<width>710</width>
-					<onleft>15</onleft>
+					<onleft>16</onleft>
 					<include>DefaultSettingButton</include>
 					<label>$LOCALIZE[19127]</label>
 				</control>

@@ -51,6 +51,8 @@ using namespace PVR;
 static constexpr int CONTROL_BTN_SAVE = 29;
 static constexpr int CONTROL_BTN_IGNORE_FINISHED = 30;
 static constexpr int CONTROL_BTN_IGNORE_FUTURE = 31;
+static constexpr int CONTROL_BTN_START_ANY_TIME = 32;
+static constexpr int CONTROL_BTN_END_ANY_TIME = 33;
 
 CGUIDialogPVRGuideSearch::CGUIDialogPVRGuideSearch()
   : CGUIDialog(WINDOW_DIALOG_PVR_GUIDE_SEARCH, "DialogPVRGuideSearch.xml")
@@ -225,6 +227,12 @@ bool CGUIDialogPVRGuideSearch::OnMessage(CGUIMessage& message)
         UpdateChannelSpin();
         return true;
       }
+      else if (iControl == CONTROL_BTN_START_ANY_TIME || iControl == CONTROL_BTN_END_ANY_TIME)
+      {
+        UpdateSearchFilter();
+        Update();
+        return true;
+      }
     }
     break;
   }
@@ -316,6 +324,9 @@ void CGUIDialogPVRGuideSearch::UpdateSearchFilter()
     m_searchFilter->SetEndDateTime(end);
     m_endDateTime = end;
   }
+
+  m_searchFilter->SetStartAnyTime(IsRadioSelected(CONTROL_BTN_START_ANY_TIME));
+  m_searchFilter->SetEndAnyTime(IsRadioSelected(CONTROL_BTN_END_ANY_TIME));
 }
 
 void CGUIDialogPVRGuideSearch::Update()
@@ -340,6 +351,10 @@ void CGUIDialogPVRGuideSearch::Update()
                        m_searchFilter->ShouldIgnoreFinishedBroadcasts());
   SET_CONTROL_SELECTED(GetID(), CONTROL_BTN_IGNORE_FUTURE,
                        m_searchFilter->ShouldIgnoreFutureBroadcasts());
+  SET_CONTROL_SELECTED(GetID(), CONTROL_BTN_START_ANY_TIME, m_searchFilter->IsStartAnyTime());
+  SET_CONTROL_SELECTED(GetID(), CONTROL_BTN_END_ANY_TIME, m_searchFilter->IsEndAnyTime());
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_EDIT_START_TIME, !m_searchFilter->IsStartAnyTime());
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_EDIT_STOP_TIME, !m_searchFilter->IsEndAnyTime());
 
   // Set start/end datetime fields
   m_startDateTime = m_searchFilter->GetStartDateTime();

@@ -90,8 +90,14 @@ namespace PVR
     const CDateTime& GetStartDateTime() const { return m_searchData.m_startDateTime; }
     void SetStartDateTime(const CDateTime& startDateTime);
 
+    bool IsStartAnyTime() const { return m_searchData.m_startAnyTime; }
+    void SetStartAnyTime(bool startAnyTime);
+
     const CDateTime& GetEndDateTime() const { return m_searchData.m_endDateTime; }
     void SetEndDateTime(const CDateTime& endDateTime);
+
+    bool IsEndAnyTime() const { return m_searchData.m_endAnyTime; }
+    void SetEndAnyTime(bool endAnyTime);
 
     bool ShouldIncludeUnknownGenres() const { return m_searchData.m_bIncludeUnknownGenres; }
     void SetIncludeUnknownGenres(bool bIncludeUnknownGenres);
