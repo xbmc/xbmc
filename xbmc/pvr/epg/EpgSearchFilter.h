@@ -18,6 +18,8 @@
 
 namespace PVR
 {
+static constexpr int PVR_EPG_SEARCH_INVALID_DATABASE_ID{-1};
+
 class CPVREpgInfoTag;
 
 class CPVREpgSearchFilter
@@ -165,13 +167,13 @@ private:
   // PVR specific filters
   bool m_bIsRadio; /*!< True to filter radio channels only, false to tv only */
   int m_iClientID = PVR_CLIENT_INVALID_UID; /*!< The client id */
-  int m_iChannelGroupID{-1}; /*! The channel group id */
+  int m_iChannelGroupID{-1}; /*!< The channel group id */
   int m_iChannelUID = -1; /*!< The channel uid */
   bool m_bFreeToAirOnly; /*!< Include free to air channels only */
   bool m_bIgnorePresentTimers; /*!< True to ignore currently present timers, false if not */
   bool m_bIgnorePresentRecordings; /*!< True to ignore currently active recordings, false if not */
 
-  int m_iDatabaseId = -1;
+  int m_iDatabaseId{PVR_EPG_SEARCH_INVALID_DATABASE_ID};
   std::string m_title;
   std::string m_iconPath;
   CDateTime m_lastExecutedDateTime;
