@@ -1957,59 +1957,13 @@ std::string CFileItem::FindLocalArt(const std::string &artFile, bool useFolder) 
   return "";
 }
 
-std::string CFileItem::GetLocalArtBaseFilename() const
-{
-  bool useFolder = false;
-  return GetLocalArtBaseFilename(useFolder);
-}
-
-std::string CFileItem::GetLocalArtBaseFilename(bool& useFolder) const
-{
-  std::string strFile;
-  if (IsStack())
-  {
-    std::string strPath;
-    URIUtils::GetParentPath(m_strPath,strPath);
-    strFile = URIUtils::AddFileToFolder(
-        strPath, URIUtils::GetFileName(CStackDirectory::GetStackedTitlePath(m_strPath)));
-  }
-
-  std::string file = strFile.empty() ? m_strPath : strFile;
-  if (URIUtils::IsInRAR(file) || URIUtils::IsInZIP(file))
-  {
-    std::string strPath = URIUtils::GetDirectory(file);
-    std::string strParent;
-    URIUtils::GetParentPath(strPath,strParent);
-    strFile = URIUtils::AddFileToFolder(strParent, URIUtils::GetFileName(file));
-  }
-
-  if (IsMultiPath())
-    strFile = CMultiPathDirectory::GetFirstPath(m_strPath);
-
-  if (IsOpticalMediaFile())
-  { // optical media files should be treated like folders
-    useFolder = true;
-    strFile = GetLocalMetadataPath();
-  }
-  else if (useFolder && !(m_bIsFolder && !IsFileFolder()))
-  {
-    file = strFile.empty() ? m_strPath : strFile;
-    strFile = URIUtils::GetDirectory(file);
-  }
-
-  if (strFile.empty())
-    strFile = GetDynPath();
-
-  return strFile;
-}
-
 std::string CFileItem::GetLocalArt(const std::string& artFile, bool useFolder) const
 {
   // no retrieving of empty art files from folders
   if (useFolder && artFile.empty())
     return "";
 
-  std::string strFile = GetLocalArtBaseFilename(useFolder);
+  std::string strFile = ART::GetLocalArtBaseFilename(*this, useFolder);
   if (strFile.empty()) // empty filepath -> nothing to find
     return "";
 

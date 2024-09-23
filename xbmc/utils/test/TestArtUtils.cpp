@@ -47,6 +47,32 @@ std::string unique_path(const std::string& input)
   return ret;
 }
 
+struct ArtFilenameTest
+{
+  std::string path;
+  std::string result;
+  bool isFolder = false;
+  bool result_folder = false;
+  bool force_use_folder = false;
+};
+
+class GetLocalArtBaseFilenameTest : public testing::WithParamInterface<ArtFilenameTest>,
+                                    public testing::Test
+{
+};
+
+const auto local_art_filename_tests = std::array{
+    ArtFilenameTest{"/home/user/foo.avi", "/home/user/foo.avi"},
+    ArtFilenameTest{"stack:///home/user/foo-cd1.avi , /home/user/foo-cd2.avi",
+                    "/home/user/foo.avi"},
+    ArtFilenameTest{"zip://%2fhome%2fuser%2fbar.zip/foo.avi", "/home/user/foo.avi"},
+    ArtFilenameTest{"multipath://%2fhome%2fuser%2fbar%2f/%2fhome%2fuser%2ffoo%2f",
+                    "/home/user/bar/", true, true},
+    ArtFilenameTest{"/home/user/VIDEO_TS/VIDEO_TS.IFO", "/home/user/", false, true},
+    ArtFilenameTest{"/home/user/BDMV/index.bdmv", "/home/user/", false, true},
+    ArtFilenameTest{"/home/user/foo.avi", "/home/user/", false, true, true},
+};
+
 struct FanartTest
 {
   std::string path;
@@ -172,6 +198,19 @@ TEST_P(FolderThumbTest, GetFolderThumb)
 }
 
 INSTANTIATE_TEST_SUITE_P(TestArtUtils, FolderThumbTest, testing::ValuesIn(folder_thumb_tests));
+
+TEST_P(GetLocalArtBaseFilenameTest, GetLocalArtBaseFilename)
+{
+  CFileItem item(GetParam().path, GetParam().isFolder);
+  bool useFolder = GetParam().force_use_folder ? true : GetParam().isFolder;
+  const std::string res = ART::GetLocalArtBaseFilename(item, useFolder);
+  EXPECT_EQ(res, GetParam().result);
+  EXPECT_EQ(useFolder, GetParam().result_folder);
+}
+
+INSTANTIATE_TEST_SUITE_P(TestArtUtils,
+                         GetLocalArtBaseFilenameTest,
+                         testing::ValuesIn(local_art_filename_tests));
 
 TEST_P(GetLocalFanartTest, GetLocalFanart)
 {
