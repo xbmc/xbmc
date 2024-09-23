@@ -24,9 +24,9 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SubtitlesSettings.h"
-#include "utils/DateLib.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/XTimeUtils.h"
 #include "utils/log.h"
 #ifdef TARGET_WINDOWS
 #include "win32util.h"

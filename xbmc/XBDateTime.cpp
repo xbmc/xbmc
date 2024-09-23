@@ -11,8 +11,8 @@
 #include "LangInfo.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/Archive.h"
-#include "utils/DateLib.h"
 #include "utils/StringUtils.h"
+#include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
 #include <cstdlib>
@@ -93,10 +93,10 @@ const CDateTimeSpan& CDateTimeSpan::operator -=(const CDateTimeSpan& right)
 
 void CDateTimeSpan::SetDateTimeSpan(int day, int hour, int minute, int second)
 {
-  m_timeSpan = date::floor<std::chrono::seconds>(date::days(day)) +
-               date::floor<std::chrono::seconds>(std::chrono::hours(hour)) +
-               date::floor<std::chrono::seconds>(std::chrono::minutes(minute)) +
-               date::floor<std::chrono::seconds>(std::chrono::seconds(second));
+  m_timeSpan = KODI::TIME::floor<std::chrono::seconds>(KODI::TIME::days(day)) +
+               KODI::TIME::floor<std::chrono::seconds>(std::chrono::hours(hour)) +
+               KODI::TIME::floor<std::chrono::seconds>(std::chrono::minutes(minute)) +
+               KODI::TIME::floor<std::chrono::seconds>(std::chrono::seconds(second));
 }
 
 void CDateTimeSpan::SetFromTimeString(const std::string& time) // hh:mm
@@ -111,36 +111,36 @@ void CDateTimeSpan::SetFromTimeString(const std::string& time) // hh:mm
 
 int CDateTimeSpan::GetDays() const
 {
-  return date::floor<date::days>(m_timeSpan).count();
+  return KODI::TIME::floor<KODI::TIME::days>(m_timeSpan).count();
 }
 
 int CDateTimeSpan::GetHours() const
 {
-  auto time = date::floor<date::days>(m_timeSpan);
-  auto dp = date::make_time(m_timeSpan - time);
+  auto time = KODI::TIME::floor<KODI::TIME::days>(m_timeSpan);
+  auto dp = KODI::TIME::make_time(m_timeSpan - time);
 
   return dp.hours().count();
 }
 
 int CDateTimeSpan::GetMinutes() const
 {
-  auto time = date::floor<date::days>(m_timeSpan);
-  auto dp = date::make_time(m_timeSpan - time);
+  auto time = KODI::TIME::floor<KODI::TIME::days>(m_timeSpan);
+  auto dp = KODI::TIME::make_time(m_timeSpan - time);
 
   return dp.minutes().count();
 }
 
 int CDateTimeSpan::GetSeconds() const
 {
-  auto time = date::floor<date::days>(m_timeSpan);
-  auto dp = date::make_time(m_timeSpan - time);
+  auto time = KODI::TIME::floor<KODI::TIME::days>(m_timeSpan);
+  auto dp = KODI::TIME::make_time(m_timeSpan - time);
 
   return dp.seconds().count();
 }
 
 int CDateTimeSpan::GetSecondsTotal() const
 {
-  return date::floor<std::chrono::seconds>(m_timeSpan).count();
+  return KODI::TIME::floor<std::chrono::seconds>(m_timeSpan).count();
 }
 
 void CDateTimeSpan::SetFromPeriod(const std::string &period)
@@ -201,12 +201,12 @@ CDateTime::CDateTime(const tm& time)
 {
   Reset();
 
-  auto ymd = date::local_days(date::year(time.tm_year + 1900) / date::month(time.tm_mon + 1) /
-                              time.tm_mday);
+  auto ymd = KODI::TIME::local_days(KODI::TIME::year(time.tm_year + 1900) /
+                                    KODI::TIME::month(time.tm_mon + 1) / time.tm_mday);
   auto dur = ymd + std::chrono::hours(time.tm_hour) + std::chrono::minutes(time.tm_min) +
              std::chrono::seconds(time.tm_sec);
 
-  auto timeT = date::floor<std::chrono::seconds>(dur.time_since_epoch()).count();
+  auto timeT = KODI::TIME::floor<std::chrono::seconds>(dur.time_since_epoch()).count();
 
   KODI::TIME::TimePoint tp{std::chrono::seconds{timeT}};
 
@@ -222,10 +222,10 @@ CDateTime::CDateTime(int year, int month, int day, int hour, int minute, int sec
 
 CDateTime CDateTime::GetCurrentDateTime()
 {
-  auto zone = date::make_zoned(date::current_zone(), std::chrono::system_clock::now());
+  auto zone = KODI::TIME::make_zoned(KODI::TIME::current_zone(), std::chrono::system_clock::now());
 
   return CDateTime(
-      date::floor<std::chrono::seconds>(zone.get_local_time().time_since_epoch()).count());
+      KODI::TIME::floor<std::chrono::seconds>(zone.get_local_time().time_since_epoch()).count());
 }
 
 CDateTime CDateTime::GetUTCDateTime()
@@ -248,12 +248,12 @@ const CDateTime& CDateTime::operator=(const tm& right)
 {
   Reset();
 
-  auto ymd = date::local_days(date::year(right.tm_year + 1900) / date::month(right.tm_mon + 1) /
-                              right.tm_mday);
+  auto ymd = KODI::TIME::local_days(KODI::TIME::year(right.tm_year + 1900) /
+                                    KODI::TIME::month(right.tm_mon + 1) / right.tm_mday);
   auto dur = ymd + std::chrono::hours(right.tm_hour) + std::chrono::minutes(right.tm_min) +
              std::chrono::seconds(right.tm_sec);
 
-  auto timeT = date::floor<std::chrono::seconds>(dur.time_since_epoch()).count();
+  auto timeT = KODI::TIME::floor<std::chrono::seconds>(dur.time_since_epoch()).count();
 
   KODI::TIME::TimePoint tp{std::chrono::seconds{timeT}};
 
@@ -452,7 +452,7 @@ CDateTimeSpan CDateTime::operator -(const CDateTime& right) const
 {
   CDateTimeSpan left;
 
-  left.m_timeSpan = date::floor<std::chrono::seconds>(m_time - right.m_time);
+  left.m_timeSpan = KODI::TIME::floor<std::chrono::seconds>(m_time - right.m_time);
   return left;
 }
 
@@ -471,8 +471,8 @@ KODI::TIME::SystemTime CDateTime::GetAsSystemTime()
   st.minute = GetMinute();
   st.second = GetSecond();
 
-  auto dp = date::floor<std::chrono::milliseconds>(m_time);
-  auto ms = date::floor<std::chrono::milliseconds>(m_time - dp);
+  auto dp = KODI::TIME::floor<std::chrono::milliseconds>(m_time);
+  auto ms = KODI::TIME::floor<std::chrono::milliseconds>(m_time - dp);
 
   st.milliseconds = ms.count();
 
@@ -483,11 +483,12 @@ void CDateTime::SetFromSystemTime(const KODI::TIME::SystemTime& right)
 {
   Reset();
 
-  auto ymd = date::sys_days(date::year(right.year) / date::month(right.month) / right.day);
+  auto ymd = KODI::TIME::sys_days(KODI::TIME::year(right.year) / KODI::TIME::month(right.month) /
+                                  right.day);
   auto dur = ymd + std::chrono::hours(right.hour) + std::chrono::minutes(right.minute) +
              std::chrono::seconds(right.second) + std::chrono::milliseconds(right.milliseconds);
 
-  auto timeT = date::floor<std::chrono::milliseconds>(dur.time_since_epoch()).count();
+  auto timeT = KODI::TIME::floor<std::chrono::milliseconds>(dur.time_since_epoch()).count();
 
   KODI::TIME::TimePoint tp{std::chrono::milliseconds{timeT}};
 
@@ -578,79 +579,85 @@ bool CDateTime::SetFromDateString(const std::string &date)
 
 int CDateTime::GetDay() const
 {
-  auto dp = date::floor<date::days>(m_time);
-  auto ymd = date::year_month_day{dp};
+  auto dp = KODI::TIME::floor<KODI::TIME::days>(m_time);
+  auto ymd = KODI::TIME::year_month_day{dp};
 
   return static_cast<unsigned int>(ymd.day());
 }
 
 int CDateTime::GetMonth() const
 {
-  auto dp = date::floor<date::days>(m_time);
-  auto ymd = date::year_month_day{dp};
+  auto dp = KODI::TIME::floor<KODI::TIME::days>(m_time);
+  auto ymd = KODI::TIME::year_month_day{dp};
 
   return static_cast<unsigned int>(ymd.month());
 }
 
 int CDateTime::GetYear() const
 {
-  auto dp = date::floor<date::days>(m_time);
-  auto ymd = date::year_month_day{dp};
+  auto dp = KODI::TIME::floor<KODI::TIME::days>(m_time);
+  auto ymd = KODI::TIME::year_month_day{dp};
 
   return static_cast<int>(ymd.year());
 }
 
 int CDateTime::GetHour() const
 {
-  auto dp = date::floor<date::days>(m_time);
-  auto time = date::make_time(date::floor<std::chrono::seconds>(m_time - dp));
+  auto dp = KODI::TIME::floor<KODI::TIME::days>(m_time);
+  auto time = KODI::TIME::make_time(KODI::TIME::floor<std::chrono::seconds>(m_time - dp));
 
   return time.hours().count();
 }
 
 int CDateTime::GetMinute() const
 {
-  auto dp = date::floor<date::days>(m_time);
-  auto time = date::make_time(date::floor<std::chrono::seconds>(m_time - dp));
+  auto dp = KODI::TIME::floor<KODI::TIME::days>(m_time);
+  auto time = KODI::TIME::make_time(KODI::TIME::floor<std::chrono::seconds>(m_time - dp));
 
   return time.minutes().count();
 }
 
 int CDateTime::GetSecond() const
 {
-  auto dp = date::floor<date::days>(m_time);
-  auto time = date::make_time(date::floor<std::chrono::seconds>(m_time - dp));
+  auto dp = KODI::TIME::floor<KODI::TIME::days>(m_time);
+  auto time = KODI::TIME::make_time(KODI::TIME::floor<std::chrono::seconds>(m_time - dp));
 
   return time.seconds().count();
 }
 
 int CDateTime::GetDayOfWeek() const
 {
-  auto dp = date::floor<date::days>(m_time);
+  auto dp = KODI::TIME::floor<KODI::TIME::days>(m_time);
+#if defined(DATE_IS_CXX20)
+  auto yww = std::chrono::year_month_weekday{dp};
+
+  return yww.weekday().c_encoding();
+#else
   auto yww = iso_week::year_weeknum_weekday{dp};
 
   return static_cast<unsigned int>(yww.weekday());
+#endif // defined(DATE_IS_CXX20)
 }
 
 int CDateTime::GetMinuteOfDay() const
 {
-  auto dp = date::floor<std::chrono::hours>(m_time);
+  auto dp = KODI::TIME::floor<std::chrono::hours>(m_time);
   ;
-  auto time = date::make_time(date::floor<std::chrono::seconds>(m_time - dp));
+  auto time = KODI::TIME::make_time(KODI::TIME::floor<std::chrono::seconds>(m_time - dp));
 
   return time.hours().count() * 60 + time.minutes().count();
 }
 
 bool CDateTime::SetDateTime(int year, int month, int day, int hour, int minute, int second)
 {
-  auto ymd = date::year(year) / month / day;
+  auto ymd = KODI::TIME::year(year) / month / day;
   if (!ymd.ok())
   {
     SetValid(false);
     return false;
   }
 
-  m_time = date::sys_days(ymd) + std::chrono::hours(hour) + std::chrono::minutes(minute) +
+  m_time = KODI::TIME::sys_days(ymd) + std::chrono::hours(hour) + std::chrono::minutes(minute) +
            std::chrono::seconds(second);
 
   SetValid(true);
@@ -664,7 +671,7 @@ bool CDateTime::SetDate(int year, int month, int day)
 
 bool CDateTime::SetTime(int hour, int minute, int second)
 {
-  m_time = date::sys_seconds(std::chrono::seconds(0)) + std::chrono::hours(hour) +
+  m_time = KODI::TIME::sys_seconds(std::chrono::seconds(0)) + std::chrono::hours(hour) +
            std::chrono::minutes(minute) + std::chrono::seconds(second);
 
   SetValid(true);
@@ -673,33 +680,33 @@ bool CDateTime::SetTime(int hour, int minute, int second)
 
 void CDateTime::GetAsTime(time_t& time) const
 {
-  time = date::floor<std::chrono::seconds>(m_time.time_since_epoch()).count();
+  time = KODI::TIME::floor<std::chrono::seconds>(m_time.time_since_epoch()).count();
 }
 
 void CDateTime::GetAsTm(tm& time) const
 {
-  auto dp = date::floor<date::days>(m_time);
+  auto dp = KODI::TIME::floor<KODI::TIME::days>(m_time);
 
   time = {};
 
-  auto ymd = date::year_month_day{dp};
+  auto ymd = KODI::TIME::year_month_day{dp};
   time.tm_year = int(ymd.year()) - 1900;
   time.tm_mon = unsigned(ymd.month()) - 1;
   time.tm_mday = unsigned(ymd.day());
 
-  auto hms = date::make_time(date::floor<std::chrono::seconds>(m_time - dp));
+  auto hms = KODI::TIME::make_time(KODI::TIME::floor<std::chrono::seconds>(m_time - dp));
   time.tm_hour = hms.hours().count();
   time.tm_min = hms.minutes().count();
   time.tm_sec = hms.seconds().count();
 
-  date::weekday wd{dp};
+  KODI::TIME::weekday wd{dp};
   time.tm_wday = wd.c_encoding();
 
-  auto newyear = date::sys_days(date::year(time.tm_year + 1900) / 1 / 1);
-  auto seconds_to_newyear = date::floor<std::chrono::seconds>(m_time - newyear);
+  auto newyear = KODI::TIME::sys_days(KODI::TIME::year(time.tm_year + 1900) / 1 / 1);
+  auto seconds_to_newyear = KODI::TIME::floor<std::chrono::seconds>(m_time - newyear);
   time.tm_yday = seconds_to_newyear.count() / 86400;
 
-  time.tm_isdst = date::current_zone()->get_info(m_time).save.count() != 0;
+  time.tm_isdst = KODI::TIME::current_zone()->get_info(m_time).save.count() != 0;
 }
 
 std::chrono::system_clock::time_point CDateTime::GetAsTimePoint() const
@@ -714,27 +721,51 @@ std::chrono::system_clock::time_point CDateTime::GetAsTimePoint() const
 
 std::string CDateTime::GetAsDBDate() const
 {
-  return date::format("%F", m_time);
+  return KODI::TIME::format(
+#if defined(DATE_IS_CXX20)
+      "{:%F}",
+#else
+      "%F",
+#endif // defined(DATE_IS_CXX20)
+      m_time);
 }
 
 std::string CDateTime::GetAsDBTime() const
 {
-  auto sp = date::floor<std::chrono::seconds>(m_time);
-  return date::format("%T", sp);
+  auto sp = KODI::TIME::floor<std::chrono::seconds>(m_time);
+  return KODI::TIME::format(
+#if defined(DATE_IS_CXX20)
+      "{:%T}",
+#else
+      "%T",
+#endif // defined(DATE_IS_CXX20)
+      sp);
 }
 
 std::string CDateTime::GetAsDBDateTime() const
 {
-  auto sp = date::floor<std::chrono::seconds>(m_time);
+  auto sp = KODI::TIME::floor<std::chrono::seconds>(m_time);
 
-  return date::format("%F %T", sp);
+  return KODI::TIME::format(
+#if defined(DATE_IS_CXX20)
+      "{:%F %T}",
+#else
+      "%F %T",
+#endif // defined(DATE_IS_CXX20)
+      sp);
 }
 
 std::string CDateTime::GetAsSaveString() const
 {
-  auto sp = date::floor<std::chrono::seconds>(m_time);
+  auto sp = KODI::TIME::floor<std::chrono::seconds>(m_time);
 
-  return date::format("%Y%m%d_%H%M%S", sp);
+  return KODI::TIME::format(
+#if defined(DATE_IS_CXX20)
+      "{:%Y%m%d_%H%M%S}",
+#else
+      "%Y%m%d_%H%M%S",
+#endif // defined(DATE_IS_CXX20)
+      sp);
 }
 
 bool CDateTime::SetFromW3CDate(const std::string &dateTime)
@@ -1343,17 +1374,23 @@ std::string CDateTime::GetAsLocalizedTime(TIME_FORMAT format, bool withSeconds /
 
 CDateTime CDateTime::GetAsLocalDateTime() const
 {
-  auto zone = date::make_zoned(date::current_zone(), m_time);
+  auto zone = KODI::TIME::make_zoned(KODI::TIME::current_zone(), m_time);
 
   return CDateTime(
-      date::floor<std::chrono::seconds>(zone.get_local_time().time_since_epoch()).count());
+      KODI::TIME::floor<std::chrono::seconds>(zone.get_local_time().time_since_epoch()).count());
 }
 
 std::string CDateTime::GetAsRFC1123DateTime() const
 {
-  auto time = date::floor<std::chrono::seconds>(m_time);
+  auto time = KODI::TIME::floor<std::chrono::seconds>(m_time);
 
-  return date::format("%a, %d %b %Y %T GMT", time);
+  return KODI::TIME::format(
+#if defined(DATE_IS_CXX20)
+      "{:%a, %d %b %Y %T GMT}",
+#else
+      "%a, %d %b %Y %T GMT",
+#endif // defined(DATE_IS_CXX20)
+      time);
 }
 
 std::string CDateTime::GetAsW3CDate() const
@@ -1363,14 +1400,28 @@ std::string CDateTime::GetAsW3CDate() const
 
 std::string CDateTime::GetAsW3CDateTime(bool asUtc /* = false */) const
 {
-  auto time = date::floor<std::chrono::seconds>(m_time);
+  auto time = KODI::TIME::floor<std::chrono::seconds>(m_time);
 
   if (asUtc)
-    return date::format("%FT%TZ", time);
+  {
+    return KODI::TIME::format(
+#if defined(DATE_IS_CXX20)
+        "{:%FT%TZ}",
+#else
+        "%FT%TZ",
+#endif // defined(DATE_IS_CXX20)
+        time);
+  }
 
-  auto zt = date::make_zoned(date::current_zone(), time);
+  auto zt = KODI::TIME::make_zoned(KODI::TIME::current_zone(), time);
 
-  return date::format("%FT%T%Ez", zt);
+  return KODI::TIME::format(
+#if defined(DATE_IS_CXX20)
+      "{:%FT%T%Ez}",
+#else
+      "%FT%T%Ez",
+#endif // defined(DATE_IS_CXX20)
+      zt);
 }
 
 int CDateTime::MonthStringToMonthNum(const std::string& month)

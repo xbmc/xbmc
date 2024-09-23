@@ -10,7 +10,7 @@
 #include "XBDateTime.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/legacy/ModuleXbmc.h" //Needed to test getRegion()
-#include "utils/DateLib.h"
+#include "utils/XTimeUtils.h"
 
 #include <array>
 #include <chrono>
@@ -303,11 +303,19 @@ TEST_F(TestDateTime, GetAsStringsWithBias)
   std::cout << dateTime.GetAsW3CDateTime(false) << std::endl;
   std::cout << dateTime.GetAsW3CDateTime(true) << std::endl;
 
-  auto tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
-  auto zone = date::make_zoned(date::current_zone(), tps);
+  auto tps = KODI::TIME::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  auto zone = KODI::TIME::make_zoned(KODI::TIME::current_zone(), tps);
 
   EXPECT_EQ(dateTime.GetAsRFC1123DateTime(), "Tue, 14 May 1991 12:34:56 GMT");
-  EXPECT_EQ(dateTime.GetAsW3CDateTime(false), date::format("%FT%T%Ez", zone));
+
+  // NOTE: MSVC 2019 fails to expand EXPECT_EQ macro with #if conditional!
+
+#if defined(DATE_IS_CXX20)
+  EXPECT_EQ(dateTime.GetAsW3CDateTime(false), KODI::TIME::format("{:%FT%T%Ez}", zone));
+#else
+  EXPECT_EQ(dateTime.GetAsW3CDateTime(false), KODI::TIME::format("%FT%T%Ez", zone));
+#endif // defined(DATE_IS_CXX20)
+
   EXPECT_EQ(dateTime.GetAsW3CDateTime(true), "1991-05-14T12:34:56Z");
 }
 
@@ -611,7 +619,7 @@ TEST_F(TestDateTime, GetAsLocalDateTime)
   CDateTime dateTime2;
   dateTime2 = dateTime1.GetAsLocalDateTime();
 
-  auto zoned_time = date::make_zoned(date::current_zone(), dateTime1.GetAsTimePoint());
+  auto zoned_time = KODI::TIME::make_zoned(KODI::TIME::current_zone(), dateTime1.GetAsTimePoint());
   auto time = zoned_time.get_local_time().time_since_epoch();
 
   CDateTime cmpTime(std::chrono::duration_cast<std::chrono::seconds>(time).count());
@@ -633,164 +641,291 @@ TEST_F(TestDateTime, Reset)
   EXPECT_EQ(dateTime.GetMinute(), 0);
   EXPECT_EQ(dateTime.GetSecond(), 0);
 }
+
 TEST_F(TestDateTime, Tzdata)
 {
   CDateTime dateTime;
   dateTime.SetDateTime(1991, 05, 14, 12, 34, 56);
 
+  // NOTE: MSVC 2019 fails to expand EXPECT_EQ macro with #if conditional!
+
+  // LANG=C TZ="Etc/GMT" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
+  auto tps = KODI::TIME::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  auto zone = KODI::TIME::make_zoned("Etc/GMT", tps);
+#if defined(DATE_IS_CXX20)
+  EXPECT_EQ(KODI::TIME::format("{:%FT%T%Ez}", zone), "1991-05-14T12:34:56+00:00")
+#else
+  EXPECT_EQ(KODI::TIME::format("%FT%T%Ez", zone), "1991-05-14T12:34:56+00:00")
+#endif
+      << "tzdata information not valid for 'Etc/GMT'";
+
   // LANG=C TZ="Etc/GMT+1" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
-  auto tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
-  auto zone = date::make_zoned("Etc/GMT+1", tps);
-  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T11:34:56-01:00")
+  tps = KODI::TIME::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = KODI::TIME::make_zoned("Etc/GMT+1", tps);
+#if defined(DATE_IS_CXX20)
+  EXPECT_EQ(KODI::TIME::format("{:%FT%T%Ez}", zone), "1991-05-14T11:34:56-01:00")
+#else
+  EXPECT_EQ(KODI::TIME::format("%FT%T%Ez", zone), "1991-05-14T11:34:56-01:00")
+#endif
       << "tzdata information not valid for 'Etc/GMT+1'";
 
   // LANG=C TZ="Etc/GMT+2" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
-  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
-  zone = date::make_zoned("Etc/GMT+2", tps);
-  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T10:34:56-02:00")
+  tps = KODI::TIME::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = KODI::TIME::make_zoned("Etc/GMT+2", tps);
+#if defined(DATE_IS_CXX20)
+  EXPECT_EQ(KODI::TIME::format("{:%FT%T%Ez}", zone), "1991-05-14T10:34:56-02:00")
+#else
+  EXPECT_EQ(KODI::TIME::format("%FT%T%Ez", zone), "1991-05-14T10:34:56-02:00")
+#endif
       << "tzdata information not valid for 'Etc/GMT+2'";
 
   // LANG=C TZ="Etc/GMT+3" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
-  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
-  zone = date::make_zoned("Etc/GMT+3", tps);
-  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T09:34:56-03:00")
+  tps = KODI::TIME::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = KODI::TIME::make_zoned("Etc/GMT+3", tps);
+#if defined(DATE_IS_CXX20)
+  EXPECT_EQ(KODI::TIME::format("{:%FT%T%Ez}", zone), "1991-05-14T09:34:56-03:00")
+#else
+  EXPECT_EQ(KODI::TIME::format("%FT%T%Ez", zone), "1991-05-14T09:34:56-03:00")
+#endif
       << "tzdata information not valid for 'Etc/GMT+3'";
 
   // LANG=C TZ="Etc/GMT+4" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
-  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
-  zone = date::make_zoned("Etc/GMT+4", tps);
-  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T08:34:56-04:00")
+  tps = KODI::TIME::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = KODI::TIME::make_zoned("Etc/GMT+4", tps);
+#if defined(DATE_IS_CXX20)
+  EXPECT_EQ(KODI::TIME::format("{:%FT%T%Ez}", zone), "1991-05-14T08:34:56-04:00")
+#else
+  EXPECT_EQ(KODI::TIME::format("%FT%T%Ez", zone), "1991-05-14T08:34:56-04:00")
+#endif
       << "tzdata information not valid for 'Etc/GMT+4'";
 
   // LANG=C TZ="Etc/GMT+5" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
-  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
-  zone = date::make_zoned("Etc/GMT+5", tps);
-  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T07:34:56-05:00")
+  tps = KODI::TIME::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = KODI::TIME::make_zoned("Etc/GMT+5", tps);
+#if defined(DATE_IS_CXX20)
+  EXPECT_EQ(KODI::TIME::format("{:%FT%T%Ez}", zone), "1991-05-14T07:34:56-05:00")
+#else
+  EXPECT_EQ(KODI::TIME::format("%FT%T%Ez", zone), "1991-05-14T07:34:56-05:00")
+#endif
       << "tzdata information not valid for 'Etc/GMT+5'";
 
   // LANG=C TZ="Etc/GMT+6" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
-  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
-  zone = date::make_zoned("Etc/GMT+6", tps);
-  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T06:34:56-06:00")
+  tps = KODI::TIME::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = KODI::TIME::make_zoned("Etc/GMT+6", tps);
+#if defined(DATE_IS_CXX20)
+  EXPECT_EQ(KODI::TIME::format("{:%FT%T%Ez}", zone), "1991-05-14T06:34:56-06:00")
+#else
+  EXPECT_EQ(KODI::TIME::format("%FT%T%Ez", zone), "1991-05-14T06:34:56-06:00")
+#endif
       << "tzdata information not valid for 'Etc/GMT+6'";
 
   // LANG=C TZ="Etc/GMT+7" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
-  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
-  zone = date::make_zoned("Etc/GMT+7", tps);
-  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T05:34:56-07:00")
+  tps = KODI::TIME::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = KODI::TIME::make_zoned("Etc/GMT+7", tps);
+#if defined(DATE_IS_CXX20)
+  EXPECT_EQ(KODI::TIME::format("{:%FT%T%Ez}", zone), "1991-05-14T05:34:56-07:00")
+#else
+  EXPECT_EQ(KODI::TIME::format("%FT%T%Ez", zone), "1991-05-14T05:34:56-07:00")
+#endif
       << "tzdata information not valid for 'Etc/GMT+7'";
 
   // LANG=C TZ="Etc/GMT+8" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
-  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
-  zone = date::make_zoned("Etc/GMT+8", tps);
-  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T04:34:56-08:00")
+  tps = KODI::TIME::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = KODI::TIME::make_zoned("Etc/GMT+8", tps);
+#if defined(DATE_IS_CXX20)
+  EXPECT_EQ(KODI::TIME::format("{:%FT%T%Ez}", zone), "1991-05-14T04:34:56-08:00")
+#else
+  EXPECT_EQ(KODI::TIME::format("%FT%T%Ez", zone), "1991-05-14T04:34:56-08:00")
+#endif
       << "tzdata information not valid for 'Etc/GMT+8'";
 
   // LANG=C TZ="Etc/GMT+9" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
-  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
-  zone = date::make_zoned("Etc/GMT+9", tps);
-  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T03:34:56-09:00")
+  tps = KODI::TIME::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = KODI::TIME::make_zoned("Etc/GMT+9", tps);
+#if defined(DATE_IS_CXX20)
+  EXPECT_EQ(KODI::TIME::format("{:%FT%T%Ez}", zone), "1991-05-14T03:34:56-09:00")
+#else
+  EXPECT_EQ(KODI::TIME::format("%FT%T%Ez", zone), "1991-05-14T03:34:56-09:00")
+#endif
       << "tzdata information not valid for 'Etc/GMT+9'";
 
   // LANG=C TZ="Etc/GMT+10" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
-  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
-  zone = date::make_zoned("Etc/GMT+10", tps);
-  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T02:34:56-10:00")
+  tps = KODI::TIME::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = KODI::TIME::make_zoned("Etc/GMT+10", tps);
+#if defined(DATE_IS_CXX20)
+  EXPECT_EQ(KODI::TIME::format("{:%FT%T%Ez}", zone), "1991-05-14T02:34:56-10:00")
+#else
+  EXPECT_EQ(KODI::TIME::format("%FT%T%Ez", zone), "1991-05-14T02:34:56-10:00")
+#endif
       << "tzdata information not valid for 'Etc/GMT+10'";
 
   // LANG=C TZ="Etc/GMT+11" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
-  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
-  zone = date::make_zoned("Etc/GMT+11", tps);
-  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T01:34:56-11:00")
+  tps = KODI::TIME::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = KODI::TIME::make_zoned("Etc/GMT+11", tps);
+#if defined(DATE_IS_CXX20)
+  EXPECT_EQ(KODI::TIME::format("{:%FT%T%Ez}", zone), "1991-05-14T01:34:56-11:00")
+#else
+  EXPECT_EQ(KODI::TIME::format("%FT%T%Ez", zone), "1991-05-14T01:34:56-11:00")
+#endif
       << "tzdata information not valid for 'Etc/GMT+11'";
 
   // LANG=C TZ="Etc/GMT+12" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
-  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
-  zone = date::make_zoned("Etc/GMT+12", tps);
-  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T00:34:56-12:00")
+  tps = KODI::TIME::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = KODI::TIME::make_zoned("Etc/GMT+12", tps);
+#if defined(DATE_IS_CXX20)
+  EXPECT_EQ(KODI::TIME::format("{:%FT%T%Ez}", zone), "1991-05-14T00:34:56-12:00")
+#else
+  EXPECT_EQ(KODI::TIME::format("%FT%T%Ez", zone), "1991-05-14T00:34:56-12:00")
+#endif
       << "tzdata information not valid for 'Etc/GMT+12'";
 
   // LANG=C TZ="Etc/GMT-1" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
-  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
-  zone = date::make_zoned("Etc/GMT-1", tps);
-  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T13:34:56+01:00")
+  tps = KODI::TIME::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = KODI::TIME::make_zoned("Etc/GMT-1", tps);
+#if defined(DATE_IS_CXX20)
+  EXPECT_EQ(KODI::TIME::format("{:%FT%T%Ez}", zone), "1991-05-14T13:34:56+01:00")
+#else
+  EXPECT_EQ(KODI::TIME::format("%FT%T%Ez", zone), "1991-05-14T13:34:56+01:00")
+#endif
       << "tzdata information not valid for 'Etc/GMT-1'";
 
   // LANG=C TZ="Etc/GMT-2" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
-  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
-  zone = date::make_zoned("Etc/GMT-2", tps);
-  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T14:34:56+02:00")
+  tps = KODI::TIME::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = KODI::TIME::make_zoned("Etc/GMT-2", tps);
+#if defined(DATE_IS_CXX20)
+  EXPECT_EQ(KODI::TIME::format("{:%FT%T%Ez}", zone), "1991-05-14T14:34:56+02:00")
+#else
+  EXPECT_EQ(KODI::TIME::format("%FT%T%Ez", zone), "1991-05-14T14:34:56+02:00")
+#endif
       << "tzdata information not valid for 'Etc/GMT-2'";
 
   // LANG=C TZ="Etc/GMT-3" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
-  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
-  zone = date::make_zoned("Etc/GMT-3", tps);
-  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T15:34:56+03:00")
+  tps = KODI::TIME::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = KODI::TIME::make_zoned("Etc/GMT-3", tps);
+#if defined(DATE_IS_CXX20)
+  EXPECT_EQ(KODI::TIME::format("{:%FT%T%Ez}", zone), "1991-05-14T15:34:56+03:00")
+#else
+  EXPECT_EQ(KODI::TIME::format("%FT%T%Ez", zone), "1991-05-14T15:34:56+03:00")
+#endif
       << "tzdata information not valid for 'Etc/GMT-3'";
 
   // LANG=C TZ="Etc/GMT-4" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
-  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
-  zone = date::make_zoned("Etc/GMT-4", tps);
-  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T16:34:56+04:00")
+  tps = KODI::TIME::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = KODI::TIME::make_zoned("Etc/GMT-4", tps);
+#if defined(DATE_IS_CXX20)
+  EXPECT_EQ(KODI::TIME::format("{:%FT%T%Ez}", zone), "1991-05-14T16:34:56+04:00")
+#else
+  EXPECT_EQ(KODI::TIME::format("%FT%T%Ez", zone), "1991-05-14T16:34:56+04:00")
+#endif
       << "tzdata information not valid for 'Etc/GMT-4'";
 
   // LANG=C TZ="Etc/GMT-5" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
-  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
-  zone = date::make_zoned("Etc/GMT-5", tps);
-  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T17:34:56+05:00")
+  tps = KODI::TIME::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = KODI::TIME::make_zoned("Etc/GMT-5", tps);
+#if defined(DATE_IS_CXX20)
+  EXPECT_EQ(KODI::TIME::format("{:%FT%T%Ez}", zone), "1991-05-14T17:34:56+05:00")
+#else
+  EXPECT_EQ(KODI::TIME::format("%FT%T%Ez", zone), "1991-05-14T17:34:56+05:00")
+#endif
       << "tzdata information not valid for 'Etc/GMT-5'";
 
   // LANG=C TZ="Etc/GMT-6" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
-  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
-  zone = date::make_zoned("Etc/GMT-6", tps);
-  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T18:34:56+06:00")
+  tps = KODI::TIME::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = KODI::TIME::make_zoned("Etc/GMT-6", tps);
+#if defined(DATE_IS_CXX20)
+  EXPECT_EQ(KODI::TIME::format("{:%FT%T%Ez}", zone), "1991-05-14T18:34:56+06:00")
+#else
+  EXPECT_EQ(KODI::TIME::format("%FT%T%Ez", zone), "1991-05-14T18:34:56+06:00")
+#endif
       << "tzdata information not valid for 'Etc/GMT-6'";
 
   // LANG=C TZ="Etc/GMT-7" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
-  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
-  zone = date::make_zoned("Etc/GMT-7", tps);
-  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T19:34:56+07:00")
+  tps = KODI::TIME::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = KODI::TIME::make_zoned("Etc/GMT-7", tps);
+#if defined(DATE_IS_CXX20)
+  EXPECT_EQ(KODI::TIME::format("{:%FT%T%Ez}", zone), "1991-05-14T19:34:56+07:00")
+#else
+  EXPECT_EQ(KODI::TIME::format("%FT%T%Ez", zone), "1991-05-14T19:34:56+07:00")
+#endif
       << "tzdata information not valid for 'Etc/GMT-7'";
 
   // LANG=C TZ="Etc/GMT-8" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
-  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
-  zone = date::make_zoned("Etc/GMT-8", tps);
-  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T20:34:56+08:00")
+  tps = KODI::TIME::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = KODI::TIME::make_zoned("Etc/GMT-8", tps);
+#if defined(DATE_IS_CXX20)
+  EXPECT_EQ(KODI::TIME::format("{:%FT%T%Ez}", zone), "1991-05-14T20:34:56+08:00")
+#else
+  EXPECT_EQ(KODI::TIME::format("%FT%T%Ez", zone), "1991-05-14T20:34:56+08:00")
+#endif
       << "tzdata information not valid for 'Etc/GMT-8'";
 
   // LANG=C TZ="Etc/GMT-9" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
-  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
-  zone = date::make_zoned("Etc/GMT-9", tps);
-  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T21:34:56+09:00")
+  tps = KODI::TIME::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = KODI::TIME::make_zoned("Etc/GMT-9", tps);
+#if defined(DATE_IS_CXX20)
+  EXPECT_EQ(KODI::TIME::format("{:%FT%T%Ez}", zone), "1991-05-14T21:34:56+09:00")
+#else
+  EXPECT_EQ(KODI::TIME::format("%FT%T%Ez", zone), "1991-05-14T21:34:56+09:00")
+#endif
       << "tzdata information not valid for 'Etc/GMT-9'";
 
   // LANG=C TZ="Etc/GMT-10" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
-  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
-  zone = date::make_zoned("Etc/GMT-10", tps);
-  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T22:34:56+10:00")
+  tps = KODI::TIME::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = KODI::TIME::make_zoned("Etc/GMT-10", tps);
+#if defined(DATE_IS_CXX20)
+  EXPECT_EQ(KODI::TIME::format("{:%FT%T%Ez}", zone), "1991-05-14T22:34:56+10:00")
+#else
+  EXPECT_EQ(KODI::TIME::format("%FT%T%Ez", zone), "1991-05-14T22:34:56+10:00")
+#endif
       << "tzdata information not valid for 'Etc/GMT-10'";
 
   // LANG=C TZ="Etc/GMT-11" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
-  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
-  zone = date::make_zoned("Etc/GMT-11", tps);
-  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T23:34:56+11:00")
+  tps = KODI::TIME::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = KODI::TIME::make_zoned("Etc/GMT-11", tps);
+#if defined(DATE_IS_CXX20)
+  EXPECT_EQ(KODI::TIME::format("{:%FT%T%Ez}", zone), "1991-05-14T23:34:56+11:00")
+#else
+  EXPECT_EQ(KODI::TIME::format("%FT%T%Ez", zone), "1991-05-14T23:34:56+11:00")
+#endif
       << "tzdata information not valid for 'Etc/GMT-11'";
 
   // LANG=C TZ="Etc/GMT-12" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
-  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
-  zone = date::make_zoned("Etc/GMT-12", tps);
-  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-15T00:34:56+12:00")
+  tps = KODI::TIME::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = KODI::TIME::make_zoned("Etc/GMT-12", tps);
+#if defined(DATE_IS_CXX20)
+  EXPECT_EQ(KODI::TIME::format("{:%FT%T%Ez}", zone), "1991-05-15T00:34:56+12:00")
+#else
+  EXPECT_EQ(KODI::TIME::format("%FT%T%Ez", zone), "1991-05-15T00:34:56+12:00")
+#endif
       << "tzdata information not valid for 'Etc/GMT-12'";
 
   // LANG=C TZ="Etc/GMT-13" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
-  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
-  zone = date::make_zoned("Etc/GMT-13", tps);
-  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-15T01:34:56+13:00")
+  tps = KODI::TIME::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = KODI::TIME::make_zoned("Etc/GMT-13", tps);
+#if defined(DATE_IS_CXX20)
+  EXPECT_EQ(KODI::TIME::format("{:%FT%T%Ez}", zone), "1991-05-15T01:34:56+13:00")
+#else
+  EXPECT_EQ(KODI::TIME::format("%FT%T%Ez", zone), "1991-05-15T01:34:56+13:00")
+#endif
       << "tzdata information not valid for 'Etc/GMT-13'";
 
   // LANG=C TZ="Etc/GMT-14" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
-  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
-  zone = date::make_zoned("Etc/GMT-14", tps);
-  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-15T02:34:56+14:00")
+  tps = KODI::TIME::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = KODI::TIME::make_zoned("Etc/GMT-14", tps);
+#if defined(DATE_IS_CXX20)
+  EXPECT_EQ(KODI::TIME::format("{:%FT%T%Ez}", zone), "1991-05-15T02:34:56+14:00")
+#else
+  EXPECT_EQ(KODI::TIME::format("%FT%T%Ez", zone), "1991-05-15T02:34:56+14:00")
+#endif
       << "tzdata information not valid for 'Etc/GMT-14'";
+
+  // LANG=C TZ="Etc/UTC" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
+  tps = KODI::TIME::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = KODI::TIME::make_zoned("Etc/UTC", tps);
+#if defined(DATE_IS_CXX20)
+  EXPECT_EQ(KODI::TIME::format("{:%FT%T%Ez}", zone), "1991-05-14T12:34:56+00:00")
+#else
+  EXPECT_EQ(KODI::TIME::format("%FT%T%Ez", zone), "1991-05-14T12:34:56+00:00")
+#endif
+      << "tzdata information not valid for 'Etc/UTC'";
 }

@@ -53,7 +53,12 @@ macro(buildDate)
 endmacro()
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  if(ENABLE_INTERNAL_DATE)
+  try_compile(DATE_IS_CXX20 "${CMAKE_BINARY_DIR}" "${CMAKE_SOURCE_DIR}/tools/depends/target/date/test-c++20.cpp")
+  if(DATE_IS_CXX20)
+    message(STATUS "Date: using std::chrono from C++20 instead ...")
+    add_definitions(-DDATE_IS_CXX20)
+    return()
+  elseif(ENABLE_INTERNAL_DATE)
     buildDate()
   else()
     find_package(PkgConfig)
@@ -99,6 +104,11 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       set_property(TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY
                                                                             IMPORTED_CONFIGURATIONS DEBUG)
     endif()
+
+    if(DATE_HAS_STRINGVIEW)
+      set(_date_definitions -DDATE_HAS_STRINGVIEW)
+    endif()
+
     set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
                                                                      INTERFACE_INCLUDE_DIRECTORIES "${DATE_INCLUDE_DIRS}"
                                                                      INTERFACE_COMPILE_DEFINITIONS "${_date_definitions}")
