@@ -1944,40 +1944,15 @@ std::string CFileItem::FindLocalArt(const std::string &artFile, bool useFolder) 
   std::string thumb;
   if (!m_bIsFolder)
   {
-    thumb = GetLocalArt(artFile, false);
+    thumb = ART::GetLocalArt(*this, artFile, false);
     if (!thumb.empty() && CFile::Exists(thumb))
       return thumb;
   }
   if ((useFolder || (m_bIsFolder && !IsFileFolder())) && !artFile.empty())
   {
-    std::string thumb2 = GetLocalArt(artFile, true);
+    std::string thumb2 = ART::GetLocalArt(*this, artFile, true);
     if (!thumb2.empty() && thumb2 != thumb && CFile::Exists(thumb2))
       return thumb2;
-  }
-  return "";
-}
-
-std::string CFileItem::GetLocalArt(const std::string& artFile, bool useFolder) const
-{
-  // no retrieving of empty art files from folders
-  if (useFolder && artFile.empty())
-    return "";
-
-  std::string strFile = ART::GetLocalArtBaseFilename(*this, useFolder);
-  if (strFile.empty()) // empty filepath -> nothing to find
-    return "";
-
-  if (useFolder)
-  {
-    if (!artFile.empty())
-      return URIUtils::AddFileToFolder(strFile, artFile);
-  }
-  else
-  {
-    if (artFile.empty()) // old thumbnail matching
-      return URIUtils::ReplaceExtension(strFile, ".tbn");
-    else
-      return URIUtils::ReplaceExtension(strFile, "-" + artFile);
   }
   return "";
 }

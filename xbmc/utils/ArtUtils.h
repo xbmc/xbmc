@@ -26,6 +26,15 @@ void FillInDefaultIcon(CFileItem& item);
  */
 std::string GetFolderThumb(const CFileItem& item, const std::string& folderJPG = "folder.jpg");
 
+/*! \brief Assemble the filename of a particular piece of local artwork for an item.
+           No file existence check is typically performed.
+ \param artFile the art file to search for.
+ \param useFolder whether to look in the folder for the art file. Defaults to false.
+ \return the path to the local artwork.
+ \sa FindLocalArt
+ */
+std::string GetLocalArt(const CFileItem& item, const std::string& artFile, bool useFolder = false);
+
 /*!
  \brief Assemble the base filename of local artwork for an item,
  accounting for archives, stacks and multi-paths, and BDMV/VIDEO_TS folders.
