@@ -590,7 +590,7 @@ int CPVRDatabase::GetClientID(const std::string& addonID, unsigned int instanceI
   if (ExecuteQuery(sql))
     return static_cast<int>(m_pDS->lastinsertid());
 
-  return -1;
+  return PVR_CLIENT_INVALID_UID;
 }
 
 /********** Channel provider methods **********/
@@ -1306,7 +1306,8 @@ std::vector<std::shared_ptr<CPVRTimerInfoTag>> CPVRDatabase::GetTimers(
         newTag->m_iClientIndex = -m_pDS->fv("iClientIndex").get_asInt();
         newTag->m_iParentClientIndex = m_pDS->fv("iParentClientIndex").get_asInt();
         newTag->m_iClientId = m_pDS->fv("iClientId").get_asInt();
-        newTag->SetTimerType(CPVRTimerType::CreateFromIds(m_pDS->fv("iTimerType").get_asInt(), -1));
+        newTag->SetTimerType(CPVRTimerType::CreateFromIds(m_pDS->fv("iTimerType").get_asInt(),
+                                                          PVR_CLIENT_INVALID_UID));
         newTag->m_state = static_cast<PVR_TIMER_STATE>(m_pDS->fv("iState").get_asInt());
         newTag->m_strTitle = m_pDS->fv("sTitle").get_asString().c_str();
         newTag->m_iClientChannelUid = m_pDS->fv("iClientChannelUid").get_asInt();

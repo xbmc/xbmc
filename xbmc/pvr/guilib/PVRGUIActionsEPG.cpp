@@ -30,6 +30,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
+#include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
@@ -245,6 +246,24 @@ bool CPVRGUIActionsEPG::ChooseIconForSavedSearch(const CFileItem& item)
 
   searchFilter->SetIconPath(icon);
   CServiceBroker::GetPVRManager().EpgContainer().PersistSavedSearch(*searchFilter);
+  return true;
+}
+
+bool CPVRGUIActionsEPG::DuplicateSavedSearch(const CFileItem& item)
+{
+  const auto searchFilter{item.GetEPGSearchFilter()};
+
+  if (!searchFilter)
+  {
+    CLog::LogF(LOGERROR, "Wrong item type. No EPG search filter present.");
+    return false;
+  }
+
+  const auto dupedSearchFilter{std::make_shared<CPVREpgSearchFilter>(*searchFilter)};
+  dupedSearchFilter->SetDatabaseId(PVR_EPG_SEARCH_INVALID_DATABASE_ID); // force new db entry
+  dupedSearchFilter->SetTitle(StringUtils::Format(g_localizeStrings.Get(19356), // Copy of '<title>'
+                                                  searchFilter->GetTitle()));
+  CServiceBroker::GetPVRManager().EpgContainer().PersistSavedSearch(*dupedSearchFilter);
   return true;
 }
 

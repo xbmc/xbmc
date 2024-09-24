@@ -455,7 +455,7 @@ void CGUIWindowPVRSearchBase::ExecuteSearch()
   }
 
   // Save if not a transient search
-  if (m_searchfilter->GetDatabaseId() != -1)
+  if (m_searchfilter->GetDatabaseId() != PVR_EPG_SEARCH_INVALID_DATABASE_ID)
     CServiceBroker::GetPVRManager().EpgContainer().UpdateSavedSearchLastExecuted(*m_searchfilter);
 }
 

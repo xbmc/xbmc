@@ -18,162 +18,164 @@
 
 namespace PVR
 {
-  class CPVREpgInfoTag;
+static constexpr int PVR_EPG_SEARCH_INVALID_DATABASE_ID{-1};
 
-  class CPVREpgSearchFilter
-  {
-  public:
-    CPVREpgSearchFilter() = delete;
+class CPVREpgInfoTag;
 
-    /*!
-     * @brief ctor.
-     * @param bRadio the type of channels to search - if true, 'radio'. 'tv', otherwise.
-     */
-    explicit CPVREpgSearchFilter(bool bRadio);
+class CPVREpgSearchFilter
+{
+public:
+  CPVREpgSearchFilter() = delete;
 
-    /*!
-     * @brief Clear this filter.
-     */
-    void Reset();
+  /*!
+   * @brief ctor.
+   * @param bRadio the type of channels to search - if true, 'radio'. 'tv', otherwise.
+   */
+  explicit CPVREpgSearchFilter(bool bRadio);
 
-    /*!
-     * @brief Return the path for this filter.
-     * @return the path.
-     */
-    std::string GetPath() const;
+  /*!
+   * @brief Clear this filter.
+   */
+  void Reset();
 
-    /*!
-     * @brief Check if a tag will be filtered or not.
-     * @param tag The tag to check.
-     * @return True if this tag matches the filter, false if not.
-     */
-    bool FilterEntry(const std::shared_ptr<const CPVREpgInfoTag>& tag) const;
+  /*!
+   * @brief Return the path for this filter.
+   * @return the path.
+   */
+  std::string GetPath() const;
 
-    /*!
-     * @brief remove duplicates from a list of epg tags.
-     * @param results The list of epg tags.
-     */
-    static void RemoveDuplicates(std::vector<std::shared_ptr<CPVREpgInfoTag>>& results);
+  /*!
+   * @brief Check if a tag will be filtered or not.
+   * @param tag The tag to check.
+   * @return True if this tag matches the filter, false if not.
+   */
+  bool FilterEntry(const std::shared_ptr<const CPVREpgInfoTag>& tag) const;
 
-    /*!
-     * @brief Get the type of channels to search.
-     * @return true, if 'radio'. false, otherwise.
-     */
-    bool IsRadio() const { return m_bIsRadio; }
+  /*!
+   * @brief remove duplicates from a list of epg tags.
+   * @param results The list of epg tags.
+   */
+  static void RemoveDuplicates(std::vector<std::shared_ptr<CPVREpgInfoTag>>& results);
 
-    const std::string& GetSearchTerm() const { return m_searchData.m_strSearchTerm; }
-    void SetSearchTerm(const std::string& strSearchTerm);
+  /*!
+   * @brief Get the type of channels to search.
+   * @return true, if 'radio'. false, otherwise.
+   */
+  bool IsRadio() const { return m_bIsRadio; }
 
-    void SetSearchPhrase(const std::string& strSearchPhrase);
+  const std::string& GetSearchTerm() const { return m_searchData.m_strSearchTerm; }
+  void SetSearchTerm(const std::string& strSearchTerm);
 
-    bool IsCaseSensitive() const { return m_bIsCaseSensitive; }
-    void SetCaseSensitive(bool bIsCaseSensitive);
+  void SetSearchPhrase(const std::string& strSearchPhrase);
 
-    bool ShouldSearchInDescription() const { return m_searchData.m_bSearchInDescription; }
-    void SetSearchInDescription(bool bSearchInDescription);
+  bool IsCaseSensitive() const { return m_bIsCaseSensitive; }
+  void SetCaseSensitive(bool bIsCaseSensitive);
 
-    int GetGenreType() const { return m_searchData.m_iGenreType; }
-    void SetGenreType(int iGenreType);
+  bool ShouldSearchInDescription() const { return m_searchData.m_bSearchInDescription; }
+  void SetSearchInDescription(bool bSearchInDescription);
 
-    int GetMinimumDuration() const { return m_iMinimumDuration; }
-    void SetMinimumDuration(int iMinimumDuration);
+  int GetGenreType() const { return m_searchData.m_iGenreType; }
+  void SetGenreType(int iGenreType);
 
-    int GetMaximumDuration() const { return m_iMaximumDuration; }
-    void SetMaximumDuration(int iMaximumDuration);
+  int GetMinimumDuration() const { return m_iMinimumDuration; }
+  void SetMinimumDuration(int iMinimumDuration);
 
-    bool ShouldIgnoreFinishedBroadcasts() const { return m_searchData.m_bIgnoreFinishedBroadcasts; }
-    void SetIgnoreFinishedBroadcasts(bool bIgnoreFinishedBroadcasts);
+  int GetMaximumDuration() const { return m_iMaximumDuration; }
+  void SetMaximumDuration(int iMaximumDuration);
 
-    bool ShouldIgnoreFutureBroadcasts() const { return m_searchData.m_bIgnoreFutureBroadcasts; }
-    void SetIgnoreFutureBroadcasts(bool bIgnoreFutureBroadcasts);
+  bool ShouldIgnoreFinishedBroadcasts() const { return m_searchData.m_bIgnoreFinishedBroadcasts; }
+  void SetIgnoreFinishedBroadcasts(bool bIgnoreFinishedBroadcasts);
 
-    const CDateTime& GetStartDateTime() const { return m_searchData.m_startDateTime; }
-    void SetStartDateTime(const CDateTime& startDateTime);
+  bool ShouldIgnoreFutureBroadcasts() const { return m_searchData.m_bIgnoreFutureBroadcasts; }
+  void SetIgnoreFutureBroadcasts(bool bIgnoreFutureBroadcasts);
 
-    bool IsStartAnyTime() const { return m_searchData.m_startAnyTime; }
-    void SetStartAnyTime(bool startAnyTime);
+  const CDateTime& GetStartDateTime() const { return m_searchData.m_startDateTime; }
+  void SetStartDateTime(const CDateTime& startDateTime);
 
-    const CDateTime& GetEndDateTime() const { return m_searchData.m_endDateTime; }
-    void SetEndDateTime(const CDateTime& endDateTime);
+  bool IsStartAnyTime() const { return m_searchData.m_startAnyTime; }
+  void SetStartAnyTime(bool startAnyTime);
 
-    bool IsEndAnyTime() const { return m_searchData.m_endAnyTime; }
-    void SetEndAnyTime(bool endAnyTime);
+  const CDateTime& GetEndDateTime() const { return m_searchData.m_endDateTime; }
+  void SetEndDateTime(const CDateTime& endDateTime);
 
-    bool ShouldIncludeUnknownGenres() const { return m_searchData.m_bIncludeUnknownGenres; }
-    void SetIncludeUnknownGenres(bool bIncludeUnknownGenres);
+  bool IsEndAnyTime() const { return m_searchData.m_endAnyTime; }
+  void SetEndAnyTime(bool endAnyTime);
 
-    bool ShouldRemoveDuplicates() const { return m_bRemoveDuplicates; }
-    void SetRemoveDuplicates(bool bRemoveDuplicates);
+  bool ShouldIncludeUnknownGenres() const { return m_searchData.m_bIncludeUnknownGenres; }
+  void SetIncludeUnknownGenres(bool bIncludeUnknownGenres);
 
-    int GetClientID() const { return m_iClientID; }
-    void SetClientID(int iClientID);
+  bool ShouldRemoveDuplicates() const { return m_bRemoveDuplicates; }
+  void SetRemoveDuplicates(bool bRemoveDuplicates);
 
-    int GetChannelGroupID() const { return m_iChannelGroupID; }
-    void SetChannelGroupID(int iChannelGroupID);
+  int GetClientID() const { return m_iClientID; }
+  void SetClientID(int iClientID);
 
-    int GetChannelUID() const { return m_iChannelUID; }
-    void SetChannelUID(int iChannelUID);
+  int GetChannelGroupID() const { return m_iChannelGroupID; }
+  void SetChannelGroupID(int iChannelGroupID);
 
-    bool IsFreeToAirOnly() const { return m_bFreeToAirOnly; }
-    void SetFreeToAirOnly(bool bFreeToAirOnly);
+  int GetChannelUID() const { return m_iChannelUID; }
+  void SetChannelUID(int iChannelUID);
 
-    bool ShouldIgnorePresentTimers() const { return m_bIgnorePresentTimers; }
-    void SetIgnorePresentTimers(bool bIgnorePresentTimers);
+  bool IsFreeToAirOnly() const { return m_bFreeToAirOnly; }
+  void SetFreeToAirOnly(bool bFreeToAirOnly);
 
-    bool ShouldIgnorePresentRecordings() const { return m_bIgnorePresentRecordings; }
-    void SetIgnorePresentRecordings(bool bIgnorePresentRecordings);
+  bool ShouldIgnorePresentTimers() const { return m_bIgnorePresentTimers; }
+  void SetIgnorePresentTimers(bool bIgnorePresentTimers);
 
-    int GetDatabaseId() const { return m_iDatabaseId; }
-    void SetDatabaseId(int iDatabaseId);
+  bool ShouldIgnorePresentRecordings() const { return m_bIgnorePresentRecordings; }
+  void SetIgnorePresentRecordings(bool bIgnorePresentRecordings);
 
-    const std::string& GetTitle() const { return m_title; }
-    void SetTitle(const std::string& title);
+  int GetDatabaseId() const { return m_iDatabaseId; }
+  void SetDatabaseId(int iDatabaseId);
 
-    const std::string& GetIconPath() const { return m_iconPath; }
-    void SetIconPath(const std::string& iconPath);
+  const std::string& GetTitle() const { return m_title; }
+  void SetTitle(const std::string& title);
 
-    const CDateTime& GetLastExecutedDateTime() const { return m_lastExecutedDateTime; }
-    void SetLastExecutedDateTime(const CDateTime& lastExecutedDateTime);
+  const std::string& GetIconPath() const { return m_iconPath; }
+  void SetIconPath(const std::string& iconPath);
 
-    const PVREpgSearchData& GetEpgSearchData() const { return m_searchData; }
-    void SetEpgSearchDataFiltered() { m_bEpgSearchDataFiltered = true; }
+  const CDateTime& GetLastExecutedDateTime() const { return m_lastExecutedDateTime; }
+  void SetLastExecutedDateTime(const CDateTime& lastExecutedDateTime);
 
-    bool IsChanged() const { return m_bChanged; }
-    void SetChanged(bool bChanged) { m_bChanged = bChanged; }
+  const PVREpgSearchData& GetEpgSearchData() const { return m_searchData; }
+  void SetEpgSearchDataFiltered() { m_bEpgSearchDataFiltered = true; }
 
-  private:
-    bool MatchGenre(const std::shared_ptr<const CPVREpgInfoTag>& tag) const;
-    bool MatchDuration(const std::shared_ptr<const CPVREpgInfoTag>& tag) const;
-    bool MatchStartAndEndTimes(const std::shared_ptr<const CPVREpgInfoTag>& tag) const;
-    bool MatchSearchTerm(const std::shared_ptr<const CPVREpgInfoTag>& tag) const;
-    bool MatchChannel(const std::shared_ptr<const CPVREpgInfoTag>& tag) const;
-    bool MatchChannelGroup(const std::shared_ptr<const CPVREpgInfoTag>& tag) const;
-    bool MatchFreeToAir(const std::shared_ptr<const CPVREpgInfoTag>& tag) const;
-    bool MatchTimers(const std::shared_ptr<const CPVREpgInfoTag>& tag) const;
-    bool MatchRecordings(const std::shared_ptr<const CPVREpgInfoTag>& tag) const;
+  bool IsChanged() const { return m_bChanged; }
+  void SetChanged(bool bChanged) { m_bChanged = bChanged; }
 
-    bool m_bChanged = false;
+private:
+  bool MatchGenre(const std::shared_ptr<const CPVREpgInfoTag>& tag) const;
+  bool MatchDuration(const std::shared_ptr<const CPVREpgInfoTag>& tag) const;
+  bool MatchStartAndEndTimes(const std::shared_ptr<const CPVREpgInfoTag>& tag) const;
+  bool MatchSearchTerm(const std::shared_ptr<const CPVREpgInfoTag>& tag) const;
+  bool MatchChannel(const std::shared_ptr<const CPVREpgInfoTag>& tag) const;
+  bool MatchChannelGroup(const std::shared_ptr<const CPVREpgInfoTag>& tag) const;
+  bool MatchFreeToAir(const std::shared_ptr<const CPVREpgInfoTag>& tag) const;
+  bool MatchTimers(const std::shared_ptr<const CPVREpgInfoTag>& tag) const;
+  bool MatchRecordings(const std::shared_ptr<const CPVREpgInfoTag>& tag) const;
 
-    PVREpgSearchData m_searchData;
-    bool m_bEpgSearchDataFiltered = false;
+  bool m_bChanged = false;
 
-    bool m_bIsCaseSensitive; /*!< Do a case sensitive search */
-    int m_iMinimumDuration; /*!< The minimum duration for an entry */
-    int m_iMaximumDuration; /*!< The maximum duration for an entry */
-    bool m_bRemoveDuplicates; /*!< True to remove duplicate events, false if not */
+  PVREpgSearchData m_searchData;
+  bool m_bEpgSearchDataFiltered = false;
 
-    // PVR specific filters
-    bool m_bIsRadio; /*!< True to filter radio channels only, false to tv only */
-    int m_iClientID = PVR_CLIENT_INVALID_UID; /*!< The client id */
-    int m_iChannelGroupID{-1}; /*! The channel group id */
-    int m_iChannelUID = -1; /*!< The channel uid */
-    bool m_bFreeToAirOnly; /*!< Include free to air channels only */
-    bool m_bIgnorePresentTimers; /*!< True to ignore currently present timers (future recordings), false if not */
-    bool m_bIgnorePresentRecordings; /*!< True to ignore currently active recordings, false if not */
+  bool m_bIsCaseSensitive; /*!< Do a case sensitive search */
+  int m_iMinimumDuration; /*!< The minimum duration for an entry */
+  int m_iMaximumDuration; /*!< The maximum duration for an entry */
+  bool m_bRemoveDuplicates; /*!< True to remove duplicate events, false if not */
 
-    int m_iDatabaseId = -1;
-    std::string m_title;
-    std::string m_iconPath;
-    CDateTime m_lastExecutedDateTime;
-  };
-}
+  // PVR specific filters
+  bool m_bIsRadio; /*!< True to filter radio channels only, false to tv only */
+  int m_iClientID = PVR_CLIENT_INVALID_UID; /*!< The client id */
+  int m_iChannelGroupID{-1}; /*!< The channel group id */
+  int m_iChannelUID = -1; /*!< The channel uid */
+  bool m_bFreeToAirOnly; /*!< Include free to air channels only */
+  bool m_bIgnorePresentTimers; /*!< True to ignore currently present timers, false if not */
+  bool m_bIgnorePresentRecordings; /*!< True to ignore currently active recordings, false if not */
+
+  int m_iDatabaseId{PVR_EPG_SEARCH_INVALID_DATABASE_ID};
+  std::string m_title;
+  std::string m_iconPath;
+  CDateTime m_lastExecutedDateTime;
+};
+} // namespace PVR

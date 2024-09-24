@@ -1442,7 +1442,7 @@ bool CPVREpgDatabase::Persist(CPVREpgSearchFilter& epgSearch)
 
   // Insert a new entry if this is a new search, replace the existing otherwise
   std::string strQuery;
-  if (epgSearch.GetDatabaseId() == -1)
+  if (epgSearch.GetDatabaseId() == PVR_EPG_SEARCH_INVALID_DATABASE_ID)
     strQuery = PrepareSQL(
         "INSERT INTO savedsearches "
         "(sTitle, sLastExecutedDateTime, sSearchTerm, bSearchInDescription, bIsCaseSensitive, "
@@ -1510,7 +1510,7 @@ bool CPVREpgDatabase::Persist(CPVREpgSearchFilter& epgSearch)
   if (bReturn)
   {
     // Set the database id for searches persisted for the first time
-    if (epgSearch.GetDatabaseId() == -1)
+    if (epgSearch.GetDatabaseId() == PVR_EPG_SEARCH_INVALID_DATABASE_ID)
       epgSearch.SetDatabaseId(static_cast<int>(m_pDS->lastinsertid()));
 
     epgSearch.SetChanged(false);
@@ -1521,7 +1521,7 @@ bool CPVREpgDatabase::Persist(CPVREpgSearchFilter& epgSearch)
 
 bool CPVREpgDatabase::UpdateSavedSearchLastExecuted(const CPVREpgSearchFilter& epgSearch)
 {
-  if (epgSearch.GetDatabaseId() == -1)
+  if (epgSearch.GetDatabaseId() == PVR_EPG_SEARCH_INVALID_DATABASE_ID)
     return false;
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
@@ -1534,7 +1534,7 @@ bool CPVREpgDatabase::UpdateSavedSearchLastExecuted(const CPVREpgSearchFilter& e
 
 bool CPVREpgDatabase::Delete(const CPVREpgSearchFilter& epgSearch)
 {
-  if (epgSearch.GetDatabaseId() == -1)
+  if (epgSearch.GetDatabaseId() == PVR_EPG_SEARCH_INVALID_DATABASE_ID)
     return false;
 
   CLog::LogFC(LOGDEBUG, LOGEPG, "Deleting saved search '{}' from the database",
