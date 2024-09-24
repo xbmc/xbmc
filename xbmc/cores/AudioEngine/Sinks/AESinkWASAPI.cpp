@@ -904,6 +904,20 @@ initialize:
   format.m_sampleRate    = wfxex.Format.nSamplesPerSec; //PCM: Sample rate.  RAW: Link speed
   format.m_frameSize     = (wfxex.Format.wBitsPerSample >> 3) * wfxex.Format.nChannels;
 
+  ComPtr<IAudioClient2> audioClient2;
+  if (SUCCEEDED(m_pAudioClient.As(&audioClient2)))
+  {
+    AudioClientProperties props = {};
+    props.cbSize = sizeof(props);
+    // ForegroundOnlyMedia/BackgroundCapableMedia replaced in Windows 10 by Movie/Media
+    props.eCategory = CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin10)
+                          ? AudioCategory_Media
+                          : AudioCategory_ForegroundOnlyMedia;
+
+    if (FAILED(hr = audioClient2->SetClientProperties(&props)))
+      CLog::LogF(LOGERROR, "unable to set audio category, {}", WASAPIErrToStr(hr));
+  }
+
   REFERENCE_TIME audioSinkBufferDurationMsec, hnsLatency;
 
   audioSinkBufferDurationMsec = (REFERENCE_TIME)500000;
