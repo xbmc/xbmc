@@ -502,6 +502,7 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
 
   HRESULT hr;
   IXAudio2MasteringVoice* pMasterVoice = nullptr;
+  const wchar_t* pDevice = device.c_str();
   // ForegroundOnlyMedia/BackgroundCapableMedia replaced in Windows 10 by Movie/Media
   const AUDIO_STREAM_CATEGORY streamCategory{
       CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin10)
@@ -511,7 +512,7 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
   if (!bdefault)
   {
     hr = m_xAudio2->CreateMasteringVoice(&pMasterVoice, wfxex.Format.nChannels,
-                                         wfxex.Format.nSamplesPerSec, 0, device.c_str(), nullptr,
+                                         wfxex.Format.nSamplesPerSec, 0, pDevice, nullptr,
                                          streamCategory);
   }
 
@@ -524,11 +525,11 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
                  "Trying the default device...",
                  KODI::PLATFORM::WINDOWS::FromW(device));
     }
-
     // smartphone issue: providing device ID (even default ID) causes E_NOINTERFACE result
     // workaround: device = nullptr will initialize default audio endpoint
+    pDevice = nullptr;
     hr = m_xAudio2->CreateMasteringVoice(&pMasterVoice, wfxex.Format.nChannels,
-                                         wfxex.Format.nSamplesPerSec, 0, nullptr, nullptr,
+                                         wfxex.Format.nSamplesPerSec, 0, pDevice, nullptr,
                                          streamCategory);
     if (FAILED(hr) || !pMasterVoice)
     {
@@ -603,8 +604,8 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
         wfxex.Format.nAvgBytesPerSec   = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
 
         hr = m_xAudio2->CreateMasteringVoice(&m_masterVoice, wfxex.Format.nChannels,
-                                             wfxex.Format.nSamplesPerSec, 0, device.c_str(),
-                                             nullptr, streamCategory);
+                                             wfxex.Format.nSamplesPerSec, 0, pDevice, nullptr,
+                                             streamCategory);
         if (SUCCEEDED(hr))
         {
           hr = m_xAudio2->CreateSourceVoice(&m_sourceVoice, &wfxex.Format, 0, XAUDIO2_DEFAULT_FREQ_RATIO, &m_voiceCallback);
@@ -633,8 +634,8 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
         wfxex.Format.nAvgBytesPerSec   = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
 
         if (SUCCEEDED(m_xAudio2->CreateMasteringVoice(&m_masterVoice, wfxex.Format.nChannels,
-                                                      wfxex.Format.nSamplesPerSec, 0,
-                                                      device.c_str(), nullptr, streamCategory)) &&
+                                                      wfxex.Format.nSamplesPerSec, 0, pDevice,
+                                                      nullptr, streamCategory)) &&
             SUCCEEDED(m_xAudio2->CreateSourceVoice(&m_sourceVoice, &wfxex.Format, 0,
                                                    XAUDIO2_DEFAULT_FREQ_RATIO, &m_voiceCallback)))
           goto initialize;
