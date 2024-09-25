@@ -1911,7 +1911,7 @@ void CUtil::GetVideoBasePathAndFileName(const std::string& videoPath, std::strin
     basePath = item.GetLocalMetadataPath();
 
   CURL url(videoPath);
-  if (basePath.empty() && url.IsProtocol("bluray"))
+  if (basePath.empty() && (url.IsProtocol("bluray") || url.IsProtocol("dvd")))
   {
     basePath = url.GetHostName();
     videoFileName = URIUtils::ReplaceExtension(GetTitleFromPath(url.GetHostName()), "");

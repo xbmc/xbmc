@@ -53,6 +53,7 @@
 #include "dialogs/GUIDialogCache.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogSimpleMenu.h"
+#include "dialogs/GUIDialogYesNo.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
 #include "filesystem/Directory.h"
@@ -143,6 +144,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 #include "video/Bookmark.h"
@@ -177,6 +179,7 @@
 #include "platform/win32/threads/Win32Exception.h"
 #endif
 
+#include <charconv>
 #include <cmath>
 #include <memory>
 #include <mutex>
@@ -2256,39 +2259,6 @@ bool CApplication::PlayMedia(CFileItem& item, const std::string& player, PLAYLIS
   return PlayFile(item, player, false);
 }
 
-// PlayStack()
-// For playing a multi-file video.  Particularly inefficient
-// on startup, as we are required to calculate the length
-// of each video, so we open + close each one in turn.
-// A faster calculation of video time would improve this
-// substantially.
-// return value: same with PlayFile()
-bool CApplication::PlayStack(CFileItem& item, bool bRestart)
-{
-  const auto stackHelper = GetComponent<CApplicationStackHelper>();
-  if (!stackHelper->InitializeStack(item))
-    return false;
-
-  std::optional<int64_t> startoffset = stackHelper->InitializeStackStartPartAndOffset(item);
-  if (!startoffset)
-  {
-    CLog::LogF(LOGERROR, "Failed to obtain start offset for stack {}. Aborting playback.",
-               item.GetDynPath());
-    return false;
-  }
-
-  CFileItem selectedStackPart = stackHelper->GetCurrentStackPartFileItem();
-  selectedStackPart.SetStartOffset(startoffset.value());
-
-  if (item.HasProperty("savedplayerstate"))
-  {
-    selectedStackPart.SetProperty("savedplayerstate", item.GetProperty("savedplayerstate")); // pass on to part
-    item.ClearProperty("savedplayerstate");
-  }
-
-  return PlayFile(selectedStackPart, "", true);
-}
-
 bool CApplication::PlayFile(CFileItem item,
                             const std::string& player,
                             bool bRestart /* = false */,
@@ -2328,12 +2298,27 @@ bool CApplication::PlayFile(CFileItem item,
     return false;
   }
 
-  // if we have a stacked set of files, we need to setup our stack routines for
-  // "seamless" seeking and total time of the movie etc.
-  // will recall with restart set to true
-  if (item.IsStack())
-    return PlayStack(item, bRestart);
+  // Deal with stacks here
+  // Need to reference both the stacked FileItem and the individual FileItem later
+  // Along with the starting offset
+  CFileItem stack;
+  bool isStack{false};
+  double stackOffset{0.0};
+  if (stackHelper->InitializeStack(item))
+  {
+    std::optional<int64_t> startoffset = stackHelper->InitializeStackStartPartAndOffset(item);
+    if (!startoffset)
+    {
+      CLog::LogF(LOGERROR, "Failed to obtain start offset for stack {}. Aborting playback.",
+                 item.GetDynPath());
+      return false;
+    }
+    stackOffset = static_cast<double>(*startoffset / 1000);
+    isStack = true;
+  }
 
+  // Set player options
+  // This is saved under the stack filename for stacks so leave item = stacked item
   CPlayerOptions options;
 
   if (item.HasProperty("StartPercent"))
@@ -2342,15 +2327,10 @@ bool CApplication::PlayFile(CFileItem item,
     item.SetStartOffset(0);
   }
 
+  // For items in file stacks
   options.starttime = CUtil::ConvertMilliSecsToSecs(item.GetStartOffset());
 
-  if (bRestart)
-  {
-    // have to be set here due to playstack using this for starting the file
-    if (item.HasVideoInfoTag())
-      options.state = item.GetVideoInfoTag()->GetResumePoint().playerState;
-  }
-  if (!bRestart || stackHelper->IsPlayingISOStack())
+  if (!bRestart || isStack)
   {
     // the following code block is only applicable when bRestart is false OR to ISO stacks
 
@@ -2360,8 +2340,8 @@ bool CApplication::PlayFile(CFileItem item,
       CVideoDatabase dbs;
       dbs.Open();
 
-      std::string path = item.GetPath();
-      std::string videoInfoTagPath(item.GetVideoInfoTag()->m_strFileNameAndPath);
+      std::string path{item.GetPath()};
+      std::string videoInfoTagPath{item.GetVideoInfoTag()->m_strFileNameAndPath};
       if (videoInfoTagPath.find("removable://") == 0 || VIDEO::IsVideoDb(item))
         path = videoInfoTagPath;
 
@@ -2388,9 +2368,11 @@ bool CApplication::PlayFile(CFileItem item,
         {
           CBookmark bookmark;
           std::string path = item.GetPath();
-          if (item.HasVideoInfoTag() && StringUtils::StartsWith(item.GetVideoInfoTag()->m_strFileNameAndPath, "removable://"))
+          if (item.HasVideoInfoTag() &&
+              StringUtils::StartsWith(item.GetVideoInfoTag()->m_strFileNameAndPath, "removable://"))
             path = item.GetVideoInfoTag()->m_strFileNameAndPath;
-          else if (item.HasProperty("original_listitem_url") && URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
+          else if (item.HasProperty("original_listitem_url") &&
+                   URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
             path = item.GetProperty("original_listitem_url").asString();
           if (dbs.GetResumeBookMark(path, bookmark))
           {
@@ -2402,7 +2384,7 @@ bool CApplication::PlayFile(CFileItem item,
         if (options.starttime == 0.0 && item.HasVideoInfoTag())
         {
           // No resume point is set, but check if this item is part of a multi-episode file
-          const CVideoInfoTag *tag = item.GetVideoInfoTag();
+          const CVideoInfoTag* tag = item.GetVideoInfoTag();
 
           if (tag->m_iBookmarkId > 0)
           {
@@ -2415,7 +2397,7 @@ bool CApplication::PlayFile(CFileItem item,
       }
       else if (item.HasVideoInfoTag())
       {
-        const CVideoInfoTag *tag = item.GetVideoInfoTag();
+        const CVideoInfoTag* tag = item.GetVideoInfoTag();
 
         if (tag->m_iBookmarkId > 0)
         {
@@ -2430,29 +2412,76 @@ bool CApplication::PlayFile(CFileItem item,
     }
   }
 
-  // a disc image might be Blu-Ray disc
+  // Now item needs to point to the item we are playing (ie. the part of the stack)
+  if (isStack)
+  {
+    // Save info needed from stack item
+    bool Resume{item.GetStartOffset() == STARTOFFSET_RESUME};
+    const CVideoInfoTag tag{*item.GetVideoInfoTag()};
+
+    // Get individual stack part as item
+    bool stackSet{false};
+    if (!options.state.empty())
+    {
+      CXBMCTinyXML2 xmlDoc;
+      if (xmlDoc.Parse(options.state))
+      {
+        tinyxml2::XMLHandle hRoot(xmlDoc.RootElement());
+        if (hRoot.ToElement() && StringUtils::EqualsNoCase(hRoot.ToElement()->Value(), "nextpart"))
+        {
+          int nextItem;
+          std::from_chars(hRoot.ToElement()->GetText(),
+                          hRoot.ToElement()->GetText() + std::strlen(hRoot.ToElement()->GetText()),
+                          nextItem);
+          item = stackHelper->SetStackPartCurrentFileItem(nextItem);
+          stackSet = true;
+          options.startpercent = options.starttime = 0;
+        }
+      }
+    }
+    if (!stackSet)
+    {
+      item = stackHelper->GetCurrentStackPartFileItem();
+
+      // Save resume state (needed for correct bluray playback)
+      if (Resume)
+        item.SetStartOffset(STARTOFFSET_RESUME);
+
+      // Adjust bookmark start
+      options.starttime = stackOffset;
+    }
+
+    // Keep VideoInfoTag
+    const std::string path = item.GetPath();
+    item.SetFromVideoInfoTag(tag);
+    item.SetPath(path);
+  }
+
+  // a disc image might be a DVD or Blu-Ray disc
   if (!(options.startpercent > 0.0 || options.starttime > 0.0) &&
-      (VIDEO::IsBDFile(item) || item.IsDiscImage() ||
-       (forceSelection && VIDEO::IsBlurayPlaylist(item))))
+      (VIDEO::IsBDFile(item) || item.IsDiscImage() || VIDEO::IsDVDFile(item) ||
+       (forceSelection && (VIDEO::IsBlurayPlaylist(item) || VIDEO::IsDVDPlaylist(item)))))
   {
     // No video selection when using external or remote players (they handle it if supported)
-    const bool isSimpleMenuAllowed = [&]()
+    const bool isPlaylistChoiceAllowed = [&]()
     {
-      const std::string defaulPlayer{
+      const std::string defaultPlayer{
           player.empty() ? m_ServiceManager->GetPlayerCoreFactory().GetDefaultPlayer(item)
                          : player};
       const bool isExternalPlayer{
-          m_ServiceManager->GetPlayerCoreFactory().IsExternalPlayer(defaulPlayer)};
+          m_ServiceManager->GetPlayerCoreFactory().IsExternalPlayer(defaultPlayer)};
       const bool isRemotePlayer{
-          m_ServiceManager->GetPlayerCoreFactory().IsRemotePlayer(defaulPlayer)};
+          m_ServiceManager->GetPlayerCoreFactory().IsRemotePlayer(defaultPlayer)};
       return !isExternalPlayer && !isRemotePlayer;
     }();
 
-    if (isSimpleMenuAllowed)
+    if (isPlaylistChoiceAllowed)
     {
-      // Check if we must show the simplified bd menu.
+      // Check if we must show the simplified menu.
+      m_CancelPlayback = true;
       if (!CGUIDialogSimpleMenu::ShowPlaySelection(item, forceSelection))
         return true;
+      m_CancelPlayback = false;
     }
   }
 
@@ -2475,9 +2504,8 @@ bool CApplication::PlayFile(CFileItem item,
         CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_fullScreenOnMovieStart &&
         !CMediaSettings::GetInstance().DoesMediaStartWindowed();
   }
-  else if (stackHelper->IsPlayingRegularStack())
+  else if (isStack)
   {
-    //! @todo - this will fail if user seeks back to first file in stack
     if (stackHelper->GetCurrentPartNumber() == 0 ||
         stackHelper->GetRegisteredStack(item)->GetStartOffset() != 0)
       options.fullscreen = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->
@@ -2501,18 +2529,17 @@ bool CApplication::PlayFile(CFileItem item,
     // pushed some delay message into the threadmessage list, they are not
     // expected be processed after or during the new item playback starting.
     // so we clean up previous playing item's playback callback delay messages here.
-    int previousMsgsIgnoredByNewPlaying[] = {
-      GUI_MSG_PLAYBACK_STARTED,
-      GUI_MSG_PLAYBACK_ENDED,
-      GUI_MSG_PLAYBACK_STOPPED,
-      GUI_MSG_PLAYLIST_CHANGED,
-      GUI_MSG_PLAYLISTPLAYER_STOPPED,
-      GUI_MSG_PLAYLISTPLAYER_STARTED,
-      GUI_MSG_PLAYLISTPLAYER_CHANGED,
-      GUI_MSG_QUEUE_NEXT_ITEM,
-      0
-    };
-    int dMsgCount = CServiceBroker::GetGUI()->GetWindowManager().RemoveThreadMessageByMessageIds(&previousMsgsIgnoredByNewPlaying[0]);
+    int previousMsgsIgnoredByNewPlaying[] = {GUI_MSG_PLAYBACK_STARTED,
+                                             GUI_MSG_PLAYBACK_ENDED,
+                                             GUI_MSG_PLAYBACK_STOPPED,
+                                             GUI_MSG_PLAYLIST_CHANGED,
+                                             GUI_MSG_PLAYLISTPLAYER_STOPPED,
+                                             GUI_MSG_PLAYLISTPLAYER_STARTED,
+                                             GUI_MSG_PLAYLISTPLAYER_CHANGED,
+                                             GUI_MSG_QUEUE_NEXT_ITEM,
+                                             0};
+    int dMsgCount = CServiceBroker::GetGUI()->GetWindowManager().RemoveThreadMessageByMessageIds(
+        &previousMsgsIgnoredByNewPlaying[0]);
     if (dMsgCount > 0)
       CLog::LogF(LOGDEBUG, "Ignored {} playback thread messages", dMsgCount);
   }
@@ -2523,7 +2550,7 @@ bool CApplication::PlayFile(CFileItem item,
   appPlayer->SetMute(appVolume->IsMuted());
 
 #if !defined(TARGET_POSIX)
-  CGUIComponent *gui = CServiceBroker::GetGUI();
+  CGUIComponent* gui = CServiceBroker::GetGUI();
   if (gui)
     gui->GetAudioManager().Enable(false);
 #endif
@@ -2886,21 +2913,46 @@ bool CApplication::OnMessage(CGUIMessage& message)
                                                        m_itemCurrentFile, data);
 
     m_playerEvent.Set();
-    const auto stackHelper = GetComponent<CApplicationStackHelper>();
-    if (stackHelper->IsPlayingRegularStack() && stackHelper->HasNextStackPartFileItem())
-    { // just play the next item in the stack
-      PlayFile(stackHelper->SetNextStackPartCurrentFileItem(), "", true);
-      return true;
-    }
 
     // For EPG playlist items we keep the player open to ensure continuous viewing experience.
     const bool isEpgPlaylistItem{
         m_itemCurrentFile->GetProperty("epg_playlist_item").asBoolean(false)};
 
+    const std::string path{m_itemCurrentFile->GetDynPath()};
     ResetCurrentItem();
 
     if (!isEpgPlaylistItem)
     {
+      const auto stackHelper = GetComponent<CApplicationStackHelper>();
+      if ((stackHelper->IsPlayingRegularStack() || stackHelper->IsPlayingDiscStack()) &&
+          stackHelper->HasNextStackPartFileItem())
+      {
+        // If stack was stopped (eg. DVD at menu after main feature finished) then ask if continue or stop
+        if (!stackHelper->GetStackPartStopped() ||
+            CGUIDialogYesNo::ShowAndGetInput(CVariant{25015}, CVariant{25016}, "", "",
+                                             CVariant{25018}, CVariant{25017}))
+        {
+          PlayFile(stackHelper->SetNextStackPartCurrentFileItem(), "", true);
+          if (!m_CancelPlayback)
+            return true;
+
+          // Selection of next part cancelled so
+          // create bookmark for next part
+          CBookmark bookmark;
+          bookmark.timeInSeconds = stackHelper->GetCurrentStackPartStartTimeMs() / 1000.0;
+          bookmark.totalTimeInSeconds = stackHelper->GetStackTotalTimeMs() / 1000.0;
+          bookmark.playerState =
+              StringUtils::Format("<nextpart>{}</nextpart>", stackHelper->GetCurrentPartNumber());
+
+          CVideoDatabase db;
+          if (db.Open())
+          {
+            db.AddBookMarkToFile(path, bookmark, CBookmark::RESUME);
+            db.Close();
+          }
+        }
+      }
+
       if (!CServiceBroker::GetPlaylistPlayer().PlayNext(1, true))
         GetComponent<CApplicationPlayer>()->ClosePlayer();
 
@@ -3347,7 +3399,7 @@ const CFileItem& CApplication::CurrentUnstackedItem()
 {
   const auto stackHelper = GetComponent<CApplicationStackHelper>();
 
-  if (stackHelper->IsPlayingISOStack() || stackHelper->IsPlayingRegularStack())
+  if (stackHelper->IsPlayingDiscStack() || stackHelper->IsPlayingRegularStack())
     return stackHelper->GetCurrentStackPartFileItem();
   else
     return *m_itemCurrentFile;

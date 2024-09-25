@@ -168,6 +168,8 @@ typedef struct {
  */
 #define DVDNAV_STOP 8
 
+#define DVDNAV_LAST_CHAPTER 1
+
 /*
  * DVDNAV_HIGHLIGHT
  *
