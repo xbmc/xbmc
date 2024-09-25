@@ -254,8 +254,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
     return 0;
 
   HRESULT hr;
-  BYTE *buf;
-  DWORD flags = 0;
+  BYTE* buf;
 
 #ifndef _DEBUG
   LARGE_INTEGER timerStart;
@@ -293,9 +292,8 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
       return INT_MAX;
     }
 
-    memset(buf, 0, NumFramesRequested * m_format.m_frameSize); //fill buffer with silence
-
-    hr = m_pRenderClient->ReleaseBuffer(NumFramesRequested, flags); //pass back to audio driver
+    hr = m_pRenderClient->ReleaseBuffer(NumFramesRequested,
+                                        AUDCLNT_BUFFERFLAGS_SILENT); //pass back to audio driver
     if (FAILED(hr))
     {
       #ifdef _DEBUG
@@ -359,7 +357,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
          NumFramesRequested * m_format.m_frameSize);
   m_bufferPtr = 0;
 
-  hr = m_pRenderClient->ReleaseBuffer(NumFramesRequested, flags); //pass back to audio driver
+  hr = m_pRenderClient->ReleaseBuffer(NumFramesRequested, 0); //pass back to audio driver
   if (FAILED(hr))
   {
 #ifdef _DEBUG
