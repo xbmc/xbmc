@@ -254,8 +254,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
     return 0;
 
   HRESULT hr;
-  BYTE *buf;
-  DWORD flags = 0;
+  BYTE* buf;
 
 #ifndef _DEBUG
   LARGE_INTEGER timerStart;
@@ -293,9 +292,8 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
       return INT_MAX;
     }
 
-    memset(buf, 0, NumFramesRequested * m_format.m_frameSize); //fill buffer with silence
-
-    hr = m_pRenderClient->ReleaseBuffer(NumFramesRequested, flags); //pass back to audio driver
+    hr = m_pRenderClient->ReleaseBuffer(NumFramesRequested,
+                                        AUDCLNT_BUFFERFLAGS_SILENT); //pass back to audio driver
     if (FAILED(hr))
     {
       #ifdef _DEBUG
@@ -359,7 +357,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
          NumFramesRequested * m_format.m_frameSize);
   m_bufferPtr = 0;
 
-  hr = m_pRenderClient->ReleaseBuffer(NumFramesRequested, flags); //pass back to audio driver
+  hr = m_pRenderClient->ReleaseBuffer(NumFramesRequested, 0); //pass back to audio driver
   if (FAILED(hr))
   {
 #ifdef _DEBUG
@@ -396,7 +394,10 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     deviceInfo.m_channels.Reset();
     deviceInfo.m_dataFormats.clear();
     deviceInfo.m_sampleRates.clear();
+    deviceInfo.m_streamTypes.clear();
     deviceChannels.Reset();
+    add192 = false;
+    add48 = false;
 
     for (unsigned int c = 0; c < WASAPI_SPEAKER_COUNT; c++)
     {
@@ -592,8 +593,23 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
       wfxex.dwChannelMask               = KSAUDIO_SPEAKER_STEREO;
       wfxex.Format.wFormatTag           = WAVE_FORMAT_EXTENSIBLE;
       wfxex.SubFormat                   = KSDATAFORMAT_SUBTYPE_PCM;
-      wfxex.Format.wBitsPerSample       = 16;
-      wfxex.Samples.wValidBitsPerSample = 16;
+
+      // 16 bits is most widely supported and likely to have the widest range of sample rates
+      if (deviceInfo.m_dataFormats.empty() ||
+          std::find(deviceInfo.m_dataFormats.cbegin(), deviceInfo.m_dataFormats.cend(),
+                    AE_FMT_S16NE) != deviceInfo.m_dataFormats.cend())
+      {
+        wfxex.Format.wBitsPerSample = 16;
+        wfxex.Samples.wValidBitsPerSample = 16;
+      }
+      else
+      {
+        const AEDataFormat fmt = deviceInfo.m_dataFormats.front();
+        wfxex.Format.wBitsPerSample = CAEUtil::DataFormatToBits(fmt);
+        wfxex.Samples.wValidBitsPerSample =
+            (fmt == AE_FMT_S24NE4MSB ? 24 : wfxex.Format.wBitsPerSample);
+      }
+
       wfxex.Format.nChannels            = 2;
       wfxex.Format.nBlockAlign          = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
       wfxex.Format.nAvgBytesPerSec      = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
@@ -745,17 +761,17 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
   else if (format.m_dataFormat == AE_FMT_RAW) //No sense in trying other formats for passthrough.
     return false;
 
-  CLog::Log(LOGWARNING,
-            "AESinkWASAPI: IsFormatSupported failed ({}) - trying to find a compatible format",
-            WASAPIErrToStr(hr));
+  CLog::LogF(LOGWARNING,
+             "format {} not supported by the device - trying to find a compatible format",
+             CAEUtil::DataFormatToStr(format.m_dataFormat));
 
   requestedChannels = wfxex.Format.nChannels;
   desired_map = CAESinkFactoryWin::SpeakerMaskFromAEChannels(format.m_channelLayout);
 
   /* The requested format is not supported by the device.  Find something that works */
-  CLog::Log(LOGWARNING,
-            "AESinkWASAPI: Input channels are [{}] - Trying to find a matching output layout",
-            std::string(format.m_channelLayout));
+  CLog::LogF(LOGWARNING, "Input channels are [{}] - Trying to find a matching output layout",
+             std::string(format.m_channelLayout));
+
   for (int layout = -1; layout <= (int)ARRAYSIZE(layoutsList); layout++)
   {
     // if requested layout is not supported, try standard layouts which contain
@@ -885,6 +901,20 @@ initialize:
 
   format.m_sampleRate    = wfxex.Format.nSamplesPerSec; //PCM: Sample rate.  RAW: Link speed
   format.m_frameSize     = (wfxex.Format.wBitsPerSample >> 3) * wfxex.Format.nChannels;
+
+  ComPtr<IAudioClient2> audioClient2;
+  if (SUCCEEDED(m_pAudioClient.As(&audioClient2)))
+  {
+    AudioClientProperties props = {};
+    props.cbSize = sizeof(props);
+    // ForegroundOnlyMedia/BackgroundCapableMedia replaced in Windows 10 by Movie/Media
+    props.eCategory = CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin10)
+                          ? AudioCategory_Media
+                          : AudioCategory_ForegroundOnlyMedia;
+
+    if (FAILED(hr = audioClient2->SetClientProperties(&props)))
+      CLog::LogF(LOGERROR, "unable to set audio category, {}", WASAPIErrToStr(hr));
+  }
 
   REFERENCE_TIME audioSinkBufferDurationMsec, hnsLatency;
 
