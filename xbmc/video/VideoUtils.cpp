@@ -13,13 +13,18 @@
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "filesystem/Directory.h"
+#include "filesystem/StackDirectory.h"
 #include "filesystem/VideoDatabaseDirectory/QueryParams.h"
+#include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayListFileItemClassify.h"
 #include "pvr/filesystem/PVRGUIDirectory.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/SettingUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
+#include "utils/ArtUtils.h"
+#include "utils/FileExtensionProvider.h"
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -187,6 +192,86 @@ KODI::VIDEO::UTILS::ResumeInformation GetNonFolderItemResumeInformation(const CF
 
 namespace KODI::VIDEO::UTILS
 {
+
+std::string FindTrailer(const CFileItem& item)
+{
+  std::string strFile2;
+  std::string strFile = item.GetPath();
+  if (item.IsStack())
+  {
+    std::string strPath;
+    URIUtils::GetParentPath(item.GetPath(), strPath);
+    XFILE::CStackDirectory dir;
+    std::string strPath2;
+    strPath2 = dir.GetStackedTitlePath(strFile);
+    strFile = URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(strPath2));
+    CFileItem sitem(dir.GetFirstStackedFile(item.GetPath()), false);
+    std::string strTBNFile(URIUtils::ReplaceExtension(ART::GetTBNFile(sitem), "-trailer"));
+    strFile2 = URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(strTBNFile));
+  }
+  if (URIUtils::IsInRAR(strFile) || URIUtils::IsInZIP(strFile))
+  {
+    std::string strPath = URIUtils::GetDirectory(strFile);
+    std::string strParent;
+    URIUtils::GetParentPath(strPath, strParent);
+    strFile = URIUtils::AddFileToFolder(strParent, URIUtils::GetFileName(item.GetPath()));
+  }
+
+  // no local trailer available for these
+  if (NETWORK::IsInternetStream(item) || URIUtils::IsUPnP(strFile) || URIUtils::IsBluray(strFile) ||
+      item.IsLiveTV() || item.IsPlugin() || item.IsDVD())
+    return "";
+
+  std::string strDir = URIUtils::GetDirectory(strFile);
+  CFileItemList items;
+  XFILE::CDirectory::GetDirectory(
+      strDir, items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
+      XFILE::DIR_FLAG_READ_CACHE | XFILE::DIR_FLAG_NO_FILE_INFO | XFILE::DIR_FLAG_NO_FILE_DIRS);
+  URIUtils::RemoveExtension(strFile);
+  strFile += "-trailer";
+  std::string strFile3 = URIUtils::AddFileToFolder(strDir, "movie-trailer");
+
+  // Precompile our REs
+  VECCREGEXP matchRegExps;
+  CRegExp tmpRegExp(true, CRegExp::autoUtf8);
+  const std::vector<std::string>& strMatchRegExps =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_trailerMatchRegExps;
+
+  for (const auto& strRegExp : strMatchRegExps)
+  {
+    if (tmpRegExp.RegComp(strRegExp))
+      matchRegExps.push_back(tmpRegExp);
+  }
+
+  std::string strTrailer;
+  for (int i = 0; i < items.Size(); i++)
+  {
+    std::string strCandidate = items[i]->GetPath();
+    URIUtils::RemoveExtension(strCandidate);
+    if (StringUtils::EqualsNoCase(strCandidate, strFile) ||
+        StringUtils::EqualsNoCase(strCandidate, strFile2) ||
+        StringUtils::EqualsNoCase(strCandidate, strFile3))
+    {
+      strTrailer = items[i]->GetPath();
+      break;
+    }
+    else
+    {
+      for (auto& expr : matchRegExps)
+      {
+        if (expr.RegFind(strCandidate) != -1)
+        {
+          strTrailer = items[i]->GetPath();
+          i = items.Size();
+          break;
+        }
+      }
+    }
+  }
+
+  return strTrailer;
+}
+
 std::string GetOpticalMediaPath(const CFileItem& item)
 {
   auto exists = [&item](const std::string& file)

@@ -49,6 +49,7 @@
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoManagerTypes.h"
 #include "video/VideoThumbLoader.h"
+#include "video/VideoUtils.h"
 #include "video/dialogs/GUIDialogVideoManagerExtras.h"
 #include "video/dialogs/GUIDialogVideoManagerVersions.h"
 
@@ -59,7 +60,7 @@
 using namespace XFILE;
 using namespace ADDON;
 using namespace KODI::MESSAGING;
-using namespace KODI::VIDEO;
+using namespace KODI;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
 using KODI::UTILITY::CDigest;
@@ -1527,7 +1528,7 @@ namespace KODI::VIDEO
     if (content == CONTENT_MOVIES)
     {
       // find local trailer first
-      std::string strTrailer = pItem->FindTrailer();
+      std::string strTrailer = UTILS::FindTrailer(*pItem);
       if (!strTrailer.empty())
         movieDetails.m_strTrailer = strTrailer;
 

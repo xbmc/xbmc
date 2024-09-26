@@ -14,6 +14,13 @@ class CFileItem;
 
 namespace KODI::VIDEO::UTILS
 {
+
+/*! \brief
+ *  Find a local trailer file for a given file item
+ *  \return non-empty string with path of trailer if found
+ */
+std::string FindTrailer(const CFileItem& item);
+
 /*!
  \brief Check whether an item is an optical media folder or its parent.
   This will return the non-empty path to the playable entry point of the media
