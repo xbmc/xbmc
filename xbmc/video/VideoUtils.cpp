@@ -15,6 +15,7 @@
 #include "filesystem/Directory.h"
 #include "filesystem/VideoDatabaseDirectory/QueryParams.h"
 #include "playlists/PlayListFileItemClassify.h"
+#include "pvr/filesystem/PVRGUIDirectory.h"
 #include "settings/SettingUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -41,15 +42,17 @@ KODI::VIDEO::UTILS::ResumeInformation GetFolderItemResumeInformation(const CFile
     return {};
 
   CFileItem folderItem(item);
-  if ((!folderItem.HasProperty("inprogressepisodes") || // season/show
-       (folderItem.GetProperty("inprogressepisodes").asInteger() == 0)) &&
-      (!folderItem.HasProperty("inprogress") || // movie set
-       (folderItem.GetProperty("inprogress").asInteger() == 0)))
+  if (!folderItem.HasProperty("inprogressepisodes") && // season/show/recordings
+      !folderItem.HasProperty("inprogress")) // movie set
   {
-    CVideoDatabase db;
-    if (db.Open())
+    if (URIUtils::IsPVRRecordingFileOrFolder(folderItem.GetPath()))
     {
-      if (!folderItem.HasProperty("inprogressepisodes") && !folderItem.HasProperty("inprogress"))
+      PVR::CPVRGUIDirectory::GetRecordingsDirectoryInfo(folderItem);
+    }
+    else
+    {
+      CVideoDatabase db;
+      if (db.Open())
       {
         XFILE::VIDEODATABASEDIRECTORY::CQueryParams params;
         XFILE::VIDEODATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(item.GetPath(), params);
@@ -79,7 +82,6 @@ KODI::VIDEO::UTILS::ResumeInformation GetFolderItemResumeInformation(const CFile
           db.GetSetInfo(static_cast<int>(params.GetSetId()), details, &folderItem);
         }
       }
-      db.Close();
     }
   }
 

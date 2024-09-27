@@ -429,6 +429,54 @@ void GetGetRecordingsSubDirectories(const CPVRRecordingsPath& recParentPath,
 
 } // unnamed namespace
 
+bool CPVRGUIDirectory::GetRecordingsDirectoryInfo(CFileItem& item)
+{
+  CFileItemList results;
+  const CPVRGUIDirectory dir{item.GetPath()};
+  if (dir.GetRecordingsDirectory(results))
+  {
+    item.SetLabelPreformatted(true);
+    item.SetProperty("totalepisodes", 0);
+    item.SetProperty("watchedepisodes", 0);
+    item.SetProperty("unwatchedepisodes", 0);
+    item.SetProperty("inprogressepisodes", 0);
+
+    int64_t sizeInBytes{0};
+
+    for (const auto& result : results.GetList())
+    {
+      const auto recording{result->GetPVRRecordingInfoTag()};
+      if (!recording)
+        continue;
+
+      if (item.m_dateTime.IsValid() || (item.m_dateTime < recording->RecordingTimeAsLocalTime()))
+        item.m_dateTime = recording->RecordingTimeAsLocalTime();
+
+      item.IncrementProperty("totalepisodes", 1);
+
+      if (recording->GetPlayCount() == 0)
+        item.IncrementProperty("unwatchedepisodes", 1);
+      else
+        item.IncrementProperty("watchedepisodes", 1);
+
+      if (recording->GetResumePoint().IsPartWay())
+        item.IncrementProperty("inprogressepisodes", 1);
+
+      sizeInBytes += recording->GetSizeInBytes();
+    }
+
+    item.SetProperty("recordingsize", StringUtils::SizeToString(sizeInBytes));
+
+    if (item.GetProperty("unwatchedepisodes").asInteger() > 0)
+      item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED);
+    else
+      item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED);
+
+    return true;
+  }
+  return false;
+}
+
 bool CPVRGUIDirectory::GetRecordingsDirectory(CFileItemList& results) const
 {
   results.SetContent("recordings");
