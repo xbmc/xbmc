@@ -15,6 +15,7 @@ class CVariant;
 #include "ReplayGain.h"
 #include "XBDateTime.h"
 #include "music/Album.h"
+#include "music/Song.h"
 #include "utils/IArchivable.h"
 #include "utils/ISerializable.h"
 #include "utils/ISortable.h"
@@ -89,6 +90,7 @@ public:
   const EmbeddedArtInfo &GetCoverArtInfo() const;
   const ReplayGain& GetReplayGain() const;
   CAlbum::ReleaseType GetAlbumReleaseType() const;
+  const std::map<int, chapterDetails>& GetChapterMarks() const;
 
   void SetURL(const std::string& strURL);
   void SetTitle(const std::string& strTitle);
@@ -159,6 +161,7 @@ public:
   void SetStationName(const std::string& strStationName); // name of online radio station
   void SetStationArt(const std::string& strStationArt);
   void SetSongVideoURL(const std::string& songVideoURL); // link to video of song
+  void SetChapterMarks(const std::map<int, chapterDetails>& chapters);
 
   /*! \brief Append a unique artist to the artist list
    Checks if we have this artist already added, and if not adds it to the songs artist list.
@@ -258,6 +261,7 @@ protected:
   std::string m_stationName;
   std::string m_stationArt; // Used to fetch thumb URL for Shoutcasts
   std::string m_songVideoURL; // link to a video for a song
+  std::map<int, chapterDetails> m_chapters; // Ch No., name, start time, end time
 
   EmbeddedArtInfo m_coverArt; ///< art information
 

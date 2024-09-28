@@ -49,6 +49,9 @@ protected:
   static int POPMtoXBMC(int popm);
 
 template<typename T>
-   static bool ParseTag(T *tag, EmbeddedArt *art, MUSIC_INFO::CMusicInfoTag& infoTag);
+  static bool ParseTag(T* tag, EmbeddedArt* art, MUSIC_INFO::CMusicInfoTag& infoTag);
+
+private:
+  static int ms_totalLen;
 };
 
