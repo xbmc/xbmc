@@ -94,10 +94,10 @@
       <!-- F8			-->  <button id="196">ActivateWindow(FavouritesBrowser)</button>
       <!-- F9			-->  <button id="173">ShowVideoMenu</button>
       <!-- F10			-->  <button id="174">ShowSubtitles</button>
-      <!-- F11			-->  <button id="175">NextSubtitle</button>
+      <!-- F11			-->  <button id="175">DialogSelectSubtitle</button>
       <!-- F12			-->  <button id="176">ActivateWindow(Videos)</button>
       <!-- F13			-->  <button id="163">Playlist</button>
-      <!-- F14			-->  <button id="164">AudioNextLanguage</button>
+      <!-- F14			-->  <button id="164">DialogSelectAudio</button>
       <!-- Large Down	-->  <button id="182">PageDown</button>
       <!-- Large Up	-->      <button id="181">PageUp</button>
       <!-- pwrToggle   -->   <button id="166">ShutDown()</button>

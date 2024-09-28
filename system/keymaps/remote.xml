@@ -198,9 +198,9 @@
       <info>Info</info>
       <guide>ActivateWindow(TVGuide)</guide>
       <teletext>ActivateWindow(Teletext)</teletext>
-      <subtitle>NextSubtitle</subtitle>
+      <subtitle>DialogSelectSubtitle</subtitle>
       <star>NextSubtitle</star>
-      <language>AudioNextLanguage</language>
+      <language>DialogSelectAudio</language>
       <playlist>Playlist</playlist>
       <hash>AudioNextLanguage</hash>
       <pageplus>SkipNext</pageplus>
