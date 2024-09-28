@@ -44,7 +44,8 @@ struct StreamInfo
   int bitrate = 0;
   std::string language;
   std::string name;
-  std::string codecName;
+  std::string codecName; // Codec name (name definition from ffmpeg)
+  std::string codecDesc; // Codec description
   StreamFlags flags = StreamFlags::FLAG_NONE;
 
 protected:

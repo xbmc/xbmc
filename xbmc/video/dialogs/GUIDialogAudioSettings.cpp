@@ -346,31 +346,34 @@ void CGUIDialogAudioSettings::AudioStreamsOptionFiller(const SettingConstPtr& se
 {
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-  int audioStreamCount = appPlayer->GetAudioStreamCount();
+  const int audioStreamCount = appPlayer->GetAudioStreamCount();
 
-  std::string strFormat = "{:s} - {:s} - {:d} " + g_localizeStrings.Get(10127);
+  std::string strChannels = g_localizeStrings.Get(10127);
   std::string strUnknown = "[" + g_localizeStrings.Get(13205) + "]";
 
   // cycle through each audio stream and add it to our list control
   for (int i = 0; i < audioStreamCount; ++i)
   {
-    std::string strItem;
-    std::string strLanguage;
-
     AudioStreamInfo info;
     appPlayer->GetAudioStreamInfo(i, info);
 
+    std::string strLanguage;
     if (!g_LangCodeExpander.Lookup(info.language, strLanguage))
       strLanguage = strUnknown;
 
-    if (info.name.length() == 0)
-      info.name = strUnknown;
+    std::string textInfo = strLanguage;
+    if (!info.name.empty())
+      textInfo += " - " + info.name;
 
-    strItem = StringUtils::Format(strFormat, strLanguage, info.name, info.channels);
+    textInfo += " (";
+    if (!info.codecDesc.empty())
+      textInfo += info.codecDesc + ", ";
 
-    strItem += FormatFlags(info.flags);
-    strItem += StringUtils::Format(" ({}/{})", i + 1, audioStreamCount);
-    list.emplace_back(strItem, i);
+    textInfo += std::to_string(info.channels) + " " + strChannels + ")";
+
+    textInfo += FormatFlags(info.flags);
+    textInfo += StringUtils::Format(" ({}/{})", i + 1, audioStreamCount);
+    list.emplace_back(textInfo, i);
   }
 
   if (list.empty())

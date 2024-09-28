@@ -186,7 +186,8 @@ struct SelectionStream
   int source = 0;
   int id = 0;
   int64_t demuxerId = -1;
-  std::string codec;
+  std::string codec; // Codec name (name definition from ffmpeg)
+  std::string codecDesc; // Codec description
   int channels = 0;
   int bitrate = 0;
   int width = 0;
