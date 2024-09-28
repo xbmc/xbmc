@@ -472,6 +472,7 @@ void CSelectionStreams::Update(const std::shared_ptr<CDVDInputStream>& input,
 
       SubtitleStreamInfo info = nav->GetSubtitleStreamInfo(i);
       s.name     = info.name;
+      s.codec = info.codecName;
       s.flags = info.flags;
       s.language = g_LangCodeExpander.ConvertToISO6392B(info.language);
       Update(s);
@@ -5390,6 +5391,7 @@ void CVideoPlayer::GetSubtitleStreamInfo(int index, SubtitleStreamInfo& info) co
     info.name += "(Invalid)";
 
   info.language = s.language;
+  info.codecName = s.codec;
   info.flags = s.flags;
 }
 
