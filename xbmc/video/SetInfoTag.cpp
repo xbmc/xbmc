@@ -17,6 +17,7 @@ void CSetInfoTag::Reset()
   m_id = -1;
   m_overview.clear();
   m_updateSetOverview = false;
+  m_poster.clear();
 }
 
 bool CSetInfoTag::Load(const TiXmlElement* element, bool append, bool prioritise)
@@ -41,6 +42,12 @@ void CSetInfoTag::ParseNative(const TiXmlElement* set, bool prioritise)
 
   if (XMLUtils::GetString(set, "overview", value))
     SetOverview(value);
+  else if (XMLUtils::GetString(set, "plot", value))
+    // compatibility with tinyMediaManager
+    SetOverview(value);
+
+  if (XMLUtils::GetString(set, "thumb", value))
+    m_poster = value;
 }
 
 void CSetInfoTag::SetOverview(const std::string& overview)
@@ -50,20 +57,10 @@ void CSetInfoTag::SetOverview(const std::string& overview)
   m_updateSetOverview = true;
 }
 
-const std::string& CSetInfoTag::GetOverview() const
-{
-  return m_overview;
-}
-
 void CSetInfoTag::SetTitle(const std::string& title)
 {
   m_title = title;
   m_title = StringUtils::Trim(m_title);
-}
-
-const std::string& CSetInfoTag::GetTitle() const
-{
-  return m_title;
 }
 
 void CSetInfoTag::Merge(const CSetInfoTag& other)
@@ -72,12 +69,15 @@ void CSetInfoTag::Merge(const CSetInfoTag& other)
     m_title = other.GetTitle();
   if (!other.GetOverview().empty())
     m_overview = other.GetOverview();
+  if (!other.GetPoster().empty())
+    m_overview = other.GetPoster();
 }
 
 void CSetInfoTag::Copy(const CSetInfoTag& other)
 {
   m_title = other.GetTitle();
   m_overview = other.GetOverview();
+  m_poster = other.GetPoster();
 }
 
 bool CSetInfoTag::IsEmpty() const

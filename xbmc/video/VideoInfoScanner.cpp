@@ -509,6 +509,8 @@ namespace KODI::VIDEO
               tag.m_set.overview = setTag.GetOverview();
               tag.SetUpdateSetOverview(true);
             }
+            if (!setTag.GetPoster().empty())
+              tag.m_set.poster = setTag.GetPoster();
             setUpdated = true;
           }
         }

@@ -31,11 +31,13 @@ public:
   bool IsEmpty() const;
 
   void SetOverview(const std::string& overview);
-  const std::string& GetOverview() const;
-  bool GetUpdateSetOverview() { return m_updateSetOverview; }
+  std::string GetOverview() const { return m_overview; }
+  bool GetUpdateSetOverview() const { return m_updateSetOverview; }
 
   void SetTitle(const std::string& title);
-  const std::string& GetTitle() const;
+  std::string GetTitle() const { return m_title; }
+
+  std::string GetPoster() const { return m_poster; }
 
   void Merge(const CSetInfoTag& other);
   void Copy(const CSetInfoTag& other);
@@ -44,6 +46,7 @@ private:
   std::string m_title; // Title of the movie set
   int m_id{-1}; // ID of movie set in database
   std::string m_overview; // Overview/description of the movie set
+  std::string m_poster;
   bool m_updateSetOverview{false}; // If overview has been set
 
   /* \brief Parse our native XML format for video info.
