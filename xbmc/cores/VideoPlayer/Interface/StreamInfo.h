@@ -73,6 +73,8 @@ struct VideoStreamInfo : StreamInfo
   std::string stereoMode;
   int angles = 0;
   StreamHdrType hdrType = StreamHdrType::HDR_TYPE_NONE;
+  uint32_t fpsRate{0};
+  uint32_t fpsScale{0};
 };
 
 struct ProgramInfo
