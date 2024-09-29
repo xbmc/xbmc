@@ -22,6 +22,7 @@
 
 #include <Audioclient.h>
 #include <Mmreg.h>
+#include <avrt.h>
 
 #ifdef TARGET_WINDOWS_DESKTOP
 #  pragma comment(lib, "Avrt.lib")
@@ -187,9 +188,17 @@ void CAESinkWASAPI::Deinitialize()
   {
     try
     {
-    m_pAudioClient->Stop();  //stop the audio output
-    m_pAudioClient->Reset(); //flush buffer and reset audio clock stream position
-    m_sinkFrames = 0;
+      m_pAudioClient->Stop(); //stop the audio output
+      m_pAudioClient->Reset(); //flush buffer and reset audio clock stream position
+      m_sinkFrames = 0;
+
+#ifdef TARGET_WINDOWS_DESKTOP
+      if (m_hTask)
+      {
+        AvRevertMmThreadCharacteristics(m_hTask);
+        m_hTask = NULL;
+      }
+#endif
     }
     catch (...)
     {
@@ -303,6 +312,15 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
       return INT_MAX;
     }
     m_sinkFrames += NumFramesRequested;
+
+#ifdef TARGET_WINDOWS_DESKTOP
+    DWORD taskIndex = 0;
+    m_hTask = AvSetMmThreadCharacteristics(TEXT("Audio"), &taskIndex);
+    if (m_hTask == NULL)
+    {
+      CLog::LogF(LOGERROR, "unable to register thread with multimedia scheduler {}", GetLastError());
+    }
+#endif
 
     hr = m_pAudioClient->Start(); //start the audio driver running
     if (FAILED(hr))
@@ -916,21 +934,29 @@ initialize:
       CLog::LogF(LOGERROR, "unable to set audio category, {}", WASAPIErrToStr(hr));
   }
 
-  REFERENCE_TIME audioSinkBufferDurationMsec, hnsLatency;
+  REFERENCE_TIME hnsBufferDuration, hnsLatency;
 
-  audioSinkBufferDurationMsec = (REFERENCE_TIME)500000;
-  if (IsUSBDevice())
+  if (FAILED(hr = m_pAudioClient->GetDevicePeriod(&hnsBufferDuration, nullptr)))
   {
-    CLog::LogF(LOGDEBUG, "detected USB device, increasing buffer size");
-    audioSinkBufferDurationMsec = (REFERENCE_TIME)1000000;
+    CLog::LogF(LOGERROR, "unable to retrieve device default period, {}", WASAPIErrToStr(hr));
+
+    hnsBufferDuration = (REFERENCE_TIME)500000;
+    if (IsUSBDevice())
+    {
+      CLog::LogF(LOGDEBUG, "detected USB device, increasing buffer size");
+      hnsBufferDuration = (REFERENCE_TIME)1000000;
+    }
   }
-  audioSinkBufferDurationMsec = (REFERENCE_TIME)((audioSinkBufferDurationMsec / format.m_frameSize) * format.m_frameSize); //even number of frames
+
+  hnsBufferDuration = (REFERENCE_TIME)((hnsBufferDuration / format.m_frameSize) *
+                                       format.m_frameSize); //even number of frames
 
   if (format.m_dataFormat == AE_FMT_RAW)
     format.m_dataFormat = AE_FMT_S16NE;
 
-  hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_EXCLUSIVE, AUDCLNT_STREAMFLAGS_EVENTCALLBACK | AUDCLNT_STREAMFLAGS_NOPERSIST,
-                                    audioSinkBufferDurationMsec, audioSinkBufferDurationMsec, &wfxex.Format, NULL);
+  hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_EXCLUSIVE,
+                                  AUDCLNT_STREAMFLAGS_EVENTCALLBACK | AUDCLNT_STREAMFLAGS_NOPERSIST,
+                                  hnsBufferDuration, hnsBufferDuration, &wfxex.Format, NULL);
 
   if (hr == AUDCLNT_E_BUFFER_SIZE_NOT_ALIGNED)
   {
@@ -943,7 +969,8 @@ initialize:
       return false;
     }
 
-    audioSinkBufferDurationMsec = (REFERENCE_TIME) ((10000.0 * 1000 / wfxex.Format.nSamplesPerSec * m_uiBufferLen) + 0.5);
+    hnsBufferDuration =
+        (REFERENCE_TIME)((10000.0 * 1000 / wfxex.Format.nSamplesPerSec * m_uiBufferLen) + 0.5);
 
     /* Release the previous allocations */
     /* Create a new audio client */
@@ -955,8 +982,10 @@ initialize:
     }
 
     /* Open the stream and associate it with an audio session */
-    hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_EXCLUSIVE, AUDCLNT_STREAMFLAGS_EVENTCALLBACK | AUDCLNT_STREAMFLAGS_NOPERSIST,
-                                      audioSinkBufferDurationMsec, audioSinkBufferDurationMsec, &wfxex.Format, NULL);
+    hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_EXCLUSIVE,
+                                    AUDCLNT_STREAMFLAGS_EVENTCALLBACK |
+                                        AUDCLNT_STREAMFLAGS_NOPERSIST,
+                                    hnsBufferDuration, hnsBufferDuration, &wfxex.Format, NULL);
   }
   if (FAILED(hr))
   {
@@ -975,7 +1004,7 @@ initialize:
     CLog::Log(LOGDEBUG, "  Enc. Channels   : {}", wfxex_iec61937.dwEncodedChannelCount);
     CLog::Log(LOGDEBUG, "  Enc. Samples/Sec: {}", wfxex_iec61937.dwEncodedSamplesPerSec);
     CLog::Log(LOGDEBUG, "  Channel Mask    : {}", wfxex.dwChannelMask);
-    CLog::Log(LOGDEBUG, "  Periodicty      : {}", audioSinkBufferDurationMsec);
+    CLog::Log(LOGDEBUG, "  Periodicity     : {}", hnsBufferDuration);
     return false;
   }
 
@@ -1016,6 +1045,14 @@ void CAESinkWASAPI::Drain()
       m_pAudioClient->Stop();  //stop the audio output
       m_pAudioClient->Reset(); //flush buffer and reset audio clock stream position
       m_sinkFrames = 0;
+
+#ifdef TARGET_WINDOWS_DESKTOP
+      if (m_hTask)
+      {
+        AvRevertMmThreadCharacteristics(m_hTask);
+        m_hTask = NULL;
+      }
+#endif
     }
     catch (...)
     {

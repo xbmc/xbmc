@@ -73,4 +73,5 @@ private:
 
     std::vector<uint8_t> m_buffer;
     int m_bufferPtr{0};
+    HANDLE m_hTask = NULL;
 };
