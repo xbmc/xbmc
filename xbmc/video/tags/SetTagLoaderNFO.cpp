@@ -28,8 +28,13 @@ using namespace ADDON;
 CSetTagLoaderNFO::CSetTagLoaderNFO(const std::string& title) : ISetInfoTagLoader(title)
 {
   if (!title.empty() && !KODI::VIDEO::CVideoInfoScanner::GetMovieSetInfoFolder(title).empty())
-    m_path = URIUtils::AddFileToFolder(KODI::VIDEO::CVideoInfoScanner::GetMovieSetInfoFolder(title),
-                                       "set.nfo");
+  {
+    const std::string msif{KODI::VIDEO::CVideoInfoScanner::GetMovieSetInfoFolder(title)};
+    m_path =
+        URIUtils::AddFileToFolder(msif, "collection.nfo"); // compatibility with tinyMediaManager
+    if (!CFileUtils::Exists(m_path))
+      m_path = URIUtils::AddFileToFolder(msif, "set.nfo");
+  }
 }
 
 bool CSetTagLoaderNFO::HasInfo() const
