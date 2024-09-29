@@ -44,6 +44,7 @@ void CVideoInfoTag::Reset()
   m_set.id = -1;
   m_set.overview.clear();
   m_set.originalTitle.clear();
+  m_set.poster.clear();
   m_tags.clear();
   m_assetInfo.Clear();
   m_hasVideoVersions = false;
@@ -371,6 +372,8 @@ void CVideoInfoTag::Merge(CVideoInfoTag& other)
     m_set.overview = other.m_set.overview;
   if (!other.m_set.originalTitle.empty())
     m_set.originalTitle = other.m_set.originalTitle;
+  if (!other.m_set.poster.empty())
+    m_set.poster = other.m_set.poster;
   if (!other.m_tags.empty())
     m_tags = other.m_tags;
 

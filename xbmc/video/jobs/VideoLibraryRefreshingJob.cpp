@@ -175,13 +175,21 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       }
       m_item->ClearArt();
 
-      // Local art from Media Set Information Folder will be in item (from UpdateSetInfo)
-      // if art was present, otherwise item will contain online art from movie scraper
+      // If poster specified in set.nfo use that first
       CGUIListItem::ArtMap movieSetArt;
-      tag.m_strPictureURL.Parse();
-      for (const auto& url : tag.m_strPictureURL.GetUrls())
-        if (StringUtils::StartsWith(url.m_aspect, "set."))
-          movieSetArt.insert({url.m_aspect.substr(4), url.m_url});
+      if (!tag.m_set.poster.empty())
+      {
+        movieSetArt.insert({"poster", tag.m_set.poster});
+      }
+      else
+      {
+        // Local art from Media Set Information Folder will be in item (from UpdateSetInfo)
+        // if art was present, otherwise item will contain online art from movie scraper
+        tag.m_strPictureURL.Parse();
+        for (const auto& url : tag.m_strPictureURL.GetUrls())
+          if (StringUtils::StartsWith(url.m_aspect, "set."))
+            movieSetArt.insert({url.m_aspect.substr(4), url.m_url});
+      }
       db.SetArtForItem(dbId, MediaTypeVideoCollection, movieSetArt);
 
       // Refresh (for video info dialog)
