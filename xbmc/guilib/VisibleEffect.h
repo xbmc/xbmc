@@ -14,7 +14,7 @@ enum ANIMATION_STATE { ANIM_STATE_NONE = 0, ANIM_STATE_DELAYED, ANIM_STATE_IN_PR
 // forward definitions
 
 class TiXmlElement;
-class Tweener;
+class Interpolator;
 class CGUIListItem;
 
 #include "interfaces/info/InfoBool.h"
@@ -68,7 +68,8 @@ public:
   const TransformMatrix& GetTransform() const { return m_matrix; }
   EFFECT_TYPE GetType() const { return m_effect; }
 
-  static std::shared_ptr<Tweener> GetTweener(const TiXmlElement *pAnimationNode);
+  static std::shared_ptr<Interpolator> GetTweener(const TiXmlElement* pAnimationNode);
+
 protected:
   TransformMatrix m_matrix;
   EFFECT_TYPE m_effect;
@@ -80,7 +81,7 @@ private:
   unsigned int m_length;
   unsigned int m_delay;
 
-  std::shared_ptr<Tweener> m_pTweener;
+  std::shared_ptr<Interpolator> m_pTweener;
 };
 
 class CFadeEffect : public CAnimEffect
@@ -221,7 +222,8 @@ private:
 class CScroller
 {
 public:
-  CScroller(unsigned int duration = 200, std::shared_ptr<Tweener> tweener = std::shared_ptr<Tweener>());
+  CScroller(unsigned int duration = 200,
+            std::shared_ptr<Interpolator> tweener = std::shared_ptr<Interpolator>());
   CScroller(const CScroller& right);
   CScroller& operator=(const CScroller &src);
   ~CScroller();
@@ -265,5 +267,5 @@ private:
   unsigned int m_startTime;               //!< Brief starting time of scroll
 
   unsigned int m_duration;                //!< Brief duration of scroll
-  std::shared_ptr<Tweener> m_pTweener;
+  std::shared_ptr<Interpolator> m_pTweener;
 };

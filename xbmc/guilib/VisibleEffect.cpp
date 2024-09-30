@@ -11,7 +11,7 @@
 #include "GUIColorManager.h"
 #include "GUIControlFactory.h"
 #include "GUIInfoManager.h"
-#include "Tween.h"
+#include "Interpolators.h"
 #include "addons/Skin.h" // for the effect time adjustments
 #include "guilib/GUIComponent.h"
 #include "utils/ColorUtils.h"
@@ -38,7 +38,7 @@ CAnimEffect::CAnimEffect(const TiXmlElement *node, EFFECT_TYPE effect)
 }
 
 CAnimEffect::CAnimEffect(unsigned int delay, unsigned int length, EFFECT_TYPE effect)
-  : m_pTweener(std::shared_ptr<Tweener>(new LinearTweener()))
+  : m_pTweener(std::shared_ptr<Interpolator>(new LinearInterpolator()))
 {
   m_delay = delay;
   m_length = length;
@@ -87,28 +87,28 @@ void CAnimEffect::ApplyState(ANIMATION_STATE state, const CPoint &center)
   ApplyEffect(offset, center);
 }
 
-std::shared_ptr<Tweener> CAnimEffect::GetTweener(const TiXmlElement *pAnimationNode)
+std::shared_ptr<Interpolator> CAnimEffect::GetTweener(const TiXmlElement* pAnimationNode)
 {
-  std::shared_ptr<Tweener> m_pTweener;
+  std::shared_ptr<Interpolator> m_pTweener;
   const char *tween = pAnimationNode->Attribute("tween");
   if (tween)
   {
     if (StringUtils::CompareNoCase(tween, "linear") == 0)
-      m_pTweener = std::shared_ptr<Tweener>(new LinearTweener());
+      m_pTweener = std::shared_ptr<Interpolator>(new LinearInterpolator());
     else if (StringUtils::CompareNoCase(tween, "quadratic") == 0)
-      m_pTweener = std::shared_ptr<Tweener>(new QuadTweener());
+      m_pTweener = std::shared_ptr<Interpolator>(new QuadInterpolator());
     else if (StringUtils::CompareNoCase(tween, "cubic") == 0)
-      m_pTweener = std::shared_ptr<Tweener>(new CubicTweener());
+      m_pTweener = std::shared_ptr<Interpolator>(new CubicInterpolator());
     else if (StringUtils::CompareNoCase(tween, "sine") == 0)
-      m_pTweener = std::shared_ptr<Tweener>(new SineTweener());
+      m_pTweener = std::shared_ptr<Interpolator>(new SineInterpolator());
     else if (StringUtils::CompareNoCase(tween, "back") == 0)
-      m_pTweener = std::shared_ptr<Tweener>(new BackTweener());
+      m_pTweener = std::shared_ptr<Interpolator>(new BackInterpolator());
     else if (StringUtils::CompareNoCase(tween, "circle") == 0)
-      m_pTweener = std::shared_ptr<Tweener>(new CircleTweener());
+      m_pTweener = std::shared_ptr<Interpolator>(new CircleInterpolator());
     else if (StringUtils::CompareNoCase(tween, "bounce") == 0)
-      m_pTweener = std::shared_ptr<Tweener>(new BounceTweener());
+      m_pTweener = std::shared_ptr<Interpolator>(new BounceInpolator());
     else if (StringUtils::CompareNoCase(tween, "elastic") == 0)
-      m_pTweener = std::shared_ptr<Tweener>(new ElasticTweener());
+      m_pTweener = std::shared_ptr<Interpolator>(new ElasticInpolator());
 
     const char *easing = pAnimationNode->Attribute("easing");
     if (m_pTweener && easing)
@@ -130,11 +130,11 @@ std::shared_ptr<Tweener> CAnimEffect::GetTweener(const TiXmlElement *pAnimationN
     // or quadratic if we have acceleration
     if (accel)
     {
-      m_pTweener = std::shared_ptr<Tweener>(new QuadTweener(accel));
+      m_pTweener = std::shared_ptr<Interpolator>(new QuadInterpolator(accel));
       m_pTweener->SetEasing(EASE_IN);
     }
     else
-      m_pTweener = std::shared_ptr<Tweener>(new LinearTweener());
+      m_pTweener = std::shared_ptr<Interpolator>(new LinearInterpolator());
   }
 
   return m_pTweener;
@@ -742,7 +742,7 @@ void CAnimation::AddEffect(const std::string &type, const TiXmlElement *node, co
 }
 
 CScroller::CScroller(unsigned int duration /* = 200 */,
-                     std::shared_ptr<Tweener> tweener /* = NULL */)
+                     std::shared_ptr<Interpolator> tweener /* = NULL */)
   : m_pTweener(std::move(tweener))
 {
   m_scrollValue = 0;

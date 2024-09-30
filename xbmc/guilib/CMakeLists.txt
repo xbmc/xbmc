@@ -153,7 +153,7 @@ set(HEADERS DDSImage.h
             TextureBundle.h
             TextureBundleXBT.h
             TextureManager.h
-            Tween.h
+            Interpolators.h
             VisibleEffect.h
             WindowIDs.h
             XBTF.h
