@@ -72,17 +72,23 @@ void CSetInfoTag::SetOriginalTitle(const std::string& title)
 
 void CSetInfoTag::Merge(const CSetInfoTag& other)
 {
-  if (!other.GetTitle().empty())
+  if (other.GetID())
+    m_id = other.GetID();
+  if (other.HasTitle())
     m_title = other.GetTitle();
-  if (!other.GetOverview().empty())
+  if (other.HasOriginalTitle())
+    m_originalTitle = other.GetOriginalTitle();
+  if (other.HasOverview())
     m_overview = other.GetOverview();
-  if (!other.GetPoster().empty())
-    m_overview = other.GetPoster();
+  if (other.HasPoster())
+    m_poster = other.GetPoster();
 }
 
 void CSetInfoTag::Copy(const CSetInfoTag& other)
 {
+  m_id = other.GetID();
   m_title = other.GetTitle();
+  m_originalTitle = other.GetOriginalTitle();
   m_overview = other.GetOverview();
   m_poster = other.GetPoster();
 }
