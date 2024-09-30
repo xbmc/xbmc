@@ -38,6 +38,7 @@ set(SOURCES DDSImage.cpp
             GUIMoverControl.cpp
             GUIMultiImage.cpp
             GUIPanelContainer.cpp
+            GUIPrimitive.cpp
             GUIProgressControl.cpp
             GUIRadioButtonControl.cpp
             GUIRangesControl.cpp
@@ -116,6 +117,7 @@ set(HEADERS DDSImage.h
             GUIMoverControl.h
             GUIMultiImage.h
             GUIPanelContainer.h
+            GUIPrimitive.h
             GUIProgressControl.h
             GUIRadioButtonControl.h
             GUIRangesControl.h

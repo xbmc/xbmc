@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -128,6 +128,14 @@ public:
   static bool GetScroller(const TiXmlNode* pControlNode,
                           const std::string& scrollerTag,
                           CScroller& scroller);
+  static bool GetPrimitive(const TiXmlElement* node,
+                           const int parentID,
+                           std::array<KODI::GUILIB::GUIINFO::CGUIInfoColor, 4>& colors,
+                           uint32_t& angle,
+                           std::string& type);
+
+  std::unique_ptr<Interpolator> GetInterpolator(const TiXmlElement* node, const char* type);
+  std::unique_ptr<Interpolator> ParseInterpolator(const TiXmlElement* node);
 
 protected:
   static std::string GetType(const TiXmlElement* pControlNode);
