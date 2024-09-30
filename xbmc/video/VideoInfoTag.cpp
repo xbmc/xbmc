@@ -360,16 +360,8 @@ void CVideoInfoTag::Merge(CVideoInfoTag& other)
   if (other.m_cast.size())
     m_cast = other.m_cast;
 
-  if (other.m_set.HasTitle())
-    m_set.SetTitle(other.m_set.GetTitle());
-  if (other.m_set.GetID())
-    m_set.SetID(other.m_set.GetID());
-  if (other.m_set.HasOverview())
-    m_set.SetOverview(other.m_set.GetOverview());
-  if (other.m_set.HasOriginalTitle())
-    m_set.SetOriginalTitle(other.m_set.GetOriginalTitle());
-  if (other.m_set.HasPoster())
-    m_set.SetPoster(other.m_set.GetPoster());
+  m_set.Merge(other.m_set);
+
   if (!other.m_tags.empty())
     m_tags = other.m_tags;
 
@@ -826,7 +818,9 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
   case FieldVotes:                    sortable[FieldVotes] = GetRating().votes; break;
   case FieldStudio:                   sortable[FieldStudio] = m_studio; break;
   case FieldTrailer:                  sortable[FieldTrailer] = m_strTrailer; break;
-  case FieldSet:                      sortable[FieldSet] = m_set.GetTitle(); break;
+  case FieldSet:
+    sortable[FieldSet] = m_set.GetTitle();
+    break;
   case FieldTime:                     sortable[FieldTime] = GetDuration(); break;
   case FieldFilename:                 sortable[FieldFilename] = m_strFile; break;
   case FieldMPAA:                     sortable[FieldMPAA] = m_strMPAARating; break;

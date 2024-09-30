@@ -8,6 +8,9 @@
 
 #pragma once
 
+#include "utils/Archive.h"
+#include "utils/Variant.h"
+
 #include <string>
 
 class TiXmlNode;

@@ -410,8 +410,8 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
     CVideoDatabase database;
     database.Open();
     database.GetMoviesNav(m_movieItem->GetPath(), *m_castList, -1, -1, -1, -1, -1, -1,
-                          m_movieItem->GetVideoInfoTag()->m_set.GetID(), -1,
-                          SortDescription(), VideoDbDetailsAll);
+                          m_movieItem->GetVideoInfoTag()->m_set.GetID(), -1, SortDescription(),
+                          VideoDbDetailsAll);
     m_castList->Sort(SortBySortTitle, SortOrderDescending);
     CVideoThumbLoader loader;
     for (auto& item : *m_castList)
