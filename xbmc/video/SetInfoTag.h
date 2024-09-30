@@ -30,20 +30,34 @@ public:
   bool Load(const TiXmlElement* element, bool append = false, bool prioritise = false);
   bool IsEmpty() const;
 
+  int GetID() const { return m_id; }
+  void SetID(int id) { m_id = id; }
+
   void SetOverview(const std::string& overview);
+  bool HasOverview() const { return !m_overview.empty(); }
   std::string GetOverview() const { return m_overview; }
   bool GetUpdateSetOverview() const { return m_updateSetOverview; }
 
   void SetTitle(const std::string& title);
+  bool HasTitle() const { return !m_title.empty(); }
   std::string GetTitle() const { return m_title; }
 
+  void SetOriginalTitle(const std::string& title);
+  bool HasOriginalTitle() const { return !m_originalTitle.empty(); }
+  std::string GetOriginalTitle() const { return m_originalTitle; }
+
+  void SetPoster(const std::string& poster) { m_poster = poster; }
+  bool HasPoster() const { return !m_poster.empty(); }
   std::string GetPoster() const { return m_poster; }
 
   void Merge(const CSetInfoTag& other);
   void Copy(const CSetInfoTag& other);
+  void Archive(CArchive& ar);
+  void Serialize(CVariant& value) const;
 
 private:
   std::string m_title; // Title of the movie set
+  std::string m_originalTitle; // Original title of movie set (from scraper)
   int m_id{-1}; // ID of movie set in database
   std::string m_overview; // Overview/description of the movie set
   std::string m_poster;
@@ -56,5 +70,5 @@ private:
    \param prioritise whether additive tags should be replaced (or prepended) by the content of the tags, or appended to.
    \sa Load
    */
-  void ParseNative(const TiXmlElement* element, bool prioritise);
+  void ParseNative(const TiXmlElement* set, bool prioritise);
 };

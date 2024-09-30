@@ -461,14 +461,14 @@ namespace KODI::VIDEO
       CVideoInfoTag movieDetails;
       if (m_database.GetMovieInfo(item->GetPath(), movieDetails))
       {
-        if (!movieDetails.m_set.title.empty())
+        if (movieDetails.m_set.HasTitle())
         {
-          const int dbId{movieDetails.m_set.id};
-          movieDetails.m_set.title = m_database.GetOriginalSetById(dbId); // Original title
+          const int dbId{movieDetails.m_set.GetID()};
+          movieDetails.m_set.SetTitle(m_database.GetOriginalSetById(dbId)); // Original title
           if (UpdateSetInTag(movieDetails)) // Returned in tag
           {
-            m_database.AddSet(movieDetails.m_set.title, movieDetails.m_set.overview,
-                              movieDetails.m_set.originalTitle,
+            m_database.AddSet(movieDetails.m_set.GetTitle(), movieDetails.m_set.GetOverview(),
+                              movieDetails.m_set.GetOriginalTitle(),
                               movieDetails.GetUpdateSetOverview()); // Update set
             CGUIListItem::ArtMap movieSetArt;
             auto urls = movieDetails.m_strPictureURL.GetUrls();
@@ -488,39 +488,47 @@ namespace KODI::VIDEO
     // If there is a set, see if the details need to be updated from the
     // Movie Set Information Folder
     bool setUpdated{false};
-    if (!tag.m_set.title.empty())
+    if (tag.m_set.HasTitle())
     {
-      const std::string movieSetInfoPath = GetMovieSetInfoFolder(tag.m_set.title);
+      const std::string movieSetInfoPath = GetMovieSetInfoFolder(tag.m_set.GetTitle());
       if (!movieSetInfoPath.empty())
       {
         // look for Set.NFO
         if (const std::unique_ptr setLoader{
-                CSetInfoTagLoaderFactory::CreateLoader(tag.m_set.title)};
+                CSetInfoTagLoaderFactory::CreateLoader(tag.m_set.GetTitle())};
             setLoader)
         {
           CSetInfoTag setTag;
           INFO_TYPE result{setLoader->Load(setTag, false)};
           if (result && !setTag.IsEmpty())
           {
-            tag.m_set.originalTitle = tag.m_set.title;
+            tag.m_set.SetOriginalTitle(tag.m_set.GetTitle());
             if (!setTag.GetTitle().empty())
-              tag.m_set.title = setTag.GetTitle();
+              tag.m_set.SetTitle(setTag.GetTitle());
             if (!setTag.GetOverview().empty())
             {
-              tag.m_set.overview = setTag.GetOverview();
+              tag.m_set.SetOverview(setTag.GetOverview());
               tag.SetUpdateSetOverview(true);
             }
             if (!setTag.GetPoster().empty())
-              tag.m_set.poster = setTag.GetPoster();
+              tag.m_set.SetPoster(setTag.GetPoster());
             setUpdated = true;
           }
         }
 
         // Now look for art
+        // If poster specified in set.nfo use that first
         CGUIListItem::ArtMap movieSetArt;
-        const std::vector<std::string> movieSetArtTypes =
-            CVideoThumbLoader::GetArtTypes(MediaTypeVideoCollection);
-        AddLocalItemArtwork(movieSetArt, movieSetArtTypes, movieSetInfoPath, true, false);
+        if (tag.m_set.HasPoster())
+        {
+          movieSetArt.insert({"poster", tag.m_set.GetPoster()});
+        }
+        else
+        {
+          const std::vector<std::string> movieSetArtTypes =
+              CVideoThumbLoader::GetArtTypes(MediaTypeVideoCollection);
+          AddLocalItemArtwork(movieSetArt, movieSetArtTypes, movieSetInfoPath, true, false);
+        }
         if (!movieSetArt.empty())
         {
           tag.m_strPictureURL.Parse();
@@ -537,10 +545,8 @@ namespace KODI::VIDEO
           }
 
           // Remove existing set art from VideoInfoTag
-          urls.erase(std::remove_if(urls.begin(), urls.end(),
-                                    [](const auto& url)
-                                    { return StringUtils::StartsWith(url.m_aspect, "set."); }),
-                     urls.end());
+          std::erase_if(urls, [](const auto& url)
+                        { return StringUtils::StartsWith(url.m_aspect, "set."); });
 
           // Add found art
           for (auto& art : movieSetArt)
@@ -1653,7 +1659,7 @@ namespace KODI::VIDEO
           CUtil::GetDiscNumberFromPath(URIUtils::GetParentPath(movieDetails.m_strFileNameAndPath))};
       if (!discNum.empty())
       {
-        if (movieDetails.m_set.title.empty())
+        if (!movieDetails.m_set.HasTitle())
         {
           const std::string setName{m_database.GetSetByNameLike(movieDetails.m_strTitle)};
           if (!setName.empty())
@@ -1896,7 +1902,7 @@ namespace KODI::VIDEO
     // get and cache thumb images
     std::string mediaType = ContentToMediaType(content, pItem->m_bIsFolder);
     std::vector<std::string> artTypes = CVideoThumbLoader::GetArtTypes(mediaType);
-    bool moviePartOfSet = content == CONTENT_MOVIES && !movieDetails.m_set.title.empty();
+    bool moviePartOfSet = content == CONTENT_MOVIES && movieDetails.m_set.HasTitle();
     std::vector<std::string> movieSetArtTypes;
     if (moviePartOfSet)
     {
@@ -1930,7 +1936,7 @@ namespace KODI::VIDEO
 
       if (moviePartOfSet)
       {
-        std::string movieSetInfoPath = GetMovieSetInfoFolder(movieDetails.m_set.title);
+        std::string movieSetInfoPath = GetMovieSetInfoFolder(movieDetails.m_set.GetTitle());
         if (!movieSetInfoPath.empty())
         {
           CGUIListItem::ArtMap movieSetArt;
