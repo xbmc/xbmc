@@ -8,7 +8,9 @@
 
 #include "SetInfoTag.h"
 
+#include "utils/Archive.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 
 void CSetInfoTag::Reset()
@@ -63,6 +65,11 @@ void CSetInfoTag::SetTitle(const std::string& title)
   m_title = StringUtils::Trim(m_title);
 }
 
+void CSetInfoTag::SetOriginalTitle(const std::string& title)
+{
+  m_originalTitle = title;
+}
+
 void CSetInfoTag::Merge(const CSetInfoTag& other)
 {
   if (!other.GetTitle().empty())
@@ -78,6 +85,32 @@ void CSetInfoTag::Copy(const CSetInfoTag& other)
   m_title = other.GetTitle();
   m_overview = other.GetOverview();
   m_poster = other.GetPoster();
+}
+
+void CSetInfoTag::Archive(CArchive& ar)
+{
+  if (ar.IsStoring())
+  {
+    ar << m_title;
+    ar << m_id;
+    ar << m_overview;
+    ar << m_originalTitle;
+  }
+  else
+  {
+    ar >> m_title;
+    ar >> m_id;
+    ar >> m_overview;
+    ar >> m_originalTitle;
+  }
+}
+
+void CSetInfoTag::Serialize(CVariant& value) const
+{
+  value["set"] = m_title;
+  value["setid"] = m_id;
+  value["setoverview"] = m_overview;
+  value["originalset"] = m_originalTitle;
 }
 
 bool CSetInfoTag::IsEmpty() const

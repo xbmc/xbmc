@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "SetInfoTag.h"
 #include "XBDateTime.h"
 #include "utils/EmbeddedArt.h"
 #include "utils/Fanart.h"
@@ -363,15 +364,7 @@ public:
   std::vector<std::string> m_artist;
   std::vector< SActorInfo > m_cast;
   typedef std::vector< SActorInfo >::const_iterator iCast;
-  struct SetInfo //!< Struct holding information about a movie set
-  {
-    std::string title; //!< Title of the movie set
-    int id; //!< ID of movie set in database
-    std::string overview; //!< Overview/description of the movie set
-    std::string originalTitle; //<! Original title of the movie set
-    std::string poster;
-  };
-  SetInfo m_set; //!< Assigned movie set
+  CSetInfoTag m_set;
   std::vector<std::string> m_tags;
   std::string m_strFile;
   std::string m_strPath;

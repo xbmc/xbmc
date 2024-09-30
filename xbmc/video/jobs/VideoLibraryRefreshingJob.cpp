@@ -120,11 +120,11 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
               nfo->Load(tag, false);
 
               // Check set matches
-              if (tag.m_set.title == originalSetTitle)
+              if (tag.m_set.GetTitle() == originalSetTitle)
               {
                 localFound = true;
-                if (!tag.m_set.overview.empty())
-                  overview = tag.m_set.overview;
+                if (tag.m_set.HasOverview())
+                  overview = tag.m_set.GetOverview();
               }
             }
 
@@ -140,11 +140,11 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
               {
                 std::unordered_map<std::string, std::string> uniqueIDs;
                 if (infoDownloader.GetDetails(uniqueIDs, itemResultList.at(0), tag))
-                  if (!tag.m_set.title.empty())
+                  if (tag.m_set.HasTitle())
                   {
                     onlineFound = true;
                     if (overview.empty())
-                      overview = tag.m_set.overview;
+                      overview = tag.m_set.GetOverview();
                   }
               }
             }
@@ -154,15 +154,15 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
 
       // Use Set.NFO, if present, as priority
       bool setFound{CVideoInfoScanner::UpdateSetInTag(tag)};
-      if (!tag.m_set.title.empty())
-        overview = tag.m_set.overview;
+      if (tag.m_set.HasTitle())
+        overview = tag.m_set.GetOverview();
 
       // Nothing found to update with
       if (!localFound && !onlineFound && !setFound)
         return false;
 
       // tag now contains up-to-date set title
-      db.AddSet(tag.m_set.title, overview, tag.m_set.originalTitle);
+      db.AddSet(tag.m_set.GetTitle(), overview, tag.m_set.GetOriginalTitle());
 
       // Now deal with art
       // Clear art first
@@ -177,9 +177,9 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
 
       // If poster specified in set.nfo use that first
       CGUIListItem::ArtMap movieSetArt;
-      if (!tag.m_set.poster.empty())
+      if (tag.m_set.HasPoster())
       {
-        movieSetArt.insert({"poster", tag.m_set.poster});
+        movieSetArt.insert({"poster", tag.m_set.GetPoster()});
       }
       else
       {

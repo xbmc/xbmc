@@ -464,9 +464,9 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
           item.AppendArt(artmap, MediaTypeSeason);
       }
     }
-    else if (tag.m_type == MediaTypeMovie && tag.m_set.id >= 0 && !item.HasArt("set.fanart"))
+    else if (tag.m_type == MediaTypeMovie && tag.m_set.GetID() >= 0 && !item.HasArt("set.fanart"))
     {
-      const ArtMap& artmap = GetArtFromCache(MediaTypeVideoCollection, tag.m_set.id);
+      const ArtMap& artmap = GetArtFromCache(MediaTypeVideoCollection, tag.m_set.GetID());
       if (!artmap.empty())
         item.AppendArt(artmap, MediaTypeVideoCollection);
     }
