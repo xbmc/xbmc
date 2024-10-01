@@ -729,7 +729,7 @@ void CGUITexture::SetTexture(
   m_frameHeight = height;
 
   std::unique_ptr<CTexture> texture = CTexture::CreateTexture();
-  if (texture == nullptr || !texture->UploadFromMemory(width, height, 0, pixels, format, alpha))
+  if (!texture->UploadFromMemory(width, height, 0, pixels, format, alpha))
     return;
 
   m_texture.Set(std::move(texture), width, height);

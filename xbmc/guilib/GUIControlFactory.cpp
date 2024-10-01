@@ -613,7 +613,7 @@ bool CGUIControlFactory::GetScroller(const TiXmlNode* control,
 }
 
 bool CGUIControlFactory::GetPrimitive(const TiXmlElement* node,
-                                      const int parentID,
+                                      int parentID,
                                       std::array<GUIINFO::CGUIInfoColor, 4>& colors,
                                       uint32_t& angle,
                                       std::string& type)
@@ -674,15 +674,15 @@ std::unique_ptr<Interpolator> CGUIControlFactory::ParseInterpolator(const TiXmlE
   if (easing)
   {
     if (StringUtils::CompareNoCase(easing, "in") == 0)
-      interp->SetEasing(EASE_IN);
+      interp->SetEasing(EASE::IN);
     else if (StringUtils::CompareNoCase(easing, "out") == 0)
-      interp->SetEasing(EASE_OUT);
+      interp->SetEasing(EASE::OUT);
     else if (StringUtils::CompareNoCase(easing, "inout") == 0)
-      interp->SetEasing(EASE_INOUT);
+      interp->SetEasing(EASE::INOUT);
   }
   else
   {
-    interp->SetEasing(EASE_INOUT);
+    interp->SetEasing(EASE::INOUT);
   }
 
   return interp;

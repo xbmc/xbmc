@@ -17,9 +17,9 @@ public:
   CGUIPrimitive(int parentID, int controlID, float posX, float posY, float width, float height);
   CGUIPrimitive(const CGUIPrimitive& left);
 
-  void SetUniform(KODI::GUILIB::GUIINFO::CGUIInfoColor& color);
-  void Set2DGradient(std::array<KODI::GUILIB::GUIINFO::CGUIInfoColor, 4>& colors);
-  void Set1DGradient(std::array<KODI::GUILIB::GUIINFO::CGUIInfoColor, 4>& colors,
+  void SetUniform(KODI::GUILIB::GUIINFO::CGUIInfoColor color);
+  void Set2DGradient(const std::array<KODI::GUILIB::GUIINFO::CGUIInfoColor, 4>& colors);
+  void Set1DGradient(const std::array<KODI::GUILIB::GUIINFO::CGUIInfoColor, 4>& colors,
                      uint32_t angle,
                      const std::unique_ptr<Interpolator>& colorInterpolator,
                      const std::unique_ptr<Interpolator>& alphaInterpolator);
@@ -34,8 +34,5 @@ private:
                                             const KODI::UTILS::COLOR::ColorFloats& colorB,
                                             float phaseColor,
                                             float phaseAlpha);
-  bool IsOpaque(const KODI::UTILS::COLOR::Color color)
-  {
-    return (color & 0xFF000000) == 0xFF000000;
-  }
+  bool IsOpaque(KODI::UTILS::COLOR::Color color) { return (color & 0xFF000000) == 0xFF000000; }
 };

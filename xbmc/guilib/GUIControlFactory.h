@@ -134,8 +134,8 @@ public:
                            uint32_t& angle,
                            std::string& type);
 
-  std::unique_ptr<Interpolator> GetInterpolator(const TiXmlElement* node, const char* type);
-  std::unique_ptr<Interpolator> ParseInterpolator(const TiXmlElement* node);
+  static std::unique_ptr<Interpolator> GetInterpolator(const TiXmlElement* node, const char* type);
+  static std::unique_ptr<Interpolator> ParseInterpolator(const TiXmlElement* node);
 
 protected:
   static std::string GetType(const TiXmlElement* pControlNode);

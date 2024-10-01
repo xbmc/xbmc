@@ -21,7 +21,7 @@ CGUIPrimitive::CGUIPrimitive(
   ControlType = GUICONTROL_PRIMITIVE;
 }
 
-void CGUIPrimitive::SetUniform(GUIINFO::CGUIInfoColor& color)
+void CGUIPrimitive::SetUniform(GUIINFO::CGUIInfoColor color)
 {
   std::array<uint8_t, 4> texelData;
 
@@ -33,7 +33,7 @@ void CGUIPrimitive::SetUniform(GUIINFO::CGUIInfoColor& color)
   m_texture->SetAspectRatio(CAspectRatio::AR_STRETCH);
 }
 
-void CGUIPrimitive::Set1DGradient(std::array<KODI::GUILIB::GUIINFO::CGUIInfoColor, 4>& colors,
+void CGUIPrimitive::Set1DGradient(const std::array<KODI::GUILIB::GUIINFO::CGUIInfoColor, 4>& colors,
                                   uint32_t angle,
                                   const std::unique_ptr<Interpolator>& colorInterpolator,
                                   const std::unique_ptr<Interpolator>& alphaInterpolator)
@@ -69,7 +69,7 @@ void CGUIPrimitive::Set1DGradient(std::array<KODI::GUILIB::GUIINFO::CGUIInfoColo
   m_texture->SetAspectRatio(CAspectRatio::AR_STRETCH_TEXEL_EDGE);
 }
 
-void CGUIPrimitive::Set2DGradient(std::array<KODI::GUILIB::GUIINFO::CGUIInfoColor, 4>& colors)
+void CGUIPrimitive::Set2DGradient(const std::array<KODI::GUILIB::GUIINFO::CGUIInfoColor, 4>& colors)
 {
   std::array<uint8_t, 16> texelData;
 

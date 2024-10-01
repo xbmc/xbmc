@@ -22,17 +22,17 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-enum EASE
+enum class EASE
 {
-  EASE_IN,
-  EASE_OUT,
-  EASE_INOUT
+  IN,
+  OUT,
+  INOUT
 };
 
 class Interpolator
 {
 public:
-  explicit Interpolator(EASE easeType = EASE_OUT) { m_easeType = easeType; }
+  explicit Interpolator(EASE easeType = EASE::OUT) : m_easeType(easeType) {}
   virtual ~Interpolator() = default;
 
   void SetEasing(EASE type) { m_easeType = type; }
@@ -44,7 +44,7 @@ public:
    \brief Maps an input [0,1] to a interpolation function
    */
   virtual float Interpolate(float phase) { return 0.0f; };
-  virtual bool HasResumePoint() const { return m_easeType == EASE_INOUT; }
+  virtual bool HasResumePoint() const { return m_easeType == EASE::INOUT; }
   /*!
    \brief Returns minimum steps required for piecewise linear interpolation
    */
@@ -65,19 +65,20 @@ public:
 class QuadInterpolator : public Interpolator
 {
 public:
-  explicit QuadInterpolator(float a = 1.0f) { _a = a; }
+  explicit QuadInterpolator(float a = 1.0f) : _a(a) {}
+
   float Interpolate(float phase) override
   {
     switch (m_easeType)
     {
-      case EASE_IN:
+      case EASE::IN:
         return phase * (_a * phase + 1 - _a);
 
       default:
-      case EASE_OUT:
+      case EASE::OUT:
         return -1.0f * phase * (_a * phase - 1 - _a);
 
-      case EASE_INOUT:
+      case EASE::INOUT:
         phase *= 2;
         if (phase < 1)
           return 0.5f * phase * (_a * phase + 1 - _a);
@@ -98,15 +99,15 @@ public:
   {
     switch (m_easeType)
     {
-      case EASE_IN:
+      case EASE::IN:
         return phase * phase * phase;
 
       default:
-      case EASE_OUT:
+      case EASE::OUT:
         phase--;
         return (phase * phase * phase + 1);
 
-      case EASE_INOUT:
+      case EASE::INOUT:
         phase *= 2;
         if (phase < 1)
           return 0.5f * phase * phase * phase;
@@ -124,15 +125,15 @@ public:
   {
     switch (m_easeType)
     {
-      case EASE_IN:
+      case EASE::IN:
         return -1.0f * (sqrt(1 - phase * phase) - 1);
 
       default:
-      case EASE_OUT:
+      case EASE::OUT:
         phase--;
         return sqrt(1 - phase * phase);
 
-      case EASE_INOUT:
+      case EASE::INOUT:
         phase *= 2;
         if (phase < 1)
           return -0.5f * (sqrt(1 - phase * phase) - 1);
@@ -145,22 +146,22 @@ public:
 class BackInterpolator : public Interpolator
 {
 public:
-  explicit BackInterpolator(float s = 1.70158) { _s = s; }
+  explicit BackInterpolator(float s = 1.70158) : _s(s) {}
 
   float Interpolate(float phase) override
   {
     float s = _s;
     switch (m_easeType)
     {
-      case EASE_IN:
+      case EASE::IN:
         return phase * phase * ((s + 1) * phase - s);
 
       default:
-      case EASE_OUT:
+      case EASE::OUT:
         phase--;
         return phase * phase * ((s + 1) * phase + s) + 1;
 
-      case EASE_INOUT:
+      case EASE::INOUT:
         phase *= 2;
         s *= (1.525f);
         if ((phase) < 1)
@@ -181,14 +182,14 @@ public:
   {
     switch (m_easeType)
     {
-      case EASE_IN:
+      case EASE::IN:
         return 1 - cos(phase * static_cast<float>(M_PI) / 2.0f);
 
       default:
-      case EASE_OUT:
+      case EASE::OUT:
         return sin(phase * static_cast<float>(M_PI) / 2.0f);
 
-      case EASE_INOUT:
+      case EASE::INOUT:
         return 0.5f * (1 - cos(static_cast<float>(M_PI) * phase));
     }
   }
@@ -202,24 +203,20 @@ public:
   {
     switch (m_easeType)
     {
-      case EASE_IN:
+      case EASE::IN:
         return (change - easeOut(duration - time, 0, change, duration)) + start;
-        break;
 
-      case EASE_OUT:
+      default:
+      case EASE::OUT:
         return easeOut(time, start, change, duration);
-        break;
 
-      case EASE_INOUT:
+      case EASE::INOUT:
         if (time < duration / 2)
           return (change - easeOut(duration - (time * 2), 0, change, duration) + start) * .5f +
                  start;
         else
           return (easeOut(time * 2 - duration, 0, change, duration) * .5f + change * .5f) + start;
-        break;
     }
-
-    return easeOut(time, start, change, duration);
   }
 
 protected:
@@ -251,29 +248,22 @@ protected:
 class ElasticInpolator : public Interpolator
 {
 public:
-  ElasticInpolator(float a = 0.0, float p = 0.0)
-  {
-    _a = a;
-    _p = p;
-  }
+  ElasticInpolator(float a = 0.0, float p = 0.0) : _a(a), _p(p) {}
 
   float Tween(float time, float start, float change, float duration) override
   {
     switch (m_easeType)
     {
-      case EASE_IN:
+      case EASE::IN:
         return easeIn(time, start, change, duration);
-        break;
 
-      case EASE_OUT:
+      default:
+      case EASE::OUT:
         return easeOut(time, start, change, duration);
-        break;
 
-      case EASE_INOUT:
+      case EASE::INOUT:
         return easeInOut(time, start, change, duration);
-        break;
     }
-    return easeOut(time, start, change, duration);
   }
 
 protected:
