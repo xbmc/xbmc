@@ -25,7 +25,7 @@ public:
                      const std::unique_ptr<Interpolator>& alphaInterpolator);
 
 private:
-  template<unsigned long T>
+  template<size_t T>
   void ConvertToTexel(const KODI::UTILS::COLOR::ColorFloats& color,
                       std::array<uint8_t, T>& texelData,
                       unsigned int pixel);

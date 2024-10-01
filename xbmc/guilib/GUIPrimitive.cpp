@@ -83,7 +83,7 @@ void CGUIPrimitive::Set2DGradient(std::array<KODI::GUILIB::GUIINFO::CGUIInfoColo
   m_texture->SetAspectRatio(CAspectRatio::AR_STRETCH_TEXEL_EDGE);
 }
 
-template<unsigned long T>
+template<size_t T>
 void CGUIPrimitive::ConvertToTexel(const KODI::UTILS::COLOR::ColorFloats& color,
                                    std::array<uint8_t, T>& texelData,
                                    unsigned int texel)
