@@ -129,10 +129,10 @@ public:
                           const std::string& scrollerTag,
                           CScroller& scroller);
   static bool GetPrimitive(const TiXmlElement* node,
-                           const int parentID,
+                           int parentID,
                            std::array<KODI::GUILIB::GUIINFO::CGUIInfoColor, 4>& colors,
                            uint32_t& angle,
-                           std::string& type);
+                           std::string& shading);
 
   static std::unique_ptr<Interpolator> GetInterpolator(const TiXmlElement* node, const char* type);
   static std::unique_ptr<Interpolator> ParseInterpolator(const TiXmlElement* node);
