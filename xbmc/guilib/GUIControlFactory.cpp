@@ -616,16 +616,20 @@ bool CGUIControlFactory::GetPrimitive(const TiXmlElement* node,
                                       int parentID,
                                       std::array<GUIINFO::CGUIInfoColor, 4>& colors,
                                       uint32_t& angle,
-                                      std::string& type)
+                                      std::string& shading)
 {
+
+  if (StringUtils::CompareNoCase(node->FirstChild()->ValueStr(), "rectangle"))
+    return false;
+
   colors[0].Parse(XMLUtils::GetAttribute(node, "color1"), parentID);
   colors[1].Parse(XMLUtils::GetAttribute(node, "color2"), parentID);
   colors[2].Parse(XMLUtils::GetAttribute(node, "color3"), parentID);
   colors[3].Parse(XMLUtils::GetAttribute(node, "color4"), parentID);
 
-  angle = StringUtils::ToUint32(XMLUtils::GetAttribute(node, "angle"), parentID);
+  shading = XMLUtils::GetAttribute(node, "shading");
 
-  type = node->FirstChild()->ValueStr();
+  angle = StringUtils::ToUint32(XMLUtils::GetAttribute(node, "angle"), 0);
 
   return true;
 }
@@ -1594,22 +1598,22 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
       if (!(node && node->FirstChild()))
         break;
 
-      std::string type;
+      std::string shading;
       std::array<GUIINFO::CGUIInfoColor, 4> colorinfo;
       uint32_t angle = 0;
 
-      if (!GetPrimitive(node, parentID, colorinfo, angle, type))
+      if (!GetPrimitive(node, parentID, colorinfo, angle, shading))
         break;
 
       control = new CGUIPrimitive(parentID, id, posX, posY, width, height);
       CGUIPrimitive* icontrol = static_cast<CGUIPrimitive*>(control);
 
-      if (StringUtils::CompareNoCase(type, "1dgradient") == 0)
+      if (StringUtils::CompareNoCase(shading, "1dgradient") == 0)
       {
         icontrol->Set1DGradient(colorinfo, angle, GetInterpolator(pControlNode, "color"),
                                 GetInterpolator(pControlNode, "alpha"));
       }
-      else if (StringUtils::CompareNoCase(type, "2dgradient") == 0)
+      else if (StringUtils::CompareNoCase(shading, "2dgradient") == 0)
       {
         icontrol->Set2DGradient(colorinfo);
       }

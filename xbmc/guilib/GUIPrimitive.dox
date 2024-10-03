@@ -63,18 +63,19 @@ the following tags are available.
 
 | Tag           | Description                                                   |
 |--------------:|:--------------------------------------------------------------|
-| primitive     | Specifies what primitive sub-type is displayed. Possible values: "Uniform", "1DGradient", "2DGradient".
+| primitive     | Specifies what primitive type is displayed. Possible values: "rectangle".
 | interpolation | Specifies the interpolation to generate a one-dimensional gradient. Possible values: "color", "alpha".
 
 For the "primitive" tag, the following attributes are available.
 
 | Attribute     | Description                                                   |
 |--------------:|:--------------------------------------------------------------|
-| color1        | Specifies a AARRGGBB color for "Uniform", "1DGradient" and "2DGradient" primitives.
-| color2        | Specifies a AARRGGBB color for "1DGradient" and "2DGradient" primitives.
-| color3        | Specifies a AARRGGBB color for "2DGradient" primitives.
-| color4        | Specifies a AARRGGBB color for "2DGradient" primitives.
-| angle         | Specifies an angle at which the gradient is displayed at ("0" or "90).
+| shading       | Specifies a the type of shading the element should reveive.
+| color1        | Specifies a AARRGGBB color for "Uniform", "1DGradient" and "2DGradient" shading.
+| color2        | Specifies a AARRGGBB color for "1DGradient" and "2DGradient" shading.
+| color3        | Specifies a AARRGGBB color for "2DGradient" shading.
+| color4        | Specifies a AARRGGBB color for "2DGradient" shading.
+| angle         | Specifies an angle at which the one-dimensional gradient is displayed at ("0" or "90).
 
 For the "interpolation" tag (applicable to one-dimensional gradients), the following attributes are available.
 
