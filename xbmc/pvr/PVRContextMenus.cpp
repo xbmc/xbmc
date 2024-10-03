@@ -335,9 +335,13 @@ bool StopRecording::IsVisible(const CFileItem& item) const
   const std::shared_ptr<const CPVREpgInfoTag> epg = item.GetEPGInfoTag();
   if (epg && epg->IsGapTag())
   {
-    channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelForEpgTag(epg);
-    if (channel)
-      return CServiceBroker::GetPVRManager().Timers()->IsRecordingOnChannel(*channel);
+    const CDateTime now{CDateTime::GetUTCDateTime()};
+    if (epg->StartAsUTC() <= now && epg->EndAsUTC() >= now)
+    {
+      channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelForEpgTag(epg);
+      if (channel)
+        return CServiceBroker::GetPVRManager().Timers()->IsRecordingOnChannel(*channel);
+    }
   }
 
   return false;
@@ -348,12 +352,16 @@ bool StopRecording::Execute(const CFileItemPtr& item) const
   const std::shared_ptr<const CPVREpgInfoTag> epgTag = item->GetEPGInfoTag();
   if (epgTag && epgTag->IsGapTag())
   {
-    // instance recording
-    const std::shared_ptr<CPVRChannel> channel =
-        CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelForEpgTag(epgTag);
-    if (channel)
-      return CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().SetRecordingOnChannel(channel,
-                                                                                           false);
+    const CDateTime now{CDateTime::GetUTCDateTime()};
+    if (epgTag->StartAsUTC() <= now && epgTag->EndAsUTC() >= now)
+    {
+      const std::shared_ptr<CPVRChannel> channel{
+          CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelForEpgTag(epgTag)};
+      if (channel)
+        return CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().SetRecordingOnChannel(
+            channel, false);
+    }
+    return false;
   }
 
   return CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().StopRecording(*item);
