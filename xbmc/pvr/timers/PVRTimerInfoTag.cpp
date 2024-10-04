@@ -791,7 +791,7 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromDate(
     if (bInstantStart)
       epgTag = channel->GetEPGNow();
     else if (channel->GetEPG())
-      epgTag = channel->GetEPG()->GetTagBetween(start, start + CDateTimeSpan(0, 0, iDuration, 0));
+      epgTag = channel->GetEPG()->GetTagBetween(start, start + CDateTimeSpan(0, 0, 0, iDuration));
   }
 
   std::shared_ptr<CPVRTimerInfoTag> newTimer;
@@ -853,16 +853,17 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromDate(
 
   if (iDuration == DEFAULT_PVRRECORD_INSTANTRECORDTIME)
     iDuration = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
-        CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME);
+                    CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME) *
+                60;
 
   if (bInstantStart)
   {
-    CDateTime endTime = now + CDateTimeSpan(0, 0, iDuration ? iDuration : 120, 0);
+    const CDateTime endTime{now + CDateTimeSpan(0, 0, 0, iDuration ? iDuration : 2 * 60 * 60)};
     newTimer->SetEndFromUTC(endTime);
   }
   else
   {
-    CDateTime endTime = start + CDateTimeSpan(0, 0, iDuration ? iDuration : 120, 0);
+    const CDateTime endTime{start + CDateTimeSpan(0, 0, 0, iDuration ? iDuration : 2 * 60 * 60)};
     newTimer->SetEndFromUTC(endTime);
   }
 

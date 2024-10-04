@@ -562,7 +562,7 @@ bool CPVRGUIActionsTimers::SetRecordingOnChannel(const std::shared_ptr<CPVRChann
 
       const std::shared_ptr<CPVRTimerInfoTag> newTimer(
           epgTag ? CPVRTimerInfoTag::CreateFromEpg(epgTag, false)
-                 : CPVRTimerInfoTag::CreateInstantTimerTag(channel, iDuration));
+                 : CPVRTimerInfoTag::CreateInstantTimerTag(channel, iDuration * 60));
 
       if (newTimer)
         bReturn = CServiceBroker::GetPVRManager().Timers()->AddTimer(newTimer);
@@ -984,7 +984,7 @@ void CPVRGUIActionsTimers::AnnounceReminder(const std::shared_ptr<CPVRTimerInfoT
     }
     else
     {
-      int iDuration = (timer->EndAsUTC() - timer->StartAsUTC()).GetSecondsTotal() / 60;
+      const int iDuration{(timer->EndAsUTC() - timer->StartAsUTC()).GetSecondsTotal()};
       newTimer = CPVRTimerInfoTag::CreateTimerTag(timer->Channel(), timer->StartAsUTC(), iDuration);
     }
 
