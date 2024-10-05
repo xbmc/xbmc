@@ -24,12 +24,6 @@ Several distribution **[specific build guides](README.md)** are available.
 ## 1. Document conventions
 This guide assumes you are using `terminal`, also known as `console`, `command-line` or simply `cli`. Commands need to be run at the terminal, one at a time and in the provided order.
 
-This is a comment that provides context:
-```
-this is a command
-this is another command
-```
-
 Commands that contain strings enclosed in angle brackets denote something you need to change to suit your needs.
 ```
 git clone -b <branch-name> https://github.com/xbmc/xbmc kodi
@@ -101,35 +95,14 @@ Change to Kodi's source code directory:
 cd $HOME/kodi
 ```
 
-Build and install crossguid:
-```
-sudo make -C tools/depends/target/crossguid PREFIX=/usr/local
-```
-
-Build and install flatbuffers:
-```
-sudo make -C tools/depends/target/flatbuffers PREFIX=/usr/local
-```
-
-Build and install libfmt:
-```
-sudo make -C tools/depends/target/fmt PREFIX=/usr/local
-```
-
-Build and install libspdlog:
-```
-sudo make -C tools/depends/target/spdlog PREFIX=/usr/local
-```
-
-Build and install wayland-protocols:
-```
-sudo make -C tools/depends/target/wayland-protocols PREFIX=/usr/local
-```
-
-Build and install waylandpp:
-```
-sudo make -C tools/depends/target/waylandpp PREFIX=/usr/local
-```
+| Dependency        | Build & install command |
+|-------------------|--------------------------|
+| crossguid         | `sudo make -C tools/depends/target/crossguid PREFIX=/usr/local` |
+| flatbuffers       | `sudo make -C tools/depends/target/flatbuffers PREFIX=/usr/local` |
+| libfmt            | `sudo make -C tools/depends/target/fmt PREFIX=/usr/local` |
+| libspdlog         | `sudo make -C tools/depends/target/spdlog PREFIX=/usr/local` |
+| wayland-protocols | `sudo make -C tools/depends/target/wayland-protocols PREFIX=/usr/local` |
+| waylandpp         | `sudo make -C tools/depends/target/waylandpp PREFIX=/usr/local` |
 
 > [!WARNING]  
 > Building `waylandpp` has some dependencies of its own, namely `scons, libwayland-dev (>= 1.11.0) and libwayland-egl1-mesa`
@@ -161,7 +134,7 @@ cd $HOME/kodi-build
 
 Configuring the build involves running `cmake` with the desired options:
 ```
-cmake ../kodi -DAPP_RENDER_SYSTEM=<gl | gles> [ -DCORE_PLATFORM_NAME=<x11 &| wayland &| gbm> ]
+cmake ../kodi -DAPP_RENDER_SYSTEM=<render_system> [ -DCORE_PLATFORM_NAME=<platform_names> ... ]
 ```
 
 When configuring the build, `-DAPP_RENDER_SYSTEM` **must** be specified. 
@@ -171,7 +144,7 @@ When configuring the build, `-DAPP_RENDER_SYSTEM` **must** be specified.
 |`APP_RENDER_SYSTEM`   | The Rendering system to use |gl     |Uses OpenGL                         |
 |                      |                             |gles   |Uses OpenGLES                       |
 
-Optionally, `-DCORE_PLATFORM_NAME` and other CMake supported params parameters can also be specificed.
+Optionally, `-DCORE_PLATFORM_NAME` and other CMake [supported](https://cmake.org/cmake/help/latest/manual/cmake-variables.7.html#variables-that-change-behavior) params parameters can also be specificed.
 
 |Parameter             |Description                  |Options|Desscription                        |
 |----------------------|-----------------------------|-------|------------------------------------|
@@ -186,7 +159,10 @@ Optionally, `-DCORE_PLATFORM_NAME` and other CMake supported params parameters c
 An example invocation would be
 
 ```
-cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DCORE_PLATFORM_NAME="x11 wayland gbm" -DAPP_RENDER_SYSTEM=gl
+cmake ../kodi \
+    -DAPP_RENDER_SYSTEM=gl \
+    -DCORE_PLATFORM_NAME="x11 wayland gbm" \
+    -DCMAKE_INSTALL_PREFIX=/usr/local
 ```
 
 > [!TIP]
