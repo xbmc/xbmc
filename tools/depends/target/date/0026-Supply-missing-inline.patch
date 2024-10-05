@@ -1,0 +1,24 @@
+From e6f4aed4d11d4e50687e9aa8630c7f0db7d31dba Mon Sep 17 00:00:00 2001
+From: Howard Hinnant <howard.hinnant@gmail.com>
+Date: Sun, 24 Apr 2022 22:27:03 -0400
+Subject: [PATCH 26/50] Supply missing 'inline'
+
+---
+ include/date/ptz.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/date/ptz.h b/include/date/ptz.h
+index 88d2244..7dd4c16 100644
+--- a/include/date/ptz.h
++++ b/include/date/ptz.h
+@@ -327,6 +327,7 @@ time_zone::get_next_end(date::year y) const
+     return date::sys_seconds{(end_rule_(++y) - (offset_ + save_)).time_since_epoch()};
+ }
+ 
++inline
+ date::sys_info
+ time_zone::contant_offset() const
+ {
+-- 
+2.39.5
+

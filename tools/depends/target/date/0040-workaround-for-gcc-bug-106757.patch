@@ -1,0 +1,32 @@
+From 0e65940a7fbc4ed617a1ee111a60311eccbead9a Mon Sep 17 00:00:00 2001
+From: Miles Sherman <miles.sherman@lonk.com>
+Date: Sat, 16 Mar 2024 20:43:39 +0000
+Subject: [PATCH 40/50] workaround for gcc bug 106757
+
+see: https://github.com/HowardHinnant/date/issues/750
+---
+ include/date/date.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/include/date/date.h b/include/date/date.h
+index d4ca88c..38b5d9b 100644
+--- a/include/date/date.h
++++ b/include/date/date.h
+@@ -6527,7 +6527,14 @@ read(std::basic_istream<CharT, Traits>& is, int a0, Args&& ...args)
+             *e++ = static_cast<CharT>(CharT(u % 10) + CharT{'0'});
+             u /= 10;
+         } while (u > 0);
++#ifdef __GNUC__
++#pragma GCC diagnostic push
++#pragma GCC diagnostic ignored "-Wstringop-overflow"
++#endif
+         std::reverse(buf, e);
++#ifdef __GNUC__
++#pragma GCC diagnostic pop
++#endif
+         for (auto p = buf; p != e && is.rdstate() == std::ios::goodbit; ++p)
+             read(is, *p);
+     }
+-- 
+2.39.5
+

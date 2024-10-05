@@ -1,0 +1,28 @@
+From c82b776f28e1802ef1b46e95dcade7d5c80a0373 Mon Sep 17 00:00:00 2001
+From: Howard Hinnant <howard.hinnant@gmail.com>
+Date: Fri, 12 Aug 2022 10:29:10 -0400
+Subject: [PATCH 28/50] Tweak sys_time streaming operator to work better year
+ and month precision time_points.
+
+---
+ include/date/date.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/date/date.h b/include/date/date.h
+index 4ad85cc..6960e8c 100644
+--- a/include/date/date.h
++++ b/include/date/date.h
+@@ -4206,8 +4206,8 @@ template <class CharT, class Traits, class Duration>
+ inline
+ typename std::enable_if
+ <
+-    std::ratio_less<typename Duration::period, days::period>::value
+-    , std::basic_ostream<CharT, Traits>&
++    !std::is_convertible<Duration, days>::value,
++    std::basic_ostream<CharT, Traits>&
+ >::type
+ operator<<(std::basic_ostream<CharT, Traits>& os, const sys_time<Duration>& tp)
+ {
+-- 
+2.39.5
+

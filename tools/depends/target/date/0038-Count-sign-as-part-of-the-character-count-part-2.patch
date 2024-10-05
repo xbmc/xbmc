@@ -1,0 +1,30 @@
+From 5d225951ff24e6802d5026cb85d5b5a95b1a2476 Mon Sep 17 00:00:00 2001
+From: Howard Hinnant <howard.hinnant@gmail.com>
+Date: Tue, 19 Dec 2023 10:12:30 -0500
+Subject: [PATCH 38/50] Count sign as part of the character count : part 2
+
+* Fix up some damage caused by previous commit.
+---
+ include/date/date.h | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/include/date/date.h b/include/date/date.h
+index 959cd5c..d4ca88c 100644
+--- a/include/date/date.h
++++ b/include/date/date.h
+@@ -7520,7 +7520,12 @@ from_stream(std::basic_istream<CharT, Traits>& is, const CharT* fmt,
+                     {
+                         auto c = static_cast<char>(Traits::to_char_type(ic));
+                         if (c == '-')
++                        {
+                             neg = true;
++                            (void)is.get();
++                        }
++                        else if (c == '+')
++                            (void)is.get();
+                     }
+                     if (modified == CharT{})
+                     {
+-- 
+2.39.5
+

@@ -1,0 +1,36 @@
+From 28972d72b49c6981dec9c3276b09a0cbb1ff4a80 Mon Sep 17 00:00:00 2001
+From: Howard Hinnant <howard.hinnant@gmail.com>
+Date: Mon, 6 Feb 2023 14:29:35 -0500
+Subject: [PATCH 32/50] Guard against Posix::time_zone having transition near
+ ... beginning or end of year.
+
+---
+ include/date/ptz.h | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/include/date/ptz.h b/include/date/ptz.h
+index 7b2811c..b7f2164 100644
+--- a/include/date/ptz.h
++++ b/include/date/ptz.h
+@@ -452,6 +452,10 @@ time_zone::get_info(date::sys_time<Duration> st) const
+     if (start_rule_.ok())
+     {
+         auto y = year_month_day{floor<days>(st)}.year();
++        if (st >= get_next_start(y))
++            ++y;
++        else if (st < get_prev_end(y))
++            --y;
+         auto start = get_start(y);
+         auto end   = get_end(y);
+         if (start <= end)  // (northern hemisphere)
+@@ -505,6 +509,7 @@ time_zone::get_info(date::sys_time<Duration> st) const
+     }
+     else
+         r = contant_offset();
++    assert(r.begin <= st && st < r.end);
+     return r;
+ }
+ 
+-- 
+2.39.5
+

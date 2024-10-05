@@ -1,0 +1,991 @@
+From 8a932116795f4046ba8ed79ce33717c7331a1490 Mon Sep 17 00:00:00 2001
+From: Martin Zink <martinzink@apache.org>
+Date: Wed, 8 May 2024 17:15:38 +0200
+Subject: [PATCH 45/50] #826 Build fix for ambiguity with >= libc++ 17
+
+---
+ include/date/date.h                           |  2 +-
+ include/date/ptz.h                            |  2 +-
+ include/date/tz.h                             |  4 +-
+ include/date/tz_private.h                     |  3 +-
+ src/tz.cpp                                    |  3 +-
+ test/clock_cast_test/local_t.pass.cpp         |  1 +
+ test/clock_cast_test/noncastable.pass.cpp     |  1 +
+ test/date_test/durations_output.pass.cpp      | 56 +++++++++----------
+ test/date_test/format/century.pass.cpp        | 42 +++++++-------
+ test/date_test/format/misc.pass.cpp           |  3 +-
+ test/date_test/format/range.pass.cpp          | 22 ++++----
+ test/date_test/format/two_dight_year.pass.cpp | 44 +++++++--------
+ .../multi_year_duration_addition.pass.cpp     | 11 ++--
+ test/date_test/parse.pass.cpp                 | 11 +++-
+ test/date_test/time_of_day_hours.pass.cpp     |  8 +--
+ test/date_test/year.pass.cpp                  |  1 +
+ test/date_test/year_month.pass.cpp            |  4 ++
+ test/iso_week/year.pass.cpp                   |  1 +
+ test/posix/ptz.pass.cpp                       |  1 +
+ test/tz_test/OffsetZone.h                     |  4 +-
+ test/tz_test/validate.cpp                     |  6 +-
+ test/tz_test/zoned_time.pass.cpp              |  1 +
+ test/tz_test/zoned_time_deduction.pass.cpp    |  2 +
+ 23 files changed, 127 insertions(+), 106 deletions(-)
+
+diff --git a/include/date/date.h b/include/date/date.h
+index 2772ab5..beb627e 100644
+--- a/include/date/date.h
++++ b/include/date/date.h
+@@ -4228,7 +4228,7 @@ inline
+ std::basic_ostream<CharT, Traits>&
+ operator<<(std::basic_ostream<CharT, Traits>& os, const local_time<Duration>& ut)
+ {
+-    return (os << sys_time<Duration>{ut.time_since_epoch()});
++    return (date::operator<<(os, sys_time<Duration>{ut.time_since_epoch()}));
+ }
+ 
+ namespace detail
+diff --git a/include/date/ptz.h b/include/date/ptz.h
+index 3dca4f0..274fa87 100644
+--- a/include/date/ptz.h
++++ b/include/date/ptz.h
+@@ -667,7 +667,7 @@ time_zone::name() const
+     auto print_offset = [](seconds off)
+         {
+             std::string nm;
+-            hh_mm_ss<seconds> offset{-off};
++            date::hh_mm_ss<seconds> offset{-off};
+             if (offset.is_negative())
+                 nm += '-';
+             nm += std::to_string(offset.hours().count());
+diff --git a/include/date/tz.h b/include/date/tz.h
+index 61dde29..0f9f2c5 100644
+--- a/include/date/tz.h
++++ b/include/date/tz.h
+@@ -231,8 +231,8 @@ nonexistent_local_time::make_msg(local_time<Duration> tp, const local_info& i)
+        << i.first.abbrev << " and\n"
+        << local_seconds{i.second.begin.time_since_epoch()} + i.second.offset << ' '
+        << i.second.abbrev
+-       << " which are both equivalent to\n"
+-       << i.first.end << " UTC";
++       << " which are both equivalent to\n";
++    date::operator<<(os, i.first.end) << " UTC";
+     return os.str();
+ }
+ 
+diff --git a/include/date/tz_private.h b/include/date/tz_private.h
+index aec01d0..1a01f17 100644
+--- a/include/date/tz_private.h
++++ b/include/date/tz_private.h
+@@ -289,8 +289,7 @@ struct transition
+     std::ostream&
+     operator<<(std::ostream& os, const transition& t)
+     {
+-        using date::operator<<;
+-        os << t.timepoint << "Z ";
++        date::operator<<(os, t.timepoint) << "Z ";
+         if (t.info->offset >= std::chrono::seconds{0})
+             os << '+';
+         os << make_time(t.info->offset);
+diff --git a/src/tz.cpp b/src/tz.cpp
+index 490e585..8231797 100644
+--- a/src/tz.cpp
++++ b/src/tz.cpp
+@@ -2729,8 +2729,7 @@ operator<<(std::ostream& os, const time_zone& z)
+ std::ostream&
+ operator<<(std::ostream& os, const leap_second& x)
+ {
+-    using namespace date;
+-    return os << x.date_ << "  +";
++    return date::operator<<(os, x.date_) << "  +";
+ }
+ 
+ #if USE_OS_TZDB
+diff --git a/test/clock_cast_test/local_t.pass.cpp b/test/clock_cast_test/local_t.pass.cpp
+index c80459d..ae5edec 100644
+--- a/test/clock_cast_test/local_t.pass.cpp
++++ b/test/clock_cast_test/local_t.pass.cpp
+@@ -28,6 +28,7 @@ main()
+ {
+    using namespace date;
+    using namespace std::chrono;
++   using date::local_days, date::local_t, date::January, date::July, date::Sunday;
+ 
+    // self
+    {
+diff --git a/test/clock_cast_test/noncastable.pass.cpp b/test/clock_cast_test/noncastable.pass.cpp
+index 373f223..3e1c5c1 100644
+--- a/test/clock_cast_test/noncastable.pass.cpp
++++ b/test/clock_cast_test/noncastable.pass.cpp
+@@ -191,6 +191,7 @@ main()
+     using namespace date;
+     using namespace std::chrono;
+     using sys_clock = std::chrono::system_clock;
++    using local_t = date::local_t;
+ 
+     //steady_clock (must be different that sys_clock)
+     static_assert(is_clock_castable<steady_clock, steady_clock>::value, "steady_clock -> steady_clock");
+diff --git a/test/date_test/durations_output.pass.cpp b/test/date_test/durations_output.pass.cpp
+index ebf3ff5..8215d62 100644
+--- a/test/date_test/durations_output.pass.cpp
++++ b/test/date_test/durations_output.pass.cpp
+@@ -36,7 +36,7 @@ void test_SI()
+    // atto
+    {
+      duration<int, std::atto> d(13);
+-     os << d;
++     date::operator<<(os, d);
+      assert(os.str() == "13as");
+      os.str("");
+    }
+@@ -44,7 +44,7 @@ void test_SI()
+    // femto
+    {
+      duration<int, std::femto> d(13);
+-     os << d;
++     date::operator<<(os, d);
+      assert(os.str() == "13fs");
+      os.str("");
+    }
+@@ -52,7 +52,7 @@ void test_SI()
+    // pico
+    {
+      duration<int, std::pico> d(13);
+-     os << d;
++     date::operator<<(os, d);
+      assert(os.str() == "13ps");
+      os.str("");
+    }
+@@ -60,7 +60,7 @@ void test_SI()
+    // nano
+    {
+      duration<int, std::nano> d(13);
+-     os << d;
++     date::operator<<(os, d);
+      assert(os.str() == "13ns");
+      os.str("");
+    }
+@@ -68,7 +68,7 @@ void test_SI()
+    // mikro
+    {
+      duration<int, std::micro> d(13);
+-     os << d;
++     date::operator<<(os, d);
+      assert(os.str() == "13\xC2\xB5s");
+      os.str("");
+    }
+@@ -76,7 +76,7 @@ void test_SI()
+    // milli
+    {
+      duration<int, std::milli> d(13);
+-     os << d;
++     date::operator<<(os, d);
+      assert(os.str() == "13ms");
+      os.str("");
+    }
+@@ -84,7 +84,7 @@ void test_SI()
+    // centi
+    {
+      duration<int, std::centi> d(13);
+-     os << d;
++     date::operator<<(os, d);
+      assert(os.str() == "13cs");
+      os.str("");
+    }
+@@ -92,7 +92,7 @@ void test_SI()
+    // deci
+    {
+      duration<int, std::deci> d(13);
+-     os << d;
++     date::operator<<(os, d);
+      assert(os.str() == "13ds");
+      os.str("");
+    }
+@@ -100,7 +100,7 @@ void test_SI()
+    // seconds
+    {
+      duration<int> d(13);
+-     os << d;
++     date::operator<<(os, d);
+      assert(os.str() == "13s");
+      os.str("");
+    }
+@@ -108,7 +108,7 @@ void test_SI()
+    // deca
+    {
+      duration<int, std::deca> d(13);
+-     os << d;
++     date::operator<<(os, d);
+      assert(os.str() == "13das");
+      os.str("");
+    }
+@@ -116,7 +116,7 @@ void test_SI()
+    // hecto
+    {
+      duration<int, std::hecto> d(13);
+-     os << d;
++     date::operator<<(os, d);
+      assert(os.str() == "13hs");
+      os.str("");
+    }
+@@ -124,7 +124,7 @@ void test_SI()
+    // kilo
+    {
+      duration<int, std::kilo> d(13);
+-     os << d;
++     date::operator<<(os, d);
+      assert(os.str() == "13ks");
+      os.str("");
+    }
+@@ -132,7 +132,7 @@ void test_SI()
+    // mega
+    {
+      duration<int, std::mega> d(13);
+-     os << d;
++     date::operator<<(os, d);
+      assert(os.str() == "13Ms");
+      os.str("");
+    }
+@@ -140,7 +140,7 @@ void test_SI()
+    // giga
+    {
+      duration<int, std::giga> d(13);
+-     os << d;
++     date::operator<<(os, d);
+      assert(os.str() == "13Gs");
+      os.str("");
+    }
+@@ -148,7 +148,7 @@ void test_SI()
+    // tera
+    {
+      duration<int, std::tera> d(13);
+-     os << d;
++     date::operator<<(os, d);
+      assert(os.str() == "13Ts");
+      os.str("");
+    }
+@@ -156,7 +156,7 @@ void test_SI()
+    // peta
+    {
+      duration<int, std::peta> d(13);
+-     os << d;
++     date::operator<<(os, d);
+      assert(os.str() == "13Ps");
+      os.str("");
+    }
+@@ -164,7 +164,7 @@ void test_SI()
+    // femto
+    {
+      duration<int, std::exa> d(13);
+-     os << d;
++     date::operator<<(os, d);
+      assert(os.str() == "13Es");
+      os.str("");
+    }
+@@ -180,7 +180,7 @@ void test_calendar()
+    // minutes
+    {
+       minutes d(13);
+-      os << d;
++      date::operator<<(os, d);
+       assert(os.str() == "13min");
+       os.str("");
+    }
+@@ -188,7 +188,7 @@ void test_calendar()
+    // hours
+    {
+       hours d(13);
+-      os << d;
++      date::operator<<(os, d);
+       assert(os.str() == "13h");
+       os.str("");
+    }
+@@ -196,7 +196,7 @@ void test_calendar()
+    // days
+    {
+       days d(13);
+-      os << d;
++      date::operator<<(os, d);
+       assert(os.str() == "13d");
+       os.str("");
+    }
+@@ -212,7 +212,7 @@ void test_integral_scale()
+    // ratio 123 / 1
+    {
+       duration<int, std::ratio<123, 1>> d(13);
+-      os << d;
++      date::operator<<(os, d);
+       assert(os.str() == "13[123]s");
+       os.str("");
+    }
+@@ -220,7 +220,7 @@ void test_integral_scale()
+    // ratio 100 / 4 = ratio 25 / 1
+    {
+       duration<int, std::ratio<25, 1>> d(13);
+-      os << d;
++      date::operator<<(os, d);
+       assert(os.str() == "13[25]s");
+       os.str("");
+    }
+@@ -228,7 +228,7 @@ void test_integral_scale()
+    // weeks = ratio 7 * 24 * 60 * 60 / 1 = ratio 604800 / 1
+    {
+       weeks d(13);
+-      os << d;
++      date::operator<<(os, d);
+       assert(os.str() == "13[604800]s");
+       os.str("");
+    }
+@@ -236,7 +236,7 @@ void test_integral_scale()
+    // years = 146097/400 days = ratio 146097/400 * 24 * 60 * 60 = ratio 31556952 / 1
+    {
+       years d(13);
+-      os << d;
++      date::operator<<(os, d);
+       assert(os.str() == "13[31556952]s");
+       os.str("");
+    }
+@@ -244,7 +244,7 @@ void test_integral_scale()
+    // months = 1/12 years = ratio 1/12 * 31556952  = ratio 2629746 / 1
+    {
+       months d(13);
+-      os << d;
++      date::operator<<(os, d);
+       assert(os.str() == "13[2629746]s");
+       os.str("");
+    }
+@@ -260,7 +260,7 @@ void test_ratio_scale()
+    // ratio 1 / 2
+    {
+       duration<int, std::ratio<1, 2>> d(13);
+-      os << d;
++      date::operator<<(os, d);
+       assert(os.str() == "13[1/2]s");
+       os.str("");
+    }
+@@ -268,7 +268,7 @@ void test_ratio_scale()
+    // ratio 100 / 3
+    {
+       duration<int, std::ratio<100, 3>> d(13);
+-      os << d;
++      date::operator<<(os, d);
+       assert(os.str() == "13[100/3]s");
+       os.str("");
+    }
+@@ -276,7 +276,7 @@ void test_ratio_scale()
+    // ratio 100 / 6 = ratio 50 / 3
+    {
+       duration<int, std::ratio<100, 6>> d(13);
+-      os << d;
++      date::operator<<(os, d);
+       assert(os.str() == "13[50/3]s");
+       os.str("");
+    }
+diff --git a/test/date_test/format/century.pass.cpp b/test/date_test/format/century.pass.cpp
+index 1b401f7..a3506d1 100644
+--- a/test/date_test/format/century.pass.cpp
++++ b/test/date_test/format/century.pass.cpp
+@@ -32,86 +32,86 @@ main()
+     using namespace date;
+     using namespace std::chrono;
+     std::ostringstream os;
+-    os << format("%C", sys_days{jun/1/20001});
++    os << date::format("%C", sys_days{jun/1/20001});
+     assert(os.str() == "200");
+ 
+     os.str("");
+-    os << format("%C", sys_days{jun/1/20000});
++    os << date::format("%C", sys_days{jun/1/20000});
+     assert(os.str() == "200");
+ 
+     os.str("");
+-    os << format("%C", sys_days{jun/1/19999});
++    os << date::format("%C", sys_days{jun/1/19999});
+     assert(os.str() == "199");
+ 
+     os.str("");
+-    os << format("%C", sys_days{jun/1/2001});
++    os << date::format("%C", sys_days{jun/1/2001});
+     assert(os.str() == "20");
+ 
+     os.str("");
+-    os << format("%C", sys_days{jun/1/2000});
++    os << date::format("%C", sys_days{jun/1/2000});
+     assert(os.str() == "20");
+ 
+     os.str("");
+-    os << format("%C", sys_days{jun/1/1999});
++    os << date::format("%C", sys_days{jun/1/1999});
+     assert(os.str() == "19");
+ 
+     os.str("");
+-    os << format("%C", sys_days{jun/1/101});
++    os << date::format("%C", sys_days{jun/1/101});
+     assert(os.str() == "01");
+ 
+     os.str("");
+-    os << format("%C", sys_days{jun/1/100});
++    os << date::format("%C", sys_days{jun/1/100});
+     assert(os.str() == "01");
+ 
+     os.str("");
+-    os << format("%C", sys_days{jun/1/99});
++    os << date::format("%C", sys_days{jun/1/99});
+     assert(os.str() == "00");
+ 
+     os.str("");
+-    os << format("%C", sys_days{jun/1/1});
++    os << date::format("%C", sys_days{jun/1/1});
+     assert(os.str() == "00");
+ 
+     os.str("");
+-    os << format("%C", sys_days{jun/1/0});
++    os << date::format("%C", sys_days{jun/1/0});
+     assert(os.str() == "00");
+ 
+     os.str("");
+-    os << format("%C", sys_days{jun/1/-1});
++    os << date::format("%C", sys_days{jun/1/-1});
+     assert(os.str() == "-01");
+ 
+     os.str("");
+-    os << format("%C", sys_days{jun/1/-99});
++    os << date::format("%C", sys_days{jun/1/-99});
+     assert(os.str() == "-01");
+ 
+     os.str("");
+-    os << format("%C", sys_days{jun/1/-100});
++    os << date::format("%C", sys_days{jun/1/-100});
+     assert(os.str() == "-01");
+ 
+     os.str("");
+-    os << format("%C", sys_days{jun/1/-101});
++    os << date::format("%C", sys_days{jun/1/-101});
+     assert(os.str() == "-02");
+ 
+     os.str("");
+-    os << format("%C", sys_days{jun/1/-1999});
++    os << date::format("%C", sys_days{jun/1/-1999});
+     assert(os.str() == "-20");
+ 
+     os.str("");
+-    os << format("%C", sys_days{jun/1/-2000});
++    os << date::format("%C", sys_days{jun/1/-2000});
+     assert(os.str() == "-20");
+ 
+     os.str("");
+-    os << format("%C", sys_days{jun/1/-2001});
++    os << date::format("%C", sys_days{jun/1/-2001});
+     assert(os.str() == "-21");
+ 
+     os.str("");
+-    os << format("%C", sys_days{jun/1/-19999});
++    os << date::format("%C", sys_days{jun/1/-19999});
+     assert(os.str() == "-200");
+ 
+     os.str("");
+-    os << format("%C", sys_days{jun/1/-20000});
++    os << date::format("%C", sys_days{jun/1/-20000});
+     assert(os.str() == "-200");
+ 
+     os.str("");
+-    os << format("%C", sys_days{jun/1/-20001});
++    os << date::format("%C", sys_days{jun/1/-20001});
+     assert(os.str() == "-201");
+ }
+diff --git a/test/date_test/format/misc.pass.cpp b/test/date_test/format/misc.pass.cpp
+index 06deb24..cfcea69 100644
+--- a/test/date_test/format/misc.pass.cpp
++++ b/test/date_test/format/misc.pass.cpp
+@@ -29,12 +29,11 @@ void
+ test(const std::string& in_fmt, const std::string& input,
+      const std::string& out_fmt, const std::string& output)
+ {
+-    using namespace date;
+     std::istringstream in{input};
+     T t;
+     in >> parse(in_fmt, t);
+     assert(!in.fail());
+-    auto s = format(out_fmt, t);
++    auto s = date::format(out_fmt, t);
+     assert(s == output);
+ }
+ 
+diff --git a/test/date_test/format/range.pass.cpp b/test/date_test/format/range.pass.cpp
+index fbe2d8c..f18dc14 100644
+--- a/test/date_test/format/range.pass.cpp
++++ b/test/date_test/format/range.pass.cpp
+@@ -40,39 +40,41 @@ main()
+     using namespace date;
+     using namespace std::chrono;
+     std::ostringstream os;
+-    os << format("%F %T", sys_days{jan/1/year::min()});
++    using date::year, date::last;
++
++    os << date::format("%F %T", sys_days{jan/1/year::min()});
+     assert(os.str() == "-32767-01-01 00:00:00");
+     os.str("");
+-    os << format("%F %T", sys_days{dec/last/year::max()});
++    os << date::format("%F %T", sys_days{dec/last/year::max()});
+     assert(os.str() == "32767-12-31 00:00:00");
+     os.str("");
+-    os << format("%F %T", sys_days{dec/last/year::max()} + hours{23} + minutes{59} +
++    os << date::format("%F %T", sys_days{dec/last/year::max()} + hours{23} + minutes{59} +
+                                                   seconds{59} + microseconds{999999});
+     assert(os.str() == "32767-12-31 23:59:59.999999");
+     os.str("");
+ 
+-    os << format("%Y-%m-%d %H:%M:%S", sys_days{jan/1/year::min()});
++    os << date::format("%Y-%m-%d %H:%M:%S", sys_days{jan/1/year::min()});
+     assert(os.str() == "-32767-01-01 00:00:00");
+     os.str("");
+-    os << format("%Y-%m-%d %H:%M:%S", sys_days{dec/last/year::max()});
++    os << date::format("%Y-%m-%d %H:%M:%S", sys_days{dec/last/year::max()});
+     assert(os.str() == "32767-12-31 00:00:00");
+     os.str("");
+-    os << format("%Y-%m-%d %H:%M:%S", sys_days{dec/last/year::max()} + hours{23} +
++    os << date::format("%Y-%m-%d %H:%M:%S", sys_days{dec/last/year::max()} + hours{23} +
+                                         minutes{59} + seconds{59} + microseconds{999999});
+     assert(os.str() == "32767-12-31 23:59:59.999999");
+     os.str("");
+ 
+-    os << format("%F %T", sys_days{jan/1/year::min()} + microfortnights{1});
++    os << date::format("%F %T", sys_days{jan/1/year::min()} + microfortnights{1});
+     assert(os.str() == "-32767-01-01 00:00:01.2096");
+     os.str("");
+-    os << format("%F %T", sys_days{dec/last/year::max()} + microfortnights{1});
++    os << date::format("%F %T", sys_days{dec/last/year::max()} + microfortnights{1});
+     assert(os.str() == "32767-12-31 00:00:01.2096");
+     os.str("");
+ 
+-    os << format("%F", jan/1/year::min());
++    os << date::format("%F", jan/1/year::min());
+     assert(os.str() == "-32767-01-01");
+     os.str("");
+-    os << format("%F", dec/last/year::max());
++    os << date::format("%F", dec/last/year::max());
+     assert(os.str() == "32767-12-31");
+     os.str("");
+ }
+diff --git a/test/date_test/format/two_dight_year.pass.cpp b/test/date_test/format/two_dight_year.pass.cpp
+index 3f615b3..c7642b7 100644
+--- a/test/date_test/format/two_dight_year.pass.cpp
++++ b/test/date_test/format/two_dight_year.pass.cpp
+@@ -32,90 +32,90 @@ main()
+     using namespace date;
+     using namespace std::chrono;
+     std::ostringstream os;
+-    os << format("%y", sys_days{jun/1/20001});
++    os << date::format("%y", sys_days{jun/1/20001});
+     assert(os.str() == "01");
+ 
+     os.str("");
+-    os << format("%y", sys_days{jun/1/20000});
++    os << date::format("%y", sys_days{jun/1/20000});
+     assert(os.str() == "00");
+ 
+     os.str("");
+-    os << format("%y", sys_days{jun/1/19999});
++    os << date::format("%y", sys_days{jun/1/19999});
+     assert(os.str() == "99");
+ 
+     os.str("");
+-    os << format("%y", sys_days{jun/1/2001});
++    os << date::format("%y", sys_days{jun/1/2001});
+     assert(os.str() == "01");
+ 
+     os.str("");
+-    os << format("%y", sys_days{jun/1/2000});
++    os << date::format("%y", sys_days{jun/1/2000});
+     assert(os.str() == "00");
+ 
+     os.str("");
+-    os << format("%y", sys_days{jun/1/1999});
++    os << date::format("%y", sys_days{jun/1/1999});
+     assert(os.str() == "99");
+ 
+     os.str("");
+-    os << format("%y", sys_days{jun/1/101});
++    os << date::format("%y", sys_days{jun/1/101});
+     assert(os.str() == "01");
+ 
+     os.str("");
+-    os << format("%y", sys_days{jun/1/100});
++    os << date::format("%y", sys_days{jun/1/100});
+     assert(os.str() == "00");
+ 
+     os.str("");
+-    os << format("%y", sys_days{jun/1/99});
++    os << date::format("%y", sys_days{jun/1/99});
+     assert(os.str() == "99");
+ 
+     os.str("");
+-    os << format("%y", sys_days{jun/1/1});
++    os << date::format("%y", sys_days{jun/1/1});
+     assert(os.str() == "01");
+ 
+     os.str("");
+-    os << format("%y", sys_days{jun/1/0});
++    os << date::format("%y", sys_days{jun/1/0});
+     assert(os.str() == "00");
+ 
+     os.str("");
+-    os << format("%y", sys_days{jun/1/-1});
++    os << date::format("%y", sys_days{jun/1/-1});
+     assert(os.str() == "01");
+ 
+     os.str("");
+-    os << format("%y", sys_days{jun/1/-99});
++    os << date::format("%y", sys_days{jun/1/-99});
+     assert(os.str() == "99");
+ 
+     os.str("");
+-    os << format("%y", sys_days{jun/1/-100});
++    os << date::format("%y", sys_days{jun/1/-100});
+     assert(os.str() == "00");
+ 
+     os.str("");
+-    os << format("%y", sys_days{jun/1/-101});
++    os << date::format("%y", sys_days{jun/1/-101});
+     assert(os.str() == "01");
+ 
+     os.str("");
+-    os << format("%y", sys_days{jun/1/-1999});
++    os << date::format("%y", sys_days{jun/1/-1999});
+     assert(os.str() == "99");
+ 
+     os.str("");
+-    os << format("%y", sys_days{jun/1/-2000});
++    os << date::format("%y", sys_days{jun/1/-2000});
+     assert(os.str() == "00");
+ 
+     os.str("");
+-    os << format("%y", sys_days{jun/1/-2001});
++    os << date::format("%y", sys_days{jun/1/-2001});
+     assert(os.str() == "01");
+ 
+     os.str("");
+-    os << format("%y", sys_days{jun/1/-19999});
++    os << date::format("%y", sys_days{jun/1/-19999});
+     assert(os.str() == "99");
+ 
+     os.str("");
+-    os << format("%y", sys_days{jun/1/-20000});
++    os << date::format("%y", sys_days{jun/1/-20000});
+     assert(os.str() == "00");
+ 
+     os.str("");
+-    os << format("%y", sys_days{jun/1/-20001});
++    os << date::format("%y", sys_days{jun/1/-20001});
+     assert(os.str() == "01");
+ 
+     os.str("");
+-    os << format("%y", sys_days{jun/1/year::min()});
++    os << date::format("%y", sys_days{jun/1/date::year::min()});
+     assert(os.str() == "67");
+ }
+diff --git a/test/date_test/multi_year_duration_addition.pass.cpp b/test/date_test/multi_year_duration_addition.pass.cpp
+index 4100615..c0a8cf9 100644
+--- a/test/date_test/multi_year_duration_addition.pass.cpp
++++ b/test/date_test/multi_year_duration_addition.pass.cpp
+@@ -84,9 +84,10 @@ main()
+     constexpr ConvertibleToYears custom_year;
+     constexpr ConvertibleToYearsAndMonths prefer_year;
+ 
++    using date::last;
+ 
+     {
+-       constexpr year_month ym = 2001_y/feb;
++       constexpr date::year_month ym = 2001_y/feb;
+        CPP14_ASSERT(ym + one_month == 2001_y/mar);
+        NOEXCEPT_ASSERT(ym + one_month);
+        CPP14_ASSERT(one_month + ym == 2001_y/mar);
+@@ -166,7 +167,7 @@ main()
+     }
+ 
+     {
+-       constexpr year_month_day ym = 2001_y/feb/10;
++       constexpr date::year_month_day ym = 2001_y/feb/10;
+        CPP14_ASSERT(ym + one_month == 2001_y/mar/10);
+        NOEXCEPT_ASSERT(ym + one_month);
+        CPP14_ASSERT(one_month + ym == 2001_y/mar/10);
+@@ -246,7 +247,7 @@ main()
+     }
+ 
+     {
+-       constexpr year_month_day_last ym = 2001_y/feb/last;
++       constexpr date::year_month_day_last ym = 2001_y/feb/last;
+        CPP14_ASSERT(ym + one_month == 2001_y/mar/last);
+        NOEXCEPT_ASSERT(ym + one_month);
+        CPP14_ASSERT(one_month + ym == 2001_y/mar/last);
+@@ -326,7 +327,7 @@ main()
+     }
+ 
+     {
+-       constexpr year_month_weekday ym = 2001_y/feb/fri[4];
++       constexpr date::year_month_weekday ym = 2001_y/feb/fri[4];
+        CPP14_ASSERT(ym + one_month == 2001_y/mar/fri[4]);
+        NOEXCEPT_ASSERT(ym + one_month);
+        CPP14_ASSERT(one_month + ym == 2001_y/mar/fri[4]);
+@@ -406,7 +407,7 @@ main()
+     }
+ 
+     {
+-       constexpr year_month_weekday_last ym = 2001_y/feb/fri[last];
++       constexpr date::year_month_weekday_last ym = 2001_y/feb/fri[last];
+        CPP14_ASSERT(ym + one_month == 2001_y/mar/fri[last]);
+        NOEXCEPT_ASSERT(ym + one_month);
+        CPP14_ASSERT(one_month + ym == 2001_y/mar/fri[last]);
+diff --git a/test/date_test/parse.pass.cpp b/test/date_test/parse.pass.cpp
+index a7fecfd..13ca909 100644
+--- a/test/date_test/parse.pass.cpp
++++ b/test/date_test/parse.pass.cpp
+@@ -390,6 +390,7 @@ test_F()
+ {
+     using namespace date;
+     using namespace std::chrono;
++    using date::year_month_day;
+     {
+         std::istringstream in{"2016-12-13"};
+         sys_days tp;
+@@ -400,7 +401,7 @@ test_F()
+     }
+     {
+         std::istringstream in{"2016-12-13"};
+-        year_month_day tp;
++        year_month_day tp{};
+         in >> parse("%F", tp);
+         assert(!in.fail());
+         assert(!in.bad());
+@@ -413,6 +414,7 @@ test_H()
+ {
+     using namespace date;
+     using namespace std::chrono;
++    using date::sys_time;
+     {
+         std::istringstream in{"2016-12-11 15"};
+         sys_time<hours> tp;
+@@ -434,6 +436,7 @@ test_Ip()
+ {
+     using namespace date;
+     using namespace std::chrono;
++    using date::sys_time;
+     {
+         std::istringstream in{"2016-12-11 1 pm"};
+         sys_time<hours> tp;
+@@ -507,6 +510,7 @@ test_M()
+ {
+     using namespace date;
+     using namespace std::chrono;
++    using date::sys_time;
+     {
+         std::istringstream in{"2016-12-11 15"};
+         sys_time<minutes> tp;
+@@ -528,6 +532,7 @@ test_S()
+ {
+     using namespace date;
+     using namespace std::chrono;
++    using date::sys_time;
+     {
+         std::istringstream in{"2016-12-11 15"};
+         sys_seconds tp;
+@@ -557,6 +562,7 @@ test_T()
+ {
+     using namespace date;
+     using namespace std::chrono;
++    using date::sys_time;
+     {
+         std::istringstream in{"2016-12-11 15:43:22"};
+         sys_seconds tp;
+@@ -615,6 +621,7 @@ test_p()
+ {
+     using namespace date;
+     using namespace std::chrono;
++    using date::sys_time;
+     {
+         std::istringstream in{"2016-12-11 11pm"};
+         sys_time<hours> tp;
+@@ -744,6 +751,7 @@ test_z()
+ {
+     using namespace date;
+     using namespace std::chrono;
++    using date::local_seconds, date::local_days;
+     {
+         std::istringstream in{"2016-12-26 15:53:22 -0500"};
+         sys_seconds tp;
+@@ -775,6 +783,7 @@ test_Z()
+ {
+     using namespace date;
+     using namespace std::chrono;
++    using date::local_seconds, date::local_days;
+     {
+         std::string a;
+         std::istringstream in{"2016-12-26 15:53:22 word"};
+diff --git a/test/date_test/time_of_day_hours.pass.cpp b/test/date_test/time_of_day_hours.pass.cpp
+index 5b12429..8b03a79 100644
+--- a/test/date_test/time_of_day_hours.pass.cpp
++++ b/test/date_test/time_of_day_hours.pass.cpp
+@@ -79,16 +79,16 @@ main()
+     static_assert(t1.to_duration() == hours{13}, "");
+ #endif
+ 
+-    auto t2 = t1;
++    const auto t2 = t1;
+     assert(t2.hours() == t1.hours());
+     assert(t2.to_duration() == t1.to_duration());
+     ostringstream os;
+     os << t2;
+     assert(os.str() == "13:00:00");
+-    auto h = make12(t2.hours());
++    auto h = date::make12(t2.hours());
+     os.str("");
+     assert(h == hours{1});
+     assert(t2.to_duration() == t1.to_duration());
+-    assert(!is_am(t2.hours()));
+-    assert(is_pm(t2.hours()));
++    assert(!date::is_am(t2.hours()));
++    assert(date::is_pm(t2.hours()));
+ }
+diff --git a/test/date_test/year.pass.cpp b/test/date_test/year.pass.cpp
+index 585a245..eb411b9 100644
+--- a/test/date_test/year.pass.cpp
++++ b/test/date_test/year.pass.cpp
+@@ -90,6 +90,7 @@ main()
+ {
+     using namespace date;
+     using namespace std::chrono;
++    using date::year;
+ 
+     static_assert(year{2015} == 2015_y, "");
+     static_assert(year{2015} != 2016_y, "");
+diff --git a/test/date_test/year_month.pass.cpp b/test/date_test/year_month.pass.cpp
+index 44954c9..0688a0f 100644
+--- a/test/date_test/year_month.pass.cpp
++++ b/test/date_test/year_month.pass.cpp
+@@ -75,6 +75,9 @@ test_arithmetic()
+ {
+     using namespace date;
+     using namespace std::chrono;
++    using date::year_month;
++    using date::year;
++    using date::month;
+ 
+     for (int y1 = 2010; y1 <= 2015; ++y1)
+     {
+@@ -114,6 +117,7 @@ void test_arithemtic_not_ok()
+ {
+   using namespace date;
+   using namespace std::chrono;
++  using date::year_month, date::month;
+ 
+   year_month ym{2018_y, month{14}};
+ 
+diff --git a/test/iso_week/year.pass.cpp b/test/iso_week/year.pass.cpp
+index c62b170..3e44369 100644
+--- a/test/iso_week/year.pass.cpp
++++ b/test/iso_week/year.pass.cpp
+@@ -83,6 +83,7 @@ int
+ main()
+ {
+     using namespace iso_week;
++    using iso_week::year;
+ 
+     static_assert(year{2015} == 2015_y, "");
+     static_assert(int{year{2015}} == 2015, "");
+diff --git a/test/posix/ptz.pass.cpp b/test/posix/ptz.pass.cpp
+index c17d28a..dd8a398 100644
+--- a/test/posix/ptz.pass.cpp
++++ b/test/posix/ptz.pass.cpp
+@@ -50,6 +50,7 @@ main()
+     using namespace date;
+     using namespace std;
+     using namespace std::chrono;
++    using date::local_days, date::Sunday, date::last;
+ 
+     auto tzi = locate_zone("Australia/Sydney");
+     Posix::time_zone tzp{"AEST-10AEDT,M10.1.0,M4.1.0/3"};
+diff --git a/test/tz_test/OffsetZone.h b/test/tz_test/OffsetZone.h
+index bacb03c..8e71e24 100644
+--- a/test/tz_test/OffsetZone.h
++++ b/test/tz_test/OffsetZone.h
+@@ -42,7 +42,7 @@ public:
+         {
+             using namespace date;
+             using namespace std::chrono;
+-            using LT = local_time<std::common_type_t<Duration, minutes>>;
++            using LT = date::local_time<std::common_type_t<Duration, minutes>>;
+             return LT{(tp + offset_).time_since_epoch()};
+         }
+ 
+@@ -52,7 +52,7 @@ public:
+         {
+             using namespace date;
+             using namespace std::chrono;
+-            using ST = sys_time<std::common_type_t<Duration, minutes>>;
++            using ST = date::sys_time<std::common_type_t<Duration, minutes>>;
+             return ST{(tp - offset_).time_since_epoch()};
+         }
+ 
+diff --git a/test/tz_test/validate.cpp b/test/tz_test/validate.cpp
+index 2202b37..7f914e0 100644
+--- a/test/tz_test/validate.cpp
++++ b/test/tz_test/validate.cpp
+@@ -9,7 +9,7 @@ test_info(const date::time_zone* zone, const date::sys_info& info)
+     auto begin = info.begin;
+     auto end = info.end - microseconds{1};
+     auto mid = begin + (end - begin) /2;
+-    using sys_microseconds = sys_time<microseconds>;
++    using sys_microseconds = date::sys_time<microseconds>;
+     using zoned_microseconds = zoned_time<microseconds>;
+     zoned_microseconds local{zone};
+ 
+@@ -106,7 +106,7 @@ tzmain()
+     {
+         std::cout << name << '\n';
+         auto z = locate_zone(name);
+-        auto begin = sys_days(jan/1/year::min()) + seconds{0};
++        auto begin = sys_days(jan/1/date::year::min()) + seconds{0};
+         auto end   = sys_days(jan/1/2035) + seconds{0};
+         auto info = z->get_info(begin);
+         std::cout << "Initially:           ";
+@@ -130,7 +130,7 @@ tzmain()
+                     info.save == prev_save)
+                 continue;
+             auto dp = floor<days>(begin);
+-            auto ymd = year_month_day(dp);
++            auto ymd = date::year_month_day(dp);
+             auto time = make_time(begin - dp);
+             std::cout << ymd << ' ' << time << "Z ";
+             if (info.offset >= seconds{0})
+diff --git a/test/tz_test/zoned_time.pass.cpp b/test/tz_test/zoned_time.pass.cpp
+index cada23c..92c0874 100644
+--- a/test/tz_test/zoned_time.pass.cpp
++++ b/test/tz_test/zoned_time.pass.cpp
+@@ -108,6 +108,7 @@ main()
+     using namespace std;
+     using namespace std::chrono;
+     using namespace date;
++    using date::sys_time, date::local_days, date::local_seconds;
+     static_assert( is_nothrow_destructible<zoned_seconds>{}, "");
+     static_assert( is_default_constructible<zoned_seconds>{}, "");
+     static_assert( is_nothrow_copy_constructible<zoned_seconds>{}, "");
+diff --git a/test/tz_test/zoned_time_deduction.pass.cpp b/test/tz_test/zoned_time_deduction.pass.cpp
+index 6398bcd..7935d17 100644
+--- a/test/tz_test/zoned_time_deduction.pass.cpp
++++ b/test/tz_test/zoned_time_deduction.pass.cpp
+@@ -34,6 +34,7 @@ void testDeductionFrom(Source&& s)
+ {
+     using namespace date;
+     using namespace std::chrono;
++    using date::sys_time, date::local_days, date::local_time;
+ 
+     // No time point
+     {
+@@ -148,6 +149,7 @@ main()
+ {
+     using namespace date;
+     using namespace std::chrono;
++    using date::sys_time, date::local_days, date::local_time;
+ 
+ #if HAS_DEDUCTION_GUIDES
+     //  no arguments
+-- 
+2.39.5
+

@@ -23,10 +23,33 @@
 #include <Windows.h>
 #endif
 
+// Types wrapping either std::chrono standardized types since C++20
+// or types from https://github.com/HowardHinnant/date
+
+#if !defined(DATE_IS_CXX20) // use std::chrono C++20
+
+#define USE_OS_TZDB 1
+
+#if defined(DATE_HAS_STRINGVIEW)
+#define HAS_STRING_VIEW 1
+#else // !defined(DATE_HAS_STRINGVIEW)
+#define HAS_STRING_VIEW 0
+#endif // defined(DATE_HAS_STRINGVIEW)
+
+#define HAS_REMOTE_API 0
+#include <date/date.h>
+#include <date/iso_week.h>
+#include <date/tz.h>
+
+#endif // !defined(DATE_IS_CXX20)
+
 namespace KODI
 {
 namespace TIME
 {
+
+// For backward compatibility with CArchive
+
 struct SystemTime
 {
   unsigned short year;
@@ -39,30 +62,112 @@ struct SystemTime
   unsigned short milliseconds;
 };
 
-struct TimeZoneInformation
+// Duration and timepoint
+
+using Duration = std::chrono::duration<std::int64_t, std::ratio<1, 10'000'000>>;
+using TimePoint = std::chrono::time_point<std::chrono::system_clock, Duration>;
+
+// Types wrapping either std::chrono standardized types since C++20
+// or types from https://github.com/HowardHinnant/date
+
+#if defined(DATE_IS_CXX20) // use std::chrono C++20
+
+#include <format>
+
+// clang-format off
+
+using days           = std::chrono::days;
+using local_days     = std::chrono::local_days;
+using month          = std::chrono::month;
+using sys_days       = std::chrono::sys_days;
+using sys_seconds    = std::chrono::sys_seconds;
+using year           = std::chrono::year;
+using year_month_day = std::chrono::year_month_day;
+using weekday        = std::chrono::weekday;
+
+using std::chrono::current_zone;
+using std::chrono::floor;
+using std::format;
+
+// clang-format on
+
+#if defined(_MSC_VER) && (!defined(__clang__) || (_MSC_VER < 1910))
+// MSVC
+#if _MSC_VER < 1910
+//   before VS2017
+#define CONSTCD11
+#else
+//   VS2017 and later
+#define CONSTCD11 constexpr
+#endif
+
+#elif defined(__SUNPRO_CC) && __SUNPRO_CC <= 0x5150
+// Oracle Developer Studio 12.6 and earlier
+#define CONSTCD11 constexpr
+
+#elif __cplusplus >= 201402
+// C++14
+#define CONSTCD11 constexpr
+#else
+// C++11
+#define CONSTCD11 constexpr
+#endif
+
+template<class Rep, class Period>
+CONSTCD11 inline std::chrono::hh_mm_ss<std::chrono::duration<Rep, Period>> make_time(
+    const std::chrono::duration<Rep, Period>& d)
 {
-  long bias;
-  std::string standardName;
-  SystemTime standardDate;
-  long standardBias;
-  std::string daylightName;
-  SystemTime daylightDate;
-  long daylightBias;
-};
+  return std::chrono::hh_mm_ss<std::chrono::duration<Rep, Period>>(d);
+}
 
-constexpr int KODI_TIME_ZONE_ID_INVALID{-1};
-constexpr int KODI_TIME_ZONE_ID_UNKNOWN{0};
-constexpr int KODI_TIME_ZONE_ID_STANDARD{1};
-constexpr int KODI_TIME_ZONE_ID_DAYLIGHT{2};
-
-struct FileTime
+template<class Duration,
+         class TimeZonePtr
+#if !defined(_MSC_VER) || (_MSC_VER > 1916)
+#if !defined(__INTEL_COMPILER) || (__INTEL_COMPILER > 1600)
+         ,
+         class = typename std::enable_if<std::is_class<
+             typename std::decay<decltype(*std::declval<TimeZonePtr&>())>::type>{}>::type
+#endif
+#endif
+         >
+inline std::chrono::zoned_time<typename std::common_type<Duration, std::chrono::seconds>::type,
+                               TimeZonePtr>
+make_zoned(TimeZonePtr zone, const std::chrono::sys_time<Duration>& st)
 {
-  unsigned int lowDateTime;
-  unsigned int highDateTime;
-};
+  return std::chrono::zoned_time<typename std::common_type<Duration, std::chrono::seconds>::type,
+                                 TimeZonePtr>(std::move(zone), st);
+}
 
-void GetLocalTime(SystemTime* systemTime);
-uint32_t GetTimeZoneInformation(TimeZoneInformation* timeZoneInformation);
+template<class Duration>
+inline std::chrono::zoned_time<typename std::common_type<Duration, std::chrono::seconds>::type>
+make_zoned(const std::string& name, const std::chrono::sys_time<Duration>& st)
+{
+  return std::chrono::zoned_time<typename std::common_type<Duration, std::chrono::seconds>::type>(
+      name, st);
+}
+
+#else // !defined(DATE_IS_CXX20)
+
+// clang-format off
+
+using days           = ::date::days;
+using local_days     = ::date::local_days;
+using month          = ::date::month;
+using sys_days       = ::date::sys_days;
+using sys_seconds    = ::date::sys_seconds;
+using year           = ::date::year;
+using year_month_day = ::date::year_month_day;
+using weekday        = ::date::weekday;
+
+using ::date::current_zone;
+using ::date::floor;
+using ::date::format;
+using ::date::make_time;
+using ::date::make_zoned;
+
+// clang-format on
+
+#endif // defined(DATE_IS_CXX20)
 
 template<typename Rep, typename Period>
 void Sleep(std::chrono::duration<Rep, Period> duration)
@@ -76,13 +181,5 @@ void Sleep(std::chrono::duration<Rep, Period> duration)
   std::this_thread::sleep_for(duration);
 }
 
-int FileTimeToLocalFileTime(const FileTime* fileTime, FileTime* localFileTime);
-int SystemTimeToFileTime(const SystemTime* systemTime, FileTime* fileTime);
-long CompareFileTime(const FileTime* fileTime1, const FileTime* fileTime2);
-int FileTimeToSystemTime(const FileTime* fileTime, SystemTime* systemTime);
-int LocalFileTimeToFileTime(const FileTime* LocalFileTime, FileTime* fileTime);
-
-int FileTimeToTimeT(const FileTime* localFileTime, time_t* pTimeT);
-int TimeTToFileTime(time_t timeT, FileTime* localFileTime);
 } // namespace TIME
 } // namespace KODI

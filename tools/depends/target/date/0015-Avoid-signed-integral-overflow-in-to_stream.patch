@@ -1,0 +1,48 @@
+From e1aa4837e0adb6b426672a87fcd85690d6600531 Mon Sep 17 00:00:00 2001
+From: Howard Hinnant <howard.hinnant@gmail.com>
+Date: Tue, 31 Aug 2021 17:42:18 -0400
+Subject: [PATCH 15/50] Avoid signed integral overflow in to_stream Fixes: #696
+
+---
+ include/date/date.h | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
+
+diff --git a/include/date/date.h b/include/date/date.h
+index bb226ca..3b8b461 100644
+--- a/include/date/date.h
++++ b/include/date/date.h
+@@ -6213,8 +6213,13 @@ to_stream(std::basic_ostream<CharT, Traits>& os, const CharT* fmt,
+           const std::chrono::seconds* offset_sec = nullptr)
+ {
+     using CT = typename std::common_type<Duration, std::chrono::seconds>::type;
+-    auto ld = floor<days>(tp);
+-    fields<CT> fds{year_month_day{ld}, hh_mm_ss<CT>{tp-local_seconds{ld}}};
++    auto ld = std::chrono::time_point_cast<days>(tp);
++    fields<CT> fds;
++    if (ld <= tp)
++        fds = fields<CT>{year_month_day{ld}, hh_mm_ss<CT>{tp-local_seconds{ld}}};
++    else
++        fds = fields<CT>{year_month_day{ld - days{1}},
++                         hh_mm_ss<CT>{days{1} - (local_seconds{ld} - tp)}};
+     return to_stream(os, fmt, fds, abbrev, offset_sec);
+ }
+ 
+@@ -6227,8 +6232,13 @@ to_stream(std::basic_ostream<CharT, Traits>& os, const CharT* fmt,
+     using CT = typename std::common_type<Duration, seconds>::type;
+     const std::string abbrev("UTC");
+     CONSTDATA seconds offset{0};
+-    auto sd = floor<days>(tp);
+-    fields<CT> fds{year_month_day{sd}, hh_mm_ss<CT>{tp-sys_seconds{sd}}};
++    auto sd = std::chrono::time_point_cast<days>(tp);
++    fields<CT> fds;
++    if (sd <= tp)
++        fds = fields<CT>{year_month_day{sd}, hh_mm_ss<CT>{tp-sys_seconds{sd}}};
++    else
++        fds = fields<CT>{year_month_day{sd - days{1}},
++                         hh_mm_ss<CT>{days{1} - (sys_seconds{sd} - tp)}};
+     return to_stream(os, fmt, fds, &abbrev, &offset);
+ }
+ 
+-- 
+2.39.5
+

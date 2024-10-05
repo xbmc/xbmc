@@ -1,0 +1,27 @@
+From ab37c362e35267d6dee02cb47760f9e9c669d3be Mon Sep 17 00:00:00 2001
+From: Howard Hinnant <howard.hinnant@gmail.com>
+Date: Mon, 11 Dec 2023 21:33:25 -0500
+Subject: [PATCH 37/50] Count sign as part of the character count.
+
+---
+ include/date/date.h | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/include/date/date.h b/include/date/date.h
+index cbfbc98..959cd5c 100644
+--- a/include/date/date.h
++++ b/include/date/date.h
+@@ -6351,7 +6351,10 @@ read_signed(std::basic_istream<CharT, Traits>& is, unsigned m = 1, unsigned M =
+         if (('0' <= c && c <= '9') || c == '-' || c == '+')
+         {
+             if (c == '-' || c == '+')
++            {
+                 (void)is.get();
++                --M;
++            }
+             auto x = static_cast<int>(read_unsigned(is, std::max(m, 1u), M));
+             if (!is.fail())
+             {
+-- 
+2.39.5
+

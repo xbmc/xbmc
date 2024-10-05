@@ -1,0 +1,31 @@
+From 575fc23c3c9750929ccce65956857ad064443755 Mon Sep 17 00:00:00 2001
+From: Howard Hinnant <howard.hinnant@gmail.com>
+Date: Mon, 15 Apr 2024 10:00:21 -0400
+Subject: [PATCH 41/50] Restrict mention of -Wstringop-overflow to gcc >= 11
+
+---
+ include/date/date.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/date/date.h b/include/date/date.h
+index 38b5d9b..f21970e 100644
+--- a/include/date/date.h
++++ b/include/date/date.h
+@@ -6527,12 +6527,12 @@ read(std::basic_istream<CharT, Traits>& is, int a0, Args&& ...args)
+             *e++ = static_cast<CharT>(CharT(u % 10) + CharT{'0'});
+             u /= 10;
+         } while (u > 0);
+-#ifdef __GNUC__
++#if defined(__GNUC__) && __GNUC__ >= 11
+ #pragma GCC diagnostic push
+ #pragma GCC diagnostic ignored "-Wstringop-overflow"
+ #endif
+         std::reverse(buf, e);
+-#ifdef __GNUC__
++#if defined(__GNUC__) && __GNUC__ >= 11
+ #pragma GCC diagnostic pop
+ #endif
+         for (auto p = buf; p != e && is.rdstate() == std::ios::goodbit; ++p)
+-- 
+2.39.5
+

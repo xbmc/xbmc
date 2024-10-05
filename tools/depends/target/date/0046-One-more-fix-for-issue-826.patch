@@ -1,0 +1,26 @@
+From 706b1286e84de5f45d85443d89e37f5e772d8001 Mon Sep 17 00:00:00 2001
+From: Howard Hinnant <howard.hinnant@gmail.com>
+Date: Fri, 10 May 2024 16:44:22 -0400
+Subject: [PATCH 46/50] One more fix for issue #826
+
+---
+ src/tz.cpp | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/src/tz.cpp b/src/tz.cpp
+index 8231797..5191521 100644
+--- a/src/tz.cpp
++++ b/src/tz.cpp
+@@ -2704,7 +2704,8 @@ operator<<(std::ostream& os, const time_zone& z)
+         os.width(8);
+         os << s.format_ << "   ";
+         os << s.until_year_ << ' ' << s.until_date_;
+-        os << "   " << s.until_utc_ << " UTC";
++        os << "   ";
++        date::operator<<(os, s.until_utc_) << " UTC";
+         os << "   " << s.until_std_ << " STD";
+         os << "   " << s.until_loc_;
+         os << "   " << make_time(s.initial_save_);
+-- 
+2.39.5
+

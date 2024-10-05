@@ -128,7 +128,6 @@ CScraper::CScraper(const AddonInfoPtr& addonInfo, AddonType addonType)
 {
   m_requiressettings = addonInfo->Type(addonType)->GetValue("@requiressettings").asBoolean();
 
-  CDateTimeSpan persistence;
   std::string tmp = addonInfo->Type(addonType)->GetValue("@cachepersistence").asString();
   if (!tmp.empty())
     m_persistence.SetFromTimeString(tmp);

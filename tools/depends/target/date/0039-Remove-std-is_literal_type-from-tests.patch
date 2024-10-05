@@ -1,0 +1,129 @@
+From 88a3b1512661decb78c60841f819a14eb200423c Mon Sep 17 00:00:00 2001
+From: Howard Hinnant <howard.hinnant@gmail.com>
+Date: Tue, 19 Dec 2023 10:16:52 -0500
+Subject: [PATCH 39/50] Remove std::is_literal_type from tests.
+
+* It was deprecated in C++17 and removed in C++20
+---
+ test/iso_week/lastweek_weekday.pass.cpp      | 1 -
+ test/iso_week/weekday.pass.cpp               | 1 -
+ test/iso_week/weeknum.pass.cpp               | 1 -
+ test/iso_week/weeknum_weekday.pass.cpp       | 1 -
+ test/iso_week/year.pass.cpp                  | 1 -
+ test/iso_week/year_lastweek.pass.cpp         | 1 -
+ test/iso_week/year_lastweek_weekday.pass.cpp | 1 -
+ test/iso_week/year_weeknum.pass.cpp          | 1 -
+ test/iso_week/year_weeknum_weekday.pass.cpp  | 1 -
+ 9 files changed, 9 deletions(-)
+
+diff --git a/test/iso_week/lastweek_weekday.pass.cpp b/test/iso_week/lastweek_weekday.pass.cpp
+index 3ffbb25..39156a6 100644
+--- a/test/iso_week/lastweek_weekday.pass.cpp
++++ b/test/iso_week/lastweek_weekday.pass.cpp
+@@ -56,7 +56,6 @@ static_assert( std::is_trivially_move_assignable<iso_week::lastweek_weekday>{},
+ 
+ static_assert(std::is_trivially_copyable<iso_week::lastweek_weekday>{}, "");
+ static_assert(std::is_standard_layout<iso_week::lastweek_weekday>{}, "");
+-static_assert(std::is_literal_type<iso_week::lastweek_weekday>{}, "");
+ 
+ static_assert( std::is_nothrow_constructible<iso_week::lastweek_weekday,
+                                                  iso_week::weekday>{}, "");
+diff --git a/test/iso_week/weekday.pass.cpp b/test/iso_week/weekday.pass.cpp
+index 25b3545..c3d4dfa 100644
+--- a/test/iso_week/weekday.pass.cpp
++++ b/test/iso_week/weekday.pass.cpp
+@@ -82,7 +82,6 @@ static_assert( std::is_trivially_move_assignable<iso_week::weekday>{}, "");
+ 
+ static_assert(std::is_trivially_copyable<iso_week::weekday>{}, "");
+ static_assert(std::is_standard_layout<iso_week::weekday>{}, "");
+-static_assert(std::is_literal_type<iso_week::weekday>{}, "");
+ 
+ static_assert( std::is_nothrow_constructible<iso_week::weekday, unsigned>{}, "");
+ static_assert( std::is_nothrow_constructible<iso_week::weekday, iso_week::sys_days>{}, "");
+diff --git a/test/iso_week/weeknum.pass.cpp b/test/iso_week/weeknum.pass.cpp
+index 5e60d77..5d9e809 100644
+--- a/test/iso_week/weeknum.pass.cpp
++++ b/test/iso_week/weeknum.pass.cpp
+@@ -70,7 +70,6 @@ static_assert( std::is_trivially_move_assignable<iso_week::weeknum>{}, "");
+ 
+ static_assert(std::is_trivially_copyable<iso_week::weeknum>{}, "");
+ static_assert(std::is_standard_layout<iso_week::weeknum>{}, "");
+-static_assert(std::is_literal_type<iso_week::weeknum>{}, "");
+ 
+ static_assert( std::is_nothrow_constructible<iso_week::weeknum, unsigned>{}, "");
+ static_assert(!std::is_convertible<unsigned, iso_week::weeknum>{}, "");
+diff --git a/test/iso_week/weeknum_weekday.pass.cpp b/test/iso_week/weeknum_weekday.pass.cpp
+index c02c093..e275e6a 100644
+--- a/test/iso_week/weeknum_weekday.pass.cpp
++++ b/test/iso_week/weeknum_weekday.pass.cpp
+@@ -59,7 +59,6 @@ static_assert( std::is_trivially_move_assignable<iso_week::weeknum_weekday>{}, "
+ 
+ static_assert(std::is_trivially_copyable<iso_week::weeknum_weekday>{}, "");
+ static_assert(std::is_standard_layout<iso_week::weeknum_weekday>{}, "");
+-static_assert(std::is_literal_type<iso_week::weeknum_weekday>{}, "");
+ 
+ static_assert( std::is_nothrow_constructible<iso_week::weeknum_weekday,
+                                                  iso_week::weeknum,
+diff --git a/test/iso_week/year.pass.cpp b/test/iso_week/year.pass.cpp
+index e554ee9..c62b170 100644
+--- a/test/iso_week/year.pass.cpp
++++ b/test/iso_week/year.pass.cpp
+@@ -72,7 +72,6 @@ static_assert( std::is_trivially_move_assignable<iso_week::year>{}, "");
+ 
+ static_assert(std::is_trivially_copyable<iso_week::year>{}, "");
+ static_assert(std::is_standard_layout<iso_week::year>{}, "");
+-static_assert(std::is_literal_type<iso_week::year>{}, "");
+ 
+ static_assert( std::is_nothrow_constructible<iso_week::year, int>{}, "");
+ static_assert(!std::is_convertible<int, iso_week::year>{}, "");
+diff --git a/test/iso_week/year_lastweek.pass.cpp b/test/iso_week/year_lastweek.pass.cpp
+index 8874472..60486bb 100644
+--- a/test/iso_week/year_lastweek.pass.cpp
++++ b/test/iso_week/year_lastweek.pass.cpp
+@@ -64,7 +64,6 @@ static_assert( std::is_trivially_move_assignable<iso_week::year_lastweek>{}, "")
+ 
+ static_assert(std::is_trivially_copyable<iso_week::year_lastweek>{}, "");
+ static_assert(std::is_standard_layout<iso_week::year_lastweek>{}, "");
+-static_assert(std::is_literal_type<iso_week::year_lastweek>{}, "");
+ 
+ static_assert(std::is_nothrow_constructible<iso_week::year_lastweek,
+                                                 iso_week::year>{}, "");
+diff --git a/test/iso_week/year_lastweek_weekday.pass.cpp b/test/iso_week/year_lastweek_weekday.pass.cpp
+index 5f65f6f..1cdc3ee 100644
+--- a/test/iso_week/year_lastweek_weekday.pass.cpp
++++ b/test/iso_week/year_lastweek_weekday.pass.cpp
+@@ -65,7 +65,6 @@ static_assert( std::is_trivially_move_assignable<iso_week::year_lastweek_weekday
+ 
+ static_assert(std::is_trivially_copyable<iso_week::year_lastweek_weekday>{}, "");
+ static_assert(std::is_standard_layout<iso_week::year_lastweek_weekday>{}, "");
+-static_assert(std::is_literal_type<iso_week::year_lastweek_weekday>{}, "");
+ 
+ static_assert( std::is_nothrow_constructible<iso_week::year_lastweek_weekday,
+                                                  iso_week::year, iso_week::weekday>{}, "");
+diff --git a/test/iso_week/year_weeknum.pass.cpp b/test/iso_week/year_weeknum.pass.cpp
+index 6e9d4b6..08d495b 100644
+--- a/test/iso_week/year_weeknum.pass.cpp
++++ b/test/iso_week/year_weeknum.pass.cpp
+@@ -65,7 +65,6 @@ static_assert( std::is_trivially_move_assignable<iso_week::year_weeknum>{}, "");
+ 
+ static_assert(std::is_trivially_copyable<iso_week::year_weeknum>{}, "");
+ static_assert(std::is_standard_layout<iso_week::year_weeknum>{}, "");
+-static_assert(std::is_literal_type<iso_week::year_weeknum>{}, "");
+ 
+ static_assert( std::is_nothrow_constructible<iso_week::year_weeknum,
+                                                  iso_week::year,
+diff --git a/test/iso_week/year_weeknum_weekday.pass.cpp b/test/iso_week/year_weeknum_weekday.pass.cpp
+index 0540f97..8ca1c79 100644
+--- a/test/iso_week/year_weeknum_weekday.pass.cpp
++++ b/test/iso_week/year_weeknum_weekday.pass.cpp
+@@ -69,7 +69,6 @@ static_assert( std::is_trivially_move_assignable<iso_week::year_weeknum_weekday>
+ 
+ static_assert(std::is_trivially_copyable<iso_week::year_weeknum_weekday>{}, "");
+ static_assert(std::is_standard_layout<iso_week::year_weeknum_weekday>{}, "");
+-static_assert(std::is_literal_type<iso_week::year_weeknum_weekday>{}, "");
+ 
+ static_assert( std::is_nothrow_constructible<iso_week::year_weeknum_weekday,
+                                                  iso_week::year, iso_week::weeknum,
+-- 
+2.39.5
+

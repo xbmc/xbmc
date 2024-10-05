@@ -1,0 +1,31 @@
+From d57d764707050fa85fc3a6f824c666ed4550b1b4 Mon Sep 17 00:00:00 2001
+From: Howard Hinnant <howard.hinnant@gmail.com>
+Date: Sun, 25 Jul 2021 23:08:53 -0400
+Subject: [PATCH 12/50] Round when parsing seconds instead of duration_cast.
+
+---
+ include/date/date.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/include/date/date.h b/include/date/date.h
+index cbcbf32..0c3d4c2 100644
+--- a/include/date/date.h
++++ b/include/date/date.h
+@@ -8046,12 +8046,13 @@ from_stream(std::basic_istream<CharT, Traits>& is, const CharT* fmt,
+ {
+     using Duration = std::chrono::duration<Rep, Period>;
+     using CT = typename std::common_type<Duration, std::chrono::seconds>::type;
++    using detail::round_i;
+     fields<CT> fds{};
+     date::from_stream(is, fmt, fds, abbrev, offset);
+     if (!fds.has_tod)
+         is.setstate(std::ios::failbit);
+     if (!is.fail())
+-        d = std::chrono::duration_cast<Duration>(fds.tod.to_duration());
++        d = round_i<Duration>(fds.tod.to_duration());
+     return is;
+ }
+ 
+-- 
+2.39.5
+

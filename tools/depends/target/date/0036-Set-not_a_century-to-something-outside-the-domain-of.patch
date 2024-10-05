@@ -1,0 +1,26 @@
+From 0ef86f1ced8788cf06f712e4ffbcb1cd74dacf65 Mon Sep 17 00:00:00 2001
+From: Howard Hinnant <howard.hinnant@gmail.com>
+Date: Mon, 11 Dec 2023 21:32:25 -0500
+Subject: [PATCH 36/50] Set not_a_century to something outside the domain of
+ centuries for a year.
+
+---
+ include/date/date.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/date/date.h b/include/date/date.h
+index 6960e8c..cbfbc98 100644
+--- a/include/date/date.h
++++ b/include/date/date.h
+@@ -6590,7 +6590,7 @@ from_stream(std::basic_istream<CharT, Traits>& is, const CharT* fmt,
+ 
+         CONSTDATA int not_a_year = numeric_limits<short>::min();
+         CONSTDATA int not_a_2digit_year = 100;
+-        CONSTDATA int not_a_century = not_a_year / 100;
++        CONSTDATA int not_a_century = numeric_limits<int>::min();
+         CONSTDATA int not_a_month = 0;
+         CONSTDATA int not_a_day = 0;
+         CONSTDATA int not_a_hour = numeric_limits<int>::min();
+-- 
+2.39.5
+

@@ -1,0 +1,35 @@
+From 51ce7e131079c061533d741be5fe7cca57f2faac Mon Sep 17 00:00:00 2001
+From: Howard Hinnant <howard.hinnant@gmail.com>
+Date: Fri, 13 Sep 2024 20:31:29 -0400
+Subject: [PATCH 50/50] A couple more fixes for parsing compliance
+
+* Fixes: #839
+---
+ src/tz.cpp | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/src/tz.cpp b/src/tz.cpp
+index 89a08fd..6d4a3c2 100644
+--- a/src/tz.cpp
++++ b/src/tz.cpp
+@@ -603,6 +603,7 @@ static
+ std::string
+ get_alpha_word(std::istream& in)
+ {
++    ws(in);
+     std::string s;
+     while (!in.eof() && std::isalpha(in.peek()))
+         s.push_back(static_cast<char>(in.get()));
+@@ -2817,7 +2818,8 @@ find_read_and_leap_seconds()
+                 iss.exceptions(std::ios::failbit | std::ios::badbit);
+                 std::string word;
+                 iss >> word;
+-                if (word == "Leap")
++                tolower(word);
++                if (is_prefix_of(word, "leap"))
+                 {
+                     int y, m, d;
+                     iss >> y;
+-- 
+2.39.5
+

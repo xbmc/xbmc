@@ -1,0 +1,30 @@
+From 8f95c598c931c7a955720bfecbf01337978c69e0 Mon Sep 17 00:00:00 2001
+From: Howard Hinnant <howard.hinnant@gmail.com>
+Date: Thu, 27 May 2021 21:19:48 -0400
+Subject: [PATCH 08/50] [Pedantic] Use named constants in place of literals
+
+---
+ include/date/date.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/date/date.h b/include/date/date.h
+index e2ab2b8..153f801 100644
+--- a/include/date/date.h
++++ b/include/date/date.h
+@@ -7755,11 +7755,11 @@ from_stream(std::basic_istream<CharT, Traits>& is, const CharT* fmt,
+             if (j != not_a_doy && Y != not_a_year)
+             {
+                 auto ymd_trial = year_month_day{local_days(year{Y}/1/1) + days{j-1}};
+-                if (m == 0)
++                if (m == not_a_month)
+                     m = static_cast<int>(static_cast<unsigned>(ymd_trial.month()));
+                 else if (month(static_cast<unsigned>(m)) != ymd_trial.month())
+                     goto broken;
+-                if (d == 0)
++                if (d == not_a_day)
+                     d = static_cast<int>(static_cast<unsigned>(ymd_trial.day()));
+                 else if (day(static_cast<unsigned>(d)) != ymd_trial.day())
+                     goto broken;
+-- 
+2.39.5
+

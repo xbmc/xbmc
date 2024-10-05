@@ -1,0 +1,27 @@
+From d9049ee6976f45eff434c4971baa78ff807562c4 Mon Sep 17 00:00:00 2001
+From: Howard Hinnant <howard.hinnant@gmail.com>
+Date: Fri, 15 Oct 2021 09:03:33 -0400
+Subject: [PATCH 19/50] Fix current_zone for SLES
+
+* Fixes #708
+* Patch submitted by JaroslawMelzer
+---
+ src/tz.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/tz.cpp b/src/tz.cpp
+index 86680a5..fc8dcce 100644
+--- a/src/tz.cpp
++++ b/src/tz.cpp
+@@ -3919,7 +3919,7 @@ tzdb::current_zone() const
+             auto p = result.find("ZONE=\"");
+             if (p != std::string::npos)
+             {
+-                result.erase(p, p+6);
++                result.erase(0, p+6);
+                 result.erase(result.rfind('"'));
+                 return locate_zone(result);
+             }
+-- 
+2.39.5
+

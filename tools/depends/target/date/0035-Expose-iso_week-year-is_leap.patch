@@ -1,0 +1,70 @@
+From cc4685a21e4a4fdae707ad1233c61bbaff241f93 Mon Sep 17 00:00:00 2001
+From: DavisVaughan <davis@rstudio.com>
+Date: Fri, 21 Apr 2023 14:19:32 -0400
+Subject: [PATCH 35/50] Expose `iso_week::year::is_leap()`
+
+---
+ include/date/iso_week.h     | 18 ++++++++++++++----
+ test/iso_week/year.pass.cpp |  3 +++
+ 2 files changed, 17 insertions(+), 4 deletions(-)
+
+diff --git a/include/date/iso_week.h b/include/date/iso_week.h
+index 4a0a4a9..90dfcc1 100644
+--- a/include/date/iso_week.h
++++ b/include/date/iso_week.h
+@@ -148,6 +148,8 @@ public:
+     year& operator+=(const years& y) NOEXCEPT;
+     year& operator-=(const years& y) NOEXCEPT;
+ 
++    CONSTCD14 bool is_leap() const NOEXCEPT;
++
+     CONSTCD11 explicit operator int() const NOEXCEPT;
+     CONSTCD11 bool ok() const NOEXCEPT;
+ 
+@@ -599,6 +601,17 @@ inline year year::operator--(int) NOEXCEPT {auto tmp(*this); --(*this); return t
+ inline year& year::operator+=(const years& y) NOEXCEPT {*this = *this + y; return *this;}
+ inline year& year::operator-=(const years& y) NOEXCEPT {*this = *this - y; return *this;}
+ 
++CONSTCD14
++inline
++bool
++year::is_leap() const NOEXCEPT
++{
++    const auto y = date::year{static_cast<int>(y_)};
++    const auto s0 = sys_days((y-years{1})/12/date::thu[date::last]);
++    const auto s1 = sys_days(y/12/date::thu[date::last]);
++    return s1-s0 != days{7*52};
++}
++
+ CONSTCD11 inline year::operator int() const NOEXCEPT {return y_;}
+ CONSTCD11 inline bool year::ok() const NOEXCEPT {return min() <= *this && *this <= max();}
+ 
+@@ -1020,10 +1033,7 @@ inline
+ weeknum
+ year_lastweek::weeknum() const NOEXCEPT
+ {
+-    const auto y = date::year{static_cast<int>(y_)};
+-    const auto s0 = sys_days((y-years{1})/12/date::thu[date::last]);
+-    const auto s1 = sys_days(y/12/date::thu[date::last]);
+-    return iso_week::weeknum(static_cast<unsigned>(date::trunc<weeks>(s1-s0).count()));
++    return iso_week::weeknum(y_.is_leap() ? 53u : 52u);
+ }
+ 
+ CONSTCD11 inline bool year_lastweek::ok() const NOEXCEPT {return y_.ok();}
+diff --git a/test/iso_week/year.pass.cpp b/test/iso_week/year.pass.cpp
+index 1f1675a..e554ee9 100644
+--- a/test/iso_week/year.pass.cpp
++++ b/test/iso_week/year.pass.cpp
+@@ -93,6 +93,9 @@ main()
+     static_assert(year{2015} <= 2015_y, "");
+     static_assert(year{2016} >= 2015_y, "");
+ 
++    static_assert(year{2015}.is_leap(), "");
++    static_assert(!year{2016}.is_leap(), "");
++
+     auto y = year{2014};
+     assert(++y == year{2015});
+     assert(y == year{2015});
+-- 
+2.39.5
+

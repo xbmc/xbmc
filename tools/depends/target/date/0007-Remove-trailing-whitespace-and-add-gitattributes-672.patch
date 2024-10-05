@@ -1,0 +1,677 @@
+From 417402ad35dff9097fd2f03ce732a82d8993059f Mon Sep 17 00:00:00 2001
+From: Aaron Franke <arnfranke@yahoo.com>
+Date: Mon, 24 May 2021 08:22:43 -0400
+Subject: [PATCH 07/50] Remove trailing whitespace and add gitattributes (#672)
+
+---
+ .gitattributes                                |   2 +
+ .gitignore                                    |   2 +-
+ include/date/ios.h                            |   4 +-
+ include/date/julian.h                         |  16 +--
+ include/date/solar_hijri.h                    |  20 ++--
+ src/ios.mm                                    | 110 +++++++++---------
+ .../detail/decimal_format_seconds.pass.cpp    |   6 +-
+ .../multi_year_duration_addition.pass.cpp     |  22 ++--
+ test/date_test/year_month.pass.cpp            |   2 +-
+ test/posix/ptz.pass.cpp                       |   2 +-
+ test/tz_test/zoned_time.pass.cpp              |  20 ++--
+ test/tz_test/zoned_time_deduction.pass.cpp    |   2 +-
+ 12 files changed, 105 insertions(+), 103 deletions(-)
+ create mode 100644 .gitattributes
+
+diff --git a/.gitattributes b/.gitattributes
+new file mode 100644
+index 0000000..8ad74f7
+--- /dev/null
++++ b/.gitattributes
+@@ -0,0 +1,2 @@
++# Normalize EOL for all files that Git considers text files.
++* text=auto eol=lf
+diff --git a/.gitignore b/.gitignore
+index e88e3be..3126959 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -135,7 +135,7 @@ publish/
+ # Publish Web Output
+ *.[Pp]ublish.xml
+ *.azurePubxml
+-# TODO: Comment the next line if you want to checkin your web deploy settings 
++# TODO: Comment the next line if you want to checkin your web deploy settings
+ # but database connection strings (with potential passwords) will be unencrypted
+ *.pubxml
+ *.publishproj
+diff --git a/include/date/ios.h b/include/date/ios.h
+index ee54b9d..a9f8636 100644
+--- a/include/date/ios.h
++++ b/include/date/ios.h
+@@ -36,10 +36,10 @@
+     {
+     namespace iOSUtils
+     {
+-    
++
+     std::string get_tzdata_path();
+     std::string get_current_timezone();
+-    
++
+     }  // namespace iOSUtils
+     }  // namespace date
+ 
+diff --git a/include/date/julian.h b/include/date/julian.h
+index d909d69..da692a4 100644
+--- a/include/date/julian.h
++++ b/include/date/julian.h
+@@ -1655,10 +1655,10 @@ inline
+ bool
+ month_day::ok() const NOEXCEPT
+ {
+-    CONSTDATA julian::day d[] = { 
+-        julian::day(31), julian::day(29), julian::day(31), julian::day(30), 
+-        julian::day(31), julian::day(30), julian::day(31), julian::day(31), 
+-        julian::day(30), julian::day(31), julian::day(30), julian::day(31) 
++    CONSTDATA julian::day d[] = {
++        julian::day(31), julian::day(29), julian::day(31), julian::day(30),
++        julian::day(31), julian::day(30), julian::day(31), julian::day(31),
++        julian::day(30), julian::day(31), julian::day(30), julian::day(31)
+     };
+     return m_.ok() && julian::day(1) <= d_ && d_ <= d[static_cast<unsigned>(m_)-1];
+ }
+@@ -1949,10 +1949,10 @@ inline
+ day
+ year_month_day_last::day() const NOEXCEPT
+ {
+-    CONSTDATA julian::day d[] = { 
+-        julian::day(31), julian::day(28), julian::day(31), julian::day(30), 
+-        julian::day(31), julian::day(30), julian::day(31), julian::day(31), 
+-        julian::day(30), julian::day(31), julian::day(30), julian::day(31) 
++    CONSTDATA julian::day d[] = {
++        julian::day(31), julian::day(28), julian::day(31), julian::day(30),
++        julian::day(31), julian::day(30), julian::day(31), julian::day(31),
++        julian::day(30), julian::day(31), julian::day(30), julian::day(31)
+     };
+     return month() != feb || !y_.is_leap() ? d[static_cast<unsigned>(month())-1] : julian::day(29);
+ }
+diff --git a/include/date/solar_hijri.h b/include/date/solar_hijri.h
+index 6f6c331..8de9cb5 100644
+--- a/include/date/solar_hijri.h
++++ b/include/date/solar_hijri.h
+@@ -1707,11 +1707,11 @@ inline
+ bool
+ month_day::ok() const NOEXCEPT
+ {
+-    CONSTDATA solar_hijri::day d[] = { 
+-        solar_hijri::day(31), solar_hijri::day(31), solar_hijri::day(31), 
+-        solar_hijri::day(31), solar_hijri::day(31), solar_hijri::day(31), 
+-        solar_hijri::day(30), solar_hijri::day(30), solar_hijri::day(30), 
+-        solar_hijri::day(30), solar_hijri::day(30), solar_hijri::day(30) 
++    CONSTDATA solar_hijri::day d[] = {
++        solar_hijri::day(31), solar_hijri::day(31), solar_hijri::day(31),
++        solar_hijri::day(31), solar_hijri::day(31), solar_hijri::day(31),
++        solar_hijri::day(30), solar_hijri::day(30), solar_hijri::day(30),
++        solar_hijri::day(30), solar_hijri::day(30), solar_hijri::day(30)
+     };
+     return m_.ok() && solar_hijri::day(1) <= d_ && d_ <= d[static_cast<unsigned>(m_)-1];
+ }
+@@ -2002,11 +2002,11 @@ inline
+ day
+ year_month_day_last::day() const NOEXCEPT
+ {
+-    CONSTDATA solar_hijri::day d[] = { 
+-        solar_hijri::day(31), solar_hijri::day(31), solar_hijri::day(31), 
+-        solar_hijri::day(31), solar_hijri::day(31), solar_hijri::day(31), 
+-        solar_hijri::day(30), solar_hijri::day(30), solar_hijri::day(30), 
+-        solar_hijri::day(30), solar_hijri::day(30), solar_hijri::day(29) 
++    CONSTDATA solar_hijri::day d[] = {
++        solar_hijri::day(31), solar_hijri::day(31), solar_hijri::day(31),
++        solar_hijri::day(31), solar_hijri::day(31), solar_hijri::day(31),
++        solar_hijri::day(30), solar_hijri::day(30), solar_hijri::day(30),
++        solar_hijri::day(30), solar_hijri::day(30), solar_hijri::day(29)
+     };
+     return month() != esf || !y_.is_leap() ?
+         d[static_cast<unsigned>(month()) - 1] : solar_hijri::day(30);
+diff --git a/src/ios.mm b/src/ios.mm
+index fe3bb24..9e5d800 100644
+--- a/src/ios.mm
++++ b/src/ios.mm
+@@ -51,7 +51,7 @@ namespace date
+ {
+     namespace iOSUtils
+     {
+-        
++
+         struct TarInfo
+         {
+             char objType;
+@@ -60,14 +60,14 @@ namespace date
+             size_t blocksContentSize; // adjusted size to 512 bytes blocks
+             bool success;
+         };
+-        
++
+         std::string convertCFStringRefPathToCStringPath(CFStringRef ref);
+         bool extractTzdata(CFURLRef homeUrl, CFURLRef archiveUrl, std::string destPath);
+         TarInfo getTarObjectInfo(std::ifstream &readStream);
+         std::string getTarObject(std::ifstream &readStream, int64_t size);
+         bool writeFile(const std::string &tzdataPath, const std::string &fileName,
+                        const std::string &data, size_t realContentSize);
+-        
++
+         std::string
+         get_current_timezone()
+         {
+@@ -75,18 +75,18 @@ namespace date
+             CFStringRef tzNameRef = CFTimeZoneGetName(tzRef);
+             CFIndex bufferSize = CFStringGetLength(tzNameRef) + 1;
+             char buffer[bufferSize];
+-            
++
+             if (CFStringGetCString(tzNameRef, buffer, bufferSize, kCFStringEncodingUTF8))
+             {
+                 CFRelease(tzRef);
+                 return std::string(buffer);
+             }
+-            
++
+             CFRelease(tzRef);
+-            
++
+             return "";
+         }
+-        
++
+         std::string
+         get_tzdata_path()
+         {
+@@ -96,7 +96,7 @@ namespace date
+                              INTERNAL_DIR + "/" + TZDATA_DIR);
+             std::string result_path(std::string(convertCFStringRefPathToCStringPath(homePath)) +
+                                     INTERNAL_DIR);
+-            
++
+             if (access(path.c_str(), F_OK) == 0)
+             {
+ #if TAR_DEBUG
+@@ -104,34 +104,34 @@ namespace date
+ #endif
+                 CFRelease(homeUrlRef);
+                 CFRelease(homePath);
+-                
++
+                 return result_path;
+             }
+-            
++
+             CFBundleRef mainBundle = CFBundleGetMainBundle();
+             CFArrayRef paths = CFBundleCopyResourceURLsOfType(mainBundle, CFSTR(TARGZ_EXTENSION),
+                                                               NULL);
+-            
++
+             if (CFArrayGetCount(paths) != 0)
+             {
+                 // get archive path, assume there is no other tar.gz in bundle
+                 CFURLRef archiveUrl = static_cast<CFURLRef>(CFArrayGetValueAtIndex(paths, 0));
+                 CFStringRef archiveName = CFURLCopyPath(archiveUrl);
+                 archiveUrl = CFBundleCopyResourceURL(mainBundle, archiveName, NULL, NULL);
+-                
++
+                 extractTzdata(homeUrlRef, archiveUrl, path);
+-                
++
+                 CFRelease(archiveUrl);
+                 CFRelease(archiveName);
+             }
+-            
++
+             CFRelease(homeUrlRef);
+             CFRelease(homePath);
+             CFRelease(paths);
+-            
++
+             return result_path;
+         }
+-        
++
+         std::string
+         convertCFStringRefPathToCStringPath(CFStringRef ref)
+         {
+@@ -142,55 +142,55 @@ namespace date
+             delete[] buffer;
+             return result;
+         }
+-        
++
+         bool
+         extractTzdata(CFURLRef homeUrl, CFURLRef archiveUrl, std::string destPath)
+         {
+             std::string TAR_TMP_PATH = "/tmp.tar";
+-            
++
+             CFStringRef homeStringRef = CFURLCopyPath(homeUrl);
+             auto homePath = convertCFStringRefPathToCStringPath(homeStringRef);
+             CFRelease(homeStringRef);
+-            
++
+             CFStringRef archiveStringRef = CFURLCopyPath(archiveUrl);
+             auto archivePath = convertCFStringRefPathToCStringPath(archiveStringRef);
+             CFRelease(archiveStringRef);
+-            
++
+             // create Library path
+             auto libraryPath = homePath + INTERNAL_DIR;
+-            
++
+             // create tzdata path
+             auto tzdataPath = libraryPath + "/" + TZDATA_DIR;
+-            
++
+             // -- replace %20 with " "
+             const std::string search = "%20";
+             const std::string replacement = " ";
+             size_t pos = 0;
+-            
++
+             while ((pos = archivePath.find(search, pos)) != std::string::npos) {
+                 archivePath.replace(pos, search.length(), replacement);
+                 pos += replacement.length();
+             }
+-            
++
+             gzFile tarFile = gzopen(archivePath.c_str(), "rb");
+-            
++
+             // create tar unpacking path
+             auto tarPath = libraryPath + TAR_TMP_PATH;
+-            
++
+             // create tzdata directory
+             mkdir(destPath.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+-            
++
+             // ======= extract tar ========
+-            
++
+             std::ofstream os(tarPath.c_str(), std::ofstream::out | std::ofstream::app);
+             unsigned int bufferLength = 1024 * 256;  // 256Kb
+             unsigned char *buffer = (unsigned char *)malloc(bufferLength);
+             bool success = true;
+-            
++
+             while (true)
+             {
+                 int readBytes = gzread(tarFile, buffer, bufferLength);
+-                
++
+                 if (readBytes > 0)
+                 {
+                     os.write((char *) &buffer[0], readBytes);
+@@ -214,21 +214,21 @@ namespace date
+                             break;
+                         }
+             }
+-            
++
+             os.close();
+             free(buffer);
+             gzclose(tarFile);
+-            
++
+             if (!success)
+             {
+                 remove(tarPath.c_str());
+                 return false;
+             }
+-            
++
+             // ======== extract files =========
+-            
++
+             uint64_t location = 0; // Position in the file
+-            
++
+             // get file size
+             struct stat stat_buf;
+             int res = stat(tarPath.c_str(), &stat_buf);
+@@ -239,20 +239,20 @@ namespace date
+                 return false;
+             }
+             int64_t tarSize = stat_buf.st_size;
+-            
++
+             // create read stream
+             std::ifstream is(tarPath.c_str(), std::ifstream::in | std::ifstream::binary);
+-            
++
+             // process files
+             while (location < tarSize)
+             {
+                 TarInfo info = getTarObjectInfo(is);
+-                
++
+                 if (!info.success || info.realContentSize == 0)
+                 {
+                     break; // something wrong or all files are read
+                 }
+-                
++
+                 switch (info.objType)
+                 {
+                     case '0':   // file
+@@ -266,17 +266,17 @@ namespace date
+ #endif
+                         writeFile(tzdataPath, info.objName, obj, info.realContentSize);
+                         location += info.blocksContentSize;
+-                        
++
+                         break;
+                     }
+                 }
+             }
+-            
++
+             remove(tarPath.c_str());
+-            
++
+             return true;
+         }
+-        
++
+         TarInfo
+         getTarObjectInfo(std::ifstream &readStream)
+         {
+@@ -285,22 +285,22 @@ namespace date
+             char type;
+             char name[TAR_NAME_SIZE + 1];
+             char sizeBuf[TAR_SIZE_SIZE + 1];
+-            
++
+             readStream.read(buffer, length);
+-            
++
+             memcpy(&type, &buffer[TAR_TYPE_POSITION], 1);
+-            
++
+             memset(&name, '\0', TAR_NAME_SIZE + 1);
+             memcpy(&name, &buffer[TAR_NAME_POSITION], TAR_NAME_SIZE);
+-            
++
+             memset(&sizeBuf, '\0', TAR_SIZE_SIZE + 1);
+             memcpy(&sizeBuf, &buffer[TAR_SIZE_POSITION], TAR_SIZE_SIZE);
+             size_t realSize = strtol(sizeBuf, NULL, 8);
+             size_t blocksSize = realSize + (TAR_BLOCK_SIZE - (realSize % TAR_BLOCK_SIZE));
+-            
++
+             return {type, std::string(name), realSize, blocksSize, true};
+         }
+-        
++
+         std::string
+         getTarObject(std::ifstream &readStream, int64_t size)
+         {
+@@ -308,29 +308,29 @@ namespace date
+             readStream.read(buffer, size);
+             return std::string(buffer);
+         }
+-        
++
+         bool
+         writeFile(const std::string &tzdataPath, const std::string &fileName, const std::string &data,
+                   size_t realContentSize)
+         {
+             std::ofstream os(tzdataPath + "/" + fileName, std::ofstream::out | std::ofstream::binary);
+-            
++
+             if (!os) {
+                 return false;
+             }
+-            
++
+             // trim empty space
+             char trimmedData[realContentSize + 1];
+             memset(&trimmedData, '\0', realContentSize);
+             memcpy(&trimmedData, data.c_str(), realContentSize);
+-            
++
+             // write
+             os.write(trimmedData, realContentSize);
+             os.close();
+-            
++
+             return true;
+         }
+-        
++
+     }  // namespace iOSUtils
+ }  // namespace date
+ 
+diff --git a/test/date_test/detail/decimal_format_seconds.pass.cpp b/test/date_test/detail/decimal_format_seconds.pass.cpp
+index cce6ae8..6769905 100644
+--- a/test/date_test/detail/decimal_format_seconds.pass.cpp
++++ b/test/date_test/detail/decimal_format_seconds.pass.cpp
+@@ -33,15 +33,15 @@
+ // private:
+ //     std::chrono::seconds s_;
+ //     precision            sub_s_;
+-// 
++//
+ // public:
+ //     constexpr explicit decimal_format_seconds(const Duration& d) noexcept;
+-// 
++//
+ //     constexpr std::chrono::seconds& seconds() noexcept;
+ //     constexpr std::chrono::seconds seconds() const noexcept;
+ //     constexpr precision subseconds() const noexcept;
+ //     constexpr precision to_duration() const noexcept;
+-// 
++//
+ //     template <class CharT, class Traits>
+ //     friend
+ //     std::basic_ostream<CharT, Traits>&
+diff --git a/test/date_test/multi_year_duration_addition.pass.cpp b/test/date_test/multi_year_duration_addition.pass.cpp
+index 5d1d031..4100615 100644
+--- a/test/date_test/multi_year_duration_addition.pass.cpp
++++ b/test/date_test/multi_year_duration_addition.pass.cpp
+@@ -83,7 +83,7 @@ main()
+     constexpr ConvertibleToMonths custom_month;
+     constexpr ConvertibleToYears custom_year;
+     constexpr ConvertibleToYearsAndMonths prefer_year;
+-    
++
+ 
+     {
+        constexpr year_month ym = 2001_y/feb;
+@@ -97,7 +97,7 @@ main()
+        NOEXCEPT_ASSERT(copy(ym) += one_month);
+        CPP14_ASSERT((copy(ym) -= one_month) == 2001_y/jan);
+        NOEXCEPT_ASSERT(copy(ym) -= one_month);
+-      
++
+        CPP11_ASSERT(ym + one_year == 2002_y/feb);
+        NOEXCEPT_ASSERT(ym + one_year);
+        CPP11_ASSERT(one_year + ym == 2002_y/feb);
+@@ -141,7 +141,7 @@ main()
+        NOEXCEPT_ASSERT(copy(ym) += custom_month);
+        CPP14_ASSERT((copy(ym) -= custom_month) == 2001_y/jan);
+        NOEXCEPT_ASSERT(copy(ym) -= custom_month);
+-      
++
+        CPP11_ASSERT(ym + custom_year == 2002_y/feb);
+        NOEXCEPT_ASSERT(ym + custom_year);
+        CPP11_ASSERT(custom_year + ym == 2002_y/feb);
+@@ -177,7 +177,7 @@ main()
+        NOEXCEPT_ASSERT(copy(ym) += one_month);
+        CPP14_ASSERT((copy(ym) -= one_month) == 2001_y/jan/10);
+        NOEXCEPT_ASSERT(copy(ym) -= one_month);
+-      
++
+        CPP11_ASSERT(ym + one_year == 2002_y/feb/10);
+        NOEXCEPT_ASSERT(ym + one_year);
+        CPP11_ASSERT(one_year + ym == 2002_y/feb/10);
+@@ -221,7 +221,7 @@ main()
+        NOEXCEPT_ASSERT(copy(ym) += custom_month);
+        CPP14_ASSERT((copy(ym) -= custom_month) == 2001_y/jan/10);
+        NOEXCEPT_ASSERT(copy(ym) -= custom_month);
+-      
++
+        CPP11_ASSERT(ym + custom_year == 2002_y/feb/10);
+        NOEXCEPT_ASSERT(ym + custom_year);
+        CPP11_ASSERT(custom_year + ym == 2002_y/feb/10);
+@@ -257,7 +257,7 @@ main()
+        NOEXCEPT_ASSERT(copy(ym) += one_month);
+        CPP14_ASSERT((copy(ym) -= one_month) == 2001_y/jan/last);
+        NOEXCEPT_ASSERT(copy(ym) -= one_month);
+-      
++
+        CPP11_ASSERT(ym + one_year == 2002_y/feb/last);
+        NOEXCEPT_ASSERT(ym + one_year);
+        CPP11_ASSERT(one_year + ym == 2002_y/feb/last);
+@@ -301,7 +301,7 @@ main()
+        NOEXCEPT_ASSERT(copy(ym) += custom_month);
+        CPP14_ASSERT((copy(ym) -= custom_month) == 2001_y/jan/last);
+        NOEXCEPT_ASSERT(copy(ym) -= custom_month);
+-      
++
+        CPP11_ASSERT(ym + custom_year == 2002_y/feb/last);
+        NOEXCEPT_ASSERT(ym + custom_year);
+        CPP11_ASSERT(custom_year + ym == 2002_y/feb/last);
+@@ -337,7 +337,7 @@ main()
+        NOEXCEPT_ASSERT(copy(ym) += one_month);
+        CPP14_ASSERT((copy(ym) -= one_month) == 2001_y/jan/fri[4]);
+        NOEXCEPT_ASSERT(copy(ym) -= one_month);
+-      
++
+        CPP11_ASSERT(ym + one_year == 2002_y/feb/fri[4]);
+        NOEXCEPT_ASSERT(ym + one_year);
+        CPP11_ASSERT(one_year + ym == 2002_y/feb/fri[4]);
+@@ -381,7 +381,7 @@ main()
+        NOEXCEPT_ASSERT(copy(ym) += custom_month);
+        CPP14_ASSERT((copy(ym) -= custom_month) == 2001_y/jan/fri[4]);
+        NOEXCEPT_ASSERT(copy(ym) -= custom_month);
+-      
++
+        CPP11_ASSERT(ym + custom_year == 2002_y/feb/fri[4]);
+        NOEXCEPT_ASSERT(ym + custom_year);
+        CPP11_ASSERT(custom_year + ym == 2002_y/feb/fri[4]);
+@@ -417,7 +417,7 @@ main()
+        NOEXCEPT_ASSERT(copy(ym) += one_month);
+        CPP14_ASSERT((copy(ym) -= one_month) == 2001_y/jan/fri[last]);
+        NOEXCEPT_ASSERT(copy(ym) -= one_month);
+-      
++
+        CPP11_ASSERT(ym + one_year == 2002_y/feb/fri[last]);
+        NOEXCEPT_ASSERT(ym + one_year);
+        CPP11_ASSERT(one_year + ym == 2002_y/feb/fri[last]);
+@@ -461,7 +461,7 @@ main()
+        NOEXCEPT_ASSERT(copy(ym) += custom_month);
+        CPP14_ASSERT((copy(ym) -= custom_month) == 2001_y/jan/fri[last]);
+        NOEXCEPT_ASSERT(copy(ym) -= custom_month);
+-      
++
+        CPP11_ASSERT(ym + custom_year == 2002_y/feb/fri[last]);
+        NOEXCEPT_ASSERT(ym + custom_year);
+        CPP11_ASSERT(custom_year + ym == 2002_y/feb/fri[last]);
+diff --git a/test/date_test/year_month.pass.cpp b/test/date_test/year_month.pass.cpp
+index eec28a9..44954c9 100644
+--- a/test/date_test/year_month.pass.cpp
++++ b/test/date_test/year_month.pass.cpp
+@@ -123,7 +123,7 @@ void test_arithemtic_not_ok()
+     assert(ym - months{0} == ym2);
+     assert(ym - ym2 == months{0});
+     assert(ym2 - ym == months{0});
+-   
++
+     auto ymc = ym;
+     ymc += months{0};
+     assert(ymc.ok());
+diff --git a/test/posix/ptz.pass.cpp b/test/posix/ptz.pass.cpp
+index 9e15e3a..c17d28a 100644
+--- a/test/posix/ptz.pass.cpp
++++ b/test/posix/ptz.pass.cpp
+@@ -56,7 +56,7 @@ main()
+     auto tp = local_days{2021_y/1/1} + 0s;
+     assert(tzp.get_info(tp).result == local_info::unique);
+     assert(is_equal(tzi->get_info(tp), tzp.get_info(tp)));
+-    
++
+     tp = local_days{2021_y/10/Sunday[1]} + 2h + 30min;
+     assert(tzp.get_info(tp).result == local_info::nonexistent);
+     assert(is_equal(tzi->get_info(tp), tzp.get_info(tp)));
+diff --git a/test/tz_test/zoned_time.pass.cpp b/test/tz_test/zoned_time.pass.cpp
+index 70f3a83..cada23c 100644
+--- a/test/tz_test/zoned_time.pass.cpp
++++ b/test/tz_test/zoned_time.pass.cpp
+@@ -25,12 +25,12 @@
+ // {
+ // public:
+ //     using duration = typename std::common_type<Duration, std::chrono::seconds>::type;
+-// 
++//
+ //              zoned_time();
+ //              zoned_time(const sys_time<Duration>& st);
+ //     explicit zoned_time(const time_zone* z);
+ //     explicit zoned_time(std::string_view name);
+-// 
++//
+ //     template <class Duration2,
+ //               class = typename std::enable_if
+ //                       <
+@@ -38,36 +38,36 @@
+ //                                               sys_time<Duration>>::value
+ //                       >::type>
+ //         zoned_time(const zoned_time<Duration2>& zt) NOEXCEPT;
+-// 
++//
+ //     zoned_time(const time_zone* z,    const local_time<Duration>& tp);
+ //     zoned_time(std::string_view name, const local_time<Duration>& tp);
+ //     zoned_time(const time_zone* z,    const local_time<Duration>& tp, choose c);
+ //     zoned_time(std::string_view name, const local_time<Duration>& tp, choose c);
+-// 
++//
+ //     zoned_time(const time_zone* z,    const zoned_time<Duration>& zt);
+ //     zoned_time(std::string_view name, const zoned_time<Duration>& zt);
+ //     zoned_time(const time_zone* z,    const zoned_time<Duration>& zt, choose);
+ //     zoned_time(std::string_view name, const zoned_time<Duration>& zt, choose);
+-// 
++//
+ //     zoned_time(const time_zone* z,    const sys_time<Duration>& st);
+ //     zoned_time(std::string_view name, const sys_time<Duration>& st);
+-// 
++//
+ //     zoned_time& operator=(const sys_time<Duration>& st);
+ //     zoned_time& operator=(const local_time<Duration>& ut);
+-// 
++//
+ //     explicit operator sys_time<duration>() const;
+ //     explicit operator local_time<duration>() const;
+-// 
++//
+ //     const time_zone*     get_time_zone() const;
+ //     local_time<duration> get_local_time() const;
+ //     sys_time<duration>   get_sys_time() const;
+ //     sys_info             get_info() const;
+-// 
++//
+ //     template <class Duration1, class Duration2>
+ //     friend
+ //     bool
+ //     operator==(const zoned_time<Duration1>& x, const zoned_time<Duration2>& y);
+-// 
++//
+ //     template <class CharT, class Traits, class Duration1>
+ //     friend
+ //     std::basic_ostream<CharT, Traits>&
+diff --git a/test/tz_test/zoned_time_deduction.pass.cpp b/test/tz_test/zoned_time_deduction.pass.cpp
+index e62e11a..6398bcd 100644
+--- a/test/tz_test/zoned_time_deduction.pass.cpp
++++ b/test/tz_test/zoned_time_deduction.pass.cpp
+@@ -154,7 +154,7 @@ main()
+     {
+         zoned_time zt{};
+         static_assert(std::is_same<decltype(zt), zoned_time<seconds>>::value, "");
+-    } 
++    }
+ 
+     // zoned_time
+     {
+-- 
+2.39.5
+
