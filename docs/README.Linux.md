@@ -28,34 +28,12 @@ This is a comment that provides context:
 ```
 this is a command
 this is another command
-and yet another one
-```
-
-**Example:** Clone Kodi's current master branch:
-```
-git clone https://github.com/xbmc/xbmc kodi
 ```
 
 Commands that contain strings enclosed in angle brackets denote something you need to change to suit your needs.
 ```
 git clone -b <branch-name> https://github.com/xbmc/xbmc kodi
 ```
-
-**Example:** Clone Kodi's current Krypton branch:
-```
-git clone -b Krypton https://github.com/xbmc/xbmc kodi
-```
-
-Several different strategies are used to draw your attention to certain pieces of information. In order of how critical the information is, these items are marked as a note, tip, or warning. For example:
- 
-> [!NOTE]  
-> Linux is user friendly... It's just very particular about who its friends are.
-
-> [!TIP]
-> Algorithm is what developers call code they do not want to explain.
-
-> [!WARNING]  
-> Developers don't change light bulbs. It's a hardware problem.
 
 **[back to top](#table-of-contents)** | **[back to section top](#1-document-conventions)**
 
@@ -75,12 +53,45 @@ git clone https://github.com/xbmc/xbmc kodi
 **[back to top](#table-of-contents)**
 
 ## 3. Install the required packages
-The following is the list of packages that are used to build Kodi on Debian/Ubuntu (with all supported external libraries enabled).
 
 > [!NOTE]  
 > Kodi requires a compiler with C++17 support, i.e. gcc >= 7 or clang >= 5
 
-* autoconf, automake, autopoint, gettext, autotools-dev, cmake, curl, default-jre | openjdk-6-jre | openjdk-7-jre, gawk, gcc (>= 7) | gcc-7, g++ (>= 7) | g++-7, cpp (>= 7) | cpp-7, flatbuffers, gdc, gperf, libasound2-dev | libasound-dev, libass-dev (>= 0.9.8), libavahi-client-dev, libavahi-common-dev, libbluetooth-dev, libbluray-dev, libbz2-dev, libcdio-dev, libcec4-dev | libcec-dev, libp8-platform-dev, libcrossguid-dev, libcurl4-openssl-dev | libcurl4-gnutls-dev | libcurl-dev, libcwiid-dev, libdbus-1-dev, libegl1-mesa-dev, libenca-dev, libexiv2-dev, libflac-dev, libfontconfig-dev, libfmt3-dev | libfmt-dev, libfreetype6-dev, libfribidi-dev, libfstrcmp-dev, libgcrypt-dev, libgif-dev (>= 5.0.5), libgles2-mesa-dev [armel] | libgl1-mesa-dev | libgl-dev, libglew-dev, libglu1-mesa-dev | libglu-dev, libgnutls-dev | libgnutls28-dev, libgpg-error-dev, libgtest-dev, libiso9660-dev, libjpeg-dev, liblcms2-dev, liblirc-dev, libltdl-dev, liblzo2-dev, libmicrohttpd-dev, libmysqlclient-dev, libnfs-dev, libogg-dev, libomxil-bellagio-dev [armel], libpcre2-dev, libplist-dev, libpng12-dev | libpng-dev, libpulse-dev, libshairplay-dev, libsmbclient-dev, libspdlog-dev, libsqlite3-dev, libssl-dev, libtag1-dev (>= 1.8) | libtag1x8, libtiff5-dev | libtiff-dev | libtiff4-dev, libtinyxml-dev, libtinyxml2-dev, libtool, libudev-dev, libunistring-dev, libva-dev, libvdpau-dev, libvorbis-dev, libxkbcommon-dev, libxmu-dev, libxrandr-dev, libxslt1-dev | libxslt-dev, libxt-dev, waylandpp-dev | netcat, wayland-protocols | wipe, lsb-release, meson (>= 0.47.0), nasm (>= 2.14), ninja-build, python3-dev, python3-pil | python-imaging, python-support | python3-minimal, rapidjson-dev, swig, unzip, uuid-dev, zip, zlib1g-dev
+The following is the list of packages that are used to build Kodi on Debian/Ubuntu (with all supported external libraries enabled).
+
+```
+autoconf, automake, autopoint, gettext, autotools-dev, cmake, curl, gawk
+flatbuffers, gdc, gperf, libasound2-dev | libasound-dev, libass-dev (>= 0.9.8),
+libavahi-client-dev, libavahi-common-dev, libbluetooth-dev, libbluray-dev, libbz2-dev,
+libcdio-dev, libp8-platform-dev, libcrossguid-dev, libcwiid-dev, libdbus-1-dev,
+libegl1-mesa-dev, libenca-dev, libexiv2-dev, libflac-dev, libfontconfig-dev,
+libfreetype6-dev, libfribidi-dev, libfstrcmp-dev, libgcrypt-dev, libgif-dev (>= 5.0.5), libglew-dev,
+libgpg-error-dev, libgtest-dev, libiso9660-dev, libjpeg-dev, liblcms2-dev, liblirc-dev, libltdl-dev,
+liblzo2-dev, libmicrohttpd-dev, libmysqlclient-dev, libnfs-dev, libogg-dev,
+libomxil-bellagio-dev [armel], libpcre2-dev, libplist-dev, libpulse-dev, libshairplay-dev,
+libsmbclient-dev, libspdlog-dev, libsqlite3-dev, libssl-dev, libtinyxml-dev, libtinyxml2-dev,
+libtool, libudev-dev, libunistring-dev, libva-dev, libvdpau-dev, libvorbis-dev, libxkbcommon-dev,
+libxmu-dev, libxrandr-dev, libxt-dev, lsb-release, meson (>= 0.47.0), nasm (>= 2.14), ninja-build,
+python3-dev, rapidjson-dev, swig, unzip, uuid-dev, zip, zlib1g-dev
+```
+ **Additionally**, some dependencies can be satisfied by multiple packages. In such cases, one package from each line must be installed the (options are separated by `|`).
+```
+default-jre | openjdk-6-jre | openjdk-7-jre
+gcc (>= 7) | gcc-7, g++ (>= 7) | g++-7, cpp (>= 7) | cpp-7
+libcec4-dev | libcec-dev
+libcurl4-openssl-dev | libcurl4-gnutls-dev | libcurl-dev
+libfmt3-dev | libfmt-dev
+libgles2-mesa-dev [armel] | libgl1-mesa-dev | libgl-dev
+libglu1-mesa-dev | libglu-dev
+libgnutls-dev | libgnutls28-dev
+libpng12-dev | libpng-dev
+libtag1-dev (>= 1.8) | libtag1x8
+libtiff5-dev | libtiff-dev | libtiff4-dev
+libxslt1-dev | libxslt-dev
+waylandpp-dev | netcat
+wayland-protocols | wipe
+python3-dev, python3-pil | python-imaging, python-support | python3-minimal
+```
 
 ### 3.1. Build missing dependencies
 Some packages may be missing or outdated in older distributions. Notably `crossguid`, `libfmt`, `libspdlog`, `waylandpp`, `wayland-protocols`, etc. are known to be outdated or missing. Fortunately there is an easy way to build individual dependencies with **[Kodi's unified depends build system](../tools/depends/README.md)**.
@@ -141,20 +152,24 @@ Building with GBM windowing (including `gbm` in the `CORE_PLATFORM_NAME` cmake c
 
 ## 4. Build Kodi
 ### 4.1. Configure build
-If you get a `Could NOT find...` error message during CMake configuration step, take a note of the missing dependencies and either install them from repositories (if available) or **[build the missing dependencies manually](#31-build-missing-dependencies)**.
 
-Create an out-of-source build directory:
+Create an out-of-source build directory and `cd` into it:
 ```
 mkdir $HOME/kodi-build
-```
-
-> [!TIP]
-> Look for comments starting with `Or ...` and only execute the command(s) you need.
-
-Change to build directory:
-```
 cd $HOME/kodi-build
 ```
+
+Configuring the build:
+```
+cmake ../kodi -DAPP_RENDER_SYSTEM=<gl|gles> [-DCORE_PLATFORM_NAME=x11|wayland|gbm]
+```
+
+When configuring the build, at minimum, the `APP_RENDER_SYSTEM` must be specified. The `CORE_PLATFORM_NAME` can also be specific
+- `gl` - OpenGL Render System
+- `gles` - OpenGLES Render System
+
+> [!TIP]
+> If you get a `Could NOT find...` error message during CMake configuration step, take a note of the missing dependencies and either install them from repositories (if available) or **[build the missing dependencies manually](#31-build-missing-dependencies)**.
 
 Configure build for X11:
 ```
