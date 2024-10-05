@@ -334,10 +334,16 @@ sudo make uninstall
 > [!WARNING]  
 > If you reran CMakes' configure step with a different `-DCMAKE_INSTALL_PREFIX=`, you will need to rerun configure with the correct path for this step to work correctly.
 
-If you would like to also remove any settings and third-party addons (skins, scripts, etc.) and Kodi configuration files, you should also run:
+If you would like to also remove any settings and third-party addons (skins, scripts, etc.) and Kodi configuration files, you will need to also clear the `~/.kodi` directory.
+
+> [!WARNING]  
+> Deleting ~/.kodi will also remove your library, caches, etc. Once you're sure that's what you want, you can run:
+
 ```
-rm -rf ~/.kodi
+rm -I -rf ~/.kodi
 ```
+
+The `-I` is a safeguard that prompts before deleting. You can remove it if you're sure about the command (a typo like adding a space after `~` will remove your entire home directory).
 
 **[back to top](#table-of-contents)**
 
