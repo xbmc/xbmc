@@ -13,6 +13,7 @@
 #include "settings/lib/ISettingsHandler.h"
 #include "utils/SortUtils.h"
 
+#include <cstdint>
 #include <set>
 #include <string>
 #include <utility>
