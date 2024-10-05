@@ -223,8 +223,8 @@ bool CPVREpg::UpdateEntry(const std::shared_ptr<CPVREpgInfoTag>& tag, EPG_EVENT_
     }
     else
     {
-      // Delete running/future events and past events if they are older than epg linger time setting
-      if ((existingTag->EndAsUTC() >= CDateTime::GetUTCDateTime()) || IsTagExpired(existingTag))
+      // Delete future events and past events if they are older than epg linger time setting
+      if ((existingTag->StartAsUTC() > CDateTime::GetUTCDateTime()) || IsTagExpired(existingTag))
       {
         m_tags.DeleteEntry(existingTag);
       }
