@@ -159,55 +159,38 @@ mkdir $HOME/kodi-build
 cd $HOME/kodi-build
 ```
 
-Configuring the build:
+Configuring the build involves running `cmake` with the desired options:
 ```
-cmake ../kodi -DAPP_RENDER_SYSTEM=<gl|gles> [-DCORE_PLATFORM_NAME=x11|wayland|gbm]
-```
-
-When configuring the build, at minimum, the `APP_RENDER_SYSTEM` must be specified. The `CORE_PLATFORM_NAME` can also be specific
-- `gl` - OpenGL Render System
-- `gles` - OpenGLES Render System
-
-> [!TIP]
-> If you get a `Could NOT find...` error message during CMake configuration step, take a note of the missing dependencies and either install them from repositories (if available) or **[build the missing dependencies manually](#31-build-missing-dependencies)**.
-
-Configure build for X11:
-```
-cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DCORE_PLATFORM_NAME=x11 -DAPP_RENDER_SYSTEM=gl
+cmake ../kodi -DAPP_RENDER_SYSTEM=<gl | gles> [ -DCORE_PLATFORM_NAME=<x11 &| wayland &| gbm> ]
 ```
 
-> [!NOTE]  
-> You can use `gles` instead of `gl` if you want to build with `GLES`.
+When configuring the build, `-DAPP_RENDER_SYSTEM` **must** be specified. 
 
-Or configure build for Wayland:
-```
-cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DCORE_PLATFORM_NAME=wayland -DAPP_RENDER_SYSTEM=gl
-```
+|Parameter             |Description                  |Options|Desscription                        |
+|----------------------|-----------------------------|-------|------------------------------------|
+|`APP_RENDER_SYSTEM`   | The Rendering system to use |gl     |Uses OpenGL                         |
+|                      |                             |gles   |Uses OpenGLES                       |
 
-> [!NOTE]  
-> You can use `gles` instead of `gl` if you want to build with `GLES`.
+Optionally, `-DCORE_PLATFORM_NAME` and other CMake supported params parameters can also be specificed.
 
-Or configure build for GBM:
-```
-cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DCORE_PLATFORM_NAME=gbm -DAPP_RENDER_SYSTEM=gles
-```
+|Parameter             |Description                  |Options|Desscription                        |
+|----------------------|-----------------------------|-------|------------------------------------|
+|`CORE_PLATFORM_NAME`  | The set of windowing systems to use   |x11     |Uses X11 as the windowing system    |
+|                      |                                       |wayland |Uses Wayland as the windowing system|
+|                      |                                       |gbm     |Uses GBM as the windowing system    |
+|`CMAKE_INSTALL_PREFIX`| Kodi's install location               |any path|Defaults to `/usr/local/`           |  
+|`ENABLE_GOLD`         |Enables the Gold linker                |ON      |         |  
+|`ENABLE_LLD`          |Enables the LLD linker                 |ON      |         |  
+|`ENABLE_MOLD`         |Enables the Mold linker                |ON      |         |  
 
-> [!NOTE]  
-> You can use `gl` instead of `gles` if you want to build with `GL`.
+An example invocation would be
 
-Or configure build with any combination of the three (default is "x11 wayland gbm"):
 ```
 cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DCORE_PLATFORM_NAME="x11 wayland gbm" -DAPP_RENDER_SYSTEM=gl
 ```
 
-> [!NOTE]  
-> You can use `gles` instead of `gl` if you want to build with `GLES`.
-
-> [!NOTE]  
-> You can use several alternative linkers if available on your system: gnu gold (default), llvm lld or mold
-
-To use an alternative linker, enable it with `-DENABLE_GOLD=ON` or `-DENABLE_LLD=ON` or `-DENABLE_MOLD=ON`
-
+> [!TIP]
+> If you get a `Could NOT find...` error message during CMake configuration step, take a note of the missing dependencies and either install them from repositories (if available) or **[build the missing dependencies manually](#31-build-missing-dependencies)**.
 
 ### 4.2. Build
 ```
