@@ -448,9 +448,6 @@ public:
    */
   std::string GetLocalMetadataPath() const;
 
-  // finds a matching local trailer file
-  std::string FindTrailer() const;
-
   bool LoadMusicTag();
   bool LoadGameTag();
 

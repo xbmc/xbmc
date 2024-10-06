@@ -7,6 +7,7 @@
  */
 
 #include "FileItem.h"
+#include "URL.h"
 #include "Util.h"
 #include "filesystem/Directory.h"
 #include "platform/Filesystem.h"
@@ -22,11 +23,22 @@
 using namespace KODI;
 namespace fs = KODI::PLATFORM::FILESYSTEM;
 
+namespace
+{
+
 using OptDef = std::pair<std::string, bool>;
 
 class OpticalMediaPathTest : public testing::WithParamInterface<OptDef>, public testing::Test
 {
 };
+
+using TrailerDef = std::pair<std::string, std::string>;
+
+class TrailerTest : public testing::WithParamInterface<TrailerDef>, public testing::Test
+{
+};
+
+} // namespace
 
 TEST_P(OpticalMediaPathTest, GetOpticalMediaPath)
 {
@@ -57,3 +69,53 @@ const auto mediapath_tests = std::array{
 };
 
 INSTANTIATE_TEST_SUITE_P(TestVideoUtils, OpticalMediaPathTest, testing::ValuesIn(mediapath_tests));
+
+TEST_P(TrailerTest, FindTrailer)
+{
+  std::string temp_path;
+  if (!GetParam().second.empty())
+  {
+    std::error_code ec;
+    temp_path = fs::create_temp_directory(ec);
+    EXPECT_FALSE(ec);
+    XFILE::CDirectory::Create(temp_path);
+    const std::string file_path = URIUtils::AddFileToFolder(temp_path, GetParam().second);
+    {
+      std::ofstream of(file_path);
+    }
+    URIUtils::AddSlashAtEnd(temp_path);
+  }
+
+  std::string input_path = GetParam().first;
+  if (!temp_path.empty())
+  {
+    StringUtils::Replace(input_path, "#DIRECTORY#", temp_path);
+    StringUtils::Replace(input_path, "#URLENCODED_DIRECTORY#", CURL::Encode(temp_path));
+  }
+
+  CFileItem item(input_path, false);
+  EXPECT_EQ(VIDEO::UTILS::FindTrailer(item),
+            GetParam().second.empty() ? ""
+                                      : URIUtils::AddFileToFolder(temp_path, GetParam().second));
+
+  if (!temp_path.empty())
+    XFILE::CDirectory::RemoveRecursive(temp_path);
+}
+
+const auto trailer_tests = std::array{
+    TrailerDef{"https://some.where/foo", ""},
+    TrailerDef{"upnp://1/2/3", ""},
+    TrailerDef{"bluray://1", ""},
+    TrailerDef{"pvr://foobar.pvr", ""},
+    TrailerDef{"plugin://plugin.video.foo/foo?param=1", ""},
+    TrailerDef{"dvd://1", ""},
+    TrailerDef{"stack://#DIRECTORY#foo-cd1.avi , #DIRECTORY#foo-cd2.avi", "foo-trailer.mkv"},
+    TrailerDef{"stack://#DIRECTORY#foo-cd1.avi , #DIRECTORY#foo-cd2.avi", "foo-cd1-trailer.avi"},
+    TrailerDef{"stack://#DIRECTORY#foo-cd1.avi , #DIRECTORY#foo-cd2.avi", "movie-trailer.mp4"},
+    TrailerDef{"zip://#URLENCODED_DIRECTORY#bar.zip/bar.avi", "bar-trailer.mov"},
+    TrailerDef{"zip://#URLENCODED_DIRECTORY#bar.zip/bar.mkv", "movie-trailer.ogm"},
+    TrailerDef{"#DIRECTORY#bar.mkv", "bar-trailer.mkv"},
+    TrailerDef{"#DIRECTORY#bar.mkv", "movie-trailer.avi"},
+};
+
+INSTANTIATE_TEST_SUITE_P(TestVideoUtils, TrailerTest, testing::ValuesIn(trailer_tests));
