@@ -256,22 +256,23 @@ struct SortComparerStreamSubtitle
   }
 };
 
-bool SupportsAudioFeature(int feature, const std::vector<int>& caps)
+bool SupportsAudioFeature(IPlayerAudioCaps feature, const std::vector<IPlayerAudioCaps>& caps)
 {
-  for (int item : caps)
+  for (IPlayerAudioCaps cap : caps)
   {
-    if (item == feature || item == IPC_AUD_ALL)
+    if (cap == feature || cap == IPlayerAudioCaps::ALL)
       return true;
   }
 
   return false;
 }
 
-bool SupportsSubtitleFeature(int feature, const std::vector<int>& caps)
+bool SupportsSubtitleFeature(IPlayerSubtitleCaps feature,
+                             const std::vector<IPlayerSubtitleCaps>& caps)
 {
-  for (int item : caps)
+  for (IPlayerSubtitleCaps cap : caps)
   {
-    if (item == feature || item == IPC_SUBS_ALL)
+    if (cap == feature || cap == IPlayerSubtitleCaps::ALL)
       return true;
   }
   return false;
@@ -374,9 +375,9 @@ void KODI::VIDEO::GUILIB::OpenDialogSelectAudioStream()
   auto& components = CServiceBroker::GetAppComponents();
   auto appPlayer = components.GetComponent<CApplicationPlayer>();
 
-  std::vector<int> caps;
+  std::vector<IPlayerAudioCaps> caps;
   appPlayer->GetAudioCapabilities(caps);
-  if (!SupportsAudioFeature(IPC_AUD_SELECT_STREAM, caps))
+  if (!SupportsAudioFeature(IPlayerAudioCaps::SELECT_STREAM, caps))
     return;
 
   const int streamCount = appPlayer->GetAudioStreamCount();
@@ -446,9 +447,9 @@ void KODI::VIDEO::GUILIB::OpenDialogSelectSubtitleStream()
   auto& components = CServiceBroker::GetAppComponents();
   auto appPlayer = components.GetComponent<CApplicationPlayer>();
 
-  std::vector<int> caps;
+  std::vector<IPlayerSubtitleCaps> caps;
   appPlayer->GetSubtitleCapabilities(caps);
-  if (!SupportsSubtitleFeature(IPC_SUBS_SELECT, caps))
+  if (!SupportsSubtitleFeature(IPlayerSubtitleCaps::SELECT_STREAM, caps))
     return;
 
   const int streamCount = appPlayer->GetSubtitleCount();
