@@ -9,6 +9,7 @@
 #include "PlayListFactory.h"
 
 #include "FileItem.h"
+#include "URL.h"
 #include "playlists/PlayListB4S.h"
 #include "playlists/PlayListM3U.h"
 #include "playlists/PlayListPLS.h"
@@ -20,6 +21,19 @@
 #include "utils/URIUtils.h"
 
 using namespace PLAYLIST;
+
+CPlayList* CPlayListFactory::Create(const CURL& url)
+{
+  CFileItem item{url.Get(), false};
+
+  if (url.HasOption("mimetype"))
+  {
+    item.SetContentLookup(false);
+    item.SetMimeType(url.GetOption("mimetype"));
+  }
+
+  return Create(item);
+}
 
 CPlayList* CPlayListFactory::Create(const std::string& filename)
 {
