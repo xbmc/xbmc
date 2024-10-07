@@ -57,7 +57,7 @@ python: | xbmc/assets
 	cd xbmc/assets/python@PYTHON_VERSION@/lib/python@PYTHON_VERSION@/; rm -rf test config config-@PYTHON_VERSION@ lib-dynload ; find . -name "*.so" -exec rm -f {} \;
 
 res:
-	mkdir -p xbmc/res xbmc/res/values
+	mkdir -p xbmc/res xbmc/res/values xbmc/res/xml
 	cp -rfp media/mipmap-* xbmc/res/
 	cp -fp $(CMAKE_SOURCE_DIR)/media/applaunch_screen.png xbmc/res/drawable/
 	cp -fp $(CMAKE_SOURCE_DIR)/media/applaunch_screen.png xbmc/res/drawable-xxxhdpi/
