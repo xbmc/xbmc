@@ -266,53 +266,37 @@ bool FindSimilar::Execute(const CFileItemPtr& item) const
 
 bool StartRecording::IsVisible(const CFileItem& item) const
 {
-  const std::shared_ptr<const CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(item);
-
-  std::shared_ptr<CPVRChannel> channel = item.GetPVRChannelInfoTag();
+  const std::shared_ptr<CPVRChannel> channel{item.GetPVRChannelInfoTag()};
   if (channel)
+  {
+    const std::shared_ptr<const CPVRClient> client{CServiceBroker::GetPVRManager().GetClient(item)};
     return client && client->GetClientCapabilities().SupportsTimers() &&
            !CServiceBroker::GetPVRManager().Timers()->IsRecordingOnChannel(*channel);
-
-  const std::shared_ptr<const CPVREpgInfoTag> epg = item.GetEPGInfoTag();
-  if (epg && epg->IsRecordable())
-  {
-    if (epg->IsGapTag())
-    {
-      channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelForEpgTag(epg);
-      if (channel)
-      {
-        return client && client->GetClientCapabilities().SupportsTimers() &&
-               !CServiceBroker::GetPVRManager().Timers()->IsRecordingOnChannel(*channel);
-      }
-    }
-    else
-    {
-      return client && client->GetClientCapabilities().SupportsTimers() &&
-             !CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(epg);
-    }
   }
+
+  const std::shared_ptr<const CPVREpgInfoTag> epgTag{item.GetEPGInfoTag()};
+  if (epgTag && epgTag->IsRecordable())
+  {
+    const std::shared_ptr<const CPVRClient> client{CServiceBroker::GetPVRManager().GetClient(item)};
+    return client && client->GetClientCapabilities().SupportsTimers() &&
+           !CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(epgTag);
+  }
+
   return false;
 }
 
 bool StartRecording::Execute(const CFileItemPtr& item) const
 {
-  const std::shared_ptr<const CPVREpgInfoTag> epgTag = item->GetEPGInfoTag();
-  if (!epgTag || epgTag->IsActive())
-  {
-    // instant recording
-    std::shared_ptr<CPVRChannel> channel;
-    if (epgTag)
-      channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelForEpgTag(epgTag);
+  const std::shared_ptr<CPVRChannel> channel{item->GetPVRChannelInfoTag()};
+  if (channel)
+    return CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().SetRecordingOnChannel(channel,
+                                                                                         true);
 
-    if (!channel)
-      channel = item->GetPVRChannelInfoTag();
+  const std::shared_ptr<const CPVREpgInfoTag> epgTag{item->GetEPGInfoTag()};
+  if (epgTag)
+    return CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().AddTimer(*item, false);
 
-    if (channel)
-      return CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().SetRecordingOnChannel(channel,
-                                                                                           true);
-  }
-
-  return CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().AddTimer(*item, false);
+  return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
