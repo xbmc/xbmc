@@ -11,6 +11,7 @@
 #include "URL.h"
 #include "guilib/DirtyRegion.h"
 #include "guilib/GUITextureGLES.h"
+#include "platform/MessagePrinter.h"
 #include "rendering/MatrixGL.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
@@ -22,8 +23,6 @@
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
-
-#include <exception>
 
 #if defined(TARGET_LINUX)
 #include "utils/EGLUtils.h"
@@ -45,22 +44,17 @@ bool CRenderSystemGLES::InitRenderSystem()
   m_maxTextureSize = maxTextureSize;
 
   // Get the GLES version number
+  m_RenderVersion = "<none>";
   m_RenderVersionMajor = 0;
   m_RenderVersionMinor = 0;
 
   const char* ver = (const char*)glGetString(GL_VERSION);
-  if (ver != 0)
+  if (ver != NULL)
   {
     sscanf(ver, "%d.%d", &m_RenderVersionMajor, &m_RenderVersionMinor);
     if (!m_RenderVersionMajor)
       sscanf(ver, "%*s %*s %d.%d", &m_RenderVersionMajor, &m_RenderVersionMinor);
     m_RenderVersion = ver;
-  }
-  else
-  {
-    CLog::Log(LOGFATAL, "CRenderSystemGLES::{} - glGetString(GL_VERSION) returned NULL, exiting",
-              __FUNCTION__);
-    std::terminate();
   }
 
   // Get our driver vendor and renderer
@@ -74,15 +68,14 @@ bool CRenderSystemGLES::InitRenderSystem()
   if (tmpRenderer != NULL)
     m_RenderRenderer = tmpRenderer;
 
-  m_RenderExtensions  = " ";
+  m_RenderExtensions = "";
 
   const char *tmpExtensions = (const char*) glGetString(GL_EXTENSIONS);
   if (tmpExtensions != NULL)
   {
     m_RenderExtensions += tmpExtensions;
+    m_RenderExtensions += " ";
   }
-
-  m_RenderExtensions += " ";
 
 #if defined(GL_KHR_debug) && defined(TARGET_LINUX)
   if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_openGlDebugging)
@@ -106,6 +99,14 @@ bool CRenderSystemGLES::InitRenderSystem()
     }
   }
 #endif
+
+  // Shut down gracefully if OpenGL context could not be allocated
+  if (m_RenderVersionMajor == 0)
+  {
+    CLog::Log(LOGFATAL, "Can not initialize OpenGL context. Exiting");
+    CMessagePrinter::DisplayError("ERROR: Can not initialize OpenGL context. Exiting");
+    return false;
+  }
 
   LogGraphicsInfo();
 
