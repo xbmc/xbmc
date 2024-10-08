@@ -70,8 +70,8 @@ public:
   virtual void Initialize() = 0;
   virtual void Stop() = 0;
 
-  virtual void GetLocalDrives(VECSOURCES &localDrives) = 0;
-  virtual void GetRemovableDrives(VECSOURCES &removableDrives) = 0;
+  virtual void GetLocalDrives(std::vector<CMediaSource>& localDrives) = 0;
+  virtual void GetRemovableDrives(std::vector<CMediaSource>& removableDrives) = 0;
   virtual std::string GetFirstOpticalDeviceFileName()
   {
 #ifdef HAS_OPTICAL_DRIVE

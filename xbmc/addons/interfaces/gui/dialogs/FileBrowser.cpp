@@ -70,7 +70,7 @@ bool Interface_GUIDialogFileBrowser::show_and_get_directory(KODI_HANDLE kodiBase
 
   std::string strPath = path_in;
 
-  VECSOURCES vecShares;
+  std::vector<CMediaSource> vecShares;
   GetVECShares(vecShares, shares, strPath);
   bool bRet = CGUIDialogFileBrowser::ShowAndGetDirectory(vecShares, heading, strPath, write_only);
   if (bRet)
@@ -107,7 +107,7 @@ bool Interface_GUIDialogFileBrowser::show_and_get_file(KODI_HANDLE kodiBase,
 
   std::string strPath = path_in;
 
-  VECSOURCES vecShares;
+  std::vector<CMediaSource> vecShares;
   GetVECShares(vecShares, shares, strPath);
   bool bRet = CGUIDialogFileBrowser::ShowAndGetFile(vecShares, mask, heading, strPath, use_thumbs,
                                                     use_file_directories);
@@ -179,7 +179,7 @@ bool Interface_GUIDialogFileBrowser::show_and_get_file_list(KODI_HANDLE kodiBase
     return false;
   }
 
-  VECSOURCES vecShares;
+  std::vector<CMediaSource> vecShares;
   GetVECShares(vecShares, shares, "");
 
   std::vector<std::string> pathsInt;
@@ -224,7 +224,7 @@ bool Interface_GUIDialogFileBrowser::show_and_get_source(KODI_HANDLE kodiBase,
 
   std::string strPath = path_in;
 
-  VECSOURCES vecShares;
+  std::vector<CMediaSource> vecShares;
   if (additionalShare)
     GetVECShares(vecShares, additionalShare, strPath);
   bool bRet =
@@ -259,7 +259,7 @@ bool Interface_GUIDialogFileBrowser::show_and_get_image(KODI_HANDLE kodiBase,
 
   std::string strPath = path_in;
 
-  VECSOURCES vecShares;
+  std::vector<CMediaSource> vecShares;
   GetVECShares(vecShares, shares, strPath);
   bool bRet = CGUIDialogFileBrowser::ShowAndGetImage(vecShares, heading, strPath);
   if (bRet)
@@ -290,7 +290,7 @@ bool Interface_GUIDialogFileBrowser::show_and_get_image_list(KODI_HANDLE kodiBas
     return false;
   }
 
-  VECSOURCES vecShares;
+  std::vector<CMediaSource> vecShares;
   GetVECShares(vecShares, shares, "");
 
   std::vector<std::string> pathsInt;
@@ -335,7 +335,7 @@ void Interface_GUIDialogFileBrowser::clear_file_list(KODI_HANDLE kodiBase,
   }
 }
 
-void Interface_GUIDialogFileBrowser::GetVECShares(VECSOURCES& vecShares,
+void Interface_GUIDialogFileBrowser::GetVECShares(std::vector<CMediaSource>& vecShares,
                                                   const std::string& strShares,
                                                   const std::string& strPath)
 {
@@ -352,35 +352,35 @@ void Interface_GUIDialogFileBrowser::GetVECShares(VECSOURCES& vecShares,
   found = strShares.find("programs");
   if (found != std::string::npos)
   {
-    VECSOURCES* sources = CMediaSourceSettings::GetInstance().GetSources("programs");
+    std::vector<CMediaSource>* sources = CMediaSourceSettings::GetInstance().GetSources("programs");
     if (sources != nullptr)
       vecShares.insert(vecShares.end(), sources->begin(), sources->end());
   }
   found = strShares.find("files");
   if (found != std::string::npos)
   {
-    VECSOURCES* sources = CMediaSourceSettings::GetInstance().GetSources("files");
+    std::vector<CMediaSource>* sources = CMediaSourceSettings::GetInstance().GetSources("files");
     if (sources != nullptr)
       vecShares.insert(vecShares.end(), sources->begin(), sources->end());
   }
   found = strShares.find("music");
   if (found != std::string::npos)
   {
-    VECSOURCES* sources = CMediaSourceSettings::GetInstance().GetSources("music");
+    std::vector<CMediaSource>* sources = CMediaSourceSettings::GetInstance().GetSources("music");
     if (sources != nullptr)
       vecShares.insert(vecShares.end(), sources->begin(), sources->end());
   }
   found = strShares.find("video");
   if (found != std::string::npos)
   {
-    VECSOURCES* sources = CMediaSourceSettings::GetInstance().GetSources("video");
+    std::vector<CMediaSource>* sources = CMediaSourceSettings::GetInstance().GetSources("video");
     if (sources != nullptr)
       vecShares.insert(vecShares.end(), sources->begin(), sources->end());
   }
   found = strShares.find("pictures");
   if (found != std::string::npos)
   {
-    VECSOURCES* sources = CMediaSourceSettings::GetInstance().GetSources("pictures");
+    std::vector<CMediaSource>* sources = CMediaSourceSettings::GetInstance().GetSources("pictures");
     if (sources != nullptr)
       vecShares.insert(vecShares.end(), sources->begin(), sources->end());
   }

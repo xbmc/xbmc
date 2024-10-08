@@ -54,7 +54,7 @@ void CLinuxStorageProvider::Stop()
   m_instance->Stop();
 }
 
-void CLinuxStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
+void CLinuxStorageProvider::GetLocalDrives(std::vector<CMediaSource>& localDrives)
 {
   // Home directory
   CMediaSource share;
@@ -70,7 +70,7 @@ void CLinuxStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
   m_instance->GetLocalDrives(localDrives);
 }
 
-void CLinuxStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
+void CLinuxStorageProvider::GetRemovableDrives(std::vector<CMediaSource>& removableDrives)
 {
   m_instance->GetRemovableDrives(removableDrives);
 }

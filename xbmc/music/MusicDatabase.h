@@ -982,7 +982,7 @@ private:
   /*! \brief Checks that source table matches sources.xml
   returns true when they do
   */
-  bool CheckSources(VECSOURCES& sources);
+  bool CheckSources(std::vector<CMediaSource>& sources);
 
   /*! \brief Initially fills source table from sources.xml for use only at
   migration of db from an earlier version than 72

@@ -44,7 +44,7 @@ CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
           realPath = CURL(realPath).GetHostName();
 
         // Check manually configured sources
-        VECSOURCES *sources = NULL;
+        std::vector<CMediaSource>* sources = NULL;
         for (unsigned int index = 0; index < size && !accessible; index++)
         {
           sources = CMediaSourceSettings::GetInstance().GetSources(sourceTypes[index]);
@@ -76,7 +76,7 @@ CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
         if (!accessible)
         {
           bool isSource;
-          VECSOURCES removableSources;
+          std::vector<CMediaSource> removableSources;
           CServiceBroker::GetMediaManager().GetRemovableDrives(removableSources);
           int sourceIndex = CUtil::GetMatchingSource(realPath, removableSources, isSource);
           if (sourceIndex >= 0 && sourceIndex < static_cast<int>(removableSources.size()) &&

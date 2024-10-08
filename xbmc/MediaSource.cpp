@@ -77,7 +77,7 @@ bool CMediaSource::operator==(const CMediaSource &share) const
   return true;
 }
 
-void AddOrReplace(VECSOURCES& sources, const VECSOURCES& extras)
+void AddOrReplace(std::vector<CMediaSource>& sources, const std::vector<CMediaSource>& extras)
 {
   unsigned int i;
   for( i=0;i<extras.size();++i )
@@ -96,7 +96,7 @@ void AddOrReplace(VECSOURCES& sources, const VECSOURCES& extras)
   }
 }
 
-void AddOrReplace(VECSOURCES& sources, const CMediaSource& source)
+void AddOrReplace(std::vector<CMediaSource>& sources, const CMediaSource& source)
 {
   unsigned int i;
   for( i=0;i<sources.size();++i )

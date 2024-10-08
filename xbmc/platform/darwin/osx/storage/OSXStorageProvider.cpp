@@ -31,7 +31,7 @@ COSXStorageProvider::COSXStorageProvider()
   PumpDriveChangeEvents(NULL);
 }
 
-void COSXStorageProvider::GetLocalDrives(VECSOURCES& localDrives)
+void COSXStorageProvider::GetLocalDrives(std::vector<CMediaSource>& localDrives)
 {
   CMediaSource share;
 
@@ -93,7 +93,7 @@ void COSXStorageProvider::GetLocalDrives(VECSOURCES& localDrives)
   }
 }
 
-void COSXStorageProvider::GetRemovableDrives(VECSOURCES& removableDrives)
+void COSXStorageProvider::GetRemovableDrives(std::vector<CMediaSource>& removableDrives)
 {
   DASessionRef session = DASessionCreate(kCFAllocatorDefault);
   if (session)

@@ -921,10 +921,10 @@ void CGUIWindowMusicNav::AddSearchFolder()
   if (viewState)
   {
     // add our remove the musicsearch source
-    VECSOURCES &sources = viewState->GetSources();
+    std::vector<CMediaSource>& sources = viewState->GetSources();
     bool haveSearchSource = false;
     bool needSearchSource = !GetProperty("search").empty() || !m_searchWithEdit; // we always need it if we don't have the edit control
-    for (IVECSOURCES it = sources.begin(); it != sources.end(); ++it)
+    for (std::vector<CMediaSource>::iterator it = sources.begin(); it != sources.end(); ++it)
     {
       CMediaSource& share = *it;
       if (share.strPath == "musicsearch://")

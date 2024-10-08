@@ -1173,7 +1173,7 @@ bool CGUIControlButtonSetting::GetPath(const std::shared_ptr<CSettingPath>& path
 
   std::string path = pathSetting->GetValue();
 
-  VECSOURCES shares;
+  std::vector<CMediaSource> shares;
   bool localSharesOnly = false;
   const std::vector<std::string>& sources = pathSetting->GetSources();
   for (const auto& source : sources)
@@ -1182,7 +1182,7 @@ bool CGUIControlButtonSetting::GetPath(const std::shared_ptr<CSettingPath>& path
       localSharesOnly = true;
     else
     {
-      VECSOURCES* sources = CMediaSourceSettings::GetInstance().GetSources(source);
+      std::vector<CMediaSource>* sources = CMediaSourceSettings::GetInstance().GetSources(source);
       if (sources != NULL)
         shares.insert(shares.end(), sources->begin(), sources->end());
     }

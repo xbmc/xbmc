@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "MediaSource.h" // Definition of VECSOURCES
+#include "MediaSource.h" // Definition of std::vector<CMediaSource>
 #include "utils/Digest.h"
 
 #include <climits>
@@ -154,7 +154,9 @@ public:
    \param parameters the returned parameters
    */
   static void SplitParams(const std::string& paramString, std::vector<std::string>& parameters);
-  static int GetMatchingSource(const std::string& strPath, VECSOURCES& VECSOURCES, bool& bIsSourceName);
+  static int GetMatchingSource(const std::string& strPath,
+                               std::vector<CMediaSource>& sources,
+                               bool& bIsSourceName);
   static std::string TranslateSpecialSource(const std::string &strSpecial);
   static void DeleteDirectoryCache(const std::string &prefix = "");
   static void DeleteMusicDatabaseDirectoryCache();

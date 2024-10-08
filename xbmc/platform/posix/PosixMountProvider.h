@@ -22,8 +22,9 @@ public:
   void Initialize() override;
   void Stop() override { }
 
-  void GetLocalDrives(VECSOURCES &localDrives) override { GetDrives(localDrives); }
-  void GetRemovableDrives(VECSOURCES &removableDrives) override { /*GetDrives(removableDrives);*/ }
+  void GetLocalDrives(std::vector<CMediaSource>& localDrives) override { GetDrives(localDrives); }
+  void GetRemovableDrives(std::vector<CMediaSource>& removableDrives) override
+  { /*GetDrives(removableDrives);*/ }
 
   std::vector<std::string> GetDiskUsage() override;
 
@@ -31,7 +32,7 @@ public:
 
   bool PumpDriveChangeEvents(IStorageEventsCallback *callback) override;
 private:
-  void GetDrives(VECSOURCES &drives);
+  void GetDrives(std::vector<CMediaSource>& drives);
 
   unsigned int m_removableLength;
 };

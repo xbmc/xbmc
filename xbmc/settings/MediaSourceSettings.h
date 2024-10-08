@@ -36,7 +36,7 @@ public:
   bool Save(const std::string &file) const;
   void Clear();
 
-  VECSOURCES* GetSources(const std::string &type);
+  std::vector<CMediaSource>* GetSources(const std::string& type);
   const std::string& GetDefaultSource(const std::string &type) const;
   void SetDefaultSource(const std::string &type, const std::string &source);
 
@@ -55,19 +55,19 @@ private:
   bool GetSource(const std::string& category, const tinyxml2::XMLNode* source, CMediaSource& share);
   void GetSources(const tinyxml2::XMLNode* rootElement,
                   const std::string& tagName,
-                  VECSOURCES& items,
+                  std::vector<CMediaSource>& items,
                   std::string& defaultString);
   bool SetSources(tinyxml2::XMLNode* rootNode,
                   const char* section,
-                  const VECSOURCES& shares,
+                  const std::vector<CMediaSource>& shares,
                   const std::string& defaultPath) const;
 
-  VECSOURCES m_programSources;
-  VECSOURCES m_pictureSources;
-  VECSOURCES m_fileSources;
-  VECSOURCES m_musicSources;
-  VECSOURCES m_videoSources;
-  VECSOURCES m_gameSources;
+  std::vector<CMediaSource> m_programSources;
+  std::vector<CMediaSource> m_pictureSources;
+  std::vector<CMediaSource> m_fileSources;
+  std::vector<CMediaSource> m_musicSources;
+  std::vector<CMediaSource> m_videoSources;
+  std::vector<CMediaSource> m_gameSources;
 
   std::string m_defaultProgramSource;
   std::string m_defaultMusicSource;

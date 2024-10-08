@@ -45,7 +45,7 @@ PLAYLIST::Id CGUIViewStateWindowVideo::GetPlaylist() const
   return PLAYLIST::Id::TYPE_VIDEO;
 }
 
-VECSOURCES& CGUIViewStateWindowVideo::GetSources()
+std::vector<CMediaSource>& CGUIViewStateWindowVideo::GetSources()
 {
   AddLiveTVSources();
   return CGUIViewState::GetSources();
@@ -383,7 +383,7 @@ void CGUIViewStateWindowVideoNav::SaveViewState()
   }
 }
 
-VECSOURCES& CGUIViewStateWindowVideoNav::GetSources()
+std::vector<CMediaSource>& CGUIViewStateWindowVideoNav::GetSources()
 {
   //  Setup shares we want to have
   m_sources.clear();
@@ -442,7 +442,7 @@ bool CGUIViewStateWindowVideoPlaylist::HideParentDirItems()
   return true;
 }
 
-VECSOURCES& CGUIViewStateWindowVideoPlaylist::GetSources()
+std::vector<CMediaSource>& CGUIViewStateWindowVideoPlaylist::GetSources()
 {
   m_sources.clear();
   //  Playlist share

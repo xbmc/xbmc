@@ -229,7 +229,7 @@ void CGUIDialogInfoProviderSettings::OnSettingAction(const std::shared_ptr<const
     CGUIDialogAddonSettings::ShowForAddon(m_artistscraper, false);
   else if (settingId == CSettings::SETTING_MUSICLIBRARY_ARTISTSFOLDER)
   {
-    VECSOURCES shares;
+    std::vector<CMediaSource> shares;
     CServiceBroker::GetMediaManager().GetLocalDrives(shares);
     CServiceBroker::GetMediaManager().GetNetworkLocations(shares);
     CServiceBroker::GetMediaManager().GetRemovableDrives(shares);

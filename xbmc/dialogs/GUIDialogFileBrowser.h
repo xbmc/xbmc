@@ -34,16 +34,41 @@ public:
   bool IsConfirmed() { return m_bConfirmed; }
   void SetHeading(const std::string &heading);
 
-  static bool ShowAndGetDirectory(const VECSOURCES &shares, const std::string &heading, std::string &path, bool bWriteOnly=false);
-  static bool ShowAndGetFile(const VECSOURCES &shares, const std::string &mask, const std::string &heading, std::string &path, bool useThumbs = false, bool useFileDirectories = false);
+  static bool ShowAndGetDirectory(const std::vector<CMediaSource>& shares,
+                                  const std::string& heading,
+                                  std::string& path,
+                                  bool bWriteOnly = false);
+  static bool ShowAndGetFile(const std::vector<CMediaSource>& shares,
+                             const std::string& mask,
+                             const std::string& heading,
+                             std::string& path,
+                             bool useThumbs = false,
+                             bool useFileDirectories = false);
   static bool ShowAndGetFile(const std::string &directory, const std::string &mask, const std::string &heading, std::string &path, bool useThumbs = false, bool useFileDirectories = false, bool singleList = false);
-  static bool ShowAndGetSource(std::string &path, bool allowNetworkShares, VECSOURCES* additionalShare = NULL, const std::string& strType="");
-  static bool ShowAndGetFileList(const VECSOURCES &shares, const std::string &mask, const std::string &heading, std::vector<std::string> &path, bool useThumbs = false, bool useFileDirectories = false);
-  static bool ShowAndGetImage(const VECSOURCES &shares, const std::string &heading, std::string &path);
-  static bool ShowAndGetImage(const CFileItemList &items, const VECSOURCES &shares, const std::string &heading, std::string &path, bool* flip=NULL, int label=21371);
-  static bool ShowAndGetImageList(const VECSOURCES &shares, const std::string &heading, std::vector<std::string> &path);
+  static bool ShowAndGetSource(std::string& path,
+                               bool allowNetworkShares,
+                               std::vector<CMediaSource>* additionalShare = NULL,
+                               const std::string& strType = "");
+  static bool ShowAndGetFileList(const std::vector<CMediaSource>& shares,
+                                 const std::string& mask,
+                                 const std::string& heading,
+                                 std::vector<std::string>& path,
+                                 bool useThumbs = false,
+                                 bool useFileDirectories = false);
+  static bool ShowAndGetImage(const std::vector<CMediaSource>& shares,
+                              const std::string& heading,
+                              std::string& path);
+  static bool ShowAndGetImage(const CFileItemList& items,
+                              const std::vector<CMediaSource>& shares,
+                              const std::string& heading,
+                              std::string& path,
+                              bool* flip = NULL,
+                              int label = 21371);
+  static bool ShowAndGetImageList(const std::vector<CMediaSource>& shares,
+                                  const std::string& heading,
+                                  std::vector<std::string>& path);
 
-  void SetSources(const VECSOURCES &shares);
+  void SetSources(const std::vector<CMediaSource>& shares);
 
   void OnItemLoaded(CFileItem *item) override {};
 
@@ -64,7 +89,7 @@ protected:
   void OnEditMediaSource(CFileItem* pItem);
   CGUIControl *GetFirstFocusableControl(int id) override;
 
-  VECSOURCES m_shares;
+  std::vector<CMediaSource> m_shares;
   XFILE::CVirtualDirectory m_rootDir;
   CFileItemList* m_vecItems;
   CFileItem* m_Directory;

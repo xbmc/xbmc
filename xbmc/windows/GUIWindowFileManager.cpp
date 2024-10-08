@@ -1301,7 +1301,7 @@ void CGUIWindowFileManager::SetInitialPath(const std::string &path)
       m_Directory[0]->SetPath("");
 
       bool bIsSourceName = false;
-      VECSOURCES shares;
+      std::vector<CMediaSource> shares;
       m_rootDir.GetSources(shares);
       int iIndex = CUtil::GetMatchingSource(strDestination, shares, bIsSourceName);
       if (iIndex > -1

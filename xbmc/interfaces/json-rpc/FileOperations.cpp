@@ -39,7 +39,7 @@ JSONRPC_STATUS CFileOperations::GetRootDirectory(const std::string &method, ITra
   std::string media = parameterObject["media"].asString();
   StringUtils::ToLower(media);
 
-  VECSOURCES *sources = CMediaSourceSettings::GetInstance().GetSources(media);
+  std::vector<CMediaSource>* sources = CMediaSourceSettings::GetInstance().GetSources(media);
   if (sources)
   {
     CFileItemList items;

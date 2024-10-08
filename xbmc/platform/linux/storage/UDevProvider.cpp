@@ -91,7 +91,7 @@ void CUDevProvider::Stop()
   udev_unref(m_udev);
 }
 
-void CUDevProvider::GetDisks(VECSOURCES& disks, bool removable)
+void CUDevProvider::GetDisks(std::vector<CMediaSource>& disks, bool removable)
 {
   // enumerate existing block devices
   struct udev_enumerate *u_enum = udev_enumerate_new(m_udev);
@@ -188,12 +188,12 @@ void CUDevProvider::GetDisks(VECSOURCES& disks, bool removable)
   udev_enumerate_unref(u_enum);
 }
 
-void CUDevProvider::GetLocalDrives(VECSOURCES &localDrives)
+void CUDevProvider::GetLocalDrives(std::vector<CMediaSource>& localDrives)
 {
   GetDisks(localDrives, false);
 }
 
-void CUDevProvider::GetRemovableDrives(VECSOURCES &removableDrives)
+void CUDevProvider::GetRemovableDrives(std::vector<CMediaSource>& removableDrives)
 {
   GetDisks(removableDrives, true);
 }

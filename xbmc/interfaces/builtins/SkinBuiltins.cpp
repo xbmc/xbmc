@@ -191,7 +191,7 @@ static int SetPath(const std::vector<std::string>& params)
 {
   int string = CSkinSettings::GetInstance().TranslateString(params[0]);
   std::string value = CSkinSettings::GetInstance().GetString(string);
-  VECSOURCES localShares;
+  std::vector<CMediaSource> localShares;
   CServiceBroker::GetMediaManager().GetLocalDrives(localShares);
   CServiceBroker::GetMediaManager().GetNetworkLocations(localShares);
   if (params.size() > 1)
@@ -227,7 +227,7 @@ static int SetFile(const std::vector<std::string>& params)
 {
   int string = CSkinSettings::GetInstance().TranslateString(params[0]);
   std::string value = CSkinSettings::GetInstance().GetString(string);
-  VECSOURCES localShares;
+  std::vector<CMediaSource> localShares;
   CServiceBroker::GetMediaManager().GetLocalDrives(localShares);
 
   // Note. can only browse one addon type from here
@@ -289,7 +289,7 @@ static int SetImage(const std::vector<std::string>& params)
 {
   int string = CSkinSettings::GetInstance().TranslateString(params[0]);
   std::string value = CSkinSettings::GetInstance().GetString(string);
-  VECSOURCES localShares;
+  std::vector<CMediaSource> localShares;
   CServiceBroker::GetMediaManager().GetLocalDrives(localShares);
   if (params.size() > 1)
   {

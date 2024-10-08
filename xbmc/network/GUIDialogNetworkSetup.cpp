@@ -211,7 +211,7 @@ void CGUIDialogNetworkSetup::InitializeSettings()
 void CGUIDialogNetworkSetup::OnServerBrowse()
 {
   // open a filebrowser dialog with the current address
-  VECSOURCES shares;
+  std::vector<CMediaSource> shares;
   std::string path = ConstructPath();
   // get the share as the base path
   CMediaSource share;
