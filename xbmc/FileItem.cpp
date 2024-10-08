@@ -1156,12 +1156,12 @@ bool CFileItem::IsBluray() const
 
 bool CFileItem::IsDVD() const
 {
-  return URIUtils::IsDVD(m_strPath) || m_iDriveType == CMediaSource::SOURCE_TYPE_DVD;
+  return URIUtils::IsDVD(m_strPath) || m_iDriveType == CMediaSource::SOURCE_TYPE_OPTICAL_DISC;
 }
 
 bool CFileItem::IsOnDVD() const
 {
-  return URIUtils::IsOnDVD(m_strPath) || m_iDriveType == CMediaSource::SOURCE_TYPE_DVD;
+  return URIUtils::IsOnDVD(m_strPath) || m_iDriveType == CMediaSource::SOURCE_TYPE_OPTICAL_DISC;
 }
 
 bool CFileItem::IsNfs() const

@@ -561,7 +561,7 @@ void CGUIDialogFileBrowser::OnClick(int iItem)
 
 bool CGUIDialogFileBrowser::HaveDiscOrConnection( int iDriveType )
 {
-  if ( iDriveType == CMediaSource::SOURCE_TYPE_DVD )
+  if (iDriveType == CMediaSource::SOURCE_TYPE_OPTICAL_DISC)
   {
     if (!CServiceBroker::GetMediaManager().IsDiscInDrive())
     {
