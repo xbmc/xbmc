@@ -156,11 +156,19 @@ bool CCharArrayParser::ReadNextLine(std::string& line)
   line.assign(m_data + m_position, lineLimit - m_position);
   m_position = lineLimit;
 
+  // Skip EOL chars
   if (m_data[m_position] == '\r')
   {
     m_position++;
+
+    if (m_data[m_position] == '\n')
+      m_position++;
+    // Malformed EOL as \r\r\n
+    else if (m_position + 1 <= m_limit && m_data[m_position] == '\r' &&
+             m_data[m_position + 1] == '\n')
+      m_position += 2;
   }
-  if (m_data[m_position] == '\n')
+  else if (m_data[m_position] == '\n')
   {
     m_position++;
   }
