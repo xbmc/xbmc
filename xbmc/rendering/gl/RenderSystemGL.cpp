@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "guilib/GUITextureGL.h"
+#include "platform/MessagePrinter.h"
 #include "rendering/MatrixGL.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
@@ -42,17 +43,18 @@ bool CRenderSystemGL::InitRenderSystem()
   // Get the GL version number
   m_RenderVersionMajor = 0;
   m_RenderVersionMinor = 0;
-  const char* ver = (const char*)glGetString(GL_VERSION);
-  if (ver != 0)
+  m_RenderVersion = "<none>";
+  const char* ver = reinterpret_cast<const char*>(glGetString(GL_VERSION));
+  if (ver)
   {
     sscanf(ver, "%d.%d", &m_RenderVersionMajor, &m_RenderVersionMinor);
     m_RenderVersion = ver;
   }
 
-  CLog::Log(LOGINFO, "CRenderSystemGL::{} - Version: {}, Major: {}, Minor: {}", __FUNCTION__, ver,
-            m_RenderVersionMajor, m_RenderVersionMinor);
+  CLog::Log(LOGINFO, "CRenderSystemGL::{} - Version: {}, Major: {}, Minor: {}", __FUNCTION__,
+            m_RenderVersion, m_RenderVersionMajor, m_RenderVersionMinor);
 
-  m_RenderExtensions  = " ";
+  m_RenderExtensions = "";
   if (m_RenderVersionMajor > 3 ||
       (m_RenderVersionMajor == 3 && m_RenderVersionMinor >= 2))
   {
@@ -63,22 +65,26 @@ bool CRenderSystemGL::InitRenderSystem()
       GLint i;
       for (i = 0; i < n; i++)
       {
-        m_RenderExtensions += (const char*) glGetStringi(GL_EXTENSIONS, i);
-        m_RenderExtensions += " ";
+        const char* extension = reinterpret_cast<const char*>(glGetStringi(GL_EXTENSIONS, i));
+        if (extension)
+        {
+          m_RenderExtensions += extension;
+          m_RenderExtensions += " ";
+        }
       }
     }
   }
   else
   {
-    auto extensions = (const char*) glGetString(GL_EXTENSIONS);
+    const char* extensions = reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS));
     if (extensions)
     {
       m_RenderExtensions += extensions;
+      m_RenderExtensions += " ";
     }
   }
-  m_RenderExtensions += " ";
 
-  ver = (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
+  ver = reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION));
   if (ver)
   {
     sscanf(ver, "%d.%d", &m_glslMajor, &m_glslMinor);
@@ -117,17 +123,25 @@ bool CRenderSystemGL::InitRenderSystem()
   }
 #endif
 
+  // Shut down gracefully if OpenGL context could not be allocated
+  if (m_RenderVersionMajor == 0)
+  {
+    CLog::Log(LOGFATAL, "Can not initialize OpenGL context. Exiting");
+    CMessagePrinter::DisplayError("ERROR: Can not initialize OpenGL context. Exiting");
+    return false;
+  }
+
   LogGraphicsInfo();
 
   // Get our driver vendor and renderer
-  const char* tmpVendor = (const char*) glGetString(GL_VENDOR);
+  const char* tmpVendor = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
   m_RenderVendor.clear();
-  if (tmpVendor != NULL)
+  if (tmpVendor)
     m_RenderVendor = tmpVendor;
 
-  const char* tmpRenderer = (const char*) glGetString(GL_RENDERER);
+  const char* tmpRenderer = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
   m_RenderRenderer.clear();
-  if (tmpRenderer != NULL)
+  if (tmpRenderer)
     m_RenderRenderer = tmpRenderer;
 
   m_bRenderCreated = true;
