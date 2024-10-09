@@ -58,6 +58,8 @@ void VideoPicture::Reset()
 
   iWidth = 0;
   iHeight = 0;
+  m_xOffset = 0;
+  m_yOffset = 0;
   iDisplayWidth = 0;
   iDisplayHeight = 0;
 }
