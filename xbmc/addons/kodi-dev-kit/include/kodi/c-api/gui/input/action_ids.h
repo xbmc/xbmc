@@ -677,6 +677,15 @@ enum ADDON_ACTION
   /// @brief <b>`267`</b>: Tempo decrease in current file played. global action, can be used anywhere
   ADDON_ACTION_PLAYER_DECREASE_TEMPO = 267,
 
+  /// @brief <b>`270 `</b>: Open the dialog window to select a video stream
+  ADDON_ACTION_DIALOG_SELECT_VIDEO = 270,
+
+  /// @brief <b>`271 `</b>: Open the dialog window to select a audio stream
+  ADDON_ACTION_DIALOG_SELECT_AUDIO = 271,
+
+  /// @brief <b>`272 `</b>: Open the dialog window to select a subtitle stream
+  ADDON_ACTION_DIALOG_SELECT_SUBTITLE = 272,
+
   /// @brief <b>`300`</b>: Voice actions
   ADDON_ACTION_VOICE_RECOGNIZE = 300,
 
