@@ -2196,6 +2196,10 @@ msgctxt "#459"
 msgid "Subs"
 msgstr ""
 
+#: xbmc/video/PlayerController.cpp
+#: xbmc/video/dialogs/GUIDialogAudioSettings.cpp
+#: addons/skin.estuary/xml/DialogPlayerProcessInfo.xml
+#: xbmc/video/guilib/VideoStreamSelectHelper.cpp
 msgctxt "#460"
 msgid "Audio stream"
 msgstr ""
@@ -2204,8 +2208,10 @@ msgctxt "#461"
 msgid "[active]"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogSubtitleSettings.cpp
+#: xbmc/video/guilib/VideoStreamSelectHelper.cpp
 msgctxt "#462"
-msgid "Subtitle"
+msgid "Subtitle stream"
 msgstr ""
 
 msgctxt "#463"
@@ -22827,6 +22833,7 @@ msgstr ""
 #. Label for an option to select the video stream to play if current video has more than one video stream
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 #: xbmc/video/PlayerController.cpp
+#: xbmc/video/guilib/VideoStreamSelectHelper.cpp
 msgctxt "#38031"
 msgid "Video stream"
 msgstr ""

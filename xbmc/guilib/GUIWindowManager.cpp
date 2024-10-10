@@ -299,6 +299,9 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIDialogVideoManagerExtras);
   Add(new CGUIDialogSelect(WINDOW_DIALOG_SELECT_VIDEO_VERSION));
   Add(new CGUIDialogSelect(WINDOW_DIALOG_SELECT_VIDEO_EXTRA));
+  Add(new CGUIDialogSelect(WINDOW_DIALOG_SELECT_VIDEO_STREAM));
+  Add(new CGUIDialogSelect(WINDOW_DIALOG_SELECT_AUDIO_STREAM));
+  Add(new CGUIDialogSelect(WINDOW_DIALOG_SELECT_SUBTITLE_STREAM));
 
   Add(new CGUIDialogTextViewer);
   Add(new CGUIWindowFullScreen);
@@ -386,6 +389,9 @@ bool CGUIWindowManager::DestroyWindows()
     DestroyWindow(WINDOW_DIALOG_SLIDER);
     DestroyWindow(WINDOW_DIALOG_MEDIA_FILTER);
     DestroyWindow(WINDOW_DIALOG_SUBTITLES);
+    DestroyWindow(WINDOW_DIALOG_SELECT_VIDEO_STREAM);
+    DestroyWindow(WINDOW_DIALOG_SELECT_AUDIO_STREAM);
+    DestroyWindow(WINDOW_DIALOG_SELECT_SUBTITLE_STREAM);
     DestroyWindow(WINDOW_DIALOG_COLOR_PICKER);
 
     /* Delete PVR related windows and dialogs */

@@ -759,6 +759,9 @@ bool CVideoGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWin
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // VIDEOPLAYER_*
     ///////////////////////////////////////////////////////////////////////////////////////////////
+    case VIDEOPLAYER_VIDEOSTREAMCOUNT:
+      value = m_appPlayer->GetVideoStreamCount();
+      return true;
     case VIDEOPLAYER_AUDIOSTREAMCOUNT:
       value = m_appPlayer->GetAudioStreamCount();
       return true;

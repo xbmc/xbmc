@@ -760,18 +760,18 @@ void CApplicationPlayer::LoadPage(int p, int sp, unsigned char* buffer)
     player->LoadPage(p, sp, buffer);
 }
 
-void CApplicationPlayer::GetAudioCapabilities(std::vector<int>& audioCaps) const
+void CApplicationPlayer::GetAudioCapabilities(std::vector<IPlayerAudioCaps>& caps) const
 {
   const std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
-    player->GetAudioCapabilities(audioCaps);
+    player->GetAudioCapabilities(caps);
 }
 
-void CApplicationPlayer::GetSubtitleCapabilities(std::vector<int>& subCaps) const
+void CApplicationPlayer::GetSubtitleCapabilities(std::vector<IPlayerSubtitleCaps>& caps) const
 {
   const std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
-    player->GetSubtitleCapabilities(subCaps);
+    player->GetSubtitleCapabilities(caps);
 }
 
 int  CApplicationPlayer::SeekChapter(int iChapter)

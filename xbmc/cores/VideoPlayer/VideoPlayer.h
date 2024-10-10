@@ -187,6 +187,7 @@ struct SelectionStream
   int id = 0;
   int64_t demuxerId = -1;
   std::string codec;
+  std::string codecDesc;
   int channels = 0;
   int bitrate = 0;
   int width = 0;
@@ -197,6 +198,8 @@ struct SelectionStream
   std::string stereo_mode;
   float aspect_ratio = 0.0f;
   StreamHdrType hdrType = StreamHdrType::HDR_TYPE_NONE;
+  uint32_t fpsScale{0};
+  uint32_t fpsRate{0};
 };
 
 class CSelectionStreams
