@@ -11,6 +11,7 @@
 #include "EGL/egl.h"
 #include "WinSystemX11.h"
 #include "rendering/gles/RenderSystemGLES.h"
+#include "windowing/X11/GLContextEGL.h"
 
 class CGLContextEGL;
 
@@ -38,6 +39,7 @@ public:
   bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
   bool DestroyWindowSystem() override;
   bool DestroyWindow() override;
+  int GetBufferAge() override { return m_pGLContext->GetBufferAge(); }
 
   bool IsExtSupported(const char* extension) const override;
 

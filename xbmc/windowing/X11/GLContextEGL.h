@@ -35,6 +35,11 @@ public:
   void SetVSync(bool enable) override;
   void SwapBuffers() override;
   void QueryExtensions() override;
+  void CheckBufferAgeSupport() override
+  {
+    m_bufferAgeSupport = IsExtSupported("EGL_EXT_buffer_age");
+  }
+  int GetBufferAge() override;
   uint64_t GetVblankTiming(uint64_t &msc, uint64_t &interval) override;
 
   bool BindTextureUploadContext();
@@ -68,4 +73,5 @@ protected:
 
   EGLContext m_eglUploadContext = EGL_NO_CONTEXT;
   mutable CCriticalSection m_textureUploadLock;
+  bool m_bufferAgeSupport{false};
 };

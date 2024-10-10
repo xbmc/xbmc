@@ -34,6 +34,11 @@ public:
                        bool fullScreen,
                        RESOLUTION_INFO& res) override;
   bool DestroyWindow() override;
+  void SetDirtyRegions(const CDirtyRegionList& dirtyRegions) override
+  {
+    m_eglContext.SetDamagedRegions(dirtyRegions);
+  }
+  int GetBufferAge() override { return m_eglContext.GetBufferAge(); }
 
   bool BindTextureUploadContext() override;
   bool UnbindTextureUploadContext() override;
