@@ -38,7 +38,7 @@ CSubtitlesSettings::CSubtitlesSettings(const std::shared_ptr<CSettings>& setting
        CSettings::SETTING_SUBTITLES_LANGUAGES,      CSettings::SETTING_SUBTITLES_STORAGEMODE,
        CSettings::SETTING_SUBTITLES_CUSTOMPATH,     CSettings::SETTING_SUBTITLES_PAUSEONSEARCH,
        CSettings::SETTING_SUBTITLES_DOWNLOADFIRST,  CSettings::SETTING_SUBTITLES_TV,
-       CSettings::SETTING_SUBTITLES_MOVIE});
+       CSettings::SETTING_SUBTITLES_MOVIE,          CSettings::SETTING_SUBTITLES_LINE_SPACING});
 }
 
 CSubtitlesSettings::~CSubtitlesSettings()
@@ -131,6 +131,11 @@ int CSubtitlesSettings::GetShadowOpacity()
 int CSubtitlesSettings::GetBlurSize()
 {
   return m_settings->GetInt(CSettings::SETTING_SUBTITLES_BLUR);
+}
+
+int CSubtitlesSettings::GetLineSpacing()
+{
+  return m_settings->GetInt(CSettings::SETTING_SUBTITLES_LINE_SPACING);
 }
 
 BackgroundType CSubtitlesSettings::GetBackgroundType()
