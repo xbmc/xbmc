@@ -1710,6 +1710,10 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
   }
   break;
 
+  case TMSG_SHOW_SHUTDOWN_MENU:
+    CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_DIALOG_BUTTON_MENU);
+    break;
+
   default:
     CLog::Log(LOGERROR, "{}: Unhandled threadmessage sent, {}", __FUNCTION__, msg);
     break;
