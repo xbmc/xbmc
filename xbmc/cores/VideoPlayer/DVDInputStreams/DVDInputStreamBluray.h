@@ -61,6 +61,7 @@ public:
   void Abort() override;
   bool IsEOF() override;
   int64_t GetLength() override;
+  int64_t GetDuration() override;
   int GetBlockSize() override { return 6144; }
   ENextStream NextStream() override;
 

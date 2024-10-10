@@ -10,12 +10,12 @@
 
 #include "FileItem.h"
 #include "GUIUserMessages.h"
-#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "application/ApplicationStackHelper.h"
+#include "filesystem/StackDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
@@ -30,6 +30,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/JobManager.h"
 #include "utils/SaveFileStateJob.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
@@ -76,7 +77,7 @@ void CApplicationPlayerCallback::OnPlayBackStarted(const CFileItem& file)
   auto& components = CServiceBroker::GetAppComponents();
   const auto stackHelper = components.GetComponent<CApplicationStackHelper>();
 
-  if (stackHelper->IsPlayingISOStack() || stackHelper->IsPlayingRegularStack())
+  if (stackHelper->IsPlayingDiscStack() || stackHelper->IsPlayingRegularStack())
     itemCurrentFile = std::make_shared<CFileItem>(*stackHelper->GetRegisteredStack(file));
   else
     itemCurrentFile = std::make_shared<CFileItem>(file);
@@ -104,27 +105,111 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
 
   std::unique_lock<CCriticalSection> lock(stackHelper->m_critSection);
 
-  CFileItem fileItem(file);
   CBookmark bookmark = bookmarkParam;
-  CBookmark resumeBookmark;
-  bool playCountUpdate = false;
-  float percent = 0.0f;
 
   // Make sure we don't reset existing bookmark etc. on eg. player start failure
   if (bookmark.timeInSeconds == 0.0)
     return;
 
-  if (stackHelper->GetRegisteredStack(fileItem) != nullptr &&
-      stackHelper->GetRegisteredStackTotalTimeMs(fileItem) > 0)
+  CFileItem fileItem{file};
+  CBookmark resumeBookmark;
+  bool playCountUpdate = false;
+  float percent = 0.0f;
+  bool stackAllPartsPlayed{true};
+  int64_t totalTime{file.GetProperty("longest_stream_duration").asInteger()};
+  const std::string longestPath{file.GetProperty("longest_stream_path").asString()};
+
+  // If part of stack then pressing stop could be the only way out (ie. movie ends and return to menu)
+  // If a BD is played from the simple menu/play main movie then DynPath() is a bluray://...mpls
+  // (which doesn't use the disc menu therefore assume stop means stop)
+  // If played through BD/DVD menu and stopped in menu then bookmark is for menu not the watched episode/movie
+  const bool inMenu{file.GetProperty("stopped_in_menu").asBoolean()};
+  const bool endedInMenu{inMenu && (file.GetProperty("longest_stream_duration").asDouble() /
+                                    1000.0) > bookmark.totalTimeInSeconds};
+
+  if (stackHelper->GetRegisteredStack(fileItem) != nullptr)
   {
-    // regular stack case: we have to save the bookmark on the stack
     fileItem = *stackHelper->GetRegisteredStack(file);
-    // the bookmark coming from the player is only relative to the current part, thus needs to be corrected with these attributes (start time will be 0 for non-stackparts)
-    bookmark.timeInSeconds += stackHelper->GetRegisteredStackPartStartTimeMs(file) / 1000.0;
-    if (stackHelper->GetRegisteredStackTotalTimeMs(file) > 0)
-      bookmark.totalTimeInSeconds = stackHelper->GetRegisteredStackTotalTimeMs(file) / 1000.0;
     bookmark.partNumber = stackHelper->GetRegisteredStackPartNumber(file);
+    fileItem.SetProperty("original_path", file.GetPath());
+
+    // Build stacktimes for disc image stacks after each disc image is played
+    // unless in DVD menu before playing movie
+    if (stackHelper->WasPlayingDiscStack() && !(inMenu && !endedInMenu))
+    {
+      CVideoDatabase dbs;
+      if (dbs.Open())
+      {
+        // Get existing stacktimes (if any)
+        std::vector<uint64_t> times;
+        bool haveTimes{false};
+        haveTimes = dbs.GetStackTimes(fileItem.GetDynPath(), times);
+        if (stackHelper->GetKnownStackParts() - 1 == static_cast<long>(times.size()))
+        {
+          // Update filename
+          std::string stackedPath;
+          if (VIDEO::IsBlurayPlaylist(file))
+          {
+            std::vector<std::string> paths{};
+            XFILE::CStackDirectory::GetPaths(fileItem.GetDynPath(), paths);
+            paths[bookmark.partNumber] = longestPath;
+            XFILE::CStackDirectory::ConstructStackPath(paths, stackedPath);
+            fileItem.SetProperty("new_stack_path", stackedPath);
+
+            // fileItem will have the original stack:// path in DynPath
+            // So update all CFileItems in the stack
+            stackHelper->SetRegisteredStackDynPaths(stackedPath);
+          }
+          else
+            stackedPath = fileItem.GetDynPath();
+
+          uint64_t time{0};
+          if (haveTimes)
+            time = times.back(); // Times are cumulative
+
+          // Add this part's time to end of stacktimes
+          totalTime += time;
+          times.emplace_back(totalTime);
+          dbs.SetStackTimes(stackedPath, times);
+
+          // Update stack (for bookmark and % played)
+          stackHelper->SetRegisteredStackPartStartTimeMs(file, time);
+          stackHelper->SetRegisteredStackTotalTimeMs(file, totalTime);
+
+          // If adding part then update streamdetails as well
+          fileItem.GetVideoInfoTag()->m_streamDetails = file.GetVideoInfoTag()->m_streamDetails;
+
+          // Also update video info tag with total time of the stack (as this is read for the library display)
+          fileItem.GetVideoInfoTag()->m_streamDetails.SetVideoDuration(0, totalTime / 1000.0);
+        }
+        else
+        {
+          // Still need to update video duration for total stack time
+          fileItem.GetVideoInfoTag()->m_streamDetails.SetVideoDuration(
+              0, stackHelper->GetRegisteredStackTotalTimeMs(file) / 1000.0);
+        }
+        dbs.Close();
+      }
+    }
+
+    if (stackHelper->GetRegisteredStackTotalTimeMs(file) > 0)
+    {
+      // the bookmark coming from the player is only relative to the current part, thus needs to be corrected with these attributes
+      // (start time will be 0 for non-stackparts)
+      bookmark.timeInSeconds += stackHelper->GetRegisteredStackPartStartTimeMs(file) / 1000.0;
+      bookmark.totalTimeInSeconds = stackHelper->GetRegisteredStackTotalTimeMs(file) / 1000.0;
+    }
+
+    stackHelper->SetStackPartStopped(inMenu);
+
+    // Only show a stack as played if all parts have been played
+    stackAllPartsPlayed =
+        (stackHelper->WasPlayingDiscStack() &&
+         stackHelper->GetCurrentPartNumber() + 1 == stackHelper->GetTotalPartNumbers()) ||
+        (!stackHelper->WasPlayingDiscStack() && stackHelper->IsPlayingRegularStack());
   }
+  else
+    fileItem.SetDynPath(longestPath);
 
   percent = bookmark.timeInSeconds / bookmark.totalTimeInSeconds * 100;
 
@@ -134,27 +219,52 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
   if ((MUSIC::IsAudio(fileItem) && advancedSettings->m_audioPlayCountMinimumPercent > 0 &&
        percent >= advancedSettings->m_audioPlayCountMinimumPercent) ||
       (VIDEO::IsVideo(fileItem) && advancedSettings->m_videoPlayCountMinimumPercent > 0 &&
-       percent >= advancedSettings->m_videoPlayCountMinimumPercent))
+       percent >= advancedSettings->m_videoPlayCountMinimumPercent && stackAllPartsPlayed) ||
+      (endedInMenu && stackAllPartsPlayed))
   {
+    // In case of disc stacks only increase play count when all parts have been played
     playCountUpdate = true;
   }
 
-  if (advancedSettings->m_videoIgnorePercentAtEnd > 0 &&
-      bookmark.totalTimeInSeconds - bookmark.timeInSeconds <
-          0.01 * static_cast<double>(advancedSettings->m_videoIgnorePercentAtEnd) *
-              bookmark.totalTimeInSeconds)
+  if (inMenu && !(endedInMenu && stackAllPartsPlayed))
+  {
+    if (endedInMenu)
+    {
+      // Ended in menu
+      resumeBookmark.timeInSeconds = totalTime / 1000.0;
+      resumeBookmark.playerState =
+          StringUtils::Format("<nextpart>{}</nextpart>", bookmark.partNumber + 1);
+    }
+    else
+    {
+      if (stackHelper->GetCurrentPartNumber() > 0)
+      {
+        // Not played movie of this part yet
+        resumeBookmark.timeInSeconds = stackHelper->GetStackTotalTimeMs() / 1000.0;
+        resumeBookmark.playerState =
+            StringUtils::Format("<nextpart>{}</nextpart>", bookmark.partNumber);
+      }
+      else
+      {
+        // Not played anything yet
+        resumeBookmark.timeInSeconds = 0;
+        fileItem.GetVideoInfoTag()->m_streamDetails.Reset(); // Don't save menu streamdetails
+      }
+    }
+    resumeBookmark.totalTimeInSeconds = stackHelper->GetStackTotalTimeMs() / 1000.0;
+  }
+  else if ((advancedSettings->m_videoIgnorePercentAtEnd > 0 &&
+            bookmark.totalTimeInSeconds - bookmark.timeInSeconds <
+                0.01 * static_cast<double>(advancedSettings->m_videoIgnorePercentAtEnd) *
+                    bookmark.totalTimeInSeconds) ||
+           inMenu)
   {
     resumeBookmark.timeInSeconds = -1.0;
   }
-  else if (bookmark.timeInSeconds > advancedSettings->m_videoIgnoreSecondsAtStart)
+  else if (bookmark.timeInSeconds > 0.0 &&
+           bookmark.timeInSeconds > advancedSettings->m_videoIgnoreSecondsAtStart)
   {
     resumeBookmark = bookmark;
-    if (stackHelper->GetRegisteredStack(file) != nullptr)
-    {
-      // also update video info tag with total time
-      fileItem.GetVideoInfoTag()->m_streamDetails.SetVideoDuration(
-          0, resumeBookmark.totalTimeInSeconds);
-    }
   }
   else
   {
@@ -192,6 +302,20 @@ void CApplicationPlayerCallback::OnPlayBackResumed()
 
 void CApplicationPlayerCallback::OnPlayBackStopped()
 {
+  // If playing a DVD/Bluray stack and using a menu then stop can be the only way
+  // to exit. Therefore, if part way through a stack we may want to play the next
+  // stacked item.
+  // Already flagged above if this may be the case (based on media played)
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto stackHelper = components.GetComponent<CApplicationStackHelper>();
+  if (stackHelper->IsPlayingDiscStack() && stackHelper->HasNextStackPartFileItem() &&
+      stackHelper->GetStackPartStopped())
+  {
+    // Dialog box to ask continue/stop later
+    OnPlayBackEnded();
+    return;
+  }
+
   CLog::LogF(LOGDEBUG, "CApplication::OnPlayBackStopped");
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_STOPPED, 0, 0);
