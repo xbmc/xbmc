@@ -746,6 +746,17 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(double &frametime, double &pts)
     if (m_speed != 0)
       pts += m_picture.iDuration * m_speed / abs(m_speed);
 
+    // ATSC A53 Closed Captions
+    if (m_picture.HasA53SideData() &&
+        CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+            CSettings::SETTING_SUBTITLES_PARSECAPTIONS))
+    {
+      std::unique_ptr<AVBufferRef, AVBufferRefDeleter> a53SideData = m_picture.GetA53SideData();
+      auto ccData =
+          std::make_unique<CCaptionBlock>(m_picture.pts, a53SideData->data, a53SideData->size);
+      m_messageParent.Put(std::make_shared<CDVDMsgSubtitleCCData>(ccData));
+    }
+
     m_outputSate = OutputPicture(&m_picture);
 
     if (m_outputSate == OUTPUT_AGAIN)

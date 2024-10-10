@@ -1186,7 +1186,7 @@ void CDecoderCC708::Init(void (*handler)(int service, void *userdata), void *use
   ccx_decoders_708_init(m_cc708decoders, handler, userdata, this);
 }
 
-void CDecoderCC708::Decode(const unsigned char *data, int datalength)
+void CDecoderCC708::Decode(const std::vector<uint8_t>& data)
 {
-  decode_708(data, datalength, m_cc708decoders);
+  decode_708(data.data(), data.size(), m_cc708decoders);
 }
