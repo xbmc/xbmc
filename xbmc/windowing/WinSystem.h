@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -261,22 +261,12 @@ public:
   std::pair<bool, int> GetDitherSettings();
 
   /*!
-   * \brief Binds a shared context to the current thread, in order to upload textures asynchronously.
-   * \return Return true if a texture upload context exists and the binding succeeds.
+   * \brief Binds an at startup allocated shared context to the current thread, in order to upload textures asynchronously
+   *
+   * \param id id of the requesting context
+   * \return Return true if a texture upload context exists and the binding succeeds
    */
-  virtual bool BindTextureUploadContext() { return false; }
-
-  /*!
-   * \brief Unbinds the shared context.
-   * \return Return true if the texture upload context has been unbound.
-   */
-  virtual bool UnbindTextureUploadContext() { return false; }
-
-  /*!
-   * \brief Checks if a graphics context is already bound to the current thread.
-   * \return Return true if so.
-   */
-  virtual bool HasContext() { return false; }
+  virtual bool BindSecondaryGPUContext(unsigned int id) { return false; }
 
 protected:
   void UpdateDesktopResolution(RESOLUTION_INFO& newRes, const std::string &output, int width, int height, float refreshRate, uint32_t dwFlags);

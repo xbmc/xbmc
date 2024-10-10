@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -105,11 +105,6 @@ public:
               XB_FMT format,
               const unsigned char* pixels,
               bool loadToGPU);
-
-  /*! 
-   * \brief Uploads the texture to the GPU. 
-   */
-  void LoadToGPUAsync();
 
   virtual void CreateTextureObject() = 0;
   virtual void DestroyTextureObject() = 0;
