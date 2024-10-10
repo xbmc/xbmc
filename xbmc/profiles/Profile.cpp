@@ -11,18 +11,16 @@
 #include "XBDateTime.h"
 #include "utils/XMLUtils.h"
 
-CProfile::CLock::CLock(LockType type, const std::string &password):
-  code(password)
+CProfile::CLock::CLock(LockType type, const std::string& password)
+  : mode(type), code(password), settings(LOCK_LEVEL::NONE)
 {
   programs = false;
   pictures = false;
   files = false;
   video = false;
   music = false;
-  settings = LOCK_LEVEL::NONE;
   addonManager = false;
   games = false;
-  mode = type;
 }
 
 void CProfile::CLock::Validate()
