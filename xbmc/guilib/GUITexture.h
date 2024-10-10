@@ -10,49 +10,11 @@
 
 #include "TextureManager.h"
 #include "guiinfo/GUIInfoColor.h"
+#include "guilib/AspectRatio.h"
 #include "utils/ColorUtils.h"
 #include "utils/Geometry.h"
 
 #include <functional>
-
-// image alignment for <aspect>keep</aspect>, <aspect>scale</aspect> or <aspect>center</aspect>
-#define ASPECT_ALIGN_CENTER  0
-#define ASPECT_ALIGN_LEFT    1
-#define ASPECT_ALIGN_RIGHT   2
-#define ASPECT_ALIGNY_CENTER 0
-#define ASPECT_ALIGNY_TOP    4
-#define ASPECT_ALIGNY_BOTTOM 8
-#define ASPECT_ALIGN_MASK    3
-#define ASPECT_ALIGNY_MASK  ~3
-
-class CAspectRatio
-{
-public:
-  enum ASPECT_RATIO { AR_STRETCH = 0, AR_SCALE, AR_KEEP, AR_CENTER };
-  CAspectRatio(ASPECT_RATIO aspect = AR_STRETCH)
-  {
-    ratio = aspect;
-    align = ASPECT_ALIGN_CENTER | ASPECT_ALIGNY_CENTER;
-    scaleDiffuse = true;
-  }
-
-  CAspectRatio(ASPECT_RATIO aspect, uint32_t al, bool scaleD)
-    : ratio(aspect), align(al), scaleDiffuse(scaleD)
-  {
-  }
-
-  bool operator!=(const CAspectRatio &right) const
-  {
-    if (ratio != right.ratio) return true;
-    if (align != right.align) return true;
-    if (scaleDiffuse != right.scaleDiffuse) return true;
-    return false;
-  };
-
-  ASPECT_RATIO ratio;
-  uint32_t     align;
-  bool         scaleDiffuse;
-};
 
 class CTextureInfo
 {
@@ -123,6 +85,7 @@ public:
   bool AllocResources();
   void FreeResources(bool immediately = false);
   void SetInvalid();
+  void OnWindowResize();
 
   bool SetVisible(bool visible);
   bool SetAlpha(unsigned char alpha);
@@ -202,6 +165,11 @@ protected:
   float m_width;
   float m_height;
   float m_depth{0};
+
+  // size used to get and release image from LargeTextureManager
+  int m_requestWidth = REQUEST_SIZE_UNSET;
+  int m_requestHeight = REQUEST_SIZE_UNSET;
+  static constexpr int REQUEST_SIZE_UNSET = -1;
 
   CRect m_vertex;       // vertex coords to render
   bool m_invalid;       // if true, we need to recalculate
