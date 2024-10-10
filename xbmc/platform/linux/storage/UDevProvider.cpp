@@ -274,11 +274,12 @@ bool CUDevProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
       if (strcmp(action, "change") == 0 && !(bd && strcmp(bd, "1") == 0))
       {
         const char *optical = udev_device_get_property_value(dev, "ID_CDROM");
-        bool isOptical = optical && (strcmp(optical, "1") != 0);
+        const bool isOptical = optical && (strcmp(optical, "1") == 0);
         storageDevice.type =
             isOptical ? MEDIA_DETECT::STORAGE::Type::OPTICAL : MEDIA_DETECT::STORAGE::Type::UNKNOWN;
+        storageDevice.path = devnode;
 
-        if (mountpoint && !isOptical)
+        if (mountpoint && isOptical)
         {
           CLog::Log(LOGINFO, "UDev: Changed / Added {}", mountpoint);
           if (callback)
