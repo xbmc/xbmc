@@ -391,7 +391,7 @@ std::vector<std::string> CUDisksProvider::EnumerateDisks()
   return devices;
 }
 
-void CUDisksProvider::GetDisks(VECSOURCES& devices, bool EnumerateRemovable)
+void CUDisksProvider::GetDisks(std::vector<CMediaSource>& devices, bool EnumerateRemovable)
 {
   for (auto& itr : m_AvailableDevices)
   {

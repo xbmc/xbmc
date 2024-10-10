@@ -58,7 +58,7 @@ public:
 
   virtual std::string GetLockType();
   virtual std::string GetExtensions();
-  virtual VECSOURCES& GetSources();
+  virtual std::vector<CMediaSource>& GetSources();
 
 protected:
   explicit CGUIViewState(const CFileItemList& items);  // no direct object creation, use GetViewState()
@@ -93,7 +93,7 @@ protected:
   std::vector<GUIViewSortDetails> m_sortMethods;
   int m_currentSortMethod;
 
-  static VECSOURCES m_sources;
+  static std::vector<CMediaSource> m_sources;
   static std::string m_strPlaylistDirectory;
 };
 

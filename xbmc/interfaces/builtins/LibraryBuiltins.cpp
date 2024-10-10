@@ -122,7 +122,7 @@ static int ExportLibrary(const std::vector<std::string>& params)
   if (StringUtils::EqualsNoCase(params[0], "music"))
     iHeading = 20196;
   std::string path;
-  VECSOURCES shares;
+  std::vector<CMediaSource> shares;
   CServiceBroker::GetMediaManager().GetLocalDrives(shares);
   CServiceBroker::GetMediaManager().GetNetworkLocations(shares);
   CServiceBroker::GetMediaManager().GetRemovableDrives(shares);

@@ -17,7 +17,7 @@
 /*!
 \ingroup windows
 \brief Represents a share.
-\sa VECMediaSource, IVECSOURCES
+\sa VECMediaSource, std::vector<CMediaSource>::iterator
 */
 class CMediaSource final
 {
@@ -90,20 +90,5 @@ public:
   bool m_allowSharing = true; /// <Allow browsing of source from UPnP / WebServer
 };
 
-/*!
-\ingroup windows
-\brief A vector to hold CMediaSource objects.
-\sa CMediaSource, IVECSOURCES
-*/
-typedef std::vector<CMediaSource> VECSOURCES;
-
-/*!
-\ingroup windows
-\brief Iterator of VECSOURCES.
-\sa CMediaSource, VECSOURCES
-*/
-typedef std::vector<CMediaSource>::iterator IVECSOURCES;
-typedef std::vector<CMediaSource>::const_iterator CIVECSOURCES;
-
-void AddOrReplace(VECSOURCES& sources, const VECSOURCES& extras);
-void AddOrReplace(VECSOURCES& sources, const CMediaSource& source);
+void AddOrReplace(std::vector<CMediaSource>& sources, const std::vector<CMediaSource>& extras);
+void AddOrReplace(std::vector<CMediaSource>& sources, const CMediaSource& source);

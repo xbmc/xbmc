@@ -145,7 +145,7 @@ bool CFileUtils::RemoteAccessAllowed(const std::string &strPath)
   // Check manually added sources (held in sources.xml)
   for (const std::string& sourceName : SourceNames)
   {
-    VECSOURCES* sources = CMediaSourceSettings::GetInstance().GetSources(sourceName);
+    std::vector<CMediaSource>* sources = CMediaSourceSettings::GetInstance().GetSources(sourceName);
     int sourceIndex = CUtil::GetMatchingSource(realPath, *sources, isSource);
     if (sourceIndex >= 0 && sourceIndex < static_cast<int>(sources->size()) &&
         sources->at(sourceIndex).m_iHasLock != LOCK_STATE_LOCKED &&
@@ -153,7 +153,7 @@ bool CFileUtils::RemoteAccessAllowed(const std::string &strPath)
       return true;
   }
   // Check auto-mounted sources
-  VECSOURCES sources;
+  std::vector<CMediaSource> sources;
   CServiceBroker::GetMediaManager().GetRemovableDrives(
       sources); // Sources returned always have m_allowsharing = true
   //! @todo Make sharing of auto-mounted sources user configurable

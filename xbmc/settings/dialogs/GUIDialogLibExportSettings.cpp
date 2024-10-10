@@ -148,7 +148,7 @@ void CGUIDialogLibExportSettings::OnSettingAction(const std::shared_ptr<const CS
   if (settingId == CSettings::SETTING_MUSICLIBRARY_EXPORT_FOLDER && !m_settings.IsToLibFolders() &&
       !m_settings.IsArtistFoldersOnly())
   {
-    VECSOURCES shares;
+    std::vector<CMediaSource> shares;
     CServiceBroker::GetMediaManager().GetLocalDrives(shares);
     CServiceBroker::GetMediaManager().GetNetworkLocations(shares);
     CServiceBroker::GetMediaManager().GetRemovableDrives(shares);

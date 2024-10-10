@@ -318,7 +318,7 @@ std::vector<std::string> CUDisks2Provider::GetDiskUsage()
   return legacy.GetDiskUsage();
 }
 
-void CUDisks2Provider::GetDisks(VECSOURCES &devices, bool enumerateRemovable)
+void CUDisks2Provider::GetDisks(std::vector<CMediaSource>& devices, bool enumerateRemovable)
 {
   for (const auto &elt: m_filesystems)
   {
