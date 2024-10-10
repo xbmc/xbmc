@@ -76,6 +76,7 @@ CSong::CSong(CFileItem& item)
   iBitRate = tag.GetBitRate();
   iChannels = tag.GetNoOfChannels();
   songVideoURL = tag.GetSongVideoURL();
+  chapterMarks = tag.GetChapterMarks();
 }
 
 CSong::CSong()
@@ -285,6 +286,7 @@ void CSong::Clear()
   iSampleRate = 0;
   iChannels =  0;
   songVideoURL.clear();
+  chapterMarks.clear();
 
   replayGain = ReplayGain();
 }
