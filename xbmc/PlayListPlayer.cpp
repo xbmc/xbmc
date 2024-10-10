@@ -948,10 +948,14 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
       // Discard the current playlist, if TMSG_MEDIA_PLAY gets posted with just a single item.
       // Otherwise items may fail to play, when started while a playlist is playing.
       // But a single item in a stack is allowed.
-      CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
-      const std::shared_ptr<CFileItem> pitem = playlist[m_iCurrentSong];
-      if (!URIUtils::IsStack(pitem->GetDynPath()))
-        Reset();
+      if (m_iCurrentPlayList != Id::TYPE_NONE)
+      {
+
+        CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
+        CFileItemPtr pitem = playlist[m_iCurrentSong];
+        if (!URIUtils::IsStack(pitem->GetDynPath()))
+          Reset();
+      }
 
       CFileItem *item = static_cast<CFileItem*>(pMsg->lpVoid);
       g_application.PlayFile(*item, "", pMsg->param1 != 0);
