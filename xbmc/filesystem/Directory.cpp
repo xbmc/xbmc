@@ -252,8 +252,8 @@ bool CDirectory::GetDirectory(const CURL& url,
         }
       }
 
-      // cache the directory, if necessary
-      if (!(hints.flags & DIR_FLAG_BYPASS_CACHE))
+      // cache the directory, if it is not empty and no DIR_FLAG_BYPASS_CACHE flag is set
+      if (!(hints.flags & DIR_FLAG_BYPASS_CACHE) && !items.IsEmpty())
         g_directoryCache.SetDirectory(realURL.Get(), items, pDirectory->GetCacheType(url));
     }
 
