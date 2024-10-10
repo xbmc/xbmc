@@ -1,0 +1,45 @@
+--- sidplay-libs-2.1.1/builders/resid-builder/configure.ac.orig	2015-03-13 15:55:09.275548007 +0100
++++ sidplay-libs-2.1.1/builders/resid-builder/configure.ac	2015-03-13 15:52:31.983551091 +0100
+@@ -2,6 +2,8 @@
+ AC_INIT(Makefile.am)
+ AC_CONFIG_AUX_DIR(unix)
+ AM_CONFIG_HEADER(unix/config.h)
++m4_include(unix/my_macros.m4)
++m4_include(unix/sidplay2.m4)
+ 
+ dnl Setup library CURRENT, REVISION and AGE
+ LIBCUR=0
+--- sidplay2/libsidplay/configure.ac.orig	2015-03-13 16:00:25.075541814 +0100
++++ sidplay2/libsidplay/configure.ac	2015-03-13 16:01:36.411540416 +0100
+@@ -2,6 +2,9 @@
+ m4_define([LIBCUR],1)
+ m4_define([LIBREV],1)
+ m4_define([LIBAGE],0)
++m4_include(unix/my_macros.m4)
++m4_include(unix/ac_compile_check_sizeof.m4)
++m4_include(unix/ac_create_stdint_h.m4)
+ 
+ dnl Process this file with autoconf to produce a configure script.
+ AC_INIT(libsidplay,2.LIBCUR.LIBREV)
+--- sidplay2/builders/hardsid-builder/configure.ac.orig	2015-03-13 16:09:30.803531114 +0100
++++ sidplay2/builders/hardsid-builder/configure.ac	2015-03-13 16:09:46.399530808 +0100
+@@ -2,6 +2,8 @@
+ AC_INIT(Makefile.am)
+ AC_CONFIG_AUX_DIR(unix)
+ AM_CONFIG_HEADER(unix/config.h)
++m4_include(unix/my_macros.m4)
++m4_include(unix/sidplay2.m4)
+ 
+ dnl Setup library CURRENT, REVISION and AGE
+ LIBCUR=0
+--- sidplay2/libsidutils/configure.ac.orig	2015-03-13 16:19:14.719519664 +0100
++++ sidplay2/libsidutils/configure.ac	2015-03-13 16:19:27.035519422 +0100
+@@ -2,6 +2,8 @@
+ AC_INIT(Makefile.am)
+ AC_CONFIG_AUX_DIR(unix)
+ AM_CONFIG_HEADER(unix/config.h)
++m4_include(unix/my_macros.m4)
++m4_include(unix/sidplay2.m4)
+ 
+ dnl Setup library CURRENT, REVISION and AGE
+ LIBCUR=0
