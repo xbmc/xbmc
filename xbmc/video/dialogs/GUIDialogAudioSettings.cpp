@@ -348,16 +348,17 @@ void CGUIDialogAudioSettings::AudioStreamsOptionFiller(const SettingConstPtr& se
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
   const int audioStreamCount = appPlayer->GetAudioStreamCount();
 
-  std::string strChannels = g_localizeStrings.Get(10127);
+  std::string channelsLabel = g_localizeStrings.Get(10127);
   std::string strUnknown = "[" + g_localizeStrings.Get(13205) + "]";
 
   // cycle through each audio stream and add it to our list control
   for (int i = 0; i < audioStreamCount; ++i)
   {
+    std::string strLanguage;
+
     AudioStreamInfo info;
     appPlayer->GetAudioStreamInfo(i, info);
 
-    std::string strLanguage;
     if (!g_LangCodeExpander.Lookup(info.language, strLanguage))
       strLanguage = strUnknown;
 
@@ -369,7 +370,7 @@ void CGUIDialogAudioSettings::AudioStreamsOptionFiller(const SettingConstPtr& se
     if (!info.codecDesc.empty())
       textInfo += info.codecDesc + ", ";
 
-    textInfo += std::to_string(info.channels) + " " + strChannels + ")";
+    textInfo += std::to_string(info.channels) + " " + channelsLabel + ")";
 
     textInfo += FormatFlags(info.flags);
     textInfo += StringUtils::Format(" ({}/{})", i + 1, audioStreamCount);

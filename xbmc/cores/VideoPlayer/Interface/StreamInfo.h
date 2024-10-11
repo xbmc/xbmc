@@ -44,8 +44,8 @@ struct StreamInfo
   int bitrate = 0;
   std::string language;
   std::string name;
-  std::string codecName; // Codec name (name definition from ffmpeg)
-  std::string codecDesc; // Codec description
+  std::string codecName;
+  std::string codecDesc;
   StreamFlags flags = StreamFlags::FLAG_NONE;
 
 protected:
@@ -61,7 +61,9 @@ struct AudioStreamInfo : StreamInfo
 };
 
 struct SubtitleStreamInfo : StreamInfo
-{};
+{
+  bool isExternal{false};
+};
 
 struct VideoStreamInfo : StreamInfo
 {

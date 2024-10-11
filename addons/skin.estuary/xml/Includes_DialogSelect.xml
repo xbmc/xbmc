@@ -194,6 +194,550 @@
 			</control>
 		</control>
 	</include>
+	<include name="VideoDialogSelectVideoLayout">
+	<!--
+	Available ListItem video stream properties:
+	stream.description, stream.codec, stream.language, stream.resolution, stream.bitrate,
+	stream.fps, stream.is3d, stream.stereomode, stream.hdrtype, stream.isdefault, stream.isforced,
+	stream.ishearingimpaired, stream.isvisualimpaired
+	-->
+		<control type="group">
+			<centertop>50%</centertop>
+			<centerleft>50%</centerleft>
+			<height>750</height>
+			<width>1220</width>
+			<include content="DialogBackgroundCommons">
+				<param name="width" value="1220" />
+				<param name="height" value="750" />
+				<param name="header_label" value="" />
+				<param name="header_id" value="1" />
+			</include>
+			<control type="image">
+				<left>0</left>
+				<top>80</top>
+				<width>920</width>
+				<bottom>2</bottom>
+				<texture border="40">buttons/dialogbutton-nofo.png</texture>
+			</control>
+			<control type="list" id="3">
+				<left>20</left>
+				<top>100</top>
+				<width>880</width>
+				<bottom>20</bottom>
+				<onup>3</onup>
+				<ondown>3</ondown>
+				<onleft>9001</onleft>
+				<onright>61</onright>
+				<pagecontrol>61</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<include content="DefaultSimpleListLayout">
+					<param name="width" value="880" />
+					<param name="list_id" value="3" />
+				</include>
+			</control>
+			<control type="list" id="6">
+				<left>20</left>
+				<top>100</top>
+				<width>880</width>
+				<bottom>20</bottom>
+				<onup>6</onup>
+				<ondown>6</ondown>
+				<onleft>9001</onleft>
+				<onright>61</onright>
+				<pagecontrol>61</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<itemlayout height="100" width="880">
+					<control type="image">
+						<left>10</left>
+						<top>16</top>
+						<width>30</width>
+						<height>30</height>
+						<aspectratio>keep</aspectratio>
+						<aligny>center</aligny>
+						<texture>icons/menumarks/tick.png</texture>
+						<visible>ListItem.IsSelected</visible>
+					</control>
+					<control type="label">
+						<left>50</left>
+						<top>0</top>
+						<right>80</right>
+						<height>60</height>
+						<font>font14</font>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Property(stream.codec)]$INFO[ListItem.Property(stream.resolution),$COMMA ]$INFO[ListItem.Property(stream.bitrate),$COMMA , kbps]$INFO[ListItem.Property(stream.fps),$COMMA , fps]$VAR[VideoStreamDialogVideoItemLabelVar, - [LIGHT],[/LIGHT]]</label>
+					</control>
+					<control type="textbox">
+						<left>50</left>
+						<top>50</top>
+						<right>80</right>
+						<height>67</height>
+						<font>font12</font>
+						<textcolor>grey</textcolor>
+						<label>$INFO[ListItem.Property(stream.description),, ]$INFO[ListItem.Property(stream.language),(,)]</label>
+					</control>
+					<control type="image">
+						<left>830</left>
+						<top>16</top>
+						<width>30</width>
+						<height>30</height>
+						<aspectratio>keep</aspectratio>
+						<aligny>center</aligny>
+						<texture>icons/menumarks/star.png</texture>
+						<visible>ListItem.Property(stream.isdefault)</visible>
+					</control>
+				</itemlayout>
+				<focusedlayout height="100" width="880">
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<right>0</right>
+						<bottom>0</bottom>
+						<texture colordiffuse="button_focus">lists/focus.png</texture>
+						<animation effect="fade" start="100" end="50" time="0">UnFocus</animation>
+					</control>
+					<control type="image">
+						<left>10</left>
+						<top>16</top>
+						<width>30</width>
+						<height>30</height>
+						<aspectratio>keep</aspectratio>
+						<aligny>center</aligny>
+						<texture>icons/menumarks/tick.png</texture>
+						<visible>ListItem.IsSelected</visible>
+					</control>
+					<control type="label">
+						<left>50</left>
+						<top>0</top>
+						<right>80</right>
+						<height>60</height>
+						<aligny>center</aligny>
+						<scroll>true</scroll>
+						<font>font14</font>
+						<label>$INFO[ListItem.Property(stream.codec)]$INFO[ListItem.Property(stream.resolution),$COMMA ]$INFO[ListItem.Property(stream.bitrate),$COMMA , kbps]$INFO[ListItem.Property(stream.fps),$COMMA , fps]$VAR[VideoStreamDialogVideoItemLabelVar, - [LIGHT],[/LIGHT]]</label>
+					</control>
+					<control type="textbox">
+						<left>50</left>
+						<top>50</top>
+						<right>80</right>
+						<height>67</height>
+						<font>font12</font>
+						<label>$INFO[ListItem.Property(stream.description),, ]$INFO[ListItem.Property(stream.language),(,)]</label>
+					</control>
+					<control type="image">
+						<left>830</left>
+						<top>16</top>
+						<width>30</width>
+						<height>30</height>
+						<aspectratio>keep</aspectratio>
+						<aligny>center</aligny>
+						<texture>icons/menumarks/star.png</texture>
+						<visible>ListItem.Property(stream.isdefault)</visible>
+					</control>
+				</focusedlayout>
+			</control>
+			<control type="scrollbar" id="61">
+				<left>910</left>
+				<top>100</top>
+				<width>12</width>
+				<bottom>20</bottom>
+				<onleft condition="Control.IsVisible(3)">3</onleft>
+				<onleft condition="Control.IsVisible(6)">6</onleft>
+				<onright>9001</onright>
+				<orientation>vertical</orientation>
+			</control>
+			<control type="label">
+				<left>925</left>
+				<bottom>10</bottom>
+				<width>275</width>
+				<height>35</height>
+				<font>font12</font>
+				<align>right</align>
+				<textcolor>grey</textcolor>
+				<label>$VAR[SelectLabel]</label>
+			</control>
+			<control type="grouplist" id="9001">
+				<left>920</left>
+				<top>80</top>
+				<onleft>61</onleft>
+				<itemgap>dialogbuttons_itemgap</itemgap>
+				<onright>3</onright>
+				<include content="DefaultDialogButton">
+					<param name="id" value="5" />
+					<param name="label" value="" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="8" />
+					<param name="label" value="" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="7" />
+					<param name="label" value="$LOCALIZE[222]" />
+				</include>
+			</control>
+		</control>
+	</include>
+	<include name="VideoDialogSelectAudioLayout">
+	<!--
+	Available ListItem audio stream properties:
+	stream.description, stream.codec, stream.codecdesc, stream.channels,
+	stream.isdefault, stream.isforced, stream.isoriginal, stream.ishearingimpaired, stream.isvisualimpaired
+	-->
+		<control type="group">
+			<centertop>50%</centertop>
+			<centerleft>50%</centerleft>
+			<height>750</height>
+			<width>1220</width>
+			<include content="DialogBackgroundCommons">
+				<param name="width" value="1220" />
+				<param name="height" value="750" />
+				<param name="header_label" value="" />
+				<param name="header_id" value="1" />
+			</include>
+			<control type="image">
+				<left>0</left>
+				<top>80</top>
+				<width>920</width>
+				<bottom>2</bottom>
+				<texture border="40">buttons/dialogbutton-nofo.png</texture>
+			</control>
+			<control type="list" id="3">
+				<left>20</left>
+				<top>100</top>
+				<width>880</width>
+				<bottom>20</bottom>
+				<onup>3</onup>
+				<ondown>3</ondown>
+				<onleft>9001</onleft>
+				<onright>61</onright>
+				<pagecontrol>61</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<include content="DefaultSimpleListLayout">
+					<param name="width" value="880" />
+					<param name="list_id" value="3" />
+				</include>
+			</control>
+			<control type="list" id="6">
+				<left>20</left>
+				<top>100</top>
+				<width>880</width>
+				<bottom>20</bottom>
+				<onup>6</onup>
+				<ondown>6</ondown>
+				<onleft>9001</onleft>
+				<onright>61</onright>
+				<pagecontrol>61</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<itemlayout height="130" width="880">
+					<control type="image">
+						<left>10</left>
+						<top>16</top>
+						<width>30</width>
+						<height>30</height>
+						<aspectratio>keep</aspectratio>
+						<aligny>center</aligny>
+						<texture>icons/menumarks/tick.png</texture>
+						<visible>ListItem.IsSelected</visible>
+					</control>
+-					<control type="label">
+						<left>50</left>
+						<top>0</top>
+						<right>80</right>
+						<height>60</height>
+						<font>font14</font>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]$VAR[VideoStreamDialogAudioItemLabelVar, - [LIGHT],[/LIGHT]]</label>
+					</control>
+					<control type="textbox">
+						<left>50</left>
+						<top>50</top>
+						<right>80</right>
+						<height>80</height>
+						<font>font12</font>
+						<textcolor>grey</textcolor>
+						<label>$INFO[ListItem.Property(stream.codecdesc),, - ]$INFO[ListItem.Property(stream.channels),$LOCALIZE[31612]: ][CR]$INFO[ListItem.Property(stream.description)]</label>
+					</control>
+					<control type="image">
+						<left>830</left>
+						<top>16</top>
+						<width>30</width>
+						<height>30</height>
+						<aspectratio>keep</aspectratio>
+						<aligny>center</aligny>
+						<texture>icons/menumarks/star.png</texture>
+						<visible>ListItem.Property(stream.isdefault)</visible>
+					</control>
+				</itemlayout>
+				<focusedlayout height="130" width="880">
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<right>0</right>
+						<bottom>0</bottom>
+						<texture colordiffuse="button_focus">lists/focus.png</texture>
+						<animation effect="fade" start="100" end="50" time="0">UnFocus</animation>
+					</control>
+					<control type="image">
+						<left>10</left>
+						<top>16</top>
+						<width>30</width>
+						<height>30</height>
+						<aspectratio>keep</aspectratio>
+						<aligny>center</aligny>
+						<texture>icons/menumarks/tick.png</texture>
+						<visible>ListItem.IsSelected</visible>
+					</control>
+					<control type="label">
+						<left>50</left>
+						<top>0</top>
+						<right>80</right>
+						<height>60</height>
+						<aligny>center</aligny>
+						<scroll>true</scroll>
+						<font>font14</font>
+						<label>$INFO[ListItem.Label]$VAR[VideoStreamDialogAudioItemLabelVar, - [LIGHT],[/LIGHT]]</label>
+					</control>
+					<control type="textbox">
+						<left>50</left>
+						<top>50</top>
+						<right>80</right>
+						<height>80</height>
+						<font>font12</font>
+						<label>$INFO[ListItem.Property(stream.codecdesc),, - ]$INFO[ListItem.Property(stream.channels),$LOCALIZE[31612]: ][CR]$INFO[ListItem.Property(stream.description)]</label>
+					</control>
+					<control type="image">
+						<left>830</left>
+						<top>16</top>
+						<width>30</width>
+						<height>30</height>
+						<aspectratio>keep</aspectratio>
+						<aligny>center</aligny>
+						<texture>icons/menumarks/star.png</texture>
+						<visible>ListItem.Property(stream.isdefault)</visible>
+					</control>
+				</focusedlayout>
+			</control>
+			<control type="scrollbar" id="61">
+				<left>910</left>
+				<top>100</top>
+				<width>12</width>
+				<bottom>20</bottom>
+				<onleft condition="Control.IsVisible(3)">3</onleft>
+				<onleft condition="Control.IsVisible(6)">6</onleft>
+				<onright>9001</onright>
+				<orientation>vertical</orientation>
+			</control>
+			<control type="label">
+				<left>925</left>
+				<bottom>10</bottom>
+				<width>275</width>
+				<height>35</height>
+				<font>font12</font>
+				<align>right</align>
+				<textcolor>grey</textcolor>
+				<label>$VAR[SelectLabel]</label>
+			</control>
+			<control type="grouplist" id="9001">
+				<left>920</left>
+				<top>80</top>
+				<onleft>61</onleft>
+				<itemgap>dialogbuttons_itemgap</itemgap>
+				<onright>3</onright>
+				<include content="DefaultDialogButton">
+					<param name="id" value="5" />
+					<param name="label" value="" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="8" />
+					<param name="label" value="" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="7" />
+					<param name="label" value="$LOCALIZE[222]" />
+				</include>
+			</control>
+		</control>
+	</include>
+	<include name="VideoDialogSelectSubtitleLayout">
+	<!--
+	Available ListItem subtitle stream properties:
+	stream.description, stream.codec, stream.isdefault, stream.isforced, stream.isoriginal,
+	stream.ishearingimpaired, stream.isvisualimpaired, stream.isexternal
+	-->
+		<control type="group">
+			<centertop>50%</centertop>
+			<centerleft>50%</centerleft>
+			<height>750</height>
+			<width>1220</width>
+			<include content="DialogBackgroundCommons">
+				<param name="width" value="1220" />
+				<param name="height" value="750" />
+				<param name="header_label" value="" />
+				<param name="header_id" value="1" />
+			</include>
+			<control type="image">
+				<left>0</left>
+				<top>80</top>
+				<width>920</width>
+				<bottom>2</bottom>
+				<texture border="40">buttons/dialogbutton-nofo.png</texture>
+			</control>
+			<control type="list" id="3">
+				<left>20</left>
+				<top>100</top>
+				<width>880</width>
+				<bottom>20</bottom>
+				<onup>3</onup>
+				<ondown>3</ondown>
+				<onleft>9001</onleft>
+				<onright>61</onright>
+				<pagecontrol>61</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<include content="DefaultSimpleListLayout">
+					<param name="width" value="880" />
+					<param name="list_id" value="3" />
+				</include>
+			</control>
+			<control type="list" id="6">
+				<left>20</left>
+				<top>100</top>
+				<width>880</width>
+				<bottom>20</bottom>
+				<onup>6</onup>
+				<ondown>6</ondown>
+				<onleft>9001</onleft>
+				<onright>61</onright>
+				<pagecontrol>61</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<itemlayout height="100" width="880">
+					<control type="image">
+						<left>10</left>
+						<top>16</top>
+						<width>30</width>
+						<height>30</height>
+						<aspectratio>keep</aspectratio>
+						<aligny>center</aligny>
+						<texture>icons/menumarks/tick.png</texture>
+						<visible>ListItem.IsSelected</visible>
+					</control>
+					<control type="label">
+						<left>50</left>
+						<top>0</top>
+						<right>80</right>
+						<height>60</height>
+						<font>font14</font>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]$VAR[VideoStreamDialogSubItemLabelVar, - [LIGHT],[/LIGHT]]</label>
+					</control>
+					<control type="textbox">
+						<left>50</left>
+						<top>50</top>
+						<right>80</right>
+						<height>67</height>
+						<font>font12</font>
+						<textcolor>grey</textcolor>
+						<label>$INFO[ListItem.Property(stream.description)]</label>
+					</control>
+					<control type="image">
+						<left>830</left>
+						<top>16</top>
+						<width>30</width>
+						<height>30</height>
+						<aspectratio>keep</aspectratio>
+						<aligny>center</aligny>
+						<texture>icons/menumarks/star.png</texture>
+						<visible>ListItem.Property(stream.isdefault)</visible>
+					</control>
+				</itemlayout>
+				<focusedlayout height="100" width="880">
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<right>0</right>
+						<bottom>0</bottom>
+						<texture colordiffuse="button_focus">lists/focus.png</texture>
+						<animation effect="fade" start="100" end="50" time="0">UnFocus</animation>
+					</control>
+					<control type="image">
+						<left>10</left>
+						<top>16</top>
+						<width>30</width>
+						<height>30</height>
+						<aspectratio>keep</aspectratio>
+						<aligny>center</aligny>
+						<texture>icons/menumarks/tick.png</texture>
+						<visible>ListItem.IsSelected</visible>
+					</control>
+					<control type="label">
+						<left>50</left>
+						<top>0</top>
+						<right>80</right>
+						<height>60</height>
+						<aligny>center</aligny>
+						<scroll>true</scroll>
+						<font>font14</font>
+						<label>$INFO[ListItem.Label]$VAR[VideoStreamDialogSubItemLabelVar, - [LIGHT],[/LIGHT]]</label>
+					</control>
+					<control type="textbox">
+						<left>50</left>
+						<top>50</top>
+						<right>80</right>
+						<height>67</height>
+						<font>font12</font>
+						<label>$INFO[ListItem.Property(stream.description)]</label>
+					</control>
+					<control type="image">
+						<left>830</left>
+						<top>16</top>
+						<width>30</width>
+						<height>30</height>
+						<aspectratio>keep</aspectratio>
+						<aligny>center</aligny>
+						<texture>icons/menumarks/star.png</texture>
+						<visible>ListItem.Property(stream.isdefault)</visible>
+					</control>
+				</focusedlayout>
+			</control>
+			<control type="scrollbar" id="61">
+				<left>910</left>
+				<top>100</top>
+				<width>12</width>
+				<bottom>20</bottom>
+				<onleft condition="Control.IsVisible(3)">3</onleft>
+				<onleft condition="Control.IsVisible(6)">6</onleft>
+				<onright>9001</onright>
+				<orientation>vertical</orientation>
+			</control>
+			<control type="label">
+				<left>925</left>
+				<bottom>10</bottom>
+				<width>275</width>
+				<height>35</height>
+				<font>font12</font>
+				<align>right</align>
+				<textcolor>grey</textcolor>
+				<label>$VAR[SelectLabel]</label>
+			</control>
+			<control type="grouplist" id="9001">
+				<left>920</left>
+				<top>80</top>
+				<onleft>61</onleft>
+				<itemgap>dialogbuttons_itemgap</itemgap>
+				<onright>3</onright>
+				<include content="DefaultDialogButton">
+					<param name="id" value="5" />
+					<param name="label" value="" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="8" />
+					<param name="label" value="" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="7" />
+					<param name="label" value="$LOCALIZE[222]" />
+				</include>
+			</control>
+		</control>
+	</include>
 	<include name="GameDialogSelectSaveLayout">
 		<control type="group">
 			<centertop>50%</centertop>

@@ -31,6 +31,7 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "video/dialogs/GUIDialogAudioSettings.h"
+#include "video/guilib/VideoStreamSelectHelper.h"
 
 using namespace KODI;
 using namespace UTILS;
@@ -141,6 +142,12 @@ bool CPlayerController::OnAction(const CAction &action)
         return true;
       }
 
+      case ACTION_DIALOG_SELECT_SUBTITLE:
+      {
+        VIDEO::GUILIB::OpenDialogSelectSubtitleStream();
+        return true;
+      }
+
       case ACTION_SUBTITLE_DELAY_MIN:
       {
         float videoSubsDelayRange = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubsDelayRange;
@@ -244,6 +251,12 @@ bool CPlayerController::OnAction(const CAction &action)
         return true;
       }
 
+      case ACTION_DIALOG_SELECT_AUDIO:
+      {
+        VIDEO::GUILIB::OpenDialogSelectAudioStream();
+        return true;
+      }
+
       case ACTION_VIDEO_NEXT_STREAM:
       {
         if (appPlayer->GetVideoStreamCount() == 1)
@@ -260,6 +273,12 @@ bool CPlayerController::OnAction(const CAction &action)
         std::string caption = g_localizeStrings.Get(38031);
         caption += StringUtils::Format(" ({}/{})", currentVideo + 1, videoStreamCount);
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, caption, info.name, DisplTime, false, MsgTime);
+        return true;
+      }
+
+      case ACTION_DIALOG_SELECT_VIDEO:
+      {
+        VIDEO::GUILIB::OpenDialogSelectVideoStream();
         return true;
       }
 

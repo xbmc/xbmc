@@ -5388,6 +5388,8 @@ void CVideoPlayer::GetSubtitleStreamInfo(int index, SubtitleStreamInfo& info) co
   info.language = s.language;
   info.codecName = s.codec;
   info.flags = s.flags;
+  info.isExternal = STREAM_SOURCE_MASK(s.source) == STREAM_SOURCE_DEMUX_SUB ||
+                    STREAM_SOURCE_MASK(s.source) == STREAM_SOURCE_TEXT;
 }
 
 void CVideoPlayer::SetSubtitle(int iStream)
