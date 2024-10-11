@@ -597,7 +597,8 @@ static void set_transform(
   dest->filter = strdup(filter);
   dest->nparams = nparams;
   dest->params = malloc(nparams * sizeof(XFixed));
-  memcpy(dest->params, params, nparams * sizeof(XFixed));
+  if (nparams)
+    memcpy(dest->params, params, nparams * sizeof(XFixed));
 }
 
 static void copy_transform(transform_t* dest, transform_t* src)

@@ -1,0 +1,25 @@
+From 6b0bc3602465eede68f1e04cf4835d1347bc9d69 Mon Sep 17 00:00:00 2001
+From: Yu Xiao <1918256943@qq.com>
+Date: Fri, 11 Oct 2024 18:02:35 +0800
+Subject: [PATCH] fix some UB like memcpy(NULL, NULL, 0)
+
+---
+ lib/libUPnP/Neptune/Source/Core/NptUtils.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/libUPnP/Neptune/Source/Core/NptUtils.cpp b/lib/libUPnP/Neptune/Source/Core/NptUtils.cpp
+index f427f8b..b2a641c 100644
+--- a/lib/libUPnP/Neptune/Source/Core/NptUtils.cpp
++++ b/lib/libUPnP/Neptune/Source/Core/NptUtils.cpp
+@@ -376,7 +376,7 @@ NPT_HexString(const unsigned char* data,
+     while (data_size--) {
+         NPT_ByteToHex(*src++, dst, uppercase);
+         dst += 2;
+-        if (data_size) {
++        if (data_size && separator_length) {
+             NPT_CopyMemory(dst, separator, separator_length);
+             dst += separator_length;
+         }
+--
+2.44.0.windows.1
+
