@@ -81,7 +81,6 @@
 #include <androidjni/Cursor.h>
 #include <androidjni/Display.h>
 #include <androidjni/DisplayManager.h>
-#include <androidjni/Environment.h>
 #include <androidjni/File.h>
 #include <androidjni/Intent.h>
 #include <androidjni/IntentFilter.h>
@@ -1089,42 +1088,6 @@ bool CXBMCApp::StartActivity(const std::string& package,
 int CXBMCApp::GetBatteryLevel() const
 {
   return m_batteryLevel;
-}
-
-bool CXBMCApp::GetExternalStorage(std::string &path, const std::string &type /* = "" */)
-{
-  std::string sType;
-  std::string mountedState;
-  bool mounted = false;
-
-  if(type == "files" || type.empty())
-  {
-    CJNIFile external = CJNIEnvironment::getExternalStorageDirectory();
-    if (external)
-      path = external.getAbsolutePath();
-  }
-  else
-  {
-    if (type == "music")
-      sType = "Music"; // Environment.DIRECTORY_MUSIC
-    else if (type == "videos")
-      sType = "Movies"; // Environment.DIRECTORY_MOVIES
-    else if (type == "pictures")
-      sType = "Pictures"; // Environment.DIRECTORY_PICTURES
-    else if (type == "photos")
-      sType = "DCIM"; // Environment.DIRECTORY_DCIM
-    else if (type == "downloads")
-      sType = "Download"; // Environment.DIRECTORY_DOWNLOADS
-    if (!sType.empty())
-    {
-      CJNIFile external = CJNIEnvironment::getExternalStoragePublicDirectory(sType);
-      if (external)
-        path = external.getAbsolutePath();
-    }
-  }
-  mountedState = CJNIEnvironment::getExternalStorageState();
-  mounted = (mountedState == "mounted" || mountedState == "mounted_ro");
-  return mounted && !path.empty();
 }
 
 // Used in Application.cpp to figure out volume steps

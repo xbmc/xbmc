@@ -12,6 +12,10 @@
 #include <ppltasks.h>
 #include <sdkddkver.h>
 
+#ifndef TARGET_WINDOWS_STORE
+#include <winrt/windows.foundation.h>
+#endif
+
 namespace winrt
 {
   using namespace Windows::Foundation;

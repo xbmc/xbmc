@@ -59,6 +59,7 @@
 #include "video/VideoItemArtworkHandler.h"
 #include "video/VideoLibraryQueue.h"
 #include "video/VideoThumbLoader.h"
+#include "video/VideoUtils.h"
 #include "video/dialogs/GUIDialogVideoManagerExtras.h"
 #include "video/dialogs/GUIDialogVideoManagerVersions.h"
 #include "video/guilib/VideoGUIUtils.h"
@@ -453,7 +454,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
     if (m_movieItem->GetVideoInfoTag()->m_strTrailer.empty() ||
         URIUtils::IsInternetStream(m_movieItem->GetVideoInfoTag()->m_strTrailer))
     {
-      std::string localTrailer = m_movieItem->FindTrailer();
+      std::string localTrailer = VIDEO::UTILS::FindTrailer(*m_movieItem);
       if (!localTrailer.empty())
       {
         m_movieItem->GetVideoInfoTag()->m_strTrailer = localTrailer;

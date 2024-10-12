@@ -166,13 +166,6 @@ public:
                             const std::string& className = std::string());
   std::vector<androidPackage> GetApplications() const;
 
-  /*!
-   * \brief If external storage is available, it returns the path for the external storage (for the specified type)
-   * \param path will contain the path of the external storage (for the specified type)
-   * \param type optional type. Possible values are "", "files", "music", "videos", "pictures", "photos, "downloads"
-   * \return true if external storage is available and a valid path has been stored in the path parameter
-   */
-  static bool GetExternalStorage(std::string& path, const std::string& type = "");
   static int GetMaxSystemVolume();
   static float GetSystemVolume();
   static void SetSystemVolume(float percent);

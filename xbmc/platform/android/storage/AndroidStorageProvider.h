@@ -30,6 +30,14 @@ public:
 
   bool PumpDriveChangeEvents(IStorageEventsCallback* callback) override;
 
+  /*!
+   * \brief If external storage is available, it returns the path for the external storage (for the specified type)
+   * \param path will contain the path of the external storage (for the specified type)
+   * \param type optional type. Possible values are "", "files", "music", "videos", "pictures", "photos, "downloads"
+   * \return true if external storage is available and a valid path has been stored in the path parameter
+   */
+  static bool GetExternalStorage(std::string& path, const std::string& type = "");
+
 private:
   std::string unescape(const std::string& str);
   VECSOURCES m_removableDrives;

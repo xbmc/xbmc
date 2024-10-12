@@ -17,8 +17,6 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
-#include "platform/android/activity/XBMCApp.h"
-
 #include <array>
 #include <cstdio>
 #include <cstdlib>
@@ -131,7 +129,7 @@ void CAndroidStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
 
   // external directory
   std::string path;
-  if (CXBMCApp::GetExternalStorage(path) && !path.empty()  && XFILE::CDirectory::Exists(path))
+  if (GetExternalStorage(path) && !path.empty() && XFILE::CDirectory::Exists(path))
   {
     share.strPath = path;
     share.strName = g_localizeStrings.Get(21456);
@@ -391,8 +389,7 @@ std::vector<std::string> CAndroidStorageProvider::GetDiskUsage()
   usage.clear();
   // add external storage if available
   std::string path;
-  if (CXBMCApp::GetExternalStorage(path) && !path.empty() && GetStorageUsage(path, usage) &&
-      !usage.empty())
+  if (GetExternalStorage(path) && !path.empty() && GetStorageUsage(path, usage) && !usage.empty())
     result.push_back(usage);
 
   // add removable storage
@@ -450,4 +447,42 @@ bool CAndroidStorageProvider::GetStorageUsage(const std::string& path, std::stri
       path.size() < PATH_MAXLEN - 1 ? path : StringUtils::Left(path, PATH_MAXLEN - 4) + "...",
       PATH_MAXLEN, totalSize, "G", usedSize, "G", freeSize, "G", usedPercentage, "%");
   return true;
+}
+
+bool CAndroidStorageProvider::GetExternalStorage(std::string& path,
+                                                 const std::string& type /* = "" */)
+{
+  std::string sType;
+  std::string mountedState;
+  bool mounted = false;
+
+  if (type == "files" || type.empty())
+  {
+    CJNIFile external = CJNIEnvironment::getExternalStorageDirectory();
+    if (external)
+      path = external.getAbsolutePath();
+  }
+  else
+  {
+    if (type == "music")
+      sType = "Music"; // Environment.DIRECTORY_MUSIC
+    else if (type == "videos")
+      sType = "Movies"; // Environment.DIRECTORY_MOVIES
+    else if (type == "pictures")
+      sType = "Pictures"; // Environment.DIRECTORY_PICTURES
+    else if (type == "photos")
+      sType = "DCIM"; // Environment.DIRECTORY_DCIM
+    else if (type == "downloads")
+      sType = "Download"; // Environment.DIRECTORY_DOWNLOADS
+    if (!sType.empty())
+    {
+      CJNIFile external = CJNIEnvironment::getExternalStoragePublicDirectory(sType);
+      if (external)
+        path = external.getAbsolutePath();
+    }
+  }
+
+  mountedState = CJNIEnvironment::getExternalStorageState();
+  mounted = (mountedState == "mounted" || mountedState == "mounted_ro");
+  return mounted && !path.empty();
 }

@@ -389,13 +389,6 @@ void CDetectDVDMedia::WaitMediaReady()
   std::unique_lock<CCriticalSection> waitLock(m_muReadingMedia);
 }
 
-// Static function
-// Returns status of the DVD Drive
-bool CDetectDVDMedia::DriveReady()
-{
-  return m_DriveState == DriveState::READY;
-}
-
 DriveState CDetectDVDMedia::GetDriveState()
 {
   return m_DriveState;

@@ -13,27 +13,62 @@
 #include "cores/AudioEngine/Sinks/windows/AESinkFactoryWin.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "utils/SystemInfo.h"
 #include "utils/log.h"
 
-#ifdef TARGET_WINDOWS_STORE
-#include "platform/win10/AsyncHelpers.h"
-#endif
 #include "platform/win32/CharsetConverter.h"
 
 #include <algorithm>
 #include <stdint.h>
 
 #include <ksmedia.h>
-#include <mfapi.h>
-#include <mmdeviceapi.h>
-#include <mmreg.h>
-#include <wrl/implements.h>
 
 using namespace Microsoft::WRL;
 
 namespace
 {
 constexpr int XAUDIO_BUFFERS_IN_QUEUE = 2;
+
+HRESULT KXAudio2Create(IXAudio2** ppXAudio2,
+                       UINT32 Flags X2DEFAULT(0),
+                       XAUDIO2_PROCESSOR XAudio2Processor X2DEFAULT(XAUDIO2_DEFAULT_PROCESSOR))
+{
+  typedef HRESULT(__stdcall * XAudio2CreateInfoFunc)(_Outptr_ IXAudio2**, UINT32,
+                                                     XAUDIO2_PROCESSOR);
+  static HMODULE dll = NULL;
+  static XAudio2CreateInfoFunc XAudio2CreateFn = nullptr;
+
+  if (dll == NULL)
+  {
+    dll = LoadLibraryEx(L"xaudio2_9redist.dll", NULL, LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
+
+    if (dll == NULL)
+    {
+      dll = LoadLibraryEx(L"xaudio2_9.dll", NULL, LOAD_LIBRARY_SEARCH_SYSTEM32);
+
+      if (dll == NULL)
+      {
+        // Windows 8 compatibility
+        dll = LoadLibraryEx(L"xaudio2_8.dll", NULL, LOAD_LIBRARY_SEARCH_SYSTEM32);
+
+        if (dll == NULL)
+          return HRESULT_FROM_WIN32(GetLastError());
+      }
+    }
+
+    XAudio2CreateFn = (XAudio2CreateInfoFunc)(void*)GetProcAddress(dll, "XAudio2Create");
+    if (!XAudio2CreateFn)
+    {
+      return HRESULT_FROM_WIN32(GetLastError());
+    }
+  }
+
+  if (XAudio2CreateFn)
+    return (*XAudio2CreateFn)(ppXAudio2, Flags, XAudio2Processor);
+  else
+    return E_FAIL;
+}
+
 } // namespace
 
 extern const char* WASAPIErrToStr(HRESULT err);
@@ -50,10 +85,10 @@ inline void SafeDestroyVoice(TVoice **ppVoice)
 
 CAESinkXAudio::CAESinkXAudio()
 {
-  HRESULT hr = XAudio2Create(m_xAudio2.ReleaseAndGetAddressOf(), 0);
+  HRESULT hr = KXAudio2Create(m_xAudio2.ReleaseAndGetAddressOf(), 0);
   if (FAILED(hr))
   {
-    CLog::LogF(LOGERROR, "XAudio initialization failed.");
+    CLog::LogF(LOGERROR, "XAudio initialization failed, error {:X}.", hr);
   }
 #ifdef _DEBUG
   else
@@ -89,6 +124,13 @@ void CAESinkXAudio::Register()
 std::unique_ptr<IAESink> CAESinkXAudio::Create(std::string& device, AEAudioFormat& desiredFormat)
 {
   auto sink = std::make_unique<CAESinkXAudio>();
+
+  if (!sink->m_xAudio2)
+  {
+    CLog::LogF(LOGERROR, "XAudio2 not loaded.");
+    return {};
+  }
+
   if (sink->Initialize(desiredFormat, device))
     return sink;
 
@@ -283,7 +325,13 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
   IXAudio2SourceVoice* mSourceVoice = nullptr;
   Microsoft::WRL::ComPtr<IXAudio2> xaudio2;
 
-  hr = XAudio2Create(xaudio2.ReleaseAndGetAddressOf(), eflags);
+  // ForegroundOnlyMedia/BackgroundCapableMedia replaced in Windows 10 by Movie/Media
+  const AUDIO_STREAM_CATEGORY streamCategory{
+      CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin10)
+          ? AudioCategory_Media
+          : AudioCategory_ForegroundOnlyMedia};
+
+  hr = KXAudio2Create(xaudio2.ReleaseAndGetAddressOf(), eflags);
   if (FAILED(hr))
   {
     CLog::LogF(LOGERROR, "failed to activate XAudio for capability testing ({})",
@@ -291,7 +339,7 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     return;
   }
 
-  for(RendererDetail& details : CAESinkFactoryWin::GetRendererDetails())
+  for (RendererDetail& details : CAESinkFactoryWin::GetRendererDetailsWinRT())
   {
     deviceInfo.m_channels.Reset();
     deviceInfo.m_dataFormats.clear();
@@ -304,7 +352,7 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
         deviceChannels += AEChannelNames[c];
     }
 
-    const std::wstring deviceId = KODI::PLATFORM::WINDOWS::ToW(details.strDevicePath);
+    const std::wstring deviceId = KODI::PLATFORM::WINDOWS::ToW(details.strDeviceId);
 
     /* Test format for PCM format iteration */
     wfxex.Format.cbSize = sizeof(WAVEFORMATEXTENSIBLE) - sizeof(WAVEFORMATEX);
@@ -314,9 +362,15 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     wfxex.Format.wFormatTag = WAVE_FORMAT_EXTENSIBLE;
     wfxex.SubFormat = KSDATAFORMAT_SUBTYPE_IEEE_FLOAT;
 
-    xaudio2->CreateMasteringVoice(&mMasterVoice, wfxex.Format.nChannels,
-                                  wfxex.Format.nSamplesPerSec, 0, deviceId.c_str(), nullptr,
-                                  AudioCategory_Media);
+    hr = xaudio2->CreateMasteringVoice(&mMasterVoice, wfxex.Format.nChannels,
+                                       wfxex.Format.nSamplesPerSec, 0, deviceId.c_str(), nullptr,
+                                       streamCategory);
+
+    if (FAILED(hr))
+    {
+      CLog::LogF(LOGERROR, "failed to create mastering voice (:X)", hr);
+      return;
+    }
 
     for (int p = AE_FMT_FLOAT; p > AE_FMT_INVALID; p--)
     {
@@ -359,25 +413,31 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
 
     for (int j = 0; j < WASAPISampleRateCount; j++)
     {
+      if (WASAPISampleRates[j] < XAUDIO2_MIN_SAMPLE_RATE ||
+          WASAPISampleRates[j] > XAUDIO2_MAX_SAMPLE_RATE)
+        continue;
+
       SafeDestroyVoice(&mSourceVoice);
       SafeDestroyVoice(&mMasterVoice);
 
       wfxex.Format.nSamplesPerSec = WASAPISampleRates[j];
       wfxex.Format.nAvgBytesPerSec = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
 
-      xaudio2->CreateMasteringVoice(&mMasterVoice, wfxex.Format.nChannels,
-                                    wfxex.Format.nSamplesPerSec, 0, deviceId.c_str(), nullptr,
-                                    AudioCategory_Media);
-      hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format);
+      if (SUCCEEDED(xaudio2->CreateMasteringVoice(&mMasterVoice, wfxex.Format.nChannels,
+                                                  wfxex.Format.nSamplesPerSec, 0, deviceId.c_str(),
+                                                  nullptr, streamCategory)))
+      {
+        hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format);
 
-      if (SUCCEEDED(hr))
-        deviceInfo.m_sampleRates.push_back(WASAPISampleRates[j]);
+        if (SUCCEEDED(hr))
+          deviceInfo.m_sampleRates.push_back(WASAPISampleRates[j]);
+      }
     }
 
     SafeDestroyVoice(&mSourceVoice);
     SafeDestroyVoice(&mMasterVoice);
 
-    deviceInfo.m_deviceName = details.strDevicePath;
+    deviceInfo.m_deviceName = details.strDeviceId;
     deviceInfo.m_displayName = details.strWinDevType.append(details.strDescription);
     deviceInfo.m_displayNameExtra = std::string("XAudio: ").append(details.strDescription);
     deviceInfo.m_deviceType = details.eDeviceType;
@@ -442,11 +502,18 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
 
   HRESULT hr;
   IXAudio2MasteringVoice* pMasterVoice = nullptr;
+  const wchar_t* pDevice = device.c_str();
+  // ForegroundOnlyMedia/BackgroundCapableMedia replaced in Windows 10 by Movie/Media
+  const AUDIO_STREAM_CATEGORY streamCategory{
+      CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin10)
+          ? AudioCategory_Media
+          : AudioCategory_ForegroundOnlyMedia};
 
   if (!bdefault)
   {
-    hr = m_xAudio2->CreateMasteringVoice(&pMasterVoice, wfxex.Format.nChannels, wfxex.Format.nSamplesPerSec,
-                                          0, device.c_str(), nullptr, AudioCategory_Media);
+    hr = m_xAudio2->CreateMasteringVoice(&pMasterVoice, wfxex.Format.nChannels,
+                                         wfxex.Format.nSamplesPerSec, 0, pDevice, nullptr,
+                                         streamCategory);
   }
 
   if (!pMasterVoice)
@@ -458,11 +525,12 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
                  "Trying the default device...",
                  KODI::PLATFORM::WINDOWS::FromW(device));
     }
-
     // smartphone issue: providing device ID (even default ID) causes E_NOINTERFACE result
     // workaround: device = nullptr will initialize default audio endpoint
-    hr = m_xAudio2->CreateMasteringVoice(&pMasterVoice, wfxex.Format.nChannels, wfxex.Format.nSamplesPerSec,
-                                          0, 0, nullptr, AudioCategory_Media);
+    pDevice = nullptr;
+    hr = m_xAudio2->CreateMasteringVoice(&pMasterVoice, wfxex.Format.nChannels,
+                                         wfxex.Format.nSamplesPerSec, 0, pDevice, nullptr,
+                                         streamCategory);
     if (FAILED(hr) || !pMasterVoice)
     {
       CLog::LogF(LOGINFO, "Could not retrieve the default XAudio audio endpoint ({}).",
@@ -525,11 +593,19 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
 
       for (int i = 0 ; i < WASAPISampleRateCount; i++)
       {
+        if (WASAPISampleRates[j] < XAUDIO2_MIN_SAMPLE_RATE ||
+            WASAPISampleRates[j] > XAUDIO2_MAX_SAMPLE_RATE)
+          continue;
+
+        SafeDestroyVoice(&m_sourceVoice);
+        SafeDestroyVoice(&m_masterVoice);
+
         wfxex.Format.nSamplesPerSec    = WASAPISampleRates[i];
         wfxex.Format.nAvgBytesPerSec   = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
 
-        hr = m_xAudio2->CreateMasteringVoice(&m_masterVoice, wfxex.Format.nChannels, wfxex.Format.nSamplesPerSec,
-                                             0, device.c_str(), nullptr, AudioCategory_Media);
+        hr = m_xAudio2->CreateMasteringVoice(&m_masterVoice, wfxex.Format.nChannels,
+                                             wfxex.Format.nSamplesPerSec, 0, pDevice, nullptr,
+                                             streamCategory);
         if (SUCCEEDED(hr))
         {
           hr = m_xAudio2->CreateSourceVoice(&m_sourceVoice, &wfxex.Format, 0, XAUDIO2_DEFAULT_FREQ_RATIO, &m_voiceCallback);
@@ -550,9 +626,19 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
 
       if (closestMatch >= 0)
       {
+        // Closest match may be different from the last successful sample rate tested
+        SafeDestroyVoice(&m_sourceVoice);
+        SafeDestroyVoice(&m_masterVoice);
+
         wfxex.Format.nSamplesPerSec    = WASAPISampleRates[closestMatch];
         wfxex.Format.nAvgBytesPerSec   = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
-        goto initialize;
+
+        if (SUCCEEDED(m_xAudio2->CreateMasteringVoice(&m_masterVoice, wfxex.Format.nChannels,
+                                                      wfxex.Format.nSamplesPerSec, 0, pDevice,
+                                                      nullptr, streamCategory)) &&
+            SUCCEEDED(m_xAudio2->CreateSourceVoice(&m_sourceVoice, &wfxex.Format, 0,
+                                                   XAUDIO2_DEFAULT_FREQ_RATIO, &m_voiceCallback)))
+          goto initialize;
       }
     }
   }

@@ -17,6 +17,7 @@
 
 #include "platform/android/activity/XBMCApp.h"
 #include "platform/android/powermanagement/AndroidPowerSyscall.h"
+#include "platform/android/storage/AndroidStorageProvider.h"
 
 #include <stdlib.h>
 
@@ -66,7 +67,7 @@ void CPlatformAndroid::PlatformSyslog()
       CJNIBuild::BRAND, CJNIBuild::MODEL, CJNIBuild::HARDWARE);
 
   std::string extstorage;
-  bool extready = CXBMCApp::GetExternalStorage(extstorage);
+  const bool extready = CAndroidStorageProvider::GetExternalStorage(extstorage);
   CLog::Log(
       LOGINFO, "External storage path = {}; status = {}; Permissions = {}{}", extstorage,
       extready ? "ok" : "nok",

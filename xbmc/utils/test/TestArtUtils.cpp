@@ -7,9 +7,14 @@
  */
 
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "filesystem/Directory.h"
 #include "platform/Filesystem.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "settings/lib/SettingsManager.h"
 #include "utils/ArtUtils.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
@@ -45,6 +50,21 @@ std::string unique_path(const std::string& input)
                  [&randchar](const char c) { return (c == '%') ? randchar() : c; });
 
   return ret;
+}
+
+class AdvancedSettingsResetBase : public testing::Test
+{
+public:
+  AdvancedSettingsResetBase();
+};
+
+AdvancedSettingsResetBase::AdvancedSettingsResetBase()
+{
+  // Force all advanced settings to be reset to defaults
+  const auto settings = CServiceBroker::GetSettingsComponent();
+  CSettingsManager* settingsMgr = settings->GetSettings()->GetSettingsManager();
+  settings->GetAdvancedSettings()->Uninitialize(*settingsMgr);
+  settings->GetAdvancedSettings()->Initialize(*settingsMgr);
 }
 
 struct ArtFilenameTest
@@ -173,6 +193,58 @@ class FolderThumbTest : public testing::WithParamInterface<FolderTest>, public t
 {
 };
 
+struct LocalArtTest
+{
+  std::string file;
+  std::string art;
+  bool use_folder;
+  std::string base;
+};
+
+const auto local_art_tests = std::array{
+    LocalArtTest{"c:\\dir\\filename.avi", "art.jpg", false, "c:\\dir\\filename-art.jpg"},
+    LocalArtTest{"c:\\dir\\filename.avi", "art.jpg", true, "c:\\dir\\art.jpg"},
+    LocalArtTest{"/dir/filename.avi", "art.jpg", false, "/dir/filename-art.jpg"},
+    LocalArtTest{"/dir/filename.avi", "art.jpg", true, "/dir/art.jpg"},
+    LocalArtTest{"smb://somepath/file.avi", "art.jpg", false, "smb://somepath/file-art.jpg"},
+    LocalArtTest{"smb://somepath/file.avi", "art.jpg", true, "smb://somepath/art.jpg"},
+    LocalArtTest{"stack:///path/to/movie-cd1.avi , /path/to/movie-cd2.avi", "art.jpg", false,
+                 "/path/to/movie-art.jpg"},
+    LocalArtTest{"stack:///path/to/movie-cd1.avi , /path/to/movie-cd2.avi", "art.jpg", true,
+                 "/path/to/art.jpg"},
+    LocalArtTest{
+        "stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi",
+        "art.jpg", true, "/path/to/movie_name/art.jpg"},
+    LocalArtTest{"/home/user/TV Shows/Dexter/S1/1x01.avi", "art.jpg", false,
+                 "/home/user/TV Shows/Dexter/S1/1x01-art.jpg"},
+    LocalArtTest{"/home/user/TV Shows/Dexter/S1/1x01.avi", "art.jpg", true,
+                 "/home/user/TV Shows/Dexter/S1/art.jpg"},
+    LocalArtTest{"zip://g%3a%5cmultimedia%5cmovies%5cSphere%2ezip/Sphere.avi", "art.jpg", false,
+                 "g:\\multimedia\\movies\\Sphere-art.jpg"},
+    LocalArtTest{"zip://g%3a%5cmultimedia%5cmovies%5cSphere%2ezip/Sphere.avi", "art.jpg", true,
+                 "g:\\multimedia\\movies\\art.jpg"},
+    LocalArtTest{"/home/user/movies/movie_name/video_ts/VIDEO_TS.IFO", "art.jpg", false,
+                 "/home/user/movies/movie_name/art.jpg"},
+    LocalArtTest{"/home/user/movies/movie_name/video_ts/VIDEO_TS.IFO", "art.jpg", true,
+                 "/home/user/movies/movie_name/art.jpg"},
+    LocalArtTest{"/home/user/movies/movie_name/BDMV/index.bdmv", "art.jpg", false,
+                 "/home/user/movies/movie_name/art.jpg"},
+    LocalArtTest{"/home/user/movies/movie_name/BDMV/index.bdmv", "art.jpg", true,
+                 "/home/user/movies/movie_name/art.jpg"},
+    LocalArtTest{"c:\\dir\\filename.avi", "", false, "c:\\dir\\filename.tbn"},
+    LocalArtTest{"/dir/filename.avi", "", false, "/dir/filename.tbn"},
+    LocalArtTest{"smb://somepath/file.avi", "", false, "smb://somepath/file.tbn"},
+    LocalArtTest{"/home/user/TV Shows/Dexter/S1/1x01.avi", "", false,
+                 "/home/user/TV Shows/Dexter/S1/1x01.tbn"},
+    LocalArtTest{"zip://g%3a%5cmultimedia%5cmovies%5cSphere%2ezip/Sphere.avi", "", false,
+                 "g:\\multimedia\\movies\\Sphere.tbn"},
+};
+
+class TestLocalArt : public AdvancedSettingsResetBase,
+                     public testing::WithParamInterface<LocalArtTest>
+{
+};
+
 } // namespace
 
 TEST_P(FillInDefaultIconTest, FillInDefaultIcon)
@@ -198,6 +270,17 @@ TEST_P(FolderThumbTest, GetFolderThumb)
 }
 
 INSTANTIATE_TEST_SUITE_P(TestArtUtils, FolderThumbTest, testing::ValuesIn(folder_thumb_tests));
+
+TEST_P(TestLocalArt, GetLocalArt)
+{
+  CFileItem item;
+  item.SetPath(GetParam().file);
+  std::string path = CURL(ART::GetLocalArt(item, GetParam().art, GetParam().use_folder)).Get();
+  std::string compare = CURL(GetParam().base).Get();
+  EXPECT_EQ(compare, path);
+}
+
+INSTANTIATE_TEST_SUITE_P(TestArtUtils, TestLocalArt, testing::ValuesIn(local_art_tests));
 
 TEST_P(GetLocalArtBaseFilenameTest, GetLocalArtBaseFilename)
 {

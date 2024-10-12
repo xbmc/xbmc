@@ -11,6 +11,7 @@
 #include "threads/CriticalSection.h"
 #include "utils/EventStream.h"
 
+#include <cstdint>
 #include <map>
 #include <memory>
 #include <mutex>

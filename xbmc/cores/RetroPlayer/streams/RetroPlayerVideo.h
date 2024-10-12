@@ -11,6 +11,8 @@
 #include "IRetroPlayerStream.h"
 #include "cores/RetroPlayer/RetroPlayerTypes.h"
 
+#include <cstdint>
+
 extern "C"
 {
 #include <libavutil/pixfmt.h>

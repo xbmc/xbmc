@@ -1944,40 +1944,15 @@ std::string CFileItem::FindLocalArt(const std::string &artFile, bool useFolder) 
   std::string thumb;
   if (!m_bIsFolder)
   {
-    thumb = GetLocalArt(artFile, false);
+    thumb = ART::GetLocalArt(*this, artFile, false);
     if (!thumb.empty() && CFile::Exists(thumb))
       return thumb;
   }
   if ((useFolder || (m_bIsFolder && !IsFileFolder())) && !artFile.empty())
   {
-    std::string thumb2 = GetLocalArt(artFile, true);
+    std::string thumb2 = ART::GetLocalArt(*this, artFile, true);
     if (!thumb2.empty() && thumb2 != thumb && CFile::Exists(thumb2))
       return thumb2;
-  }
-  return "";
-}
-
-std::string CFileItem::GetLocalArt(const std::string& artFile, bool useFolder) const
-{
-  // no retrieving of empty art files from folders
-  if (useFolder && artFile.empty())
-    return "";
-
-  std::string strFile = ART::GetLocalArtBaseFilename(*this, useFolder);
-  if (strFile.empty()) // empty filepath -> nothing to find
-    return "";
-
-  if (useFolder)
-  {
-    if (!artFile.empty())
-      return URIUtils::AddFileToFolder(strFile, artFile);
-  }
-  else
-  {
-    if (artFile.empty()) // old thumbnail matching
-      return URIUtils::ReplaceExtension(strFile, ".tbn");
-    else
-      return URIUtils::ReplaceExtension(strFile, "-" + artFile);
   }
   return "";
 }
@@ -2377,89 +2352,6 @@ const std::shared_ptr<PVR::CPVRChannel> CFileItem::GetPVRChannelInfoTag() const
 {
   return m_pvrChannelGroupMemberInfoTag ? m_pvrChannelGroupMemberInfoTag->Channel()
                                         : std::shared_ptr<CPVRChannel>();
-}
-
-std::string CFileItem::FindTrailer() const
-{
-  std::string strFile2;
-  std::string strFile = m_strPath;
-  if (IsStack())
-  {
-    std::string strPath;
-    URIUtils::GetParentPath(m_strPath,strPath);
-    CStackDirectory dir;
-    std::string strPath2;
-    strPath2 = dir.GetStackedTitlePath(strFile);
-    strFile = URIUtils::AddFileToFolder(strPath,URIUtils::GetFileName(strPath2));
-    CFileItem item(dir.GetFirstStackedFile(m_strPath),false);
-    std::string strTBNFile(URIUtils::ReplaceExtension(ART::GetTBNFile(item), "-trailer"));
-    strFile2 = URIUtils::AddFileToFolder(strPath,URIUtils::GetFileName(strTBNFile));
-  }
-  if (URIUtils::IsInRAR(strFile) || URIUtils::IsInZIP(strFile))
-  {
-    std::string strPath = URIUtils::GetDirectory(strFile);
-    std::string strParent;
-    URIUtils::GetParentPath(strPath,strParent);
-    strFile = URIUtils::AddFileToFolder(strParent,URIUtils::GetFileName(m_strPath));
-  }
-
-  // no local trailer available for these
-  if (NETWORK::IsInternetStream(*this) || URIUtils::IsUPnP(strFile) ||
-      URIUtils::IsBluray(strFile) || IsLiveTV() || IsPlugin() || IsDVD())
-    return "";
-
-  std::string strDir = URIUtils::GetDirectory(strFile);
-  CFileItemList items;
-  CDirectory::GetDirectory(strDir, items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(), DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO | DIR_FLAG_NO_FILE_DIRS);
-  URIUtils::RemoveExtension(strFile);
-  strFile += "-trailer";
-  std::string strFile3 = URIUtils::AddFileToFolder(strDir, "movie-trailer");
-
-  // Precompile our REs
-  VECCREGEXP matchRegExps;
-  CRegExp tmpRegExp(true, CRegExp::autoUtf8);
-  const std::vector<std::string>& strMatchRegExps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_trailerMatchRegExps;
-
-  std::vector<std::string>::const_iterator strRegExp = strMatchRegExps.begin();
-  while (strRegExp != strMatchRegExps.end())
-  {
-    if (tmpRegExp.RegComp(*strRegExp))
-    {
-      matchRegExps.push_back(tmpRegExp);
-    }
-    ++strRegExp;
-  }
-
-  std::string strTrailer;
-  for (int i = 0; i < items.Size(); i++)
-  {
-    std::string strCandidate = items[i]->m_strPath;
-    URIUtils::RemoveExtension(strCandidate);
-    if (StringUtils::EqualsNoCase(strCandidate, strFile) ||
-        StringUtils::EqualsNoCase(strCandidate, strFile2) ||
-        StringUtils::EqualsNoCase(strCandidate, strFile3))
-    {
-      strTrailer = items[i]->m_strPath;
-      break;
-    }
-    else
-    {
-      VECCREGEXP::iterator expr = matchRegExps.begin();
-
-      while (expr != matchRegExps.end())
-      {
-        if (expr->RegFind(strCandidate) != -1)
-        {
-          strTrailer = items[i]->m_strPath;
-          i = items.Size();
-          break;
-        }
-        ++expr;
-      }
-    }
-  }
-
-  return strTrailer;
 }
 
 VideoDbContentType CFileItem::GetVideoContentType() const

@@ -397,15 +397,6 @@ public:
 
   CPictureInfoTag* GetPictureInfoTag();
 
-  /*! \brief Assemble the filename of a particular piece of local artwork for an item.
-             No file existence check is typically performed.
-   \param artFile the art file to search for.
-   \param useFolder whether to look in the folder for the art file. Defaults to false.
-   \return the path to the local artwork.
-   \sa FindLocalArt
-   */
-  std::string GetLocalArt(const std::string& artFile, bool useFolder = false) const;
-
   /*! \brief Assemble the filename of a particular piece of local artwork for an item,
              and check for file existence.
    \param artFile the art file to search for.
@@ -456,9 +447,6 @@ public:
      \sa URIUtils::GetParentPath
    */
   std::string GetLocalMetadataPath() const;
-
-  // finds a matching local trailer file
-  std::string FindTrailer() const;
 
   bool LoadMusicTag();
   bool LoadGameTag();

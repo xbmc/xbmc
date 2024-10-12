@@ -106,7 +106,8 @@ endif()
 if(CORE_SYSTEM_NAME MATCHES windows)
   list(APPEND SOURCES Sinks/AESinkWASAPI.cpp
                       Sinks/AESinkXAudio.cpp
-                      Sinks/windows/AESinkFactoryWin.cpp)
+                      Sinks/windows/AESinkFactoryWin.cpp
+                      Sinks/windows/AESinkFactoryWinRT.cpp)
   list(APPEND HEADERS Sinks/AESinkWASAPI.h
                       Sinks/AESinkXAudio.h
                       Sinks/windows/AESinkFactoryWin.h)

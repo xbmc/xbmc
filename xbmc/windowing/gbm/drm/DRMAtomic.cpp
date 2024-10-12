@@ -149,6 +149,11 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
   {
     CLog::Log(LOGERROR, "CDRMAtomic::{} - atomic commit failed: {}", __FUNCTION__,
               strerror(errno));
+    m_atomicRequestQueue.pop_back();
+  }
+  else if (m_atomicRequestQueue.size() > 1)
+  {
+    m_atomicRequestQueue.pop_front();
   }
 
   if (m_inFenceFd != -1)
@@ -163,9 +168,6 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
       CLog::Log(LOGERROR, "CDRMAtomic::{} - failed to destroy property blob: {}", __FUNCTION__,
                 strerror(errno));
   }
-
-  if (m_atomicRequestQueue.size() > 1)
-    m_atomicRequestQueue.pop_back();
 
   m_atomicRequestQueue.emplace_back(std::make_unique<CDRMAtomicRequest>());
   m_req = m_atomicRequestQueue.back().get();

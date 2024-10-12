@@ -9,6 +9,7 @@
 #include "PlayListFactory.h"
 
 #include "FileItem.h"
+#include "URL.h"
 #include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayListASX.h"
 #include "playlists/PlayListB4S.h"
@@ -24,6 +25,19 @@
 
 namespace KODI::PLAYLIST
 {
+
+CPlayList* CPlayListFactory::Create(const CURL& url)
+{
+  CFileItem item{url.Get(), false};
+
+  if (url.HasOption("mimetype"))
+  {
+    item.SetContentLookup(false);
+    item.SetMimeType(url.GetOption("mimetype"));
+  }
+
+  return Create(item);
+}
 
 CPlayList* CPlayListFactory::Create(const std::string& filename)
 {

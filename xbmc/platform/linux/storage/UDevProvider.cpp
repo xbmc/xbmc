@@ -17,7 +17,9 @@ extern "C" {
 #include <poll.h>
 }
 
-static const char *get_mountpoint(const char *devnode)
+namespace
+{
+const char* get_mountpoint(const char* devnode)
 {
   static char buf[4096];
   const char *delim = " ";
@@ -59,6 +61,7 @@ static const char *get_mountpoint(const char *devnode)
   fclose(fp);
   return mountpoint;
 }
+} // namespace
 
 CUDevProvider::CUDevProvider()
 {

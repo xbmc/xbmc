@@ -9,6 +9,8 @@
 #pragma once
 
 #include "iimage.h"
+
+#include <cstdint>
 #include <memory>
 
 extern "C"

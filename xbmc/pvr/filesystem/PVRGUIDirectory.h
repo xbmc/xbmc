@@ -12,6 +12,7 @@
 
 #include <string>
 
+class CFileItem;
 class CFileItemList;
 
 namespace PVR
@@ -102,6 +103,13 @@ public:
    * @return True on success, false otherwise..
    */
   bool GetProvidersDirectory(CFileItemList& results) const;
+
+  /*!
+   * @brief Get info for a recording folder.
+   * @param item The folder.
+   * @return True on success, false otherwise..
+   */
+  static bool GetRecordingsDirectoryInfo(CFileItem& item);
 
 private:
   bool GetTimersDirectory(CFileItemList& results) const;
