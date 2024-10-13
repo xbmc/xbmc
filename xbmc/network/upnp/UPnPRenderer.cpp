@@ -682,6 +682,7 @@ NPT_Result CUPnPRenderer::PlayMedia(const NPT_String& uri,
   }
   else
   {
+    item->SetProperty("no-ext-subs-scan", true);
     CFileItemList* l = new CFileItemList; //don't delete,
     l->Add(std::make_shared<CFileItem>(*item));
     CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l));

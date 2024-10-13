@@ -783,7 +783,8 @@ bool CVideoPlayer::OpenInputStream()
     // find any available external subtitles
     std::vector<std::string> filenames;
 
-    if (!URIUtils::IsUPnP(m_item.GetPath()))
+    if (!URIUtils::IsUPnP(m_item.GetPath()) &&
+        !m_item.GetProperty("no-ext-subs-scan").asBoolean(false))
       CUtil::ScanForExternalSubtitles(m_item.GetDynPath(), filenames);
 
     // load any subtitles from file item
