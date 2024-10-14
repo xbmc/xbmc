@@ -13,7 +13,6 @@
 #include "UPnP.h"
 
 #include "FileItem.h"
-#include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "UPnPInternal.h"
 #include "UPnPRenderer.h"
@@ -21,8 +20,7 @@
 #include "UPnPSettings.h"
 #include "URL.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
+#include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
 #include "profiles/ProfileManager.h"
@@ -171,19 +169,15 @@ public:
   // PLT_MediaBrowser methods
   bool OnMSAdded(PLT_DeviceDataReference& device) override
   {
-    CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
-    message.SetStringParam("upnp://");
-    CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
+    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Sources, "OnAdded",
+                                                       CVariant{"upnp://"});
 
     return PLT_SyncMediaBrowser::OnMSAdded(device);
   }
   void OnMSRemoved(PLT_DeviceDataReference& device) override
   {
-    PLT_SyncMediaBrowser::OnMSRemoved(device);
-
-    CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
-    message.SetStringParam("upnp://");
-    CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
+    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Sources, "OnRemoved",
+                                                       CVariant{"upnp://"});
 
     PLT_SyncMediaBrowser::OnMSRemoved(device);
   }
@@ -202,9 +196,8 @@ public:
     }
 
     m_logger->debug("notified container update {}", (const char*)path);
-    CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
-    message.SetStringParam(path.GetChars());
-    CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
+    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Sources, "OnUpdated",
+                                                       CVariant{path.GetChars()});
   }
 
   bool MarkWatched(const CFileItem& item, const bool watched)

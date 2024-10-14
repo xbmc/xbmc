@@ -18,6 +18,7 @@ class CStereoscopicsManager;
 class CGUIInfoManager;
 class CGUIColorManager;
 class CGUIAudioManager;
+class CGUIAnnouncementHandlerContainer;
 
 class CGUIComponent
 {
@@ -47,4 +48,5 @@ protected:
   std::unique_ptr<CGUIInfoManager> m_guiInfoManager;
   std::unique_ptr<CGUIColorManager> m_guiColorManager;
   std::unique_ptr<CGUIAudioManager> m_guiAudioManager;
+  std::unique_ptr<CGUIAnnouncementHandlerContainer> m_announcementHandlerContainer;
 };
