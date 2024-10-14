@@ -8,11 +8,8 @@
 
 #include "ZeroconfBrowserAndroid.h"
 
-#include "GUIUserMessages.h"
 #include "ServiceBroker.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/GUIMessage.h"
-#include "guilib/GUIWindowManager.h"
+#include "interfaces/AnnouncementManager.h"
 #include "network/DNSNameCache.h"
 #include "utils/log.h"
 
@@ -241,10 +238,10 @@ void CZeroconfBrowserAndroidDiscover::onServiceFound(const jni::CJNINsdServiceIn
             s.GetName(), s.GetType(), s.GetDomain());
   m_browser->addDiscoveredService(this, s);
 
-  CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
-  message.SetStringParam("zeroconf://");
-  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
-  CLog::Log(LOGDEBUG, "CZeroconfBrowserAndroidDiscover::onServiceFound sent gui update for path zeroconf://");
+  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Sources, "OnUpdated",
+                                                     CVariant{"zeroconf://"});
+  CLog::Log(LOGDEBUG, "CZeroconfBrowserAndroidDiscover::onServiceFound sent source update announce "
+                      "for path zeroconf://");
 }
 
 void CZeroconfBrowserAndroidDiscover::onServiceLost(const jni::CJNINsdServiceInfo& serviceInfo)
