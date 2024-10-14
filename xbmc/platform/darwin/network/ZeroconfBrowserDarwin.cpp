@@ -8,11 +8,8 @@
 
 #include "ZeroconfBrowserDarwin.h"
 
-#include "GUIUserMessages.h"
 #include "ServiceBroker.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/GUIMessage.h"
-#include "guilib/GUIWindowManager.h"
+#include "interfaces/AnnouncementManager.h"
 #include "utils/log.h"
 
 #include "platform/darwin/DarwinUtils.h"
@@ -168,10 +165,10 @@ void CZeroconfBrowserDarwin::BrowserCallback(CFNetServiceBrowserRef browser, CFO
     }
     if (! (flags & kCFNetServiceFlagMoreComing) )
     {
-      CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
-      message.SetStringParam("zeroconf://");
-      CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
-      CLog::Log(LOGDEBUG, "CZeroconfBrowserDarwin::BrowserCallback sent gui update for path zeroconf://");
+      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Sources, "OnUpdated",
+                                                         CVariant{"zeroconf://"});
+      CLog::Log(LOGDEBUG, "CZeroconfBrowserDarwin::BrowserCallback sent sources update "
+                          "announcement for path zeroconf://");
     }
   } else
   {

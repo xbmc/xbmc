@@ -16,6 +16,7 @@ xbmc/dialogs                                    dialogs
 xbmc/favourites                                 favourites
 xbmc/guilib                                     guilib
 xbmc/guilib/guiinfo                             guilib_guiinfo
+xbmc/guilib/handlers                            guilib_announcement_handlers
 xbmc/guilib/listproviders                       guilib_listproviders
 xbmc/imagefiles                                 imagefiles
 xbmc/messaging                                  messaging
