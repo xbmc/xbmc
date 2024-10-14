@@ -863,8 +863,9 @@ void AddHardCodedAndExtendedArtTypes(std::vector<std::string>& artTypes, const C
 }
 
 // Add art types currently assigned to the media item
-void AddCurrentArtTypes(std::vector<std::string>& artTypes, const CVideoInfoTag& tag,
-  CVideoDatabase& db)
+void AddCurrentArtTypes(std::vector<std::string>& artTypes,
+                        const CVideoInfoTag& tag,
+                        CVideoDatabase& db)
 {
   std::map<std::string, std::string> currentArt;
 
@@ -882,8 +883,9 @@ void AddCurrentArtTypes(std::vector<std::string>& artTypes, const CVideoInfoTag&
 }
 
 // Add art types that exist for other media items of the same type
-void AddMediaTypeArtTypes(std::vector<std::string>& artTypes, const CVideoInfoTag& tag,
-  CVideoDatabase& db)
+void AddMediaTypeArtTypes(std::vector<std::string>& artTypes,
+                          const CVideoInfoTag& tag,
+                          CVideoDatabase& db)
 {
   std::vector<std::string> dbArtTypes;
   db.GetArtTypes(tag.m_type, dbArtTypes);
@@ -895,8 +897,9 @@ void AddMediaTypeArtTypes(std::vector<std::string>& artTypes, const CVideoInfoTa
 }
 
 // Add art types from available but unassigned artwork for this media item
-void AddAvailableArtTypes(std::vector<std::string>& artTypes, const CVideoInfoTag& tag,
-  CVideoDatabase& db)
+void AddAvailableArtTypes(std::vector<std::string>& artTypes,
+                          const CVideoInfoTag& tag,
+                          CVideoDatabase& db)
 {
   for (const auto& artType : db.GetAvailableArtTypesForItem(tag.m_iDbId, tag.m_type))
   {
@@ -929,6 +932,7 @@ public:
 
   bool ChooseArtType();
   const std::string& GetArtType() const { return m_artType; }
+  void UpdateArtType(const std::string& type, const std::string& art) const;
 
 private:
   std::shared_ptr<CFileItem> m_item;
@@ -936,6 +940,15 @@ private:
   int m_selectedItem{0};
   std::string m_artType;
 };
+
+void CArtTypeChooser::UpdateArtType(const std::string& type, const std::string& art) const
+{
+  m_item->SetArt(type, art);
+  if (!m_items.IsEmpty())
+    for (auto& item : m_items)
+      if (item->GetProperty("type") == type)
+        item->SetArt("thumb", art);
+}
 
 bool CArtTypeChooser::ChooseArtType()
 {
@@ -1831,7 +1844,10 @@ bool CGUIDialogVideoInfo::ChooseAndManageVideoItemArtwork(const std::shared_ptr<
     if (!chooser.ChooseArtType())
       break;
 
-    result = ManageVideoItemArtwork(item, item->GetVideoInfoTag()->m_type, chooser.GetArtType());
+    const std::string chosenArtType{chooser.GetArtType()};
+    result = ManageVideoItemArtwork(item, item->GetVideoInfoTag()->m_type, chosenArtType);
+    if (result)
+      chooser.UpdateArtType(chosenArtType, item->GetArt(chosenArtType));
 
   } while (true);
 
