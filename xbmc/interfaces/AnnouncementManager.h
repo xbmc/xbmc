@@ -16,7 +16,7 @@
 
 #include <list>
 #include <memory>
-#include <vector>
+#include <unordered_map>
 
 class CFileItem;
 class CVariant;
@@ -33,6 +33,7 @@ namespace ANNOUNCEMENT
     void Deinitialize();
 
     void AddAnnouncer(IAnnouncer *listener);
+    void AddAnnouncer(IAnnouncer* listener, int flagMask);
     void RemoveAnnouncer(IAnnouncer *listener);
 
     void Announce(AnnouncementFlag flag, const std::string& message);
@@ -90,6 +91,6 @@ namespace ANNOUNCEMENT
 
     CCriticalSection m_announcersCritSection;
     CCriticalSection m_queueCritSection;
-    std::vector<IAnnouncer *> m_announcers;
+    std::unordered_map<IAnnouncer*, int> m_announcers;
   };
 }
