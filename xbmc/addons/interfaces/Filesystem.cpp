@@ -151,7 +151,7 @@ unsigned int Interface_Filesystem::TranslateFileReadBitsToKodi(unsigned int addo
     kodiFlags |= READ_AUDIO_VIDEO;
   if (addonFlags & ADDON_READ_AFTER_WRITE)
     kodiFlags |= READ_AFTER_WRITE;
-  if (addonFlags & READ_REOPEN)
+  if (addonFlags & ADDON_READ_REOPEN)
     kodiFlags |= READ_REOPEN;
 
   return kodiFlags;
