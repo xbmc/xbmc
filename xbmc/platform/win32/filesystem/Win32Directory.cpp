@@ -91,13 +91,9 @@ bool CWin32Directory::GetDirectory(const CURL& url, CFileItemList &items)
           || itemName.front() == '.') // mark files starting from dot as hidden
       pItem->SetProperty("file:hidden", true);
 
-    // calculation of size and date costs a little on win32
-    // so DIR_FLAG_NO_FILE_INFO flag is ignored
-    FILETIME localTime;
-    if (FileTimeToLocalFileTime(&findData.ftLastWriteTime, &localTime) == TRUE)
-      pItem->m_dateTime = CWIN32Util::fileTimeToTimeT(localTime);
-    else
-      pItem->m_dateTime = 0;
+    // File time is UTC based so we can just convert it to time64_t and
+    // construct CDateTime from it
+    pItem->m_dateTime = CWIN32Util::fileTimeToTimeT(findData.ftLastWriteTime);
 
     if (!pItem->m_bIsFolder)
         pItem->m_dwSize = (__int64(findData.nFileSizeHigh) << 32) + findData.nFileSizeLow;
