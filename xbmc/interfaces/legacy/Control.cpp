@@ -379,8 +379,9 @@ namespace XBMCAddon
             CTextureInfo(strFileName));
       pGUIControl->SetVisible(m_visible);
 
-      if (pGUIControl && aspectRatio <= CAspectRatio::AR_KEEP)
-        static_cast<CGUIImage*>(pGUIControl)->SetAspectRatio((CAspectRatio::ASPECT_RATIO)aspectRatio);
+      if (pGUIControl && (CAspectRatio::AspectRatio)aspectRatio <= CAspectRatio::KEEP)
+        static_cast<CGUIImage*>(pGUIControl)
+            ->SetAspectRatio((CAspectRatio::AspectRatio)aspectRatio);
 
       if (pGUIControl && colorDiffuse)
         static_cast<CGUIImage*>(pGUIControl)->SetColorDiffuse(GUILIB::GUIINFO::CGUIInfoColor(colorDiffuse));

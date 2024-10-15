@@ -427,7 +427,7 @@ bool CGUITexture::CalculateSize()
   float newWidth = m_width;
   float newHeight = m_height;
 
-  if (m_aspect.ratio != CAspectRatio::AR_STRETCH && m_frameWidth && m_frameHeight)
+  if (m_aspect.ratio != CAspectRatio::STRETCH && m_frameWidth && m_frameHeight)
   {
     // to get the pixel ratio, we must use the SCALED output sizes
     float pixelRatio = CServiceBroker::GetWinSystem()->GetGfxContext().GetScalingPixelRatio();
@@ -440,13 +440,13 @@ bool CGUITexture::CalculateSize()
     // maximize the width
     newHeight = m_width / fOutputFrameRatio;
 
-    if ((m_aspect.ratio == CAspectRatio::AR_SCALE && newHeight < m_height) ||
-        (m_aspect.ratio == CAspectRatio::AR_KEEP && newHeight > m_height))
+    if ((m_aspect.ratio == CAspectRatio::SCALE && newHeight < m_height) ||
+        (m_aspect.ratio == CAspectRatio::KEEP && newHeight > m_height))
     {
       newHeight = m_height;
       newWidth = newHeight * fOutputFrameRatio;
     }
-    if (m_aspect.ratio == CAspectRatio::AR_CENTER)
+    if (m_aspect.ratio == CAspectRatio::CENTER)
     { // keep original size + center
       newWidth = m_frameWidth / sqrt(pixelRatio);
       newHeight = m_frameHeight * sqrt(pixelRatio);

@@ -184,7 +184,7 @@ bool CGUISliderControl::ProcessSelector(CGUITexture* background,
     dirty |= nib->SetWidth(nib->GetTextureWidth() * fScale);
     dirty |= nib->SetHeight(nib->GetWidth() * 2);
   }
-  CAspectRatio ratio(CAspectRatio::AR_KEEP);
+  CAspectRatio ratio(CAspectRatio::KEEP);
   ratio.align = ASPECT_ALIGN_LEFT | ASPECT_ALIGNY_CENTER;
   dirty |= nib->SetAspectRatio(ratio);
   dirty |= nib->Process(currentTime);

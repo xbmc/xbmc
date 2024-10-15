@@ -10,49 +10,11 @@
 
 #include "TextureManager.h"
 #include "guiinfo/GUIInfoColor.h"
+#include "guilib/AspectRatio.h"
 #include "utils/ColorUtils.h"
 #include "utils/Geometry.h"
 
 #include <functional>
-
-// image alignment for <aspect>keep</aspect>, <aspect>scale</aspect> or <aspect>center</aspect>
-#define ASPECT_ALIGN_CENTER  0
-#define ASPECT_ALIGN_LEFT    1
-#define ASPECT_ALIGN_RIGHT   2
-#define ASPECT_ALIGNY_CENTER 0
-#define ASPECT_ALIGNY_TOP    4
-#define ASPECT_ALIGNY_BOTTOM 8
-#define ASPECT_ALIGN_MASK    3
-#define ASPECT_ALIGNY_MASK  ~3
-
-class CAspectRatio
-{
-public:
-  enum ASPECT_RATIO { AR_STRETCH = 0, AR_SCALE, AR_KEEP, AR_CENTER };
-  CAspectRatio(ASPECT_RATIO aspect = AR_STRETCH)
-  {
-    ratio = aspect;
-    align = ASPECT_ALIGN_CENTER | ASPECT_ALIGNY_CENTER;
-    scaleDiffuse = true;
-  }
-
-  CAspectRatio(ASPECT_RATIO aspect, uint32_t al, bool scaleD)
-    : ratio(aspect), align(al), scaleDiffuse(scaleD)
-  {
-  }
-
-  bool operator!=(const CAspectRatio &right) const
-  {
-    if (ratio != right.ratio) return true;
-    if (align != right.align) return true;
-    if (scaleDiffuse != right.scaleDiffuse) return true;
-    return false;
-  };
-
-  ASPECT_RATIO ratio;
-  uint32_t     align;
-  bool         scaleDiffuse;
-};
 
 class CTextureInfo
 {
