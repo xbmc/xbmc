@@ -30,7 +30,7 @@ enum AnnouncementFlag
 };
 
 const auto ANNOUNCE_ALL = (Player | Playlist | GUI | System | VideoLibrary | AudioLibrary |
-                           Application | Input | ANNOUNCEMENT::PVR | Other);
+                           Application | Input | ANNOUNCEMENT::PVR | Other | Info | Sources);
 
 /*!
     \brief Returns a string representation for the
