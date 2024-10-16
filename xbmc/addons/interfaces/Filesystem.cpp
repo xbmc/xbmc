@@ -151,8 +151,11 @@ unsigned int Interface_Filesystem::TranslateFileReadBitsToKodi(unsigned int addo
     kodiFlags |= READ_AUDIO_VIDEO;
   if (addonFlags & ADDON_READ_AFTER_WRITE)
     kodiFlags |= READ_AFTER_WRITE;
-  if (addonFlags & READ_REOPEN)
+  if (addonFlags & ADDON_READ_REOPEN)
     kodiFlags |= READ_REOPEN;
+  //! @todo Add ADDON_READ_NO_BUFFER to filesystem.h in the binary addon devkit
+  if (addonFlags & READ_NO_BUFFER)
+    kodiFlags |= READ_NO_BUFFER;
 
   return kodiFlags;
 }
