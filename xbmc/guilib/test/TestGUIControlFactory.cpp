@@ -535,7 +535,7 @@ const auto ScrollerTests = std::array{
                  {{100, 6.1256237f}, {200, 29.360115f}}},
     ScrollerTest{R"(<root><test tween="quadratic" easing="inout">400</test></root>)"s,
                  400,
-                 {{100, 24.502501f}, {200, 61.87281f}}},
+                 {{100, 12.25125f}, {200, 77.842896f}}},
     ScrollerTest{R"(<root><test tween="cubic" easing="in">400</test></root>)"s,
                  400,
                  {{100, 1.5160923f}, {200, 13.642845f}}},
