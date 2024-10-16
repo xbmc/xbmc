@@ -172,11 +172,8 @@ static const AVCodecHWConfig* FindHWConfig(const AVCodec* codec)
     if (!IsSupportedHwFormat(config->pix_fmt))
       continue;
 
-    if ((config->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX) &&
-        config->device_type == AV_HWDEVICE_TYPE_DRM)
-      return config;
-
-    if ((config->methods & AV_CODEC_HW_CONFIG_METHOD_INTERNAL))
+    if ((config->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX) ||
+        (config->methods & AV_CODEC_HW_CONFIG_METHOD_INTERNAL))
       return config;
   }
 
@@ -299,41 +296,48 @@ bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
   m_hints = hints;
 
   const AVCodecHWConfig* pConfig = FindHWConfig(pCodec);
-  if (pConfig && (pConfig->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX) &&
-      pConfig->device_type == AV_HWDEVICE_TYPE_DRM)
+  if (pConfig && (pConfig->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX))
   {
+    const char* type = av_hwdevice_get_type_name(pConfig->device_type);
     const char* device = nullptr;
 
-    if (getenv("KODI_RENDER_NODE"))
-      device = getenv("KODI_RENDER_NODE");
+    if (pConfig->device_type == AV_HWDEVICE_TYPE_DRM)
+    {
+      if (getenv("KODI_RENDER_NODE"))
+        device = getenv("KODI_RENDER_NODE");
 
 #if defined(HAVE_GBM)
-    auto winSystem = dynamic_cast<KODI::WINDOWING::GBM::CWinSystemGbm*>(CServiceBroker::GetWinSystem());
+      auto winSystem =
+          dynamic_cast<KODI::WINDOWING::GBM::CWinSystemGbm*>(CServiceBroker::GetWinSystem());
 
-    if (winSystem)
-    {
-      auto drm = winSystem->GetDrm();
+      if (winSystem)
+      {
+        auto drm = winSystem->GetDrm();
 
-      if (!drm)
-        return false;
+        if (!drm)
+          return false;
 
-      if (!device)
-        device = drm->GetRenderDevicePath();
-    }
+        if (!device)
+          device = drm->GetRenderDevicePath();
+      }
 #endif
 
-    //! @todo: fix with proper device when dma-hints wayland protocol works
-    if (!device)
-      device = "/dev/dri/renderD128";
+      //! @todo: fix with proper device when dma-hints wayland protocol works
+      if (!device)
+        device = "/dev/dri/renderD128";
+    }
 
-    CLog::Log(LOGDEBUG, "CDVDVideoCodecDRMPRIME::{} - using drm device for av_hwdevice_ctx: {}", __FUNCTION__, device);
+    CLog::Log(LOGDEBUG,
+              "CDVDVideoCodecDRMPRIME::{} - creating {} hwdevice context using device: {}",
+              __FUNCTION__, type ? type : "unknown", device ? device : "(null)");
 
     if (av_hwdevice_ctx_create(&m_pCodecContext->hw_device_ctx, pConfig->device_type,
                                device, nullptr, 0) < 0)
     {
-      CLog::Log(LOGERROR,
-                "CDVDVideoCodecDRMPRIME::{} - unable to create hwdevice context using device: {}",
-                __FUNCTION__, device);
+      CLog::Log(
+          LOGERROR,
+          "CDVDVideoCodecDRMPRIME::{} - unable to create {} hwdevice context using device: {}",
+          __FUNCTION__, type ? type : "unknown", device ? device : "(null)");
       avcodec_free_context(&m_pCodecContext);
       return false;
     }
