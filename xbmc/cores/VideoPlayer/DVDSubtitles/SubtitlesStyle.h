@@ -101,6 +101,7 @@ struct style
   // Vertical margin value in pixels scaled for VIEWPORT_HEIGHT
   int marginVertical = MARGIN_VERTICAL;
   int blur = 0; // In %
+  int lineSpacing = 0;
 };
 
 struct subtitleOpts
