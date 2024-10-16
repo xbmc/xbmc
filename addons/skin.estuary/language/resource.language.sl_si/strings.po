@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: 2024-05-15 07:51+0000\n"
 "Last-Translator: Simon <dolenec@gmail.com>\n"
@@ -192,6 +192,10 @@ msgstr "Nazaj"
 msgctxt "#31039"
 msgid "Fast forward"
 msgstr "Naprej"
+
+msgctxt "#31040"
+msgid "Edit widgets"
+msgstr ""
 
 # empty string with id 31040
 msgctxt "#31041"
