@@ -107,12 +107,11 @@ void CStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
 
       UINT uDriveType = GetDriveTypeA(driveLetter.c_str());
       source.strPath = "win-lib://removable/" + driveLetter + "/";
-      source.m_iDriveType = (
-        (uDriveType == DRIVE_FIXED) ? CMediaSource::SOURCE_TYPE_LOCAL :
-        (uDriveType == DRIVE_REMOTE) ? CMediaSource::SOURCE_TYPE_REMOTE :
-        (uDriveType == DRIVE_CDROM) ? CMediaSource::SOURCE_TYPE_DVD :
-        (uDriveType == DRIVE_REMOVABLE) ? CMediaSource::SOURCE_TYPE_REMOVABLE :
-        CMediaSource::SOURCE_TYPE_UNKNOWN);
+      source.m_iDriveType = ((uDriveType == DRIVE_FIXED)    ? CMediaSource::SOURCE_TYPE_LOCAL
+                             : (uDriveType == DRIVE_REMOTE) ? CMediaSource::SOURCE_TYPE_REMOTE
+                             : (uDriveType == DRIVE_CDROM)  ? CMediaSource::SOURCE_TYPE_OPTICAL_DISC
+                             : (uDriveType == DRIVE_REMOVABLE) ? CMediaSource::SOURCE_TYPE_REMOVABLE
+                                                               : CMediaSource::SOURCE_TYPE_UNKNOWN);
 
       removableDrives.push_back(source);
     }
@@ -262,12 +261,11 @@ void CStorageProvider::GetDrivesByType(VECSOURCES & localDrives, Drive_Types eDr
     share.m_ignore = true;
     if (!bUseDCD)
     {
-      share.m_iDriveType = (
-        (uDriveType == DRIVE_FIXED) ? CMediaSource::SOURCE_TYPE_LOCAL :
-        (uDriveType == DRIVE_REMOTE) ? CMediaSource::SOURCE_TYPE_REMOTE :
-        (uDriveType == DRIVE_CDROM) ? CMediaSource::SOURCE_TYPE_DVD :
-        (uDriveType == DRIVE_REMOVABLE) ? CMediaSource::SOURCE_TYPE_REMOVABLE :
-        CMediaSource::SOURCE_TYPE_UNKNOWN);
+      share.m_iDriveType = ((uDriveType == DRIVE_FIXED)    ? CMediaSource::SOURCE_TYPE_LOCAL
+                            : (uDriveType == DRIVE_REMOTE) ? CMediaSource::SOURCE_TYPE_REMOTE
+                            : (uDriveType == DRIVE_CDROM)  ? CMediaSource::SOURCE_TYPE_OPTICAL_DISC
+                            : (uDriveType == DRIVE_REMOVABLE) ? CMediaSource::SOURCE_TYPE_REMOVABLE
+                                                              : CMediaSource::SOURCE_TYPE_UNKNOWN);
     }
 
     AddOrReplace(localDrives, share);

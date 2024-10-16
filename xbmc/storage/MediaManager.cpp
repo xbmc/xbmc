@@ -613,7 +613,8 @@ std::string CMediaManager::GetDiscPath()
   m_platformStorage->GetRemovableDrives(drives);
   for(unsigned i = 0; i < drives.size(); ++i)
   {
-    if(drives[i].m_iDriveType == CMediaSource::SOURCE_TYPE_DVD && !drives[i].strPath.empty())
+    if (drives[i].m_iDriveType == CMediaSource::SOURCE_TYPE_OPTICAL_DISC &&
+        !drives[i].strPath.empty())
       return drives[i].strPath;
   }
 
