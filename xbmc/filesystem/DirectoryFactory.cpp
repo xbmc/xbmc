@@ -97,7 +97,14 @@ using namespace XFILE;
  */
 IDirectory* CDirectoryFactory::Create(const CFileItem& item)
 {
-  return Create(CURL{item.GetDynPath()});
+  CURL curl{item.GetDynPath()};
+
+  // Store the mimetype, allowing the PlayListFactory to set it on the created FileItem
+  const std::string& mimeType = item.GetMimeType();
+  if (!mimeType.empty())
+    curl.SetOption("mimetype", mimeType);
+
+  return Create(curl);
 }
 
 /*!
