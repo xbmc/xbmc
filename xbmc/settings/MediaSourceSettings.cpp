@@ -371,8 +371,8 @@ bool CMediaSourceSettings::GetSource(const std::string& category,
   const auto* thumbnailNodeElement = source->FirstChildElement("thumbnail");
 
   std::vector<std::string> verifiedPaths;
-  // disallowed for files, or there's only a single path in the vector
-  if (StringUtils::EqualsNoCase(category, "files") || vecPaths.size() == 1)
+  // disallowed if there's only a single path in the vector
+  if (vecPaths.size() == 1)
   {
     verifiedPaths.push_back(vecPaths[0]);
   }
