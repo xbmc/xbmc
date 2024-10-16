@@ -662,13 +662,15 @@ static void AddHostsFromMediaSource(const CMediaSource& source, std::vector<std:
   }
 }
 
-static void AddHostsFromVecSource(const VECSOURCES& sources, std::vector<std::string>& hosts)
+static void AddHostsFromVecSource(const std::vector<CMediaSource>& sources,
+                                  std::vector<std::string>& hosts)
 {
   for (const auto& it : sources)
     AddHostsFromMediaSource(it, hosts);
 }
 
-static void AddHostsFromVecSource(const VECSOURCES* sources, std::vector<std::string>& hosts)
+static void AddHostsFromVecSource(const std::vector<CMediaSource>* sources,
+                                  std::vector<std::string>& hosts)
 {
   if (sources)
     AddHostsFromVecSource(*sources, hosts);

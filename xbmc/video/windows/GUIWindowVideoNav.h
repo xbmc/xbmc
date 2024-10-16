@@ -56,7 +56,7 @@ protected:
   bool OnClick(int iItem, const std::string &player = "") override;
   std::string GetStartFolder(const std::string &dir) override;
 
-  VECSOURCES m_shares;
+  std::vector<CMediaSource> m_shares;
 
 private:
   virtual SelectFirstUnwatchedItem GetSettingSelectFirstUnwatchedItem();

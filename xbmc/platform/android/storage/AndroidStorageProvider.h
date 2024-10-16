@@ -24,8 +24,8 @@ public:
   void Stop() override {}
   bool Eject(const std::string& mountpath) override { return false; }
 
-  void GetLocalDrives(VECSOURCES& localDrives) override;
-  void GetRemovableDrives(VECSOURCES& removableDrives) override;
+  void GetLocalDrives(std::vector<CMediaSource>& localDrives) override;
+  void GetRemovableDrives(std::vector<CMediaSource>& removableDrives) override;
   std::vector<std::string> GetDiskUsage() override;
 
   bool PumpDriveChangeEvents(IStorageEventsCallback* callback) override;
@@ -40,7 +40,7 @@ public:
 
 private:
   std::string unescape(const std::string& str);
-  VECSOURCES m_removableDrives;
+  std::vector<CMediaSource> m_removableDrives;
   unsigned int m_removableLength;
 
   static std::set<std::string> GetRemovableDrives();

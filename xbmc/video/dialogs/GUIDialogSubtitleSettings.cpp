@@ -146,7 +146,7 @@ std::string CGUIDialogSubtitleSettings::BrowseForSubtitle()
 
   strMask += extras;
 
-  VECSOURCES shares(*CMediaSourceSettings::GetInstance().GetSources("video"));
+  std::vector<CMediaSource> shares(*CMediaSourceSettings::GetInstance().GetSources("video"));
   if (CMediaSettings::GetInstance().GetAdditionalSubtitleDirectoryChecked() != -1 && !CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH).empty())
   {
     CMediaSource share;

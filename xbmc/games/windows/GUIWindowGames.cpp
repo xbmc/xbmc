@@ -291,7 +291,7 @@ std::string CGUIWindowGames::GetStartFolder(const std::string& dir)
   }
 
   SetupShares();
-  VECSOURCES shares;
+  std::vector<CMediaSource> shares;
   m_rootDir.GetSources(shares);
   bool bIsSourceName = false;
   int iIndex = CUtil::GetMatchingSource(dir, shares, bIsSourceName);

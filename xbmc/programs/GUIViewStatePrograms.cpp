@@ -51,7 +51,7 @@ std::string CGUIViewStateWindowPrograms::GetExtensions()
   return ".cut";
 }
 
-VECSOURCES& CGUIViewStateWindowPrograms::GetSources()
+std::vector<CMediaSource>& CGUIViewStateWindowPrograms::GetSources()
 {
 #if defined(TARGET_ANDROID)
   {
@@ -66,7 +66,8 @@ VECSOURCES& CGUIViewStateWindowPrograms::GetSources()
   }
 #endif
 
-  VECSOURCES *programSources = CMediaSourceSettings::GetInstance().GetSources("programs");
+  std::vector<CMediaSource>* programSources =
+      CMediaSourceSettings::GetInstance().GetSources("programs");
   AddOrReplace(*programSources, CGUIViewState::GetSources());
   return *programSources;
 }

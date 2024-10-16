@@ -35,12 +35,12 @@ CVirtualDirectory::~CVirtualDirectory(void) = default;
 
 /*!
  \brief Add shares to the virtual directory
- \param VECSOURCES Shares to add
- \sa CMediaSource, VECSOURCES
+ \param std::vector<CMediaSource> Shares to add
+ \sa CMediaSource, std::vector<CMediaSource>
  */
-void CVirtualDirectory::SetSources(const VECSOURCES& vecSources)
+void CVirtualDirectory::SetSources(const std::vector<CMediaSource>& sources)
 {
-  m_vecSources = vecSources;
+  m_sources = sources;
 }
 
 /*!
@@ -82,7 +82,7 @@ bool CVirtualDirectory::GetDirectory(const CURL& url, CFileItemList &items, bool
   items.SetPath(strPath);
 
   // grab our shares
-  VECSOURCES shares;
+  std::vector<CMediaSource> shares;
   GetSources(shares);
   CSourcesDirectory dir;
   return dir.GetDirectory(shares, items);
@@ -101,7 +101,9 @@ void CVirtualDirectory::CancelDirectory()
  \note The parameter \e strPath can not be a share with directory. Eg. "iso9660://dir" will return \e false.
     It must be "iso9660://".
  */
-bool CVirtualDirectory::IsSource(const std::string& strPath, VECSOURCES *sources, std::string *name) const
+bool CVirtualDirectory::IsSource(const std::string& strPath,
+                                 std::vector<CMediaSource>* sources,
+                                 std::string* name) const
 {
   std::string strPathCpy = strPath;
   StringUtils::TrimRight(strPathCpy, "/\\");
@@ -112,7 +114,7 @@ bool CVirtualDirectory::IsSource(const std::string& strPath, VECSOURCES *sources
   if(URIUtils::IsDOSPath(strPathCpy))
     StringUtils::Replace(strPathCpy, '/', '\\');
 
-  VECSOURCES shares;
+  std::vector<CMediaSource> shares;
   if (sources)
     shares = *sources;
   else
@@ -144,7 +146,7 @@ bool CVirtualDirectory::IsSource(const std::string& strPath, VECSOURCES *sources
 bool CVirtualDirectory::IsInSource(const std::string &path) const
 {
   bool isSourceName;
-  VECSOURCES shares;
+  std::vector<CMediaSource> shares;
   GetSources(shares);
   int iShare = CUtil::GetMatchingSource(path, shares, isSourceName);
   if (URIUtils::IsOnDVD(path))
@@ -163,9 +165,9 @@ bool CVirtualDirectory::IsInSource(const std::string &path) const
   return (iShare > -1);
 }
 
-void CVirtualDirectory::GetSources(VECSOURCES &shares) const
+void CVirtualDirectory::GetSources(std::vector<CMediaSource>& shares) const
 {
-  shares = m_vecSources;
+  shares = m_sources;
   // add our plug n play shares
 
   if (m_allowNonLocalSources)

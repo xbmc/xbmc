@@ -159,10 +159,10 @@ public:
 
   std::vector<std::string> GetDiskUsage() override;
 
-  void GetLocalDrives(VECSOURCES &localDrives) override
+  void GetLocalDrives(std::vector<CMediaSource>& localDrives) override
   { GetDisks(localDrives, false); }
 
-  void GetRemovableDrives(VECSOURCES &removableDrives) override
+  void GetRemovableDrives(std::vector<CMediaSource>& removableDrives) override
   { GetDisks(removableDrives, true); }
 
   void Stop() override
@@ -177,7 +177,7 @@ private:
 
   std::string m_daemonVersion;
 
-  void GetDisks(VECSOURCES &devices, bool enumerateRemovable);
+  void GetDisks(std::vector<CMediaSource>& devices, bool enumerateRemovable);
 
   void DriveAdded(Drive *drive);
   bool DriveRemoved(const std::string& object);

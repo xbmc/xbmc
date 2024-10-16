@@ -38,8 +38,8 @@ bool CSourcesDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   std::string type(url.GetFileName());
   URIUtils::RemoveSlashAtEnd(type);
 
-  VECSOURCES sources;
-  VECSOURCES *sourcesFromType = CMediaSourceSettings::GetInstance().GetSources(type);
+  std::vector<CMediaSource> sources;
+  std::vector<CMediaSource>* sourcesFromType = CMediaSourceSettings::GetInstance().GetSources(type);
   if (!sourcesFromType)
     return false;
 
@@ -49,7 +49,7 @@ bool CSourcesDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   return GetDirectory(sources, items);
 }
 
-bool CSourcesDirectory::GetDirectory(const VECSOURCES &sources, CFileItemList &items)
+bool CSourcesDirectory::GetDirectory(const std::vector<CMediaSource>& sources, CFileItemList& items)
 {
   for (unsigned int i = 0; i < sources.size(); ++i)
   {

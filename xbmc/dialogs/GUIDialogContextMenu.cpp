@@ -403,7 +403,7 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
       items.Add(nothumb);
 
       std::string strThumb;
-      VECSOURCES shares;
+      std::vector<CMediaSource> shares;
       CServiceBroker::GetMediaManager().GetLocalDrives(shares);
       if (!CGUIDialogFileBrowser::ShowAndGetImage(items, shares, g_localizeStrings.Get(1030), strThumb))
         return false;
@@ -544,7 +544,7 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
 
 CMediaSource *CGUIDialogContextMenu::GetShare(const std::string &type, const CFileItem *item)
 {
-  VECSOURCES *shares = CMediaSourceSettings::GetInstance().GetSources(type);
+  std::vector<CMediaSource>* shares = CMediaSourceSettings::GetInstance().GetSources(type);
   if (!shares || !item)
     return nullptr;
   for (unsigned int i = 0; i < shares->size(); i++)
@@ -609,7 +609,7 @@ void CGUIDialogContextMenu::OnDeinitWindow(int nextWindowID)
 
 std::string CGUIDialogContextMenu::GetDefaultShareNameByType(const std::string &strType)
 {
-  VECSOURCES *pShares = CMediaSourceSettings::GetInstance().GetSources(strType);
+  std::vector<CMediaSource>* pShares = CMediaSourceSettings::GetInstance().GetSources(strType);
   std::string strDefault = CMediaSourceSettings::GetInstance().GetDefaultSource(strType);
 
   if (!pShares) return "";

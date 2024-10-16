@@ -37,7 +37,8 @@ public:
   bool HasListItems() const override { return true; }
   CFileItemPtr GetCurrentListItem(int offset = 0) override;
   std::string GetContent();
-  static void AddItemPathToFileBrowserSources(VECSOURCES &sources, const CFileItem &item);
+  static void AddItemPathToFileBrowserSources(std::vector<CMediaSource>& sources,
+                                              const CFileItem& item);
   void SetDiscography(CMusicDatabase& database) const;
   void SetSongs(const VECSONGS &songs) const;
   void SetArtTypeList(CFileItemList& artlist);

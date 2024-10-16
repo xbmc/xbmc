@@ -9,7 +9,7 @@
 #pragma once
 
 #include "IStorageProvider.h"
-#include "MediaSource.h" // for VECSOURCES
+#include "MediaSource.h" // for std::vector<CMediaSource>
 #include "storage/discs/IDiscDriveHandler.h"
 #include "threads/CriticalSection.h"
 #include "utils/DiscsUtils.h"
@@ -42,9 +42,9 @@ public:
   bool LoadSources();
   bool SaveSources();
 
-  void GetLocalDrives(VECSOURCES &localDrives, bool includeQ = true);
-  void GetRemovableDrives(VECSOURCES &removableDrives);
-  void GetNetworkLocations(VECSOURCES &locations, bool autolocations = true);
+  void GetLocalDrives(std::vector<CMediaSource>& localDrives, bool includeQ = true);
+  void GetRemovableDrives(std::vector<CMediaSource>& removableDrives);
+  void GetNetworkLocations(std::vector<CMediaSource>& locations, bool autolocations = true);
 
   bool AddNetworkLocation(const std::string &path);
   bool HasLocation(const std::string& path) const;
