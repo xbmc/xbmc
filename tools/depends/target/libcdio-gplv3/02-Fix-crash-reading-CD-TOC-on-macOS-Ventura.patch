@@ -1,0 +1,26 @@
+From 6f2426e8bf4dc5269ccbd9fbfa94340895f8be6e Mon Sep 17 00:00:00 2001
+From: Robert Kausch <robert.kausch@freac.org>
+Date: Wed, 15 Mar 2023 00:02:10 +0100
+Subject: [PATCH] Fix crash reading CD TOC on macOS Ventura
+
+Remove unnecessary additional byte added to the TOC buffer length and length of the range requested from CFDataGetBytes. As of macOS Ventura, CFDataGetBytes checks the requested length and asserts if more data than available is requested.
+---
+ lib/driver/osx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/driver/osx.c b/lib/driver/osx.c
+index d48b5a0e..af2fe402 100644
+--- a/lib/driver/osx.c
++++ b/lib/driver/osx.c
+@@ -1232,7 +1232,7 @@ read_toc_osx (void *p_user_data)
+     CFRange range;
+     CFIndex buf_len;
+ 
+-    buf_len = CFDataGetLength( data ) + 1;
++    buf_len = CFDataGetLength( data );
+     range = CFRangeMake( 0, buf_len );
+ 
+     if( ( p_env->pTOC = (CDTOC *)malloc( buf_len ) ) != NULL ) {
+-- 
+2.46.2
+
