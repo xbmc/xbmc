@@ -944,7 +944,7 @@ private:
   bool SearchArtists(const std::string& search, CFileItemList& artists);
   bool SearchAlbums(const std::string& search, CFileItemList& albums);
   bool SearchSongs(const std::string& strSearch, CFileItemList& songs);
-  int GetSongIDFromPath(const std::string& filePath);
+  int GetSongIDFromPath(const std::string& filePath, int startOffset = -1);
   void NormaliseSongDates(std::string& strRelease, std::string& strOriginal);
   bool TrimImageURLs(std::string& strImage, const size_t space);
 
