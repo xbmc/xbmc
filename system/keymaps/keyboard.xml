@@ -371,7 +371,7 @@
       <zoom>AspectRatio</zoom>
       <t>ShowSubtitles</t>
       <t mod="ctrl">SubtitleAlign</t>
-      <l>NextSubtitle</l>
+      <l>DialogSelectSubtitle</l>
       <left>StepBack</left>
       <right>StepForward</right>
       <up>ChapterOrBigStepForward</up>
@@ -381,11 +381,11 @@
       <left mod="alt">PlayerControl(tempodown)</left>
       <right mod="alt">PlayerControl(tempoup)</right>
       <a>AudioDelay</a>
-      <a mod="ctrl">AudioNextLanguage</a>
+      <a mod="ctrl">DialogSelectAudio</a>
       <escape>Fullscreen</escape>
       <c>Playlist</c>
       <v>ActivateWindow(Teletext)</v>
-      <v mod="ctrl">VideoNextStream</v>
+      <v mod="ctrl">DialogSelectVideo</v>
       <text>ActivateWindow(Teletext)</text>
       <up mod="ctrl">SubtitleShiftUp</up>
       <down mod="ctrl">SubtitleShiftDown</down>
@@ -583,7 +583,7 @@
       <z>AspectRatio</z>
       <zoom>AspectRatio</zoom>
       <t>ShowSubtitles</t>
-      <l>NextSubtitle</l>
+      <l>DialogSelectSubtitle</l>
       <a>AudioDelay</a>
       <escape>Fullscreen</escape>
       <return>Select</return>

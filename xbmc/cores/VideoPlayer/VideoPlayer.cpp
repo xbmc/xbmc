@@ -454,6 +454,7 @@ void CSelectionStreams::Update(const std::shared_ptr<CDVDInputStream>& input,
       AudioStreamInfo info = nav->GetAudioStreamInfo(i);
       s.name     = info.name;
       s.codec    = info.codecName;
+      s.codecDesc = info.codecDesc;
       s.language = g_LangCodeExpander.ConvertToISO6392B(info.language);
       s.channels = info.channels;
       s.flags = info.flags;
@@ -472,6 +473,7 @@ void CSelectionStreams::Update(const std::shared_ptr<CDVDInputStream>& input,
 
       SubtitleStreamInfo info = nav->GetSubtitleStreamInfo(i);
       s.name     = info.name;
+      s.codec = info.codecName;
       s.flags = info.flags;
       s.language = g_LangCodeExpander.ConvertToISO6392B(info.language);
       Update(s);
@@ -535,17 +537,12 @@ void CSelectionStreams::Update(const std::shared_ptr<CDVDInputStream>& input,
         s.stereo_mode = vstream->stereo_mode;
         s.bitrate = vstream->iBitRate;
         s.hdrType = vstream->hdr_type;
+        s.fpsRate = static_cast<uint32_t>(vstream->iFpsRate);
+        s.fpsScale = static_cast<uint32_t>(vstream->iFpsScale);
       }
       if(stream->type == STREAM_AUDIO)
       {
-        std::string type;
-        type = static_cast<CDemuxStreamAudio*>(stream)->GetStreamType();
-        if(type.length() > 0)
-        {
-          if(s.name.length() > 0)
-            s.name += " - ";
-          s.name += type;
-        }
+        s.codecDesc = static_cast<CDemuxStreamAudio*>(stream)->GetStreamType();
         s.channels = static_cast<CDemuxStreamAudio*>(stream)->iChannels;
         s.bitrate = static_cast<CDemuxStreamAudio*>(stream)->iBitRate;
       }
@@ -5298,6 +5295,8 @@ void CVideoPlayer::GetVideoStreamInfo(int streamId, VideoStreamInfo& info) const
   info.stereoMode = s.stereo_mode;
   info.flags = s.flags;
   info.hdrType = s.hdrType;
+  info.fpsRate = s.fpsRate;
+  info.fpsScale = s.fpsScale;
 }
 
 int CVideoPlayer::GetVideoStreamCount() const
@@ -5343,6 +5342,7 @@ void CVideoPlayer::GetAudioStreamInfo(int index, AudioStreamInfo& info) const
   info.bitrate = s.bitrate;
   info.channels = s.channels;
   info.codecName = s.codec;
+  info.codecDesc = s.codecDesc;
   info.flags = s.flags;
 }
 
@@ -5387,7 +5387,10 @@ void CVideoPlayer::GetSubtitleStreamInfo(int index, SubtitleStreamInfo& info) co
     info.name += "(Invalid)";
 
   info.language = s.language;
+  info.codecName = s.codec;
   info.flags = s.flags;
+  info.isExternal = STREAM_SOURCE_MASK(s.source) == STREAM_SOURCE_DEMUX_SUB ||
+                    STREAM_SOURCE_MASK(s.source) == STREAM_SOURCE_TEXT;
 }
 
 void CVideoPlayer::SetSubtitle(int iStream)

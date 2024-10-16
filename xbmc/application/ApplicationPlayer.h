@@ -83,7 +83,7 @@ public:
   bool CanPause() const;
   bool CanSeek() const;
   int GetAudioDelay() const;
-  void GetAudioCapabilities(std::vector<int>& audioCaps) const;
+  void GetAudioCapabilities(std::vector<IPlayerAudioCaps>& caps) const;
   int GetAudioStream();
   int GetAudioStreamCount() const;
   void GetAudioStreamInfo(int index, AudioStreamInfo& info) const;
@@ -98,7 +98,7 @@ public:
   KODI::PLAYLIST::Id GetPreferredPlaylist() const;
   int GetSubtitleDelay() const;
   int GetSubtitle();
-  void GetSubtitleCapabilities(std::vector<int>& subCaps) const;
+  void GetSubtitleCapabilities(std::vector<IPlayerSubtitleCaps>& caps) const;
   int GetSubtitleCount() const;
   void GetSubtitleStreamInfo(int index, SubtitleStreamInfo& info) const;
   bool GetSubtitleVisible() const;

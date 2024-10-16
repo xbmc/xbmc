@@ -31,6 +31,7 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "video/dialogs/GUIDialogAudioSettings.h"
+#include "video/guilib/VideoStreamSelectHelper.h"
 
 using namespace KODI;
 using namespace UTILS;
@@ -141,6 +142,12 @@ bool CPlayerController::OnAction(const CAction &action)
         return true;
       }
 
+      case ACTION_DIALOG_SELECT_SUBTITLE:
+      {
+        VIDEO::GUILIB::OpenDialogSelectSubtitleStream();
+        return true;
+      }
+
       case ACTION_SUBTITLE_DELAY_MIN:
       {
         float videoSubsDelayRange = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubsDelayRange;
@@ -224,19 +231,29 @@ bool CPlayerController::OnAction(const CAction &action)
         if (++currentAudio >= audioStreamCount)
           currentAudio = 0;
         appPlayer->SetAudioStream(currentAudio); // Set the audio stream to the one selected
-        std::string aud;
+
         std::string lan;
         AudioStreamInfo info;
         appPlayer->GetAudioStreamInfo(currentAudio, info);
         if (!g_LangCodeExpander.Lookup(info.language, lan))
           lan = g_localizeStrings.Get(13205); // Unknown
-        if (info.name.empty())
-          aud = lan;
-        else
-          aud = StringUtils::Format("{} - {}", lan, info.name);
+
+        std::string textInfo = lan;
+        if (!info.name.empty())
+          textInfo += " - " + info.name;
+        if (!info.codecDesc.empty())
+          textInfo += " (" + info.codecDesc + ")";
+
         std::string caption = g_localizeStrings.Get(460);
         caption += StringUtils::Format(" ({}/{})", currentAudio + 1, audioStreamCount);
-        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, caption, aud, DisplTime, false, MsgTime);
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, caption, textInfo,
+                                              DisplTime, false, MsgTime);
+        return true;
+      }
+
+      case ACTION_DIALOG_SELECT_AUDIO:
+      {
+        VIDEO::GUILIB::OpenDialogSelectAudioStream();
         return true;
       }
 
@@ -256,6 +273,12 @@ bool CPlayerController::OnAction(const CAction &action)
         std::string caption = g_localizeStrings.Get(38031);
         caption += StringUtils::Format(" ({}/{})", currentVideo + 1, videoStreamCount);
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, caption, info.name, DisplTime, false, MsgTime);
+        return true;
+      }
+
+      case ACTION_DIALOG_SELECT_VIDEO:
+      {
+        VIDEO::GUILIB::OpenDialogSelectVideoStream();
         return true;
       }
 

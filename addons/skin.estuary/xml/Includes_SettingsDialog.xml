@@ -25,19 +25,25 @@
 			<onclick>ActivateWindow(osdcmssettings)</onclick>
 			<visible>System.HasCMS</visible>
 		</control>
-		<control type="button" id="22105">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[31112]</label>
-			<label2>[B]$INFO[VideoPlayer.AudioLanguage][/B]</label2>
-			<onclick>AudioNextLanguage</onclick>
-			<visible>Integer.IsGreater(VideoPlayer.AudioStreamCount,1)</visible>
-		</control>
 		<control type="button" id="22106">
 			<include>DialogSettingButton</include>
 			<label>$LOCALIZE[31115]</label>
 			<label2>$VAR[ActiveVideoPlayerSubtitleLanguage]</label2>
-			<onclick>NextSubtitle</onclick>
+			<onclick>DialogSelectSubtitle</onclick>
 			<visible>VideoPlayer.HasSubtitles</visible>
+		</control>
+		<control type="button" id="22105">
+			<include>DialogSettingButton</include>
+			<label>$LOCALIZE[31112]</label>
+			<label2>[B]$INFO[VideoPlayer.AudioLanguage][/B]</label2>
+			<onclick>DialogSelectAudio</onclick>
+			<visible>Integer.IsGreater(VideoPlayer.AudioStreamCount,1)</visible>
+		</control>
+		<control type="button" id="22110">
+			<include>DialogSettingButton</include>
+			<label>$LOCALIZE[31109]</label>
+			<onclick>DialogSelectVideo</onclick>
+			<visible>Integer.IsGreater(VideoPlayer.VideoStreamCount,1)</visible>
 		</control>
 		<control type="button" id="22107">
 			<include>DialogSettingButton</include>
