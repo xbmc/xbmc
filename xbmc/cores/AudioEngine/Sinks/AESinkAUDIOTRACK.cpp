@@ -20,6 +20,8 @@
 
 #include "platform/android/activity/XBMCApp.h"
 
+#include <numeric>
+
 #include <androidjni/AudioFormat.h>
 #include <androidjni/AudioManager.h>
 #include <androidjni/AudioTrack.h>
@@ -768,25 +770,16 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
 
   // the RAW hack for simulating pause bursts should not come
   // into the way of hw delay
+  if (m_pause_ms > m_audiotrackbuffer_sec * 1000.0)
+    m_pause_ms = m_audiotrackbuffer_sec * 1000.0;
+
   if (m_pause_ms > 0.0)
   {
-    double difference = (m_audiotrackbuffer_sec - delay) * 1000;
-    if (usesAdvancedLogging)
-    {
-      CLog::Log(LOGINFO, "Faking Pause-Bursts in Delay - returning smoothed {} ms Original {} ms",
-                m_audiotrackbuffer_sec * 1000, delay * 1000);
-      CLog::Log(LOGINFO, "Difference: {} ms m_pause_ms {}", difference, m_pause_ms);
-    }
-    // buffer not yet reached
-    if (difference > 0.0)
+    if (delay < m_audiotrackbuffer_sec)
       delay = m_audiotrackbuffer_sec;
     else
-    {
-      CLog::Log(LOGINFO, "Resetting pause bursts as buffer level was reached! (2)");
-      m_pause_ms = 0.0;
-    }
+      m_audiotrackbuffer_sec = delay;
   }
-
   const double d = GetMovingAverageDelay(delay);
 
   // Audiotrack is caching more than we thought it would
@@ -798,6 +791,8 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   if (usesAdvancedLogging)
   {
     CLog::Log(LOGINFO, "Delay Current: {:f} ms", d * 1000);
+    if (m_pause_ms > 0.0)
+      CLog::Log(LOGINFO, "Delay faked due to pause delay: {:f} ms", m_pause_ms);
   }
   status.SetDelay(d);
 }
@@ -927,49 +922,28 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
   }
   unsigned int written_frames = static_cast<unsigned int>(written / m_format.m_frameSize);
   double time_to_add_ms = 1000.0 * (CurrentHostCounter() - startTime) / CurrentHostFrequency();
+  // Get Back in Sync with faked pause bursts
   if (m_passthrough && !m_info.m_wantsIECPassthrough)
   {
-    // AT does not consume in a blocking way - it runs ahead and blocks
-    // exactly once with the last package for some 100 ms
-    double extra_sleep = 0.0;
-    if (time_to_add_ms < m_format.m_streamInfo.GetDuration())
-      extra_sleep = (m_format.m_streamInfo.GetDuration() - time_to_add_ms) / 2;
-
-    // if there is still place, just add it without blocking
-    if (m_delay < (m_audiotrackbuffer_sec - (m_format.m_streamInfo.GetDuration() / 1000.0)))
-      extra_sleep = 0;
-
     if (m_pause_ms > 0.0)
     {
-      extra_sleep = 0;
-      m_pause_ms -= m_format.m_streamInfo.GetDuration();
+      // Idea here is: Slowly correct the wrong buffer so that AE should not realize
+      // but do not underrun while doing so
+      double extra_sleep_ms = m_format.m_streamInfo.GetDuration() / 2.0 - time_to_add_ms;
+      if (extra_sleep_ms > 0)
+      {
+        CLog::Log(LOGDEBUG, "Sleeping for {:f}", extra_sleep_ms);
+        m_pause_ms -= extra_sleep_ms;
+        usleep(extra_sleep_ms * 1000);
+      }
       if (m_pause_ms <= 0.0)
       {
         m_pause_ms = 0.0;
-        CLog::Log(LOGINFO, "Resetting pause bursts as buffer level was reached! (1)");
+        extra_sleep_ms = 0.0;
+        CLog::Log(LOGDEBUG, "Resetting pause bursts as buffer level was reached! (1)");
       }
     }
-    else
-    {
-      if (m_delay > 0.3)
-        extra_sleep *= 2;
-    }
-
-    usleep(extra_sleep * 1000);
   }
-  else
-  {
-    // waiting should only be done if sink is not run dry
-    double period_time = m_format.m_frames / static_cast<double>(m_sink_sampleRate);
-    if (m_delay >= (m_audiotrackbuffer_sec - period_time))
-    {
-      double time_should_ms = 1000.0 * written_frames / m_format.m_sampleRate;
-      double time_off = time_should_ms - time_to_add_ms;
-      if (time_off > 0)
-        usleep(time_off * 500); // sleep half the error on average away
-    }
-  }
-
   return written_frames;
 }
 
@@ -1248,7 +1222,6 @@ double CAESinkAUDIOTRACK::GetMovingAverageDelay(double newestdelay)
 
   return d;
 #endif
-
   m_linearmovingaverage.push_back(newestdelay);
 
   // new values are in the back, old values are in the front
@@ -1261,12 +1234,8 @@ double CAESinkAUDIOTRACK::GetMovingAverageDelay(double newestdelay)
     m_linearmovingaverage.pop_front();
     size--;
   }
-  // m_{LWMA}^{(n)}(t) = \frac{2}{n (n+1)} \sum_{i=1}^n i \; x(t-n+i)
-  const double denom = 2.0 / (size * (size + 1));
-  double sum = 0.0;
-  for (size_t i = 0; i < m_linearmovingaverage.size(); i++)
-    sum += (i + 1) * m_linearmovingaverage.at(i);
+  double sum = std::accumulate(m_linearmovingaverage.begin(), m_linearmovingaverage.end(), 0.0);
 
-  return sum * denom;
+  return sum / size;
 }
 
