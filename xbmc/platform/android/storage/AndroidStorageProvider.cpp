@@ -17,6 +17,8 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
+#include "platform/android/activity/XBMCApp.h"
+
 #include <array>
 #include <cstdio>
 #include <cstdlib>
@@ -456,7 +458,7 @@ bool CAndroidStorageProvider::GetExternalStorage(std::string& path,
   std::string mountedState;
   bool mounted = false;
 
-  if (type == "files" || type.empty())
+  if (CJNIBase::GetSDKVersion() <= 29)
   {
     CJNIFile external = CJNIEnvironment::getExternalStorageDirectory();
     if (external)
@@ -464,25 +466,31 @@ bool CAndroidStorageProvider::GetExternalStorage(std::string& path,
   }
   else
   {
-    if (type == "music")
-      sType = "Music"; // Environment.DIRECTORY_MUSIC
-    else if (type == "videos")
-      sType = "Movies"; // Environment.DIRECTORY_MOVIES
-    else if (type == "pictures")
-      sType = "Pictures"; // Environment.DIRECTORY_PICTURES
-    else if (type == "photos")
-      sType = "DCIM"; // Environment.DIRECTORY_DCIM
-    else if (type == "downloads")
-      sType = "Download"; // Environment.DIRECTORY_DOWNLOADS
-    if (!sType.empty())
-    {
-      CJNIFile external = CJNIEnvironment::getExternalStoragePublicDirectory(sType);
-      if (external)
-        path = external.getAbsolutePath();
-    }
+    CJNIStorageManager manager =
+        (CJNIStorageManager)CXBMCApp::Get().getSystemService(CJNIContext::STORAGE_SERVICE);
+    CJNIStorageVolume volume = manager.getPrimaryStorageVolume();
+    path = volume.getDirectory().getAbsolutePath();
+  }
+
+  if (type == "music")
+    sType = CJNIEnvironment::DIRECTORY_MUSIC;
+  else if (type == "videos")
+    sType = CJNIEnvironment::DIRECTORY_MOVIES;
+  else if (type == "pictures")
+    sType = CJNIEnvironment::DIRECTORY_PICTURES;
+  else if (type == "photos")
+    sType = CJNIEnvironment::DIRECTORY_DCIM;
+  else if (type == "downloads")
+    sType = CJNIEnvironment::DIRECTORY_DOWNLOADS;
+
+  if (!sType.empty())
+  {
+    path.append("/");
+    path.append(sType);
   }
 
   mountedState = CJNIEnvironment::getExternalStorageState();
-  mounted = (mountedState == "mounted" || mountedState == "mounted_ro");
+  mounted = (mountedState == CJNIEnvironment::MEDIA_MOUNTED ||
+             mountedState == CJNIEnvironment::MEDIA_MOUNTED_READ_ONLY);
   return mounted && !path.empty();
 }

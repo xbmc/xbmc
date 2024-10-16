@@ -1,5 +1,7 @@
 package @APP_PACKAGE@;
 
+import @APP_PACKAGE@.util.Storage;
+
 import static android.content.pm.PackageManager.FEATURE_LEANBACK;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
@@ -560,7 +562,9 @@ public class Splash extends Activity
   void updateExternalStorageState()
   {
     String state = Environment.getExternalStorageState();
-    Log.d(TAG, "External storage = " + Environment.getExternalStorageDirectory().getAbsolutePath() + "; state = " + state);
+    Log.d(TAG,
+          "External storage = " + Storage.getPrimaryStorageVolumePath(getApplicationContext()) +
+              "; state = " + state);
     if (Environment.MEDIA_MOUNTED.equals(state))
     {
       mStateMachine.sendEmptyMessage(StorageChecked);
@@ -614,7 +618,7 @@ public class Splash extends Activity
     super.onCreate(savedInstanceState);
 
     // Be sure properties are initialized for native
-    XBMCProperties.initializeProperties();
+    XBMCProperties.initialize(getApplicationContext());
 
     // Check if @APP_NAME@ is not already running
     ActivityManager activityManager = (ActivityManager) getBaseContext()
@@ -632,7 +636,9 @@ public class Splash extends Activity
 
     mStateMachine.sendEmptyMessage(Checking);
 
-    Log.d(TAG, "External storage = " + Environment.getExternalStorageDirectory().getAbsolutePath() + "; state = " + Environment.getExternalStorageState());
+    Log.d(TAG,
+          "External storage = " + Storage.getPrimaryStorageVolumePath(getApplicationContext()) +
+              "; state = " + Environment.getExternalStorageState());
     if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()))
       mExternalStorageChecked = true;
 

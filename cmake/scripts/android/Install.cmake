@@ -64,7 +64,7 @@ set(package_files strings.xml
                   src/interfaces/XBMCMediaDrmOnEventListener.java
                   src/interfaces/XBMCDisplayManagerDisplayListener.java
                   src/interfaces/XBMCSpeechRecognitionListener.java
-		  src/interfaces/XBMCConnectivityManagerNetworkCallback.java
+                  src/interfaces/XBMCConnectivityManagerNetworkCallback.java
                   src/model/TVEpisode.java
                   src/model/Movie.java
                   src/model/TVShow.java
@@ -77,6 +77,7 @@ set(package_files strings.xml
                   src/content/XBMCMediaContentProvider.java
                   src/content/XBMCContentProvider.java
                   src/content/XBMCYTDLContentProvider.java
+                  src/util/Storage.java
                   )
 foreach(file IN LISTS package_files)
   configure_file(${CMAKE_SOURCE_DIR}/tools/android/packaging/xbmc/${file}.in
