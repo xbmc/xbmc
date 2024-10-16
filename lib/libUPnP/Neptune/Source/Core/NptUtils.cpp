@@ -376,7 +376,7 @@ NPT_HexString(const unsigned char* data,
     while (data_size--) {
         NPT_ByteToHex(*src++, dst, uppercase);
         dst += 2;
-        if (data_size) {
+        if (data_size && separator_length) {
             NPT_CopyMemory(dst, separator, separator_length);
             dst += separator_length;
         }
