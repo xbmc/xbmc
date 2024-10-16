@@ -530,7 +530,7 @@ const std::string& CSysInfo::GetAppName(void)
   return appName;
 }
 
-bool CSysInfo::GetDiskSpace(std::string drive,int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed)
+bool CSysInfo::GetDiskSpace(std::string drive, int& iTotal, int& iTotalFree, int& iTotalUsed, int& iPercentFree, int& iPercentUsed)
 {
   using namespace KODI::PLATFORM::FILESYSTEM;
 
