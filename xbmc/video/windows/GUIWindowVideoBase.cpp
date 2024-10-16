@@ -425,7 +425,8 @@ bool CGUIWindowVideoBase::ShowInfo(const CFileItemPtr& item2, const ScraperPtr& 
   if (bHasInfo)
   {
     // @todo add support to refresh movie version information
-    if (!info || info->Content() == CONTENT_NONE || VIDEO::IsVideoAssetFile(*item))
+    if ((!info || info->Content() == CONTENT_NONE || VIDEO::IsVideoAssetFile(*item)) &&
+        item->GetVideoContentType() != VideoDbContentType::MOVIE_SETS)
       item->SetProperty("xxuniqueid", "xx" + movieDetails.GetUniqueID()); // disable refresh button
     item->SetProperty("CheckAutoPlayNextItem", IsActive());
     *item->GetVideoInfoTag() = movieDetails;
@@ -458,7 +459,7 @@ bool CGUIWindowVideoBase::ShowInfo(const CFileItemPtr& item2, const ScraperPtr& 
   if (!profileManager->GetCurrentProfile().canWriteDatabases() && !g_passwordManager.bMasterUser)
     return false;
 
-  if (!info)
+  if (!info && item->GetVideoContentType() != VideoDbContentType::MOVIE_SETS)
     return false;
 
   if (CVideoLibraryQueue::GetInstance().IsScanningLibrary())
