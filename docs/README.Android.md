@@ -98,8 +98,8 @@ Before Android SDK can be used, you need to accept the licenses and configure it
 cd $HOME/android-tools/android-sdk-linux/cmdline-tools/bin
 ./sdkmanager --sdk_root=$(pwd)/../.. --licenses
 ./sdkmanager --sdk_root=$(pwd)/../.. platform-tools
-./sdkmanager --sdk_root=$(pwd)/../.. "platforms;android-34"
-./sdkmanager --sdk_root=$(pwd)/../.. "build-tools;33.0.1"
+./sdkmanager --sdk_root=$(pwd)/../.. "platforms;android-35"
+./sdkmanager --sdk_root=$(pwd)/../.. "build-tools;34.0.0"
 ./sdkmanager --sdk_root=$(pwd)/../.. "ndk;26.2.11394342"
 ```
 
