@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS = ../../Makefile.include Makefile osx.patch 01-fix-glob-on-android.patch ../../download-files.include
+DEPS = ../../Makefile.include Makefile 01-osx.patch 02-Fix-crash-reading-CD-TOC-on-macOS-Ventura.patch 03-fix-glob-on-android.patch ../../download-files.include
 
 # lib name, version
 LIBNAME=libcdio
@@ -24,9 +24,10 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 ifeq ($(TARGET_PLATFORM),macosx)
-	cd $(PLATFORM); patch -p1 -i ../osx.patch
+	cd $(PLATFORM); patch -p1 -i ../01-osx.patch
+	cd $(PLATFORM); patch -p1 -i ../02-Fix-crash-reading-CD-TOC-on-macOS-Ventura.patch
 endif
-	cd $(PLATFORM); patch -p1 -i ../01-fix-glob-on-android.patch
+	cd $(PLATFORM); patch -p1 -i ../03-fix-glob-on-android.patch
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
 
