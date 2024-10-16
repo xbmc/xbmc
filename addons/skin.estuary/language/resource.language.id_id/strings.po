@@ -193,6 +193,10 @@ msgctxt "#31039"
 msgid "Fast forward"
 msgstr "Mempercepat"
 
+msgctxt "#31040"
+msgid "Edit widgets"
+msgstr ""
+
 # empty string with id 31040
 msgctxt "#31041"
 msgid "Camera manufacturer"
