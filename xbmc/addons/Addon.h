@@ -361,6 +361,17 @@ public:
                         std::string& value,
                         AddonInstanceId id = ADDON_SETTINGS_ID) override;
 
+  /*!
+   * \brief Function to get Kodi's internal settings related to an add-on instance.
+   *
+   * \param[in] id Instance identifier to use, use @ref ADDON_SETTINGS_ID
+   *               to denote global add-on settings from settings.xml.
+   * \param[out] enabled Whether instance is declared enabled, true if so.
+   * \param[out] name The instance name used and set by the user
+   * \return true if the setting's value was retrieved, false otherwise.
+   */
+  bool GetInstanceSetting(AddonInstanceId id, bool& enabled, std::string& name) override;
+
   std::shared_ptr<CAddonSettings> GetSettings(AddonInstanceId id = ADDON_SETTINGS_ID) override;
 
   /*! \brief get the required version of a dependency.
