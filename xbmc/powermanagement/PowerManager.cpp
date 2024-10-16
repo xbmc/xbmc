@@ -269,7 +269,7 @@ void CPowerManager::StorePlayerState()
                                            stackHelper->GetCurrentStackPartStartTimeMs());
     // in case of iso stack, keep track of part number
     m_lastPlayedFileItem->m_lStartPartNumber =
-        stackHelper->IsPlayingISOStack() ? stackHelper->GetCurrentPartNumber() + 1 : 1;
+        stackHelper->IsPlayingDiscStack() ? stackHelper->GetCurrentPartNumber() + 1 : 1;
     // for iso and iso stacks, keep track of playerstate
     m_lastPlayedFileItem->SetProperty("savedplayerstate", appPlayer->GetPlayerState());
     CLog::Log(LOGDEBUG,
