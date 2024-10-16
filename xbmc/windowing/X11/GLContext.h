@@ -28,7 +28,9 @@ public:
   virtual void SetVSync(bool enable) = 0;
   virtual void SwapBuffers() = 0;
   virtual void QueryExtensions() = 0;
+  virtual bool IsBufferAgeSupported() { return false; }
   virtual uint64_t GetVblankTiming(uint64_t& msc, uint64_t& interval) { return 0; }
+  virtual int GetBufferAge() { return 2; }
   bool IsExtSupported(const char* extension) const;
 
   const std::string& ExtPrefix() const { return m_extPrefix; }
