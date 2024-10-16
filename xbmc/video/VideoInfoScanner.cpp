@@ -1478,7 +1478,11 @@ namespace KODI::VIDEO
       return -1;
 
     if (!libraryImport)
-      GetArtwork(pItem, content, videoFolder, useLocal && !pItem->IsPlugin(), showInfo ? showInfo->m_strPath : "");
+    {
+      const std::string currentPath{URIUtils::GetDirectory(pItem->GetPath())};
+      GetArtwork(pItem, content, videoFolder, useLocal && !pItem->IsPlugin(), currentPath,
+                 showInfo ? showInfo->m_strPath : currentPath);
+    }
 
     // ensure the art map isn't completely empty by specifying an empty thumb
     std::map<std::string, std::string> art = pItem->GetArt();
@@ -1763,7 +1767,12 @@ namespace KODI::VIDEO
     }
   }
 
-  void CVideoInfoScanner::GetArtwork(CFileItem *pItem, const CONTENT_TYPE &content, bool bApplyToDir, bool useLocal, const std::string &actorArtPath)
+  void CVideoInfoScanner::GetArtwork(CFileItem* pItem,
+                                     const CONTENT_TYPE& content,
+                                     bool bApplyToDir,
+                                     bool useLocal,
+                                     const std::string& actorArtPath,
+                                     const std::string& parentPath)
   {
     int artLevel = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
         CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL);
@@ -1887,7 +1896,7 @@ namespace KODI::VIDEO
     // parent folder to apply the thumb to and to search for local actor thumbs
     std::string parentDir = URIUtils::GetBasePath(pItem->GetPath());
     if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOLIBRARY_ACTORTHUMBS))
-      FetchActorThumbs(movieDetails.m_cast, actorArtPath.empty() ? parentDir : actorArtPath);
+      FetchActorThumbs(movieDetails.m_cast, actorArtPath, parentPath);
     if (bApplyToDir)
       ApplyThumbToFolder(parentDir, art["thumb"]);
   }
@@ -2374,39 +2383,56 @@ namespace KODI::VIDEO
     }
   }
 
-  void CVideoInfoScanner::FetchActorThumbs(std::vector<SActorInfo>& actors, const std::string& strPath)
+  void CVideoInfoScanner::FetchActorThumbs(std::vector<SActorInfo>& actors,
+                                           const std::string& strPath,
+                                           const std::string& parentPath)
   {
     CFileItemList items;
+    CFileItemList parentItems;
+
     // don't try to fetch anything local with plugin source
     if (!URIUtils::IsPlugin(strPath))
     {
-      std::string actorsDir = URIUtils::AddFileToFolder(strPath, ".actors");
+      const std::string actorsDir = URIUtils::AddFileToFolder(strPath, ".actors");
+      const std::string parentActorsDir = URIUtils::AddFileToFolder(parentPath, ".actors");
       if (CDirectory::Exists(actorsDir))
         CDirectory::GetDirectory(actorsDir, items, ".png|.jpg|.tbn", DIR_FLAG_NO_FILE_DIRS |
                                  DIR_FLAG_NO_FILE_INFO);
+      if (!parentPath.empty() && actorsDir != parentActorsDir &&
+          CDirectory::Exists(parentActorsDir))
+        CDirectory::GetDirectory(parentActorsDir, parentItems, ".png|.jpg|.tbn",
+                                 DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO);
     }
-    for (std::vector<SActorInfo>::iterator i = actors.begin(); i != actors.end(); ++i)
+    for (auto& i : actors)
     {
-      if (i->thumb.empty())
+      if (i.thumb.empty())
       {
-        std::string thumbFile = i->strName;
+        std::string thumbFile = i.strName;
         StringUtils::Replace(thumbFile, ' ', '_');
-        for (int j = 0; j < items.Size(); j++)
-        {
-          std::string compare = URIUtils::GetFileName(items[j]->GetPath());
-          URIUtils::RemoveExtension(compare);
-          if (!items[j]->m_bIsFolder && compare == thumbFile)
-          {
-            i->thumb = items[j]->GetPath();
-            break;
-          }
-        }
-        if (i->thumb.empty() && !i->thumbUrl.GetFirstUrlByType().m_url.empty())
-          i->thumb = CScraperUrl::GetThumbUrl(i->thumbUrl.GetFirstUrlByType());
-        if (!i->thumb.empty())
-          CServiceBroker::GetTextureCache()->BackgroundCacheImage(i->thumb);
+        std::string path{FindActorThumbFile(items, thumbFile)};
+        if (path.empty())
+          path = FindActorThumbFile(parentItems, thumbFile);
+        if (!path.empty())
+          i.thumb = path;
+        else if (path.empty() && !i.thumbUrl.GetFirstUrlByType().m_url.empty())
+          i.thumb = CScraperUrl::GetThumbUrl(i.thumbUrl.GetFirstUrlByType());
+        if (!i.thumb.empty())
+          CServiceBroker::GetTextureCache()->BackgroundCacheImage(i.thumb);
       }
     }
+  }
+
+  std::string CVideoInfoScanner::FindActorThumbFile(const CFileItemList& items,
+                                                    const std::string& thumbFile)
+  {
+    for (const auto& file : items.GetList())
+    {
+      std::string compare = URIUtils::GetFileName(file->GetPath());
+      URIUtils::RemoveExtension(compare);
+      if (!file->m_bIsFolder && compare == thumbFile)
+        return file->GetPath();
+    }
+    return std::string();
   }
 
   bool CVideoInfoScanner::DownloadFailed(CGUIDialogProgress* pDialog)
