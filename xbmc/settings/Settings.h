@@ -179,6 +179,7 @@ public:
   static constexpr auto SETTING_SUBTITLES_MOVIE = "subtitles.movie";
   static constexpr auto SETTING_DVDS_AUTORUN = "dvds.autorun";
   static constexpr auto SETTING_DVDS_PLAYERREGION = "dvds.playerregion";
+  static constexpr auto SETTING_DVDS_PLAYBACK = "dvds.playback";
   static constexpr auto SETTING_DVDS_AUTOMENU = "dvds.automenu";
   static constexpr auto SETTING_DISC_PLAYBACK = "disc.playback";
   static constexpr auto SETTING_BLURAY_PLAYERREGION = "bluray.playerregion";
