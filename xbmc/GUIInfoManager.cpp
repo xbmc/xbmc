@@ -4081,6 +4081,131 @@ const infomap retroplayer[] =
 };
 
 /// \page modules__infolabels_boolean_conditions
+/// \subsection modules__infolabels_boolean_conditions_SmartHome SmartHome
+/// \table_start
+///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`SmartHome.HasLab`</b>,
+///                  \anchor SmartHome_HasLab
+///                  _boolean_,
+///     @return **True** if a LEGO train lab has been seen recently.
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.LabCPU`</b>,
+///                  \anchor SmartHome_LabCPU
+///                  _string_,
+///     @return The CPU utilization of the computer powering a LEGO train lab.
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.LabMemory`</b>,
+///                  \anchor SmartHome_LabMemory
+///                  _string_,
+///     @return The RAM utilization of the LEGO train lab microcontroller.
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.LabCurrent`</b>,
+///                  \anchor SmartHome_LabCurrent
+///                  _string_,
+///     @return The current through the shunt current sensor
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.LabIR`</b>,
+///                  \anchor SmartHome_LabIR
+///                  _string_,
+///     @return The output voltage of the IR reflectance sensor
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.HasStation`</b>,
+///                  \anchor SmartHome_HasStation
+///                  _boolean_,
+///     @return **True** if a LEGO train power station has been seen recently.
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.StationSupply`</b>,
+///                  \anchor SmartHome_StationSupply
+///                  _string_,
+///     @return The supply voltage being provided to a LEGO train power station.
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.StationMotor`</b>,
+///                  \anchor SmartHome_StationMotor
+///                  _string_,
+///     @return The voltage being applied to the 9V motors of a LEGO train.
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.StationCurrent`</b>,
+///                  \anchor SmartHome_StationCurrent
+///                  _string_,
+///     @return The current being provided to a LEGO train's 9V motors.
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.StationCPU`</b>,
+///                  \anchor SmartHome_StationCPU
+///                  _string_,
+///     @return The CPU utilization of the computer powering a LEGO train power station.
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.StationMessage`</b>,
+///                  \anchor SmartHome_StationMessage
+///                  _string_,
+///     @return The last string message logged by the LEGO train power station's
+///             microcontroller.
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.HasTrain`</b>,
+///                  \anchor SmartHome_HasTrain
+///                  _boolean_,
+///     @return **True** if a LEGO train has been seen recently.
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.TrainCPU`</b>,
+///                  \anchor SmartHome_TrainCPU
+///                  _string_,
+///     @return The CPU utilization of the computer powering a LEGO train.
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.TrainMemory`</b>,
+///                  \anchor SmartHome_TrainMemory
+///                  _string_,
+///     @return The RAM utilization of the computer powering a LEGO train.
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.TrainSupply`</b>,
+///                  \anchor SmartHome_TrainSupply
+///                  _string_,
+///     @return The supply voltage being provided to a LEGO train's engine
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.TrainMessage`</b>,
+///                  \anchor SmartHome_TrainMessage
+///                  _string_,
+///     @return The last string message logged by the LEGO train's microcontroller.
+///     <p>
+///   }
+/// \table_end
+///
+/// -----------------------------------------------------------------------------
+const infomap smarthome[] = {
+    // clang-format off
+    {"haslab", SMARTHOME_HAS_LAB},
+    {"labcpu", SMARTHOME_LAB_CPU},
+    {"labmemory", SMARTHOME_LAB_MEMORY},
+    {"labcurrent", SMARTHOME_LAB_CURRENT},
+    {"labir", SMARTHOME_LAB_IR},
+    {"hasstation", SMARTHOME_HAS_STATION},
+    {"stationsupply", SMARTHOME_STATION_SUPPLY},
+    {"stationmotor", SMARTHOME_STATION_MOTOR},
+    {"stationcurrent", SMARTHOME_STATION_CURRENT},
+    {"stationcpu", SMARTHOME_STATION_CPU},
+    {"stationmessage", SMARTHOME_STATION_MESSAGE},
+    {"hastrain", SMARTHOME_HAS_TRAIN},
+    {"traincpu", SMARTHOME_TRAIN_CPU},
+    {"trainmemory", SMARTHOME_TRAIN_MEMORY},
+    {"trainsupply", SMARTHOME_TRAIN_SUPPLY},
+    {"trainmessage", SMARTHOME_TRAIN_MESSAGE},
+    // clang-format on
+};
+
+/// \page modules__infolabels_boolean_conditions
 /// \subsection modules__infolabels_boolean_conditions_Container Container
 /// \table_start
 ///   \table_h3{ Labels, Type, Description }
@@ -10560,6 +10685,14 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       {
         if (prop.name == rd.str)
           return rd.val;
+      }
+    }
+    else if (cat.name == "smarthome")
+    {
+      for (const infomap& i : smarthome)
+      {
+        if (prop.name == i.str)
+          return i.val;
       }
     }
   }
