@@ -52,7 +52,7 @@ namespace XBMCAddon
       strHeading = heading;
     }
 
-    String Keyboard::getText()
+    const String& Keyboard::getText()
     {
       return strText;
     }
