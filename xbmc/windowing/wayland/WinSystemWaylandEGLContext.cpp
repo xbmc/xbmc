@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017-2018 Team Kodi
+ *  Copyright (C) 2017-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -102,19 +102,9 @@ bool CWinSystemWaylandEGLContext::DestroyWindowSystem()
   return CWinSystemWaylandImpl::DestroyWindowSystem();
 }
 
-bool CWinSystemWaylandEGLContext::BindTextureUploadContext()
+bool CWinSystemWaylandEGLContext::BindSecondaryGPUContext(unsigned int id)
 {
-  return m_eglContext.BindTextureUploadContext();
-}
-
-bool CWinSystemWaylandEGLContext::UnbindTextureUploadContext()
-{
-  return m_eglContext.UnbindTextureUploadContext();
-}
-
-bool CWinSystemWaylandEGLContext::HasContext()
-{
-  return m_eglContext.HasContext();
+  return m_eglContext.BindSecondaryGPUContext(id);
 }
 
 CSizeInt CWinSystemWaylandEGLContext::GetNativeWindowAttachedSize()
