@@ -9,6 +9,7 @@
 #include "GUITexture.h"
 
 #include "GUILargeTextureManager.h"
+#include "GUITextureCallbackManager.h"
 #include "Texture.h"
 #include "TextureManager.h"
 #include "utils/MathUtils.h"
@@ -365,7 +366,16 @@ bool CGUITexture::AllocResources()
     if (m_isAllocated != NORMAL)
     { // use our large image background loader
       CTextureArray texture;
-      if (CServiceBroker::GetGUI()->GetLargeTextureManager().GetImage(m_info.filename, texture, !IsAllocated(), m_use_cache))
+      if (m_requestWidth == REQUEST_SIZE_UNSET && m_requestHeight == REQUEST_SIZE_UNSET)
+      {
+        CGraphicContext& gfxContext = CServiceBroker::GetWinSystem()->GetGfxContext();
+        m_requestWidth = (int)(m_width / gfxContext.GetGUIScaleX() + 0.5f);
+        m_requestHeight = (int)(m_height / gfxContext.GetGUIScaleY() + 0.5f);
+        CServiceBroker::GetGUI()->GetTextureCallbackManager().RegisterOnWindowResizeCallback(*this);
+      }
+      if (CServiceBroker::GetGUI()->GetLargeTextureManager().GetImage(
+              m_info.filename, texture, m_requestWidth, m_requestHeight, m_aspect.ratio,
+              !IsAllocated(), m_use_cache))
       {
         m_isAllocated = LARGE;
 
@@ -427,7 +437,7 @@ bool CGUITexture::CalculateSize()
   float newWidth = m_width;
   float newHeight = m_height;
 
-  if (m_aspect.ratio != CAspectRatio::AR_STRETCH && m_frameWidth && m_frameHeight)
+  if (m_aspect.ratio != CAspectRatio::STRETCH && m_frameWidth && m_frameHeight)
   {
     // to get the pixel ratio, we must use the SCALED output sizes
     float pixelRatio = CServiceBroker::GetWinSystem()->GetGfxContext().GetScalingPixelRatio();
@@ -440,13 +450,13 @@ bool CGUITexture::CalculateSize()
     // maximize the width
     newHeight = m_width / fOutputFrameRatio;
 
-    if ((m_aspect.ratio == CAspectRatio::AR_SCALE && newHeight < m_height) ||
-        (m_aspect.ratio == CAspectRatio::AR_KEEP && newHeight > m_height))
+    if ((m_aspect.ratio == CAspectRatio::SCALE && newHeight < m_height) ||
+        (m_aspect.ratio == CAspectRatio::KEEP && newHeight > m_height))
     {
       newHeight = m_height;
       newWidth = newHeight * fOutputFrameRatio;
     }
-    if (m_aspect.ratio == CAspectRatio::AR_CENTER)
+    if (m_aspect.ratio == CAspectRatio::CENTER)
     { // keep original size + center
       newWidth = m_frameWidth / sqrt(pixelRatio);
       newHeight = m_frameHeight * sqrt(pixelRatio);
@@ -507,7 +517,14 @@ bool CGUITexture::CalculateSize()
 void CGUITexture::FreeResources(bool immediately /* = false */)
 {
   if (m_isAllocated == LARGE || m_isAllocated == LARGE_FAILED)
-    CServiceBroker::GetGUI()->GetLargeTextureManager().ReleaseImage(m_info.filename, immediately || (m_isAllocated == LARGE_FAILED));
+  {
+    CServiceBroker::GetGUI()->GetLargeTextureManager().ReleaseImage(
+        m_info.filename, m_requestWidth, m_requestHeight, m_aspect.ratio,
+        immediately || (m_isAllocated == LARGE_FAILED));
+    m_requestWidth = REQUEST_SIZE_UNSET;
+    m_requestHeight = REQUEST_SIZE_UNSET;
+    CServiceBroker::GetGUI()->GetTextureCallbackManager().UnregisterOnWindowResizeCallback(*this);
+  }
   else if (m_isAllocated == NORMAL && m_texture.size())
     CServiceBroker::GetGUI()->GetTextureManager().ReleaseTexture(m_info.filename, immediately);
 
@@ -536,6 +553,11 @@ void CGUITexture::DynamicResourceAlloc(bool allocateDynamically)
 void CGUITexture::SetInvalid()
 {
   m_invalid = true;
+}
+
+void CGUITexture::OnWindowResize()
+{
+  FreeResources(true);
 }
 
 bool CGUITexture::UpdateAnimFrame(unsigned int currentTime)

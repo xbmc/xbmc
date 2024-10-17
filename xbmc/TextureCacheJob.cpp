@@ -186,7 +186,8 @@ std::unique_ptr<CTexture> CTextureCacheJob::LoadImage(const IMAGE_FILES::CImageF
     return {};
   }
 
-  auto texture = CTexture::LoadFromFile(imageURL.GetTargetFile(), 0, 0, true, file.GetMimeType());
+  auto texture = CTexture::LoadFromFile(imageURL.GetTargetFile(), 0, 0, CAspectRatio::CENTER,
+                                        file.GetMimeType());
   if (!texture)
     return {};
 

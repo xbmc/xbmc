@@ -328,13 +328,13 @@ bool CGUIControlFactory::GetAspectRatio(const TiXmlNode* pRootNode,
 
   ratio = node->FirstChild()->Value();
   if (StringUtils::EqualsNoCase(ratio, "keep"))
-    aspect.ratio = CAspectRatio::AR_KEEP;
+    aspect.ratio = CAspectRatio::KEEP;
   else if (StringUtils::EqualsNoCase(ratio, "scale"))
-    aspect.ratio = CAspectRatio::AR_SCALE;
+    aspect.ratio = CAspectRatio::SCALE;
   else if (StringUtils::EqualsNoCase(ratio, "center"))
-    aspect.ratio = CAspectRatio::AR_CENTER;
+    aspect.ratio = CAspectRatio::CENTER;
   else if (StringUtils::EqualsNoCase(ratio, "stretch"))
-    aspect.ratio = CAspectRatio::AR_STRETCH;
+    aspect.ratio = CAspectRatio::STRETCH;
 
   const char* attribute = node->Attribute("align");
   if (attribute)
