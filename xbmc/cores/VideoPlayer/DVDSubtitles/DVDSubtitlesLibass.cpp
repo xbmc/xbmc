@@ -106,8 +106,11 @@ void CDVDSubtitlesLibass::Configure()
     XFILE::CDirectory::GetDirectory(FONT::FONTPATH::SYSTEM, items, FONT::SUPPORTED_EXTENSIONS_MASK,
                                     XFILE::DIR_FLAG_NO_FILE_DIRS | XFILE::DIR_FLAG_NO_FILE_INFO);
   }
+
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  const bool overrideFont = settings->GetBool(CSettings::SETTING_SUBTITLES_OVERRIDEFONTS);
   // Get temporary fonts
-  if (XFILE::CDirectory::Exists(FONT::FONTPATH::TEMP, false))
+  if (!overrideFont && XFILE::CDirectory::Exists(FONT::FONTPATH::TEMP, false))
   {
     XFILE::CDirectory::GetDirectory(FONT::FONTPATH::TEMP, items, FONT::SUPPORTED_EXTENSIONS_MASK,
                                     XFILE::DIR_FLAG_BYPASS_CACHE | XFILE::DIR_FLAG_NO_FILE_DIRS |
@@ -149,8 +152,6 @@ void CDVDSubtitlesLibass::Configure()
 
   // Extract font must be set before loading ASS/SSA data,
   // after that cannot be changed
-  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-  bool overrideFont = settings->GetBool(CSettings::SETTING_SUBTITLES_OVERRIDEFONTS);
   ass_set_extract_fonts(m_library, overrideFont ? 0 : 1);
 }
 
