@@ -117,6 +117,16 @@ public:
     return m_addonCapabilities && m_addonCapabilities->bSupportsAsyncEPGTransfer;
   }
 
+  /*!
+   * @brief Check whether this add-on supports retrieving an edit decision list for epg tags.
+   * @return True if supported, false otherwise.
+   */
+  bool SupportsEpgTagEdl() const
+  {
+    return m_addonCapabilities && m_addonCapabilities->bSupportsEPG &&
+           m_addonCapabilities->bSupportsEPGEdl;
+  }
+
   /////////////////////////////////////////////////////////////////////////////////
   //
   // Timers
@@ -188,16 +198,6 @@ public:
   }
 
   /*!
-   * @brief Check whether this add-on supports retrieving an edit decision list for epg tags.
-   * @return True if supported, false otherwise.
-   */
-  bool SupportsEpgTagEdl() const
-  {
-    return m_addonCapabilities && m_addonCapabilities->bSupportsEPG &&
-           m_addonCapabilities->bSupportsEPGEdl;
-  }
-
-  /*!
    * @brief Check whether this add-on supports renaming recordings..
    * @return True if supported, false otherwise.
    */
@@ -241,6 +241,16 @@ public:
   {
     return m_addonCapabilities && m_addonCapabilities->bSupportsRecordings &&
            m_addonCapabilities->bSupportsRecordingsDelete;
+  }
+
+  /*!
+   * @brief Check whether this add-on supports multiple recorded streams at a time.
+   * @return True if supported, false otherwise.
+   */
+  bool SupportsMultipleRecordedStreams() const
+  {
+    return m_addonCapabilities && m_addonCapabilities->bSupportsRecordings &&
+           m_addonCapabilities->bSupportsMultipleRecordedStreams;
   }
 
   /////////////////////////////////////////////////////////////////////////////////

@@ -108,19 +108,7 @@ int CInputStreamPVRBase::GetBlockSize()
 
 bool CInputStreamPVRBase::GetTimes(Times &times)
 {
-  PVR_STREAM_TIMES streamTimes = {};
-  if (m_client && m_client->GetStreamTimes(&streamTimes) == PVR_ERROR_NO_ERROR)
-  {
-    times.startTime = streamTimes.startTime;
-    times.ptsStart = streamTimes.ptsStart;
-    times.ptsBegin = streamTimes.ptsBegin;
-    times.ptsEnd = streamTimes.ptsEnd;
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return GetPVRStreamTimes(times);
 }
 
 CDVDInputStream::ENextStream CInputStreamPVRBase::NextStream()
@@ -140,18 +128,12 @@ bool CInputStreamPVRBase::CanSeek()
 
 void CInputStreamPVRBase::Pause(bool bPaused)
 {
-  if (m_client)
-    m_client->PauseStream(bPaused);
+  PausePVRStream(bPaused);
 }
 
 bool CInputStreamPVRBase::IsRealtime()
 {
-  bool ret = false;
-
-  if (m_client)
-    m_client->IsRealTimeStream(ret);
-
-  return ret;
+  return IsRealtimePVRStream();
 }
 
 bool CInputStreamPVRBase::OpenDemux()

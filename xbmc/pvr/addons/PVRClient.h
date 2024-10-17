@@ -650,40 +650,73 @@ public:
   /*!
    * @brief Open a recording on the server.
    * @param recording The recording to open.
+   * @param streamId The id of the stream opened.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
-  PVR_ERROR OpenRecordedStream(const std::shared_ptr<const CPVRRecording>& recording);
+  PVR_ERROR OpenRecordedStream(const std::shared_ptr<const CPVRRecording>& recording,
+                               int64_t& streamId);
 
   /*!
    * @brief Close an open recording stream.
+   * @param streamId The id of the stream to close, as returned by OpenRecordedStream.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
-  PVR_ERROR CloseRecordedStream();
+  PVR_ERROR CloseRecordedStream(int64_t streamId);
 
   /*!
    * @brief Read from an open recording stream.
+   * @param streamId The id of the stream to read, as returned by OpenRecordedStream.
    * @param lpBuf The buffer to store the data in.
    * @param uiBufSize The amount of bytes to read.
    * @param iRead The amount of bytes that were actually read from the stream.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
-  PVR_ERROR ReadRecordedStream(void* lpBuf, int64_t uiBufSize, int& iRead);
+  PVR_ERROR ReadRecordedStream(int64_t streamId, void* lpBuf, int64_t uiBufSize, int& iRead);
 
   /*!
    * @brief Seek in a recording stream on a backend.
+   * @param streamId The id of the stream to seek, as returned by OpenRecordedStream.
    * @param iFilePosition The position to seek to.
    * @param iWhence ?
    * @param iPosition The new position or -1 on error.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
-  PVR_ERROR SeekRecordedStream(int64_t iFilePosition, int iWhence, int64_t& iPosition);
+  PVR_ERROR SeekRecordedStream(int64_t streamId,
+                               int64_t iFilePosition,
+                               int iWhence,
+                               int64_t& iPosition);
 
   /*!
-   * @brief Get the length of the currently playing recording stream, if any.
+   * @brief Get the length of the given stream.
+   * @param streamId The id of the stream to get the length for, as returned by OpenRecordedStream.
    * @param iLength The total length of the stream that's currently being read or -1 on error.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
-  PVR_ERROR GetRecordedStreamLength(int64_t& iLength) const;
+  PVR_ERROR GetRecordedStreamLength(int64_t streamId, int64_t& iLength) const;
+
+  /*!
+   * @brief Check whether the given stream is a real-time stream.
+   * @param streamId The id of the stream to check, as returned by OpenRecordedStream.
+   * @param isRealTime True if real-time, false otherwise.
+   * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
+   */
+  PVR_ERROR IsRecordedStreamRealTime(int64_t streamId, bool& isRealTime) const;
+
+  /*!
+   * @brief (Un)Pause a stream.
+   * @param streamId The id of the stream to (un)pause, as returned by OpenRecordedStream.
+   * @param paused True to pause the stream, false to unpause.
+   * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
+   */
+  PVR_ERROR PauseRecordedStream(int64_t streamId, bool paused);
+
+  /*!
+   * @brief Get stream times for the given stream.
+   * @param streamId The id of the stream to get times for, as returned by OpenRecordedStream.
+   * @param times The stream times.
+   * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
+   */
+  PVR_ERROR GetRecordedStreamTimes(int64_t streamId, PVR_STREAM_TIMES* times) const;
 
   /*!
    * @brief Fill the given container with the properties required for playback of the given recording. Values are obtained from the PVR backend.

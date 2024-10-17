@@ -1495,14 +1495,18 @@ PVR_ERROR CPVRClient::ReadLiveStream(void* lpBuf, int64_t uiBufSize, int& iRead)
                      });
 }
 
-PVR_ERROR CPVRClient::ReadRecordedStream(void* lpBuf, int64_t uiBufSize, int& iRead)
+PVR_ERROR CPVRClient::ReadRecordedStream(int64_t streamId,
+                                         void* lpBuf,
+                                         int64_t uiBufSize,
+                                         int& iRead)
 {
   iRead = -1;
   return DoAddonCall(__func__,
-                     [&lpBuf, uiBufSize, &iRead](const AddonInstance* addon)
+                     [streamId, &lpBuf, uiBufSize, &iRead](const AddonInstance* addon)
                      {
                        iRead = addon->toAddon->ReadRecordedStream(
-                           addon, static_cast<unsigned char*>(lpBuf), static_cast<int>(uiBufSize));
+                           addon, streamId, static_cast<unsigned char*>(lpBuf),
+                           static_cast<int>(uiBufSize));
                        return (iRead == -1) ? PVR_ERROR_NOT_IMPLEMENTED : PVR_ERROR_NO_ERROR;
                      });
 }
@@ -1518,14 +1522,17 @@ PVR_ERROR CPVRClient::SeekLiveStream(int64_t iFilePosition, int iWhence, int64_t
                      });
 }
 
-PVR_ERROR CPVRClient::SeekRecordedStream(int64_t iFilePosition, int iWhence, int64_t& iPosition)
+PVR_ERROR CPVRClient::SeekRecordedStream(int64_t streamId,
+                                         int64_t iFilePosition,
+                                         int iWhence,
+                                         int64_t& iPosition)
 {
   iPosition = -1;
   return DoAddonCall(__func__,
-                     [iFilePosition, iWhence, &iPosition](const AddonInstance* addon)
+                     [streamId, iFilePosition, iWhence, &iPosition](const AddonInstance* addon)
                      {
-                       iPosition =
-                           addon->toAddon->SeekRecordedStream(addon, iFilePosition, iWhence);
+                       iPosition = addon->toAddon->SeekRecordedStream(addon, streamId,
+                                                                      iFilePosition, iWhence);
                        return (iPosition == -1) ? PVR_ERROR_NOT_IMPLEMENTED : PVR_ERROR_NO_ERROR;
                      });
 }
@@ -1552,13 +1559,13 @@ PVR_ERROR CPVRClient::GetLiveStreamLength(int64_t& iLength) const
                      });
 }
 
-PVR_ERROR CPVRClient::GetRecordedStreamLength(int64_t& iLength) const
+PVR_ERROR CPVRClient::GetRecordedStreamLength(int64_t streamId, int64_t& iLength) const
 {
   iLength = -1;
   return DoAddonCall(__func__,
-                     [&iLength](const AddonInstance* addon)
+                     [streamId, &iLength](const AddonInstance* addon)
                      {
-                       iLength = addon->toAddon->LengthRecordedStream(addon);
+                       iLength = addon->toAddon->LengthRecordedStream(addon, streamId);
                        return (iLength == -1) ? PVR_ERROR_NOT_IMPLEMENTED : PVR_ERROR_NO_ERROR;
                      });
 }
@@ -1820,21 +1827,24 @@ PVR_ERROR CPVRClient::OpenLiveStream(const std::shared_ptr<const CPVRChannel>& c
                      });
 }
 
-PVR_ERROR CPVRClient::OpenRecordedStream(const std::shared_ptr<const CPVRRecording>& recording)
+PVR_ERROR CPVRClient::OpenRecordedStream(const std::shared_ptr<const CPVRRecording>& recording,
+                                         int64_t& streamId)
 {
   if (!recording)
     return PVR_ERROR_INVALID_PARAMETERS;
 
   return DoAddonCall(
       __func__,
-      [this, recording](const AddonInstance* addon)
+      [this, recording, &streamId](const AddonInstance* addon)
       {
-        CloseRecordedStream();
+        if (!m_clientCapabilities.SupportsMultipleRecordedStreams())
+          CloseRecordedStream(streamId);
 
         const CAddonRecording tag(*recording);
         CLog::LogFC(LOGDEBUG, LOGPVR, "Opening stream for recording '{}'", recording->m_strTitle);
-        return addon->toAddon->OpenRecordedStream(addon, &tag) ? PVR_ERROR_NO_ERROR
-                                                               : PVR_ERROR_NOT_IMPLEMENTED;
+        return addon->toAddon->OpenRecordedStream(addon, &tag, &streamId)
+                   ? PVR_ERROR_NO_ERROR
+                   : PVR_ERROR_NOT_IMPLEMENTED;
       },
       m_clientCapabilities.SupportsRecordings());
 }
@@ -1849,14 +1859,54 @@ PVR_ERROR CPVRClient::CloseLiveStream()
                      });
 }
 
-PVR_ERROR CPVRClient::CloseRecordedStream()
+PVR_ERROR CPVRClient::CloseRecordedStream(int64_t streamId)
 {
   return DoAddonCall(__func__,
-                     [](const AddonInstance* addon)
+                     [streamId](const AddonInstance* addon)
                      {
-                       addon->toAddon->CloseRecordedStream(addon);
+                       addon->toAddon->CloseRecordedStream(addon, streamId);
                        return PVR_ERROR_NO_ERROR;
                      });
+}
+
+PVR_ERROR CPVRClient::IsRecordedStreamRealTime(int64_t streamId, bool& isRealTime) const
+{
+  if (m_clientCapabilities.SupportsMultipleRecordedStreams())
+  {
+    return DoAddonCall(
+        __func__, [streamId, &isRealTime](const AddonInstance* addon)
+        { return addon->toAddon->IsRecordedStreamRealTime(addon, streamId, &isRealTime); });
+  }
+  else
+  {
+    return IsRealTimeStream(isRealTime);
+  }
+}
+
+PVR_ERROR CPVRClient::PauseRecordedStream(int64_t streamId, bool paused)
+{
+  if (m_clientCapabilities.SupportsMultipleRecordedStreams())
+  {
+    return DoAddonCall(__func__, [streamId, paused](const AddonInstance* addon)
+                       { return addon->toAddon->PauseRecordedStream(addon, streamId, paused); });
+  }
+  else
+  {
+    return PauseStream(paused);
+  }
+}
+
+PVR_ERROR CPVRClient::GetRecordedStreamTimes(int64_t streamId, PVR_STREAM_TIMES* times) const
+{
+  if (m_clientCapabilities.SupportsMultipleRecordedStreams())
+  {
+    return DoAddonCall(__func__, [streamId, &times](const AddonInstance* addon)
+                       { return addon->toAddon->GetRecordedStreamTimes(addon, streamId, times); });
+  }
+  else
+  {
+    return GetStreamTimes(times);
+  }
 }
 
 PVR_ERROR CPVRClient::PauseStream(bool bPaused)

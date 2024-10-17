@@ -38,7 +38,8 @@ bool CInputStreamPVRRecording::OpenPVRStream()
         "CInputStreamPVRRecording - {} - unable to obtain recording instance for recording {}",
         __FUNCTION__, m_item.GetPath());
 
-  if (recording && m_client && (m_client->OpenRecordedStream(recording) == PVR_ERROR_NO_ERROR))
+  if (recording && m_client &&
+      (m_client->OpenRecordedStream(recording, m_streamId) == PVR_ERROR_NO_ERROR))
   {
     CLog::Log(LOGDEBUG, "CInputStreamPVRRecording - {} - opened recording stream {}", __FUNCTION__,
               m_item.GetPath());
@@ -49,7 +50,7 @@ bool CInputStreamPVRRecording::OpenPVRStream()
 
 void CInputStreamPVRRecording::ClosePVRStream()
 {
-  if (m_client && (m_client->CloseRecordedStream() == PVR_ERROR_NO_ERROR))
+  if (m_client && (m_client->CloseRecordedStream(m_streamId) == PVR_ERROR_NO_ERROR))
   {
     CLog::Log(LOGDEBUG, "CInputStreamPVRRecording - {} - closed recording stream {}", __FUNCTION__,
               m_item.GetPath());
@@ -61,7 +62,7 @@ int CInputStreamPVRRecording::ReadPVRStream(uint8_t* buf, int buf_size)
   int iRead = -1;
 
   if (m_client)
-    m_client->ReadRecordedStream(buf, buf_size, iRead);
+    m_client->ReadRecordedStream(m_streamId, buf, buf_size, iRead);
 
   return iRead;
 }
@@ -71,7 +72,7 @@ int64_t CInputStreamPVRRecording::SeekPVRStream(int64_t offset, int whence)
   int64_t ret = -1;
 
   if (m_client)
-    m_client->SeekRecordedStream(offset, whence, ret);
+    m_client->SeekRecordedStream(m_streamId, offset, whence, ret);
 
   return ret;
 }
@@ -81,7 +82,7 @@ int64_t CInputStreamPVRRecording::GetPVRStreamLength()
   int64_t ret = -1;
 
   if (m_client)
-    m_client->GetRecordedStreamLength(ret);
+    m_client->GetRecordedStreamLength(m_streamId, ret);
 
   return ret;
 }
@@ -99,4 +100,37 @@ bool CInputStreamPVRRecording::CanPausePVRStream()
 bool CInputStreamPVRRecording::CanSeekPVRStream()
 {
   return true;
+}
+
+bool CInputStreamPVRRecording::IsRealtimePVRStream()
+{
+  bool ret = false;
+
+  if (m_client)
+    m_client->IsRecordedStreamRealTime(m_streamId, ret);
+
+  return ret;
+}
+
+void CInputStreamPVRRecording::PausePVRStream(bool paused)
+{
+  if (m_client)
+    m_client->PauseRecordedStream(m_streamId, paused);
+}
+
+bool CInputStreamPVRRecording::GetPVRStreamTimes(Times& times)
+{
+  PVR_STREAM_TIMES streamTimes = {};
+  if (m_client && m_client->GetRecordedStreamTimes(m_streamId, &streamTimes) == PVR_ERROR_NO_ERROR)
+  {
+    times.startTime = streamTimes.startTime;
+    times.ptsStart = streamTimes.ptsStart;
+    times.ptsBegin = streamTimes.ptsBegin;
+    times.ptsEnd = streamTimes.ptsEnd;
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
