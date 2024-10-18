@@ -1005,8 +1005,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
   GetActions(pControlNode, "ontextchange", textChangeActions);
   GetActions(pControlNode, "onfocus", focusActions);
   GetActions(pControlNode, "onunfocus", unfocusActions);
-  focusActions.EnableSendThreadMessageMode();
-  unfocusActions.EnableSendThreadMessageMode();
   GetActions(pControlNode, "altclick", altclickActions);
 
   std::string infoString;
