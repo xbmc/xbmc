@@ -596,12 +596,12 @@ static void set_transform(
   dest->transform = *transform;
   dest->filter = strdup(filter);
   dest->nparams = nparams;
-  if (nparams)  
-  {  
-    dest->params = malloc(nparams * sizeof(XFixed));  
-    memcpy(dest->params, params, nparams * sizeof(XFixed));  
-  }  
-  else  
+  if (nparams)
+  {
+    dest->params = malloc(nparams * sizeof(XFixed));
+    memcpy(dest->params, params, nparams * sizeof(XFixed));
+  }
+  else
     dest->params = NULL;
 }
 
