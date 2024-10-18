@@ -53,6 +53,7 @@ static const std::map<ActionName, ActionID> ActionMappings = {
     {"osd", ACTION_SHOW_OSD},
     {"showsubtitles", ACTION_SHOW_SUBTITLES},
     {"nextsubtitle", ACTION_NEXT_SUBTITLE},
+    {"previoussubtitle", ACTION_PREV_SUBTITLE},
     {"browsesubtitle", ACTION_BROWSE_SUBTITLE},
     {"cyclesubtitle", ACTION_CYCLE_SUBTITLE},
     {"dialogselectvideo", ACTION_DIALOG_SELECT_VIDEO},
