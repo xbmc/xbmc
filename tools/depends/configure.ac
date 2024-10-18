@@ -581,6 +581,8 @@ if test "$platform_os" = "android"; then
     AC_MSG_ERROR(verify ndk path)
   fi
 
+  use_ndk_version=[`cat $use_ndk_path/source.properties | grep "Pkg.Revision" | cut -d'=' -f2 | awk '{print $1}'`]
+
   #not all sort versions support -V - probe it...
   SORT_PARAMS=""
   sort -V /dev/null > /dev/null 2>&1 && SORT_PARAMS="-V"
@@ -681,6 +683,7 @@ if test "$platform_os" = "android"; then
 echo -e
   AC_SUBST(use_sdk_path)
   AC_SUBST(use_ndk_path)
+  AC_SUBST(use_ndk_version)
   AC_SUBST(use_ndk_api)
   AC_SUBST(build_tools_path)
 fi
