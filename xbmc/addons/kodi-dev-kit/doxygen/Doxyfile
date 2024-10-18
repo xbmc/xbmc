@@ -822,6 +822,7 @@ INPUT                  = main.txt \
                          ../../../guilib/GUIMoverControl.dox \
                          ../../../guilib/GUIMultiImage.dox \
                          ../../../guilib/GUIPanelContainer.dox \
+                         ../../../guilib/GUIPrimitive.dox \
                          ../../../guilib/GUIProgressControl.dox \
                          ../../../guilib/GUIRadioButtonControl.dox \
                          ../../../guilib/GUIRangesControl.dox \
