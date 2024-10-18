@@ -193,6 +193,10 @@ msgctxt "#31039"
 msgid "Fast forward"
 msgstr "早送り"
 
+msgctxt "#31040"
+msgid "Edit widgets"
+msgstr ""
+
 msgctxt "#31041"
 msgid "Camera manufacturer"
 msgstr "カメラメーカー"
@@ -390,6 +394,11 @@ msgctxt "#31107"
 msgid "WideList"
 msgstr "ワイドリスト"
 
+# empty strings from id 31108 to 31108
+msgctxt "#31109"
+msgid "Video streams"
+msgstr ""
+
 msgctxt "#31110"
 msgid "Enter files section"
 msgstr "ファイルセクションに入る"
@@ -399,8 +408,8 @@ msgid "View your personal pictures or download one of the many image add-ons fro
 msgstr "個人的な写真を表示またはオフィシャルリポジトリから画像アドオンをダウンロード。"
 
 msgctxt "#31112"
-msgid "Toggle audio stream"
-msgstr "オーディオストリームをトグル"
+msgid "Audio streams"
+msgstr ""
 
 msgctxt "#31113"
 msgid "Search local library"
@@ -411,8 +420,8 @@ msgid "Search YouTube"
 msgstr "YouTube検索"
 
 msgctxt "#31115"
-msgid "Toggle subtitle"
-msgstr "字幕を切り替える"
+msgid "Subtitles streams"
+msgstr ""
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
@@ -731,6 +740,19 @@ msgstr "メディア"
 msgctxt "#31611"
 msgid "System"
 msgstr "システム"
+
+#. Audio channels
+msgctxt "#31612"
+msgid "channels"
+msgstr ""
+
+#~ msgctxt "#31112"
+#~ msgid "Toggle audio stream"
+#~ msgstr "オーディオストリームをトグル"
+
+#~ msgctxt "#31115"
+#~ msgid "Toggle subtitle"
+#~ msgstr "字幕を切り替える"
 
 #~ msgctxt "#31615"
 #~ msgid "Extras"

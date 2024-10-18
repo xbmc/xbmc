@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2023-11-28 18:10+0000\n"
+"PO-Revision-Date: 2024-08-02 17:06+0000\n"
 "Last-Translator: Oskari Lavinto <olavinto@protonmail.com>\n"
 "Language-Team: Finnish <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/fi_fi/>\n"
 "Language: fi_fi\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.2.1\n"
+"X-Generator: Weblate 5.6.2\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -171,7 +171,7 @@ msgstr "Oma arvio"
 
 msgctxt "#31034"
 msgid "Extended info"
-msgstr "ExtendedInfo"
+msgstr "Laajat tiedot"
 
 msgctxt "#31035"
 msgid "Pages"
@@ -192,6 +192,10 @@ msgstr "Taaksepäin"
 msgctxt "#31039"
 msgid "Fast forward"
 msgstr "Eteenpäin"
+
+msgctxt "#31040"
+msgid "Edit widgets"
+msgstr "Muokkaa widgettejä"
 
 msgctxt "#31041"
 msgid "Camera manufacturer"
@@ -390,6 +394,11 @@ msgctxt "#31107"
 msgid "WideList"
 msgstr "Leveä lista"
 
+# empty strings from id 31108 to 31108
+msgctxt "#31109"
+msgid "Video streams"
+msgstr ""
+
 msgctxt "#31110"
 msgid "Enter files section"
 msgstr "Avaa tiedostonäkymä"
@@ -399,8 +408,8 @@ msgid "View your personal pictures or download one of the many image add-ons fro
 msgstr "Katsele omia kuviasi tai asenna jokin monista kuvalisäosista virallisesta jakeluvarastosta."
 
 msgctxt "#31112"
-msgid "Toggle audio stream"
-msgstr "Vaihda ääniraitaa"
+msgid "Audio streams"
+msgstr ""
 
 msgctxt "#31113"
 msgid "Search local library"
@@ -411,8 +420,8 @@ msgid "Search YouTube"
 msgstr "Etsi YouTubesta"
 
 msgctxt "#31115"
-msgid "Toggle subtitle"
-msgstr "Vaihda tekstitystä"
+msgid "Subtitles streams"
+msgstr ""
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
@@ -731,6 +740,19 @@ msgstr "Media"
 msgctxt "#31611"
 msgid "System"
 msgstr "Järjestelmä"
+
+#. Audio channels
+msgctxt "#31612"
+msgid "channels"
+msgstr ""
+
+#~ msgctxt "#31112"
+#~ msgid "Toggle audio stream"
+#~ msgstr "Vaihda ääniraitaa"
+
+#~ msgctxt "#31115"
+#~ msgid "Toggle subtitle"
+#~ msgstr "Vaihda tekstitystä"
 
 #~ msgctxt "#31615"
 #~ msgid "Extras"

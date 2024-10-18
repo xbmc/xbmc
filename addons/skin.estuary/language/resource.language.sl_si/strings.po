@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: 2024-05-15 07:51+0000\n"
 "Last-Translator: Simon <dolenec@gmail.com>\n"
@@ -192,6 +192,10 @@ msgstr "Nazaj"
 msgctxt "#31039"
 msgid "Fast forward"
 msgstr "Naprej"
+
+msgctxt "#31040"
+msgid "Edit widgets"
+msgstr ""
 
 # empty string with id 31040
 msgctxt "#31041"
@@ -397,6 +401,11 @@ msgctxt "#31107"
 msgid "WideList"
 msgstr "Širok seznam"
 
+# empty strings from id 31108 to 31108
+msgctxt "#31109"
+msgid "Video streams"
+msgstr ""
+
 # empty strings from id 31108 to 31109
 msgctxt "#31110"
 msgid "Enter files section"
@@ -407,8 +416,8 @@ msgid "View your personal pictures or download one of the many image add-ons fro
 msgstr "Oglejte si svoje osebne slike ali prenesite enega od številnih slikovnih dodatkov iz uradnega skladišča."
 
 msgctxt "#31112"
-msgid "Toggle audio stream"
-msgstr "Preklop zvočnega toka"
+msgid "Audio streams"
+msgstr ""
 
 msgctxt "#31113"
 msgid "Search local library"
@@ -419,8 +428,8 @@ msgid "Search YouTube"
 msgstr "Poišči na YouTube"
 
 msgctxt "#31115"
-msgid "Toggle subtitle"
-msgstr "Preklopi podnapise"
+msgid "Subtitles streams"
+msgstr ""
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
@@ -740,6 +749,19 @@ msgstr "Predstavne vsebine"
 msgctxt "#31611"
 msgid "System"
 msgstr "Sistem"
+
+#. Audio channels
+msgctxt "#31612"
+msgid "channels"
+msgstr ""
+
+#~ msgctxt "#31112"
+#~ msgid "Toggle audio stream"
+#~ msgstr "Preklop zvočnega toka"
+
+#~ msgctxt "#31115"
+#~ msgid "Toggle subtitle"
+#~ msgstr "Preklopi podnapise"
 
 #~ msgctxt "#31615"
 #~ msgid "Extras"
