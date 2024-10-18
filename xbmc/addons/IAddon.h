@@ -47,6 +47,11 @@ constexpr AddonInstanceId ADDON_SINGLETON_INSTANCE_ID = 0;
 constexpr AddonInstanceId ADDON_FIRST_INSTANCE_ID = 1;
 
 /*!
+ * @brief Identifier denoting initial first add-on instance set by a Python script.
+ */
+constexpr AddonInstanceId ADDON_FIRST_SCRIPT_SET_INSTANCE_ID = 1000;
+
+/*!
  * @brief Identifier denoting add-on instance id as unused.
  *
  * @sa ADDON::IAddonInstanceHandler
@@ -142,6 +147,7 @@ public:
   virtual bool GetSettingString(const std::string& key,
                                 std::string& value,
                                 AddonInstanceId id = ADDON_SETTINGS_ID) = 0;
+  virtual bool GetInstanceSetting(AddonInstanceId id, bool& enabled, std::string& instanceName) = 0;
   virtual std::shared_ptr<CAddonSettings> GetSettings(AddonInstanceId id = ADDON_SETTINGS_ID) = 0;
   virtual const std::vector<DependencyInfo>& GetDependencies() const = 0;
   virtual CAddonVersion GetDependencyVersion(const std::string& dependencyID) const = 0;
