@@ -8,7 +8,9 @@
 
 #include "GUIImage.h"
 
+#include "FileItem.h"
 #include "GUIMessage.h"
+#include "ImageSettings.h"
 #include "utils/log.h"
 
 #include <cassert>
@@ -39,7 +41,11 @@ CGUIImage::CGUIImage(const CGUIImage& left)
     m_texture(left.m_texture->Clone()),
     m_fadingTextures(),
     m_currentTexture(),
-    m_currentFallback()
+    m_currentFallback(),
+    m_imageFilterInfo(left.m_imageFilterInfo),
+    m_imageFilter(left.m_imageFilter),
+    m_diffuseFilterInfo(left.m_diffuseFilterInfo),
+    m_diffuseFilter(left.m_diffuseFilter)
 {
   m_crossFadeTime = left.m_crossFadeTime;
   // defaults
@@ -70,6 +76,23 @@ void CGUIImage::UpdateDiffuseColor(const CGUIListItem* item)
 
 void CGUIImage::UpdateInfo(const CGUIListItem *item)
 {
+  if (item != nullptr)
+  {
+    std::string imageFilter = m_imageFilterInfo.GetItemLabel(item);
+    if (!imageFilter.empty())
+    {
+      m_imageFilter = ImageSettings::TranslateImageFilter(imageFilter);
+      UpdateImageFilter(m_imageFilter);
+    }
+
+    std::string diffuseFilter = m_diffuseFilterInfo.GetItemLabel(item);
+    if (!diffuseFilter.empty())
+    {
+      m_diffuseFilter = ImageSettings::TranslateImageFilter(diffuseFilter);
+      UpdateDiffuseFilter(m_diffuseFilter);
+    }
+  }
+
   // The texture may also depend on info conditions. Update the diffuse color in that case.
   if (m_texture->GetDiffuseColor().HasInfo())
     UpdateDiffuseColor(item);
@@ -320,6 +343,11 @@ void CGUIImage::SetAspectRatio(const CAspectRatio &aspect)
   m_texture->SetAspectRatio(aspect);
 }
 
+void CGUIImage::SetScalingMethod(TEXTURE_SCALING scalingMethod)
+{
+  m_texture->SetScalingMethod(scalingMethod);
+}
+
 void CGUIImage::SetCrossFade(unsigned int time)
 {
   m_crossFadeTime = time;
@@ -394,6 +422,72 @@ void CGUIImage::SetInfo(const GUIINFO::CGUIInfoLabel &info)
   // a constant image never needs updating
   if (m_info.IsConstant())
     m_texture->SetFileName(m_info.GetLabel(0));
+}
+
+void CGUIImage::SetImageFilter(const GUIINFO::CGUIInfoLabel& imageFilter)
+{
+  m_imageFilterInfo = imageFilter;
+
+  // Check if an image filter is available without a listitem
+  static const CFileItem empty;
+  const std::string strImageFilter = m_imageFilterInfo.GetItemLabel(&empty);
+  if (!strImageFilter.empty())
+  {
+    m_imageFilter = ImageSettings::TranslateImageFilter(strImageFilter);
+    UpdateImageFilter(m_imageFilter);
+  }
+}
+
+void CGUIImage::SetDiffuseFilter(const GUIINFO::CGUIInfoLabel& diffuseFilter)
+{
+  m_diffuseFilterInfo = diffuseFilter;
+
+  // Check if a diffuse filter is available without a listitem
+  static const CFileItem empty;
+  const std::string strDiffuseFilter = m_diffuseFilterInfo.GetItemLabel(&empty);
+  if (!strDiffuseFilter.empty())
+  {
+    m_diffuseFilter = ImageSettings::TranslateImageFilter(strDiffuseFilter);
+    UpdateDiffuseFilter(m_diffuseFilter);
+  }
+}
+
+void CGUIImage::UpdateImageFilter(IMAGE_FILTER imageFilter)
+{
+  switch (imageFilter)
+  {
+    case IMAGE_FILTER::LINEAR:
+    {
+      m_texture->SetScalingMethod(TEXTURE_SCALING::LINEAR);
+      break;
+    }
+    case IMAGE_FILTER::NEAREST:
+    {
+      m_texture->SetScalingMethod(TEXTURE_SCALING::NEAREST);
+      break;
+    }
+    default:
+      break;
+  }
+}
+
+void CGUIImage::UpdateDiffuseFilter(IMAGE_FILTER diffuseFilter)
+{
+  switch (diffuseFilter)
+  {
+    case IMAGE_FILTER::LINEAR:
+    {
+      m_texture->SetDiffuseScalingMethod(TEXTURE_SCALING::LINEAR);
+      break;
+    }
+    case IMAGE_FILTER::NEAREST:
+    {
+      m_texture->SetDiffuseScalingMethod(TEXTURE_SCALING::NEAREST);
+      break;
+    }
+    default:
+      break;
+  }
 }
 
 unsigned char CGUIImage::GetFadeLevel(unsigned int time) const

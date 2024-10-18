@@ -83,6 +83,15 @@ void CTextureArray::Reset()
   m_texWidth = 0;
   m_texHeight = 0;
   m_texCoordsArePixels = false;
+  m_scalingMethod = TEXTURE_SCALING::UNKNOWN;
+}
+
+void CTextureArray::SetScalingMethod(TEXTURE_SCALING scalingMethod)
+{
+  m_scalingMethod = scalingMethod;
+
+  for (std::shared_ptr<CTexture>& texture : m_textures)
+    texture->SetScalingMethod(m_scalingMethod);
 }
 
 void CTextureArray::Add(std::shared_ptr<CTexture> texture, int delay)
