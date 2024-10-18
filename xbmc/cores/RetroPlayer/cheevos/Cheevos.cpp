@@ -85,7 +85,7 @@ bool CCheevos::LoadData()
   response.CURLOpen(0);
 
   char responseStr[RESPONSE_SIZE];
-  response.ReadString(responseStr, RESPONSE_SIZE);
+  response.ReadString(responseStr, RESPONSE_SIZE - 1);
 
   response.Close();
 
