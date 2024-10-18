@@ -485,7 +485,8 @@ DemuxPacket* CDVDDemuxCC::Decode()
 
         pPacket = CDVDDemuxUtils::AllocateDemuxPacket(data.size());
         pPacket->iSize = data.size();
-        memcpy(pPacket->pData, data.c_str(), pPacket->iSize);
+        if (pPacket->iSize)
+          memcpy(pPacket->pData, data.c_str(), pPacket->iSize);
 
         pPacket->iStreamId = service;
         pPacket->pts = m_streamdata[i].pts;
