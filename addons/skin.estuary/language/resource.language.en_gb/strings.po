@@ -502,7 +502,12 @@ msgctxt "#31107"
 msgid "WideList"
 msgstr ""
 
-#empty strings from id 31108 to 31109
+#empty strings from id 31108 to 31108
+
+#: /xml/VideoOSD.xml
+msgctxt "#31109"
+msgid "Video streams"
+msgstr ""
 
 #: /xml/Home.xml
 msgctxt "#31110"
@@ -516,7 +521,7 @@ msgstr ""
 
 #: /xml/VideoOSD.xml
 msgctxt "#31112"
-msgid "Toggle audio stream"
+msgid "Audio streams"
 msgstr ""
 
 #: /xml/Custom_1107_SearchDialog.xml
@@ -531,7 +536,7 @@ msgstr ""
 
 #: /xml/VideoOSD.xml
 msgctxt "#31115"
-msgid "Toggle subtitle"
+msgid "Subtitles streams"
 msgstr ""
 
 #: /xml/Includes_Home.xml
@@ -923,4 +928,10 @@ msgstr ""
 #. Label to show the system info page
 msgctxt "#31611"
 msgid "System"
+msgstr ""
+
+#: /xml/Includes_DialogSelect.xml
+#. Audio channels
+msgctxt "#31612"
+msgid "channels"
 msgstr ""

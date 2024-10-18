@@ -15,6 +15,7 @@
 #include <utility>
 #include <vector>
 
+enum class IPlayerSubtitleCaps;
 class CVariant;
 struct IntegerSettingOption;
 
@@ -44,7 +45,7 @@ protected:
   void InitializeSettings() override;
 
 private:
-  bool SupportsSubtitleFeature(int feature);
+  bool SupportsSubtitleFeature(IPlayerSubtitleCaps feature);
 
   void AddSubtitleStreams(const std::shared_ptr<CSettingGroup>& group,
                           const std::string& settingId);
@@ -53,7 +54,7 @@ private:
   bool m_subtitleVisible;
   std::shared_ptr<CSettingInt> m_subtitleStreamSetting;
 
-  std::vector<int> m_subtitleCapabilities;
+  std::vector<IPlayerSubtitleCaps> m_subtitleCapabilities;
   static std::string FormatFlags(StreamFlags flags);
 
   static void SubtitleStreamsOptionFiller(const std::shared_ptr<const CSetting>& setting,

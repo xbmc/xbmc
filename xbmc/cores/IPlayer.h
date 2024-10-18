@@ -50,22 +50,24 @@ public:
 
 class CFileItem;
 
-enum IPlayerAudioCapabilities
+// \brief Player Audio capabilities
+enum class IPlayerAudioCaps
 {
-  IPC_AUD_ALL,
-  IPC_AUD_OFFSET,
-  IPC_AUD_AMP,
-  IPC_AUD_SELECT_STREAM,
-  IPC_AUD_OUTPUT_STEREO,
-  IPC_AUD_SELECT_OUTPUT
+  ALL, // All capabilities supported
+  SELECT_STREAM, // Support to change stream
+  SELECT_OUTPUT, // Support to select an output device
+  OUTPUT_STEREO, // Support output in stereo mode
+  OFFSET, // Support to change sync offset
+  VOLUME_AMP, // Support volume amplification
 };
 
-enum IPlayerSubtitleCapabilities
+// \brief Player Subtitle capabilities
+enum class IPlayerSubtitleCaps
 {
-  IPC_SUBS_ALL,
-  IPC_SUBS_SELECT,
-  IPC_SUBS_EXTERNAL,
-  IPC_SUBS_OFFSET
+  ALL, // All capabilities supported
+  SELECT_STREAM, // Support to change stream
+  EXTERNAL, // Support to load external subtitles
+  OFFSET, // Support to change sync offset
 };
 
 enum ERENDERFEATURE
@@ -211,16 +213,20 @@ public:
   virtual std::string GetPlayerState() { return ""; }
   virtual bool SetPlayerState(const std::string& state) { return false; }
 
-  virtual void GetAudioCapabilities(std::vector<int>& audioCaps) const
-  {
-    audioCaps.assign(1, IPC_AUD_ALL);
-  }
   /*!
-   \brief define the subtitle capabilities of the player
+   * \brief Define the audio capabilities of the player
    */
-  virtual void GetSubtitleCapabilities(std::vector<int>& subCaps) const
+  virtual void GetAudioCapabilities(std::vector<IPlayerAudioCaps>& caps) const
   {
-    subCaps.assign(1, IPC_SUBS_ALL);
+    caps.assign(1, IPlayerAudioCaps::ALL);
+  }
+
+  /*!
+   * \brief Define the subtitle capabilities of the player
+   */
+  virtual void GetSubtitleCapabilities(std::vector<IPlayerSubtitleCaps>& caps) const
+  {
+    caps.assign(1, IPlayerSubtitleCaps::ALL);
   }
 
   /*!

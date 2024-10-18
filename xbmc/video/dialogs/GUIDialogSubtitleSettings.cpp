@@ -297,18 +297,18 @@ void CGUIDialogSubtitleSettings::InitializeSettings()
   AddToggle(groupSubtitles, SETTING_SUBTITLE_ENABLE, 13397, SettingLevel::Basic, m_subtitleVisible);
 
   // subtitle delay setting
-  if (SupportsSubtitleFeature(IPC_SUBS_OFFSET))
+  if (SupportsSubtitleFeature(IPlayerSubtitleCaps::OFFSET))
   {
     std::shared_ptr<CSettingNumber> settingSubtitleDelay = AddSlider(groupSubtitles, SETTING_SUBTITLE_DELAY, 22006, SettingLevel::Basic, videoSettings.m_SubtitleDelay, 0, -CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubsDelayRange, 0.1f, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubsDelayRange, 22006, usePopup);
     std::static_pointer_cast<CSettingControlSlider>(settingSubtitleDelay->GetControl())->SetFormatter(SettingFormatterDelay);
   }
 
   // subtitle stream setting
-  if (SupportsSubtitleFeature(IPC_SUBS_SELECT))
+  if (SupportsSubtitleFeature(IPlayerSubtitleCaps::SELECT_STREAM))
     AddSubtitleStreams(groupSubtitles, SETTING_SUBTITLE_STREAM);
 
   // subtitle browser setting
-  if (SupportsSubtitleFeature(IPC_SUBS_EXTERNAL))
+  if (SupportsSubtitleFeature(IPlayerSubtitleCaps::EXTERNAL))
     AddButton(groupSubtitles, SETTING_SUBTITLE_BROWSER, 13250, SettingLevel::Basic);
 
   AddButton(groupSubtitles, SETTING_SUBTITLE_SEARCH, 24134, SettingLevel::Basic);
@@ -317,11 +317,11 @@ void CGUIDialogSubtitleSettings::InitializeSettings()
   AddButton(groupSaveAsDefault, SETTING_MAKE_DEFAULT, 12376, SettingLevel::Basic);
 }
 
-bool CGUIDialogSubtitleSettings::SupportsSubtitleFeature(int feature)
+bool CGUIDialogSubtitleSettings::SupportsSubtitleFeature(IPlayerSubtitleCaps feature)
 {
-  for (auto item : m_subtitleCapabilities)
+  for (IPlayerSubtitleCaps cap : m_subtitleCapabilities)
   {
-    if (item == feature || item == IPC_SUBS_ALL)
+    if (cap == feature || cap == IPlayerSubtitleCaps::ALL)
       return true;
   }
   return false;
@@ -417,6 +417,8 @@ std::string CGUIDialogSubtitleSettings::FormatFlags(StreamFlags flags)
     localizedFlags.emplace_back(g_localizeStrings.Get(39107));
   if (flags &  StreamFlags::FLAG_VISUAL_IMPAIRED)
     localizedFlags.emplace_back(g_localizeStrings.Get(39108));
+  if (flags & StreamFlags::FLAG_ORIGINAL)
+    localizedFlags.emplace_back(g_localizeStrings.Get(39111));
 
   std::string formated = StringUtils::Join(localizedFlags, ", ");
 
