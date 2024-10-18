@@ -783,7 +783,7 @@ void CWinSystemWayland::ProcessMessages()
   }
 }
 
-void CWinSystemWayland::ApplyShellSurfaceState(IShellSurface::StateBitset state)
+void CWinSystemWayland::ApplyShellSurfaceState(const IShellSurface::StateBitset& state)
 {
   m_windowDecorator->SetState(m_configuredSize, m_scale, state);
   m_shellSurfaceState = state;
@@ -962,7 +962,7 @@ void CWinSystemWayland::ApplyNextState()
   }
 }
 
-CWinSystemWayland::Sizes CWinSystemWayland::CalculateSizes(CSizeInt size, int scale, IShellSurface::StateBitset state, bool sizeIncludesDecoration)
+CWinSystemWayland::Sizes CWinSystemWayland::CalculateSizes(CSizeInt size, int scale, const IShellSurface::StateBitset& state, bool sizeIncludesDecoration)
 {
   Sizes result;
 
@@ -1008,7 +1008,7 @@ CWinSystemWayland::Sizes CWinSystemWayland::CalculateSizes(CSizeInt size, int sc
  * \param sizeIncludesDecoration if true, given size includes potential window decorations
  * \return whether main buffer (not surface) size changed
  */
-CWinSystemWayland::SizeUpdateInformation CWinSystemWayland::UpdateSizeVariables(CSizeInt size, int scale, IShellSurface::StateBitset state, bool sizeIncludesDecoration)
+CWinSystemWayland::SizeUpdateInformation CWinSystemWayland::UpdateSizeVariables(CSizeInt size, int scale, const IShellSurface::StateBitset& state, bool sizeIncludesDecoration)
 {
   CLog::LogF(LOGDEBUG, "Set size {}x{} scale {} {} decorations with state {}", size.Width(),
              size.Height(), scale, sizeIncludesDecoration ? "including" : "excluding",
