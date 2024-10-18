@@ -70,14 +70,14 @@ std::string CGUIViewStateWindowGames::GetExtensions()
   return StringUtils::Join(exts, "|");
 }
 
-VECSOURCES& CGUIViewStateWindowGames::GetSources()
+std::vector<CMediaSource>& CGUIViewStateWindowGames::GetSources()
 {
-  VECSOURCES* pGameSources = CMediaSourceSettings::GetInstance().GetSources("games");
+  std::vector<CMediaSource>* pGameSources = CMediaSourceSettings::GetInstance().GetSources("games");
 
   // Guard against source type not existing
   if (pGameSources == nullptr)
   {
-    static VECSOURCES empty;
+    static std::vector<CMediaSource> empty;
     return empty;
   }
 

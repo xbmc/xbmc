@@ -208,7 +208,7 @@ void CGUIWindowAddonBrowser::InstallFromZip()
   else
   {
     // pop up filebrowser to grab an installed folder
-    VECSOURCES shares = *CMediaSourceSettings::GetInstance().GetSources("files");
+    std::vector<CMediaSource> shares = *CMediaSourceSettings::GetInstance().GetSources("files");
     CServiceBroker::GetMediaManager().GetLocalDrives(shares);
     CServiceBroker::GetMediaManager().GetNetworkLocations(shares);
     std::string path;

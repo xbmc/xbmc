@@ -40,5 +40,5 @@ protected:
   void SavePlayList();
 
   int m_movingFrom;
-  VECSOURCES m_shares;
+  std::vector<CMediaSource> m_shares;
 };

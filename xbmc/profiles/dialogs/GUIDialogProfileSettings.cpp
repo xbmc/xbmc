@@ -225,7 +225,7 @@ void CGUIDialogProfileSettings::OnSettingAction(const std::shared_ptr<const CSet
   const std::string &settingId = setting->GetId();
   if (settingId == SETTING_PROFILE_IMAGE)
   {
-    VECSOURCES shares;
+    std::vector<CMediaSource> shares;
     CServiceBroker::GetMediaManager().GetLocalDrives(shares);
 
     CFileItemList items;
@@ -361,7 +361,7 @@ void CGUIDialogProfileSettings::InitializeSettings()
 
 bool CGUIDialogProfileSettings::GetProfilePath(std::string &directory, bool isDefault)
 {
-  VECSOURCES shares;
+  std::vector<CMediaSource> shares;
   CMediaSource share;
   share.strName = g_localizeStrings.Get(13200);
   share.strPath = "special://masterprofile/profiles/";

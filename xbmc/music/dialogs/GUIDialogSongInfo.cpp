@@ -413,7 +413,7 @@ void CGUIDialogSongInfo::OnGetArt()
 
   // Show list of possible art for user selection
   std::string result;
-  VECSOURCES sources(*CMediaSourceSettings::GetInstance().GetSources("music"));
+  std::vector<CMediaSource> sources(*CMediaSourceSettings::GetInstance().GetSources("music"));
   // Add album folder as source (could be disc set)
   std::string albumpath = m_song->GetProperty("album_path").asString();
   if (!albumpath.empty())

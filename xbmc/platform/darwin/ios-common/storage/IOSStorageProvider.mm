@@ -18,7 +18,7 @@ std::unique_ptr<IStorageProvider> IStorageProvider::CreateInstance()
   return std::make_unique<CIOSStorageProvider>();
 }
 
-void CIOSStorageProvider::GetLocalDrives(VECSOURCES& localDrives)
+void CIOSStorageProvider::GetLocalDrives(std::vector<CMediaSource>& localDrives)
 {
   CMediaSource share;
 

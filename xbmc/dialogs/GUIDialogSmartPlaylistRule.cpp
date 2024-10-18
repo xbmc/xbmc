@@ -312,12 +312,12 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   }
   else if (m_rule.m_field == FieldPath)
   {
-    VECSOURCES sources;
+    std::vector<CMediaSource> sources;
     if (m_type == "songs" || m_type == "mixed")
       sources = *CMediaSourceSettings::GetInstance().GetSources("music");
     if (PLAYLIST::CSmartPlaylist::IsVideoType(m_type))
     {
-      VECSOURCES sources2 = *CMediaSourceSettings::GetInstance().GetSources("video");
+      std::vector<CMediaSource> sources2 = *CMediaSourceSettings::GetInstance().GetSources("video");
       sources.insert(sources.end(),sources2.begin(),sources2.end());
     }
     CServiceBroker::GetMediaManager().GetLocalDrives(sources);

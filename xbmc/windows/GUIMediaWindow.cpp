@@ -866,7 +866,7 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
   if (m_vecItems->GetLabel().empty())
   {
     // Removable sources
-    VECSOURCES removables;
+    std::vector<CMediaSource> removables;
     CServiceBroker::GetMediaManager().GetRemovableDrives(removables);
     for (const auto& s : removables)
     {

@@ -31,8 +31,8 @@ public:
   virtual void Initialize();
   virtual void Stop() { }
 
-  virtual void GetLocalDrives(VECSOURCES &localDrives);
-  virtual void GetRemovableDrives(VECSOURCES &removableDrives);
+  virtual void GetLocalDrives(std::vector<CMediaSource>& localDrives);
+  virtual void GetRemovableDrives(std::vector<CMediaSource>& removableDrives);
   virtual std::string GetFirstOpticalDeviceFileName();
 
   virtual bool Eject(const std::string& mountpath);
@@ -45,7 +45,9 @@ public:
   static bool xbevent;
 
 private:
-  static void GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType=ALL_DRIVES, bool bonlywithmedia=false);
+  static void GetDrivesByType(std::vector<CMediaSource>& localDrives,
+                              Drive_Types eDriveType = ALL_DRIVES,
+                              bool bonlywithmedia = false);
   static DEVINST GetDrivesDevInstByDiskNumber(long DiskNumber);
 };
 
