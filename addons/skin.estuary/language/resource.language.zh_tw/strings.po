@@ -193,6 +193,10 @@ msgctxt "#31039"
 msgid "Fast forward"
 msgstr "快轉"
 
+msgctxt "#31040"
+msgid "Edit widgets"
+msgstr ""
+
 msgctxt "#31041"
 msgid "Camera manufacturer"
 msgstr "攝影機製造商"
@@ -390,6 +394,11 @@ msgctxt "#31107"
 msgid "WideList"
 msgstr "寬版面列表"
 
+# empty strings from id 31108 to 31108
+msgctxt "#31109"
+msgid "Video streams"
+msgstr ""
+
 msgctxt "#31110"
 msgid "Enter files section"
 msgstr "進入檔案區"
@@ -399,8 +408,8 @@ msgid "View your personal pictures or download one of the many image add-ons fro
 msgstr "檢視你的個人圖片，或下載官方的眾多影像附加元件。"
 
 msgctxt "#31112"
-msgid "Toggle audio stream"
-msgstr "切換聲道"
+msgid "Audio streams"
+msgstr ""
 
 msgctxt "#31113"
 msgid "Search local library"
@@ -411,8 +420,8 @@ msgid "Search YouTube"
 msgstr "搜尋YouTube"
 
 msgctxt "#31115"
-msgid "Toggle subtitle"
-msgstr "切換字幕"
+msgid "Subtitles streams"
+msgstr ""
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
@@ -731,6 +740,19 @@ msgstr "媒體"
 msgctxt "#31611"
 msgid "System"
 msgstr "系統"
+
+#. Audio channels
+msgctxt "#31612"
+msgid "channels"
+msgstr ""
+
+#~ msgctxt "#31112"
+#~ msgid "Toggle audio stream"
+#~ msgstr "切換聲道"
+
+#~ msgctxt "#31115"
+#~ msgid "Toggle subtitle"
+#~ msgstr "切換字幕"
 
 #~ msgctxt "#31615"
 #~ msgid "Extras"
