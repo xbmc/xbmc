@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -12,6 +12,7 @@
 #include "threads/CriticalSection.h"
 
 #include <cstdint>
+#include <vector>
 
 #include "system_egl.h"
 
@@ -37,9 +38,7 @@ public:
   void QueryExtensions() override;
   uint64_t GetVblankTiming(uint64_t &msc, uint64_t &interval) override;
 
-  bool BindTextureUploadContext();
-  bool UnbindTextureUploadContext();
-  bool HasContext();
+  bool BindSecondaryGPUContext(unsigned int id);
 
   EGLint m_renderingApi;
   EGLDisplay m_eglDisplay = EGL_NO_DISPLAY;
@@ -49,6 +48,7 @@ public:
 protected:
   bool SuitableCheck(EGLDisplay eglDisplay, EGLConfig config);
   EGLConfig GetEGLConfig(EGLDisplay eglDisplay, XVisualInfo *vInfo);
+  void CreateSecondaryContexts(const EGLint* list);
   PFNEGLGETSYNCVALUESCHROMIUMPROC m_eglGetSyncValuesCHROMIUM = nullptr;
   PFNEGLGETPLATFORMDISPLAYEXTPROC m_eglGetPlatformDisplayEXT = nullptr;
 
@@ -66,6 +66,5 @@ protected:
 
   bool m_usePB = false;
 
-  EGLContext m_eglUploadContext = EGL_NO_CONTEXT;
-  mutable CCriticalSection m_textureUploadLock;
+  std::vector<EGLContext> m_eglSecondaryContexts;
 };
