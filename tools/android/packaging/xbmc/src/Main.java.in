@@ -146,7 +146,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
                && getLauncherName().equals("com.google.android.leanbacklauncher"))
       {
         // Leanback
-        mJsonRPC = new XBMCJsonRPC();
+        mJsonRPC = new XBMCJsonRPC(getApplicationContext());
         handler.removeCallbacks(leanbackUpdateRunnable);
         handler.postDelayed(leanbackUpdateRunnable, 30 * 1000);
       }
