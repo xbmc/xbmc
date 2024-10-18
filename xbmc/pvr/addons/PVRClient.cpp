@@ -269,7 +269,8 @@ public:
         prop.iKey = entry.first;
         prop.eType = entry.second.type;
         prop.iValue = entry.second.value.asInteger32();
-        prop.strValue = entry.second.value.asString().c_str();
+        m_customPropStringValues.emplace_back(entry.second.value.asString());
+        prop.strValue = m_customPropStringValues.back().c_str();
         ++idx;
       }
       customProps = m_customProps.get();
@@ -283,6 +284,7 @@ private:
   const std::string m_directory;
   const std::string m_summary;
   const std::string m_seriesLink;
+  std::vector<std::string> m_customPropStringValues;
   std::unique_ptr<PVR_SETTING_KEY_VALUE_PAIR[]> m_customProps;
 };
 
