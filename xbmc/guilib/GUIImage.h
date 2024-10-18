@@ -93,7 +93,12 @@ protected:
   virtual void FreeTextures(bool immediately = false);
   void FreeResourcesButNotAnims();
   unsigned char GetFadeLevel(unsigned int time) const;
-  bool ProcessFading(CFadingTexture *texture, unsigned int frameTime, unsigned int currentTime);
+  std::string GetFallback(const std::string& currentName);
+  void ProcessState();
+  void ProcessAllocation();
+  void ProcessNoTransition(unsigned int currentTime);
+  void ProcessInstantTransition(unsigned int currentTime);
+  void ProcessFadingTransition(unsigned int currentTime);
 
   /*!
    * \brief Update the diffuse color based on the current item infos
@@ -107,9 +112,16 @@ protected:
   CTextureInfo m_image;
   KODI::GUILIB::GUIINFO::CGUIInfoLabel m_info;
 
-  std::unique_ptr<CGUITexture> m_texture;
-  std::vector<CFadingTexture *> m_fadingTextures;
-  std::string m_currentTexture;
+  bool m_isTransitioning{false};
+  bool m_hasNewStagingTexture{false};
+
+  std::unique_ptr<CGUITexture> m_textureCurrent;
+  std::unique_ptr<CGUITexture> m_textureNext;
+
+  std::string m_nameCurrent{};
+  std::string m_nameNext{};
+  std::string m_nameStaging{};
+
   std::string m_currentFallback;
 
   unsigned int m_crossFadeTime;
