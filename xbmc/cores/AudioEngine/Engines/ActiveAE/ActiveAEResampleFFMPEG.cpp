@@ -73,54 +73,7 @@ bool CActiveAEResampleFFMPEG::Init(SampleConfig dstConfig,
   AVChannelLayout dstChLayout = {};
   AVChannelLayout srcChLayout = {};
 
-  av_channel_layout_from_mask(&dstChLayout, m_dst_chan_layout);
-  av_channel_layout_from_mask(&srcChLayout, m_src_chan_layout);
-
-  int ret = swr_alloc_set_opts2(&m_pContext, &dstChLayout, m_dst_fmt, m_dst_rate, &srcChLayout,
-                                m_src_fmt, m_src_rate, 0, NULL);
-
-  if (ret)
-  {
-    CLog::Log(LOGERROR, "CActiveAEResampleFFMPEG::Init - create context failed");
-    return false;
-  }
-
-  if (sublevel > 0.0f)
-    av_opt_set_double(m_pContext, "lfe_mix_level", static_cast<double>(sublevel), 0);
-
-  if(quality == AE_QUALITY_HIGH)
-  {
-    av_opt_set_double(m_pContext, "cutoff", 1.0, 0);
-    av_opt_set_int(m_pContext,"filter_size", 256, 0);
-  }
-  else if(quality == AE_QUALITY_MID)
-  {
-    // 0.97 is default cutoff so use (1.0 - 0.97) / 2.0 + 0.97
-    av_opt_set_double(m_pContext, "cutoff", 0.985, 0);
-    av_opt_set_int(m_pContext,"filter_size", 64, 0);
-  }
-  else if(quality == AE_QUALITY_LOW)
-  {
-    av_opt_set_double(m_pContext, "cutoff", 0.97, 0);
-    av_opt_set_int(m_pContext,"filter_size", 32, 0);
-  }
-
-  if (m_dst_fmt == AV_SAMPLE_FMT_S32 || m_dst_fmt == AV_SAMPLE_FMT_S32P)
-  {
-    av_opt_set_int(m_pContext, "output_sample_bits", m_dst_bits, 0);
-  }
-
-  // tell resampler to clamp float values
-  // not required for sink stage (remapLayout == true)
-  if ((m_dst_fmt == AV_SAMPLE_FMT_FLT || m_dst_fmt == AV_SAMPLE_FMT_FLTP) &&
-      (m_src_fmt == AV_SAMPLE_FMT_FLT || m_src_fmt == AV_SAMPLE_FMT_FLTP) &&
-      !remapLayout && normalize)
-  {
-     av_opt_set_double(m_pContext, "rematrix_maxval", 1.0, 0);
-  }
-
-  av_opt_set_double(m_pContext, "center_mix_level", centerMix, 0);
-
+  bool hasMatrix = false;
   if (remapLayout)
   {
     // one-to-one mapping of channels
@@ -130,28 +83,19 @@ bool CActiveAEResampleFFMPEG::Init(SampleConfig dstConfig,
     m_dst_chan_layout = 0;
     for (unsigned int out=0; out<remapLayout->Count(); out++)
     {
-      m_dst_chan_layout += ((uint64_t)1) << out;
+      m_dst_chan_layout += static_cast<uint64_t>(1) << out;
       int idx = CAEUtil::GetAVChannelIndex((*remapLayout)[out], m_src_chan_layout);
       if (idx >= 0)
       {
         m_rematrix[out][idx] = 1.0;
       }
     }
-
-    av_opt_set_int(m_pContext, "out_channel_count", m_dst_channels, 0);
-    av_opt_set_int(m_pContext, "out_channel_layout", m_dst_chan_layout, 0);
-
-    if (swr_set_matrix(m_pContext, (const double*)m_rematrix, AE_CH_MAX) < 0)
-    {
-      CLog::Log(LOGERROR, "CActiveAEResampleFFMPEG::Init - setting channel matrix failed");
-      return false;
-    }
+    hasMatrix = true;
   }
   // stereo upmix
   else if (upmix && m_src_channels == 2 && m_dst_channels > 2)
   {
     memset(m_rematrix, 0, sizeof(m_rematrix));
-    av_channel_layout_uninit(&dstChLayout);
     av_channel_layout_from_mask(&dstChLayout, m_dst_chan_layout);
     for (int out=0; out<m_dst_channels; out++)
     {
@@ -181,14 +125,66 @@ bool CActiveAEResampleFFMPEG::Init(SampleConfig dstConfig,
       }
     }
 
+    hasMatrix = true;
     av_channel_layout_uninit(&dstChLayout);
+  }
 
-    if (swr_set_matrix(m_pContext, (const double*)m_rematrix, AE_CH_MAX) < 0)
+  av_channel_layout_from_mask(&dstChLayout, m_dst_chan_layout);
+  av_channel_layout_from_mask(&srcChLayout, m_src_chan_layout);
+
+  int ret = swr_alloc_set_opts2(&m_pContext, &dstChLayout, m_dst_fmt, m_dst_rate, &srcChLayout,
+                                m_src_fmt, m_src_rate, 0, NULL);
+
+  if (ret)
+  {
+    CLog::Log(LOGERROR, "CActiveAEResampleFFMPEG::Init - create context failed");
+    return false;
+  }
+
+  if (sublevel > 0.0f)
+    av_opt_set_double(m_pContext, "lfe_mix_level", static_cast<double>(sublevel), 0);
+
+  if (hasMatrix)
+  {
+    if (swr_set_matrix(m_pContext, reinterpret_cast<const double*>(m_rematrix), AE_CH_MAX) < 0)
     {
       CLog::Log(LOGERROR, "CActiveAEResampleFFMPEG::Init - setting channel matrix failed");
       return false;
     }
   }
+
+  if (quality == AE_QUALITY_HIGH)
+  {
+    av_opt_set_double(m_pContext, "cutoff", 1.0, 0);
+    av_opt_set_int(m_pContext, "filter_size", 256, 0);
+  }
+  else if (quality == AE_QUALITY_MID)
+  {
+    // 0.97 is default cutoff so use (1.0 - 0.97) / 2.0 + 0.97
+    av_opt_set_double(m_pContext, "cutoff", 0.985, 0);
+    av_opt_set_int(m_pContext, "filter_size", 64, 0);
+  }
+  else if (quality == AE_QUALITY_LOW)
+  {
+    av_opt_set_double(m_pContext, "cutoff", 0.97, 0);
+    av_opt_set_int(m_pContext, "filter_size", 32, 0);
+  }
+
+  if (m_dst_fmt == AV_SAMPLE_FMT_S32 || m_dst_fmt == AV_SAMPLE_FMT_S32P)
+  {
+    av_opt_set_int(m_pContext, "output_sample_bits", m_dst_bits, 0);
+  }
+
+  // tell resampler to clamp float values
+  // not required for sink stage (remapLayout == true)
+  if ((m_dst_fmt == AV_SAMPLE_FMT_FLT || m_dst_fmt == AV_SAMPLE_FMT_FLTP) &&
+      (m_src_fmt == AV_SAMPLE_FMT_FLT || m_src_fmt == AV_SAMPLE_FMT_FLTP) && !remapLayout &&
+      normalize)
+  {
+    av_opt_set_double(m_pContext, "rematrix_maxval", 1.0, 0);
+  }
+
+  av_opt_set_double(m_pContext, "center_mix_level", centerMix, 0);
 
   if(swr_init(m_pContext) < 0)
   {
