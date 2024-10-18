@@ -5,4 +5,20 @@
     <string name="search_hint">@APP_NAME@</string>
 
     <string name="suggestion_channel">Suggestions</string>
+
+    <!-- Splash -->
+    <string name="continue_button">Continue</string>
+    <string name="error_title">Error</string>
+    <string name="info_title">Info</string>
+    <string name="exit_button">Exit</string>
+    <string name="notice_dialog">%1$s requires access to your device media and files to function. Please allow this via the following dialogue box or %1$s will exit.</string>
+    <string name="asking_permissions">Asking for permissions…</string>
+    <string name="clearing_cache">Clearing cache…</string>
+    <string name="waiting_external">Waiting for external storage…</string>
+    <string name="external_ok">External storage OK…</string>
+    <string name="starting">Starting %1$s…</string>
+    <string name="first_run">Preparing for first run. Please wait…</string>
+    <string name="permission_denied">Permission denied!! Exiting…</string>
+    <string name="no_find_apk">Cannot find package.</string>
+    <string name="no_read_apk">Cannot read package.</string>
 </resources>

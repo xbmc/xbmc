@@ -100,19 +100,19 @@ public class Splash extends Activity
       switch (mSplash.mState)
       {
         case InError:
-          showErrorDialog(mSplash, "Error", mErrorMsg);
+          showErrorDialog(mSplash, getString(R.string.error_title), mErrorMsg);
           break;
         case CheckingPermissionsInfo:
           AlertDialog dialog = new AlertDialog.Builder(mSplash).create();
           dialog.setCancelable(false);
-          dialog.setTitle("Info");
-          dialog.setMessage("@APP_NAME@ requires access to your device media and files to function. Please allow this via the following dialogue box or @APP_NAME@ will exit.");
-          dialog.setButton(DialogInterface.BUTTON_NEUTRAL, "continue",
+          dialog.setTitle(getString(R.string.info_title));
+          dialog.setMessage(getString(R.string.notice_dialog, "@APP_NAME@"));
+          dialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.continue_button),
                   (dialog1, which) -> mStateMachine.sendEmptyMessage(RecordAudioPermission));
           dialog.show();
           break;
         case RecordAudioPermission:
-          mSplash.mTextView.setText("Asking for permissions...");
+          mSplash.mTextView.setText(getString(R.string.asking_permissions));
           mSplash.mProgress.setVisibility(View.INVISIBLE);
 
           requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO},
@@ -144,7 +144,7 @@ public class Splash extends Activity
             sendEmptyMessage(CheckExternalStorage);
           else
           {
-            mErrorMsg = "Permission denied!! Exiting...";
+            mErrorMsg = getString(R.string.permission_denied);
             sendEmptyMessage(InError);
             break;
           }
@@ -152,7 +152,7 @@ public class Splash extends Activity
         case Checking:
           break;
         case Clearing:
-          mSplash.mTextView.setText("Clearing cache...");
+          mSplash.mTextView.setText(getString(R.string.clearing_cache));
           mSplash.mProgress.setVisibility(View.INVISIBLE);
           break;
         case Caching:
@@ -178,11 +178,11 @@ public class Splash extends Activity
           }
           break;
         case WaitingStorageChecked:
-          mSplash.mTextView.setText("Waiting for external storage...");
+          mSplash.mTextView.setText(getString(R.string.waiting_external));
           mSplash.mProgress.setVisibility(View.INVISIBLE);
           break;
         case StorageChecked:
-          mSplash.mTextView.setText("External storage OK...");
+          mSplash.mTextView.setText(getString(R.string.external_ok));
           mExternalStorageChecked = true;
           mSplash.stopWatchingExternalStorage();
           if (mSplash.mCachingDone)
@@ -210,7 +210,7 @@ public class Splash extends Activity
 
           break;
         case StartingXBMC:
-          mSplash.mTextView.setText("Starting @APP_NAME@...");
+          mSplash.mTextView.setText(getString(R.string.starting, "@APP_NAME@"));
           mSplash.mProgress.setVisibility(View.INVISIBLE);
           mSplash.startXBMC();
           break;
@@ -345,13 +345,13 @@ public class Splash extends Activity
       catch (FileNotFoundException e1)
       {
         Log.e(TAG, "Exception: " + e1.getMessage());
-        mErrorMsg = "Cannot find package.";
+        mErrorMsg = getString(R.string.no_find_apk);
         return -1;
       }
       catch (IOException e)
       {
         Log.e(TAG, "Exception: " + e.getMessage());
-        mErrorMsg = "Cannot read package.";
+        mErrorMsg = getString(R.string.no_read_apk);
         File obb = new File(sPackagePath);
         obb.delete();
         return -1;
@@ -368,7 +368,7 @@ public class Splash extends Activity
       switch (mState)
       {
         case Caching:
-          mSplash.mTextView.setText("Preparing for first run. Please wait...");
+          mSplash.mTextView.setText(getString(R.string.first_run, "@APP_NAME@"));
           mSplash.mProgress.setVisibility(View.VISIBLE);
           mSplash.mProgress.setProgress(value);
           break;
@@ -398,7 +398,7 @@ public class Splash extends Activity
     builder.setTitle(title);
     builder.setIcon(android.R.drawable.ic_dialog_alert);
     builder.setMessage(Html.fromHtml(message, Html.FROM_HTML_MODE_LEGACY));
-    builder.setPositiveButton("Exit", (dialog, arg1) -> {
+    builder.setPositiveButton(getString(R.string.exit_button), (dialog, arg1) -> {
       dialog.dismiss();
       act.finish();
     });
