@@ -420,7 +420,6 @@ void CDVDSubtitlesLibass::ApplyStyle(const std::shared_ptr<struct style>& subSty
     style->SecondaryColour = ConvColor(COLOR::BLACK);
 
     // Configure the effects
-    double lineSpacing = 0.0;
     if (subStyle->borderStyle == BorderType::OUTLINE ||
         subStyle->borderStyle == BorderType::OUTLINE_NO_SHADOW)
     {
@@ -450,8 +449,6 @@ void CDVDSubtitlesLibass::ApplyStyle(const std::shared_ptr<struct style>& subSty
       style->BackColour =
           ConvColor(subStyle->shadowColor, subStyle->shadowOpacity); // Set the box shadow color
       style->Shadow = (10.00 / 100 * subStyle->shadowSize) * scale; // Set the box shadow size
-      // By default a box overlaps the other, then we increase a bit the line spacing
-      lineSpacing = 8.0 * scaleDefault;
     }
     else if (subStyle->borderStyle == BorderType::SQUARE_BOX)
     {
@@ -463,9 +460,14 @@ void CDVDSubtitlesLibass::ApplyStyle(const std::shared_ptr<struct style>& subSty
       style->Shadow = 4 * scale; // Space between the text and the box edges
     }
 
+    double lineSpacing = (static_cast<double>(subStyle->lineSpacing) * (playResY / 4)) / 100;
+    if (subStyle->assOverrideFont)
+      lineSpacing *= scaleDefault;
+    else
+      lineSpacing *= scale;
     // ass_set_line_spacing do not scale, so we have to scale to frame size
     ass_set_line_spacing(m_renderer,
-                         lineSpacing / playResY * static_cast<double>(opts.frameHeight));
+                         lineSpacing / playResY * static_cast<double>(opts.frameHeight / 4));
 
     style->Blur = (10.00 / 100 * subStyle->blur);
 
