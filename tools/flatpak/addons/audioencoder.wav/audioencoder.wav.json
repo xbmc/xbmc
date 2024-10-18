@@ -1,0 +1,19 @@
+{
+    "name": "audioencoder.wav",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/xbmc/audioencoder.wav",
+            "commit": "d4449bb3f2066893649cdbcc72375a628e610289"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}
