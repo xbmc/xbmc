@@ -1,0 +1,43 @@
+From f571a8b092eb83209ea294201292068ffc19e193 Mon Sep 17 00:00:00 2001
+From: Garrett Brown <themagnificentmrb@gmail.com>
+Date: Fri, 28 Jun 2024 16:49:40 -0700
+Subject: [PATCH] CMake: Only install static library
+
+---
+ CMakeLists.txt | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 96d13e4..004320c 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -89,7 +89,7 @@ source_group("Fuzzer Files" FILES "${FUZZER_SOURCES}")
+ set(THREADS_PREFER_PTHREAD_FLAG ON)
+ find_package(Threads REQUIRED)
+ 
+-add_library(juice SHARED ${LIBJUICE_SOURCES})
++add_library(juice SHARED EXCLUDE_FROM_ALL ${LIBJUICE_SOURCES})
+ set_target_properties(juice PROPERTIES VERSION ${PROJECT_VERSION})
+ target_include_directories(juice PUBLIC
+     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+@@ -99,7 +99,7 @@ target_include_directories(juice PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+ target_compile_definitions(juice PRIVATE $<$<CONFIG:Release>:RELEASE=1>)
+ target_link_libraries(juice PRIVATE Threads::Threads)
+ 
+-add_library(juice-static STATIC EXCLUDE_FROM_ALL ${LIBJUICE_SOURCES})
++add_library(juice-static STATIC ${LIBJUICE_SOURCES})
+ set_target_properties(juice-static PROPERTIES VERSION ${PROJECT_VERSION})
+ target_include_directories(juice-static PUBLIC
+     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+@@ -147,7 +147,7 @@ add_library(LibJuice::LibJuice ALIAS juice)
+ set_target_properties(juice-static PROPERTIES EXPORT_NAME LibJuiceStatic)
+ add_library(LibJuice::LibJuiceStatic ALIAS juice-static)
+ 
+-install(TARGETS juice EXPORT LibJuiceTargets
++install(TARGETS juice-static EXPORT LibJuiceTargets
+ 	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+ 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+ 	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+-- 
+2.37.0.windows.1
+

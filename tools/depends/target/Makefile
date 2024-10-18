@@ -6,6 +6,7 @@ endif
 
 # Keep in alphabetical order
 DEPENDS = \
+  boost \
   brotli \
   bzip2 \
   dav1d \
@@ -24,15 +25,19 @@ DEPENDS = \
   harfbuzz \
   libass \
   libbluray \
+  libdatachannel \
   libffi \
   libgcrypt \
   libgpg-error \
   libjpeg-turbo \
+  libjuice \
   liblzo2 \
   libmicrohttpd \
   libplist \
   libpng \
   libshairplay \
+  libsrtp \
+  libtorrent \
   libusb \
   libxml2 \
   libxslt \
@@ -40,13 +45,16 @@ DEPENDS = \
   nettle \
   nghttp2 \
   openssl \
+  plog \
   python3 \
   pythonmodule-pil \
   pythonmodule-pycryptodome \
   pythonmodule-setuptools \
   sqlite3 \
   tinyxml \
+  try_signal \
   udfread \
+  usrsctp \
   xz
 
 ifeq ($(ENABLE_GPLV3),yes)
@@ -164,6 +172,7 @@ libass: fontconfig fribidi harfbuzz libpng freetype2 expat $(ICONV)
 libbluray: fontconfig freetype2 $(ICONV) udfread libxml2
 libcdio-gplv3: $(ICONV)
 libcdio: $(ICONV)
+libdatachannel: libjuice libsrtp plog usrsctp
 libdisplay-info: hwdata
 libevdev: libudev
 libgcrypt: libgpg-error
@@ -171,6 +180,8 @@ libinput: mtdev libevdev
 libmicrohttpd: gnutls libgcrypt libgpg-error
 libplist: $(ZLIB)
 libpng: $(ZLIB)
+libsrtp: openssl
+libtorrent: boost libdatachannel openssl try_signal $(ZLIB)
 libva: libdrm $(LIBVA_DEPS)
 libxml2: $(ZLIB)
 libxslt: libgcrypt libxml2
