@@ -18,6 +18,7 @@
 #include "TextureManager.h"
 #include "URL.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "handlers/GUIAnnouncementHandlerContainer.h"
 
 #include <memory>
 
@@ -28,7 +29,8 @@ CGUIComponent::CGUIComponent()
     m_stereoscopicsManager(std::make_unique<CStereoscopicsManager>()),
     m_guiInfoManager(std::make_unique<CGUIInfoManager>()),
     m_guiColorManager(std::make_unique<CGUIColorManager>()),
-    m_guiAudioManager(std::make_unique<CGUIAudioManager>())
+    m_guiAudioManager(std::make_unique<CGUIAudioManager>()),
+    m_announcementHandlerContainer(std::make_unique<CGUIAnnouncementHandlerContainer>())
 {
 }
 

@@ -207,11 +207,17 @@ bool CPVRGUIActionsTimers::AddTimer(const CFileItem& item,
       ParentalCheckResult::SUCCESS)
     return false;
 
+  CDateTime gapStart;
+  int gapDuration{CPVRTimerInfoTag::DEFAULT_PVRRECORD_INSTANTRECORDTIME};
   std::shared_ptr<CPVREpgInfoTag> epgTag = CPVRItem(item).GetEpgInfoTag();
   if (epgTag)
   {
     if (epgTag->IsGapTag())
-      epgTag.reset(); // for gap tags, we can only create instant timers
+    {
+      gapStart = epgTag->StartAsUTC();
+      gapDuration = (epgTag->EndAsUTC() - gapStart).GetSecondsTotal();
+      epgTag.reset(); // for gap tags, we can only create instant or time-based timers
+    }
   }
   else if (bCreateRule)
   {
@@ -232,9 +238,28 @@ bool CPVRGUIActionsTimers::AddTimer(const CFileItem& item,
     return false;
   }
 
-  std::shared_ptr<CPVRTimerInfoTag> newTimer(
-      epgTag ? CPVRTimerInfoTag::CreateFromEpg(epgTag, bCreateRule)
-             : CPVRTimerInfoTag::CreateInstantTimerTag(channel));
+  std::shared_ptr<CPVRTimerInfoTag> newTimer;
+  if (epgTag)
+  {
+    newTimer = CPVRTimerInfoTag::CreateFromEpg(epgTag, bCreateRule);
+  }
+  else if (gapStart.IsValid() &&
+           gapDuration != CPVRTimerInfoTag::DEFAULT_PVRRECORD_INSTANTRECORDTIME)
+  {
+    if (gapStart <= CDateTime::GetUTCDateTime())
+      gapStart = CDateTime{time_t{0}}; // special PVR addon API value for an instant recording
+
+    // prevent super long recordings for channels without any epg data
+    gapDuration = std::min(
+        m_settings.GetIntValue(CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME) * 60, gapDuration);
+
+    newTimer = CPVRTimerInfoTag::CreateTimerTag(channel, gapStart, gapDuration);
+  }
+  else
+  {
+    newTimer = CPVRTimerInfoTag::CreateInstantTimerTag(channel);
+  }
+
   if (!newTimer)
   {
     if (bCreateRule && bFallbackToOneShotTimer)
@@ -562,7 +587,7 @@ bool CPVRGUIActionsTimers::SetRecordingOnChannel(const std::shared_ptr<CPVRChann
 
       const std::shared_ptr<CPVRTimerInfoTag> newTimer(
           epgTag ? CPVRTimerInfoTag::CreateFromEpg(epgTag, false)
-                 : CPVRTimerInfoTag::CreateInstantTimerTag(channel, iDuration));
+                 : CPVRTimerInfoTag::CreateInstantTimerTag(channel, iDuration * 60));
 
       if (newTimer)
         bReturn = CServiceBroker::GetPVRManager().Timers()->AddTimer(newTimer);
@@ -984,7 +1009,7 @@ void CPVRGUIActionsTimers::AnnounceReminder(const std::shared_ptr<CPVRTimerInfoT
     }
     else
     {
-      int iDuration = (timer->EndAsUTC() - timer->StartAsUTC()).GetSecondsTotal() / 60;
+      const int iDuration{(timer->EndAsUTC() - timer->StartAsUTC()).GetSecondsTotal()};
       newTimer = CPVRTimerInfoTag::CreateTimerTag(timer->Channel(), timer->StartAsUTC(), iDuration);
     }
 

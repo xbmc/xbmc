@@ -65,7 +65,6 @@
 #include "video/guilib/VideoGUIUtils.h"
 #include "video/guilib/VideoPlayActionProcessor.h"
 #include "video/guilib/VideoSelectActionProcessor.h"
-#include "video/guilib/VideoVersionHelper.h"
 #include "view/GUIViewState.h"
 
 #include <memory>

@@ -8,11 +8,8 @@
 
 #include "ZeroconfBrowserMDNS.h"
 
-#include "GUIUserMessages.h"
 #include "ServiceBroker.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/GUIMessage.h"
-#include "guilib/GUIWindowManager.h"
+#include "interfaces/AnnouncementManager.h"
 #include "network/DNSNameCache.h"
 #include "utils/log.h"
 
@@ -88,10 +85,11 @@ void DNSSD_API CZeroconfBrowserMDNS::BrowserCallback(DNSServiceRef browser,
     }
     if(! (flags & kDNSServiceFlagsMoreComing) )
     {
-      CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
-      message.SetStringParam("zeroconf://");
-      CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
-      CLog::Log(LOGDEBUG, "ZeroconfBrowserMDNS::BrowserCallback sent gui update for path zeroconf://");
+      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Sources, "OnUpdated",
+                                                         CVariant{"zeroconf://"});
+      CLog::Log(
+          LOGDEBUG,
+          "ZeroconfBrowserMDNS::BrowserCallback sent source update announce for path zeroconf://");
     }
   }
   else
