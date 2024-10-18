@@ -1206,7 +1206,7 @@ bool CGUIMediaWindow::OnSelect(int item)
  */
 bool CGUIMediaWindow::HaveDiscOrConnection(const std::string& strPath, int iDriveType)
 {
-  if (iDriveType==CMediaSource::SOURCE_TYPE_DVD)
+  if (iDriveType == CMediaSource::SOURCE_TYPE_OPTICAL_DISC)
   {
     if (!CServiceBroker::GetMediaManager().IsDiscInDrive(strPath))
     {
@@ -1371,7 +1371,7 @@ void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, std::str
 
     // History string of the DVD drive
     // must be handled separately
-    if (pItem->m_iDriveType == CMediaSource::SOURCE_TYPE_DVD)
+    if (pItem->m_iDriveType == CMediaSource::SOURCE_TYPE_OPTICAL_DISC)
     {
       // Remove disc label from item label
       // and use as history string, m_strPath
