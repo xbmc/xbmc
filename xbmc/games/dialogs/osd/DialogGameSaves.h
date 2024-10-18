@@ -99,6 +99,11 @@ private:
   */
   void HandleGameClient(const std::string& gameClientId);
 
+  /*!
+  * \brief Called every frame with the game client version to set
+  */
+  void HandleGameClientVersion(const std::string& gameClientVersion);
+
   // Dialog parameters
   std::unique_ptr<CGUIViewControl> m_viewControl;
   std::unique_ptr<CFileItemList> m_vecList;
@@ -111,6 +116,7 @@ private:
   // State parameters
   std::string m_currentCaption;
   std::string m_currentGameClient;
+  std::string m_currentGameClientVersion;
 };
 } // namespace GAME
 } // namespace KODI
