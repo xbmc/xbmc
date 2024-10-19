@@ -24,6 +24,9 @@ public:
                      const std::unique_ptr<Interpolator>& colorInterpolator,
                      const std::unique_ptr<Interpolator>& alphaInterpolator);
 
+protected:
+  void FreeTextures(bool immediately = false) override {};
+
 private:
   template<size_t T>
   void ConvertToTexel(const KODI::UTILS::COLOR::ColorFloats& color,
