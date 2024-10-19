@@ -27,7 +27,7 @@ void CGUIPrimitive::SetUniform(GUIINFO::CGUIInfoColor color)
 
   ConvertToTexel(KODI::UTILS::COLOR::ConvertToFloats(color), texelData, 0);
 
-  KD_TEX_ALPHA alpha = IsOpaque(color) ? KD_TEX_ALPHA_OPAQUE : KD_TEX_ALPHA_STRAIGHT;
+  const KD_TEX_ALPHA alpha = IsOpaque(color) ? KD_TEX_ALPHA_OPAQUE : KD_TEX_ALPHA_STRAIGHT;
 
   m_texture->SetTexture(1, 1, texelData.data(), KD_TEX_FMT_SDR_RGBA8, alpha);
   m_texture->SetAspectRatio(CAspectRatio::AR_STRETCH);
@@ -57,8 +57,8 @@ void CGUIPrimitive::Set1DGradient(const std::array<KODI::GUILIB::GUIINFO::CGUIIn
     ConvertToTexel(color, texelData, step);
   }
 
-  bool opaque = IsOpaque(colors[0] & colors[1]);
-  KD_TEX_ALPHA alpha = opaque ? KD_TEX_ALPHA_OPAQUE : KD_TEX_ALPHA_STRAIGHT;
+  const bool opaque = IsOpaque(colors[0] & colors[1]);
+  const KD_TEX_ALPHA alpha = opaque ? KD_TEX_ALPHA_OPAQUE : KD_TEX_ALPHA_STRAIGHT;
 
   // real angles require vertex manipulation.
   if (angle < 45)
@@ -76,8 +76,8 @@ void CGUIPrimitive::Set2DGradient(const std::array<KODI::GUILIB::GUIINFO::CGUIIn
   for (unsigned int i = 0; i < 4; ++i)
     ConvertToTexel(KODI::UTILS::COLOR::ConvertToFloats(colors[i]), texelData, i);
 
-  bool opaque = IsOpaque(colors[0] & colors[1] & colors[2] & colors[3]);
-  KD_TEX_ALPHA alpha = opaque ? KD_TEX_ALPHA_OPAQUE : KD_TEX_ALPHA_STRAIGHT;
+  const bool opaque = IsOpaque(colors[0] & colors[1] & colors[2] & colors[3]);
+  const KD_TEX_ALPHA alpha = opaque ? KD_TEX_ALPHA_OPAQUE : KD_TEX_ALPHA_STRAIGHT;
 
   m_texture->SetTexture(2, 2, texelData.data(), KD_TEX_FMT_SDR_RGBA8, alpha);
   m_texture->SetAspectRatio(CAspectRatio::AR_STRETCH_TEXEL_EDGE);
@@ -103,7 +103,7 @@ KODI::UTILS::COLOR::ColorFloats CGUIPrimitive::MixColors(
   phaseColor = std::clamp(phaseColor, 0.0f, 1.0f);
   phaseAlpha = std::clamp(phaseAlpha, 0.0f, 1.0f);
 
-  KODI::UTILS::COLOR::ColorFloats color;
+  KODI::UTILS::COLOR::ColorFloats color{};
 
   color.red = colorA.red * (1.0f - phaseColor) + colorB.red * phaseColor;
   color.green = colorA.green * (1.0f - phaseColor) + colorB.green * phaseColor;

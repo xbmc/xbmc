@@ -17,11 +17,11 @@ public:
   CGUIPrimitive(int parentID, int controlID, float posX, float posY, float width, float height);
 
   void SetUniform(KODI::GUILIB::GUIINFO::CGUIInfoColor color);
-  void Set2DGradient(const std::array<KODI::GUILIB::GUIINFO::CGUIInfoColor, 4>& colors);
   void Set1DGradient(const std::array<KODI::GUILIB::GUIINFO::CGUIInfoColor, 4>& colors,
                      uint32_t angle,
                      const std::unique_ptr<Interpolator>& colorInterpolator,
                      const std::unique_ptr<Interpolator>& alphaInterpolator);
+  void Set2DGradient(const std::array<KODI::GUILIB::GUIINFO::CGUIInfoColor, 4>& colors);
 
 protected:
   void FreeTextures(bool immediately = false) override {};

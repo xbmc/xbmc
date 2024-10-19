@@ -43,7 +43,7 @@ public:
   /*!
    \brief Maps an input [0,1] to a interpolation function
    */
-  virtual float Interpolate(float phase) { return 0.0f; };
+  virtual float Interpolate(float phase) { return 0.0f; }
   virtual bool HasResumePoint() const { return m_easeType == EASE::EASE_INOUT; }
   /*!
    \brief Returns minimum steps required for piecewise linear interpolation
