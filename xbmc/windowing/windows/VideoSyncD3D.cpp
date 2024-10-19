@@ -18,6 +18,8 @@
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
+#include "platform/win32/WIN32Util.h"
+
 #include <mutex>
 
 #ifdef TARGET_WINDOWS_STORE
@@ -97,7 +99,7 @@ void CVideoSyncD3D::Run(CEvent& stopEvent)
         CLog::LogF(LOGWARNING, "failed to detect vblank - screen asleep?");
 
       if (!SUCCEEDED(hr))
-        CLog::LogF(LOGERROR, "error waiting for vblank, {}", DX::GetErrorDescription(hr));
+        CLog::LogF(LOGERROR, "error waiting for vblank, {}", CWIN32Util::FormatHRESULT(hr));
 
       validVBlank = false;
 
