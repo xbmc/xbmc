@@ -40,6 +40,8 @@
 #include <dwrite.h>
 #endif
 
+#include <Audioclient.h>
+
 #define XAUDIO2_E_INVALID_CALL          0x88960001
 #define XAUDIO2_E_XMA_DECODER_ERROR     0x88960002
 #define XAUDIO2_E_XAPO_CREATION_FAILED  0x88960003
@@ -3329,6 +3331,51 @@ const WCHAR* WINAPI DXGetErrorStringW( _In_ HRESULT hr )
 // -------------------------------------------------------------
         CHK_ERRA(XAPO_E_FORMAT_UNSUPPORTED)
 
+// -------------------------------------------------------------
+// Audioclient.h error codes - WASAPI
+// -------------------------------------------------------------
+        CHK_ERRA(AUDCLNT_E_NOT_INITIALIZED)
+        CHK_ERRA(AUDCLNT_E_ALREADY_INITIALIZED)
+        CHK_ERRA(AUDCLNT_E_WRONG_ENDPOINT_TYPE)
+        CHK_ERRA(AUDCLNT_E_DEVICE_INVALIDATED)
+        CHK_ERRA(AUDCLNT_E_NOT_STOPPED)
+        CHK_ERRA(AUDCLNT_E_BUFFER_TOO_LARGE)
+        CHK_ERRA(AUDCLNT_E_OUT_OF_ORDER)
+        CHK_ERRA(AUDCLNT_E_UNSUPPORTED_FORMAT)
+        CHK_ERRA(AUDCLNT_E_INVALID_SIZE)
+        CHK_ERRA(AUDCLNT_E_DEVICE_IN_USE)
+        CHK_ERRA(AUDCLNT_E_BUFFER_OPERATION_PENDING)
+        CHK_ERRA(AUDCLNT_E_THREAD_NOT_REGISTERED)
+        CHK_ERRA(AUDCLNT_E_EXCLUSIVE_MODE_NOT_ALLOWED)
+        CHK_ERRA(AUDCLNT_E_ENDPOINT_CREATE_FAILED)
+        CHK_ERRA(AUDCLNT_E_SERVICE_NOT_RUNNING)
+        CHK_ERRA(AUDCLNT_E_EVENTHANDLE_NOT_EXPECTED)
+        CHK_ERRA(AUDCLNT_E_EXCLUSIVE_MODE_ONLY)
+        CHK_ERRA(AUDCLNT_E_BUFDURATION_PERIOD_NOT_EQUAL)
+        CHK_ERRA(AUDCLNT_E_EVENTHANDLE_NOT_SET)
+        CHK_ERRA(AUDCLNT_E_INCORRECT_BUFFER_SIZE)
+        CHK_ERRA(AUDCLNT_E_BUFFER_SIZE_ERROR)
+        CHK_ERRA(AUDCLNT_E_CPUUSAGE_EXCEEDED)
+        CHK_ERRA(AUDCLNT_E_BUFFER_ERROR)
+        CHK_ERRA(AUDCLNT_E_BUFFER_SIZE_NOT_ALIGNED)
+        CHK_ERRA(AUDCLNT_E_INVALID_DEVICE_PERIOD)
+        CHK_ERRA(AUDCLNT_E_INVALID_STREAM_FLAG)
+        CHK_ERRA(AUDCLNT_E_ENDPOINT_OFFLOAD_NOT_CAPABLE)
+        CHK_ERRA(AUDCLNT_E_OUT_OF_OFFLOAD_RESOURCES)
+        CHK_ERRA(AUDCLNT_E_OFFLOAD_MODE_ONLY)
+        CHK_ERRA(AUDCLNT_E_NONOFFLOAD_MODE_ONLY)
+        CHK_ERRA(AUDCLNT_E_RESOURCES_INVALIDATED)
+        CHK_ERRA(AUDCLNT_E_RAW_MODE_UNSUPPORTED)
+        CHK_ERRA(AUDCLNT_E_ENGINE_PERIODICITY_LOCKED)
+        CHK_ERRA(AUDCLNT_E_ENGINE_FORMAT_LOCKED)
+        CHK_ERRA(AUDCLNT_E_HEADTRACKING_ENABLED)
+        CHK_ERRA(AUDCLNT_E_HEADTRACKING_UNSUPPORTED)
+        CHK_ERRA(AUDCLNT_E_EFFECT_NOT_AVAILABLE)
+        CHK_ERRA(AUDCLNT_E_EFFECT_STATE_READ_ONLY)
+        CHK_ERRA(AUDCLNT_S_BUFFER_EMPTY)
+        CHK_ERRA(AUDCLNT_S_THREAD_ALREADY_REGISTERED)
+        CHK_ERRA(AUDCLNT_S_POSITION_STALLED)
+
         default: return L"";
     }
 }
@@ -3694,6 +3741,51 @@ void WINAPI DXGetErrorDescriptionW( _In_ HRESULT hr, _Out_cap_(count) WCHAR* des
 // xapo.h error codes
 // -------------------------------------------------------------
         CHK_ERR(XAPO_E_FORMAT_UNSUPPORTED, "Requested audio format unsupported.")
+
+// -------------------------------------------------------------
+// Audioclient.h error codes - WASAPI
+// -------------------------------------------------------------
+        CHK_ERR(AUDCLNT_E_NOT_INITIALIZED, "The audio stream has not been successfully initialized.")
+        CHK_ERR(AUDCLNT_E_ALREADY_INITIALIZED, "The IAudioClient object is already initialized.")
+        CHK_ERR(AUDCLNT_E_WRONG_ENDPOINT_TYPE, "The caller tried to access an IAudioCaptureClient interface on a rendering endpoint, or an IAudioRenderClient interface on a capture endpoint.")
+        CHK_ERR(AUDCLNT_E_DEVICE_INVALIDATED, "The audio endpoint device was invalidated.")
+        CHK_ERR(AUDCLNT_E_NOT_STOPPED, "The audio stream was not stopped at the time of the Start call.")
+        CHK_ERR(AUDCLNT_E_BUFFER_TOO_LARGE, "The NumFramesRequested value exceeds the available buffer space.")
+        CHK_ERR(AUDCLNT_E_OUT_OF_ORDER, "A previous IAudioRenderClient::GetBuffer call is still in effect or a call to IAudioRenderClient::GetBuffer is missing.")
+        CHK_ERR(AUDCLNT_E_UNSUPPORTED_FORMAT, "The audio engine (shared mode) or audio endpoint device (exclusive mode) does not support the specified format.")
+        CHK_ERR(AUDCLNT_E_INVALID_SIZE, "The NumFramesWritten value exceeds the NumFramesRequested value specified in the previous IAudioRenderClient::GetBuffer call.")
+        CHK_ERR(AUDCLNT_E_DEVICE_IN_USE, "The endpoint device is already in use.")
+        CHK_ERR(AUDCLNT_E_BUFFER_OPERATION_PENDING, "Buffer cannot be accessed because a stream reset is in progress.")
+//        CHK_ERRA(AUDCLNT_E_THREAD_NOT_REGISTERED)
+        CHK_ERR(AUDCLNT_E_EXCLUSIVE_MODE_NOT_ALLOWED, "The user disabled exclusive-mode use of the device.")
+        CHK_ERR(AUDCLNT_E_ENDPOINT_CREATE_FAILED, "The method failed to create the audio endpoint for the render or the capture device.")
+        CHK_ERR(AUDCLNT_E_SERVICE_NOT_RUNNING, "The Windows audio service is not running.")
+        CHK_ERR(AUDCLNT_E_EVENTHANDLE_NOT_EXPECTED, "The audio stream was not initialized for event-driven buffering.")
+//        CHK_ERRA(AUDCLNT_E_EXCLUSIVE_MODE_ONLY)
+        CHK_ERR(AUDCLNT_E_BUFDURATION_PERIOD_NOT_EQUAL, "The parameters hnsBufferDuration and hnsPeriodicity are not equal.")
+        CHK_ERR(AUDCLNT_E_EVENTHANDLE_NOT_SET, "The event handle was not set for an audio stream in event-driven buffering mode.")
+//        CHK_ERRA(AUDCLNT_E_INCORRECT_BUFFER_SIZE)
+        CHK_ERR(AUDCLNT_E_BUFFER_SIZE_ERROR, "The stream is exclusive mode and uses event-driven buffering, but the client attempted to get a packet that was not the size of the buffer.")
+        CHK_ERR(AUDCLNT_E_CPUUSAGE_EXCEEDED, "The process-pass duration exceeded the maximum allowed CPU usage.")
+        CHK_ERR(AUDCLNT_E_BUFFER_ERROR, "GetBuffer failed to retrieve a data buffer.")
+        CHK_ERR(AUDCLNT_E_BUFFER_SIZE_NOT_ALIGNED, "The requested buffer size is not aligned.")
+        CHK_ERR(AUDCLNT_E_INVALID_DEVICE_PERIOD, "The requested device period is not valid.")
+//        CHK_ERRA(AUDCLNT_E_INVALID_STREAM_FLAG)
+        CHK_ERR(AUDCLNT_E_ENDPOINT_OFFLOAD_NOT_CAPABLE, "The endpoint does not support offload.")
+        CHK_ERR(AUDCLNT_E_OUT_OF_OFFLOAD_RESOURCES, "The endpoint is out of offload resources.")
+        CHK_ERR(AUDCLNT_E_OFFLOAD_MODE_ONLY, "The operation is only supported in offload mode.")
+        CHK_ERR(AUDCLNT_E_NONOFFLOAD_MODE_ONLY, "The operation is only supported in non-offload mode.")
+        CHK_ERR(AUDCLNT_E_RESOURCES_INVALIDATED, "A resource associated with the audio stream is no longer valid.")
+        CHK_ERR(AUDCLNT_E_RAW_MODE_UNSUPPORTED, "The endpoint does not support raw mode.")
+        CHK_ERR(AUDCLNT_E_ENGINE_PERIODICITY_LOCKED, "The periodicity of the audio engine has been locked by another client.")
+        CHK_ERR(AUDCLNT_E_ENGINE_FORMAT_LOCKED, "The format of the audio engine has been locked by another client.")
+//        CHK_ERRA(AUDCLNT_E_HEADTRACKING_ENABLED)
+//        CHK_ERRA(AUDCLNT_E_HEADTRACKING_UNSUPPORTED)
+        CHK_ERR(AUDCLNT_E_EFFECT_NOT_AVAILABLE, "The specified effect is not available.")
+        CHK_ERR(AUDCLNT_E_EFFECT_STATE_READ_ONLY, "The specified effect has a state that is read-only.")
+        CHK_ERR(AUDCLNT_S_BUFFER_EMPTY, "No capture data is available to be read.")
+//        CHK_ERRA(AUDCLNT_S_THREAD_ALREADY_REGISTERED)
+        CHK_ERR(AUDCLNT_S_POSITION_STALLED, "The IAudioClient::Start method has not been called for this stream.")
     }
 }
 

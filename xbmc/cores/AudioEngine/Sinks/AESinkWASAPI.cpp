@@ -17,6 +17,8 @@
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
+#include "platform/win32/WIN32Util.h"
+
 #include <algorithm>
 #include <stdint.h>
 
@@ -32,11 +34,10 @@ const IID IID_IAudioClock = __uuidof(IAudioClock);
 DEFINE_PROPERTYKEY(PKEY_Device_FriendlyName, 0xa45c254e, 0xdf1c, 0x4efd, 0x80, 0x20, 0x67, 0xd1, 0x46, 0xa8, 0x50, 0xe0, 14);
 DEFINE_PROPERTYKEY(PKEY_Device_EnumeratorName, 0xa45c254e, 0xdf1c, 0x4efd, 0x80, 0x20, 0x67, 0xd1, 0x46, 0xa8, 0x50, 0xe0, 24);
 
-extern const char *WASAPIErrToStr(HRESULT err);
 #define EXIT_ON_FAILURE(hr, reason) \
   if (FAILED(hr)) \
   { \
-    CLog::LogF(LOGERROR, reason " - HRESULT = {} ErrorMessage = {}", hr, WASAPIErrToStr(hr)); \
+    CLog::LogF(LOGERROR, reason " - error {}", hr, CWIN32Util::FormatHRESULT(hr)); \
     goto failed; \
   }
 
@@ -279,14 +280,14 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
     hr = m_pAudioClient->Reset();
     if (FAILED(hr))
     {
-      CLog::LogF(LOGERROR, " AudioClient reset failed due to {}", WASAPIErrToStr(hr));
+      CLog::LogF(LOGERROR, " AudioClient reset failed due to {}", CWIN32Util::FormatHRESULT(hr));
       return 0;
     }
     hr = m_pRenderClient->GetBuffer(NumFramesRequested, &buf);
     if (FAILED(hr))
     {
       #ifdef _DEBUG
-      CLog::LogF(LOGERROR, "GetBuffer failed due to {}", WASAPIErrToStr(hr));
+      CLog::LogF(LOGERROR, "GetBuffer failed due to {}", CWIN32Util::FormatHRESULT(hr));
 #endif
       m_isDirty = true; //flag new device or re-init needed
       return INT_MAX;
@@ -297,7 +298,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
     if (FAILED(hr))
     {
       #ifdef _DEBUG
-      CLog::LogF(LOGDEBUG, "ReleaseBuffer failed due to {}.", WASAPIErrToStr(hr));
+      CLog::LogF(LOGDEBUG, "ReleaseBuffer failed due to {}.", CWIN32Util::FormatHRESULT(hr));
 #endif
       m_isDirty = true; //flag new device or re-init needed
       return INT_MAX;
@@ -347,7 +348,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
   if (FAILED(hr))
   {
 #ifdef _DEBUG
-    CLog::LogF(LOGERROR, "GetBuffer failed due to {}", WASAPIErrToStr(hr));
+    CLog::LogF(LOGERROR, "GetBuffer failed due to {}", CWIN32Util::FormatHRESULT(hr));
 #endif
     return INT_MAX;
   }
@@ -361,7 +362,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
   if (FAILED(hr))
   {
 #ifdef _DEBUG
-    CLog::LogF(LOGDEBUG, "ReleaseBuffer failed due to {}.", WASAPIErrToStr(hr));
+    CLog::LogF(LOGDEBUG, "ReleaseBuffer failed due to {}.", CWIN32Util::FormatHRESULT(hr));
 #endif
     return INT_MAX;
   }
@@ -673,7 +674,8 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
 failed:
 
   if (FAILED(hr))
-    CLog::LogF(LOGERROR, "Failed to enumerate WASAPI endpoint devices ({}).", WASAPIErrToStr(hr));
+    CLog::LogF(LOGERROR, "Failed to enumerate WASAPI endpoint devices ({}).",
+               CWIN32Util::FormatHRESULT(hr));
 }
 
 //Private utility functions////////////////////////////////////////////////////
@@ -755,7 +757,7 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
   }
   else if (hr != AUDCLNT_E_UNSUPPORTED_FORMAT) //It failed for a reason unrelated to an unsupported format.
   {
-    CLog::LogF(LOGERROR, "IsFormatSupported failed ({})", WASAPIErrToStr(hr));
+    CLog::LogF(LOGERROR, "IsFormatSupported failed ({})", CWIN32Util::FormatHRESULT(hr));
     return false;
   }
   else if (format.m_dataFormat == AE_FMT_RAW) //No sense in trying other formats for passthrough.
@@ -848,7 +850,7 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
             closestMatch = i;
         }
         else if (hr != AUDCLNT_E_UNSUPPORTED_FORMAT)
-          CLog::LogF(LOGERROR, "IsFormatSupported failed ({})", WASAPIErrToStr(hr));
+          CLog::LogF(LOGERROR, "IsFormatSupported failed ({})", CWIN32Util::FormatHRESULT(hr));
       }
 
       if (closestMatch >= 0)
@@ -913,7 +915,7 @@ initialize:
                           : AudioCategory_ForegroundOnlyMedia;
 
     if (FAILED(hr = audioClient2->SetClientProperties(&props)))
-      CLog::LogF(LOGERROR, "unable to set audio category, {}", WASAPIErrToStr(hr));
+      CLog::LogF(LOGERROR, "unable to set audio category, {}", CWIN32Util::FormatHRESULT(hr));
   }
 
   REFERENCE_TIME audioSinkBufferDurationMsec, hnsLatency;
@@ -939,7 +941,7 @@ initialize:
     hr = m_pAudioClient->GetBufferSize(&m_uiBufferLen);
     if (FAILED(hr))
     {
-      CLog::LogF(LOGERROR, "GetBufferSize Failed : {}", WASAPIErrToStr(hr));
+      CLog::LogF(LOGERROR, "GetBufferSize Failed : {}", CWIN32Util::FormatHRESULT(hr));
       return false;
     }
 
@@ -950,7 +952,7 @@ initialize:
     hr = m_pDevice->Activate(m_pAudioClient.ReleaseAndGetAddressOf());
     if (FAILED(hr))
     {
-      CLog::LogF(LOGERROR, "Device Activation Failed : {}", WASAPIErrToStr(hr));
+      CLog::LogF(LOGERROR, "Device Activation Failed : {}", CWIN32Util::FormatHRESULT(hr));
       return false;
     }
 
@@ -960,8 +962,8 @@ initialize:
   }
   if (FAILED(hr))
   {
-    CLog::LogF(LOGERROR, "Failed to initialize WASAPI in exclusive mode {} - ({}).", HRESULT(hr),
-               WASAPIErrToStr(hr));
+    CLog::LogF(LOGERROR, "Failed to initialize WASAPI in exclusive mode - {}.",
+               CWIN32Util::FormatHRESULT(hr));
     CLog::Log(LOGDEBUG, "  Sample Rate     : {}", wfxex.Format.nSamplesPerSec);
     CLog::Log(LOGDEBUG, "  Sample Format   : {}", CAEUtil::DataFormatToStr(format.m_dataFormat));
     CLog::Log(LOGDEBUG, "  Bits Per Sample : {}", wfxex.Format.wBitsPerSample);
@@ -987,7 +989,7 @@ initialize:
   hr = m_pAudioClient->GetStreamLatency(&hnsLatency);
   if (FAILED(hr))
   {
-    CLog::LogF(LOGERROR, "GetStreamLatency Failed : {}", WASAPIErrToStr(hr));
+    CLog::LogF(LOGERROR, "GetStreamLatency Failed : {}", CWIN32Util::FormatHRESULT(hr));
     return false;
   }
 
