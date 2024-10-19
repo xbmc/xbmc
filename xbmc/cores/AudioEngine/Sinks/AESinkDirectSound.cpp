@@ -19,6 +19,7 @@
 #include "utils/log.h"
 
 #include "platform/win32/CharsetConverter.h"
+#include "platform/win32/WIN32Util.h"
 
 #include <algorithm>
 #include <list>
@@ -42,11 +43,10 @@ extern HWND g_hWnd;
 DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_IEEE_FLOAT, WAVE_FORMAT_IEEE_FLOAT, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 );
 DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_DOLBY_AC3_SPDIF, WAVE_FORMAT_DOLBY_AC3_SPDIF, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 );
 
-extern const char *WASAPIErrToStr(HRESULT err);
 #define EXIT_ON_FAILURE(hr, reason) \
   if (FAILED(hr)) \
   { \
-    CLog::LogF(LOGERROR, reason " - HRESULT = {} ErrorMessage = {}", hr, WASAPIErrToStr(hr)); \
+    CLog::LogF(LOGERROR, reason " - error {}", hr, CWIN32Util::FormatHRESULT(hr)); \
     goto failed; \
   }
 
@@ -175,13 +175,13 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
     CLog::LogF(
         LOGERROR,
         "Failed to create the DirectSound device {} with error {}, trying the default device.",
-        deviceFriendlyName, dserr2str(hr));
+        deviceFriendlyName, CWIN32Util::FormatHRESULT(hr));
 
     hr = DirectSoundCreate(nullptr, m_pDSound.ReleaseAndGetAddressOf(), nullptr);
     if (FAILED(hr))
     {
       CLog::LogF(LOGERROR, "Failed to create the default DirectSound device with error {}.",
-                 dserr2str(hr));
+                 CWIN32Util::FormatHRESULT(hr));
       return false;
     }
   }
@@ -194,8 +194,8 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
 
   if (FAILED(hr))
   {
-    CLog::LogF(LOGERROR, "Failed to create the DirectSound device cooperative level.");
-    CLog::LogF(LOGERROR, "DSErr: {}", dserr2str(hr));
+    CLog::LogF(LOGERROR, "Failed to create the DirectSound device cooperative level with error {}.",
+               CWIN32Util::FormatHRESULT(hr));
     m_pDSound = nullptr;
     return false;
   }
@@ -259,7 +259,7 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
     if (dsbdesc.dwFlags & DSBCAPS_LOCHARDWARE)
     {
       CLog::LogF(LOGDEBUG, "Couldn't create secondary buffer ({}). Trying without LOCHARDWARE.",
-                 dserr2str(res));
+                 CWIN32Util::FormatHRESULT(res));
       // Try without DSBCAPS_LOCHARDWARE
       dsbdesc.dwFlags &= ~DSBCAPS_LOCHARDWARE;
       res = m_pDSound->CreateSoundBuffer(&dsbdesc, m_pBuffer.ReleaseAndGetAddressOf(), nullptr);
@@ -267,7 +267,7 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
     if (res != DS_OK)
     {
       m_pBuffer = nullptr;
-      CLog::LogF(LOGERROR, "cannot create secondary buffer ({})", dserr2str(res));
+      CLog::LogF(LOGERROR, "cannot create secondary buffer ({})", CWIN32Util::FormatHRESULT(res));
       return false;
     }
   }
@@ -554,7 +554,7 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bo
     }
     else
     {
-      CLog::LogF(LOGERROR, "Getting DeviceFormat failed ({})", WASAPIErrToStr(hr));
+      CLog::LogF(LOGERROR, "Getting DeviceFormat failed ({})", CWIN32Util::FormatHRESULT(hr));
     }
 
     deviceInfo.m_deviceName       = strDevName;
@@ -581,7 +581,8 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bo
 failed:
 
   if (FAILED(hr))
-    CLog::LogF(LOGERROR, "Failed to enumerate WASAPI endpoint devices ({}).", WASAPIErrToStr(hr));
+    CLog::LogF(LOGERROR, "Failed to enumerate WASAPI endpoint devices ({}).",
+               CWIN32Util::FormatHRESULT(hr));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -595,12 +596,14 @@ void CAESinkDirectSound::CheckPlayStatus()
     return;
   }
 
-  if (!(status & DSBSTATUS_PLAYING) && m_CacheLen != 0) // If we have some data, see if we can start playback
+  if (!(status & DSBSTATUS_PLAYING) &&
+      m_CacheLen != 0) // If we have some data, see if we can start playback
   {
     HRESULT hr = m_pBuffer->Play(0, 0, DSBPLAY_LOOPING);
     CLog::LogF(LOGDEBUG, "Resuming Playback");
     if (FAILED(hr))
-      CLog::LogF(LOGERROR, "Failed to play the DirectSound buffer: {}", dserr2str(hr));
+      CLog::LogF(LOGERROR, "Failed to play the DirectSound buffer: {}",
+                 CWIN32Util::FormatHRESULT(hr));
   }
 }
 
@@ -612,9 +615,8 @@ bool CAESinkDirectSound::UpdateCacheStatus()
   HRESULT res = m_pBuffer->GetCurrentPosition(&playCursor, &writeCursor); // Get the current playback and safe write positions
   if (DS_OK != res)
   {
-    CLog::LogF(LOGERROR,
-               "GetCurrentPosition failed. Unable to determine buffer status. HRESULT = {:#08x}",
-               res);
+    CLog::LogF(LOGERROR, "GetCurrentPosition failed. Unable to determine buffer status ({})",
+               CWIN32Util::FormatHRESULT(res));
     m_isDirtyDS = true;
     return false;
   }
@@ -704,39 +706,6 @@ DWORD CAESinkDirectSound::SpeakerMaskFromAEChannels(const CAEChannelInfo &channe
   }
 
   return mask;
-}
-
-const char *CAESinkDirectSound::dserr2str(int err)
-{
-  switch (err)
-  {
-    case DS_OK: return "DS_OK";
-    case DS_NO_VIRTUALIZATION: return "DS_NO_VIRTUALIZATION";
-    case DSERR_ALLOCATED: return "DS_NO_VIRTUALIZATION";
-    case DSERR_CONTROLUNAVAIL: return "DSERR_CONTROLUNAVAIL";
-    case DSERR_INVALIDPARAM: return "DSERR_INVALIDPARAM";
-    case DSERR_INVALIDCALL: return "DSERR_INVALIDCALL";
-    case DSERR_GENERIC: return "DSERR_GENERIC";
-    case DSERR_PRIOLEVELNEEDED: return "DSERR_PRIOLEVELNEEDED";
-    case DSERR_OUTOFMEMORY: return "DSERR_OUTOFMEMORY";
-    case DSERR_BADFORMAT: return "DSERR_BADFORMAT";
-    case DSERR_UNSUPPORTED: return "DSERR_UNSUPPORTED";
-    case DSERR_NODRIVER: return "DSERR_NODRIVER";
-    case DSERR_ALREADYINITIALIZED: return "DSERR_ALREADYINITIALIZED";
-    case DSERR_NOAGGREGATION: return "DSERR_NOAGGREGATION";
-    case DSERR_BUFFERLOST: return "DSERR_BUFFERLOST";
-    case DSERR_OTHERAPPHASPRIO: return "DSERR_OTHERAPPHASPRIO";
-    case DSERR_UNINITIALIZED: return "DSERR_UNINITIALIZED";
-    case DSERR_NOINTERFACE: return "DSERR_NOINTERFACE";
-    case DSERR_ACCESSDENIED: return "DSERR_ACCESSDENIED";
-    case DSERR_BUFFERTOOSMALL: return "DSERR_BUFFERTOOSMALL";
-    case DSERR_DS8_REQUIRED: return "DSERR_DS8_REQUIRED";
-    case DSERR_SENDLOOP: return "DSERR_SENDLOOP";
-    case DSERR_BADSENDBUFFERGUID: return "DSERR_BADSENDBUFFERGUID";
-    case DSERR_OBJECTNOTFOUND: return "DSERR_OBJECTNOTFOUND";
-    case DSERR_FXUNAVAILABLE: return "DSERR_FXUNAVAILABLE";
-    default: return "unknown";
-  }
 }
 
 std::string CAESinkDirectSound::GetDefaultDevice()
