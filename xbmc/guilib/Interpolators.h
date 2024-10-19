@@ -24,15 +24,15 @@
 
 enum class EASE
 {
-  IN,
-  OUT,
-  INOUT
+  EASE_IN,
+  EASE_OUT,
+  EASE_INOUT
 };
 
 class Interpolator
 {
 public:
-  explicit Interpolator(EASE easeType = EASE::OUT) : m_easeType(easeType) {}
+  explicit Interpolator(EASE easeType = EASE::EASE_OUT) : m_easeType(easeType) {}
   virtual ~Interpolator() = default;
 
   void SetEasing(EASE type) { m_easeType = type; }
@@ -44,7 +44,7 @@ public:
    \brief Maps an input [0,1] to a interpolation function
    */
   virtual float Interpolate(float phase) { return 0.0f; };
-  virtual bool HasResumePoint() const { return m_easeType == EASE::INOUT; }
+  virtual bool HasResumePoint() const { return m_easeType == EASE::EASE_INOUT; }
   /*!
    \brief Returns minimum steps required for piecewise linear interpolation
    */
@@ -71,14 +71,14 @@ public:
   {
     switch (m_easeType)
     {
-      case EASE::IN:
+      case EASE::EASE_IN:
         return phase * (_a * phase + 1 - _a);
 
       default:
-      case EASE::OUT:
+      case EASE::EASE_OUT:
         return -1.0f * phase * (_a * phase - 1 - _a);
 
-      case EASE::INOUT:
+      case EASE::EASE_INOUT:
         phase *= 2;
         if (phase < 1)
           return 0.5f * phase * (_a * phase + 1 - _a);
@@ -99,15 +99,15 @@ public:
   {
     switch (m_easeType)
     {
-      case EASE::IN:
+      case EASE::EASE_IN:
         return phase * phase * phase;
 
       default:
-      case EASE::OUT:
+      case EASE::EASE_OUT:
         phase--;
         return (phase * phase * phase + 1);
 
-      case EASE::INOUT:
+      case EASE::EASE_INOUT:
         phase *= 2;
         if (phase < 1)
           return 0.5f * phase * phase * phase;
@@ -125,15 +125,15 @@ public:
   {
     switch (m_easeType)
     {
-      case EASE::IN:
+      case EASE::EASE_IN:
         return -1.0f * (sqrt(1 - phase * phase) - 1);
 
       default:
-      case EASE::OUT:
+      case EASE::EASE_OUT:
         phase--;
         return sqrt(1 - phase * phase);
 
-      case EASE::INOUT:
+      case EASE::EASE_INOUT:
         phase *= 2;
         if (phase < 1)
           return -0.5f * (sqrt(1 - phase * phase) - 1);
@@ -153,15 +153,15 @@ public:
     float s = _s;
     switch (m_easeType)
     {
-      case EASE::IN:
+      case EASE::EASE_IN:
         return phase * phase * ((s + 1) * phase - s);
 
       default:
-      case EASE::OUT:
+      case EASE::EASE_OUT:
         phase--;
         return phase * phase * ((s + 1) * phase + s) + 1;
 
-      case EASE::INOUT:
+      case EASE::EASE_INOUT:
         phase *= 2;
         s *= (1.525f);
         if ((phase) < 1)
@@ -182,14 +182,14 @@ public:
   {
     switch (m_easeType)
     {
-      case EASE::IN:
+      case EASE::EASE_IN:
         return 1 - cos(phase * static_cast<float>(M_PI) / 2.0f);
 
       default:
-      case EASE::OUT:
+      case EASE::EASE_OUT:
         return sin(phase * static_cast<float>(M_PI) / 2.0f);
 
-      case EASE::INOUT:
+      case EASE::EASE_INOUT:
         return 0.5f * (1 - cos(static_cast<float>(M_PI) * phase));
     }
   }
@@ -203,14 +203,14 @@ public:
   {
     switch (m_easeType)
     {
-      case EASE::IN:
+      case EASE::EASE_IN:
         return (change - easeOut(duration - time, 0, change, duration)) + start;
 
       default:
-      case EASE::OUT:
+      case EASE::EASE_OUT:
         return easeOut(time, start, change, duration);
 
-      case EASE::INOUT:
+      case EASE::EASE_INOUT:
         if (time < duration / 2)
           return (change - easeOut(duration - (time * 2), 0, change, duration) + start) * .5f +
                  start;
@@ -254,14 +254,14 @@ public:
   {
     switch (m_easeType)
     {
-      case EASE::IN:
+      case EASE::EASE_IN:
         return easeIn(time, start, change, duration);
 
       default:
-      case EASE::OUT:
+      case EASE::EASE_OUT:
         return easeOut(time, start, change, duration);
 
-      case EASE::INOUT:
+      case EASE::EASE_INOUT:
         return easeInOut(time, start, change, duration);
     }
   }

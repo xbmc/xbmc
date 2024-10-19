@@ -678,15 +678,15 @@ std::unique_ptr<Interpolator> CGUIControlFactory::ParseInterpolator(const TiXmlE
   if (easing)
   {
     if (StringUtils::CompareNoCase(easing, "in") == 0)
-      interp->SetEasing(EASE::IN);
+      interp->SetEasing(EASE::EASE_IN);
     else if (StringUtils::CompareNoCase(easing, "out") == 0)
-      interp->SetEasing(EASE::OUT);
+      interp->SetEasing(EASE::EASE_OUT);
     else if (StringUtils::CompareNoCase(easing, "inout") == 0)
-      interp->SetEasing(EASE::INOUT);
+      interp->SetEasing(EASE::EASE_INOUT);
   }
   else
   {
-    interp->SetEasing(EASE::INOUT);
+    interp->SetEasing(EASE::EASE_INOUT);
   }
 
   return interp;

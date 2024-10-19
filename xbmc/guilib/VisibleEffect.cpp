@@ -114,11 +114,11 @@ std::shared_ptr<Interpolator> CAnimEffect::GetTweener(const TiXmlElement* pAnima
     if (m_pTweener && easing)
     {
       if (StringUtils::CompareNoCase(easing, "in") == 0)
-        m_pTweener->SetEasing(EASE::IN);
+        m_pTweener->SetEasing(EASE::EASE_IN);
       else if (StringUtils::CompareNoCase(easing, "out") == 0)
-        m_pTweener->SetEasing(EASE::OUT);
+        m_pTweener->SetEasing(EASE::EASE_OUT);
       else if (StringUtils::CompareNoCase(easing, "inout") == 0)
-        m_pTweener->SetEasing(EASE::INOUT);
+        m_pTweener->SetEasing(EASE::EASE_INOUT);
     }
   }
 
@@ -131,7 +131,7 @@ std::shared_ptr<Interpolator> CAnimEffect::GetTweener(const TiXmlElement* pAnima
     if (accel)
     {
       m_pTweener = std::shared_ptr<Interpolator>(new QuadInterpolator(accel));
-      m_pTweener->SetEasing(EASE::IN);
+      m_pTweener->SetEasing(EASE::EASE_IN);
     }
     else
       m_pTweener = std::shared_ptr<Interpolator>(new LinearInterpolator());
