@@ -1,15 +1,15 @@
 --- a/setup.py
 +++ b/setup.py
-@@ -414,6 +414,8 @@
+@@ -473,6 +473,8 @@
+         pkg_config = None
          if _cmd_exists(os.environ.get("PKG_CONFIG", "pkg-config")):
              pkg_config = _pkg_config
- 
-+        self.compiler.include_dirs = [os.environ["PYTHONXINCLUDE"]]
 +
++        self.compiler.include_dirs = [os.environ["PYTHONXINCLUDE"]]
+ 
          #
          # add configured kits
-         for root_name, lib_name in dict(
-@@ -471,8 +473,8 @@
+@@ -544,8 +546,8 @@
                  for d in os.environ[k].split(os.path.pathsep):
                      _add_directory(library_dirs, d)
  
