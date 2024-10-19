@@ -17,6 +17,7 @@
 #include "utils/log.h"
 
 #include "platform/win32/CharsetConverter.h"
+#include "platform/win32/WIN32Util.h"
 
 #include <algorithm>
 #include <stdint.h>
@@ -70,8 +71,6 @@ HRESULT KXAudio2Create(IXAudio2** ppXAudio2,
 }
 
 } // namespace
-
-extern const char* WASAPIErrToStr(HRESULT err);
 
 template <class TVoice>
 inline void SafeDestroyVoice(TVoice **ppVoice)
@@ -252,14 +251,14 @@ unsigned int CAESinkXAudio::AddPackets(uint8_t **data, unsigned int frames, unsi
     hr = m_sourceVoice->SubmitSourceBuffer(&xbuffer);
     if (FAILED(hr))
     {
-      CLog::LogF(LOGERROR, "voice submit buffer failed due to {}", WASAPIErrToStr(hr));
+      CLog::LogF(LOGERROR, "voice submit buffer failed due to {}", CWIN32Util::FormatHRESULT(hr));
       delete xbuffer.pContext;
       return 0;
     }
     hr = m_sourceVoice->Start(0, XAUDIO2_COMMIT_NOW);
     if (FAILED(hr))
     {
-      CLog::LogF(LOGERROR, "voice start failed due to {}", WASAPIErrToStr(hr));
+      CLog::LogF(LOGERROR, "voice start failed due to {}", CWIN32Util::FormatHRESULT(hr));
       m_isDirty = true; //flag new device or re-init needed
       delete xbuffer.pContext;
       return INT_MAX;
@@ -303,7 +302,7 @@ unsigned int CAESinkXAudio::AddPackets(uint8_t **data, unsigned int frames, unsi
   hr = m_sourceVoice->SubmitSourceBuffer(&xbuffer);
   if (FAILED(hr))
   {
-    CLog::LogF(LOGERROR, "submiting buffer failed due to {}", WASAPIErrToStr(hr));
+    CLog::LogF(LOGERROR, "submiting buffer failed due to {}", CWIN32Util::FormatHRESULT(hr));
     delete xbuffer.pContext;
     return INT_MAX;
   }
@@ -335,7 +334,7 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
   if (FAILED(hr))
   {
     CLog::LogF(LOGERROR, "failed to activate XAudio for capability testing ({})",
-               WASAPIErrToStr(hr));
+               CWIN32Util::FormatHRESULT(hr));
     return;
   }
 
@@ -534,7 +533,7 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
     if (FAILED(hr) || !pMasterVoice)
     {
       CLog::LogF(LOGINFO, "Could not retrieve the default XAudio audio endpoint ({}).",
-                 WASAPIErrToStr(hr));
+                 CWIN32Util::FormatHRESULT(hr));
       return false;
     }
   }
@@ -558,7 +557,7 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
   if (CServiceBroker::GetLogging().CanLogComponent(LOGAUDIO))
     CLog::LogFC(LOGDEBUG, LOGAUDIO,
                 "CreateSourceVoice failed ({}) - trying to find a compatible format",
-                WASAPIErrToStr(hr));
+                CWIN32Util::FormatHRESULT(hr));
 
   requestedChannels = wfxex.Format.nChannels;
 
@@ -621,7 +620,7 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
         }
 
         if (FAILED(hr))
-          CLog::LogF(LOGERROR, "creating voices failed ({})", WASAPIErrToStr(hr));
+          CLog::LogF(LOGERROR, "creating voices failed ({})", CWIN32Util::FormatHRESULT(hr));
       }
 
       if (closestMatch >= 0)
@@ -683,7 +682,7 @@ initialize:
   hr = m_sourceVoice->Start(0, XAUDIO2_COMMIT_NOW);
   if (FAILED(hr))
   {
-    CLog::LogF(LOGERROR, "Voice start failed : {}", WASAPIErrToStr(hr));
+    CLog::LogF(LOGERROR, "Voice start failed : {}", CWIN32Util::FormatHRESULT(hr));
     CLog::Log(LOGDEBUG, "  Sample Rate     : {}", wfxex.Format.nSamplesPerSec);
     CLog::Log(LOGDEBUG, "  Sample Format   : {}", CAEUtil::DataFormatToStr(format.m_dataFormat));
     CLog::Log(LOGDEBUG, "  Bits Per Sample : {}", wfxex.Format.wBitsPerSample);
@@ -702,7 +701,7 @@ initialize:
   m_xAudio2->GetPerformanceData(&perfData);
   if (!perfData.TotalSourceVoiceCount)
   {
-    CLog::LogF(LOGERROR, "GetPerformanceData Failed : {}", WASAPIErrToStr(hr));
+    CLog::LogF(LOGERROR, "GetPerformanceData Failed : {}", CWIN32Util::FormatHRESULT(hr));
     return false;
   }
 
