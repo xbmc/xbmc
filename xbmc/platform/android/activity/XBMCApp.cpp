@@ -220,6 +220,11 @@ void CXBMCApp::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
       m_mediaSessionUpdated = false;
       UpdateSessionState();
     }
+    else if (message == "OnAVStart")
+    {
+      m_mediaSessionUpdated = false;
+      UpdateSessionState();
+    }
   }
   else if (flag & Info)
   {
