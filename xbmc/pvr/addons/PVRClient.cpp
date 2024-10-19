@@ -122,6 +122,7 @@ public:
   explicit CAddonRecording(const CPVRRecording& recording)
     : m_recordingId(recording.ClientRecordingID()),
       m_title(recording.m_strTitle),
+      m_titleExtraInfo(recording.TitleExtraInfo()),
       m_episodeName(recording.m_strShowTitle),
       m_directory(recording.Directory()),
       m_plotOutline(recording.m_strPlotOutline),
@@ -146,6 +147,7 @@ public:
 
     strRecordingId = m_recordingId.c_str();
     strTitle = m_title.c_str();
+    strTitleExtraInfo = m_titleExtraInfo.c_str();
     strEpisodeName = m_episodeName.c_str();
     iSeriesNumber = recording.m_iSeason;
     iEpisodeNumber = recording.m_iEpisode;
@@ -189,6 +191,7 @@ public:
 private:
   const std::string m_recordingId;
   const std::string m_title;
+  const std::string m_titleExtraInfo;
   const std::string m_episodeName;
   const std::string m_directory;
   const std::string m_plotOutline;
@@ -293,6 +296,7 @@ class CAddonEpgTag : public EPG_TAG
 public:
   explicit CAddonEpgTag(const CPVREpgInfoTag& tag)
     : m_title(tag.Title()),
+      m_titleExtraInfo(tag.TitleExtraInfo()),
       m_plotOutline(tag.PlotOutline()),
       m_plot(tag.Plot()),
       m_originalTitle(tag.OriginalTitle()),
@@ -331,6 +335,7 @@ public:
     iGenreType = tag.GenreType();
     iGenreSubType = tag.GenreSubType();
     strTitle = m_title.c_str();
+    strTitleExtraInfo = m_titleExtraInfo.c_str();
     strPlotOutline = m_plotOutline.c_str();
     strPlot = m_plot.c_str();
     strOriginalTitle = m_originalTitle.c_str();
@@ -360,6 +365,7 @@ private:
   }
 
   const std::string m_title;
+  const std::string m_titleExtraInfo;
   const std::string m_plotOutline;
   const std::string m_plot;
   const std::string m_originalTitle;

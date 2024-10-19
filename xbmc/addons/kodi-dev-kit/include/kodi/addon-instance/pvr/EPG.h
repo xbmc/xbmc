@@ -60,6 +60,7 @@ public:
   /// | **Unique broadcast id** | `unsigned int` | @ref PVREPGTag::SetUniqueBroadcastId "SetUniqueBroadcastId" | @ref PVREPGTag::GetUniqueBroadcastId "GetUniqueBroadcastId" | *required to set*
   /// | **Unique channel id** | `unsigned int` | @ref PVREPGTag::SetUniqueChannelId "SetUniqueChannelId" | @ref PVREPGTag::GetUniqueChannelId "GetUniqueChannelId" | *required to set*
   /// | **Title** | `std::string` | @ref PVREPGTag::SetTitle "SetTitle" | @ref PVREPGTag::GetTitle "GetTitle" | *required to set*
+  /// | **Title extra info** | `std::string` | @ref PVREPGTag::SetTitleExtraInfo "SetTitleExtraInfo" | @ref PVREPGTag::GetTitleExtraInfo "GetTitleExtraInfo" | *optional*
   /// | **Start time** | `time_t` | @ref PVREPGTag::SetStartTime "SetStartTime" | @ref PVREPGTag::GetStartTime "GetStartTime" | *required to set*
   /// | **End time** | `time_t` | @ref PVREPGTag::SetEndTime "SetEndTime" | @ref PVREPGTag::GetEndTime "GetEndTime" | *required to set*
   /// | **Plot outline** | `std::string` | @ref PVREPGTag::SetPlotOutline "SetPlotOutline" | @ref PVREPGTag::GetPlotOutline "GetPlotOutline" | *optional*
@@ -120,6 +121,19 @@ public:
 
   /// @brief To get with @ref SetTitle changed values.
   std::string GetTitle() const { return m_cStructure->strTitle ? m_cStructure->strTitle : ""; }
+
+  /// @brief **optional**\n
+  /// This event's title extra information.
+  void SetTitleExtraInfo(const std::string& titleExtraInfo)
+  {
+    ReallocAndCopyString(&m_cStructure->strTitleExtraInfo, titleExtraInfo.c_str());
+  }
+
+  /// @brief To get with @ref SetTitleExtraInfo changed values.
+  std::string GetTitleExtraInfo() const
+  {
+    return m_cStructure->strTitleExtraInfo ? m_cStructure->strTitleExtraInfo : "";
+  }
 
   /// @brief **required**\n
   /// Start time in UTC.
@@ -487,6 +501,7 @@ public:
   static void AllocResources(const EPG_TAG* source, EPG_TAG* target)
   {
     target->strTitle = AllocAndCopyString(source->strTitle);
+    target->strTitleExtraInfo = AllocAndCopyString(source->strTitleExtraInfo);
     target->strPlotOutline = AllocAndCopyString(source->strPlotOutline);
     target->strPlot = AllocAndCopyString(source->strPlot);
     target->strOriginalTitle = AllocAndCopyString(source->strOriginalTitle);
@@ -507,6 +522,7 @@ public:
   static void FreeResources(EPG_TAG* target)
   {
     FreeString(target->strTitle);
+    FreeString(target->strTitleExtraInfo);
     FreeString(target->strPlotOutline);
     FreeString(target->strPlot);
     FreeString(target->strOriginalTitle);

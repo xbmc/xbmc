@@ -624,6 +624,11 @@ extern "C"
     unsigned int iUniqueBroadcastId;
     unsigned int iUniqueChannelId;
     const char* strTitle;
+    const char* strTitleExtraInfo;
+    int iSeriesNumber;
+    int iEpisodeNumber;
+    int iEpisodePartNumber;
+    const char* strEpisodeName;
     time_t startTime;
     time_t endTime;
     const char* strPlotOutline;
@@ -644,10 +649,6 @@ extern "C"
     const char* strParentalRatingIcon;
     const char* strParentalRatingSource;
     int iStarRating;
-    int iSeriesNumber;
-    int iEpisodeNumber;
-    int iEpisodePartNumber;
-    const char* strEpisodeName;
     unsigned int iFlags;
     const char* strSeriesLink;
   } EPG_TAG;

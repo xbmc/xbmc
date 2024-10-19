@@ -86,6 +86,8 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING& recording, unsigned int iClien
     m_strRecordingId = recording.strRecordingId;
   if (recording.strTitle)
     m_strTitle = recording.strTitle;
+  if (recording.strTitleExtraInfo)
+    m_titleExtraInfo = recording.strTitleExtraInfo;
   if (recording.strEpisodeName)
     m_strShowTitle = recording.strEpisodeName;
   m_iSeason = recording.iSeriesNumber;
@@ -198,7 +200,8 @@ bool CPVRRecording::operator==(const CPVRRecording& right) const
           m_parentalRatingCode == right.m_parentalRatingCode &&
           m_parentalRatingIcon == right.m_parentalRatingIcon &&
           m_parentalRatingSource == right.m_parentalRatingSource &&
-          m_episodePartNumber == right.m_episodePartNumber);
+          m_episodePartNumber == right.m_episodePartNumber &&
+          m_titleExtraInfo == right.m_titleExtraInfo);
 }
 
 bool CPVRRecording::operator!=(const CPVRRecording& right) const
@@ -227,6 +230,7 @@ void CPVRRecording::Serialize(CVariant& value) const
   value["parentalratingicon"] = m_parentalRatingIcon;
   value["parentalratingsource"] = m_parentalRatingSource;
   value["episodepart"] = m_episodePartNumber;
+  value["titleextrainfo"] = m_titleExtraInfo;
 
   if (!value.isMember("art"))
     value["art"] = CVariant(CVariant::VariantTypeObject);
@@ -282,6 +286,7 @@ void CPVRRecording::Reset()
   m_parentalRatingCode.clear();
   m_parentalRatingIcon.clear();
   m_parentalRatingSource.clear();
+  m_titleExtraInfo.clear();
 
   CVideoInfoTag::Reset();
 }
@@ -444,6 +449,7 @@ void CPVRRecording::Update(const CPVRRecording& tag, const CPVRClient& client)
   m_strRecordingId = tag.m_strRecordingId;
   m_iClientId = tag.m_iClientId;
   m_strTitle = tag.m_strTitle;
+  m_titleExtraInfo = tag.m_titleExtraInfo;
   m_strShowTitle = tag.m_strShowTitle;
   m_iSeason = tag.m_iSeason;
   m_iEpisode = tag.m_iEpisode;
@@ -761,4 +767,10 @@ int CPVRRecording::EpisodePart() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_episodePartNumber;
+}
+
+const std::string& CPVRRecording::TitleExtraInfo() const
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  return m_titleExtraInfo;
 }

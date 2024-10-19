@@ -96,7 +96,8 @@ void CPVREpgDatabase::CreateTables()
               "sSeriesLink     varchar(255), "
               "sParentalRatingCode varchar(64),"
               "sParentalRatingIcon varchar(512),"
-              "sParentalRatingSource varchar(128)"
+              "sParentalRatingSource varchar(128),"
+              "sTitleExtraInfo varchar(128)"
               ")");
 
   CLog::LogFC(LOGDEBUG, LOGEPG, "Creating table 'lastepgscan'");
@@ -347,6 +348,12 @@ void CPVREpgDatabase::UpdateTables(int iVersion)
     m_pDS->exec("UPDATE savedsearches SET bStartAnyTime = 1;");
     m_pDS->exec("UPDATE savedsearches SET bEndAnyTime = 1;");
   }
+
+  if (iVersion < 20)
+  {
+    m_pDS->exec("ALTER TABLE epgtags ADD sTitleExtraInfo varchar(128);");
+    m_pDS->exec("UPDATE epgtags SET sTitleExtraInfo = ''");
+  }
 }
 
 bool CPVREpgDatabase::DeleteEpg()
@@ -479,6 +486,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::CreateEpgTag(
     newTag->m_iGenreType = m_pDS->fv("iGenreType").get_asInt();
     newTag->m_iGenreSubType = m_pDS->fv("iGenreSubType").get_asInt();
     newTag->m_strGenreDescription = m_pDS->fv("sGenre").get_asString();
+    newTag->m_titleExtraInfo = m_pDS->fv("sTitleExtraInfo").get_asString();
 
     return newTag;
   }
@@ -1282,9 +1290,9 @@ bool CPVREpgDatabase::QueuePersistQuery(const CPVREpgInfoTag& tag)
         "sIconPath, iGenreType, iGenreSubType, sGenre, sFirstAired, iParentalRating, iStarRating, "
         "iSeriesId, "
         "iEpisodeId, iEpisodePart, sEpisodeName, iFlags, sSeriesLink, sParentalRatingCode, "
-        "iBroadcastUid, sParentalRatingIcon, sParentalRatingSource) "
+        "iBroadcastUid, sParentalRatingIcon, sParentalRatingSource, sTitleExtraInfo) "
         "VALUES (%u, %u, %u, '%s', '%s', '%s', '%s', '%s', '%s', '%s', %i, '%s', '%s', %i, %i, "
-        "'%s', '%s', %i, %i, %i, %i, %i, '%s', %i, '%s', '%s', %i, '%s', '%s');",
+        "'%s', '%s', %i, %i, %i, %i, %i, '%s', %i, '%s', '%s', %i, '%s', '%s', '%s');",
         tag.EpgID(), static_cast<unsigned int>(iStartTime), static_cast<unsigned int>(iEndTime),
         tag.Title().c_str(), tag.PlotOutline().c_str(), tag.Plot().c_str(),
         tag.OriginalTitle().c_str(), tag.DeTokenize(tag.Cast()).c_str(),
@@ -1294,7 +1302,7 @@ bool CPVREpgDatabase::QueuePersistQuery(const CPVREpgInfoTag& tag)
         tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName().c_str(),
         tag.Flags(), tag.SeriesLink().c_str(), tag.ParentalRatingCode().c_str(),
         tag.UniqueBroadcastID(), tag.ParentalRatingIcon().c_str(),
-        tag.ParentalRatingSource().c_str());
+        tag.ParentalRatingSource().c_str(), tag.TitleExtraInfo().c_str());
   }
   else
   {
@@ -1305,9 +1313,9 @@ bool CPVREpgDatabase::QueuePersistQuery(const CPVREpgInfoTag& tag)
         "sIconPath, iGenreType, iGenreSubType, sGenre, sFirstAired, iParentalRating, iStarRating, "
         "iSeriesId, "
         "iEpisodeId, iEpisodePart, sEpisodeName, iFlags, sSeriesLink, sParentalRatingCode, "
-        "iBroadcastUid, idBroadcast, sParentalRatingIcon, sParentalRatingSource) "
+        "iBroadcastUid, idBroadcast, sParentalRatingIcon, sParentalRatingSource, sTitleExtraInfo) "
         "VALUES (%u, %u, %u, '%s', '%s', '%s', '%s', '%s', '%s', '%s', %i, '%s', '%s', %i, %i, "
-        "'%s', '%s', %i, %i, %i, %i, %i, '%s', %i, '%s', '%s', %i, %i, '%s', '%s');",
+        "'%s', '%s', %i, %i, %i, %i, %i, '%s', %i, '%s', '%s', %i, %i, '%s', '%s', '%s');",
         tag.EpgID(), static_cast<unsigned int>(iStartTime), static_cast<unsigned int>(iEndTime),
         tag.Title().c_str(), tag.PlotOutline().c_str(), tag.Plot().c_str(),
         tag.OriginalTitle().c_str(), tag.DeTokenize(tag.Cast()).c_str(),
@@ -1317,7 +1325,7 @@ bool CPVREpgDatabase::QueuePersistQuery(const CPVREpgInfoTag& tag)
         tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName().c_str(),
         tag.Flags(), tag.SeriesLink().c_str(), tag.ParentalRatingCode().c_str(),
         tag.UniqueBroadcastID(), iBroadcastId, tag.ParentalRatingIcon().c_str(),
-        tag.ParentalRatingSource().c_str());
+        tag.ParentalRatingSource().c_str(), tag.TitleExtraInfo().c_str());
   }
 
   QueueInsertQuery(strQuery);
