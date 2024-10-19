@@ -133,9 +133,9 @@ public:
       m_fanartPath(recording.ClientFanartPath()),
       m_firstAired(recording.FirstAired().IsValid() ? recording.FirstAired().GetAsW3CDate() : ""),
       m_providerName(recording.ProviderName()),
-      m_parentalRatingCode(""), //! @todo
-      m_parentalRatingIcon(""), //! @todo
-      m_parentalRatingSource("") //! @todo
+      m_parentalRatingCode(recording.GetParentalRatingCode()),
+      m_parentalRatingIcon(recording.GetParentalRatingIcon()),
+      m_parentalRatingSource(recording.GetParentalRatingSource())
   {
     // zero-init base struct members
     PVR_RECORDING* base = static_cast<PVR_RECORDING*>(this);
@@ -306,8 +306,8 @@ public:
       m_genreDescription(tag.GenreDescription()),
       m_firstAired(GetFirstAired(tag)),
       m_parentalRatingCode(tag.ParentalRatingCode()),
-      m_parentalRatingIcon(""), //! @todo
-      m_parentalRatingSource("") //! @todo
+      m_parentalRatingIcon(tag.ParentalRatingIcon()),
+      m_parentalRatingSource(tag.ParentalRatingSource())
   {
     // zero-init base struct members
     EPG_TAG* base = static_cast<EPG_TAG*>(this);
