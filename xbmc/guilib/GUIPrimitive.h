@@ -15,7 +15,6 @@ class CGUIPrimitive : public CGUIImage
 {
 public:
   CGUIPrimitive(int parentID, int controlID, float posX, float posY, float width, float height);
-  CGUIPrimitive(const CGUIPrimitive& left);
 
   void SetUniform(KODI::GUILIB::GUIINFO::CGUIInfoColor color);
   void Set2DGradient(const std::array<KODI::GUILIB::GUIINFO::CGUIInfoColor, 4>& colors);
