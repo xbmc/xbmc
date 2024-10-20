@@ -1483,8 +1483,12 @@ bool CGUIDialogVideoInfo::DeleteVideoItem(const std::shared_ptr<CFileItem>& item
         item->m_bIsFolder = true;
 
       CGUIComponent *gui = CServiceBroker::GetGUI();
-      if (gui && gui->ConfirmDelete(item->GetPath()))
-        CFileUtils::DeleteItem(item);
+
+        if (gui) // BOAZ_N
+        {
+            if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_DELETECONFIRM) || gui->ConfirmDelete(item->GetPath()))
+                CFileUtils::DeleteItem(item);
+        }
     }
   }
 
