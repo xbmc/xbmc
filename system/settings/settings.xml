@@ -1075,19 +1075,19 @@
           </dependencies>
           <control type="toggle" />
         </setting>
-	<setting id="filelists.deleteconfirm" type="boolean" label="40801" help="40802">
-	  <level>2</level>
-	  <default>false</default>
-	  <dependencies>
-	    <dependency type="enable">
-	      <or>
-	        <condition on="property" operator="!is" name="ProfileHasFilesLocked" />
-	        <condition on="property" name="IsMasterUser" />
-	      </or>
-	    </dependency>
-	  </dependencies>
-	  <control type="toggle" />
-	</setting>
+        <setting id="filelists.videodeleteconfirm" type="boolean" label="40801" help="40802">
+          <level>2</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="enable">
+              <or>
+                <condition on="property" operator="!is" name="ProfileHasFilesLocked" />
+                <condition on="property" name="IsMasterUser" />
+              </or>
+            </dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>		  
       </group>
     </category>
     <category id="video" label="14215" help="38107">

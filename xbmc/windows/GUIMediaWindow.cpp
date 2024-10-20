@@ -1653,11 +1653,10 @@ void CGUIMediaWindow::OnDeleteItem(int iItem)
   }
 
   CGUIComponent *gui = CServiceBroker::GetGUI();
-  
-  if (gui) // BOAZ_N
+  if (gui && gui->ConfirmDelete(item->GetPath()))
   {
-    if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_DELETECONFIRM) || gui->ConfirmDelete(item->GetPath()))
-        CFileUtils::DeleteItem(item);
+    if (!CFileUtils::DeleteItem(item))
+      return;
   }
   else
     return;

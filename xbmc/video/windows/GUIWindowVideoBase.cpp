@@ -1061,9 +1061,9 @@ void CGUIWindowVideoBase::OnDeleteItem(const CFileItemPtr& item)
   {
     CGUIComponent *gui = CServiceBroker::GetGUI();
     
-    if (gui) // BOAZ_N
+    if (gui)
     {
-      if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_DELETECONFIRM) || gui->ConfirmDelete(item->GetPath()))
+      if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_VIDEODELETECONFIRM) || gui->ConfirmDelete(item->GetPath()))
           CFileUtils::DeleteItem(item);
     }
   }
