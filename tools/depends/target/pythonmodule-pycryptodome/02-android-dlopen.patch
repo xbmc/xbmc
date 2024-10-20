@@ -1,6 +1,6 @@
 --- a/lib/Crypto/Util/_raw_api.py
 +++ b/lib/Crypto/Util/_raw_api.py
-@@ -182,11 +182,14 @@
+@@ -183,11 +183,14 @@
              import platform
              cached_architecture[:] = platform.architecture()
          bits, linkage = cached_architecture
@@ -20,7 +20,7 @@
          return CDLL(name)
  
      def get_c_string(c_string):
-@@ -287,20 +290,10 @@
+@@ -288,20 +291,10 @@
      @cdecl, the C function declarations.
      """
  
