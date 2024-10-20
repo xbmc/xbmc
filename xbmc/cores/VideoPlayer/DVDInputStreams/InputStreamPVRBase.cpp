@@ -40,8 +40,9 @@ bool CInputStreamPVRBase::IsEOF()
 
 bool CInputStreamPVRBase::Open()
 {
-  if (CDVDInputStream::Open() && OpenPVRStream())
+  if (!m_isOpen && CDVDInputStream::Open() && OpenPVRStream())
   {
+    m_isOpen = true;
     m_eof = false;
     m_StreamProps->iStreamCount = 0;
     return true;
@@ -54,9 +55,13 @@ bool CInputStreamPVRBase::Open()
 
 void CInputStreamPVRBase::Close()
 {
-  ClosePVRStream();
-  CDVDInputStream::Close();
-  m_eof = true;
+  if (m_isOpen)
+  {
+    ClosePVRStream();
+    CDVDInputStream::Close();
+    m_eof = true;
+    m_isOpen = false;
+  }
 }
 
 int CInputStreamPVRBase::Read(uint8_t* buf, int buf_size)

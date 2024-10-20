@@ -80,4 +80,5 @@ protected:
   std::shared_ptr<PVR_STREAM_PROPERTIES> m_StreamProps;
   std::map<int, std::shared_ptr<CDemuxStream>> m_streamMap;
   std::shared_ptr<PVR::CPVRClient> m_client;
+  bool m_isOpen{false};
 };
