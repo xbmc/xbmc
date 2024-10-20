@@ -19,11 +19,6 @@
 
 struct PVR_TIMER_TYPE;
 
-namespace ADDON
-{
-class CAddonVersion;
-}
-
 namespace PVR
 {
 class CPVRClient;
@@ -70,9 +65,7 @@ public:
                                                              int iClientId);
 
   CPVRTimerType();
-  CPVRTimerType(const PVR_TIMER_TYPE& type,
-                int iClientId,
-                const ADDON::CAddonVersion& addonApiVersion);
+  CPVRTimerType(const PVR_TIMER_TYPE& type, int iClientId);
   CPVRTimerType(unsigned int iTypeId, uint64_t iAttributes, const std::string& strDescription = "");
 
   virtual ~CPVRTimerType();

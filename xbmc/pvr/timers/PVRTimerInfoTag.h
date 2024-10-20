@@ -21,11 +21,6 @@
 
 struct PVR_TIMER;
 
-namespace ADDON
-{
-class CAddonVersion;
-}
-
 namespace PVR
 {
 class CPVRChannel;
@@ -48,8 +43,7 @@ public:
   explicit CPVRTimerInfoTag(bool bRadio = false);
   CPVRTimerInfoTag(const PVR_TIMER& timer,
                    const std::shared_ptr<CPVRChannel>& channel,
-                   unsigned int iClientId,
-                   const ADDON::CAddonVersion& addonApiVersion);
+                   unsigned int iClientId);
 
   bool operator==(const CPVRTimerInfoTag& right) const;
   bool operator!=(const CPVRTimerInfoTag& right) const;

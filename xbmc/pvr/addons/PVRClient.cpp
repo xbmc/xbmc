@@ -10,7 +10,6 @@
 
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
-#include "addons/AddonVersion.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "cores/EdlEdit.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxUtils.h"
@@ -1427,8 +1426,8 @@ PVR_ERROR CPVRClient::UpdateTimerTypes()
               CLog::LogF(LOGERROR, "Invalid timer type supplied by add-on {}.", GetID());
               continue;
             }
-            timerTypes.emplace_back(std::make_shared<CPVRTimerType>(
-                *(types_array[i]), m_iClientId, Addon()->GetTypeVersionDll(ADDON_INSTANCE_PVR)));
+            timerTypes.emplace_back(
+                std::make_shared<CPVRTimerType>(*(types_array[i]), m_iClientId));
           }
         }
 
@@ -2338,9 +2337,7 @@ void CPVRClient::cb_transfer_timer_entry(void* kodiInstance,
 
                         // transfer this entry to the timers container
                         const std::shared_ptr<CPVRTimerInfoTag> transferTimer =
-                            std::make_shared<CPVRTimerInfoTag>(
-                                *timer, channel, client->GetID(),
-                                client->Addon()->GetTypeVersionDll(ADDON_INSTANCE_PVR));
+                            std::make_shared<CPVRTimerInfoTag>(*timer, channel, client->GetID());
                         CPVRTimersContainer* timers =
                             static_cast<CPVRTimersContainer*>(handle->dataAddress);
                         timers->UpdateFromClient(transferTimer);
