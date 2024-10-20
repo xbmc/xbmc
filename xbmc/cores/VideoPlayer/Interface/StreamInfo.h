@@ -10,6 +10,7 @@
 
 #include "utils/Geometry.h"
 
+#include <cstdint>
 #include <string>
 
 template <typename T> class CRectGen;
