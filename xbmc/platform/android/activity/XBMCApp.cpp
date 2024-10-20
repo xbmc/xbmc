@@ -977,9 +977,9 @@ void CXBMCApp::OnPlayBackStopped()
   CLog::Log(LOGDEBUG, "{}", __PRETTY_FUNCTION__);
 
   m_playback_state = PLAYBACK_STATE_STOPPED;
+  m_mediaSessionUpdated = false;
   UpdateSessionState();
   m_mediaSession->activate(false);
-  m_mediaSessionUpdated = false;
 
   RequestVisibleBehind(false);
   CAndroidKey::SetHandleMediaKeys(true);
