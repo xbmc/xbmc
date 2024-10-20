@@ -122,11 +122,6 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING& recording, unsigned int iClien
     m_strProviderName = recording.strProviderName;
   m_iClientProviderUid = recording.iClientProviderUid;
 
-  // Workaround for C++ PVR Add-on API wrapper not initializing this value correctly until API 9.0.1
-  //! @todo Remove with next incompatible API bump.
-  if (m_iClientProviderUid == 0)
-    m_iClientProviderUid = PVR_PROVIDER_INVALID_UID;
-
   SetGenre(recording.iGenreType, recording.iGenreSubType,
            recording.strGenreDescription ? recording.strGenreDescription : "");
   CVideoInfoTag::SetPlayCount(recording.iPlayCount);
