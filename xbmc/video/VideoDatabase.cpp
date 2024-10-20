@@ -4956,6 +4956,11 @@ void CVideoDatabase::SetVideoSettings(int idFile, const CVideoSettings &setting)
   }
 }
 
+void CVideoDatabase::UpdateArtForItem(int mediaId, const MediaType& mediaType)
+{
+  AnnounceUpdate(mediaType, mediaId);
+}
+
 void CVideoDatabase::SetArtForItem(int mediaId, const MediaType &mediaType, const std::map<std::string, std::string> &art)
 {
   for (const auto &i : art)
@@ -4994,8 +4999,6 @@ void CVideoDatabase::SetArtForItem(int mediaId, const MediaType &mediaType, cons
       sql = PrepareSQL("INSERT INTO art(media_id, media_type, type, url) VALUES (%d, '%s', '%s', '%s')", mediaId, mediaType.c_str(), artType.c_str(), url.c_str());
       m_pDS->exec(sql);
     }
-
-    AnnounceUpdate(mediaType, mediaId);
   }
   catch (...)
   {
