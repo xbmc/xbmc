@@ -827,8 +827,14 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       item->m_bIsFolder = false;
       CGUIComponent *gui = CServiceBroker::GetGUI();
-      if (gui && gui->ConfirmDelete(item->GetPath()))
-        CFileUtils::DeleteItem(item);
+
+      if (gui)
+      {
+          bool confirm = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_CONFIRMFILEDELETE);
+
+          if (!confirm || gui->ConfirmDelete(item->GetPath()))
+            CFileUtils::DeleteItem(item);
+      }
     }
     else if (!VIDEO::IsVideoDb(*item))
       OnDeleteItem(itemNumber);

@@ -514,8 +514,15 @@ bool CProfileManager::DeleteProfile(unsigned int index)
   item->Select(true);
 
   CGUIComponent *gui = CServiceBroker::GetGUI();
-  if (gui && gui->ConfirmDelete(item->GetPath()))
-    CFileUtils::DeleteItem(item);
+
+  if (gui)
+  {
+    bool confirm = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+        CSettings::SETTING_FILELISTS_CONFIRMFILEDELETE);
+
+    if (!confirm || gui->ConfirmDelete(item->GetPath()))
+      CFileUtils::DeleteItem(item);
+  }
 
   return Save();
 }

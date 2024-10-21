@@ -24703,11 +24703,11 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#40801"
-msgid "Video delete confirmation"
+msgid "Confirm file delete"
 msgstr ""
 
-#. Description of setting with label #40801 "Video delete confirmation"
+#. Description of setting with label #40801 "Confirm file delete"
 #: system/settings/settings.xml
 msgctxt "#40802"
-msgid "Show video delete confirmation dialog"
+msgid "Confirm file delete"
 msgstr ""
