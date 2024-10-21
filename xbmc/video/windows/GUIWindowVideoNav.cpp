@@ -716,8 +716,10 @@ void CGUIWindowVideoNav::OnDeleteItem(const CFileItemPtr& pItem)
     
     if (gui)
     {
-      if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_VIDEODELETECONFIRM) || gui->ConfirmDelete(pItem->GetPath()))
-          CFileUtils::DeleteItem(pItem);
+      if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+              CSettings::SETTING_FILELISTS_VIDEODELETECONFIRM) ||
+          gui->ConfirmDelete(pItem->GetPath()))
+        CFileUtils::DeleteItem(pItem);
     }
   }
   else
