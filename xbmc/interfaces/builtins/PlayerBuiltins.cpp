@@ -10,6 +10,7 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
+#include "GUIPassword.h"
 #include "GUIUserMessages.h"
 #include "PartyModeManager.h"
 #include "PlayListPlayer.h"
@@ -17,7 +18,6 @@
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "application/Application.h"
-#include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "application/ApplicationPowerHandling.h"
 #include "guilib/GUIComponent.h"
@@ -473,6 +473,14 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
   // at this point the item instance has only the path and the folder flag set. We
   // need some extended item properties to process resume successfully. Load them.
   item.LoadDetails();
+
+  if ((VIDEO::IsVideo(item) && !g_passwordManager.IsVideoUnlocked()) ||
+      (MUSIC::IsAudio(item) && !g_passwordManager.IsMusicUnlocked()))
+  {
+    CLog::LogF(LOGERROR, "MasterCode or MediaSource-code is wrong: {} will not be played.",
+               item.GetPath());
+    return false;
+  }
 
   // ask if we need to check guisettings to resume
   bool askToResume = true;
