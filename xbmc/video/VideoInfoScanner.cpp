@@ -1486,7 +1486,8 @@ namespace KODI::VIDEO
 
     CVideoInfoTag &movieDetails = *pItem->GetVideoInfoTag();
     if (movieDetails.m_basePath.empty())
-      movieDetails.m_basePath = pItem->GetBaseMoviePath(videoFolder);
+      movieDetails.m_basePath =
+          pItem->GetBaseMoviePath(videoFolder || URIUtils::IsStack(pItem->GetDynPath()));
     movieDetails.m_parentPathID = m_database.AddPath(URIUtils::GetParentPath(movieDetails.m_basePath));
 
     movieDetails.m_strFileNameAndPath = pItem->GetPath();

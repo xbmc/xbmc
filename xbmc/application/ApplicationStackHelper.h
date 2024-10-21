@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "FileItemList.h"
 #include "application/IApplicationComponent.h"
 #include "threads/CriticalSection.h"
 
@@ -47,9 +48,14 @@ public:
   int GetCurrentPartNumber() const { return m_currentStackPosition; }
 
   /*!
-  \brief Returns true if Application is currently playing an ISO stack
+  \brief returns the total number of parts
   */
-  bool IsPlayingISOStack() const;
+  int GetTotalPartNumbers() const { return m_currentStack->Size(); }
+
+  /*!
+  \brief Returns true if Application is currently playing an disc (ISO/BMDV/VIDEO_TS) stack
+  */
+  bool IsPlayingDiscStack() const;
 
   /*!
   \brief Returns true if Application is currently playing a Regular (non-ISO) stack
@@ -79,7 +85,7 @@ public:
   }
 
   /*!
-  \brief Returns the FileItem currently playing back as part of a (non-ISO) stack playback
+  \brief Returns the FileItem currently playing back as part of a stack playback
   */
   const CFileItem& GetCurrentStackPartFileItem() const
   {
@@ -87,32 +93,32 @@ public:
   }
 
   /*!
-  \brief Returns the end time of a FileItem part of a (non-ISO) stack playback
+  \brief Returns the end time of a FileItem part of a stack playback
   \param partNumber the requested part number in the stack
   */
   uint64_t GetStackPartEndTimeMs(int partNumber) const;
 
   /*!
-  \brief Returns the start time of a FileItem part of a (non-ISO) stack playback
+  \brief Returns the start time of a FileItem part of a stack playback
   \param partNumber the requested part number in the stack
   */
   uint64_t GetStackPartStartTimeMs(int partNumber) const { return (partNumber > 0) ? GetStackPartEndTimeMs(partNumber - 1) : 0; }
 
   /*!
-  \brief Returns the start time of the current FileItem part of a (non-ISO) stack playback
+  \brief Returns the start time of the current FileItem part of a stack playback
   */
   uint64_t GetCurrentStackPartStartTimeMs() const { return GetStackPartStartTimeMs(m_currentStackPosition); }
 
   /*!
-  \brief Returns the total time of a (non-ISO) stack playback
+  \brief Returns the total time of a stack playback
   */
   uint64_t GetStackTotalTimeMs() const;
 
   /*!
-  \brief Returns the stack part number corresponding to the given timestamp in a (non-ISO) stack playback
+  \brief Returns the stack part number corresponding to the given timestamp in a stack playback
   \param msecs the requested timestamp in the stack (in milliseconds)
   */
-  int GetStackPartNumberAtTimeMs(uint64_t msecs);
+  int GetStackPartNumberAtTimeMs(uint64_t msecs) const;
 
   // Stack information registration methods
 
@@ -178,11 +184,33 @@ public:
   */
   void SetRegisteredStackTotalTimeMs(const CFileItem& item, uint64_t totalTimeMs);
 
+  /*!
+  \brief Updates the DynPath (which contains the entire stack://) as each element is played
+  \param newPath the updated stack:// path
+  */
+  void SetRegisteredStackDynPaths(const std::string& newPath) const;
+
+  void SetRegisteredStackPartDynPath(const CFileItem& item, const std::string& newPath);
+
+  void SetStackEndTimeMs(const uint64_t totalTimeMs);
+  void SetStackPartOffsets(const CFileItem& item,
+                           const int64_t startOffset,
+                           const int64_t endOffset);
+  int GetKnownStackParts() const { return m_knownStackParts; }
+  void IncreaseKnownStackParts() { m_knownStackParts += 1; }
+
+  void SetStackPartStopped(const bool value) { m_stackpartstopped = value; }
+  bool GetStackPartStopped() const { return m_stackpartstopped; }
+
+  bool HasDiscParts() const;
+
+  bool WasPlayingDiscStack() const { return m_wasDiscStack; }
+
   CCriticalSection m_critSection;
 
 protected:
   /*!
-  \brief Returns a FileItem part of a (non-ISO) stack playback
+  \brief Returns a FileItem part of a stack playback
   \param partNumber the requested part number in the stack
   */
   CFileItem& GetStackPartFileItem(int partNumber);
@@ -211,5 +239,7 @@ protected:
 
   std::unique_ptr<CFileItemList> m_currentStack;
   int m_currentStackPosition = 0;
-  bool m_currentStackIsDiscImageStack = false;
+  int m_knownStackParts{0};
+  bool m_wasDiscStack{false};
+  bool m_stackpartstopped{false};
 };

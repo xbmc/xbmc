@@ -56,6 +56,7 @@ public:
   int GetBlockSize() override { return DVDSTREAM_BLOCK_SIZE_DVD; }
   bool IsEOF() override { return m_bEOF; }
   int64_t GetLength() override { return 0; }
+  int64_t GetDuration() override { return 0; }
   ENextStream NextStream() override ;
 
   void ActivateButton() override;

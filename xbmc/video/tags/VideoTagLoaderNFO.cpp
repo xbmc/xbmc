@@ -15,9 +15,9 @@
 #include "filesystem/Directory.h"
 #include "filesystem/StackDirectory.h"
 #include "utils/FileUtils.h"
-#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 
 #include <utility>
@@ -91,25 +91,23 @@ CInfoScanner::INFO_TYPE CVideoTagLoaderNFO::Load(CVideoInfoTag& tag,
   return result;
 }
 
-std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
-                                        bool movieFolder) const
+std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item, bool movieFolder) const
 {
-  std::string nfoFile;
   // Find a matching .nfo file
+  std::string nfoFile;
   if (!item.m_bIsFolder)
   {
-    if (URIUtils::IsInRAR(item.GetPath())) // we have a rarred item - we want to check outside the rars
+    if (URIUtils::IsInRAR(
+            item.GetPath())) // we have a rarred item - we want to check outside the rars
     {
       CFileItem item2(item);
       CURL url(item.GetPath());
       std::string strPath = URIUtils::GetDirectory(url.GetHostName());
-      item2.SetPath(URIUtils::AddFileToFolder(strPath,
-                                            URIUtils::GetFileName(item.GetPath())));
+      item2.SetPath(URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(item.GetPath())));
       return FindNFO(item2, movieFolder);
     }
 
-    // grab the folder path
-    std::string strPath = URIUtils::GetDirectory(item.GetPath());
+    const std::string strPath = URIUtils::GetDirectory(item.GetPath());
 
     if (movieFolder && !item.IsStack())
     { // looking up by folder name - movie.nfo takes priority - but not for stacked items (handled below)
@@ -121,27 +119,26 @@ std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
     // try looking for .nfo file for a stacked item
     if (item.IsStack())
     {
-      // first try .nfo file matching first file in stack
-      CStackDirectory dir;
-      std::string firstFile = dir.GetFirstStackedFile(item.GetPath());
       CFileItem item2;
-      item2.SetPath(firstFile);
-      nfoFile = FindNFO(item2, movieFolder);
-      // else try .nfo file matching stacked title
+      if (!KODI::VIDEO::IsDVDFile(item) && !KODI::VIDEO::IsBDFile(item))
+      {
+        // first try .nfo file matching first file in stack
+        item2.SetPath(CStackDirectory::GetFirstStackedFile(item.GetPath()));
+        nfoFile = FindNFO(item2, movieFolder);
+      }
       if (nfoFile.empty())
       {
-        std::string stackedTitlePath = dir.GetStackedTitlePath(item.GetPath());
-        item2.SetPath(stackedTitlePath);
+        // else try .nfo file matching stacked title
+        item2.SetPath(CStackDirectory::GetStackedTitlePath(item.GetPath()));
         nfoFile = FindNFO(item2, movieFolder);
       }
     }
     else
     {
-      // already an .nfo file?
       if (URIUtils::HasExtension(item.GetPath(), ".nfo"))
+        // already an .nfo file
         nfoFile = item.GetPath();
-      // no, create .nfo file
-      else
+      if (nfoFile.empty())
         nfoFile = URIUtils::ReplaceExtension(item.GetPath(), ".nfo");
     }
 
@@ -149,57 +146,28 @@ std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
     if (!nfoFile.empty() && !CFileUtils::Exists(nfoFile))
       nfoFile.clear();
 
-    if (nfoFile.empty()) // final attempt - strip off any cd1 folders
-    {
-      URIUtils::RemoveSlashAtEnd(strPath); // need no slash for the check that follows
-      CFileItem item2;
-      if (StringUtils::EndsWithNoCase(strPath, "cd1"))
-      {
-        strPath.erase(strPath.size() - 3);
-        item2.SetPath(URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(item.GetPath())));
-        return FindNFO(item2, movieFolder);
-      }
-    }
-
     if (nfoFile.empty() && item.IsOpticalMediaFile())
     {
       CFileItem parentDirectory(item.GetLocalMetadataPath(), true);
       nfoFile = FindNFO(parentDirectory, true);
     }
   }
+
   // folders (or stacked dvds) can take any nfo file if there's a unique one
-  if (item.m_bIsFolder || item.IsOpticalMediaFile() || (movieFolder && nfoFile.empty()))
+  if (item.m_bIsFolder || URIUtils::GetFileName(item.GetPath()).empty() ||
+      item.IsOpticalMediaFile() || (movieFolder && nfoFile.empty()))
   {
     // see if there is a unique nfo file in this folder, and if so, use that
     CFileItemList items;
-    CDirectory dir;
-    std::string strPath;
-    if (item.m_bIsFolder)
-      strPath = item.GetPath();
-    else
-      strPath = URIUtils::GetDirectory(item.GetPath());
+    const std::string strPath{item.m_bIsFolder ? item.GetPath()
+                                               : URIUtils::GetDirectory(item.GetPath())};
 
-    if (dir.GetDirectory(strPath, items, ".nfo", DIR_FLAG_DEFAULTS) && items.Size())
-    {
-      int numNFO = -1;
-      for (int i = 0; i < items.Size(); i++)
-      {
-        if (items[i]->IsNFO())
-        {
-          if (numNFO == -1)
-            numNFO = i;
-          else
-          {
-            numNFO = -1;
-            break;
-          }
-        }
-      }
-      if (numNFO > -1)
-        return items[numNFO]->GetPath();
-    }
+    if (CDirectory::GetDirectory(strPath, items, ".nfo", DIR_FLAG_DEFAULTS); !items.IsEmpty())
+      if (const auto& it = std::find_if(items.begin(), items.end(),
+                                        [](const auto& item) { return item->IsNFO(); });
+          it != items.end())
+        return (*it)->GetPath();
   }
 
   return nfoFile;
 }
-
