@@ -1,0 +1,8 @@
+xbmc/smarthome smarthome
+xbmc/smarthome/guibridge smarthome/guibridge
+xbmc/smarthome/guicontrols smarthome/guicontrols
+xbmc/smarthome/guiinfo smarthome/guiinfo
+xbmc/smarthome/input smarthome/input
+xbmc/smarthome/rendering smarthome/rendering
+xbmc/smarthome/ros2 smarthome/ros2
+xbmc/smarthome/streams smarthome/streams
