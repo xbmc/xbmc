@@ -12,7 +12,6 @@
 #include <cstdint>
 #include <memory>
 #include <optional>
-#include <span>
 #include <string_view>
 #include <vector>
 
@@ -41,8 +40,6 @@ public:
 
   bool SetProperty(const std::string& name, uint64_t value);
   bool SupportsProperty(const std::string& name);
-  std::optional<bool> IsPropertyImmutable(std::string_view name);
-  std::optional<std::span<uint64_t, 2>> GetRangePropertyLimits(std::string_view name);
 
 protected:
   explicit CDRMObject(int fd);

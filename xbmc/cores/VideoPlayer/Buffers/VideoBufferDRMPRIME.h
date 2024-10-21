@@ -54,8 +54,6 @@ public:
   virtual const VideoPicture& GetPicture() const { return m_picture; }
   virtual uint32_t GetWidth() const { return GetPicture().iWidth; }
   virtual uint32_t GetHeight() const { return GetPicture().iHeight; }
-  virtual uint32_t GetXOffset() const { return GetPicture().m_xOffset; }
-  virtual uint32_t GetYOffset() const { return GetPicture().m_yOffset; }
 
   virtual AVDRMFrameDescriptor* GetDescriptor() const = 0;
   virtual bool IsValid() const { return true; }
