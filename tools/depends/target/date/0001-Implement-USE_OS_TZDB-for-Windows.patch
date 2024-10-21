@@ -1,0 +1,1755 @@
+From bb70fc9c98ca5c37f00322e06bf973768e8dae5d Mon Sep 17 00:00:00 2001
+From: Vasyl Gello <vasek.gello@gmail.com>
+Date: Sun, 6 Oct 2024 17:15:07 +0300
+Subject: [PATCH] Implement USE_OS_TZDB for Windows
+
+  * Follows STL implementation based on ICU
+
+  * Should work starting Windows 10 1705 "Creators Update"
+
+  * Features optimized usage of `timezone_mapping` not present
+    in STL
+
+  * POSIX timezone tests do not work with ICU implementation due
+    to different storage format of timezone data
+
+Signed-off-by: Vasyl Gello <vasek.gello@gmail.com>
+---
+ CMakeLists.txt          |    2 +-
+ include/date/tz.h       |   46 +-
+ src/tz.cpp              | 1294 ++++++++++++++++++++++++++++++++++++++-
+ test/posix/ptz.pass.cpp |   25 +
+ 4 files changed, 1344 insertions(+), 23 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index a430a23..ff6a8bd 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -146,7 +146,7 @@ if( BUILD_TZ_LIB )
+       target_compile_definitions( date-tz PRIVATE AUTO_DOWNLOAD=1 HAS_REMOTE_API=1 )
+     endif()
+ 
+-    if ( USE_SYSTEM_TZ_DB AND NOT WIN32 AND NOT MANUAL_TZ_DB )
++    if ( USE_SYSTEM_TZ_DB AND NOT MANUAL_TZ_DB )
+       target_compile_definitions( date-tz PRIVATE INSTALL=. PUBLIC USE_OS_TZDB=1 )
+     else()
+       target_compile_definitions( date-tz PUBLIC USE_OS_TZDB=0 )
+diff --git a/include/date/tz.h b/include/date/tz.h
+index f056849..d36d9eb 100644
+--- a/include/date/tz.h
++++ b/include/date/tz.h
+@@ -82,12 +82,6 @@ static_assert(HAS_REMOTE_API == 0 ? AUTO_DOWNLOAD == 0 : true,
+ #  define USE_SHELL_API 1
+ #endif
+ 
+-#if USE_OS_TZDB
+-#  ifdef _WIN32
+-#    error "USE_OS_TZDB can not be used on Windows"
+-#  endif
+-#endif
+-
+ #ifndef HAS_DEDUCTION_GUIDES
+ #  if __cplusplus >= 201703
+ #    define HAS_DEDUCTION_GUIDES 1
+@@ -144,6 +138,23 @@ enum class choose {earliest, latest};
+ struct tzdb;
+ static std::unique_ptr<tzdb> init_tzdb();
+ # endif // defined(ANDROID) || defined(__ANDROID__)
++
++# if _WIN32 && USE_OS_TZDB
++
++// from stl/inc/__msvc_tzdb.hpp
++
++enum class __std_tzdb_sys_info_type : char {
++    // TRANSITION, ABI: In order to be compatible with existing object files which do not know about
++    // `__std_tzdb_sys_info_type`, the type is passed in the after-end byte of a string passed with its length to
++    // `__std_tzdb_get_sys_info`. Since older object files always pass the `.c_str()` of a `std::string`
++    // to that function, the after-end byte will always be '\0'.
++    _Full = '\0',
++    _Offset_only,
++    _Offset_and_range,
++};
++
++# endif // _WIN32 && USE_OS_TZDB
++
+ #endif // defined(BUILD_TZ_LIB)
+ 
+ namespace detail
+@@ -787,8 +798,10 @@ class time_zone
+ private:
+     std::string                          name_;
+ #if USE_OS_TZDB
++# if !_WIN32
+     std::vector<detail::transition>      transitions_;
+     std::vector<detail::expanded_ttinfo> ttinfos_;
++# endif // !_WIN32
+ #else  // !USE_OS_TZDB
+     std::vector<detail::zonelet>         zonelets_;
+ #endif  // !USE_OS_TZDB
+@@ -840,6 +853,11 @@ private:
+     DATE_API sys_info   get_info_impl(sys_seconds tp) const;
+     DATE_API local_info get_info_impl(local_seconds tp) const;
+ 
++#if defined(BUILD_TZ_LIB) && _WIN32 && USE_OS_TZDB
++    sys_info   get_win_info_impl(sys_seconds tp, __std_tzdb_sys_info_type kind) const;
++    local_info get_win_info_impl(local_seconds tp, __std_tzdb_sys_info_type kind) const;
++#endif // defined(BUILD_TZ_LIB) && _WIN32 && USE_OS_TZDB
++
+     template <class Duration>
+         sys_time<typename std::common_type<Duration, std::chrono::seconds>::type>
+         to_sys_impl(local_time<Duration> tp, choose z, std::false_type) const;
+@@ -850,6 +868,8 @@ private:
+ #if USE_OS_TZDB
+     DATE_API void init() const;
+     DATE_API void init_impl();
++
++# if !_WIN32
+     DATE_API sys_info
+         load_sys_info(std::vector<detail::transition>::const_iterator i) const;
+ 
+@@ -857,6 +877,8 @@ private:
+     DATE_API void
+     load_data(std::istream& inf, std::int32_t tzh_leapcnt, std::int32_t tzh_timecnt,
+                                  std::int32_t tzh_typecnt, std::int32_t tzh_charcnt);
++# endif // !_WIN32
++
+ # if defined(ANDROID) || defined(__ANDROID__)
+     void parse_from_android_tzdata(std::ifstream& inf, const std::size_t off);
+ # endif // defined(ANDROID) || defined(__ANDROID__)
+@@ -933,7 +955,11 @@ local_time<typename std::common_type<Duration, std::chrono::seconds>::type>
+ time_zone::to_local(sys_time<Duration> tp) const
+ {
+     using LT = local_time<typename std::common_type<Duration, std::chrono::seconds>::type>;
++#if defined(BUILD_TZ_LIB) && _WIN32 && USE_OS_TZDB
++    auto i = get_win_info_impl(tp, __std_tzdb_sys_info_type::_Offset_only);
++#else // !defined(BUILD_TZ_LIB) && !_WIN32 && !USE_OS_TZDB
+     auto i = get_info(tp);
++#endif // defined(BUILD_TZ_LIB) && _WIN32 && USE_OS_TZDB
+     return LT{(tp + i.offset).time_since_epoch()};
+ }
+ 
+@@ -949,7 +975,11 @@ template <class Duration>
+ sys_time<typename std::common_type<Duration, std::chrono::seconds>::type>
+ time_zone::to_sys_impl(local_time<Duration> tp, choose z, std::false_type) const
+ {
++#if defined(BUILD_TZ_LIB) && _WIN32 && USE_OS_TZDB
++    auto i = get_win_info_impl(tp, __std_tzdb_sys_info_type::_Offset_and_range);
++#else // !defined(BUILD_TZ_LIB) && !_WIN32 && !USE_OS_TZDB
+     auto i = get_info(tp);
++#endif // defined(BUILD_TZ_LIB) && _WIN32 && USE_OS_TZDB
+     if (i.result == local_info::nonexistent)
+     {
+         return i.first.end;
+@@ -966,7 +996,11 @@ template <class Duration>
+ sys_time<typename std::common_type<Duration, std::chrono::seconds>::type>
+ time_zone::to_sys_impl(local_time<Duration> tp, choose, std::true_type) const
+ {
++#if defined(BUILD_TZ_LIB) && _WIN32 && USE_OS_TZDB
++    auto i = get_win_info_impl(tp, __std_tzdb_sys_info_type::_Offset_and_range);
++#else // !defined(BUILD_TZ_LIB) && !_WIN32 && !USE_OS_TZDB
+     auto i = get_info(tp);
++#endif // defined(BUILD_TZ_LIB) && _WIN32 && USE_OS_TZDB
+     if (i.result == local_info::nonexistent)
+         throw nonexistent_local_time(tp, i);
+     else if (i.result == local_info::ambiguous)
+diff --git a/src/tz.cpp b/src/tz.cpp
+index 15c9f5d..aa0dc7b 100644
+--- a/src/tz.cpp
++++ b/src/tz.cpp
+@@ -7,6 +7,10 @@
+ // Copyright (c) 2017 Nicolas Veloz Savino
+ // Copyright (c) 2017 Florian Dang
+ // Copyright (c) 2017 Aaron Bishop
++// Copyright (c) 2024 Vasyl Gello
++//
++// Portions copyright (c) Microsoft Corporation
++// Portions copyright (c) 2016-2024 Unicode, Inc
+ //
+ // Permission is hereby granted, free of charge, to any person obtaining a copy
+ // of this software and associated documentation files (the "Software"), to deal
+@@ -113,7 +117,7 @@ struct index_entry_t {
+ #  endif // USE_OS_TZDB
+ #endif // defined(ANDROID) || defined(__ANDROID__)
+ 
+-#if USE_OS_TZDB
++#if !_WIN32 && USE_OS_TZDB
+ #  include <dirent.h>
+ #endif
+ #include <algorithm>
+@@ -149,6 +153,21 @@ struct index_entry_t {
+ #      define WINRT
+ #      define INSTALL .
+ #    endif
++#    if USE_OS_TZDB
++#      include <icu.h>
++#      define _STD ::std::
++#      if !defined(WINRT)
++#        pragma comment(lib, "Version")
++#      else // defined(WINRT)
++#        include <cwchar>
++#        include <winrt/Windows.System.Profile.h>
++
++using namespace winrt::Windows::System;
++using namespace winrt::Windows::System::Profile;
++
++#      endif // !defined(WINRT)
++#    endif // USE_OS_TZDB
++
+ #  endif
+ 
+ #  include <io.h> // _unlink etc.
+@@ -204,6 +223,799 @@ static CONSTDATA char folder_delimiter = '/';
+ #  pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+ #endif  // defined(__GNUC__) && __GNUC__ < 5
+ 
++#if _WIN32
++#  if USE_OS_TZDB
++
++/*
++ basilgello: Adapted from https://github.com/Microsoft/STL
++ commit f2a381bcc93080cb8d492892e98b1f93419c9f88 :
++
++ * added fallback load of 'icuin.dll' (available from Win10 1705
++   'Creators Update') if 'icu.dll' can not be loaded
++
++ * changed output of _Allocate_wide_to_narrow to '_STD unique_ptr<const char[]>'
++   to facilitate automatic cleaning in *current scenario*
++   (std::string(const char[]))
++
++ * deleted _Propagate_Error and _report_Error as date library throws exceptions
++
++*/
++
++namespace {
++    // from stl/inc/xfilesystem_abi.h
++
++    enum class __std_win_error : unsigned long {
++        _Success                   = 0, // #define ERROR_SUCCESS                    0L
++        _Invalid_function          = 1, // #define ERROR_INVALID_FUNCTION           1L
++        _File_not_found            = 2, // #define ERROR_FILE_NOT_FOUND             2L
++        _Path_not_found            = 3, // #define ERROR_PATH_NOT_FOUND             3L
++        _Access_denied             = 5, // #define ERROR_ACCESS_DENIED              5L
++        _Not_enough_memory         = 8, // #define ERROR_NOT_ENOUGH_MEMORY          8L
++        _No_more_files             = 18, // #define ERROR_NO_MORE_FILES              18L
++        _Sharing_violation         = 32, // #define ERROR_SHARING_VIOLATION          32L
++        _Not_supported             = 50, // #define ERROR_NOT_SUPPORTED              50L
++        _Error_bad_netpath         = 53, // #define ERROR_BAD_NETPATH                53L
++        _File_exists               = 80, // #define ERROR_FILE_EXISTS                80L
++        _Invalid_parameter         = 87, // #define ERROR_INVALID_PARAMETER          87L
++        _Insufficient_buffer       = 122, // #define ERROR_INSUFFICIENT_BUFFER        122L
++        _Invalid_name              = 123, // #define ERROR_INVALID_NAME               123L
++        _Directory_not_empty       = 145, // #define ERROR_DIR_NOT_EMPTY              145L
++        _Already_exists            = 183, // #define ERROR_ALREADY_EXISTS             183L
++        _Filename_exceeds_range    = 206, // #define ERROR_FILENAME_EXCED_RANGE       206L
++        _Directory_name_is_invalid = 267, // #define ERROR_DIRECTORY                  267L
++        _Reparse_tag_invalid       = 4393L, // #define ERROR_REPARSE_TAG_INVALID        4393L
++        _Max                       = ~0UL // sentinel not used by Win32
++    };
++
++    enum class __std_code_page : unsigned int { _Acp = 0, _Utf8 = 65001 };
++
++    struct __std_fs_convert_result {
++        int _Len;
++        __std_win_error _Err;
++    };
++
++    // from stl/src/filesystem.cpp
++
++    [[nodiscard]] __std_code_page __stdcall __std_fs_code_page() noexcept {
++        if (___lc_codepage_func() == CP_UTF8) {
++            return __std_code_page{CP_UTF8};
++        }
++
++        return __std_code_page{CP_ACP};
++    }
++
++    [[nodiscard]] __std_fs_convert_result __stdcall __std_fs_convert_narrow_to_wide(_In_ const __std_code_page _Code_page,
++        _In_reads_(_Input_len) const char* const _Input_str, _In_ const int _Input_len,
++        _Out_writes_opt_(_Output_len) wchar_t* const _Output_str, _In_ const int _Output_len) noexcept {
++        const int _Len = MultiByteToWideChar(
++            static_cast<unsigned int>(_Code_page), MB_ERR_INVALID_CHARS, _Input_str, _Input_len, _Output_str, _Output_len);
++        return {_Len, _Len == 0 ? __std_win_error{GetLastError()} : __std_win_error::_Success};
++    }
++
++    [[nodiscard]] __std_fs_convert_result __stdcall __std_fs_convert_wide_to_narrow(_In_ const __std_code_page _Code_page,
++        _In_reads_(_Input_len) const wchar_t* const _Input_str, _In_ const int _Input_len,
++        _Out_writes_opt_(_Output_len) char* const _Output_str, _In_ const int _Output_len) noexcept {
++        __std_fs_convert_result _Result;
++
++        if (_Code_page == __std_code_page{CP_UTF8} || _Code_page == __std_code_page{54936}) {
++            // For UTF-8 or GB18030, attempt to use WC_ERR_INVALID_CHARS. (These codepages can't use WC_NO_BEST_FIT_CHARS
++            // below, and other codepages can't use WC_ERR_INVALID_CHARS.)
++            _Result._Len = WideCharToMultiByte(static_cast<unsigned int>(_Code_page), WC_ERR_INVALID_CHARS, _Input_str,
++                _Input_len, _Output_str, _Output_len, nullptr, nullptr);
++        } else { // For other codepages, attempt to use WC_NO_BEST_FIT_CHARS.
++                 // Codepages that don't support this will activate the ERROR_INVALID_FLAGS fallback below.
++            BOOL _Used_default_char = FALSE;
++
++            _Result._Len = WideCharToMultiByte(static_cast<unsigned int>(_Code_page), WC_NO_BEST_FIT_CHARS, _Input_str,
++                _Input_len, _Output_str, _Output_len, nullptr, &_Used_default_char);
++
++            if (_Used_default_char) { // Report round-tripping failure with ERROR_NO_UNICODE_TRANSLATION,
++                                      // "No mapping for the Unicode character exists in the target multi-byte code page."
++                return {0, __std_win_error{ERROR_NO_UNICODE_TRANSLATION}};
++            }
++        }
++
++        _Result._Err = _Result._Len == 0 ? __std_win_error{GetLastError()} : __std_win_error::_Success;
++
++        if (_Result._Err == __std_win_error{ERROR_INVALID_FLAGS}) { // Fall back to a non-strict conversion.
++            _Result._Len = WideCharToMultiByte(static_cast<unsigned int>(_Code_page), 0, _Input_str, _Input_len,
++                _Output_str, _Output_len, nullptr, nullptr);
++
++            _Result._Err = _Result._Len == 0 ? __std_win_error{GetLastError()} : __std_win_error::_Success;
++        }
++
++        return _Result;
++    }
++
++    struct __std_tzdb_leap_info {
++        uint16_t _Year;
++        uint16_t _Month;
++        uint16_t _Day;
++        uint16_t _Hour;
++        uint16_t _Negative;
++        uint16_t _Reserved;
++    };
++
++    enum class __std_tzdb_error {
++        _Success   = 0,
++        _Win_error = 1,
++        _Icu_error = 2,
++    };
++
++    // from stl/src/tzdb.cpp
++
++    enum class _Icu_api_level : unsigned long {
++        _Not_set,
++        _Detecting,
++        _Has_failed,
++        _Has_icu_addresses,
++    };
++
++#      if !defined(ures_openDirect)
++        typedef UResourceBundle* (*ures_openDirect)(const char* packageName, const char* localeID,
++                                                      UErrorCode* status);
++#      endif // !defined(::ures_openDirect)
++
++    struct _Icu_functions_table {
++        _STD atomic<decltype(&::ucal_close)> _Pfn_ucal_close{nullptr};
++        _STD atomic<decltype(&::ucal_get)> _Pfn_ucal_get{nullptr};
++        _STD atomic<decltype(&::ucal_getCanonicalTimeZoneID)> _Pfn_ucal_getCanonicalTimeZoneID{nullptr};
++        _STD atomic<decltype(&::ucal_getDefaultTimeZone)> _Pfn_ucal_getDefaultTimeZone{nullptr};
++        _STD atomic<decltype(&::ucal_getTimeZoneDisplayName)> _Pfn_ucal_getTimeZoneDisplayName{nullptr};
++        _STD atomic<decltype(&::ucal_getTimeZoneTransitionDate)> _Pfn_ucal_getTimeZoneTransitionDate{nullptr};
++        _STD atomic<decltype(&::ucal_getTZDataVersion)> _Pfn_ucal_getTZDataVersion{nullptr};
++        _STD atomic<decltype(&::ucal_inDaylightTime)> _Pfn_ucal_inDaylightTime{nullptr};
++        _STD atomic<decltype(&::ucal_open)> _Pfn_ucal_open{nullptr};
++        _STD atomic<decltype(&::ucal_openTimeZoneIDEnumeration)> _Pfn_ucal_openTimeZoneIDEnumeration{nullptr};
++        _STD atomic<decltype(&::ucal_setMillis)> _Pfn_ucal_setMillis{nullptr};
++        _STD atomic<decltype(&::uenum_close)> _Pfn_uenum_close{nullptr};
++        _STD atomic<decltype(&::uenum_unext)> _Pfn_uenum_unext{nullptr};
++        _STD atomic<decltype(&::ures_close)> _Pfn_ures_close{nullptr};
++        _STD atomic<decltype(&::ures_getByKey)> _Pfn_ures_getByKey{nullptr};
++        _STD atomic<decltype(&::ures_getKey)> _Pfn_ures_getKey{nullptr};
++        _STD atomic<decltype(&::ures_getNextResource)> _Pfn_ures_getNextResource{nullptr};
++        _STD atomic<decltype(&::ures_getStringByKey)> _Pfn_ures_getStringByKey{nullptr};
++        _STD atomic<decltype(&::ures_openDirect)> _Pfn_ures_openDirect{nullptr};
++        _STD atomic<bool> _IsPre72{false};
++        _STD atomic<_Icu_api_level> _Api_level{_Icu_api_level::_Not_set};
++    };
++
++    _Icu_functions_table _Icu_functions;
++
++    template <class _Ty>
++    void _Load_Icu_Address(
++        const HMODULE _Icu_Module, const HMODULE _IcuIn_Module, const HMODULE _IcuUc_Module,
++        _STD atomic<_Ty>& _Stored_Pfn, LPCSTR _Fn_name, DWORD& _Last_error) noexcept {
++        const HMODULE _icus[3] = {_Icu_Module, _IcuIn_Module, _IcuUc_Module};
++        for (int i = 0; i < 3; i++) {
++            if (_icus[i] == nullptr) break;
++            const auto _Pfn = reinterpret_cast<_Ty>(GetProcAddress(_icus[i], _Fn_name));
++            if (_Pfn != nullptr) {
++                _Stored_Pfn.store(_Pfn, _STD memory_order_relaxed);
++                break;
++            } else {
++                _Last_error = GetLastError();
++            }
++        }
++    }
++
++    [[nodiscard]] _Icu_api_level _Init_icu_functions(_Icu_api_level _Level) noexcept {
++        while (!_Icu_functions._Api_level.compare_exchange_weak(
++            _Level, _Icu_api_level::_Detecting, _STD memory_order_acq_rel)) {
++            if (_Level > _Icu_api_level::_Detecting) {
++                return _Level;
++            }
++        }
++
++        _Level = _Icu_api_level::_Has_failed;
++
++        UINT _SysDir_Size = GetSystemDirectoryW(nullptr, 0);
++        if (!_SysDir_Size) {
++            return _Level;
++        }
++
++        _STD unique_ptr<WCHAR[]> _SysDir_Name = _STD make_unique<WCHAR[]>(_SysDir_Size);
++        _SysDir_Size = GetSystemDirectoryW(_SysDir_Name.get(), _SysDir_Size);
++        if (!_SysDir_Size) {
++            return _Level;
++        }
++
++        std::wstring _Icu_DLL_Name = _SysDir_Name.get();
++        _Icu_DLL_Name += L"\\icu.dll";
++
++        std::wstring _IcuIn_DLL_Name = _SysDir_Name.get();
++        _IcuIn_DLL_Name += L"\\icuin.dll";
++
++        std::wstring _IcuUc_DLL_Name = _SysDir_Name.get();
++        _IcuUc_DLL_Name += L"\\icuuc.dll";
++
++        HMODULE _Icu_Module = LoadLibraryExW(_Icu_DLL_Name.c_str(), nullptr, 0);
++        HMODULE _IcuIn_Module = LoadLibraryExW(_IcuIn_DLL_Name.c_str(), nullptr, 0);
++        HMODULE _IcuUc_Module = LoadLibraryExW(_IcuUc_DLL_Name.c_str(), nullptr, 0);
++
++        if (_Icu_Module == nullptr && _IcuIn_Module == nullptr && _IcuUc_Module == nullptr) {
++            return _Level;
++        }
++
++        // collect at least one error if any GetProcAddress call fails
++        DWORD _Last_error{ERROR_SUCCESS};
++        _Load_Icu_Address(_Icu_Module, _IcuIn_Module, _IcuUc_Module, _Icu_functions._Pfn_ucal_close, "ucal_close", _Last_error);
++        _Load_Icu_Address(_Icu_Module, _IcuIn_Module, _IcuUc_Module, _Icu_functions._Pfn_ucal_get, "ucal_get", _Last_error);
++        _Load_Icu_Address(_Icu_Module, _IcuIn_Module, _IcuUc_Module, _Icu_functions._Pfn_ucal_getCanonicalTimeZoneID, "ucal_getCanonicalTimeZoneID",
++            _Last_error);
++        _Load_Icu_Address(
++            _Icu_Module, _IcuIn_Module, _IcuUc_Module, _Icu_functions._Pfn_ucal_getDefaultTimeZone, "ucal_getDefaultTimeZone", _Last_error);
++        _Load_Icu_Address(_Icu_Module, _IcuIn_Module, _IcuUc_Module, _Icu_functions._Pfn_ucal_getTimeZoneDisplayName, "ucal_getTimeZoneDisplayName",
++            _Last_error);
++        _Load_Icu_Address(_Icu_Module, _IcuIn_Module, _IcuUc_Module, _Icu_functions._Pfn_ucal_getTimeZoneTransitionDate,
++            "ucal_getTimeZoneTransitionDate", _Last_error);
++        _Load_Icu_Address(_Icu_Module, _IcuIn_Module, _IcuUc_Module, _Icu_functions._Pfn_ucal_getTZDataVersion, "ucal_getTZDataVersion", _Last_error);
++        _Load_Icu_Address(_Icu_Module, _IcuIn_Module, _IcuUc_Module, _Icu_functions._Pfn_ucal_inDaylightTime, "ucal_inDaylightTime", _Last_error);
++        _Load_Icu_Address(_Icu_Module, _IcuIn_Module, _IcuUc_Module, _Icu_functions._Pfn_ucal_open, "ucal_open", _Last_error);
++        _Load_Icu_Address(_Icu_Module, _IcuIn_Module, _IcuUc_Module, _Icu_functions._Pfn_ucal_openTimeZoneIDEnumeration,
++            "ucal_openTimeZoneIDEnumeration", _Last_error);
++        _Load_Icu_Address(_Icu_Module, _IcuIn_Module, _IcuUc_Module, _Icu_functions._Pfn_ucal_setMillis, "ucal_setMillis", _Last_error);
++        _Load_Icu_Address(_Icu_Module, _IcuIn_Module, _IcuUc_Module, _Icu_functions._Pfn_uenum_close, "uenum_close", _Last_error);
++        _Load_Icu_Address(_Icu_Module, _IcuIn_Module, _IcuUc_Module, _Icu_functions._Pfn_uenum_unext, "uenum_unext", _Last_error);
++        _Load_Icu_Address(_Icu_Module, _IcuIn_Module, _IcuUc_Module, _Icu_functions._Pfn_ures_close, "ures_close", _Last_error);
++        _Load_Icu_Address(_Icu_Module, _IcuIn_Module, _IcuUc_Module, _Icu_functions._Pfn_ures_getByKey, "ures_getByKey", _Last_error);
++        _Load_Icu_Address(_Icu_Module, _IcuIn_Module, _IcuUc_Module, _Icu_functions._Pfn_ures_getKey, "ures_getKey", _Last_error);
++        _Load_Icu_Address(_Icu_Module, _IcuIn_Module, _IcuUc_Module, _Icu_functions._Pfn_ures_getNextResource, "ures_getNextResource", _Last_error);
++        _Load_Icu_Address(_Icu_Module, _IcuIn_Module, _IcuUc_Module, _Icu_functions._Pfn_ures_getStringByKey, "ures_getStringByKey", _Last_error);
++        _Load_Icu_Address(_Icu_Module, _IcuIn_Module, _IcuUc_Module, _Icu_functions._Pfn_ures_openDirect, "ures_openDirect", _Last_error);
++
++        if (_Last_error != ERROR_SUCCESS) {
++            // reset last error code for thread in case a later GetProcAddress resets it
++            SetLastError(_Last_error);
++            return _Level;
++        }
++
++
++        bool isPre72 = false;
++
++#      if !defined(WINRT)
++
++        // Get ProductVersion of ICU DLL and set pre-72 flag
++
++        DWORD dwDummy;
++        DWORD dwFVISize = GetFileVersionInfoSizeW(_Icu_DLL_Name.c_str(), &dwDummy);
++        LPBYTE lpVersionInfo = new BYTE[dwFVISize];
++        if (GetFileVersionInfoW(_Icu_DLL_Name.c_str(), 0, dwFVISize, lpVersionInfo) == 0) {
++            return _Level;
++        }
++
++        UINT uLen;
++        VS_FIXEDFILEINFO *lpFfi;
++        BOOL bVer = VerQueryValueW(lpVersionInfo, L"\\", (LPVOID *)&lpFfi, &uLen);
++
++        if (!bVer || uLen == 0) {
++            return _Level;
++        }
++
++        DWORD dwProductVersionMS = lpFfi->dwProductVersionMS;
++        DWORD dwProductVersionLS = lpFfi->dwProductVersionLS;
++        delete[] lpVersionInfo;
++
++        DWORD dwLeftMost = HIWORD(dwProductVersionMS);
++        DWORD dwSecondLeft = LOWORD(dwProductVersionMS);
++        DWORD dwSecondRight = HIWORD(dwProductVersionLS);
++        DWORD dwRightMost = LOWORD(dwProductVersionLS);
++
++        isPre72 = dwLeftMost < 72;
++#      else // defined(WINRT)
++        auto sv = AnalyticsInfo::VersionInfo().DeviceFamilyVersion();
++        wchar_t* end;
++        unsigned long long  v = wcstoull(sv.c_str(), &end, 10);
++        unsigned long long v1 = (v & 0xFFFF000000000000L) >> 48;
++        unsigned long long v2 = (v & 0x0000FFFF00000000L) >> 32;
++        unsigned long long v3 = (v & 0x00000000FFFF0000L) >> 16;
++
++        isPre72 = v3 < 26100; // Windows 11 24H2 (10.0.26100)
++#      endif // !defined(WINRT)
++
++        _Icu_functions._IsPre72.store(isPre72, _STD memory_order_release);
++
++        // Finalize the level
++
++        _Level = _Icu_api_level::_Has_icu_addresses;
++        _Icu_functions._Api_level.store(_Level, _STD memory_order_release);
++        return _Level;
++    }
++
++    [[nodiscard]] _Icu_api_level _Acquire_icu_functions() noexcept {
++        auto _Level = _Icu_functions._Api_level.load(_STD memory_order_acquire);
++        if (_Level <= _Icu_api_level::_Detecting) {
++            _Level = _Init_icu_functions(_Level);
++        }
++
++        return _Level;
++    }
++
++    void __icu_ucal_close(UCalendar* cal) noexcept {
++        const auto _Fun = _Icu_functions._Pfn_ucal_close.load(_STD memory_order_relaxed);
++        _Fun(cal);
++    }
++
++    [[nodiscard]] int32_t __icu_ucal_get(const UCalendar* cal, UCalendarDateFields field, UErrorCode* status) noexcept {
++        const auto _Fun = _Icu_functions._Pfn_ucal_get.load(_STD memory_order_relaxed);
++        return _Fun(cal, field, status);
++    }
++
++    [[nodiscard]] int32_t __icu_ucal_getCanonicalTimeZoneID(const UChar* id, int32_t len, UChar* result,
++        int32_t resultCapacity, UBool* isSystemID, UErrorCode* status) noexcept {
++        const auto _Fun = _Icu_functions._Pfn_ucal_getCanonicalTimeZoneID.load(_STD memory_order_relaxed);
++        return _Fun(id, len, result, resultCapacity, isSystemID, status);
++    }
++
++    [[nodiscard]] int32_t __icu_ucal_getDefaultTimeZone(
++        UChar* result, int32_t resultCapacity, UErrorCode* ec) noexcept {
++        const auto _Fun = _Icu_functions._Pfn_ucal_getDefaultTimeZone.load(_STD memory_order_relaxed);
++        return _Fun(result, resultCapacity, ec);
++    }
++
++    [[nodiscard]] int32_t __icu_ucal_getTimeZoneDisplayName(const UCalendar* cal, UCalendarDisplayNameType type,
++        const char* locale, UChar* result, int32_t resultLength, UErrorCode* status) noexcept {
++        const auto _Fun = _Icu_functions._Pfn_ucal_getTimeZoneDisplayName.load(_STD memory_order_relaxed);
++        return _Fun(cal, type, locale, result, resultLength, status);
++    }
++
++    [[nodiscard]] UBool __icu_ucal_getTimeZoneTransitionDate(
++        const UCalendar* cal, UTimeZoneTransitionType type, UDate* transition, UErrorCode* status) noexcept {
++        const auto _Fun = _Icu_functions._Pfn_ucal_getTimeZoneTransitionDate.load(_STD memory_order_relaxed);
++        return _Fun(cal, type, transition, status);
++    }
++
++    [[nodiscard]] const char* __icu_ucal_getTZDataVersion(UErrorCode* status) noexcept {
++        const auto _Fun = _Icu_functions._Pfn_ucal_getTZDataVersion.load(_STD memory_order_relaxed);
++        return _Fun(status);
++    }
++
++    [[nodiscard]] UBool __icu_ucal_inDaylightTime(const UCalendar* cal, UErrorCode* status) noexcept {
++        const auto _Fun = _Icu_functions._Pfn_ucal_inDaylightTime.load(_STD memory_order_relaxed);
++        return _Fun(cal, status);
++    }
++
++    [[nodiscard]] UCalendar* __icu_ucal_open(
++        const UChar* zoneID, int32_t len, const char* locale, UCalendarType type, UErrorCode* status) noexcept {
++        const auto _Fun = _Icu_functions._Pfn_ucal_open.load(_STD memory_order_relaxed);
++        return _Fun(zoneID, len, locale, type, status);
++    }
++
++    [[nodiscard]] UEnumeration* __icu_ucal_openTimeZoneIDEnumeration(
++        USystemTimeZoneType zoneType, const char* region, const int32_t* rawOffset, UErrorCode* ec) noexcept {
++        const auto _Fun = _Icu_functions._Pfn_ucal_openTimeZoneIDEnumeration.load(_STD memory_order_relaxed);
++        return _Fun(zoneType, region, rawOffset, ec);
++    }
++
++    void __icu_ucal_setMillis(UCalendar* cal, UDate dateTime, UErrorCode* status) noexcept {
++        const auto _Fun = _Icu_functions._Pfn_ucal_setMillis.load(_STD memory_order_relaxed);
++        _Fun(cal, dateTime, status);
++    }
++
++    void __icu_uenum_close(UEnumeration* en) noexcept {
++        const auto _Fun = _Icu_functions._Pfn_uenum_close.load(_STD memory_order_relaxed);
++        _Fun(en);
++    }
++
++    [[nodiscard]] const UChar* __icu_uenum_unext(UEnumeration* en, int32_t* resultLength, UErrorCode* status) noexcept {
++        const auto _Fun = _Icu_functions._Pfn_uenum_unext.load(_STD memory_order_relaxed);
++        return _Fun(en, resultLength, status);
++    }
++
++    void __icu_ures_close(UResourceBundle* en) noexcept {
++        const auto _Fun = _Icu_functions._Pfn_ures_close.load(_STD memory_order_relaxed);
++        _Fun(en);
++    }
++
++    [[nodiscard]] UResourceBundle* __icu_ures_getByKey(const UResourceBundle* resourceBundle, const char* key,
++        UResourceBundle* result, UErrorCode* status) noexcept {
++        const auto _Fun = _Icu_functions._Pfn_ures_getByKey.load(_STD memory_order_relaxed);
++        return _Fun(resourceBundle, key, result, status);
++    }
++
++    [[nodiscard]] const char* __icu_ures_getKey(const UResourceBundle* resourceBundle) noexcept {
++        const auto _Fun = _Icu_functions._Pfn_ures_getKey.load(_STD memory_order_relaxed);
++        return _Fun(resourceBundle);
++    }
++
++    [[nodiscard]] UResourceBundle* __icu_ures_getNextResource(UResourceBundle* resourceBundle,
++        UResourceBundle* result, UErrorCode* status) noexcept {
++        const auto _Fun = _Icu_functions._Pfn_ures_getNextResource.load(_STD memory_order_relaxed);
++        return _Fun(resourceBundle, result, status);
++    }
++
++    [[nodiscard]] const UChar* __icu_ures_getStringByKey(const UResourceBundle* resourceBundle, const char* key,
++        int32_t* len, UErrorCode* status) noexcept {
++        const auto _Fun = _Icu_functions._Pfn_ures_getStringByKey.load(_STD memory_order_relaxed);
++        return _Fun(resourceBundle, key, len, status);
++    }
++
++    [[nodiscard]] UResourceBundle* __icu_ures_openDirect(const char* packageName, const char* localeID,
++        UErrorCode* status) noexcept {
++        const auto _Fun = _Icu_functions._Pfn_ures_openDirect.load(_STD memory_order_relaxed);
++        return _Fun(packageName, localeID, status);
++    }
++
++    struct _UCalendar_deleter {
++        void operator()(UCalendar* _Cal) const noexcept {
++            __icu_ucal_close(_Cal);
++        }
++    };
++
++    struct _UEnumeration_deleter {
++        void operator()(UEnumeration* _En) const noexcept {
++            __icu_uenum_close(_En);
++        }
++    };
++
++    [[nodiscard]] const _STD unique_ptr<char[]> _Allocate_wide_to_narrow(
++        const char16_t* const _Input, const int _Input_len, __std_tzdb_error& _Err) noexcept {
++        const auto _Code_page      = __std_fs_code_page();
++        const auto _Input_as_wchar = reinterpret_cast<const wchar_t*>(_Input);
++        const auto _Count_result = __std_fs_convert_wide_to_narrow(_Code_page, _Input_as_wchar, _Input_len, nullptr, 0);
++        if (_Count_result._Err != __std_win_error::_Success) {
++            SetLastError(static_cast<DWORD>(_Count_result._Err));
++            _Err = __std_tzdb_error::_Win_error;
++            return nullptr;
++        }
++
++        _STD unique_ptr<char[]> _Data{new (_STD nothrow) char[_Count_result._Len + 1]};
++        if (_Data == nullptr) {
++            return nullptr;
++        }
++
++        _Data[_Count_result._Len] = '\0';
++
++        const auto _Result =
++            __std_fs_convert_wide_to_narrow(_Code_page, _Input_as_wchar, _Input_len, _Data.get(), _Count_result._Len);
++        if (_Result._Err != __std_win_error::_Success) {
++            SetLastError(static_cast<DWORD>(_Result._Err));
++            _Err = __std_tzdb_error::_Win_error;
++            return nullptr;
++        }
++
++        return _STD move(_Data);
++    }
++
++    [[nodiscard]] _STD unique_ptr<const char16_t[]> _Allocate_narrow_to_wide(
++        const char* const _Input, const int _Input_len, __std_tzdb_error& _Err) noexcept {
++        const auto _Code_page = __std_fs_code_page();
++        const auto _Count     = __std_fs_convert_narrow_to_wide(_Code_page, _Input, _Input_len, nullptr, 0);
++        if (_Count._Err != __std_win_error::_Success) {
++            _Err = __std_tzdb_error::_Win_error;
++            return nullptr;
++        }
++
++        _STD unique_ptr<char16_t[]> _Data{new (_STD nothrow) char16_t[_Count._Len + 1]};
++        if (_Data == nullptr) {
++            return nullptr;
++        }
++
++        _Data[_Count._Len]          = u'\0';
++        const auto _Output_as_wchar = reinterpret_cast<wchar_t*>(_Data.get());
++
++        const auto _Result =
++            __std_fs_convert_narrow_to_wide(_Code_page, _Input, _Input_len, _Output_as_wchar, _Count._Len);
++        if (_Result._Err != __std_win_error::_Success) {
++            _Err = __std_tzdb_error::_Win_error;
++            return nullptr;
++        }
++
++        return _Data;
++    }
++
++    template <class _Function>
++    [[nodiscard]] _STD unique_ptr<const char16_t[]> _Get_icu_string_impl(const _Function _Icu_fn,
++        const int32_t _Initial_buf_len, int32_t& _Result_len, __std_tzdb_error& _Err) noexcept {
++        _STD unique_ptr<char16_t[]> _Str_buf{new (_STD nothrow) char16_t[_Initial_buf_len]};
++        if (_Str_buf == nullptr) {
++            return nullptr;
++        }
++
++        UErrorCode _UErr{U_ZERO_ERROR};
++        _Result_len = _Icu_fn(_Str_buf.get(), _Initial_buf_len, &_UErr);
++        if (_UErr == U_BUFFER_OVERFLOW_ERROR && _Result_len > 0) {
++            _Str_buf.reset(new (_STD nothrow) char16_t[_Result_len + 1]);
++            if (_Str_buf == nullptr) {
++                return nullptr;
++            }
++
++            _UErr       = U_ZERO_ERROR; // reset error.
++            _Result_len = _Icu_fn(_Str_buf.get(), _Result_len, &_UErr);
++            if (U_FAILURE(_UErr)) {
++                _Err = __std_tzdb_error::_Icu_error;
++                return nullptr;
++            }
++        } else if (U_FAILURE(_UErr) || _Result_len <= 0) {
++            _Err = __std_tzdb_error::_Icu_error;
++            return nullptr;
++        }
++
++        return _Str_buf;
++    }
++
++    [[nodiscard]] _STD unique_ptr<const char16_t[]> _Get_canonical_id(
++        const char16_t* _Id, const int32_t _Len, int32_t& _Result_len, __std_tzdb_error& _Err) noexcept {
++        const auto _Icu_fn = [_Id, _Len](UChar* _Result, int32_t _Result_capacity, UErrorCode* _UErr) {
++            UBool _Is_system{};
++            return __icu_ucal_getCanonicalTimeZoneID(_Id, _Len, _Result, _Result_capacity, &_Is_system, _UErr);
++        };
++        return _Get_icu_string_impl(_Icu_fn, 32, _Result_len, _Err);
++    }
++
++    [[nodiscard]] _STD unique_ptr<const char16_t[]> _Get_default_timezone(
++        int32_t& _Result_len, __std_tzdb_error& _Err) noexcept {
++        const auto _Icu_fn = [](UChar* _Result, int32_t _Result_capacity, UErrorCode* _UErr) {
++            return __icu_ucal_getDefaultTimeZone(_Result, _Result_capacity, _UErr);
++        };
++        return _Get_icu_string_impl(_Icu_fn, 32, _Result_len, _Err);
++    }
++
++    [[nodiscard]] _STD unique_ptr<const char16_t[]> _Get_timezone_short_id(
++        UCalendar* const _Cal, const bool _Is_daylight, int32_t& _Result_len, __std_tzdb_error& _Err) noexcept {
++        const auto _Display_type =
++            _Is_daylight ? UCalendarDisplayNameType::UCAL_SHORT_DST : UCalendarDisplayNameType::UCAL_SHORT_STANDARD;
++        const auto _Icu_fn = [_Cal, _Display_type](UChar* _Result, int32_t _Result_capacity, UErrorCode* _UErr) {
++            return __icu_ucal_getTimeZoneDisplayName(_Cal, _Display_type, nullptr, _Result, _Result_capacity, _UErr);
++        };
++        return _Get_icu_string_impl(_Icu_fn, 12, _Result_len, _Err);
++    }
++
++    [[nodiscard]] _STD unique_ptr<UCalendar, _UCalendar_deleter> _Get_cal(
++        const char* _Tz, const size_t _Tz_len, __std_tzdb_error& _Err) noexcept {
++        const auto _Tz_name = _Allocate_narrow_to_wide(_Tz, static_cast<int>(_Tz_len), _Err);
++        if (_Tz_name == nullptr) {
++            return nullptr;
++        }
++
++        UErrorCode _UErr{U_ZERO_ERROR};
++        _STD unique_ptr<UCalendar, _UCalendar_deleter> _Cal{
++            __icu_ucal_open(_Tz_name.get(), -1, nullptr, UCalendarType::UCAL_DEFAULT, &_UErr)};
++        if (U_FAILURE(_UErr)) {
++            _Err = __std_tzdb_error::_Icu_error;
++        }
++
++        return _Cal;
++    }
++
++    [[nodiscard]] const bool _Is_ICU_Pre72() noexcept {
++        return _Icu_functions._IsPre72.load(_STD memory_order_relaxed);
++    }
++} // unnamed namespace
++
++namespace {
++    // Adapted from https://github.com/unicode-org/icu
++    // commit 99ca2ad931600f317501a41bca4c8b9afb946de9
++    // file icu4c/source/common/wintz.cpp
++
++    // This is the location of the time zones in the registry on Vista+ systems.
++    // See: https://docs.microsoft.com/windows/win32/api/timezoneapi/ns-timezoneapi-dynamic_time_zone_information
++    #define WINDOWS_TIMEZONES_REG_KEY_PATH L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Time Zones"
++
++    // Max length for a registry key is 255. +1 for null.
++    // See: https://docs.microsoft.com/windows/win32/sysinfo/registry-element-size-limits
++    #define WINDOWS_MAX_REG_KEY_LENGTH 256
++
++#if !defined(WINRT)
++
++    // This is the layout of the TZI binary value in the registry.
++    // See: https://docs.microsoft.com/windows/win32/api/timezoneapi/ns-timezoneapi-time_zone_information
++    typedef struct _REG_TZI_FORMAT {
++        LONG Bias;
++        LONG StandardBias;
++        LONG DaylightBias;
++        SYSTEMTIME StandardDate;
++        SYSTEMTIME DaylightDate;
++    } REG_TZI_FORMAT;
++
++#endif // !defined(WINRT)
++
++    static const std::string detectWindowsTimeZonePre72() {
++        // We first try to obtain the time zone directly by using the TimeZoneKeyName field of the DYNAMIC_TIME_ZONE_INFORMATION struct.
++        DYNAMIC_TIME_ZONE_INFORMATION dynamicTZI;
++        memset(&dynamicTZI, 0, sizeof(dynamicTZI));
++        SYSTEMTIME systemTimeAllZero;
++        memset(&systemTimeAllZero, 0, sizeof(systemTimeAllZero));
++
++        if (GetDynamicTimeZoneInformation(&dynamicTZI) == TIME_ZONE_ID_INVALID) {
++            return std::string("");
++        }
++
++        // If the DST setting has been turned off in the Control Panel, then return "Etc/GMT<offset>".
++        //
++        // Note: This logic is based on how the Control Panel itself determines if DST is 'off' on Windows.
++        // The code is somewhat convoluted; in a sort of pseudo-code it looks like this:
++        //
++        //   IF (GetDynamicTimeZoneInformation != TIME_ZONE_ID_INVALID) && (DynamicDaylightTimeDisabled != 0) &&
++        //      (StandardDate == DaylightDate) &&
++        //      (
++        //       (TimeZoneKeyName != Empty && StandardDate == 0) ||
++        //       (TimeZoneKeyName == Empty && StandardDate != 0)
++        //      )
++        //   THEN
++        //     DST setting is "Disabled".
++        //
++        if (dynamicTZI.DynamicDaylightTimeDisabled != 0 &&
++            memcmp(&dynamicTZI.StandardDate, &dynamicTZI.DaylightDate, sizeof(dynamicTZI.StandardDate)) == 0 &&
++            ((dynamicTZI.TimeZoneKeyName[0] != L'\0' && memcmp(&dynamicTZI.StandardDate, &systemTimeAllZero, sizeof(systemTimeAllZero)) == 0) ||
++             (dynamicTZI.TimeZoneKeyName[0] == L'\0' && memcmp(&dynamicTZI.StandardDate, &systemTimeAllZero, sizeof(systemTimeAllZero)) != 0)))
++        {
++            LONG utcOffsetMins = dynamicTZI.Bias;
++            if (utcOffsetMins == 0) {
++                return std::string("Etc/UTC");
++            }
++
++            // No way to support when DST is turned off and the offset in minutes is not a multiple of 60.
++            if (utcOffsetMins % 60 == 0) {
++                const uint8_t gmtOffsetTzLen = 11;
++                char gmtOffsetTz[gmtOffsetTzLen] = {}; // "Etc/GMT+dd" is 11-char long with a terminal null.
++                // Important note on the sign convention for zones:
++                //
++                // From https://en.wikipedia.org/wiki/Tz_database#Area
++                //   "In order to conform with the POSIX style, those zone names beginning with "Etc/GMT" have their sign reversed
++                //   from the standard ISO 8601 convention. In the "Etc" area, zones west of GMT have a positive sign and those
++                //   east have a negative sign in their name (e.g "Etc/GMT-14" is 14 hours ahead of GMT)."
++                //
++                // Regarding the POSIX style, from https://www.gnu.org/software/libc/manual/html_node/TZ-Variable.html
++                //   "The offset specifies the time value you must add to the local time to get a Coordinated Universal Time value."
++                //
++                // However, the Bias value in DYNAMIC_TIME_ZONE_INFORMATION *already* follows the POSIX convention.
++                //
++                // From https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/ns-timezoneapi-dynamic_time_zone_information
++                //   "The bias is the difference, in minutes, between Coordinated Universal Time (UTC) and
++                //   local time. All translations between UTC and local time are based on the following formula:
++                //      UTC = local time + bias"
++                //
++                // For example, a time zone that is 3 hours ahead of UTC (UTC+03:00) would have a Bias value of -180, and the
++                // corresponding time zone ID would be "Etc/GMT-3". (So there is no need to negate utcOffsetMins below.)
++                int ret = snprintf(gmtOffsetTz, sizeof(gmtOffsetTz), "Etc/GMT%+ld", utcOffsetMins / 60);
++                if (ret > 0 && ret < gmtOffsetTzLen) {
++                    return std::string(gmtOffsetTz);
++                }
++            }
++        }
++
++        // If DST is NOT disabled, but the TimeZoneKeyName field of the struct is nullptr, then we may be dealing with a
++        // RDP/terminal services session where the 'Time Zone Redirection' feature is enabled. However, either the RDP
++        // client sent the server incomplete info (some 3rd party RDP clients only send the StandardName and  DaylightName,
++        // but do not send the important TimeZoneKeyName), or if the RDP server has not appropriately populated the struct correctly.
++        //
++        // In this case we unfortunately have no choice but to fallback to using the pre-Vista method of determining the
++        // time zone, which requires examining the registry directly.
++        //
++        // Note that this can however still fail though if the client and server are using different languages, as the StandardName
++        // that is sent by client is *localized* in the client's language. However, we must compare this to the names that are
++        // on the server, which are *localized* in registry using the server's language.
++        //
++        // One other note is that this fallback method doesn't work for the UWP version, as we can't use the registry APIs.
++
++        // windowsTimeZoneName will point at timezoneSubKeyName if we had to fallback to using the registry, and we found a match.
++        WCHAR timezoneSubKeyName[WINDOWS_MAX_REG_KEY_LENGTH];
++        WCHAR *windowsTimeZoneName = dynamicTZI.TimeZoneKeyName;
++        size_t windowsTimeZoneNameLen = wcslen(windowsTimeZoneName);
++
++        if (dynamicTZI.TimeZoneKeyName[0] == 0) {
++#if !defined(WINRT)
++            // Open the path to the time zones in the Windows registry.
++            LONG ret;
++            HKEY hKeyAllTimeZones = nullptr;
++            ret = RegOpenKeyExW(HKEY_LOCAL_MACHINE, WINDOWS_TIMEZONES_REG_KEY_PATH, 0, KEY_READ,
++                                reinterpret_cast<PHKEY>(&hKeyAllTimeZones));
++
++            if (ret != ERROR_SUCCESS) {
++                // If we can't open the key, then we can't do much, so fail.
++                return std::string("");
++            }
++
++            // Read the number of subkeys under the time zone registry path.
++            DWORD numTimeZoneSubKeys;
++            ret = RegQueryInfoKeyW(hKeyAllTimeZones, nullptr, nullptr, nullptr, &numTimeZoneSubKeys,
++                                   nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
++
++            if (ret != ERROR_SUCCESS) {
++                RegCloseKey(hKeyAllTimeZones);
++                return std::string("");
++            }
++
++            // Examine each of the subkeys to try and find a match for the localized standard name ("Std").
++            //
++            // Note: The name of the time zone subkey itself is not localized, but the "Std" name is localized. This means
++            // that we could fail to find a match if the RDP client and RDP server are using different languages, but unfortunately
++            // there isn't much we can do about it.
++            HKEY hKeyTimeZoneSubKey = nullptr;
++            ULONG registryValueType;
++            WCHAR registryStandardName[WINDOWS_MAX_REG_KEY_LENGTH];
++
++            for (DWORD i = 0; i < numTimeZoneSubKeys; i++) {
++                // Note: RegEnumKeyExW wants the size of the buffer in characters.
++                DWORD size = WINDOWS_MAX_REG_KEY_LENGTH;
++                ret = RegEnumKeyExW(hKeyAllTimeZones, i, timezoneSubKeyName, &size, nullptr, nullptr, nullptr, nullptr);
++
++                if (ret != ERROR_SUCCESS) {
++                    RegCloseKey(hKeyAllTimeZones);
++                    return std::string("");
++                }
++
++                ret = RegOpenKeyExW(hKeyAllTimeZones, timezoneSubKeyName, 0, KEY_READ,
++                                    reinterpret_cast<PHKEY>(&hKeyTimeZoneSubKey));
++
++                if (ret != ERROR_SUCCESS) {
++                    RegCloseKey(hKeyAllTimeZones);
++                    return std::string("");
++                }
++
++                // Note: RegQueryValueExW wants the size of the buffer in bytes.
++                size = sizeof(registryStandardName);
++                ret = RegQueryValueExW(hKeyTimeZoneSubKey, L"Std", nullptr, &registryValueType,
++                                       reinterpret_cast<LPBYTE>(registryStandardName), &size);
++
++                if (ret != ERROR_SUCCESS || registryValueType != REG_SZ) {
++                    RegCloseKey(hKeyTimeZoneSubKey);
++                    RegCloseKey(hKeyAllTimeZones);
++                    return std::string("");
++                }
++
++                // Note: wcscmp does an ordinal (byte) comparison.
++                if (wcscmp(reinterpret_cast<WCHAR *>(registryStandardName), dynamicTZI.StandardName) == 0) {
++                    // Since we are comparing the *localized* time zone name, it's possible that some languages might use
++                    // the same string for more than one time zone. Thus we need to examine the TZI data in the registry to
++                    // compare the GMT offset (the bias), and the DST transition dates, to ensure it's the same time zone
++                    // as the currently reported one.
++                    REG_TZI_FORMAT registryTziValue;
++                    memset(&registryTziValue, 0, sizeof(registryTziValue));
++
++                    // Note: RegQueryValueExW wants the size of the buffer in bytes.
++                    DWORD timezoneTziValueSize = sizeof(registryTziValue);
++                    ret = RegQueryValueExW(hKeyTimeZoneSubKey, L"TZI", nullptr, &registryValueType,
++                                           reinterpret_cast<LPBYTE>(&registryTziValue), &timezoneTziValueSize);
++
++                    if (ret == ERROR_SUCCESS) {
++                        if ((dynamicTZI.Bias == registryTziValue.Bias) &&
++                            (memcmp((const void *)&dynamicTZI.StandardDate, (const void *)&registryTziValue.StandardDate, sizeof(SYSTEMTIME)) == 0) &&
++                            (memcmp((const void *)&dynamicTZI.DaylightDate, (const void *)&registryTziValue.DaylightDate, sizeof(SYSTEMTIME)) == 0))
++                        {
++                            // We found a matching time zone.
++                            windowsTimeZoneName = timezoneSubKeyName;
++                            windowsTimeZoneNameLen = size;
++                            break;
++                        }
++                    }
++                }
++
++                RegCloseKey(hKeyTimeZoneSubKey);
++                hKeyTimeZoneSubKey = nullptr;
++            }
++
++            if (hKeyTimeZoneSubKey != nullptr) {
++                RegCloseKey(hKeyTimeZoneSubKey);
++            }
++
++            if (hKeyAllTimeZones != nullptr) {
++                RegCloseKey(hKeyAllTimeZones);
++            }
++#else // defined(WINRT)
++            // We can't use the registry APIs in the UWP version.
++            (void)timezoneSubKeyName; // suppress unused variable warnings.
++            return std::string("");
++#endif // !defined(WINRT)
++        }
++
++        __std_tzdb_error _Tzdb_Err{};
++
++        const auto _an = _Allocate_wide_to_narrow(reinterpret_cast<const char16_t*>(windowsTimeZoneName), windowsTimeZoneNameLen, _Tzdb_Err);
++        if (_an == nullptr) {
++            return std::string("");
++        }
++
++        return std::string(_an.get());
++    }
++} // unnamed namespace
++
++using _UDate_Duration = std::chrono::duration<UDate, std::milli>;
++
++#  endif // USE_OS_TZDB
++#endif // _WIN32
++
+ #if !USE_OS_TZDB
+ 
+ #  ifdef _WIN32
+@@ -237,7 +1049,7 @@ convert_utf8_to_utf16(const std::string& s)
+     return out;
+ }
+ 
+-#    ifndef WINRT
++#    if !defined(WINRT)
+ 
+ namespace
+ {
+@@ -288,7 +1100,7 @@ get_download_folder()
+ 
+ #      endif  // !INSTALL
+ 
+-#    endif // WINRT
++#    endif // !defined(WINRT)
+ #  else // !_WIN32
+ 
+ #    if !defined(INSTALL)
+@@ -678,8 +1490,6 @@ parse_month(std::istream& in)
+ }
+ #endif // !defined(ANDROID) && !defined(__ANDROID__)
+ 
+-#if !USE_OS_TZDB
+-
+ #ifdef _WIN32
+ 
+ static
+@@ -733,6 +1543,8 @@ native_to_standard_timezone_name(const std::string& native_tz_name,
+     return false;
+ }
+ 
++#if !USE_OS_TZDB
++
+ // Parse this XML file:
+ // https://raw.githubusercontent.com/unicode-org/cldr/master/common/supplemental/windowsZones.xml
+ // The parsing method is designed to be simple and quick. It is not overly
+@@ -880,7 +1692,79 @@ load_timezone_mappings_from_xml_file(const std::string& input_path)
+     return mappings;
+ }
+ 
+-#endif  // _WIN32
++#else  // USE_OS_TZDB
++
++// Populate timezone mappings from ICU
++static
++std::vector<detail::timezone_mapping>
++load_timezone_mappings_from_icu()
++{
++    std::vector<detail::timezone_mapping> mappings;
++    UErrorCode status = U_ZERO_ERROR;
++
++    // Open ICU timezone resource
++
++    UResourceBundle* resb = __icu_ures_openDirect(nullptr, "windowsZones", &status);
++
++    if (U_FAILURE(status)) {
++        __icu_ures_close(resb);
++        return mappings;
++    }
++
++    __icu_ures_getByKey(resb, "mapTimezones", resb, &status);
++
++    if (U_FAILURE(status)) {
++        __icu_ures_close(resb);
++        return mappings;
++    }
++
++    // Iterate through keys and extract only values for "001" territory (aka world)
++    // because territory is irrelevant for our implementation
++
++    UResourceBundle* mapZone = nullptr;
++    const char* wintzid = nullptr;
++    const char16_t* olsontzid = nullptr;
++    int32_t olsontzidlen = 0;
++
++    while (true) {
++        status = U_ZERO_ERROR;
++        olsontzidlen = 0;
++
++        mapZone = __icu_ures_getNextResource(resb, mapZone, &status);
++
++        if (U_FAILURE(status)) {
++            break;
++        }
++
++        wintzid = __icu_ures_getKey(mapZone);
++        olsontzid = reinterpret_cast<const char16_t*>(__icu_ures_getStringByKey(mapZone, "001", &olsontzidlen, &status));
++
++        if (wintzid == nullptr || U_FAILURE(status)) {
++            break;
++        }
++
++        __std_tzdb_error _Tzdb_Err{};
++        const auto _abbrev = _Allocate_wide_to_narrow(olsontzid, olsontzidlen, _Tzdb_Err);
++
++        if (_abbrev == nullptr) {
++            break;
++        }
++
++        detail::timezone_mapping zm(wintzid, "", _abbrev.get());
++        mappings.push_back(std::move(zm));
++    }
++
++    __icu_ures_close(mapZone);
++    __icu_ures_close(resb);
++
++    return mappings;
++}
++
++#endif // !USE_OS_TZDB
++
++#endif // _WIN32
++
++#if !USE_OS_TZDB
+ 
+ // Parsing helpers
+ 
+@@ -1915,6 +2799,8 @@ time_zone::time_zone(const std::string& s, detail::undocumented)
+ {
+ }
+ 
++# if !_WIN32
++
+ enum class endian
+ {
+     native = __BYTE_ORDER__,
+@@ -2221,12 +3107,14 @@ time_zone::load_data(std::istream& inf,
+         transitions_[i].info = ttinfos_.data() + indices[j];
+ }
+ 
++# endif // !_WIN32
++
+ void
+ time_zone::init_impl()
+ {
+-#if defined(ANDROID) || defined(__ANDROID__)
++#if defined(ANDROID) || defined(__ANDROID__) || _WIN32
+     return;
+-#endif // defined(ANDROID) || defined(__ANDROID__)
++#else // !defined(ANDROID) && !defined(__ANDROID__) && !_WIN32
+     using namespace std;
+     using namespace std::chrono;
+     auto name = get_tz_dir() + ('/' + name_);
+@@ -2247,22 +3135,22 @@ time_zone::init_impl()
+     }
+     else
+     {
+-#if !defined(NDEBUG)
++# if !defined(NDEBUG)
+         inf.ignore((4+1)*tzh_timecnt + 6*tzh_typecnt + tzh_charcnt + 8*tzh_leapcnt +
+                    tzh_ttisstdcnt + tzh_ttisgmtcnt);
+         load_header(inf);
+         auto v2 = load_version(inf);
+         assert(v == v2);
+         skip_reserve(inf);
+-#else  // defined(NDEBUG)
++# else  // defined(NDEBUG)
+         inf.ignore((4+1)*tzh_timecnt + 6*tzh_typecnt + tzh_charcnt + 8*tzh_leapcnt +
+                    tzh_ttisstdcnt + tzh_ttisgmtcnt + (4+1+15));
+-#endif  // defined(NDEBUG)
++# endif  // defined(NDEBUG)
+         load_counts(inf, tzh_ttisgmtcnt, tzh_ttisstdcnt, tzh_leapcnt,
+                          tzh_timecnt,    tzh_typecnt,    tzh_charcnt);
+         load_data<int64_t>(inf, tzh_leapcnt, tzh_timecnt, tzh_typecnt, tzh_charcnt);
+     }
+-#if !MISSING_LEAP_SECONDS
++# if !MISSING_LEAP_SECONDS
+     if (tzh_leapcnt > 0)
+     {
+         auto& leap_seconds = get_tzdb_list().front().leap_seconds;
+@@ -2287,7 +3175,7 @@ time_zone::init_impl()
+             t->timepoint -= leap_count;
+         }
+     }
+-#endif  // !MISSING_LEAP_SECONDS
++# endif  // !MISSING_LEAP_SECONDS
+     auto b = transitions_.begin();
+     auto i = transitions_.end();
+     if (i != b)
+@@ -2300,6 +3188,7 @@ time_zone::init_impl()
+                 i = transitions_.erase(i);
+         }
+     }
++#endif // defined(ANDROID) || defined(__ANDROID__) || _WIN32
+ }
+ 
+ void
+@@ -2308,6 +3197,8 @@ time_zone::init() const
+     std::call_once(*adjusted_, [this]() {const_cast<time_zone*>(this)->init_impl();});
+ }
+ 
++#if !_WIN32
++
+ sys_info
+ time_zone::load_sys_info(std::vector<detail::transition>::const_iterator i) const
+ {
+@@ -2335,9 +3226,12 @@ time_zone::load_sys_info(std::vector<detail::transition>::const_iterator i) cons
+     return r;
+ }
+ 
++# endif // !_WIN32
++
+ sys_info
+ time_zone::get_info_impl(sys_seconds tp) const
+ {
++#if !_WIN32
+     using namespace std;
+     init();
+     return load_sys_info(upper_bound(transitions_.begin(), transitions_.end(), tp,
+@@ -2345,11 +3239,17 @@ time_zone::get_info_impl(sys_seconds tp) const
+                                      {
+                                          return x < t.timepoint;
+                                      }));
++#else // _WIN32
++    return get_win_info_impl(tp, __std_tzdb_sys_info_type::_Full);
++#endif // !_WIN32
+ }
+ 
+ local_info
+ time_zone::get_info_impl(local_seconds tp) const
+ {
++#if _WIN32
++    return get_win_info_impl(tp, __std_tzdb_sys_info_type::_Full);
++#else // !_WIN32
+     using namespace std::chrono;
+     init();
+     local_info i{};
+@@ -2386,8 +3286,277 @@ time_zone::get_info_impl(local_seconds tp) const
+             i.second = {};
+     }
+     return i;
++#endif // _WIN32
+ }
+ 
++#if _WIN32
++
++sys_info
++time_zone::get_win_info_impl(sys_seconds tp, __std_tzdb_sys_info_type kind) const
++{
++    if (_Acquire_icu_functions() < _Icu_api_level::_Has_icu_addresses) {
++        throw std::runtime_error("Can not acquire ICU functions!");
++    }
++
++    sys_info r;
++    __std_tzdb_error _Tzdb_Err{};
++
++    // Open new calendar
++    // basilgello: STL team wants to cache the reference in time_zone
++    // but it will make the whole implementation thread-unsafe!
++    const auto _Cal = _Get_cal(name_.c_str(), name_.length(), _Tzdb_Err);
++    if (_Cal == nullptr) {
++        throw std::runtime_error("Can not open calendar!");
++    }
++
++    // _Sys is UDate which is milliseconds since Unix epoch represented as double
++    const auto tp_ms = std::chrono::duration_cast<std::chrono::milliseconds>(tp.time_since_epoch()).count();
++    UDate _Sys = static_cast<UDate>(tp_ms);
++
++    UErrorCode _UErr{};
++    __icu_ucal_setMillis(_Cal.get(), _Sys, &_UErr);
++    if (U_FAILURE(_UErr)) {
++        throw std::runtime_error("Can not setMillis!");
++    }
++
++    const auto _Is_daylight = __icu_ucal_inDaylightTime(_Cal.get(), &_UErr);
++    if (U_FAILURE(_UErr)) {
++        throw std::runtime_error("Can not inDaylightTime!");
++    }
++
++    const auto _Save = _Is_daylight ? __icu_ucal_get(_Cal.get(), UCalendarDateFields::UCAL_DST_OFFSET, &_UErr) : 0;
++    if (U_FAILURE(_UErr)) {
++        throw std::runtime_error("Can not make _Save!");
++    }
++
++    _UDate_Duration saveDur{_Save};
++    r.save = std::chrono::duration_cast<std::chrono::minutes>(saveDur);
++
++    const auto _Offset = __icu_ucal_get(_Cal.get(), UCalendarDateFields::UCAL_ZONE_OFFSET, &_UErr) + _Save;
++    if (U_FAILURE(_UErr)) {
++        throw std::runtime_error("Can not make _Offset!");
++    }
++
++    _UDate_Duration offsetDur{_Offset};
++    r.offset = std::chrono::duration_cast<std::chrono::seconds>(offsetDur);
++
++    if (kind == __std_tzdb_sys_info_type::_Offset_only) {
++        return r;
++    }
++
++    UDate _Transition{};
++    if (__icu_ucal_getTimeZoneTransitionDate(_Cal.get(),
++             UTimeZoneTransitionType::UCAL_TZ_TRANSITION_PREVIOUS_INCLUSIVE, &_Transition, &_UErr)) {
++        _UDate_Duration beginDur{_Transition};
++        r.begin = sys_seconds{std::chrono::duration_cast<sys_seconds::duration>(beginDur)};
++    } else {
++        r.begin = sys_days{year::min()/min_day};
++    }
++
++    if (U_FAILURE(_UErr)) {
++        throw std::runtime_error("Can not make _Begin!");
++    }
++
++    if (__icu_ucal_getTimeZoneTransitionDate(
++           _Cal.get(), UTimeZoneTransitionType::UCAL_TZ_TRANSITION_NEXT, &_Transition, &_UErr)) {
++        _UDate_Duration endDur{_Transition};
++        r.end = sys_seconds{std::chrono::duration_cast<sys_seconds::duration>(endDur)};
++    } else {
++        r.end = sys_days{year::max()/max_day};
++    }
++
++    if (U_FAILURE(_UErr)) {
++        throw std::runtime_error("Can not make _End!");
++    }
++
++    if (kind == __std_tzdb_sys_info_type::_Offset_and_range) {
++        return r;
++    }
++
++    int32_t _Abbrev_len{};
++    const auto _Abbrev = _Get_timezone_short_id(_Cal.get(), _Is_daylight, _Abbrev_len, _Tzdb_Err);
++    if (_Abbrev == nullptr) {
++        throw std::runtime_error("Can not make r.abbrev!");
++    }
++
++    const auto _abbrev = _Allocate_wide_to_narrow(_Abbrev.get(), _Abbrev_len, _Tzdb_Err);
++    if (_abbrev == nullptr) {
++        throw std::runtime_error("Can not convert wide r.abbrev to narrow!");
++    }
++
++    r.abbrev = _abbrev.get();
++
++    return r;
++}
++
++local_info
++time_zone::get_win_info_impl(local_seconds tp, __std_tzdb_sys_info_type kind) const
++{
++    using namespace std::chrono;
++    local_info i{};
++
++    // from stl/src/tzdb.cpp
++
++    const auto _Time_since_ep = tp.time_since_epoch();
++    i.first = get_win_info_impl(sys_seconds{_Time_since_ep}, kind);
++
++    const sys_seconds _Local_sys{std::chrono::duration_cast<sys_seconds::duration>(_Time_since_ep)};
++    const auto _Curr_sys = _Local_sys - i.first.offset;
++    if (i.first.begin != sys_days(year::min()/min_day) && _Curr_sys < i.first.begin + days{1}) {
++        // get previous transition information
++        i.second = get_win_info_impl(sys_seconds{(i.first.begin - seconds{1}).time_since_epoch()}, kind);
++
++        const auto _Transition = i.first.begin;
++        const auto _Prev_sys   = _Local_sys - i.second.offset;
++        if (_Curr_sys >= _Transition) {
++            if (_Prev_sys < _Transition) {
++                i.result = local_info::ambiguous;
++                _STD swap(i.first, i.second);
++            } else {
++                i.result = local_info::unique;
++                i.second = {};
++            }
++        } else {
++            if (_Prev_sys >= _Transition) {
++                i.result = local_info::nonexistent;
++                _STD swap(i.first, i.second);
++            } else {
++                i.result = local_info::unique;
++                i.first  = _STD move(i.second);
++                i.second = {};
++            }
++        }
++    } else if (i.first.end != sys_days(year::max()/max_day) && _Curr_sys > i.first.end - days{1}) {
++        // get next transition information
++        i.second = get_win_info_impl(sys_seconds{(i.first.end + seconds{1}).time_since_epoch()}, kind);
++
++        const auto _Transition = i.first.end;
++        const auto _Next_sys   = _Local_sys - i.second.offset;
++        if (_Curr_sys < _Transition) {
++            if (_Next_sys >= _Transition) {
++                i.result = local_info::ambiguous;
++            } else {
++                i.result = local_info::unique;
++                i.second = {};
++            }
++        } else {
++            if (_Next_sys < _Transition) {
++                i.result = local_info::nonexistent;
++            } else {
++                i.result = local_info::unique;
++                i.first  = _STD move(i.second);
++                i.second = {};
++            }
++        }
++    } else {
++        // local time is contained inside of first transition boundaries by at least 1 day
++        i.result = local_info::unique;
++        i.second = {};
++    }
++
++    return i;
++}
++
++static
++std::vector<leap_second>
++find_read_and_leap_seconds()
++{
++    std::vector<leap_second> leap_seconds;
++
++    // Windows registry stores leap seconds after 2018
++    // so we can safely add all leaps before 2018 straight
++    // into the list
++
++    constexpr uint64_t _Known_leap_seconds[]{
++        78796800    /* 0  */,
++        94694400    /* 1  */,
++        126230400   /* 2  */,
++        157766400   /* 3  */,
++        189302400   /* 4  */,
++        220924800   /* 5  */,
++        252460800   /* 6  */,
++        283996800   /* 7  */,
++        315532800   /* 8  */,
++        362793600   /* 9  */,
++        394329600   /* 10 */,
++        425865600   /* 11 */,
++        489024000   /* 12 */,
++        567993600   /* 13 */,
++        631152000   /* 14 */,
++        662688000   /* 15 */,
++        709948800   /* 16 */,
++        741484800   /* 17 */,
++        773020800   /* 18 */,
++        820454400   /* 19 */,
++        867715200   /* 20 */,
++        915148800   /* 21 */,
++        1136073600  /* 22 */,
++        1230768000  /* 23 */,
++        1341100800  /* 24 */,
++        1435708800  /* 25 */,
++        1483228800  /* 26 */,
++    };
++
++    for (auto s : _Known_leap_seconds) {
++        leap_seconds.emplace_back(sys_seconds{std::chrono::seconds{s}}, detail::undocumented{});
++    }
++
++#if !defined(WINRT)
++    // Now query the registry
++
++    // from stl/src/tzdb.cpp
++
++    constexpr auto reg_key_name    = LR"(SYSTEM\CurrentControlSet\Control\LeapSecondInformation)";
++    constexpr auto reg_subkey_name = L"LeapSeconds";
++    HKEY leap_sec_key              = nullptr;
++
++    LSTATUS status = RegOpenKeyExW(HKEY_LOCAL_MACHINE, reg_key_name, 0, KEY_READ, &leap_sec_key);
++    if (status != ERROR_SUCCESS) {
++        // May not exist on older systems. Treat this as equivalent to the key existing but with no data.
++        return leap_seconds;
++    }
++
++    DWORD byte_size = 0;
++    status = RegQueryValueExW(leap_sec_key, reg_subkey_name, nullptr, nullptr, nullptr, &byte_size);
++    static_assert(sizeof(__std_tzdb_leap_info) == 12);
++    const auto ls_size   = byte_size / 12;
++
++    _STD unique_ptr<__std_tzdb_leap_info[]> reg_ls_data = nullptr;
++    if (status == ERROR_SUCCESS || status == ERROR_MORE_DATA) {
++        reg_ls_data = _STD make_unique<__std_tzdb_leap_info[]>(ls_size);
++
++        status = RegQueryValueExW(
++            leap_sec_key, reg_subkey_name, nullptr, nullptr, reinterpret_cast<LPBYTE>(reg_ls_data.get()), &byte_size);
++    }
++
++    RegCloseKey(leap_sec_key);
++    if (status != ERROR_SUCCESS) {
++        SetLastError(status);
++    }
++
++    // Push leap seconds registry into vector
++
++    // from stl/inc/chrono
++
++    for (size_t _Idx = 0; _Idx < ls_size; ++_Idx) {
++         // Leap seconds occur at _Ls._Hour:59:59. We store the next second after, so we need to add an entire
++         // hour.
++         const auto& _Ls = reg_ls_data[_Idx];
++
++         const auto tp = sys_days{year{_Ls._Year}/month{_Ls._Month}/day{_Ls._Day}}
++                         + std::chrono::hours{_Ls._Hour + 1};
++
++         leap_seconds.emplace_back(sys_seconds{tp}, detail::undocumented{});
++    }
++#endif // !defined(WINRT)
++
++    // Return the leap second vector
++
++    return leap_seconds;
++}
++
++#endif // _WIN32
++
+ #if defined(ANDROID) || defined(__ANDROID__)
+ void
+ time_zone::parse_from_android_tzdata(std::ifstream& inf, const std::size_t off)
+@@ -2475,6 +3644,7 @@ operator<<(std::ostream& os, const time_zone& z)
+     z.init();
+     os << z.name_ << '\n';
+     os << "Initially:           ";
++#if !_WIN32
+     auto const& t = z.transitions_.front();
+     if (t.info->offset >= seconds{0})
+         os << '+';
+@@ -2486,6 +3656,7 @@ operator<<(std::ostream& os, const time_zone& z)
+     os << t.info->abbrev << '\n';
+     for (auto i = std::next(z.transitions_.cbegin()); i < z.transitions_.cend(); ++i)
+         os << *i << '\n';
++#endif // !_WIN32
+     return os;
+ }
+ 
+@@ -2899,7 +4070,7 @@ operator<<(std::ostream& os, const leap_second& x)
+ 
+ #if USE_OS_TZDB
+ 
+-#if !defined(ANDROID) && !defined(__ANDROID__)
++#if !defined(ANDROID) && !defined(__ANDROID__) && !_WIN32
+ static
+ std::string
+ get_version()
+@@ -3003,7 +4174,7 @@ find_read_and_leap_seconds()
+ #endif
+     return {};
+ }
+-#endif // !defined(ANDROID) && !defined(__ANDROID__)
++#endif // !defined(ANDROID) && !defined(__ANDROID__) && !_WIN32
+ 
+ static
+ std::unique_ptr<tzdb>
+@@ -3042,6 +4213,54 @@ init_tzdb()
+     db->zones.shrink_to_fit();
+     std::sort(db->zones.begin(), db->zones.end());
+     db->version = std::string(hdr.tzdata_version).replace(0, 6, "");
++#elif _WIN32
++    if (_Acquire_icu_functions() < _Icu_api_level::_Has_icu_addresses) {
++        throw std::runtime_error("Can not acquire ICU functions!");
++    }
++
++    UErrorCode _UErr{U_ZERO_ERROR};
++    db->version = __icu_ucal_getTZDataVersion(&_UErr);
++    if (U_FAILURE(_UErr)) {
++        throw std::runtime_error("Can not get TZData version!");
++    }
++
++    _STD unique_ptr<UEnumeration, _UEnumeration_deleter> _Enum{
++        __icu_ucal_openTimeZoneIDEnumeration(USystemTimeZoneType::UCAL_ZONE_TYPE_ANY, nullptr, nullptr, &_UErr)};
++    if (U_FAILURE(_UErr)) {
++        throw std::runtime_error("Can not open timezone enumeration!");
++    }
++
++    __std_tzdb_error _Tzdb_Err{};
++
++    while (true) {
++        int32_t _Elem_len{};
++        const auto _Elem = __icu_uenum_unext(_Enum.get(), &_Elem_len, &_UErr);
++        if (U_FAILURE(_UErr)) {
++            throw std::runtime_error("Error enumerating timezones!");
++        }
++
++        if (_Elem == nullptr) break;
++
++        auto tzname = _Allocate_wide_to_narrow(_Elem, _Elem_len, _Tzdb_Err);
++        if (tzname == nullptr) {
++            throw std::runtime_error("Error converting wide timezone name to narrow!");
++        }
++
++        time_zone timezone{std::string(tzname.get()),
++                           detail::undocumented{}};
++        db->zones.emplace_back(std::move(timezone));
++    }
++
++    db->zones.shrink_to_fit();
++    std::sort(db->zones.begin(), db->zones.end());
++
++    db->mappings = load_timezone_mappings_from_icu();
++    sort_zone_mappings(db->mappings);
++
++    db->leap_seconds = find_read_and_leap_seconds();
++
++    db->version += ".";
++    db->version += std::to_string(db->leap_seconds.size());
+ #else
+     //Iterate through folders
+     std::queue<std::string> subfolders;
+@@ -3095,7 +4314,7 @@ init_tzdb()
+     std::sort(db->zones.begin(), db->zones.end());
+     db->leap_seconds = find_read_and_leap_seconds();
+     db->version = get_version();
+-#endif // defined(ANDROID) || defined(__ANDROID__)
++#endif // defined(ANDROID) || defined(__ANDROID__) || _WIN32
+     return db;
+ }
+ 
+@@ -4104,6 +5323,7 @@ operator<<(std::ostream& os, const tzdb& db)
+ 
+ #ifdef _WIN32
+ 
++# if !USE_OS_TZDB
+ static
+ std::string
+ getTimeZoneKeyName()
+@@ -4137,6 +5357,48 @@ tzdb::current_zone() const
+     }
+     return locate_zone(standard_tzid);
+ }
++# else // USE_OS_TZDB
++const time_zone*
++tzdb::current_zone() const
++{
++    if (_Acquire_icu_functions() < _Icu_api_level::_Has_icu_addresses) {
++        throw std::runtime_error("Can not acquire ICU functions!");
++    }
++
++    // Use workaround implementation on ICU < 72.1
++
++    if (_Is_ICU_Pre72()) {
++        const auto tzname72 = detectWindowsTimeZonePre72();
++        if (tzname72.empty()) {
++            throw std::runtime_error("Can not get default timezone name!");
++        }
++
++        // Map Windows Timezone name (non-localized) to ICU timezone ID (~ Olson timezone id).
++
++        std::string native_zone = tzname72;
++
++        if (tzname72.find("Etc/") != 0) {
++            native_to_standard_timezone_name(tzname72, native_zone);
++        }
++
++        return locate_zone(native_zone);
++    }
++
++    __std_tzdb_error _Tzdb_Err{};
++    int32_t _Id_len{};
++    const auto _Id_name = _Get_default_timezone(_Id_len, _Tzdb_Err);
++    if (_Id_name == nullptr) {
++        throw std::runtime_error("Can not get default timezone name!");
++    }
++
++    auto tzname = _Allocate_wide_to_narrow(_Id_name.get(), _Id_len, _Tzdb_Err);
++    if (tzname == nullptr) {
++        throw std::runtime_error("Error converting wide timezone name to narrow!");
++    }
++
++    return locate_zone(tzname.get());
++}
++# endif // !USE_OS_TZDB
+ 
+ #else  // !_WIN32
+ 
+diff --git a/test/posix/ptz.pass.cpp b/test/posix/ptz.pass.cpp
+index dd8a398..c019554 100644
+--- a/test/posix/ptz.pass.cpp
++++ b/test/posix/ptz.pass.cpp
+@@ -44,6 +44,7 @@ is_equal(date::local_info const& x, date::local_info const& y)
+                                 && is_equal(x.second, y.second);
+ }
+ 
++
+ int
+ main()
+ {
+@@ -56,55 +57,79 @@ main()
+     Posix::time_zone tzp{"AEST-10AEDT,M10.1.0,M4.1.0/3"};
+     auto tp = local_days{2021_y/1/1} + 0s;
+     assert(tzp.get_info(tp).result == local_info::unique);
++#if !_WIN32 && !USE_OS_TZDB
+     assert(is_equal(tzi->get_info(tp), tzp.get_info(tp)));
++#endif // !_WIN32 && !USE_OS_TZDB
+ 
+     tp = local_days{2021_y/10/Sunday[1]} + 2h + 30min;
+     assert(tzp.get_info(tp).result == local_info::nonexistent);
++#if !_WIN32 && !USE_OS_TZDB
+     assert(is_equal(tzi->get_info(tp), tzp.get_info(tp)));
++#endif // !_WIN32 && !USE_OS_TZDB
+ 
+     tp = local_days{2021_y/4/Sunday[1]} + 2h + 30min;
+     assert(tzp.get_info(tp).result == local_info::ambiguous);
++#if !_WIN32 && !USE_OS_TZDB
+     assert(is_equal(tzi->get_info(tp), tzp.get_info(tp)));
++#endif // !_WIN32 && !USE_OS_TZDB
+ 
+     tp = local_days{2021_y/7/1};
+     assert(tzp.get_info(tp).result == local_info::unique);
++#if !_WIN32 && !USE_OS_TZDB
+     assert(is_equal(tzi->get_info(tp), tzp.get_info(tp)));
++#endif // !_WIN32 && !USE_OS_TZDB
+ 
+ 
+     tzi = locate_zone("America/New_York");
+     tzp = Posix::time_zone{"EST5EDT,M3.2.0,M11.1.0"};
+     tp = local_days{2021_y/1/1};
+     assert(tzp.get_info(tp).result == local_info::unique);
++#if !_WIN32 && !USE_OS_TZDB
+     assert(is_equal(tzi->get_info(tp), tzp.get_info(tp)));
++#endif // !_WIN32 && !USE_OS_TZDB
+ 
+     tp = local_days{2021_y/3/Sunday[2]} + 2h + 30min;
+     assert(tzp.get_info(tp).result == local_info::nonexistent);
++#if !_WIN32 && !USE_OS_TZDB
+     assert(is_equal(tzi->get_info(tp), tzp.get_info(tp)));
++#endif // !_WIN32 && !USE_OS_TZDB
+ 
+     tp = local_days{2021_y/11/Sunday[1]} + 1h + 30min;
+     assert(tzp.get_info(tp).result == local_info::ambiguous);
++#if !_WIN32 && !USE_OS_TZDB
+     assert(is_equal(tzi->get_info(tp), tzp.get_info(tp)));
++#endif // !_WIN32 && !USE_OS_TZDB
+ 
+     tp = local_days{2021_y/7/1};
+     assert(tzp.get_info(tp).result == local_info::unique);
++#if !_WIN32 && !USE_OS_TZDB
+     assert(is_equal(tzi->get_info(tp), tzp.get_info(tp)));
++#endif // !_WIN32 && !USE_OS_TZDB
+ 
+ 
+     tzi = locate_zone("Europe/Dublin");
+     tzp = Posix::time_zone{"IST-1GMT0,M10.5.0,M3.5.0/1"};
+     tp = local_days{2021_y/1/1};
+     assert(tzp.get_info(tp).result == local_info::unique);
++#if !_WIN32 && !USE_OS_TZDB
+     assert(is_equal(tzi->get_info(tp), tzp.get_info(tp)));
++#endif // !_WIN32 && !USE_OS_TZDB
+ 
+     tp = local_days{2021_y/3/Sunday[last]} + 1h + 30min;
+     assert(tzp.get_info(tp).result == local_info::nonexistent);
++#if !_WIN32 && !USE_OS_TZDB
+     assert(is_equal(tzi->get_info(tp), tzp.get_info(tp)));
++#endif // !_WIN32 && !USE_OS_TZDB
+ 
+     tp = local_days{2021_y/10/Sunday[last]} + 1h + 30min;
+     assert(tzp.get_info(tp).result == local_info::ambiguous);
++#if !_WIN32 && !USE_OS_TZDB
+     assert(is_equal(tzi->get_info(tp), tzp.get_info(tp)));
++#endif // !_WIN32 && !USE_OS_TZDB
+ 
+     tp = local_days{2021_y/7/1};
+     assert(tzp.get_info(tp).result == local_info::unique);
++#if !_WIN32 && !USE_OS_TZDB
+     assert(is_equal(tzi->get_info(tp), tzp.get_info(tp)));
++#endif // !_WIN32 && !USE_OS_TZDB
+ }
+-- 
+2.39.5
+
