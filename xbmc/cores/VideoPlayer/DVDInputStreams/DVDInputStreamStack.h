@@ -25,6 +25,7 @@ public:
   int64_t Seek(int64_t offset, int whence) override;
   bool IsEOF() override;
   int64_t GetLength() override;
+  int64_t GetDuration() override { return 0; }
 
 protected:
 
