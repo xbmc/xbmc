@@ -713,7 +713,6 @@ void CGUIWindowVideoNav::OnDeleteItem(const CFileItemPtr& pItem)
   {
     pItem->m_bIsFolder = false;
     CGUIComponent *gui = CServiceBroker::GetGUI();
-
     
     if (gui)
     {
