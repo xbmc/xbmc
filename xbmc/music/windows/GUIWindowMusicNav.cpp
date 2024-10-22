@@ -830,10 +830,10 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
       if (gui)
       {
-          bool confirm = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_CONFIRMFILEDELETE);
+        bool confirm = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_CONFIRMFILEDELETE);
 
-          if (!confirm || gui->ConfirmDelete(item->GetPath()))
-            CFileUtils::DeleteItem(item);
+        if (!confirm || gui->ConfirmDelete(item->GetPath()))
+          CFileUtils::DeleteItem(item);
       }
     }
     else if (!VIDEO::IsVideoDb(*item))
