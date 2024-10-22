@@ -135,7 +135,7 @@
 					<height>70</height>
 					<font>font45</font>
 					<aligny>center</aligny>
-					<label>$LOCALIZE[19069]$INFO[Container(11).ListItem.StartDate, - ]</label>
+					<label>$VAR[BreadcrumbsPVRChannelGuideVar]$INFO[Container(11).ListItem.StartDate, / ]</label>
 					<shadowcolor>black</shadowcolor>
 				</control>
 			</control>
