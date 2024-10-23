@@ -1634,7 +1634,10 @@ std::string MysqlDatabase::mysql_vmprintf(const char* zFormat, va_list ap)
 
   mysqlStrAccumInit(&acc, zBase, sizeof(zBase), MYSQL_MAX_LENGTH);
   mysqlVXPrintf(&acc, 0, zFormat, ap);
-  return mysqlStrAccumFinish(&acc);
+  std::string strResult = mysqlStrAccumFinish(&acc);
+  // Free acc.zText to avoid memory leak.
+  mysqlStrAccumReset(&acc);
+  return strResult;
 }
 
 //************* MysqlDataset implementation ***************
