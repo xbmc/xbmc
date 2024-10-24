@@ -227,6 +227,10 @@ public:
                                    const std::string& file,
                                    const std::string& destname = "");
 
+  /*!
+   * \brief Delete a file with/without confirmation.
+   *        Depends on confirmation flag in settings.
+   */
   static bool FileDelWithConfirm(CFileItemPtr pItem);
 
 #if !defined(TARGET_WINDOWS)

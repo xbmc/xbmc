@@ -2471,13 +2471,16 @@ void CUtil::CopyUserDataIfNeeded(const std::string& strPath,
 
 bool CUtil::FileDelWithConfirm(CFileItemPtr pItem)
 {
-  if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-          CSettings::SETTING_FILELISTS_CONFIRMFILEDELETE))
-    return true;
-
   CGUIComponent* gui = CServiceBroker::GetGUI();
 
-  CFileUtils::DeleteItem(pItem);
+  if (gui)
+  {
+    const bool confirm = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+        CSettings::SETTING_FILELISTS_CONFIRMFILEDELETE);
 
-  return (gui && gui->ConfirmDelete(pItem->GetPath()));
+    if (!confirm || gui->ConfirmDelete(pItem->GetPath()))
+      return CFileUtils::DeleteItem(pItem);
+  }
+
+  return false;
 }
