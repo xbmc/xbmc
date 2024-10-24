@@ -1,0 +1,25 @@
+From 19cabe2ae0494e37904658d833bb0f3ce3dbffcb Mon Sep 17 00:00:00 2001
+From: Garrett Brown <themagnificentmrb@gmail.com>
+Date: Tue, 2 Jul 2024 17:17:17 -0700
+Subject: [PATCH 2/2] Use C++17
+
+---
+ CMakeLists.txt | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index a2f61e6..657b7f8 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1,6 +1,8 @@
+ cmake_minimum_required(VERSION 2.8.12)
+ project(try_signal)
+ 
++set(CMAKE_CXX_STANDARD 17)
++
+ add_library(try_signal signal_error_code try_signal)
+ target_include_directories(try_signal PUBLIC .)
+ 
+-- 
+2.37.0.windows.1
+
