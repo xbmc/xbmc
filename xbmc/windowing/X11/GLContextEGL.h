@@ -35,6 +35,8 @@ public:
   void SetVSync(bool enable) override;
   void SwapBuffers() override;
   void QueryExtensions() override;
+  bool IsBufferAgeSupported() override { return IsExtSupported("EGL_EXT_buffer_age"); }
+  int GetBufferAge() override;
   uint64_t GetVblankTiming(uint64_t &msc, uint64_t &interval) override;
 
   bool BindTextureUploadContext();
