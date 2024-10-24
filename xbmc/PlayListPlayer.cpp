@@ -10,6 +10,7 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
+#include "GUIPassword.h"
 #include "GUIUserMessages.h"
 #include "PartyModeManager.h"
 #include "ServiceBroker.h"
@@ -983,8 +984,20 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
           {
             return;
           }
-          if (MUSIC::IsAudio(*item) || IsVideo(*item))
+          const bool isVideo{VIDEO::IsVideo(*item)};
+          const bool isAudio{MUSIC::IsAudio(*item)};
+          if (isAudio || isVideo)
+          {
+            if ((isVideo && !g_passwordManager.IsVideoUnlocked()) ||
+                (isAudio && !g_passwordManager.IsMusicUnlocked()))
+            {
+              CLog::LogF(LOGERROR,
+                         "MasterCode or MediaSource-code is wrong: {} will not be played.",
+                         item->GetPath());
+              return;
+            }
             Play(item, pMsg->strParam);
+          }
           else
             g_application.PlayMedia(*item, pMsg->strParam, playlistId);
         }

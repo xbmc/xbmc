@@ -479,6 +479,32 @@ bool CGUIPassword::CheckMenuLock(int iWindowID)
     return true;
 }
 
+bool CGUIPassword::IsVideoUnlocked()
+{
+  const auto profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
+
+  const bool isLocked{profileManager->GetCurrentProfile().videoLocked()};
+  if (!isLocked && !m_strMediaSourcePath.empty()) // check mediasource by path
+    return g_passwordManager.IsMediaPathUnlocked(profileManager, "video");
+
+  if (isLocked)
+    return IsMasterLockUnlocked(true); //Now let's check the PW if we need!
+  return true;
+}
+
+bool CGUIPassword::IsMusicUnlocked()
+{
+  const auto profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
+
+  const bool isLocked{profileManager->GetCurrentProfile().musicLocked()};
+  if (!isLocked && !m_strMediaSourcePath.empty()) // check mediasource by path
+    return g_passwordManager.IsMediaPathUnlocked(profileManager, "music");
+
+  if (isLocked)
+    return IsMasterLockUnlocked(true); //Now let's check the PW if we need!
+  return true;
+}
+
 bool CGUIPassword::LockSource(const std::string& strType, const std::string& strName, bool bState)
 {
   VECSOURCES* pShares = CMediaSourceSettings::GetInstance().GetSources(strType);
