@@ -169,12 +169,13 @@ void CSettingsBase::UnregisterCallback(ISettingCallback* callback)
   m_settingsManager->UnregisterCallback(callback);
 }
 
-SettingPtr CSettingsBase::GetSetting(const std::string& id) const
+SettingPtr CSettingsBase::GetSetting(const std::string& id,
+                                     bool presenceValidated /* = true */) const
 {
   if (id.empty())
     return nullptr;
 
-  return m_settingsManager->GetSetting(id);
+  return m_settingsManager->GetSetting(id, presenceValidated);
 }
 
 std::vector<std::shared_ptr<CSettingSection>> CSettingsBase::GetSections() const

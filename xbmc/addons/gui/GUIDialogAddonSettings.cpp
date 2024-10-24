@@ -148,8 +148,10 @@ bool CGUIDialogAddonSettings::OnAction(const CAction& action)
   return CGUIDialogSettingsManagerBase::OnAction(action);
 }
 
-bool CGUIDialogAddonSettings::ShowForAddon(const ADDON::AddonPtr& addon,
-                                           bool saveToDisk /* = true */)
+bool CGUIDialogAddonSettings::ShowForAddon(
+    const ADDON::AddonPtr& addon,
+    bool saveToDisk /* = true */,
+    ADDON::AddonInstanceId instanceId /* = ADDON::ADDON_SETTINGS_ID */)
 {
   if (!addon)
   {
@@ -168,9 +170,12 @@ bool CGUIDialogAddonSettings::ShowForAddon(const ADDON::AddonPtr& addon,
     return false;
 
   if (addon->SupportsInstanceSettings())
-    return ShowForMultipleInstances(addon, saveToDisk);
-  else
-    return ShowForSingleInstance(addon, saveToDisk);
+  {
+    if (instanceId == ADDON::ADDON_SETTINGS_ID)
+      return ShowForMultipleInstances(addon, saveToDisk);
+  }
+
+  return ShowForSingleInstance(addon, saveToDisk, instanceId);
 }
 
 bool CGUIDialogAddonSettings::ShowForSingleInstance(
@@ -239,13 +244,11 @@ bool CGUIDialogAddonSettings::ShowForMultipleInstances(const ADDON::AddonPtr& ad
     ADDON::AddonInstanceId highestId = 0;
     for (const auto& id : ids)
     {
+      bool enabled = false;
       std::string name;
-      addon->GetSettingString(ADDON_SETTING_INSTANCE_NAME_VALUE, name, id);
+      addon->GetInstanceSetting(id, enabled, name);
       if (name.empty())
         name = g_localizeStrings.Get(13205); // Unknown
-
-      bool enabled = false;
-      addon->GetSettingBool(ADDON_SETTING_INSTANCE_ENABLED_VALUE, enabled, id);
 
       const std::string label = StringUtils::Format(
           g_localizeStrings.Get(10020), name,
@@ -256,7 +259,7 @@ bool CGUIDialogAddonSettings::ShowForMultipleInstances(const ADDON::AddonPtr& ad
       item->SetProperty("name", name);
       itemsInstances.Add(item);
 
-      if (id > highestId)
+      if (id < ADDON_FIRST_SCRIPT_SET_INSTANCE_ID && id > highestId)
         highestId = id;
     }
 
@@ -414,6 +417,11 @@ std::string CGUIDialogAddonSettings::GetCurrentAddonID() const
     return "";
 
   return m_addon->ID();
+}
+
+AddonInstanceId CGUIDialogAddonSettings::GetCurrentAddonInstanceId() const
+{
+  return m_instanceId;
 }
 
 void CGUIDialogAddonSettings::SetupView()

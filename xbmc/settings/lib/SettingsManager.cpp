@@ -518,7 +518,8 @@ bool CSettingsManager::HasSettings() const
   return !m_settings.empty();
 }
 
-SettingPtr CSettingsManager::GetSetting(const std::string &id) const
+SettingPtr CSettingsManager::GetSetting(const std::string& id,
+                                        bool presenceValidated /* = true */) const
 {
   std::shared_lock<CSharedSection> lock(m_settingsCritical);
   if (id.empty())
@@ -532,7 +533,9 @@ SettingPtr CSettingsManager::GetSetting(const std::string &id) const
     return setting->second.setting;
   }
 
-  m_logger->debug("requested setting ({}) was not found.", id);
+  if (presenceValidated)
+    m_logger->debug("requested setting ({}) was not found.", id);
+
   return nullptr;
 }
 
