@@ -765,6 +765,67 @@ int64_t CFile::GetPosition() const
   return -1;
 }
 
+bool XFILE::CFile::ReadString(std::vector<char>& line)
+{
+  if (!m_pFile)
+    return false;
+
+  line.clear();
+
+  if (m_pBuffer)
+  {
+    using traits = CFileStreamBuffer::traits_type;
+    CFileStreamBuffer::int_type aByte = m_pBuffer->sgetc();
+
+    while (aByte != traits::eof())
+    {
+      aByte = m_pBuffer->sbumpc();
+
+      if (aByte == traits::eof())
+        break;
+
+      if (aByte == traits::to_int_type('\n'))
+      {
+        if (m_pBuffer->sgetc() == traits::to_int_type('\r'))
+          m_pBuffer->sbumpc();
+        break;
+      }
+
+      if (aByte == traits::to_int_type('\r'))
+      {
+        if (m_pBuffer->sgetc() == traits::to_int_type('\n'))
+          m_pBuffer->sbumpc();
+        break;
+      }
+
+      line.emplace_back(traits::to_char_type(aByte));
+    }
+
+    return true;
+  }
+
+  try
+  {
+    // Read by buffer chuncks until to EOL or EOF
+    do
+    {
+      char bufferLine[1025];
+      if (!m_pFile->ReadString(bufferLine, sizeof(bufferLine))) // EOF or error
+        return !line.empty();
+
+      const size_t length = std::strlen(bufferLine);
+      line.insert(line.end(), bufferLine, bufferLine + length);
+    } while (line.back() != '\n' && line.back() != '\r');
+
+    return true;
+  }
+  XBMCCOMMONS_HANDLE_UNCHECKED
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "{} - Unhandled exception", __FUNCTION__);
+  }
+  return false;
+}
 
 //*********************************************************************************************
 bool CFile::ReadString(char *szLine, int iLineLength)

@@ -72,6 +72,14 @@ public:
    *         or undetectable error occur, -1 in case of any explicit error
    */
   ssize_t Read(void* bufPtr, size_t bufSize);
+
+  /*!
+   * \brief String reading by line
+   * \param line[OUT] The line read
+   * \return True if has success, otherwise false for EOF or error
+   */
+  bool ReadString(std::vector<char>& line);
+
   bool ReadString(char *szLine, int iLineLength);
   /**
    * Attempt to write bufSize bytes from buffer bufPtr into currently opened file.
