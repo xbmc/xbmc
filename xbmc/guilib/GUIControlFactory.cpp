@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -28,6 +28,7 @@
 #include "GUIMoverControl.h"
 #include "GUIMultiImage.h"
 #include "GUIPanelContainer.h"
+#include "GUIPrimitive.h"
 #include "GUIProgressControl.h"
 #include "GUIRSSControl.h"
 #include "GUIRadioButtonControl.h"
@@ -49,6 +50,7 @@
 #include "cores/RetroPlayer/guicontrols/GUIGameControl.h"
 #include "games/controllers/guicontrols/GUIGameController.h"
 #include "games/controllers/guicontrols/GUIGameControllerList.h"
+#include "guilib/Interpolators.h"
 #include "input/actions/ActionIDs.h"
 #include "pvr/guilib/GUIEPGGridContainer.h"
 #include "utils/CharsetConverter.h"
@@ -88,6 +90,7 @@ static const ControlMapping controls[] = {
     {"mover", CGUIControl::GUICONTROL_MOVER},
     {"multiimage", CGUIControl::GUICONTROL_MULTI_IMAGE},
     {"panel", CGUIControl::GUICONTAINER_PANEL},
+    {"primitive", CGUIControl::GUICONTROL_PRIMITIVE},
     {"progress", CGUIControl::GUICONTROL_PROGRESS},
     {"radiobutton", CGUIControl::GUICONTROL_RADIO},
     {"ranges", CGUIControl::GUICONTROL_RANGES},
@@ -607,6 +610,86 @@ bool CGUIControlFactory::GetScroller(const TiXmlNode* control,
     }
   }
   return false;
+}
+
+bool CGUIControlFactory::GetPrimitive(const TiXmlElement* node,
+                                      int parentID,
+                                      std::array<GUIINFO::CGUIInfoColor, 4>& colors,
+                                      uint32_t& angle,
+                                      std::string& shading)
+{
+
+  if (StringUtils::CompareNoCase(node->FirstChild()->ValueStr(), "rectangle"))
+    return false;
+
+  colors[0].Parse(XMLUtils::GetAttribute(node, "color1"), parentID);
+  colors[1].Parse(XMLUtils::GetAttribute(node, "color2"), parentID);
+  colors[2].Parse(XMLUtils::GetAttribute(node, "color3"), parentID);
+  colors[3].Parse(XMLUtils::GetAttribute(node, "color4"), parentID);
+
+  shading = XMLUtils::GetAttribute(node, "shading");
+
+  angle = StringUtils::ToUint32(XMLUtils::GetAttribute(node, "angle"), 0);
+
+  return true;
+}
+
+std::unique_ptr<Interpolator> CGUIControlFactory::GetInterpolator(const TiXmlElement* node,
+                                                                  const char* type)
+{
+  const TiXmlElement* interpolationNode = node->FirstChildElement("interpolation");
+  while (interpolationNode)
+  {
+    const char* value = interpolationNode->FirstChild()->Value();
+    if (value && StringUtils::EqualsNoCase(value, type))
+      return ParseInterpolator(interpolationNode);
+
+    interpolationNode = interpolationNode->NextSiblingElement("interpolation");
+  }
+  return std::make_unique<LinearInterpolator>();
+}
+
+std::unique_ptr<Interpolator> CGUIControlFactory::ParseInterpolator(const TiXmlElement* node)
+{
+  std::unique_ptr<Interpolator> interp;
+  const char* type = node->Attribute("type");
+  if (type)
+  {
+    if (StringUtils::CompareNoCase(type, "cubic") == 0)
+      interp = std::make_unique<CubicInterpolator>();
+    else if (StringUtils::CompareNoCase(type, "sine") == 0)
+      interp = std::make_unique<SineInterpolator>();
+    else if (StringUtils::CompareNoCase(type, "back") == 0)
+      interp = std::make_unique<BackInterpolator>();
+    else if (StringUtils::CompareNoCase(type, "circle") == 0)
+      interp = std::make_unique<CircleInterpolator>();
+    else if (StringUtils::CompareNoCase(type, "quadratic") == 0)
+    {
+      float accel = 1.0f;
+      node->QueryFloatAttribute("acceleration", &accel);
+      interp = std::make_unique<QuadInterpolator>(accel);
+    }
+  }
+
+  if (!interp)
+    return std::make_unique<LinearInterpolator>();
+
+  const char* easing = node->Attribute("easing");
+  if (easing)
+  {
+    if (StringUtils::CompareNoCase(easing, "in") == 0)
+      interp->SetEasing(EASE::EASE_IN);
+    else if (StringUtils::CompareNoCase(easing, "out") == 0)
+      interp->SetEasing(EASE::EASE_OUT);
+    else if (StringUtils::CompareNoCase(easing, "inout") == 0)
+      interp->SetEasing(EASE::EASE_INOUT);
+  }
+  else
+  {
+    interp->SetEasing(EASE::EASE_INOUT);
+  }
+
+  return interp;
 }
 
 bool CGUIControlFactory::GetColor(const TiXmlNode* control,
@@ -1506,6 +1589,38 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
                                    fadeTime, randomized, loop, timeToPauseAtEnd);
       static_cast<CGUIMultiImage*>(control)->SetInfo(texturePath);
       static_cast<CGUIMultiImage*>(control)->SetAspectRatio(aspect);
+
+      break;
+    }
+    case CGUIControl::GUICONTROL_PRIMITIVE:
+    {
+      const TiXmlElement* node = pControlNode->FirstChildElement("primitive");
+      if (!(node && node->FirstChild()))
+        break;
+
+      std::string shading;
+      std::array<GUIINFO::CGUIInfoColor, 4> colorinfo;
+      uint32_t angle = 0;
+
+      if (!GetPrimitive(node, parentID, colorinfo, angle, shading))
+        break;
+
+      control = new CGUIPrimitive(parentID, id, posX, posY, width, height);
+      CGUIPrimitive* icontrol = static_cast<CGUIPrimitive*>(control);
+
+      if (StringUtils::CompareNoCase(shading, "1dgradient") == 0)
+      {
+        icontrol->Set1DGradient(colorinfo, angle, GetInterpolator(pControlNode, "color"),
+                                GetInterpolator(pControlNode, "alpha"));
+      }
+      else if (StringUtils::CompareNoCase(shading, "2dgradient") == 0)
+      {
+        icontrol->Set2DGradient(colorinfo);
+      }
+      else
+      {
+        icontrol->SetUniform(colorinfo[0]);
+      }
 
       break;
     }

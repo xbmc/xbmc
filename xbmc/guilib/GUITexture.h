@@ -28,7 +28,15 @@
 class CAspectRatio
 {
 public:
-  enum ASPECT_RATIO { AR_STRETCH = 0, AR_SCALE, AR_KEEP, AR_CENTER };
+  enum ASPECT_RATIO
+  {
+    AR_STRETCH = 0,
+    AR_SCALE,
+    AR_KEEP,
+    AR_CENTER,
+    AR_STRETCH_TEXEL_EDGE
+  };
+
   CAspectRatio(ASPECT_RATIO aspect = AR_STRETCH)
   {
     ratio = aspect;
@@ -133,6 +141,11 @@ public:
   bool SetFileName(const std::string &filename);
   void SetUseCache(const bool useCache = true);
   bool SetAspectRatio(const CAspectRatio &aspect);
+  void SetTexture(uint32_t width,
+                  uint32_t height,
+                  unsigned char* pixels,
+                  KD_TEX_FMT format,
+                  KD_TEX_ALPHA alpha);
 
   const std::string& GetFileName() const { return m_info.filename; }
   float GetTextureWidth() const { return m_frameWidth; }
@@ -210,6 +223,8 @@ protected:
 
   float m_frameWidth, m_frameHeight;          // size in pixels of the actual frame within the texture
   float m_texCoordsScaleU, m_texCoordsScaleV; // scale factor for pixel->texture coordinates
+  float m_texCoordsOffsetU{0};
+  float m_texCoordsOffsetV{0};
 
   // animations
   int m_currentLoop;
