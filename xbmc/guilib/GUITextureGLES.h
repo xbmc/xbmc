@@ -58,5 +58,6 @@ private:
   PackedVertices m_packedVertices;
   std::vector<GLushort> m_idx;
   CRenderSystemGLES *m_renderSystem;
+  bool m_isGLES20{true};
 };
 
