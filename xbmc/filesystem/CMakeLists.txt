@@ -11,6 +11,8 @@ set(SOURCES AddonsDirectory.cpp
             DirectoryFactory.cpp
             DirectoryHistory.cpp
             DllLibCurl.cpp
+            DVDDirectory.cpp
+            DVDFile.cpp
             EventsDirectory.cpp
             FavouritesDirectory.cpp
             FileCache.cpp
@@ -73,6 +75,8 @@ set(HEADERS AddonsDirectory.h
             DirectoryFactory.h
             DirectoryHistory.h
             DllLibCurl.h
+            DVDDirectory.h
+	    DVDFile.h
             EventsDirectory.h
             FTPDirectory.h
             FTPParse.h
@@ -151,11 +155,9 @@ endif()
 
 if(ENABLE_OPTICAL)
   list(APPEND SOURCES CDDADirectory.cpp
-                      CDDAFile.cpp
-                      DVDDirectory.cpp)
+                      CDDAFile.cpp)
   list(APPEND HEADERS CDDADirectory.h
-                      CDDAFile.h
-                      DVDDirectory.h)
+                      CDDAFile.h)
 endif()
 
 if(TARGET ${APP_NAME_LC}::NFS)
