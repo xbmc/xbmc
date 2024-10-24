@@ -625,8 +625,7 @@ int64_t CAddonInstaller::EnumeratePackageFolder(
     size += items[i]->m_dwSize;
     std::string pack,dummy;
     CAddonVersion::SplitFileName(pack, dummy, items[i]->GetLabel());
-    if (result.find(pack) == result.end())
-      result[pack] = std::make_unique<CFileItemList>();
+    result.try_emplace(pack, std::make_unique<CFileItemList>());
     result[pack]->Add(std::make_shared<CFileItem>(*items[i]));
   }
 
