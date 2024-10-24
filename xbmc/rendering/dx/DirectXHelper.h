@@ -84,16 +84,6 @@ namespace DX
     *den = 1000 + i;
   }
 
-  inline std::string GetErrorDescription(HRESULT hr)
-  {
-    using namespace KODI::PLATFORM::WINDOWS;
-
-    WCHAR buff[2048];
-    DXGetErrorDescriptionW(hr, buff, 2048);
-
-    return FromW(StringUtils::Format(L"{:X} - {} ({})", hr, DXGetErrorStringW(hr), buff));
-  }
-
   inline std::string GetFeatureLevelDescription(D3D_FEATURE_LEVEL featureLevel)
   {
     uint32_t fl_major = (featureLevel & 0xF000u) >> 12;

@@ -13,6 +13,8 @@
 #include "rendering/dx/RenderContext.h"
 #include "utils/log.h"
 
+#include "platform/win32/WIN32Util.h"
+
 extern "C"
 {
 #include <libavutil/mem.h>
@@ -92,7 +94,7 @@ void CRenderCaptureDX::BeginRender()
       result = pDevice->CreateQuery(&queryDesc, m_query.ReleaseAndGetAddressOf());
       if (FAILED(result))
       {
-        CLog::LogF(LOGERROR, "CreateQuery failed {}", DX::GetErrorDescription(result));
+        CLog::LogF(LOGERROR, "CreateQuery failed {}", CWIN32Util::FormatHRESULT(result));
         m_asyncSupported = false;
         m_query = nullptr;
       }

@@ -8,9 +8,10 @@
 
 #include "WinRtUtil.h"
 
-#include "rendering/dx/DirectXHelper.h"
 #include "utils/SystemInfo.h"
 #include "utils/log.h"
+
+#include "platform/win32/WIN32Util.h"
 
 #ifdef TARGET_WINDOWS_DESKTOP
 #include <Windows.Graphics.Display.Interop.h>
@@ -92,7 +93,7 @@ HDR_STATUS CWinRtUtil::GetWindowsHDRStatus()
     if (FALSE == GetWindowRect(g_hWnd, &rect))
     {
       CLog::LogF(LOGERROR, "unable to retrieve window rect, error {}",
-                 DX::GetErrorDescription(GetLastError()));
+                 CWIN32Util::FormatHRESULT(GetLastError()));
       return HDR_STATUS::HDR_UNKNOWN;
     }
 
@@ -122,7 +123,7 @@ HDR_STATUS CWinRtUtil::GetWindowsHDRStatus()
   if (FAILED(hr))
   {
     CLog::LogF(LOGERROR, "unable to retrieve DisplayInformation for window, error {}",
-               DX::GetErrorDescription(hr));
+               CWIN32Util::FormatHRESULT(hr));
     return HDR_STATUS::HDR_UNKNOWN;
   }
 #endif
