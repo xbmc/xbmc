@@ -141,6 +141,8 @@ void CVideoItemArtworkHandler::PersistArt(const std::string& art)
 
   videodb.SetArtForItem(m_item->GetVideoInfoTag()->m_iDbId, m_item->GetVideoInfoTag()->m_type,
                         m_artType, art);
+
+  videodb.UpdateArtForItem(m_item->GetVideoInfoTag()->m_iDbId, m_artType);
 }
 
 void CVideoItemArtworkHandler::AddItemPathStringToFileBrowserSources(
