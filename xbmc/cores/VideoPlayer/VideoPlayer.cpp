@@ -25,7 +25,6 @@
 #include "DVDInputStreams/InputStreamPVRBase.h"
 #include "DVDMessage.h"
 #include "FileItem.h"
-#include "GUIUserMessages.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "URL.h"
@@ -39,13 +38,12 @@
 #include "cores/FFmpeg.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
-#include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/StereoscopicsManager.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
+#include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/NetworkFileItemClassify.h"
 #include "settings/AdvancedSettings.h"
@@ -63,6 +61,7 @@
 #include "utils/log.h"
 #include "video/Bookmark.h"
 #include "video/VideoInfoTag.h"
+#include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
 #include <chrono>
@@ -1324,14 +1323,10 @@ void CVideoPlayer::Prepare()
                     __FUNCTION__, starttime.count());
         }
 
-        const std::shared_ptr<CAdvancedSettings> advancedSettings =
-            CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
-        if (advancedSettings && advancedSettings->m_EdlDisplayCommbreakNotifications)
-        {
-          const std::string timeString =
-              StringUtils::SecondsToTimeString(edit->end.count(), TIME_FORMAT_MM_SS);
-          CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(25011), timeString);
-        }
+        CVariant announcement(
+            StringUtils::SecondsToTimeString(edit->end.count(), TIME_FORMAT_MM_SS));
+        CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnCommercial",
+                                                           announcement);
       }
     }
   }
@@ -1891,7 +1886,7 @@ void CVideoPlayer::HandlePlaySpeed()
     {
       if (cache.level < 0.0)
       {
-        CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(21454), g_localizeStrings.Get(21455));
+        CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "SourceSlow");
         SetCaching(CACHESTATE_INIT);
       }
       // Note: Previously used cache.level >= 1 would keep video stalled
@@ -2464,15 +2459,11 @@ void CVideoPlayer::CheckAutoSceneSkip()
     // marker for commbreak may be inaccurate. allow user to skip into break from the back
     if (m_playSpeed >= 0 && m_Edl.GetLastEditTime() != edit->start && clock < edit->end - 1s)
     {
-      const std::shared_ptr<CAdvancedSettings> advancedSettings =
-          CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
-      if (advancedSettings && advancedSettings->m_EdlDisplayCommbreakNotifications)
-      {
-        const std::string timeString = StringUtils::SecondsToTimeString(
-            std::chrono::duration_cast<std::chrono::seconds>(edit->end - edit->start).count(),
-            TIME_FORMAT_MM_SS);
-        CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(25011), timeString);
-      }
+      CVariant announcement{StringUtils::SecondsToTimeString(
+          std::chrono::duration_cast<std::chrono::seconds>(edit->end - edit->start).count(),
+          TIME_FORMAT_MM_SS)};
+      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnCommercial",
+                                                         announcement);
 
       m_Edl.SetLastEditTime(edit->start);
       m_Edl.SetLastEditActionType(edit->action);
@@ -4133,14 +4124,15 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
     {
       m_dvd.state = DVDSTATE_NORMAL;
       CLog::Log(LOGDEBUG, "CVideoPlayer::OnDiscNavResult - libbluray menu not supported (DVDSTATE_NORMAL)");
-      CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(25008), g_localizeStrings.Get(25009));
+      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnBlurayMenuError");
     }
     break;
     case BD_EVENT_ENC_ERROR:
     {
       m_dvd.state = DVDSTATE_NORMAL;
       CLog::Log(LOGDEBUG, "CVideoPlayer::OnDiscNavResult - libbluray the disc/file is encrypted and can't be played (DVDSTATE_NORMAL)");
-      CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(16026), g_localizeStrings.Get(29805));
+      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player,
+                                                         "OnBlurayEncryptedError");
     }
     break;
     default:
@@ -4304,8 +4296,8 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
       {
         CLog::Log(LOGDEBUG, "DVDNAV_ERROR");
         m_dvd.state = DVDSTATE_NORMAL;
-        CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(16026),
-                                              g_localizeStrings.Get(16029));
+        CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player,
+                                                           "OnPlaybackFailed");
       }
       break;
     default:
@@ -4395,9 +4387,8 @@ bool CVideoPlayer::OnAction(const CAction &action)
             m_callback.OnPlayBackResumed();
           }
 
-          // send a message to everyone that we've gone to the menu
-          CGUIMessage msg(GUI_MSG_VIDEO_MENU_STARTED, 0, 0);
-          CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
+          // Let everyone know that we've gone to the menu
+          CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnMenu");
         }
         return true;
       }
@@ -4559,9 +4550,10 @@ bool CVideoPlayer::OnAction(const CAction &action)
         break;
     case ACTION_TOGGLE_COMMSKIP:
       m_SkipCommercials = !m_SkipCommercials;
-      CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(25011),
-                                            g_localizeStrings.Get(m_SkipCommercials ? 25013 : 25012));
+      CServiceBroker::GetAnnouncementManager()->Announce(
+          ANNOUNCEMENT::Player, "OnToggleSkipCommercials", CVariant{m_SkipCommercials});
       break;
+
     case ACTION_PLAYER_DEBUG:
       m_renderManager.ToggleDebug();
       break;
@@ -4570,12 +4562,8 @@ bool CVideoPlayer::OnAction(const CAction &action)
       break;
 
     case ACTION_PLAYER_PROCESS_INFO:
-      if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() != WINDOW_DIALOG_PLAYER_PROCESS_INFO)
-      {
-        CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_DIALOG_PLAYER_PROCESS_INFO);
-        return true;
-      }
-      break;
+      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnProcessInfo");
+      return true;
   }
 
   // return false to inform the caller we didn't handle the message
