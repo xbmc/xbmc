@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: 2024-02-12 00:31+0000\n"
 "Last-Translator: Christian Gade <gade@kodi.tv>\n"
@@ -192,6 +192,10 @@ msgstr "Terugdraai"
 msgctxt "#31039"
 msgid "Fast forward"
 msgstr "Vinnig vorentoe"
+
+msgctxt "#31040"
+msgid "Edit widgets"
+msgstr ""
 
 msgctxt "#31041"
 msgid "Camera manufacturer"
@@ -390,6 +394,11 @@ msgctxt "#31107"
 msgid "WideList"
 msgstr "WyeLys"
 
+# empty strings from id 31108 to 31108
+msgctxt "#31109"
+msgid "Video streams"
+msgstr ""
+
 msgctxt "#31110"
 msgid "Enter files section"
 msgstr "Tik lêer seksie in"
@@ -399,8 +408,8 @@ msgid "View your personal pictures or download one of the many image add-ons fro
 msgstr "Besigtig jou persoonlike prente of laai een van die baie beeld byvoegsels af vanaf die offisiële stoorplek."
 
 msgctxt "#31112"
-msgid "Toggle audio stream"
-msgstr "Wissel oudio stroom"
+msgid "Audio streams"
+msgstr ""
 
 msgctxt "#31113"
 msgid "Search local library"
@@ -411,7 +420,7 @@ msgid "Search YouTube"
 msgstr "Deursoek YouTube"
 
 msgctxt "#31115"
-msgid "Toggle subtitle"
+msgid "Subtitles streams"
 msgstr ""
 
 msgctxt "#31116"
@@ -731,6 +740,15 @@ msgstr "Media"
 msgctxt "#31611"
 msgid "System"
 msgstr "Stelsel"
+
+#. Audio channels
+msgctxt "#31612"
+msgid "channels"
+msgstr ""
+
+#~ msgctxt "#31112"
+#~ msgid "Toggle audio stream"
+#~ msgstr "Wissel oudio stroom"
 
 #~ msgctxt "#31615"
 #~ msgid "Extras"

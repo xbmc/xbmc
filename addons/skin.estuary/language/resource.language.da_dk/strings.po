@@ -193,6 +193,10 @@ msgctxt "#31039"
 msgid "Fast forward"
 msgstr "Spol frem"
 
+msgctxt "#31040"
+msgid "Edit widgets"
+msgstr ""
+
 msgctxt "#31041"
 msgid "Camera manufacturer"
 msgstr "Kameraproducent"
@@ -390,6 +394,11 @@ msgctxt "#31107"
 msgid "WideList"
 msgstr "Bred liste"
 
+# empty strings from id 31108 to 31108
+msgctxt "#31109"
+msgid "Video streams"
+msgstr ""
+
 msgctxt "#31110"
 msgid "Enter files section"
 msgstr "Gå til filsektionen"
@@ -399,8 +408,8 @@ msgid "View your personal pictures or download one of the many image add-ons fro
 msgstr "Se dine personlige billeder eller hent et af de mange billed-add-ons fra det officielle fjernlager."
 
 msgctxt "#31112"
-msgid "Toggle audio stream"
-msgstr "Skift lydspor"
+msgid "Audio streams"
+msgstr ""
 
 msgctxt "#31113"
 msgid "Search local library"
@@ -411,8 +420,8 @@ msgid "Search YouTube"
 msgstr "Søg på YouTube"
 
 msgctxt "#31115"
-msgid "Toggle subtitle"
-msgstr "Skift undertekst"
+msgid "Subtitles streams"
+msgstr ""
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
@@ -731,6 +740,19 @@ msgstr "Medie"
 msgctxt "#31611"
 msgid "System"
 msgstr "System"
+
+#. Audio channels
+msgctxt "#31612"
+msgid "channels"
+msgstr ""
+
+#~ msgctxt "#31112"
+#~ msgid "Toggle audio stream"
+#~ msgstr "Skift lydspor"
+
+#~ msgctxt "#31115"
+#~ msgid "Toggle subtitle"
+#~ msgstr "Skift undertekst"
 
 #~ msgctxt "#31612"
 #~ msgid "Add version"
