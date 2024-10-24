@@ -7,6 +7,8 @@
  */
 
 #include "TestUtils.h"
+
+#include "FileItem.h"
 #include "Util.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"

@@ -24712,3 +24712,14 @@ msgid "50th Anniversary Edition"
 msgstr ""
 
 # 40000 to 40800 are reserved for Video Versions feature
+
+#: system/settings/settings.xml
+msgctxt "#40801"
+msgid "Confirm media file deletion"
+msgstr ""
+
+#. Description of setting with label #40801 "Confirm file deletion"
+#: system/settings/settings.xml
+msgctxt "#40802"
+msgid "Only applies to media files - video, picture and music files"
+msgstr ""

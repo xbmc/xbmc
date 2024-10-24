@@ -72,6 +72,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/Digest.h"
 #include "utils/FileExtensionProvider.h"
+#include "utils/FileUtils.h"
 #include "utils/FontUtils.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
@@ -2466,4 +2467,20 @@ void CUtil::CopyUserDataIfNeeded(const std::string& strPath,
     std::string srcPath = URIUtils::AddFileToFolder("special://xbmc/userdata/", file);
     CFile::Copy(srcPath, destPath);
   }
+}
+
+bool CUtil::FileDeleteWithConfirm(const CFileItemPtr& item)
+{
+  const bool confirm = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+    CSettings::SETTING_FILELISTS_CONFIRMFILEDELETE);
+
+  if (confirm)
+  {
+    CGUIComponent* gui = CServiceBroker::GetGUI();
+
+    if (!gui || !gui->ConfirmDelete(item->GetPath()))
+      return false;
+  }
+
+  return CFileUtils::DeleteItem(item);
 }

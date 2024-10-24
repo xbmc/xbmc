@@ -1652,13 +1652,7 @@ void CGUIMediaWindow::OnDeleteItem(int iItem)
       return;
   }
 
-  CGUIComponent *gui = CServiceBroker::GetGUI();
-  if (gui && gui->ConfirmDelete(item->GetPath()))
-  {
-    if (!CFileUtils::DeleteItem(item))
-      return;
-  }
-  else
+  if (!CUtil::FileDeleteWithConfirm(item))
     return;
 
   Refresh(true);
