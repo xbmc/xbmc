@@ -513,7 +513,10 @@ bool CProfileManager::DeleteProfile(unsigned int index)
   item->m_bIsFolder = true;
   item->Select(true);
 
-  CUtil::FileDelWithConfirm(item);
+  CGUIComponent* gui = CServiceBroker::GetGUI();
+
+  if (gui && gui->ConfirmDelete(item->GetPath()))
+    CFileUtils::DeleteItem(item);
 
   return Save();
 }

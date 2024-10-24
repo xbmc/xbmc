@@ -827,7 +827,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       item->m_bIsFolder = false;
 
-      CUtil::FileDelWithConfirm(item);
+      CUtil::FileDeleteWithConfirm(item);
     }
     else if (!VIDEO::IsVideoDb(*item))
       OnDeleteItem(itemNumber);

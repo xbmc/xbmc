@@ -713,7 +713,7 @@ void CGUIWindowVideoNav::OnDeleteItem(const CFileItemPtr& pItem)
   {
     pItem->m_bIsFolder = false;
 
-    CUtil::FileDelWithConfirm(pItem);
+    CUtil::FileDeleteWithConfirm(pItem);
   }
   else
   {

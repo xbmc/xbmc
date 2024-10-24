@@ -1652,7 +1652,7 @@ void CGUIMediaWindow::OnDeleteItem(int iItem)
       return;
   }
 
-  if (!CUtil::FileDelWithConfirm(item))
+  if (!CUtil::FileDeleteWithConfirm(item))
     return;
 
   Refresh(true);

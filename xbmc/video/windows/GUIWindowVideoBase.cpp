@@ -1059,7 +1059,7 @@ void CGUIWindowVideoBase::OnDeleteItem(const CFileItemPtr& item)
        m_vecItems->IsPath("special://videoplaylists/")) &&
       CUtil::SupportsWriteFileOperations(item->GetPath()))
   {
-    CUtil::FileDelWithConfirm(item);
+    CUtil::FileDeleteWithConfirm(item);
   }
 }
 

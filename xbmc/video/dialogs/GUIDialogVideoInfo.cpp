@@ -1482,7 +1482,7 @@ bool CGUIDialogVideoInfo::DeleteVideoItem(const std::shared_ptr<CFileItem>& item
       if (item->IsStack())
         item->m_bIsFolder = true;
 
-      CUtil::FileDelWithConfirm(item);
+      CUtil::FileDeleteWithConfirm(item);
     }
   }
 
