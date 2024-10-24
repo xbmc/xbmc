@@ -20,6 +20,8 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.os.storage.StorageManager;
+import android.os.storage.StorageVolume;
 import android.provider.Settings;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -560,7 +562,9 @@ public class Splash extends Activity
   void updateExternalStorageState()
   {
     String state = Environment.getExternalStorageState();
-    Log.d(TAG, "External storage = " + Environment.getExternalStorageDirectory().getAbsolutePath() + "; state = " + state);
+    StorageManager manager = (StorageManager) getSystemService(Context.STORAGE_SERVICE);
+    StorageVolume volume = manager.getPrimaryStorageVolume();
+    Log.d(TAG, "External storage = " + volume.getDirectory().getAbsolutePath() + "; state = " + state);
     if (Environment.MEDIA_MOUNTED.equals(state))
     {
       mStateMachine.sendEmptyMessage(StorageChecked);
@@ -614,7 +618,7 @@ public class Splash extends Activity
     super.onCreate(savedInstanceState);
 
     // Be sure properties are initialized for native
-    XBMCProperties.initializeProperties();
+    XBMCProperties.initialize(getApplicationContext());
 
     // Check if @APP_NAME@ is not already running
     ActivityManager activityManager = (ActivityManager) getBaseContext()
