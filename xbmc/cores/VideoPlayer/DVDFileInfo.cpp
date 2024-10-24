@@ -18,6 +18,7 @@
 #include "network/NetworkFileItemClassify.h"
 #include "pictures/Picture.h"
 #include "playlists/PlayListFileItemClassify.h"
+#include "pvr/PVRThumbLoader.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/MemUtils.h"
@@ -258,10 +259,7 @@ bool CDVDFileInfo::CanExtract(const CFileItem& fileItem)
   if (fileItem.m_bIsFolder)
     return false;
 
-  if (fileItem.IsLiveTV() ||
-      // Due to a pvr addon api design flaw (no support for multiple concurrent streams
-      // per addon instance), pvr recording thumbnail extraction does not work (reliably).
-      URIUtils::IsPVRRecording(fileItem.GetDynPath()) ||
+  if ((URIUtils::IsPVR(fileItem.GetPath()) && !PVR::ProvidesStreamForThumbExtraction(fileItem)) ||
       // plugin path not fully resolved
       URIUtils::IsPlugin(fileItem.GetDynPath()) || URIUtils::IsUPnP(fileItem.GetPath()) ||
       NETWORK::IsInternetStream(fileItem) || VIDEO::IsDiscStub(fileItem) ||

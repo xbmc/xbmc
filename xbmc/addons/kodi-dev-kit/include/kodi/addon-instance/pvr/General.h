@@ -1112,6 +1112,7 @@ public:
   /// | **Supports async EPG transfer** | `boolean` | @ref PVRCapabilities::SetSupportsAsyncEPGTransfer "SetSupportsAsyncEPGTransfer" | @ref PVRCapabilities::GetSupportsAsyncEPGTransfer "GetSupportsAsyncEPGTransfer"
   /// | **Supports recording size** | `boolean` | @ref PVRCapabilities::SetSupportsRecordingSize "SetSupportsRecordingSize" | @ref PVRCapabilities::GetSupportsRecordingSize "GetSupportsRecordingSize"
   /// | **Supports recordings delete** | `boolean` | @ref PVRCapabilities::SetSupportsRecordingsDelete "SetSupportsRecordingsDelete" | @ref PVRCapabilities::GetSupportsRecordingsDelete "SetSupportsRecordingsDelete"
+  /// | **Supports multiple recorded streams** | `boolean` | @ref PVRCapabilities::SetSupportsMultipleRecordedStreams "SetSupportsMultipleRecordedStreams" | @ref PVRCapabilities::GetSupportsMultipleRecordedStreams "GetSupportsMultipleRecordedStreams"
   /// | **Recordings lifetime values** | @ref cpp_kodi_addon_pvr_Defs_PVRTypeIntValue "PVRTypeIntValue" | @ref PVRCapabilities::SetRecordingsLifetimeValues "SetRecordingsLifetimeValues" | @ref PVRCapabilities::GetRecordingsLifetimeValues "GetRecordingsLifetimeValues"
   ///
   /// @warning This class can not be used outside of @ref kodi::addon::CInstancePVRClient::GetCapabilities()
@@ -1337,6 +1338,18 @@ public:
 
   /// @brief To get with @ref SetSupportsRecordingsDelete changed values.
   bool GetSupportsRecordingsDelete() const { return m_cStructure->bSupportsRecordingsDelete; }
+
+  /// @brief Set **true** if this add-on supports multiple streams for recordings at a time.
+  void SetSupportsMultipleRecordedStreams(bool supportsMultipleRecordedStreams)
+  {
+    m_cStructure->bSupportsMultipleRecordedStreams = supportsMultipleRecordedStreams;
+  }
+
+  /// @brief To get with @ref SetSupportsMultiRecordedStreams changed values.
+  bool GetSupportsMultipleRecordedStreams() const
+  {
+    return m_cStructure->bSupportsMultipleRecordedStreams;
+  }
 
   /// @brief **optional**\n
   /// Set array containing the possible values for @ref PVRRecording::SetLifetime().

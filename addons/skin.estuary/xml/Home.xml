@@ -415,7 +415,7 @@
 							<param name="item_limit" value="15"/>
 							<param name="list_id" value="12300"/>
 							<param name="label" value="$INFO[ListItem.Title]$INFO[ListItem.Date, (,)]"/>
-							<param name="label2" value="$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName]"/>
+							<param name="label2" value="$VAR[SeasonEpisodeAndNameLabel]"/>
 						</include>
 						<include content="WidgetListPVR" condition="System.HasPVRAddon + !Skin.HasSetting(home_no_tv_timers_widget)">
 							<param name="content_path" value="pvr://timers/tv/timers/?view=hidedisabled"/>
@@ -426,7 +426,7 @@
 							<param name="item_limit" value="15"/>
 							<param name="list_id" value="12400"/>
 							<param name="label" value="$INFO[ListItem.Title]$INFO[ListItem.Date, (,)]"/>
-							<param name="label2" value="$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName]"/>
+							<param name="label2" value="$VAR[SeasonEpisodeAndNameLabel]"/>
 						</include>
 						<include content="WidgetListPVR" condition="System.HasPVRAddon + !Skin.HasSetting(home_no_tv_channelgroups_widget)">
 							<param name="content_path" value="pvr://channels/tv"/>
@@ -498,7 +498,7 @@
 							<param name="item_limit" value="15"/>
 							<param name="list_id" value="13300"/>
 							<param name="label" value="$INFO[ListItem.Title]$INFO[ListItem.Date, (,)]"/>
-							<param name="label2" value="$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName]"/>
+							<param name="label2" value="$VAR[SeasonEpisodeAndNameLabel]"/>
 						</include>
 						<include content="WidgetListPVR" condition="System.HasPVRAddon + !Skin.HasSetting(home_no_radio_timers_widget)">
 							<param name="content_path" value="pvr://timers/radio/timers/?view=hidedisabled"/>
@@ -509,7 +509,7 @@
 							<param name="item_limit" value="15"/>
 							<param name="list_id" value="13400"/>
 							<param name="label" value="$INFO[ListItem.Title]$INFO[ListItem.Date, (,)]"/>
-							<param name="label2" value="$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName]"/>
+							<param name="label2" value="$VAR[SeasonEpisodeAndNameLabel]"/>
 						</include>
 						<include content="WidgetListPVR" condition="System.HasPVRAddon + !Skin.HasSetting(home_no_radio_channelgroups_widget)">
 							<param name="content_path" value="pvr://channels/radio"/>

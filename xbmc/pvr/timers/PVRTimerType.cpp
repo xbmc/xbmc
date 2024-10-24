@@ -9,7 +9,6 @@
 #include "PVRTimerType.h"
 
 #include "ServiceBroker.h"
-#include "addons/AddonVersion.h"
 #include "guilib/LocalizeStrings.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClient.h"
@@ -156,9 +155,7 @@ CPVRTimerType::CPVRTimerType()
 {
 }
 
-CPVRTimerType::CPVRTimerType(const PVR_TIMER_TYPE& type,
-                             int iClientId,
-                             const ADDON::CAddonVersion& addonApiVersion)
+CPVRTimerType::CPVRTimerType(const PVR_TIMER_TYPE& type, int iClientId)
   : m_iClientId(iClientId),
     m_iTypeId(type.iId),
     m_iAttributes(type.iAttributes),
@@ -166,13 +163,7 @@ CPVRTimerType::CPVRTimerType(const PVR_TIMER_TYPE& type,
 {
   InitDescription();
   InitAttributeValues(type);
-
-  //! @todo version check can be removed with next incompatible API bump
-  static const ADDON::CAddonVersion customSettingsMinApiVersion{"9.1.0"};
-  if (addonApiVersion >= customSettingsMinApiVersion)
-  {
-    InitCustomSettingDefinitions(type);
-  }
+  InitCustomSettingDefinitions(type);
 }
 
 CPVRTimerType::CPVRTimerType(unsigned int iTypeId,

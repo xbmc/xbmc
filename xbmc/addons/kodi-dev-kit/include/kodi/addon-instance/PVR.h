@@ -2585,27 +2585,36 @@ public:
   /// @brief Open a stream to a recording on the backend.
   ///
   /// @param[in] recording The recording to open.
+  /// @param[out] streamId The id for the opened stream.
   /// @return True if the stream has been opened successfully, false otherwise.
   ///
   /// @remarks Optional, and only used if @ref PVRCapabilities::SetSupportsRecordings()
-  /// is set to true. @ref CloseRecordedStream() will always be called by Kodi
-  /// prior to calling this function.
+  /// is set to true. If @ref PVRCapabilities::SetSupportsMultipleRecordedStreams() is set to false,
+  /// @ref CloseRecordedStream() will be called by Kodi prior to calling this function.
   ///
-  virtual bool OpenRecordedStream(const kodi::addon::PVRRecording& recording) { return false; }
+  virtual bool OpenRecordedStream(const kodi::addon::PVRRecording& recording, int64_t& streamId)
+  {
+    return false;
+  }
   //----------------------------------------------------------------------------
 
   //============================================================================
   /// @brief Close an open stream from a recording.
   ///
+  /// @param[in] streamId The id of the stream to close, as returned by @ref OpenRecordedStream().
+  /// Can be ignored, if @ref PVRCapabilities::SetSupportsMultipleRecordedStreams() is set to false.
+  ///
   /// @remarks Optional, and only used if @ref PVRCapabilities::SetSupportsRecordings()
   /// is set to true.
   ///
-  virtual void CloseRecordedStream() {}
+  virtual void CloseRecordedStream(int64_t streamId) {}
   //----------------------------------------------------------------------------
 
   //============================================================================
   /// @brief Read from a recording.
   ///
+  /// @param[in] streamId The id of the stream to read, as returned by @ref OpenRecordedStream().
+  /// Can be ignored, if @ref PVRCapabilities::SetSupportsMultipleRecordedStreams() is set to false.
   /// @param[in] buffer The buffer to store the data in.
   /// @param[in] size The amount of bytes to read.
   /// @return The amount of bytes that were actually read from the stream.
@@ -2613,12 +2622,17 @@ public:
   /// @remarks Optional, and only used if @ref PVRCapabilities::SetSupportsRecordings()
   /// is set to true.
   ///
-  virtual int ReadRecordedStream(unsigned char* buffer, unsigned int size) { return 0; }
+  virtual int ReadRecordedStream(int64_t streamId, unsigned char* buffer, unsigned int size)
+  {
+    return 0;
+  }
   //----------------------------------------------------------------------------
 
   //============================================================================
   /// @brief Seek in a recorded stream.
   ///
+  /// @param[in] streamId The id of the stream to seek, as returned by @ref OpenRecordedStream().
+  /// Can be ignored, if @ref PVRCapabilities::SetSupportsMultipleRecordedStreams() is set to false.
   /// @param[in] position The position to seek to.
   /// @param[in] whence [optional] offset relative to
   ///                   You can set the value of whence to one of three things:
@@ -2633,20 +2647,79 @@ public:
   /// @remarks Optional, and only used if @ref PVRCapabilities::SetSupportsRecordings()
   /// is set to true.
   ///
-  virtual int64_t SeekRecordedStream(int64_t position, int whence) { return 0; }
+  virtual int64_t SeekRecordedStream(int64_t streamId, int64_t position, int whence) { return 0; }
   //----------------------------------------------------------------------------
 
   //============================================================================
   /// @brief Obtain the length of a recorded stream.
   ///
+  /// @param[in] streamId The id of the stream to get the length for, as returned by
+  /// @ref OpenRecordedStream(). Can be ignored, if
+  /// @ref PVRCapabilities::SetSupportsMultipleRecordedStreams() is set to false.
   /// @return The total length of the stream that's currently being read.
   ///
   /// @remarks Optional, and only used if @ref PVRCapabilities::SetSupportsRecordings()
-  /// is true (=> @ref ReadRecordedStream).
+  /// is set to true.
   ///
-  virtual int64_t LengthRecordedStream() { return 0; }
+  virtual int64_t LengthRecordedStream(int64_t streamId) { return 0; }
   //----------------------------------------------------------------------------
 
+  //============================================================================
+  /// @brief Check for real-time streaming.
+  ///
+  /// @param[in] streamId The id of the stream to check, as returned by @ref OpenRecordedStream().
+  /// @param[out] isRealTime True if is real-time streaming, false otherwise.
+  /// @return @ref PVR_ERROR_NO_ERROR on success, respective error code otherwise.
+  ///
+  /// @remarks Optional, and only called if both @ref PVRCapabilities::SetSupportsRecordings()
+  /// and @ref PVRCapabilities::SetSupportsMultipleRecordedStreams() are set to true. If
+  /// @refPVRCapabilities::SetSupportsMultipleRecordedStreams() is set to false,
+  /// @ref IsRealTimeStream() will be called to check real time status for recorded streams.
+  ///
+  virtual PVR_ERROR IsRecordedStreamRealTime(int64_t streamId, bool& isRealTime)
+  {
+    return PVR_ERROR_NOT_IMPLEMENTED;
+  }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  ///
+  /// @brief Notify the pvr addon that Kodi (un)paused the currently playing
+  /// stream.
+  ///
+  /// @param[in] streamId The id of the stream (un)paused, as returned by @ref OpenRecordedStream().
+  /// @param[in] paused To inform by `true` is paused and with `false` playing
+  /// @return @ref PVR_ERROR_NO_ERROR on success, respective error code otherwise.
+  ///
+  /// @remarks Optional, and only called if both @ref PVRCapabilities::SetSupportsRecordings()
+  /// and @ref PVRCapabilities::SetSupportsMultipleRecordedStreams() are set to true. If
+  /// @refPVRCapabilities::SetSupportsMultipleRecordedStreams() is set to false, @ref PauseStream()
+  /// will be called to pause recorded streams.
+  ///
+  virtual PVR_ERROR PauseRecordedStream(int64_t streamId, bool paused)
+  {
+    return PVR_ERROR_NOT_IMPLEMENTED;
+  }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  ///
+  /// @brief Get stream times.
+  ///
+  /// @param[in] streamId The id of the stream to get times for, as returned by
+  /// @ref OpenRecordedStream().
+  /// @param[out] times Data to be filled by the implementation.
+  /// @return @ref PVR_ERROR_NO_ERROR on success, respective error code otherwise.
+  ///
+  /// @remarks Optional, and only called if both @ref PVRCapabilities::SetSupportsRecordings()
+  /// and @ref PVRCapabilities::SetSupportsMultipleRecordedStreams() are set to true. If
+  /// @refPVRCapabilities::SetSupportsMultipleRecordedStreams() is set to false,
+  /// @ref GetStreamTimes() will be called to obtain times for recorded streams.
+  ///
+  virtual PVR_ERROR GetRecordedStreamTimes(int64_t streamId, kodi::addon::PVRStreamTimes& times)
+  {
+    return PVR_ERROR_NOT_IMPLEMENTED;
+  }
   ///@}
   //--==----==----==----==----==----==----==----==----==----==----==----==----==
 
@@ -2831,6 +2904,9 @@ private:
     instance->pvr->toAddon->ReadRecordedStream = ADDON_ReadRecordedStream;
     instance->pvr->toAddon->SeekRecordedStream = ADDON_SeekRecordedStream;
     instance->pvr->toAddon->LengthRecordedStream = ADDON_LengthRecordedStream;
+    instance->pvr->toAddon->IsRecordedStreamRealTime = ADDON_IsRecordedStreamRealTime;
+    instance->pvr->toAddon->PauseRecordedStream = ADDON_PauseRecordedStream;
+    instance->pvr->toAddon->GetRecordedStreamTimes = ADDON_GetRecordedStreamTimes;
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     instance->pvr->toAddon->DemuxReset = ADDON_DemuxReset;
     instance->pvr->toAddon->DemuxAbort = ADDON_DemuxAbort;
@@ -3476,37 +3552,67 @@ private:
   }
 
   inline static bool ADDON_OpenRecordedStream(const AddonInstance_PVR* instance,
-                                              const PVR_RECORDING* recording)
+                                              const PVR_RECORDING* recording,
+                                              int64_t* streamId)
   {
     return static_cast<CInstancePVRClient*>(instance->toAddon->addonInstance)
-        ->OpenRecordedStream(recording);
+        ->OpenRecordedStream(recording, *streamId);
   }
 
-  inline static void ADDON_CloseRecordedStream(const AddonInstance_PVR* instance)
+  inline static void ADDON_CloseRecordedStream(const AddonInstance_PVR* instance, int64_t streamId)
   {
-    static_cast<CInstancePVRClient*>(instance->toAddon->addonInstance)->CloseRecordedStream();
+    static_cast<CInstancePVRClient*>(instance->toAddon->addonInstance)
+        ->CloseRecordedStream(streamId);
   }
 
   inline static int ADDON_ReadRecordedStream(const AddonInstance_PVR* instance,
+                                             int64_t streamId,
                                              unsigned char* buffer,
                                              unsigned int size)
   {
     return static_cast<CInstancePVRClient*>(instance->toAddon->addonInstance)
-        ->ReadRecordedStream(buffer, size);
+        ->ReadRecordedStream(streamId, buffer, size);
   }
 
   inline static int64_t ADDON_SeekRecordedStream(const AddonInstance_PVR* instance,
+                                                 int64_t streamId,
                                                  int64_t position,
                                                  int whence)
   {
     return static_cast<CInstancePVRClient*>(instance->toAddon->addonInstance)
-        ->SeekRecordedStream(position, whence);
+        ->SeekRecordedStream(streamId, position, whence);
   }
 
-  inline static int64_t ADDON_LengthRecordedStream(const AddonInstance_PVR* instance)
+  inline static int64_t ADDON_LengthRecordedStream(const AddonInstance_PVR* instance,
+                                                   int64_t streamId)
   {
     return static_cast<CInstancePVRClient*>(instance->toAddon->addonInstance)
-        ->LengthRecordedStream();
+        ->LengthRecordedStream(streamId);
+  }
+
+  inline static PVR_ERROR ADDON_IsRecordedStreamRealTime(const AddonInstance_PVR* instance,
+                                                         int64_t streamId,
+                                                         bool* isRealTime)
+  {
+    return static_cast<CInstancePVRClient*>(instance->toAddon->addonInstance)
+        ->IsRecordedStreamRealTime(streamId, *isRealTime);
+  }
+
+  inline static PVR_ERROR ADDON_PauseRecordedStream(const AddonInstance_PVR* instance,
+                                                    int64_t streamId,
+                                                    bool paused)
+  {
+    return static_cast<CInstancePVRClient*>(instance->toAddon->addonInstance)
+        ->PauseRecordedStream(streamId, paused);
+  }
+
+  inline static PVR_ERROR ADDON_GetRecordedStreamTimes(const AddonInstance_PVR* instance,
+                                                       int64_t streamId,
+                                                       PVR_STREAM_TIMES* times)
+  {
+    PVRStreamTimes cppTimes(times);
+    return static_cast<CInstancePVRClient*>(instance->toAddon->addonInstance)
+        ->GetRecordedStreamTimes(streamId, cppTimes);
   }
 
   inline static void ADDON_DemuxReset(const AddonInstance_PVR* instance)

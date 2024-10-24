@@ -111,10 +111,11 @@ extern "C"
   {
     const char* strRecordingId;
     const char* strTitle;
-    const char* strEpisodeName;
+    const char* strTitleExtraInfo;
     int iSeriesNumber;
     int iEpisodeNumber;
     int iEpisodePartNumber;
+    const char* strEpisodeName;
     int iYear;
     const char* strDirectory;
     const char* strPlotOutline;

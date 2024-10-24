@@ -110,6 +110,8 @@ CPVREpgInfoTag::CPVREpgInfoTag(const EPG_TAG& data,
   // explicit NULL check, because there is no implicit NULL constructor for std::string
   if (data.strTitle)
     m_strTitle = data.strTitle;
+  if (data.strTitleExtraInfo)
+    m_titleExtraInfo = data.strTitleExtraInfo;
   if (data.strGenreDescription)
     m_strGenreDescription = data.strGenreDescription;
   if (data.strPlotOutline)
@@ -178,6 +180,7 @@ void CPVREpgInfoTag::Serialize(CVariant& value) const
   value["parentalratingsource"] = m_parentalRatingSource;
   value["rating"] = m_iStarRating;
   value["title"] = m_strTitle;
+  value["titleextrainfo"] = m_titleExtraInfo;
   value["plotoutline"] = m_strPlotOutline;
   value["plot"] = m_strPlot;
   value["originaltitle"] = m_strOriginalTitle;
@@ -482,7 +485,8 @@ bool CPVREpgInfoTag::Update(const CPVREpgInfoTag& tag, bool bUpdateBroadcastId /
        m_iSeriesNumber != tag.m_iSeriesNumber || m_strEpisodeName != tag.m_strEpisodeName ||
        m_iUniqueBroadcastID != tag.m_iUniqueBroadcastID || m_iEpgID != tag.m_iEpgID ||
        m_genre != tag.m_genre || m_iconPath != tag.m_iconPath || m_iFlags != tag.m_iFlags ||
-       m_strSeriesLink != tag.m_strSeriesLink || m_channelData != tag.m_channelData);
+       m_strSeriesLink != tag.m_strSeriesLink || m_channelData != tag.m_channelData ||
+       m_titleExtraInfo != tag.m_titleExtraInfo);
 
   if (bUpdateBroadcastId)
     bChanged |= (m_iDatabaseID != tag.m_iDatabaseID);
@@ -493,6 +497,7 @@ bool CPVREpgInfoTag::Update(const CPVREpgInfoTag& tag, bool bUpdateBroadcastId /
       m_iDatabaseID = tag.m_iDatabaseID;
 
     m_strTitle = tag.m_strTitle;
+    m_titleExtraInfo = tag.m_titleExtraInfo;
     m_strPlotOutline = tag.m_strPlotOutline;
     m_strPlot = tag.m_strPlot;
     m_strOriginalTitle = tag.m_strOriginalTitle;

@@ -296,11 +296,20 @@ extern "C"
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Recording stream read interface functions
-    bool(__cdecl* OpenRecordedStream)(const struct AddonInstance_PVR*, const struct PVR_RECORDING*);
-    void(__cdecl* CloseRecordedStream)(const struct AddonInstance_PVR*);
-    int(__cdecl* ReadRecordedStream)(const struct AddonInstance_PVR*, unsigned char*, unsigned int);
-    int64_t(__cdecl* SeekRecordedStream)(const struct AddonInstance_PVR*, int64_t, int);
-    int64_t(__cdecl* LengthRecordedStream)(const struct AddonInstance_PVR*);
+    bool(__cdecl* OpenRecordedStream)(const struct AddonInstance_PVR*,
+                                      const struct PVR_RECORDING*,
+                                      int64_t*);
+    void(__cdecl* CloseRecordedStream)(const struct AddonInstance_PVR*, int64_t);
+    int(__cdecl* ReadRecordedStream)(const struct AddonInstance_PVR*,
+                                     int64_t,
+                                     unsigned char*,
+                                     unsigned int);
+    int64_t(__cdecl* SeekRecordedStream)(const struct AddonInstance_PVR*, int64_t, int64_t, int);
+    int64_t(__cdecl* LengthRecordedStream)(const struct AddonInstance_PVR*, int64_t);
+    PVR_ERROR(__cdecl* IsRecordedStreamRealTime)(const struct AddonInstance_PVR*, int64_t, bool*);
+    PVR_ERROR(__cdecl* PauseRecordedStream)(const struct AddonInstance_PVR*, int64_t, bool);
+    PVR_ERROR(__cdecl* GetRecordedStreamTimes)
+    (const struct AddonInstance_PVR*, int64_t, PVR_STREAM_TIMES*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Stream demux interface functions
