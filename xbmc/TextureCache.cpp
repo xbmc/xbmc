@@ -146,9 +146,13 @@ bool CTextureCache::StartCacheImage(const std::string& image)
   return false;
 }
 
-std::string CTextureCache::CacheImage(const std::string& image,
-                                      std::unique_ptr<CTexture>* texture /*= nullptr*/,
-                                      CTextureDetails* details /*= nullptr*/)
+std::string CTextureCache::CacheImage(
+    const std::string& image,
+    std::unique_ptr<CTexture>* texture /*= nullptr*/,
+    CTextureDetails* details /*= nullptr*/,
+    unsigned int idealWidth /*= 0*/,
+    unsigned int idealHeight /*= 0*/,
+    CAspectRatio::AspectRatio aspectRatio /*= CAspectRatio::CENTER*/)
 {
   std::string url = IMAGE_FILES::ToCacheKey(image);
   if (url.empty())
@@ -187,7 +191,7 @@ std::string CTextureCache::CacheImage(const std::string& image,
   if (!cachedpath.empty())
   {
     if (texture)
-      *texture = CTexture::LoadFromFile(cachedpath, 0, 0);
+      *texture = CTexture::LoadFromFile(cachedpath, idealWidth, idealHeight, aspectRatio);
   }
   else
   {

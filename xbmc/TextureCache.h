@@ -10,6 +10,7 @@
 
 #include "TextureCacheJob.h"
 #include "TextureDatabase.h"
+#include "guilib/AspectRatio.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 #include "threads/Timer.h"
@@ -92,12 +93,18 @@ public:
    \param image url of the image to cache
    \param texture [out] the loaded image
    \param details [out] details of the cached image
+   \param idealWidth the ideal width of the returned texture (defaults to 0, no ideal width). Only matters if texture is not null.
+   \param idealHeight the ideal height of the returned texture (defaults to 0, no ideal height). Only matters if texture is not null.
+   \param aspectRatio the aspect ratio mode of the texture (defaults to "center"). Only matters if texture is not null.
    \return cached url of this image
    \sa CTextureCacheJob::CacheTexture
    */
   std::string CacheImage(const std::string& image,
                          std::unique_ptr<CTexture>* texture = nullptr,
-                         CTextureDetails* details = nullptr);
+                         CTextureDetails* details = nullptr,
+                         unsigned int idealWidth = 0,
+                         unsigned int idealHeight = 0,
+                         CAspectRatio::AspectRatio aspectRatio = CAspectRatio::CENTER);
 
   /*! \brief Cache an image to image cache if not already cached, returning the image details.
    \param image url of the image to cache.

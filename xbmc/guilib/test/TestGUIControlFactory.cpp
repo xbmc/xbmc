@@ -201,25 +201,25 @@ class TestAspectRatio : public testing::WithParamInterface<AspectRatioTest>, pub
 
 const auto AspectRatioTests = std::array{
     AspectRatioTest{R"(<root><test align="center">keep</test></root>)"s,
-                    {CAspectRatio::AR_KEEP, ASPECT_ALIGN_CENTER, true}},
+                    {CAspectRatio::KEEP, ASPECT_ALIGN_CENTER, true}},
     AspectRatioTest{R"(<root><test align="right">scale</test></root>)"s,
-                    {CAspectRatio::AR_SCALE, ASPECT_ALIGN_RIGHT, true}},
+                    {CAspectRatio::SCALE, ASPECT_ALIGN_RIGHT, true}},
     AspectRatioTest{R"(<root><test align="left">center</test></root>)"s,
-                    {CAspectRatio::AR_CENTER, ASPECT_ALIGN_LEFT, true}},
+                    {CAspectRatio::CENTER, ASPECT_ALIGN_LEFT, true}},
     AspectRatioTest{R"(<root><test align="center">stretch</test></root>)"s,
-                    {CAspectRatio::AR_STRETCH, ASPECT_ALIGN_CENTER, true}},
+                    {CAspectRatio::STRETCH, ASPECT_ALIGN_CENTER, true}},
     AspectRatioTest{R"(<root><test aligny="center" scalediffuse="true">keep</test></root>)"s,
-                    {CAspectRatio::AR_KEEP, ASPECT_ALIGNY_CENTER, true}},
+                    {CAspectRatio::KEEP, ASPECT_ALIGNY_CENTER, true}},
     AspectRatioTest{R"(<root><test aligny="bottom" scalediffuse="yes">keep</test></root>)"s,
-                    {CAspectRatio::AR_KEEP, ASPECT_ALIGNY_BOTTOM, true}},
+                    {CAspectRatio::KEEP, ASPECT_ALIGNY_BOTTOM, true}},
     AspectRatioTest{
         R"(<root><test align="right" aligny="top" scalediffuse="no">keep</test></root>)"s,
-        {CAspectRatio::AR_KEEP, ASPECT_ALIGN_RIGHT | ASPECT_ALIGNY_TOP, false}},
+        {CAspectRatio::KEEP, ASPECT_ALIGN_RIGHT | ASPECT_ALIGNY_TOP, false}},
     AspectRatioTest{R"(<root><test scalediffuse="false">keep</test></root>)"s,
-                    {CAspectRatio::AR_KEEP, ASPECT_ALIGN_CENTER, false}},
+                    {CAspectRatio::KEEP, ASPECT_ALIGN_CENTER, false}},
     AspectRatioTest{
-        R"(<root><test/></root>)"s, {CAspectRatio::AR_STRETCH, ASPECT_ALIGN_CENTER, true}, false},
-    AspectRatioTest{R"(<root/>)"s, {CAspectRatio::AR_STRETCH, ASPECT_ALIGN_CENTER, true}, false},
+        R"(<root><test/></root>)"s, {CAspectRatio::STRETCH, ASPECT_ALIGN_CENTER, true}, false},
+    AspectRatioTest{R"(<root/>)"s, {CAspectRatio::STRETCH, ASPECT_ALIGN_CENTER, true}, false},
 };
 
 struct ColorTest

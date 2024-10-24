@@ -487,23 +487,8 @@ bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int 
   AVColorRange range = frame->color_range;
   AVPixelFormat pixFormat = ConvertFormats(frame);
 
-  // assumption quadratic maximums e.g. 2048x2048
-  float ratio = m_width / (float)m_height;
-  unsigned int nHeight = m_originalHeight;
-  unsigned int nWidth = m_originalWidth;
-  if (nHeight > height)
-  {
-    nHeight = height;
-    nWidth = (unsigned int)(nHeight * ratio + 0.5f);
-  }
-  if (nWidth > width)
-  {
-    nWidth = width;
-    nHeight = (unsigned int)(nWidth / ratio + 0.5f);
-  }
-
-  struct SwsContext* context = sws_getContext(m_originalWidth, m_originalHeight, pixFormat,
-    nWidth, nHeight, AV_PIX_FMT_RGB32, SWS_BICUBIC, NULL, NULL, NULL);
+  SwsContext* context = sws_getContext(m_originalWidth, m_originalHeight, pixFormat, width, height,
+                                       AV_PIX_FMT_RGB32, SWS_BICUBIC, NULL, NULL, NULL);
 
   if (range == AVCOL_RANGE_JPEG)
   {
@@ -531,7 +516,7 @@ bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int 
     const unsigned char *src = pictureRGB->data[0];
     unsigned char* dst = pixels;
 
-    for (unsigned int y = 0; y < nHeight; y++)
+    for (unsigned int y = 0; y < height; y++)
     {
       memcpy(dst, src, minPitch);
       src += pictureRGB->linesize[0];
@@ -546,9 +531,9 @@ bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int 
     av_frame_free(&pictureRGB);
   }
 
-  // update width and height original dimensions are kept
-  m_height = nHeight;
-  m_width = nWidth;
+  // update width and height
+  m_height = height;
+  m_width = width;
 
   return true;
 }

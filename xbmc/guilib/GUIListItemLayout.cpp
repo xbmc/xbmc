@@ -221,7 +221,7 @@ void CGUIListItemLayout::CreateListControlLayouts(float width, float height, boo
   }
   CGUIImage *image = new CGUIImage(0, 0, 8, 0, iconWidth, texHeight, CTextureInfo(""));
   image->SetInfo(GUIINFO::CGUIInfoLabel("$INFO[ListItem.Icon]", "", m_group.GetParentID()));
-  image->SetAspectRatio(CAspectRatio::AR_KEEP);
+  image->SetAspectRatio(CAspectRatio::KEEP);
   m_group.AddControl(image);
   float x = iconWidth + labelInfo.offsetX + 10;
   CGUIListLabel *label = new CGUIListLabel(0, 0, x, labelInfo.offsetY, width - x - 18, height, labelInfo, GUIINFO::CGUIInfoLabel("$INFO[ListItem.Label]", "", m_group.GetParentID()), CGUIControl::FOCUS);
