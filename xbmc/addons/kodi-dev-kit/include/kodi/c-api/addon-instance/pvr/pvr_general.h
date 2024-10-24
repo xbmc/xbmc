@@ -370,6 +370,7 @@ extern "C"
     bool bSupportsRecordingSize;
     bool bSupportsProviders;
     bool bSupportsRecordingsDelete;
+    bool bSupportsMultipleRecordedStreams;
 
     unsigned int iRecordingsLifetimesSize;
     struct PVR_ATTRIBUTE_INT_VALUE* recordingsLifetimeValues;

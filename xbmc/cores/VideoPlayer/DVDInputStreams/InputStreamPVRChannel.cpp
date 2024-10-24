@@ -122,3 +122,36 @@ bool CInputStreamPVRChannel::CanSeekPVRStream()
 
   return ret;
 }
+
+bool CInputStreamPVRChannel::IsRealtimePVRStream()
+{
+  bool ret = false;
+
+  if (m_client)
+    m_client->IsRealTimeStream(ret);
+
+  return ret;
+}
+
+void CInputStreamPVRChannel::PausePVRStream(bool paused)
+{
+  if (m_client)
+    m_client->PauseStream(paused);
+}
+
+bool CInputStreamPVRChannel::GetPVRStreamTimes(Times& times)
+{
+  PVR_STREAM_TIMES streamTimes = {};
+  if (m_client && m_client->GetStreamTimes(&streamTimes) == PVR_ERROR_NO_ERROR)
+  {
+    times.startTime = streamTimes.startTime;
+    times.ptsStart = streamTimes.ptsStart;
+    times.ptsBegin = streamTimes.ptsBegin;
+    times.ptsEnd = streamTimes.ptsEnd;
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}

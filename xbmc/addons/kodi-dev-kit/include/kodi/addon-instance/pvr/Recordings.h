@@ -69,6 +69,7 @@ public:
   /// |------|------|----------|----------|-----------
   /// | **Recording id** | `std::string` | @ref PVRRecording::SetRecordingId "SetRecordingId" | @ref PVRRecording::GetRecordingId "GetRecordingId" | *required to set*
   /// | **Title** | `std::string` | @ref PVRRecording::SetTitle "SetTitle" | @ref PVRRecording::GetTitle "GetTitle" | *required to set*
+  /// | **Title extra info** | `std::string` | @ref PVRRecording::SetTitleExtraInfo "SetTitleExtraInfo" | @ref PVRRecording::GetTitleExtraInfo "GetTitleExtraInfo" | *optional*
   /// | **Episode name** | `std::string` | @ref PVRRecording::SetEpisodeName "SetEpisodeName" | @ref PVRRecording::GetEpisodeName "GetEpisodeName" | *optional*
   /// | **Series number** | `int` | @ref PVRRecording::SetSeriesNumber "SetSeriesNumber" | @ref PVRRecording::GetSeriesNumber "GetSeriesNumber" | *optional*
   /// | **Episode number** | `int` | @ref PVRRecording::SetEpisodeNumber "SetEpisodeNumber" | @ref PVRRecording::GetEpisodeNumber "GetEpisodeNumber" | *optional*
@@ -129,6 +130,19 @@ public:
 
   /// @brief To get with @ref SetTitle changed values.
   std::string GetTitle() const { return m_cStructure->strTitle ? m_cStructure->strTitle : ""; }
+
+  /// @brief **optional**\n
+  /// The title extra information of this recording.
+  void SetTitleExtraInfo(const std::string& titleExtraInfo)
+  {
+    ReallocAndCopyString(&m_cStructure->strTitleExtraInfo, titleExtraInfo.c_str());
+  }
+
+  /// @brief To get with @ref SetTitleExtraInfo changed values.
+  std::string GetTitleExtraInfo() const
+  {
+    return m_cStructure->strTitleExtraInfo ? m_cStructure->strTitleExtraInfo : "";
+  }
 
   /// @brief **optional**\n
   /// Episode name (also known as subtitle).
@@ -582,6 +596,7 @@ public:
   {
     target->strRecordingId = AllocAndCopyString(source->strRecordingId);
     target->strTitle = AllocAndCopyString(source->strTitle);
+    target->strTitleExtraInfo = AllocAndCopyString(source->strTitleExtraInfo);
     target->strEpisodeName = AllocAndCopyString(source->strEpisodeName);
     target->strDirectory = AllocAndCopyString(source->strDirectory);
     target->strPlotOutline = AllocAndCopyString(source->strPlotOutline);
@@ -602,6 +617,7 @@ public:
   {
     FreeString(target->strRecordingId);
     FreeString(target->strTitle);
+    FreeString(target->strTitleExtraInfo);
     FreeString(target->strEpisodeName);
     FreeString(target->strDirectory);
     FreeString(target->strPlotOutline);

@@ -605,7 +605,7 @@
           <control type="list" format="string" />
         </setting>
         <setting id="subtitles.fontsize" type="integer" label="289" help="36186">
-          <level>3</level>
+          <level>2</level>
           <default>42</default> <!-- in pixels -->
           <constraints>
             <minimum>12</minimum>
@@ -618,7 +618,7 @@
           <control type="list" format="string" />
         </setting>
         <setting id="subtitles.style" type="integer" label="736" help="36187">
-          <level>3</level>
+          <level>2</level>
           <default>0</default> <!-- FontStyle::NORMAL -->
           <constraints>
             <options>
@@ -631,17 +631,17 @@
           <control type="list" format="string" />
         </setting>
         <setting id="subtitles.colorpick" type="string" label="737" help="36188">
-          <level>3</level>
+          <level>2</level>
           <default>FFFFFFFF</default> <!-- White -->
           <control type="colorbutton" />
         </setting>
         <setting id="subtitles.opacity" type="integer" label="752" help="36295">
-          <level>3</level>
+          <level>2</level>
           <default>100</default>
           <control type="slider" format="percentage" range="0,100" />
         </setting>
         <setting id="subtitles.bordersize" type="integer" label="39159" help="688">
-          <level>3</level>
+          <level>2</level>
           <default>25</default>
           <dependencies>
             <dependency type="enable" setting="subtitles.backgroundtype" operator="!is">2</dependency>
@@ -649,7 +649,7 @@
           <control type="slider" format="percentage" range="0,100" />
         </setting>
         <setting id="subtitles.bordercolorpick" type="string" label="39160" help="689">
-          <level>3</level>
+          <level>2</level>
           <default>FF000000</default> <!-- Black -->
           <dependencies>
             <dependency type="enable" setting="subtitles.backgroundtype" operator="!is">2</dependency>
@@ -659,6 +659,11 @@
         <setting id="subtitles.blur" type="integer" label="39173" help="690">
           <level>3</level>
           <default>0</default>
+          <control type="slider" format="percentage" range="0,100" />
+        </setting>
+        <setting id="subtitles.linespacing" type="integer" label="39202" help="39203">
+          <level>3</level>
+          <default>12</default>
           <control type="slider" format="percentage" range="0,100" />
         </setting>
         <setting id="subtitles.backgroundtype" type="integer" label="39165" help="39169">

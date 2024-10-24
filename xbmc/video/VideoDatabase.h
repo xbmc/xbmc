@@ -984,6 +984,8 @@ public:
   bool GetArtForItem(int mediaId, const MediaType &mediaType, std::map<std::string, std::string> &art);
   std::string GetArtForItem(int mediaId, const MediaType &mediaType, const std::string &artType);
 
+  void UpdateArtForItem(int mediaId, const MediaType& mediaType);
+
   /*!
    * \brief Retrieve all art for the given video asset, with optional fallback to the art of the
    * parent/owner of the asset

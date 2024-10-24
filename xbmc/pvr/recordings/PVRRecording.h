@@ -530,6 +530,12 @@ public:
    */
   int EpisodePart() const;
 
+  /*!
+  * @brief Get the title extra information of this recording.
+  * @return The title extra info.
+  */
+  const std::string& TitleExtraInfo() const;
+
 private:
   CPVRRecording(const CPVRRecording& tag) = delete;
   CPVRRecording& operator=(const CPVRRecording& other) = delete;
@@ -569,6 +575,7 @@ private:
   std::string m_parentalRatingIcon; /*!< parental rating icon path */
   std::string m_parentalRatingSource; /*!< parental rating source */
   int m_episodePartNumber{PVR_RECORDING_INVALID_SERIES_EPISODE}; /*!< episode part number */
+  std::string m_titleExtraInfo; /*!< title extra info */
 
   mutable CCriticalSection m_critSection;
 };

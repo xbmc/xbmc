@@ -24176,7 +24176,19 @@ msgctxt "#39201"
 msgid "HDR10+"
 msgstr ""
 
-#empty strings from id 39202 to 39999
+#. Subtitle line spacing setting
+#: system/settings/settings.xml
+msgctxt "#39202"
+msgid "Line spacing"
+msgstr ""
+
+#. Subtitle line spacing setting help
+#: system/settings/settings.xml
+msgctxt "#39203"
+msgid "Adjust the space between lines of text. Setting a value too low may cause boxes to overlap when the \"Background type\" setting is used."
+msgstr ""
+
+#empty strings from id 39204 to 39999
 
 # 40000 to 40800 are reserved for Video Versions feature
 

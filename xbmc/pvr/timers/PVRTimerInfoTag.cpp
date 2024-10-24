@@ -9,7 +9,6 @@
 #include "PVRTimerInfoTag.h"
 
 #include "ServiceBroker.h"
-#include "addons/AddonVersion.h"
 #include "guilib/LocalizeStrings.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
@@ -90,8 +89,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */)
 
 CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER& timer,
                                    const std::shared_ptr<CPVRChannel>& channel,
-                                   unsigned int iClientId,
-                                   const ADDON::CAddonVersion& addonApiVersion)
+                                   unsigned int iClientId)
   : m_strTitle(timer.strTitle ? timer.strTitle : ""),
     m_strEpgSearchString(timer.strEpgSearchString ? timer.strEpgSearchString : ""),
     m_bFullTextEpgSearch(timer.bFullTextEpgSearch),
@@ -135,20 +133,15 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER& timer,
   if (m_iClientIndex == PVR_TIMER_NO_CLIENT_INDEX)
     CLog::LogF(LOGERROR, "Invalid client index supplied by client {} (must be > 0)!", m_iClientId);
 
-  //! @todo version check can be removed with next incompatible API bump
-  static const ADDON::CAddonVersion customSettingsMinApiVersion{"9.1.0"};
-  if (addonApiVersion >= customSettingsMinApiVersion)
+  for (unsigned int i = 0; i < timer.iCustomPropsSize; ++i)
   {
-    for (unsigned int i = 0; i < timer.iCustomPropsSize; ++i)
-    {
-      const PVR_SETTING_KEY_VALUE_PAIR& prop{timer.customProps[i]};
-      if (prop.eType == PVR_SETTING_TYPE::INTEGER)
-        m_customProps.insert({prop.iKey, {prop.eType, CVariant{prop.iValue}}});
-      else if (prop.eType == PVR_SETTING_TYPE::STRING)
-        m_customProps.insert({prop.iKey, {prop.eType, CVariant{prop.strValue}}});
-      else
-        CLog::LogF(LOGERROR, "Unknown setting type for custom property");
-    }
+    const PVR_SETTING_KEY_VALUE_PAIR& prop{timer.customProps[i]};
+    if (prop.eType == PVR_SETTING_TYPE::INTEGER)
+      m_customProps.insert({prop.iKey, {prop.eType, CVariant{prop.iValue}}});
+    else if (prop.eType == PVR_SETTING_TYPE::STRING)
+      m_customProps.insert({prop.iKey, {prop.eType, CVariant{prop.strValue}}});
+    else
+      CLog::LogF(LOGERROR, "Unknown setting type for custom property");
   }
 
   const std::shared_ptr<const CPVRClient> client =

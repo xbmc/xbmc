@@ -196,6 +196,12 @@ public:
   const std::string& Title() const { return m_strTitle; }
 
   /*!
+  * @brief Get the title extra information of this event.
+  * @return The title extra info.
+  */
+  const std::string& TitleExtraInfo() const { return m_titleExtraInfo; }
+
+  /*!
    * @brief Get the plot outline of this event.
    * @return The plot outline.
    */
@@ -505,6 +511,7 @@ private:
   int m_iEpisodePart = -1; /*!< episode part number */
   unsigned int m_iUniqueBroadcastID = 0; /*!< unique broadcast ID */
   std::string m_strTitle; /*!< title */
+  std::string m_titleExtraInfo; /*!< title extra info */
   std::string m_strPlotOutline; /*!< plot outline */
   std::string m_strPlot; /*!< plot */
   std::string m_strOriginalTitle; /*!< original title */

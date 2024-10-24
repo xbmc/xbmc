@@ -181,129 +181,76 @@ bool CDRMUtils::FindPreferredMode()
   return true;
 }
 
-bool CDRMUtils::FindGuiPlane()
+bool CDRMUtils::FindPlanes()
 {
-  /* find the gui plane which support ARGB and 8bit or 10 bit XRGB
-     * prefer the one which does not support NV12, because it can be re-used in future for video
-     * prefer the highest id number because they are listed on top where zpos is not available
-     * and use the gui plane crtc as the crtc
-     * */
-  CDRMPlane* gui_plane_nv12{nullptr};
-  CDRMPlane* gui_plane{nullptr};
-  CDRMCrtc* gui_crtc_nv12{nullptr};
-  CDRMCrtc* gui_crtc{nullptr};
-
-  for (size_t crtc_offset = 0; crtc_offset < m_crtcs.size(); crtc_offset++)
+  for (size_t i = 0; i < m_crtcs.size(); i++)
   {
-    if (!(m_encoder->GetPossibleCrtcs() & (1 << crtc_offset)))
+    if (!(m_encoder->GetPossibleCrtcs() & (1 << i)))
       continue;
 
-    for (auto& plane : m_planes)
-    {
-      if (!(plane.get()->GetPossibleCrtcs() & (1 << crtc_offset)))
-        continue;
-
-      if (plane.get()->SupportsFormat(DRM_FORMAT_ARGB8888) &&
-          (plane.get()->SupportsFormat(DRM_FORMAT_XRGB2101010) ||
-           plane.get()->SupportsFormat(DRM_FORMAT_XRGB8888)))
+    auto videoPlane = std::find_if(m_planes.begin(), m_planes.end(), [&i](auto& plane) {
+      if (plane->GetPossibleCrtcs() & (1 << i))
       {
-        if (plane.get()->SupportsFormat(DRM_FORMAT_NV12) &&
-            (gui_plane_nv12 == nullptr || gui_plane_nv12->GetId() < plane.get()->GetId()))
-        {
-          gui_plane_nv12 = plane.get();
-          gui_crtc_nv12 = m_crtcs[crtc_offset].get();
-        }
-        else if (!plane.get()->SupportsFormat(DRM_FORMAT_NV12) &&
-                 (gui_plane == nullptr || gui_plane->GetId() < plane.get()->GetId()))
-        {
-          gui_plane = plane.get();
-          gui_crtc = m_crtcs[crtc_offset].get();
-        }
+        return plane->SupportsFormat(DRM_FORMAT_NV12);
+      }
+      return false;
+    });
+
+    uint32_t videoPlaneId{0};
+
+    if (videoPlane != m_planes.end())
+      videoPlaneId = videoPlane->get()->GetPlaneId();
+
+    auto guiPlane =
+        std::find_if(m_planes.begin(), m_planes.end(), [&i, &videoPlaneId](auto& plane) {
+          if (plane->GetPossibleCrtcs() & (1 << i))
+          {
+            return (plane->GetPlaneId() != videoPlaneId &&
+                    (videoPlaneId == 0 || plane->SupportsFormat(DRM_FORMAT_ARGB8888)) &&
+                    (plane->SupportsFormat(DRM_FORMAT_XRGB2101010) ||
+                     plane->SupportsFormat(DRM_FORMAT_XRGB8888)));
+          }
+          return false;
+        });
+
+    if (videoPlane != m_planes.end() && guiPlane != m_planes.end())
+    {
+      m_crtc = m_crtcs[i].get();
+      m_video_plane = videoPlane->get();
+      m_gui_plane = guiPlane->get();
+      break;
+    }
+
+    if (guiPlane != m_planes.end())
+    {
+      if (!m_crtc && m_encoder->GetCrtcId() == m_crtcs[i]->GetCrtcId())
+      {
+        m_crtc = m_crtcs[i].get();
+        m_gui_plane = guiPlane->get();
+        m_video_plane = nullptr;
       }
     }
   }
 
-  // fallback to NV12 supporting plane
-  if (gui_plane == nullptr)
+  CLog::Log(LOGINFO, "CDRMUtils::{} - using crtc: {}", __FUNCTION__, m_crtc->GetCrtcId());
+
+  // video plane may not be available
+  if (m_video_plane)
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} - using video plane {}", __FUNCTION__,
+              m_video_plane->GetPlaneId());
+
+  if (m_gui_plane->SupportsFormat(DRM_FORMAT_XRGB2101010))
   {
-    gui_crtc = gui_crtc_nv12;
-    gui_plane = gui_plane_nv12;
+    m_gui_plane->SetFormat(DRM_FORMAT_XRGB2101010);
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} - using 10bit gui plane {}", __FUNCTION__,
+              m_gui_plane->GetPlaneId());
   }
-
-  if (gui_plane != nullptr)
+  else
   {
-    m_crtc = gui_crtc;
-    m_gui_plane = gui_plane;
-
-    CLog::Log(LOGINFO, "CDRMUtils::{} - using crtc: {}", __FUNCTION__, m_crtc->GetCrtcId());
-    if (m_gui_plane->SupportsFormat(DRM_FORMAT_XRGB2101010))
-    {
-      m_gui_plane->SetFormat(DRM_FORMAT_XRGB2101010);
-      CLog::Log(LOGDEBUG, "CDRMUtils::{} - using 10bit gui plane {}", __FUNCTION__,
-                m_gui_plane->GetPlaneId());
-    }
-    else
-    {
-      m_gui_plane->SetFormat(DRM_FORMAT_XRGB8888);
-      CLog::Log(LOGDEBUG, "CDRMUtils::{} - using gui plane {}", __FUNCTION__,
-                m_gui_plane->GetPlaneId());
-    }
-    return true;
+    m_gui_plane->SetFormat(DRM_FORMAT_XRGB8888);
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} - using gui plane {}", __FUNCTION__,
+              m_gui_plane->GetPlaneId());
   }
-
-  CLog::Log(LOGERROR, "CDRMUtils::{} - Can not find a GUI plane", __FUNCTION__);
-  return false;
-}
-
-bool CDRMUtils::FindVideoPlane(uint32_t format, uint64_t modifier)
-{
-  bool supports_zpos = m_gui_plane->SupportsProperty("zpos");
-  bool zpos_immutable = supports_zpos && m_gui_plane->IsPropertyImmutable("zpos").value();
-
-  auto crtc_offset = std::distance(
-      m_crtcs.begin(),
-      std::find_if(m_crtcs.begin(), m_crtcs.end(),
-                   [this](auto& crtc) { return crtc->GetCrtcId() == m_crtc->GetCrtcId(); }));
-
-  auto guiplane_id = m_gui_plane->GetId();
-  auto videoPlane = std::find_if(m_planes.begin(), m_planes.end(),
-                                 [&crtc_offset, &format, &modifier, &guiplane_id](auto& plane)
-                                 {
-                                   if (plane->GetPossibleCrtcs() & (1 << crtc_offset))
-                                   {
-                                     return (guiplane_id != plane->GetPlaneId() &&
-                                             plane->SupportsFormatAndModifier(format, modifier));
-                                   }
-                                   return false;
-                                 });
-
-  if (videoPlane == m_planes.end())
-  {
-    CLog::Log(LOGERROR,
-              "CDRMUtils::{} - Can not find a Video Plane plane for format {}, modifier {}",
-              __FUNCTION__, format, modifier);
-    return false;
-  }
-
-  m_video_plane = videoPlane->get();
-  CLog::Log(LOGDEBUG, "CDRMUtils::{} - using video plane {}", __FUNCTION__,
-            m_video_plane->GetPlaneId());
-
-  if (!supports_zpos || zpos_immutable)
-    return true;
-
-  // re-sort the video and gui planes
-  auto limits = m_gui_plane->GetRangePropertyLimits("zpos");
-
-  if (!limits)
-    return true;
-
-  m_gui_plane->SetProperty("zpos", limits.value()[1]);
-  m_video_plane->SetProperty("zpos", limits.value()[0]);
-  CLog::Log(LOGDEBUG, "CDRMUtils::{} - gui plane id,zpos: {}, {}", __FUNCTION__,
-            m_gui_plane->GetId(), limits.value()[1]);
-  CLog::Log(LOGDEBUG, "CDRMUtils::{} - video plane id,zpos: {}, {}", __FUNCTION__,
-            m_video_plane->GetId(), limits.value()[0]);
 
   return true;
 }
@@ -520,10 +467,8 @@ bool CDRMUtils::InitDrm()
   if (!FindCrtc())
     return false;
 
-  if (!FindGuiPlane())
+  if (!FindPlanes())
     return false;
-
-  FindVideoPlane(DRM_FORMAT_NV12, DRM_FORMAT_MOD_LINEAR);
 
   if (!FindPreferredMode())
     return false;

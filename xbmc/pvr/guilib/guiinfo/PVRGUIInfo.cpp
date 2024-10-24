@@ -481,8 +481,6 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
       case VIDEOPLAYER_EPISODENAME:
       case LISTITEM_EPISODENAME:
         strValue = recording->EpisodeName();
-        // fixup multiline episode name strings (which do not fit in any way in our GUI)
-        StringUtils::Replace(strValue, "\n", ", ");
         return true;
       case VIDEOPLAYER_CHANNEL_NAME:
       case LISTITEM_CHANNEL_NAME:
@@ -617,6 +615,14 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
           }
         }
         return false;
+      case LISTITEM_TITLE_EXTRAINFO:
+      case VIDEOPLAYER_TITLE_EXTRAINFO:
+      {
+        strValue = recording->TitleExtraInfo();
+        // fixup multiline info strings (which do not fit in any way in our GUI)
+        StringUtils::Replace(strValue, "\n", ", ");
+        return true;
+      }
     }
     return false;
   }
@@ -817,11 +823,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
       case VIDEOPLAYER_EPISODENAME:
       case LISTITEM_EPISODENAME:
         if (!CServiceBroker::GetPVRManager().IsParentalLocked(epgTag))
-        {
           strValue = epgTag->EpisodeName();
-          // fixup multiline episode name strings (which do not fit in any way in our GUI)
-          StringUtils::Replace(strValue, "\n", ", ");
-        }
         return true;
       case VIDEOPLAYER_CAST:
       case LISTITEM_CAST:
@@ -890,6 +892,14 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
           return true;
         }
         return false;
+      }
+      case LISTITEM_TITLE_EXTRAINFO:
+      case VIDEOPLAYER_TITLE_EXTRAINFO:
+      {
+        strValue = epgTag->TitleExtraInfo();
+        // fixup multiline info strings (which do not fit in any way in our GUI)
+        StringUtils::Replace(strValue, "\n", ", ");
+        return true;
       }
     }
   }

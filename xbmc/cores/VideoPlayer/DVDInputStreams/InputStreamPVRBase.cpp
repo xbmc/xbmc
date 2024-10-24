@@ -40,8 +40,9 @@ bool CInputStreamPVRBase::IsEOF()
 
 bool CInputStreamPVRBase::Open()
 {
-  if (CDVDInputStream::Open() && OpenPVRStream())
+  if (!m_isOpen && CDVDInputStream::Open() && OpenPVRStream())
   {
+    m_isOpen = true;
     m_eof = false;
     m_StreamProps->iStreamCount = 0;
     return true;
@@ -54,9 +55,13 @@ bool CInputStreamPVRBase::Open()
 
 void CInputStreamPVRBase::Close()
 {
-  ClosePVRStream();
-  CDVDInputStream::Close();
-  m_eof = true;
+  if (m_isOpen)
+  {
+    ClosePVRStream();
+    CDVDInputStream::Close();
+    m_eof = true;
+    m_isOpen = false;
+  }
 }
 
 int CInputStreamPVRBase::Read(uint8_t* buf, int buf_size)
@@ -103,19 +108,7 @@ int CInputStreamPVRBase::GetBlockSize()
 
 bool CInputStreamPVRBase::GetTimes(Times &times)
 {
-  PVR_STREAM_TIMES streamTimes = {};
-  if (m_client && m_client->GetStreamTimes(&streamTimes) == PVR_ERROR_NO_ERROR)
-  {
-    times.startTime = streamTimes.startTime;
-    times.ptsStart = streamTimes.ptsStart;
-    times.ptsBegin = streamTimes.ptsBegin;
-    times.ptsEnd = streamTimes.ptsEnd;
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return GetPVRStreamTimes(times);
 }
 
 CDVDInputStream::ENextStream CInputStreamPVRBase::NextStream()
@@ -135,18 +128,12 @@ bool CInputStreamPVRBase::CanSeek()
 
 void CInputStreamPVRBase::Pause(bool bPaused)
 {
-  if (m_client)
-    m_client->PauseStream(bPaused);
+  PausePVRStream(bPaused);
 }
 
 bool CInputStreamPVRBase::IsRealtime()
 {
-  bool ret = false;
-
-  if (m_client)
-    m_client->IsRealTimeStream(ret);
-
-  return ret;
+  return IsRealtimePVRStream();
 }
 
 bool CInputStreamPVRBase::OpenDemux()

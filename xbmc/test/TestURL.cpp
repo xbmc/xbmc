@@ -70,3 +70,10 @@ const TestURLGetWithoutUserDetailsData values[] = {
 };
 
 INSTANTIATE_TEST_SUITE_P(URL, TestURLGetWithoutUserDetails, ValuesIn(values));
+
+TEST(TestURLGetWithoutOptions, PreserveSlashesBetweenProtocolAndPath)
+{
+  std::string url{"https://example.com//stream//example/index.m3u8"};
+  CURL input{url};
+  EXPECT_EQ(input.GetWithoutOptions(), url);
+}

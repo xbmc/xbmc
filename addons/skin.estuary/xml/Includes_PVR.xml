@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <includes>
 	<expression name="listitem_has_episode_info">!String.IsEmpty(ListItem.Episode) | !String.IsEmpty(ListItem.EpisodeName) | !String.IsEmpty(ListItem.Season)</expression>
-	<expression name="listitem_has_epg_event_info">!String.IsEmpty(ListItem.EpgEventTitle) | $EXP[listitem_has_episode_info]</expression>
+	<expression name="listitem_has_epg_event_info">!String.IsEmpty(ListItem.EpgEventTitle) | !String.IsEmpty(ListItem.TitleExtraInfo) | $EXP[listitem_has_episode_info]</expression>
 	<include name="PVRListItemLayout">
 		<definition>
 			<control type="label">
@@ -430,7 +430,7 @@
 				<width>830</width>
 				<height>70</height>
 				<scroll>true</scroll>
-				<label>[I]$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName][/I]</label>
+				<label>[I]$VAR[SeasonEpisodeAndNameLabel][/I]</label>
 			</control>
 			<control type="textbox">
 				<top>465</top>
@@ -467,7 +467,7 @@
 							<height>90</height>
 							<width>830</width>
 							<aligny>center</aligny>
-							<label>$VAR[RecordingDateSizeLabel]$INFO[ListItem.Label]$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName, (,)]$INFO[ListItem.Property(totalcount), (, $LOCALIZE[31036])]</label>
+							<label>$VAR[RecordingDateSizeLabel]$INFO[ListItem.Label]$VAR[SeasonEpisodeAndNameLabel, (,)]$INFO[ListItem.Property(totalcount), (, $LOCALIZE[31036])]</label>
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 						<control type="label">
@@ -476,7 +476,7 @@
 							<height>90</height>
 							<width>830</width>
 							<aligny>center</aligny>
-							<label>[COLOR grey]$INFO[ListItem.ChannelName,,[CR]][/COLOR]$INFO[ListItem.EpgEventTitle]$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName, (,)]</label>
+							<label>[COLOR grey]$INFO[ListItem.ChannelName,,[CR]][/COLOR]$INFO[ListItem.EpgEventTitle]$VAR[SeasonEpisodeAndNameLabel, (,)]</label>
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 					</focusedlayout>
@@ -487,7 +487,7 @@
 							<height>90</height>
 							<width>830</width>
 							<aligny>center</aligny>
-							<label>$VAR[RecordingDateSizeLabel]$INFO[ListItem.Label]$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName, (,)]$INFO[ListItem.Property(totalcount), (, $LOCALIZE[31036])]</label>
+							<label>$VAR[RecordingDateSizeLabel]$INFO[ListItem.Label]$VAR[SeasonEpisodeAndNameLabel, (,)]$INFO[ListItem.Property(totalcount), (, $LOCALIZE[31036])]</label>
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 						<control type="label">
@@ -496,7 +496,7 @@
 							<height>90</height>
 							<width>830</width>
 							<aligny>center</aligny>
-							<label>[COLOR grey]$INFO[ListItem.ChannelName,,[CR]][/COLOR]$INFO[ListItem.EpgEventTitle]$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName, (,)]</label>
+							<label>[COLOR grey]$INFO[ListItem.ChannelName,,[CR]][/COLOR]$INFO[ListItem.EpgEventTitle]$VAR[SeasonEpisodeAndNameLabel, (,)]</label>
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 					</itemlayout>
@@ -557,7 +557,7 @@
 					<top>35</top>
 					<width>100%</width>
 					<height>30</height>
-					<label>$VAR[FlagDashLabel]$VAR[SeasonEpisodeLabel,[COLOR grey],[/COLOR]]$INFO[ListItem.EpisodeName]</label>
+					<label>$VAR[FlagDashLabel]$VAR[SeasonEpisodeLabel,[COLOR grey],[/COLOR]]$VAR[EpisodeNameLabel]</label>
 				</control>
 			</control>
 			<control type="textbox">

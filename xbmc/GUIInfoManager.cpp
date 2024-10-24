@@ -4016,6 +4016,14 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_MediaProviders `VideoPlayer.MediaProviders`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`VideoPlayer.TitleExtraInfo`</b>,
+///                  \anchor VideoPlayer_TitleExtraInfo
+///                  _string_,
+///     @return string containing extra information, enriching the title of the currently playing media, if any.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_TitleExtraInfo `VideoPlayer.TitleExtraInfo`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -4101,6 +4109,7 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "hasvideoversions", VIDEOPLAYER_HAS_VIDEOVERSIONS},
                                   { "episodepart",      VIDEOPLAYER_EPISODEPART},
                                   { "mediaproviders",   VIDEOPLAYER_MEDIAPROVIDERS },
+                                  { "titleextrainfo",   VIDEOPLAYER_TITLE_EXTRAINFO },
 };
 // clang-format on
 
@@ -7118,7 +7127,14 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @skinning_v22 **[New Infolabel]** \link ListItem_MediaProviders `ListItem.MediaProviders`\endlink
 ///     <p>
 ///   }
-///
+///   \table_row3{   <b>`ListItem.TitleExtraInfo`</b>,
+///                  \anchor ListItem_TitleExtraInfo
+///                  _string_,
+///     @return string containing extra information, enriching the title of the item.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link ListItem_TitleExtraInfo `ListItem.TitleExtraInfo`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -7348,6 +7364,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "pvrgrouporigin",   LISTITEM_PVR_GROUP_ORIGIN },
                                   { "episodepart",      LISTITEM_EPISODEPART },
                                   { "mediaproviders",   LISTITEM_MEDIAPROVIDERS },
+                                  { "titleextrainfo",   LISTITEM_TITLE_EXTRAINFO },
 };
 // clang-format on
 
