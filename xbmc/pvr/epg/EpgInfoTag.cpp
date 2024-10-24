@@ -246,7 +246,7 @@ float CPVREpgInfoTag::ProgressPercentage() const
   float fReturn = 0.0f;
 
   time_t currentTime, startTime, endTime;
-  CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(currentTime);
+  CDateTime::GetUTCDateTime().GetAsTime(currentTime);
   m_startTime.GetAsTime(startTime);
   m_endTime.GetAsTime(endTime);
 
@@ -267,7 +267,7 @@ float CPVREpgInfoTag::ProgressPercentage() const
 unsigned int CPVREpgInfoTag::Progress() const
 {
   time_t currentTime, startTime;
-  CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(currentTime);
+  CDateTime::GetUTCDateTime().GetAsTime(currentTime);
   m_startTime.GetAsTime(startTime);
 
   if (currentTime > startTime)
@@ -315,9 +315,7 @@ CDateTime CPVREpgInfoTag::StartAsUTC() const
 
 CDateTime CPVREpgInfoTag::StartAsLocalTime() const
 {
-  CDateTime retVal;
-  retVal.SetFromUTCDateTime(m_startTime);
-  return retVal;
+  return m_startTime.GetAsLocalDateTime();
 }
 
 CDateTime CPVREpgInfoTag::EndAsUTC() const
@@ -327,9 +325,7 @@ CDateTime CPVREpgInfoTag::EndAsUTC() const
 
 CDateTime CPVREpgInfoTag::EndAsLocalTime() const
 {
-  CDateTime retVal;
-  retVal.SetFromUTCDateTime(m_endTime);
-  return retVal;
+  return m_endTime.GetAsLocalDateTime();
 }
 
 void CPVREpgInfoTag::SetEndFromUTC(const CDateTime& end)

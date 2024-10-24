@@ -152,7 +152,7 @@ void CSavestateDatabase::GetSavestateItem(const ISavestate& savestate,
                                           const std::string& savestatePath,
                                           CFileItem& item)
 {
-  CDateTime dateUTC = CDateTime::FromUTCDateTime(savestate.Created());
+  CDateTime dateUTC = savestate.Created();
 
   std::string label;
   std::string label2;
