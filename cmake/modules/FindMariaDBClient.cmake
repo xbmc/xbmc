@@ -57,7 +57,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
                                                                      INTERFACE_INCLUDE_DIRECTORIES "${MARIADBCLIENT_INCLUDE_DIR}"
                                                                      INTERFACE_COMPILE_DEFINITIONS HAS_MARIADB)
-    if(CORE_SYSTEM_NAME STREQUAL osx)
+    if(CORE_SYSTEM_NAME STREQUAL osx OR HOST MATCHES "steamdeck")
       target_link_libraries(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE gssapi_krb5)
     endif()
   endif()
