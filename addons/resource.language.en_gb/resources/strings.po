@@ -24703,7 +24703,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#40801"
-msgid "Confirm video/pictures/music file deletion"
+msgid "Confirm media file deletion"
 msgstr ""
 
 #. Description of setting with label #40801 "Confirm file deletion"
