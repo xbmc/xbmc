@@ -123,7 +123,7 @@ std::string CAndroidStorageProvider::unescape(const std::string& str)
   return retString;
 }
 
-void CAndroidStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
+void CAndroidStorageProvider::GetLocalDrives(std::vector<CMediaSource>& localDrives)
 {
   CMediaSource share;
 
@@ -143,7 +143,7 @@ void CAndroidStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
   localDrives.push_back(share);
 }
 
-void CAndroidStorageProvider::GetRemovableDrives(VECSOURCES& removableDrives)
+void CAndroidStorageProvider::GetRemovableDrives(std::vector<CMediaSource>& removableDrives)
 {
   bool inError = false;
 
@@ -167,7 +167,7 @@ void CAndroidStorageProvider::GetRemovableDrives(VECSOURCES& removableDrives)
 
     if (!inError)
     {
-      VECSOURCES droidDrives;
+      std::vector<CMediaSource> droidDrives;
 
       for (int i = 0; i < vols.size(); ++i)
       {
@@ -393,7 +393,7 @@ std::vector<std::string> CAndroidStorageProvider::GetDiskUsage()
     result.push_back(usage);
 
   // add removable storage
-  VECSOURCES drives;
+  std::vector<CMediaSource> drives;
   GetRemovableDrives(drives);
   for (unsigned int i = 0; i < drives.size(); i++)
   {
@@ -407,7 +407,7 @@ std::vector<std::string> CAndroidStorageProvider::GetDiskUsage()
 
 bool CAndroidStorageProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
 {
-  VECSOURCES drives;
+  std::vector<CMediaSource> drives;
   GetRemovableDrives(drives);
   bool changed = m_removableDrives != drives;
   m_removableDrives = std::move(drives);

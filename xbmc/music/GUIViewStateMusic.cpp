@@ -54,7 +54,7 @@ std::string CGUIViewStateWindowMusic::GetExtensions()
   return CServiceBroker::GetFileExtensionProvider().GetMusicExtensions();
 }
 
-VECSOURCES& CGUIViewStateWindowMusic::GetSources()
+std::vector<CMediaSource>& CGUIViewStateWindowMusic::GetSources()
 {
   return CGUIViewState::GetSources();
 }
@@ -571,7 +571,7 @@ void CGUIViewStateWindowMusicNav::AddOnlineShares()
   if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVirtualShares)
     return;
 
-  VECSOURCES *musicSources = CMediaSourceSettings::GetInstance().GetSources("music");
+  std::vector<CMediaSource>* musicSources = CMediaSourceSettings::GetInstance().GetSources("music");
 
   for (int i = 0; i < (int)musicSources->size(); ++i)
   {
@@ -579,7 +579,7 @@ void CGUIViewStateWindowMusicNav::AddOnlineShares()
   }
 }
 
-VECSOURCES& CGUIViewStateWindowMusicNav::GetSources()
+std::vector<CMediaSource>& CGUIViewStateWindowMusicNav::GetSources()
 {
   //  Setup shares we want to have
   m_sources.clear();
@@ -639,7 +639,7 @@ bool CGUIViewStateWindowMusicPlaylist::HideParentDirItems()
   return true;
 }
 
-VECSOURCES& CGUIViewStateWindowMusicPlaylist::GetSources()
+std::vector<CMediaSource>& CGUIViewStateWindowMusicPlaylist::GetSources()
 {
   m_sources.clear();
   //  Playlist share

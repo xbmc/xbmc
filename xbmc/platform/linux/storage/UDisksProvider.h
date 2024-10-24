@@ -101,8 +101,14 @@ public:
   void Initialize() override;
   void Stop() override { }
 
-  void GetLocalDrives(VECSOURCES &localDrives) override { GetDisks(localDrives, false); }
-  void GetRemovableDrives(VECSOURCES &removableDrives) override { GetDisks(removableDrives, true); }
+  void GetLocalDrives(std::vector<CMediaSource>& localDrives) override
+  {
+    GetDisks(localDrives, false);
+  }
+  void GetRemovableDrives(std::vector<CMediaSource>& removableDrives) override
+  {
+    GetDisks(removableDrives, true);
+  }
 
   bool Eject(const std::string& mountpath) override;
 
@@ -121,7 +127,7 @@ private:
 
   std::vector<std::string> EnumerateDisks();
 
-  void GetDisks(VECSOURCES& devices, bool EnumerateRemovable);
+  void GetDisks(std::vector<CMediaSource>& devices, bool EnumerateRemovable);
 
   int m_DaemonVersion;
 

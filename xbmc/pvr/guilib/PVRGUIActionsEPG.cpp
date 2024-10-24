@@ -231,7 +231,7 @@ bool CPVRGUIActionsEPG::ChooseIconForSavedSearch(const CFileItem& item)
   items.Add(std::move(nothumb));
 
   std::string icon;
-  VECSOURCES sources;
+  std::vector<CMediaSource> sources;
   CServiceBroker::GetMediaManager().GetLocalDrives(sources);
   if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources,
                                               g_localizeStrings.Get(19285), // Browse for icon

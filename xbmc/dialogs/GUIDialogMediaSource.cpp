@@ -152,7 +152,7 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const std::string &type)
 
 bool CGUIDialogMediaSource::ShowAndEditMediaSource(const std::string &type, const std::string&share)
 {
-  VECSOURCES* pShares = CMediaSourceSettings::GetInstance().GetSources(type);
+  std::vector<CMediaSource>* pShares = CMediaSourceSettings::GetInstance().GetSources(type);
   if (pShares)
   {
     for (unsigned int i = 0;i<pShares->size();++i)
@@ -197,7 +197,7 @@ std::string CGUIDialogMediaSource::GetUniqueMediaSourceName()
   // Get unique source name for this media type
   unsigned int i, j = 2;
   bool bConfirmed = false;
-  VECSOURCES* pShares = CMediaSourceSettings::GetInstance().GetSources(m_type);
+  std::vector<CMediaSource>* pShares = CMediaSourceSettings::GetInstance().GetSources(m_type);
   std::string strName = m_name;
   while (!bConfirmed)
   {
@@ -237,7 +237,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
   // Ignore current path is best at this stage??
   std::string path = m_paths->Get(item)->GetPath();
   bool allowNetworkShares(m_type != "programs");
-  VECSOURCES extraShares;
+  std::vector<CMediaSource> extraShares;
 
   if (m_name != CUtil::GetTitleFromPath(path))
     m_bNameChanged = true;

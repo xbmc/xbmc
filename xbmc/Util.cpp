@@ -1214,7 +1214,9 @@ void CUtil::SplitParams(const std::string &paramString, std::vector<std::string>
     parameters.push_back(parameter);
 }
 
-int CUtil::GetMatchingSource(const std::string& strPath1, VECSOURCES& VECSOURCES, bool& bIsSourceName)
+int CUtil::GetMatchingSource(const std::string& strPath1,
+                             std::vector<CMediaSource>& sources,
+                             bool& bIsSourceName)
 {
   if (strPath1.empty())
     return -1;
@@ -1245,9 +1247,9 @@ int CUtil::GetMatchingSource(const std::string& strPath1, VECSOURCES& VECSOURCES
   int iIndex = -1;
 
   // we first test the NAME of a source
-  for (int i = 0; i < (int)VECSOURCES.size(); ++i)
+  for (int i = 0; i < static_cast<int>(sources.size()); ++i)
   {
-    const CMediaSource &share = VECSOURCES[i];
+    const CMediaSource& share = sources[i];
     std::string strName = share.strName;
 
     // special cases for dvds
@@ -1284,9 +1286,9 @@ int CUtil::GetMatchingSource(const std::string& strPath1, VECSOURCES& VECSOURCES
 
   size_t iLength = 0;
   size_t iLenPath = strDest.size();
-  for (int i = 0; i < (int)VECSOURCES.size(); ++i)
+  for (int i = 0; i < static_cast<int>(sources.size()); ++i)
   {
-    const CMediaSource &share = VECSOURCES[i];
+    const CMediaSource& share = sources[i];
 
     // does it match a source name?
     if (share.strPath.substr(0,8) == "shout://")
@@ -1351,7 +1353,7 @@ int CUtil::GetMatchingSource(const std::string& strPath1, VECSOURCES& VECSOURCES
 
       bIsSourceName = false;
       bool bDummy;
-      return GetMatchingSource(strPath, VECSOURCES, bDummy);
+      return GetMatchingSource(strPath, sources, bDummy);
     }
 
     CLog::Log(LOGDEBUG, "CUtil::GetMatchingSource: no matching source found for [{}]", strPath1);

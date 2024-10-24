@@ -15,8 +15,6 @@
 
 class CMediaSource;
 
-typedef std::vector<CMediaSource> VECSOURCES;
-
 extern "C"
 {
 
@@ -107,7 +105,7 @@ extern "C"
     //@}
 
   private:
-    static void GetVECShares(VECSOURCES& vecShares,
+    static void GetVECShares(std::vector<CMediaSource>& vecShares,
                              const std::string& strShares,
                              const std::string& strPath);
   };
