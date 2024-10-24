@@ -227,6 +227,8 @@ public:
                                    const std::string& file,
                                    const std::string& destname = "");
 
+  static bool FileDelWithConfirm(CFileItemPtr pItem);
+
 #if !defined(TARGET_WINDOWS)
 private:
   static unsigned int s_randomSeed;
