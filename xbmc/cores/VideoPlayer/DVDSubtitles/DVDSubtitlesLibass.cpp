@@ -463,9 +463,12 @@ void CDVDSubtitlesLibass::ApplyStyle(const std::shared_ptr<struct style>& subSty
     }
 
     // ass_set_line_spacing do not scale, so we have to scale to frame size
-    ass_set_line_spacing(m_renderer,
+    if (m_subtitleType != NATIVE)
+    {
+      ass_set_line_spacing(m_renderer,
                          lineSpacing / playResY * static_cast<double>(opts.frameHeight));
-
+    }
+    
     style->Blur = (10.00 / 100 * subStyle->blur);
 
     // Set the margins (in pixel)
