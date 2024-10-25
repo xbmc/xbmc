@@ -175,6 +175,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     std::string m_videoDefaultPlayer;
     float m_videoPlayCountMinimumPercent;
+    bool m_videoBypassCodecProfile = false; // Android only to bypass reported codec capabilities
 
     float m_slideshowBlackBarCompensation;
     float m_slideshowZoomAmount;
