@@ -32,7 +32,8 @@ CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml")
   m_updateRA = (Audio | Video | Totals);
   m_loadType = KEEP_IN_MEMORY;
 
-  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
+  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this, ANNOUNCEMENT::VideoLibrary |
+                                                                   ANNOUNCEMENT::AudioLibrary);
 }
 
 CGUIWindowHome::~CGUIWindowHome(void)
@@ -80,10 +81,6 @@ void CGUIWindowHome::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
 
   CLog::Log(LOGDEBUG, LOGANNOUNCE, "GOT ANNOUNCEMENT, type: {}, from {}, message {}",
             AnnouncementFlagToString(flag), sender, message);
-
-  // we are only interested in library changes
-  if ((flag & (ANNOUNCEMENT::VideoLibrary | ANNOUNCEMENT::AudioLibrary)) == 0)
-    return;
 
   if (data.isMember("transaction") && data["transaction"].asBoolean())
     return;
