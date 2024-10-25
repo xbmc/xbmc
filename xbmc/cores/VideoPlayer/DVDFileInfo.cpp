@@ -259,7 +259,8 @@ bool CDVDFileInfo::CanExtract(const CFileItem& fileItem)
   if (fileItem.m_bIsFolder)
     return false;
 
-  if ((URIUtils::IsPVR(fileItem.GetPath()) && !PVR::ProvidesStreamForThumbExtraction(fileItem)) ||
+  if ((URIUtils::IsPVR(fileItem.GetPath()) &&
+       !PVR::ProvidesStreamForMetaDataExtraction(fileItem)) ||
       // plugin path not fully resolved
       URIUtils::IsPlugin(fileItem.GetDynPath()) || URIUtils::IsUPnP(fileItem.GetPath()) ||
       NETWORK::IsInternetStream(fileItem) || VIDEO::IsDiscStub(fileItem) ||
@@ -308,11 +309,6 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
   if (!pInputStream)
     return false;
 
-  if (pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
-  {
-    return false;
-  }
-
   if (pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) || !pInputStream->Open())
   {
     return false;
@@ -322,7 +318,10 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
   if (pDemuxer)
   {
     bool retVal = DemuxerToStreamDetails(pInputStream, pDemuxer, pItem->GetVideoInfoTag()->m_streamDetails, strFileNameAndPath);
-    ProcessExternalSubtitles(pItem);
+
+    if (!pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+      ProcessExternalSubtitles(pItem);
+
     delete pDemuxer;
     return retVal;
   }

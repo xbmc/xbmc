@@ -14,7 +14,7 @@
 
 namespace PVR
 {
-bool ProvidesStreamForThumbExtraction(const CFileItem& item);
+bool ProvidesStreamForMetaDataExtraction(const CFileItem& item);
 
 class CPVRThumbLoader : public CThumbLoader
 {

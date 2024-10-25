@@ -4220,6 +4220,18 @@ CVideoInfoTag CVideoDatabase::GetDetailsByTypeAndId(VideoDbContentType type, int
   return {};
 }
 
+bool CVideoDatabase::GetStreamDetails(const std::string& filenameAndPath, CStreamDetails& details)
+{
+  CVideoInfoTag tag;
+  tag.m_iFileId = GetFileId(filenameAndPath);
+  if (GetStreamDetails(tag))
+  {
+    details = tag.m_streamDetails;
+    return true;
+  }
+  return false;
+}
+
 bool CVideoDatabase::GetStreamDetails(CFileItem& item)
 {
   // Note that this function (possibly) creates VideoInfoTags for items that don't have one yet!

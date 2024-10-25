@@ -163,7 +163,7 @@ public:
   std::vector<EDL::Edit> GetEdl() const;
 
   /*!
-   * @brief Get the resume point and play count from the database if the
+   * @brief Get metadata like the resume point and play count from the database if the
    * client doesn't handle it itself.
    * @param db The database to read the data from.
    * @param client The client this recording belongs to.

@@ -27,7 +27,7 @@
 
 namespace PVR
 {
-bool ProvidesStreamForThumbExtraction(const CFileItem& item)
+bool ProvidesStreamForMetaDataExtraction(const CFileItem& item)
 {
   // Note: We must not rely on presence of a recording info tag here, but path is always set.
   if (URIUtils::IsPVRRecording(item.GetPath()))
