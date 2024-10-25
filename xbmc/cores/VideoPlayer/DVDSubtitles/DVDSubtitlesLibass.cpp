@@ -367,12 +367,31 @@ void CDVDSubtitlesLibass::ApplyStyle(const std::shared_ptr<struct style>& subSty
     free(style->Name);
     style->Name = strdup("KodiDefault");
 
+    // PlayResY and PlayResX are mandatory but some out-of-spec files do not specify them
+    // if both PlayRes are not specified libass fallback to 288x384
+    double playResY = static_cast<double>(m_track->PlayResY);
+    if (m_track->PlayResY == 0 && m_track->PlayResX == 0)
+    {
+      CLog::LogF(LOGWARNING, "PlayResX and PlayResY are not defined in subtitle file. This may "
+                             "cause unexpected rendering issues.");
+      playResY = 288.0;
+    }
+    else if (m_track->PlayResY == 0 && m_track->PlayResX > 0)
+    {
+      // This use case depend strictly on library implementation anyway
+      // the common behavior of the library is to calculate with an aspect ratio of 4/3
+      CLog::LogF(
+          LOGWARNING,
+          "PlayResY is not defined in subtitle file. This may cause unexpected rendering issues.");
+      playResY = std::max(1.0, static_cast<double>(m_track->PlayResX) * 3 / 4);
+    }
+
     // Calculate the scale
     // Font size, borders, etc... are specified in pixel unit in scaled
     // for a window height of 720, so we need to rescale to our PlayResY
-    double playResY{static_cast<double>(m_track->PlayResY)};
     double scaleDefault{playResY / 720};
     double scale{scaleDefault};
+
     if (m_subtitleType == NATIVE &&
         (subStyle->assOverrideStyles == OverrideStyles::STYLES ||
          subStyle->assOverrideStyles == OverrideStyles::STYLES_POSITIONS ||
