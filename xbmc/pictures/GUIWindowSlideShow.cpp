@@ -152,7 +152,7 @@ CGUIWindowSlideShow::CGUIWindowSlideShow(void)
   m_loadType = KEEP_IN_MEMORY;
   m_bLoadNextPic = false;
   CServiceBroker::GetSlideShowDelegator().SetDelegate(this);
-  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
+  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this, ANNOUNCEMENT::Player);
   Reset();
 }
 
@@ -167,14 +167,11 @@ void CGUIWindowSlideShow::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
                                    const std::string& message,
                                    const CVariant& data)
 {
-  if (flag & ANNOUNCEMENT::Player)
+  if (message == "OnPlay" || message == "OnResume")
   {
-    if (message == "OnPlay" || message == "OnResume")
-    {
-      if (data.isMember("player") && data["player"].isMember("playerid") &&
-          data["player"]["playerid"] == static_cast<int>(PLAYLIST::Id::TYPE_VIDEO))
-        Close();
-    }
+    if (data.isMember("player") && data["player"].isMember("playerid") &&
+        data["player"]["playerid"] == static_cast<int>(PLAYLIST::Id::TYPE_VIDEO))
+      Close();
   }
 }
 
