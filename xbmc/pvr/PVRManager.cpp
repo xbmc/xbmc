@@ -210,7 +210,7 @@ CPVRManager::CPVRManager()
                 CSettings::SETTING_PVRPOWERMANAGEMENT_SETWAKEUPCMD,
                 CSettings::SETTING_PVRPARENTAL_ENABLED, CSettings::SETTING_PVRPARENTAL_DURATION})
 {
-  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
+  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this, ANNOUNCEMENT::GUI);
   m_actionListener.Init(*this);
 
   CLog::LogFC(LOGDEBUG, LOGPVR, "PVR Manager instance created");
