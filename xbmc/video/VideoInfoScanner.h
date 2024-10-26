@@ -89,8 +89,14 @@ namespace KODI::VIDEO
      \param bApplyToDir whether we should apply any thumbs to a folder.  Defaults to false.
      \param useLocal whether we should use local thumbs. Defaults to true.
      \param actorArtPath the path to search for actor thumbs. Defaults to empty.
+     \param parentPath the base bath of the item. Defaults to empty.
      */
-    void GetArtwork(CFileItem *pItem, const CONTENT_TYPE &content, bool bApplyToDir=false, bool useLocal=true, const std::string &actorArtPath = "");
+    void GetArtwork(CFileItem* pItem,
+                    const CONTENT_TYPE& content,
+                    bool bApplyToDir = false,
+                    bool useLocal = true,
+                    const std::string& actorArtPath = "",
+                    const std::string& parentPath = "");
 
     /*! \brief Get season thumbs for a tvshow.
      All seasons (regardless of whether the user has episodes) are added to the art map.
@@ -184,8 +190,12 @@ namespace KODI::VIDEO
      Updates each actor with their thumb (local or online)
      \param actors - vector of SActorInfo
      \param strPath - path on filesystem to look for local thumbs
+     \param parentPath - path on filesystem to look for local thumbs if they don't exist in the season path
      */
-    void FetchActorThumbs(std::vector<SActorInfo>& actors, const std::string& strPath);
+    void FetchActorThumbs(std::vector<SActorInfo>& actors,
+                          const std::string& strPath,
+                          const std::string& parentPath);
+    static std::string FindActorThumbFile(const CFileItemList& items, const std::string& thumbFile);
 
     static int GetPathHash(const CFileItemList &items, std::string &hash);
 
