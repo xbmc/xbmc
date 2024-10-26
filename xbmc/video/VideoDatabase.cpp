@@ -1458,6 +1458,8 @@ int CVideoDatabase::GetMusicVideoId(const std::string& strFilenameAndPath)
 //********************************************************************************************************************************
 int CVideoDatabase::AddNewMovie(CVideoInfoTag& details)
 {
+  assert(m_pDB->in_transaction());
+
   const auto filePath = details.GetPath();
 
   try
@@ -1474,8 +1476,6 @@ int CVideoDatabase::AddNewMovie(CVideoInfoTag& details)
         return -1;
     }
 
-    BeginTransaction();
-
     m_pDS->exec(
         PrepareSQL("INSERT INTO movie (idMovie, idFile) VALUES (NULL, %i)", details.m_iFileId));
     details.m_iDbId = static_cast<int>(m_pDS->lastinsertid());
@@ -1485,14 +1485,11 @@ int CVideoDatabase::AddNewMovie(CVideoInfoTag& details)
                    details.m_iFileId, details.m_iDbId, MediaTypeMovie, VideoAssetType::VERSION,
                    VIDEO_VERSION_ID_DEFAULT));
 
-    CommitTransaction();
-
     return details.m_iDbId;
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, filePath);
-    RollbackTransaction();
   }
   return -1;
 }
