@@ -370,7 +370,8 @@ void CPeripheralCecAdapter::Process(void)
     m_bActiveSourceBeforeStandby = false;
   }
 
-  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
+  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(
+      this, ANNOUNCEMENT::System | ANNOUNCEMENT::GUI | ANNOUNCEMENT::Player);
 
   m_queryThread = new CPeripheralCecAdapterUpdateThread(this, &m_configuration);
   m_queryThread->Create(false);

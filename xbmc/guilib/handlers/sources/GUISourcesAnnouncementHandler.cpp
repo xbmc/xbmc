@@ -16,7 +16,7 @@
 
 CGUISourcesAnnouncementHandler::CGUISourcesAnnouncementHandler()
 {
-  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
+  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this, ANNOUNCEMENT::Sources);
 }
 
 CGUISourcesAnnouncementHandler::~CGUISourcesAnnouncementHandler()
@@ -29,10 +29,6 @@ void CGUISourcesAnnouncementHandler::Announce(ANNOUNCEMENT::AnnouncementFlag fla
                                               const std::string& message,
                                               const CVariant& data)
 {
-  // We are only interested in sources changes
-  if ((flag & ANNOUNCEMENT::Sources) == 0)
-    return;
-
   if (message == "OnAdded" || message == "OnRemoved" || message == "OnUpdated")
   {
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);

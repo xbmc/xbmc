@@ -173,8 +173,7 @@ void CAirTunesServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
                                const std::string& message,
                                const CVariant& data)
 {
-  if ((flag & ANNOUNCEMENT::Player) &&
-      sender == ANNOUNCEMENT::CAnnouncementManager::ANNOUNCEMENT_SENDER)
+  if (sender == ANNOUNCEMENT::CAnnouncementManager::ANNOUNCEMENT_SENDER)
   {
     if ((message == "OnPlay" || message == "OnResume") && m_streamStarted)
     {
@@ -685,7 +684,7 @@ void CAirTunesServer::RegisterActionListener(bool doRegister)
 
   if (doRegister)
   {
-    CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
+    CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this, ANNOUNCEMENT::Player);
     appListener->RegisterActionListener(this);
     ServerInstance->Create();
   }

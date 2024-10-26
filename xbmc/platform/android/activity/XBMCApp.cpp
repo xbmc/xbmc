@@ -474,7 +474,8 @@ void CXBMCApp::UnregisterDisplayListener()
 
 void CXBMCApp::Initialize()
 {
-  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
+  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(
+      this, ANNOUNCEMENT::Input | ANNOUNCEMENT::Player | ANNOUNCEMENT::Info);
 }
 
 void CXBMCApp::Deinitialize()

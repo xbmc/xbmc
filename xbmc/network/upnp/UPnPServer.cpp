@@ -130,7 +130,8 @@ NPT_Result CUPnPServer::SetupServices()
   OnScanCompleted(VideoLibrary);
 
   // now safe to start passing on new notifications
-  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
+  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this, ANNOUNCEMENT::VideoLibrary |
+                                                                   ANNOUNCEMENT::AudioLibrary);
 
   return result;
 }

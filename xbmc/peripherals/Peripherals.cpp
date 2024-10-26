@@ -136,7 +136,7 @@ void CPeripherals::Initialise()
   m_eventScanner->Start();
 
   CServiceBroker::GetAppMessenger()->RegisterReceiver(this);
-  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
+  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this, ANNOUNCEMENT::Player);
 }
 
 void CPeripherals::Clear()
@@ -1019,8 +1019,7 @@ void CPeripherals::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
                             const std::string& message,
                             const CVariant& data)
 {
-  if (flag == ANNOUNCEMENT::Player &&
-      sender == ANNOUNCEMENT::CAnnouncementManager::ANNOUNCEMENT_SENDER)
+  if (sender == ANNOUNCEMENT::CAnnouncementManager::ANNOUNCEMENT_SENDER)
   {
     if (message == "OnQuit")
     {

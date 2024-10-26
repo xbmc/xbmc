@@ -293,10 +293,6 @@ void CDirectoryProvider::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
                                   const std::string& message,
                                   const CVariant& data)
 {
-  // we are only interested in library, player and GUI changes
-  if ((flag & (ANNOUNCEMENT::VideoLibrary | ANNOUNCEMENT::AudioLibrary | ANNOUNCEMENT::Player | ANNOUNCEMENT::GUI)) == 0)
-    return;
-
   {
     std::unique_lock<CCriticalSection> lock(m_section);
     // we don't need to refresh anything if there are no fitting
@@ -675,7 +671,9 @@ bool CDirectoryProvider::UpdateURL()
   if (!m_isSubscribed)
   {
     m_isSubscribed = true;
-    CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
+    CServiceBroker::GetAnnouncementManager()->AddAnnouncer(
+        this, ANNOUNCEMENT::VideoLibrary | ANNOUNCEMENT::AudioLibrary | ANNOUNCEMENT::Player |
+                  ANNOUNCEMENT::GUI);
     CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CDirectoryProvider::OnAddonEvent);
     CServiceBroker::GetRepositoryUpdater().Events().Subscribe(this, &CDirectoryProvider::OnAddonRepositoryEvent);
     CServiceBroker::GetPVRManager().Events().Subscribe(this, &CDirectoryProvider::OnPVRManagerEvent);

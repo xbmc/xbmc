@@ -99,7 +99,7 @@ CLibInputHandler::CLibInputHandler() : CThread("libinput")
   m_touch = std::make_unique<CLibInputTouch>();
   m_settings = std::make_unique<CLibInputSettings>(this);
 
-  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
+  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this, ANNOUNCEMENT::System);
 }
 
 CLibInputHandler::~CLibInputHandler()
