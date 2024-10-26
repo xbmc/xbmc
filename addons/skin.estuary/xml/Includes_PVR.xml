@@ -366,144 +366,147 @@
 		</control>
 	</include>
 	<include name="PVRInfoPanel">
-		<control type="group">
-			<visible>!ListItem.IsFolder</visible>
-			<control type="image">
-				<top>135</top>
-				<left>630</left>
-				<width>200</width>
-				<height>200</height>
-				<aspectratio align="center" aligny="center">keep</aspectratio>
-				<texture fallback="DefaultTVShows.png">$VAR[ChannelListEPGIconVar]</texture>
-				<visible>!String.IsEmpty(ListItem.ChannelName)</visible>
-				<fadetime>200</fadetime>
-			</control>
+		<param name="bottom">list_bottom_offset</param>
+		<definition>
 			<control type="group">
-				<top>120</top>
-				<left>0</left>
-				<width>600</width>
-				<control type="label">
-					<height>262</height>
-					<font>font45</font>
-					<label>$INFO[ListItem.ChannelName]</label>
-				</control>
-				<control type="label">
-					<top>60</top>
+				<visible>!ListItem.IsFolder</visible>
+				<control type="image">
+					<top>135</top>
+					<left>630</left>
+					<width>200</width>
 					<height>200</height>
-					<label>$VAR[PVRInfoPanelDateDurationLabel]</label>
+					<aspectratio align="center" aligny="center">keep</aspectratio>
+					<texture fallback="DefaultTVShows.png">$VAR[ChannelListEPGIconVar]</texture>
+					<visible>!String.IsEmpty(ListItem.ChannelName)</visible>
+					<fadetime>200</fadetime>
 				</control>
-				<control type="progress">
-					<top>200</top>
-					<height>12</height>
-					<colordiffuse>88FFFFFF</colordiffuse>
-					<info>ListItem.Progress</info>
-					<visible>Integer.IsGreater(ListItem.Progress,0)</visible>
+				<control type="group">
+					<top>120</top>
+					<left>0</left>
+					<width>600</width>
+					<control type="label">
+						<height>262</height>
+						<font>font45</font>
+						<label>$INFO[ListItem.ChannelName]</label>
+					</control>
+					<control type="label">
+						<top>60</top>
+						<height>200</height>
+						<label>$VAR[PVRInfoPanelDateDurationLabel]</label>
+					</control>
+					<control type="progress">
+						<top>200</top>
+						<height>12</height>
+						<colordiffuse>88FFFFFF</colordiffuse>
+						<info>ListItem.Progress</info>
+						<visible>Integer.IsGreater(ListItem.Progress,0)</visible>
+					</control>
+					<control type="progress">
+						<top>200</top>
+						<height>12</height>
+						<colordiffuse>88FFFFFF</colordiffuse>
+						<info>ListItem.PercentPlayed</info>
+						<visible>Integer.IsGreater(ListItem.PercentPlayed,0)</visible>
+					</control>
 				</control>
-				<control type="progress">
-					<top>200</top>
-					<height>12</height>
-					<colordiffuse>88FFFFFF</colordiffuse>
-					<info>ListItem.PercentPlayed</info>
-					<visible>Integer.IsGreater(ListItem.PercentPlayed,0)</visible>
+				<control type="label">
+					<top>365</top>
+					<width>830</width>
+					<height>262</height>
+					<font>font36_title</font>
+					<label>$INFO[ListItem.Title] $INFO[ListItem.Year,([COLOR grey],[/COLOR])]</label>
+					<scroll>true</scroll>
+					<visible>!ListItem.HasEpg</visible>
 				</control>
-			</control>
-			<control type="label">
-				<top>365</top>
-				<width>830</width>
-				<height>262</height>
-				<font>font36_title</font>
-				<label>$INFO[ListItem.Title] $INFO[ListItem.Year,([COLOR grey],[/COLOR])]</label>
-				<scroll>true</scroll>
-				<visible>!ListItem.HasEpg</visible>
-			</control>
-			<control type="label">
-				<top>365</top>
-				<width>830</width>
-				<height>262</height>
-				<font>font36_title</font>
-				<label>$INFO[ListItem.EpgEventTitle] $INFO[ListItem.Year,([COLOR grey],[/COLOR])]</label>
-				<scroll>true</scroll>
-				<visible>ListItem.HasEpg</visible>
-			</control>
-			<control type="label">
-				<top>410</top>
-				<width>830</width>
-				<height>70</height>
-				<scroll>true</scroll>
-				<label>[I]$VAR[SeasonEpisodeAndNameLabel][/I]</label>
-			</control>
-			<control type="textbox">
-				<top>465</top>
-				<width>830</width>
-				<bottom>list_bottom_offset</bottom>
-				<label>$VAR[PVRInstanceName,,[CR]]$INFO[ListItem.MediaProviders,[COLOR grey]$LOCALIZE[19334]:[/COLOR] ,[CR]]$VAR[FlagLabel,,[CR]]$INFO[ListItem.Genre,[COLOR grey]$LOCALIZE[515]:[/COLOR] ,[CR]]$INFO[ListItem.ParentalRatingCode,[COLOR grey]$LOCALIZE[31017]: [/COLOR],[CR]]$INFO[ListItem.TimerType,[COLOR grey]$LOCALIZE[803]:[/COLOR] ,[CR]]$VAR[RecordingSizeLabel]$VAR[ExpirationDateTimeLabel]$INFO[ListItem.Plot,[CR]]</label>
-				<autoscroll delay="10000" time="3000" repeat="10000">Skin.HasSetting(AutoScroll)</autoscroll>
-			</control>
-		</control>
-		<control type="group">
-			<visible>ListItem.IsFolder</visible>
-			<top>list_top_offset</top>
-			<control type="label">
-				<top>10</top>
-				<width>830</width>
-				<height>262</height>
-				<label>$LOCALIZE[19076] ($INFO[Container(5000).NumItems,[B],[/B] $LOCALIZE[31036]]) $INFO[ListItem.Property(recordingsize),- $LOCALIZE[20161]: [B],[/B]]</label>
-				<font>font37</font>
-				<visible>!ListItem.IsParentFolder</visible>
+				<control type="label">
+					<top>365</top>
+					<width>830</width>
+					<height>262</height>
+					<font>font36_title</font>
+					<label>$INFO[ListItem.EpgEventTitle] $INFO[ListItem.Year,([COLOR grey],[/COLOR])]</label>
+					<scroll>true</scroll>
+					<visible>ListItem.HasEpg</visible>
+				</control>
+				<control type="label">
+					<top>410</top>
+					<width>830</width>
+					<height>70</height>
+					<scroll>true</scroll>
+					<label>[I]$VAR[SeasonEpisodeAndNameLabel][/I]</label>
+				</control>
+				<control type="textbox">
+					<top>465</top>
+					<width>830</width>
+					<bottom>$PARAM[bottom]</bottom>
+					<label>$VAR[PVRInstanceName,,[CR]]$INFO[ListItem.MediaProviders,[COLOR grey]$LOCALIZE[19334]:[/COLOR] ,[CR]]$VAR[FlagLabel,,[CR]]$INFO[ListItem.Genre,[COLOR grey]$LOCALIZE[515]:[/COLOR] ,[CR]]$INFO[ListItem.ParentalRatingCode,[COLOR grey]$LOCALIZE[31017]: [/COLOR],[CR]]$INFO[ListItem.TimerType,[COLOR grey]$LOCALIZE[803]:[/COLOR] ,[CR]]$VAR[RecordingSizeLabel]$VAR[ExpirationDateTimeLabel]$INFO[ListItem.Plot,[CR]]</label>
+					<autoscroll delay="10000" time="3000" repeat="10000">Skin.HasSetting(AutoScroll)</autoscroll>
+				</control>
 			</control>
 			<control type="group">
-				<left>-10</left>
-				<top>60</top>
-				<visible>!ListItem.IsParentFolder</visible>
-				<control type="panel" id="5000">
-					<top>20</top>
+				<visible>ListItem.IsFolder</visible>
+				<top>list_top_offset</top>
+				<control type="label">
+					<top>10</top>
 					<width>830</width>
-					<bottom>100</bottom>
-					<orientation>vertical</orientation>
-					<focusedlayout height="100" width="780">
-						<control type="label">
-							<visible>!String.IsEqual(ListItem.ChannelName, ListItem.Label)</visible>
-							<left>10</left>
-							<height>90</height>
-							<width>830</width>
-							<aligny>center</aligny>
-							<label>$VAR[RecordingDateSizeLabel]$INFO[ListItem.Label]$VAR[SeasonEpisodeAndNameLabel, (,)]$INFO[ListItem.Property(totalcount), (, $LOCALIZE[31036])]</label>
-							<shadowcolor>text_shadow</shadowcolor>
-						</control>
-						<control type="label">
-							<visible>String.IsEqual(ListItem.ChannelName, ListItem.Label)</visible>
-							<left>10</left>
-							<height>90</height>
-							<width>830</width>
-							<aligny>center</aligny>
-							<label>[COLOR grey]$INFO[ListItem.ChannelName,,[CR]][/COLOR]$INFO[ListItem.EpgEventTitle]$VAR[SeasonEpisodeAndNameLabel, (,)]</label>
-							<shadowcolor>text_shadow</shadowcolor>
-						</control>
-					</focusedlayout>
-					<itemlayout height="100" width="780">
-						<control type="label">
-							<visible>!String.IsEqual(ListItem.ChannelName, ListItem.Label)</visible>
-							<left>10</left>
-							<height>90</height>
-							<width>830</width>
-							<aligny>center</aligny>
-							<label>$VAR[RecordingDateSizeLabel]$INFO[ListItem.Label]$VAR[SeasonEpisodeAndNameLabel, (,)]$INFO[ListItem.Property(totalcount), (, $LOCALIZE[31036])]</label>
-							<shadowcolor>text_shadow</shadowcolor>
-						</control>
-						<control type="label">
-							<visible>String.IsEqual(ListItem.ChannelName, ListItem.Label)</visible>
-							<left>10</left>
-							<height>90</height>
-							<width>830</width>
-							<aligny>center</aligny>
-							<label>[COLOR grey]$INFO[ListItem.ChannelName,,[CR]][/COLOR]$INFO[ListItem.EpgEventTitle]$VAR[SeasonEpisodeAndNameLabel, (,)]</label>
-							<shadowcolor>text_shadow</shadowcolor>
-						</control>
-					</itemlayout>
-					<content sortby="$PARAM[folder_sortby]" sortorder="$PARAM[folder_sortorder]">$INFO[ListItem.FilenameAndPath]</content>
+					<height>262</height>
+					<label>$LOCALIZE[19076] ($INFO[Container(5000).NumItems,[B],[/B] $LOCALIZE[31036]]) $INFO[ListItem.Property(recordingsize),- $LOCALIZE[20161]: [B],[/B]]</label>
+					<font>font37</font>
+					<visible>!ListItem.IsParentFolder</visible>
+				</control>
+				<control type="group">
+					<left>-10</left>
+					<top>60</top>
+					<visible>!ListItem.IsParentFolder</visible>
+					<control type="panel" id="5000">
+						<top>20</top>
+						<width>830</width>
+						<bottom>$PARAM[bottom]</bottom>
+						<orientation>vertical</orientation>
+						<focusedlayout height="100" width="780">
+							<control type="label">
+								<visible>!String.IsEqual(ListItem.ChannelName, ListItem.Label)</visible>
+								<left>10</left>
+								<height>90</height>
+								<width>830</width>
+								<aligny>center</aligny>
+								<label>$VAR[RecordingDateSizeLabel]$INFO[ListItem.Label]$VAR[SeasonEpisodeAndNameLabel, (,)]$INFO[ListItem.Property(totalcount), (, $LOCALIZE[31036])]</label>
+								<shadowcolor>text_shadow</shadowcolor>
+							</control>
+							<control type="label">
+								<visible>String.IsEqual(ListItem.ChannelName, ListItem.Label)</visible>
+								<left>10</left>
+								<height>90</height>
+								<width>830</width>
+								<aligny>center</aligny>
+								<label>[COLOR grey]$INFO[ListItem.ChannelName,,[CR]][/COLOR]$INFO[ListItem.EpgEventTitle]$VAR[SeasonEpisodeAndNameLabel, (,)]</label>
+								<shadowcolor>text_shadow</shadowcolor>
+							</control>
+						</focusedlayout>
+						<itemlayout height="100" width="780">
+							<control type="label">
+								<visible>!String.IsEqual(ListItem.ChannelName, ListItem.Label)</visible>
+								<left>10</left>
+								<height>90</height>
+								<width>830</width>
+								<aligny>center</aligny>
+								<label>$VAR[RecordingDateSizeLabel]$INFO[ListItem.Label]$VAR[SeasonEpisodeAndNameLabel, (,)]$INFO[ListItem.Property(totalcount), (, $LOCALIZE[31036])]</label>
+								<shadowcolor>text_shadow</shadowcolor>
+							</control>
+							<control type="label">
+								<visible>String.IsEqual(ListItem.ChannelName, ListItem.Label)</visible>
+								<left>10</left>
+								<height>90</height>
+								<width>830</width>
+								<aligny>center</aligny>
+								<label>[COLOR grey]$INFO[ListItem.ChannelName,,[CR]][/COLOR]$INFO[ListItem.EpgEventTitle]$VAR[SeasonEpisodeAndNameLabel, (,)]</label>
+								<shadowcolor>text_shadow</shadowcolor>
+							</control>
+						</itemlayout>
+						<content sortby="$PARAM[folder_sortby]" sortorder="$PARAM[folder_sortorder]">$INFO[ListItem.FilenameAndPath]</content>
+					</control>
 				</control>
 			</control>
-		</control>
+		</definition>
 	</include>
 	<include name="RDSInfoLine">
 		<control type="grouplist">
@@ -766,5 +769,42 @@
 				<visible>Control.IsVisible($PARAM[control_id])</visible>
 			</control>
 		</definition>
+	</include>
+	<include name="PVRBackendDiskspace">
+		<control type="label">
+			<left>0</left>
+			<bottom>70</bottom>
+			<width>830</width>
+			<height>20</height>
+			<font>font37</font>
+			<label>$INFO[PVR.ClientName]$INFO[PVR.InstanceName, (,)]</label>
+		</control>
+		<control type="group">
+			<visible>!Integer.IsGreater(PVR.BackendDiskspaceProgr,100)</visible>
+			<control type="label">
+				<left>0</left>
+				<bottom>20</bottom>
+				<width>610</width>
+				<height>20</height>
+				<label>[COLOR grey]$LOCALIZE[19116]:[/COLOR] $INFO[PVR.BackendDiskspace]</label>
+			</control>
+			<control type="progress">
+				<right>25</right>
+				<bottom>10</bottom>
+				<width>200</width>
+				<height>12</height>
+				<info>PVR.BackendDiskspaceProgr</info>
+			</control>
+		</control>
+		<control type="group">
+			<visible>Integer.IsGreater(PVR.BackendDiskspaceProgr,100)</visible>
+			<control type="label">
+				<left>0</left>
+				<bottom>20</bottom>
+				<width>610</width>
+				<height>20</height>
+				<label>[COLOR grey]$LOCALIZE[19116]:[/COLOR] $LOCALIZE[13205]</label>
+			</control>
+		</control>
 	</include>
 </includes>

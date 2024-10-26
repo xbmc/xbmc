@@ -53,10 +53,18 @@
 					<orientation>vertical</orientation>
 					<animation effect="zoom" start="100,100" end="50,100" center="-50,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(73)">conditional</animation>
 				</control>
-				<include content="PVRInfoPanel">
-					<param name="folder_sortby" value="date" />
-					<param name="folder_sortorder" value="descending" />
-				</include>
+				<control type="group">
+					<include content="PVRInfoPanel">
+						<param name="folder_sortby" value="date" />
+						<param name="folder_sortorder" value="descending" />
+						<param name="bottom" value="200" />
+					</include>
+					<control type="group">
+						<bottom>list_bottom_offset</bottom>
+						<height>60</height>
+						<include content="PVRBackendDiskspace"/>
+					</control>
+				</control>
 			</control>
 			<include content="TopBar">
 				<param name="breadcrumbs_label" value="$VAR[BreadcrumbsPVRRecordingsVar]" />
