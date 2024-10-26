@@ -79,6 +79,7 @@ public:
   explicit CDateTime(const tm& time);
   explicit CDateTime(const std::chrono::system_clock::time_point& time);
   CDateTime(int year, int month, int day, int hour, int minute, int second);
+  CDateTime(int year, int month, int day, int hour, int minute, int second, int milliseconds);
 
   static CDateTime GetCurrentDateTime();
   static CDateTime GetUTCDateTime();
@@ -142,9 +143,12 @@ public:
   int GetHour() const;
   int GetMinute() const;
   int GetSecond() const;
+  int GetMilliseconds() const;
   int GetDayOfWeek() const;
   int GetMinuteOfDay() const;
 
+  bool SetDateTime(
+      int year, int month, int day, int hour, int minute, int second, int milliseconds);
   bool SetDateTime(int year, int month, int day, int hour, int minute, int second);
   bool SetDate(int year, int month, int day);
   bool SetTime(int hour, int minute, int second);

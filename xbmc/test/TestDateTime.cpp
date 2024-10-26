@@ -303,11 +303,15 @@ TEST_F(TestDateTime, GetAsStringsWithBias)
   std::cout << dateTime.GetAsW3CDateTime(false) << std::endl;
   std::cout << dateTime.GetAsW3CDateTime(true) << std::endl;
 
+#if !defined(TARGET_WINDOWS)
   auto tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
   auto zone = date::make_zoned(date::current_zone(), tps);
+  EXPECT_EQ(dateTime.GetAsW3CDateTime(false), date::format("%FT%T%Ez", zone));
+#else // defined(TARGET_WINDOWS)
+  EXPECT_EQ(dateTime.GetAsW3CDateTime(true), "1991-05-14T12:34:56Z");
+#endif // !defined(TARGET_WINDOWS)
 
   EXPECT_EQ(dateTime.GetAsRFC1123DateTime(), "Tue, 14 May 1991 12:34:56 GMT");
-  EXPECT_EQ(dateTime.GetAsW3CDateTime(false), date::format("%FT%T%Ez", zone));
   EXPECT_EQ(dateTime.GetAsW3CDateTime(true), "1991-05-14T12:34:56Z");
 }
 
@@ -611,10 +615,28 @@ TEST_F(TestDateTime, GetAsLocalDateTime)
   CDateTime dateTime2;
   dateTime2 = dateTime1.GetAsLocalDateTime();
 
+#if !defined(TARGET_WINDOWS)
   auto zoned_time = date::make_zoned(date::current_zone(), dateTime1.GetAsTimePoint());
   auto time = zoned_time.get_local_time().time_since_epoch();
 
   CDateTime cmpTime(std::chrono::duration_cast<std::chrono::seconds>(time).count());
+#else // defined(TARGET_WINDOWS)
+  SYSTEMTIME lst{}, st{};
+
+  st.wYear = dateTime1.GetYear();
+  st.wMonth = dateTime1.GetMonth();
+  st.wDay = dateTime1.GetDay();
+  st.wDayOfWeek = dateTime1.GetDayOfWeek();
+  st.wHour = dateTime1.GetHour();
+  st.wMinute = dateTime1.GetMinute();
+  st.wSecond = dateTime1.GetSecond();
+  st.wMilliseconds = dateTime1.GetMilliseconds();
+
+  EXPECT_TRUE(SystemTimeToTzSpecificLocalTime(nullptr, &st, &lst) == TRUE);
+
+  CDateTime cmpTime(lst.wYear, lst.wMonth, lst.wDay, lst.wHour, lst.wMinute, lst.wSecond,
+                    lst.wMilliseconds);
+#endif // !defined(TARGET_WINDOWS)
 
   EXPECT_TRUE(dateTime2 == cmpTime);
 }
@@ -633,6 +655,8 @@ TEST_F(TestDateTime, Reset)
   EXPECT_EQ(dateTime.GetMinute(), 0);
   EXPECT_EQ(dateTime.GetSecond(), 0);
 }
+
+#ifndef TARGET_WINDOWS
 TEST_F(TestDateTime, Tzdata)
 {
   CDateTime dateTime;
@@ -794,3 +818,4 @@ TEST_F(TestDateTime, Tzdata)
   EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-15T02:34:56+14:00")
       << "tzdata information not valid for 'Etc/GMT-14'";
 }
+#endif // !defined(TARGET_WINDOWS)

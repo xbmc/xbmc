@@ -15,11 +15,6 @@ macro(buildDate)
 
   set(DATE_VERSION ${${MODULE}_VER})
 
-  # Debug postfix only used for windows
-  if(WIN32 OR WINDOWS_STORE)
-    set(DATE_DEBUG_POSTFIX "d")
-  endif()
-
   # Work around old release
 
   file(GLOB patches "${CMAKE_SOURCE_DIR}/tools/depends/target/date/*.patch")
@@ -30,6 +25,11 @@ macro(buildDate)
 
   set(EXTRA_ARGS "")
 
+  # We use date library in header-only mode on Windows
+  if(NOT WIN32 AND NOT WINDOWSSTORE)
+    list(APPEND EXTRA_ARGS -DBUILD_TZ_LIB=ON)
+  endif()
+
   if(CORE_SYSTEM_NAME STREQUAL darwin_embedded)
     list(APPEND EXTRA_ARGS -DIOS=ON)
   endif()
@@ -39,62 +39,56 @@ macro(buildDate)
                  -DMANUAL_TZ_DB=OFF
                  -DUSE_TZ_DB_IN_DOT=OFF
                  -DBUILD_SHARED_LIBS=OFF
-                 -DBUILD_TZ_LIB=ON
                  ${EXTRA_ARGS})
 
   BUILD_DEP_TARGET()
 endmacro()
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  if(ENABLE_INTERNAL_DATE)
+  if(ENABLE_INTERNAL_DATE OR WIN32 OR WINDOWSSTORE)
     buildDate()
   else()
     find_package(PkgConfig)
-    # Do not use pkgconfig on windows
-    if(PKG_CONFIG_FOUND AND NOT WIN32)
-      pkg_check_modules(PC_DATE date QUIET)
-      set(DATE_VERSION ${PC_DATE_VERSION})
-    endif()
 
     find_path(DATE_INCLUDE_DIR NAMES date/date.h date/tz.h
                                     HINTS ${DEPENDS_PATH}/include ${PC_DATE_INCLUDEDIR}
                                     ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
-    find_library(DATE_LIBRARY_RELEASE NAMES date-tz libdate-tz
-                                           HINTS ${DEPENDS_PATH}/lib ${PC_DATE_LIBDIR}
-                                           ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
-    find_library(DATE_LIBRARY_DEBUG NAMES date-tzd libdate-tzd
-                                         HINTS ${DEPENDS_PATH}/lib ${PC_DATE_LIBDIR}
-                                         ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+
+    find_library(DATE_LIBRARY NAMES date-tz libdate-tz
+                                      HINTS ${DEPENDS_PATH}/lib ${PC_DATE_LIBDIR}
+                                            ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
 
     set(DATE_VERSION ${PC_DATE_VERSION})
   endif()
 
-  # Select relevant lib build type (ie DATE_LIBRARY_RELEASE or DATE_LIBRARY_DEBUG)
-  include(SelectLibraryConfigurations)
-  select_library_configurations(DATE)
-  unset(DATE_LIBRARIES)
-
   include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(Date
-                                    REQUIRED_VARS DATE_LIBRARY DATE_INCLUDE_DIR
-                                    VERSION_VAR DATE_VERSION)
+
+  # We use date library in header-only mode on Windows
+  if(NOT WIN32 AND NOT WINDOWSSTORE)
+    find_package_handle_standard_args(Date
+                                      REQUIRED_VARS DATE_LIBRARY DATE_INCLUDE_DIR
+                                      VERSION_VAR DATE_VERSION)
+  else()
+    find_package_handle_standard_args(Date
+                                      REQUIRED_VARS DATE_INCLUDE_DIR
+                                      VERSION_VAR DATE_VERSION)
+  endif()
 
   if(DATE_FOUND)
-    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
-    if(DATE_LIBRARY_RELEASE)
-      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                       IMPORTED_CONFIGURATIONS RELEASE
-                                                                       IMPORTED_LOCATION_RELEASE "${DATE_LIBRARY_RELEASE}")
-    endif()
-    if(DATE_LIBRARY_DEBUG)
-      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                       IMPORTED_LOCATION_DEBUG "${DATE_LIBRARY_DEBUG}")
-      set_property(TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY
-                                                                            IMPORTED_CONFIGURATIONS DEBUG)
-    endif()
+    # We use date library in header-only mode on Windows
+    if(NOT WIN32 AND NOT WINDOWSSTORE)
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
 
-    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                     INTERFACE_INCLUDE_DIRECTORIES "${DATE_INCLUDE_DIRS}")
+      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                       IMPORTED_LOCATION "${DATE_LIBRARY}"
+                                                                       INTERFACE_INCLUDE_DIRECTORIES "${DATE_INCLUDE_DIR}")
+    else()
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE IMPORTED)
+
+      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                       INTERFACE_INCLUDE_DIRECTORIES "${DATE_INCLUDE_DIR}"
+                                                                       INTERFACE_LINK_LIBRARIES "")
+    endif()
 
     if(TARGET date)
       add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} date)

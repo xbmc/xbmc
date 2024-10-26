@@ -1878,3 +1878,26 @@ std::string CWIN32Util::FormatHRESULT(HRESULT hr)
 
   return std::format("0x{:X} {} ({})", static_cast<uint32_t>(hr), code, FromW(buff));
 }
+
+int CWIN32Util::fileTimeToLocalFileTime(const FILETIME* fileTime, FILETIME* localFileTime)
+{
+  FILETIME file{};
+  file.dwLowDateTime = fileTime->dwLowDateTime;
+  file.dwHighDateTime = fileTime->dwHighDateTime;
+
+  SYSTEMTIME systemTime{};
+  if (FALSE == FileTimeToSystemTime(&file, &systemTime))
+    return FALSE;
+
+  SYSTEMTIME localSystemTime{};
+  if (FALSE == SystemTimeToTzSpecificLocalTime(nullptr, &systemTime, &localSystemTime))
+    return FALSE;
+
+  FILETIME localFile{};
+  int ret = SystemTimeToFileTime(&localSystemTime, &localFile);
+
+  localFileTime->dwLowDateTime = localFile.dwLowDateTime;
+  localFileTime->dwHighDateTime = localFile.dwHighDateTime;
+
+  return ret;
+}

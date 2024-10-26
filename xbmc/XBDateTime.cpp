@@ -219,10 +219,18 @@ CDateTime::CDateTime(const tm& time)
   auto ymd =
       date::sys_days(date::year(time.tm_year + 1900) / date::month(time.tm_mon + 1) / time.tm_mday);
 
-  m_time = ymd + std::chrono::hours(time.tm_hour) + std::chrono::minutes(time.tm_min) +
-           std::chrono::seconds(time.tm_sec);
+  // Add seconds first to switch computation to 64-bit on MSVC as mentioned by Howard Hinnant
+  // here: https://github.com/microsoft/STL/issues/4997#issuecomment-2435569300
+  m_time = ymd + std::chrono::seconds(time.tm_sec) + std::chrono::minutes(time.tm_min) +
+           std::chrono::hours(time.tm_hour);
 
   SetValid(true);
+}
+
+CDateTime::CDateTime(
+    int year, int month, int day, int hour, int minute, int second, int milliseconds)
+{
+  SetDateTime(year, month, day, hour, minute, second, milliseconds);
 }
 
 CDateTime::CDateTime(int year, int month, int day, int hour, int minute, int second)
@@ -232,6 +240,7 @@ CDateTime::CDateTime(int year, int month, int day, int hour, int minute, int sec
 
 CDateTime CDateTime::GetCurrentDateTime()
 {
+#if !defined(TARGET_WINDOWS)
   CDateTime dt;
 
   auto zoned_time = date::make_zoned(date::current_zone(), std::chrono::system_clock::now());
@@ -243,6 +252,14 @@ CDateTime CDateTime::GetCurrentDateTime()
   dt.SetValid(true);
 
   return dt;
+#else // defined(TARGET_WINDOWS)
+  SYSTEMTIME st{};
+  GetLocalTime(&st);
+
+  CDateTime ret(st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
+
+  return ret;
+#endif // !defined(TARGET_WINDOWS)
 }
 
 CDateTime CDateTime::GetUTCDateTime()
@@ -266,8 +283,10 @@ const CDateTime& CDateTime::operator=(const tm& right)
   auto ymd = date::sys_days(date::year(right.tm_year + 1900) / date::month(right.tm_mon + 1) /
                             right.tm_mday);
 
-  m_time = ymd + std::chrono::hours(right.tm_hour) + std::chrono::minutes(right.tm_min) +
-           std::chrono::seconds(right.tm_sec);
+  // Add seconds first to switch computation to 64-bit on MSVC as mentioned by Howard Hinnant
+  // here: https://github.com/microsoft/STL/issues/4997#issuecomment-2435569300
+  m_time = ymd + std::chrono::seconds(right.tm_sec) + std::chrono::minutes(right.tm_min) +
+           std::chrono::hours(right.tm_hour);
 
   SetValid(true);
 
@@ -471,11 +490,7 @@ KODI::TIME::SystemTime CDateTime::GetAsSystemTime()
   st.hour = GetHour();
   st.minute = GetMinute();
   st.second = GetSecond();
-
-  auto dp = date::floor<std::chrono::seconds>(m_time);
-  auto ms = date::floor<std::chrono::milliseconds>(m_time - dp);
-
-  st.milliseconds = ms.count();
+  st.milliseconds = GetMilliseconds();
 
   return st;
 }
@@ -486,8 +501,11 @@ void CDateTime::SetFromSystemTime(const KODI::TIME::SystemTime& right)
 
   auto ymd = date::sys_days(date::year(right.year) / date::month(right.month) / right.day);
 
-  m_time = ymd + std::chrono::hours(right.hour) + std::chrono::minutes(right.minute) +
-           std::chrono::seconds(right.second) + std::chrono::milliseconds(right.milliseconds);
+  // Add seconds first to switch computation to 64-bit on MSVC as mentioned by Howard Hinnant
+  // here: https://github.com/microsoft/STL/issues/4997#issuecomment-2435569300
+  m_time = ymd + std::chrono::milliseconds(right.milliseconds) +
+           std::chrono::seconds(right.second) + std::chrono::minutes(right.minute) +
+           std::chrono::hours(right.hour);
 
   SetValid(true);
 }
@@ -620,6 +638,14 @@ int CDateTime::GetSecond() const
   return time.seconds().count();
 }
 
+int CDateTime::GetMilliseconds() const
+{
+  auto dp = date::floor<std::chrono::seconds>(m_time);
+  auto time = date::floor<std::chrono::milliseconds>(m_time - dp);
+
+  return time.count();
+}
+
 int CDateTime::GetDayOfWeek() const
 {
   auto dp = date::floor<date::days>(m_time);
@@ -638,6 +664,12 @@ int CDateTime::GetMinuteOfDay() const
 
 bool CDateTime::SetDateTime(int year, int month, int day, int hour, int minute, int second)
 {
+  return SetDateTime(year, month, day, hour, minute, second, 0);
+}
+
+bool CDateTime::SetDateTime(
+    int year, int month, int day, int hour, int minute, int second, int milliseconds)
+{
   auto ymd = date::year(year) / month / day;
   if (!ymd.ok())
   {
@@ -645,8 +677,10 @@ bool CDateTime::SetDateTime(int year, int month, int day, int hour, int minute, 
     return false;
   }
 
-  m_time = date::sys_days(ymd) + std::chrono::hours(hour) + std::chrono::minutes(minute) +
-           std::chrono::seconds(second);
+  // Add seconds first to switch computation to 64-bit on MSVC as mentioned by Howard Hinnant
+  // here: https://github.com/microsoft/STL/issues/4997#issuecomment-2435569300
+  m_time = date::sys_days(ymd) + std::chrono::milliseconds(milliseconds) +
+           std::chrono::seconds(second) + std::chrono::minutes(minute) + std::chrono::hours(hour);
 
   SetValid(true);
   return true;
@@ -694,7 +728,11 @@ void CDateTime::GetAsTm(tm& time) const
   auto seconds_to_newyear = date::floor<std::chrono::seconds>(m_time - newyear);
   time.tm_yday = seconds_to_newyear.count() / 86400;
 
+#if !defined(TARGET_WINDOWS)
   time.tm_isdst = date::current_zone()->get_info(m_time).save.count() != 0;
+#else // defined(TARGET_WINDOWS)
+  time.tm_isdst = -1;
+#endif // !defined(TARGET_WINDOWS)
 }
 
 std::chrono::system_clock::time_point CDateTime::GetAsTimePoint() const
@@ -1333,6 +1371,7 @@ std::string CDateTime::GetAsLocalizedTime(TIME_FORMAT format, bool withSeconds /
 
 CDateTime CDateTime::GetAsLocalDateTime() const
 {
+#if !defined(TARGET_WINDOWS)
   CDateTime dt;
 
   auto zoned_time = date::make_zoned(date::current_zone(), m_time);
@@ -1343,6 +1382,30 @@ CDateTime CDateTime::GetAsLocalDateTime() const
   dt.SetValid(true);
 
   return dt;
+#else // defined(TARGET_WINDOWS)
+  SYSTEMTIME lst{}, st{};
+
+  st.wYear = GetYear();
+  st.wMonth = GetMonth();
+  st.wDay = GetDay();
+  st.wDayOfWeek = GetDayOfWeek();
+  st.wHour = GetHour();
+  st.wMinute = GetMinute();
+  st.wSecond = GetSecond();
+  st.wMilliseconds = GetMilliseconds();
+
+  if (!SystemTimeToTzSpecificLocalTime(nullptr, &st, &lst))
+  {
+    CDateTime dt;
+    dt.SetValid(false);
+    return dt;
+  }
+
+  CDateTime ret(lst.wYear, lst.wMonth, lst.wDay, lst.wHour, lst.wMinute, lst.wSecond,
+                lst.wMilliseconds);
+
+  return ret;
+#endif // !defined(TARGET_WINDOWS)
 }
 
 std::string CDateTime::GetAsRFC1123DateTime() const
@@ -1364,9 +1427,20 @@ std::string CDateTime::GetAsW3CDateTime(bool asUtc /* = false */) const
   if (asUtc)
     return date::format("%FT%TZ", time);
 
+#if !defined(TARGET_WINDOWS)
   auto zt = date::make_zoned(date::current_zone(), time);
 
   return date::format("%FT%T%Ez", zt);
+#else // defined(TARGET_WINDOWS)
+  auto zt = GetAsLocalDateTime();
+
+  auto timezoneBias = zt - *this;
+
+  return StringUtils::Format("{:04}-{:02}-{:02}T{:02}:{:02}:{:02}{}{:02}:{:02}", zt.GetYear(),
+                             zt.GetMonth(), zt.GetDay(), zt.GetHour(), zt.GetMinute(),
+                             zt.GetSecond(), (timezoneBias.GetSecondsTotal() >= 0 ? '+' : '-'),
+                             abs(timezoneBias.GetHours()), abs(timezoneBias.GetMinutes()));
+#endif // !defined(TARGET_WINDOWS)
 }
 
 int CDateTime::MonthStringToMonthNum(const std::string& month)

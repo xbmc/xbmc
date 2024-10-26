@@ -13,4 +13,8 @@
 #define HAS_REMOTE_API 0
 #include <date/date.h>
 #include <date/iso_week.h>
+#if !defined(TARGET_WINDOWS)
 #include <date/tz.h>
+#else // defined(TARGET_WINDOWS)
+#include <windows.h>
+#endif // !defined(TARGET_WINDOWS)

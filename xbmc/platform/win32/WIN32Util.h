@@ -111,6 +111,8 @@ public:
    */
   static std::string FormatHRESULT(HRESULT hr);
 
+  static int fileTimeToLocalFileTime(const FILETIME* fileTime, FILETIME* localFileTime);
+
 private:
   static HDR_STATUS GetWindowsHDRStatusWin32();
 };
