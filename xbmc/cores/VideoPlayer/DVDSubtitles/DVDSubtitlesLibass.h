@@ -58,7 +58,7 @@ public:
   * demux packets with DecodeDemuxPkt
   * \return True if success, false if error
   */
-  bool DecodeHeader(char* data, int size);
+  bool DecodeHeader(const char* data, int size);
 
   /*!
   * \brief Decode ASS/SSA demux packet (depends from DecodeHeader)

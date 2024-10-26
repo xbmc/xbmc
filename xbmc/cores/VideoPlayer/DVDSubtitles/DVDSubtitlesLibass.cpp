@@ -154,7 +154,7 @@ void CDVDSubtitlesLibass::Configure()
   ass_set_extract_fonts(m_library, overrideFont ? 0 : 1);
 }
 
-bool CDVDSubtitlesLibass::DecodeHeader(char* data, int size)
+bool CDVDSubtitlesLibass::DecodeHeader(const char* data, int size)
 {
   std::unique_lock<CCriticalSection> lock(m_section);
   if (!m_library || !data)
@@ -176,9 +176,12 @@ bool CDVDSubtitlesLibass::DecodeDemuxPkt(const char* data, int size, double star
     return false;
   }
 
-  //! @bug libass isn't const correct
+#if LIBASS_VERSION >= 0x01703000
+  ass_process_chunk(m_track, data, size, DVD_TIME_TO_MSEC(start), DVD_TIME_TO_MSEC(duration));
+#else
   ass_process_chunk(m_track, const_cast<char*>(data), size, DVD_TIME_TO_MSEC(start),
                     DVD_TIME_TO_MSEC(duration));
+#endif
   return true;
 }
 
