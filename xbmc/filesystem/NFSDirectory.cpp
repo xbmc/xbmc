@@ -269,8 +269,13 @@ bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         && !StringUtils::EqualsNoCase(strName,"lost+found"))
     {
       CFileItemPtr pItem(new CFileItem(tmpDirent.name));
+      // thexai pointed that posix and win32 implementations treat this value
+      // as local time to generate consistent directory hashes across platforms
+      // to avoid library re-scans:
+      // https://github.com/xbmc/xbmc/pull/23631
       pItem->m_dateTime =
-          tmpDirent.mtime.tv_sec != 0 ? tmpDirent.mtime.tv_sec : tmpDirent.ctime.tv_sec;
+          CDateTime(tmpDirent.mtime.tv_sec != 0 ? tmpDirent.mtime.tv_sec : tmpDirent.ctime.tv_sec)
+              .GetAsLocalDateTime();
       pItem->m_dwSize = iSize;
 
       if (bIsDir)

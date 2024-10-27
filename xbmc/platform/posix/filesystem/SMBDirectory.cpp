@@ -216,7 +216,12 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         URIUtils::AddSlashAtEnd(path);
         pItem->SetPath(path);
         pItem->m_bIsFolder = true;
-        pItem->m_dateTime = info.st_mtime != 0 ? info.st_mtime : info.st_ctime;
+        // thexai pointed that posix and win32 implementations treat this value
+        // as local time to generate consistent directory hashes across platforms
+        // to avoid library re-scans:
+        // https://github.com/xbmc/xbmc/pull/23631
+        pItem->m_dateTime =
+            CDateTime(info.st_mtime != 0 ? info.st_mtime : info.st_ctime).GetAsLocalDateTime();
         if (hidden)
           pItem->SetProperty("file:hidden", true);
         items.Add(pItem);
@@ -227,7 +232,12 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         pItem->SetPath(strRoot + aDir.name);
         pItem->m_bIsFolder = false;
         pItem->m_dwSize = iSize;
-        pItem->m_dateTime = info.st_mtime != 0 ? info.st_mtime : info.st_ctime;
+        // thexai pointed that posix and win32 implementations treat this value
+        // as local time to generate consistent directory hashes across platforms
+        // to avoid library re-scans:
+        // https://github.com/xbmc/xbmc/pull/23631
+        pItem->m_dateTime =
+            CDateTime(info.st_mtime != 0 ? info.st_mtime : info.st_ctime).GetAsLocalDateTime();
         if (hidden)
           pItem->SetProperty("file:hidden", true);
         items.Add(pItem);

@@ -80,7 +80,11 @@ bool CPosixDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     {
       if (bStat || stat(pItem->GetPath().c_str(), &buffer) == 0)
       {
-        pItem->m_dateTime = buffer.st_mtime;
+        // thexai pointed that posix and win32 implementations treat this value
+        // as local time to generate consistent directory hashes across platforms
+        // to avoid library re-scans:
+        // https://github.com/xbmc/xbmc/pull/23631
+        pItem->m_dateTime = CDateTime(buffer.st_mtime).GetAsLocalDateTime();
 
         if (!pItem->m_bIsFolder)
           pItem->m_dwSize = buffer.st_size;
