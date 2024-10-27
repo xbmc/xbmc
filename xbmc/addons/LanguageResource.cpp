@@ -29,12 +29,11 @@ namespace ADDON
 {
 
 CLanguageResource::CLanguageResource(const AddonInfoPtr& addonInfo)
-  : CResource(addonInfo, AddonType::RESOURCE_LANGUAGE)
+  : CResource(addonInfo, AddonType::RESOURCE_LANGUAGE),
+    // parse <extension> attributes
+    m_locale(
+        CLocale::FromString(Type(AddonType::RESOURCE_LANGUAGE)->GetValue("@locale").asString()))
 {
-  // parse <extension> attributes
-  m_locale =
-      CLocale::FromString(Type(AddonType::RESOURCE_LANGUAGE)->GetValue("@locale").asString());
-
   // parse <charsets>
   const CAddonExtensions* charsetsElement =
       Type(AddonType::RESOURCE_LANGUAGE)->GetElement("charsets");
