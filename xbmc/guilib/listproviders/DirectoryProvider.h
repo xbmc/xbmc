@@ -85,6 +85,7 @@ public:
 private:
   UpdateState m_updateState = OK;
   unsigned int m_jobID = 0;
+  bool m_updatePending{false};
   KODI::GUILIB::GUIINFO::CGUIInfoLabel m_url;
   KODI::GUILIB::GUIINFO::CGUIInfoLabel m_target;
   KODI::GUILIB::GUIINFO::CGUIInfoLabel m_sortMethod;

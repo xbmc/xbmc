@@ -252,7 +252,7 @@ bool CDirectoryProvider::Update(bool forceRefresh)
 {
   // we never need to force refresh here
   bool changed = false;
-  bool fireJob = false;
+  bool fireJob = m_updatePending;
 
   // update the URL & limit and fire off a new job if needed
   fireJob |= UpdateURL();
@@ -273,11 +273,21 @@ bool CDirectoryProvider::Update(bool forceRefresh)
   {
     CLog::Log(LOGDEBUG, "CDirectoryProvider[{}]: refreshing..", m_currentUrl);
     if (m_jobID)
-      CServiceBroker::GetJobManager()->CancelJob(m_jobID);
+    {
+      if (!m_updatePending)
+      {
+        CLog::Log(LOGDEBUG, "CDirectoryProvider[{}]: Another refresh in progress. Defering..",
+                  m_currentUrl);
+        m_updatePending = true;
+      }
+      return false;
+    }
+
     m_jobID = CServiceBroker::GetJobManager()->AddJob(
         new CDirectoryJob(m_currentUrl, m_target.GetLabel(m_parentID, false), m_currentSort,
                           m_currentLimit, m_currentBrowse, m_parentID),
         this);
+    m_updatePending = false;
   }
 
   if (!changed)
@@ -396,6 +406,7 @@ void CDirectoryProvider::Reset()
     if (m_jobID)
       CServiceBroker::GetJobManager()->CancelJob(m_jobID);
     m_jobID = 0;
+    m_updatePending = false;
     m_items.clear();
     m_currentTarget.clear();
     m_currentUrl.clear();
@@ -438,6 +449,8 @@ void CDirectoryProvider::OnJobComplete(unsigned int jobID, bool success, CJob *j
       m_updateState = DONE;
   }
   m_jobID = 0;
+  if (m_updatePending)
+    Update(false);
 }
 
 std::string CDirectoryProvider::GetTarget(const CFileItem& item) const
