@@ -50,10 +50,10 @@ public:
   const std::string& GetLogTarget() const { return m_logTarget; }
   void SetLogTarget(const std::string& logTarget) { m_logTarget = logTarget; }
 
-  std::string_view GetAudioBackend() const { return m_audioBackend; }
+  const std::string& GetAudioBackend() const { return m_audioBackend; }
   void SetAudioBackend(std::string_view audioBackend) { m_audioBackend = audioBackend; }
 
-  std::string_view GetGlInterface() const { return m_glInterface; }
+  const std::string& GetGlInterface() const { return m_glInterface; }
   void SetGlInterface(const std::string& glInterface) { m_glInterface = glInterface; }
 
   CFileItemList& GetPlaylist() const { return *m_playlist; }
