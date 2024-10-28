@@ -1822,7 +1822,7 @@ int MysqlDataset::exec(const std::string& sql)
   if (!handle())
     throw DbErrors("No Database Connection");
   std::string qry = sql;
-  int res = 0;
+
   exec_res.clear();
 
   // enforce the "auto_increment" keyword to be appended to "integer primary key"
@@ -1848,10 +1848,17 @@ int MysqlDataset::exec(const std::string& sql)
       qry += " CHARACTER SET utf8 COLLATE utf8_general_ci";
   }
 
-  CLog::LogFC(LOGDEBUG, LOGDATABASE, "Mysql execute: {}", qry);
+  const auto start = std::chrono::steady_clock::now();
 
-  if (db->setErr(static_cast<MysqlDatabase*>(db)->query_with_reconnect(qry.c_str()), qry.c_str()) !=
-      MYSQL_OK)
+  const int res =
+      db->setErr(static_cast<MysqlDatabase*>(db)->query_with_reconnect(qry.c_str()), qry.c_str());
+
+  const auto end = std::chrono::steady_clock::now();
+  const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+  CLog::LogFC(LOGDEBUG, LOGDATABASE, "{} ms for query: {}", duration.count(), qry);
+
+  if (res != MYSQL_OK)
   {
     throw DbErrors(db->getErrorMsg());
   }

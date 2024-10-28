@@ -810,7 +810,7 @@ int SqliteDataset::exec(const std::string& sql)
   if (!handle())
     throw DbErrors("No Database Connection");
   std::string qry = sql;
-  int res;
+
   exec_res.clear();
 
   // Strip size constraints from indexes (not supported in sqlite)
@@ -851,12 +851,21 @@ int SqliteDataset::exec(const std::string& sql)
       qry.resize(pos);
   }
 
-  CLog::LogFC(LOGDEBUG, LOGDATABASE, "Sqlite execute: {}", qry);
+  const auto start = std::chrono::steady_clock::now();
 
   char* errmsg;
-  if ((res = db->setErr(sqlite3_exec(handle(), qry.c_str(), &callback, &exec_res, &errmsg),
-                        qry.c_str())) == SQLITE_OK)
+  const int res =
+      db->setErr(sqlite3_exec(handle(), qry.c_str(), &callback, &exec_res, &errmsg), qry.c_str());
+
+  const auto end = std::chrono::steady_clock::now();
+  const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+  CLog::LogFC(LOGDEBUG, LOGDATABASE, "{} ms for query: {}", duration.count(), qry);
+
+  if (res == SQLITE_OK)
+  {
     return res;
+  }
   else
   {
     if (errmsg)
