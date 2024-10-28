@@ -1,11 +1,11 @@
 #.rst:
-# FindFribidi
+# FindFriBidi
 # -----------
 # Finds the GNU FriBidi library
 #
 # This will define the following target:
 #
-#   ${APP_NAME_LC}::Fribidi   - The FriBidi library
+#   ${APP_NAME_LC}::FriBidi   - The FriBidi library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   find_package(PkgConfig)
