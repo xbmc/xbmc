@@ -397,7 +397,7 @@ int SqliteDatabase::copy(const char* backup_name)
   if (active == false)
     throw DbErrors("Can't copy database: no active connection...");
 
-  CLog::Log(LOGDEBUG, "Copying from {} to {} at {}", db, backup_name, host);
+  CLog::LogF(LOGDEBUG, "Copying from {} to {} at {}", db, backup_name, host);
 
   int rc;
   std::string backup_db = backup_name;
@@ -449,7 +449,7 @@ int SqliteDatabase::drop_analytics(void)
   char sqlcmd[4096];
   result_set res;
 
-  CLog::Log(LOGDEBUG, "Cleaning indexes from database {} at {}", db, host);
+  CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning indexes from database {} at {}", db, host);
   snprintf(sqlcmd, sizeof(sqlcmd),
            "SELECT name FROM sqlite_master WHERE type == 'index' AND sql IS NOT NULL");
   if ((last_err = sqlite3_exec(conn, sqlcmd, &callback, &res, NULL)) != SQLITE_OK)
@@ -464,7 +464,7 @@ int SqliteDatabase::drop_analytics(void)
   }
   res.clear();
 
-  CLog::Log(LOGDEBUG, "Cleaning views from database {} at {}", db, host);
+  CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning views from database {} at {}", db, host);
   snprintf(sqlcmd, sizeof(sqlcmd), "SELECT name FROM sqlite_master WHERE type == 'view'");
   if ((last_err = sqlite3_exec(conn, sqlcmd, &callback, &res, NULL)) != SQLITE_OK)
     return DB_UNEXPECTED_RESULT;
@@ -478,7 +478,7 @@ int SqliteDatabase::drop_analytics(void)
   }
   res.clear();
 
-  CLog::Log(LOGDEBUG, "Cleaning triggers from database {} at {}", db, host);
+  CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning triggers from database {} at {}", db, host);
   snprintf(sqlcmd, sizeof(sqlcmd), "SELECT name FROM sqlite_master WHERE type == 'trigger'");
   if ((last_err = sqlite3_exec(conn, sqlcmd, &callback, &res, NULL)) != SQLITE_OK)
     return DB_UNEXPECTED_RESULT;
@@ -510,6 +510,8 @@ int SqliteDatabase::drop()
 
 long SqliteDatabase::nextid(const char* sname)
 {
+  CLog::LogFC(LOGDEBUG, LOGDATABASE, "nextid for {}", sname);
+
   if (!active)
     return DB_UNEXPECTED_RESULT;
   int id; /*,nrow,ncol;*/
@@ -549,6 +551,7 @@ void SqliteDatabase::start_transaction()
   if (active)
   {
     sqlite3_exec(conn, "begin IMMEDIATE", NULL, NULL, NULL);
+    CLog::LogFC(LOGDEBUG, LOGDATABASE, "Sqlite start transaction");
     _in_transaction = true;
   }
 }
@@ -558,6 +561,7 @@ void SqliteDatabase::commit_transaction()
   if (active)
   {
     sqlite3_exec(conn, "commit", NULL, NULL, NULL);
+    CLog::LogFC(LOGDEBUG, LOGDATABASE, "Sqlite commit transaction");
     _in_transaction = false;
   }
 }
@@ -567,6 +571,7 @@ void SqliteDatabase::rollback_transaction()
   if (active)
   {
     sqlite3_exec(conn, "rollback", NULL, NULL, NULL);
+    CLog::LogFC(LOGDEBUG, LOGDATABASE, "Sqlite rollback transaction");
     _in_transaction = false;
   }
 }
@@ -845,6 +850,8 @@ int SqliteDataset::exec(const std::string& sql)
     if (pos != std::string::npos)
       qry.resize(pos);
   }
+
+  CLog::LogFC(LOGDEBUG, LOGDATABASE, "Sqlite execute: {}", qry);
 
   char* errmsg;
   if ((res = db->setErr(sqlite3_exec(handle(), qry.c_str(), &callback, &exec_res, &errmsg),

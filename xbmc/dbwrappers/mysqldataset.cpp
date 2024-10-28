@@ -308,6 +308,8 @@ int MysqlDatabase::copy(const char* backup_name)
   if (!active || conn == NULL)
     throw DbErrors("Can't copy database: no active connection...");
 
+  CLog::LogF(LOGDEBUG, "Copying from {} to {} at {}", db, backup_name, host);
+
   char sql[4096];
   int ret;
 
@@ -385,6 +387,8 @@ int MysqlDatabase::drop_analytics(void)
   if ((ret = mysql_select_db(conn, db.c_str())) != MYSQL_OK)
     throw DbErrors("Can't connect to database: '%s'", db.c_str());
 
+  CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning indexes from database {} at {}", db, host);
+
   // getting a list of indexes in the database
   snprintf(sql, sizeof(sql),
            "SELECT DISTINCT table_name, index_name "
@@ -413,6 +417,8 @@ int MysqlDatabase::drop_analytics(void)
     mysql_free_result(res);
   }
 
+  CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning views from database {} at {}", db, host);
+
   // next topic is a views list
   snprintf(sql, sizeof(sql),
            "SELECT table_name FROM information_schema.views WHERE table_schema = '%s'", db.c_str());
@@ -437,6 +443,8 @@ int MysqlDatabase::drop_analytics(void)
     mysql_free_result(res);
   }
 
+  CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning triggers from database {} at {}", db, host);
+
   // triggers
   snprintf(sql, sizeof(sql),
            "SELECT trigger_name FROM information_schema.triggers WHERE event_object_schema = '%s'",
@@ -460,6 +468,8 @@ int MysqlDatabase::drop_analytics(void)
     }
     mysql_free_result(res);
   }
+
+  CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning functions from database {} at {}", db, host);
 
   // Native functions
   snprintf(sql, sizeof(sql),
@@ -510,7 +520,8 @@ int MysqlDatabase::query_with_reconnect(const char* query)
 
 long MysqlDatabase::nextid(const char* sname)
 {
-  CLog::Log(LOGDEBUG, "MysqlDatabase::nextid for {}", sname);
+  CLog::LogFC(LOGDEBUG, LOGDATABASE, "nextid for {}", sname);
+
   if (!active)
     return DB_UNEXPECTED_RESULT;
   const char* seq_table = "sys_seq";
@@ -518,7 +529,7 @@ long MysqlDatabase::nextid(const char* sname)
   MYSQL_RES* res;
   char sqlcmd[512];
   snprintf(sqlcmd, sizeof(sqlcmd), "SELECT nextid FROM %s WHERE seq_name = '%s'", seq_table, sname);
-  CLog::Log(LOGDEBUG, "MysqlDatabase::nextid will request");
+  CLog::LogFC(LOGDEBUG, LOGDATABASE, "MysqlDatabase::nextid will request");
   if ((last_err = query_with_reconnect(sqlcmd)) != 0)
   {
     return DB_UNEXPECTED_RESULT;
@@ -557,7 +568,7 @@ void MysqlDatabase::start_transaction()
   if (active)
   {
     mysql_autocommit(conn, false);
-    CLog::Log(LOGDEBUG, "Mysql Start transaction");
+    CLog::LogFC(LOGDEBUG, LOGDATABASE, "Mysql Start transaction");
     _in_transaction = true;
   }
 }
@@ -568,7 +579,7 @@ void MysqlDatabase::commit_transaction()
   {
     mysql_commit(conn);
     mysql_autocommit(conn, true);
-    CLog::Log(LOGDEBUG, "Mysql commit transaction");
+    CLog::LogFC(LOGDEBUG, LOGDATABASE, "Mysql commit transaction");
     _in_transaction = false;
   }
 }
@@ -579,7 +590,7 @@ void MysqlDatabase::rollback_transaction()
   {
     mysql_rollback(conn);
     mysql_autocommit(conn, true);
-    CLog::Log(LOGDEBUG, "Mysql rollback transaction");
+    CLog::LogFC(LOGDEBUG, LOGDATABASE, "Mysql rollback transaction");
     _in_transaction = false;
   }
 }
@@ -1837,7 +1848,7 @@ int MysqlDataset::exec(const std::string& sql)
       qry += " CHARACTER SET utf8 COLLATE utf8_general_ci";
   }
 
-  CLog::Log(LOGDEBUG, "Mysql execute: {}", qry);
+  CLog::LogFC(LOGDEBUG, LOGDATABASE, "Mysql execute: {}", qry);
 
   if (db->setErr(static_cast<MysqlDatabase*>(db)->query_with_reconnect(qry.c_str()), qry.c_str()) !=
       MYSQL_OK)
