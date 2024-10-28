@@ -1819,7 +1819,11 @@ extern "C"
 
       if (value_start != NULL)
       {
-        char var[64];
+        const size_t varSize = value_start - envstring;
+        char* var = static_cast<char*>(std::malloc(varSize + 1));
+        if (!var)
+          return -1;
+
         int size = strlen(envstring) + 1;
         char *value = (char*)malloc(size);
 
@@ -1828,7 +1832,7 @@ extern "C"
         value[0] = 0;
 
         memcpy(var, envstring, value_start - envstring);
-        var[value_start - envstring] = 0;
+        var[varSize] = 0;
         char* temp = var;
         while (*temp)
         {
@@ -1881,6 +1885,7 @@ extern "C"
         }
 
         free(value);
+        std::free(var);
       }
     }
 
