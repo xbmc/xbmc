@@ -127,6 +127,7 @@ public:
                           const char* newCiphers = NULL,
                           bool newCompression = false);
   virtual void disconnect(void) { active = false; }
+  virtual int postconnect() { return DB_COMMAND_OK; }
   virtual int reset(void) { return DB_COMMAND_OK; }
   virtual int create(void) { return DB_COMMAND_OK; }
   virtual int drop(void) { return DB_COMMAND_OK; }

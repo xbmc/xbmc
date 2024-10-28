@@ -387,6 +387,22 @@ void SqliteDatabase::disconnect(void)
   active = false;
 }
 
+int SqliteDatabase::postconnect()
+{
+  if (!active)
+    throw DbErrors("Cannot execute postconnect actions: no active connection...");
+
+  const std::string cmd{
+      "PRAGMA cache_size=4096; PRAGMA synchronous='NORMAL'; PRAGMA count_changes='OFF';"};
+
+  if (setErr(sqlite3_exec(getHandle(), cmd.c_str(), NULL, NULL, NULL), cmd.c_str()) != SQLITE_OK)
+  {
+    throw DbErrors("%s", getErrorMsg());
+  }
+
+  return DB_COMMAND_OK;
+}
+
 int SqliteDatabase::create()
 {
   return connect(true);

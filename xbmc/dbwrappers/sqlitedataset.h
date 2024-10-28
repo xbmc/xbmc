@@ -54,10 +54,11 @@ public:
   void setDatabase(const char* newDb) override;
 
   /* func. connects to database-server */
-
   int connect(bool create) override;
   /* func. disconnects from database-server */
   void disconnect() override;
+  /* func. post-connection operations */
+  int postconnect() override;
   /* func. creates new database */
   int create() override;
   /* func. deletes database */
