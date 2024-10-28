@@ -160,7 +160,7 @@ freetype2: bzip2 harfbuzz $(ZLIB)
 gettext: $(ICONV)
 gnutls: nettle $(ZLIB)
 harfbuzz: freetype2-noharfbuzz $(ICONV)
-libass: fontconfig fribidi harfbuzz libpng freetype2 expat $(ICONV)
+libass: fontconfig fribidi harfbuzz freetype2 $(ICONV)
 libbluray: fontconfig freetype2 $(ICONV) udfread libxml2
 libcdio-gplv3: $(ICONV)
 libcdio: $(ICONV)

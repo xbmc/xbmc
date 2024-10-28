@@ -1,0 +1,410 @@
+--- /dev/null
++++ b/cmake/libass-config.cmake
+@@ -0,0 +1 @@
++include(${CMAKE_CURRENT_LIST_DIR}/libass.cmake)
+--- /dev/null
++++ b/CMakeLists.txt
+@@ -0,0 +1,235 @@
++cmake_minimum_required(VERSION 3.15)
++
++project(libass VERSION 0.17.3 LANGUAGES C)
++
++set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
++
++# All platforms require
++find_package(Iconv REQUIRED)
++find_package(Freetype 2.6 REQUIRED)
++find_package(FriBidi REQUIRED)
++find_package(HarfBuzz REQUIRED)
++
++# Font providers
++if(CMAKE_SYSTEM_NAME MATCHES Windows)
++  set(CONFIG_DIRECTWRITE 1)
++elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
++  set(CONFIG_CORETEXT 1)
++else()
++  find_package(Fontconfig REQUIRED)
++  set(CONFIG_FONTCONFIG 1)
++endif()
++
++# All platforms
++if(Freetype_FOUND)
++  set(CONFIG_FREETYPE 1)
++endif()
++
++if(FriBidi_FOUND)
++  set(CONFIG_FRIBIDI 1)
++endif()
++
++if(HarfBuzz_FOUND)
++  set(CONFIG_HARFBUZZ 1)
++endif()
++
++if(Iconv_FOUND)
++  set(CONFIG_ICONV 1)
++endif()
++
++# ASM - Currently disabled
++if(ARCH STREQUAL x86_64)
++  set(ARCH_X86_64 1)
++  find_program(NASM nasm HINTS "${NATIVEPREFIX}/bin")
++
++#  if(NASM_FOUND)
++#    set(CONFIG_ASM 1)
++#  endif()
++elseif(ARCH STREQUAL aarch64)
++  set(ARCH_AARCH64 1)
++#  set(CONFIG_ASM 1)
++endif()
++
++set(VCS_TAG "")
++
++include(CheckFunctionExists)
++include(CheckIncludeFiles)
++
++CHECK_FUNCTION_EXISTS (strdup HAVE_STRDUP)
++CHECK_FUNCTION_EXISTS (strndup HAVE_STRNDUP)
++
++CHECK_INCLUDE_FILES(dlfcn.h HAVE_DLFCN_H)
++CHECK_INCLUDE_FILES(iconv.h HAVE_ICONV_H)
++CHECK_INCLUDE_FILES(inttypes.h HAVE_INTTYPES_H)
++CHECK_INCLUDE_FILES(stdint.h HAVE_STDINT_H)
++CHECK_INCLUDE_FILES(stdio.h HAVE_STDIO_H)
++CHECK_INCLUDE_FILES(stdlib.h HAVE_STDLIB_H)
++CHECK_INCLUDE_FILES(strings.h HAVE_STRINGS_H)
++CHECK_INCLUDE_FILES(string.h HAVE_STRING_H)
++CHECK_INCLUDE_FILES(sys/stat.h HAVE_SYS_STAT_H)
++CHECK_INCLUDE_FILES(sys/types.h HAVE_SYS_TYPES_H)
++CHECK_INCLUDE_FILES(unistd.h HAVE_UNISTD_H)
++
++set(PACKAGE_NAME ${CMAKE_PROJECT_NAME})
++set(PACKAGE ${CMAKE_PROJECT_NAME})
++set(PACKAGE_VERSION ${CMAKE_PROJECT_VERSION})
++set(VERSION ${CMAKE_PROJECT_VERSION})
++
++set(CONFIG_SOURCEVERSION \"\")
++
++configure_file(${CMAKE_SOURCE_DIR}/libass/config.h.in ${CMAKE_SOURCE_DIR}/libass/config.h)
++
++if(MSVC)
++  set(CMAKE_DEBUG_POSTFIX "d")
++endif()
++
++add_library(libass 
++  libass/ass_bitmap.c
++  libass/ass_bitmap.h
++  libass/ass_bitmap_engine.c
++  libass/ass_bitmap_engine.h
++  libass/ass_blur.c
++  libass/ass_cache.c
++  libass/ass_cache.h
++  libass/ass_cache_template.h
++  libass/ass_compat.h
++  libass/ass_drawing.c
++  libass/ass_drawing.h
++  libass/ass_filesystem.h
++  libass/ass_filesystem.c
++  libass/ass_font.c
++  libass/ass_font.h
++  libass/ass_fontselect.c
++  libass/ass_fontselect.h
++  libass/ass_library.c
++  libass/ass_library.h
++  libass/ass_outline.c
++  libass/ass_outline.h
++  libass/ass_parse.c
++  libass/ass_parse.h
++  libass/ass_rasterizer.c
++  libass/ass_rasterizer.h
++  libass/ass_render.c
++  libass/ass_render.h
++  libass/ass_render_api.c
++  libass/ass_shaper.c
++  libass/ass_shaper.h
++  libass/ass_string.c
++  libass/ass_string.h
++  libass/ass_strtod.c
++  libass/ass_types.h
++  libass/ass_utils.c
++  libass/ass_utils.h
++  libass/ass.c
++  libass/ass.h
++  libass/wyhash.h
++  libass/c/blur_template.h
++  libass/c/c_be_blur.c
++  libass/c/c_blend_bitmaps.c
++  libass/c/c_blur.c
++  libass/c/c_rasterizer.c
++  libass/c/rasterizer_template.h
++  libass/config.h
++)
++
++target_link_libraries(libass
++  PRIVATE
++    Freetype::Freetype
++    FriBidi::FriBidi
++    Iconv::Iconv
++    harfbuzz::harfbuzz
++)
++
++target_include_directories(libass
++  PRIVATE
++    ${CMAKE_SOURCE_DIR}/libass
++  INTERFACE
++    $<INSTALL_INTERFACE:include/ass>
++)
++
++if(WINDOWS_STORE)
++  target_compile_definitions(libass
++    PRIVATE
++      MS_APP
++  )
++  target_compile_options(libass
++    PRIVATE
++      /sdl-
++  )
++endif()
++
++if(CONFIG_DIRECTWRITE)
++  target_sources(libass PRIVATE
++                        libass/dwrite_c.h
++                        libass/ass_directwrite_info_template.h
++                        libass/ass_directwrite.h
++                        libass/ass_directwrite.c
++  )
++  target_link_libraries(libass PRIVATE dwrite.lib)
++endif()
++
++if(CONFIG_CORETEXT)
++  target_sources(libass PRIVATE
++                        libass/ass_coretext.h
++                        libass/ass_coretext.c
++  )
++  target_link_libraries(libass PRIVATE 
++                                "-framework CoreText"
++                                "-framework CoreFoundation")
++endif()
++
++if(CONFIG_FONTCONFIG)
++  target_sources(libass PRIVATE
++                        libass/ass_fontconfig.c
++                        libass/ass_fontconfig.h
++  )
++  target_link_libraries(libass PRIVATE Fontconfig::Fontconfig)
++endif()
++
++set(libass_VERSION ${PROJECT_VERSION})
++include(CMakePackageConfigHelpers)
++write_basic_package_version_file(
++  ${CMAKE_CURRENT_BINARY_DIR}/libass-config-version.cmake
++  VERSION ${libass_VERSION}
++  COMPATIBILITY AnyNewerVersion
++)
++
++install(TARGETS libass EXPORT libass
++  RUNTIME DESTINATION bin
++  ARCHIVE DESTINATION lib
++  LIBRARY DESTINATION lib)
++
++install(FILES
++  ${CMAKE_CURRENT_SOURCE_DIR}/libass/ass_render.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/libass/ass_shaper.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/libass/ass_types.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/libass/ass_utils.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/libass/ass.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/libass/ass_bitmap.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/libass/ass_bitmap_engine.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/libass/ass_cache.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/libass/ass_cache_template.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/libass/ass_drawing.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/libass/ass_filesystem.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/libass/ass_font.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/libass/ass_fontconfig.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/libass/ass_library.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/libass/ass_parse.h
++  ${CMAKE_CURRENT_SOURCE_DIR}/libass/ass_rasterizer.h
++  DESTINATION include/ass)
++
++install(EXPORT libass
++  FILE
++    libass.cmake
++  NAMESPACE
++    libass::
++  DESTINATION
++    lib/cmake/libass
++)
++install(
++  FILES
++    cmake/libass-config.cmake
++    ${CMAKE_CURRENT_BINARY_DIR}/libass-config-version.cmake
++  DESTINATION
++    lib/cmake/libass
++)
+--- /dev/null
++++ b/cmake/FindFriBidi.cmake
+@@ -0,0 +1,47 @@
++#.rst:
++# FindFribidi
++# -----------
++# Finds the GNU FriBidi library
++#
++# This will define the following target:
++#
++#   FriBidi::FriBidi   - The FriBidi library
++
++if(NOT TARGET FriBidi::${CMAKE_FIND_PACKAGE_NAME})
++  find_package(PkgConfig)
++
++  if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWS_STORE))
++    pkg_check_modules(FRIBIDI fribidi IMPORTED_TARGET GLOBAL QUIET)
++
++    get_target_property(FRIBIDI_LIBRARY PkgConfig::FRIBIDI INTERFACE_LINK_LIBRARIES)
++    get_target_property(FRIBIDI_INCLUDE_DIR PkgConfig::FRIBIDI INTERFACE_INCLUDE_DIRECTORIES)
++
++  else()
++    find_path(FRIBIDI_INCLUDE_DIR NAMES fribidi.h
++                                  PATH_SUFFIXES fribidi
++                                  HINTS ${DEPENDS_PATH}/include)
++    find_library(FRIBIDI_LIBRARY NAMES fribidi libfribidi
++                                 HINTS ${DEPENDS_PATH}/lib)
++  endif()
++
++  include(FindPackageHandleStandardArgs)
++  find_package_handle_standard_args(FriBidi
++                                    REQUIRED_VARS FRIBIDI_LIBRARY FRIBIDI_INCLUDE_DIR
++                                    VERSION_VAR FRIBIDI_VERSION)
++
++  if(FRIBIDI_FOUND)
++    if(TARGET PkgConfig::FRIBIDI)
++      add_library(FriBidi::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::FRIBIDI)
++    else()
++        add_library(FriBidi::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
++        set_target_properties(FriBidi::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
++                                                                         IMPORTED_LOCATION "${FRIBIDI_LIBRARY}"
++                                                                         INTERFACE_INCLUDE_DIRECTORIES "${FRIBIDI_INCLUDE_DIR}")
++    endif()
++  else()
++    if(FriBidi_FIND_REQUIRED)
++      message(FATAL_ERROR "FriBidi library was not found.")
++    endif()
++  endif()
++endif()
++
+--- /dev/null
++++ b/libass/config.h.in
+@@ -0,0 +1,115 @@
++/* targeting a 64-bit arm host architecture */
++#cmakedefine ARCH_AARCH64 @ARCH_AARCH64@
++
++/* targeting a 64-bit x86 host architecture */
++#cmakedefine ARCH_X86_64 @ARCH_X86_64@
++
++/* targeting a 32- or 64-bit x86 host architecture */
++#cmakedefine ARCH_X86 @ARCH_X86@
++
++/* ASM enabled */
++#cmakedefine CONFIG_ASM @CONFIG_ASM@
++
++/* found CoreText framework */
++#cmakedefine CONFIG_CORETEXT @CONFIG_CORETEXT@
++
++/* found DirectWrite and GDI (Win32) */
++#cmakedefine CONFIG_DIRECTWRITE @CONFIG_DIRECTWRITE@
++
++/* found fontconfig via pkg-config */
++#cmakedefine CONFIG_FONTCONFIG @CONFIG_FONTCONFIG@
++
++/* found freetype2 via pkg-config */
++#cmakedefine CONFIG_FREETYPE @CONFIG_FREETYPE@
++
++/* found fribidi via pkg-config */
++#cmakedefine CONFIG_FRIBIDI @CONFIG_FRIBIDI@
++
++/* found harfbuzz via pkg-config */
++#cmakedefine CONFIG_HARFBUZZ @CONFIG_HARFBUZZ@
++
++/* use iconv */
++#cmakedefine CONFIG_ICONV @CONFIG_ICONV@
++
++/* use small tiles */
++#cmakedefine01 CONFIG_LARGE_TILES
++
++/* found libpng via pkg-config */
++#cmakedefine CONFIG_LIBPNG @CONFIG_LIBPNG@
++
++/* string containing info about the used source */
++#cmakedefine CONFIG_SOURCEVERSION @CONFIG_SOURCEVERSION@
++
++/* found libunibreak via pkg-config */
++#cmakedefine CONFIG_UNIBREAK
++
++/* Define to 1 if you have the <dlfcn.h> header file. */
++#cmakedefine HAVE_DLFCN_H @HAVE_DLFCN_H@
++
++/* Define to 1 if you have the <iconv.h> header file. */
++#cmakedefine HAVE_ICONV_H @HAVE_ICONV_H@
++
++/* Define to 1 if you have the <inttypes.h> header file. */
++#cmakedefine HAVE_INTTYPES_H @HAVE_INTTYPES_H@
++
++/* Define to 1 if you have the <stdint.h> header file. */
++#cmakedefine HAVE_STDINT_H @HAVE_STDINT_H@
++
++/* Define to 1 if you have the <stdio.h> header file. */
++#cmakedefine HAVE_STDIO_H @HAVE_STDIO_H@
++
++/* Define to 1 if you have the <stdlib.h> header file. */
++#cmakedefine HAVE_STDLIB_H @HAVE_STDLIB_H@
++
++/* Define to 1 if you have the `strdup' function. */
++#cmakedefine HAVE_STRDUP @HAVE_STRDUP@
++
++/* Define to 1 if you have the <strings.h> header file. */
++#cmakedefine HAVE_STRINGS_H @HAVE_STRINGS_H@
++
++/* Define to 1 if you have the <string.h> header file. */
++#cmakedefine HAVE_STRING_H @HAVE_STRING_H@
++
++/* Define to 1 if you have the `strndup' function. */
++#cmakedefine HAVE_STRNDUP @HAVE_STRNDUP@
++
++/* Define to 1 if you have the <sys/stat.h> header file. */
++#cmakedefine HAVE_SYS_STAT_H @HAVE_SYS_STAT_H@
++
++/* Define to 1 if you have the <sys/types.h> header file. */
++#cmakedefine HAVE_SYS_TYPES_H @HAVE_SYS_TYPES_H@
++
++/* Define to 1 if you have the <unistd.h> header file. */
++#cmakedefine HAVE_UNISTD_H @HAVE_UNISTD_H@
++
++/* Define to the sub-directory where libtool stores uninstalled libraries. */
++#cmakedefine LT_OBJDIR @LT_OBJDIR@
++
++/* Name of package */
++#cmakedefine PACKAGE @PACKAGE@
++
++/* Define to the address where bug reports for this package should be sent. */
++#cmakedefine PACKAGE_BUGREPORT @PACKAGE_BUGREPORT@
++
++/* Define to the full name of this package. */
++#cmakedefine PACKAGE_NAME @PACKAGE_NAME@
++
++/* Define to the full name and version of this package. */
++#cmakedefine PACKAGE_STRING @PACKAGE_STRING@
++
++/* Define to the one symbol short name of this package. */
++#cmakedefine PACKAGE_TARNAME @PACKAGE_TARNAME@
++
++/* Define to the home page for this package. */
++#cmakedefine PACKAGE_URL @PACKAGE_URL@
++
++/* Define to the version of this package. */
++#cmakedefine PACKAGE_VERSION @PACKAGE_VERSION@
++
++/* Define to 1 if all of the C90 standard headers exist (not just the ones
++   required in a freestanding environment). This macro is provided for
++   backward compatibility; new code need not use it. */
++#cmakedefine STDC_HEADERS @STDC_HEADERS@
++
++/* Version number of package */
++#cmakedefine VERSION @VERSION@
