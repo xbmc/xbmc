@@ -644,14 +644,7 @@ bool CDatabase::Connect(const std::string& dbName, const DatabaseSettings& dbSet
       }
       CreateDatabase();
     }
-
-    // sqlite3 post connection operations
-    if (dbSettings.type == "sqlite3")
-    {
-      m_pDS->exec("PRAGMA cache_size=4096\n");
-      m_pDS->exec("PRAGMA synchronous='NORMAL'\n");
-      m_pDS->exec("PRAGMA count_changes='OFF'\n");
-    }
+    m_pDB->postconnect();
   }
   catch (DbErrors& error)
   {
