@@ -777,6 +777,9 @@ bool XFILE::CFile::ReadString(std::vector<char>& line)
     using traits = CFileStreamBuffer::traits_type;
     CFileStreamBuffer::int_type aByte = m_pBuffer->sgetc();
 
+    if (aByte == traits::eof())
+      return false;
+
     while (aByte != traits::eof())
     {
       aByte = m_pBuffer->sbumpc();
