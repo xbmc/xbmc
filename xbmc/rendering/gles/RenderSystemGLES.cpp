@@ -49,19 +49,26 @@ bool CRenderSystemGLES::InitRenderSystem()
   m_RenderVersionMinor = 0;
 
   const char* ver = (const char*)glGetString(GL_VERSION);
-  if (ver != 0)
-  {
-    sscanf(ver, "%d.%d", &m_RenderVersionMajor, &m_RenderVersionMinor);
-    if (!m_RenderVersionMajor)
-      sscanf(ver, "%*s %*s %d.%d", &m_RenderVersionMajor, &m_RenderVersionMinor);
-    m_RenderVersion = ver;
-  }
-  else
+  if (ver == 0)
   {
     CLog::Log(LOGFATAL, "CRenderSystemGLES::{} - glGetString(GL_VERSION) returned NULL, exiting",
               __FUNCTION__);
     std::terminate();
   }
+
+  const std::string& verOverride =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_openGLVersionOverride;
+  if (verOverride.empty())
+    m_RenderVersion = ver;
+  else
+    m_RenderVersion = verOverride;
+
+  sscanf(m_RenderVersion.data(), "%d.%d", &m_RenderVersionMajor, &m_RenderVersionMinor);
+  if (!m_RenderVersionMajor)
+    sscanf(m_RenderVersion.data(), "%*s %*s %d.%d", &m_RenderVersionMajor, &m_RenderVersionMinor);
+
+  CLog::Log(LOGINFO, "CRenderSystemGLES::{} - Version: {}, Major: {}, Minor: {}", __FUNCTION__,
+            m_RenderVersion, m_RenderVersionMajor, m_RenderVersionMinor);
 
   // Get our driver vendor and renderer
   const char *tmpVendor = (const char*) glGetString(GL_VENDOR);

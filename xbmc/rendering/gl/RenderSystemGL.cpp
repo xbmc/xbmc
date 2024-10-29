@@ -44,21 +44,26 @@ bool CRenderSystemGL::InitRenderSystem()
   // Get the GL version number
   m_RenderVersionMajor = 0;
   m_RenderVersionMinor = 0;
+
   const char* ver = (const char*)glGetString(GL_VERSION);
-  if (ver != 0)
-  {
-    sscanf(ver, "%d.%d", &m_RenderVersionMajor, &m_RenderVersionMinor);
-    m_RenderVersion = ver;
-  }
-  else
+  if (ver == 0)
   {
     CLog::Log(LOGFATAL, "CRenderSystemGL::{} - glGetString(GL_VERSION) returned NULL, exiting",
               __FUNCTION__);
     std::terminate();
   }
 
-  CLog::Log(LOGINFO, "CRenderSystemGL::{} - Version: {}, Major: {}, Minor: {}", __FUNCTION__, ver,
-            m_RenderVersionMajor, m_RenderVersionMinor);
+  const std::string& verOverride =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_openGLVersionOverride;
+  if (verOverride.empty())
+    m_RenderVersion = ver;
+  else
+    m_RenderVersion = verOverride;
+
+  sscanf(m_RenderVersion.data(), "%d.%d", &m_RenderVersionMajor, &m_RenderVersionMinor);
+
+  CLog::Log(LOGINFO, "CRenderSystemGL::{} - Version: {}, Major: {}, Minor: {}", __FUNCTION__,
+            m_RenderVersion, m_RenderVersionMajor, m_RenderVersionMinor);
 
   m_RenderExtensions  = " ";
   if (m_RenderVersionMajor > 3 ||
