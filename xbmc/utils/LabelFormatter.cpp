@@ -98,12 +98,13 @@ using namespace MUSIC_INFO;
  *  %d - Date and Time
  *  %e - Original release date
  *  %f - bpm
+ *  %h - plugin label2
  *  %p - Last Played
  *  %r - User Rating
  *  *t - Date Taken (suitable for Pictures)
  */
 
-#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZOQUVXWabcdefiprstuv"
+#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZOQUVXWabcdefhiprstuv"
 
 CLabelFormatter::CLabelFormatter(const std::string &mask, const std::string &mask2)
 {
@@ -371,6 +372,9 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
   case 'f': // BPM
     if (music)
       value = std::to_string(music->GetBPM());
+    break;
+  case 'h': //plugin label2
+    value = item->GetLabel2();
     break;
   }
   if (!value.empty())

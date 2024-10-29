@@ -245,6 +245,7 @@ namespace XBMCAddon
     /// | SORT_METHOD_VIDEO_SORT_TITLE            | SORT_METHOD_FULLPATH        | SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE |
     /// | SORT_METHOD_LABEL_IGNORE_FOLDERS        | SORT_METHOD_CHANNEL         |                                         |
     /// @note to add multiple sort methods just call the method multiple times.
+    /// @note see LabelFormatter.cpp for list of available metadata masks
     ///
     ///
     /// ------------------------------------------------------------------------
