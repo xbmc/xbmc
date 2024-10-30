@@ -19,12 +19,13 @@
 //
 //------------------------------------------------------------------------
 
+#include <chrono>
+#include <locale>
+#include <sstream>
 #include <stdarg.h>
 #include <stdint.h>
 #include <string>
 #include <vector>
-#include <sstream>
-#include <locale>
 
 // workaround for broken [[deprecated]] in coverity
 #if defined(__COVERITY__)
@@ -267,6 +268,13 @@ public:
    \sa TIME_FORMAT
    */
   static std::string SecondsToTimeString(long seconds, TIME_FORMAT format = TIME_FORMAT_GUESS);
+
+  /*! \brief convert a milliseconds value to a time string in the TIME_FORMAT_HH_MM_SS format
+   \param milliSeconds time in milliseconds
+   \return the formatted time
+   \sa TIME_FORMAT
+   */
+  static std::string MillisecondsToTimeString(std::chrono::milliseconds milliSeconds);
 
   /*! \brief check whether a string is a natural number.
    Matches [ \t]*[0-9]+[ \t]*
