@@ -567,9 +567,14 @@ void MysqlDatabase::start_transaction()
 {
   if (active)
   {
+    assert(!_in_transaction);
     mysql_autocommit(conn, false);
     CLog::LogFC(LOGDEBUG, LOGDATABASE, "Mysql Start transaction");
-    _in_transaction = true;
+
+    if (_in_transaction)
+      CLog::LogF(LOGERROR, "error: nested transactions are not supported.");
+    else
+      _in_transaction = true;
   }
 }
 
@@ -577,6 +582,7 @@ void MysqlDatabase::commit_transaction()
 {
   if (active)
   {
+    assert(_in_transaction);
     mysql_commit(conn);
     mysql_autocommit(conn, true);
     CLog::LogFC(LOGDEBUG, LOGDATABASE, "Mysql commit transaction");
@@ -588,6 +594,7 @@ void MysqlDatabase::rollback_transaction()
 {
   if (active)
   {
+    assert(_in_transaction);
     mysql_rollback(conn);
     mysql_autocommit(conn, true);
     CLog::LogFC(LOGDEBUG, LOGDATABASE, "Mysql rollback transaction");
