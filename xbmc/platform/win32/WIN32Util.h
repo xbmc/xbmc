@@ -104,6 +104,12 @@ public:
    * Undefined results when the strings are not formatted properly.
   */
   static bool IsDriverVersionAtLeast(const std::string& version1, const std::string& version2);
+  /*!
+   * \brief Format a Windows HRESULT value into a string for logging
+   * \param hr The error code
+   * \return Formatted string
+   */
+  static std::string FormatHRESULT(HRESULT hr);
 
 private:
   static HDR_STATUS GetWindowsHDRStatusWin32();

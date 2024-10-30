@@ -11,6 +11,8 @@
 #include "rendering/dx/RenderContext.h"
 #include "utils/log.h"
 
+#include "platform/win32/WIN32Util.h"
+
 #include <mutex>
 
 #include <Windows.h>
@@ -73,7 +75,7 @@ bool CEnumeratorHD::OpenEnumerator()
   if (FAILED(hr = pD3DDevice.As(&m_pVideoDevice)))
   {
     CLog::LogF(LOGWARNING, "video device initialization is failed. Error {}",
-               DX::GetErrorDescription(hr));
+               CWIN32Util::FormatHRESULT(hr));
     return false;
   }
 
@@ -91,14 +93,14 @@ bool CEnumeratorHD::OpenEnumerator()
                  &contentDesc, m_pEnumerator.ReleaseAndGetAddressOf())))
   {
     CLog::LogF(LOGWARNING, "failed to init video enumerator with params: {}x{}. Error {}", m_width,
-               m_height, DX::GetErrorDescription(hr));
+               m_height, CWIN32Util::FormatHRESULT(hr));
     return false;
   }
 
   if (FAILED(hr = m_pEnumerator.As(&m_pEnumerator1)))
   {
     CLog::LogF(LOGDEBUG, "ID3D11VideoProcessorEnumerator1 not available on this system. Message {}",
-               DX::GetErrorDescription(hr));
+               CWIN32Util::FormatHRESULT(hr));
   }
 
   return true;
@@ -135,7 +137,7 @@ ProcessorCapabilities CEnumeratorHD::ProbeProcessorCaps()
 
   if (FAILED(hr = m_pEnumerator->GetVideoProcessorCaps(&result.m_vcaps)))
   {
-    CLog::LogF(LOGWARNING, "failed to get processor caps. Error {}", DX::GetErrorDescription(hr));
+    CLog::LogF(LOGWARNING, "failed to get processor caps. Error {}", CWIN32Util::FormatHRESULT(hr));
     return {};
   }
 
@@ -181,7 +183,7 @@ ProcessorCapabilities CEnumeratorHD::ProbeProcessorCaps()
     if (FAILED(hr = m_pEnumerator->GetVideoProcessorRateConversionCaps(i, &convCaps)))
     {
       CLog::LogF(LOGWARNING, "unable to retrieve processor rate conversion caps {}. Error {}", i,
-                 DX::GetErrorDescription(hr));
+                 CWIN32Util::FormatHRESULT(hr));
       continue;
     }
 
@@ -210,7 +212,7 @@ ProcessorCapabilities CEnumeratorHD::ProbeProcessorCaps()
     CLog::LogF(LOGWARNING,
                "unable to retrieve processor rate conversion caps {}, the deinterlacing "
                "capabilities are unknown. Error {}",
-               result.m_procIndex, DX::GetErrorDescription(hr));
+               result.m_procIndex, CWIN32Util::FormatHRESULT(hr));
   }
 
   CLog::LogF(
@@ -269,7 +271,7 @@ ProcessorFormats CEnumeratorHD::GetProcessorFormats(bool inputFormats, bool outp
     {
       CLog::LogF(LOGWARNING,
                  "Unable to retrieve support of the dxva processor for format {}, error {}",
-                 DX::DXGIFormatToString(dxgiFormat), DX::GetErrorDescription(hr));
+                 DX::DXGIFormatToString(dxgiFormat), CWIN32Util::FormatHRESULT(hr));
       return formats;
     }
   }
@@ -329,7 +331,7 @@ bool CEnumeratorHD::CheckConversionInternal(DXGI_FORMAT inputFormat,
   else
   {
     CLog::LogF(LOGERROR, "unable to validate the format conversion, error {}",
-               DX::GetErrorDescription(hr));
+               CWIN32Util::FormatHRESULT(hr));
     return false;
   }
 }
@@ -379,7 +381,7 @@ void CEnumeratorHD::LogSupportedConversions(const DXGI_FORMAT inputFormat,
   {
     CLog::LogFC(LOGDEBUG, LOGVIDEO,
                 "unable to retrieve processor support of input format {}. Error {}",
-                DX::DXGIFormatToString(inputFormat), DX::GetErrorDescription(hr));
+                DX::DXGIFormatToString(inputFormat), CWIN32Util::FormatHRESULT(hr));
     return;
   }
   else if (!(uiFlags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT))
@@ -498,7 +500,7 @@ ComPtr<ID3D11VideoProcessor> CEnumeratorHD::CreateVideoProcessor(UINT RateConver
   if (FAILED(hr))
   {
     CLog::LogF(LOGDEBUG, "failed creating video processor with error {}.",
-               DX::GetErrorDescription(hr));
+               CWIN32Util::FormatHRESULT(hr));
     return {};
   }
 
@@ -521,7 +523,7 @@ ComPtr<ID3D11VideoProcessorInputView> CEnumeratorHD::CreateVideoProcessorInputVi
 
   if (S_OK != hr)
     CLog::LogF(FAILED(hr) ? LOGERROR : LOGWARNING, "CreateVideoProcessorInputView returned {}.",
-               DX::GetErrorDescription(hr));
+               CWIN32Util::FormatHRESULT(hr));
 
   return inputView;
 }
@@ -541,7 +543,7 @@ ComPtr<ID3D11VideoProcessorOutputView> CEnumeratorHD::CreateVideoProcessorOutput
                                                               outputView.GetAddressOf());
   if (S_OK != hr)
     CLog::LogF(FAILED(hr) ? LOGERROR : LOGWARNING, "CreateVideoProcessorOutputView returned {}.",
-               DX::GetErrorDescription(hr));
+               CWIN32Util::FormatHRESULT(hr));
 
   return outputView;
 }

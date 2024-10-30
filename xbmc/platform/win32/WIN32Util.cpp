@@ -32,6 +32,7 @@
 #include <cassert>
 #endif
 #include <array>
+#include <format>
 #include <locale.h>
 #include <sstream>
 
@@ -1860,4 +1861,20 @@ bool CWIN32Util::IsDriverVersionAtLeast(const std::string& version1, const std::
     // equality: compare the next segment.
   }
   return true;
+}
+
+std::string CWIN32Util::FormatHRESULT(HRESULT hr)
+{
+  using namespace KODI::PLATFORM::WINDOWS;
+
+  const std::string code = FromW(DXGetErrorStringW(hr));
+  WCHAR buff[2048];
+  DXGetErrorDescriptionW(hr, buff, 2048);
+
+  // Remove trailing \r\n of system messages
+  size_t buffLength{wcslen(buff)};
+  if ((buffLength) > 2 && buff[buffLength - 2] == L'\r' && buff[buffLength - 1] == L'\n')
+    buff[buffLength - 2] = 0;
+
+  return std::format("0x{:X} {} ({})", static_cast<uint32_t>(hr), code, FromW(buff));
 }

@@ -3,38 +3,44 @@
  *
  *  DirectX Error Library
  *
- *  Copyright (C) Microsoft Corporation. All rights reserved.
+ *  Copyright (c) Microsoft Corporation.
  *
  *  SPDX-License-Identifier: MIT
  *  See LICENSES/README.md for more information.
+ *
+ *  source https://github.com/microsoft/DXUT/blob/main/Core/dxerr.cpp
+ *  last synchronized 2024-10-15
+ *  differences with source:
+ *  - removed redundant _HRESULT_TYPEDEF_() casts in DXGetErrorStringW() > caused wrong code text
+ *  - a few typos corrected in DXGetErrorDescriptionW()
+ *  - return empty text when no code or description is found. The caller provides its own fallback.
+
  */
+
+// clang-format off
 
 // This version only supports UNICODE.
 
 #include "dxerr.h"
 
-#include <stdio.h>
-#include <algorithm>
+#include <cstdio>
 
 #if !defined(WINAPI_FAMILY) || (WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP)
 #include <ddraw.h>
-#include <d3d9.h>
 #include <mmsystem.h>
 #include <dsound.h>
-
-#define DIRECTINPUT_VERSION 0x800
-#include <dinput.h>
-#include <dinputd.h>
 #endif
 
 #include <d3d10_1.h>
-#include <d3d11_1.h>
+#include <d3d11.h>
 
 #if !defined(WINAPI_FAMILY) || WINAPI_FAMILY != WINAPI_FAMILY_PHONE_APP
 #include <wincodec.h>
-#include <d2derr.h>
+#include <d2d1.h>
 #include <dwrite.h>
 #endif
+
+#include <Audioclient.h>
 
 #define XAUDIO2_E_INVALID_CALL          0x88960001
 #define XAUDIO2_E_XMA_DECODER_ERROR     0x88960002
@@ -61,19 +67,19 @@
 
 //--------------------------------------------------------------------------------------
 #define  CHK_ERR(hrchk, strOut) \
-        case hrchk: \
+        case static_cast<HRESULT>(hrchk): \
              return L##strOut;
 
 #define  CHK_ERRA(hrchk) \
-        case hrchk: \
-             return L#hrchk;
+        case static_cast<HRESULT>(hrchk): \
+             return L## #hrchk;
 
 #define HRESULT_FROM_WIN32b(x) ((HRESULT)(x) <= 0 ? ((HRESULT)(x)) : ((HRESULT) (((x) & 0x0000FFFF) | (FACILITY_WIN32 << 16) | 0x80000000)))
 
 #define  CHK_ERR_WIN32A(hrchk) \
         case HRESULT_FROM_WIN32b(hrchk): \
         case hrchk: \
-             return L#hrchk;
+             return L## #hrchk;
 
 #define  CHK_ERR_WIN32_ONLY(hrchk, strOut) \
         case HRESULT_FROM_WIN32b(hrchk): \
@@ -3133,116 +3139,6 @@ const WCHAR* WINAPI DXGetErrorStringW( _In_ HRESULT hr )
         CHK_ERRA(DDERR_DEVICEDOESNTOWNSURFACE)
 
 // -------------------------------------------------------------
-// dinput.h error codes
-// -------------------------------------------------------------
-//      CHK_ERRA(DI_OK)
-//      CHK_ERRA(DI_NOTATTACHED)
-//      CHK_ERRA(DI_BUFFEROVERFLOW)
-//      CHK_ERRA(DI_PROPNOEFFECT)
-//      CHK_ERRA(DI_NOEFFECT)
-//      CHK_ERRA(DI_POLLEDDEVICE)
-//      CHK_ERRA(DI_DOWNLOADSKIPPED)
-//      CHK_ERRA(DI_EFFECTRESTARTED)
-//      CHK_ERRA(DI_SETTINGSNOTSAVED_ACCESSDENIED)
-//      CHK_ERRA(DI_SETTINGSNOTSAVED_DISKFULL)
-//      CHK_ERRA(DI_TRUNCATED)
-//      CHK_ERRA(DI_TRUNCATEDANDRESTARTED)
-//      CHK_ERRA(DI_WRITEPROTECT)
-        CHK_ERR(DIERR_INSUFFICIENTPRIVS, "DIERR_INSUFFICIENTPRIVS & VFW_E_INVALIDMEDIATYPE")
-        CHK_ERR(DIERR_DEVICEFULL, "DIERR_DEVICEFULL & VFW_E_INVALIDSUBTYPE & DMO_E_INVALIDSTREAMINDEX")
-        CHK_ERR(DIERR_MOREDATA, "DIERR_MOREDATA & VFW_E_NEED_OWNER & DMO_E_INVALIDTYPE")
-        CHK_ERR(DIERR_NOTDOWNLOADED, "DIERR_NOTDOWNLOADED & VFW_E_ENUM_OUT_OF_SYNC & DMO_E_TYPE_NOT_SET")
-        CHK_ERR(DIERR_HASEFFECTS, "DIERR_HASEFFECTS & VFW_E_ALREADY_CONNECTED & DMO_E_NOTACCEPTING")
-        CHK_ERR(DIERR_NOTEXCLUSIVEACQUIRED, "DIERR_NOTEXCLUSIVEACQUIRED & VFW_E_FILTER_ACTIVE & DMO_E_TYPE_NOT_ACCEPTED")
-        CHK_ERR(DIERR_INCOMPLETEEFFECT, "DIERR_INCOMPLETEEFFECT & VFW_E_NO_TYPES & DMO_E_NO_MORE_ITEMS")
-        CHK_ERR(DIERR_NOTBUFFERED, "DIERR_NOTBUFFERED & VFW_E_NO_ACCEPTABLE_TYPES")
-        CHK_ERR(DIERR_EFFECTPLAYING, "DIERR_EFFECTPLAYING & VFW_E_INVALID_DIRECTION")
-        CHK_ERR(DIERR_UNPLUGGED, "DIERR_UNPLUGGED & VFW_E_NOT_CONNECTED")
-        CHK_ERR(DIERR_REPORTFULL, "DIERR_REPORTFULL & VFW_E_NO_ALLOCATOR")
-        CHK_ERR(DIERR_MAPFILEFAIL, "DIERR_MAPFILEFAIL & VFW_E_RUNTIME_ERROR")
-//      CHK_ERRA(DIERR_OLDDIRECTINPUTVERSION)
-//      CHK_ERRA(DIERR_GENERIC)
-//      CHK_ERRA(DIERR_OLDDIRECTINPUTVERSION)
-//      CHK_ERRA(DIERR_BETADIRECTINPUTVERSION)
-//      CHK_ERRA(DIERR_BADDRIVERVER)
-//      CHK_ERRA(DIERR_DEVICENOTREG)
-//      CHK_ERRA(DIERR_NOTFOUND)
-//      CHK_ERRA(DIERR_OBJECTNOTFOUND)
-//      CHK_ERRA(DIERR_INVALIDPARAM)
-//      CHK_ERRA(DIERR_NOINTERFACE)
-//      CHK_ERRA(DIERR_GENERIC)
-//      CHK_ERRA(DIERR_OUTOFMEMORY)
-//      CHK_ERRA(DIERR_UNSUPPORTED)
-//      CHK_ERRA(DIERR_NOTINITIALIZED)
-//      CHK_ERRA(DIERR_ALREADYINITIALIZED)
-//      CHK_ERRA(DIERR_NOAGGREGATION)
-//      CHK_ERRA(DIERR_OTHERAPPHASPRIO)
-//      CHK_ERRA(DIERR_INPUTLOST)
-//      CHK_ERRA(DIERR_ACQUIRED)
-//      CHK_ERRA(DIERR_NOTACQUIRED)
-//      CHK_ERRA(DIERR_READONLY)
-//      CHK_ERRA(DIERR_HANDLEEXISTS)
-
-
-// -------------------------------------------------------------
-// dinputd.h error
-// -------------------------------------------------------------
-//        CHK_ERRA(DIERR_NOMOREITEMS)
-        CHK_ERRA(DIERR_DRIVERFIRST)
-        CHK_ERR(DIERR_DRIVERFIRST+1, "DIERR_DRIVERFIRST+1")
-        CHK_ERR(DIERR_DRIVERFIRST+2, "DIERR_DRIVERFIRST+2")
-        CHK_ERR(DIERR_DRIVERFIRST+3, "DIERR_DRIVERFIRST+3")
-        CHK_ERR(DIERR_DRIVERFIRST+4, "DIERR_DRIVERFIRST+4")
-        CHK_ERR(DIERR_DRIVERFIRST+5, "DIERR_DRIVERFIRST+5")
-        CHK_ERRA(DIERR_DRIVERLAST)
-        CHK_ERR(DIERR_INVALIDCLASSINSTALLER, "DIERR_INVALIDCLASSINSTALLER")
-        CHK_ERR(DIERR_CANCELLED, "DIERR_CANCELLED & MS_E_SAMPLEALLOC")
-        CHK_ERRA(DIERR_BADINF)
-
-// -------------------------------------------------------------
-// d3d9.h error codes
-// -------------------------------------------------------------
-//      CHK_ERRA(D3D_OK)
-        CHK_ERRA(D3DERR_WRONGTEXTUREFORMAT)
-        CHK_ERRA(D3DERR_UNSUPPORTEDCOLOROPERATION)
-        CHK_ERRA(D3DERR_UNSUPPORTEDCOLORARG)
-        CHK_ERRA(D3DERR_UNSUPPORTEDALPHAOPERATION)
-        CHK_ERRA(D3DERR_UNSUPPORTEDALPHAARG)
-        CHK_ERRA(D3DERR_TOOMANYOPERATIONS)
-        CHK_ERRA(D3DERR_CONFLICTINGTEXTUREFILTER)
-        CHK_ERRA(D3DERR_UNSUPPORTEDFACTORVALUE)
-        CHK_ERRA(D3DERR_CONFLICTINGRENDERSTATE)
-        CHK_ERRA(D3DERR_UNSUPPORTEDTEXTUREFILTER)
-        CHK_ERRA(D3DERR_CONFLICTINGTEXTUREPALETTE)
-        CHK_ERRA(D3DERR_DRIVERINTERNALERROR)
-        CHK_ERRA(D3DERR_NOTFOUND)
-        CHK_ERRA(D3DERR_MOREDATA)
-        CHK_ERRA(D3DERR_DEVICELOST)
-        CHK_ERRA(D3DERR_DEVICENOTRESET)
-        CHK_ERRA(D3DERR_NOTAVAILABLE)
-        CHK_ERRA(D3DERR_OUTOFVIDEOMEMORY)
-        CHK_ERRA(D3DERR_INVALIDDEVICE)
-        CHK_ERRA(D3DERR_INVALIDCALL)
-        CHK_ERRA(D3DERR_DRIVERINVALIDCALL)
-        //CHK_ERRA(D3DERR_WASSTILLDRAWING)
-        CHK_ERRA(D3DOK_NOAUTOGEN)
-
-	    // Extended for Windows Vista
-	    CHK_ERRA(D3DERR_DEVICEREMOVED)
-	    CHK_ERRA(S_NOT_RESIDENT)
-	    CHK_ERRA(S_RESIDENT_IN_SHARED_MEMORY)
-	    CHK_ERRA(S_PRESENT_MODE_CHANGED)
-	    CHK_ERRA(S_PRESENT_OCCLUDED)
-	    CHK_ERRA(D3DERR_DEVICEHUNG)
-
-        // Extended for Windows 7
-        CHK_ERRA(D3DERR_UNSUPPORTEDOVERLAY)
-        CHK_ERRA(D3DERR_UNSUPPORTEDOVERLAYFORMAT)
-        CHK_ERRA(D3DERR_CANNOTPROTECTCONTENT)
-        CHK_ERRA(D3DERR_UNSUPPORTEDCRYPTO)
-        CHK_ERRA(D3DERR_PRESENT_STATISTICS_DISJOINT)
-
-// -------------------------------------------------------------
 // dsound.h error codes
 // -------------------------------------------------------------
 //      CHK_ERRA(DS_OK)
@@ -3269,8 +3165,7 @@ const WCHAR* WINAPI DXGetErrorStringW( _In_ HRESULT hr )
         CHK_ERRA(DSERR_SENDLOOP)
         CHK_ERRA(DSERR_BADSENDBUFFERGUID)
         CHK_ERRA(DSERR_OBJECTNOTFOUND)
-
-    	CHK_ERRA(DSERR_FXUNAVAILABLE)
+        CHK_ERRA(DSERR_FXUNAVAILABLE)
 
 #endif // !WINAPI_FAMILY || WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP
 
@@ -3319,6 +3214,7 @@ const WCHAR* WINAPI DXGetErrorStringW( _In_ HRESULT hr )
 // -------------------------------------------------------------
 // Direct2D error codes
 // -------------------------------------------------------------
+// D2DERR_UNSUPPORTED_PIXEL_FORMAT is not defined for UWP. WINCODEC_ERR_UNSUPPORTEDPIXELFORMAT is and has the same value.
 //        CHK_ERRA(D2DERR_UNSUPPORTED_PIXEL_FORMAT)
 //        CHK_ERRA(D2DERR_INSUFFICIENT_BUFFER)
         CHK_ERRA(D2DERR_WRONG_STATE)
@@ -3434,9 +3330,54 @@ const WCHAR* WINAPI DXGetErrorStringW( _In_ HRESULT hr )
 // xapo.h error codes
 // -------------------------------------------------------------
         CHK_ERRA(XAPO_E_FORMAT_UNSUPPORTED)
-    }
 
-    return L"Unknown";
+// -------------------------------------------------------------
+// Audioclient.h error codes - WASAPI
+// -------------------------------------------------------------
+        CHK_ERRA(AUDCLNT_E_NOT_INITIALIZED)
+        CHK_ERRA(AUDCLNT_E_ALREADY_INITIALIZED)
+        CHK_ERRA(AUDCLNT_E_WRONG_ENDPOINT_TYPE)
+        CHK_ERRA(AUDCLNT_E_DEVICE_INVALIDATED)
+        CHK_ERRA(AUDCLNT_E_NOT_STOPPED)
+        CHK_ERRA(AUDCLNT_E_BUFFER_TOO_LARGE)
+        CHK_ERRA(AUDCLNT_E_OUT_OF_ORDER)
+        CHK_ERRA(AUDCLNT_E_UNSUPPORTED_FORMAT)
+        CHK_ERRA(AUDCLNT_E_INVALID_SIZE)
+        CHK_ERRA(AUDCLNT_E_DEVICE_IN_USE)
+        CHK_ERRA(AUDCLNT_E_BUFFER_OPERATION_PENDING)
+        CHK_ERRA(AUDCLNT_E_THREAD_NOT_REGISTERED)
+        CHK_ERRA(AUDCLNT_E_EXCLUSIVE_MODE_NOT_ALLOWED)
+        CHK_ERRA(AUDCLNT_E_ENDPOINT_CREATE_FAILED)
+        CHK_ERRA(AUDCLNT_E_SERVICE_NOT_RUNNING)
+        CHK_ERRA(AUDCLNT_E_EVENTHANDLE_NOT_EXPECTED)
+        CHK_ERRA(AUDCLNT_E_EXCLUSIVE_MODE_ONLY)
+        CHK_ERRA(AUDCLNT_E_BUFDURATION_PERIOD_NOT_EQUAL)
+        CHK_ERRA(AUDCLNT_E_EVENTHANDLE_NOT_SET)
+        CHK_ERRA(AUDCLNT_E_INCORRECT_BUFFER_SIZE)
+        CHK_ERRA(AUDCLNT_E_BUFFER_SIZE_ERROR)
+        CHK_ERRA(AUDCLNT_E_CPUUSAGE_EXCEEDED)
+        CHK_ERRA(AUDCLNT_E_BUFFER_ERROR)
+        CHK_ERRA(AUDCLNT_E_BUFFER_SIZE_NOT_ALIGNED)
+        CHK_ERRA(AUDCLNT_E_INVALID_DEVICE_PERIOD)
+        CHK_ERRA(AUDCLNT_E_INVALID_STREAM_FLAG)
+        CHK_ERRA(AUDCLNT_E_ENDPOINT_OFFLOAD_NOT_CAPABLE)
+        CHK_ERRA(AUDCLNT_E_OUT_OF_OFFLOAD_RESOURCES)
+        CHK_ERRA(AUDCLNT_E_OFFLOAD_MODE_ONLY)
+        CHK_ERRA(AUDCLNT_E_NONOFFLOAD_MODE_ONLY)
+        CHK_ERRA(AUDCLNT_E_RESOURCES_INVALIDATED)
+        CHK_ERRA(AUDCLNT_E_RAW_MODE_UNSUPPORTED)
+        CHK_ERRA(AUDCLNT_E_ENGINE_PERIODICITY_LOCKED)
+        CHK_ERRA(AUDCLNT_E_ENGINE_FORMAT_LOCKED)
+        CHK_ERRA(AUDCLNT_E_HEADTRACKING_ENABLED)
+        CHK_ERRA(AUDCLNT_E_HEADTRACKING_UNSUPPORTED)
+        CHK_ERRA(AUDCLNT_E_EFFECT_NOT_AVAILABLE)
+        CHK_ERRA(AUDCLNT_E_EFFECT_STATE_READ_ONLY)
+        CHK_ERRA(AUDCLNT_S_BUFFER_EMPTY)
+        CHK_ERRA(AUDCLNT_S_THREAD_ALREADY_REGISTERED)
+        CHK_ERRA(AUDCLNT_S_POSITION_STALLED)
+
+        default: return L"";
+    }
 }
 
 //--------------------------------------------------------------------------------------
@@ -3447,14 +3388,12 @@ const WCHAR* WINAPI DXGetErrorStringW( _In_ HRESULT hr )
 #undef CHK_ERR_WIN32_ONLY
 
 #define  CHK_ERRA(hrchk) \
-        case hrchk: \
-             wcscpy_s( desc, count, L#hrchk ); \
-             break;
+        case static_cast<HRESULT>(hrchk): \
+             wcscpy_s( desc, count, L## #hrchk ); break;
 
 #define  CHK_ERR(hrchk, strOut) \
-        case hrchk: \
-             wcscpy_s( desc, count, L##strOut ); \
-             break;
+        case static_cast<HRESULT>(hrchk): \
+             wcscpy_s( desc, count, L##strOut ); break;
 
 
 //--------------------------------------------------------------------------------------
@@ -3466,13 +3405,21 @@ void WINAPI DXGetErrorDescriptionW( _In_ HRESULT hr, _Out_cap_(count) WCHAR* des
     *desc = 0;
 
     // First try to see if FormatMessage knows this hr
-    UINT icount = static_cast<UINT>( std::min<size_t>( count, 32767 ) );
+    LPWSTR errorText = nullptr;
 
-    DWORD result = FormatMessageW( FORMAT_MESSAGE_FROM_SYSTEM, nullptr, hr,
-                                   MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), desc, icount, nullptr );
+    DWORD result = FormatMessageW( FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS| FORMAT_MESSAGE_ALLOCATE_BUFFER,
+                                   nullptr, static_cast<DWORD>(hr),
+                                   MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), reinterpret_cast<LPWSTR>(&errorText), 0, nullptr );
 
-    if (result > 0)
+    if (result > 0 && errorText)
+    {
+        wcscpy_s( desc, count, errorText );
+
+        if ( errorText )
+            LocalFree( errorText );
+
         return;
+    }
 
     switch (hr)
     {
@@ -3602,117 +3549,6 @@ void WINAPI DXGetErrorDescriptionW( _In_ HRESULT hr, _Out_cap_(count) WCHAR* des
         CHK_ERR(DDERR_NODRIVERSUPPORT, "The driver does not enumerate display mode refresh rates.")
         CHK_ERR(DDERR_DEVICEDOESNTOWNSURFACE, "Surfaces created by one direct draw device cannot be used directly by another direct draw device.")
 
-
-// -------------------------------------------------------------
-// dinput.h error codes
-// -------------------------------------------------------------
-//      CHK_ERR(DI_OK, "DI_OK")
-//      CHK_ERR(DI_NOTATTACHED, "DI_NOTATTACHED")
-//      CHK_ERR(DI_BUFFEROVERFLOW, "DI_BUFFEROVERFLOW")
-//      CHK_ERR(DI_PROPNOEFFECT, "DI_PROPNOEFFECT")
-//      CHK_ERR(DI_NOEFFECT, "DI_NOEFFECT")
-//      CHK_ERR(DI_POLLEDDEVICE, "DI_POLLEDDEVICE")
-//      CHK_ERR(DI_DOWNLOADSKIPPED, "DI_DOWNLOADSKIPPED")
-//      CHK_ERR(DI_EFFECTRESTARTED, "DI_EFFECTRESTARTED")
-//      CHK_ERR(DI_SETTINGSNOTSAVED_ACCESSDENIED, "DI_SETTINGSNOTSAVED_ACCESSDENIED")
-//      CHK_ERR(DI_SETTINGSNOTSAVED_DISKFULL, "DI_SETTINGSNOTSAVED_DISKFULL")
-//      CHK_ERR(DI_TRUNCATED, "DI_TRUNCATED")
-//      CHK_ERR(DI_TRUNCATEDANDRESTARTED, "DI_TRUNCATEDANDRESTARTED")
-//      CHK_ERR(DI_WRITEPROTECT, "DI_WRITEPROTECT")
-        CHK_ERR(DIERR_OLDDIRECTINPUTVERSION, "The application requires a newer version of DirectInput.")
-//      CHK_ERR(DIERR_GENERIC, "DIERR_GENERIC")
-//      CHK_ERR(DIERR_OLDDIRECTINPUTVERSION, "DIERR_OLDDIRECTINPUTVERSION")
-        CHK_ERR(DIERR_BETADIRECTINPUTVERSION, "The application was written for an unsupported prerelease version of DirectInput.")
-        CHK_ERR(DIERR_BADDRIVERVER, "The object could not be created due to an incompatible driver version or mismatched or incomplete driver components.")
-//      CHK_ERR(DIERR_DEVICENOTREG, "DIERR_DEVICENOTREG")
-//      CHK_ERR(DIERR_NOTFOUND, "The requested object does not exist.")
-//      CHK_ERR(DIERR_OBJECTNOTFOUND, "DIERR_OBJECTNOTFOUND")
-//      CHK_ERR(DIERR_INVALIDPARAM, "DIERR_INVALIDPARAM")
-//      CHK_ERR(DIERR_NOINTERFACE, "DIERR_NOINTERFACE")
-//      CHK_ERR(DIERR_GENERIC, "DIERR_GENERIC")
-//      CHK_ERR(DIERR_OUTOFMEMORY, "DIERR_OUTOFMEMORY")
-//      CHK_ERR(DIERR_UNSUPPORTED, "DIERR_UNSUPPORTED")
-        CHK_ERR(DIERR_NOTINITIALIZED, "This object has not been initialized")
-        CHK_ERR(DIERR_ALREADYINITIALIZED, "This object is already initialized")
-//      CHK_ERR(DIERR_NOAGGREGATION, "DIERR_NOAGGREGATION")
-//      CHK_ERR(DIERR_OTHERAPPHASPRIO, "DIERR_OTHERAPPHASPRIO")
-        CHK_ERR(DIERR_INPUTLOST, "Access to the device has been lost.  It must be re-acquired.")
-        CHK_ERR(DIERR_ACQUIRED, "The operation cannot be performed while the device is acquired.")
-        CHK_ERR(DIERR_NOTACQUIRED, "The operation cannot be performed unless the device is acquired.")
-//      CHK_ERR(DIERR_READONLY, "DIERR_READONLY")
-//      CHK_ERR(DIERR_HANDLEEXISTS, "DIERR_HANDLEEXISTS")
-        CHK_ERR(DIERR_INSUFFICIENTPRIVS, "Unable to IDirectInputJoyConfig_Acquire because the user does not have sufficient privileges to change the joystick configuration. & An invalid media type was specified")
-        CHK_ERR(DIERR_DEVICEFULL, "The device is full. & An invalid media subtype was specified.")
-        CHK_ERR(DIERR_MOREDATA, "Not all the requested information fit into the buffer. & This object can only be created as an aggregated object.")
-        CHK_ERR(DIERR_NOTDOWNLOADED, "The effect is not downloaded. & The enumerator has become invalid.")
-        CHK_ERR(DIERR_HASEFFECTS, "The device cannot be reinitialized because there are still effects attached to it. & At least one of the pins involved in the operation is already connected.")
-        CHK_ERR(DIERR_NOTEXCLUSIVEACQUIRED, "The operation cannot be performed unless the device is acquired in DISCL_EXCLUSIVE mode. & This operation cannot be performed because the filter is active.")
-        CHK_ERR(DIERR_INCOMPLETEEFFECT, "The effect could not be downloaded because essential information is missing.  For example, no axes have been associated with the effect, or no type-specific information has been created. & One of the specified pins supports no media types.")
-        CHK_ERR(DIERR_NOTBUFFERED, "Attempted to read buffered device data from a device that is not buffered. & There is no common media type between these pins.")
-        CHK_ERR(DIERR_EFFECTPLAYING, "An attempt was made to modify parameters of an effect while it is playing.  Not all hardware devices support altering the parameters of an effect while it is playing. & Two pins of the same direction cannot be connected together.")
-        CHK_ERR(DIERR_UNPLUGGED, "The operation could not be completed because the device is not plugged in. & The operation cannot be performed because the pins are not connected.")
-        CHK_ERR(DIERR_REPORTFULL, "SendDeviceData failed because more information was requested to be sent than can be sent to the device.  Some devices have restrictions on how much data can be sent to them.  (For example, there might be a limit on the number of buttons that can be pressed at once.) & No sample buffer allocator is available.")
-        CHK_ERR(DIERR_MAPFILEFAIL, "A mapper file function failed because reading or writing the user or IHV settings file failed. & A run-time error occurred.")
-
-// -------------------------------------------------------------
-// dinputd.h error codes
-// -------------------------------------------------------------
-        CHK_ERR(DIERR_NOMOREITEMS, "No more items.")
-        CHK_ERR(DIERR_DRIVERFIRST, "Device driver-specific codes. Unless the specific driver has been precisely identified, no meaning should be attributed to these values other than that the driver originated the error.")
-        CHK_ERR(DIERR_DRIVERFIRST+1, "DIERR_DRIVERFIRST+1")
-        CHK_ERR(DIERR_DRIVERFIRST+2, "DIERR_DRIVERFIRST+2")
-        CHK_ERR(DIERR_DRIVERFIRST+3, "DIERR_DRIVERFIRST+3")
-        CHK_ERR(DIERR_DRIVERFIRST+4, "DIERR_DRIVERFIRST+4")
-        CHK_ERR(DIERR_DRIVERFIRST+5, "DIERR_DRIVERFIRST+5")
-        CHK_ERR(DIERR_DRIVERLAST, "Device installer errors.")
-        CHK_ERR(DIERR_INVALIDCLASSINSTALLER, "Registry entry or DLL for class installer invalid or class installer not found.")
-        CHK_ERR(DIERR_CANCELLED, "The user cancelled the install operation. & The stream already has allocated samples and the surface doesn't match the sample format.")
-        CHK_ERR(DIERR_BADINF, "The INF file for the selected device could not be found or is invalid or is damaged. & The specified purpose ID can't be used for the call.")
-
-// -------------------------------------------------------------
-// d3d9.h error codes
-// -------------------------------------------------------------
-//      CHK_ERR(D3D_OK, "Ok")
-        CHK_ERR(D3DERR_WRONGTEXTUREFORMAT, "Wrong texture format")
-        CHK_ERR(D3DERR_UNSUPPORTEDCOLOROPERATION, "Unsupported color operation")
-        CHK_ERR(D3DERR_UNSUPPORTEDCOLORARG, "Unsupported color arg")
-        CHK_ERR(D3DERR_UNSUPPORTEDALPHAOPERATION, "Unsupported alpha operation")
-        CHK_ERR(D3DERR_UNSUPPORTEDALPHAARG, "Unsupported alpha arg")
-        CHK_ERR(D3DERR_TOOMANYOPERATIONS, "Too many operations")
-        CHK_ERR(D3DERR_CONFLICTINGTEXTUREFILTER, "Conflicting texture filter")
-        CHK_ERR(D3DERR_UNSUPPORTEDFACTORVALUE, "Unsupported factor value")
-        CHK_ERR(D3DERR_CONFLICTINGRENDERSTATE, "Conflicting render state")
-        CHK_ERR(D3DERR_UNSUPPORTEDTEXTUREFILTER, "Unsupported texture filter")
-        CHK_ERR(D3DERR_CONFLICTINGTEXTUREPALETTE, "Conflicting texture palette")
-        CHK_ERR(D3DERR_DRIVERINTERNALERROR, "Driver internal error")
-        CHK_ERR(D3DERR_NOTFOUND, "Not found")
-        CHK_ERR(D3DERR_MOREDATA, "More data")
-        CHK_ERR(D3DERR_DEVICELOST, "Device lost")
-        CHK_ERR(D3DERR_DEVICENOTRESET, "Device not reset")
-        CHK_ERR(D3DERR_NOTAVAILABLE, "Not available")
-        CHK_ERR(D3DERR_OUTOFVIDEOMEMORY, "Out of video memory")
-        CHK_ERR(D3DERR_INVALIDDEVICE, "Invalid device")
-        CHK_ERR(D3DERR_INVALIDCALL, "Invalid call")
-        CHK_ERR(D3DERR_DRIVERINVALIDCALL, "Driver invalid call")
-        //CHK_ERR(D3DERR_WASSTILLDRAWING, "Was Still Drawing")
-        CHK_ERR(D3DOK_NOAUTOGEN, "The call succeeded but there won't be any mipmaps generated")
-
-	    // Extended for Windows Vista
-	    CHK_ERR(D3DERR_DEVICEREMOVED, "Hardware device was removed")
-	    CHK_ERR(S_NOT_RESIDENT, "Resource not resident in memory")
-	    CHK_ERR(S_RESIDENT_IN_SHARED_MEMORY, "Resource resident in shared memory")
-	    CHK_ERR(S_PRESENT_MODE_CHANGED, "Desktop display mode has changed")
-	    CHK_ERR(S_PRESENT_OCCLUDED, "Client window is occluded (minimized or other fullscreen)")
-	    CHK_ERR(D3DERR_DEVICEHUNG, "Hardware adapter reset by OS")
-
-        // Extended for Windows 7
-        CHK_ERR(D3DERR_UNSUPPORTEDOVERLAY, "Overlay is not supported" )
-        CHK_ERR(D3DERR_UNSUPPORTEDOVERLAYFORMAT, "Overlay format is not supported" )
-        CHK_ERR(D3DERR_CANNOTPROTECTCONTENT, "Contect protection not available" )
-        CHK_ERR(D3DERR_UNSUPPORTEDCRYPTO, "Unsupported cryptographic system" )
-        CHK_ERR(D3DERR_PRESENT_STATISTICS_DISJOINT, "Presentation statistics are disjoint" )
-
-
 // -------------------------------------------------------------
 // dsound.h error codes
 // -------------------------------------------------------------
@@ -3740,7 +3576,6 @@ void WINAPI DXGetErrorDescriptionW( _In_ HRESULT hr, _Out_cap_(count) WCHAR* des
         CHK_ERR(DSERR_SENDLOOP, "A circular loop of send effects was detected")
         CHK_ERR(DSERR_BADSENDBUFFERGUID, "The GUID specified in an audiopath file does not match a valid MIXIN buffer")
         CHK_ERR(DSERR_OBJECTNOTFOUND, "The object requested was not found (numerically equal to DMUS_E_NOT_FOUND)")
-
         CHK_ERR(DSERR_FXUNAVAILABLE, "Requested effects are not available")
 
 #endif // !WINAPI_FAMILY || WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP
@@ -3790,6 +3625,7 @@ void WINAPI DXGetErrorDescriptionW( _In_ HRESULT hr, _Out_cap_(count) WCHAR* des
 // -------------------------------------------------------------
 // Direct2D error codes
 // -------------------------------------------------------------
+// D2DERR_UNSUPPORTED_PIXEL_FORMAT is not defined for UWP. WINCODEC_ERR_UNSUPPORTEDPIXELFORMAT is and has the same value.
 //        CHK_ERR(D2DERR_UNSUPPORTED_PIXEL_FORMAT, "The pixel format is not supported.")
 //        CHK_ERR(D2DERR_INSUFFICIENT_BUFFER, "The supplied buffer was too small to accomodate the data.")
         CHK_ERR(D2DERR_WRONG_STATE, "The object was not in the correct state to process the method.")
@@ -3896,15 +3732,60 @@ void WINAPI DXGetErrorDescriptionW( _In_ HRESULT hr, _Out_cap_(count) WCHAR* des
 // -------------------------------------------------------------
 // xaudio2.h error codes
 // -------------------------------------------------------------
-        CHK_ERR(XAUDIO2_E_INVALID_CALL, "Invalid XAudio2 API call or arguments")
-        CHK_ERR(XAUDIO2_E_XMA_DECODER_ERROR, "Hardware XMA decoder error")
-        CHK_ERR(XAUDIO2_E_XAPO_CREATION_FAILED, "Failed to create an audio effect")
-        CHK_ERR(XAUDIO2_E_DEVICE_INVALIDATED, "Device invalidated (unplugged, disabled, etc)")
+        CHK_ERR(_HRESULT_TYPEDEF_(XAUDIO2_E_INVALID_CALL), "Invalid XAudio2 API call or arguments")
+        CHK_ERR(_HRESULT_TYPEDEF_(XAUDIO2_E_XMA_DECODER_ERROR), "Hardware XMA decoder error")
+        CHK_ERR(_HRESULT_TYPEDEF_(XAUDIO2_E_XAPO_CREATION_FAILED), "Failed to create an audio effect")
+        CHK_ERR(_HRESULT_TYPEDEF_(XAUDIO2_E_DEVICE_INVALIDATED), "Device invalidated (unplugged, disabled, etc)")
 
 // -------------------------------------------------------------
 // xapo.h error codes
 // -------------------------------------------------------------
         CHK_ERR(XAPO_E_FORMAT_UNSUPPORTED, "Requested audio format unsupported.")
+
+// -------------------------------------------------------------
+// Audioclient.h error codes - WASAPI
+// -------------------------------------------------------------
+        CHK_ERR(AUDCLNT_E_NOT_INITIALIZED, "The audio stream has not been successfully initialized.")
+        CHK_ERR(AUDCLNT_E_ALREADY_INITIALIZED, "The IAudioClient object is already initialized.")
+        CHK_ERR(AUDCLNT_E_WRONG_ENDPOINT_TYPE, "The caller tried to access an IAudioCaptureClient interface on a rendering endpoint, or an IAudioRenderClient interface on a capture endpoint.")
+        CHK_ERR(AUDCLNT_E_DEVICE_INVALIDATED, "The audio endpoint device was invalidated.")
+        CHK_ERR(AUDCLNT_E_NOT_STOPPED, "The audio stream was not stopped at the time of the Start call.")
+        CHK_ERR(AUDCLNT_E_BUFFER_TOO_LARGE, "The NumFramesRequested value exceeds the available buffer space.")
+        CHK_ERR(AUDCLNT_E_OUT_OF_ORDER, "A previous IAudioRenderClient::GetBuffer call is still in effect or a call to IAudioRenderClient::GetBuffer is missing.")
+        CHK_ERR(AUDCLNT_E_UNSUPPORTED_FORMAT, "The audio engine (shared mode) or audio endpoint device (exclusive mode) does not support the specified format.")
+        CHK_ERR(AUDCLNT_E_INVALID_SIZE, "The NumFramesWritten value exceeds the NumFramesRequested value specified in the previous IAudioRenderClient::GetBuffer call.")
+        CHK_ERR(AUDCLNT_E_DEVICE_IN_USE, "The endpoint device is already in use.")
+        CHK_ERR(AUDCLNT_E_BUFFER_OPERATION_PENDING, "Buffer cannot be accessed because a stream reset is in progress.")
+//        CHK_ERRA(AUDCLNT_E_THREAD_NOT_REGISTERED)
+        CHK_ERR(AUDCLNT_E_EXCLUSIVE_MODE_NOT_ALLOWED, "The user disabled exclusive-mode use of the device.")
+        CHK_ERR(AUDCLNT_E_ENDPOINT_CREATE_FAILED, "The method failed to create the audio endpoint for the render or the capture device.")
+        CHK_ERR(AUDCLNT_E_SERVICE_NOT_RUNNING, "The Windows audio service is not running.")
+        CHK_ERR(AUDCLNT_E_EVENTHANDLE_NOT_EXPECTED, "The audio stream was not initialized for event-driven buffering.")
+//        CHK_ERRA(AUDCLNT_E_EXCLUSIVE_MODE_ONLY)
+        CHK_ERR(AUDCLNT_E_BUFDURATION_PERIOD_NOT_EQUAL, "The parameters hnsBufferDuration and hnsPeriodicity are not equal.")
+        CHK_ERR(AUDCLNT_E_EVENTHANDLE_NOT_SET, "The event handle was not set for an audio stream in event-driven buffering mode.")
+//        CHK_ERRA(AUDCLNT_E_INCORRECT_BUFFER_SIZE)
+        CHK_ERR(AUDCLNT_E_BUFFER_SIZE_ERROR, "The stream is exclusive mode and uses event-driven buffering, but the client attempted to get a packet that was not the size of the buffer.")
+        CHK_ERR(AUDCLNT_E_CPUUSAGE_EXCEEDED, "The process-pass duration exceeded the maximum allowed CPU usage.")
+        CHK_ERR(AUDCLNT_E_BUFFER_ERROR, "GetBuffer failed to retrieve a data buffer.")
+        CHK_ERR(AUDCLNT_E_BUFFER_SIZE_NOT_ALIGNED, "The requested buffer size is not aligned.")
+        CHK_ERR(AUDCLNT_E_INVALID_DEVICE_PERIOD, "The requested device period is not valid.")
+//        CHK_ERRA(AUDCLNT_E_INVALID_STREAM_FLAG)
+        CHK_ERR(AUDCLNT_E_ENDPOINT_OFFLOAD_NOT_CAPABLE, "The endpoint does not support offload.")
+        CHK_ERR(AUDCLNT_E_OUT_OF_OFFLOAD_RESOURCES, "The endpoint is out of offload resources.")
+        CHK_ERR(AUDCLNT_E_OFFLOAD_MODE_ONLY, "The operation is only supported in offload mode.")
+        CHK_ERR(AUDCLNT_E_NONOFFLOAD_MODE_ONLY, "The operation is only supported in non-offload mode.")
+        CHK_ERR(AUDCLNT_E_RESOURCES_INVALIDATED, "A resource associated with the audio stream is no longer valid.")
+        CHK_ERR(AUDCLNT_E_RAW_MODE_UNSUPPORTED, "The endpoint does not support raw mode.")
+        CHK_ERR(AUDCLNT_E_ENGINE_PERIODICITY_LOCKED, "The periodicity of the audio engine has been locked by another client.")
+        CHK_ERR(AUDCLNT_E_ENGINE_FORMAT_LOCKED, "The format of the audio engine has been locked by another client.")
+//        CHK_ERRA(AUDCLNT_E_HEADTRACKING_ENABLED)
+//        CHK_ERRA(AUDCLNT_E_HEADTRACKING_UNSUPPORTED)
+        CHK_ERR(AUDCLNT_E_EFFECT_NOT_AVAILABLE, "The specified effect is not available.")
+        CHK_ERR(AUDCLNT_E_EFFECT_STATE_READ_ONLY, "The specified effect has a state that is read-only.")
+        CHK_ERR(AUDCLNT_S_BUFFER_EMPTY, "No capture data is available to be read.")
+//        CHK_ERRA(AUDCLNT_S_THREAD_ALREADY_REGISTERED)
+        CHK_ERR(AUDCLNT_S_POSITION_STALLED, "The IAudioClient::Start method has not been called for this stream.")
     }
 }
 
