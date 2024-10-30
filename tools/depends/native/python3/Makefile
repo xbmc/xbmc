@@ -31,7 +31,8 @@ $(LIBDYLIB): $(PLATFORM)
 	cd $(PLATFORM); $(MAKE)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
-	cd $(PLATFORM); $(MAKE) install
+# We specifically use -j1 as some threading issues can occur with install directory creation
+	cd $(PLATFORM); $(MAKE) install -j1
 	touch $@
 
 clean:
