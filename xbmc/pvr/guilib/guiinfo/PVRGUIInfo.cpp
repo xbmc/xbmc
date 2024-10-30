@@ -76,6 +76,8 @@ void CPVRGUIInfo::ResetProperties()
   m_bHasRadioRecordings = false;
   m_iCurrentActiveClient = 0;
   m_strPlayingClientName.clear();
+  m_strClientName.clear();
+  m_strInstanceName.clear();
   m_strBackendName.clear();
   m_strBackendVersion.clear();
   m_strBackendHost.clear();
@@ -1172,6 +1174,12 @@ bool CPVRGUIInfo::GetPVRLabel(const CFileItem* item,
     case PVR_ACTUAL_STREAM_PROVIDER:
       CharInfoProvider(strValue);
       return true;
+    case PVR_CLIENT_NAME:
+      CharInfoClientName(strValue);
+      return true;
+    case PVR_INSTANCE_NAME:
+      CharInfoInstanceName(strValue);
+      return true;
     case PVR_BACKEND_NAME:
       CharInfoBackendName(strValue);
       return true;
@@ -1960,6 +1968,18 @@ void CPVRGUIInfo::CharInfoFrontendStatus(std::string& strValue) const
     strValue = g_localizeStrings.Get(13205);
 }
 
+void CPVRGUIInfo::CharInfoClientName(std::string& strValue) const
+{
+  m_updateBackendCacheRequested = true;
+  strValue = m_strClientName;
+}
+
+void CPVRGUIInfo::CharInfoInstanceName(std::string& strValue) const
+{
+  m_updateBackendCacheRequested = true;
+  strValue = m_strInstanceName;
+}
+
 void CPVRGUIInfo::CharInfoBackendName(std::string& strValue) const
 {
   m_updateBackendCacheRequested = true;
@@ -2101,6 +2121,8 @@ void CPVRGUIInfo::UpdateBackendCache()
   }
 
   // Store some defaults
+  m_strClientName = g_localizeStrings.Get(13205);
+  m_strInstanceName = g_localizeStrings.Get(13205);
   m_strBackendName = g_localizeStrings.Get(13205);
   m_strBackendVersion = g_localizeStrings.Get(13205);
   m_strBackendHost = g_localizeStrings.Get(13205);
@@ -2118,6 +2140,8 @@ void CPVRGUIInfo::UpdateBackendCache()
   {
     const auto& backend = m_backendProperties[m_iCurrentActiveClient];
 
+    m_strClientName = backend.clientname;
+    m_strInstanceName = backend.instancename;
     m_strBackendName = backend.name;
     m_strBackendVersion = backend.version;
     m_strBackendHost = backend.host;

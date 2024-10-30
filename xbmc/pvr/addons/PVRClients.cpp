@@ -600,6 +600,8 @@ std::vector<SBackend> CPVRClients::GetBackendProperties() const
           properties.numRecordings = iAmount;
         if (client->GetRecordingsAmount(true, iAmount) == PVR_ERROR_NO_ERROR)
           properties.numDeletedRecordings = iAmount;
+        properties.clientname = client->GetClientName();
+        properties.instancename = client->GetInstanceName();
         properties.name = client->GetBackendName();
         properties.version = client->GetBackendVersion();
         properties.host = client->GetConnectionString();
