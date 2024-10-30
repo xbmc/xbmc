@@ -589,15 +589,17 @@ bool CEdl::ReadPvr(const CFileItem &fileItem)
         if (AddEdit(edit))
         {
           CLog::Log(LOGDEBUG, "{} - Added break [{} - {}] found in PVR item for: {}.", __FUNCTION__,
-                    MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
+                    StringUtils::MillisecondsToTimeString(edit.start),
+                    StringUtils::MillisecondsToTimeString(edit.end),
                     CURL::GetRedacted(fileItem.GetDynPath()));
         }
         else
         {
           CLog::Log(LOGERROR,
                     "{} - Invalid break [{} - {}] found in PVR item for: {}. Continuing anyway.",
-                    __FUNCTION__, MillisecondsToTimeString(edit.start),
-                    MillisecondsToTimeString(edit.end), CURL::GetRedacted(fileItem.GetDynPath()));
+                    __FUNCTION__, StringUtils::MillisecondsToTimeString(edit.start),
+                    StringUtils::MillisecondsToTimeString(edit.end),
+                    CURL::GetRedacted(fileItem.GetDynPath()));
         }
         break;
 
@@ -627,32 +629,32 @@ bool CEdl::AddEdit(const Edit& newEdit)
   {
     CLog::Log(LOGERROR,
               "{} - Not an Action::CUT, Action::MUTE, or Action::COMM_BREAK! [{} - {}], {}",
-              __FUNCTION__, MillisecondsToTimeString(edit.start),
-              MillisecondsToTimeString(edit.end), static_cast<int>(edit.action));
+              __FUNCTION__, StringUtils::MillisecondsToTimeString(edit.start),
+              StringUtils::MillisecondsToTimeString(edit.end), static_cast<int>(edit.action));
     return false;
   }
 
   if (edit.start < 0ms)
   {
     CLog::Log(LOGERROR, "{} - Before start! [{} - {}], {}", __FUNCTION__,
-              MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
-              static_cast<int>(edit.action));
+              StringUtils::MillisecondsToTimeString(edit.start),
+              StringUtils::MillisecondsToTimeString(edit.end), static_cast<int>(edit.action));
     return false;
   }
 
   if (edit.start >= edit.end)
   {
     CLog::Log(LOGERROR, "{} - Times are around the wrong way or the same! [{} - {}], {}",
-              __FUNCTION__, MillisecondsToTimeString(edit.start),
-              MillisecondsToTimeString(edit.end), static_cast<int>(edit.action));
+              __FUNCTION__, StringUtils::MillisecondsToTimeString(edit.start),
+              StringUtils::MillisecondsToTimeString(edit.end), static_cast<int>(edit.action));
     return false;
   }
 
   if (InEdit(edit.start) || InEdit(edit.end))
   {
     CLog::Log(LOGERROR, "{} - Start or end is in an existing edit! [{} - {}], {}", __FUNCTION__,
-              MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
-              static_cast<int>(edit.action));
+              StringUtils::MillisecondsToTimeString(edit.start),
+              StringUtils::MillisecondsToTimeString(edit.end), static_cast<int>(edit.action));
     return false;
   }
 
@@ -661,8 +663,8 @@ bool CEdl::AddEdit(const Edit& newEdit)
     if (edit.start < m_vecEdits[i].start && edit.end > m_vecEdits[i].end)
     {
       CLog::Log(LOGERROR, "{} - Edit surrounds an existing edit! [{} - {}], {}", __FUNCTION__,
-                MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
-                static_cast<int>(edit.action));
+                StringUtils::MillisecondsToTimeString(edit.start),
+                StringUtils::MillisecondsToTimeString(edit.end), static_cast<int>(edit.action));
       return false;
     }
   }
@@ -703,8 +705,8 @@ bool CEdl::AddEdit(const Edit& newEdit)
   if (m_vecEdits.empty() || edit.start > m_vecEdits.back().start)
   {
     CLog::Log(LOGDEBUG, "{} - Pushing new edit to back [{} - {}], {}", __FUNCTION__,
-              MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
-              static_cast<int>(edit.action));
+              StringUtils::MillisecondsToTimeString(edit.start),
+              StringUtils::MillisecondsToTimeString(edit.end), static_cast<int>(edit.action));
     m_vecEdits.emplace_back(edit);
   }
   else
@@ -715,8 +717,8 @@ bool CEdl::AddEdit(const Edit& newEdit)
       if (edit.start < pCurrentEdit->start)
       {
         CLog::Log(LOGDEBUG, "{} - Inserting new edit [{} - {}], {}", __FUNCTION__,
-                  MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
-                  static_cast<int>(edit.action));
+                  StringUtils::MillisecondsToTimeString(edit.start),
+                  StringUtils::MillisecondsToTimeString(edit.end), static_cast<int>(edit.action));
         m_vecEdits.insert(pCurrentEdit, edit);
         break;
       }
@@ -736,7 +738,7 @@ bool CEdl::AddSceneMarker(std::chrono::milliseconds iSceneMarker)
     return false;
 
   CLog::Log(LOGDEBUG, "{} - Inserting new scene marker: {}", __FUNCTION__,
-            MillisecondsToTimeString(iSceneMarker));
+            StringUtils::MillisecondsToTimeString(iSceneMarker));
   m_vecSceneMarkers.push_back(iSceneMarker); // Unsorted
 
   return true;
@@ -950,14 +952,6 @@ std::optional<std::chrono::milliseconds> CEdl::GetNextSceneMarker(Direction dire
   return sceneMarker;
 }
 
-std::string CEdl::MillisecondsToTimeString(std::chrono::milliseconds milliSeconds)
-{
-  std::string strTimeString = StringUtils::SecondsToTimeString(
-      std::chrono::duration_cast<std::chrono::seconds>(milliSeconds).count(), TIME_FORMAT_HH_MM_SS);
-  strTimeString += StringUtils::Format(".{:03}", milliSeconds.count() % 1000);
-  return strTimeString;
-}
-
 void CEdl::MergeShortCommBreaks()
 {
   /*
@@ -970,8 +964,8 @@ void CEdl::MergeShortCommBreaks()
       (m_vecEdits[0].end - m_vecEdits[0].start) < 5s)
   {
     CLog::Log(LOGDEBUG, "{} - Removing short commercial break at start [{} - {}]. <5 seconds",
-              __FUNCTION__, MillisecondsToTimeString(m_vecEdits[0].start),
-              MillisecondsToTimeString(m_vecEdits[0].end));
+              __FUNCTION__, StringUtils::MillisecondsToTimeString(m_vecEdits[0].start),
+              StringUtils::MillisecondsToTimeString(m_vecEdits[0].end));
     m_vecEdits.erase(m_vecEdits.begin());
   }
 
@@ -994,13 +988,14 @@ void CEdl::MergeShortCommBreaks()
         commBreak.start = m_vecEdits[i].start;
         commBreak.end = m_vecEdits[i + 1].end;
 
-        CLog::Log(
-            LOGDEBUG, "{} - Consolidating commercial break [{} - {}] and [{} - {}] to: [{} - {}]",
-            __FUNCTION__, MillisecondsToTimeString(m_vecEdits[i].start),
-            MillisecondsToTimeString(m_vecEdits[i].end),
-            MillisecondsToTimeString(m_vecEdits[i + 1].start),
-            MillisecondsToTimeString(m_vecEdits[i + 1].end),
-            MillisecondsToTimeString(commBreak.start), MillisecondsToTimeString(commBreak.end));
+        CLog::Log(LOGDEBUG,
+                  "{} - Consolidating commercial break [{} - {}] and [{} - {}] to: [{} - {}]",
+                  __FUNCTION__, StringUtils::MillisecondsToTimeString(m_vecEdits[i].start),
+                  StringUtils::MillisecondsToTimeString(m_vecEdits[i].end),
+                  StringUtils::MillisecondsToTimeString(m_vecEdits[i + 1].start),
+                  StringUtils::MillisecondsToTimeString(m_vecEdits[i + 1].end),
+                  StringUtils::MillisecondsToTimeString(commBreak.start),
+                  StringUtils::MillisecondsToTimeString(commBreak.end));
 
         /*
          * Erase old edits and insert the new merged one.
@@ -1023,8 +1018,8 @@ void CEdl::MergeShortCommBreaks()
                                   std::chrono::seconds(advancedSettings->m_iEdlMaxStartGap)))
     {
       CLog::Log(LOGDEBUG, "{} - Expanding first commercial break back to start [{} - {}].",
-                __FUNCTION__, MillisecondsToTimeString(m_vecEdits[0].start),
-                MillisecondsToTimeString(m_vecEdits[0].end));
+                __FUNCTION__, StringUtils::MillisecondsToTimeString(m_vecEdits[0].start),
+                StringUtils::MillisecondsToTimeString(m_vecEdits[0].end));
       m_vecEdits[0].start = 0ms;
     }
 
@@ -1040,8 +1035,8 @@ void CEdl::MergeShortCommBreaks()
       {
         CLog::Log(LOGDEBUG,
                   "{} - Removing short commercial break [{} - {}]. Minimum length: {} seconds",
-                  __FUNCTION__, MillisecondsToTimeString(m_vecEdits[i].start),
-                  MillisecondsToTimeString(m_vecEdits[i].end),
+                  __FUNCTION__, StringUtils::MillisecondsToTimeString(m_vecEdits[i].start),
+                  StringUtils::MillisecondsToTimeString(m_vecEdits[i].end),
                   advancedSettings->m_iEdlMinCommBreakLength);
         m_vecEdits.erase(m_vecEdits.begin() + i);
 

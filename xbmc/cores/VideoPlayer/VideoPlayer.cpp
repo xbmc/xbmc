@@ -2433,8 +2433,9 @@ void CVideoPlayer::CheckAutoSceneSkip()
         (m_playSpeed < 0 && correctClock < (edit->end - 1s)))
     {
       CLog::Log(LOGDEBUG, "{} - Clock in EDL cut [{} - {}]: {}. Automatically skipping over.",
-                __FUNCTION__, CEdl::MillisecondsToTimeString(edit->start),
-                CEdl::MillisecondsToTimeString(edit->end), CEdl::MillisecondsToTimeString(clock));
+                __FUNCTION__, StringUtils::MillisecondsToTimeString(edit->start),
+                StringUtils::MillisecondsToTimeString(edit->end),
+                StringUtils::MillisecondsToTimeString(clock));
 
       // Seeking either goes to the start or the end of the cut depending on the play direction.
       std::chrono::milliseconds seek = m_playSpeed >= 0 ? edit->end : edit->start;
@@ -2473,8 +2474,9 @@ void CVideoPlayer::CheckAutoSceneSkip()
         CLog::Log(LOGDEBUG,
                   "{} - Clock in commercial break [{} - {}]: {}. Automatically skipping to end of "
                   "commercial break",
-                  __FUNCTION__, CEdl::MillisecondsToTimeString(edit->start),
-                  CEdl::MillisecondsToTimeString(edit->end), CEdl::MillisecondsToTimeString(clock));
+                  __FUNCTION__, StringUtils::MillisecondsToTimeString(edit->start),
+                  StringUtils::MillisecondsToTimeString(edit->end),
+                  StringUtils::MillisecondsToTimeString(clock));
 
         CDVDMsgPlayerSeek::CMode mode;
         mode.time = edit->end.count();

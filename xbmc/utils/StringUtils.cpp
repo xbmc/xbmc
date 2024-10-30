@@ -1509,6 +1509,14 @@ std::string StringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
   return strHMS;
 }
 
+std::string StringUtils::MillisecondsToTimeString(std::chrono::milliseconds milliSeconds)
+{
+  std::string strTimeString = StringUtils::SecondsToTimeString(
+      std::chrono::duration_cast<std::chrono::seconds>(milliSeconds).count(), TIME_FORMAT_HH_MM_SS);
+  strTimeString += StringUtils::Format(".{:03}", milliSeconds.count() % 1000);
+  return strTimeString;
+}
+
 bool StringUtils::IsNaturalNumber(const std::string& str)
 {
   size_t i = 0, n = 0;

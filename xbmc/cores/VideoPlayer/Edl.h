@@ -152,8 +152,6 @@ public:
   std::optional<std::chrono::milliseconds> GetNextSceneMarker(Direction direction,
                                                               std::chrono::milliseconds clockTime);
 
-  static std::string MillisecondsToTimeString(std::chrono::milliseconds milliSeconds);
-
 private:
   // total cut time (edl cuts) in ms
   std::chrono::milliseconds m_totalCutTime;
