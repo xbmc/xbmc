@@ -34,7 +34,7 @@ public:
 
   void EnumerateFormats();
 
-  pw_node_info* GetInfo() { return m_info.get(); }
+  std::string Get(const std::string& key) const;
 
   std::set<spa_audio_format>& GetFormats() { return m_formats; }
   std::set<spa_audio_channel>& GetChannels() { return m_channels; }

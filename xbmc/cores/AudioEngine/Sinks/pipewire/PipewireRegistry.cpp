@@ -9,7 +9,6 @@
 #include "PipewireRegistry.h"
 
 #include "PipewireCore.h"
-#include "PipewireGlobal.h"
 #include "PipewireNode.h"
 #include "utils/log.h"
 
@@ -56,46 +55,25 @@ void CPipewireRegistry::OnGlobalAdded(void* userdata,
   if (strcmp(mediaClass, "Audio/Sink") != 0)
     return;
 
-  const char* name = spa_dict_lookup(props, PW_KEY_NODE_NAME);
-  if (!name)
-    return;
+  auto& nodes = registry.GetNodes();
 
-  const char* desc = spa_dict_lookup(props, PW_KEY_NODE_DESCRIPTION);
-  if (!desc)
-    return;
+  nodes[id] = std::make_unique<CPipewireNode>(registry, id, type);
 
-  auto properties =
-      std::unique_ptr<pw_properties, PipewirePropertiesDeleter>(pw_properties_new_dict(props));
-
-  auto node = std::make_unique<CPipewireNode>(registry, id, type);
-
-  auto& globals = registry.GetGlobals();
-
-  globals[id] = std::make_unique<CPipewireGlobal>();
-  globals[id]
-      ->SetName(name)
-      .SetDescription(desc)
-      .SetID(id)
-      .SetPermissions(permissions)
-      .SetType(type)
-      .SetVersion(version)
-      .SetProperties(std::move(properties))
-      .SetNode(std::move(node));
+  CLog::Log(LOGDEBUG, "CPipewireRegistry::{} - id={}", __FUNCTION__, id);
 }
 
 void CPipewireRegistry::OnGlobalRemoved(void* userdata, uint32_t id)
 {
   auto& registry = *reinterpret_cast<CPipewireRegistry*>(userdata);
-  auto& globals = registry.GetGlobals();
+  auto& nodes = registry.GetNodes();
 
-  auto it = globals.find(id);
-  if (it != globals.end())
+  auto it = nodes.find(id);
+  if (it != nodes.end())
   {
-    const auto& [globalId, global] = *it;
-    CLog::Log(LOGDEBUG, "CPipewireRegistry::{} - id={} type={}", __FUNCTION__, id,
-              global->GetType());
+    const auto& [nodeId, node] = *it;
+    CLog::Log(LOGDEBUG, "CPipewireRegistry::{} - id={}", __FUNCTION__, nodeId);
 
-    globals.erase(it);
+    nodes.erase(it);
   }
 }
 
