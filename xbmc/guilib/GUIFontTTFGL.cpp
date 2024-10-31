@@ -258,13 +258,13 @@ void CGUIFontTTFGL::LastEnd()
         // Set up the offsets of the various vertex attributes within the buffer
         // object bound to GL_ARRAY_BUFFER
         glVertexAttribPointer(
-            posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(SVertex),
+            posLoc, 2, GL_FLOAT, GL_FALSE, sizeof(SVertex),
             reinterpret_cast<GLvoid*>(character * sizeof(SVertex) * 4 + offsetof(SVertex, x)));
         glVertexAttribPointer(
             colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex),
             reinterpret_cast<GLvoid*>(character * sizeof(SVertex) * 4 + offsetof(SVertex, r)));
         glVertexAttribPointer(
-            tex0Loc, 2, GL_FLOAT, GL_FALSE, sizeof(SVertex),
+            tex0Loc, 2, GL_UNSIGNED_SHORT, GL_TRUE, sizeof(SVertex),
             reinterpret_cast<GLvoid*>(character * sizeof(SVertex) * 4 + offsetof(SVertex, u)));
 
         glDrawElements(GL_TRIANGLES, 6 * count, GL_UNSIGNED_SHORT, 0);
