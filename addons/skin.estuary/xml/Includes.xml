@@ -930,15 +930,15 @@
 				<left>0</left>
 				<top>0</top>
 				<right>0</right>
-				<bottom>0</bottom>
-				<texture colordiffuse="dialog_tint">colors/white.png</texture>
+				<height>70</height>
+				<texture colordiffuse="dialog_header_tint">colors/white.png</texture>
 			</control>
 			<control type="image">
 				<left>0</left>
-				<top>0</top>
+				<top>70</top>
 				<right>0</right>
-				<height>70</height>
-				<texture colordiffuse="button_focus" border="2">colors/white70.png</texture>
+				<bottom>0</bottom>
+				<texture colordiffuse="dialog_tint">colors/white.png</texture>
 			</control>
 			<control type="label" id="$PARAM[header_id]">
 				<left>40</left>
