@@ -344,13 +344,7 @@ void TexturePacker::ReduceChannels(RGBAImage& image)
   if (uniformRed && uniformGreen && uniformBlue && !isWhite)
     printf("WARNING: uniform color detected! Consider using diffusecolor!\n");
 
-  if (isIntensity)
-  {
-    // this is an intensity (GL_INTENSITY) texture
-    ConvertToSingleChannel(image, 0);
-    image.textureSwizzle = KD_TEX_SWIZ_RRRR;
-  }
-  else if (uniformAlpha && alpha == 0xff)
+  if (uniformAlpha && alpha == 0xff)
   {
     // we have a opaque texture, L or RGBX
     if (isGrey)
@@ -365,6 +359,12 @@ void TexturePacker::ReduceChannels(RGBAImage& image)
     // an alpha only texture
     ConvertToSingleChannel(image, 3);
     image.textureSwizzle = KD_TEX_SWIZ_111R;
+  }
+  else if (isIntensity)
+  {
+    // this is an intensity (GL_INTENSITY) texture
+    ConvertToSingleChannel(image, 0);
+    image.textureSwizzle = KD_TEX_SWIZ_RRRR;
   }
   else if (isGrey)
   {
