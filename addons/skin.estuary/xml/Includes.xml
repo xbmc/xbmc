@@ -340,7 +340,7 @@
 		<param name="width">115</param>
 		<param name="height">60</param>
 		<param name="flag_visible">true</param>
-		<param name="texture">flags/flag.png</param>
+		<param name="texture">colors/white.png</param>
 		<definition>
 			<control type="group">
 				<width>$PARAM[width]</width>
@@ -348,10 +348,11 @@
 				<visible>$PARAM[flag_visible]</visible>
 				<control type="image">
 					<fadetime>0</fadetime>
-					<align>center</align>
-					<aligny>center</aligny>
-					<aspectratio>keep</aspectratio>
-					<texture>$PARAM[texture]</texture>
+					<top>13</top>
+					<left>5</left>
+					<width>105</width>
+					<height>34</height>
+					<texture border="2" infill="false" colordiffuse="white">$PARAM[texture]</texture>
 				</control>
 				<control type="label">
 					<align>center</align>
