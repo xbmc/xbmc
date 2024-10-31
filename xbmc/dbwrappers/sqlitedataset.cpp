@@ -566,9 +566,14 @@ void SqliteDatabase::start_transaction()
 {
   if (active)
   {
+    assert(!_in_transaction);
     sqlite3_exec(conn, "begin IMMEDIATE", NULL, NULL, NULL);
     CLog::LogFC(LOGDEBUG, LOGDATABASE, "Sqlite start transaction");
-    _in_transaction = true;
+
+    if (_in_transaction)
+      CLog::LogF(LOGERROR, "error: nested transactions are not supported.");
+    else
+      _in_transaction = true;
   }
 }
 
@@ -576,6 +581,7 @@ void SqliteDatabase::commit_transaction()
 {
   if (active)
   {
+    assert(_in_transaction);
     sqlite3_exec(conn, "commit", NULL, NULL, NULL);
     CLog::LogFC(LOGDEBUG, LOGDATABASE, "Sqlite commit transaction");
     _in_transaction = false;
@@ -586,6 +592,7 @@ void SqliteDatabase::rollback_transaction()
 {
   if (active)
   {
+    assert(_in_transaction);
     sqlite3_exec(conn, "rollback", NULL, NULL, NULL);
     CLog::LogFC(LOGDEBUG, LOGDATABASE, "Sqlite rollback transaction");
     _in_transaction = false;
