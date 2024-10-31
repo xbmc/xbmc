@@ -124,7 +124,7 @@
 							<top>5</top>
 							<width>330</width>
 							<height>250</height>
-							<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
+							<texture border="4" infill="false" colordiffuse="button_focus">colors/white.png</texture>
 							<visible>Control.HasFocus(11)</visible>
 						</control>
 					</control>
