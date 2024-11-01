@@ -193,6 +193,10 @@ msgctxt "#31039"
 msgid "Fast forward"
 msgstr "Għaġġel quddiem"
 
+msgctxt "#31040"
+msgid "Edit widgets"
+msgstr ""
+
 # empty string with id 31040
 msgctxt "#31041"
 msgid "Camera manufacturer"
@@ -399,6 +403,11 @@ msgctxt "#31107"
 msgid "WideList"
 msgstr ""
 
+# empty strings from id 31108 to 31108
+msgctxt "#31109"
+msgid "Video streams"
+msgstr ""
+
 # empty strings from id 31108 to 31109
 msgctxt "#31110"
 msgid "Enter files section"
@@ -409,7 +418,7 @@ msgid "View your personal pictures or download one of the many image add-ons fro
 msgstr ""
 
 msgctxt "#31112"
-msgid "Toggle audio stream"
+msgid "Audio streams"
 msgstr ""
 
 msgctxt "#31113"
@@ -421,7 +430,7 @@ msgid "Search YouTube"
 msgstr ""
 
 msgctxt "#31115"
-msgid "Toggle subtitle"
+msgid "Subtitles streams"
 msgstr ""
 
 msgctxt "#31116"
@@ -742,3 +751,8 @@ msgstr ""
 msgctxt "#31611"
 msgid "System"
 msgstr "Sistema"
+
+#. Audio channels
+msgctxt "#31612"
+msgid "channels"
+msgstr ""
