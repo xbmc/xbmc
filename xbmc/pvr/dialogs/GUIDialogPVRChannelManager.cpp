@@ -426,7 +426,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo()
   items.Add(nothumb);
 
   std::string strThumb;
-  VECSOURCES shares;
+  std::vector<CMediaSource> shares;
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   if (settings->GetString(CSettings::SETTING_PVRMENU_ICONPATH) != "")
   {

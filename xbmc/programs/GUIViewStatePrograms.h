@@ -19,6 +19,6 @@ protected:
   void SaveViewState() override;
   std::string GetLockType() override;
   std::string GetExtensions() override;
-  VECSOURCES& GetSources() override;
+  std::vector<CMediaSource>& GetSources() override;
 };
 

@@ -331,7 +331,7 @@ void CMediaSettings::OnSettingAction(const std::shared_ptr<const CSetting>& sett
   else if (settingId == CSettings::SETTING_MUSICLIBRARY_IMPORT)
   {
     std::string path;
-    VECSOURCES shares;
+    std::vector<CMediaSource> shares;
     CServiceBroker::GetMediaManager().GetLocalDrives(shares);
     CServiceBroker::GetMediaManager().GetNetworkLocations(shares);
     CServiceBroker::GetMediaManager().GetRemovableDrives(shares);
@@ -355,7 +355,7 @@ void CMediaSettings::OnSettingAction(const std::shared_ptr<const CSetting>& sett
   else if (settingId == CSettings::SETTING_VIDEOLIBRARY_IMPORT)
   {
     std::string path;
-    VECSOURCES shares;
+    std::vector<CMediaSource> shares;
     CServiceBroker::GetMediaManager().GetLocalDrives(shares);
     CServiceBroker::GetMediaManager().GetNetworkLocations(shares);
     CServiceBroker::GetMediaManager().GetRemovableDrives(shares);

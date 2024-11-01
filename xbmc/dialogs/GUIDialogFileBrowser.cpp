@@ -606,7 +606,12 @@ void CGUIDialogFileBrowser::OnWindowUnload()
   m_viewControl.Reset();
 }
 
-bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, const VECSOURCES &shares, const std::string &heading, std::string &result, bool* flip, int label)
+bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList& items,
+                                            const std::vector<CMediaSource>& shares,
+                                            const std::string& heading,
+                                            std::string& result,
+                                            bool* flip,
+                                            int label)
 {
   CGUIDialogFileBrowser *browser = new CGUIDialogFileBrowser();
   if (!browser)
@@ -648,22 +653,29 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, const VE
   return confirmed;
 }
 
-bool CGUIDialogFileBrowser::ShowAndGetImage(const VECSOURCES &shares, const std::string &heading, std::string &path)
+bool CGUIDialogFileBrowser::ShowAndGetImage(const std::vector<CMediaSource>& shares,
+                                            const std::string& heading,
+                                            std::string& path)
 {
   return ShowAndGetFile(shares, CServiceBroker::GetFileExtensionProvider().GetPictureExtensions(), heading, path, true); // true for use thumbs
 }
 
-bool CGUIDialogFileBrowser::ShowAndGetImageList(const VECSOURCES &shares, const std::string &heading, std::vector<std::string> &path)
+bool CGUIDialogFileBrowser::ShowAndGetImageList(const std::vector<CMediaSource>& shares,
+                                                const std::string& heading,
+                                                std::vector<std::string>& path)
 {
   return ShowAndGetFileList(shares, CServiceBroker::GetFileExtensionProvider().GetPictureExtensions(), heading, path, true); // true for use thumbs
 }
 
-bool CGUIDialogFileBrowser::ShowAndGetDirectory(const VECSOURCES &shares, const std::string &heading, std::string &path, bool bWriteOnly)
+bool CGUIDialogFileBrowser::ShowAndGetDirectory(const std::vector<CMediaSource>& shares,
+                                                const std::string& heading,
+                                                std::string& path,
+                                                bool bWriteOnly)
 {
   // an extension mask of "/" ensures that no files are shown
   if (bWriteOnly)
   {
-    VECSOURCES shareWritable;
+    std::vector<CMediaSource> shareWritable;
     for (unsigned int i=0;i<shares.size();++i)
     {
       if (shares[i].IsWritable())
@@ -676,7 +688,12 @@ bool CGUIDialogFileBrowser::ShowAndGetDirectory(const VECSOURCES &shares, const 
   return ShowAndGetFile(shares, "/", heading, path);
 }
 
-bool CGUIDialogFileBrowser::ShowAndGetFile(const VECSOURCES &shares, const std::string &mask, const std::string &heading, std::string &path, bool useThumbs /* = false */, bool useFileDirectories /* = false */)
+bool CGUIDialogFileBrowser::ShowAndGetFile(const std::vector<CMediaSource>& shares,
+                                           const std::string& mask,
+                                           const std::string& heading,
+                                           std::string& path,
+                                           bool useThumbs /* = false */,
+                                           bool useFileDirectories /* = false */)
 {
   CGUIDialogFileBrowser *browser = new CGUIDialogFileBrowser();
   if (!browser)
@@ -727,7 +744,7 @@ bool CGUIDialogFileBrowser::ShowAndGetFile(const std::string &directory, const s
   // add a single share for this directory
   if (!singleList)
   {
-    VECSOURCES shares;
+    std::vector<CMediaSource> shares;
     CMediaSource share;
     share.strPath = directory;
     URIUtils::RemoveSlashAtEnd(share.strPath); // this is needed for the dodgy code in WINDOW_INIT
@@ -767,7 +784,7 @@ bool CGUIDialogFileBrowser::ShowAndGetFile(const std::string &directory, const s
   { // "Browse for thumb"
     CServiceBroker::GetGUI()->GetWindowManager().Remove(browser->GetID());
     delete browser;
-    VECSOURCES shares;
+    std::vector<CMediaSource> shares;
     CServiceBroker::GetMediaManager().GetLocalDrives(shares);
 
     return ShowAndGetFile(shares, mask, heading, path, useThumbs,useFileDirectories);
@@ -777,7 +794,12 @@ bool CGUIDialogFileBrowser::ShowAndGetFile(const std::string &directory, const s
   return confirmed;
 }
 
-bool CGUIDialogFileBrowser::ShowAndGetFileList(const VECSOURCES &shares, const std::string &mask, const std::string &heading, std::vector<std::string> &path, bool useThumbs /* = false */, bool useFileDirectories /* = false */)
+bool CGUIDialogFileBrowser::ShowAndGetFileList(const std::vector<CMediaSource>& shares,
+                                               const std::string& mask,
+                                               const std::string& heading,
+                                               std::vector<std::string>& path,
+                                               bool useThumbs /* = false */,
+                                               bool useFileDirectories /* = false */)
 {
   CGUIDialogFileBrowser *browser = new CGUIDialogFileBrowser();
   if (!browser)
@@ -812,7 +834,11 @@ void CGUIDialogFileBrowser::SetHeading(const std::string &heading)
   SET_CONTROL_LABEL(CONTROL_HEADING_LABEL, heading);
 }
 
-bool CGUIDialogFileBrowser::ShowAndGetSource(std::string &path, bool allowNetworkShares, VECSOURCES* additionalShare /* = NULL */, const std::string& strType /* = "" */)
+bool CGUIDialogFileBrowser::ShowAndGetSource(
+    std::string& path,
+    bool allowNetworkShares,
+    std::vector<CMediaSource>* additionalShare /* = NULL */,
+    const std::string& strType /* = "" */)
 {
   // Technique is
   // 1.  Show Filebrowser with currently defined local, and optionally the network locations.
@@ -835,7 +861,7 @@ bool CGUIDialogFileBrowser::ShowAndGetSource(std::string &path, bool allowNetwor
   // Add it to our window manager
   CServiceBroker::GetGUI()->GetWindowManager().AddUniqueInstance(browser);
 
-  VECSOURCES shares;
+  std::vector<CMediaSource> shares;
   if (!strType.empty())
   {
     if (additionalShare)
@@ -877,7 +903,7 @@ bool CGUIDialogFileBrowser::ShowAndGetSource(std::string &path, bool allowNetwor
   return confirmed;
 }
 
-void CGUIDialogFileBrowser::SetSources(const VECSOURCES &shares)
+void CGUIDialogFileBrowser::SetSources(const std::vector<CMediaSource>& shares)
 {
   m_shares = shares;
   if (!m_shares.size() && m_addSourceType.empty())
@@ -939,7 +965,7 @@ bool CGUIDialogFileBrowser::OnPopupMenu(int iItem)
     if (m_addNetworkShareEnabled)
     {
       std::string strOldPath=m_selectedPath,newPath=m_selectedPath;
-      VECSOURCES shares=m_shares;
+      std::vector<CMediaSource> shares = m_shares;
       if (CGUIDialogNetworkSetup::ShowAndGetNetworkAddress(newPath))
       {
         CServiceBroker::GetMediaManager().SetLocationPath(strOldPath, newPath);

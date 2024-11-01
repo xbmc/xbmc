@@ -56,7 +56,7 @@ bool ChooseAndSetNewThumbnail(CFileItem& item)
   prefilledItems.Add(none);
 
   std::string thumb;
-  VECSOURCES sources;
+  std::vector<CMediaSource> sources;
   CServiceBroker::GetMediaManager().GetLocalDrives(sources);
   if (CGUIDialogFileBrowser::ShowAndGetImage(prefilledItems, sources, g_localizeStrings.Get(1030),
                                              thumb)) // Browse for image

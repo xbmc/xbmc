@@ -110,7 +110,7 @@ bool CGUIDialogVideoManagerExtras::AddVideoExtra()
   const MediaType mediaType{m_videoAsset->GetVideoInfoTag()->m_type};
 
   // prompt to choose a video file
-  VECSOURCES sources{*CMediaSourceSettings::GetInstance().GetSources("files")};
+  std::vector<CMediaSource> sources{*CMediaSourceSettings::GetInstance().GetSources("files")};
 
   CServiceBroker::GetMediaManager().GetLocalDrives(sources);
   CServiceBroker::GetMediaManager().GetNetworkLocations(sources);

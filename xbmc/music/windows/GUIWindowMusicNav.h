@@ -41,7 +41,7 @@ protected:
   bool GetSongsFromPlayList(const std::string& strPlayList, CFileItemList &items);
   bool ManageInfoProvider(const CFileItemPtr& item);
 
-  VECSOURCES m_shares;
+  std::vector<CMediaSource> m_shares;
 
   // searching
   void OnSearchUpdate();

@@ -146,20 +146,20 @@ bool CMediaManager::SaveSources()
   return doc.SaveFile(MEDIA_SOURCES_XML);
 }
 
-void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
+void CMediaManager::GetLocalDrives(std::vector<CMediaSource>& localDrives, bool includeQ)
 {
   std::unique_lock<CCriticalSection> lock(m_CritSecStorageProvider);
   m_platformStorage->GetLocalDrives(localDrives);
 }
 
-void CMediaManager::GetRemovableDrives(VECSOURCES &removableDrives)
+void CMediaManager::GetRemovableDrives(std::vector<CMediaSource>& removableDrives)
 {
   std::unique_lock<CCriticalSection> lock(m_CritSecStorageProvider);
   if (m_platformStorage)
     m_platformStorage->GetRemovableDrives(removableDrives);
 }
 
-void CMediaManager::GetNetworkLocations(VECSOURCES &locations, bool autolocations)
+void CMediaManager::GetNetworkLocations(std::vector<CMediaSource>& locations, bool autolocations)
 {
   for (unsigned int i = 0; i < m_locations.size(); i++)
   {
@@ -609,7 +609,7 @@ std::string CMediaManager::GetDiscPath()
 #else
 
   std::unique_lock<CCriticalSection> lock(m_CritSecStorageProvider);
-  VECSOURCES drives;
+  std::vector<CMediaSource> drives;
   m_platformStorage->GetRemovableDrives(drives);
   for(unsigned i = 0; i < drives.size(); ++i)
   {

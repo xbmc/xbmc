@@ -10221,7 +10221,7 @@ bool CMusicDatabase::DeleteAlbumSources(int idAlbum)
   return ExecuteQuery(PrepareSQL("DELETE FROM album_source WHERE idAlbum = %i", idAlbum));
 }
 
-bool CMusicDatabase::CheckSources(VECSOURCES& sources)
+bool CMusicDatabase::CheckSources(std::vector<CMediaSource>& sources)
 {
   if (sources.empty())
   {
@@ -10283,7 +10283,7 @@ bool CMusicDatabase::CheckSources(VECSOURCES& sources)
 bool CMusicDatabase::MigrateSources()
 {
   //Fetch music sources from xml
-  VECSOURCES sources(*CMediaSourceSettings::GetInstance().GetSources("music"));
+  std::vector<CMediaSource> sources(*CMediaSourceSettings::GetInstance().GetSources("music"));
 
   std::string strSQL;
   try
@@ -10323,7 +10323,7 @@ bool CMusicDatabase::MigrateSources()
 bool CMusicDatabase::UpdateSources()
 {
   //Check library and xml sources match
-  VECSOURCES sources(*CMediaSourceSettings::GetInstance().GetSources("music"));
+  std::vector<CMediaSource> sources(*CMediaSourceSettings::GetInstance().GetSources("music"));
   if (CheckSources(sources))
     return true;
 

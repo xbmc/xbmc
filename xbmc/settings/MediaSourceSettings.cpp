@@ -142,7 +142,7 @@ void CMediaSourceSettings::Clear()
   m_gameSources.clear();
 }
 
-VECSOURCES* CMediaSourceSettings::GetSources(const std::string& type)
+std::vector<CMediaSource>* CMediaSourceSettings::GetSources(const std::string& type)
 {
   if (type == "programs" || type == "myprograms")
     return &m_programSources;
@@ -192,11 +192,11 @@ bool CMediaSourceSettings::UpdateSource(const std::string& strType,
                                         const std::string& strUpdateChild,
                                         const std::string& strUpdateValue)
 {
-  VECSOURCES* pShares = GetSources(strType);
+  std::vector<CMediaSource>* pShares = GetSources(strType);
   if (pShares == NULL)
     return false;
 
-  for (IVECSOURCES it = pShares->begin(); it != pShares->end(); ++it)
+  for (std::vector<CMediaSource>::iterator it = pShares->begin(); it != pShares->end(); ++it)
   {
     if (it->strName == strOldName)
     {
@@ -231,13 +231,13 @@ bool CMediaSourceSettings::DeleteSource(const std::string& strType,
                                         const std::string& strPath,
                                         bool virtualSource /* = false */)
 {
-  VECSOURCES* pShares = GetSources(strType);
+  std::vector<CMediaSource>* pShares = GetSources(strType);
   if (pShares == NULL)
     return false;
 
   bool found = false;
 
-  for (IVECSOURCES it = pShares->begin(); it != pShares->end(); ++it)
+  for (std::vector<CMediaSource>::iterator it = pShares->begin(); it != pShares->end(); ++it)
   {
     if (it->strName == strName && it->strPath == strPath)
     {
@@ -256,7 +256,7 @@ bool CMediaSourceSettings::DeleteSource(const std::string& strType,
 
 bool CMediaSourceSettings::AddShare(const std::string& type, const CMediaSource& share)
 {
-  VECSOURCES* pShares = GetSources(type);
+  std::vector<CMediaSource>* pShares = GetSources(type);
   if (pShares == NULL)
     return false;
 
@@ -295,13 +295,13 @@ bool CMediaSourceSettings::UpdateShare(const std::string& type,
                                        const std::string& oldName,
                                        const CMediaSource& share)
 {
-  VECSOURCES* pShares = GetSources(type);
+  std::vector<CMediaSource>* pShares = GetSources(type);
   if (pShares == NULL)
     return false;
 
   // update our current share list
   CMediaSource* pShare = NULL;
-  for (IVECSOURCES it = pShares->begin(); it != pShares->end(); ++it)
+  for (std::vector<CMediaSource>::iterator it = pShares->begin(); it != pShares->end(); ++it)
   {
     if (it->strName == oldName)
     {
@@ -442,7 +442,7 @@ bool CMediaSourceSettings::GetSource(const std::string& category,
 
 void CMediaSourceSettings::GetSources(const tinyxml2::XMLNode* rootElement,
                                       const std::string& tagName,
-                                      VECSOURCES& items,
+                                      std::vector<CMediaSource>& items,
                                       std::string& defaultString)
 {
 
@@ -490,7 +490,7 @@ void CMediaSourceSettings::GetSources(const tinyxml2::XMLNode* rootElement,
 
 bool CMediaSourceSettings::SetSources(tinyxml2::XMLNode* root,
                                       const char* section,
-                                      const VECSOURCES& shares,
+                                      const std::vector<CMediaSource>& shares,
                                       const std::string& defaultPath) const
 {
   auto* doc = root->GetDocument();
@@ -501,7 +501,7 @@ bool CMediaSourceSettings::SetSources(tinyxml2::XMLNode* root,
     return false;
 
   XMLUtils::SetPath(sectionNode, "default", defaultPath);
-  for (CIVECSOURCES it = shares.begin(); it != shares.end(); ++it)
+  for (std::vector<CMediaSource>::const_iterator it = shares.begin(); it != shares.end(); ++it)
   {
     const CMediaSource& share = *it;
     if (share.m_ignore)

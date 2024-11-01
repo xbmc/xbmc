@@ -29,26 +29,19 @@ namespace XFILE
     bool GetDirectory(const CURL& url, CFileItemList &items) override;
     void CancelDirectory() override;
     bool GetDirectory(const CURL& url, CFileItemList &items, bool bUseFileDirectories, bool keepImpl);
-    void SetSources(const VECSOURCES& vecSources);
-    inline unsigned int GetNumberOfSources()
-    {
-      return static_cast<uint32_t>(m_vecSources.size());
-    }
+    void SetSources(const std::vector<CMediaSource>& sources);
+    inline unsigned int GetNumberOfSources() { return static_cast<uint32_t>(m_sources.size()); }
 
-    bool IsSource(const std::string& strPath, VECSOURCES *sources = NULL, std::string *name = NULL) const;
+    bool IsSource(const std::string& strPath,
+                  std::vector<CMediaSource>* sources = NULL,
+                  std::string* name = NULL) const;
     bool IsInSource(const std::string& strPath) const;
 
-    inline const CMediaSource& operator [](const int index) const
-    {
-      return m_vecSources[index];
-    }
+    inline const CMediaSource& operator[](const int index) const { return m_sources[index]; }
 
-    inline CMediaSource& operator[](const int index)
-    {
-      return m_vecSources[index];
-    }
+    inline CMediaSource& operator[](const int index) { return m_sources[index]; }
 
-    void GetSources(VECSOURCES &sources) const;
+    void GetSources(std::vector<CMediaSource>& sources) const;
 
     void AllowNonLocalSources(bool allow) { m_allowNonLocalSources = allow; }
 
@@ -58,7 +51,7 @@ namespace XFILE
   protected:
     void CacheThumbs(CFileItemList &items);
 
-    VECSOURCES m_vecSources;
+    std::vector<CMediaSource> m_sources;
     bool m_allowNonLocalSources;
     std::shared_ptr<IDirectory> m_pDir;
   };

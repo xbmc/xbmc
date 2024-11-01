@@ -228,7 +228,7 @@ void CDisplaySettings::OnSettingAction(const std::shared_ptr<const CSetting>& se
   if (settingId == "videoscreen.cms3dlut")
   {
     std::string path = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
-    VECSOURCES shares;
+    std::vector<CMediaSource> shares;
     CServiceBroker::GetMediaManager().GetLocalDrives(shares);
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, ".3dlut", g_localizeStrings.Get(36580), path))
     {
@@ -238,7 +238,7 @@ void CDisplaySettings::OnSettingAction(const std::shared_ptr<const CSetting>& se
   else if (settingId == "videoscreen.displayprofile")
   {
     std::string path = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
-    VECSOURCES shares;
+    std::vector<CMediaSource> shares;
     CServiceBroker::GetMediaManager().GetLocalDrives(shares);
     if (CGUIDialogFileBrowser::ShowAndGetFile(shares, ".icc|.icm", g_localizeStrings.Get(36581), path))
     {

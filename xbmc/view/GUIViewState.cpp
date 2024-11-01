@@ -52,7 +52,7 @@ using namespace ADDON;
 using namespace PVR;
 
 std::string CGUIViewState::m_strPlaylistDirectory;
-VECSOURCES CGUIViewState::m_sources;
+std::vector<CMediaSource> CGUIViewState::m_sources;
 
 CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& items)
 {
@@ -462,15 +462,15 @@ std::string CGUIViewState::GetExtensions()
   return "";
 }
 
-VECSOURCES& CGUIViewState::GetSources()
+std::vector<CMediaSource>& CGUIViewState::GetSources()
 {
   return m_sources;
 }
 
 void CGUIViewState::AddLiveTVSources()
 {
-  VECSOURCES *sources = CMediaSourceSettings::GetInstance().GetSources("video");
-  for (IVECSOURCES it = sources->begin(); it != sources->end(); ++it)
+  std::vector<CMediaSource>* sources = CMediaSourceSettings::GetInstance().GetSources("video");
+  for (std::vector<CMediaSource>::iterator it = sources->begin(); it != sources->end(); ++it)
   {
     if (URIUtils::IsLiveTV((*it).strPath))
     {

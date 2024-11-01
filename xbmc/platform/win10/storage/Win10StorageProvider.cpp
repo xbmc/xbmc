@@ -44,7 +44,7 @@ CStorageProvider::~CStorageProvider()
 void CStorageProvider::Initialize()
 {
   m_changed = false;
-  VECSOURCES vShare;
+  std::vector<CMediaSource> vShare;
   GetDrivesByType(vShare, DVD_DRIVES);
   if (!vShare.empty())
     CServiceBroker::GetMediaManager().SetHasOpticalDrive(true);
@@ -67,7 +67,7 @@ void CStorageProvider::Initialize()
   m_watcher.Start();
 }
 
-void CStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
+void CStorageProvider::GetLocalDrives(std::vector<CMediaSource>& localDrives)
 {
   CMediaSource share;
   share.strPath = CSpecialProtocol::TranslatePath("special://home");
@@ -79,7 +79,7 @@ void CStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
   GetDrivesByType(localDrives, LOCAL_DRIVES, true);
 }
 
-void CStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
+void CStorageProvider::GetRemovableDrives(std::vector<CMediaSource>& removableDrives)
 {
   using KODI::PLATFORM::WINDOWS::FromW;
 
@@ -124,7 +124,7 @@ void CStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
 
 std::string CStorageProvider::GetFirstOpticalDeviceFileName()
 {
-  VECSOURCES vShare;
+  std::vector<CMediaSource> vShare;
   std::string strdevice = "\\\\.\\";
   GetDrivesByType(vShare, DVD_DRIVES);
 
@@ -187,7 +187,9 @@ bool CStorageProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
   return res;
 }
 
-void CStorageProvider::GetDrivesByType(VECSOURCES & localDrives, Drive_Types eDriveType, bool bonlywithmedia)
+void CStorageProvider::GetDrivesByType(std::vector<CMediaSource>& localDrives,
+                                       Drive_Types eDriveType,
+                                       bool bonlywithmedia)
 {
   DWORD drivesBits = GetLogicalDrives();
   if (drivesBits == 0)

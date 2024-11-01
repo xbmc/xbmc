@@ -19,8 +19,6 @@ class CFileItem;
 class CMediaSource;
 class CProfileManager;
 
-typedef std::vector<CMediaSource> VECSOURCES;
-
 class CGUIPassword : public ISettingCallback
 {
 public:
@@ -66,7 +64,7 @@ public:
   bool LockSource(const std::string& strType, const std::string& strName, bool bState);
   void LockSources(bool lock);
   void RemoveSourceLocks();
-  bool IsDatabasePathUnlocked(const std::string& strPath, VECSOURCES& vecSources);
+  bool IsDatabasePathUnlocked(const std::string& strPath, std::vector<CMediaSource>& sources);
 
   /*! \brief Helper function to test if a matching mediasource is currently unlocked
    for a given media file

@@ -507,9 +507,9 @@ bool CGUIPassword::IsMusicUnlocked()
 
 bool CGUIPassword::LockSource(const std::string& strType, const std::string& strName, bool bState)
 {
-  VECSOURCES* pShares = CMediaSourceSettings::GetInstance().GetSources(strType);
+  std::vector<CMediaSource>* pShares = CMediaSourceSettings::GetInstance().GetSources(strType);
   bool bResult = false;
-  for (IVECSOURCES it=pShares->begin();it != pShares->end();++it)
+  for (std::vector<CMediaSource>::iterator it = pShares->begin(); it != pShares->end(); ++it)
   {
     if (it->strName == strName)
     {
@@ -533,8 +533,8 @@ void CGUIPassword::LockSources(bool lock)
   const char* strTypes[] = {"programs", "music", "video", "pictures", "files", "games"};
   for (const char* const strType : strTypes)
   {
-    VECSOURCES *shares = CMediaSourceSettings::GetInstance().GetSources(strType);
-    for (IVECSOURCES it=shares->begin();it != shares->end();++it)
+    std::vector<CMediaSource>* shares = CMediaSourceSettings::GetInstance().GetSources(strType);
+    for (std::vector<CMediaSource>::iterator it = shares->begin(); it != shares->end(); ++it)
       if (it->m_iLockMode != LOCK_MODE_EVERYONE)
         it->m_iHasLock = lock ? LOCK_STATE_LOCKED : LOCK_STATE_LOCK_BUT_UNLOCKED;
   }
@@ -548,8 +548,8 @@ void CGUIPassword::RemoveSourceLocks()
   const char* strTypes[] = {"programs", "music", "video", "pictures", "files", "games"};
   for (const char* const strType : strTypes)
   {
-    VECSOURCES *shares = CMediaSourceSettings::GetInstance().GetSources(strType);
-    for (IVECSOURCES it=shares->begin();it != shares->end();++it)
+    std::vector<CMediaSource>* shares = CMediaSourceSettings::GetInstance().GetSources(strType);
+    for (std::vector<CMediaSource>::iterator it = shares->begin(); it != shares->end(); ++it)
       if (it->m_iLockMode != LOCK_MODE_EVERYONE) // remove old info
       {
         it->m_iHasLock = LOCK_STATE_NO_LOCK;
@@ -564,7 +564,8 @@ void CGUIPassword::RemoveSourceLocks()
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
 }
 
-bool CGUIPassword::IsDatabasePathUnlocked(const std::string& strPath, VECSOURCES& vecSources)
+bool CGUIPassword::IsDatabasePathUnlocked(const std::string& strPath,
+                                          std::vector<CMediaSource>& sources)
 {
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
@@ -581,10 +582,10 @@ bool CGUIPassword::IsDatabasePathUnlocked(const std::string& strPath, VECSOURCES
 
   // try to find the best matching source
   bool bName = false;
-  int iIndex = CUtil::GetMatchingSource(strPath, vecSources, bName);
+  int iIndex = CUtil::GetMatchingSource(strPath, sources, bName);
 
-  if (iIndex > -1 && iIndex < static_cast<int>(vecSources.size()))
-    if (vecSources[iIndex].m_iHasLock < LOCK_STATE_LOCKED)
+  if (iIndex > -1 && iIndex < static_cast<int>(sources.size()))
+    if (sources[iIndex].m_iHasLock < LOCK_STATE_LOCKED)
       return true;
 
   return false;
@@ -599,12 +600,12 @@ bool CGUIPassword::IsMediaPathUnlocked(const std::shared_ptr<CProfileManager>& p
     if (!g_passwordManager.bMasterUser &&
         profileManager->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
     {
-      VECSOURCES& vecSources = *CMediaSourceSettings::GetInstance().GetSources(strType);
+      std::vector<CMediaSource>& sources = *CMediaSourceSettings::GetInstance().GetSources(strType);
       bool bName = false;
-      int iIndex = CUtil::GetMatchingSource(m_strMediaSourcePath, vecSources, bName);
-      if (iIndex > -1 && iIndex < static_cast<int>(vecSources.size()))
+      int iIndex = CUtil::GetMatchingSource(m_strMediaSourcePath, sources, bName);
+      if (iIndex > -1 && iIndex < static_cast<int>(sources.size()))
       {
-        return g_passwordManager.IsItemUnlocked(&vecSources[iIndex], strType);
+        return g_passwordManager.IsItemUnlocked(&sources[iIndex], strType);
       }
     }
   }
@@ -614,9 +615,9 @@ bool CGUIPassword::IsMediaPathUnlocked(const std::shared_ptr<CProfileManager>& p
 
 bool CGUIPassword::IsMediaFileUnlocked(const std::string& type, const std::string& file) const
 {
-  std::vector<CMediaSource>* vecSources = CMediaSourceSettings::GetInstance().GetSources(type);
+  std::vector<CMediaSource>* sources = CMediaSourceSettings::GetInstance().GetSources(type);
 
-  if (!vecSources)
+  if (!sources)
   {
     CLog::Log(LOGERROR,
               "{}: CMediaSourceSettings::GetInstance().GetSources(\"{}\") returned nullptr.",
@@ -629,10 +630,10 @@ bool CGUIPassword::IsMediaFileUnlocked(const std::string& type, const std::strin
   bool isSourceName{false};
   const std::string fileBasePath = URIUtils::GetBasePath(file);
 
-  int iIndex = CUtil::GetMatchingSource(fileBasePath, *vecSources, isSourceName);
+  int iIndex = CUtil::GetMatchingSource(fileBasePath, *sources, isSourceName);
 
-  if (iIndex > -1 && iIndex < static_cast<int>(vecSources->size()))
-    return (*vecSources)[iIndex].m_iHasLock < LOCK_STATE_LOCKED;
+  if (iIndex > -1 && iIndex < static_cast<int>(sources->size()))
+    return (*sources)[iIndex].m_iHasLock < LOCK_STATE_LOCKED;
 
   return true;
 }
