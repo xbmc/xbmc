@@ -208,6 +208,7 @@ void CVideoDatabase::CreateTables()
   CLog::Log(LOGINFO, "create videoversiontype table");
   m_pDS->exec("CREATE TABLE videoversiontype (id INTEGER PRIMARY KEY, name TEXT, owner INTEGER, "
               "itemType INTEGER)");
+  CLog::Log(LOGINFO, "populate videoversiontype table");
   InitializeVideoVersionTypeTable(GetSchemaVersion());
 
   CLog::Log(LOGINFO, "create videoversion table");
@@ -12013,10 +12014,10 @@ std::string CVideoDatabase::GetVideoItemTitle(VideoDbContentType itemType, int d
 
 void CVideoDatabase::InitializeVideoVersionTypeTable(int schemaVersion)
 {
+  assert(m_pDB->in_transaction());
+
   try
   {
-    BeginTransaction();
-
     for (int id = VIDEO_VERSION_ID_BEGIN; id <= VIDEO_VERSION_ID_END; ++id)
     {
       // Exclude removed pre-populated "quality" values
@@ -12037,13 +12038,11 @@ void CVideoDatabase::InitializeVideoVersionTypeTable(int schemaVersion)
             type.c_str(), VideoAssetTypeOwner::SYSTEM, VideoAssetType::VERSION));
       }
     }
-
-    CommitTransaction();
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
-    RollbackTransaction();
+    CLog::LogF(LOGERROR, "failed");
+    throw;
   }
 }
 
