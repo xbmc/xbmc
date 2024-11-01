@@ -56,6 +56,7 @@ public:
   static constexpr auto SETTING_FILELISTS_SHOWEXTENSIONS = "filelists.showextensions";
   static constexpr auto SETTING_FILELISTS_IGNORETHEWHENSORTING = "filelists.ignorethewhensorting";
   static constexpr auto SETTING_FILELISTS_ALLOWFILEDELETION = "filelists.allowfiledeletion";
+  static constexpr auto SETTING_FILELISTS_CONFIRMFILEDELETION = "filelists.confirmfiledeletion";
   static constexpr auto SETTING_FILELISTS_SHOWADDSOURCEBUTTONS = "filelists.showaddsourcebuttons";
   static constexpr auto SETTING_FILELISTS_SHOWHIDDEN = "filelists.showhidden";
   static constexpr auto SETTING_SCREENSAVER_MODE = "screensaver.mode";

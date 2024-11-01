@@ -1080,6 +1080,16 @@
           </dependencies>
           <control type="toggle" />
         </setting>
+        <setting id="filelists.confirmfiledeletion" type="boolean" label="40801" help="40802">
+          <level>2</level>
+          <default>true</default>
+          <dependencies>
+            <dependency type="enable">
+              <condition setting="filelists.allowfiledeletion" operator="is">true</condition>
+            </dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
       </group>
     </category>
     <category id="video" label="14215" help="38107">

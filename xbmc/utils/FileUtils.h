@@ -21,6 +21,9 @@ public:
   static bool DeleteItem(const std::shared_ptr<CFileItem>& item);
   static bool DeleteItem(const std::string &strPath);
   static bool Exists(const std::string& strFileName, bool bUseCache = true);
+  /** \brief Delete a file with or without gui confirmation unless setting is off.
+  */
+  static bool DeleteItemWithConfirm(const std::shared_ptr<CFileItem>& item);
   static bool RenameFile(const std::string &strFile);
   static bool RemoteAccessAllowed(const std::string &strPath);
   static unsigned int LoadFile(const std::string &filename, void* &outputBuffer);

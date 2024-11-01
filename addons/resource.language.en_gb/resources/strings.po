@@ -24712,3 +24712,15 @@ msgid "50th Anniversary Edition"
 msgstr ""
 
 # 40000 to 40800 are reserved for Video Versions feature
+
+#. Confirm file deletion
+#: system/settings/settings.xml
+msgctxt "#40801"
+msgid "Confirm file deletion"
+msgstr ""
+
+#. Description of setting with label #40801 "Confirm file deletion"
+#: system/settings/settings.xml
+msgctxt "#40802"
+msgid "If enabled, a confirmation dialog will be displayed when files shall be deleted. If disabled, files will be deleted without user confirmation."
+msgstr ""

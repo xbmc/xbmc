@@ -19,6 +19,7 @@
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/StackDirectory.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/LocalizeStrings.h"
 #include "imagefiles/ImageFileURL.h"
@@ -352,4 +353,18 @@ bool CFileUtils::CheckFileAccessAllowed(const std::string &filePath)
 bool CFileUtils::Exists(const std::string& strFileName, bool bUseCache)
 {
   return CFile::Exists(strFileName, bUseCache);
+}
+
+bool CFileUtils::DeleteItemWithConfirm(const std::shared_ptr<CFileItem>& item)
+{
+  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_FILELISTS_CONFIRMFILEDELETION))
+  {
+    CGUIComponent* gui = CServiceBroker::GetGUI();
+
+    if (!gui || !gui->ConfirmDelete(item->GetPath()))
+      return false;
+  }
+
+  return CFileUtils::DeleteItem(item);
 }
