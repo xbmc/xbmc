@@ -24,13 +24,13 @@ class CMediaSource final
 public:
   enum SourceType
   {
-    SOURCE_TYPE_UNKNOWN      = 0,
-    SOURCE_TYPE_LOCAL        = 1,
-    SOURCE_TYPE_DVD          = 2,
-    SOURCE_TYPE_VIRTUAL_DVD  = 3,
-    SOURCE_TYPE_REMOTE       = 4,
-    SOURCE_TYPE_VPATH        = 5,
-    SOURCE_TYPE_REMOVABLE    = 6
+    SOURCE_TYPE_UNKNOWN = 0,
+    SOURCE_TYPE_LOCAL = 1,
+    SOURCE_TYPE_OPTICAL_DISC = 2,
+    SOURCE_TYPE_VIRTUAL_OPTICAL_DISC = 3,
+    SOURCE_TYPE_REMOTE = 4,
+    SOURCE_TYPE_VPATH = 5,
+    SOURCE_TYPE_REMOVABLE = 6
   };
 
   bool operator==(const CMediaSource &right) const;
@@ -50,9 +50,9 @@ public:
   Unknown source, maybe a wrong path.
   - SOURCE_TYPE_LOCAL \n
   Harddisk source.
-  - SOURCE_TYPE_DVD \n
+  - SOURCE_TYPE_OPTICAL_DISC \n
   DVD-ROM source of the build in drive, strPath may vary.
-  - SOURCE_TYPE_VIRTUAL_DVD \n
+  - SOURCE_TYPE_VIRTUAL_OPTICAL_DISC \n
   DVD-ROM source, strPath is fix.
   - SOURCE_TYPE_REMOTE \n
   Network source.

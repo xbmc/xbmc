@@ -178,7 +178,7 @@ void CVirtualDirectory::GetSources(std::vector<CMediaSource>& shares) const
   for (unsigned int i = 0; i < shares.size(); ++i)
   {
     CMediaSource& share = shares[i];
-    if (share.m_iDriveType == CMediaSource::SOURCE_TYPE_DVD)
+    if (share.m_iDriveType == CMediaSource::SOURCE_TYPE_OPTICAL_DISC)
     {
       if (CServiceBroker::GetMediaManager().IsAudio(share.strPath))
       {

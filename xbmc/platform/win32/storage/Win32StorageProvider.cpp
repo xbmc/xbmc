@@ -281,12 +281,12 @@ void CWin32StorageProvider::GetDrivesByType(std::vector<CMediaSource>& localDriv
         share.m_ignore= true;
         if( !bUseDCD )
         {
-          share.m_iDriveType= (
-           ( uDriveType == DRIVE_FIXED  )    ? CMediaSource::SOURCE_TYPE_LOCAL :
-           ( uDriveType == DRIVE_REMOTE )    ? CMediaSource::SOURCE_TYPE_REMOTE :
-           ( uDriveType == DRIVE_CDROM  )    ? CMediaSource::SOURCE_TYPE_DVD :
-           ( uDriveType == DRIVE_REMOVABLE ) ? CMediaSource::SOURCE_TYPE_REMOVABLE :
-             CMediaSource::SOURCE_TYPE_UNKNOWN );
+          share.m_iDriveType =
+              ((uDriveType == DRIVE_FIXED)       ? CMediaSource::SOURCE_TYPE_LOCAL
+               : (uDriveType == DRIVE_REMOTE)    ? CMediaSource::SOURCE_TYPE_REMOTE
+               : (uDriveType == DRIVE_CDROM)     ? CMediaSource::SOURCE_TYPE_OPTICAL_DISC
+               : (uDriveType == DRIVE_REMOVABLE) ? CMediaSource::SOURCE_TYPE_REMOVABLE
+                                                 : CMediaSource::SOURCE_TYPE_UNKNOWN);
         }
 
         AddOrReplace(localDrives, share);
@@ -394,7 +394,7 @@ bool CDetectDisc::DoWork()
     share.strStatus = g_localizeStrings.Get(446);
   share.strName = share.strPath;
   share.m_ignore = true;
-  share.m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
+  share.m_iDriveType = CMediaSource::SOURCE_TYPE_OPTICAL_DISC;
   CServiceBroker::GetMediaManager().AddAutoSource(share, m_bautorun);
 #endif
   return true;
