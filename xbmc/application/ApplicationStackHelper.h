@@ -81,7 +81,8 @@ public:
   */
   const CFileItem& SetStackPartCurrentFileItem(int partNumber)
   {
-    return GetStackPartFileItem(m_currentStackPosition = partNumber);
+    m_currentStackPosition = partNumber;
+    return GetStackPartFileItem(m_currentStackPosition);
   }
 
   /*!
