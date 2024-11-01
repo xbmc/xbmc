@@ -1,11 +1,11 @@
 #.rst:
-# FindFribidi
+# FindFriBidi
 # -----------
 # Finds the GNU FriBidi library
 #
 # This will define the following target:
 #
-#   ${APP_NAME_LC}::Fribidi   - The FriBidi library
+#   ${APP_NAME_LC}::FriBidi   - The FriBidi library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   find_package(PkgConfig)
@@ -32,11 +32,17 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   if(FRIBIDI_FOUND)
     if(TARGET PkgConfig::FRIBIDI)
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::FRIBIDI)
+      if(NOT TARGET FriBidi::FriBidi)
+        add_library(FriBidi::FriBidi ALIAS PkgConfig::FRIBIDI)
+      endif()
     else()
-        add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
-        set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                         IMPORTED_LOCATION "${FRIBIDI_LIBRARY}"
-                                                                         INTERFACE_INCLUDE_DIRECTORIES "${FRIBIDI_INCLUDE_DIR}")
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
+      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                       IMPORTED_LOCATION "${FRIBIDI_LIBRARY}"
+                                                                       INTERFACE_INCLUDE_DIRECTORIES "${FRIBIDI_INCLUDE_DIR}")
+      if(NOT TARGET FriBidi::FriBidi)
+        add_library(FriBidi::FriBidi ALIAS ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
+      endif()
     endif()
   else()
     if(FriBidi_FIND_REQUIRED)

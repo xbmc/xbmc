@@ -22,7 +22,6 @@ DEPENDS = \
   gnutls \
   gtest \
   harfbuzz \
-  libass \
   libbluray \
   libffi \
   libgcrypt \
@@ -55,8 +54,10 @@ else
   DEPENDS+=samba libcdio
 endif
 
+FONTCONFIG=fontconfig
 ifeq ($(OS),darwin_embedded)
   EXCLUDED_DEPENDS = libusb gtest
+  FONTCONFIG=
   ifeq ($(TARGET_PLATFORM),appletvos)
     EXCLUDED_DEPENDS += libshairplay libplist
   endif
@@ -64,6 +65,7 @@ ifeq ($(OS),darwin_embedded)
 endif
 
 ifeq ($(OS),osx)
+  FONTCONFIG=
   EXCLUDED_DEPENDS = libusb
   DEPENDS += smctemp
 endif
@@ -160,7 +162,7 @@ freetype2: bzip2 harfbuzz $(ZLIB)
 gettext: $(ICONV)
 gnutls: nettle $(ZLIB)
 harfbuzz: freetype2-noharfbuzz $(ICONV)
-libass: fontconfig fribidi harfbuzz libpng freetype2 expat $(ICONV)
+libass: $(FONTCONFIG) fribidi harfbuzz freetype2 $(ICONV)
 libbluray: fontconfig freetype2 $(ICONV) udfread libxml2
 libcdio-gplv3: $(ICONV)
 libcdio: $(ICONV)

@@ -1,0 +1,11 @@
+--- a/libass/ass_directwrite.c
++++ b/libass/ass_directwrite.c
+@@ -55,7 +55,7 @@
+ 
+ static void hdc_release(ASS_SharedHDC *shared_hdc)
+ {
+-    if (!--shared_hdc->ref_count) {
++    if (shared_hdc && !--shared_hdc->ref_count) {
+         DeleteDC(shared_hdc->hdc);
+         free(shared_hdc);
+     }

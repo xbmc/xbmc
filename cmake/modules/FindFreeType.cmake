@@ -36,6 +36,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
                                                                      IMPORTED_LOCATION "${FREETYPE_LIBRARY}"
                                                                      INTERFACE_INCLUDE_DIRECTORIES "${FREETYPE_INCLUDE_DIR}")
+
+    if(NOT TARGET Freetype::Freetype)
+      add_library(Freetype::Freetype ALIAS ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
+    endif()
   else()
     if(Freetype_FIND_REQUIRED)
       message(FATAL_ERROR "Freetype libraries were not found.")
