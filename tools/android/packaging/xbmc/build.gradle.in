@@ -4,6 +4,7 @@ android {
     namespace '@APP_PACKAGE@'
     compileSdk @TARGET_SDK@
     ndkPath "@NDKROOT@"
+    ndkVersion "@NDKVERSION@"
     defaultConfig {
         applicationId "@APP_PACKAGE@"
         minSdk @TARGET_MINSDK@
