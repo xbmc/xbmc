@@ -126,11 +126,14 @@ private:
       items.Add(item);
     }
 
+    const auto recordings{CServiceBroker::GetPVRManager().Recordings()};
     return std::accumulate(
-        items.cbegin(), items.cend(), true, [this](bool success, const auto& itemToDelete) {
+        items.cbegin(), items.cend(), true,
+        [this, &recordings](bool success, const auto& itemToDelete)
+        {
           return (itemToDelete->IsPVRRecording() &&
                   (!m_bWatchedOnly || itemToDelete->GetPVRRecordingInfoTag()->GetPlayCount() > 0) &&
-                  !itemToDelete->GetPVRRecordingInfoTag()->Delete())
+                  !recordings->DeleteRecording(itemToDelete->GetPVRRecordingInfoTag()))
                      ? false
                      : success;
         });

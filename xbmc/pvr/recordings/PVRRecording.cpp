@@ -427,6 +427,11 @@ void CPVRRecording::UpdateMetadata(CVideoDatabase& db, const CPVRClient& client)
   m_bGotMetaData = true;
 }
 
+void CPVRRecording::DeleteMetadata(CVideoDatabase& db)
+{
+  db.EraseAllForFile(m_strFileNameAndPath);
+}
+
 std::vector<EDL::Edit> CPVRRecording::GetEdl() const
 {
   std::vector<EDL::Edit> edls;

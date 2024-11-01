@@ -356,6 +356,17 @@ bool CPVRRecordings::ResetResumePoint(const std::shared_ptr<CPVRRecording>& reco
   return bResult;
 }
 
+bool CPVRRecordings::DeleteRecording(const std::shared_ptr<CPVRRecording>& recording)
+{
+  CVideoDatabase& db = GetVideoDatabase();
+  if (db.IsOpen() && recording->Delete())
+  {
+    recording->DeleteMetadata(db);
+    return true;
+  }
+  return false;
+}
+
 CVideoDatabase& CPVRRecordings::GetVideoDatabase()
 {
   if (!m_database)
