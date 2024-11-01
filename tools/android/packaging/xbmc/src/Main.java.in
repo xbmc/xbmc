@@ -309,6 +309,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   }
 
   @Override
+  @SuppressWarnings("deprecation")
   public void onVisibleBehindCanceled()
   {
     _onVisibleBehindCanceled();

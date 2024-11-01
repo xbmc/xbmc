@@ -637,7 +637,9 @@ void CXBMCApp::RequestVisibleBehind(bool requested)
   if (requested == m_hasReqVisible)
     return;
 
-  m_hasReqVisible = requestVisibleBehind(requested);
+  if (CJNIBuild::SDK_INT < 26)
+    m_hasReqVisible = requestVisibleBehind(requested);
+
   CLog::Log(LOGDEBUG, "Visible Behind request: {}", m_hasReqVisible ? "true" : "false");
 }
 
