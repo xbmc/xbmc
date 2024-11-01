@@ -712,9 +712,7 @@ void CGUIWindowVideoNav::OnDeleteItem(const CFileItemPtr& pItem)
            m_vecItems->IsPath("special://videoplaylists/"))
   {
     pItem->m_bIsFolder = false;
-    CGUIComponent *gui = CServiceBroker::GetGUI();
-    if (gui && gui->ConfirmDelete(pItem->GetPath()))
-      CFileUtils::DeleteItem(pItem);
+    CFileUtils::DeleteItemWithConfirm(pItem);
   }
   else
   {
