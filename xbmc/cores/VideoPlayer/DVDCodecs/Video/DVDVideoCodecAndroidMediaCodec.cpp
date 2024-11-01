@@ -23,6 +23,7 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "media/decoderfilter/DecoderFilterManager.h"
 #include "messaging/ApplicationMessenger.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/SettingUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -828,9 +829,16 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
                          return profileLevel.profile() == profile;
                        }) == profileLevels.cend())
       {
-        CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open profile not supported: {}",
+        CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open: Profile {} not supported",
                   profile);
-        continue;
+        if (CServiceBroker::GetSettingsComponent()
+                ->GetAdvancedSettings()
+                ->m_videoBypassCodecProfile)
+          CLog::Log(
+              LOGINFO,
+              "CDVDVideoCodecAndroidMediaCodec::Open: Ignore profile not supported for the codec");
+        else
+          continue;
       }
     }
 
