@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="suggestion_channel">Ettepanekud</string>
+    <string name="info_title">Info</string>
+    <string name="exit_button">Välju</string>
+    <string name="asking_permissions">Lubade küsimine…</string>
+    <string name="clearing_cache">Vahemälu tühjendamine…</string>
+    <string name="waiting_external">Välise salvestusruumi ootamine…</string>
+    <string name="first_run">Valmistumine esmakäivituseks. Palun oota…</string>
+    <string name="starting">%1$s käivitamine…</string>
+    <string name="no_find_apk">Paketti ei leita.</string>
+    <string name="no_read_apk">Paketti ei saa lugeda.</string>
+    <string name="error_title">Viga</string>
+    <string name="continue_button">Jätka</string>
+    <string name="permission_denied">Luba ei antud!! Sulgumine…</string>
+    <string name="notice_dialog">%1$s vajab toimimiseks juurdepääsu seadme meediale ja failidele. Luba see järgnevas aknas või %1$s sulgub.</string>
+    <string name="external_ok">Väline salvestusruum on korras…</string>
 </resources>
