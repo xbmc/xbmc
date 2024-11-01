@@ -75,6 +75,9 @@ namespace PythonBindings
 #if PY_VERSION_HEX >= 0x030C00A1
       0,
 #endif
+#if PY_VERSION_HEX >= 0x030D00A4
+      0,
+#endif
     };
 
     static int size = (long*)&(py_type_object_header.tp_name) - (long*)&py_type_object_header;
