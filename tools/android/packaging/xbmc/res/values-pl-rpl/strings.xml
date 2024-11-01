@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="suggestion_channel">Sugestie</string>
+    <string name="waiting_external">Oczekiwanie na pamięć zewnętrzną…</string>
+    <string name="continue_button">Kontynuuj</string>
+    <string name="error_title">Błąd</string>
+    <string name="info_title">Informacje</string>
+    <string name="exit_button">Zamknij</string>
+    <string name="clearing_cache">Czyszczenie pamięci podręcznej…</string>
+    <string name="external_ok">Pamięć zewnętrzna OK…</string>
+    <string name="starting">Uruchamianie %1$s…</string>
+    <string name="first_run">Przygotowanie do pierwszego uruchomienia. Proszę czekać…</string>
+    <string name="permission_denied">Odmowa dostępu!! Wychodzenie…</string>
+    <string name="no_find_apk">Nie można znaleźć pakietu.</string>
+    <string name="no_read_apk">Nie można odczytać pakietu.</string>
+    <string name="notice_dialog">%1$s wymaga dostępu do multimediów i plików urządzenia, aby działać. Zezwól na to za pomocą następującego okna dialogowego lub %1$s zakończy działanie.</string>
+    <string name="asking_permissions">Pytanie o uprawnienia…</string>
 </resources>

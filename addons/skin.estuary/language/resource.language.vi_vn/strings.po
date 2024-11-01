@@ -193,6 +193,10 @@ msgctxt "#31039"
 msgid "Fast forward"
 msgstr "Tua tới nhanh"
 
+msgctxt "#31040"
+msgid "Edit widgets"
+msgstr ""
+
 msgctxt "#31041"
 msgid "Camera manufacturer"
 msgstr "Nhà sản xuất máy ảnh"
@@ -390,6 +394,11 @@ msgctxt "#31107"
 msgid "WideList"
 msgstr "WideList"
 
+# empty strings from id 31108 to 31108
+msgctxt "#31109"
+msgid "Video streams"
+msgstr ""
+
 msgctxt "#31110"
 msgid "Enter files section"
 msgstr "Truy cập phần tập tin"
@@ -399,8 +408,8 @@ msgid "View your personal pictures or download one of the many image add-ons fro
 msgstr "Xem ảnh cá nhân của bạn hoặc tải xuống một trong nhiều tiện ích hình ảnh từ kho lưu trữ chính thức."
 
 msgctxt "#31112"
-msgid "Toggle audio stream"
-msgstr "Chuyển đổi luồng âm thanh"
+msgid "Audio streams"
+msgstr ""
 
 msgctxt "#31113"
 msgid "Search local library"
@@ -411,8 +420,8 @@ msgid "Search YouTube"
 msgstr "Tìm kiếm Youtube"
 
 msgctxt "#31115"
-msgid "Toggle subtitle"
-msgstr "Chuyển đổi phụ đề"
+msgid "Subtitles streams"
+msgstr ""
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
@@ -731,6 +740,19 @@ msgstr "Đa phương tiện"
 msgctxt "#31611"
 msgid "System"
 msgstr "Hệ thống"
+
+#. Audio channels
+msgctxt "#31612"
+msgid "channels"
+msgstr ""
+
+#~ msgctxt "#31112"
+#~ msgid "Toggle audio stream"
+#~ msgstr "Chuyển đổi luồng âm thanh"
+
+#~ msgctxt "#31115"
+#~ msgid "Toggle subtitle"
+#~ msgstr "Chuyển đổi phụ đề"
 
 #~ msgctxt "#31615"
 #~ msgid "Extras"
