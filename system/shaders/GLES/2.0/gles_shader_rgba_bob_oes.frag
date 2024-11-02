@@ -1,21 +1,9 @@
 /*
- *      Copyright (C) 2010-2013 Team XBMC
- *      http://xbmc.org
+ *  Copyright (C) 2010-2024 Team Kodi
+ *  This file is part of Kodi - https://kodi.tv
  *
- *  This Program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2, or (at your option)
- *  any later version.
- *
- *  This Program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
- *  <http://www.gnu.org/licenses/>.
- *
+ *  SPDX-License-Identifier: GPL-2.0-or-later
+ *  See LICENSES/README.md for more information.
  */
 
 #version 100
@@ -24,21 +12,16 @@
 
 precision highp float;
 uniform samplerExternalOES m_samp0;
-uniform samplerExternalOES m_samp1;
-varying vec4 m_cord0;
-varying vec4 m_cord1;
-varying lowp vec4 m_colour;
-uniform int m_method;
+varying vec2 m_cord0;
 uniform int m_field;
 uniform float m_step;
 
 uniform float m_brightness;
 uniform float m_contrast;
 
-void main ()
+void main()
 {
-  vec2 source;
-  source = m_cord0.xy;
+  vec2 source = m_cord0;
 
   float temp1 = mod(source.y, 2.0 * m_step);
   float temp2 = source.y - temp1;
@@ -50,9 +33,7 @@ void main ()
   below.x = source.x;
   below.y = source.y + (2.0*m_step * bstep);
 
-  vec4 color = mix(texture2D(m_samp0, source), texture2D(m_samp0, below), 0.5);
-  color *= m_contrast;
-  color += m_brightness;
-
-  gl_FragColor = color;
+  gl_FragColor = mix(texture2D(m_samp0, source), texture2D(m_samp0, below), 0.5);
+  gl_FragColor *= m_contrast;
+  gl_FragColor += m_brightness;
 }
