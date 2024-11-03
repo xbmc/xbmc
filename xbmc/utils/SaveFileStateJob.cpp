@@ -171,7 +171,8 @@ void CSaveFileState::DoWork(CFileItem& item,
           }
         }
 
-        if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->HasStreamDetails())
+        if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->HasStreamDetails() &&
+            !item.IsLiveTV())
         {
           CFileItem dbItem(item);
 
@@ -180,7 +181,7 @@ void CSaveFileState::DoWork(CFileItem& item,
               dbItem.GetVideoInfoTag()->m_streamDetails != item.GetVideoInfoTag()->m_streamDetails)
           {
             const int idFile = videodatabase.SetStreamDetailsForFile(
-                item.GetVideoInfoTag()->m_streamDetails, item.GetDynPath());
+                item.GetVideoInfoTag()->m_streamDetails, progressTrackingFile);
             if (item.GetVideoContentType() == VideoDbContentType::MOVIES)
               videodatabase.SetFileForMovie(item.GetDynPath(), item.GetVideoInfoTag()->m_iDbId,
                                             idFile);
