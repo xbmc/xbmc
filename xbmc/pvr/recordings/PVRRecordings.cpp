@@ -380,12 +380,14 @@ int CPVRRecordings::CleanupCachedImages()
       urlsToCheck.emplace_back(recording.second->ClientIconPath());
       urlsToCheck.emplace_back(recording.second->ClientThumbnailPath());
       urlsToCheck.emplace_back(recording.second->ClientFanartPath());
+      urlsToCheck.emplace_back(recording.second->ClientParentalRatingIconPath());
       urlsToCheck.emplace_back(recording.second->m_strFileNameAndPath);
     }
   }
 
   static const std::vector<PVRImagePattern> urlPatterns = {
-      {CPVRRecording::IMAGE_OWNER_PATTERN, ""}, // client-supplied icon, thumbnail, fanart
+      {CPVRRecording::IMAGE_OWNER_PATTERN,
+       ""}, // client-supplied icon, thumbnail, fanart, parental rating icon
       {"video", "pvr://recordings/"}, // kodi-generated video thumbnail
   };
   return CPVRCachedImages::Cleanup(urlPatterns, urlsToCheck);

@@ -69,7 +69,8 @@ const std::string CPVRRecording::IMAGE_OWNER_PATTERN = "pvrrecording";
 CPVRRecording::CPVRRecording()
   : m_iconPath(IMAGE_OWNER_PATTERN),
     m_thumbnailPath(IMAGE_OWNER_PATTERN),
-    m_fanartPath(IMAGE_OWNER_PATTERN)
+    m_fanartPath(IMAGE_OWNER_PATTERN),
+    m_parentalRatingIcon(IMAGE_OWNER_PATTERN)
 {
   Reset();
 }
@@ -78,7 +79,9 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING& recording, unsigned int iClien
   : m_iconPath(recording.strIconPath ? recording.strIconPath : "", IMAGE_OWNER_PATTERN),
     m_thumbnailPath(recording.strThumbnailPath ? recording.strThumbnailPath : "",
                     IMAGE_OWNER_PATTERN),
-    m_fanartPath(recording.strFanartPath ? recording.strFanartPath : "", IMAGE_OWNER_PATTERN)
+    m_fanartPath(recording.strFanartPath ? recording.strFanartPath : "", IMAGE_OWNER_PATTERN),
+    m_parentalRatingIcon(recording.strParentalRatingIcon ? recording.strParentalRatingIcon : "",
+                         IMAGE_OWNER_PATTERN)
 {
   Reset();
 
@@ -132,8 +135,6 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING& recording, unsigned int iClien
   m_parentalRating = recording.iParentalRating;
   if (recording.strParentalRatingCode)
     m_parentalRatingCode = recording.strParentalRatingCode;
-  if (recording.strParentalRatingIcon)
-    m_parentalRatingIcon = recording.strParentalRatingIcon;
   if (recording.strParentalRatingSource)
     m_parentalRatingSource = recording.strParentalRatingSource;
 
@@ -222,7 +223,7 @@ void CPVRRecording::Serialize(CVariant& value) const
   value["genre"] = m_genre;
   value["parentalrating"] = m_parentalRating;
   value["parentalratingcode"] = m_parentalRatingCode;
-  value["parentalratingicon"] = m_parentalRatingIcon;
+  value["parentalratingicon"] = ClientParentalRatingIconPath();
   value["parentalratingsource"] = m_parentalRatingSource;
   value["episodepart"] = m_episodePartNumber;
   value["titleextrainfo"] = m_titleExtraInfo;
@@ -279,7 +280,6 @@ void CPVRRecording::Reset()
 
   m_parentalRating = 0;
   m_parentalRatingCode.clear();
-  m_parentalRatingIcon.clear();
   m_parentalRatingSource.clear();
   m_titleExtraInfo.clear();
 
@@ -749,7 +749,7 @@ const std::string& CPVRRecording::GetParentalRatingCode() const
 const std::string& CPVRRecording::GetParentalRatingIcon() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  return m_parentalRatingIcon;
+  return m_parentalRatingIcon.GetLocalImage();
 }
 
 const std::string& CPVRRecording::GetParentalRatingSource() const

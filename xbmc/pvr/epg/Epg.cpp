@@ -547,7 +547,9 @@ void CPVREpg::RemovedFromContainer()
 
 int CPVREpg::CleanupCachedImages(const std::shared_ptr<const CPVREpgDatabase>& database)
 {
-  const std::vector<std::string> urlsToCheck = database->GetAllIconPaths(EpgID());
+  std::vector<std::string> urlsToCheck;
+  database->GetAllIconPaths(EpgID(), urlsToCheck);
+  database->GetAllParentalRatingIconPaths(EpgID(), urlsToCheck);
   const std::string owner = StringUtils::Format(CPVREpgInfoTag::IMAGE_OWNER_PATTERN, EpgID());
 
   return CPVRCachedImages::Cleanup({{owner, ""}}, urlsToCheck);

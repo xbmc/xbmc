@@ -113,9 +113,18 @@ namespace PVR
     /*!
      * @brief Get all icon paths for a given EPG id.
      * @param iEpgID The ID of the EPG.
-     * @return The entries.
+     * @param path The paths returned.
+     * @return True on success, false otherwise.
      */
-    std::vector<std::string> GetAllIconPaths(int iEpgID) const;
+    bool GetAllIconPaths(int iEpgID, std::vector<std::string>& paths) const;
+
+    /*!
+     * @brief Get all parental rating icon paths for a given EPG id.
+     * @param iEpgID The ID of the EPG.
+     * @param path The paths returned.
+     * @return True on success, false otherwise.
+     */
+    bool GetAllParentalRatingIconPaths(int iEpgID, std::vector<std::string>& paths) const;
 
     /*!
      * @brief Check whether this EPG has any tags.

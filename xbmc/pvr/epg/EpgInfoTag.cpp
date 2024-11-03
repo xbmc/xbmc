@@ -32,8 +32,11 @@ using namespace PVR;
 
 const std::string CPVREpgInfoTag::IMAGE_OWNER_PATTERN = "epgtag_{}";
 
-CPVREpgInfoTag::CPVREpgInfoTag(int iEpgID, const std::string& iconPath)
-  : m_iUniqueBroadcastID(EPG_TAG_INVALID_UID),
+CPVREpgInfoTag::CPVREpgInfoTag(int iEpgID,
+                               const std::string& iconPath,
+                               const std::string& parentalRatingIconPath)
+  : m_parentalRatingIcon(parentalRatingIconPath, StringUtils::Format(IMAGE_OWNER_PATTERN, iEpgID)),
+    m_iUniqueBroadcastID(EPG_TAG_INVALID_UID),
     m_iconPath(iconPath, StringUtils::Format(IMAGE_OWNER_PATTERN, iEpgID)),
     m_iFlags(EPG_TAG_FLAG_UNDEFINED),
     m_channelData(new CPVREpgChannelData),
@@ -46,7 +49,8 @@ CPVREpgInfoTag::CPVREpgInfoTag(const std::shared_ptr<CPVREpgChannelData>& channe
                                const CDateTime& start,
                                const CDateTime& end,
                                bool bIsGapTag)
-  : m_iUniqueBroadcastID(EPG_TAG_INVALID_UID),
+  : m_parentalRatingIcon(StringUtils::Format(IMAGE_OWNER_PATTERN, iEpgID)),
+    m_iUniqueBroadcastID(EPG_TAG_INVALID_UID),
     m_iconPath(StringUtils::Format(IMAGE_OWNER_PATTERN, iEpgID)),
     m_iFlags(EPG_TAG_FLAG_UNDEFINED),
     m_bIsGapTag(bIsGapTag),
@@ -70,6 +74,8 @@ CPVREpgInfoTag::CPVREpgInfoTag(const EPG_TAG& data,
   : m_iGenreType(data.iGenreType),
     m_iGenreSubType(data.iGenreSubType),
     m_parentalRating(data.iParentalRating),
+    m_parentalRatingIcon(data.strParentalRatingIcon ? data.strParentalRatingIcon : "",
+                         StringUtils::Format(IMAGE_OWNER_PATTERN, iEpgID)),
     m_iStarRating(data.iStarRating),
     m_iSeriesNumber(data.iSeriesNumber),
     m_iEpisodeNumber(data.iEpisodeNumber),
@@ -134,8 +140,6 @@ CPVREpgInfoTag::CPVREpgInfoTag(const EPG_TAG& data,
     m_strSeriesLink = data.strSeriesLink;
   if (data.strParentalRatingCode)
     m_parentalRatingCode = data.strParentalRatingCode;
-  if (data.strParentalRatingIcon)
-    m_parentalRatingIcon = data.strParentalRatingIcon;
   if (data.strParentalRatingSource)
     m_parentalRatingSource = data.strParentalRatingSource;
 }
@@ -176,7 +180,7 @@ void CPVREpgInfoTag::Serialize(CVariant& value) const
   value["channeluid"] = m_channelData->UniqueClientChannelId();
   value["parentalrating"] = m_parentalRating;
   value["parentalratingcode"] = m_parentalRatingCode;
-  value["parentalratingicon"] = m_parentalRatingIcon;
+  value["parentalratingicon"] = ClientParentalRatingIconPath();
   value["parentalratingsource"] = m_parentalRatingSource;
   value["rating"] = m_iStarRating;
   value["title"] = m_strTitle;

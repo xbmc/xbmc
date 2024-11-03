@@ -328,6 +328,15 @@ public:
   const std::string& ClientFanartPath() const { return m_fanartPath.GetClientImage(); }
 
   /*!
+   * @brief Return the parental rating icon path as given by the client.
+   * @return The path.
+   */
+  const std::string& ClientParentalRatingIconPath() const
+  {
+    return m_parentalRatingIcon.GetClientImage();
+  }
+
+  /*!
    * @brief Return the icon path used by Kodi.
    * @return The path.
    */
@@ -572,7 +581,7 @@ private:
       PVR_PROVIDER_INVALID_UID; /*!< provider uid associated with this recording on the client */
   unsigned int m_parentalRating{0}; /*!< parental rating */
   std::string m_parentalRatingCode; /*!< Parental rating code */
-  std::string m_parentalRatingIcon; /*!< parental rating icon path */
+  CPVRCachedImage m_parentalRatingIcon; /*!< parental rating icon path */
   std::string m_parentalRatingSource; /*!< parental rating source */
   int m_episodePartNumber{PVR_RECORDING_INVALID_SERIES_EPISODE}; /*!< episode part number */
   std::string m_titleExtraInfo; /*!< title extra info */
