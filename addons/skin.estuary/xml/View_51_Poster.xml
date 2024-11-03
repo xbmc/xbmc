@@ -204,7 +204,7 @@
 				<height>721</height>
 				<visible>Control.HasFocus(51)</visible>
 				<animation effect="fade" time="100">VisibleChange</animation>
-				<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
+				<texture border="4" infill="false" colordiffuse="button_focus">colors/white.png</texture>
 			</control>
 			<control type="group">
 				<left>216</left>

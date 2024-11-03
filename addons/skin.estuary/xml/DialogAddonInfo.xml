@@ -117,7 +117,7 @@
 							<top>16</top>
 							<width>393</width>
 							<height>228</height>
-							<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
+							<texture border="4" infill="false" colordiffuse="button_focus">colors/white.png</texture>
 						</control>
 					</focusedlayout>
 				</control>
