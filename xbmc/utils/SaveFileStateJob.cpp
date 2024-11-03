@@ -86,7 +86,9 @@ void CSaveFileState::DoWork(CFileItem& item,
       }
       else
       {
+        //! @todo check possible failure of BeginTransaction
         videodatabase.BeginTransaction();
+        bool videoDbSuccess{true};
 
         if (URIUtils::IsPlugin(progressTrackingFile) && !(item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iDbId >= 0))
         {
@@ -105,6 +107,7 @@ void CSaveFileState::DoWork(CFileItem& item,
         // No resume & watched status for livetv
         if (!item.IsLiveTV())
         {
+          //! @todo handle db failures to maintain data integrity
           if (updatePlayCount)
           {
             // no watched for not yet finished pvr recordings
@@ -182,17 +185,29 @@ void CSaveFileState::DoWork(CFileItem& item,
           {
             const int idFile = videodatabase.SetStreamDetailsForFile(
                 item.GetVideoInfoTag()->m_streamDetails, progressTrackingFile);
-            if (item.GetVideoContentType() == VideoDbContentType::MOVIES)
-              videodatabase.SetFileForMovie(item.GetDynPath(), item.GetVideoInfoTag()->m_iDbId,
-                                            idFile);
-            else if (item.GetVideoContentType() == VideoDbContentType::EPISODES)
-              videodatabase.SetFileForEpisode(item.GetDynPath(), item.GetVideoInfoTag()->m_iDbId,
-                                              idFile);
-            updateListing = true;
+
+            if (idFile == -2)
+            {
+              videoDbSuccess = false;
+            }
+            else if (idFile > 0)
+            {
+              updateListing = true;
+
+              if (item.GetVideoContentType() == VideoDbContentType::MOVIES)
+                videoDbSuccess = videodatabase.SetFileForMovie(
+                    item.GetDynPath(), item.GetVideoInfoTag()->m_iDbId, idFile);
+              else if (item.GetVideoContentType() == VideoDbContentType::EPISODES)
+                videoDbSuccess = videodatabase.SetFileForEpisode(
+                    item.GetDynPath(), item.GetVideoInfoTag()->m_iDbId, idFile);
+            }
           }
         }
 
-        videodatabase.CommitTransaction();
+        if (videoDbSuccess)
+          videodatabase.CommitTransaction();
+        else
+          videodatabase.RollbackTransaction();
 
         if (updateListing)
         {

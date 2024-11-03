@@ -3021,11 +3021,9 @@ bool CVideoDatabase::SetFileForEpisode(const std::string& fileAndPath, int idEpi
 {
   try
   {
-    BeginTransaction();
     std::string sql = PrepareSQL("UPDATE episode SET c18='%s', idFile=%i WHERE idEpisode=%i",
                                  fileAndPath.c_str(), idFile, idEpisode);
     m_pDS->exec(sql);
-    CommitTransaction();
 
     return true;
   }
@@ -3033,7 +3031,6 @@ bool CVideoDatabase::SetFileForEpisode(const std::string& fileAndPath, int idEpi
   {
     CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, idEpisode);
   }
-  RollbackTransaction();
   return false;
 }
 
@@ -3041,14 +3038,14 @@ bool CVideoDatabase::SetFileForMovie(const std::string& fileAndPath, int idMovie
 {
   try
   {
-    BeginTransaction();
+    assert(m_pDB->in_transaction());
+
     std::string sql = PrepareSQL("UPDATE movie SET c22='%s', idFile=%i WHERE idMovie=%i",
                                  fileAndPath.c_str(), idFile, idMovie);
     m_pDS->exec(sql);
     sql = PrepareSQL("UPDATE videoversion SET idFile=%i WHERE idMedia=%i AND media_type='movie'",
                      idFile, idMovie);
     m_pDS->exec(sql);
-    CommitTransaction();
 
     return true;
   }
@@ -3056,7 +3053,6 @@ bool CVideoDatabase::SetFileForMovie(const std::string& fileAndPath, int idMovie
   {
     CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, idMovie);
   }
-  RollbackTransaction();
   return false;
 }
 
@@ -3256,14 +3252,18 @@ int CVideoDatabase::SetStreamDetailsForFile(const CStreamDetails& details,
   int idFile = AddFile(strFileNameAndPath);
   if (idFile < 0)
     return -1;
-  SetStreamDetailsForFileId(details, idFile);
-  return idFile;
+
+  //! @todo ugly error return mechanism, fixme
+  if (SetStreamDetailsForFileId(details, idFile))
+    return idFile;
+  else
+    return -2;
 }
 
-void CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, int idFile)
+bool CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, int idFile)
 {
   if (idFile < 0)
-    return;
+    return false;
 
   try
   {
@@ -3313,11 +3313,13 @@ void CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
         m_pDS->exec(sql);
       }
     }
+    return true;
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, idFile);
   }
+  return false;
 }
 
 //********************************************************************************************************************************
