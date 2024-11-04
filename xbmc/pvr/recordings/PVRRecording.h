@@ -171,6 +171,12 @@ public:
   void UpdateMetadata(CVideoDatabase& db, const CPVRClient& client);
 
   /*!
+   * @brief Delete metadata like the resume point and play count from the database.
+   * @param db The database to delete the data from.
+   */
+  void DeleteMetadata(CVideoDatabase& db);
+
+  /*!
    * @brief Update this tag with the contents of the given tag.
    * @param tag The new tag info.
    * @param client The client this recording belongs to.

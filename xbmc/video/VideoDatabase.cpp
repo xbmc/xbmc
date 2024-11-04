@@ -12012,6 +12012,44 @@ void CVideoDatabase::EraseAllForPath(const std::string& path)
   }
 }
 
+void CVideoDatabase::EraseAllForFile(const std::string& fileNameAndPath)
+{
+  try
+  {
+    const int fileId{GetFileId(fileNameAndPath)};
+    if (fileId != -1)
+    {
+      std::string sql = PrepareSQL("DELETE FROM settings WHERE idFile = %i", fileId);
+      m_pDS->exec(sql);
+
+      sql = PrepareSQL("DELETE FROM bookmark WHERE idFile = %i", fileId);
+      m_pDS->exec(sql);
+
+      sql = PrepareSQL("DELETE FROM streamdetails WHERE idFile = %i", fileId);
+      m_pDS->exec(sql);
+
+      sql = PrepareSQL("DELETE FROM files WHERE idFile = %i", fileId);
+      m_pDS->exec(sql);
+
+      std::string path;
+      std::string fileName;
+      SplitPath(fileNameAndPath, path, fileName);
+      const int pathId{GetPathId(path)};
+      if (pathId != -1)
+      {
+        sql = PrepareSQL("DELETE FROM path WHERE idPath = %i "
+                         "AND NOT EXISTS (SELECT 1 FROM files WHERE files.idPath = %i)",
+                         pathId, pathId);
+        m_pDS->exec(sql);
+      }
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
+  }
+}
+
 std::string CVideoDatabase::GetVideoItemTitle(VideoDbContentType itemType, int dbId)
 {
   switch (itemType)

@@ -83,6 +83,13 @@ public:
   bool ResetResumePoint(const std::shared_ptr<CPVRRecording>& recording);
 
   /*!
+   * @brief Delete a recording in the backend, cleanup db enries.
+   * @param recording The recording
+   * @return True on success, false otherwise
+   */
+  bool DeleteRecording(const std::shared_ptr<CPVRRecording>& recording);
+
+  /*!
    * @brief Get a list of all recordings
    * @return the list of all recordings
    */
