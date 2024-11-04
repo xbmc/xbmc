@@ -319,7 +319,13 @@ public:
    * @brief Get the parental rating icon path of this event.
    * @return Path to the parental rating icon.
    */
-  const std::string& ParentalRatingIcon() const { return m_parentalRatingIcon; }
+  const std::string& ParentalRatingIcon() const { return m_parentalRatingIcon.GetLocalImage(); }
+
+  /*!
+   * @brief Get the parental rating icon path of this event as given by the client.
+   * @return The path to the icon
+   */
+  std::string ClientParentalRatingIconPath() const { return m_parentalRatingIcon.GetClientImage(); }
 
   /*!
    * @brief Get the parental rating source of this event.
@@ -485,7 +491,9 @@ public:
   static const std::string DeTokenize(const std::vector<std::string>& tokens);
 
 private:
-  CPVREpgInfoTag(int iEpgID, const std::string& iconPath);
+  CPVREpgInfoTag(int iEpgID,
+                 const std::string& iconPath,
+                 const std::string& parentalRatingIconPath);
 
   CPVREpgInfoTag() = delete;
   CPVREpgInfoTag(const CPVREpgInfoTag& tag) = delete;
@@ -503,7 +511,7 @@ private:
   std::string m_strGenreDescription; /*!< genre description */
   unsigned int m_parentalRating = 0; /*!< parental rating */
   std::string m_parentalRatingCode; /*!< Parental rating code */
-  std::string m_parentalRatingIcon; /*!< parental rating icon path */
+  CPVRCachedImage m_parentalRatingIcon; /*!< parental rating icon path */
   std::string m_parentalRatingSource; /*!< parental rating source */
   int m_iStarRating = 0; /*!< star rating */
   int m_iSeriesNumber = -1; /*!< series number */

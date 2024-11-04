@@ -134,7 +134,7 @@ public:
       m_firstAired(recording.FirstAired().IsValid() ? recording.FirstAired().GetAsW3CDate() : ""),
       m_providerName(recording.ProviderName()),
       m_parentalRatingCode(recording.GetParentalRatingCode()),
-      m_parentalRatingIcon(recording.GetParentalRatingIcon()),
+      m_parentalRatingIcon(recording.ClientParentalRatingIconPath()),
       m_parentalRatingSource(recording.GetParentalRatingSource())
   {
     // zero-init base struct members
@@ -309,7 +309,7 @@ public:
       m_genreDescription(tag.GenreDescription()),
       m_firstAired(GetFirstAired(tag)),
       m_parentalRatingCode(tag.ParentalRatingCode()),
-      m_parentalRatingIcon(tag.ParentalRatingIcon()),
+      m_parentalRatingIcon(tag.ClientParentalRatingIconPath()),
       m_parentalRatingSource(tag.ParentalRatingSource())
   {
     // zero-init base struct members

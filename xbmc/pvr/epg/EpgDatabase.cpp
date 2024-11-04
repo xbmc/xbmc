@@ -443,7 +443,8 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::CreateEpgTag(
   if (!pDS->eof())
   {
     std::shared_ptr<CPVREpgInfoTag> newTag(
-        new CPVREpgInfoTag(m_pDS->fv("idEpg").get_asInt(), m_pDS->fv("sIconPath").get_asString()));
+        new CPVREpgInfoTag(m_pDS->fv("idEpg").get_asInt(), m_pDS->fv("sIconPath").get_asString(),
+                           m_pDS->fv("sParentalRatingIcon").get_asString()));
 
     time_t iStartTime;
     iStartTime = static_cast<time_t>(m_pDS->fv("iStartTime").get_asInt());
@@ -481,7 +482,6 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::CreateEpgTag(
     newTag->m_iFlags = m_pDS->fv("iFlags").get_asInt();
     newTag->m_strSeriesLink = m_pDS->fv("sSeriesLink").get_asString();
     newTag->m_parentalRatingCode = m_pDS->fv("sParentalRatingCode").get_asString();
-    newTag->m_parentalRatingIcon = m_pDS->fv("sParentalRatingIcon").get_asString();
     newTag->m_parentalRatingSource = m_pDS->fv("sParentalRatingSource").get_asString();
     newTag->m_iGenreType = m_pDS->fv("iGenreType").get_asInt();
     newTag->m_iGenreSubType = m_pDS->fv("iGenreSubType").get_asInt();
@@ -1121,7 +1121,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetAllEpgTags(int 
   return {};
 }
 
-std::vector<std::string> CPVREpgDatabase::GetAllIconPaths(int iEpgID) const
+bool CPVREpgDatabase::GetAllIconPaths(int iEpgID, std::vector<std::string>& paths) const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   const std::string strQuery =
@@ -1130,21 +1130,46 @@ std::vector<std::string> CPVREpgDatabase::GetAllIconPaths(int iEpgID) const
   {
     try
     {
-      std::vector<std::string> paths;
       while (!m_pDS->eof())
       {
         paths.emplace_back(m_pDS->fv("sIconPath").get_asString());
         m_pDS->next();
       }
       m_pDS->close();
-      return paths;
+      return true;
     }
     catch (...)
     {
-      CLog::LogF(LOGERROR, "Could not load tags for EPG ({})", iEpgID);
+      CLog::LogF(LOGERROR, "Could not load icon paths for EPG ({})", iEpgID);
     }
   }
-  return {};
+  return false;
+}
+
+bool CPVREpgDatabase::GetAllParentalRatingIconPaths(int iEpgID,
+                                                    std::vector<std::string>& paths) const
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  const std::string strQuery =
+      PrepareSQL("SELECT sParentalRatingIcon FROM epgtags WHERE idEpg = %u;", iEpgID);
+  if (ResultQuery(strQuery))
+  {
+    try
+    {
+      while (!m_pDS->eof())
+      {
+        paths.emplace_back(m_pDS->fv("sParentalRatingIcon").get_asString());
+        m_pDS->next();
+      }
+      m_pDS->close();
+      return true;
+    }
+    catch (...)
+    {
+      CLog::LogF(LOGERROR, "Could not load parental rating icon paths for EPG ({})", iEpgID);
+    }
+  }
+  return false;
 }
 
 bool CPVREpgDatabase::GetLastEpgScanTime(int iEpgId, CDateTime* lastScan) const
@@ -1301,7 +1326,7 @@ bool CPVREpgDatabase::QueuePersistQuery(const CPVREpgInfoTag& tag)
         tag.GenreDescription().c_str(), sFirstAired.c_str(), tag.ParentalRating(), tag.StarRating(),
         tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName().c_str(),
         tag.Flags(), tag.SeriesLink().c_str(), tag.ParentalRatingCode().c_str(),
-        tag.UniqueBroadcastID(), tag.ParentalRatingIcon().c_str(),
+        tag.UniqueBroadcastID(), tag.ClientParentalRatingIconPath().c_str(),
         tag.ParentalRatingSource().c_str(), tag.TitleExtraInfo().c_str());
   }
   else
@@ -1324,7 +1349,7 @@ bool CPVREpgDatabase::QueuePersistQuery(const CPVREpgInfoTag& tag)
         tag.GenreDescription().c_str(), sFirstAired.c_str(), tag.ParentalRating(), tag.StarRating(),
         tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName().c_str(),
         tag.Flags(), tag.SeriesLink().c_str(), tag.ParentalRatingCode().c_str(),
-        tag.UniqueBroadcastID(), iBroadcastId, tag.ParentalRatingIcon().c_str(),
+        tag.UniqueBroadcastID(), iBroadcastId, tag.ClientParentalRatingIconPath().c_str(),
         tag.ParentalRatingSource().c_str(), tag.TitleExtraInfo().c_str());
   }
 
