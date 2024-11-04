@@ -367,7 +367,7 @@
 		<param name="visible">true</param>
 		<definition>
 			<control type="grouplist">
-				<visible>Window.IsActive(Home) | Window.IsActive(10025)</visible>
+				<visible>Window.IsActive(Home) | Window.IsActive(10025) | Window.IsActive(TVRecordings) | Window.IsActive(RadioRecordings)</visible>
 				<orientation>horizontal</orientation>
 				<right>20</right>
 				<bottom>0</bottom>

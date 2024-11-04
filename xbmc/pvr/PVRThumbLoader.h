@@ -14,8 +14,6 @@
 
 namespace PVR
 {
-bool ProvidesStreamForThumbExtraction(const CFileItem& item);
-
 class CPVRThumbLoader : public CThumbLoader
 {
 public:
@@ -39,4 +37,4 @@ private:
   bool m_bInvalidated = false;
 };
 
-}
+} // namespace PVR

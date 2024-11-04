@@ -142,6 +142,8 @@ private:
   void CharInfoUNC(std::string& strValue) const;
   void CharInfoFrontendName(std::string& strValue) const;
   void CharInfoFrontendStatus(std::string& strValue) const;
+  void CharInfoClientName(std::string& strValue) const;
+  void CharInfoInstanceName(std::string& strValue) const;
   void CharInfoBackendName(std::string& strValue) const;
   void CharInfoBackendVersion(std::string& strValue) const;
   void CharInfoBackendHost(std::string& strValue) const;
@@ -170,6 +172,8 @@ private:
   bool m_bHasRadioRecordings;
   unsigned int m_iCurrentActiveClient;
   std::string m_strPlayingClientName;
+  std::string m_strClientName;
+  std::string m_strInstanceName;
   std::string m_strBackendName;
   std::string m_strBackendVersion;
   std::string m_strBackendHost;

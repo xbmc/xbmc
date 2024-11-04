@@ -46,6 +46,8 @@ typedef std::map<int, std::shared_ptr<CPVRClient>> CPVRClientMap;
    */
 struct SBackend
 {
+  std::string clientname;
+  std::string instancename;
   std::string name;
   std::string version;
   std::string host;

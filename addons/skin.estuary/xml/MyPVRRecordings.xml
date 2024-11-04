@@ -53,10 +53,18 @@
 					<orientation>vertical</orientation>
 					<animation effect="zoom" start="100,100" end="50,100" center="-50,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(73)">conditional</animation>
 				</control>
-				<include content="PVRInfoPanel">
-					<param name="folder_sortby" value="date" />
-					<param name="folder_sortorder" value="descending" />
-				</include>
+				<control type="group">
+					<include content="PVRInfoPanel">
+						<param name="folder_sortby" value="date" />
+						<param name="folder_sortorder" value="descending" />
+						<param name="bottom" value="200" />
+					</include>
+					<control type="group">
+						<bottom>list_bottom_offset</bottom>
+						<height>60</height>
+						<include content="PVRBackendDiskspace"/>
+					</control>
+				</control>
 			</control>
 			<include content="TopBar">
 				<param name="breadcrumbs_label" value="$VAR[BreadcrumbsPVRRecordingsVar]" />
@@ -65,30 +73,11 @@
 				<param name="info_visible" value="true" />
 			</include>
 			<control type="group">
-				<depth>DepthBars</depth>
-				<right>20</right>
-				<width>850</width>
-				<include>OpenClose_Right</include>
 				<bottom>0</bottom>
-				<height>60</height>
-				<control type="label">
-					<right>220</right>
-					<width>610</width>
-					<height>20</height>
-					<label>$INFO[PVR.backenddiskspace]</label>
-					<shadowcolor>black</shadowcolor>
-					<align>right</align>
-					<font>font27</font>
-					<visible>!Integer.IsGreater(PVR.backenddiskspaceprogr,100)</visible>
-				</control>
-				<control type="progress">
-					<right>0</right>
-					<top>17</top>
-					<width>200</width>
-					<height>12</height>
-					<info>PVR.backenddiskspaceprogr</info>
-					<visible>!Integer.IsGreater(PVR.backenddiskspaceprogr,100)</visible>
-				</control>
+				<height>70</height>
+				<animation effect="fade" start="0" end="100" time="300" delay="300">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+				<include condition="!Skin.HasSetting(hide_mediaflags)">MediaFlags</include>
 			</control>
 			<control type="group">
 				<include>MediaMenuCommon</include>

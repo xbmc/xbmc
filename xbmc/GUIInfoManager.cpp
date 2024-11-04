@@ -7087,7 +7087,7 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///                  \anchor ListItem_PVRClientName
 ///                  _string_,
 ///     @return If selected item is of type PVR (recording\, timer\, EPG)\, the name of the PVR client
-///     add-on\, as specified by the add-on developer. Empty if theitem is not of type PVR.
+///     add-on\, as specified by the add-on developer. Empty if the item is not of type PVR.
 ///     <p><hr>
 ///     @skinning_v22 **[New Infolabel]** \link ListItem_PVRClientName `ListItem.PVRClientName`\endlink
 ///     <p>
@@ -8384,6 +8384,23 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
 ///     @skinning_v22 **[New Integer Value]** \link PVR_ClientCount `PVR.ClientCount`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`PVR.ClientName`</b>,
+///                  \anchor PVR_ClientName
+///                  _string_,
+///     @return The name of the PVR client add-on\, as specified by the add-on developer.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link PVR_ClientName `PVR.ClientName`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`PVR.InstanceName`</b>,
+///                  \anchor PVR_InstanceName
+///                  _string_,
+///     @return The name of the instance of the PVR client add-on\, as specified by the user in
+///     the add-on settings. Empty if the PVR client add-on does not support multiple instances.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link PVR_InstanceName `PVR.InstanceName`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -8467,7 +8484,9 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "timeshiftprogressbufferstart", PVR_TIMESHIFT_PROGRESS_BUFFER_START },
                                   { "timeshiftprogressbufferend", PVR_TIMESHIFT_PROGRESS_BUFFER_END },
                                   { "epgeventicon",               PVR_EPG_EVENT_ICON },
-                                  { "clientcount",                PVR_CLIENT_COUNT }};
+                                  { "clientcount",                PVR_CLIENT_COUNT },
+                                  { "clientname",                 PVR_CLIENT_NAME },
+                                  { "instancename",               PVR_INSTANCE_NAME }};
 // clang-format on
 
 /// \page modules__infolabels_boolean_conditions

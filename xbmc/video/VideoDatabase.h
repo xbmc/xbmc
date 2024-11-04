@@ -22,6 +22,7 @@
 
 class CFileItem;
 class CFileItemList;
+class CStreamDetails;
 class CVideoSettings;
 class CGUIDialogProgress;
 class CGUIDialogProgressBarHandle;
@@ -701,6 +702,7 @@ public:
   bool GetResumePoint(CVideoInfoTag& tag);
   bool GetStreamDetails(CFileItem& item);
   bool GetStreamDetails(CVideoInfoTag& tag);
+  bool GetStreamDetails(const std::string& filenameAndPath, CStreamDetails& details);
   bool GetDetailsByTypeAndId(CFileItem& item, VideoDbContentType type, int id);
   CVideoInfoTag GetDetailsByTypeAndId(VideoDbContentType type, int id);
 

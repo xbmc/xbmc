@@ -2060,7 +2060,7 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
 
   CFileItem item(strMovie, false);
   if ((NETWORK::IsInternetStream(item) && !URIUtils::IsOnLAN(item.GetDynPath())) ||
-      PLAYLIST::IsPlayList(item) || item.IsLiveTV() || !VIDEO::IsVideo(item))
+      PLAYLIST::IsPlayList(item) || item.IsPVR() || !VIDEO::IsVideo(item))
     return;
 
   CLog::Log(LOGDEBUG, "{}: Searching for subtitles...", __FUNCTION__);
