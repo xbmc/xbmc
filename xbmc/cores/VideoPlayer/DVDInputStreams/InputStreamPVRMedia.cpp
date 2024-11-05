@@ -100,3 +100,36 @@ bool CInputStreamPVRMedia::CanSeekPVRStream()
 {
   return true;
 }
+
+bool CInputStreamPVRMedia::IsRealtimePVRStream()
+{
+  bool ret = false;
+
+  // if (m_client)
+  //   m_client->IsRecordedStreamRealTime(m_streamId, ret);
+
+  return ret;
+}
+
+void CInputStreamPVRMedia::PausePVRStream(bool paused)
+{
+  // if (m_client)
+  //   m_client->PauseRecordedStream(m_streamId, paused);
+}
+
+bool CInputStreamPVRMedia::GetPVRStreamTimes(Times& times)
+{
+  // PVR_STREAM_TIMES streamTimes = {};
+  // if (m_client && m_client->GetRecordedStreamTimes(m_streamId, &streamTimes) == PVR_ERROR_NO_ERROR)
+  // {
+  //   times.startTime = streamTimes.startTime;
+  //   times.ptsStart = streamTimes.ptsStart;
+  //   times.ptsBegin = streamTimes.ptsBegin;
+  //   times.ptsEnd = streamTimes.ptsEnd;
+  //   return true;
+  // }
+  // else
+  // {
+    return false;
+  // }
+}
