@@ -11,9 +11,9 @@
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_timers.h" // PVR_TIMER_STATE
 #include "pvr/timers/PVRTimerInfoTag.h"
 
-#include <map>
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 class CSetting;
@@ -67,11 +67,11 @@ private:
   std::shared_ptr<const CPVRTimerSettingDefinition> GetSettingDefintion(
       const std::string& settingId) const;
 
-  using CustomSettingDefinitionsMap =
-      std::map<std::string,
-               std::shared_ptr<const CPVRTimerSettingDefinition>>; // setting id, setting def
+  using CustomSettingDefinitionsVector = std::vector<
+      std::pair<std::string,
+                std::shared_ptr<const CPVRTimerSettingDefinition>>>; // setting id, setting def
 
-  CustomSettingDefinitionsMap m_customSettingDefs;
+  CustomSettingDefinitionsVector m_customSettingDefs;
   CPVRTimerInfoTag::CustomPropsMap m_customProps;
 };
 } // namespace PVR
