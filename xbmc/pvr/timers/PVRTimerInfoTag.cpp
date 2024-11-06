@@ -343,7 +343,11 @@ void CPVRTimerInfoTag::UpdateSummary()
   const std::string startDate(StartAsLocalTime().GetAsLocalizedDate());
   const std::string endDate(EndAsLocalTime().GetAsLocalizedDate());
 
-  if (m_bEndAnyTime)
+  if (!m_timerType->SupportsStartTime() || !m_timerType->SupportsEndTime())
+  {
+    m_strSummary = GetWeekdaysString();
+  }
+  else if (m_bEndAnyTime)
   {
     m_strSummary = StringUtils::Format(
         "{} {} {}",
