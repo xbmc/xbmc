@@ -70,7 +70,7 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
 
   // construct directory where the track is stored
   std::string strDirectory;
-  int legalType;
+  LegalPath legalType;
   if (!CreateAlbumDir(*pItem->GetMusicInfoTag(), strDirectory, legalType))
     return false;
 
@@ -115,7 +115,7 @@ bool CCDDARipper::RipCD()
 
   // construct directory where the tracks are stored
   std::string strDirectory;
-  int legalType;
+  LegalPath legalType;
   if (!CreateAlbumDir(*vecItems[0]->GetMusicInfoTag(), strDirectory, legalType))
     return false;
 
@@ -144,7 +144,7 @@ bool CCDDARipper::RipCD()
 
 bool CCDDARipper::CreateAlbumDir(const MUSIC_INFO::CMusicInfoTag& infoTag,
                                  std::string& strDirectory,
-                                 int& legalType)
+                                 LegalPath& legalType)
 {
   std::shared_ptr<CSettingPath> recordingpathSetting = std::static_pointer_cast<CSettingPath>(
       CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(
@@ -168,13 +168,13 @@ bool CCDDARipper::CreateAlbumDir(const MUSIC_INFO::CMusicInfoTag& infoTag,
     return false;
   }
 
-  legalType = LEGAL_NONE;
+  legalType = LegalPath::NONE;
   CFileItem ripPath(strDirectory, true);
   if (ripPath.IsSmb())
-    legalType = LEGAL_WIN32_COMPAT;
+    legalType = LegalPath::WIN32_COMPAT;
 #ifdef TARGET_WINDOWS
   if (ripPath.IsHD())
-    legalType = LEGAL_WIN32_COMPAT;
+    legalType = LegalPath::WIN32_COMPAT;
 #endif
 
   std::string strAlbumDir = GetAlbumDirName(infoTag);

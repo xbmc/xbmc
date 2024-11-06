@@ -1827,7 +1827,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
           AVDictionaryEntry* nameTag = av_dict_get(pStream->metadata, "filename", NULL, 0);
           if (nameTag)
           {
-            filePath += CUtil::MakeLegalFileName(nameTag->value, LEGAL_WIN32_COMPAT);
+            filePath += CUtil::MakeLegalFileName(nameTag->value, LegalPath::WIN32_COMPAT);
             XFILE::CFile file;
             if (pStream->codecpar->extradata && file.OpenForWrite(filePath))
             {

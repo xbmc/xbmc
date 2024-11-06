@@ -10816,8 +10816,8 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
           }
         }
 
-        std::string itemPath = URIUtils::AddFileToFolder(movieSetsDir,
-            CUtil::MakeLegalFileName(title, LEGAL_WIN32_COMPAT));
+        std::string itemPath = URIUtils::AddFileToFolder(
+            movieSetsDir, CUtil::MakeLegalFileName(title, LegalPath::WIN32_COMPAT));
         if (CDirectory::Exists(itemPath) || CDirectory::Create(itemPath))
         {
           std::map<std::string, std::string> artwork;
@@ -11315,8 +11315,9 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
         item.SetArt(artItem.GetArt());
         if (!item.GetVideoInfoTag()->m_set.title.empty())
         {
-          std::string setPath = URIUtils::AddFileToFolder(movieSetsDir,
-              CUtil::MakeLegalFileName(item.GetVideoInfoTag()->m_set.title, LEGAL_WIN32_COMPAT));
+          std::string setPath = URIUtils::AddFileToFolder(
+              movieSetsDir, CUtil::MakeLegalFileName(item.GetVideoInfoTag()->m_set.title,
+                                                     LegalPath::WIN32_COMPAT));
           if (CDirectory::Exists(setPath))
           {
             CGUIListItem::ArtMap setArt;

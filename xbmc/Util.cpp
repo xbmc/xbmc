@@ -1015,13 +1015,13 @@ bool CUtil::CreateDirectoryEx(const std::string& strPath)
   return CDirectory::Exists(strPath);
 }
 
-std::string CUtil::MakeLegalFileName(std::string strFile, int LegalType)
+std::string CUtil::MakeLegalFileName(std::string strFile, LegalPath LegalType)
 {
   StringUtils::Replace(strFile, '/', '_');
   StringUtils::Replace(strFile, '\\', '_');
   StringUtils::Replace(strFile, '?', '_');
 
-  if (LegalType == LEGAL_WIN32_COMPAT)
+  if (LegalType == LegalPath::WIN32_COMPAT)
   {
     // just filter out some illegal characters on windows
     StringUtils::Replace(strFile, ':', '_');
@@ -1037,7 +1037,7 @@ std::string CUtil::MakeLegalFileName(std::string strFile, int LegalType)
 }
 
 // legalize entire path
-std::string CUtil::MakeLegalPath(std::string strPathAndFile, int LegalType)
+std::string CUtil::MakeLegalPath(std::string strPathAndFile, LegalPath LegalType)
 {
   if (URIUtils::IsStack(strPathAndFile))
     return MakeLegalPath(CStackDirectory::GetFirstStackedFile(strPathAndFile));
