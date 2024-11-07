@@ -602,8 +602,9 @@ public:
    * \brief Clear any existing stream details and add the new provided details to a file.
    * \param[in] details New stream details
    * \param[in] idFile Identifier of the file
+   * \return operation success. true for success, false for failure
    */
-  void SetStreamDetailsForFileId(const CStreamDetails& details, int idFile);
+  bool SetStreamDetailsForFileId(const CStreamDetails& details, int idFile);
 
   bool SetSingleValue(VideoDbContentType type, int dbId, int dbField, const std::string& strValue);
   bool SetSingleValue(VideoDbContentType type,
