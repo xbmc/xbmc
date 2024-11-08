@@ -1519,8 +1519,8 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
   {
     XBMC_Event newEvent = {};
     newEvent.type = XBMC_VIDEORESIZE;
-    newEvent.resize.w = pMsg->param1;
-    newEvent.resize.h = pMsg->param2;
+    newEvent.resize.width = pMsg->param1;
+    newEvent.resize.height = pMsg->param2;
     m_pAppPort->OnEvent(newEvent);
     CServiceBroker::GetGUI()->GetWindowManager().MarkDirty();
   }
