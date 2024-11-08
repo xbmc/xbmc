@@ -420,7 +420,8 @@ namespace KODI::VIDEO
         break;
 
       // add video extras to library
-      if (foundSomething && !m_ignoreVideoExtras && IsVideoExtrasFolder(*pItem))
+      if (foundSomething && content == CONTENT_MOVIES && settings.parent_name &&
+          !m_ignoreVideoExtras && IsVideoExtrasFolder(*pItem))
       {
         if (AddVideoExtras(items, content, pItem->GetPath()))
         {
@@ -2462,7 +2463,7 @@ namespace KODI::VIDEO
     // get the library item which was added previously with the specified conent type
     for (const auto& item : items)
     {
-      if (content == CONTENT_MOVIES)
+      if (content == CONTENT_MOVIES && !item->m_bIsFolder)
       {
         dbId = m_database.GetMovieId(item->GetPath());
         if (dbId != -1)
