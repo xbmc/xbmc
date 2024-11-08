@@ -3,7 +3,30 @@
 	<include name="SettingsDialogOSDVisible">
 		<visible>!Window.IsActive(DialogSettings.xml) + !Window.IsActive(DialogSlider.xml) + !Window.IsActive(GameVideoFilter) + !Window.IsActive(GameStretchMode) + !Window.IsActive(GameControllers) + !Window.IsActive(GameVideoRotation)</visible>
 	</include>
-	<include name="SettingsDialogOSDContent">
+	<include name="SettingsDialogStreamSelectionContent">
+		<control type="button" id="22106">
+			<include>DialogSettingButton</include>
+			<label>$LOCALIZE[31115]</label>
+			<label2>$VAR[ActiveVideoPlayerSubtitleLanguage]</label2>
+			<onclick>DialogSelectSubtitle</onclick>
+			<enable>VideoPlayer.HasSubtitles</enable>
+		</control>
+		<control type="button" id="22105">
+			<include>DialogSettingButton</include>
+			<label>$LOCALIZE[31112]</label>
+			<label2>[B]$VAR[ActiveVideoPlayerAudioLanguage]$VAR[VideoPlayerAudioCodecVar, - ]$VAR[VideoPlayerAudioChannelsVar, ][/B]</label2>
+			<onclick>DialogSelectAudio</onclick>
+			<enable>Integer.IsGreater(VideoPlayer.AudioStreamCount,1)</enable>
+		</control>
+		<control type="button" id="22110">
+			<include>DialogSettingButton</include>
+			<label>$LOCALIZE[31109]</label>
+			<label2>[B]$INFO[VideoPlayer.VideoCodec]$INFO[Player.Process(videowidth), - ]$INFO[Player.Process(videoheight),x]$INFO[Player.Process(videoscantype)][/B]</label2>
+			<onclick>DialogSelectVideo</onclick>
+			<enable>Integer.IsGreater(VideoPlayer.VideoStreamCount,1)</enable>
+		</control>
+	</include>
+	<include name="SettingsDialogVideoSettingsContent">
 		<control type="button" id="22101">
 			<include>DialogSettingButton</include>
 			<label>$LOCALIZE[13396]</label>
@@ -24,26 +47,6 @@
 			<label>$LOCALIZE[36560]</label>
 			<onclick>ActivateWindow(osdcmssettings)</onclick>
 			<visible>System.HasCMS</visible>
-		</control>
-		<control type="button" id="22106">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[31115]</label>
-			<label2>$VAR[ActiveVideoPlayerSubtitleLanguage]</label2>
-			<onclick>DialogSelectSubtitle</onclick>
-			<visible>VideoPlayer.HasSubtitles</visible>
-		</control>
-		<control type="button" id="22105">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[31112]</label>
-			<label2>[B]$INFO[VideoPlayer.AudioLanguage][/B]</label2>
-			<onclick>DialogSelectAudio</onclick>
-			<visible>Integer.IsGreater(VideoPlayer.AudioStreamCount,1)</visible>
-		</control>
-		<control type="button" id="22110">
-			<include>DialogSettingButton</include>
-			<label>$LOCALIZE[31109]</label>
-			<onclick>DialogSelectVideo</onclick>
-			<visible>Integer.IsGreater(VideoPlayer.VideoStreamCount,1)</visible>
 		</control>
 		<control type="button" id="22107">
 			<include>DialogSettingButton</include>
@@ -132,7 +135,7 @@
 			<onclick>ActivateWindow(GameAdvancedSettings)</onclick>
 		</control>
 	</include>
-	<include name="SettingsDialogMusicOSDContent">
+	<include name="SettingsDialogMusicSettingsContent">
 		<control type="radiobutton" id="22101">
 			<include>DialogSettingButton</include>
 			<label>$LOCALIZE[31163]</label>

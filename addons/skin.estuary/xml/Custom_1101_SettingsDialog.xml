@@ -28,10 +28,11 @@
 					<onup>11100</onup>
 					<ondown>11100</ondown>
 					<orientation>vertical</orientation>
-					<include condition="String.IsEqual(window(home).Property(settingsdialog_content),osd)">SettingsDialogOSDContent</include>
+					<include condition="String.IsEqual(window(home).Property(settingsdialog_content),streamselection)">SettingsDialogStreamSelectionContent</include>
+					<include condition="String.IsEqual(window(home).Property(settingsdialog_content),videosettings)">SettingsDialogVideoSettingsContent</include>
 					<include condition="String.IsEqual(window(home).Property(settingsdialog_content),3d)">SettingsDialog3DContent</include>
 					<include condition="String.IsEqual(window(home).Property(settingsdialog_content),games)">SettingsDialogGameContent</include>
-					<include condition="String.IsEqual(window(home).Property(settingsdialog_content),musicosd)">SettingsDialogMusicOSDContent</include>
+					<include condition="String.IsEqual(window(home).Property(settingsdialog_content),musicsettings)">SettingsDialogMusicSettingsContent</include>
 					<include condition="String.IsEqual(window(home).Property(settingsdialog_content),moviewidgets)">SettingsDialogMovieWidgetsContent</include>
 					<include condition="String.IsEqual(window(home).Property(settingsdialog_content),tvshowwidgets)">SettingsDialogTVShowWidgetsContent</include>
 					<include condition="String.IsEqual(window(home).Property(settingsdialog_content),musicwidgets)">SettingsDialogMusicWidgetsContent</include>
