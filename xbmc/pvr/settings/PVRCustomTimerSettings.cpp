@@ -55,7 +55,7 @@ CPVRCustomTimerSettings::CPVRCustomTimerSettings(
       }
 
       const std::string settingId{StringUtils::Format("{}-{}", settingIdPrefix, idx)};
-      m_customSettingDefs.insert({settingId, settingDef});
+      m_customSettingDefs.emplace_back(std::make_pair(settingId, settingDef));
       ++idx;
     }
   }
@@ -247,7 +247,8 @@ bool CPVRCustomTimerSettings::IsSettingSupportedForTimerType(const std::string& 
 std::shared_ptr<const CPVRTimerSettingDefinition> CPVRCustomTimerSettings::GetSettingDefintion(
     const std::string& settingId) const
 {
-  const auto it{m_customSettingDefs.find(settingId)};
+  const auto it{std::find_if(m_customSettingDefs.cbegin(), m_customSettingDefs.cend(),
+                             [&settingId](const auto& entry) { return entry.first == settingId; })};
   if (it == m_customSettingDefs.cend())
     return {};
 
