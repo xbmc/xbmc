@@ -455,6 +455,22 @@ std::string URIUtils::GetBasePath(const std::string& strPath)
   return strDirectory;
 }
 
+std::string URIUtils::GetBlurayPath(const std::string& path)
+{
+  if (IsBlurayPlaylist(path))
+  {
+    CURL url(path);
+    CURL url2(url.GetHostName()); // strip bluray://
+    if (url2.IsProtocol("udf"))
+      // ISO
+      return url2.GetHostName(); // strip udf://
+    if (url.IsProtocol("bluray"))
+      // BDMV
+      return url2.Get() + "BDMV/index.bdmv";
+  }
+  return path;
+}
+
 std::string URLEncodePath(const std::string& strPath)
 {
   std::vector<std::string> segments = StringUtils::Split(strPath, "/");
@@ -777,6 +793,12 @@ bool URIUtils::IsDVD(const std::string& strFile)
 #endif
 
   return false;
+}
+
+bool URIUtils::IsBlurayPlaylist(const std::string& file)
+{
+  return IsProtocol(file, "bluray") &&
+         StringUtils::EqualsNoCase(GetExtension(StringUtils::ToLower(file)), ".mpls");
 }
 
 bool URIUtils::IsStack(const std::string& strFile)

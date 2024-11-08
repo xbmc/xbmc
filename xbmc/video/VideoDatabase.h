@@ -592,8 +592,8 @@ public:
                            const std::map<std::string, std::string>& artwork,
                            int idShow,
                            int idEpisode = -1);
-  bool SetFileForEpisode(const std::string& fileAndPath, int idEpisode, int idFile);
-  bool SetFileForMovie(const std::string& fileAndPath, int idMovie, int idFile);
+  bool SetFileForEpisode(const std::string& fileAndPath, const int idEpisode, const int oldIdFile);
+  bool SetFileForMovie(const std::string& fileAndPath, const int oldIdFile);
   int SetDetailsForMusicVideo(CVideoInfoTag& details,
                               const std::map<std::string, std::string>& artwork,
                               int idMVideo = -1);
@@ -604,7 +604,7 @@ public:
    * \param[in] idFile Identifier of the file
    * \return operation success. true for success, false for failure
    */
-  bool SetStreamDetailsForFileId(const CStreamDetails& details, int idFile);
+  bool SetStreamDetailsForFileId(const CStreamDetails& details, int idFile) const;
 
   bool SetSingleValue(VideoDbContentType type, int dbId, int dbField, const std::string& strValue);
   bool SetSingleValue(VideoDbContentType type,
@@ -637,6 +637,7 @@ public:
   void UpdateFanart(const CFileItem& item, VideoDbContentType type);
   void DeleteSet(int idSet);
   void DeleteTag(int idTag, VideoDbContentType mediaType);
+  void DeleteFile(int idFile);
 
   /*! \brief Get video settings for the specified file id
    \param idFile file id to get the settings for
@@ -1149,9 +1150,11 @@ public:
   bool UpdateAssetsOwner(const std::string& mediaType, int dbIdSource, int dbIdTarget);
 
   int GetMovieId(const std::string& strFilenameAndPath);
+  int GetMovieId(const int fileId) const;
   std::string GetMovieTitle(int idMovie);
   void GetSameVideoItems(const CFileItem& item, CFileItemList& items);
-  int GetFileIdByMovie(int idMovie);
+  int GetFileIdByMovie(int idMovie) const;
+  int GetFileIdByEpisode(int idEpisode) const;
   std::string GetFileBasePathById(int idFile);
 
   /*!
