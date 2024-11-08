@@ -57,8 +57,8 @@ typedef struct XBMC_MouseButtonEvent {
    mode with the new width and height.
  */
 typedef struct XBMC_ResizeEvent {
-	int w;		/* New width */
-	int h;		/* New height */
+  int width; /* New width */
+  int height; /* New height */
 } XBMC_ResizeEvent;
 
 typedef struct XBMC_MoveEvent {
