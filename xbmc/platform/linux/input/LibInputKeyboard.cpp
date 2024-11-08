@@ -470,7 +470,7 @@ void CLibInputKeyboard::ProcessKey(libinput_event_keyboard *e)
   XBMC_Event event = {};
   event.type = pressed ? XBMC_KEYDOWN : XBMC_KEYUP;
   event.key.keysym.mod = XBMCMod(mod);
-  event.key.keysym.sym = XBMCKeyForKeysym(keysym, scancode);
+  event.key.keysym.sym = XBMCKeyForXKBKeysym(keysym);
   event.key.keysym.scancode = scancode;
   event.key.keysym.unicode = unicode;
 
@@ -500,7 +500,7 @@ void CLibInputKeyboard::ProcessKey(libinput_event_keyboard *e)
   }
 }
 
-XBMCKey CLibInputKeyboard::XBMCKeyForKeysym(xkb_keysym_t sym, uint32_t scancode)
+XBMCKey CLibInputKeyboard::XBMCKeyForXKBKeysym(xkb_keysym_t sym)
 {
   if (sym >= 'A' && sym <= 'Z')
   {
