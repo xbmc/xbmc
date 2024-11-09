@@ -8,8 +8,6 @@ CONFIGURE=./configure --prefix=$(NATIVEPREFIX) \
                       --without-pymalloc \
                       --with-system-ffi
 
-NATIVE_SITEPACKAGES=$(NATIVEPREFIX)/lib/python$(PYTHON_VERSION)/site-packages
-
 ifeq ($(OS),linux)
   CONFIGURE += --with-system-expat
 endif
