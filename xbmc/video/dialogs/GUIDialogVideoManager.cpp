@@ -304,10 +304,30 @@ void CGUIDialogVideoManager::Play()
 
 void CGUIDialogVideoManager::Remove()
 {
-  // confirm to remove
+  const VideoAssetType assetType = GetVideoAssetType();
+  int titleMsgId;
+  int textMsgId;
+
+  switch (assetType)
+  {
+    case VideoAssetType::VERSION:
+      titleMsgId = 40018;
+      textMsgId = 40020;
+      break;
+    case VideoAssetType::EXTRA:
+      titleMsgId = 40039;
+      textMsgId = 40040;
+      break;
+    default:
+      assert(false);
+      CLog::LogF(LOGERROR, "Unknown asset type ({})", static_cast<int>(assetType));
+      return;
+  }
+
+  // confirm the removal
   if (!CGUIDialogYesNo::ShowAndGetInput(
-          CVariant(40018),
-          StringUtils::Format(g_localizeStrings.Get(40020),
+          titleMsgId,
+          StringUtils::Format(g_localizeStrings.Get(textMsgId),
                               m_selectedVideoAsset->GetVideoInfoTag()->GetAssetInfo().GetTitle())))
   {
     return;
