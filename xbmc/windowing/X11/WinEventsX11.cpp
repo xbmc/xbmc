@@ -386,6 +386,7 @@ bool CWinEventsX11::MessagePump()
         newEvent.type = XBMC_VIDEORESIZE;
         newEvent.resize.width = xevent.xconfigure.width;
         newEvent.resize.height = xevent.xconfigure.height;
+        newEvent.resize.scale = 1.0;
         if (appPort)
           ret |= appPort->OnEvent(newEvent);
         CServiceBroker::GetGUI()->GetWindowManager().MarkDirty();

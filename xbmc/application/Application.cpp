@@ -271,7 +271,8 @@ void CApplication::HandlePortEvents()
           if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_fullScreen)
           {
             CServiceBroker::GetWinSystem()->GetGfxContext().ApplyWindowResize(
-                newEvent.resize.width, newEvent.resize.height);
+                newEvent.resize.width * newEvent.resize.scale,
+                newEvent.resize.height * newEvent.resize.scale);
 
             const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
             settings->SetInt(CSettings::SETTING_WINDOW_WIDTH, newEvent.resize.width);
@@ -1587,6 +1588,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     newEvent.type = XBMC_VIDEORESIZE;
     newEvent.resize.width = pMsg->param1;
     newEvent.resize.height = pMsg->param2;
+    newEvent.resize.scale = 1.0;
     OnEvent(newEvent);
     CServiceBroker::GetGUI()->GetWindowManager().MarkDirty();
   }

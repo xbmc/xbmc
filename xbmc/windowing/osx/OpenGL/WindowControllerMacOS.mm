@@ -64,6 +64,7 @@
     newEvent.type = XBMC_VIDEORESIZE;
     newEvent.resize.width = static_cast<int>(rect.size.width);
     newEvent.resize.height = static_cast<int>(rect.size.height);
+    newEvent.resize.scale = 1.0;
 
     // check for valid sizes cause in some cases
     // we are hit during fullscreen transition from macos

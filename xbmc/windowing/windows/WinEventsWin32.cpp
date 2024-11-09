@@ -612,6 +612,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           newEvent.type = XBMC_VIDEORESIZE;
           newEvent.resize.width = g_sizeMoveWidth;
           newEvent.resize.height = g_sizeMoveHight;
+          newEvent.resize.scale = 1.0;
 
           // tell the device about new size
           DX::Windowing()->OnResize(newEvent.resize.width, newEvent.resize.height);
@@ -674,6 +675,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           newEvent.type = XBMC_VIDEORESIZE;
           newEvent.resize.width = g_sizeMoveWidth;
           newEvent.resize.height = g_sizeMoveHight;
+          newEvent.resize.scale = 1.0;
 
           CLog::LogFC(LOGDEBUG, LOGWINDOWING, "window resize event {} x {}", newEvent.resize.width,
                       newEvent.resize.height);
