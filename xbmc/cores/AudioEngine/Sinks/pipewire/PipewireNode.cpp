@@ -60,6 +60,12 @@ void CPipewireNode::Info(void* userdata, const struct pw_node_info* info)
   }
 }
 
+std::string CPipewireNode::Get(const std::string& key) const
+{
+  const char* value = spa_dict_lookup(m_info->props, key.c_str());
+  return value ? value : "";
+}
+
 template<typename T>
 static T Parse(uint32_t type, void* body, uint32_t size)
 {

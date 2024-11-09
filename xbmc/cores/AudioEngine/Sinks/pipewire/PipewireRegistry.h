@@ -20,7 +20,7 @@ namespace PIPEWIRE
 {
 
 class CPipewireCore;
-class CPipewireGlobal;
+class CPipewireNode;
 
 class CPipewireRegistry
 {
@@ -33,7 +33,7 @@ public:
 
   CPipewireCore& GetCore() const { return m_core; }
 
-  std::map<uint32_t, std::unique_ptr<CPipewireGlobal>>& GetGlobals() { return m_globals; }
+  std::map<uint32_t, std::unique_ptr<CPipewireNode>>& GetNodes() { return m_nodes; }
 
 private:
   static void OnGlobalAdded(void* userdata,
@@ -58,7 +58,7 @@ private:
 
   std::unique_ptr<pw_registry, PipewireRegistryDeleter> m_registry;
 
-  std::map<uint32_t, std::unique_ptr<CPipewireGlobal>> m_globals;
+  std::map<uint32_t, std::unique_ptr<CPipewireNode>> m_nodes;
 };
 
 } // namespace PIPEWIRE
