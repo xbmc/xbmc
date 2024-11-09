@@ -303,7 +303,7 @@ public:
    \return the formatted time
    \sa TIME_FORMAT
    */
-  static std::string MillisecondsToTimeString(std::chrono::milliseconds milliSeconds);
+  [[nodiscard]] static std::string MillisecondsToTimeString(std::chrono::milliseconds milliSeconds);
 
   /*! \brief check whether a string is a natural number.
    Matches [ \t]*[0-9]+[ \t]*
