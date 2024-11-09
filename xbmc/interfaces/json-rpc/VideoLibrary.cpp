@@ -1162,7 +1162,10 @@ JSONRPC_STATUS CVideoLibrary::RemoveVideo(const CVariant &parameterObject)
     return InternalError;
 
   if (parameterObject.isMember("movieid"))
-    videodatabase.DeleteMovie((int)parameterObject["movieid"].asInteger());
+  {
+    if (!videodatabase.DeleteMovie((int)parameterObject["movieid"].asInteger()))
+      return InternalError;
+  }
   else if (parameterObject.isMember("tvshowid"))
     videodatabase.DeleteTvShow((int)parameterObject["tvshowid"].asInteger());
   else if (parameterObject.isMember("episodeid"))

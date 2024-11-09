@@ -3693,21 +3693,24 @@ void CVideoDatabase::DeleteBookMarkForEpisode(const CVideoInfoTag& tag)
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::DeleteMovie(int idMovie,
+bool CVideoDatabase::DeleteMovie(int idMovie,
                                  DeleteMovieCascadeAction ca /* = ALL_ASSETS */,
                                  DeleteMovieHashAction hashAction /* = HASH_DELETE */)
 {
   if (idMovie < 0)
-    return;
+    return false;
+
+  if (nullptr == m_pDB)
+    return false;
+  if (nullptr == m_pDS)
+    return false;
+
+  const bool inTransaction{m_pDB->in_transaction()};
 
   try
   {
-    if (nullptr == m_pDB)
-      return;
-    if (nullptr == m_pDS)
-      return;
-
-    BeginTransaction();
+    if (!inTransaction)
+      BeginTransaction();
 
     const int idFile{GetDbId(PrepareSQL("SELECT idFile FROM movie WHERE idMovie=%i", idMovie))};
     DeleteStreamDetails(idFile);
@@ -3739,9 +3742,10 @@ void CVideoDatabase::DeleteMovie(int idMovie,
       {
         if (!DeleteVideoAsset(pDS->fv(0).get_asInt()))
         {
-          RollbackTransaction();
+          if (!inTransaction)
+            RollbackTransaction();
           pDS->close();
-          return;
+          return false;
         }
         pDS->next();
       }
@@ -3751,13 +3755,18 @@ void CVideoDatabase::DeleteMovie(int idMovie,
     //! @todo move this below CommitTransaction() once UPnP doesn't rely on this anymore
     AnnounceRemove(MediaTypeMovie, idMovie);
 
-    CommitTransaction();
+    if (!inTransaction)
+      CommitTransaction();
+
+    return true;
   }
   catch (...)
   {
     CLog::LogF(LOGERROR, "failed");
-    RollbackTransaction();
+    if (!inTransaction)
+      RollbackTransaction();
   }
+  return false;
 }
 
 void CVideoDatabase::DeleteTvShow(const std::string& strPath)

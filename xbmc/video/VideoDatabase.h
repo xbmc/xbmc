@@ -616,7 +616,14 @@ public:
 
   int UpdateDetailsForMovie(int idMovie, CVideoInfoTag& details, const std::map<std::string, std::string> &artwork, const std::set<std::string> &updatedDetails);
 
-  void DeleteMovie(int idMovie,
+  /*!
+   * \brief Remove a movie from the library.
+   * \param[in] idMovie The id of the movie
+   * \param[in] action Versions of the movie to be deleted
+   * \param[in] hashAction Preserve or invalidate the hash of the movie path
+   * \return operation success. true for success, false for failure
+   */
+  bool DeleteMovie(int idMovie,
                    DeleteMovieCascadeAction action = DeleteMovieCascadeAction::ALL_ASSETS,
                    DeleteMovieHashAction hashAction = DeleteMovieHashAction::HASH_DELETE);
   void DeleteTvShow(int idTvShow, bool bKeepId = false);
