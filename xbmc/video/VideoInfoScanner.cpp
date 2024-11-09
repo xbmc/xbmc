@@ -2493,15 +2493,15 @@ namespace KODI::VIDEO
                       CURL::GetRedacted(item->GetPath()));
           }
 
-          const std::string typeVideoVersion =
+          const std::string extraTypeName =
               CGUIDialogVideoManagerExtras::GenerateVideoExtra(path, item->GetPath());
 
-          const int idVideoVersion = m_database.AddVideoVersionType(
-              typeVideoVersion, VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRA);
+          const int idVideoAssetType = m_database.AddVideoVersionType(
+              extraTypeName, VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRA);
 
           GetArtwork(item.get(), content, true, true, "");
 
-          if (m_database.AddVideoAsset(ContentToVideoDbType(content), dbId, idVideoVersion,
+          if (m_database.AddVideoAsset(ContentToVideoDbType(content), dbId, idVideoAssetType,
                                        VideoAssetType::EXTRA, *item.get()))
           {
             CLog::Log(LOGDEBUG, "VideoInfoScanner: Added video extra {}",

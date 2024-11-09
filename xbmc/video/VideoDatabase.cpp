@@ -12634,18 +12634,31 @@ bool CVideoDatabase::AddVideoAsset(VideoDbContentType itemType,
   {
     BeginTransaction();
 
-    m_pDS->query(PrepareSQL("SELECT idFile FROM videoversion WHERE idFile = %i", idFile));
+    m_pDS->query(PrepareSQL(
+        "SELECT idMedia, media_type, itemType FROM videoversion WHERE idFile = %i", idFile));
 
     if (m_pDS->num_rows() == 0)
+    {
       m_pDS->exec(
           PrepareSQL("INSERT INTO videoversion (idFile, idMedia, media_type, itemType, idType) "
                      "VALUES(%i, %i, '%s', %i, %i)",
                      idFile, dbId, mediaType.c_str(), videoAssetType, idVideoAsset));
+    }
     else
-      m_pDS->exec(PrepareSQL("UPDATE videoversion "
-                             "SET idMedia = %i, media_type = '%s', itemType = %i, idType = %i "
-                             "WHERE idFile = %i",
-                             dbId, mediaType.c_str(), videoAssetType, idVideoAsset, idFile));
+    {
+      const int assetIdMedia = m_pDS->fv("idMedia").get_asInt();
+      const std::string assetMediaType = m_pDS->fv("media_type").get_asString();
+      const VideoAssetType assetType =
+          static_cast<VideoAssetType>(m_pDS->fv("itemType").get_asInt());
+
+      if (assetIdMedia != dbId || assetMediaType != mediaType || assetType != videoAssetType)
+      {
+        m_pDS->exec(PrepareSQL("UPDATE videoversion "
+                               "SET idMedia = %i, media_type = '%s', itemType = %i, idType = %i "
+                               "WHERE idFile = %i",
+                               dbId, mediaType.c_str(), videoAssetType, idVideoAsset, idFile));
+      }
+    }
 
     if (item.GetVideoInfoTag()->HasStreamDetails() &&
         !SetStreamDetailsForFileId(item.GetVideoInfoTag()->m_streamDetails, idFile))
