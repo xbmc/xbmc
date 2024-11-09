@@ -135,7 +135,7 @@ public:
   {
     FreeResources(*source, *size);
     *source = nullptr;
-    *size = values.size();
+    *size = static_cast<unsigned int>(values.size());
     if (*size)
       *source = AllocAndCopyData(values);
   }
@@ -261,7 +261,7 @@ public:
   {
     FreeResources(*source, *size);
     *source = nullptr;
-    *size = values.size();
+    *size = static_cast<unsigned int>(values.size());
     if (*size)
       *source = AllocAndCopyData(values);
   }
@@ -872,7 +872,7 @@ public:
   {
     FreeResources(*source, *size);
     *source = nullptr;
-    *size = defs.size();
+    *size = static_cast<unsigned int>(defs.size());
     if (*size)
       *source = AllocAndCopyData(defs);
   }
@@ -1042,7 +1042,7 @@ public:
   {
     FreeResources(*source, *size);
     *source = nullptr;
-    *size = values.size();
+    *size = static_cast<unsigned int>(values.size());
     if (*size)
       *source = AllocAndCopyData(values);
   }
