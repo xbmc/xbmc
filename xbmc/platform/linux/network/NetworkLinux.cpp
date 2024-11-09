@@ -41,8 +41,8 @@ struct IcmpPacket
 
   uint16_t Checksum()
   {
-    auto data = reinterpret_cast<const uint16_t*>(&header);
-    unsigned int length = sizeof(header) + sizeof(data);
+    auto data = reinterpret_cast<const uint16_t*>(this);
+    unsigned int length = sizeof(IcmpPacket);
 
     unsigned int sum;
 
