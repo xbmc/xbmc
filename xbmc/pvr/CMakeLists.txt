@@ -9,7 +9,6 @@ set(SOURCES PVRCachedImage.cpp
             PVREventLogJob.cpp
             PVRItem.cpp
             PVRManager.cpp
-            PVRPathUtils.cpp
             PVRPlaybackState.cpp
             PVRStreamProperties.cpp
             PVRThumbLoader.cpp)
@@ -28,7 +27,6 @@ set(HEADERS IPVRComponent.h
             PVREventLogJob.h
             PVRItem.h
             PVRManager.h
-            PVRPathUtils.h
             PVRPlaybackState.h
             PVRSignalStatus.h
             PVRStreamProperties.h

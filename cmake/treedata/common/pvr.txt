@@ -10,4 +10,5 @@ xbmc/pvr/providers      pvr/providers
 xbmc/pvr/recordings     pvr/recordings
 xbmc/pvr/settings       pvr/settings
 xbmc/pvr/timers         pvr/timers
+xbmc/pvr/utils          pvr/utils
 xbmc/pvr/windows        pvr/windows
