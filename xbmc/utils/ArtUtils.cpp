@@ -208,10 +208,7 @@ std::string GetLocalArtBaseFilename(const CFileItem& item, bool& useFolder)
   std::string strFile;
   if (item.IsStack())
   {
-    std::string strPath;
-    URIUtils::GetParentPath(item.GetPath(), strPath);
-    strFile = URIUtils::AddFileToFolder(
-        strPath, URIUtils::GetFileName(CStackDirectory::GetStackedTitlePath(item.GetPath())));
+    strFile = CStackDirectory::GetStackedTitlePath(item.GetPath());
   }
 
   std::string file = strFile.empty() ? item.GetPath() : strFile;

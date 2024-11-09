@@ -54,6 +54,11 @@ public:
   std::string GetDiscStubExtensions() const;
 
   /*!
+   * @brief Returns a list of disc image extensions
+   */
+  std::string GetDiscImageExtensions() const;
+
+  /*!
    * @brief Returns a file folder extensions
    */
   std::string GetFileFolderExtensions() const;
