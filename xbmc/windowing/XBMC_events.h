@@ -59,6 +59,7 @@ typedef struct XBMC_MouseButtonEvent {
 typedef struct XBMC_ResizeEvent {
   int width; /* New width */
   int height; /* New height */
+  double scale; /* Scaling factor */
 } XBMC_ResizeEvent;
 
 typedef struct XBMC_MoveEvent {

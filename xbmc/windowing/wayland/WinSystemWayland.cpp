@@ -888,7 +888,7 @@ void CWinSystemWayland::SetResolutionInternal(CSizeInt size, std::int32_t scale,
       {
         XBMC_Event msg{};
         msg.type = XBMC_VIDEORESIZE;
-        msg.resize = {sizes.bufferSize.Width(), sizes.bufferSize.Height()};
+        msg.resize = {sizes.bufferSize.Width(), sizes.bufferSize.Height(), 1.0};
         // FIXME
         dynamic_cast<CWinEventsWayland&>(*m_winEvents).MessagePush(&msg);
         m_waitingForApply = true;

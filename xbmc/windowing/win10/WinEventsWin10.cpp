@@ -186,6 +186,7 @@ void CWinEventsWin10::UpdateWindowSize()
   newEvent.type = XBMC_VIDEORESIZE;
   newEvent.resize.width = size.Width;
   newEvent.resize.height = size.Height;
+  newEvent.resize.scale = 1.0;
   if (g_application.GetRenderGUI() && !DX::Windowing()->IsAlteringWindow() &&
       newEvent.resize.width > 0 && newEvent.resize.height > 0)
     MessagePush(&newEvent);
