@@ -18,6 +18,7 @@
 #include "network/NetworkFileItemClassify.h"
 #include "pictures/Picture.h"
 #include "playlists/PlayListFileItemClassify.h"
+#include "pvr/utils/PVRStreamUtils.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/MemUtils.h"
@@ -36,7 +37,6 @@
 #include "DVDDemuxers/DVDDemuxVobsub.h"
 #include "DVDDemuxers/DVDFactoryDemuxer.h"
 #include "DVDInputStreams/DVDFactoryInputStream.h"
-#include "DVDInputStreams/InputStreamPVRBase.h"
 #include "Process/ProcessInfo.h"
 #include "TextureCache.h"
 #include "Util.h"
@@ -259,7 +259,7 @@ bool CDVDFileInfo::CanExtract(const CFileItem& fileItem)
     return false;
 
   if ((URIUtils::IsPVR(fileItem.GetPath()) &&
-       !CInputStreamPVRBase::ProvidesStreamForMetaDataExtraction(fileItem)) ||
+       !PVR::UTILS::ProvidesStreamForMetaDataExtraction(fileItem)) ||
       // plugin path not fully resolved
       URIUtils::IsPlugin(fileItem.GetDynPath()) || URIUtils::IsUPnP(fileItem.GetPath()) ||
       NETWORK::IsInternetStream(fileItem) || VIDEO::IsDiscStub(fileItem) ||

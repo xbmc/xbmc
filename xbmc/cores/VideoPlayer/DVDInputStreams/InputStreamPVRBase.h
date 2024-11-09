@@ -30,8 +30,6 @@ class CInputStreamPVRBase
   , public CDVDInputStream::IDemux
 {
 public:
-  static bool ProvidesStreamForMetaDataExtraction(const CFileItem& item);
-
   CInputStreamPVRBase(IVideoPlayer* pPlayer, const CFileItem& fileitem);
   ~CInputStreamPVRBase() override;
   bool Open() override;

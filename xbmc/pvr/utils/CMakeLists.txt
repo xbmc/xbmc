@@ -1,5 +1,7 @@
-set(SOURCES PVRPathUtils.cpp)
+set(SOURCES PVRPathUtils.cpp
+            PVRStreamUtils.cpp)
 
-set(HEADERS PVRPathUtils.h)
+set(HEADERS PVRPathUtils.h
+            PVRStreamUtils.h)
 
 core_add_library(pvr_utils)
