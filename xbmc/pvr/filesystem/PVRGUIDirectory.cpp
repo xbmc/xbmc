@@ -746,9 +746,6 @@ bool CPVRGUIDirectory::GetChannelsDirectory(CFileItemList& results) const
 
         if (dateAdded)
         {
-          if (channel->LastWatched())
-            continue;
-
           const CDateTime dtChannelAdded{channel->DateTimeAdded()};
           if (!dtChannelAdded.IsValid())
             continue;
