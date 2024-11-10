@@ -55,7 +55,7 @@ public class XBMCMediaContentProvider extends XBMCContentProvider
   @Override
   public boolean onCreate()
   {
-    mJsonRPC  = new XBMCJsonRPC();
+    mJsonRPC  = new XBMCJsonRPC(getContext());
 
     return true;
   }

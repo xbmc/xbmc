@@ -1,0 +1,26 @@
+package @APP_PACKAGE@.util;
+
+import android.content.Context;
+import android.os.Build;
+import android.os.Environment;
+import android.os.storage.StorageManager;
+import android.os.storage.StorageVolume;
+
+public class Storage 
+{
+  public static String getPrimaryStorageVolumePath(Context context)
+  {
+    final String path;
+    if (Build.VERSION.SDK_INT <= 29)
+    {
+      path = Environment.getExternalStorageDirectory().getAbsolutePath();
+    }
+    else
+    {
+      StorageManager manager = (StorageManager) context.getSystemService(Context.STORAGE_SERVICE);
+      StorageVolume volume = manager.getPrimaryStorageVolume();
+      path = volume.getDirectory().getAbsolutePath();
+    }
+    return path;
+  }
+}

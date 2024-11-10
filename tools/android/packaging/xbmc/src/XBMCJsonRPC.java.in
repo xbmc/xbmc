@@ -123,8 +123,9 @@ public class XBMCJsonRPC
 
   private NotificationManager mNotificationManager;
 
-  public XBMCJsonRPC()
+  public XBMCJsonRPC(Context context)
   {
+    XBMCProperties.initialize(context);
     String jsonPort = XBMCProperties.getStringProperty("xbmc.jsonPort", "8080");
     m_xbmc_web_url = "http://localhost:" + jsonPort;
     mTextureCache = new XBMCTextureCache();

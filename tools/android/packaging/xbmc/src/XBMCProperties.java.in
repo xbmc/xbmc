@@ -1,16 +1,27 @@
 package @APP_PACKAGE@;
 
+import @APP_PACKAGE@.util.Storage;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
 
-import android.os.Environment;
+import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 
 public class XBMCProperties
 {
   private static final String TAG = "@APP_NAME@";
+
+  private static Context mContext;
+
+  public static void initialize(Context context)
+  {
+    mContext = context;
+    if (!isInitialized())
+      initializeProperties();
+  }
 
   private static boolean isInitialized()
   {
@@ -20,7 +31,7 @@ public class XBMCProperties
 
   public static void initializeProperties()
   {
-    String propfn = Environment.getExternalStorageDirectory().getAbsolutePath() + "/xbmc_env.properties";
+    String propfn = Storage.getPrimaryStorageVolumePath(mContext) + "/xbmc_env.properties";
     File fProp = new File(propfn);
     if (fProp.exists())
     {
