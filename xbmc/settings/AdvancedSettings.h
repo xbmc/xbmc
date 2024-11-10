@@ -373,6 +373,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::string m_stereoscopicregex_tab;
 
     bool m_openGlDebugging;
+    std::string m_openGLVersionOverride;
 
     std::string m_userAgent;
     uint32_t m_nfsTimeout;
