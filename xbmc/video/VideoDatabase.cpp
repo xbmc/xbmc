@@ -3336,18 +3336,14 @@ int CVideoDatabase::SetDetailsForMusicVideo(CVideoInfoTag& details,
   return -1;
 }
 
-int CVideoDatabase::SetStreamDetailsForFile(const CStreamDetails& details,
-                                            const std::string& strFileNameAndPath)
+bool CVideoDatabase::SetStreamDetailsForFile(const CStreamDetails& details,
+                                             const std::string& strFileNameAndPath)
 {
   // AddFile checks to make sure the file isn't already in the DB first
   int idFile = AddFile(strFileNameAndPath);
   if (idFile < 0)
-    return -1;
-  //! @todo ugly error return mechanism, fixme
-  if (SetStreamDetailsForFileId(details, idFile))
-    return idFile;
-  else
-    return -2;
+    return false;
+  return SetStreamDetailsForFileId(details, idFile);
 }
 
 bool CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, int idFile) const

@@ -182,14 +182,10 @@ void CSaveFileState::DoWork(CFileItem& item,
           if (!videodatabase.GetStreamDetails(dbItem) ||
               dbItem.GetVideoInfoTag()->m_streamDetails != item.GetVideoInfoTag()->m_streamDetails)
           {
-            const int idFile = videodatabase.SetStreamDetailsForFile(
-                item.GetVideoInfoTag()->m_streamDetails, progressTrackingFile);
-
-            if (idFile == -2)
-            {
+            if (!videodatabase.SetStreamDetailsForFile(item.GetVideoInfoTag()->m_streamDetails,
+                                                       progressTrackingFile))
               videoDbSuccess = false;
-            }
-            else if (idFile > 0)
+            else
             {
               if (URIUtils::IsProtocol(item.GetDynPath(), "bluray"))
               {
