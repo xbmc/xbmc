@@ -15,7 +15,6 @@
 #include "pvr/addons/PVRClient.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/URIUtils.h"
 #include "utils/log.h"
 
 CInputStreamPVRBase::CInputStreamPVRBase(IVideoPlayer* pPlayer, const CFileItem& fileitem)
@@ -352,18 +351,4 @@ void CInputStreamPVRBase::UpdateStreamMap()
   }
 
   m_streamMap = newStreamMap;
-}
-
-bool CInputStreamPVRBase::ProvidesStreamForMetaDataExtraction(const CFileItem& item)
-{
-  // Note: We must not rely on presence of a recording info tag here, but path is always set.
-  if (URIUtils::IsPVRRecording(item.GetPath()))
-  {
-    const std::shared_ptr<const PVR::CPVRClient> client{
-        CServiceBroker::GetPVRManager().GetClient(item)};
-    if (client)
-      return client->GetClientCapabilities().SupportsMultipleRecordedStreams();
-  }
-
-  return false;
 }

@@ -16,7 +16,6 @@
 #include "input/WindowTranslator.h"
 #include "pvr/PVRConstants.h" // PVR_CLIENT_INVALID_UID
 #include "pvr/PVRManager.h"
-#include "pvr/PVRPathUtils.h"
 #include "pvr/addons/PVRClient.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
@@ -37,6 +36,7 @@
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/timers/PVRTimersPath.h"
+#include "pvr/utils/PVRPathUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
