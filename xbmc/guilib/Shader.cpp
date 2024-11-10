@@ -151,8 +151,13 @@ bool CGLSLVertexShader::Compile()
   {
     GLchar log[LOG_SIZE];
     CLog::Log(LOGERROR, "GL: Error compiling vertex shader");
-    glGetShaderInfoLog(m_vertexShader, LOG_SIZE, NULL, log);
-    CLog::Log(LOGERROR, "{}", log);
+    GLsizei length;
+    glGetShaderInfoLog(m_vertexShader, LOG_SIZE, &length, log);
+    if (length > 0)
+    {
+      CLog::Log(LOGERROR, "GL: Vertex Shader compilation log:");
+      CLog::Log(LOGERROR, "{}", log);
+    }
     m_lastLog = log;
     m_compiled = false;
   }
@@ -163,8 +168,8 @@ bool CGLSLVertexShader::Compile()
     glGetShaderInfoLog(m_vertexShader, LOG_SIZE, &length, log);
     if (length > 0)
     {
-      CLog::Log(LOGDEBUG, "GL: Vertex Shader compilation log:");
-      CLog::Log(LOGDEBUG, "{}", log);
+      CLog::Log(LOGERROR, "GL: Vertex Shader compilation log:");
+      CLog::Log(LOGERROR, "{}", log);
     }
     m_lastLog = log;
     m_compiled = true;
@@ -204,8 +209,13 @@ bool CGLSLPixelShader::Compile()
   {
     GLchar log[LOG_SIZE];
     CLog::Log(LOGERROR, "GL: Error compiling pixel shader");
-    glGetShaderInfoLog(m_pixelShader, LOG_SIZE, NULL, log);
-    CLog::Log(LOGERROR, "{}", log);
+    GLsizei length;
+    glGetShaderInfoLog(m_pixelShader, LOG_SIZE, &length, log);
+    if (length > 0)
+    {
+      CLog::Log(LOGERROR, "GL: Pixel Shader compilation log:");
+      CLog::Log(LOGERROR, "{}", log);
+    }
     m_lastLog = log;
     m_compiled = false;
   }
@@ -216,8 +226,8 @@ bool CGLSLPixelShader::Compile()
     glGetShaderInfoLog(m_pixelShader, LOG_SIZE, &length, log);
     if (length > 0)
     {
-      CLog::Log(LOGDEBUG, "GL: Pixel Shader compilation log:");
-      CLog::Log(LOGDEBUG, "{}", log);
+      CLog::Log(LOGERROR, "GL: Pixel Shader compilation log:");
+      CLog::Log(LOGERROR, "{}", log);
     }
     m_lastLog = log;
     m_compiled = true;
