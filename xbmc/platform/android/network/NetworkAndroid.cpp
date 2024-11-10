@@ -360,7 +360,7 @@ void CNetworkAndroid::RetrieveInterfaces()
 
 void CNetworkAndroid::onAvailable(const CJNINetwork n)
 {
-  CLog::Log(LOGDEBUG, "CNetworkAndroid::onAvailable The default network is now: {}", n.toString());
+  CLog::Log(LOGDEBUG, "CNetworkAndroid::onAvailable: The default network is now: {}", n.toString());
 
   CJNIConnectivityManager connman{CJNIContext::getSystemService(CJNIContext::CONNECTIVITY_SERVICE)};
   CJNILinkProperties lp = connman.getLinkProperties(n);
@@ -368,6 +368,13 @@ void CNetworkAndroid::onAvailable(const CJNINetwork n)
   if (lp)
   {
     CJNINetworkInterface intf = CJNINetworkInterface::getByName(lp.getInterfaceName());
+    if (xbmc_jnienv()->ExceptionCheck())
+    {
+      xbmc_jnienv()->ExceptionClear();
+      CLog::Log(LOGERROR, "CNetworkAndroid::onAvailable: Cannot get interface by name: {}",
+                lp.getInterfaceName());
+      return;
+    }
     if (intf)
       m_defaultInterface = std::make_unique<CNetworkInterfaceAndroid>(n, lp, intf);
   }
