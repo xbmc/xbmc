@@ -25,6 +25,7 @@ class CPVRChannel;
 class CPVRChannelGroup;
 class CPVRChannelGroupMember;
 class CPVREpgInfoTag;
+class CPVRMediaTag;
 class CPVRRecording;
 class CPVRStreamProperties;
 
@@ -81,7 +82,7 @@ public:
                      PVR_SOURCE source) const;
 
   /*!
-   * @brief Check if a TV channel, radio channel or recording is playing.
+   * @brief Check if a TV channel, radio channel, recording or media tag is playing.
    * @return True if it's playing, false otherwise.
    */
   bool IsPlaying() const;
@@ -109,6 +110,12 @@ public:
    * @return True if it's playing, false otherwise.
    */
   bool IsPlayingRecording() const;
+
+  /*!
+   * @brief Check if a mediaTag is playing.
+   * @return True if it's playing, false otherwise.
+   */
+  bool IsPlayingMediaTag() const;
 
   /*!
    * @brief Check if an epg tag is playing.
@@ -139,6 +146,13 @@ public:
   bool IsPlayingRecording(const std::shared_ptr<const CPVRRecording>& recording) const;
 
   /*!
+   * @brief Check if the given mediaTag is playing.
+   * @param mediaTag The mediaTag to check.
+   * @return True if it's playing, false otherwise.
+   */
+  bool IsPlayingMediaTag(const std::shared_ptr<CPVRMediaTag>& mediaTag) const;
+
+  /*!
    * @brief Check if the given epg tag is playing.
    * @param epgTag The tag to check.
    * @return True if it's playing, false otherwise.
@@ -162,6 +176,12 @@ public:
    * @return The recording or nullptr if none is playing.
    */
   std::shared_ptr<CPVRRecording> GetPlayingRecording() const;
+
+  /*!
+   * @brief Return the mediaTag that is currently playing.
+   * @return The mediaTag or nullptr if none is playing.
+   */
+  std::shared_ptr<CPVRMediaTag> GetPlayingMediaTag() const;
 
   /*!
    * @brief Return the epg tag that is currently playing.
@@ -283,6 +303,7 @@ private:
   mutable CCriticalSection m_critSection;
 
   std::shared_ptr<CPVRChannelGroupMember> m_playingChannel;
+  std::shared_ptr<CPVRMediaTag> m_playingMediaTag;
   std::shared_ptr<CPVRRecording> m_playingRecording;
   std::shared_ptr<CPVREpgInfoTag> m_playingEpgTag;
   std::shared_ptr<CPVRChannelGroupMember> m_lastPlayedChannelTV;
@@ -293,6 +314,7 @@ private:
   int m_playingGroupId = -1;
   int m_playingClientId = PVR_CLIENT_INVALID_UID;
   int m_playingChannelUniqueId = -1;
+  std::string m_strPlayingMediaTagUniqueId;
   std::string m_strPlayingRecordingUniqueId;
   int m_playingEpgTagChannelUniqueId = -1;
   unsigned int m_playingEpgTagUniqueId = 0;

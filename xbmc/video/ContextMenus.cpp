@@ -55,6 +55,9 @@ bool CVideoInfo::IsVisible(const CFileItem& item) const
   if (item.IsPVRRecording())
     return false; // pvr recordings have its own implementation for this
 
+  if (item.IsPVRMediaTag())
+    return false; // pvr media have its own implementation for this
+
   return item.GetVideoInfoTag()->m_type == m_mediaType;
 }
 
@@ -95,7 +98,7 @@ bool CVideoMarkWatched::IsVisible(const CFileItem& item) const
     else if (item.GetProperty("IsVideoFolder").asBoolean())
       return true;
     else
-      return !item.IsParentFolder() && URIUtils::IsPVRRecordingFileOrFolder(item.GetPath());
+      return !item.IsParentFolder() && URIUtils::IsPVRMediaTagFileOrFolder(item.GetPath());
   }
   else if (!item.HasVideoInfoTag())
     return false;
@@ -123,8 +126,10 @@ bool CVideoMarkUnWatched::IsVisible(const CFileItem& item) const
       return VIDEO::IsVideoDb(item);
     else if (item.GetProperty("IsVideoFolder").asBoolean())
       return true;
+    else if (!item.IsParentFolder() && URIUtils::IsPVRRecordingFileOrFolder(item.GetPath()))
+      return true;
     else
-      return !item.IsParentFolder() && URIUtils::IsPVRRecordingFileOrFolder(item.GetPath());
+      return !item.IsParentFolder() && URIUtils::IsPVRMediaTagFileOrFolder(item.GetPath());
   }
   else if (!item.HasVideoInfoTag())
     return false;
@@ -151,6 +156,10 @@ bool CVideoBrowse::Execute(const std::shared_ptr<CFileItem>& item) const
     target = WINDOW_RADIO_RECORDINGS;
   else if (URIUtils::IsPVRTVRecordingFileOrFolder(item->GetPath()))
     target = WINDOW_TV_RECORDINGS;
+  else if (URIUtils::IsPVRRadioMediaTagFileOrFolder(item->GetPath()))
+    target = WINDOW_TV_MEDIA;
+  else if (URIUtils::IsPVRTVMediaTagFileOrFolder(item->GetPath()))
+    target = WINDOW_TV_MEDIA;
   else
     target = WINDOW_VIDEO_NAV;
 
@@ -550,6 +559,9 @@ bool CVideoPlayAndQueue::IsVisible(const CFileItem& item) const
   const int windowId = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
   if ((windowId == WINDOW_TV_RECORDINGS || windowId == WINDOW_RADIO_RECORDINGS) &&
       item.IsUsablePVRRecording())
+    return true;
+
+  if ((windowId == WINDOW_TV_MEDIA || windowId == WINDOW_RADIO_MEDIA) && item.IsUsablePVRMediaTag())
     return true;
 
   return false; //! @todo implement

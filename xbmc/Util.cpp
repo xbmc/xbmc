@@ -1571,7 +1571,7 @@ bool CUtil::SupportsWriteFileOperations(const std::string& strPath)
     return true;
   if (URIUtils::IsSmb(strPath))
     return true;
-  if (URIUtils::IsPVRRecording(strPath))
+  if (URIUtils::IsPVRRecording(strPath) || URIUtils::IsPVRMediaTag(strPath))
     return CPVRDirectory::SupportsWriteFileOperations(strPath);
   if (URIUtils::IsNfs(strPath))
     return true;

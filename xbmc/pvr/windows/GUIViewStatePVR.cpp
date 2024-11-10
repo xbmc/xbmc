@@ -14,6 +14,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/epg/EpgSearchPath.h"
+#include "pvr/media/PVRMediaPath.h"
 #include "pvr/providers/PVRProvidersPath.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
 #include "pvr/timers/PVRTimersPath.h"
@@ -98,6 +99,50 @@ bool CGUIViewStateWindowPVRRecordings::HideParentDirItems()
 {
   return (CGUIViewState::HideParentDirItems() ||
           CPVRRecordingsPath(m_items.GetPath()).IsRecordingsRoot());
+}
+
+CGUIViewStateWindowPVRMedia::CGUIViewStateWindowPVRMedia(const int windowId,
+                                                         const CFileItemList& items)
+  : CGUIViewStatePVR(windowId, items)
+{
+  AddSortMethod(SortByLabel, 551, // "Name"
+                LABEL_MASKS("%L", "%d", "%L", ""), // Filename, DateTime | Foldername, empty
+                CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                    CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING)
+                    ? SortAttributeIgnoreArticle
+                    : SortAttributeNone);
+  AddSortMethod(SortByDate, 552, // "Date"
+                LABEL_MASKS("%L", "%d", "%L", "%d")); // Filename, DateTime | Foldername, DateTime
+  AddSortMethod(SortByTime, 180, // "Duration"
+                LABEL_MASKS("%L", "%D", "%L", "")); // Filename, Duration | Foldername, empty
+  AddSortMethod(SortByFile, 561, // "File"
+                LABEL_MASKS("%L", "%d", "%L", "")); // Filename, DateTime | Foldername, empty
+
+  if (CServiceBroker::GetPVRManager().Clients()->AnyClientSupportingMediaSize())
+  {
+    // "Size" : Filename, Size | Foldername, Size
+    AddSortMethod(SortBySize, 553, LABEL_MASKS("%L", "%I", "%L", "%I"));
+  }
+
+  AddSortMethod(SortByEpisodeNumber, 20359, // "Episode"
+                LABEL_MASKS("%L", "%d", "%L", "")); // Filename, DateTime | Foldername, empty
+  AddSortMethod(SortByProvider, 19348, // "Provider"
+                LABEL_MASKS("%L", "", "%L", "")); // Filename, empty | Foldername, empty
+
+  SetSortMethod(
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_PVRDefaultSortOrder);
+
+  LoadViewState(items.GetPath(), m_windowId);
+}
+
+void CGUIViewStateWindowPVRMedia::SaveViewState()
+{
+  SaveViewToDb(m_items.GetPath(), m_windowId, CViewStateSettings::GetInstance().Get("pvrmedia"));
+}
+
+bool CGUIViewStateWindowPVRMedia::HideParentDirItems()
+{
+  return (CGUIViewState::HideParentDirItems() || CPVRMediaPath(m_items.GetPath()).IsMediaRoot());
 }
 
 CGUIViewStateWindowPVRGuide::CGUIViewStateWindowPVRGuide(const int windowId,

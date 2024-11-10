@@ -232,6 +232,7 @@ void CGUIWindowSystemInfo::FrameMove()
     SetControlLabel(i++, "{}: {}", 19163, PVR_BACKEND_RECORDINGS);
     SetControlLabel(i++, "{}: {}", 19168,
                     PVR_BACKEND_DELETED_RECORDINGS); // Deleted and recoverable recordings
+    SetControlLabel(i++, "%s: %s", 14211, PVR_BACKEND_MEDIA);
     SetControlLabel(i++, "{}: {}", 19025, PVR_BACKEND_TIMERS);
   }
 
@@ -244,7 +245,7 @@ void CGUIWindowSystemInfo::FrameMove()
 
 void CGUIWindowSystemInfo::ResetLabels()
 {
-  for (int i = 2; i < 13; i++)
+  for (int i = 2; i < 15; i++)
   {
     SET_CONTROL_LABEL(i, "");
   }

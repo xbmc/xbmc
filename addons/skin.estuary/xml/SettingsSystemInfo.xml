@@ -22,7 +22,7 @@
 			<control type="grouplist">
 				<left>420</left>
 				<top>30</top>
-				<height>550</height>
+				<height>650</height>
 				<orientation>vertical</orientation>
 				<control type="label" id="2">
 					<height>47</height>
@@ -75,6 +75,21 @@
 					<font>Mono26</font>
 				</control>
 				<control type="label" id="12">
+					<height>47</height>
+					<width>1400</width>
+					<font>Mono26</font>
+				</control>
+				<control type="label" id="13">
+					<height>47</height>
+					<width>1400</width>
+					<font>Mono26</font>
+				</control>
+				<control type="label" id="14">
+					<height>47</height>
+					<width>1400</width>
+					<font>Mono26</font>
+				</control>
+				<control type="label" id="15">
 					<height>47</height>
 					<width>1400</width>
 					<font>Mono26</font>

@@ -94,6 +94,8 @@ This page shows the window names, the window definition, the window ID and the s
 | PVRRadioRDSInfo         | WINDOW_DIALOG_PVR_RADIO_RDS_INFO     | 10610     | DialogPVRRadioRDSInfo.xml           |                                    |
 | PVRRecordingSettings    | WINDOW_DIALOG_PVR_RECORDING_SETTING  | 10611     | DialogSettings.xml                  |                                    |
 |                         | WINDOW_DIALOG_PVR_CLIENT_PRIORITIES  | 10612     | DialogSettings.xml                  |                                    |
+| PVRMediaTagInfo         | WINDOW_DIALOG_PVR_MEDIA_TAG_INFO     | 10614     | DialogPVRInfo.xml                   | @skinning_v22 **Modified**<p></p> |
+| PVRMediaTagSettings     | WINDOW_DIALOG_PVR_MEDIA_TAG_SETTING  | 10615     | DialogSettings.xml                  | @skinning_v22 **Modified**<p></p> |
 | TVChannels              | WINDOW_TV_CHANNELS                   | 10700     | MyPVRChannels.xml                   |                                    |
 | TVRecordings            | WINDOW_TV_RECORDINGS                 | 10701     | MyPVRRecordings.xml                 |                                    |
 | TVGuide                 | WINDOW_TV_GUIDE                      | 10702     | MyPVRGuide.xml                      |                                    |
@@ -106,6 +108,8 @@ This page shows the window names, the window definition, the window ID and the s
 | RadioSearch             | WINDOW_RADIO_SEARCH                  | 10709     | MyPVRSearch.xml                     |                                    |
 | TVTimerRules            | WINDOW_TV_TIMER_RULES                | 10710     | MyPVRTimers.xml                     |                                    |
 | RadioTimerRules         | WINDOW_RADIO_TIMER_RULES             | 10711     | MyPVRTimers.xml                     |                                    |
+| TVMedia                 | WINDOW_TV_MEDIA                      | 10712     | MyPVRMedia.xml                      | @skinning_v22 **New window**<p></p> |
+| RadioMedia              | WINDOW_RADIO_MEDIA                   | 10713     | MyPVRMedia.xml                      | @skinning_v22 **New window**<p></p> |
 | FullscreenLiveTV        | WINDOW_FULLSCREEN_LIVETV             | 10800     | None (shortcut to fullscreenvideo)  |                                    |
 | FullscreenRadio         | WINDOW_FULLSCREEN_RADIO              | 10801     | None (shortcut to visualisation)    |                                    |
 | FullscreenLivetvPreview | WINDOW_FULLSCREEN_LIVETV_PREVIEW     | 10802     | None (shortcut to fullscreenlivetv) |                                    |
