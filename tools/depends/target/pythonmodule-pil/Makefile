@@ -50,7 +50,7 @@ export HARFBUZZ_ROOT=$(PREFIX)
 export FRIBIDI_ROOT=$(PREFIX)
 export ZLIB_ROOT
 
-BUILD_OPTS=--plat-name $(OS)-$(CPU) --disable-jpeg2000 --disable-webp --disable-imagequant --disable-tiff --disable-webp --disable-webpmux --disable-xcb --disable-lcms --disable-platform-guessing
+BUILD_OPTS=--plat-name $(OS)-$(CPU) --disable-jpeg2000 --disable-webp --disable-imagequant --disable-tiff --disable-xcb --disable-lcms --disable-platform-guessing
 
 export CC CFLAGS
 export PYTHONXINCLUDE=$(PREFIX)/include/python$(PYTHON_VERSION)
@@ -75,18 +75,18 @@ endif
 .installed-$(PLATFORM): $(PLATFORM) $(PILPATHLIB)
 	cd $(PLATFORM); $(NATIVEPREFIX)/bin/python3 setup.py build_ext $(BUILD_OPTS) install --install-lib $(PILPATH)
 ifeq ($(OS),android)
-	cd $(PILPATHLIB) && unzip -o ../Pillow-*.egg
+	cd $(PILPATHLIB) && unzip -o ../pillow-*.egg
 	cd $(PILPATHLIB)/PIL && \
           sed $(SED_FLAG) -e 's/import sys/import os, sys /' \
                           -e '/__file__/ s/_imaging/lib_imaging/g' \
                           -e 's/pkg_resources.resource_filename(__name__,/os.path.join(os.environ["KODI_ANDROID_LIBS"], /' \
                               _imaging*.py
-	cd $(PILPATH) && rm -rf Pillow-*.egg
+	cd $(PILPATH) && rm -rf pillow-*.egg
 else ifeq ($(OS),darwin_embedded)
-	cd $(PILPATHLIB) && unzip -o ../Pillow-*.egg
-	cd $(PILPATH) && rm -rf Pillow-*.egg
+	cd $(PILPATHLIB) && unzip -o ../pillow-*.egg
+	cd $(PILPATH) && rm -rf pillow-*.egg
 else ifeq ($(TARGET_PLATFORM),webos)
-	cd $(PILPATHLIB) && unzip -o $(PILPATH)/Pillow-*.egg && rm -f $(PILPATH)/Pillow-*.egg
+	cd $(PILPATHLIB) && unzip -o $(PILPATH)/pillow-*.egg && rm -f $(PILPATH)/pillow-*.egg
 endif
 	touch $@
 
