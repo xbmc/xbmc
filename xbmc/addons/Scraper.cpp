@@ -903,17 +903,18 @@ static bool PythonDetails(const std::string& ID,
 }
 
 // fetch list of matching movies sorted by relevance (may be empty);
-// throws CScraperError on error; first called with fFirst set, then unset if first try fails
-std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
-                                             const std::string &movieTitle, int movieYear,
-                                             bool fFirst)
+// throws CScraperError on error; first called with bCleanChars set, then unset if first try fails
+std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile& fcurl,
+                                             const std::string& movieTitle,
+                                             int movieYear,
+                                             bool bCleanChars)
 {
   // prepare parameters for URL creation
   std::string sTitle, sYear;
   if (movieYear < 0)
   {
     std::string sTitleYear;
-    CUtil::CleanString(movieTitle, sTitle, sTitleYear, sYear, true /*fRemoveExt*/, fFirst);
+    CUtil::CleanString(movieTitle, sTitle, sTitleYear, sYear, true /*fRemoveExt*/, bCleanChars);
   }
   else
   {
@@ -931,7 +932,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
   if (IsNoop())
     return vcscurl;
 
-  if (!fFirst)
+  if (!bCleanChars)
     StringUtils::Replace(sTitle, '-', ' ');
 
   if (m_isPython)
@@ -946,7 +947,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
   std::vector<std::string> vcsIn(1);
   g_charsetConverter.utf8To(SearchStringEncoding(), sTitle, vcsIn[0]);
   vcsIn[0] = CURL::Encode(vcsIn[0]);
-  if (fFirst && !sYear.empty())
+  if (bCleanChars && !sYear.empty())
     vcsIn.push_back(sYear);
 
   // request a search URL from the title/filename/etc.
