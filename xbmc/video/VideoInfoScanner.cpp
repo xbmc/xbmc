@@ -315,9 +315,8 @@ namespace KODI::VIDEO
                                  DIR_FLAG_DEFAULTS);
         // do not consider inner folders with .nomedia
         items.erase(std::remove_if(items.begin(), items.end(),
-                                   [this](const CFileItemPtr& item) {
-                                     return item->m_bIsFolder && HasNoMedia(item->GetPath());
-                                   }),
+                                   [](const CFileItemPtr& item)
+                                   { return item->m_bIsFolder && HasNoMedia(item->GetPath()); }),
                     items.end());
         items.Stack();
 
@@ -1029,8 +1028,7 @@ namespace KODI::VIDEO
         // Listing that ignores files inside and below folders containing .nomedia files.
         CDirectory::EnumerateDirectory(
             item->GetPath(), [&items](const std::shared_ptr<CFileItem>& item) { items.Add(item); },
-            [this](const std::shared_ptr<CFileItem>& folder)
-            { return !HasNoMedia(folder->GetPath()); },
+            [](const std::shared_ptr<CFileItem>& folder) { return !HasNoMedia(folder->GetPath()); },
             true, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(), flags);
 
         // fast hash failed - compute slow one
@@ -2480,6 +2478,9 @@ namespace KODI::VIDEO
       return false;
     }
 
+    // No need to check for .nomedia in the current directory, the caller already checked and this
+    // function would not have been called if it existed.
+
     // Add video extras to library
     CDirectory::EnumerateDirectory(
         path,
@@ -2513,8 +2514,8 @@ namespace KODI::VIDEO
                       CURL::GetRedacted(item->GetPath()));
           }
         },
-        [](auto) { return true; }, true,
-        CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(), DIR_FLAG_DEFAULTS);
+        [](const std::shared_ptr<CFileItem>& dirItem) { return !HasNoMedia(dirItem->GetPath()); },
+        true, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(), DIR_FLAG_DEFAULTS);
 
     return true;
   }

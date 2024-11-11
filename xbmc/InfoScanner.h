@@ -54,7 +54,7 @@ public:
    \param strDirectory Directory to scan
    \return true if there is a .nomedia file
    */
-  bool HasNoMedia(const std::string& strDirectory) const;
+  static bool HasNoMedia(const std::string& strDirectory);
 
   //! \brief Set whether or not to show a progress dialog.
   void ShowDialog(bool show) { m_showDialog = show; }
