@@ -2,7 +2,7 @@ include ../../Makefile.include PYTHONMODULE-SETUPTOOLS-VERSION ../../download-fi
 PLATFORM=$(NATIVEPLATFORM)
 DEPS= ../../Makefile.include Makefile PYTHONMODULE-SETUPTOOLS-VERSION ../../download-files.include 01-distutils-flag.patch
 
-LIBDYLIB=$(PLATFORM)/dist/$(LIBNAME)-$(VERSION)-py$(PYTHON_VERSION).egg
+LIBDYLIB=$(PLATFORM)/dist/$(LIBNAME)-$(VERSION)-py$(NATIVE_PYTHON_VERSION).egg
 
 all: .installed-$(PLATFORM)
 
@@ -12,7 +12,7 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 
 .installed-$(PLATFORM): $(PLATFORM)
 	cd $(PLATFORM); patch -p1 -i ../01-distutils-flag.patch
-	cd $(PLATFORM); PYTHONPATH="$(NATIVEPREFIX)/lib/python${PYTHON_VERSION}/site-packages" $(NATIVEPREFIX)/bin/python3 setup.py install --prefix=$(NATIVEPREFIX)
+	cd $(PLATFORM); PYTHONPATH="$(NATIVEPREFIX)/lib/python${NATIVE_PYTHON_VERSION}/site-packages" $(NATIVEPREFIX)/bin/python3 setup.py install --prefix=$(NATIVEPREFIX)
 	touch $@
 
 clean:

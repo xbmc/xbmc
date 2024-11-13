@@ -27,11 +27,6 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
      OR CMAKE_SYSTEM_NAME STREQUAL WindowsStore)
     set(Python3_USE_STATIC_LIBS TRUE)
     set(Python3_ROOT_DIR ${libdir})
-
-    if(KODI_DEPENDSBUILD)
-      # Force set to tools/depends python version
-      set(PYTHON_VER 3.12)
-    endif()
   endif()
 
   # Provide root dir to search for Python if provided

@@ -679,6 +679,16 @@ if test "$ffmpeg_options" = "default"; then
   ffmpeg_options="$ffmpeg_options_default"
 fi
 
+# Read python major.minor version from native PYTHON-VERSION file
+m4_define([NATIVE_PYTHON_FILE_INPUT],m4_quote(m4_include([native/python3/PYTHON3-VERSION])))
+m4_define([NATIVE_PYTHON_MAJOR_MINOR],m4_bregexp(NATIVE_PYTHON_FILE_INPUT,[VERSION=\([0-9]+\.[0-9]+\)\.[0-9]+\s*?],[\1]))
+native_py_version=m4_defn([NATIVE_PYTHON_MAJOR_MINOR])
+
+# Read python major.minor version from target PYTHON-VERSION file
+m4_define([TARGET_PYTHON_FILE_INPUT],m4_quote(m4_include([target/python3/PYTHON3-VERSION])))
+m4_define([TARGET_PYTHON_MAJOR_MINOR],m4_bregexp(TARGET_PYTHON_FILE_INPUT,[VERSION=\([0-9]+\.[0-9]+\)\.[0-9]+\s*?],[\1]))
+target_py_version=m4_defn([TARGET_PYTHON_MAJOR_MINOR])
+
 if test "$platform_os" = "android"; then
 echo -e
   AC_SUBST(use_sdk_path)
@@ -688,6 +698,8 @@ echo -e
   AC_SUBST(build_tools_path)
 fi
 
+AC_SUBST(native_py_version)
+AC_SUBST(target_py_version)
 AC_SUBST(meson_system)
 AC_SUBST(meson_cpu)
 AC_SUBST(use_debug)
