@@ -439,10 +439,21 @@ void CSelectionStreams::Update(const std::shared_ptr<CDVDInputStream>& input,
     std::string filename = nav->GetFileName();
     int source = Source(STREAM_SOURCE_NAV, filename);
 
+    std::vector<CDemuxStream*> demuxStreams;
+    if (demuxer)
+      demuxStreams = demuxer->GetStreams();
+
     int count;
     count = nav->GetAudioStreamCount();
     for(int i=0;i<count;i++)
     {
+      const auto stream =
+          std::find_if(demuxStreams.begin(), demuxStreams.end(),
+                       [i](const auto& stream)
+                       { return stream->type == STREAM_AUDIO && stream->dvdNavId == i; });
+      CDemuxStreamAudio* aStream =
+          (stream != demuxStreams.end()) ? static_cast<CDemuxStreamAudio*>(*stream) : nullptr;
+
       SelectionStream s;
       s.source   = source;
       s.type     = STREAM_AUDIO;
@@ -453,9 +464,19 @@ void CSelectionStreams::Update(const std::shared_ptr<CDVDInputStream>& input,
       AudioStreamInfo info = nav->GetAudioStreamInfo(i);
       s.name     = info.name;
       s.codec    = info.codecName;
-      s.codecDesc = info.codecDesc;
+      // additional/more reliable info from ffmpeg than IFO nav data
+      if (aStream)
+      {
+        s.codecDesc = aStream->GetStreamType();
+        s.channels = aStream->iChannels;
+        s.bitrate = aStream->iBitRate;
+      }
+      else
+      {
+        s.codecDesc = info.codecDesc;
+        s.channels = info.channels;
+      }
       s.language = g_LangCodeExpander.ConvertToISO6392B(info.language);
-      s.channels = info.channels;
       s.flags = info.flags;
       Update(s);
     }
