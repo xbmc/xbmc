@@ -1637,10 +1637,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         st->iBitsPerSample = pStream->codecpar->bits_per_raw_sample;
         char buf[32] = {};
         // https://github.com/FFmpeg/FFmpeg/blob/6ccc3989d15/doc/APIchanges#L50-L53
-        AVChannelLayout layout = {};
-        av_channel_layout_from_mask(&layout, st->iChannelLayout);
-        av_channel_layout_describe(&layout, buf, sizeof(buf));
-        av_channel_layout_uninit(&layout);
+        av_channel_layout_describe(&pStream->codecpar->ch_layout, buf, sizeof(buf));
         st->m_channelLayoutName = buf;
         if (st->iBitsPerSample == 0)
           st->iBitsPerSample = pStream->codecpar->bits_per_coded_sample;

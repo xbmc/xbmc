@@ -117,14 +117,12 @@ std::string CDemuxStreamAudio::GetStreamType()
     case AV_CODEC_ID_VORBIS:
       strInfo = "Vorbis ";
       break;
-    case AV_CODEC_ID_PCM_BLURAY:
-    case AV_CODEC_ID_PCM_DVD:
-      strInfo = "PCM ";
-      break;
     default:
-      strInfo = "";
       break;
   }
+
+  if (codec >= AV_CODEC_ID_PCM_S16LE && codec <= AV_CODEC_ID_PCM_SGA)
+    strInfo = "PCM ";
 
   strInfo += m_channelLayoutName;
 
