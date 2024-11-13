@@ -571,6 +571,7 @@ void CPVREpgInfoTag::SetEpgID(int iEpgID)
 {
   m_iEpgID = iEpgID;
   m_iconPath.SetOwner(StringUtils::Format(IMAGE_OWNER_PATTERN, m_iEpgID));
+  m_parentalRatingIcon.SetOwner(StringUtils::Format(IMAGE_OWNER_PATTERN, m_iEpgID));
 }
 
 bool CPVREpgInfoTag::IsRecordable() const
