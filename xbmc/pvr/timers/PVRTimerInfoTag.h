@@ -80,13 +80,11 @@ public:
    * @param bCreateRule if true, create a timer rule, create a one shot timer otherwise
    * @param bCreateReminder if true, create a reminder timer or rule, create a recording timer
    * or rule otherwise
-   * @param bReadOnly whether the timer/rule is read only
    * @return the timer or null if timer could not be created
    */
   static std::shared_ptr<CPVRTimerInfoTag> CreateFromEpg(const std::shared_ptr<CPVREpgInfoTag>& tag,
                                                          bool bCreateRule,
-                                                         bool bCreateReminder,
-                                                         bool bReadOnly = false);
+                                                         bool bCreateReminder);
 
   /*!
    * @brief create a timer or timer rule for the given epg info tag.
@@ -640,8 +638,7 @@ private:
       const std::shared_ptr<CPVRChannel>& channel,
       const CDateTime& start,
       int iDuration,
-      bool bCreateReminder,
-      bool bReadOnly);
+      bool bCreateReminder);
 
   mutable CCriticalSection m_critSection;
 

@@ -739,9 +739,8 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateReminderFromDate(
     int iDuration,
     const std::shared_ptr<CPVRTimerInfoTag>& parent /* = std::shared_ptr<CPVRTimerInfoTag>() */)
 {
-  bool bReadOnly = !!parent; // children of reminder rules are always read-only
   std::shared_ptr<CPVRTimerInfoTag> newTimer =
-      CreateFromDate(parent->Channel(), start, iDuration, true, bReadOnly);
+      CreateFromDate(parent->Channel(), start, iDuration, true);
   if (newTimer && parent)
   {
     // set parent
@@ -760,21 +759,20 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateInstantTimerTag(
     const std::shared_ptr<CPVRChannel>& channel,
     int iDuration /* = DEFAULT_PVRRECORD_INSTANTRECORDTIME */)
 {
-  return CreateFromDate(channel, CDateTime(INSTANT_TIMER_START), iDuration, false, false);
+  return CreateFromDate(channel, CDateTime(INSTANT_TIMER_START), iDuration, false);
 }
 
 std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateTimerTag(
     const std::shared_ptr<CPVRChannel>& channel, const CDateTime& start, int iDuration)
 {
-  return CreateFromDate(channel, start, iDuration, false, false);
+  return CreateFromDate(channel, start, iDuration, false);
 }
 
 std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromDate(
     const std::shared_ptr<CPVRChannel>& channel,
     const CDateTime& start,
     int iDuration,
-    bool bCreateReminder,
-    bool bReadOnly)
+    bool bCreateReminder)
 {
   if (!channel)
   {
@@ -798,7 +796,7 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromDate(
   {
     if (epgTag->IsRecordable())
     {
-      newTimer = CreateFromEpg(epgTag, false, bCreateReminder, bReadOnly);
+      newTimer = CreateFromEpg(epgTag, false, bCreateReminder);
     }
     else
     {
@@ -822,8 +820,6 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromDate(
     uint64_t iMustHaveAttribs = PVR_TIMER_TYPE_IS_MANUAL;
     if (bCreateReminder)
       iMustHaveAttribs |= PVR_TIMER_TYPE_IS_REMINDER;
-    if (bReadOnly)
-      iMustHaveAttribs |= PVR_TIMER_TYPE_IS_READONLY;
 
     // timertype: manual one-shot timer for given client
     const std::shared_ptr<CPVRTimerType> timerType = CPVRTimerType::CreateFromAttributes(
@@ -891,8 +887,7 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateReminderFromEpg(
     const std::shared_ptr<CPVREpgInfoTag>& tag,
     const std::shared_ptr<CPVRTimerInfoTag>& parent /* = std::shared_ptr<CPVRTimerInfoTag>() */)
 {
-  bool bReadOnly = !!parent; // children of reminder rules are always read-only
-  std::shared_ptr<CPVRTimerInfoTag> newTimer = CreateFromEpg(tag, false, true, bReadOnly);
+  std::shared_ptr<CPVRTimerInfoTag> newTimer = CreateFromEpg(tag, false, true);
   if (newTimer && parent)
   {
     // set parent
@@ -908,14 +903,11 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateReminderFromEpg(
 std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromEpg(
     const std::shared_ptr<CPVREpgInfoTag>& tag, bool bCreateRule /* = false */)
 {
-  return CreateFromEpg(tag, bCreateRule, false, false);
+  return CreateFromEpg(tag, bCreateRule, false);
 }
 
 std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromEpg(
-    const std::shared_ptr<CPVREpgInfoTag>& tag,
-    bool bCreateRule,
-    bool bCreateReminder,
-    bool bReadOnly /* = false */)
+    const std::shared_ptr<CPVREpgInfoTag>& tag, bool bCreateRule, bool bCreateReminder)
 {
   std::shared_ptr<CPVRTimerInfoTag> newTag(new CPVRTimerInfoTag());
 
@@ -954,8 +946,6 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromEpg(
     uint64_t iMustHaveAttribs = PVR_TIMER_TYPE_IS_REPEATING;
     if (bCreateReminder)
       iMustHaveAttribs |= PVR_TIMER_TYPE_IS_REMINDER;
-    if (bReadOnly)
-      iMustHaveAttribs |= PVR_TIMER_TYPE_IS_READONLY;
 
     if (!tag->SeriesLink().empty())
       timerType = CPVRTimerType::CreateFromAttributes(
@@ -987,8 +977,6 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromEpg(
     uint64_t iMustHaveAttribs = PVR_TIMER_TYPE_ATTRIBUTE_NONE;
     if (bCreateReminder)
       iMustHaveAttribs |= PVR_TIMER_TYPE_IS_REMINDER;
-    if (bReadOnly)
-      iMustHaveAttribs |= PVR_TIMER_TYPE_IS_READONLY;
 
     timerType = CPVRTimerType::CreateFromAttributes(
         iMustHaveAttribs, PVR_TIMER_TYPE_IS_REPEATING | iMustNotHaveAttribs, channel->ClientID());
