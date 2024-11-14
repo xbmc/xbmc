@@ -177,9 +177,9 @@ const CWindowTranslator::WindowMapByName CWindowTranslator::WindowMappingByName 
     {"ingamesaves", WINDOW_DIALOG_IN_GAME_SAVES},
     {"gamesaves", WINDOW_DIALOG_GAME_SAVES},
     {"gameagents", WINDOW_DIALOG_GAME_AGENTS},
-    {"videoselectdialog", WINDOW_DIALOG_SELECT_VIDEO_STREAM},
-    {"audioselectdialog", WINDOW_DIALOG_SELECT_AUDIO_STREAM},
-    {"subtitleselectdialog", WINDOW_DIALOG_SELECT_SUBTITLE_STREAM},
+    {"dialogselectvideo", WINDOW_DIALOG_SELECT_VIDEO_STREAM},
+    {"dialogselectaudio", WINDOW_DIALOG_SELECT_AUDIO_STREAM},
+    {"dialogselectsubtitle", WINDOW_DIALOG_SELECT_SUBTITLE_STREAM},
 };
 
 namespace
