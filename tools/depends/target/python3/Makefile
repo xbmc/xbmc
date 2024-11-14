@@ -54,7 +54,6 @@ PY_MODULES = py_cv_module_audioop=n/a \
              py_cv_module_readline=n/a \
              py_cv_module__curses=n/a \
              py_cv_module__curses_panel=n/a \
-             py_cv_module__scproxy=n/a \
              py_cv_module_xx=n/a \
              py_cv_module_xxlimited=n/a \
              py_cv_module_xxlimited_35=n/a \
@@ -74,7 +73,8 @@ PY_MODULES+= py_cv_module__decimal=n/a \
 
 
 ifeq ($(OS), darwin_embedded)
-  PY_MODULES+= py_cv_module__posixsubprocess=n/a
+  PY_MODULES+= py_cv_module__posixsubprocess=n/a \
+               py_cv_module__scproxy=n/a
 endif
 
 # configuration settings
