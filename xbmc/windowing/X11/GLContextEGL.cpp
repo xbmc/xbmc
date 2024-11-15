@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -162,9 +162,12 @@ bool CGLContextEGL::Refresh(bool force, int screen, Window glWindow, bool &newCo
       EGL_NONE
   };
   m_eglContext = eglCreateContext(m_eglDisplay, m_eglConfig, EGL_NO_CONTEXT, contextAttributes);
-  m_eglUploadContext = eglCreateContext(m_eglDisplay, m_eglConfig, m_eglContext, contextAttributes);
 
-  if (m_eglContext == EGL_NO_CONTEXT)
+  if (m_eglContext)
+  {
+    CreateSecondaryContexts(contextAttributes);
+  }
+  else
   {
     EGLint contextAttributes[] =
     {
@@ -172,8 +175,6 @@ bool CGLContextEGL::Refresh(bool force, int screen, Window glWindow, bool &newCo
       EGL_NONE
     };
     m_eglContext = eglCreateContext(m_eglDisplay, m_eglConfig, EGL_NO_CONTEXT, contextAttributes);
-    m_eglUploadContext =
-        eglCreateContext(m_eglDisplay, m_eglConfig, m_eglContext, contextAttributes);
 
     if (m_eglContext == EGL_NO_CONTEXT)
     {
@@ -181,6 +182,8 @@ bool CGLContextEGL::Refresh(bool force, int screen, Window glWindow, bool &newCo
       Destroy();
       return false;
     }
+
+    CreateSecondaryContexts(contextAttributes);
 
     CLog::Log(LOGWARNING, "Failed to get an OpenGL context supporting core profile 3.2, "
                           "using legacy mode with reduced feature set");
@@ -196,11 +199,20 @@ bool CGLContextEGL::Refresh(bool force, int screen, Window glWindow, bool &newCo
 
   m_eglGetSyncValuesCHROMIUM = (PFNEGLGETSYNCVALUESCHROMIUMPROC)eglGetProcAddress("eglGetSyncValuesCHROMIUM");
 
-  if (m_eglUploadContext == EGL_NO_CONTEXT)
-    CLog::Log(LOGWARNING, "failed to create EGL upload context");
-
   m_usePB = false;
   return true;
+}
+
+void CGLContextEGL::CreateSecondaryContexts(const EGLint* contextAttributes)
+{
+  if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiAsyncTextureUpload)
+    return;
+
+  uint32_t maxThreads =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiTextureThreads;
+  for (uint32_t i = 0; i < maxThreads; i++)
+    m_eglSecondaryContexts.push_back(
+        eglCreateContext(m_eglDisplay, m_eglConfig, m_eglContext, contextAttributes));
 }
 
 bool CGLContextEGL::CreatePB()
@@ -295,11 +307,6 @@ bool CGLContextEGL::CreatePB()
     return false;
   }
 
-  m_eglUploadContext = eglCreateContext(m_eglDisplay, m_eglConfig, m_eglContext, contextAttributes);
-
-  if (m_eglUploadContext == EGL_NO_CONTEXT)
-    CLog::Log(LOGWARNING, "Failed to create EGL upload context");
-
   m_usePB = true;
   return true;
 }
@@ -314,11 +321,9 @@ void CGLContextEGL::Destroy()
     m_eglContext = EGL_NO_CONTEXT;
   }
 
-  if (m_eglUploadContext)
-  {
-    eglDestroyContext(m_eglDisplay, m_eglUploadContext);
-    m_eglUploadContext = EGL_NO_CONTEXT;
-  }
+  for (const auto& context : m_eglSecondaryContexts)
+    eglDestroyContext(m_eglDisplay, context);
+  m_eglSecondaryContexts.clear();
 
   if (m_eglSurface)
   {
@@ -554,50 +559,21 @@ uint64_t CGLContextEGL::GetVblankTiming(uint64_t &msc, uint64_t &interval)
   return ret;
 }
 
-bool CGLContextEGL::BindTextureUploadContext()
+bool CGLContextEGL::BindSecondaryGPUContext(unsigned int id)
 {
-  if (m_eglDisplay == EGL_NO_DISPLAY || m_eglUploadContext == EGL_NO_CONTEXT)
+  if (id > m_eglSecondaryContexts.size())
   {
-    CLog::LogF(LOGERROR, "No texture upload context found.");
+    CLog::LogF(LOGERROR, "Not enough secondary EGL contexts.");
     return false;
   }
 
-  m_textureUploadLock.lock();
-
-  if (!eglMakeCurrent(m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, m_eglUploadContext))
+  if (!eglMakeCurrent(m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, m_eglSecondaryContexts[id]))
   {
-    m_textureUploadLock.unlock();
-    CLog::LogF(LOGERROR, "Couldn't bind texture upload context.");
+    CLog::LogF(LOGERROR, "Couldn't bind secondary GPU context.");
     return false;
   }
 
   return true;
-}
-
-bool CGLContextEGL::UnbindTextureUploadContext()
-{
-  if (m_eglDisplay == EGL_NO_DISPLAY || m_eglUploadContext == EGL_NO_CONTEXT)
-  {
-    CLog::LogF(LOGERROR, "No texture upload context found.");
-    m_textureUploadLock.unlock();
-    return false;
-  }
-
-  if (!eglMakeCurrent(m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT))
-  {
-    CLog::LogF(LOGERROR, "Couldn't release texture upload context");
-    m_textureUploadLock.unlock();
-    return false;
-  }
-
-  m_textureUploadLock.unlock();
-
-  return true;
-}
-
-bool CGLContextEGL::HasContext()
-{
-  return eglGetCurrentContext() != EGL_NO_CONTEXT;
 }
 
 void CGLContextEGL::QueryExtensions()

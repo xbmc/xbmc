@@ -13,6 +13,7 @@ set(SOURCES AutoSwitch.cpp
             GUIInfoManager.cpp
             GUILargeTextureManager.cpp
             GUIPassword.cpp
+            GUITextureJobManager.cpp
             InfoScanner.cpp
             LangInfo.cpp
             MediaSource.cpp
@@ -51,6 +52,7 @@ set(HEADERS AutoSwitch.h
             GUIInfoManager.h
             GUILargeTextureManager.h
             GUIPassword.h
+            GUITextureJobManager.h
             GUIUserMessages.h
             HDRStatus.h
             IFileItemListModifier.h

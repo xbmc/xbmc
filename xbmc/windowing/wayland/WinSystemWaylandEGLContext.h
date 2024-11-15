@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017-2018 Team Kodi
+ *  Copyright (C) 2017-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -43,9 +43,7 @@ public:
   bool DestroyWindow() override;
   bool DestroyWindowSystem() override;
 
-  bool BindTextureUploadContext() override;
-  bool UnbindTextureUploadContext() override;
-  bool HasContext() override;
+  bool BindSecondaryGPUContext(unsigned int id) override;
 
 protected:
   /**

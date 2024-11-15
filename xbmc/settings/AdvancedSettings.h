@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -339,6 +339,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_guiFrontToBackRendering{false};
     bool m_guiGeometryClear{true};
     bool m_guiAsyncTextureUpload{false};
+    uint32_t m_guiTextureThreads{1};
     bool m_guiVideoLayoutTransparent{false};
 
     unsigned int m_addonPackageFolderSize;

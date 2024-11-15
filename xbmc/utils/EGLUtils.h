@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017-2018 Team Kodi
+ *  Copyright (C) 2017-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -221,9 +221,7 @@ public:
     return m_eglConfig;
   }
 
-  bool BindTextureUploadContext();
-  bool UnbindTextureUploadContext();
-  bool HasContext();
+  bool BindSecondaryGPUContext(unsigned int id);
 
 private:
   void SurfaceAttrib();
@@ -235,6 +233,5 @@ private:
   EGLSurface m_eglSurface{EGL_NO_SURFACE};
   EGLContext m_eglContext{EGL_NO_CONTEXT};
   EGLConfig m_eglConfig{}, m_eglHDRConfig{};
-  EGLContext m_eglUploadContext{EGL_NO_CONTEXT};
-  mutable CCriticalSection m_textureUploadLock;
+  std::vector<EGLContext> m_eglSecondaryContexts;
 };
