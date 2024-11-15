@@ -73,6 +73,8 @@ public:
   uint32_t GetOriginalWidth() const { return m_originalWidth; }
   /*! \brief return the original height of the image, before scaling/cropping */
   uint32_t GetOriginalHeight() const { return m_originalHeight; }
+  /*! \brief return the texture swizzle */
+  KD_TEX_SWIZ GetSwizzle() const { return m_textureSwizzle; }
 
   // allocates staging texture space.
   void Allocate(uint32_t width, uint32_t height, XB_FMT format);
