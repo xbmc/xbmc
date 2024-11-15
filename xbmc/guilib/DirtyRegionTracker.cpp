@@ -18,9 +18,8 @@
 #include <algorithm>
 #include <stdio.h>
 
-CDirtyRegionTracker::CDirtyRegionTracker(int buffering)
+CDirtyRegionTracker::CDirtyRegionTracker()
 {
-  m_buffering = buffering;
   m_solver = NULL;
 }
 
@@ -76,11 +75,10 @@ CDirtyRegionList CDirtyRegionTracker::GetDirtyRegions()
   return output;
 }
 
-void CDirtyRegionTracker::CleanMarkedRegions()
+void CDirtyRegionTracker::CleanMarkedRegions(int bufferAge)
 {
-  int buffering = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiVisualizeDirtyRegions ? 20 : m_buffering;
-  m_markedRegions.erase(
-      std::remove_if(m_markedRegions.begin(), m_markedRegions.end(),
-                     [buffering](CDirtyRegion& r) { return r.UpdateAge() >= buffering; }),
-      m_markedRegions.end());
+  m_markedRegions.erase(std::remove_if(m_markedRegions.begin(), m_markedRegions.end(),
+                                       [bufferAge](CDirtyRegion& r)
+                                       { return r.UpdateAge() > bufferAge; }),
+                        m_markedRegions.end());
 }

@@ -14,6 +14,7 @@
 #include "VideoSync.h"
 #include "WinEvents.h"
 #include "cores/VideoPlayer/VideoRenderers/DebugInfo.h"
+#include "guilib/DirtyRegion.h"
 #include "guilib/DispResource.h"
 #include "utils/HDRCapabilities.h"
 
@@ -68,6 +69,8 @@ public:
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) = 0;
   virtual bool DisplayHardwareScalingEnabled() { return false; }
   virtual void UpdateDisplayHardwareScaling(const RESOLUTION_INFO& resInfo) { }
+  virtual void SetDirtyRegions(const CDirtyRegionList& dirtyRegionsList) {}
+  virtual int GetBufferAge() { return 2; }
   virtual bool MoveWindow(int topLeft, int topRight){return false;}
   virtual void FinishModeChange(RESOLUTION res){}
   virtual void FinishWindowResize(int newWidth, int newHeight) {ResizeWindow(newWidth, newHeight, -1, -1);}

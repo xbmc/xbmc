@@ -51,6 +51,7 @@ public:
   bool DestroyWindow() override;
   bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) override;
   bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
+  int GetBufferAge() override { return 3; }
   void UpdateResolutions() override;
   bool CanDoWindowed() override { return false; }
 

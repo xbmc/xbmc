@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "guilib/DirtyRegion.h"
 #include "threads/CriticalSection.h"
 
 #include <array>
@@ -17,6 +18,8 @@
 #include <vector>
 
 #include "system_egl.h"
+
+#include <EGL/eglext.h>
 
 class CEGLUtils
 {
@@ -201,6 +204,8 @@ public:
   void DestroyContext();
   bool SetVSync(bool enable);
   bool TrySwapBuffers();
+  void SetDamagedRegions(const CDirtyRegionList& dirtyRegions);
+  int GetBufferAge();
   bool IsPlatformSupported() const;
   EGLint GetConfigAttrib(EGLint attribute) const;
 
@@ -237,4 +242,8 @@ private:
   EGLConfig m_eglConfig{}, m_eglHDRConfig{};
   EGLContext m_eglUploadContext{EGL_NO_CONTEXT};
   mutable CCriticalSection m_textureUploadLock;
+
+  PFNEGLSETDAMAGEREGIONKHRPROC m_eglSetDamageRegionKHR{nullptr};
+  bool m_partialUpdateSupport{false};
+  bool m_bufferAgeSupport{false};
 };
