@@ -197,21 +197,26 @@ void CGUIFontTTFGLES::LastEnd()
         // clip using vertex shader
         renderSystem->ResetScissors();
 
-        float x1 =
-            m_vertexTrans[i].m_clip.x1 - m_vertexTrans[i].m_translateX - m_vertexTrans[i].m_offsetX;
-        float y1 =
-            m_vertexTrans[i].m_clip.y1 - m_vertexTrans[i].m_translateY - m_vertexTrans[i].m_offsetY;
-        float x2 =
-            m_vertexTrans[i].m_clip.x2 - m_vertexTrans[i].m_translateX - m_vertexTrans[i].m_offsetX;
-        float y2 =
-            m_vertexTrans[i].m_clip.y2 - m_vertexTrans[i].m_translateY - m_vertexTrans[i].m_offsetY;
+        const float clipBoundaries[4] = {
+            (m_vertexTrans[i].m_clip.x1 - m_vertexTrans[i].m_translateX -
+             m_vertexTrans[i].m_offsetX) /
+                context.GetGUIScaleX(),
+            (m_vertexTrans[i].m_clip.y1 - m_vertexTrans[i].m_translateY -
+             m_vertexTrans[i].m_offsetY) /
+                context.GetGUIScaleY(),
+            (m_vertexTrans[i].m_clip.x2 - m_vertexTrans[i].m_translateX -
+             m_vertexTrans[i].m_offsetX) /
+                context.GetGUIScaleX(),
+            (m_vertexTrans[i].m_clip.y2 - m_vertexTrans[i].m_translateY -
+             m_vertexTrans[i].m_offsetY) /
+                context.GetGUIScaleY()};
 
-        glUniform4f(clipUniformLoc, x1, y1, x2, y2);
+        glUniform4fv(clipUniformLoc, 1, clipBoundaries);
 
-        // setup texture step
-        float stepX = context.GetGUIScaleX() / (static_cast<float>(m_textureWidth));
-        float stepY = context.GetGUIScaleY() / (static_cast<float>(m_textureHeight));
-        glUniform4f(coordStepUniformLoc, stepX, stepY, 1.0f, 1.0f);
+        const float textureSteps[4] = {1.f / static_cast<float>(m_textureWidth),
+                                       1.f / static_cast<float>(m_textureHeight), 1.f, 1.f};
+
+        glUniform4fv(coordStepUniformLoc, 1, textureSteps);
       }
 
       // calculate the fractional offset to the ideal position
