@@ -134,6 +134,8 @@ static const translateField fields[] = {
   { "albumstatus",       FieldAlbumStatus,             CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 38081 },
   { "albumduration",     FieldAlbumDuration,           CDatabaseQueryRule::SECONDS_FIELD,  StringValidation::IsTime,             false, 180 },
   { "hdrtype",           FieldHdrType,                 CDatabaseQueryRule::TEXTIN_FIELD,   NULL,                                 false, 20474 },
+  { "hasversions",       FieldHasVideoVersions,        CDatabaseQueryRule::BOOLEAN_FIELD,  NULL,                                 false, 20475 },
+  { "hasextras",         FieldHasVideoExtras,          CDatabaseQueryRule::BOOLEAN_FIELD,  NULL,                                 false, 20476 },
 };
 // clang-format on
 
@@ -477,6 +479,8 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
     fields.push_back(FieldSet);
     fields.push_back(FieldTag);
     fields.push_back(FieldDateAdded);
+    fields.push_back(FieldHasVideoVersions);
+    fields.push_back(FieldHasVideoExtras);
     isVideo = true;
   }
   else if (type == "musicvideos")
@@ -788,6 +792,8 @@ std::string CSmartPlaylistRule::GetBooleanQuery(const std::string &negate, const
       return "movie_view.idFile " + negate + " IN (SELECT DISTINCT idFile FROM bookmark WHERE type = 1)";
     else if (m_field == FieldTrailer)
       return negate + GetField(m_field, strType) + "!= ''";
+    else if (m_field == FieldHasVideoVersions || m_field == FieldHasVideoExtras)
+      return negate + GetField(m_field, strType);
   }
   else if (strType == "episodes")
   {

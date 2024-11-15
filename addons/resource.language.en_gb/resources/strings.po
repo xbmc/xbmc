@@ -14387,7 +14387,19 @@ msgctxt "#20474"
 msgid "HDR type"
 msgstr ""
 
-#empty strings from id 20475 to 21329
+#. Used in smart playlists as rule field name to select items that have multiple versions
+#: xbmc/playlists/SmartPlayList.cpp
+msgctxt "#20475"
+msgid "Has multiple versions"
+msgstr ""	
+
+#. Used in smart playlists as rule field name to select items that have video extras
+#: xbmc/playlists/SmartPlayList.cpp
+msgctxt "#20476"
+msgid "Has video extras"
+msgstr ""
+
+#empty strings from id 20477 to 21329
 #up to 21329 is reserved for the video db !! !
 
 #: system/settings/settings.xml
