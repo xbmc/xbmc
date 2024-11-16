@@ -46,7 +46,10 @@ namespace XFILE
       int64_t GetLength() override;
       int Stat(const CURL& url, struct __stat64* buffer) override;
       void Close() override;
-      bool ReadString(char *szLine, int iLineLength) override { return m_state->ReadString(szLine, iLineLength); }
+      ReadLineResult ReadLine(char* buffer, std::size_t bufferSize) override
+      {
+        return m_state->ReadLine(buffer, bufferSize);
+      }
       ssize_t Read(void* lpBuf, size_t uiBufSize) override { return m_state->Read(lpBuf, uiBufSize); }
       ssize_t Write(const void* lpBuf, size_t uiBufSize) override;
       const std::string GetProperty(XFILE::FileProperty type, const std::string &name = "") const override;
@@ -129,7 +132,7 @@ namespace XFILE
 
           bool Seek(int64_t pos);
           ssize_t Read(void* lpBuf, size_t uiBufSize);
-          bool ReadString(char *szLine, int iLineLength);
+          ReadLineResult ReadLine(char* buffer, std::size_t bufferSize);
           int8_t FillBuffer(unsigned int want);
           void SetReadBuffer(const void* lpBuf, int64_t uiBufSize);
 

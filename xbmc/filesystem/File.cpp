@@ -810,15 +810,18 @@ bool XFILE::CFile::ReadString(std::vector<char>& line)
   try
   {
     // Read by buffer chuncks until to EOL or EOF
-    do
+    while (true)
     {
       char bufferLine[1025];
-      if (!m_pFile->ReadString(bufferLine, sizeof(bufferLine))) // EOF or error
+      auto result = m_pFile->ReadLine(bufferLine, sizeof(bufferLine));
+      if (result.code == XFILE::IFile::ReadLineResult::FAILURE)
         return !line.empty();
 
-      const size_t length = std::strlen(bufferLine);
-      line.insert(line.end(), bufferLine, bufferLine + length);
-    } while (line.back() != '\n' && line.back() != '\r');
+      line.insert(line.end(), bufferLine, bufferLine + result.length);
+
+      if (result.code == XFILE::IFile::ReadLineResult::OK)
+        break;
+    }
 
     return true;
   }
@@ -881,7 +884,7 @@ bool CFile::ReadString(char *szLine, int iLineLength)
 
   try
   {
-    return m_pFile->ReadString(szLine, iLineLength);
+    return m_pFile->ReadLine(szLine, iLineLength).code != XFILE::IFile::ReadLineResult::FAILURE;
   }
   XBMCCOMMONS_HANDLE_UNCHECKED
   catch (...) { CLog::Log(LOGERROR, "{} - Unhandled exception", __FUNCTION__); }
