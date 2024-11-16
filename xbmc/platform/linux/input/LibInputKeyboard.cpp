@@ -469,7 +469,12 @@ void CLibInputKeyboard::ProcessKey(libinput_event_keyboard *e)
 
       m_repeatRate = data->second.at(1);
       m_repeatTimer.Stop(true);
-      m_repeatEvent = event;
+      m_repeatEventFunction = [event]()
+      {
+        std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+        if (appPort)
+          appPort->OnEvent(event);
+      };
       m_repeatTimer.Start(std::chrono::milliseconds(data->second.at(0)), false);
     }
   }
@@ -505,9 +510,7 @@ void CLibInputKeyboard::KeyRepeatTimeout()
 {
   m_repeatTimer.RestartAsync(std::chrono::milliseconds(m_repeatRate));
 
-  std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
-  if (appPort)
-    appPort->OnEvent(m_repeatEvent);
+  m_repeatEventFunction();
 }
 
 void CLibInputKeyboard::UpdateLeds(libinput_device *dev)

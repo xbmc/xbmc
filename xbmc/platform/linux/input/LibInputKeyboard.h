@@ -86,7 +86,7 @@ private:
 
   int m_leds;
 
-  XBMC_Event m_repeatEvent;
+  std::function<void()> m_repeatEventFunction;
   std::map<libinput_device*, std::vector<int>> m_repeatData;
   CTimer m_repeatTimer;
   int m_repeatRate;
