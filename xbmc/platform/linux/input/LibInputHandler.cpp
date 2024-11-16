@@ -298,5 +298,6 @@ void CLibInputHandler::DeviceRemoved(libinput_device *dev)
               __FUNCTION__, name, sysname);
     auto device = std::find(m_devices.begin(), m_devices.end(), libinput_device_unref(dev));
     m_devices.erase(device);
+    m_keyboard->DeviceRemoved(dev);
   }
 }

@@ -515,6 +515,15 @@ void CLibInputKeyboard::UpdateLeds(libinput_device *dev)
   libinput_device_led_update(dev, static_cast<libinput_led>(m_leds));
 }
 
+void CLibInputKeyboard::DeviceRemoved(libinput_device* dev)
+{
+  const auto data = m_repeatData.find(dev);
+  if (data != m_repeatData.end())
+  {
+    m_repeatData.erase(data);
+  }
+}
+
 void CLibInputKeyboard::GetRepeat(libinput_device *dev)
 {
   int kbdrep[2] = {REPEAT_DELAY, REPEAT_RATE};

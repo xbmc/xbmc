@@ -27,6 +27,7 @@ public:
 
   void ProcessKey(libinput_event_keyboard *e);
   void UpdateLeds(libinput_device *dev);
+  void DeviceRemoved(libinput_device* e);
   void GetRepeat(libinput_device *dev);
 
   bool SetKeymap(const std::string& layout);
