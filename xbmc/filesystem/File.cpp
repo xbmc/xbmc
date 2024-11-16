@@ -765,47 +765,12 @@ int64_t CFile::GetPosition() const
   return -1;
 }
 
-bool XFILE::CFile::ReadString(std::vector<char>& line)
+bool XFILE::CFile::ReadLine(std::string& line)
 {
   if (!m_pFile)
     return false;
 
   line.clear();
-
-  if (m_pBuffer)
-  {
-    using traits = CFileStreamBuffer::traits_type;
-    CFileStreamBuffer::int_type aByte = m_pBuffer->sgetc();
-
-    if (aByte == traits::eof())
-      return false;
-
-    while (aByte != traits::eof())
-    {
-      aByte = m_pBuffer->sbumpc();
-
-      if (aByte == traits::eof())
-        break;
-
-      if (aByte == traits::to_int_type('\n'))
-      {
-        if (m_pBuffer->sgetc() == traits::to_int_type('\r'))
-          m_pBuffer->sbumpc();
-        break;
-      }
-
-      if (aByte == traits::to_int_type('\r'))
-      {
-        if (m_pBuffer->sgetc() == traits::to_int_type('\n'))
-          m_pBuffer->sbumpc();
-        break;
-      }
-
-      line.emplace_back(traits::to_char_type(aByte));
-    }
-
-    return true;
-  }
 
   try
   {
@@ -813,13 +778,13 @@ bool XFILE::CFile::ReadString(std::vector<char>& line)
     while (true)
     {
       char bufferLine[1025];
-      auto result = m_pFile->ReadLine(bufferLine, sizeof(bufferLine));
-      if (result.code == XFILE::IFile::ReadLineResult::FAILURE)
+      auto result = ReadLine(bufferLine, sizeof(bufferLine));
+      if (result.code == ReadLineResult::FAILURE)
         return !line.empty();
 
       line.insert(line.end(), bufferLine, bufferLine + result.length);
 
-      if (result.code == XFILE::IFile::ReadLineResult::OK)
+      if (result.code == ReadLineResult::OK)
         break;
     }
 
@@ -834,10 +799,10 @@ bool XFILE::CFile::ReadString(std::vector<char>& line)
 }
 
 //*********************************************************************************************
-bool CFile::ReadString(char *szLine, int iLineLength)
+XFILE::CFile::ReadLineResult XFILE::CFile::ReadLine(char* buffer, std::size_t bufferSize)
 {
-  if (!m_pFile || !szLine)
-    return false;
+  if (!m_pFile || !buffer)
+    return {ReadLineResult::FAILURE, 0};
 
   if (m_pBuffer)
   {
@@ -845,50 +810,55 @@ bool CFile::ReadString(char *szLine, int iLineLength)
     CFileStreamBuffer::int_type aByte = m_pBuffer->sgetc();
 
     if(aByte == traits::eof())
-      return false;
+      return {ReadLineResult::FAILURE, 0};
 
-    while(iLineLength>0)
+    for (std::size_t i = 0; i < bufferSize - 1; ++i)
     {
       aByte = m_pBuffer->sbumpc();
 
       if(aByte == traits::eof())
-        break;
+      {
+        buffer[i] = '\0';
+        return {ReadLineResult::OK, i};
+      }
 
       if(aByte == traits::to_int_type('\n'))
       {
         if(m_pBuffer->sgetc() == traits::to_int_type('\r'))
           m_pBuffer->sbumpc();
-        break;
+        buffer[i] = '\0';
+        return {ReadLineResult::OK, i};
       }
 
       if(aByte == traits::to_int_type('\r'))
       {
         if(m_pBuffer->sgetc() == traits::to_int_type('\n'))
           m_pBuffer->sbumpc();
-        break;
+        buffer[i] = '\0';
+        return {ReadLineResult::OK, i};
       }
 
-      *szLine = traits::to_char_type(aByte);
-      szLine++;
-      iLineLength--;
+      buffer[i] = traits::to_char_type(aByte);
     }
 
-    // if we have no space for terminating character we failed
-    if(iLineLength==0)
-      return false;
+    buffer[bufferSize - 1] = 0;
 
-    *szLine = 0;
-
-    return true;
+    return {ReadLineResult::TRUNCATED, bufferSize - 1};
   }
 
   try
   {
-    return m_pFile->ReadLine(szLine, iLineLength).code != XFILE::IFile::ReadLineResult::FAILURE;
+    const IFile::ReadLineResult result = m_pFile->ReadLine(buffer, bufferSize);
+    if (result.code == IFile::ReadLineResult::FAILURE)
+      return {ReadLineResult::FAILURE, result.length};
+    else if (result.code == IFile::ReadLineResult::TRUNCATED)
+      return {ReadLineResult::TRUNCATED, result.length};
+    else
+      return {ReadLineResult::OK, result.length};
   }
   XBMCCOMMONS_HANDLE_UNCHECKED
   catch (...) { CLog::Log(LOGERROR, "{} - Unhandled exception", __FUNCTION__); }
-  return false;
+  return {ReadLineResult::FAILURE, 0};
 }
 
 ssize_t CFile::Write(const void* lpBuf, size_t uiBufSize)

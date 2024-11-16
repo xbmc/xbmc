@@ -111,8 +111,8 @@ bool CEdl::ReadEdl(const std::string& mediaFilePath, float fps)
   bool bError = false;
   int iLine = 0;
   std::string strBuffer;
-  strBuffer.resize(1024);
-  while (edlFile.ReadString(&strBuffer[0], 1024))
+  strBuffer.reserve(1024);
+  while (edlFile.ReadLine(strBuffer))
   {
     // Log any errors from previous run in the loop
     if (bError)
@@ -307,9 +307,9 @@ bool CEdl::ReadComskip(const std::string& mediaFilePath, float fps)
     return false;
   }
 
-  char szBuffer[1024];
-  if (comskipFile.ReadString(szBuffer, 1023)
-  &&  strncmp(szBuffer, COMSKIP_HEADER, strlen(COMSKIP_HEADER)) != 0) // Line 1.
+  std::string line;
+  line.reserve(1024);
+  if (!comskipFile.ReadLine(line) || !line.starts_with(COMSKIP_HEADER)) // Line 1.
   {
     CLog::Log(LOGERROR,
               "{} - Invalid Comskip file: {}. Error reading line 1 - expected '{}' at start.",
@@ -320,7 +320,7 @@ bool CEdl::ReadComskip(const std::string& mediaFilePath, float fps)
 
   int iFrames;
   float fFrameRate;
-  if (sscanf(szBuffer, "FILE PROCESSING COMPLETE %i FRAMES AT %f", &iFrames, &fFrameRate) != 2)
+  if (sscanf(line.c_str(), "FILE PROCESSING COMPLETE %i FRAMES AT %f", &iFrames, &fFrameRate) != 2)
   {
     /*
      * Not all generated Comskip files have the frame rate information.
@@ -342,15 +342,15 @@ bool CEdl::ReadComskip(const std::string& mediaFilePath, float fps)
   else
     fFrameRate /= 100; // Reduce by factor of 100 to get fps.
 
-  (void)comskipFile.ReadString(szBuffer, 1023); // Line 2. Ignore "-------------"
+  (void)comskipFile.ReadLine(line); // Line 2. Ignore "-------------"
 
   bool bValid = true;
   int iLine = 2;
-  while (bValid && comskipFile.ReadString(szBuffer, 1023)) // Line 3 and onwards.
+  while (bValid && comskipFile.ReadLine(line)) // Line 3 and onwards.
   {
     iLine++;
     double dStartFrame, dEndFrame;
-    if (sscanf(szBuffer, "%lf %lf", &dStartFrame, &dEndFrame) == 2)
+    if (sscanf(line.c_str(), "%lf %lf", &dStartFrame, &dEndFrame) == 2)
     {
       Edit edit;
       edit.start = std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -412,9 +412,9 @@ bool CEdl::ReadVideoReDo(const std::string& mediaFilePath)
     return false;
   }
 
-  char szBuffer[1024];
-  if (videoReDoFile.ReadString(szBuffer, 1023)
-  &&  strncmp(szBuffer, VIDEOREDO_HEADER, strlen(VIDEOREDO_HEADER)) != 0)
+  std::string line;
+  line.reserve(1024);
+  if (!videoReDoFile.ReadLine(line) || !line.starts_with(VIDEOREDO_HEADER))
   {
     CLog::Log(LOGERROR,
               "{} - Invalid VideoReDo file: {}. Error reading line 1 - expected {}. Only version 2 "
@@ -426,16 +426,16 @@ bool CEdl::ReadVideoReDo(const std::string& mediaFilePath)
 
   int iLine = 1;
   bool bValid = true;
-  while (bValid && videoReDoFile.ReadString(szBuffer, 1023))
+  while (bValid && videoReDoFile.ReadLine(line))
   {
     iLine++;
-    if (strncmp(szBuffer, VIDEOREDO_TAG_CUT, strlen(VIDEOREDO_TAG_CUT)) == 0) // Found the <Cut> tag
+    if (line.starts_with(VIDEOREDO_TAG_CUT)) // Found the <Cut> tag
     {
       /*
        * double is used as 32 bit float would overflow.
        */
       double dStart, dEnd;
-      if (sscanf(szBuffer + strlen(VIDEOREDO_TAG_CUT), "%lf:%lf", &dStart, &dEnd) == 2)
+      if (sscanf(line.c_str() + strlen(VIDEOREDO_TAG_CUT), "%lf:%lf", &dStart, &dEnd) == 2)
       {
         /*
          *  Times need adjusting by 1/10,000 to get ms.
@@ -449,11 +449,12 @@ bool CEdl::ReadVideoReDo(const std::string& mediaFilePath)
       else
         bValid = false;
     }
-    else if (strncmp(szBuffer, VIDEOREDO_TAG_SCENE, strlen(VIDEOREDO_TAG_SCENE)) == 0) // Found the <SceneMarker > tag
+    else if (line.starts_with(VIDEOREDO_TAG_SCENE)) // Found the <SceneMarker > tag
     {
       int iScene;
       double dSceneMarker;
-      if (sscanf(szBuffer + strlen(VIDEOREDO_TAG_SCENE), " %i>%lf", &iScene, &dSceneMarker) == 2)
+      if (sscanf(line.c_str() + strlen(VIDEOREDO_TAG_SCENE), " %i>%lf", &iScene, &dSceneMarker) ==
+          2)
         bValid = AddSceneMarker(std::chrono::milliseconds(
             std::lround(dSceneMarker / 10000))); // Times need adjusting by 1/10,000 to get ms.
       else

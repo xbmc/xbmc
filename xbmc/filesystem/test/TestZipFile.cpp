@@ -55,7 +55,7 @@ TEST_F(TestZipFile, Read)
   file.Flush();
   EXPECT_EQ(20, file.GetPosition());
   EXPECT_TRUE(!memcmp("About\n-----\nXBMC is ", buf, sizeof(buf) - 1));
-  EXPECT_TRUE(file.ReadString(buf, sizeof(buf)));
+  EXPECT_TRUE(file.ReadLine(buf, sizeof(buf)).code != XFILE::CFile::ReadLineResult::FAILURE);
   EXPECT_EQ(39, file.GetPosition());
   EXPECT_STREQ("an award-winning fr", buf);
   EXPECT_EQ(100, file.Seek(100));

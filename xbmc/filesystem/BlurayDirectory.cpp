@@ -297,7 +297,8 @@ std::vector<BLURAY_TITLE_INFO*> CBlurayDirectory::GetUserPlaylists()
   std::string discInfPath = URIUtils::AddFileToFolder(root, "disc.inf");
   std::vector<BLURAY_TITLE_INFO*> userTitles;
   CFile file;
-  char buffer[1025];
+  std::string line;
+  line.reserve(1024);
 
   if (file.Open(discInfPath))
   {
@@ -311,13 +312,13 @@ std::vector<BLURAY_TITLE_INFO*> CBlurayDirectory::GetUserPlaylists()
     }
 
     uint8_t maxLines = 100;
-    while ((maxLines > 0) && file.ReadString(buffer, 1024))
+    while ((maxLines > 0) && file.ReadLine(line))
     {
       maxLines--;
-      if (StringUtils::StartsWithNoCase(buffer, "playlists"))
+      if (StringUtils::StartsWithNoCase(line, "playlists"))
       {
         int pos = 0;
-        while ((pos = pl.RegFind(buffer, static_cast<unsigned int>(pos))) >= 0)
+        while ((pos = pl.RegFind(line, static_cast<unsigned int>(pos))) >= 0)
         {
           std::string playlist = pl.GetMatch(0);
           uint32_t len = static_cast<uint32_t>(playlist.length());

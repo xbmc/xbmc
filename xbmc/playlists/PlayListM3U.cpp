@@ -64,7 +64,7 @@ CPlayListM3U::~CPlayListM3U(void) = default;
 
 bool CPlayListM3U::Load(const std::string& strFileName)
 {
-  std::vector<char> vLine;
+  std::string strLine;
   std::string strInfo;
   std::vector<std::pair<std::string, std::string> > properties;
 
@@ -88,9 +88,8 @@ bool CPlayListM3U::Load(const std::string& strFileName)
     return false;
   }
 
-  while (file.ReadString(vLine))
+  while (file.ReadLine(strLine))
   {
-    std::string strLine(vLine.begin(), vLine.end());
     StringUtils::Trim(strLine);
 
     if (StringUtils::StartsWith(strLine, InfoMarker))

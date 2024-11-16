@@ -78,9 +78,28 @@ public:
    * \param line[OUT] The line read
    * \return True if has success, otherwise false for EOF or error
    */
-  bool ReadString(std::vector<char>& line);
+  bool ReadLine(std::string& line);
 
-  bool ReadString(char *szLine, int iLineLength);
+  /**
+   * See \ref IFile::ReadLineResult
+   */
+  struct ReadLineResult
+  {
+    enum class ResultCode
+    {
+      FAILURE,
+      TRUNCATED,
+      OK,
+    };
+    using enum ResultCode;
+
+    ResultCode code;
+    std::size_t length;
+  };
+  /**
+   * See \ref IFile
+   */
+  ReadLineResult ReadLine(char* buffer, std::size_t bufferSize);
   /**
    * Attempt to write bufSize bytes from buffer bufPtr into currently opened file.
    * @param bufPtr  pointer to buffer
