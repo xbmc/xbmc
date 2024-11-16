@@ -371,6 +371,7 @@
       <z>AspectRatio</z>
       <zoom>AspectRatio</zoom>
       <t>ShowSubtitles</t>
+      <subtitle>ShowSubtitles</subtitle>
       <t mod="ctrl">SubtitleAlign</t>
       <l>DialogSelectSubtitle</l>
       <left>StepBack</left>
