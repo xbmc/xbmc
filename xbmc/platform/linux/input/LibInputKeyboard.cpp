@@ -23,6 +23,8 @@
 #include <string.h>
 
 #include <fcntl.h>
+#include <libinput.h>
+#include <libudev.h>
 #include <linux/input.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
@@ -525,6 +527,8 @@ void CLibInputKeyboard::DeviceRemoved(libinput_device* dev)
   {
     m_repeatData.erase(data);
   }
+
+  m_remoteControlDevices.erase(dev);
 }
 
 void CLibInputKeyboard::GetRepeat(libinput_device *dev)
@@ -559,6 +563,22 @@ void CLibInputKeyboard::GetRepeat(libinput_device *dev)
   if (data == m_repeatData.end())
   {
     m_repeatData.insert(std::make_pair(dev, kbdrepvec));
+  }
+}
+
+void CLibInputKeyboard::CheckForRemoteControl(libinput_device* dev)
+{
+  auto* udevDevice = libinput_device_get_udev_device(dev);
+  // assume that devices that have an "rc" subsystem device among their parents are remote controls:
+  auto* rcDevice = udev_device_get_parent_with_subsystem_devtype(udevDevice, "rc", nullptr);
+  if (rcDevice)
+  {
+    const char* name = libinput_device_get_name(dev);
+    const char* sysname = libinput_device_get_sysname(dev);
+    CLog::Log(LOGDEBUG, "CLibInputKeyboard::{} - detected device \"{}\" ({}) as remote control",
+              __FUNCTION__, name, sysname);
+
+    m_remoteControlDevices.insert(dev);
   }
 }
 

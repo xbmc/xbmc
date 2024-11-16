@@ -268,6 +268,7 @@ void CLibInputHandler::DeviceAdded(libinput_device *dev)
               name, sysname);
     m_devices.push_back(libinput_device_ref(dev));
     m_keyboard->GetRepeat(dev);
+    m_keyboard->CheckForRemoteControl(dev);
   }
 }
 
