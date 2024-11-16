@@ -192,7 +192,7 @@ constexpr auto evdevKeycodeMap = make_map<uint32_t, XBMCKey>({
     {KEY_EPG, XBMCK_EPG},
     // {KEY_LANGUAGE, XBMCK_UNKNOWN },
     // {KEY_TITLE, XBMCK_UNKNOWN },
-    // {KEY_SUBTITLE, XBMCK_UNKNOWN },
+    {KEY_SUBTITLE, XBMCK_SUBTITLE},
     // {KEY_MODE, XBMCK_UNKNOWN },
     // {KEY_PC, XBMCK_UNKNOWN },
     // {KEY_TV, XBMCK_UNKNOWN },
