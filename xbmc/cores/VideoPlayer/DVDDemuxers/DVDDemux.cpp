@@ -17,16 +17,16 @@ std::string CDemuxStreamAudio::GetStreamType()
   {
     //! @todo: With ffmpeg >= 6.1 add new AC4 codec
     case AV_CODEC_ID_AC3:
-      strInfo = "AC3 ";
+      strInfo = "AC3";
       break;
     case AV_CODEC_ID_EAC3:
     {
       //! @todo: With ffmpeg >= 6.1 add new atmos profile case
       // "JOC" its EAC3 Atmos underlying profile, there is no standard codec name string
       if (StringUtils::Contains(codecName, "JOC"))
-        strInfo = "DD+ ATMOS ";
+        strInfo = "DD+ ATMOS";
       else
-        strInfo = "DD+ ";
+        strInfo = "DD+";
       break;
     }
     case AV_CODEC_ID_DTS:
@@ -35,34 +35,34 @@ std::string CDemuxStreamAudio::GetStreamType()
       switch (profile)
       {
         case FF_PROFILE_DTS_96_24:
-          strInfo = "DTS 96/24 ";
+          strInfo = "DTS 96/24";
           break;
         case FF_PROFILE_DTS_ES:
-          strInfo = "DTS ES ";
+          strInfo = "DTS ES";
           break;
         case FF_PROFILE_DTS_EXPRESS:
-          strInfo = "DTS EXPRESS ";
+          strInfo = "DTS EXPRESS";
           break;
         case FF_PROFILE_DTS_HD_MA:
-          strInfo = "DTS-HD MA ";
+          strInfo = "DTS-HD MA";
           break;
         case FF_PROFILE_DTS_HD_HRA:
-          strInfo = "DTS-HD HRA ";
+          strInfo = "DTS-HD HRA";
           break;
         default:
-          strInfo = "DTS ";
+          strInfo = "DTS";
           break;
       }
       break;
     }
     case AV_CODEC_ID_MP2:
-      strInfo = "MP2 ";
+      strInfo = "MP2";
       break;
     case AV_CODEC_ID_MP3:
-      strInfo = "MP3 ";
+      strInfo = "MP3";
       break;
     case AV_CODEC_ID_TRUEHD:
-      strInfo = "TrueHD ";
+      strInfo = "TrueHD";
       break;
     case AV_CODEC_ID_AAC:
     {
@@ -70,61 +70,62 @@ std::string CDemuxStreamAudio::GetStreamType()
       {
         case FF_PROFILE_AAC_LOW:
         case FF_PROFILE_MPEG2_AAC_LOW:
-          strInfo = "AAC-LC ";
+          strInfo = "AAC-LC";
           break;
         case FF_PROFILE_AAC_HE:
         case FF_PROFILE_MPEG2_AAC_HE:
-          strInfo = "HE-AAC ";
+          strInfo = "HE-AAC";
           break;
         case FF_PROFILE_AAC_HE_V2:
-          strInfo = "HE-AACv2 ";
+          strInfo = "HE-AACv2";
           break;
         case FF_PROFILE_AAC_SSR:
-          strInfo = "AAC-SSR ";
+          strInfo = "AAC-SSR";
           break;
         case FF_PROFILE_AAC_LTP:
-          strInfo = "AAC-LTP ";
+          strInfo = "AAC-LTP";
           break;
         default:
         {
           // Try check by codec full string according to RFC 6381
           if (codecName == "mp4a.40.2" || codecName == "mp4a.40.17")
-            strInfo = "AAC-LC ";
+            strInfo = "AAC-LC";
           else if (codecName == "mp4a.40.3")
-            strInfo = "AAC-SSR ";
+            strInfo = "AAC-SSR";
           else if (codecName == "mp4a.40.4" || codecName == "mp4a.40.19")
-            strInfo = "AAC-LTP ";
+            strInfo = "AAC-LTP";
           else if (codecName == "mp4a.40.5")
-            strInfo = "HE-AAC ";
+            strInfo = "HE-AAC";
           else if (codecName == "mp4a.40.29")
-            strInfo = "HE-AACv2 ";
+            strInfo = "HE-AACv2";
           else
-            strInfo = "AAC ";
+            strInfo = "AAC";
           break;
         }
       }
       break;
     }
     case AV_CODEC_ID_ALAC:
-      strInfo = "ALAC ";
+      strInfo = "ALAC";
       break;
     case AV_CODEC_ID_FLAC:
-      strInfo = "FLAC ";
+      strInfo = "FLAC";
       break;
     case AV_CODEC_ID_OPUS:
-      strInfo = "Opus ";
+      strInfo = "Opus";
       break;
     case AV_CODEC_ID_VORBIS:
-      strInfo = "Vorbis ";
+      strInfo = "Vorbis";
       break;
     default:
       break;
   }
 
   if (codec >= AV_CODEC_ID_PCM_S16LE && codec <= AV_CODEC_ID_PCM_SGA)
-    strInfo = "PCM ";
+    strInfo = "PCM";
 
-  strInfo += m_channelLayoutName;
+  if (!m_channelLayoutName.empty())
+    strInfo += (strInfo.empty() ? "" : " ") + m_channelLayoutName;
 
   return strInfo;
 }
