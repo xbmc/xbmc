@@ -418,7 +418,7 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
         CVideoInfoTag details;
         m_database.GetTvShowInfo("", details, params.GetTvShowId());
         std::map<std::string, std::string> art;
-        if (m_database.GetArtForItem(details.m_iDbId, details.m_type, art))
+        if (m_database.GetArtForItem(details.m_iDbId, details.m_type, art) && !art.empty())
         {
           items.AppendArt(art, details.m_type);
           items.SetArtFallback("fanart", "tvshow.fanart");
@@ -456,7 +456,8 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
             seasonID = items[firstIndex]->GetVideoInfoTag()->m_iIdSeason;
 
           CGUIListItem::ArtMap seasonArt;
-          if (seasonID > -1 && m_database.GetArtForItem(seasonID, MediaTypeSeason, seasonArt))
+          if (seasonID > -1 && m_database.GetArtForItem(seasonID, MediaTypeSeason, seasonArt) &&
+              !seasonArt.empty())
           {
             items.AppendArt(seasonArt, MediaTypeSeason);
             // set an art fallback for "thumb"
@@ -473,7 +474,8 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
         if (params.GetSetId() > 0)
         {
           CGUIListItem::ArtMap setArt;
-          if (m_database.GetArtForItem(params.GetSetId(), MediaTypeVideoCollection, setArt))
+          if (m_database.GetArtForItem(params.GetSetId(), MediaTypeVideoCollection, setArt) &&
+              !setArt.empty())
           {
             items.AppendArt(setArt, MediaTypeVideoCollection);
             items.SetArtFallback("fanart", "set.fanart");

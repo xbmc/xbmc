@@ -426,7 +426,7 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
               artwork))
         item.AppendArt(artwork);
     }
-    else if (m_videoDatabase->GetArtForItem(tag.m_iDbId, tag.m_type, artwork))
+    else if (m_videoDatabase->GetArtForItem(tag.m_iDbId, tag.m_type, artwork) && !artwork.empty())
     {
       item.AppendArt(artwork);
     }

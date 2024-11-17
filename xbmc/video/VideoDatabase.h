@@ -988,9 +988,16 @@ public:
     }
   }
 
-  void SetArtForItem(int mediaId, const MediaType &mediaType, const std::string &artType, const std::string &url);
-  void SetArtForItem(int mediaId, const MediaType &mediaType, const std::map<std::string, std::string> &art);
-  bool GetArtForItem(int mediaId, const MediaType &mediaType, std::map<std::string, std::string> &art);
+  bool SetArtForItem(int mediaId,
+                     const MediaType& mediaType,
+                     const std::string& artType,
+                     const std::string& url);
+  bool SetArtForItem(int mediaId,
+                     const MediaType& mediaType,
+                     const std::map<std::string, std::string>& art);
+  bool GetArtForItem(int mediaId,
+                     const MediaType& mediaType,
+                     std::map<std::string, std::string>& art);
   std::string GetArtForItem(int mediaId, const MediaType &mediaType, const std::string &artType);
 
   void UpdateArtForItem(int mediaId, const MediaType& mediaType);
@@ -1113,7 +1120,7 @@ public:
   bool GetVideoVersionTypes(VideoDbContentType idContent,
                             VideoAssetType asset,
                             CFileItemList& items);
-  void SetVideoVersionDefaultArt(int dbId, int idFrom, VideoDbContentType type);
+  bool SetVideoVersionDefaultArt(int dbId, int idFrom, VideoDbContentType type);
   void InitializeVideoVersionTypeTable(int schemaVersion);
   void UpdateVideoVersionTypeTable();
   bool GetVideoVersionsNav(const std::string& strBaseDir,
