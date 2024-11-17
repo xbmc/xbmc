@@ -12,6 +12,8 @@
 #include "LibInputSettings.h"
 #include "ServiceBroker.h"
 #include "application/AppInboundProtocol.h"
+#include "input/keyboard/XBMC_keysym.h"
+#include "input/remote/IRRemote.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Map.h"
@@ -207,6 +209,12 @@ constexpr auto XkbDeadKeyXBMCMapping =
                                       {XKB_KEY_dead_small_schwa, XBMCK_SCHWA},
                                       {XKB_KEY_dead_capital_schwa, XBMCK_SCHWA}});
 
+/// maps from libinput (i.e. evdev) scancodes to XINPUT_IR_REMOTE_* key codes
+constexpr auto libinputKeyToRemoteButtonMap = make_map<uint32_t, uint32_t>({
+    {KEY_FULL_SCREEN, XINPUT_IR_REMOTE_DISPLAY},
+    // TODO: add all the other evdev keys here
+});
+
 std::optional<XBMCKey> TranslateDeadKey(uint32_t keySym)
 {
   auto mapping = XkbDeadKeyXBMCMapping.find(keySym);
@@ -333,6 +341,15 @@ void CLibInputKeyboard::ProcessKey(libinput_event_keyboard *e)
 {
   if (!m_ctx || !m_keymap || !m_state)
     return;
+
+  auto* baseEvent = libinput_event_keyboard_get_base_event(e);
+  auto* inputDevice = libinput_event_get_device(baseEvent);
+  if (m_remoteControlDevices.count(inputDevice))
+  {
+    CLog::LogF(LOGDEBUG, "event comes from a remote control.");
+    ProcessRemoteControlInput(e);
+    return;
+  }
 
   const uint32_t xkbkey = libinput_event_keyboard_get_key(e) + 8;
   const xkb_keysym_t keysym = xkb_state_key_get_one_sym(m_state.get(), xkbkey);
@@ -483,6 +500,36 @@ void CLibInputKeyboard::ProcessKey(libinput_event_keyboard *e)
   else
   {
     m_repeatTimer.Stop();
+  }
+}
+
+void CLibInputKeyboard::ProcessRemoteControlInput(libinput_event_keyboard* e)
+{
+  const uint32_t libinputKeycode = libinput_event_keyboard_get_key(e);
+  const auto mappingIter = libinputKeyToRemoteButtonMap.find(libinputKeycode);
+  if (mappingIter != libinputKeyToRemoteButtonMap.cend())
+  {
+    XBMC_Event buttonEvent = {};
+    buttonEvent.type = XBMC_BUTTON;
+    buttonEvent.keybutton.button = mappingIter->second;
+    buttonEvent.keybutton.holdtime = 0;
+
+    const bool pressed = libinput_event_keyboard_get_key_state(e) == LIBINPUT_KEY_STATE_PRESSED;
+    if (pressed)
+    {
+      CLog::LogF(LOGDEBUG, "mapping scancode {} to remote control code {}", libinputKeycode,
+                 mappingIter->second);
+
+      // send initial key-down event
+      std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+      if (appPort)
+        appPort->OnEvent(buttonEvent);
+    }
+  }
+  else
+  {
+    CLog::LogF(LOGINFO, "could not map libinput key code {} to remote control name.",
+               libinputKeycode);
   }
 }
 

@@ -53,6 +53,12 @@ private:
    * Get Unicode codepoint/UTF32 code for provided keycode
    */
   std::uint32_t UnicodeCodepointForKeycode(xkb_keycode_t code) const;
+
+  /**
+   * Process keyboard input that actually comes from a remote control.
+   */
+  void ProcessRemoteControlInput(libinput_event_keyboard* e);
+
   struct XkbContextDeleter
   {
     void operator()(xkb_context* ctx) const;
