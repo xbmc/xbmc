@@ -12588,14 +12588,14 @@ void CVideoDatabase::SetVideoVersion(int idFile, int idVideoVersion)
   }
 }
 
-void CVideoDatabase::AddVideoAsset(VideoDbContentType itemType,
+bool CVideoDatabase::AddVideoAsset(VideoDbContentType itemType,
                                    int dbId,
                                    int idVideoVersion,
                                    VideoAssetType videoAssetType,
                                    CFileItem& item)
 {
   if (!m_pDB || !m_pDS)
-    return;
+    return false;
 
   assert(m_pDB->in_transaction() == false);
 
@@ -12605,11 +12605,11 @@ void CVideoDatabase::AddVideoAsset(VideoDbContentType itemType,
     mediaType = MediaTypeMovie;
   }
   else
-    return;
+    return false;
 
   int idFile = AddFile(item.GetPath());
   if (idFile < 0)
-    return;
+    return false;
 
   try
   {
@@ -12631,12 +12631,17 @@ void CVideoDatabase::AddVideoAsset(VideoDbContentType itemType,
     if (videoAssetType == VideoAssetType::VERSION)
       SetVideoVersionDefaultArt(idFile, item.GetVideoInfoTag()->m_iDbId, itemType);
 
+    SetArtForItem(idFile, MediaTypeVideoVersion, item.GetArt());
+
     CommitTransaction();
+
+    return true;
   }
   catch (...)
   {
     CLog::LogF(LOGERROR, "failed for video {}", dbId);
     RollbackTransaction();
+    return false;
   }
 }
 

@@ -1093,7 +1093,7 @@ public:
   int AddVideoVersionType(const std::string& typeVideoVersion,
                           VideoAssetTypeOwner owner,
                           VideoAssetType assetType);
-  void AddVideoAsset(VideoDbContentType itemType,
+  bool AddVideoAsset(VideoDbContentType itemType,
                      int dbId,
                      int idVideoVersion,
                      VideoAssetType videoAssetType,
