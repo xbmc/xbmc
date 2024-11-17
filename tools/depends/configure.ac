@@ -335,6 +335,7 @@ case $host in
         if test "x$use_cpu" = "xarm64-v8a"; then
           platform_cflags="${platform_cflags} -mtune=cortex-a53"
         fi
+        platform_ldflags="${platform_ldflags} -Wl,-z,max-page-size=16384"
         meson_cpu="aarch64"
       ;;
       i*86*-linux-android*)
