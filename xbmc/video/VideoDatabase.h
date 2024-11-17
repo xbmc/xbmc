@@ -1093,9 +1093,19 @@ public:
   int AddVideoVersionType(const std::string& typeVideoVersion,
                           VideoAssetTypeOwner owner,
                           VideoAssetType assetType);
+  /*!
+   * \brief Create a new video asset from the provided item and type and attach it to an owner
+   * A file record is created for items with a path new to the database.
+   * \param[in] itemType Parent's type
+   * \param[in] dbId  Parent's id
+   * \param[in] idVideoAsset Video asset identifier / name
+   * \param[in] videoAssetType Type of the video asset
+   * \param[in] item Item to be made into a video asset
+   * \return Success status. true:success, false:failure
+   */
   bool AddVideoAsset(VideoDbContentType itemType,
                      int dbId,
-                     int idVideoVersion,
+                     int idVideoAsset,
                      VideoAssetType videoAssetType,
                      CFileItem& item);
   bool DeleteVideoAsset(int idFile);

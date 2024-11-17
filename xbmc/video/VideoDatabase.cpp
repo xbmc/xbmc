@@ -12590,7 +12590,7 @@ void CVideoDatabase::SetVideoVersion(int idFile, int idVideoVersion)
 
 bool CVideoDatabase::AddVideoAsset(VideoDbContentType itemType,
                                    int dbId,
-                                   int idVideoVersion,
+                                   int idVideoAsset,
                                    VideoAssetType videoAssetType,
                                    CFileItem& item)
 {
@@ -12599,13 +12599,11 @@ bool CVideoDatabase::AddVideoAsset(VideoDbContentType itemType,
 
   assert(m_pDB->in_transaction() == false);
 
-  MediaType mediaType;
-  if (itemType == VideoDbContentType::MOVIES)
-  {
-    mediaType = MediaTypeMovie;
-  }
-  else
+  if (itemType != VideoDbContentType::MOVIES)
     return false;
+
+  MediaType mediaType;
+  VideoContentTypeToString(itemType, mediaType);
 
   int idFile = AddFile(item.GetPath());
   if (idFile < 0)
@@ -12618,12 +12616,15 @@ bool CVideoDatabase::AddVideoAsset(VideoDbContentType itemType,
     m_pDS->query(PrepareSQL("SELECT idFile FROM videoversion WHERE idFile = %i", idFile));
 
     if (m_pDS->num_rows() == 0)
-      m_pDS->exec(PrepareSQL("INSERT INTO videoversion VALUES(%i, %i, '%s', %i, %i)", idFile, dbId,
-                             mediaType.c_str(), videoAssetType, idVideoVersion));
+      m_pDS->exec(
+          PrepareSQL("INSERT INTO videoversion (idFile, idMedia, media_type, itemType, idType) "
+                     "VALUES(%i, %i, '%s', %i, %i)",
+                     idFile, dbId, mediaType.c_str(), videoAssetType, idVideoAsset));
     else
-      m_pDS->exec(PrepareSQL("UPDATE videoversion SET idMedia = %i, media_type = '%s', itemType = "
-                             "%i, idType = %i WHERE idFile = %i",
-                             dbId, mediaType.c_str(), videoAssetType, idVideoVersion, idFile));
+      m_pDS->exec(PrepareSQL("UPDATE videoversion "
+                             "SET idMedia = %i, media_type = '%s', itemType = %i, idType = %i "
+                             "WHERE idFile = %i",
+                             dbId, mediaType.c_str(), videoAssetType, idVideoAsset, idFile));
 
     if (item.GetVideoInfoTag()->HasStreamDetails())
       SetStreamDetailsForFileId(item.GetVideoInfoTag()->m_streamDetails, idFile);
