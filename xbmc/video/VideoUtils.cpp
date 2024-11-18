@@ -14,10 +14,8 @@
 #include "Util.h"
 #include "filesystem/Directory.h"
 #include "filesystem/StackDirectory.h"
-#include "filesystem/VideoDatabaseDirectory/QueryParams.h"
 #include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayListFileItemClassify.h"
-#include "pvr/filesystem/PVRGUIDirectory.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingUtils.h"
 #include "settings/Settings.h"
@@ -26,169 +24,16 @@
 #include "utils/ArtUtils.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/FileUtils.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
-#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 
 #include <algorithm>
 #include <array>
 #include <cstdint>
 #include <vector>
-
-using namespace KODI;
-
-namespace
-{
-KODI::VIDEO::UTILS::ResumeInformation GetFolderItemResumeInformation(const CFileItem& item)
-{
-  if (!item.m_bIsFolder)
-    return {};
-
-  CFileItem folderItem(item);
-  if (!folderItem.HasProperty("inprogressepisodes") && // season/show/recordings
-      !folderItem.HasProperty("inprogress")) // movie set
-  {
-    if (URIUtils::IsPVRRecordingFileOrFolder(folderItem.GetPath()))
-    {
-      PVR::CPVRGUIDirectory::GetRecordingsDirectoryInfo(folderItem);
-    }
-    else
-    {
-      CVideoDatabase db;
-      if (db.Open())
-      {
-        XFILE::VIDEODATABASEDIRECTORY::CQueryParams params;
-        XFILE::VIDEODATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(item.GetPath(), params);
-
-        if (params.GetTvShowId() >= 0)
-        {
-          if (params.GetSeason() >= 0)
-          {
-            const int idSeason = db.GetSeasonId(static_cast<int>(params.GetTvShowId()),
-                                                static_cast<int>(params.GetSeason()));
-            if (idSeason >= 0)
-            {
-              CVideoInfoTag details;
-              db.GetSeasonInfo(idSeason, details, &folderItem);
-            }
-          }
-          else
-          {
-            CVideoInfoTag details;
-            db.GetTvShowInfo(item.GetPath(), details, static_cast<int>(params.GetTvShowId()),
-                             &folderItem);
-          }
-        }
-        else if (params.GetSetId() >= 0)
-        {
-          CVideoInfoTag details;
-          db.GetSetInfo(static_cast<int>(params.GetSetId()), details, &folderItem);
-        }
-      }
-    }
-  }
-
-  if (folderItem.IsResumable())
-  {
-    KODI::VIDEO::UTILS::ResumeInformation resumeInfo;
-    resumeInfo.isResumable = true;
-    return resumeInfo;
-  }
-
-  return {};
-}
-
-KODI::VIDEO::UTILS::ResumeInformation GetNonFolderItemResumeInformation(const CFileItem& item)
-{
-  // do not resume nfo files
-  if (item.IsNFO())
-    return {};
-
-  // do not resume playlists, except strm files
-  if (!item.IsType(".strm") && PLAYLIST::IsPlayList(item))
-    return {};
-
-  // do not resume Live TV and 'deleted' items (e.g. trashed pvr recordings)
-  if (item.IsLiveTV() || item.IsDeleted())
-    return {};
-
-  KODI::VIDEO::UTILS::ResumeInformation resumeInfo;
-
-  if (item.GetCurrentResumeTimeAndPartNumber(resumeInfo.startOffset, resumeInfo.partNumber))
-  {
-    if (resumeInfo.startOffset > 0)
-    {
-      resumeInfo.startOffset = CUtil::ConvertSecsToMilliSecs(resumeInfo.startOffset);
-      resumeInfo.isResumable = true;
-    }
-  }
-  else
-  {
-    // Obtain the resume bookmark from video db...
-
-    CVideoDatabase db;
-    if (!db.Open())
-    {
-      CLog::LogF(LOGERROR, "Cannot open VideoDatabase");
-      return {};
-    }
-
-    std::string path = item.GetPath();
-    if (VIDEO::IsVideoDb(item) || item.IsDVD())
-    {
-      if (item.HasVideoInfoTag())
-      {
-        path = item.GetVideoInfoTag()->m_strFileNameAndPath;
-      }
-      else if (VIDEO::IsVideoDb(item))
-      {
-        // Obtain path+filename from video db
-        XFILE::VIDEODATABASEDIRECTORY::CQueryParams params;
-        XFILE::VIDEODATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(item.GetPath(), params);
-
-        long id = -1;
-        VideoDbContentType content_type;
-        if ((id = params.GetMovieId()) >= 0)
-          content_type = VideoDbContentType::MOVIES;
-        else if ((id = params.GetEpisodeId()) >= 0)
-          content_type = VideoDbContentType::EPISODES;
-        else if ((id = params.GetMVideoId()) >= 0)
-          content_type = VideoDbContentType::MUSICVIDEOS;
-        else
-        {
-          CLog::LogF(LOGERROR, "Cannot obtain video content type");
-          db.Close();
-          return {};
-        }
-
-        db.GetFilePathById(static_cast<int>(id), path, content_type);
-      }
-      else
-      {
-        // DVD
-        CLog::LogF(LOGERROR, "Cannot obtain bookmark for DVD");
-        db.Close();
-        return {};
-      }
-    }
-
-    CBookmark bookmark;
-    db.GetResumeBookMark(path, bookmark);
-    db.Close();
-
-    if (bookmark.IsSet())
-    {
-      resumeInfo.isResumable = bookmark.IsPartWay();
-      resumeInfo.startOffset = CUtil::ConvertSecsToMilliSecs(bookmark.timeInSeconds);
-      resumeInfo.partNumber = static_cast<int>(bookmark.partNumber);
-    }
-  }
-  return resumeInfo;
-}
-
-} // unnamed namespace
 
 namespace KODI::VIDEO::UTILS
 {
@@ -324,11 +169,36 @@ bool IsAutoPlayNextItem(const std::string& content)
 
 ResumeInformation GetItemResumeInformation(const CFileItem& item)
 {
-  ResumeInformation info = GetNonFolderItemResumeInformation(item);
-  if (info.isResumable)
-    return info;
+  // do not resume nfo files
+  if (item.IsNFO())
+    return {};
 
-  return GetFolderItemResumeInformation(item);
+  // do not resume playlists, except strm files
+  if (!item.IsType(".strm") && PLAYLIST::IsPlayList(item))
+    return {};
+
+  // do not resume Live TV and 'deleted' items (e.g. trashed pvr recordings)
+  if (item.IsLiveTV() || item.IsDeleted())
+    return {};
+
+  int64_t startOffset{0};
+  int partNumber{0};
+  if (item.GetCurrentResumeTimeAndPartNumber(startOffset, partNumber) && startOffset > 0)
+  {
+    ResumeInformation resumeInfo;
+    resumeInfo.startOffset = CUtil::ConvertSecsToMilliSecs(startOffset);
+    resumeInfo.isResumable = true;
+    return resumeInfo;
+  }
+
+  if (item.m_bIsFolder && item.IsResumable())
+  {
+    ResumeInformation resumeInfo;
+    resumeInfo.isResumable = true;
+    return resumeInfo;
+  }
+
+  return {};
 }
 
 ResumeInformation GetStackPartResumeInformation(const CFileItem& item, unsigned int partNumber)
