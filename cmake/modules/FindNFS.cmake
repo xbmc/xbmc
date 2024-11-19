@@ -41,9 +41,19 @@ if(NOT TARGET libnfs::nfs)
     buildlibnfs()
   else()
     if(NOT TARGET libnfs::nfs)
+
+      if(NFS_FIND_VERSION)
+        if(NFS_FIND_VERSION_EXACT)
+          set(NFS_FIND_SPEC "=${NFS_FIND_VERSION_COMPLETE}")
+        else()
+          set(NFS_FIND_SPEC ">=${NFS_FIND_VERSION_COMPLETE}")
+        endif()
+      endif()
+
+      find_package(PkgConfig)
       # Try pkgconfig based search as last resort
       if(PKG_CONFIG_FOUND)
-        pkg_check_modules(PC_LIBNFS libnfs>=3.0.0 QUIET)
+        pkg_check_modules(PC_LIBNFS libnfs${NFS_FIND_SPEC} QUIET)
       endif()
 
       find_library(LIBNFS_LIBRARY_RELEASE NAMES nfs libnfs

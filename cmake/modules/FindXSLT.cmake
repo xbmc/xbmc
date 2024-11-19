@@ -17,9 +17,9 @@ if(NOT TARGET XSLT::XSLT)
   endif()
 
   find_path(XSLT_INCLUDE_DIR NAMES libxslt/xslt.h
-                             PATHS ${PC_XSLT_INCLUDEDIR})
+                             HINTS ${PC_XSLT_INCLUDEDIR})
   find_library(XSLT_LIBRARY NAMES xslt libxslt
-                            PATHS ${PC_XSLT_LIBDIR})
+                            HINTS ${PC_XSLT_LIBDIR})
 
   set(XSLT_VERSION ${PC_XSLT_VERSION})
 
@@ -38,6 +38,4 @@ if(NOT TARGET XSLT::XSLT)
     target_link_libraries(XSLT::XSLT INTERFACE LibXml2::LibXml2)
     set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP XSLT::XSLT)
   endif()
-
-  mark_as_advanced(XSLT_INCLUDE_DIR XSLT_LIBRARY)
 endif()

@@ -14,14 +14,16 @@
 #
 #   SmbClient::SmbClient   - The SmbClient library
 
+find_package(PkgConfig)
+
 if(PKG_CONFIG_FOUND)
   pkg_check_modules(PC_SMBCLIENT smbclient QUIET)
 endif()
 
 find_path(SMBCLIENT_INCLUDE_DIR NAMES libsmbclient.h
-                                PATHS ${PC_SMBCLIENT_INCLUDEDIR})
+                                HINTS ${PC_SMBCLIENT_INCLUDEDIR})
 find_library(SMBCLIENT_LIBRARY NAMES smbclient
-                               PATHS ${PC_SMBCLIENT_LIBDIR})
+                               HINTS ${PC_SMBCLIENT_LIBDIR})
 
 set(SMBCLIENT_VERSION ${PC_SMBCLIENT_VERSION})
 

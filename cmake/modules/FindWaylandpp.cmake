@@ -10,6 +10,7 @@
 # WAYLANDPP_DEFINITIONS  - the waylandpp definitions
 # WAYLANDPP_SCANNER      - path to wayland-scanner++
 
+find_package(PkgConfig)
 pkg_check_modules(PC_WAYLANDPP wayland-client++ wayland-egl++ wayland-cursor++ QUIET)
 
 if(PC_WAYLANDPP_FOUND)
@@ -26,16 +27,16 @@ else()
   message(SEND_ERROR "wayland-scanner++ not found via pkg-config")
 endif()
 
-find_path(WAYLANDPP_INCLUDE_DIR wayland-client.hpp PATHS ${PC_WAYLANDPP_INCLUDEDIR})
+find_path(WAYLANDPP_INCLUDE_DIR wayland-client.hpp HINTS ${PC_WAYLANDPP_INCLUDEDIR})
 
 find_library(WAYLANDPP_CLIENT_LIBRARY NAMES wayland-client++
-                                      PATHS ${PC_WAYLANDPP_LIBRARY_DIRS})
+                                      HINTS ${PC_WAYLANDPP_LIBRARY_DIRS})
 
 find_library(WAYLANDPP_CURSOR_LIBRARY NAMES wayland-cursor++
-                                      PATHS ${PC_WAYLANDPP_LIBRARY_DIRS})
+                                      HINTS ${PC_WAYLANDPP_LIBRARY_DIRS})
 
 find_library(WAYLANDPP_EGL_LIBRARY NAMES wayland-egl++
-                                   PATHS ${PC_WAYLANDPP_LIBRARY_DIRS})
+                                   HINTS ${PC_WAYLANDPP_LIBRARY_DIRS})
 
 if(KODI_DEPENDSBUILD)
   pkg_check_modules(PC_WAYLANDC wayland-client wayland-egl wayland-cursor QUIET)
@@ -49,13 +50,13 @@ if(KODI_DEPENDSBUILD)
   endif()
 
   find_library(WAYLANDC_CLIENT_LIBRARY NAMES wayland-client
-                                       PATHS ${WAYLAND_SEARCH_PATH}
+                                       HINTS ${WAYLAND_SEARCH_PATH}
                                        REQUIRED)
   find_library(WAYLANDC_CURSOR_LIBRARY NAMES wayland-cursor
-                                       PATHS ${WAYLAND_SEARCH_PATH}
+                                       HINTS ${WAYLAND_SEARCH_PATH}
                                        REQUIRED)
   find_library(WAYLANDC_EGL_LIBRARY NAMES wayland-egl
-                                    PATHS ${WAYLAND_SEARCH_PATH}
+                                    HINTS ${WAYLAND_SEARCH_PATH}
                                     REQUIRED)
 
   set(WAYLANDPP_STATIC_DEPS ${WAYLANDC_CLIENT_LIBRARY}
@@ -68,7 +69,7 @@ set(WAYLANDPP_PROTOCOLS_DIR "${PC_WAYLANDPP_PKGDATADIR}/protocols" CACHE INTERNA
 
 # wayland-scanner++ is from native/host system in case of cross-compilation, so
 # it's ok if we don't find it with pkgconfig
-find_program(WAYLANDPP_SCANNER wayland-scanner++ PATHS ${PC_WAYLANDPP_SCANNER})
+find_program(WAYLANDPP_SCANNER wayland-scanner++ HINTS ${PC_WAYLANDPP_SCANNER})
 
 include (FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Waylandpp

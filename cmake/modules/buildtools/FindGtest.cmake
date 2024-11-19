@@ -32,20 +32,30 @@ if(ENABLE_INTERNAL_GTEST)
 
   BUILD_DEP_TARGET()
 else()
+
+  if(Gtest_FIND_VERSION)
+    if(Gtest_FIND_VERSION_EXACT)
+      set(Gtest_FIND_SPEC "=${Gtest_FIND_VERSION_COMPLETE}")
+    else()
+      set(Gtest_FIND_SPEC ">=${Gtest_FIND_VERSION_COMPLETE}")
+    endif()
+  endif()
+
+  find_package(PkgConfig)
   if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_GTEST gtest>=1.10.0 QUIET)
+    pkg_check_modules(PC_GTEST gtest${Gtest_FIND_SPEC} QUIET)
     set(GTEST_VERSION ${PC_GTEST_VERSION})
   elseif(WIN32)
-    set(GTEST_VERSION 1.10.0)
+    set(GTEST_VERSION ${Gtest_FIND_VERSION_COMPLETE})
   endif()
 
   find_path(GTEST_INCLUDE_DIR NAMES gtest/gtest.h
-                              PATHS ${PC_GTEST_INCLUDEDIR})
+                              HINTS ${PC_GTEST_INCLUDEDIR})
 
   find_library(GTEST_LIBRARY_RELEASE NAMES gtest
-                                     PATHS ${PC_GTEST_LIBDIR})
+                                     HINTS ${PC_GTEST_LIBDIR})
   find_library(GTEST_LIBRARY_DEBUG NAMES gtestd
-                                   PATHS ${PC_GTEST_LIBDIR})
+                                   HINTS ${PC_GTEST_LIBDIR})
 
   include(SelectLibraryConfigurations)
   select_library_configurations(GTEST)

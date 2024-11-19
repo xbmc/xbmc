@@ -14,13 +14,13 @@ if(NOT TARGET Plist::Plist)
   endif()
 
   find_path(PLIST_INCLUDE_DIR plist/plist.h
-                              PATHS ${PC_PLIST_INCLUDEDIR}
+                              HINTS ${PC_PLIST_INCLUDEDIR}
                               NO_CACHE)
 
   set(PLIST_VERSION ${PC_PLIST_VERSION})
 
   find_library(PLIST_LIBRARY NAMES plist-2.0 plist libplist-2.0 libplist
-                                   PATHS ${PC_PLIST_LIBDIR}
+                                   HINTS ${PC_PLIST_LIBDIR}
                                    NO_CACHE)
 
   include(FindPackageHandleStandardArgs)

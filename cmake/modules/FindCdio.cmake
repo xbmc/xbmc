@@ -9,22 +9,24 @@
 # CDIO_INCLUDE_DIRS - the cdio include directory
 # CDIO_LIBRARIES - the cdio libraries
 
+find_package(PkgConfig)
+
 if(PKG_CONFIG_FOUND)
   pkg_check_modules(PC_CDIO libcdio>=0.80 QUIET)
   pkg_check_modules(PC_CDIOPP libcdio++>=2.1.0 QUIET)
 endif()
 
 find_path(CDIO_INCLUDE_DIR NAMES cdio/cdio.h
-                           PATHS ${PC_CDIO_INCLUDEDIR})
+                           HINTS ${PC_CDIO_INCLUDEDIR})
 
 find_library(CDIO_LIBRARY NAMES cdio libcdio
-                          PATHS ${PC_CDIO_LIBDIR})
+                          HINTS ${PC_CDIO_LIBDIR})
 
 if(DEFINED PC_CDIO_VERSION AND DEFINED PC_CDIOPP_VERSION AND NOT "${PC_CDIO_VERSION}" VERSION_EQUAL "${PC_CDIOPP_VERSION}")
   message(WARNING "Detected libcdio (${PC_CDIO_VERSION}) and libcdio++ (${PC_CDIOPP_VERSION}) version mismatch. libcdio++ will not be used.")
 else()
   find_path(CDIOPP_INCLUDE_DIR NAMES cdio++/cdio.hpp
-                               PATHS ${PC_CDIOPP_INCLUDEDIR} ${CDIO_INCLUDE_DIR})
+                               HINTS ${PC_CDIOPP_INCLUDEDIR} ${CDIO_INCLUDE_DIR})
 
   set(CDIO_VERSION ${PC_CDIO_VERSION})
 endif()
