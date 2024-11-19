@@ -22,8 +22,8 @@ if(NOT TARGET PulseAudio::PulseAudio)
   find_package(PkgConfig)
   if(PKG_CONFIG_FOUND)
     pkg_check_modules(PC_PULSEAUDIO libpulse${PulseAudio_FIND_SPEC} QUIET)
-    pkg_check_modules(PC_PULSEAUDIO_MAINLOOP libpulse${PulseAudio_FIND_SPEC} QUIET)
-    pkg_check_modules(PC_PULSEAUDIO_SIMPLE libpulse${PulseAudio_FIND_SPEC} QUIET)
+    pkg_check_modules(PC_PULSEAUDIO_MAINLOOP libpulse-mainloop-glib${PulseAudio_FIND_SPEC} QUIET)
+    pkg_check_modules(PC_PULSEAUDIO_SIMPLE libpulse-simple${PulseAudio_FIND_SPEC} QUIET)
   endif()
 
   find_path(PULSEAUDIO_INCLUDE_DIR NAMES pulse/pulseaudio.h pulse/simple.h
