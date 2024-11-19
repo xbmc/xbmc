@@ -8,56 +8,55 @@
 
 #include "TagLoaderTagLib.h"
 
+#include "MusicInfoTag.h"
+#include "ReplayGain.h"
+#include "ServiceBroker.h"
+#include "TagLibVFSStream.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
+#include "utils/RegExp.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/log.h"
+
 #include <vector>
 
-#include <taglib/id3v1tag.h>
-#include <taglib/apetag.h>
-#include <taglib/asftag.h>
-#include <taglib/id3v1genres.h>
 #include <taglib/aifffile.h>
 #include <taglib/apefile.h>
+#include <taglib/apetag.h>
 #include <taglib/asffile.h>
+#include <taglib/asftag.h>
+#include <taglib/attachedpictureframe.h>
+#include <taglib/chapterframe.h>
+#include <taglib/commentsframe.h>
+#include <taglib/flacfile.h>
+#include <taglib/id3v1genres.h>
+#include <taglib/id3v1tag.h>
+#include <taglib/id3v2tag.h>
+#include <taglib/itfile.h>
 #include <taglib/modfile.h>
 #include <taglib/mp4file.h>
+#include <taglib/mp4tag.h>
+#include <taglib/mpcfile.h>
 #include <taglib/mpegfile.h>
 #include <taglib/oggfile.h>
 #include <taglib/oggflacfile.h>
 #include <taglib/opusfile.h>
+#include <taglib/popularimeterframe.h>
 #include <taglib/rifffile.h>
-#include <taglib/speexfile.h>
 #include <taglib/s3mfile.h>
+#include <taglib/speexfile.h>
+#include <taglib/textidentificationframe.h>
+#include <taglib/tpropertymap.h>
 #include <taglib/trueaudiofile.h>
+#include <taglib/tstring.h>
+#include <taglib/uniquefileidentifierframe.h>
+#include <taglib/unsynchronizedlyricsframe.h>
 #include <taglib/vorbisfile.h>
 #include <taglib/wavfile.h>
 #include <taglib/wavpackfile.h>
-#include <taglib/xmfile.h>
-#include <taglib/flacfile.h>
-#include <taglib/itfile.h>
-#include <taglib/mpcfile.h>
-#include <taglib/id3v2tag.h>
 #include <taglib/xiphcomment.h>
-#include <taglib/mp4tag.h>
-
-#include <taglib/textidentificationframe.h>
-#include <taglib/uniquefileidentifierframe.h>
-#include <taglib/popularimeterframe.h>
-#include <taglib/commentsframe.h>
-#include <taglib/unsynchronizedlyricsframe.h>
-#include <taglib/attachedpictureframe.h>
-
-#include <taglib/tstring.h>
-#include <taglib/tpropertymap.h>
-
-#include "TagLibVFSStream.h"
-#include "MusicInfoTag.h"
-#include "ReplayGain.h"
-#include "utils/RegExp.h"
-#include "utils/URIUtils.h"
-#include "utils/log.h"
-#include "utils/StringUtils.h"
-#include "ServiceBroker.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/SettingsComponent.h"
+#include <taglib/xmfile.h>
 
 #if TAGLIB_MAJOR_VERSION <= 1 && TAGLIB_MINOR_VERSION < 11
 #include "utils/Base64.h"
@@ -65,6 +64,8 @@
 
 using namespace TagLib;
 using namespace MUSIC_INFO;
+
+int CTagLoaderTagLib::ms_totalLen = 0;
 
 namespace
 {
@@ -281,6 +282,7 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, EmbeddedArt *art, MUSIC_INFO:
 {
   if (!id3v2) return false;
   ReplayGain replayGainInfo;
+  std::map<int, chapterDetails> chapters;
 
   ID3v2::AttachedPictureFrame *pictures[3] = {};
   const ID3v2::FrameListMap& frameListMap = id3v2->frameListMap();
@@ -462,6 +464,45 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, EmbeddedArt *art, MUSIC_INFO:
           tag.SetUserrating(POPMtoXBMC(popFrame->rating()));
         }
       }
+    else if (it->first == "CHAP")
+    {
+      // We use a chapter number index here to ensure chapters are added in the right order
+      int chapNumber = 0;
+      unsigned int prevTime = 0;
+      for (ID3v2::FrameList::ConstIterator ch = it->second.begin(); ch != it->second.end(); ++ch)
+      {
+        auto* chapFrame = dynamic_cast<ID3v2::ChapterFrame*>(*ch);
+        if (!chapFrame)
+          continue;
+        const std::string chapData = chapFrame->toString().toCString(true);
+        chapterDetails& chapter{chapters[chapNumber]};
+        const std::vector<std::string> chapInfo = StringUtils::Split(chapData, ",");
+        if (!chapFrame->embeddedFrameList("TIT2").isEmpty())
+          chapter.name =
+              chapFrame->embeddedFrameList("TIT2")[0]->toString().toCString(true);
+        const unsigned int startTime = chapFrame->startTime(); // times are in millisecs
+        unsigned int endTime = chapFrame->endTime();
+        const std::vector<std::string> titles{StringUtils::Split(chapInfo.front(), ":")};
+        if (chapter.name.empty())
+        {
+          if (!titles.front().empty())
+            chapter.name = titles.front();
+          else
+            chapter.name =
+                "Ch " + std::to_string(chapNumber + 1); // use counter
+        }
+        // Make sure the last chapter really goes to the end of the file
+        if (prevTime == endTime)
+          endTime = ms_totalLen;
+        chapter.startTime = startTime;
+        chapter.endTime = endTime;
+        CLog::LogF(LOGDEBUG, "CTagLoaderTagLib - Chapter {}, {} start point {}, endpoint {}",
+                   chapNumber + 1, chapter.name, startTime, endTime);
+        prevTime = endTime;
+        chapNumber++;
+      }
+      tag.SetChapterMarks(chapters);
+    }
     else if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_logLevel == LOG_LEVEL_MAX)
       CLog::Log(LOGDEBUG, "unrecognized ID3 frame detected: {}{}{}{}", it->first[0], it->first[1],
                 it->first[2], it->first[3]);
@@ -1345,6 +1386,7 @@ bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, 
   if (file->audioProperties())
   {
     tag.SetDuration(file->audioProperties()->length());
+    ms_totalLen = file->audioProperties()->lengthInMilliseconds();
     tag.SetBitRate(file->audioProperties()->bitrate());
     tag.SetNoOfChannels(file->audioProperties()->channels());
     tag.SetSampleRate(file->audioProperties()->sampleRate());
