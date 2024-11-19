@@ -137,6 +137,9 @@ This page shows the window names, the window definition, the window ID and the s
 | SelectVideoExtra        | WINDOW_DIALOG_SELECT_VIDEO_EXTRA     | 12016     | DialogSelect.xml                    | @skinning_v21 **New window** SelectVideoExtra |
 | ManageVideoVersions     | WINDOW_DIALOG_MANAGE_VIDEO_VERSIONS  | 12004     | DialogVideoManager.xml              | @skinning_v21 **New window** ManageVideoVersions |
 | ManageVideoExtras       | WINDOW_DIALOG_MANAGE_VIDEO_EXTRAS    | 12017     | DialogVideoManager.xml              | @skinning_v21 **New window** ManageVideoExtras |
+| DialogSelectVideo       | WINDOW_DIALOG_SELECT_VIDEO_STREAM    | 12300     | DialogSelect.xml                    | @skinning_v22 **New window** DialogSelectVideo |
+| DialogSelectAudio       | WINDOW_DIALOG_SELECT_AUDIO_STREAM    | 12301     | DialogSelect.xml                    | @skinning_v22 **New window** DialogSelectAudio |
+| DialogSelectSubtitle    | WINDOW_DIALOG_SELECT_SUBTITLE_STREAM | 12302     | DialogSelect.xml                    | @skinning_v22 **New window** DialogSelectSubtitle |
 | Weather                 | WINDOW_WEATHER                       | 12600     | MyWeather.xml                       |                                    |
 | Screensaver             | WINDOW_SCREENSAVER                   | 12900     | none                                |                                    |
 | VideoOSD                | WINDOW_DIALOG_VIDEO_OSD              | 12901     | VideoOSD.xml                        |                                    |
