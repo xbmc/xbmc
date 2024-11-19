@@ -1244,7 +1244,11 @@ bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, 
     else if (strExtension == "asf" || strExtension == "wmv" || strExtension == "wma")
       file = asfFile = new ASF::File(stream);
     else if (strExtension == "flac")
+#if (TAGLIB_MAJOR_VERSION >= 2)
+      file = flacFile = new FLAC::File(stream);
+#else
       file = flacFile = new FLAC::File(stream, ID3v2::FrameFactory::instance());
+#endif
     else if (strExtension == "it")
       file = new IT::File(stream);
     else if (strExtension == "mod" || strExtension == "module" || strExtension == "nst" || strExtension == "wow")
@@ -1256,11 +1260,19 @@ bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, 
     else if (strExtension == "mpc")
       file = mpcFile = new MPC::File(stream);
     else if (strExtension == "mp3" || strExtension == "aac")
+#if (TAGLIB_MAJOR_VERSION >= 2)
+      file = mpegFile = new MPEG::File(stream);
+#else
       file = mpegFile = new MPEG::File(stream, ID3v2::FrameFactory::instance());
+#endif
     else if (strExtension == "s3m")
       file = new S3M::File(stream);
     else if (strExtension == "tta")
+#if (TAGLIB_MAJOR_VERSION >= 2)
+      file = ttaFile = new TrueAudio::File(stream);
+#else
       file = ttaFile = new TrueAudio::File(stream, ID3v2::FrameFactory::instance());
+#endif
     else if (strExtension == "wv")
       file = wvFile = new WavPack::File(stream);
     else if (strExtension == "aif" || strExtension == "aiff")
@@ -1344,7 +1356,11 @@ bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, 
 
   if (file->audioProperties())
   {
+#if (TAGLIB_MAJOR_VERSION >= 2)
+    tag.SetDuration(file->audioProperties()->lengthInSeconds());
+#else
     tag.SetDuration(file->audioProperties()->length());
+#endif
     tag.SetBitRate(file->audioProperties()->bitrate());
     tag.SetNoOfChannels(file->audioProperties()->channels());
     tag.SetSampleRate(file->audioProperties()->sampleRate());
