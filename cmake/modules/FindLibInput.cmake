@@ -11,15 +11,17 @@
 # LIBINPUT_DEFINITIONS - the libinput compile definitions
 #
 
+find_package(PkgConfig)
+
 if(PKG_CONFIG_FOUND)
   pkg_check_modules(PC_LIBINPUT libinput QUIET)
 endif()
 
 find_path(LIBINPUT_INCLUDE_DIR NAMES libinput.h
-                               PATHS ${PC_LIBINPUT_INCLUDEDIR})
+                               HINTS ${PC_LIBINPUT_INCLUDEDIR})
 
 find_library(LIBINPUT_LIBRARY NAMES input
-                              PATHS ${PC_LIBINPUT_LIBDIR})
+                              HINTS ${PC_LIBINPUT_LIBDIR})
 
 set(LIBINPUT_VERSION ${PC_LIBINPUT_VERSION})
 

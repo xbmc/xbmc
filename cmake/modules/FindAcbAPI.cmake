@@ -14,10 +14,10 @@ if(NOT TARGET ACBAPI::ACBAPI)
   endif()
 
   find_path(ACBAPI_INCLUDE_DIR NAMES appswitching-control-block/AcbAPI.h
-                                   PATHS ${PC_ACBAPI_INCLUDEDIR}
+                                   HINTS ${PC_ACBAPI_INCLUDEDIR}
                                    NO_CACHE)
   find_library(ACBAPI_LIBRARY NAMES AcbAPI
-                                  PATHS ${PC_ACBAPI_LIBDIR}
+                                  HINTS ${PC_ACBAPI_LIBDIR}
                                   NO_CACHE)
 
   set(ACBAPI_VERSION ${PC_ACBAPI_VERSION})
@@ -31,7 +31,7 @@ if(NOT TARGET ACBAPI::ACBAPI)
     add_library(ACBAPI::ACBAPI UNKNOWN IMPORTED)
     set_target_properties(ACBAPI::ACBAPI PROPERTIES
                                                  IMPORTED_LOCATION "${ACBAPI_LIBRARY}"
-                                                 INTERFACE_INCLUDE_DIRECTORIES "${ACBAPI_INCLUDE_DIR}")
+                                         INTERFACE_INCLUDE_DIRECTORIES "${ACBAPI_INCLUDE_DIR}")
     set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP ACBAPI::ACBAPI)
 
     # creates an empty library to install on webOS 5+ devices

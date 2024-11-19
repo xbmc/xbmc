@@ -8,17 +8,26 @@
 #   LibDRM::LibDRM   - The LibDRM library
 
 if(NOT TARGET LIBDRM::LIBDRM)
+
+  if(LibDRM_FIND_VERSION)
+    if(LibDRM_FIND_VERSION_EXACT)
+      set(LibDRM_FIND_SPEC "=${LibDRM_FIND_VERSION_COMPLETE}")
+    else()
+      set(LibDRM_FIND_SPEC ">=${LibDRM_FIND_VERSION_COMPLETE}")
+    endif()
+  endif()
+
   find_package(PkgConfig)
   if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_LIBDRM libdrm>=2.4.95 QUIET)
+    pkg_check_modules(PC_LIBDRM libdrm${LibDRM_FIND_SPEC} QUIET)
   endif()
 
   find_path(LIBDRM_INCLUDE_DIR NAMES drm.h
                                PATH_SUFFIXES libdrm drm
-                               PATHS ${PC_LIBDRM_INCLUDEDIR}
+                               HINTS ${PC_LIBDRM_INCLUDEDIR}
                                NO_CACHE)
   find_library(LIBDRM_LIBRARY NAMES drm
-                              PATHS ${PC_LIBDRM_LIBDIR}
+                              HINTS ${PC_LIBDRM_LIBDIR}
                               NO_CACHE)
 
   set(LIBDRM_VERSION ${PC_LIBDRM_VERSION})

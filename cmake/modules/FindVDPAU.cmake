@@ -14,10 +14,10 @@ if(NOT TARGET VDPAU::VDPAU)
   endif()
 
   find_path(VDPAU_INCLUDE_DIR NAMES vdpau/vdpau.h vdpau/vdpau_x11.h
-                              PATHS ${PC_VDPAU_INCLUDEDIR}
+                              HINTS ${PC_VDPAU_INCLUDEDIR}
                               NO_CACHE)
   find_library(VDPAU_LIBRARY NAMES vdpau
-                             PATHS ${PC_VDPAU_LIBDIR}
+                             HINTS ${PC_VDPAU_LIBDIR}
                              NO_CACHE)
 
   set(VDPAU_VERSION ${PC_VDPAU_VERSION})

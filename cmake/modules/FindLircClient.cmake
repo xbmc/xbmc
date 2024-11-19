@@ -12,8 +12,10 @@ if(NOT TARGET LIRCCLIENT::LIRCCLIENT)
     pkg_check_modules(PC_LIRC lirc QUIET)
   endif()
 
-  find_path(LIRCCLIENT_INCLUDE_DIR lirc/lirc_client.h PATHS ${PC_LIRC_INCLUDEDIR})
-  find_library(LIRCCLIENT_LIBRARY lirc_client PATHS ${PC_LIRC_LIBDIR})
+  find_path(LIRCCLIENT_INCLUDE_DIR lirc/lirc_client.h
+                                   HINTS ${PC_LIRC_INCLUDEDIR})
+  find_library(LIRCCLIENT_LIBRARY lirc_client
+                                  HINTS ${PC_LIRC_LIBDIR})
 
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(LircClient

@@ -10,18 +10,25 @@
 # MICROHTTPD_LIBRARIES - the MicroHttpd libraries
 # MICROHTTPD_DEFINITIONS - the MicroHttpd definitions
 #
-# and the following imported targets::
-#
-#   MicroHttpd::MicroHttpd   - The MicroHttpd library
+
+if(MicroHttpd_FIND_VERSION)
+  if(MicroHttpd_FIND_VERSION_EXACT)
+    set(MicroHttpd_FIND_SPEC "=${MicroHttpd_FIND_VERSION_COMPLETE}")
+  else()
+    set(MicroHttpd_FIND_SPEC ">=${MicroHttpd_FIND_VERSION_COMPLETE}")
+  endif()
+endif()
+
+find_package(PkgConfig)
 
 if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_MICROHTTPD libmicrohttpd>=0.9.40 QUIET)
+  pkg_check_modules(PC_MICROHTTPD libmicrohttpd${MicroHttpd_FIND_SPEC} QUIET)
 endif()
 
 find_path(MICROHTTPD_INCLUDE_DIR NAMES microhttpd.h
-                                 PATHS ${PC_MICROHTTPD_INCLUDEDIR})
+                                 HINTS ${PC_MICROHTTPD_INCLUDEDIR})
 find_library(MICROHTTPD_LIBRARY NAMES microhttpd libmicrohttpd
-                                PATHS ${PC_MICROHTTPD_LIBDIR})
+                                HINTS ${PC_MICROHTTPD_LIBDIR})
 
 set(MICROHTTPD_VERSION ${PC_MICROHTTPD_VERSION})
 

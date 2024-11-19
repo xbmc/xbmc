@@ -72,6 +72,7 @@ if(NOT PCRE::pcre)
 
   else()
     if(NOT TARGET PCRE::pcre)
+      find_package(PkgConfig)
       if(PKG_CONFIG_FOUND)
         pkg_check_modules(PC_PCRE pcre QUIET)
       endif()

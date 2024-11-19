@@ -1,4 +1,4 @@
-list(APPEND PLATFORM_REQUIRED_DEPS WaylandProtocols>=1.7 Waylandpp>=0.2.2 LibDRM Xkbcommon>=0.4.1)
+list(APPEND PLATFORM_REQUIRED_DEPS WaylandProtocols>=1.7 Waylandpp>=0.2.2 LibDRM>=2.4.95 Xkbcommon>=0.4.1)
 list(APPEND PLATFORM_OPTIONAL_DEPS VAAPI)
 
 if(APP_RENDER_SYSTEM STREQUAL "gl")

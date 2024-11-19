@@ -9,7 +9,7 @@
 
 find_path(WAYLANDPROTOCOLSWEBOS_PROTOCOLSDIR NAMES webos-shell.xml
                                              PATH_SUFFIXES wayland-webos
-                                             PATHS ${DEPENDS_PATH}/share
+                                             HINTS ${DEPENDS_PATH}/share
                                              REQUIRED)
 
 include(FindPackageMessage)

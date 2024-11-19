@@ -13,15 +13,17 @@
 #
 #   FriBidi::FriBidi   - The FriBidi library
 
+find_package(PkgConfig)
+
 if(PKG_CONFIG_FOUND)
   pkg_check_modules(PC_FRIBIDI fribidi QUIET)
 endif()
 
 find_path(FRIBIDI_INCLUDE_DIR NAMES fribidi.h
                               PATH_SUFFIXES fribidi
-                              PATHS ${PC_FRIBIDI_INCLUDEDIR})
+                              HINTS ${PC_FRIBIDI_INCLUDEDIR})
 find_library(FRIBIDI_LIBRARY NAMES fribidi libfribidi
-                             PATHS ${PC_FRIBIDI_LIBDIR})
+                             HINTS ${PC_FRIBIDI_LIBDIR})
 
 set(FRIBIDI_VERSION ${PC_FRIBIDI_VERSION})
 
