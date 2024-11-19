@@ -4,10 +4,10 @@
 	<include>Animation_DialogPopupOpenClose</include>
 	<depth>DepthOSD</depth>
 	<controls>
-		<include condition="![Window.IsActive(videoselectdialog) | Window.IsActive(audioselectdialog) | Window.IsActive(subtitleselectdialog) | Window.IsActive(selectvideoversion) | Window.IsActive(selectvideoextra) | Window.IsActive(gamesaves) | Window.IsActive(gamestretchmode) | Window.IsActive(gamevideofilter) | Window.IsActive(gamevideorotation) | Window.IsActive(ingamesaves)]">DefaultDialogSelectLayout</include>
-		<include condition="Window.IsActive(videoselectdialog)">VideoDialogSelectVideoLayout</include>
-		<include condition="Window.IsActive(audioselectdialog)">VideoDialogSelectAudioLayout</include>
-		<include condition="Window.IsActive(subtitleselectdialog)">VideoDialogSelectSubtitleLayout</include>
+		<include condition="![Window.IsActive(dialogselectvideo) | Window.IsActive(dialogselectaudio) | Window.IsActive(dialogselectsubtitle) | Window.IsActive(selectvideoversion) | Window.IsActive(selectvideoextra) | Window.IsActive(gamesaves) | Window.IsActive(gamestretchmode) | Window.IsActive(gamevideofilter) | Window.IsActive(gamevideorotation) | Window.IsActive(ingamesaves)]">DefaultDialogSelectLayout</include>
+		<include condition="Window.IsActive(dialogselectvideo)">VideoDialogSelectVideoLayout</include>
+		<include condition="Window.IsActive(dialogselectaudio)">VideoDialogSelectAudioLayout</include>
+		<include condition="Window.IsActive(dialogselectsubtitle)">VideoDialogSelectSubtitleLayout</include>
 		<include condition="Window.IsActive(gamesaves)">GameDialogSelectSaveLayout</include>
 		<include condition="Window.IsActive(gamevideofilter)">GameDialogSelectFilterLayout</include>
 		<include condition="Window.IsActive(gamestretchmode)">GameDialogSelectViewLayout</include>
