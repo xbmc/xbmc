@@ -14,11 +14,11 @@ if(NOT TARGET ACBAPI::ACBAPI)
   endif()
 
   find_path(ACBAPI_INCLUDE_DIR NAMES appswitching-control-block/AcbAPI.h
-                                   HINTS ${PC_ACBAPI_INCLUDEDIR}
-                                   NO_CACHE)
+                               HINTS ${PC_ACBAPI_INCLUDEDIR}
+                               NO_CACHE)
   find_library(ACBAPI_LIBRARY NAMES AcbAPI
-                                  HINTS ${PC_ACBAPI_LIBDIR}
-                                  NO_CACHE)
+                              HINTS ${PC_ACBAPI_LIBDIR}
+                              NO_CACHE)
 
   set(ACBAPI_VERSION ${PC_ACBAPI_VERSION})
 
