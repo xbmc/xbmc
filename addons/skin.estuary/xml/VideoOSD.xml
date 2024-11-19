@@ -197,10 +197,11 @@
 					</control>
 					<control type="radiobutton" id="70046">
 						<include content="OSDButton">
-							<param name="texture" value="osd/fullscreen/buttons/settings-subtitle.png"/>
+							<param name="texture" value="osd/fullscreen/buttons/streams.png"/>
 						</include>
-						<onclick>ActivateWindow(osdsubtitlesettings)</onclick>
-						<visible>!VideoPlayer.Content(LiveTV) | VideoPlayer.HasSubtitles</visible>
+						<onclick>SetProperty(settingsdialog_content,streamselection,home)</onclick>
+						<onclick>SetProperty(settingsdialog_header,$LOCALIZE[13392],home)</onclick>
+						<onclick>ActivateWindow(1101)</onclick>
 					</control>
 					<control type="radiobutton" id="70047">
 						<include content="OSDButton">
@@ -215,7 +216,7 @@
 						<include content="OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/settings.png"/>
 						</include>
-						<onclick>SetProperty(settingsdialog_content,osd,home)</onclick>
+						<onclick>SetProperty(settingsdialog_content,videosettings,home)</onclick>
 						<onclick>SetProperty(settingsdialog_header,$LOCALIZE[5],home)</onclick>
 						<onclick>ActivateWindow(1101)</onclick>
 					</control>

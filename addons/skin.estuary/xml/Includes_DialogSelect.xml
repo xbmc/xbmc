@@ -204,25 +204,25 @@
 		<control type="group">
 			<centertop>50%</centertop>
 			<centerleft>50%</centerleft>
-			<height>750</height>
-			<width>1220</width>
+			<height>870</height>
+			<width>1270</width>
 			<include content="DialogBackgroundCommons">
-				<param name="width" value="1220" />
-				<param name="height" value="750" />
+				<param name="width" value="1270" />
+				<param name="height" value="870" />
 				<param name="header_label" value="" />
 				<param name="header_id" value="1" />
 			</include>
 			<control type="image">
 				<left>0</left>
 				<top>80</top>
-				<width>920</width>
+				<width>970</width>
 				<bottom>2</bottom>
 				<texture border="40">buttons/dialogbutton-nofo.png</texture>
 			</control>
 			<control type="list" id="3">
 				<left>20</left>
 				<top>100</top>
-				<width>880</width>
+				<width>930</width>
 				<bottom>20</bottom>
 				<onup>3</onup>
 				<ondown>3</ondown>
@@ -238,7 +238,7 @@
 			<control type="list" id="6">
 				<left>20</left>
 				<top>100</top>
-				<width>880</width>
+				<width>930</width>
 				<bottom>20</bottom>
 				<onup>6</onup>
 				<ondown>6</ondown>
@@ -246,10 +246,10 @@
 				<onright>61</onright>
 				<pagecontrol>61</pagecontrol>
 				<scrolltime>200</scrolltime>
-				<itemlayout height="100" width="880">
+				<itemlayout height="75" width="930">
 					<control type="image">
 						<left>10</left>
-						<top>16</top>
+						<top>5</top>
 						<width>30</width>
 						<height>30</height>
 						<aspectratio>keep</aspectratio>
@@ -259,34 +259,34 @@
 					</control>
 					<control type="label">
 						<left>50</left>
-						<top>0</top>
-						<right>80</right>
-						<height>60</height>
-						<font>font14</font>
+						<top>5</top>
+						<right>50</right>
+						<height>30</height>
 						<aligny>center</aligny>
-						<label>$INFO[ListItem.Property(stream.codec)]$INFO[ListItem.Property(stream.resolution),$COMMA ]$INFO[ListItem.Property(stream.bitrate),$COMMA , kbps]$INFO[ListItem.Property(stream.fps),$COMMA , fps]$VAR[VideoStreamDialogVideoItemLabelVar, - [LIGHT],[/LIGHT]]</label>
+						<label>$INFO[ListItem.Property(stream.codec)]$INFO[ListItem.Property(stream.hdrtype),$COMMA ]$INFO[ListItem.Property(stream.resolution),$COMMA ]$VAR[StreamBitrateVar,$COMMA , kbps]$INFO[ListItem.Property(stream.fps),$COMMA , fps]$VAR[VideoStreamDialogItemLabelVar, - [LIGHT],[/LIGHT]]</label>
 					</control>
-					<control type="textbox">
+					<control type="label">
 						<left>50</left>
-						<top>50</top>
-						<right>80</right>
-						<height>67</height>
-						<font>font12</font>
-						<textcolor>grey</textcolor>
+						<top>45</top>
+						<right>50</right>
+						<height>20</height>
+						<font>font10</font>
+						<aligny>center</aligny>
 						<label>$INFO[ListItem.Property(stream.description),, ]$INFO[ListItem.Property(stream.language),(,)]</label>
+						<textcolor>grey</textcolor>
 					</control>
 					<control type="image">
-						<left>830</left>
-						<top>16</top>
+						<right>10</right>
+						<top>5</top>
 						<width>30</width>
 						<height>30</height>
 						<aspectratio>keep</aspectratio>
-						<aligny>center</aligny>
+						<align>right</align>
 						<texture>icons/menumarks/star.png</texture>
 						<visible>ListItem.Property(stream.isdefault)</visible>
 					</control>
 				</itemlayout>
-				<focusedlayout height="100" width="880">
+				<focusedlayout height="75" width="930">
 					<control type="image">
 						<left>0</left>
 						<top>0</top>
@@ -297,7 +297,7 @@
 					</control>
 					<control type="image">
 						<left>10</left>
-						<top>16</top>
+						<top>5</top>
 						<width>30</width>
 						<height>30</height>
 						<aspectratio>keep</aspectratio>
@@ -307,28 +307,30 @@
 					</control>
 					<control type="label">
 						<left>50</left>
-						<top>0</top>
-						<right>80</right>
-						<height>60</height>
+						<top>5</top>
+						<right>50</right>
+						<height>30</height>
 						<aligny>center</aligny>
 						<scroll>true</scroll>
-						<font>font14</font>
-						<label>$INFO[ListItem.Property(stream.codec)]$INFO[ListItem.Property(stream.resolution),$COMMA ]$INFO[ListItem.Property(stream.bitrate),$COMMA , kbps]$INFO[ListItem.Property(stream.fps),$COMMA , fps]$VAR[VideoStreamDialogVideoItemLabelVar, - [LIGHT],[/LIGHT]]</label>
+						<label>$INFO[ListItem.Property(stream.codec)]$INFO[ListItem.Property(stream.hdrtype),$COMMA ]$INFO[ListItem.Property(stream.resolution),$COMMA ]$VAR[StreamBitrateVar,$COMMA , kbps]$INFO[ListItem.Property(stream.fps),$COMMA , fps]$VAR[VideoStreamDialogItemLabelVar, - [LIGHT],[/LIGHT]]</label>
 					</control>
-					<control type="textbox">
+					<control type="label">
 						<left>50</left>
-						<top>50</top>
-						<right>80</right>
-						<height>67</height>
-						<font>font12</font>
+						<top>45</top>
+						<right>50</right>
+						<height>20</height>
+						<font>font10</font>
+						<aligny>center</aligny>
+						<scroll>true</scroll>
 						<label>$INFO[ListItem.Property(stream.description),, ]$INFO[ListItem.Property(stream.language),(,)]</label>
 					</control>
 					<control type="image">
-						<left>830</left>
-						<top>16</top>
+						<right>10</right>
+						<top>5</top>
 						<width>30</width>
 						<height>30</height>
 						<aspectratio>keep</aspectratio>
+						<align>right</align>
 						<aligny>center</aligny>
 						<texture>icons/menumarks/star.png</texture>
 						<visible>ListItem.Property(stream.isdefault)</visible>
@@ -336,7 +338,7 @@
 				</focusedlayout>
 			</control>
 			<control type="scrollbar" id="61">
-				<left>910</left>
+				<left>960</left>
 				<top>100</top>
 				<width>12</width>
 				<bottom>20</bottom>
@@ -346,7 +348,7 @@
 				<orientation>vertical</orientation>
 			</control>
 			<control type="label">
-				<left>925</left>
+				<left>975</left>
 				<bottom>10</bottom>
 				<width>275</width>
 				<height>35</height>
@@ -356,7 +358,7 @@
 				<label>$VAR[SelectLabel]</label>
 			</control>
 			<control type="grouplist" id="9001">
-				<left>920</left>
+				<left>970</left>
 				<top>80</top>
 				<onleft>61</onleft>
 				<itemgap>dialogbuttons_itemgap</itemgap>
@@ -385,25 +387,25 @@
 		<control type="group">
 			<centertop>50%</centertop>
 			<centerleft>50%</centerleft>
-			<height>750</height>
-			<width>1220</width>
+			<height>870</height>
+			<width>1270</width>
 			<include content="DialogBackgroundCommons">
-				<param name="width" value="1220" />
-				<param name="height" value="750" />
+				<param name="width" value="1270" />
+				<param name="height" value="870" />
 				<param name="header_label" value="" />
 				<param name="header_id" value="1" />
 			</include>
 			<control type="image">
 				<left>0</left>
 				<top>80</top>
-				<width>920</width>
+				<width>970</width>
 				<bottom>2</bottom>
 				<texture border="40">buttons/dialogbutton-nofo.png</texture>
 			</control>
 			<control type="list" id="3">
 				<left>20</left>
 				<top>100</top>
-				<width>880</width>
+				<width>930</width>
 				<bottom>20</bottom>
 				<onup>3</onup>
 				<ondown>3</ondown>
@@ -419,7 +421,7 @@
 			<control type="list" id="6">
 				<left>20</left>
 				<top>100</top>
-				<width>880</width>
+				<width>930</width>
 				<bottom>20</bottom>
 				<onup>6</onup>
 				<ondown>6</ondown>
@@ -427,10 +429,10 @@
 				<onright>61</onright>
 				<pagecontrol>61</pagecontrol>
 				<scrolltime>200</scrolltime>
-				<itemlayout height="130" width="880">
+				<itemlayout height="75" width="930">
 					<control type="image">
 						<left>10</left>
-						<top>16</top>
+						<top>5</top>
 						<width>30</width>
 						<height>30</height>
 						<aspectratio>keep</aspectratio>
@@ -440,34 +442,34 @@
 					</control>
 -					<control type="label">
 						<left>50</left>
-						<top>0</top>
-						<right>80</right>
-						<height>60</height>
-						<font>font14</font>
+						<top>5</top>
+						<right>50</right>
+						<height>30</height>
 						<aligny>center</aligny>
-						<label>$INFO[ListItem.Label]$VAR[VideoStreamDialogAudioItemLabelVar, - [LIGHT],[/LIGHT]]</label>
+						<label>$INFO[ListItem.Label]$VAR[VideoStreamDialogItemLabelVar, - [LIGHT],[/LIGHT]]</label>
 					</control>
-					<control type="textbox">
+					<control type="label">
 						<left>50</left>
-						<top>50</top>
-						<right>80</right>
-						<height>80</height>
-						<font>font12</font>
+						<top>45</top>
+						<right>50</right>
+						<height>20</height>
+						<font>font10</font>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Property(stream.codecdesc)]$INFO[ListItem.Property(stream.channels), - , $LOCALIZE[31612]]$INFO[ListItem.Property(stream.description), - ]</label>
 						<textcolor>grey</textcolor>
-						<label>$INFO[ListItem.Property(stream.codecdesc),, - ]$INFO[ListItem.Property(stream.channels),$LOCALIZE[31612]: ][CR]$INFO[ListItem.Property(stream.description)]</label>
 					</control>
 					<control type="image">
-						<left>830</left>
-						<top>16</top>
+						<right>10</right>
+						<top>5</top>
 						<width>30</width>
 						<height>30</height>
 						<aspectratio>keep</aspectratio>
-						<aligny>center</aligny>
+						<align>right</align>
 						<texture>icons/menumarks/star.png</texture>
 						<visible>ListItem.Property(stream.isdefault)</visible>
 					</control>
 				</itemlayout>
-				<focusedlayout height="130" width="880">
+				<focusedlayout height="75" width="930">
 					<control type="image">
 						<left>0</left>
 						<top>0</top>
@@ -478,7 +480,7 @@
 					</control>
 					<control type="image">
 						<left>10</left>
-						<top>16</top>
+						<top>5</top>
 						<width>30</width>
 						<height>30</height>
 						<aspectratio>keep</aspectratio>
@@ -488,36 +490,37 @@
 					</control>
 					<control type="label">
 						<left>50</left>
-						<top>0</top>
-						<right>80</right>
-						<height>60</height>
+						<top>5</top>
+						<right>50</right>
+						<height>30</height>
 						<aligny>center</aligny>
 						<scroll>true</scroll>
-						<font>font14</font>
-						<label>$INFO[ListItem.Label]$VAR[VideoStreamDialogAudioItemLabelVar, - [LIGHT],[/LIGHT]]</label>
+						<label>$INFO[ListItem.Label]$VAR[VideoStreamDialogItemLabelVar, - [LIGHT],[/LIGHT]]</label>
 					</control>
-					<control type="textbox">
+					<control type="label">
 						<left>50</left>
-						<top>50</top>
-						<right>80</right>
-						<height>80</height>
-						<font>font12</font>
-						<label>$INFO[ListItem.Property(stream.codecdesc),, - ]$INFO[ListItem.Property(stream.channels),$LOCALIZE[31612]: ][CR]$INFO[ListItem.Property(stream.description)]</label>
+						<top>45</top>
+						<right>50</right>
+						<height>20</height>
+						<font>font10</font>
+						<aligny>center</aligny>
+						<scroll>true</scroll>
+						<label>$INFO[ListItem.Property(stream.codecdesc)]$INFO[ListItem.Property(stream.channels), - , $LOCALIZE[31612]]$INFO[ListItem.Property(stream.description), - ]</label>
 					</control>
 					<control type="image">
-						<left>830</left>
-						<top>16</top>
+						<right>10</right>
+						<top>5</top>
 						<width>30</width>
 						<height>30</height>
 						<aspectratio>keep</aspectratio>
-						<aligny>center</aligny>
+						<align>right</align>
 						<texture>icons/menumarks/star.png</texture>
 						<visible>ListItem.Property(stream.isdefault)</visible>
 					</control>
 				</focusedlayout>
 			</control>
 			<control type="scrollbar" id="61">
-				<left>910</left>
+				<left>960</left>
 				<top>100</top>
 				<width>12</width>
 				<bottom>20</bottom>
@@ -527,7 +530,7 @@
 				<orientation>vertical</orientation>
 			</control>
 			<control type="label">
-				<left>925</left>
+				<left>975</left>
 				<bottom>10</bottom>
 				<width>275</width>
 				<height>35</height>
@@ -537,7 +540,7 @@
 				<label>$VAR[SelectLabel]</label>
 			</control>
 			<control type="grouplist" id="9001">
-				<left>920</left>
+				<left>970</left>
 				<top>80</top>
 				<onleft>61</onleft>
 				<itemgap>dialogbuttons_itemgap</itemgap>
@@ -566,11 +569,11 @@
 		<control type="group">
 			<centertop>50%</centertop>
 			<centerleft>50%</centerleft>
-			<height>750</height>
+			<height>870</height>
 			<width>1220</width>
 			<include content="DialogBackgroundCommons">
 				<param name="width" value="1220" />
-				<param name="height" value="750" />
+				<param name="height" value="870" />
 				<param name="header_label" value="" />
 				<param name="header_id" value="1" />
 			</include>
@@ -608,10 +611,10 @@
 				<onright>61</onright>
 				<pagecontrol>61</pagecontrol>
 				<scrolltime>200</scrolltime>
-				<itemlayout height="100" width="880">
+				<itemlayout height="75" width="880">
 					<control type="image">
 						<left>10</left>
-						<top>16</top>
+						<top>5</top>
 						<width>30</width>
 						<height>30</height>
 						<aspectratio>keep</aspectratio>
@@ -621,34 +624,34 @@
 					</control>
 					<control type="label">
 						<left>50</left>
-						<top>0</top>
-						<right>80</right>
-						<height>60</height>
-						<font>font14</font>
+						<top>5</top>
+						<right>50</right>
+						<height>30</height>
 						<aligny>center</aligny>
-						<label>$INFO[ListItem.Label]$VAR[VideoStreamDialogSubItemLabelVar, - [LIGHT],[/LIGHT]]</label>
+						<label>$INFO[ListItem.Label]$VAR[VideoStreamDialogItemLabelVar, - [LIGHT],[/LIGHT]]</label>
 					</control>
-					<control type="textbox">
+					<control type="label">
 						<left>50</left>
-						<top>50</top>
-						<right>80</right>
-						<height>67</height>
-						<font>font12</font>
-						<textcolor>grey</textcolor>
+						<top>45</top>
+						<right>50</right>
+						<height>20</height>
+						<font>font10</font>
+						<aligny>center</aligny>
 						<label>$INFO[ListItem.Property(stream.description)]</label>
+						<textcolor>grey</textcolor>
 					</control>
 					<control type="image">
-						<left>830</left>
-						<top>16</top>
+						<right>10</right>
+						<top>5</top>
 						<width>30</width>
 						<height>30</height>
 						<aspectratio>keep</aspectratio>
-						<aligny>center</aligny>
+						<align>right</align>
 						<texture>icons/menumarks/star.png</texture>
 						<visible>ListItem.Property(stream.isdefault)</visible>
 					</control>
 				</itemlayout>
-				<focusedlayout height="100" width="880">
+				<focusedlayout height="75" width="880">
 					<control type="image">
 						<left>0</left>
 						<top>0</top>
@@ -659,7 +662,7 @@
 					</control>
 					<control type="image">
 						<left>10</left>
-						<top>16</top>
+						<top>5</top>
 						<width>30</width>
 						<height>30</height>
 						<aspectratio>keep</aspectratio>
@@ -669,29 +672,30 @@
 					</control>
 					<control type="label">
 						<left>50</left>
-						<top>0</top>
-						<right>80</right>
-						<height>60</height>
+						<top>5</top>
+						<right>50</right>
+						<height>30</height>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]$VAR[VideoStreamDialogItemLabelVar, - [LIGHT],[/LIGHT]]</label>
+					</control>
+					<control type="label">
+						<left>50</left>
+						<top>45</top>
+						<right>50</right>
+						<height>20</height>
+						<font>font10</font>
 						<aligny>center</aligny>
 						<scroll>true</scroll>
-						<font>font14</font>
-						<label>$INFO[ListItem.Label]$VAR[VideoStreamDialogSubItemLabelVar, - [LIGHT],[/LIGHT]]</label>
-					</control>
-					<control type="textbox">
-						<left>50</left>
-						<top>50</top>
-						<right>80</right>
-						<height>67</height>
-						<font>font12</font>
 						<label>$INFO[ListItem.Property(stream.description)]</label>
+						<scroll>true</scroll>
 					</control>
 					<control type="image">
-						<left>830</left>
-						<top>16</top>
+						<right>10</right>
+						<top>5</top>
 						<width>30</width>
 						<height>30</height>
 						<aspectratio>keep</aspectratio>
-						<aligny>center</aligny>
+						<align>right</align>
 						<texture>icons/menumarks/star.png</texture>
 						<visible>ListItem.Property(stream.isdefault)</visible>
 					</control>

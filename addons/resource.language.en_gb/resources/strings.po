@@ -7272,7 +7272,11 @@ msgctxt "#13391"
 msgid "Eject / Load"
 msgstr ""
 
-#empty string with id 13392
+#: addons/skin.estuary/xml/Variables.xml
+#: addons/skin.estuary/xml/VideoOSD.xml
+msgctxt "#13392"
+msgid "Stream selection"
+msgstr ""
 
 #: xbmc/windows/GUIWindowFileManager.cpp
 msgctxt "#13393"
