@@ -1,0 +1,97 @@
+/*!
+
+\page Primitive_Control Primitive Control
+\brief **Used to show an primitive.**
+
+\tableofcontents
+
+The primitive control is used for displaying colors and gradients in Kodi. 
+You can choose the position, size, colors and interpolation type.
+
+--------------------------------------------------------------------------------
+\section Primitive_Control_sect1 Example
+
+~~~~~~~~~~~~~
+<control type="primitive">
+      <left>300</left>
+      <top>300</top>
+      <width>150</width>
+      <height>150</height>
+      <primitive color1="FFFFFFFF">uniform</primitive>
+</control>
+<control type="primitive">
+      <left>600</left>
+      <top>300</top>
+      <width>150</width>
+      <height>150</height>
+      <interpolation type="sine" easing="in">color</interpolation>
+      <interpolation type="linear" easing="inout">alpha</interpolation>
+      <primitive color1="FFFFFF00" color2="1FFF0000" angle="90">1dgradient</primitive>
+</control>
+<control type="primitive">
+      <left>900</left>
+      <top>300</top>
+      <width>150</width>
+      <height>150</height>
+      <primitive color1="FFFF0000" color2="FFFFFF00" color3="FF0000FF" color4="FF00FF00">2dgradient</primitive>
+</control>
+~~~~~~~~~~~~~
+
+
+--------------------------------------------------------------------------------
+\section Primitive_Control_sect2 Primitive types
+Primitives have three different sub-types: "Uniform", "1DGradient" and "2DGradient".
+
+\subsection Primitive_Control_sect2_1 Uniform
+Surface with a single color.
+
+\subsection Primitive_Control_sect2_2 1DGradient
+One-dimensional gradient, which interpolates between two colors. Currently, 
+there are two angles possible: 0 and 90. The interpolation can be choosen
+individually for color and alpha. The interpolation is done in sRGB colorspace.
+
+\subsection Primitive_Control_sect2_3 2DGradient
+Simple two-dimensional gradient. The each of the supplied color values occupies
+a corner (top left, top right, bottom left, bottom right). The color is
+interpolated linearly, in sRGB colorspace.
+
+--------------------------------------------------------------------------------
+\section Primitive_Control_sect3 Available tags and attributes
+
+In addition to the [Default Control Tags](http://kodi.wiki/view/Default_Control_Tags)
+the following tags are available. 
+
+| Tag           | Description                                                   |
+|--------------:|:--------------------------------------------------------------|
+| primitive     | Specifies what primitive type is displayed. Possible values: "rectangle".
+| interpolation | Specifies the interpolation to generate a one-dimensional gradient. Possible values: "color", "alpha".
+
+For the "primitive" tag, the following attributes are available.
+
+| Attribute     | Description                                                   |
+|--------------:|:--------------------------------------------------------------|
+| shading       | Specifies a the type of shading the element should reveive.
+| color1        | Specifies a AARRGGBB color for "Uniform", "1DGradient" and "2DGradient" shading.
+| color2        | Specifies a AARRGGBB color for "1DGradient" and "2DGradient" shading.
+| color3        | Specifies a AARRGGBB color for "2DGradient" shading.
+| color4        | Specifies a AARRGGBB color for "2DGradient" shading.
+| angle         | Specifies an angle at which the one-dimensional gradient is displayed at ("0" or "90).
+
+For the "interpolation" tag (applicable to one-dimensional gradients), the following attributes are available.
+
+| Attribute     | Description                                                   |
+|--------------:|:--------------------------------------------------------------|
+| type          | Sets the type of the gradient. Possible values "linear", "sine", "quadratic", "cubic", "back" and "circle".
+| easing        | Specifies the easing method. Possible values: "in", "out" and "inout".
+| acceleration  | Specifies acceleration, if the type is "quadratic". Floating point value between "0" (equals a linear function) and "1" (full deflection).
+
+--------------------------------------------------------------------------------
+\section Primitive_Control_sect4 See also
+
+
+#### Development:
+
+- [Add-on development](http://kodi.wiki/view/Add-on_development)
+- [Skinning](http://kodi.wiki/view/Skinning)
+
+*/

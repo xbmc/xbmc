@@ -231,15 +231,12 @@ void CGUITexture::Render(int32_t depthOffset, int32_t overrideDepth)
   v2 = m_frameHeight - m_info.border.y2;
   v3 = m_frameHeight;
 
-  if (!m_texture.m_texCoordsArePixels)
-  {
-    u1 *= m_texCoordsScaleU;
-    u2 *= m_texCoordsScaleU;
-    u3 *= m_texCoordsScaleU;
-    v1 *= m_texCoordsScaleV;
-    v2 *= m_texCoordsScaleV;
-    v3 *= m_texCoordsScaleV;
-  }
+  u1 = u1 * m_texCoordsScaleU + m_texCoordsOffsetU;
+  u2 = u2 * m_texCoordsScaleU + m_texCoordsOffsetU;
+  u3 = u3 * m_texCoordsScaleU + m_texCoordsOffsetU;
+  v1 = v1 * m_texCoordsScaleV + m_texCoordsOffsetV;
+  v2 = v2 * m_texCoordsScaleV + m_texCoordsOffsetV;
+  v3 = v3 * m_texCoordsScaleV + m_texCoordsOffsetV;
 
   //! @todo The diffuse coloring applies to all vertices, which will
   //!      look weird for stuff with borders, as will the -ve height/width
@@ -414,8 +411,23 @@ bool CGUITexture::CalculateSize()
   if (m_currentFrame >= m_texture.size())
     return false;
 
-  m_texCoordsScaleU = 1.0f / m_texture.m_texWidth;
-  m_texCoordsScaleV = 1.0f / m_texture.m_texHeight;
+  if (m_aspect.ratio == CAspectRatio::AR_STRETCH_TEXEL_EDGE)
+  {
+    // the active texture area is between the centers of the upper left and lower right texel
+    m_texCoordsScaleU =
+        (m_texture.m_texWidth - 1.0f) / (m_texture.m_texWidth * m_texture.m_texWidth);
+    m_texCoordsScaleV =
+        (m_texture.m_texHeight - 1.0f) / (m_texture.m_texHeight * m_texture.m_texHeight);
+    m_texCoordsOffsetU = 1.0f / (2 * m_texture.m_texWidth);
+    m_texCoordsOffsetV = 1.0f / (2 * m_texture.m_texHeight);
+  }
+  else
+  {
+    m_texCoordsScaleU = 1.0f / m_texture.m_texWidth;
+    m_texCoordsScaleV = 1.0f / m_texture.m_texHeight;
+    m_texCoordsOffsetU = 0.0f;
+    m_texCoordsOffsetV = 0.0f;
+  }
 
   if (m_width == 0)
     m_width = m_frameWidth;
@@ -427,7 +439,8 @@ bool CGUITexture::CalculateSize()
   float newWidth = m_width;
   float newHeight = m_height;
 
-  if (m_aspect.ratio != CAspectRatio::AR_STRETCH && m_frameWidth && m_frameHeight)
+  if (m_aspect.ratio != CAspectRatio::AR_STRETCH &&
+      m_aspect.ratio != CAspectRatio::AR_STRETCH_TEXEL_EDGE && m_frameWidth && m_frameHeight)
   {
     // to get the pixel ratio, we must use the SCALED output sizes
     float pixelRatio = CServiceBroker::GetWinSystem()->GetGfxContext().GetScalingPixelRatio();
@@ -706,6 +719,20 @@ bool CGUITexture::SetAspectRatio(const CAspectRatio& aspect)
   }
   else
     return false;
+}
+
+void CGUITexture::SetTexture(
+    uint32_t width, uint32_t height, unsigned char* pixels, KD_TEX_FMT format, KD_TEX_ALPHA alpha)
+{
+  m_texture.Reset();
+  m_frameWidth = width;
+  m_frameHeight = height;
+
+  std::unique_ptr<CTexture> texture = CTexture::CreateTexture();
+  if (!texture->UploadFromMemory(width, height, 0, pixels, format, alpha))
+    return;
+
+  m_texture.Set(std::move(texture), width, height);
 }
 
 bool CGUITexture::SetFileName(const std::string& filename)
