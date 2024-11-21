@@ -171,6 +171,30 @@ void CFavouritesService::ReInit(std::string userDataFolder)
     CLog::Log(LOGDEBUG, "CFavourites::Load - no userdata favourites found, skipping");
 }
 
+void CFavouritesService::CleanupTargetsCache(const CFileItem& item)
+{
+  // Cleanup cache. Resume info etc. of cached target items might need refresh.
+  std::unique_lock<CCriticalSection> lock(m_criticalSection);
+
+  const std::string dynPath{item.GetDynPath()};
+  std::erase_if(m_targets,
+                [&dynPath](const auto& entry)
+                {
+                  auto const& [key, value] = entry;
+                  return (value->GetDynPath() == dynPath);
+                });
+}
+
+void CFavouritesService::OnPlaybackStopped(const CFileItem& item)
+{
+  CleanupTargetsCache(item);
+}
+
+void CFavouritesService::OnPlaybackEnded(const CFileItem& item)
+{
+  CleanupTargetsCache(item);
+}
+
 bool CFavouritesService::Persist()
 {
   CXBMCTinyXML2 doc;

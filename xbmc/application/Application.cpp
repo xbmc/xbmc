@@ -55,6 +55,7 @@
 #include "dialogs/GUIDialogSimpleMenu.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
+#include "favourites/FavouritesService.h"
 #include "filesystem/Directory.h"
 #include "filesystem/DirectoryCache.h"
 #include "filesystem/DirectoryFactory.h"
@@ -2862,6 +2863,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
   case GUI_MSG_PLAYBACK_STOPPED:
   {
     CServiceBroker::GetPVRManager().OnPlaybackStopped(*m_itemCurrentFile);
+    CServiceBroker::GetFavouritesService().OnPlaybackStopped(*m_itemCurrentFile);
 
     CVariant data(CVariant::VariantTypeObject);
     data["end"] = false;
@@ -2880,6 +2882,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
   case GUI_MSG_PLAYBACK_ENDED:
   {
     CServiceBroker::GetPVRManager().OnPlaybackEnded(*m_itemCurrentFile);
+    CServiceBroker::GetFavouritesService().OnPlaybackEnded(*m_itemCurrentFile);
 
     CVariant data(CVariant::VariantTypeObject);
     data["end"] = true;
