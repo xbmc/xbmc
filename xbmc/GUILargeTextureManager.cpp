@@ -26,8 +26,16 @@
 #include <exception>
 #include <mutex>
 
-CImageLoader::CImageLoader(const std::string& path, const bool useCache)
-  : m_path(path), m_texture(nullptr)
+CImageLoader::CImageLoader(const std::string& path,
+                           unsigned int targetWidth,
+                           unsigned int targetHeight,
+                           CAspectRatio::AspectRatio aspectRatio,
+                           const bool useCache)
+  : m_path(path),
+    m_texture(nullptr),
+    m_targetWidth(targetWidth),
+    m_targetHeight(targetHeight),
+    m_aspectRatio(aspectRatio)
 {
   m_use_cache = useCache;
 }
@@ -52,9 +60,7 @@ bool CImageLoader::DoWork()
   {
     // direct route - load the image
     auto start = std::chrono::steady_clock::now();
-    m_texture =
-        CTexture::LoadFromFile(loadPath, CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth(),
-                               CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight());
+    m_texture = CTexture::LoadFromFile(loadPath, m_targetWidth, m_targetHeight, m_aspectRatio);
 
     auto end = std::chrono::steady_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
@@ -81,7 +87,8 @@ bool CImageLoader::DoWork()
     return false; // We're done
 
   // not in our texture cache or it failed to load from it, so try and load directly and then cache the result
-  CServiceBroker::GetTextureCache()->CacheImage(texturePath, &m_texture);
+  CServiceBroker::GetTextureCache()->CacheImage(texturePath, &m_texture, nullptr, m_targetWidth,
+                                                m_targetHeight, m_aspectRatio);
 
   if (!m_texture)
     return false;
@@ -92,8 +99,14 @@ bool CImageLoader::DoWork()
   return true;
 }
 
-CGUILargeTextureManager::CLargeTexture::CLargeTexture(const std::string &path):
-  m_path(path)
+CGUILargeTextureManager::CLargeTexture::CLargeTexture(const std::string& path,
+                                                      unsigned int targetWidth,
+                                                      unsigned int targetHeight,
+                                                      CAspectRatio::AspectRatio aspectRatio)
+  : m_path(path),
+    m_targetWidth(targetWidth),
+    m_targetHeight(targetHeight),
+    m_aspectRatio(aspectRatio)
 {
   m_refCount = 1;
   m_timeToDelete = 0;
@@ -167,13 +180,20 @@ void CGUILargeTextureManager::CleanupUnusedImages(bool immediately)
 
 // if available, increment reference count, and return the image.
 // else, add to the queue list if appropriate.
-bool CGUILargeTextureManager::GetImage(const std::string &path, CTextureArray &texture, bool firstRequest, const bool useCache)
+bool CGUILargeTextureManager::GetImage(const std::string& path,
+                                       CTextureArray& texture,
+                                       unsigned int width,
+                                       unsigned int height,
+                                       CAspectRatio::AspectRatio aspectRatio,
+                                       bool firstRequest,
+                                       const bool useCache)
 {
   std::unique_lock<CCriticalSection> lock(m_listSection);
   for (listIterator it = m_allocated.begin(); it != m_allocated.end(); ++it)
   {
     CLargeTexture *image = *it;
-    if (image->GetPath() == path)
+    if (image->GetPath() == path && image->GetTargetWidth() == width &&
+        image->GetTargetHeight() == height && image->GetAspectRatio() == aspectRatio)
     {
       if (firstRequest)
         image->AddRef();
@@ -183,18 +203,23 @@ bool CGUILargeTextureManager::GetImage(const std::string &path, CTextureArray &t
   }
 
   if (firstRequest)
-    QueueImage(path, useCache);
+    QueueImage(path, width, height, aspectRatio, useCache);
 
   return true;
 }
 
-void CGUILargeTextureManager::ReleaseImage(const std::string &path, bool immediately)
+void CGUILargeTextureManager::ReleaseImage(const std::string& path,
+                                           unsigned int width,
+                                           unsigned int height,
+                                           CAspectRatio::AspectRatio aspectRatio,
+                                           bool immediately)
 {
   std::unique_lock<CCriticalSection> lock(m_listSection);
   for (listIterator it = m_allocated.begin(); it != m_allocated.end(); ++it)
   {
     CLargeTexture *image = *it;
-    if (image->GetPath() == path)
+    if (image->GetPath() == path && image->GetTargetWidth() == width &&
+        image->GetTargetHeight() == height && image->GetAspectRatio() == aspectRatio)
     {
       if (image->DecrRef(immediately) && immediately)
         m_allocated.erase(it);
@@ -205,7 +230,9 @@ void CGUILargeTextureManager::ReleaseImage(const std::string &path, bool immedia
   {
     unsigned int id = it->first;
     CLargeTexture *image = it->second;
-    if (image->GetPath() == path && image->DecrRef(true))
+    if (image->GetPath() == path && image->GetTargetWidth() == width &&
+        image->GetTargetHeight() == height && image->GetAspectRatio() == aspectRatio &&
+        image->DecrRef(true))
     {
       // cancel this job
       CServiceBroker::GetJobManager()->CancelJob(id);
@@ -216,7 +243,11 @@ void CGUILargeTextureManager::ReleaseImage(const std::string &path, bool immedia
 }
 
 // queue the image, and start the background loader if necessary
-void CGUILargeTextureManager::QueueImage(const std::string &path, bool useCache)
+void CGUILargeTextureManager::QueueImage(const std::string& path,
+                                         unsigned int width,
+                                         unsigned int height,
+                                         CAspectRatio::AspectRatio aspectRatio,
+                                         bool useCache)
 {
   if (path.empty())
     return;
@@ -225,7 +256,8 @@ void CGUILargeTextureManager::QueueImage(const std::string &path, bool useCache)
   for (queueIterator it = m_queued.begin(); it != m_queued.end(); ++it)
   {
     CLargeTexture *image = it->second;
-    if (image->GetPath() == path)
+    if (image->GetPath() == path && image->GetTargetWidth() == width &&
+        image->GetTargetHeight() == height && image->GetAspectRatio() == aspectRatio)
     {
       image->AddRef();
       return; // already queued
@@ -233,9 +265,9 @@ void CGUILargeTextureManager::QueueImage(const std::string &path, bool useCache)
   }
 
   // queue the item
-  CLargeTexture *image = new CLargeTexture(path);
-  unsigned int jobID = CServiceBroker::GetJobManager()->AddJob(new CImageLoader(path, useCache),
-                                                               this, CJob::PRIORITY_NORMAL);
+  CLargeTexture* image = new CLargeTexture(path, width, height, aspectRatio);
+  unsigned int jobID = CServiceBroker::GetJobManager()->AddJob(
+      new CImageLoader(path, width, height, aspectRatio, useCache), this, CJob::PRIORITY_NORMAL);
   m_queued.emplace_back(jobID, image);
 }
 

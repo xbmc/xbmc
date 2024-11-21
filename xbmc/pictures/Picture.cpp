@@ -293,7 +293,7 @@ std::unique_ptr<CTexture> CPicture::CreateTiledThumb(const std::vector<std::stri
     int y = i / num_across;
     // load in the image
     unsigned int width = tile_width - 2 * tile_gap, height = tile_height - 2 * tile_gap;
-    std::unique_ptr<CTexture> texture = CTexture::LoadFromFile(files[i], width, height, true);
+    std::unique_ptr<CTexture> texture = CTexture::LoadFromFile(files[i], width, height);
     if (texture && texture->GetWidth() && texture->GetHeight())
     {
       GetScale(texture->GetWidth(), texture->GetHeight(), width, height);

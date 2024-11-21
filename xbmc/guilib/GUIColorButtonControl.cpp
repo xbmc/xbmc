@@ -36,8 +36,8 @@ CGUIColorButtonControl::CGUIColorButtonControl(int parentID,
 {
   m_colorPosX = 0;
   m_colorPosY = 0;
-  m_imgColorMask->SetAspectRatio(CAspectRatio::AR_KEEP);
-  m_imgColorDisabledMask->SetAspectRatio(CAspectRatio::AR_KEEP);
+  m_imgColorMask->SetAspectRatio(CAspectRatio::KEEP);
+  m_imgColorDisabledMask->SetAspectRatio(CAspectRatio::KEEP);
   m_imgBoxColor = GUIINFO::CGUIInfoColor(KODI::UTILS::COLOR::NONE);
   ControlType = GUICONTROL_COLORBUTTON;
   // offsetX is like a left/right padding, "hex" label does not require high values

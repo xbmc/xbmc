@@ -33,7 +33,7 @@ void CGUIWindowSplash::OnInitWindow()
       static_cast<float>(CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth()),
       static_cast<float>(CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight()),
       CTextureInfo(CUtil::GetSplashPath()));
-  m_image->SetAspectRatio(CAspectRatio::AR_SCALE);
+  m_image->SetAspectRatio(CAspectRatio::SCALE);
 }
 
 void CGUIWindowSplash::Render()

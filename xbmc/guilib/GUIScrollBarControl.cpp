@@ -39,8 +39,8 @@ GUIScrollBarControl::GUIScrollBarControl(int parentID,
     m_guiNibNoFocus(CGUITexture::CreateTexture(posX, posY, width, height, nibTexture)),
     m_guiNibFocus(CGUITexture::CreateTexture(posX, posY, width, height, nibTextureFocus))
 {
-  m_guiNibNoFocus->SetAspectRatio(CAspectRatio::AR_CENTER);
-  m_guiNibFocus->SetAspectRatio(CAspectRatio::AR_CENTER);
+  m_guiNibNoFocus->SetAspectRatio(CAspectRatio::CENTER);
+  m_guiNibFocus->SetAspectRatio(CAspectRatio::CENTER);
   m_numItems = 100;
   m_offset = 0;
   m_pageSize = 10;

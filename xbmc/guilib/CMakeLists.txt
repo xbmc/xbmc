@@ -53,6 +53,7 @@ set(SOURCES DDSImage.cpp
             GUITextBox.cpp
             GUITextLayout.cpp
             GUITexture.cpp
+            GUITextureCallbackManager.cpp
             GUIToggleButtonControl.cpp
             GUIVideoControl.cpp
             GUIVisualisationControl.cpp
@@ -72,7 +73,8 @@ set(SOURCES DDSImage.cpp
             XBTF.cpp
             XBTFReader.cpp)
 
-set(HEADERS DDSImage.h
+set(HEADERS AspectRatio.h
+            DDSImage.h
             DirtyRegion.h
             DirtyRegionSolvers.h
             DirtyRegionTracker.h
@@ -131,6 +133,7 @@ set(HEADERS DDSImage.h
             GUITextBox.h
             GUITextLayout.h
             GUITexture.h
+            GUITextureCallbackManager.h
             GUIToggleButtonControl.h
             GUIVideoControl.h
             GUIVisualisationControl.h
