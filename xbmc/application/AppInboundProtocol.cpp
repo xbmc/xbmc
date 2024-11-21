@@ -69,12 +69,13 @@ void CAppInboundProtocol::HandleEvents()
         {
           if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_fullScreen)
           {
-            CServiceBroker::GetWinSystem()->GetGfxContext().ApplyWindowResize(newEvent.resize.w,
-                                                                              newEvent.resize.h);
+            CServiceBroker::GetWinSystem()->GetGfxContext().ApplyWindowResize(
+                newEvent.resize.width * newEvent.resize.scale,
+                newEvent.resize.height * newEvent.resize.scale);
 
             const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-            settings->SetInt(CSettings::SETTING_WINDOW_WIDTH, newEvent.resize.w);
-            settings->SetInt(CSettings::SETTING_WINDOW_HEIGHT, newEvent.resize.h);
+            settings->SetInt(CSettings::SETTING_WINDOW_WIDTH, newEvent.resize.width);
+            settings->SetInt(CSettings::SETTING_WINDOW_HEIGHT, newEvent.resize.height);
             settings->Save();
           }
           else
