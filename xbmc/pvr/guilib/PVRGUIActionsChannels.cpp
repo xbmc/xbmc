@@ -31,7 +31,6 @@
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
-#include "pvr/windows/GUIWindowPVRBase.h"
 #include "settings/Settings.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -220,14 +219,6 @@ bool CPVRGUIActionsChannels::HideChannel(const CFileItem& item) const
   if (!groups->Get(channel->IsRadio())
            ->RemoveFromGroup(groups->GetGroupAll(channel->IsRadio()), groupMember))
     return false;
-
-  CGUIWindowPVRBase* pvrWindow =
-      dynamic_cast<CGUIWindowPVRBase*>(CServiceBroker::GetGUI()->GetWindowManager().GetWindow(
-          CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow()));
-  if (pvrWindow)
-    pvrWindow->DoRefresh();
-  else
-    CLog::LogF(LOGERROR, "Called on non-pvr window. No refresh possible.");
 
   return true;
 }

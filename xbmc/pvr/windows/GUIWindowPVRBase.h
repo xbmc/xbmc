@@ -74,12 +74,6 @@ namespace PVR
     void Notify(const PVREvent& event);
     virtual void NotifyEvent(const PVREvent& event);
 
-    /*!
-     * @brief Refresh window content.
-     * @return true, if refresh succeeded, false otherwise.
-     */
-    bool DoRefresh() { return Refresh(true); }
-
     bool ActivatePreviousChannelGroup();
     bool ActivateNextChannelGroup();
     bool OpenChannelGroupSelectionDialog();
