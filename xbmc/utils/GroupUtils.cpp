@@ -125,8 +125,7 @@ bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileI
           iWatched++;
 
         // handle resume points
-        CBookmark bookmark = movieInfo->GetResumePoint();
-        if (bookmark.IsSet())
+        if (movieInfo->GetResumePoint().IsPartWay())
           inProgress++;
 
         //accumulate the path for a multipath construction
