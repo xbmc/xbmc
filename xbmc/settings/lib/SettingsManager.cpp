@@ -532,7 +532,8 @@ SettingPtr CSettingsManager::GetSetting(const std::string &id) const
     return setting->second.setting;
   }
 
-  m_logger->debug("requested setting ({}) was not found.", id);
+  if (m_loaded)
+    m_logger->debug("requested setting ({}) was not found.", id);
   return nullptr;
 }
 
