@@ -88,6 +88,10 @@ struct VideoStreamInfoExt : VideoStreamInfo
     isForced = info.flags & StreamFlags::FLAG_FORCED;
     isHearingImpaired = info.flags & StreamFlags::FLAG_HEARING_IMPAIRED;
     isVisualImpaired = info.flags & StreamFlags::FLAG_VISUAL_IMPAIRED;
+
+    fps = static_cast<float>(info.fpsRate);
+    if (fps > 0.0f && info.fpsScale > 0)
+      fps /= info.fpsScale;
   }
 
   int streamId{0};
@@ -96,6 +100,7 @@ struct VideoStreamInfoExt : VideoStreamInfo
   bool isForced{false};
   bool isHearingImpaired{false};
   bool isVisualImpaired{false};
+  float fps{0.0f};
 };
 
 struct AudioStreamInfoExt : AudioStreamInfo
@@ -164,13 +169,9 @@ struct SortComparerStreamVideo
     {
       return a.hdrType < b.hdrType;
     }
-    if (a.fpsRate != b.fpsRate)
+    if (a.fps != b.fps)
     {
-      return a.fpsRate < b.fpsRate;
-    }
-    if (a.fpsScale != b.fpsScale)
-    {
-      return a.fpsScale < b.fpsScale;
+      return a.fps < b.fps;
     }
     if (a.height != b.height)
     {
@@ -328,12 +329,7 @@ void KODI::VIDEO::GUILIB::OpenDialogSelectVideoStream()
                           std::to_string(info.width) + "x" + std::to_string(info.height));
     fileItem->SetProperty("stream.bitrate",
                           static_cast<int>(std::lrint(static_cast<double>(info.bitrate) / 1000.0)));
-
-    float fps = static_cast<float>(info.fpsRate);
-    if (fps > 0.0f && info.fpsScale > 0)
-      fps /= info.fpsScale;
-
-    fileItem->SetProperty("stream.fps", ConvertFpsToString(fps));
+    fileItem->SetProperty("stream.fps", ConvertFpsToString(info.fps));
 
     fileItem->SetProperty("stream.is3d", !info.stereoMode.empty() && info.stereoMode != "mono");
     fileItem->SetProperty("stream.stereomode", info.stereoMode);
