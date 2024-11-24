@@ -12667,13 +12667,6 @@ bool CVideoDatabase::AddVideoAsset(VideoDbContentType itemType,
       return false;
     }
 
-    if (videoAssetType == VideoAssetType::VERSION &&
-        !SetVideoVersionDefaultArt(idFile, item.GetVideoInfoTag()->m_iDbId, itemType))
-    {
-      RollbackTransaction();
-      return false;
-    }
-
     if (!SetArtForItem(idFile, MediaTypeVideoVersion, item.GetArt()))
     {
       RollbackTransaction();
