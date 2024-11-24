@@ -2027,16 +2027,29 @@ int CDVDDemuxFFmpeg::GetChapter()
   if (ich)
     return ich->GetChapter();
 
-  if (m_pFormatContext == NULL
-  || m_currentPts == DVD_NOPTS_VALUE)
+  if (m_pFormatContext == NULL || m_currentPts == DVD_NOPTS_VALUE)
     return 0;
 
-  for(unsigned i = 0; i < m_pFormatContext->nb_chapters; i++)
+  for (unsigned i = 0; i < m_pFormatContext->nb_chapters; i++)
   {
-    AVChapter* chapter = m_pFormatContext->chapters[i];
-    if (m_currentPts >= ConvertTimestamp(chapter->start, chapter->time_base.den, chapter->time_base.num)
-    && m_currentPts <  ConvertTimestamp(chapter->end,   chapter->time_base.den, chapter->time_base.num))
-      return i + 1;
+    const AVChapter* chapter = m_pFormatContext->chapters[i];
+    const double startPts =
+        ConvertTimestamp(chapter->start, chapter->time_base.den, chapter->time_base.num);
+
+    if (i == m_pFormatContext->nb_chapters - 1)
+    {
+      if (m_currentPts >= startPts)
+        return i + 1;
+    }
+    else
+    {
+      const AVChapter* nextChapter = m_pFormatContext->chapters[i + 1];
+      const double nextStartPts = ConvertTimestamp(nextChapter->start, nextChapter->time_base.den,
+                                                   nextChapter->time_base.num);
+
+      if (m_currentPts >= startPts && m_currentPts < nextStartPts)
+        return i + 1;
+    }
   }
 
   return 0;
