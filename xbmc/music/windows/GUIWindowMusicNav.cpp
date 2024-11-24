@@ -396,35 +396,35 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
   if (StringUtils::StartsWithNoCase(strDirectory, "videodb://") || VIDEO::IsVideoDb(items))
   {
     CVideoDatabaseDirectory dir;
-    VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(items.GetPath());
+    const auto node = dir.GetDirectoryChildType(items.GetPath());
     switch (node)
     {
-      case VIDEODATABASEDIRECTORY::NODE_TYPE_TITLE_MUSICVIDEOS:
-      case VIDEODATABASEDIRECTORY::NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS:
+      case VIDEODATABASEDIRECTORY::NodeType::TITLE_MUSICVIDEOS:
+      case VIDEODATABASEDIRECTORY::NodeType::RECENTLY_ADDED_MUSICVIDEOS:
         items.SetContent("musicvideos");
         break;
-      case VIDEODATABASEDIRECTORY::NODE_TYPE_GENRE:
+      case VIDEODATABASEDIRECTORY::NodeType::GENRE:
         items.SetContent("genres");
         break;
-      case VIDEODATABASEDIRECTORY::NODE_TYPE_COUNTRY:
+      case VIDEODATABASEDIRECTORY::NodeType::COUNTRY:
         items.SetContent("countries");
         break;
-      case VIDEODATABASEDIRECTORY::NODE_TYPE_ACTOR:
+      case VIDEODATABASEDIRECTORY::NodeType::ACTOR:
         items.SetContent("artists");
         break;
-      case VIDEODATABASEDIRECTORY::NODE_TYPE_DIRECTOR:
+      case VIDEODATABASEDIRECTORY::NodeType::DIRECTOR:
         items.SetContent("directors");
         break;
-      case VIDEODATABASEDIRECTORY::NODE_TYPE_STUDIO:
+      case VIDEODATABASEDIRECTORY::NodeType::STUDIO:
         items.SetContent("studios");
         break;
-      case VIDEODATABASEDIRECTORY::NODE_TYPE_YEAR:
+      case VIDEODATABASEDIRECTORY::NodeType::YEAR:
         items.SetContent("years");
         break;
-      case VIDEODATABASEDIRECTORY::NODE_TYPE_MUSICVIDEOS_ALBUM:
+      case VIDEODATABASEDIRECTORY::NodeType::MUSICVIDEOS_ALBUM:
         items.SetContent("albums");
         break;
-      case VIDEODATABASEDIRECTORY::NODE_TYPE_TAGS:
+      case VIDEODATABASEDIRECTORY::NodeType::TAGS:
         items.SetContent("tags");
         break;
       default:

@@ -1253,10 +1253,10 @@ void CGUIWindowVideoBase::GetGroupedItems(CFileItemList &items)
     CQueryParams params;
     CVideoDatabaseDirectory dir;
     dir.GetQueryParams(items.GetPath(), params);
-    VIDEODATABASEDIRECTORY::NODE_TYPE nodeType = CVideoDatabaseDirectory::GetDirectoryChildType(m_strFilterPath);
+    NodeType nodeType = CVideoDatabaseDirectory::GetDirectoryChildType(m_strFilterPath);
     const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
     if (items.GetContent() == "movies" && params.GetSetId() <= 0 &&
-        params.GetVideoVersionId() < 0 && nodeType == NODE_TYPE_TITLE_MOVIES &&
+        params.GetVideoVersionId() < 0 && nodeType == NodeType::TITLE_MOVIES &&
         (settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_GROUPMOVIESETS) ||
          (StringUtils::EqualsNoCase(group, "sets") && mixed)))
     {

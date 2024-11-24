@@ -15,8 +15,9 @@
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
-CDirectoryNodeTitleMusicVideos::CDirectoryNodeTitleMusicVideos(const std::string& strName, CDirectoryNode* pParent)
-  : CDirectoryNode(NODE_TYPE_TITLE_MUSICVIDEOS, strName, pParent)
+CDirectoryNodeTitleMusicVideos::CDirectoryNodeTitleMusicVideos(const std::string& strName,
+                                                               CDirectoryNode* pParent)
+  : CDirectoryNode(NodeType::TITLE_MUSICVIDEOS, strName, pParent)
 {
 
 }

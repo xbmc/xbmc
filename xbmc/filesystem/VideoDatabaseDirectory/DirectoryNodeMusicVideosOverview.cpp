@@ -16,30 +16,29 @@
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
-Node MusicVideoChildren[] = {
-                              { NODE_TYPE_GENRE,             "genres",    135 },
-                              { NODE_TYPE_TITLE_MUSICVIDEOS, "titles",    10024 },
-                              { NODE_TYPE_YEAR,              "years",     652 },
-                              { NODE_TYPE_ACTOR,             "artists",   133 },
-                              { NODE_TYPE_MUSICVIDEOS_ALBUM, "albums",    132 },
-                              { NODE_TYPE_DIRECTOR,          "directors", 20348 },
-                              { NODE_TYPE_STUDIO,            "studios",   20388 },
-                              { NODE_TYPE_TAGS,              "tags",      20459 }
-                            };
+Node MusicVideoChildren[] = {{NodeType::GENRE, "genres", 135},
+                             {NodeType::TITLE_MUSICVIDEOS, "titles", 10024},
+                             {NodeType::YEAR, "years", 652},
+                             {NodeType::ACTOR, "artists", 133},
+                             {NodeType::MUSICVIDEOS_ALBUM, "albums", 132},
+                             {NodeType::DIRECTOR, "directors", 20348},
+                             {NodeType::STUDIO, "studios", 20388},
+                             {NodeType::TAGS, "tags", 20459}};
 
-CDirectoryNodeMusicVideosOverview::CDirectoryNodeMusicVideosOverview(const std::string& strName, CDirectoryNode* pParent)
-  : CDirectoryNode(NODE_TYPE_MUSICVIDEOS_OVERVIEW, strName, pParent)
+CDirectoryNodeMusicVideosOverview::CDirectoryNodeMusicVideosOverview(const std::string& strName,
+                                                                     CDirectoryNode* pParent)
+  : CDirectoryNode(NodeType::MUSICVIDEOS_OVERVIEW, strName, pParent)
 {
 
 }
 
-NODE_TYPE CDirectoryNodeMusicVideosOverview::GetChildType() const
+NodeType CDirectoryNodeMusicVideosOverview::GetChildType() const
 {
   for (const Node& node : MusicVideoChildren)
     if (GetName() == node.id)
       return node.node;
 
-  return NODE_TYPE_NONE;
+  return NodeType::NONE;
 }
 
 std::string CDirectoryNodeMusicVideosOverview::GetLocalizedName() const

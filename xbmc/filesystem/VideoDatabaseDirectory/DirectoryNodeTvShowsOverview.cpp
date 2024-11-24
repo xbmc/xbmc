@@ -17,30 +17,27 @@
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
 Node TvShowChildren[] = {
-                          { NODE_TYPE_GENRE,         "genres",   135 },
-                          { NODE_TYPE_TITLE_TVSHOWS, "titles",   10024 },
-                          { NODE_TYPE_YEAR,          "years",    652 },
-                          { NODE_TYPE_ACTOR,         "actors",   344 },
-                          { NODE_TYPE_STUDIO,        "studios",  20388 },
-                          { NODE_TYPE_TAGS,          "tags",     20459 }
-                        };
+    {NodeType::GENRE, "genres", 135},     {NodeType::TITLE_TVSHOWS, "titles", 10024},
+    {NodeType::YEAR, "years", 652},       {NodeType::ACTOR, "actors", 344},
+    {NodeType::STUDIO, "studios", 20388}, {NodeType::TAGS, "tags", 20459}};
 
-CDirectoryNodeTvShowsOverview::CDirectoryNodeTvShowsOverview(const std::string& strName, CDirectoryNode* pParent)
-  : CDirectoryNode(NODE_TYPE_TVSHOWS_OVERVIEW, strName, pParent)
+CDirectoryNodeTvShowsOverview::CDirectoryNodeTvShowsOverview(const std::string& strName,
+                                                             CDirectoryNode* pParent)
+  : CDirectoryNode(NodeType::TVSHOWS_OVERVIEW, strName, pParent)
 {
 
 }
 
-NODE_TYPE CDirectoryNodeTvShowsOverview::GetChildType() const
+NodeType CDirectoryNodeTvShowsOverview::GetChildType() const
 {
   if (GetName()=="0")
-    return NODE_TYPE_EPISODES;
+    return NodeType::EPISODES;
 
   for (const Node& node : TvShowChildren)
     if (GetName() == node.id)
       return node.node;
 
-  return NODE_TYPE_NONE;
+  return NodeType::NONE;
 }
 
 std::string CDirectoryNodeTvShowsOverview::GetLocalizedName() const

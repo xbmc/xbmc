@@ -21,28 +21,28 @@
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
 Node OverviewChildren[] = {
-                            { NODE_TYPE_MOVIES_OVERVIEW,            "movies",                   342 },
-                            { NODE_TYPE_TVSHOWS_OVERVIEW,           "tvshows",                  20343 },
-                            { NODE_TYPE_MUSICVIDEOS_OVERVIEW,       "musicvideos",              20389 },
-                            { NODE_TYPE_RECENTLY_ADDED_MOVIES,      "recentlyaddedmovies",      20386 },
-                            { NODE_TYPE_RECENTLY_ADDED_EPISODES,    "recentlyaddedepisodes",    20387 },
-                            { NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS, "recentlyaddedmusicvideos", 20390 },
-                            { NODE_TYPE_INPROGRESS_TVSHOWS,         "inprogresstvshows",        626 },
-                          };
+    {NodeType::MOVIES_OVERVIEW, "movies", 342},
+    {NodeType::TVSHOWS_OVERVIEW, "tvshows", 20343},
+    {NodeType::MUSICVIDEOS_OVERVIEW, "musicvideos", 20389},
+    {NodeType::RECENTLY_ADDED_MOVIES, "recentlyaddedmovies", 20386},
+    {NodeType::RECENTLY_ADDED_EPISODES, "recentlyaddedepisodes", 20387},
+    {NodeType::RECENTLY_ADDED_MUSICVIDEOS, "recentlyaddedmusicvideos", 20390},
+    {NodeType::INPROGRESS_TVSHOWS, "inprogresstvshows", 626},
+};
 
 CDirectoryNodeOverview::CDirectoryNodeOverview(const std::string& strName, CDirectoryNode* pParent)
-  : CDirectoryNode(NODE_TYPE_OVERVIEW, strName, pParent)
+  : CDirectoryNode(NodeType::OVERVIEW, strName, pParent)
 {
 
 }
 
-NODE_TYPE CDirectoryNodeOverview::GetChildType() const
+NodeType CDirectoryNodeOverview::GetChildType() const
 {
   for (const Node& node : OverviewChildren)
     if (GetName() == node.id)
       return node.node;
 
-  return NODE_TYPE_NONE;
+  return NodeType::NONE;
 }
 
 std::string CDirectoryNodeOverview::GetLocalizedName() const

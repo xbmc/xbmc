@@ -14,15 +14,16 @@
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
-CDirectoryNodeInProgressTvShows::CDirectoryNodeInProgressTvShows(const std::string& strName, CDirectoryNode* pParent)
-  : CDirectoryNode(NODE_TYPE_INPROGRESS_TVSHOWS, strName, pParent)
+CDirectoryNodeInProgressTvShows::CDirectoryNodeInProgressTvShows(const std::string& strName,
+                                                                 CDirectoryNode* pParent)
+  : CDirectoryNode(NodeType::INPROGRESS_TVSHOWS, strName, pParent)
 {
 
 }
 
-NODE_TYPE CDirectoryNodeInProgressTvShows::GetChildType() const
+NodeType CDirectoryNodeInProgressTvShows::GetChildType() const
 {
-  return NODE_TYPE_SEASONS;
+  return NodeType::SEASONS;
 }
 
 std::string CDirectoryNodeInProgressTvShows::GetLocalizedName() const

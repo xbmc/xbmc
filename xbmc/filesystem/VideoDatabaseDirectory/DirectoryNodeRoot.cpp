@@ -11,12 +11,12 @@
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
 CDirectoryNodeRoot::CDirectoryNodeRoot(const std::string& strName, CDirectoryNode* pParent)
-  : CDirectoryNode(NODE_TYPE_ROOT, strName, pParent)
+  : CDirectoryNode(NodeType::ROOT, strName, pParent)
 {
 
 }
 
-NODE_TYPE CDirectoryNodeRoot::GetChildType() const
+NodeType CDirectoryNodeRoot::GetChildType() const
 {
-  return NODE_TYPE_OVERVIEW;
+  return NodeType::OVERVIEW;
 }

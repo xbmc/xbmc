@@ -679,15 +679,14 @@ PLT_MediaObject* BuildObject(CFileItem& item,
     }
     else if (VIDEO::IsVideoDb(item))
     {
-      VIDEODATABASEDIRECTORY::NODE_TYPE node =
-          CVideoDatabaseDirectory::GetDirectoryType(item.GetPath());
+      const auto node = CVideoDatabaseDirectory::GetDirectoryType(item.GetPath());
       CVideoInfoTag& tag = *item.GetVideoInfoTag();
       switch (node)
       {
-        case VIDEODATABASEDIRECTORY::NODE_TYPE_GENRE:
+        case VIDEODATABASEDIRECTORY::NodeType::GENRE:
           container->m_ObjectClass.type += ".genre.movieGenre";
           break;
-        case VIDEODATABASEDIRECTORY::NODE_TYPE_ACTOR:
+        case VIDEODATABASEDIRECTORY::NodeType::ACTOR:
           container->m_ObjectClass.type += ".person.videoArtist";
           container->m_Creator =
               StringUtils::Join(tag.m_artist,
@@ -695,7 +694,7 @@ PLT_MediaObject* BuildObject(CFileItem& item,
                   .c_str();
           container->m_Title = tag.m_strTitle.c_str();
           break;
-        case VIDEODATABASEDIRECTORY::NODE_TYPE_SEASONS:
+        case VIDEODATABASEDIRECTORY::NodeType::SEASONS:
           container->m_ObjectClass.type += ".album.videoAlbum.videoBroadcastSeason";
           if (item.HasVideoInfoTag())
           {
@@ -703,7 +702,7 @@ PLT_MediaObject* BuildObject(CFileItem& item,
             PopulateObjectFromTag(*tag, *container, &file_path, &resource, quirks);
           }
           break;
-        case VIDEODATABASEDIRECTORY::NODE_TYPE_TITLE_TVSHOWS:
+        case VIDEODATABASEDIRECTORY::NodeType::TITLE_TVSHOWS:
           container->m_ObjectClass.type += ".album.videoAlbum.videoBroadcastShow";
           if (item.HasVideoInfoTag())
           {

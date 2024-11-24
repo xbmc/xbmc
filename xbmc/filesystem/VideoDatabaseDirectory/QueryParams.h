@@ -36,9 +36,10 @@ namespace XFILE
       long GetVideoVersionId() const { return m_idVideoVersion; }
 
     protected:
-      void SetQueryParam(NODE_TYPE NodeType, const std::string& strNodeName);
+      void SetQueryParam(NodeType NodeType, const std::string& strNodeName);
 
       friend class CDirectoryNode;
+
     private:
       long m_idContent;
       long m_idMovie;
