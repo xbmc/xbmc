@@ -9879,7 +9879,7 @@ bool CMusicDatabase::GetAlbumFolder(const CAlbum& album,
   // Create a valid unique folder name from album title
   // @todo: Does UFT8 matter or need normalizing?
   // @todo: Simplify punctuation removing unicode appostraphes, "..." etc.?
-  strFolder = CUtil::MakeLegalFileName(album.strAlbum, LEGAL_WIN32_COMPAT);
+  strFolder = CUtil::MakeLegalFileName(album.strAlbum, LegalPath::WIN32_COMPAT);
   StringUtils::Replace(strFolder, " _ ", "_");
 
   // Check <first albumartist name>/<albumname> is unique e.g. 2 x Bruckner Symphony No. 3
@@ -9915,7 +9915,7 @@ bool CMusicDatabase::GetArtistFolderName(const std::string& strArtist,
   // Create a valid unique folder name for artist
   // @todo: Does UFT8 matter or need normalizing?
   // @todo: Simplify punctuation removing unicode appostraphes, "..." etc.?
-  strFolder = CUtil::MakeLegalFileName(strArtist, LEGAL_WIN32_COMPAT);
+  strFolder = CUtil::MakeLegalFileName(strArtist, LegalPath::WIN32_COMPAT);
   StringUtils::Replace(strFolder, " _ ", "_");
 
   // Ensure <artist name> is unique e.g. 2 x John Williams.
