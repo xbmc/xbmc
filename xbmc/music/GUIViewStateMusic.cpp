@@ -83,7 +83,7 @@ void CGUIViewStateMusicSearch::SaveViewState()
 CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& items) : CGUIViewStateWindowMusic(items)
 {
   CMusicDatabaseDirectory dir;
-  NODE_TYPE NodeType=dir.GetDirectoryChildType(items.GetPath());
+  NodeType nodeType = dir.GetDirectoryChildType(items.GetPath());
 
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   std::string strTrack = settings->GetString(CSettings::SETTING_MUSICFILES_LIBRARYTRACKFORMAT);
@@ -99,9 +99,9 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
   if (settings->GetBool(CSettings::SETTING_MUSICLIBRARY_USEARTISTSORTNAME))
     sortAttribute = static_cast<SortAttribute>(sortAttribute | SortAttributeUseArtistSortName);
 
-  switch (NodeType)
+  switch (nodeType)
   {
-  case NODE_TYPE_OVERVIEW:
+    case NodeType::OVERVIEW:
     {
       AddSortMethod(SortByNone, 551, LABEL_MASKS("%F", "", "%L", ""));  // Filename, empty | Foldername, empty
       SetSortMethod(SortByNone);
@@ -111,7 +111,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       SetSortOrder(SortOrderNone);
     }
     break;
-  case NODE_TYPE_TOP100:
+    case NodeType::TOP100:
     {
       AddSortMethod(SortByNone, 551, LABEL_MASKS("%F", "", "%L", ""));  // Filename, empty | Foldername, empty
       SetSortMethod(SortByNone);
@@ -121,7 +121,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       SetSortOrder(SortOrderNone);
     }
     break;
-  case NODE_TYPE_GENRE:
+    case NodeType::GENRE:
     {
       AddSortMethod(SortByGenre, 515, LABEL_MASKS("%F", "", "%G", ""));  // Filename, empty | Genre, empty
       SetSortMethod(SortByGenre);
@@ -131,19 +131,21 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       SetSortOrder(SortOrderAscending);
     }
     break;
-  case NODE_TYPE_ROLE:
-  {
-    AddSortMethod(SortByNone, 576, LABEL_MASKS("%F", "", "%G", ""));  // Filename, empty | Genre, empty
-    SetSortMethod(SortByPlaycount);
-
-    SetViewAsControl(DEFAULT_VIEW_LIST);
-
-    SetSortOrder(SortOrderNone);
-  }
-  break;
-  case NODE_TYPE_YEAR:
+    case NodeType::ROLE:
     {
-      AddSortMethod(SortByLabel, 562, LABEL_MASKS("%F", "", "%Y", ""));  // Filename, empty | Year, empty
+      AddSortMethod(SortByNone, 576,
+                    LABEL_MASKS("%F", "", "%G", "")); // Filename, empty | Genre, empty
+      SetSortMethod(SortByPlaycount);
+
+      SetViewAsControl(DEFAULT_VIEW_LIST);
+
+      SetSortOrder(SortOrderNone);
+    }
+    break;
+    case NodeType::YEAR:
+    {
+      AddSortMethod(SortByLabel, 562,
+                    LABEL_MASKS("%F", "", "%Y", "")); // Filename, empty | Year, empty
       SetSortMethod(SortByLabel);
 
       SetViewAsControl(DEFAULT_VIEW_LIST);
@@ -151,7 +153,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       SetSortOrder(SortOrderAscending);
     }
     break;
-  case NODE_TYPE_ARTIST:
+    case NodeType::ARTIST:
     {
       AddSortMethod(SortByArtist, sortAttribute, 557, LABEL_MASKS("%F", "", "%A", ""));  // Filename, empty | Artist, empty
       AddSortMethod(SortByDateAdded, sortAttribute, 570, LABEL_MASKS("%F", "", "%A", "%a"));  // Filename, empty | Artist, dateAdded
@@ -162,7 +164,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       SetSortOrder(viewState->m_sortDescription.sortOrder);
     }
     break;
-  case NODE_TYPE_ALBUM:
+    case NodeType::ALBUM:
     {
       // album
       AddSortMethod(SortByAlbum, sortAttribute, 558, LABEL_MASKS("%F", "", strAlbum, "%A"));  // Filename, empty | Userdefined (default=%B), Artist
@@ -199,7 +201,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       SetSortOrder(viewState->m_sortDescription.sortOrder);
     }
     break;
-  case NODE_TYPE_ALBUM_RECENTLY_ADDED:
+    case NodeType::ALBUM_RECENTLY_ADDED:
     {
       AddSortMethod(SortByNone, 552, LABEL_MASKS("%F", "", strAlbum, "%a"));  // Filename, empty | Userdefined, dateAdded
       SetSortMethod(SortByNone);
@@ -209,7 +211,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       SetSortOrder(SortOrderNone);
     }
     break;
-  case NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS:
+    case NodeType::ALBUM_RECENTLY_ADDED_SONGS:
     {
       AddSortMethod(SortByNone, 552, LABEL_MASKS(strTrack, "%a"));  // Userdefined, dateAdded | empty, empty
       SetSortMethod(SortByNone);
@@ -219,21 +221,21 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       SetSortOrder(SortOrderNone);
     }
     break;
-  case NODE_TYPE_ALBUM_RECENTLY_PLAYED:
+    case NodeType::ALBUM_RECENTLY_PLAYED:
     {
       AddSortMethod(SortByLastPlayed, 568, LABEL_MASKS("%F", "", strAlbum, "%p"));  // Filename, empty | Userdefined, last played
 
       SetViewAsControl(CViewStateSettings::GetInstance().Get("musicnavalbums")->m_viewMode);
     }
     break;
-  case NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS:
+    case NodeType::ALBUM_RECENTLY_PLAYED_SONGS:
     {
       AddSortMethod(SortByLastPlayed, 568, LABEL_MASKS(strTrack, "%p"));  // Userdefined, last played | empty, empty
 
       SetViewAsControl(CViewStateSettings::GetInstance().Get("musicnavalbums")->m_viewMode);
     }
     break;
-  case NODE_TYPE_ALBUM_TOP100:
+    case NodeType::ALBUM_TOP100:
     {
       AddSortMethod(SortByNone, 551, LABEL_MASKS("%F", "", strAlbum, "%V"));  // Filename, empty | Userdefined, Play count
       SetSortMethod(SortByNone);
@@ -242,7 +244,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       SetSortOrder(SortOrderNone);
     }
     break;
-  case NODE_TYPE_SINGLES:
+    case NodeType::SINGLES:
     {
       AddSortMethod(SortByArtist, sortAttribute, 557, LABEL_MASKS("%A - %T", "%D"));  // Artist, Title, Duration| empty, empty
       AddSortMethod(SortByArtistThenYear, sortAttribute, 578, LABEL_MASKS("%A - %T", "%Y"));  // Artist, Title, Year| empty, empty
@@ -268,8 +270,8 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       SetSortOrder(viewState->m_sortDescription.sortOrder);
     }
     break;
-  case NODE_TYPE_ALBUM_TOP100_SONGS:
-  case NODE_TYPE_SONG:
+    case NodeType::ALBUM_TOP100_SONGS:
+    case NodeType::SONG:
     {
       AddSortMethod(SortByTrackNumber, 554, LABEL_MASKS(strTrack, "%D"));  // Userdefined, Duration| empty, empty
       AddSortMethod(SortByTitle, sortAttribute, 556, LABEL_MASKS("%T - %A", "%D"));  // Title, Artist, Duration| empty, empty
@@ -303,7 +305,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       SetSortOrder(viewState->m_sortDescription.sortOrder);
     }
     break;
-  case NODE_TYPE_SONG_TOP100:
+    case NodeType::SONG_TOP100:
     {
       AddSortMethod(SortByNone, 576, LABEL_MASKS("%T - %A", "%V"));
       SetSortMethod(SortByPlaycount);
@@ -313,7 +315,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       SetSortOrder(SortOrderNone);
     }
     break;
-  case NODE_TYPE_DISC:
+    case NodeType::DISC:
     {
       AddSortMethod(SortByNone, 427, LABEL_MASKS("%L")); // Use the existing label
       SetSortMethod(SortByNone);
@@ -329,18 +331,18 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
 void CGUIViewStateMusicDatabase::SaveViewState()
 {
   CMusicDatabaseDirectory dir;
-  NODE_TYPE NodeType=dir.GetDirectoryChildType(m_items.GetPath());
+  NodeType nodeType = dir.GetDirectoryChildType(m_items.GetPath());
 
-  switch (NodeType)
+  switch (nodeType)
   {
-    case NODE_TYPE_ARTIST:
+    case NodeType::ARTIST:
       SaveViewToDb(m_items.GetPath(), WINDOW_MUSIC_NAV, CViewStateSettings::GetInstance().Get("musicnavartists"));
       break;
-    case NODE_TYPE_ALBUM:
+    case NodeType::ALBUM:
       SaveViewToDb(m_items.GetPath(), WINDOW_MUSIC_NAV, CViewStateSettings::GetInstance().Get("musicnavalbums"));
       break;
-    case NODE_TYPE_SINGLES:
-    case NODE_TYPE_SONG:
+    case NodeType::SINGLES:
+    case NodeType::SONG:
       SaveViewToDb(m_items.GetPath(), WINDOW_MUSIC_NAV, CViewStateSettings::GetInstance().Get("musicnavsongs"));
       break;
     default:

@@ -433,37 +433,37 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
   else if (StringUtils::StartsWithNoCase(strDirectory, "musicdb://") || MUSIC::IsMusicDb(items))
   {
     CMusicDatabaseDirectory dir;
-    NODE_TYPE node = dir.GetDirectoryChildType(items.GetPath());
+    NodeType node = dir.GetDirectoryChildType(items.GetPath());
     switch (node)
     {
-      case NODE_TYPE_ALBUM:
-      case NODE_TYPE_ALBUM_RECENTLY_ADDED:
-      case NODE_TYPE_ALBUM_RECENTLY_PLAYED:
-      case NODE_TYPE_ALBUM_TOP100:
-      case NODE_TYPE_DISC: // ! @todo: own content type "discs"??
+      case NodeType::ALBUM:
+      case NodeType::ALBUM_RECENTLY_ADDED:
+      case NodeType::ALBUM_RECENTLY_PLAYED:
+      case NodeType::ALBUM_TOP100:
+      case NodeType::DISC: // ! @todo: own content type "discs"??
         items.SetContent("albums");
         break;
-      case NODE_TYPE_ARTIST:
+      case NodeType::ARTIST:
         items.SetContent("artists");
         break;
-      case NODE_TYPE_SONG:
-      case NODE_TYPE_SONG_TOP100:
-      case NODE_TYPE_SINGLES:
-      case NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS:
-      case NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS:
-      case NODE_TYPE_ALBUM_TOP100_SONGS:
+      case NodeType::SONG:
+      case NodeType::SONG_TOP100:
+      case NodeType::SINGLES:
+      case NodeType::ALBUM_RECENTLY_ADDED_SONGS:
+      case NodeType::ALBUM_RECENTLY_PLAYED_SONGS:
+      case NodeType::ALBUM_TOP100_SONGS:
         items.SetContent("songs");
         break;
-      case NODE_TYPE_GENRE:
+      case NodeType::GENRE:
         items.SetContent("genres");
         break;
-      case NODE_TYPE_SOURCE:
+      case NodeType::SOURCE:
         items.SetContent("sources");
         break;
-      case NODE_TYPE_ROLE:
+      case NodeType::ROLE:
         items.SetContent("roles");
         break;
-      case NODE_TYPE_YEAR:
+      case NodeType::YEAR:
         items.SetContent("years");
         break;
       default:
@@ -642,11 +642,9 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
             buttons.Add(CONTEXT_BUTTON_INFO_ALL, 21884);
 
           //Set default or clear default
-          NODE_TYPE nodetype = dir.GetDirectoryType(item->GetPath());
-          if (!inPlaylists &&
-             (nodetype == NODE_TYPE_ROOT ||
-              nodetype == NODE_TYPE_OVERVIEW ||
-              nodetype == NODE_TYPE_TOP100))
+          NodeType nodetype = dir.GetDirectoryType(item->GetPath());
+          if (!inPlaylists && (nodetype == NodeType::ROOT || nodetype == NodeType::OVERVIEW ||
+                               nodetype == NodeType::TOP100))
           {
             const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
             if (!item->IsPath(settings->GetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW)))

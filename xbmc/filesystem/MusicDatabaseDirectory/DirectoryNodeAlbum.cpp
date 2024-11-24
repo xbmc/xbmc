@@ -15,14 +15,14 @@
 using namespace XFILE::MUSICDATABASEDIRECTORY;
 
 CDirectoryNodeAlbum::CDirectoryNodeAlbum(const std::string& strName, CDirectoryNode* pParent)
-  : CDirectoryNode(NODE_TYPE_ALBUM, strName, pParent)
+  : CDirectoryNode(NodeType::ALBUM, strName, pParent)
 {
 
 }
 
-NODE_TYPE CDirectoryNodeAlbum::GetChildType() const
+NodeType CDirectoryNodeAlbum::GetChildType() const
 {
-  return NODE_TYPE_DISC;
+  return NodeType::DISC;
 }
 
 std::string CDirectoryNodeAlbum::GetLocalizedName() const

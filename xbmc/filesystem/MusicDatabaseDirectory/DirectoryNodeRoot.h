@@ -19,7 +19,7 @@ namespace XFILE
     public:
       CDirectoryNodeRoot(const std::string& strName, CDirectoryNode* pParent);
     protected:
-      NODE_TYPE GetChildType() const override;
+      NodeType GetChildType() const override;
     };
   }
 }

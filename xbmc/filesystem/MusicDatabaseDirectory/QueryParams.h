@@ -26,7 +26,7 @@ namespace XFILE
       int GetDisc() { return m_disc; }
 
     protected:
-      void SetQueryParam(NODE_TYPE NodeType, const std::string& strNodeName);
+      void SetQueryParam(NodeType NodeType, const std::string& strNodeName);
 
       friend class CDirectoryNode;
     private:

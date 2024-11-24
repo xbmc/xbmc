@@ -16,18 +16,19 @@
 
 using namespace XFILE::MUSICDATABASEDIRECTORY;
 
-CDirectoryNodeAlbumRecentlyPlayed::CDirectoryNodeAlbumRecentlyPlayed(const std::string& strName, CDirectoryNode* pParent)
-  : CDirectoryNode(NODE_TYPE_ALBUM_RECENTLY_PLAYED, strName, pParent)
+CDirectoryNodeAlbumRecentlyPlayed::CDirectoryNodeAlbumRecentlyPlayed(const std::string& strName,
+                                                                     CDirectoryNode* pParent)
+  : CDirectoryNode(NodeType::ALBUM_RECENTLY_PLAYED, strName, pParent)
 {
 
 }
 
-NODE_TYPE CDirectoryNodeAlbumRecentlyPlayed::GetChildType() const
+NodeType CDirectoryNodeAlbumRecentlyPlayed::GetChildType() const
 {
-  if (GetName()=="-1")
-    return NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS;
+  if (GetName() == "-1")
+    return NodeType::ALBUM_RECENTLY_PLAYED_SONGS;
 
-  return NODE_TYPE_DISC;
+  return NodeType::DISC;
 }
 
 std::string CDirectoryNodeAlbumRecentlyPlayed::GetLocalizedName() const

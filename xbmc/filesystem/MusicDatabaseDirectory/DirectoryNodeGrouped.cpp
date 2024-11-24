@@ -12,16 +12,18 @@
 
 using namespace XFILE::MUSICDATABASEDIRECTORY;
 
-CDirectoryNodeGrouped::CDirectoryNodeGrouped(NODE_TYPE type, const std::string& strName, CDirectoryNode* pParent)
+CDirectoryNodeGrouped::CDirectoryNodeGrouped(NodeType type,
+                                             const std::string& strName,
+                                             CDirectoryNode* pParent)
   : CDirectoryNode(type, strName, pParent)
 { }
 
-NODE_TYPE CDirectoryNodeGrouped::GetChildType() const
+NodeType CDirectoryNodeGrouped::GetChildType() const
 {
-  if (GetType() == NODE_TYPE_YEAR)
-    return NODE_TYPE_ALBUM;
+  if (GetType() == NodeType::YEAR)
+    return NodeType::ALBUM;
 
-  return NODE_TYPE_ARTIST;
+  return NodeType::ARTIST;
 }
 
 std::string CDirectoryNodeGrouped::GetLocalizedName() const
@@ -45,13 +47,13 @@ std::string CDirectoryNodeGrouped::GetContentType() const
 {
   switch (GetType())
   {
-    case NODE_TYPE_GENRE:
+    case NodeType::GENRE:
       return "genres";
-    case NODE_TYPE_SOURCE:
+    case NodeType::SOURCE:
       return "sources";
-    case NODE_TYPE_ROLE:
+    case NodeType::ROLE:
       return "roles";
-    case NODE_TYPE_YEAR:
+    case NodeType::YEAR:
       return "years";
     default:
       break;
