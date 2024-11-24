@@ -510,6 +510,8 @@ bool CEGLContextUtils::CreateSurface(EGLNativeWindowType nativeWindow, EGLint HD
 
   SurfaceAttrib();
 
+  eglQuerySurface(m_eglDisplay, m_eglSurface, EGL_HEIGHT, &m_height);
+
   return true;
 }
 
@@ -544,6 +546,8 @@ bool CEGLContextUtils::CreatePlatformSurface(void* nativeWindow, EGLNativeWindow
   }
 
   SurfaceAttrib();
+
+  eglQuerySurface(m_eglDisplay, m_eglSurface, EGL_HEIGHT, &m_height);
 
   return true;
 }
@@ -667,14 +671,12 @@ void CEGLContextUtils::SetDamagedRegions(const CDirtyRegionList& dirtyRegions)
   }
   else
   {
-    EGLint height;
-    eglQuerySurface(m_eglDisplay, m_eglSurface, EGL_HEIGHT, &height);
     std::vector<Rect> rects;
     rects.reserve(dirtyRegions.size());
     for (const auto& region : dirtyRegions)
     {
       rects.push_back({static_cast<EGLint>(std::round(region.x1)),
-                       static_cast<EGLint>(std::round(height - region.y2)),
+                       static_cast<EGLint>(std::round(m_height - region.y2)),
                        static_cast<EGLint>(std::round(region.Width())),
                        static_cast<EGLint>(std::round(region.Height()))});
     }

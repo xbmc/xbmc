@@ -244,6 +244,7 @@ private:
   mutable CCriticalSection m_textureUploadLock;
 
   PFNEGLSETDAMAGEREGIONKHRPROC m_eglSetDamageRegionKHR{nullptr};
+  EGLint m_height{1080}; //assume 1080p in case the query fails
   bool m_partialUpdateSupport{false};
   bool m_bufferAgeSupport{false};
 };
