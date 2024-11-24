@@ -11,6 +11,7 @@
 
 #include <errno.h>
 #include <string>
+#include <string_view>
 
 #include <gtest/gtest.h>
 
@@ -209,4 +210,73 @@ TEST(TestFile, SetHidden)
 #endif
   EXPECT_TRUE(XFILE::CFile::Exists(XBMC_TEMPFILEPATH(file)));
   EXPECT_TRUE(XBMC_DELETETEMPFILE(file));
+}
+
+TEST(TestFile, ReadLineRaw)
+{
+  // Note: The newline char on Windows is "\r", not "\r\n"!
+  // For Platform compatibility we therefor only match the prefix.
+
+  const auto newLineLen = CXBMCTestUtils::Instance().getNewLineCharacters().length();
+
+  XFILE::CFile file;
+  ASSERT_TRUE(file.Open(XBMC_REF_FILE_PATH("/xbmc/filesystem/test/reffile.txt")));
+  char buffer[1024];
+  // Read first line full
+  XFILE::CFile::ReadLineResult result = file.ReadLine(buffer, sizeof(buffer));
+  ASSERT_EQ(result.code, XFILE::CFile::ReadLineResult::OK);
+  ASSERT_EQ(result.length, 6);
+  ASSERT_TRUE(std::string_view(buffer).starts_with("About"));
+  // Read second line in parts
+  result = file.ReadLine(buffer, 2);
+  ASSERT_EQ(result.code, XFILE::CFile::ReadLineResult::TRUNCATED);
+  ASSERT_EQ(result.length, 1);
+  ASSERT_STREQ(buffer, "-");
+  result = file.ReadLine(buffer, 3);
+  ASSERT_EQ(result.code, XFILE::CFile::ReadLineResult::TRUNCATED);
+  ASSERT_EQ(result.length, 2);
+  ASSERT_STREQ(buffer, "--");
+  result = file.ReadLine(buffer, 3 + newLineLen);
+  ASSERT_EQ(result.code, XFILE::CFile::ReadLineResult::OK);
+  ASSERT_EQ(result.length, 3);
+  ASSERT_TRUE(std::string_view(buffer).starts_with("--"));
+  // Read third line until line break
+  result = file.ReadLine(buffer, 78);
+  ASSERT_EQ(result.code, XFILE::CFile::ReadLineResult::TRUNCATED);
+  ASSERT_EQ(result.length, 77);
+  // Read remaining line break
+  result = file.ReadLine(buffer, 1 + newLineLen);
+  ASSERT_EQ(result.code, XFILE::CFile::ReadLineResult::OK);
+  ASSERT_EQ(result.length, 1);
+  ASSERT_TRUE(std::string_view(buffer) == "\n" || std::string_view(buffer) == "\r");
+  // Read remaining 22 lines
+  for (int i = 0; i < 22; ++i)
+  {
+    result = file.ReadLine(buffer, sizeof(buffer));
+    ASSERT_EQ(result.code, XFILE::CFile::ReadLineResult::OK);
+  }
+  // Read after EOF
+  result = file.ReadLine(buffer, sizeof(buffer));
+  ASSERT_EQ(result.code, XFILE::CFile::ReadLineResult::FAILURE);
+}
+
+TEST(TestFile, ReadLine)
+{
+  // Note: The newline char on Windows is "\r", not "\r\n"!
+  // For Platform compatibility we therefor only match the prefix.
+
+  XFILE::CFile file;
+  ASSERT_TRUE(file.Open(XBMC_REF_FILE_PATH("/xbmc/filesystem/test/reffile.txt")));
+  std::string line;
+  ASSERT_TRUE(file.ReadLine(line));
+  ASSERT_TRUE(line.starts_with("About"));
+  ASSERT_TRUE(file.ReadLine(line));
+  ASSERT_TRUE(line.starts_with("-----"));
+  // Read remaining 23 lines
+  for (int i = 0; i < 23; ++i)
+  {
+    ASSERT_TRUE(file.ReadLine(line));
+  }
+  // Read after EOF
+  ASSERT_FALSE(file.ReadLine(line));
 }
