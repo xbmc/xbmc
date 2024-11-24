@@ -11415,7 +11415,7 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
         {
           std::string setPath = URIUtils::AddFileToFolder(
               movieSetsDir, CUtil::MakeLegalFileName(item.GetVideoInfoTag()->m_set.GetTitle(),
-                                                     LegalPath::LEGAL_WIN32_COMPAT));
+                                                     LegalPath::WIN32_COMPAT));
           if (CDirectory::Exists(setPath))
           {
             CGUIListItem::ArtMap setArt;
