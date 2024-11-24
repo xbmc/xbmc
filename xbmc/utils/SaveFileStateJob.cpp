@@ -87,151 +87,153 @@ void CSaveFileState::DoWork(CFileItem& item,
       }
       else
       {
-          //! @todo check possible failure of BeginTransaction
-          videodatabase.BeginTransaction();
-          bool videoDbSuccess{ true };
+        //! @todo check possible failure of BeginTransaction
+        videodatabase.BeginTransaction();
+        bool videoDbSuccess{true};
 
-          if (URIUtils::IsPlugin(progressTrackingFile) && !(item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iDbId >= 0))
+        if (URIUtils::IsPlugin(progressTrackingFile) &&
+            !(item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iDbId >= 0))
+        {
+          // FileItem from plugin can lack information, make sure all needed fields are set
+          CVideoInfoTag* tag = item.GetVideoInfoTag();
+          CStreamDetails streams = tag->m_streamDetails;
+          if (videodatabase.LoadVideoInfo(progressTrackingFile, *tag))
           {
-              // FileItem from plugin can lack information, make sure all needed fields are set
-              CVideoInfoTag* tag = item.GetVideoInfoTag();
-              CStreamDetails streams = tag->m_streamDetails;
-              if (videodatabase.LoadVideoInfo(progressTrackingFile, *tag))
-              {
-                  item.SetPath(progressTrackingFile);
-                  item.ClearProperty("original_listitem_url");
-                  tag->m_streamDetails = streams;
-              }
+            item.SetPath(progressTrackingFile);
+            item.ClearProperty("original_listitem_url");
+            tag->m_streamDetails = streams;
           }
+        }
 
-          bool updateListing = false;
-          // No resume & watched status for livetv
-          if (!item.IsLiveTV())
+        bool updateListing = false;
+        // No resume & watched status for livetv
+        if (!item.IsLiveTV())
+        {
+          //! @todo handle db failures to maintain data integrity
+          if (updatePlayCount)
           {
-              //! @todo handle db failures to maintain data integrity
-              if (updatePlayCount)
+            // no watched for not yet finished pvr recordings
+            if (!item.IsInProgressPVRRecording())
+            {
+              CLog::Log(LOGDEBUG, "{} - Marking video item {} as watched", __FUNCTION__,
+                        redactPath);
+
+              // consider this item as played
+              const CDateTime newLastPlayed = videodatabase.IncrementPlayCount(item);
+
+              item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED);
+              updateListing = true;
+
+              if (item.HasVideoInfoTag())
               {
-                  // no watched for not yet finished pvr recordings
-                  if (!item.IsInProgressPVRRecording())
-                  {
-                      CLog::Log(LOGDEBUG, "{} - Marking video item {} as watched", __FUNCTION__,
-                          redactPath);
+                if (item.IsPVRRecording())
+                  CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().IncrementPlayCount(
+                      item);
+                else
+                  item.GetVideoInfoTag()->IncrementPlayCount();
 
-                      // consider this item as played
-                      const CDateTime newLastPlayed = videodatabase.IncrementPlayCount(item);
+                if (newLastPlayed.IsValid())
+                  item.GetVideoInfoTag()->m_lastPlayed = newLastPlayed;
 
-                      item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED);
-                      updateListing = true;
-
-                      if (item.HasVideoInfoTag())
-                      {
-                          if (item.IsPVRRecording())
-                              CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().IncrementPlayCount(
-                                  item);
-                          else
-                              item.GetVideoInfoTag()->IncrementPlayCount();
-
-                          if (newLastPlayed.IsValid())
-                              item.GetVideoInfoTag()->m_lastPlayed = newLastPlayed;
-
-                          CVariant data;
-                          data["id"] = item.GetVideoInfoTag()->m_iDbId;
-                          data["type"] = item.GetVideoInfoTag()->m_type;
-                          CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary,
-                              "OnUpdate", data);
-                      }
-                  }
+                CVariant data;
+                data["id"] = item.GetVideoInfoTag()->m_iDbId;
+                data["type"] = item.GetVideoInfoTag()->m_type;
+                CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary,
+                                                                   "OnUpdate", data);
               }
-              else
-              {
-                  const CDateTime newLastPlayed = videodatabase.UpdateLastPlayed(item);
-
-                  if (item.HasVideoInfoTag() && newLastPlayed.IsValid())
-                      item.GetVideoInfoTag()->m_lastPlayed = newLastPlayed;
-              }
-
-              if (!item.HasVideoInfoTag() ||
-                  item.GetVideoInfoTag()->GetResumePoint().timeInSeconds != bookmark.timeInSeconds)
-              {
-                  if (bookmark.timeInSeconds <= 0.0)
-                      videodatabase.ClearBookMarksOfFile(progressTrackingFile, CBookmark::RESUME);
-                  else
-                      videodatabase.AddBookMarkToFile(progressTrackingFile, bookmark, CBookmark::RESUME);
-                  if (item.HasVideoInfoTag())
-                      item.GetVideoInfoTag()->SetResumePoint(bookmark);
-
-                  // UPnP announce resume point changes to clients
-                  // however not if playcount is modified as that already announces
-                  if (item.HasVideoInfoTag() && !updatePlayCount)
-                  {
-                      CVariant data;
-                      data["id"] = item.GetVideoInfoTag()->m_iDbId;
-                      data["type"] = item.GetVideoInfoTag()->m_type;
-                      CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary,
-                          "OnUpdate", data);
-                  }
-
-                  updateListing = true;
-              }
+            }
           }
-
-          // Update database entry
-          const std::string fileName{ item.HasProperty("new_stack_path")
-                                         ? item.GetProperty("new_stack_path").asString()
-                                         : item.GetDynPath() };
-
-          // Update file linking in case of bluray:// (or stack path containing bluray://)
-          if (URIUtils::IsProtocol(fileName, "bluray") || item.HasProperty("new_stack_path"))
-          {
-              if (item.GetVideoContentType() == VideoDbContentType::MOVIES)
-              {
-                  const int currentFileId{
-                      videodatabase.GetFileIdByMovie(item.GetVideoInfoTag()->m_iDbId) };
-                  videodatabase.SetFileForMovie(fileName, currentFileId);
-              }
-              else if (item.GetVideoContentType() == VideoDbContentType::EPISODES)
-              {
-                  const int currentFileId{
-                      videodatabase.GetFileIdByEpisode(item.GetVideoInfoTag()->m_iDbId) };
-                  videodatabase.SetFileForEpisode(fileName, item.GetVideoInfoTag()->m_iDbId,
-                      currentFileId);
-              }
-          }
-
-          if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->HasStreamDetails() && !item.IsLiveTV())
-          {
-              CFileItem dbItem(item);
-
-              // Check whether the item's db streamdetails need updating
-              if (!videodatabase.GetStreamDetails(dbItem) ||
-                  dbItem.GetVideoInfoTag()->m_streamDetails != item.GetVideoInfoTag()->m_streamDetails)
-              {
-                  videodatabase.SetStreamDetailsForFile(item.GetVideoInfoTag()->m_streamDetails,
-                      fileName);
-                  updateListing = true;
-              }
-          }
-
-          if (videoDbSuccess)
-              videodatabase.CommitTransaction();
           else
-              videodatabase.RollbackTransaction();
-
-          if (updateListing)
           {
-              CUtil::DeleteVideoDatabaseDirectoryCache();
-              const std::shared_ptr<CFileItem> msgItem(new CFileItem(item));
-              if (item.HasProperty("original_listitem_url"))
-                  msgItem->SetPath(item.GetProperty("original_listitem_url").asString());
-              msgItem->SetDynPath(fileName);
+            const CDateTime newLastPlayed = videodatabase.UpdateLastPlayed(item);
 
-              CGUIMessage message(GUI_MSG_NOTIFY_ALL,
-                  CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(), 0,
-                  GUI_MSG_UPDATE_ITEM, 0, msgItem);
-              CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
+            if (item.HasVideoInfoTag() && newLastPlayed.IsValid())
+              item.GetVideoInfoTag()->m_lastPlayed = newLastPlayed;
           }
 
-          videodatabase.Close();
+          if (!item.HasVideoInfoTag() ||
+              item.GetVideoInfoTag()->GetResumePoint().timeInSeconds != bookmark.timeInSeconds)
+          {
+            if (bookmark.timeInSeconds <= 0.0)
+              videodatabase.ClearBookMarksOfFile(progressTrackingFile, CBookmark::RESUME);
+            else
+              videodatabase.AddBookMarkToFile(progressTrackingFile, bookmark, CBookmark::RESUME);
+            if (item.HasVideoInfoTag())
+              item.GetVideoInfoTag()->SetResumePoint(bookmark);
+
+            // UPnP announce resume point changes to clients
+            // however not if playcount is modified as that already announces
+            if (item.HasVideoInfoTag() && !updatePlayCount)
+            {
+              CVariant data;
+              data["id"] = item.GetVideoInfoTag()->m_iDbId;
+              data["type"] = item.GetVideoInfoTag()->m_type;
+              CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary,
+                                                                 "OnUpdate", data);
+            }
+
+            updateListing = true;
+          }
+        }
+
+        // Update database entry
+        const std::string fileName{item.HasProperty("new_stack_path")
+                                       ? item.GetProperty("new_stack_path").asString()
+                                       : item.GetDynPath()};
+
+        // Update file linking in case of bluray:// (or stack path containing bluray://)
+        if (URIUtils::IsProtocol(fileName, "bluray") || item.HasProperty("new_stack_path"))
+        {
+          if (item.GetVideoContentType() == VideoDbContentType::MOVIES)
+          {
+            const int currentFileId{
+                videodatabase.GetFileIdByMovie(item.GetVideoInfoTag()->m_iDbId)};
+            videodatabase.SetFileForMovie(fileName, currentFileId);
+          }
+          else if (item.GetVideoContentType() == VideoDbContentType::EPISODES)
+          {
+            const int currentFileId{
+                videodatabase.GetFileIdByEpisode(item.GetVideoInfoTag()->m_iDbId)};
+            videodatabase.SetFileForEpisode(fileName, item.GetVideoInfoTag()->m_iDbId,
+                                            currentFileId);
+          }
+        }
+
+        if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->HasStreamDetails() &&
+            !item.IsLiveTV())
+        {
+          CFileItem dbItem(item);
+
+          // Check whether the item's db streamdetails need updating
+          if (!videodatabase.GetStreamDetails(dbItem) ||
+              dbItem.GetVideoInfoTag()->m_streamDetails != item.GetVideoInfoTag()->m_streamDetails)
+          {
+            videodatabase.SetStreamDetailsForFile(item.GetVideoInfoTag()->m_streamDetails,
+                                                  fileName);
+            updateListing = true;
+          }
+        }
+
+        if (videoDbSuccess)
+          videodatabase.CommitTransaction();
+        else
+          videodatabase.RollbackTransaction();
+
+        if (updateListing)
+        {
+          CUtil::DeleteVideoDatabaseDirectoryCache();
+          const std::shared_ptr<CFileItem> msgItem(new CFileItem(item));
+          if (item.HasProperty("original_listitem_url"))
+            msgItem->SetPath(item.GetProperty("original_listitem_url").asString());
+          msgItem->SetDynPath(fileName);
+
+          CGUIMessage message(GUI_MSG_NOTIFY_ALL,
+                              CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(), 0,
+                              GUI_MSG_UPDATE_ITEM, 0, msgItem);
+          CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
+        }
+
+        videodatabase.Close();
       }
     }
 

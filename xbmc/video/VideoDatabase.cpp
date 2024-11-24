@@ -3059,6 +3059,7 @@ bool CVideoDatabase::SetFileForEpisode(const std::string& fileAndPath,
 
   try
   {
+    assert(m_pDB->in_transaction());
     std::string sql =
         PrepareSQL("UPDATE episode SET idFile=%i WHERE idEpisode=%i", idFile, idEpisode);
     m_pDS->exec(sql);
