@@ -1421,7 +1421,8 @@ bool CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(const std::shared_ptr<CFil
   switch (type)
   {
     case VideoDbContentType::MOVIES:
-      database.DeleteMovie(item->GetVideoInfoTag()->m_iDbId);
+      if (!database.DeleteMovie(item->GetVideoInfoTag()->m_iDbId))
+        return false;
       break;
     case VideoDbContentType::EPISODES:
       database.DeleteEpisode(item->GetVideoInfoTag()->m_iDbId);

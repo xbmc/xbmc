@@ -315,9 +315,8 @@ namespace KODI::VIDEO
                                  DIR_FLAG_DEFAULTS);
         // do not consider inner folders with .nomedia
         items.erase(std::remove_if(items.begin(), items.end(),
-                                   [this](const CFileItemPtr& item) {
-                                     return item->m_bIsFolder && HasNoMedia(item->GetPath());
-                                   }),
+                                   [](const CFileItemPtr& item)
+                                   { return item->m_bIsFolder && HasNoMedia(item->GetPath()); }),
                     items.end());
         items.Stack();
 
@@ -420,7 +419,8 @@ namespace KODI::VIDEO
         break;
 
       // add video extras to library
-      if (foundSomething && !m_ignoreVideoExtras && IsVideoExtrasFolder(*pItem))
+      if (foundSomething && content == CONTENT_MOVIES && settings.parent_name &&
+          !m_ignoreVideoExtras && IsVideoExtrasFolder(*pItem))
       {
         if (AddVideoExtras(items, content, pItem->GetPath()))
         {
@@ -1028,8 +1028,7 @@ namespace KODI::VIDEO
         // Listing that ignores files inside and below folders containing .nomedia files.
         CDirectory::EnumerateDirectory(
             item->GetPath(), [&items](const std::shared_ptr<CFileItem>& item) { items.Add(item); },
-            [this](const std::shared_ptr<CFileItem>& folder)
-            { return !HasNoMedia(folder->GetPath()); },
+            [](const std::shared_ptr<CFileItem>& folder) { return !HasNoMedia(folder->GetPath()); },
             true, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(), flags);
 
         // fast hash failed - compute slow one
@@ -2462,7 +2461,7 @@ namespace KODI::VIDEO
     // get the library item which was added previously with the specified conent type
     for (const auto& item : items)
     {
-      if (content == CONTENT_MOVIES)
+      if (content == CONTENT_MOVIES && !item->m_bIsFolder)
       {
         dbId = m_database.GetMovieId(item->GetPath());
         if (dbId != -1)
@@ -2479,6 +2478,9 @@ namespace KODI::VIDEO
       return false;
     }
 
+    // No need to check for .nomedia in the current directory, the caller already checked and this
+    // function would not have been called if it existed.
+
     // Add video extras to library
     CDirectory::EnumerateDirectory(
         path,
@@ -2492,15 +2494,15 @@ namespace KODI::VIDEO
                       CURL::GetRedacted(item->GetPath()));
           }
 
-          const std::string typeVideoVersion =
+          const std::string extraTypeName =
               CGUIDialogVideoManagerExtras::GenerateVideoExtra(path, item->GetPath());
 
-          const int idVideoVersion = m_database.AddVideoVersionType(
-              typeVideoVersion, VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRA);
+          const int idVideoAssetType = m_database.AddVideoVersionType(
+              extraTypeName, VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRA);
 
           GetArtwork(item.get(), content, true, true, "");
 
-          if (m_database.AddVideoAsset(ContentToVideoDbType(content), dbId, idVideoVersion,
+          if (m_database.AddVideoAsset(ContentToVideoDbType(content), dbId, idVideoAssetType,
                                        VideoAssetType::EXTRA, *item.get()))
           {
             CLog::Log(LOGDEBUG, "VideoInfoScanner: Added video extra {}",
@@ -2512,8 +2514,8 @@ namespace KODI::VIDEO
                       CURL::GetRedacted(item->GetPath()));
           }
         },
-        [](auto) { return true; }, true,
-        CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(), DIR_FLAG_DEFAULTS);
+        [](const std::shared_ptr<CFileItem>& dirItem) { return !HasNoMedia(dirItem->GetPath()); },
+        true, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(), DIR_FLAG_DEFAULTS);
 
     return true;
   }
