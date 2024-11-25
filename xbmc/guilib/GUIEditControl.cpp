@@ -421,7 +421,7 @@ void CGUIEditControl::SetInputType(CGUIEditControl::INPUT_TYPE type, const CVari
     m_inputHeading = heading.asString();
   else if (heading.isInteger() && heading.asInteger())
     m_inputHeading = g_localizeStrings.Get(static_cast<uint32_t>(heading.asInteger()));
-  //! @todo Verify the current input string?
+  ValidateInput();
 }
 
 void CGUIEditControl::RecalcRightLabelPosition()
