@@ -264,15 +264,14 @@ bool CSmartPlaylistRule::Validate(const std::string &input, void *data)
   if (validator == NULL)
     return true;
 
-  // split the input into multiple values and validate every value separately
-  std::vector<std::string> values = StringUtils::Split(input, RULE_VALUE_SEPARATOR);
-  for (std::vector<std::string>::const_iterator it = values.begin(); it != values.end(); ++it)
-  {
-    if (!validator(*it, data))
-      return false;
-  }
+  if (input.empty())
+    return validator("", data);
 
-  return true;
+  // Split the input into multiple values and validate every value separately
+  const std::vector<std::string> values{StringUtils::Split(input, RULE_VALUE_SEPARATOR)};
+
+  return (std::all_of(values.begin(), values.end(),
+                      [data, validator](const auto& s) { return validator(s, data); }));
 }
 
 bool CSmartPlaylistRule::ValidateRating(const std::string &input, void *data)
