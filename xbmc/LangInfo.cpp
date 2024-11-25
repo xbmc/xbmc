@@ -799,7 +799,6 @@ bool CLangInfo::SetLanguage(std::string language /* = "" */, bool reloadServices
   return true;
 }
 
-// three char language code (not win32 specific)
 const std::string& CLangInfo::GetAudioLanguage() const
 {
   if (!m_audioLanguage.empty())
@@ -808,17 +807,33 @@ const std::string& CLangInfo::GetAudioLanguage() const
   return m_languageCodeGeneral;
 }
 
-void CLangInfo::SetAudioLanguage(const std::string& language)
+void CLangInfo::SetAudioLanguage(const std::string& language, bool isIso6392 /* = false */)
 {
-  if (language.empty()
-    || StringUtils::EqualsNoCase(language, "default")
-    || StringUtils::EqualsNoCase(language, "original")
-    || StringUtils::EqualsNoCase(language, "mediadefault")
-    || !g_LangCodeExpander.ConvertToISO6392B(language, m_audioLanguage))
+  if (language.empty() || StringUtils::EqualsNoCase(language, "default") ||
+      StringUtils::EqualsNoCase(language, "original") ||
+      StringUtils::EqualsNoCase(language, "mediadefault"))
+  {
     m_audioLanguage.clear();
+    return;
+  }
+
+  std::string langISO6392;
+  if (isIso6392)
+  {
+    g_LangCodeExpander.ConvertToISO6392B(language, langISO6392);
+  }
+  else
+  {
+    if (g_LangCodeExpander.ConvertToISO6391(language, langISO6392))
+    {
+      // if following conversion (to ISO 639-2) fails it should be because
+      // the language code has been defined by the user, so ignore it
+      g_LangCodeExpander.ConvertISO6391ToISO6392B(langISO6392, langISO6392);
+    }
+  }
+  m_audioLanguage = langISO6392; // empty value for error cases
 }
 
-// three char language code (not win32 specific)
 const std::string& CLangInfo::GetSubtitleLanguage() const
 {
   if (!m_subtitleLanguage.empty())
@@ -827,13 +842,30 @@ const std::string& CLangInfo::GetSubtitleLanguage() const
   return m_languageCodeGeneral;
 }
 
-void CLangInfo::SetSubtitleLanguage(const std::string& language)
+void CLangInfo::SetSubtitleLanguage(const std::string& language, bool isIso6392 /* = false */)
 {
-  if (language.empty()
-    || StringUtils::EqualsNoCase(language, "default")
-    || StringUtils::EqualsNoCase(language, "original")
-    || !g_LangCodeExpander.ConvertToISO6392B(language, m_subtitleLanguage))
+  if (language.empty() || StringUtils::EqualsNoCase(language, "default") ||
+      StringUtils::EqualsNoCase(language, "original"))
+  {
     m_subtitleLanguage.clear();
+    return;
+  }
+
+  std::string langISO6392;
+  if (isIso6392)
+  {
+    g_LangCodeExpander.ConvertToISO6392B(language, langISO6392);
+  }
+  else
+  {
+    if (g_LangCodeExpander.ConvertToISO6391(language, langISO6392))
+    {
+      // if following conversion (to ISO 639-2) fails it should be because
+      // the language code has been defined by the user, so ignore it
+      g_LangCodeExpander.ConvertISO6391ToISO6392B(langISO6392, langISO6392);
+    }
+  }
+  m_subtitleLanguage = langISO6392; // empty value for error cases
 }
 
 // two character codes as defined in ISO639
