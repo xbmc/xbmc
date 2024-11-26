@@ -757,6 +757,7 @@ bool CVideoPlayer::CloseFile(bool reopen)
 
   m_Edl.Clear();
   CServiceBroker::GetDataCacheCore().Reset();
+  m_processInfo->SetDataCache(&CServiceBroker::GetDataCacheCore());
 
   m_HasVideo = false;
   m_HasAudio = false;
