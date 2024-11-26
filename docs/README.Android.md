@@ -73,7 +73,7 @@ sudo apt install autoconf bison build-essential curl default-jdk flex gawk git g
 **[back to top](#table-of-contents)**
 
 ## 3. Prerequisites
-Building Kodi for Android requires Android NDK revision 27c. For the SDK just use the latest available.
+Building Kodi for Android requires Android NDK revision 27c (27.2.12479018). For the SDK just use the latest available.
 Kodi CI/CD platforms currently use r27c for build testing and releases, so we recommend using r27c for the most tested build experience
 
 * **[Android SDK](https://developer.android.com/studio/index.html)** (Look for `Get just the command line tools`)
@@ -135,22 +135,22 @@ cd $HOME/kodi/tools/depends
 
 Configure build for aarch64:
 ```
-./configure --with-tarballs=$HOME/android-tools/xbmc-tarballs --host=aarch64-linux-android --with-sdk-path=$HOME/android-tools/android-sdk-linux --with-ndk-path=$HOME/android-tools/android-sdk-linux/ndk/27.2.12479018 --prefix=$HOME/android-tools/xbmc-depends
+./configure --with-tarballs=$HOME/android-tools/xbmc-tarballs --host=aarch64-linux-android --with-sdk-path=$HOME/android-tools/android-sdk-linux --prefix=$HOME/android-tools/xbmc-depends
 ```
 
 Or configure build for arm:
 ```
-./configure --with-tarballs=$HOME/android-tools/xbmc-tarballs --host=arm-linux-androideabi --with-sdk-path=$HOME/android-tools/android-sdk-linux --with-ndk-path=$HOME/android-tools/android-sdk-linux/ndk/27.2.12479018 --prefix=$HOME/android-tools/xbmc-depends
+./configure --with-tarballs=$HOME/android-tools/xbmc-tarballs --host=arm-linux-androideabi --with-sdk-path=$HOME/android-tools/android-sdk-linux --prefix=$HOME/android-tools/xbmc-depends
 ```
 
 Or configure build for x86:
 ```
-./configure --with-tarballs=$HOME/android-tools/xbmc-tarballs --host=i686-linux-android --with-sdk-path=$HOME/android-tools/android-sdk-linux --with-ndk-path=$HOME/android-tools/android-sdk-linux/ndk/27.2.12479018 --prefix=$HOME/android-tools/xbmc-depends
+./configure --with-tarballs=$HOME/android-tools/xbmc-tarballs --host=i686-linux-android --with-sdk-path=$HOME/android-tools/android-sdk-linux --prefix=$HOME/android-tools/xbmc-depends
 ```
 
 Or configure build for x86_64:
 ```
-./configure --with-tarballs=$HOME/android-tools/xbmc-tarballs --host=x86_64-linux-android --with-sdk-path=$HOME/android-tools/android-sdk-linux --with-ndk-path=$HOME/android-tools/android-sdk-linux/ndk/27.2.12479018 --prefix=$HOME/android-tools/xbmc-depends
+./configure --with-tarballs=$HOME/android-tools/xbmc-tarballs --host=x86_64-linux-android --with-sdk-path=$HOME/android-tools/android-sdk-linux --prefix=$HOME/android-tools/xbmc-depends
 ```
 
 > [!NOTE]  
@@ -238,12 +238,12 @@ make -j$(getconf _NPROCESSORS_ONLN)
 ```
 --with-ndk-api=<ndk number>
 ```
-  specify ndk level (optional for android), default is 24.]
+  specify ndk level (optional for android), default is 24.
 
 ```
 --with-ndk-path=<path>
 ```
-  specify path to ndk (required for android only)
+  specify path to ndk (optional for android), default is sdk_path/ndk/27.2.12479018
 
 ```
 --with-sdk-path=<path>

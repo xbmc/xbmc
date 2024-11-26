@@ -70,15 +70,16 @@ AC_ARG_WITH([cpu],
   [use_cpu=$withval],
   [use_cpu=auto])
 
-AC_ARG_WITH([ndk-path],
-  [AS_HELP_STRING([--with-ndk-path],
-  [specify path to ndk (required for android only)])],
-  [use_ndk_path=$withval])
-
 AC_ARG_WITH([sdk-path],
   [AS_HELP_STRING([--with-sdk-path],
   [specify path to sdk (required for android only)])],
   [use_sdk_path=$withval])
+
+AC_ARG_WITH([ndk-path],
+  [AS_HELP_STRING([--with-ndk-path],
+  [specify path to ndk (optional for android), default is sdk_path/ndk/27.2.12479018])],
+  [use_ndk_path=$withval],
+  [use_ndk_path=$use_sdk_path/ndk/27.2.12479018])
 
 AC_ARG_WITH([sdk],
   [AS_HELP_STRING([--with-sdk],
