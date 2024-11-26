@@ -1077,7 +1077,6 @@ int CBlurayDirectory::GetUserPlaylists() const
   std::string line;
   line.reserve(1024);
   int playlist{-1};
-  int playlist{-1};
 
   if (file.Open(discInfPath))
   {
