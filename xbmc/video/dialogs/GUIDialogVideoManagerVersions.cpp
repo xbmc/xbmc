@@ -589,8 +589,10 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
 
     CFileItem item{path, false};
 
-    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-            CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
+    // Imperfect test of the existence of stream details but comes at no extra cost.
+    // File is already a video asset implies stream details were extracted => skip extraction
+    if (newAsset.m_idFile <= 0 && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                                      CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
     {
       CDVDFileInfo::GetFileStreamDetails(&item);
       CLog::LogF(LOGDEBUG, "Extracted filestream details from video file {}",
