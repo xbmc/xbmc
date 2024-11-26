@@ -79,19 +79,18 @@ bool CPlayListPLS::Load(const std::string &strFile)
     return false;
   }
 
-  char szLine[4096];
   std::string strLine;
+  strLine.reserve(1024);
 
   // run through looking for the [playlist] marker.
   // if we find another http stream, then load it.
   while (true)
   {
-    if ( !file.ReadString(szLine, sizeof(szLine) ) )
+    if (!file.ReadLine(strLine))
     {
       file.Close();
       return size() > 0;
     }
-    strLine = szLine;
     StringUtils::Trim(strLine);
     if(StringUtils::EqualsNoCase(strLine, START_PLAYLIST_MARKER))
       break;
@@ -102,9 +101,8 @@ bool CPlayListPLS::Load(const std::string &strFile)
   }
 
   bool bFailed = false;
-  while (file.ReadString(szLine, sizeof(szLine) ) )
+  while (file.ReadLine(strLine))
   {
-    strLine = szLine;
     StringUtils::RemoveCRLF(strLine);
     size_t iPosEqual = strLine.find('=');
     if (iPosEqual != std::string::npos)

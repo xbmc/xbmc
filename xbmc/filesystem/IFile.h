@@ -92,7 +92,27 @@ public:
    *         -1 in case of any explicit error
    */
   virtual ssize_t Write(const void* bufPtr, size_t bufSize) { return -1;}
-  virtual bool ReadString(char *szLine, int iLineLength);
+  struct ReadLineResult
+  {
+    enum class ResultCode
+    {
+      FAILURE, ///< Recondition violated, e.g. buffer is nullptr, file not open, EOF already reached, ...
+      TRUNCATED, ///< The line is longer than the supplied buffer. The next read continues reading of the line
+      OK, ///< Read a line
+    };
+    using enum ResultCode;
+
+    ResultCode code; ///< The result of the read operation
+    std::size_t length; ///< length of the read string without null terminator
+  };
+  /**
+   * Reads a line from a file into \p buffer. Reads at most \p bufferLength - 1 bytes from the file.
+   * \p buffer is unchanged in case the returned result code is FAILURE. The read line can contain '\0' characters
+   * @param buffer The buffer into which the line is wrote
+   * @param bufferSize The size of \p buffer
+   * @return See \ref ReadLineResult
+   */
+  virtual ReadLineResult ReadLine(char* buffer, std::size_t bufferSize);
   virtual int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET) = 0;
   virtual void Close() = 0;
   virtual int64_t GetPosition() = 0;

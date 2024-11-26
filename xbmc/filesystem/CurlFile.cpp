@@ -1111,7 +1111,7 @@ bool CCurlFile::Open(const CURL& url)
     if (m_httpresponse >= 400 && CServiceBroker::GetLogging().CanLogComponent(LOGCURL))
     {
       error.resize(4096);
-      ReadString(&error[0], 4095);
+      ReadLine(&error[0], 4095);
     }
 
     CLog::Log(LOGERROR, "CCurlFile::{} - <{}> Failed with code {}:\n{}", __FUNCTION__,
@@ -1262,12 +1262,12 @@ ssize_t CCurlFile::Write(const void* lpBuf, size_t uiBufSize)
   return m_state->m_filePos;
 }
 
-bool CCurlFile::CReadState::ReadString(char *szLine, int iLineLength)
+CCurlFile::ReadLineResult CCurlFile::CReadState::ReadLine(char* buffer, std::size_t bufferSize)
 {
-  unsigned int want = (unsigned int)iLineLength;
+  unsigned int want = (unsigned int)bufferSize;
 
   if((m_fileSize == 0 || m_filePos < m_fileSize) && FillBuffer(want) != FILLBUFFER_OK)
-    return false;
+    return {ReadLineResult::FAILURE, 0};
 
   // ensure only available data is considered
   want = std::min(m_buffer.getMaxReadSize(), want);
@@ -1281,20 +1281,31 @@ bool CCurlFile::CReadState::ReadString(char *szLine, int iLineLength)
           "CCurlFile::{} - ({}) Transfer ended before entire file was retrieved pos {}, size {}",
           __FUNCTION__, fmt::ptr(this), m_filePos, m_fileSize);
 
-    return false;
+    return {ReadLineResult::FAILURE, 0};
   }
 
-  char* pLine = szLine;
-  do
+  std::size_t bytesRead = 0;
+  bool foundNewline = false;
+  bool reachedEnd = false;
+  for (; bytesRead < want - 1 && !foundNewline; ++bytesRead)
   {
-    if (!m_buffer.ReadData(pLine, 1))
+    reachedEnd = m_buffer.ReadData(buffer + bytesRead, 1) == 0;
+    if (reachedEnd)
       break;
 
-    pLine++;
-  } while (((pLine - 1)[0] != '\n') && ((unsigned int)(pLine - szLine) < want));
-  pLine[0] = 0;
-  m_filePos += (pLine - szLine);
-  return (pLine - szLine) > 0;
+    foundNewline = buffer[bytesRead] == '\n';
+  }
+
+  buffer[bytesRead] = '\0';
+  m_filePos += bytesRead;
+  if (bytesRead == 0)
+    return {ReadLineResult::FAILURE, 0};
+  else if (foundNewline)
+    return {ReadLineResult::OK, bytesRead - 1};
+  else if (reachedEnd)
+    return {ReadLineResult::OK, bytesRead};
+  else
+    return {ReadLineResult::TRUNCATED, bytesRead};
 }
 
 bool CCurlFile::ReOpen(const CURL& url)

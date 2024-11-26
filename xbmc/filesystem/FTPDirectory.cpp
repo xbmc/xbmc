@@ -13,6 +13,7 @@
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "URL.h"
+#include "filesystem/IFile.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -43,7 +44,7 @@ bool CFTPDirectory::GetDirectory(const CURL& url2, CFileItemList &items)
   bool serverNotUseUTF8 = url.GetProtocolOption("utf8") == "0";
 
   char buffer[MAX_PATH + 1024];
-  while( reader.ReadString(buffer, sizeof(buffer)) )
+  while (reader.ReadLine(buffer, sizeof(buffer)).code == IFile::ReadLineResult::OK)
   {
     std::string strBuffer = buffer;
 

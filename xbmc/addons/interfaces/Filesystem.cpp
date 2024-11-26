@@ -872,7 +872,8 @@ bool Interface_Filesystem::read_file_string(void* kodiBase,
     return false;
   }
 
-  return static_cast<CFile*>(file)->ReadString(szLine, lineLength);
+  return static_cast<CFile*>(file)->ReadLine(szLine, lineLength).code !=
+         CFile::ReadLineResult::FAILURE;
 }
 
 ssize_t Interface_Filesystem::write_file(void* kodiBase, void* file, const void* ptr, size_t size)

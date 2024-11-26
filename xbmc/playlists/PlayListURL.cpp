@@ -30,8 +30,8 @@ CPlayListURL::~CPlayListURL(void) = default;
 
 bool CPlayListURL::Load(const std::string& strFileName)
 {
-  char szLine[4096];
   std::string strLine;
+  strLine.reserve(1024);
 
   Clear();
 
@@ -45,16 +45,14 @@ bool CPlayListURL::Load(const std::string& strFileName)
     return false;
   }
 
-  while (file.ReadString(szLine, 1024))
+  while (file.ReadLine(strLine))
   {
-    strLine = szLine;
     StringUtils::RemoveCRLF(strLine);
 
     if (StringUtils::StartsWith(strLine, "[InternetShortcut]"))
     {
-      if (file.ReadString(szLine,1024))
+      if (file.ReadLine(strLine))
       {
-        strLine  = szLine;
         StringUtils::RemoveCRLF(strLine);
         if (StringUtils::StartsWith(strLine, "URL="))
         {
