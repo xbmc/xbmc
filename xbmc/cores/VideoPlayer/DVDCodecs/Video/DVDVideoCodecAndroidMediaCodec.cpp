@@ -759,8 +759,13 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       continue;
 
     m_codecname = codec_info.getName();
-    if (!CServiceBroker::GetDecoderFilterManager()->isValid(m_codecname, m_hints))
+    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+            CSettings::SETTING_VIDEOPLAYER_USEDECODERFILTER) &&
+        (!CServiceBroker::GetDecoderFilterManager()->isValid(m_codecname, m_hints)))
+    {
+      CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::Open: Codec disabled: {}", m_codecname);
       continue;
+    }
 
     CLog::Log(LOGINFO, "CDVDVideoCodecAndroidMediaCodec::Open Testing codec: {}", m_codecname);
 
