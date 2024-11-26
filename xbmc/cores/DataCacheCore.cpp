@@ -47,11 +47,14 @@ void CDataCacheCore::Reset()
     std::unique_lock<CCriticalSection> lock(m_renderSection);
     m_renderInfo = {};
   }
-  {
-    std::unique_lock<CCriticalSection> lock(m_contentSection);
-    m_contentInfo.Reset();
-  }
+  ResetContentInfo();
   m_timeInfo = {};
+}
+
+void CDataCacheCore::ResetContentInfo()
+{
+  std::unique_lock<CCriticalSection> lock(m_contentSection);
+  m_contentInfo.Reset();
 }
 
 bool CDataCacheCore::HasAVInfoChanges()
