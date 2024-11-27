@@ -132,6 +132,8 @@ public:
   bool ToggleDeviceState(CecStateChange mode = STATE_SWITCH_TOGGLE, bool forceType = false);
 
 private:
+  static const unsigned int HOLD_THRESHOLD_MS = 250;
+
   bool InitialiseFeature(const PeripheralFeature feature) override;
   void ResetMembers(void);
   void Process(void) override;
