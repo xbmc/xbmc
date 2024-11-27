@@ -27,6 +27,7 @@ public:
        float rightThumbY = 0.0f,
        float repeat = 0.0f);
   CKey(uint32_t buttonCode, unsigned int held);
+  CKey(uint32_t buttonCode, unsigned int held, uint32_t modifiers);
   CKey(uint32_t keycode,
        uint8_t vkey,
        wchar_t unicode,
