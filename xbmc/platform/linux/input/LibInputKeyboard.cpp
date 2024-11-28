@@ -509,6 +509,8 @@ void CLibInputKeyboard::ProcessRemoteControlInput(libinput_event_keyboard* e)
   const auto mappingIter = libinputKeyToRemoteButtonMap.find(libinputKeycode);
   if (mappingIter != libinputKeyToRemoteButtonMap.cend())
   {
+    const auto firstClickTime = std::chrono::steady_clock::now();
+
     XBMC_Event buttonEvent = {};
     buttonEvent.type = XBMC_BUTTON;
     buttonEvent.keybutton.button = mappingIter->second;
@@ -524,6 +526,37 @@ void CLibInputKeyboard::ProcessRemoteControlInput(libinput_event_keyboard* e)
       std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
       if (appPort)
         appPort->OnEvent(buttonEvent);
+
+      // set up timer to periodically send key-repeat events while button is pressed
+      libinput_event* ev = libinput_event_keyboard_get_base_event(e);
+      libinput_device* dev = libinput_event_get_device(ev);
+      const auto data = m_repeatData.find(dev);
+      if (data != m_repeatData.end())
+      {
+        CLog::LogF(LOGDEBUG, "using delay: {}ms repeat: {}ms", data->second.at(0),
+                   data->second.at(1));
+
+        m_repeatRate = data->second.at(1);
+        m_repeatTimer.Stop(true);
+        m_repeatEventFunction = [buttonEvent, firstClickTime]()
+        {
+          const auto now = std::chrono::steady_clock::now();
+          const auto duration =
+              std::chrono::duration_cast<std::chrono::milliseconds>(now - firstClickTime);
+
+          auto localButtonEvent = buttonEvent;
+          localButtonEvent.keybutton.holdtime = duration.count();
+
+          std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+          if (appPort)
+            appPort->OnEvent(localButtonEvent);
+        };
+        m_repeatTimer.Start(std::chrono::milliseconds(data->second.at(0)), false);
+      }
+    }
+    else
+    {
+      m_repeatTimer.Stop();
     }
   }
   else
