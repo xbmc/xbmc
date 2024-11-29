@@ -745,8 +745,14 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
 
 float CGUIFontTTF::GetTextWidthInternal(const vecText& text)
 {
+  const std::u32string key(text.begin(), text.end());
+  if (m_textWidthCache.contains(key))
+    return m_textWidthCache[key];
+
   const std::vector<Glyph> glyphs = GetHarfBuzzShapedGlyphs(text);
-  return GetTextWidthInternal(text, glyphs);
+  const float width = GetTextWidthInternal(text, glyphs);
+  m_textWidthCache[key] = width;
+  return width;
 }
 
 // this routine assumes a single line (i.e. it was called from GUITextLayout)

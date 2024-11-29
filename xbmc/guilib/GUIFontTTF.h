@@ -15,6 +15,7 @@
 #include <memory>
 #include <stdint.h>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include <ft2build.h>
@@ -284,4 +285,5 @@ private:
   CGUIFontTTF(const CGUIFontTTF&) = delete;
   CGUIFontTTF& operator=(const CGUIFontTTF&) = delete;
   int m_referenceCount{0};
+  std::unordered_map<std::u32string, float> m_textWidthCache{};
 };
