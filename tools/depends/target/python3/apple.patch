@@ -1,30 +1,30 @@
 --- a/configure.ac
 +++ b/configure.ac
-@@ -545,6 +545,9 @@
- 	*-*-cygwin*)
- 		ac_sys_system=Cygwin
+@@ -324,6 +324,9 @@
+ 	*-*-linux*)
+ 		ac_sys_system=Linux
  		;;
 +	*-*-darwin*)
 +		ac_sys_system=Darwin
 +		;;
- 	*-*-vxworks*)
- 	    ac_sys_system=VxWorks
- 	    ;;
-@@ -600,6 +600,8 @@
  	*-*-cygwin*)
- 		_host_cpu=
+ 		ac_sys_system=Cygwin
+ 		;;
+@@ -751,6 +754,8 @@
+ 	*-*-cygwin*)
+ 		_host_ident=
  		;;
 +	*-*-darwin*)
 +		;;
- 	*-*-vxworks*)
- 		_host_cpu=$host_cpu
- 		;;
-@@ -675,6 +675,8 @@
+ 	*-apple-ios*)
+ 		_host_os=`echo $host | cut -d '-' -f3`
+ 		_host_device=`echo $host | cut -d '-' -f4`
+@@ -848,6 +853,8 @@
      define_xopen_source=no;;
    Darwin/@<:@[12]@:>@@<:@0-9@:>@.*)
      define_xopen_source=no;;
 +  Darwin/*)
 +    define_xopen_source=no;;
-   # On QNX 6.3.2, defining _XOPEN_SOURCE prevents netdb.h from
-   # defining NI_NUMERICHOST.
-   QNX/6.3.2)
+   # On iOS, defining _POSIX_C_SOURCE also disables platform specific features.
+   iOS/*)
+     define_xopen_source=no;;
