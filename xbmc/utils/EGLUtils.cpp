@@ -667,13 +667,16 @@ void CEGLContextUtils::SetDamagedRegions(const CDirtyRegionList& dirtyRegions)
   }
   else
   {
-    EGLint height = eglQuerySurface(m_eglDisplay, m_eglSurface, EGL_HEIGHT, &height);
+    EGLint height = 1080;
+    eglQuerySurface(m_eglDisplay, m_eglSurface, EGL_HEIGHT, &height);
     std::vector<Rect> rects;
     rects.reserve(dirtyRegions.size());
     for (const auto& region : dirtyRegions)
     {
-      rects.push_back({static_cast<EGLint>(region.x1), static_cast<EGLint>(height - region.y2),
-                       static_cast<EGLint>(region.Width()), static_cast<EGLint>(region.Height())});
+      rects.push_back({static_cast<EGLint>(std::round(region.x1)),
+                       static_cast<EGLint>(std::round(height - region.y2)),
+                       static_cast<EGLint>(std::round(region.Width())),
+                       static_cast<EGLint>(std::round(region.Height()))});
     }
     m_eglSetDamageRegionKHR(m_eglDisplay, m_eglSurface, reinterpret_cast<EGLint*>(rects.data()),
                             rects.size());
