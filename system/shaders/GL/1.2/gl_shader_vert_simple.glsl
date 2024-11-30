@@ -8,21 +8,21 @@
 
 #version 120
 
-attribute vec4 m_attrpos;
+attribute vec2 m_attrpos;
 attribute vec4 m_attrcol;
-attribute vec4 m_attrcord0;
-attribute vec4 m_attrcord1;
-varying vec4 m_cord0;
-varying vec4 m_cord1;
+attribute vec2 m_attrcord0;
+attribute vec2 m_attrcord1;
+varying vec2 m_cord0;
+varying vec2 m_cord1;
 varying vec4 m_colour;
 uniform mat4 m_matrix;
 uniform float m_depth;
 
-void main ()
+void main()
 {
-  gl_Position = m_matrix * m_attrpos;
+  gl_Position = m_matrix * vec4(m_attrpos, 0., 1.);
   gl_Position.z = m_depth * gl_Position.w;
-  m_colour    = m_attrcol;
-  m_cord0     = m_attrcord0;
-  m_cord1     = m_attrcord1;
+  m_colour = m_attrcol;
+  m_cord0 = m_attrcord0;
+  m_cord1 = m_attrcord1;
 }
