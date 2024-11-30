@@ -1,14 +1,6 @@
-include ../../Makefile.include
+include ../../Makefile.include NINJA-VERSION ../../download-files.include
 PLATFORM=$(NATIVEPLATFORM)
-DEPS = ../../Makefile.include Makefile ../../download-files.include
-
-# lib name, version
-LIBNAME=ninja
-VERSION=1.10.2
-SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
-SHA512=895412ae1cbc83c656e92f282602a29300e08274e9dea0da4464202ae556e7a1ab03bec057f23da4756bbd91bd2d744cd7a64b336740fd2782bb4db5c3b7b496
-include ../../download-files.include
+DEPS = ../../Makefile.include Makefile NINJA-VERSION ../../download-files.include
 
 LIBDYLIB=$(PLATFORM)/ninja
 
