@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="suggestion_channel">Suggerimenti</string>
+    <string name="error_title">Errore</string>
+    <string name="exit_button">Esci</string>
+    <string name="info_title">Info</string>
+    <string name="clearing_cache">Pulizia cache…</string>
+    <string name="external_ok">Archiviazione esterna OK…</string>
+    <string name="starting">Inizio %1$s…</string>
+    <string name="first_run">Preparazione per la prima esecuzione. Attendi…</string>
+    <string name="permission_denied">Permesso negato!! Uscita in corso…</string>
+    <string name="asking_permissions">Richiesta permessi…</string>
+    <string name="no_read_apk">Impossibile leggere il pacchetto.</string>
+    <string name="continue_button">Continua</string>
+    <string name="no_find_apk">Impossibile trovare il pacchetto.</string>
+    <string name="waiting_external">In attesa dell\'archiviazione esterna…</string>
+    <string name="notice_dialog">%1$s richiede l\'accesso ai file e ai media del tuo dispositivo per funzionare. Consentilo tramite la seguente finestra di dialogo o %1$s verrà chiuso.</string>
 </resources>

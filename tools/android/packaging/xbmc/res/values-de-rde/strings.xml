@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="suggestion_channel">Vorschläge</string>
+    <string name="error_title">Fehler</string>
+    <string name="info_title">Information</string>
+    <string name="exit_button">Verlassen</string>
+    <string name="asking_permissions">Anfrage von Berechtigungen läuft …</string>
+    <string name="clearing_cache">Cache wird geleert …</string>
+    <string name="waiting_external">Warten auf externen Speicher …</string>
+    <string name="external_ok">Externer Speicher bereit …</string>
+    <string name="starting">%1$s wird gestartet …</string>
+    <string name="first_run">Vorbereitung des ersten Starts. Bitte warten …</string>
+    <string name="permission_denied">Berechtigung verweigert!!! Wird beendet …</string>
+    <string name="no_find_apk">Paket kann nicht gefunden werden.</string>
+    <string name="no_read_apk">Paket kann nicht gelesen werden.</string>
+    <string name="continue_button">Fortsetzen</string>
+    <string name="notice_dialog">%1$s benötigt Zugriff auf Medien und Dateien des Gerätes. Bitte diesen Zugriff in der folgenden Dialogbox bestätigen. Andernfalls wird %1$s beendet.</string>
 </resources>

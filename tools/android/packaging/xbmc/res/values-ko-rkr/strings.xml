@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="suggestion_channel">제안</string>
+    <string name="error_title">오류</string>
+    <string name="info_title">정보</string>
+    <string name="asking_permissions">허가 요청하기…</string>
+    <string name="clearing_cache">캐시를 지우는 중…</string>
+    <string name="waiting_external">외부 저장소를 기다리는 중…</string>
+    <string name="external_ok">외부 저장소는 정상입니다…</string>
+    <string name="starting">%1$s 시작…</string>
+    <string name="first_run">첫 번째 실행을 준비 중입니다. 잠시만 기다려 주세요…</string>
+    <string name="permission_denied">허가 거부!! 종료 중…</string>
+    <string name="exit_button">종료</string>
+    <string name="no_find_apk">패키지를 찾을 수 없습니다.</string>
+    <string name="no_read_apk">패키지를 읽을 수 없습니다.</string>
+    <string name="continue_button">계속</string>
+    <string name="notice_dialog">%1$s가 동작하려면 장치 미디어 및 파일에 액세스해야 합니다. 다음 대화 상자를 통해 이를 허용하십시오. 그렇지 않으면 %1$s가 종료됩니다.</string>
 </resources>
