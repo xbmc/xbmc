@@ -10,6 +10,7 @@
 
 #include "DVDClock.h"
 #include "DebugRenderer.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
 #include "cores/VideoPlayer/VideoRenderers/OverlayRenderer.h"
 #include "cores/VideoSettings.h"
@@ -203,15 +204,12 @@ protected:
   std::deque<int> m_discard;
 
   std::unique_ptr<VideoPicture> m_pConfigPicture;
-  unsigned int m_width = 0;
-  unsigned int m_height = 0;
-  unsigned int m_dwidth = 0;
-  unsigned int m_dheight = 0;
+
+  VideoPicture m_picture{};
+
   float m_fps = 0.0;
   unsigned int m_orientation = 0;
   int m_NumberBuffers = 0;
-  std::string m_stereomode;
-
   int m_lateframes = -1;
   double m_presentpts = 0.0;
   EPRESENTSTEP m_presentstep = PRESENT_IDLE;
