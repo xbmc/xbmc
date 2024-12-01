@@ -126,6 +126,8 @@ constexpr auto xkbMap = make_map<xkb_keysym_t, XBMCKey>({
     {XKB_KEY_Sys_Req, XBMCK_SYSREQ},
     {XKB_KEY_Break, XBMCK_BREAK},
     {XKB_KEY_Menu, XBMCK_MENU},
+    {XKB_KEY_XF86MenuKB, XBMCK_MENU},
+    {XKB_KEY_XF86MenuPB, XBMCK_MENU},
     {XKB_KEY_XF86PowerOff, XBMCK_POWER},
     {XKB_KEY_EcuSign, XBMCK_EURO},
     {XKB_KEY_Undo, XBMCK_UNDO},
