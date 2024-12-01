@@ -935,7 +935,9 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
     if (!recording)
       return InvalidParams;
 
-    if (!CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayMedia(CFileItem(recording)))
+    CFileItem recItem{recording};
+    HandleResumeOption(optionResume, recItem);
+    if (!CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(recItem, false))
       return FailedToExecute;
 
     return ACK;
@@ -967,10 +969,29 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
 
         return StartSlideshow("", false, optionShuffled.isBoolean() && optionShuffled.asBoolean());
       }
-      else if (list.Size() == 1 && (URIUtils::IsPVRChannel(list[0]->GetPath()) ||
-                                    URIUtils::IsPVRRecording(list[0]->GetPath())))
+      else if (list.Size() == 1 && URIUtils::IsPVRChannel(list[0]->GetPath()))
       {
         if (!CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayMedia(*list[0]))
+          return FailedToExecute;
+      }
+      else if (list.Size() == 1 && URIUtils::IsPVRRecording(list[0]->GetPath()))
+      {
+        const std::shared_ptr<const CPVRRecordings> recordingsContainer{
+            CServiceBroker::GetPVRManager().Recordings()};
+        if (!recordingsContainer)
+          return FailedToExecute;
+
+        std::shared_ptr<CPVRRecording> recording{list[0]->GetPVRRecordingInfoTag()};
+        if (!recording)
+          recording = recordingsContainer->GetByPath(list[0]->GetPath());
+
+        if (!recording)
+          return InvalidParams;
+
+        CFileItem recItem{recording};
+        HandleResumeOption(optionResume, recItem);
+        if (!CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(recItem,
+                                                                                     false))
           return FailedToExecute;
       }
       else
