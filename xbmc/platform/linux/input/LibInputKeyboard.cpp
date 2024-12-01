@@ -358,7 +358,8 @@ void CLibInputKeyboard::ProcessKey(libinput_event_keyboard *e)
   if (!m_ctx || !m_keymap || !m_state)
     return;
 
-  const uint32_t xkbkey = libinput_event_keyboard_get_key(e) + 8;
+  const uint32_t libinputKeycode = libinput_event_keyboard_get_key(e);
+  const uint32_t xkbkey = libinputKeycode + 8;
   const xkb_keysym_t keysym = xkb_state_key_get_one_sym(m_state.get(), xkbkey);
   const bool pressed = libinput_event_keyboard_get_key_state(e) == LIBINPUT_KEY_STATE_PRESSED;
   xkb_state_update_key(m_state.get(), xkbkey, pressed ? XKB_KEY_DOWN : XKB_KEY_UP);
@@ -459,8 +460,6 @@ void CLibInputKeyboard::ProcessKey(libinput_event_keyboard *e)
     unicode = 0;
   }
 
-  const uint32_t scancode = libinput_event_keyboard_get_key(e);
-
   // flush composer if set (after a finished sequence)
   if (flushComposer)
   {
@@ -471,7 +470,7 @@ void CLibInputKeyboard::ProcessKey(libinput_event_keyboard *e)
   event.type = pressed ? XBMC_KEYDOWN : XBMC_KEYUP;
   event.key.keysym.mod = XBMCMod(mod);
   event.key.keysym.sym = XBMCKeyForXKBKeysym(keysym);
-  event.key.keysym.scancode = scancode;
+  event.key.keysym.scancode = libinputKeycode;
   event.key.keysym.unicode = unicode;
 
   std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
