@@ -180,9 +180,35 @@ constexpr auto xkbMap = make_map<xkb_keysym_t, XBMCKey>({
 /// Additional mappings directly from libinput (i.e. evdev) keycodes to Kodi keys.
 /// These keys are not (yet) supported by any XKB release; so to avoid waiting for XKB project to add support,
 /// they are now handled here in a special way.
+/// Also, for some evdev keys there exists no appropriate XBMCK_... constant; so these entries
+/// are commented out in this table.
 constexpr auto evdevKeycodeMap = make_map<uint32_t, XBMCKey>({
     {KEY_OK, XBMCK_RETURN},
-    // TODO: add mappings for other keys
+    // {KEY_CLEAR, XBMCK_UNKNOWN },
+    {KEY_POWER2, XBMCK_POWER},
+    // {KEY_TIME, XBMCK_UNKNOWN },
+    // {KEY_CHANNEL, XBMCK_UNKNOWN },
+    {KEY_FAVORITES, XBMCK_FAVORITES},
+    {KEY_EPG, XBMCK_EPG},
+    // {KEY_LANGUAGE, XBMCK_UNKNOWN },
+    // {KEY_TITLE, XBMCK_UNKNOWN },
+    // {KEY_SUBTITLE, XBMCK_UNKNOWN },
+    // {KEY_MODE, XBMCK_UNKNOWN },
+    // {KEY_PC, XBMCK_UNKNOWN },
+    // {KEY_TV, XBMCK_UNKNOWN },
+    // {KEY_TV2, XBMCK_UNKNOWN },
+    // {KEY_VCR, XBMCK_UNKNOWN },
+    // {KEY_VCR2, XBMCK_UNKNOWN },
+    // {KEY_CD, XBMCK_UNKNOWN },
+    // {KEY_RADIO, XBMCK_UNKNOWN },
+    // {KEY_TEXT, XBMCK_UNKNOWN },
+    {KEY_RED, XBMCK_RED},
+    {KEY_GREEN, XBMCK_GREEN},
+    {KEY_YELLOW, XBMCK_YELLOW},
+    {KEY_BLUE, XBMCK_BLUE},
+    {KEY_NEXT, XBMCK_MEDIA_NEXT_TRACK},
+    {KEY_PREVIOUS, XBMCK_MEDIA_PREV_TRACK},
+    // {KEY_DIGITS, XBMCK_UNKNOWN },
 });
 
 constexpr auto logLevelMap = make_map<xkb_log_level, int>({{XKB_LOG_LEVEL_CRITICAL, LOGERROR},
