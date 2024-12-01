@@ -56,6 +56,7 @@
       <escape>PreviousMenu</escape>
       <escape mod="longpress">Back</escape>
       <i>Info</i>
+      <info>Info</info>
       <menu>ContextMenu</menu>
       <menu mod="longpress">Menu</menu>
       <c>ContextMenu</c>

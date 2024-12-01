@@ -130,7 +130,7 @@ constexpr auto xkbMap = make_map<xkb_keysym_t, XBMCKey>({
     {XKB_KEY_EcuSign, XBMCK_EURO},
     {XKB_KEY_Undo, XBMCK_UNDO},
     {XKB_KEY_XF86Sleep, XBMCK_SLEEP},
-    // Unmapped: XBMCK_GUIDE, XBMCK_SETTINGS, XBMCK_INFO
+    // Unmapped: XBMCK_GUIDE, XBMCK_SETTINGS
     {XKB_KEY_XF86Red, XBMCK_RED},
     {XKB_KEY_XF86Green, XBMCK_GREEN},
     {XKB_KEY_XF86Yellow, XBMCK_YELLOW},
@@ -140,6 +140,7 @@ constexpr auto xkbMap = make_map<xkb_keysym_t, XBMCKey>({
     // Unmapped: XBMCK_CONFIG, XBMCK_EPG
 
     // Media keys
+    {XKB_KEY_XF86Info, XBMCK_INFO},
     {XKB_KEY_XF86Eject, XBMCK_EJECT},
     {XKB_KEY_Cancel, XBMCK_STOP},
     {XKB_KEY_XF86AudioRecord, XBMCK_RECORD},
