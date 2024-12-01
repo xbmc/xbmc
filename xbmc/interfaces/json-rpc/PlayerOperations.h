@@ -94,7 +94,6 @@ namespace JSONRPC
     static JSONRPC_STATUS GetPropertyValue(PlayerType player, const std::string &property, CVariant &result);
 
     static KODI::PLAYLIST::RepeatState ParseRepeatState(const CVariant& repeat);
-    static double ParseTimeInSeconds(const CVariant &time);
     static bool IsPVRChannel();
     static std::shared_ptr<PVR::CPVREpgInfoTag> GetCurrentEpg();
   };
