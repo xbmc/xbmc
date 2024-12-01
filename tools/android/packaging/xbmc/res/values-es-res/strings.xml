@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="suggestion_channel">Sugerencias</string>
+    <string name="info_title">Info</string>
+    <string name="asking_permissions">Pidiendo permisos…</string>
+    <string name="clearing_cache">Limpiando caché…</string>
+    <string name="external_ok">Almacenamiento externo OK…</string>
+    <string name="starting">Lanzando %1$s…</string>
+    <string name="first_run">Preparando para la primera ejecución. Por favor, espera…</string>
+    <string name="permission_denied">¡¡Permiso denegado!! Saliendo…</string>
+    <string name="no_read_apk">No se puede leer el paquete.</string>
+    <string name="continue_button">Continuar</string>
+    <string name="no_find_apk">No se encuentra el paquete.</string>
+    <string name="error_title">Error</string>
+    <string name="exit_button">Salir</string>
+    <string name="notice_dialog">%1$s requiere acceso al almacenamiento del dispositivo para funcionar. Por favor, permítelo en el siguente cuadro de dialogo o %1$s terminará.</string>
+    <string name="waiting_external">Esperando al almacenamiento externo…</string>
 </resources>
