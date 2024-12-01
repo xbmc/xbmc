@@ -141,6 +141,7 @@ constexpr auto xkbMap = make_map<xkb_keysym_t, XBMCKey>({
     // Unmapped: XBMCK_CONFIG, XBMCK_EPG
 
     // Media keys
+    {XKB_KEY_XF86Info, XBMCK_INFO},
     {XKB_KEY_XF86Eject, XBMCK_EJECT},
     {XKB_KEY_Cancel, XBMCK_STOP},
     {XKB_KEY_XF86AudioRecord, XBMCK_RECORD},
