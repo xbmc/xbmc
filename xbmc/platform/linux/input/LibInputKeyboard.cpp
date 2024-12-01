@@ -466,10 +466,18 @@ void CLibInputKeyboard::ProcessKey(libinput_event_keyboard *e)
     xkb_compose_state_reset(m_composedState.get());
   }
 
+  const XBMCKey xbmcKey = XBMCKeyForXKBKeysym(keysym);
+
+  if (xbmcKey == XBMCK_UNKNOWN)
+  {
+    CLog::LogF(LOGDEBUG, "unable to map key with keycode {} ({:#x}), XKB keysym {} ({:#x}).",
+               libinputKeycode, libinputKeycode, keysym, keysym);
+  }
+
   XBMC_Event event = {};
   event.type = pressed ? XBMC_KEYDOWN : XBMC_KEYUP;
   event.key.keysym.mod = XBMCMod(mod);
-  event.key.keysym.sym = XBMCKeyForXKBKeysym(keysym);
+  event.key.keysym.sym = xbmcKey;
   event.key.keysym.scancode = libinputKeycode;
   event.key.keysym.unicode = unicode;
 
