@@ -177,6 +177,14 @@ constexpr auto xkbMap = make_map<xkb_keysym_t, XBMCKey>({
     // {XKB_KEY_XF86Fn, XBMCK_UNKNOWN},
 });
 
+/// Additional mappings directly from libinput (i.e. evdev) keycodes to Kodi keys.
+/// These keys are not (yet) supported by any XKB release; so to avoid waiting for XKB project to add support,
+/// they are now handled here in a special way.
+constexpr auto evdevKeycodeMap = make_map<uint32_t, XBMCKey>({
+    {KEY_OK, XBMCK_RETURN},
+    // TODO: add mappings for other keys
+});
+
 constexpr auto logLevelMap = make_map<xkb_log_level, int>({{XKB_LOG_LEVEL_CRITICAL, LOGERROR},
                                                            {XKB_LOG_LEVEL_ERROR, LOGERROR},
                                                            {XKB_LOG_LEVEL_WARNING, LOGWARNING},
@@ -466,7 +474,15 @@ void CLibInputKeyboard::ProcessKey(libinput_event_keyboard *e)
     xkb_compose_state_reset(m_composedState.get());
   }
 
-  const XBMCKey xbmcKey = XBMCKeyForXKBKeysym(keysym);
+  XBMCKey xbmcKey = XBMCKeyForXKBKeysym(keysym);
+  bool keyRepeats = xkb_keymap_key_repeats(m_keymap.get(), xkbkey);
+
+  if (xbmcKey == XBMCK_UNKNOWN)
+  {
+    // for "extended keycodes" that are out of range for XKB, try to map directly from scancodes to XBMC keys:
+    xbmcKey = XBMCKeyForLibinputKeycode(libinputKeycode);
+    keyRepeats = true; // assume that all of these keys repeat
+  }
 
   if (xbmcKey == XBMCK_UNKNOWN)
   {
@@ -485,7 +501,7 @@ void CLibInputKeyboard::ProcessKey(libinput_event_keyboard *e)
   if (appPort)
     appPort->OnEvent(event);
 
-  if (pressed && xkb_keymap_key_repeats(m_keymap.get(), xkbkey))
+  if (pressed && keyRepeats)
   {
     libinput_event *ev = libinput_event_keyboard_get_base_event(e);
     libinput_device *dev = libinput_event_get_device(ev);
@@ -525,6 +541,15 @@ XBMCKey CLibInputKeyboard::XBMCKeyForXKBKeysym(xkb_keysym_t sym)
   auto xkbmapping = xkbMap.find(sym);
   if (xkbmapping != xkbMap.cend())
     return xkbmapping->second;
+
+  return XBMCK_UNKNOWN;
+}
+
+XBMCKey CLibInputKeyboard::XBMCKeyForLibinputKeycode(uint32_t scancode)
+{
+  const auto evdevmapping = evdevKeycodeMap.find(scancode);
+  if (evdevmapping != evdevKeycodeMap.cend())
+    return evdevmapping->second;
 
   return XBMCK_UNKNOWN;
 }
