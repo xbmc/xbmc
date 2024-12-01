@@ -10,7 +10,6 @@
 
 /* to use the same as player */
 #include "../VideoPlayer/DVDClock.h"
-#include "../VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "RenderCapture.h"
 #include "RenderFactory.h"
 #include "RenderFlags.h"
@@ -98,15 +97,8 @@ bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned 
     if (!m_bRenderGUI)
       return true;
 
-    if (m_width == picture.iWidth &&
-        m_height == picture.iHeight &&
-        m_dwidth == picture.iDisplayWidth &&
-        m_dheight == picture.iDisplayHeight &&
-        m_fps == fps &&
-        m_orientation == orientation &&
-        m_stereomode == picture.stereoMode &&
-        m_NumberBuffers == buffers &&
-        m_pRenderer != nullptr &&
+    if (m_picture.IsSameParams(picture) && m_fps == fps && m_orientation == orientation &&
+        m_NumberBuffers == buffers && m_pRenderer != nullptr &&
         !m_pRenderer->ConfigChanged(picture))
     {
       return true;
@@ -138,13 +130,9 @@ bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned 
 
   {
     std::unique_lock<CCriticalSection> lock(m_statelock);
-    m_width = picture.iWidth;
-    m_height = picture.iHeight,
-    m_dwidth = picture.iDisplayWidth;
-    m_dheight = picture.iDisplayHeight;
+    m_picture.SetParams(picture);
     m_fps = fps;
     m_orientation = orientation;
-    m_stereomode = picture.stereoMode;
     m_NumberBuffers  = buffers;
     m_renderState = STATE_CONFIGURING;
     m_stateEvent.Reset();
@@ -237,7 +225,7 @@ bool CRenderManager::Configure()
     m_clockSync.Reset();
     m_dvdClock.SetVsyncAdjust(0);
     m_overlays.Reset();
-    m_overlays.SetStereoMode(m_stereomode);
+    m_overlays.SetStereoMode(m_picture.stereoMode);
 
     m_renderState = STATE_CONFIGURED;
 
@@ -411,8 +399,7 @@ void CRenderManager::UnInit()
   DeleteRenderer();
 
   m_renderState = STATE_UNCONFIGURED;
-  m_width = 0;
-  m_height = 0;
+  m_picture.Reset();
   m_bRenderGUI = false;
   RemoveCaptures();
 
@@ -702,7 +689,8 @@ RESOLUTION CRenderManager::GetResolution()
     return res;
 
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF)
-    res = CResolutionUtils::ChooseBestResolution(m_fps, m_width, m_height, !m_stereomode.empty());
+    res = CResolutionUtils::ChooseBestResolution(m_fps, m_picture.iWidth, m_picture.iHeight,
+                                                 !m_picture.stereoMode.empty());
 
   return res;
 }
@@ -908,7 +896,8 @@ void CRenderManager::UpdateResolution()
     {
       if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF && m_fps > 0.0f)
       {
-        RESOLUTION res = CResolutionUtils::ChooseBestResolution(m_fps, m_width, m_height, !m_stereomode.empty());
+        RESOLUTION res = CResolutionUtils::ChooseBestResolution(
+            m_fps, m_picture.iWidth, m_picture.iHeight, !m_picture.stereoMode.empty());
         CServiceBroker::GetWinSystem()->GetGfxContext().SetVideoResolution(res, false);
         UpdateLatencyTweak();
         if (m_pRenderer)
@@ -925,9 +914,9 @@ void CRenderManager::TriggerUpdateResolution(float fps, int width, int height, s
   if (width)
   {
     m_fps = fps;
-    m_width = width;
-    m_height = height;
-    m_stereomode = stereomode;
+    m_picture.iWidth = width;
+    m_picture.iHeight = height;
+    m_picture.stereoMode = stereomode;
   }
   m_bTriggerUpdateResolution = true;
 }
