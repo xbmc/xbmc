@@ -62,6 +62,7 @@
       <c>ContextMenu</c>
       <c mod="longpress">Menu</c>
       <space>Pause</space>
+      <pause>Pause</pause>
       <x>Stop</x>
       <period>SkipNext</period>
       <comma>SkipPrevious</comma>
