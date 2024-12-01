@@ -11,11 +11,12 @@
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "ServiceBroker.h"
-#include "filesystem/Directory.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/filesystem/PVRGUIDirectory.h"
 #include "pvr/guilib/PVRGUIActionsEPG.h"
 #include "pvr/guilib/PVRGUIActionsRecordings.h"
+#include "pvr/recordings/PVRRecordings.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
@@ -54,17 +55,19 @@ std::shared_ptr<CFileItem> LoadRecordingFileOrFolderItem(const CFileItem& item)
     if (item.HasPVRRecordingInfoTag() || item.HasProperty("watchedepisodes"))
       return std::make_shared<CFileItem>(item); // already loaded
 
-    const std::string parentPath{URIUtils::GetParentPath(item.GetPath())};
-
-    //! @todo optimize, find a way to set the details of the item without loading parent directory.
-    CFileItemList items;
-    if (XFILE::CDirectory::GetDirectory(parentPath, items, "", XFILE::DIR_FLAG_DEFAULTS))
+    if (item.m_bIsFolder)
     {
-      const std::string& path{item.GetPath()};
-      const auto it = std::find_if(items.cbegin(), items.cend(),
-                                   [&path](const auto& entry) { return entry->GetPath() == path; });
-      if (it != items.cend())
-        return *it;
+      CFileItem loadedItem{item};
+      if (CPVRGUIDirectory::GetRecordingsDirectoryInfo(loadedItem))
+        return std::make_shared<CFileItem>(loadedItem);
+    }
+    else
+    {
+      // recording without info tag; find by path
+      const std::shared_ptr<CPVRRecording> recording{
+          CServiceBroker::GetPVRManager().Recordings()->GetByPath(item.GetPath())};
+      if (recording)
+        return std::make_shared<CFileItem>(recording);
     }
   }
   return {};
