@@ -49,7 +49,7 @@ CProcessInfo::CProcessInfo()
 
 void CProcessInfo::SetDataCache(CDataCacheCore *cache)
 {
-  m_dataCache = cache;;
+  m_dataCache = cache;
 
   ResetVideoCodecInfo();
   m_renderGuiLayer = false;
