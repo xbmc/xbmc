@@ -33,6 +33,7 @@ public:
 
 private:
   XBMCKey XBMCKeyForXKBKeysym(xkb_keysym_t sym);
+  XBMCKey XBMCKeyForLibinputKeycode(uint32_t scancode);
   void KeyRepeatTimeout();
   /**
    * Check if the system supports key composition
