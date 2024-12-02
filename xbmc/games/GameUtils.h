@@ -10,6 +10,7 @@
 
 #include "GameTypes.h"
 
+#include <mutex>
 #include <set>
 #include <string>
 
@@ -71,6 +72,12 @@ public:
    */
   static bool IsStandaloneGame(const ADDON::AddonPtr& addon);
 
+  /*!
+   * \brief Called when the cache of installable game add-ons should be
+   * refreshed, such as when a new add-on repo is installed
+   */
+  static void UpdateInstallableAddons();
+
 private:
   static void GetGameClients(const CFileItem& file,
                              GameClientVector& candidates,
@@ -101,6 +108,22 @@ private:
    * \return True if the game client is enabled, false otherwise
    */
   static bool Enable(const std::string& gameClient);
+
+  /*!
+   * \brief Cache of installable game add-ons used to compute the list of
+   * known game file extensions
+   */
+  static ADDON::VECADDONS m_installableGameAddons;
+
+  /*!
+   * \brief Set to true to update cache of installable game add-ons
+   */
+  static bool m_checkInstallable;
+
+  /*!
+   * \brief Mutex to guard list of installable game add-ons
+   */
+  static std::mutex m_installableMutex;
 };
 } // namespace GAME
 } // namespace KODI
