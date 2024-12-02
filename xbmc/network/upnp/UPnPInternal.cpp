@@ -15,6 +15,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "filesystem/MusicDatabaseDirectory.h"
+#include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
 #include "filesystem/StackDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "imagefiles/ImageFileURL.h"

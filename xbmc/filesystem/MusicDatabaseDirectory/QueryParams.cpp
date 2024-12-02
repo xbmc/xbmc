@@ -8,6 +8,8 @@
 
 #include "QueryParams.h"
 
+#include "DirectoryNode.h"
+
 #include <stdlib.h>
 
 using namespace XFILE::MUSICDATABASEDIRECTORY;

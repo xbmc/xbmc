@@ -9,11 +9,16 @@
 #pragma once
 
 #include "IDirectory.h"
-#include "MusicDatabaseDirectory/DirectoryNode.h"
-#include "MusicDatabaseDirectory/QueryParams.h"
 
 namespace XFILE
 {
+
+namespace MUSICDATABASEDIRECTORY
+{
+enum class NodeType;
+class CQueryParams;
+} // namespace MUSICDATABASEDIRECTORY
+
   class CMusicDatabaseDirectory : public IDirectory
   {
   public:
