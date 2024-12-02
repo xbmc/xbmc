@@ -72,6 +72,14 @@ public:
 
   CAgentInput& AgentInput() { return *m_agentInput; }
 
+  /*!
+   * \brief Called when an add-on repo is installed
+   *
+   * If the repo contains game add-ons, it can introduce new file extensions
+   * to the list of known game extensions.
+   */
+  void OnAddonRepoInstalled();
+
 private:
   // Construction parameters
   CControllerManager& m_controllerManager;
