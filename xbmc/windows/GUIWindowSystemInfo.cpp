@@ -63,6 +63,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
     {
       CGUIWindow::OnMessage(message);
       m_diskUsage.clear();
+      m_privacyPolicyLoaded = false;
       return true;
     }
     break;
@@ -80,8 +81,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         SET_CONTROL_HIDDEN(CONTROL_TB_POLICY);
       else if (m_section == CONTROL_BT_POLICY)
       {
-        SET_CONTROL_LABEL(CONTROL_TB_POLICY, CServiceBroker::GetGUI()->GetInfoManager().GetLabel(
-                                                 SYSTEM_PRIVACY_POLICY, INFO::DEFAULT_CONTEXT));
+        LoadPrivacyPolicy();
         SET_CONTROL_VISIBLE(CONTROL_TB_POLICY);
       }
       return true;
@@ -251,7 +251,6 @@ void CGUIWindowSystemInfo::ResetLabels()
   {
     SET_CONTROL_LABEL(i, "");
   }
-  SET_CONTROL_LABEL(CONTROL_TB_POLICY, "");
 }
 
 void CGUIWindowSystemInfo::SetControlLabel(int id, const char *format, int label, int info)
@@ -260,4 +259,14 @@ void CGUIWindowSystemInfo::SetControlLabel(int id, const char *format, int label
       format, g_localizeStrings.Get(label),
       CServiceBroker::GetGUI()->GetInfoManager().GetLabel(info, INFO::DEFAULT_CONTEXT));
   SET_CONTROL_LABEL(id, tmpStr);
+}
+
+void CGUIWindowSystemInfo::LoadPrivacyPolicy()
+{
+  if (!m_privacyPolicyLoaded)
+  {
+    m_privacyPolicyLoaded = true;
+    SET_CONTROL_LABEL(CONTROL_TB_POLICY, CServiceBroker::GetGUI()->GetInfoManager().GetLabel(
+                                             SYSTEM_PRIVACY_POLICY, INFO::DEFAULT_CONTEXT));
+  }
 }
