@@ -871,46 +871,34 @@
 					</include>
 				</control>
 				<control type="group">
-					<description>Emulator name and icon</description>
-					<right>0</right>
-					<width>310</width>
-					<top>162</top>
-					<height>330</height>
-					<bottom>50</bottom>
-					<control type="group">
-						<left>52</left>
-						<control type="image">
-							<left>-20</left>
-							<right>-20</right>
-							<top>-20</top>
-							<bottom>-20</bottom>
-							<texture border="40">buttons/dialogbutton-nofo.png</texture>
-						</control>
-						<control type="label">
-							<description>Label for Saved with: text</description>
-							<top>14</top>
-							<height>20</height>
-							<shadowcolor>text_shadow</shadowcolor>
-							<label>35255</label>
-							<align>center</align>
-						</control>
-						<control type="label" id="10823">
-							<description>Emulator name</description>
-							<top>60</top>
-							<height>20</height>
-							<font>font23_narrow</font>
-							<textcolor>button_focus</textcolor>
-							<shadowcolor>text_shadow</shadowcolor>
-							<align>center</align>
-						</control>
-						<control type="image" id="10824">
-							<description>Emulator icon</description>
-							<top>108</top>
-							<height>192</height>
-							<right>33</right>
-							<width>192</width>
-							<aspectratio>keep</aspectratio>
-						</control>
+					<description>Saved-with emulator name, version and icon</description>
+					<left>1302</left>
+					<top>420</top>
+					<control type="label" id="10823">
+						<description>Emulator name</description>
+						<top>48</top>
+						<height>30</height>
+						<font>font23_narrow</font>
+						<textoffsetx>20</textoffsetx>
+						<textcolor>button_focus</textcolor>
+						<shadowcolor>text_shadow</shadowcolor>
+						<align>center</align>
+					</control>
+					<control type="label" id="10828">
+						<description>Emulator version</description>
+						<top>78</top>
+						<height>30</height>
+						<font>font23_narrow</font>
+						<textoffsetx>20</textoffsetx>
+						<textcolor>button_focus</textcolor>
+						<shadowcolor>text_shadow</shadowcolor>
+						<align>center</align>
+					</control>
+					<control type="image" id="10824">
+						<description>Emulator icon</description>
+						<top>128</top>
+						<height>200</height>
+						<aspectratio>keep</aspectratio>
 					</control>
 				</control>
 				<control type="group">

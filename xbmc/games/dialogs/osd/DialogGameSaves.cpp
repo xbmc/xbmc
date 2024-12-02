@@ -225,6 +225,7 @@ void CDialogGameSaves::OnInitWindow()
       if (!gameClientId.empty())
       {
         std::string emulatorName;
+        std::string emulatorVersion;
         std::string emulatorIcon;
 
         using namespace ADDON;
@@ -239,6 +240,7 @@ void CDialogGameSaves::OnInitWindow()
             m_currentGameClient = gameClient->ID();
 
             emulatorName = gameClient->GetEmulatorName();
+            emulatorVersion = item->GetProperty(SAVESTATE_GAME_CLIENT_VERSION).asString();
             emulatorIcon = gameClient->Icon();
           }
         }
@@ -247,6 +249,12 @@ void CDialogGameSaves::OnInitWindow()
         {
           CGUIMessage message(GUI_MSG_LABEL_SET, GetID(), CONTROL_SAVES_EMULATOR_NAME);
           message.SetLabel(emulatorName);
+          OnMessage(message);
+        }
+        if (!emulatorVersion.empty())
+        {
+          CGUIMessage message(GUI_MSG_LABEL_SET, GetID(), CONTROL_SAVES_EMULATOR_VERSION);
+          message.SetLabel(emulatorVersion);
           OnMessage(message);
         }
         if (!emulatorIcon.empty())
@@ -362,15 +370,18 @@ void CDialogGameSaves::OnFocus(const CFileItem& item)
 {
   const std::string caption = item.GetProperty(SAVESTATE_CAPTION).asString();
   const std::string gameClientId = item.GetProperty(SAVESTATE_GAME_CLIENT).asString();
+  const std::string gameClientVersion = item.GetProperty(SAVESTATE_GAME_CLIENT_VERSION).asString();
 
   HandleCaption(caption);
   HandleGameClient(gameClientId);
+  HandleGameClientVersion(gameClientVersion);
 }
 
 void CDialogGameSaves::OnFocusLost()
 {
   HandleCaption("");
   HandleGameClient("");
+  HandleGameClientVersion("");
 }
 
 void CDialogGameSaves::OnContextMenu(CFileItem& item)
@@ -498,4 +509,19 @@ void CDialogGameSaves::HandleGameClient(const std::string& gameClientId)
     message.SetLabel(iconPath);
     CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message, GetID());
   }
+}
+
+void CDialogGameSaves::HandleGameClientVersion(const std::string& gameClientVersion)
+{
+  if (gameClientVersion == m_currentGameClientVersion)
+    return;
+
+  m_currentGameClientVersion = gameClientVersion;
+  if (m_currentGameClientVersion.empty())
+    return;
+
+  // Update the GUI elements
+  CGUIMessage message(GUI_MSG_LABEL_SET, GetID(), CONTROL_SAVES_EMULATOR_VERSION);
+  message.SetLabel(gameClientVersion);
+  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message, GetID());
 }
