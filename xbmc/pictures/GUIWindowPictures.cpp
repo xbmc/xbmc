@@ -352,6 +352,8 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
   // look into using OnPlay announce!
   m_slideShowStarted = true;
   CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_SLIDESHOW);
+  if (!startSlideShow)
+    m_viewControl.SetSelectedItem(slideShow.GetCurrentSlide()->GetPath());
 
   return true;
 }
