@@ -33,8 +33,14 @@ constexpr int CONTROL_TEXT_END = 13; // 12 lines
 #define CONTROL_BT_PVR      99
 #define CONTROL_BT_POLICY   100
 
-#define CONTROL_START       CONTROL_BT_STORAGE
-#define CONTROL_END         CONTROL_BT_POLICY
+constexpr int CONTROL_BT_DONATE = 101;
+constexpr int CONTROL_GROUP_DONATE = 102;
+constexpr int CONTROL_MULTI_IMAGE_DONATE = 103;
+
+constexpr int CONTROL_GROUP_SYSTEM_BAR = 104;
+
+constexpr int CONTROL_START = CONTROL_BT_STORAGE;
+constexpr int CONTROL_END = CONTROL_BT_DONATE;
 
 CGUIWindowSystemInfo::CGUIWindowSystemInfo(void) :
     CGUIWindow(WINDOW_SYSTEM_INFORMATION, "SettingsSystemInfo.xml")
@@ -78,11 +84,23 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         m_section = focusedControl;
       }
       if (m_section >= CONTROL_BT_STORAGE && m_section <= CONTROL_BT_PVR)
+      {
         SET_CONTROL_HIDDEN(CONTROL_TB_POLICY);
+        SET_CONTROL_HIDDEN(CONTROL_GROUP_DONATE);
+        SET_CONTROL_VISIBLE(CONTROL_GROUP_SYSTEM_BAR);
+      }
       else if (m_section == CONTROL_BT_POLICY)
       {
         LoadPrivacyPolicy();
         SET_CONTROL_VISIBLE(CONTROL_TB_POLICY);
+        SET_CONTROL_HIDDEN(CONTROL_GROUP_DONATE);
+        SET_CONTROL_VISIBLE(CONTROL_GROUP_SYSTEM_BAR);
+      }
+      else if (m_section == CONTROL_BT_DONATE)
+      {
+        SET_CONTROL_HIDDEN(CONTROL_TB_POLICY);
+        SET_CONTROL_VISIBLE(CONTROL_GROUP_DONATE);
+        SET_CONTROL_HIDDEN(CONTROL_GROUP_SYSTEM_BAR);
       }
       return true;
     }
@@ -251,6 +269,10 @@ void CGUIWindowSystemInfo::ResetLabels()
   {
     SET_CONTROL_LABEL(i, "");
   }
+
+  // Reset the multiimage to the beginning
+  CGUIMessage msg{GUI_MSG_RESET_MULTI_IMAGE, GetID(), CONTROL_MULTI_IMAGE_DONATE};
+  OnMessage(msg);
 }
 
 void CGUIWindowSystemInfo::SetControlLabel(int id, const char *format, int label, int info)
