@@ -150,9 +150,12 @@ endif()
 if(CPU MATCHES i686)
   set(CPU x86)
 endif()
+
+find_program(MAKE_EXECUTABLE make REQUIRED)
+
 foreach(target apk apk-clean)
   add_custom_target(${target}
-      COMMAND env PATH=${NATIVEPREFIX}/bin:$ENV{PATH} ${CMAKE_MAKE_PROGRAM} -j1
+      COMMAND env PATH=${NATIVEPREFIX}/bin:$ENV{PATH} ${MAKE_EXECUTABLE} -j1
               -C ${CMAKE_BINARY_DIR}/tools/android/packaging
               CMAKE_SOURCE_DIR=${CMAKE_SOURCE_DIR}
               CC=${CMAKE_C_COMPILER}
