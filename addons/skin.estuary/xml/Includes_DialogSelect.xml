@@ -326,14 +326,6 @@
 					<description>Saved-with emulator name, version and icon</description>
 					<left>1302</left>
 					<top>420</top>
-					<control type="label">
-						<description>Label for "Saved with:" text</description>
-						<height>20</height>
-						<font>font16</font>
-						<shadowcolor>text_shadow</shadowcolor>
-						<label>35255</label>
-						<align>center</align>
-					</control>
 					<control type="label" id="10823">
 						<description>Emulator name</description>
 						<top>48</top>
