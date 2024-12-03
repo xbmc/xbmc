@@ -30,7 +30,7 @@ msgstr "Получать обзор альбома с"
 
 msgctxt "#30003"
 msgid "     Preferred Language"
-msgstr "Язык предпочтения"
+msgstr "Предпочитаемый язык"
 
 msgctxt "#30004"
 msgid "Get Album Rating from"
