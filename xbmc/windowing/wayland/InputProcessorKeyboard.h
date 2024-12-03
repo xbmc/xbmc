@@ -56,7 +56,7 @@ private:
   CInputProcessorKeyboard& operator=(CInputProcessorKeyboard const& other) = delete;
 
   void ConvertAndSendKey(std::uint32_t scancode, bool pressed);
-  XBMC_Event SendKey(unsigned char scancode, XBMCKey key, std::uint16_t unicodeCodepoint, bool pressed);
+  XBMC_Event SendKey(uint32_t scancode, XBMCKey key, std::uint16_t unicodeCodepoint, bool pressed);
   /**
    * Notify the outside world about key composing events
    *
