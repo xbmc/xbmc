@@ -16,9 +16,6 @@
 //******************************************************************************
 // VideoPicture
 //******************************************************************************
-
-VideoPicture::VideoPicture() = default;
-
 VideoPicture::~VideoPicture()
 {
   if (videoBuffer)
@@ -121,6 +118,3 @@ bool VideoPicture::IsSameParams(const VideoPicture& pic) const
          this->color_transfer == pic.color_transfer && this->hdrType == pic.hdrType &&
          CompareDisplayMetadata(pic) && CompareLightMetadata(pic);
 }
-
-VideoPicture::VideoPicture(VideoPicture const&) = default;
-VideoPicture& VideoPicture::operator=(VideoPicture const&) = default;

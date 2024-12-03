@@ -36,7 +36,7 @@ class CSetting;
 struct VideoPicture
 {
 public:
-  VideoPicture();
+  VideoPicture() = default;
   ~VideoPicture();
   VideoPicture& CopyRef(const VideoPicture &pic);
   VideoPicture& SetParams(const VideoPicture &pic);
@@ -80,8 +80,8 @@ public:
   unsigned int iDisplayHeight;          //< height of the picture without black bars
 
 private:
-  VideoPicture(VideoPicture const&);
-  VideoPicture& operator=(VideoPicture const&);
+  VideoPicture(VideoPicture const&) = default;
+  VideoPicture& operator=(VideoPicture const&) = default;
 
   bool CompareDisplayMetadata(const VideoPicture& pic) const;
   bool CompareLightMetadata(const VideoPicture& pic) const;
