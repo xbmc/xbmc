@@ -358,6 +358,10 @@ constexpr const int ACTION_MENU = 163;
 
 constexpr const int ACTION_SET_RATING = 164;
 
+//! Switch to the previous subtitle of a movie without enabling/disabling.
+//! Can be used in videoFullScreen.xml window id=2005
+constexpr const int ACTION_REVERSE_CYCLE_SUBTITLE = 165;
+
 constexpr const int ACTION_RECORD = 170;
 
 constexpr const int ACTION_PASTE = 180;
