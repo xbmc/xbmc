@@ -9,11 +9,16 @@
 #pragma once
 
 #include "IDirectory.h"
-#include "MusicDatabaseDirectory/DirectoryNode.h"
-#include "MusicDatabaseDirectory/QueryParams.h"
 
 namespace XFILE
 {
+
+namespace MUSICDATABASEDIRECTORY
+{
+enum class NodeType;
+class CQueryParams;
+} // namespace MUSICDATABASEDIRECTORY
+
   class CMusicDatabaseDirectory : public IDirectory
   {
   public:
@@ -22,10 +27,13 @@ namespace XFILE
     bool GetDirectory(const CURL& url, CFileItemList &items) override;
     bool AllowAll() const override { return true; }
     bool Exists(const CURL& url) override;
-    static MUSICDATABASEDIRECTORY::NODE_TYPE GetDirectoryChildType(const std::string& strPath);
-    static MUSICDATABASEDIRECTORY::NODE_TYPE GetDirectoryType(const std::string& strPath);
-    static MUSICDATABASEDIRECTORY::NODE_TYPE GetDirectoryParentType(const std::string& strPath);
-    static bool GetDirectoryNodeInfo(const std::string& strPath, MUSICDATABASEDIRECTORY::NODE_TYPE& type, MUSICDATABASEDIRECTORY::NODE_TYPE& childtype, MUSICDATABASEDIRECTORY::CQueryParams& params);
+    static MUSICDATABASEDIRECTORY::NodeType GetDirectoryChildType(const std::string& strPath);
+    static MUSICDATABASEDIRECTORY::NodeType GetDirectoryType(const std::string& strPath);
+    static MUSICDATABASEDIRECTORY::NodeType GetDirectoryParentType(const std::string& strPath);
+    static bool GetDirectoryNodeInfo(const std::string& strPath,
+                                     MUSICDATABASEDIRECTORY::NodeType& type,
+                                     MUSICDATABASEDIRECTORY::NodeType& childtype,
+                                     MUSICDATABASEDIRECTORY::CQueryParams& params);
     bool IsArtistDir(const std::string& strDirectory);
     void ClearDirectoryCache(const std::string& strDirectory);
     static bool IsAllItem(const std::string& strDirectory);

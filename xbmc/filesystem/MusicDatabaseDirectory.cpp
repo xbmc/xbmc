@@ -10,6 +10,7 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
+#include "MusicDatabaseDirectory/DirectoryNode.h"
 #include "MusicDatabaseDirectory/QueryParams.h"
 #include "ServiceBroker.h"
 #include "filesystem/File.h"
@@ -37,10 +38,10 @@ bool CMusicDatabaseDirectory::GetDirectory(const CURL& url, CFileItemList &items
 
   // Adjust path to control navigation from albums to discs or directly to songs
   CQueryParams params;
-  NODE_TYPE type;
-  NODE_TYPE childtype;
+  NodeType type;
+  NodeType childtype;
   GetDirectoryNodeInfo(path, type, childtype, params);
-  if (childtype == NODE_TYPE_DISC)
+  if (childtype == NodeType::DISC)
   {
     bool bFlatten = false;
     if (params.GetAlbumId() < 0)
@@ -98,47 +99,47 @@ bool CMusicDatabaseDirectory::GetDirectory(const CURL& url, CFileItemList &items
   return bResult;
 }
 
-NODE_TYPE CMusicDatabaseDirectory::GetDirectoryChildType(const std::string& strPath)
+NodeType CMusicDatabaseDirectory::GetDirectoryChildType(const std::string& strPath)
 {
   std::string path = CLegacyPathTranslation::TranslateMusicDbPath(strPath);
   std::unique_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
 
   if (!pNode)
-    return NODE_TYPE_NONE;
+    return NodeType::NONE;
 
   return pNode->GetChildType();
 }
 
-NODE_TYPE CMusicDatabaseDirectory::GetDirectoryType(const std::string& strPath)
+NodeType CMusicDatabaseDirectory::GetDirectoryType(const std::string& strPath)
 {
   std::string path = CLegacyPathTranslation::TranslateMusicDbPath(strPath);
   std::unique_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
 
   if (!pNode)
-    return NODE_TYPE_NONE;
+    return NodeType::NONE;
 
   return pNode->GetType();
 }
 
-NODE_TYPE CMusicDatabaseDirectory::GetDirectoryParentType(const std::string& strPath)
+NodeType CMusicDatabaseDirectory::GetDirectoryParentType(const std::string& strPath)
 {
   std::string path = CLegacyPathTranslation::TranslateMusicDbPath(strPath);
   std::unique_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(path));
 
   if (!pNode)
-    return NODE_TYPE_NONE;
+    return NodeType::NONE;
 
-  CDirectoryNode* pParentNode=pNode->GetParent();
+  CDirectoryNode* pParentNode = pNode->GetParent();
 
   if (!pParentNode)
-    return NODE_TYPE_NONE;
+    return NodeType::NONE;
 
   return pParentNode->GetChildType();
 }
 
 bool CMusicDatabaseDirectory::GetDirectoryNodeInfo(const std::string& strPath,
-                                                   MUSICDATABASEDIRECTORY::NODE_TYPE& type,
-                                                   MUSICDATABASEDIRECTORY::NODE_TYPE& childtype,
+                                                   MUSICDATABASEDIRECTORY::NodeType& type,
+                                                   MUSICDATABASEDIRECTORY::NodeType& childtype,
                                                    MUSICDATABASEDIRECTORY::CQueryParams& params)
 {
   std::string path = CLegacyPathTranslation::TranslateMusicDbPath(strPath);
@@ -150,8 +151,7 @@ bool CMusicDatabaseDirectory::GetDirectoryNodeInfo(const std::string& strPath,
 
 bool CMusicDatabaseDirectory::IsArtistDir(const std::string& strDirectory)
 {
-  NODE_TYPE node=GetDirectoryType(strDirectory);
-  return (node==NODE_TYPE_ARTIST);
+  return GetDirectoryType(strDirectory) == NodeType::ARTIST;
 }
 
 void CMusicDatabaseDirectory::ClearDirectoryCache(const std::string& strDirectory)
@@ -216,53 +216,53 @@ bool CMusicDatabaseDirectory::GetLabel(const std::string& strDirectory, std::str
   {
     switch (pNode->GetChildType())
     {
-    case NODE_TYPE_TOP100:
-      strLabel = g_localizeStrings.Get(271); // Top 100
-      break;
-    case NODE_TYPE_GENRE:
-      strLabel = g_localizeStrings.Get(135); // Genres
-      break;
-    case NODE_TYPE_SOURCE:
-      strLabel = g_localizeStrings.Get(39030); // Sources
-      break;
-    case NODE_TYPE_ROLE:
-      strLabel = g_localizeStrings.Get(38033); // Roles
-      break;
-    case NODE_TYPE_ARTIST:
-      strLabel = g_localizeStrings.Get(133); // Artists
-      break;
-    case NODE_TYPE_ALBUM:
-      strLabel = g_localizeStrings.Get(132); // Albums
-      break;
-    case NODE_TYPE_ALBUM_RECENTLY_ADDED:
-    case NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS:
-      strLabel = g_localizeStrings.Get(359); // Recently Added Albums
-      break;
-    case NODE_TYPE_ALBUM_RECENTLY_PLAYED:
-    case NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS:
-      strLabel = g_localizeStrings.Get(517); // Recently Played Albums
-      break;
-    case NODE_TYPE_ALBUM_TOP100:
-    case NODE_TYPE_ALBUM_TOP100_SONGS:
-      strLabel = g_localizeStrings.Get(10505); // Top 100 Albums
-      break;
-    case NODE_TYPE_SINGLES:
-      strLabel = g_localizeStrings.Get(1050); // Singles
-      break;
-    case NODE_TYPE_SONG:
-      strLabel = g_localizeStrings.Get(134); // Songs
-      break;
-    case NODE_TYPE_SONG_TOP100:
-      strLabel = g_localizeStrings.Get(10504); // Top 100 Songs
-      break;
-    case NODE_TYPE_YEAR:
-      strLabel = g_localizeStrings.Get(652);  // Years
-      break;
-    case NODE_TYPE_OVERVIEW:
-      strLabel = "";
-      break;
-    default:
-      return false;
+      case NodeType::TOP100:
+        strLabel = g_localizeStrings.Get(271); // Top 100
+        break;
+      case NodeType::GENRE:
+        strLabel = g_localizeStrings.Get(135); // Genres
+        break;
+      case NodeType::SOURCE:
+        strLabel = g_localizeStrings.Get(39030); // Sources
+        break;
+      case NodeType::ROLE:
+        strLabel = g_localizeStrings.Get(38033); // Roles
+        break;
+      case NodeType::ARTIST:
+        strLabel = g_localizeStrings.Get(133); // Artists
+        break;
+      case NodeType::ALBUM:
+        strLabel = g_localizeStrings.Get(132); // Albums
+        break;
+      case NodeType::ALBUM_RECENTLY_ADDED:
+      case NodeType::ALBUM_RECENTLY_ADDED_SONGS:
+        strLabel = g_localizeStrings.Get(359); // Recently Added Albums
+        break;
+      case NodeType::ALBUM_RECENTLY_PLAYED:
+      case NodeType::ALBUM_RECENTLY_PLAYED_SONGS:
+        strLabel = g_localizeStrings.Get(517); // Recently Played Albums
+        break;
+      case NodeType::ALBUM_TOP100:
+      case NodeType::ALBUM_TOP100_SONGS:
+        strLabel = g_localizeStrings.Get(10505); // Top 100 Albums
+        break;
+      case NodeType::SINGLES:
+        strLabel = g_localizeStrings.Get(1050); // Singles
+        break;
+      case NodeType::SONG:
+        strLabel = g_localizeStrings.Get(134); // Songs
+        break;
+      case NodeType::SONG_TOP100:
+        strLabel = g_localizeStrings.Get(10504); // Top 100 Songs
+        break;
+      case NodeType::YEAR:
+        strLabel = g_localizeStrings.Get(652); // Years
+        break;
+      case NodeType::OVERVIEW:
+        strLabel = "";
+        break;
+      default:
+        return false;
     }
   }
 
@@ -271,14 +271,21 @@ bool CMusicDatabaseDirectory::GetLabel(const std::string& strDirectory, std::str
 
 bool CMusicDatabaseDirectory::ContainsSongs(const std::string &path)
 {
-  MUSICDATABASEDIRECTORY::NODE_TYPE type = GetDirectoryChildType(path);
-  if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_SONG) return true;
-  if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_SINGLES) return true;
-  if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS) return true;
-  if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS) return true;
-  if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM_TOP100_SONGS) return true;
-  if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_SONG_TOP100) return true;
-  if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_DISC) return true;
+  const auto type = GetDirectoryChildType(path);
+  if (type == NodeType::SONG)
+    return true;
+  if (type == NodeType::SINGLES)
+    return true;
+  if (type == NodeType::ALBUM_RECENTLY_ADDED_SONGS)
+    return true;
+  if (type == NodeType::ALBUM_RECENTLY_PLAYED_SONGS)
+    return true;
+  if (type == NodeType::ALBUM_TOP100_SONGS)
+    return true;
+  if (type == NodeType::SONG_TOP100)
+    return true;
+  if (type == NodeType::DISC)
+    return true;
   return false;
 }
 
@@ -290,7 +297,7 @@ bool CMusicDatabaseDirectory::Exists(const CURL& url)
   if (!pNode)
     return false;
 
-  if (pNode->GetChildType() == MUSICDATABASEDIRECTORY::NODE_TYPE_NONE)
+  if (pNode->GetChildType() == NodeType::NONE)
     return false;
 
   return true;
@@ -309,36 +316,36 @@ std::string CMusicDatabaseDirectory::GetIcon(const std::string &strDirectory)
 {
   switch (GetDirectoryChildType(strDirectory))
   {
-  case NODE_TYPE_ARTIST:
+    case NodeType::ARTIST:
       return "DefaultMusicArtists.png";
-  case NODE_TYPE_GENRE:
+    case NodeType::GENRE:
       return "DefaultMusicGenres.png";
-  case NODE_TYPE_SOURCE:
-    return "DefaultMusicSources.png";
-  case NODE_TYPE_ROLE:
-    return "DefaultMusicRoles.png";
-  case NODE_TYPE_TOP100:
+    case NodeType::SOURCE:
+      return "DefaultMusicSources.png";
+    case NodeType::ROLE:
+      return "DefaultMusicRoles.png";
+    case NodeType::TOP100:
       return "DefaultMusicTop100.png";
-  case NODE_TYPE_ALBUM:
-    return "DefaultMusicAlbums.png";
-  case NODE_TYPE_ALBUM_RECENTLY_ADDED:
-  case NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS:
-    return "DefaultMusicRecentlyAdded.png";
-  case NODE_TYPE_ALBUM_RECENTLY_PLAYED:
-  case NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS:
-    return "DefaultMusicRecentlyPlayed.png";
-  case NODE_TYPE_SINGLES:
-  case NODE_TYPE_SONG:
-    return "DefaultMusicSongs.png";
-  case NODE_TYPE_ALBUM_TOP100:
-  case NODE_TYPE_ALBUM_TOP100_SONGS:
-    return "DefaultMusicTop100Albums.png";
-  case NODE_TYPE_SONG_TOP100:
-    return "DefaultMusicTop100Songs.png";
-  case NODE_TYPE_YEAR:
-    return "DefaultMusicYears.png";
-  default:
-    break;
+    case NodeType::ALBUM:
+      return "DefaultMusicAlbums.png";
+    case NodeType::ALBUM_RECENTLY_ADDED:
+    case NodeType::ALBUM_RECENTLY_ADDED_SONGS:
+      return "DefaultMusicRecentlyAdded.png";
+    case NodeType::ALBUM_RECENTLY_PLAYED:
+    case NodeType::ALBUM_RECENTLY_PLAYED_SONGS:
+      return "DefaultMusicRecentlyPlayed.png";
+    case NodeType::SINGLES:
+    case NodeType::SONG:
+      return "DefaultMusicSongs.png";
+    case NodeType::ALBUM_TOP100:
+    case NodeType::ALBUM_TOP100_SONGS:
+      return "DefaultMusicTop100Albums.png";
+    case NodeType::SONG_TOP100:
+      return "DefaultMusicTop100Songs.png";
+    case NodeType::YEAR:
+      return "DefaultMusicYears.png";
+    default:
+      break;
   }
 
   return "";

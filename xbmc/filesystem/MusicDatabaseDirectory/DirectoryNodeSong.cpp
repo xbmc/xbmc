@@ -14,7 +14,7 @@
 using namespace XFILE::MUSICDATABASEDIRECTORY;
 
 CDirectoryNodeSong::CDirectoryNodeSong(const std::string& strName, CDirectoryNode* pParent)
-  : CDirectoryNode(NODE_TYPE_SONG, strName, pParent)
+  : CDirectoryNode(NodeType::SONG, strName, pParent)
 {
 
 }

@@ -22,6 +22,7 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "filesystem/Directory.h"
 #include "filesystem/MusicDatabaseDirectory.h"
+#include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
@@ -923,9 +924,8 @@ bool IsItemPlayable(const CFileItem& item)
       (MUSIC::IsMusicDb(item) || StringUtils::StartsWithNoCase(item.GetPath(), "library://music/")))
   {
     // Exclude top level nodes - eg can't play 'genres' just a specific genre etc
-    const XFILE::MUSICDATABASEDIRECTORY::NODE_TYPE node =
-        XFILE::CMusicDatabaseDirectory::GetDirectoryParentType(item.GetPath());
-    if (node == XFILE::MUSICDATABASEDIRECTORY::NODE_TYPE_OVERVIEW)
+    const auto node = XFILE::CMusicDatabaseDirectory::GetDirectoryParentType(item.GetPath());
+    if (node == XFILE::MUSICDATABASEDIRECTORY::NodeType::OVERVIEW)
       return false;
 
     return true;

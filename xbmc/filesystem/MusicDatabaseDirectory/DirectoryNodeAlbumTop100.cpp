@@ -15,18 +15,19 @@
 
 using namespace XFILE::MUSICDATABASEDIRECTORY;
 
-CDirectoryNodeAlbumTop100::CDirectoryNodeAlbumTop100(const std::string& strName, CDirectoryNode* pParent)
-  : CDirectoryNode(NODE_TYPE_ALBUM_TOP100, strName, pParent)
+CDirectoryNodeAlbumTop100::CDirectoryNodeAlbumTop100(const std::string& strName,
+                                                     CDirectoryNode* pParent)
+  : CDirectoryNode(NodeType::ALBUM_TOP100, strName, pParent)
 {
 
 }
 
-NODE_TYPE CDirectoryNodeAlbumTop100::GetChildType() const
+NodeType CDirectoryNodeAlbumTop100::GetChildType() const
 {
-  if (GetName()=="-1")
-    return NODE_TYPE_ALBUM_TOP100_SONGS;
+  if (GetName() == "-1")
+    return NodeType::ALBUM_TOP100_SONGS;
 
-  return NODE_TYPE_SONG;
+  return NodeType::SONG;
 }
 
 std::string CDirectoryNodeAlbumTop100::GetLocalizedName() const

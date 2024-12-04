@@ -8,6 +8,8 @@
 
 #include "QueryParams.h"
 
+#include "DirectoryNode.h"
+
 #include <stdlib.h>
 
 using namespace XFILE::MUSICDATABASEDIRECTORY;
@@ -22,37 +24,37 @@ CQueryParams::CQueryParams()
   m_disc = -1;
 }
 
-void CQueryParams::SetQueryParam(NODE_TYPE NodeType, const std::string& strNodeName)
+void CQueryParams::SetQueryParam(NodeType nodeType, const std::string& strNodeName)
 {
   int idDb = atoi(strNodeName.c_str());
 
-  switch (NodeType)
+  switch (nodeType)
   {
-  case NODE_TYPE_GENRE:
-    m_idGenre=idDb;
-    break;
-  case NODE_TYPE_YEAR:
-    m_year=idDb;
-    break;
-  case NODE_TYPE_ARTIST:
-    m_idArtist=idDb;
-    break;
-  case NODE_TYPE_DISC:
-    m_disc = idDb;
-    break;
-  case NODE_TYPE_ALBUM_RECENTLY_PLAYED:
-  case NODE_TYPE_ALBUM_RECENTLY_ADDED:
-  case NODE_TYPE_ALBUM_TOP100:
-  case NODE_TYPE_ALBUM:
-    m_idAlbum=idDb;
-    break;
-  case NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS:
-  case NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS:
-  case NODE_TYPE_ALBUM_TOP100_SONGS:
-  case NODE_TYPE_SONG:
-  case NODE_TYPE_SONG_TOP100:
-    m_idSong=idDb;
-  default:
-    break;
+    case NodeType::GENRE:
+      m_idGenre = idDb;
+      break;
+    case NodeType::YEAR:
+      m_year = idDb;
+      break;
+    case NodeType::ARTIST:
+      m_idArtist = idDb;
+      break;
+    case NodeType::DISC:
+      m_disc = idDb;
+      break;
+    case NodeType::ALBUM_RECENTLY_PLAYED:
+    case NodeType::ALBUM_RECENTLY_ADDED:
+    case NodeType::ALBUM_TOP100:
+    case NodeType::ALBUM:
+      m_idAlbum = idDb;
+      break;
+    case NodeType::ALBUM_RECENTLY_ADDED_SONGS:
+    case NodeType::ALBUM_RECENTLY_PLAYED_SONGS:
+    case NodeType::ALBUM_TOP100_SONGS:
+    case NodeType::SONG:
+    case NodeType::SONG_TOP100:
+      m_idSong = idDb;
+    default:
+      break;
   }
 }

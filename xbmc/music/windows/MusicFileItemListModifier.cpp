@@ -65,44 +65,44 @@ void CMusicFileItemListModifier::AddQueuingFolder(CFileItemList& items)
 
   // No need for "*all" when overview node and child node is "albums" or "artists"
   // without options (hence all albums or artists unfiltered).
-  if (directoryNode->GetType() == NODE_TYPE_OVERVIEW &&
-      (nodeChildType == NODE_TYPE_ARTIST || nodeChildType == NODE_TYPE_ALBUM) &&
+  if (directoryNode->GetType() == NodeType::OVERVIEW &&
+      (nodeChildType == NodeType::ARTIST || nodeChildType == NodeType::ALBUM) &&
       musicUrl.GetOptions().empty())
     return;
   // Smart playlist rules on parent node do not get applied to child nodes so no "*all"
   // ! @Todo: Remove this allowing "*all" once rules do get applied to child nodes.
-  if (directoryNode->GetType() == NODE_TYPE_OVERVIEW &&
-      (nodeChildType == NODE_TYPE_ARTIST || nodeChildType == NODE_TYPE_ALBUM) &&
+  if (directoryNode->GetType() == NodeType::OVERVIEW &&
+      (nodeChildType == NodeType::ARTIST || nodeChildType == NodeType::ALBUM) &&
       musicUrl.HasOption("xsp"))
     return;
 
   switch (nodeChildType)
   {
-  case NODE_TYPE_ARTIST:
-    pItem = std::make_shared<CFileItem>(g_localizeStrings.Get(15103)); // "All Artists"
-    musicUrl.AppendPath("-1/");
-    pItem->SetPath(musicUrl.ToString());
-    break;
+    case NodeType::ARTIST:
+      pItem = std::make_shared<CFileItem>(g_localizeStrings.Get(15103)); // "All Artists"
+      musicUrl.AppendPath("-1/");
+      pItem->SetPath(musicUrl.ToString());
+      break;
 
-  //  All album related nodes
-  case NODE_TYPE_ALBUM:
-  case NODE_TYPE_ALBUM_RECENTLY_PLAYED:
-  case NODE_TYPE_ALBUM_RECENTLY_ADDED:
-  case NODE_TYPE_ALBUM_TOP100:
-    pItem = std::make_shared<CFileItem>(g_localizeStrings.Get(15102)); // "All Albums"
-    musicUrl.AppendPath("-1/");
-    pItem->SetPath(musicUrl.ToString());
-    break;
+    //  All album related nodes
+    case NodeType::ALBUM:
+    case NodeType::ALBUM_RECENTLY_PLAYED:
+    case NodeType::ALBUM_RECENTLY_ADDED:
+    case NodeType::ALBUM_TOP100:
+      pItem = std::make_shared<CFileItem>(g_localizeStrings.Get(15102)); // "All Albums"
+      musicUrl.AppendPath("-1/");
+      pItem->SetPath(musicUrl.ToString());
+      break;
 
-  //  Disc node
-  case NODE_TYPE_DISC:
-    pItem = std::make_shared<CFileItem>(g_localizeStrings.Get(38075)); // "All Discs"
-    musicUrl.AppendPath("-1/");
-    pItem->SetPath(musicUrl.ToString());
-    break;
+    //  Disc node
+    case NodeType::DISC:
+      pItem = std::make_shared<CFileItem>(g_localizeStrings.Get(38075)); // "All Discs"
+      musicUrl.AppendPath("-1/");
+      pItem->SetPath(musicUrl.ToString());
+      break;
 
-  default:
-    break;
+    default:
+      break;
   }
 
   if (pItem)

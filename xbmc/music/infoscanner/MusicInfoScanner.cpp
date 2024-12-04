@@ -31,6 +31,7 @@
 #include "filesystem/Directory.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
+#include "filesystem/MusicDatabaseDirectory/QueryParams.h"
 #include "filesystem/SmartPlaylistDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
@@ -355,8 +356,8 @@ void CMusicInfoScanner::FetchAlbumInfo(const std::string& strDirectory,
       else
       {
         CMusicDatabaseDirectory dir;
-        NODE_TYPE childtype = dir.GetDirectoryChildType(strDirectory);
-        if (childtype == NODE_TYPE_ALBUM)
+        NodeType childtype = dir.GetDirectoryChildType(strDirectory);
+        if (childtype == NodeType::ALBUM)
           dir.GetDirectory(pathToUrl, items);
       }
     }
@@ -417,8 +418,8 @@ void CMusicInfoScanner::FetchArtistInfo(const std::string& strDirectory,
       else
       {
         CMusicDatabaseDirectory dir;
-        NODE_TYPE childtype = dir.GetDirectoryChildType(strDirectory);
-        if (childtype == NODE_TYPE_ARTIST)
+        NodeType childtype = dir.GetDirectoryChildType(strDirectory);
+        if (childtype == NodeType::ARTIST)
           dir.GetDirectory(pathToUrl, items);
       }
     }

@@ -9,6 +9,8 @@
 #include "MusicDbUrl.h"
 
 #include "filesystem/MusicDatabaseDirectory.h"
+#include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
+#include "filesystem/MusicDatabaseDirectory/QueryParams.h"
 #include "playlists/SmartPlayList.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
@@ -32,35 +34,35 @@ bool CMusicDbUrl::parse()
   std::string path = m_url.Get();
 
   // Parse path for directory node types and query params
-  NODE_TYPE dirType;
-  NODE_TYPE childType;
+  NodeType dirType;
+  NodeType childType;
   CQueryParams queryParams;
   if (!CMusicDatabaseDirectory::GetDirectoryNodeInfo(path, dirType, childType, queryParams))
     return false;
 
   switch (dirType)
   {
-    case NODE_TYPE_ARTIST:
+    case NodeType::ARTIST:
       m_type = "artists";
       break;
 
-    case NODE_TYPE_ALBUM:
-    case NODE_TYPE_ALBUM_RECENTLY_ADDED:
-    case NODE_TYPE_ALBUM_RECENTLY_PLAYED:
-    case NODE_TYPE_ALBUM_TOP100:
+    case NodeType::ALBUM:
+    case NodeType::ALBUM_RECENTLY_ADDED:
+    case NodeType::ALBUM_RECENTLY_PLAYED:
+    case NodeType::ALBUM_TOP100:
       m_type = "albums";
       break;
 
-    case NODE_TYPE_DISC:
+    case NodeType::DISC:
       m_type = "discs";
       break;
 
-    case NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS:
-    case NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS:
-    case NODE_TYPE_ALBUM_TOP100_SONGS:
-    case NODE_TYPE_SONG:
-    case NODE_TYPE_SONG_TOP100:
-    case NODE_TYPE_SINGLES:
+    case NodeType::ALBUM_RECENTLY_ADDED_SONGS:
+    case NodeType::ALBUM_RECENTLY_PLAYED_SONGS:
+    case NodeType::ALBUM_TOP100_SONGS:
+    case NodeType::SONG:
+    case NodeType::SONG_TOP100:
+    case NodeType::SINGLES:
       m_type = "songs";
       break;
 
@@ -70,52 +72,52 @@ bool CMusicDbUrl::parse()
 
   switch (childType)
   {
-    case NODE_TYPE_ARTIST:
+    case NodeType::ARTIST:
       m_type = "artists";
       break;
 
-    case NODE_TYPE_ALBUM:
-    case NODE_TYPE_ALBUM_RECENTLY_ADDED:
-    case NODE_TYPE_ALBUM_RECENTLY_PLAYED:
-    case NODE_TYPE_ALBUM_TOP100:
+    case NodeType::ALBUM:
+    case NodeType::ALBUM_RECENTLY_ADDED:
+    case NodeType::ALBUM_RECENTLY_PLAYED:
+    case NodeType::ALBUM_TOP100:
       m_type = "albums";
       break;
 
-    case NODE_TYPE_DISC:
+    case NodeType::DISC:
       m_type = "discs";
       break;
 
-    case NODE_TYPE_SONG:
-    case NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS:
-    case NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS:
-    case NODE_TYPE_ALBUM_TOP100_SONGS:
-    case NODE_TYPE_SONG_TOP100:
-    case NODE_TYPE_SINGLES:
+    case NodeType::SONG:
+    case NodeType::ALBUM_RECENTLY_ADDED_SONGS:
+    case NodeType::ALBUM_RECENTLY_PLAYED_SONGS:
+    case NodeType::ALBUM_TOP100_SONGS:
+    case NodeType::SONG_TOP100:
+    case NodeType::SINGLES:
       m_type = "songs";
       break;
 
-    case NODE_TYPE_GENRE:
+    case NodeType::GENRE:
       m_type = "genres";
       break;
 
-    case NODE_TYPE_SOURCE:
+    case NodeType::SOURCE:
       m_type = "sources";
       break;
 
-    case NODE_TYPE_ROLE:
+    case NodeType::ROLE:
       m_type = "roles";
       break;
 
-    case NODE_TYPE_YEAR:
+    case NodeType::YEAR:
       m_type = "years";
       break;
 
-    case NODE_TYPE_TOP100:
+    case NodeType::TOP100:
       m_type = "top100";
       break;
 
-    case NODE_TYPE_ROOT:
-    case NODE_TYPE_OVERVIEW:
+    case NodeType::ROOT:
+    case NodeType::OVERVIEW:
     default:
       return false;
   }
@@ -127,7 +129,7 @@ bool CMusicDbUrl::parse()
   AddOptions(m_url.GetOptions());
 
   // add options based on the node type
-  if (dirType == NODE_TYPE_SINGLES || childType == NODE_TYPE_SINGLES)
+  if (dirType == NodeType::SINGLES || childType == NodeType::SINGLES)
     AddOption("singles", true);
 
   // add options based on the QueryParams

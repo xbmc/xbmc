@@ -8,35 +8,39 @@
 
 #pragma once
 
-#include "DirectoryNode.h"
+#include <string>
 
 namespace XFILE
 {
   namespace MUSICDATABASEDIRECTORY
   {
-    class CQueryParams
-    {
-    public:
-      CQueryParams();
-      int GetArtistId() { return m_idArtist; }
-      int GetAlbumId() { return m_idAlbum; }
-      int GetGenreId() { return m_idGenre; }
-      int GetSongId() { return m_idSong; }
-      int GetYear() { return m_year; }
-      int GetDisc() { return m_disc; }
 
-    protected:
-      void SetQueryParam(NODE_TYPE NodeType, const std::string& strNodeName);
+  enum class NodeType;
 
-      friend class CDirectoryNode;
-    private:
-      int m_idArtist;
-      int m_idAlbum;
-      int m_idGenre;
-      int m_idSong;
-      int m_year;
-      int m_disc;
-    };
+  class CQueryParams
+  {
+  public:
+    CQueryParams();
+    int GetArtistId() { return m_idArtist; }
+    int GetAlbumId() { return m_idAlbum; }
+    int GetGenreId() { return m_idGenre; }
+    int GetSongId() { return m_idSong; }
+    int GetYear() { return m_year; }
+    int GetDisc() { return m_disc; }
+
+  protected:
+    void SetQueryParam(NodeType NodeType, const std::string& strNodeName);
+
+    friend class CDirectoryNode;
+
+  private:
+    int m_idArtist;
+    int m_idAlbum;
+    int m_idGenre;
+    int m_idSong;
+    int m_year;
+    int m_disc;
+  };
   }
 }
 
