@@ -8,6 +8,7 @@
 
 #include "QueryParams.h"
 
+#include "DirectoryNode.h"
 #include "video/VideoDatabase.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;

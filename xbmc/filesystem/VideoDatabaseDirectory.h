@@ -9,11 +9,16 @@
 #pragma once
 
 #include "IDirectory.h"
-#include "VideoDatabaseDirectory/DirectoryNode.h"
-#include "VideoDatabaseDirectory/QueryParams.h"
 
 namespace XFILE
 {
+
+namespace VIDEODATABASEDIRECTORY
+{
+class CQueryParams;
+enum class NodeType;
+} // namespace VIDEODATABASEDIRECTORY
+
   class CVideoDatabaseDirectory : public IDirectory
   {
   public:
