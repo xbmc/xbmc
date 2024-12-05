@@ -12661,7 +12661,7 @@ bool CVideoDatabase::AddVideoAsset(VideoDbContentType itemType,
       }
     }
 
-    if (item.GetVideoInfoTag()->HasStreamDetails() &&
+    if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->HasStreamDetails() &&
         !SetStreamDetailsForFileId(item.GetVideoInfoTag()->m_streamDetails, idFile))
     {
       RollbackTransaction();

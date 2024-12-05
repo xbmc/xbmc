@@ -193,7 +193,7 @@ bool CGUIDialogVideoManagerExtras::AddVideoExtra()
         }
       }
 
-      // Additional constraints for the converion of a movie version
+      // Additional constraints for the conversion of a movie version
       if (newAsset.m_assetType == VideoAssetType::VERSION &&
           m_database.IsDefaultVideoVersion(newAsset.m_idFile))
       {
@@ -220,8 +220,10 @@ bool CGUIDialogVideoManagerExtras::AddVideoExtra()
 
     CFileItem item{path, false};
 
-    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-            CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
+    // Imperfect test of the existence of stream details but comes at no extra cost.
+    // File is already a video asset implies stream details were extracted => skip extraction
+    if (newAsset.m_idFile <= 0 && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                                      CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
     {
       CDVDFileInfo::GetFileStreamDetails(&item);
       CLog::LogF(LOGDEBUG, "Extracted filestream details from video file {}",
