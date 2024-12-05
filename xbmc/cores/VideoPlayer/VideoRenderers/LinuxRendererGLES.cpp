@@ -1817,13 +1817,12 @@ void CLinuxRendererGLES::CheckVideoParameters(int index)
   }
 
   bool toneMap = false;
+  const bool streamIsHDRPQ =
+      (buf.m_srcColTransfer == AVCOL_TRC_SMPTE2084 && buf.m_srcPrimaries == AVCOL_PRI_BT2020);
 
-  if (!m_passthroughHDR && toneMapMethod != VS_TONEMAPMETHOD_OFF)
+  if (streamIsHDRPQ && !m_passthroughHDR && toneMapMethod != VS_TONEMAPMETHOD_OFF)
   {
-    if (buf.hasLightMetadata || (buf.hasDisplayMetadata && buf.displayMetadata.has_luminance))
-    {
-      toneMap = true;
-    }
+    toneMap = true;
   }
 
   if (toneMap != m_toneMap || toneMapMethod != m_toneMapMethod)
