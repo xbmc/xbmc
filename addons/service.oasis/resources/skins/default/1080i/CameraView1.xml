@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<controls>
+		<control type="cameraview">
+			<topic>/oasis/kinect2/sd/image_color_rect</topic>
+			<stretchmode>zoom</stretchmode>
+		</control>
+	</controls>
+</window>
