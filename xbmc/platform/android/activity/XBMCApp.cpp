@@ -57,6 +57,7 @@
 #include "platform/android/activity/IInputDeviceCallbacks.h"
 #include "platform/android/activity/IInputDeviceEventHandler.h"
 #include "platform/android/powermanagement/AndroidPowerSyscall.h"
+#include "platform/android/storage/AndroidStorageProvider.h"
 
 #include <memory>
 #include <mutex>
@@ -82,6 +83,7 @@
 #include <androidjni/Display.h>
 #include <androidjni/DisplayManager.h>
 #include <androidjni/File.h>
+#include <androidjni/FileProvider.h>
 #include <androidjni/Intent.h>
 #include <androidjni/IntentFilter.h>
 #include <androidjni/JNIThreading.h>
@@ -1026,6 +1028,25 @@ bool CXBMCApp::StartActivity(const std::string& package,
 
     if (!jniURI)
       return false;
+
+    // decoded path or null if this is not a hierarchical URI
+    const std::string pathname = jniURI.getPath();
+
+    // path to shared/external storage volume
+    std::string extpath;
+
+    if (!pathname.empty() && CAndroidStorageProvider::GetExternalStorage(extpath) &&
+        !extpath.empty() && StringUtils::StartsWith(pathname, extpath))
+    {
+      // generate a content URI
+      jniURI = CJNIFileProvider::getUriForFile(CXBMCApp::Get(), "org.xbmc.kodi.fileprovider",
+                                               CJNIFile(pathname));
+
+      CLog::LogF(LOGINFO, "Share using FileProvider: {}", jniURI.toString());
+
+      // grant temporary permission to external app
+      CJNIContext::grantUriPermission(package, jniURI, CJNIIntent::FLAG_GRANT_READ_URI_PERMISSION);
+    }
 
     newIntent.setDataAndType(jniURI, dataType);
   }
