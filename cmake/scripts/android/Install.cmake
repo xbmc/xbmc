@@ -74,6 +74,7 @@ set(package_files strings.xml
                   src/model/MusicVideo.java
                   src/model/Media.java
                   src/content/XBMCFileContentProvider.java
+                  src/content/XBMCFileProvider.java
                   src/content/XBMCMediaContentProvider.java
                   src/content/XBMCContentProvider.java
                   src/content/XBMCYTDLContentProvider.java
