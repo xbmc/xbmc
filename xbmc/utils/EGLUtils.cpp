@@ -669,6 +669,12 @@ void CEGLContextUtils::SetDamagedRegions(const CDirtyRegionList& dirtyRegions)
   {
     EGLint height = 1080;
     eglQuerySurface(m_eglDisplay, m_eglSurface, EGL_HEIGHT, &height);
+    if (eglGetError() != EGL_SUCCESS && !m_damageRegionError)
+    {
+      CLog::LogF(LOGERROR, "eglQuerySurface failed");
+      m_damageRegionError = true;
+    }
+
     std::vector<Rect> rects;
     rects.reserve(dirtyRegions.size());
     for (const auto& region : dirtyRegions)
@@ -680,6 +686,12 @@ void CEGLContextUtils::SetDamagedRegions(const CDirtyRegionList& dirtyRegions)
     }
     m_eglSetDamageRegionKHR(m_eglDisplay, m_eglSurface, reinterpret_cast<EGLint*>(rects.data()),
                             rects.size());
+  }
+
+  if (eglGetError() != EGL_SUCCESS && !m_damageRegionError)
+  {
+    CLog::LogF(LOGERROR, "Setting damaged region failed");
+    m_damageRegionError = true;
   }
 }
 
