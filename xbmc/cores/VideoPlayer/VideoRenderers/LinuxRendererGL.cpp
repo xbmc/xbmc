@@ -278,6 +278,7 @@ void CLinuxRendererGL::AddVideoPicture(const VideoPicture &picture, int index)
   buf.loaded = false;
   buf.m_srcPrimaries = picture.color_primaries;
   buf.m_srcColSpace = picture.color_space;
+  buf.m_srcColTransfer = picture.color_transfer;
   buf.m_srcFullRange = picture.color_range == 1;
   buf.m_srcBits = picture.colorBits;
 
