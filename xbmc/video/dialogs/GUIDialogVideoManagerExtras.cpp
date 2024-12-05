@@ -275,9 +275,6 @@ std::string CGUIDialogVideoManagerExtras::GenerateVideoExtra(const std::string& 
   // remove file extension
   URIUtils::RemoveExtension(extrasVersion);
 
-  // remove special characters
-  extrasVersion = StringUtils::ReplaceSpecialCharactersWithSpace(extrasVersion);
-
   // trim the string
   return StringUtils::Trim(extrasVersion);
 }
