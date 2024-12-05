@@ -659,16 +659,23 @@ void CEGLContextUtils::SetDamagedRegions(const CDirtyRegionList& dirtyRegions)
     return;
 
   using Rect = std::array<EGLint, 4>;
+  EGLBoolean damageRegionsResult = EGL_FALSE;
   if (dirtyRegions.empty())
   {
     // add a single (empty) entry, otherwise the whole frame gets rendered
     static Rect zeroRect{};
-    m_eglSetDamageRegionKHR(m_eglDisplay, m_eglSurface, zeroRect.data(), 1);
+    damageRegionsResult = m_eglSetDamageRegionKHR(m_eglDisplay, m_eglSurface, zeroRect.data(), 1);
   }
   else
   {
     EGLint height = 1080;
-    eglQuerySurface(m_eglDisplay, m_eglSurface, EGL_HEIGHT, &height);
+    if (eglQuerySurface(m_eglDisplay, m_eglSurface, EGL_HEIGHT, &height) != EGL_TRUE &&
+        !m_damageRegionError)
+    {
+      CLog::LogF(LOGERROR, "eglQuerySurface failed ({:#x})", eglGetError());
+      m_damageRegionError = true;
+    }
+
     std::vector<Rect> rects;
     rects.reserve(dirtyRegions.size());
     for (const auto& region : dirtyRegions)
@@ -678,8 +685,14 @@ void CEGLContextUtils::SetDamagedRegions(const CDirtyRegionList& dirtyRegions)
                        static_cast<EGLint>(std::round(region.Width())),
                        static_cast<EGLint>(std::round(region.Height()))});
     }
-    m_eglSetDamageRegionKHR(m_eglDisplay, m_eglSurface, reinterpret_cast<EGLint*>(rects.data()),
-                            rects.size());
+    damageRegionsResult = m_eglSetDamageRegionKHR(
+        m_eglDisplay, m_eglSurface, reinterpret_cast<EGLint*>(rects.data()), rects.size());
+  }
+
+  if (damageRegionsResult != EGL_TRUE && !m_damageRegionError)
+  {
+    CLog::LogF(LOGERROR, "Setting damaged region failed ({:#x})", eglGetError());
+    m_damageRegionError = true;
   }
 }
 
