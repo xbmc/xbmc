@@ -141,6 +141,7 @@ bool CPVRGUIActionsPlayback::PlayRecording(const CFileItem& item, bool bCheckRes
       }
 
       const auto parentItem = std::make_shared<CFileItem>(parentPath, true);
+      parentItem->LoadDetails();
       if (item.GetStartOffset() == STARTOFFSET_RESUME)
         parentItem->SetStartOffset(STARTOFFSET_RESUME);
 
