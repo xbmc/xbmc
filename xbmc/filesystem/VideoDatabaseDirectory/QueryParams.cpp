@@ -8,6 +8,7 @@
 
 #include "QueryParams.h"
 
+#include "DirectoryNode.h"
 #include "video/VideoDatabase.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
@@ -31,70 +32,70 @@ CQueryParams::CQueryParams()
   m_idTag = -1;
 }
 
-void CQueryParams::SetQueryParam(NODE_TYPE NodeType, const std::string& strNodeName)
+void CQueryParams::SetQueryParam(NodeType nodeType, const std::string& strNodeName)
 {
   long idDb=atol(strNodeName.c_str());
 
-  switch (NodeType)
+  switch (nodeType)
   {
-  case NODE_TYPE_OVERVIEW:
-    if (strNodeName == "tvshows")
-      m_idContent = static_cast<long>(VideoDbContentType::TVSHOWS);
-    else if (strNodeName == "musicvideos")
-      m_idContent = static_cast<long>(VideoDbContentType::MUSICVIDEOS);
-    else
-      m_idContent = static_cast<long>(VideoDbContentType::MOVIES);
-    break;
-  case NODE_TYPE_GENRE:
-    m_idGenre = idDb;
-    break;
-  case NODE_TYPE_COUNTRY:
-    m_idCountry = idDb;
-    break;
-  case NODE_TYPE_YEAR:
-    m_idYear = idDb;
-    break;
-  case NODE_TYPE_ACTOR:
-    m_idActor = idDb;
-    break;
-  case NODE_TYPE_DIRECTOR:
-    m_idDirector = idDb;
-    break;
-  case NODE_TYPE_TITLE_MOVIES:
-  case NODE_TYPE_RECENTLY_ADDED_MOVIES:
-    m_idMovie = idDb;
-    break;
-  case NODE_TYPE_TITLE_TVSHOWS:
-  case NODE_TYPE_INPROGRESS_TVSHOWS:
-    m_idShow = idDb;
-    break;
-  case NODE_TYPE_SEASONS:
-    m_idSeason = idDb;
-    break;
-  case NODE_TYPE_EPISODES:
-  case NODE_TYPE_RECENTLY_ADDED_EPISODES:
-    m_idEpisode = idDb;
-    break;
-  case NODE_TYPE_STUDIO:
-    m_idStudio = idDb;
-    break;
-  case NODE_TYPE_TITLE_MUSICVIDEOS:
-  case NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS:
-    m_idMVideo = idDb;
-    break;
-  case NODE_TYPE_MUSICVIDEOS_ALBUM:
-    m_idAlbum = idDb;
-    break;
-  case NODE_TYPE_SETS:
-    m_idSet = idDb;
-    break;
-  case NODE_TYPE_TAGS:
-    m_idTag = idDb;
-    break;
-  case NODE_TYPE_VIDEOVERSIONS:
-    m_idVideoVersion = idDb;
-    break;
-  default:
-    break;
+    case NodeType::OVERVIEW:
+      if (strNodeName == "tvshows")
+        m_idContent = static_cast<long>(VideoDbContentType::TVSHOWS);
+      else if (strNodeName == "musicvideos")
+        m_idContent = static_cast<long>(VideoDbContentType::MUSICVIDEOS);
+      else
+        m_idContent = static_cast<long>(VideoDbContentType::MOVIES);
+      break;
+    case NodeType::GENRE:
+      m_idGenre = idDb;
+      break;
+    case NodeType::COUNTRY:
+      m_idCountry = idDb;
+      break;
+    case NodeType::YEAR:
+      m_idYear = idDb;
+      break;
+    case NodeType::ACTOR:
+      m_idActor = idDb;
+      break;
+    case NodeType::DIRECTOR:
+      m_idDirector = idDb;
+      break;
+    case NodeType::TITLE_MOVIES:
+    case NodeType::RECENTLY_ADDED_MOVIES:
+      m_idMovie = idDb;
+      break;
+    case NodeType::TITLE_TVSHOWS:
+    case NodeType::INPROGRESS_TVSHOWS:
+      m_idShow = idDb;
+      break;
+    case NodeType::SEASONS:
+      m_idSeason = idDb;
+      break;
+    case NodeType::EPISODES:
+    case NodeType::RECENTLY_ADDED_EPISODES:
+      m_idEpisode = idDb;
+      break;
+    case NodeType::STUDIO:
+      m_idStudio = idDb;
+      break;
+    case NodeType::TITLE_MUSICVIDEOS:
+    case NodeType::RECENTLY_ADDED_MUSICVIDEOS:
+      m_idMVideo = idDb;
+      break;
+    case NodeType::MUSICVIDEOS_ALBUM:
+      m_idAlbum = idDb;
+      break;
+    case NodeType::SETS:
+      m_idSet = idDb;
+      break;
+    case NodeType::TAGS:
+      m_idTag = idDb;
+      break;
+    case NodeType::VIDEOVERSIONS:
+      m_idVideoVersion = idDb;
+      break;
+    default:
+      break;
   }
 }

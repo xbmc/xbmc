@@ -17,14 +17,14 @@
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
 CDirectoryNodeSeasons::CDirectoryNodeSeasons(const std::string& strName, CDirectoryNode* pParent)
-  : CDirectoryNode(NODE_TYPE_SEASONS, strName, pParent)
+  : CDirectoryNode(NodeType::SEASONS, strName, pParent)
 {
 
 }
 
-NODE_TYPE CDirectoryNodeSeasons::GetChildType() const
+NodeType CDirectoryNodeSeasons::GetChildType() const
 {
-  return NODE_TYPE_EPISODES;
+  return NodeType::EPISODES;
 }
 
 std::string CDirectoryNodeSeasons::GetLocalizedName() const

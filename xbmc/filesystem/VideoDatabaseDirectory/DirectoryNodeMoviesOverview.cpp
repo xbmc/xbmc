@@ -19,32 +19,33 @@ using namespace XFILE::VIDEODATABASEDIRECTORY;
 
 // clang-format off
 Node MovieChildren[] = {
-                        { NODE_TYPE_GENRE,        "genres",           135 },
-                        { NODE_TYPE_TITLE_MOVIES, "titles",           10024 },
-                        { NODE_TYPE_YEAR,         "years",            652 },
-                        { NODE_TYPE_ACTOR,        "actors",           344 },
-                        { NODE_TYPE_DIRECTOR,     "directors",        20348 },
-                        { NODE_TYPE_STUDIO,       "studios",          20388 },
-                        { NODE_TYPE_SETS,         "sets",             20434 },
-                        { NODE_TYPE_COUNTRY,      "countries",        20451 },
-                        { NODE_TYPE_TAGS,         "tags",             20459 },
-                        { NODE_TYPE_VIDEOVERSIONS,"videoversions",    40000 },
+                        { NodeType::GENRE,        "genres",           135 },
+                        { NodeType::TITLE_MOVIES, "titles",           10024 },
+                        { NodeType::YEAR,         "years",            652 },
+                        { NodeType::ACTOR,        "actors",           344 },
+                        { NodeType::DIRECTOR,     "directors",        20348 },
+                        { NodeType::STUDIO,       "studios",          20388 },
+                        { NodeType::SETS,         "sets",             20434 },
+                        { NodeType::COUNTRY,      "countries",        20451 },
+                        { NodeType::TAGS,         "tags",             20459 },
+                        { NodeType::VIDEOVERSIONS,"videoversions",    40000 },
                        };
 // clang-format on
 
-CDirectoryNodeMoviesOverview::CDirectoryNodeMoviesOverview(const std::string& strName, CDirectoryNode* pParent)
-  : CDirectoryNode(NODE_TYPE_MOVIES_OVERVIEW, strName, pParent)
+CDirectoryNodeMoviesOverview::CDirectoryNodeMoviesOverview(const std::string& strName,
+                                                           CDirectoryNode* pParent)
+  : CDirectoryNode(NodeType::MOVIES_OVERVIEW, strName, pParent)
 {
 
 }
 
-NODE_TYPE CDirectoryNodeMoviesOverview::GetChildType() const
+NodeType CDirectoryNodeMoviesOverview::GetChildType() const
 {
   for (const Node& node : MovieChildren)
     if (GetName() == node.id)
       return node.node;
 
-  return NODE_TYPE_NONE;
+  return NodeType::NONE;
 }
 
 std::string CDirectoryNodeMoviesOverview::GetLocalizedName() const

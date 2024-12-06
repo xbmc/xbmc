@@ -20,37 +20,37 @@ namespace XFILE
   {
     class CQueryParams;
 
-    typedef enum _NODE_TYPE
+    enum class NodeType
     {
-      NODE_TYPE_NONE = 0,
-      NODE_TYPE_MOVIES_OVERVIEW,
-      NODE_TYPE_TVSHOWS_OVERVIEW,
-      NODE_TYPE_GENRE,
-      NODE_TYPE_ACTOR,
-      NODE_TYPE_ROOT,
-      NODE_TYPE_OVERVIEW,
-      NODE_TYPE_TITLE_MOVIES,
-      NODE_TYPE_YEAR,
-      NODE_TYPE_DIRECTOR,
-      NODE_TYPE_TITLE_TVSHOWS,
-      NODE_TYPE_SEASONS,
-      NODE_TYPE_EPISODES,
-      NODE_TYPE_RECENTLY_ADDED_MOVIES,
-      NODE_TYPE_RECENTLY_ADDED_EPISODES,
-      NODE_TYPE_STUDIO,
-      NODE_TYPE_MUSICVIDEOS_OVERVIEW,
-      NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS,
-      NODE_TYPE_TITLE_MUSICVIDEOS,
-      NODE_TYPE_MUSICVIDEOS_ALBUM,
-      NODE_TYPE_SETS,
-      NODE_TYPE_COUNTRY,
-      NODE_TYPE_TAGS,
-      NODE_TYPE_INPROGRESS_TVSHOWS,
-      NODE_TYPE_VIDEOVERSIONS
-    } NODE_TYPE;
+      NONE = 0,
+      MOVIES_OVERVIEW,
+      TVSHOWS_OVERVIEW,
+      GENRE,
+      ACTOR,
+      ROOT,
+      OVERVIEW,
+      TITLE_MOVIES,
+      YEAR,
+      DIRECTOR,
+      TITLE_TVSHOWS,
+      SEASONS,
+      EPISODES,
+      RECENTLY_ADDED_MOVIES,
+      RECENTLY_ADDED_EPISODES,
+      STUDIO,
+      MUSICVIDEOS_OVERVIEW,
+      RECENTLY_ADDED_MUSICVIDEOS,
+      TITLE_MUSICVIDEOS,
+      MUSICVIDEOS_ALBUM,
+      SETS,
+      COUNTRY,
+      TAGS,
+      INPROGRESS_TVSHOWS,
+      VIDEOVERSIONS
+    };
 
     typedef struct {
-      NODE_TYPE   node;
+      NodeType node;
       std::string id;
       int         label;
     } Node;
@@ -62,10 +62,10 @@ namespace XFILE
       static void GetDatabaseInfo(const std::string& strPath, CQueryParams& params);
       virtual ~CDirectoryNode();
 
-      NODE_TYPE GetType() const;
+      NodeType GetType() const;
 
       bool GetChilds(CFileItemList& items);
-      virtual NODE_TYPE GetChildType() const;
+      virtual NodeType GetChildType() const;
       virtual std::string GetLocalizedName() const;
       void CollectQueryParams(CQueryParams& params) const;
 
@@ -74,9 +74,12 @@ namespace XFILE
       std::string BuildPath() const;
 
       virtual bool CanCache() const;
+
     protected:
-      CDirectoryNode(NODE_TYPE Type, const std::string& strName, CDirectoryNode* pParent);
-      static CDirectoryNode* CreateNode(NODE_TYPE Type, const std::string& strName, CDirectoryNode* pParent);
+      CDirectoryNode(NodeType Type, const std::string& strName, CDirectoryNode* pParent);
+      static CDirectoryNode* CreateNode(NodeType Type,
+                                        const std::string& strName,
+                                        CDirectoryNode* pParent);
 
       void AddOptions(const std::string& options);
 
@@ -88,7 +91,7 @@ namespace XFILE
 
 
     private:
-      NODE_TYPE m_Type;
+      NodeType m_Type;
       std::string m_strName;
       CDirectoryNode* m_pParent;
       CUrlOptions m_options;
