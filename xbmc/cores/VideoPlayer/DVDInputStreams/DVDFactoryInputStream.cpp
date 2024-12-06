@@ -182,8 +182,8 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
   }
 
   // our file interface handles all these types of streams
-  return std::make_shared<CDVDInputStreamFile>(
-      finalFileitem, XFILE::READ_TRUNCATED | XFILE::READ_BITRATE | XFILE::READ_CHUNKED);
+  return std::make_shared<CDVDInputStreamFile>(finalFileitem,
+                                               XFILE::READ_TRUNCATED | XFILE::READ_BITRATE);
 }
 
 std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer, const CFileItem &fileitem, const std::vector<std::string>& filenames)
