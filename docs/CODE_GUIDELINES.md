@@ -77,7 +77,7 @@ Conventions can be bent or broken in the interest of making code more readable a
 
 ## 2. Language standard
 
-We currently target the C++17 language standard. Do use C++17 features when possible (and supported by all target platforms). Do not use C++20 features.
+We currently target the C++20 language standard. Do use C++20 features when possible (and supported by all target platforms). Do not use C++23 features.
 
 **[back to top](#table-of-contents)**
 
