@@ -37,7 +37,6 @@ extern "C" void XBMC_POSIX_HandleSignal(int sig)
 }
 } // namespace
 
-
 int main(int argc, char* argv[])
 {
 #if defined(_DEBUG)
@@ -47,12 +46,13 @@ int main(int argc, char* argv[])
     fprintf(stderr, "Failed to set core size limit (%s).\n", strerror(errno));
 #endif
 
-  // Set up global SIGINT/SIGTERM handler
+  // Set up global SIGINT/SIGHUP/SIGTERM handler
   struct sigaction signalHandler;
   std::memset(&signalHandler, 0, sizeof(signalHandler));
   signalHandler.sa_handler = &XBMC_POSIX_HandleSignal;
   signalHandler.sa_flags = SA_RESTART;
   sigaction(SIGINT, &signalHandler, nullptr);
+  sigaction(SIGHUP, &signalHandler, nullptr);
   sigaction(SIGTERM, &signalHandler, nullptr);
 
   setlocale(LC_NUMERIC, "C");
