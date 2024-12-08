@@ -293,6 +293,7 @@ void CLinuxRendererGL::AddVideoPicture(const VideoPicture &picture, int index)
   buf.loaded = false;
   buf.m_srcPrimaries = picture.color_primaries;
   buf.m_srcColSpace = picture.color_space;
+  buf.m_srcColTransfer = picture.color_transfer;
   buf.m_srcFullRange = picture.color_range == 1;
   buf.m_srcBits = picture.colorBits;
 
@@ -2776,7 +2777,7 @@ void CLinuxRendererGL::DeleteCLUT()
 void CLinuxRendererGL::CheckVideoParameters(int index)
 {
   const CPictureBuffer& buf = m_buffers[index];
-  ETONEMAPMETHOD method = m_videoSettings.m_ToneMapMethod;
+  const ETONEMAPMETHOD& toneMapMethod = m_videoSettings.m_ToneMapMethod;
 
   if (buf.m_srcPrimaries != m_srcPrimaries)
   {
@@ -2785,20 +2786,20 @@ void CLinuxRendererGL::CheckVideoParameters(int index)
   }
 
   bool toneMap = false;
-  if (method != VS_TONEMAPMETHOD_OFF)
+  const bool streamIsHDRPQ =
+      (buf.m_srcColTransfer == AVCOL_TRC_SMPTE2084 && buf.m_srcPrimaries == AVCOL_PRI_BT2020);
+
+  if (streamIsHDRPQ && toneMapMethod != VS_TONEMAPMETHOD_OFF)
   {
-    if (buf.hasLightMetadata || (buf.hasDisplayMetadata && buf.displayMetadata.has_luminance))
-    {
-      toneMap = true;
-    }
+    toneMap = true;
   }
 
-  if (toneMap != m_toneMap || (m_toneMapMethod != method))
+  if (toneMap != m_toneMap || toneMapMethod != m_toneMapMethod)
   {
     m_reloadShaders = true;
+    m_toneMap = toneMap;
+    m_toneMapMethod = toneMapMethod;
   }
-  m_toneMap = toneMap;
-  m_toneMapMethod = method;
 }
 
 CRenderCapture* CLinuxRendererGL::GetRenderCapture()
