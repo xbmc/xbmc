@@ -1,0 +1,19 @@
+{
+    "name": "screensaver.cpblobs",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/xbmc/screensaver.cpblobs",
+            "commit": "cd96c71c22940014d5c79c58af99b60e0b418f71"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}

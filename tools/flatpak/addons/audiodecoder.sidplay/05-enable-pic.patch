@@ -1,0 +1,42 @@
+--- sidplay2/configure.ac.orig	2015-03-13 16:34:22.815501858 +0100
++++ sidplay2/configure.ac	2015-03-13 16:33:58.547502333 +0100
+@@ -19,6 +19,7 @@
+ echo; echo "Configuring libsidplay..."
+ cd $pwd/libsidplay
+ if ! eval ./configure $ac_configure_args \
++--with-pic \
+ --with-sidbuilders=$builders;
+ then
+ exit
+@@ -27,6 +28,7 @@
+ echo; echo "Configuring resid..."
+ cd "$pwd/resid"
+ if ! eval ./configure $ac_configure_args \
++--with-pic \
+ --disable-resid-install;
+ then
+ exit
+@@ -39,6 +41,7 @@
+ --with-sidplay2-library=$pwd/libsidplay/src \
+ --with-resid-includes=$pwd/resid \
+ --with-resid-library=$pwd/resid \
++--with-pic \
+ --libdir=$builders;
+ then
+ exit
+@@ -50,6 +53,7 @@
+     if ! eval ./configure $ac_configure_args \
+         --with-sidplay2-includes=$pwd/libsidplay/include \
+         --with-sidplay2-library=$pwd/libsidplay/src \
++        --with-pic \
+         --libdir=$builders;
+     then
+     exit
+@@ -60,6 +64,7 @@
+ cd $pwd/libsidutils
+ if ! eval ./configure $ac_configure_args \
+ --with-sidplay2-includes=$pwd/libsidplay/include \
++--with-pic \
+ --with-sidplay2-library=$pwd/libsidplay/src;
+ then
+ exit
