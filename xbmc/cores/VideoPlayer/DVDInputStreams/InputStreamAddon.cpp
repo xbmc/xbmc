@@ -762,14 +762,11 @@ int CInputStreamAddon::ConvertAudioCodecProfile(STREAMCODEC_PROFILE profile)
     case DTSCodecProfileHDExpress:
       return FF_PROFILE_DTS_EXPRESS;
     case DTSCodecProfileHDMAX:
-      //! @todo: with ffmpeg >= 6.1 set the appropriate profile
-      return FF_PROFILE_UNKNOWN; // FF_PROFILE_DTS_HD_MA_X
+      return FF_PROFILE_DTS_HD_MA_X;
     case DTSCodecProfileHDMAIMAX:
-      //! @todo: with ffmpeg >= 6.1 set the appropriate profile
-      return FF_PROFILE_UNKNOWN; // FF_PROFILE_DTS_HD_MA_X_IMAX
+      return FF_PROFILE_DTS_HD_MA_X_IMAX;
     case DDPlusCodecProfileAtmos:
-      //! @todo: with ffmpeg >= 6.1 set the appropriate profile
-      return FF_PROFILE_UNKNOWN; // FF_PROFILE_EAC3_DDP_ATMOS
+      return FF_PROFILE_EAC3_DDP_ATMOS;
     default:
       return FF_PROFILE_UNKNOWN;
   }

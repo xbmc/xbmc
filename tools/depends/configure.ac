@@ -404,9 +404,11 @@ case $host in
     case $host in
       *i686*-linux-gnu*|i*86*-*-linux-uclibc*)
         meson_cpu="x86"
+        ffmpeg_cpu="i686"
       ;;
       x86_64*-linux-gnu*|x86_64-*-linux-uclibc*)
         meson_cpu="x86_64"
+        ffmpeg_cpu="x86-64"
       ;;
     esac
     use_cpu=$host_cpu
@@ -416,7 +418,7 @@ case $host in
     platform_cxxflags="$platform_cflags"
     platform_os="linux"
     meson_system="linux"
-    ffmpeg_options_default="--enable-vaapi --enable-vdpau --cpu=$use_cpu"
+    ffmpeg_options_default="--enable-vaapi --enable-vdpau --cpu=$ffmpeg_cpu"
     target_platform="x11 wayland gbm"
   ;;
   *darwin*)
