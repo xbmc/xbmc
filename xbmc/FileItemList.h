@@ -31,7 +31,10 @@ public:
 
   CFileItemList();
   explicit CFileItemList(const std::string& strPath);
+  CFileItemList(const CFileItemList& other);
+  CFileItemList(CFileItemList&& other) noexcept;
   ~CFileItemList() override;
+
   void Archive(CArchive& ar) override;
   CFileItemPtr operator[](int iItem);
   const CFileItemPtr operator[](int iItem) const;
