@@ -18,7 +18,6 @@
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/LocalizeStrings.h"
-#include "settings/DiscSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Geometry.h"
@@ -322,23 +321,21 @@ bool CDVDInputStreamBluray::Open()
     return false;
   }
 
-  int mode = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_DISC_PLAYBACK);
-
   if (URIUtils::HasExtension(filename, ".mpls"))
   {
     m_navmode = false;
     m_titleInfo = GetTitleFile(filename);
-  }
-  else if (mode == BD_PLAYBACK_MAIN_TITLE)
-  {
-    m_navmode = false;
-    m_titleInfo = GetTitleLongest();
   }
   else if (resumable && m_item.GetStartOffset() == STARTOFFSET_RESUME && m_item.IsResumable())
   {
     // resuming a bluray for which we have a saved state - the playlist will be open later on SetState
     m_navmode = false;
     return true;
+  }
+  else if (URIUtils::HasExtension(filename, ".mpls"))
+  {
+    m_navmode = false;
+    m_titleInfo = GetTitleFile(filename);
   }
   else
   {
@@ -1012,6 +1009,13 @@ int64_t CDVDInputStreamBluray::Seek(int64_t offset, int whence)
 int64_t CDVDInputStreamBluray::GetLength()
 {
   return static_cast<int64_t>(bd_get_title_size(m_bd));
+}
+
+int64_t CDVDInputStreamBluray::GetDuration()
+{
+  if (m_titleInfo)
+    return static_cast<int64_t>(m_titleInfo->duration / 90);
+  return 0;
 }
 
 static bool find_stream(int pid, BLURAY_STREAM_INFO *info, int count, std::string &language)
