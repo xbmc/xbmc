@@ -33,6 +33,11 @@
 using namespace KODI;
 using namespace GAME;
 
+// Initialize static state
+ADDON::VECADDONS CGameUtils::m_installableGameAddons;
+bool CGameUtils::m_checkInstallable{false};
+std::mutex CGameUtils::m_installableMutex;
+
 bool CGameUtils::FillInGameClient(CFileItem& item, std::string& savestatePath)
 {
   using namespace ADDON;
@@ -219,10 +224,17 @@ bool CGameUtils::HasGameExtension(const std::string& path)
   }
 
   // Check remote add-ons
-  gameClients.clear();
-  if (CServiceBroker::GetAddonMgr().GetInstallableAddons(gameClients, AddonType::GAMEDLL))
+  std::lock_guard<std::mutex> installableLock(m_installableMutex);
+  if (m_checkInstallable)
   {
-    for (auto& gameClient : gameClients)
+    m_checkInstallable = false;
+    m_installableGameAddons.clear();
+    CServiceBroker::GetAddonMgr().GetInstallableAddons(m_installableGameAddons, AddonType::GAMEDLL);
+  }
+
+  if (!m_installableGameAddons.empty())
+  {
+    for (auto& gameClient : m_installableGameAddons)
     {
       GameClientPtr gc(std::static_pointer_cast<CGameClient>(gameClient));
       if (gc->IsExtensionValid(extension))
@@ -281,6 +293,12 @@ bool CGameUtils::IsStandaloneGame(const ADDON::AddonPtr& addon)
   }
 
   return false;
+}
+
+void CGameUtils::UpdateInstallableAddons()
+{
+  std::lock_guard<std::mutex> installableLock(m_installableMutex);
+  m_checkInstallable = true;
 }
 
 bool CGameUtils::Install(const std::string& gameClient)
