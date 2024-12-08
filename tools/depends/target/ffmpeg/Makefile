@@ -46,7 +46,7 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	cd $(PLATFORM)/build; $(CMAKE) $(CMAKE_ARGS) ..
 
 .build-$(PLATFORM): $(PLATFORM)
-	$(MAKE) -C $(PLATFORM)/build || (find . -wholename "*ffbuild/config.log" -exec cat {} \; && false)
+	$(MAKE) -C $(PLATFORM)/build
 	touch $@
 
 .installed-$(PLATFORM): .build-$(PLATFORM)
