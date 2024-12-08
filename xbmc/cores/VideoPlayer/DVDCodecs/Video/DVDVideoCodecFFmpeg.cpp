@@ -370,9 +370,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_pCodecContext->get_format = GetFormat;
   m_pCodecContext->codec_tag = hints.codec_tag;
 
-#if LIBAVCODEC_VERSION_MAJOR >= 60
   m_pCodecContext->flags = AV_CODEC_FLAG_COPY_OPAQUE;
-#endif
 
   // setup threading model
   if (!(hints.codecOptions & CODEC_FORCE_SOFTWARE))
@@ -553,21 +551,6 @@ void CDVDVideoCodecFFmpeg::UpdateName()
   CLog::Log(LOGDEBUG, "CDVDVideoCodecFFmpeg - Updated codec: {}", m_name);
 }
 
-#if LIBAVCODEC_VERSION_MAJOR < 60
-union pts_union
-{
-  double pts_d;
-  int64_t pts_i;
-};
-
-static int64_t pts_dtoi(double pts)
-{
-  pts_union u;
-  u.pts_d = pts;
-  return u.pts_i;
-}
-#endif
-
 bool CDVDVideoCodecFFmpeg::AddData(const DemuxPacket &packet)
 {
   if (!m_pCodecContext)
@@ -585,10 +568,6 @@ bool CDVDVideoCodecFFmpeg::AddData(const DemuxPacket &packet)
     m_started = true;
 
   m_dts = packet.dts;
-
-#if LIBAVCODEC_VERSION_MAJOR < 60
-  m_pCodecContext->reordered_opaque = pts_dtoi(packet.pts);
-#endif
 
   AVPacket* avpkt = av_packet_alloc();
   if (!avpkt)

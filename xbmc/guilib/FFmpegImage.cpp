@@ -198,12 +198,7 @@ bool CFFmpegImage::Initialize(unsigned char* buffer, size_t bufSize)
   bool is_png = (bufSize > 3 && buffer[1] == 'P' && buffer[2] == 'N' && buffer[3] == 'G');
   bool is_tiff = (bufSize > 2 && buffer[0] == 'I' && buffer[1] == 'I' && buffer[2] == '*');
 
-  // See Github #19113
-#if LIBAVCODEC_VERSION_MAJOR < 60
-  constexpr char jpegFormat[] = "image2";
-#else
   constexpr char jpegFormat[] = "jpeg_pipe";
-#endif
 
   const AVInputFormat* inp = nullptr;
   if (is_jpeg)
@@ -303,14 +298,8 @@ AVFrame* CFFmpegImage::ExtractFrame()
     return nullptr;
   }
   //we need milliseconds
-
-#if LIBAVCODEC_VERSION_MAJOR < 60
-  frame->pkt_duration =
-      av_rescale_q(frame->pkt_duration, m_fctx->streams[0]->time_base, AVRational{1, 1000});
-#else
   frame->duration =
       av_rescale_q(frame->duration, m_fctx->streams[0]->time_base, AVRational{1, 1000});
-#endif
 
   m_height = frame->height;
   m_width = frame->width;
@@ -748,12 +737,7 @@ std::shared_ptr<Frame> CFFmpegImage::ReadFrame()
     return nullptr;
   std::shared_ptr<Frame> frame(new Frame());
 
-#if LIBAVCODEC_VERSION_MAJOR < 60
-  frame->m_delay = (unsigned int)avframe->pkt_duration;
-#else
   frame->m_delay = (unsigned int)avframe->duration;
-#endif
-
   frame->m_pitch = avframe->width * 4;
   frame->m_pImage = (unsigned char*) av_malloc(avframe->height * frame->m_pitch);
   DecodeFrame(avframe, avframe->width, avframe->height, frame->m_pitch, frame->m_pImage);
