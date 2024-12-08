@@ -169,6 +169,8 @@ static const std::map<xkb_keycode_t, XBMCKey> XkbKeycodeXBMCMappings = {
     // Unmapped: XBMCK_SYSREQ
     {XKB_KEY_Break, XBMCK_BREAK},
     {XKB_KEY_Menu, XBMCK_MENU},
+    {XKB_KEY_XF86MenuKB, XBMCK_MENU},
+    {XKB_KEY_XF86MenuPB, XBMCK_MENU},
     {XKB_KEY_XF86PowerOff, XBMCK_POWER},
     {XKB_KEY_EcuSign, XBMCK_EURO},
     {XKB_KEY_Undo, XBMCK_UNDO},
@@ -191,7 +193,7 @@ static const std::map<xkb_keycode_t, XBMCKey> XkbKeycodeXBMCMappings = {
     {XKB_KEY_XF86Phone, XBMCK_PHONE},
     {XKB_KEY_XF86AudioPlay, XBMCK_PLAY},
     {XKB_KEY_XF86AudioRandomPlay, XBMCK_SHUFFLE}
-    // XBMCK_FASTFORWARD clashes with XBMCK_MEDIA_FASTFORWARD
+// XBMCK_FASTFORWARD clashes with XBMCK_MEDIA_FASTFORWARD
 
 #if defined(TARGET_WEBOS)
     // WebOS remote

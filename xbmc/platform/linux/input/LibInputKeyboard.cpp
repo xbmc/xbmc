@@ -126,6 +126,8 @@ constexpr auto xkbMap = make_map<xkb_keysym_t, XBMCKey>({
     {XKB_KEY_Sys_Req, XBMCK_SYSREQ},
     {XKB_KEY_Break, XBMCK_BREAK},
     {XKB_KEY_Menu, XBMCK_MENU},
+    {XKB_KEY_XF86MenuKB, XBMCK_MENU},
+    {XKB_KEY_XF86MenuPB, XBMCK_MENU},
     {XKB_KEY_XF86PowerOff, XBMCK_POWER},
     {XKB_KEY_EcuSign, XBMCK_EURO},
     {XKB_KEY_Undo, XBMCK_UNDO},
@@ -149,6 +151,57 @@ constexpr auto xkbMap = make_map<xkb_keysym_t, XBMCKey>({
     {XKB_KEY_XF86AudioPlay, XBMCK_PLAY},
     {XKB_KEY_XF86AudioRandomPlay, XBMCK_SHUFFLE}
     // XBMCK_FASTFORWARD clashes with XBMCK_MEDIA_FASTFORWARD
+});
+
+/// Additional mappings directly from libinput (i.e. evdev) keycodes to Kodi keys
+constexpr auto evdevKeycodeMap = make_map<uint32_t, XBMCKey>({
+    {KEY_OK, XBMCK_RETURN},
+    // {KEY_CLEAR, XBMCK_UNKNOWN },
+    {KEY_POWER2, XBMCK_POWER},
+    {KEY_INFO, XBMCK_INFO},
+    // {KEY_TIME, XBMCK_UNKNOWN },
+    // {KEY_CHANNEL, XBMCK_UNKNOWN },
+    {KEY_FAVORITES, XBMCK_FAVORITES},
+    {KEY_EPG, XBMCK_EPG},
+    // {KEY_LANGUAGE, XBMCK_UNKNOWN },
+    // {KEY_TITLE, XBMCK_UNKNOWN },
+    {KEY_SUBTITLE, XBMCK_SUBTITLE},
+    // {KEY_ANGLE, XBMCK_UNKNOWN },
+    // {KEY_FULL_SCREEN, XBMCK_UNKNOWN },
+    // {KEY_MODE, XBMCK_UNKNOWN },
+    // {KEY_ASPECT_RATIO, XBMCK_UNKNOWN },
+    // {KEY_PC, XBMCK_UNKNOWN },
+    // {KEY_TV, XBMCK_UNKNOWN },
+    // {KEY_TV2, XBMCK_UNKNOWN },
+    // {KEY_VCR, XBMCK_UNKNOWN },
+    // {KEY_VCR2, XBMCK_UNKNOWN },
+    // {KEY_CD, XBMCK_UNKNOWN },
+    // {KEY_RADIO, XBMCK_UNKNOWN },
+    // {KEY_TEXT, XBMCK_UNKNOWN },
+    // {KEY_DVD, XBMCK_UNKNOWN },
+    // {KEY_AUDIO, XBMCK_UNKNOWN },
+    // {KEY_VIDEO, XBMCK_UNKNOWN },
+    {KEY_RED, XBMCK_RED},
+    {KEY_GREEN, XBMCK_GREEN},
+    {KEY_YELLOW, XBMCK_YELLOW},
+    {KEY_BLUE, XBMCK_BLUE},
+    {KEY_CHANNELUP, XBMCK_PAGEUP},
+    {KEY_CHANNELDOWN, XBMCK_PAGEDOWN},
+    {KEY_NEXT, XBMCK_MEDIA_NEXT_TRACK},
+    // {KEY_SHUFFLE, XBMCK_UNKNOWN },
+    {KEY_PREVIOUS, XBMCK_MEDIA_PREV_TRACK},
+    // {KEY_DIGITS, XBMCK_UNKNOWN },
+    // {KEY_FN, XBMCK_UNKNOWN },
+    {KEY_NUMERIC_0, XBMCK_0},
+    {KEY_NUMERIC_1, XBMCK_1},
+    {KEY_NUMERIC_2, XBMCK_2},
+    {KEY_NUMERIC_3, XBMCK_3},
+    {KEY_NUMERIC_4, XBMCK_4},
+    {KEY_NUMERIC_5, XBMCK_5},
+    {KEY_NUMERIC_6, XBMCK_6},
+    {KEY_NUMERIC_7, XBMCK_7},
+    {KEY_NUMERIC_8, XBMCK_8},
+    {KEY_NUMERIC_9, XBMCK_9},
 });
 
 constexpr auto logLevelMap = make_map<xkb_log_level, int>({{XKB_LOG_LEVEL_CRITICAL, LOGERROR},
@@ -332,7 +385,8 @@ void CLibInputKeyboard::ProcessKey(libinput_event_keyboard *e)
   if (!m_ctx || !m_keymap || !m_state)
     return;
 
-  const uint32_t xkbkey = libinput_event_keyboard_get_key(e) + 8;
+  const uint32_t libinputKeycode = libinput_event_keyboard_get_key(e);
+  const uint32_t xkbkey = libinputKeycode + 8;
   const xkb_keysym_t keysym = xkb_state_key_get_one_sym(m_state.get(), xkbkey);
   const bool pressed = libinput_event_keyboard_get_key_state(e) == LIBINPUT_KEY_STATE_PRESSED;
   xkb_state_update_key(m_state.get(), xkbkey, pressed ? XKB_KEY_DOWN : XKB_KEY_UP);
@@ -433,31 +487,47 @@ void CLibInputKeyboard::ProcessKey(libinput_event_keyboard *e)
     unicode = 0;
   }
 
-  uint32_t scancode = libinput_event_keyboard_get_key(e);
-  if (scancode > std::numeric_limits<unsigned char>::max())
-  {
-    // Kodi scancodes are limited to unsigned char, pretend the scancode is unknown on overflow
-    scancode = 0;
-  }
-
   // flush composer if set (after a finished sequence)
   if (flushComposer)
   {
     xkb_compose_state_reset(m_composedState.get());
   }
 
+  XBMCKey xbmcKey = XBMCKeyForXKBKeysym(keysym);
+  bool keyRepeats = xkb_keymap_key_repeats(m_keymap.get(), xkbkey);
+
+  if (xbmcKey == XBMCK_UNKNOWN)
+  {
+    // for "extended keycodes" that are out of range for XKB, try to map directly from scancodes to XBMC keys:
+    xbmcKey = XBMCKeyForLibinputKeycode(libinputKeycode);
+    keyRepeats = true; // assume that all of these keys repeat
+  }
+
+  if (xbmcKey == XBMCK_UNKNOWN)
+  {
+    CLog::LogF(LOGDEBUG, "unable to map key with keycode {} ({:#x}), XKB keysym {} ({:#x}).",
+               libinputKeycode, libinputKeycode, keysym, keysym);
+  }
+
+  uint32_t limitedScancode = libinputKeycode;
+  if (limitedScancode > std::numeric_limits<unsigned char>::max())
+  {
+    // Kodi scancodes are limited to unsigned char, pretend the scancode is unknown on overflow
+    limitedScancode = 0;
+  }
+
   XBMC_Event event = {};
   event.type = pressed ? XBMC_KEYDOWN : XBMC_KEYUP;
   event.key.keysym.mod = XBMCMod(mod);
-  event.key.keysym.sym = XBMCKeyForKeysym(keysym, scancode);
-  event.key.keysym.scancode = scancode;
+  event.key.keysym.sym = xbmcKey;
+  event.key.keysym.scancode = limitedScancode;
   event.key.keysym.unicode = unicode;
 
   std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
   if (appPort)
     appPort->OnEvent(event);
 
-  if (pressed && xkb_keymap_key_repeats(m_keymap.get(), xkbkey))
+  if (pressed && keyRepeats)
   {
     libinput_event *ev = libinput_event_keyboard_get_base_event(e);
     libinput_device *dev = libinput_event_get_device(ev);
@@ -479,7 +549,7 @@ void CLibInputKeyboard::ProcessKey(libinput_event_keyboard *e)
   }
 }
 
-XBMCKey CLibInputKeyboard::XBMCKeyForKeysym(xkb_keysym_t sym, uint32_t scancode)
+XBMCKey CLibInputKeyboard::XBMCKeyForXKBKeysym(xkb_keysym_t sym)
 {
   if (sym >= 'A' && sym <= 'Z')
   {
@@ -497,6 +567,15 @@ XBMCKey CLibInputKeyboard::XBMCKeyForKeysym(xkb_keysym_t sym, uint32_t scancode)
   auto xkbmapping = xkbMap.find(sym);
   if (xkbmapping != xkbMap.cend())
     return xkbmapping->second;
+
+  return XBMCK_UNKNOWN;
+}
+
+XBMCKey CLibInputKeyboard::XBMCKeyForLibinputKeycode(uint32_t scancode)
+{
+  const auto evdevmapping = evdevKeycodeMap.find(scancode);
+  if (evdevmapping != evdevKeycodeMap.cend())
+    return evdevmapping->second;
 
   return XBMCK_UNKNOWN;
 }
