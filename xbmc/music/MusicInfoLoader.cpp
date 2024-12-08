@@ -179,8 +179,10 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
   {
     // first check the cached item
     CFileItemPtr mapItem = (*m_mapFileItems)[pItem->GetPath()];
-    if (mapItem && mapItem->m_dateTime==pItem->m_dateTime && mapItem->HasMusicInfoTag() && mapItem->GetMusicInfoTag()->Loaded())
-    { // Query map if we previously cached the file on HD
+    if (mapItem && mapItem->m_dateTime == pItem->m_dateTime && mapItem->HasMusicInfoTag() &&
+        mapItem->GetMusicInfoTag()->Loaded() && pItem->GetStartOffset() == 0 &&
+        pItem->GetEndOffset() == 0)
+    { // Query map if we previously cached the file on HD (only if not a multi-song file)
       *pItem->GetMusicInfoTag() = *mapItem->GetMusicInfoTag();
       if (mapItem->HasArt("thumb"))
         pItem->SetArt("thumb", mapItem->GetArt("thumb"));
@@ -207,13 +209,42 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
       to more than one song then we can not fill the tag data and thumb from the database.
       */
       MAPSONGS::iterator it = m_songsMap.find(pItem->GetPath()); // Find file in song map
-      if (it != m_songsMap.end() && it->second.size() == 1)
+
+      if (it != m_songsMap.end())
       {
-        // Have we loaded this item from database before,
-        // and even if it has a cuesheet it has only one song
-        pItem->GetMusicInfoTag()->SetSong(it->second[0]);
-        if (!it->second[0].strThumb.empty())
-          pItem->SetArt("thumb", it->second[0].strThumb);
+        int songIndex{-1};
+        if (it->second.size() > 1)
+        {
+          // More than one match (ie. single file containing multiple songs)
+          const VECSONGS songs = it->second;
+          const auto& song = std::find_if(songs.begin(), songs.end(),
+                                          [&](const CSong& s)
+                                          { return pItem->GetStartOffset() == s.iStartOffset; });
+          if (song != songs.end())
+            songIndex = std::distance(songs.begin(), song);
+        }
+        else
+          songIndex = 0;
+
+        if (songIndex != -1)
+        {
+          pItem->GetMusicInfoTag()->SetSong(it->second[songIndex]);
+          if (!it->second[songIndex].strThumb.empty())
+            pItem->SetArt("thumb", it->second[songIndex].strThumb);
+          else
+          {
+            // Get art
+            std::vector<ArtForThumbLoader> art;
+            if (m_musicDatabase.GetArtForItem(-1, it->second[songIndex].idAlbum, -1, false, art))
+            {
+              std::map<std::string, std::string> artmap;
+              for (const auto& a : art)
+                if (a.mediaType == MediaTypeAlbum)
+                  artmap.insert(std::make_pair(a.artType, a.url));
+              pItem->SetArt(artmap);
+            }
+          }
+        }
       }
       else if (MUSIC::IsMusicDb(*pItem))
       { // a music db item that doesn't have tag loaded - grab details from the database
