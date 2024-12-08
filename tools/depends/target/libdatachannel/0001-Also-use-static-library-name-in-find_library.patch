@@ -1,0 +1,45 @@
+From b66cf9eddc93c08eb803590d00641dd0b8f4e3c6 Mon Sep 17 00:00:00 2001
+From: Garrett Brown <themagnificentmrb@gmail.com>
+Date: Fri, 28 Jun 2024 17:02:32 -0700
+Subject: [PATCH 1/2] Also use static library name in find_library
+
+---
+ CMakeLists.txt                   | 4 ++--
+ cmake/Modules/FindLibJuice.cmake | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 2754b012..ce8be00f 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -418,13 +418,13 @@ else()
+ 	if(USE_SYSTEM_JUICE)
+ 		find_package(LibJuice REQUIRED)
+ 		target_compile_definitions(datachannel PRIVATE RTC_SYSTEM_JUICE=1)
+-		target_compile_definitions(datachannel-static PRIVATE RTC_SYSTEM_JUICE=1)
++		target_compile_definitions(datachannel-static PRIVATE RTC_SYSTEM_JUICE=1 JUICE_STATIC)
+ 		target_link_libraries(datachannel PRIVATE LibJuice::LibJuice)
+ 		target_link_libraries(datachannel-static PRIVATE LibJuice::LibJuice)
+ 	else()
+ 		add_subdirectory(deps/libjuice EXCLUDE_FROM_ALL)
+ 		target_compile_definitions(datachannel PRIVATE RTC_SYSTEM_JUICE=0)
+-		target_compile_definitions(datachannel-static PRIVATE RTC_SYSTEM_JUICE=0)
++		target_compile_definitions(datachannel-static PRIVATE RTC_SYSTEM_JUICE=0 JUICE_STATIC)
+ 		target_link_libraries(datachannel PRIVATE LibJuice::LibJuiceStatic)
+ 		target_link_libraries(datachannel-static PRIVATE LibJuice::LibJuiceStatic)
+ 	endif()
+diff --git a/cmake/Modules/FindLibJuice.cmake b/cmake/Modules/FindLibJuice.cmake
+index 2a01c484..31558707 100644
+--- a/cmake/Modules/FindLibJuice.cmake
++++ b/cmake/Modules/FindLibJuice.cmake
+@@ -1,6 +1,6 @@
+ if (NOT TARGET LibJuice::LibJuice)
+ 	find_path(JUICE_INCLUDE_DIR juice/juice.h)
+-	find_library(JUICE_LIBRARY NAMES juice)
++	find_library(JUICE_LIBRARY NAMES juice juice-static)
+ 
+ 	include(FindPackageHandleStandardArgs)
+ 	find_package_handle_standard_args(LibJuice DEFAULT_MSG JUICE_LIBRARY JUICE_INCLUDE_DIR)
+-- 
+2.37.0.windows.1
+

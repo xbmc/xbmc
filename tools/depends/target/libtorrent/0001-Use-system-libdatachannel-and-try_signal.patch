@@ -1,0 +1,466 @@
+From 3413e3141f51b69f639633a8c1ccb2db0834253b Mon Sep 17 00:00:00 2001
+From: Garrett Brown <themagnificentmrb@gmail.com>
+Date: Fri, 28 Jul 2023 16:44:06 -0700
+Subject: [PATCH 1/2] Use system libdatachannel and try_signal
+
+---
+ CMakeLists.txt                         | 41 +++------------
+ cmake/Modules/FindLibDataChannel.cmake | 59 +++++++++++++++++++++
+ cmake/Modules/FindLibjuice.cmake       | 17 ++++++
+ cmake/Modules/FindLibsrtp.cmake        | 73 ++++++++++++++++++++++++++
+ cmake/Modules/FindPlog.cmake           | 47 +++++++++++++++++
+ cmake/Modules/FindUsrsctp.cmake        | 51 ++++++++++++++++++
+ cmake/Modules/Findtry_signal.cmake     | 51 ++++++++++++++++++
+ 7 files changed, 304 insertions(+), 35 deletions(-)
+ create mode 100644 cmake/Modules/FindLibDataChannel.cmake
+ create mode 100644 cmake/Modules/FindLibjuice.cmake
+ create mode 100644 cmake/Modules/FindLibsrtp.cmake
+ create mode 100644 cmake/Modules/FindPlog.cmake
+ create mode 100644 cmake/Modules/FindUsrsctp.cmake
+ create mode 100644 cmake/Modules/Findtry_signal.cmake
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index d6c8fbdec..908e2343e 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -17,6 +17,8 @@ set (SOVERSION "${VER_MAJOR}.${VER_MINOR}")
+ include(GNUInstallDirs)
+ include(GeneratePkgConfig)
+ 
++find_package(try_signal REQUIRED)
++
+ set(libtorrent_include_files
+ 	add_torrent_params.hpp
+ 	address.hpp
+@@ -295,14 +297,6 @@ set(libtorrent_aux_include_files
+ 	xml_parse.hpp
+ )
+ 
+-set(try_signal_include_files
+-	try_signal
+-	signal_error_code
+-	try_signal_mingw
+-	try_signal_msvc
+-	try_signal_posix
+-)
+-
+ set(sources
+ 	add_torrent_params.cpp
+ 	alert.cpp
+@@ -485,11 +479,6 @@ set(ed25519_sources
+ 	hasher512.cpp
+ )
+ 
+-set(try_signal_sources
+-	try_signal.cpp
+-	signal_error_code.cpp
+-)
+-
+ list(TRANSFORM sources PREPEND "src/")
+ list(TRANSFORM kademlia_sources PREPEND "src/kademlia/")
+ list(TRANSFORM ed25519_sources PREPEND "src/ed25519/")
+@@ -497,7 +486,6 @@ list(TRANSFORM libtorrent_include_files PREPEND "include/libtorrent/")
+ list(TRANSFORM libtorrent_extensions_include_files PREPEND "include/libtorrent/extensions/")
+ list(TRANSFORM libtorrent_aux_include_files PREPEND "include/libtorrent/aux_/")
+ list(TRANSFORM libtorrent_kademlia_include_files PREPEND "include/libtorrent/kademlia/")
+-list(TRANSFORM try_signal_sources PREPEND "deps/try_signal/")
+ 
+ # these options control target creation and thus have to be declared before the add_library() call
+ feature_option(BUILD_SHARED_LIBS "build libtorrent as a shared library" ON)
+@@ -520,7 +508,6 @@ endif()
+ 
+ add_library(torrent-rasterbar
+ 	${sources}
+-	${try_signal_sources}
+ 	${libtorrent_include_files}
+ 	${libtorrent_extensions_include_files}
+ 	${libtorrent_aux_include_files}
+@@ -550,7 +537,6 @@ set_target_properties(torrent-rasterbar
+ target_include_directories(torrent-rasterbar PUBLIC
+ 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+ 	$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+-	PRIVATE deps/try_signal
+ )
+ 
+ target_compile_definitions(torrent-rasterbar
+@@ -576,6 +562,7 @@ endif()
+ target_link_libraries(torrent-rasterbar
+ 	PUBLIC
+ 		Threads::Threads
++		try_signal::try_signal
+ )
+ 
+ if(CMAKE_CXX_COMPILER_ID MATCHES Clang)
+@@ -826,24 +813,6 @@ else()
+ 	target_compile_definitions(torrent-rasterbar PUBLIC TORRENT_DISABLE_DHT)
+ endif()
+ 
+-if (webtorrent)
+-	option(NO_WEBSOCKET "Disable WebSocket support in libdatachannel" ON)
+-	option(NO_MEDIA "Disable media transport support in libdatachannel" ON)
+-	if(GNUTLS_FOUND)
+-		option(USE_GNUTLS "Use GnuTLS instead of OpenSSL for libdatachannel" ON)
+-	else()
+-		option(USE_GNUTLS "Use GnuTLS instead of OpenSSL for libdatachannel" OFF)
+-	endif()
+-	add_subdirectory(deps/libdatachannel EXCLUDE_FROM_ALL)
+-	if(CMAKE_CXX_COMPILER_ID MATCHES Clang|GNU)
+-		target_compile_options(datachannel-static PRIVATE
+-			-Wno-pedantic
+-			-Wno-unused-parameter
+-			-Wno-unused-variable
+-			-Wno-format-nonliteral)
+-	endif()
+-endif()
+-
+ # Boost
+ find_public_dependency(Boost REQUIRED)
+ target_link_libraries(torrent-rasterbar PUBLIC Boost::headers)
+@@ -929,7 +898,9 @@ include(CheckCXXCompilerFlag)
+ add_subdirectory(bindings)
+ 
+ if(webtorrent)
+-	target_link_libraries(torrent-rasterbar PRIVATE LibDataChannel::LibDataChannelStatic)
++	find_package(LibDataChannel REQUIRED)
++	target_compile_definitions(torrent-rasterbar PRIVATE ${LIBDATACHANNEL_DEFINITIONS})
++	target_link_libraries(torrent-rasterbar PRIVATE ${LIBDATACHANNEL_LIBRARIES})
+ 
+ 	# Boost.JSON was added to Boost in version 1.75
+ 	find_package(Boost OPTIONAL_COMPONENTS json)
+diff --git a/cmake/Modules/FindLibDataChannel.cmake b/cmake/Modules/FindLibDataChannel.cmake
+new file mode 100644
+index 000000000..8fa574ba2
+--- /dev/null
++++ b/cmake/Modules/FindLibDataChannel.cmake
+@@ -0,0 +1,59 @@
++# FindLibDataChannel
++# -------
++# Finds the libdatachannel library
++#
++# This will define the following variables::
++#
++#   LIBDATACHANNEL_FOUND - system has libdatachannel
++#   LIBDATACHANNEL_INCLUDE_DIRS - the libdatachannel include directory
++#   LIBDATACHANNEL_LIBRARIES - the libdatachannel libraries
++#   LIBDATACHANNEL_DEFINITIONS - the libdatachannel compiler definitions
++#
++# and the following imported targets::
++#
++#   LibDataChannel::LibDataChannel - The libdatachannel library
++#
++
++find_package(Libjuice REQUIRED QUIET)
++find_package(Libsrtp REQUIRED QUIET)
++find_package(Plog REQUIRED QUIET)
++find_package(Usrsctp REQUIRED QUIET)
++
++set(LIBDATACHANNEL_DEPENDENCIES
++  Libjuice::Libjuice
++  libsrtp::libsrtp
++  plog::plog
++  Usrsctp::Usrsctp)
++
++# Populate paths for find_package_handle_standard_args
++find_path(LIBDATACHANNEL_INCLUDE_DIR rtc/rtc.hpp)
++find_library(LIBDATACHANNEL_LIBRARY NAMES datachannel datachannel-static)
++
++include(FindPackageHandleStandardArgs)
++find_package_handle_standard_args(LibDataChannel
++  REQUIRED_VARS
++    LIBDATACHANNEL_LIBRARY
++    LIBDATACHANNEL_INCLUDE_DIR
++  VERSION_VAR
++    LIBDATACHANNEL_VERSION)
++
++if(LIBDATACHANNEL_FOUND)
++  set(LIBDATACHANNEL_INCLUDE_DIRS ${LIBDATACHANNEL_INCLUDE_DIR})
++  set(LIBDATACHANNEL_LIBRARIES ${LIBDATACHANNEL_LIBRARY})
++  set(LIBDATACHANNEL_DEFINITIONS RTC_STATIC)
++
++  if(NOT TARGET LibDataChannel::LibDataChannel)
++    add_library(LibDataChannel::LibDataChannel UNKNOWN IMPORTED)
++
++    set_target_properties(LibDataChannel::LibDataChannel PROPERTIES
++      IMPORTED_LOCATION "${LIBDATACHANNEL_LIBRARY}"
++      INTERFACE_COMPILE_DEFINITIONS ${LIBDATACHANNEL_DEFINITIONS}
++      INTERFACE_INCLUDE_DIRECTORIES "${LIBDATACHANNEL_INCLUDE_DIR}")
++
++    add_dependencies(LibDataChannel::LibDataChannel ${LIBDATACHANNEL_DEPENDENCIES})
++  endif()
++endif()
++
++mark_as_advanced(LIBDATACHANNEL_INCLUDE_DIR)
++mark_as_advanced(LIBDATACHANNEL_LIBRARY)
++mark_as_advanced(LIBDATACHANNEL_DEPENDENCIES)
+diff --git a/cmake/Modules/FindLibjuice.cmake b/cmake/Modules/FindLibjuice.cmake
+new file mode 100644
+index 000000000..e3e90a3c1
+--- /dev/null
++++ b/cmake/Modules/FindLibjuice.cmake
+@@ -0,0 +1,17 @@
++if (NOT TARGET LibJuice::LibJuice)
++	find_path(JUICE_INCLUDE_DIR juice/juice.h)
++	find_library(JUICE_LIBRARY NAMES juice juice-static)
++
++	include(FindPackageHandleStandardArgs)
++	find_package_handle_standard_args(Libjuice DEFAULT_MSG JUICE_LIBRARY JUICE_INCLUDE_DIR)
++
++    if (Libjuice_FOUND)
++        add_library(LibJuice::LibJuice UNKNOWN IMPORTED)
++        set_target_properties(LibJuice::LibJuice PROPERTIES
++            IMPORTED_LOCATION "${JUICE_LIBRARY}"
++            INTERFACE_INCLUDE_DIRECTORIES "${JUICE_INCLUDE_DIRS}"
++            INTERFACE_LINK_LIBRARIES "${JUICE_LIBRARIES}"
++                IMPORTED_LINK_INTERFACE_LANGUAGES "C")
++    endif ()
++endif ()
++
+diff --git a/cmake/Modules/FindLibsrtp.cmake b/cmake/Modules/FindLibsrtp.cmake
+new file mode 100644
+index 000000000..20e77387a
+--- /dev/null
++++ b/cmake/Modules/FindLibsrtp.cmake
+@@ -0,0 +1,73 @@
++############################################################################
++# FindSRTP.txt
++# Copyright (C) 2014  Belledonne Communications, Grenoble France
++#
++############################################################################
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License
++# as published by the Free Software Foundation; either version 2
++# of the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, write to the Free Software
++# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
++#
++############################################################################
++#
++# - Find the SRTP include file and library
++#
++#  SRTP_FOUND - system has SRTP
++#  SRTP_INCLUDE_DIRS - the SRTP include directory
++#  SRTP_LIBRARIES - The libraries needed to use SRTP
++
++set(_SRTP_ROOT_PATHS
++	${CMAKE_INSTALL_PREFIX}
++)
++
++find_path(SRTP2_INCLUDE_DIRS
++	NAMES srtp2/srtp.h
++	HINTS _SRTP_ROOT_PATHS
++	PATH_SUFFIXES include
++)
++
++if(SRTP2_INCLUDE_DIRS)
++	set(HAVE_SRTP_SRTP_H 1)
++	set(SRTP_INCLUDE_DIRS ${SRTP2_INCLUDE_DIRS})
++	set(SRTP_VERSION 2)
++	find_library(SRTP_LIBRARIES
++		NAMES srtp2
++		HINTS ${_SRTP_ROOT_PATHS}
++		PATH_SUFFIXES bin lib
++	)
++else()
++	find_path(SRTP_INCLUDE_DIRS
++		NAMES srtp/srtp.h
++		HINTS _SRTP_ROOT_PATHS
++		PATH_SUFFIXES include
++	)
++	if(SRTP_INCLUDE_DIRS)
++		set(HAVE_SRTP_SRTP_H 1)
++		set(SRTP_VERSION 1)
++	endif()
++	find_library(SRTP_LIBRARIES
++	NAMES srtp
++	HINTS ${_SRTP_ROOT_PATHS}
++	PATH_SUFFIXES bin lib
++)
++endif()
++
++
++include(FindPackageHandleStandardArgs)
++find_package_handle_standard_args(Libsrtp
++	DEFAULT_MSG
++	SRTP_INCLUDE_DIRS SRTP_LIBRARIES HAVE_SRTP_SRTP_H SRTP_VERSION
++)
++
++mark_as_advanced(SRTP_INCLUDE_DIRS SRTP_LIBRARIES HAVE_SRTP_SRTP_H SRTP_VERSION)
++
+diff --git a/cmake/Modules/FindPlog.cmake b/cmake/Modules/FindPlog.cmake
+new file mode 100644
+index 000000000..f114f9985
+--- /dev/null
++++ b/cmake/Modules/FindPlog.cmake
+@@ -0,0 +1,47 @@
++#[=======================================================================[.rst
++Findplog
++----------
++
++FindModule for Plog library
++
++Imported Targets
++^^^^^^^^^^^^^^^^
++
++This module defines the :prop_tgt:`IMPORTED` target ``plog::plog``.
++
++Result Variables
++^^^^^^^^^^^^^^^^
++
++This module sets the following variables:
++
++``plog_FOUND``
++  True, if the library was found.
++
++Cache variables
++^^^^^^^^^^^^^^^
++
++The following cache variables may also be set:
++
++``plog_INCLUDE_DIR``
++  Directory containing ``plog/Log.h``.
++
++#]=======================================================================]
++
++include(FindPackageHandleStandardArgs)
++
++find_path(
++  plog_INCLUDE_DIR
++  NAMES plog/Log.h
++  PATHS /usr/include /usr/local/include)
++
++find_package_handle_standard_args(
++  Plog
++  REQUIRED_VARS plog_INCLUDE_DIR)
++mark_as_advanced(plog_INCLUDE_DIR)
++
++if(Plog_FOUND)
++  if(NOT TARGET plog::plog)
++    add_library(plog::plog INTERFACE IMPORTED)
++    set_target_properties(plog::plog PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${plog_INCLUDE_DIR}")
++  endif()
++endif()
+diff --git a/cmake/Modules/FindUsrsctp.cmake b/cmake/Modules/FindUsrsctp.cmake
+new file mode 100644
+index 000000000..577bbc662
+--- /dev/null
++++ b/cmake/Modules/FindUsrsctp.cmake
+@@ -0,0 +1,51 @@
++#[=======================================================================[.rst
++FindUsrsctp
++----------
++
++FindModule for Usrsctp library
++
++Imported Targets
++^^^^^^^^^^^^^^^^
++
++This module defines the :prop_tgt:`IMPORTED` target ``Usrsctp::Usrsctp``.
++
++Result Variables
++^^^^^^^^^^^^^^^^
++
++This module sets the following variables:
++
++``Usrsctp_FOUND``
++  True, if the library was found.
++
++#]=======================================================================]
++
++include(FindPackageHandleStandardArgs)
++
++find_path(
++  Usrsctp_INCLUDE_DIR
++  NAMES usrsctp.h
++  PATHS /usr/include /usr/local/include)
++
++find_library(
++Usrsctp_LIBRARY
++  NAMES usrsctp libusrsctp
++  PATHS /usr/lib /usr/local/lib)
++
++find_package_handle_standard_args(
++  Usrsctp
++  REQUIRED_VARS Usrsctp_LIBRARY Usrsctp_INCLUDE_DIR)
++mark_as_advanced(Usrsctp_INCLUDE_DIR Usrsctp_LIBRARY)
++
++if(Usrsctp_FOUND)
++  if(NOT TARGET Usrsctp::Usrsctp)
++    if(IS_ABSOLUTE "${Usrsctp_LIBRARY}")
++      add_library(Usrsctp::Usrsctp UNKNOWN IMPORTED)
++      set_property(TARGET Usrsctp::Usrsctp PROPERTY IMPORTED_LOCATION "${Usrsctp_LIBRARY}")
++    else()
++      add_library(Usrsctp::Usrsctp INTERFACE IMPORTED)
++      set_property(TARGET Usrsctp::Usrsctp PROPERTY IMPORTED_LIBNAME "${Usrsctp_LIBRARY}")
++    endif()
++
++    set_target_properties(Usrsctp::Usrsctp PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${Usrsctp_INCLUDE_DIR}")
++  endif()
++endif()
+diff --git a/cmake/Modules/Findtry_signal.cmake b/cmake/Modules/Findtry_signal.cmake
+new file mode 100644
+index 000000000..18f41a933
+--- /dev/null
++++ b/cmake/Modules/Findtry_signal.cmake
+@@ -0,0 +1,51 @@
++#[=======================================================================[.rst
++Findtry_signal
++----------
++
++FindModule for try_signal library
++
++Imported Targets
++^^^^^^^^^^^^^^^^
++
++This module defines the :prop_tgt:`IMPORTED` target ``try_signal::try_signal``.
++
++Result Variables
++^^^^^^^^^^^^^^^^
++
++This module sets the following variables:
++
++``TRY_SIGNAL_FOUND``
++  True, if the library was found.
++
++Cache variables
++^^^^^^^^^^^^^^^
++
++The following cache variables may also be set:
++
++``TRY_SIGNAL_INCLUDE_DIR``
++  Directory containing ``try_signal.hpp``.
++
++#]=======================================================================]
++
++include(FindPackageHandleStandardArgs)
++
++# Populate paths for find_package_handle_standard_args
++find_path(TRY_SIGNAL_INCLUDE_DIR NAMES try_signal.hpp)
++find_library(TRY_SIGNAL_LIBRARY NAMES try_signal)
++
++find_package_handle_standard_args(try_signal
++  REQUIRED_VARS
++    TRY_SIGNAL_LIBRARY
++    TRY_SIGNAL_INCLUDE_DIR)
++
++if(TRY_SIGNAL_FOUND)
++  if(NOT TARGET try_signal::try_signal)
++    add_library(try_signal::try_signal INTERFACE IMPORTED)
++    set_target_properties(try_signal::try_signal PROPERTIES
++      IMPORTED_LOCATION "${TRY_SIGNAL_LIBRARY}"
++      INTERFACE_INCLUDE_DIRECTORIES "${TRY_SIGNAL_INCLUDE_DIR}")
++  endif()
++endif()
++
++mark_as_advanced(TRY_SIGNAL_INCLUDE_DIR)
++mark_as_advanced(TRY_SIGNAL_LIBRARY)
+-- 
+2.34.1
+
