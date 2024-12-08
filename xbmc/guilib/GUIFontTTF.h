@@ -64,9 +64,9 @@ struct SVertex
 #else
 struct SVertex
 {
-  float x, y, z;
+  float x, y;
   unsigned char r, g, b, a;
-  float u, v;
+  uint16_t u, v;
 };
 #endif
 
