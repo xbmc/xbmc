@@ -128,8 +128,19 @@ std::string CGUIDialogSubtitleSettings::BrowseForSubtitle()
   }
 
   std::string strPath;
-  const std::string dynPath{g_application.CurrentFileItem().GetDynPath()};
-  if (URIUtils::IsInRAR(dynPath) || URIUtils::IsInZIP(dynPath))
+  const CFileItem& fileItem = g_application.CurrentFileItem();
+  const std::string dynPath{fileItem.GetDynPath()};
+
+  // Playlists can contains media urls that are not browsable (web hosted files)
+  // or urls of non-media files that are to be played by the InputStream add-ons
+  // so when the dynpath is not a sharing protocol (e.g. FTP, SMB)
+  // start browse files from the original playlist file path
+  if (fileItem.HasProperty("original_playlist_filepath") &&
+      !(!URIUtils::IsHTTP(dynPath) && URIUtils::IsNetworkFilesystem(dynPath)))
+  {
+    strPath = fileItem.GetProperty("original_playlist_filepath").asString();
+  }
+  else if (URIUtils::IsInRAR(dynPath) || URIUtils::IsInZIP(dynPath))
   {
     strPath = CURL(dynPath).GetHostName();
   }
