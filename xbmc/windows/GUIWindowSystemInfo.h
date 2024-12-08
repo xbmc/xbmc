@@ -24,6 +24,8 @@ private:
   int  m_section;
   void ResetLabels();
   void SetControlLabel(int id, const char *format, int label, int info);
+  void LoadPrivacyPolicy();
   std::vector<std::string> m_diskUsage;
+  bool m_privacyPolicyLoaded{false};
 };
 
