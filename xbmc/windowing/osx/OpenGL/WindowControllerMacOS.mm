@@ -62,13 +62,14 @@
 
     XBMC_Event newEvent = {};
     newEvent.type = XBMC_VIDEORESIZE;
-    newEvent.resize.w = static_cast<int>(rect.size.width);
-    newEvent.resize.h = static_cast<int>(rect.size.height);
+    newEvent.resize.width = static_cast<int>(rect.size.width);
+    newEvent.resize.height = static_cast<int>(rect.size.height);
+    newEvent.resize.scale = 1.0;
 
     // check for valid sizes cause in some cases
     // we are hit during fullscreen transition from macos
     // and might be technically "zero" sized
-    if (newEvent.resize.w != 0 && newEvent.resize.h != 0)
+    if (newEvent.resize.width != 0 && newEvent.resize.height != 0)
     {
       std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
       if (appPort)

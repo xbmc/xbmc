@@ -610,16 +610,17 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         {
           g_sizeMoveSizing = false;
           newEvent.type = XBMC_VIDEORESIZE;
-          newEvent.resize.w = g_sizeMoveWidth;
-          newEvent.resize.h = g_sizeMoveHight;
+          newEvent.resize.width = g_sizeMoveWidth;
+          newEvent.resize.height = g_sizeMoveHight;
+          newEvent.resize.scale = 1.0;
 
           // tell the device about new size
-          DX::Windowing()->OnResize(newEvent.resize.w, newEvent.resize.h);
+          DX::Windowing()->OnResize(newEvent.resize.width, newEvent.resize.height);
           // tell the application about new size
           const auto& components = CServiceBroker::GetAppComponents();
           const auto appPower = components.GetComponent<CApplicationPowerHandling>();
           if (appPower->GetRenderGUI() && !DX::Windowing()->IsAlteringWindow() &&
-              newEvent.resize.w > 0 && newEvent.resize.h > 0)
+              newEvent.resize.width > 0 && newEvent.resize.height > 0)
           {
             if (appPort)
               appPort->OnEvent(newEvent);
@@ -672,18 +673,19 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         {
           // API call such as SetWindowPos or SwapChain->SetFullscreenState
           newEvent.type = XBMC_VIDEORESIZE;
-          newEvent.resize.w = g_sizeMoveWidth;
-          newEvent.resize.h = g_sizeMoveHight;
+          newEvent.resize.width = g_sizeMoveWidth;
+          newEvent.resize.height = g_sizeMoveHight;
+          newEvent.resize.scale = 1.0;
 
-          CLog::LogFC(LOGDEBUG, LOGWINDOWING, "window resize event {} x {}", newEvent.resize.w,
-                      newEvent.resize.h);
+          CLog::LogFC(LOGDEBUG, LOGWINDOWING, "window resize event {} x {}", newEvent.resize.width,
+                      newEvent.resize.height);
           // tell device about new size
-          DX::Windowing()->OnResize(newEvent.resize.w, newEvent.resize.h);
+          DX::Windowing()->OnResize(newEvent.resize.width, newEvent.resize.height);
           // tell application about size changes
           const auto& components = CServiceBroker::GetAppComponents();
           const auto appPower = components.GetComponent<CApplicationPowerHandling>();
           if (appPower->GetRenderGUI() && !DX::Windowing()->IsAlteringWindow() &&
-              newEvent.resize.w > 0 && newEvent.resize.h > 0)
+              newEvent.resize.width > 0 && newEvent.resize.height > 0)
           {
             if (appPort)
               appPort->OnEvent(newEvent);
