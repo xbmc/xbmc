@@ -54,7 +54,7 @@ namespace ADDON
 
 typedef struct
 {
-  const char *name;
+  const char* name;
   CONTENT_TYPE type;
   int pretty;
 } ContentMapping;
@@ -67,7 +67,7 @@ static const ContentMapping content[] = {{"unknown", CONTENT_NONE, 231},
                                          {"tvshows", CONTENT_TVSHOWS, 20343},
                                          {"musicvideos", CONTENT_MUSICVIDEOS, 20389}};
 
-std::string TranslateContent(const CONTENT_TYPE &type, bool pretty /*=false*/)
+std::string TranslateContent(const CONTENT_TYPE& type, bool pretty /*=false*/)
 {
   for (const ContentMapping& map : content)
   {
@@ -82,7 +82,7 @@ std::string TranslateContent(const CONTENT_TYPE &type, bool pretty /*=false*/)
   return "";
 }
 
-CONTENT_TYPE TranslateContent(const std::string &string)
+CONTENT_TYPE TranslateContent(const std::string& string)
 {
   for (const ContentMapping& map : content)
   {
@@ -96,23 +96,23 @@ AddonType ScraperTypeFromContent(const CONTENT_TYPE& content)
 {
   switch (content)
   {
-  case CONTENT_ALBUMS:
-    return AddonType::SCRAPER_ALBUMS;
-  case CONTENT_ARTISTS:
-    return AddonType::SCRAPER_ARTISTS;
-  case CONTENT_MOVIES:
-    return AddonType::SCRAPER_MOVIES;
-  case CONTENT_MUSICVIDEOS:
-    return AddonType::SCRAPER_MUSICVIDEOS;
-  case CONTENT_TVSHOWS:
-    return AddonType::SCRAPER_TVSHOWS;
-  default:
-    return AddonType::UNKNOWN;
+    case CONTENT_ALBUMS:
+      return AddonType::SCRAPER_ALBUMS;
+    case CONTENT_ARTISTS:
+      return AddonType::SCRAPER_ARTISTS;
+    case CONTENT_MOVIES:
+      return AddonType::SCRAPER_MOVIES;
+    case CONTENT_MUSICVIDEOS:
+      return AddonType::SCRAPER_MUSICVIDEOS;
+    case CONTENT_TVSHOWS:
+      return AddonType::SCRAPER_TVSHOWS;
+    default:
+      return AddonType::UNKNOWN;
   }
 }
 
 // if the XML root is <error>, throw CScraperError with enclosed <title>/<message> values
-static void CheckScraperError(const TiXmlElement *pxeRoot)
+static void CheckScraperError(const TiXmlElement* pxeRoot)
 {
   if (!pxeRoot || StringUtils::CompareNoCase(pxeRoot->Value(), "error"))
     return;
@@ -157,12 +157,12 @@ CScraper::CScraper(const AddonInfoPtr& addonInfo, AddonType addonType)
   m_isPython = URIUtils::GetExtension(addonInfo->Type(addonType)->LibPath()) == ".py";
 }
 
-bool CScraper::Supports(const CONTENT_TYPE &content) const
+bool CScraper::Supports(const CONTENT_TYPE& content) const
 {
   return Type() == ScraperTypeFromContent(content);
 }
 
-bool CScraper::SetPathSettings(CONTENT_TYPE content, const std::string &xml)
+bool CScraper::SetPathSettings(CONTENT_TYPE content, const std::string& xml)
 {
   m_pathContent = content;
   if (!LoadSettings(false, false))
@@ -192,7 +192,8 @@ std::string CScraper::GetPathSettings()
 
 void CScraper::ClearCache()
 {
-  std::string strCachePath = URIUtils::AddFileToFolder(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cachePath, "scrapers");
+  std::string strCachePath = URIUtils::AddFileToFolder(
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cachePath, "scrapers");
 
   // create scraper cache dir if needed
   if (!CDirectory::Exists(strCachePath))
@@ -220,10 +221,10 @@ void CScraper::ClearCache()
 // is XML output by chained functions, possibly recursively
 // the CCurlFile object is passed in so that URL fetches can be canceled from other threads
 // throws CScraperError abort on internal failures (e.g., parse errors)
-std::vector<std::string> CScraper::Run(const std::string &function,
-                                       const CScraperUrl &scrURL,
-                                       CCurlFile &http,
-                                       const std::vector<std::string> *extras)
+std::vector<std::string> CScraper::Run(const std::string& function,
+                                       const CScraperUrl& scrURL,
+                                       CCurlFile& http,
+                                       const std::vector<std::string>* extras)
 {
   if (!Load())
     throw CScraperError();
@@ -249,14 +250,14 @@ std::vector<std::string> CScraper::Run(const std::string &function,
 
   std::vector<std::string> result;
   result.push_back(strXML);
-  TiXmlElement *xchain = doc.RootElement()->FirstChildElement();
+  TiXmlElement* xchain = doc.RootElement()->FirstChildElement();
   // skip children of the root element until <url> or <chain>
   while (xchain && strcmp(xchain->Value(), "url") && strcmp(xchain->Value(), "chain"))
     xchain = xchain->NextSiblingElement();
   while (xchain)
   {
     // <chain|url function="...">param</>
-    const char *szFunction = xchain->Attribute("function");
+    const char* szFunction = xchain->Attribute("function");
     if (szFunction)
     {
       CScraperUrl scrURL2;
@@ -289,35 +290,34 @@ std::vector<std::string> CScraper::Run(const std::string &function,
 
 // just like Run, but returns an empty list instead of throwing in case of error
 // don't use in new code; errors should be handled appropriately
-std::vector<std::string> CScraper::RunNoThrow(const std::string &function,
-                                              const CScraperUrl &url,
-                                              XFILE::CCurlFile &http,
-                                              const std::vector<std::string> *extras)
+std::vector<std::string> CScraper::RunNoThrow(const std::string& function,
+                                              const CScraperUrl& url,
+                                              XFILE::CCurlFile& http,
+                                              const std::vector<std::string>* extras)
 {
   std::vector<std::string> vcs;
   try
   {
     vcs = Run(function, url, http, extras);
   }
-  catch (const CScraperError &sce)
+  catch (const CScraperError& sce)
   {
     assert(sce.FAborted()); // the only kind we should get
   }
   return vcs;
 }
 
-std::string CScraper::InternalRun(const std::string &function,
-                                  const CScraperUrl &scrURL,
-                                  CCurlFile &http,
-                                  const std::vector<std::string> *extras)
+std::string CScraper::InternalRun(const std::string& function,
+                                  const CScraperUrl& scrURL,
+                                  CCurlFile& http,
+                                  const std::vector<std::string>* extras)
 {
   // walk the list of input URLs and fetch each into parser parameters
   const auto& urls = scrURL.GetUrls();
   size_t i;
   for (i = 0; i < urls.size(); ++i)
   {
-    if (!CScraperUrl::Get(urls[i], m_parser.m_param[i], http, ID()) ||
-        m_parser.m_param[i].empty())
+    if (!CScraperUrl::Get(urls[i], m_parser.m_param[i], http, ID()) || m_parser.m_param[i].empty())
       return "";
   }
   // put the 'extra' parameters into the parser parameter list too
@@ -419,7 +419,7 @@ bool CScraper::IsNoop()
 
 // pass in contents of .nfo file; returns URL (possibly empty if none found)
 // and may populate strId, or throws CScraperError on error
-CScraperUrl CScraper::NfoUrl(const std::string &sNfoContent)
+CScraperUrl CScraper::NfoUrl(const std::string& sNfoContent)
 {
   CScraperUrl scurlRet;
 
@@ -506,7 +506,7 @@ CScraperUrl CScraper::NfoUrl(const std::string &sNfoContent)
   return scurlRet;
 }
 
-CScraperUrl CScraper::ResolveIDToUrl(const std::string &externalID)
+CScraperUrl CScraper::ResolveIDToUrl(const std::string& externalID)
 {
   CScraperUrl scurlRet;
 
@@ -582,16 +582,16 @@ CScraperUrl CScraper::ResolveIDToUrl(const std::string &externalID)
   return scurlRet;
 }
 
-static bool RelevanceSortFunction(const CScraperUrl &left, const CScraperUrl &right)
+static bool RelevanceSortFunction(const CScraperUrl& left, const CScraperUrl& right)
 {
   return left.GetRelevance() > right.GetRelevance();
 }
 
 template<class T>
-static T FromFileItem(const CFileItem &item);
+static T FromFileItem(const CFileItem& item);
 
 template<>
-CScraperUrl FromFileItem<CScraperUrl>(const CFileItem &item)
+CScraperUrl FromFileItem<CScraperUrl>(const CFileItem& item)
 {
   CScraperUrl url;
 
@@ -607,7 +607,7 @@ CScraperUrl FromFileItem<CScraperUrl>(const CFileItem &item)
 }
 
 template<>
-CMusicAlbumInfo FromFileItem<CMusicAlbumInfo>(const CFileItem &item)
+CMusicAlbumInfo FromFileItem<CMusicAlbumInfo>(const CFileItem& item)
 {
   CMusicAlbumInfo info;
   const std::string& sTitle = item.GetLabel();
@@ -639,7 +639,7 @@ CMusicAlbumInfo FromFileItem<CMusicAlbumInfo>(const CFileItem &item)
 }
 
 template<>
-CMusicArtistInfo FromFileItem<CMusicArtistInfo>(const CFileItem &item)
+CMusicArtistInfo FromFileItem<CMusicArtistInfo>(const CFileItem& item)
 {
   CMusicArtistInfo info;
   const std::string& sTitle = item.GetLabel();
@@ -649,8 +649,9 @@ CMusicArtistInfo FromFileItem<CMusicArtistInfo>(const CFileItem &item)
 
   info = CMusicArtistInfo(sTitle, url);
   if (item.HasProperty("artist.genre"))
-    info.GetArtist().genre = StringUtils::Split(item.GetProperty("artist.genre").asString(),
-                                                CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
+    info.GetArtist().genre = StringUtils::Split(
+        item.GetProperty("artist.genre").asString(),
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
   if (item.HasProperty("artist.disambiguation"))
     info.GetArtist().strDisambiguation = item.GetProperty("artist.disambiguation").asString();
   if (item.HasProperty("artist.type"))
@@ -664,14 +665,14 @@ CMusicArtistInfo FromFileItem<CMusicArtistInfo>(const CFileItem &item)
 }
 
 template<class T>
-static std::vector<T> PythonFind(const std::string &ID,
-                                 const std::map<std::string, std::string> &additionals)
+static std::vector<T> PythonFind(const std::string& ID,
+                                 const std::map<std::string, std::string>& additionals)
 {
   std::vector<T> result;
   CFileItemList items;
   std::stringstream str;
   str << "plugin://" << ID << "?action=find";
-  for (const auto &it : additionals)
+  for (const auto& it : additionals)
     str << "&" << it.first << "=" << CURL::Encode(it.second);
 
   if (XFILE::CDirectory::GetDirectory(str.str(), items, "", DIR_FLAG_DEFAULTS))
@@ -683,22 +684,23 @@ static std::vector<T> PythonFind(const std::string &ID,
   return result;
 }
 
-static std::string FromString(const CFileItem &item, const std::string &key)
+static std::string FromString(const CFileItem& item, const std::string& key)
 {
   return item.GetProperty(key).asString();
 }
 
-static std::vector<std::string> FromArray(const CFileItem &item, const std::string &key, int sep)
+static std::vector<std::string> FromArray(const CFileItem& item, const std::string& key, int sep)
 {
-  return StringUtils::Split(item.GetProperty(key).asString(),
-                            sep ? CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator
-                                : CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
+  return StringUtils::Split(
+      item.GetProperty(key).asString(),
+      sep ? CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator
+          : CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
 }
 
-static void ParseThumbs(CScraperUrl &scurl,
-                        const CFileItem &item,
+static void ParseThumbs(CScraperUrl& scurl,
+                        const CFileItem& item,
                         int nThumbs,
-                        const std::string &tag)
+                        const std::string& tag)
 {
   for (int i = 0; i < nThumbs; ++i)
   {
@@ -711,7 +713,7 @@ static void ParseThumbs(CScraperUrl &scurl,
   }
 }
 
-static std::string ParseFanart(const CFileItem &item, int nFanart, const std::string &tag)
+static std::string ParseFanart(const CFileItem& item, int nFanart, const std::string& tag)
 {
   std::string result;
   TiXmlElement fanart("fanart");
@@ -771,7 +773,7 @@ bool DetailsFromFileItem<CAlbum>(const CFileItem& item, CAlbum& album)
   album.fRating = item.GetProperty("album.rating").asFloat();
   album.iUserrating = item.GetProperty("album.user_rating").asInteger32();
   album.iVotes = item.GetProperty("album.votes").asInteger32();
-  
+
   /* Scrapers fetch a list of possible art but do not set the current images used because art
      selection depends on other preferences so is handled by CMusicInfoScanner
      album.art = item.GetArt();
@@ -904,22 +906,23 @@ static bool PythonDetails(const std::string& ID,
 }
 
 // fetch list of matching movies sorted by relevance (may be empty);
-// throws CScraperError on error; first called with fFirst set, then unset if first try fails
-std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
-                                             const std::string &movieTitle, int movieYear,
-                                             bool fFirst)
+// throws CScraperError on error; first called with bCleanChars set, then unset if first try fails
+std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile& fcurl,
+                                             const std::string& movieTitle,
+                                             int movieYear,
+                                             bool bCleanChars)
 {
   // prepare parameters for URL creation
   std::string sTitle, sYear;
   if (movieYear < 0)
   {
     std::string sTitleYear;
-    CUtil::CleanString(movieTitle, sTitle, sTitleYear, sYear, true /*fRemoveExt*/, fFirst);
+    CUtil::CleanString(movieTitle, sTitle, sTitleYear, sYear, true /*fRemoveExt*/, bCleanChars);
   }
   else
   {
     sTitle = movieTitle;
-    sYear = std::to_string( movieYear );
+    sYear = std::to_string(movieYear);
   }
 
   CLog::Log(LOGDEBUG,
@@ -932,7 +935,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
   if (IsNoop())
     return vcscurl;
 
-  if (!fFirst)
+  if (!bCleanChars)
     StringUtils::Replace(sTitle, '-', ' ');
 
   if (m_isPython)
@@ -947,7 +950,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
   std::vector<std::string> vcsIn(1);
   g_charsetConverter.utf8To(SearchStringEncoding(), sTitle, vcsIn[0]);
   vcsIn[0] = CURL::Encode(vcsIn[0]);
-  if (fFirst && !sYear.empty())
+  if (bCleanChars && !sYear.empty())
     vcsIn.push_back(sYear);
 
   // request a search URL from the title/filename/etc.
@@ -989,16 +992,16 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
     // we need to sort if returned results don't specify 'sorted="yes"'
     if (fSort)
     {
-      const char *sorted = xhResults.Element()->Attribute("sorted");
+      const char* sorted = xhResults.Element()->Attribute("sorted");
       if (sorted != nullptr)
         fSort = !StringUtils::EqualsNoCase(sorted, "yes");
     }
 
-    for (TiXmlElement *pxeMovie = xhResults.FirstChild("entity").Element(); pxeMovie;
+    for (TiXmlElement* pxeMovie = xhResults.FirstChild("entity").Element(); pxeMovie;
          pxeMovie = pxeMovie->NextSiblingElement())
     {
-      TiXmlNode *pxnTitle = pxeMovie->FirstChild("title");
-      TiXmlElement *pxeLink = pxeMovie->FirstChildElement("url");
+      TiXmlNode* pxnTitle = pxeMovie->FirstChild("title");
+      TiXmlElement* pxeLink = pxeMovie->FirstChildElement("url");
       if (pxnTitle && pxnTitle->FirstChild() && pxeLink && pxeLink->FirstChild())
       {
         CScraperUrl scurlMovie;
@@ -1061,9 +1064,9 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
 
 // find album by artist, using fcurl for web fetches
 // returns a list of albums (empty if no match or failure)
-std::vector<CMusicAlbumInfo> CScraper::FindAlbum(CCurlFile &fcurl,
-                                                 const std::string &sAlbum,
-                                                 const std::string &sArtist)
+std::vector<CMusicAlbumInfo> CScraper::FindAlbum(CCurlFile& fcurl,
+                                                 const std::string& sAlbum,
+                                                 const std::string& sArtist)
 {
   CLog::Log(LOGDEBUG,
             "{}: Searching for '{} - {}' using {} scraper "
@@ -1076,8 +1079,8 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(CCurlFile &fcurl,
     return vcali;
 
   if (m_isPython)
-    return PythonFind<CMusicAlbumInfo>(ID(),
-      {{"title", sAlbum}, {"artist", sArtist}, {"pathSettings", GetPathSettingsAsJSON()}});
+    return PythonFind<CMusicAlbumInfo>(
+        ID(), {{"title", sAlbum}, {"artist", sArtist}, {"pathSettings", GetPathSettingsAsJSON()}});
 
   // scraper function is given the album and artist as parameters and
   // returns an XML <url> element parseable by CScraperUrl
@@ -1116,7 +1119,7 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(CCurlFile &fcurl,
     doc.Parse(*i, TIXML_ENCODING_UTF8);
     TiXmlHandle xhDoc(&doc);
 
-    for (TiXmlElement *pxeAlbum = xhDoc.FirstChild("results").FirstChild("entity").Element();
+    for (TiXmlElement* pxeAlbum = xhDoc.FirstChild("results").FirstChild("entity").Element();
          pxeAlbum; pxeAlbum = pxeAlbum->NextSiblingElement())
     {
       std::string sTitle;
@@ -1135,7 +1138,7 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(CCurlFile &fcurl,
 
         // if no URL is provided, use the URL we got back from CreateAlbumSearchUrl
         // (e.g., in case we only got one result back and were sent to the detail page)
-        TiXmlElement *pxeLink = pxeAlbum->FirstChildElement("url");
+        TiXmlElement* pxeLink = pxeAlbum->FirstChildElement("url");
         CScraperUrl scurlAlbum;
         if (!pxeLink)
           scurlAlbum.ParseFromData(scurl.GetData());
@@ -1147,10 +1150,10 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(CCurlFile &fcurl,
 
         CMusicAlbumInfo ali(sTitle, sArtist, sAlbumName, scurlAlbum);
 
-        TiXmlElement *pxeRel = pxeAlbum->FirstChildElement("relevance");
+        TiXmlElement* pxeRel = pxeAlbum->FirstChildElement("relevance");
         if (pxeRel && pxeRel->FirstChild())
         {
-          const char *szScale = pxeRel->Attribute("scale");
+          const char* szScale = pxeRel->Attribute("scale");
           float flScale = szScale ? float(atof(szScale)) : 1;
           ali.SetRelevance(float(atof(pxeRel->FirstChild()->Value())) / flScale);
         }
@@ -1164,7 +1167,7 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(CCurlFile &fcurl,
 
 // find artist, using fcurl for web fetches
 // returns a list of artists (empty if no match or failure)
-std::vector<CMusicArtistInfo> CScraper::FindArtist(CCurlFile &fcurl, const std::string &sArtist)
+std::vector<CMusicArtistInfo> CScraper::FindArtist(CCurlFile& fcurl, const std::string& sArtist)
 {
   CLog::Log(LOGDEBUG,
             "{}: Searching for '{}' using {} scraper "
@@ -1177,8 +1180,8 @@ std::vector<CMusicArtistInfo> CScraper::FindArtist(CCurlFile &fcurl, const std::
     return vcari;
 
   if (m_isPython)
-    return PythonFind<CMusicArtistInfo>(ID(),
-      {{"artist", sArtist}, {"pathSettings", GetPathSettingsAsJSON()}});
+    return PythonFind<CMusicArtistInfo>(
+        ID(), {{"artist", sArtist}, {"pathSettings", GetPathSettingsAsJSON()}});
 
   // scraper function is given the artist as parameter and
   // returns an XML <url> element parseable by CScraperUrl
@@ -1217,15 +1220,15 @@ std::vector<CMusicArtistInfo> CScraper::FindArtist(CCurlFile &fcurl, const std::
       return vcari;
     }
     TiXmlHandle xhDoc(&doc);
-    for (TiXmlElement *pxeArtist = xhDoc.FirstChild("results").FirstChild("entity").Element();
+    for (TiXmlElement* pxeArtist = xhDoc.FirstChild("results").FirstChild("entity").Element();
          pxeArtist; pxeArtist = pxeArtist->NextSiblingElement())
     {
-      TiXmlNode *pxnTitle = pxeArtist->FirstChild("title");
+      TiXmlNode* pxnTitle = pxeArtist->FirstChild("title");
       if (pxnTitle && pxnTitle->FirstChild())
       {
         CScraperUrl scurlArtist;
 
-        TiXmlElement *pxeLink = pxeArtist->FirstChildElement("url");
+        TiXmlElement* pxeLink = pxeArtist->FirstChildElement("url");
         if (!pxeLink)
           scurlArtist.ParseFromData(scurl.GetData());
         for (; pxeLink && pxeLink->FirstChild(); pxeLink = pxeLink->NextSiblingElement("url"))
@@ -1238,8 +1241,9 @@ std::vector<CMusicArtistInfo> CScraper::FindArtist(CCurlFile &fcurl, const std::
         std::string genre;
         XMLUtils::GetString(pxeArtist, "genre", genre);
         if (!genre.empty())
-          ari.GetArtist().genre =
-              StringUtils::Split(genre, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
+          ari.GetArtist().genre = StringUtils::Split(
+              genre,
+              CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
         XMLUtils::GetString(pxeArtist, "disambiguation", ari.GetArtist().strDisambiguation);
         XMLUtils::GetString(pxeArtist, "year", ari.GetArtist().strBorn);
 
@@ -1309,16 +1313,16 @@ VIDEO::EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile& fcurl, const CScra
     }
 
     TiXmlHandle xhDoc(&doc);
-    for (TiXmlElement *pxeMovie = xhDoc.FirstChild("episodeguide").FirstChild("episode").Element();
+    for (TiXmlElement* pxeMovie = xhDoc.FirstChild("episodeguide").FirstChild("episode").Element();
          pxeMovie; pxeMovie = pxeMovie->NextSiblingElement())
     {
       VIDEO::EPISODE ep;
-      TiXmlElement *pxeLink = pxeMovie->FirstChildElement("url");
+      TiXmlElement* pxeLink = pxeMovie->FirstChildElement("url");
       std::string strEpNum;
       if (pxeLink && XMLUtils::GetInt(pxeMovie, "season", ep.iSeason) &&
           XMLUtils::GetString(pxeMovie, "epnum", strEpNum) && !strEpNum.empty())
       {
-        CScraperUrl &scurlEp(ep.cScraperUrl);
+        CScraperUrl& scurlEp(ep.cScraperUrl);
         size_t dot = strEpNum.find('.');
         ep.iEpisode = atoi(strEpNum.c_str());
         ep.iSubepisode = (dot != std::string::npos) ? atoi(strEpNum.substr(dot + 1).c_str()) : 0;
@@ -1389,7 +1393,7 @@ bool CScraper::GetVideoDetails(XFILE::CCurlFile& fcurl,
     }
 
     TiXmlHandle xhDoc(&doc);
-    TiXmlElement *pxeDetails = xhDoc.FirstChild("details").Element();
+    TiXmlElement* pxeDetails = xhDoc.FirstChild("details").Element();
     if (!pxeDetails)
     {
       CLog::Log(LOGERROR, "{}: Invalid XML file (want <details>)", __FUNCTION__);
@@ -1402,7 +1406,7 @@ bool CScraper::GetVideoDetails(XFILE::CCurlFile& fcurl,
 }
 
 // takes a URL; returns true and populates album on success, false otherwise
-bool CScraper::GetAlbumDetails(CCurlFile &fcurl, const CScraperUrl &scurl, CAlbum &album)
+bool CScraper::GetAlbumDetails(CCurlFile& fcurl, const CScraperUrl& scurl, CAlbum& album)
 {
   CLog::Log(LOGDEBUG,
             "{}: Reading '{}' using {} scraper "
@@ -1411,8 +1415,8 @@ bool CScraper::GetAlbumDetails(CCurlFile &fcurl, const CScraperUrl &scurl, CAlbu
             ADDON::TranslateContent(Content()), Version().asString());
 
   if (m_isPython)
-    return PythonDetails(ID(), "url", scurl.GetFirstThumbUrl(),
-      "getdetails", GetPathSettingsAsJSON(), album);
+    return PythonDetails(ID(), "url", scurl.GetFirstThumbUrl(), "getdetails",
+                         GetPathSettingsAsJSON(), album);
 
   std::vector<std::string> vcsOut = RunNoThrow("GetAlbumDetails", scurl, fcurl);
 
@@ -1434,10 +1438,10 @@ bool CScraper::GetAlbumDetails(CCurlFile &fcurl, const CScraperUrl &scurl, CAlbu
 
 // takes a URL (one returned from FindArtist), the original search string, and
 // returns true and populates artist on success, false on failure
-bool CScraper::GetArtistDetails(CCurlFile &fcurl,
-                                const CScraperUrl &scurl,
-                                const std::string &sSearch,
-                                CArtist &artist)
+bool CScraper::GetArtistDetails(CCurlFile& fcurl,
+                                const CScraperUrl& scurl,
+                                const std::string& sSearch,
+                                CArtist& artist)
 {
   if (!scurl.HasUrls())
     return false;
@@ -1449,8 +1453,8 @@ bool CScraper::GetArtistDetails(CCurlFile &fcurl,
             ADDON::TranslateContent(Content()), Version().asString());
 
   if (m_isPython)
-    return PythonDetails(ID(), "url", scurl.GetFirstThumbUrl(),
-      "getdetails", GetPathSettingsAsJSON(), artist);
+    return PythonDetails(ID(), "url", scurl.GetFirstThumbUrl(), "getdetails",
+                         GetPathSettingsAsJSON(), artist);
 
   // pass in the original search string for chaining to search other sites
   std::vector<std::string> vcIn;
@@ -1476,7 +1480,7 @@ bool CScraper::GetArtistDetails(CCurlFile &fcurl,
   return fRet;
 }
 
-bool CScraper::GetArtwork(XFILE::CCurlFile &fcurl, CVideoInfoTag &details)
+bool CScraper::GetArtwork(XFILE::CCurlFile& fcurl, CVideoInfoTag& details)
 {
   if (!details.HasUniqueID())
     return false;
@@ -1488,8 +1492,8 @@ bool CScraper::GetArtwork(XFILE::CCurlFile &fcurl, CVideoInfoTag &details)
             Version().asString());
 
   if (m_isPython)
-    return PythonDetails(ID(), "id", details.GetUniqueID(),
-      "getartwork", GetPathSettingsAsJSON(), details);
+    return PythonDetails(ID(), "id", details.GetUniqueID(), "getartwork", GetPathSettingsAsJSON(),
+                         details);
 
   std::vector<std::string> vcsIn;
   CScraperUrl scurl;
@@ -1510,4 +1514,4 @@ bool CScraper::GetArtwork(XFILE::CCurlFile &fcurl, CVideoInfoTag &details)
   }
   return fRet;
 }
-}
+} // namespace ADDON
