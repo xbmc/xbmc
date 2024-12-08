@@ -14398,7 +14398,12 @@ msgctxt "#20474"
 msgid "HDR type"
 msgstr ""
 
-#empty strings from id 20475 to 21329
+#: xbmc/video/VideoInfoScanner.cpp
+msgctxt "#20475"
+msgid "Listing media files"
+msgstr ""
+
+#empty strings from id 20476 to 21329
 #up to 21329 is reserved for the video db !! !
 
 #: system/settings/settings.xml

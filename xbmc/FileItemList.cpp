@@ -46,6 +46,18 @@ CFileItemList::CFileItemList(const std::string& strPath) : CFileItem(strPath, tr
 {
 }
 
+// Copy constructor:
+CFileItemList::CFileItemList(const CFileItemList& other) : CFileItem(other)
+{
+  Copy(other, true);
+}
+
+// Move constructor:
+CFileItemList::CFileItemList(CFileItemList&& other) noexcept
+  : CFileItem(std::move(other)), m_items(std::move(other.m_items))
+{
+}
+
 CFileItemList::~CFileItemList()
 {
   Clear();

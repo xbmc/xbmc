@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "FileItemList.h"
 #include "InfoScanner.h"
 #include "VideoDatabase.h"
 #include "addons/Scraper.h"
@@ -106,8 +107,28 @@ namespace KODI::VIDEO
     static std::string GetMovieSetInfoFolder(const std::string& setTitle);
 
   protected:
+    struct SourcePathContent
+    {
+      std::string rootPath;
+      SScanSettings scrapperScanSettings;
+      CONTENT_TYPE contentType;
+      CFileItemList items;
+
+      SourcePathContent(std::string a, SScanSettings b, CONTENT_TYPE c)
+        : rootPath(a), scrapperScanSettings(b), contentType(c), items() {};
+    };
+
     virtual void Process();
     bool DoScan(const std::string& strDirectory) override;
+    bool DoScan(const std::vector<SourcePathContent>& _pathsContent);
+
+    void LoadRemoteItems(const std::string& strDirectory,
+                         CFileItemList& remoteDirectoryItems,
+                         SScanSettings scrapperScanSettings,
+                         CONTENT_TYPE contentType);
+    bool IsPathAllowedForScan(const std::string& strDirectory,
+                              SScanSettings scrapperScanSettings,
+                              CONTENT_TYPE contentType);
 
     INFO_RET RetrieveInfoForTvShow(CFileItem *pItem, bool bDirNames, ADDON::ScraperPtr &scraper, bool useLocal, CScraperUrl* pURL, bool fetchEpisodes, CGUIDialogProgress* pDlgProgress);
     INFO_RET RetrieveInfoForMovie(CFileItem *pItem, bool bDirNames, ADDON::ScraperPtr &scraper, bool useLocal, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress);
