@@ -61,11 +61,11 @@ CGUIFont::CGUIFont(const std::string& strFontName,
                    float lineSpacing,
                    float origHeight,
                    CGUIFontTTF* font)
-  : m_strFontName(strFontName)
+  : m_strFontName(strFontName),
+    m_textColor(textColor),
+    m_shadowColor(shadowColor)
 {
   m_style = style & FONT_STYLE_MASK;
-  m_textColor = textColor;
-  m_shadowColor = shadowColor;
   m_lineSpacing = lineSpacing;
   m_origHeight = origHeight;
   m_font = font;
