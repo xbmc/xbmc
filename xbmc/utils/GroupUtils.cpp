@@ -46,11 +46,11 @@ bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileI
     const CFileItemPtr item = items.Get(index);
 
     // group by sets
-    if ((groupBy & GroupBySet) &&
-      item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_set.id > 0)
+    if ((groupBy & GroupBySet) && item->HasVideoInfoTag() &&
+        item->GetVideoInfoTag()->m_set.GetID() > 0)
     {
       ungrouped = false;
-      setMap[item->GetVideoInfoTag()->m_set.id].insert(item);
+      setMap[item->GetVideoInfoTag()->m_set.GetID()].insert(item);
     }
 
     if (ungrouped)
@@ -72,7 +72,8 @@ bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileI
         continue;
       }
 
-      CFileItemPtr pItem(new CFileItem((*set->second.begin())->GetVideoInfoTag()->m_set.title));
+      CFileItemPtr pItem(
+          new CFileItem((*set->second.begin())->GetVideoInfoTag()->m_set.GetTitle()));
       pItem->GetVideoInfoTag()->m_iDbId = set->first;
       pItem->GetVideoInfoTag()->m_type = MediaTypeVideoCollection;
 
@@ -90,7 +91,7 @@ bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileI
       CVideoInfoTag* setInfo = pItem->GetVideoInfoTag();
       setInfo->m_strPath = pItem->GetPath();
       setInfo->m_strTitle = pItem->GetLabel();
-      setInfo->m_strPlot = (*set->second.begin())->GetVideoInfoTag()->m_set.overview;
+      setInfo->m_strPlot = (*set->second.begin())->GetVideoInfoTag()->m_set.GetOverview();
 
       int ratings = 0;
       float totalRatings = 0;
