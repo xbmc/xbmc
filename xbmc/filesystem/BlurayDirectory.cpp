@@ -31,7 +31,6 @@
 
 #include <libbluray/bluray-version.h>
 #include <libbluray/bluray.h>
-#include <libbluray/filesystem.h>
 #include <libbluray/log_control.h>
 
 namespace XFILE
