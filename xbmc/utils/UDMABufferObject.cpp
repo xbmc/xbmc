@@ -20,6 +20,10 @@
 
 #include "PlatformDefs.h"
 
+#ifndef MFD_NOEXEC_SEAL
+#define MFD_NOEXEC_SEAL 0x0008U
+#endif
+
 namespace
 {
 
@@ -95,7 +99,13 @@ bool CUDMABufferObject::CreateBufferObject(uint64_t size)
   // Must be rounded to the system page size
   m_size = RoundUp(size, PAGESIZE);
 
-  m_memfd = memfd_create("kodi", MFD_CLOEXEC | MFD_ALLOW_SEALING);
+  // Since linux >= 6.3 create with the MFD_NOEXEC_SEAL flag.
+  m_memfd = memfd_create("kodi", MFD_CLOEXEC | MFD_ALLOW_SEALING | MFD_NOEXEC_SEAL);
+  if (m_memfd < 0)
+  {
+    // retry creating m_memfd without MFD_NOEXEC_SEAL to support linux < 6.3
+    m_memfd = memfd_create("kodi", MFD_CLOEXEC | MFD_ALLOW_SEALING);
+  }
   if (m_memfd < 0)
   {
     CLog::Log(LOGERROR, "CUDMABufferObject::{} - memfd_create failed: {}", __FUNCTION__,
