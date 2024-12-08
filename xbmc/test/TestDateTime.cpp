@@ -10,8 +10,10 @@
 #include "XBDateTime.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/legacy/ModuleXbmc.h" //Needed to test getRegion()
+#include "utils/DateLib.h"
 
 #include <array>
+#include <chrono>
 #include <iostream>
 
 #include <gtest/gtest.h>
@@ -33,35 +35,16 @@ TEST_F(TestDateTime, DateTimeOperators)
   EXPECT_FALSE(dateTime1 == dateTime2);
 }
 
-TEST_F(TestDateTime, FileTimeOperators)
+TEST_F(TestDateTime, TimePointOperators)
 {
   CDateTime dateTime1(1991, 5, 14, 12, 34, 56);
   CDateTime dateTime2(1991, 5, 14, 12, 34, 57);
 
-  KODI::TIME::FileTime fileTime1;
-  KODI::TIME::FileTime fileTime2;
+  auto tp = dateTime2.GetAsTimePoint();
 
-  dateTime1.GetAsTimeStamp(fileTime1);
-  dateTime2.GetAsTimeStamp(fileTime2);
-
-  CDateTime dateTime3(fileTime1);
-
-  EXPECT_TRUE(dateTime3 < fileTime2);
-  EXPECT_FALSE(dateTime3 > fileTime2);
-  EXPECT_FALSE(dateTime3 == fileTime2);
-}
-
-TEST_F(TestDateTime, SystemTimeOperators)
-{
-  CDateTime dateTime1(1991, 5, 14, 12, 34, 56);
-  CDateTime dateTime2(1991, 5, 14, 12, 34, 57);
-
-  KODI::TIME::SystemTime systemTime;
-  dateTime2.GetAsSystemTime(systemTime);
-
-  EXPECT_TRUE(dateTime1 < systemTime);
-  EXPECT_FALSE(dateTime1 > systemTime);
-  EXPECT_FALSE(dateTime1 == systemTime);
+  EXPECT_TRUE(dateTime1 < tp);
+  EXPECT_FALSE(dateTime1 > tp);
+  EXPECT_FALSE(dateTime1 == tp);
 }
 
 TEST_F(TestDateTime, TimeTOperators)
@@ -162,7 +145,7 @@ TEST_F(TestDateTime, MonthStringToMonthNum)
 }
 
 // this method is broken as SetFromDBDate() will return true
-TEST_F(TestDateTime, DISABLED_SetFromDateString)
+TEST_F(TestDateTime, SetFromDateString)
 {
   CDateTime dateTime;
   EXPECT_TRUE(dateTime.SetFromDateString("tuesday may 14, 1991"));
@@ -191,13 +174,7 @@ TEST_F(TestDateTime, SetFromDBDate)
   EXPECT_EQ(dateTime.GetDay(), 2);
 }
 
-// disabled on osx and freebsd as their mktime functions
-// don't work for dates before 1900
-#if defined(TARGET_DARWIN_OSX) || defined(TARGET_FREEBSD)
-TEST_F(TestDateTime, DISABLED_SetFromDBTime)
-#else
 TEST_F(TestDateTime, SetFromDBTime)
-#endif
 {
   CDateTime dateTime1;
   EXPECT_TRUE(dateTime1.SetFromDBTime("12:34"));
@@ -238,10 +215,8 @@ TEST_F(TestDateTime, SetFromW3CDate)
 
 TEST_F(TestDateTime, SetFromW3CDateTime)
 {
-  CDateTimeSpan bias = CDateTime::GetTimezoneBias();
   CDateTime dateTime;
   dateTime.SetFromDBDateTime("1994-11-05 13:15:30");
-  dateTime += bias;
   std::string dateTimeStr = dateTime.GetAsDBDate() + "T" + dateTime.GetAsDBTime() + "Z";
 
   CDateTime dateTime1;
@@ -261,35 +236,6 @@ TEST_F(TestDateTime, SetFromW3CDateTime)
   EXPECT_EQ(dateTime2.GetHour(), 13);
   EXPECT_EQ(dateTime2.GetMinute(), 15);
   EXPECT_EQ(dateTime2.GetSecond(), 30);
-}
-
-TEST_F(TestDateTime, SetFromUTCDateTime)
-{
-  CDateTimeSpan bias = CDateTime::GetTimezoneBias();
-
-  CDateTime dateTime1;
-  dateTime1.SetFromDBDateTime("1991-05-14 12:34:56");
-  dateTime1 += bias;
-
-  CDateTime dateTime2;
-  EXPECT_TRUE(dateTime2.SetFromUTCDateTime(dateTime1));
-  EXPECT_EQ(dateTime2.GetYear(), 1991);
-  EXPECT_EQ(dateTime2.GetMonth(), 5);
-  EXPECT_EQ(dateTime2.GetDay(), 14);
-  EXPECT_EQ(dateTime2.GetHour(), 12);
-  EXPECT_EQ(dateTime2.GetMinute(), 34);
-  EXPECT_EQ(dateTime2.GetSecond(), 56);
-
-  const time_t time = 674224496 + bias.GetSecondsTotal();
-
-  CDateTime dateTime3;
-  EXPECT_TRUE(dateTime3.SetFromUTCDateTime(time));
-  EXPECT_EQ(dateTime3.GetYear(), 1991);
-  EXPECT_EQ(dateTime3.GetMonth(), 5);
-  EXPECT_EQ(dateTime3.GetDay(), 14);
-  EXPECT_EQ(dateTime3.GetHour(), 12);
-  EXPECT_EQ(dateTime3.GetMinute(), 34);
-  EXPECT_EQ(dateTime3.GetSecond(), 56);
 }
 
 TEST_F(TestDateTime, SetFromRFC1123DateTime)
@@ -326,18 +272,14 @@ TEST_F(TestDateTime, SetDateTime)
   EXPECT_EQ(dateTime2.GetMinute(), 0);
   EXPECT_EQ(dateTime2.GetSecond(), 0);
 
-// disabled on osx and freebsd as their mktime functions
-// don't work for dates before 1900
-#if !defined(TARGET_DARWIN_OSX) && !defined(TARGET_FREEBSD)
   CDateTime dateTime3;
   EXPECT_TRUE(dateTime3.SetTime(12, 34, 56));
-  EXPECT_EQ(dateTime3.GetYear(), 1601);
+  EXPECT_EQ(dateTime3.GetYear(), 1970);
   EXPECT_EQ(dateTime3.GetMonth(), 1);
   EXPECT_EQ(dateTime3.GetDay(), 1);
   EXPECT_EQ(dateTime3.GetHour(), 12);
   EXPECT_EQ(dateTime3.GetMinute(), 34);
   EXPECT_EQ(dateTime3.GetSecond(), 56);
-#endif
 }
 
 TEST_F(TestDateTime, GetAsStrings)
@@ -352,22 +294,25 @@ TEST_F(TestDateTime, GetAsStrings)
   EXPECT_EQ(dateTime.GetAsW3CDate(), "1991-05-14");
 }
 
-// disabled because we have no way to validate these values
-// GetTimezoneBias() always returns a positive value so
-// there is no way to detect the direction of the offset
-TEST_F(TestDateTime, DISABLED_GetAsStringsWithBias)
+TEST_F(TestDateTime, GetAsStringsWithBias)
 {
-  CDateTimeSpan bias = CDateTime::GetTimezoneBias();
-
   CDateTime dateTime;
   dateTime.SetDateTime(1991, 05, 14, 12, 34, 56);
 
-  CDateTime dateTimeWithBias(dateTime);
-  dateTimeWithBias += bias;
+  std::cout << dateTime.GetAsRFC1123DateTime() << std::endl;
+  std::cout << dateTime.GetAsW3CDateTime(false) << std::endl;
+  std::cout << dateTime.GetAsW3CDateTime(true) << std::endl;
 
-  EXPECT_EQ(dateTime.GetAsRFC1123DateTime(), "Tue, 14 May 1991 20:34:56 GMT");
-  EXPECT_EQ(dateTime.GetAsW3CDateTime(false), "1991-05-14T12:34:56+08:00");
-  EXPECT_EQ(dateTime.GetAsW3CDateTime(true), "1991-05-14T20:34:56Z");
+#if !defined(TARGET_WINDOWS)
+  auto tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  auto zone = date::make_zoned(date::current_zone(), tps);
+  EXPECT_EQ(dateTime.GetAsW3CDateTime(false), date::format("%FT%T%Ez", zone));
+#else // defined(TARGET_WINDOWS)
+  EXPECT_EQ(dateTime.GetAsW3CDateTime(true), "1991-05-14T12:34:56Z");
+#endif // !defined(TARGET_WINDOWS)
+
+  EXPECT_EQ(dateTime.GetAsRFC1123DateTime(), "Tue, 14 May 1991 12:34:56 GMT");
+  EXPECT_EQ(dateTime.GetAsW3CDateTime(true), "1991-05-14T12:34:56Z");
 }
 
 TEST_F(TestDateTime, GetAsLocalized)
@@ -619,15 +564,14 @@ TEST_F(TestDateTime, GetAsLocalized)
   EXPECT_EQ(dateTime2.GetAsLocalizedTime(TIME_FORMAT(256)), "5");
 }
 
-TEST_F(TestDateTime, GetAsSystemTime)
+TEST_F(TestDateTime, GetAsTimePoint)
 {
   CDateTime dateTime;
   dateTime.SetDateTime(1991, 05, 14, 12, 34, 56);
 
-  KODI::TIME::SystemTime systemTime;
-  dateTime.GetAsSystemTime(systemTime);
+  auto tp = dateTime.GetAsTimePoint();
 
-  EXPECT_TRUE(dateTime == systemTime);
+  EXPECT_TRUE(dateTime == tp);
 }
 
 TEST_F(TestDateTime, GetAsTime)
@@ -663,57 +607,215 @@ TEST_F(TestDateTime, GetAsTm)
   }
 }
 
-// Disabled pending std::chrono and std::date changes.
-TEST_F(TestDateTime, DISABLED_GetAsTimeStamp)
+TEST_F(TestDateTime, GetAsLocalDateTime)
 {
-  CDateTimeSpan bias = CDateTime::GetTimezoneBias();
-
-  CDateTime dateTime;
-  dateTime.SetDateTime(1991, 05, 14, 12, 34, 56);
-
-  KODI::TIME::FileTime fileTime;
-  dateTime.GetAsTimeStamp(fileTime);
-  dateTime += bias;
-
-  EXPECT_TRUE(dateTime == fileTime);
-}
-
-TEST_F(TestDateTime, GetAsUTCDateTime)
-{
-  CDateTimeSpan bias = CDateTime::GetTimezoneBias();
-
   CDateTime dateTime1;
   dateTime1.SetDateTime(1991, 05, 14, 12, 34, 56);
 
   CDateTime dateTime2;
-  dateTime2 = dateTime1.GetAsUTCDateTime();
-  dateTime2 -= bias;
+  dateTime2 = dateTime1.GetAsLocalDateTime();
 
-  EXPECT_EQ(dateTime2.GetYear(), 1991);
-  EXPECT_EQ(dateTime2.GetMonth(), 5);
-  EXPECT_EQ(dateTime2.GetDay(), 14);
-  EXPECT_EQ(dateTime2.GetHour(), 12);
-  EXPECT_EQ(dateTime2.GetMinute(), 34);
-  EXPECT_EQ(dateTime2.GetSecond(), 56);
+#if !defined(TARGET_WINDOWS)
+  auto zoned_time = date::make_zoned(date::current_zone(), dateTime1.GetAsTimePoint());
+  auto time = zoned_time.get_local_time().time_since_epoch();
+
+  CDateTime cmpTime(std::chrono::duration_cast<std::chrono::seconds>(time).count());
+#else // defined(TARGET_WINDOWS)
+  SYSTEMTIME lst{}, st{};
+
+  st.wYear = dateTime1.GetYear();
+  st.wMonth = dateTime1.GetMonth();
+  st.wDay = dateTime1.GetDay();
+  st.wDayOfWeek = dateTime1.GetDayOfWeek();
+  st.wHour = dateTime1.GetHour();
+  st.wMinute = dateTime1.GetMinute();
+  st.wSecond = dateTime1.GetSecond();
+  st.wMilliseconds = dateTime1.GetMilliseconds();
+
+  EXPECT_TRUE(SystemTimeToTzSpecificLocalTime(nullptr, &st, &lst) == TRUE);
+
+  CDateTime cmpTime(lst.wYear, lst.wMonth, lst.wDay, lst.wHour, lst.wMinute, lst.wSecond,
+                    lst.wMilliseconds);
+#endif // !defined(TARGET_WINDOWS)
+
+  EXPECT_TRUE(dateTime2 == cmpTime);
 }
 
-// disabled on osx and freebsd as their mktime functions
-// don't work for dates before 1900
-#if defined(TARGET_DARWIN_OSX) || defined(TARGET_FREEBSD)
-TEST_F(TestDateTime, DISABLED_Reset)
-#else
 TEST_F(TestDateTime, Reset)
-#endif
 {
   CDateTime dateTime;
   dateTime.SetDateTime(1991, 05, 14, 12, 34, 56);
 
   dateTime.Reset();
 
-  EXPECT_EQ(dateTime.GetYear(), 1601);
+  EXPECT_EQ(dateTime.GetYear(), 1970);
   EXPECT_EQ(dateTime.GetMonth(), 1);
   EXPECT_EQ(dateTime.GetDay(), 1);
   EXPECT_EQ(dateTime.GetHour(), 0);
   EXPECT_EQ(dateTime.GetMinute(), 0);
   EXPECT_EQ(dateTime.GetSecond(), 0);
 }
+
+#ifndef TARGET_WINDOWS
+TEST_F(TestDateTime, Tzdata)
+{
+  CDateTime dateTime;
+  dateTime.SetDateTime(1991, 05, 14, 12, 34, 56);
+
+  // LANG=C TZ="Etc/GMT+1" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
+  auto tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  auto zone = date::make_zoned("Etc/GMT+1", tps);
+  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T11:34:56-01:00")
+      << "tzdata information not valid for 'Etc/GMT+1'";
+
+  // LANG=C TZ="Etc/GMT+2" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
+  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = date::make_zoned("Etc/GMT+2", tps);
+  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T10:34:56-02:00")
+      << "tzdata information not valid for 'Etc/GMT+2'";
+
+  // LANG=C TZ="Etc/GMT+3" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
+  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = date::make_zoned("Etc/GMT+3", tps);
+  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T09:34:56-03:00")
+      << "tzdata information not valid for 'Etc/GMT+3'";
+
+  // LANG=C TZ="Etc/GMT+4" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
+  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = date::make_zoned("Etc/GMT+4", tps);
+  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T08:34:56-04:00")
+      << "tzdata information not valid for 'Etc/GMT+4'";
+
+  // LANG=C TZ="Etc/GMT+5" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
+  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = date::make_zoned("Etc/GMT+5", tps);
+  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T07:34:56-05:00")
+      << "tzdata information not valid for 'Etc/GMT+5'";
+
+  // LANG=C TZ="Etc/GMT+6" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
+  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = date::make_zoned("Etc/GMT+6", tps);
+  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T06:34:56-06:00")
+      << "tzdata information not valid for 'Etc/GMT+6'";
+
+  // LANG=C TZ="Etc/GMT+7" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
+  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = date::make_zoned("Etc/GMT+7", tps);
+  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T05:34:56-07:00")
+      << "tzdata information not valid for 'Etc/GMT+7'";
+
+  // LANG=C TZ="Etc/GMT+8" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
+  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = date::make_zoned("Etc/GMT+8", tps);
+  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T04:34:56-08:00")
+      << "tzdata information not valid for 'Etc/GMT+8'";
+
+  // LANG=C TZ="Etc/GMT+9" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
+  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = date::make_zoned("Etc/GMT+9", tps);
+  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T03:34:56-09:00")
+      << "tzdata information not valid for 'Etc/GMT+9'";
+
+  // LANG=C TZ="Etc/GMT+10" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
+  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = date::make_zoned("Etc/GMT+10", tps);
+  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T02:34:56-10:00")
+      << "tzdata information not valid for 'Etc/GMT+10'";
+
+  // LANG=C TZ="Etc/GMT+11" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
+  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = date::make_zoned("Etc/GMT+11", tps);
+  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T01:34:56-11:00")
+      << "tzdata information not valid for 'Etc/GMT+11'";
+
+  // LANG=C TZ="Etc/GMT+12" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
+  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = date::make_zoned("Etc/GMT+12", tps);
+  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T00:34:56-12:00")
+      << "tzdata information not valid for 'Etc/GMT+12'";
+
+  // LANG=C TZ="Etc/GMT-1" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
+  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = date::make_zoned("Etc/GMT-1", tps);
+  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T13:34:56+01:00")
+      << "tzdata information not valid for 'Etc/GMT-1'";
+
+  // LANG=C TZ="Etc/GMT-2" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
+  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = date::make_zoned("Etc/GMT-2", tps);
+  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T14:34:56+02:00")
+      << "tzdata information not valid for 'Etc/GMT-2'";
+
+  // LANG=C TZ="Etc/GMT-3" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
+  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = date::make_zoned("Etc/GMT-3", tps);
+  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T15:34:56+03:00")
+      << "tzdata information not valid for 'Etc/GMT-3'";
+
+  // LANG=C TZ="Etc/GMT-4" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
+  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = date::make_zoned("Etc/GMT-4", tps);
+  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T16:34:56+04:00")
+      << "tzdata information not valid for 'Etc/GMT-4'";
+
+  // LANG=C TZ="Etc/GMT-5" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
+  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = date::make_zoned("Etc/GMT-5", tps);
+  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T17:34:56+05:00")
+      << "tzdata information not valid for 'Etc/GMT-5'";
+
+  // LANG=C TZ="Etc/GMT-6" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
+  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = date::make_zoned("Etc/GMT-6", tps);
+  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T18:34:56+06:00")
+      << "tzdata information not valid for 'Etc/GMT-6'";
+
+  // LANG=C TZ="Etc/GMT-7" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
+  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = date::make_zoned("Etc/GMT-7", tps);
+  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T19:34:56+07:00")
+      << "tzdata information not valid for 'Etc/GMT-7'";
+
+  // LANG=C TZ="Etc/GMT-8" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
+  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = date::make_zoned("Etc/GMT-8", tps);
+  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T20:34:56+08:00")
+      << "tzdata information not valid for 'Etc/GMT-8'";
+
+  // LANG=C TZ="Etc/GMT-9" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
+  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = date::make_zoned("Etc/GMT-9", tps);
+  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T21:34:56+09:00")
+      << "tzdata information not valid for 'Etc/GMT-9'";
+
+  // LANG=C TZ="Etc/GMT-10" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
+  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = date::make_zoned("Etc/GMT-10", tps);
+  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T22:34:56+10:00")
+      << "tzdata information not valid for 'Etc/GMT-10'";
+
+  // LANG=C TZ="Etc/GMT-11" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
+  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = date::make_zoned("Etc/GMT-11", tps);
+  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-14T23:34:56+11:00")
+      << "tzdata information not valid for 'Etc/GMT-11'";
+
+  // LANG=C TZ="Etc/GMT-12" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
+  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = date::make_zoned("Etc/GMT-12", tps);
+  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-15T00:34:56+12:00")
+      << "tzdata information not valid for 'Etc/GMT-12'";
+
+  // LANG=C TZ="Etc/GMT-13" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
+  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = date::make_zoned("Etc/GMT-13", tps);
+  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-15T01:34:56+13:00")
+      << "tzdata information not valid for 'Etc/GMT-13'";
+
+  // LANG=C TZ="Etc/GMT-14" date '+%Y-%m-%dT%H:%M:%S%Ez' -d "1991-05-14 12:34:56 UTC" | sed 's/[0-9][0-9]$/:&/'
+  tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  zone = date::make_zoned("Etc/GMT-14", tps);
+  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-15T02:34:56+14:00")
+      << "tzdata information not valid for 'Etc/GMT-14'";
+}
+#endif // !defined(TARGET_WINDOWS)

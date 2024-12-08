@@ -27,6 +27,9 @@ namespace KODI
 {
 namespace TIME
 {
+
+// For backward compatibility with CArchive
+
 struct SystemTime
 {
   unsigned short year;
@@ -39,30 +42,8 @@ struct SystemTime
   unsigned short milliseconds;
 };
 
-struct TimeZoneInformation
-{
-  long bias;
-  std::string standardName;
-  SystemTime standardDate;
-  long standardBias;
-  std::string daylightName;
-  SystemTime daylightDate;
-  long daylightBias;
-};
-
-constexpr int KODI_TIME_ZONE_ID_INVALID{-1};
-constexpr int KODI_TIME_ZONE_ID_UNKNOWN{0};
-constexpr int KODI_TIME_ZONE_ID_STANDARD{1};
-constexpr int KODI_TIME_ZONE_ID_DAYLIGHT{2};
-
-struct FileTime
-{
-  unsigned int lowDateTime;
-  unsigned int highDateTime;
-};
-
-void GetLocalTime(SystemTime* systemTime);
-uint32_t GetTimeZoneInformation(TimeZoneInformation* timeZoneInformation);
+using Duration = std::chrono::duration<std::int64_t, std::ratio<1, 10'000'000>>;
+using TimePoint = std::chrono::time_point<std::chrono::system_clock, Duration>;
 
 template<typename Rep, typename Period>
 void Sleep(std::chrono::duration<Rep, Period> duration)
@@ -76,13 +57,5 @@ void Sleep(std::chrono::duration<Rep, Period> duration)
   std::this_thread::sleep_for(duration);
 }
 
-int FileTimeToLocalFileTime(const FileTime* fileTime, FileTime* localFileTime);
-int SystemTimeToFileTime(const SystemTime* systemTime, FileTime* fileTime);
-long CompareFileTime(const FileTime* fileTime1, const FileTime* fileTime2);
-int FileTimeToSystemTime(const FileTime* fileTime, SystemTime* systemTime);
-int LocalFileTimeToFileTime(const FileTime* LocalFileTime, FileTime* fileTime);
-
-int FileTimeToTimeT(const FileTime* localFileTime, time_t* pTimeT);
-int TimeTToFileTime(time_t timeT, FileTime* localFileTime);
 } // namespace TIME
 } // namespace KODI
