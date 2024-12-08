@@ -521,6 +521,34 @@ JSONRPC_STATUS CPlayerOperations::SetTempo(const std::string& method,
   }
 }
 
+namespace
+{
+double ParseTimeInSeconds(const CVariant& time)
+{
+  double seconds = 0.0;
+  if (time.isMember("hours"))
+    seconds += time["hours"].asInteger() * 60 * 60;
+  if (time.isMember("minutes"))
+    seconds += time["minutes"].asInteger() * 60;
+  if (time.isMember("seconds"))
+    seconds += time["seconds"].asInteger();
+  if (time.isMember("milliseconds"))
+    seconds += time["milliseconds"].asDouble() / 1000.0;
+
+  return seconds;
+}
+
+void HandleResumeOption(const CVariant& optionResume, CFileItem& item)
+{
+  if (optionResume.isBoolean() && optionResume.asBoolean())
+    item.SetStartOffset(STARTOFFSET_RESUME);
+  else if (optionResume.isDouble())
+    item.SetProperty("StartPercent", optionResume);
+  else if (optionResume.isObject())
+    item.SetStartOffset(CUtil::ConvertSecsToMilliSecs(ParseTimeInSeconds(optionResume)));
+}
+} // unnamed namespace
+
 JSONRPC_STATUS CPlayerOperations::Seek(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   PlayerType player = GetPlayer(parameterObject["playerid"]);
@@ -907,7 +935,9 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
     if (!recording)
       return InvalidParams;
 
-    if (!CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayMedia(CFileItem(recording)))
+    CFileItem recItem{recording};
+    HandleResumeOption(optionResume, recItem);
+    if (!CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(recItem, false))
       return FailedToExecute;
 
     return ACK;
@@ -939,10 +969,29 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
 
         return StartSlideshow("", false, optionShuffled.isBoolean() && optionShuffled.asBoolean());
       }
-      else if (list.Size() == 1 && (URIUtils::IsPVRChannel(list[0]->GetPath()) ||
-                                    URIUtils::IsPVRRecording(list[0]->GetPath())))
+      else if (list.Size() == 1 && URIUtils::IsPVRChannel(list[0]->GetPath()))
       {
         if (!CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayMedia(*list[0]))
+          return FailedToExecute;
+      }
+      else if (list.Size() == 1 && URIUtils::IsPVRRecording(list[0]->GetPath()))
+      {
+        const std::shared_ptr<const CPVRRecordings> recordingsContainer{
+            CServiceBroker::GetPVRManager().Recordings()};
+        if (!recordingsContainer)
+          return FailedToExecute;
+
+        std::shared_ptr<CPVRRecording> recording{list[0]->GetPVRRecordingInfoTag()};
+        if (!recording)
+          recording = recordingsContainer->GetByPath(list[0]->GetPath());
+
+        if (!recording)
+          return InvalidParams;
+
+        CFileItem recItem{recording};
+        HandleResumeOption(optionResume, recItem);
+        if (!CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(recItem,
+                                                                                     false))
           return FailedToExecute;
       }
       else
@@ -992,15 +1041,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
           list.SetProperty("repeat", static_cast<int>(ParseRepeatState(optionRepeat)));
         // Handle "resume" option
         if (list.Size() == 1)
-        {
-          if (optionResume.isBoolean() && optionResume.asBoolean())
-            list[0]->SetStartOffset(STARTOFFSET_RESUME);
-          else if (optionResume.isDouble())
-            list[0]->SetProperty("StartPercent", optionResume);
-          else if (optionResume.isObject())
-            list[0]->SetStartOffset(
-                CUtil::ConvertSecsToMilliSecs(ParseTimeInSeconds(optionResume)));
-        }
+          HandleResumeOption(optionResume, *list[0]);
 
         auto l = new CFileItemList(); //don't delete
         l->Copy(list);
@@ -2179,21 +2220,6 @@ PLAYLIST::RepeatState CPlayerOperations::ParseRepeatState(const CVariant& repeat
     state = PLAYLIST::RepeatState::ALL;
 
   return state;
-}
-
-double CPlayerOperations::ParseTimeInSeconds(const CVariant &time)
-{
-  double seconds = 0.0;
-  if (time.isMember("hours"))
-    seconds += time["hours"].asInteger() * 60 * 60;
-  if (time.isMember("minutes"))
-    seconds += time["minutes"].asInteger() * 60;
-  if (time.isMember("seconds"))
-    seconds += time["seconds"].asInteger();
-  if (time.isMember("milliseconds"))
-    seconds += time["milliseconds"].asDouble() / 1000.0;
-
-  return seconds;
 }
 
 bool CPlayerOperations::IsPVRChannel()
