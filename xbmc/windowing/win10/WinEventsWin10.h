@@ -67,7 +67,7 @@ private:
 
   void OnResize(float width, float height);
   void UpdateWindowSize();
-  void Kodi_KeyEvent(unsigned int vkey, unsigned scancode, unsigned keycode, bool isDown);
+  void Kodi_KeyEvent(unsigned int vkey, uint32_t scancode, unsigned keycode, bool isDown);
   void HandleWindowSizeChanged();
 
   Concurrency::concurrent_queue<XBMC_Event> m_events;
