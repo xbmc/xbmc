@@ -40,12 +40,11 @@ public:
 
   static void EnumerateDevicesEx (AEDeviceInfoList &deviceInfoList, bool force = false);
 private:
-  void          AEChannelsFromSpeakerMask(DWORD speakers);
-  DWORD         SpeakerMaskFromAEChannels(const CAEChannelInfo &channels);
-  void          CheckPlayStatus();
-  bool          UpdateCacheStatus();
-  unsigned int  GetSpace();
-  const char    *dserr2str(int err);
+  void AEChannelsFromSpeakerMask(DWORD speakers);
+  DWORD SpeakerMaskFromAEChannels(const CAEChannelInfo& channels);
+  void CheckPlayStatus();
+  bool UpdateCacheStatus();
+  unsigned int GetSpace();
 
   Microsoft::WRL::ComPtr<IDirectSoundBuffer> m_pBuffer;
   Microsoft::WRL::ComPtr<IDirectSound> m_pDSound;
