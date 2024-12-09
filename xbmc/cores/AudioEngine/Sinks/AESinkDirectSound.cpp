@@ -25,7 +25,6 @@
 #include <list>
 #include <mutex>
 
-#include <Audioclient.h>
 #include <Mmreg.h>
 #include <Rpc.h>
 #include <initguid.h>
@@ -50,17 +49,24 @@ DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_DOLBY_AC3_SPDIF, WAVE_FORMAT_DOLBY_AC3_SPDIF,
     goto failed; \
   }
 
-#define DS_SPEAKER_COUNT 8
-static const unsigned int DSChannelOrder[] = {SPEAKER_FRONT_LEFT, SPEAKER_FRONT_RIGHT, SPEAKER_FRONT_CENTER, SPEAKER_LOW_FREQUENCY, SPEAKER_BACK_LEFT, SPEAKER_BACK_RIGHT, SPEAKER_SIDE_LEFT, SPEAKER_SIDE_RIGHT};
-static const enum AEChannel AEChannelNamesDS[] = {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_LFE, AE_CH_BL, AE_CH_BR, AE_CH_SL, AE_CH_SR, AE_CH_NULL};
-
-using namespace Microsoft::WRL;
+namespace
+{
+constexpr unsigned int DS_SPEAKER_COUNT = 8U;
+constexpr unsigned int DSChannelOrder[] = {
+    SPEAKER_FRONT_LEFT, SPEAKER_FRONT_RIGHT, SPEAKER_FRONT_CENTER, SPEAKER_LOW_FREQUENCY,
+    SPEAKER_BACK_LEFT,  SPEAKER_BACK_RIGHT,  SPEAKER_SIDE_LEFT,    SPEAKER_SIDE_RIGHT};
+constexpr enum AEChannel AEChannelNamesDS[] = {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_LFE, AE_CH_BL,
+                                               AE_CH_BR, AE_CH_SL, AE_CH_SR, AE_CH_NULL};
 
 struct DSDevice
 {
   std::string name;
-  LPGUID     lpGuid;
+  LPGUID lpGuid;
 };
+
+} // namespace
+
+using namespace Microsoft::WRL;
 
 static BOOL CALLBACK DSEnumCallback(LPGUID lpGuid, LPCTSTR lpcstrDescription, LPCTSTR lpcstrModule, LPVOID lpContext)
 {
@@ -451,122 +457,41 @@ double CAESinkDirectSound::GetCacheTotal()
 
 void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool force)
 {
-  CAEDeviceInfo        deviceInfo;
+  CAEDeviceInfo deviceInfo{};
 
-  ComPtr<IMMDeviceEnumerator> pEnumerator = nullptr;
-  ComPtr<IMMDeviceCollection> pEnumDevices = nullptr;
-  UINT uiCount = 0;
-
-  HRESULT                hr;
-
-  const std::string strDD = CAESinkFactoryWin::GetDefaultDeviceId();
-
-  /* Windows Vista or later - supporting WASAPI device probing */
-  hr = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, reinterpret_cast<void**>(pEnumerator.GetAddressOf()));
-  EXIT_ON_FAILURE(hr, "Could not allocate WASAPI device enumerator.")
-
-  hr = pEnumerator->EnumAudioEndpoints(eRender, DEVICE_STATE_ACTIVE, pEnumDevices.GetAddressOf());
-  EXIT_ON_FAILURE(hr, "Retrieval of audio endpoint enumeration failed.")
-
-  hr = pEnumDevices->GetCount(&uiCount);
-  EXIT_ON_FAILURE(hr, "Retrieval of audio endpoint count failed.")
-
-  for (UINT i = 0; i < uiCount; i++)
+  for (RendererDetail& detail : CAESinkFactoryWin::GetRendererDetails())
   {
-    ComPtr<IMMDevice> pDevice = nullptr;
-    ComPtr<IPropertyStore> pProperty = nullptr;
-    PROPVARIANT varName;
-    PropVariantInit(&varName);
-
     deviceInfo.m_channels.Reset();
     deviceInfo.m_dataFormats.clear();
     deviceInfo.m_sampleRates.clear();
+    deviceInfo.m_streamTypes.clear();
 
-    hr = pEnumDevices->Item(i, pDevice.GetAddressOf());
-    if (FAILED(hr))
+    if (detail.nChannels)
+      deviceInfo.m_channels =
+          layoutsByChCount[std::max(std::min(detail.nChannels, DS_SPEAKER_COUNT), 2U)];
+    deviceInfo.m_dataFormats.push_back(AEDataFormat(AE_FMT_FLOAT));
+    if (detail.eDeviceType != AE_DEVTYPE_PCM)
     {
-      CLog::LogF(LOGERROR, "Retrieval of DirectSound endpoint failed.");
-      goto failed;
+      deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
+      // DTS is played with the same infrastructure as AC3
+      deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
+      deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
+      deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
+      deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
+      // signal that we can doe AE_FMT_RAW
+      deviceInfo.m_dataFormats.push_back(AE_FMT_RAW);
     }
-
-    hr = pDevice->OpenPropertyStore(STGM_READ, pProperty.GetAddressOf());
-    if (FAILED(hr))
-    {
-      CLog::LogF(LOGERROR, "Retrieval of DirectSound endpoint properties failed.");
-      goto failed;
-    }
-
-    hr = pProperty->GetValue(PKEY_Device_FriendlyName, &varName);
-    if (FAILED(hr))
-    {
-      CLog::LogF(LOGERROR, "Retrieval of DirectSound endpoint device name failed.");
-      goto failed;
-    }
-
-    std::string strFriendlyName = KODI::PLATFORM::WINDOWS::FromW(varName.pwszVal);
-    PropVariantClear(&varName);
-
-    hr = pProperty->GetValue(PKEY_AudioEndpoint_GUID, &varName);
-    if (FAILED(hr))
-    {
-      CLog::LogF(LOGERROR, "Retrieval of DirectSound endpoint GUID failed.");
-      goto failed;
-    }
-
-    std::string strDevName = KODI::PLATFORM::WINDOWS::FromW(varName.pwszVal);
-    PropVariantClear(&varName);
-
-    hr = pProperty->GetValue(PKEY_AudioEndpoint_FormFactor, &varName);
-    if (FAILED(hr))
-    {
-      CLog::LogF(LOGERROR, "Retrieval of DirectSound endpoint form factor failed.");
-      goto failed;
-    }
-    std::string strWinDevType = winEndpoints[(EndpointFormFactor)varName.uiVal].winEndpointType;
-    AEDeviceType aeDeviceType = winEndpoints[(EndpointFormFactor)varName.uiVal].aeDeviceType;
-
-    PropVariantClear(&varName);
-
-    /* In shared mode Windows tells us what format the audio must be in. */
-    ComPtr<IAudioClient> pClient;
-    hr = pDevice->Activate(IID_IAudioClient, CLSCTX_ALL, nullptr, reinterpret_cast<void**>(pClient.GetAddressOf()));
-    EXIT_ON_FAILURE(hr, "Activate device failed.")
-
-    //hr = pClient->GetMixFormat(&pwfxex);
-    hr = pProperty->GetValue(PKEY_AudioEngine_DeviceFormat, &varName);
-    if (SUCCEEDED(hr) && varName.blob.cbSize > 0)
-    {
-      WAVEFORMATEX* smpwfxex = (WAVEFORMATEX*)varName.blob.pBlobData;
-      deviceInfo.m_channels = layoutsByChCount[std::max(std::min(smpwfxex->nChannels, (WORD) DS_SPEAKER_COUNT), (WORD) 2)];
-      deviceInfo.m_dataFormats.push_back(AEDataFormat(AE_FMT_FLOAT));
-      if (aeDeviceType != AE_DEVTYPE_PCM)
-      {
-        deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
-        // DTS is played with the same infrastructure as AC3
-        deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
-        deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
-        deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
-        deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
-        // signal that we can doe AE_FMT_RAW
-        deviceInfo.m_dataFormats.push_back(AE_FMT_RAW);
-      }
-      deviceInfo.m_sampleRates.push_back(std::min(smpwfxex->nSamplesPerSec, (DWORD) 192000));
-    }
-    else
-    {
-      CLog::LogF(LOGERROR, "Getting DeviceFormat failed ({})", CWIN32Util::FormatHRESULT(hr));
-    }
-
-    deviceInfo.m_deviceName       = strDevName;
-    deviceInfo.m_displayName      = strWinDevType.append(strFriendlyName);
-    deviceInfo.m_displayNameExtra = std::string("DIRECTSOUND: ").append(strFriendlyName);
-    deviceInfo.m_deviceType       = aeDeviceType;
-
+    if (detail.m_samplesPerSec)
+      deviceInfo.m_sampleRates.push_back(std::min(detail.m_samplesPerSec, 192000UL));
+    deviceInfo.m_deviceName = detail.strDeviceId;
+    deviceInfo.m_displayName = detail.strWinDevType.append(detail.strDescription);
+    deviceInfo.m_displayNameExtra = std::string("DIRECTSOUND: ").append(detail.strDescription);
+    deviceInfo.m_deviceType = detail.eDeviceType;
     deviceInfo.m_wantsIECPassthrough = true;
     deviceInfoList.push_back(deviceInfo);
 
     // add the default device with m_deviceName = default
-    if(strDD == strDevName)
+    if (detail.bDefault)
     {
       deviceInfo.m_deviceName = std::string("default");
       deviceInfo.m_displayName = std::string("default");
@@ -575,14 +500,6 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bo
       deviceInfoList.push_back(deviceInfo);
     }
   }
-
-  return;
-
-failed:
-
-  if (FAILED(hr))
-    CLog::LogF(LOGERROR, "Failed to enumerate WASAPI endpoint devices ({}).",
-               CWIN32Util::FormatHRESULT(hr));
 }
 
 ///////////////////////////////////////////////////////////////////////////////

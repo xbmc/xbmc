@@ -46,7 +46,7 @@ std::vector<RendererDetail> CAESinkFactoryWin::GetRendererDetails()
 
   hr = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator,
                         reinterpret_cast<void**>(pEnumerator.GetAddressOf()));
-  EXIT_ON_FAILURE(hr, "Could not allocate WASAPI device enumerator.")
+  EXIT_ON_FAILURE(hr, "Could not allocate MMDevice enumerator.")
 
   // get the default audio endpoint
   if (S_OK ==
@@ -85,33 +85,67 @@ std::vector<RendererDetail> CAESinkFactoryWin::GetRendererDetails()
     PropVariantInit(&varName);
 
     hr = pEnumDevices->Item(i, pDevice.GetAddressOf());
-    EXIT_ON_FAILURE(hr, "Retrieval of WASAPI endpoint failed.")
+    EXIT_ON_FAILURE(hr, "Retrieval of endpoint failed.")
 
     hr = pDevice->OpenPropertyStore(STGM_READ, pProperty.ReleaseAndGetAddressOf());
-    EXIT_ON_FAILURE(hr, "Retrieval of WASAPI endpoint properties failed.")
+    EXIT_ON_FAILURE(hr, "Retrieval of endpoint properties failed.")
 
     hr = pProperty->GetValue(PKEY_Device_FriendlyName, &varName);
-    EXIT_ON_FAILURE(hr, "Retrieval of WASAPI endpoint device name failed.")
+    EXIT_ON_FAILURE(hr, "Retrieval of endpoint device name failed.")
 
     details.strDescription = KODI::PLATFORM::WINDOWS::FromW(varName.pwszVal);
     PropVariantClear(&varName);
 
     hr = pProperty->GetValue(PKEY_AudioEndpoint_GUID, &varName);
-    EXIT_ON_FAILURE(hr, "Retrieval of WASAPI endpoint GUID failed.")
+    EXIT_ON_FAILURE(hr, "Retrieval of endpoint GUID failed.")
 
     details.strDeviceId = KODI::PLATFORM::WINDOWS::FromW(varName.pwszVal);
     PropVariantClear(&varName);
 
     hr = pProperty->GetValue(PKEY_AudioEndpoint_FormFactor, &varName);
-    EXIT_ON_FAILURE(hr, "Retrieval of WASAPI endpoint form factor failed.")
+    EXIT_ON_FAILURE(hr, "Retrieval of endpoint form factor failed.")
 
     details.strWinDevType = winEndpoints[(EndpointFormFactor)varName.uiVal].winEndpointType;
     details.eDeviceType = winEndpoints[(EndpointFormFactor)varName.uiVal].aeDeviceType;
+    PropVariantClear(&varName);
 
+    /* In shared mode Windows tells us what format the audio must be in. */
+
+    /* Beginning of suspicous code
+     *
+     * Is this seemingly unnecessary activation actually needed in some cases to initialize
+     * PKEY_AudioEngine_DeviceFormat? Or was it forgotten when GetMixFormat() was commented?
+     * Found a blog that indicates that GetMixFormat() can force the population. Maybe only for
+     * older Windows versions?
+     * Doesn't seem needed for Windows 8.1 and above. No mention in MS documentation.
+     * This code came from AESinkDirectSound which was created with this as is.
+     * No prior history found, the DS code prior to 2012 didn't use the MMDevice API.
+     * Kept to avoid breaking something by accident.
+     */
+    ComPtr<IAudioClient> pClient;
+    hr = pDevice->Activate(IID_IAudioClient, CLSCTX_ALL, nullptr,
+                           reinterpret_cast<void**>(pClient.GetAddressOf()));
+    EXIT_ON_FAILURE(hr, "Activate device failed.")
+
+    //hr = pClient->GetMixFormat(&pwfxex);
+    /* End of suspicious code */
+
+    hr = pProperty->GetValue(PKEY_AudioEngine_DeviceFormat, &varName);
+    if (SUCCEEDED(hr) && varName.blob.cbSize >= sizeof(WAVEFORMATEX))
+    {
+      // This may be a WAVEFORMATEXTENSIBLE but the extra data is not needed.
+      WAVEFORMATEX* pwfx = reinterpret_cast<WAVEFORMATEX*>(varName.blob.pBlobData);
+      details.nChannels = pwfx->nChannels;
+      details.m_samplesPerSec = pwfx->nSamplesPerSec;
+    }
+    else
+    {
+      CLog::LogF(LOGDEBUG, "Getting DeviceFormat failed ({})", CWIN32Util::FormatHRESULT(hr));
+    }
     PropVariantClear(&varName);
 
     hr = pProperty->GetValue(PKEY_AudioEndpoint_PhysicalSpeakers, &varName);
-    EXIT_ON_FAILURE(hr, "Retrieval of WASAPI endpoint speaker layout failed.")
+    EXIT_ON_FAILURE(hr, "Retrieval of endpoint speaker layout failed.")
 
     details.uiChannelMask = std::max(varName.uintVal, (unsigned int)KSAUDIO_SPEAKER_STEREO);
     PropVariantClear(&varName);
@@ -259,7 +293,7 @@ HRESULT CAESinkFactoryWin::ActivateWASAPIDevice(std::string &device, IAEWASAPIDe
     return E_POINTER;
 
   HRESULT hr = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, reinterpret_cast<void**>(pEnumerator.GetAddressOf()));
-  EXIT_ON_FAILURE(hr, "Could not allocate WASAPI device enumerator.")
+  EXIT_ON_FAILURE(hr, "Could not allocate MMDevice enumerator.")
 
   /* Get our device. First try to find the named device. */
 
@@ -275,13 +309,13 @@ HRESULT CAESinkFactoryWin::ActivateWASAPIDevice(std::string &device, IAEWASAPIDe
     PROPVARIANT varName;
 
     hr = pEnumDevices->Item(i, pDevice.GetAddressOf());
-    EXIT_ON_FAILURE(hr, "Retrieval of WASAPI endpoint failed.")
+    EXIT_ON_FAILURE(hr, "Retrieval of endpoint failed.")
 
     hr = pDevice->OpenPropertyStore(STGM_READ, pProperty.GetAddressOf());
-    EXIT_ON_FAILURE(hr, "Retrieval of WASAPI endpoint properties failed.")
+    EXIT_ON_FAILURE(hr, "Retrieval of endpoint properties failed.")
 
     hr = pProperty->GetValue(PKEY_AudioEndpoint_GUID, &varName);
-    EXIT_ON_FAILURE(hr, "Retrieval of WASAPI endpoint GUID failed.")
+    EXIT_ON_FAILURE(hr, "Retrieval of endpoint GUID failed.")
 
     std::string strDevName = KODI::PLATFORM::WINDOWS::FromW(varName.pwszVal);
 
