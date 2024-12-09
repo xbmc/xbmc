@@ -156,7 +156,7 @@ struct AEWASAPIDeviceWin32 : public IAEWASAPIDevice
 {
   friend CAESinkFactoryWin;
 
-  HRESULT AEWASAPIDeviceWin32::Activate(IAudioClient** ppAudioClient)
+  HRESULT Activate(IAudioClient** ppAudioClient)
   {
     HRESULT hr = S_FALSE;
 
@@ -181,13 +181,13 @@ struct AEWASAPIDeviceWin32 : public IAEWASAPIDevice
     return hr;
   };
 
-  int AEWASAPIDeviceWin32::Release() override
+  int Release() override
   {
     delete this;
     return 0;
   };
 
-  bool AEWASAPIDeviceWin32::IsUSBDevice() override
+  bool IsUSBDevice() override
   {
     bool ret = false;
     ComPtr<IPropertyStore> pProperty = nullptr;
