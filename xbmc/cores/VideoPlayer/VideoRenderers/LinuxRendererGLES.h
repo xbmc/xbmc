@@ -100,6 +100,7 @@ protected:
   virtual void ReleaseShaders();
   void SetTextureFilter(GLenum method);
   void UpdateVideoFilter();
+  void CheckVideoParameters(int index);
   AVColorPrimaries GetSrcPrimaries(AVColorPrimaries srcPrimaries, unsigned int width, unsigned int height);
 
   // textures
@@ -176,6 +177,8 @@ protected:
 
     AVColorPrimaries m_srcPrimaries;
     AVColorSpace m_srcColSpace;
+    AVColorTransferCharacteristic m_srcColTransfer;
+
     int m_srcBits{8};
     int m_srcTextureBits{8};
     bool m_srcFullRange;
