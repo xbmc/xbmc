@@ -3113,37 +3113,13 @@ void CVideoDatabase::DeleteFile(int idFile)
   m_pDS->query(sql);
   if (m_pDS->eof())
   {
-    // Get idPath
-    sql = PrepareSQL(
-        "SELECT path.idPath FROM path JOIN files ON path.idPath = files.idPath WHERE idFile = %i",
-        idFile);
-    m_pDS->query(sql);
-    int path{-1};
-    if (!m_pDS->eof())
-    {
-      path = m_pDS->fv("idPath").get_asInt();
-    }
-
     // Remove file and any associated bookmarks and streamdetails
+    // Path is left so not re-added at library update
     sql = PrepareSQL("DELETE FROM files WHERE idFile = %i", idFile);
     m_pDS->exec(sql);
     sql = PrepareSQL("DELETE FROM bookmark WHERE idFile = %i", idFile);
     m_pDS->exec(sql);
     DeleteStreamDetails(idFile);
-
-    // Delete path if orphan
-    if (path >= 0)
-    {
-      sql = PrepareSQL("SELECT idFile FROM files JOIN path ON files.idPath = path.idPath WHERE "
-                       "files.idPath = %i",
-                       path);
-      m_pDS->query(sql);
-      if (m_pDS->eof())
-      {
-        sql = PrepareSQL("DELETE FROM path WHERE idPath = %i", path);
-        m_pDS->exec(sql);
-      }
-    }
   }
 }
 
@@ -6599,104 +6575,11 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
     m_pDS->exec("DELETE FROM episode WHERE idSeason NOT IN (SELECT idSeason from seasons)");
   }
-
-  if (iVersion < 134)
-  {
-    // Fix bluray:// paths (see #25140)
-
-    // Movies
-    m_pDS->query(PrepareSQL(
-        "SELECT movie.idMovie, movie.idFile, movie.c%02d, files.idPath FROM movie LEFT JOIN "
-        "files ON files.idFile = movie.idFile WHERE movie.c%02d LIKE '%s'",
-        VIDEODB_ID_BASEPATH, VIDEODB_ID_BASEPATH, "bluray://%"));
-
-    while (!m_pDS->eof())
-    {
-      // file should now be entire url
-      const int idMovie{m_pDS->fv(0).get_asInt()};
-      const int idFile{m_pDS->fv(1).get_asInt()};
-      const std::string file{m_pDS->fv(2).get_asString()};
-      const int idPath{m_pDS->fv(3).get_asInt()};
-      m_pDS2->exec(PrepareSQL("UPDATE files SET strFilename = '%s' WHERE idFile = %i", file.c_str(),
-                              idFile));
-
-      // reset path
-      const CURL url(file);
-      const CURL url2(url.GetHostName()); // strip bluray://
-      std::string path;
-      if (url2.IsProtocol("udf"))
-      {
-        // ISO
-        path = url2.GetHostName(); // strip udf://
-        path = URIUtils::GetParentPath(path); // remove .ISO filename
-      }
-      else
-      {
-        // BDMV
-        path = url2.Get();
-      }
-      m_pDS2->exec(
-          PrepareSQL("UPDATE path SET strPath = '%s' WHERE idPath = %i", path.c_str(), idPath));
-
-      // reset path in movie
-      m_pDS2->exec(PrepareSQL("UPDATE movie SET c%02d = '%s' WHERE idMovie = %i",
-                              VIDEODB_ID_BASEPATH, path.c_str(), idMovie));
-
-      m_pDS->next();
-    }
-
-    m_pDS->close();
-
-    // Episodes
-    m_pDS->query(
-        PrepareSQL("SELECT episode.idEpisode, episode.idFile, episode.c%02d, files.idPath FROM "
-                   "episode LEFT JOIN "
-                   "files ON files.idFile = episode.idFile WHERE episode.c%02d LIKE '%s'",
-                   VIDEODB_ID_EPISODE_BASEPATH, VIDEODB_ID_EPISODE_BASEPATH, "bluray://%"));
-
-    while (!m_pDS->eof())
-    {
-      // file should now be entire url
-      const int idEpisode{m_pDS->fv(0).get_asInt()};
-      const int idFile{m_pDS->fv(1).get_asInt()};
-      std::string file{m_pDS->fv(2).get_asString()};
-      const int idPath{m_pDS->fv(3).get_asInt()};
-      m_pDS2->exec(PrepareSQL("UPDATE files SET strFilename = '%s' WHERE idFile = %i", file.c_str(),
-                              idFile));
-
-      // reset path
-      const CURL url(file);
-      const CURL url2(url.GetHostName()); // strip bluray://
-      std::string path;
-      if (url2.IsProtocol("udf"))
-      {
-        // ISO
-        file = url2.GetHostName(); // strip udf://
-        path = URIUtils::GetParentPath(file); // remove .ISO filename
-      }
-      else
-      {
-        // BDMV
-        path = url2.Get();
-        file = path;
-      }
-      m_pDS2->exec(
-          PrepareSQL("UPDATE path SET strPath = '%s' WHERE idPath = %i", path.c_str(), idPath));
-
-      // reset path in episode
-      m_pDS2->exec(PrepareSQL("UPDATE episode SET c%02d = '%s' WHERE idEpisode = %i",
-                              VIDEODB_ID_EPISODE_BASEPATH, file.c_str(), idEpisode));
-
-      m_pDS->next();
-    }
-
-    m_pDS->close();
-  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 134;
+  return 133;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
@@ -11713,7 +11596,7 @@ void CVideoDatabase::ConstructPath(std::string& strDest,
                                    const std::string& strFileName)
 {
   if (URIUtils::IsStack(strFileName) || URIUtils::IsInArchive(strFileName) ||
-      URIUtils::IsPlugin(strPath) || URIUtils::IsProtocol(strFileName, "bluray"))
+      URIUtils::IsPlugin(strPath))
     strDest = strFileName;
   else
     strDest = URIUtils::AddFileToFolder(strPath, strFileName);
@@ -11721,23 +11604,12 @@ void CVideoDatabase::ConstructPath(std::string& strDest,
 
 void CVideoDatabase::SplitPath(const std::string& strFileNameAndPath, std::string& strPath, std::string& strFileName)
 {
-  if (URIUtils::IsStack(strFileNameAndPath) || StringUtils::StartsWithNoCase(strFileNameAndPath, "rar://") || StringUtils::StartsWithNoCase(strFileNameAndPath, "zip://"))
+  if (URIUtils::IsStack(strFileNameAndPath) ||
+      StringUtils::StartsWithNoCase(strFileNameAndPath, "rar://") ||
+      StringUtils::StartsWithNoCase(strFileNameAndPath, "zip://"))
   {
-    URIUtils::GetParentPath(strFileNameAndPath,strPath);
+    URIUtils::GetParentPath(strFileNameAndPath, strPath);
     strFileName = strFileNameAndPath;
-  }
-  else if (URIUtils::IsProtocol(strFileNameAndPath, "bluray"))
-  {
-    CURL url(strFileNameAndPath);
-    std::string root = url.GetHostName();
-    if (URIUtils::IsProtocol(root, "udf"))
-    {
-      CURL url(root);
-      root = url.GetHostName();
-    }
-    strFileName = strFileNameAndPath;
-    std::string temp;
-    URIUtils::Split(root, strPath, temp);
   }
   else if (URIUtils::IsPlugin(strFileNameAndPath))
   {
