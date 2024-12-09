@@ -10440,6 +10440,8 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
           if (scraper && CPluginDirectory::CheckExists(TranslateContent(scraper->Content()), path))
             exists = true;
         }
+        else if (URIUtils::IsProtocol(path, "archive"))
+          exists = CDirectory::Exists(URIUtils::GetDirectory(CURL(path).GetHostName()), false);
         else
           exists = CDirectory::Exists(path, false);
 
