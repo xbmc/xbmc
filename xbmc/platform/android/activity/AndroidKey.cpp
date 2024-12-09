@@ -270,7 +270,7 @@ bool CAndroidKey::onKeyboardEvent(AInputEvent *event)
                                repeat, flags, (state & AMETA_ALT_ON) ? "yes" : "no",
                                (state & AMETA_SHIFT_ON) ? "yes" : "no",
                                (state & AMETA_SYM_ON) ? "yes" : "no");
-      XBMC_Key((uint8_t)keycode, sym, modifiers, unicode, false);
+      XBMC_Key(static_cast<uint32_t>(keycode), sym, modifiers, unicode, false);
       break;
 
     case AKEY_EVENT_ACTION_UP:
@@ -281,7 +281,7 @@ bool CAndroidKey::onKeyboardEvent(AInputEvent *event)
                                repeat, flags, (state & AMETA_ALT_ON) ? "yes" : "no",
                                (state & AMETA_SHIFT_ON) ? "yes" : "no",
                                (state & AMETA_SYM_ON) ? "yes" : "no");
-      XBMC_Key((uint8_t)keycode, sym, modifiers, unicode, true);
+      XBMC_Key(static_cast<uint32_t>(keycode), sym, modifiers, unicode, true);
       break;
 
     case AKEY_EVENT_ACTION_MULTIPLE:
@@ -310,7 +310,8 @@ bool CAndroidKey::onKeyboardEvent(AInputEvent *event)
   return ret;
 }
 
-void CAndroidKey::XBMC_Key(uint8_t code, uint16_t key, uint16_t modifiers, uint16_t unicode, bool up)
+void CAndroidKey::XBMC_Key(
+    uint32_t code, uint16_t key, uint16_t modifiers, uint16_t unicode, bool up)
 {
   CWinSystemAndroid* winSystem(dynamic_cast<CWinSystemAndroid*>(CServiceBroker::GetWinSystem()));
   if (!winSystem)
