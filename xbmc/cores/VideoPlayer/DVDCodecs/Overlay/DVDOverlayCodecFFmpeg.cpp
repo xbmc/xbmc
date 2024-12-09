@@ -271,7 +271,10 @@ std::shared_ptr<CDVDOverlay> CDVDOverlayCodecFFmpeg::GetOverlay()
     overlay->y = rect.y;
     overlay->width = rect.w;
     overlay->height = rect.h;
-    overlay->bForced = rect.flags != 0;
+    // PGS specs defines the "forced" flag as an indicator of whether a subtitle
+    // should always be displayed, regardless of the user subtitle settings
+    if (m_pCodecContext->codec_id == AV_CODEC_ID_HDMV_PGS_SUBTITLE)
+      overlay->bForced = (rect.flags & AV_SUBTITLE_FLAG_FORCED) != 0;
     overlay->source_width = m_width;
     overlay->source_height = m_height;
 
