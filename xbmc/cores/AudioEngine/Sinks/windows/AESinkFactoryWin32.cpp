@@ -221,30 +221,28 @@ private:
 
 std::string CAESinkFactoryWin::GetDefaultDeviceId()
 {
-  std::string strDeviceId = "";
-  ComPtr<IMMDevice> pDevice = nullptr;
-  ComPtr<IMMDeviceEnumerator> pEnumerator = nullptr;
-  std::wstring wstrDDID;
+  std::string strDeviceId;
+  ComPtr<IMMDevice> pDevice;
+  ComPtr<IMMDeviceEnumerator> pEnumerator;
+  ComPtr<IPropertyStore> pProperty;
+  PROPVARIANT varName;
 
-  HRESULT hr = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, reinterpret_cast<void**>(pEnumerator.GetAddressOf()));
-  EXIT_ON_FAILURE(hr, "Could not allocate WASAPI device enumerator.")
+  HRESULT hr = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator,
+                                reinterpret_cast<void**>(pEnumerator.GetAddressOf()));
+  EXIT_ON_FAILURE(hr, "Could not allocate MMDevice device enumerator.")
 
-    // get the default audio endpoint
-  if (pEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, pDevice.GetAddressOf()) == S_OK)
-  {
-    ComPtr<IPropertyStore> pProperty = nullptr;
-    PROPVARIANT varName;
-    PropVariantInit(&varName);
+  hr = pEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, pDevice.GetAddressOf());
+  EXIT_ON_FAILURE(hr, "Retrieval of default audio endpoint failed.")
 
-    hr = pDevice->OpenPropertyStore(STGM_READ, pProperty.GetAddressOf());
-    EXIT_ON_FAILURE(hr, "Retrieval of WASAPI endpoint properties failed.")
+  hr = pDevice->OpenPropertyStore(STGM_READ, pProperty.GetAddressOf());
+  EXIT_ON_FAILURE(hr, "Retrieval of endpoint properties failed.")
 
-    hr = pProperty->GetValue(PKEY_AudioEndpoint_GUID, &varName);
-    EXIT_ON_FAILURE(hr, "Retrieval of WASAPI endpoint GUID failed.")
+  PropVariantInit(&varName);
+  hr = pProperty->GetValue(PKEY_AudioEndpoint_GUID, &varName);
+  EXIT_ON_FAILURE(hr, "Retrieval of endpoint GUID failed.")
 
-    strDeviceId = KODI::PLATFORM::WINDOWS::FromW(varName.pwszVal);
-    PropVariantClear(&varName);
-  }
+  strDeviceId = KODI::PLATFORM::WINDOWS::FromW(varName.pwszVal);
+  PropVariantClear(&varName);
 
 failed:
   return strDeviceId;

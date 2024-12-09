@@ -133,8 +133,8 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
   std::string deviceFriendlyName;
   DirectSoundEnumerate(DSEnumCallback, &DSDeviceList);
 
-  if(StringUtils::EndsWithNoCase(device, std::string("default")))
-    strDeviceGUID = GetDefaultDevice();
+  if (StringUtils::EndsWithNoCase(device, "default"))
+    strDeviceGUID = CAESinkFactoryWin::GetDefaultDeviceId();
 
   for (std::list<DSDevice>::iterator itt = DSDeviceList.begin(); itt != DSDeviceList.end(); ++itt)
   {
@@ -459,7 +459,7 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bo
 
   HRESULT                hr;
 
-  std::string strDD = GetDefaultDevice();
+  const std::string strDD = CAESinkFactoryWin::GetDefaultDeviceId();
 
   /* Windows Vista or later - supporting WASAPI device probing */
   hr = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, reinterpret_cast<void**>(pEnumerator.GetAddressOf()));
@@ -706,41 +706,4 @@ DWORD CAESinkDirectSound::SpeakerMaskFromAEChannels(const CAEChannelInfo &channe
   }
 
   return mask;
-}
-
-std::string CAESinkDirectSound::GetDefaultDevice()
-{
-  HRESULT hr;
-  ComPtr<IMMDeviceEnumerator> pEnumerator = nullptr;
-  ComPtr<IMMDevice> pDevice = nullptr;
-  ComPtr<IPropertyStore> pProperty = nullptr;
-  PROPVARIANT varName;
-  std::string strDevName = "default";
-  AEDeviceType aeDeviceType;
-
-  hr = CoCreateInstance(CLSID_MMDeviceEnumerator, nullptr, CLSCTX_ALL, IID_IMMDeviceEnumerator, reinterpret_cast<void**>(pEnumerator.GetAddressOf()));
-  EXIT_ON_FAILURE(hr, "Could not allocate WASAPI device enumerator")
-
-  hr = pEnumerator->GetDefaultAudioEndpoint(eRender, eMultimedia, pDevice.GetAddressOf());
-  EXIT_ON_FAILURE(hr, "Retrieval of audio endpoint enumeration failed.")
-
-  hr = pDevice->OpenPropertyStore(STGM_READ, pProperty.GetAddressOf());
-  EXIT_ON_FAILURE(hr, "Retrieval of DirectSound endpoint properties failed.")
-
-  PropVariantInit(&varName);
-  hr = pProperty->GetValue(PKEY_AudioEndpoint_FormFactor, &varName);
-  EXIT_ON_FAILURE(hr, "Retrieval of DirectSound endpoint form factor failed.")
-
-  aeDeviceType = winEndpoints[(EndpointFormFactor)varName.uiVal].aeDeviceType;
-  PropVariantClear(&varName);
-
-  hr = pProperty->GetValue(PKEY_AudioEndpoint_GUID, &varName);
-  EXIT_ON_FAILURE(hr, "Retrieval of DirectSound endpoint GUID failed")
-
-  strDevName = KODI::PLATFORM::WINDOWS::FromW(varName.pwszVal);
-  PropVariantClear(&varName);
-
-failed:
-
-  return strDevName;
 }
