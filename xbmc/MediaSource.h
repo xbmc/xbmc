@@ -22,15 +22,15 @@
 class CMediaSource final
 {
 public:
-  enum SourceType
+  enum class SourceType
   {
-    SOURCE_TYPE_UNKNOWN = 0,
-    SOURCE_TYPE_LOCAL = 1,
-    SOURCE_TYPE_OPTICAL_DISC = 2,
-    SOURCE_TYPE_VIRTUAL_OPTICAL_DISC = 3,
-    SOURCE_TYPE_REMOTE = 4,
-    SOURCE_TYPE_VPATH = 5,
-    SOURCE_TYPE_REMOVABLE = 6
+    UNKNOWN = 0,
+    LOCAL = 1,
+    OPTICAL_DISC = 2,
+    VIRTUAL_OPTICAL_DISC = 3,
+    REMOTE = 4,
+    VPATH = 5,
+    REMOVABLE = 6,
   };
 
   bool operator==(const CMediaSource &right) const;
@@ -57,7 +57,7 @@ public:
   - SOURCE_TYPE_REMOTE \n
   Network source.
   */
-  SourceType m_iDriveType = SOURCE_TYPE_UNKNOWN;
+  SourceType m_iDriveType = SourceType::UNKNOWN;
 
   /*!
   \brief The type of Lock UI to show when accessing the media source.

@@ -178,12 +178,12 @@ void CUDevProvider::GetDisks(std::vector<CMediaSource>& disks, bool removable)
     if (isRemovable)
     {
       if (optical)
-        share.m_iDriveType = CMediaSource::SOURCE_TYPE_OPTICAL_DISC;
+        share.m_iDriveType = CMediaSource::SourceType::OPTICAL_DISC;
       else
-        share.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOVABLE;
+        share.m_iDriveType = CMediaSource::SourceType::REMOVABLE;
     }
     else
-      share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+      share.m_iDriveType = CMediaSource::SourceType::LOCAL;
 
     disks.push_back(share);
     udev_device_unref(device);
