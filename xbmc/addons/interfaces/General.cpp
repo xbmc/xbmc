@@ -261,8 +261,8 @@ char* Interface_General::get_region(void* kodiBase, const char* id)
     StringUtils::Replace(result, "xx", "%p");
   }
   else if (StringUtils::CompareNoCase(id, "meridiem") == 0)
-    result = StringUtils::Format("{}/{}", g_langInfo.GetMeridiemSymbol(MeridiemSymbolAM),
-                                 g_langInfo.GetMeridiemSymbol(MeridiemSymbolPM));
+    result = StringUtils::Format("{}/{}", g_langInfo.GetMeridiemSymbol(MeridiemSymbol::AM),
+                                 g_langInfo.GetMeridiemSymbol(MeridiemSymbol::PM));
   else
   {
     CLog::Log(LOGERROR, "Interface_General::{} -  add-on '{}' requests invalid id '{}'",

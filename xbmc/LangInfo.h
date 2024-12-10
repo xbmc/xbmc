@@ -41,11 +41,11 @@ namespace ADDON
 }
 typedef std::shared_ptr<ADDON::CLanguageResource> LanguageResourcePtr;
 
-typedef enum MeridiemSymbol
+enum class MeridiemSymbol
 {
-  MeridiemSymbolPM = 0,
-  MeridiemSymbolAM
-} MeridiemSymbol;
+  PM = 0,
+  AM
+};
 
 class CLangInfo : public ISettingCallback, public ISettingsHandler
 {

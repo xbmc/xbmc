@@ -499,8 +499,10 @@ bool CLangInfo::Load(const std::string& strLanguage)
       if (pTime && !pTime->NoChildren())
       {
         region.m_strTimeFormat=pTime->FirstChild()->Value();
-        region.m_strMeridiemSymbols[MeridiemSymbolAM] = XMLUtils::GetAttribute(pTime, "symbolAM");
-        region.m_strMeridiemSymbols[MeridiemSymbolPM] = XMLUtils::GetAttribute(pTime, "symbolPM");
+        region.m_strMeridiemSymbols[static_cast<int>(MeridiemSymbol::AM)] =
+            XMLUtils::GetAttribute(pTime, "symbolAM");
+        region.m_strMeridiemSymbols[static_cast<int>(MeridiemSymbol::PM)] =
+            XMLUtils::GetAttribute(pTime, "symbolPM");
       }
 
       const TiXmlNode *pTempUnit=pRegion->FirstChild("tempunit");
@@ -1027,14 +1029,14 @@ const std::string& CLangInfo::MeridiemSymbolToString(MeridiemSymbol symbol)
 {
   switch (symbol)
   {
-  case MeridiemSymbolAM:
-    return g_localizeStrings.Get(378);
+    case MeridiemSymbol::AM:
+      return g_localizeStrings.Get(378);
 
-  case MeridiemSymbolPM:
-    return g_localizeStrings.Get(379);
+    case MeridiemSymbol::PM:
+      return g_localizeStrings.Get(379);
 
-  default:
-    break;
+    default:
+      break;
   }
 
   return StringUtils::Empty;

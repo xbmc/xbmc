@@ -457,8 +457,8 @@ namespace XBMCAddon
       }
       else if (StringUtils::CompareNoCase(id, "meridiem") == 0)
       {
-        result = StringUtils::Format("{}/{}", g_langInfo.GetMeridiemSymbol(MeridiemSymbolAM),
-                                     g_langInfo.GetMeridiemSymbol(MeridiemSymbolPM));
+        result = StringUtils::Format("{}/{}", g_langInfo.GetMeridiemSymbol(MeridiemSymbol::AM),
+                                     g_langInfo.GetMeridiemSymbol(MeridiemSymbol::PM));
       }
 #ifdef TARGET_WINDOWS
       StringUtils::Replace(result, "%-", "%#"); //Convert to Windows format if required.
