@@ -547,7 +547,7 @@ public:
   int m_iprogramCount;
   int m_idepth;
   int m_lStartPartNumber;
-  LockType m_iLockMode;
+  LockMode m_iLockMode;
   std::string m_strLockCode;
   int m_iHasLock; // 0 - no lock 1 - lock, but unlocked 2 - locked
   int m_iBadPwdCount;

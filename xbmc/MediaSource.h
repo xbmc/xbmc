@@ -63,22 +63,22 @@ public:
   \brief The type of Lock UI to show when accessing the media source.
 
   Value can be:
-  - CMediaSource::LOCK_MODE_EVERYONE \n
+  - LockMode::EVERYONE \n
   Default value.  No lock UI is shown, user can freely access the source.
-  - LOCK_MODE_NUMERIC \n
+  - LockMode::NUMERIC \n
   Lock code is entered via OSD numpad or IrDA remote buttons.
-  - LOCK_MODE_GAMEPAD \n
+  - LockMode::GAMEPAD \n
   Lock code is entered via XBOX gamepad buttons.
-  - LOCK_MODE_QWERTY \n
+  - LockMode::QWERTY \n
   Lock code is entered via OSD keyboard or PC USB keyboard.
-  - LOCK_MODE_SAMBA \n
+  - LockMode::SAMBA \n
   Lock code is entered via OSD keyboard or PC USB keyboard and passed directly to SMB for authentication.
-  - LOCK_MODE_EEPROM_PARENTAL \n
+  - LockMode::EEPROM_PARENTAL \n
   Lock code is retrieved from XBOX EEPROM and entered via XBOX gamepad or remote.
-  - LOCK_MODE_UNKNOWN \n
+  - LockMode::UNKNOWN \n
   Value is unknown or unspecified.
   */
-  LockType m_iLockMode = LOCK_MODE_EVERYONE;
+  LockMode m_iLockMode = LockMode::EVERYONE;
   std::string m_strLockCode;  ///< Input code for Lock UI to verify, can be chosen freely.
   int m_iHasLock = LOCK_STATE_NO_LOCK;
   int m_iBadPwdCount = 0; ///< Number of wrong passwords user has entered since share was last unlocked

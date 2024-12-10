@@ -526,7 +526,10 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       }
     }
     case SYSTEM_HASLOCKS:
-      value = CServiceBroker::GetSettingsComponent()->GetProfileManager()->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE;
+      value = CServiceBroker::GetSettingsComponent()
+                  ->GetProfileManager()
+                  ->GetMasterProfile()
+                  .getLockMode() != LockMode::EVERYONE;
       return true;
     case SYSTEM_HAS_PVR:
       value = true;
@@ -542,7 +545,11 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
 #endif
       return true;
     case SYSTEM_ISMASTER:
-      value = CServiceBroker::GetSettingsComponent()->GetProfileManager()->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
+      value = CServiceBroker::GetSettingsComponent()
+                      ->GetProfileManager()
+                      ->GetMasterProfile()
+                      .getLockMode() != LockMode::EVERYONE &&
+              g_passwordManager.bMasterUser;
       return true;
     case SYSTEM_ISFULLSCREEN:
       value = CServiceBroker::GetWinSystem()->IsFullScreen();

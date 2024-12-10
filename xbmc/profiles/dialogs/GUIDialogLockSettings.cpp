@@ -46,7 +46,9 @@ CGUIDialogLockSettings::CGUIDialogLockSettings()
 
 CGUIDialogLockSettings::~CGUIDialogLockSettings() = default;
 
-bool CGUIDialogLockSettings::ShowAndGetLock(LockType &lockMode, std::string &password, int header /* = 20091 */)
+bool CGUIDialogLockSettings::ShowAndGetLock(LockMode& lockMode,
+                                            std::string& password,
+                                            int header /* = 20091 */)
 {
   CProfile::CLock locks(lockMode, password);
   if (!ShowAndGetLock(locks, header, false, false))
@@ -161,27 +163,27 @@ void CGUIDialogLockSettings::OnSettingAction(const std::shared_ptr<const CSettin
     dialog->Open();
 
     std::string newPassword;
-    LockType iLockMode = LOCK_MODE_UNKNOWN;
+    LockMode iLockMode = LockMode::UNKNOWN;
     bool bResult = false;
     switch (dialog->GetSelectedItem())
     {
       case 0:
-        iLockMode = LOCK_MODE_EVERYONE; //Disabled! Need check routine!!!
+        iLockMode = LockMode::EVERYONE; //Disabled! Need check routine!!!
         bResult = true;
         break;
 
       case 1:
-        iLockMode = LOCK_MODE_NUMERIC;
+        iLockMode = LockMode::NUMERIC;
         bResult = CGUIDialogNumeric::ShowAndVerifyNewPassword(newPassword);
         break;
 
       case 2:
-        iLockMode = LOCK_MODE_GAMEPAD;
+        iLockMode = LockMode::GAMEPAD;
         bResult = CGUIDialogGamepad::ShowAndVerifyNewPassword(newPassword);
         break;
 
       case 3:
-        iLockMode = LOCK_MODE_QWERTY;
+        iLockMode = LockMode::QWERTY;
         bResult = CGUIKeyboardFactory::ShowAndVerifyNewPassword(newPassword);
         break;
 
@@ -191,15 +193,15 @@ void CGUIDialogLockSettings::OnSettingAction(const std::shared_ptr<const CSettin
 
     if (bResult)
     {
-      if (iLockMode == LOCK_MODE_EVERYONE)
+      if (iLockMode == LockMode::EVERYONE)
         newPassword = "-";
       m_locks.code = newPassword;
       if (m_locks.code == "-")
-        iLockMode = LOCK_MODE_EVERYONE;
+        iLockMode = LockMode::EVERYONE;
       m_locks.mode = iLockMode;
 
       SetSettingLockCodeLabel();
-      SetDetailSettingsEnabled(m_locks.mode != LOCK_MODE_EVERYONE);
+      SetDetailSettingsEnabled(m_locks.mode != LockMode::EVERYONE);
       m_changed = true;
     }
   }
@@ -223,7 +225,7 @@ void CGUIDialogLockSettings::SetupView()
   {
     SetHeading(20066);
     SetSettingLockCodeLabel();
-    SetDetailSettingsEnabled(m_locks.mode != LOCK_MODE_EVERYONE);
+    SetDetailSettingsEnabled(m_locks.mode != LockMode::EVERYONE);
   }
   SET_CONTROL_HIDDEN(CONTROL_SETTINGS_CUSTOM_BUTTON);
   SET_CONTROL_LABEL(CONTROL_SETTINGS_OKAY_BUTTON, 186);
@@ -291,7 +293,8 @@ void CGUIDialogLockSettings::InitializeSettings()
 
 std::string CGUIDialogLockSettings::GetLockModeLabel()
 {
-  return g_localizeStrings.Get(m_locks.mode == LOCK_MODE_EVERYONE ? 1223 : 12336 + m_locks.mode);
+  return g_localizeStrings.Get(
+      m_locks.mode == LockMode::EVERYONE ? 1223 : 12336 + static_cast<int>(m_locks.mode));
 }
 
 void CGUIDialogLockSettings::SetDetailSettingsEnabled(bool enabled)
@@ -312,8 +315,8 @@ void CGUIDialogLockSettings::SetDetailSettingsEnabled(bool enabled)
 void CGUIDialogLockSettings::SetSettingLockCodeLabel()
 {
   // adjust label2 of the lock code setting button
-  if (m_locks.mode > LOCK_MODE_QWERTY)
-    m_locks.mode = LOCK_MODE_EVERYONE;
+  if (m_locks.mode > LockMode::QWERTY)
+    m_locks.mode = LockMode::EVERYONE;
   BaseSettingControlPtr settingControl = GetSettingControl(SETTING_LOCKCODE);
   if (settingControl != NULL && settingControl->GetControl() != NULL)
     SET_CONTROL_LABEL2(settingControl->GetID(), GetLockModeLabel());

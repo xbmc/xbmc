@@ -154,11 +154,11 @@ bool CApplicationPowerHandling::WakeUpScreenSaver(bool bPowerOffKeyPressed /* = 
     {
       const std::shared_ptr<CProfileManager> profileManager =
           CServiceBroker::GetSettingsComponent()->GetProfileManager();
-      if (profileManager->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
+      if (profileManager->GetMasterProfile().getLockMode() != LockMode::EVERYONE &&
           (profileManager->UsingLoginScreen() ||
            CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
                CSettings::SETTING_MASTERLOCK_STARTUPLOCK)) &&
-          profileManager->GetCurrentProfile().getLockMode() != LOCK_MODE_EVERYONE &&
+          profileManager->GetCurrentProfile().getLockMode() != LockMode::EVERYONE &&
           m_screensaverIdInUse != "screensaver.xbmc.builtin.dim" &&
           m_screensaverIdInUse != "screensaver.xbmc.builtin.black" &&
           m_screensaverIdInUse != "visualization")

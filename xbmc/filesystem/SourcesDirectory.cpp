@@ -94,7 +94,7 @@ bool CSourcesDirectory::GetDirectory(const std::vector<CMediaSource>& sources, C
 
     pItem->SetArt("icon", strIcon);
     if (share.m_iHasLock == LOCK_STATE_LOCKED &&
-        m_profileManager->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
+        m_profileManager->GetMasterProfile().getLockMode() != LockMode::EVERYONE)
       pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_LOCKED);
     else
       pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_NONE);

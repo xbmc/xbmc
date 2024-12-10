@@ -203,7 +203,7 @@ bool CMediaSourceSettings::UpdateSource(const std::string& strType,
       if (strUpdateChild == "name")
         it->strName = strUpdateValue;
       else if (strUpdateChild == "lockmode")
-        it->m_iLockMode = (LockType)std::strtol(strUpdateValue.c_str(), NULL, 10);
+        it->m_iLockMode = static_cast<LockMode>(std::strtol(strUpdateValue.c_str(), nullptr, 10));
       else if (strUpdateChild == "lockcode")
         it->m_strLockCode = strUpdateValue;
       else if (strUpdateChild == "badpwdcount")
@@ -419,7 +419,7 @@ bool CMediaSourceSettings::GetSource(const std::string& category,
   if (lockModeElement)
   {
     share.m_iLockMode =
-        static_cast<LockType>(std::strtol(lockModeElement->FirstChild()->Value(), nullptr, 10));
+        static_cast<LockMode>(std::strtol(lockModeElement->FirstChild()->Value(), nullptr, 10));
     share.m_iHasLock = LOCK_STATE_LOCKED;
   }
 
@@ -516,7 +516,7 @@ bool CMediaSourceSettings::SetSources(tinyxml2::XMLNode* root,
 
     if (share.m_iHasLock)
     {
-      XMLUtils::SetInt(sourceElement, "lockmode", share.m_iLockMode);
+      XMLUtils::SetInt(sourceElement, "lockmode", static_cast<int>(share.m_iLockMode));
       XMLUtils::SetString(sourceElement, "lockcode", share.m_strLockCode);
       XMLUtils::SetInt(sourceElement, "badpwdcount", share.m_iBadPwdCount);
     }

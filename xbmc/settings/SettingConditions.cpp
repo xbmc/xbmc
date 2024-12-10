@@ -273,8 +273,8 @@ bool ProfileLockMode(const std::string& condition,
                      void* data)
 {
   char* tmp = nullptr;
-  LockType lock = (LockType)strtol(value.c_str(), &tmp, 0);
-  if (tmp != NULL && *tmp != '\0')
+  LockMode lock = static_cast<LockMode>(strtol(value.c_str(), &tmp, 0));
+  if (tmp != nullptr && *tmp != '\0')
     return false;
 
   return CSettingConditions::GetCurrentProfile().getLockMode() == lock;

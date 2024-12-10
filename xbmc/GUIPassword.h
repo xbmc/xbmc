@@ -41,8 +41,8 @@ public:
    \return If access is granted, returns \e true
    */
   bool IsItemUnlocked(CMediaSource* pItem, const std::string &strType);
-  bool CheckLock(LockType btnType, const std::string& strPassword, int iHeading);
-  bool CheckLock(LockType btnType, const std::string& strPassword, int iHeading, bool& bCanceled);
+  bool CheckLock(LockMode btnType, const std::string& strPassword, int iHeading);
+  bool CheckLock(LockMode btnType, const std::string& strPassword, int iHeading, bool& bCanceled);
   bool IsProfileLockUnlocked(int iProfile=-1);
   bool IsProfileLockUnlocked(int iProfile, bool& bCanceled, bool prompt = true);
   bool IsMasterLockUnlocked(bool bPromptUser);
@@ -96,7 +96,9 @@ private:
                            const std::string& strType) const;
 
   std::string m_strMediaSourcePath;
-  int VerifyPassword(LockType btnType, const std::string& strPassword, const std::string& strHeading);
+  int VerifyPassword(LockMode btnType,
+                     const std::string& strPassword,
+                     const std::string& strHeading);
 };
 
 extern CGUIPassword g_passwordManager;

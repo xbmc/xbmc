@@ -34,9 +34,8 @@ static int LoadProfile(const std::vector<std::string>& params)
   int index = profileManager->GetProfileIndex(params[0]);
   bool prompt = (params.size() == 2 && StringUtils::EqualsNoCase(params[1], "prompt"));
   bool bCanceled;
-  if (index >= 0
-      && (profileManager->GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE
-        || g_passwordManager.IsProfileLockUnlocked(index,bCanceled,prompt)))
+  if (index >= 0 && (profileManager->GetMasterProfile().getLockMode() == LockMode::EVERYONE ||
+                     g_passwordManager.IsProfileLockUnlocked(index, bCanceled, prompt)))
   {
     CServiceBroker::GetAppMessenger()->PostMsg(TMSG_LOADPROFILE, index);
   }

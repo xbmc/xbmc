@@ -1050,7 +1050,7 @@ void CGUIWindowVideoBase::OnDeleteItem(const CFileItemPtr& item)
 
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-  if (profileManager->GetCurrentProfile().getLockMode() != LOCK_MODE_EVERYONE &&
+  if (profileManager->GetCurrentProfile().getLockMode() != LockMode::EVERYONE &&
       profileManager->GetCurrentProfile().filesLocked())
   {
     if (!g_passwordManager.IsMasterLockUnlocked(true))

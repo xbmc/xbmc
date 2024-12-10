@@ -255,7 +255,10 @@ void CGUIDialogContextMenu::GetContextButtons(const std::string &type, const CFi
     if (!GetDefaultShareNameByType(type).empty())
       buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // Clear Default
   }
-  if (share && LOCK_MODE_EVERYONE != CServiceBroker::GetSettingsComponent()->GetProfileManager()->GetMasterProfile().getLockMode())
+  if (share && LockMode::EVERYONE != CServiceBroker::GetSettingsComponent()
+                                         ->GetProfileManager()
+                                         ->GetMasterProfile()
+                                         .getLockMode())
   {
     if (share->m_iHasLock == LOCK_STATE_NO_LOCK && (CServiceBroker::GetSettingsComponent()
                                                         ->GetProfileManager()
@@ -446,7 +449,7 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
       // password entry and re-entry succeeded, write out the lock data
       share->m_iHasLock = LOCK_STATE_LOCKED;
       CMediaSourceSettings::GetInstance().UpdateSource(type, share->strName, "lockcode", strNewPassword);
-      strNewPassword = std::to_string(share->m_iLockMode);
+      strNewPassword = std::to_string(static_cast<int>(share->m_iLockMode));
       CMediaSourceSettings::GetInstance().UpdateSource(type, share->strName, "lockmode", strNewPassword);
       CMediaSourceSettings::GetInstance().UpdateSource(type, share->strName, "badpwdcount", "0");
       CMediaSourceSettings::GetInstance().Save();
@@ -519,7 +522,7 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
       std::string strNewPW;
       std::string strNewLockMode;
       if (CGUIDialogLockSettings::ShowAndGetLock(share->m_iLockMode,strNewPW))
-        strNewLockMode = std::to_string(share->m_iLockMode);
+        strNewLockMode = std::to_string(static_cast<int>(share->m_iLockMode));
       else
         return false;
       // password ReSet and re-entry succeeded, write out the lock data

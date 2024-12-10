@@ -11,7 +11,7 @@
 #include "XBDateTime.h"
 #include "utils/XMLUtils.h"
 
-CProfile::CLock::CLock(LockType type, const std::string& password)
+CProfile::CLock::CLock(LockMode type, const std::string& password)
   : mode(type), code(password), settings(LOCK_LEVEL::NONE)
 {
   programs = false;
@@ -25,10 +25,10 @@ CProfile::CLock::CLock(LockType type, const std::string& password)
 
 void CProfile::CLock::Validate()
 {
-  if (mode != LOCK_MODE_EVERYONE && (code == "-" || code.empty()))
-    mode = LOCK_MODE_EVERYONE;
+  if (mode != LockMode::EVERYONE && (code == "-" || code.empty()))
+    mode = LockMode::EVERYONE;
 
-  if (code.empty() || mode == LOCK_MODE_EVERYONE)
+  if (code.empty() || mode == LockMode::EVERYONE)
     code = "-";
 }
 
@@ -80,11 +80,11 @@ void CProfile::Load(const TiXmlNode *node, int nextIdProfile)
   XMLUtils::GetBoolean(node, "lockprograms", m_locks.programs);
   XMLUtils::GetBoolean(node, "lockgames", m_locks.games);
 
-  int lockMode = m_locks.mode;
+  int lockMode = static_cast<int>(m_locks.mode);
   XMLUtils::GetInt(node, "lockmode", lockMode);
-  m_locks.mode = (LockType)lockMode;
-  if (m_locks.mode > LOCK_MODE_QWERTY || m_locks.mode < LOCK_MODE_EVERYONE)
-    m_locks.mode = LOCK_MODE_EVERYONE;
+  m_locks.mode = static_cast<LockMode>(lockMode);
+  if (m_locks.mode > LockMode::QWERTY || m_locks.mode < LockMode::EVERYONE)
+    m_locks.mode = LockMode::EVERYONE;
 
   XMLUtils::GetString(node, "lockcode", m_locks.code);
   XMLUtils::GetString(node, "lastdate", m_date);
@@ -112,7 +112,7 @@ void CProfile::Save(TiXmlNode *root) const
   XMLUtils::SetBoolean(node, "lockprograms", m_locks.programs);
   XMLUtils::SetBoolean(node, "lockgames", m_locks.games);
 
-  XMLUtils::SetInt(node, "lockmode", m_locks.mode);
+  XMLUtils::SetInt(node, "lockmode", static_cast<int>(m_locks.mode));
   XMLUtils::SetString(node,"lockcode", m_locks.code);
   XMLUtils::SetString(node, "lastdate", m_date);
 }
