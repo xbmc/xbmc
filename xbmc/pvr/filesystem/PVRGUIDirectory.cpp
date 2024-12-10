@@ -167,7 +167,7 @@ bool CPVRGUIDirectory::GetDirectory(CFileItemList& results) const
   std::string fileName = m_url.GetFileName();
   URIUtils::RemoveSlashAtEnd(fileName);
 
-  results.SetCacheToDisc(CFileItemList::CACHE_NEVER);
+  results.SetCacheToDisc(CFileItemList::CacheType::NEVER);
 
   if (fileName.empty())
   {

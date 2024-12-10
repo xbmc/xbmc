@@ -22,11 +22,11 @@
 class CFileItemList : public CFileItem
 {
 public:
-  enum CACHE_TYPE
+  enum class CacheType
   {
-    CACHE_NEVER = 0,
-    CACHE_IF_SLOW,
-    CACHE_ALWAYS
+    NEVER = 0,
+    IF_SLOW,
+    ALWAYS
   };
 
   CFileItemList();
@@ -110,9 +110,9 @@ public:
    \sa Load,RemoveDiscCache
    */
   bool Save(int windowID = 0);
-  void SetCacheToDisc(CACHE_TYPE cacheToDisc) { m_cacheToDisc = cacheToDisc; }
-  bool CacheToDiscAlways() const { return m_cacheToDisc == CACHE_ALWAYS; }
-  bool CacheToDiscIfSlow() const { return m_cacheToDisc == CACHE_IF_SLOW; }
+  void SetCacheToDisc(CacheType cacheToDisc) { m_cacheToDisc = cacheToDisc; }
+  bool CacheToDiscAlways() const { return m_cacheToDisc == CacheType::ALWAYS; }
+  bool CacheToDiscIfSlow() const { return m_cacheToDisc == CacheType::IF_SLOW; }
   /*! \brief remove a previously cached CFileItemList from the cache
 
    The file list may be cached based on which window we're viewing in, as different
@@ -196,7 +196,7 @@ private:
   bool m_fastLookup = false;
   SortDescription m_sortDescription;
   bool m_sortIgnoreFolders = false;
-  CACHE_TYPE m_cacheToDisc = CACHE_IF_SLOW;
+  CacheType m_cacheToDisc = CacheType::IF_SLOW;
   bool m_replaceListing = false;
   std::string m_content;
 
