@@ -44,6 +44,7 @@ public:
       true}; // if false, the main body of a texture is not drawn. useful for borders with no inner filling
   int        orientation;     // orientation of the texture (0 - 7 == EXIForientation - 1)
   std::string diffuse;         // diffuse overlay texture
+  bool m_diffuseSlice; // 9-slice only the diffuse texture
   KODI::GUILIB::GUIINFO::CGUIInfoColor diffuseColor; // diffuse color
   std::string filename;        // main texture file
 };
@@ -141,7 +142,13 @@ protected:
               float u2,
               float v2,
               float u3,
-              float v3);
+              float v3,
+              float du1,
+              float dv1,
+              float du2,
+              float dv2,
+              float du3,
+              float dv3);
   static void OrientateTexture(CRect &rect, float width, float height, int orientation);
   void ResetAnimState();
 
