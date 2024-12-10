@@ -98,8 +98,8 @@ bool CEncoderFFmpeg::Init()
     /* Set the basic encoder parameters.
      * The input file's sample rate is used to avoid a sample rate conversion. */
     const AVSampleFormat* sampleFmts = nullptr;
-    int numFmts = 0;
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(61, 12, 100)
+    int numFmts = 0;
     if (avcodec_get_supported_config(m_codecCtx, codec, AV_CODEC_CONFIG_SAMPLE_FORMAT, 0,
                                      reinterpret_cast<const void**>(&sampleFmts), &numFmts) < 0)
     {
