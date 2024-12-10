@@ -119,7 +119,7 @@ void COSXStorageProvider::GetRemovableDrives(std::vector<CMediaSource>& removabl
             CMediaSource share;
 
             share.strPath = mountpoint;
-            share.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOVABLE;
+            share.m_iDriveType = SourceType::REMOVABLE;
             Cocoa_GetVolumeNameFromMountPoint(mountpoint, share.strName);
             share.m_ignore = true;
             // detect if its a cd or dvd
@@ -131,7 +131,7 @@ void COSXStorageProvider::GetRemovableDrives(std::vector<CMediaSource>& removabl
               if (mediaKind != NULL &&
                   (CFStringCompare(mediaKind, CFSTR(kIOCDMediaClass), 0) == kCFCompareEqualTo ||
                   CFStringCompare(mediaKind, CFSTR(kIODVDMediaClass), 0) == kCFCompareEqualTo))
-                share.m_iDriveType = CMediaSource::SOURCE_TYPE_OPTICAL_DISC;
+                share.m_iDriveType = SourceType::OPTICAL_DISC;
             }
             removableDrives.push_back(share);
           }

@@ -73,7 +73,7 @@ void CStorageProvider::GetLocalDrives(std::vector<CMediaSource>& localDrives)
   share.strPath = CSpecialProtocol::TranslatePath("special://home");
   share.strName = g_localizeStrings.Get(21440);
   share.m_ignore = true;
-  share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+  share.m_iDriveType = SourceType::LOCAL;
   localDrives.push_back(share);
 
   GetDrivesByType(localDrives, LOCAL_DRIVES, true);
@@ -107,11 +107,11 @@ void CStorageProvider::GetRemovableDrives(std::vector<CMediaSource>& removableDr
 
       UINT uDriveType = GetDriveTypeA(driveLetter.c_str());
       source.strPath = "win-lib://removable/" + driveLetter + "/";
-      source.m_iDriveType = ((uDriveType == DRIVE_FIXED)    ? CMediaSource::SOURCE_TYPE_LOCAL
-                             : (uDriveType == DRIVE_REMOTE) ? CMediaSource::SOURCE_TYPE_REMOTE
-                             : (uDriveType == DRIVE_CDROM)  ? CMediaSource::SOURCE_TYPE_OPTICAL_DISC
-                             : (uDriveType == DRIVE_REMOVABLE) ? CMediaSource::SOURCE_TYPE_REMOVABLE
-                                                               : CMediaSource::SOURCE_TYPE_UNKNOWN);
+      source.m_iDriveType = ((uDriveType == DRIVE_FIXED)       ? SourceType::LOCAL
+                             : (uDriveType == DRIVE_REMOTE)    ? SourceType::REMOTE
+                             : (uDriveType == DRIVE_CDROM)     ? SourceType::OPTICAL_DISC
+                             : (uDriveType == DRIVE_REMOVABLE) ? SourceType::REMOVABLE
+                                                               : SourceType::UNKNOWN);
 
       removableDrives.push_back(source);
     }
@@ -234,7 +234,7 @@ void CStorageProvider::GetDrivesByType(std::vector<CMediaSource>& localDrives,
       // Has to be the same as auto mounted devices
       share.strStatus = share.strName;
       share.strName = share.strPath;
-      share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+      share.m_iDriveType = SourceType::LOCAL;
       bUseDCD = true;
     }
     else
@@ -263,11 +263,11 @@ void CStorageProvider::GetDrivesByType(std::vector<CMediaSource>& localDrives,
     share.m_ignore = true;
     if (!bUseDCD)
     {
-      share.m_iDriveType = ((uDriveType == DRIVE_FIXED)    ? CMediaSource::SOURCE_TYPE_LOCAL
-                            : (uDriveType == DRIVE_REMOTE) ? CMediaSource::SOURCE_TYPE_REMOTE
-                            : (uDriveType == DRIVE_CDROM)  ? CMediaSource::SOURCE_TYPE_OPTICAL_DISC
-                            : (uDriveType == DRIVE_REMOVABLE) ? CMediaSource::SOURCE_TYPE_REMOVABLE
-                                                              : CMediaSource::SOURCE_TYPE_UNKNOWN);
+      share.m_iDriveType = ((uDriveType == DRIVE_FIXED)       ? SourceType::LOCAL
+                            : (uDriveType == DRIVE_REMOTE)    ? SourceType::REMOTE
+                            : (uDriveType == DRIVE_CDROM)     ? SourceType::OPTICAL_DISC
+                            : (uDriveType == DRIVE_REMOVABLE) ? SourceType::REMOVABLE
+                                                              : SourceType::UNKNOWN);
     }
 
     AddOrReplace(localDrives, share);

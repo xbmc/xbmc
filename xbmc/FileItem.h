@@ -14,7 +14,7 @@
  */
 
 #include "LockMode.h"
-#include "MediaSource.h"
+#include "SourceType.h"
 #include "XBDateTime.h"
 #include "guilib/GUIListItem.h"
 #include "threads/CriticalSection.h"
@@ -29,6 +29,7 @@
 #include <utility>
 #include <vector>
 
+class CMediaSource;
 enum class VideoDbContentType;
 
 namespace ADDON
@@ -538,8 +539,9 @@ public:
   void SetFromSong(const CSong &song);
 
   bool m_bIsShareOrDrive;    ///< is this a root share/drive
-  CMediaSource::SourceType
-      m_iDriveType; ///< If \e m_bIsShareOrDrive is \e true, use to get the share type. Types see: CMediaSource::m_iDriveType
+  /// If \e m_bIsShareOrDrive is \e true, use to get the share type.
+  /// Types see: CMediaSource::m_iDriveType
+  SourceType m_iDriveType;
   CDateTime m_dateTime;             ///< file creation date & time
   int64_t m_dwSize;             ///< file size (0 for folders)
   std::string m_strDVDLabel;

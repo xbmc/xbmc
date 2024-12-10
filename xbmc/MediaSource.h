@@ -9,6 +9,7 @@
 #pragma once
 
 #include "LockMode.h"
+#include "SourceType.h"
 #include "media/MediaLockState.h"
 
 #include <string>
@@ -22,17 +23,6 @@
 class CMediaSource final
 {
 public:
-  enum class SourceType
-  {
-    UNKNOWN = 0,
-    LOCAL = 1,
-    OPTICAL_DISC = 2,
-    VIRTUAL_OPTICAL_DISC = 3,
-    REMOTE = 4,
-    VPATH = 5,
-    REMOVABLE = 6,
-  };
-
   bool operator==(const CMediaSource &right) const;
 
   void FromNameAndPaths(const std::string &category, const std::string &name, const std::vector<std::string> &paths);

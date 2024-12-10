@@ -567,7 +567,7 @@ void CFileItem::Initialize()
   m_dwSize = 0;
   m_bIsParentFolder = false;
   m_bIsShareOrDrive = false;
-  m_iDriveType = CMediaSource::SourceType::UNKNOWN;
+  m_iDriveType = SourceType::UNKNOWN;
   m_lStartOffset = 0;
   m_lStartPartNumber = 1;
   m_lEndOffset = 0;
@@ -688,7 +688,7 @@ void CFileItem::Archive(CArchive& ar)
     ar >> m_bIsShareOrDrive;
     int dtype;
     ar >> dtype;
-    m_iDriveType = static_cast<CMediaSource::SourceType>(dtype);
+    m_iDriveType = static_cast<SourceType>(dtype);
     ar >> m_dateTime;
     ar >> m_dwSize;
     ar >> m_strDVDLabel;
@@ -1160,12 +1160,12 @@ bool CFileItem::IsBluray() const
 
 bool CFileItem::IsDVD() const
 {
-  return URIUtils::IsDVD(m_strPath) || m_iDriveType == CMediaSource::SourceType::OPTICAL_DISC;
+  return URIUtils::IsDVD(m_strPath) || m_iDriveType == SourceType::OPTICAL_DISC;
 }
 
 bool CFileItem::IsOnDVD() const
 {
-  return URIUtils::IsOnDVD(m_strPath) || m_iDriveType == CMediaSource::SourceType::OPTICAL_DISC;
+  return URIUtils::IsOnDVD(m_strPath) || m_iDriveType == SourceType::OPTICAL_DISC;
 }
 
 bool CFileItem::IsNfs() const
@@ -1210,7 +1210,7 @@ bool CFileItem::IsVirtualDirectoryRoot() const
 
 bool CFileItem::IsRemovable() const
 {
-  return IsOnDVD() || MUSIC::IsCDDA(*this) || m_iDriveType == CMediaSource::SourceType::REMOVABLE;
+  return IsOnDVD() || MUSIC::IsCDDA(*this) || m_iDriveType == SourceType::REMOVABLE;
 }
 
 bool CFileItem::IsReadOnly() const
