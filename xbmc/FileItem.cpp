@@ -881,12 +881,15 @@ bool CFileItem::Exists(bool bUseCache /* = true */) const
   if (URIUtils::IsStack(strPath))
     strPath = CStackDirectory::GetFirstStackedFile(strPath);
 
+  if (URIUtils::IsBluray(strPath) && URIUtils::GetFileName(strPath) == "menu")
+  {
+    strPath = CURL(strPath).GetHostName();
+    return CDirectory::Exists(strPath, bUseCache);
+  }
+
   if (m_bIsFolder)
     return CDirectory::Exists(strPath, bUseCache);
-  else
-    return CFile::Exists(strPath, bUseCache);
-
-  return false;
+  return CFile::Exists(strPath, bUseCache);
 }
 
 bool CFileItem::IsEPG() const
@@ -1777,7 +1780,7 @@ void CFileItem::SetDynPath(const std::string &path)
 
 std::string CFileItem::GetBlurayPath() const
 {
-  if (VIDEO::IsBlurayPlaylist(*this))
+  if (URIUtils::IsBluray(GetDynPath()))
   {
     CURL url(GetDynPath());
     CURL url2(url.GetHostName()); // strip bluray://
@@ -1998,7 +2001,8 @@ std::string CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
     return GetLocalMetadataPath();
 
   if (bUseFolderNames &&
-     (!m_bIsFolder || URIUtils::IsInArchive(m_strPath) ||
+      (!m_bIsFolder || URIUtils::IsInArchive(m_strPath) ||
+       URIUtils::IsBluray(m_strPath) ||
      (HasVideoInfoTag() && GetVideoInfoTag()->m_iDbId > 0 && !CMediaTypes::IsContainer(GetVideoInfoTag()->m_type))))
   {
     std::string name2(strMovieName);
