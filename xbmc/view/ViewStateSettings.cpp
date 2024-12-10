@@ -8,6 +8,7 @@
 
 #include "ViewStateSettings.h"
 
+#include "SortFileItem.h"
 #include "utils/SortUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
@@ -90,8 +91,11 @@ bool CViewStateSettings::Load(const TiXmlNode *settings)
     if (pViewState->FirstChild(XML_SORTATTRIBUTES) == NULL)
     {
       int sortMethod;
-      if (XMLUtils::GetInt(pViewState, XML_SORTMETHOD, sortMethod, SORT_METHOD_NONE, SORT_METHOD_MAX))
-        viewState->second->m_sortDescription = SortUtils::TranslateOldSortMethod((SORT_METHOD)sortMethod);
+      if (XMLUtils::GetInt(pViewState, XML_SORTMETHOD, sortMethod,
+                           static_cast<int>(SortMethod::NONE),
+                           static_cast<int>(SortMethod::SM_MAX)))
+        viewState->second->m_sortDescription =
+            SortUtils::TranslateOldSortMethod(static_cast<SortMethod>(sortMethod));
     }
     else
     {

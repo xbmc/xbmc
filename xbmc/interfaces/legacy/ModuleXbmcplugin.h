@@ -10,6 +10,7 @@
 
 #include "AddonString.h"
 #include "ListItem.h"
+#include "SortFileItem.h"
 #include "Tuple.h"
 #include "swighelper.h"
 
@@ -440,51 +441,75 @@ namespace XBMCAddon
 #endif
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-    SWIG_CONSTANT(int, SORT_METHOD_NONE);
-    SWIG_CONSTANT(int, SORT_METHOD_LABEL);
-    SWIG_CONSTANT(int, SORT_METHOD_LABEL_IGNORE_THE);
-    SWIG_CONSTANT(int, SORT_METHOD_DATE);
-    SWIG_CONSTANT(int, SORT_METHOD_SIZE);
-    SWIG_CONSTANT(int, SORT_METHOD_FILE);
-    SWIG_CONSTANT(int, SORT_METHOD_DRIVE_TYPE);
-    SWIG_CONSTANT(int, SORT_METHOD_TRACKNUM);
-    SWIG_CONSTANT(int, SORT_METHOD_DURATION);
-    SWIG_CONSTANT(int, SORT_METHOD_TITLE);
-    SWIG_CONSTANT(int, SORT_METHOD_TITLE_IGNORE_THE);
-    SWIG_CONSTANT(int, SORT_METHOD_ARTIST);
-    SWIG_CONSTANT(int, SORT_METHOD_ARTIST_IGNORE_THE);
-    SWIG_CONSTANT(int, SORT_METHOD_ALBUM);
-    SWIG_CONSTANT(int, SORT_METHOD_ALBUM_IGNORE_THE);
-    SWIG_CONSTANT(int, SORT_METHOD_GENRE);
-    SWIG_CONSTANT2(int, SORT_METHOD_VIDEO_YEAR,SORT_METHOD_YEAR);
-    SWIG_CONSTANT(int, SORT_METHOD_VIDEO_RATING);
-    SWIG_CONSTANT(int, SORT_METHOD_PROGRAM_COUNT);
-    SWIG_CONSTANT(int, SORT_METHOD_PLAYLIST_ORDER);
-    SWIG_CONSTANT(int, SORT_METHOD_EPISODE);
-    SWIG_CONSTANT(int, SORT_METHOD_VIDEO_TITLE);
-    SWIG_CONSTANT(int, SORT_METHOD_VIDEO_SORT_TITLE);
-    SWIG_CONSTANT(int, SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE);
-    SWIG_CONSTANT(int, SORT_METHOD_VIDEO_ORIGINAL_TITLE);
-    SWIG_CONSTANT(int, SORT_METHOD_VIDEO_ORIGINAL_TITLE_IGNORE_THE);
-    SWIG_CONSTANT(int, SORT_METHOD_PRODUCTIONCODE);
-    SWIG_CONSTANT(int, SORT_METHOD_SONG_RATING);
-    SWIG_CONSTANT(int, SORT_METHOD_MPAA_RATING);
-    SWIG_CONSTANT(int, SORT_METHOD_VIDEO_RUNTIME);
-    SWIG_CONSTANT(int, SORT_METHOD_STUDIO);
-    SWIG_CONSTANT(int, SORT_METHOD_STUDIO_IGNORE_THE);
-    SWIG_CONSTANT(int, SORT_METHOD_UNSORTED);
-    SWIG_CONSTANT(int, SORT_METHOD_BITRATE);
-    SWIG_CONSTANT(int, SORT_METHOD_LISTENERS);
-    SWIG_CONSTANT(int, SORT_METHOD_COUNTRY);
-    SWIG_CONSTANT(int, SORT_METHOD_DATEADDED);
-    SWIG_CONSTANT(int, SORT_METHOD_FULLPATH);
-    SWIG_CONSTANT(int, SORT_METHOD_LABEL_IGNORE_FOLDERS);
-    SWIG_CONSTANT(int, SORT_METHOD_LASTPLAYED);
-    SWIG_CONSTANT(int, SORT_METHOD_PLAYCOUNT);
-    SWIG_CONSTANT(int, SORT_METHOD_CHANNEL);
-    SWIG_CONSTANT(int, SORT_METHOD_DATE_TAKEN);
-    SWIG_CONSTANT(int, SORT_METHOD_VIDEO_USER_RATING);
-    SWIG_CONSTANT(int, SORT_METHOD_SONG_USER_RATING);
+    SWIG_CONSTANT2(int, SORT_METHOD_NONE, static_cast<int>(SortMethod::NONE));
+    SWIG_CONSTANT2(int, SORT_METHOD_LABEL, static_cast<int>(SortMethod::LABEL));
+    SWIG_CONSTANT2(int,
+                   SORT_METHOD_LABEL_IGNORE_THE,
+                   static_cast<int>(SortMethod::LABEL_IGNORE_THE));
+    SWIG_CONSTANT2(int, SORT_METHOD_DATE, static_cast<int>(SortMethod::DATE));
+    SWIG_CONSTANT2(int, SORT_METHOD_SIZE, static_cast<int>(SortMethod::SIZE));
+    SWIG_CONSTANT2(int, SORT_METHOD_FILE, static_cast<int>(SortMethod::FILE));
+    SWIG_CONSTANT2(int, SORT_METHOD_DRIVE_TYPE, static_cast<int>(SortMethod::DRIVE_TYPE));
+    SWIG_CONSTANT2(int, SORT_METHOD_TRACKNUM, static_cast<int>(SortMethod::TRACKNUM));
+    SWIG_CONSTANT2(int, SORT_METHOD_DURATION, static_cast<int>(SortMethod::DURATION));
+    SWIG_CONSTANT2(int, SORT_METHOD_TITLE, static_cast<int>(SortMethod::TITLE));
+    SWIG_CONSTANT2(int,
+                   SORT_METHOD_TITLE_IGNORE_THE,
+                   static_cast<int>(SortMethod::TITLE_IGNORE_THE));
+    SWIG_CONSTANT2(int, SORT_METHOD_ARTIST, static_cast<int>(SortMethod::ARTIST));
+    SWIG_CONSTANT2(int,
+                   SORT_METHOD_ARTIST_IGNORE_THE,
+                   static_cast<int>(SortMethod::ARTIST_IGNORE_THE));
+    SWIG_CONSTANT2(int, SORT_METHOD_ALBUM, static_cast<int>(SortMethod::ALBUM));
+    SWIG_CONSTANT2(int,
+                   SORT_METHOD_ALBUM_IGNORE_THE,
+                   static_cast<int>(SortMethod::ALBUM_IGNORE_THE));
+    SWIG_CONSTANT2(int, SORT_METHOD_GENRE, static_cast<int>(SortMethod::GENRE));
+    SWIG_CONSTANT2(int, SORT_METHOD_VIDEO_YEAR, static_cast<int>(SortMethod::YEAR));
+    SWIG_CONSTANT2(int, SORT_METHOD_VIDEO_RATING, static_cast<int>(SortMethod::VIDEO_RATING));
+    SWIG_CONSTANT2(int, SORT_METHOD_PROGRAM_COUNT, static_cast<int>(SortMethod::PROGRAM_COUNT));
+    SWIG_CONSTANT2(int, SORT_METHOD_PLAYLIST_ORDER, static_cast<int>(SortMethod::PLAYLIST_ORDER));
+    SWIG_CONSTANT2(int, SORT_METHOD_EPISODE, static_cast<int>(SortMethod::EPISODE));
+    SWIG_CONSTANT2(int, SORT_METHOD_VIDEO_TITLE, static_cast<int>(SortMethod::VIDEO_TITLE));
+    SWIG_CONSTANT2(int,
+                   SORT_METHOD_VIDEO_SORT_TITLE,
+                   static_cast<int>(SortMethod::VIDEO_SORT_TITLE));
+    SWIG_CONSTANT2(int,
+                   SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE,
+                   static_cast<int>(SortMethod::VIDEO_SORT_TITLE_IGNORE_THE));
+    SWIG_CONSTANT2(int,
+                   SORT_METHOD_VIDEO_ORIGINAL_TITLE,
+                   static_cast<int>(SortMethod::VIDEO_ORIGINAL_TITLE));
+    SWIG_CONSTANT2(int,
+                   SORT_METHOD_VIDEO_ORIGINAL_TITLE_IGNORE_THE,
+                   static_cast<int>(SortMethod::VIDEO_ORIGINAL_TITLE_IGNORE_THE));
+    SWIG_CONSTANT2(int, SORT_METHOD_PRODUCTIONCODE, static_cast<int>(SortMethod::PRODUCTIONCODE));
+    SWIG_CONSTANT2(int, SORT_METHOD_SONG_RATING, static_cast<int>(SortMethod::SONG_RATING));
+    SWIG_CONSTANT2(int, SORT_METHOD_MPAA_RATING, static_cast<int>(SortMethod::MPAA_RATING));
+    SWIG_CONSTANT2(int, SORT_METHOD_VIDEO_RUNTIME, static_cast<int>(SortMethod::VIDEO_RUNTIME));
+    SWIG_CONSTANT2(int, SORT_METHOD_STUDIO, static_cast<int>(SortMethod::STUDIO));
+    SWIG_CONSTANT2(int,
+                   SORT_METHOD_STUDIO_IGNORE_THE,
+                   static_cast<int>(SortMethod::STUDIO_IGNORE_THE));
+    SWIG_CONSTANT2(int, SORT_METHOD_UNSORTED, static_cast<int>(SortMethod::UNSORTED));
+    SWIG_CONSTANT2(int, SORT_METHOD_BITRATE, static_cast<int>(SortMethod::BITRATE));
+    SWIG_CONSTANT2(int, SORT_METHOD_LISTENERS, static_cast<int>(SortMethod::LISTENERS));
+    SWIG_CONSTANT2(int, SORT_METHOD_COUNTRY, static_cast<int>(SortMethod::COUNTRY));
+    SWIG_CONSTANT2(int, SORT_METHOD_DATEADDED, static_cast<int>(SortMethod::DATEADDED));
+    SWIG_CONSTANT2(int, SORT_METHOD_FULLPATH, static_cast<int>(SortMethod::FULLPATH));
+    SWIG_CONSTANT2(int,
+                   SORT_METHOD_LABEL_IGNORE_FOLDERS,
+                   static_cast<int>(SortMethod::LABEL_IGNORE_FOLDERS));
+    SWIG_CONSTANT2(int, SORT_METHOD_LASTPLAYED, static_cast<int>(SortMethod::LASTPLAYED));
+    SWIG_CONSTANT2(int, SORT_METHOD_PLAYCOUNT, static_cast<int>(SortMethod::PLAYCOUNT));
+    SWIG_CONSTANT2(int, SORT_METHOD_CHANNEL, static_cast<int>(SortMethod::CHANNEL));
+    SWIG_CONSTANT2(int, SORT_METHOD_DATE_TAKEN, static_cast<int>(SortMethod::DATE_TAKEN));
+    SWIG_CONSTANT2(int,
+                   SORT_METHOD_VIDEO_USER_RATING,
+                   static_cast<int>(SortMethod::VIDEO_USER_RATING));
+    SWIG_CONSTANT2(int,
+                   SORT_METHOD_SONG_USER_RATING,
+                   static_cast<int>(SortMethod::SONG_USER_RATING));
   }
 }
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */

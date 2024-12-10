@@ -9,9 +9,7 @@
 #pragma once
 
 #include "IDirectory.h"
-#include "SortFileItem.h"
 #include "interfaces/generic/RunningScriptsHandler.h"
-#include "threads/Event.h"
 
 #include <atomic>
 #include <memory>
@@ -20,6 +18,7 @@
 class CURL;
 class CFileItem;
 class CFileItemList;
+enum class SortMethod;
 
 namespace XFILE
 {
@@ -64,7 +63,10 @@ public:
   static bool AddItem(int handle, const CFileItem *item, int totalItems);
   static bool AddItems(int handle, const CFileItemList *items, int totalItems);
   static void EndOfDirectory(int handle, bool success, bool replaceListing, bool cacheToDisc);
-  static void AddSortMethod(int handle, SORT_METHOD sortMethod, const std::string &labelMask, const std::string &label2Mask);
+  static void AddSortMethod(int handle,
+                            SortMethod sortMethod,
+                            const std::string& labelMask,
+                            const std::string& label2Mask);
   static std::string GetSetting(int handle, const std::string &key);
   static void SetSetting(int handle, const std::string &key, const std::string &value);
   static void SetContent(int handle, const std::string &strContent);
