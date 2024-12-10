@@ -54,7 +54,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
   std::string partyModePath;
   bool playlistLoaded;
 
-  m_bIsVideo = context == PARTYMODECONTEXT_VIDEO;
+  m_bIsVideo = context == PartyModeContext::VIDEO;
 
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
@@ -70,7 +70,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
   if (playlistLoaded)
   {
     m_type = playlist.GetType();
-    if (context == PARTYMODECONTEXT_UNKNOWN)
+    if (context == PartyModeContext::UNKNOWN)
     {
       //get it from the xsp file
       m_bIsVideo = (StringUtils::EqualsNoCase(m_type, "video") ||
@@ -518,12 +518,12 @@ int CPartyModeManager::GetRandomSongs()
 PartyModeContext CPartyModeManager::GetType() const
 {
   if (!IsEnabled())
-    return PARTYMODECONTEXT_UNKNOWN;
+    return PartyModeContext::UNKNOWN;
 
   if (m_bIsVideo)
-    return PARTYMODECONTEXT_VIDEO;
+    return PartyModeContext::VIDEO;
 
-  return PARTYMODECONTEXT_MUSIC;
+  return PartyModeContext::MUSIC;
 }
 
 void CPartyModeManager::ClearState()
@@ -549,9 +549,9 @@ void CPartyModeManager::UpdateStats()
 bool CPartyModeManager::IsEnabled(PartyModeContext context /* = PARTYMODECONTEXT_UNKNOWN */) const
 {
   if (!m_bEnabled) return false;
-  if (context == PARTYMODECONTEXT_VIDEO)
+  if (context == PartyModeContext::VIDEO)
     return m_bIsVideo;
-  if (context == PARTYMODECONTEXT_MUSIC)
+  if (context == PartyModeContext::MUSIC)
     return !m_bIsVideo;
   return true; // unknown, but we're enabled
 }

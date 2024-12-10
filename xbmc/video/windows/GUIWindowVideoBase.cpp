@@ -912,7 +912,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
 
   case CONTEXT_BUTTON_PLAY_PARTYMODE:
-    g_partyModeManager.Enable(PARTYMODECONTEXT_VIDEO, m_vecItems->Get(itemNumber)->GetPath());
+    g_partyModeManager.Enable(PartyModeContext::VIDEO, m_vecItems->Get(itemNumber)->GetPath());
     return true;
 
   case CONTEXT_BUTTON_SCAN:
@@ -969,7 +969,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(const std::shared_ptr<CFileItem>& pItem,
                                       const std::string& player)
 {
   // party mode
-  if (g_partyModeManager.IsEnabled(PARTYMODECONTEXT_VIDEO))
+  if (g_partyModeManager.IsEnabled(PartyModeContext::VIDEO))
   {
     PLAYLIST::CPlayList playlistTemp;
     playlistTemp.Add(pItem);

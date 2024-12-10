@@ -277,16 +277,16 @@ static int PlayerControl(const std::vector<std::string>& params)
   {
     std::string strXspPath;
     //empty param=music, "music"=music, "video"=video, else xsp path
-    PartyModeContext context = PARTYMODECONTEXT_MUSIC;
+    PartyModeContext context = PartyModeContext::MUSIC;
     if (params[0].size() > 9)
     {
       if (params[0].size() == 16 && StringUtils::EndsWithNoCase(params[0], "video)"))
-        context = PARTYMODECONTEXT_VIDEO;
+        context = PartyModeContext::VIDEO;
       else if (params[0].size() != 16 || !StringUtils::EndsWithNoCase(params[0], "music)"))
       {
         strXspPath = params[0].substr(10);
         StringUtils::TrimRight(strXspPath, ")");
-        context = PARTYMODECONTEXT_UNKNOWN;
+        context = PartyModeContext::UNKNOWN;
       }
     }
     if (g_partyModeManager.IsEnabled())
