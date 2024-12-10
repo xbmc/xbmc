@@ -255,8 +255,9 @@ SelectFirstUnwatchedItem CGUIWindowVideoNav::GetSettingSelectFirstUnwatchedItem(
     if (nodeType == NodeType::SEASONS || nodeType == NodeType::EPISODES)
     {
       int iValue = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOLIBRARY_TVSHOWSSELECTFIRSTUNWATCHEDITEM);
-      if (iValue >= SelectFirstUnwatchedItem::NEVER && iValue <= SelectFirstUnwatchedItem::ALWAYS)
-        return (SelectFirstUnwatchedItem)iValue;
+      if (iValue >= static_cast<int>(SelectFirstUnwatchedItem::NEVER) &&
+          iValue <= static_cast<int>(SelectFirstUnwatchedItem::ALWAYS))
+        return static_cast<SelectFirstUnwatchedItem>(iValue);
     }
   }
 
