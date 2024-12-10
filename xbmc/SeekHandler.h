@@ -19,10 +19,10 @@
 
 struct IntegerSettingOption;
 
-enum SeekType
+enum class SeekType
 {
-  SEEK_TYPE_VIDEO = 0,
-  SEEK_TYPE_MUSIC = 1
+  VIDEO = 0,
+  MUSIC = 1
 };
 
 class CSeekHandler : public ISettingCallback, public KODI::ACTION::IActionListener
@@ -39,7 +39,11 @@ public:
   void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
   bool OnAction(const CAction &action) override;
 
-  void Seek(bool forward, float amount, float duration = 0, bool analogSeek = false, SeekType type = SEEK_TYPE_VIDEO);
+  void Seek(bool forward,
+            float amount,
+            float duration = 0,
+            bool analogSeek = false,
+            SeekType type = SeekType::VIDEO);
   void SeekSeconds(int seconds);
   void FrameMove();
   void Reset();
