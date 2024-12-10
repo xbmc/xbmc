@@ -1276,8 +1276,8 @@ int CMusicInfoScanner::GetPathHash(const CFileItemList &items, std::string &hash
     const CFileItemPtr pItem = items[i];
     digest.Update(pItem->GetPath());
     digest.Update((unsigned char *)&pItem->m_dwSize, sizeof(pItem->m_dwSize));
-    KODI::TIME::FileTime time = pItem->m_dateTime;
-    digest.Update((unsigned char*)&time, sizeof(KODI::TIME::FileTime));
+    const auto time = pItem->m_dateTime.GetAsTimePoint().time_since_epoch().count();
+    digest.Update(&time, sizeof(std::chrono::nanoseconds));
     if (MUSIC::IsAudio(*pItem) && !PLAYLIST::IsPlayList(*pItem) && !pItem->IsNFO())
       count++;
   }

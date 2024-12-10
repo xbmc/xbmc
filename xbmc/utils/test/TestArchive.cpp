@@ -10,11 +10,11 @@
 #  include <windows.h>
 #endif
 
+#include "XBDateTime.h"
 #include "filesystem/File.h"
 #include "test/TestUtils.h"
 #include "utils/Archive.h"
 #include "utils/Variant.h"
-#include "utils/XTimeUtils.h"
 
 #include <gtest/gtest.h>
 
@@ -236,6 +236,26 @@ TEST_F(TestArchive, SystemTimeArchive)
   arload.Close();
 
   EXPECT_TRUE(!memcmp(&SystemTime_ref, &SystemTime_var, sizeof(KODI::TIME::SystemTime)));
+}
+
+TEST_F(TestArchive, DateTimeArchive)
+{
+  ASSERT_NE(nullptr, file);
+  CDateTime dateTime1(1991, 5, 14, 12, 34, 56);
+  CDateTime dateTime2;
+
+  CArchive arstore(file, CArchive::store);
+  dateTime1.Archive(arstore);
+  arstore.Close();
+
+  ASSERT_EQ(0, file->Seek(0, SEEK_SET));
+  CArchive arload(file, CArchive::load);
+  dateTime2.Archive(arload);
+  arload.Close();
+
+  EXPECT_TRUE(dateTime1 == dateTime2);
+  EXPECT_FALSE(dateTime1 > dateTime2);
+  EXPECT_FALSE(dateTime1 < dateTime2);
 }
 
 TEST_F(TestArchive, CVariantArchive)

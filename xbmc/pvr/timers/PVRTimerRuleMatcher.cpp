@@ -69,7 +69,7 @@ CDateTime CPVRTimerRuleMatcher::GetNextTimerStart() const
     }
   }
 
-  return nextStart.GetAsUTCDateTime();
+  return nextStart;
 }
 
 bool CPVRTimerRuleMatcher::Matches(const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const
