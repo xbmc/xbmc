@@ -267,8 +267,9 @@ SelectFirstUnwatchedItem CGUIWindowVideoNav::GetSettingSelectFirstUnwatchedItem(
 IncludeAllSeasonsAndSpecials CGUIWindowVideoNav::GetSettingIncludeAllSeasonsAndSpecials()
 {
   int iValue = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOLIBRARY_TVSHOWSINCLUDEALLSEASONSANDSPECIALS);
-  if (iValue >= IncludeAllSeasonsAndSpecials::NEITHER && iValue <= IncludeAllSeasonsAndSpecials::SPECIALS)
-    return (IncludeAllSeasonsAndSpecials)iValue;
+  if (iValue >= static_cast<int>(IncludeAllSeasonsAndSpecials::NEITHER) &&
+      iValue <= static_cast<int>(IncludeAllSeasonsAndSpecials::SPECIALS))
+    return static_cast<IncludeAllSeasonsAndSpecials>(iValue);
 
   return IncludeAllSeasonsAndSpecials::NEITHER;
 }

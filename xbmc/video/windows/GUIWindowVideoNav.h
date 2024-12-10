@@ -19,7 +19,7 @@ enum class SelectFirstUnwatchedItem
   ALWAYS = 2
 };
 
-enum IncludeAllSeasonsAndSpecials
+enum class IncludeAllSeasonsAndSpecials
 {
   NEITHER = 0,
   BOTH = 1,
