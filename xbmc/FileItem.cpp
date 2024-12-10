@@ -883,12 +883,15 @@ bool CFileItem::Exists(bool bUseCache /* = true */) const
   if (URIUtils::IsStack(strPath))
     strPath = CStackDirectory::GetFirstStackedFile(strPath);
 
+  if (URIUtils::IsBluray(strPath) && URIUtils::GetFileName(strPath) == "menu")
+  {
+    strPath = CURL(strPath).GetHostName();
+    return CDirectory::Exists(strPath, bUseCache);
+  }
+
   if (m_bIsFolder)
     return CDirectory::Exists(strPath, bUseCache);
-  else
-    return CFile::Exists(strPath, bUseCache);
-
-  return false;
+  return CFile::Exists(strPath, bUseCache);
 }
 
 bool CFileItem::IsEPG() const
