@@ -619,7 +619,7 @@ namespace KODI::VIDEO
     if (m_handle)
       m_handle->SetText(pItem->GetMovieName(bDirNames));
 
-    CInfoScanner::INFO_TYPE result=CInfoScanner::NO_NFO;
+    InfoType result = InfoType::NONE;
     CScraperUrl scrUrl;
     // handle .nfo files
     std::unique_ptr<IVideoInfoTagLoader> loader;
@@ -633,7 +633,7 @@ namespace KODI::VIDEO
       }
     }
 
-    if (result == CInfoScanner::FULL_NFO)
+    if (result == InfoType::FULL)
     {
 
       long lResult = AddVideo(pItem, info2->Content(), bDirNames, useLocal);
@@ -648,7 +648,7 @@ namespace KODI::VIDEO
       }
       return InfoRet::ADDED;
     }
-    if (result == CInfoScanner::URL_NFO || result == CInfoScanner::COMBINED_NFO)
+    if (result == InfoType::URL || result == InfoType::COMBINED)
     {
       scrUrl = loader->ScraperUrl();
       pURL = &scrUrl;
@@ -658,7 +658,7 @@ namespace KODI::VIDEO
     int retVal = 0;
     std::string movieTitle = pItem->GetMovieName(bDirNames);
     int movieYear = -1; // hint that movie title was not found
-    if (result == CInfoScanner::TITLE_NFO)
+    if (result == InfoType::TITLE)
     {
       CVideoInfoTag* tag = pItem->GetVideoInfoTag();
       movieTitle = tag->GetTitle();
@@ -672,9 +672,8 @@ namespace KODI::VIDEO
     {
       const std::unordered_map<std::string, std::string> uniqueIDs{{identifierType, identifier}};
       if (GetDetails(pItem, uniqueIDs, url, info2,
-                     (result == CInfoScanner::COMBINED_NFO || result == CInfoScanner::OVERRIDE_NFO)
-                         ? loader.get()
-                         : nullptr,
+                     (result == InfoType::COMBINED || result == InfoType::OVERRIDE) ? loader.get()
+                                                                                    : nullptr,
                      pDlgProgress))
       {
         if ((lResult = AddVideo(pItem, info2->Content(), false, useLocal)) < 0)
@@ -703,9 +702,8 @@ namespace KODI::VIDEO
     const std::unordered_map<std::string, std::string> uniqueIDs{{identifierType, identifier}};
 
     if (GetDetails(pItem, {}, url, info2,
-                   (result == CInfoScanner::COMBINED_NFO || result == CInfoScanner::OVERRIDE_NFO)
-                       ? loader.get()
-                       : nullptr,
+                   (result == InfoType::COMBINED || result == InfoType::OVERRIDE) ? loader.get()
+                                                                                  : nullptr,
                    pDlgProgress))
     {
       if ((lResult = AddVideo(pItem, info2->Content(), false, useLocal)) < 0)
@@ -740,7 +738,7 @@ namespace KODI::VIDEO
     if (m_handle)
       m_handle->SetText(pItem->GetMovieName(bDirNames));
 
-    CInfoScanner::INFO_TYPE result = CInfoScanner::NO_NFO;
+    InfoType result = InfoType::NONE;
     CScraperUrl scrUrl;
     // handle .nfo files
     std::unique_ptr<IVideoInfoTagLoader> loader;
@@ -753,7 +751,7 @@ namespace KODI::VIDEO
         result = loader->Load(*pItem->GetVideoInfoTag(), false);
       }
     }
-    if (result == CInfoScanner::FULL_NFO)
+    if (result == InfoType::FULL)
     {
       const int dbId = AddVideo(pItem, info2->Content(), bDirNames, true);
       if (dbId < 0)
@@ -762,7 +760,7 @@ namespace KODI::VIDEO
         return InfoRet::HAVE_ALREADY;
       return InfoRet::ADDED;
     }
-    if (result == CInfoScanner::URL_NFO || result == CInfoScanner::COMBINED_NFO)
+    if (result == InfoType::URL || result == InfoType::COMBINED)
     {
       scrUrl = loader->ScraperUrl();
       pURL = &scrUrl;
@@ -772,7 +770,7 @@ namespace KODI::VIDEO
     int retVal = 0;
     std::string movieTitle = pItem->GetMovieName(bDirNames);
     int movieYear = -1; // hint that movie title was not found
-    if (result == CInfoScanner::TITLE_NFO)
+    if (result == InfoType::TITLE)
     {
       CVideoInfoTag* tag = pItem->GetVideoInfoTag();
       movieTitle = tag->GetTitle();
@@ -785,9 +783,8 @@ namespace KODI::VIDEO
     {
       const std::unordered_map<std::string, std::string> uniqueIDs{{identifierType, identifier}};
       if (GetDetails(pItem, uniqueIDs, url, info2,
-                     (result == CInfoScanner::COMBINED_NFO || result == CInfoScanner::OVERRIDE_NFO)
-                         ? loader.get()
-                         : nullptr,
+                     (result == InfoType::COMBINED || result == InfoType::OVERRIDE) ? loader.get()
+                                                                                    : nullptr,
                      pDlgProgress))
       {
         const int dbId = AddVideo(pItem, info2->Content(), bDirNames, useLocal);
@@ -808,9 +805,8 @@ namespace KODI::VIDEO
               url.GetFirstThumbUrl(), info2->Name(), TranslateContent(info2->Content()));
 
     if (GetDetails(pItem, {}, url, info2,
-                   (result == CInfoScanner::COMBINED_NFO || result == CInfoScanner::OVERRIDE_NFO)
-                       ? loader.get()
-                       : nullptr,
+                   (result == InfoType::COMBINED || result == InfoType::OVERRIDE) ? loader.get()
+                                                                                  : nullptr,
                    pDlgProgress))
     {
       const int dbId = AddVideo(pItem, info2->Content(), bDirNames, useLocal);
@@ -845,7 +841,7 @@ namespace KODI::VIDEO
     if (m_handle)
       m_handle->SetText(pItem->GetMovieName(bDirNames));
 
-    CInfoScanner::INFO_TYPE result = CInfoScanner::NO_NFO;
+    InfoType result = InfoType::NONE;
     CScraperUrl scrUrl;
     // handle .nfo files
     std::unique_ptr<IVideoInfoTagLoader> loader;
@@ -858,13 +854,13 @@ namespace KODI::VIDEO
         result = loader->Load(*pItem->GetVideoInfoTag(), false);
       }
     }
-    if (result == CInfoScanner::FULL_NFO)
+    if (result == InfoType::FULL)
     {
       if (AddVideo(pItem, info2->Content(), bDirNames, true) < 0)
         return InfoRet::INFO_ERROR;
       return InfoRet::ADDED;
     }
-    if (result == CInfoScanner::URL_NFO || result == CInfoScanner::COMBINED_NFO)
+    if (result == InfoType::URL || result == InfoType::COMBINED)
     {
       scrUrl = loader->ScraperUrl();
       pURL = &scrUrl;
@@ -874,7 +870,7 @@ namespace KODI::VIDEO
     int retVal = 0;
     std::string movieTitle = pItem->GetMovieName(bDirNames);
     int movieYear = -1; // hint that movie title was not found
-    if (result == CInfoScanner::TITLE_NFO)
+    if (result == InfoType::TITLE)
     {
       CVideoInfoTag* tag = pItem->GetVideoInfoTag();
       movieTitle = tag->GetTitle();
@@ -887,9 +883,8 @@ namespace KODI::VIDEO
     {
       const std::unordered_map<std::string, std::string> uniqueIDs{{identifierType, identifier}};
       if (GetDetails(pItem, uniqueIDs, url, info2,
-                     (result == CInfoScanner::COMBINED_NFO || result == CInfoScanner::OVERRIDE_NFO)
-                         ? loader.get()
-                         : nullptr,
+                     (result == InfoType::COMBINED || result == InfoType::OVERRIDE) ? loader.get()
+                                                                                    : nullptr,
                      pDlgProgress))
       {
         if (AddVideo(pItem, info2->Content(), bDirNames, useLocal) < 0)
@@ -907,9 +902,8 @@ namespace KODI::VIDEO
               url.GetFirstThumbUrl(), info2->Name(), TranslateContent(info2->Content()));
 
     if (GetDetails(pItem, {}, url, info2,
-                   (result == CInfoScanner::COMBINED_NFO || result == CInfoScanner::OVERRIDE_NFO)
-                       ? loader.get()
-                       : nullptr,
+                   (result == InfoType::COMBINED || result == InfoType::OVERRIDE) ? loader.get()
+                                                                                  : nullptr,
                    pDlgProgress))
     {
       if (AddVideo(pItem, info2->Content(), bDirNames, useLocal) < 0)
@@ -1956,7 +1950,7 @@ namespace KODI::VIDEO
       }
 
       // handle .nfo files
-      CInfoScanner::INFO_TYPE result=CInfoScanner::NO_NFO;
+      InfoType result = InfoType::NONE;
       CScraperUrl scrUrl;
       const ScraperPtr& info(scraper);
       std::unique_ptr<IVideoInfoTagLoader> loader;
@@ -1969,7 +1963,7 @@ namespace KODI::VIDEO
           result = loader->Load(*item.GetVideoInfoTag(), false);
         }
       }
-      if (result == CInfoScanner::FULL_NFO)
+      if (result == InfoType::FULL)
       {
         // override with episode and season number from file if available
         if (file->iEpisode > -1)

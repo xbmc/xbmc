@@ -27,13 +27,14 @@
 using namespace XFILE;
 using namespace ADDON;
 
-CInfoScanner::INFO_TYPE CNfoFile::Create(const std::string& strPath,
-                                         const ScraperPtr& info, int episode)
+CInfoScanner::InfoType CNfoFile::Create(const std::string& strPath,
+                                        const ScraperPtr& info,
+                                        int episode)
 {
   m_info = info; // assume we can use these settings
   m_type = ScraperTypeFromContent(info->Content());
   if (Load(strPath) != 0)
-    return CInfoScanner::NO_NFO;
+    return CInfoScanner::InfoType::NONE;
 
   CFileItemList items;
   bool bNfo=false;
@@ -86,20 +87,20 @@ CInfoScanner::INFO_TYPE CNfoFile::Create(const std::string& strPath,
       break;
 
   if (res == 2)
-    return CInfoScanner::ERROR_NFO;
+    return CInfoScanner::InfoType::ERROR_NFO;
   if (bNfo)
   {
     if (!m_scurl.HasUrls())
     {
       if (m_doc.find("[scrape url]") != std::string::npos)
-        return CInfoScanner::OVERRIDE_NFO;
+        return CInfoScanner::InfoType::OVERRIDE;
       else
-        return CInfoScanner::FULL_NFO;
+        return CInfoScanner::InfoType::FULL;
     }
     else
-      return CInfoScanner::COMBINED_NFO;
+      return CInfoScanner::InfoType::COMBINED;
   }
-  return m_scurl.HasUrls() ? CInfoScanner::URL_NFO : CInfoScanner::NO_NFO;
+  return m_scurl.HasUrls() ? CInfoScanner::InfoType::URL : CInfoScanner::InfoType::NONE;
 }
 
 // return value: 0 - success; 1 - no result; skip; 2 - error

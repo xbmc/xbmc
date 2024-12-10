@@ -113,12 +113,13 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       loader.reset(VIDEO::CVideoInfoTagLoaderFactory::CreateLoader(
           *m_item, scraper, scanSettings.parent_name_root, m_forceRefresh));
       // check if there's an NFO for the item
-      CInfoScanner::INFO_TYPE nfoResult = CInfoScanner::NO_NFO;
+      CInfoScanner::InfoType nfoResult = CInfoScanner::InfoType::NONE;
       if (loader)
       {
         std::unique_ptr<CVideoInfoTag> tag(new CVideoInfoTag());
         nfoResult = loader->Load(*tag, false);
-        if (nfoResult == CInfoScanner::FULL_NFO && m_item->IsPlugin() && scraper->ID() == "metadata.local")
+        if (nfoResult == CInfoScanner::InfoType::FULL && m_item->IsPlugin() &&
+            scraper->ID() == "metadata.local")
         {
           // get video info and art from plugin source with metadata.local scraper
           if (scraper->Content() == CONTENT_TVSHOWS && !m_item->m_bIsFolder && tag->m_iIdShow < 0)
@@ -129,19 +130,19 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
           if (nfo && nfo->GetArt())
             pluginArt = std::move(nfo->GetArt());
         }
-        else if (nfoResult == CInfoScanner::URL_NFO)
+        else if (nfoResult == CInfoScanner::InfoType::URL)
           scraperUrl = loader->ScraperUrl();
       }
 
       // if there's no NFO remember it in case we have to refresh again
-      if (nfoResult == CInfoScanner::ERROR_NFO)
+      if (nfoResult == CInfoScanner::InfoType::ERROR_NFO)
         ignoreNfo = true;
-      else if (nfoResult != CInfoScanner::NO_NFO)
+      else if (nfoResult != CInfoScanner::InfoType::NONE)
         hasDetails = true;
 
       // if we are performing a forced refresh ask the user to choose between using a valid NFO and a valid scraper
-      if (needsRefresh && IsModal() && !scraper->IsNoop()
-          && nfoResult != CInfoScanner::ERROR_NFO)
+      if (needsRefresh && IsModal() && !scraper->IsNoop() &&
+          nfoResult != CInfoScanner::InfoType::ERROR_NFO)
       {
         int heading = 20159;
         if (scraper->Content() == CONTENT_MOVIES)

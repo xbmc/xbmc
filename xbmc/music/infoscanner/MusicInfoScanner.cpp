@@ -1491,7 +1491,7 @@ CInfoScanner::InfoRet CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
     m_musicDatabase.GetAlbumPath(album.idAlbum, path);
 
   std::string strNfo = URIUtils::AddFileToFolder(path, "album.nfo");
-  CInfoScanner::INFO_TYPE result = CInfoScanner::NO_NFO;
+  InfoType result = InfoType::NONE;
   CNfoFile nfoReader;
   existsNFO = CFileUtils::Exists(strNfo);
   // When on GUI ask user if they want to ignore nfo and refresh from Internet
@@ -1504,14 +1504,13 @@ CInfoScanner::InfoRet CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
   {
     CLog::Log(LOGDEBUG, "Found matching nfo file: {}", CURL::GetRedacted(strNfo));
     result = nfoReader.Create(strNfo, info);
-    if (result == CInfoScanner::FULL_NFO)
+    if (result == InfoType::FULL)
     {
       CLog::Log(LOGDEBUG, "{} Got details from nfo", __FUNCTION__);
       nfoReader.GetDetails(albumInfo.GetAlbum());
       return InfoRet::ADDED;
     }
-    else if (result == CInfoScanner::URL_NFO ||
-             result == CInfoScanner::COMBINED_NFO)
+    else if (result == InfoType::URL || result == InfoType::COMBINED)
     {
       CScraperUrl scrUrl(nfoReader.ScraperUrl());
       CMusicAlbumInfo albumNfo("nfo",scrUrl);
@@ -1522,7 +1521,7 @@ CInfoScanner::InfoRet CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
       scraper.GetAlbums().clear();
       scraper.GetAlbums().push_back(albumNfo);
     }
-    else if (result != CInfoScanner::OVERRIDE_NFO)
+    else if (result != InfoType::OVERRIDE)
       CLog::Log(LOGERROR, "Unable to find an url in nfo file: {}", strNfo);
   }
 
@@ -1558,8 +1557,7 @@ CInfoScanner::InfoRet CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
 
   CGUIDialogSelect *pDlg = NULL;
   int iSelectedAlbum=0;
-  if ((result == CInfoScanner::NO_NFO || result == CInfoScanner::OVERRIDE_NFO)
-      && !bMusicBrainz)
+  if ((result == InfoType::NONE || result == InfoType::OVERRIDE) && !bMusicBrainz)
   {
     iSelectedAlbum = -1; // set negative so that we can detect a failure
     if (scraper.Succeeded() && scraper.GetAlbumCount() >= 1)
@@ -1701,7 +1699,7 @@ CInfoScanner::InfoRet CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
 
   albumInfo = scraper.GetAlbum(iSelectedAlbum);
 
-  if (result == CInfoScanner::COMBINED_NFO || result == CInfoScanner::OVERRIDE_NFO)
+  if (result == InfoType::COMBINED || result == InfoType::OVERRIDE)
     nfoReader.GetDetails(albumInfo.GetAlbum(), NULL, true);
 
   return InfoRet::ADDED;
@@ -1745,7 +1743,7 @@ CInfoScanner::InfoRet CMusicInfoScanner::DownloadArtistInfo(
   }
 
   // Handle nfo files
-  CInfoScanner::INFO_TYPE result = CInfoScanner::NO_NFO;
+  InfoType result = InfoType::NONE;
   CNfoFile nfoReader;
   std::string strNfo;
   std::string path;
@@ -1786,13 +1784,13 @@ CInfoScanner::InfoRet CMusicInfoScanner::DownloadArtistInfo(
   {
     CLog::Log(LOGDEBUG, "Found matching nfo file: {}", CURL::GetRedacted(strNfo));
     result = nfoReader.Create(strNfo, info);
-    if (result == CInfoScanner::FULL_NFO)
+    if (result == InfoType::FULL)
     {
       CLog::Log(LOGDEBUG, "{} Got details from nfo", __FUNCTION__);
       nfoReader.GetDetails(artistInfo.GetArtist());
       return InfoRet::ADDED;
     }
-    else if (result == CInfoScanner::URL_NFO || result == CInfoScanner::COMBINED_NFO)
+    else if (result == InfoType::URL || result == InfoType::COMBINED)
     {
       CScraperUrl scrUrl(nfoReader.ScraperUrl());
       CMusicArtistInfo artistNfo("nfo", scrUrl);
@@ -1830,7 +1828,7 @@ CInfoScanner::InfoRet CMusicInfoScanner::DownloadArtistInfo(
   }
 
   int iSelectedArtist = 0;
-  if (result == CInfoScanner::NO_NFO && !bMusicBrainz)
+  if (result == InfoType::NONE && !bMusicBrainz)
   {
     if (scraper.GetArtistCount() >= 1)
     {
@@ -1920,7 +1918,7 @@ CInfoScanner::InfoRet CMusicInfoScanner::DownloadArtistInfo(
 
   artistInfo = scraper.GetArtist(iSelectedArtist);
 
-  if (result == CInfoScanner::COMBINED_NFO)
+  if (result == InfoType::COMBINED)
     nfoReader.GetDetails(artistInfo.GetArtist(), NULL, true);
 
   return InfoRet::ADDED;
@@ -2326,17 +2324,17 @@ int CMusicInfoScanner::CountFilesRecursively(const std::string& strPath)
   return count;
 }
 
-int CMusicInfoScanner::CountFiles(const CFileItemList &items, bool recursive)
+int CMusicInfoScanner::CountFiles(const CFileItemList& items, bool recursive)
 {
   int count = 0;
-  for (int i=0; i<items.Size(); ++i)
+  for (int i = 0; i < items.Size(); ++i)
   {
-    const CFileItemPtr pItem=items[i];
+    const CFileItemPtr pItem = items[i];
 
     if (recursive && pItem->m_bIsFolder)
-      count+=CountFilesRecursively(pItem->GetPath());
+      count += CountFilesRecursively(pItem->GetPath());
     else if (MUSIC::IsAudio(*pItem) && !PLAYLIST::IsPlayList(*pItem) && !pItem->IsNFO())
-      count++;
+      ++count;
   }
   return count;
 }
