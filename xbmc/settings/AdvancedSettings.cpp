@@ -140,7 +140,9 @@ void CAdvancedSettings::Initialize()
   m_audioPlayCountMinimumPercent = 90.0f;
 
   m_videoSubsDelayRange = 60;
+  m_videoSubsDelayStep = 0.1f;
   m_videoAudioDelayRange = 10;
+  m_videoAudioDelayStep = 0.025f;
   m_videoUseTimeSeeking = true;
   m_videoTimeSeekForward = 30;
   m_videoTimeSeekBackward = -30;
@@ -601,7 +603,9 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetString(pElement, "stereoscopicregexsbs", m_stereoscopicregex_sbs);
     XMLUtils::GetString(pElement, "stereoscopicregextab", m_stereoscopicregex_tab);
     XMLUtils::GetFloat(pElement, "subsdelayrange", m_videoSubsDelayRange, 10, 600);
+    XMLUtils::GetFloat(pElement, "subsdelaystep", m_videoSubsDelayStep, 0, 1.0f);
     XMLUtils::GetFloat(pElement, "audiodelayrange", m_videoAudioDelayRange, 10, 600);
+    XMLUtils::GetFloat(pElement, "audiodelaystep", m_videoAudioDelayStep, 0, 1.0f);
     XMLUtils::GetString(pElement, "defaultplayer", m_videoDefaultPlayer);
     XMLUtils::GetBoolean(pElement, "fullscreenonmoviestart", m_fullScreenOnMovieStart);
     // 101 on purpose - can be used to never automark as watched

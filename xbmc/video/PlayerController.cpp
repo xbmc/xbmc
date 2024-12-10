@@ -158,72 +158,84 @@ bool CPlayerController::OnAction(const CAction &action)
       case ACTION_SUBTITLE_DELAY_MIN:
       {
         float videoSubsDelayRange = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubsDelayRange;
+        float videoSubsDelayStep =
+            CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubsDelayStep;
         CVideoSettings vs = appPlayer->GetVideoSettings();
-        vs.m_SubtitleDelay -= 0.1f;
+        vs.m_SubtitleDelay -= videoSubsDelayStep;
         if (vs.m_SubtitleDelay < -videoSubsDelayRange)
           vs.m_SubtitleDelay = -videoSubsDelayRange;
         appPlayer->SetSubTitleDelay(vs.m_SubtitleDelay);
 
         ShowSlider(action.GetID(), 22006, appPlayer->GetVideoSettings().m_SubtitleDelay,
-                   -videoSubsDelayRange, 0.1f, videoSubsDelayRange);
+                   -videoSubsDelayRange, videoSubsDelayStep, videoSubsDelayRange);
         return true;
       }
 
       case ACTION_SUBTITLE_DELAY_PLUS:
       {
         float videoSubsDelayRange = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubsDelayRange;
+        float videoSubsDelayStep =
+            CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubsDelayStep;
         CVideoSettings vs = appPlayer->GetVideoSettings();
-        vs.m_SubtitleDelay += 0.1f;
+        vs.m_SubtitleDelay += videoSubsDelayStep;
         if (vs.m_SubtitleDelay > videoSubsDelayRange)
           vs.m_SubtitleDelay = videoSubsDelayRange;
         appPlayer->SetSubTitleDelay(vs.m_SubtitleDelay);
 
         ShowSlider(action.GetID(), 22006, appPlayer->GetVideoSettings().m_SubtitleDelay,
-                   -videoSubsDelayRange, 0.1f, videoSubsDelayRange);
+                   -videoSubsDelayRange, videoSubsDelayStep, videoSubsDelayRange);
         return true;
       }
 
       case ACTION_SUBTITLE_DELAY:
       {
         float videoSubsDelayRange = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubsDelayRange;
+        float videoSubsDelayStep =
+            CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubsDelayStep;
         ShowSlider(action.GetID(), 22006, appPlayer->GetVideoSettings().m_SubtitleDelay,
-                   -videoSubsDelayRange, 0.1f, videoSubsDelayRange, true);
+                   -videoSubsDelayRange, videoSubsDelayStep, videoSubsDelayRange, true);
         return true;
       }
 
       case ACTION_AUDIO_DELAY:
       {
         float videoAudioDelayRange = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoAudioDelayRange;
+        float videoAudioDelayStep =
+            CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoAudioDelayStep;
         ShowSlider(action.GetID(), 297, appPlayer->GetVideoSettings().m_AudioDelay,
-                   -videoAudioDelayRange, AUDIO_DELAY_STEP, videoAudioDelayRange, true);
+                   -videoAudioDelayRange, videoAudioDelayStep, videoAudioDelayRange, true);
         return true;
       }
 
       case ACTION_AUDIO_DELAY_MIN:
       {
         float videoAudioDelayRange = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoAudioDelayRange;
+        float videoAudioDelayStep =
+            CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoAudioDelayStep;
         CVideoSettings vs = appPlayer->GetVideoSettings();
-        vs.m_AudioDelay -= AUDIO_DELAY_STEP;
+        vs.m_AudioDelay -= videoAudioDelayStep;
         if (vs.m_AudioDelay < -videoAudioDelayRange)
           vs.m_AudioDelay = -videoAudioDelayRange;
         appPlayer->SetAVDelay(vs.m_AudioDelay);
 
         ShowSlider(action.GetID(), 297, appPlayer->GetVideoSettings().m_AudioDelay,
-                   -videoAudioDelayRange, AUDIO_DELAY_STEP, videoAudioDelayRange);
+                   -videoAudioDelayRange, videoAudioDelayStep, videoAudioDelayRange);
         return true;
       }
 
       case ACTION_AUDIO_DELAY_PLUS:
       {
         float videoAudioDelayRange = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoAudioDelayRange;
+        float videoAudioDelayStep =
+            CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoAudioDelayStep;
         CVideoSettings vs = appPlayer->GetVideoSettings();
-        vs.m_AudioDelay += AUDIO_DELAY_STEP;
+        vs.m_AudioDelay += videoAudioDelayStep;
         if (vs.m_AudioDelay > videoAudioDelayRange)
           vs.m_AudioDelay = videoAudioDelayRange;
         appPlayer->SetAVDelay(vs.m_AudioDelay);
 
         ShowSlider(action.GetID(), 297, appPlayer->GetVideoSettings().m_AudioDelay,
-                   -videoAudioDelayRange, AUDIO_DELAY_STEP, videoAudioDelayRange);
+                   -videoAudioDelayRange, videoAudioDelayStep, videoAudioDelayRange);
         return true;
       }
 
@@ -589,9 +601,21 @@ void CPlayerController::OnSliderChange(void *data, CGUISliderControl *slider)
           m_sliderAction == ACTION_VOLAMP_DOWN ||
           m_sliderAction == ACTION_VOLAMP)
     slider->SetTextValue(CGUIDialogAudioSettings::FormatDecibel(slider->GetFloatValue()));
-  else
+  else if (m_sliderAction == ACTION_SUBTITLE_DELAY || m_sliderAction == ACTION_SUBTITLE_DELAY_MIN ||
+           m_sliderAction == ACTION_SUBTITLE_DELAY_PLUS)
+  {
+    float videoSubsDelayStep =
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubsDelayStep;
     slider->SetTextValue(
-        CGUIDialogAudioSettings::FormatDelay(slider->GetFloatValue(), AUDIO_DELAY_STEP));
+        CGUIDialogAudioSettings::FormatDelay(slider->GetFloatValue(), videoSubsDelayStep));
+  }
+  else
+  {
+    float videoAudioDelayStep =
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoAudioDelayStep;
+    slider->SetTextValue(
+        CGUIDialogAudioSettings::FormatDelay(slider->GetFloatValue(), videoAudioDelayStep));
+  }
 
   auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
