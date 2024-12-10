@@ -184,7 +184,7 @@ namespace XBMCAddon
       ///
       getText();
 #else
-      String getText();
+      const String& getText();
 #endif
 
       // isConfirmed() Method
