@@ -132,7 +132,8 @@ void CGUIDialogLockSettings::OnSettingChanged(const std::shared_ptr<const CSetti
   else if (settingId == SETTING_LOCK_FILEMANAGER)
     m_locks.files = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
   else if (settingId == SETTING_LOCK_SETTINGS)
-    m_locks.settings = static_cast<LOCK_LEVEL::SETTINGS_LOCK>(std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
+    m_locks.settings =
+        static_cast<SettingsLock>(std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
   else if (settingId == SETTING_LOCK_ADDONMANAGER)
     m_locks.addonManager = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
 
@@ -278,11 +279,11 @@ void CGUIDialogLockSettings::InitializeSettings()
     AddToggle(groupDetails, SETTING_LOCK_FILEMANAGER, 20042, SettingLevel::Basic, m_locks.files);
 
     TranslatableIntegerSettingOptions settingsLevelOptions;
-    settingsLevelOptions.emplace_back(106, LOCK_LEVEL::NONE);
-    settingsLevelOptions.emplace_back(593, LOCK_LEVEL::ALL);
-    settingsLevelOptions.emplace_back(10037, LOCK_LEVEL::STANDARD);
-    settingsLevelOptions.emplace_back(10038, LOCK_LEVEL::ADVANCED);
-    settingsLevelOptions.emplace_back(10039, LOCK_LEVEL::EXPERT);
+    settingsLevelOptions.emplace_back(106, static_cast<int>(SettingsLock::NONE));
+    settingsLevelOptions.emplace_back(593, static_cast<int>(SettingsLock::ALL));
+    settingsLevelOptions.emplace_back(10037, static_cast<int>(SettingsLock::STANDARD));
+    settingsLevelOptions.emplace_back(10038, static_cast<int>(SettingsLock::ADVANCED));
+    settingsLevelOptions.emplace_back(10039, static_cast<int>(SettingsLock::EXPERT));
     AddList(groupDetails, SETTING_LOCK_SETTINGS, 20043, SettingLevel::Basic, static_cast<int>(m_locks.settings), settingsLevelOptions, 20043);
 
     AddToggle(groupDetails, SETTING_LOCK_ADDONMANAGER, 24090, SettingLevel::Basic, m_locks.addonManager);

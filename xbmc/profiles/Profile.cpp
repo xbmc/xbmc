@@ -12,7 +12,7 @@
 #include "utils/XMLUtils.h"
 
 CProfile::CLock::CLock(LockMode type, const std::string& password)
-  : mode(type), code(password), settings(LOCK_LEVEL::NONE)
+  : mode(type), code(password), settings(SettingsLock::NONE)
 {
   programs = false;
   pictures = false;
@@ -70,9 +70,9 @@ void CProfile::Load(const TiXmlNode *node, int nextIdProfile)
   XMLUtils::GetBoolean(node, "hassources", m_bSources);
   XMLUtils::GetBoolean(node, "canwritesources", m_bCanWriteSources);
   XMLUtils::GetBoolean(node, "lockaddonmanager", m_locks.addonManager);
-  int settings = m_locks.settings;
+  int settings = static_cast<int>(m_locks.settings);
   XMLUtils::GetInt(node, "locksettings", settings);
-  m_locks.settings = (LOCK_LEVEL::SETTINGS_LOCK)settings;
+  m_locks.settings = static_cast<SettingsLock>(settings);
   XMLUtils::GetBoolean(node, "lockfiles", m_locks.files);
   XMLUtils::GetBoolean(node, "lockmusic", m_locks.music);
   XMLUtils::GetBoolean(node, "lockvideo", m_locks.video);
@@ -104,7 +104,7 @@ void CProfile::Save(TiXmlNode *root) const
   XMLUtils::SetBoolean(node, "hassources", m_bSources);
   XMLUtils::SetBoolean(node, "canwritesources", m_bCanWriteSources);
   XMLUtils::SetBoolean(node, "lockaddonmanager", m_locks.addonManager);
-  XMLUtils::SetInt(node, "locksettings", m_locks.settings);
+  XMLUtils::SetInt(node, "locksettings", static_cast<int>(m_locks.settings));
   XMLUtils::SetBoolean(node, "lockfiles", m_locks.files);
   XMLUtils::SetBoolean(node, "lockmusic", m_locks.music);
   XMLUtils::SetBoolean(node, "lockvideo", m_locks.video);
