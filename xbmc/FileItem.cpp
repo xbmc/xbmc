@@ -1779,7 +1779,7 @@ void CFileItem::SetDynPath(const std::string &path)
 
 std::string CFileItem::GetBlurayPath() const
 {
-  if (VIDEO::IsBlurayPlaylist(*this))
+  if (URIUtils::IsBluray(GetDynPath()))
   {
     CURL url(GetDynPath());
     CURL url2(url.GetHostName()); // strip bluray://
