@@ -159,6 +159,10 @@ constexpr const int GUI_MSG_STATE_CHANGED = 51;
  */
 constexpr const int GUI_MSG_SUBTITLE_DOWNLOADED = 52;
 
+/*!
+ * \brief Reset a multiimage to its initial state
+ */
+constexpr const int GUI_MSG_RESET_MULTI_IMAGE = 53;
 
 constexpr const int GUI_MSG_USER = 1000;
 
