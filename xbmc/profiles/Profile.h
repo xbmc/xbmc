@@ -8,11 +8,10 @@
 
 #pragma once
 
-#include "LockType.h"
+#include "LockMode.h"
 #include "SettingsLock.h"
 
 #include <string>
-#include <vector>
 
 class TiXmlNode;
 

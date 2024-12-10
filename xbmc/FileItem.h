@@ -13,7 +13,7 @@
  \brief
  */
 
-#include "LockType.h"
+#include "LockMode.h"
 #include "XBDateTime.h"
 #include "guilib/GUIListItem.h"
 #include "threads/CriticalSection.h"

@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "LockType.h"
+#include "LockMode.h"
 #include "media/MediaLockState.h"
 
 #include <string>

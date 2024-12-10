@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "LockType.h"
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/SettingLevel.h"
 
@@ -18,6 +17,7 @@
 class CFileItem;
 class CMediaSource;
 class CProfileManager;
+enum class LockMode;
 
 class CGUIPassword : public ISettingCallback
 {

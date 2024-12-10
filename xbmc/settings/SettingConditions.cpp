@@ -8,14 +8,14 @@
 
 #include "SettingConditions.h"
 
-#include "LockType.h"
+#include "GUIPassword.h"
+#include "LockMode.h"
+#include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/Skin.h"
 #include "addons/addoninfo/AddonType.h"
 #include "application/AppParams.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAESettings.h"
-#include "ServiceBroker.h"
-#include "GUIPassword.h"
 #if defined(HAS_WEB_SERVER)
 #include "network/WebServer.h"
 #endif
