@@ -592,12 +592,13 @@ public:
                            const std::map<std::string, std::string>& artwork,
                            int idShow,
                            int idEpisode = -1);
-  bool SetFileForEpisode(const std::string& fileAndPath, int idEpisode, int idFile);
-  bool SetFileForMovie(const std::string& fileAndPath, int idMovie, int idFile);
+  bool SetFileForEpisode(const std::string& fileAndPath, const int idEpisode, const int oldIdFile);
+  bool SetFileForMovie(const std::string& fileAndPath, const int oldIdFile);
   int SetDetailsForMusicVideo(CVideoInfoTag& details,
                               const std::map<std::string, std::string>& artwork,
                               int idMVideo = -1);
-  int SetStreamDetailsForFile(const CStreamDetails& details, const std::string& strFileNameAndPath);
+  void SetStreamDetailsForFile(const CStreamDetails& details,
+                               const std::string& strFileNameAndPath);
   /*!
    * \brief Clear any existing stream details and add the new provided details to a file.
    * \param[in] details New stream details
@@ -637,6 +638,7 @@ public:
   void UpdateFanart(const CFileItem& item, VideoDbContentType type);
   void DeleteSet(int idSet);
   void DeleteTag(int idTag, VideoDbContentType mediaType);
+  void DeleteFile(int idFile);
 
   /*! \brief Get video settings for the specified file id
    \param idFile file id to get the settings for
@@ -1143,9 +1145,11 @@ public:
   bool UpdateAssetsOwner(const std::string& mediaType, int dbIdSource, int dbIdTarget);
 
   int GetMovieId(const std::string& strFilenameAndPath);
+  int GetMovieId(const int fileId) const;
   std::string GetMovieTitle(int idMovie);
   void GetSameVideoItems(const CFileItem& item, CFileItemList& items);
-  int GetFileIdByMovie(int idMovie);
+  int GetFileIdByMovie(int idMovie) const;
+  int GetFileIdByEpisode(int idEpisode) const;
   std::string GetFileBasePathById(int idFile);
 
   /*!
