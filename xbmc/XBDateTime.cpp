@@ -246,7 +246,7 @@ CDateTime::CDateTime()
 CDateTime::CDateTime(const KODI::TIME::SystemTime& time)
 {
   // we store internally as a FileTime
-  m_state = ToFileTime(time, m_time) ? valid : invalid;
+  m_state = ToFileTime(time, m_time) ? State::VALID : State::INVALID;
 }
 
 CDateTime::CDateTime(const KODI::TIME::FileTime& time) : m_time(time)
@@ -261,12 +261,12 @@ CDateTime::CDateTime(const CDateTime& time) : m_time(time.m_time)
 
 CDateTime::CDateTime(const time_t& time)
 {
-  m_state = ToFileTime(time, m_time) ? valid : invalid;
+  m_state = ToFileTime(time, m_time) ? State::VALID : State::INVALID;
 }
 
 CDateTime::CDateTime(const tm& time)
 {
-  m_state = ToFileTime(time, m_time) ? valid : invalid;
+  m_state = ToFileTime(time, m_time) ? State::VALID : State::INVALID;
 }
 
 CDateTime::CDateTime(int year, int month, int day, int hour, int minute, int second)
@@ -292,7 +292,7 @@ CDateTime CDateTime::GetUTCDateTime()
 
 const CDateTime& CDateTime::operator=(const KODI::TIME::SystemTime& right)
 {
-  m_state = ToFileTime(right, m_time) ? valid : invalid;
+  m_state = ToFileTime(right, m_time) ? State::VALID : State::INVALID;
 
   return *this;
 }
@@ -307,14 +307,14 @@ const CDateTime& CDateTime::operator=(const KODI::TIME::FileTime& right)
 
 const CDateTime& CDateTime::operator =(const time_t& right)
 {
-  m_state = ToFileTime(right, m_time) ? valid : invalid;
+  m_state = ToFileTime(right, m_time) ? State::VALID : State::INVALID;
 
   return *this;
 }
 
 const CDateTime& CDateTime::operator =(const tm& right)
 {
-  m_state = ToFileTime(right, m_time) ? valid : invalid;
+  m_state = ToFileTime(right, m_time) ? State::VALID : State::INVALID;
 
   return *this;
 }
@@ -589,8 +589,8 @@ void CDateTime::Archive(CArchive& ar)
 {
   if (ar.IsStoring())
   {
-    ar<<(int)m_state;
-    if (m_state==valid)
+    ar << static_cast<int>(m_state);
+    if (m_state == State::VALID)
     {
       KODI::TIME::SystemTime st;
       GetAsSystemTime(st);
@@ -602,8 +602,8 @@ void CDateTime::Archive(CArchive& ar)
     Reset();
     int state;
     ar >> state;
-    m_state = CDateTime::STATE(state);
-    if (m_state==valid)
+    m_state = static_cast<State>(state);
+    if (m_state == State::VALID)
     {
       KODI::TIME::SystemTime st;
       ar>>st;
@@ -620,12 +620,12 @@ void CDateTime::Reset()
 
 void CDateTime::SetValid(bool yesNo)
 {
-  m_state=yesNo ? valid : invalid;
+  m_state = yesNo ? State::VALID : State::INVALID;
 }
 
 bool CDateTime::IsValid() const
 {
-  return m_state==valid;
+  return m_state == State::VALID;
 }
 
 bool CDateTime::ToFileTime(const KODI::TIME::SystemTime& time, KODI::TIME::FileTime& fileTime) const
@@ -786,8 +786,8 @@ bool CDateTime::SetDateTime(int year, int month, int day, int hour, int minute, 
   st.minute = minute;
   st.second = second;
 
-  m_state = ToFileTime(st, m_time) ? valid : invalid;
-  return m_state == valid;
+  m_state = ToFileTime(st, m_time) ? State::VALID : State::INVALID;
+  return m_state == State::VALID;
 }
 
 bool CDateTime::SetDate(int year, int month, int day)
@@ -877,7 +877,7 @@ bool CDateTime::SetFromUTCDateTime(const CDateTime &dateTime)
 
   m_time = tmp.m_time;
   m_state = tmp.m_state;
-  return m_state == valid;
+  return m_state == State::VALID;
 }
 
 static bool bGotTimezoneBias = false;

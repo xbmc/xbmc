@@ -210,11 +210,11 @@ private:
 private:
   KODI::TIME::FileTime m_time;
 
-  typedef enum _STATE
+  enum class State
   {
-    invalid=0,
-    valid
-  } STATE;
+    INVALID = 0,
+    VALID
+  };
 
-  STATE m_state;
+  State m_state;
 };
