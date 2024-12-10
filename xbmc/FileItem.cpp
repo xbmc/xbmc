@@ -993,19 +993,19 @@ bool CFileItem::IsPicture() const
   return false;
 }
 
-bool CFileItem::IsFileFolder(EFileFolderType types) const
+bool CFileItem::IsFileFolder(FileFolderType types) const
 {
-  EFileFolderType always_type = EFILEFOLDER_TYPE_ALWAYS;
+  FileFolderType always_type = FileFolderType::ALWAYS;
 
   /* internet streams are not directly expanded */
   if (NETWORK::IsInternetStream(*this))
-    always_type = EFILEFOLDER_TYPE_ONCLICK;
+    always_type = FileFolderType::ONCLICK;
 
   // strm files are not browsable
-  if (IsType(".strm") && (types & EFILEFOLDER_TYPE_ONBROWSE))
+  if (IsType(".strm") && (static_cast<int>(types) & static_cast<int>(FileFolderType::ONBROWSE)))
     return false;
 
-  if (types & always_type)
+  if (static_cast<int>(types) & static_cast<int>(always_type))
   {
     if (PLAYLIST::IsSmartPlayList(*this) ||
         (PLAYLIST::IsPlayList(*this) &&
@@ -1024,7 +1024,7 @@ bool CFileItem::IsFileFolder(EFileFolderType types) const
       CServiceBroker::GetFileExtensionProvider().CanOperateExtension(m_strPath))
     return true;
 
-  if(types & EFILEFOLDER_TYPE_ONBROWSE)
+  if (static_cast<int>(types) & static_cast<int>(FileFolderType::ONBROWSE))
   {
     if ((PLAYLIST::IsPlayList(*this) &&
          !CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_playlistAsFolders) ||
