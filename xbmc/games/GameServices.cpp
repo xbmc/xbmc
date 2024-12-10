@@ -11,6 +11,7 @@
 #include "controllers/Controller.h"
 #include "controllers/ControllerManager.h"
 #include "games/GameSettings.h"
+#include "games/GameUtils.h"
 #include "games/agents/input/AgentInput.h"
 #include "profiles/ProfileManager.h"
 
@@ -66,4 +67,9 @@ std::string CGameServices::TranslateFeature(const std::string& controllerId,
 std::string CGameServices::GetSavestatesFolder() const
 {
   return m_profileManager.GetSavestatesFolder();
+}
+
+void CGameServices::OnAddonRepoInstalled()
+{
+  CGameUtils::UpdateInstallableAddons();
 }
