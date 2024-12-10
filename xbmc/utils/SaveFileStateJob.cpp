@@ -15,7 +15,6 @@
 #include "URIUtils.h"
 #include "URL.h"
 #include "Util.h"
-#include "application/ApplicationComponents.h"
 #include "application/ApplicationStackHelper.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
@@ -183,23 +182,28 @@ void CSaveFileState::DoWork(CFileItem& item,
           if (!videodatabase.GetStreamDetails(dbItem) ||
               dbItem.GetVideoInfoTag()->m_streamDetails != item.GetVideoInfoTag()->m_streamDetails)
           {
-            const int idFile = videodatabase.SetStreamDetailsForFile(
-                item.GetVideoInfoTag()->m_streamDetails, progressTrackingFile);
-
-            if (idFile == -2)
-            {
+            if (!videodatabase.SetStreamDetailsForFile(item.GetVideoInfoTag()->m_streamDetails,
+                                                       progressTrackingFile))
               videoDbSuccess = false;
-            }
-            else if (idFile > 0)
+            else
             {
+              if (URIUtils::IsProtocol(item.GetDynPath(), "bluray"))
+              {
+                if (item.GetVideoContentType() == VideoDbContentType::MOVIES)
+                {
+                  const int currentFileId{
+                      videodatabase.GetFileIdByMovie(item.GetVideoInfoTag()->m_iDbId)};
+                  videoDbSuccess = videodatabase.SetFileForMovie(item.GetDynPath(), currentFileId);
+                }
+                else if (item.GetVideoContentType() == VideoDbContentType::EPISODES)
+                {
+                  const int currentFileId{
+                      videodatabase.GetFileIdByEpisode(item.GetVideoInfoTag()->m_iDbId)};
+                  videoDbSuccess = videodatabase.SetFileForEpisode(
+                      item.GetDynPath(), item.GetVideoInfoTag()->m_iDbId, currentFileId);
+                }
+              }
               updateListing = true;
-
-              if (item.GetVideoContentType() == VideoDbContentType::MOVIES)
-                videoDbSuccess = videodatabase.SetFileForMovie(
-                    item.GetDynPath(), item.GetVideoInfoTag()->m_iDbId, idFile);
-              else if (item.GetVideoContentType() == VideoDbContentType::EPISODES)
-                videoDbSuccess = videodatabase.SetFileForEpisode(
-                    item.GetDynPath(), item.GetVideoInfoTag()->m_iDbId, idFile);
             }
           }
         }
