@@ -49,6 +49,7 @@ TEST_F(TestDateTimeSpan, SetDateTimeSpan)
   int secondsTotal = (days * 24 * 60 * 60) + (hours * 60 * 60) + (minutes * 60) + seconds;
 
   timeSpan.SetDateTimeSpan(days, hours, minutes, seconds);
+  EXPECT_TRUE(timeSpan.IsValid());
   EXPECT_EQ(timeSpan.GetDays(), days);
   EXPECT_EQ(timeSpan.GetHours(), hours);
   EXPECT_EQ(timeSpan.GetMinutes(), minutes);
@@ -61,12 +62,15 @@ TEST_F(TestDateTimeSpan, SetFromPeriod)
   CDateTimeSpan timeSpan;
 
   timeSpan.SetFromPeriod("3");
+  EXPECT_TRUE(timeSpan.IsValid());
   EXPECT_EQ(timeSpan.GetDays(), 3);
 
   timeSpan.SetFromPeriod("3weeks");
+  EXPECT_TRUE(timeSpan.IsValid());
   EXPECT_EQ(timeSpan.GetDays(), 21);
 
   timeSpan.SetFromPeriod("3months");
+  EXPECT_TRUE(timeSpan.IsValid());
   EXPECT_EQ(timeSpan.GetDays(), 93);
 }
 
@@ -75,6 +79,19 @@ TEST_F(TestDateTimeSpan, SetFromTimeString)
   CDateTimeSpan timeSpan;
 
   timeSpan.SetFromTimeString("12:34");
+  EXPECT_TRUE(timeSpan.IsValid());
   EXPECT_EQ(timeSpan.GetHours(), 12);
   EXPECT_EQ(timeSpan.GetMinutes(), 34);
+
+  timeSpan.SetFromTimeString("aa:34");
+  EXPECT_FALSE(timeSpan.IsValid());
+
+  timeSpan.SetFromTimeString("12:aa");
+  EXPECT_FALSE(timeSpan.IsValid());
+
+  timeSpan.SetFromTimeString("12:");
+  EXPECT_FALSE(timeSpan.IsValid());
+
+  timeSpan.SetFromTimeString(":34");
+  EXPECT_FALSE(timeSpan.IsValid());
 }
