@@ -700,9 +700,12 @@ void CMediaManager::OnStorageAdded(const MEDIA_DETECT::STORAGE::StorageDevice& d
 {
 #ifdef HAS_OPTICAL_DRIVE
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-  if (settings->GetInt(CSettings::SETTING_AUDIOCDS_AUTOACTION) != AUTOCD_NONE || settings->GetBool(CSettings::SETTING_DVDS_AUTORUN))
+  if (settings->GetInt(CSettings::SETTING_AUDIOCDS_AUTOACTION) !=
+          static_cast<int>(AutoCDAction::NONE) ||
+      settings->GetBool(CSettings::SETTING_DVDS_AUTORUN))
   {
-    if (settings->GetInt(CSettings::SETTING_AUDIOCDS_AUTOACTION) == AUTOCD_RIP)
+    if (settings->GetInt(CSettings::SETTING_AUDIOCDS_AUTOACTION) ==
+        static_cast<int>(AutoCDAction::RIP))
     {
       CServiceBroker::GetJobManager()->AddJob(new CAutorunMediaJob(device.label, device.path), this,
                                               CJob::PRIORITY_LOW);
