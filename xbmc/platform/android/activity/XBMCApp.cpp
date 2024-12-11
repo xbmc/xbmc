@@ -1795,21 +1795,29 @@ void CXBMCApp::surfaceChanged(CJNISurfaceHolder holder, int format, int width, i
 
 void CXBMCApp::surfaceCreated(CJNISurfaceHolder holder)
 {
-  android_printf("%s: ", __PRETTY_FUNCTION__);
-
-  m_window = CNativeWindow::CreateFromSurface(holder);
-  if (m_window == nullptr)
-  {
-    android_printf(" => invalid ANativeWindow object");
-    return;
-  }
-
-  if (!m_firstrun)
-    XBMC_SetupDisplay();
-
-  auto& components = CServiceBroker::GetAppComponents();
-  const auto appPower = components.GetComponent<CApplicationPowerHandling>();
-  appPower->SetRenderGUI(true);
+    android_printf("%s: ", __PRETTY_FUNCTION__);
+    
+    m_window = CNativeWindow::CreateFromSurface(holder);
+    if (!m_window)
+    {
+        android_printf(" => invalid ANativeWindow object");
+        return;
+    }
+    
+    // Configure surface for optimal performance
+    ANativeWindow_acquire(m_window.get());
+    ANativeWindow_setBuffersGeometry(m_window.get(), 0, 0, WINDOW_FORMAT_RGBA_8888);
+    ANativeWindow_setBuffersDataSpace(m_window.get(), ADATASPACE_SRGB);
+    
+    // Enable triple buffering for smooth playback
+    ANativeWindow_setBufferCount(m_window.get(), 3);
+    
+    if (!m_firstrun)
+        XBMC_SetupDisplay();
+    
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+    appPower->SetRenderGUI(true);
 }
 
 void CXBMCApp::surfaceDestroyed(CJNISurfaceHolder holder)
