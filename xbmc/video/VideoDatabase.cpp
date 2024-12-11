@@ -3113,13 +3113,39 @@ void CVideoDatabase::DeleteFile(int idFile)
   m_pDS->query(sql);
   if (m_pDS->eof())
   {
+    // Get idPath
+    sql = PrepareSQL(
+        "SELECT path.idPath, path.strPath FROM path JOIN files ON path.idPath = files.idPath WHERE idFile = %i",
+        idFile);
+    m_pDS->query(sql);
+    int path{-1};
+    std::string strPath;
+    if (!m_pDS->eof())
+    {
+      path = m_pDS->fv("idPath").get_asInt();
+      strPath = m_pDS->fv("strPath").get_asString();
+    }
+
     // Remove file and any associated bookmarks and streamdetails
-    // Path is left so not re-added at library update
     sql = PrepareSQL("DELETE FROM files WHERE idFile = %i", idFile);
     m_pDS->exec(sql);
     sql = PrepareSQL("DELETE FROM bookmark WHERE idFile = %i", idFile);
     m_pDS->exec(sql);
     DeleteStreamDetails(idFile);
+
+    // Delete path if orphan (and not base directory - needs to remain to prevent re-adding on library update)
+    if (path >= 0 && URIUtils::IsBluray(strPath))
+    {
+      sql = PrepareSQL("SELECT idFile FROM files JOIN path ON files.idPath = path.idPath WHERE "
+                       "files.idPath = %i",
+                       path);
+      m_pDS->query(sql);
+      if (m_pDS->eof())
+      {
+        sql = PrepareSQL("DELETE FROM path WHERE idPath = %i", path);
+        m_pDS->exec(sql);
+      }
+    }
   }
 }
 
@@ -6728,10 +6754,9 @@ int CVideoDatabase::GetPlayCount(const std::string& strFilenameAndPath)
 
 int CVideoDatabase::GetPlayCount(const CFileItem &item)
 {
-  if (IsBlurayPlaylist(item))
+  if (URIUtils::IsBluray(item.GetDynPath()))
     return GetPlayCount(GetFileId(item.GetDynPath()));
-  else
-    return GetPlayCount(GetFileId(item));
+  return GetPlayCount(GetFileId(item));
 }
 
 CDateTime CVideoDatabase::GetLastPlayed(int iFileId)
@@ -6802,7 +6827,7 @@ void CVideoDatabase::UpdateFanart(const CFileItem& item, VideoDbContentType type
 CDateTime CVideoDatabase::SetPlayCount(const CFileItem& item, int count, const CDateTime& date)
 {
   int id{-1};
-  if (IsBlurayPlaylist(item))
+  if (URIUtils::IsBluray(item.GetDynPath()))
     id = AddFile(item.GetDynPath());
   else if (item.HasProperty("original_listitem_url") &&
            URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))

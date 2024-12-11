@@ -468,7 +468,7 @@ std::string URIUtils::GetBasePath(const std::string& strPath)
 
 std::string URIUtils::GetBlurayPath(const std::string& path)
 {
-  if (IsBlurayPlaylist(path))
+  if (IsBluray(path))
   {
     CURL url(path);
     CURL url2(url.GetHostName()); // strip bluray://
@@ -804,12 +804,6 @@ bool URIUtils::IsDVD(const std::string& strFile)
 #endif
 
   return false;
-}
-
-bool URIUtils::IsBlurayPlaylist(const std::string& file)
-{
-  return IsProtocol(file, "bluray") &&
-         StringUtils::EqualsNoCase(GetExtension(StringUtils::ToLower(file)), ".mpls");
 }
 
 bool URIUtils::IsStack(const std::string& strFile)

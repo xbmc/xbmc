@@ -1363,7 +1363,7 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
     if (item->HasProperty("item_start") || HasProperty("item_start"))
       return (item->GetProperty("item_start") == GetProperty("item_start"));
     // See if we have associated a bluray playlist
-    if (VIDEO::IsBlurayPlaylist(*this) || VIDEO::IsBlurayPlaylist(*item))
+    if (URIUtils::IsBluray(this->GetDynPath()) || URIUtils::IsBluray(item->GetDynPath()))
       return (GetDynPath() == item->GetDynPath());
     return true;
   }
@@ -1783,16 +1783,7 @@ void CFileItem::SetDynPath(const std::string &path)
 std::string CFileItem::GetBlurayPath() const
 {
   if (URIUtils::IsBluray(GetDynPath()))
-  {
-    CURL url(GetDynPath());
-    CURL url2(url.GetHostName()); // strip bluray://
-    if (url2.IsProtocol("udf"))
-      // ISO
-      return url2.GetHostName(); // strip udf://
-    else if (url.IsProtocol("bluray"))
-      // BDMV
-      return url2.Get() + "BDMV/index.bdmv";
-  }
+    return URIUtils::GetBlurayPath(GetDynPath());
   return GetDynPath();
 }
 
@@ -2032,7 +2023,7 @@ std::string CFileItem::GetLocalMetadataPath() const
     return m_strPath;
 
   std::string parent{};
-  if (VIDEO::IsBlurayPlaylist(*this))
+  if (URIUtils::IsBluray(this->GetDynPath()))
     parent = URIUtils::GetParentPath(GetBlurayPath());
   else
     parent = URIUtils::GetParentPath(m_strPath);
