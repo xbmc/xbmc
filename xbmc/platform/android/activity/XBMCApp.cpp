@@ -416,8 +416,43 @@ void CXBMCApp::onConfigurationChanged()
 
 void CXBMCApp::onLowMemory()
 {
-  android_printf("%s: ", __PRETTY_FUNCTION__);
-  // can't do much as we don't want to close completely
+    android_printf("%s: Handling low memory condition", __PRETTY_FUNCTION__);
+    HandleLowMemory();
+}
+
+void CXBMCApp::HandleLowMemory()
+{
+    // Clear application cache
+    {
+        std::unique_lock<CCriticalSection> lock(m_applicationsMutex);
+        m_applications.clear();
+    }
+    
+    // Release non-essential memory
+    if (m_memoryManager)
+    {
+        m_memoryManager->TrimMemory();
+    }
+    
+    // Clear texture cache
+    if (CServiceBroker::GetGUI())
+    {
+        CServiceBroker::GetGUI()->GetTextureManager().ReleaseHwTextures();
+    }
+    
+    // Notify media player to reduce buffer sizes
+    const auto& components = CServiceBroker::GetAppComponents();
+    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+    if (appPlayer)
+    {
+        appPlayer->OnMemoryStatus(false);
+    }
+}
+
+void CXBMCApp::InitializeMemoryManager()
+{
+    m_memoryManager = std::make_unique<CMemoryManager>();
+    m_memoryManager->Initialize(BUFFER_CACHE_SIZE);
 }
 
 void CXBMCApp::onCreateWindow(ANativeWindow* window)
@@ -885,6 +920,42 @@ void CXBMCApp::UpdateSessionState()
 
 void CXBMCApp::OnPlayBackStarted()
 {
+    CLog::Log(LOGDEBUG, "%s", __PRETTY_FUNCTION__);
+    
+    // Check available memory before playback
+    KODI::MEMORY::MemoryStatus status;
+    KODI::MEMORY::GetMemoryStatus(&status);
+    
+    if (status.availPhys < MIN_MEMORY_FOR_PLAYBACK)
+    {
+        HandleLowMemory();
+    }
+    
+    // Set optimal buffer size based on available memory
+    size_t bufferSize = std::min(status.availPhys / 4, static_cast<unsigned long>(32 * 1024 * 1024));
+    setenv("KODI_ANDROID_BUFFER_SIZE", std::to_string(bufferSize).c_str(), 1);
+    
+    // Initialize hardware acceleration
+    if (CServiceBroker::GetSettingsComponent())
+    {
+        auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+        if (settings->GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE))
+        {
+            InitializeHWCodecs();
+        }
+    }
+    
+    m_playback_state = PLAYBACK_STATE_PLAYING;
+    if (appPlayer->HasVideo())
+    {
+        m_playback_state |= PLAYBACK_STATE_VIDEO;
+        OptimizeVideoPlayback();
+    }
+    if (appPlayer->HasAudio())
+    {
+        m_playback_state |= PLAYBACK_STATE_AUDIO;
+        OptimizeAudioPlayback();
+    }
   CLog::Log(LOGDEBUG, "{}", __PRETTY_FUNCTION__);
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
@@ -908,8 +979,31 @@ void CXBMCApp::OnPlayBackStarted()
   CAndroidKey::SetHandleMediaKeys(false);
 
   RequestVisibleBehind(true);
+
+}
+  void CXBMCApp::OptimizeVideoPlayback()
+{
+    // Set video surface parameters for optimal performance
+    if (m_window)
+    {
+        ANativeWindow_setBuffersGeometry(m_window.get(), 0, 0, WINDOW_FORMAT_RGBA_8888);
+        ANativeWindow_setBuffersDataSpace(m_window.get(), ADATASPACE_SRGB);
+    }
+    
+    // Request high priority for video threads
+    setpriority(PRIO_PROCESS, 0, -20);
 }
 
+void CXBMCApp::OptimizeAudioPlayback()
+{
+    // Set audio buffer size based on device capabilities
+    CJNIAudioManager audioManager(getSystemService(CJNIContext::AUDIO_SERVICE));
+    if (audioManager)
+    {
+        int optimal_buffer_size = audioManager.getProperty(CJNIAudioManager::PROPERTY_OUTPUT_FRAMES_PER_BUFFER);
+        setenv("KODI_ANDROID_AUDIO_BUFFER_SIZE", std::to_string(optimal_buffer_size).c_str(), 1);
+    }
+}
 void CXBMCApp::OnPlayBackPaused()
 {
   CLog::Log(LOGDEBUG, "{}", __PRETTY_FUNCTION__);
@@ -1455,7 +1549,24 @@ float CXBMCApp::GetFrameLatencyMs() const
 
 bool CXBMCApp::WaitVSync(unsigned int milliSeconds)
 {
-  return m_vsyncEvent.Wait(std::chrono::milliseconds(milliSeconds));
+    if (m_window)
+    {
+        // Calculate optimal wait time based on refresh rate
+        uint64_t nextVSync = GetNextFrameTime();
+        uint64_t now = CurrentHostCounter();
+        
+        if (nextVSync > now)
+        {
+            uint64_t waitTime = std::min(static_cast<uint64_t>(milliSeconds * 1000000LL),
+                                       nextVSync - now);
+            if (waitTime > 0)
+            {
+                return m_vsyncEvent.Wait(std::chrono::nanoseconds(waitTime));
+            }
+        }
+        return true;
+    }
+    return false;
 }
 
 void CXBMCApp::SetupEnv()
@@ -1463,6 +1574,19 @@ void CXBMCApp::SetupEnv()
   setenv("KODI_ANDROID_SYSTEM_LIBS", CJNISystem::getProperty("java.library.path").c_str(), 0);
   setenv("KODI_ANDROID_LIBS", getApplicationInfo().nativeLibraryDir.c_str(), 0);
   setenv("KODI_ANDROID_APK", getPackageResourcePath().c_str(), 0);
+  // Set optimal performance parameters
+  setenv("KODI_ANDROID_SURFACE_SYNCHRONIZATION", "1", 1);
+  setenv("KODI_ANDROID_VSYNC_WAITTIME", "16666667", 1); // 60fps target
+    
+  // Configure memory limits
+  size_t availMem = GetSystemMemory();
+  size_t cacheMem = std::min(availMem / 4, static_cast<size_t>(256 * 1024 * 1024));
+  setenv("KODI_ANDROID_CACHE_SIZE", std::to_string(cacheMem).c_str(), 1);
+    
+  // Enable hardware acceleration where available
+  setenv("KODI_ANDROID_USE_SURFACE_RENDERING", "1", 1);
+    
+  InitializeMemoryManager();
 
   std::string appName = CCompileInfo::GetAppName();
   StringUtils::ToLower(appName);
