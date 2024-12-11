@@ -140,7 +140,14 @@ public:
   void onGainFocus() override;
   void onLostFocus() override;
 
-  void Initialize();
+  void CXBMCApp::Initialize()
+{
+    // Existing implementation...
+    
+    // Setup memory monitoring
+    m_memoryMonitorTimer.Start(10000); // Check every 10 seconds
+    m_memoryMonitorTimer.SetCallback(std::bind(&CXBMCApp::MonitorMemoryUsage, this));
+}
   void Deinitialize();
 
   bool Stop(int exitCode);
@@ -288,4 +295,19 @@ private:
     
     void InitializeMemoryManager();
     void HandleLowMemory();
+private:
+    void MonitorMemoryUsage();
+    CTimer m_memoryMonitorTimer;
+void CXBMCApp::MonitorMemoryUsage()
+{
+    KODI::MEMORY::MemoryStatus status;
+    KODI::MEMORY::GetMemoryStatus(&status);
+    
+    // If memory usage is high, take action
+    if (status.availPhys < MIN_MEMORY_FOR_PLAYBACK)
+    {
+        CLog::Log(LOGWARNING, "Memory usage critical: %lu bytes available", status.availPhys);
+        HandleLowMemory();
+    }
+}
 };
