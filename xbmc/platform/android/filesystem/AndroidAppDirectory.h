@@ -24,6 +24,10 @@ public:
   bool GetDirectory(const CURL& url, CFileItemList& items) override;
   bool Exists(const CURL& url) override { return true; }
   bool AllowAll() const override { return true; }
-  DIR_CACHE_TYPE GetCacheType(const CURL& url) const override { return DIR_CACHE_NEVER; }
+  DIR_CACHE_TYPE GetCacheType(const CURL& url) const override 
+{ 
+    // Cache app listings for 5 minutes to improve responsiveness
+    return DIR_CACHE_ONCE;
+}
 };
 }
