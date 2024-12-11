@@ -234,6 +234,9 @@ void CAnnouncementManager::DoAnnounce(AnnouncementFlag flag,
         title = item->GetLabel();
       object["item"]["title"] = title;
 
+      if (!item->GetVideoInfoTag()->GetDefaultUniqueID().empty())
+        object["item"]["uniqueID"] = item->GetVideoInfoTag()->GetUniqueID();
+
       switch (item->GetVideoContentType())
       {
         case VideoDbContentType::MOVIES:
