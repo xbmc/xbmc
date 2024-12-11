@@ -21,6 +21,24 @@
 
 using namespace XFILE;
 
+class CAPKFile {
+private:
+    static constexpr size_t CACHE_BUFFER_SIZE = 8192;
+    std::vector<uint8_t> m_cache_buffer;
+    int64_t m_cache_position = 0;
+    
+    bool FillCache(int64_t position) {
+        m_cache_buffer.resize(CACHE_BUFFER_SIZE);
+        int64_t bytes_read = zip_fread(m_zip_file, m_cache_buffer.data(), CACHE_BUFFER_SIZE);
+        if (bytes_read > 0) {
+            m_cache_position = position;
+            m_cache_buffer.resize(bytes_read);
+            return true;
+        }
+        return false;
+    }
+};
+
 CAPKFile::CAPKFile()
 {
   m_file_pos    = 0;
