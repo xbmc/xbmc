@@ -1,0 +1,64 @@
+name: Android Code Optimization
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  lint_and_analysis:
+    name: Run Android Lint and Code Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Java environment
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11' # Adjust according to your project requirements
+
+      # Step 3: Set up Android SDK
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v2
+        with:
+          api-level: 33 # Adjust according to your target API level
+          build-tools: '33.0.0'
+
+      # Step 4: Run Lint for Code Analysis
+      - name: Run Android Lint
+        run: ./gradlew lint
+
+      # Step 5: Run Detekt (for Kotlin projects)
+      - name: Run Detekt
+        run: ./gradlew detekt
+
+      # Step 6: Run Tests for UI Responsiveness
+      - name: Run UI Tests
+        run: ./gradlew connectedAndroidTest
+
+  post_results:
+    name: Post Optimization Suggestions
+    runs-on: ubuntu-latest
+
+    steps:
+      # Post results back to GitHub
+      - name: Add Review Comments
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const lintResults = fs.readFileSync('app/build/reports/lint-results.html', 'utf8');
+            const detektResults = fs.readFileSync('build/reports/detekt/detekt.html', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.payload.pull_request.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `### Lint and Detekt Results
+              Lint: ${lintResults}
+              Detekt: ${detektResults}`
+            });
