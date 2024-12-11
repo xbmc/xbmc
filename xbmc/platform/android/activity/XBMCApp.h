@@ -280,4 +280,12 @@ public:
   void surfaceChanged(CJNISurfaceHolder holder, int format, int width, int height) override;
   void surfaceCreated(CJNISurfaceHolder holder) override;
   void surfaceDestroyed(CJNISurfaceHolder holder) override;
+
+private:
+    static constexpr size_t MIN_MEMORY_FOR_PLAYBACK = 50 * 1024 * 1024; // 50MB
+    static constexpr size_t BUFFER_CACHE_SIZE = 10 * 1024 * 1024; // 10MB
+    std::unique_ptr<CMemoryManager> m_memoryManager;
+    
+    void InitializeMemoryManager();
+    void HandleLowMemory();
 };
