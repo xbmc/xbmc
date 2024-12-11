@@ -6753,7 +6753,8 @@ CDateTime CVideoDatabase::SetPlayCount(const CFileItem& item, int count, const C
 
     m_pDS->exec(strSQL);
 
-    if (item.HasVideoInfoTag() && (item.GetVideoInfoTag()->m_iDbId > 0 || !item.GetVideoInfoTag()->GetUniqueID().empty()))
+    if (item.HasVideoInfoTag() &&
+        (item.GetVideoInfoTag()->m_iDbId > 0 || !item.GetVideoInfoTag()->GetUniqueID().empty()))
     {
       CVariant data;
       if (CVideoLibraryQueue::GetInstance().IsScanningLibrary())
