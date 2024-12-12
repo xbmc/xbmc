@@ -1062,8 +1062,12 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
       valid = true;
       if(!psp.relevant(stream))
         visible = false;
-      //else if(stream.flags & StreamFlags::FLAG_FORCED)
-      //  visible = true;
+
+      // close the stream when not visible and not candidate for forced subtitles
+      // relevant only for forced subtitles within the stream (not container flags)
+      if (!visible && !g_LangCodeExpander.CompareISO639Codes(stream.language, as.language))
+        valid = false;
+
       break;
     }
   }
@@ -3024,6 +3028,14 @@ void CVideoPlayer::HandleMessages()
         SetEnableStream(m_CurrentSubtitle, false);
 
       SetSubtitleVisibleInternal(isVisible);
+
+      const auto& ss = m_SelectionStreams.Get(STREAM_SUBTITLE, GetSubtitle());
+      const auto& as = m_SelectionStreams.Get(STREAM_AUDIO, GetAudioStream());
+
+      // close the stream when not visible and not candidate for forced subtitles
+      // relevant only for forced subtitles within the stream (not container flags)
+      if (!isVisible && !g_LangCodeExpander.CompareISO639Codes(ss.language, as.language))
+        CloseStream(m_CurrentSubtitle, false);
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_SET_PROGRAM))
     {
