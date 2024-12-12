@@ -381,8 +381,8 @@ namespace KODI::VIDEO
 
       for (int i = 0; i < remoteDirectoryItems.Size(); ++i)
       {
-        std::shared_ptr<CFileItem> remoteItem = remoteDirectoryItems[i];
-        std::string remoteItemPath = remoteItem->GetPath();
+        std::shared_ptr<CFileItem> pRemoteItem = remoteDirectoryItems[i];
+        std::string remoteItemPath = pRemoteItem->GetPath();
 
         // Update progress bar
         if (m_handle)
@@ -395,8 +395,8 @@ namespace KODI::VIDEO
           return !m_bStop;
 
         if ((pathContent.contentType == CONTENT_TVSHOWS &&
-             remoteItem->m_bIsFolder) // For TV shows, we only scan folders
-            || !remoteItem->m_bIsFolder) // if item is not a folder, it's a file we want to scan
+             pRemoteItem->m_bIsFolder) // For TV shows, we only scan folders
+            || !pRemoteItem->m_bIsFolder) // if item is not a folder, it's a file we want to scan
         {
           // Check if video file is already in DB:
           bool isVideoAlreadyInDB = false;
@@ -418,14 +418,14 @@ namespace KODI::VIDEO
             if (m_handle)
             {
               m_handle->SetText(
-                  remoteItem->GetMovieName(true)); // Show media name only for new items
+                  pRemoteItem->GetMovieName(true)); // Show media name only for new items
             }
 
             CLog::Log(LOGDEBUG, "VideoInfoScanner: Scanning item '{}'",
                       CURL::GetRedacted(remoteItemPath));
 
             CFileItemList itemList(pathContent.rootPath);
-            itemList.Add(remoteItem);
+            itemList.Add(pRemoteItem);
 
             //note: function 'RetrieveVideoInfo' does not only --retreive-- but also --add-- media into the DB.
             bool foundSomething =
@@ -435,6 +435,18 @@ namespace KODI::VIDEO
             {
               CLog::Log(LOGDEBUG, "VideoInfoScanner: media info added for {}",
                         CURL::GetRedacted(remoteItemPath));
+
+              // After a new media has been identified and added to DB, we also want to add video extras to library
+              if (pathContent.contentType == CONTENT_MOVIES &&
+                  pathContent.scrapperScanSettings.parent_name && !m_ignoreVideoExtras &&
+                  IsVideoInExtrasFolder(*pRemoteItem))
+              {
+                if (AddVideoExtras(itemList, pathContent.contentType, remoteItemPath))
+                {
+                  CLog::Log(LOGDEBUG, "VideoInfoScanner: Finished adding video extras from dir {}",
+                            CURL::GetRedacted(remoteItemPath));
+                }
+              }
             }
             else
             {
