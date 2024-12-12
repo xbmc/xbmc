@@ -973,6 +973,12 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
         visible = false;
       else if(stream.flags & StreamFlags::FLAG_FORCED)
         visible = true;
+
+      // It's necessary keep the stream open, even if the subtitle track is not visible, to analyze
+      // possible forced PGS / VobSub in same language as audio, otherwise the stream is closed.
+      if (!visible && !g_LangCodeExpander.CompareISO639Codes(stream.language, as.language))
+        valid = false;
+
       break;
     }
   }
