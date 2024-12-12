@@ -115,7 +115,7 @@ namespace KODI::VIDEO
       CFileItemList items;
 
       SourcePathContent(std::string a, SScanSettings b, CONTENT_TYPE c)
-        : rootPath(a), scrapperScanSettings(b), contentType(c), items() {};
+        : rootPath(a), scrapperScanSettings(b), contentType(c), items(){};
     };
 
     virtual void Process();
