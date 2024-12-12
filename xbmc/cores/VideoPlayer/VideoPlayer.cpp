@@ -973,6 +973,12 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
         visible = false;
       else if(stream.flags & StreamFlags::FLAG_FORCED)
         visible = true;
+
+      // It's necessary keep the stream open, even if the subtitle track is not visible, to analyze
+      // possible forced PGS / VobSub in same language as audio, otherwise the stream is closed.
+      if (!visible && !g_LangCodeExpander.CompareISO639Codes(stream.language, as.language))
+        valid = false;
+
       break;
     }
   }
@@ -2933,6 +2939,12 @@ void CVideoPlayer::HandleMessages()
         SetEnableStream(m_CurrentSubtitle, false);
 
       SetSubtitleVisibleInternal(isVisible);
+
+      const auto& ss = m_SelectionStreams.Get(STREAM_SUBTITLE, GetSubtitle());
+      const auto& as = m_SelectionStreams.Get(STREAM_AUDIO, GetAudioStream());
+
+      if (!isVisible && !g_LangCodeExpander.CompareISO639Codes(ss.language, as.language))
+        CloseStream(m_CurrentSubtitle, false);
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_SET_PROGRAM))
     {
