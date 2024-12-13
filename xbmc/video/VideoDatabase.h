@@ -944,10 +944,10 @@ public:
 
   void ExportToXML(const std::string &path, bool singleFile = true, bool images=false, bool actorThumbs=false, bool overwrite=false);
   void ExportActorThumbs(const std::string& path,
+                         const std::string& singlePath,
                          const CVideoInfoTag& tag,
                          bool singleFiles,
-                         bool overwrite = false,
-                         const std::string& tvshowDir = "") const;
+                         bool overwrite = false) const;
   void ImportFromXML(const std::string &path);
   void DumpToDummyFiles(const std::string &path);
   bool ImportArtFromXML(const TiXmlNode *node, std::map<std::string, std::string> &artwork);

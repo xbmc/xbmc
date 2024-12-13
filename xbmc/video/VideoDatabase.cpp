@@ -10906,6 +10906,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
       }
 
       CFileItem item(movie.m_strFileNameAndPath,false);
+      std::string singlePath;
       if (!singleFile && CUtil::SupportsWriteFileOperations(movie.m_strFileNameAndPath))
       {
         if (!item.Exists(false))
@@ -10919,11 +10920,12 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
           std::string nfoFile(URIUtils::ReplaceExtension(ART::GetTBNFile(item), ".nfo"));
 
           if (item.IsOpticalMediaFile())
-          {
             nfoFile = URIUtils::AddFileToFolder(
                                     URIUtils::GetParentPath(nfoFile),
                                     URIUtils::GetFileName(nfoFile));
-          }
+          else if (URIUtils::IsBluray(item.GetDynPath()))
+            nfoFile =
+                URIUtils::ReplaceExtension(URIUtils::GetBlurayPath(item.GetDynPath()), ".nfo");
 
           if (overwrite || !CFile::Exists(nfoFile, false))
           {
@@ -10936,6 +10938,8 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
               iFailCount++;
             }
           }
+
+          singlePath = URIUtils::GetDirectory(nfoFile);
         }
       }
       if (!singleFile)
@@ -10960,7 +10964,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
           CServiceBroker::GetTextureCache()->Export(i.second, savedThumb, overwrite);
         }
         if (actorThumbs)
-          ExportActorThumbs(actorsDir, movie, !singleFile, overwrite);
+          ExportActorThumbs(actorsDir, singlePath, movie, !singleFile, overwrite);
       }
       m_pDS->next();
       current++;
@@ -11162,6 +11166,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
       }
 
       CFileItem item(tvshow.m_strPath, true);
+      std::string singlePath;
       if (!singleFile && CUtil::SupportsWriteFileOperations(tvshow.m_strPath))
       {
         if (!item.Exists(false))
@@ -11185,6 +11190,8 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
               iFailCount++;
             }
           }
+
+          singlePath = URIUtils::GetDirectory(nfoFile);
         }
       }
       if (!singleFile)
@@ -11207,7 +11214,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
 
         tvshowDir = tvshow.m_strPath;
         if (actorThumbs)
-          ExportActorThumbs(actorsDir, tvshow, !singleFile, overwrite);
+          ExportActorThumbs(actorsDir, singlePath, tvshow, !singleFile, overwrite);
 
         // export season thumbs
         for (const auto &i : seasonArt)
@@ -11275,6 +11282,10 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
           {
             std::string nfoFile(URIUtils::ReplaceExtension(ART::GetTBNFile(item), ".nfo"));
 
+            if (URIUtils::IsBluray(item.GetDynPath()))
+              nfoFile =
+                  URIUtils::ReplaceExtension(URIUtils::GetBlurayPath(item.GetDynPath()), ".nfo");
+
             if (overwrite || !CFile::Exists(nfoFile, false))
             {
               if(!xmlDoc.SaveFile(nfoFile))
@@ -11286,6 +11297,8 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
                 iFailCount++;
               }
             }
+
+            singlePath = URIUtils::GetDirectory(nfoFile);
           }
         }
         if (!singleFile)
@@ -11309,7 +11322,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
             CServiceBroker::GetTextureCache()->Export(i.second, savedThumb, overwrite);
           }
           if (actorThumbs)
-            ExportActorThumbs(actorsDir, episode, !singleFile, overwrite, tvshowDir);
+            ExportActorThumbs(actorsDir, singlePath, episode, !singleFile, overwrite);
         }
       }
       pDS->close();
@@ -11374,19 +11387,16 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
         CVariant{647}, CVariant{StringUtils::Format(g_localizeStrings.Get(15011), iFailCount)});
 }
 
-void CVideoDatabase::ExportActorThumbs(const std::string& strDir,
+void CVideoDatabase::ExportActorThumbs(const std::string& path,
+                                       const std::string& singlePath,
                                        const CVideoInfoTag& tag,
                                        bool singleFiles,
-                                       bool overwrite /* =false */,
-                                       const std::string& tvshowDir /* ="" */) const
+                                       bool overwrite /*=false*/) const
 {
-  std::string strPath(strDir);
+  std::string strPath(path);
   if (singleFiles)
   {
-
-    strPath = URIUtils::AddFileToFolder(
-        tag.m_type == MediaTypeEpisode && !tvshowDir.empty() ? tvshowDir : tag.m_strPath,
-        ".actors");
+    strPath = URIUtils::AddFileToFolder(singlePath, ".actors");
     if (!CDirectory::Exists(strPath))
     {
       CDirectory::Create(strPath);
