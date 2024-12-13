@@ -10,6 +10,7 @@
 
 #include "controllers/ControllerTypes.h"
 
+#include <future>
 #include <memory>
 #include <string>
 
@@ -89,6 +90,9 @@ private:
   // Game services
   std::unique_ptr<CGameSettings> m_gameSettings;
   std::unique_ptr<CAgentInput> m_agentInput;
+
+  // Game threads
+  std::future<void> m_initializationTask;
 };
 } // namespace GAME
 } // namespace KODI

@@ -29,6 +29,9 @@ CGameServices::CGameServices(CControllerManager& controllerManager,
     m_gameSettings(new CGameSettings()),
     m_agentInput(std::make_unique<CAgentInput>(peripheralManager, inputManager))
 {
+  // Load the add-ons from the database asynchronously
+  m_initializationTask =
+      std::async(std::launch::async, []() { CGameUtils::UpdateInstallableAddons(); });
 }
 
 CGameServices::~CGameServices() = default;
