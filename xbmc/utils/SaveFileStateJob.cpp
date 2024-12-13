@@ -183,29 +183,29 @@ void CSaveFileState::DoWork(CFileItem& item,
           if (!videodatabase.GetStreamDetails(dbItem) ||
               dbItem.GetVideoInfoTag()->m_streamDetails != item.GetVideoInfoTag()->m_streamDetails)
           {
-            if (!videodatabase.SetStreamDetailsForFile(item.GetVideoInfoTag()->m_streamDetails,
-                                                       progressTrackingFile))
-              videoDbSuccess = false;
-            else
-            {
-              if (URIUtils::IsProtocol(item.GetDynPath(), "bluray"))
-              {
-                if (item.GetVideoContentType() == VideoDbContentType::MOVIES)
-                {
-                  const int currentFileId{
-                      videodatabase.GetFileIdByMovie(item.GetVideoInfoTag()->m_iDbId)};
-                  videoDbSuccess = videodatabase.SetFileForMovie(item.GetDynPath(), currentFileId);
-                }
-                else if (item.GetVideoContentType() == VideoDbContentType::EPISODES)
-                {
-                  const int currentFileId{
-                      videodatabase.GetFileIdByEpisode(item.GetVideoInfoTag()->m_iDbId)};
-                  videoDbSuccess = videodatabase.SetFileForEpisode(
-                      item.GetDynPath(), item.GetVideoInfoTag()->m_iDbId, currentFileId);
-                }
-              }
-              updateListing = true;
-            }
+            videoDbSuccess = videodatabase.SetStreamDetailsForFile(
+                item.GetVideoInfoTag()->m_streamDetails, progressTrackingFile);
+            updateListing = !videoDbSuccess;
+          }
+        }
+
+        // See if fileId needs updating
+        if (URIUtils::IsProtocol(item.GetDynPath(), "bluray"))
+        {
+          if (item.GetVideoContentType() == VideoDbContentType::MOVIES)
+          {
+            const auto& tag{item.GetVideoInfoTag()};
+            const int currentFileId{videodatabase.GetFileIdByMovie(tag->m_iDbId)};
+            if (tag->m_strFileNameAndPath != item.GetDynPath())
+              videoDbSuccess = videodatabase.SetFileForMovie(item.GetDynPath(), currentFileId);
+          }
+          else if (item.GetVideoContentType() == VideoDbContentType::EPISODES)
+          {
+            const auto& tag{item.GetVideoInfoTag()};
+            const int currentFileId{videodatabase.GetFileIdByEpisode(tag->m_iDbId)};
+            if (tag->m_strFileNameAndPath != item.GetDynPath())
+              videoDbSuccess = videodatabase.SetFileForEpisode(
+                  item.GetDynPath(), item.GetVideoInfoTag()->m_iDbId, currentFileId);
           }
         }
 

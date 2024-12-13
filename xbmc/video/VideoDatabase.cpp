@@ -3093,6 +3093,13 @@ bool CVideoDatabase::SetFileForMovie(const std::string& fileAndPath, const int o
     sql = PrepareSQL("UPDATE art SET media_id=%i WHERE media_id=%i AND media_type='videoversion'",
                      idFile, oldIdFile);
     m_pDS->exec(sql);
+    sql = PrepareSQL("SELECT idFile FROM streamdetails WHERE idFile = %i", idFile);
+    m_pDS->query(sql);
+    if (m_pDS->eof())
+    {
+      sql = PrepareSQL("UPDATE streamdetails SET idFile=%i WHERE idFile=%i", idFile, oldIdFile);
+      m_pDS->exec(sql);
+    }
     DeleteFile(oldIdFile);
 
     return true;
