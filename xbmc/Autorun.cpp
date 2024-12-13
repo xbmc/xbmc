@@ -85,8 +85,12 @@ bool CAutorun::ExecuteAutorun(const std::string& path)
   bool success = false;
 
 #ifdef HAS_CDDA_RIPPER
-  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_AUDIOCDS_AUTOACTION) == AUTOCD_RIP &&
-      pInfo->IsAudio(1) && !CServiceBroker::GetSettingsComponent()->GetProfileManager()->GetCurrentProfile().musicLocked())
+  const auto& settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  const auto& profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
+  const AutoCDAction action =
+      static_cast<AutoCDAction>(settings->GetInt(CSettings::SETTING_AUDIOCDS_AUTOACTION));
+  if (action == AutoCDAction::RIP && pInfo->IsAudio(1) &&
+      !profileManager->GetCurrentProfile().musicLocked())
   {
     success = KODI::CDRIP::CCDDARipper::GetInstance().RipCD();
   }
@@ -99,7 +103,11 @@ bool CAutorun::ExecuteAutorun(const std::string& path)
 
 bool CAutorun::PlayDisc(const std::string& path, bool bypassSettings, bool startFromBeginning)
 {
-  if ( !bypassSettings && CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_AUDIOCDS_AUTOACTION) != AUTOCD_PLAY && !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_DVDS_AUTORUN))
+  const auto& settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  const AutoCDAction action =
+      static_cast<AutoCDAction>(settings->GetInt(CSettings::SETTING_AUDIOCDS_AUTOACTION));
+  if (!bypassSettings && action != AutoCDAction::PLAY &&
+      !settings->GetBool(CSettings::SETTING_DVDS_AUTORUN))
     return false;
 
   int nSize = CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST::Id::TYPE_MUSIC).size();
@@ -435,8 +443,12 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
       CServiceBroker::GetPlaylistPlayer().Play(0, "");
     }
   }
+
   // then music
-  if (!bPlaying && (bypassSettings || CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_AUDIOCDS_AUTOACTION) == AUTOCD_PLAY) && bAllowMusic)
+  const auto& settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  const AutoCDAction action =
+      static_cast<AutoCDAction>(settings->GetInt(CSettings::SETTING_AUDIOCDS_AUTOACTION));
+  if (!bPlaying && (bypassSettings || action == AutoCDAction::PLAY) && bAllowMusic)
   {
     for (int i = 0; i < vecItems.Size(); i++)
     {
@@ -551,9 +563,9 @@ void CAutorun::SettingOptionAudioCdActionsFiller(const SettingConstPtr& setting,
                                                  int& current,
                                                  void* data)
 {
-  list.emplace_back(g_localizeStrings.Get(16018), AUTOCD_NONE);
-  list.emplace_back(g_localizeStrings.Get(14098), AUTOCD_PLAY);
+  list.emplace_back(g_localizeStrings.Get(16018), static_cast<int>(AutoCDAction::NONE));
+  list.emplace_back(g_localizeStrings.Get(14098), static_cast<int>(AutoCDAction::PLAY));
 #ifdef HAS_CDDA_RIPPER
-  list.emplace_back(g_localizeStrings.Get(14096), AUTOCD_RIP);
+  list.emplace_back(g_localizeStrings.Get(14096), static_cast<int>(AutoCDAction::RIP));
 #endif
 }
