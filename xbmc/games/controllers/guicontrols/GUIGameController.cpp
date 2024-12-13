@@ -89,6 +89,8 @@ void CGUIGameController::UpdateInfo(const CGUIListItem* item /* = nullptr */)
 {
   CGUIImage::UpdateInfo(item);
 
+  m_controllerDiffuse.Update(item);
+
   if (item != nullptr)
   {
     std::string controllerId;
