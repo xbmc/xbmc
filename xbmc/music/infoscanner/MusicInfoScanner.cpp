@@ -57,6 +57,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <chrono>
 #include <utility>
 
 using namespace KODI;
@@ -197,10 +198,10 @@ void CMusicInfoScanner::Process()
 
       m_musicDatabase.EmptyCache();
 
-      auto elapsed =
-          std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - tick);
+      auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
+          std::chrono::steady_clock::now() - tick);
       CLog::Log(LOGINFO,
-                "My Music: Scanning for music info using worker thread, operation took {}s",
+                "My Music: Scanning for music info using worker thread, operation took {}ms",
                 elapsed.count());
     }
     if (m_scanType == 1) // load album info
