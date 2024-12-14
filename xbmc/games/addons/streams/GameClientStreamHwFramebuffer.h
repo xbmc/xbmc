@@ -9,10 +9,9 @@
 #pragma once
 
 #include "IGameClientStream.h"
+#include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/game.h"
 
 #include <memory>
-
-struct game_hw_rendering_properties;
 
 namespace KODI
 {
@@ -52,9 +51,15 @@ public:
   bool GetBuffer(unsigned int width, unsigned int height, game_stream_buffer& buffer) override;
   void AddData(const game_stream_packet& packet) override;
 
+  // Public utility functions
+  static void LogHwProperties(const game_hw_rendering_properties& hwProperties);
+
 private:
-  // Utility functions
-  std::unique_ptr<RETRO::HwFramebufferProperties> TranslateProperties(
+  // Private utility functions
+  static std::string GetContextName(GAME_HW_CONTEXT_TYPE contextType,
+                                    unsigned int versionMajor,
+                                    unsigned int versionMinor);
+  static std::unique_ptr<RETRO::HwFramebufferProperties> TranslateProperties(
       const game_hw_rendering_properties& hwProperties);
 
   // Construction parameters

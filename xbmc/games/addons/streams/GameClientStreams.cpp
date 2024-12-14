@@ -17,7 +17,6 @@
 #include "cores/RetroPlayer/streams/RetroPlayerStreamTypes.h"
 #include "games/addons/GameClient.h"
 #include "games/addons/GameClientTranslator.h"
-#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <memory>
@@ -92,45 +91,17 @@ void CGameClientStreams::CloseStream(IGameClientStream* stream)
 
 bool CGameClientStreams::EnableHardwareRendering(const game_hw_rendering_properties& properties)
 {
-  std::string strContextType;
+  if (properties.context_type == GAME_HW_CONTEXT_NONE)
+    return false;
 
-  switch (properties.context_type)
-  {
-    case GAME_HW_CONTEXT_OPENGL:
-      strContextType = "OpenGL 2.x";
-      break;
-    case GAME_HW_CONTEXT_OPENGLES2:
-      strContextType = "OpenGLES 2.0";
-      break;
-    case GAME_HW_CONTEXT_OPENGL_CORE:
-      strContextType =
-          StringUtils::Format("OpenGL {}.{}", properties.version_major, properties.version_minor);
-      break;
-    case GAME_HW_CONTEXT_OPENGLES3:
-      strContextType = "OpenGLES 3.0";
-      break;
-    case GAME_HW_CONTEXT_OPENGLES_VERSION:
-      strContextType =
-          StringUtils::Format("OpenGLES {}.{}", properties.version_major, properties.version_minor);
-      break;
-    case GAME_HW_CONTEXT_VULKAN:
-      strContextType = "Vulkan";
-      break;
-    default:
-      return false;
-  }
-
-  CLog::Log(LOGDEBUG, "Enabling hardware rendering for {}", strContextType);
-  CLog::Log(LOGDEBUG, "  depth: {}", properties.depth ? "true" : "false");
-  CLog::Log(LOGDEBUG, "  stencil: {}", properties.stencil ? "true" : "false");
-  CLog::Log(LOGDEBUG, "  bottomLeftOrigin: {}", properties.bottom_left_origin ? "true" : "false");
-  CLog::Log(LOGDEBUG, "  cacheContext: {}", properties.cache_context ? "true" : "false");
-  CLog::Log(LOGDEBUG, "  debugContext: {}", properties.debug_context ? "true" : "false");
+  // Log hardware rendering properties for debugging
+  CGameClientStreamHwFramebuffer::LogHwProperties(properties);
 
   // Store hardware rendering properties
   m_hwProperties = properties;
 
   //! @todo Finish OpenGL support
+  CLog::Log(LOGERROR, "Hardware rendering not implemented");
   return false;
 }
 

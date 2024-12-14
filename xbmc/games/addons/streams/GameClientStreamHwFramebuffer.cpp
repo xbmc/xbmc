@@ -10,6 +10,7 @@
 
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/Game.h"
 #include "cores/RetroPlayer/streams/RetroPlayerRendering.h"
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 using namespace KODI;
@@ -86,6 +87,54 @@ void CGameClientStreamHwFramebuffer::AddData(const game_stream_packet& packet)
     RETRO::HwFramebufferPacket hwFramebufferPacket{hwFramebuffer.framebuffer};
     m_stream->AddStreamData(static_cast<const RETRO::StreamPacket&>(hwFramebufferPacket));
   }
+}
+
+void CGameClientStreamHwFramebuffer::LogHwProperties(
+    const game_hw_rendering_properties& hwProperties)
+{
+  const std::string strContextType = CGameClientStreamHwFramebuffer::GetContextName(
+      hwProperties.context_type, hwProperties.version_major, hwProperties.version_minor);
+
+  CLog::Log(LOGINFO, "Enabling hardware rendering for {}", strContextType);
+  CLog::Log(LOGDEBUG, "  depth: {}", hwProperties.depth ? "true" : "false");
+  CLog::Log(LOGDEBUG, "  stencil: {}", hwProperties.stencil ? "true" : "false");
+  CLog::Log(LOGDEBUG, "  bottomLeftOrigin: {}", hwProperties.bottom_left_origin ? "true" : "false");
+  CLog::Log(LOGDEBUG, "  cacheContext: {}", hwProperties.cache_context ? "true" : "false");
+  CLog::Log(LOGDEBUG, "  debugContext: {}", hwProperties.debug_context ? "true" : "false");
+}
+
+std::string CGameClientStreamHwFramebuffer::GetContextName(GAME_HW_CONTEXT_TYPE contextType,
+                                                           unsigned int versionMajor,
+                                                           unsigned int versionMinor)
+{
+  std::string strContextType;
+
+  switch (contextType)
+  {
+    case GAME_HW_CONTEXT_OPENGL:
+      strContextType = "OpenGL 2.x";
+      break;
+    case GAME_HW_CONTEXT_OPENGLES2:
+      strContextType = "OpenGLES 2.0";
+      break;
+    case GAME_HW_CONTEXT_OPENGL_CORE:
+      strContextType = StringUtils::Format("OpenGL {}.{}", versionMajor, versionMinor);
+      break;
+    case GAME_HW_CONTEXT_OPENGLES3:
+      strContextType = "OpenGLES 3.0";
+      break;
+    case GAME_HW_CONTEXT_OPENGLES_VERSION:
+      strContextType = StringUtils::Format("OpenGLES {}.{}", versionMajor, versionMinor);
+      break;
+    case GAME_HW_CONTEXT_VULKAN:
+      strContextType = "Vulkan";
+      break;
+    default:
+      strContextType = "Unknown";
+      break;
+  }
+
+  return strContextType;
 }
 
 std::unique_ptr<RETRO::HwFramebufferProperties> CGameClientStreamHwFramebuffer::TranslateProperties(

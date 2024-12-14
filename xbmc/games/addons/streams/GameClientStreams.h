@@ -45,6 +45,10 @@ public:
   // HW rendering functions
   bool EnableHardwareRendering(const game_hw_rendering_properties& properties);
   game_proc_address_t GetHwProcedureAddress(const char* sym);
+  bool HardwareRenderingAttempted() const
+  {
+    return m_hwProperties.context_type != GAME_HW_CONTEXT_NONE;
+  }
 
 private:
   // Utility functions

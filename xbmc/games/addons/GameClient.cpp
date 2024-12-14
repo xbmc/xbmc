@@ -183,6 +183,8 @@ bool CGameClient::Initialize(void)
     return true;
   }
 
+  NotifyError(GAME_ERROR_UNKNOWN);
+
   return false;
 }
 
@@ -254,6 +256,7 @@ bool CGameClient::OpenFile(const CFileItem& file,
 
   if (!InitializeGameplay(file.GetPath(), streamManager, input))
   {
+    NotifyError(GAME_ERROR_UNKNOWN);
     Streams().Deinitialize();
     return false;
   }
@@ -295,6 +298,7 @@ bool CGameClient::OpenStandalone(RETRO::IStreamManager& streamManager, IGameInpu
 
   if (!InitializeGameplay("", streamManager, input))
   {
+    NotifyError(GAME_ERROR_UNKNOWN);
     Streams().Deinitialize();
     return false;
   }
@@ -403,7 +407,14 @@ void CGameClient::NotifyError(GAME_ERROR error)
   if (error == GAME_ERROR_RESTRICTED)
     missingResource = GetMissingResource();
 
-  if (!missingResource.empty())
+  // Check if hardware rendering was attempted
+  if (Streams().HardwareRenderingAttempted())
+  {
+    // Failed to play game
+    // This game requires OpenGL support for 3D rendering. OpenGL support is still under development.
+    MESSAGING::HELPERS::ShowOKDialogText(CVariant{35210}, CVariant{35271});
+  }
+  else if (!missingResource.empty())
   {
     // Failed to play game
     // This game requires the following add-on: %s
