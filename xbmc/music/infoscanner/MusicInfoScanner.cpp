@@ -574,7 +574,8 @@ bool CMusicInfoScanner::DoScan(const std::string& strDirectory)
 CInfoScanner::InfoRet CMusicInfoScanner::ScanTags(const CFileItemList& items,
                                                   CFileItemList& scannedItems)
 {
-  std::vector<std::string> regexps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_audioExcludeFromScanRegExps;
+  const std::vector<std::string>& regexps =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_audioExcludeFromScanRegExps;
 
   for (int i = 0; i < items.Size(); ++i)
   {
