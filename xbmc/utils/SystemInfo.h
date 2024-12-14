@@ -102,6 +102,8 @@ public:
     WindowsVersionWin10_Future, // Windows 10 future build
     WindowsVersionWin11_21H2,   // Windows 11 21H2 - Sun Valley
     WindowsVersionWin11_22H2,   // Windows 11 22H2 - Sun Valley 2
+    WindowsVersionWin11_23H2,   // Windows 11 23H2 - Sun Valley 3
+    WindowsVersionWin11_24H2,   // Windows 11 24H2 - Hudson Valley
     WindowsVersionWin11_Future, // Windows 11 future build
     /* Insert new Windows versions here, when they'll be known */
     WindowsVersionFuture = 100  // Future Windows version, not known to code
