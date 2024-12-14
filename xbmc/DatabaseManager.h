@@ -56,12 +56,18 @@ public:
 private:
   std::atomic<bool> m_bIsUpgrading;
 
-  enum DB_STATUS { DB_CLOSED, DB_UPDATING, DB_READY, DB_FAILED };
-  void UpdateStatus(const std::string &name, DB_STATUS status);
+  enum class DBStatus
+  {
+    CLOSED,
+    UPDATING,
+    READY,
+    FAILED
+  };
+  void UpdateStatus(const std::string& name, DBStatus status);
   void UpdateDatabase(CDatabase &db, DatabaseSettings *settings = NULL);
   bool Update(CDatabase &db, const DatabaseSettings &settings);
   bool UpdateVersion(CDatabase &db, const std::string &dbName);
 
   CCriticalSection            m_section;     ///< Critical section protecting m_dbStatus.
-  std::map<std::string, DB_STATUS> m_dbStatus;    ///< Our database status map.
+  std::map<std::string, DBStatus> m_dbStatus; ///< Our database status map.
 };
