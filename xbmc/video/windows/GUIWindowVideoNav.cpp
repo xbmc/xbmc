@@ -362,12 +362,12 @@ NodeType CGUIWindowVideoNav::GetNodeType(const CFileItemList& items)
   {
     return CVideoDatabaseDirectory::GetDirectoryChildType(items.GetPath());
   }
-  
+
   if (items.GetContent() == "seasons")
   {
     return NodeType::SEASONS;
   }
-  
+
   if (items.GetContent() == "episodes")
   {
     return NodeType::EPISODES;
