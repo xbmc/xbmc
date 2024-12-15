@@ -723,12 +723,15 @@ public:
   CVideoInfoTag GetDetailsByTypeAndId(VideoDbContentType type, int id);
 
   // scraper settings
+  using ScraperCache = std::unordered_map<std::string, ADDON::ScraperPtr>;
   void SetScraperForPath(const std::string& filePath,
                          const ADDON::ScraperPtr& info,
                          const KODI::VIDEO::SScanSettings& settings);
-  ADDON::ScraperPtr GetScraperForPath(const std::string& strPath);
   ADDON::ScraperPtr GetScraperForPath(const std::string& strPath,
-                                      KODI::VIDEO::SScanSettings& settings);
+                                      ScraperCache* scraperCache = nullptr);
+  ADDON::ScraperPtr GetScraperForPath(const std::string& strPath,
+                                      KODI::VIDEO::SScanSettings& settings,
+                                      ScraperCache* scraperCache = nullptr);
 
   /*! \brief Retrieve the scraper and settings we should use for the specified path
    If the scraper is not set on this particular path, we'll recursively check parent folders.
@@ -740,7 +743,8 @@ public:
    */
   ADDON::ScraperPtr GetScraperForPath(const std::string& strPath,
                                       KODI::VIDEO::SScanSettings& settings,
-                                      bool& foundDirectly);
+                                      bool& foundDirectly,
+                                      ScraperCache* scraperCache = nullptr);
 
   /*! \brief Retrieve the content type of videos in the given path
    If content is set on the folder, we return the given content type, except in the case of tvshows,
