@@ -11124,14 +11124,14 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
 
     // repeat for all tvshows
     sql = "SELECT * FROM tvshow_view";
-    m_pDS->query(sql);
+    pDS2->query(sql);
 
-    total = m_pDS->num_rows();
+    total = pDS2->num_rows();
     current = 0;
 
-    while (!m_pDS->eof())
+    while (!pDS2->eof())
     {
-      CVideoInfoTag tvshow = GetDetailsForTvShow(m_pDS, VideoDbDetailsAll);
+      CVideoInfoTag tvshow = GetDetailsForTvShow(pDS2, VideoDbDetailsAll);
       GetTvShowNamedSeasons(tvshow.m_iDbId, tvshow.m_namedSeasons);
 
       std::map<int, std::map<std::string, std::string> > seasonArt;
@@ -11167,7 +11167,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
         if (progress->IsCanceled())
         {
           progress->Close();
-          m_pDS->close();
+          pDS2->close();
           return;
         }
       }
@@ -11243,46 +11243,72 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
       }
 
       // now save the episodes from this show
-      sql = PrepareSQL("select * from episode_view where idShow=%i order by strFileName, idEpisode",tvshow.m_iDbId);
+      sql = PrepareSQL("select * from episode_view where idShow=%i order by idSeason, idEpisode",tvshow.m_iDbId);
       pDS->query(sql);
       std::string showDir(item.GetPath());
 
+      // Generate map of episodes in each file (finding base file for bluray://)
+      std::multimap<std::string, int> fileMap;
+      int index{1};
       while (!pDS->eof())
       {
-        CVideoInfoTag episode = GetDetailsForEpisode(pDS, VideoDbDetailsAll);
-        std::map<std::string, std::string> artwork;
-        if (GetArtForItem(episode.m_iDbId, MediaTypeEpisode, artwork) && !artwork.empty() &&
-            singleFile)
-        {
-          TiXmlElement additionalNode("art");
-          for (const auto& i : artwork)
-            XMLUtils::SetString(&additionalNode, i.first.c_str(), i.second);
-          episode.Save(pMain->LastChild(), "episodedetails", true, &additionalNode);
-        }
-        else if (singleFile)
-          episode.Save(pMain->LastChild(), "episodedetails", singleFile);
-        else
-          episode.Save(pMain, "episodedetails", singleFile);
+        std::string file{pDS->fv("strPath").get_asString() + pDS->fv("strFileName").get_asString()};
+        if (URIUtils::IsBluray(file))
+          file = URIUtils::GetBlurayPath(file);
+        fileMap.insert({file, index});
         pDS->next();
+        index++;
+      }
+
+      for (auto file = fileMap.begin(); file != fileMap.end(); file = fileMap.upper_bound(file->first))
+      {
         // multi-episode files need dumping to the same XML
-        while (!singleFile && !pDS->eof() &&
-               episode.m_iFileId == pDS->fv("idFile").get_asInt())
+        CVideoInfoTag episode;
+        auto episodes{fileMap.equal_range(file->first)};
+        for (auto episode_it = episodes.first; episode_it!=episodes.second; ++episode_it)
         {
-          episode = GetDetailsForEpisode(pDS, VideoDbDetailsAll);
-          episode.Save(pMain, "episodedetails", singleFile);
-          pDS->next();
+          if (episode_it == episodes.first)
+          {
+            // First episode in file
+            pDS->goto_rec(episode_it->second);
+
+            episode = GetDetailsForEpisode(pDS, VideoDbDetailsAll);
+            std::map<std::string, std::string> artwork;
+            if (GetArtForItem(episode.m_iDbId, MediaTypeEpisode, artwork) && !artwork.empty() &&
+                singleFile)
+            {
+              TiXmlElement additionalNode("art");
+              for (const auto& i : artwork)
+                XMLUtils::SetString(&additionalNode, i.first.c_str(), i.second);
+              episode.Save(pMain->LastChild(), "episodedetails", true, &additionalNode);
+            }
+            else if (singleFile)
+              episode.Save(pMain->LastChild(), "episodedetails", singleFile);
+            else
+              episode.Save(pMain, "episodedetails", singleFile);
+          }
+          else
+          {
+            // Any subsequent episodes in file
+            if (!singleFile)
+            {
+              pDS->goto_rec(episode_it->second);
+              episode = GetDetailsForEpisode(pDS, VideoDbDetailsAll);
+              episode.Save(pMain, "episodedetails", singleFile);
+            }
+          }
         }
 
         // reset old skip state
         bool bSkip = false;
 
-        CFileItem item(episode.m_strFileNameAndPath, false);
-        if (!singleFile && CUtil::SupportsWriteFileOperations(episode.m_strFileNameAndPath))
+        CFileItem item(file->first, false);
+        if (!singleFile && CUtil::SupportsWriteFileOperations(file->first))
         {
           if (!item.Exists(false))
           {
             CLog::Log(LOGINFO, "{} - Not exporting item {} as it does not exist", __FUNCTION__,
-                      episode.m_strFileNameAndPath);
+                      file->first);
             bSkip = true;
           }
           else
@@ -11333,10 +11359,10 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
         }
       }
       pDS->close();
-      m_pDS->next();
+      pDS2->next();
       current++;
     }
-    m_pDS->close();
+    pDS2->close();
 
     if (!singleFile && progress)
     {

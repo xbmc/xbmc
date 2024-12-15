@@ -1456,12 +1456,32 @@ CVideoInfoScanner::CVideoInfoScanner()
     CVideoInfoTag &movieDetails = *pItem->GetVideoInfoTag();
     if (movieDetails.m_basePath.empty())
       movieDetails.m_basePath = pItem->GetBaseMoviePath(videoFolder);
-    movieDetails.m_parentPathID = m_database.AddPath(URIUtils::GetParentPath(movieDetails.m_basePath));
 
-    movieDetails.m_strFileNameAndPath = pItem->GetPath();
+    if (movieDetails.m_strPath.empty() && !movieDetails.m_strFile.empty())
+    {
+      // Relative path (eg. bluray://)
+      CURL url;
+      url.SetHostName(movieDetails.m_basePath);
+      url.SetProtocol("bluray");
+      url.SetFileName(movieDetails.m_strFile);
+      const std::string file{url.GetFileNameWithoutPath()};
+      const std::string fileandpath{url.Get()};
+      const std::string path{URIUtils::GetDirectory(fileandpath)};
 
-    if (pItem->m_bIsFolder)
-      movieDetails.m_strPath = pItem->GetPath();
+      movieDetails.m_parentPathID = m_database.AddPath(path);
+      movieDetails.m_strPath = path;
+      movieDetails.m_strFileNameAndPath = fileandpath;
+    }
+    else
+    {
+      movieDetails.m_parentPathID =
+          m_database.AddPath(URIUtils::GetParentPath(movieDetails.m_basePath));
+
+      movieDetails.m_strFileNameAndPath = pItem->GetPath();
+
+      if (pItem->m_bIsFolder)
+        movieDetails.m_strPath = pItem->GetPath();
+    }
 
     std::string strTitle(movieDetails.m_strTitle);
 
@@ -1601,7 +1621,8 @@ CVideoInfoScanner::CVideoInfoScanner()
 
       if ((libraryImport || m_advancedSettings->m_bVideoLibraryImportResumePoint) &&
           movieDetails.GetResumePoint().IsSet())
-        m_database.AddBookMarkToFile(pItem->GetPath(), movieDetails.GetResumePoint(), CBookmark::RESUME);
+        m_database.AddBookMarkToFile(pItem->GetVideoInfoTag()->m_strFileNameAndPath,
+                                     movieDetails.GetResumePoint(), CBookmark::RESUME);
     }
 
     m_database.Close();
