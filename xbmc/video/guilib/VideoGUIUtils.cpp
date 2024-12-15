@@ -424,6 +424,7 @@ void PlayItem(
       }
 
       const auto parentItem = std::make_shared<CFileItem>(parentPath, true);
+      parentItem->LoadDetails();
       if (item->GetStartOffset() == STARTOFFSET_RESUME)
         parentItem->SetStartOffset(STARTOFFSET_RESUME);
 
