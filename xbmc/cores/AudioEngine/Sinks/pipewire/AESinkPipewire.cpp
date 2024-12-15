@@ -607,7 +607,8 @@ unsigned int CAESinkPipewire::AddPackets(uint8_t** data, unsigned int frames, un
 
   } while (true);
 
-  m_stream->TriggerProcess();
+  if (m_stream->IsDriving())
+    m_stream->TriggerProcess();
 
   return frames;
 }
