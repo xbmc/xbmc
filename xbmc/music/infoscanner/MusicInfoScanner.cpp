@@ -18,7 +18,6 @@
 #include "ServiceBroker.h"
 #include "TextureCache.h"
 #include "URL.h"
-#include "Util.h"
 #include "addons/AddonSystemSettings.h"
 #include "addons/Scraper.h"
 #include "addons/addoninfo/AddonType.h"
@@ -278,6 +277,7 @@ void CMusicInfoScanner::Process()
     CLog::Log(LOGERROR, "MusicInfoScanner: Exception while scanning.");
   }
   m_musicDatabase.Close();
+  m_regexCache.clear();
   CLog::Log(LOGDEBUG, "{} - Finished scan", __FUNCTION__);
 
   m_bRunning = false;
@@ -489,7 +489,7 @@ bool CMusicInfoScanner::DoScan(const std::string& strDirectory)
   // Discard all excluded files defined by m_musicExcludeRegExps
   const std::vector<std::string> &regexps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_audioExcludeFromScanRegExps;
 
-  if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
+  if (CUtil::ExcludeFileOrFolder(strDirectory, regexps, &m_regexCache))
     return true;
 
   if (HasNoMedia(strDirectory))
@@ -581,7 +581,7 @@ CInfoScanner::InfoRet CMusicInfoScanner::ScanTags(const CFileItemList& items,
 
     CFileItemPtr pItem = items[i];
 
-    if (CUtil::ExcludeFileOrFolder(pItem->GetPath(), regexps))
+    if (CUtil::ExcludeFileOrFolder(pItem->GetPath(), regexps, &m_regexCache))
       continue;
 
     if (pItem->IsFolder() || PLAYLIST::IsPlayList(*pItem) || pItem->IsPicture() ||
