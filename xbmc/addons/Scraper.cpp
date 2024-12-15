@@ -169,11 +169,25 @@ bool CScraper::SetPathSettings(CONTENT_TYPE content, const std::string &xml)
     return false;
 
   if (xml.empty())
+  {
+    GetSettings(ADDON_SETTINGS_ID)->Unload();
+    m_xmlConfigHash = 0;
     return true;
+  }
+
+  const std::size_t configHash = std::hash<std::string>()(xml);
+  if (m_xmlConfigHash == configHash)
+    return true;
+
+  // Unload so SettingsFromXML() works
+  GetSettings(ADDON_SETTINGS_ID)->Unload();
 
   CXBMCTinyXML doc;
   doc.Parse(xml);
-  return SettingsFromXML(doc, false);
+  if (!SettingsFromXML(doc, false))
+    return false;
+  m_xmlConfigHash = configHash;
+  return true;
 }
 
 std::string CScraper::GetPathSettings()
