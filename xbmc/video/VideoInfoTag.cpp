@@ -18,6 +18,8 @@
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
+#include "utils/URIUtils.h"
+#include "URL.h"
 #include "video/VideoManagerTypes.h"
 
 #include <algorithm>
@@ -194,6 +196,11 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
     XMLUtils::SetString(movie, "path", m_strPath);
     XMLUtils::SetString(movie, "filenameandpath", m_strFileNameAndPath);
     XMLUtils::SetString(movie, "basepath", m_basePath);
+  }
+  else if (URIUtils::IsBluray(m_strFileNameAndPath))
+  {
+    CURL url{m_strFileNameAndPath};
+    XMLUtils::SetString(movie, "relativefilename", url.GetFileName());
   }
   if (!m_strEpisodeGuide.empty())
   {
@@ -1138,6 +1145,10 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
 
   if (XMLUtils::GetString(movie, "filenameandpath", value))
     SetFileNameAndPath(value);
+  else if (XMLUtils::GetString(movie, "relativefilename", value))
+  {
+    SetFile(value);
+  }
 
   if (XMLUtils::GetDate(movie, "premiered", m_premiered))
   {
