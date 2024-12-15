@@ -19,6 +19,7 @@
 #include "VideoInfoScanner.h"
 #include "XBDateTime.h"
 #include "addons/AddonManager.h"
+#include "addons/Scraper.h"
 #include "dbwrappers/dataset.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -8831,20 +8832,62 @@ bool CVideoDatabase::HasContent(VideoDbContentType type)
   return result;
 }
 
-ScraperPtr CVideoDatabase::GetScraperForPath( const std::string& strPath )
+ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath,
+                                             ScraperCache* scraperCache /*= nullptr*/)
 {
   SScanSettings settings;
-  return GetScraperForPath(strPath, settings);
+  return GetScraperForPath(strPath, settings, scraperCache);
 }
 
-ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath, SScanSettings& settings)
+ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath,
+                                             SScanSettings& settings,
+                                             ScraperCache* scraperCache /*= nullptr*/)
 {
   bool dummy;
-  return GetScraperForPath(strPath, settings, dummy);
+  return GetScraperForPath(strPath, settings, dummy, scraperCache);
 }
 
-ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath, SScanSettings& settings, bool& foundDirectly)
+ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath,
+                                             SScanSettings& settings,
+                                             bool& foundDirectly,
+                                             ScraperCache* scraperCache /*= nullptr*/)
 {
+  // Returns a pair of bool and CScraperPtr.
+  // The boolean is true if an addon matching the scraperID exists.
+  // If true the CScraper can still be nullptr if the addon isn't a CScraper.
+  auto getScraper = [&](const std::string& scraperID)
+  {
+    AddonPtr addon;
+    if (scraperCache)
+    {
+      if (auto iter = scraperCache->find(scraperID); iter == scraperCache->end())
+      {
+        if (CServiceBroker::GetAddonMgr().GetAddon(scraperID, addon,
+                                                   ADDON::OnlyEnabled::CHOICE_YES))
+        {
+          auto scraper = std::dynamic_pointer_cast<CScraper>(addon);
+          if (scraper)
+            scraperCache->emplace(scraperID, scraper);
+          return std::make_pair(true, scraper);
+        }
+        else
+          return std::make_pair(false, ScraperPtr());
+      }
+      else
+        return std::make_pair(true, iter->second);
+    }
+    else if (CServiceBroker::GetAddonMgr().GetAddon(scraperID, addon,
+                                                    ADDON::OnlyEnabled::CHOICE_YES))
+    {
+      auto scraper = std::dynamic_pointer_cast<CScraper>(addon);
+      return std::make_pair(true, scraper);
+    }
+    else
+    {
+      return std::make_pair(false, ScraperPtr());
+    }
+  };
+
   foundDirectly = false;
   try
   {
@@ -8895,19 +8938,22 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath, SScanSe
       //assert(content != CONTENT_NONE);
       std::string scraperID = m_pDS->fv("path.strScraper").get_asString();
 
-      AddonPtr addon;
-      if (!scraperID.empty() &&
-          CServiceBroker::GetAddonMgr().GetAddon(scraperID, addon, ADDON::OnlyEnabled::CHOICE_YES))
+      if (!scraperID.empty())
       {
-        scraper = std::dynamic_pointer_cast<CScraper>(addon);
-        if (!scraper)
+        bool found = false;
+        std::tie(found, scraper) = getScraper(scraperID);
+
+        if (found && !scraper)
           return ScraperPtr();
 
-        // store this path's content & settings
-        scraper->SetPathSettings(content, m_pDS->fv("path.strSettings").get_asString());
-        settings.parent_name = m_pDS->fv("path.useFolderNames").get_asBool();
-        settings.recurse = m_pDS->fv("path.scanRecursive").get_asInt();
-        settings.noupdate = m_pDS->fv("path.noUpdate").get_asBool();
+        if (scraper)
+        {
+          // store this path's content & settings
+          scraper->SetPathSettings(content, m_pDS->fv("path.strSettings").get_asString());
+          settings.parent_name = m_pDS->fv("path.useFolderNames").get_asBool();
+          settings.recurse = m_pDS->fv("path.scanRecursive").get_asInt();
+          settings.noupdate = m_pDS->fv("path.noUpdate").get_asBool();
+        }
       }
     }
 
@@ -8943,17 +8989,19 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath, SScanSe
           content = TranslateContent(strcontent);
 
           AddonPtr addon;
-          if (content != CONTENT_NONE &&
-              CServiceBroker::GetAddonMgr().GetAddon(m_pDS->fv("path.strScraper").get_asString(),
-                                                     addon, ADDON::OnlyEnabled::CHOICE_YES))
+          if (content != CONTENT_NONE)
           {
-            scraper = std::dynamic_pointer_cast<CScraper>(addon);
-            scraper->SetPathSettings(content, m_pDS->fv("path.strSettings").get_asString());
-            settings.parent_name = m_pDS->fv("path.useFolderNames").get_asBool();
-            settings.recurse = m_pDS->fv("path.scanRecursive").get_asInt();
-            settings.noupdate = m_pDS->fv("path.noUpdate").get_asBool();
-            settings.exclude = false;
-            break;
+            bool found = false;
+            std::tie(found, scraper) = getScraper(m_pDS->fv("path.strScraper").get_asString());
+            if (found)
+            {
+              scraper->SetPathSettings(content, m_pDS->fv("path.strSettings").get_asString());
+              settings.parent_name = m_pDS->fv("path.useFolderNames").get_asBool();
+              settings.recurse = m_pDS->fv("path.scanRecursive").get_asInt();
+              settings.noupdate = m_pDS->fv("path.noUpdate").get_asBool();
+              settings.exclude = false;
+              break;
+            }
           }
         }
         strPath1 = strParent;
