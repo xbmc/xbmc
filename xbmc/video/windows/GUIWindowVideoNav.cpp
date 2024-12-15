@@ -248,16 +248,17 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
 
 SelectFirstUnwatchedItem CGUIWindowVideoNav::GetSettingSelectFirstUnwatchedItem()
 {
-  if (VIDEO::IsVideoDb(*m_vecItems))
-  {
-    NodeType nodeType = CVideoDatabaseDirectory::GetDirectoryChildType(m_vecItems->GetPath());
+  NodeType nodeType = GetNodeType(*m_vecItems);
 
-    if (nodeType == NodeType::SEASONS || nodeType == NodeType::EPISODES)
+  if (nodeType == NodeType::SEASONS || nodeType == NodeType::EPISODES)
+  {
+    int iValue = CServiceBroker::GetSettingsComponent()->GetSettings()
+        ->GetInt(CSettings::SETTING_VIDEOLIBRARY_TVSHOWSSELECTFIRSTUNWATCHEDITEM);
+    
+    if (iValue >= static_cast<int>(SelectFirstUnwatchedItem::NEVER) &&
+        iValue <= static_cast<int>(SelectFirstUnwatchedItem::ALWAYS))
     {
-      int iValue = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOLIBRARY_TVSHOWSSELECTFIRSTUNWATCHEDITEM);
-      if (iValue >= static_cast<int>(SelectFirstUnwatchedItem::NEVER) &&
-          iValue <= static_cast<int>(SelectFirstUnwatchedItem::ALWAYS))
-        return static_cast<SelectFirstUnwatchedItem>(iValue);
+      return static_cast<SelectFirstUnwatchedItem>(iValue);
     }
   }
 
@@ -279,7 +280,7 @@ int CGUIWindowVideoNav::GetFirstUnwatchedItemIndex(bool includeAllSeasons, bool 
   int iIndex = 0;
   int iUnwatchedSeason = INT_MAX;
   int iUnwatchedEpisode = INT_MAX;
-  NodeType nodeType = CVideoDatabaseDirectory::GetDirectoryChildType(m_vecItems->GetPath());
+  NodeType nodeType = GetNodeType(*m_vecItems);
 
   // Run through the list of items and find the first unwatched season/episode
   for (int i = 0; i < m_vecItems->Size(); ++i)
@@ -355,6 +356,26 @@ void CGUIWindowVideoNav::SelectFirstUnwatched() {
   }
 }
 
+NodeType CGUIWindowVideoNav::GetNodeType(const CFileItemList& items)
+{
+  if (VIDEO::IsVideoDb(items))
+  {
+    return CVideoDatabaseDirectory::GetDirectoryChildType(items.GetPath());
+  }
+  
+  if (items.GetContent() == "seasons")
+  {
+    return NodeType::SEASONS;
+  }
+  
+  if (items.GetContent() == "episodes")
+  {
+    return NodeType::EPISODES;
+  }
+
+  return NodeType::NONE;
+}
+
 bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItemList &items)
 {
   if (m_thumbLoader.IsLoading())
@@ -388,6 +409,7 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
                         (itemsSize == 2 && iFlatten == 1 &&                                                // flatten if one season + specials
                          (items[firstIndex]->GetVideoInfoTag()->m_iSeason == 0 || items[firstIndex + 1]->GetVideoInfoTag()->m_iSeason == 0));
 
+        // also try to flatten if there is only 1 unwatched season (not counting specials)
         if (iFlatten > 0 && !bFlatten && (WatchedMode)CMediaSettings::GetInstance().GetWatchedMode("tvshows") == WatchedModeUnwatched)
         {
           int count = 0;
@@ -397,17 +419,18 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
             if (item->GetProperty("unwatchedepisodes").asInteger() != 0 && item->GetVideoInfoTag()->m_iSeason > 0)
               count++;
           }
-          bFlatten = (count < 2); // flatten if there is only 1 unwatched season (not counting specials)
+          bFlatten = (count < 2);
         }
 
         if (bFlatten)
-        { // flatten if one season or flatten always
+        {
           items.Clear();
 
           CVideoDbUrl videoUrl;
           if (!videoUrl.FromString(items.GetPath()))
             return false;
 
+          // This -2 is an indicator for the video database to not filter on season.
           videoUrl.AppendPath("-2/");
           return GetDirectory(videoUrl.ToString(), items);
         }
