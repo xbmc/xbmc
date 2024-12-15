@@ -477,7 +477,11 @@ void CNfsConnection::keepAlive(const std::string& _exportPath, struct nfsfh* _pF
 
   nfs_lseek(pContext, _pFileHandle, 0, SEEK_CUR, &offset);
 
-  int bytes = nfs_read(pContext, _pFileHandle, 32, buffer);
+#ifdef LIBNFS_API_V2
+  int bytes = nfs_read(pContext, _pFileHandle, buffer, sizeof(buffer));
+#else
+  int bytes = nfs_read(pContext, _pFileHandle, sizeof(buffer), buffer);
+#endif
   if (bytes < 0)
   {
     CLog::LogF(LOGERROR, "nfs_read - Error ({}, {})", bytes, nfs_get_error(pContext));
@@ -741,8 +745,11 @@ ssize_t CNFSFile::Read(void *lpBuf, size_t uiBufSize)
 
   if (m_pFileHandle == NULL || m_pNfsContext == NULL )
     return -1;
-
+#ifdef LIBNFS_API_V2
+  numberOfBytesRead = nfs_read(m_pNfsContext, m_pFileHandle, lpBuf, uiBufSize);
+#else
   numberOfBytesRead = nfs_read(m_pNfsContext, m_pFileHandle, uiBufSize, (char *)lpBuf);
+#endif
 
   lock.unlock(); //no need to keep the connection lock after that
 
@@ -841,12 +848,17 @@ ssize_t CNFSFile::Write(const void* lpBuf, size_t uiBufSize)
     {
       chunkSize = leftBytes;//write last chunk with correct size
     }
+#ifdef LIBNFS_API_V2
+    writtenBytes = nfs_write(m_pNfsContext, m_pFileHandle,
+                             static_cast<const char*>(lpBuf) + numberOfBytesWritten, chunkSize);
+#else
     //write chunk
     //! @bug libnfs < 2.0.0 isn't const correct
     writtenBytes = nfs_write(m_pNfsContext,
                                   m_pFileHandle,
                                   chunkSize,
                                   const_cast<char*>((const char *)lpBuf) + numberOfBytesWritten);
+#endif
     //decrease left bytes
     leftBytes-= writtenBytes;
     //increase overall written bytes
