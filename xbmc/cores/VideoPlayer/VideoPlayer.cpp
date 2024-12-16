@@ -951,7 +951,7 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
     m_processInfo->ResetAudioCodecInfo();
   }
 
-  // enable  or disable subtitles
+  // enable or disable subtitles
   bool visible = m_processInfo->GetVideoSettings().m_SubtitleOn;
 
   // open subtitle stream
@@ -973,6 +973,13 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
         visible = false;
       else if(stream.flags & StreamFlags::FLAG_FORCED)
         visible = true;
+
+      if (m_processInfo->GetVideoSettings().m_SubtitleOn != visible)
+      {
+        CVideoSettings vs{m_processInfo->GetVideoSettings()};
+        vs.m_SubtitleOn = false;
+        m_processInfo->SetVideoSettings(vs);
+      }
       break;
     }
   }
