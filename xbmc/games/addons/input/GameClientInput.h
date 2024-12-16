@@ -117,6 +117,7 @@ private:
   // Helper functions
   static ControllerVector GetControllers(const CGameClient& gameClient);
   static void ActivateControllers(CControllerHub& hub);
+  void ResetPorts(const PortVec& port);
 
   // Input properties
   IGameInputCallback* m_inputCallback = nullptr;

@@ -460,8 +460,7 @@ void CGameClientInput::ResetPorts()
   std::lock_guard<std::recursive_mutex> lock(m_portMutex);
 
   const CControllerTree& controllerTree = GetDefaultControllerTree();
-  for (const CPortNode& port : controllerTree.GetPorts())
-    ConnectController(port.GetAddress(), port.GetActiveController().GetController());
+  ResetPorts(controllerTree.GetPorts());
 }
 
 bool CGameClientInput::HasAgent() const
@@ -736,4 +735,17 @@ ControllerVector CGameClientInput::GetControllers(const CGameClient& gameClient)
   }
 
   return controllers;
+}
+
+void CGameClientInput::ResetPorts(const PortVec& ports)
+{
+  for (const CPortNode& port : ports)
+  {
+    // Reset port
+    const CControllerNode& activeController = port.GetActiveController();
+    ConnectController(port.GetAddress(), activeController.GetController());
+
+    // Reset child ports
+    ResetPorts(activeController.GetHub().GetPorts());
+  }
 }
