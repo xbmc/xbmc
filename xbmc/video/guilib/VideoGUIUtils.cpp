@@ -220,6 +220,9 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
           content = "files";
 
         items.SetContent(content);
+
+        // Get play counts and resume bookmarks for the items.
+        db.GetPlayCounts(items.GetPath(), items);
       }
     }
 
@@ -424,6 +427,7 @@ void PlayItem(
       }
 
       const auto parentItem = std::make_shared<CFileItem>(parentPath, true);
+      parentItem->SetProperty("IsVideoFolder", true);
       parentItem->LoadDetails();
       if (item->GetStartOffset() == STARTOFFSET_RESUME)
         parentItem->SetStartOffset(STARTOFFSET_RESUME);

@@ -2293,6 +2293,18 @@ bool CFileItem::LoadDetails()
     return false;
   }
 
+  if (GetProperty("IsVideoFolder").asBoolean(false))
+  {
+    const std::shared_ptr<CFileItem> loadedItem{VIDEO::UTILS::LoadVideoFilesFolderInfo(*this)};
+    if (loadedItem)
+    {
+      UpdateInfo(*loadedItem);
+      return true;
+    }
+    CLog::LogF(LOGERROR, "Error filling video files folder item details (path={})", GetPath());
+    return false;
+  }
+
   //! @todo add support for other types on demand.
   CLog::LogF(LOGDEBUG, "Unsupported item type (path={})", GetPath());
   return false;
