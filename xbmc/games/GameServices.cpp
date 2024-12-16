@@ -11,6 +11,7 @@
 #include "controllers/Controller.h"
 #include "controllers/ControllerManager.h"
 #include "games/GameSettings.h"
+#include "games/GameUtils.h"
 #include "games/agents/input/AgentInput.h"
 #include "profiles/ProfileManager.h"
 
@@ -28,6 +29,9 @@ CGameServices::CGameServices(CControllerManager& controllerManager,
     m_gameSettings(new CGameSettings()),
     m_agentInput(std::make_unique<CAgentInput>(peripheralManager, inputManager))
 {
+  // Load the add-ons from the database asynchronously
+  m_initializationTask =
+      std::async(std::launch::async, []() { CGameUtils::UpdateInstallableAddons(); });
 }
 
 CGameServices::~CGameServices() = default;
@@ -66,4 +70,9 @@ std::string CGameServices::TranslateFeature(const std::string& controllerId,
 std::string CGameServices::GetSavestatesFolder() const
 {
   return m_profileManager.GetSavestatesFolder();
+}
+
+void CGameServices::OnAddonRepoInstalled()
+{
+  CGameUtils::UpdateInstallableAddons();
 }
