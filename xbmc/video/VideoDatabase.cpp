@@ -3121,9 +3121,9 @@ void CVideoDatabase::DeleteFile(int idFile)
   if (m_pDS->eof())
   {
     // Get idPath
-    sql = PrepareSQL(
-        "SELECT path.idPath, path.strPath FROM path JOIN files ON path.idPath = files.idPath WHERE idFile = %i",
-        idFile);
+    sql = PrepareSQL("SELECT path.idPath, path.strPath FROM path JOIN files ON path.idPath = "
+                     "files.idPath WHERE idFile = %i",
+                     idFile);
     m_pDS->query(sql);
     int path{-1};
     std::string strPath;
@@ -11243,7 +11243,8 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
       }
 
       // now save the episodes from this show
-      sql = PrepareSQL("select * from episode_view where idShow=%i order by idSeason, idEpisode",tvshow.m_iDbId);
+      sql = PrepareSQL("select * from episode_view where idShow=%i order by idSeason, idEpisode",
+                       tvshow.m_iDbId);
       pDS->query(sql);
       std::string showDir(item.GetPath());
 
@@ -11260,12 +11261,13 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
         index++;
       }
 
-      for (auto file = fileMap.begin(); file != fileMap.end(); file = fileMap.upper_bound(file->first))
+      for (auto file = fileMap.begin(); file != fileMap.end();
+           file = fileMap.upper_bound(file->first))
       {
         // multi-episode files need dumping to the same XML
         CVideoInfoTag episode;
         auto episodes{fileMap.equal_range(file->first)};
-        for (auto episode_it = episodes.first; episode_it!=episodes.second; ++episode_it)
+        for (auto episode_it = episodes.first; episode_it != episodes.second; ++episode_it)
         {
           if (episode_it == episodes.first)
           {

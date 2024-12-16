@@ -9,17 +9,17 @@
 #include "VideoInfoTag.h"
 
 #include "ServiceBroker.h"
+#include "URL.h"
 #include "guilib/LocalizeStrings.h"
 #include "imagefiles/ImageFileURL.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Archive.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
-#include "utils/URIUtils.h"
-#include "URL.h"
 #include "video/VideoManagerTypes.h"
 
 #include <algorithm>

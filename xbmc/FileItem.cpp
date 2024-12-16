@@ -1994,9 +1994,9 @@ std::string CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
     return GetLocalMetadataPath();
 
   if (bUseFolderNames &&
-      (!m_bIsFolder || URIUtils::IsInArchive(m_strPath) ||
-       URIUtils::IsBluray(m_strPath) ||
-     (HasVideoInfoTag() && GetVideoInfoTag()->m_iDbId > 0 && !CMediaTypes::IsContainer(GetVideoInfoTag()->m_type))))
+      (!m_bIsFolder || URIUtils::IsInArchive(m_strPath) || URIUtils::IsBluray(m_strPath) ||
+       (HasVideoInfoTag() && GetVideoInfoTag()->m_iDbId > 0 &&
+        !CMediaTypes::IsContainer(GetVideoInfoTag()->m_type))))
   {
     std::string name2(strMovieName);
     URIUtils::GetParentPath(name2,strMovieName);
