@@ -131,18 +131,20 @@ public:
   // CURL interface
   static bool Exists(const CURL& file, bool bUseCache = true);
   static bool Delete(const CURL& file);
-  /**
-  * Fills struct __stat64 with information about file specified by filename
-  * For st_mode function will set correctly _S_IFDIR (directory) flag and may set
-  * _S_IREAD (read permission), _S_IWRITE (write permission) flags if such
-  * information is available. Function may set st_size (file size), st_atime,
-  * st_mtime, st_ctime (access, modification, creation times).
-  * Any other flags and members of __stat64 that didn't updated with actual file
-  * information will be set to zero (st_nlink can be set ether to 1 or zero).
-  * @param file        specifies requested file
-  * @param buffer      pointer to __stat64 buffer to receive information about file
-  * @return zero of success, -1 otherwise.
-  */
+  /*!
+   * \brief Fills struct __stat64 with information about file specified by url.
+   *
+   * For st_mode function will set correctly _S_IFDIR (directory) flag and may set
+   * _S_IREAD (read permission), _S_IWRITE (write permission) flags if such
+   * information is available. Function may set st_size (file size), st_atime,
+   * st_mtime, st_ctime (access, modification, creation times).
+   * Any other flags and members of __stat64 that didn't updated with actual file
+   * information will be set to zero (st_nlink can be set ether to 1 or zero).
+   *
+   * \param[in] file specifies requested file. Ends with a directory separator for directories.
+   * \param[out] buffer pointer to __stat64 buffer to receive information about file
+   * \return zero for success, -1 otherwise.
+   */
   static int  Stat(const CURL& file, struct __stat64* buffer);
   static bool Rename(const CURL& file, const CURL& urlNew);
   static bool Copy(const CURL& file, const CURL& dest, XFILE::IFileCallback* pCallback = NULL, void* pContext = NULL);
@@ -150,18 +152,21 @@ public:
 
   // string interface
   static bool Exists(const std::string& strFileName, bool bUseCache = true);
-  /**
-  * Fills struct __stat64 with information about file specified by filename
-  * For st_mode function will set correctly _S_IFDIR (directory) flag and may set
-  * _S_IREAD (read permission), _S_IWRITE (write permission) flags if such
-  * information is available. Function may set st_size (file size), st_atime,
-  * st_mtime, st_ctime (access, modification, creation times).
-  * Any other flags and members of __stat64 that didn't updated with actual file
-  * information will be set to zero (st_nlink can be set ether to 1 or zero).
-  * @param strFileName specifies requested file
-  * @param buffer      pointer to __stat64 buffer to receive information about file
-  * @return zero of success, -1 otherwise.
-  */
+  /*!
+   * \brief Fills struct __stat64 with information about file specified by filename.
+   *
+   * For st_mode function will set correctly _S_IFDIR (directory) flag and may set
+   * _S_IREAD (read permission), _S_IWRITE (write permission) flags if such
+   * information is available. Function may set st_size (file size), st_atime,
+   * st_mtime, st_ctime (access, modification, creation times).
+   * Any other flags and members of __stat64 that didn't updated with actual file
+   * information will be set to zero (st_nlink can be set ether to 1 or zero).
+   *
+   * \param[in] strFileName specifies requested file. Ends with a directory separator for
+   * directories.
+   * \param[out] buffer pointer to __stat64 buffer to receive information about file
+   * \return zero for success, -1 otherwise.
+   */
   static int  Stat(const std::string& strFileName, struct __stat64* buffer);
   /**
   * Fills struct __stat64 with information about currently open file
