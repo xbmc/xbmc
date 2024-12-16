@@ -17,7 +17,7 @@ extern "C"
 #include <libavutil/pixfmt.h>
 }
 
-//! @todo
+//! @todo RetroPlayer needs an abstraction for GAME_HW_CONTEXT_TYPE
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/game.h"
 
 namespace KODI

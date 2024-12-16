@@ -17,7 +17,7 @@ class CRPProcessInfoEGL : public CRPProcessInfo
 {
 public:
   CRPProcessInfoEGL(std::string platformName);
-  virtual ~CRPProcessInfoEGL() override = default;
+  ~CRPProcessInfoEGL() override = default;
 
   // Implementation of CRPProcessInfo
   HwProcedureAddress GetHwProcedureAddress(const char* symbol) override;

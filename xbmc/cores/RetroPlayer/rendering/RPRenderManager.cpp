@@ -277,7 +277,6 @@ void CRPRenderManager::RenderFrame()
 
 uintptr_t CRPRenderManager::GetCurrentFramebuffer(unsigned int width, unsigned int height)
 {
-  std::vector<IRenderBuffer*> renderBuffers;
   for (IRenderBufferPool* bufferPool : m_processInfo.GetBufferManager().GetBufferPools())
   {
     if (!bufferPool->HasVisibleRenderer())
@@ -302,7 +301,6 @@ bool CRPRenderManager::Create(unsigned int width, unsigned int height)
 
   renderer->Configure(m_format);
 
-  std::vector<IRenderBuffer*> renderBuffers;
   for (IRenderBufferPool* bufferPool : m_processInfo.GetBufferManager().GetBufferPools())
   {
     if (!bufferPool->HasVisibleRenderer())
