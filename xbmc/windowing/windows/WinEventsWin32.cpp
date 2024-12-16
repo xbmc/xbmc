@@ -154,7 +154,7 @@ static XBMC_keysym *TranslateKey(WPARAM vkey, UINT scancode, XBMC_keysym *keysym
   uint8_t keystate[256];
 
   /* Set the keysym information */
-  keysym->scancode = static_cast<unsigned char>(scancode);
+  keysym->scancode = static_cast<uint32_t>(scancode);
   keysym->unicode = 0;
 
   if ((vkey == VK_RETURN) && (scancode & 0x100))

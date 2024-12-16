@@ -401,7 +401,10 @@ void CWinEventsWin10::OnPointerWheelChanged(const CoreWindow&, const PointerEven
   MessagePush(&newEvent);
 }
 
-void CWinEventsWin10::Kodi_KeyEvent(unsigned int vkey, unsigned scancode, unsigned keycode, bool isDown)
+void CWinEventsWin10::Kodi_KeyEvent(unsigned int vkey,
+                                    uint32_t scancode,
+                                    unsigned keycode,
+                                    bool isDown)
 {
   using State = CoreVirtualKeyStates;
 
