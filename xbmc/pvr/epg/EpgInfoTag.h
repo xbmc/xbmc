@@ -103,7 +103,7 @@ public:
    * @brief Get the progress of this tag in percent.
    * @return The current progress of this tag.
    */
-  float ProgressPercentage() const;
+  double ProgressPercentage() const;
 
   /*!
    * @brief Get the progress of this tag in seconds.

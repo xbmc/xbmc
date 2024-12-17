@@ -46,6 +46,7 @@
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "threads/SystemClock.h"
+#include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
 
 #include <cmath>
@@ -1468,17 +1469,15 @@ bool CPVRGUIInfo::GetPVRInt(const CFileItem* item, const CGUIInfo& info, int& iV
       iValue = GetTimeShiftSeekPercent();
       return true;
     case PVR_ACTUAL_STREAM_SIG_PROGR:
-      iValue =
-          static_cast<int>(std::lrintf(static_cast<float>(m_qualityInfo.Signal()) / 0xFFFF * 100));
+      iValue = MathUtils::round_int(static_cast<double>(m_qualityInfo.Signal()) / 0xFFFF * 100.0);
       return true;
     case PVR_ACTUAL_STREAM_SNR_PROGR:
-      iValue =
-          static_cast<int>(std::lrintf(static_cast<float>(m_qualityInfo.SNR()) / 0xFFFF * 100));
+      iValue = MathUtils::round_int(static_cast<double>(m_qualityInfo.SNR()) / 0xFFFF * 100.0);
       return true;
     case PVR_BACKEND_DISKSPACE_PROGR:
       if (m_iBackendDiskTotal > 0)
-        iValue = static_cast<int>(
-            std::lrintf(static_cast<float>(m_iBackendDiskUsed) / m_iBackendDiskTotal * 100));
+        iValue = MathUtils::round_int(static_cast<double>(m_iBackendDiskUsed) /
+                                      m_iBackendDiskTotal * 100.0);
       else
         iValue = 0xFF;
       return true;
@@ -2206,14 +2205,14 @@ int CPVRGUIInfo::GetTimeShiftSeekPercent() const
   {
     int total = m_timesInfo.GetTimeshiftProgressDuration();
 
-    float totalTime = static_cast<float>(total);
-    if (totalTime == 0.0f)
+    const double totalTime = static_cast<double>(total);
+    if (totalTime == 0.0)
       return 0;
 
-    float percentPerSecond = 100.0f / totalTime;
-    float percent = progress + percentPerSecond * seekSize;
-    percent = std::max(0.0f, std::min(percent, 100.0f));
-    return static_cast<int>(std::lrintf(percent));
+    const double percentPerSecond = 100.0 / totalTime;
+    double percent = progress + percentPerSecond * seekSize;
+    percent = std::max(0.0, std::min(percent, 100.0));
+    return MathUtils::round_int(percent);
   }
   return progress;
 }
