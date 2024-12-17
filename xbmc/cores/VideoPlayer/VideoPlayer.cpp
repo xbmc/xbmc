@@ -47,6 +47,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "network/NetworkFileItemClassify.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
@@ -951,14 +952,16 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
     m_processInfo->ResetAudioCodecInfo();
   }
 
+  CVideoSettings& ds{CMediaSettings::GetInstance().GetDefaultVideoSettings()};
+  CVideoSettings vs{m_processInfo->GetVideoSettings()};
+
   // enable or disable subtitles
-  bool visible = m_processInfo->GetVideoSettings().m_SubtitleOn;
+  bool visible{vs.m_SubtitleOn};
 
   // open subtitle stream
   SelectionStream as = m_SelectionStreams.Get(STREAM_AUDIO, GetAudioStream());
-  PredicateSubtitlePriority psp(as.language,
-                                m_processInfo->GetVideoSettings().m_SubtitleStream,
-                                m_processInfo->GetVideoSettings().m_SubtitleOn);
+  PredicateSubtitlePriority psp(as.language, vs.m_SubtitleStream, ds.m_SubtitleOn);
+
   valid = false;
   // We need to close CC subtitles to avoid conflicts with external sub stream
   if (m_CurrentSubtitle.source == STREAM_SOURCE_VIDEOMUX)
@@ -969,16 +972,20 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
     if (OpenStream(m_CurrentSubtitle, stream.demuxerId, stream.id, stream.source))
     {
       valid = true;
-      if(!psp.relevant(stream))
-        visible = false;
-      else if(stream.flags & StreamFlags::FLAG_FORCED)
-        visible = true;
-
-      if (m_processInfo->GetVideoSettings().m_SubtitleOn != visible)
+      // default settings: let the predicates control sub visibility
+      // video specific settings: respect the user's choice
+      if (vs.m_isDefaultVideoSettings)
       {
-        CVideoSettings vs{m_processInfo->GetVideoSettings()};
-        vs.m_SubtitleOn = false;
-        m_processInfo->SetVideoSettings(vs);
+        if (!psp.relevant(stream))
+          visible = false;
+        else if (stream.flags & StreamFlags::FLAG_FORCED)
+          visible = true;
+
+        if (vs.m_SubtitleOn != visible)
+        {
+          vs.m_SubtitleOn = visible;
+          m_processInfo->SetVideoSettings(vs);
+        }
       }
       break;
     }

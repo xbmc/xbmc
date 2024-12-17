@@ -228,6 +228,7 @@ public:
   float m_ToneMapParam;
   int m_Orientation;
   int m_CenterMixLevel; // relative to metadata or default
+  bool m_isDefaultVideoSettings; //!< settings loaded from system defaults, or specific to a video
 };
 
 class CCriticalSection;
