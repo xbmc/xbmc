@@ -75,26 +75,26 @@ using namespace KODI::MESSAGING;
 
 namespace
 {
-  NodeType GetItemListNodeType(const CFileItemList& items)
+NodeType GetItemListNodeType(const CFileItemList& items)
+{
+  if (VIDEO::IsVideoDb(items))
   {
-    if (VIDEO::IsVideoDb(items))
-    {
-      return CVideoDatabaseDirectory::GetDirectoryChildType(items.GetPath());
-    }
-
-    if (items.GetContent() == "seasons")
-    {
-      return NodeType::SEASONS;
-    }
-
-    if (items.GetContent() == "episodes")
-    {
-      return NodeType::EPISODES;
-    }
-
-    return NodeType::NONE;
+    return CVideoDatabaseDirectory::GetDirectoryChildType(items.GetPath());
   }
+
+  if (items.GetContent() == "seasons")
+  {
+    return NodeType::SEASONS;
+  }
+
+  if (items.GetContent() == "episodes")
+  {
+    return NodeType::EPISODES;
+  }
+
+  return NodeType::NONE;
 }
+} // namespace
 
 CGUIWindowVideoNav::CGUIWindowVideoNav(void)
     : CGUIWindowVideoBase(WINDOW_VIDEO_NAV, "MyVideoNav.xml")
@@ -275,9 +275,9 @@ SelectFirstUnwatchedItem CGUIWindowVideoNav::GetSettingSelectFirstUnwatchedItem(
 
   if (nodeType == NodeType::SEASONS || nodeType == NodeType::EPISODES)
   {
-    const int iValue = CServiceBroker::GetSettingsComponent()->GetSettings()
-        ->GetInt(CSettings::SETTING_VIDEOLIBRARY_TVSHOWSSELECTFIRSTUNWATCHEDITEM);
-    
+    const int iValue = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+        CSettings::SETTING_VIDEOLIBRARY_TVSHOWSSELECTFIRSTUNWATCHEDITEM);
+
     if (iValue >= static_cast<int>(SelectFirstUnwatchedItem::NEVER) &&
         iValue <= static_cast<int>(SelectFirstUnwatchedItem::ALWAYS))
     {
