@@ -432,7 +432,6 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
           if (!videoUrl.FromString(items.GetPath()))
             return false;
 
-          // This -2 is an indicator for the video database to not filter on season.
           videoUrl.AppendPath("-2/");
           return GetDirectory(videoUrl.ToString(), items);
         }
