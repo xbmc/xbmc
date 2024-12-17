@@ -120,7 +120,7 @@ struct SBackend
      * @brief Get the number of created clients.
      * @return The amount of created clients.
      */
-    int CreatedClientAmount() const;
+    size_t CreatedClientAmount() const;
 
     /*!
      * @brief Check whether there are any created clients.
@@ -164,7 +164,7 @@ struct SBackend
      * @brief Get the number of enabled clients.
      * @return The amount of enabled clients.
      */
-    int EnabledClientAmount() const;
+    size_t EnabledClientAmount() const;
 
     /*!
      * @brief Check whether a given client ID points to an enabled client.

@@ -304,12 +304,11 @@ std::shared_ptr<CPVRClient> CPVRClients::GetClient(int clientId) const
   return {};
 }
 
-int CPVRClients::CreatedClientAmount() const
+size_t CPVRClients::CreatedClientAmount() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  return static_cast<int>(std::count_if(m_clientMap.cbegin(), m_clientMap.cend(),
-                                        [](const auto& client)
-                                        { return client.second->ReadyToUse(); }));
+  return std::count_if(m_clientMap.cbegin(), m_clientMap.cend(),
+                       [](const auto& client) { return client.second->ReadyToUse(); });
 }
 
 bool CPVRClients::HasCreatedClients() const
@@ -438,7 +437,7 @@ PVR_ERROR CPVRClients::GetCallableClients(CPVRClientMap& clientsReady,
   return clientsNotReady.empty() ? PVR_ERROR_NO_ERROR : PVR_ERROR_SERVER_ERROR;
 }
 
-int CPVRClients::EnabledClientAmount() const
+size_t CPVRClients::EnabledClientAmount() const
 {
   CPVRClientMap clientMap;
   {
@@ -447,9 +446,9 @@ int CPVRClients::EnabledClientAmount() const
   }
 
   ADDON::CAddonMgr& addonMgr = CServiceBroker::GetAddonMgr();
-  return static_cast<int>(std::count_if(
-      clientMap.cbegin(), clientMap.cend(),
-      [&addonMgr](const auto& client) { return !addonMgr.IsAddonDisabled(client.second->ID()); }));
+  return std::count_if(clientMap.cbegin(), clientMap.cend(),
+                       [&addonMgr](const auto& client)
+                       { return !addonMgr.IsAddonDisabled(client.second->ID()); });
 }
 
 bool CPVRClients::IsEnabledClient(int clientId) const

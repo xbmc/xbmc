@@ -86,7 +86,8 @@ bool CPVRChannelGroupSettings::UpdateUseBackendChannelOrder()
 
 bool CPVRChannelGroupSettings::UpdateUseBackendChannelNumbers()
 {
-  const int enabledClientAmount = CServiceBroker::GetPVRManager().Clients()->EnabledClientAmount();
+  const size_t enabledClientAmount =
+      CServiceBroker::GetPVRManager().Clients()->EnabledClientAmount();
   m_bUseBackendChannelNumbers =
       m_settings.GetBoolValue(CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS) &&
       (enabledClientAmount == 1 ||
