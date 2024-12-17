@@ -9,7 +9,6 @@
 #pragma once
 
 #include "GUIWindowVideoBase.h"
-#include "filesystem/VideoDatabaseDirectory/DirectoryNode.h"
 
 class CFileItemList;
 
@@ -64,5 +63,4 @@ private:
   virtual IncludeAllSeasonsAndSpecials GetSettingIncludeAllSeasonsAndSpecials();
   virtual int GetFirstUnwatchedItemIndex(bool includeAllSeasons, bool includeSpecials);
   void SelectFirstUnwatched();
-  static XFILE::VIDEODATABASEDIRECTORY::NodeType GetNodeType(const CFileItemList& items);
 };

@@ -73,6 +73,29 @@ using namespace KODI::MESSAGING;
 
 #define CONTROL_UPDATE_LIBRARY    20
 
+namespace
+{
+  NodeType GetItemListNodeType(const CFileItemList& items)
+  {
+    if (VIDEO::IsVideoDb(items))
+    {
+      return CVideoDatabaseDirectory::GetDirectoryChildType(items.GetPath());
+    }
+
+    if (items.GetContent() == "seasons")
+    {
+      return NodeType::SEASONS;
+    }
+
+    if (items.GetContent() == "episodes")
+    {
+      return NodeType::EPISODES;
+    }
+
+    return NodeType::NONE;
+  }
+}
+
 CGUIWindowVideoNav::CGUIWindowVideoNav(void)
     : CGUIWindowVideoBase(WINDOW_VIDEO_NAV, "MyVideoNav.xml")
 {
@@ -248,11 +271,11 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
 
 SelectFirstUnwatchedItem CGUIWindowVideoNav::GetSettingSelectFirstUnwatchedItem()
 {
-  NodeType nodeType = GetNodeType(*m_vecItems);
+  const NodeType nodeType = GetItemListNodeType(*m_vecItems);
 
   if (nodeType == NodeType::SEASONS || nodeType == NodeType::EPISODES)
   {
-    int iValue = CServiceBroker::GetSettingsComponent()->GetSettings()
+    const int iValue = CServiceBroker::GetSettingsComponent()->GetSettings()
         ->GetInt(CSettings::SETTING_VIDEOLIBRARY_TVSHOWSSELECTFIRSTUNWATCHEDITEM);
     
     if (iValue >= static_cast<int>(SelectFirstUnwatchedItem::NEVER) &&
@@ -280,7 +303,7 @@ int CGUIWindowVideoNav::GetFirstUnwatchedItemIndex(bool includeAllSeasons, bool 
   int iIndex = 0;
   int iUnwatchedSeason = INT_MAX;
   int iUnwatchedEpisode = INT_MAX;
-  NodeType nodeType = GetNodeType(*m_vecItems);
+  const NodeType nodeType = GetItemListNodeType(*m_vecItems);
 
   // Run through the list of items and find the first unwatched season/episode
   for (int i = 0; i < m_vecItems->Size(); ++i)
@@ -356,26 +379,6 @@ void CGUIWindowVideoNav::SelectFirstUnwatched() {
   }
 }
 
-NodeType CGUIWindowVideoNav::GetNodeType(const CFileItemList& items)
-{
-  if (VIDEO::IsVideoDb(items))
-  {
-    return CVideoDatabaseDirectory::GetDirectoryChildType(items.GetPath());
-  }
-
-  if (items.GetContent() == "seasons")
-  {
-    return NodeType::SEASONS;
-  }
-
-  if (items.GetContent() == "episodes")
-  {
-    return NodeType::EPISODES;
-  }
-
-  return NodeType::NONE;
-}
-
 bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItemList &items)
 {
   if (m_thumbLoader.IsLoading())
@@ -409,7 +412,6 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
                         (itemsSize == 2 && iFlatten == 1 &&                                                // flatten if one season + specials
                          (items[firstIndex]->GetVideoInfoTag()->m_iSeason == 0 || items[firstIndex + 1]->GetVideoInfoTag()->m_iSeason == 0));
 
-        // also try to flatten if there is only 1 unwatched season (not counting specials)
         if (iFlatten > 0 && !bFlatten && (WatchedMode)CMediaSettings::GetInstance().GetWatchedMode("tvshows") == WatchedModeUnwatched)
         {
           int count = 0;
@@ -419,11 +421,11 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
             if (item->GetProperty("unwatchedepisodes").asInteger() != 0 && item->GetVideoInfoTag()->m_iSeason > 0)
               count++;
           }
-          bFlatten = (count < 2);
+          bFlatten = (count < 2); // flatten if there is only 1 unwatched season (not counting specials)
         }
 
         if (bFlatten)
-        {
+        { // flatten if one season or flatten always
           items.Clear();
 
           CVideoDbUrl videoUrl;
