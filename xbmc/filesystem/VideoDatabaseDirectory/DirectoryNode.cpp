@@ -256,7 +256,7 @@ bool CDirectoryNode::GetChilds(CFileItemList& items)
     if (bSuccess)
     {
       if (CanCache())
-        items.SetCacheToDisc(CFileItemList::CACHE_ALWAYS);
+        items.SetCacheToDisc(CFileItemList::CacheType::ALWAYS);
     }
     else
       items.Clear();
