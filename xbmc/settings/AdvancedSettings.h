@@ -319,7 +319,8 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_iPVRInfoToggleInterval; /*!< @brief if there are more than 1 pvr gui info item available (e.g. multiple recordings active at the same time), use this toggle delay in milliseconds. defaults to 3000. */
     bool m_bPVRChannelIconsAutoScan; /*!< @brief automatically scan user defined folder for channel icons when loading internal channel groups */
     bool m_bPVRAutoScanIconsUserSet; /*!< @brief mark channel icons populated by auto scan as "user set" */
-    int m_iPVRNumericChannelSwitchTimeout; /*!< @brief time in msecs after that a channel switch occurs after entering a channel number, if confirmchannelswitch is disabled */
+    uint32_t
+        m_iPVRNumericChannelSwitchTimeout; /*!< @brief time in msecs after that a channel switch occurs after entering a channel number, if confirmchannelswitch is disabled */
     int m_iPVRTimeshiftThreshold; /*!< @brief time diff between current playing time and timeshift buffer end, in seconds, before a playing stream is displayed as timeshifting. */
     bool m_bPVRTimeshiftSimpleOSD; /*!< @brief use simple timeshift OSD (with progress only for the playing event instead of progress for the whole ts buffer). */
     SortDescription m_PVRDefaultSortOrder; /*!< @brief SortDecription used to store default recording sort type and sort order */
