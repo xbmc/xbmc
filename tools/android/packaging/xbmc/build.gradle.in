@@ -59,6 +59,7 @@ project.afterEvaluate {
 }
 
 dependencies {
+    implementation 'androidx.core:core:1.15.0'
     // New support library to for channels/programs development.
     implementation 'androidx.tvprovider:tvprovider:1.1.0-alpha01'
     implementation 'com.google.code.gson:gson:2.11.0'
