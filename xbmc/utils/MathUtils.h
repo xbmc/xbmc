@@ -152,6 +152,14 @@ namespace MathUtils
 #endif
   }
 
+  /*! \brief Round to nearest integer.
+   \sa truncate_int, test
+  */
+  inline int round_int(float x)
+  {
+    return round_int(static_cast<double>(x));
+  }
+
   /*! \brief Truncate to nearest integer.
    This routine does fast truncation to an integer.
    It should simply drop the fractional portion of the floating point number.

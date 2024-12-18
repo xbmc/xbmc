@@ -23,6 +23,7 @@
 #include "pvr/timers/PVRTimers.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -336,7 +337,7 @@ bool CPVRRecording::SetResumePoint(const CBookmark& resumePoint)
   if (client && client->GetClientCapabilities().SupportsRecordingsLastPlayedPosition())
   {
     if (client->SetRecordingLastPlayedPosition(
-            *this, static_cast<int>(std::lrint(resumePoint.timeInSeconds))) != PVR_ERROR_NO_ERROR)
+            *this, MathUtils::round_int(resumePoint.timeInSeconds)) != PVR_ERROR_NO_ERROR)
       return false;
   }
 
@@ -350,8 +351,8 @@ bool CPVRRecording::SetResumePoint(double timeInSeconds,
   const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
   if (client && client->GetClientCapabilities().SupportsRecordingsLastPlayedPosition())
   {
-    if (client->SetRecordingLastPlayedPosition(
-            *this, static_cast<int>(std::lrint(timeInSeconds))) != PVR_ERROR_NO_ERROR)
+    if (client->SetRecordingLastPlayedPosition(*this, MathUtils::round_int(timeInSeconds)) !=
+        PVR_ERROR_NO_ERROR)
       return false;
   }
 

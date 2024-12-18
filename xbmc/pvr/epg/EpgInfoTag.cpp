@@ -245,9 +245,9 @@ bool CPVREpgInfoTag::IsUpcoming() const
   return (m_startTime > now);
 }
 
-float CPVREpgInfoTag::ProgressPercentage() const
+double CPVREpgInfoTag::ProgressPercentage() const
 {
-  float fReturn = 0.0f;
+  double ret = 0.0;
 
   time_t currentTime, startTime, endTime;
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(currentTime);
@@ -256,16 +256,19 @@ float CPVREpgInfoTag::ProgressPercentage() const
 
   if (currentTime >= startTime && currentTime <= endTime)
   {
-    const std::chrono::duration<float> current{currentTime - startTime};
-    const std::chrono::duration<float> total{endTime - startTime > 0 ? endTime - startTime
-                                                                     : 3600.0f};
-    fReturn = current.count() * 100.0f / total.count();
+    const std::chrono::duration<double> total{endTime - startTime > 0 ? endTime - startTime
+                                                                      : 3600.0};
+    if (total.count())
+    {
+      const std::chrono::duration<double> current{currentTime - startTime};
+      ret = current.count() * 100.0 / total.count();
+    }
   }
   else if (currentTime > endTime)
   {
-    fReturn = 100.0f;
+    ret = 100.0;
   }
-  return fReturn;
+  return ret;
 }
 
 unsigned int CPVREpgInfoTag::Progress() const

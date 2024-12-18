@@ -46,6 +46,7 @@
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "threads/SystemClock.h"
+#include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
 
 #include <cmath>
@@ -1281,43 +1282,43 @@ bool CPVRGUIInfo::GetRadioRDSLabel(const CFileItem* item,
         strValue = tag->GetInfoStock();
         return true;
       case RDS_INFO_STOCK_SIZE:
-        strValue = std::to_string(static_cast<int>(tag->GetInfoStock().size()));
+        strValue = std::to_string(tag->GetInfoStock().size());
         return true;
       case RDS_INFO_SPORT:
         strValue = tag->GetInfoSport();
         return true;
       case RDS_INFO_SPORT_SIZE:
-        strValue = std::to_string(static_cast<int>(tag->GetInfoSport().size()));
+        strValue = std::to_string(tag->GetInfoSport().size());
         return true;
       case RDS_INFO_LOTTERY:
         strValue = tag->GetInfoLottery();
         return true;
       case RDS_INFO_LOTTERY_SIZE:
-        strValue = std::to_string(static_cast<int>(tag->GetInfoLottery().size()));
+        strValue = std::to_string(tag->GetInfoLottery().size());
         return true;
       case RDS_INFO_WEATHER:
         strValue = tag->GetInfoWeather();
         return true;
       case RDS_INFO_WEATHER_SIZE:
-        strValue = std::to_string(static_cast<int>(tag->GetInfoWeather().size()));
+        strValue = std::to_string(tag->GetInfoWeather().size());
         return true;
       case RDS_INFO_HOROSCOPE:
         strValue = tag->GetInfoHoroscope();
         return true;
       case RDS_INFO_HOROSCOPE_SIZE:
-        strValue = std::to_string(static_cast<int>(tag->GetInfoHoroscope().size()));
+        strValue = std::to_string(tag->GetInfoHoroscope().size());
         return true;
       case RDS_INFO_CINEMA:
         strValue = tag->GetInfoCinema();
         return true;
       case RDS_INFO_CINEMA_SIZE:
-        strValue = std::to_string(static_cast<int>(tag->GetInfoCinema().size()));
+        strValue = std::to_string(tag->GetInfoCinema().size());
         return true;
       case RDS_INFO_OTHER:
         strValue = tag->GetInfoOther();
         return true;
       case RDS_INFO_OTHER_SIZE:
-        strValue = std::to_string(static_cast<int>(tag->GetInfoOther().size()));
+        strValue = std::to_string(tag->GetInfoOther().size());
         return true;
       case RDS_PROG_HOST:
         strValue = tag->GetProgHost();
@@ -1468,22 +1469,20 @@ bool CPVRGUIInfo::GetPVRInt(const CFileItem* item, const CGUIInfo& info, int& iV
       iValue = GetTimeShiftSeekPercent();
       return true;
     case PVR_ACTUAL_STREAM_SIG_PROGR:
-      iValue =
-          static_cast<int>(std::lrintf(static_cast<float>(m_qualityInfo.Signal()) / 0xFFFF * 100));
+      iValue = MathUtils::round_int(static_cast<double>(m_qualityInfo.Signal()) / 0xFFFF * 100.0);
       return true;
     case PVR_ACTUAL_STREAM_SNR_PROGR:
-      iValue =
-          static_cast<int>(std::lrintf(static_cast<float>(m_qualityInfo.SNR()) / 0xFFFF * 100));
+      iValue = MathUtils::round_int(static_cast<double>(m_qualityInfo.SNR()) / 0xFFFF * 100.0);
       return true;
     case PVR_BACKEND_DISKSPACE_PROGR:
       if (m_iBackendDiskTotal > 0)
-        iValue = static_cast<int>(
-            std::lrintf(static_cast<float>(m_iBackendDiskUsed) / m_iBackendDiskTotal * 100));
+        iValue = MathUtils::round_int(static_cast<double>(m_iBackendDiskUsed) /
+                                      m_iBackendDiskTotal * 100.0);
       else
         iValue = 0xFF;
       return true;
     case PVR_CLIENT_COUNT:
-      iValue = CServiceBroker::GetPVRManager().Clients()->EnabledClientAmount();
+      iValue = static_cast<int>(CServiceBroker::GetPVRManager().Clients()->EnabledClientAmount());
       return true;
   }
   return false;
@@ -2206,14 +2205,14 @@ int CPVRGUIInfo::GetTimeShiftSeekPercent() const
   {
     int total = m_timesInfo.GetTimeshiftProgressDuration();
 
-    float totalTime = static_cast<float>(total);
-    if (totalTime == 0.0f)
+    const double totalTime = static_cast<double>(total);
+    if (totalTime == 0.0)
       return 0;
 
-    float percentPerSecond = 100.0f / totalTime;
-    float percent = progress + percentPerSecond * seekSize;
-    percent = std::max(0.0f, std::min(percent, 100.0f));
-    return static_cast<int>(std::lrintf(percent));
+    const double percentPerSecond = 100.0 / totalTime;
+    double percent = progress + percentPerSecond * seekSize;
+    percent = std::max(0.0, std::min(percent, 100.0));
+    return MathUtils::round_int(percent);
   }
   return progress;
 }

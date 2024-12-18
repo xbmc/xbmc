@@ -980,13 +980,11 @@ std::vector<std::shared_ptr<CPVRChannelGroupMember>> CPVRDatabase::Get(
         newMember->m_iGroupID = group.GroupID();
         newMember->m_iGroupClientID = group.GetClientID();
         newMember->m_bIsRadio = m_pDS->fv("bIsRadio").get_asBool();
-        newMember->m_channelNumber = {
-            static_cast<unsigned int>(m_pDS->fv("iChannelNumber").get_asInt()),
-            static_cast<unsigned int>(m_pDS->fv("iSubChannelNumber").get_asInt())};
-        newMember->m_clientChannelNumber = {
-            static_cast<unsigned int>(m_pDS->fv("iClientChannelNumber").get_asInt()),
-            static_cast<unsigned int>(m_pDS->fv("iClientSubChannelNumber").get_asInt())};
-        newMember->m_iOrder = static_cast<int>(m_pDS->fv("iOrder").get_asInt());
+        newMember->m_channelNumber = {m_pDS->fv("iChannelNumber").get_asUInt(),
+                                      m_pDS->fv("iSubChannelNumber").get_asUInt()};
+        newMember->m_clientChannelNumber = {m_pDS->fv("iClientChannelNumber").get_asUInt(),
+                                            m_pDS->fv("iClientSubChannelNumber").get_asUInt()};
+        newMember->m_iOrder = m_pDS->fv("iOrder").get_asInt();
         newMember->SetGroupName(group.GroupName());
 
         results.emplace_back(newMember);

@@ -167,12 +167,11 @@ void CPVRClients::UpdateClients(
     auto progressHandler = std::make_unique<CPVRGUIProgressHandler>(
         g_localizeStrings.Get(19239)); // Creating PVR clients
 
-    unsigned int i = 0;
+    size_t i = 0;
     for (const auto& client : clientsToCreate)
     {
-      progressHandler->UpdateProgress(
-          client->Name(), i++,
-          static_cast<unsigned int>(clientsToCreate.size() + clientsToReCreate.size()));
+      progressHandler->UpdateProgress(client->Name(), i++,
+                                      clientsToCreate.size() + clientsToReCreate.size());
 
       const ADDON_STATUS status = client->Create();
 
@@ -192,9 +191,8 @@ void CPVRClients::UpdateClients(
 
     for (const auto& clientInfo : clientsToReCreate)
     {
-      progressHandler->UpdateProgress(
-          clientInfo.second, i++,
-          static_cast<unsigned int>(clientsToCreate.size() + clientsToReCreate.size()));
+      progressHandler->UpdateProgress(clientInfo.second, i++,
+                                      clientsToCreate.size() + clientsToReCreate.size());
 
       // stop and recreate client
       StopClient(clientInfo.first, true /* restart */);
@@ -304,12 +302,11 @@ std::shared_ptr<CPVRClient> CPVRClients::GetClient(int clientId) const
   return {};
 }
 
-int CPVRClients::CreatedClientAmount() const
+size_t CPVRClients::CreatedClientAmount() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  return static_cast<int>(std::count_if(m_clientMap.cbegin(), m_clientMap.cend(),
-                                        [](const auto& client)
-                                        { return client.second->ReadyToUse(); }));
+  return std::count_if(m_clientMap.cbegin(), m_clientMap.cend(),
+                       [](const auto& client) { return client.second->ReadyToUse(); });
 }
 
 bool CPVRClients::HasCreatedClients() const
@@ -438,7 +435,7 @@ PVR_ERROR CPVRClients::GetCallableClients(CPVRClientMap& clientsReady,
   return clientsNotReady.empty() ? PVR_ERROR_NO_ERROR : PVR_ERROR_SERVER_ERROR;
 }
 
-int CPVRClients::EnabledClientAmount() const
+size_t CPVRClients::EnabledClientAmount() const
 {
   CPVRClientMap clientMap;
   {
@@ -447,9 +444,9 @@ int CPVRClients::EnabledClientAmount() const
   }
 
   ADDON::CAddonMgr& addonMgr = CServiceBroker::GetAddonMgr();
-  return static_cast<int>(std::count_if(
-      clientMap.cbegin(), clientMap.cend(),
-      [&addonMgr](const auto& client) { return !addonMgr.IsAddonDisabled(client.second->ID()); }));
+  return std::count_if(clientMap.cbegin(), clientMap.cend(),
+                       [&addonMgr](const auto& client)
+                       { return !addonMgr.IsAddonDisabled(client.second->ID()); });
 }
 
 bool CPVRClients::IsEnabledClient(int clientId) const

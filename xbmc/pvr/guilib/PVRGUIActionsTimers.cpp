@@ -516,7 +516,7 @@ bool CPVRGUIActionsTimers::SetRecordingOnChannel(const std::shared_ptr<CPVRChann
               selector.AddAction(RECORD_NEXT_SHOW, nextTitle);
 
               // be smart. if current show is almost over, preselect next show.
-              if (epgTag->ProgressPercentage() > 90.0f)
+              if (epgTag->ProgressPercentage() > 90.0)
                 ePreselect = RECORD_NEXT_SHOW;
             }
           }

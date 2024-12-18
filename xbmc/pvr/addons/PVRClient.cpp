@@ -44,6 +44,7 @@
 #include "pvr/timers/PVRTimers.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -169,8 +170,7 @@ public:
     iGenreType = recording.GenreType();
     iGenreSubType = recording.GenreSubType();
     iPlayCount = recording.GetLocalPlayCount();
-    iLastPlayedPosition =
-        static_cast<int>(std::lrint(recording.GetLocalResumePoint().timeInSeconds));
+    iLastPlayedPosition = MathUtils::round_int(recording.GetLocalResumePoint().timeInSeconds);
     bIsDeleted = recording.IsDeleted();
     iEpgEventId = recording.BroadcastUid();
     iChannelUid = recording.ChannelUid();

@@ -18,6 +18,7 @@
 #include "pvr/recordings/PVRRecording.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
 
 #include <chrono>
@@ -360,9 +361,13 @@ int CPVRGUITimesInfo::GetRemainingTime(const std::shared_ptr<const CPVREpgInfoTa
 int CPVRGUITimesInfo::GetTimeshiftProgress() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  const std::chrono::duration<float> current{m_iTimeshiftPlayTime - m_iTimeshiftStartTime};
-  const std::chrono::duration<float> total{m_iTimeshiftEndTime - m_iTimeshiftStartTime};
-  return static_cast<int>(std::lrintf(current.count() / total.count() * 100));
+  const std::chrono::duration<double> total{m_iTimeshiftEndTime - m_iTimeshiftStartTime};
+  if (total.count())
+  {
+    const std::chrono::duration<double> current{m_iTimeshiftPlayTime - m_iTimeshiftStartTime};
+    return MathUtils::round_int(current.count() / total.count() * 100.0);
+  }
+  return 0;
 }
 
 int CPVRGUITimesInfo::GetTimeshiftProgressDuration() const
@@ -374,19 +379,24 @@ int CPVRGUITimesInfo::GetTimeshiftProgressDuration() const
 int CPVRGUITimesInfo::GetTimeshiftProgressPlayPosition() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  const std::chrono::duration<float> duration{m_iTimeshiftPlayTime - m_iTimeshiftProgressStartTime};
-  return static_cast<int>(std::lrintf(duration.count() / m_iTimeshiftProgressDuration * 100));
+  if (m_iTimeshiftProgressDuration)
+  {
+    const std::chrono::duration<double> duration{m_iTimeshiftPlayTime -
+                                                 m_iTimeshiftProgressStartTime};
+    return MathUtils::round_int(duration.count() / m_iTimeshiftProgressDuration * 100.0);
+  }
+  return 0;
 }
 
 int CPVRGUITimesInfo::GetTimeshiftProgressEpgStart() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  if (m_playingEpgTag)
+  if (m_playingEpgTag && m_iTimeshiftProgressDuration)
   {
     time_t epgStart = 0;
     m_playingEpgTag->StartAsUTC().GetAsTime(epgStart);
-    const std::chrono::duration<float> duration{epgStart - m_iTimeshiftProgressStartTime};
-    return static_cast<int>(std::lrintf(duration.count() / m_iTimeshiftProgressDuration * 100));
+    const std::chrono::duration<double> duration{epgStart - m_iTimeshiftProgressStartTime};
+    return MathUtils::round_int(duration.count() / m_iTimeshiftProgressDuration * 100.0);
   }
   return 0;
 }
@@ -394,12 +404,12 @@ int CPVRGUITimesInfo::GetTimeshiftProgressEpgStart() const
 int CPVRGUITimesInfo::GetTimeshiftProgressEpgEnd() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  if (m_playingEpgTag)
+  if (m_playingEpgTag && m_iTimeshiftProgressDuration)
   {
     time_t epgEnd = 0;
     m_playingEpgTag->EndAsUTC().GetAsTime(epgEnd);
-    const std::chrono::duration<float> duration{epgEnd - m_iTimeshiftProgressStartTime};
-    return static_cast<int>(std::lrintf(duration.count() / m_iTimeshiftProgressDuration * 100));
+    const std::chrono::duration<double> duration{epgEnd - m_iTimeshiftProgressStartTime};
+    return MathUtils::round_int(duration.count() / m_iTimeshiftProgressDuration * 100.0);
   }
   return 0;
 }
@@ -407,16 +417,25 @@ int CPVRGUITimesInfo::GetTimeshiftProgressEpgEnd() const
 int CPVRGUITimesInfo::GetTimeshiftProgressBufferStart() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  const std::chrono::duration<float> duration{m_iTimeshiftStartTime -
-                                              m_iTimeshiftProgressStartTime};
-  return static_cast<int>(std::lrintf(duration.count() / m_iTimeshiftProgressDuration * 100));
+  if (m_iTimeshiftProgressDuration)
+  {
+    const std::chrono::duration<double> duration{m_iTimeshiftStartTime -
+                                                 m_iTimeshiftProgressStartTime};
+    return MathUtils::round_int(duration.count() / m_iTimeshiftProgressDuration * 100.0);
+  }
+  return 0;
 }
 
 int CPVRGUITimesInfo::GetTimeshiftProgressBufferEnd() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  const std::chrono::duration<float> duration{m_iTimeshiftEndTime - m_iTimeshiftProgressStartTime};
-  return static_cast<int>(std::lrintf(duration.count() / m_iTimeshiftProgressDuration * 100));
+  if (m_iTimeshiftProgressDuration)
+  {
+    const std::chrono::duration<double> duration{m_iTimeshiftEndTime -
+                                                 m_iTimeshiftProgressStartTime};
+    return MathUtils::round_int(duration.count() / m_iTimeshiftProgressDuration * 100.0);
+  }
+  return 0;
 }
 
 int CPVRGUITimesInfo::GetEpgEventDuration(const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const
@@ -432,9 +451,11 @@ int CPVRGUITimesInfo::GetEpgEventProgress(const std::shared_ptr<const CPVREpgInf
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   if (epgTag && m_playingEpgTag && *epgTag != *m_playingEpgTag)
-    return static_cast<int>(std::lrintf(epgTag->ProgressPercentage()));
+    return MathUtils::round_int(epgTag->ProgressPercentage());
+  else if (m_iDuration)
+    return MathUtils::round_int(static_cast<double>(GetElapsedTime()) / m_iDuration * 100.0);
   else
-    return static_cast<int>(std::lrintf(static_cast<float>(GetElapsedTime()) / m_iDuration * 100));
+    return 0;
 }
 
 bool CPVRGUITimesInfo::IsTimeshifting() const
