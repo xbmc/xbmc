@@ -1,0 +1,45 @@
+{
+    "name": "game.libretro.mrboom",
+    "buildsystem": "cmake-ninja",
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DOVERRIDE_PATHS=ON"
+    ],
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/kodi-game/game.libretro.mrboom",
+            "commit": "2afdf901c5273602a94fc4411f704a47272e3963"
+        }
+    ],
+    "modules": [
+        {
+            "name": "mrboom",
+            "buildsystem": "simple",
+            "build-options": {
+                "no-debuginfo": true,
+                "cflags": "-g0",
+                "cxxflags": "-g0"
+            },
+            "build-commands": [
+                "make -j PREFIX=/app platform=unix",
+                "install -D -m 755 mrboom_libretro.so /app/lib/libretro/mrboom_libretro.so"
+            ],
+            "cleanup": [
+                "/lib/libretro"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://github.com/Javanaise/mrboom-libretro/releases/download/5.2/MrBoom-src-5.2.454d614.tar.gz",
+                    "sha256": "50e4fe4bc74b23ac441499c756c4575dfe9faab9e787a3ab942a856ac63cf10d"
+                }
+            ]
+        }
+    ]
+}
