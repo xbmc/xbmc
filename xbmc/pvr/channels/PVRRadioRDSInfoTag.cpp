@@ -643,14 +643,14 @@ void CPVRRadioRDSInfoTag::SetProgramServiceText(const std::string& strPSText)
   for (size_t i = m_strProgramServiceText.MaxSize() / 2 + 1; i < m_strProgramServiceText.MaxSize();
        ++i)
   {
-    m_strProgramServiceLine0 += m_strProgramServiceText.GetLine(static_cast<unsigned int>(i));
+    m_strProgramServiceLine0 += m_strProgramServiceText.GetLine(i);
     m_strProgramServiceLine0 += ' ';
   }
 
   m_strProgramServiceLine1.erase();
   for (size_t i = 0; i < m_strProgramServiceText.MaxSize() / 2; ++i)
   {
-    m_strProgramServiceLine1 += m_strProgramServiceText.GetLine(static_cast<unsigned int>(i));
+    m_strProgramServiceLine1 += m_strProgramServiceText.GetLine(i);
     m_strProgramServiceLine1 += ' ';
   }
 }
