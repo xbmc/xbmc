@@ -23,11 +23,12 @@ namespace XFILE
     ~CStackDirectory() override;
     bool GetDirectory(const CURL& url, CFileItemList& items) override;
     bool AllowAll() const override { return true; }
-    static std::string GetStackedTitlePath(const std::string &strPath);
-    static std::string GetStackedTitlePath(const std::string &strPath, VECCREGEXP& RegExps);
+    static std::string GetStackedTitlePath(const std::string& strPath);
     static std::string GetFirstStackedFile(const std::string &strPath);
     static bool GetPaths(const std::string& strPath, std::vector<std::string>& vecPaths);
     static std::string ConstructStackPath(const CFileItemList& items, const std::vector<int> &stack);
     static bool ConstructStackPath(const std::vector<std::string> &paths, std::string &stackedPath);
+    static std::string GetParentPath(const std::string& path);
+    static void LoadRegExps(VECCREGEXP& fileRegExps, VECCREGEXP& folderRegExps);
   };
 }

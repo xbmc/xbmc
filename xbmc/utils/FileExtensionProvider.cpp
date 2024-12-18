@@ -51,6 +51,11 @@ std::string CFileExtensionProvider::GetDiscStubExtensions() const
   return m_advancedSettings->m_discStubExtensions;
 }
 
+std::string CFileExtensionProvider::GetDiscImageExtensions() const
+{
+  return m_advancedSettings->m_discImageExtensions;
+}
+
 std::string CFileExtensionProvider::GetMusicExtensions() const
 {
   std::string extensions(m_advancedSettings->m_musicExtensions);

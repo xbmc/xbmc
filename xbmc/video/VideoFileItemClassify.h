@@ -22,6 +22,9 @@ bool IsDiscStub(const CFileItem& item);
 //! \brief Check whether an item is a DVD file.
 bool IsDVDFile(const CFileItem& item, bool bVobs = true, bool bIfos = true);
 
+//! \brief Check whether an item is a DVD image file.
+bool IsDVDImageFile(const CFileItem& item);
+
 //! \brief Checks whether item points to a protected blu-ray disc.
 bool IsProtectedBlurayDisc(const CFileItem& item);
 
