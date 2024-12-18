@@ -9,7 +9,6 @@
 #include "URIUtils.h"
 
 #include "FileItem.h"
-#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "StringUtils.h"
 #include "URL.h"
@@ -291,7 +290,8 @@ void URIUtils::GetCommonPath(std::string& strParent, const std::string& strPath)
 bool URIUtils::HasParentInHostname(const CURL& url)
 {
   return url.IsProtocol("zip") || url.IsProtocol("apk") || url.IsProtocol("bluray") ||
-         url.IsProtocol("udf") || url.IsProtocol("iso9660") || url.IsProtocol("xbt") ||
+         url.IsProtocol("dvd") || url.IsProtocol("udf") || url.IsProtocol("iso9660") ||
+         url.IsProtocol("xbt") ||
          (CServiceBroker::IsAddonInterfaceUp() &&
           CServiceBroker::GetFileExtensionProvider().EncodedHostName(url.GetProtocol()));
 }
@@ -325,32 +325,14 @@ bool URIUtils::GetParentPath(const std::string& strPath, std::string& strParent)
 
   CURL url(strPath);
   std::string strFile = url.GetFileName();
-  if ( URIUtils::HasParentInHostname(url) && strFile.empty())
+  if (HasParentInHostname(url) && strFile.empty())
   {
     strFile = url.GetHostName();
     return GetParentPath(strFile, strParent);
   }
   else if (url.IsProtocol("stack"))
   {
-    CStackDirectory dir;
-    CFileItemList items;
-    if (!dir.GetDirectory(url, items))
-      return false;
-    CURL url2(GetDirectory(items[0]->GetPath()));
-    if (HasParentInHostname(url2))
-      GetParentPath(url2.Get(), strParent);
-    else
-      strParent = url2.Get();
-    for( int i=1;i<items.Size();++i)
-    {
-      items[i]->m_strDVDLabel = GetDirectory(items[i]->GetPath());
-      if (HasParentInHostname(url2))
-        items[i]->SetPath(GetParentPath(items[i]->m_strDVDLabel));
-      else
-        items[i]->SetPath(items[i]->m_strDVDLabel);
-
-      GetCommonPath(strParent,items[i]->GetPath());
-    }
+    strParent = CStackDirectory::GetParentPath(url.Get());
     return true;
   }
   else if (url.IsProtocol("multipath"))
@@ -453,6 +435,73 @@ std::string URIUtils::GetBasePath(const std::string& strPath)
       strDirectory = GetDirectory(strCheck);
   }
   return strDirectory;
+}
+
+std::string URIUtils::GetBaseMoviePath(const std::string& path)
+{
+  std::string root{path};
+
+  // Deal with dvd:// or bluray:// and any embedded udf://
+  CURL url{root};
+  while (HasParentInHostname(url))
+  {
+    root = url.GetHostName();
+    url.Parse(root);
+  }
+
+  // Deal with any BD/DVD directories
+  if (IsBDFile(root))
+  {
+    root = GetParentPath(root);
+    RemoveSlashAtEnd(root);
+    if (GetFileName(root) == "BDMV")
+      root = GetParentPath(root);
+  }
+  else if (IsDVDFile(root))
+  {
+    root = GetParentPath(root);
+    RemoveSlashAtEnd(root);
+    if (GetFileName(root) == "VIDEO_TS")
+      root = GetParentPath(root);
+  }
+
+  // If simply file then get path
+  if (!GetFileName(root).empty())
+    root = GetDirectory(root);
+
+  return root;
+}
+
+std::string URIUtils::GetBlurayPath(const std::string& path)
+{
+  if (IsBlurayPlaylist(path))
+  {
+    CURL url(path);
+    CURL url2(url.GetHostName()); // strip bluray://
+    if (url2.IsProtocol("udf"))
+      // ISO
+      return url2.GetHostName(); // strip udf://
+    if (url.IsProtocol("bluray"))
+      // BDMV
+      return url2.Get() + "BDMV/index.bdmv";
+  }
+  return path;
+}
+
+std::string URIUtils::GetDVDPath(const std::string& path)
+{
+  if (IsDVDPlaylist(path))
+  {
+    CURL url(path);
+    CURL url2(url.GetHostName()); // strip dvd://
+    if (url2.IsProtocol("udf"))
+      // ISO
+      return url2.GetHostName(); // strip udf://
+    if (url.IsProtocol("dvd"))
+      // DVD
+      return url2.Get() + "VIDEO_TS/VIDEO_TS.IFO";
+  }
+  return path;
 }
 
 std::string URLEncodePath(const std::string& strPath)
@@ -779,6 +828,27 @@ bool URIUtils::IsDVD(const std::string& strFile)
   return false;
 }
 
+bool URIUtils::IsDVDFile(const std::string& file)
+{
+  return StringUtils::EndsWith(StringUtils::ToLower(file), "video_ts.ifo");
+}
+
+bool URIUtils::IsBDFile(const std::string& file)
+{
+  return StringUtils::EndsWith(StringUtils::ToLower(file), "index.bdmv");
+}
+
+bool URIUtils::IsBlurayPlaylist(const std::string& file)
+{
+  return IsProtocol(file, "bluray") &&
+         StringUtils::EqualsNoCase(GetExtension(StringUtils::ToLower(file)), ".mpls");
+}
+
+bool URIUtils::IsDVDPlaylist(const std::string& file)
+{
+  return IsProtocol(file, "dvd") && StringUtils::Contains(file, "/title/", false);
+}
+
 bool URIUtils::IsStack(const std::string& strFile)
 {
   return IsProtocol(strFile, "stack");
@@ -866,9 +936,19 @@ bool URIUtils::IsDiscImage(const std::string& file)
   return HasExtension(file, ".img|.iso|.nrg|.udf");
 }
 
+// Consider a disc image stack if ANY of the items is a disc image
+
 bool URIUtils::IsDiscImageStack(const std::string& file)
 {
-  return IsStack(file) && IsDiscImage(CStackDirectory::GetFirstStackedFile(file));
+  if (IsStack(file))
+  {
+    std::vector<std::string> paths;
+    CStackDirectory::GetPaths(file, paths);
+    for (const std::string& path : paths)
+      if (IsDiscImage(path) || IsDVDFile(path) || IsBDFile(path))
+        return true;
+  }
+  return false;
 }
 
 bool URIUtils::IsSpecial(const std::string& strFile)
