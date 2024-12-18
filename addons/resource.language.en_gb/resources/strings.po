@@ -6185,7 +6185,25 @@ msgctxt "#12395"
 msgid "Battery level"
 msgstr ""
 
-#empty strings from id 12396 to 12599
+#. Label of button in the System Info screen asking for donations. "Thank you!" is used to convey gratitude to the users of our beloved software.
+#: addons/skin.estuary/xml/SettingsSystemInfo.xml
+msgctxt "#12396"
+msgid "Thank you!"
+msgstr ""
+
+#. Label of text box asking for donations
+#: addons/skin.estuary/xml/SettingsSystemInfo.xml
+msgctxt "#12397"
+msgid "Kodi is brought to you with love from the Kodi Foundation, a 501(c)(3) nonprofit organization. Thank you for using our software!"
+msgstr ""
+
+#. URL for donations. Do not translate.
+#: addons/skin.estuary/xml/SettingsSystemInfo.xml
+msgctxt "#12398"
+msgid "kodi.tv/donate"
+msgstr ""
+
+#empty strings from id 12399 to 12599
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#12600"
