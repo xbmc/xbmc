@@ -201,7 +201,8 @@ void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceList
     return;
 
   // set cache to disc
-  dir->m_listItems->SetCacheToDisc(cacheToDisc ? CFileItemList::CACHE_IF_SLOW : CFileItemList::CACHE_NEVER);
+  dir->m_listItems->SetCacheToDisc(cacheToDisc ? CFileItemList::CacheType::IF_SLOW
+                                               : CFileItemList::CacheType::NEVER);
 
   dir->m_success = success;
   dir->m_listItems->SetReplaceListing(replaceListing);

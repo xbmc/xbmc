@@ -129,7 +129,7 @@ void CFileItemList::Clear()
   m_sortDescription.sortOrder = SortOrderNone;
   m_sortDescription.sortAttributes = SortAttributeNone;
   m_sortIgnoreFolders = false;
-  m_cacheToDisc = CACHE_IF_SLOW;
+  m_cacheToDisc = CacheType::IF_SLOW;
   m_sortDetails.clear();
   m_replaceListing = false;
   m_content.clear();
@@ -505,7 +505,7 @@ void CFileItemList::Archive(CArchive& ar)
     m_sortDescription.sortAttributes = (SortAttribute)tempint;
     ar >> m_sortIgnoreFolders;
     ar >> tempint;
-    m_cacheToDisc = CACHE_TYPE(tempint);
+    m_cacheToDisc = CacheType(tempint);
 
     unsigned int detailSize = 0;
     ar >> detailSize;

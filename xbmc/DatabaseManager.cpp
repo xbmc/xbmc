@@ -65,20 +65,20 @@ void CDatabaseManager::Initialize()
 bool CDatabaseManager::CanOpen(const std::string &name)
 {
   std::unique_lock<CCriticalSection> lock(m_section);
-  std::map<std::string, DB_STATUS>::const_iterator i = m_dbStatus.find(name);
+  const auto i = m_dbStatus.find(name);
   if (i != m_dbStatus.end())
-    return i->second == DB_READY;
+    return i->second == DBStatus::READY;
   return false; // db isn't even attempted to update yet
 }
 
 void CDatabaseManager::UpdateDatabase(CDatabase &db, DatabaseSettings *settings)
 {
   std::string name = db.GetBaseDBName();
-  UpdateStatus(name, DB_UPDATING);
+  UpdateStatus(name, DBStatus::UPDATING);
   if (Update(db, settings ? *settings : DatabaseSettings()))
-    UpdateStatus(name, DB_READY);
+    UpdateStatus(name, DBStatus::READY);
   else
-    UpdateStatus(name, DB_FAILED);
+    UpdateStatus(name, DBStatus::FAILED);
 }
 
 bool CDatabaseManager::Update(CDatabase &db, const DatabaseSettings &settings)
@@ -225,7 +225,7 @@ bool CDatabaseManager::UpdateVersion(CDatabase &db, const std::string &dbName)
   return bReturn;
 }
 
-void CDatabaseManager::UpdateStatus(const std::string &name, DB_STATUS status)
+void CDatabaseManager::UpdateStatus(const std::string& name, DBStatus status)
 {
   std::unique_lock<CCriticalSection> lock(m_section);
   m_dbStatus[name] = status;

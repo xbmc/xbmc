@@ -591,7 +591,7 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
     return;
   }
 
-  if (!pItem->m_bIsFolder && pItem->IsFileFolder(EFILEFOLDER_MASK_ALL))
+  if (!pItem->m_bIsFolder && pItem->IsFileFolder(FileFolderType::MASK_ALL))
   {
     XFILE::IFileDirectory *pFileDirectory = NULL;
     pFileDirectory = XFILE::CFileDirectoryFactory::Create(pItem->GetURL(), pItem.get(), "");

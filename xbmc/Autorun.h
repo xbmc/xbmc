@@ -32,11 +32,11 @@ namespace XFILE
 
 class CSetting;
 
-enum AutoCDAction
+enum class AutoCDAction
 {
-  AUTOCD_NONE = 0,
-  AUTOCD_PLAY,
-  AUTOCD_RIP
+  NONE = 0,
+  PLAY,
+  RIP
 };
 
 namespace MEDIA_DETECT

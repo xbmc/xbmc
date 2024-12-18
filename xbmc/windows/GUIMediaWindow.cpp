@@ -1048,7 +1048,7 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
     return true;
   }
 
-  if (!pItem->m_bIsFolder && pItem->IsFileFolder(EFILEFOLDER_MASK_ONCLICK))
+  if (!pItem->m_bIsFolder && pItem->IsFileFolder(FileFolderType::MASK_ONCLICK))
   {
     XFILE::IFileDirectory *pFileDirectory = nullptr;
     pFileDirectory = XFILE::CFileDirectoryFactory::Create(pItem->GetURL(), pItem.get(), "");
