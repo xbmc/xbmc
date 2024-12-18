@@ -26,6 +26,13 @@
 
 #include "platform/win32/CharsetConverter.h"
 
+// @todo: Remove this and "SDK_26100.h" when Windows SDK updated to 10.0.26100.0 in builders
+#ifdef TARGET_WINDOWS_DESKTOP
+#ifndef NTDDI_WIN11_GE // Windows SDK 10.0.26100.0 or newer
+#include "SDK_26100.h"
+#endif
+#endif
+
 #include <PowrProf.h>
 
 #ifdef TARGET_WINDOWS_DESKTOP
@@ -1251,79 +1258,25 @@ HDR_STATUS CWIN32Util::ToggleWindowsHDR(DXGI_MODE_DESC& modeDesc)
   uint32_t pathCount = 0;
   uint32_t modeCount = 0;
 
+  if (ERROR_SUCCESS != GetDisplayConfigBufferSizes(QDC_ONLY_ACTIVE_PATHS, &pathCount, &modeCount))
+    return status;
+
+  std::vector<DISPLAYCONFIG_PATH_INFO> paths(pathCount);
+  std::vector<DISPLAYCONFIG_MODE_INFO> modes(modeCount);
+
+  if (ERROR_SUCCESS != QueryDisplayConfig(QDC_ONLY_ACTIVE_PATHS, &pathCount, paths.data(),
+                                          &modeCount, modes.data(), nullptr))
+    return status;
+
   MONITORINFOEXW mi = {};
   mi.cbSize = sizeof(mi);
   GetMonitorInfoW(MonitorFromWindow(g_hWnd, MONITOR_DEFAULTTOPRIMARY), &mi);
   const std::wstring deviceNameW = mi.szDevice;
 
-  if (ERROR_SUCCESS == GetDisplayConfigBufferSizes(QDC_ONLY_ACTIVE_PATHS, &pathCount, &modeCount))
-  {
-    std::vector<DISPLAYCONFIG_PATH_INFO> paths(pathCount);
-    std::vector<DISPLAYCONFIG_MODE_INFO> modes(modeCount);
-
-    if (ERROR_SUCCESS == QueryDisplayConfig(QDC_ONLY_ACTIVE_PATHS, &pathCount, paths.data(),
-                                            &modeCount, modes.data(), nullptr))
-    {
-      DISPLAYCONFIG_GET_ADVANCED_COLOR_INFO getColorInfo = {};
-      getColorInfo.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_ADVANCED_COLOR_INFO;
-      getColorInfo.header.size = sizeof(getColorInfo);
-
-      DISPLAYCONFIG_SET_ADVANCED_COLOR_STATE setColorState = {};
-      setColorState.header.type = DISPLAYCONFIG_DEVICE_INFO_SET_ADVANCED_COLOR_STATE;
-      setColorState.header.size = sizeof(setColorState);
-
-      DISPLAYCONFIG_SOURCE_DEVICE_NAME getSourceName = {};
-      getSourceName.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_SOURCE_NAME;
-      getSourceName.header.size = sizeof(getSourceName);
-
-      // Only try to toggle display currently used by Kodi
-      for (const auto& path : paths)
-      {
-        getSourceName.header.adapterId.HighPart = path.sourceInfo.adapterId.HighPart;
-        getSourceName.header.adapterId.LowPart = path.sourceInfo.adapterId.LowPart;
-        getSourceName.header.id = path.sourceInfo.id;
-
-        if (ERROR_SUCCESS == DisplayConfigGetDeviceInfo(&getSourceName.header))
-        {
-          const std::wstring sourceNameW = getSourceName.viewGdiDeviceName;
-          if (deviceNameW == sourceNameW)
-          {
-            const auto& mode = modes.at(path.targetInfo.modeInfoIdx);
-
-            getColorInfo.header.adapterId.HighPart = mode.adapterId.HighPart;
-            getColorInfo.header.adapterId.LowPart = mode.adapterId.LowPart;
-            getColorInfo.header.id = mode.id;
-
-            setColorState.header.adapterId.HighPart = mode.adapterId.HighPart;
-            setColorState.header.adapterId.LowPart = mode.adapterId.LowPart;
-            setColorState.header.id = mode.id;
-
-            if (ERROR_SUCCESS == DisplayConfigGetDeviceInfo(&getColorInfo.header))
-            {
-              if (getColorInfo.advancedColorSupported)
-              {
-                if (getColorInfo.advancedColorEnabled) // HDR is ON
-                {
-                  setColorState.enableAdvancedColor = FALSE;
-                  status = HDR_STATUS::HDR_OFF;
-                  CLog::LogF(LOGINFO, "Toggle Windows HDR Off (ON => OFF).");
-                }
-                else // HDR is OFF
-                {
-                  setColorState.enableAdvancedColor = TRUE;
-                  status = HDR_STATUS::HDR_ON;
-                  CLog::LogF(LOGINFO, "Toggle Windows HDR On (OFF => ON).");
-                }
-                if (ERROR_SUCCESS != DisplayConfigSetDeviceInfo(&setColorState.header))
-                  status = HDR_STATUS::HDR_TOGGLE_FAILED;
-              }
-            }
-            break;
-          }
-        }
-      }
-    }
-  }
+  if (CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin11_24H2))
+    status = ToggleWindowsHDR_24H2(deviceNameW, paths, modes);
+  else
+    status = ToggleWindowsHDR_Legacy(deviceNameW, paths, modes);
 
   // Restores previous graphics mode before toggle HDR
   if (status != HDR_STATUS::HDR_TOGGLE_FAILED && modeDesc.RefreshRate.Denominator != 0)
@@ -1351,11 +1304,156 @@ HDR_STATUS CWIN32Util::ToggleWindowsHDR(DXGI_MODE_DESC& modeDesc)
   return status;
 }
 
+#ifdef TARGET_WINDOWS_DESKTOP
+HDR_STATUS CWIN32Util::ToggleWindowsHDR_Legacy(const std::wstring& gdiDeviceName,
+                                               const std::vector<DISPLAYCONFIG_PATH_INFO>& paths,
+                                               const std::vector<DISPLAYCONFIG_MODE_INFO>& modes)
+{
+  HDR_STATUS status = HDR_STATUS::HDR_TOGGLE_FAILED;
+
+  DISPLAYCONFIG_GET_ADVANCED_COLOR_INFO getColorInfo = {};
+  getColorInfo.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_ADVANCED_COLOR_INFO;
+  getColorInfo.header.size = sizeof(getColorInfo);
+
+  DISPLAYCONFIG_SET_ADVANCED_COLOR_STATE setColorState = {};
+  setColorState.header.type = DISPLAYCONFIG_DEVICE_INFO_SET_ADVANCED_COLOR_STATE;
+  setColorState.header.size = sizeof(setColorState);
+
+  DISPLAYCONFIG_SOURCE_DEVICE_NAME getSourceName = {};
+  getSourceName.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_SOURCE_NAME;
+  getSourceName.header.size = sizeof(getSourceName);
+
+  // Only try to toggle display currently used by Kodi
+  for (const auto& path : paths)
+  {
+    getSourceName.header.adapterId.HighPart = path.sourceInfo.adapterId.HighPart;
+    getSourceName.header.adapterId.LowPart = path.sourceInfo.adapterId.LowPart;
+    getSourceName.header.id = path.sourceInfo.id;
+
+    if (ERROR_SUCCESS != DisplayConfigGetDeviceInfo(&getSourceName.header))
+      continue;
+
+    if (gdiDeviceName != getSourceName.viewGdiDeviceName)
+      continue;
+
+    const auto& mode = modes.at(path.targetInfo.modeInfoIdx);
+
+    getColorInfo.header.adapterId.HighPart = mode.adapterId.HighPart;
+    getColorInfo.header.adapterId.LowPart = mode.adapterId.LowPart;
+    getColorInfo.header.id = mode.id;
+
+    setColorState.header.adapterId.HighPart = mode.adapterId.HighPart;
+    setColorState.header.adapterId.LowPart = mode.adapterId.LowPart;
+    setColorState.header.id = mode.id;
+
+    if (ERROR_SUCCESS != DisplayConfigGetDeviceInfo(&getColorInfo.header))
+      return status;
+
+    if (!getColorInfo.advancedColorSupported)
+      return status;
+
+    if (getColorInfo.advancedColorEnabled) // HDR is ON
+    {
+      setColorState.enableAdvancedColor = FALSE;
+      status = HDR_STATUS::HDR_OFF;
+      CLog::LogF(LOGINFO, "Toggle Windows HDR Off.");
+    }
+    else // HDR is OFF
+    {
+      setColorState.enableAdvancedColor = TRUE;
+      status = HDR_STATUS::HDR_ON;
+      CLog::LogF(LOGINFO, "Toggle Windows HDR On.");
+    }
+
+    if (ERROR_SUCCESS != DisplayConfigSetDeviceInfo(&setColorState.header))
+    {
+      status = HDR_STATUS::HDR_TOGGLE_FAILED;
+      CLog::LogF(LOGERROR, "Toggle Windows HDR has failed.");
+    }
+
+    break;
+  }
+
+  return status;
+}
+
+HDR_STATUS CWIN32Util::ToggleWindowsHDR_24H2(const std::wstring& gdiDeviceName,
+                                             const std::vector<DISPLAYCONFIG_PATH_INFO>& paths,
+                                             const std::vector<DISPLAYCONFIG_MODE_INFO>& modes)
+{
+  HDR_STATUS status = HDR_STATUS::HDR_TOGGLE_FAILED;
+
+  DISPLAYCONFIG_GET_ADVANCED_COLOR_INFO_2 getColorInfo2 = {};
+  getColorInfo2.header.type = static_cast<DISPLAYCONFIG_DEVICE_INFO_TYPE>(
+      DISPLAYCONFIG_DEVICE_INFO_GET_ADVANCED_COLOR_INFO_2);
+  getColorInfo2.header.size = sizeof(getColorInfo2);
+
+  DISPLAYCONFIG_SET_HDR_STATE setHdrState = {};
+  setHdrState.header.type =
+      static_cast<DISPLAYCONFIG_DEVICE_INFO_TYPE>(DISPLAYCONFIG_DEVICE_INFO_SET_HDR_STATE);
+  setHdrState.header.size = sizeof(setHdrState);
+
+  DISPLAYCONFIG_SOURCE_DEVICE_NAME getSourceName = {};
+  getSourceName.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_SOURCE_NAME;
+  getSourceName.header.size = sizeof(getSourceName);
+
+  // Only try to toggle display currently used by Kodi
+  for (const auto& path : paths)
+  {
+    getSourceName.header.adapterId.HighPart = path.sourceInfo.adapterId.HighPart;
+    getSourceName.header.adapterId.LowPart = path.sourceInfo.adapterId.LowPart;
+    getSourceName.header.id = path.sourceInfo.id;
+
+    if (ERROR_SUCCESS != DisplayConfigGetDeviceInfo(&getSourceName.header))
+      continue;
+
+    if (gdiDeviceName != getSourceName.viewGdiDeviceName)
+      continue;
+
+    const auto& mode = modes.at(path.targetInfo.modeInfoIdx);
+
+    getColorInfo2.header.adapterId.HighPart = mode.adapterId.HighPart;
+    getColorInfo2.header.adapterId.LowPart = mode.adapterId.LowPart;
+    getColorInfo2.header.id = mode.id;
+
+    setHdrState.header.adapterId.HighPart = mode.adapterId.HighPart;
+    setHdrState.header.adapterId.LowPart = mode.adapterId.LowPart;
+    setHdrState.header.id = mode.id;
+
+    if (ERROR_SUCCESS != DisplayConfigGetDeviceInfo(&getColorInfo2.header))
+      return status;
+
+    if (!getColorInfo2.highDynamicRangeSupported)
+      return status;
+
+    if (getColorInfo2.activeColorMode == DISPLAYCONFIG_ADVANCED_COLOR_MODE_HDR) // HDR is ON
+    {
+      setHdrState.enableHdr = FALSE;
+      status = HDR_STATUS::HDR_OFF;
+      CLog::LogF(LOGINFO, "Toggle Windows HDR Off.");
+    }
+    else // HDR is OFF
+    {
+      setHdrState.enableHdr = TRUE;
+      status = HDR_STATUS::HDR_ON;
+      CLog::LogF(LOGINFO, "Toggle Windows HDR On.");
+    }
+
+    if (ERROR_SUCCESS != DisplayConfigSetDeviceInfo(&setHdrState.header))
+    {
+      status = HDR_STATUS::HDR_TOGGLE_FAILED;
+      CLog::LogF(LOGERROR, "Toggle Windows HDR has failed.");
+    }
+
+    break;
+  }
+
+  return status;
+}
+
 HDR_STATUS CWIN32Util::GetWindowsHDRStatusWin32()
 {
   HDR_STATUS status = HDR_STATUS::HDR_UNKNOWN;
-
-#ifdef TARGET_WINDOWS_DESKTOP
   bool advancedColorSupported = false;
   bool advancedColorEnabled = false;
   uint32_t pathCount = 0;
@@ -1429,10 +1527,10 @@ HDR_STATUS CWIN32Util::GetWindowsHDRStatusWin32()
       CLog::LogF(LOGDEBUG, "Display is HDR capable and current HDR status is {}",
                  advancedColorEnabled ? "ON" : "OFF");
   }
-#endif // TARGET_WINDOWS_DESKTOP
 
   return status;
 }
+#endif // TARGET_WINDOWS_DESKTOP
 
 HDR_STATUS CWIN32Util::GetWindowsHDRStatus()
 {

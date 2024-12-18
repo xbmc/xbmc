@@ -112,5 +112,13 @@ public:
   static std::string FormatHRESULT(HRESULT hr);
 
 private:
+#ifdef TARGET_WINDOWS_DESKTOP
   static HDR_STATUS GetWindowsHDRStatusWin32();
+  static HDR_STATUS ToggleWindowsHDR_Legacy(const std::wstring& gdiDeviceName,
+                                            const std::vector<DISPLAYCONFIG_PATH_INFO>& paths,
+                                            const std::vector<DISPLAYCONFIG_MODE_INFO>& modes);
+  static HDR_STATUS ToggleWindowsHDR_24H2(const std::wstring& gdiDeviceName,
+                                          const std::vector<DISPLAYCONFIG_PATH_INFO>& paths,
+                                          const std::vector<DISPLAYCONFIG_MODE_INFO>& modes);
+#endif // TARGET_WINDOWS_DESKTOP
 };
