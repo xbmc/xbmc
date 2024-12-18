@@ -29,6 +29,7 @@ public:
   // Implementation of IStreamManager
   StreamPtr CreateStream(StreamType streamType) override;
   void CloseStream(StreamPtr stream) override;
+  HwProcedureAddress GetHwProcedureAddress(const char* symbol) override;
 
 private:
   // Construction parameters

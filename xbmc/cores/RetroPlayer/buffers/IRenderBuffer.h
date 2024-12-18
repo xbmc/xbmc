@@ -43,6 +43,7 @@ public:
   virtual size_t GetFrameSize() const = 0;
   virtual uint8_t* GetMemory() = 0;
   virtual void ReleaseMemory() {}
+  virtual uintptr_t GetCurrentFramebuffer() = 0;
   virtual bool UploadTexture() = 0;
   virtual void BindToUnit(unsigned int unit) {}
   virtual void SetHeader(void* header) {}

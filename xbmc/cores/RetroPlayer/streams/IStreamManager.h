@@ -9,6 +9,7 @@
 #pragma once
 
 #include "RetroPlayerStreamTypes.h"
+#include "cores/RetroPlayer/RetroPlayerTypes.h"
 
 namespace KODI
 {
@@ -35,6 +36,15 @@ public:
    * \param stream The stream to close
    */
   virtual void CloseStream(StreamPtr stream) = 0;
+
+  /*!
+   * \brief Get a symbol from the hardware context
+   *
+   * \param symbol The symbol's name
+   *
+   * \return A function pointer for the specified symbol
+   */
+  virtual HwProcedureAddress GetHwProcedureAddress(const char* symbol) = 0;
 };
 
 } // namespace RETRO

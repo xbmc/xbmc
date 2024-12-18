@@ -99,6 +99,9 @@ public:
                 unsigned int width,
                 unsigned int height,
                 unsigned int orientationDegCW);
+  void RenderFrame();
+  uintptr_t GetCurrentFramebuffer(unsigned int width, unsigned int height);
+  bool Create(unsigned int width, unsigned int height);
   void Flush();
 
   // Functions called from the player

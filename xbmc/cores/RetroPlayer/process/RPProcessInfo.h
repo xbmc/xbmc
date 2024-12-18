@@ -146,6 +146,15 @@ public:
    */
   SCALINGMETHOD GetDefaultScalingMethod() const { return m_defaultScalingMethod; }
 
+  /*!
+   * \brief Get a symbol from the hardware context
+   *
+   * \param symbol The symbol's name
+   *
+   * \return A function pointer for the specified symbol, or nullptr if
+   *         unavailable
+   */
+  virtual HwProcedureAddress GetHwProcedureAddress(const char* symbol) { return nullptr; }
   ///}
 
   /// @name Player video info

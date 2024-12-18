@@ -30,6 +30,7 @@ public:
   IRenderBufferPool* GetPool() override { return m_pool.get(); }
   DataAccess GetMemoryAccess() const override;
   DataAlignment GetMemoryAlignment() const override;
+  uintptr_t GetCurrentFramebuffer() override { return 0; }
 
 protected:
   // Reference counting
