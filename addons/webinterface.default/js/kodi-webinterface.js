@@ -3214,8 +3214,10 @@ this.Kodi.module("KodiEntities", function(KodiEntities, App, Backbone, Marionett
           model.end = helpers.global.dateStringToObj(model.endtime);
         }
         if (type === 'movie' || type === 'tvshow' || type === 'season') {
-          model.fanart = 'fanart' in model.art ? model.art.fanart : void 0;
-          model.thumbnail = 'poster' in model.art ? model.art.poster : 'thumb' in model.art ? model.art.thumb : void 0;
+          model.fanart = 'art' in model && 'fanart' in model.art ? model.art.fanart : void 0;
+          if (!('thumbnail' in model)) {
+            model.thumbnail = 'art' in model ? ('poster' in model.art ? model.art.poster : 'thumb' in model.art ? model.art.thumb : void 0) : void 0;
+          }
         }
         if (type === 'tvshow' || type === 'season') {
           model.progress = helpers.global.round((model.watchedepisodes / model.episode) * 100, 2);
