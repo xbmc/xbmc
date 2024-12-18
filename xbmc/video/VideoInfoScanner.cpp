@@ -2215,8 +2215,8 @@ namespace KODI::VIDEO
       else
       {
         digest.Update(&pItem->m_dwSize, sizeof(pItem->m_dwSize));
-        KODI::TIME::FileTime time = pItem->m_dateTime;
-        digest.Update(&time, sizeof(KODI::TIME::FileTime));
+        const auto time = pItem->m_dateTime.GetAsTimePoint().time_since_epoch().count();
+        digest.Update(&time, sizeof(std::chrono::nanoseconds));
       }
       if (IsVideo(*pItem) && !PLAYLIST::IsPlayList(*pItem) && !pItem->IsNFO())
         count++;

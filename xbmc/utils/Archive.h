@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "utils/XTimeUtils.h"
+
 #include <cstdint>
 #include <cstring>
 #include <memory>
