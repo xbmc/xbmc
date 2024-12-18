@@ -23,7 +23,6 @@ using System.Net.Sockets;
 
 namespace XBMC
 {
-
     public enum IconType
     {
         ICON_NONE = 0x00,
@@ -69,7 +68,6 @@ namespace XBMC
 
     public class EventClient
     {
-
         /************************************************************************/
         /* Written by Peter Tribe aka EqUiNox (TeamBlackbolt)                   */
         /* Based upon XBMC's xbmcclient.cpp class                               */
@@ -162,7 +160,6 @@ namespace XBMC
 
         private byte[] Header(PacketType PacketType, int NumberOfPackets, int CurrentPacket, int PayloadSize)
         {
-
             byte[] header = new byte[HEADER_SIZE];
 
             header[0] = (byte)'X';
@@ -203,14 +200,12 @@ namespace XBMC
             header[21] = (byte)(uniqueToken & 0x000000ff);
 
             return header;
-
         }
 
         private bool Send(PacketType PacketType, byte[] Payload)
         {
             try
             {
-
                 bool successful = true;
                 int packetCount = (Payload.Length / MAX_PAYLOAD_SIZE) + 1;
                 int bytesToSend = 0;
@@ -219,7 +214,6 @@ namespace XBMC
 
                 for (int Package = 1; Package <= packetCount; Package++)
                 {
-
                     if (bytesLeft > MAX_PAYLOAD_SIZE)
                     {
                         bytesToSend = MAX_PAYLOAD_SIZE;
@@ -246,19 +240,14 @@ namespace XBMC
                     }
 
                     bytesSent += bytesToSend;
-
                 }
 
                 return successful;
-
             }
             catch
             {
-
                 return false;
-
             }
-
         }
 
         /************************************************************************/
@@ -272,8 +261,7 @@ namespace XBMC
         /************************************************************************/
         public bool SendHelo(string DevName, IconType IconType, string IconFile)
         {
-
-            byte[] icon = new byte[0];
+            byte[] icon = Array.Empty<byte>();
             if (IconType != IconType.ICON_NONE)
                 icon = File.ReadAllBytes(IconFile);
 
@@ -296,7 +284,6 @@ namespace XBMC
             Array.Copy(icon, 0, payload, DevName.Length + 12, icon.Length);
 
             return Send(PacketType.PT_HELO, payload);
-
         }
 
         public bool SendHelo(string DevName)
@@ -314,8 +301,7 @@ namespace XBMC
         /************************************************************************/
         public bool SendNotification(string Caption, string Message, IconType IconType, string IconFile)
         {
-
-            byte[] icon = new byte[0];
+            byte[] icon = Array.Empty<byte>();
             if (IconType != IconType.ICON_NONE)
                 icon = File.ReadAllBytes(IconFile);
 
@@ -339,7 +325,6 @@ namespace XBMC
             Array.Copy(icon, 0, payload, Caption.Length + Message.Length + 7, icon.Length);
 
             return Send(PacketType.PT_NOTIFICATION, payload);
-
         }
 
         public bool SendNotification(string Caption, string Message)
@@ -374,7 +359,6 @@ namespace XBMC
         /************************************************************************/
         private bool SendButton(string Button, ushort ButtonCode, string DeviceMap, ButtonFlagsType Flags, short Amount)
         {
-
             if (Button.Length != 0)
             {
                 if ((Flags & ButtonFlagsType.BTN_USE_NAME) == 0)
@@ -415,7 +399,6 @@ namespace XBMC
             payload[offset++] = (byte)'\0';
 
             return Send(PacketType.PT_BUTTON, payload);
-
         }
 
         public bool SendButton(string Button, string DeviceMap, ButtonFlagsType Flags, short Amount)
@@ -458,7 +441,7 @@ namespace XBMC
         /************************************************************************/
         public bool SendPing()
         {
-            byte[] payload = new byte[0];
+            byte[] payload = Array.Empty<byte>();
             return Send(PacketType.PT_PING, payload);
         }
 
@@ -467,7 +450,7 @@ namespace XBMC
         /************************************************************************/
         public bool SendBye()
         {
-            byte[] payload = new byte[0];
+            byte[] payload = Array.Empty<byte>();
             return Send(PacketType.PT_BYE, payload);
         }
 
@@ -480,7 +463,6 @@ namespace XBMC
         /************************************************************************/
         public bool SendMouse(ushort X, ushort Y, MouseFlagsType Flags)
         {
-
             byte[] payload = new byte[9];
 
             int offset = 0;
@@ -494,7 +476,6 @@ namespace XBMC
             payload[offset++] = (byte)(Y & 0x00ff);
 
             return Send(PacketType.PT_MOUSE, payload);
-
         }
 
         public bool SendMouse(ushort X, ushort Y)
@@ -509,7 +490,6 @@ namespace XBMC
         /************************************************************************/
         public bool SendLog(LogTypeEnum LogLevel, string Message)
         {
-
             byte[] payload = new byte[Message.Length + 2];
 
             int offset = 0;
@@ -521,7 +501,6 @@ namespace XBMC
             payload[offset++] = (byte)'\0';
 
             return Send(PacketType.PT_LOG, payload);
-
         }
 
         /************************************************************************/
@@ -531,7 +510,6 @@ namespace XBMC
         /************************************************************************/
         public bool SendAction(ActionType Action, string Message)
         {
-
             byte[] payload = new byte[Message.Length + 2];
 
             int offset = 0;
@@ -543,13 +521,11 @@ namespace XBMC
             payload[offset++] = (byte)'\0';
 
             return Send(PacketType.PT_ACTION, payload);
-
         }
 
         public bool SendAction(string Message)
         {
             return SendAction(ActionType.ACTION_EXECBUILTIN, Message);
         }
-
     }
 }
