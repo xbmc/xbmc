@@ -250,6 +250,7 @@ namespace KODI::VIDEO
     CVideoDatabase m_database;
     std::set<std::string> m_pathsToCount;
     std::set<int> m_pathsToClean;
+    CVideoDatabase::ScraperCache m_scraperCache;
 
   private:
     static void AddLocalItemArtwork(CGUIListItem::ArtMap& itemArt,
