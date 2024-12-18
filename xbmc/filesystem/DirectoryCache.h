@@ -49,7 +49,7 @@ namespace XFILE
     void ClearSubPaths(const std::string& strPath);
     void Clear();
     void AddFile(const std::string& strFile);
-    bool FileExists(const std::string& strPath, bool& bInCache);
+    bool FileExists(std::string strFile, bool& bInCache);
 #ifdef _DEBUG
     void PrintStats() const;
 #endif
