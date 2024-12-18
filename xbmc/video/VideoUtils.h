@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <memory>
 #include <string>
 
 class CFileItem;
@@ -63,5 +64,12 @@ ResumeInformation GetItemResumeInformation(const CFileItem& item);
  \return The resume information.
  */
 ResumeInformation GetStackPartResumeInformation(const CFileItem& item, unsigned int partNumber);
+
+/*!
+ \brief For a given non-library folder containing video files, load info from the video database.
+ \param folder The folder to load
+ \return The item containing the folder including loaded info.
+ */
+std::shared_ptr<CFileItem> LoadVideoFilesFolderInfo(const CFileItem& folder);
 
 } // namespace KODI::VIDEO::UTILS
