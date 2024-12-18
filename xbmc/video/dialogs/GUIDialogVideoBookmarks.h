@@ -62,6 +62,14 @@ protected:
   VECBOOKMARKS m_bookmarks;
 
 private:
+  /*!
+   * \brief Return the bookmark index for the list item.
+   * \param[in] item Item number in the list
+   * \return bookmark index in m_bookmarks, or -1 for an invalid or a non-bookmark item.
+   */
+  int ItemToBookmarkIndex(int item) const;
+  void Delete(const CBookmark& bm);
+
   std::string m_filePath;
   CCriticalSection m_refreshSection;
 };

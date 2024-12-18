@@ -466,6 +466,10 @@ int CWin32File::Stat(const CURL& url, struct __stat64* statData)
     return -1;
   }
 
+  // stat of directories requires the removal of the trailing slash
+  if (pathnameW.back() == L'\\')
+    pathnameW.pop_back();
+
   if (pathnameW.length() <= 6) // 6 is length of "\\?\x:"
     return -1; // pathnameW is empty or points to device ("\\?\x:"), on win32 stat() for devices is not supported
 
@@ -502,7 +506,7 @@ int CWin32File::Stat(const CURL& url, struct __stat64* statData)
   if (!m_smbFile)
   {
     assert(pathnameW.compare(0, 4, L"\\\\?\\", 4) == 0);
-    assert(pathnameW.length() >= 7); // '7' is the minimal length of "\\?\x:\"
+    assert(pathnameW.length() >= 7); // '7' is the minimal length of "\\?\x:y"
     assert(pathnameW[5] == L':');
     const wchar_t driveLetter = pathnameW[4];
     assert((driveLetter >= L'A' && driveLetter <= L'Z') || (driveLetter >= L'a' && driveLetter <= L'z'));

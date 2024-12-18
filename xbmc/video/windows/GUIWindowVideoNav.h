@@ -12,14 +12,14 @@
 
 class CFileItemList;
 
-enum SelectFirstUnwatchedItem
+enum class SelectFirstUnwatchedItem
 {
   NEVER = 0,
   ON_FIRST_ENTRY = 1,
   ALWAYS = 2
 };
 
-enum IncludeAllSeasonsAndSpecials
+enum class IncludeAllSeasonsAndSpecials
 {
   NEITHER = 0,
   BOTH = 1,

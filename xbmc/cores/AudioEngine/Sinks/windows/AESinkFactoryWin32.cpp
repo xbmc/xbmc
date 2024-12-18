@@ -117,7 +117,7 @@ std::vector<RendererDetail> CAESinkFactoryWin::GetRendererDetails()
     PropVariantClear(&varName);
 
     hr = pProperty->GetValue(PKEY_Device_EnumeratorName, &varName);
-    if (SUCCEEDED(hr) && varName.pwszVal != nullptr)
+    if (SUCCEEDED(hr) && varName.vt != VT_EMPTY)
     {
       details.strDeviceEnumerator = KODI::PLATFORM::WINDOWS::FromW(varName.pwszVal);
       StringUtils::ToUpper(details.strDeviceEnumerator);
@@ -156,7 +156,7 @@ struct AEWASAPIDeviceWin32 : public IAEWASAPIDevice
 {
   friend CAESinkFactoryWin;
 
-  HRESULT AEWASAPIDeviceWin32::Activate(IAudioClient** ppAudioClient)
+  HRESULT Activate(IAudioClient** ppAudioClient)
   {
     HRESULT hr = S_FALSE;
 
@@ -181,13 +181,13 @@ struct AEWASAPIDeviceWin32 : public IAEWASAPIDevice
     return hr;
   };
 
-  int AEWASAPIDeviceWin32::Release() override
+  int Release() override
   {
     delete this;
     return 0;
   };
 
-  bool AEWASAPIDeviceWin32::IsUSBDevice() override
+  bool IsUSBDevice() override
   {
     bool ret = false;
     ComPtr<IPropertyStore> pProperty = nullptr;
@@ -199,9 +199,12 @@ struct AEWASAPIDeviceWin32 : public IAEWASAPIDevice
       return ret;
     hr = pProperty->GetValue(PKEY_Device_EnumeratorName, &varName);
 
-    std::string str = KODI::PLATFORM::WINDOWS::FromW(varName.pwszVal);
-    StringUtils::ToUpper(str);
-    ret = (str == "USB");
+    if (SUCCEEDED(hr) && varName.vt != VT_EMPTY)
+    {
+      std::string str = KODI::PLATFORM::WINDOWS::FromW(varName.pwszVal);
+      StringUtils::ToUpper(str);
+      ret = (str == "USB");
+    }
     PropVariantClear(&varName);
     return ret;
   }
