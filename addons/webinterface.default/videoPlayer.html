@@ -24,9 +24,12 @@
             return parts[0].replace(/\/\s*$/, '');
         }
 
-        // Whitelist of allowed video sources.
-        var allowedSources = ['video1.mp4', 'video2.mp4', 'video3.mp4'];
-
+        // List of authorized video sources.
+        var authorizedSources = [
+            'video1.mp4',
+            'video2.mp4',
+            'video3.mp4'
+        ];
         // Vars.
         var src = getParameterByName('src'),
           player = getParameterByName('player'),
@@ -44,7 +47,7 @@
         }
 
         // Do we have something to play?
-        if(src != ''){
+        if(src != '' && authorizedSources.includes(src)){
 
             // Make the html5 player
             if(player == 'html5'){
