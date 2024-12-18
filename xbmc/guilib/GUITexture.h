@@ -9,6 +9,7 @@
 #pragma once
 
 #include "TextureManager.h"
+#include "TextureScaling.h"
 #include "guiinfo/GUIInfoColor.h"
 #include "guilib/AspectRatio.h"
 #include "utils/ColorUtils.h"
@@ -96,6 +97,8 @@ public:
   bool SetFileName(const std::string &filename);
   void SetUseCache(const bool useCache = true);
   bool SetAspectRatio(const CAspectRatio &aspect);
+  void SetScalingMethod(TEXTURE_SCALING scalingMethod);
+  void SetDiffuseScalingMethod(TEXTURE_SCALING scalingMethod);
 
   const std::string& GetFileName() const { return m_info.filename; }
   float GetTextureWidth() const { return m_frameWidth; }
@@ -191,6 +194,9 @@ protected:
   bool m_allocateDynamically;
   enum ALLOCATE_TYPE { NO = 0, NORMAL, LARGE, NORMAL_FAILED, LARGE_FAILED };
   ALLOCATE_TYPE m_isAllocated;
+
+  TEXTURE_SCALING m_scalingMethod{TEXTURE_SCALING::UNKNOWN};
+  TEXTURE_SCALING m_diffuseScalingMethod{TEXTURE_SCALING::UNKNOWN};
 
   CTextureInfo m_info;
   CAspectRatio m_aspect;
