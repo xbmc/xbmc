@@ -3,7 +3,7 @@
 from socket import *
 from optparse import OptionParser
 
-UDP_ADDR = "0.0.0.0"
+UDP_ADDR = "192.168.1.100"  # Replace with the IP address of the dedicated interface
 UDP_PORT = 7724
 BUFFER_SIZE = 65536
 #HEADER_KEYS = ['Logger', 'Level', 'Source-File', 'Source-Function', 'Source-Line', 'TimeStamp']

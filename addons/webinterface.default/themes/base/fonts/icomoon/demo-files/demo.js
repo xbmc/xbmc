@@ -15,7 +15,11 @@ document.body.addEventListener("click", function(e) {
         testDrive = document.getElementById('testDrive'),
         testText = document.getElementById('testText');
     function updateTest() {
-        testDrive.innerHTML = testText.value || String.fromCharCode(160);
+        while (testDrive.firstChild) {
+            testDrive.removeChild(testDrive.firstChild);
+        }
+        var textNode = document.createTextNode(testText.value || String.fromCharCode(160));
+        testDrive.appendChild(textNode);
         if (window.icomoonLiga) {
             window.icomoonLiga(testDrive);
         }
