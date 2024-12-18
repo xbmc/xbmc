@@ -9,6 +9,7 @@
 #pragma once
 
 #include "InfoScanner.h"
+#include "Util.h"
 #include "VideoDatabase.h"
 #include "addons/Scraper.h"
 #include "guilib/GUIListItem.h"
@@ -250,6 +251,7 @@ namespace KODI::VIDEO
     CVideoDatabase m_database;
     std::set<std::string> m_pathsToCount;
     std::set<int> m_pathsToClean;
+    mutable CUtil::RegexCache m_regexCache;
 
   private:
     static void AddLocalItemArtwork(CGUIListItem::ArtMap& itemArt,
