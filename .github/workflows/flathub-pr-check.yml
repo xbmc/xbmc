@@ -1,0 +1,96 @@
+name: Build Flatpak CI
+
+on:
+  pull_request:
+    branches:
+      - master
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+concurrency:
+  # auto-cancel previous runs if the pull request is force-push updated
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  build-flatpak:
+    runs-on: ubuntu-latest
+    steps:
+    # PR/CI
+    - name: Checkout relevant repo
+      uses: actions/checkout@v4
+      with:
+        path: "xbmc"
+    # Flathub config
+    - name: Checkout Flathub config
+      uses: actions/checkout@v4
+      with:
+        repository: 'flole998/tv.kodi.Kodi'
+        submodules: true
+        ref: "beta"
+        path: "flathub"
+    - name: Install dependencies
+      run: |
+        sudo apt-get update -y
+        DEBIAN_FRONTEND=noninteractive sudo apt-get install --force-yes -y cmake git build-essential ccache dbus-x11 flatpak
+    - name: Grant tar root access
+      run: sudo chown root /bin/tar && sudo chmod u+s /bin/tar
+    - id: restore-cache
+      name: Restore cache
+      uses: actions/cache/restore@v4
+      with:
+        path: |
+          /tmp/ccache
+          flathub/.flatpak-builder
+          /var/lib/flatpak
+        key: flatpak-cache-${{ github.run_id }}
+        restore-keys: |
+          flatpak-cache
+    - name: Remove tar root access
+      run: sudo chmod u-s /bin/tar
+    - name: Adjust cache permissions if cache was restored
+      run: |
+        sudo chmod -R 777 /tmp/ccache || true
+        sudo chmod -R 777 flathub/.flatpak-builder || true
+    - name: Start DBUS
+      run: sudo service dbus start
+    - name: Install yq
+      run: sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq && sudo chmod +x /usr/bin/yq
+    - name: Add flatpak repo
+      run: sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+    - name: Install flatpak SDKs
+      run: |
+        sudo flatpak -y install flathub org.freedesktop.Sdk//22.08
+        sudo flatpak -y install flathub org.freedesktop.Platform//22.08
+        sudo flatpak -y install flathub org.freedesktop.Sdk.Extension.openjdk17//22.08
+        sudo flatpak -y install flathub org.flatpak.Builder
+    - name: Patch flatpak build conf
+      run: |
+        # Remove git repo from local copy
+        yq -i eval 'del(.modules[].sources[] | select(.type == "git" and .url == "https://github.com/xbmc/xbmc.git"))' flathub/tv.kodi.Kodi.yml
+        # Add local git repo copy
+        yq -i eval '(.modules[] | select(.name == "kodi") | .sources) |= [{"type": "dir", "path": "'"$GITHUB_WORKSPACE"'/xbmc"}] + .' flathub/tv.kodi.Kodi.yml
+        # Remove addons from build
+        yq -i 'del(.modules[] | select(. == "addons/*")) | .' flathub/tv.kodi.Kodi.yml
+    - name: Build Kodi
+      env:
+        CCACHE_DIR: /tmp/ccache
+        FLATPAKBUILDER: flatpak run org.flatpak.Builder
+      run: cd flathub && dbus-launch make build
+    - name: Create flatpak-file
+      run: cd flathub && make flatpak
+    - name: Upload flatpak-file
+      uses: actions/upload-artifact@v4
+      with:
+        name: flatpak
+        path: flathub/tv.kodi.Kodi.flatpak
+    - name: Grant tar root access
+      run: sudo chown root /bin/tar && sudo chmod u+s /bin/tar
+    - name: Save cache
+      uses: actions/cache/save@v4
+      with:
+        path: |
+          /tmp/ccache
+          flathub/.flatpak-builder
+          /var/lib/flatpak
+        key: ${{ steps.restore-cache.outputs.cache-primary-key }}
