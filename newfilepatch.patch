@@ -1,0 +1,1772 @@
+diff --git a/docs/GIT-FU.md b/docs/GIT-FU.md
+--- a/docs/GIT-FU.md
++++ b/docs/GIT-FU.md
+@@ -4,1 +4,1 @@
+-# Kodi's git-fu reference
++# Kodi's git-fu reference
+
+@@ -9,1 +9,1 @@
+-## Table of Contents
++## Table of Contents
+
+@@ -10,1 +10,1 @@
+-1. **[Introduction](#1-introduction)**
++
+1. **[Introduction](#1-introduction)**
+@@ -45,1 +45,1 @@
+-## 1. Introduction
++## 1. Introduction
+
+@@ -62,1 +62,1 @@
+-## 2. Document conventions
++## 2. Document conventions
+
+@@ -100,1 +100,1 @@
+-## 3. Prerequisites
++## 3. Prerequisites
+
+@@ -118,1 +118,1 @@
+-## 4. Clone Kodi's repo into your machine
++## 4. Clone Kodi's repo into your machine
+
+@@ -139,1 +139,1 @@
+-## 5. Working with branches
++## 5. Working with branches
+
+@@ -142,1 +142,1 @@
+-### 5.1. Create feature branch
++### 5.1. Create feature branch
+
+@@ -148,1 +148,1 @@
+-### 5.2. Push feature branch to origin
++### 5.2. Push feature branch to origin
+
+@@ -164,1 +164,1 @@
+-### 5.3. List branches
++### 5.3. List branches
+
+@@ -175,1 +175,1 @@
+-### 5.4. Switch between branches
++### 5.4. Switch between branches
+
+@@ -181,1 +181,1 @@
+-### 5.5. Backup branch
++### 5.5. Backup branch
+
+@@ -188,1 +188,1 @@
+-### 5.6. Check branch status
++### 5.6. Check branch status
+
+@@ -194,1 +194,1 @@
+-### 5.7. Delete branch
++### 5.7. Delete branch
+
+@@ -209,1 +209,1 @@
+-### 5.8. Rebase branch
++### 5.8. Rebase branch
+
+@@ -221,1 +221,1 @@
+-## 6. Syncing branches
++## 6. Syncing branches
+
+@@ -224,1 +224,1 @@
+-### 6.1. Fetch master branch from upstream and sync local master branch with it
++### 6.1. Fetch master branch from upstream and sync local master branch with it
+
+@@ -233,1 +233,1 @@
+-### 6.2. Fetch feature branch from origin and sync local feature branch with it
++### 6.2. Fetch feature branch from origin and sync local feature branch with it
+
+@@ -240,1 +240,1 @@
+-### 6.3. Push local feature branch to origin and sync remote feature branch with it
++### 6.3. Push local feature branch to origin and sync remote feature branch with it
+
+@@ -251,1 +251,1 @@
+-## 7. Working with commits
++## 7. Working with commits
+
+@@ -259,1 +259,1 @@
+-### 7.1. Create commit
++### 7.1. Create commit
+
+@@ -264,1 +264,1 @@
+-### 7.2. Amend last commit
++### 7.2. Amend last commit
+
+@@ -269,1 +269,1 @@
+-### 7.3. Rename last commit
++### 7.3. Rename last commit
+
+@@ -274,1 +274,1 @@
+-### 7.4. Delete last commit
++### 7.4. Delete last commit
+
+@@ -285,1 +285,1 @@
+-### 7.5. Fix commit
++### 7.5. Fix commit
+
+@@ -290,1 +290,1 @@
+-### 7.6. List commits
++### 7.6. List commits
+
+@@ -295,1 +295,1 @@
+-### 7.7. Cherry-pick commits
++### 7.7. Cherry-pick commits
+
+@@ -307,1 +307,1 @@
+-## 8. Examples with nice screenies
++## 8. Examples with nice screenies
+
+@@ -356,1 +356,1 @@
+-## 9. Going pro
++## 9. Going pro
+
+@@ -359,1 +359,1 @@
+-### 9.1. Fetch an upstream pull request
++### 9.1. Fetch an upstream pull request
+
+@@ -368,1 +368,1 @@
+-### 9.2. Fetch a pull request someone submitted to your repository
++### 9.2. Fetch a pull request someone submitted to your repository
+
+@@ -387,1 +387,1 @@
+-### 9.3. Fetch a pull request or commit and apply them to another branch
++### 9.3. Fetch a pull request or commit and apply them to another branch
+
+@@ -406,1 +406,1 @@
+-## 10. Other resources
++## 10. Other resources
+
+@@ -412,1 +412,1 @@
+-### 10.1. Using git alias
++### 10.1. Using git alias
+
+@@ -454,1 +454,1 @@
+-**[back to top](#table-of-contents)** | **[back to section top](#10-other-resources)**
++
+diff --git a/docs/codeofconduct/CodeOfConduct.md b/docs/codeofconduct/CodeOfConduct.md
+--- a/docs/codeofconduct/CodeOfConduct.md
++++ b/docs/codeofconduct/CodeOfConduct.md
+@@ -5,1 +5,1 @@
+--   This document should hopefully be entirely common sense and how most
++- This document should hopefully be entirely common sense and how most
+@@ -7,1 +7,1 @@
+--   In an ideal world it would be entirely unnecessary, but with the impersonal
++- In an ideal world it would be entirely unnecessary, but with the impersonal
+@@ -13,1 +13,1 @@
+--   Our primary aim is to make Kodi the best open source media player
++- Our primary aim is to make Kodi the best open source media player
+@@ -16,1 +16,1 @@
+--   To achieve this, we aim to create a supportive, welcoming and
++- To achieve this, we aim to create a supportive, welcoming and
+@@ -20,1 +20,1 @@
+--   Our team environment should be welcoming and safe, free of
++- Our team environment should be welcoming and safe, free of
+@@ -24,1 +24,1 @@
+--   Whilst we do not expect everyone to get along and agree all of the
++- Whilst we do not expect everyone to get along and agree all of the
+@@ -100,1 +100,1 @@
+--   This code covers all services supplied by and used by Team Kodi,
++- This code covers all services supplied by and used by Team Kodi,
+@@ -103,1 +103,1 @@
+-    -   The official GitHub repos.
++  -   The official GitHub repos.
+@@ -105,1 +105,1 @@
+-    -   The Kodi forum.
++    - The Kodi forum.
+@@ -107,1 +107,1 @@
+-    -   The Kodi wiki.
++  -   The Kodi wiki.
+@@ -109,1 +109,1 @@
+-    -   The Kodi Slack and IRC channels.
++    - The Kodi Slack and IRC channels.
+@@ -111,1 +111,1 @@
+-    -   Official Kodi social media channels.
++  -   Official Kodi social media channels.
+@@ -113,1 +113,1 @@
+-    -   Devcon.
++    - Devcon.
+@@ -115,1 +115,1 @@
+--   Anyone who contributes to the Kodi project on any of these channels
++- Anyone who contributes to the Kodi project on any of these channels
+@@ -120,1 +120,1 @@
+--   Violations of this code which cannot be dealt with by simple
++- Violations of this code which cannot be dealt with by simple
+@@ -121,1 +121,1 @@
+-    discussion should be reported to the working group via conduct@kodi.tv .
++    discussion should be reported to the working group via <conduct@kodi.tv> .
+@@ -124,1 +124,1 @@
+--   The identity of the reporter and where appropriate the nature of the issue
++- The identity of the reporter and where appropriate the nature of the issue
+@@ -127,1 +127,1 @@
+--   The procedure upon receiving a report should be:
++- The procedure upon receiving a report should be:
+@@ -129,1 +129,1 @@
+-    1.  The group should review the report, and any member directly
++    1. The group should review the report, and any member directly
+@@ -133,1 +133,1 @@
+-    1.  Any public disputes or discussions should be brought to a close
++    1. Any public disputes or discussions should be brought to a close
+@@ -138,1 +138,1 @@
+-    1.  All individuals concerned with the issue will be contacted
++    1. All individuals concerned with the issue will be contacted
+@@ -144,1 +144,1 @@
+-    1.  In case of such identifications, the group will attempt to
++    1. In case of such identifications, the group will attempt to
+@@ -148,1 +148,1 @@
+-    1.  The behaviour of all parties involved will be reviewed, and in
++    1. The behaviour of all parties involved will be reviewed, and in
+@@ -153,1 +153,1 @@
+-    1.  This action will depend on the severity of the transgression and
++    1. This action will depend on the severity of the transgression and
+@@ -157,1 +157,1 @@
+-        -   First offence -- a warning.
++        - First offence -- a warning.
+@@ -159,1 +159,1 @@
+-        -   Second offence -- loss of privileges for a week.
++        - Second offence -- loss of privileges for a week.
+@@ -161,1 +161,1 @@
+-        -   Third offence -- loss of privileges for a month.
++        - Third offence -- loss of privileges for a month.
+@@ -163,1 +163,1 @@
+-        -   Fourth offence -- permanent revoking of privileges.
++        - Fourth offence -- permanent revoking of privileges.
+@@ -165,1 +165,1 @@
+-        -   Final offence -- banning from all Kodi services.
++        - Final offence -- banning from all Kodi services.
+@@ -167,1 +167,1 @@
+-        -   Privileges will depend on the nature of the issue, but may
++        - Privileges will depend on the nature of the issue, but may
+@@ -180,1 +180,1 @@
+--   *Kodi Foundation Board* -- the elected five directors and management
++- *Kodi Foundation Board* -- the elected five directors and management
+@@ -183,1 +183,1 @@
+--   *Working Group* -- the team assigned by the board to create this
++- *Working Group* -- the team assigned by the board to create this
+@@ -186,1 +186,1 @@
+--   *Contributors* -- volunteers who give input into the upkeep and
++- *Contributors* -- volunteers who give input into the upkeep and
+@@ -193,1 +193,1 @@
+--   [Forum rules](https://kodi.wiki/view/Official:Forum_rules)
++- [Forum rules](https://kodi.wiki/view/Official:Forum_rules)
+@@ -194,1 +194,1 @@
+--   [Moderation rules (the basics)](https://github.com/xbmc/xbmc/blob/master/docs/codeofconduct/ModerationRules.md)
++- [Moderation rules (the basics)](https://github.com/xbmc/xbmc/blob/master/docs/codeofconduct/ModerationRules.md)
+@@ -195,1 +195,1 @@
+--   [Moderator guidelines](https://github.com/xbmc/xbmc/blob/master/docs/codeofconduct/ModeratorGuidelines.md)
++- [Moderator guidelines](https://github.com/xbmc/xbmc/blob/master/docs/codeofconduct/ModeratorGuidelines.md)
+@@ -196,1 +196,1 @@
+--   [Forum banning code of conduct](https://github.com/xbmc/xbmc/blob/master/docs/codeofconduct/ForumUserBanning.md)
++- [Forum banning code of conduct](https://github.com/xbmc/xbmc/blob/master/docs/codeofconduct/ForumUserBanning.md)
+diff --git a/docs/README.openSUSE.md b/docs/README.openSUSE.md
+--- a/docs/README.openSUSE.md
++++ b/docs/README.openSUSE.md
+@@ -3,1 +3,1 @@
+-# openSUSE build guide
++# openSUSE build guide
+
+@@ -10,1 +10,1 @@
+-## Table of Contents
++## Table of Contents
+
+@@ -11,1 +11,1 @@
+-1. **[Document conventions](#1-document-conventions)**
++
+1. **[Document conventions](#1-document-conventions)**
+@@ -17,1 +17,1 @@
+-## 1. Document conventions
++## 1. Document conventions
+
+@@ -55,1 +55,1 @@
+-## 2. Get the source code
++## 2. Get the source code
+
+@@ -69,1 +69,1 @@
+-## 3. Install the required packages
++## 3. Install the required packages
+
+@@ -126,1 +126,1 @@
+-### 3.1. Build missing dependencies
++### 3.1. Build missing dependencies
+
+@@ -144,1 +144,1 @@
+-## 4. Build Kodi
++## 4. Build Kodi
+
+@@ -149,1 +149,1 @@
+-**[back to top](#table-of-contents)**
++
+diff --git a/addons/metadata.themoviedb.org.python/README.md b/addons/metadata.themoviedb.org.python/README.md
+--- a/addons/metadata.themoviedb.org.python/README.md
++++ b/addons/metadata.themoviedb.org.python/README.md
+@@ -5,1 +5,1 @@
+-### Manual search by IMDB / TMDB ID
++### Manual search by IMDB / TMDB ID
+
+diff --git a/docs/README.macOS.md b/docs/README.macOS.md
+--- a/docs/README.macOS.md
++++ b/docs/README.macOS.md
+@@ -3,1 +3,1 @@
+-# macOS build guide
++# macOS build guide
+
+@@ -6,1 +6,1 @@
+-## Table of Contents
++## Table of Contents
+
+@@ -7,1 +7,1 @@
+-1. **[Document conventions](#1-document-conventions)**
++
+1. **[Document conventions](#1-document-conventions)**
+@@ -23,1 +23,1 @@
+-## 1. Document conventions
++## 1. Document conventions
+
+@@ -61,1 +61,1 @@
+-## 2. Prerequisites
++## 2. Prerequisites
+
+@@ -62,1 +62,1 @@
+-* **[Java Development Kit (JDK)](http://www.oracle.com/technetwork/java/javase/downloads/index.html)**
++
+* **[Java Development Kit (JDK)](http://www.oracle.com/technetwork/java/javase/downloads/index.html)**
+@@ -67,1 +67,1 @@
+-  * Xcode 12.4 against MacOSX SDK 11.1 on 10.15.7 (Catalina)(recommended)(CI)
++
+  * Xcode 12.4 against MacOSX SDK 11.1 on 10.15.7 (Catalina)(recommended)(CI)
+@@ -68,1 +68,1 @@
+-  * Xcode 13.x against MacOSX SDK 12.3 on 12.x (Monterey)(recommended)
++* Xcode 13.x against MacOSX SDK 12.3 on 12.x (Monterey)(recommended)
+@@ -76,1 +76,1 @@
+-## 3. Get the source code
++## 3. Get the source code
+
+@@ -89,1 +89,1 @@
+-## 4. Configure and build tools and dependencies
++## 4. Configure and build tools and dependencies
+
+@@ -132,1 +132,1 @@
+-
++
+@@ -204,1 +204,1 @@
+-## 5. Build binary add-ons
++## 5. Build binary add-ons
+
+@@ -234,1 +234,1 @@
+-## 6. Build Kodi
++## 6. Build Kodi
+
+@@ -237,1 +237,1 @@
+-### 6.1. Build with Xcode
++### 6.1. Build with Xcode
+
+@@ -278,1 +278,1 @@
+-### 6.2. Build with xcodebuild
++### 6.2. Build with xcodebuild
+
+@@ -300,1 +300,1 @@
+-### 6.3. Build with make
++### 6.3. Build with make
+
+@@ -327,1 +327,1 @@
+-## 7. Run Kodi
++## 7. Run Kodi
+
+@@ -328,1 +328,1 @@
+-### 7.1. Built with Xcode or xcodebuild
++
+### 7.1. Built with Xcode or xcodebuild
+@@ -341,1 +341,1 @@
+-### 7.2. Built with make
++### 7.2. Built with make
+
+@@ -349,1 +349,1 @@
+-## 8. Package
++## 8. Package
+
+@@ -374,1 +374,1 @@
+-## 9. Install
++## 9. Install
+
+@@ -379,1 +379,1 @@
+-**[back to top](#table-of-contents)**
++
+diff --git a/.github/ISSUE_TEMPLATE/roadmap_item.md b/.github/ISSUE_TEMPLATE/roadmap_item.md
+--- a/.github/ISSUE_TEMPLATE/roadmap_item.md
++++ b/.github/ISSUE_TEMPLATE/roadmap_item.md
+@@ -7,1 +7,1 @@
+-## Roadmap or todo item
++## Roadmap or todo item
+
+@@ -11,1 +11,1 @@
+-
++
+@@ -24,1 +24,1 @@
+-### Additional context, screenshots or links
++### Additional context, screenshots or links
+
+diff --git a/docs/README.Windows.md b/docs/README.Windows.md
+--- a/docs/README.Windows.md
++++ b/docs/README.Windows.md
+@@ -3,1 +3,1 @@
+-# Windows build guide
++# Windows build guide
+
+@@ -6,1 +6,1 @@
+-## Table of Contents
++## Table of Contents
+
+@@ -7,1 +7,1 @@
+-1. **[Document conventions](#1-document-conventions)**
++
+1. **[Document conventions](#1-document-conventions)**
+@@ -14,1 +14,1 @@
+-## 1. Document conventions
++## 1. Document conventions
+
+@@ -52,1 +52,1 @@
+-## 2. Prerequisites
++## 2. Prerequisites
+
+@@ -54,1 +54,1 @@
+-* **Windows** 64bit OS, Windows 8.1 or above (allows build of x64, win32, uwp, arm)
++
+* **Windows** 64bit OS, Windows 8.1 or above (allows build of x64, win32, uwp, arm)
+@@ -62,1 +62,1 @@
+-* **[AMD](https://support.amd.com/en-us/download)**
++
+* **[AMD](https://support.amd.com/en-us/download)**
+@@ -66,1 +66,1 @@
+-### CMake install notes
++### CMake install notes
+
+@@ -68,1 +68,1 @@
+-* Under **Install options** change default to `Add CMake to system PATH for all users` or `Add CMake to system PATH for current user` (whichever you prefer).
++
+* Under **Install options** change default to `Add CMake to system PATH for all users` or `Add CMake to system PATH for current user` (whichever you prefer).
+@@ -70,1 +70,1 @@
+-### Git for Windows install notes
++### Git for Windows install notes
+
+@@ -72,1 +72,1 @@
+-* Under **Choosing the default editor used by Git** change default to `Use Notepad++ as Git's default editor` or your favorite editor.
++
+* Under **Choosing the default editor used by Git** change default to `Use Notepad++ as Git's default editor` or your favorite editor.
+@@ -75,1 +75,1 @@
+-### JRE install notes
++### JRE install notes
+
+@@ -79,1 +79,1 @@
+-### NSIS install notes
++### NSIS install notes
+
+@@ -82,1 +82,1 @@
+-### Visual Studio 2022/2019 install notes
++### Visual Studio 2022/2019 install notes
+
+@@ -84,1 +84,1 @@
+-* Under **Desktop & Mobile** section select
++
+* Under **Desktop & Mobile** section select
+@@ -90,1 +90,1 @@
+-* Under **Compilers, build tools and runtimes** section select
++
+* Under **Compilers, build tools and runtimes** section select
+@@ -97,1 +97,1 @@
+-## 3. Get the source code
++## 3. Get the source code
+
+@@ -110,1 +110,1 @@
+-## 4. Set up the build environment
++## 4. Set up the build environment
+
+@@ -166,1 +166,1 @@
+-## 5. Build Kodi automagically
++## 5. Build Kodi automagically
+
+@@ -195,1 +195,1 @@
+-## 6. Build Kodi manually
++## 6. Build Kodi manually
+
+@@ -262,1 +262,1 @@
+-
++
+diff --git a/.github/ISSUE_TEMPLATE.md b/.github/ISSUE_TEMPLATE.md
+--- a/.github/ISSUE_TEMPLATE.md
++++ b/.github/ISSUE_TEMPLATE.md
+@@ -8,1 +8,1 @@
+-## Bug report
++## Bug report
+
+@@ -9,1 +9,1 @@
+-### Describe the bug
++
+### Describe the bug
+@@ -15,1 +15,1 @@
+-
++
+@@ -17,1 +17,1 @@
+-## Expected Behavior
++## Expected Behavior
+
+@@ -36,1 +36,1 @@
+-### To Reproduce
++### To Reproduce
+
+@@ -53,1 +53,1 @@
+-### Screenshots
++### Screenshots
+
+@@ -59,1 +59,1 @@
+-## Additional context or screenshots (if appropriate)
++## Additional context or screenshots (if appropriate)
+
+@@ -66,1 +66,1 @@
+-### Your Environment
++### Your Environment
+
+@@ -70,1 +70,1 @@
+- - [ ] Android
++- [ ] Android
+@@ -71,1 +71,1 @@
+- - [ ] iOS
++- [ ] iOS
+@@ -72,1 +72,1 @@
+- - [ ] tvOS
++- [ ] tvOS
+@@ -73,1 +73,1 @@
+- - [ ] Linux
++- [ ] Linux
+@@ -74,1 +74,1 @@
+- - [ ] OSX
++- [ ] OSX
+@@ -75,1 +75,1 @@
+- - [ ] Windows
++- [ ] Windows
+@@ -76,1 +76,1 @@
+- - [ ] Windows UWP
++- [ ] Windows UWP
+@@ -78,1 +78,1 @@
+- - Operating system version/name:
++- Operating system version/name:
+@@ -79,1 +79,1 @@
+- - Kodi version:
++- Kodi version:
+diff --git a/docs/README.Android.md b/docs/README.Android.md
+--- a/docs/README.Android.md
++++ b/docs/README.Android.md
+@@ -3,1 +3,1 @@
+-# Android build guide
++# Android build guide
+
+@@ -8,1 +8,1 @@
+-## Table of Contents
++## Table of Contents
+
+@@ -9,1 +9,1 @@
+-1. **[Document conventions](#1-document-conventions)**
++
+1. **[Document conventions](#1-document-conventions)**
+@@ -24,1 +24,1 @@
+-## 1. Document conventions
++## 1. Document conventions
+
+@@ -62,1 +62,1 @@
+-## 2. Install the required packages
++## 2. Install the required packages
+
+@@ -75,1 +75,1 @@
+-## 3. Prerequisites
++## 3. Prerequisites
+
+@@ -81,1 +81,1 @@
+-### 3.1. Extract Android SDK
++### 3.1. Extract Android SDK
+
+@@ -95,1 +95,1 @@
+-### 3.2. Configure Android SDK
++### 3.2. Configure Android SDK
+
+@@ -106,1 +106,1 @@
+-### 3.3. Create a key to sign debug APKs
++### 3.3. Create a key to sign debug APKs
+
+@@ -115,1 +115,1 @@
+-## 4. Get the source code
++## 4. Get the source code
+
+@@ -126,1 +126,1 @@
+-## 5. Build tools and dependencies
++## 5. Build tools and dependencies
+
+@@ -172,1 +172,1 @@
+-
++
+@@ -256,1 +256,1 @@
+-## 6. Build binary add-ons
++## 6. Build binary add-ons
+
+@@ -288,1 +288,1 @@
+-## 7. Build Kodi
++## 7. Build Kodi
+
+@@ -311,1 +311,1 @@
+-## 8. Package
++## 8. Package
+
+@@ -323,1 +323,1 @@
+-## 9. Install
++## 9. Install
+
+@@ -342,1 +342,1 @@
+-## 10. Debugging Kodi
++## 10. Debugging Kodi
+
+@@ -387,1 +387,1 @@
+-**[back to top](#table-of-contents)** | **[back to section top](#10-debugging-kodi)**
++
+diff --git a/docs/README.iOS.md b/docs/README.iOS.md
+--- a/docs/README.iOS.md
++++ b/docs/README.iOS.md
+@@ -3,1 +3,1 @@
+-# iOS build guide
++# iOS build guide
+
+@@ -6,1 +6,1 @@
+-## Table of Contents
++## Table of Contents
+
+@@ -7,1 +7,1 @@
+-1. **[Document conventions](#1-document-conventions)**
++
+1. **[Document conventions](#1-document-conventions)**
+@@ -22,1 +22,1 @@
+-## 1. Document conventions
++## 1. Document conventions
+
+@@ -60,1 +60,1 @@
+-## 2. Prerequisites
++## 2. Prerequisites
+
+@@ -61,1 +61,1 @@
+-* **[Java Development Kit (JDK)](http://www.oracle.com/technetwork/java/javase/downloads/index.html)**
++
+* **[Java Development Kit (JDK)](http://www.oracle.com/technetwork/java/javase/downloads/index.html)**
+@@ -66,1 +66,1 @@
+-  * Xcode 12.4 against iOS SDK 14.4 on 10.15.7 (Catalina)(recommended)(CI)
++
+  * Xcode 12.4 against iOS SDK 14.4 on 10.15.7 (Catalina)(recommended)(CI)
+@@ -67,1 +67,1 @@
+-  * Xcode 13.x against iOS SDK 15.5 on 12.x (Monterey)(recommended)
++* Xcode 13.x against iOS SDK 15.5 on 12.x (Monterey)(recommended)
+@@ -75,1 +75,1 @@
+-## 3. Get the source code
++## 3. Get the source code
+
+@@ -88,1 +88,1 @@
+-## 4. Configure and build tools and dependencies
++## 4. Configure and build tools and dependencies
+
+@@ -124,1 +124,1 @@
+-
++
+@@ -300,1 +300,1 @@
+-## 6.2 Build 
++
+## 6.2 Build 
+@@ -320,1 +320,1 @@
+-## 7. Package
++## 7. Package
+
+@@ -337,1 +337,1 @@
+-## 8. Install
++## 8. Install
+
+@@ -366,1 +366,1 @@
+-**[back to top](#table-of-contents)**
++
+diff --git a/docs/HOWTO.KillAGlobal.md b/docs/HOWTO.KillAGlobal.md
+--- a/docs/HOWTO.KillAGlobal.md
++++ b/docs/HOWTO.KillAGlobal.md
+@@ -3,1 +3,1 @@
+-# HOW-TO: Kill a Global
++# HOW-TO: Kill a Global
+
+@@ -6,1 +6,1 @@
+-## Table of Contents
++## Table of Contents
+
+@@ -7,1 +7,1 @@
+-1. **[What is the root issue?](#1-what-is-the-root-issue)**
++
+1. **[What is the root issue?](#1-what-is-the-root-issue)**
+@@ -23,1 +23,1 @@
+-## 1. What is the root issue?
++## 1. What is the root issue?
+
+@@ -28,1 +28,1 @@
+-## 2. Globals? Singletons? What's the difference?
++## 2. Globals? Singletons? What's the difference?
+
+@@ -168,1 +168,1 @@
+-**[back to top](#table-of-contents)**
++
+diff --git a/lib/libUPnP/Platinum/README.md b/lib/libUPnP/Platinum/README.md
+--- a/lib/libUPnP/Platinum/README.md
++++ b/lib/libUPnP/Platinum/README.md
+@@ -1,1 +1,1 @@
+-#PLATINUM UPNP SDK [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) [![Build Status](https://travis-ci.org/plutinosoft/Platinum.svg?branch=master)](https://travis-ci.org/plutinosoft/Platinum)
++# PLATINUM UPNP SDK [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) [![Build Status](https://travis-ci.org/plutinosoft/Platinum.svg?branch=master)](https://travis-ci.org/plutinosoft/Platinum)
+@@ -4,1 +4,1 @@
+-* Neptune : a C++ Runtime Library
++
+* Neptune : a C++ Runtime Library
+@@ -9,1 +9,1 @@
+-#Building SDK and Sample Applications
++# Building SDK and Sample Applications
+@@ -11,1 +11,1 @@
+-## Windows:
++## Windows
+@@ -14,1 +14,1 @@
+-## Mac, iOS:
++## Mac, iOS
+@@ -15,1 +15,1 @@
+-First install carthage (https://github.com/Carthage/Carthage)
++First install carthage (<https://github.com/Carthage/Carthage>)
+@@ -31,1 +31,1 @@
+-## Linux, Cygwin, etc ...
++## Linux, Cygwin, etc ...
+
+@@ -32,1 +32,1 @@
+-Open a shell, go to the Platinum root directory and type 'scons' (http://scons.org).
++Open a shell, go to the Platinum root directory and type 'scons' (<http://scons.org>).
+@@ -41,1 +41,1 @@
+-#Running Sample Applications
++# Running Sample Applications
+@@ -43,1 +43,1 @@
+-## FileMediaServerTest
++## FileMediaServerTest
+
+@@ -54,1 +54,1 @@
+-## MediaRendererTest
++## MediaRendererTest
+
+@@ -64,1 +64,1 @@
+-## MediaCrawler
++## MediaCrawler
+
+@@ -69,1 +69,1 @@
+-## MicroMediaController
++## MicroMediaController
+
+@@ -95,1 +95,1 @@
+-## MediaConnect
++## MediaConnect
+
+@@ -98,1 +98,1 @@
+-## MediaServerCocoaTest
++## MediaServerCocoaTest
+
+@@ -101,1 +101,1 @@
+-#Language Bindings
++# Language Bindings
+@@ -103,1 +103,1 @@
+-## Objective-C
++## Objective-C
+
+@@ -106,1 +106,1 @@
+-## C++/CLR
++## C++/CLR
+
+@@ -109,1 +109,1 @@
+-## Android Java/JNI
++## Android Java/JNI
+
+@@ -122,1 +122,1 @@
+-#Contributing
++# Contributing
+diff --git a/docs/README.FreeBSD.md b/docs/README.FreeBSD.md
+--- a/docs/README.FreeBSD.md
++++ b/docs/README.FreeBSD.md
+@@ -3,1 +3,1 @@
+-# FreeBSD build guide
++# FreeBSD build guide
+
+@@ -8,1 +8,1 @@
+-## Table of Contents
++## Table of Contents
+
+@@ -9,1 +9,1 @@
+-1. **[Document conventions](#1-document-conventions)**
++
+1. **[Document conventions](#1-document-conventions)**
+@@ -21,1 +21,1 @@
+-## 1. Document conventions
++## 1. Document conventions
+
+@@ -59,1 +59,1 @@
+-## 2. Get the source code
++## 2. Get the source code
+
+@@ -77,1 +77,1 @@
+-## 3. Install the required packages
++## 3. Install the required packages
+
+@@ -107,1 +107,1 @@
+-### 3.1. Build missing dependencies
++### 3.1. Build missing dependencies
+
+@@ -112,1 +112,1 @@
+-## 4. Build Kodi
++## 4. Build Kodi
+
+@@ -113,1 +113,1 @@
+-### 4.1. Configure build
++
+### 4.1. Configure build
+@@ -133,1 +133,1 @@
+-### 4.2. Build
++### 4.2. Build
+
+@@ -164,1 +164,1 @@
+-## 5. Build binary add-ons
++## 5. Build binary add-ons
+
+@@ -199,1 +199,1 @@
+-## 6. Run Kodi
++## 6. Run Kodi
+
+@@ -214,1 +214,1 @@
+-## 7. Uninstall Kodi
++## 7. Uninstall Kodi
+
+@@ -228,1 +228,1 @@
+-## 8. Test suite
++## 8. Test suite
+
+@@ -265,1 +265,1 @@
+-**[back to top](#table-of-contents)**
++
+diff --git a/docs/README.Linux.md b/docs/README.Linux.md
+--- a/docs/README.Linux.md
++++ b/docs/README.Linux.md
+@@ -3,1 +3,1 @@
+-# Linux build guide
++# Linux build guide
+
+@@ -8,1 +8,1 @@
+-## Table of Contents
++## Table of Contents
+
+@@ -9,1 +9,1 @@
+-1. **[Document conventions](#1-document-conventions)**
++
+1. **[Document conventions](#1-document-conventions)**
+@@ -24,1 +24,1 @@
+-## 1. Document conventions
++## 1. Document conventions
+
+@@ -62,1 +62,1 @@
+-## 2. Get the source code
++## 2. Get the source code
+
+@@ -77,1 +77,1 @@
+-## 3. Install the required packages
++## 3. Install the required packages
+
+@@ -85,1 +85,1 @@
+-### 3.1. Build missing dependencies
++### 3.1. Build missing dependencies
+
+@@ -129,1 +129,1 @@
+-### 3.2. Enable internal dependencies
++### 3.2. Enable internal dependencies
+
+@@ -138,1 +138,1 @@
+-Building with GBM windowing (including `gbm` in the `CORE_PLATFORM_NAME` cmake config) requires `libdisplay-info` for EDID parsing. This is currently a hard dependency for GBM windowing and no internal build option is available. Some distributions may already package it but if not it is available to build from source here: https://gitlab.freedesktop.org/emersion/libdisplay-info
++Building with GBM windowing (including `gbm` in the `CORE_PLATFORM_NAME` cmake config) requires `libdisplay-info` for EDID parsing. This is currently a hard dependency for GBM windowing and no internal build option is available. Some distributions may already package it but if not it is available to build from source here: <https://gitlab.freedesktop.org/emersion/libdisplay-info>
+@@ -142,1 +142,1 @@
+-## 4. Build Kodi
++## 4. Build Kodi
+
+@@ -143,1 +143,1 @@
+-### 4.1. Configure build
++
+### 4.1. Configure build
+@@ -196,1 +196,1 @@
+-
++
+@@ -197,1 +197,1 @@
+-### 4.2. Build
++### 4.2. Build
+
+@@ -249,1 +249,1 @@
+-## 5. Build binary add-ons
++## 5. Build binary add-ons
+
+@@ -340,1 +340,1 @@
+-## 6. Run Kodi
++## 6. Run Kodi
+
+@@ -355,1 +355,1 @@
+-## 7. Uninstall Kodi
++## 7. Uninstall Kodi
+
+@@ -370,1 +370,1 @@
+-## 8. Test suite
++## 8. Test suite
+
+@@ -407,1 +407,1 @@
+-**[back to top](#table-of-contents)**
++
+diff --git a/docs/HOWTO.CleanUpLogic.md b/docs/HOWTO.CleanUpLogic.md
+--- a/docs/HOWTO.CleanUpLogic.md
++++ b/docs/HOWTO.CleanUpLogic.md
+@@ -3,1 +3,1 @@
+-# HOW-TO: Clean Up Logic
++# HOW-TO: Clean Up Logic
+
+@@ -6,1 +6,1 @@
+-## Table of Contents
++## Table of Contents
+
+@@ -7,1 +7,1 @@
+-1. **[Why clean logic is important](#1-why-clean-logic-is-important)**
++
+1. **[Why clean logic is important](#1-why-clean-logic-is-important)**
+@@ -165,1 +165,1 @@
+-**[back to top](#table-of-contents)**
++
+diff --git a/README.md b/README.md
+--- a/README.md
++++ b/README.md
+@@ -38,1 +38,1 @@
+-## Give your media the love it deserves
++## Give your media the love it deserves
+
+@@ -47,1 +47,1 @@
+-## Getting Started
++## Getting Started
+
+@@ -50,1 +50,1 @@
+-## How to Contribute
++## How to Contribute
+
+@@ -65,1 +65,1 @@
+-## Building
++## Building
+
+@@ -68,1 +68,1 @@
+-## Acknowledgements
++## Acknowledgements
+
+@@ -76,1 +76,1 @@
+-## License
++## License
+
+diff --git a/docs/README.tvOS.md b/docs/README.tvOS.md
+--- a/docs/README.tvOS.md
++++ b/docs/README.tvOS.md
+@@ -3,1 +3,1 @@
+-# tvOS build guide
++# tvOS build guide
+
+@@ -6,1 +6,1 @@
+-## Table of Contents
++## Table of Contents
+
+@@ -7,1 +7,1 @@
+-1. **[Document conventions](#1-document-conventions)**
++
+1. **[Document conventions](#1-document-conventions)**
+@@ -28,1 +28,1 @@
+-## 1. Document conventions
++## 1. Document conventions
+
+@@ -66,1 +66,1 @@
+-## 2. Prerequisites
++## 2. Prerequisites
+
+@@ -67,1 +67,1 @@
+-* **[Java Development Kit (JDK)](http://www.oracle.com/technetwork/java/javase/downloads/index.html)**
++
+* **[Java Development Kit (JDK)](http://www.oracle.com/technetwork/java/javase/downloads/index.html)**
+@@ -72,1 +72,1 @@
+-  * Xcode 12.4 against tvOS SDK 14.3 on 10.15.7 (Catalina)(recommended)(CI)
++* Xcode 12.4 against tvOS SDK 14.3 on 10.15.7 (Catalina)(recommended)(CI)
+@@ -73,1 +73,1 @@
+-  * Xcode 13.x against tvOS SDK 15.4 on 12.x (Monterey)(recommended)
++* Xcode 13.x against tvOS SDK 15.4 on 12.x (Monterey)(recommended)
+@@ -81,1 +81,1 @@
+-## 3. Get the source code
++## 3. Get the source code
+
+@@ -94,1 +94,1 @@
+-## 4. Configure and build tools and dependencies
++## 4. Configure and build tools and dependencies
+
+@@ -126,1 +126,1 @@
+-
++
+@@ -198,1 +198,1 @@
+-## 5. Generate Kodi Build files
++## 5. Generate Kodi Build files
+
+@@ -291,1 +291,1 @@
+-### 6.2. Build with xcodebuild
++### 6.2. Build with xcodebuild
+
+@@ -310,1 +310,1 @@
+-## 7. Packaging to distribute as deb
++## 7. Packaging to distribute as deb
+
+@@ -358,1 +358,1 @@
+-## An important note on Code Signing
++## An important note on Code Signing
+
+@@ -380,1 +380,1 @@
+-## 9.1. Jailbroken devices
++## 9.1. Jailbroken devices
+
+@@ -390,1 +390,1 @@
+-## Wirelessly connecting to AppleTV 4/4K
++## Wirelessly connecting to AppleTV 4/4K
+
+diff --git a/docs/README.md b/docs/README.md
+--- a/docs/README.md
++++ b/docs/README.md
+@@ -3,1 +3,1 @@
+-# Kodi's Documentation Home
++# Kodi's Documentation Home
+
+@@ -8,1 +8,1 @@
+-## Building Kodi
++## Building Kodi
+
+@@ -25,1 +25,1 @@
+-</p>
++
+diff --git a/docs/README.Fedora.md b/docs/README.Fedora.md
+--- a/docs/README.Fedora.md
++++ b/docs/README.Fedora.md
+@@ -3,1 +3,1 @@
+-# Fedora build guide
++# Fedora build guide
+
+@@ -8,1 +8,1 @@
+-## Table of Contents
++## Table of Contents
+
+@@ -9,1 +9,1 @@
+-1. **[Document conventions](#1-document-conventions)**
++
+1. **[Document conventions](#1-document-conventions)**
+@@ -14,1 +14,1 @@
+-## 1. Document conventions
++## 1. Document conventions
+
+@@ -52,1 +52,1 @@
+-## 2. Get the source code
++## 2. Get the source code
+
+@@ -66,1 +66,1 @@
+-## 3. Install the required packages
++## 3. Install the required packages
+
+@@ -111,1 +111,1 @@
+-## 4. Build Kodi
++## 4. Build Kodi
+
+@@ -116,1 +116,1 @@
+-**[back to top](#table-of-contents)**
++
+diff --git a/docs/codeofconduct/ModerationRules.md b/docs/codeofconduct/ModerationRules.md
+--- a/docs/codeofconduct/ModerationRules.md
++++ b/docs/codeofconduct/ModerationRules.md
+@@ -8,1 +8,1 @@
+-- Be civil, no matter how infuriating other persons are. 
++
+- Be civil, no matter how infuriating other persons are. 
+@@ -12,1 +12,1 @@
+-- Never edit posts without explaining that you did so in your edit.
++
+- Never edit posts without explaining that you did so in your edit.
+@@ -18,1 +18,1 @@
+-- Don't. It's much more preferred to move them to the garbage or edit the offending bits out (See above)
++
+- Don't. It's much more preferred to move them to the garbage or edit the offending bits out (See above)
+@@ -22,1 +22,1 @@
+-- When moving threads, when possible leave a non-permanent redirect for a number of days. 7 is a good number, but 3 works as well. Use your own intuition. Wink
++
+- When moving threads, when possible leave a non-permanent redirect for a number of days. 7 is a good number, but 3 works as well. Use your own intuition. Wink
+@@ -26,1 +26,1 @@
+-- When in doubt, don't stick or unstick
++
+- When in doubt, don't stick or unstick
+diff --git a/cmake/README.md b/cmake/README.md
+--- a/cmake/README.md
++++ b/cmake/README.md
+@@ -3,1 +3,1 @@
+-# Kodi's CMake Based Build System
++# Kodi's CMake Based Build System
+
+@@ -15,1 +15,1 @@
+-## Build options
++## Build options
+
+@@ -25,1 +25,1 @@
+-## Buildsystem variables
++## Buildsystem variables
+
+@@ -27,1 +27,1 @@
+-- `CMAKE_BUILD_TYPE` specifies the type of the build. This can be either *Debug* or *Release* (default is *Release*)
++* `CMAKE_BUILD_TYPE` specifies the type of the build. This can be either *Debug* or *Release* (default is *Release*)
+@@ -28,1 +28,1 @@
+-- `CMAKE_TOOLCHAIN_FILE` can be used to pass a toolchain file
++* `CMAKE_TOOLCHAIN_FILE` can be used to pass a toolchain file
+@@ -29,1 +29,1 @@
+-- `ARCH_DEFINES` specifies the platform-specific C/C++ preprocessor defines (defaults to empty)
++* `ARCH_DEFINES` specifies the platform-specific C/C++ preprocessor defines (defaults to empty)
+@@ -31,1 +31,1 @@
+-## Building
++## Building
+
+@@ -45,1 +45,1 @@
+-## Tests
++## Tests
+
+@@ -50,1 +50,1 @@
+-## Extra targets
++## Extra targets
+
+@@ -63,1 +63,1 @@
+-## Building binary addons
++## Building binary addons
+
+@@ -89,1 +89,1 @@
+-## Sanitizers
++## Sanitizers
+
+@@ -95,1 +95,1 @@
+-## Debugging the build
++## Debugging the build
+
+@@ -107,1 +107,1 @@
+-```
++
+diff --git a/cmake/addons/bootstrap/README.md b/cmake/addons/bootstrap/README.md
+--- a/cmake/addons/bootstrap/README.md
++++ b/cmake/addons/bootstrap/README.md
+@@ -2,1 +2,1 @@
+-# KODI ADDON DEFINITIONS BOOTSTRAPPING
++
+# KODI ADDON DEFINITIONS BOOTSTRAPPING
+@@ -14,1 +14,1 @@
+-* `<repository>` is the identification of the repository.
++
+* `<repository>` is the identification of the repository.
+@@ -22,1 +22,1 @@
+-* `CMAKE_INSTALL_PREFIX` points to the directory where the downloaded addon
++
+* `CMAKE_INSTALL_PREFIX` points to the directory where the downloaded addon
+@@ -43,1 +43,1 @@
+-http://www.cmake.org/cmake/help/v2.8.8/cmake.html#section_Generators for a list.
++<http://www.cmake.org/cmake/help/v2.8.8/cmake.html#section_Generators> for a list.
+diff --git a/lib/libUPnP/Neptune/README.md b/lib/libUPnP/Neptune/README.md
+--- a/lib/libUPnP/Neptune/README.md
++++ b/lib/libUPnP/Neptune/README.md
+@@ -1,1 +1,1 @@
+-#Neptune C++ Runtime [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) [![Build Status](https://travis-ci.org/plutinosoft/Neptune.svg)](https://travis-ci.org/plutinosoft/Neptune)
++# Neptune C++ Runtime [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) [![Build Status](https://travis-ci.org/plutinosoft/Neptune.svg)](https://travis-ci.org/plutinosoft/Neptune)
+diff --git a/LICENSE.md b/LICENSE.md
+--- a/LICENSE.md
++++ b/LICENSE.md
+@@ -5,1 +5,1 @@
+-
++
+@@ -17,1 +17,1 @@
+-for more details.
++
+diff --git a/tools/depends/README.md b/tools/depends/README.md
+--- a/tools/depends/README.md
++++ b/tools/depends/README.md
+@@ -3,1 +3,1 @@
+-# Kodi's Unified Depends Build System
++# Kodi's Unified Depends Build System
+
+@@ -10,1 +10,1 @@
+-
++
+@@ -18,1 +18,1 @@
+-## Usage Examples
++## Usage Examples
+
+@@ -20,1 +20,1 @@
+-### All platforms
++
+### All platforms
+@@ -22,1 +22,1 @@
+-### Darwin
++
+### Darwin
+@@ -35,1 +35,1 @@
+-### Android
++### Android
+
+@@ -51,1 +51,1 @@
+-### Linux
++### Linux
+
+diff --git a/.github/ISSUE_TEMPLATE/bug_report.md b/.github/ISSUE_TEMPLATE/bug_report.md
+--- a/.github/ISSUE_TEMPLATE/bug_report.md
++++ b/.github/ISSUE_TEMPLATE/bug_report.md
+@@ -8,1 +8,1 @@
+-## Bug report
++## Bug report
+
+@@ -9,1 +9,1 @@
+-### Describe the bug
++
+### Describe the bug
+@@ -15,1 +15,1 @@
+-
++
+@@ -17,1 +17,1 @@
+-## Expected Behavior
++## Expected Behavior
+
+@@ -36,1 +36,1 @@
+-### To Reproduce
++### To Reproduce
+
+@@ -53,1 +53,1 @@
+-### Screenshots 
++### Screenshots 
+
+@@ -59,1 +59,1 @@
+-## Additional context or screenshots (if appropriate)
++## Additional context or screenshots (if appropriate)
+
+@@ -66,1 +66,1 @@
+-### Your Environment
++### Your Environment
+
+@@ -70,1 +70,1 @@
+- - [ ] Android
++- [ ] Android
+@@ -71,1 +71,1 @@
+- - [ ] iOS
++- [ ] iOS
+@@ -72,1 +72,1 @@
+- - [ ] tvOS
++- [ ] tvOS
+@@ -73,1 +73,1 @@
+- - [ ] Linux
++- [ ] Linux
+@@ -74,1 +74,1 @@
+- - [ ] macOS
++- [ ] macOS
+@@ -75,1 +75,1 @@
+- - [ ] Windows
++- [ ] Windows
+@@ -76,1 +76,1 @@
+- - [ ] Windows UWP
++- [ ] Windows UWP
+@@ -78,1 +78,1 @@
+- - Operating system version/name:
++- Operating system version/name:
+@@ -79,1 +79,1 @@
+- - Kodi version:
++- Kodi version:
+diff --git a/docs/doxygen/README.md b/docs/doxygen/README.md
+--- a/docs/doxygen/README.md
++++ b/docs/doxygen/README.md
+@@ -3,1 +3,1 @@
+-# Kodi's Doxygen Documentation
++# Kodi's Doxygen Documentation
+
+@@ -6,1 +6,1 @@
+-To generate Kodi's doxygen documentation, run `doxygen Doxyfile.doxy` in this directory. Generated documentation will be located a directory level up (docs) inside `html`.
++
+diff --git a/docs/README.Ubuntu.md b/docs/README.Ubuntu.md
+--- a/docs/README.Ubuntu.md
++++ b/docs/README.Ubuntu.md
+@@ -3,1 +3,1 @@
+-# Debian/Ubuntu build guide
++# Debian/Ubuntu build guide
+
+@@ -8,1 +8,1 @@
+-## Table of Contents
++## Table of Contents
+
+@@ -9,1 +9,1 @@
+-1. **[Document conventions](#1-document-conventions)**
++
+1. **[Document conventions](#1-document-conventions)**
+@@ -17,1 +17,1 @@
+-## 1. Document conventions
++## 1. Document conventions
+
+@@ -55,1 +55,1 @@
+-## 2. Get the source code
++## 2. Get the source code
+
+@@ -73,1 +73,1 @@
+-## 3. Install the required packages
++## 3. Install the required packages
+
+@@ -79,1 +79,1 @@
+-### 3.1. Get build dependencies automagically
++### 3.1. Get build dependencies automagically
+
+@@ -121,1 +121,1 @@
+-### 3.2. Get build dependencies manually
++### 3.2. Get build dependencies manually
+
+@@ -172,1 +172,1 @@
+-### 3.3 Ubuntu <= 18.04
++### 3.3 Ubuntu <= 18.04
+
+@@ -178,1 +178,1 @@
+-#### Meson
++#### Meson
+
+@@ -187,1 +187,1 @@
+-#### nasm (x86_64 / amd64)
++#### nasm (x86_64 / amd64)
+
+@@ -194,1 +194,1 @@
+-## 4. Build Kodi
++## 4. Build Kodi
+
+@@ -199,1 +199,1 @@
+-**[back to top](#table-of-contents)**
++
+diff --git a/docs/README.webOS.md b/docs/README.webOS.md
+--- a/docs/README.webOS.md
++++ b/docs/README.webOS.md
+@@ -3,1 +3,1 @@
+-# webOS build guide
++# webOS build guide
+
+@@ -6,1 +6,1 @@
+-## Table of Contents
++## Table of Contents
+
+@@ -7,1 +7,1 @@
+-1. **[Document conventions](#1-document-conventions)**
++
+1. **[Document conventions](#1-document-conventions)**
+@@ -9,1 +9,1 @@
+-3. **[Configure the tool chain](#3-Configure-the-tool-chain)**
++3. **[Configure the tool chain](#3-configure-the-tool-chain)**
+@@ -10,1 +10,1 @@
+-4. **[Configure ares-cli tools](#4-Configure-ares-cli-tools)**
++4. **[Configure ares-cli tools](#4-configure-ares-cli-tools)**
+@@ -13,1 +13,1 @@
+-  6.1. **[Advanced Configure Options](#61-Advanced-Configure-Options)**
++  6.1. **[Advanced Configure Options](#61-advanced-configure-options)**
+@@ -14,1 +14,1 @@
+-7. **[Generate Kodi Build files](#7-Generate-Kodi-Build-files)**  
++7. **[Generate Kodi Build files](#7-generate-kodi-build-files)**  
+@@ -15,1 +15,1 @@
+-  7.1. **[Generate Project Files](#71-Generate-Project-Files)**  
++  7.1. **[Generate Project Files](#71-generate-project-files)**  
+@@ -16,1 +16,1 @@
+-  7.2. **[Add Binary Addons to Project](#72-Add-Binary-Addons-to-Project)**
++  7.2. **[Add Binary Addons to Project](#72-add-binary-addons-to-project)**
+@@ -18,1 +18,1 @@
+-  8.1. **[Build kodi binary](#81-Build-kodi-binary)**
++  8.1. **[Build kodi binary](#81-build-kodi-binary)**
+@@ -19,1 +19,1 @@
+-9. **[Packaging kodi to distribute as an IPK](#9-Packaging-kodi-to-distribute-as-an-IPK)**  
++9. **[Packaging kodi to distribute as an IPK](#9-packaging-kodi-to-distribute-as-an-ipk)**  
+@@ -20,1 +20,1 @@
+-  9.1. **[Create the IPK](#91-Create-the-IPK)**  
++  9.1. **[Create the IPK](#91-create-the-ipk)**  
+@@ -24,1 +24,1 @@
+-11. **[Debugging ](#11-Debugging)**
++11. **[Debugging](#11-Debugging)**
+@@ -25,1 +25,1 @@
+-12. **[Uninstall](#12-Uninstall)**  
++12. **[Uninstall](#12-uninstall)**  
+@@ -26,1 +26,1 @@
+-  12.1. **[Using make to uninstall](#121-Using-make-to-uninstall)**  
++  12.1. **[Using make to uninstall](#121-using-make-to-uninstall)**  
+@@ -27,1 +27,1 @@
+-  12.1. **[Using ares-cli to uninstall](#122-Using-ares-cli-to-uninstall)**
++  12.1. **[Using ares-cli to uninstall](#122-using-ares-cli-to-uninstall)**
+@@ -29,1 +29,1 @@
+-## 1. Document conventions
++## 1. Document conventions
+
+@@ -67,1 +67,1 @@
+-## 2. Prerequisites
++## 2. Prerequisites
+
+@@ -68,1 +68,1 @@
+-* **[LG developer account](https://webostv.developer.lge.com/develop/getting-started/preparing-lg-account)**. This is required to access developer mode on the webOS device.
++
+* **[LG developer account](https://webostv.developer.lge.com/develop/getting-started/preparing-lg-account)**. This is required to access developer mode on the webOS device.
+@@ -71,1 +71,1 @@
+-* **[Download and setup a compatible toolchain to compile kodi]**. The toolchain which was used in this guide is **[buildroot-nc4](https://github.com/openlgtv/buildroot-nc4)**, it is an up to date buildroot configuration and comes with newer tools such as GCC 12.2.0. Other toolchains exist, such as those found on the LG OpenSource website: **https://opensource.lge.com/**. You will need to enter the model number of your TV to find the applicable toolchain.
++* **[Download and setup a compatible toolchain to compile kodi]**. The toolchain which was used in this guide is **[buildroot-nc4](https://github.com/openlgtv/buildroot-nc4)**, it is an up to date buildroot configuration and comes with newer tools such as GCC 12.2.0. Other toolchains exist, such as those found on the LG OpenSource website: **<https://opensource.lge.com/>**. You will need to enter the model number of your TV to find the applicable toolchain.
+@@ -98,1 +98,1 @@
+-## 5. Get the source code
++## 5. Get the source code
+
+@@ -111,1 +111,1 @@
+-## 6. Configure and build tools and dependencies
++## 6. Configure and build tools and dependencies
+
+@@ -146,1 +146,1 @@
+-
++
+@@ -211,1 +211,1 @@
+-## 7. Generate Kodi Build files
++## 7. Generate Kodi Build files
+
+@@ -233,1 +233,1 @@
+-	CMAKE_EXTRA_ARGUMENTS="-DCORE_PLATFORM_NAME=webos -DENABLE_DBUS=OFF -DENABLE_CEC=OFF -DENABLE_PIPEWIRE=OFF -DHAVE_LINUX_UDMABUF=OFF"
++ CMAKE_EXTRA_ARGUMENTS="-DCORE_PLATFORM_NAME=webos -DENABLE_DBUS=OFF -DENABLE_CEC=OFF -DENABLE_PIPEWIRE=OFF -DHAVE_LINUX_UDMABUF=OFF"
+@@ -338,1 +338,1 @@
+-**[back to top](#table-of-contents)**
++
+diff --git a/cmake/addons/README.md b/cmake/addons/README.md
+--- a/cmake/addons/README.md
++++ b/cmake/addons/README.md
+@@ -2,1 +2,1 @@
+-# Kodi add-ons CMake based buildsystem
++
+# Kodi add-ons CMake based buildsystem
+@@ -5,1 +5,1 @@
+-  - `<addon-id> <git-url> <git-revision>`
++- `<addon-id> <git-url> <git-revision>`
+@@ -6,1 +6,1 @@
+-  - `<addon-id> <tarball-url>`
++- `<addon-id> <tarball-url>`
+@@ -7,1 +7,1 @@
+-  - `<addon-id> <file://path>`
++- `<addon-id> <file://path>`
+@@ -10,1 +10,1 @@
+-- `<addon-id>` must be identical to the add-on's ID as defined in the add-on's addon.xml
++
+- `<addon-id>` must be identical to the add-on's ID as defined in the add-on's addon.xml
+@@ -16,1 +16,1 @@
+-## Reserved filenames
++## Reserved filenames
+
+@@ -17,1 +17,1 @@
+-- **platforms.txt**
++
+- **platforms.txt**
+@@ -23,1 +23,1 @@
+-#### Attention
++#### Attention
+
+@@ -26,1 +26,1 @@
+-## Buildsystem variables
++## Buildsystem variables
+
+@@ -28,1 +28,1 @@
+-- `ADDONS_TO_BUILD` has four rules for matching a provided space delimited list:
++
+- `ADDONS_TO_BUILD` has four rules for matching a provided space delimited list:
+@@ -29,1 +29,1 @@
+-     - to build all addons, just use `all` (default is *all*)
++  - to build all addons, just use `all` (default is *all*)
+@@ -30,1 +30,1 @@
+-     - an exact match of an `<addon-id>` that you want to build (e.g. `ADDONS_TO_BUILD="game.libretro"`)
++  - an exact match of an `<addon-id>` that you want to build (e.g. `ADDONS_TO_BUILD="game.libretro"`)
+@@ -31,1 +31,1 @@
+-     - a regular expression `<addon-id>` is matched against (e.g. `ADDONS_TO_BUILD="pvr.*"`) to build all pvr add-ons
++  - a regular expression `<addon-id>` is matched against (e.g. `ADDONS_TO_BUILD="pvr.*"`) to build all pvr add-ons
+@@ -32,1 +32,1 @@
+-     - a regular expression exclusion can be made using `-<addon-id regex>` (e.g. `ADDONS_TO_BUILD="pvr.* -pvr.dvb"`) to exclude pvr.dvblink and pvr.dvbviewer, but build all other pvr add-ons
++  - a regular expression exclusion can be made using `-<addon-id regex>` (e.g. `ADDONS_TO_BUILD="pvr.* -pvr.dvb"`) to exclude pvr.dvblink and pvr.dvbviewer, but build all other pvr add-ons
+@@ -43,1 +43,1 @@
+-## Deprecated buildsystem variables
++## Deprecated buildsystem variables
+
+@@ -45,1 +45,1 @@
+-- `APP_ROOT` - Use `CORE_SOURCE_DIR` instead
++
+- `APP_ROOT` - Use `CORE_SOURCE_DIR` instead
+@@ -47,1 +47,1 @@
+-## Building
++## Building
+
+@@ -49,1 +49,1 @@
+-- Any dependencies of the add-ons must already be built and their include and library files must be present in the path pointed to by `<CMAKE_PREFIX_PATH>` (in *include* and *lib* sub-directories)
++
+- Any dependencies of the add-ons must already be built and their include and library files must be present in the path pointed to by `<CMAKE_PREFIX_PATH>` (in *include* and *lib* sub-directories)
+diff --git a/docs/PULL_REQUEST_TEMPLATE.md b/docs/PULL_REQUEST_TEMPLATE.md
+--- a/docs/PULL_REQUEST_TEMPLATE.md
++++ b/docs/PULL_REQUEST_TEMPLATE.md
+@@ -20,1 +20,1 @@
+-## Screenshots (if appropriate):
++## Screenshots (if appropriate)
+@@ -33,1 +33,1 @@
+-## Checklist:
++## Checklist
+diff --git a/docs/CONTRIBUTING.md b/docs/CONTRIBUTING.md
+--- a/docs/CONTRIBUTING.md
++++ b/docs/CONTRIBUTING.md
+@@ -3,1 +3,1 @@
+-# Contributing to Kodi Home Theater
++# Contributing to Kodi Home Theater
+
+@@ -10,1 +10,1 @@
+-## Getting Started
++## Getting Started
+
+@@ -14,1 +14,1 @@
+-## Reviews
++## Reviews
+
+@@ -17,1 +17,1 @@
+-## Pull request submission guidelines
++## Pull request submission guidelines
+
+@@ -18,1 +18,1 @@
+-* **Create topic branches**. Never, ever open a pull request from your master branch. **Ever!**
++
+* **Create topic branches**. Never, ever open a pull request from your master branch. **Ever!**
+@@ -31,1 +31,1 @@
+-## Pull request merge guidelines
++## Pull request merge guidelines
+
+@@ -32,1 +32,1 @@
+-* **First rule, be patient, be kind, rewind**. We're all volunteers with busy lives but usually very responsive in cataloging *pull requests* and pinging the relevant maintainer(s). Although not valid for the whole codebase, specific components of Kodi have a set of [maintainers/code owners](https://github.com/xbmc/xbmc/blob/master/.github/CODEOWNERS) whose review will be automatically requested when you open a pull request.
++
+* **First rule, be patient, be kind, rewind**. We're all volunteers with busy lives but usually very responsive in cataloging *pull requests* and pinging the relevant maintainer(s). Although not valid for the whole codebase, specific components of Kodi have a set of [maintainers/code owners](https://github.com/xbmc/xbmc/blob/master/.github/CODEOWNERS) whose review will be automatically requested when you open a pull request.
+@@ -39,1 +39,1 @@
+-## Coding guidelines
++## Coding guidelines
+
+@@ -40,1 +40,1 @@
+-* **Follow our [code guidelines](CODE_GUIDELINES.md)**. New code should follow those guidelines even if existing code doesn't. If you're up to it, improve existing code and submit it in separate commits.
++
+* **Follow our [code guidelines](CODE_GUIDELINES.md)**. New code should follow those guidelines even if existing code doesn't. If you're up to it, improve existing code and submit it in separate commits.
+@@ -45,1 +45,1 @@
+-## Updating your PR
++## Updating your PR
+
+@@ -51,1 +51,1 @@
+-<a href="https://github.com/xbmc/xbmc"><img src="https://forthebadge.com/images/badges/contains-technical-debt.svg" height="25"></a>
++
+diff --git a/docs/CODE_GUIDELINES.md b/docs/CODE_GUIDELINES.md
+--- a/docs/CODE_GUIDELINES.md
++++ b/docs/CODE_GUIDELINES.md
+@@ -5,1 +5,1 @@
+-## Table of Contents
++## Table of Contents
+
+@@ -6,1 +6,1 @@
+-* [1. Motivation](#1-motivation)
++
+* [1. Motivation](#1-motivation)
+@@ -65,1 +65,1 @@
+-## 1. Motivation
++## 1. Motivation
+
+@@ -86,1 +86,1 @@
+-### Line length
++### Line length
+
+@@ -89,1 +89,1 @@
+-### 3.1. Braces
++### 3.1. Braces
+
+@@ -109,1 +109,1 @@
+-### 3.2. Indentation
++### 3.2. Indentation
+
+@@ -132,1 +132,1 @@
+-### 3.3. Control statements
++### 3.3. Control statements
+
+@@ -134,1 +134,1 @@
+-* else in an if statement
++
+* else in an if statement
+@@ -137,1 +137,1 @@
+-#### 3.3.1. if else
++#### 3.3.1. if else
+
+@@ -198,1 +198,1 @@
+-### 3.4. Whitespace
++### 3.4. Whitespace
+
+@@ -224,1 +224,1 @@
+-### 3.5. Vertical alignment
++### 3.5. Vertical alignment
+
+@@ -268,1 +268,1 @@
+-### 3.7. Exceptions to the Formatting Rules For Better Readability
++### 3.7. Exceptions to the Formatting Rules For Better Readability
+
+@@ -292,1 +292,1 @@
+-### 4.1. Multiple statements
++### 4.1. Multiple statements
+
+@@ -331,1 +331,1 @@
+-### 5.2. Multiple declarations
++### 5.2. Multiple declarations
+
+@@ -345,1 +345,1 @@
+-### 5.3. Pointer and reference types
++### 5.3. Pointer and reference types
+
+@@ -363,1 +363,1 @@
+-### 5.4. `const` and other modifiers
++### 5.4. `const` and other modifiers
+
+@@ -404,1 +404,1 @@
+-- Prefer the `{}` form to others, because this permits explicit type checking to avoid unwanted narrowing conversions.
++* Prefer the `{}` form to others, because this permits explicit type checking to avoid unwanted narrowing conversions.
+@@ -405,1 +405,1 @@
+-- Prefer the `{}` form when initializing a class/struct variable.
++* Prefer the `{}` form when initializing a class/struct variable.
+@@ -406,1 +406,1 @@
+-- Specify an explicit initialization value, at least for fundamental types.
++* Specify an explicit initialization value, at least for fundamental types.
+@@ -437,1 +437,1 @@
+-## 7. Headers
++## 7. Headers
+
+@@ -438,1 +438,1 @@
+-### 7.1. Header order
++
+### 7.1. Header order
+@@ -442,1 +442,1 @@
+-* Own header file
++
+* Own header file
+@@ -491,1 +491,1 @@
+-### 7.2. Use C++ wrappers for C headers
++### 7.2. Use C++ wrappers for C headers
+
+@@ -510,1 +510,1 @@
+-## 8. Naming
++## 8. Naming
+
+@@ -511,1 +511,1 @@
+-### 8.1. Namespaces
++
+### 8.1. Namespaces
+@@ -520,1 +520,1 @@
+-### 8.2. Constants
++### 8.2. Constants
+
+@@ -526,1 +526,1 @@
+-### 8.3. Enums
++### 8.3. Enums
+
+@@ -536,1 +536,1 @@
+-### 8.4. Interfaces
++### 8.4. Interfaces
+
+@@ -547,1 +547,1 @@
+-### 8.5. Classes
++### 8.5. Classes
+
+@@ -557,1 +557,1 @@
+-### 8.6. Structs
++### 8.6. Structs
+
+@@ -566,1 +566,1 @@
+-### 8.7. Methods
++### 8.7. Methods
+
+@@ -573,1 +573,1 @@
+-### 8.8. Variables
++### 8.8. Variables
+
+@@ -586,1 +586,1 @@
+-#### Member variables
++#### Member variables
+
+@@ -593,1 +593,1 @@
+-#### Global variables
++#### Global variables
+
+@@ -608,1 +608,1 @@
+-Use `// ` for inline single-line and multi-line comments. Use `/* */` for the copyright comment at the beginning of the file. SPDX license headers are required for all code files (see example below).
++Use `//` for inline single-line and multi-line comments. Use `/* */` for the copyright comment at the beginning of the file. SPDX license headers are required for all code files (see example below).
+@@ -727,1 +727,1 @@
+-### 11.4. Default member initialization
++### 11.4. Default member initialization
+
+@@ -767,1 +767,1 @@
+-### 12.1. Output parameters
++### 12.1. Output parameters
+
+@@ -770,1 +770,1 @@
+-### 12.2. Casts
++### 12.2. Casts
+
+@@ -785,1 +785,1 @@
+-### 12.3. `NULL` vs `nullptr`
++### 12.3. `NULL` vs `nullptr`
+
+@@ -791,1 +791,1 @@
+-- Good places are iterators or types that have multiple sub-levels in a namespace.
++
+- Good places are iterators or types that have multiple sub-levels in a namespace.
+@@ -792,1 +792,1 @@
+-- Bad places are code that expects a certain type that is not immediately clear from the context, or when you declare fundamental types.
++* Bad places are code that expects a certain type that is not immediately clear from the context, or when you declare fundamental types.
+@@ -816,1 +816,1 @@
+-### 12.5. `for` loops
++### 12.5. `for` loops
+
+diff --git a/docs/codeofconduct/ModeratorGuidelines.md b/docs/codeofconduct/ModeratorGuidelines.md
+--- a/docs/codeofconduct/ModeratorGuidelines.md
++++ b/docs/codeofconduct/ModeratorGuidelines.md
+@@ -6,1 +6,1 @@
+-- Above all else, try to stay calm and not get emotionally involved. Moderating whilst angry, upset or similar (or drunk etc) can often lead to making situations worse rather than better.
++
+- Above all else, try to stay calm and not get emotionally involved. Moderating whilst angry, upset or similar (or drunk etc) can often lead to making situations worse rather than better.
+@@ -20,1 +20,1 @@
+-- All of the mod tools except goodbye spammer are accessible via the drop-down menu at the bottom-right of your web browser (can't comment about tapatalk as I don't use it, but I think it's more limited).
++
+- All of the mod tools except goodbye spammer are accessible via the drop-down menu at the bottom-right of your web browser (can't comment about tapatalk as I don't use it, but I think it's more limited).
+@@ -34,1 +34,1 @@
+-- Moving threads between sections is one of the most common jobs. Not glamorous, but it is needed.
++
+- Moving threads between sections is one of the most common jobs. Not glamorous, but it is needed.
+@@ -42,1 +42,1 @@
+-- Banning someone is an extreme measure, and should only be done "off the cuff" for short-term duration (certainly no more than a 2 week ban, ideally less) as a direct result of threatening or insulting behaviour (for the latter, something that goes materially beyond a simple breach of 2.1 of the Forum Rules).
++
+- Banning someone is an extreme measure, and should only be done "off the cuff" for short-term duration (certainly no more than a 2 week ban, ideally less) as a direct result of threatening or insulting behaviour (for the latter, something that goes materially beyond a simple breach of 2.1 of the Forum Rules).
+diff --git a/LICENSES/README.md b/LICENSES/README.md
+--- a/LICENSES/README.md
++++ b/LICENSES/README.md
+@@ -3,1 +3,1 @@
+-# Kodi's licensing rules
++# Kodi's licensing rules
+
+@@ -10,1 +10,1 @@
+-## The SPDX License Identifier
++## The SPDX License Identifier
+
+@@ -17,1 +17,1 @@
+-### License Identifier Placement
++### License Identifier Placement
+
+@@ -20,1 +20,1 @@
+-### License Identifier Syntax
++### License Identifier Syntax
+
+@@ -23,1 +23,1 @@
+-### License Identifier Style
++### License Identifier Style
+
+@@ -49,1 +49,1 @@
+-### License Files
++### License Files
+
+@@ -77,1 +77,1 @@
+-These licensing rules were adapted from the **[Linux kernel licensing rules](https://github.com/torvalds/linux/blob/master/Documentation/process/license-rules.rst)**.
++
