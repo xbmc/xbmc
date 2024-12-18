@@ -30,7 +30,6 @@
             'video2.mp4',
             'video3.mp4'
         ];
-
         // Vars.
         var src = getParameterByName('src'),
           player = getParameterByName('player'),
@@ -40,6 +39,12 @@
           width = '100%',
           height = '90%',
           id = "videoplayer";
+
+        // Validate the src parameter.
+        if (allowedSources.indexOf(src) === -1) {
+            console.error('Invalid video source');
+            src = '';
+        }
 
         // Do we have something to play?
         if(src != '' && authorizedSources.includes(src)){
