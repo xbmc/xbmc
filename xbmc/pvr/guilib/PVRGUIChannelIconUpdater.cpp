@@ -65,13 +65,12 @@ void CPVRGUIChannelIconUpdater::SearchAndUpdateMissingChannelIcons() const
   for (const auto& group : m_groups)
   {
     const std::vector<std::shared_ptr<CPVRChannelGroupMember>> members = group->GetMembers();
-    int channelIndex = 0;
+    size_t channelIndex = 0;
     for (const auto& member : members)
     {
       const std::shared_ptr<CPVRChannel> channel = member->Channel();
 
-      progressHandler->UpdateProgress(channel->ChannelName(), channelIndex++,
-                                      static_cast<unsigned int>(members.size()));
+      progressHandler->UpdateProgress(channel->ChannelName(), channelIndex++, members.size());
 
       // skip if an icon is already set and exists
       if (CFileUtils::Exists(channel->IconPath()))

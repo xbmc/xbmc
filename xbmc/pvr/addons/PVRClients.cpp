@@ -167,12 +167,11 @@ void CPVRClients::UpdateClients(
     auto progressHandler = std::make_unique<CPVRGUIProgressHandler>(
         g_localizeStrings.Get(19239)); // Creating PVR clients
 
-    unsigned int i = 0;
+    size_t i = 0;
     for (const auto& client : clientsToCreate)
     {
-      progressHandler->UpdateProgress(
-          client->Name(), i++,
-          static_cast<unsigned int>(clientsToCreate.size() + clientsToReCreate.size()));
+      progressHandler->UpdateProgress(client->Name(), i++,
+                                      clientsToCreate.size() + clientsToReCreate.size());
 
       const ADDON_STATUS status = client->Create();
 
@@ -192,9 +191,8 @@ void CPVRClients::UpdateClients(
 
     for (const auto& clientInfo : clientsToReCreate)
     {
-      progressHandler->UpdateProgress(
-          clientInfo.second, i++,
-          static_cast<unsigned int>(clientsToCreate.size() + clientsToReCreate.size()));
+      progressHandler->UpdateProgress(clientInfo.second, i++,
+                                      clientsToCreate.size() + clientsToReCreate.size());
 
       // stop and recreate client
       StopClient(clientInfo.first, true /* restart */);
