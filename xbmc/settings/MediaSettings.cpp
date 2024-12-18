@@ -77,6 +77,8 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
   const TiXmlElement *pElement = settings->FirstChildElement("defaultvideosettings");
   if (pElement != NULL)
   {
+    m_defaultVideoSettings.m_isDefaultVideoSettings = true;
+
     int interlaceMethod;
     XMLUtils::GetInt(pElement, "interlacemethod", interlaceMethod, VS_INTERLACEMETHOD_NONE, VS_INTERLACEMETHOD_MAX);
 
