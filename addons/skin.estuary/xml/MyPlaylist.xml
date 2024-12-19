@@ -30,8 +30,8 @@
 			<control type="group">
 				<visible>!Container.Content(songs)</visible>
 				<depth>DepthBars</depth>
-				<bottom>0</bottom>
-				<height>70</height>
+				<bottom>10</bottom>
+				<height>40</height>
 				<animation effect="fade" start="0" end="100" time="300" delay="300">WindowOpen</animation>
 				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
 				<include condition="!Skin.HasSetting(hide_mediaflags)">MediaFlags</include>
