@@ -30,14 +30,18 @@ CPipewire::CPipewire()
 CPipewire::~CPipewire()
 {
   if (m_loop)
+    m_loop->Lock();
+
+  m_registry.reset();
+  m_core.reset();
+  m_context.reset();
+
+  if (m_loop)
   {
     m_loop->Unlock();
     m_loop->Stop();
   }
 
-  m_registry.reset();
-  m_core.reset();
-  m_context.reset();
   m_loop.reset();
 
   pw_deinit();
