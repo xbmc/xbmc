@@ -505,11 +505,8 @@ int PlayOrQueueMedia(const std::vector<std::string>& params,
       CMediaSettings::GetInstance().SetMediaStartWindowed(true);
     else if (StringUtils::EqualsNoCase(params[i], "resume"))
     {
-      // Force the item to resume (if applicable).
-      // If item is provided by a plugin, we don't know if this can be resumed or not at this point,
-      // that information was lost when the item was turned into a string but we were told to resume
-      // so we will try to do that.
-      if (item.IsPlugin() || VIDEO::UTILS::GetItemResumeInformation(item).isResumable)
+      // force the item to resume (if applicable)
+      if (VIDEO::UTILS::GetItemResumeInformation(item).isResumable)
         item.SetStartOffset(STARTOFFSET_RESUME);
       else
         item.SetStartOffset(0);
