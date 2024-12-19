@@ -30,10 +30,7 @@ CPipewire::CPipewire()
 CPipewire::~CPipewire()
 {
   if (m_loop)
-  {
-    m_loop->Unlock();
     m_loop->Stop();
-  }
 
   m_registry.reset();
   m_core.reset();
