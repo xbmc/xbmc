@@ -14,8 +14,6 @@
 #include "addons/AddonManager.h"
 #include "favourites/FavouritesService.h"
 #include "filesystem/Directory.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
 #include "music/MusicFileItemClassify.h"
@@ -33,6 +31,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
+#include "utils/guilib/GUIBuiltinsUtils.h"
 #include "utils/guilib/GUIContentUtils.h"
 #include "utils/log.h"
 #include "video/VideoFileItemClassify.h"
@@ -50,6 +49,7 @@
 using namespace XFILE;
 using namespace KODI;
 using namespace KODI::MESSAGING;
+using namespace KODI::UTILS::GUILIB;
 using namespace PVR;
 
 class CDirectoryJob : public CJob
@@ -455,23 +455,6 @@ std::string CDirectoryProvider::GetTarget(const CFileItem& item) const
 
 namespace
 {
-bool ExecuteAction(const std::string& execute, const std::shared_ptr<CFileItem>& item)
-{
-  if (!execute.empty())
-  {
-    CGUIMessage message(GUI_MSG_EXECUTE, 0, 0, 0, 0, item);
-    message.SetStringParam(execute);
-    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(message);
-    return true;
-  }
-  return false;
-}
-
-bool ExecuteAction(const CExecString& execute, const std::shared_ptr<CFileItem>& item)
-{
-  return ExecuteAction(execute.GetExecString(), item);
-}
-
 class CVideoSelectActionProcessor : public VIDEO::GUILIB::CVideoSelectActionProcessorBase
 {
 public:
@@ -483,26 +466,25 @@ public:
 protected:
   bool OnPlayPartSelected(unsigned int part) override
   {
-    // part numbers are 1-based
-    ExecuteAction({"PlayMedia", *m_item, StringUtils::Format("playoffset={}", part - 1)}, m_item);
+    CGUIBuiltinsUtils::ExecutePlayMediaPart(m_item, part);
     return true;
   }
 
   bool OnResumeSelected() override
   {
-    ExecuteAction({"PlayMedia", *m_item, "resume"}, m_item);
+    CGUIBuiltinsUtils::ExecutePlayMediaTryResume(m_item);
     return true;
   }
 
   bool OnPlaySelected() override
   {
-    ExecuteAction({"PlayMedia", *m_item, "noresume"}, m_item);
+    CGUIBuiltinsUtils::ExecutePlayMediaNoResume(m_item);
     return true;
   }
 
   bool OnQueueSelected() override
   {
-    ExecuteAction({"QueueMedia", *m_item, ""}, m_item);
+    CGUIBuiltinsUtils::ExecuteQueueMedia(m_item);
     return true;
   }
 
@@ -533,13 +515,13 @@ public:
 protected:
   bool OnResumeSelected() override
   {
-    ExecuteAction({"PlayMedia", *m_item, "resume"}, m_item);
+    CGUIBuiltinsUtils::ExecutePlayMediaTryResume(m_item);
     return true;
   }
 
   bool OnPlaySelected() override
   {
-    ExecuteAction({"PlayMedia", *m_item, "noresume"}, m_item);
+    CGUIBuiltinsUtils::ExecutePlayMediaNoResume(m_item);
     return true;
   }
 };
@@ -576,7 +558,7 @@ bool CDirectoryProvider::OnClick(const std::shared_ptr<CGUIListItem>& item)
   if (fileItem.HasProperty("node.target_url"))
     fileItem.SetPath(fileItem.GetProperty("node.target_url").asString());
 
-  return ExecuteAction({fileItem, GetTarget(fileItem)}, targetItem);
+  return CGUIBuiltinsUtils::ExecuteAction({fileItem, GetTarget(fileItem)}, targetItem);
 }
 
 bool CDirectoryProvider::OnPlay(const std::shared_ptr<CGUIListItem>& item)
@@ -605,12 +587,12 @@ bool CDirectoryProvider::OnPlay(const std::shared_ptr<CGUIListItem>& item)
     if (exec.GetFunction() == "playmedia")
     {
       // exec as is
-      return ExecuteAction(exec, targetItem);
+      return CGUIBuiltinsUtils::ExecuteAction(exec, targetItem);
     }
     else
     {
       // build a playmedia execute string for given target and exec this
-      return ExecuteAction({"PlayMedia", *targetItem, ""}, targetItem);
+      return CGUIBuiltinsUtils::ExecutePlayMediaAskResume(targetItem);
     }
   }
   return true;
@@ -622,7 +604,7 @@ bool CDirectoryProvider::OnInfo(const std::shared_ptr<CFileItem>& fileItem)
                             ? CServiceBroker::GetFavouritesService().ResolveFavourite(*fileItem)
                             : fileItem};
 
-  return UTILS::GUILIB::CGUIContentUtils::ShowInfoForItem(*targetItem);
+  return CGUIContentUtils::ShowInfoForItem(*targetItem);
 }
 
 bool CDirectoryProvider::OnInfo(const std::shared_ptr<CGUIListItem>& item)

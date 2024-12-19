@@ -10,17 +10,15 @@
 
 #include "ContextMenuManager.h"
 #include "FileItem.h"
-#include "ServiceBroker.h"
 #include "favourites/FavouritesURL.h"
 #include "favourites/FavouritesUtils.h"
-#include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
-#include "guilib/GUIWindowManager.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/PlayerUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/guilib/GUIBuiltinsUtils.h"
 #include "utils/guilib/GUIContentUtils.h"
 #include "video/VideoUtils.h"
 #include "video/guilib/VideoGUIUtils.h"
@@ -28,6 +26,7 @@
 #include "video/guilib/VideoSelectActionProcessor.h"
 
 using namespace KODI;
+using namespace KODI::UTILS::GUILIB;
 
 CGUIWindowFavourites::CGUIWindowFavourites()
   : CGUIMediaWindow(WINDOW_FAVOURITES, "MyFavourites.xml")
@@ -61,27 +60,25 @@ public:
 protected:
   bool OnPlayPartSelected(unsigned int part) override
   {
-    // part numbers are 1-based
-    FAVOURITES_UTILS::ExecuteAction(
-        {"PlayMedia", *m_item, StringUtils::Format("playoffset={}", part - 1)}, m_item);
+    CGUIBuiltinsUtils::ExecutePlayMediaPart(m_item, part);
     return true;
   }
 
   bool OnResumeSelected() override
   {
-    FAVOURITES_UTILS::ExecuteAction({"PlayMedia", *m_item, "resume"}, m_item);
+    CGUIBuiltinsUtils::ExecutePlayMediaTryResume(m_item);
     return true;
   }
 
   bool OnPlaySelected() override
   {
-    FAVOURITES_UTILS::ExecuteAction({"PlayMedia", *m_item, "noresume"}, m_item);
+    CGUIBuiltinsUtils::ExecutePlayMediaNoResume(m_item);
     return true;
   }
 
   bool OnQueueSelected() override
   {
-    FAVOURITES_UTILS::ExecuteAction({"QueueMedia", *m_item, ""}, m_item);
+    CGUIBuiltinsUtils::ExecuteQueueMedia(m_item);
     return true;
   }
 
@@ -108,13 +105,13 @@ public:
 protected:
   bool OnResumeSelected() override
   {
-    FAVOURITES_UTILS::ExecuteAction({"PlayMedia", *m_item, "resume"}, m_item);
+    CGUIBuiltinsUtils::ExecutePlayMediaTryResume(m_item);
     return true;
   }
 
   bool OnPlaySelected() override
   {
-    FAVOURITES_UTILS::ExecuteAction({"PlayMedia", *m_item, "noresume"}, m_item);
+    CGUIBuiltinsUtils::ExecutePlayMediaNoResume(m_item);
     return true;
   }
 };
