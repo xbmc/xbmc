@@ -175,12 +175,12 @@ bool CVideoBrowse::Execute(const std::shared_ptr<CFileItem>& item) const
 
 namespace
 {
-bool ExecuteAction(const CExecString& execute)
+bool ExecuteAction(const CExecString& execute, const std::shared_ptr<CFileItem>& item)
 {
   const std::string& execStr{execute.GetExecString()};
   if (!execStr.empty())
   {
-    CGUIMessage message(GUI_MSG_EXECUTE, 0, 0);
+    CGUIMessage message(GUI_MSG_EXECUTE, 0, 0, 0, 0, item);
     message.SetStringParam(execStr);
     CServiceBroker::GetGUI()->GetWindowManager().SendMessage(message);
     return true;
@@ -200,25 +200,25 @@ protected:
   bool OnPlayPartSelected(unsigned int part) override
   {
     // part numbers are 1-based
-    ExecuteAction({"PlayMedia", *m_item, StringUtils::Format("playoffset={}", part - 1)});
+    ExecuteAction({"PlayMedia", *m_item, StringUtils::Format("playoffset={}", part - 1)}, m_item);
     return true;
   }
 
   bool OnResumeSelected() override
   {
-    ExecuteAction({"PlayMedia", *m_item, "resume"});
+    ExecuteAction({"PlayMedia", *m_item, "resume"}, m_item);
     return true;
   }
 
   bool OnPlaySelected() override
   {
-    ExecuteAction({"PlayMedia", *m_item, "noresume"});
+    ExecuteAction({"PlayMedia", *m_item, "noresume"}, m_item);
     return true;
   }
 
   bool OnQueueSelected() override
   {
-    ExecuteAction({"QueueMedia", *m_item, ""});
+    ExecuteAction({"QueueMedia", *m_item, ""}, m_item);
     return true;
   }
 
