@@ -39,7 +39,7 @@ Action CVideoSelectActionProcessorBase::GetDefaultAction()
 
 bool CVideoSelectActionProcessorBase::Process(Action action)
 {
-  if (CVideoPlayActionProcessorBase::Process(action))
+  if (CVideoPlayActionProcessor::Process(action))
     return true;
 
   switch (action)
@@ -66,7 +66,7 @@ bool CVideoSelectActionProcessorBase::Process(Action action)
           !KODI::VIDEO::UTILS::HasItemVideoDbInformation(*m_item))
       {
         // for items without info fall back to default play action
-        return Process(CVideoPlayActionProcessorBase::GetDefaultAction());
+        return Process(CVideoPlayActionProcessor::GetDefaultAction());
       }
 
       return OnInfoSelected();

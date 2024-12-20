@@ -260,18 +260,17 @@ void CGUIDialogVideoManager::CloseAll()
 
 namespace
 {
-class CVideoPlayActionProcessor : public VIDEO::GUILIB::CVideoPlayActionProcessorBase
+class CVideoPlayActionProcessor : public VIDEO::GUILIB::CVideoPlayActionProcessor
 {
 public:
   explicit CVideoPlayActionProcessor(const std::shared_ptr<CFileItem>& item)
-    : CVideoPlayActionProcessorBase(item)
+    : VIDEO::GUILIB::CVideoPlayActionProcessor(item)
   {
   }
 
 protected:
   bool OnResumeSelected() override
   {
-    m_item->SetStartOffset(STARTOFFSET_RESUME);
     Play();
     return true;
   }

@@ -16,14 +16,16 @@ class CFileItem;
 
 namespace KODI::VIDEO::GUILIB
 {
-class CVideoPlayActionProcessorBase
+class CVideoPlayActionProcessor
 {
 public:
-  explicit CVideoPlayActionProcessorBase(const std::shared_ptr<CFileItem>& item) : m_item(item) {}
-  virtual ~CVideoPlayActionProcessorBase() = default;
+  explicit CVideoPlayActionProcessor(const std::shared_ptr<CFileItem>& item) : m_item(item) {}
+  virtual ~CVideoPlayActionProcessor() = default;
 
   bool ProcessDefaultAction();
   bool ProcessAction(Action action);
+
+  void SetChoosePlayer() { m_choosePlayer = true; }
 
   bool UserCancelled() const { return m_userCancelled; }
 
@@ -33,13 +35,16 @@ protected:
   virtual Action GetDefaultAction();
   virtual bool Process(Action action);
 
-  virtual bool OnResumeSelected() = 0;
-  virtual bool OnPlaySelected() = 0;
+  virtual bool OnResumeSelected();
+  virtual bool OnPlaySelected();
+
+  void Play(const std::string& player);
 
   std::shared_ptr<CFileItem> m_item;
   bool m_userCancelled{false};
+  bool m_choosePlayer{false};
 
 private:
-  CVideoPlayActionProcessorBase() = delete;
+  CVideoPlayActionProcessor() = delete;
 };
 } // namespace KODI::VIDEO::GUILIB

@@ -10,27 +10,31 @@
 
 #include "FileItem.h"
 #include "ServiceBroker.h"
+#include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "dialogs/GUIDialogContextMenu.h"
+#include "playlists/PlayListTypes.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/Variant.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/guilib/VideoGUIUtils.h"
 #include "video/guilib/VideoVersionHelper.h"
 
 namespace KODI::VIDEO::GUILIB
 {
 
-Action CVideoPlayActionProcessorBase::GetDefaultAction()
+Action CVideoPlayActionProcessor::GetDefaultAction()
 {
   return static_cast<Action>(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
       CSettings::SETTING_MYVIDEOS_PLAYACTION));
 }
 
-bool CVideoPlayActionProcessorBase::ProcessDefaultAction()
+bool CVideoPlayActionProcessor::ProcessDefaultAction()
 {
   return ProcessAction(GetDefaultAction());
 }
 
-bool CVideoPlayActionProcessorBase::ProcessAction(Action action)
+bool CVideoPlayActionProcessor::ProcessAction(Action action)
 {
   m_userCancelled = false;
 
@@ -46,7 +50,7 @@ bool CVideoPlayActionProcessorBase::ProcessAction(Action action)
   return Process(action);
 }
 
-bool CVideoPlayActionProcessorBase::Process(Action action)
+bool CVideoPlayActionProcessor::Process(Action action)
 {
   switch (action)
   {
@@ -63,9 +67,11 @@ bool CVideoPlayActionProcessorBase::Process(Action action)
     }
 
     case ACTION_RESUME:
+      m_item->SetStartOffset(STARTOFFSET_RESUME);
       return OnResumeSelected();
 
     case ACTION_PLAY_FROM_BEGINNING:
+      m_item->SetStartOffset(0);
       return OnPlaySelected();
 
     default:
@@ -74,7 +80,7 @@ bool CVideoPlayActionProcessorBase::Process(Action action)
   return false; // We did not handle the action.
 }
 
-Action CVideoPlayActionProcessorBase::ChoosePlayOrResume(const CFileItem& item)
+Action CVideoPlayActionProcessor::ChoosePlayOrResume(const CFileItem& item)
 {
   Action action = ACTION_PLAY_FROM_BEGINNING;
 
@@ -90,6 +96,68 @@ Action CVideoPlayActionProcessorBase::ChoosePlayOrResume(const CFileItem& item)
   }
 
   return action;
+}
+
+bool CVideoPlayActionProcessor::OnResumeSelected()
+{
+  Play("");
+  return true;
+}
+
+namespace
+{
+std::vector<std::string> GetPlayers(const CPlayerCoreFactory& playerCoreFactory,
+                                    const CFileItem& item)
+{
+  std::vector<std::string> players;
+  if (VIDEO::IsVideoDb(item))
+  {
+    //! @todo CPlayerCoreFactory and classes called from there do not handle dyn path correctly.
+    CFileItem item2{item};
+    item2.SetPath(item.GetDynPath());
+    playerCoreFactory.GetPlayers(item2, players);
+  }
+  else
+    playerCoreFactory.GetPlayers(item, players);
+
+  return players;
+}
+} // unnamed namespace
+
+bool CVideoPlayActionProcessor::OnPlaySelected()
+{
+  std::string player;
+  if (m_choosePlayer)
+  {
+    const CPlayerCoreFactory& playerCoreFactory{CServiceBroker::GetPlayerCoreFactory()};
+    const std::vector<std::string> players{GetPlayers(playerCoreFactory, *m_item)};
+    player = playerCoreFactory.SelectPlayerDialog(players);
+    if (player.empty())
+    {
+      m_userCancelled = true;
+      return true; // User cancelled player selection. We're done.
+    }
+  }
+
+  Play(player);
+  return true;
+}
+
+void CVideoPlayActionProcessor::Play(const std::string& player)
+{
+  auto item{m_item};
+  if (item->m_bIsFolder && item->HasVideoVersions())
+  {
+    //! @todo get rid of "videos with versions as folder" hack!
+    item = std::make_shared<CFileItem>(*item);
+    item->m_bIsFolder = false;
+  }
+
+  item->SetProperty("playlist_type_hint", static_cast<int>(KODI::PLAYLIST::Id::TYPE_VIDEO));
+  const ContentUtils::PlayMode mode{item->GetProperty("CheckAutoPlayNextItem").asBoolean()
+                                        ? ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM
+                                        : ContentUtils::PlayMode::PLAY_ONLY_THIS};
+  VIDEO::UTILS::PlayItem(item, player, mode);
 }
 
 } // namespace KODI::VIDEO::GUILIB

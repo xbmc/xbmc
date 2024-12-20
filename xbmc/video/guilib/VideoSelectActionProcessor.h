@@ -16,11 +16,11 @@ class CFileItem;
 
 namespace KODI::VIDEO::GUILIB
 {
-class CVideoSelectActionProcessorBase : public CVideoPlayActionProcessorBase
+class CVideoSelectActionProcessorBase : public CVideoPlayActionProcessor
 {
 public:
   explicit CVideoSelectActionProcessorBase(const std::shared_ptr<CFileItem>& item)
-    : CVideoPlayActionProcessorBase(item)
+    : CVideoPlayActionProcessor(item)
   {
   }
 

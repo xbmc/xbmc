@@ -586,17 +586,9 @@ protected:
     return m_window.OnPlayStackPart(m_item, part);
   }
 
-  bool OnResumeSelected() override
-  {
-    m_item->SetStartOffset(STARTOFFSET_RESUME);
-    return m_window.PlayItem(m_item, m_player);
-  }
+  bool OnResumeSelected() override { return m_window.PlayItem(m_item, m_player); }
 
-  bool OnPlaySelected() override
-  {
-    m_item->SetStartOffset(0);
-    return m_window.PlayItem(m_item, m_player);
-  }
+  bool OnPlaySelected() override { return m_window.PlayItem(m_item, m_player); }
 
   bool OnQueueSelected() override
   {
@@ -755,28 +747,20 @@ void CGUIWindowVideoBase::LoadVideoInfo(CFileItemList& items,
 
 namespace
 {
-class CVideoPlayActionProcessor : public VIDEO::GUILIB::CVideoPlayActionProcessorBase
+class CVideoPlayActionProcessor : public VIDEO::GUILIB::CVideoPlayActionProcessor
 {
 public:
   CVideoPlayActionProcessor(CGUIWindowVideoBase& window,
                             const std::shared_ptr<CFileItem>& item,
                             const std::string& player)
-    : CVideoPlayActionProcessorBase(item), m_window(window), m_player(player)
+    : VIDEO::GUILIB::CVideoPlayActionProcessor(item), m_window(window), m_player(player)
   {
   }
 
 protected:
-  bool OnResumeSelected() override
-  {
-    m_item->SetStartOffset(STARTOFFSET_RESUME);
-    return m_window.PlayItem(m_item, m_player);
-  }
+  bool OnResumeSelected() override { return m_window.PlayItem(m_item, m_player); }
 
-  bool OnPlaySelected() override
-  {
-    m_item->SetStartOffset(0);
-    return m_window.PlayItem(m_item, m_player);
-  }
+  bool OnPlaySelected() override { return m_window.PlayItem(m_item, m_player); }
 
 private:
   CGUIWindowVideoBase& m_window;

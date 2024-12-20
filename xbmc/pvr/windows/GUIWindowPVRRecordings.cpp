@@ -297,11 +297,11 @@ private:
   const int m_itemIndex{-1};
 };
 
-class CVideoPlayActionProcessor : public VIDEO::GUILIB::CVideoPlayActionProcessorBase
+class CVideoPlayActionProcessor : public VIDEO::GUILIB::CVideoPlayActionProcessor
 {
 public:
   explicit CVideoPlayActionProcessor(const std::shared_ptr<CFileItem>& item)
-    : CVideoPlayActionProcessorBase(item)
+    : VIDEO::GUILIB::CVideoPlayActionProcessor(item)
   {
   }
 
@@ -310,7 +310,6 @@ protected:
   {
     if (m_item->m_bIsFolder)
     {
-      m_item->SetStartOffset(STARTOFFSET_RESUME);
       CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecordingFolder(
           *m_item, false /* no resume check */);
     }
@@ -326,7 +325,6 @@ protected:
   {
     if (m_item->m_bIsFolder)
     {
-      m_item->SetStartOffset(0);
       CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecordingFolder(
           *m_item, false /* no resume check */);
     }
