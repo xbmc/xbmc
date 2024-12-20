@@ -62,7 +62,7 @@ bool CVideoSelectActionProcessorBase::Process(Action action)
     case ACTION_INFO:
     {
       if (GetDefaultAction() == ACTION_INFO && !KODI::VIDEO::IsVideoDb(*m_item) &&
-          !m_item->IsPlugin() && !m_item->IsScript() &&
+          !m_item->IsPlugin() && !m_item->IsScript() && !m_item->IsPVR() &&
           !KODI::VIDEO::UTILS::HasItemVideoDbInformation(*m_item))
       {
         // for items without info fall back to default play action
