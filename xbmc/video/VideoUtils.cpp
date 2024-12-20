@@ -239,4 +239,45 @@ ResumeInformation GetStackPartResumeInformation(const CFileItem& item, unsigned 
   return resumeInfo;
 }
 
+std::shared_ptr<CFileItem> LoadVideoFilesFolderInfo(const CFileItem& folder)
+{
+  CVideoDatabase db;
+  if (!db.Open())
+  {
+    CLog::LogF(LOGERROR, "Cannot open VideoDatabase");
+    return {};
+  }
+
+  CFileItemList items;
+  XFILE::CDirectory::GetDirectory(folder.GetDynPath(), items, "", XFILE::DIR_FLAG_DEFAULTS);
+
+  db.GetPlayCounts(items.GetPath(), items);
+
+  std::shared_ptr<CFileItem> loadedItem{std::make_shared<CFileItem>(folder)};
+  loadedItem->SetProperty("total", 0);
+  loadedItem->SetProperty("watched", 0);
+  loadedItem->SetProperty("unwatched", 0);
+  loadedItem->SetProperty("inprogress", 0);
+
+  for (const auto& item : items)
+  {
+    if (item->HasVideoInfoTag())
+    {
+      loadedItem->IncrementProperty("total", 1);
+      if (item->GetVideoInfoTag()->GetPlayCount() == 0)
+      {
+        loadedItem->IncrementProperty("unwatched", 1);
+      }
+      else
+      {
+        loadedItem->IncrementProperty("watched", 1);
+      }
+      if (item->GetVideoInfoTag()->GetResumePoint().IsPartWay())
+      {
+        loadedItem->IncrementProperty("inprogress", 1);
+      }
+    }
+  }
+  return loadedItem;
+}
 } // namespace KODI::VIDEO::UTILS
