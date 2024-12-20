@@ -14,22 +14,14 @@
 #include "video/guilib/VideoAction.h"
 #include "windows/GUIMediaWindow.h"
 
-namespace
-{
-class CVideoSelectActionProcessor;
-class CVideoPlayActionProcessor;
-} // unnamed namespace
-
 class CGUIWindowVideoBase : public CGUIMediaWindow, public IBackgroundLoaderObserver
 {
-  friend class ::CVideoSelectActionProcessor;
-  friend class ::CVideoPlayActionProcessor;
-
 public:
   CGUIWindowVideoBase(int id, const std::string &xmlFile);
   ~CGUIWindowVideoBase(void) override;
   bool OnMessage(CGUIMessage& message) override;
   bool OnAction(const CAction &action) override;
+  bool OnPopupMenu(int iItem) override;
 
   /*! \brief Gets called to process the "info" action for the given file item
    Default implementation shows a dialog containing information for the movie/episode/...
@@ -66,6 +58,10 @@ public:
                             CVideoDatabase& database,
                             bool allowReplaceLabels = true);
 
+  bool PlayItem(const std::shared_ptr<CFileItem>& item, const std::string& player);
+  bool OnPlayStackPart(const std::shared_ptr<CFileItem>& item, unsigned int partNumber);
+  void OnQueueItem(const std::shared_ptr<CFileItem>& item, int iItem, bool first = false);
+
 protected:
   void OnScan(const std::string& strPath, bool scanAll = false);
   bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
@@ -79,7 +75,6 @@ protected:
   void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
   bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
   virtual void OnQueueItem(int iItem, bool first = false);
-  void OnQueueItem(const std::shared_ptr<CFileItem>& item, int iItem, bool first = false);
   virtual void OnDeleteItem(const CFileItemPtr& pItem);
   void OnDeleteItem(int iItem) override;
   virtual void DoSearch(const std::string& strSearch, CFileItemList& items) {}
@@ -106,7 +101,6 @@ protected:
   using CGUIMediaWindow::LoadPlayList;
   void LoadPlayList(const std::string& strPlayList,
                     KODI::PLAYLIST::Id playlistId = KODI::PLAYLIST::Id::TYPE_VIDEO);
-  bool PlayItem(const std::shared_ptr<CFileItem>& item, const std::string& player);
 
   /*!
    \brief Lookup the information of an item and display an Info dialog
@@ -126,8 +120,6 @@ protected:
   static bool OnUnAssignContent(const std::string &path, int header, int text);
 
   static bool StackingAvailable(const CFileItemList &items);
-
-  bool OnPlayStackPart(const std::shared_ptr<CFileItem>& item, unsigned int partNumber);
 
   void UpdateVideoVersionItems();
   void UpdateVideoVersionItemsLabel(const std::string& directory);

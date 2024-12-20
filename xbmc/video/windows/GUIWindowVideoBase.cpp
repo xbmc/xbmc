@@ -115,6 +115,11 @@ bool CGUIWindowVideoBase::OnAction(const CAction &action)
   return CGUIMediaWindow::OnAction(action);
 }
 
+bool CGUIWindowVideoBase::OnPopupMenu(int iItem)
+{
+  return CGUIMediaWindow::OnPopupMenu(iItem);
+}
+
 bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
