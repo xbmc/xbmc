@@ -454,11 +454,11 @@ std::string CDirectoryProvider::GetTarget(const CFileItem& item) const
 
 namespace
 {
-class CVideoSelectActionProcessor : public VIDEO::GUILIB::CVideoSelectActionProcessorBase
+class CVideoSelectActionProcessor : public VIDEO::GUILIB::CVideoSelectActionProcessor
 {
 public:
   CVideoSelectActionProcessor(CDirectoryProvider& provider, const std::shared_ptr<CFileItem>& item)
-    : CVideoSelectActionProcessorBase(item), m_provider(provider)
+    : VIDEO::GUILIB::CVideoSelectActionProcessor(item), m_provider(provider)
   {
   }
 

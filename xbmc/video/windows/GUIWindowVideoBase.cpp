@@ -563,22 +563,22 @@ bool CGUIWindowVideoBase::OnSelect(int iItem)
         !StringUtils::StartsWith(path, "plugin://")) ||
        (StringUtils::StartsWith(path, "plugin://") &&
         item->GetProperty("IsPlayable").asBoolean(false))))
-    return OnFileAction(
-        iItem, VIDEO::GUILIB::CVideoSelectActionProcessorBase::GetDefaultSelectAction(), "");
+    return OnFileAction(iItem, VIDEO::GUILIB::CVideoSelectActionProcessor::GetDefaultSelectAction(),
+                        "");
 
   return CGUIMediaWindow::OnSelect(iItem);
 }
 
 namespace
 {
-class CVideoSelectActionProcessor : public VIDEO::GUILIB::CVideoSelectActionProcessorBase
+class CVideoSelectActionProcessor : public VIDEO::GUILIB::CVideoSelectActionProcessor
 {
 public:
   CVideoSelectActionProcessor(CGUIWindowVideoBase& window,
                               const std::shared_ptr<CFileItem>& item,
                               int itemIndex,
                               const std::string& player)
-    : CVideoSelectActionProcessorBase(item),
+    : VIDEO::GUILIB::CVideoSelectActionProcessor(item),
       m_window(window),
       m_itemIndex(itemIndex),
       m_player(player)

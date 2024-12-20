@@ -243,13 +243,13 @@ void CGUIWindowPVRRecordingsBase::UpdateButtons()
 
 namespace
 {
-class CVideoSelectActionProcessor : public VIDEO::GUILIB::CVideoSelectActionProcessorBase
+class CVideoSelectActionProcessor : public VIDEO::GUILIB::CVideoSelectActionProcessor
 {
 public:
   CVideoSelectActionProcessor(CGUIWindowPVRRecordingsBase& window,
                               const std::shared_ptr<CFileItem>& item,
                               int itemIndex)
-    : CVideoSelectActionProcessorBase(item), m_window(window), m_itemIndex(itemIndex)
+    : VIDEO::GUILIB::CVideoSelectActionProcessor(item), m_window(window), m_itemIndex(itemIndex)
   {
   }
 

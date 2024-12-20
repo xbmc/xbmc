@@ -186,11 +186,11 @@ bool CVideoBrowse::Execute(const std::shared_ptr<CFileItem>& item) const
 
 namespace
 {
-class CVideoSelectActionProcessor : public VIDEO::GUILIB::CVideoSelectActionProcessorBase
+class CVideoSelectActionProcessor : public VIDEO::GUILIB::CVideoSelectActionProcessor
 {
 public:
   explicit CVideoSelectActionProcessor(const std::shared_ptr<CFileItem>& item)
-    : CVideoSelectActionProcessorBase(item)
+    : VIDEO::GUILIB::CVideoSelectActionProcessor(item)
   {
   }
 
