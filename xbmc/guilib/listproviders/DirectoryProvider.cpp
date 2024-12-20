@@ -37,7 +37,6 @@
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoThumbLoader.h"
-#include "video/VideoUtils.h"
 #include "video/guilib/VideoGUIUtils.h"
 #include "video/guilib/VideoPlayActionProcessor.h"
 #include "video/guilib/VideoSelectActionProcessor.h"
@@ -504,27 +503,6 @@ private:
   CDirectoryProvider& m_provider;
 };
 
-class CVideoPlayActionProcessor : public VIDEO::GUILIB::CVideoPlayActionProcessor
-{
-public:
-  explicit CVideoPlayActionProcessor(const std::shared_ptr<CFileItem>& item)
-    : VIDEO::GUILIB::CVideoPlayActionProcessor(item)
-  {
-  }
-
-protected:
-  bool OnResumeSelected() override
-  {
-    CGUIBuiltinsUtils::ExecutePlayMediaTryResume(m_item);
-    return true;
-  }
-
-  bool OnPlaySelected() override
-  {
-    CGUIBuiltinsUtils::ExecutePlayMediaNoResume(m_item);
-    return true;
-  }
-};
 } // namespace
 
 bool CDirectoryProvider::OnClick(const std::shared_ptr<CGUIListItem>& item)
@@ -576,7 +554,7 @@ bool CDirectoryProvider::OnPlay(const std::shared_ptr<CGUIListItem>& item)
   if (targetItem->HasVideoInfoTag() ||
       (targetItem->m_bIsFolder && VIDEO::UTILS::IsItemPlayable(*targetItem)))
   {
-    CVideoPlayActionProcessor proc{targetItem};
+    KODI::VIDEO::GUILIB::CVideoPlayActionProcessor proc{targetItem};
     if (proc.ProcessDefaultAction())
       return true;
   }
