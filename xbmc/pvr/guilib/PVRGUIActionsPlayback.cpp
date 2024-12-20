@@ -82,23 +82,6 @@ bool CPVRGUIActionsPlayback::CheckResumeRecording(const CFileItem& item) const
   return bPlayIt;
 }
 
-bool CPVRGUIActionsPlayback::ResumePlayRecording(const CFileItem& item, bool bFallbackToPlay) const
-{
-  if (VIDEO::UTILS::GetItemResumeInformation(item).isResumable)
-  {
-    const_cast<CFileItem*>(&item)->SetStartOffset(STARTOFFSET_RESUME);
-  }
-  else
-  {
-    if (bFallbackToPlay)
-      const_cast<CFileItem*>(&item)->SetStartOffset(0);
-    else
-      return false;
-  }
-
-  return PlayRecording(item, false /* skip resume check */);
-}
-
 void CPVRGUIActionsPlayback::CheckAndSwitchToFullscreen(bool bFullscreen) const
 {
   CMediaSettings::GetInstance().SetMediaStartWindowed(!bFullscreen);

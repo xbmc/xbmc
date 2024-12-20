@@ -20,7 +20,6 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "pvr/PVRManager.h"
-#include "pvr/guilib/PVRGUIActionsPlayback.h"
 #include "pvr/guilib/PVRGUIActionsRecordings.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/recordings/PVRRecordings.h"
@@ -31,7 +30,6 @@
 #include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
 #include "video/VideoLibraryQueue.h"
-#include "video/guilib/VideoGUIUtils.h"
 #include "video/guilib/VideoPlayActionProcessor.h"
 #include "video/guilib/VideoSelectActionProcessor.h"
 #include "video/windows/GUIWindowVideoBase.h"
@@ -258,32 +256,6 @@ protected:
   {
     //! @todo pvr recordings do not support video stacking (yet).
     return false;
-  }
-
-  bool OnResumeSelected() override
-  {
-    CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().ResumePlayRecording(
-        *m_item, true /* fall back to play if no resume possible */);
-    return true;
-  }
-
-  bool OnPlaySelected() override
-  {
-    CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
-        *m_item, false /* no resume check */);
-    return true;
-  }
-
-  bool OnQueueSelected() override
-  {
-    VIDEO::UTILS::QueueItem(m_item, VIDEO::UTILS::QueuePosition::POSITION_END);
-    return true;
-  }
-
-  bool OnInfoSelected() override
-  {
-    CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().ShowRecordingInfo(*m_item);
-    return true;
   }
 
   bool OnChooseSelected() override
