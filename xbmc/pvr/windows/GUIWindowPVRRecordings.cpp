@@ -296,46 +296,6 @@ private:
   CGUIWindowPVRRecordingsBase& m_window;
   const int m_itemIndex{-1};
 };
-
-class CVideoPlayActionProcessor : public VIDEO::GUILIB::CVideoPlayActionProcessor
-{
-public:
-  explicit CVideoPlayActionProcessor(const std::shared_ptr<CFileItem>& item)
-    : VIDEO::GUILIB::CVideoPlayActionProcessor(item)
-  {
-  }
-
-protected:
-  bool OnResumeSelected() override
-  {
-    if (m_item->m_bIsFolder)
-    {
-      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecordingFolder(
-          *m_item, false /* no resume check */);
-    }
-    else
-    {
-      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().ResumePlayRecording(
-          *m_item, true /* fall back to play if no resume possible */);
-    }
-    return true;
-  }
-
-  bool OnPlaySelected() override
-  {
-    if (m_item->m_bIsFolder)
-    {
-      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecordingFolder(
-          *m_item, false /* no resume check */);
-    }
-    else
-    {
-      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
-          *m_item, false /* no resume check */);
-    }
-    return true;
-  }
-};
 } // namespace
 
 bool CGUIWindowPVRRecordingsBase::OnMessage(CGUIMessage& message)
@@ -367,7 +327,7 @@ bool CGUIWindowPVRRecordingsBase::OnMessage(CGUIMessage& message)
 
               if (!item->IsParentFolder() && message.GetParam1() == ACTION_PLAYER_PLAY)
               {
-                CVideoPlayActionProcessor proc{item};
+                KODI::VIDEO::GUILIB::CVideoPlayActionProcessor proc{item};
                 bReturn = proc.ProcessDefaultAction();
               }
               else if (item->m_bIsFolder)

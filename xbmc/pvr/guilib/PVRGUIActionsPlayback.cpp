@@ -173,25 +173,6 @@ bool CPVRGUIActionsPlayback::PlayRecording(const CFileItem& item, bool bCheckRes
   return true;
 }
 
-bool CPVRGUIActionsPlayback::PlayRecordingFolder(const CFileItem& item, bool bCheckResume) const
-{
-  if (!item.m_bIsFolder)
-    return false;
-
-  if (!bCheckResume || CheckResumeRecording(item))
-  {
-    // recursively add items to list
-    const auto itemToQueue = std::make_shared<CFileItem>(item);
-    auto queuedItems = std::make_unique<CFileItemList>();
-    VIDEO::UTILS::GetItemsForPlayList(itemToQueue, *queuedItems);
-
-    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 0, -1,
-                                               static_cast<void*>(queuedItems.release()));
-    CheckAndSwitchToFullscreen(true);
-  }
-  return true;
-}
-
 bool CPVRGUIActionsPlayback::PlayEpgTag(
     const CFileItem& item,
     ContentUtils::PlayMode mode /* = ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM */) const
