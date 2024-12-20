@@ -21,7 +21,6 @@
 #include "music/MusicFileItemClassify.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/ContentUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/guilib/GUIBuiltinsUtils.h"
 #include "video/VideoFileItemClassify.h"
@@ -270,9 +269,10 @@ bool CVideoResume::IsVisible(const CFileItem& itemIn) const
 
 namespace
 {
-std::vector<std::string> GetPlayers(const CPlayerCoreFactory& playerCoreFactory,
-                                    const CFileItem& item)
+bool HasMultiplePlayers(const CFileItem& item)
 {
+  const CPlayerCoreFactory& playerCoreFactory{CServiceBroker::GetPlayerCoreFactory()};
+
   std::vector<std::string> players;
   if (VIDEO::IsVideoDb(item))
   {
@@ -284,55 +284,8 @@ std::vector<std::string> GetPlayers(const CPlayerCoreFactory& playerCoreFactory,
   else
     playerCoreFactory.GetPlayers(item, players);
 
-  return players;
+  return (players.size() > 1);
 }
-
-class CVideoPlayActionProcessor : public VIDEO::GUILIB::CVideoPlayActionProcessor
-{
-public:
-  CVideoPlayActionProcessor(const std::shared_ptr<CFileItem>& item, bool choosePlayer)
-    : VIDEO::GUILIB::CVideoPlayActionProcessor(item), m_choosePlayer(choosePlayer)
-  {
-  }
-
-protected:
-  bool OnResumeSelected() override
-  {
-    Play();
-    return true;
-  }
-
-  bool OnPlaySelected() override
-  {
-    std::string player;
-    if (m_choosePlayer)
-    {
-      const CPlayerCoreFactory& playerCoreFactory{CServiceBroker::GetPlayerCoreFactory()};
-      const std::vector<std::string> players{GetPlayers(playerCoreFactory, *m_item)};
-      player = playerCoreFactory.SelectPlayerDialog(players);
-      if (player.empty())
-      {
-        m_userCancelled = true;
-        return true; // User cancelled player selection. We're done.
-      }
-    }
-
-    Play(player);
-    return true;
-  }
-
-private:
-  void Play(const std::string& player = "")
-  {
-    m_item->SetProperty("playlist_type_hint", static_cast<int>(PLAYLIST::Id::TYPE_VIDEO));
-    const ContentUtils::PlayMode mode{m_item->GetProperty("CheckAutoPlayNextItem").asBoolean()
-                                          ? ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM
-                                          : ContentUtils::PlayMode::PLAY_ONLY_THIS};
-    VIDEO::UTILS::PlayItem(m_item, player, mode);
-  }
-
-  const bool m_choosePlayer{false};
-};
 
 enum class PlayMode
 {
@@ -341,6 +294,7 @@ enum class PlayMode
   PLAY_VERSION_USING,
   RESUME,
 };
+
 void SetPathAndPlay(const std::shared_ptr<CFileItem>& item, PlayMode mode)
 {
   item->SetProperty("check_resume", false);
@@ -377,8 +331,10 @@ void SetPathAndPlay(const std::shared_ptr<CFileItem>& item, PlayMode mode)
       itemCopy->SetProperty("has_resolved_video_asset", true);
     }
 
-    const bool choosePlayer{mode == PlayMode::PLAY_USING || mode == PlayMode::PLAY_VERSION_USING};
-    CVideoPlayActionProcessor proc{itemCopy, choosePlayer};
+    KODI::VIDEO::GUILIB::CVideoPlayActionProcessor proc{itemCopy};
+    if (mode == PlayMode::PLAY_USING || mode == PlayMode::PLAY_VERSION_USING)
+      proc.SetChoosePlayer();
+
     if (mode == PlayMode::RESUME && (itemCopy->GetStartOffset() == STARTOFFSET_RESUME ||
                                      VIDEO::UTILS::GetItemResumeInformation(*item).isResumable))
       proc.ProcessAction(VIDEO::GUILIB::ACTION_RESUME);
@@ -438,8 +394,7 @@ bool CVideoPlayUsing::IsVisible(const CFileItem& item) const
   if (item.IsLiveTV())
     return false;
 
-  const CPlayerCoreFactory& playerCoreFactory{CServiceBroker::GetPlayerCoreFactory()};
-  return (GetPlayers(playerCoreFactory, item).size() > 1) && VIDEO::UTILS::IsItemPlayable(item);
+  return (HasMultiplePlayers(item) && VIDEO::UTILS::IsItemPlayable(item));
 }
 
 bool CVideoPlayUsing::Execute(const std::shared_ptr<CFileItem>& itemIn) const
