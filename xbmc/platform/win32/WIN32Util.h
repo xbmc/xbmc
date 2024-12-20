@@ -113,4 +113,5 @@ public:
 
 private:
   static HDR_STATUS GetWindowsHDRStatusWin32();
+  static HDR_STATUS SetWindowsHDRStatus(bool enable, DXGI_MODE_DESC& modeDesc);
 };

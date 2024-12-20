@@ -1248,6 +1248,16 @@ HDR_STATUS CWIN32Util::ToggleWindowsHDR(DXGI_MODE_DESC& modeDesc)
     }
   }
 #else
+  status = GetWindowsHDRStatus();
+  if (status == HDR_STATUS::HDR_UNSUPPORTED)
+    return HDR_STATUS::HDR_TOGGLE_FAILED;
+
+  return SetWindowsHDRStatus(status == HDR_STATUS::HDR_OFF ? true : false, modeDesc);
+}
+
+HDR_STATUS CWIN32Util::SetWindowsHDRStatus(bool enable, DXGI_MODE_DESC& modeDesc)
+{
+  HDR_STATUS status = HDR_STATUS::HDR_TOGGLE_FAILED;
   uint32_t pathCount = 0;
   uint32_t modeCount = 0;
 
@@ -1264,10 +1274,6 @@ HDR_STATUS CWIN32Util::ToggleWindowsHDR(DXGI_MODE_DESC& modeDesc)
     if (ERROR_SUCCESS == QueryDisplayConfig(QDC_ONLY_ACTIVE_PATHS, &pathCount, paths.data(),
                                             &modeCount, modes.data(), nullptr))
     {
-      DISPLAYCONFIG_GET_ADVANCED_COLOR_INFO getColorInfo = {};
-      getColorInfo.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_ADVANCED_COLOR_INFO;
-      getColorInfo.header.size = sizeof(getColorInfo);
-
       DISPLAYCONFIG_SET_ADVANCED_COLOR_STATE setColorState = {};
       setColorState.header.type = DISPLAYCONFIG_DEVICE_INFO_SET_ADVANCED_COLOR_STATE;
       setColorState.header.size = sizeof(setColorState);
@@ -1290,36 +1296,26 @@ HDR_STATUS CWIN32Util::ToggleWindowsHDR(DXGI_MODE_DESC& modeDesc)
           {
             const auto& mode = modes.at(path.targetInfo.modeInfoIdx);
 
-            getColorInfo.header.adapterId.HighPart = mode.adapterId.HighPart;
-            getColorInfo.header.adapterId.LowPart = mode.adapterId.LowPart;
-            getColorInfo.header.id = mode.id;
-
             setColorState.header.adapterId.HighPart = mode.adapterId.HighPart;
             setColorState.header.adapterId.LowPart = mode.adapterId.LowPart;
             setColorState.header.id = mode.id;
 
-            if (ERROR_SUCCESS == DisplayConfigGetDeviceInfo(&getColorInfo.header))
+            if (!enable)
             {
-              if (getColorInfo.advancedColorSupported)
-              {
-                if (getColorInfo.advancedColorEnabled) // HDR is ON
-                {
-                  setColorState.enableAdvancedColor = FALSE;
-                  status = HDR_STATUS::HDR_OFF;
-                  CLog::LogF(LOGINFO, "Toggle Windows HDR Off (ON => OFF).");
-                }
-                else // HDR is OFF
-                {
-                  setColorState.enableAdvancedColor = TRUE;
-                  status = HDR_STATUS::HDR_ON;
-                  CLog::LogF(LOGINFO, "Toggle Windows HDR On (OFF => ON).");
-                }
-                if (ERROR_SUCCESS != DisplayConfigSetDeviceInfo(&setColorState.header))
-                  status = HDR_STATUS::HDR_TOGGLE_FAILED;
-              }
+              setColorState.enableAdvancedColor = FALSE;
+              status = HDR_STATUS::HDR_OFF;
+              CLog::LogF(LOGINFO, "Set Windows HDR Off (ON => OFF).");
             }
-            break;
+            else
+            {
+              setColorState.enableAdvancedColor = TRUE;
+              status = HDR_STATUS::HDR_ON;
+              CLog::LogF(LOGINFO, "Set Windows HDR On (OFF => ON).");
+            }
+            if (ERROR_SUCCESS != DisplayConfigSetDeviceInfo(&setColorState.header))
+              status = HDR_STATUS::HDR_TOGGLE_FAILED;
           }
+          break;
         }
       }
     }
