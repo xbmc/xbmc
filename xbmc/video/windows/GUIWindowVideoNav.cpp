@@ -73,6 +73,29 @@ using namespace KODI::MESSAGING;
 
 #define CONTROL_UPDATE_LIBRARY    20
 
+namespace
+{
+NodeType GetItemListNodeType(const CFileItemList& items)
+{
+  if (VIDEO::IsVideoDb(items))
+  {
+    return CVideoDatabaseDirectory::GetDirectoryChildType(items.GetPath());
+  }
+
+  if (items.GetContent() == "seasons")
+  {
+    return NodeType::SEASONS;
+  }
+
+  if (items.GetContent() == "episodes")
+  {
+    return NodeType::EPISODES;
+  }
+
+  return NodeType::NONE;
+}
+} // namespace
+
 CGUIWindowVideoNav::CGUIWindowVideoNav(void)
     : CGUIWindowVideoBase(WINDOW_VIDEO_NAV, "MyVideoNav.xml")
 {
@@ -248,16 +271,17 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
 
 SelectFirstUnwatchedItem CGUIWindowVideoNav::GetSettingSelectFirstUnwatchedItem()
 {
-  if (VIDEO::IsVideoDb(*m_vecItems))
-  {
-    NodeType nodeType = CVideoDatabaseDirectory::GetDirectoryChildType(m_vecItems->GetPath());
+  const NodeType nodeType = GetItemListNodeType(*m_vecItems);
 
-    if (nodeType == NodeType::SEASONS || nodeType == NodeType::EPISODES)
+  if (nodeType == NodeType::SEASONS || nodeType == NodeType::EPISODES)
+  {
+    const int iValue = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+        CSettings::SETTING_VIDEOLIBRARY_TVSHOWSSELECTFIRSTUNWATCHEDITEM);
+
+    if (iValue >= static_cast<int>(SelectFirstUnwatchedItem::NEVER) &&
+        iValue <= static_cast<int>(SelectFirstUnwatchedItem::ALWAYS))
     {
-      int iValue = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOLIBRARY_TVSHOWSSELECTFIRSTUNWATCHEDITEM);
-      if (iValue >= static_cast<int>(SelectFirstUnwatchedItem::NEVER) &&
-          iValue <= static_cast<int>(SelectFirstUnwatchedItem::ALWAYS))
-        return static_cast<SelectFirstUnwatchedItem>(iValue);
+      return static_cast<SelectFirstUnwatchedItem>(iValue);
     }
   }
 
@@ -279,7 +303,7 @@ int CGUIWindowVideoNav::GetFirstUnwatchedItemIndex(bool includeAllSeasons, bool 
   int iIndex = 0;
   int iUnwatchedSeason = INT_MAX;
   int iUnwatchedEpisode = INT_MAX;
-  NodeType nodeType = CVideoDatabaseDirectory::GetDirectoryChildType(m_vecItems->GetPath());
+  const NodeType nodeType = GetItemListNodeType(*m_vecItems);
 
   // Run through the list of items and find the first unwatched season/episode
   for (int i = 0; i < m_vecItems->Size(); ++i)
