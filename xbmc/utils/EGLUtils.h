@@ -246,4 +246,5 @@ private:
   PFNEGLSETDAMAGEREGIONKHRPROC m_eglSetDamageRegionKHR{nullptr};
   bool m_partialUpdateSupport{false};
   bool m_bufferAgeSupport{false};
+  bool m_damageRegionError{false};
 };
