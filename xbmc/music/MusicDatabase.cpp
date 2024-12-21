@@ -4005,7 +4005,7 @@ void CMusicDatabase::IncrementPlayCount(const CFileItem& item)
     if (nullptr == m_pDS)
       return;
 
-    int idSong = GetSongIDFromPath(item.GetPath());
+    int idSong = GetSongIDFromPath(item.GetPath(), item.GetStartOffset());
     std::string strDateNow = CDateTime::GetCurrentDateTime().GetAsDBDateTime();
     std::string sql = PrepareSQL("UPDATE song SET iTimesPlayed = iTimesPlayed+1, lastplayed ='%s' "
                                  "WHERE idSong=%i",
@@ -11507,7 +11507,7 @@ bool CMusicDatabase::SetSongVotes(const std::string& filePath, int votes)
   return false;
 }
 
-int CMusicDatabase::GetSongIDFromPath(const std::string& filePath)
+int CMusicDatabase::GetSongIDFromPath(const std::string& filePath, int startOffset)
 {
   // grab the where string to identify the song id
   CURL url(filePath);
@@ -11529,9 +11529,16 @@ int CMusicDatabase::GetSongIDFromPath(const std::string& filePath)
     SplitPath(filePath, strPath, strFileName);
     URIUtils::AddSlashAtEnd(strPath);
 
-    std::string sql = PrepareSQL("SELECT idSong FROM song JOIN path ON song.idPath = path.idPath "
-                                 "WHERE song.strFileName='%s' AND path.strPath='%s'",
-                                 strFileName.c_str(), strPath.c_str());
+    std::string sql;
+    if (startOffset == -1)
+      sql = PrepareSQL("SELECT idSong FROM song JOIN path ON song.idPath = path.idPath "
+                       "WHERE song.strFileName='%s' AND path.strPath='%s'",
+                       strFileName.c_str(), strPath.c_str());
+    else
+      sql = PrepareSQL("SELECT idSong FROM song JOIN path ON song.idPath = path.idPath "
+                       "WHERE song.strFileName='%s' AND path.strPath='%s' AND song.iStartOffset=%i",
+                       strFileName.c_str(), strPath.c_str(), startOffset);
+
     if (!m_pDS->query(sql))
       return -1;
 
