@@ -29,6 +29,7 @@ public:
   int GetBlockSize() override;
   bool GetCacheStatus(XFILE::SCacheStatus *status) override;
   int64_t GetLength() override;
+  int64_t GetDuration() override { return 0; }
   bool IsEOF() override;
   CDVDInputStream::ENextStream NextStream() override;
   bool Open() override;
