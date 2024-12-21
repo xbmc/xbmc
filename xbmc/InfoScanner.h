@@ -10,7 +10,6 @@
 
 #include <set>
 #include <string>
-#include <vector>
 
 class CGUIDialogProgressBarHandle;
 
@@ -20,14 +19,14 @@ public:
   /*!
     \brief Return values from the information lookup functions.
    */
-  enum INFO_RET
+  enum class InfoRet
   {
-    INFO_CANCELLED,
-    INFO_ERROR,
-    INFO_NOT_NEEDED,
-    INFO_HAVE_ALREADY,
-    INFO_NOT_FOUND,
-    INFO_ADDED
+    CANCELLED,
+    INFO_ERROR, // ERROR clashes with windows macro
+    NOT_NEEDED,
+    HAVE_ALREADY,
+    NOT_FOUND,
+    ADDED
   };
 
   /*
