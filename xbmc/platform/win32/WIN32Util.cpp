@@ -1412,7 +1412,8 @@ HDR_STATUS CWIN32Util::ToggleWindowsHDR(DXGI_MODE_DESC& modeDesc)
 #ifndef TARGET_WINDOWS_STORE
 HDR_STATUS CWIN32Util::SetDisplayHDRStatus(DISPLAYCONFIG_MODE_INFO mode, bool enable)
 {
-  HDR_STATUS status = HDR_STATUS::HDR_TOGGLE_FAILED;
+  LONG result{ERROR_SUCCESS};
+  HDR_STATUS status{enable ? HDR_STATUS::HDR_ON : HDR_STATUS::HDR_OFF};
 
   // Windows 11 24H2 or newer (SDK 10.0.26100.0)
   if (CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin11_24H2))
@@ -1423,20 +1424,9 @@ HDR_STATUS CWIN32Util::SetDisplayHDRStatus(DISPLAYCONFIG_MODE_INFO mode, bool en
     setHdrState.header.size = sizeof(setHdrState);
     setHdrState.header.adapterId = mode.adapterId;
     setHdrState.header.id = mode.id;
+    setHdrState.enableHdr = enable ? TRUE : FALSE;
 
-    if (!enable)
-    {
-      setHdrState.enableHdr = FALSE;
-      status = HDR_STATUS::HDR_OFF;
-    }
-    else
-    {
-      setHdrState.enableHdr = TRUE;
-      status = HDR_STATUS::HDR_ON;
-    }
-
-    if (ERROR_SUCCESS != DisplayConfigSetDeviceInfo(&setHdrState.header))
-      status = HDR_STATUS::HDR_TOGGLE_FAILED;
+    result = DisplayConfigSetDeviceInfo(&setHdrState.header);
   }
   else // older than Windows 11 24H2
   {
@@ -1445,21 +1435,14 @@ HDR_STATUS CWIN32Util::SetDisplayHDRStatus(DISPLAYCONFIG_MODE_INFO mode, bool en
     setColorState.header.size = sizeof(setColorState);
     setColorState.header.adapterId = mode.adapterId;
     setColorState.header.id = mode.id;
+    setColorState.enableAdvancedColor = enable ? TRUE : FALSE;
 
-    if (!enable)
-    {
-      setColorState.enableAdvancedColor = FALSE;
-      status = HDR_STATUS::HDR_OFF;
-    }
-    else
-    {
-      setColorState.enableAdvancedColor = TRUE;
-      status = HDR_STATUS::HDR_ON;
-    }
-
-    if (ERROR_SUCCESS != DisplayConfigSetDeviceInfo(&setColorState.header))
-      status = HDR_STATUS::HDR_TOGGLE_FAILED;
+    result = DisplayConfigSetDeviceInfo(&setColorState.header);
   }
+
+  if (result != ERROR_SUCCESS)
+    status = HDR_STATUS::HDR_TOGGLE_FAILED;
+
   return status;
 }
 #endif
