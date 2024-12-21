@@ -18,7 +18,7 @@ using namespace KEYBOARD;
 namespace
 {
 // The array of XBMCKEYTABLEs used in XBMC.
-// scancode, sym, unicode, ascii, vkey, keyname
+// sym, unicode, ascii, vkey, keyname
 // clang-format off
 static const XBMCKEYTABLE XBMCKeyTable[] = {
     {XBMCK_BACKSPACE, 0, 0, XBMCVK_BACK, "backspace"},

@@ -150,12 +150,6 @@ void CInputProcessorKeyboard::ConvertAndSendKey(std::uint32_t scancode, bool pre
     // it does not fit
     utf32 = 0;
   }
-  if (scancode > std::numeric_limits<unsigned char>::max())
-  {
-    // Kodi scancodes are limited to unsigned char, pretend the scancode is unknown
-    // on overflow
-    scancode = 0;
-  }
 
   // flush composer if set (after a finished sequence)
   if (flushComposer)
@@ -189,7 +183,10 @@ void CInputProcessorKeyboard::ConvertAndSendKey(std::uint32_t scancode, bool pre
   }
 }
 
-XBMC_Event CInputProcessorKeyboard::SendKey(unsigned char scancode, XBMCKey key, std::uint16_t unicodeCodepoint, bool pressed)
+XBMC_Event CInputProcessorKeyboard::SendKey(uint32_t scancode,
+                                            XBMCKey key,
+                                            std::uint16_t unicodeCodepoint,
+                                            bool pressed)
 {
   assert(m_keymap);
 

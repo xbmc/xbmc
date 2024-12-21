@@ -38,7 +38,7 @@
  */
 struct XBMC_keysym
 {
-  unsigned char scancode; /* hardware specific scancode */
+  uint32_t scancode; /* hardware specific scancode */
   XBMCKey sym; /* SDL virtual keysym */
   XBMCMod mod; /* current key modifiers */
   uint16_t unicode; /* translated character */
