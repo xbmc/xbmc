@@ -124,8 +124,7 @@ bool CImageDecoder::LoadInfoTag(const std::string& fileName, CPictureInfoTag* ta
     tag->m_imageMetadata.exifInfo.ExposureProgram = ifcTag.exposure_program;
     tag->m_imageMetadata.exifInfo.ExposureMode = ifcTag.exposure_mode;
     tag->m_imageMetadata.exifInfo.ISOequivalent = static_cast<int>(ifcTag.iso_speed);
-    CDateTime dt;
-    dt.SetFromUTCDateTime(ifcTag.time_created);
+    CDateTime dt(ifcTag.time_created);
     tag->m_dateTimeTaken = dt;
     tag->m_imageMetadata.iptcInfo.TimeCreated = dt.GetAsLocalizedDateTime();
     tag->m_imageMetadata.exifInfo.GpsInfoPresent = ifcTag.gps_info_present;

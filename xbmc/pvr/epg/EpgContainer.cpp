@@ -315,7 +315,7 @@ void CPVREpgContainer::Process()
     time_t iLastEpgCleanup = 0;
     bool bUpdateEpg = true;
 
-    CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNow);
+    CDateTime::GetUTCDateTime().GetAsTime(iNow);
     {
       std::unique_lock<CCriticalSection> lock(m_critSection);
       bUpdateEpg = (iNow >= m_iNextEpgUpdate) && !m_bSuspended;
@@ -591,7 +591,7 @@ std::shared_ptr<CPVREpg> CPVREpgContainer::CreateChannelEpg(int iEpgId, const st
   {
     std::unique_lock<CCriticalSection> lock(m_critSection);
     m_bPreventUpdates = false;
-    CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iNextEpgUpdate);
+    CDateTime::GetUTCDateTime().GetAsTime(m_iNextEpgUpdate);
   }
 
   m_events.Publish(PVREvent::EpgContainer);
@@ -611,7 +611,7 @@ bool CPVREpgContainer::RemoveOldEntries()
     epgEntry.second->Cleanup(cleanupTime);
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iLastEpgCleanup);
+  CDateTime::GetUTCDateTime().GetAsTime(m_iLastEpgCleanup);
 
   return true;
 }
@@ -785,7 +785,7 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
   {
     /* the update has been interrupted. try again later */
     time_t iNow;
-    CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNow);
+    CDateTime::GetUTCDateTime().GetAsTime(iNow);
 
     std::unique_lock<CCriticalSection> lock(m_critSection);
     m_iNextEpgUpdate = iNow + advancedSettings->m_iEpgRetryInterruptedUpdateInterval;
@@ -793,7 +793,7 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
   else
   {
     std::unique_lock<CCriticalSection> lock(m_critSection);
-    CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iNextEpgUpdate);
+    CDateTime::GetUTCDateTime().GetAsTime(m_iNextEpgUpdate);
     m_iNextEpgUpdate += advancedSettings->m_iEpgUpdateCheckInterval;
     if (m_pendingUpdates == pendingUpdates)
       m_pendingUpdates = 0;
@@ -850,7 +850,7 @@ bool CPVREpgContainer::CheckPlayingEvents()
   m_critSection.unlock();
 
   time_t iNow;
-  CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNow);
+  CDateTime::GetUTCDateTime().GetAsTime(iNow);
   if (iNow >= iNextEpgActiveTagCheck)
   {
     bFoundChanges = std::accumulate(epgs.cbegin(), epgs.cend(), bFoundChanges,
@@ -858,7 +858,7 @@ bool CPVREpgContainer::CheckPlayingEvents()
                                       return epgEntry.second->CheckPlayingEvent() ? true : found;
                                     });
 
-    CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNextEpgActiveTagCheck);
+    CDateTime::GetUTCDateTime().GetAsTime(iNextEpgActiveTagCheck);
     iNextEpgActiveTagCheck += CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iEpgActiveTagCheckInterval;
 
     /* pvr tags always start on the full minute */

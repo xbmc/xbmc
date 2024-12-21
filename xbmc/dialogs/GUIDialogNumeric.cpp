@@ -40,7 +40,7 @@ using KODI::UTILITY::CDigest;
 
 CGUIDialogNumeric::CGUIDialogNumeric(void) : CGUIDialog(WINDOW_DIALOG_NUMERIC, "DialogNumeric.xml")
 {
-  memset(&m_datetime, 0, sizeof(KODI::TIME::SystemTime));
+  m_datetime.Reset();
   m_loadType = KEEP_IN_MEMORY;
 }
 
@@ -226,59 +226,76 @@ void CGUIDialogNumeric::OnBackSpace()
   }
   else if (m_mode == INPUT_TIME)
   {
+    int hour = m_datetime.GetHour();
+    int minute = m_datetime.GetMinute();
+
     if (m_block == 0)
-      m_datetime.hour /= 10;
-    else if (m_datetime.minute)
-      m_datetime.minute /= 10;
+      hour /= 10;
+    else if (minute)
+      minute /= 10;
     else
     {
       m_block = 0;
       m_dirty = false;
     }
+
+    m_datetime.SetTime(hour, minute, 0);
   }
   else if (m_mode == INPUT_TIME_SECONDS)
   {
+    int hour = m_datetime.GetHour();
+    int minute = m_datetime.GetMinute();
+    int second = m_datetime.GetSecond();
+
     if (m_block == 0)
-      m_datetime.hour /= 10;
+      hour /= 10;
     else if (m_block == 1)
     {
-      if (m_datetime.minute)
-        m_datetime.minute /= 10;
+      if (minute)
+        minute /= 10;
       else
       {
         m_block = 0;
         m_dirty = false;
       }
     }
-    else if (m_datetime.second)
-      m_datetime.minute /= 10;
+    else if (second)
+      minute /= 10;
     else
     {
       m_block = 0;
       m_dirty = false;
     }
+
+    m_datetime.SetTime(hour, minute, second);
   }
   else if (m_mode == INPUT_DATE)
   {
+    int day = m_datetime.GetDay();
+    int month = m_datetime.GetMonth();
+    int year = m_datetime.GetYear();
+
     if (m_block == 0)
-      m_datetime.day /= 10;
+      day /= 10;
     else if (m_block == 1)
     {
-      if (m_datetime.month)
-        m_datetime.month /= 10;
+      if (month)
+        month /= 10;
       else
       {
         m_block = 0;
         m_dirty = false;
       }
     }
-    else if (m_datetime.year) // m_block == 2
-      m_datetime.year /= 10;
+    else if (year) // m_block == 2
+      year /= 10;
     else
     {
       m_block = 1;
       m_dirty = false;
     }
+
+    m_datetime.SetDate(year, month, day);
   }
 }
 
@@ -312,21 +329,21 @@ void CGUIDialogNumeric::FrameMove()
     strLabel = m_number;
   else if (m_mode == INPUT_TIME)
   { // format up the time
-    strLabel = StringUtils::Format("{:2}:{:02}", m_datetime.hour, m_datetime.minute);
+    strLabel = StringUtils::Format("{:2}:{:02}", m_datetime.GetHour(), m_datetime.GetMinute());
     start = m_block * 3;
     end = m_block * 3 + 2;
   }
   else if (m_mode == INPUT_TIME_SECONDS)
   { // format up the time
-    strLabel = StringUtils::Format("{:2}:{:02}:{:02}", m_datetime.hour, m_datetime.minute,
-                                   m_datetime.second);
+    strLabel = StringUtils::Format("{:2}:{:02}:{:02}", m_datetime.GetHour(), m_datetime.GetMinute(),
+                                   m_datetime.GetSecond());
     start = m_block * 3;
     end = m_block * 3 + 2;
   }
   else if (m_mode == INPUT_DATE)
   { // format up the date
-    strLabel =
-        StringUtils::Format("{:2}/{:2}/{:4}", m_datetime.day, m_datetime.month, m_datetime.year);
+    strLabel = StringUtils::Format("{:2}/{:2}/{:4}", m_datetime.GetDay(), m_datetime.GetMonth(),
+                                   m_datetime.GetYear());
     start = m_block * 3;
     end = m_block * 3 + 2;
     if (m_block == 2)
@@ -372,7 +389,7 @@ void CGUIDialogNumeric::OnNumber(uint32_t num)
   }
 }
 
-void CGUIDialogNumeric::SetMode(INPUT_MODE mode, const KODI::TIME::SystemTime& initial)
+void CGUIDialogNumeric::SetMode(INPUT_MODE mode, const CDateTime& initial)
 {
   m_mode = mode;
   m_block = 0;
@@ -420,7 +437,7 @@ void CGUIDialogNumeric::SetMode(INPUT_MODE mode, const std::string &initial)
     if (!dateTime.IsValid())
       return;
 
-    dateTime.GetAsSystemTime(m_datetime);
+    m_datetime = dateTime;
     m_lastblock = (m_mode == INPUT_DATE) ? 2 : 1;
   }
   else if (m_mode == INPUT_IP_ADDRESS)
@@ -442,7 +459,7 @@ void CGUIDialogNumeric::SetMode(INPUT_MODE mode, const std::string &initial)
     m_number = initial;
 }
 
-KODI::TIME::SystemTime CGUIDialogNumeric::GetOutput() const
+CDateTime CGUIDialogNumeric::GetOutput() const
 {
   assert(m_mode == INPUT_TIME || m_mode == INPUT_TIME_SECONDS || m_mode == INPUT_DATE);
   return m_datetime;
@@ -453,13 +470,13 @@ std::string CGUIDialogNumeric::GetOutputString() const
   switch (m_mode)
   {
   case INPUT_DATE:
-    return StringUtils::Format("{:02}/{:02}/{:04}", m_datetime.day, m_datetime.month,
-                               m_datetime.year);
+    return StringUtils::Format("{:02}/{:02}/{:04}", m_datetime.GetDay(), m_datetime.GetMonth(),
+                               m_datetime.GetYear());
   case INPUT_TIME:
-    return StringUtils::Format("{}:{:02}", m_datetime.hour, m_datetime.minute);
+    return StringUtils::Format("{}:{:02}", m_datetime.GetHour(), m_datetime.GetMinute());
   case INPUT_TIME_SECONDS:
-    return StringUtils::Format("{}:{:02}:{:02}", m_datetime.hour, m_datetime.minute,
-                               m_datetime.second);
+    return StringUtils::Format("{}:{:02}:{:02}", m_datetime.GetHour(), m_datetime.GetMinute(),
+                               m_datetime.GetSecond());
   case INPUT_IP_ADDRESS:
     return StringUtils::Format("{}.{}.{}.{}", m_ip[0], m_ip[1], m_ip[2], m_ip[3]);
   case INPUT_NUMBER:
@@ -475,23 +492,25 @@ bool CGUIDialogNumeric::ShowAndGetSeconds(std::string &timeString, const std::st
 {
   CGUIDialogNumeric *pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogNumeric>(WINDOW_DIALOG_NUMERIC);
   if (!pDialog) return false;
-  int seconds = StringUtils::TimeStringToSeconds(timeString);
-  KODI::TIME::SystemTime time = {};
-  time.hour = seconds / 3600;
-  time.minute = (seconds - time.hour * 3600) / 60;
-  time.second = seconds - time.hour * 3600 - time.minute * 60;
-  pDialog->SetMode(INPUT_TIME_SECONDS, time);
+
+  std::chrono::system_clock::time_point time{
+      std::chrono::seconds{StringUtils::TimeStringToSeconds(timeString)}};
+
+  CDateTime datetime(time);
+
+  pDialog->SetMode(INPUT_TIME_SECONDS, datetime);
   pDialog->SetHeading(heading);
   pDialog->Open();
   if (!pDialog->IsConfirmed() || pDialog->IsCanceled())
     return false;
-  time = pDialog->GetOutput();
-  seconds = time.hour * 3600 + time.minute * 60 + time.second;
-  timeString = StringUtils::SecondsToTimeString(seconds);
+  datetime = pDialog->GetOutput();
+  time = datetime.GetAsTimePoint();
+  timeString = StringUtils::SecondsToTimeString(
+      std::chrono::duration_cast<std::chrono::seconds>(time.time_since_epoch()).count());
   return true;
 }
 
-bool CGUIDialogNumeric::ShowAndGetTime(KODI::TIME::SystemTime& time, const std::string& heading)
+bool CGUIDialogNumeric::ShowAndGetTime(CDateTime& time, const std::string& heading)
 {
   CGUIDialogNumeric *pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogNumeric>(WINDOW_DIALOG_NUMERIC);
   if (!pDialog) return false;
@@ -504,7 +523,7 @@ bool CGUIDialogNumeric::ShowAndGetTime(KODI::TIME::SystemTime& time, const std::
   return true;
 }
 
-bool CGUIDialogNumeric::ShowAndGetDate(KODI::TIME::SystemTime& date, const std::string& heading)
+bool CGUIDialogNumeric::ShowAndGetDate(CDateTime& date, const std::string& heading)
 {
   CGUIDialogNumeric *pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogNumeric>(WINDOW_DIALOG_NUMERIC);
   if (!pDialog) return false;
@@ -675,28 +694,33 @@ void CGUIDialogNumeric::SetHeading(const std::string& strHeading)
 
 void CGUIDialogNumeric::VerifyDate(bool checkYear)
 {
-  if (m_datetime.day == 0)
-    m_datetime.day = 1;
-  if (m_datetime.month == 0)
-    m_datetime.month = 1;
+  int day = m_datetime.GetDay();
+  int month = m_datetime.GetMonth();
+  int year = m_datetime.GetYear();
+
+  if (day == 0)
+    day = 1;
+  if (month == 0)
+    month = 1;
   // check for number of days in the month
-  if (m_datetime.day == 31)
+  if (day == 31)
   {
-    if (m_datetime.month == 4 || m_datetime.month == 6 || m_datetime.month == 9 ||
-        m_datetime.month == 11)
-      m_datetime.day = 30;
+    if (month == 4 || month == 6 || month == 9 || month == 11)
+      day = 30;
   }
-  if (m_datetime.month == 2 && m_datetime.day > 28)
+  if (month == 2 && day > 28)
   {
-    m_datetime.day = 29; // max in february.
+    day = 29; // max in february.
     if (checkYear)
     {
       // leap years occur when the year is divisible by 4 but not by 100, or the year is divisible by 400
       // thus they don't occur, if the year has a remainder when divided by 4, or when the year is divisible by 100 but not by 400
-      if ((m_datetime.year % 4) || (!(m_datetime.year % 100) && (m_datetime.year % 400)))
-        m_datetime.day = 28;
+      if ((year % 4) || (!(year % 100) && (year % 400)))
+        day = 28;
     }
   }
+
+  m_datetime.SetDate(year, month, day);
 }
 
 void CGUIDialogNumeric::OnOK()
@@ -736,17 +760,21 @@ void CGUIDialogNumeric::HandleInputIP(uint32_t num)
 
 void CGUIDialogNumeric::HandleInputDate(uint32_t num)
 {
+  int day = m_datetime.GetDay();
+  int month = m_datetime.GetMonth();
+  int year = m_datetime.GetYear();
+
   if (m_block == 0) // day of month
   {
-    if (m_dirty && (m_datetime.day < 3 || num < 2))
+    if (m_dirty && (day < 3 || num < 2))
     {
-      m_datetime.day *= 10;
-      m_datetime.day += num;
+      day *= 10;
+      day += num;
     }
     else
-      m_datetime.day = num;
+      day = num;
 
-    if (m_datetime.day > 3)
+    if (day > 3)
     {
       m_block = 1;             // move to months
       m_dirty = false;
@@ -758,13 +786,13 @@ void CGUIDialogNumeric::HandleInputDate(uint32_t num)
   {
     if (m_dirty && num < 3)
     {
-      m_datetime.month *= 10;
-      m_datetime.month += num;
+      month *= 10;
+      month += num;
     }
     else
-      m_datetime.month = num;
+      month = num;
 
-    if (m_datetime.month > 1)
+    if (month > 1)
     {
       VerifyDate(false);
       m_block = 2;             // move to year
@@ -775,15 +803,15 @@ void CGUIDialogNumeric::HandleInputDate(uint32_t num)
   }
   else // year
   {
-    if (m_dirty && m_datetime.year < 1000) // have taken input
+    if (m_dirty && year < 1000) // have taken input
     {
-      m_datetime.year *= 10;
-      m_datetime.year += num;
+      year *= 10;
+      year += num;
     }
     else
-      m_datetime.year = num;
+      year = num;
 
-    if (m_datetime.year > 1000)
+    if (year > 1000)
     {
       VerifyDate(true);
       m_block = 0;        // move to day of month
@@ -792,22 +820,28 @@ void CGUIDialogNumeric::HandleInputDate(uint32_t num)
     else
       m_dirty = true;
   }
+
+  m_datetime.SetDate(year, month, day);
 }
 
 void CGUIDialogNumeric::HandleInputSeconds(uint32_t num)
 {
+  int hour = m_datetime.GetHour();
+  int minute = m_datetime.GetMinute();
+  int second = m_datetime.GetSecond();
+
   if (m_block == 0) // hour
   {
     if (m_dirty) // have input the first digit
     {
-      m_datetime.hour *= 10;
-      m_datetime.hour += num;
+      hour *= 10;
+      hour += num;
       m_block = 1;             // move to minutes - allows up to 99 hours
       m_dirty = false;
     }
     else  // this is the first digit
     {
-      m_datetime.hour = num;
+      hour = num;
       m_dirty = true;
     }
   }
@@ -815,14 +849,14 @@ void CGUIDialogNumeric::HandleInputSeconds(uint32_t num)
   {
     if (m_dirty) // have input the first digit
     {
-      m_datetime.minute *= 10;
-      m_datetime.minute += num;
+      minute *= 10;
+      minute += num;
       m_block = 2;             // move to seconds - allows up to 99 minutes
       m_dirty = false;
     }
     else  // this is the first digit
     {
-      m_datetime.minute = num;
+      minute = num;
       if (num > 5)
       {
         m_block = 2;           // move to seconds
@@ -836,14 +870,14 @@ void CGUIDialogNumeric::HandleInputSeconds(uint32_t num)
   {
     if (m_dirty) // have input the first digit
     {
-      m_datetime.second *= 10;
-      m_datetime.second += num;
+      second *= 10;
+      second += num;
       m_block = 0;             // move to hours
       m_dirty = false;
     }
     else  // this is the first digit
     {
-      m_datetime.second = num;
+      second = num;
       if (num > 5)
       {
         m_block = 0;           // move to hours
@@ -853,28 +887,33 @@ void CGUIDialogNumeric::HandleInputSeconds(uint32_t num)
         m_dirty = true;
     }
   }
+
+  m_datetime.SetTime(hour, minute, second);
 }
 
 void CGUIDialogNumeric::HandleInputTime(uint32_t num)
 {
+  int hour = m_datetime.GetHour();
+  int minute = m_datetime.GetMinute();
+
   if (m_block == 0) // hour
   {
     if (m_dirty) // have input the first digit
     {
-      if (m_datetime.hour < 2 || num < 4)
+      if (hour < 2 || num < 4)
       {
-        m_datetime.hour *= 10;
-        m_datetime.hour += num;
+        hour *= 10;
+        hour += num;
       }
       else
-        m_datetime.hour = num;
+        hour = num;
 
       m_block = 1;             // move to minutes
       m_dirty = false;
     }
     else  // this is the first digit
     {
-      m_datetime.hour = num;
+      hour = num;
 
       if (num > 2)
       {
@@ -889,14 +928,14 @@ void CGUIDialogNumeric::HandleInputTime(uint32_t num)
   {
     if (m_dirty) // have input the first digit
     {
-      m_datetime.minute *= 10;
-      m_datetime.minute += num;
+      minute *= 10;
+      minute += num;
       m_block = 0;             // move to hours
       m_dirty = false;
     }
     else  // this is the first digit
     {
-      m_datetime.minute = num;
+      minute = num;
 
       if (num > 5)
       {
@@ -907,5 +946,7 @@ void CGUIDialogNumeric::HandleInputTime(uint32_t num)
         m_dirty = true;
     }
   }
+
+  m_datetime.SetTime(hour, minute, 0);
 }
 

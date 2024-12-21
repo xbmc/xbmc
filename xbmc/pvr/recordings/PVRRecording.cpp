@@ -533,12 +533,9 @@ void CPVRRecording::UpdatePath()
                                             m_strChannelName, m_recordingTime, m_strRecordingId);
 }
 
-const CDateTime& CPVRRecording::RecordingTimeAsLocalTime() const
+CDateTime CPVRRecording::RecordingTimeAsLocalTime() const
 {
-  static CDateTime tmp;
-  tmp.SetFromUTCDateTime(m_recordingTime);
-
-  return tmp;
+  return m_recordingTime.GetAsLocalDateTime();
 }
 
 CDateTime CPVRRecording::EndTimeAsUTC() const
@@ -549,9 +546,7 @@ CDateTime CPVRRecording::EndTimeAsUTC() const
 
 CDateTime CPVRRecording::EndTimeAsLocalTime() const
 {
-  CDateTime ret;
-  ret.SetFromUTCDateTime(EndTimeAsUTC());
-  return ret;
+  return EndTimeAsUTC().GetAsLocalDateTime();
 }
 
 bool CPVRRecording::WillBeExpiredWithNewLifetime(int iLifetime) const

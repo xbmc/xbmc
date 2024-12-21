@@ -128,7 +128,6 @@ CScraper::CScraper(const AddonInfoPtr& addonInfo, AddonType addonType)
 {
   m_requiressettings = addonInfo->Type(addonType)->GetValue("@requiressettings").asBoolean();
 
-  CDateTimeSpan persistence;
   std::string tmp = addonInfo->Type(addonType)->GetValue("@cachepersistence").asString();
   if (!tmp.empty())
     m_persistence.SetFromTimeString(tmp);
@@ -192,6 +191,12 @@ std::string CScraper::GetPathSettings()
 
 void CScraper::ClearCache()
 {
+  if (!m_persistence.IsValid())
+  {
+    CLog::Log(LOGERROR, "{}: m_persistence is invalid! Skipping ...", __FUNCTION__);
+    return;
+  }
+
   std::string strCachePath = URIUtils::AddFileToFolder(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cachePath, "scrapers");
 
   // create scraper cache dir if needed

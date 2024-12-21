@@ -246,9 +246,8 @@ void CPVRGUITimesInfo::Update()
 
 std::string CPVRGUITimesInfo::TimeToTimeString(time_t datetime, TIME_FORMAT format, bool withSeconds)
 {
-  CDateTime time;
-  time.SetFromUTCDateTime(datetime);
-  return time.GetAsLocalizedTime(format, withSeconds);
+  CDateTime time(datetime);
+  return time.GetAsLocalDateTime().GetAsLocalizedTime(format, withSeconds);
 }
 
 std::string CPVRGUITimesInfo::GetTimeshiftStartTime(TIME_FORMAT format) const
