@@ -1,7 +1,7 @@
 xbmc/addons/test                  test/addons
 xbmc/addons/gui/skin/test         test/skin
 xbmc/cores/AudioEngine/Sinks/test test/audioengine_sinks
-xbmc/cores/VideoPlayer/test/edl   test/edl
+xbmc/cores/VideoPlayer/Edl/test   test/edl
 xbmc/cores/VideoPlayer/VideoRenderers/VideoShaders/test test/videoshaders
 xbmc/filesystem/test              test/filesystem
 xbmc/games/addons/input/test      test/games/addons/input
