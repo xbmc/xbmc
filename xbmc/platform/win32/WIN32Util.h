@@ -114,13 +114,19 @@ public:
 
 private:
 #ifndef TARGET_WINDOWS_STORE
+  struct DisplayConfigSnapshot
+  {
+    std::vector<DISPLAYCONFIG_PATH_INFO> paths;
+    std::vector<DISPLAYCONFIG_MODE_INFO> modes;
+  };
+
   static std::wstring GetCurrentDisplayName();
+  static DisplayConfigSnapshot GetDisplayConfigSnapshot();
   static std::optional<DISPLAYCONFIG_MODE_INFO> GetCurrentDisplayModeInfo();
   static std::optional<DISPLAYCONFIG_MODE_INFO> GetDisplayModeInfo(
       const std::wstring& gdiDeviceName);
   static std::optional<DISPLAYCONFIG_PATH_INFO> GetDisplayPathInfo(
       const std::wstring& gdiDeviceName);
-  static std::vector<DISPLAYCONFIG_MODE_INFO> EnumerateAllDisplays();
   static HDR_STATUS GetDisplayHDRStatus(DISPLAYCONFIG_MODE_INFO mode);
   static HDR_STATUS SetDisplayHDRStatus(DISPLAYCONFIG_MODE_INFO mode, bool enable);
 #endif

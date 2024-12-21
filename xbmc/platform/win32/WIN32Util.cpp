@@ -1228,6 +1228,36 @@ std::wstring CWIN32Util::GetCurrentDisplayName()
   return mi.szDevice;
 }
 
+CWIN32Util::DisplayConfigSnapshot CWIN32Util::GetDisplayConfigSnapshot()
+{
+  uint32_t pathCount{0};
+  uint32_t modeCount{0};
+  CWIN32Util::DisplayConfigSnapshot snapshot{};
+
+  constexpr uint32_t flags{QDC_ONLY_ACTIVE_PATHS};
+  LONG result{ERROR_SUCCESS};
+
+  do
+  {
+    if (GetDisplayConfigBufferSizes(flags, &pathCount, &modeCount) != ERROR_SUCCESS)
+      return {};
+
+    snapshot.paths.resize(pathCount);
+    snapshot.modes.resize(modeCount);
+
+    result = QueryDisplayConfig(flags, &pathCount, snapshot.paths.data(), &modeCount,
+                                snapshot.modes.data(), nullptr);
+  } while (result == ERROR_INSUFFICIENT_BUFFER);
+
+  if (result != ERROR_SUCCESS)
+    return {};
+
+  snapshot.paths.resize(pathCount);
+  snapshot.modes.resize(modeCount);
+
+  return snapshot;
+}
+
 std::optional<DISPLAYCONFIG_MODE_INFO> CWIN32Util::GetCurrentDisplayModeInfo()
 {
   std::wstring name{GetCurrentDisplayName()};
@@ -1236,46 +1266,24 @@ std::optional<DISPLAYCONFIG_MODE_INFO> CWIN32Util::GetCurrentDisplayModeInfo()
 
   return GetDisplayModeInfo(name);
 }
+
 std::optional<DISPLAYCONFIG_MODE_INFO> CWIN32Util::GetDisplayModeInfo(
     const std::wstring& gdiDeviceName)
 {
-  uint32_t pathCount{0};
-  uint32_t modeCount{0};
-  std::vector<DISPLAYCONFIG_PATH_INFO> paths;
-  std::vector<DISPLAYCONFIG_MODE_INFO> modes;
-
-  constexpr uint32_t flags{QDC_ONLY_ACTIVE_PATHS};
-  LONG result{ERROR_SUCCESS};
-
-  do
-  {
-    if (GetDisplayConfigBufferSizes(flags, &pathCount, &modeCount) != ERROR_SUCCESS)
-      return std::nullopt;
-
-    paths.resize(pathCount);
-    modes.resize(modeCount);
-
-    result = QueryDisplayConfig(flags, &pathCount, paths.data(), &modeCount, modes.data(), nullptr);
-  } while (result == ERROR_INSUFFICIENT_BUFFER);
-
-  if (result != ERROR_SUCCESS)
-    return std::nullopt;
-
-  paths.resize(pathCount);
-  modes.resize(modeCount);
+  const DisplayConfigSnapshot snapshot{GetDisplayConfigSnapshot()};
 
   DISPLAYCONFIG_SOURCE_DEVICE_NAME source{};
   source.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_SOURCE_NAME;
   source.header.size = sizeof(source);
 
-  for (const auto& path : paths)
+  for (const auto& path : snapshot.paths)
   {
     source.header.adapterId = path.sourceInfo.adapterId;
     source.header.id = path.sourceInfo.id;
 
     if (DisplayConfigGetDeviceInfo(&source.header) == ERROR_SUCCESS &&
         gdiDeviceName == source.viewGdiDeviceName)
-      return modes.at(path.targetInfo.modeInfoIdx); // useful info: mode.adapterId, mode,id
+      return snapshot.modes.at(path.targetInfo.modeInfoIdx); // useful info: mode.adapterId, mode,id
   }
   return std::nullopt;
 }
@@ -1283,36 +1291,13 @@ std::optional<DISPLAYCONFIG_MODE_INFO> CWIN32Util::GetDisplayModeInfo(
 std::optional<DISPLAYCONFIG_PATH_INFO> CWIN32Util::GetDisplayPathInfo(
     const std::wstring& gdiDeviceName)
 {
-  uint32_t pathCount{0};
-  uint32_t modeCount{0};
-  std::vector<DISPLAYCONFIG_PATH_INFO> paths;
-  std::vector<DISPLAYCONFIG_MODE_INFO> modes;
-
-  constexpr uint32_t flags{QDC_ONLY_ACTIVE_PATHS};
-  LONG result{ERROR_SUCCESS};
-
-  do
-  {
-    if (GetDisplayConfigBufferSizes(flags, &pathCount, &modeCount) != ERROR_SUCCESS)
-      return std::nullopt;
-
-    paths.resize(pathCount);
-    modes.resize(modeCount);
-
-    result = QueryDisplayConfig(flags, &pathCount, paths.data(), &modeCount, modes.data(), nullptr);
-  } while (result == ERROR_INSUFFICIENT_BUFFER);
-
-  if (result != ERROR_SUCCESS)
-    return std::nullopt;
-
-  paths.resize(pathCount);
-  modes.resize(modeCount);
+  const DisplayConfigSnapshot snapshot{GetDisplayConfigSnapshot()};
 
   DISPLAYCONFIG_SOURCE_DEVICE_NAME source{};
   source.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_SOURCE_NAME;
   source.header.size = sizeof(source);
 
-  for (const auto& path : paths)
+  for (const auto& path : snapshot.paths)
   {
     source.header.adapterId = path.sourceInfo.adapterId;
     source.header.id = path.sourceInfo.id;
@@ -1512,12 +1497,11 @@ HDR_STATUS CWIN32Util::GetWindowsHDRStatus()
   }
   else
   {
-    std::vector<DISPLAYCONFIG_MODE_INFO> alldisplays{EnumerateAllDisplays()};
+    const DisplayConfigSnapshot snapshot{GetDisplayConfigSnapshot()};
 
-    status = HDR_STATUS::HDR_UNSUPPORTED;
-    for (const auto& display : alldisplays)
+    for (const auto& path : snapshot.paths)
     {
-      HDR_STATUS temp{GetDisplayHDRStatus(display)};
+      HDR_STATUS temp{GetDisplayHDRStatus(snapshot.modes.at(path.targetInfo.modeInfoIdx))};
 
       if (temp != HDR_STATUS::HDR_UNSUPPORTED)
       {
@@ -1544,42 +1528,6 @@ HDR_STATUS CWIN32Util::GetWindowsHDRStatus()
 }
 
 #ifndef TARGET_WINDOWS_STORE
-std::vector<DISPLAYCONFIG_MODE_INFO> CWIN32Util::EnumerateAllDisplays()
-{
-  std::vector<DISPLAYCONFIG_MODE_INFO> displays;
-  uint32_t pathCount = 0;
-  uint32_t modeCount = 0;
-  std::vector<DISPLAYCONFIG_PATH_INFO> paths;
-  std::vector<DISPLAYCONFIG_MODE_INFO> modes;
-
-  constexpr uint32_t flags{QDC_ONLY_ACTIVE_PATHS};
-  LONG result{ERROR_SUCCESS};
-
-  do
-  {
-    if (GetDisplayConfigBufferSizes(flags, &pathCount, &modeCount) != ERROR_SUCCESS)
-      return {};
-
-    paths.resize(pathCount);
-    modes.resize(modeCount);
-
-    result = QueryDisplayConfig(flags, &pathCount, paths.data(), &modeCount, modes.data(), nullptr);
-  } while (result == ERROR_INSUFFICIENT_BUFFER);
-
-  if (result != ERROR_SUCCESS)
-    return {};
-
-  paths.resize(pathCount);
-  modes.resize(modeCount);
-
-  for (const auto& mode : modes)
-  {
-    if (mode.infoType == DISPLAYCONFIG_MODE_INFO_TYPE_TARGET)
-      displays.push_back(mode);
-  }
-  return displays;
-}
-
 HDR_STATUS CWIN32Util::GetDisplayHDRStatus(DISPLAYCONFIG_MODE_INFO mode)
 {
   bool hdrSupported{false};
