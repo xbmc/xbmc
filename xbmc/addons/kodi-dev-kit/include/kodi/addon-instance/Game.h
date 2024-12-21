@@ -573,6 +573,21 @@ public:
   ///
   ///@{
 
+  //==========================================================================
+  /// @brief **Callback to Kodi Function**\n
+  /// Enable hardware rendering functionality
+  ///
+  /// @return True if hardware rendering was enabled, false otherwise
+  ///
+  /// @remarks Only called from addon itself
+  ///
+  bool EnableHardwareRendering(const game_hw_rendering_properties& properties)
+  {
+    return m_instanceData->toKodi->EnableHardwareRendering(m_instanceData->toKodi->kodiInstance,
+                                                           &properties);
+  }
+  //----------------------------------------------------------------------------
+
   //============================================================================
   /// @brief Invalidates the current HW context and reinitializes GPU resources
   ///

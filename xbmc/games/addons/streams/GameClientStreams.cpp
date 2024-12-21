@@ -9,6 +9,7 @@
 #include "GameClientStreams.h"
 
 #include "GameClientStreamAudio.h"
+#include "GameClientStreamHwFramebuffer.h"
 #include "GameClientStreamSwFramebuffer.h"
 #include "GameClientStreamVideo.h"
 #include "cores/RetroPlayer/streams/IRetroPlayerStream.h"
@@ -67,7 +68,7 @@ IGameClientStream* CGameClientStreams::OpenStream(const game_stream_properties& 
 
   if (!gameStream->OpenStream(retroStream.get(), properties))
   {
-    CLog::Log(LOGERROR, "GAME: Failed to open audio stream");
+    CLog::Log(LOGERROR, "GAME: Failed to open stream");
     return nullptr;
   }
 
@@ -88,6 +89,30 @@ void CGameClientStreams::CloseStream(IGameClientStream* stream)
   }
 }
 
+bool CGameClientStreams::EnableHardwareRendering(const game_hw_rendering_properties& properties)
+{
+  if (properties.context_type == GAME_HW_CONTEXT_NONE)
+    return false;
+
+  // Log hardware rendering properties for debugging
+  CGameClientStreamHwFramebuffer::LogHwProperties(properties);
+
+  // Store hardware rendering properties
+  m_hwProperties = properties;
+
+  //! @todo Finish OpenGL support
+  CLog::Log(LOGERROR, "Hardware rendering not implemented");
+  return false;
+}
+
+game_proc_address_t CGameClientStreams::GetHwProcedureAddress(const char* symbol)
+{
+  if (m_streamManager != nullptr)
+    return m_streamManager->GetHwProcedureAddress(symbol);
+
+  return nullptr;
+}
+
 std::unique_ptr<IGameClientStream> CGameClientStreams::CreateStream(
     GAME_STREAM_TYPE streamType) const
 {
@@ -103,6 +128,11 @@ std::unique_ptr<IGameClientStream> CGameClientStreams::CreateStream(
     case GAME_STREAM_VIDEO:
     {
       gameStream = std::make_unique<CGameClientStreamVideo>();
+      break;
+    }
+    case GAME_STREAM_HW_FRAMEBUFFER:
+    {
+      gameStream = std::make_unique<CGameClientStreamHwFramebuffer>(m_gameClient, m_hwProperties);
       break;
     }
     case GAME_STREAM_SW_FRAMEBUFFER:
