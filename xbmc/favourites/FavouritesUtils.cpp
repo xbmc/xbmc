@@ -127,11 +127,11 @@ bool ShouldEnableMoveItems()
 
 namespace
 {
-bool ExecuteAction(const std::string& execString)
+bool ExecuteAction(const std::string& execString, const std::shared_ptr<CFileItem>& item)
 {
   if (!execString.empty())
   {
-    CGUIMessage message(GUI_MSG_EXECUTE, 0, 0);
+    CGUIMessage message(GUI_MSG_EXECUTE, 0, 0, 0, 0, item);
     message.SetStringParam(execString);
     CServiceBroker::GetGUI()->GetWindowManager().SendMessage(message);
     return true;
@@ -140,15 +140,15 @@ bool ExecuteAction(const std::string& execString)
 }
 } // unnamed namespace
 
-bool ExecuteAction(const CExecString& execString)
+bool ExecuteAction(const CExecString& execString, const std::shared_ptr<CFileItem>& item)
 {
-  return ExecuteAction(execString.GetExecString());
+  return ExecuteAction(execString.GetExecString(), item);
 }
 
-bool ExecuteAction(const CFavouritesURL& favURL)
+bool ExecuteAction(const CFavouritesURL& favURL, const std::shared_ptr<CFileItem>& item)
 {
   if (favURL.IsValid())
-    return ExecuteAction(favURL.GetExecString());
+    return ExecuteAction(favURL.GetExecString(), item);
 
   return false;
 }

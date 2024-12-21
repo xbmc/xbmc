@@ -63,25 +63,25 @@ protected:
   {
     // part numbers are 1-based
     FAVOURITES_UTILS::ExecuteAction(
-        {"PlayMedia", *m_item, StringUtils::Format("playoffset={}", part - 1)});
+        {"PlayMedia", *m_item, StringUtils::Format("playoffset={}", part - 1)}, m_item);
     return true;
   }
 
   bool OnResumeSelected() override
   {
-    FAVOURITES_UTILS::ExecuteAction({"PlayMedia", *m_item, "resume"});
+    FAVOURITES_UTILS::ExecuteAction({"PlayMedia", *m_item, "resume"}, m_item);
     return true;
   }
 
   bool OnPlaySelected() override
   {
-    FAVOURITES_UTILS::ExecuteAction({"PlayMedia", *m_item, "noresume"});
+    FAVOURITES_UTILS::ExecuteAction({"PlayMedia", *m_item, "noresume"}, m_item);
     return true;
   }
 
   bool OnQueueSelected() override
   {
-    FAVOURITES_UTILS::ExecuteAction({"QueueMedia", *m_item, ""});
+    FAVOURITES_UTILS::ExecuteAction({"QueueMedia", *m_item, ""}, m_item);
     return true;
   }
 
@@ -108,13 +108,13 @@ public:
 protected:
   bool OnResumeSelected() override
   {
-    FAVOURITES_UTILS::ExecuteAction({"PlayMedia", *m_item, "resume"});
+    FAVOURITES_UTILS::ExecuteAction({"PlayMedia", *m_item, "resume"}, m_item);
     return true;
   }
 
   bool OnPlaySelected() override
   {
-    FAVOURITES_UTILS::ExecuteAction({"PlayMedia", *m_item, "noresume"});
+    FAVOURITES_UTILS::ExecuteAction({"PlayMedia", *m_item, "noresume"}, m_item);
     return true;
   }
 };
@@ -132,25 +132,24 @@ bool CGUIWindowFavourites::OnSelect(int itemIdx)
 
   const bool isPlayMedia{favURL.GetAction() == CFavouritesURL::Action::PLAY_MEDIA};
 
-  const auto target{CServiceBroker::GetFavouritesService().ResolveFavourite(*item)};
-  if (!target)
+  std::shared_ptr<CFileItem> targetItem{
+      CServiceBroker::GetFavouritesService().ResolveFavourite(*item)};
+  if (!targetItem)
     return false;
 
-  CFileItem targetItem{*target};
-
   // video select action setting is for files only, except exec func is playmedia...
-  if (targetItem.HasVideoInfoTag() && (!targetItem.m_bIsFolder || isPlayMedia))
+  if (targetItem->HasVideoInfoTag() && (!targetItem->m_bIsFolder || isPlayMedia))
   {
     // play the given/default video version, even if multiple versions are available
-    targetItem.SetProperty("has_resolved_video_asset", true);
+    targetItem->SetProperty("has_resolved_video_asset", true);
 
-    CVideoSelectActionProcessor proc{std::make_shared<CFileItem>(targetItem)};
+    CVideoSelectActionProcessor proc{targetItem};
     if (proc.ProcessDefaultAction())
       return true;
   }
 
   // exec the execute string for the original (!) item
-  return FAVOURITES_UTILS::ExecuteAction(favURL);
+  return FAVOURITES_UTILS::ExecuteAction(favURL, targetItem);
 }
 
 bool CGUIWindowFavourites::OnAction(const CAction& action)
@@ -185,7 +184,7 @@ bool CGUIWindowFavourites::OnAction(const CAction& action)
         target = CFavouritesURL{CFavouritesURL::Action::PLAY_MEDIA,
                                 {StringUtils::Paramify(item->GetPath())}};
       }
-      return FAVOURITES_UTILS::ExecuteAction(target);
+      return FAVOURITES_UTILS::ExecuteAction(target, targetItem);
     }
     return false;
   }
