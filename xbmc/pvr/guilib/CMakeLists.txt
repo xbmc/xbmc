@@ -30,7 +30,6 @@ set(HEADERS GUIEPGGridContainer.h
             PVRGUIActionsTimers.h
             PVRGUIChannelIconUpdater.h
             PVRGUIChannelNavigator.h
-            PVRGUIProgressHandler.h
-            PVRGUIRecordingsPlayActionProcessor.h)
+            PVRGUIProgressHandler.h)
 
 core_add_library(pvr_guilib)

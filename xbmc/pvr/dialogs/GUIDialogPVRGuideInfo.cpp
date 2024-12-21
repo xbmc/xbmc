@@ -18,10 +18,10 @@
 #include "pvr/guilib/PVRGUIActionsEPG.h"
 #include "pvr/guilib/PVRGUIActionsPlayback.h"
 #include "pvr/guilib/PVRGUIActionsTimers.h"
-#include "pvr/guilib/PVRGUIRecordingsPlayActionProcessor.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
+#include "video/guilib/VideoPlayActionProcessor.h"
 
 #include <memory>
 
@@ -140,7 +140,8 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonPlay(const CGUIMessage& message)
         const auto recording{CPVRItem(m_progItem).GetRecording()};
         if (recording)
         {
-          CGUIPVRRecordingsPlayActionProcessor proc{std::make_shared<CFileItem>(recording)};
+          KODI::VIDEO::GUILIB::CVideoPlayActionProcessor proc{
+              std::make_shared<CFileItem>(recording)};
           proc.ProcessDefaultAction();
           if (proc.UserCancelled())
             Open();
