@@ -120,5 +120,7 @@ private:
       const std::wstring& gdiDeviceName);
   static std::optional<DISPLAYCONFIG_PATH_INFO> GetDisplayPathInfo(
       const std::wstring& gdiDeviceName);
+  static std::vector<DISPLAYCONFIG_MODE_INFO> EnumerateAllDisplays();
+  static HDR_STATUS GetDisplayHDRStatus(DISPLAYCONFIG_MODE_INFO mode);
 #endif
 };

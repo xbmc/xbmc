@@ -1485,9 +1485,10 @@ HDR_STATUS CWIN32Util::ToggleWindowsHDR(DXGI_MODE_DESC& modeDesc)
 HDR_STATUS CWIN32Util::GetWindowsHDRStatus()
 {
   HDR_STATUS status = HDR_STATUS::HDR_UNSUPPORTED;
+#ifdef TARGET_WINDOWS_STORE
+
   bool hdrSupported = false;
   bool hdrEnabled = false;
-#ifdef TARGET_WINDOWS_STORE
 
   auto displayInformation = DisplayInformation::GetForCurrentView();
 
@@ -1528,84 +1529,153 @@ HDR_STATUS CWIN32Util::GetWindowsHDRStatus()
       displayManager.Close();
     }
   }
+
+  if (hdrSupported)
+    status = hdrEnabled ? HDR_STATUS::HDR_ON : HDR_STATUS::HDR_OFF;
+
 #else
-  std::wstring gdiDeviceName{GetCurrentDisplayName()};
-  if (gdiDeviceName.empty())
-    return status;
 
-  const auto mode{GetDisplayModeInfo(gdiDeviceName)};
-  if (mode)
+  if (g_hWnd != NULL)
   {
-    // Windows 11 24H2 or newer (SDK 10.0.26100.0)
-    if (CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin11_24H2))
-    {
-      DISPLAYCONFIG_GET_ADVANCED_COLOR_INFO_2 getColorInfo2 = {};
-      getColorInfo2.header.type = static_cast<DISPLAYCONFIG_DEVICE_INFO_TYPE>(
-          DISPLAYCONFIG_DEVICE_INFO_GET_ADVANCED_COLOR_INFO_2);
-      getColorInfo2.header.size = sizeof(getColorInfo2);
+    std::wstring gdiDeviceName{GetCurrentDisplayName()};
+    if (gdiDeviceName.empty())
+      return status;
 
-      getColorInfo2.header.adapterId = mode->adapterId;
-      getColorInfo2.header.id = mode->id;
-
-      if (ERROR_SUCCESS == DisplayConfigGetDeviceInfo(&getColorInfo2.header))
-      {
-        if (getColorInfo2.activeColorMode == DISPLAYCONFIG_ADVANCED_COLOR_MODE_HDR)
-          hdrEnabled = true;
-
-        if (getColorInfo2.highDynamicRangeSupported == TRUE)
-          hdrSupported = true;
-      }
-    }
-    else // older than Windows 11 24H2
-    {
-      DISPLAYCONFIG_GET_ADVANCED_COLOR_INFO getColorInfo = {};
-      getColorInfo.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_ADVANCED_COLOR_INFO;
-      getColorInfo.header.size = sizeof(getColorInfo);
-
-      getColorInfo.header.adapterId = mode->adapterId;
-      getColorInfo.header.id = mode->id;
-
-      if (ERROR_SUCCESS == DisplayConfigGetDeviceInfo(&getColorInfo.header))
-      {
-        // DISPLAYCONFIG_DEVICE_INFO_GET_ADVANCED_COLOR_INFO documentation is lacking and field
-        // names are confusing. Through experimentation and deductions from equivalent WinRT API:
-        //
-        // SDR screen, advanced color not supported (Win 10, Win 11 < 22H2)
-        // > advancedColorSupported = 0 and wideColorEnforced = 0
-        // SDR screen, advanced color is supported (Win 11 >= 22H2)
-        // > advancedColorSupported = 1 and wideColorEnforced = 1
-        // HDR screen
-        // > advancedColorSupported = 1 and wideColorEnforced = 0
-        //
-        // advancedColorForceDisabled: maybe equivalent of advancedColorLimitedByPolicy?
-        //
-        // advancedColorEnabled = 1:
-        // For HDR screens means HDR is on
-        // For SDR screens means ACM (Automatic Color Management, Win 11 >= 22H2) is on
-
-        if (getColorInfo.advancedColorSupported && !getColorInfo.wideColorEnforced)
-          hdrSupported = true;
-
-        if (hdrSupported && getColorInfo.advancedColorEnabled)
-          hdrEnabled = true;
-      }
-    }
-  }
-#endif
-
-  if (!hdrSupported)
-  {
-    status = HDR_STATUS::HDR_UNSUPPORTED;
-    if (CServiceBroker::IsServiceManagerUp())
-      CLog::LogF(LOGDEBUG, "Display is not HDR capable or cannot be detected");
+    const auto mode{GetDisplayModeInfo(gdiDeviceName)};
+    if (mode)
+      status = GetDisplayHDRStatus(mode.value());
   }
   else
   {
-    status = hdrEnabled ? HDR_STATUS::HDR_ON : HDR_STATUS::HDR_OFF;
-    if (CServiceBroker::IsServiceManagerUp())
-      CLog::LogF(LOGDEBUG, "Display is HDR capable and current HDR status is {}",
-                 hdrEnabled ? "ON" : "OFF");
+    std::vector<DISPLAYCONFIG_MODE_INFO> alldisplays{EnumerateAllDisplays()};
+
+    status = HDR_STATUS::HDR_UNSUPPORTED;
+    for (const auto& display : alldisplays)
+    {
+      HDR_STATUS temp{GetDisplayHDRStatus(display)};
+
+      if (temp != HDR_STATUS::HDR_UNSUPPORTED)
+      {
+        status = temp;
+
+        if (temp == HDR_STATUS::HDR_ON)
+          break;
+      }
+    }
   }
+
+#endif
+
+  if (CServiceBroker::IsServiceManagerUp())
+  {
+    if (status == HDR_STATUS::HDR_UNSUPPORTED)
+      CLog::LogF(LOGDEBUG, "Display is not HDR capable or cannot be detected");
+    else
+      CLog::LogF(LOGDEBUG, "Display is HDR capable and current HDR status is {}",
+                 status == HDR_STATUS::HDR_ON ? "ON" : "OFF");
+  }
+
+  return status;
+}
+
+std::vector<DISPLAYCONFIG_MODE_INFO> CWIN32Util::EnumerateAllDisplays()
+{
+  std::vector<DISPLAYCONFIG_MODE_INFO> displays;
+  uint32_t pathCount = 0;
+  uint32_t modeCount = 0;
+  std::vector<DISPLAYCONFIG_PATH_INFO> paths;
+  std::vector<DISPLAYCONFIG_MODE_INFO> modes;
+
+  constexpr uint32_t flags{QDC_ONLY_ACTIVE_PATHS};
+  LONG result{ERROR_SUCCESS};
+
+  do
+  {
+    if (GetDisplayConfigBufferSizes(flags, &pathCount, &modeCount) != ERROR_SUCCESS)
+      return {};
+
+    paths.resize(pathCount);
+    modes.resize(modeCount);
+
+    result = QueryDisplayConfig(flags, &pathCount, paths.data(), &modeCount, modes.data(), nullptr);
+  } while (result == ERROR_INSUFFICIENT_BUFFER);
+
+  if (result != ERROR_SUCCESS)
+    return {};
+
+  paths.resize(pathCount);
+  modes.resize(modeCount);
+
+  for (const auto& mode : modes)
+  {
+    if (mode.infoType == DISPLAYCONFIG_MODE_INFO_TYPE_TARGET)
+      displays.push_back(mode);
+  }
+  return displays;
+}
+
+HDR_STATUS CWIN32Util::GetDisplayHDRStatus(DISPLAYCONFIG_MODE_INFO mode)
+{
+  bool hdrSupported{false};
+  bool hdrEnabled{false};
+
+  // Windows 11 24H2 or newer (SDK 10.0.26100.0)
+  if (CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin11_24H2))
+  {
+    DISPLAYCONFIG_GET_ADVANCED_COLOR_INFO_2 getColorInfo2 = {};
+    getColorInfo2.header.type = static_cast<DISPLAYCONFIG_DEVICE_INFO_TYPE>(
+        DISPLAYCONFIG_DEVICE_INFO_GET_ADVANCED_COLOR_INFO_2);
+    getColorInfo2.header.size = sizeof(getColorInfo2);
+    getColorInfo2.header.adapterId = mode.adapterId;
+    getColorInfo2.header.id = mode.id;
+
+    if (ERROR_SUCCESS == DisplayConfigGetDeviceInfo(&getColorInfo2.header))
+    {
+      if (getColorInfo2.activeColorMode == DISPLAYCONFIG_ADVANCED_COLOR_MODE_HDR)
+        hdrEnabled = true;
+
+      if (getColorInfo2.highDynamicRangeSupported == TRUE)
+        hdrSupported = true;
+    }
+  }
+  else // older than Windows 11 24H2
+  {
+    DISPLAYCONFIG_GET_ADVANCED_COLOR_INFO getColorInfo = {};
+    getColorInfo.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_ADVANCED_COLOR_INFO;
+    getColorInfo.header.size = sizeof(getColorInfo);
+    getColorInfo.header.adapterId = mode.adapterId;
+    getColorInfo.header.id = mode.id;
+
+    if (ERROR_SUCCESS == DisplayConfigGetDeviceInfo(&getColorInfo.header))
+    {
+      // DISPLAYCONFIG_DEVICE_INFO_GET_ADVANCED_COLOR_INFO documentation is lacking and field
+      // names are confusing. Through experimentation and deductions from equivalent WinRT API:
+      //
+      // SDR screen, advanced color not supported (Win 10, Win 11 < 22H2)
+      // > advancedColorSupported = 0 and wideColorEnforced = 0
+      // SDR screen, advanced color is supported (Win 11 >= 22H2)
+      // > advancedColorSupported = 1 and wideColorEnforced = 1
+      // HDR screen
+      // > advancedColorSupported = 1 and wideColorEnforced = 0
+      //
+      // advancedColorForceDisabled: maybe equivalent of advancedColorLimitedByPolicy?
+      //
+      // advancedColorEnabled = 1:
+      // For HDR screens means HDR is on
+      // For SDR screens means ACM (Automatic Color Management, Win 11 >= 22H2) is on
+
+      if (getColorInfo.advancedColorSupported && !getColorInfo.wideColorEnforced)
+        hdrSupported = true;
+
+      if (hdrSupported && getColorInfo.advancedColorEnabled)
+        hdrEnabled = true;
+    }
+  }
+
+  HDR_STATUS status{HDR_STATUS::HDR_UNSUPPORTED};
+
+  if (hdrSupported)
+    status = hdrEnabled ? HDR_STATUS::HDR_ON : HDR_STATUS::HDR_OFF;
 
   return status;
 }
