@@ -52,9 +52,10 @@ CInfoScanner::INFO_TYPE CVideoTagLoaderNFO::Load(CVideoInfoTag& tag,
     result = nfoReader.Create(m_path, m_info);
 
   if (result == CInfoScanner::FULL_NFO || result == CInfoScanner::COMBINED_NFO)
+  {
     nfoReader.GetDetails(tag, nullptr, prioritise);
-
-  if (result == CInfoScanner::URL_NFO || result == CInfoScanner::COMBINED_NFO)
+  }
+  else if (result == CInfoScanner::URL_NFO || result == CInfoScanner::COMBINED_NFO)
   {
     m_url = nfoReader.ScraperUrl();
     m_info = nfoReader.GetScraperInfo();
