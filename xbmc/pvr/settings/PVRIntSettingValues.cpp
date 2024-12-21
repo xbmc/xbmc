@@ -48,15 +48,6 @@ CPVRIntSettingValues::CPVRIntSettingValues(int defaultValue) : m_defaultValue(de
 {
 }
 
-CPVRIntSettingValues::CPVRIntSettingValues(struct PVR_ATTRIBUTE_INT_VALUE* values,
-                                           unsigned int valuesSize,
-                                           unsigned int defaultValue,
-                                           int defaultDescriptionResourceId /* = 0 */)
-  : CPVRIntSettingValues(
-        values, valuesSize, static_cast<int>(defaultValue), defaultDescriptionResourceId)
-{
-}
-
 CPVRIntSettingValues::CPVRIntSettingValues(const std::vector<SettingIntValue>& values,
                                            int defaultValue)
   : m_values(values), m_defaultValue(defaultValue)

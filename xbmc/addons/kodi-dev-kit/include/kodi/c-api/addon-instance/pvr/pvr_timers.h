@@ -391,11 +391,11 @@ extern "C"
 
     unsigned int iPreventDuplicateEpisodesSize;
     struct PVR_ATTRIBUTE_INT_VALUE* preventDuplicateEpisodes;
-    unsigned int iPreventDuplicateEpisodesDefault;
+    int iPreventDuplicateEpisodesDefault;
 
     unsigned int iRecordingGroupSize;
     struct PVR_ATTRIBUTE_INT_VALUE* recordingGroup;
-    unsigned int iRecordingGroupDefault;
+    int iRecordingGroupDefault;
 
     unsigned int iMaxRecordingsSize;
     struct PVR_ATTRIBUTE_INT_VALUE* maxRecordings;

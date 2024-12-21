@@ -27,10 +27,6 @@ public:
                        unsigned int valuesSize,
                        int defaultValue,
                        int defaultDescriptionResourceId = 0);
-  CPVRIntSettingValues(struct PVR_ATTRIBUTE_INT_VALUE* values,
-                       unsigned int valuesSize,
-                       unsigned int defaultValue,
-                       int defaultDescriptionResourceId = 0);
   CPVRIntSettingValues(const std::vector<SettingIntValue>& values, int defaultValue);
 
   virtual ~CPVRIntSettingValues() = default;
