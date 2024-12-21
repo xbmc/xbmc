@@ -161,10 +161,7 @@ private:
     void Add(const std::string& text);
 
     const std::string& GetText() const { return m_infoText; }
-    std::string GetLine(unsigned int line) const
-    {
-      return line < m_data.size() ? m_data.at(line) : "";
-    }
+    std::string GetLine(size_t line) const { return line < m_data.size() ? m_data.at(line) : ""; }
 
   private:
     const size_t m_maxSize = 10;

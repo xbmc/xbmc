@@ -37,11 +37,11 @@ namespace PVR
 
     /*!
      * @brief Update the progress dialogs's content.
-     * @param strText The new progress text.
-     * @param iCurrent The new current progress value, must be less or equal iMax.
-     * @param iMax The new maximum progress value, must be greater or equal iCurrent.
+     * @param text The new progress text.
+     * @param currentValue The new current progress value, must be less or equal iMax.
+     * @param maxValue The new maximum progress value, must be greater or equal iCurrent.
      */
-    void UpdateProgress(const std::string& strText, unsigned int iCurrent, unsigned int iMax);
+    void UpdateProgress(const std::string& text, size_t currentValue, size_t maxValue);
 
   protected:
     // CThread implementation
