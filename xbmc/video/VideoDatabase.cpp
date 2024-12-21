@@ -3506,7 +3506,9 @@ void CVideoDatabase::AddBookMarkToFile(const std::string& strFilenameAndPath, co
   }
 }
 
-void CVideoDatabase::ClearBookMarkOfFile(const std::string& strFilenameAndPath, CBookmark& bookmark, CBookmark::EType type /*= CBookmark::STANDARD*/)
+void CVideoDatabase::ClearBookMarkOfFile(const std::string& strFilenameAndPath,
+                                         const CBookmark& bookmark,
+                                         CBookmark::EType type /*= CBookmark::STANDARD*/)
 {
   try
   {

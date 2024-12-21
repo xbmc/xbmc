@@ -678,7 +678,9 @@ public:
   void AddBookMarkToFile(const std::string& strFilenameAndPath, const CBookmark &bookmark, CBookmark::EType type = CBookmark::STANDARD);
   bool GetResumeBookMark(const std::string& strFilenameAndPath, CBookmark &bookmark);
   void DeleteResumeBookMark(const CFileItem& item);
-  void ClearBookMarkOfFile(const std::string& strFilenameAndPath, CBookmark& bookmark, CBookmark::EType type = CBookmark::STANDARD);
+  void ClearBookMarkOfFile(const std::string& strFilenameAndPath,
+                           const CBookmark& bookmark,
+                           CBookmark::EType type = CBookmark::STANDARD);
   void ClearBookMarksOfFile(const std::string& strFilenameAndPath, CBookmark::EType type = CBookmark::STANDARD);
   void ClearBookMarksOfFile(int idFile, CBookmark::EType type = CBookmark::STANDARD);
   bool GetBookMarkForEpisode(const CVideoInfoTag& tag, CBookmark& bookmark);
