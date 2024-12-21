@@ -1565,11 +1565,27 @@ HDR_STATUS CWIN32Util::GetWindowsHDRStatus()
 
         if (ERROR_SUCCESS == DisplayConfigGetDeviceInfo(&getColorInfo.header))
         {
-          if (getColorInfo.advancedColorEnabled)
-            hdrEnabled = true;
+          // DISPLAYCONFIG_DEVICE_INFO_GET_ADVANCED_COLOR_INFO documentation is lacking and field
+          // names are confusing. Through experimentation and deductions from equivalent WinRT API:
+          //
+          // SDR screen, advanced color not supported (Win 10, Win 11 < 22H2)
+          // > advancedColorSupported = 0 and wideColorEnforced = 0
+          // SDR screen, advanced color is supported (Win 11 >= 22H2)
+          // > advancedColorSupported = 1 and wideColorEnforced = 1
+          // HDR screen
+          // > advancedColorSupported = 1 and wideColorEnforced = 0
+          //
+          // advancedColorForceDisabled: maybe equivalent of advancedColorLimitedByPolicy?
+          //
+          // advancedColorEnabled = 1:
+          // For HDR screens means HDR is on
+          // For SDR screens means ACM (Automatic Color Management, Win 11 >= 22H2) is on
 
-          if (getColorInfo.advancedColorSupported)
+          if (getColorInfo.advancedColorSupported && !getColorInfo.wideColorEnforced)
             hdrSupported = true;
+
+          if (hdrSupported && getColorInfo.advancedColorEnabled)
+            hdrEnabled = true;
         }
 
         if (g_hWnd != nullptr)
