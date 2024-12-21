@@ -61,10 +61,36 @@ void CURL::Parse(std::string strURL1)
   // format 1: protocol://[username:password]@hostname[:port]/directoryandfile
   // format 2: protocol://file
   // format 3: drive:directoryandfile
+  // format 4: magnet:?xt=...
   //
   // first need 2 check if this is a protocol or just a normal drive & path
   if (!strURL.size()) return ;
   if (strURL == "?") return;
+
+  // Magnet URIs aren't standard URLs, so we need to handle them separately
+  if (StringUtils::StartsWith(strURL, "magnet:"))
+  {
+    // Set protocol
+    SetProtocol("magnet");
+
+    // Ignore any protocol slashes that may have been unintentionally added
+    std::string remaining = strURL.substr(std::strlen("magnet:"));
+    remaining.erase(0, remaining.find_first_not_of('/'));
+
+    // Set file name, if one appears before the first ?
+    size_t optionsStart = remaining.find('?');
+    if (optionsStart != std::string::npos)
+    {
+      SetFileName(remaining.substr(0, optionsStart));
+      SetOptions(remaining.substr(optionsStart));
+    }
+    else
+    {
+      SetFileName(remaining);
+    }
+
+    return;
+  }
 
   // form is format 1 or 2
   // format 1: protocol://[domain;][username:password]@hostname[:port]/directoryandfile
