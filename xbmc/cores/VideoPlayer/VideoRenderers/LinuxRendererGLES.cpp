@@ -132,7 +132,8 @@ bool CLinuxRendererGLES::Configure(const VideoPicture &picture, float fps, unsig
   // setup the background colour
   m_clearColour = CServiceBroker::GetWinSystem()->UseLimitedColor() ? (16.0f / 0xff) : 0.0f;
 
-  if (picture.hasDisplayMetadata && picture.hasLightMetadata)
+  if (picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
+      picture.color_transfer == AVCOL_TRC_ARIB_STD_B67)
   {
     m_passthroughHDR = CServiceBroker::GetWinSystem()->SetHDR(&picture);
     CLog::Log(LOGDEBUG, "LinuxRendererGLES::Configure: HDR passthrough: {}",
