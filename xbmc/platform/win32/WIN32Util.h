@@ -110,7 +110,4 @@ public:
    * \return Formatted string
    */
   static std::string FormatHRESULT(HRESULT hr);
-
-private:
-  static HDR_STATUS GetWindowsHDRStatusWin32();
 };

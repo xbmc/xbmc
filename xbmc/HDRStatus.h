@@ -10,7 +10,6 @@
 
 enum class HDR_STATUS
 {
-  HDR_UNKNOWN = -2,
   HDR_TOGGLE_FAILED = -1,
   HDR_UNSUPPORTED = 0,
   HDR_OFF = 1,
