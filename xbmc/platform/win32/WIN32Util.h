@@ -122,5 +122,6 @@ private:
       const std::wstring& gdiDeviceName);
   static std::vector<DISPLAYCONFIG_MODE_INFO> EnumerateAllDisplays();
   static HDR_STATUS GetDisplayHDRStatus(DISPLAYCONFIG_MODE_INFO mode);
+  static HDR_STATUS SetDisplayHDRStatus(DISPLAYCONFIG_MODE_INFO mode, bool enable);
 #endif
 };

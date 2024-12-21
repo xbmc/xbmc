@@ -1363,101 +1363,28 @@ HDR_STATUS CWIN32Util::ToggleWindowsHDR(DXGI_MODE_DESC& modeDesc)
 #else
   std::wstring gdiDeviceName{GetCurrentDisplayName()};
   if (gdiDeviceName.empty())
-    return status;
+    return HDR_STATUS::HDR_TOGGLE_FAILED;
 
   const auto mode{GetDisplayModeInfo(gdiDeviceName)};
-  if (mode)
+  if (!mode)
+    return HDR_STATUS::HDR_TOGGLE_FAILED;
+
+  status = GetDisplayHDRStatus(mode.value());
+  if (status == HDR_STATUS::HDR_UNSUPPORTED)
+    return HDR_STATUS::HDR_TOGGLE_FAILED;
+
+  bool enableHdr{status == HDR_STATUS::HDR_OFF ? true : false};
+  CLog::LogF(LOGINFO, "Set Windows HDR {}.", enableHdr ? "On" : "Off");
+
+  status = SetDisplayHDRStatus(mode.value(), enableHdr);
+
+  if (status == HDR_STATUS::HDR_TOGGLE_FAILED)
   {
-    // Windows 11 24H2 or newer (SDK 10.0.26100.0)
-    if (CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin11_24H2))
-    {
-      DISPLAYCONFIG_GET_ADVANCED_COLOR_INFO_2 getColorInfo2 = {};
-      getColorInfo2.header.type = static_cast<DISPLAYCONFIG_DEVICE_INFO_TYPE>(
-          DISPLAYCONFIG_DEVICE_INFO_GET_ADVANCED_COLOR_INFO_2);
-      getColorInfo2.header.size = sizeof(getColorInfo2);
-
-      DISPLAYCONFIG_SET_HDR_STATE setHdrState = {};
-      setHdrState.header.type =
-          static_cast<DISPLAYCONFIG_DEVICE_INFO_TYPE>(DISPLAYCONFIG_DEVICE_INFO_SET_HDR_STATE);
-      setHdrState.header.size = sizeof(setHdrState);
-
-      getColorInfo2.header.adapterId = mode->adapterId;
-      getColorInfo2.header.id = mode->id;
-
-      setHdrState.header.adapterId = mode->adapterId;
-      setHdrState.header.id = mode->id;
-
-      if (ERROR_SUCCESS != DisplayConfigGetDeviceInfo(&getColorInfo2.header))
-        return status;
-
-      if (!getColorInfo2.highDynamicRangeSupported)
-        return status;
-
-      if (getColorInfo2.activeColorMode == DISPLAYCONFIG_ADVANCED_COLOR_MODE_HDR) // HDR is ON
-      {
-        setHdrState.enableHdr = FALSE;
-        status = HDR_STATUS::HDR_OFF;
-        CLog::LogF(LOGINFO, "Toggle Windows HDR Off.");
-      }
-      else // HDR is OFF
-      {
-        setHdrState.enableHdr = TRUE;
-        status = HDR_STATUS::HDR_ON;
-        CLog::LogF(LOGINFO, "Toggle Windows HDR On.");
-      }
-
-      if (ERROR_SUCCESS != DisplayConfigSetDeviceInfo(&setHdrState.header))
-      {
-        status = HDR_STATUS::HDR_TOGGLE_FAILED;
-        CLog::LogF(LOGERROR, "Toggle Windows HDR has failed.");
-      }
-    }
-    else // older than Windows 11 24H2
-    {
-      DISPLAYCONFIG_GET_ADVANCED_COLOR_INFO getColorInfo = {};
-      getColorInfo.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_ADVANCED_COLOR_INFO;
-      getColorInfo.header.size = sizeof(getColorInfo);
-
-      DISPLAYCONFIG_SET_ADVANCED_COLOR_STATE setColorState = {};
-      setColorState.header.type = DISPLAYCONFIG_DEVICE_INFO_SET_ADVANCED_COLOR_STATE;
-      setColorState.header.size = sizeof(setColorState);
-
-      getColorInfo.header.adapterId = mode->adapterId;
-      getColorInfo.header.id = mode->id;
-
-      setColorState.header.adapterId = mode->adapterId;
-      setColorState.header.id = mode->id;
-
-      if (ERROR_SUCCESS != DisplayConfigGetDeviceInfo(&getColorInfo.header))
-        return status;
-
-      if (!getColorInfo.advancedColorSupported)
-        return status;
-
-      if (getColorInfo.advancedColorEnabled) // HDR is ON
-      {
-        setColorState.enableAdvancedColor = FALSE;
-        status = HDR_STATUS::HDR_OFF;
-        CLog::LogF(LOGINFO, "Toggle Windows HDR Off.");
-      }
-      else // HDR is OFF
-      {
-        setColorState.enableAdvancedColor = TRUE;
-        status = HDR_STATUS::HDR_ON;
-        CLog::LogF(LOGINFO, "Toggle Windows HDR On.");
-      }
-
-      if (ERROR_SUCCESS != DisplayConfigSetDeviceInfo(&setColorState.header))
-      {
-        status = HDR_STATUS::HDR_TOGGLE_FAILED;
-        CLog::LogF(LOGERROR, "Toggle Windows HDR has failed.");
-      }
-    }
+    CLog::LogF(LOGERROR, "Set Windows HDR has failed.");
   }
-
-  // Restores previous graphics mode before toggle HDR
-  if (status != HDR_STATUS::HDR_TOGGLE_FAILED && modeDesc.RefreshRate.Denominator != 0)
+  else if (modeDesc.RefreshRate.Denominator != 0)
   {
+    // Restores previous graphics mode before toggle HDR
     float fps = static_cast<float>(modeDesc.RefreshRate.Numerator) /
                 static_cast<float>(modeDesc.RefreshRate.Denominator);
     int32_t est;
@@ -1481,6 +1408,61 @@ HDR_STATUS CWIN32Util::ToggleWindowsHDR(DXGI_MODE_DESC& modeDesc)
 
   return status;
 }
+
+#ifndef TARGET_WINDOWS_STORE
+HDR_STATUS CWIN32Util::SetDisplayHDRStatus(DISPLAYCONFIG_MODE_INFO mode, bool enable)
+{
+  HDR_STATUS status = HDR_STATUS::HDR_TOGGLE_FAILED;
+
+  // Windows 11 24H2 or newer (SDK 10.0.26100.0)
+  if (CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin11_24H2))
+  {
+    DISPLAYCONFIG_SET_HDR_STATE setHdrState = {};
+    setHdrState.header.type =
+        static_cast<DISPLAYCONFIG_DEVICE_INFO_TYPE>(DISPLAYCONFIG_DEVICE_INFO_SET_HDR_STATE);
+    setHdrState.header.size = sizeof(setHdrState);
+    setHdrState.header.adapterId = mode.adapterId;
+    setHdrState.header.id = mode.id;
+
+    if (!enable)
+    {
+      setHdrState.enableHdr = FALSE;
+      status = HDR_STATUS::HDR_OFF;
+    }
+    else
+    {
+      setHdrState.enableHdr = TRUE;
+      status = HDR_STATUS::HDR_ON;
+    }
+
+    if (ERROR_SUCCESS != DisplayConfigSetDeviceInfo(&setHdrState.header))
+      status = HDR_STATUS::HDR_TOGGLE_FAILED;
+  }
+  else // older than Windows 11 24H2
+  {
+    DISPLAYCONFIG_SET_ADVANCED_COLOR_STATE setColorState = {};
+    setColorState.header.type = DISPLAYCONFIG_DEVICE_INFO_SET_ADVANCED_COLOR_STATE;
+    setColorState.header.size = sizeof(setColorState);
+    setColorState.header.adapterId = mode.adapterId;
+    setColorState.header.id = mode.id;
+
+    if (!enable)
+    {
+      setColorState.enableAdvancedColor = FALSE;
+      status = HDR_STATUS::HDR_OFF;
+    }
+    else
+    {
+      setColorState.enableAdvancedColor = TRUE;
+      status = HDR_STATUS::HDR_ON;
+    }
+
+    if (ERROR_SUCCESS != DisplayConfigSetDeviceInfo(&setColorState.header))
+      status = HDR_STATUS::HDR_TOGGLE_FAILED;
+  }
+  return status;
+}
+#endif
 
 HDR_STATUS CWIN32Util::GetWindowsHDRStatus()
 {
@@ -1578,6 +1560,7 @@ HDR_STATUS CWIN32Util::GetWindowsHDRStatus()
   return status;
 }
 
+#ifndef TARGET_WINDOWS_STORE
 std::vector<DISPLAYCONFIG_MODE_INFO> CWIN32Util::EnumerateAllDisplays()
 {
   std::vector<DISPLAYCONFIG_MODE_INFO> displays;
@@ -1679,6 +1662,7 @@ HDR_STATUS CWIN32Util::GetDisplayHDRStatus(DISPLAYCONFIG_MODE_INFO mode)
 
   return status;
 }
+#endif
 
 /*!
  * \brief Retrieve from the system the max luminance of SDR content in HDR.
