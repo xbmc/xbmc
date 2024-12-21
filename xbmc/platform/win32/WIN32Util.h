@@ -12,6 +12,7 @@
 #include "URL.h"
 #include "utils/Geometry.h"
 
+#include <optional>
 #include <vector>
 
 #include <dxgi1_5.h>
@@ -110,4 +111,14 @@ public:
    * \return Formatted string
    */
   static std::string FormatHRESULT(HRESULT hr);
+
+private:
+#ifndef TARGET_WINDOWS_STORE
+  static std::wstring GetCurrentDisplayName();
+  static std::optional<DISPLAYCONFIG_MODE_INFO> GetCurrentDisplayModeInfo();
+  static std::optional<DISPLAYCONFIG_MODE_INFO> GetDisplayModeInfo(
+      const std::wstring& gdiDeviceName);
+  static std::optional<DISPLAYCONFIG_PATH_INFO> GetDisplayPathInfo(
+      const std::wstring& gdiDeviceName);
+#endif
 };

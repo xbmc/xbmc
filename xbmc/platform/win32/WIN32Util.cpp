@@ -1218,6 +1218,113 @@ bool CWIN32Util::SetThreadLocalLocale(bool enable /* = true */)
   return _configthreadlocale(param) != -1;
 }
 
+#ifndef TARGET_WINDOWS_STORE
+std::wstring CWIN32Util::GetCurrentDisplayName()
+{
+  MONITORINFOEXW mi{};
+  mi.cbSize = sizeof(mi);
+  if (!GetMonitorInfoW(MonitorFromWindow(g_hWnd, MONITOR_DEFAULTTOPRIMARY), &mi))
+    return {};
+  return mi.szDevice;
+}
+
+std::optional<DISPLAYCONFIG_MODE_INFO> CWIN32Util::GetCurrentDisplayModeInfo()
+{
+  std::wstring name{GetCurrentDisplayName()};
+  if (name.empty())
+    return std::nullopt;
+
+  return GetDisplayModeInfo(name);
+}
+std::optional<DISPLAYCONFIG_MODE_INFO> CWIN32Util::GetDisplayModeInfo(
+    const std::wstring& gdiDeviceName)
+{
+  uint32_t pathCount{0};
+  uint32_t modeCount{0};
+  std::vector<DISPLAYCONFIG_PATH_INFO> paths;
+  std::vector<DISPLAYCONFIG_MODE_INFO> modes;
+
+  constexpr uint32_t flags{QDC_ONLY_ACTIVE_PATHS};
+  LONG result{ERROR_SUCCESS};
+
+  do
+  {
+    if (GetDisplayConfigBufferSizes(flags, &pathCount, &modeCount) != ERROR_SUCCESS)
+      return std::nullopt;
+
+    paths.resize(pathCount);
+    modes.resize(modeCount);
+
+    result = QueryDisplayConfig(flags, &pathCount, paths.data(), &modeCount, modes.data(), nullptr);
+  } while (result == ERROR_INSUFFICIENT_BUFFER);
+
+  if (result != ERROR_SUCCESS)
+    return std::nullopt;
+
+  paths.resize(pathCount);
+  modes.resize(modeCount);
+
+  DISPLAYCONFIG_SOURCE_DEVICE_NAME source{};
+  source.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_SOURCE_NAME;
+  source.header.size = sizeof(source);
+
+  for (const auto& path : paths)
+  {
+    source.header.adapterId = path.sourceInfo.adapterId;
+    source.header.id = path.sourceInfo.id;
+
+    if (DisplayConfigGetDeviceInfo(&source.header) == ERROR_SUCCESS &&
+        gdiDeviceName == source.viewGdiDeviceName)
+      return modes.at(path.targetInfo.modeInfoIdx); // useful info: mode.adapterId, mode,id
+  }
+  return std::nullopt;
+}
+
+std::optional<DISPLAYCONFIG_PATH_INFO> CWIN32Util::GetDisplayPathInfo(
+    const std::wstring& gdiDeviceName)
+{
+  uint32_t pathCount{0};
+  uint32_t modeCount{0};
+  std::vector<DISPLAYCONFIG_PATH_INFO> paths;
+  std::vector<DISPLAYCONFIG_MODE_INFO> modes;
+
+  constexpr uint32_t flags{QDC_ONLY_ACTIVE_PATHS};
+  LONG result{ERROR_SUCCESS};
+
+  do
+  {
+    if (GetDisplayConfigBufferSizes(flags, &pathCount, &modeCount) != ERROR_SUCCESS)
+      return std::nullopt;
+
+    paths.resize(pathCount);
+    modes.resize(modeCount);
+
+    result = QueryDisplayConfig(flags, &pathCount, paths.data(), &modeCount, modes.data(), nullptr);
+  } while (result == ERROR_INSUFFICIENT_BUFFER);
+
+  if (result != ERROR_SUCCESS)
+    return std::nullopt;
+
+  paths.resize(pathCount);
+  modes.resize(modeCount);
+
+  DISPLAYCONFIG_SOURCE_DEVICE_NAME source{};
+  source.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_SOURCE_NAME;
+  source.header.size = sizeof(source);
+
+  for (const auto& path : paths)
+  {
+    source.header.adapterId = path.sourceInfo.adapterId;
+    source.header.id = path.sourceInfo.id;
+
+    if (DisplayConfigGetDeviceInfo(&source.header) == ERROR_SUCCESS &&
+        gdiDeviceName == source.viewGdiDeviceName)
+      return path; // useful info: path.targetInfo.adapterId, path.targetInfo.id
+  }
+  return std::nullopt;
+}
+#endif
+
 HDR_STATUS CWIN32Util::ToggleWindowsHDR(DXGI_MODE_DESC& modeDesc)
 {
   HDR_STATUS status = HDR_STATUS::HDR_TOGGLE_FAILED;
@@ -1254,63 +1361,31 @@ HDR_STATUS CWIN32Util::ToggleWindowsHDR(DXGI_MODE_DESC& modeDesc)
     }
   }
 #else
-  uint32_t pathCount = 0;
-  uint32_t modeCount = 0;
-
-  MONITORINFOEXW mi = {};
-  mi.cbSize = sizeof(mi);
-  GetMonitorInfoW(MonitorFromWindow(g_hWnd, MONITOR_DEFAULTTOPRIMARY), &mi);
-  const std::wstring deviceNameW = mi.szDevice;
-
-  if (ERROR_SUCCESS != GetDisplayConfigBufferSizes(QDC_ONLY_ACTIVE_PATHS, &pathCount, &modeCount))
+  std::wstring gdiDeviceName{GetCurrentDisplayName()};
+  if (gdiDeviceName.empty())
     return status;
 
-  std::vector<DISPLAYCONFIG_PATH_INFO> paths(pathCount);
-  std::vector<DISPLAYCONFIG_MODE_INFO> modes(modeCount);
-
-  if (ERROR_SUCCESS != QueryDisplayConfig(QDC_ONLY_ACTIVE_PATHS, &pathCount, paths.data(),
-                                          &modeCount, modes.data(), nullptr))
-    return status;
-
-  DISPLAYCONFIG_SOURCE_DEVICE_NAME getSourceName = {};
-  getSourceName.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_SOURCE_NAME;
-  getSourceName.header.size = sizeof(getSourceName);
-
-  // Windows 11 24H2 or newer (SDK 10.0.26100.0)
-  if (CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin11_24H2))
+  const auto mode{GetDisplayModeInfo(gdiDeviceName)};
+  if (mode)
   {
-    DISPLAYCONFIG_GET_ADVANCED_COLOR_INFO_2 getColorInfo2 = {};
-    getColorInfo2.header.type = static_cast<DISPLAYCONFIG_DEVICE_INFO_TYPE>(
-        DISPLAYCONFIG_DEVICE_INFO_GET_ADVANCED_COLOR_INFO_2);
-    getColorInfo2.header.size = sizeof(getColorInfo2);
-
-    DISPLAYCONFIG_SET_HDR_STATE setHdrState = {};
-    setHdrState.header.type =
-        static_cast<DISPLAYCONFIG_DEVICE_INFO_TYPE>(DISPLAYCONFIG_DEVICE_INFO_SET_HDR_STATE);
-    setHdrState.header.size = sizeof(setHdrState);
-
-    // Only try to toggle display currently used by Kodi
-    for (const auto& path : paths)
+    // Windows 11 24H2 or newer (SDK 10.0.26100.0)
+    if (CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin11_24H2))
     {
-      getSourceName.header.adapterId.HighPart = path.sourceInfo.adapterId.HighPart;
-      getSourceName.header.adapterId.LowPart = path.sourceInfo.adapterId.LowPart;
-      getSourceName.header.id = path.sourceInfo.id;
+      DISPLAYCONFIG_GET_ADVANCED_COLOR_INFO_2 getColorInfo2 = {};
+      getColorInfo2.header.type = static_cast<DISPLAYCONFIG_DEVICE_INFO_TYPE>(
+          DISPLAYCONFIG_DEVICE_INFO_GET_ADVANCED_COLOR_INFO_2);
+      getColorInfo2.header.size = sizeof(getColorInfo2);
 
-      if (ERROR_SUCCESS != DisplayConfigGetDeviceInfo(&getSourceName.header))
-        continue;
+      DISPLAYCONFIG_SET_HDR_STATE setHdrState = {};
+      setHdrState.header.type =
+          static_cast<DISPLAYCONFIG_DEVICE_INFO_TYPE>(DISPLAYCONFIG_DEVICE_INFO_SET_HDR_STATE);
+      setHdrState.header.size = sizeof(setHdrState);
 
-      if (deviceNameW != getSourceName.viewGdiDeviceName)
-        continue;
+      getColorInfo2.header.adapterId = mode->adapterId;
+      getColorInfo2.header.id = mode->id;
 
-      const auto& mode = modes.at(path.targetInfo.modeInfoIdx);
-
-      getColorInfo2.header.adapterId.HighPart = mode.adapterId.HighPart;
-      getColorInfo2.header.adapterId.LowPart = mode.adapterId.LowPart;
-      getColorInfo2.header.id = mode.id;
-
-      setHdrState.header.adapterId.HighPart = mode.adapterId.HighPart;
-      setHdrState.header.adapterId.LowPart = mode.adapterId.LowPart;
-      setHdrState.header.id = mode.id;
+      setHdrState.header.adapterId = mode->adapterId;
+      setHdrState.header.id = mode->id;
 
       if (ERROR_SUCCESS != DisplayConfigGetDeviceInfo(&getColorInfo2.header))
         return status;
@@ -1336,42 +1411,22 @@ HDR_STATUS CWIN32Util::ToggleWindowsHDR(DXGI_MODE_DESC& modeDesc)
         status = HDR_STATUS::HDR_TOGGLE_FAILED;
         CLog::LogF(LOGERROR, "Toggle Windows HDR has failed.");
       }
-
-      break;
     }
-  }
-  else // older than Windows 11 24H2
-  {
-    DISPLAYCONFIG_GET_ADVANCED_COLOR_INFO getColorInfo = {};
-    getColorInfo.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_ADVANCED_COLOR_INFO;
-    getColorInfo.header.size = sizeof(getColorInfo);
-
-    DISPLAYCONFIG_SET_ADVANCED_COLOR_STATE setColorState = {};
-    setColorState.header.type = DISPLAYCONFIG_DEVICE_INFO_SET_ADVANCED_COLOR_STATE;
-    setColorState.header.size = sizeof(setColorState);
-
-    // Only try to toggle display currently used by Kodi
-    for (const auto& path : paths)
+    else // older than Windows 11 24H2
     {
-      getSourceName.header.adapterId.HighPart = path.sourceInfo.adapterId.HighPart;
-      getSourceName.header.adapterId.LowPart = path.sourceInfo.adapterId.LowPart;
-      getSourceName.header.id = path.sourceInfo.id;
+      DISPLAYCONFIG_GET_ADVANCED_COLOR_INFO getColorInfo = {};
+      getColorInfo.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_ADVANCED_COLOR_INFO;
+      getColorInfo.header.size = sizeof(getColorInfo);
 
-      if (ERROR_SUCCESS != DisplayConfigGetDeviceInfo(&getSourceName.header))
-        continue;
+      DISPLAYCONFIG_SET_ADVANCED_COLOR_STATE setColorState = {};
+      setColorState.header.type = DISPLAYCONFIG_DEVICE_INFO_SET_ADVANCED_COLOR_STATE;
+      setColorState.header.size = sizeof(setColorState);
 
-      if (deviceNameW != getSourceName.viewGdiDeviceName)
-        continue;
+      getColorInfo.header.adapterId = mode->adapterId;
+      getColorInfo.header.id = mode->id;
 
-      const auto& mode = modes.at(path.targetInfo.modeInfoIdx);
-
-      getColorInfo.header.adapterId.HighPart = mode.adapterId.HighPart;
-      getColorInfo.header.adapterId.LowPart = mode.adapterId.LowPart;
-      getColorInfo.header.id = mode.id;
-
-      setColorState.header.adapterId.HighPart = mode.adapterId.HighPart;
-      setColorState.header.adapterId.LowPart = mode.adapterId.LowPart;
-      setColorState.header.id = mode.id;
+      setColorState.header.adapterId = mode->adapterId;
+      setColorState.header.id = mode->id;
 
       if (ERROR_SUCCESS != DisplayConfigGetDeviceInfo(&getColorInfo.header))
         return status;
@@ -1397,8 +1452,6 @@ HDR_STATUS CWIN32Util::ToggleWindowsHDR(DXGI_MODE_DESC& modeDesc)
         status = HDR_STATUS::HDR_TOGGLE_FAILED;
         CLog::LogF(LOGERROR, "Toggle Windows HDR has failed.");
       }
-
-      break;
     }
   }
 
@@ -1417,7 +1470,8 @@ HDR_STATUS CWIN32Util::ToggleWindowsHDR(DXGI_MODE_DESC& modeDesc)
         modeDesc.ScanlineOrdering != DXGI_MODE_SCANLINE_ORDER_PROGRESSIVE)
       devmode.dmDisplayFlags = DM_INTERLACED;
     devmode.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT | DM_DISPLAYFREQUENCY | DM_DISPLAYFLAGS;
-    est = ChangeDisplaySettingsExW(deviceNameW.c_str(), &devmode, nullptr, CDS_FULLSCREEN, nullptr);
+    est =
+        ChangeDisplaySettingsExW(gdiDeviceName.c_str(), &devmode, nullptr, CDS_FULLSCREEN, nullptr);
     if (est == DISP_CHANGE_SUCCESSFUL)
       CLog::LogF(LOGDEBUG, "Previous graphics mode restored OK");
     else
@@ -1475,121 +1529,65 @@ HDR_STATUS CWIN32Util::GetWindowsHDRStatus()
     }
   }
 #else
-  uint32_t pathCount = 0;
-  uint32_t modeCount = 0;
-
-  MONITORINFOEXW mi = {};
-  mi.cbSize = sizeof(mi);
-  GetMonitorInfoW(MonitorFromWindow(g_hWnd, MONITOR_DEFAULTTOPRIMARY), &mi);
-  const std::wstring deviceNameW = mi.szDevice;
-
-  if (ERROR_SUCCESS != GetDisplayConfigBufferSizes(QDC_ONLY_ACTIVE_PATHS, &pathCount, &modeCount))
+  std::wstring gdiDeviceName{GetCurrentDisplayName()};
+  if (gdiDeviceName.empty())
     return status;
 
-  std::vector<DISPLAYCONFIG_PATH_INFO> paths(pathCount);
-  std::vector<DISPLAYCONFIG_MODE_INFO> modes(modeCount);
-
-  if (ERROR_SUCCESS != QueryDisplayConfig(QDC_ONLY_ACTIVE_PATHS, &pathCount, paths.data(),
-                                          &modeCount, modes.data(), 0))
-    return status;
-
-  DISPLAYCONFIG_SOURCE_DEVICE_NAME getSourceName = {};
-  getSourceName.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_SOURCE_NAME;
-  getSourceName.header.size = sizeof(getSourceName);
-
-  // Windows 11 24H2 or newer (SDK 10.0.26100.0)
-  if (CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin11_24H2))
+  const auto mode{GetDisplayModeInfo(gdiDeviceName)};
+  if (mode)
   {
-    DISPLAYCONFIG_GET_ADVANCED_COLOR_INFO_2 getColorInfo2 = {};
-    getColorInfo2.header.type = static_cast<DISPLAYCONFIG_DEVICE_INFO_TYPE>(
-        DISPLAYCONFIG_DEVICE_INFO_GET_ADVANCED_COLOR_INFO_2);
-    getColorInfo2.header.size = sizeof(getColorInfo2);
-
-    for (const auto& path : paths)
+    // Windows 11 24H2 or newer (SDK 10.0.26100.0)
+    if (CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin11_24H2))
     {
-      getSourceName.header.adapterId.HighPart = path.sourceInfo.adapterId.HighPart;
-      getSourceName.header.adapterId.LowPart = path.sourceInfo.adapterId.LowPart;
-      getSourceName.header.id = path.sourceInfo.id;
+      DISPLAYCONFIG_GET_ADVANCED_COLOR_INFO_2 getColorInfo2 = {};
+      getColorInfo2.header.type = static_cast<DISPLAYCONFIG_DEVICE_INFO_TYPE>(
+          DISPLAYCONFIG_DEVICE_INFO_GET_ADVANCED_COLOR_INFO_2);
+      getColorInfo2.header.size = sizeof(getColorInfo2);
 
-      if (ERROR_SUCCESS != DisplayConfigGetDeviceInfo(&getSourceName.header))
-        continue;
+      getColorInfo2.header.adapterId = mode->adapterId;
+      getColorInfo2.header.id = mode->id;
 
-      const std::wstring sourceNameW = getSourceName.viewGdiDeviceName;
-
-      if (g_hWnd == nullptr || deviceNameW == sourceNameW)
+      if (ERROR_SUCCESS == DisplayConfigGetDeviceInfo(&getColorInfo2.header))
       {
-        const auto& mode = modes.at(path.targetInfo.modeInfoIdx);
+        if (getColorInfo2.activeColorMode == DISPLAYCONFIG_ADVANCED_COLOR_MODE_HDR)
+          hdrEnabled = true;
 
-        getColorInfo2.header.adapterId.HighPart = mode.adapterId.HighPart;
-        getColorInfo2.header.adapterId.LowPart = mode.adapterId.LowPart;
-        getColorInfo2.header.id = mode.id;
-
-        if (ERROR_SUCCESS == DisplayConfigGetDeviceInfo(&getColorInfo2.header))
-        {
-          if (getColorInfo2.activeColorMode == DISPLAYCONFIG_ADVANCED_COLOR_MODE_HDR)
-            hdrEnabled = true;
-
-          if (getColorInfo2.highDynamicRangeSupported == TRUE)
-            hdrSupported = true;
-        }
-
-        if (g_hWnd != nullptr)
-          break;
+        if (getColorInfo2.highDynamicRangeSupported == TRUE)
+          hdrSupported = true;
       }
     }
-  }
-  else // older than Windows 11 24H2
-  {
-    DISPLAYCONFIG_GET_ADVANCED_COLOR_INFO getColorInfo = {};
-    getColorInfo.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_ADVANCED_COLOR_INFO;
-    getColorInfo.header.size = sizeof(getColorInfo);
-
-    for (const auto& path : paths)
+    else // older than Windows 11 24H2
     {
-      getSourceName.header.adapterId.HighPart = path.sourceInfo.adapterId.HighPart;
-      getSourceName.header.adapterId.LowPart = path.sourceInfo.adapterId.LowPart;
-      getSourceName.header.id = path.sourceInfo.id;
+      DISPLAYCONFIG_GET_ADVANCED_COLOR_INFO getColorInfo = {};
+      getColorInfo.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_ADVANCED_COLOR_INFO;
+      getColorInfo.header.size = sizeof(getColorInfo);
 
-      if (ERROR_SUCCESS != DisplayConfigGetDeviceInfo(&getSourceName.header))
-        continue;
+      getColorInfo.header.adapterId = mode->adapterId;
+      getColorInfo.header.id = mode->id;
 
-      const std::wstring sourceNameW = getSourceName.viewGdiDeviceName;
-
-      if (g_hWnd == nullptr || deviceNameW == sourceNameW)
+      if (ERROR_SUCCESS == DisplayConfigGetDeviceInfo(&getColorInfo.header))
       {
-        const auto& mode = modes.at(path.targetInfo.modeInfoIdx);
+        // DISPLAYCONFIG_DEVICE_INFO_GET_ADVANCED_COLOR_INFO documentation is lacking and field
+        // names are confusing. Through experimentation and deductions from equivalent WinRT API:
+        //
+        // SDR screen, advanced color not supported (Win 10, Win 11 < 22H2)
+        // > advancedColorSupported = 0 and wideColorEnforced = 0
+        // SDR screen, advanced color is supported (Win 11 >= 22H2)
+        // > advancedColorSupported = 1 and wideColorEnforced = 1
+        // HDR screen
+        // > advancedColorSupported = 1 and wideColorEnforced = 0
+        //
+        // advancedColorForceDisabled: maybe equivalent of advancedColorLimitedByPolicy?
+        //
+        // advancedColorEnabled = 1:
+        // For HDR screens means HDR is on
+        // For SDR screens means ACM (Automatic Color Management, Win 11 >= 22H2) is on
 
-        getColorInfo.header.adapterId.HighPart = mode.adapterId.HighPart;
-        getColorInfo.header.adapterId.LowPart = mode.adapterId.LowPart;
-        getColorInfo.header.id = mode.id;
+        if (getColorInfo.advancedColorSupported && !getColorInfo.wideColorEnforced)
+          hdrSupported = true;
 
-        if (ERROR_SUCCESS == DisplayConfigGetDeviceInfo(&getColorInfo.header))
-        {
-          // DISPLAYCONFIG_DEVICE_INFO_GET_ADVANCED_COLOR_INFO documentation is lacking and field
-          // names are confusing. Through experimentation and deductions from equivalent WinRT API:
-          //
-          // SDR screen, advanced color not supported (Win 10, Win 11 < 22H2)
-          // > advancedColorSupported = 0 and wideColorEnforced = 0
-          // SDR screen, advanced color is supported (Win 11 >= 22H2)
-          // > advancedColorSupported = 1 and wideColorEnforced = 1
-          // HDR screen
-          // > advancedColorSupported = 1 and wideColorEnforced = 0
-          //
-          // advancedColorForceDisabled: maybe equivalent of advancedColorLimitedByPolicy?
-          //
-          // advancedColorEnabled = 1:
-          // For HDR screens means HDR is on
-          // For SDR screens means ACM (Automatic Color Management, Win 11 >= 22H2) is on
-
-          if (getColorInfo.advancedColorSupported && !getColorInfo.wideColorEnforced)
-            hdrSupported = true;
-
-          if (hdrSupported && getColorInfo.advancedColorEnabled)
-            hdrEnabled = true;
-        }
-
-        if (g_hWnd != nullptr)
-          break;
+        if (hdrSupported && getColorInfo.advancedColorEnabled)
+          hdrEnabled = true;
       }
     }
   }
@@ -1648,65 +1646,28 @@ bool CWIN32Util::GetSystemSdrWhiteLevel(const std::wstring& gdiDeviceName, float
 #else
   // DISPLAYCONFIG_DEVICE_INFO_GET_SDR_WHITE_LEVEL was added in Windows 10 1709
 
-  uint32_t pathCount{0};
-  uint32_t modeCount{0};
-  std::vector<DISPLAYCONFIG_PATH_INFO> paths;
-  std::vector<DISPLAYCONFIG_MODE_INFO> modes;
+  const auto path{GetDisplayPathInfo(gdiDeviceName)};
+  if (!path)
+    return false;
 
-  uint32_t flags = QDC_ONLY_ACTIVE_PATHS;
-  LONG result = ERROR_SUCCESS;
+  DISPLAYCONFIG_SDR_WHITE_LEVEL config{};
+  config.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_SDR_WHITE_LEVEL;
+  config.header.size = sizeof(config);
+  config.header.adapterId = path->targetInfo.adapterId;
+  config.header.id = path->targetInfo.id;
 
-  do
+  if (DisplayConfigGetDeviceInfo(&config.header) != ERROR_SUCCESS)
+    return false;
+
+  if (sdrWhiteLevel)
   {
-    if (GetDisplayConfigBufferSizes(flags, &pathCount, &modeCount) != ERROR_SUCCESS)
-      return false;
-
-    paths.resize(pathCount);
-    modes.resize(modeCount);
-
-    result = QueryDisplayConfig(flags, &pathCount, paths.data(), &modeCount, modes.data(), nullptr);
-  } while (result == ERROR_INSUFFICIENT_BUFFER);
-
-  if (result == ERROR_SUCCESS)
-  {
-    paths.resize(pathCount);
-    modes.resize(modeCount);
-
-    for (const auto& path : paths)
-    {
-      DISPLAYCONFIG_SOURCE_DEVICE_NAME source{};
-      source.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_SOURCE_NAME;
-      source.header.size = sizeof(source);
-      source.header.adapterId = path.sourceInfo.adapterId;
-      source.header.id = path.sourceInfo.id;
-
-      if (DisplayConfigGetDeviceInfo(&source.header) == ERROR_SUCCESS)
-      {
-        if (gdiDeviceName == source.viewGdiDeviceName)
-        {
-          DISPLAYCONFIG_SDR_WHITE_LEVEL config{};
-          config.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_SDR_WHITE_LEVEL;
-          config.header.size = sizeof(config);
-          config.header.adapterId = path.targetInfo.adapterId;
-          config.header.id = path.targetInfo.id;
-          if (DisplayConfigGetDeviceInfo(&config.header) == ERROR_SUCCESS)
-          {
-            if (sdrWhiteLevel)
-            {
-              const float sdrNits = static_cast<const float>(config.SDRWhiteLevel * 80 / 1000);
-              if (sdrNits > 10000.0f)
-                *sdrWhiteLevel = 10000.0f;
-              else
-                *sdrWhiteLevel = sdrNits;
-            }
-            return true;
-          }
-          break;
-        }
-      }
-    }
+    const float sdrNits = static_cast<const float>(config.SDRWhiteLevel * 80 / 1000);
+    if (sdrNits > 10000.0f)
+      *sdrWhiteLevel = 10000.0f;
+    else
+      *sdrWhiteLevel = sdrNits;
   }
-  return (false);
+  return true;
 #endif
 }
 
@@ -1883,57 +1844,21 @@ std::wstring CWIN32Util::GetDisplayFriendlyName(const std::wstring& gdiDeviceNam
   // Not supported
   return std::wstring();
 #else
+  const auto path{GetDisplayPathInfo(gdiDeviceName)};
 
-  uint32_t pathCount{};
-  uint32_t modeCount{};
-  std::vector<DISPLAYCONFIG_PATH_INFO> paths;
-  std::vector<DISPLAYCONFIG_MODE_INFO> modes;
+  if (!path)
+    return {};
 
-  uint32_t flags = QDC_ONLY_ACTIVE_PATHS;
-  LONG result = ERROR_SUCCESS;
+  DISPLAYCONFIG_TARGET_DEVICE_NAME target{};
+  target.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_TARGET_NAME;
+  target.header.size = sizeof(target);
+  target.header.adapterId = path->targetInfo.adapterId;
+  target.header.id = path->targetInfo.id;
 
-  do
-  {
-    if (GetDisplayConfigBufferSizes(flags, &pathCount, &modeCount) != ERROR_SUCCESS)
-      return std::wstring();
+  if (DisplayConfigGetDeviceInfo(&target.header) != ERROR_SUCCESS)
+    return {};
 
-    paths.resize(pathCount);
-    modes.resize(modeCount);
-
-    result = QueryDisplayConfig(flags, &pathCount, paths.data(), &modeCount, modes.data(), nullptr);
-  } while (result == ERROR_INSUFFICIENT_BUFFER);
-
-  if (result == ERROR_SUCCESS)
-  {
-    paths.resize(pathCount);
-    modes.resize(modeCount);
-
-    for (const auto& path : paths)
-    {
-      DISPLAYCONFIG_SOURCE_DEVICE_NAME source = {};
-      source.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_SOURCE_NAME;
-      source.header.size = sizeof(source);
-      source.header.adapterId = path.sourceInfo.adapterId;
-      source.header.id = path.sourceInfo.id;
-
-      if (DisplayConfigGetDeviceInfo(&source.header) == ERROR_SUCCESS)
-      {
-        if (gdiDeviceName == source.viewGdiDeviceName)
-        {
-          DISPLAYCONFIG_TARGET_DEVICE_NAME target = {};
-          target.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_TARGET_NAME;
-          target.header.size = sizeof(target);
-          target.header.adapterId = path.targetInfo.adapterId;
-          target.header.id = path.targetInfo.id;
-          if (DisplayConfigGetDeviceInfo(&target.header) == ERROR_SUCCESS)
-            return target.monitorFriendlyDeviceName;
-
-          break;
-        }
-      }
-    }
-  }
-  return std::wstring();
+  return target.monitorFriendlyDeviceName;
 #endif
 }
 
