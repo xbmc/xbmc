@@ -588,6 +588,13 @@
           <control type="toggle" />
         </setting>
       </group>
+      <group id="4" label="39187">
+        <setting id="subtitles.captionsimpaired" type="boolean" label="39204" help="39205">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+      </group>
     </category>
     <category id="subtitles" label="287" help="37033">
       <group id="1" label="39186">
