@@ -119,7 +119,7 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
       {
         item->SetEndOffset(m_fctx->duration); // mka file
         if (item->GetEndOffset() < 0)
-          item->SetEndOffset(compare); // m4b file
+          item->SetEndOffset(CUtil::ConvertSecsToMilliSecs(compare)); // m4b file
       }
     }
     item->GetMusicInfoTag()->SetDuration(
