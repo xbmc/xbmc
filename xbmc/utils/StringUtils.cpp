@@ -1470,26 +1470,26 @@ long StringUtils::TimeStringToSeconds(const std::string &timeString)
   }
 }
 
-std::string StringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
+std::string StringUtils::SecondsToTimeString(long seconds, TIME_FORMAT format)
 {
-  bool isNegative = lSeconds < 0;
-  lSeconds = std::abs(lSeconds);
+  const bool isNegative = seconds < 0;
+  seconds = std::abs(seconds);
 
   std::string strHMS;
   if (format == TIME_FORMAT_SECS)
-    strHMS = std::to_string(lSeconds);
+    strHMS = std::to_string(seconds);
   else if (format == TIME_FORMAT_MINS)
-    strHMS = std::to_string(lrintf(static_cast<float>(lSeconds) / 60.0f));
+    strHMS = std::to_string(std::lrintf(static_cast<float>(seconds) / 60.0f));
   else if (format == TIME_FORMAT_HOURS)
-    strHMS = std::to_string(lrintf(static_cast<float>(lSeconds) / 3600.0f));
+    strHMS = std::to_string(std::lrintf(static_cast<float>(seconds) / 3600.0f));
   else if (format & TIME_FORMAT_M)
-    strHMS += std::to_string(lSeconds % 3600 / 60);
+    strHMS += std::to_string(seconds % 3600 / 60);
   else
   {
-    int hh = lSeconds / 3600;
-    lSeconds = lSeconds % 3600;
-    int mm = lSeconds / 60;
-    int ss = lSeconds % 60;
+    const long hh = seconds / 3600;
+    seconds = seconds % 3600;
+    const long mm = seconds / 60;
+    unsigned int ss = seconds % 60;
 
     if (format == TIME_FORMAT_GUESS)
       format = (hh >= 1) ? TIME_FORMAT_HH_MM_SS : TIME_FORMAT_MM_SS;
