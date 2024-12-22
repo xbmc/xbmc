@@ -1374,7 +1374,7 @@ HDR_STATUS CWIN32Util::ToggleWindowsHDR(DXGI_MODE_DESC& modeDesc)
 }
 
 #ifndef TARGET_WINDOWS_STORE
-HDR_STATUS CWIN32Util::SetDisplayHDRStatus(DisplayConfigId identifier, bool enable)
+HDR_STATUS CWIN32Util::SetDisplayHDRStatus(const DisplayConfigId& identifier, bool enable)
 {
   LONG result{ERROR_SUCCESS};
   HDR_STATUS status{enable ? HDR_STATUS::HDR_ON : HDR_STATUS::HDR_OFF};
@@ -1506,7 +1506,7 @@ HDR_STATUS CWIN32Util::GetWindowsHDRStatus()
 }
 
 #ifndef TARGET_WINDOWS_STORE
-HDR_STATUS CWIN32Util::GetDisplayHDRStatus(DisplayConfigId identifier)
+HDR_STATUS CWIN32Util::GetDisplayHDRStatus(const DisplayConfigId& identifier)
 {
   bool hdrSupported{false};
   bool hdrEnabled{false};

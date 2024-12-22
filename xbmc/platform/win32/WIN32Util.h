@@ -130,7 +130,7 @@ private:
   static DisplayConfigSnapshot GetDisplayConfigSnapshot();
   static std::optional<DisplayConfigId> GetCurrentDisplayTargetId();
   static std::optional<DisplayConfigId> GetDisplayTargetId(const std::wstring& gdiDeviceName);
-  static HDR_STATUS GetDisplayHDRStatus(DisplayConfigId identifier);
-  static HDR_STATUS SetDisplayHDRStatus(DisplayConfigId identifier, bool enable);
+  static HDR_STATUS GetDisplayHDRStatus(const DisplayConfigId& identifier);
+  static HDR_STATUS SetDisplayHDRStatus(const DisplayConfigId& identifier, bool enable);
 #endif
 };
