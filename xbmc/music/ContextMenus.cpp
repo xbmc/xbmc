@@ -24,19 +24,19 @@
 
 using namespace CONTEXTMENU;
 
-CMusicInfo::CMusicInfo(MediaType mediaType)
+CMusicInfoBase::CMusicInfoBase(MediaType mediaType)
   : CStaticContextMenuAction(19033), m_mediaType(std::move(mediaType))
 {
 }
 
-bool CMusicInfo::IsVisible(const CFileItem& item) const
+bool CMusicInfoBase::IsVisible(const CFileItem& item) const
 {
   return (item.HasMusicInfoTag() && item.GetMusicInfoTag()->GetType() == m_mediaType) ||
          (m_mediaType == MediaTypeArtist && item.IsVideoDb() && item.HasProperty("artist_musicid")) ||
          (m_mediaType == MediaTypeAlbum && item.IsVideoDb() && item.HasProperty("album_musicid"));
 }
 
-bool CMusicInfo::Execute(const std::shared_ptr<CFileItem>& item) const
+bool CMusicInfoBase::Execute(const std::shared_ptr<CFileItem>& item) const
 {
   CGUIDialogMusicInfo::ShowFor(item.get());
   return true;
