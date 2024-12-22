@@ -28,6 +28,12 @@ private:
   const MediaType m_mediaType;
 };
 
+struct CVideoInfo : CVideoInfoBase
+{
+  CVideoInfo() : CVideoInfoBase(MediaTypeVideo) {}
+  bool IsVisible(const CFileItem& item) const override;
+};
+
 struct CTVShowInfo : CVideoInfoBase
 {
   CTVShowInfo() : CVideoInfoBase(MediaTypeTvShow) {}

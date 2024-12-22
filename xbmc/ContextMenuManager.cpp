@@ -80,6 +80,7 @@ void CContextMenuManager::Init()
       std::make_shared<CONTEXTMENU::CDisableAddon>(),
       std::make_shared<CONTEXTMENU::CAddonSettings>(),
       std::make_shared<CONTEXTMENU::CCheckForUpdates>(),
+      std::make_shared<CONTEXTMENU::CVideoInfo>(),
       std::make_shared<CONTEXTMENU::CEpisodeInfo>(),
       std::make_shared<CONTEXTMENU::CMovieInfo>(),
       std::make_shared<CONTEXTMENU::CMovieSetInfo>(),
