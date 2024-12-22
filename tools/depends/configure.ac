@@ -190,10 +190,12 @@ case $build in
 
     # acquire build platform (native) sdk sysroot.
     build_platform=macosx
-    native_sdk_path=[`$use_xcrun --show-sdk-path`]
+    native_sdk_path=[`$use_xcrun --sdk macosx --show-sdk-path`]
     host_sysroot="$native_sdk_path"
     host_includes="${host_includes} -isysroot $native_sdk_path"
 
+    # We only set CC_FOR_BUILD as we require use_build_toolchain to be populated
+    # All other build apps are detected by AC_PATH_PROG further down
     CC_FOR_BUILD=[`$use_xcrun --find clang`]
     use_build_toolchain=[`$CC_FOR_BUILD --version | grep InstalledDir | awk '{ print $2}'`]
 
@@ -263,8 +265,11 @@ case $host in
     esac
   ;;
   *darwin*)
+    # Again we set CC to find toolchain path for use in AC_PATH_TOOL macros further down
     CC=[`$use_xcrun --find clang`]
-    platform_cxx=clang++
+    # May as well just set CXX direct as platform_cxx default is g++. Setting the variable
+    # before AC_PATH_TOOL causes that macro to do nothing and just use the set variable
+    CXX=[`$use_xcrun --find clang++`]
     use_toolchain=[`$CC --version | grep InstalledDir | awk '{ print $2}'`]
 esac
 
