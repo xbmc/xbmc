@@ -1218,7 +1218,7 @@ bool CWIN32Util::SetThreadLocalLocale(bool enable /* = true */)
   return _configthreadlocale(param) != -1;
 }
 
-#ifndef TARGET_WINDOWS_STORE
+#ifdef TARGET_WINDOWS_DESKTOP
 std::wstring CWIN32Util::GetCurrentDisplayName()
 {
   MONITORINFOEXW mi{};
@@ -1287,7 +1287,7 @@ std::optional<CWIN32Util::DisplayConfigId> CWIN32Util::GetDisplayTargetId(
   }
   return std::nullopt;
 }
-#endif
+#endif // TARGET_WINDOWS_DESKTOP
 
 HDR_STATUS CWIN32Util::ToggleWindowsHDR(DXGI_MODE_DESC& modeDesc)
 {
@@ -1373,7 +1373,7 @@ HDR_STATUS CWIN32Util::ToggleWindowsHDR(DXGI_MODE_DESC& modeDesc)
   return status;
 }
 
-#ifndef TARGET_WINDOWS_STORE
+#ifdef TARGET_WINDOWS_DESKTOP
 HDR_STATUS CWIN32Util::SetDisplayHDRStatus(const DisplayConfigId& identifier, bool enable)
 {
   LONG result{ERROR_SUCCESS};
@@ -1409,7 +1409,7 @@ HDR_STATUS CWIN32Util::SetDisplayHDRStatus(const DisplayConfigId& identifier, bo
 
   return status;
 }
-#endif
+#endif // TARGET_WINDOWS_DESKTOP
 
 HDR_STATUS CWIN32Util::GetWindowsHDRStatus()
 {
@@ -1505,7 +1505,7 @@ HDR_STATUS CWIN32Util::GetWindowsHDRStatus()
   return status;
 }
 
-#ifndef TARGET_WINDOWS_STORE
+#ifdef TARGET_WINDOWS_DESKTOP
 HDR_STATUS CWIN32Util::GetDisplayHDRStatus(const DisplayConfigId& identifier)
 {
   bool hdrSupported{false};
@@ -1571,7 +1571,7 @@ HDR_STATUS CWIN32Util::GetDisplayHDRStatus(const DisplayConfigId& identifier)
 
   return status;
 }
-#endif
+#endif // TARGET_WINDOWS_DESKTOP
 
 /*!
  * \brief Retrieve from the system the max luminance of SDR content in HDR.

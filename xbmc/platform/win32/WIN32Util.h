@@ -112,8 +112,8 @@ public:
    */
   static std::string FormatHRESULT(HRESULT hr);
 
+#ifdef TARGET_WINDOWS_DESKTOP
 private:
-#ifndef TARGET_WINDOWS_STORE
   struct DisplayConfigSnapshot
   {
     std::vector<DISPLAYCONFIG_PATH_INFO> paths;
@@ -132,5 +132,5 @@ private:
   static std::optional<DisplayConfigId> GetDisplayTargetId(const std::wstring& gdiDeviceName);
   static HDR_STATUS GetDisplayHDRStatus(const DisplayConfigId& identifier);
   static HDR_STATUS SetDisplayHDRStatus(const DisplayConfigId& identifier, bool enable);
-#endif
+#endif // TARGET_WINDOWS_DESKTOP
 };
