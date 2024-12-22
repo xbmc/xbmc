@@ -120,14 +120,17 @@ private:
     std::vector<DISPLAYCONFIG_MODE_INFO> modes;
   };
 
+  struct DisplayConfigId
+  {
+    LUID adapterId;
+    UINT32 id;
+  };
+
   static std::wstring GetCurrentDisplayName();
   static DisplayConfigSnapshot GetDisplayConfigSnapshot();
-  static std::optional<DISPLAYCONFIG_MODE_INFO> GetCurrentDisplayModeInfo();
-  static std::optional<DISPLAYCONFIG_MODE_INFO> GetDisplayModeInfo(
-      const std::wstring& gdiDeviceName);
-  static std::optional<DISPLAYCONFIG_PATH_INFO> GetDisplayPathInfo(
-      const std::wstring& gdiDeviceName);
-  static HDR_STATUS GetDisplayHDRStatus(DISPLAYCONFIG_MODE_INFO mode);
-  static HDR_STATUS SetDisplayHDRStatus(DISPLAYCONFIG_MODE_INFO mode, bool enable);
+  static std::optional<DisplayConfigId> GetCurrentDisplayTargetId();
+  static std::optional<DisplayConfigId> GetDisplayTargetId(const std::wstring& gdiDeviceName);
+  static HDR_STATUS GetDisplayHDRStatus(DisplayConfigId identifier);
+  static HDR_STATUS SetDisplayHDRStatus(DisplayConfigId identifier, bool enable);
 #endif
 };

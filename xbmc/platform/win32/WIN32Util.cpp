@@ -1232,7 +1232,7 @@ CWIN32Util::DisplayConfigSnapshot CWIN32Util::GetDisplayConfigSnapshot()
 {
   uint32_t pathCount{0};
   uint32_t modeCount{0};
-  CWIN32Util::DisplayConfigSnapshot snapshot{};
+  DisplayConfigSnapshot snapshot{};
 
   constexpr uint32_t flags{QDC_ONLY_ACTIVE_PATHS};
   LONG result{ERROR_SUCCESS};
@@ -1258,16 +1258,16 @@ CWIN32Util::DisplayConfigSnapshot CWIN32Util::GetDisplayConfigSnapshot()
   return snapshot;
 }
 
-std::optional<DISPLAYCONFIG_MODE_INFO> CWIN32Util::GetCurrentDisplayModeInfo()
+std::optional<CWIN32Util::DisplayConfigId> CWIN32Util::GetCurrentDisplayTargetId()
 {
   std::wstring name{GetCurrentDisplayName()};
   if (name.empty())
     return std::nullopt;
 
-  return GetDisplayModeInfo(name);
+  return GetDisplayTargetId(name);
 }
 
-std::optional<DISPLAYCONFIG_MODE_INFO> CWIN32Util::GetDisplayModeInfo(
+std::optional<CWIN32Util::DisplayConfigId> CWIN32Util::GetDisplayTargetId(
     const std::wstring& gdiDeviceName)
 {
   const DisplayConfigSnapshot snapshot{GetDisplayConfigSnapshot()};
@@ -1283,28 +1283,7 @@ std::optional<DISPLAYCONFIG_MODE_INFO> CWIN32Util::GetDisplayModeInfo(
 
     if (DisplayConfigGetDeviceInfo(&source.header) == ERROR_SUCCESS &&
         gdiDeviceName == source.viewGdiDeviceName)
-      return snapshot.modes.at(path.targetInfo.modeInfoIdx); // useful info: mode.adapterId, mode,id
-  }
-  return std::nullopt;
-}
-
-std::optional<DISPLAYCONFIG_PATH_INFO> CWIN32Util::GetDisplayPathInfo(
-    const std::wstring& gdiDeviceName)
-{
-  const DisplayConfigSnapshot snapshot{GetDisplayConfigSnapshot()};
-
-  DISPLAYCONFIG_SOURCE_DEVICE_NAME source{};
-  source.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_SOURCE_NAME;
-  source.header.size = sizeof(source);
-
-  for (const auto& path : snapshot.paths)
-  {
-    source.header.adapterId = path.sourceInfo.adapterId;
-    source.header.id = path.sourceInfo.id;
-
-    if (DisplayConfigGetDeviceInfo(&source.header) == ERROR_SUCCESS &&
-        gdiDeviceName == source.viewGdiDeviceName)
-      return path; // useful info: path.targetInfo.adapterId, path.targetInfo.id
+      return DisplayConfigId{path.targetInfo.adapterId, path.targetInfo.id};
   }
   return std::nullopt;
 }
@@ -1350,18 +1329,18 @@ HDR_STATUS CWIN32Util::ToggleWindowsHDR(DXGI_MODE_DESC& modeDesc)
   if (gdiDeviceName.empty())
     return HDR_STATUS::HDR_TOGGLE_FAILED;
 
-  const auto mode{GetDisplayModeInfo(gdiDeviceName)};
-  if (!mode)
+  const auto identifier{GetDisplayTargetId(gdiDeviceName)};
+  if (!identifier)
     return HDR_STATUS::HDR_TOGGLE_FAILED;
 
-  status = GetDisplayHDRStatus(mode.value());
+  status = GetDisplayHDRStatus(identifier.value());
   if (status == HDR_STATUS::HDR_UNSUPPORTED)
     return HDR_STATUS::HDR_TOGGLE_FAILED;
 
   bool enableHdr{status == HDR_STATUS::HDR_OFF ? true : false};
   CLog::LogF(LOGINFO, "Set Windows HDR {}.", enableHdr ? "On" : "Off");
 
-  status = SetDisplayHDRStatus(mode.value(), enableHdr);
+  status = SetDisplayHDRStatus(identifier.value(), enableHdr);
 
   if (status == HDR_STATUS::HDR_TOGGLE_FAILED)
   {
@@ -1395,7 +1374,7 @@ HDR_STATUS CWIN32Util::ToggleWindowsHDR(DXGI_MODE_DESC& modeDesc)
 }
 
 #ifndef TARGET_WINDOWS_STORE
-HDR_STATUS CWIN32Util::SetDisplayHDRStatus(DISPLAYCONFIG_MODE_INFO mode, bool enable)
+HDR_STATUS CWIN32Util::SetDisplayHDRStatus(DisplayConfigId identifier, bool enable)
 {
   LONG result{ERROR_SUCCESS};
   HDR_STATUS status{enable ? HDR_STATUS::HDR_ON : HDR_STATUS::HDR_OFF};
@@ -1407,8 +1386,8 @@ HDR_STATUS CWIN32Util::SetDisplayHDRStatus(DISPLAYCONFIG_MODE_INFO mode, bool en
     setHdrState.header.type =
         static_cast<DISPLAYCONFIG_DEVICE_INFO_TYPE>(DISPLAYCONFIG_DEVICE_INFO_SET_HDR_STATE);
     setHdrState.header.size = sizeof(setHdrState);
-    setHdrState.header.adapterId = mode.adapterId;
-    setHdrState.header.id = mode.id;
+    setHdrState.header.adapterId = identifier.adapterId;
+    setHdrState.header.id = identifier.id;
     setHdrState.enableHdr = enable ? TRUE : FALSE;
 
     result = DisplayConfigSetDeviceInfo(&setHdrState.header);
@@ -1418,8 +1397,8 @@ HDR_STATUS CWIN32Util::SetDisplayHDRStatus(DISPLAYCONFIG_MODE_INFO mode, bool en
     DISPLAYCONFIG_SET_ADVANCED_COLOR_STATE setColorState = {};
     setColorState.header.type = DISPLAYCONFIG_DEVICE_INFO_SET_ADVANCED_COLOR_STATE;
     setColorState.header.size = sizeof(setColorState);
-    setColorState.header.adapterId = mode.adapterId;
-    setColorState.header.id = mode.id;
+    setColorState.header.adapterId = identifier.adapterId;
+    setColorState.header.id = identifier.id;
     setColorState.enableAdvancedColor = enable ? TRUE : FALSE;
 
     result = DisplayConfigSetDeviceInfo(&setColorState.header);
@@ -1491,17 +1470,16 @@ HDR_STATUS CWIN32Util::GetWindowsHDRStatus()
     if (gdiDeviceName.empty())
       return status;
 
-    const auto mode{GetDisplayModeInfo(gdiDeviceName)};
-    if (mode)
-      status = GetDisplayHDRStatus(mode.value());
+    const auto identifier{GetDisplayTargetId(gdiDeviceName)};
+    if (identifier)
+      status = GetDisplayHDRStatus(identifier.value());
   }
   else
   {
-    const DisplayConfigSnapshot snapshot{GetDisplayConfigSnapshot()};
-
-    for (const auto& path : snapshot.paths)
+    for (const auto& path : GetDisplayConfigSnapshot().paths)
     {
-      HDR_STATUS temp{GetDisplayHDRStatus(snapshot.modes.at(path.targetInfo.modeInfoIdx))};
+      const DisplayConfigId identifier{path.targetInfo.adapterId, path.targetInfo.id};
+      const HDR_STATUS temp{GetDisplayHDRStatus(identifier)};
 
       if (temp != HDR_STATUS::HDR_UNSUPPORTED)
       {
@@ -1528,7 +1506,7 @@ HDR_STATUS CWIN32Util::GetWindowsHDRStatus()
 }
 
 #ifndef TARGET_WINDOWS_STORE
-HDR_STATUS CWIN32Util::GetDisplayHDRStatus(DISPLAYCONFIG_MODE_INFO mode)
+HDR_STATUS CWIN32Util::GetDisplayHDRStatus(DisplayConfigId identifier)
 {
   bool hdrSupported{false};
   bool hdrEnabled{false};
@@ -1540,8 +1518,8 @@ HDR_STATUS CWIN32Util::GetDisplayHDRStatus(DISPLAYCONFIG_MODE_INFO mode)
     getColorInfo2.header.type = static_cast<DISPLAYCONFIG_DEVICE_INFO_TYPE>(
         DISPLAYCONFIG_DEVICE_INFO_GET_ADVANCED_COLOR_INFO_2);
     getColorInfo2.header.size = sizeof(getColorInfo2);
-    getColorInfo2.header.adapterId = mode.adapterId;
-    getColorInfo2.header.id = mode.id;
+    getColorInfo2.header.adapterId = identifier.adapterId;
+    getColorInfo2.header.id = identifier.id;
 
     if (ERROR_SUCCESS == DisplayConfigGetDeviceInfo(&getColorInfo2.header))
     {
@@ -1557,8 +1535,8 @@ HDR_STATUS CWIN32Util::GetDisplayHDRStatus(DISPLAYCONFIG_MODE_INFO mode)
     DISPLAYCONFIG_GET_ADVANCED_COLOR_INFO getColorInfo = {};
     getColorInfo.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_ADVANCED_COLOR_INFO;
     getColorInfo.header.size = sizeof(getColorInfo);
-    getColorInfo.header.adapterId = mode.adapterId;
-    getColorInfo.header.id = mode.id;
+    getColorInfo.header.adapterId = identifier.adapterId;
+    getColorInfo.header.id = identifier.id;
 
     if (ERROR_SUCCESS == DisplayConfigGetDeviceInfo(&getColorInfo.header))
     {
@@ -1631,15 +1609,15 @@ bool CWIN32Util::GetSystemSdrWhiteLevel(const std::wstring& gdiDeviceName, float
 #else
   // DISPLAYCONFIG_DEVICE_INFO_GET_SDR_WHITE_LEVEL was added in Windows 10 1709
 
-  const auto path{GetDisplayPathInfo(gdiDeviceName)};
-  if (!path)
+  const auto identifier{GetDisplayTargetId(gdiDeviceName)};
+  if (!identifier)
     return false;
 
   DISPLAYCONFIG_SDR_WHITE_LEVEL config{};
   config.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_SDR_WHITE_LEVEL;
   config.header.size = sizeof(config);
-  config.header.adapterId = path->targetInfo.adapterId;
-  config.header.id = path->targetInfo.id;
+  config.header.adapterId = identifier->adapterId;
+  config.header.id = identifier->id;
 
   if (DisplayConfigGetDeviceInfo(&config.header) != ERROR_SUCCESS)
     return false;
@@ -1829,16 +1807,15 @@ std::wstring CWIN32Util::GetDisplayFriendlyName(const std::wstring& gdiDeviceNam
   // Not supported
   return std::wstring();
 #else
-  const auto path{GetDisplayPathInfo(gdiDeviceName)};
-
-  if (!path)
+  const auto identifier{GetDisplayTargetId(gdiDeviceName)};
+  if (!identifier)
     return {};
 
   DISPLAYCONFIG_TARGET_DEVICE_NAME target{};
   target.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_TARGET_NAME;
   target.header.size = sizeof(target);
-  target.header.adapterId = path->targetInfo.adapterId;
-  target.header.id = path->targetInfo.id;
+  target.header.adapterId = identifier->adapterId;
+  target.header.id = identifier->id;
 
   if (DisplayConfigGetDeviceInfo(&target.header) != ERROR_SUCCESS)
     return {};
