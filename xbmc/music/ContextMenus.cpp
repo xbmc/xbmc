@@ -42,6 +42,18 @@ bool CMusicInfoBase::Execute(const std::shared_ptr<CFileItem>& item) const
   return true;
 }
 
+bool CMusicInfo::IsVisible(const CFileItem& item) const
+{
+  if (CMusicInfoBase::IsVisible(item))
+    return true;
+
+  if (item.m_bIsFolder)
+    return false;
+
+  const auto* tag{item.GetMusicInfoTag()};
+  return tag && tag->GetType() == MediaTypeNone && !tag->GetTitle().empty() && item.IsAudio();
+}
+
 bool CMusicBrowse::IsVisible(const CFileItem& item) const
 {
   return ((item.m_bIsFolder || item.IsFileFolder(EFILEFOLDER_MASK_ONBROWSE)) &&
