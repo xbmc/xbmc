@@ -64,6 +64,18 @@ bool CVideoInfoBase::Execute(const std::shared_ptr<CFileItem>& item) const
   return true;
 }
 
+bool CVideoInfo::IsVisible(const CFileItem& item) const
+{
+  if (CVideoInfoBase::IsVisible(item))
+    return true;
+
+  if (item.m_bIsFolder)
+    return false;
+
+  const auto* tag{item.GetVideoInfoTag()};
+  return tag && tag->m_type == MediaTypeNone && !tag->IsEmpty() && VIDEO::IsVideo(item);
+}
+
 bool CVideoRemoveResumePoint::IsVisible(const CFileItem& itemIn) const
 {
   CFileItem item(itemIn.GetItemToPlay());
