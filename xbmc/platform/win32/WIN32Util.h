@@ -114,12 +114,6 @@ public:
 
 #ifdef TARGET_WINDOWS_DESKTOP
 private:
-  struct DisplayConfigSnapshot
-  {
-    std::vector<DISPLAYCONFIG_PATH_INFO> paths;
-    std::vector<DISPLAYCONFIG_MODE_INFO> modes;
-  };
-
   struct DisplayConfigId
   {
     LUID adapterId;
@@ -127,7 +121,7 @@ private:
   };
 
   static std::wstring GetCurrentDisplayName();
-  static DisplayConfigSnapshot GetDisplayConfigSnapshot();
+  static std::vector<DISPLAYCONFIG_PATH_INFO> GetDisplayConfigPaths();
   static std::optional<DisplayConfigId> GetCurrentDisplayTargetId();
   static std::optional<DisplayConfigId> GetDisplayTargetId(const std::wstring& gdiDeviceName);
   static HDR_STATUS GetDisplayHDRStatus(const DisplayConfigId& identifier);

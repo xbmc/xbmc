@@ -1228,11 +1228,12 @@ std::wstring CWIN32Util::GetCurrentDisplayName()
   return mi.szDevice;
 }
 
-CWIN32Util::DisplayConfigSnapshot CWIN32Util::GetDisplayConfigSnapshot()
+std::vector<DISPLAYCONFIG_PATH_INFO> CWIN32Util::GetDisplayConfigPaths()
 {
   uint32_t pathCount{0};
   uint32_t modeCount{0};
-  DisplayConfigSnapshot snapshot{};
+  std::vector<DISPLAYCONFIG_PATH_INFO> paths;
+  std::vector<DISPLAYCONFIG_MODE_INFO> modes;
 
   constexpr uint32_t flags{QDC_ONLY_ACTIVE_PATHS};
   LONG result{ERROR_SUCCESS};
@@ -1242,20 +1243,19 @@ CWIN32Util::DisplayConfigSnapshot CWIN32Util::GetDisplayConfigSnapshot()
     if (GetDisplayConfigBufferSizes(flags, &pathCount, &modeCount) != ERROR_SUCCESS)
       return {};
 
-    snapshot.paths.resize(pathCount);
-    snapshot.modes.resize(modeCount);
+    paths.resize(pathCount);
+    modes.resize(modeCount);
 
-    result = QueryDisplayConfig(flags, &pathCount, snapshot.paths.data(), &modeCount,
-                                snapshot.modes.data(), nullptr);
+    result = QueryDisplayConfig(flags, &pathCount, paths.data(), &modeCount, modes.data(), nullptr);
   } while (result == ERROR_INSUFFICIENT_BUFFER);
 
   if (result != ERROR_SUCCESS)
     return {};
 
-  snapshot.paths.resize(pathCount);
-  snapshot.modes.resize(modeCount);
+  paths.resize(pathCount);
+  modes.resize(modeCount);
 
-  return snapshot;
+  return paths;
 }
 
 std::optional<CWIN32Util::DisplayConfigId> CWIN32Util::GetCurrentDisplayTargetId()
@@ -1270,13 +1270,11 @@ std::optional<CWIN32Util::DisplayConfigId> CWIN32Util::GetCurrentDisplayTargetId
 std::optional<CWIN32Util::DisplayConfigId> CWIN32Util::GetDisplayTargetId(
     const std::wstring& gdiDeviceName)
 {
-  const DisplayConfigSnapshot snapshot{GetDisplayConfigSnapshot()};
-
   DISPLAYCONFIG_SOURCE_DEVICE_NAME source{};
   source.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_SOURCE_NAME;
   source.header.size = sizeof(source);
 
-  for (const auto& path : snapshot.paths)
+  for (const auto& path : GetDisplayConfigPaths())
   {
     source.header.adapterId = path.sourceInfo.adapterId;
     source.header.id = path.sourceInfo.id;
@@ -1476,7 +1474,7 @@ HDR_STATUS CWIN32Util::GetWindowsHDRStatus()
   }
   else
   {
-    for (const auto& path : GetDisplayConfigSnapshot().paths)
+    for (const auto& path : GetDisplayConfigPaths())
     {
       const DisplayConfigId identifier{path.targetInfo.adapterId, path.targetInfo.id};
       const HDR_STATUS temp{GetDisplayHDRStatus(identifier)};
