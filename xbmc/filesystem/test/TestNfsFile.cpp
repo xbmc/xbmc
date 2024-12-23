@@ -27,19 +27,23 @@ struct SplitPath
   bool expectedResultExport;
   bool expectedResultPath;
 } g_TestData[] = {
-                   {"nfs://192.168.0.1:2049/srv/test/tvmedia/foo.txt", "/srv/test", "//tvmedia/foo.txt", true, true},
-                   {"nfs://192.168.0.1/srv/test/tv/media/foo.txt", "/srv/test/tv", "//media/foo.txt", true, true},
-                   {"nfs://192.168.0.1:2049/srv/test/tvmedia", "/srv/test", "//tvmedia", true, true},
-                   {"nfs://192.168.0.1:2049/srv/test/tvmedia/", "/srv/test", "//tvmedia/", true, true},
-                   {"nfs://192.168.0.1:2049/srv/test/tv/media", "/srv/test/tv", "//media", true, true},
-                   {"nfs://192.168.0.1:2049/srv/test/tv/media/", "/srv/test/tv", "//media/", true, true},
-                   {"nfs://192.168.0.1:2049/srv/test/tv", "/srv/test/tv", "//", true, true},
-                   {"nfs://192.168.0.1:2049/srv/test/", "/srv/test", "//", true, true},
-                   {"nfs://192.168.0.1:2049/", "/", "//", true, true},
-                   {"nfs://192.168.0.1:2049/notexported/foo.txt", "/", "//notexported/foo.txt", true, true},
+    {"nfs://192.168.0.1:2049/srv/test/tvmedia/foo.txt", "/srv/test", "//tvmedia/foo.txt", true,
+     true},
+    {"nfs://192.168.0.1/srv/test/tv/media/foo.txt", "/srv/test/tv", "//media/foo.txt", true, true},
+    {"nfs://192.168.0.1/srv/test/tv/media/foo%3F.txt", "/srv/test/tv", "//media/foo?.txt", true,
+     true},
+    {"nfs://192.168.0.1:2049/srv/test/tvmedia", "/srv/test", "//tvmedia", true, true},
+    {"nfs://192.168.0.1:2049/srv/test/tvmedia/", "/srv/test", "//tvmedia/", true, true},
+    {"nfs://192.168.0.1:2049/srv/test/tvmedia%3F/", "/srv/test", "//tvmedia?/", true, true},
+    {"nfs://192.168.0.1:2049/srv/test/tv/media", "/srv/test/tv", "//media", true, true},
+    {"nfs://192.168.0.1:2049/srv/test/tv/media/", "/srv/test/tv", "//media/", true, true},
+    {"nfs://192.168.0.1:2049/srv/test/tv", "/srv/test/tv", "//", true, true},
+    {"nfs://192.168.0.1:2049/srv/test/", "/srv/test", "//", true, true},
+    {"nfs://192.168.0.1:2049/", "/", "//", true, true},
+    {"nfs://192.168.0.1:2049/notexported/foo.txt", "/", "//notexported/foo.txt", true, true},
 
-                   {"nfs://192.168.0.1:2049/notexported/foo.txt", "/notexported", "//foo.txt", false, false},
-                 };
+    {"nfs://192.168.0.1:2049/notexported/foo.txt", "/notexported", "//foo.txt", false, false},
+};
 
 class TestNfs : public Test,
                 public WithParamInterface<SplitPath>
