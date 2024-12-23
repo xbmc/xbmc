@@ -159,13 +159,15 @@ do_clean_get() {
 
 PATH_CHANGE_REV_FILENAME=".last_success_revision"
 
-#hash a dir based on the git revision and $TRIPLET
+#hash a dir based on the git revision and $version
 #params paths to be hashed
 function getBuildHash ()
 {
+  local package="$(extractPackage $3)"
+  local version="$(extractVersion $4)"
   local hashStr
   hashStr="$(git rev-list HEAD --max-count=1  -- $@)"
-  hashStr="$hashStr $@ $TRIPLET"
+  hashStr="$hashStr $@ $version $package"
   echo $hashStr
 }
 
@@ -206,4 +208,21 @@ function tagSuccessFulBuild ()
   # tag last successful build with revisions of the given dir
   # needs to match the checks in function getBuildHash
   echo "$(getBuildHash $pathToTag $@)" > $pathToTag/$PATH_CHANGE_REV_FILENAME
+}
+
+function extractVersion()
+{
+  local file="$1"
+  local ver=$(grep "VERSION=" $file | sed 's/VERSION=//g;s/#.*$//g;/^$/d')
+
+  echo $ver
+}
+
+function extractPackage()
+{
+  local path="$1"
+  local file="$path/0_package.target-$TRIPLET.list"
+  local package=$(grep '^dav1d-' $file)
+
+  echo $package
 }
