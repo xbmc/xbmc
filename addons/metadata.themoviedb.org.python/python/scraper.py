@@ -26,7 +26,7 @@ def get_tmdb_scraper(settings):
     return TMDBMovieScraper(ADDON_SETTINGS, language, certcountry)
 
 def search_for_movie(title, year, handle, settings):
-    log("Find movie with title '{title}' from year '{year}'".format(title=title, year=year), xbmc.LOGINFO)
+    log("Searching for movie '{title}' from year '{year}'".format(title=title, year=year), xbmc.LOGINFO)
     title = _strip_trailing_article(title)
     search_results = get_tmdb_scraper(settings).search(title, year)
     if not search_results:
