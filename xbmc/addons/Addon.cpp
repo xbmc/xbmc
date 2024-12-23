@@ -264,6 +264,59 @@ bool CAddon::SettingsLoaded(AddonInstanceId id /* = ADDON_SETTINGS_ID */) const
   return addonSettings && addonSettings->IsLoaded();
 }
 
+class FilenameXMLCache 
+{
+public:
+	const CXBMCTinyXML* loadXMLFile(const std::string& id, const std::string& xmlFilename)
+	{
+	  struct __stat64 s;
+	  if (XFILE::CFile::Stat(xmlFilename, &s) == 0)
+	  {
+		auto found = cache.find(xmlFilename);
+		if (found != cache.end() && s.st_mtime <= found->second.modified)
+		{
+		  auto& cachedItem = found->second;
+		  return &cachedItem.xml;
+		}
+		else
+		{
+		  auto& cachedItem = cache[xmlFilename];
+		  cachedItem.modified = s.st_mtime;
+
+		  if (!cachedItem.xml.LoadFile(xmlFilename))
+		  {
+			if (CFile::Exists(xmlFilename))
+			{
+			  CLog::Log(LOGERROR, "CAddon[{}]: unable to load: {}, Line {}\n{}", id, xmlFilename,
+						cachedItem.xml.ErrorRow(), cachedItem.xml.ErrorDesc());
+			}
+			cache.erase(xmlFilename);
+			return nullptr;
+		  }
+
+		  return &cachedItem.xml;
+		}
+	  }
+	  return nullptr;
+	}
+
+private:
+
+	struct CacheItem
+	{
+	  time_t modified;
+	  CXBMCTinyXML xml;
+	};
+
+	std::unordered_map<std::string, CacheItem> cache;
+};
+
+const CXBMCTinyXML* loadXMLFile(const std::string& id, const std::string& xmlFilename)
+{
+	static FilenameXMLCache cache;
+	return cache.loadXMLFile(id, xmlFilename);
+}
+
 bool CAddon::LoadSettings(bool bForce,
                           bool loadUserSettings,
                           AddonInstanceId id /* = ADDON_SETTINGS_ID */)
@@ -290,22 +343,13 @@ bool CAddon::LoadSettings(bool bForce,
     GetSettings(id)->Uninitialize();
 
   // load the settings definition XML file
-  const auto addonSettingsDefinitionFile = m_settings[id].m_addonSettingsPath;
-  CXBMCTinyXML addonSettingsDefinitionDoc;
-  if (!addonSettingsDefinitionDoc.LoadFile(addonSettingsDefinitionFile))
-  {
-    if (CFile::Exists(addonSettingsDefinitionFile))
-    {
-      CLog::Log(LOGERROR, "CAddon[{}]: unable to load: {}, Line {}\n{}", ID(),
-                addonSettingsDefinitionFile, addonSettingsDefinitionDoc.ErrorRow(),
-                addonSettingsDefinitionDoc.ErrorDesc());
-    }
-
+  const auto xmlFilename = m_settings[id].m_addonSettingsPath;
+  const CXBMCTinyXML* doc = loadXMLFile(ID(), xmlFilename);
+  if (doc == nullptr)
     return false;
-  }
 
   // initialize the settings definition
-  if (!GetSettings(id)->Initialize(addonSettingsDefinitionDoc))
+  if (!GetSettings(id)->Initialize(*doc))
   {
     CLog::Log(LOGERROR, "CAddon[{}]: failed to initialize addon settings", ID());
     return false;
@@ -356,15 +400,11 @@ bool CAddon::LoadUserSettings(AddonInstanceId id /* = ADDON_SETTINGS_ID */)
     return true;
   }
 
-  CXBMCTinyXML doc;
-  if (!doc.LoadFile(data.m_userSettingsPath))
-  {
-    CLog::Log(LOGERROR, "CAddon[{}]: failed to load addon settings from {}", ID(),
-              data.m_userSettingsPath);
+  const auto xmlFilename = data.m_userSettingsPath;
+  const CXBMCTinyXML* doc = loadXMLFile(ID(), xmlFilename);
+  if (doc == nullptr)
     return false;
-  }
-
-  return SettingsFromXML(doc, false, id);
+  return SettingsFromXML(*doc, false, id);
 }
 
 bool CAddon::HasSettingsToSave(AddonInstanceId id /* = ADDON_SETTINGS_ID */) const
