@@ -24,8 +24,10 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <array>
 #include <memory>
 #include <regex>
+#include <string_view>
 
 namespace
 {
@@ -459,8 +461,8 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon,
       element = child->FirstChildElement("platform");
       if (element && element->GetText() != nullptr)
       {
-        auto platforms = StringUtils::Split(element->GetText(),
-                                            {" ", "\t", "\n", "\r"});
+        static constexpr std::array<std::string_view, 4> delims{" ", "\t", "\n", "\r"};
+        auto platforms = StringUtils::Split(element->GetText(), delims);
         platforms.erase(std::remove_if(platforms.begin(), platforms.end(),
                         [](const std::string& platform) { return platform.empty(); }),
                         platforms.cend());
