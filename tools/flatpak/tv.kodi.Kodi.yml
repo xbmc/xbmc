@@ -1,0 +1,1037 @@
+app-id: tv.kodi.Kodi
+runtime: org.freedesktop.Platform
+runtime-version: "22.08"
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.openjdk17
+command: kodi
+rename-icon: kodi
+rename-desktop-file: kodi.desktop
+desktop-file-name-suffix: " (Nightly)"
+
+finish-args:
+  - --device=all
+  - --allow=bluetooth
+  - --filesystem=xdg-music
+  - --filesystem=xdg-pictures
+  - --filesystem=xdg-videos
+  - --filesystem=/mnt
+  - --filesystem=/media
+  - --filesystem=/run/media
+  - --filesystem=/run/lirc
+  - --share=ipc
+  - --share=network
+  - --socket=pulseaudio
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --system-talk-name=org.freedesktop.Avahi
+  - --system-talk-name=org.freedesktop.login1
+  - --system-talk-name=org.freedesktop.UDisks2
+  - --system-talk-name=org.freedesktop.UPower
+  - --talk-name=org.freedesktop.ScreenSaver
+
+cleanup:
+  - "*.a"
+  - "*.pyc"
+  - "*.pyo"
+  - "*.cmake"
+  - /.ref
+  - /etc
+  - /include
+  - /lib/cmake
+  - /lib64/cmake
+  - /lib/pkgconfig
+  - /lib64/pkgconfig
+  - /man
+  - /private
+  - /share/doc
+  - /share/man
+  - /var
+
+modules:
+  - {
+      "name": "dav1d",
+      "buildsystem": "meson",
+      "config-opts":
+        [
+          "-Denable_asm=true",
+          "-Denable_tools=false",
+          "-Denable_examples=false",
+          "-Denable_tests=false",
+        ],
+      "cleanup": ["/include", "/bin", "/share/doc"],
+      "sources":
+        [
+          {
+            "type": "archive",
+            "url": "https://code.videolan.org/videolan/dav1d/-/archive/1.0.0/dav1d-1.0.0.tar.bz2",
+            "sha512": "86c6481e787fb6b8c28521e1efb1876d1be99f5fa5332cddab1111059b44775e05203cfc5c80a1b404ee00f35a1f5e1099e21b1f0851d77fb0101567e8b1a892",
+          },
+        ],
+    }
+  - {
+      "name": "ffmpeg",
+      "config-opts":
+        [
+          "--enable-libdav1d",
+          "--enable-gpl",
+          "--enable-gnutls",
+          "--enable-vaapi",
+          "--enable-vdpau",
+        ],
+      "cleanup": ["/include", "/lib", "/bin", "/share/doc"],
+      "sources":
+        [
+          {
+            "type": "archive",
+            "url": "https://ffmpeg.org/releases/ffmpeg-6.0.tar.xz",
+            "sha256": "57be87c22d9b49c112b6d24bc67d42508660e6b718b3db89c44e47e289137082",
+            "x-checker-data":
+              {
+                "type": "html",
+                "url": "https://ffmpeg.org/releases/",
+                "pattern": ">(ffmpeg-([\\d.]+)\\.tar\\.xz)<",
+              },
+          },
+        ],
+    }
+  - {
+      "name": "flatbuffers",
+      "buildsystem": "cmake-ninja",
+      "config-opts":
+        [
+          "-DCMAKE_BUILD_TYPE=Release",
+          "-DFLATBUFFERS_BUILD_FLATLIB=OFF",
+          "-DFLATBUFFERS_BUILD_SHAREDLIB=ON",
+        ],
+      "cleanup": ["/include", "/lib/*.so"],
+      "sources":
+        [
+          {
+            "type": "archive",
+            "url": "https://github.com/google/flatbuffers/archive/refs/tags/v2.0.0.tar.gz",
+            "sha256": "9ddb9031798f4f8754d00fca2f1a68ecf9d0f83dfac7239af1311e4fd9a565c4",
+          },
+          {
+            "type": "shell",
+            "commands":
+              ["sed -i 's/-Werror=/-W/g;s/-Werror//g' CMakeLists.txt"],
+          },
+        ],
+    }
+  - {
+      "name": "fmt",
+      "buildsystem": "cmake-ninja",
+      "config-opts": ["-DCMAKE_BUILD_TYPE=Release"],
+      "cleanup": ["/include", "*.a"],
+      "sources":
+        [
+          {
+            "type": "archive",
+            "url": "https://github.com/fmtlib/fmt/archive/refs/tags/9.1.0.tar.gz",
+            "sha512": "a18442042722dd48e20714ec034a12fcc0576c9af7be5188586970e2edf47529825bdc99af366b1d5891630c8dbf6f63bfa9f012e77ab3d3ed80d1a118e3b2be",
+          },
+        ],
+    }
+  - {
+      "name": "fstrcmp",
+      "buildsystem": "cmake-ninja",
+      "cleanup": ["/include", "*.a"],
+      "sources":
+        [
+          {
+            "type": "archive",
+            "url": "http://fstrcmp.sourceforge.net/fstrcmp-0.7.D001.tar.gz",
+            "sha256": "e4018e850f80700acee8da296e56e15b1eef711ab15157e542e7d7e1237c3476",
+          },
+          { "type": "patch", "path": "fstrcmp.patch" },
+        ],
+    }
+  - {
+      "name": "glu",
+      "config-opts": ["--disable-static"],
+      "sources":
+        [
+          {
+            "type": "archive",
+            "url": "https://ftp.osuosl.org/pub/blfs/conglomeration/glu/glu-9.0.2.tar.xz",
+            "sha256": "6e7280ff585c6a1d9dfcdf2fca489251634b3377bfc33c29e4002466a38d02d4",
+          },
+        ],
+      "cleanup": ["/include", "/lib/*.a", "/lib/*.la", "/lib/pkgconfig"],
+    }
+  - {
+      "name": "glm",
+      "buildsystem": "cmake-ninja",
+      "config-opts":
+        [
+          "-DBUILD_STATIC_LIBS=ON",
+          "-DGLM_TEST_ENABLE_CXX_11=ON",
+          "-DGLM_TEST_ENABLE=OFF",
+        ],
+      "sources":
+        [
+          {
+            "type": "archive",
+            "url": "https://github.com/g-truc/glm/archive/refs/tags/0.9.9.8.tar.gz",
+            "sha256": "7d508ab72cb5d43227a3711420f06ff99b0a0cb63ee2f93631b162bfe1fe9592",
+          },
+          {
+            "type": "shell",
+            "commands":
+              [
+                "echo 'install(FILES ${ROOT_HEADER} ${ROOT_INLINE} DESTINATION include/glm)' >> glm/CMakeLists.txt",
+                "echo 'install(FILES ${CORE_HEADER} ${CORE_INLINE} DESTINATION include/glm/detail)' >> glm/CMakeLists.txt",
+                "echo 'install(FILES ${EXT_HEADER} ${EXT_INLINE} DESTINATION include/glm/ext)' >> glm/CMakeLists.txt",
+                "echo 'install(FILES ${GTC_HEADER} ${GTC_INLINE} DESTINATION include/glm/gtc)' >> glm/CMakeLists.txt",
+                "echo 'install(FILES ${GTX_HEADER} ${GTX_INLINE} DESTINATION include/glm/gtx)' >> glm/CMakeLists.txt",
+                "echo 'install(FILES ${SIMD_HEADER} ${SIMD_INLINE} DESTINATION include/glm/simd)' >> glm/CMakeLists.txt",
+                "echo 'install(TARGETS glm_static)' >> glm/CMakeLists.txt",
+              ],
+          },
+        ],
+    }
+  - {
+      "name": "hwdata",
+      "config-opts": ["--datarootdir=${FLATPAK_DEST}/lib/"],
+      "sources":
+        [
+          {
+            "type": "archive",
+            "url": "https://github.com/vcrhonek/hwdata/archive/refs/tags/v0.374.tar.gz",
+            "sha256": "2a0988bf5e97e49159d7f02a5e02a719c8976d4ec883a8abb635149d221ceca0",
+            "x-checker-data":
+              {
+                "type": "anitya",
+                "project-id": 13577,
+                "stable-only": true,
+                "url-template": "https://github.com/vcrhonek/hwdata/archive/refs/tags/v$version.tar.gz",
+              },
+            "cleanup": ["/lib/pkgconfig"],
+          },
+        ],
+    }
+  - {
+      "name": "json",
+      "buildsystem": "cmake-ninja",
+      "sources":
+        [
+          {
+            "type": "archive",
+            "url": "https://github.com/nlohmann/json/archive/refs/tags/v3.10.4.tar.gz",
+            "sha256": "1155fd1a83049767360e9a120c43c578145db3204d2b309eba49fbbedd0f4ed3",
+          },
+        ],
+    }
+  - {
+      "name": "jsoncpp",
+      "buildsystem": "cmake-ninja",
+      "config-opts":
+        [
+          "-DJSONCPP_WITH_TESTS=OFF",
+          "-DBUILD_STATIC_LIBS=OFF",
+          "-DBUILD_OBJECT_LIBS=OFF",
+        ],
+      "sources":
+        [
+          {
+            "type": "archive",
+            "url": "https://github.com/open-source-parsers/jsoncpp/archive/1.9.4.tar.gz",
+            "sha256": "e34a628a8142643b976c7233ef381457efad79468c67cb1ae0b83a33d7493999",
+          },
+        ],
+    }
+  - {
+      "name": "libass",
+      "cleanup": ["/include", "*.a", "*.la", "/lib/*.so"],
+      "sources":
+        [
+          {
+            "type": "archive",
+            "url": "https://github.com/libass/libass/archive/refs/tags/0.15.2.tar.gz",
+            "sha256": "f96b7ce35f2b0bf430eb71c4c9dd5d8f0abf52499e08490d346608c837c98299",
+          },
+        ],
+    }
+  - {
+      "name": "libbluray",
+      "config-opts": ["--disable-bdjava-jar"],
+      "cleanup": ["/include", "*.a", "*.la", "*.pc", "/lib/*.so"],
+      "sources":
+        [
+          {
+            "type": "archive",
+            "url": "https://download.videolan.org/pub/videolan/libbluray/1.3.2/libbluray-1.3.2.tar.bz2",
+            "sha512": "6f2d3a984809db33a99d2fe3618370a3fda3ef1c417b725d3c2e1f24ff21495f95a6a5f78b30b2b26bab47865f68dd08c08e8a554809d3a5225956da712dc064",
+          },
+        ],
+    }
+  - {
+      "name": "libcdio",
+      "config-opts":
+        [
+          "--enable-cxx",
+          "--without-cd-drive",
+          "--without-cd-info",
+          "--without-cdda-player",
+          "--without-cd-read",
+          "--without-iso-info",
+          "--without-iso-read",
+          "--disable-example-progs",
+        ],
+      "cleanup": ["/include", "/share/info", "*.a", "*.la", "/lib/*.so"],
+      "sources":
+        [
+          {
+            "type": "archive",
+            "url": "http://git.savannah.gnu.org/cgit/libcdio.git/snapshot/libcdio-release-2.1.0.tar.gz",
+            "sha256": "3ab7973d88405a7d4aad05e547c3316ba196caa19826072174c3bc3c58145c61",
+          },
+        ],
+    }
+  - {
+      "name": "libcec",
+      "buildsystem": "cmake-ninja",
+      "cleanup": ["/include", "/lib/*.so"],
+      "sources":
+        [
+          {
+            "type": "archive",
+            "url": "https://github.com/Pulse-Eight/libcec/archive/libcec-6.0.2.tar.gz",
+            "sha256": "090696d7a4fb772d7acebbb06f91ab92e025531c7c91824046b9e4e71ecb3377",
+          },
+        ],
+      "modules":
+        [
+          {
+            "name": "p8-platform",
+            "buildsystem": "cmake-ninja",
+            "cleanup": ["/include", "*.a"],
+            "sources":
+              [
+                {
+                  "type": "archive",
+                  "url": "https://github.com/Pulse-Eight/platform/archive/p8-platform-2.1.0.1.tar.gz",
+                  "sha256": "064f8d2c358895c7e0bea9ae956f8d46f3f057772cb97f2743a11d478a0f68a0",
+                },
+              ],
+          },
+        ],
+    }
+  - {
+      "name": "libdisplay-info",
+      "buildsystem": "meson",
+      "sources":
+        [
+          {
+            "type": "archive",
+            "url": "https://gitlab.freedesktop.org/emersion/libdisplay-info/-/archive/0.1.1/libdisplay-info-0.1.1.tar.gz",
+            "sha256": "a5aeef57817916286526292ec816a5338c4d3c0094ce91e584fc82b57070a44f",
+            "x-checker-data":
+              {
+                "type": "anitya",
+                "project-id": 326668,
+                "url-template": "https://gitlab.freedesktop.org/emersion/libdisplay-info/-/archive/$version/libdisplay-info-$version.tar.gz",
+              },
+          },
+        ],
+    }
+  - {
+      "name": "libinput",
+      "buildsystem": "meson",
+      "config-opts":
+        [
+          "-Dlibwacom=false",
+          "-Ddebug-gui=false",
+          "-Dtests=false",
+          "-Ddocumentation=false",
+        ],
+      "sources":
+        [
+          {
+            "type": "archive",
+            "url": "https://www.freedesktop.org/software/libinput/libinput-1.19.2.tar.xz",
+            "sha256": "0fc39f0af3ee1a77c60c34bc45391a4d0879169f7c0f7bbbeb5eef590b98b883",
+          },
+        ],
+      "modules":
+        [
+          {
+            "name": "mtdev",
+            "sources":
+              [
+                {
+                  "type": "archive",
+                  "url": "http://bitmath.org/code/mtdev/mtdev-1.1.6.tar.gz",
+                  "sha256": "1325f389a2f25cd5f5a8ea4d29aad24aa7c3ec30401d679400dd79eb9c0a8dbb",
+                },
+                {
+                  "type": "shell",
+                  "commands":
+                    [
+                      "cp -p /usr/share/automake-*/config.{sub,guess} config-aux",
+                    ],
+                },
+              ],
+          },
+          {
+            "name": "libevdev",
+            "buildsystem": "meson",
+            "config-opts": ["-Dtests=disabled", "-Ddocumentation=disabled"],
+            "sources":
+              [
+                {
+                  "type": "archive",
+                  "url": "https://www.freedesktop.org/software/libevdev/libevdev-1.11.0.tar.xz",
+                  "sha256": "63f4ea1489858a109080e0b40bd43e4e0903a1e12ea888d581db8c495747c2d0",
+                },
+              ],
+          },
+        ],
+    }
+  - {
+      "name": "libmicrohttpd",
+      "cleanup": ["/include", "*.a", "*.la", "/lib/*.so"],
+      "sources":
+        [
+          {
+            "type": "archive",
+            "url": "https://ftp.gnu.org/gnu/libmicrohttpd/libmicrohttpd-0.9.75.tar.gz",
+            "sha512": "4dc62ed191342a61cc2767171bb1ff4050f390db14ef7100299888237b52ea0b04b939c843878fe7f5daec2b35a47b3c1b7e7c11fb32d458184fe6b19986a37c",
+          },
+        ],
+    }
+  - {
+      "name": "libnfs",
+      "buildsystem": "cmake-ninja",
+      "config-opts": ["-DCMAKE_BUILD_TYPE=Release"],
+      "cleanup": ["/include", "/bin", "/lib/*.so"],
+      "sources":
+        [
+          {
+            "type": "archive",
+            "url": "https://github.com/sahlberg/libnfs/archive/libnfs-5.0.2.tar.gz",
+            "sha512": "6dcf4ea8a01b35beb53694625d20fbebd858a88725c2742671878ad6fe7877999f93d262fb58a435b00c283c3e6fb6fa7222d04bb4540bf674b7ce196e9424f5",
+          },
+        ],
+    }
+  - {
+      "name": "libplist",
+      "cleanup":
+        [
+          "/include",
+          "/bin",
+          "*.a",
+          "*.la",
+          "/lib/*.so",
+          "/share/runtime/locale",
+        ],
+      "config-opts": [],
+      "sources":
+        [
+          {
+            "type": "archive",
+            "url": "https://github.com/libimobiledevice/libplist/archive/2.2.0.tar.gz",
+            "sha256": "7e654bdd5d8b96f03240227ed09057377f06ebad08e1c37d0cfa2abe6ba0cee2",
+          },
+        ],
+    }
+
+  - {
+      "name": "libudfread",
+      "cleanup": ["/include", "/share/doc", "*.a", "*.la", "/lib/*.so"],
+      "sources":
+        [
+          {
+            "type": "archive",
+            "url": "http://mirrors.kodi.tv/build-deps/sources/libudfread-1.1.2.tar.gz",
+            "sha256": "2bf16726ac98d093156195bb049a663e07d3323e079c26912546f4e05c77bac5",
+          },
+          {
+            "type": "script",
+            "dest-filename": "autogen.sh",
+            "commands": ["autoreconf -vfi"],
+          },
+        ],
+    }
+  - {
+      "name": "lzo",
+      "config-opts": ["--enable-shared", "--disable-static"],
+      "cleanup": ["/include", "/share/doc", "*.la", "/lib/*.so"],
+      "sources":
+        [
+          {
+            "type": "archive",
+            "url": "http://www.oberhumer.com/opensource/lzo/download/lzo-2.10.tar.gz",
+            "sha256": "c0f892943208266f9b6543b3ae308fab6284c5c90e627931446fb49b4221a072",
+          },
+        ],
+    }
+  - {
+      "name": "mariadb-connector",
+      "buildsystem": "cmake-ninja",
+      "config-opts": ["-DWITH_UNIT_TESTS=OFF"],
+      "cleanup": ["/include", "*.a"],
+      "sources":
+        [
+          {
+            "type": "archive",
+            "url": "https://github.com/mariadb-corporation/mariadb-connector-c/archive/refs/tags/v3.2.4.tar.gz",
+            "sha256": "6da2563a7940457846267989732b97028c350d7de07f89e355f15646641d0ed7",
+          },
+        ],
+    }
+  - {
+      "name": "pycryptodome",
+      "buildsystem": "simple",
+      "build-commands":
+        [
+          "touch .separate_namespace",
+          "python3 setup.py install --prefix=/app --root=/",
+        ],
+      "sources":
+        [
+          {
+            "type": "archive",
+            "url": "https://files.pythonhosted.org/packages/64/ab/f2b4059ddf59bffbdbb4bdb60a6729c6c1de5eea1ef186d5a633ae12db3b/pycryptodome-3.11.0.tar.gz",
+            "sha256": "428096bbf7a77e207f418dfd4d7c284df8ade81d2dc80f010e92753a3e406ad0",
+          },
+        ],
+    }
+  - {
+      "name": "python-pillow",
+      "buildsystem": "simple",
+      "build-commands": ["python3 setup.py install --prefix=/app --root=/"],
+      "sources":
+        [
+          {
+            "type": "archive",
+            "url": "https://files.pythonhosted.org/packages/7d/2a/2fc11b54e2742db06297f7fa7f420a0e3069fdcf0e4b57dfec33f0b08622/Pillow-8.4.0.tar.gz",
+            "sha256": "b8e2f83c56e141920c39464b852de3719dfbfb6e3c99a2d8da0edf4fb33176ed",
+          },
+        ],
+    }
+  - {
+      "name": "python3-yaml",
+      "buildsystem": "simple",
+      "build-commands":
+        [
+          'pip3 install --exists-action=i --no-index --find-links="file://${PWD}" --prefix=${FLATPAK_DEST} "pyyaml" --no-build-isolation',
+        ],
+      "sources":
+        [
+          {
+            "type": "file",
+            "url": "https://files.pythonhosted.org/packages/36/2b/61d51a2c4f25ef062ae3f74576b01638bebad5e045f747ff12643df63844/PyYAML-6.0.tar.gz",
+            "sha256": "68fb519c14306fec9720a2a5b45bc9f0c8d1b9c72adf45c37baedfcd949c35a2",
+          },
+        ],
+    }
+  - {
+      "name": "lirc",
+      "no-autogen": true,
+      "config-opts": ["--with-systemdsystemunitdir=/app/lib/systemd"],
+      "sources":
+        [
+          {
+            "type": "archive",
+            "url": "https://downloads.sourceforge.net/project/lirc/LIRC/0.10.2/lirc-0.10.2.tar.bz2",
+            "sha256": "3d44ec8274881cf262f160805641f0827ffcc20ade0d85e7e6f3b90e0d3d222a",
+          },
+          {
+            "type": "shell",
+            "commands": ["sed -i s/Ubuntu/ignoreme/g configure.ac"],
+          },
+        ],
+    }
+  - {
+      "name": "rapidjson",
+      "buildsystem": "cmake-ninja",
+      "config-opts":
+        [
+          "-DRAPIDJSON_BUILD_DOC=OFF",
+          "-DRAPIDJSON_BUILD_EXAMPLES=OFF",
+          "-DRAPIDJSON_BUILD_TESTS=OFF",
+        ],
+      "cleanup": ["/include", "/share/doc"],
+      "sources":
+        [
+          {
+            "type": "archive",
+            "url": "https://github.com/Tencent/rapidjson/archive/v1.1.0.tar.gz",
+            "sha256": "bf7ced29704a1e696fbccf2a2b4ea068e7774fa37f6d7dd4039d0787f8bed98e",
+          },
+        ],
+    }
+  - {
+      "name": "samba",
+      "buildsystem": "simple",
+      "build-commands":
+        [
+          "./buildtools/bin/waf configure --prefix=/app --disable-python --without-ads --without-ldap --without-pam --without-acl-support --without-systemd --without-ad-dc --without-json",
+          "./buildtools/bin/waf build -j $FLATPAK_BUILDER_N_JOBS",
+          "./buildtools/bin/waf install",
+        ],
+      "cleanup": ["/bin", "/libexec", "/share", "/include", "/lib/*.so"],
+      "sources":
+        [
+          {
+            "type": "archive",
+            "url": "https://download.samba.org/pub/samba/stable/samba-4.15.1.tar.gz",
+            "sha256": "a1811fbb4110d64969f6c108f8d161e2c3e20ddf475529a3d32bd94bb7459f00",
+          },
+        ],
+      "modules": [
+          {
+            "name": "perl",
+            "no-autogen": true,
+            "config-opts": ["-des"],
+            # Somehow these are installed without write permissions,  breaking stripping
+            "post-install":
+              [
+                "find $FLATPAK_DEST/lib/perl5/5.34.0/${FLATPAK_ARCH}-linux/auto/ -name \\*.so -exec chmod u+w {} +",
+              ],
+            "sources":
+              [
+                {
+                  "type": "archive",
+                  "url": "https://www.cpan.org/src/5.0/perl-5.34.0.tar.xz",
+                  "sha256": "82c2e5e5c71b0e10487a80d79140469ab1f8056349ca8545140a224dbbed7ded",
+                },
+                {
+                  "type": "script",
+                  "dest-filename": "configure",
+                  "commands": ["exec ./configure.gnu $@"],
+                },
+              ],
+          },
+          {
+            "name": "parse-yapp",
+            "buildsystem": "simple",
+            "build-commands": ["perl Makefile.PL", "make", "make install"],
+            "sources":
+              [
+                {
+                  "type": "archive",
+                  "url": "https://cpan.metacpan.org/authors/id/W/WB/WBRASWELL/Parse-Yapp-1.21.tar.gz",
+                  "sha256": "3810e998308fba2e0f4f26043035032b027ce51ce5c8a52a8b8e340ca65f13e5",
+                },
+              ],
+          },
+          {
+            "name": "rpcsvc-proto",
+            "sources":
+              [
+                {
+                  "type": "archive",
+                  "url": "https://github.com/thkukuk/rpcsvc-proto/releases/download/v1.4.2/rpcsvc-proto-1.4.2.tar.xz",
+                  "sha256": "678851b9f7ddf4410d2859c12016b65a6dd1a0728d478f18aeb54d165352f17c",
+                },
+              ],
+          },
+        ],
+    }
+
+  - {
+      "name": "shairplay",
+      "cleanup":
+        [
+          "/include",
+          "/bin",
+          "*.a",
+          "*.la",
+          "/lib/*.so",
+          "/share/runtime/locale",
+        ],
+      "build-options":
+        {
+          "env":
+            {
+              "C_INCLUDE_PATH": "/app/include/avahi-compat-libdns_sd:/app/include",
+            },
+        },
+      "sources":
+        [
+          {
+            "type": "git",
+            "url": "https://github.com/juhovh/shairplay/",
+            "commit": "096b61ad14c90169f438e690d096e3fcf87e504e",
+          },
+        ],
+      "modules":
+        [
+          {
+            "name": "avahi",
+            "cleanup":
+              [
+                "/include",
+                "/bin",
+                "*.a",
+                "*.la",
+                "/lib/*.so",
+                "/share/runtime/locale",
+              ],
+            "config-opts":
+              [
+                "--with-distro=none",
+                "--disable-libdaemon",
+                "--disable-core-docs",
+                "--disable-manpages",
+                "--disable-mono",
+                "--disable-libevent",
+                "--disable-qt4",
+                "--disable-qt5",
+                "--disable-python",
+                "--disable-gtk",
+                "--disable-gtk3",
+                "--enable-compat-libdns_sd",
+              ],
+            "sources":
+              [
+                {
+                  "type": "archive",
+                  "url": "https://github.com/lathiat/avahi/archive/v0.8.tar.gz",
+                  "sha256": "c15e750ef7c6df595fb5f2ce10cac0fee2353649600e6919ad08ae8871e4945f",
+                },
+              ],
+          },
+        ],
+    }
+  - {
+      "name": "spdlog",
+      "buildsystem": "cmake-ninja",
+      "config-opts":
+        [
+          "-DSPDLOG_BUILD_EXAMPLE=OFF",
+          "-DSPDLOG_BUILD_TESTS=OFF",
+          "-DSPDLOG_BUILD_BENCH=OFF",
+          "-DSPDLOG_INSTALL=ON",
+          "-DSPDLOG_FMT_EXTERNAL=ON",
+        ],
+      "cleanup": ["/include", "*.a"],
+      "sources":
+        [
+          {
+            "type": "archive",
+            "url": "https://github.com/gabime/spdlog/archive/refs/tags/v1.10.0.tar.gz",
+            "sha512": "e82ec0a0c813ed2f1c8a31a0f21dbb733d0a7bd8d05284feae3bd66040bc53ad47a93b26c3e389c7e5623cfdeba1854d690992c842748e072aab3e6e6ecc5666",
+          },
+        ],
+    }
+  - {
+      "name": "swig",
+      "config-opts": ["--without-pcre", "--without-alllang"],
+      "cleanup": ["/share/swig"],
+      "sources":
+        [
+          {
+            "type": "archive",
+            "url": "http://prdownloads.sourceforge.net/swig/swig-4.0.2.tar.gz",
+            "sha256": "d53be9730d8d58a16bf0cbd1f8ac0c0c3e1090573168bfa151b01eb47fa906fc",
+          },
+        ],
+      "modules":
+        [
+          {
+            "name": "groovy",
+            "buildsystem": "simple",
+            "build-commands":
+              [
+                "mkdir -p ${FLATPAK_DEST}/groovy",
+                "cp -r groovy/* ${FLATPAK_DEST}/groovy",
+              ],
+            "sources":
+              [
+                {
+                  "type": "archive",
+                  "url": "http://mirrors.kodi.tv/build-deps/sources/apache-groovy-binary-4.0.16.zip",
+                  "sha512": "743698979c801f3cfb36545888b5303e1e25dae5692bb45cab7ebbe102a6eda31f09abc6978349ad90ecaf630416fc87eacba7781244855e7e771a3c44041fa0",
+                  "dest": "groovy",
+                },
+              ],
+            "cleanup": ["/groovy"],
+          },
+          {
+            "name": "commons-lang3",
+            "buildsystem": "simple",
+            "build-commands":
+              [
+                "mkdir -p ${FLATPAK_DEST}/commons-lang3",
+                "cp -r commons-lang3/* ${FLATPAK_DEST}/commons-lang3",
+              ],
+            "cleanup": ["/commons-lang3"],
+            "sources":
+              [
+                {
+                  "type": "archive",
+                  "url": "http://mirrors.kodi.tv/build-deps/sources/commons-lang3-3.14.0-bin.tar.gz",
+                  "sha512": "8e7e62418a49ba810512c13a640a8bf35f878fcd54af32fdaab1111e37817f58b21b475980ba663fba4887e45ef8d88af8ff17796f20d202e929e8e2574546dc",
+                  "dest": "commons-lang3",
+                },
+              ],
+          },
+          {
+            "name": "commons-text",
+            "buildsystem": "simple",
+            "build-commands":
+              [
+                "mkdir -p ${FLATPAK_DEST}/commons-text",
+                "cp -r commons-text/* ${FLATPAK_DEST}/commons-text",
+              ],
+            "cleanup": ["/commons-text"],
+            "sources":
+              [
+                {
+                  "type": "archive",
+                  "url": "http://mirrors.kodi.tv/build-deps/sources/commons-text-1.11.0-bin.tar.gz",
+                  "sha512": "2e94877000dd270b69e2e8cbf49f258a90b4c628b6b6b0814e300a2f0e9c391f0816dceb0707e596ae3b7c9532f93e7a4917df47c77f44b3a810e14042ce5f3f",
+                  "dest": "commons-text",
+                },
+              ],
+          },
+        ],
+    }
+  - {
+      "name": "taglib",
+      "buildsystem": "cmake-ninja",
+      "config-opts": ["-DBUILD_SHARED_LIBS=ON"],
+      "cleanup": ["/include", "/lib/*.so"],
+      "sources":
+        [
+          {
+            "type": "archive",
+            "url": "https://taglib.org/releases/taglib-1.12.tar.gz",
+            "sha256": "7fccd07669a523b07a15bd24c8da1bbb92206cb19e9366c3692af3d79253b703",
+          },
+        ],
+    }
+
+  - {
+      "name": "tinyxml",
+      "cleanup": ["/include", "/share/doc", "*.a", "*.la", "/lib/*.so"],
+      "sources":
+        [
+          {
+            "type": "archive",
+            "url": "http://mirrors.kodi.tv/build-deps/sources/tinyxml-2.6.2_2.tar.gz",
+            "sha256": "8164c9ad48b9028667768a584d62f7760cfbfb90d0dd6214ad174403058da10c",
+          },
+          {
+            "type": "script",
+            "dest-filename": "autogen.sh",
+            "commands": ["autoreconf -vfi"],
+          },
+        ],
+    }
+  - {
+      "name": "tinyxml2",
+      "buildsystem": "cmake-ninja",
+      "build-options": { "cflags": "-fPIC", "cxxflags": "-fPIC" },
+      "sources":
+        [
+          {
+            "type": "archive",
+            "url": "https://github.com/leethomason/tinyxml2/archive/refs/tags/9.0.0.tar.gz",
+            "sha256": "cc2f1417c308b1f6acc54f88eb70771a0bf65f76282ce5c40e54cfe52952702c",
+          },
+        ],
+    }
+
+  - {
+      "name": "waylandpp",
+      "buildsystem": "cmake-ninja",
+      "sources":
+        [
+          {
+            "type": "archive",
+            "url": "https://github.com/NilsBrause/waylandpp/archive/0.2.8.tar.gz",
+            "sha256": "e7f486165d3568c3558b5c7099133aea4a285b82820eeafad329fc10271c654d",
+          },
+        ],
+      "modules":
+        [
+          {
+            "name": "pugixml",
+            "buildsystem": "cmake-ninja",
+            "config-opts": ["-DBUILD_SHARED_LIBS=ON"],
+            "sources":
+              [
+                {
+                  "type": "archive",
+                  "url": "https://github.com/zeux/pugixml/archive/v1.11.4.tar.gz",
+                  "sha256": "017139251c122dbff400a507cddc4cb74120a431a50c6c524f30edcc5b331ade",
+                },
+              ],
+          },
+        ],
+    }
+
+  - name: kodi
+    buildsystem: cmake-ninja
+    config-opts:
+      - -DAPP_PACKAGE=tv.kodi.Kodi
+      - -DADDONS_CONFIGURE_AT_STARTUP=OFF
+      - -DVERBOSE=1
+      - -DENABLE_TESTING=OFF
+      - -DENABLE_AIRTUNES=ON
+      - -DENABLE_ALSA=ON
+      - -DENABLE_AVAHI=ON
+      - -DENABLE_BLURAY=ON
+      - -DENABLE_CEC=ON
+      - -DENABLE_DBUS=ON
+      - -DENABLE_DVDCSS=ON
+      - -DENABLE_EGL=ON
+      - -DENABLE_EVENTCLIENTS=ON
+      - -DENABLE_MICROHTTPD=ON
+      - -DENABLE_MARIADBCLIENT=ON
+      - -DENABLE_NFS=ON
+      - -DENABLE_OPTICAL=ON
+      - -DENABLE_PULSEAUDIO=ON
+      - -DENABLE_SMBCLIENT=ON
+      - -DENABLE_UDEV=ON
+      - -DENABLE_UPNP=ON
+      - -DENABLE_VAAPI=ON
+      - -DENABLE_VDPAU=ON
+      - -DENABLE_XSLT=ON
+      - -DENABLE_INTERNAL_RapidJSON=OFF
+      - -DENABLE_INTERNAL_FLATBUFFERS=OFF
+      - -DENABLE_INTERNAL_FMT=OFF
+      - -DENABLE_INTERNAL_NFS=OFF
+      - -DENABLE_INTERNAL_FFMPEG=OFF
+      - -DENABLE_LIRCCLIENT=ON
+      - -DAPP_RENDER_SYSTEM=gl
+      - -DJava_JAVA_EXECUTABLE=/usr/lib/sdk/openjdk17/bin/java
+      - -DCROSSGUID_URL=build/download/crossguid.tar.gz
+      - -DLIBDVDCSS_URL=build/download/libdvdcss.tar.gz
+      - -DLIBDVDREAD_URL=build/download/libdvdread.tar.gz
+      - -DLIBDVDNAV_URL=build/download/libdvdnav.tar.gz
+      - -DFETCHCONTENT_SOURCE_DIR_GROOVY=/app/groovy
+      - -DFETCHCONTENT_SOURCE_DIR_APACHE-COMMONS-LANG=/app/commons-lang3
+      - -DFETCHCONTENT_SOURCE_DIR_APACHE-COMMONS-TEXT=/app/commons-text
+    sources:
+      - type: dir
+        path: "../../"
+      - type: patch
+        path: kodi.sh.in.patch
+      - type: file
+        path: addon-list.txt
+        dest: build/download/
+      - type: file
+        path: tools/patch-addon-manifest.sh
+        dest: build/download/
+      - type: shell
+        commands:
+          - build/download/patch-addon-manifest.sh build/download/addon-list.txt
+      - type: file
+        url: http://mirrors.kodi.tv/build-deps/sources/crossguid-ca1bf4b810e2d188d04cb6286f957008ee1b7681.tar.gz
+        sha256: 6be27e0b3a4907f0cd3cfadec255ee1b925569e1bd06e67a4d2f4267299b69c4
+        dest: build/download/
+        dest-filename: crossguid.tar.gz
+      - type: file
+        url: https://github.com/xbmc/libdvdcss/archive/1.4.3-Next-Nexus-Alpha2-2.tar.gz
+        sha512: d3be3bfc13c5ea56d8db745c2aab090c99760684fe4c8f62a13d266feb319e9180ceeecf8116bfd2ed90d9accba2c11dbbf93b61ad00f69a40812ebf4eabcdda
+        dest: build/download/
+        dest-filename: libdvdcss.tar.gz
+      - type: file
+        url: https://github.com/xbmc/libdvdread/archive/6.1.3-Next-Nexus-Alpha2-2.tar.gz
+        sha512: 629a41157d07b8ec0ea1fe89ae5ec48f63047472a862782b805c531ae31a0376fc4dc15175f8280c3ef91d7fa977bacebb1b51232640034a34bab2293210fc5e
+        dest: build/download/
+        dest-filename: libdvdread.tar.gz
+      - type: file
+        url: https://github.com/xbmc/libdvdnav/archive/6.1.1-Next-Nexus-Alpha2-2.tar.gz
+        sha512: 51e6fc033121241354a5f0b3fc9a430577ae3ff6bb7f31445aa548ef4893037fb80eea3b2c6774c81e9ebaf9c45e9b490c98c2c65eb38f9f7daba84b236f7e1d
+        dest: build/download/
+        dest-filename: libdvdnav.tar.gz
+
+  - name: kodi-platform
+    buildsystem: cmake-ninja
+    sources:
+      - type: archive
+        url: https://github.com/xbmc/kodi-platform/archive/kodiplatform-20180302.tar.gz
+        sha256: 1d8ddbe444bd42f4b6f2babb9f78d6c1e152d828eff90b07308febf883c05b38
+
+  - addons/audiodecoder.2sf/audiodecoder.2sf.json
+  - addons/audiodecoder.asap/audiodecoder.asap.json
+  # - addons/audiodecoder.dumb/audiodecoder.dumb.json
+  - addons/audiodecoder.fluidsynth/audiodecoder.fluidsynth.json
+  - addons/audiodecoder.gme/audiodecoder.gme.json
+  - addons/audiodecoder.gsf/audiodecoder.gsf.json
+  - addons/audiodecoder.hvl/audiodecoder.hvl.json
+  - addons/audiodecoder.modplug/audiodecoder.modplug.json
+  - addons/audiodecoder.ncsf/audiodecoder.ncsf.json
+  - addons/audiodecoder.nosefart/audiodecoder.nosefart.json
+  - addons/audiodecoder.openmpt/audiodecoder.openmpt.json
+  - addons/audiodecoder.organya/audiodecoder.organya.json
+  - addons/audiodecoder.qsf/audiodecoder.qsf.json
+  - addons/audiodecoder.sacd/audiodecoder.sacd.json
+  - addons/audiodecoder.sidplay/audiodecoder.sidplay.json
+  - addons/audiodecoder.snesapu/audiodecoder.snesapu.json
+  - addons/audiodecoder.ssf/audiodecoder.ssf.json
+  - addons/audiodecoder.stsound/audiodecoder.stsound.json
+  - addons/audiodecoder.timidity/audiodecoder.timidity.json
+  - addons/audiodecoder.upse/audiodecoder.upse.json
+  - addons/audiodecoder.usf/audiodecoder.usf.json
+  - addons/audiodecoder.vgmstream/audiodecoder.vgmstream.json
+  - addons/audiodecoder.wsr/audiodecoder.wsr.json
+  - addons/audioencoder.flac/audioencoder.flac.json
+  - addons/audioencoder.lame/audioencoder.lame.json
+  - addons/audioencoder.vorbis/audioencoder.vorbis.json
+  - addons/audioencoder.wav/audioencoder.wav.json
+  - addons/game.libretro/game.libretro.json
+  # - addons/game.libretro.2048/game.libretro.2048.json
+  - addons/game.libretro.mrboom/game.libretro.mrboom.json
+  - addons/imagedecoder.heif/imagedecoder.heif.json
+  - addons/imagedecoder.mpo/imagedecoder.mpo.json
+  - addons/imagedecoder.raw/imagedecoder.raw.json
+  - addons/inputstream.adaptive/inputstream.adaptive.json
+  - addons/inputstream.ffmpegdirect/inputstream.ffmpegdirect.json
+  - addons/inputstream.rtmp/inputstream.rtmp.json
+  - addons/peripheral.joystick/peripheral.joystick.json
+  - addons/peripheral.xarcade/peripheral.xarcade.json
+  - addons/pvr.argustv/pvr.argustv.json
+  - addons/pvr.demo/pvr.demo.json
+  - addons/pvr.dvblink/pvr.dvblink.json
+  - addons/pvr.dvbviewer/pvr.dvbviewer.json
+  - addons/pvr.filmon/pvr.filmon.json
+  - addons/pvr.freebox/pvr.freebox.json
+  - addons/pvr.hdhomerun/pvr.hdhomerun.json
+  - addons/pvr.hts/pvr.hts.json
+  - addons/pvr.iptvsimple/pvr.iptvsimple.json
+  - addons/pvr.mediaportal.tvserver/pvr.mediaportal.tvserver.json
+  - addons/pvr.mythtv/pvr.mythtv.json
+  - addons/pvr.nextpvr/pvr.nextpvr.json
+  - addons/pvr.njoy/pvr.njoy.json
+  - addons/pvr.octonet/pvr.octonet.json
+  - addons/pvr.pctv/pvr.pctv.json
+  - addons/pvr.plutotv/pvr.plutotv.json
+  - addons/pvr.sledovanitv.cz/pvr.sledovanitv.cz.json
+  - addons/pvr.stalker/pvr.stalker.json
+  - addons/pvr.teleboy/pvr.teleboy.json
+  - addons/pvr.vbox/pvr.vbox.json
+  - addons/pvr.vdr.vnsi/pvr.vdr.vnsi.json
+  - addons/pvr.vuplus/pvr.vuplus.json
+  - addons/pvr.waipu/pvr.waipu.json
+  - addons/pvr.wmc/pvr.wmc.json
+  - addons/pvr.zattoo/pvr.zattoo.json
+  - addons/screensaver.asteroids/screensaver.asteroids.json
+  - addons/screensaver.asterwave/screensaver.asterwave.json
+  - addons/screensaver.biogenesis/screensaver.biogenesis.json
+  - addons/screensaver.cpblobs/screensaver.cpblobs.json
+  - addons/screensaver.greynetic/screensaver.greynetic.json
+  - addons/screensaver.matrixtrails/screensaver.matrixtrails.json
+  - addons/screensaver.pingpong/screensaver.pingpong.json
+  - addons/screensaver.pyro/screensaver.pyro.json
+  - addons/screensaver.shadertoy/screensaver.shadertoy.json
+  - addons/screensaver.stars/screensaver.stars.json
+  - addons/vfs.libarchive/vfs.libarchive.json
+  - addons/vfs.rar/vfs.rar.json
+  - addons/vfs.sftp/vfs.sftp.json
+  - addons/visualization.fishbmc/visualization.fishbmc.json
+  - addons/visualization.goom/visualization.goom.json
+  - addons/visualization.matrix/visualization.matrix.json
+  - addons/visualization.pictureit/visualization.pictureit.json
+  - addons/visualization.projectm/visualization.projectm.json
+  - addons/visualization.shadertoy/visualization.shadertoy.json
+  - addons/visualization.spectrum/visualization.spectrum.json
+  - addons/visualization.starburst/visualization.starburst.json
+  - addons/visualization.waveform/visualization.waveform.json

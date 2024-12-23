@@ -1,0 +1,19 @@
+{
+    "name": "audiodecoder.dumb",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/xbmc/audiodecoder.dumb",
+            "commit": "ef5fc6c99902d8d8dd906a57e5a6da94ec044a2e"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}
