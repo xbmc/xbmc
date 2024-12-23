@@ -24,6 +24,8 @@
 #include "guilib/LocalizeStrings.h"
 #include "media/MediaType.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -118,6 +120,14 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       {
         std::unique_ptr<CVideoInfoTag> tag(new CVideoInfoTag());
         nfoResult = loader->Load(*tag, false);
+
+        // keep some properties only if advancedsettings.xml says so
+        const auto advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+        if (!advancedSettings->m_bVideoLibraryImportWatchedState)
+          tag->ResetPlayCount();
+        if (!advancedSettings->m_bVideoLibraryImportResumePoint)
+          tag->SetResumePoint(CBookmark());
+
         if (nfoResult == CInfoScanner::InfoType::FULL && m_item->IsPlugin() &&
             scraper->ID() == "metadata.local")
         {
