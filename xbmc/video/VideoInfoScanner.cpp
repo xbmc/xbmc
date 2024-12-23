@@ -15,7 +15,6 @@
 #include "ServiceBroker.h"
 #include "TextureCache.h"
 #include "URL.h"
-#include "Util.h"
 #include "VideoInfoDownloader.h"
 #include "cores/VideoPlayer/DVDFileInfo.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
@@ -171,6 +170,7 @@ namespace KODI::VIDEO
 
       CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetLibraryInfoProvider().ResetLibraryBools();
       m_database.Close();
+      m_regexCache.clear();
 
       auto end = std::chrono::steady_clock::now();
       auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
@@ -273,7 +273,7 @@ namespace KODI::VIDEO
     const std::vector<std::string> &regexps = content == CONTENT_TVSHOWS ? CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_tvshowExcludeFromScanRegExps
                                                          : CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_moviesExcludeFromScanRegExps;
 
-    if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
+    if (CUtil::ExcludeFileOrFolder(strDirectory, regexps, &m_regexCache))
       return true;
 
     if (HasNoMedia(strDirectory))
@@ -479,8 +479,15 @@ namespace KODI::VIDEO
         continue;
 
       // Discard all exclude files defined by regExExclude
-      if (CUtil::ExcludeFileOrFolder(pItem->GetPath(), (content == CONTENT_TVSHOWS) ? CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_tvshowExcludeFromScanRegExps
-                                                                    : CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_moviesExcludeFromScanRegExps))
+      if (CUtil::ExcludeFileOrFolder(pItem->GetPath(),
+                                     (content == CONTENT_TVSHOWS)
+                                         ? CServiceBroker::GetSettingsComponent()
+                                               ->GetAdvancedSettings()
+                                               ->m_tvshowExcludeFromScanRegExps
+                                         : CServiceBroker::GetSettingsComponent()
+                                               ->GetAdvancedSettings()
+                                               ->m_moviesExcludeFromScanRegExps,
+                                     &m_regexCache))
         continue;
 
       if (info2->Content() == CONTENT_MOVIES || info2->Content() == CONTENT_MUSICVIDEOS)
@@ -1134,7 +1141,7 @@ namespace KODI::VIDEO
         continue;
 
       // Discard all exclude files defined by regExExcludes
-      if (CUtil::ExcludeFileOrFolder(items[i]->GetPath(), regexps))
+      if (CUtil::ExcludeFileOrFolder(items[i]->GetPath(), regexps, &m_regexCache))
         continue;
 
       /*
@@ -2232,7 +2239,8 @@ namespace KODI::VIDEO
 
     for (int i = 0; i < items.Size(); ++i)
     {
-      if (items[i]->m_bIsFolder && !CUtil::ExcludeFileOrFolder(items[i]->GetPath(), excludes))
+      if (items[i]->m_bIsFolder &&
+          !CUtil::ExcludeFileOrFolder(items[i]->GetPath(), excludes, &m_regexCache))
         return false;
     }
     return true;
