@@ -2435,7 +2435,7 @@ bool CApplication::PlayFile(CFileItem item,
   // a disc image might be Blu-Ray disc
   if (!(options.startpercent > 0.0 || options.starttime > 0.0) &&
       (VIDEO::IsBDFile(item) || item.IsDiscImage() ||
-       (forceSelection && VIDEO::IsBlurayPlaylist(item))))
+       (forceSelection && URIUtils::IsBluray(item.GetDynPath()))))
   {
     // No video selection when using external or remote players (they handle it if supported)
     const bool isSimpleMenuAllowed = [&]()

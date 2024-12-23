@@ -72,11 +72,6 @@ bool IsProtectedBlurayDisc(const CFileItem& item)
   return CFileUtils::Exists(path);
 }
 
-bool IsBlurayPlaylist(const CFileItem& item)
-{
-  return StringUtils::EqualsNoCase(URIUtils::GetExtension(item.GetDynPath()), ".mpls");
-}
-
 bool IsSubtitle(const CFileItem& item)
 {
   return URIUtils::HasExtension(item.GetPath(),

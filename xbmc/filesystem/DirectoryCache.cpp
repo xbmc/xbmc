@@ -164,7 +164,7 @@ void CDirectoryCache::AddFile(const std::string& strFile)
   }
 }
 
-bool CDirectoryCache::FileExists(const std::string& strFile, bool& bInCache)
+bool CDirectoryCache::FileExists(std::string strFile, bool& bInCache)
 {
   std::unique_lock<CCriticalSection> lock(m_cs);
   bInCache = false;
@@ -174,6 +174,13 @@ bool CDirectoryCache::FileExists(const std::string& strFile, bool& bInCache)
   URIUtils::RemoveSlashAtEnd(strPath);
   std::string storedPath = URIUtils::GetDirectory(strPath);
   URIUtils::RemoveSlashAtEnd(storedPath);
+
+  // For bluray:// get the underlying file (udf:// etc..)
+  if (URIUtils::IsBluray(strFile))
+  {
+    CURL url{strFile};
+    strFile = url.GetHostName() + url.GetFileName();
+  }
 
   auto i = m_cache.find(storedPath);
   if (i != m_cache.end())
