@@ -329,19 +329,6 @@ std::string CWIN32Util::GetResInfoString()
 #endif
 }
 
-int CWIN32Util::GetDesktopColorDepth()
-{
-#ifdef TARGET_WINDOWS_STORE
-  CLog::LogF(LOGDEBUG, "s not implemented");
-  return 32;
-#else
-  DEVMODE devmode = {};
-  devmode.dmSize = sizeof(devmode);
-  EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devmode);
-  return (int)devmode.dmBitsPerPel;
-#endif
-}
-
 size_t CWIN32Util::GetSystemMemorySize()
 {
 #ifdef TARGET_WINDOWS_STORE
