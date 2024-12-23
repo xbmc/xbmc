@@ -66,6 +66,19 @@ bool IsDVDFile(const CFileItem& item, bool bVobs /*= true*/, bool bIfos /*= true
   return false;
 }
 
+bool IsDVDImageFile(const CFileItem& item)
+{
+  if (URIUtils::IsDiscImage(item.GetDynPath()))
+  {
+    CURL url;
+    url.SetProtocol("udf");
+    url.SetHostName(item.GetPath());
+    url.SetFileName("VIDEO_TS/VIDEO_TS.IFO");
+    return CFileUtils::Exists(url.Get());
+  }
+  return false;
+}
+
 bool IsProtectedBlurayDisc(const CFileItem& item)
 {
   const std::string path = URIUtils::AddFileToFolder(item.GetPath(), "AACS", "Unit_Key_RO.inf");
