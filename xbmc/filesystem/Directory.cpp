@@ -28,7 +28,9 @@
 #include "utils/JobManager.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
+#include "video/VideoInfoTag.h"
 
 using namespace KODI;
 using namespace XFILE;
@@ -309,6 +311,44 @@ bool CDirectory::GetDirectory(const CURL& url,
   catch (...) { CLog::Log(LOGERROR, "{} - Unhandled exception", __FUNCTION__); }
   CLog::Log(LOGERROR, "{} - Error getting {}", __FUNCTION__, url.GetRedacted());
   return false;
+}
+
+bool CDirectory::GetDirectory(const std::string& path, CFileItemList& items, const CFileItem& item)
+{
+  // Specifically looking for dvd/blu-ray episodes
+  const CURL url(path);
+  const CURL realURL = URIUtils::SubstitutePath(url);
+
+  if (url.IsProtocol("bluray") || url.IsProtocol("dvd"))
+  {
+    std::shared_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realURL));
+
+    if (pDirectory)
+    {
+      std::vector<CVideoInfoTag> episodesOnDisc;
+
+      CVideoDatabase database;
+      if (!database.Open())
+      {
+        CLog::LogF(LOGERROR, "Failed to open video database");
+        return false;
+      }
+      database.GetEpisodesByFileId(item.GetVideoInfoTag()->m_iFileId, episodesOnDisc);
+
+      return pDirectory->GetEpisodeDirectory(url, item, items, episodesOnDisc);
+    }
+  }
+
+  return false;
+}
+
+bool CDirectory::GetDirectory(const std::string& path, CFileItem& main, const CFileItem& item)
+{
+  // specifically looking for main title
+  const CURL url(path);
+  const CURL realURL = URIUtils::SubstitutePath(url);
+  std::shared_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realURL));
+  return pDirectory->GetMainItem(url, main);
 }
 
 bool CDirectory::EnumerateDirectory(
