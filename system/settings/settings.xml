@@ -2584,6 +2584,63 @@
           </constraints>
           <control type="spinner" format="integer" />
         </setting>
+       <setting id="nfs.enableids" type="boolean" label="37058" help="37059">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="nfs.uid" type="integer" label="37060" help="37061" parent="nfs.enableids">
+          <level>2</level>
+          <default>1000</default>
+          <constraints>
+            <minimum>1000</minimum>
+            <step>1</step>
+            <maximum>60000</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" setting="nfs.enableids">true</dependency>
+          </dependencies>
+          <control type="edit" format="integer" />
+        </setting>
+        <setting id="nfs.gid" type="integer" label="37062" help="37063" parent="nfs.enableids">
+          <level>2</level>
+          <default>100</default>
+          <constraints>
+            <minimum>100</minimum>
+            <step>1</step>
+            <maximum>60000</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" setting="nfs.enableids">true</dependency>
+          </dependencies>
+          <control type="edit" format="integer" />
+        </setting>
+      </group>
+      <group id="2" label="37064">
+        <setting id="nfs.grouppermissions" type="integer" label="37065" help="37066">
+          <level>3</level>
+          <default>40</default>
+          <constraints>
+            <options>
+              <option label="37067">0</option>
+              <option label="37068">40</option>
+              <option label="37069">56</option>
+            </options>
+          </constraints>
+          <control type="list" format="integer" />
+        </setting>
+        <setting id="nfs.otherpermissions" type="integer" label="37070" help="37071">
+          <level>3</level>
+          <default>5</default>
+          <constraints>
+            <options>
+              <option label="37067">0</option>
+              <option label="37068">5</option>
+              <option label="37069">7</option>
+            </options>
+          </constraints>
+          <control type="list" format="integer" />
+        </setting>
       </group>
       <group id="2" label="37053">
         <setting id="nfs.chunksize" type="integer" label="37054" help="37055">
