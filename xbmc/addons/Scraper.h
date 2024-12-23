@@ -179,6 +179,7 @@ private:
   CDateTimeSpan m_persistence;
   CONTENT_TYPE m_pathContent = CONTENT_NONE;
   CScraperParser m_parser;
+  std::size_t m_xmlConfigHash{0};
 };
 
 }
