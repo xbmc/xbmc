@@ -1202,7 +1202,7 @@ bool CWIN32Util::SetThreadLocalLocale(bool enable /* = true */)
   return _configthreadlocale(param) != -1;
 }
 
-HDR_STATUS CWIN32Util::ToggleWindowsHDR(DXGI_MODE_DESC& modeDesc)
+HDR_STATUS CWIN32Util::ToggleWindowsHDR()
 {
   HDR_STATUS status = HDR_STATUS::HDR_TOGGLE_FAILED;
 
@@ -1242,6 +1242,13 @@ HDR_STATUS CWIN32Util::ToggleWindowsHDR(DXGI_MODE_DESC& modeDesc)
   if (gdiDeviceName.empty())
     return HDR_STATUS::HDR_TOGGLE_FAILED;
 
+  // The graphics mode is altered by the Windows HDR status change, save it before
+  DEVMODEW devMode = {};
+  devMode.dmSize = sizeof(devMode);
+
+  if (FALSE == EnumDisplaySettingsW(gdiDeviceName.c_str(), ENUM_CURRENT_SETTINGS, &devMode))
+    return HDR_STATUS::HDR_TOGGLE_FAILED;
+
   const auto identifier{CDisplayUtilsWin32::GetDisplayTargetId(gdiDeviceName)};
   if (!identifier)
     return HDR_STATUS::HDR_TOGGLE_FAILED;
@@ -1259,23 +1266,14 @@ HDR_STATUS CWIN32Util::ToggleWindowsHDR(DXGI_MODE_DESC& modeDesc)
   {
     CLog::LogF(LOGERROR, "Set Windows HDR has failed.");
   }
-  else if (modeDesc.RefreshRate.Denominator != 0)
+  else if (devMode.dmDisplayFrequency != 0)
   {
     // Restores previous graphics mode before toggle HDR
-    float fps = static_cast<float>(modeDesc.RefreshRate.Numerator) /
-                static_cast<float>(modeDesc.RefreshRate.Denominator);
-    int32_t est;
-    DEVMODEW devmode = {};
-    devmode.dmSize = sizeof(devmode);
-    devmode.dmPelsWidth = modeDesc.Width;
-    devmode.dmPelsHeight = modeDesc.Height;
-    devmode.dmDisplayFrequency = static_cast<uint32_t>(fps);
-    if (modeDesc.ScanlineOrdering &&
-        modeDesc.ScanlineOrdering != DXGI_MODE_SCANLINE_ORDER_PROGRESSIVE)
-      devmode.dmDisplayFlags = DM_INTERLACED;
-    devmode.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT | DM_DISPLAYFREQUENCY | DM_DISPLAYFLAGS;
-    est =
-        ChangeDisplaySettingsExW(gdiDeviceName.c_str(), &devmode, nullptr, CDS_FULLSCREEN, nullptr);
+    devMode.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT | DM_DISPLAYFREQUENCY | DM_DISPLAYFLAGS;
+
+    const LONG est =
+        ChangeDisplaySettingsExW(gdiDeviceName.c_str(), &devMode, nullptr, CDS_FULLSCREEN, nullptr);
+
     if (est == DISP_CHANGE_SUCCESSFUL)
       CLog::LogF(LOGDEBUG, "Previous graphics mode restored OK");
     else

@@ -75,7 +75,7 @@ public:
   static bool SetThreadLocalLocale(bool enable = true);
 
   // HDR display support
-  static HDR_STATUS ToggleWindowsHDR(DXGI_MODE_DESC& modeDesc);
+  static HDR_STATUS ToggleWindowsHDR();
   static HDR_STATUS GetWindowsHDRStatus();
   static bool GetSystemSdrWhiteLevel(const std::wstring& gdiDeviceName, float* sdrWhiteLevel);
 
