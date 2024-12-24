@@ -510,6 +510,11 @@ bool IsNonExistingUserPartyModePlaylist(const CFileItem& item)
   return ((profileManager->GetUserDataItem("PartyMode-Video.xsp") == path) &&
           !CFileUtils::Exists(path));
 }
+
+bool IsEmptyVideoItem(const CFileItem& item)
+{
+  return item.HasVideoInfoTag() && item.GetVideoInfoTag()->IsEmpty();
+}
 } // unnamed namespace
 
 bool IsItemPlayable(const CFileItem& item)
@@ -532,8 +537,8 @@ bool IsItemPlayable(const CFileItem& item)
   if (MUSIC::IsMusicDb(item) || StringUtils::StartsWithNoCase(item.GetPath(), "library://music/"))
     return false;
 
-  // Exclude other components
-  if (item.IsPlugin() || item.IsScript() || item.IsAddonsPath())
+  // Exclude add-ons
+  if (item.IsAddonsPath())
     return false;
 
   // Exclude special items
@@ -585,15 +590,21 @@ bool IsItemPlayable(const CFileItem& item)
     return true;
   }
 
-  if (item.HasVideoInfoTag() && item.CanQueue())
+  if (item.IsPlugin() && IsVideo(item) && !IsEmptyVideoItem(item) &&
+      item.GetProperty("isplayable").asBoolean(false))
   {
     return true;
   }
-  else if ((!item.m_bIsFolder && IsVideo(item)) || item.IsDVD() || MUSIC::IsCDDA(item))
+  else if (item.HasVideoInfoTag() && item.CanQueue() && !item.IsPlugin() && !item.IsScript())
   {
     return true;
   }
-  else if (item.m_bIsFolder)
+  else if ((!item.m_bIsFolder && IsVideo(item) && !IsEmptyVideoItem(item)) || item.IsDVD() ||
+           MUSIC::IsCDDA(item))
+  {
+    return true;
+  }
+  else if (item.m_bIsFolder && !item.IsPlugin() && !item.IsScript())
   {
     // Not a video-specific folder (like file:// or nfs://). Allow play if context is Video window.
     if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VIDEO_NAV &&
