@@ -12,9 +12,6 @@
 #include "URL.h"
 #include "utils/Geometry.h"
 
-#include <optional>
-#include <vector>
-
 #include <dxgi1_5.h>
 
 #define BONJOUR_EVENT             ( WM_USER + 0x100 )	// Message sent to the Window when a Bonjour event occurs.
@@ -110,20 +107,4 @@ public:
    * \return Formatted string
    */
   static std::string FormatHRESULT(HRESULT hr);
-
-#ifdef TARGET_WINDOWS_DESKTOP
-private:
-  struct DisplayConfigId
-  {
-    LUID adapterId;
-    UINT32 id;
-  };
-
-  static std::wstring GetCurrentDisplayName();
-  static std::vector<DISPLAYCONFIG_PATH_INFO> GetDisplayConfigPaths();
-  static std::optional<DisplayConfigId> GetCurrentDisplayTargetId();
-  static std::optional<DisplayConfigId> GetDisplayTargetId(const std::wstring& gdiDeviceName);
-  static HDR_STATUS GetDisplayHDRStatus(const DisplayConfigId& identifier);
-  static HDR_STATUS SetDisplayHDRStatus(const DisplayConfigId& identifier, bool enable);
-#endif // TARGET_WINDOWS_DESKTOP
 };

@@ -1,5 +1,6 @@
 set(SOURCES CharsetConverter.cpp
             CPUInfoWin32.cpp
+            DisplayUtilsWin32.cpp
             Environment.cpp
             GPUInfoWin32.cpp
             MemUtils.cpp
@@ -15,6 +16,7 @@ set(SOURCES CharsetConverter.cpp
 set(HEADERS CharsetConverter.h
             CPUInfoWin32.h
             dirent.h
+            DisplayUtilsWin32.h
             dxerr.h
             GPUInfoWin32.h
             IMMNotificationClient.h
