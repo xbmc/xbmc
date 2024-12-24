@@ -188,6 +188,8 @@ protected:
 
     AVColorPrimaries m_srcPrimaries;
     AVColorSpace m_srcColSpace;
+    AVColorTransferCharacteristic m_srcColTransfer;
+
     int m_srcBits = 8;
     int m_srcTextureBits = 8;
     bool m_srcFullRange;
