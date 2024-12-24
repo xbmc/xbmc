@@ -69,16 +69,17 @@ using KODI::UTILITY::CDigest;
 namespace KODI::VIDEO
 {
 
-  CVideoInfoScanner::CVideoInfoScanner()
-  {
-    m_bStop = false;
-    m_scanAll = false;
+CVideoInfoScanner::CVideoInfoScanner()
+  : m_advancedSettings(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings())
+{
+  m_bStop = false;
+  m_scanAll = false;
 
-    const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
-    m_ignoreVideoVersions = settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_IGNOREVIDEOVERSIONS);
-    m_ignoreVideoExtras = settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_IGNOREVIDEOEXTRAS);
-  }
+  m_ignoreVideoVersions = settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_IGNOREVIDEOVERSIONS);
+  m_ignoreVideoExtras = settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_IGNOREVIDEOEXTRAS);
+}
 
   CVideoInfoScanner::~CVideoInfoScanner()
   = default;
@@ -224,7 +225,7 @@ namespace KODI::VIDEO
       }
     }
     m_database.Close();
-    m_bClean = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVideoLibraryCleanOnUpdate;
+    m_bClean = m_advancedSettings->m_bVideoLibraryCleanOnUpdate;
 
     m_bRunning = true;
     Process();
@@ -271,8 +272,9 @@ namespace KODI::VIDEO
     CONTENT_TYPE content = info ? info->Content() : CONTENT_NONE;
 
     // exclude folders that match our exclude regexps
-    const std::vector<std::string> &regexps = content == CONTENT_TVSHOWS ? CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_tvshowExcludeFromScanRegExps
-                                                         : CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_moviesExcludeFromScanRegExps;
+    const std::vector<std::string>& regexps =
+        content == CONTENT_TVSHOWS ? m_advancedSettings->m_tvshowExcludeFromScanRegExps
+                                   : m_advancedSettings->m_moviesExcludeFromScanRegExps;
 
     if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
       return true;
@@ -303,7 +305,7 @@ namespace KODI::VIDEO
       }
 
       std::string fastHash;
-      if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVideoLibraryUseFastHash && !URIUtils::IsPlugin(strDirectory))
+      if (m_advancedSettings->m_bVideoLibraryUseFastHash && !URIUtils::IsPlugin(strDirectory))
         fastHash = GetFastHash(strDirectory, regexps);
 
       if (m_database.GetPathHash(strDirectory, dbHash) && !fastHash.empty() && StringUtils::EqualsNoCase(fastHash, dbHash))
@@ -480,8 +482,10 @@ namespace KODI::VIDEO
         continue;
 
       // Discard all exclude files defined by regExExclude
-      if (CUtil::ExcludeFileOrFolder(pItem->GetPath(), (content == CONTENT_TVSHOWS) ? CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_tvshowExcludeFromScanRegExps
-                                                                    : CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_moviesExcludeFromScanRegExps))
+      if (CUtil::ExcludeFileOrFolder(pItem->GetPath(),
+                                     (content == CONTENT_TVSHOWS)
+                                         ? m_advancedSettings->m_tvshowExcludeFromScanRegExps
+                                         : m_advancedSettings->m_moviesExcludeFromScanRegExps))
         continue;
 
       if (info2->Content() == CONTENT_MOVIES || info2->Content() == CONTENT_MUSICVIDEOS)
@@ -949,7 +953,7 @@ namespace KODI::VIDEO
   bool CVideoInfoScanner::EnumerateSeriesFolder(CFileItem* item, EPISODELIST& episodeList)
   {
     CFileItemList items;
-    const std::vector<std::string> &regexps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_tvshowExcludeFromScanRegExps;
+    const std::vector<std::string>& regexps = m_advancedSettings->m_tvshowExcludeFromScanRegExps;
 
     bool bSkip = false;
 
@@ -979,7 +983,7 @@ namespace KODI::VIDEO
           allowEmptyHash = true;
         }
       }
-      else if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVideoLibraryUseFastHash)
+      else if (m_advancedSettings->m_bVideoLibraryUseFastHash)
         hash = GetRecursiveFastHash(item->GetPath(), regexps);
 
       if (m_database.GetPathHash(item->GetPath(), dbHash) && (allowEmptyHash || !hash.empty()) && StringUtils::EqualsNoCase(dbHash, hash))
@@ -1222,7 +1226,7 @@ namespace KODI::VIDEO
 
   bool CVideoInfoScanner::EnumerateEpisodeItem(const CFileItem *item, EPISODELIST& episodeList)
   {
-    SETTINGS_TVSHOWLIST expression = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_tvshowEnumRegExps;
+    SETTINGS_TVSHOWLIST expression = m_advancedSettings->m_tvshowEnumRegExps;
 
     std::string strLabel;
 
@@ -1322,7 +1326,7 @@ namespace KODI::VIDEO
 
       CRegExp reg2(true, CRegExp::autoUtf8);
       // check the remainder of the string for any further episodes.
-      if (!byDate && reg2.RegComp(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_tvshowMultiPartEnumRegExp))
+      if (!byDate && reg2.RegComp(m_advancedSettings->m_tvshowMultiPartEnumRegExp))
       {
         int offset = 0;
 
@@ -1337,9 +1341,7 @@ namespace KODI::VIDEO
 
             CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new season {}, multipart episode {} [{}]",
                       episode.iSeason, episode.iEpisode,
-                      CServiceBroker::GetSettingsComponent()
-                          ->GetAdvancedSettings()
-                          ->m_tvshowMultiPartEnumRegExp);
+                      m_advancedSettings->m_tvshowMultiPartEnumRegExp);
 
             episodeList.push_back(episode);
             remainder = reg.GetMatch(3);
@@ -1350,10 +1352,7 @@ namespace KODI::VIDEO
           {
             episode.iEpisode = atoi(reg2.GetMatch(1).c_str());
             CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding multipart episode {} [{}]",
-                      episode.iEpisode,
-                      CServiceBroker::GetSettingsComponent()
-                          ->GetAdvancedSettings()
-                          ->m_tvshowMultiPartEnumRegExp);
+                      episode.iEpisode, m_advancedSettings->m_tvshowMultiPartEnumRegExp);
             episodeList.push_back(episode);
             offset += regexp2pos + reg2.GetFindLen();
           }
@@ -1596,12 +1595,11 @@ namespace KODI::VIDEO
 
     if (!pItem->m_bIsFolder)
     {
-      const auto advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
-      if ((libraryImport || advancedSettings->m_bVideoLibraryImportWatchedState) &&
+      if ((libraryImport || m_advancedSettings->m_bVideoLibraryImportWatchedState) &&
           (movieDetails.IsPlayCountSet() || movieDetails.m_lastPlayed.IsValid()))
         m_database.SetPlayCount(*pItem, movieDetails.GetPlayCount(), movieDetails.m_lastPlayed);
 
-      if ((libraryImport || advancedSettings->m_bVideoLibraryImportResumePoint) &&
+      if ((libraryImport || m_advancedSettings->m_bVideoLibraryImportResumePoint) &&
           movieDetails.GetResumePoint().IsSet())
         m_database.AddBookMarkToFile(pItem->GetPath(), movieDetails.GetResumePoint(), CBookmark::RESUME);
     }
@@ -1675,10 +1673,9 @@ namespace KODI::VIDEO
       result = loader->Load(infoTag, false);
 
       // keep some properties only if advancedsettings.xml says so
-      const auto advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
-      if (!advancedSettings->m_bVideoLibraryImportWatchedState)
+      if (!m_advancedSettings->m_bVideoLibraryImportWatchedState)
         infoTag.ResetPlayCount();
-      if (!advancedSettings->m_bVideoLibraryImportResumePoint)
+      if (!m_advancedSettings->m_bVideoLibraryImportResumePoint)
         infoTag.SetResumePoint(CBookmark());
     }
     return {result, std::move(loader)};
@@ -2216,7 +2213,7 @@ namespace KODI::VIDEO
 
   bool CVideoInfoScanner::CanFastHash(const CFileItemList &items, const std::vector<std::string> &excludes) const
   {
-    if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVideoLibraryUseFastHash || items.IsPlugin())
+    if (!m_advancedSettings->m_bVideoLibraryUseFastHash || items.IsPlugin())
       return false;
 
     for (int i = 0; i < items.Size(); ++i)
