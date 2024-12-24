@@ -1,0 +1,9 @@
+LIBNAME=libdatachannel
+VERSION=0.22.3
+ARCHIVE=v$(VERSION).tar.gz
+SHA512=1b7cd19301bd921172a852439f969254abdea0a65a1354de85820f266bde37c92278f9349d7708e14531fe7f3390015e97336abbe2e2c5ceb37f724e2c644b28
+BYPRODUCT=libdatachannel-static.a
+BYPRODUCT_WIN=datachannel-static.lib
+
+# TODO
+BASE_URL=https://github.com/paullouisageneau/libdatachannel/archive/refs/tags
