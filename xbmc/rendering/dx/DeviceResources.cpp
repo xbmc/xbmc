@@ -1359,9 +1359,6 @@ void DX::DeviceResources::SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpac
 
 HDR_STATUS DX::DeviceResources::ToggleHDR()
 {
-  DXGI_MODE_DESC md = {};
-  GetDisplayMode(&md);
-
   // Xbox uses only full screen windowed mode and not needs recreate swapchain.
   // Recreate swapchain causes native 4K resolution is lost and quality obtained
   // is equivalent to 1080p upscaled to 4K (TO DO: investigate root cause).
@@ -1371,7 +1368,7 @@ HDR_STATUS DX::DeviceResources::ToggleHDR()
   DX::Windowing()->SetAlteringWindow(true);
 
   // Toggle display HDR
-  HDR_STATUS hdrStatus = CWIN32Util::ToggleWindowsHDR(md);
+  HDR_STATUS hdrStatus = CWIN32Util::ToggleWindowsHDR();
 
   // Kill swapchain
   if (!isXbox && m_swapChain && hdrStatus != HDR_STATUS::HDR_TOGGLE_FAILED)
