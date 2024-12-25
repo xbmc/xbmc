@@ -27,7 +27,7 @@ action = params.get('action')
 if action == 'find':
     title = params['title']
     year = params.get('year', 'not specified')
-    xbmc.log(f'Find movie with title "{title}" from year {year}', xbmc.LOGDEBUG)
+    xbmc.log(f'Searching for movie "{title}" from year {year}', xbmc.LOGDEBUG)
 
     liz = xbmcgui.ListItem('Demo show 1', offscreen=True)
     liz.setArt({'thumb': 'DefaultVideo.png'})

@@ -149,4 +149,9 @@ bool IsVideoExtrasFolder(const CFileItem& item)
          StringUtils::EqualsNoCase(URIUtils::GetFileOrFolderName(item.GetPath()), "extras");
 }
 
+bool IsVideoInExtrasFolder(const CFileItem& item)
+{
+  return StringUtils::EqualsNoCase(URIUtils::GetFileOrFolderName(item.GetPath()), "extras");
+}
+
 } // namespace KODI::VIDEO
