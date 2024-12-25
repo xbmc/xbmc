@@ -10922,6 +10922,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
         TiXmlDeclaration decl("1.0", "UTF-8", "yes");
         xmlDoc.InsertEndChild(decl);
       }
+      std::string tvshowDir;
       if (images && !bSkip)
       {
         if (singleFile)
@@ -10933,6 +10934,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
           CServiceBroker::GetTextureCache()->Export(i.second, savedThumb, overwrite);
         }
 
+        tvshowDir = tvshow.m_strPath;
         if (actorThumbs)
           ExportActorThumbs(actorsDir, tvshow, !singleFile, overwrite);
 
@@ -11035,7 +11037,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
             CServiceBroker::GetTextureCache()->Export(i.second, savedThumb, overwrite);
           }
           if (actorThumbs)
-            ExportActorThumbs(actorsDir, episode, !singleFile, overwrite);
+            ExportActorThumbs(actorsDir, episode, !singleFile, overwrite, tvshowDir);
         }
       }
       pDS->close();
@@ -11100,12 +11102,19 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
         CVariant{647}, CVariant{StringUtils::Format(g_localizeStrings.Get(15011), iFailCount)});
 }
 
-void CVideoDatabase::ExportActorThumbs(const std::string &strDir, const CVideoInfoTag &tag, bool singleFiles, bool overwrite /*=false*/)
+void CVideoDatabase::ExportActorThumbs(const std::string& strDir,
+                                       const CVideoInfoTag& tag,
+                                       bool singleFiles,
+                                       bool overwrite /* =false */,
+                                       const std::string& tvshowDir /* ="" */) const
 {
   std::string strPath(strDir);
   if (singleFiles)
   {
-    strPath = URIUtils::AddFileToFolder(tag.m_strPath, ".actors");
+
+    strPath = URIUtils::AddFileToFolder(
+        tag.m_type == MediaTypeEpisode && !tvshowDir.empty() ? tvshowDir : tag.m_strPath,
+        ".actors");
     if (!CDirectory::Exists(strPath))
     {
       CDirectory::Create(strPath);
@@ -11113,7 +11122,7 @@ void CVideoDatabase::ExportActorThumbs(const std::string &strDir, const CVideoIn
     }
   }
 
-  for (const auto &i : tag.m_cast)
+  for (const auto& i : tag.m_cast)
   {
     CFileItem item;
     item.SetLabel(i.strName);
