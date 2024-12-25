@@ -62,7 +62,10 @@ public:
   \param bAllowSelection [in] should we allow the user to manually override the info with a GUI if the album is not found?
   \param pDialog [in] a progress dialog which this and downstream functions can update with status, if required
   */
-  INFO_RET UpdateAlbumInfo(CAlbum& album, const ADDON::ScraperPtr& scraper, bool bAllowSelection, CGUIDialogProgress* pDialog = NULL);
+  InfoRet UpdateAlbumInfo(CAlbum& album,
+                          const ADDON::ScraperPtr& scraper,
+                          bool bAllowSelection,
+                          CGUIDialogProgress* pDialog = nullptr);
 
   /*! \brief Scrape additional artist information and update the music database with it.
   Given an artist, search for it using the given scraper.
@@ -73,7 +76,10 @@ public:
   \param bAllowSelection [in] should we allow the user to manually override the info with a GUI if the album is not found?
   \param pDialog [in] a progress dialog which this and downstream functions can update with status, if required
   */
-  INFO_RET UpdateArtistInfo(CArtist& artist, const ADDON::ScraperPtr& scraper, bool bAllowSelection, CGUIDialogProgress* pDialog = NULL);
+  InfoRet UpdateArtistInfo(CArtist& artist,
+                           const ADDON::ScraperPtr& scraper,
+                           bool bAllowSelection,
+                           CGUIDialogProgress* pDialog = nullptr);
 
 protected:
   virtual void Process();
@@ -106,7 +112,10 @@ protected:
    \param bAllowSelection [in] should we allow the user to manually override the info with a GUI if the album is not found?
    \param pDialog [in] a progress dialog which this and downstream functions can update with status, if required
    */
-  INFO_RET UpdateDatabaseAlbumInfo(CAlbum& album, const ADDON::ScraperPtr& scraper, bool bAllowSelection, CGUIDialogProgress* pDialog = NULL);
+  InfoRet UpdateDatabaseAlbumInfo(CAlbum& album,
+                                  const ADDON::ScraperPtr& scraper,
+                                  bool bAllowSelection,
+                                  CGUIDialogProgress* pDialog = nullptr);
 
   /*! \brief Scrape additional artist information and update the database.
    Search for the given artist using the given scraper.
@@ -117,7 +126,10 @@ protected:
    \param bAllowSelection [in] should we allow the user to manually override the info with a GUI if the album is not found?
    \param pDialog [in] a progress dialog which this and downstream functions can update with status, if required
    */
-  INFO_RET UpdateDatabaseArtistInfo(CArtist& artist, const ADDON::ScraperPtr& scraper, bool bAllowSelection, CGUIDialogProgress* pDialog = NULL);
+  InfoRet UpdateDatabaseArtistInfo(CArtist& artist,
+                                   const ADDON::ScraperPtr& scraper,
+                                   bool bAllowSelection,
+                                   CGUIDialogProgress* pDialog = nullptr);
 
   /*! \brief Using the scrapers download metadata for an album
    Given a CAlbum style struct containing some data about an album, query
@@ -130,7 +142,11 @@ protected:
    \param bUseScrapedMBID [in] should scraper use any previously scraped mbid to identify the artist, or use artist name?
    \param pDialog [in] a progress dialog which this and downstream functions can update with status, if required
    */
-  INFO_RET DownloadAlbumInfo(const CAlbum& album, const ADDON::ScraperPtr& scraper, MUSIC_GRABBER::CMusicAlbumInfo& albumInfo, bool bUseScrapedMBID, CGUIDialogProgress* pDialog = NULL);
+  InfoRet DownloadAlbumInfo(const CAlbum& album,
+                            const ADDON::ScraperPtr& scraper,
+                            MUSIC_GRABBER::CMusicAlbumInfo& albumInfo,
+                            bool bUseScrapedMBID,
+                            CGUIDialogProgress* pDialog = nullptr);
 
   /*! \brief Using the scrapers download metadata for an artist
    Given a CAlbum style struct containing some data about an artist, query
@@ -143,7 +159,11 @@ protected:
    \param bUseScrapedMBID [in] should scraper use any previously scraped mbid to identify the album, or use album and artist name?
    \param pDialog [in] a progress dialog which this and downstream functions can update with status, if required
    */
-  INFO_RET DownloadArtistInfo(const CArtist& artist, const ADDON::ScraperPtr& scraper, MUSIC_GRABBER::CMusicArtistInfo& artistInfo, bool bUseScrapedMBID, CGUIDialogProgress* pDialog = NULL);
+  InfoRet DownloadArtistInfo(const CArtist& artist,
+                             const ADDON::ScraperPtr& scraper,
+                             MUSIC_GRABBER::CMusicArtistInfo& artistInfo,
+                             bool bUseScrapedMBID,
+                             CGUIDialogProgress* pDialog = nullptr);
 
   /*! \brief Get the types of art for an artist or album that are to be
   automatically fetched from local files during scanning
@@ -230,7 +250,7 @@ protected:
    \param items [in] list of FileItems to scan
    \param scannedItems [in] list to populate with the scannedItems
    */
-  INFO_RET ScanTags(const CFileItemList& items, CFileItemList& scannedItems);
+  InfoRet ScanTags(const CFileItemList& items, CFileItemList& scannedItems);
   int GetPathHash(const CFileItemList &items, std::string &hash);
 
   void Run() override;
