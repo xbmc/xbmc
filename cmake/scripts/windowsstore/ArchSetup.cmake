@@ -99,7 +99,7 @@ if(DEFINED ENV{MAXTHREADS})
 else()
   set(MP_FLAG "/MP")
 endif()
-set(CMAKE_CXX_FLAGS "${MP_FLAG} ${CMAKE_CXX_FLAGS} /EHsc /await /permissive-")
+set(CMAKE_CXX_FLAGS "${MP_FLAG} ${CMAKE_CXX_FLAGS} /EHsc /await:strict /permissive-")
 # Google Test needs to use shared version of runtime libraries
 set(gtest_force_shared_crt ON CACHE STRING "" FORCE)
 
