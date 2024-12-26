@@ -110,26 +110,6 @@ std::vector<RendererDetail> CAESinkFactoryWin::GetRendererDetails()
     PropVariantClear(&varName);
 
     /* In shared mode Windows tells us what format the audio must be in. */
-
-    /* Beginning of suspicous code
-     *
-     * Is this seemingly unnecessary activation actually needed in some cases to initialize
-     * PKEY_AudioEngine_DeviceFormat? Or was it forgotten when GetMixFormat() was commented?
-     * Found a blog that indicates that GetMixFormat() can force the population. Maybe only for
-     * older Windows versions?
-     * Doesn't seem needed for Windows 8.1 and above. No mention in MS documentation.
-     * This code came from AESinkDirectSound which was created with this as is.
-     * No prior history found, the DS code prior to 2012 didn't use the MMDevice API.
-     * Kept to avoid breaking something by accident.
-     */
-    ComPtr<IAudioClient> pClient;
-    hr = pDevice->Activate(IID_IAudioClient, CLSCTX_ALL, nullptr,
-                           reinterpret_cast<void**>(pClient.GetAddressOf()));
-    EXIT_ON_FAILURE(hr, "Activate device failed.")
-
-    //hr = pClient->GetMixFormat(&pwfxex);
-    /* End of suspicious code */
-
     hr = pProperty->GetValue(PKEY_AudioEngine_DeviceFormat, &varName);
     if (SUCCEEDED(hr) && varName.blob.cbSize >= sizeof(WAVEFORMATEX))
     {
