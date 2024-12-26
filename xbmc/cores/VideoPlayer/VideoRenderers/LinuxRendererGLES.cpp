@@ -171,6 +171,7 @@ void CLinuxRendererGLES::AddVideoPicture(const VideoPicture &picture, int index)
   buf.loaded = false;
   buf.m_srcPrimaries = picture.color_primaries;
   buf.m_srcColSpace = picture.color_space;
+  buf.m_srcColTransfer = picture.color_transfer;
   buf.m_srcFullRange = picture.color_range == 1;
   buf.m_srcBits = picture.colorBits;
 
@@ -842,30 +843,7 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
   CPictureBuffer &buf = m_buffers[index];
   CYuvPlane (&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[field];
 
-  if (buf.m_srcPrimaries != m_srcPrimaries)
-  {
-    m_srcPrimaries = buf.m_srcPrimaries;
-    m_reloadShaders = true;
-  }
-
-  bool toneMap = false;
-  ETONEMAPMETHOD toneMapMethod = m_videoSettings.m_ToneMapMethod;
-
-  if (!m_passthroughHDR && toneMapMethod != VS_TONEMAPMETHOD_OFF)
-  {
-    if (buf.hasLightMetadata || (buf.hasDisplayMetadata && buf.displayMetadata.has_luminance))
-    {
-      toneMap = true;
-    }
-  }
-
-  if (toneMap != m_toneMap || toneMapMethod != m_toneMapMethod)
-  {
-    m_reloadShaders = true;
-  }
-
-  m_toneMap = toneMap;
-  m_toneMapMethod = toneMapMethod;
+  CheckVideoParameters(index);
 
   if (m_reloadShaders)
   {
@@ -976,30 +954,7 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field)
   CPictureBuffer &buf = m_buffers[index];
   CYuvPlane (&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[field];
 
-  if (buf.m_srcPrimaries != m_srcPrimaries)
-  {
-    m_srcPrimaries = buf.m_srcPrimaries;
-    m_reloadShaders = true;
-  }
-
-  bool toneMap = false;
-  ETONEMAPMETHOD toneMapMethod = m_videoSettings.m_ToneMapMethod;
-
-  if (toneMapMethod != VS_TONEMAPMETHOD_OFF)
-  {
-    if (buf.hasLightMetadata || (buf.hasDisplayMetadata && buf.displayMetadata.has_luminance))
-    {
-      toneMap = true;
-    }
-  }
-
-  if (toneMap != m_toneMap || m_toneMapMethod != toneMapMethod)
-  {
-    m_reloadShaders = true;
-  }
-
-  m_toneMap = toneMap;
-  m_toneMapMethod = toneMapMethod;
+  CheckVideoParameters(index);
 
   if (m_reloadShaders)
   {
@@ -1760,4 +1715,32 @@ bool CLinuxRendererGLES::IsGuiLayer()
 CRenderCapture* CLinuxRendererGLES::GetRenderCapture()
 {
   return new CRenderCaptureGLES;
+}
+
+void CLinuxRendererGLES::CheckVideoParameters(int index)
+{
+  const CPictureBuffer& buf = m_buffers[index];
+  const ETONEMAPMETHOD& toneMapMethod = m_videoSettings.m_ToneMapMethod;
+
+  if (buf.m_srcPrimaries != m_srcPrimaries)
+  {
+    m_srcPrimaries = buf.m_srcPrimaries;
+    m_reloadShaders = true;
+  }
+
+  bool toneMap = false;
+  const bool streamIsHDRPQ =
+      (buf.m_srcColTransfer == AVCOL_TRC_SMPTE2084 && buf.m_srcPrimaries == AVCOL_PRI_BT2020);
+
+  if (streamIsHDRPQ && !m_passthroughHDR && toneMapMethod != VS_TONEMAPMETHOD_OFF)
+  {
+    toneMap = true;
+  }
+
+  if (toneMap != m_toneMap || toneMapMethod != m_toneMapMethod)
+  {
+    m_reloadShaders = true;
+    m_toneMap = toneMap;
+    m_toneMapMethod = toneMapMethod;
+  }
 }
