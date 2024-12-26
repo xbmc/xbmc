@@ -17,6 +17,7 @@
 #include <string>
 #include <vector>
 
+class CAdvancedSettings;
 class CRegExp;
 class CFileItem;
 class CFileItemList;
@@ -266,6 +267,9 @@ namespace KODI::VIDEO
     bool AddVideoExtras(CFileItemList& items, const CONTENT_TYPE& content, const std::string& path);
     bool ProcessVideoVersion(VideoDbContentType itemType, int dbId);
 
+    std::pair<InfoType, std::unique_ptr<IVideoInfoTagLoader>> ReadInfoTag(
+        CFileItem& item, const ADDON::ScraperPtr& scraper, bool lookInFolder, bool resetTag);
+
     bool m_bStop;
     bool m_scanAll;
     bool m_ignoreVideoVersions{false};
@@ -274,6 +278,7 @@ namespace KODI::VIDEO
     CVideoDatabase m_database;
     std::set<std::string> m_pathsToCount;
     std::set<int> m_pathsToClean;
+    std::shared_ptr<CAdvancedSettings> m_advancedSettings;
 
   private:
     static void AddLocalItemArtwork(CGUIListItem::ArtMap& itemArt,
