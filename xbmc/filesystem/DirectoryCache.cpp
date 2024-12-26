@@ -176,7 +176,7 @@ bool CDirectoryCache::FileExists(std::string strFile, bool& bInCache)
   URIUtils::RemoveSlashAtEnd(storedPath);
 
   // For bluray:// get the underlying file (udf:// etc..)
-  if (URIUtils::IsBluray(strFile))
+  if (URIUtils::IsBlurayPath(strFile))
   {
     CURL url{strFile};
     strFile = url.GetHostName() + url.GetFileName();

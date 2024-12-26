@@ -57,7 +57,7 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item, bool forceSelectio
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_DISC_PLAYBACK) != BD_PLAYBACK_SIMPLE_MENU)
     return true;
 
-  if (forceSelection && URIUtils::IsBluray(item.GetDynPath()))
+  if (forceSelection && URIUtils::IsBlurayPath(item.GetDynPath()))
   {
     item.SetProperty("save_dyn_path", item.GetDynPath()); // save for screen refresh later
     item.SetDynPath(item.GetBlurayPath());

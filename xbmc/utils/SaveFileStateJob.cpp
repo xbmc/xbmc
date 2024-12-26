@@ -46,7 +46,7 @@ void CSaveFileState::DoWork(CFileItem& item,
     progressTrackingFile =
         item.GetVideoInfoTag()
             ->m_strFileNameAndPath; // this variable contains removable:// suffixed by disc label+uniqueid or is empty if label not uniquely identified
-  else if (URIUtils::IsBluray(item.GetDynPath()) &&
+  else if (URIUtils::IsBlurayPath(item.GetDynPath()) &&
            (item.GetVideoContentType() == VideoDbContentType::MOVIES ||
             item.GetVideoContentType() == VideoDbContentType::EPISODES))
     progressTrackingFile = item.GetDynPath();
@@ -59,7 +59,7 @@ void CSaveFileState::DoWork(CFileItem& item,
     // only use original_listitem_url for Python, UPnP and Bluray sources
     std::string original = item.GetProperty("original_listitem_url").asString();
     if (URIUtils::IsPlugin(original) || URIUtils::IsUPnP(original) ||
-        URIUtils::IsBluray(item.GetPath()))
+        URIUtils::IsBlurayPath(item.GetPath()))
       progressTrackingFile = original;
   }
 

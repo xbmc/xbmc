@@ -226,7 +226,7 @@ std::string GetLocalArtBaseFilename(const CFileItem& item, bool& useFolder)
   if (item.IsMultiPath())
     strFile = CMultiPathDirectory::GetFirstPath(item.GetPath());
 
-  if (item.IsOpticalMediaFile() || URIUtils::IsBluray(file))
+  if (item.IsOpticalMediaFile() || URIUtils::IsBlurayPath(file))
   { // optical media files should be treated like folders
     useFolder = true;
     strFile = item.GetLocalMetadataPath();
@@ -279,7 +279,7 @@ std::string GetLocalFanart(const CFileItem& item)
   }
 
   // no local fanart available for these
-  if (NETWORK::IsInternetStream(item) || URIUtils::IsUPnP(file) || URIUtils::IsBluray(file) ||
+  if (NETWORK::IsInternetStream(item) || URIUtils::IsUPnP(file) || URIUtils::IsBlurayPath(file) ||
       item.IsLiveTV() || item.IsPlugin() || item.IsAddonsPath() || item.IsDVD() ||
       (URIUtils::IsFTP(file) &&
        !CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bFTPThumbs) ||

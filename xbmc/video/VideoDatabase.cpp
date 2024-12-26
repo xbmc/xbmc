@@ -3141,7 +3141,7 @@ void CVideoDatabase::DeleteFile(int idFile)
     DeleteStreamDetails(idFile);
 
     // Delete path if orphan (and not base directory - needs to remain to prevent re-adding on library update)
-    if (path >= 0 && URIUtils::IsBluray(strPath))
+    if (path >= 0 && URIUtils::IsBlurayPath(strPath))
     {
       sql = PrepareSQL("SELECT idFile FROM files JOIN path ON files.idPath = path.idPath WHERE "
                        "files.idPath = %i",
@@ -6761,7 +6761,7 @@ int CVideoDatabase::GetPlayCount(const std::string& strFilenameAndPath)
 
 int CVideoDatabase::GetPlayCount(const CFileItem &item)
 {
-  if (URIUtils::IsBluray(item.GetDynPath()))
+  if (URIUtils::IsBlurayPath(item.GetDynPath()))
     return GetPlayCount(GetFileId(item.GetDynPath()));
   return GetPlayCount(GetFileId(item));
 }
@@ -6834,7 +6834,7 @@ void CVideoDatabase::UpdateFanart(const CFileItem& item, VideoDbContentType type
 CDateTime CVideoDatabase::SetPlayCount(const CFileItem& item, int count, const CDateTime& date)
 {
   int id{-1};
-  if (URIUtils::IsBluray(item.GetDynPath()))
+  if (URIUtils::IsBlurayPath(item.GetDynPath()))
     id = AddFile(item.GetDynPath());
   else if (item.HasProperty("original_listitem_url") &&
            URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
@@ -10930,7 +10930,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
             nfoFile = URIUtils::AddFileToFolder(
                                     URIUtils::GetParentPath(nfoFile),
                                     URIUtils::GetFileName(nfoFile));
-          else if (URIUtils::IsBluray(item.GetDynPath()))
+          else if (URIUtils::IsBlurayPath(item.GetDynPath()))
             nfoFile =
                 URIUtils::ReplaceExtension(URIUtils::GetBlurayPath(item.GetDynPath()), ".nfo");
 
@@ -11254,7 +11254,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
       while (!pDS->eof())
       {
         std::string file{pDS->fv("strPath").get_asString() + pDS->fv("strFileName").get_asString()};
-        if (URIUtils::IsBluray(file))
+        if (URIUtils::IsBlurayPath(file))
           file = URIUtils::GetBlurayPath(file);
         fileMap.insert({file, index});
         pDS->next();
@@ -11317,7 +11317,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
           {
             std::string nfoFile(URIUtils::ReplaceExtension(ART::GetTBNFile(item), ".nfo"));
 
-            if (URIUtils::IsBluray(item.GetDynPath()))
+            if (URIUtils::IsBlurayPath(item.GetDynPath()))
               nfoFile =
                   URIUtils::ReplaceExtension(URIUtils::GetBlurayPath(item.GetDynPath()), ".nfo");
 

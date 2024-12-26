@@ -197,7 +197,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
     XMLUtils::SetString(movie, "filenameandpath", m_strFileNameAndPath);
     XMLUtils::SetString(movie, "basepath", m_basePath);
   }
-  else if (URIUtils::IsBluray(m_strFileNameAndPath))
+  else if (URIUtils::IsBlurayPath(m_strFileNameAndPath))
   {
     CURL url{m_strFileNameAndPath};
     XMLUtils::SetString(movie, "relativefilename", url.GetFileName());

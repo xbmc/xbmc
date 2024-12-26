@@ -468,7 +468,7 @@ std::string URIUtils::GetBasePath(const std::string& strPath)
 
 std::string URIUtils::GetBlurayPath(const std::string& path)
 {
-  if (IsBluray(path))
+  if (IsBlurayPath(path))
   {
     CURL url(path);
     CURL url2(url.GetHostName()); // strip bluray://
@@ -1210,7 +1210,7 @@ bool URIUtils::IsVideoDb(const std::string& strFile)
   return IsProtocol(strFile, "videodb");
 }
 
-bool URIUtils::IsBluray(const std::string& strFile)
+bool URIUtils::IsBlurayPath(const std::string& strFile)
 {
   return IsProtocol(strFile, "bluray");
 }
