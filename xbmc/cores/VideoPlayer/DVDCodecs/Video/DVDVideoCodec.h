@@ -41,6 +41,7 @@ public:
   VideoPicture& CopyRef(const VideoPicture &pic);
   VideoPicture& SetParams(const VideoPicture &pic);
   void Reset(); // reinitialize members, videoBuffer will be released if set!
+  bool IsSameParams(const VideoPicture& pic) const;
 
   CVideoBuffer *videoBuffer = nullptr;
 
@@ -81,6 +82,9 @@ public:
 private:
   VideoPicture(VideoPicture const&);
   VideoPicture& operator=(VideoPicture const&);
+
+  bool CompareDisplayMetadata(const VideoPicture& pic) const;
+  bool CompareLightMetadata(const VideoPicture& pic) const;
 };
 
 #define DVP_FLAG_TOP_FIELD_FIRST    0x00000001
