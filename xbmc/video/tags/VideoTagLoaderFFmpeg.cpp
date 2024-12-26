@@ -122,8 +122,9 @@ bool CVideoTagLoaderFFmpeg::HasInfo() const
   return avtag != nullptr;
 }
 
-CInfoScanner::INFO_TYPE CVideoTagLoaderFFmpeg::Load(CVideoInfoTag& tag,
-                                                    bool, std::vector<EmbeddedArt>* art)
+CInfoScanner::InfoType CVideoTagLoaderFFmpeg::Load(CVideoInfoTag& tag,
+                                                   bool,
+                                                   std::vector<EmbeddedArt>* art)
 {
   if (m_item.IsType(".mkv"))
     return LoadMKV(tag, art);
@@ -132,12 +133,11 @@ CInfoScanner::INFO_TYPE CVideoTagLoaderFFmpeg::Load(CVideoInfoTag& tag,
   else if (m_item.IsType(".avi"))
     return LoadAVI(tag, art);
   else
-    return CInfoScanner::NO_NFO;
-
+    return CInfoScanner::InfoType::NONE;
 }
 
-CInfoScanner::INFO_TYPE CVideoTagLoaderFFmpeg::LoadMKV(CVideoInfoTag& tag,
-                                                       std::vector<EmbeddedArt>* art)
+CInfoScanner::InfoType CVideoTagLoaderFFmpeg::LoadMKV(CVideoInfoTag& tag,
+                                                      std::vector<EmbeddedArt>* art)
 {
   // embedded art
   for (size_t i = 0; i < m_fctx->nb_streams; ++i)
@@ -177,13 +177,13 @@ CInfoScanner::INFO_TYPE CVideoTagLoaderFFmpeg::LoadMKV(CVideoInfoTag& tag,
     if (!m_override_data)
     {
       nfo.GetDetails(tag, content);
-      return CInfoScanner::FULL_NFO;
+      return CInfoScanner::InfoType::FULL;
     }
     else
     {
       nfo.Create(content, m_info);
       m_url = nfo.ScraperUrl();
-      return CInfoScanner::URL_NFO;
+      return CInfoScanner::InfoType::URL;
     }
   }
 
@@ -197,7 +197,7 @@ CInfoScanner::INFO_TYPE CVideoTagLoaderFFmpeg::LoadMKV(CVideoInfoTag& tag,
       CNfoFile nfo;
       nfo.Create(avtag->value, m_info);
       m_url = nfo.ScraperUrl();
-      return CInfoScanner::URL_NFO;
+      return CInfoScanner::InfoType::URL;
     }
     else if (StringUtils::CompareNoCase(avtag->key, "title") == 0)
       tag.SetTitle(avtag->value);
@@ -211,12 +211,12 @@ CInfoScanner::INFO_TYPE CVideoTagLoaderFFmpeg::LoadMKV(CVideoInfoTag& tag,
     hastag = true;
   }
 
-  return hastag ? CInfoScanner::TITLE_NFO : CInfoScanner::NO_NFO;
+  return hastag ? CInfoScanner::InfoType::TITLE : CInfoScanner::InfoType::NONE;
 }
 
 // https://wiki.multimedia.cx/index.php/FFmpeg_Metadata
-CInfoScanner::INFO_TYPE CVideoTagLoaderFFmpeg::LoadMP4(CVideoInfoTag& tag,
-                                                       std::vector<EmbeddedArt>* art)
+CInfoScanner::InfoType CVideoTagLoaderFFmpeg::LoadMP4(CVideoInfoTag& tag,
+                                                      std::vector<EmbeddedArt>* art)
 {
   bool hasfull = false;
   AVDictionaryEntry* avtag = nullptr;
@@ -262,12 +262,12 @@ CInfoScanner::INFO_TYPE CVideoTagLoaderFFmpeg::LoadMP4(CVideoInfoTag& tag,
       tag.m_coverArt.emplace_back(size, "image/png", type);
   }
 
-  return hasfull ? CInfoScanner::FULL_NFO : CInfoScanner::TITLE_NFO;
+  return hasfull ? CInfoScanner::InfoType::FULL : CInfoScanner::InfoType::TITLE;
 }
 
 // https://wiki.multimedia.cx/index.php/FFmpeg_Metadata#AVI
-CInfoScanner::INFO_TYPE CVideoTagLoaderFFmpeg::LoadAVI(CVideoInfoTag& tag,
-                                                       std::vector<EmbeddedArt>* art)
+CInfoScanner::InfoType CVideoTagLoaderFFmpeg::LoadAVI(CVideoInfoTag& tag,
+                                                      std::vector<EmbeddedArt>* art)
 {
   AVDictionaryEntry* avtag = nullptr;
   while ((avtag = av_dict_get(m_fctx->metadata, "", avtag, AV_DICT_IGNORE_SUFFIX)))
@@ -278,5 +278,5 @@ CInfoScanner::INFO_TYPE CVideoTagLoaderFFmpeg::LoadAVI(CVideoInfoTag& tag,
       tag.SetYear(atoi(avtag->value));
   }
 
-  return CInfoScanner::TITLE_NFO;
+  return CInfoScanner::InfoType::TITLE;
 }

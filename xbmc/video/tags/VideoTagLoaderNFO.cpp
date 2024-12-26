@@ -40,21 +40,21 @@ bool CVideoTagLoaderNFO::HasInfo() const
   return !m_path.empty() && CFileUtils::Exists(m_path);
 }
 
-CInfoScanner::INFO_TYPE CVideoTagLoaderNFO::Load(CVideoInfoTag& tag,
-                                                 bool prioritise,
-                                                 std::vector<EmbeddedArt>*)
+CInfoScanner::InfoType CVideoTagLoaderNFO::Load(CVideoInfoTag& tag,
+                                                bool prioritise,
+                                                std::vector<EmbeddedArt>*)
 {
   CNfoFile nfoReader;
-  CInfoScanner::INFO_TYPE result = CInfoScanner::NO_NFO;
+  CInfoScanner::InfoType result = CInfoScanner::InfoType::NONE;
   if (m_info && m_info->Content() == CONTENT_TVSHOWS && !m_item.m_bIsFolder)
     result = nfoReader.Create(m_path, m_info, m_item.GetVideoInfoTag()->m_iEpisode);
   else if (m_info)
     result = nfoReader.Create(m_path, m_info);
 
-  if (result == CInfoScanner::FULL_NFO || result == CInfoScanner::COMBINED_NFO)
+  if (result == CInfoScanner::InfoType::FULL || result == CInfoScanner::InfoType::COMBINED)
     nfoReader.GetDetails(tag, nullptr, prioritise);
 
-  if (result == CInfoScanner::URL_NFO || result == CInfoScanner::COMBINED_NFO)
+  if (result == CInfoScanner::InfoType::URL || result == CInfoScanner::InfoType::COMBINED)
   {
     m_url = nfoReader.ScraperUrl();
     m_info = nfoReader.GetScraperInfo();
@@ -63,25 +63,25 @@ CInfoScanner::INFO_TYPE CVideoTagLoaderNFO::Load(CVideoInfoTag& tag,
   std::string type;
   switch(result)
   {
-    case CInfoScanner::COMBINED_NFO:
+    case CInfoScanner::InfoType::COMBINED:
       type = "mixed";
       break;
-    case CInfoScanner::FULL_NFO:
+    case CInfoScanner::InfoType::FULL:
       type = "full";
       break;
-    case CInfoScanner::URL_NFO:
+    case CInfoScanner::InfoType::URL:
       type = "URL";
       break;
-    case CInfoScanner::NO_NFO:
+    case CInfoScanner::InfoType::NONE:
       type = "";
       break;
-    case CInfoScanner::OVERRIDE_NFO:
+    case CInfoScanner::InfoType::OVERRIDE:
       type = "override";
       break;
     default:
       type = "malformed";
   }
-  if (result != CInfoScanner::NO_NFO)
+  if (result != CInfoScanner::InfoType::NONE)
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Found matching {} NFO file: {}", type,
               CURL::GetRedacted(m_path));
   else
@@ -202,4 +202,3 @@ std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
 
   return nfoFile;
 }
-
