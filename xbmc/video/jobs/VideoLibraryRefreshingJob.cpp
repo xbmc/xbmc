@@ -128,7 +128,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
               }
             }
 
-            // Get online information (only if nothing found locally)
+            // Get online details (only if no movie.nfo containing set details found locally)
             if (!onlineFound && overview.empty() && !movie->GetVideoInfoTag()->GetTitle().empty())
             {
               scraper = db.GetScraperForPath(movie->GetDynPath(), scanSettings);
@@ -152,47 +152,29 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
         }
       }
 
-      // Use Set.NFO, if present, as priority
-      bool setFound{CVideoInfoScanner::UpdateSetInTag(tag)};
-      if (tag.m_set.HasTitle())
-        overview = tag.m_set.GetOverview();
+      // UpdateSetInTag will update set art using the following:
+      // 1 Local files
+      // 2 Set.nfo <art> tag
+      // 3 Online scraper (already populated above)
+      bool setUpdated{CVideoInfoScanner::UpdateSetInTag(tag)};
 
       // Nothing found to update with
-      if (!localFound && !onlineFound && !setFound)
+      if (!localFound && !onlineFound && !setUpdated)
         return false;
 
       // tag now contains up-to-date set title
+      if (tag.m_set.HasTitle())
+        overview = tag.m_set.GetOverview();
       db.AddSet(tag.m_set.GetTitle(), overview, tag.m_set.GetOriginalTitle());
 
-      // Now deal with art
-      // Clear art first
-      CTextureDatabase textureDb;
-      if (textureDb.Open())
-      {
-        for (const auto& artwork : m_item->GetArt())
-          textureDb.InvalidateCachedTexture(artwork.second);
-        textureDb.Close();
-      }
-      m_item->ClearArt();
-
-      // If poster specified in set.nfo use that first
-      CGUIListItem::ArtMap movieSetArt;
-      if (tag.m_set.HasPoster())
-      {
-        movieSetArt.insert({"poster", tag.m_set.GetPoster()});
-      }
-      else
-      {
-        // Local art from Media Set Information Folder will be in item (from UpdateSetInfo)
-        // if art was present, otherwise item will contain online art from movie scraper
-        tag.m_strPictureURL.Parse();
-        for (const auto& url : tag.m_strPictureURL.GetUrls())
-          if (StringUtils::StartsWith(url.m_aspect, "set."))
-            movieSetArt.insert({url.m_aspect.substr(4), url.m_url});
-      }
+      // Update set art
+      ArtMap movieSetArt;
+      if (tag.m_set.HasArt())
+        movieSetArt = tag.m_set.GetArt();
       db.SetArtForItem(dbId, MediaTypeVideoCollection, movieSetArt);
 
       // Refresh (for video info dialog)
+      m_item->ClearArt();
       db.GetSetInfo(dbId, tag);
       m_item->SetFromVideoInfoTag(tag);
       return true;

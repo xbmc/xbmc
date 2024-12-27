@@ -8,6 +8,7 @@
 
 #include "SetInfoTag.h"
 
+#include "VideoThumbLoader.h"
 #include "utils/Archive.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
@@ -19,7 +20,7 @@ void CSetInfoTag::Reset()
   m_id = -1;
   m_overview.clear();
   m_updateSetOverview = false;
-  m_poster.clear();
+  m_art.clear();
 }
 
 bool CSetInfoTag::Load(const TiXmlElement* element, bool append, bool prioritise)
@@ -48,8 +49,16 @@ void CSetInfoTag::ParseNative(const TiXmlElement* set, bool prioritise)
     // compatibility with tinyMediaManager
     SetOverview(value);
 
-  if (XMLUtils::GetString(set, "thumb", value))
-    m_poster = value;
+  const TiXmlElement* art{set->FirstChildElement("art")};
+  if (art)
+    for (const TiXmlElement* picture = art->FirstChildElement(); picture;
+         picture = picture->NextSiblingElement())
+    {
+      std::string type{picture->ValueStr()};
+      std::string url{picture->GetText()};
+      if (!type.empty() && !url.empty())
+        m_art.insert({type, url});
+    }
 }
 
 void CSetInfoTag::SetOverview(const std::string& overview)
@@ -70,6 +79,11 @@ void CSetInfoTag::SetOriginalTitle(const std::string& title)
   m_originalTitle = title;
 }
 
+void CSetInfoTag::SetArt(const ArtMap& art)
+{
+  m_art = art;
+}
+
 void CSetInfoTag::Merge(const CSetInfoTag& other)
 {
   if (other.GetID())
@@ -80,8 +94,8 @@ void CSetInfoTag::Merge(const CSetInfoTag& other)
     m_originalTitle = other.GetOriginalTitle();
   if (other.HasOverview())
     m_overview = other.GetOverview();
-  if (other.HasPoster())
-    m_poster = other.GetPoster();
+  if (!other.m_art.empty())
+    m_art = other.m_art;
 }
 
 void CSetInfoTag::Copy(const CSetInfoTag& other)
@@ -90,7 +104,7 @@ void CSetInfoTag::Copy(const CSetInfoTag& other)
   m_title = other.GetTitle();
   m_originalTitle = other.GetOriginalTitle();
   m_overview = other.GetOverview();
-  m_poster = other.GetPoster();
+  m_art = other.m_art;
 }
 
 void CSetInfoTag::Archive(CArchive& ar)

@@ -493,10 +493,11 @@ CVideoInfoScanner::CVideoInfoScanner()
     bool setUpdated{false};
     if (tag.m_set.HasTitle())
     {
+      ArtMap movieSetArt;
       const std::string movieSetInfoPath = GetMovieSetInfoFolder(tag.m_set.GetTitle());
       if (!movieSetInfoPath.empty())
       {
-        // look for Set.NFO
+        // Look for set.nfo
         if (const std::unique_ptr setLoader{
                 CSetInfoTagLoaderFactory::CreateLoader(tag.m_set.GetTitle())};
             setLoader)
@@ -513,39 +514,28 @@ CVideoInfoScanner::CVideoInfoScanner()
               tag.m_set.SetOverview(setTag.GetOverview());
               tag.SetUpdateSetOverview(true);
             }
-            if (!setTag.GetPoster().empty())
-              tag.m_set.SetPoster(setTag.GetPoster());
+            if (setTag.HasArt())
+              tag.m_set.SetArt(setTag.GetArt());
             setUpdated = true;
           }
         }
 
         // Now look for art
-        // If poster specified in set.nfo use that first
-        CGUIListItem::ArtMap movieSetArt;
-        if (tag.m_set.HasPoster())
-        {
-          movieSetArt.insert({"poster", tag.m_set.GetPoster()});
-        }
-        else
-        {
-          const std::vector<std::string> movieSetArtTypes =
-              CVideoThumbLoader::GetArtTypes(MediaTypeVideoCollection);
-          AddLocalItemArtwork(movieSetArt, movieSetArtTypes, movieSetInfoPath, true, false);
-        }
+        // Look for local art files first
+        const std::vector<std::string> movieSetArtTypes =
+            CVideoThumbLoader::GetArtTypes(MediaTypeVideoCollection);
+        AddLocalItemArtwork(movieSetArt, movieSetArtTypes, movieSetInfoPath, true, false);
+
+        // If art specified in set.nfo use that next
+        if (movieSetArt.empty() && tag.m_set.HasArt())
+          for (auto& art : tag.m_set.GetArt())
+            movieSetArt.insert(art);
+
+        // Replace scraper art (currently in tag) with the local/nfo art
         if (!movieSetArt.empty())
         {
           tag.m_strPictureURL.Parse();
           auto urls = tag.m_strPictureURL.GetUrls();
-
-          // Clear existing art (if any) from cache and VideoInfoTag
-          CTextureDatabase textureDb;
-          if (textureDb.Open())
-          {
-            for (const auto& url : urls)
-              if (StringUtils::StartsWith(url.m_aspect, "set."))
-                textureDb.InvalidateCachedTexture(url.m_url);
-            textureDb.Close();
-          }
 
           // Remove existing set art from VideoInfoTag
           std::erase_if(urls, [](const auto& url)
@@ -565,6 +555,16 @@ CVideoInfoScanner::CVideoInfoScanner()
           setUpdated = true;
         }
       }
+      else
+      {
+        // No MSIF, so use the set art from the scraper (already in tag)
+        tag.m_strPictureURL.Parse();
+        for (const auto& url : tag.m_strPictureURL.GetUrls())
+          if (StringUtils::StartsWith(url.m_aspect, "set."))
+            movieSetArt.insert({url.m_aspect.substr(4), url.m_url});
+      }
+      if (!movieSetArt.empty())
+        tag.m_set.SetArt(movieSetArt);
     }
     return setUpdated;
   }

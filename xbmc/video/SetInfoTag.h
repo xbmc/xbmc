@@ -8,8 +8,7 @@
 
 #pragma once
 
-#include "utils/Archive.h"
-#include "utils/Variant.h"
+#include "VideoThumbLoader.h"
 
 #include <string>
 
@@ -49,9 +48,9 @@ public:
   bool HasOriginalTitle() const { return !m_originalTitle.empty(); }
   std::string GetOriginalTitle() const { return m_originalTitle; }
 
-  void SetPoster(const std::string& poster) { m_poster = poster; }
-  bool HasPoster() const { return !m_poster.empty(); }
-  std::string GetPoster() const { return m_poster; }
+  void SetArt(const ArtMap& art);
+  bool HasArt() const { return !m_art.empty(); }
+  ArtMap GetArt() const { return m_art; }
 
   void Merge(const CSetInfoTag& other);
   void Copy(const CSetInfoTag& other);
@@ -61,9 +60,9 @@ public:
 private:
   std::string m_title; // Title of the movie set
   std::string m_originalTitle; // Original title of movie set (from scraper)
+  ArtMap m_art; // Art information
   int m_id{-1}; // ID of movie set in database
   std::string m_overview; // Overview/description of the movie set
-  std::string m_poster;
   bool m_updateSetOverview{false}; // If overview has been set
 
   /* \brief Parse our native XML format for video info.
@@ -74,4 +73,5 @@ private:
    \sa Load
    */
   void ParseNative(const TiXmlElement* set, bool prioritise);
+  bool ParseArt(const TiXmlElement* element);
 };
