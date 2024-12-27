@@ -35,7 +35,7 @@ public:
   //! \brief tag Tag to load info into
   //! \brief prioritise True to prioritise data over existing data in tag
   //! \returns True if tag was read, false otherwise
-  virtual CInfoScanner::INFO_TYPE Load(CSetInfoTag& tag, bool prioritise) = 0;
+  virtual CInfoScanner::InfoType Load(CSetInfoTag& tag, bool prioritise) = 0;
 
 protected:
   const std::string m_title;

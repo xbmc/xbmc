@@ -503,8 +503,8 @@ CVideoInfoScanner::CVideoInfoScanner()
             setLoader)
         {
           CSetInfoTag setTag;
-          INFO_TYPE result{setLoader->Load(setTag, false)};
-          if (result && !setTag.IsEmpty())
+          InfoType result{setLoader->Load(setTag, false)};
+          if (result != InfoType::NONE && !setTag.IsEmpty())
           {
             tag.m_set.SetOriginalTitle(tag.m_set.GetTitle());
             if (!setTag.GetTitle().empty())

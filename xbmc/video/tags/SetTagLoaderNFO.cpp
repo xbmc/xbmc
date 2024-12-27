@@ -39,15 +39,15 @@ bool CSetTagLoaderNFO::HasInfo() const
   return !m_path.empty() && CFileUtils::Exists(m_path);
 }
 
-CInfoScanner::INFO_TYPE CSetTagLoaderNFO::Load(CSetInfoTag& tag, const bool prioritise)
+CInfoScanner::InfoType CSetTagLoaderNFO::Load(CSetInfoTag& tag, const bool prioritise)
 {
   CNfoFile nfoReader;
   AddonPtr addon;
   CServiceBroker::GetAddonMgr().GetAddon("metadata.local", addon, ADDON::OnlyEnabled::CHOICE_YES);
   const ScraperPtr scraper = std::dynamic_pointer_cast<CScraper>(addon);
-  const CInfoScanner::INFO_TYPE result{nfoReader.Create(m_path, scraper)};
+  const CInfoScanner::InfoType result{nfoReader.Create(m_path, scraper)};
 
-  if (result == CInfoScanner::FULL_NFO || result == CInfoScanner::COMBINED_NFO)
+  if (result == CInfoScanner::InfoType::FULL || result == CInfoScanner::InfoType::COMBINED)
     nfoReader.GetDetails(tag, nullptr);
 
   // ** Get set name from originally passed if needed
@@ -57,25 +57,25 @@ CInfoScanner::INFO_TYPE CSetTagLoaderNFO::Load(CSetInfoTag& tag, const bool prio
   std::string type;
   switch (result)
   {
-    case CInfoScanner::COMBINED_NFO:
+    case CInfoScanner::InfoType::COMBINED:
       type = "mixed";
       break;
-    case CInfoScanner::FULL_NFO:
+    case CInfoScanner::InfoType::FULL:
       type = "full";
       break;
-    case CInfoScanner::URL_NFO:
+    case CInfoScanner::InfoType::URL:
       type = "URL";
       break;
-    case CInfoScanner::NO_NFO:
+    case CInfoScanner::InfoType::NONE:
       type = "";
       break;
-    case CInfoScanner::OVERRIDE_NFO:
+    case CInfoScanner::InfoType::OVERRIDE:
       type = "override";
       break;
     default:
       type = "malformed";
   }
-  if (result != CInfoScanner::NO_NFO)
+  if (result != CInfoScanner::InfoType::NONE)
     CLog::LogF(LOGDEBUG, "Found matching {} NFO file: {}", type, CURL::GetRedacted(m_path));
   else
     CLog::LogF(LOGDEBUG, "No NFO file found. Using title search for '{}'",
