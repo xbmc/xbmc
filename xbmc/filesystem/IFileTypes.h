@@ -76,12 +76,12 @@ enum class IOControl
   SET_RETRY = 16, /**< Enable/disable retry within the protocol handler (if supported) */
 };
 
-enum CURLOPTIONTYPE
+enum class CURLOptionType
 {
-  CURL_OPTION_OPTION,     /**< Set a general option   */
-  CURL_OPTION_PROTOCOL,   /**< Set a protocol option (see below)  */
-  CURL_OPTION_CREDENTIALS,/**< Set User and password  */
-  CURL_OPTION_HEADER      /**< Add a Header           */
+  OPTION, /**< Set a general option   */
+  PROTOCOL, /**< Set a protocol option (see below)  */
+  CREDENTIALS, /**< Set User and password  */
+  HEADER /**< Add a Header           */
 };
 
 /**

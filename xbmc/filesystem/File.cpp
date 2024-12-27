@@ -205,28 +205,29 @@ bool CFile::CURLCreate(const std::string &url)
   return true;
 }
 
-bool CFile::CURLAddOption(XFILE::CURLOPTIONTYPE type, const char* name, const char * value)
+bool CFile::CURLAddOption(CURLOptionType type, const char* name, const char* value)
 {
-  switch (type){
-  case XFILE::CURL_OPTION_CREDENTIALS:
+  switch (type)
   {
-    m_curl.SetUserName(name);
-    m_curl.SetPassword(value);
-    break;
-  }
-  case XFILE::CURL_OPTION_PROTOCOL:
-  case XFILE::CURL_OPTION_HEADER:
-  {
-    m_curl.SetProtocolOption(name, value);
-    break;
-  }
-  case XFILE::CURL_OPTION_OPTION:
-  {
-    m_curl.SetOption(name, value);
-    break;
-  }
-  default:
-    return false;
+    case CURLOptionType::CREDENTIALS:
+    {
+      m_curl.SetUserName(name);
+      m_curl.SetPassword(value);
+      break;
+    }
+    case CURLOptionType::PROTOCOL:
+    case CURLOptionType::HEADER:
+    {
+      m_curl.SetProtocolOption(name, value);
+      break;
+    }
+    case CURLOptionType::OPTION:
+    {
+      m_curl.SetOption(name, value);
+      break;
+    }
+    default:
+      return false;
   }
   return true;
 }
