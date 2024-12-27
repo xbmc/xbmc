@@ -182,6 +182,7 @@ struct RendererDetail
   AEDeviceType eDeviceType;
   unsigned int nChannels;
   unsigned int uiChannelMask;
+  unsigned long m_samplesPerSec; //!< Sample rate of the system default format
   bool bDefault;
 };
 

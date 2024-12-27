@@ -38,15 +38,13 @@ public:
   virtual double GetCacheTotal();
   virtual unsigned int AddPackets(uint8_t **data, unsigned int frames, unsigned int offset);
 
-  static std::string GetDefaultDevice();
   static void EnumerateDevicesEx (AEDeviceInfoList &deviceInfoList, bool force = false);
 private:
-  void          AEChannelsFromSpeakerMask(DWORD speakers);
-  DWORD         SpeakerMaskFromAEChannels(const CAEChannelInfo &channels);
-  void          CheckPlayStatus();
-  bool          UpdateCacheStatus();
-  unsigned int  GetSpace();
-  const char    *dserr2str(int err);
+  void AEChannelsFromSpeakerMask(DWORD speakers);
+  DWORD SpeakerMaskFromAEChannels(const CAEChannelInfo& channels);
+  void CheckPlayStatus();
+  bool UpdateCacheStatus();
+  unsigned int GetSpace();
 
   Microsoft::WRL::ComPtr<IDirectSoundBuffer> m_pBuffer;
   Microsoft::WRL::ComPtr<IDirectSound> m_pDSound;
