@@ -444,7 +444,7 @@ TEST_F(TestURIUtils, IsZIP)
 
 TEST_F(TestURIUtils, IsBluray)
 {
-  EXPECT_TRUE(URIUtils::IsBluray("bluray://path/to/file"));
+  EXPECT_TRUE(URIUtils::IsBlurayPath("bluray://path/to/file"));
 }
 
 TEST_F(TestURIUtils, AddSlashAtEnd)
