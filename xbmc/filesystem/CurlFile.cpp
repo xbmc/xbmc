@@ -2001,7 +2001,7 @@ bool CCurlFile::GetMimeType(const CURL &url, std::string &content, const std::st
     if (buffer.st_mode == _S_IFDIR)
       content = "x-directory/normal";
     else
-      content = file.GetProperty(XFILE::FILE_PROPERTY_MIME_TYPE);
+      content = file.GetProperty(XFILE::FileProperty::MIME_TYPE);
     CLog::Log(LOGDEBUG, "CCurlFile::{} - <{}> -> {}", __FUNCTION__, redactUrl, content);
     return true;
   }
@@ -2023,7 +2023,7 @@ bool CCurlFile::GetContentType(const CURL &url, std::string &content, const std:
     if (buffer.st_mode == _S_IFDIR)
       content = "x-directory/normal";
     else
-      content = file.GetProperty(XFILE::FILE_PROPERTY_CONTENT_TYPE, "");
+      content = file.GetProperty(XFILE::FileProperty::CONTENT_TYPE, "");
     CLog::Log(LOGDEBUG, "CCurlFile::{} - <{}> -> {}", __FUNCTION__, redactUrl, content);
     return true;
   }
@@ -2112,22 +2112,22 @@ const std::string CCurlFile::GetProperty(XFILE::FileProperty type, const std::st
 {
   switch (type)
   {
-  case FILE_PROPERTY_RESPONSE_PROTOCOL:
-    return m_state->m_httpheader.GetProtoLine();
-  case FILE_PROPERTY_RESPONSE_HEADER:
-    return m_state->m_httpheader.GetValue(name);
-  case FILE_PROPERTY_CONTENT_TYPE:
-    return m_state->m_httpheader.GetValue("content-type");
-  case FILE_PROPERTY_CONTENT_CHARSET:
-    return m_state->m_httpheader.GetCharset();
-  case FILE_PROPERTY_MIME_TYPE:
-    return m_state->m_httpheader.GetMimeType();
-  case FILE_PROPERTY_EFFECTIVE_URL:
-  {
-    char *url = nullptr;
-    g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_EFFECTIVE_URL, &url);
-    return url ? url : "";
-  }
+    case FileProperty::RESPONSE_PROTOCOL:
+      return m_state->m_httpheader.GetProtoLine();
+    case FileProperty::RESPONSE_HEADER:
+      return m_state->m_httpheader.GetValue(name);
+    case FileProperty::CONTENT_TYPE:
+      return m_state->m_httpheader.GetValue("content-type");
+    case FileProperty::CONTENT_CHARSET:
+      return m_state->m_httpheader.GetCharset();
+    case FileProperty::MIME_TYPE:
+      return m_state->m_httpheader.GetMimeType();
+    case FileProperty::EFFECTIVE_URL:
+    {
+      char* url = nullptr;
+      g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_EFFECTIVE_URL, &url);
+      return url ? url : "";
+    }
   default:
     return "";
   }
@@ -2135,7 +2135,7 @@ const std::string CCurlFile::GetProperty(XFILE::FileProperty type, const std::st
 
 const std::vector<std::string> CCurlFile::GetPropertyValues(XFILE::FileProperty type, const std::string &name) const
 {
-  if (type == FILE_PROPERTY_RESPONSE_HEADER)
+  if (type == FileProperty::RESPONSE_HEADER)
   {
     return m_state->m_httpheader.GetValues(name);
   }

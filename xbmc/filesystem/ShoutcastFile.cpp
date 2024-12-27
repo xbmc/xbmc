@@ -95,7 +95,7 @@ bool CShoutcastFile::Open(const CURL& url)
   bool result = m_file.Open(url2);
   if (result)
   {
-    m_fileCharset = m_file.GetProperty(XFILE::FILE_PROPERTY_CONTENT_CHARSET);
+    m_fileCharset = m_file.GetProperty(FileProperty::CONTENT_CHARSET);
 
     icyTitle = m_file.GetHttpHeader().GetValue("icy-name");
     if (icyTitle.empty())

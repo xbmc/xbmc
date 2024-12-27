@@ -1079,22 +1079,22 @@ char** Interface_Filesystem::get_property_values(
   switch (type)
   {
     case ADDON_FILE_PROPERTY_RESPONSE_PROTOCOL:
-      internalType = XFILE::FILE_PROPERTY_RESPONSE_PROTOCOL;
+      internalType = XFILE::FileProperty::RESPONSE_PROTOCOL;
       break;
     case ADDON_FILE_PROPERTY_RESPONSE_HEADER:
-      internalType = XFILE::FILE_PROPERTY_RESPONSE_HEADER;
+      internalType = XFILE::FileProperty::RESPONSE_HEADER;
       break;
     case ADDON_FILE_PROPERTY_CONTENT_TYPE:
-      internalType = XFILE::FILE_PROPERTY_CONTENT_TYPE;
+      internalType = XFILE::FileProperty::CONTENT_TYPE;
       break;
     case ADDON_FILE_PROPERTY_CONTENT_CHARSET:
-      internalType = XFILE::FILE_PROPERTY_CONTENT_CHARSET;
+      internalType = XFILE::FileProperty::CONTENT_CHARSET;
       break;
     case ADDON_FILE_PROPERTY_MIME_TYPE:
-      internalType = XFILE::FILE_PROPERTY_MIME_TYPE;
+      internalType = XFILE::FileProperty::MIME_TYPE;
       break;
     case ADDON_FILE_PROPERTY_EFFECTIVE_URL:
-      internalType = XFILE::FILE_PROPERTY_EFFECTIVE_URL;
+      internalType = XFILE::FileProperty::EFFECTIVE_URL;
       break;
     default:
       CLog::Log(LOGERROR, "Interface_Filesystem::{} - invalid data (addon='{}', file='{}')",

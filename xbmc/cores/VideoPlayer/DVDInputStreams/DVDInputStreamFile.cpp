@@ -67,7 +67,7 @@ bool CDVDInputStreamFile::Open()
   }
 
   if (m_pFile->GetImplementation() && (content.empty() || content == "application/octet-stream"))
-    m_content = m_pFile->GetImplementation()->GetProperty(XFILE::FILE_PROPERTY_CONTENT_TYPE);
+    m_content = m_pFile->GetImplementation()->GetProperty(XFILE::FileProperty::CONTENT_TYPE);
 
   m_eof = false;
   return true;

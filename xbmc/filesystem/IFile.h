@@ -139,7 +139,7 @@ public:
 
   virtual const std::string GetProperty(XFILE::FileProperty type, const std::string &name = "") const
   {
-    return type == XFILE::FILE_PROPERTY_CONTENT_TYPE ? "application/octet-stream" : "";
+    return type == XFILE::FileProperty::CONTENT_TYPE ? "application/octet-stream" : "";
   };
 
   virtual const std::vector<std::string> GetPropertyValues(XFILE::FileProperty type, const std::string &name = "") const

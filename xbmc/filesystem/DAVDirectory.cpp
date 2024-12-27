@@ -126,7 +126,7 @@ bool CDAVDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   std::string strResponse;
   dav.ReadData(strResponse);
 
-  std::string fileCharset(dav.GetProperty(XFILE::FILE_PROPERTY_CONTENT_CHARSET));
+  std::string fileCharset(dav.GetProperty(XFILE::FileProperty::CONTENT_CHARSET));
   CXBMCTinyXML2 davResponse;
   davResponse.Parse(strResponse);
 
