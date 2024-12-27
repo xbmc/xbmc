@@ -24,17 +24,17 @@ namespace XFILE
   class CCurlFile : public IFile
   {
     private:
-      typedef enum
-      {
-        PROXY_HTTP = 0,
-        PROXY_SOCKS4,
-        PROXY_SOCKS4A,
-        PROXY_SOCKS5,
-        PROXY_SOCKS5_REMOTE,
-        PROXY_HTTPS,
-      } ProxyType;
-
     public:
+      enum class ProxyType
+      {
+        HTTP = 0,
+        SOCKS4,
+        SOCKS4A,
+        SOCKS5,
+        SOCKS5_REMOTE,
+        HTTPS,
+      };
+
       CCurlFile();
       ~CCurlFile() override;
       bool Open(const CURL& url) override;
@@ -157,7 +157,7 @@ namespace XFILE
 
       std::string m_url;
       std::string m_userAgent;
-      ProxyType m_proxytype = PROXY_HTTP;
+      ProxyType m_proxytype = ProxyType::HTTP;
       std::string m_proxyhost;
       uint16_t m_proxyport = 3128;
       std::string m_proxyuser;
