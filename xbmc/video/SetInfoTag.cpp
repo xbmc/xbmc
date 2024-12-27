@@ -39,14 +39,8 @@ void CSetInfoTag::ParseNative(const TiXmlElement* set, bool prioritise)
 
   if (XMLUtils::GetString(set, "title", value))
     SetTitle(value);
-  else if (XMLUtils::GetString(set, "name", value))
-    // If no <title> then look for <name> - for compatibility with <set> in movie.nfo which uses <name>
-    SetTitle(value);
 
   if (XMLUtils::GetString(set, "overview", value))
-    SetOverview(value);
-  else if (XMLUtils::GetString(set, "plot", value))
-    // compatibility with tinyMediaManager
     SetOverview(value);
 
   const TiXmlElement* art{set->FirstChildElement("art")};

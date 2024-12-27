@@ -30,10 +30,7 @@ CSetTagLoaderNFO::CSetTagLoaderNFO(const std::string& title) : ISetInfoTagLoader
   if (!title.empty() && !KODI::VIDEO::CVideoInfoScanner::GetMovieSetInfoFolder(title).empty())
   {
     const std::string msif{KODI::VIDEO::CVideoInfoScanner::GetMovieSetInfoFolder(title)};
-    m_path =
-        URIUtils::AddFileToFolder(msif, "collection.nfo"); // compatibility with tinyMediaManager
-    if (!CFileUtils::Exists(m_path))
-      m_path = URIUtils::AddFileToFolder(msif, "set.nfo");
+    m_path = URIUtils::AddFileToFolder(msif, "set.nfo");
   }
 }
 
