@@ -19,27 +19,28 @@ class CFileItem;
 
 namespace XFILE
 {
-  enum DIR_CACHE_TYPE
-  {
-    DIR_CACHE_NEVER = 0, ///< Never cache this directory to memory
-    DIR_CACHE_ONCE,      ///< Cache this directory to memory for each fetch (so that FileExists() checks are fast)
-    DIR_CACHE_ALWAYS     ///< Always cache this directory to memory, so that each additional fetch of this folder will utilize the cache (until it's cleared)
-  };
+enum class CacheType
+{
+  NEVER = 0, ///< Never cache this directory to memory
+  ONCE, ///< Cache this directory to memory for each fetch (so that FileExists() checks are fast)
+  ALWAYS ///< Always cache this directory to memory, so that each additional fetch of this folder will utilize the cache (until it's cleared)
+};
 
-  /*! \brief Available directory flags
+/*! \brief Available directory flags
    The defaults are to allow file directories, no prompting, retrieve file information, hide hidden files, and utilise the directory cache
    based on the implementation's wishes.
    */
-  enum DIR_FLAG
-  {
-    DIR_FLAG_DEFAULTS      = 0,
-    DIR_FLAG_NO_FILE_DIRS  = (2 << 0), ///< Don't convert files (zip, rar etc.) to directories
-    DIR_FLAG_ALLOW_PROMPT  = (2 << 1), ///< Allow prompting for further info (passwords etc.)
-    DIR_FLAG_NO_FILE_INFO  = (2 << 2), ///< Don't read additional file info (stat for example)
-    DIR_FLAG_GET_HIDDEN    = (2 << 3), ///< Get hidden files
-    DIR_FLAG_READ_CACHE    = (2 << 4), ///< Force reading from the directory cache (if available)
-    DIR_FLAG_BYPASS_CACHE  = (2 << 5)  ///< Completely bypass the directory cache (no reading, no writing)
-  };
+enum DIR_FLAG
+{
+  DIR_FLAG_DEFAULTS = 0,
+  DIR_FLAG_NO_FILE_DIRS = (2 << 0), ///< Don't convert files (zip, rar etc.) to directories
+  DIR_FLAG_ALLOW_PROMPT = (2 << 1), ///< Allow prompting for further info (passwords etc.)
+  DIR_FLAG_NO_FILE_INFO = (2 << 2), ///< Don't read additional file info (stat for example)
+  DIR_FLAG_GET_HIDDEN = (2 << 3), ///< Get hidden files
+  DIR_FLAG_READ_CACHE = (2 << 4), ///< Force reading from the directory cache (if available)
+  DIR_FLAG_BYPASS_CACHE =
+      (2 << 5) ///< Completely bypass the directory cache (no reading, no writing)
+};
 /*!
  \ingroup filesystem
  \brief Interface to the directory on a file system.
@@ -120,7 +121,7 @@ public:
   \param url Directory at hand.
   \return Returns the cache type.
   */
-  virtual DIR_CACHE_TYPE GetCacheType(const CURL& url) const { return DIR_CACHE_ONCE; }
+  virtual CacheType GetCacheType(const CURL& url) const { return CacheType::ONCE; }
 
   void SetMask(const std::string& strMask);
   void SetFlags(int flags);

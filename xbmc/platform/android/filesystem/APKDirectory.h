@@ -19,7 +19,7 @@ namespace XFILE
     ~CAPKDirectory() override = default;
     bool GetDirectory(const CURL& url, CFileItemList& items) override;
     bool ContainsFiles(const CURL& url) override;
-    DIR_CACHE_TYPE GetCacheType(const CURL& url) const override;
+    CacheType GetCacheType(const CURL& url) const override;
     bool Exists(const CURL& url) override;
   };
 }

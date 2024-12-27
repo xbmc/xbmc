@@ -24,7 +24,7 @@ namespace XFILE
     class CDir
     {
     public:
-      explicit CDir(DIR_CACHE_TYPE cacheType);
+      explicit CDir(CacheType cacheType);
       CDir(CDir&& dir) = default;
       CDir& operator=(CDir&& dir) = default;
       virtual ~CDir();
@@ -33,7 +33,8 @@ namespace XFILE
       unsigned int GetLastAccess() const { return m_lastAccess; }
 
       std::unique_ptr<CFileItemList> m_Items;
-      DIR_CACHE_TYPE m_cacheType;
+      CacheType m_cacheType;
+
     private:
       CDir(const CDir&) = delete;
       CDir& operator=(const CDir&) = delete;
@@ -43,7 +44,7 @@ namespace XFILE
     CDirectoryCache(void);
     virtual ~CDirectoryCache(void);
     bool GetDirectory(const std::string& strPath, CFileItemList &items, bool retrieveAll = false);
-    void SetDirectory(const std::string& strPath, const CFileItemList &items, DIR_CACHE_TYPE cacheType);
+    void SetDirectory(const std::string& strPath, const CFileItemList& items, CacheType cacheType);
     void ClearDirectory(const std::string& strPath);
     void ClearFile(const std::string& strFile);
     void ClearSubPaths(const std::string& strPath);

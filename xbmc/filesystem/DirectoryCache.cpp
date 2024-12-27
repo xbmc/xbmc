@@ -25,7 +25,7 @@
 
 using namespace XFILE;
 
-CDirectoryCache::CDir::CDir(DIR_CACHE_TYPE cacheType) : m_Items(std::make_unique<CFileItemList>())
+CDirectoryCache::CDir::CDir(CacheType cacheType) : m_Items(std::make_unique<CFileItemList>())
 {
   m_cacheType = cacheType;
   m_lastAccess = 0;
@@ -63,8 +63,7 @@ bool CDirectoryCache::GetDirectory(const std::string& strPath, CFileItemList &it
   if (i != m_cache.end())
   {
     CDir& dir = i->second;
-    if (dir.m_cacheType == XFILE::DIR_CACHE_ALWAYS ||
-        (dir.m_cacheType == XFILE::DIR_CACHE_ONCE && retrieveAll))
+    if (dir.m_cacheType == CacheType::ALWAYS || (dir.m_cacheType == CacheType::ONCE && retrieveAll))
     {
       items.Copy(*dir.m_Items);
       dir.SetLastAccess(m_accessCounter);
@@ -77,9 +76,11 @@ bool CDirectoryCache::GetDirectory(const std::string& strPath, CFileItemList &it
   return false;
 }
 
-void CDirectoryCache::SetDirectory(const std::string& strPath, const CFileItemList &items, DIR_CACHE_TYPE cacheType)
+void CDirectoryCache::SetDirectory(const std::string& strPath,
+                                   const CFileItemList& items,
+                                   CacheType cacheType)
 {
-  if (cacheType == DIR_CACHE_NEVER)
+  if (cacheType == CacheType::NEVER)
     return; // nothing to do
 
   // caches the given directory using a copy of the items, rather than the items
@@ -231,7 +232,7 @@ void CDirectoryCache::CheckIfFull()
   for (auto i = m_cache.begin(); i != m_cache.end(); i++)
   {
     // ensure dirs that are always cached aren't cleared
-    if (i->second.m_cacheType != DIR_CACHE_ALWAYS)
+    if (i->second.m_cacheType != CacheType::ALWAYS)
     {
       if (lastAccessed == m_cache.end() ||
           i->second.GetLastAccess() < lastAccessed->second.GetLastAccess())

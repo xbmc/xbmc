@@ -20,7 +20,7 @@ namespace XFILE
     CWinLibraryDirectory();
     virtual ~CWinLibraryDirectory(void);
     bool GetDirectory(const CURL& url, CFileItemList &items) override;
-    DIR_CACHE_TYPE GetCacheType(const CURL& url) const override { return DIR_CACHE_ONCE; }
+    CacheType GetCacheType(const CURL& url) const override { return CacheType::ONCE; }
     bool Create(const CURL& url) override;
     bool Exists(const CURL& url) override;
     bool Remove(const CURL& url) override;
