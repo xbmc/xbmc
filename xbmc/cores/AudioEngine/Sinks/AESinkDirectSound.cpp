@@ -22,11 +22,9 @@
 #include "platform/win32/WIN32Util.h"
 
 #include <algorithm>
-#include <list>
 #include <mutex>
 
 #include <Mmreg.h>
-#include <Rpc.h>
 #include <initguid.h>
 
 // include order is important here
@@ -34,8 +32,6 @@
 #include <mmdeviceapi.h>
 #include <Functiondiscoverykeys_devpkey.h>
 // clang-format on
-
-#pragma comment(lib, "Rpcrt4.lib")
 
 extern HWND g_hWnd;
 
@@ -57,31 +53,9 @@ constexpr unsigned int DSChannelOrder[] = {
     SPEAKER_BACK_LEFT,  SPEAKER_BACK_RIGHT,  SPEAKER_SIDE_LEFT,    SPEAKER_SIDE_RIGHT};
 constexpr enum AEChannel AEChannelNamesDS[] = {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_LFE, AE_CH_BL,
                                                AE_CH_BR, AE_CH_SL, AE_CH_SR, AE_CH_NULL};
-
-struct DSDevice
-{
-  std::string name;
-  LPGUID lpGuid;
-};
-
 } // namespace
 
 using namespace Microsoft::WRL;
-
-static BOOL CALLBACK DSEnumCallback(LPGUID lpGuid, LPCTSTR lpcstrDescription, LPCTSTR lpcstrModule, LPVOID lpContext)
-{
-  DSDevice dev;
-  std::list<DSDevice> &enumerator = *static_cast<std::list<DSDevice>*>(lpContext);
-
-  dev.name = KODI::PLATFORM::WINDOWS::FromW(lpcstrDescription);
-
-  dev.lpGuid = lpGuid;
-
-  if (lpGuid)
-    enumerator.push_back(dev);
-
-  return TRUE;
-}
 
 CAESinkDirectSound::CAESinkDirectSound() :
   m_pBuffer       (nullptr),
@@ -125,56 +99,42 @@ std::unique_ptr<IAESink> CAESinkDirectSound::Create(std::string& device,
   return {};
 }
 
-bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
+bool CAESinkDirectSound::Initialize(AEAudioFormat& format, std::string& device)
 {
   if (m_initialized)
     return false;
 
   bool deviceIsBluetooth = false;
-  LPGUID deviceGUID = nullptr;
-  RPC_WSTR wszUuid  = nullptr;
+  GUID deviceGUID = {};
   HRESULT hr = E_FAIL;
   std::string strDeviceGUID = device;
-  std::list<DSDevice> DSDeviceList;
-  std::string deviceFriendlyName;
-  DirectSoundEnumerate(DSEnumCallback, &DSDeviceList);
+  std::string deviceFriendlyName = "unknown";
 
   if (StringUtils::EndsWithNoCase(device, "default"))
     strDeviceGUID = CAESinkFactoryWin::GetDefaultDeviceId();
 
-  for (std::list<DSDevice>::iterator itt = DSDeviceList.begin(); itt != DSDeviceList.end(); ++itt)
-  {
-    if ((*itt).lpGuid)
-    {
-      hr = (UuidToString((*itt).lpGuid, &wszUuid));
-      std::string sztmp = KODI::PLATFORM::WINDOWS::FromW(reinterpret_cast<wchar_t*>(wszUuid));
-      std::string szGUID = "{" + std::string(sztmp.begin(), sztmp.end()) + "}";
-      if (StringUtils::CompareNoCase(szGUID, strDeviceGUID) == 0)
-      {
-        deviceGUID = (*itt).lpGuid;
-        deviceFriendlyName = (*itt).name.c_str();
-        break;
-      }
-    }
-    if (hr == RPC_S_OK) RpcStringFree(&wszUuid);
-  }
+  hr = CLSIDFromString(KODI::PLATFORM::WINDOWS::ToW(strDeviceGUID).c_str(), &deviceGUID);
+  if (FAILED(hr))
+    CLog::LogF(LOGERROR, "Failed to convert the device '{}' to a GUID, with error {}.",
+               strDeviceGUID, CWIN32Util::FormatHRESULT(hr));
 
-  // Detect a Bluetooth device
-  for (const auto& device : CAESinkFactoryWin::GetRendererDetails())
+  for (const auto& detail : CAESinkFactoryWin::GetRendererDetails())
   {
-    if (StringUtils::CompareNoCase(device.strDeviceId, strDeviceGUID) != 0)
+    if (StringUtils::CompareNoCase(detail.strDeviceId, strDeviceGUID) != 0)
       continue;
 
-    if (device.strDeviceEnumerator == "BTHENUM")
+    if (detail.strDeviceEnumerator == "BTHENUM")
     {
       deviceIsBluetooth = true;
       CLog::LogF(LOGDEBUG, "Audio device '{}' is detected as Bluetooth device", deviceFriendlyName);
     }
 
+    deviceFriendlyName = detail.strDescription;
+
     break;
   }
 
-  hr = DirectSoundCreate(deviceGUID, m_pDSound.ReleaseAndGetAddressOf(), nullptr);
+  hr = DirectSoundCreate(&deviceGUID, m_pDSound.ReleaseAndGetAddressOf(), nullptr);
 
   if (FAILED(hr))
   {
@@ -182,6 +142,8 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
         LOGERROR,
         "Failed to create the DirectSound device {} with error {}, trying the default device.",
         deviceFriendlyName, CWIN32Util::FormatHRESULT(hr));
+
+    deviceFriendlyName = "default";
 
     hr = DirectSoundCreate(nullptr, m_pDSound.ReleaseAndGetAddressOf(), nullptr);
     if (FAILED(hr))
@@ -470,6 +432,7 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bo
       deviceInfo.m_channels =
           layoutsByChCount[std::max(std::min(detail.nChannels, DS_SPEAKER_COUNT), 2U)];
     deviceInfo.m_dataFormats.push_back(AEDataFormat(AE_FMT_FLOAT));
+
     if (detail.eDeviceType != AE_DEVTYPE_PCM)
     {
       deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
@@ -481,6 +444,7 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bo
       // signal that we can doe AE_FMT_RAW
       deviceInfo.m_dataFormats.push_back(AE_FMT_RAW);
     }
+
     if (detail.m_samplesPerSec)
       deviceInfo.m_sampleRates.push_back(std::min(detail.m_samplesPerSec, 192000UL));
     deviceInfo.m_deviceName = detail.strDeviceId;
