@@ -79,7 +79,7 @@ int CInputStreamPVRBase::Read(uint8_t* buf, int buf_size)
 
 int64_t CInputStreamPVRBase::Seek(int64_t offset, int whence)
 {
-  if (whence == SEEK_POSSIBLE)
+  if (whence == DVDSTREAM_SEEK_POSSIBLE)
     return CanSeek() ? 1 : 0;
 
   int64_t ret = SeekPVRStream(offset, whence);

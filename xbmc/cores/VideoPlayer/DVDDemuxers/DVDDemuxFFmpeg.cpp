@@ -349,7 +349,7 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
   else
   {
     bool seekable = true;
-    if (m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
+    if (m_pInput->Seek(0, DVDSTREAM_SEEK_POSSIBLE) == 0)
     {
       seekable = false;
     }
@@ -1215,8 +1215,7 @@ bool CDVDDemuxFFmpeg::SeekTime(double time, bool backwards, double* startpts)
     return true;
   }
 
-  if (!m_pInput->Seek(0, SEEK_POSSIBLE) &&
-      !m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG))
+  if (!m_pInput->Seek(0, DVDSTREAM_SEEK_POSSIBLE) && !m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG))
   {
     CLog::Log(LOGDEBUG, "{} - input stream reports it is not seekable", __FUNCTION__);
     return false;
