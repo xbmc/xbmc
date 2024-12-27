@@ -57,7 +57,7 @@ set(HEADERS AutoSwitch.h
             IProgressCallback.h
             InfoScanner.h
             LangInfo.h
-            LockType.h
+            LockMode.h
             MediaSource.h
             NfoFile.h
             PartyModeManager.h

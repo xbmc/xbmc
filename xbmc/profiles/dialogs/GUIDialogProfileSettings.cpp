@@ -71,7 +71,8 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
     dialog->m_sourcesMode = 2;
     dialog->m_locks = CProfile::CLock();
 
-    bool bLock = profileManager->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser;
+    bool bLock = profileManager->GetMasterProfile().getLockMode() != LockMode::EVERYONE &&
+                 !g_passwordManager.bMasterUser;
     dialog->m_locks.addonManager = bLock;
     dialog->m_locks.settings = (bLock) ? LOCK_LEVEL::ALL : LOCK_LEVEL::NONE;
     dialog->m_locks.files = bLock;
@@ -266,15 +267,17 @@ void CGUIDialogProfileSettings::OnSettingAction(const std::shared_ptr<const CSet
     {
       const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-      if (profileManager->GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE && !m_isDefault)
+      if (profileManager->GetMasterProfile().getLockMode() == LockMode::EVERYONE && !m_isDefault)
       {
         if (CGUIDialogYesNo::ShowAndGetInput(CVariant{20066}, CVariant{20118}))
           g_passwordManager.SetMasterLockMode(false);
-        if (profileManager->GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE)
+        if (profileManager->GetMasterProfile().getLockMode() == LockMode::EVERYONE)
           return;
       }
       if (CGUIDialogLockSettings::ShowAndGetLock(m_locks, m_isDefault ? 12360 : 20068,
-              profileManager->GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE || m_isDefault))
+                                                 profileManager->GetMasterProfile().getLockMode() ==
+                                                         LockMode::EVERYONE ||
+                                                     m_isDefault))
         m_needsSaving = true;
     }
     else
@@ -334,8 +337,8 @@ void CGUIDialogProfileSettings::InitializeSettings()
   if (!m_isDefault && m_showDetails)
     AddButton(group, SETTING_PROFILE_DIRECTORY, 20070, SettingLevel::Basic);
 
-  if (m_showDetails ||
-     (m_locks.mode == LOCK_MODE_EVERYONE && profileManager->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE))
+  if (m_showDetails || (m_locks.mode == LockMode::EVERYONE &&
+                        profileManager->GetMasterProfile().getLockMode() != LockMode::EVERYONE))
     AddButton(group, SETTING_PROFILE_LOCKS, 20066, SettingLevel::Basic);
 
   if (!m_isDefault && m_showDetails)
@@ -351,7 +354,7 @@ void CGUIDialogProfileSettings::InitializeSettings()
     entries.emplace_back(20062, 0);
     entries.emplace_back(20063, 1);
     entries.emplace_back(20061, 2);
-    if (profileManager->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
+    if (profileManager->GetMasterProfile().getLockMode() != LockMode::EVERYONE)
       entries.emplace_back(20107, 3);
 
     AddSpinner(groupMedia, SETTING_PROFILE_MEDIA, 20060, SettingLevel::Basic, m_dbMode, entries);

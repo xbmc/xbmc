@@ -54,7 +54,7 @@ bool CGUIPassword::IsItemUnlocked(T pItem,
 {
   const std::shared_ptr<CProfileManager> profileManager =
       CServiceBroker::GetSettingsComponent()->GetProfileManager();
-  if (profileManager->GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE)
+  if (profileManager->GetMasterProfile().getLockMode() == LockMode::EVERYONE)
     return true;
 
   while (pItem->m_iHasLock > LOCK_STATE_LOCK_BUT_UNLOCKED)
@@ -156,7 +156,7 @@ bool CGUIPassword::CheckStartUpLock()
 
   std::string strPassword = profileManager->GetMasterProfile().getLockCode();
 
-  if (profileManager->GetMasterProfile().getLockMode() == 0)
+  if (profileManager->GetMasterProfile().getLockMode() == LockMode::EVERYONE)
     iVerifyPasswordResult = 0;
   else
   {
@@ -234,11 +234,11 @@ bool CGUIPassword::IsProfileLockUnlocked(int iProfile, bool& bCanceled, bool pro
       return false;
 
     if (!prompt)
-      return (profile->getLockMode() == LOCK_MODE_EVERYONE);
+      return (profile->getLockMode() == LockMode::EVERYONE);
 
     if (profile->getDate().empty() &&
-       (profileManager->GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE ||
-        profile->getLockMode() == LOCK_MODE_EVERYONE))
+        (profileManager->GetMasterProfile().getLockMode() == LockMode::EVERYONE ||
+         profile->getLockMode() == LockMode::EVERYONE))
     {
       // user hasn't set a password and this is the first time they've used this account
       // so prompt for password/settings
@@ -247,7 +247,7 @@ bool CGUIPassword::IsProfileLockUnlocked(int iProfile, bool& bCanceled, bool pro
     }
     else
     {
-      if (profileManager->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
+      if (profileManager->GetMasterProfile().getLockMode() != LockMode::EVERYONE)
         // prompt user for profile lock code
         return CheckLock(profile->getLockMode(),profile->getLockCode(),20095,bCanceled);
     }
@@ -271,13 +271,15 @@ bool CGUIPassword::IsMasterLockUnlocked(bool bPromptUser, bool& bCanceled)
 
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-  if ((LOCK_MODE_EVERYONE < profileManager->GetMasterProfile().getLockMode() && !bMasterUser) && !bPromptUser)
+  if ((LockMode::EVERYONE < profileManager->GetMasterProfile().getLockMode() && !bMasterUser) &&
+      !bPromptUser)
   {
     // not unlocked, but calling code doesn't want to prompt user
     return false;
   }
 
-  if (g_passwordManager.bMasterUser || profileManager->GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE)
+  if (g_passwordManager.bMasterUser ||
+      profileManager->GetMasterProfile().getLockMode() == LockMode::EVERYONE)
     return true;
 
   if (iMasterLockRetriesLeft == 0)
@@ -340,21 +342,23 @@ void CGUIPassword::UpdateMasterLockRetryCount(bool bResetCount)
     g_passwordManager.iMasterLockRetriesLeft = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES); // user entered correct mastercode, reset retries to max allowed
 }
 
-bool CGUIPassword::CheckLock(LockType btnType, const std::string& strPassword, int iHeading)
+bool CGUIPassword::CheckLock(LockMode btnType, const std::string& strPassword, int iHeading)
 {
   bool bDummy;
   return CheckLock(btnType,strPassword,iHeading,bDummy);
 }
 
-bool CGUIPassword::CheckLock(LockType btnType, const std::string& strPassword, int iHeading, bool& bCanceled)
+bool CGUIPassword::CheckLock(LockMode btnType,
+                             const std::string& strPassword,
+                             int iHeading,
+                             bool& bCanceled)
 {
   bCanceled = false;
 
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-  if (btnType == LOCK_MODE_EVERYONE ||
-      strPassword == "-" ||
-      profileManager->GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE ||
+  if (btnType == LockMode::EVERYONE || strPassword == "-" ||
+      profileManager->GetMasterProfile().getLockMode() == LockMode::EVERYONE ||
       g_passwordManager.bMasterUser)
   {
     return true;
@@ -535,7 +539,7 @@ void CGUIPassword::LockSources(bool lock)
   {
     std::vector<CMediaSource>* shares = CMediaSourceSettings::GetInstance().GetSources(strType);
     for (std::vector<CMediaSource>::iterator it = shares->begin(); it != shares->end(); ++it)
-      if (it->m_iLockMode != LOCK_MODE_EVERYONE)
+      if (it->m_iLockMode != LockMode::EVERYONE)
         it->m_iHasLock = lock ? LOCK_STATE_LOCKED : LOCK_STATE_LOCK_BUT_UNLOCKED;
   }
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
@@ -550,10 +554,10 @@ void CGUIPassword::RemoveSourceLocks()
   {
     std::vector<CMediaSource>* shares = CMediaSourceSettings::GetInstance().GetSources(strType);
     for (std::vector<CMediaSource>::iterator it = shares->begin(); it != shares->end(); ++it)
-      if (it->m_iLockMode != LOCK_MODE_EVERYONE) // remove old info
+      if (it->m_iLockMode != LockMode::EVERYONE) // remove old info
       {
         it->m_iHasLock = LOCK_STATE_NO_LOCK;
-        it->m_iLockMode = LOCK_MODE_EVERYONE;
+        it->m_iLockMode = LockMode::EVERYONE;
 
         // remove locks from xml
         CMediaSourceSettings::GetInstance().UpdateSource(strType, it->strName, "lockmode", "0");
@@ -569,7 +573,8 @@ bool CGUIPassword::IsDatabasePathUnlocked(const std::string& strPath,
 {
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-  if (g_passwordManager.bMasterUser || profileManager->GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE)
+  if (g_passwordManager.bMasterUser ||
+      profileManager->GetMasterProfile().getLockMode() == LockMode::EVERYONE)
     return true;
 
   // Don't check plugin paths as they don't have an entry in sources.xml
@@ -598,7 +603,7 @@ bool CGUIPassword::IsMediaPathUnlocked(const std::shared_ptr<CProfileManager>& p
       !StringUtils::StartsWithNoCase(m_strMediaSourcePath, "library://"))
   {
     if (!g_passwordManager.bMasterUser &&
-        profileManager->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
+        profileManager->GetMasterProfile().getLockMode() != LockMode::EVERYONE)
     {
       std::vector<CMediaSource>& sources = *CMediaSourceSettings::GetInstance().GetSources(strType);
       bool bName = false;
@@ -648,25 +653,29 @@ void CGUIPassword::OnSettingAction(const std::shared_ptr<const CSetting>& settin
     SetMasterLockMode();
 }
 
-int CGUIPassword::VerifyPassword(LockType btnType, const std::string& strPassword, const std::string& strHeading)
+int CGUIPassword::VerifyPassword(LockMode btnType,
+                                 const std::string& strPassword,
+                                 const std::string& strHeading)
 {
   int iVerifyPasswordResult;
   switch (btnType)
   {
-  case LOCK_MODE_NUMERIC:
-    iVerifyPasswordResult = CGUIDialogNumeric::ShowAndVerifyPassword(const_cast<std::string&>(strPassword), strHeading, 0);
-    break;
-  case LOCK_MODE_GAMEPAD:
-    iVerifyPasswordResult = CGUIDialogGamepad::ShowAndVerifyPassword(const_cast<std::string&>(strPassword), strHeading, 0);
-    break;
-  case LOCK_MODE_QWERTY:
-    iVerifyPasswordResult = CGUIKeyboardFactory::ShowAndVerifyPassword(const_cast<std::string&>(strPassword), strHeading, 0);
-    break;
-  default:   // must not be supported, treat as unlocked
-    iVerifyPasswordResult = 0;
-    break;
+    case LockMode::NUMERIC:
+      iVerifyPasswordResult = CGUIDialogNumeric::ShowAndVerifyPassword(
+          const_cast<std::string&>(strPassword), strHeading, 0);
+      break;
+    case LockMode::GAMEPAD:
+      iVerifyPasswordResult = CGUIDialogGamepad::ShowAndVerifyPassword(
+          const_cast<std::string&>(strPassword), strHeading, 0);
+      break;
+    case LockMode::QWERTY:
+      iVerifyPasswordResult = CGUIKeyboardFactory::ShowAndVerifyPassword(
+          const_cast<std::string&>(strPassword), strHeading, 0);
+      break;
+    default: // must not be supported, treat as unlocked
+      iVerifyPasswordResult = 0;
+      break;
   }
 
   return iVerifyPasswordResult;
 }
-

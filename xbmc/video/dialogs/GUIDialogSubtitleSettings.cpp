@@ -213,7 +213,7 @@ bool CGUIDialogSubtitleSettings::Save()
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
   if (!g_passwordManager.CheckSettingLevelLock(SettingLevel::Expert) &&
-      profileManager->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
+      profileManager->GetMasterProfile().getLockMode() != LockMode::EVERYONE)
     return true;
 
   // prompt user if they are sure

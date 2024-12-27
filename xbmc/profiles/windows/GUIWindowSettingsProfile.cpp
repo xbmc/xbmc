@@ -192,7 +192,9 @@ void CGUIWindowSettingsProfile::LoadList()
     CFileItemPtr item(new CFileItem(profile->getName()));
     item->SetLabel2(profile->getDate());
     item->SetArt("thumb", profile->getThumb());
-    item->SetOverlayImage(profile->getLockMode() == LOCK_MODE_EVERYONE ? CGUIListItem::ICON_OVERLAY_NONE : CGUIListItem::ICON_OVERLAY_LOCKED);
+    item->SetOverlayImage(profile->getLockMode() == LockMode::EVERYONE
+                              ? CGUIListItem::ICON_OVERLAY_NONE
+                              : CGUIListItem::ICON_OVERLAY_LOCKED);
     m_listItems->Add(item);
   }
   {
@@ -245,7 +247,8 @@ bool CGUIWindowSettingsProfile::GetAutoLoginProfileChoice(int &iProfile)
   for (unsigned int i = 0; i < profileManager->GetNumberOfProfiles(); i++)
   {
     const CProfile *profile = profileManager->GetProfile(i);
-    const std::string& locked = g_localizeStrings.Get(profile->getLockMode() > 0 ? 20166 : 20165);
+    const std::string& locked =
+        g_localizeStrings.Get(static_cast<int>(profile->getLockMode()) > 0 ? 20166 : 20165);
     CFileItemPtr item(new CFileItem(profile->getName()));
     item->SetLabel2(locked); // lock setting
     std::string thumb = profile->getThumb();

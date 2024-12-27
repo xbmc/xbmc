@@ -8,11 +8,10 @@
 
 #pragma once
 
-#include "LockType.h"
+#include "LockMode.h"
 #include "SettingsLock.h"
 
 #include <string>
-#include <vector>
 
 class TiXmlNode;
 
@@ -24,10 +23,10 @@ public:
   class CLock
   {
   public:
-    CLock(LockType type = LOCK_MODE_EVERYONE, const std::string &password = "");
+    CLock(LockMode type = LockMode::EVERYONE, const std::string& password = "");
     void Validate();
 
-    LockType mode;
+    LockMode mode;
     std::string code;
     bool addonManager;
     LOCK_LEVEL::SETTINGS_LOCK settings;
@@ -51,7 +50,7 @@ public:
   const std::string& getDirectory() const { return m_directory;}
   const std::string& getThumb() const { return m_thumb;}
   const std::string& getLockCode() const { return m_locks.code;}
-  LockType getLockMode() const { return m_locks.mode; }
+  LockMode getLockMode() const { return m_locks.mode; }
 
   bool hasDatabases() const { return m_bDatabases; }
   bool canWriteDatabases() const { return m_bCanWrite; }

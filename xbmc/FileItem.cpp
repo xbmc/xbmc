@@ -573,7 +573,7 @@ void CFileItem::Initialize()
   m_lEndOffset = 0;
   m_iprogramCount = 0;
   m_idepth = 1;
-  m_iLockMode = LOCK_MODE_EVERYONE;
+  m_iLockMode = LockMode::EVERYONE;
   m_iBadPwdCount = 0;
   m_iHasLock = LOCK_STATE_NO_LOCK;
   m_bCanQueue = true;
@@ -641,7 +641,7 @@ void CFileItem::Archive(CArchive& ar)
     ar << m_lStartOffset;
     ar << m_lStartPartNumber;
     ar << m_lEndOffset;
-    ar << m_iLockMode;
+    ar << static_cast<int>(m_iLockMode);
     ar << m_strLockCode;
     ar << m_iBadPwdCount;
 
@@ -698,7 +698,7 @@ void CFileItem::Archive(CArchive& ar)
     ar >> m_lEndOffset;
     int temp;
     ar >> temp;
-    m_iLockMode = (LockType)temp;
+    m_iLockMode = static_cast<LockMode>(temp);
     ar >> m_strLockCode;
     ar >> m_iBadPwdCount;
 

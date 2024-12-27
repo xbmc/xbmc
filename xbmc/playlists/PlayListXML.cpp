@@ -140,7 +140,7 @@ bool CPlayListXML::Load( const std::string& strFileName )
        {
          newItem->m_strLockCode = lockpass;
          newItem->m_iHasLock = LOCK_STATE_LOCKED;
-         newItem->m_iLockMode = LOCK_MODE_NUMERIC;
+         newItem->m_iLockMode = LockMode::NUMERIC;
        }
 
        Add(newItem);

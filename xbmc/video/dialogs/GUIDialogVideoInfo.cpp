@@ -1455,8 +1455,9 @@ bool CGUIDialogVideoInfo::DeleteVideoItem(const std::shared_ptr<CFileItem>& item
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
   // check if the user is allowed to delete the actual file as well
-  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_ALLOWFILEDELETION) &&
-      (profileManager->GetCurrentProfile().getLockMode() == LOCK_MODE_EVERYONE ||
+  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_FILELISTS_ALLOWFILEDELETION) &&
+      (profileManager->GetCurrentProfile().getLockMode() == LockMode::EVERYONE ||
        !profileManager->GetCurrentProfile().filesLocked() ||
        g_passwordManager.IsMasterLockUnlocked(true)))
   {
