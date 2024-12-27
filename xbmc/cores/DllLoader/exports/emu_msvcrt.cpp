@@ -2009,7 +2009,7 @@ extern "C"
       SNativeIoControl d;
       d.request = request;
       d.param   = p1;
-      ret = pFile->IoControl(IOCTRL_NATIVE, &d);
+      ret = pFile->IoControl(IOControl::NATIVE, &d);
       if(ret<0)
         CLog::Log(LOGWARNING, "{} - {} request failed with error [{}] {}", __FUNCTION__, request,
                   errno, strerror(errno));

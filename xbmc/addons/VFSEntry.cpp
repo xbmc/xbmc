@@ -378,17 +378,17 @@ int64_t CVFSEntry::GetLength(void* ctx)
   return m_ifc.vfs->toAddon->get_length(m_ifc.vfs, ctx);
 }
 
-int CVFSEntry::IoControl(void* ctx, XFILE::EIoControl request, void* param)
+int CVFSEntry::IoControl(void* ctx, XFILE::IOControl request, void* param)
 {
   switch (request)
   {
-    case XFILE::EIoControl::IOCTRL_SEEK_POSSIBLE:
+    case XFILE::IOControl::SEEK_POSSIBLE:
     {
       if (!m_ifc.vfs->toAddon->io_control_get_seek_possible)
         return -1;
       return m_ifc.vfs->toAddon->io_control_get_seek_possible(m_ifc.vfs, ctx) ? 1 : 0;
     }
-    case XFILE::EIoControl::IOCTRL_CACHE_STATUS:
+    case XFILE::IOControl::CACHE_STATUS:
     {
       if (!m_ifc.vfs->toAddon->io_control_get_cache_status)
         return -1;
@@ -408,7 +408,7 @@ int CVFSEntry::IoControl(void* ctx, XFILE::EIoControl request, void* param)
       }
       return ret;
     }
-    case XFILE::EIoControl::IOCTRL_CACHE_SETRATE:
+    case XFILE::IOControl::CACHE_SETRATE:
     {
       if (!m_ifc.vfs->toAddon->io_control_set_cache_rate)
         return -1;
@@ -416,7 +416,7 @@ int CVFSEntry::IoControl(void* ctx, XFILE::EIoControl request, void* param)
       uint32_t& iParam = *static_cast<uint32_t*>(param);
       return m_ifc.vfs->toAddon->io_control_set_cache_rate(m_ifc.vfs, ctx, iParam) ? 1 : 0;
     }
-    case XFILE::EIoControl::IOCTRL_SET_RETRY:
+    case XFILE::IOControl::SET_RETRY:
     {
       if (!m_ifc.vfs->toAddon->io_control_set_retry)
         return -1;
@@ -426,8 +426,8 @@ int CVFSEntry::IoControl(void* ctx, XFILE::EIoControl request, void* param)
     }
 
     // Not by addon supported io's
-    case XFILE::EIoControl::IOCTRL_SET_CACHE:
-    case XFILE::EIoControl::IOCTRL_NATIVE:
+    case XFILE::IOControl::SET_CACHE:
+    case XFILE::IOControl::NATIVE:
     default:
       break;
   }
@@ -666,7 +666,7 @@ int64_t CVFSEntryIFileWrapper::GetLength()
   return m_addon->GetLength(m_context);
 }
 
-int CVFSEntryIFileWrapper::IoControl(XFILE::EIoControl request, void* param)
+int CVFSEntryIFileWrapper::IoControl(XFILE::IOControl request, void* param)
 {
   if (!m_context)
     return 0;

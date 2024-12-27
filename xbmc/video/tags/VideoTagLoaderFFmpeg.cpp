@@ -62,7 +62,7 @@ CVideoTagLoaderFFmpeg::CVideoTagLoaderFFmpeg(const CFileItem& item,
   m_fctx = avformat_alloc_context();
   m_fctx->pb = m_ioctx;
 
-  if (m_file->IoControl(IOCTRL_SEEK_POSSIBLE, nullptr) != 1)
+  if (m_file->IoControl(IOControl::SEEK_POSSIBLE, nullptr) != 1)
     m_ioctx->seekable = 0;
 
   const AVInputFormat* iformat = nullptr;

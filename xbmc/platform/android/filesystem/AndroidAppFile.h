@@ -32,7 +32,7 @@ public:
   int64_t Seek(int64_t, int) override { return -1; }
   int64_t GetPosition() override { return 0; }
   int GetChunkSize() override;
-  int IoControl(EIoControl request, void* param) override;
+  int IoControl(IOControl request, void* param) override;
 
   virtual unsigned int ReadIcon(unsigned char **lpBuf, unsigned int* width, unsigned int* height);
 

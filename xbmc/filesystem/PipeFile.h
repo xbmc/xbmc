@@ -47,7 +47,7 @@ public:
 
   bool Delete(const CURL& url) override;
   bool Rename(const CURL& url, const CURL& urlnew) override;
-  int IoControl(EIoControl request, void* param) override;
+  int IoControl(IOControl request, void* param) override;
 
   std::string GetName() const;
 

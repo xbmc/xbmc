@@ -119,7 +119,7 @@ bool CActiveAESound::Prepare()
     m_pFile = NULL;
     return false;
   }
-  m_isSeekPossible = m_pFile->IoControl(IOCTRL_SEEK_POSSIBLE, NULL) != 0;
+  m_isSeekPossible = m_pFile->IoControl(IOControl::SEEK_POSSIBLE, NULL) != 0;
   m_fileSize = m_pFile->GetLength();
   return true;
 }

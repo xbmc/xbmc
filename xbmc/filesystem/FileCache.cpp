@@ -118,13 +118,13 @@ bool CFileCache::Open(const CURL& url)
   const unsigned int cacheMemSize =
       settings->GetInt(CSettings::SETTING_FILECACHE_MEMORYSIZE) * 1024 * 1024;
 
-  m_source.IoControl(IOCTRL_SET_CACHE, this);
+  m_source.IoControl(IOControl::SET_CACHE, this);
 
   bool retry = false;
-  m_source.IoControl(IOCTRL_SET_RETRY, &retry); // We already handle retrying ourselves
+  m_source.IoControl(IOControl::SET_RETRY, &retry); // We already handle retrying ourselves
 
   // check if source can seek
-  m_seekPossible = m_source.IoControl(IOCTRL_SEEK_POSSIBLE, NULL);
+  m_seekPossible = m_source.IoControl(IOControl::SEEK_POSSIBLE, NULL);
 
   // Determine the best chunk size we can use
   m_chunkSize = CFile::DetermineChunkSize(m_source.GetChunkSize(),
@@ -266,7 +266,7 @@ void CFileCache::Process()
         {
           CLog::Log(LOGERROR, "CFileCache::{} - <{}> error {} seeking. Seek returned {}",
                     __FUNCTION__, m_sourcePath, GetLastError(), m_nSeekResult);
-          m_seekPossible = m_source.IoControl(IOCTRL_SEEK_POSSIBLE, NULL);
+          m_seekPossible = m_source.IoControl(IOControl::SEEK_POSSIBLE, NULL);
           sourceSeekFailed = true;
         }
       }
@@ -612,9 +612,9 @@ const std::string CFileCache::GetProperty(XFILE::FileProperty type, const std::s
   return m_source.GetImplementation()->GetProperty(type, name);
 }
 
-int CFileCache::IoControl(EIoControl request, void* param)
+int CFileCache::IoControl(IOControl request, void* param)
 {
-  if (request == IOCTRL_CACHE_STATUS)
+  if (request == IOControl::CACHE_STATUS)
   {
     SCacheStatus* status = (SCacheStatus*)param;
     status->maxforward = m_maxForward;
@@ -626,7 +626,7 @@ int CFileCache::IoControl(EIoControl request, void* param)
     return 0;
   }
 
-  if (request == IOCTRL_CACHE_SETRATE)
+  if (request == IOControl::CACHE_SETRATE)
   {
     m_writeRate = *static_cast<uint32_t*>(param);
 
@@ -644,7 +644,7 @@ int CFileCache::IoControl(EIoControl request, void* param)
     return 0;
   }
 
-  if (request == IOCTRL_SEEK_POSSIBLE)
+  if (request == IOControl::SEEK_POSSIBLE)
     return m_seekPossible;
 
   return -1;
