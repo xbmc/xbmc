@@ -57,13 +57,13 @@ struct SCacheStatus
   uint32_t lowrate; /**< low speed read rate (bytes/second) (if any, else 0) */
 };
 
-enum CACHE_BUFFER_MODES
+enum class CacheBufferMode
 {
-  CACHE_BUFFER_MODE_INTERNET = 0,
-  CACHE_BUFFER_MODE_ALL = 1,
-  CACHE_BUFFER_MODE_TRUE_INTERNET = 2,
-  CACHE_BUFFER_MODE_NONE = 3,
-  CACHE_BUFFER_MODE_NETWORK = 4,
+  INTERNET = 0,
+  ALL = 1,
+  TRUE_INTERNET = 2,
+  NONE = 3,
+  NETWORK = 4,
 };
 
 typedef enum {
