@@ -68,6 +68,7 @@ set(HEADERS AutoSwitch.h
             ServiceBroker.h
             ServiceManager.h
             SortFileItem.h
+            SourceType.h
             TextureCache.h
             TextureCacheJob.h
             TextureDatabase.h

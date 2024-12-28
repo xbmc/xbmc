@@ -411,7 +411,7 @@ std::vector<CMediaSource>& CGUIViewStateWindowVideoNav::GetSources()
     share.strName=item->GetLabel();
     share.strPath = item->GetPath();
     share.m_strThumbnailImage = item->GetArt("icon");
-    share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+    share.m_iDriveType = SourceType::LOCAL;
     m_sources.push_back(share);
   }
   return CGUIViewStateWindowVideo::GetSources();
@@ -460,7 +460,7 @@ std::vector<CMediaSource>& CGUIViewStateWindowVideoPlaylist::GetSources()
   //  Playlist share
   CMediaSource share;
   share.strPath= "playlistvideo://";
-  share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+  share.m_iDriveType = SourceType::LOCAL;
   m_sources.push_back(share);
 
   // no plugins in playlist window

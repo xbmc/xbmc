@@ -597,7 +597,7 @@ std::vector<CMediaSource>& CGUIViewStateWindowMusicNav::GetSources()
     share.strName = item->GetLabel();
     share.strPath = item->GetPath();
     share.m_strThumbnailImage = item->GetArt("icon");
-    share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+    share.m_iDriveType = SourceType::LOCAL;
     m_sources.push_back(share);
   }
 
@@ -649,7 +649,7 @@ std::vector<CMediaSource>& CGUIViewStateWindowMusicPlaylist::GetSources()
   //  Playlist share
   CMediaSource share;
   share.strPath = "playlistmusic://";
-  share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+  share.m_iDriveType = SourceType::LOCAL;
   m_sources.push_back(share);
 
   // CGUIViewState::GetSources would add music plugins

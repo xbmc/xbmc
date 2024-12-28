@@ -61,7 +61,7 @@ void CLinuxStorageProvider::GetLocalDrives(std::vector<CMediaSource>& localDrive
   share.strPath = getenv("HOME");
   share.strName = g_localizeStrings.Get(21440);
   share.m_ignore = true;
-  share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+  share.m_iDriveType = SourceType::LOCAL;
   localDrives.push_back(share);
   share.strPath = "/";
   share.strName = g_localizeStrings.Get(21453);

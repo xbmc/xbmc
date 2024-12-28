@@ -550,7 +550,7 @@ void CGUIDialogFileBrowser::OnClick(int iItem)
     }
     if ( pItem->m_bIsShareOrDrive )
     {
-      if ( !HaveDiscOrConnection( pItem->m_iDriveType ) )
+      if (!HaveDiscOrConnection(pItem->m_iDriveType))
         return ;
     }
     Update(strPath);
@@ -563,9 +563,9 @@ void CGUIDialogFileBrowser::OnClick(int iItem)
   }
 }
 
-bool CGUIDialogFileBrowser::HaveDiscOrConnection( int iDriveType )
+bool CGUIDialogFileBrowser::HaveDiscOrConnection(SourceType iDriveType)
 {
-  if (iDriveType == CMediaSource::SOURCE_TYPE_OPTICAL_DISC)
+  if (iDriveType == SourceType::OPTICAL_DISC)
   {
     if (!CServiceBroker::GetMediaManager().IsDiscInDrive())
     {
@@ -573,7 +573,7 @@ bool CGUIDialogFileBrowser::HaveDiscOrConnection( int iDriveType )
       return false;
     }
   }
-  else if ( iDriveType == CMediaSource::SOURCE_TYPE_REMOTE )
+  else if (iDriveType == SourceType::REMOTE)
   {
     //! @todo Handle not connected to a remote share
     if ( !CServiceBroker::GetNetwork().IsConnected() )

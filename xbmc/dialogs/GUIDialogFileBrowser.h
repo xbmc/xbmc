@@ -82,7 +82,7 @@ protected:
   void OnSort();
   void ClearFileItems();
   void Update(const std::string &strDirectory);
-  bool HaveDiscOrConnection( int iDriveType );
+  bool HaveDiscOrConnection(SourceType iDriveType);
   bool OnPopupMenu(int iItem);
   void OnAddNetworkLocation();
   void OnAddMediaSource();

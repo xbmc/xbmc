@@ -14,6 +14,7 @@
  */
 
 #include "LockMode.h"
+#include "SourceType.h"
 #include "XBDateTime.h"
 #include "guilib/GUIListItem.h"
 #include "threads/CriticalSection.h"
@@ -28,6 +29,7 @@
 #include <utility>
 #include <vector>
 
+class CMediaSource;
 enum class VideoDbContentType;
 
 namespace ADDON
@@ -78,8 +80,6 @@ typedef std::shared_ptr<const IEvent> EventPtr;
 
 /* special startoffset used to indicate that we wish to resume */
 #define STARTOFFSET_RESUME (-1)
-
-class CMediaSource;
 
 class CBookmark;
 
@@ -539,7 +539,9 @@ public:
   void SetFromSong(const CSong &song);
 
   bool m_bIsShareOrDrive;    ///< is this a root share/drive
-  int m_iDriveType;     ///< If \e m_bIsShareOrDrive is \e true, use to get the share type. Types see: CMediaSource::m_iDriveType
+  /// If \e m_bIsShareOrDrive is \e true, use to get the share type.
+  /// Types see: CMediaSource::m_iDriveType
+  SourceType m_iDriveType;
   CDateTime m_dateTime;             ///< file creation date & time
   int64_t m_dwSize;             ///< file size (0 for folders)
   std::string m_strDVDLabel;

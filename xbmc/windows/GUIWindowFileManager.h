@@ -59,7 +59,7 @@ protected:
   void Refresh();
   void Refresh(int iList);
   int GetSelectedItem(int iList);
-  bool HaveDiscOrConnection( std::string& strPath, int iDriveType );
+  bool HaveDiscOrConnection(std::string& strPath, SourceType iDriveType);
   void GetDirectoryHistoryString(const CFileItem* pItem, std::string& strHistoryString);
   bool GetDirectory(int iList, const std::string &strDirectory, CFileItemList &items);
   int NumSelected(int iList);

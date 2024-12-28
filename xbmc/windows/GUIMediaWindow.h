@@ -19,6 +19,8 @@
 
 class CFileItemList;
 class CGUIViewState;
+enum class SourceType;
+
 namespace
 {
 class CGetDirectoryItems;
@@ -146,7 +148,7 @@ protected:
   virtual bool GetAdvanceFilteredItems(CFileItemList &items);
 
   // check for a disc or connection
-  virtual bool HaveDiscOrConnection(const std::string& strPath, int iDriveType);
+  virtual bool HaveDiscOrConnection(const std::string& strPath, SourceType iDriveType);
   void ShowShareErrorMessage(CFileItem* pItem) const;
 
   void SaveSelectedItemInHistory();

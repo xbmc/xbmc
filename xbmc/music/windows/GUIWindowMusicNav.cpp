@@ -943,7 +943,7 @@ void CGUIWindowMusicNav::AddSearchFolder()
       CMediaSource share;
       share.strName=g_localizeStrings.Get(137); // Search
       share.strPath = "musicsearch://";
-      share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+      share.m_iDriveType = SourceType::LOCAL;
       sources.push_back(share);
     }
     m_rootDir.SetSources(sources);

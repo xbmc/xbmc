@@ -135,11 +135,11 @@ CMediaSource CUDiskDevice::ToMediaShare() const
   else
     source.strName = m_Label;
   if (m_isOptical)
-    source.m_iDriveType = CMediaSource::SOURCE_TYPE_OPTICAL_DISC;
+    source.m_iDriveType = SourceType::OPTICAL_DISC;
   else if (m_isSystemInternal)
-    source.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+    source.m_iDriveType = SourceType::LOCAL;
   else
-    source.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOVABLE;
+    source.m_iDriveType = SourceType::REMOVABLE;
   source.m_ignore = true;
   return source;
 }

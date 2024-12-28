@@ -322,7 +322,7 @@ CMediaSource CMediaManager::ComputeRootAddonTypeSource(const std::string& type,
   source.strPath = "addons://sources/" + type + "/";
   source.strName = label;
   source.m_strThumbnailImage = thumb;
-  source.m_iDriveType = CMediaSource::SOURCE_TYPE_VPATH;
+  source.m_iDriveType = SourceType::VPATH;
   source.m_ignore = true;
   return source;
 }
@@ -613,8 +613,7 @@ std::string CMediaManager::GetDiscPath()
   m_platformStorage->GetRemovableDrives(drives);
   for(unsigned i = 0; i < drives.size(); ++i)
   {
-    if (drives[i].m_iDriveType == CMediaSource::SOURCE_TYPE_OPTICAL_DISC &&
-        !drives[i].strPath.empty())
+    if (drives[i].m_iDriveType == SourceType::OPTICAL_DISC && !drives[i].strPath.empty())
       return drives[i].strPath;
   }
 

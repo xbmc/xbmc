@@ -9,6 +9,7 @@
 #pragma once
 
 #include "LockMode.h"
+#include "SourceType.h"
 #include "media/MediaLockState.h"
 
 #include <string>
@@ -22,17 +23,6 @@
 class CMediaSource final
 {
 public:
-  enum SourceType
-  {
-    SOURCE_TYPE_UNKNOWN = 0,
-    SOURCE_TYPE_LOCAL = 1,
-    SOURCE_TYPE_OPTICAL_DISC = 2,
-    SOURCE_TYPE_VIRTUAL_OPTICAL_DISC = 3,
-    SOURCE_TYPE_REMOTE = 4,
-    SOURCE_TYPE_VPATH = 5,
-    SOURCE_TYPE_REMOVABLE = 6
-  };
-
   bool operator==(const CMediaSource &right) const;
 
   void FromNameAndPaths(const std::string &category, const std::string &name, const std::vector<std::string> &paths);
@@ -57,7 +47,7 @@ public:
   - SOURCE_TYPE_REMOTE \n
   Network source.
   */
-  SourceType m_iDriveType = SOURCE_TYPE_UNKNOWN;
+  SourceType m_iDriveType = SourceType::UNKNOWN;
 
   /*!
   \brief The type of Lock UI to show when accessing the media source.

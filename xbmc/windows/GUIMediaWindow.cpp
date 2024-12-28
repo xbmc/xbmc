@@ -1204,9 +1204,9 @@ bool CGUIMediaWindow::OnSelect(int item)
  * Checks if there is a disc in the dvd drive and whether the
  * network is connected or not.
  */
-bool CGUIMediaWindow::HaveDiscOrConnection(const std::string& strPath, int iDriveType)
+bool CGUIMediaWindow::HaveDiscOrConnection(const std::string& strPath, SourceType iDriveType)
 {
-  if (iDriveType == CMediaSource::SOURCE_TYPE_OPTICAL_DISC)
+  if (iDriveType == SourceType::OPTICAL_DISC)
   {
     if (!CServiceBroker::GetMediaManager().IsDiscInDrive(strPath))
     {
@@ -1214,7 +1214,7 @@ bool CGUIMediaWindow::HaveDiscOrConnection(const std::string& strPath, int iDriv
       return false;
     }
   }
-  else if (iDriveType==CMediaSource::SOURCE_TYPE_REMOTE)
+  else if (iDriveType == SourceType::REMOTE)
   {
     //! @todo Handle not connected to a remote share
     if (!CServiceBroker::GetNetwork().IsConnected())
@@ -1240,7 +1240,7 @@ void CGUIMediaWindow::ShowShareErrorMessage(CFileItem* pItem) const
 
   if (url.IsProtocol("smb") && url.GetHostName().empty()) //  smb workgroup
     idMessageText = 15303; // Workgroup not found
-  else if (pItem->m_iDriveType == CMediaSource::SOURCE_TYPE_REMOTE || URIUtils::IsRemote(pItem->GetPath()))
+  else if (pItem->m_iDriveType == SourceType::REMOTE || URIUtils::IsRemote(pItem->GetPath()))
     idMessageText = 15301; // Could not connect to network server
   else
     idMessageText = 15300; // Path not found or invalid
@@ -1371,7 +1371,7 @@ void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, std::str
 
     // History string of the DVD drive
     // must be handled separately
-    if (pItem->m_iDriveType == CMediaSource::SOURCE_TYPE_OPTICAL_DISC)
+    if (pItem->m_iDriveType == SourceType::OPTICAL_DISC)
     {
       // Remove disc label from item label
       // and use as history string, m_strPath

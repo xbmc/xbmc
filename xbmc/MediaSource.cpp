@@ -46,22 +46,22 @@ void CMediaSource::FromNameAndPaths(const std::string &category, const std::stri
   m_allowSharing = true;
 
   if (URIUtils::IsMultiPath(strPath))
-    m_iDriveType = SOURCE_TYPE_VPATH;
+    m_iDriveType = SourceType::VPATH;
   else if (StringUtils::StartsWithNoCase(strPath, "udf:"))
   {
-    m_iDriveType = SOURCE_TYPE_VIRTUAL_OPTICAL_DISC;
+    m_iDriveType = SourceType::VIRTUAL_OPTICAL_DISC;
     strPath = "D:\\";
   }
   else if (URIUtils::IsISO9660(strPath))
-    m_iDriveType = SOURCE_TYPE_VIRTUAL_OPTICAL_DISC;
+    m_iDriveType = SourceType::VIRTUAL_OPTICAL_DISC;
   else if (URIUtils::IsDVD(strPath))
-    m_iDriveType = SOURCE_TYPE_OPTICAL_DISC;
+    m_iDriveType = SourceType::OPTICAL_DISC;
   else if (URIUtils::IsRemote(strPath))
-    m_iDriveType = SOURCE_TYPE_REMOTE;
+    m_iDriveType = SourceType::REMOTE;
   else if (URIUtils::IsHD(strPath))
-    m_iDriveType = SOURCE_TYPE_LOCAL;
+    m_iDriveType = SourceType::LOCAL;
   else
-    m_iDriveType = SOURCE_TYPE_UNKNOWN;
+    m_iDriveType = SourceType::UNKNOWN;
   // check - convert to url and back again to make sure strPath is accurate
   // in terms of what we expect
   strPath = CURL(strPath).Get();

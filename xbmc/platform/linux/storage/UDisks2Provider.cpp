@@ -184,11 +184,11 @@ CMediaSource CUDisks2Provider::Filesystem::ToMediaShare() const
   source.strPath = m_mountPoint;
   source.strName = GetDisplayName();
   if (IsOptical())
-    source.m_iDriveType = CMediaSource::SOURCE_TYPE_OPTICAL_DISC;
+    source.m_iDriveType = SourceType::OPTICAL_DISC;
   else if (m_block->m_isSystem)
-    source.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+    source.m_iDriveType = SourceType::LOCAL;
   else
-    source.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOVABLE;
+    source.m_iDriveType = SourceType::REMOVABLE;
   source.m_ignore = true;
   return source;
 }
