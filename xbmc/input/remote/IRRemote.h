@@ -86,6 +86,9 @@
 
 #define XINPUT_IR_REMOTE_PRINT 240
 
+#define XINPUT_IR_REMOTE_FAVORITE_MENU 241
+#define XINPUT_IR_REMOTE_LAST 242
+
 // Reserved 256 -> ...
 // Key.h
 // KEY_BUTTON_*
