@@ -453,7 +453,9 @@ PLAYLIST::Id GetPlayListId(const CFileItem& item)
   return playlistId;
 }
 
-int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
+int PlayOrQueueMedia(const std::vector<std::string>& params,
+                     bool forcePlay,
+                     const std::shared_ptr<CGUIListItem>& itemIn)
 {
   // restore to previous window if needed
   if( CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW ||
@@ -468,11 +470,19 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
   appPower->ResetScreenSaver();
   appPower->WakeUpScreenSaverAndDPMS();
 
-  CFileItem item(params[0], URIUtils::HasSlashAtEnd(params[0], true));
+  CFileItem item;
+  if (itemIn && itemIn->IsFileItem())
+  {
+    item = *std::static_pointer_cast<CFileItem>(itemIn);
+  }
+  else
+  {
+    item = {params[0], URIUtils::HasSlashAtEnd(params[0], true)};
 
-  // at this point the item instance has only the path and the folder flag set. We
-  // need some extended item properties to process resume successfully. Load them.
-  item.LoadDetails();
+    // at this point the item instance has only the path and the folder flag set. We
+    // need some extended item properties to process resume successfully. Load them.
+    item.LoadDetails();
+  }
 
   if ((VIDEO::IsVideo(item) && !g_passwordManager.IsVideoUnlocked()) ||
       (MUSIC::IsAudio(item) && !g_passwordManager.IsMusicUnlocked()))
@@ -495,11 +505,8 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
       CMediaSettings::GetInstance().SetMediaStartWindowed(true);
     else if (StringUtils::EqualsNoCase(params[i], "resume"))
     {
-      // Force the item to resume (if applicable).
-      // If item is provided by a plugin, we don't know if this can be resumed or not at this point,
-      // that information was lost when the item was turned into a string but we were told to resume
-      // so we will try to do that.
-      if (item.IsPlugin() || VIDEO::UTILS::GetItemResumeInformation(item).isResumable)
+      // force the item to resume (if applicable)
+      if (VIDEO::UTILS::GetItemResumeInformation(item).isResumable)
         item.SetStartOffset(STARTOFFSET_RESUME);
       else
         item.SetStartOffset(0);
@@ -671,7 +678,12 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
  */
 int PlayMedia(const std::vector<std::string>& params)
 {
-  return PlayOrQueueMedia(params, true);
+  return PlayOrQueueMedia(params, true, nullptr);
+}
+
+int PlayMediaEx(const std::vector<std::string>& params, const std::shared_ptr<CGUIListItem>& item)
+{
+  return PlayOrQueueMedia(params, true, item);
 }
 
 /*! \brief Queue media in the video or music playlist, according to type of media items. If both audio and video items are contained, queue to video
@@ -690,7 +702,12 @@ int PlayMedia(const std::vector<std::string>& params)
  */
 int QueueMedia(const std::vector<std::string>& params)
 {
-  return PlayOrQueueMedia(params, false);
+  return PlayOrQueueMedia(params, false, nullptr);
+}
+
+int QueueMediaEx(const std::vector<std::string>& params, const std::shared_ptr<CGUIListItem>& item)
+{
+  return PlayOrQueueMedia(params, false, item);
 }
 
 } // unnamed namespace
@@ -878,8 +895,8 @@ CBuiltins::CommandMap CPlayerBuiltins::GetOperations() const
            {"playlist.clear",      {"Clear the current playlist", 0, ClearPlaylist}},
            {"playlist.playoffset", {"Start playing from a particular offset in the playlist", 1, PlayOffset}},
            {"playercontrol",       {"Control the music or video player", 1, PlayerControl}},
-           {"playmedia",           {"Play the specified media file (or playlist)", 1, PlayMedia}},
-           {"queuemedia",          {"Queue the specified media in video or music playlist", 1, QueueMedia}},
+           {"playmedia",           {"Play the specified media file (or playlist)", 1, PlayMedia, PlayMediaEx}},
+           {"queuemedia",          {"Queue the specified media in video or music playlist", 1, QueueMedia, QueueMediaEx}},
            {"playwith",            {"Play the selected item with the specified core", 1, PlayWith}},
            {"seek",                {"Performs a seek in seconds on the current playing media file", 1, Seek}},
            {"subtitleshiftup",     {"Shift up the subtitle position", 0, SubtitleShiftUp}},

@@ -142,7 +142,8 @@ void CBuiltins::GetHelp(std::string &help)
   }
 }
 
-int CBuiltins::Execute(const std::string& execString)
+int CBuiltins::Execute(const std::string& execString,
+                       const std::shared_ptr<CGUIListItem>& item /*= nullptr*/)
 {
   const CExecString exec(execString);
   if (!exec.IsValid())
@@ -155,7 +156,12 @@ int CBuiltins::Execute(const std::string& execString)
   if (it != m_command.end())
   {
     if (it->second.parameters == 0 || params.size() >= it->second.parameters)
-      return it->second.Execute(params);
+    {
+      if (item && it->second.ExecuteEx)
+        return it->second.ExecuteEx(params, item);
+      else
+        return it->second.Execute(params);
+    }
     else
     {
       CLog::Log(LOGERROR, "{0} called with invalid number of parameters (should be: {1}, is {2})",
