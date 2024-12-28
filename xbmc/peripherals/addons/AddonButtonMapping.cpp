@@ -8,8 +8,8 @@
 
 #include "AddonButtonMapping.h"
 
-#include "input/joysticks/generic/ButtonMapping.h"
 #include "input/joysticks/interfaces/IButtonMapper.h"
+#include "input/joysticks/mapping/ButtonMapping.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/addons/AddonButtonMap.h"
 #include "utils/log.h"
