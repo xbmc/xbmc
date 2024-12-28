@@ -482,7 +482,7 @@ bool CExternalPlayer::ExecuteAppAndroid(const char* strSwitches,const char* strP
     CLog::Log(LOGINFO, "{}: Failure", __FUNCTION__);
   }
 
-  return (ret == 0);
+  return ret;
 }
 #endif
 
