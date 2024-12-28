@@ -18,9 +18,9 @@ class CFileItem;
 namespace CONTEXTMENU
 {
 
-struct CMusicInfo : CStaticContextMenuAction
+struct CMusicInfoBase : CStaticContextMenuAction
 {
-  explicit CMusicInfo(MediaType mediaType);
+  explicit CMusicInfoBase(MediaType mediaType);
   bool IsVisible(const CFileItem& item) const override;
   bool Execute(const std::shared_ptr<CFileItem>& item) const override;
 
@@ -28,19 +28,25 @@ private:
   const MediaType m_mediaType;
 };
 
-struct CAlbumInfo : CMusicInfo
+struct CMusicInfo : CMusicInfoBase
 {
-  CAlbumInfo() : CMusicInfo(MediaTypeAlbum) {}
+  CMusicInfo() : CMusicInfoBase(MediaTypeMusic) {}
+  bool IsVisible(const CFileItem& item) const override;
 };
 
-struct CArtistInfo : CMusicInfo
+struct CAlbumInfo : CMusicInfoBase
 {
-  CArtistInfo() : CMusicInfo(MediaTypeArtist) {}
+  CAlbumInfo() : CMusicInfoBase(MediaTypeAlbum) {}
 };
 
-struct CSongInfo : CMusicInfo
+struct CArtistInfo : CMusicInfoBase
 {
-  CSongInfo() : CMusicInfo(MediaTypeSong) {}
+  CArtistInfo() : CMusicInfoBase(MediaTypeArtist) {}
+};
+
+struct CSongInfo : CMusicInfoBase
+{
+  CSongInfo() : CMusicInfoBase(MediaTypeSong) {}
 };
 
 struct CMusicBrowse : CStaticContextMenuAction

@@ -36,12 +36,12 @@
 namespace CONTEXTMENU
 {
 
-CVideoInfo::CVideoInfo(MediaType mediaType)
+CVideoInfoBase::CVideoInfoBase(MediaType mediaType)
   : CStaticContextMenuAction(19033), m_mediaType(std::move(mediaType))
 {
 }
 
-bool CVideoInfo::IsVisible(const CFileItem& item) const
+bool CVideoInfoBase::IsVisible(const CFileItem& item) const
 {
   if (!item.HasVideoInfoTag())
     return false;
@@ -52,10 +52,22 @@ bool CVideoInfo::IsVisible(const CFileItem& item) const
   return item.GetVideoInfoTag()->m_type == m_mediaType;
 }
 
-bool CVideoInfo::Execute(const std::shared_ptr<CFileItem>& item) const
+bool CVideoInfoBase::Execute(const std::shared_ptr<CFileItem>& item) const
 {
   CGUIDialogVideoInfo::ShowFor(*item);
   return true;
+}
+
+bool CVideoInfo::IsVisible(const CFileItem& item) const
+{
+  if (CVideoInfoBase::IsVisible(item))
+    return true;
+
+  if (item.m_bIsFolder)
+    return false;
+
+  const auto* tag{item.GetVideoInfoTag()};
+  return tag && tag->m_type == MediaTypeNone && !tag->IsEmpty() && item.IsVideo();
 }
 
 bool CVideoRemoveResumePoint::IsVisible(const CFileItem& itemIn) const
