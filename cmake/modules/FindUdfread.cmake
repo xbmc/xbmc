@@ -41,7 +41,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       unset(UDFREAD_LIBRARIES)
     endif()
   else()
-    find_package(PkgConfig)
+    find_package(PkgConfig QUIET)
     pkg_check_modules(libudfread libudfread IMPORTED_TARGET GLOBAL QUIET)
 
     include(cmake/scripts/common/ModuleHelpers.cmake)

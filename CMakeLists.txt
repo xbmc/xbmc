@@ -172,7 +172,7 @@ if (NOT PLATFORMDEFS_DIR STREQUAL "")
   list(APPEND INCLUDES ${CMAKE_SOURCE_DIR}/xbmc/${PLATFORMDEFS_DIR})
 endif()
 
-find_package(PkgConfig)
+find_package(PkgConfig QUIET)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED QUIET)
 list(APPEND DEPLIBS ${CMAKE_THREAD_LIBS_INIT})

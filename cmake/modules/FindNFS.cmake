@@ -67,7 +67,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                    HINTS ${DEPENDS_PATH}/include
                                    ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
     else()
-      find_package(PkgConfig)
+      find_package(PkgConfig QUIET)
       # Try pkgconfig based search as last resort
       if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWS_STORE))
         if(NFS_FIND_VERSION)

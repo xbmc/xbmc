@@ -35,7 +35,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
     BUILD_DEP_TARGET()
   else()
-    find_package(PkgConfig)
+    find_package(PkgConfig QUIET)
     # Do not use pkgconfig on windows
     if(PKG_CONFIG_FOUND AND NOT WIN32)
       pkg_check_modules(PC_DAV1D dav1d QUIET)

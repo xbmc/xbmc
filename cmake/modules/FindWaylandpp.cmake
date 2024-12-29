@@ -7,7 +7,7 @@
 #   ${APP_NAME_LC}::Waylandpp   - The waylandpp library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  find_package(PkgConfig)
+  find_package(PkgConfig QUIET)
   pkg_check_modules(PC_WAYLANDPP wayland-client++ wayland-egl++ wayland-cursor++ QUIET)
 
   if(PC_WAYLANDPP_FOUND)

@@ -9,7 +9,7 @@
 #   ${APP_NAME_LC}::Xext - The X11 extension library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  find_package(PkgConfig)
+  find_package(PkgConfig QUIET)
   if(PKG_CONFIG_FOUND)
     pkg_check_modules(PC_X x11 xext QUIET)
   endif()

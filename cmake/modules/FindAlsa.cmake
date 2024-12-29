@@ -8,7 +8,7 @@
 #   ${APP_NAME_LC}::Alsa   - The Alsa library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  find_package(PkgConfig)
+  find_package(PkgConfig QUIET)
 
   if(Alsa_FIND_VERSION)
     if(Alsa_FIND_VERSION_EXACT)

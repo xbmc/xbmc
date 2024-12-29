@@ -11,7 +11,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   find_package(Cdio)
 
   if(Cdio_FOUND)
-    find_package(PkgConfig)
+    find_package(PkgConfig QUIET)
     if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWS_STORE))
       if(Iso9660pp_FIND_VERSION)
         if(Iso9660pp_FIND_VERSION_EXACT)

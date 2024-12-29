@@ -8,7 +8,7 @@
 
 if(NOT wayland::waylandppscanner)
 
-  find_package(PkgConfig)
+  find_package(PkgConfig QUIET)
   pkg_check_modules(PC_WAYLANDPP_SCANNER wayland-scanner++ QUIET)
 
   if(PC_WAYLANDPP_SCANNER_FOUND)

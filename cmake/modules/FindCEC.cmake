@@ -89,7 +89,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                 ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
       set(CEC_VERSION ${libcec_VERSION})
     else()
-      find_package(PkgConfig)
+      find_package(PkgConfig QUIET)
       # Fallback to pkg-config and individual lib/include file search
       if(PKG_CONFIG_FOUND)
         pkg_check_modules(PC_CEC libcec QUIET)

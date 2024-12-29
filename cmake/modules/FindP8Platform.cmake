@@ -46,7 +46,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} OR P8Platform_FIND_REQU
   else()
     # p8-platform cmake config is terrible for modern cmake. For now just use pkgconfig
     # and manual find_* 
-    find_package(PkgConfig)
+    find_package(PkgConfig QUIET)
     # Do not use pkgconfig on windows
     if(PKG_CONFIG_FOUND AND NOT WIN32)
       pkg_check_modules(PC_P8PLATFORM p8-platform QUIET)

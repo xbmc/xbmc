@@ -14,7 +14,7 @@
 #
 
 if(NOT TARGET Brotli::Brotli)
-  find_package(PkgConfig)
+  find_package(PkgConfig QUIET)
   if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWSSTORE))
     pkg_check_modules(BROTLICOMMON libbrotlicommon QUIET)
     # First item is the full path of the library file found
