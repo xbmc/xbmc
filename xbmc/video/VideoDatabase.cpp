@@ -10293,7 +10293,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
 
         // if bluray:// get actual path
         if (URIUtils::IsProtocol(fullPath, "bluray"))
-          fullPath = URIUtils::GetBlurayPath(fullPath);
+          fullPath = URIUtils::GetBlurayFile(fullPath);
 
         bool del = true;
         if (URIUtils::IsPlugin(fullPath))
@@ -10932,7 +10932,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
                                     URIUtils::GetFileName(nfoFile));
           else if (URIUtils::IsBlurayPath(item.GetDynPath()))
             nfoFile =
-                URIUtils::ReplaceExtension(URIUtils::GetBlurayPath(item.GetDynPath()), ".nfo");
+                URIUtils::ReplaceExtension(URIUtils::GetBlurayFile(item.GetDynPath()), ".nfo");
 
           if (overwrite || !CFile::Exists(nfoFile, false))
           {
@@ -11255,7 +11255,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
       {
         std::string file{pDS->fv("strPath").get_asString() + pDS->fv("strFileName").get_asString()};
         if (URIUtils::IsBlurayPath(file))
-          file = URIUtils::GetBlurayPath(file);
+          file = URIUtils::GetBlurayFile(file);
         fileMap.insert({file, index});
         pDS->next();
         index++;
@@ -11319,7 +11319,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
 
             if (URIUtils::IsBlurayPath(item.GetDynPath()))
               nfoFile =
-                  URIUtils::ReplaceExtension(URIUtils::GetBlurayPath(item.GetDynPath()), ".nfo");
+                  URIUtils::ReplaceExtension(URIUtils::GetBlurayFile(item.GetDynPath()), ".nfo");
 
             if (overwrite || !CFile::Exists(nfoFile, false))
             {

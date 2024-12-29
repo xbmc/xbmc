@@ -1901,30 +1901,27 @@ std::string CUtil::GetFrameworksPath(bool forPython)
   return strFrameworksPath;
 }
 
-void CUtil::GetVideoBasePathAndFileName(const std::string& videoPath, std::string& basePath, std::string& videoFileName)
+void CUtil::GetVideoBasePathAndFileName(const std::string& videoPath,
+                                        std::string& basePath,
+                                        std::string& videoFileName)
 {
   CFileItem item(videoPath, false);
-  videoFileName = URIUtils::ReplaceExtension(URIUtils::GetFileName(videoPath), "");
 
-  if (item.HasVideoInfoTag())
-    basePath = item.GetVideoInfoTag()->m_basePath;
-
-  if (basePath.empty() && item.IsOpticalMediaFile())
-    basePath = item.GetLocalMetadataPath();
-
-  CURL url(videoPath);
-  if (basePath.empty() && url.IsProtocol("bluray"))
+  if (item.IsOpticalMediaFile() || URIUtils::IsBlurayPath(item.GetDynPath()))
   {
-    basePath = url.GetHostName();
-    videoFileName = URIUtils::ReplaceExtension(GetTitleFromPath(url.GetHostName()), "");
-
-    url = CURL(url.GetHostName());
-    if (url.IsProtocol("udf"))
-      basePath = URIUtils::GetParentPath(url.GetHostName());
+    basePath = item.GetLocalMetadataPath();
+    videoFileName = URIUtils::ReplaceExtension(GetTitleFromPath(basePath), "");
   }
+  else
+  {
+    videoFileName = URIUtils::ReplaceExtension(URIUtils::GetFileName(videoPath), "");
 
-  if (basePath.empty())
-    basePath = URIUtils::GetBasePath(videoPath);
+    if (item.HasVideoInfoTag())
+      basePath = item.GetVideoInfoTag()->m_basePath;
+
+    if (basePath.empty())
+      basePath = URIUtils::GetBasePath(videoPath);
+  }
 }
 
 void CUtil::GetItemsToScan(const std::string& videoPath,

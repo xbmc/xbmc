@@ -466,7 +466,7 @@ std::string URIUtils::GetBasePath(const std::string& strPath)
   return strDirectory;
 }
 
-std::string URIUtils::GetBlurayPath(const std::string& path)
+std::string URIUtils::GetBlurayFile(const std::string& path)
 {
   if (IsBlurayPath(path))
   {
@@ -480,6 +480,29 @@ std::string URIUtils::GetBlurayPath(const std::string& path)
       return url2.Get() + "BDMV/index.bdmv";
   }
   return path;
+}
+
+std::string URIUtils::GetDiscBase(std::string file)
+{
+  if (IsBlurayPath(file))
+    file = GetBlurayFile(file);
+
+  std::string parent{GetParentPath(file)};
+  std::string parentFolder{parent};
+  RemoveSlashAtEnd(parentFolder);
+  parentFolder = GetFileName(parentFolder);
+  if (StringUtils::EqualsNoCase(parentFolder, "VIDEO_TS") ||
+      StringUtils::EqualsNoCase(parentFolder, "BDMV"))
+    return GetParentPath(parent); // go back up another one
+  return parent;
+}
+
+std::string URIUtils::GetDiscBasePath(const std::string& file)
+{
+  std::string base{GetDiscBase(file)};
+  if (IsDiscImage(base))
+    return GetDirectory(base);
+  return base;
 }
 
 std::string URLEncodePath(const std::string& strPath)
