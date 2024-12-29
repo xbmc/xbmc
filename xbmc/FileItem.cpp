@@ -611,6 +611,7 @@ void CFileItem::Archive(CArchive& ar)
     ar << m_bIsParentFolder;
     ar << m_bLabelPreformatted;
     ar << m_strPath;
+    ar << m_strDynPath;
     ar << m_bIsShareOrDrive;
     ar << m_iDriveType;
     ar << m_dateTime;
@@ -666,6 +667,7 @@ void CFileItem::Archive(CArchive& ar)
     ar >> m_bIsParentFolder;
     ar >> m_bLabelPreformatted;
     ar >> m_strPath;
+    ar >> m_strDynPath;
     ar >> m_bIsShareOrDrive;
     ar >> m_iDriveType;
     ar >> m_dateTime;
