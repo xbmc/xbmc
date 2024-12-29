@@ -151,13 +151,17 @@ CVideoInfoScanner::~CVideoInfoScanner()
         else if (!CDirectory::Exists(directory))
         {
           /*
-           * Note that this will skip clean (if m_bClean is enabled) if the directory really
-           * doesn't exist rather than a NAS being switched off.  A manual clean from settings
-           * will still pick up and remove it though.
+           * Note that this will skip clean (if m_bClean is enabled) for the directory and its
+           * sub-directories if the directory really doesn't exist rather than a NAS being switched
+           * off. A manual clean from settings will still pick up and remove it though.
            */
-          CLog::Log(LOGWARNING, "{} directory '{}' does not exist - skipping scan{}.", __FUNCTION__,
-                    CURL::GetRedacted(directory), m_bClean ? " and clean" : "");
+          CLog::LogF(LOGWARNING, "directory '{}' does not exist - skipping scan{}.",
+                     CURL::GetRedacted(directory), m_bClean ? " and clean" : "");
+
           m_pathsToScan.erase(m_pathsToScan.begin());
+
+          if (auto count = RemoveSubDirectories(m_pathsToScan.begin(), directory, nullptr))
+            CLog::LogF(LOGWARNING, "skipped {} sub directories.", count);
         }
         else if (!DoScan(directory))
           bCancelled = true;
@@ -264,7 +268,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
      */
     std::set<std::string>::iterator it = m_pathsToScan.find(strDirectory);
     if (it != m_pathsToScan.end())
-      m_pathsToScan.erase(it);
+      it = m_pathsToScan.erase(it);
 
     // load subfolder
     CFileItemList items;
@@ -451,6 +455,17 @@ CVideoInfoScanner::~CVideoInfoScanner()
         }
       }
     }
+
+    // remaining sub directories in the paths to scan were not found on disk, don't scan them.
+
+    std::function<void(const std::string&)> f;
+    if (m_bClean)
+      f = [this](const std::string& dir) { m_pathsToClean.insert(m_database.GetPathId(dir)); };
+
+    if (auto count = RemoveSubDirectories(it, strDirectory, f))
+      CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping {} missing sub directories of {}.", count,
+                strDirectory);
+
     return !m_bStop;
   }
 
@@ -2513,5 +2528,22 @@ CVideoInfoScanner::~CVideoInfoScanner()
   bool CVideoInfoScanner::ProcessVideoVersion(VideoDbContentType itemType, int dbId)
   {
     return CGUIDialogVideoManagerVersions::ProcessVideoVersion(itemType, dbId);
+  }
+
+  size_t CVideoInfoScanner::RemoveSubDirectories(std::set<std::string>::iterator first,
+                                                 const std::string_view directory,
+                                                 std::function<void(const std::string&)> f)
+  {
+    size_t count{0};
+
+    while (first != m_pathsToScan.end() && (*first).starts_with(directory))
+    {
+      if (f)
+        f(*first);
+
+      first = m_pathsToScan.erase(first);
+      ++count;
+    }
+    return count;
   }
 }
