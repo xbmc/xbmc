@@ -24230,7 +24230,19 @@ msgctxt "#39203"
 msgid "Adjust the space between lines of text. Setting a value too low may cause boxes to overlap when the \"Background type\" setting is used."
 msgstr ""
 
-#empty strings from id 39204 to 39999
+#. Setting to make CC subtitles for hearing impaired only
+#: system/settings/settings.xml
+msgctxt "#39204"
+msgid "Set CC subtitles only for the hearing impaired"
+msgstr ""
+
+#. Help text for setting of label #39204
+#: system/settings/settings.xml
+msgctxt "#39205"
+msgid "By enabling it, CC subtitles will be labeled for the hearing impaired; this will affect the automatic selection of subtitles, which unless otherwise specified will not be displayed by default."
+msgstr ""
+
+#empty strings from id 39206 to 39999
 
 # 40000 to 40800 are reserved for Video Versions feature
 
