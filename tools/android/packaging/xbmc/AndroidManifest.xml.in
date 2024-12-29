@@ -122,7 +122,6 @@
             android:name=".content.XBMCMediaContentProvider"
             android:authorities="@APP_PACKAGE@.media"
             android:exported="true" />
-
         <provider
             android:name=".content.XBMCFileContentProvider"
             android:authorities="@APP_PACKAGE@.file"
@@ -131,6 +130,15 @@
             android:name=".content.XBMCYTDLContentProvider"
             android:authorities="@APP_PACKAGE@.ytdl"
             android:exported="true" />
+        <provider
+            android:name=".content.XBMCFileProvider"
+            android:authorities="@APP_PACKAGE@.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
         <activity android:name=".XBMCSearchableActivity" 
                   android:exported="true">

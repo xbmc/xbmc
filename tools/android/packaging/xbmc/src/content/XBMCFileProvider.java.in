@@ -1,0 +1,13 @@
+package @APP_PACKAGE@.content;
+
+import @APP_PACKAGE@.R;
+
+import androidx.core.content.FileProvider;
+
+public class XBMCFileProvider extends FileProvider
+{
+  public XBMCFileProvider()
+  {
+    super(R.xml.file_paths);
+  }
+}
