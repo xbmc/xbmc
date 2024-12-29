@@ -11357,7 +11357,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
             CServiceBroker::GetTextureCache()->Export(i.second, savedThumb, overwrite);
           }
           if (actorThumbs)
-            ExportActorThumbs(actorsDir, singlePath, episode, !singleFile, overwrite);
+            ExportActorThumbs(actorsDir, singlePath, episode, !singleFile, overwrite, tvshowDir);
         }
       }
       pDS->close();
@@ -11426,12 +11426,14 @@ void CVideoDatabase::ExportActorThumbs(const std::string& path,
                                        const std::string& singlePath,
                                        const CVideoInfoTag& tag,
                                        bool singleFiles,
-                                       bool overwrite /*=false*/) const
+                                       bool overwrite /* =false */,
+                                       const std::string& tvshowDir /* ="" */) const
 {
   std::string strPath(path);
   if (singleFiles)
   {
-    strPath = URIUtils::AddFileToFolder(singlePath, ".actors");
+    strPath = URIUtils::AddFileToFolder(
+        tag.m_type == MediaTypeEpisode && !tvshowDir.empty() ? tvshowDir : singlePath, ".actors");
     if (!CDirectory::Exists(strPath))
     {
       CDirectory::Create(strPath);
