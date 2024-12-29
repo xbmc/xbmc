@@ -1232,16 +1232,16 @@ JSONRPC_STATUS CPlayerOperations::SetPartymode(const std::string &method, ITrans
         return FailedToExecute;
 
       bool change = false;
-      PartyModeContext context = PARTYMODECONTEXT_UNKNOWN;
+      PartyModeContext context = PartyModeContext::UNKNOWN;
       std::string strContext;
       if (player == Video)
       {
-        context = PARTYMODECONTEXT_VIDEO;
+        context = PartyModeContext::VIDEO;
         strContext = "video";
       }
       else if (player == Audio)
       {
-        context = PARTYMODECONTEXT_MUSIC;
+        context = PartyModeContext::MUSIC;
         strContext = "music";
       }
 

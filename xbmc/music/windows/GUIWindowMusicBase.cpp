@@ -529,7 +529,7 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
 
   case CONTEXT_BUTTON_PLAY_PARTYMODE:
-    g_partyModeManager.Enable(PARTYMODECONTEXT_MUSIC, item->GetPath());
+    g_partyModeManager.Enable(PartyModeContext::MUSIC, item->GetPath());
     return true;
 
   case CONTEXT_BUTTON_RIP_CD:
