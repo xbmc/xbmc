@@ -74,7 +74,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
     bool bLock = profileManager->GetMasterProfile().getLockMode() != LockMode::EVERYONE &&
                  !g_passwordManager.bMasterUser;
     dialog->m_locks.addonManager = bLock;
-    dialog->m_locks.settings = (bLock) ? LOCK_LEVEL::ALL : LOCK_LEVEL::NONE;
+    dialog->m_locks.settings = bLock ? SettingsLock::ALL : SettingsLock::NONE;
     dialog->m_locks.files = bLock;
 
     dialog->m_directory.clear();

@@ -29,7 +29,7 @@ public:
     LockMode mode;
     std::string code;
     bool addonManager;
-    LOCK_LEVEL::SETTINGS_LOCK settings;
+    SettingsLock settings;
     bool music;
     bool video;
     bool files;
@@ -61,7 +61,7 @@ public:
    \brief Returns which settings levels are locked for the current profile
    \sa LOCK_LEVEL::SETTINGS_LOCK
    */
-  LOCK_LEVEL::SETTINGS_LOCK settingsLockLevel() const { return m_locks.settings; }
+  SettingsLock settingsLockLevel() const { return m_locks.settings; }
   bool addonmanagerLocked() const { return m_locks.addonManager; }
   bool musicLocked() const { return m_locks.music; }
   bool videoLocked() const { return m_locks.video; }
