@@ -323,7 +323,7 @@ void CAgentInput::ProcessJoysticks(PERIPHERALS::EventLockHandlePtr& inputHandlin
       joysticks.end());
 
   // Update agent controllers
-  ProcessAgentControllers(joysticks, inputHandlingLock);
+  ProcessAgentControllers(joysticks, inputHandlingLock, true);
 
   if (!m_gameClient)
     return;
@@ -363,7 +363,7 @@ void CAgentInput::ProcessKeyboard()
   {
     // Update agent controllers
     PERIPHERALS::EventLockHandlePtr inputHandlingLock;
-    ProcessAgentControllers(keyboards, inputHandlingLock);
+    ProcessAgentControllers(keyboards, inputHandlingLock, false);
 
     // Process keyboard input
     if (m_gameClient && m_gameClient->Input().SupportsKeyboard() &&
@@ -397,7 +397,7 @@ void CAgentInput::ProcessMouse()
   {
     // Update agent controllers
     PERIPHERALS::EventLockHandlePtr inputHandlingLock;
-    ProcessAgentControllers(mice, inputHandlingLock);
+    ProcessAgentControllers(mice, inputHandlingLock, false);
 
     // Process mouse input
     if (m_gameClient && m_gameClient->Input().SupportsMouse() &&
@@ -423,7 +423,8 @@ void CAgentInput::ProcessMouse()
 }
 
 void CAgentInput::ProcessAgentControllers(const PERIPHERALS::PeripheralVector& peripherals,
-                                          PERIPHERALS::EventLockHandlePtr& inputHandlingLock)
+                                          PERIPHERALS::EventLockHandlePtr& inputHandlingLock,
+                                          bool updateJoysticks)
 {
   std::lock_guard<std::mutex> lock(m_controllerMutex);
 
@@ -472,9 +473,7 @@ void CAgentInput::ProcessAgentControllers(const PERIPHERALS::PeripheralVector& p
   }
 
   // If we're processing joysticks, remove expired joysticks
-  if (std::any_of(peripherals.begin(), peripherals.end(),
-                  [](const PERIPHERALS::PeripheralPtr& peripheral)
-                  { return peripheral->Type() == PERIPHERALS::PERIPHERAL_JOYSTICK; }))
+  if (updateJoysticks)
   {
     std::vector<std::string> expiredJoysticks;
     for (const auto& agentController : m_controllers)
