@@ -49,37 +49,38 @@ void CPluginSource::SetProvides(const std::string &content)
     for (std::vector<std::string>::const_iterator i = provides.begin(); i != provides.end(); ++i)
     {
       Content content = Translate(*i);
-      if (content != UNKNOWN)
+      if (content != Content::UNKNOWN)
         m_providedContent.insert(content);
     }
   }
   if (Type() == AddonType::SCRIPT && m_providedContent.empty())
-    m_providedContent.insert(EXECUTABLE);
+    m_providedContent.insert(Content::EXECUTABLE);
 }
 
 CPluginSource::Content CPluginSource::Translate(const std::string &content)
 {
   if (content == "audio")
-    return CPluginSource::AUDIO;
+    return CPluginSource::Content::AUDIO;
   else if (content == "image")
-    return CPluginSource::IMAGE;
+    return CPluginSource::Content::IMAGE;
   else if (content == "executable")
-    return CPluginSource::EXECUTABLE;
+    return CPluginSource::Content::EXECUTABLE;
   else if (content == "video")
-    return CPluginSource::VIDEO;
+    return CPluginSource::Content::VIDEO;
   else if (content == "game")
-    return CPluginSource::GAME;
+    return CPluginSource::Content::GAME;
   else
-    return CPluginSource::UNKNOWN;
+    return CPluginSource::Content::UNKNOWN;
 }
 
 bool CPluginSource::HasType(AddonType type) const
 {
-  return ((type == AddonType::VIDEO && Provides(VIDEO)) ||
-          (type == AddonType::AUDIO && Provides(AUDIO)) ||
-          (type == AddonType::IMAGE && Provides(IMAGE)) ||
-          (type == AddonType::GAME && Provides(GAME)) ||
-          (type == AddonType::EXECUTABLE && Provides(EXECUTABLE)) || (type == CAddon::Type()));
+  return ((type == AddonType::VIDEO && Provides(Content::VIDEO)) ||
+          (type == AddonType::AUDIO && Provides(Content::AUDIO)) ||
+          (type == AddonType::IMAGE && Provides(Content::IMAGE)) ||
+          (type == AddonType::GAME && Provides(Content::GAME)) ||
+          (type == AddonType::EXECUTABLE && Provides(Content::EXECUTABLE)) ||
+          (type == CAddon::Type()));
 }
 
 } /*namespace ADDON*/

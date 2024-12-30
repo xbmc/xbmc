@@ -872,7 +872,7 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon,
 bool CAddonsDirectory::GetScriptsAndPlugins(const std::string &content, VECADDONS &addons)
 {
   CPluginSource::Content type = CPluginSource::Translate(content);
-  if (type == CPluginSource::UNKNOWN)
+  if (type == CPluginSource::Content::UNKNOWN)
     return false;
 
   VECADDONS tempAddons;
@@ -893,7 +893,7 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const std::string &content, VECADDON
   }
   tempAddons.clear();
 
-  if (type == CPluginSource::GAME)
+  if (type == CPluginSource::Content::GAME)
   {
     CServiceBroker::GetAddonMgr().GetAddons(tempAddons, AddonType::GAMEDLL);
     for (auto& addon : tempAddons)

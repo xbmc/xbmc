@@ -1171,7 +1171,7 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
       if (CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, OnlyEnabled::CHOICE_YES))
       {
         const auto plugin = std::dynamic_pointer_cast<CPluginSource>(addon);
-        if (plugin && plugin->Provides(CPluginSource::AUDIO))
+        if (plugin && plugin->Provides(CPluginSource::Content::AUDIO))
         {
           CFileItemList items;
           std::unique_ptr<CGUIViewState> state(CGUIViewState::GetViewState(GetID(), items));
