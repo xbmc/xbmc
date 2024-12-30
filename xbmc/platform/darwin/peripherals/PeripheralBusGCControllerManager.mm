@@ -47,8 +47,8 @@
 
 - (void)DeviceRemoved:(int)deviceID
 {
-  parentClass->callOnDeviceRemoved([self GetDeviceLocation:deviceID]);
   parentClass->SetScanResults([self GetInputDevices]);
+  parentClass->callOnDeviceRemoved([self GetDeviceLocation:deviceID]);
 }
 
 #pragma mark - init
