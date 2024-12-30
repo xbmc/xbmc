@@ -4581,6 +4581,28 @@ void CVideoDatabase::GetDetailsFromDB(const dbiplus::sql_record* const record,
   }
 }
 
+template<typename T>
+void CVideoDatabase::GetDetailsFromDB(const dbiplus::sql_record* const record,
+                                      int min,
+                                      int max,
+                                      const T& offsets,
+                                      CSetInfoTag& details,
+                                      int idxOffset)
+{
+  for (int i = min + 1; i < max; i++)
+  {
+    switch (offsets[i].type)
+    {
+      case VIDEODB_TYPE_STRING:
+        *reinterpret_cast<std::string*>((reinterpret_cast<char*>(&details)) + offsets[i].offset) =
+            record->at(i + idxOffset).get_asString();
+        break;
+      case VIDEODB_TYPE_UNUSED: // Skip the unused field to avoid populating unused data
+        continue;
+    }
+  }
+}
+
 bool CVideoDatabase::GetDetailsByTypeAndId(CFileItem& item, VideoDbContentType type, int id)
 {
   CVideoInfoTag details;
@@ -4864,9 +4886,31 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
   return details;
 }
 
+CSetInfoTag CVideoDatabase::GetDetailsForSet(dbiplus::Dataset& pDS)
+{
+  return GetDetailsForSet(pDS.get_sql_record());
+}
+
+CSetInfoTag CVideoDatabase::GetDetailsForSet(const dbiplus::sql_record* const record)
+{
+  CSetInfoTag details;
+
+  if (record == NULL)
+    return details;
+
+  int idSet = record->at(0).get_asInt();
+
+  GetDetailsFromDB(record, VIDEODB_ID_SET_MIN, VIDEODB_ID_SET_MAX, DbSetOffsets, details, 1);
+
+  details.m_id = idSet;
+
+  return details;
+}
+
 CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(dbiplus::Dataset& pDS,
                                                   int getDetails /* = VideoDbDetailsNone */,
                                                   CFileItem* item /* = nullptr */)
+
 {
   return GetDetailsForTvShow(pDS.get_sql_record(), getDetails, item);
 }
@@ -11414,16 +11458,14 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
     if (!singleFile)
       movieSetsDir = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
           CSettings::SETTING_VIDEOLIBRARY_MOVIESETSFOLDER);
-    if (images && !movieSetsDir.empty())
+    if (!movieSetsDir.empty())
     {
       // find all movie sets
-      sql = "select idSet, strSet, strOriginalSet from sets";
-
+      sql = "select * from sets";
       m_pDS->query(sql);
-
       total = m_pDS->num_rows();
-      current = 0;
 
+      current = 0;
       while (!m_pDS->eof())
       {
         std::string title = m_pDS->fv("strOriginalSet").get_asString();
@@ -11441,16 +11483,54 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
           }
         }
 
-        std::string itemPath = URIUtils::AddFileToFolder(
+        const std::string itemPath = URIUtils::AddFileToFolder(
             movieSetsDir, CUtil::MakeLegalFileName(title, LegalPath::WIN32_COMPAT));
         if (CDirectory::Exists(itemPath) || CDirectory::Create(itemPath))
         {
+          // get set information and generate .nfo
+          CSetInfoTag set{GetDetailsForSet(*m_pDS)};
           KODI::ART::Artwork artwork;
-          GetArtForItem(m_pDS->fv("idSet").get_asInt(), MediaTypeVideoCollection, artwork);
-          for (const auto& [type, url] : artwork)
+          if (GetArtForItem(set.m_id, MediaTypeVideoCollection, artwork) && !artwork.empty())
           {
-            const std::string savedThumb = URIUtils::AddFileToFolder(itemPath, type);
-            CServiceBroker::GetTextureCache()->Export(url, savedThumb, overwrite);
+            // Remove local urls as files saved in the set folder
+            std::erase_if(artwork, [](const auto& art) { return !URIUtils::IsRemote(art.second); });
+            set.SetArt(artwork);
+          }
+          set.Save(pMain, "set", singleFile);
+
+          // write set.nfo
+          if (!singleFile && CUtil::SupportsWriteFileOperations(itemPath))
+          {
+            const std::string nfoFile{URIUtils::AddFileToFolder(itemPath, "set.nfo")};
+            if (overwrite || !CFile::Exists(nfoFile, false))
+            {
+              if (!xmlDoc.SaveFile(nfoFile))
+              {
+                CLog::LogF(LOGERROR, "Set nfo export failed! ('{}')", nfoFile);
+                CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
+                                                      g_localizeStrings.Get(20302),
+                                                      CURL::GetRedacted(nfoFile));
+                iFailCount++;
+              }
+            }
+          }
+          if (!singleFile)
+          {
+            xmlDoc.Clear();
+            TiXmlDeclaration decl("1.0", "UTF-8", "yes");
+            xmlDoc.InsertEndChild(decl);
+          }
+
+          // Write images to MSIF
+          if (images)
+          {
+            KODI::ART::Artwork artwork;
+            GetArtForItem(m_pDS->fv("idSet").get_asInt(), MediaTypeVideoCollection, artwork);
+            for (const auto& art : artwork)
+            {
+              std::string savedThumb = URIUtils::AddFileToFolder(itemPath, art.first);
+              CServiceBroker::GetTextureCache()->Export(art.second, savedThumb, overwrite);
+            }
           }
         }
         else

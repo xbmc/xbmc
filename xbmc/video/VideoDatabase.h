@@ -289,6 +289,23 @@ const std::array<SDbTableOffsets, 24> DbMovieOffsets = {{
 }};
 // clang-format on
 
+enum VIDEODB_SET_IDS // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
+{
+  VIDEODB_ID_SET_MIN = -1,
+  VIDEODB_ID_SET_TITLE = 0,
+  VIDEODB_ID_SET_OVERVIEW = 1,
+  VIDEODB_ID_SET_ORIGINALTITLE = 2,
+  VIDEODB_ID_SET_MAX
+};
+
+// clang-format off
+const std::array<SDbTableOffsets, 3> DbSetOffsets = {{
+    {VIDEODB_TYPE_STRING, my_offsetof(CSetInfoTag, m_title)},
+    {VIDEODB_TYPE_STRING, my_offsetof(CSetInfoTag, m_overview)},
+    {VIDEODB_TYPE_STRING, my_offsetof(CSetInfoTag, m_originalTitle)}
+}};
+// clang-format on
+
 enum VIDEODB_TV_IDS // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
 {
   VIDEODB_ID_TV_MIN = -1,
@@ -1350,6 +1367,8 @@ protected:
 
   CVideoInfoTag GetDetailsForMovie(dbiplus::Dataset& pDS, int getDetails = VideoDbDetailsNone);
   CVideoInfoTag GetDetailsForMovie(const dbiplus::sql_record* const record, int getDetails = VideoDbDetailsNone);
+  CSetInfoTag GetDetailsForSet(dbiplus::Dataset& pDS);
+  CSetInfoTag GetDetailsForSet(const dbiplus::sql_record* const record);
   CVideoInfoTag GetDetailsForTvShow(dbiplus::Dataset& pDS,
                                     int getDetails = VideoDbDetailsNone,
                                     CFileItem* item = nullptr);
@@ -1386,6 +1405,13 @@ protected:
                         const T& offsets,
                         CVideoInfoTag& details,
                         int idxOffset = 2) const;
+  template<typename T>
+  void GetDetailsFromDB(const dbiplus::sql_record* const record,
+                        int min,
+                        int max,
+                        const T& offsets,
+                        CSetInfoTag& details,
+                        int idxOffset);
 
   template<typename T>
   std::string GetValueString(const CVideoInfoTag& details,
