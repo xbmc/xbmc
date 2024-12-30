@@ -169,7 +169,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       db.AddSet(tag.m_set.GetTitle(), overview, tag.m_set.GetOriginalTitle());
 
       // Update set art
-      ArtMap movieSetArt;
+      ART::Artwork movieSetArt;
       if (tag.m_set.HasArt())
         movieSetArt = tag.m_set.GetArt();
       db.SetArtForItem(dbId, MediaTypeVideoCollection, movieSetArt);
