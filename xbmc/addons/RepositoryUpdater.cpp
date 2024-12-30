@@ -82,10 +82,10 @@ bool CRepositoryUpdateJob::DoWork()
 
   MarkFinished();
 
-  if (status == CRepository::STATUS_ERROR)
+  if (status == CRepository::FetchStatus::FETCH_ERROR)
     return false;
 
-  if (status == CRepository::STATUS_NOT_MODIFIED)
+  if (status == CRepository::FetchStatus::NOT_MODIFIED)
   {
     CLog::Log(LOGDEBUG, "CRepositoryUpdateJob[{}] checksum not changed.", m_repo->ID());
     return true;
