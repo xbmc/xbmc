@@ -245,6 +245,20 @@ const struct SDbTableOffsets
 
 typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
 {
+  VIDEODB_ID_SET_MIN = -1,
+  VIDEODB_ID_SET_TITLE = 0,
+  VIDEODB_ID_SET_OVERVIEW = 1,
+  VIDEODB_ID_SET_ORIGINALTITLE = 2,
+  VIDEODB_ID_SET_MAX
+} VIDEODB_SET_IDS;
+
+const struct SDbTableOffsets DbSetOffsets[] = {
+    {VIDEODB_TYPE_STRING, my_offsetof(CSetInfoTag, m_title)},
+    {VIDEODB_TYPE_STRING, my_offsetof(CSetInfoTag, m_overview)},
+    {VIDEODB_TYPE_STRING, my_offsetof(CSetInfoTag, m_originalTitle)}};
+
+typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
+{
   VIDEODB_ID_TV_MIN = -1,
   VIDEODB_ID_TV_TITLE = 0,
   VIDEODB_ID_TV_PLOT = 1,
@@ -1227,6 +1241,8 @@ protected:
 
   CVideoInfoTag GetDetailsForMovie(std::unique_ptr<dbiplus::Dataset> &pDS, int getDetails = VideoDbDetailsNone);
   CVideoInfoTag GetDetailsForMovie(const dbiplus::sql_record* const record, int getDetails = VideoDbDetailsNone);
+  CSetInfoTag GetDetailsForSet(std::unique_ptr<dbiplus::Dataset>& pDS);
+  CSetInfoTag GetDetailsForSet(const dbiplus::sql_record* const record);
   CVideoInfoTag GetDetailsForTvShow(std::unique_ptr<dbiplus::Dataset> &pDS, int getDetails = VideoDbDetailsNone, CFileItem* item = NULL);
   CVideoInfoTag GetDetailsForTvShow(const dbiplus::sql_record* const record, int getDetails = VideoDbDetailsNone, CFileItem* item = NULL);
   CVideoInfoTag GetBasicDetailsForEpisode(std::unique_ptr<dbiplus::Dataset> &pDS);
@@ -1254,6 +1270,12 @@ protected:
 
   void GetDetailsFromDB(std::unique_ptr<dbiplus::Dataset> &pDS, int min, int max, const SDbTableOffsets *offsets, CVideoInfoTag &details, int idxOffset = 2);
   void GetDetailsFromDB(const dbiplus::sql_record* const record, int min, int max, const SDbTableOffsets *offsets, CVideoInfoTag &details, int idxOffset = 2);
+  void GetDetailsFromDB(const dbiplus::sql_record* const record,
+                        int min,
+                        int max,
+                        const SDbTableOffsets* offsets,
+                        CSetInfoTag& details,
+                        int idxOffset = 2);
   std::string GetValueString(const CVideoInfoTag &details, int min, int max, const SDbTableOffsets *offsets) const;
 
 private:

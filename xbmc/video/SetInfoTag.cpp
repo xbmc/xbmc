@@ -101,6 +101,41 @@ void CSetInfoTag::Copy(const CSetInfoTag& other)
   m_art = other.m_art;
 }
 
+bool CSetInfoTag::Save(TiXmlNode* node,
+                       const std::string& tag,
+                       bool savePathInfo,
+                       const TiXmlElement* additionalNode /* =nullptr */)
+{
+  if (!node)
+    return false;
+
+  // we start with a <tag> tag
+  TiXmlElement setElement(tag.c_str());
+  TiXmlNode* set = node->InsertEndChild(setElement);
+
+  if (!set)
+    return false;
+
+  XMLUtils::SetString(set, "title", m_title);
+  if (!m_overview.empty())
+    XMLUtils::SetString(set, "overview", m_overview);
+
+  if (HasArt())
+  {
+    TiXmlElement art("art");
+    for (auto& [type,url] : m_art)
+    {
+      XMLUtils::SetString(&art, type.c_str(), url);
+    }
+    set->InsertEndChild(art);
+  }
+
+  if (additionalNode)
+    set->InsertEndChild(*additionalNode);
+
+  return true;
+}
+
 void CSetInfoTag::Archive(CArchive& ar)
 {
   if (ar.IsStoring())

@@ -4207,6 +4207,27 @@ void CVideoDatabase::GetDetailsFromDB(const dbiplus::sql_record* const record, i
   }
 }
 
+void CVideoDatabase::GetDetailsFromDB(const dbiplus::sql_record* const record,
+                                      int min,
+                                      int max,
+                                      const SDbTableOffsets* offsets,
+                                      CSetInfoTag& details,
+                                      int idxOffset)
+{
+  for (int i = min + 1; i < max; i++)
+  {
+    switch (offsets[i].type)
+    {
+      case VIDEODB_TYPE_STRING:
+        *reinterpret_cast<std::string*>((reinterpret_cast<char*>(&details)) + offsets[i].offset) =
+            record->at(i + idxOffset).get_asString();
+        break;
+      case VIDEODB_TYPE_UNUSED: // Skip the unused field to avoid populating unused data
+        continue;
+    }
+  }
+}
+
 bool CVideoDatabase::GetDetailsByTypeAndId(CFileItem& item, VideoDbContentType type, int id)
 {
   CVideoInfoTag details;
@@ -4491,6 +4512,27 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
 
     details.m_parsedDetails = getDetails;
   }
+  return details;
+}
+
+CSetInfoTag CVideoDatabase::GetDetailsForSet(std::unique_ptr<Dataset>& pDS)
+{
+  return GetDetailsForSet(pDS->get_sql_record());
+}
+
+CSetInfoTag CVideoDatabase::GetDetailsForSet(const dbiplus::sql_record* const record)
+{
+  CSetInfoTag details;
+
+  if (record == NULL)
+    return details;
+
+  int idSet = record->at(0).get_asInt();
+
+  GetDetailsFromDB(record, VIDEODB_ID_SET_MIN, VIDEODB_ID_SET_MAX, DbSetOffsets, details, 1);
+
+  details.m_id = idSet;
+
   return details;
 }
 
@@ -10887,16 +10929,14 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
     if (!singleFile)
       movieSetsDir = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
           CSettings::SETTING_VIDEOLIBRARY_MOVIESETSFOLDER);
-    if (images && !movieSetsDir.empty())
+    if (!movieSetsDir.empty())
     {
       // find all movie sets
-      sql = "select idSet, strSet, strOriginalSet from sets";
-
+      sql = "select * from sets";
       m_pDS->query(sql);
-
       total = m_pDS->num_rows();
-      current = 0;
 
+      current = 0;
       while (!m_pDS->eof())
       {
         std::string title = m_pDS->fv("strOriginalSet").get_asString();
@@ -10914,23 +10954,61 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
           }
         }
 
-        std::string itemPath = URIUtils::AddFileToFolder(
+        const std::string itemPath = URIUtils::AddFileToFolder(
             movieSetsDir, CUtil::MakeLegalFileName(title, LegalPath::WIN32_COMPAT));
         if (CDirectory::Exists(itemPath) || CDirectory::Create(itemPath))
         {
-          std::map<std::string, std::string> artwork;
-          GetArtForItem(m_pDS->fv("idSet").get_asInt(), MediaTypeVideoCollection, artwork);
-          for (const auto& art : artwork)
+          // create set.nfo xml
+          CXBMCTinyXML xmlDoc;
+          TiXmlDeclaration decl("1.0", "UTF-8", "yes");
+          xmlDoc.InsertEndChild(decl);
+          TiXmlNode* pMain{&xmlDoc};
+
+          // get set information and generate .nfo
+          CSetInfoTag set{GetDetailsForSet(m_pDS)};
+          ArtMap artwork;
+          if (GetArtForItem(set.m_id, MediaTypeVideoCollection, artwork) && !artwork.empty())
+            set.SetArt(artwork);
+          set.Save(pMain, "set", singleFile);
+
+          // write set.nfo
+          if (!singleFile && CUtil::SupportsWriteFileOperations(itemPath))
           {
-            std::string savedThumb = URIUtils::AddFileToFolder(itemPath, art.first);
-            CServiceBroker::GetTextureCache()->Export(art.second, savedThumb, overwrite);
+            const std::string nfoFile{URIUtils::AddFileToFolder(itemPath, "set.nfo")};
+            if (overwrite || !CFile::Exists(nfoFile, false))
+            {
+              if (!xmlDoc.SaveFile(nfoFile))
+              {
+                CLog::LogF(LOGERROR, "Set nfo export failed! ('{}')", nfoFile);
+                CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
+                                                      g_localizeStrings.Get(20302),
+                                                      CURL::GetRedacted(nfoFile));
+                iFailCount++;
+              }
+            }
+          }
+          if (!singleFile)
+          {
+            xmlDoc.Clear();
+            TiXmlDeclaration decl("1.0", "UTF-8", "yes");
+            xmlDoc.InsertEndChild(decl);
+          }
+
+          // Write images to MSIF
+          if (images)
+          {
+            ArtMap artwork;
+            GetArtForItem(m_pDS->fv("idSet").get_asInt(), MediaTypeVideoCollection, artwork);
+            for (const auto& art : artwork)
+            {
+              std::string savedThumb = URIUtils::AddFileToFolder(itemPath, art.first);
+              CServiceBroker::GetTextureCache()->Export(art.second, savedThumb, overwrite);
+            }
           }
         }
         else
-          CLog::Log(
-              LOGDEBUG,
-              "CVideoDatabase::{} - Not exporting movie set '{}' as could not create folder '{}'",
-              __FUNCTION__, title, itemPath);
+          CLog::LogF(LOGDEBUG, "Not exporting movie set '{}' as could not create folder '{}'",
+                     title, itemPath);
         m_pDS->next();
         current++;
       }
