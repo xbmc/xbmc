@@ -99,7 +99,8 @@ void CViewDatabase::UpdateTables(int version)
     m_pDS->query("SELECT * FROM tmp_view");
     while (!m_pDS->eof())
     {
-      SortDescription sorting = SortUtils::TranslateOldSortMethod((SORT_METHOD)m_pDS->fv(4).get_asInt());
+      SortDescription sorting =
+          SortUtils::TranslateOldSortMethod(static_cast<SortMethod>(m_pDS->fv(4).get_asInt()));
 
       std::string sql = PrepareSQL("INSERT INTO view (idView, window, path, viewMode, sortMethod, sortOrder, sortAttributes, skin) VALUES (%i, %i, '%s', %i, %i, %i, %i, '%s')",
         m_pDS->fv(0).get_asInt(), m_pDS->fv(1).get_asInt(), m_pDS->fv(2).get_asString().c_str(), m_pDS->fv(3).get_asInt(),

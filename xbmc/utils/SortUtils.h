@@ -10,12 +10,13 @@
 
 #include "DatabaseUtils.h"
 #include "LabelFormatter.h"
-#include "SortFileItem.h"
 
 #include <map>
 #include <memory>
 #include <string>
 #include <vector>
+
+enum class SortMethod;
 
 typedef enum {
   SortOrderNone = 0,
@@ -195,8 +196,8 @@ typedef std::vector<SortItemPtr> SortItems;
 class SortUtils
 {
 public:
-  static SORT_METHOD TranslateOldSortMethod(SortBy sortBy, bool ignoreArticle);
-  static SortDescription TranslateOldSortMethod(SORT_METHOD sortBy);
+  static SortMethod TranslateOldSortMethod(SortBy sortBy, bool ignoreArticle);
+  static SortDescription TranslateOldSortMethod(SortMethod sortBy);
 
   static SortBy SortMethodFromString(const std::string& sortMethod);
   static const std::string& SortMethodToString(SortBy sortMethod);
