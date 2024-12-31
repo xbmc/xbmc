@@ -1187,6 +1187,9 @@ void CLinuxRendererGLES::RenderFromFBO()
 
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
 
+  glDisableVertexAttribArray(loc);
+  glDisableVertexAttribArray(vertLoc);
+
   VerifyGLState();
 
   if (m_pVideoFilterShader)
