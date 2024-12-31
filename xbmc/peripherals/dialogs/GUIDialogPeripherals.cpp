@@ -143,6 +143,16 @@ bool CGUIDialogPeripherals::OnMessage(CGUIMessage& message)
   return CGUIDialogSelect::OnMessage(message);
 }
 
+void CGUIDialogPeripherals::FreeResources(bool immediately /* = false */)
+{
+  // Free GUI resources
+  for (auto it = m_peripherals.begin(); it != m_peripherals.end(); ++it)
+    (*it)->FreeMemory();
+
+  // Free ancestor resources
+  CGUIDialogSelect::FreeResources(immediately);
+}
+
 void CGUIDialogPeripherals::Notify(const Observable& obs, const ObservableMessage msg)
 {
   switch (msg)
