@@ -1,10 +1,8 @@
-set(SOURCES ButtonMapping.cpp
-            DriverReceiving.cpp
+set(SOURCES DriverReceiving.cpp
             FeatureHandling.cpp
             InputHandling.cpp)
 
-set(HEADERS ButtonMapping.h
-            DriverReceiving.h
+set(HEADERS DriverReceiving.h
             FeatureHandling.h
             InputHandling.h)
 
