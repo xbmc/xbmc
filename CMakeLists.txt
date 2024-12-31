@@ -27,6 +27,13 @@ if(POLICY CMP0135)
   cmake_policy(SET CMP0135 NEW)
 endif()
 
+# https://cmake.org/cmake/help/latest/policy/CMP0144.html
+# find_package() uses upper-case <PACKAGENAME>_ROOT variables
+if(POLICY CMP0144)
+  set(CMAKE_POLICY_DEFAULT_CMP0144 NEW)
+  cmake_policy(SET CMP0144 NEW)
+endif()
+
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules/buildtools)
 if(DEPENDS_DIR)
