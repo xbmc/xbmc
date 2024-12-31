@@ -61,7 +61,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     # If RAPIDJSON_INCLUDE_DIRS exists, then the find_package command found a config
     # and suitable version. If its not, we fall back to a pkgconfig/manual search
     if(NOT DEFINED RAPIDJSON_INCLUDE_DIRS)
-      find_package(PkgConfig)
+      find_package(PkgConfig QUIET)
       # Fallback to pkg-config and individual lib/include file search
       # Do not use pkgconfig on windows
       if(PKG_CONFIG_FOUND AND NOT WIN32)

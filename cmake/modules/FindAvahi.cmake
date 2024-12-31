@@ -9,7 +9,7 @@
 #   ${APP_NAME_LC}::AvahiCommon - The avahi common library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  find_package(PkgConfig)
+  find_package(PkgConfig QUIET)
   if(PKG_CONFIG_FOUND)
     pkg_check_modules(PC_AVAHI avahi-client QUIET)
   endif()

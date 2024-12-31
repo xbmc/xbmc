@@ -8,7 +8,7 @@
 #   ${APP_NAME_LC}::PlayerFactory   - The PlayerFactory library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  find_package(PkgConfig)
+  find_package(PkgConfig QUIET)
   if(PKG_CONFIG_FOUND)
     if(PlayerFactory_FIND_VERSION)
       if(PlayerFactory_FIND_VERSION_EXACT)

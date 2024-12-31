@@ -7,7 +7,7 @@
 #   ${APP_NAME_LC}::LircClient - The lirc library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  find_package(PkgConfig)
+  find_package(PkgConfig QUIET)
   if(PKG_CONFIG_FOUND)
     pkg_check_modules(PC_LIRC lirc QUIET)
   endif()

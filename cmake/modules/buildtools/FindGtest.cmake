@@ -41,7 +41,7 @@ else()
     endif()
   endif()
 
-  find_package(PkgConfig)
+  find_package(PkgConfig QUIET)
   if(PKG_CONFIG_FOUND)
     pkg_check_modules(PC_GTEST gtest${Gtest_FIND_SPEC} QUIET)
     set(GTEST_VERSION ${PC_GTEST_VERSION})

@@ -8,7 +8,7 @@
 #   ${APP_NAME_LC}::VAAPI   - The VAAPI library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  find_package(PkgConfig)
+  find_package(PkgConfig QUIET)
 
   if(PKG_CONFIG_FOUND)
     pkg_check_modules(PC_VAAPI libva libva-drm libva-wayland libva-x11 QUIET)

@@ -9,7 +9,7 @@
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
-  find_package(PkgConfig)
+  find_package(PkgConfig QUIET)
 
   # We only rely on pkgconfig for non windows platforms
   if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWS_STORE))
