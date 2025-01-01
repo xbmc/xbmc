@@ -409,6 +409,15 @@
 					<param name="flag_visible" value="!String.IsEmpty(ListItem.AudioCodec)" />
 					<param name="flag_label" value="$VAR[AudioCodecVar]" />
 				</include>
+				<control type="label" id="989898">
+					<font>font10</font>
+					<visible>false</visible>
+					<label>$VAR[ObjectAudioTypeVar]</label>
+				</control>
+				<include content="MediaFlag">
+					<param name="flag_visible" value="!String.IsEmpty(ListItem.AudioCodec) + !String.IsEqual(Control.GetLabel(989898),EMPTY)" />
+					<param name="flag_label" value="$INFO[Control.GetLabel(989898)]" />
+				</include>
 				<include content="MediaFlag">
 					<param name="flag_visible" value="!String.IsEmpty(ListItem.AudioChannels)" />
 					<param name="flag_label" value="$VAR[AudioChannelsVar]" />
@@ -447,6 +456,15 @@
 				<include content="MediaFlag">
 					<param name="flag_visible" value="!String.IsEmpty(VideoPlayer.AudioCodec)" />
 					<param name="flag_label" value="$VAR[AudioCodecVar]" />
+				</include>
+				<control type="label" id="989898">
+					<font>font10</font>
+					<visible>false</visible>
+					<label>$VAR[ObjectAudioTypeVar]</label>
+				</control>
+				<include content="MediaFlag">
+					<param name="flag_visible" value="!String.IsEmpty(VideoPlayer.AudioCodec) + !String.IsEqual(Control.GetLabel(989898),EMPTY)" />
+					<param name="flag_label" value="$INFO[Control.GetLabel(989898)]" />
 				</include>
 				<include content="MediaFlag">
 					<param name="flag_visible" value="!String.IsEmpty(VideoPlayer.AudioChannels)" />
@@ -509,6 +527,15 @@
 				<include content="MediaFlag">
 					<param name="flag_visible" value="!String.IsEmpty(MusicPlayer.Codec)" />
 					<param name="flag_label" value="$VAR[AudioCodecVar]" />
+				</include>
+				<control type="label" id="989898">
+					<font>font10</font>
+					<visible>false</visible>
+					<label>$VAR[ObjectAudioTypeVar]</label>
+				</control>
+				<include content="MediaFlag">
+					<param name="flag_visible" value="!String.IsEmpty(MusicPlayer.Codec) + !String.IsEqual(Control.GetLabel(989898),EMPTY)" />
+					<param name="flag_label" value="$INFO[Control.GetLabel(989898)]" />
 				</include>
 				<include content="MediaFlag">
 					<param name="flag_visible" value="!String.IsEmpty(MusicPlayer.Channels)" />

@@ -801,7 +801,10 @@
 		<value condition="String.IsEqual(ListItem.AudioCodec,dtshd_hra) | String.IsEqual(VideoPlayer.AudioCodec,dtshd_hra) | String.IsEqual(MusicPlayer.AudioCodec,dtshd_hra)">DTSHD-HRA</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,dtshd_ma) | String.IsEqual(VideoPlayer.AudioCodec,dtshd_ma) | String.IsEqual(MusicPlayer.AudioCodec,dtshd_ma)">DTSHD-MA</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,dtsma) | String.IsEqual(VideoPlayer.AudioCodec,dtsma) | String.IsEqual(MusicPlayer.AudioCodec,dtsma)">DTSHD-MA</value>
+		<value condition="String.IsEqual(ListItem.AudioCodec,dtshd_ma_x) | String.IsEqual(VideoPlayer.AudioCodec,dtshd_ma_x)">DTSHD-MA</value>
+		<value condition="String.IsEqual(ListItem.AudioCodec,dtshd_ma_x_imax) | String.IsEqual(VideoPlayer.AudioCodec,dtshd_ma_x_imax)">DTSHD-MA</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,eac3) | String.IsEqual(VideoPlayer.AudioCodec,eac3) | String.IsEqual(MusicPlayer.AudioCodec,eac3)">Dolby Digital+</value>
+		<value condition="String.IsEqual(ListItem.AudioCodec,eac3_ddp_atmos) | String.IsEqual(VideoPlayer.AudioCodec,eac3_ddp_atmos)">Dolby Digital+</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,flac) | String.IsEqual(VideoPlayer.AudioCodec,flac) | String.IsEqual(MusicPlayer.AudioCodec,flac)">FLAC</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,mp1) | String.IsEqual(VideoPlayer.AudioCodec,mp1) | String.IsEqual(MusicPlayer.AudioCodec,mp1)">MP1</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,mp3) | String.IsEqual(VideoPlayer.AudioCodec,mp3) | String.IsEqual(MusicPlayer.AudioCodec,mp3)">MP3</value>
@@ -813,6 +816,7 @@
 		<value condition="String.IsEqual(ListItem.AudioCodec,pcm_s16le) | String.IsEqual(VideoPlayer.AudioCodec,pcm_s16le) | String.IsEqual(MusicPlayer.AudioCodec,pcm_s16le)">PCM</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,pcm_s24le) | String.IsEqual(VideoPlayer.AudioCodec,pcm_s24le) | String.IsEqual(MusicPlayer.AudioCodec,pcm_s24le)">PCM</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,truehd) | String.IsEqual(VideoPlayer.AudioCodec,truehd) | String.IsEqual(MusicPlayer.AudioCodec,truehd)">Dolby TrueHD</value>
+		<value condition="String.IsEqual(ListItem.AudioCodec,truehd_atmos) | String.IsEqual(VideoPlayer.AudioCodec,truehd_atmos)">Dolby TrueHD</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,vorbis) | String.IsEqual(VideoPlayer.AudioCodec,vorbis) | String.IsEqual(MusicPlayer.AudioCodec,vorbis)">Vorbis</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,wav) | String.IsEqual(VideoPlayer.AudioCodec,wav) | String.IsEqual(MusicPlayer.AudioCodec,wav)">WAV</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,wavpack) | String.IsEqual(VideoPlayer.AudioCodec,wavpack) | String.IsEqual(MusicPlayer.AudioCodec,wavpack)">">WAVP</value>
@@ -821,6 +825,13 @@
 		<value condition="Window.IsActive(fullscreenvideo)">$INFO[VideoPlayer.AudioCodec]</value>
 		<value condition="Window.IsActive(visualisation)">$INFO[MusicPlayer.Codec]</value>
 		<value>$INFO[ListItem.AudioCodec]</value>
+	</variable>
+	<variable name="ObjectAudioTypeVar">
+		<value condition="String.IsEqual(ListItem.AudioCodec,eac3_ddp_atmos) | String.IsEqual(VideoPlayer.AudioCodec,eac3_ddp_atmos) | String.IsEqual(MusicPlayer.AudioCodec,eac3_ddp_atmos)">Dolby Atmos</value>
+		<value condition="String.IsEqual(ListItem.AudioCodec,truehd_atmos) | String.IsEqual(VideoPlayer.AudioCodec,truehd_atmos) | String.IsEqual(MusicPlayer.AudioCodec,truehd_atmos)">Dolby Atmos</value>
+		<value condition="String.IsEqual(ListItem.AudioCodec,dtshd_ma_x) | String.IsEqual(VideoPlayer.AudioCodec,dtshd_ma_x) | String.IsEqual(MusicPlayer.AudioCodec,dtshd_ma_x)">DTS:X</value>
+		<value condition="String.IsEqual(ListItem.AudioCodec,dtshd_ma_x_imax) | String.IsEqual(VideoPlayer.AudioCodec,dtshd_ma_x_imax) | String.IsEqual(MusicPlayer.AudioCodec,dtshd_ma_x_imax)">DTS:X IMAX</value>
+		<value>EMPTY</value>
 	</variable>
 	<variable name="AudioChannelsVar">
 		<value condition="String.IsEqual(ListItem.AudioChannels,0) | String.IsEqual(VideoPlayer.AudioChannels,0) | String.IsEqual(ListItem.MusicChannels,0) | String.IsEqual(MusicPlayer.Channels,0)">0.0</value>
