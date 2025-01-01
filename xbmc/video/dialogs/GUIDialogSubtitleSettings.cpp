@@ -299,7 +299,13 @@ void CGUIDialogSubtitleSettings::InitializeSettings()
   // subtitle delay setting
   if (SupportsSubtitleFeature(IPlayerSubtitleCaps::OFFSET))
   {
-    std::shared_ptr<CSettingNumber> settingSubtitleDelay = AddSlider(groupSubtitles, SETTING_SUBTITLE_DELAY, 22006, SettingLevel::Basic, videoSettings.m_SubtitleDelay, 0, -CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubsDelayRange, 0.1f, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubsDelayRange, 22006, usePopup);
+    std::shared_ptr<CSettingNumber> settingSubtitleDelay = AddSlider(
+        groupSubtitles, SETTING_SUBTITLE_DELAY, 22006, SettingLevel::Basic,
+        videoSettings.m_SubtitleDelay, 0,
+        -CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubsDelayRange,
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubsDelayStep,
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubsDelayRange, 22006,
+        usePopup);
     std::static_pointer_cast<CSettingControlSlider>(settingSubtitleDelay->GetControl())->SetFormatter(SettingFormatterDelay);
   }
 

@@ -128,7 +128,9 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool  m_omlSync = true;
 
     float m_videoSubsDelayRange;
+    float m_videoSubsDelayStep;
     float m_videoAudioDelayRange;
+    float m_videoAudioDelayStep;
     bool m_videoUseTimeSeeking;
     int m_videoTimeSeekForward;
     int m_videoTimeSeekBackward;
