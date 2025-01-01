@@ -56,6 +56,7 @@ public:
   int GetBlockSize() override { return DVDSTREAM_BLOCK_SIZE_DVD; }
   bool IsEOF() override { return m_bEOF; }
   int64_t GetLength() override { return 0; }
+  int64_t GetDuration() override;
   ENextStream NextStream() override ;
 
   void ActivateButton() override;
@@ -126,6 +127,10 @@ public:
   CDVDInputStream::IPosTime* GetIPosTime() override { return this; }
   bool PosTime(int iTimeInMsec) override; //seek within current pg(c)
 
+  void GetPlaylistInfo(std::vector<std::vector<unsigned int>>& clips,
+                       std::vector<std::vector<unsigned int>>& playlists,
+                       std::map<unsigned int, std::string>& playlist_langs);
+
   std::string GetDVDTitleString();
 
   /*!
@@ -166,6 +171,7 @@ protected:
   int m_iTotalTime;
   int m_iTime;
   int64_t m_iCellStart; // start time of current cell in pts units (90khz clock)
+  int64_t m_iDuration;
 
   bool m_bInMenu;
 
@@ -175,6 +181,8 @@ protected:
 
   int m_iTitleCount;
   int m_iTitle;
+  bool m_directToTitle;
+  int32_t m_lastChapter;
 
   int m_iPartCount;
   int m_iPart;

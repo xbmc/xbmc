@@ -208,10 +208,7 @@ std::string GetLocalArtBaseFilename(const CFileItem& item, bool& useFolder)
   std::string strFile;
   if (item.IsStack())
   {
-    std::string strPath;
-    URIUtils::GetParentPath(item.GetPath(), strPath);
-    strFile = URIUtils::AddFileToFolder(
-        strPath, URIUtils::GetFileName(CStackDirectory::GetStackedTitlePath(item.GetPath())));
+    strFile = CStackDirectory::GetStackedTitlePath(item.GetPath());
   }
 
   std::string file = strFile.empty() ? item.GetPath() : strFile;
@@ -279,7 +276,7 @@ std::string GetLocalFanart(const CFileItem& item)
   }
 
   // no local fanart available for these
-  if (NETWORK::IsInternetStream(item) || URIUtils::IsUPnP(file) || URIUtils::IsBluray(file) ||
+  if (NETWORK::IsInternetStream(item) || URIUtils::IsUPnP(file) || URIUtils::IsBlurayPath(file) ||
       item.IsLiveTV() || item.IsPlugin() || item.IsAddonsPath() || item.IsDVD() ||
       (URIUtils::IsFTP(file) &&
        !CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bFTPThumbs) ||

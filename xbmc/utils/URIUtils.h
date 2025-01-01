@@ -87,6 +87,33 @@ public:
    */
   static std::string GetBasePath(const std::string& strPath);
 
+  static std::string GetBaseMoviePath(const std::string& path);
+
+  /*! \brief Given a dvd:// path, return the base .ISO or VIDEO_TS.IFO.
+   \param path bluray:// path.
+   \return the base .ISO or VIDEO_TS.IFO.
+   */
+  static std::string GetDVDFile(const std::string& path);
+
+    /*! \brief Given a bluray:// path, return the base .ISO or index.BDMV.
+   \param path bluray:// path.
+   \return the base .ISO or index.BDMV.
+   */
+  static std::string GetBlurayFile(const std::string& path);
+
+  /*! \brief Given a bluray:// path, return the base .ISO or folder containing the bluray file structure.
+   \param path bluray:// path.
+   \return the base .ISO or folder containing the bluray file structure.
+   \note Used to determine file/folder to delete
+   */
+  static std::string GetDiscBase(std::string file);
+
+  /*! \brief Given a bluray:// path, return the folder containing the .ISO or bluray file structure.
+   \param path bluray:// path.
+   \return the folder containing the .ISO or bluray file structure.
+   */
+  static std::string GetDiscBasePath(const std::string& file);
+
   /* \brief Change the base path of a URL: fromPath/fromFile -> toPath/toFile
     Handles changes in path separator and filename URL encoding if necessary to derive toFile.
     \param fromPath the base path of the original URL
@@ -135,6 +162,8 @@ public:
   static bool IsDAV(const std::string& strFile);
   static bool IsDOSPath(const std::string &path);
   static bool IsDVD(const std::string& strFile);
+  static bool IsDVDFile(const std::string& file);
+  static bool IsBDFile(const std::string& file);
   static bool IsFTP(const std::string& strFile);
   static bool IsHTTP(const std::string& strFile, bool bTranslate = false);
   static bool IsUDP(const std::string& strFile);
@@ -178,7 +207,9 @@ public:
   static bool IsArchive(const std::string& strFile);
   static bool IsDiscImage(const std::string& file);
   static bool IsDiscImageStack(const std::string& file);
-  static bool IsBluray(const std::string& strFile);
+  static bool IsDiscStack(const std::string& file);
+  static bool IsBlurayPath(const std::string& strFile);
+  static bool IsDVDPath(const std::string& strFile);
   static bool IsAndroidApp(const std::string& strFile);
   static bool IsLibraryFolder(const std::string& strFile);
   static bool IsLibraryContent(const std::string& strFile);

@@ -16,6 +16,9 @@
 #include "filesystem/SpecialProtocol.h"
 #endif
 #include "guilib/LocalizeStrings.h"
+#if defined(TARGET_DARWIN_OSX)
+#include "platform/darwin/osx/CocoaInterface.h"
+#endif
 #if defined(TARGET_WINDOWS_STORE)
 #include "platform/Environment.h"
 #endif
@@ -23,13 +26,11 @@
 #include "settings/SettingsComponent.h"
 #include "utils/Geometry.h"
 #include "utils/LangCodeExpander.h"
+#include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
-
-#if defined(TARGET_DARWIN_OSX)
-#include "platform/darwin/osx/CocoaInterface.h"
-#endif
+#include "video/VideoInfoTag.h"
 
 #include <memory>
 
@@ -86,8 +87,11 @@ CDVDInputStreamNavigator::CDVDInputStreamNavigator(IVideoPlayer* player, const C
   m_bInMenu = false;
   m_holdmode = HOLDMODE_NONE;
   m_iTitle = m_iTitleCount = 0;
+  m_directToTitle = false;
+  m_lastChapter = 0;
   m_iPart = m_iPartCount = 0;
   m_iTime = m_iTotalTime = 0;
+  m_iDuration = 0;
   m_bEOF = false;
   m_lastevent = DVDNAV_NOP;
   m_dvdnav_stream_cb.pf_read = dvd_inputstreamnavigator_cb_read;
@@ -112,7 +116,8 @@ bool CDVDInputStreamNavigator::Open()
   // libdvdcss
   CEnvironment::putenv("DVDCSS_METHOD=key");
   CEnvironment::putenv("DVDCSS_VERBOSE=3");
-  CEnvironment::putenv("DVDCSS_CACHE=" + CSpecialProtocol::TranslatePath("special://masterprofile/cache"));
+  CEnvironment::putenv("DVDCSS_CACHE=" +
+                       CSpecialProtocol::TranslatePath("special://masterprofile/cache"));
 #endif
 
   // load libdvdnav.dll
@@ -126,6 +131,49 @@ bool CDVDInputStreamNavigator::Open()
   // libdvdnav is still able to play without, so strip them.
 
   std::string path = m_item.GetDynPath();
+
+  // Deal with dvd://
+  CURL url(path);
+  int32_t title{0};
+  int32_t chapter{1};
+  m_lastChapter = 0;
+  if (url.IsProtocol("dvd"))
+  {
+    // If resuming then the title and chapter are in playerstate
+    if (m_item.GetStartOffset() != STARTOFFSET_RESUME)
+    {
+      // Get title and chapter
+      CRegExp t{true, CRegExp::autoUtf8, R"((title)(?:\/)(\d+))"};
+      CRegExp tc{true, CRegExp::autoUtf8, R"((title)(?:\/)(\d+)(?:\/)(chapter)(?:\/)(\d+))"};
+      CRegExp tcs{true, CRegExp::autoUtf8,
+                  R"((title)(?:\/)(\d+)(?:\/)(chapters)(?:\/)(\d+)(?:-)(\d+))"};
+      const std::string& f{url.GetFileName()};
+      if (tcs.RegFind(f) != -1)
+      {
+        title = std::stoi(tcs.GetMatch(2));
+        chapter = std::stoi(tcs.GetMatch(4));
+        m_lastChapter = std::stoi(tcs.GetMatch(5));
+      }
+      else if (tc.RegFind(f) != -1)
+      {
+        title = std::stoi(tc.GetMatch(2));
+        chapter = std::stoi(tc.GetMatch(4));
+        m_lastChapter = chapter;
+      }
+      else if (t.RegFind(f) != -1)
+        title = std::stoi(t.GetMatch(2));
+    }
+
+    // Get base path for now
+    const CURL url2(url.GetHostName()); // strip dvd://
+    if (url2.IsProtocol("udf"))
+      // ISO
+      path = url2.GetHostName(); // strip udf://
+    else
+      // VIDEO_TS
+      path = url2.Get() + "VIDEO_TS/VIDEO_TS.IFO";
+  }
+
   if(URIUtils::GetFileName(path) == "VIDEO_TS.IFO")
     path = URIUtils::GetParentPath(path);
   URIUtils::RemoveSlashAtEnd(path);
@@ -259,24 +307,40 @@ bool CDVDInputStreamNavigator::Open()
     return false;
   }
 
+  // jump directory to title/chapter
+  m_iDuration = 0;
+  if (title > 0)
+  {
+    if (m_dll.dvdnav_part_play(m_dvdnav, title, chapter) != DVDNAV_STATUS_OK)
+      CLog::Log(LOGERROR, "Error on part_play(title {}, part {}): {}", title, chapter,
+                m_dll.dvdnav_err_to_string(m_dvdnav));
+
+    // Get duration
+    uint64_t* times = NULL;
+    uint64_t duration;
+    m_dll.dvdnav_describe_title_chapters(m_dvdnav, title, &times, &duration);
+    m_iDuration = duration / 90;
+    free(times);
+  }
   // jump directly to title menu
-  if(CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_DVDS_AUTOMENU))
+  else if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+               CSettings::SETTING_DVDS_AUTOMENU))
   {
     int len, event;
     uint8_t buf[2048];
     uint8_t* buf_ptr = buf;
 
     // must startup vm and pgc
-    m_dll.dvdnav_get_next_cache_block(m_dvdnav,&buf_ptr,&event,&len);
+    m_dll.dvdnav_get_next_cache_block(m_dvdnav, &buf_ptr, &event, &len);
     m_dll.dvdnav_sector_search(m_dvdnav, 0, SEEK_SET);
 
     // first try title menu
-    if(m_dll.dvdnav_menu_call(m_dvdnav, DVD_MENU_Title) != DVDNAV_STATUS_OK)
+    if (m_dll.dvdnav_menu_call(m_dvdnav, DVD_MENU_Title) != DVDNAV_STATUS_OK)
     {
       CLog::Log(LOGERROR, "Error on dvdnav_menu_call(Title): {}",
                 m_dll.dvdnav_err_to_string(m_dvdnav));
       // next try root menu
-      if(m_dll.dvdnav_menu_call(m_dvdnav, DVD_MENU_Root) != DVDNAV_STATUS_OK )
+      if (m_dll.dvdnav_menu_call(m_dvdnav, DVD_MENU_Root) != DVDNAV_STATUS_OK)
         CLog::Log(LOGERROR, "Error on dvdnav_menu_call(Root): {}",
                   m_dll.dvdnav_err_to_string(m_dvdnav));
     }
@@ -290,7 +354,9 @@ bool CDVDInputStreamNavigator::Open()
   m_iVobUnitCorrection = 0LL;
   m_bInMenu = false;
   m_holdmode = HOLDMODE_NONE;
-  m_iTitle = m_iTitleCount = 0;
+  m_iTitle = title;
+  m_directToTitle = url.IsProtocol("dvd");
+  m_iTitleCount = 0;
   m_iPart = m_iPartCount = 0;
   m_iTime = m_iTotalTime = 0;
 
@@ -487,7 +553,16 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
       // information only when necessary and update the decoding/displaying
       // accordingly.
       {
-        if(m_holdmode == HOLDMODE_NONE)
+        if (m_directToTitle && m_iTime > 0 && m_iTime >= m_iDuration - 2000)
+        {
+          // If started playing a title directly then stop at end (within 2 seconds of end)
+          m_bEOF = true;
+
+          m_pVideoPlayer->OnDiscNavResult(NULL, DVDNAV_STOP);
+          iNavresult = NAVRESULT_ERROR;
+          break;
+        }
+        if (m_holdmode == HOLDMODE_NONE)
         {
           CLog::Log(LOGDEBUG, " - DVDNAV_VTS_CHANGE (HOLDING)");
           m_holdmode = HOLDMODE_HELD;
@@ -547,6 +622,15 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
             free(times);
           }
         }
+
+        if (m_lastChapter > 0 && m_iPart > m_lastChapter)
+        {
+          m_bEOF = true;
+          m_pVideoPlayer->OnDiscNavResult(static_cast<void*>(&m_lastChapter), DVDNAV_STOP);
+          iNavresult = NAVRESULT_ERROR;
+          break;
+        }
+
         CLog::Log(LOGDEBUG, "{} - Cell change: Title {}, Chapter {}", __FUNCTION__, m_iTitle,
                   m_iPart);
         CLog::Log(LOGDEBUG, "{} - At position {:.0f}% inside the feature", __FUNCTION__,
@@ -1216,6 +1300,11 @@ int CDVDInputStreamNavigator::GetTotalTime()
   return m_iTotalTime;
 }
 
+int64_t CDVDInputStreamNavigator::GetDuration()
+{
+  return m_iDuration;
+}
+
 int CDVDInputStreamNavigator::GetTime()
 {
   //We use buffers of this as they can get called from multiple threads, and could block if we are currently reading data
@@ -1396,6 +1485,14 @@ bool CDVDInputStreamNavigator::SetState(const std::string& xmlstate)
   SetActiveSubtitleStream(dvdState.subp_num);
   SetActiveAudioStream(dvdState.audio_num);
   EnableSubtitleStream(dvdState.sub_enabled);
+
+  // Get duration
+  uint64_t* times = NULL;
+  uint64_t duration;
+  m_dll.dvdnav_describe_title_chapters(m_dvdnav, dvdState.title, &times, &duration);
+  m_iDuration = duration / 90;
+  free(times);
+
   return true;
 }
 
@@ -1489,6 +1586,45 @@ VideoStreamInfo CDVDInputStreamNavigator::GetVideoStreamInfo()
   info.codecName = "mpeg2";
 
   return info;
+}
+
+// First two entries in playlist array are playlist number and duration. Remaining entries are clip(s)
+// First two entries in clip array are clip number and duration. Remaining entries are playlist(s)
+
+void CDVDInputStreamNavigator::GetPlaylistInfo(std::vector<std::vector<unsigned int>>& clips,
+                                               std::vector<std::vector<unsigned int>>& playlists,
+                                               std::map<unsigned int, std::string>& playlist_langs)
+{
+  int32_t titles;
+  m_dll.dvdnav_get_number_of_titles(m_dvdnav, &titles);
+  for (int32_t i = 1; i <= titles; ++i)
+  {
+    uint64_t* times{};
+    uint64_t duration;
+    const uint32_t chapters{m_dll.dvdnav_describe_title_chapters(m_dvdnav, i, &times, &duration)};
+
+    // Save playlist
+    auto pl = std::vector{static_cast<unsigned int>(i)};
+
+    // Save playlist duration
+    pl.emplace_back(static_cast<unsigned int>(duration / 90000));
+
+    // Add chapters to playlist
+    if (chapters > 0)
+    {
+      std::string chapterStr;
+      for (uint32_t j = 0; j < chapters; ++j)
+      {
+        pl.emplace_back(static_cast<unsigned int>(times[j] / 90000));
+        chapterStr += StringUtils::Format("{},", times[j] / 90000);
+      }
+
+      playlists.emplace_back(pl);
+      chapterStr.pop_back();
+
+      CLog::LogF(LOGDEBUG, "Playlist {}, Duration {}, Chapters at {} ", i, duration, chapterStr);
+    }
+  }
 }
 
 int dvd_inputstreamnavigator_cb_seek(void * p_stream, uint64_t i_pos)

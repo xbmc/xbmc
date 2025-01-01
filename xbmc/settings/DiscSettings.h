@@ -18,6 +18,13 @@ enum BDPlaybackMode
   BD_PLAYBACK_MAIN_TITLE,
 };
 
+enum DVDPlaybackMode
+{
+  DVD_PLAYBACK_SIMPLE_MENU = 0,
+  DVD_PLAYBACK_DISC_MENU,
+  DVD_PLAYBACK_MAIN_TITLE,
+};
+
 #include "settings/lib/ISettingCallback.h"
 
 class CDiscSettings : public ISettingCallback

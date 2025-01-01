@@ -715,7 +715,7 @@ void CGUIWindowVideoBase::LoadVideoInfo(CFileItemList& items,
     }
     if (match)
     {
-      pItem->UpdateInfo(*match, replaceLabels);
+      pItem->UpdateInfo(*match, replaceLabels, true);
 
       if (stackItems)
       {
@@ -838,7 +838,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       }
       if (PLAYLIST::IsSmartPlayList(*item) || PLAYLIST::IsSmartPlayList(*m_vecItems))
         buttons.Add(CONTEXT_BUTTON_EDIT_SMART_PLAYLIST, 586);
-      if (VIDEO::IsBlurayPlaylist(*item))
+      if (URIUtils::IsBlurayPath(item->GetDynPath()) || URIUtils::IsDVDPath(item->GetDynPath()))
         buttons.Add(CONTEXT_BUTTON_CHOOSE_PLAYLIST, 13424);
     }
   }

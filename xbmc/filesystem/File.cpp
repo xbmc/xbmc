@@ -284,7 +284,7 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
     if (!(m_flags & READ_NO_CACHE))
     {
       const std::string pathToUrl(url.Get());
-      if (URIUtils::IsDVD(pathToUrl) || URIUtils::IsBluray(pathToUrl) ||
+      if (URIUtils::IsDVD(pathToUrl) || URIUtils::IsBlurayPath(pathToUrl) ||
           (m_flags & READ_AUDIO_VIDEO))
       {
         const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
@@ -442,7 +442,12 @@ int CFile::DetermineChunkSize(const int srcChunkSize, const int reqChunkSize)
 
 bool CFile::Exists(const std::string& strFileName, bool bUseCache /* = true */)
 {
-  const CURL pathToUrl(strFileName);
+  // URL dvd:// may end in /title/x or /title/x/chapter/y
+  // This is not a file per se but is resolved when DVD played
+  // So we need to substitute /video_ts/video_ts.ifo here so file exists test passes
+  CURL pathToUrl(strFileName);
+  if (URIUtils::IsDVDPath(strFileName))
+    pathToUrl.SetFileName("VIDEO_TS/VIDEO_TS.IFO");
   return Exists(pathToUrl, bUseCache);
 }
 

@@ -9,12 +9,14 @@
 #include "VideoInfoTag.h"
 
 #include "ServiceBroker.h"
+#include "URL.h"
 #include "guilib/LocalizeStrings.h"
 #include "imagefiles/ImageFileURL.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Archive.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
@@ -76,6 +78,7 @@ void CVideoInfoTag::Reset()
   m_iUserRating = 0;
   m_iDbId = -1;
   m_iFileId = -1;
+  m_originalFileId = -1;
   m_iBookmarkId = -1;
   m_iTrack = -1;
   m_fanart.m_xml.clear();
@@ -194,6 +197,12 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
     XMLUtils::SetString(movie, "path", m_strPath);
     XMLUtils::SetString(movie, "filenameandpath", m_strFileNameAndPath);
     XMLUtils::SetString(movie, "basepath", m_basePath);
+  }
+  else if (URIUtils::IsBlurayPath(m_strFileNameAndPath) ||
+           URIUtils::IsDVDPath(m_strFileNameAndPath))
+  {
+    CURL url{m_strFileNameAndPath};
+    XMLUtils::SetString(movie, "relativefilename", url.GetFileName());
   }
   if (!m_strEpisodeGuide.empty())
   {
@@ -431,7 +440,10 @@ void CVideoInfoTag::Merge(CVideoInfoTag& other)
   if (other.m_iDbId != -1)
     m_iDbId = other.m_iDbId;
   if (other.m_iFileId != -1)
+  {
     m_iFileId = other.m_iFileId;
+    m_originalFileId = other.m_originalFileId;
+  }
   if (other.m_iBookmarkId != -1)
     m_iBookmarkId = other.m_iBookmarkId;
   if (other.m_iTrack != -1)
@@ -562,6 +574,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_iUserRating;
     ar << m_iDbId;
     ar << m_iFileId;
+    ar << m_originalFileId;
     ar << m_iSpecialSortSeason;
     ar << m_iSpecialSortEpisode;
     ar << m_iBookmarkId;
@@ -682,6 +695,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_iUserRating;
     ar >> m_iDbId;
     ar >> m_iFileId;
+    ar >> m_originalFileId;
     ar >> m_iSpecialSortSeason;
     ar >> m_iSpecialSortEpisode;
     ar >> m_iBookmarkId;
@@ -793,6 +807,7 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   value["userrating"] = m_iUserRating;
   value["dbid"] = m_iDbId;
   value["fileid"] = m_iFileId;
+  value["originalfileid"] = m_originalFileId;
   value["track"] = m_iTrack;
   value["showlink"] = m_showLink;
   m_streamDetails.Serialize(value["streamdetails"]);
@@ -1138,6 +1153,8 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
 
   if (XMLUtils::GetString(movie, "filenameandpath", value))
     SetFileNameAndPath(value);
+  else if (XMLUtils::GetString(movie, "relativefilename", value))
+    SetFile(value);
 
   if (XMLUtils::GetDate(movie, "premiered", m_premiered))
   {
