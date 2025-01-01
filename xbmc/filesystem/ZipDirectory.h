@@ -19,6 +19,6 @@ namespace XFILE
     ~CZipDirectory() override;
     bool GetDirectory(const CURL& url, CFileItemList& items) override;
     bool ContainsFiles(const CURL& url) override;
-    DIR_CACHE_TYPE GetCacheType(const CURL& url) const override { return DIR_CACHE_ALWAYS; }
+    CacheType GetCacheType(const CURL& url) const override { return CacheType::ALWAYS; }
   };
 }

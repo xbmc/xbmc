@@ -24,7 +24,7 @@ public:
   ~CXbtDirectory() override;
 
   // specialization of IDirectory
-  DIR_CACHE_TYPE GetCacheType(const CURL& url) const override { return DIR_CACHE_ALWAYS; }
+  CacheType GetCacheType(const CURL& url) const override { return CacheType::ALWAYS; }
   bool GetDirectory(const CURL& url, CFileItemList& items) override;
 
   // specialization of IFileDirectory

@@ -89,9 +89,9 @@ bool CAPKDirectory::ContainsFiles(const CURL& url)
   return false;
 }
 
-DIR_CACHE_TYPE CAPKDirectory::GetCacheType(const CURL& url) const
+CacheType CAPKDirectory::GetCacheType(const CURL& url) const
 {
-  return DIR_CACHE_ALWAYS;
+  return CacheType::ALWAYS;
 }
 
 bool CAPKDirectory::Exists(const CURL& url)
