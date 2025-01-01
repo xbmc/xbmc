@@ -522,9 +522,9 @@ std::string CVideoThumbLoader::GetLocalArt(const CFileItem &item, const std::str
 
   const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
-  const bool cacheAll =
-      settings ? settings->GetInt(CSettings::SETTING_FILECACHE_BUFFERMODE) == CACHE_BUFFER_MODE_ALL
-               : false;
+  const bool cacheAll = settings ? settings->GetInt(CSettings::SETTING_FILECACHE_BUFFERMODE) ==
+                                       static_cast<int>(CacheBufferMode::ALL)
+                                 : false;
 
   if (item.m_bIsFolder && (NETWORK::IsStreamedFilesystem(item) || cacheAll))
   {

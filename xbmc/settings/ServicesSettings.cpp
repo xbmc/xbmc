@@ -36,11 +36,11 @@ void CServicesSettings::SettingOptionsBufferModesFiller(const SettingConstPtr& s
                                                         int& current,
                                                         void* data)
 {
-  list.emplace_back(g_localizeStrings.Get(37110), CACHE_BUFFER_MODE_NONE);
-  list.emplace_back(g_localizeStrings.Get(37111), CACHE_BUFFER_MODE_TRUE_INTERNET);
-  list.emplace_back(g_localizeStrings.Get(37112), CACHE_BUFFER_MODE_INTERNET);
-  list.emplace_back(g_localizeStrings.Get(37113), CACHE_BUFFER_MODE_NETWORK);
-  list.emplace_back(g_localizeStrings.Get(37114), CACHE_BUFFER_MODE_ALL);
+  list.emplace_back(g_localizeStrings.Get(37110), static_cast<int>(CacheBufferMode::NONE));
+  list.emplace_back(g_localizeStrings.Get(37111), static_cast<int>(CacheBufferMode::TRUE_INTERNET));
+  list.emplace_back(g_localizeStrings.Get(37112), static_cast<int>(CacheBufferMode::INTERNET));
+  list.emplace_back(g_localizeStrings.Get(37113), static_cast<int>(CacheBufferMode::NETWORK));
+  list.emplace_back(g_localizeStrings.Get(37114), static_cast<int>(CacheBufferMode::ALL));
 }
 
 void CServicesSettings::SettingOptionsMemorySizesFiller(const SettingConstPtr& setting,

@@ -289,17 +289,18 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
       {
         const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
-        const int cacheBufferMode = (settings)
-                                        ? settings->GetInt(CSettings::SETTING_FILECACHE_BUFFERMODE)
-                                        : CACHE_BUFFER_MODE_NETWORK;
+        const CacheBufferMode cacheBufferMode =
+            (settings) ? static_cast<CacheBufferMode>(
+                             settings->GetInt(CSettings::SETTING_FILECACHE_BUFFERMODE))
+                       : CacheBufferMode::NETWORK;
 
-        if ((cacheBufferMode == CACHE_BUFFER_MODE_INTERNET &&
+        if ((cacheBufferMode == CacheBufferMode::INTERNET &&
              URIUtils::IsInternetStream(pathToUrl, true)) ||
-            (cacheBufferMode == CACHE_BUFFER_MODE_TRUE_INTERNET &&
+            (cacheBufferMode == CacheBufferMode::TRUE_INTERNET &&
              URIUtils::IsInternetStream(pathToUrl, false)) ||
-            (cacheBufferMode == CACHE_BUFFER_MODE_NETWORK &&
+            (cacheBufferMode == CacheBufferMode::NETWORK &&
              URIUtils::IsNetworkFilesystem(pathToUrl)) ||
-            (cacheBufferMode == CACHE_BUFFER_MODE_ALL &&
+            (cacheBufferMode == CacheBufferMode::ALL &&
              (URIUtils::IsNetworkFilesystem(pathToUrl) || URIUtils::IsHD(pathToUrl))))
         {
           m_flags |= READ_CACHED;
