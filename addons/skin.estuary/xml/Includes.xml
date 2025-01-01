@@ -40,6 +40,7 @@
 	<constant name="list_item_height">75</constant>
 	<expression name="infodialog_active">Window.IsActive(musicinformation) | Window.IsActive(songinformation) | Window.IsActive(movieinformation) | Window.IsActive(addoninformation) | Window.IsActive(pvrguideinfo) | Window.IsActive(pvrrecordinginfo) | Window.IsActive(pictureinfo) | Window.IsVisible(script-embuary-video.xml) | Window.IsVisible(script-embuary-person.xml) | Window.IsVisible(script-embuary-image.xml)</expression>
 	<expression name="sidebar_visible">ControlGroup(9000).HasFocus | Control.HasFocus(6130) | Control.HasFocus(6131)</expression>
+	<expression name="object_audio_true">[String.Contains(ListItem.AudioCodec,atmos) | String.Contains(ListItem.AudioCodec,dtshd_ma_x)] | [Window.IsActive(fullscreenvideo) + [String.Contains(VideoPlayer.AudioCodec,atmos) | String.Contains(VideoPlayer.AudioCodec,dtshd_ma_x)]] | [Window.IsActive(visualisation) + [String.Contains(MusicPlayer.AudioCodec,atmos) | String.Contains(MusicPlayer.AudioCodec,dtshd_ma_x)]]</expression>
 	<include name="CommonScrollbars">
 		<param name="bottom_offset">list_bottom_offset</param>
 		<definition>
@@ -409,14 +410,9 @@
 					<param name="flag_visible" value="!String.IsEmpty(ListItem.AudioCodec)" />
 					<param name="flag_label" value="$VAR[AudioCodecVar]" />
 				</include>
-				<control type="label" id="989898">
-					<font>font10</font>
-					<visible>false</visible>
-					<label>$VAR[ObjectAudioTypeVar]</label>
-				</control>
 				<include content="MediaFlag">
-					<param name="flag_visible" value="!String.IsEmpty(ListItem.AudioCodec) + !String.IsEqual(Control.GetLabel(989898),EMPTY)" />
-					<param name="flag_label" value="$INFO[Control.GetLabel(989898)]" />
+					<param name="flag_visible" value="$EXP[object_audio_true]" />
+					<param name="flag_label" value="$VAR[ObjectAudioTypeVar]" />
 				</include>
 				<include content="MediaFlag">
 					<param name="flag_visible" value="!String.IsEmpty(ListItem.AudioChannels)" />
@@ -430,7 +426,7 @@
 				<bottom>0</bottom>
 				<height>60</height>
 				<align>right</align>
-				<itemgap>10</itemgap>
+				<itemgap>9</itemgap>
 				<width>1900</width>
 				<usecontrolcoords>true</usecontrolcoords>
 				<include content="MediaFlag">
@@ -457,14 +453,9 @@
 					<param name="flag_visible" value="!String.IsEmpty(VideoPlayer.AudioCodec)" />
 					<param name="flag_label" value="$VAR[AudioCodecVar]" />
 				</include>
-				<control type="label" id="989898">
-					<font>font10</font>
-					<visible>false</visible>
-					<label>$VAR[ObjectAudioTypeVar]</label>
-				</control>
 				<include content="MediaFlag">
-					<param name="flag_visible" value="!String.IsEmpty(VideoPlayer.AudioCodec) + !String.IsEqual(Control.GetLabel(989898),EMPTY)" />
-					<param name="flag_label" value="$INFO[Control.GetLabel(989898)]" />
+					<param name="flag_visible" value="$EXP[object_audio_true]" />
+					<param name="flag_label" value="$VAR[ObjectAudioTypeVar]" />
 				</include>
 				<include content="MediaFlag">
 					<param name="flag_visible" value="!String.IsEmpty(VideoPlayer.AudioChannels)" />
@@ -478,7 +469,7 @@
 				<bottom>10</bottom>
 				<height>60</height>
 				<align>right</align>
-				<itemgap>10</itemgap>
+				<itemgap>9</itemgap>
 				<width>1900</width>
 				<usecontrolcoords>true</usecontrolcoords>
 				<include content="MediaFlag">
@@ -514,10 +505,10 @@
 				<visible>Player.ShowInfo + !Player.ChannelPreviewActive + Window.IsActive(visualisation)</visible>)
 				<orientation>horizontal</orientation>
 				<right>20</right>
-				<bottom>10</bottom>
+				<bottom>9</bottom>
 				<height>60</height>
 				<align>right</align>
-				<itemgap>10</itemgap>
+				<itemgap>9</itemgap>
 				<width>1900</width>
 				<usecontrolcoords>true</usecontrolcoords>
 				<include content="MediaFlag">
@@ -528,14 +519,9 @@
 					<param name="flag_visible" value="!String.IsEmpty(MusicPlayer.Codec)" />
 					<param name="flag_label" value="$VAR[AudioCodecVar]" />
 				</include>
-				<control type="label" id="989898">
-					<font>font10</font>
-					<visible>false</visible>
-					<label>$VAR[ObjectAudioTypeVar]</label>
-				</control>
 				<include content="MediaFlag">
-					<param name="flag_visible" value="!String.IsEmpty(MusicPlayer.Codec) + !String.IsEqual(Control.GetLabel(989898),EMPTY)" />
-					<param name="flag_label" value="$INFO[Control.GetLabel(989898)]" />
+					<param name="flag_visible" value="$EXP[object_audio_true]" />
+					<param name="flag_label" value="$VAR[ObjectAudioTypeVar]" />
 				</include>
 				<include content="MediaFlag">
 					<param name="flag_visible" value="!String.IsEmpty(MusicPlayer.Channels)" />
