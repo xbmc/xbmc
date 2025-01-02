@@ -100,6 +100,9 @@ void CPowerManager::SetDefaults()
           defaultShutdown = CServiceBroker::GetPowerManager().CanHibernate() ? POWERSTATE_HIBERNATE : POWERSTATE_QUIT;
       }
     break;
+    case POWERSTATE_SHOW_MENU:
+      defaultShutdown = POWERSTATE_SHOW_MENU;
+    break;
   }
 
   std::static_pointer_cast<CSettingInt>(setting)->SetDefault(defaultShutdown);
@@ -312,4 +315,5 @@ void CPowerManager::SettingOptionsShutdownStatesFiller(const SettingConstPtr& se
     list.emplace_back(g_localizeStrings.Get(13014), POWERSTATE_MINIMIZE);
 #endif
   }
+  list.emplace_back(g_localizeStrings.Get(13024), POWERSTATE_SHOW_MENU);
 }
