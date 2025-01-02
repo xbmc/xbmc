@@ -22,9 +22,8 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/ContentUtils.h"
-#include "utils/ExecString.h"
-#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/guilib/GUIBuiltinsUtils.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
@@ -38,6 +37,7 @@
 #include <utility>
 
 using namespace KODI;
+using namespace KODI::UTILS::GUILIB;
 
 namespace CONTEXTMENU
 {
@@ -187,19 +187,6 @@ bool CVideoBrowse::Execute(const std::shared_ptr<CFileItem>& item) const
 
 namespace
 {
-bool ExecuteAction(const CExecString& execute, const std::shared_ptr<CFileItem>& item)
-{
-  const std::string& execStr{execute.GetExecString()};
-  if (!execStr.empty())
-  {
-    CGUIMessage message(GUI_MSG_EXECUTE, 0, 0, 0, 0, item);
-    message.SetStringParam(execStr);
-    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(message);
-    return true;
-  }
-  return false;
-}
-
 class CVideoSelectActionProcessor : public VIDEO::GUILIB::CVideoSelectActionProcessorBase
 {
 public:
@@ -211,26 +198,25 @@ public:
 protected:
   bool OnPlayPartSelected(unsigned int part) override
   {
-    // part numbers are 1-based
-    ExecuteAction({"PlayMedia", *m_item, StringUtils::Format("playoffset={}", part - 1)}, m_item);
+    CGUIBuiltinsUtils::ExecutePlayMediaPart(m_item, part);
     return true;
   }
 
   bool OnResumeSelected() override
   {
-    ExecuteAction({"PlayMedia", *m_item, "resume"}, m_item);
+    CGUIBuiltinsUtils::ExecutePlayMediaTryResume(m_item);
     return true;
   }
 
   bool OnPlaySelected() override
   {
-    ExecuteAction({"PlayMedia", *m_item, "noresume"}, m_item);
+    CGUIBuiltinsUtils::ExecutePlayMediaNoResume(m_item);
     return true;
   }
 
   bool OnQueueSelected() override
   {
-    ExecuteAction({"QueueMedia", *m_item, ""}, m_item);
+    CGUIBuiltinsUtils::ExecuteQueueMedia(m_item);
     return true;
   }
 
