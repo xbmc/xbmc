@@ -83,7 +83,7 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       return false;
     }
 
-    std::string fileCharset(http.GetProperty(XFILE::FILE_PROPERTY_CONTENT_CHARSET));
+    std::string fileCharset(http.GetProperty(XFILE::FileProperty::CONTENT_CHARSET));
     if (!fileCharset.empty() && fileCharset != "UTF-8")
     {
       std::string converted;

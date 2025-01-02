@@ -186,7 +186,7 @@ bool CRepository::FetchChecksum(const std::string& url,
   // This special header is set by the Kodi mirror redirector to control client update frequency
   // depending on the load on the mirrors
   const std::string recheckAfterHeader{
-      file.GetProperty(FILE_PROPERTY_RESPONSE_HEADER, "X-Kodi-Recheck-After")};
+      file.GetProperty(FileProperty::RESPONSE_HEADER, "X-Kodi-Recheck-After")};
   if (!recheckAfterHeader.empty())
   {
     try
@@ -228,8 +228,9 @@ bool CRepository::FetchIndex(const RepositoryDirInfo& repo,
     }
   }
 
-  if (URIUtils::HasExtension(repo.info, ".gz")
-      || CMime::GetFileTypeFromMime(http.GetProperty(XFILE::FILE_PROPERTY_MIME_TYPE)) == CMime::EFileType::FileTypeGZip)
+  if (URIUtils::HasExtension(repo.info, ".gz") ||
+      CMime::GetFileTypeFromMime(http.GetProperty(XFILE::FileProperty::MIME_TYPE)) ==
+          CMime::EFileType::FileTypeGZip)
   {
     CLog::Log(LOGDEBUG, "CRepository '{}' is gzip. decompressing", repo.info);
     std::string buffer;

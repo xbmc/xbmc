@@ -102,14 +102,14 @@ enum CURLOPTIONTYPE
  * sslcipherlist: Set list of accepted SSL ciphers.
  */
 
-enum FileProperty
+enum class FileProperty
 {
-  FILE_PROPERTY_RESPONSE_PROTOCOL,          /**< Get response protocol line  */
-  FILE_PROPERTY_RESPONSE_HEADER,            /**< Get response Header value  */
-  FILE_PROPERTY_CONTENT_TYPE,               /**< Get file content-type  */
-  FILE_PROPERTY_CONTENT_CHARSET,            /**< Get file content charset  */
-  FILE_PROPERTY_MIME_TYPE,                  /**< Get file mime type  */
-  FILE_PROPERTY_EFFECTIVE_URL               /**< Get effective URL for redirected streams  */
+  RESPONSE_PROTOCOL, /**< Get response protocol line  */
+  RESPONSE_HEADER, /**< Get response Header value  */
+  CONTENT_TYPE, /**< Get file content-type  */
+  CONTENT_CHARSET, /**< Get file content charset  */
+  MIME_TYPE, /**< Get file mime type  */
+  EFFECTIVE_URL /**< Get effective URL for redirected streams  */
 };
 
 class IFileCallback

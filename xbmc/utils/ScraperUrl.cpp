@@ -339,7 +339,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL,
 
   strHTML = strHTML1;
 
-  const auto mimeType = http.GetProperty(XFILE::FILE_PROPERTY_MIME_TYPE);
+  const auto mimeType = http.GetProperty(XFILE::FileProperty::MIME_TYPE);
   CMime::EFileType ftype = CMime::GetFileTypeFromMime(mimeType);
   if (ftype == CMime::FileTypeUnknown)
     ftype = CMime::GetFileTypeFromContent(strHTML);
@@ -360,7 +360,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL,
                 scrURL.m_url);
   }
 
-  const auto reportedCharset = http.GetProperty(XFILE::FILE_PROPERTY_CONTENT_CHARSET);
+  const auto reportedCharset = http.GetProperty(XFILE::FileProperty::CONTENT_CHARSET);
   if (ftype == CMime::FileTypeHtml)
   {
     std::string realHtmlCharset, converted;
