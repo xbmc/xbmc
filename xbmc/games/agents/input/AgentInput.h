@@ -117,8 +117,9 @@ private:
   void ProcessMouse();
 
   // Internal helpers
-  void ProcessAgentControllers(const PERIPHERALS::PeripheralVector& joysticks,
-                               PERIPHERALS::EventLockHandlePtr& inputHandlingLock);
+  void ProcessAgentControllers(const PERIPHERALS::PeripheralVector& peripherals,
+                               PERIPHERALS::EventLockHandlePtr& inputHandlingLock,
+                               bool updateJoysticks);
   void UpdateExpiredJoysticks(const PERIPHERALS::PeripheralVector& joysticks,
                               PERIPHERALS::EventLockHandlePtr& inputHandlingLock);
   void UpdateConnectedJoysticks(const PERIPHERALS::PeripheralVector& joysticks,
