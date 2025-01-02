@@ -801,12 +801,12 @@ bool CLangInfo::SetLanguage(std::string language /* = "" */, bool reloadServices
   return true;
 }
 
-const std::string& CLangInfo::GetAudioLanguage() const
+const std::string& CLangInfo::GetAudioLanguage(bool allowFallback) const
 {
-  if (!m_audioLanguage.empty())
-    return m_audioLanguage;
+  if (allowFallback && m_audioLanguage.empty())
+    return m_languageCodeGeneral;
 
-  return m_languageCodeGeneral;
+  return m_audioLanguage;
 }
 
 void CLangInfo::SetAudioLanguage(const std::string& language, bool isIso6392 /* = false */)
@@ -836,12 +836,12 @@ void CLangInfo::SetAudioLanguage(const std::string& language, bool isIso6392 /* 
   m_audioLanguage = langISO6392; // empty value for error cases
 }
 
-const std::string& CLangInfo::GetSubtitleLanguage() const
+const std::string& CLangInfo::GetSubtitleLanguage(bool allowFallback) const
 {
-  if (!m_subtitleLanguage.empty())
-    return m_subtitleLanguage;
+  if (allowFallback && m_subtitleLanguage.empty())
+    return m_languageCodeGeneral;
 
-  return m_languageCodeGeneral;
+  return m_subtitleLanguage;
 }
 
 void CLangInfo::SetSubtitleLanguage(const std::string& language, bool isIso6392 /* = false */)

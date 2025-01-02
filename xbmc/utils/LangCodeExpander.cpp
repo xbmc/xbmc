@@ -27,7 +27,7 @@ typedef struct LCENTRY
 } LCENTRY;
 
 extern const std::array<struct LCENTRY, 188> g_iso639_1;
-extern const std::array<struct LCENTRY, 540> g_iso639_2;
+extern const std::array<struct LCENTRY, 541> g_iso639_2;
 
 struct ISO639
 {
@@ -797,7 +797,7 @@ const std::array<struct LCENTRY, 188> g_iso639_1 = {{
 // clang-format on
 
 // clang-format off
-const std::array<struct LCENTRY, 540> g_iso639_2 = {{
+const std::array<struct LCENTRY, 541> g_iso639_2 = {{
     {MAKECODE('\0', 'a', 'b', 'k'), "Abkhaz"},
     {MAKECODE('\0', 'a', 'b', 'k'), "Abkhazian"},
     {MAKECODE('\0', 'a', 'c', 'e'), "Achinese"},
@@ -921,6 +921,7 @@ const std::array<struct LCENTRY, 540> g_iso639_2 = {{
     {MAKECODE('\0', 'd', 'e', 'l'), "Delaware"},
     {MAKECODE('\0', 'd', 'i', 'n'), "Dinka"},
     {MAKECODE('\0', 'd', 'i', 'v'), "Divehi"},
+    {MAKECODE('\0', 'd', 'i', 'v'), "Dhivehi"},
     {MAKECODE('\0', 'd', 'o', 'i'), "Dogri"},
     {MAKECODE('\0', 'd', 'g', 'r'), "Dogrib"},
     {MAKECODE('\0', 'd', 'r', 'a'), "Dravidian (Other)"},

@@ -105,10 +105,11 @@ public:
 
   /*
    * \brief Get the audio language in ISO 639-2 format.
-   * \return The language code (user-defined also allowed), otherwise if "default", "original" or "mediadefault" is set
-   *         to the audio language setting, will fallback to a general language code (e.g. eng)
+   * \param allowFallback If set to true, when audio language setting is set to "default", "original" or "mediadefault"
+   *                      the returned value can fallback to a general language code (e.g. eng), otherwise an empty value is returned.
+   * \return The language code (user-defined also allowed). The value can be empty when allowFallback if set to false.
    */
-  const std::string& GetAudioLanguage() const;
+  const std::string& GetAudioLanguage(bool allowFallback) const;
 
   /*
    * \brief Set the audio language.
@@ -121,10 +122,11 @@ public:
 
   /*
    * \brief Get the subtitle language in ISO 639-2 format.
-   * \return The language code (user-defined also allowed), otherwise if "default", "original" is set
-   *         to the subtitle language setting, will fallback to a general language code (e.g. eng)
+   * \param allowFallback If set to true, when audio language setting is set to "default", "original"
+   *                      the returned value can fallback to a general language code (e.g. eng), otherwise an empty value is returned.
+   * \return The language code (user-defined also allowed). The value can be empty when allowFallback if set to false.
    */
-  const std::string& GetSubtitleLanguage() const;
+  const std::string& GetSubtitleLanguage(bool allowFallback) const;
 
   /*
    * \brief Set the subtitle language.
