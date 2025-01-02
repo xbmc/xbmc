@@ -267,7 +267,7 @@ bool CDVDFileInfo::CanExtract(const CFileItem& fileItem)
     return false;
 
   // mostly can't extract from discs and files from discs.
-  if (URIUtils::IsBluray(fileItem.GetPath()) || VIDEO::IsBDFile(fileItem) || fileItem.IsDVD() ||
+  if (URIUtils::IsBlurayPath(fileItem.GetPath()) || VIDEO::IsBDFile(fileItem) || fileItem.IsDVD() ||
       fileItem.IsDiscImage() || VIDEO::IsDVDFile(fileItem, false, true))
     return false;
 

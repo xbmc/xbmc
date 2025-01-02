@@ -3109,7 +3109,7 @@ void CVideoDatabase::DeleteFile(int idFile)
     DeleteStreamDetails(idFile);
 
     // Delete path if orphan (and not base directory - needs to remain to prevent re-adding on library update)
-    if (path >= 0 && URIUtils::IsBluray(strPath))
+    if (path >= 0 && URIUtils::IsBlurayPath(strPath))
     {
       if (GetSingleValueInt(
               PrepareSQL("SELECT idFile FROM files JOIN path ON files.idPath = path.idPath WHERE "
@@ -10242,7 +10242,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
           fullPath = CURL(fullPath).GetHostName();
 
         // if bluray:// get actual path
-        if (URIUtils::IsBluray(fullPath))
+        if (URIUtils::IsBlurayPath(fullPath))
           fullPath = URIUtils::GetBlurayFile(fullPath);
 
         bool del = true;
