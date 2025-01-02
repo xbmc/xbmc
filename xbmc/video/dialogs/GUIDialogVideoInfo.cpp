@@ -64,7 +64,6 @@
 #include "video/dialogs/GUIDialogVideoManagerVersions.h"
 #include "video/guilib/VideoGUIUtils.h"
 #include "video/guilib/VideoPlayActionProcessor.h"
-#include "video/guilib/VideoVersionHelper.h"
 #include "video/windows/GUIWindowVideoNav.h"
 
 #include <algorithm>
@@ -1463,15 +1462,8 @@ bool CGUIDialogVideoInfo::DeleteVideoItem(const std::shared_ptr<CFileItem>& item
   {
     std::string strDeletePath = item->GetVideoInfoTag()->GetPath();
 
-    if (StringUtils::EqualsNoCase(URIUtils::GetFileName(strDeletePath), "VIDEO_TS.IFO"))
-    {
-      strDeletePath = URIUtils::GetDirectory(strDeletePath);
-      if (StringUtils::EndsWithNoCase(strDeletePath, "video_ts/"))
-      {
-        URIUtils::RemoveSlashAtEnd(strDeletePath);
-        strDeletePath = URIUtils::GetDirectory(strDeletePath);
-      }
-    }
+    if (URIUtils::IsBluray(strDeletePath) || VIDEO::IsDVDFile(*item) || VIDEO::IsBDFile(*item))
+      strDeletePath = URIUtils::GetDiscBase(strDeletePath);
     if (URIUtils::HasSlashAtEnd(strDeletePath))
       item->m_bIsFolder = true;
 

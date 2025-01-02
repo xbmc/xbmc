@@ -87,6 +87,19 @@ public:
    */
   static std::string GetBasePath(const std::string& strPath);
 
+  /*! \brief Given a bluray:// path, return the base .ISO or folder containing the bluray file structure.
+   \param path bluray:// path.
+   \return the base .ISO or folder containing the bluray file structure.
+   \note Used to determine file/folder to delete
+   */
+  static std::string GetDiscBase(const std::string& file);
+
+  /*! \brief Given a bluray:// path, return the folder containing the .ISO or bluray file structure.
+   \param path bluray:// path.
+   \return the folder containing the .ISO or bluray file structure.
+   */
+  static std::string GetDiscBasePath(const std::string& file);
+
   /*! \brief Given a bluray:// path, return the base .ISO or index.BDMV.
    \param path bluray:// path.
    \return the base .ISO or index.BDMV.
