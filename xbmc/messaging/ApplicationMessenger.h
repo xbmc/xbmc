@@ -90,6 +90,7 @@
 
 #define TMSG_SET_VOLUME                   TMSG_MASK_APPLICATION + 36
 #define TMSG_SET_MUTE                     TMSG_MASK_APPLICATION + 37
+#define TMSG_RESUMEAPP                    TMSG_MASK_APPLICATION + 38
 
 #define TMSG_GUI_INFOLABEL                TMSG_MASK_GUIINFOMANAGER + 0
 #define TMSG_GUI_INFOBOOL                 TMSG_MASK_GUIINFOMANAGER + 1
