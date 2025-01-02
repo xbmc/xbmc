@@ -1479,6 +1479,14 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     *static_cast<bool*>(pMsg->lpVoid) = CServiceBroker::GetWinSystem()->DestroyWindow();
     GetComponent<CApplicationPowerHandling>()->SetRenderGUI(false);
     break;
+
+  case TMSG_RESUMEAPP:
+  {
+    CGUIComponent* gui = CServiceBroker::GetGUI();
+    if (gui)
+      gui->GetWindowManager().MarkDirty();
+    break;
+  }
 #endif
 
   case TMSG_START_ANDROID_ACTIVITY:

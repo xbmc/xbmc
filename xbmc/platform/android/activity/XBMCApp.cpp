@@ -318,6 +318,10 @@ void CXBMCApp::onResume()
     appPower->ResetShutdownTimers();
   }
 
+  const auto messenger = CServiceBroker::GetAppMessenger();
+  if (messenger)
+    messenger->PostMsg(TMSG_RESUMEAPP);
+
   m_headsetPlugged = isHeadsetPlugged();
 
   // Clear the applications cache. We could have installed/deinstalled apps
