@@ -1778,22 +1778,6 @@ void CFileItem::SetDynPath(const std::string &path)
   m_strDynPath = path;
 }
 
-std::string CFileItem::GetBlurayPath() const
-{
-  if (VIDEO::IsBlurayPlaylist(*this))
-  {
-    CURL url(GetDynPath());
-    CURL url2(url.GetHostName()); // strip bluray://
-    if (url2.IsProtocol("udf"))
-      // ISO
-      return url2.GetHostName(); // strip udf://
-    else if (url.IsProtocol("bluray"))
-      // BDMV
-      return url2.Get() + "BDMV/index.bdmv";
-  }
-  return GetDynPath();
-}
-
 void CFileItem::SetCueDocument(const CCueDocumentPtr& cuePtr)
 {
   m_cueDocument = cuePtr;
@@ -2028,19 +2012,10 @@ std::string CFileItem::GetLocalMetadataPath() const
   if (m_bIsFolder && !IsFileFolder())
     return m_strPath;
 
-  std::string parent{};
-  if (VIDEO::IsBlurayPlaylist(*this))
-    parent = URIUtils::GetParentPath(GetBlurayPath());
-  else
-    parent = URIUtils::GetParentPath(m_strPath);
-  std::string parentFolder(parent);
-  URIUtils::RemoveSlashAtEnd(parentFolder);
-  parentFolder = URIUtils::GetFileName(parentFolder);
-  if (StringUtils::EqualsNoCase(parentFolder, "VIDEO_TS") || StringUtils::EqualsNoCase(parentFolder, "BDMV"))
-  { // go back up another one
-    parent = URIUtils::GetParentPath(parent);
-  }
-  return parent;
+  if (URIUtils::IsBluray(this->GetDynPath()) || VIDEO::IsDVDFile(*this) || VIDEO::IsBDFile(*this))
+    return URIUtils::GetDiscBasePath(this->GetDynPath());
+
+  return URIUtils::GetParentPath(m_strPath);
 }
 
 bool CFileItem::LoadMusicTag()
