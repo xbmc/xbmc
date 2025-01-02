@@ -10241,6 +10241,10 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
         if (URIUtils::IsInArchive(fullPath))
           fullPath = CURL(fullPath).GetHostName();
 
+        // if bluray:// get actual path
+        if (URIUtils::IsBluray(fullPath))
+          fullPath = URIUtils::GetBlurayFile(fullPath);
+
         bool del = true;
         if (URIUtils::IsPlugin(fullPath))
         {

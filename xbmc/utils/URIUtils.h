@@ -87,6 +87,12 @@ public:
    */
   static std::string GetBasePath(const std::string& strPath);
 
+  /*! \brief Given a bluray:// path, return the base .ISO or index.BDMV.
+   \param path bluray:// path.
+   \return the base .ISO or index.BDMV.
+   */
+  static std::string GetBlurayFile(const std::string& path);
+
   /* \brief Change the base path of a URL: fromPath/fromFile -> toPath/toFile
     Handles changes in path separator and filename URL encoding if necessary to derive toFile.
     \param fromPath the base path of the original URL
