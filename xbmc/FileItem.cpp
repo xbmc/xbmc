@@ -9,7 +9,6 @@
 #include "FileItem.h"
 
 #include "CueDocument.h"
-#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
