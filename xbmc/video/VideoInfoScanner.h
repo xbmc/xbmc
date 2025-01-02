@@ -292,5 +292,6 @@ namespace KODI::VIDEO
              is at least 1:4, "thumb" otherwise.
      */
     static std::string GetArtTypeFromSize(unsigned int width, unsigned int height);
+    std::set<std::string> m_clearedScrapers;
   };
   } // namespace KODI::VIDEO

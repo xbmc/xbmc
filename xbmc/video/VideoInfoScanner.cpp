@@ -495,7 +495,9 @@ CVideoInfoScanner::CVideoInfoScanner()
       }
 
       // clear our scraper cache
-      info2->ClearCache();
+      // @todo: move to a dedicated housekeeping task
+      if (auto p = m_clearedScrapers.emplace(info2->ID()); p.second)
+        info2->ClearCache();
 
       InfoRet ret = InfoRet::CANCELLED;
       if (info2->Content() == CONTENT_TVSHOWS)
