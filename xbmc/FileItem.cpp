@@ -620,7 +620,6 @@ void CFileItem::Reset()
   SetInvalid();
 }
 
-// do not archive dynamic path
 void CFileItem::Archive(CArchive& ar)
 {
   CGUIListItem::Archive(ar);
