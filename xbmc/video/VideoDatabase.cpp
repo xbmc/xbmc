@@ -3108,7 +3108,7 @@ bool CVideoDatabase::DeleteFile(int idFile)
       m_pDS->exec(sql);
 
       // Delete path if orphan (and not base directory - needs to remain to prevent re-adding on library update)
-      if (idPath >= 0 && URIUtils::IsBluray(strPath))
+      if (idPath >= 0 && URIUtils::IsBlurayPath(strPath))
       {
         sql = PrepareSQL("DELETE FROM path WHERE idPath = %i "
                          "AND NOT EXISTS (SELECT 1 FROM files WHERE files.idPath = %i)",
@@ -10277,7 +10277,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
           fullPath = CURL(fullPath).GetHostName();
 
         // if bluray:// get actual path
-        if (URIUtils::IsBluray(fullPath))
+        if (URIUtils::IsBlurayPath(fullPath))
           fullPath = URIUtils::GetBlurayFile(fullPath);
 
         bool del = true;

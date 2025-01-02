@@ -59,7 +59,7 @@ void CSaveFileState::DoWork(CFileItem& item,
     // only use original_listitem_url for Python, UPnP and Bluray sources
     std::string original = item.GetProperty("original_listitem_url").asString();
     if (URIUtils::IsPlugin(original) || URIUtils::IsUPnP(original) ||
-        URIUtils::IsBluray(item.GetPath()))
+        URIUtils::IsBlurayPath(item.GetPath()))
       progressTrackingFile = original;
   }
 
@@ -204,7 +204,7 @@ void CSaveFileState::DoWork(CFileItem& item,
         videoDbSuccess = true;
 
         // See if idFile needs updating
-        if (item.HasVideoInfoTag() && URIUtils::IsBluray(item.GetDynPath()))
+        if (item.HasVideoInfoTag() && URIUtils::IsBlurayPath(item.GetDynPath()))
         {
           if (item.GetVideoContentType() == VideoDbContentType::MOVIES)
           {

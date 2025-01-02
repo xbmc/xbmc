@@ -1151,7 +1151,7 @@ bool CFileItem::IsMultiPath() const
 
 bool CFileItem::IsBluray() const
 {
-  if (URIUtils::IsBluray(m_strPath))
+  if (URIUtils::IsBlurayPath(m_strPath))
     return true;
 
   CFileItem item = CFileItem(VIDEO::UTILS::GetOpticalMediaPath(*this), false);
@@ -2012,8 +2012,8 @@ std::string CFileItem::GetLocalMetadataPath() const
   if (m_bIsFolder && !IsFileFolder())
     return m_strPath;
 
-  if (URIUtils::IsBluray(this->GetDynPath()) || VIDEO::IsDVDFile(*this) || VIDEO::IsBDFile(*this))
-    return URIUtils::GetDiscBasePath(this->GetDynPath());
+  if (URIUtils::IsBlurayPath(GetDynPath()) || VIDEO::IsDVDFile(*this) || VIDEO::IsBDFile(*this))
+    return URIUtils::GetDiscBasePath(GetDynPath());
 
   return URIUtils::GetParentPath(m_strPath);
 }

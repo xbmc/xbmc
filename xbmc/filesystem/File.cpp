@@ -285,7 +285,7 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
     if (!(m_flags & READ_NO_CACHE))
     {
       const std::string pathToUrl(url.Get());
-      if (URIUtils::IsDVD(pathToUrl) || URIUtils::IsBluray(pathToUrl) ||
+      if (URIUtils::IsDVD(pathToUrl) || URIUtils::IsBlurayPath(pathToUrl) ||
           (m_flags & READ_AUDIO_VIDEO))
       {
         const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();

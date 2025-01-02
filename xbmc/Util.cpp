@@ -1907,7 +1907,7 @@ void CUtil::GetVideoBasePathAndFileName(const std::string& videoPath,
 {
   const CFileItem item(videoPath, false);
 
-  if (item.IsOpticalMediaFile() || URIUtils::IsBluray(item.GetDynPath()))
+  if (item.IsOpticalMediaFile() || URIUtils::IsBlurayPath(item.GetDynPath()))
   {
     basePath = item.GetLocalMetadataPath();
     videoFileName = URIUtils::ReplaceExtension(GetTitleFromPath(basePath), "");
