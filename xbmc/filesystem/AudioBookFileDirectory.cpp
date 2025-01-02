@@ -152,7 +152,7 @@ bool CAudioBookFileDirectory::ContainsFiles(const CURL& url)
   m_fctx = avformat_alloc_context();
   m_fctx->pb = m_ioctx;
 
-  if (file.IoControl(IOCTRL_SEEK_POSSIBLE, nullptr) == 0)
+  if (file.IoControl(IOControl::SEEK_POSSIBLE, nullptr) == 0)
     m_ioctx->seekable = 0;
 
   m_ioctx->max_packet_size = 32768;

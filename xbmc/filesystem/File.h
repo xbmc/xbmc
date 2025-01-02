@@ -124,7 +124,7 @@ public:
 
   const std::unique_ptr<BitstreamStats>& GetBitstreamStats() const { return m_bitStreamStats; }
 
-  int IoControl(EIoControl request, void* param);
+  int IoControl(IOControl request, void* param);
 
   IFile* GetImplementation() const { return m_pFile.get(); }
 

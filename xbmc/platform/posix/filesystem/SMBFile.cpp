@@ -728,12 +728,12 @@ std::string CSMBFile::GetAuthenticatedPath(const CURL &url)
   return smb.URLEncode(authURL);
 }
 
-int CSMBFile::IoControl(EIoControl request, void* param)
+int CSMBFile::IoControl(IOControl request, void* param)
 {
-  if (request == IOCTRL_SEEK_POSSIBLE)
+  if (request == IOControl::SEEK_POSSIBLE)
     return 1;
 
-  if (request == IOCTRL_SET_RETRY)
+  if (request == IOControl::SET_RETRY)
   {
     m_allowRetry = *(bool*) param;
     return 0;

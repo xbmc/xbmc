@@ -1003,7 +1003,7 @@ int64_t CDVDInputStreamBluray::Seek(int64_t offset, int whence)
 
   return offset;
 #else
-  if(whence == SEEK_POSSIBLE)
+  if (whence == DVDSTREAM_SEEK_POSSIBLE)
     return 0;
   return -1;
 #endif

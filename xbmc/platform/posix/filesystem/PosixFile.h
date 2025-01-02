@@ -29,7 +29,7 @@ namespace XFILE
     int64_t GetPosition() override;
     int64_t GetLength() override;
     void Flush() override;
-    int IoControl(EIoControl request, void* param) override;
+    int IoControl(IOControl request, void* param) override;
 
     bool Delete(const CURL& url) override;
     bool Rename(const CURL& url, const CURL& urlnew) override;

@@ -195,7 +195,7 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
 
   // test if seeking is supported
   m_bCanSeek = false;
-  if (m_pInputStream->Seek(0, SEEK_POSSIBLE))
+  if (m_pInputStream->Seek(0, DVDSTREAM_SEEK_POSSIBLE))
   {
     if (Seek(1))
     {

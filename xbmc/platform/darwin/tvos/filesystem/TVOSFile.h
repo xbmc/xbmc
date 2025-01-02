@@ -49,7 +49,7 @@ public:
   int64_t GetPosition() override;
   int64_t GetLength() override;
   int GetChunkSize() override;
-  int IoControl(EIoControl request, void* param) override;
+  int IoControl(IOControl request, void* param) override;
 
 protected:
   CURL m_url;

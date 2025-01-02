@@ -323,9 +323,9 @@ void CShoutcastFile::ReadTruncated(char* buf2, int size)
   }
 }
 
-int CShoutcastFile::IoControl(EIoControl control, void* payload)
+int CShoutcastFile::IoControl(IOControl control, void* payload)
 {
-  if (control == IOCTRL_SET_CACHE && m_cacheReader == nullptr)
+  if (control == IOControl::SET_CACHE && m_cacheReader == nullptr)
   {
     std::unique_lock<CCriticalSection> lock(m_tagSection);
     m_cacheReader = static_cast<CFileCache*>(payload);

@@ -1006,9 +1006,8 @@ bool Interface_Filesystem::io_control_get_seek_possible(void* kodiBase, void* fi
     return false;
   }
 
-  return static_cast<CFile*>(file)->IoControl(EIoControl::IOCTRL_SEEK_POSSIBLE, nullptr) != 0
-             ? true
-             : false;
+  return static_cast<CFile*>(file)->IoControl(IOControl::SEEK_POSSIBLE, nullptr) != 0 ? true
+                                                                                      : false;
 }
 
 bool Interface_Filesystem::io_control_get_cache_status(void* kodiBase,
@@ -1024,7 +1023,7 @@ bool Interface_Filesystem::io_control_get_cache_status(void* kodiBase,
   }
 
   SCacheStatus data = {};
-  int ret = static_cast<CFile*>(file)->IoControl(EIoControl::IOCTRL_CACHE_STATUS, &data);
+  int ret = static_cast<CFile*>(file)->IoControl(IOControl::CACHE_STATUS, &data);
   if (ret >= 0)
   {
     status->forward = data.forward;
@@ -1046,8 +1045,7 @@ bool Interface_Filesystem::io_control_set_cache_rate(void* kodiBase, void* file,
     return false;
   }
 
-  return static_cast<CFile*>(file)->IoControl(EIoControl::IOCTRL_CACHE_SETRATE, &rate) >= 0 ? true
-                                                                                            : false;
+  return static_cast<CFile*>(file)->IoControl(IOControl::CACHE_SETRATE, &rate) >= 0 ? true : false;
 }
 
 bool Interface_Filesystem::io_control_set_retry(void* kodiBase, void* file, bool retry)
@@ -1060,8 +1058,7 @@ bool Interface_Filesystem::io_control_set_retry(void* kodiBase, void* file, bool
     return false;
   }
 
-  return static_cast<CFile*>(file)->IoControl(EIoControl::IOCTRL_SET_RETRY, &retry) >= 0 ? true
-                                                                                         : false;
+  return static_cast<CFile*>(file)->IoControl(IOControl::SET_RETRY, &retry) >= 0 ? true : false;
 }
 
 char** Interface_Filesystem::get_property_values(

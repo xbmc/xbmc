@@ -257,12 +257,12 @@ int CTVOSFile::GetChunkSize()
     return static_cast<int>(GetLength()); // only full file size can be read from nsuserdefaults...
 }
 
-int CTVOSFile::IoControl(EIoControl request, void* param)
+int CTVOSFile::IoControl(IOControl request, void* param)
 {
   if (m_pFallbackFile != nullptr)
     return m_pFallbackFile->IoControl(request, param);
 
-  if (request == IOCTRL_SEEK_POSSIBLE)
+  if (request == IOControl::SEEK_POSSIBLE)
     return 0; // no seek support
   return -1;
 }

@@ -2094,12 +2094,12 @@ bool CCurlFile::GetCookies(const CURL &url, std::string &cookies)
   return false;
 }
 
-int CCurlFile::IoControl(EIoControl request, void* param)
+int CCurlFile::IoControl(IOControl request, void* param)
 {
-  if (request == IOCTRL_SEEK_POSSIBLE)
+  if (request == IOControl::SEEK_POSSIBLE)
     return m_seekable ? 1 : 0;
 
-  if (request == IOCTRL_SET_RETRY)
+  if (request == IOControl::SET_RETRY)
   {
     m_allowRetry = *(bool*) param;
     return 0;

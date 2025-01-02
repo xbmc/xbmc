@@ -196,9 +196,9 @@ int CFileAndroidApp::Stat(const CURL& url, struct __stat64* buffer)
 {
   return 0;
 }
-int CFileAndroidApp::IoControl(EIoControl request, void* param)
+int CFileAndroidApp::IoControl(IOControl request, void* param)
 {
-  if(request == IOCTRL_SEEK_POSSIBLE)
+  if (request == IOControl::SEEK_POSSIBLE)
     return 0;
   return 1;
 }

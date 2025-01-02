@@ -224,18 +224,18 @@ void CPosixFile::Flush()
     fsync(m_fd);
 }
 
-int CPosixFile::IoControl(EIoControl request, void* param)
+int CPosixFile::IoControl(IOControl request, void* param)
 {
   if (m_fd < 0)
     return -1;
 
-  if (request == IOCTRL_NATIVE)
+  if (request == IOControl::NATIVE)
   {
     if(!param)
       return -1;
     return ioctl(m_fd, ((SNativeIoControl*)param)->request, ((SNativeIoControl*)param)->param);
   }
-  else if (request == IOCTRL_SEEK_POSSIBLE)
+  else if (request == IOControl::SEEK_POSSIBLE)
   {
     if (GetPosition() < 0)
       return -1; // current position is unknown, can't test seeking

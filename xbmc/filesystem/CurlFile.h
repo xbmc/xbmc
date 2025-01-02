@@ -54,7 +54,7 @@ namespace XFILE
       ssize_t Write(const void* lpBuf, size_t uiBufSize) override;
       const std::string GetProperty(XFILE::FileProperty type, const std::string &name = "") const override;
       const std::vector<std::string> GetPropertyValues(XFILE::FileProperty type, const std::string &name = "") const override;
-      int IoControl(EIoControl request, void* param) override;
+      int IoControl(IOControl request, void* param) override;
       double GetDownloadSpeed() override;
 
       bool Post(const std::string& strURL, const std::string& strPostData, std::string& strHTML);

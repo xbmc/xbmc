@@ -362,7 +362,7 @@ int CDVDInputStreamNavigator::Read(uint8_t* buf, int buf_size)
 // not working yet, but it is the recommended way for seeking
 int64_t CDVDInputStreamNavigator::Seek(int64_t offset, int whence)
 {
-  if(whence == SEEK_POSSIBLE)
+  if (whence == DVDSTREAM_SEEK_POSSIBLE)
     return 0;
   else
     return -1;

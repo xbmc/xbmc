@@ -984,14 +984,14 @@ bool CFile::SetHidden(const CURL& file, bool hidden)
   return false;
 }
 
-int CFile::IoControl(EIoControl request, void* param)
+int CFile::IoControl(IOControl request, void* param)
 {
   int result = -1;
   if (!m_pFile)
     return -1;
   result = m_pFile->IoControl(request, param);
 
-  if(result == -1 && request == IOCTRL_SEEK_POSSIBLE)
+  if (result == -1 && request == IOControl::SEEK_POSSIBLE)
   {
     if(m_pFile->GetLength() >= 0 && m_pFile->Seek(0, SEEK_CUR) >= 0)
       return 1;

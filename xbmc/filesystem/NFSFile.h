@@ -127,9 +127,9 @@ namespace XFILE
 
     //implement iocontrol for seek_possible for preventing the stat in File class for
     //getting this info ...
-    int IoControl(EIoControl request, void* param) override
+    int IoControl(IOControl request, void* param) override
     {
-      return request == IOCTRL_SEEK_POSSIBLE ? 1 : -1;
+      return request == IOControl::SEEK_POSSIBLE ? 1 : -1;
     }
     int GetChunkSize() override {return static_cast<int>(gNfsConnection.GetMaxReadChunkSize());}
 

@@ -82,7 +82,7 @@ protected:
     int64_t GetPosition(void* ctx);
     int64_t GetLength(void* ctx);
     int GetChunkSize(void* ctx);
-    int IoControl(void* ctx, XFILE::EIoControl request, void* param);
+    int IoControl(void* ctx, XFILE::IOControl request, void* param);
     bool Delete(const CURL& url);
     bool Rename(const CURL& url, const CURL& url2);
 
@@ -181,7 +181,7 @@ protected:
     int GetChunkSize() override;
 
     //! \brief Perform I/O controls for file.
-    int IoControl(XFILE::EIoControl request, void* param) override;
+    int IoControl(XFILE::IOControl request, void* param) override;
 
     //! \brief Delete a file.
     //! \param[in] url URL of file to delete.
