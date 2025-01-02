@@ -601,7 +601,6 @@ void CFileItem::Reset()
   SetInvalid();
 }
 
-// do not archive dynamic path
 void CFileItem::Archive(CArchive& ar)
 {
   CGUIListItem::Archive(ar);
@@ -611,6 +610,7 @@ void CFileItem::Archive(CArchive& ar)
     ar << m_bIsParentFolder;
     ar << m_bLabelPreformatted;
     ar << m_strPath;
+    ar << m_strDynPath;
     ar << m_bIsShareOrDrive;
     ar << m_iDriveType;
     ar << m_dateTime;
@@ -666,6 +666,7 @@ void CFileItem::Archive(CArchive& ar)
     ar >> m_bIsParentFolder;
     ar >> m_bLabelPreformatted;
     ar >> m_strPath;
+    ar >> m_strDynPath;
     ar >> m_bIsShareOrDrive;
     ar >> m_iDriveType;
     ar >> m_dateTime;
