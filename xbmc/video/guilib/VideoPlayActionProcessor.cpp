@@ -15,6 +15,7 @@
 #include "playlists/PlayListTypes.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/PlayerUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/guilib/VideoGUIUtils.h"
@@ -104,33 +105,13 @@ bool CVideoPlayActionProcessor::OnResumeSelected()
   return true;
 }
 
-namespace
-{
-std::vector<std::string> GetPlayers(const CPlayerCoreFactory& playerCoreFactory,
-                                    const CFileItem& item)
-{
-  std::vector<std::string> players;
-  if (VIDEO::IsVideoDb(item))
-  {
-    //! @todo CPlayerCoreFactory and classes called from there do not handle dyn path correctly.
-    CFileItem item2{item};
-    item2.SetPath(item.GetDynPath());
-    playerCoreFactory.GetPlayers(item2, players);
-  }
-  else
-    playerCoreFactory.GetPlayers(item, players);
-
-  return players;
-}
-} // unnamed namespace
-
 bool CVideoPlayActionProcessor::OnPlaySelected()
 {
   std::string player;
   if (m_choosePlayer)
   {
+    const std::vector<std::string> players{CPlayerUtils::GetPlayersForItem(*m_item)};
     const CPlayerCoreFactory& playerCoreFactory{CServiceBroker::GetPlayerCoreFactory()};
-    const std::vector<std::string> players{GetPlayers(playerCoreFactory, *m_item)};
     player = playerCoreFactory.SelectPlayerDialog(players);
     if (player.empty())
     {

@@ -13,13 +13,13 @@
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "application/Application.h"
-#include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "music/MusicFileItemClassify.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/PlayerUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
@@ -217,24 +217,6 @@ bool CVideoResume::IsVisible(const CFileItem& itemIn) const
 
 namespace
 {
-bool HasMultiplePlayers(const CFileItem& item)
-{
-  const CPlayerCoreFactory& playerCoreFactory{CServiceBroker::GetPlayerCoreFactory()};
-
-  std::vector<std::string> players;
-  if (VIDEO::IsVideoDb(item))
-  {
-    //! @todo CPlayerCoreFactory and classes called from there do not handle dyn path correctly.
-    CFileItem item2{item};
-    item2.SetPath(item.GetDynPath());
-    playerCoreFactory.GetPlayers(item2, players);
-  }
-  else
-    playerCoreFactory.GetPlayers(item, players);
-
-  return (players.size() > 1);
-}
-
 enum class PlayMode
 {
   PLAY,
@@ -342,7 +324,7 @@ bool CVideoPlayUsing::IsVisible(const CFileItem& item) const
   if (item.IsLiveTV())
     return false;
 
-  return (HasMultiplePlayers(item) && VIDEO::UTILS::IsItemPlayable(item));
+  return (CPlayerUtils::HasItemMultiplePlayers(item) && VIDEO::UTILS::IsItemPlayable(item));
 }
 
 bool CVideoPlayUsing::Execute(const std::shared_ptr<CFileItem>& itemIn) const
