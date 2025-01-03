@@ -9,6 +9,7 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
+#include "URL.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "addons/binary-addons/AddonInstanceHandler.h"
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/VFS.h"
@@ -282,6 +283,14 @@ protected:
     //! \return True if listing succeeded, false otherwise.
     bool GetDirectory(const CURL& url, CFileItemList& items) override
     {
+      // Check for cached items
+      const CURL cachedItemsUrl{m_items.GetPath()};
+      if (cachedItemsUrl.GetHostName() == url.GetWithoutUserDetails())
+      {
+        items.Assign(m_items);
+        return true;
+      }
+
       return CVFSEntryIDirectoryWrapper::GetDirectory(url, items);
     }
 

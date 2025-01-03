@@ -121,11 +121,8 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
               pItem->SetPath(wrap->m_items.GetPath());
             }
 
-            // Check for folder, if yes return also wrap.
-            // Needed to fix for e.g. RAR files with only one file inside
-            pItem->m_bIsFolder = URIUtils::HasSlashAtEnd(pItem->GetPath());
-            if (pItem->m_bIsFolder)
-              return wrap;
+            // Return wrap so that its item cache can be used
+            return wrap;
           }
           else
           {
