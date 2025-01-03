@@ -37,7 +37,6 @@
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoThumbLoader.h"
-#include "video/VideoUtils.h"
 #include "video/guilib/VideoGUIUtils.h"
 #include "video/guilib/VideoPlayActionProcessor.h"
 #include "video/guilib/VideoSelectActionProcessor.h"
@@ -453,80 +452,6 @@ std::string CDirectoryProvider::GetTarget(const CFileItem& item) const
   return target;
 }
 
-namespace
-{
-class CVideoSelectActionProcessor : public VIDEO::GUILIB::CVideoSelectActionProcessorBase
-{
-public:
-  CVideoSelectActionProcessor(CDirectoryProvider& provider, const std::shared_ptr<CFileItem>& item)
-    : CVideoSelectActionProcessorBase(item), m_provider(provider)
-  {
-  }
-
-protected:
-  bool OnPlayPartSelected(unsigned int part) override
-  {
-    CGUIBuiltinsUtils::ExecutePlayMediaPart(m_item, part);
-    return true;
-  }
-
-  bool OnResumeSelected() override
-  {
-    CGUIBuiltinsUtils::ExecutePlayMediaTryResume(m_item);
-    return true;
-  }
-
-  bool OnPlaySelected() override
-  {
-    CGUIBuiltinsUtils::ExecutePlayMediaNoResume(m_item);
-    return true;
-  }
-
-  bool OnQueueSelected() override
-  {
-    CGUIBuiltinsUtils::ExecuteQueueMedia(m_item);
-    return true;
-  }
-
-  bool OnInfoSelected() override
-  {
-    m_provider.OnInfo(m_item);
-    return true;
-  }
-
-  bool OnChooseSelected() override
-  {
-    m_provider.OnContextMenu(m_item);
-    return true;
-  }
-
-private:
-  CDirectoryProvider& m_provider;
-};
-
-class CVideoPlayActionProcessor : public VIDEO::GUILIB::CVideoPlayActionProcessorBase
-{
-public:
-  explicit CVideoPlayActionProcessor(const std::shared_ptr<CFileItem>& item)
-    : CVideoPlayActionProcessorBase(item)
-  {
-  }
-
-protected:
-  bool OnResumeSelected() override
-  {
-    CGUIBuiltinsUtils::ExecutePlayMediaTryResume(m_item);
-    return true;
-  }
-
-  bool OnPlaySelected() override
-  {
-    CGUIBuiltinsUtils::ExecutePlayMediaNoResume(m_item);
-    return true;
-  }
-};
-} // namespace
-
 bool CDirectoryProvider::OnClick(const std::shared_ptr<CGUIListItem>& item)
 {
   std::shared_ptr<CFileItem> targetItem{std::static_pointer_cast<CFileItem>(item)};
@@ -547,7 +472,11 @@ bool CDirectoryProvider::OnClick(const std::shared_ptr<CGUIListItem>& item)
     // play the given/default video version, even if multiple versions are available
     targetItem->SetProperty("has_resolved_video_asset", true);
 
-    CVideoSelectActionProcessor proc{*this, targetItem};
+    const std::string targetWindow{GetTarget(*targetItem)};
+    if (!targetWindow.empty())
+      targetItem->SetProperty("targetwindow", targetWindow);
+
+    KODI::VIDEO::GUILIB::CVideoSelectActionProcessor proc{targetItem};
     if (proc.ProcessDefaultAction())
       return true;
   }
@@ -576,7 +505,7 @@ bool CDirectoryProvider::OnPlay(const std::shared_ptr<CGUIListItem>& item)
   if (targetItem->HasVideoInfoTag() ||
       (targetItem->m_bIsFolder && VIDEO::UTILS::IsItemPlayable(*targetItem)))
   {
-    CVideoPlayActionProcessor proc{targetItem};
+    KODI::VIDEO::GUILIB::CVideoPlayActionProcessor proc{targetItem};
     if (proc.ProcessDefaultAction())
       return true;
   }
@@ -598,8 +527,9 @@ bool CDirectoryProvider::OnPlay(const std::shared_ptr<CGUIListItem>& item)
   return true;
 }
 
-bool CDirectoryProvider::OnInfo(const std::shared_ptr<CFileItem>& fileItem)
+bool CDirectoryProvider::OnInfo(const std::shared_ptr<CGUIListItem>& item)
 {
+  const auto fileItem{std::static_pointer_cast<CFileItem>(item)};
   const auto targetItem{fileItem->IsFavourite()
                             ? CServiceBroker::GetFavouritesService().ResolveFavourite(*fileItem)
                             : fileItem};
@@ -607,25 +537,14 @@ bool CDirectoryProvider::OnInfo(const std::shared_ptr<CFileItem>& fileItem)
   return CGUIContentUtils::ShowInfoForItem(*targetItem);
 }
 
-bool CDirectoryProvider::OnInfo(const std::shared_ptr<CGUIListItem>& item)
+bool CDirectoryProvider::OnContextMenu(const std::shared_ptr<CGUIListItem>& item)
 {
-  auto fileItem = std::static_pointer_cast<CFileItem>(item);
-  return OnInfo(fileItem);
-}
-
-bool CDirectoryProvider::OnContextMenu(const std::shared_ptr<CFileItem>& fileItem)
-{
-  const std::string target = GetTarget(*fileItem);
+  const auto fileItem{std::static_pointer_cast<CFileItem>(item)};
+  const std::string target{GetTarget(*fileItem)};
   if (!target.empty())
     fileItem->SetProperty("targetwindow", target);
 
   return CONTEXTMENU::ShowFor(fileItem, CContextMenuManager::MAIN);
-}
-
-bool CDirectoryProvider::OnContextMenu(const std::shared_ptr<CGUIListItem>& item)
-{
-  auto fileItem = std::static_pointer_cast<CFileItem>(item);
-  return OnContextMenu(fileItem);
 }
 
 bool CDirectoryProvider::IsUpdating() const

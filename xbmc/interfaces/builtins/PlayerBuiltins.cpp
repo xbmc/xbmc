@@ -544,7 +544,7 @@ int PlayOrQueueMedia(const std::vector<std::string>& params,
   if (askToResume)
   {
     const VIDEO::GUILIB::Action action =
-        VIDEO::GUILIB::CVideoSelectActionProcessorBase::ChoosePlayOrResume(item);
+        VIDEO::GUILIB::CVideoSelectActionProcessor::ChoosePlayOrResume(item);
     if (action == VIDEO::GUILIB::ACTION_RESUME)
     {
       item.SetStartOffset(STARTOFFSET_RESUME);

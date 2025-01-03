@@ -9,9 +9,12 @@
 #include "PlayerUtils.h"
 
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "application/ApplicationPlayer.h"
+#include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "music/MusicUtils.h"
 #include "utils/Variant.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/guilib/VideoGUIUtils.h"
 
 using namespace KODI;
@@ -55,4 +58,29 @@ void CPlayerUtils::AdvanceTempoStep(const std::shared_ptr<CApplicationPlayer>& a
       appPlayer->SetTempo(currentTempo - step);
       break;
   }
+}
+
+std::vector<std::string> CPlayerUtils::GetPlayersForItem(const CFileItem& item)
+{
+  const CPlayerCoreFactory& playerCoreFactory{CServiceBroker::GetPlayerCoreFactory()};
+
+  std::vector<std::string> players;
+  if (VIDEO::IsVideoDb(item))
+  {
+    //! @todo CPlayerCoreFactory and classes called from there do not handle dyn path correctly.
+    CFileItem item2{item};
+    item2.SetPath(item.GetDynPath());
+    playerCoreFactory.GetPlayers(item2, players);
+  }
+  else
+  {
+    playerCoreFactory.GetPlayers(item, players);
+  }
+
+  return players;
+}
+
+bool CPlayerUtils::HasItemMultiplePlayers(const CFileItem& item)
+{
+  return GetPlayersForItem(item).size() > 1;
 }

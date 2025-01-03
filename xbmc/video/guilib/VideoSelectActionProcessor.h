@@ -16,15 +16,15 @@ class CFileItem;
 
 namespace KODI::VIDEO::GUILIB
 {
-class CVideoSelectActionProcessorBase : public CVideoPlayActionProcessorBase
+class CVideoSelectActionProcessor : public CVideoPlayActionProcessor
 {
 public:
-  explicit CVideoSelectActionProcessorBase(const std::shared_ptr<CFileItem>& item)
-    : CVideoPlayActionProcessorBase(item)
+  explicit CVideoSelectActionProcessor(const std::shared_ptr<CFileItem>& item)
+    : CVideoPlayActionProcessor(item)
   {
   }
 
-  ~CVideoSelectActionProcessorBase() override = default;
+  ~CVideoSelectActionProcessor() override = default;
 
   static Action GetDefaultSelectAction();
 
@@ -32,13 +32,13 @@ protected:
   Action GetDefaultAction() override;
   bool Process(Action action) override;
 
-  virtual bool OnPlayPartSelected(unsigned int part) = 0;
-  virtual bool OnQueueSelected() = 0;
-  virtual bool OnInfoSelected() = 0;
-  virtual bool OnChooseSelected() = 0;
+  virtual bool OnPlayPartSelected(unsigned int part);
+  virtual bool OnQueueSelected();
+  virtual bool OnInfoSelected();
+  virtual bool OnChooseSelected();
 
 private:
-  CVideoSelectActionProcessorBase() = delete;
+  CVideoSelectActionProcessor() = delete;
   unsigned int ChooseStackItemPartNumber() const;
 };
 } // namespace KODI::VIDEO::GUILIB

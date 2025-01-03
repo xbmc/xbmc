@@ -20,7 +20,6 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "pvr/PVRManager.h"
-#include "pvr/guilib/PVRGUIActionsPlayback.h"
 #include "pvr/guilib/PVRGUIActionsRecordings.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/recordings/PVRRecordings.h"
@@ -31,7 +30,6 @@
 #include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
 #include "video/VideoLibraryQueue.h"
-#include "video/guilib/VideoGUIUtils.h"
 #include "video/guilib/VideoPlayActionProcessor.h"
 #include "video/guilib/VideoSelectActionProcessor.h"
 #include "video/windows/GUIWindowVideoBase.h"
@@ -243,13 +241,13 @@ void CGUIWindowPVRRecordingsBase::UpdateButtons()
 
 namespace
 {
-class CVideoSelectActionProcessor : public VIDEO::GUILIB::CVideoSelectActionProcessorBase
+class CVideoSelectActionProcessor : public VIDEO::GUILIB::CVideoSelectActionProcessor
 {
 public:
   CVideoSelectActionProcessor(CGUIWindowPVRRecordingsBase& window,
                               const std::shared_ptr<CFileItem>& item,
                               int itemIndex)
-    : CVideoSelectActionProcessorBase(item), m_window(window), m_itemIndex(itemIndex)
+    : VIDEO::GUILIB::CVideoSelectActionProcessor(item), m_window(window), m_itemIndex(itemIndex)
   {
   }
 
@@ -258,32 +256,6 @@ protected:
   {
     //! @todo pvr recordings do not support video stacking (yet).
     return false;
-  }
-
-  bool OnResumeSelected() override
-  {
-    CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().ResumePlayRecording(
-        *m_item, true /* fall back to play if no resume possible */);
-    return true;
-  }
-
-  bool OnPlaySelected() override
-  {
-    CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
-        *m_item, false /* no resume check */);
-    return true;
-  }
-
-  bool OnQueueSelected() override
-  {
-    VIDEO::UTILS::QueueItem(m_item, VIDEO::UTILS::QueuePosition::POSITION_END);
-    return true;
-  }
-
-  bool OnInfoSelected() override
-  {
-    CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().ShowRecordingInfo(*m_item);
-    return true;
   }
 
   bool OnChooseSelected() override
@@ -295,48 +267,6 @@ protected:
 private:
   CGUIWindowPVRRecordingsBase& m_window;
   const int m_itemIndex{-1};
-};
-
-class CVideoPlayActionProcessor : public VIDEO::GUILIB::CVideoPlayActionProcessorBase
-{
-public:
-  explicit CVideoPlayActionProcessor(const std::shared_ptr<CFileItem>& item)
-    : CVideoPlayActionProcessorBase(item)
-  {
-  }
-
-protected:
-  bool OnResumeSelected() override
-  {
-    if (m_item->m_bIsFolder)
-    {
-      m_item->SetStartOffset(STARTOFFSET_RESUME);
-      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecordingFolder(
-          *m_item, false /* no resume check */);
-    }
-    else
-    {
-      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().ResumePlayRecording(
-          *m_item, true /* fall back to play if no resume possible */);
-    }
-    return true;
-  }
-
-  bool OnPlaySelected() override
-  {
-    if (m_item->m_bIsFolder)
-    {
-      m_item->SetStartOffset(0);
-      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecordingFolder(
-          *m_item, false /* no resume check */);
-    }
-    else
-    {
-      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
-          *m_item, false /* no resume check */);
-    }
-    return true;
-  }
 };
 } // namespace
 
@@ -369,7 +299,7 @@ bool CGUIWindowPVRRecordingsBase::OnMessage(CGUIMessage& message)
 
               if (!item->IsParentFolder() && message.GetParam1() == ACTION_PLAYER_PLAY)
               {
-                CVideoPlayActionProcessor proc{item};
+                KODI::VIDEO::GUILIB::CVideoPlayActionProcessor proc{item};
                 bReturn = proc.ProcessDefaultAction();
               }
               else if (item->m_bIsFolder)

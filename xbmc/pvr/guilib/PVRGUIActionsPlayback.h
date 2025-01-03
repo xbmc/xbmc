@@ -32,29 +32,12 @@ public:
   ~CPVRGUIActionsPlayback() override = default;
 
   /*!
-   * @brief Resume a previously not completely played recording.
-   * @param item containing a recording or an epg tag.
-   * @param bFallbackToPlay controls whether playback of the recording should be started at the
-   * beginning ig no resume data are available.
-   * @return true on success, false otherwise.
-   */
-  bool ResumePlayRecording(const CFileItem& item, bool bFallbackToPlay) const;
-
-  /*!
    * @brief Play recording.
    * @param item containing a recording or an epg tag.
    * @param bCheckResume controls resume check.
    * @return true on success, false otherwise.
    */
   bool PlayRecording(const CFileItem& item, bool bCheckResume) const;
-
-  /*!
-   * @brief Play a recording folder.
-   * @param item containing a recording folder.
-   * @param bCheckResume controls resume check.
-   * @return true on success, false otherwise.
-   */
-  bool PlayRecordingFolder(const CFileItem& item, bool bCheckResume) const;
 
   /*!
    * @brief Play EPG tag.

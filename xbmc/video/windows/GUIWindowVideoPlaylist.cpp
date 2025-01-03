@@ -378,13 +378,13 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
 
 namespace
 {
-class CVideoPlayActionProcessor : public VIDEO::GUILIB::CVideoPlayActionProcessorBase
+class CVideoPlayActionProcessor : public VIDEO::GUILIB::CVideoPlayActionProcessor
 {
 public:
   CVideoPlayActionProcessor(const std::shared_ptr<CFileItem>& item,
                             int itemIndex,
                             const std::string& player)
-    : CVideoPlayActionProcessorBase(item), m_itemIndex(itemIndex), m_player(player)
+    : VIDEO::GUILIB::CVideoPlayActionProcessor(item), m_itemIndex(itemIndex), m_player(player)
   {
   }
 

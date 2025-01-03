@@ -8,6 +8,7 @@
 
 #include "VideoSelectActionProcessor.h"
 
+#include "ContextMenuManager.h"
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "ServiceBroker.h"
@@ -20,26 +21,28 @@
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "utils/guilib/GUIBuiltinsUtils.h"
+#include "utils/guilib/GUIContentUtils.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/guilib/VideoGUIUtils.h"
 
 namespace KODI::VIDEO::GUILIB
 {
 
-Action CVideoSelectActionProcessorBase::GetDefaultSelectAction()
+Action CVideoSelectActionProcessor::GetDefaultSelectAction()
 {
   return static_cast<Action>(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
       CSettings::SETTING_MYVIDEOS_SELECTACTION));
 }
 
-Action CVideoSelectActionProcessorBase::GetDefaultAction()
+Action CVideoSelectActionProcessor::GetDefaultAction()
 {
   return GetDefaultSelectAction();
 }
 
-bool CVideoSelectActionProcessorBase::Process(Action action)
+bool CVideoSelectActionProcessor::Process(Action action)
 {
-  if (CVideoPlayActionProcessorBase::Process(action))
+  if (CVideoPlayActionProcessor::Process(action))
     return true;
 
   switch (action)
@@ -66,7 +69,7 @@ bool CVideoSelectActionProcessorBase::Process(Action action)
           !KODI::VIDEO::UTILS::HasItemVideoDbInformation(*m_item))
       {
         // for items without info fall back to default play action
-        return Process(CVideoPlayActionProcessorBase::GetDefaultAction());
+        return Process(CVideoPlayActionProcessor::GetDefaultAction());
       }
 
       return OnInfoSelected();
@@ -78,7 +81,31 @@ bool CVideoSelectActionProcessorBase::Process(Action action)
   return false; // We did not handle the action.
 }
 
-unsigned int CVideoSelectActionProcessorBase::ChooseStackItemPartNumber() const
+bool CVideoSelectActionProcessor::OnPlayPartSelected(unsigned int part)
+{
+  //! @todo implement different (not using builtins function)
+  KODI::UTILS::GUILIB::CGUIBuiltinsUtils::ExecutePlayMediaPart(m_item, part);
+  return true;
+}
+
+bool CVideoSelectActionProcessor::OnQueueSelected()
+{
+  VIDEO::UTILS::QueueItem(m_item, VIDEO::UTILS::QueuePosition::POSITION_END);
+  return true;
+}
+
+bool CVideoSelectActionProcessor::OnInfoSelected()
+{
+  return KODI::UTILS::GUILIB::CGUIContentUtils::ShowInfoForItem(*m_item);
+}
+
+bool CVideoSelectActionProcessor::OnChooseSelected()
+{
+  CONTEXTMENU::ShowFor(m_item, CContextMenuManager::MAIN);
+  return true;
+}
+
+unsigned int CVideoSelectActionProcessor::ChooseStackItemPartNumber() const
 {
   CFileItemList parts;
   XFILE::CDirectory::GetDirectory(m_item->GetDynPath(), parts, "", XFILE::DIR_FLAG_DEFAULTS);

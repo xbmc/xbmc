@@ -8,7 +8,6 @@
 
 #include "GUIWindowFavourites.h"
 
-#include "ContextMenuManager.h"
 #include "FileItem.h"
 #include "favourites/FavouritesURL.h"
 #include "favourites/FavouritesUtils.h"
@@ -18,15 +17,12 @@
 #include "messaging/ApplicationMessenger.h"
 #include "utils/PlayerUtils.h"
 #include "utils/StringUtils.h"
-#include "utils/guilib/GUIBuiltinsUtils.h"
 #include "utils/guilib/GUIContentUtils.h"
-#include "video/VideoUtils.h"
 #include "video/guilib/VideoGUIUtils.h"
 #include "video/guilib/VideoPlayActionProcessor.h"
 #include "video/guilib/VideoSelectActionProcessor.h"
 
 using namespace KODI;
-using namespace KODI::UTILS::GUILIB;
 
 CGUIWindowFavourites::CGUIWindowFavourites()
   : CGUIMediaWindow(WINDOW_FAVOURITES, "MyFavourites.xml")
@@ -46,76 +42,6 @@ void CGUIWindowFavourites::OnFavouritesEvent(const CFavouritesService::Favourite
   CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, 0);
   CServiceBroker::GetAppMessenger()->SendGUIMessage(m);
 }
-
-namespace
-{
-class CVideoSelectActionProcessor : public VIDEO::GUILIB::CVideoSelectActionProcessorBase
-{
-public:
-  explicit CVideoSelectActionProcessor(const std::shared_ptr<CFileItem>& item)
-    : CVideoSelectActionProcessorBase(item)
-  {
-  }
-
-protected:
-  bool OnPlayPartSelected(unsigned int part) override
-  {
-    CGUIBuiltinsUtils::ExecutePlayMediaPart(m_item, part);
-    return true;
-  }
-
-  bool OnResumeSelected() override
-  {
-    CGUIBuiltinsUtils::ExecutePlayMediaTryResume(m_item);
-    return true;
-  }
-
-  bool OnPlaySelected() override
-  {
-    CGUIBuiltinsUtils::ExecutePlayMediaNoResume(m_item);
-    return true;
-  }
-
-  bool OnQueueSelected() override
-  {
-    CGUIBuiltinsUtils::ExecuteQueueMedia(m_item);
-    return true;
-  }
-
-  bool OnInfoSelected() override
-  {
-    return UTILS::GUILIB::CGUIContentUtils::ShowInfoForItem(*m_item);
-  }
-
-  bool OnChooseSelected() override
-  {
-    CONTEXTMENU::ShowFor(m_item, CContextMenuManager::MAIN);
-    return true;
-  }
-};
-
-class CVideoPlayActionProcessor : public VIDEO::GUILIB::CVideoPlayActionProcessorBase
-{
-public:
-  explicit CVideoPlayActionProcessor(const ::std::shared_ptr<CFileItem>& item)
-    : CVideoPlayActionProcessorBase(item)
-  {
-  }
-
-protected:
-  bool OnResumeSelected() override
-  {
-    CGUIBuiltinsUtils::ExecutePlayMediaTryResume(m_item);
-    return true;
-  }
-
-  bool OnPlaySelected() override
-  {
-    CGUIBuiltinsUtils::ExecutePlayMediaNoResume(m_item);
-    return true;
-  }
-};
-} // namespace
 
 bool CGUIWindowFavourites::OnSelect(int itemIdx)
 {
@@ -140,7 +66,7 @@ bool CGUIWindowFavourites::OnSelect(int itemIdx)
     // play the given/default video version, even if multiple versions are available
     targetItem->SetProperty("has_resolved_video_asset", true);
 
-    CVideoSelectActionProcessor proc{targetItem};
+    KODI::VIDEO::GUILIB::CVideoSelectActionProcessor proc{targetItem};
     if (proc.ProcessDefaultAction())
       return true;
   }
@@ -167,21 +93,21 @@ bool CGUIWindowFavourites::OnAction(const CAction& action)
     // video play action setting is for files and folders...
     if (item->HasVideoInfoTag() || (item->m_bIsFolder && VIDEO::UTILS::IsItemPlayable(*item)))
     {
-      CVideoPlayActionProcessor proc{item};
+      KODI::VIDEO::GUILIB::CVideoPlayActionProcessor proc{item};
       if (proc.ProcessDefaultAction())
         return true;
     }
 
     if (CPlayerUtils::IsItemPlayable(*item))
     {
-      CFavouritesURL target{*item, {}};
-      if (target.GetAction() != CFavouritesURL::Action::PLAY_MEDIA)
+      CFavouritesURL targetURL{*item, {}};
+      if (targetURL.GetAction() != CFavouritesURL::Action::PLAY_MEDIA)
       {
         // build a playmedia execute string for given target
-        target = CFavouritesURL{CFavouritesURL::Action::PLAY_MEDIA,
-                                {StringUtils::Paramify(item->GetPath())}};
+        targetURL = CFavouritesURL{CFavouritesURL::Action::PLAY_MEDIA,
+                                   {StringUtils::Paramify(item->GetPath())}};
       }
-      return FAVOURITES_UTILS::ExecuteAction(target, targetItem);
+      return FAVOURITES_UTILS::ExecuteAction(targetURL, targetItem);
     }
     return false;
   }

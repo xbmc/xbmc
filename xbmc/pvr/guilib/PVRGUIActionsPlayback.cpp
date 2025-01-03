@@ -64,7 +64,7 @@ bool CPVRGUIActionsPlayback::CheckResumeRecording(const CFileItem& item) const
   bool bPlayIt(true);
 
   const VIDEO::GUILIB::Action action =
-      VIDEO::GUILIB::CVideoSelectActionProcessorBase::ChoosePlayOrResume(item);
+      VIDEO::GUILIB::CVideoSelectActionProcessor::ChoosePlayOrResume(item);
   if (action == VIDEO::GUILIB::ACTION_RESUME)
   {
     const_cast<CFileItem*>(&item)->SetStartOffset(STARTOFFSET_RESUME);
@@ -80,23 +80,6 @@ bool CPVRGUIActionsPlayback::CheckResumeRecording(const CFileItem& item) const
   }
 
   return bPlayIt;
-}
-
-bool CPVRGUIActionsPlayback::ResumePlayRecording(const CFileItem& item, bool bFallbackToPlay) const
-{
-  if (VIDEO::UTILS::GetItemResumeInformation(item).isResumable)
-  {
-    const_cast<CFileItem*>(&item)->SetStartOffset(STARTOFFSET_RESUME);
-  }
-  else
-  {
-    if (bFallbackToPlay)
-      const_cast<CFileItem*>(&item)->SetStartOffset(0);
-    else
-      return false;
-  }
-
-  return PlayRecording(item, false /* skip resume check */);
 }
 
 void CPVRGUIActionsPlayback::CheckAndSwitchToFullscreen(bool bFullscreen) const
@@ -168,25 +151,6 @@ bool CPVRGUIActionsPlayback::PlayRecording(const CFileItem& item, bool bCheckRes
       CServiceBroker::GetPVRManager().PlaybackState()->StartPlayback(
           itemToPlay, ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM, PVR_SOURCE::DEFAULT);
     }
-    CheckAndSwitchToFullscreen(true);
-  }
-  return true;
-}
-
-bool CPVRGUIActionsPlayback::PlayRecordingFolder(const CFileItem& item, bool bCheckResume) const
-{
-  if (!item.m_bIsFolder)
-    return false;
-
-  if (!bCheckResume || CheckResumeRecording(item))
-  {
-    // recursively add items to list
-    const auto itemToQueue = std::make_shared<CFileItem>(item);
-    auto queuedItems = std::make_unique<CFileItemList>();
-    VIDEO::UTILS::GetItemsForPlayList(itemToQueue, *queuedItems);
-
-    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 0, -1,
-                                               static_cast<void*>(queuedItems.release()));
     CheckAndSwitchToFullscreen(true);
   }
   return true;

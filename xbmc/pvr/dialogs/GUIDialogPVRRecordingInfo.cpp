@@ -13,7 +13,7 @@
 #include "guilib/GUIMessage.h"
 #include "pvr/PVRManager.h"
 #include "pvr/guilib/PVRGUIActionsEPG.h"
-#include "pvr/guilib/PVRGUIRecordingsPlayActionProcessor.h"
+#include "video/guilib/VideoPlayActionProcessor.h"
 
 using namespace PVR;
 
@@ -60,7 +60,7 @@ bool CGUIDialogPVRRecordingInfo::OnClickButtonPlay(const CGUIMessage& message)
 
     if (m_recordItem)
     {
-      CGUIPVRRecordingsPlayActionProcessor proc{m_recordItem};
+      KODI::VIDEO::GUILIB::CVideoPlayActionProcessor proc{m_recordItem};
       proc.ProcessDefaultAction();
       if (proc.UserCancelled())
         Open();
