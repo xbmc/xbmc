@@ -139,11 +139,14 @@ void CGameUtils::GetGameClients(const CFileItem& file,
   bHasVfsGameClient |= bVfs;
 
   // Get remote candidates
-  VECADDONS remoteAddons;
-  if (CServiceBroker::GetAddonMgr().GetInstallableAddons(remoteAddons, AddonType::GAMEDLL))
   {
-    GetGameClients(remoteAddons, translatedUrl, installable, bVfs);
-    bHasVfsGameClient |= bVfs;
+    std::lock_guard<std::mutex> installableLock(m_installableMutex);
+    LoadInstallableAddons();
+    if (!m_installableGameAddons.empty())
+    {
+      GetGameClients(m_installableGameAddons, translatedUrl, installable, bVfs);
+      bHasVfsGameClient |= bVfs;
+    }
   }
 
   // Sort by name
@@ -225,13 +228,7 @@ bool CGameUtils::HasGameExtension(const std::string& path)
 
   // Check remote add-ons
   std::lock_guard<std::mutex> installableLock(m_installableMutex);
-  if (m_checkInstallable)
-  {
-    m_checkInstallable = false;
-    m_installableGameAddons.clear();
-    CServiceBroker::GetAddonMgr().GetInstallableAddons(m_installableGameAddons, AddonType::GAMEDLL);
-  }
-
+  LoadInstallableAddons();
   if (!m_installableGameAddons.empty())
   {
     for (auto& gameClient : m_installableGameAddons)
@@ -261,10 +258,11 @@ std::set<std::string> CGameUtils::GetGameExtensions()
   }
 
   // Check remote add-ons
-  gameClients.clear();
-  if (CServiceBroker::GetAddonMgr().GetInstallableAddons(gameClients, AddonType::GAMEDLL))
+  std::lock_guard<std::mutex> installableLock(m_installableMutex);
+  LoadInstallableAddons();
+  if (!m_installableGameAddons.empty())
   {
-    for (auto& gameClient : gameClients)
+    for (auto& gameClient : m_installableGameAddons)
     {
       GameClientPtr gc(std::static_pointer_cast<CGameClient>(gameClient));
       extensions.insert(gc->GetExtensions().begin(), gc->GetExtensions().end());
@@ -330,4 +328,16 @@ bool CGameUtils::Enable(const std::string& gameClient)
     bSuccess = CServiceBroker::GetAddonMgr().EnableAddon(gameClient);
 
   return bSuccess;
+}
+
+void CGameUtils::LoadInstallableAddons()
+{
+  using namespace ADDON;
+
+  if (m_checkInstallable)
+  {
+    m_checkInstallable = false;
+    m_installableGameAddons.clear();
+    CServiceBroker::GetAddonMgr().GetInstallableAddons(m_installableGameAddons, AddonType::GAMEDLL);
+  }
 }

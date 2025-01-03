@@ -110,6 +110,11 @@ private:
   static bool Enable(const std::string& gameClient);
 
   /*!
+   * \brief Load and cache installable game add-ons
+   */
+  static void LoadInstallableAddons();
+
+  /*!
    * \brief Cache of installable game add-ons used to compute the list of
    * known game file extensions
    */
