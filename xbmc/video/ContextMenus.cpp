@@ -285,7 +285,7 @@ bool CVideoResume::Execute(const std::shared_ptr<CFileItem>& itemIn) const
   item->SetStartOffset(STARTOFFSET_RESUME);
   SetPathAndPlay(item, PlayMode::RESUME);
   return true;
-};
+}
 
 std::string CVideoPlay::GetLabel(const CFileItem& itemIn) const
 {
@@ -311,7 +311,7 @@ bool CVideoPlay::Execute(const std::shared_ptr<CFileItem>& itemIn) const
 #endif
   SetPathAndPlay(item, PlayMode::PLAY);
   return true;
-};
+}
 
 bool CVideoPlayUsing::IsVisible(const CFileItem& item) const
 {
@@ -400,7 +400,7 @@ bool CVideoQueue::Execute(const std::shared_ptr<CFileItem>& item) const
   SelectNextItem(windowID);
 
   return true;
-};
+}
 
 bool CVideoPlayNext::IsVisible(const CFileItem& item) const
 {
@@ -414,7 +414,7 @@ bool CVideoPlayNext::Execute(const std::shared_ptr<CFileItem>& item) const
 {
   VIDEO::UTILS::QueueItem(item, VIDEO::UTILS::QueuePosition::POSITION_BEGIN);
   return true;
-};
+}
 
 std::string CVideoPlayAndQueue::GetLabel(const CFileItem& item) const
 {
@@ -451,6 +451,5 @@ bool CVideoPlayAndQueue::Execute(const std::shared_ptr<CFileItem>& item) const
   }
 
   return true; //! @todo implement
-};
-
+}
 }
