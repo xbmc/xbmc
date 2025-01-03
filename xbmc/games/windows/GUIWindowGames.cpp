@@ -19,6 +19,8 @@
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogMediaSource.h"
 #include "dialogs/GUIDialogProgress.h"
+#include "filesystem/FileDirectoryFactory.h"
+#include "games/GameUtils.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
@@ -100,8 +102,11 @@ bool CGUIWindowGames::OnClickMsg(int controlId, int actionId)
     }
     case ACTION_PLAYER_PLAY:
     {
-      if (OnClick(iItem))
+      if (CanPlay(*pItem))
+      {
+        PlayGame(*pItem);
         return true;
+      }
       break;
     }
     case ACTION_SHOW_INFO:
@@ -142,23 +147,6 @@ bool CGUIWindowGames::OnClick(int iItem, const std::string& player /* = "" */)
   CFileItemPtr item = m_vecItems->Get(iItem);
   if (item)
   {
-    // Compensate for DIR_FLAG_NO_FILE_DIRS flag
-    if (URIUtils::IsArchive(item->GetPath()))
-    {
-      bool bIsGame = false;
-
-      // If zip file contains no games, assume it is a game
-      CFileItemList items;
-      if (m_rootDir.GetDirectory(CURL(item->GetPath()), items))
-      {
-        if (items.Size() == 0)
-          bIsGame = true;
-      }
-
-      if (!bIsGame)
-        item->m_bIsFolder = true;
-    }
-
     if (!item->m_bIsFolder)
     {
       PlayGame(*item);
@@ -182,7 +170,7 @@ void CGUIWindowGames::GetContextButtons(int itemNumber, CContextButtons& buttons
     }
     else
     {
-      if (item->IsGame())
+      if (CanPlay(*item))
       {
         buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208); // Play
       }
@@ -243,6 +231,55 @@ bool CGUIWindowGames::GetDirectory(const std::string& strDirectory, CFileItemLis
 {
   if (!CGUIMediaWindow::GetDirectory(strDirectory, items))
     return false;
+
+  // Now we must account for file folders not handled by DIR_FLAG_NO_FILE_DIRS
+  for (int i = 0; i < items.Size(); ++i)
+  {
+    CFileItemPtr item = items[i];
+    if (item->m_bIsFolder || !item->IsFileFolder(FileFolderType::ALWAYS))
+      continue;
+
+    const std::string originalPath = item->GetPath();
+
+    // This will turn the item into a file folder as a side effect
+    std::unique_ptr<XFILE::IFileDirectory> pDirectory{
+        XFILE::CFileDirectoryFactory::Create(CURL{originalPath}, item.get())};
+    if (pDirectory)
+    {
+      // Check for empty file folders
+      CFileItemList fileFolderItems;
+      if (!pDirectory->GetDirectory(item->GetURL(), fileFolderItems) || fileFolderItems.IsEmpty())
+      {
+        items.Remove(i);
+        --i;
+        continue;
+      }
+
+      // Check if file folder contains games or subfolders
+      if (std::any_of(fileFolderItems.begin(), fileFolderItems.end(),
+                      [](const CFileItemPtr& fileFolderItem) {
+                        return fileFolderItem->m_bIsFolder ||
+                               CGameUtils::HasGameExtension(fileFolderItem->GetPath());
+                      }))
+      {
+        continue;
+      }
+
+      // If the file folder contains no games, turn it back into a regular file
+      item->m_bIsFolder = false;
+      item->SetPath(originalPath);
+    }
+    else
+    {
+      // File folder contains a single file and was collapsed down. Remove it
+      // if not a game.
+      if (!CGameUtils::HasGameExtension(item->GetPath()))
+      {
+        items.Remove(i);
+        --i;
+      }
+    }
+  }
 
   // Set label
   std::string label;
@@ -337,5 +374,31 @@ void CGUIWindowGames::OnItemInfo(int itemNumber)
 bool CGUIWindowGames::PlayGame(const CFileItem& item)
 {
   CFileItem itemCopy(item);
+
+  // Dereference file folders. The check here assumes all "is folder" items
+  // passed CanPlay(), e.g. are definitely file folders.
+  if (itemCopy.m_bIsFolder)
+  {
+    itemCopy.m_bIsFolder = false;
+    itemCopy.SetPath(itemCopy.GetURL().GetHostName());
+    itemCopy.GetGameInfoTag();
+  }
+
   return g_application.PlayMedia(itemCopy, "", PLAYLIST::Id::TYPE_NONE);
+}
+
+bool CGUIWindowGames::CanPlay(const CFileItem& item) const
+{
+  if (item.IsGame())
+    return true;
+
+  if (item.m_bIsFolder)
+  {
+    // Check for file folders
+    CURL url{item.GetPath()};
+    if (url.GetFileName().empty() && URIUtils::IsZIP(url.GetHostName()))
+      return true;
+  }
+
+  return false;
 }
