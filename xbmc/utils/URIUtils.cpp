@@ -737,6 +737,11 @@ bool URIUtils::IsMultiPath(const std::string& strPath)
   return IsProtocol(strPath, "multipath");
 }
 
+bool URIUtils::IsDatabase(const std::string& strFile)
+{
+  return IsVideoDb(strFile) || IsMusicDb(strFile);
+}
+
 bool URIUtils::IsHD(const std::string& strFileName)
 {
   CURL url(strFileName);
