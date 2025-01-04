@@ -1086,6 +1086,7 @@ public:
   void SetMovieSet(int idMovie, int idSet);
   bool SetVideoUserRating(int dbId, int rating, const MediaType& mediaType);
   bool GetUseAllExternalAudioForVideo(const std::string& videoPath);
+  int AddNewMovie(CVideoInfoTag& details);
 
   std::string GetSetByNameLike(const std::string& nameLike) const;
 
@@ -1166,7 +1167,6 @@ public:
   std::vector<std::string> GetUsedImages(const std::vector<std::string>& imagesToCheck);
 
 protected:
-  int AddNewMovie(CVideoInfoTag& details);
   int AddNewMusicVideo(CVideoInfoTag& details);
 
   int GetMusicVideoId(const std::string& strFilenameAndPath);
