@@ -586,6 +586,12 @@ int URIUtils::GetBlurayPlaylistFromPath(const std::string& path)
   return playlist;
 }
 
+std::string URIUtils::GetBlurayPlaylistPath(const std::string& path, int playlist /* = -1 */)
+{
+  return AddFileToFolder(GetBlurayPath(path), "BDMV", "PLAYLIST",
+                         playlist != -1 ? StringUtils::Format("{:05}.mpls", playlist) : "");
+}
+
 std::string URLEncodePath(const std::string& strPath)
 {
   std::vector<std::string> segments = StringUtils::Split(strPath, "/");
