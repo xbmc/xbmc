@@ -1192,8 +1192,8 @@ void CActiveAESink::GenerateNoise()
   srcConfig.bits_per_sample = CAEUtil::DataFormatToUsedBits(m_sinkFormat.m_dataFormat);
   srcConfig.dither_bits = CAEUtil::DataFormatToDitherBits(m_sinkFormat.m_dataFormat);
 
-  resampler->Init(dstConfig, srcConfig,
-                  false, false, M_SQRT1_2, nullptr, AE_QUALITY_UNKNOWN, false);
+  resampler->Init(dstConfig, srcConfig, false, false, M_SQRT1_2, nullptr, AE_QUALITY_UNKNOWN, false,
+                  0.0);
 
   resampler->Resample(m_sampleOfSilence.pkt->data, m_sampleOfSilence.pkt->max_nb_samples,
                      (uint8_t**)&noise, m_sampleOfSilence.pkt->max_nb_samples, 1.0);

@@ -3212,6 +3212,18 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="audiooutput.mixsublevel" type="integer" label="34114" help="34115">
+          <level>2</level>
+          <default>0</default>
+          <constraints>
+            <options>
+              <option label="34116">0</option>
+              <option label="34117">50</option>
+              <option label="34118">100</option>
+            </options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
       </group>
       <group id="2" label="15108">
         <setting id="audiooutput.guisoundmode" type="integer" label="34120" help="36373">
