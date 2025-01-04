@@ -136,12 +136,6 @@ public:
    */
   static std::string GetBlurayAllEpisodesPath(const std::string& path);
 
-  /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path to default playlist path.
-   \param path the ISO/index.BDMV path.
-   \return the bluray:// playlist path - BDMV/PLAYLIST
-   */
-  static std::string GetBlurayPlaylistPath(const std::string& path);
-
   /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path.
    \param path the ISO/index.BDMV path.
    \return the bluray:// path.
@@ -159,6 +153,13 @@ public:
    \return the playlist number
    */
   static int GetBlurayPlaylistFromPath(const std::string& path);
+
+  /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path to default playlist path.
+   \param path the ISO/index.BDMV path.
+   \param playlist (optional) the .mpls playlist
+   \return the bluray:// playlist path - BDMV/PLAYLIST(/xxxxx.mpls)
+   */
+  static std::string GetBlurayPlaylistPath(const std::string& path, int playlist = -1);
 
   /* \brief Change the base path of a URL: fromPath/fromFile -> toPath/toFile
     Handles changes in path separator and filename URL encoding if necessary to derive toFile.
