@@ -21,6 +21,9 @@
 #include "input/joysticks/interfaces/IButtonMapper.h"
 #include "input/keyboard/Key.h"
 #include "input/keymaps/interfaces/IKeymap.h"
+#include "peripherals/PeripheralTypes.h"
+#include "peripherals/Peripherals.h"
+#include "peripherals/devices/Peripheral.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -532,7 +535,25 @@ CAxisDetector& CButtonMapping::GetAxis(
   {
     AxisConfiguration config(initialConfig);
 
-    if (m_frameCount >= 2)
+    bool isGcController = false;
+
+    // Avoid showing the "capture input" dialog for the GCController driver, as
+    // analog stick axes are always late due to zeroed events not always being
+    // sent
+#if defined(TARGET_DARWIN)
+    const std::string peripheralLocation = m_buttonMap->Location();
+
+    PERIPHERALS::CPeripherals& peripheralManager = CServiceBroker::GetPeripherals();
+
+    const PERIPHERALS::PeripheralPtr peripheral =
+        peripheralManager.GetPeripheralAtLocation(peripheralLocation);
+
+    if (peripheral &&
+        peripheral->GetBusType() == PERIPHERALS::PeripheralBusType::PERIPHERAL_BUS_GCCONTROLLER)
+      isGcController = true;
+#endif
+
+    if (m_frameCount >= 2 && !isGcController)
     {
       config.bLateDiscovery = true;
       OnLateDiscovery(axisIndex);
