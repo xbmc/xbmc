@@ -1,6 +1,5 @@
 package @APP_PACKAGE@.content;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
@@ -18,8 +17,6 @@ import java.util.List;
 
 public class XBMCFileContentProvider extends XBMCContentProvider
 {
-  private static String TAG = "@APP_NAME@";
-
   public static final String AUTHORITY = AUTHORITY_ROOT + ".file";
 
   private XBMCJsonRPC mJsonRPC = null;
@@ -42,38 +39,16 @@ public class XBMCFileContentProvider extends XBMCContentProvider
   }
 
   @Override
-  public int delete(Uri arg0, String arg1, String[] arg2)
-  {
-    // TODO Auto-generated method stub
-    return 0;
-  }
-
-  @Override
-  public String getType(Uri arg0)
+  public String getType(Uri uri)
   {
     return "vnd.android.cursor.dir/xbmc_file";
-  }
-
-  @Override
-  public Uri insert(Uri arg0, ContentValues arg1)
-  {
-    // TODO Auto-generated method stub
-    return null;
   }
 
   @Override
   public boolean onCreate()
   {
     mJsonRPC = new XBMCJsonRPC(getContext());
-
     return true;
-  }
-
-  @Override
-  public int update(Uri arg0, ContentValues arg1, String arg2, String[] arg3)
-  {
-    // TODO Auto-generated method stub
-    return 0;
   }
 
   @Override
@@ -139,7 +114,6 @@ public class XBMCFileContentProvider extends XBMCContentProvider
 
     return (pipe[0]);
   }
-
 
   static class TransferThread extends Thread
   {

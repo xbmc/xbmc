@@ -1,7 +1,6 @@
 package @APP_PACKAGE@.content;
 
 import android.app.SearchManager;
-import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
@@ -11,14 +10,11 @@ import @APP_PACKAGE@.XBMCJsonRPC;
 
 public class XBMCMediaContentProvider extends XBMCContentProvider
 {
-  private static String TAG = "@APP_NAME@";
-
   public static final String AUTHORITY = AUTHORITY_ROOT + ".media";
   public static final String SUGGEST_PATH = "suggestions";
 
   // UriMatcher stuff
   private static final int SEARCH_SUGGEST = 0;
-  private static final int REFRESH_SHORTCUT = 1;
   private static final UriMatcher URI_MATCHER = buildUriMatcher();
 
   private XBMCJsonRPC mJsonRPC = null;
@@ -32,31 +28,9 @@ public class XBMCMediaContentProvider extends XBMCContentProvider
   }
 
   @Override
-  public int delete(Uri arg0, String arg1, String[] arg2)
-  {
-    // TODO Auto-generated method stub
-    return 0;
-  }
-
-  @Override
-  public String getType(Uri arg0)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public Uri insert(Uri arg0, ContentValues arg1)
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
   public boolean onCreate()
   {
     mJsonRPC  = new XBMCJsonRPC(getContext());
-
     return true;
   }
 
@@ -79,13 +53,6 @@ public class XBMCMediaContentProvider extends XBMCContentProvider
     default:
       throw new IllegalArgumentException("Unknown Uri: " + uri);
     }
-  }
-
-  @Override
-  public int update(Uri arg0, ContentValues arg1, String arg2, String[] arg3)
-  {
-    // TODO Auto-generated method stub
-    return 0;
   }
 
 }
