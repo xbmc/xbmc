@@ -46,8 +46,9 @@ void CSaveFileState::DoWork(CFileItem& item,
     progressTrackingFile =
         item.GetVideoInfoTag()
             ->m_strFileNameAndPath; // this variable contains removable:// suffixed by disc label+uniqueid or is empty if label not uniquely identified
-  else if (IsBlurayPlaylist(item) && (item.GetVideoContentType() == VideoDbContentType::MOVIES ||
-                                      item.GetVideoContentType() == VideoDbContentType::EPISODES))
+  else if (URIUtils::IsBlurayPath(item.GetDynPath()) &&
+           (item.GetVideoContentType() == VideoDbContentType::MOVIES ||
+            item.GetVideoContentType() == VideoDbContentType::EPISODES))
     progressTrackingFile = item.GetDynPath();
   else if (item.HasVideoInfoTag() && IsVideoDb(item))
     progressTrackingFile =

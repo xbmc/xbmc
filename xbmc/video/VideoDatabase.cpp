@@ -6704,10 +6704,9 @@ int CVideoDatabase::GetPlayCount(const std::string& strFilenameAndPath)
 
 int CVideoDatabase::GetPlayCount(const CFileItem &item)
 {
-  if (IsBlurayPlaylist(item))
+  if (URIUtils::IsBlurayPath(item.GetDynPath()))
     return GetPlayCount(GetFileId(item.GetDynPath()));
-  else
-    return GetPlayCount(GetFileId(item));
+  return GetPlayCount(GetFileId(item));
 }
 
 CDateTime CVideoDatabase::GetLastPlayed(int iFileId)
@@ -6778,7 +6777,7 @@ void CVideoDatabase::UpdateFanart(const CFileItem& item, VideoDbContentType type
 CDateTime CVideoDatabase::SetPlayCount(const CFileItem& item, int count, const CDateTime& date)
 {
   int id{-1};
-  if (IsBlurayPlaylist(item))
+  if (URIUtils::IsBlurayPath(item.GetDynPath()))
     id = AddFile(item.GetDynPath());
   else if (item.HasProperty("original_listitem_url") &&
            URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
