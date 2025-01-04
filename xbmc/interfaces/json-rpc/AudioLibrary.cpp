@@ -32,8 +32,6 @@
 
 #include <memory>
 
-#include <music/MusicLibraryQueue.h>
-
 using namespace MUSIC_INFO;
 using namespace JSONRPC;
 using namespace XFILE;
@@ -1362,26 +1360,20 @@ JSONRPC_STATUS CAudioLibrary::RefreshArtist(const std::string& method,
                                             const CVariant& parameterObject,
                                             CVariant& result)
 {
-  int artistID = (int)parameterObject["artistid"].asInteger();
-
-  CMusicDbUrl musicUrl;
-  if (!musicUrl.FromString("musicdb://artists/"))
-    return InternalError;
-
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
     return InternalError;
 
-  //checking if artistID is a valid one
+  // Checking if artistID is a valid one
+  int artistID = (int)parameterObject["artistid"].asInteger();
   if (!musicdatabase.GetArtistExists(artistID))
     return InvalidParams;
 
-  //set the artist id on the musicdb url
-  musicUrl.AddOption("artistid", artistID);
-
-  //executing the StartArtistScan for refreshing the artist scraped informations
-  CMusicLibraryQueue::GetInstance().StartArtistScan(musicUrl.ToString(), true);
-
+  // Start rescraping additional information for the given artist
+  const std::string cmd =
+      StringUtils::Format("musiclibrary.refreshartist({})",
+                          StringUtils::Paramify(parameterObject["artistid"].asString()));
+  CServiceBroker::GetAppMessenger()->SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
   return ACK;
 }
 
@@ -1391,21 +1383,21 @@ JSONRPC_STATUS CAudioLibrary::RefreshAlbum(const std::string& method,
                                            const CVariant& parameterObject,
                                            CVariant& result)
 {
-  int albumID = (int)parameterObject["albumid"].asInteger();
-
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
     return InternalError;
 
-  //check if albumID is a valid one
+  // Check if albumID is a valid one
   CAlbum album;
+  int albumID = (int)parameterObject["albumid"].asInteger();
   if (!musicdatabase.GetAlbum(albumID, album, false))
     return InvalidParams;
 
-  std::string path = StringUtils::Format("musicdb://albums/{}/", albumID);
-
-  //execute the album refresh job
-  CMusicLibraryQueue::GetInstance().StartAlbumScan(path, true);
+  // Start rescraping additional information for the given album
+  const std::string cmd =
+      StringUtils::Format("musiclibrary.refreshalbum({})",
+                          StringUtils::Paramify(parameterObject["albumid"].asString()));
+  CServiceBroker::GetAppMessenger()->SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
 
   return ACK;
 }
