@@ -106,6 +106,12 @@ public:
    */
   static std::string GetBlurayFile(const std::string& path);
 
+  /*! \brief Given a path to bluray playlist (bluray://.../xxxxx.mpls), returns the playlist number.
+   \param path the bluray:// path
+   \return the playlist number
+   */
+  static int GetBlurayPlaylistFromPath(const std::string& path);
+
   /* \brief Change the base path of a URL: fromPath/fromFile -> toPath/toFile
     Handles changes in path separator and filename URL encoding if necessary to derive toFile.
     \param fromPath the base path of the original URL

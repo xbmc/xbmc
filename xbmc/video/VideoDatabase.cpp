@@ -64,6 +64,7 @@
 #include <algorithm>
 #include <map>
 #include <memory>
+#include <ranges>
 #include <string>
 #include <unordered_set>
 #include <vector>
@@ -3567,23 +3568,102 @@ void CVideoDatabase::DeleteResumeBookMark(const CFileItem& item)
   }
 }
 
-void CVideoDatabase::GetEpisodesByFile(const std::string& strFilenameAndPath, std::vector<CVideoInfoTag>& episodes)
+void CVideoDatabase::GetEpisodesByFile(const std::string& strFilenameAndPath,
+                                       std::vector<CVideoInfoTag>& episodes)
 {
+  return GetEpisodesByFileId(GetFileId(strFilenameAndPath), episodes);
+}
+
+void CVideoDatabase::GetEpisodesByFileId(int idFile, std::vector<CVideoInfoTag>& episodes)
+{
+  if (idFile < 0)
+    return;
+
   try
   {
-    std::string strSQL = PrepareSQL("select * from episode_view where idFile=%i order by c%02d, c%02d asc", GetFileId(strFilenameAndPath), VIDEODB_ID_EPISODE_SORTSEASON, VIDEODB_ID_EPISODE_SORTEPISODE);
-    m_pDS->query(strSQL);
-    while (!m_pDS->eof())
+    const int idShow{
+        GetSingleValueInt(PrepareSQL("SELECT idShow FROM episode WHERE idFile=%i", idFile), m_pDS)};
+
+    // Generate map of episodes in each file (finding base file for bluray://) of show
+    EpisodeFileMap fileMap;
+    if (!GetEpisodeMap(idShow, fileMap, m_pDS, idFile))
+      return;
+
+    // Get episode details
+    for (const auto& episode : fileMap | std::views::values)
     {
-      episodes.emplace_back(GetDetailsForEpisode(m_pDS));
-      m_pDS->next();
+      m_pDS->goto_rec(episode.index);
+      CVideoInfoTag tag{GetDetailsForEpisode(m_pDS)};
+      tag.m_duration = episode.duration;
+      episodes.emplace_back(tag);
     }
     m_pDS->close();
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strFilenameAndPath);
+    CLog::LogF(LOGERROR, "File Id {} failed", idFile);
   }
+}
+
+bool CVideoDatabase::GetEpisodeMap(int idShow,
+                                   EpisodeFileMap& fileMap,
+                                   std::unique_ptr<Dataset>& pDS,
+                                   int idFile /* = -1 */)
+{
+  try
+  {
+    const std::string sql{PrepareSQL(
+        "select episode_view.*, streamdetails.iVideoDuration as duration from "
+        "episode_view left join streamdetails on episode_view.idFile = streamdetails.idFile "
+        "and streamdetails.iStreamType = %i "
+        "where episode_view.idShow = %i "
+        "order by cast(episode_view.c%02d as integer), cast(episode_view.c%02d as integer)",
+        CStreamDetail::VIDEO, idShow, VIDEODB_ID_EPISODE_SEASON, VIDEODB_ID_EPISODE_EPISODE)};
+    pDS->query(sql);
+
+    // Generate map of episodes in each file (finding base file for bluray://) of show
+    int index{1};
+    std::string episodeFile{};
+    while (!pDS->eof())
+    {
+      EpisodeInformation episodeInformation;
+      const std::string file{URIUtils::AddFileToFolder(pDS->fv("strPath").get_asString(),
+                                                       pDS->fv("strFileName").get_asString())};
+      const std::string baseFile{URIUtils::IsBlurayPath(file) ? URIUtils::GetBlurayFile(file)
+                                                              : file};
+      // Different scrapers put duration in different places
+      const unsigned int streamDetailsDuration{pDS->fv("duration").get_asUInt()};
+      const unsigned int episodeViewDuration{
+          pDS->fv(StringUtils::Format("c{:02}", VIDEODB_ID_EPISODE_RUNTIME).c_str()).get_asUInt()};
+      episodeInformation.duration =
+          episodeViewDuration > 0 ? episodeViewDuration : streamDetailsDuration;
+
+      episodeInformation.index = index;
+
+      fileMap.insert({baseFile, episodeInformation});
+      if (idFile > 0 && episodeFile.empty() && pDS->fv("idFile").get_asInt() == idFile)
+        episodeFile = baseFile;
+
+      pDS->next();
+      index++;
+    }
+
+    // Remove episodes not from the base file/path
+    if (!episodeFile.empty())
+      std::erase_if(fileMap,
+                    [&episodeFile](const EpisodeFileMapEntry& it)
+                    {
+                      const auto& [file, episodeInfo] = it;
+                      return file != episodeFile;
+                    });
+
+    return true;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Failed to fetch episodes");
+  }
+  return false;
 }
 
 //********************************************************************************************************************************
@@ -10912,6 +10992,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
       }
 
       CFileItem item(movie.m_strFileNameAndPath,false);
+      std::string singlePath;
       if (!singleFile && CUtil::SupportsWriteFileOperations(movie.m_strFileNameAndPath))
       {
         if (!item.Exists(false))
@@ -10925,11 +11006,11 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
           std::string nfoFile(URIUtils::ReplaceExtension(ART::GetTBNFile(item), ".nfo"));
 
           if (item.IsOpticalMediaFile())
-          {
-            nfoFile = URIUtils::AddFileToFolder(
-                                    URIUtils::GetParentPath(nfoFile),
-                                    URIUtils::GetFileName(nfoFile));
-          }
+            nfoFile = URIUtils::AddFileToFolder(URIUtils::GetParentPath(nfoFile),
+                                                URIUtils::GetFileName(nfoFile));
+          else if (URIUtils::IsBlurayPath(item.GetDynPath()))
+            nfoFile =
+                URIUtils::ReplaceExtension(URIUtils::GetBlurayFile(item.GetDynPath()), ".nfo");
 
           if (overwrite || !CFile::Exists(nfoFile, false))
           {
@@ -10942,6 +11023,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
               iFailCount++;
             }
           }
+          singlePath = URIUtils::GetDirectory(nfoFile);
         }
       }
       if (!singleFile)
@@ -10966,7 +11048,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
           CServiceBroker::GetTextureCache()->Export(i.second, savedThumb, overwrite);
         }
         if (actorThumbs)
-          ExportActorThumbs(actorsDir, movie, !singleFile, overwrite);
+          ExportActorThumbs(actorsDir, singlePath, movie, !singleFile, overwrite);
       }
       m_pDS->next();
       current++;
@@ -11119,14 +11201,14 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
 
     // repeat for all tvshows
     sql = "SELECT * FROM tvshow_view";
-    m_pDS->query(sql);
+    pDS2->query(sql);
 
-    total = m_pDS->num_rows();
+    total = pDS2->num_rows();
     current = 0;
 
-    while (!m_pDS->eof())
+    while (!pDS2->eof())
     {
-      CVideoInfoTag tvshow = GetDetailsForTvShow(m_pDS, VideoDbDetailsAll);
+      CVideoInfoTag tvshow = GetDetailsForTvShow(pDS2, VideoDbDetailsAll);
       GetTvShowNamedSeasons(tvshow.m_iDbId, tvshow.m_namedSeasons);
 
       std::map<int, std::map<std::string, std::string> > seasonArt;
@@ -11162,12 +11244,13 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
         if (progress->IsCanceled())
         {
           progress->Close();
-          m_pDS->close();
+          pDS2->close();
           return;
         }
       }
 
       CFileItem item(tvshow.m_strPath, true);
+      std::string singlePath;
       if (!singleFile && CUtil::SupportsWriteFileOperations(tvshow.m_strPath))
       {
         if (!item.Exists(false))
@@ -11191,6 +11274,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
               iFailCount++;
             }
           }
+          singlePath = URIUtils::GetDirectory(nfoFile);
         }
       }
       if (!singleFile)
@@ -11213,7 +11297,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
 
         tvshowDir = tvshow.m_strPath;
         if (actorThumbs)
-          ExportActorThumbs(actorsDir, tvshow, !singleFile, overwrite);
+          ExportActorThumbs(actorsDir, singlePath, tvshow, !singleFile, overwrite);
 
         // export season thumbs
         for (const auto &i : seasonArt)
@@ -11235,51 +11319,68 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
       }
 
       // now save the episodes from this show
-      sql = PrepareSQL("select * from episode_view where idShow=%i order by strFileName, idEpisode",tvshow.m_iDbId);
-      pDS->query(sql);
       std::string showDir(item.GetPath());
 
-      while (!pDS->eof())
+      // Generate map of episodes in each file (finding base file for bluray://)
+      EpisodeFileMap fileMap;
+      GetEpisodeMap(tvshow.m_iDbId, fileMap, pDS);
+
+      for (auto file = fileMap.begin(); file != fileMap.end();
+           file = fileMap.upper_bound(file->first))
       {
-        CVideoInfoTag episode = GetDetailsForEpisode(pDS, VideoDbDetailsAll);
-        std::map<std::string, std::string> artwork;
-        if (GetArtForItem(episode.m_iDbId, MediaTypeEpisode, artwork) && !artwork.empty() &&
-            singleFile)
-        {
-          TiXmlElement additionalNode("art");
-          for (const auto& i : artwork)
-            XMLUtils::SetString(&additionalNode, i.first.c_str(), i.second);
-          episode.Save(pMain->LastChild(), "episodedetails", true, &additionalNode);
-        }
-        else if (singleFile)
-          episode.Save(pMain->LastChild(), "episodedetails", singleFile);
-        else
-          episode.Save(pMain, "episodedetails", singleFile);
-        pDS->next();
         // multi-episode files need dumping to the same XML
-        while (!singleFile && !pDS->eof() &&
-               episode.m_iFileId == pDS->fv("idFile").get_asInt())
+        CVideoInfoTag episode;
+        auto episodes{fileMap.equal_range(file->first)};
+        for (auto episode_it = episodes.first; episode_it != episodes.second; ++episode_it)
         {
-          episode = GetDetailsForEpisode(pDS, VideoDbDetailsAll);
-          episode.Save(pMain, "episodedetails", singleFile);
-          pDS->next();
+          if (episode_it == episodes.first)
+          {
+            // First episode in file
+            pDS->goto_rec(episode_it->second.index);
+
+            episode = GetDetailsForEpisode(pDS, VideoDbDetailsAll);
+            std::map<std::string, std::string> artwork;
+            if (GetArtForItem(episode.m_iDbId, MediaTypeEpisode, artwork) && !artwork.empty() &&
+                singleFile)
+            {
+              TiXmlElement additionalNode("art");
+              for (const auto& i : artwork)
+                XMLUtils::SetString(&additionalNode, i.first.c_str(), i.second);
+              episode.Save(pMain->LastChild(), "episodedetails", true, &additionalNode);
+            }
+            else if (singleFile)
+              episode.Save(pMain->LastChild(), "episodedetails", singleFile);
+            else
+              episode.Save(pMain, "episodedetails", singleFile);
+          }
+          else
+          {
+            // Any subsequent episodes in file
+            if (!singleFile)
+            {
+              pDS->goto_rec(episode_it->second.index);
+              episode = GetDetailsForEpisode(pDS, VideoDbDetailsAll);
+              episode.Save(pMain, "episodedetails", singleFile);
+            }
+          }
         }
 
         // reset old skip state
         bool bSkip = false;
 
-        CFileItem item(episode.m_strFileNameAndPath, false);
-        if (!singleFile && CUtil::SupportsWriteFileOperations(episode.m_strFileNameAndPath))
+        CFileItem item(file->first, false);
+        if (!singleFile && CUtil::SupportsWriteFileOperations(file->first))
         {
           if (!item.Exists(false))
           {
             CLog::Log(LOGINFO, "{} - Not exporting item {} as it does not exist", __FUNCTION__,
-                      episode.m_strFileNameAndPath);
+                      file->first);
             bSkip = true;
           }
           else
           {
-            std::string nfoFile(URIUtils::ReplaceExtension(ART::GetTBNFile(item), ".nfo"));
+            std::string nfoFile;
+            nfoFile = URIUtils::ReplaceExtension(ART::GetTBNFile(item), ".nfo");
 
             if (overwrite || !CFile::Exists(nfoFile, false))
             {
@@ -11292,6 +11393,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
                 iFailCount++;
               }
             }
+            singlePath = URIUtils::GetDirectory(nfoFile);
           }
         }
         if (!singleFile)
@@ -11315,14 +11417,14 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
             CServiceBroker::GetTextureCache()->Export(i.second, savedThumb, overwrite);
           }
           if (actorThumbs)
-            ExportActorThumbs(actorsDir, episode, !singleFile, overwrite, tvshowDir);
+            ExportActorThumbs(actorsDir, singlePath, episode, !singleFile, overwrite, tvshowDir);
         }
       }
       pDS->close();
-      m_pDS->next();
+      pDS2->next();
       current++;
     }
-    m_pDS->close();
+    pDS2->close();
 
     if (!singleFile && progress)
     {
@@ -11380,19 +11482,19 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
         CVariant{647}, CVariant{StringUtils::Format(g_localizeStrings.Get(15011), iFailCount)});
 }
 
-void CVideoDatabase::ExportActorThumbs(const std::string& strDir,
+void CVideoDatabase::ExportActorThumbs(const std::string& path,
+                                       const std::string& singlePath,
                                        const CVideoInfoTag& tag,
                                        bool singleFiles,
                                        bool overwrite /* =false */,
                                        const std::string& tvshowDir /* ="" */) const
 {
-  std::string strPath(strDir);
+  std::string strPath{path};
   if (singleFiles)
   {
 
     strPath = URIUtils::AddFileToFolder(
-        tag.m_type == MediaTypeEpisode && !tvshowDir.empty() ? tvshowDir : tag.m_strPath,
-        ".actors");
+        tag.m_type == MediaTypeEpisode && !tvshowDir.empty() ? tvshowDir : singlePath, ".actors");
     if (!CDirectory::Exists(strPath))
     {
       CDirectory::Create(strPath);
