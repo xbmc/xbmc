@@ -288,7 +288,7 @@ int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
   {
     std::string cError;
 
-    if (errno == EACCES)
+    if (errno == EACCES || errno == EPERM || errno == EAGAIN || errno == EINVAL)
     {
       if (m_flags & DIR_FLAG_ALLOW_PROMPT)
         RequireAuthentication(urlIn);
