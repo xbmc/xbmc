@@ -173,6 +173,7 @@ CVideoInfoScanner::CVideoInfoScanner()
 
       CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetLibraryInfoProvider().ResetLibraryBools();
       m_database.Close();
+      m_scraperCache.clear();
 
       auto end = std::chrono::steady_clock::now();
       auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
@@ -268,7 +269,8 @@ CVideoInfoScanner::CVideoInfoScanner()
     bool bSkip = false;
 
     SScanSettings settings;
-    ScraperPtr info = m_database.GetScraperForPath(strDirectory, settings, foundDirectly);
+    ScraperPtr info =
+        m_database.GetScraperForPath(strDirectory, settings, foundDirectly, &m_scraperCache);
     CONTENT_TYPE content = info ? info->Content() : CONTENT_NONE;
 
     // exclude folders that match our exclude regexps
@@ -473,7 +475,8 @@ CVideoInfoScanner::CVideoInfoScanner()
       CFileItemPtr pItem = items[i];
 
       // we do this since we may have a override per dir
-      ScraperPtr info2 = m_database.GetScraperForPath(pItem->m_bIsFolder ? pItem->GetPath() : items.GetPath());
+      ScraperPtr info2 = m_database.GetScraperForPath(
+          pItem->m_bIsFolder ? pItem->GetPath() : items.GetPath(), &m_scraperCache);
       if (!info2) // skip
         continue;
 
