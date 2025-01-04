@@ -330,6 +330,17 @@ bool URIUtils::GetParentPath(const std::string& strPath, std::string& strParent)
     strFile = url.GetHostName();
     return GetParentPath(strFile, strParent);
   }
+  else if (url.IsProtocol("bluray"))
+  {
+    CURL url2(url.GetHostName()); // strip bluray://
+    if (url2.IsProtocol("udf"))
+    {
+      strFile = url2.GetHostName(); // strip udf://
+      return GetParentPath(strFile, strParent);
+    }
+    strParent = url2.Get();
+    return true;
+  }
   else if (url.IsProtocol("stack"))
   {
     CStackDirectory dir;
@@ -453,6 +464,45 @@ std::string URIUtils::GetBasePath(const std::string& strPath)
       strDirectory = GetDirectory(strCheck);
   }
   return strDirectory;
+}
+
+std::string URIUtils::GetBlurayFile(const std::string& path)
+{
+  if (IsBlurayPath(path))
+  {
+    CURL url(path);
+    CURL url2(url.GetHostName()); // strip bluray://
+    if (url2.IsProtocol("udf"))
+      // ISO
+      return url2.GetHostName(); // strip udf://
+    if (url.IsProtocol("bluray"))
+      // BDMV
+      return url2.Get() + "BDMV/index.bdmv";
+  }
+  return path;
+}
+
+std::string URIUtils::GetDiscBase(std::string file)
+{
+  if (IsBlurayPath(file))
+    file = GetBlurayFile(file);
+
+  std::string parent{GetParentPath(file)};
+  std::string parentFolder{parent};
+  RemoveSlashAtEnd(parentFolder);
+  parentFolder = GetFileName(parentFolder);
+  if (StringUtils::EqualsNoCase(parentFolder, "VIDEO_TS") ||
+      StringUtils::EqualsNoCase(parentFolder, "BDMV"))
+    return GetParentPath(parent); // go back up another one
+  return parent;
+}
+
+std::string URIUtils::GetDiscBasePath(const std::string& file)
+{
+  std::string base{GetDiscBase(file)};
+  if (IsDiscImage(base))
+    return GetDirectory(base);
+  return base;
 }
 
 std::string URLEncodePath(const std::string& strPath)
@@ -1183,7 +1233,7 @@ bool URIUtils::IsVideoDb(const std::string& strFile)
   return IsProtocol(strFile, "videodb");
 }
 
-bool URIUtils::IsBluray(const std::string& strFile)
+bool URIUtils::IsBlurayPath(const std::string& strFile)
 {
   return IsProtocol(strFile, "bluray");
 }
