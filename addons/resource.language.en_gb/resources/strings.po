@@ -22163,7 +22163,7 @@ msgstr ""
 #. Description of setting with label #36628 "Minimum protocol version"
 #: system/settings/settings.xml
 msgctxt "#36629"
-msgid "Set the minimum SMB protocol version to negotiate when making connections. Forcing SMBv2 may be required to prevent SMBv1 use on some OS."
+msgid "Set the minimum SMB protocol version to negotiate when making connections. Forcing SMBv2 may be required to prevent SMBv1 use on some systems. Only SMBv2.1 and SMBv3 support Large MTU (chunk size > 64 KB)."
 msgstr ""
 
 #. Label of a setting, sets additional config required for some proprietary SMBv1 implementations (mostly routers)
@@ -22208,7 +22208,11 @@ msgctxt "#36636"
 msgid "You must first enter a password before web server authentication can be enabled."
 msgstr ""
 
-#empty string with id 36637
+#. Values for setting with label #36621 and #36628 "Minimum/Maximum protocol version"
+#: system/settings/settings.xml
+msgctxt "#36637"
+msgid "SMBv2 and Large MTU"
+msgstr ""
 
 #. Menuitem at "Settings -> System -> Add-ons"
 #: ./system/settings/settings.xml
