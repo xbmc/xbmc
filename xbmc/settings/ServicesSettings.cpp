@@ -65,6 +65,7 @@ void CServicesSettings::SettingOptionsMemorySizesFiller(const SettingConstPtr& s
   list.emplace_back(StringUtils::Format(mb, 512), 512);
   list.emplace_back(StringUtils::Format(mb, 768), 768);
   list.emplace_back(StringUtils::Format(gb, 1), 1024);
+  list.emplace_back(StringUtils::Format(gb, 2), 2048);
   list.emplace_back(g_localizeStrings.Get(37115), 0);
 }
 
