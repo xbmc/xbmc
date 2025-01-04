@@ -1455,12 +1455,28 @@ CVideoInfoScanner::~CVideoInfoScanner()
     CVideoInfoTag &movieDetails = *pItem->GetVideoInfoTag();
     if (movieDetails.m_basePath.empty())
       movieDetails.m_basePath = pItem->GetBaseMoviePath(videoFolder);
-    movieDetails.m_parentPathID = m_database.AddPath(URIUtils::GetParentPath(movieDetails.m_basePath));
+    if (movieDetails.m_iTrack > -1)
+    {
+      // Relative path (eg. bluray://) with playlist/title
+      const std::string fileandpath{
+          URIUtils::GetBlurayPlaylistPath(pItem->GetPath(), movieDetails.m_iTrack)};
+      const std::string path{URIUtils::GetDirectory(fileandpath)};
 
-    movieDetails.m_strFileNameAndPath = pItem->GetPath();
+      movieDetails.m_parentPathID = m_database.AddPath(path);
+      movieDetails.m_strPath = path;
+      movieDetails.m_strFileNameAndPath = fileandpath;
+      pItem->SetDynPath(fileandpath); // Needed for SetPlayCount() later
+    }
+    else
+    {
+      movieDetails.m_parentPathID =
+          m_database.AddPath(URIUtils::GetParentPath(movieDetails.m_basePath));
 
-    if (pItem->m_bIsFolder)
-      movieDetails.m_strPath = pItem->GetPath();
+      movieDetails.m_strFileNameAndPath = pItem->GetPath();
+
+      if (pItem->m_bIsFolder)
+        movieDetails.m_strPath = pItem->GetPath();
+    }
 
     std::string strTitle(movieDetails.m_strTitle);
 
@@ -1600,7 +1616,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
       if ((libraryImport || m_advancedSettings->m_bVideoLibraryImportResumePoint) &&
           movieDetails.GetResumePoint().IsSet())
-        m_database.AddBookMarkToFile(pItem->GetPath(), movieDetails.GetResumePoint(), CBookmark::RESUME);
+        m_database.AddBookMarkToFile(pItem->GetVideoInfoTag()->m_strFileNameAndPath,
+                                     movieDetails.GetResumePoint(), CBookmark::RESUME);
     }
 
     m_database.Close();
@@ -1711,24 +1728,38 @@ CVideoInfoScanner::~CVideoInfoScanner()
         CServiceBroker::GetFileExtensionProvider().GetPictureExtensions(),
         DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
 
-    std::string baseFilename = URIUtils::GetFileName(itemPath);
-    if (!baseFilename.empty())
+    std::string initialBaseFilename{URIUtils::GetFileName(itemPath)};
+    if (!initialBaseFilename.empty())
     {
-      URIUtils::RemoveExtension(baseFilename);
-      baseFilename.append("-");
+      URIUtils::RemoveExtension(initialBaseFilename);
+      initialBaseFilename.append("-");
     }
 
     const bool caseSensitive{CServiceBroker::GetSettingsComponent()
                                  ->GetAdvancedSettings()
                                  ->m_caseSensitiveLocalArtMatch};
+    CRegExp baseregex{true, CRegExp::autoUtf8, R"(^(.*?)(-S\d{2}E\d{2})-$)"};
+    CRegExp candidateregex{true, CRegExp::autoUtf8, R"(^(.*?)(-S\d{2}E\d{2})-)"};
 
     for (const auto& artFile : availableArtFiles)
     {
       std::string candidate{URIUtils::GetFileName(artFile->GetPath())};
-      const bool matchesFilename{!baseFilename.empty() &&
-                                 (caseSensitive
-                                      ? StringUtils::StartsWith(candidate, baseFilename)
-                                      : StringUtils::StartsWithNoCase(candidate, baseFilename))};
+      std::string baseFilename{initialBaseFilename};
+
+      bool matchesFilename{!baseFilename.empty() &&
+                           (caseSensitive
+                                ? StringUtils::StartsWith(candidate, baseFilename)
+                                : StringUtils::StartsWithNoCase(candidate, baseFilename))};
+
+      // If SxxEyy appended then see if there is a match with that removed
+      // But only if candidate does not contain SxxEyy (otherwise false positive match)
+      if (!matchesFilename && !baseFilename.empty() && candidateregex.RegFind(candidate) == -1 &&
+          baseregex.RegFind(baseFilename) != -1)
+      {
+        baseFilename = baseregex.GetMatch(1).append("-");
+        matchesFilename = caseSensitive ? StringUtils::StartsWith(candidate, baseFilename)
+                                        : StringUtils::StartsWithNoCase(candidate, baseFilename);
+      }
 
       if (!baseFilename.empty() && !matchesFilename)
         continue;
@@ -1805,8 +1836,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
         // the previous call.
         useFolder = false;
 
-        AddLocalItemArtwork(art, artTypes, ART::GetLocalArtBaseFilename(*pItem, useFolder), addAll,
-                            exactName);
+        AddLocalItemArtwork(
+            art, artTypes,
+            ART::GetLocalArtBaseFilename(*pItem, useFolder, ART::UseSeasonAndEpisode::YES), addAll,
+            exactName);
       }
 
       if (moviePartOfSet)
@@ -1953,6 +1986,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       else
       {
         item.SetPath(file->strPath);
+        item.GetVideoInfoTag()->m_iSeason = file->iSeason;
         item.GetVideoInfoTag()->m_iEpisode = file->iEpisode;
       }
 
