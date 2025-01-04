@@ -63,7 +63,7 @@ std::string FindTrailer(const CFileItem& item)
   }
 
   // no local trailer available for these
-  if (NETWORK::IsInternetStream(item) || URIUtils::IsUPnP(strFile) || URIUtils::IsBluray(strFile) ||
+  if (NETWORK::IsInternetStream(item) || URIUtils::IsUPnP(strFile) || URIUtils::IsBlurayPath(strFile) ||
       item.IsLiveTV() || item.IsPlugin() || item.IsDVD())
     return "";
 

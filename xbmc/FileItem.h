@@ -142,8 +142,6 @@ public:
   const std::string &GetDynPath() const;
   void SetDynPath(const std::string &path);
 
-  std::string GetBlurayPath() const;
-
   /*! \brief reset class to it's default values as per construction.
    Free's all allocated memory.
    \sa Initialize
@@ -189,6 +187,7 @@ public:
   bool IsCBR() const;
   bool IsISO9660() const;
   bool IsDVD() const;
+  bool IsDVDChapter() const;
   bool IsOnDVD() const;
   bool IsHD() const;
   bool IsNfs() const;
@@ -498,8 +497,9 @@ public:
    in the given item.
    \param item the item used to supplement information
    \param replaceLabels whether to replace labels (defaults to true)
+   \param replaceEpisodes whether to list all episodes on multi-episode disc (defaults to false)
    */
-  void UpdateInfo(const CFileItem &item, bool replaceLabels = true);
+  void UpdateInfo(const CFileItem& item, bool replaceLabels = true, bool replaceEpisodes = false);
 
   /*! \brief Merge an item with information from another item
   We take metadata/art information from the given item and supplement the current
@@ -553,6 +553,7 @@ public:
   std::string m_strLockCode;
   int m_iHasLock; // 0 - no lock 1 - lock, but unlocked 2 - locked
   int m_iBadPwdCount;
+  bool m_multipleTitles;
 
   void SetCueDocument(const CCueDocumentPtr& cuePtr);
   void LoadEmbeddedCue();
@@ -608,7 +609,6 @@ private:
   bool m_bIsAlbum;
   int64_t m_lStartOffset;
   int64_t m_lEndOffset;
-
   CCueDocumentPtr m_cueDocument;
 };
 

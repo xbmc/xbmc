@@ -15,8 +15,6 @@
 #include "URIUtils.h"
 #include "URL.h"
 #include "Util.h"
-#include "application/ApplicationComponents.h"
-#include "application/ApplicationStackHelper.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
@@ -47,8 +45,11 @@ void CSaveFileState::DoWork(CFileItem& item,
     progressTrackingFile =
         item.GetVideoInfoTag()
             ->m_strFileNameAndPath; // this variable contains removable:// suffixed by disc label+uniqueid or is empty if label not uniquely identified
-  else if (IsBlurayPlaylist(item) && (item.GetVideoContentType() == VideoDbContentType::MOVIES ||
-                                      item.GetVideoContentType() == VideoDbContentType::EPISODES))
+  else if (item.HasProperty("new_stack_path"))
+    progressTrackingFile = item.GetProperty("new_stack_path").asString();
+  else if ((URIUtils::IsBlurayPath(item.GetDynPath()) || URIUtils::IsDVDPath(item.GetDynPath())) &&
+           (item.GetVideoContentType() == VideoDbContentType::MOVIES ||
+            item.GetVideoContentType() == VideoDbContentType::EPISODES))
     progressTrackingFile = item.GetDynPath();
   else if (item.HasVideoInfoTag() && IsVideoDb(item))
     progressTrackingFile =
@@ -59,7 +60,8 @@ void CSaveFileState::DoWork(CFileItem& item,
     // only use original_listitem_url for Python, UPnP and Bluray sources
     std::string original = item.GetProperty("original_listitem_url").asString();
     if (URIUtils::IsPlugin(original) || URIUtils::IsUPnP(original) ||
-        URIUtils::IsBluray(item.GetPath()))
+        URIUtils::IsDVDPath(item.GetPath()) ||
+        URIUtils::IsBlurayPath(item.GetPath()))
       progressTrackingFile = original;
   }
 
@@ -183,24 +185,30 @@ void CSaveFileState::DoWork(CFileItem& item,
           if (!videodatabase.GetStreamDetails(dbItem) ||
               dbItem.GetVideoInfoTag()->m_streamDetails != item.GetVideoInfoTag()->m_streamDetails)
           {
-            const int idFile = videodatabase.SetStreamDetailsForFile(
+            videoDbSuccess = videodatabase.SetStreamDetailsForFile(
                 item.GetVideoInfoTag()->m_streamDetails, progressTrackingFile);
+            updateListing = !videoDbSuccess;
+          }
+        }
 
-            if (idFile == -2)
-            {
-              videoDbSuccess = false;
-            }
-            else if (idFile > 0)
-            {
-              updateListing = true;
-
-              if (item.GetVideoContentType() == VideoDbContentType::MOVIES)
-                videoDbSuccess = videodatabase.SetFileForMovie(
-                    item.GetDynPath(), item.GetVideoInfoTag()->m_iDbId, idFile);
-              else if (item.GetVideoContentType() == VideoDbContentType::EPISODES)
-                videoDbSuccess = videodatabase.SetFileForEpisode(
-                    item.GetDynPath(), item.GetVideoInfoTag()->m_iDbId, idFile);
-            }
+        // See if fileId needs updating
+        if (URIUtils::IsBlurayPath(item.GetDynPath()) || URIUtils::IsDVDPath(item.GetDynPath()) ||
+            item.HasProperty("new_stack_path"))
+        {
+          if (item.GetVideoContentType() == VideoDbContentType::MOVIES)
+          {
+            const auto& tag{item.GetVideoInfoTag()};
+            const int currentFileId{videodatabase.GetFileIdByMovie(tag->m_iDbId)};
+            if (tag->m_strFileNameAndPath != item.GetDynPath())
+              videoDbSuccess = videodatabase.SetFileForMovie(item.GetDynPath(), currentFileId);
+          }
+          else if (item.GetVideoContentType() == VideoDbContentType::EPISODES)
+          {
+            const auto& tag{item.GetVideoInfoTag()};
+            const int currentFileId{videodatabase.GetFileIdByEpisode(tag->m_iDbId)};
+            if (tag->m_strFileNameAndPath != item.GetDynPath())
+              videoDbSuccess = videodatabase.SetFileForEpisode(
+                  item.GetDynPath(), item.GetVideoInfoTag()->m_iDbId, currentFileId);
           }
         }
 
@@ -215,16 +223,11 @@ void CSaveFileState::DoWork(CFileItem& item,
           CFileItemPtr msgItem(new CFileItem(item));
           if (item.HasProperty("original_listitem_url"))
             msgItem->SetPath(item.GetProperty("original_listitem_url").asString());
+          msgItem->SetDynPath(progressTrackingFile);
 
-          // Could be part of an ISO stack. In this case the bookmark is saved onto the part.
-          // In order to properly update the list, we need to refresh the stack's resume point
-          const auto& components = CServiceBroker::GetAppComponents();
-          const auto stackHelper = components.GetComponent<CApplicationStackHelper>();
-          if (stackHelper->HasRegisteredStack(item) &&
-              stackHelper->GetRegisteredStackTotalTimeMs(item) == 0)
-            videodatabase.GetResumePoint(*(msgItem->GetVideoInfoTag()));
-
-          CGUIMessage message(GUI_MSG_NOTIFY_ALL, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(), 0, GUI_MSG_UPDATE_ITEM, 0, msgItem);
+          CGUIMessage message(GUI_MSG_NOTIFY_ALL,
+                              CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(), 0,
+                              GUI_MSG_UPDATE_ITEM, 0, msgItem);
           CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
         }
 
