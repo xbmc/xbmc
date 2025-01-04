@@ -150,7 +150,8 @@ bool CDVDInputStreamBluray::Open()
     openDisc = VIDEO::IsProtectedBlurayDisc(base);
 
     // check for a menu call for an image file
-    if (StringUtils::EqualsNoCase(filename, "menu"))
+    if (StringUtils::EqualsNoCase(filename, "menu") &&
+        !(m_item.GetStartOffset() == STARTOFFSET_RESUME && m_item.IsResumable()))
     {
       //get rid of the udf:// protocol
       CURL url2(root);
