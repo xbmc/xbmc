@@ -15,7 +15,6 @@
 #include "ServiceBroker.h"
 #include "TextureCache.h"
 #include "URL.h"
-#include "Util.h"
 #include "VideoInfoDownloader.h"
 #include "cores/VideoPlayer/DVDFileInfo.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
@@ -174,6 +173,7 @@ CVideoInfoScanner::CVideoInfoScanner()
       CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetLibraryInfoProvider().ResetLibraryBools();
       m_database.Close();
       m_scraperCache.clear();
+      m_regexCache.clear();
 
       auto end = std::chrono::steady_clock::now();
       auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
@@ -278,7 +278,7 @@ CVideoInfoScanner::CVideoInfoScanner()
         content == CONTENT_TVSHOWS ? m_advancedSettings->m_tvshowExcludeFromScanRegExps
                                    : m_advancedSettings->m_moviesExcludeFromScanRegExps;
 
-    if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
+    if (CUtil::ExcludeFileOrFolder(strDirectory, regexps, &m_regexCache))
       return true;
 
     if (HasNoMedia(strDirectory))
@@ -488,7 +488,8 @@ CVideoInfoScanner::CVideoInfoScanner()
       if (CUtil::ExcludeFileOrFolder(pItem->GetPath(),
                                      (content == CONTENT_TVSHOWS)
                                          ? m_advancedSettings->m_tvshowExcludeFromScanRegExps
-                                         : m_advancedSettings->m_moviesExcludeFromScanRegExps))
+                                         : m_advancedSettings->m_moviesExcludeFromScanRegExps,
+                                     &m_regexCache))
         continue;
 
       if (info2->Content() == CONTENT_MOVIES || info2->Content() == CONTENT_MUSICVIDEOS)
@@ -1111,7 +1112,7 @@ CVideoInfoScanner::CVideoInfoScanner()
         continue;
 
       // Discard all exclude files defined by regExExcludes
-      if (CUtil::ExcludeFileOrFolder(items[i]->GetPath(), regexps))
+      if (CUtil::ExcludeFileOrFolder(items[i]->GetPath(), regexps, &m_regexCache))
         continue;
 
       /*
@@ -2221,7 +2222,8 @@ CVideoInfoScanner::CVideoInfoScanner()
 
     for (int i = 0; i < items.Size(); ++i)
     {
-      if (items[i]->m_bIsFolder && !CUtil::ExcludeFileOrFolder(items[i]->GetPath(), excludes))
+      if (items[i]->m_bIsFolder &&
+          !CUtil::ExcludeFileOrFolder(items[i]->GetPath(), excludes, &m_regexCache))
         return false;
     }
     return true;
