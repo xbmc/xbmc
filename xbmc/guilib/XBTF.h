@@ -15,8 +15,8 @@
 
 #include <stdint.h>
 
-static const std::string XBTF_MAGIC = "XBTF";
-static const std::string XBTF_VERSION = "3";
+inline const std::string XBTF_MAGIC = "XBTF";
+inline const std::string XBTF_VERSION = "3";
 static const char XBTF_VERSION_MIN = '2';
 
 #include "TextureFormats.h"

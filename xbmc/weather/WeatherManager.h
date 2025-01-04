@@ -23,7 +23,7 @@
 #define WEATHER_LABEL_CURRENT_DEWP 27
 #define WEATHER_LABEL_CURRENT_HUMI 28
 
-static const std::string ICON_ADDON_PATH = "resource://resource.images.weathericons.default";
+inline const std::string ICON_ADDON_PATH = "resource://resource.images.weathericons.default";
 
 struct ForecastDay
 {
