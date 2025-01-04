@@ -1,0 +1,32 @@
+package @APP_PACKAGE@;
+
+import android.util.Log;
+
+/**
+ * Created by Maven85 on 16/03/2020.
+ */
+
+public class XBMCTextureCache
+{
+  native String _unwrapImageURL(String image);
+
+  private static final String TAG = "@APP_NAME@";
+
+  public XBMCTextureCache()
+  {
+  }
+
+  public String unwrapImageURL(String image)
+  {
+    try
+    {
+      return _unwrapImageURL(image);
+    }
+    catch (Exception e)
+    {
+      Log.e(TAG, "unwrapImageURL: Exception: " + e.getMessage());
+      return null;
+    }
+  }
+
+}
