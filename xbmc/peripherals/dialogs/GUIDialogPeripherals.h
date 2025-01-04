@@ -35,6 +35,7 @@ public:
 
   // implementation of CGUIControl via CGUIDialogSelect
   bool OnMessage(CGUIMessage& message) override;
+  void FreeResources(bool immediately = false) override;
 
   // implementation of Observer
   void Notify(const Observable& obs, const ObservableMessage msg) override;
