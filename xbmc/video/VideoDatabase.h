@@ -462,6 +462,15 @@ enum class DeleteMovieHashAction
 #define COMPARE_PERCENTAGE     0.90f // 90%
 #define COMPARE_PERCENTAGE_MIN 0.50f // 50%
 
+struct EpisodeInformation
+{
+  int index{0};
+  unsigned int duration{0};
+};
+
+using EpisodeFileMap = std::multimap<std::string, EpisodeInformation>;
+using EpisodeFileMapEntry = std::pair<std::string, EpisodeInformation>;
+
 class CVideoDatabase : public CDatabase
 {
 public:
@@ -607,6 +616,10 @@ public:
   void GetEpisodesByBlurayPath(const std::string& path, std::vector<CVideoInfoTag>& episodes);
   void GetEpisodesByFile(const std::string& strFilenameAndPath, std::vector<CVideoInfoTag>& episodes);
   void GetEpisodesByFileId(int idFile, std::vector<CVideoInfoTag>& episodes);
+  bool GetEpisodeMap(int idShow,
+                     EpisodeFileMap& fileMap,
+                     std::unique_ptr<dbiplus::Dataset>& pDS,
+                     int idFile = -1 /* = -1 */);
 
   int SetDetailsForItem(CVideoInfoTag& details, const std::map<std::string, std::string> &artwork);
   int SetDetailsForItem(int id, const MediaType& mediaType, CVideoInfoTag& details, const std::map<std::string, std::string> &artwork);
@@ -1008,7 +1021,9 @@ public:
   void UpdateFileDateAdded(CVideoInfoTag& details);
 
   void ExportToXML(const std::string &path, bool singleFile = true, bool images=false, bool actorThumbs=false, bool overwrite=false);
+  void ExportArt(const CFileItem& item, const ADDON::ArtMap& artwork, bool overwrite);
   void ExportActorThumbs(const std::string& path,
+                         const std::string& singlePath,
                          const CVideoInfoTag& tag,
                          bool singleFiles,
                          bool overwrite = false,
