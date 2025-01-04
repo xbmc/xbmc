@@ -279,7 +279,7 @@ std::string GetLocalFanart(const CFileItem& item)
   }
 
   // no local fanart available for these
-  if (NETWORK::IsInternetStream(item) || URIUtils::IsUPnP(file) || URIUtils::IsBluray(file) ||
+  if (NETWORK::IsInternetStream(item) || URIUtils::IsUPnP(file) || URIUtils::IsBlurayPath(file) ||
       item.IsLiveTV() || item.IsPlugin() || item.IsAddonsPath() || item.IsDVD() ||
       (URIUtils::IsFTP(file) &&
        !CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bFTPThumbs) ||

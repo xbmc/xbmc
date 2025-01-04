@@ -87,6 +87,25 @@ public:
    */
   static std::string GetBasePath(const std::string& strPath);
 
+  /*! \brief Given a bluray:// path, return the base .ISO or folder containing the bluray file structure.
+   \param path bluray:// path.
+   \return the base .ISO or folder containing the bluray file structure.
+   \note Used to determine file/folder to delete
+   */
+  static std::string GetDiscBase(const std::string& file);
+
+  /*! \brief Given a bluray:// path, return the folder containing the .ISO or bluray file structure.
+   \param path bluray:// path.
+   \return the folder containing the .ISO or bluray file structure.
+   */
+  static std::string GetDiscBasePath(const std::string& file);
+
+  /*! \brief Given a bluray:// path, return the base .ISO or index.BDMV.
+   \param path bluray:// path.
+   \return the base .ISO or index.BDMV.
+   */
+  static std::string GetBlurayFile(const std::string& path);
+
   /* \brief Change the base path of a URL: fromPath/fromFile -> toPath/toFile
     Handles changes in path separator and filename URL encoding if necessary to derive toFile.
     \param fromPath the base path of the original URL
@@ -178,7 +197,7 @@ public:
   static bool IsArchive(const std::string& strFile);
   static bool IsDiscImage(const std::string& file);
   static bool IsDiscImageStack(const std::string& file);
-  static bool IsBluray(const std::string& strFile);
+  static bool IsBlurayPath(const std::string& strFile);
   static bool IsAndroidApp(const std::string& strFile);
   static bool IsLibraryFolder(const std::string& strFile);
   static bool IsLibraryContent(const std::string& strFile);
