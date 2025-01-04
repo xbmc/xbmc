@@ -51,7 +51,12 @@ std::string GetLocalArtBaseFilename(const CFileItem& item, bool& useFolder);
  */
 std::string GetLocalFanart(const CFileItem& item);
 
-//! \brief Get the .tbn file associated with an item
-std::string GetTBNFile(const CFileItem& item);
+/*! \brief Get the .tbn file associated with an item.
+ \param item CFileItem containing the item path.
+ \param season For multi-episode files. Append SxxEyy to the file name.
+ \param episode For multi-episode files. Append SxxEyy to the file name.
+ \return the path to the .tbm file
+*/
+std::string GetTBNFile(const CFileItem& item, int season = -1, int episode = -1);
 
 } // namespace KODI::ART

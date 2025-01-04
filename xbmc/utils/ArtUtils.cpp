@@ -15,6 +15,7 @@
 #include "filesystem/File.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/StackDirectory.h"
+#include "fmt/format.h"
 #include "music/MusicFileItemClassify.h"
 #include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayListFileItemClassify.h"
@@ -231,6 +232,10 @@ std::string GetLocalArtBaseFilename(const CFileItem& item, bool& useFolder)
     useFolder = true;
     strFile = item.GetLocalMetadataPath();
   }
+  else if (URIUtils::IsBlurayPath(file))
+  {
+    strFile = URIUtils::GetBlurayFile(file);
+  }
   else if (useFolder && !(item.m_bIsFolder && !item.IsFileFolder()))
   {
     file = strFile.empty() ? item.GetPath() : strFile;
@@ -330,24 +335,24 @@ std::string GetLocalFanart(const CFileItem& item)
 }
 
 // Gets the .tbn filename from a file or folder name.
-// <filename>.ext -> <filename>.tbn
-// <foldername>/ -> <foldername>.tbn
-std::string GetTBNFile(const CFileItem& item)
+// <filename>.ext -> <filename>(-<SxxEyy>).tbn
+// <foldername>/ -> <foldername>(-<SxxEyy>).tbn
+std::string GetTBNFile(const CFileItem& item, int season /* = - 1 */, int episode /* = -1 */)
 {
   std::string thumbFile;
-  std::string file = item.GetPath();
+  std::string file{item.GetPath()};
 
   if (item.IsStack())
   {
-    std::string path, returnPath;
+    std::string path;
     URIUtils::GetParentPath(item.GetPath(), path);
     CFileItem item(CStackDirectory::GetFirstStackedFile(file), false);
-    const std::string TBNFile = GetTBNFile(item);
-    returnPath = URIUtils::AddFileToFolder(path, URIUtils::GetFileName(TBNFile));
+    const std::string TBNFile{GetTBNFile(item)};
+    const std::string returnPath{URIUtils::AddFileToFolder(path, URIUtils::GetFileName(TBNFile))};
     if (CFile::Exists(returnPath))
       return returnPath;
 
-    const std::string& stackPath = CStackDirectory::GetStackedTitlePath(file);
+    const std::string& stackPath{CStackDirectory::GetStackedTitlePath(file)};
     file = URIUtils::AddFileToFolder(path, URIUtils::GetFileName(stackPath));
   }
 
@@ -367,10 +372,14 @@ std::string GetTBNFile(const CFileItem& item)
 
   if (!file.empty())
   {
-    if (item.m_bIsFolder && !item.IsFileFolder())
-      thumbFile = file + ".tbn"; // folder, so just add ".tbn"
+    if (URIUtils::HasExtension(file))
+      URIUtils::RemoveExtension(file);
+
+    if (season >= 0 and episode >= 0)
+      thumbFile = fmt::format("{}-S{:02}E{:02}.tbn", file, season, episode);
     else
-      thumbFile = URIUtils::ReplaceExtension(file, ".tbn");
+      thumbFile = fmt::format("{}.tbn", file);
+
     url.SetFileName(thumbFile);
     thumbFile = url.Get();
   }
