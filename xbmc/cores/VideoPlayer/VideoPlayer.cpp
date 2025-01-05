@@ -317,6 +317,12 @@ public:
     const bool isLSameSubLang = g_LangCodeExpander.CompareISO639Codes(lh.language, m_subLang);
     const bool isRSameSubLang = g_LangCodeExpander.CompareISO639Codes(rh.language, m_subLang);
 
+    // "is included" is used to not consider forced and impaired
+    const bool isLincluded =
+        (lh.flags & FLAG_FORCED) == 0 && (lh.flags & FLAG_HEARING_IMPAIRED) == 0;
+    const bool isRincluded =
+        (rh.flags & FLAG_FORCED) == 0 && (rh.flags & FLAG_HEARING_IMPAIRED) == 0;
+
     if (m_isPrefHearingImp)
     {
       if (m_isPrefOriginal)
@@ -341,12 +347,6 @@ public:
 
     if (m_isPrefOriginal)
     {
-      // "is included" is used to not consider forced and impaired
-      const bool isLincluded =
-          (lh.flags & FLAG_FORCED) == 0 && (lh.flags & FLAG_HEARING_IMPAIRED) == 0;
-      const bool isRincluded =
-          (rh.flags & FLAG_FORCED) == 0 && (rh.flags & FLAG_HEARING_IMPAIRED) == 0;
-
       // try find original (default) in audio language
       const int checkFlags = FLAG_ORIGINAL | FLAG_DEFAULT;
       PREDICATE_RETURN(isLincluded && (lh.flags & checkFlags) == checkFlags && isLSameSubLang,
@@ -376,12 +376,6 @@ public:
       // dont return false here, allow you to fallback on regular sub
       // its just listitem pre-selection courtesy, in any case the sub will be not enabled
     }
-
-    // "is included" is used to not consider forced and impaired
-    const bool isLincluded =
-        (lh.flags & FLAG_FORCED) == 0 && (lh.flags & FLAG_HEARING_IMPAIRED) == 0;
-    const bool isRincluded =
-        (rh.flags & FLAG_FORCED) == 0 && (rh.flags & FLAG_HEARING_IMPAIRED) == 0;
 
     // try find regular (default)
     PREDICATE_RETURN(isLincluded && lh.flags & FLAG_DEFAULT && isLSameSubLang,
