@@ -390,10 +390,12 @@ public:
     PREDICATE_RETURN(isLincluded && isLSameSubLang, isRincluded && isRSameSubLang);
 
     // if all previous conditions do not match, allow fallback to "unknown" language
-    if (!m_isPrefForced && isLincluded && (lh.language.empty() || lh.language == "und"))
+    if (!m_isPrefForced)
     {
-      return true;
+      PREDICATE_RETURN(isLincluded && (lh.language.empty() || lh.language == "und"),
+                       isRincluded && (rh.language.empty() || rh.language == "und"));
     }
+
     return false;
   }
 };
