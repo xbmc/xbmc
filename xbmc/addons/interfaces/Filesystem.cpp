@@ -1144,20 +1144,20 @@ bool Interface_Filesystem::curl_add_option(
     return false;
   }
 
-  XFILE::CURLOPTIONTYPE internalType;
+  XFILE::CURLOptionType internalType;
   switch (type)
   {
     case ADDON_CURL_OPTION_OPTION:
-      internalType = XFILE::CURL_OPTION_OPTION;
+      internalType = XFILE::CURLOptionType::OPTION;
       break;
     case ADDON_CURL_OPTION_PROTOCOL:
-      internalType = XFILE::CURL_OPTION_PROTOCOL;
+      internalType = XFILE::CURLOptionType::PROTOCOL;
       break;
     case ADDON_CURL_OPTION_CREDENTIALS:
-      internalType = XFILE::CURL_OPTION_CREDENTIALS;
+      internalType = XFILE::CURLOptionType::CREDENTIALS;
       break;
     case ADDON_CURL_OPTION_HEADER:
-      internalType = XFILE::CURL_OPTION_HEADER;
+      internalType = XFILE::CURLOptionType::HEADER;
       break;
     default:
       throw std::logic_error("Interface_Filesystem::curl_add_option - invalid curl option type");

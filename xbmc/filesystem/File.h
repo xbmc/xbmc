@@ -41,7 +41,7 @@ public:
   ~CFile();
 
   bool CURLCreate(const std::string &url);
-  bool CURLAddOption(XFILE::CURLOPTIONTYPE type, const char* name, const char * value);
+  bool CURLAddOption(CURLOptionType type, const char* name, const char* value);
   bool CURLOpen(unsigned int flags);
 
   /**

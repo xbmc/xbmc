@@ -397,9 +397,9 @@ bool CMediaDrmCryptoSession::ProvisionRequest()
     return false;
   }
 
-  file.CURLAddOption(XFILE::CURL_OPTION_PROTOCOL, "Content-Type", "application/json");
-  file.CURLAddOption(XFILE::CURL_OPTION_PROTOCOL, "seekable", "0");
-  file.CURLAddOption(XFILE::CURL_OPTION_PROTOCOL, "postdata", encoded.c_str());
+  file.CURLAddOption(XFILE::CURLOptionType::PROTOCOL, "Content-Type", "application/json");
+  file.CURLAddOption(XFILE::CURLOptionType::PROTOCOL, "seekable", "0");
+  file.CURLAddOption(XFILE::CURLOptionType::PROTOCOL, "postdata", encoded.c_str());
 
   if (!file.CURLOpen(0))
   {
