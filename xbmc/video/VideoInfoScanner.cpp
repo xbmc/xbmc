@@ -81,8 +81,12 @@ CVideoInfoScanner::CVideoInfoScanner()
   m_ignoreVideoExtras = settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_IGNOREVIDEOEXTRAS);
 }
 
-  CVideoInfoScanner::~CVideoInfoScanner()
-  = default;
+CVideoInfoScanner::~CVideoInfoScanner()
+{
+  // Clear cache for all used scrapers
+  for (auto& [_, scraper] : m_scraperCache)
+    scraper->ClearCache();
+}
 
   void CVideoInfoScanner::Process()
   {
@@ -495,9 +499,6 @@ CVideoInfoScanner::CVideoInfoScanner()
         if (m_handle)
           m_handle->SetPercentage(i*100.f/items.Size());
       }
-
-      // clear our scraper cache
-      info2->ClearCache();
 
       InfoRet ret = InfoRet::CANCELLED;
       if (info2->Content() == CONTENT_TVSHOWS)
