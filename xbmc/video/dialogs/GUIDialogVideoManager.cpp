@@ -298,6 +298,10 @@ void CGUIDialogVideoManager::Remove()
 
   m_database.DeleteVideoAsset(m_selectedVideoAsset->GetVideoInfoTag()->m_iDbId);
 
+  // If a version of a bluray then remove the idFile as well
+  if (URIUtils::IsBlurayPath(m_selectedVideoAsset->GetDynPath()))
+    m_database.DeleteFile(m_selectedVideoAsset->GetVideoInfoTag()->m_iDbId);
+
   // refresh data and controls
   Refresh();
   RefreshSelectedVideoAsset();
@@ -481,7 +485,8 @@ void CGUIDialogVideoManager::RefreshSelectedVideoAsset()
     m_selectedVideoAsset = m_videoAssetsList->Get(0);
 }
 
-void CGUIDialogVideoManager::ChoosePlaylist(const std::shared_ptr<CFileItem>& item)
+void CGUIDialogVideoManager::ChoosePlaylist(const std::shared_ptr<CFileItem>& item,
+                                            bool replaceExistingFile /* = true */)
 {
   // Open database
   if (!m_database.IsOpen() && !m_database.Open())
@@ -492,6 +497,7 @@ void CGUIDialogVideoManager::ChoosePlaylist(const std::shared_ptr<CFileItem>& it
 
   // Select the playlist using the simple menu
   const std::string oldPath{item->GetDynPath()};
+  const int idMovie{m_database.GetMovieId(oldPath)};
 
   if (CGUIDialogSimpleMenu::GetOrShowPlaylistSelection(
           *item, PLAYLIST::ForcePlaylistSelection::FORCE_PLAYLIST_SELECTION,
@@ -500,15 +506,36 @@ void CGUIDialogVideoManager::ChoosePlaylist(const std::shared_ptr<CFileItem>& it
     if (oldPath != item->GetDynPath())
     {
       // Add playlist file as bluray://
+      bool videoDbSuccess{false};
       m_database.BeginTransaction();
-      if (m_database.SetFileForMedia(item->GetDynPath(), item->GetVideoContentType(),
-                                     m_database.GetMovieId(oldPath),
-                                     item->GetVideoInfoTag()->m_iFileId))
+      if (replaceExistingFile)
+        videoDbSuccess = m_database.SetFileForMedia(item->GetDynPath(), item->GetVideoContentType(),
+                                                    idMovie, item->GetVideoInfoTag()->m_iFileId);
+      else
+      {
+        // choose a video version for the video
+        const int idVideoVersion{ChooseVideoAsset(item, VideoAssetType::VERSION, "")};
+        if (idVideoVersion < 0)
+          return;
+
+        const int idFile{m_database.AddFile(item->GetDynPath())};
+        if (idFile > 0)
+        {
+          videoDbSuccess = true;
+          m_database.AddVideoVersion(item->GetVideoContentType(), idMovie, idFile, idVideoVersion,
+                                     VideoAssetType::VERSION);
+        }
+      }
+
+      if (videoDbSuccess)
         m_database.CommitTransaction();
       else
         m_database.RollbackTransaction();
 
+      // refresh data and controls
       Refresh();
+      UpdateControls();
+      m_hasUpdatedItems = true;
     }
   }
 }
