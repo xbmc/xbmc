@@ -7463,6 +7463,7 @@ msgstr ""
 #. Shown on context menu when a bluray:// or dvd:// playlist has already been saved
 #. Giving the user a chance to select a new one via the simple menu dialog
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
+#: addons/skin.estuary/xml/DialogVideoManager.xml
 msgctxt "#13424"
 msgid "Choose playlist"
 msgstr ""

@@ -3403,6 +3403,44 @@ bool CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
   return false;
 }
 
+std::vector<int> CVideoDatabase::GetPlaylistsByPath(const std::string& path)
+{
+  std::vector<int> playlists{};
+
+  try
+  {
+    if (nullptr == m_pDB)
+      return playlists;
+    if (nullptr == m_pDS)
+      return playlists;
+
+    const std::string strSQL{PrepareSQL("SELECT files.strFileName FROM path INNER JOIN files ON "
+                                        "path.idPath=files.idPath WHERE path.strPath='%s'",
+                                        path.c_str())};
+    m_pDS->query(strSQL);
+
+    while (!m_pDS->eof())
+    {
+      std::string filename = m_pDS->fv("files.strFilename").get_asString();
+      if (StringUtils::EqualsNoCase(URIUtils::GetExtension(filename), ".mpls"))
+      {
+        filename.erase(filename.find_last_of('.')); // remove extension
+        const int playlist{stoi(filename)};
+        playlists.emplace_back(playlist);
+      }
+      m_pDS->next();
+    }
+    m_pDS->close();
+
+    return playlists;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "failed - path {}", path);
+  }
+  return std::vector<int>{}; // empty
+}
+
 //********************************************************************************************************************************
 void CVideoDatabase::GetFilePathById(int idMovie, std::string& filePath, VideoDbContentType iType)
 {
