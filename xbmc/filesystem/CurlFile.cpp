@@ -44,9 +44,13 @@ using namespace std::chrono_literals;
 
 #define FITS_INT(a) (((a) <= INT_MAX) && ((a) >= INT_MIN))
 
-curl_proxytype proxyType2CUrlProxyType[] = {
-    CURLPROXY_HTTP,   CURLPROXY_SOCKS4,          CURLPROXY_SOCKS4A,
-    CURLPROXY_SOCKS5, CURLPROXY_SOCKS5_HOSTNAME, CURLPROXY_HTTPS,
+static const auto proxyType2CUrlProxyType = std::unordered_map<XFILE::CCurlFile::ProxyType, int>{
+    {CCurlFile::ProxyType::HTTP, CURLPROXY_HTTP},
+    {CCurlFile::ProxyType::SOCKS4, CURLPROXY_SOCKS4},
+    {CCurlFile::ProxyType::SOCKS4A, CURLPROXY_SOCKS4A},
+    {CCurlFile::ProxyType::SOCKS5, CURLPROXY_SOCKS5},
+    {CCurlFile::ProxyType::SOCKS5_REMOTE, CURLPROXY_SOCKS5_HOSTNAME},
+    {CCurlFile::ProxyType::HTTPS, CURLPROXY_HTTPS},
 };
 
 #define FILLBUFFER_OK         0
@@ -624,7 +628,7 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
 
   if (!m_proxyhost.empty())
   {
-    g_curlInterface.easy_setopt(h, CURLOPT_PROXYTYPE, proxyType2CUrlProxyType[m_proxytype]);
+    g_curlInterface.easy_setopt(h, CURLOPT_PROXYTYPE, proxyType2CUrlProxyType.at(m_proxytype));
 
     const std::string hostport = m_proxyhost + StringUtils::Format(":{}", m_proxyport);
     g_curlInterface.easy_setopt(h, CURLOPT_PROXY, hostport.c_str());
@@ -848,7 +852,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
       m_proxyuser = s->GetString(CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME);
       m_proxypassword = s->GetString(CSettings::SETTING_NETWORK_HTTPPROXYPASSWORD);
       CLog::LogFC(LOGDEBUG, LOGCURL, "<{}> Using proxy {}, type {}", url2.GetRedacted(),
-                  m_proxyhost, proxyType2CUrlProxyType[m_proxytype]);
+                  m_proxyhost, proxyType2CUrlProxyType.at(m_proxytype));
     }
 
     // get username and password
@@ -1048,19 +1052,19 @@ void CCurlFile::Reset()
 void CCurlFile::SetProxy(const std::string &type, const std::string &host,
   uint16_t port, const std::string &user, const std::string &password)
 {
-  m_proxytype = CCurlFile::PROXY_HTTP;
+  m_proxytype = CCurlFile::ProxyType::HTTP;
   if (type == "http")
-    m_proxytype = CCurlFile::PROXY_HTTP;
+    m_proxytype = CCurlFile::ProxyType::HTTP;
   else if (type == "https")
-    m_proxytype = CCurlFile::PROXY_HTTPS;
+    m_proxytype = CCurlFile::ProxyType::HTTPS;
   else if (type == "socks4")
-    m_proxytype = CCurlFile::PROXY_SOCKS4;
+    m_proxytype = CCurlFile::ProxyType::SOCKS4;
   else if (type == "socks4a")
-    m_proxytype = CCurlFile::PROXY_SOCKS4A;
+    m_proxytype = CCurlFile::ProxyType::SOCKS4A;
   else if (type == "socks5")
-    m_proxytype = CCurlFile::PROXY_SOCKS5;
+    m_proxytype = CCurlFile::ProxyType::SOCKS5;
   else if (type == "socks5-remote")
-    m_proxytype = CCurlFile::PROXY_SOCKS5_REMOTE;
+    m_proxytype = CCurlFile::ProxyType::SOCKS5_REMOTE;
   else
     CLog::Log(LOGERROR, "CCurFile::{} - <{}> Invalid proxy type \"{}\"", __FUNCTION__,
               CURL::GetRedacted(m_url), type);
