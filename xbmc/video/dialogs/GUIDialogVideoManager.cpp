@@ -13,8 +13,10 @@
 #include "GUIUserMessages.h"
 #include "MediaSource.h"
 #include "ServiceBroker.h"
+#include "URL.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
+#include "dialogs/GUIDialogSimpleMenu.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
@@ -477,4 +479,36 @@ void CGUIDialogVideoManager::RefreshSelectedVideoAsset()
 
   if (it == m_videoAssetsList->cend())
     m_selectedVideoAsset = m_videoAssetsList->Get(0);
+}
+
+void CGUIDialogVideoManager::ChoosePlaylist(const std::shared_ptr<CFileItem>& item)
+{
+  // Open database
+  if (!m_database.IsOpen() && !m_database.Open())
+  {
+    CLog::LogF(LOGERROR, "Failed to open video database!");
+    return;
+  }
+
+  // Select the playlist using the simple menu
+  const std::string oldPath{item->GetDynPath()};
+
+  if (CGUIDialogSimpleMenu::GetOrShowPlaylistSelection(
+          *item, PLAYLIST::ForcePlaylistSelection::FORCE_PLAYLIST_SELECTION,
+          PLAYLIST::ExcludeUsedPlaylists::EXCLUDE_USED_PLAYLISTS))
+  {
+    if (oldPath != item->GetDynPath())
+    {
+      // Add playlist file as bluray://
+      m_database.BeginTransaction();
+      if (m_database.SetFileForMedia(item->GetDynPath(), item->GetVideoContentType(),
+                                     m_database.GetMovieId(oldPath),
+                                     item->GetVideoInfoTag()->m_iFileId))
+        m_database.CommitTransaction();
+      else
+        m_database.RollbackTransaction();
+
+      Refresh();
+    }
+  }
 }

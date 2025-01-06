@@ -37,6 +37,7 @@
 static constexpr unsigned int CONTROL_BUTTON_ADD_VERSION = 22;
 static constexpr unsigned int CONTROL_BUTTON_RENAME_VERSION = 24;
 static constexpr unsigned int CONTROL_BUTTON_SET_DEFAULT = 25;
+static constexpr unsigned int CONTROL_BUTTON_CHOOSE_PLAYLIST = 29;
 
 CGUIDialogVideoManagerVersions::CGUIDialogVideoManagerVersions()
   : CGUIDialogVideoManager(WINDOW_DIALOG_MANAGE_VIDEO_VERSIONS),
@@ -73,6 +74,10 @@ bool CGUIDialogVideoManagerVersions::OnMessage(CGUIMessage& message)
       else if (control == CONTROL_BUTTON_SET_DEFAULT)
       {
         SetDefault();
+      }
+      else if (control == CONTROL_BUTTON_CHOOSE_PLAYLIST)
+      {
+        ChoosePlaylist(m_selectedVideoAsset);
       }
       break;
     }
@@ -117,6 +122,11 @@ void CGUIDialogVideoManagerVersions::UpdateButtons()
   {
     CONTROL_ENABLE(CONTROL_BUTTON_RENAME_VERSION);
   }
+
+  if (m_selectedVideoAsset->IsBluray())
+    CONTROL_ENABLE(CONTROL_BUTTON_CHOOSE_PLAYLIST);
+  else
+    CONTROL_DISABLE(CONTROL_BUTTON_CHOOSE_PLAYLIST);
 }
 
 void CGUIDialogVideoManagerVersions::UpdateDefaultVideoVersionSelection()
