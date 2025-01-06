@@ -10,18 +10,18 @@
 
 #include "filesystem/OverrideFile.h"
 
-namespace XFILE
+using namespace XFILE;
+
+class CBlurayFile : public COverrideFile
 {
+public:
+  CBlurayFile();
+  ~CBlurayFile() override;
 
-  class CBlurayFile : public COverrideFile
-  {
-  public:
-    CBlurayFile();
-    ~CBlurayFile() override;
+  static std::string GetBasePath(const CURL& url);
 
-    bool Exists(const CURL& url) override;
+  bool Exists(const CURL& url) override;
 
-  protected:
-    std::string TranslatePath(const CURL& url) override;
-  };
-}
+protected:
+  std::string TranslatePath(const CURL& url) override;
+};

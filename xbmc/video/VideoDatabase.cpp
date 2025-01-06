@@ -4078,7 +4078,7 @@ std::string CVideoDatabase::GetFileBasePathById(int idFile)
 
     if (!m_pDS->eof())
     {
-      return m_pDS->fv("strPath").get_asString();
+      return URIUtils::GetBasePath(m_pDS->fv("strPath").get_asString());
     }
     m_pDS->close();
   }
