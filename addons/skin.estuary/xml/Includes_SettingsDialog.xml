@@ -14,14 +14,14 @@
 		<control type="button" id="22105">
 			<include>DialogSettingButton</include>
 			<label>$LOCALIZE[31112]</label>
-			<label2>[B]$VAR[ActiveVideoPlayerAudioLanguage]$VAR[VideoPlayerAudioCodecVar, - ]$VAR[VideoPlayerAudioChannelsVar, ][/B]</label2>
+			<label2>[B]$VAR[ActiveVideoPlayerAudioLanguage]$VAR[AudioCodecVar, - ]$VAR[AudioChannelsVar, ][/B]</label2>
 			<onclick>DialogSelectAudio</onclick>
 			<enable>Integer.IsGreater(VideoPlayer.AudioStreamCount,1)</enable>
 		</control>
 		<control type="button" id="22110">
 			<include>DialogSettingButton</include>
 			<label>$LOCALIZE[31109]</label>
-			<label2>[B]$INFO[VideoPlayer.VideoCodec]$INFO[Player.Process(videowidth), - ]$INFO[Player.Process(videoheight),x]$INFO[Player.Process(videoscantype)][/B]</label2>
+			<label2>[B]$INFO[VideoCodecVar]$INFO[Player.Process(videowidth), - ]$INFO[Player.Process(videoheight),x]$INFO[Player.Process(videoscantype)][/B]</label2>
 			<onclick>DialogSelectVideo</onclick>
 			<enable>Integer.IsGreater(VideoPlayer.VideoStreamCount,1)</enable>
 		</control>
