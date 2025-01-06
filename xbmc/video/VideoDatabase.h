@@ -1116,6 +1116,11 @@ public:
                              int dbIdTarget,
                              int idVideoVersion,
                              VideoAssetType assetType);
+  bool AddVideoVersion(VideoDbContentType itemType,
+                       int dbIdSource,
+                       int idFile,
+                       int idVideoVersion,
+                       VideoAssetType assetType);
   void SetDefaultVideoVersion(VideoDbContentType itemType, int dbId, int idFile);
   void SetVideoVersion(int idFile, int idVideoVersion);
   int AddVideoVersionType(const std::string& typeVideoVersion,
