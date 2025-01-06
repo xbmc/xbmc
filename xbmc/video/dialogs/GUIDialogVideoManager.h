@@ -59,6 +59,8 @@ protected:
   void AppendItemFolderToFileBrowserSources(std::vector<CMediaSource>& sources);
   void RefreshSelectedVideoAsset();
 
+  void ChoosePlaylist(const std::shared_ptr<CFileItem>& item);
+
   CVideoDatabase m_database;
   std::shared_ptr<CFileItem> m_videoAsset;
   std::unique_ptr<CFileItemList> m_videoAssetsList;
