@@ -584,6 +584,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_iIdShow;
     ar << m_dateAdded.GetAsDBDateTime();
     ar << m_type;
+    ar << m_relevance;
     ar << m_iIdSeason;
     ar << m_coverArt.size();
     for (auto& it : m_coverArt)
@@ -712,6 +713,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> dateAdded;
     m_dateAdded.SetFromDBDateTime(dateAdded);
     ar >> m_type;
+    ar >> m_relevance;
     ar >> m_iIdSeason;
     size_t size;
     ar >> size;
