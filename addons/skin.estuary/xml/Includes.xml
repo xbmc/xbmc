@@ -21,23 +21,8 @@
 	<include file="View_501_Banner.xml" />
 	<include file="View_502_FanArt.xml" />
 	<include file="Variables.xml" />
-	<constant name="DepthDialog">0.50</constant>
-	<constant name="DepthDialog+">0.52</constant>
-	<constant name="DepthDialog-">0.48</constant>
-	<constant name="DepthMax">0.54</constant>
-	<constant name="DepthOSD">0.40</constant>
-	<constant name="DepthOSD+">0.44</constant>
-	<constant name="DepthContentPopout">0.10</constant>
-	<constant name="DepthContentPanel">0.05</constant>
-	<constant name="DepthBars">0.12</constant>
-	<constant name="DepthBackground">-0.80</constant>
-	<constant name="DepthSideBlade">0.10</constant>
-	<constant name="bg_alpha">79</constant>
-	<constant name="dialogbuttons_itemgap">-20</constant>
-	<constant name="list_bottom">0</constant>
-	<constant name="list_bottom_offset">80</constant>
-	<constant name="list_top_offset">100</constant>
-	<constant name="list_item_height">75</constant>
+	<include condition="Integer.IsLessOrEqual(System.ScreenHeight,720)" file="Constants_720.xml" />
+	<include condition="Integer.IsGreater(System.ScreenHeight,720)" file="Constants_1080.xml" />
 	<expression name="infodialog_active">Window.IsActive(musicinformation) | Window.IsActive(songinformation) | Window.IsActive(movieinformation) | Window.IsActive(addoninformation) | Window.IsActive(pvrguideinfo) | Window.IsActive(pvrrecordinginfo) | Window.IsActive(pictureinfo) | Window.IsVisible(script-embuary-video.xml) | Window.IsVisible(script-embuary-person.xml) | Window.IsVisible(script-embuary-image.xml)</expression>
 	<expression name="sidebar_visible">ControlGroup(9000).HasFocus | Control.HasFocus(6130) | Control.HasFocus(6131)</expression>
 	<expression name="object_audio_true">[String.Contains(ListItem.AudioCodec,atmos) | String.Contains(ListItem.AudioCodec,dtshd_ma_x)] | [Window.IsActive(fullscreenvideo) + [String.Contains(VideoPlayer.AudioCodec,atmos) | String.Contains(VideoPlayer.AudioCodec,dtshd_ma_x)]] | [Window.IsActive(visualisation) + [String.Contains(MusicPlayer.AudioCodec,atmos) | String.Contains(MusicPlayer.AudioCodec,dtshd_ma_x)]]</expression>
@@ -348,8 +333,8 @@
 				<aligny>center</aligny>
 				<font>font_flag</font>
 				<label>$PARAM[flag_label]</label>
-				<texturefocus border="2" infill="false" colordiffuse="white">$PARAM[texture]</texturefocus>
-				<texturenofocus border="2" infill="false" colordiffuse="white">$PARAM[texture]</texturenofocus>
+				<texturefocus border="MediaFlagBorder" infill="false" colordiffuse="white">$PARAM[texture]</texturefocus>
+				<texturenofocus border="MediaFlagBorder" infill="false" colordiffuse="white">$PARAM[texture]</texturenofocus>
 				<visible>$PARAM[flag_visible]</visible>
 			</control>
 		</definition>
