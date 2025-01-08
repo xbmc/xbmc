@@ -57,6 +57,7 @@ public:
   bool Open() override;
   void Close() override;
   int Read(uint8_t* buf, int buf_size) override;
+  int ReadBlocks(uint8_t* buf, int lba, int num_blocks);
   int64_t Seek(int64_t offset, int whence) override;
   void Abort() override;
   bool IsEOF() override;
@@ -189,4 +190,7 @@ protected:
 
     /*! Bluray state serializer handler */
     CBlurayStateSerializer m_blurayStateSerializer;
+
+    /* used during bd_open_stream read block*/
+    CCriticalSection m_readBlocksLock;
 };
