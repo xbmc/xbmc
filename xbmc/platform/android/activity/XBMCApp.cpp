@@ -1036,11 +1036,7 @@ bool CXBMCApp::StartActivity(const std::string& package,
     // decoded path or null if this is not a hierarchical URI
     const std::string pathname = jniURI.getPath();
 
-    // path to shared/external storage volume
-    std::string extpath;
-
-    if (!pathname.empty() && CAndroidStorageProvider::GetExternalStorage(extpath) &&
-        !extpath.empty() && StringUtils::StartsWith(pathname, extpath))
+    if (!pathname.empty() && StringUtils::StartsWith(pathname, "/storage/"))
     {
       // generate a content URI
       jniURI = CJNIFileProvider::getUriForFile(CXBMCApp::Get(), "org.xbmc.kodi.fileprovider",
