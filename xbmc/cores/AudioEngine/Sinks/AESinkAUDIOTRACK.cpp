@@ -970,6 +970,9 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
   if (forceBlock)
   {
     // Sink consumes too fast - block the frames minus they needed to add
+    // update time to add, so that above else case won't make us sleep twice the amount for the
+    // superviseaudiodelay use-case.
+    time_to_add_ms = 1000.0 * (CurrentHostCounter() - startTime) / CurrentHostFrequency();
     double extra_sleep_ms = (1000.0 * frames / m_format.m_sampleRate) - time_to_add_ms;
     if (extra_sleep_ms > 0.0)
     {
