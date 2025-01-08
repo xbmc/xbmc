@@ -955,9 +955,24 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
       }
     }
   }
+  else
+  {
+    // waiting should only be done if sink is not run dry
+    double period_time = m_format.m_frames / static_cast<double>(m_sink_sampleRate);
+    if (m_delay >= (m_audiotrackbuffer_sec - period_time))
+    {
+      double time_should_ms = 1000.0 * written_frames / m_format.m_sampleRate;
+      double time_off = time_should_ms - time_to_add_ms;
+      if (time_off > 0)
+        usleep(time_off * 500); // sleep half the error on average away
+    }
+  }
   if (forceBlock)
   {
     // Sink consumes too fast - block the frames minus they needed to add
+    // update time to add, so that above else case won't make us sleep twice the amount for the
+    // superviseaudiodelay use-case.
+    time_to_add_ms = 1000.0 * (CurrentHostCounter() - startTime) / CurrentHostFrequency();
     double extra_sleep_ms = (1000.0 * frames / m_format.m_sampleRate) - time_to_add_ms;
     if (extra_sleep_ms > 0.0)
     {
