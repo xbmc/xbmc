@@ -391,7 +391,7 @@ bool CFile::ShouldUseStreamBuffer(const CURL& url)
   if (m_flags & READ_NO_BUFFER)
     return false;
 
-  if (m_flags & READ_AUDIO_VIDEO)
+  if (m_flags & READ_AUDIO_VIDEO || m_pFile->GetChunkSize() > 0)
     return true;
 
   // file size > 200 MB but not in optical disk
