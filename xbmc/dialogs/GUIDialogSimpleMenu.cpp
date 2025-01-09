@@ -104,7 +104,10 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(
       if (item_new->m_bIsFolder == false)
       {
         item.SetDynPath(item_new->GetDynPath());
-        item.SetProperty("get_stream_details_from_player", true);
+        item.GetVideoInfoTag()->m_streamDetails =
+            item_new->GetVideoInfoTag()
+                ->m_streamDetails; // Basic stream details from BLURAY_TITLE INFO
+        item.SetProperty("get_stream_details_from_player", true); // Overwrite when played
         item.SetProperty("original_listitem_url", originalDynPath);
         return true;
       }
