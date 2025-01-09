@@ -56,6 +56,10 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
   std::string author;
   std::string album;
 
+  const int end_time_m4b_file =
+      m_fctx->streams[0]->duration * av_q2d(m_fctx->streams[0]->time_base);
+  const int end_time_mka_file = m_fctx->duration * av_q2d(av_get_time_base_q());
+
   AVDictionaryEntry* tag=nullptr;
   while ((tag = av_dict_get(m_fctx->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)))
   {
@@ -108,7 +112,6 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
                                                        av_q2d(m_fctx->chapters[i]->time_base)));
     item->SetEndOffset(CUtil::ConvertSecsToMilliSecs(m_fctx->chapters[i]->end *
                                                      av_q2d(m_fctx->chapters[i]->time_base)));
-    int compare = m_fctx->streams[0]->duration * av_q2d(m_fctx->streams[0]->time_base);
     if (item->GetEndOffset() < 0 ||
         item->GetEndOffset() > CUtil::ConvertMilliSecsToSecs(m_fctx->duration))
     {
@@ -117,9 +120,9 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
             m_fctx->chapters[i + 1]->start * av_q2d(m_fctx->chapters[i + 1]->time_base)));
       else
       {
-        item->SetEndOffset(m_fctx->duration); // mka file
+        item->SetEndOffset(CUtil::ConvertSecsToMilliSecs(end_time_mka_file)); // mka file
         if (item->GetEndOffset() < 0)
-          item->SetEndOffset(CUtil::ConvertSecsToMilliSecs(compare)); // m4b file
+          item->SetEndOffset(CUtil::ConvertSecsToMilliSecs(end_time_m4b_file)); // m4b file
       }
     }
     item->GetMusicInfoTag()->SetDuration(
