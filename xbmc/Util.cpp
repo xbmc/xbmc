@@ -72,14 +72,11 @@
 #include "settings/SettingsComponent.h"
 #include "utils/Digest.h"
 #include "utils/FileExtensionProvider.h"
-#include "utils/FontUtils.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
-#include "utils/TimeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
-#include "video/VideoInfoTag.h"
 #ifdef HAVE_LIBCAP
   #include <sys/capability.h>
 #endif
