@@ -38,7 +38,7 @@ namespace MUSIC_INFO
      * Reads a block of size \a length at the current get pointer.
      */
 #if (TAGLIB_MAJOR_VERSION >= 2)
-    TagLib::ByteVector readBlock(unsigned long length) override;
+    TagLib::ByteVector readBlock(size_t length) override;
 #else
     TagLib::ByteVector readBlock(TagLib::ulong length) override;
 #endif
@@ -99,7 +99,11 @@ namespace MUSIC_INFO
      *
      * \see Position
      */
+#if (TAGLIB_MAJOR_VERSION >= 2)
+    void seek(TagLib::offset_t offset, TagLib::IOStream::Position p = Beginning) override;
+#else
     void seek(long offset, TagLib::IOStream::Position p = Beginning) override;
+#endif
 
     /*!
      * Reset the end-of-file and error flags on the file.
@@ -109,17 +113,29 @@ namespace MUSIC_INFO
     /*!
      * Returns the current offset within the file.
      */
+#if (TAGLIB_MAJOR_VERSION >= 2)
+    TagLib::offset_t tell() const override;
+#else
     long tell() const override;
+#endif
 
     /*!
      * Returns the length of the file.
      */
+#if (TAGLIB_MAJOR_VERSION >= 2)
+    TagLib::offset_t length() override;
+#else
     long length() override;
+#endif
 
     /*!
      * Truncates the file to a \a length.
      */
+#if (TAGLIB_MAJOR_VERSION >= 2)
+    void truncate(TagLib::offset_t length) override;
+#else
     void truncate(long length) override;
+#endif
 
   protected:
     /*!

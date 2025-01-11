@@ -9,7 +9,7 @@
 
 #include "filesystem/File.h"
 
-#include <limits.h>
+#include <limits>
 
 #include <taglib/taglib.h>
 #include <taglib/tiostream.h>
@@ -59,7 +59,7 @@ FileName TagLibVFSStream::name() const
  * Reads a block of size \a length at the current get pointer.
  */
 #if (TAGLIB_MAJOR_VERSION >= 2)
-ByteVector TagLibVFSStream::readBlock(unsigned long length)
+ByteVector TagLibVFSStream::readBlock(size_t length)
 #else
 ByteVector TagLibVFSStream::readBlock(TagLib::ulong length)
 #endif
@@ -282,7 +282,11 @@ bool TagLibVFSStream::isOpen() const
  *
  * \see Position
  */
+#if (TAGLIB_MAJOR_VERSION >= 2)
+void TagLibVFSStream::seek(TagLib::offset_t offset, Position p)
+#else
 void TagLibVFSStream::seek(long offset, Position p)
+#endif
 {
   const long fileLen = length();
   if (m_bIsReadOnly && fileLen > 0)
@@ -340,27 +344,49 @@ void TagLibVFSStream::clear()
 /*!
  * Returns the current offset within the file.
  */
+#if (TAGLIB_MAJOR_VERSION >= 2)
+TagLib::offset_t TagLibVFSStream::tell() const
+{
+  int64_t pos = m_file.GetPosition();
+  if (pos > std::numeric_limits<TagLib::offset_t>::max())
+    return -1;
+  else
+    return static_cast<TagLib::offset_t>(pos);
+}
+#else
 long TagLibVFSStream::tell() const
 {
   int64_t pos = m_file.GetPosition();
-  if(pos > LONG_MAX)
+  if (pos > std::numeric_limits<long>::max())
     return -1;
   else
-    return (long)pos;
+    return static_cast<long>(pos);
 }
+#endif
 
 /*!
  * Returns the length of the file.
  */
+#if (TAGLIB_MAJOR_VERSION >= 2)
+TagLib::offset_t TagLibVFSStream::length()
+{
+  return static_cast<TagLib::offset_t>(m_file.GetLength());
+}
+#else
 long TagLibVFSStream::length()
 {
-  return (long)m_file.GetLength();
+  return static_cast<long>(m_file.GetLength());
 }
+#endif
 
 /*!
  * Truncates the file to a \a length.
  */
+#if (TAGLIB_MAJOR_VERSION >= 2)
+void TagLibVFSStream::truncate(TagLib::offset_t length)
+#else
 void TagLibVFSStream::truncate(long length)
+#endif
 {
   m_file.Truncate(length);
 }
