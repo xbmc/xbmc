@@ -26,6 +26,7 @@ public:
   bool ProcessAction(Action action);
 
   void SetChoosePlayer() { m_choosePlayer = true; }
+  void SetChooseStackPart() { m_chooseStackPart = true; }
 
   bool UserCancelled() const { return m_userCancelled; }
 
@@ -43,8 +44,15 @@ protected:
   std::shared_ptr<CFileItem> m_item;
   bool m_userCancelled{false};
   bool m_choosePlayer{false};
+  bool m_chooseStackPart{false};
+  unsigned int m_chosenStackPart{0};
 
 private:
   CVideoPlayActionProcessor() = delete;
+  unsigned int ChooseStackPart() const;
+  Action ChoosePlayOrResume() const;
+  static Action ChoosePlayOrResume(const std::string& resumeString);
+  void SetResumeData();
+  void SetStartData();
 };
 } // namespace KODI::VIDEO::GUILIB

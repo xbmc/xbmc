@@ -10,6 +10,7 @@
 
 #include <memory>
 #include <string>
+#include <tuple>
 
 class CFileItem;
 
@@ -43,6 +44,29 @@ bool IsAutoPlayNextItem(const CFileItem& item);
   */
 bool IsAutoPlayNextItem(const std::string& content);
 
+/*!
+ \brief Get the resume offset and part number for the given stack item.
+ \param item The stack item to retrieve the offset for
+ \return The offset or -1 if not found and the part number or 0 if not available
+ */
+std::tuple<int64_t, unsigned int> GetStackResumeOffsetAndPartNumber(const CFileItem& item);
+
+/*!
+ \brief Get the resume offset for a part of a stack item.
+ \param item The stack item to retrieve the offset for
+ \param partNumber The number of the part (1-based)
+ \return The offset or -1 if not found
+ */
+int64_t GetStackPartResumeOffset(const CFileItem& item, unsigned int partNumber);
+
+/*!
+ \brief Get the start offset for a part of a stack item.
+ \param item The stack item to retrieve the offset for
+ \param partNumber The number of the part (1-based)
+ \return The offset or -1 if not found
+ */
+int64_t GetStackPartStartOffset(const CFileItem& item, unsigned int partNumber);
+
 struct ResumeInformation
 {
   bool isResumable{false}; // the playback of the item can be resumed
@@ -56,14 +80,6 @@ struct ResumeInformation
  \return The resume information.
  */
 ResumeInformation GetItemResumeInformation(const CFileItem& item);
-
-/*!
- \brief Get resume information for a part of a stack item.
- \param item The stack item to retrieve information for
- \param partNumber The number of the part
- \return The resume information.
- */
-ResumeInformation GetStackPartResumeInformation(const CFileItem& item, unsigned int partNumber);
 
 /*!
  \brief For a given non-library folder containing video files, load info from the video database.

@@ -20,7 +20,7 @@ enum Action
   ACTION_INFO = 3,
   // 4 unused
   ACTION_PLAY_FROM_BEGINNING = 5, // play from beginning, also if resume would be possible
-  ACTION_PLAYPART = 6,
+  // 6 unused
   ACTION_QUEUE = 7,
 };
 } // namespace KODI::VIDEO::GUILIB

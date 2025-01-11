@@ -50,12 +50,6 @@ public:
    */
   static bool ExecutePlayMediaAskResume(const std::shared_ptr<CFileItem>& item);
 
-  /*! \brief Execute "PlayMedia" for the given item and given part (for multipart-media).
-   \param item The item asociated with the action to execute
-   \return True on success, false otherwise
-   */
-  static bool ExecutePlayMediaPart(const std::shared_ptr<CFileItem>& item, unsigned int part);
-
   /*! \brief Execute "QueueMedia" for the given item.
    \param item The item asociated with the action to execute
    \return True on success, false otherwise

@@ -10,18 +10,10 @@
 
 #include "ContextMenuManager.h"
 #include "FileItem.h"
-#include "FileItemList.h"
 #include "ServiceBroker.h"
-#include "dialogs/GUIDialogSelect.h"
-#include "filesystem/Directory.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#include "utils/guilib/GUIBuiltinsUtils.h"
 #include "utils/guilib/GUIContentUtils.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/guilib/VideoGUIUtils.h"
@@ -50,15 +42,6 @@ bool CVideoSelectActionProcessor::Process(Action action)
     case ACTION_CHOOSE:
       return OnChooseSelected();
 
-    case ACTION_PLAYPART:
-    {
-      const unsigned int part = ChooseStackItemPartNumber();
-      if (part < 1) // part numbers are 1-based
-        return false;
-
-      return OnPlayPartSelected(part);
-    }
-
     case ACTION_QUEUE:
       return OnQueueSelected();
 
@@ -81,13 +64,6 @@ bool CVideoSelectActionProcessor::Process(Action action)
   return false; // We did not handle the action.
 }
 
-bool CVideoSelectActionProcessor::OnPlayPartSelected(unsigned int part)
-{
-  //! @todo implement different (not using builtins function)
-  KODI::UTILS::GUILIB::CGUIBuiltinsUtils::ExecutePlayMediaPart(m_item, part);
-  return true;
-}
-
 bool CVideoSelectActionProcessor::OnQueueSelected()
 {
   VIDEO::UTILS::QueueItem(m_item, VIDEO::UTILS::QueuePosition::POSITION_END);
@@ -103,29 +79,6 @@ bool CVideoSelectActionProcessor::OnChooseSelected()
 {
   CONTEXTMENU::ShowFor(m_item, CContextMenuManager::MAIN);
   return true;
-}
-
-unsigned int CVideoSelectActionProcessor::ChooseStackItemPartNumber() const
-{
-  CFileItemList parts;
-  XFILE::CDirectory::GetDirectory(m_item->GetDynPath(), parts, "", XFILE::DIR_FLAG_DEFAULTS);
-
-  for (int i = 0; i < parts.Size(); ++i)
-    parts[i]->SetLabel(StringUtils::Format(g_localizeStrings.Get(23051), i + 1)); // Part #
-
-  CGUIDialogSelect* dialog =
-      CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
-          WINDOW_DIALOG_SELECT);
-
-  dialog->Reset();
-  dialog->SetHeading(CVariant{20324}); // Play part...
-  dialog->SetItems(parts);
-  dialog->Open();
-
-  if (!dialog->IsConfirmed())
-    return 0; // User cancelled the dialog.
-
-  return dialog->GetSelectedItem() + 1; // part numbers are 1-based
 }
 
 } // namespace KODI::VIDEO::GUILIB

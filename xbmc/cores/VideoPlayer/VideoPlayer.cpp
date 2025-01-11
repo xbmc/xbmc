@@ -2680,6 +2680,7 @@ void CVideoPlayer::OnExit()
   }
   bookmark.player = m_name;
   bookmark.playerState = GetPlayerState();
+  bookmark.partNumber = fileItem.m_lStartPartNumber;
   m_outboundEvents->Submit([=]() {
     cb->OnPlayerCloseFile(fileItem, bookmark);
   });
@@ -2743,6 +2744,7 @@ void CVideoPlayer::HandleMessages()
       }
       bookmark.player = m_name;
       bookmark.playerState = GetPlayerState();
+      bookmark.partNumber = fileItem.m_lStartPartNumber;
       m_outboundEvents->Submit([=]() {
         cb->OnPlayerCloseFile(fileItem, bookmark);
       });
