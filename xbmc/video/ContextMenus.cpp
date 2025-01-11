@@ -20,6 +20,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/PlayerUtils.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
@@ -96,10 +97,21 @@ bool CVideoMarkWatched::IsVisible(const CFileItem& item) const
   if (item.m_bIsFolder && item.IsPlugin()) // we cannot manage plugin folder's watched state
     return false;
 
-  if (item.m_bIsFolder) // Only allow video db content, video and recording folders to be updated recursively
+  if (item.m_bIsFolder)
   {
-    if (item.HasVideoInfoTag())
-      return VIDEO::IsVideoDb(item);
+    if (item.HasProperty("watchedepisodes") && item.HasProperty("totalepisodes"))
+    {
+      return item.GetProperty("watchedepisodes").asInteger() <
+             item.GetProperty("totalepisodes").asInteger();
+    }
+    else if (item.HasProperty("watched") && item.HasProperty("total"))
+    {
+      return item.GetProperty("watched").asInteger() < item.GetProperty("total").asInteger();
+    }
+    else if (VIDEO::IsVideoDb(item))
+      return true;
+    else if (StringUtils::StartsWithNoCase(item.GetPath(), "library://video/"))
+      return true;
     else if (item.GetProperty("IsVideoFolder").asBoolean())
       return true;
     else
@@ -125,10 +137,20 @@ bool CVideoMarkUnWatched::IsVisible(const CFileItem& item) const
   if (item.m_bIsFolder && item.IsPlugin()) // we cannot manage plugin folder's watched state
     return false;
 
-  if (item.m_bIsFolder) // Only allow video db content, video and recording folders to be updated recursively
+  if (item.m_bIsFolder)
   {
-    if (item.HasVideoInfoTag())
-      return VIDEO::IsVideoDb(item);
+    if (item.HasProperty("watchedepisodes"))
+    {
+      return item.GetProperty("watchedepisodes").asInteger() > 0;
+    }
+    else if (item.HasProperty("watched"))
+    {
+      return item.GetProperty("watched").asInteger() > 0;
+    }
+    else if (VIDEO::IsVideoDb(item))
+      return true;
+    else if (StringUtils::StartsWithNoCase(item.GetPath(), "library://video/"))
+      return true;
     else if (item.GetProperty("IsVideoFolder").asBoolean())
       return true;
     else
