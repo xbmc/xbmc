@@ -8,10 +8,13 @@
 #pragma once
 
 #include "IFileDirectory.h"
+#include "music/tags/MusicInfoTag.h"
+
+#include <memory>
+
 extern "C" {
 #include <libavformat/avformat.h>
 }
-
 namespace XFILE
 {
   class CAudioBookFileDirectory : public IFileDirectory
@@ -24,6 +27,9 @@ namespace XFILE
       bool IsAllowed(const CURL& url) const override { return true; }
 
     protected:
+      void AddCommaDelimitedString(const std::vector<std::string>& data,
+                                   const std::vector<std::string>& separators,
+                                   MUSIC_INFO::CMusicInfoTag& musictag);
       AVIOContext* m_ioctx = nullptr;
       AVFormatContext* m_fctx = nullptr;
   };
