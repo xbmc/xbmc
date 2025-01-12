@@ -455,6 +455,46 @@ std::string URIUtils::GetBasePath(const std::string& strPath)
   return strDirectory;
 }
 
+std::string URIUtils::GetDiscBase(const std::string& file)
+{
+  std::string discFile;
+  if (IsBlurayPath(file))
+    discFile = GetBlurayFile(file);
+  else
+    discFile = file;
+
+  std::string parent{GetParentPath(discFile)};
+  std::string parentFolder{parent};
+  RemoveSlashAtEnd(parentFolder);
+  parentFolder = GetFileName(parentFolder);
+  if (StringUtils::EqualsNoCase(parentFolder, "VIDEO_TS") ||
+      StringUtils::EqualsNoCase(parentFolder, "BDMV"))
+    return GetParentPath(parent); // go back up another one
+  return parent;
+}
+
+std::string URIUtils::GetDiscBasePath(const std::string& file)
+{
+  std::string base{GetDiscBase(file)};
+  if (IsDiscImage(base))
+    return GetDirectory(base);
+  return base;
+}
+
+std::string URIUtils::GetBlurayFile(const std::string& path)
+{
+  if (IsBlurayPath(path))
+  {
+    const CURL url(path);
+    const CURL url2(url.GetHostName()); // strip bluray://
+    if (url2.IsProtocol("udf"))
+      // ISO
+      return url2.GetHostName(); // strip udf://
+    return AddFileToFolder(url2.Get(), "BDMV", "index.bdmv"); // BDMV
+  }
+  return std::string{};
+}
+
 std::string URLEncodePath(const std::string& strPath)
 {
   std::vector<std::string> segments = StringUtils::Split(strPath, "/");
@@ -1183,7 +1223,7 @@ bool URIUtils::IsVideoDb(const std::string& strFile)
   return IsProtocol(strFile, "videodb");
 }
 
-bool URIUtils::IsBluray(const std::string& strFile)
+bool URIUtils::IsBlurayPath(const std::string& strFile)
 {
   return IsProtocol(strFile, "bluray");
 }

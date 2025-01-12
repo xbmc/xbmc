@@ -15,7 +15,6 @@
 #include "URIUtils.h"
 #include "URL.h"
 #include "Util.h"
-#include "application/ApplicationComponents.h"
 #include "application/ApplicationStackHelper.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
@@ -59,7 +58,7 @@ void CSaveFileState::DoWork(CFileItem& item,
     // only use original_listitem_url for Python, UPnP and Bluray sources
     std::string original = item.GetProperty("original_listitem_url").asString();
     if (URIUtils::IsPlugin(original) || URIUtils::IsUPnP(original) ||
-        URIUtils::IsBluray(item.GetPath()))
+        URIUtils::IsBlurayPath(item.GetPath()))
       progressTrackingFile = original;
   }
 
@@ -174,6 +173,13 @@ void CSaveFileState::DoWork(CFileItem& item,
           }
         }
 
+        //! @todo videoDBSuccess will always be true as not updated yet for play count and bookmark changes
+        if (videoDbSuccess)
+          videodatabase.CommitTransaction();
+        else
+          videodatabase.RollbackTransaction();
+        videodatabase.BeginTransaction();
+
         if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->HasStreamDetails() &&
             !item.IsLiveTV())
         {
@@ -183,24 +189,37 @@ void CSaveFileState::DoWork(CFileItem& item,
           if (!videodatabase.GetStreamDetails(dbItem) ||
               dbItem.GetVideoInfoTag()->m_streamDetails != item.GetVideoInfoTag()->m_streamDetails)
           {
-            const int idFile = videodatabase.SetStreamDetailsForFile(
+            videoDbSuccess = videodatabase.SetStreamDetailsForFile(
                 item.GetVideoInfoTag()->m_streamDetails, progressTrackingFile);
+            updateListing = !videoDbSuccess;
+          }
+        }
 
-            if (idFile == -2)
-            {
-              videoDbSuccess = false;
-            }
-            else if (idFile > 0)
-            {
-              updateListing = true;
+        if (videoDbSuccess)
+          videodatabase.CommitTransaction();
+        else
+          videodatabase.RollbackTransaction();
+        videodatabase.BeginTransaction();
+        videoDbSuccess = true;
 
-              if (item.GetVideoContentType() == VideoDbContentType::MOVIES)
-                videoDbSuccess = videodatabase.SetFileForMovie(
-                    item.GetDynPath(), item.GetVideoInfoTag()->m_iDbId, idFile);
-              else if (item.GetVideoContentType() == VideoDbContentType::EPISODES)
-                videoDbSuccess = videodatabase.SetFileForEpisode(
-                    item.GetDynPath(), item.GetVideoInfoTag()->m_iDbId, idFile);
-            }
+        // See if idFile needs updating
+        if (item.HasVideoInfoTag() && URIUtils::IsBlurayPath(item.GetDynPath()))
+        {
+          if (item.GetVideoContentType() == VideoDbContentType::MOVIES)
+          {
+            const CVideoInfoTag* tag{item.GetVideoInfoTag()};
+            if (tag->m_strFileNameAndPath != item.GetDynPath())
+              // tag->m_iFileId contains the idFile played and may be different to the idFile in the movie table entry if it's
+              // a non-default video version
+              videoDbSuccess =
+                  videodatabase.SetFileForMovie(item.GetDynPath(), tag->m_iDbId, tag->m_iFileId);
+          }
+          else if (item.GetVideoContentType() == VideoDbContentType::EPISODES)
+          {
+            const CVideoInfoTag* tag{item.GetVideoInfoTag()};
+            if (tag->m_strFileNameAndPath != item.GetDynPath())
+              videoDbSuccess =
+                  videodatabase.SetFileForEpisode(item.GetDynPath(), tag->m_iDbId, tag->m_iFileId);
           }
         }
 

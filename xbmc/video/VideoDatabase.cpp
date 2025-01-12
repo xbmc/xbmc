@@ -1992,6 +1992,7 @@ bool CVideoDatabase::HasMovieInfo(const std::string& strFilenameAndPath)
       return false;
     if (nullptr == m_pDS)
       return false;
+
     int idMovie = GetMovieId(strFilenameAndPath);
     return (idMovie > 0); // index of zero is also invalid
   }
@@ -3017,41 +3018,109 @@ int CVideoDatabase::SetDetailsForSeason(const CVideoInfoTag& details, const std:
   return -1;
 }
 
-bool CVideoDatabase::SetFileForEpisode(const std::string& fileAndPath, int idEpisode, int idFile)
+bool CVideoDatabase::SetFileForEpisode(const std::string& fileAndPath, int idEpisode, int oldIdFile)
 {
+  assert(m_pDB->in_transaction());
+
+  const int idFile = AddFile(fileAndPath);
+  if (idFile < 0)
+    return false;
+
   try
   {
-    std::string sql = PrepareSQL("UPDATE episode SET c18='%s', idFile=%i WHERE idEpisode=%i",
-                                 fileAndPath.c_str(), idFile, idEpisode);
-    m_pDS->exec(sql);
-
-    return true;
+    m_pDS->exec(PrepareSQL("UPDATE episode SET idFile=%i WHERE idEpisode=%i", idFile, idEpisode));
+    return DeleteFile(oldIdFile);
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, idEpisode);
+    CLog::LogF(LOGERROR, " idFile {}, fileAndPath {}, idEpisode {}, oldIdFile {} - failed", idFile,
+               fileAndPath, idEpisode, oldIdFile);
   }
   return false;
 }
 
-bool CVideoDatabase::SetFileForMovie(const std::string& fileAndPath, int idMovie, int idFile)
+bool CVideoDatabase::SetFileForMovie(const std::string& fileAndPath, int idMovie, int oldIdFile)
+{
+  assert(m_pDB->in_transaction());
+
+  const int idFile{AddFile(fileAndPath)};
+  if (idFile < 0)
+    return false;
+
+  try
+  {
+    std::string sql = PrepareSQL("UPDATE movie SET idFile=%i WHERE idFile=%i AND idMovie=%i",
+                                 idFile, oldIdFile, idMovie);
+    m_pDS->exec(sql);
+
+    sql = PrepareSQL(
+        "UPDATE videoversion SET idFile=%i WHERE idFile=%i AND media_type='movie' AND idMedia=%i",
+        idFile, oldIdFile, idMovie);
+    m_pDS->exec(sql);
+
+    sql = PrepareSQL("UPDATE art SET media_id=%i WHERE media_id=%i AND media_type='videoversion'",
+                     idFile, oldIdFile);
+    m_pDS->exec(sql);
+
+    sql = PrepareSQL("UPDATE streamdetails SET idFile=%i WHERE idFile=%i AND NOT EXISTS (SELECT 1 "
+                     "FROM streamdetails WHERE idFile=%i)",
+                     idFile, oldIdFile, idFile);
+    m_pDS->exec(sql);
+
+    return DeleteFile(oldIdFile);
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, " idFile {}, fileAndPath {}, idMovie {}, oldIdFile {} - failed", idFile,
+               fileAndPath, idMovie, oldIdFile);
+  }
+  return false;
+}
+
+bool CVideoDatabase::DeleteFile(int idFile)
 {
   try
   {
-    assert(m_pDB->in_transaction());
+    // First check no other references to file (eg. other episodes)
+    std::string sql{PrepareSQL("SELECT idFile FROM movie WHERE idFile = %i "
+                               "UNION SELECT idFile FROM episode WHERE idFile = %i "
+                               "UNION SELECT idFile FROM videoversion WHERE idFile = %i",
+                               idFile, idFile, idFile)};
+    m_pDS->query(sql);
+    if (m_pDS->eof())
+    {
+      // Get idPath
+      sql = PrepareSQL("SELECT path.idPath, path.strPath FROM path "
+                       "JOIN files ON path.idPath = files.idPath "
+                       "WHERE idFile = %i",
+                       idFile);
+      m_pDS->query(sql);
+      int idPath{-1};
+      std::string strPath;
+      if (!m_pDS->eof())
+      {
+        idPath = m_pDS->fv("idPath").get_asInt();
+        strPath = m_pDS->fv("strPath").get_asString();
+      }
 
-    std::string sql = PrepareSQL("UPDATE movie SET c22='%s', idFile=%i WHERE idMovie=%i",
-                                 fileAndPath.c_str(), idFile, idMovie);
-    m_pDS->exec(sql);
-    sql = PrepareSQL("UPDATE videoversion SET idFile=%i WHERE idMedia=%i AND media_type='movie'",
-                     idFile, idMovie);
-    m_pDS->exec(sql);
+      // Associated bookmarks and streamdetails deleted by delete trigger
+      sql = PrepareSQL("DELETE FROM files WHERE idFile = %i", idFile);
+      m_pDS->exec(sql);
 
+      // Delete path if orphan (and not base directory - needs to remain to prevent re-adding on library update)
+      if (idPath >= 0 && URIUtils::IsBlurayPath(strPath))
+      {
+        sql = PrepareSQL("DELETE FROM path WHERE idPath = %i "
+                         "AND NOT EXISTS (SELECT 1 FROM files WHERE files.idPath = %i)",
+                         idPath, idPath);
+        m_pDS->exec(sql);
+      }
+    }
     return true;
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, idMovie);
+    CLog::LogF(LOGERROR, "({}) failed", idFile);
   }
   return false;
 }
@@ -3245,19 +3314,14 @@ int CVideoDatabase::SetDetailsForMusicVideo(CVideoInfoTag& details,
   return -1;
 }
 
-int CVideoDatabase::SetStreamDetailsForFile(const CStreamDetails& details,
-                                            const std::string& strFileNameAndPath)
+bool CVideoDatabase::SetStreamDetailsForFile(const CStreamDetails& details,
+                                             const std::string& strFileNameAndPath)
 {
   // AddFile checks to make sure the file isn't already in the DB first
   int idFile = AddFile(strFileNameAndPath);
   if (idFile < 0)
-    return -1;
-
-  //! @todo ugly error return mechanism, fixme
-  if (SetStreamDetailsForFileId(details, idFile))
-    return idFile;
-  else
-    return -2;
+    return false;
+  return SetStreamDetailsForFileId(details, idFile);
 }
 
 bool CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, int idFile)
@@ -10211,6 +10275,10 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
         // get the actual archive path
         if (URIUtils::IsInArchive(fullPath))
           fullPath = CURL(fullPath).GetHostName();
+
+        // if bluray:// get actual path
+        if (URIUtils::IsBlurayPath(fullPath))
+          fullPath = URIUtils::GetBlurayFile(fullPath);
 
         bool del = true;
         if (URIUtils::IsPlugin(fullPath))

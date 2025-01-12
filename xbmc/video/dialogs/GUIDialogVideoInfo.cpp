@@ -61,7 +61,6 @@
 #include "video/dialogs/GUIDialogVideoManagerExtras.h"
 #include "video/dialogs/GUIDialogVideoManagerVersions.h"
 #include "video/guilib/VideoPlayActionProcessor.h"
-#include "video/guilib/VideoVersionHelper.h"
 #include "video/windows/GUIWindowVideoNav.h"
 
 #include <algorithm>
