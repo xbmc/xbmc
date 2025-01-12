@@ -86,8 +86,8 @@ void CSaveFileState::DoWork(CFileItem& item,
       else
       {
         //! @todo check possible failure of BeginTransaction
+        //! todo catch and handle errors and commit/rollback the transaction appropriately
         videodatabase.BeginTransaction();
-        bool videoDbSuccess{true};
 
         if (URIUtils::IsPlugin(progressTrackingFile) && !(item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iDbId >= 0))
         {
@@ -172,13 +172,7 @@ void CSaveFileState::DoWork(CFileItem& item,
             updateListing = true;
           }
         }
-
-        //! @todo videoDBSuccess will always be true as not updated yet for play count and bookmark changes
-        if (videoDbSuccess)
-          videodatabase.CommitTransaction();
-        else
-          videodatabase.RollbackTransaction();
-        videodatabase.BeginTransaction();
+        videodatabase.CommitTransaction();
 
         if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->HasStreamDetails() &&
             !item.IsLiveTV())
@@ -189,18 +183,20 @@ void CSaveFileState::DoWork(CFileItem& item,
           if (!videodatabase.GetStreamDetails(dbItem) ||
               dbItem.GetVideoInfoTag()->m_streamDetails != item.GetVideoInfoTag()->m_streamDetails)
           {
-            videoDbSuccess = videodatabase.SetStreamDetailsForFile(
-                item.GetVideoInfoTag()->m_streamDetails, progressTrackingFile);
-            updateListing |= videoDbSuccess;
+            videodatabase.BeginTransaction();
+
+            if (videodatabase.SetStreamDetailsForFile(item.GetVideoInfoTag()->m_streamDetails,
+                                                      progressTrackingFile))
+            {
+              videodatabase.CommitTransaction();
+              updateListing = true;
+            }
+            else
+            {
+              videodatabase.RollbackTransaction();
+            }
           }
         }
-
-        if (videoDbSuccess)
-          videodatabase.CommitTransaction();
-        else
-          videodatabase.RollbackTransaction();
-        videodatabase.BeginTransaction();
-        videoDbSuccess = true;
 
         // See if idFile needs updating
         const CVideoInfoTag* tag{item.HasVideoInfoTag() ? item.GetVideoInfoTag() : nullptr};
@@ -208,16 +204,15 @@ void CSaveFileState::DoWork(CFileItem& item,
         if (tag && URIUtils::IsBlurayPath(item.GetDynPath()) &&
             tag->m_strFileNameAndPath != item.GetDynPath())
         {
+          videodatabase.BeginTransaction();
           // tag->m_iFileId contains the idFile originally played and may be different to the idFile
           // in the movie table entry if it's a non-default video version
-          videoDbSuccess = videodatabase.SetFileForMedia(
-              item.GetDynPath(), item.GetVideoContentType(), tag->m_iDbId, tag->m_iFileId);
+          if (videodatabase.SetFileForMedia(item.GetDynPath(), item.GetVideoContentType(),
+                                            tag->m_iDbId, tag->m_iFileId))
+            videodatabase.CommitTransaction();
+          else
+            videodatabase.RollbackTransaction();
         }
-
-        if (videoDbSuccess)
-          videodatabase.CommitTransaction();
-        else
-          videodatabase.RollbackTransaction();
 
         if (updateListing)
         {
