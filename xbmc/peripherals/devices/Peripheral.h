@@ -208,6 +208,8 @@ public:
   virtual float GetSettingFloat(const std::string& strKey) const;
   virtual bool SetSetting(const std::string& strKey, float fValue);
 
+  virtual void SetAddonSetting(const std::string& strKey, const std::string& addonId);
+
   virtual void PersistSettings(bool bExiting = false);
   virtual void LoadPersistedSettings(void);
   virtual void ResetDefaultSettings(void);
@@ -276,10 +278,7 @@ public:
    *
    * \param controller The new controller profile
    */
-  virtual void SetControllerProfile(const KODI::GAME::ControllerPtr& controller)
-  {
-    m_controllerProfile = controller;
-  }
+  virtual void SetControllerProfile(const KODI::GAME::ControllerPtr& controller);
 
 protected:
   virtual void ClearSettings(void);

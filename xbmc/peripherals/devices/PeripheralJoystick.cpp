@@ -220,6 +220,18 @@ void CPeripheralJoystick::PowerOff()
   m_bus->PowerOff(m_strLocation);
 }
 
+void CPeripheralJoystick::ResetDefaultSettings()
+{
+  CPeripheral::ResetDefaultSettings();
+
+  // Reset the appearance from the peripheral bus
+  if (m_buttonMap)
+  {
+    m_buttonMap->SetAppearance(m_bus->GetAppearance(*this));
+    m_buttonMap->SaveButtonMap();
+  }
+}
+
 void CPeripheralJoystick::RegisterJoystickDriverHandler(IDriverHandler* handler, bool bPromiscuous)
 {
   std::unique_lock<CCriticalSection> lock(m_handlerMutex);

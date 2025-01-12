@@ -59,6 +59,7 @@ public:
   bool InitialiseFeature(const PeripheralFeature feature) override;
   void OnUserNotification() override;
   bool TestFeature(PeripheralFeature feature) override;
+  void ResetDefaultSettings() override;
   void RegisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler,
                                      bool bPromiscuous) override;
   void UnregisterJoystickDriverHandler(KODI::JOYSTICK::IDriverHandler* handler) override;
