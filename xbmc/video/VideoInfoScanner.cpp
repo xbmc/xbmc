@@ -81,8 +81,12 @@ CVideoInfoScanner::CVideoInfoScanner()
   m_ignoreVideoExtras = settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_IGNOREVIDEOEXTRAS);
 }
 
-  CVideoInfoScanner::~CVideoInfoScanner()
-  = default;
+CVideoInfoScanner::~CVideoInfoScanner()
+{
+  // Clear cache for all used scrapers
+  for (auto& [_, scraper] : m_scraperCache)
+    scraper->ClearCache();
+}
 
   void CVideoInfoScanner::Process()
   {
@@ -173,7 +177,6 @@ CVideoInfoScanner::CVideoInfoScanner()
 
       CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetLibraryInfoProvider().ResetLibraryBools();
       m_database.Close();
-      m_scraperCache.clear();
 
       auto end = std::chrono::steady_clock::now();
       auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
@@ -496,9 +499,6 @@ CVideoInfoScanner::CVideoInfoScanner()
         if (m_handle)
           m_handle->SetPercentage(i*100.f/items.Size());
       }
-
-      // clear our scraper cache
-      info2->ClearCache();
 
       InfoRet ret = InfoRet::CANCELLED;
       if (info2->Content() == CONTENT_TVSHOWS)
