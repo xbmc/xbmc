@@ -25,6 +25,7 @@
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/Directory.h"
+#include "filesystem/DirectoryCache.h"
 #include "filesystem/File.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/PluginDirectory.h"
@@ -10805,6 +10806,9 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
     pDS2.reset(m_pDB->CreateDataset());
     if (nullptr == pDS2)
       return;
+
+    // clear directory cache (to prevent case sensitive file name matching 'errors' on case insensitive file systems)
+    g_directoryCache.Clear();
 
     // if we're exporting to a single folder, we export thumbs as well
     std::string exportRoot = URIUtils::AddFileToFolder(path, "kodi_videodb_" + CDateTime::GetCurrentDateTime().GetAsDBDate());
