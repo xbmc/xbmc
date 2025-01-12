@@ -169,6 +169,22 @@ bool CPeripheralBusAndroid::InitializeButtonMap(const CPeripheral& peripheral,
   return true;
 }
 
+std::string CPeripheralBusAndroid::GetAppearance(const CPeripheral& peripheral) const
+{
+  int deviceId;
+  if (!GetDeviceId(peripheral.Location(), deviceId))
+    return "";
+
+  std::unique_lock<CCriticalSection> lock(m_critSectionStates);
+
+  auto it = m_joystickStates.find(deviceId);
+  if (it == m_joystickStates.end())
+    return "";
+
+  const CAndroidJoystickState& joystick = it->second;
+  return joystick.GetAppearance();
+}
+
 void CPeripheralBusAndroid::Initialise(void)
 {
   CPeripheralBus::Initialise();

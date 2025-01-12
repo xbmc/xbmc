@@ -60,6 +60,11 @@ public:
   bool InitializeButtonMap(KODI::JOYSTICK::IButtonMap& buttonMap) const;
 
   /*!
+   * \brief Get the joystick appearance, if known
+   */
+  std::string GetAppearance() const;
+
+  /*!
    * \brief Deinitialize the joystick object
    *
    * GetEvents() will not be called after deinitialization.
