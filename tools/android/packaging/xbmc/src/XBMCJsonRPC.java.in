@@ -888,28 +888,6 @@ public class XBMCJsonRPC
       }
 
       med.setXbmcUrl("videodb://movies/titles/" + details.get("movieid").getAsString() + "?showinfo=true");
-
-      /*
-      if (details.has("trailer") && !details.get("trailer").getAsString().isEmpty())
-      {
-        String trailer_url = details.get("trailer").getAsString();
-        if (trailer_url.startsWith("plugin://plugin.video.youtube"))
-        {
-          Uri u = Uri.parse(trailer_url);
-          String videoid = u.getQueryParameter("videoid");
-          String yturl = Uri.parse(m_xbmc_web_url)
-                  .buildUpon()
-                  .appendPath("addons").appendPath("webinterface.youtube-dl")
-                  .appendQueryParameter("url", "http://www.youtube.com/watch?v=" + videoid)
-                  .build()
-                  .toString();
-          med.setVideoUrl(XBMCYTDLContentProvider.GetYTDLUri(yturl).toString());
-          Log.d(TAG, "createMovieFromJson: " + med.getVideoUrl());
-        }
-        else
-          med.setVideoUrl(trailer_url);
-      }
-      */
       med.setCategory(Media.MEDIA_TYPE_MOVIE);
 
       med.setYear(details.get("year").getAsString());

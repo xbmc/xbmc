@@ -77,7 +77,6 @@ set(package_files strings.xml
                   src/content/XBMCFileProvider.java
                   src/content/XBMCMediaContentProvider.java
                   src/content/XBMCContentProvider.java
-                  src/content/XBMCYTDLContentProvider.java
                   src/util/Storage.java
                   )
 foreach(file IN LISTS package_files)
