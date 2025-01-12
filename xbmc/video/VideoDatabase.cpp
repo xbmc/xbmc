@@ -3018,6 +3018,23 @@ int CVideoDatabase::SetDetailsForSeason(const CVideoInfoTag& details, const std:
   return -1;
 }
 
+bool CVideoDatabase::SetFileForMedia(const std::string& fileAndPath,
+                                     VideoDbContentType type,
+                                     int mediaId,
+                                     int oldIdFile)
+{
+  switch (type)
+  {
+    case VideoDbContentType::MOVIES:
+      return SetFileForMovie(fileAndPath, mediaId, oldIdFile);
+    case VideoDbContentType::EPISODES:
+      return SetFileForEpisode(fileAndPath, mediaId, oldIdFile);
+    default:
+      CLog::LogF(LOGDEBUG, "unsupported media type {}", type);
+      return false;
+  }
+}
+
 bool CVideoDatabase::SetFileForEpisode(const std::string& fileAndPath, int idEpisode, int oldIdFile)
 {
   assert(m_pDB->in_transaction());

@@ -203,24 +203,15 @@ void CSaveFileState::DoWork(CFileItem& item,
         videoDbSuccess = true;
 
         // See if idFile needs updating
-        if (item.HasVideoInfoTag() && URIUtils::IsBlurayPath(item.GetDynPath()))
+        const CVideoInfoTag* tag{item.HasVideoInfoTag() ? item.GetVideoInfoTag() : nullptr};
+
+        if (tag && URIUtils::IsBlurayPath(item.GetDynPath()) &&
+            tag->m_strFileNameAndPath != item.GetDynPath())
         {
-          if (item.GetVideoContentType() == VideoDbContentType::MOVIES)
-          {
-            const CVideoInfoTag* tag{item.GetVideoInfoTag()};
-            if (tag->m_strFileNameAndPath != item.GetDynPath())
-              // tag->m_iFileId contains the idFile played and may be different to the idFile in the movie table entry if it's
-              // a non-default video version
-              videoDbSuccess =
-                  videodatabase.SetFileForMovie(item.GetDynPath(), tag->m_iDbId, tag->m_iFileId);
-          }
-          else if (item.GetVideoContentType() == VideoDbContentType::EPISODES)
-          {
-            const CVideoInfoTag* tag{item.GetVideoInfoTag()};
-            if (tag->m_strFileNameAndPath != item.GetDynPath())
-              videoDbSuccess =
-                  videodatabase.SetFileForEpisode(item.GetDynPath(), tag->m_iDbId, tag->m_iFileId);
-          }
+          // tag->m_iFileId contains the idFile originally played and may be different to the idFile
+          // in the movie table entry if it's a non-default video version
+          videoDbSuccess = videodatabase.SetFileForMedia(
+              item.GetDynPath(), item.GetVideoContentType(), tag->m_iDbId, tag->m_iFileId);
         }
 
         if (videoDbSuccess)

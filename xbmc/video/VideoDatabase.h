@@ -592,8 +592,10 @@ public:
                            const std::map<std::string, std::string>& artwork,
                            int idShow,
                            int idEpisode = -1);
-  bool SetFileForEpisode(const std::string& fileAndPath, int idEpisode, int oldIdFile);
-  bool SetFileForMovie(const std::string& fileAndPath, int idMovie, int oldIdFile);
+  bool SetFileForMedia(const std::string& fileAndPath,
+                       VideoDbContentType type,
+                       int mediaId,
+                       int oldIdFile);
   int SetDetailsForMusicVideo(CVideoInfoTag& details,
                               const std::map<std::string, std::string>& artwork,
                               int idMVideo = -1);
@@ -1260,6 +1262,9 @@ protected:
   void GetDetailsFromDB(std::unique_ptr<dbiplus::Dataset> &pDS, int min, int max, const SDbTableOffsets *offsets, CVideoInfoTag &details, int idxOffset = 2);
   void GetDetailsFromDB(const dbiplus::sql_record* const record, int min, int max, const SDbTableOffsets *offsets, CVideoInfoTag &details, int idxOffset = 2);
   std::string GetValueString(const CVideoInfoTag &details, int min, int max, const SDbTableOffsets *offsets) const;
+
+  bool SetFileForEpisode(const std::string& fileAndPath, int idEpisode, int oldIdFile);
+  bool SetFileForMovie(const std::string& fileAndPath, int idMovie, int oldIdFile);
 
 private:
   void CreateTables() override;
