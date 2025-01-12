@@ -226,6 +226,9 @@ AddonInfoPtr CAddonInfoBuilder::Generate(const std::string& addonPath, bool plat
   if (!platformCheck || PlatformSupportsAddon(addon))
     return addon;
 
+  CLog::Log(LOGERROR, "CAddonInfoBuilder::{}: No platform for add-on {} (supported platforms: {})",
+            __FUNCTION__, addon->ID(), StringUtils::Join(addon->m_platforms, ", "));
+
   return nullptr;
 }
 
