@@ -191,7 +191,7 @@ void CSaveFileState::DoWork(CFileItem& item,
           {
             videoDbSuccess = videodatabase.SetStreamDetailsForFile(
                 item.GetVideoInfoTag()->m_streamDetails, progressTrackingFile);
-            updateListing = !videoDbSuccess;
+            updateListing |= videoDbSuccess;
           }
         }
 
