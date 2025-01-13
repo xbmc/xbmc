@@ -2754,9 +2754,10 @@ int CVideoDatabase::SetDetailsForMovie(CVideoInfoTag& details,
 
     // add set...
     int idSet = -1;
-    if (!details.m_set.title.empty())
+    if (details.m_set.HasTitle())
     {
-      idSet = AddSet(details.m_set.title, details.m_set.overview, details.GetUpdateSetOverview());
+      idSet = AddSet(details.m_set.GetTitle(), details.m_set.GetOverview(),
+                     details.GetUpdateSetOverview());
       // add art if not available
       if (!HasArtForItem(idSet, MediaTypeVideoCollection))
       {
@@ -2871,9 +2872,9 @@ int CVideoDatabase::UpdateDetailsForMovie(int idMovie,
     if (updatedDetails.contains("set"))
     { // set
       idSet = -1;
-      if (!details.m_set.title.empty())
+      if (details.m_set.HasTitle())
       {
-        idSet = AddSet(details.m_set.title, details.m_set.overview);
+        idSet = AddSet(details.m_set.GetTitle(), details.m_set.GetOverview());
       }
     }
 
@@ -4790,9 +4791,9 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
   versionInfo.SetTitle(record->at(VIDEODB_DETAILS_MOVIE_VERSION_TYPENAME).get_asString());
   versionInfo.SetType(
       static_cast<VideoAssetType>(record->at(VIDEODB_DETAILS_MOVIE_VERSION_ITEMTYPE).get_asInt()));
-  details.m_set.id = record->at(VIDEODB_DETAILS_MOVIE_SET_ID).get_asInt();
-  details.m_set.title = record->at(VIDEODB_DETAILS_MOVIE_SET_NAME).get_asString();
-  details.m_set.overview = record->at(VIDEODB_DETAILS_MOVIE_SET_OVERVIEW).get_asString();
+  details.m_set.SetID(record->at(VIDEODB_DETAILS_MOVIE_SET_ID).get_asInt());
+  details.m_set.SetTitle(record->at(VIDEODB_DETAILS_MOVIE_SET_NAME).get_asString());
+  details.m_set.SetOverview(record->at(VIDEODB_DETAILS_MOVIE_SET_OVERVIEW).get_asString());
   details.m_iFileId = record->at(VIDEODB_DETAILS_MOVIE_VERSION_FILEID).get_asInt();
   details.m_strPath = record->at(VIDEODB_DETAILS_MOVIE_PATH).get_asString();
   std::string strFileName = record->at(VIDEODB_DETAILS_MOVIE_FILE).get_asString();
@@ -11905,10 +11906,10 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
         artItem.SetPath(GetSafeFile(moviesDir, filename) + ".avi");
         scanner.GetArtwork(&artItem, ContentType::MOVIES, useFolders, true, actorsDir);
         item.SetArt(artItem.GetArt());
-        if (!item.GetVideoInfoTag()->m_set.title.empty())
+        if (item.GetVideoInfoTag()->m_set.HasTitle())
         {
           std::string setPath = URIUtils::AddFileToFolder(
-              movieSetsDir, CUtil::MakeLegalFileName(item.GetVideoInfoTag()->m_set.title,
+              movieSetsDir, CUtil::MakeLegalFileName(item.GetVideoInfoTag()->m_set.GetTitle(),
                                                      LegalPath::WIN32_COMPAT));
           if (CDirectory::Exists(setPath))
           {
