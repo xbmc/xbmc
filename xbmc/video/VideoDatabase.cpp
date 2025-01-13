@@ -12003,11 +12003,12 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
             item.HasVideoVersions())
         {
           item.SetProperty("idMovie", lastMovieId);
-          scanner.AddVideo(&item, CONTENT_MOVIEVERSIONS, useFolders, true, NULL, true);
+          scanner.AddVideo(&item, nullptr, useFolders, true, NULL, true, CONTENT_MOVIEVERSIONS);
         }
         else
         {
-          lastMovieId = scanner.AddVideo(&item, CONTENT_MOVIES, useFolders, true, NULL, true);
+          lastMovieId =
+              scanner.AddVideo(&item, nullptr, useFolders, true, NULL, true, CONTENT_MOVIES);
           lastPath = item.GetPath();
         }
         if (item.HasVideoVersions())
@@ -12034,7 +12035,7 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
         artItem.SetPath(GetSafeFile(musicvideosDir, filename) + ".avi");
         scanner.GetArtwork(&artItem, CONTENT_MUSICVIDEOS, useFolders, true, actorsDir);
         item.SetArt(artItem.GetArt());
-        scanner.AddVideo(&item, CONTENT_MUSICVIDEOS, useFolders, true, NULL, true);
+        scanner.AddVideo(&item, nullptr, useFolders, true, NULL, true, CONTENT_MUSICVIDEOS);
         current++;
       }
       else if (StringUtils::CompareNoCase(movie->Value(), MediaTypeTvShow, 6) == 0)
@@ -12051,7 +12052,8 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
         artItem.SetPath(artPath);
         scanner.GetArtwork(&artItem, CONTENT_TVSHOWS, useFolders, true, actorsDir);
         showItem.SetArt(artItem.GetArt());
-        int showID = scanner.AddVideo(&showItem, CONTENT_TVSHOWS, useFolders, true, NULL, true);
+        int showID =
+            scanner.AddVideo(&showItem, nullptr, useFolders, true, NULL, true, CONTENT_TVSHOWS);
         // season artwork
         std::map<int, std::map<std::string, std::string> > seasonArt;
         artItem.GetVideoInfoTag()->m_strPath = artPath;
@@ -12076,7 +12078,8 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
           artItem.SetPath(GetSafeFile(artPath, filename));
           scanner.GetArtwork(&artItem, CONTENT_TVSHOWS, useFolders, true, actorsDir);
           item.SetArt(artItem.GetArt());
-          scanner.AddVideo(&item,CONTENT_TVSHOWS, false, false, showItem.GetVideoInfoTag(), true);
+          scanner.AddVideo(&item, nullptr, false, false, showItem.GetVideoInfoTag(), true,
+                           CONTENT_TVSHOWS);
           episode = episode->NextSiblingElement("episodedetails");
         }
       }
