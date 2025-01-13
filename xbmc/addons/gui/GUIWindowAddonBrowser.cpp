@@ -526,7 +526,11 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<AddonType>& types,
   for (const auto& addon : addons)
   {
     const CFileItemPtr item(CAddonsDirectory::FileItemFromAddon(addon, addon->ID()));
-    item->SetLabel2(addon->Summary());
+
+    // Game controllers don't have specific summaries
+    if (addon->Type() != AddonType::GAME_CONTROLLER)
+      item->SetLabel2(addon->Summary());
+
     if (!items.Contains(item->GetPath()))
     {
       items.Add(item);
