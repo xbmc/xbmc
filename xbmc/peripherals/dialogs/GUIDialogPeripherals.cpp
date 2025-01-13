@@ -184,13 +184,4 @@ void CGUIDialogPeripherals::UpdatePeripheralsSync()
   m_peripherals.Clear();
   m_manager->GetDirectory("peripherals://all/", m_peripherals);
   SetItems(m_peripherals);
-
-  if (selectedItem)
-  {
-    for (int i = 0; i < m_peripherals.Size(); i++)
-    {
-      if (m_peripherals[i]->GetPath() == selectedItem->GetPath())
-        SetSelected(i);
-    }
-  }
 }
