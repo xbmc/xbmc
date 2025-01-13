@@ -11902,9 +11902,10 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
     movie = root->FirstChildElement();
     while (movie)
     {
-      CVideoInfoTag info;
+      std::string currentTitle;
       if (StringUtils::CompareNoCase(movie->Value(), MediaTypeMovie, 5) == 0)
       {
+        CVideoInfoTag info;
         info.Load(movie);
         CFileItem item(info);
         bool useFolders = info.m_basePath.empty() ? LookupByFolders(item.GetPath()) : false;
@@ -11936,10 +11937,12 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
           }
         }
         scanner.AddVideo(&item, CONTENT_MOVIES, useFolders, true, NULL, true);
+        currentTitle = info.m_strTitle;
         current++;
       }
       else if (StringUtils::CompareNoCase(movie->Value(), MediaTypeMusicVideo, 10) == 0)
       {
+        CVideoInfoTag info;
         info.Load(movie);
         CFileItem item(info);
         bool useFolders = info.m_basePath.empty() ? LookupByFolders(item.GetPath()) : false;
@@ -11951,12 +11954,14 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
         scanner.GetArtwork(&artItem, CONTENT_MUSICVIDEOS, useFolders, true, actorsDir);
         item.SetArt(artItem.GetArt());
         scanner.AddVideo(&item, CONTENT_MUSICVIDEOS, useFolders, true, NULL, true);
+        currentTitle = info.m_strTitle;
         current++;
       }
       else if (StringUtils::CompareNoCase(movie->Value(), MediaTypeTvShow, 6) == 0)
       {
         // load the TV show in.  NOTE: This deletes all episodes under the TV Show, which may not be
         // what we desire.  It may make better sense to only delete (or even better, update) the show information
+        CVideoInfoTag info;
         info.Load(movie);
         URIUtils::AddSlashAtEnd(info.m_strPath);
         DeleteTvShow(info.m_strPath);
@@ -11977,6 +11982,7 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
           int seasonID = AddSeason(showID, i.first);
           SetArtForItem(seasonID, MediaTypeSeason, i.second);
         }
+        currentTitle = info.m_strTitle;
         current++;
         // now load the episodes
         TiXmlElement *episode = movie->FirstChildElement("episodedetails");
@@ -11996,11 +12002,19 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
           episode = episode->NextSiblingElement("episodedetails");
         }
       }
+      else if (StringUtils::CompareNoCase(movie->Value(), MediaTypeVideoCollection, 3) == 0)
+      {
+        CSetInfoTag info;
+        info.Load(movie);
+        scanner.AddSet(&info);
+        currentTitle = info.GetTitle();
+        current++;
+      }
       movie = movie->NextSiblingElement();
       if (progress && total)
       {
         progress->SetPercentage(current * 100 / total);
-        progress->SetLine(2, CVariant{info.m_strTitle});
+        progress->SetLine(2, CVariant{currentTitle});
         progress->Progress();
         if (progress->IsCanceled())
         {
