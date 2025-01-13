@@ -53,6 +53,10 @@ public:
    */
   float FilterAxis(unsigned int axisIndex, float axisValue);
 
+  // Settings for analog sticks
+  static const char* SETTING_LEFT_STICK_DEADZONE;
+  static const char* SETTING_RIGHT_STICK_DEADZONE;
+
 private:
   /*!
    * \brief Get the deadzone value from the peripheral's settings
