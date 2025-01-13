@@ -12105,11 +12105,12 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
         if (lastTitle == currentTitle && item.HasVideoVersions())
         {
           item.SetProperty("idMovie", lastMovieId);
-          scanner.AddVideo(&item, CONTENT_MOVIEVERSIONS, useFolders, true, NULL, true);
+          scanner.AddVideo(&item, nullptr, useFolders, true, NULL, true, CONTENT_MOVIEVERSIONS);
         }
         else
         {
-          lastMovieId = scanner.AddVideo(&item, CONTENT_MOVIES, useFolders, true, NULL, true);
+          lastMovieId =
+              scanner.AddVideo(&item, nullptr, useFolders, true, NULL, true, CONTENT_MOVIES);
           lastTitle = currentTitle;
         }
         if (item.HasVideoVersions())
@@ -12122,6 +12123,7 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
           if (tag->IsDefaultVideoVersion())
             SetDefaultVideoVersion(VideoDbContentType::MOVIES, lastMovieId, tag->m_iFileId);
         }
+        scanner.AddVideo(&item, nullptr, useFolders, true, NULL, true, CONTENT_MOVIES);
         current++;
       }
       else if (StringUtils::CompareNoCase(movie->Value(), MediaTypeMusicVideo, 10) == 0)
@@ -12136,7 +12138,7 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
         artItem.SetPath(GetSafeFile(musicvideosDir, filename) + ".avi");
         scanner.GetArtwork(&artItem, CONTENT_MUSICVIDEOS, useFolders, true, actorsDir);
         item.SetArt(artItem.GetArt());
-        scanner.AddVideo(&item, CONTENT_MUSICVIDEOS, useFolders, true, nullptr, true);
+        scanner.AddVideo(&item, nullptr, useFolders, true, nullptr, true, CONTENT_MUSICVIDEOS);
         current++;
       }
       else if (StringUtils::CompareNoCase(movie->Value(), MediaTypeTvShow, 6) == 0)
@@ -12153,8 +12155,8 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
         artItem.SetPath(artPath);
         scanner.GetArtwork(&artItem, CONTENT_TVSHOWS, useFolders, true, actorsDir);
         showItem.SetArt(artItem.GetArt());
-        const int showID = static_cast<int>(
-            scanner.AddVideo(&showItem, CONTENT_TVSHOWS, useFolders, true, nullptr, true));
+        const int showID =
+            scanner.AddVideo(&showItem, nullptr, useFolders, true, nullptr, true, CONTENT_TVSHOWS);
         // season artwork
         KODI::ART::SeasonsArtwork seasonArt;
         artItem.GetVideoInfoTag()->m_strPath = artPath;
@@ -12180,7 +12182,8 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
           artItem2.SetPath(GetSafeFile(artPath, filename));
           scanner.GetArtwork(&artItem2, CONTENT_TVSHOWS, useFolders, true, actorsDir);
           item.SetArt(artItem2.GetArt());
-          scanner.AddVideo(&item,CONTENT_TVSHOWS, false, false, showItem.GetVideoInfoTag(), true);
+          scanner.AddVideo(&item, nullptr, false, false, showItem.GetVideoInfoTag(), true,
+                           CONTENT_TVSHOWS);
           episode = episode->NextSiblingElement("episodedetails");
         }
       }
