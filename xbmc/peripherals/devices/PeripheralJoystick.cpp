@@ -93,7 +93,7 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
       if (bSuccess)
       {
         m_buttonMap =
-            std::make_unique<CAddonButtonMap>(this, addon, DEFAULT_CONTROLLER_ID, m_manager);
+            std::make_unique<CAddonButtonMap>(this, addon, GAME::DEFAULT_CONTROLLER_ID, m_manager);
         if (m_buttonMap->Load())
         {
           InitializeDeadzoneFiltering(*m_buttonMap);

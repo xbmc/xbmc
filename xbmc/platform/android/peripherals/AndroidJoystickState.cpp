@@ -258,7 +258,7 @@ void CAndroidJoystickState::Deinitialize(void)
 bool CAndroidJoystickState::InitializeButtonMap(JOYSTICK::IButtonMap& buttonMap) const
 {
   // We only map the default controller
-  if (buttonMap.ControllerID() != DEFAULT_CONTROLLER_ID)
+  if (buttonMap.ControllerID() != GAME::DEFAULT_CONTROLLER_ID)
     return false;
 
   bool success = false;

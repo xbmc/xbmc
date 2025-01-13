@@ -23,7 +23,7 @@ using namespace JOYSTICK;
 
 std::string CJoystickMonitor::ControllerID() const
 {
-  return DEFAULT_CONTROLLER_ID;
+  return GAME::DEFAULT_CONTROLLER_ID;
 }
 
 bool CJoystickMonitor::AcceptsInput(const FeatureName& feature) const

@@ -31,7 +31,7 @@ using namespace JOYSTICK;
 CDeadzoneFilter::CDeadzoneFilter(IButtonMap* buttonMap, PERIPHERALS::CPeripheral* peripheral)
   : m_buttonMap(buttonMap), m_peripheral(peripheral)
 {
-  if (m_buttonMap->ControllerID() != DEFAULT_CONTROLLER_ID)
+  if (m_buttonMap->ControllerID() != GAME::DEFAULT_CONTROLLER_ID)
     CLog::Log(LOGERROR, "ERROR: Must use default controller profile instead of {}",
               m_buttonMap->ControllerID());
 }

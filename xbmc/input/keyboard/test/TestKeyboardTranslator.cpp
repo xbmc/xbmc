@@ -25,13 +25,14 @@ TEST(TestKeyboardTranslator, TranslateKeys)
 
   // Load add-on info
   ADDON::AddonPtr addon;
-  EXPECT_TRUE(addonManager.GetAddon(DEFAULT_KEYBOARD_ID, addon, ADDON::AddonType::GAME_CONTROLLER,
+  EXPECT_TRUE(addonManager.GetAddon(GAME::DEFAULT_KEYBOARD_ID, addon,
+                                    ADDON::AddonType::GAME_CONTROLLER,
                                     ADDON::OnlyEnabled::CHOICE_YES));
 
   // Convert to game controller
   GAME::ControllerPtr controller = std::static_pointer_cast<GAME::CController>(addon);
   ASSERT_NE(controller.get(), nullptr);
-  EXPECT_EQ(controller->ID(), DEFAULT_KEYBOARD_ID);
+  EXPECT_EQ(controller->ID(), GAME::DEFAULT_KEYBOARD_ID);
 
   // Load controller profile
   EXPECT_TRUE(controller->LoadLayout());
