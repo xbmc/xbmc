@@ -63,7 +63,6 @@ CPeripheral::CPeripheral(CPeripherals& manager,
     m_strDeviceName(scanResult.m_strDeviceName),
     m_iVendorId(scanResult.m_iVendorId),
     m_iProductId(scanResult.m_iProductId),
-    m_strVersionInfo(g_localizeStrings.Get(13205)), // "unknown"
     m_bus(bus)
 {
   PeripheralTypeTranslator::FormatHexString(scanResult.m_iVendorId, m_strVendorId);
