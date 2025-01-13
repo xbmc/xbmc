@@ -96,6 +96,12 @@
 				<animation effect="fade" start="0" end="100" delay="300" time="320">WindowOpen</animation>
 				<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
 			</control>
+			<control type="gamecontroller" id="100">
+				<top>550</top>
+				<right>20</right>
+				<height>290</height>
+				<width>290</width>
+			</control>
 		</control>
 	</controls>
 </window>
