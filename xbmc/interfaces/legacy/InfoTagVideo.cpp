@@ -806,7 +806,7 @@ namespace XBMCAddon
 
     void InfoTagVideo::setSetIdRaw(CVideoInfoTag* infoTag, int setId)
     {
-      infoTag->m_set.id = setId;
+      infoTag->m_set.SetID(setId);
     }
 
     void InfoTagVideo::setTrackNumberRaw(CVideoInfoTag* infoTag, int trackNumber)

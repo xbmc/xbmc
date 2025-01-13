@@ -1578,7 +1578,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
           CUtil::GetDiscNumberFromPath(URIUtils::GetParentPath(movieDetails.m_strFileNameAndPath))};
       if (!discNum.empty())
       {
-        if (movieDetails.m_set.title.empty())
+        if (!movieDetails.m_set.HasTitle())
         {
           const std::string setName{m_database.GetSetByNameLike(movieDetails.m_strTitle)};
           if (!setName.empty())
@@ -1853,7 +1853,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     // get and cache thumb images
     std::string mediaType = ContentToMediaType(content, pItem->IsFolder());
     std::vector<std::string> artTypes = CVideoThumbLoader::GetArtTypes(mediaType);
-    bool moviePartOfSet = content == CONTENT_MOVIES && !movieDetails.m_set.title.empty();
+    bool moviePartOfSet = content == CONTENT_MOVIES && movieDetails.m_set.HasTitle();
     std::vector<std::string> movieSetArtTypes;
     if (moviePartOfSet)
     {
@@ -1887,7 +1887,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
       if (moviePartOfSet)
       {
-        std::string movieSetInfoPath = GetMovieSetInfoFolder(movieDetails.m_set.title);
+        std::string movieSetInfoPath = GetMovieSetInfoFolder(movieDetails.m_set.GetTitle());
         if (!movieSetInfoPath.empty())
         {
           KODI::ART::Artwork movieSetArt;
