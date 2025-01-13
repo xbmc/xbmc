@@ -56,6 +56,9 @@
 
 #include <algorithm>
 #include <memory>
+#include <set>
+#include <string>
+#include <unordered_map>
 #include <utility>
 
 using namespace XFILE;
@@ -637,7 +640,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     if (result == InfoType::FULL)
     {
 
-      long lResult = AddVideo(pItem, info2->Content(), bDirNames, useLocal);
+      long lResult = AddVideo(pItem, info2, bDirNames, useLocal);
       if (lResult < 0)
         return InfoRet::INFO_ERROR;
       if (fetchEpisodes)
@@ -677,7 +680,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                                                                     : nullptr,
                      pDlgProgress))
       {
-        if ((lResult = AddVideo(pItem, info2->Content(), false, useLocal)) < 0)
+        if ((lResult = AddVideo(pItem, info2, false, useLocal)) < 0)
           return InfoRet::INFO_ERROR;
 
         if (fetchEpisodes)
@@ -708,7 +711,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                                                                   : nullptr,
                    pDlgProgress))
     {
-      if ((lResult = AddVideo(pItem, info2->Content(), false, useLocal)) < 0)
+      if ((lResult = AddVideo(pItem, info2, false, useLocal)) < 0)
         return InfoRet::INFO_ERROR;
     }
     if (fetchEpisodes)
@@ -758,14 +761,14 @@ CVideoInfoScanner::~CVideoInfoScanner()
         // Add as version
         movieId = existingMovieId;
         item.SetProperty("idMovie", movieId);
-        const int versionId{
-            static_cast<int>(AddVideo(&item, CONTENT_MOVIEVERSIONS, bDirNames, true, NULL, false))};
+        const int versionId{static_cast<int>(
+            AddVideo(&item, info2, bDirNames, true, NULL, false, CONTENT_MOVIEVERSIONS))};
         if (versionId < 0)
           return InfoRet::INFO_ERROR;
       }
       else
       {
-        movieId = static_cast<int>(AddVideo(&item, info2->Content(), bDirNames, true));
+        movieId = static_cast<int>(AddVideo(&item, info2, bDirNames, true));
         if (movieId < 0)
           return InfoRet::INFO_ERROR;
         item.SetProperty("idMovie", movieId);
@@ -790,8 +793,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
         if (result == InfoType::FULL)
         {
           // Add the version entry
-          const int versionId{
-              static_cast<int>(AddVideo(&item, CONTENT_MOVIEVERSIONS, bDirNames, true))};
+          const int versionId{static_cast<int>(
+              AddVideo(&item, info2, bDirNames, true, NULL, false, CONTENT_MOVIEVERSIONS))};
           if (versionId < 0)
             return InfoRet::INFO_ERROR;
 
@@ -840,7 +843,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                                                                     : nullptr,
                      pDlgProgress))
       {
-        const int dbId = AddVideo(pItem, info2->Content(), bDirNames, useLocal);
+        const int dbId = AddVideo(pItem, info2, bDirNames, useLocal);
         if (dbId < 0)
           return InfoRet::INFO_ERROR;
         if (!m_ignoreVideoVersions && ProcessVideoVersion(VideoDbContentType::MOVIES, dbId))
@@ -862,7 +865,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                                                                   : nullptr,
                    pDlgProgress))
     {
-      const int dbId = AddVideo(pItem, info2->Content(), bDirNames, useLocal);
+      const int dbId = AddVideo(pItem, info2, bDirNames, useLocal);
       if (dbId < 0)
         return InfoRet::INFO_ERROR;
       if (!m_ignoreVideoVersions && ProcessVideoVersion(VideoDbContentType::MOVIES, dbId))
@@ -902,7 +905,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       std::tie(result, loader) = ReadInfoTag(*pItem, info2, bDirNames, true);
     if (result == InfoType::FULL)
     {
-      if (AddVideo(pItem, info2->Content(), bDirNames, true) < 0)
+      if (AddVideo(pItem, info2, bDirNames, true) < 0)
         return InfoRet::INFO_ERROR;
       return InfoRet::ADDED;
     }
@@ -933,7 +936,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                                                                     : nullptr,
                      pDlgProgress))
       {
-        if (AddVideo(pItem, info2->Content(), bDirNames, useLocal) < 0)
+        if (AddVideo(pItem, info2, bDirNames, useLocal) < 0)
           return InfoRet::INFO_ERROR;
         return InfoRet::ADDED;
       }
@@ -952,7 +955,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                                                                   : nullptr,
                    pDlgProgress))
     {
-      if (AddVideo(pItem, info2->Content(), bDirNames, useLocal) < 0)
+      if (AddVideo(pItem, info2, bDirNames, useLocal) < 0)
         return InfoRet::INFO_ERROR;
       return InfoRet::ADDED;
     }
@@ -996,11 +999,16 @@ CVideoInfoScanner::~CVideoInfoScanner()
           CVideoInfoDownloader loader(scraper);
           loader.GetArtwork(showInfo);
         }
-        GetSeasonThumbs(showInfo, seasonArt, CVideoThumbLoader::GetArtTypes(MediaTypeSeason), useLocal && !item->IsPlugin());
-        for (std::map<int, std::map<std::string, std::string> >::const_iterator i = seasonArt.begin(); i != seasonArt.end(); ++i)
+        const UseRemoteArtWithLocalScraper useRemoteArt{
+            scraper->ID() == "metadata.local" && m_advancedSettings->m_bNoRemoteArtWithLocalScraper
+                ? UseRemoteArtWithLocalScraper::NO
+                : UseRemoteArtWithLocalScraper::YES};
+        GetSeasonThumbs(showInfo, seasonArt, CVideoThumbLoader::GetArtTypes(MediaTypeSeason),
+                        useLocal && !item->IsPlugin(), useRemoteArt);
+        for (const auto& [season, art] : seasonArt)
         {
-          int seasonID = m_database.AddSeason(showID, i->first);
-          m_database.SetArtForItem(seasonID, MediaTypeSeason, i->second);
+          const int seasonID{m_database.AddSeason(showID, season)};
+          m_database.SetArtForItem(seasonID, MediaTypeSeason, art);
         }
       }
     }
@@ -1496,14 +1504,29 @@ CVideoInfoScanner::~CVideoInfoScanner()
     return false;
   }
 
-  long CVideoInfoScanner::AddVideo(CFileItem *pItem, const CONTENT_TYPE &content, bool videoFolder /* = false */, bool useLocal /* = true */, const CVideoInfoTag *showInfo /* = NULL */, bool libraryImport /* = false */)
+  long CVideoInfoScanner::AddVideo(CFileItem* pItem,
+                                   const ScraperPtr& scraper,
+                                   bool videoFolder /* = false */,
+                                   bool useLocal /* = true */,
+                                   const CVideoInfoTag* showInfo /* = NULL */,
+                                   bool libraryImport /* = false */,
+                                   const CONTENT_TYPE& contentOverride /* = CONTENT_NONE */)
   {
     // ensure our database is open (this can get called via other classes)
     if (!m_database.Open())
       return -1;
 
+    const CONTENT_TYPE& content{!scraper || contentOverride != CONTENT_NONE ? contentOverride
+                                                                            : scraper->Content()};
+    const bool usingLocalScraper{scraper && scraper->ID() == "metadata.local"};
+    const UseRemoteArtWithLocalScraper useRemoteArt{
+        usingLocalScraper && m_advancedSettings->m_bNoRemoteArtWithLocalScraper
+            ? UseRemoteArtWithLocalScraper::NO
+            : UseRemoteArtWithLocalScraper::YES};
+
     if (!libraryImport)
-      GetArtwork(pItem, content, videoFolder, useLocal && !pItem->IsPlugin(), showInfo ? showInfo->m_strPath : "");
+      GetArtwork(pItem, content, videoFolder, useLocal && !pItem->IsPlugin(),
+                 showInfo ? showInfo->m_strPath : "", useRemoteArt);
 
     // ensure the art map isn't completely empty by specifying an empty thumb
     std::map<std::string, std::string> art = pItem->GetArt();
@@ -1573,6 +1596,15 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (!strTrailer.empty())
         movieDetails.m_strTrailer = strTrailer;
 
+      // Remove remote set art (if need)
+      if (useRemoteArt == UseRemoteArtWithLocalScraper::NO)
+        std::erase_if(art,
+                      [](const std::pair<std::string, std::string>& artItem)
+                      {
+                        const auto& [type, url] = artItem;
+                        return StringUtils::StartsWith(type, "set.") && URIUtils::IsRemote(url);
+                      });
+
       // Deal with 'Disc n' subdirectories
       const std::string discNum{
           CUtil::GetDiscNumberFromPath(URIUtils::GetParentPath(movieDetails.m_strFileNameAndPath))};
@@ -1622,6 +1654,11 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                                       : -1};
       if (idMovie != -1)
       {
+        // Remove remote set art (if need)
+        if (useRemoteArt == UseRemoteArtWithLocalScraper::NO)
+          std::erase_if(art, [](const std::pair<std::string, std::string>& artItem)
+                        { return URIUtils::IsRemote(artItem.second); });
+
         lResult = m_database.AddMovieVersion(*pItem, idMovie, art);
         movieDetails.m_iDbId = lResult;
         movieDetails.m_type = MediaTypeMovie;
@@ -1645,7 +1682,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
         std::map<int, std::map<std::string, std::string> > seasonArt;
 
         if (!libraryImport)
-          GetSeasonThumbs(movieDetails, seasonArt, CVideoThumbLoader::GetArtTypes(MediaTypeSeason), useLocal && !pItem->IsPlugin());
+          GetSeasonThumbs(movieDetails, seasonArt, CVideoThumbLoader::GetArtTypes(MediaTypeSeason),
+                          useLocal && !pItem->IsPlugin(), useRemoteArt);
 
         lResult = m_database.SetDetailsForTvShow(paths, movieDetails, art, seasonArt);
         movieDetails.m_iDbId = lResult;
@@ -1849,7 +1887,12 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
   }
 
-  void CVideoInfoScanner::GetArtwork(CFileItem *pItem, const CONTENT_TYPE &content, bool bApplyToDir, bool useLocal, const std::string &actorArtPath)
+  void CVideoInfoScanner::GetArtwork(CFileItem* pItem,
+                                     const CONTENT_TYPE& content,
+                                     bool bApplyToDir /* = false */,
+                                     bool useLocal /* = true */,
+                                     const std::string& actorArtPath /* = "" */,
+                                     UseRemoteArtWithLocalScraper useRemoteArt /* = yes */)
   {
     int artLevel = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
         CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL);
@@ -1926,7 +1969,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       for (auto& it : pItem->GetVideoInfoTag()->m_coverArt)
       {
         if ((addAll || CVideoThumbLoader::IsArtTypeInWhitelist(it.m_type, artTypes, exactName)) &&
-          art.find(it.m_type) == art.end())
+            art.find(it.m_type) == art.end())
         {
           std::string thumb = IMAGE_FILES::URLFromFile(pItem->GetPath(), "video_" + it.m_type);
           art.insert(std::make_pair(it.m_type, thumb));
@@ -1936,10 +1979,11 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     // add online fanart (treated separately due to it being stored in m_fanart)
     if ((addAll || CVideoThumbLoader::IsArtTypeInWhitelist("fanart", artTypes, exactName)) &&
-      art.find("fanart") == art.end())
+        art.find("fanart") == art.end())
     {
       std::string fanart = pItem->GetVideoInfoTag()->m_fanart.GetImageURL();
-      if (!fanart.empty())
+      if (!fanart.empty() &&
+          !(useRemoteArt == UseRemoteArtWithLocalScraper::NO && URIUtils::IsRemote(fanart)))
         art.insert(std::make_pair("fanart", fanart));
     }
 
@@ -1954,10 +1998,11 @@ CVideoInfoScanner::~CVideoInfoScanner()
         aspect = mediaType == MediaTypeEpisode ? "thumb" : "poster";
 
       if ((addAll || CVideoThumbLoader::IsArtTypeInWhitelist(aspect, artTypes, exactName)) &&
-        art.find(aspect) == art.end())
+          art.find(aspect) == art.end())
       {
         std::string image = GetImage(url, pItem->GetPath());
-        if (!image.empty())
+        if (!image.empty() &&
+            !(useRemoteArt == UseRemoteArtWithLocalScraper::NO && URIUtils::IsRemote(image)))
           art.insert(std::make_pair(aspect, image));
       }
     }
@@ -1980,8 +2025,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     // parent folder to apply the thumb to and to search for local actor thumbs
     std::string parentDir = URIUtils::GetBasePath(pItem->GetPath());
-    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOLIBRARY_ACTORTHUMBS))
-      FetchActorThumbs(movieDetails.m_cast, actorArtPath.empty() ? parentDir : actorArtPath);
+    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+            CSettings::SETTING_VIDEOLIBRARY_ACTORTHUMBS))
+      FetchActorThumbs(movieDetails.m_cast, actorArtPath.empty() ? parentDir : actorArtPath,
+                       useRemoteArt);
     if (bApplyToDir)
       ApplyThumbToFolder(parentDir, art["thumb"]);
   }
@@ -2068,7 +2115,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
           item.GetVideoInfoTag()->m_iEpisode = file->iEpisode;
           item.GetVideoInfoTag()->m_iSeason = file->iSeason;
         }
-        if (AddVideo(&item, CONTENT_TVSHOWS, file->isFolder, true, &showInfo) < 0)
+        if (AddVideo(&item, info, file->isFolder, true, &showInfo, false, CONTENT_TVSHOWS) < 0)
           return InfoRet::INFO_ERROR;
         continue;
       }
@@ -2217,7 +2264,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         if (item.GetVideoInfoTag()->m_iEpisode == -1)
           item.GetVideoInfoTag()->m_iEpisode = guide->iEpisode;
 
-        if (AddVideo(&item, CONTENT_TVSHOWS, file->isFolder, useLocal, &showInfo) < 0)
+        if (AddVideo(&item, info, file->isFolder, useLocal, &showInfo, false, CONTENT_TVSHOWS) < 0)
           return InfoRet::INFO_ERROR;
       }
       else
@@ -2386,8 +2433,12 @@ CVideoInfoScanner::~CVideoInfoScanner()
     return "";
   }
 
-  void CVideoInfoScanner::GetSeasonThumbs(const CVideoInfoTag &show,
-      std::map<int, std::map<std::string, std::string>> &seasonArt, const std::vector<std::string> &artTypes, bool useLocal)
+  void CVideoInfoScanner::GetSeasonThumbs(
+      const CVideoInfoTag& show,
+      std::map<int, std::map<std::string, std::string>>& seasonArt,
+      const std::vector<std::string>& artTypes,
+      bool useLocal /* = true */,
+      UseRemoteArtWithLocalScraper useRemoteArt /* = yes */)
   {
     int artLevel = CServiceBroker::GetSettingsComponent()->GetSettings()->
       GetInt(CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL);
@@ -2453,16 +2504,19 @@ CVideoInfoScanner::~CVideoInfoScanner()
         aspect = "thumb";
       std::map<std::string, std::string>& art = seasonArt[url.m_season];
       if ((addAll || CVideoThumbLoader::IsArtTypeInWhitelist(aspect, artTypes, exactName)) &&
-        art.find(aspect) == art.end())
+          art.find(aspect) == art.end())
       {
         std::string image = CScraperUrl::GetThumbUrl(url);
-        if (!image.empty())
+        if (!image.empty() &&
+            !(useRemoteArt == UseRemoteArtWithLocalScraper::NO && URIUtils::IsRemote(image)))
           art.insert(std::make_pair(aspect, image));
       }
     }
   }
 
-  void CVideoInfoScanner::FetchActorThumbs(std::vector<SActorInfo>& actors, const std::string& strPath)
+  void CVideoInfoScanner::FetchActorThumbs(std::vector<SActorInfo>& actors,
+                                           const std::string& strPath,
+                                           UseRemoteArtWithLocalScraper useRemoteArt /* = yes */)
   {
     CFileItemList items;
     // don't try to fetch anything local with plugin source
@@ -2489,8 +2543,16 @@ CVideoInfoScanner::~CVideoInfoScanner()
             break;
           }
         }
-        if (i->thumb.empty() && !i->thumbUrl.GetFirstUrlByType().m_url.empty())
-          i->thumb = CScraperUrl::GetThumbUrl(i->thumbUrl.GetFirstUrlByType());
+        if (!i->thumbUrl.GetFirstUrlByType().m_url.empty())
+        {
+          const std::string thumb{CScraperUrl::GetThumbUrl(i->thumbUrl.GetFirstUrlByType())};
+          const bool notUsingThisRemoteArt{useRemoteArt == UseRemoteArtWithLocalScraper::NO &&
+                                           URIUtils::IsRemote(thumb)};
+          if (i->thumb.empty() && !notUsingThisRemoteArt)
+            i->thumb = thumb;
+          if (notUsingThisRemoteArt)
+            i->thumbUrl.Clear();
+        }
         if (!i->thumb.empty())
           CServiceBroker::GetTextureCache()->BackgroundCacheImage(i->thumb);
       }
