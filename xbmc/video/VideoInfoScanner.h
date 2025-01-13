@@ -60,14 +60,21 @@ namespace KODI::VIDEO
 
     /*! \brief Add an item to the database.
      \param pItem item to add to the database.
-     \param content content type of the item.
+     \param scraper scraper used for the lookup.
      \param videoFolder whether the video is represented by a folder (single movie per folder). Defaults to false.
      \param useLocal whether to use local information for artwork etc.
      \param showInfo pointer to CVideoInfoTag details for the show if this is an episode. Defaults to NULL.
      \param libraryImport Whether this call belongs to a full library import or not. Defaults to false.
+     \param contentOverride content type of the item. Defaults to CONTENT_NONE (which is ignored).
      \return database id of the added item, or -1 on failure.
      */
-    long AddVideo(CFileItem *pItem, const CONTENT_TYPE &content, bool videoFolder = false, bool useLocal = true, const CVideoInfoTag *showInfo = NULL, bool libraryImport = false);
+    long AddVideo(CFileItem* pItem,
+                  const ADDON::ScraperPtr& scraper,
+                  bool videoFolder = false,
+                  bool useLocal = true,
+                  const CVideoInfoTag* showInfo = NULL,
+                  bool libraryImport = false,
+                  const CONTENT_TYPE& contentOverride = CONTENT_NONE);
 
     /*! \brief Retrieve information for a list of items and add them to the database.
      \param items list of items to retrieve info for.
@@ -90,16 +97,27 @@ namespace KODI::VIDEO
      \param bApplyToDir whether we should apply any thumbs to a folder.  Defaults to false.
      \param useLocal whether we should use local thumbs. Defaults to true.
      \param actorArtPath the path to search for actor thumbs. Defaults to empty.
+     \param noRemoteArt true if not to use remote art if also using local scraper. Defaults to false.
      */
-    void GetArtwork(CFileItem *pItem, const CONTENT_TYPE &content, bool bApplyToDir=false, bool useLocal=true, const std::string &actorArtPath = "");
+    void GetArtwork(CFileItem* pItem,
+                    const CONTENT_TYPE& content,
+                    bool bApplyToDir = false,
+                    bool useLocal = true,
+                    const std::string& actorArtPath = "",
+                    bool noRemoteArt = false);
 
     /*! \brief Get season thumbs for a tvshow.
      All seasons (regardless of whether the user has episodes) are added to the art map.
      \param show     tvshow info tag
      \param art      artwork map to which season thumbs are added.
      \param useLocal whether to use local thumbs, defaults to true
+     \param noRemoteArt true if not to use remote art if also using local scraper. Defaults to false.
      */
-    static void GetSeasonThumbs(const CVideoInfoTag &show, std::map<int, std::map<std::string, std::string> > &art, const std::vector<std::string> &artTypes, bool useLocal = true);
+    static void GetSeasonThumbs(const CVideoInfoTag& show,
+                                std::map<int, std::map<std::string, std::string>>& art,
+                                const std::vector<std::string>& artTypes,
+                                bool useLocal = true,
+                                bool noRemoteArt = false);
     static std::string GetImage(const CScraperUrl::SUrlEntry &image, const std::string& itemPath);
 
     bool EnumerateEpisodeItem(const CFileItem *item, EPISODELIST& episodeList);
@@ -206,8 +224,11 @@ namespace KODI::VIDEO
      Updates each actor with their thumb (local or online)
      \param actors - vector of SActorInfo
      \param strPath - path on filesystem to look for local thumbs
+     \param noRemoteArt - if true, don't use remote art (ie. http://) even if derived from local .nfo file
      */
-    void FetchActorThumbs(std::vector<SActorInfo>& actors, const std::string& strPath);
+    void FetchActorThumbs(std::vector<SActorInfo>& actors,
+                          const std::string& strPath,
+                          bool noRemoteArt = false);
 
     static int GetPathHash(const CFileItemList &items, std::string &hash);
 
