@@ -6643,7 +6643,6 @@ msgstr ""
 #: xbmc/addons/gui/GUIDialogAddonSettings.cpp
 #: xbmc/music/MusicDatabase.cpp
 #: xbmc/peripherals/bus/PeripheralBus.cpp
-#: xbmc/peripherals/devices/Peripheral.cpp
 #: xbmc/platform/win32/WIN32Util.cpp
 #: xbmc/pvr/addons/PVRClients.cpp
 #: xbmc/pvr/channels/PVRChannel.cpp

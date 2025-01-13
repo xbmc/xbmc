@@ -311,13 +311,19 @@ void CPeripheralBus::GetDirectory(const std::string& strPath, CFileItemList& ite
                                 PeripheralTypeTranslator::TypeToString(peripheral->Type()));
 
     std::string strVersion(peripheral->GetVersionInfo());
-    if (strVersion.empty())
-      strVersion = g_localizeStrings.Get(13205);
 
-    std::string strDetails = StringUtils::Format("{} {}", g_localizeStrings.Get(24051), strVersion);
+    std::string strDetails;
+
     if (peripheral->GetBusType() == PERIPHERAL_BUS_CEC && !peripheral->GetSettingBool("enabled"))
       strDetails =
           StringUtils::Format("{}: {}", g_localizeStrings.Get(126), g_localizeStrings.Get(13106));
+
+    if (strDetails.empty())
+    {
+      std::string strVersion(peripheral->GetVersionInfo());
+      if (!strVersion.empty())
+        strDetails = StringUtils::Format("{} {}", g_localizeStrings.Get(24051), strVersion);
+    }
 
     peripheralFile->SetProperty("version", strVersion);
     peripheralFile->SetLabel2(strDetails);
