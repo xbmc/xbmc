@@ -59,6 +59,12 @@ namespace KODI::VIDEO
     void Start(const std::string& strDirectory, bool scanAll = false);
     void Stop();
 
+    /*! \brief Add a set to the database.
+     \param set CSetInfoTag to add to the database.
+     \return true if successful, false otherwise.
+     */
+    bool AddSet(CSetInfoTag* set);
+
     /*! \brief Add an item to the database.
      \param pItem item to add to the database.
      \param content content type of the item.
