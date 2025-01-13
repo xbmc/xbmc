@@ -321,6 +321,8 @@ void CAdvancedSettings::Initialize()
   m_disableEpisodeRanges = false;
 
   m_caseSensitiveLocalArtMatch = true; // case sensitive local art matching
+  m_bNoRemoteArtWithLocalScraper =
+      false; // If local nfo file refers to online art, it will be retrieved
 
   m_iEpgUpdateCheckInterval = 300; /* Check every X seconds, if EPG data need to be updated. This does not mean that
                                       every X seconds an EPG update is actually triggered, it's just the interval how
@@ -826,6 +828,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetBoolean(pElement, "casesensitivelocalartmatch", m_caseSensitiveLocalArtMatch);
     XMLUtils::GetInt(pElement, "minimumepisodeplaylistduration", m_minimumEpisodePlaylistDuration);
     XMLUtils::GetBoolean(pElement, "disableepisoderanges", m_disableEpisodeRanges);
+    XMLUtils::GetBoolean(pElement, "noremoteartwithlocalscraper", m_bNoRemoteArtWithLocalScraper);
   }
 
   pElement = pRootElement->FirstChildElement("videoscanner");
