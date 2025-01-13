@@ -1712,6 +1712,24 @@ CVideoInfoScanner::~CVideoInfoScanner()
     return false;
   }
 
+  bool CVideoInfoScanner::AddSet(CSetInfoTag* set)
+  {
+    // ensure our database is open (this can get called via other classes)
+    if (!m_database.Open())
+      return false;
+
+    CLog::LogF(LOGDEBUG, "Adding new set {}", set->GetTitle());
+
+    // Create set
+    const int idSet{
+        m_database.AddSet(set->GetTitle(), set->GetOverview(), set->GetOriginalTitle())};
+
+    // Assume art in set
+    if (idSet > 0)
+      return m_database.SetArtForItem(idSet, MediaTypeVideoCollection, set->GetArt());
+    return false;
+  }
+
   long CVideoInfoScanner::AddVideo(CFileItem* pItem,
                                    ContentType content,
                                    bool videoFolder /* = false */,
