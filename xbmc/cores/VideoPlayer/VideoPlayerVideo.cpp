@@ -13,6 +13,7 @@
 #include "DVDCodecs/Overlay/DVDOverlay.h"
 #include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 #include "ServiceBroker.h"
+#include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlayLibass.h"
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "settings/AdvancedSettings.h"
@@ -902,6 +903,11 @@ void CVideoPlayerVideo::ProcessOverlays(const VideoPicture* pSource, double pts)
         continue;
 
       double pts2 = pOverlay->bForced ? pts : pts - m_iSubtitleDelay;
+      auto libassOverlay = std::dynamic_pointer_cast<CDVDOverlayLibass>(pOverlay);
+      if (libassOverlay) {
+        if (!libassOverlay->GetLibassHandler()->EventActive(pts2))
+          continue;
+      }
 
       if((pOverlay->iPTSStartTime <= pts2 && (pOverlay->iPTSStopTime > pts2 || pOverlay->iPTSStopTime == 0LL)))
       {
