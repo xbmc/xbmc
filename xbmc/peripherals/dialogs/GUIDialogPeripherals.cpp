@@ -96,7 +96,7 @@ void CGUIDialogPeripherals::Show(CPeripherals& manager)
 
       // Show an error if the peripheral doesn't have any settings
       PeripheralPtr peripheral = manager.GetByPath(pItem->GetPath());
-      if (!peripheral || peripheral->GetSettings().empty())
+      if (!peripheral || !peripheral->HasConfigurableSettings())
       {
         MESSAGING::HELPERS::ShowOKDialogText(CVariant{35000}, CVariant{35004});
         continue;
@@ -133,8 +133,10 @@ bool CGUIDialogPeripherals::OnMessage(CGUIMessage& message)
     case GUI_MSG_REFRESH_LIST:
     {
       if (m_manager && message.GetControlId() == -1)
+      {
         UpdatePeripheralsSync();
-      return true;
+        return true;
+      }
     }
     default:
       break;
