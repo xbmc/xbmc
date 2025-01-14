@@ -100,10 +100,10 @@ void CPeripheralBus::UnregisterRemovedDevices(const PeripheralScanResults& resul
         features.size() > 1 || (features.size() == 1 && features.at(0) != FEATURE_UNKNOWN);
     if (peripheral->Type() != PERIPHERAL_UNKNOWN || peripheralHasFeatures)
     {
-      CLog::Log(LOGINFO, "{} - device removed from {}/{}: {} ({}:{})", __FUNCTION__,
-                PeripheralTypeTranslator::TypeToString(peripheral->Type()), peripheral->Location(),
-                peripheral->DeviceName(), peripheral->VendorIdAsString(),
-                peripheral->ProductIdAsString());
+      CLog::Log(LOGINFO, "{} - {} device removed from {}: {} ({}:{})", __FUNCTION__,
+                PeripheralTypeTranslator::TypeToString(peripheral->Type()),
+                peripheral->FileLocation(), peripheral->DeviceName(),
+                peripheral->VendorIdAsString(), peripheral->ProductIdAsString());
       peripheral->OnDeviceRemoved();
     }
 
