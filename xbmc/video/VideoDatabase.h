@@ -95,26 +95,27 @@ constexpr int VIDEODB_DETAILS_MOVIE_USER_RATING         = VIDEODB_MAX_COLUMNS + 
 constexpr int VIDEODB_DETAILS_MOVIE_PREMIERED           = VIDEODB_MAX_COLUMNS + 4;
 constexpr int VIDEODB_DETAILS_MOVIE_SET_NAME            = VIDEODB_MAX_COLUMNS + 5;
 constexpr int VIDEODB_DETAILS_MOVIE_SET_OVERVIEW        = VIDEODB_MAX_COLUMNS + 6;
-constexpr int VIDEODB_DETAILS_MOVIE_FILE                = VIDEODB_MAX_COLUMNS + 7;
-constexpr int VIDEODB_DETAILS_MOVIE_PATH                = VIDEODB_MAX_COLUMNS + 8;
-constexpr int VIDEODB_DETAILS_MOVIE_PLAYCOUNT           = VIDEODB_MAX_COLUMNS + 9;
-constexpr int VIDEODB_DETAILS_MOVIE_LASTPLAYED          = VIDEODB_MAX_COLUMNS + 10;
-constexpr int VIDEODB_DETAILS_MOVIE_DATEADDED           = VIDEODB_MAX_COLUMNS + 11;
-constexpr int VIDEODB_DETAILS_MOVIE_RESUME_TIME         = VIDEODB_MAX_COLUMNS + 12;
-constexpr int VIDEODB_DETAILS_MOVIE_TOTAL_TIME          = VIDEODB_MAX_COLUMNS + 13;
-constexpr int VIDEODB_DETAILS_MOVIE_PLAYER_STATE        = VIDEODB_MAX_COLUMNS + 14;
-constexpr int VIDEODB_DETAILS_MOVIE_RATING              = VIDEODB_MAX_COLUMNS + 15;
-constexpr int VIDEODB_DETAILS_MOVIE_VOTES               = VIDEODB_MAX_COLUMNS + 16;
-constexpr int VIDEODB_DETAILS_MOVIE_RATING_TYPE         = VIDEODB_MAX_COLUMNS + 17;
-constexpr int VIDEODB_DETAILS_MOVIE_UNIQUEID_VALUE      = VIDEODB_MAX_COLUMNS + 18;
-constexpr int VIDEODB_DETAILS_MOVIE_UNIQUEID_TYPE       = VIDEODB_MAX_COLUMNS + 19;
-constexpr int VIDEODB_DETAILS_MOVIE_HASVERSIONS         = VIDEODB_MAX_COLUMNS + 20;
-constexpr int VIDEODB_DETAILS_MOVIE_HASEXTRAS           = VIDEODB_MAX_COLUMNS + 21;
-constexpr int VIDEODB_DETAILS_MOVIE_ISDEFAULTVERSION    = VIDEODB_MAX_COLUMNS + 22;
-constexpr int VIDEODB_DETAILS_MOVIE_VERSION_FILEID      = VIDEODB_MAX_COLUMNS + 23;
-constexpr int VIDEODB_DETAILS_MOVIE_VERSION_TYPEID      = VIDEODB_MAX_COLUMNS + 24;
-constexpr int VIDEODB_DETAILS_MOVIE_VERSION_TYPENAME    = VIDEODB_MAX_COLUMNS + 25;
-constexpr int VIDEODB_DETAILS_MOVIE_VERSION_ITEMTYPE    = VIDEODB_MAX_COLUMNS + 26;
+constexpr int VIDEODB_DETAILS_MOVIE_SET_ORIGINALNAME    = VIDEODB_MAX_COLUMNS + 7;
+constexpr int VIDEODB_DETAILS_MOVIE_FILE                = VIDEODB_MAX_COLUMNS + 8;
+constexpr int VIDEODB_DETAILS_MOVIE_PATH                = VIDEODB_MAX_COLUMNS + 9;
+constexpr int VIDEODB_DETAILS_MOVIE_PLAYCOUNT           = VIDEODB_MAX_COLUMNS + 10;
+constexpr int VIDEODB_DETAILS_MOVIE_LASTPLAYED          = VIDEODB_MAX_COLUMNS + 11;
+constexpr int VIDEODB_DETAILS_MOVIE_DATEADDED           = VIDEODB_MAX_COLUMNS + 12;
+constexpr int VIDEODB_DETAILS_MOVIE_RESUME_TIME         = VIDEODB_MAX_COLUMNS + 13;
+constexpr int VIDEODB_DETAILS_MOVIE_TOTAL_TIME          = VIDEODB_MAX_COLUMNS + 14;
+constexpr int VIDEODB_DETAILS_MOVIE_PLAYER_STATE        = VIDEODB_MAX_COLUMNS + 15;
+constexpr int VIDEODB_DETAILS_MOVIE_RATING              = VIDEODB_MAX_COLUMNS + 16;
+constexpr int VIDEODB_DETAILS_MOVIE_VOTES               = VIDEODB_MAX_COLUMNS + 17;
+constexpr int VIDEODB_DETAILS_MOVIE_RATING_TYPE         = VIDEODB_MAX_COLUMNS + 18;
+constexpr int VIDEODB_DETAILS_MOVIE_UNIQUEID_VALUE      = VIDEODB_MAX_COLUMNS + 19;
+constexpr int VIDEODB_DETAILS_MOVIE_UNIQUEID_TYPE       = VIDEODB_MAX_COLUMNS + 20;
+constexpr int VIDEODB_DETAILS_MOVIE_HASVERSIONS         = VIDEODB_MAX_COLUMNS + 21;
+constexpr int VIDEODB_DETAILS_MOVIE_HASEXTRAS           = VIDEODB_MAX_COLUMNS + 22;
+constexpr int VIDEODB_DETAILS_MOVIE_ISDEFAULTVERSION    = VIDEODB_MAX_COLUMNS + 23;
+constexpr int VIDEODB_DETAILS_MOVIE_VERSION_FILEID      = VIDEODB_MAX_COLUMNS + 24;
+constexpr int VIDEODB_DETAILS_MOVIE_VERSION_TYPEID      = VIDEODB_MAX_COLUMNS + 25;
+constexpr int VIDEODB_DETAILS_MOVIE_VERSION_TYPENAME    = VIDEODB_MAX_COLUMNS + 26;
+constexpr int VIDEODB_DETAILS_MOVIE_VERSION_ITEMTYPE    = VIDEODB_MAX_COLUMNS + 27;
 
 constexpr int VIDEODB_DETAILS_EPISODE_TVSHOW_ID         = VIDEODB_MAX_COLUMNS + 2;
 constexpr int VIDEODB_DETAILS_EPISODE_USER_RATING       = VIDEODB_MAX_COLUMNS + 3;
@@ -585,6 +586,7 @@ public:
   std::string GetGenreById(int id) const;
   std::string GetCountryById(int id) const;
   std::string GetSetById(int id) const;
+  std::string GetOriginalSetById(int id) const;
   std::string GetTagById(int id) const;
   std::string GetPersonById(int id) const;
   std::string GetStudioById(int id) const;
@@ -1001,6 +1003,8 @@ public:
                                CFileItemList& items,
                                int getDetails = VideoDbDetailsNone);
 
+  bool GetMoviesBySet(const std::string& baseDir, CFileItemList& items, int idSet);
+
   bool HasContent();
   bool HasContent(VideoDbContentType type);
   bool HasSets() const;
@@ -1183,6 +1187,7 @@ public:
   int AddSeason(int showID, int season, const std::string& name = "");
   int AddSet(const std::string& strSet,
              const std::string& strOverview = "",
+             const std::string& strOriginalSet = "",
              const bool updateOverview = true);
   void ClearMovieSet(int idMovie);
   void SetMovieSet(int idMovie, int idSet);

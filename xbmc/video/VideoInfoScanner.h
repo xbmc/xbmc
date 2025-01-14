@@ -26,6 +26,7 @@ class CFileItemList;
 namespace KODI::VIDEO
 {
   class IVideoInfoTagLoader;
+  class ISetInfoTagLoader;
 
   typedef struct SScanSettings
   {
@@ -95,6 +96,12 @@ namespace KODI::VIDEO
 
     static void ApplyThumbToFolder(const std::string &folder, const std::string &imdbThumb);
     static bool DownloadFailed(CGUIDialogProgress* pDlgProgress);
+
+    /*! \brief Update the set information from a SET.NFO in the Movie Set Information Folder
+     Gets set details from the VideoInfoTag of a movie
+     \param tag     info tag
+     */
+    static bool UpdateSetInTag(CVideoInfoTag& tag);
 
     /*! \brief Retrieve any artwork associated with an item
      \param pItem item to find artwork for.
@@ -298,5 +305,7 @@ namespace KODI::VIDEO
     std::set<int> m_pathsToClean;
     std::shared_ptr<CAdvancedSettings> m_advancedSettings;
     CVideoDatabase::ScraperCache m_scraperCache;
+
+    void UpdateSet(const std::shared_ptr<CFileItem>& item);
   };
   } // namespace KODI::VIDEO

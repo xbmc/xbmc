@@ -13,6 +13,7 @@
 #include "GUIInfoManager.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
+#include "SetInfoTag.h"
 #include "TextureCache.h"
 #include "URL.h"
 #include "Util.h"
@@ -37,6 +38,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "tags/SetInfoTagLoaderFactory.h"
 #include "tags/VideoInfoTagLoaderFactory.h"
 #include "utils/ArtUtils.h"
 #include "utils/Digest.h"
@@ -535,6 +537,10 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (m_bStop)
         break;
 
+      // See if set needs updating
+      if (content == ContentType::MOVIES)
+        UpdateSet(pItem);
+
       // add video extras to library
       if (foundSomething && content == ContentType::MOVIES && settings.parent_name &&
           !m_ignoreVideoExtras && IsVideoExtrasFolder(*pItem))
@@ -561,6 +567,104 @@ CVideoInfoScanner::~CVideoInfoScanner()
       }
     }
     return !m_bStop;
+  }
+
+  void CVideoInfoScanner::UpdateSet(const std::shared_ptr<CFileItem>& item)
+  {
+    bool update{false};
+    CVideoInfoTag movieDetails;
+    int dbId{-1};
+
+    // If set information not already updated, see if movie set.nfo preset and/or artwork empty and
+    // could be updated locally from the movie set information folder
+    if (!item->GetProperty("set_updated").asBoolean(false))
+    {
+      if (!URIUtils::GetFileName(item->GetPath()).empty() &&
+          !URIUtils::IsPlugin(item->GetDynPath()) &&
+          m_database.GetMovieInfo(item->GetPath(), movieDetails) && movieDetails.m_set.HasTitle())
+      {
+        dbId = movieDetails.m_set.GetID();
+        movieDetails.m_set.SetTitle(m_database.GetOriginalSetById(dbId)); // Original title
+        update = UpdateSetInTag(movieDetails); // Returned in tag
+      }
+    }
+    else
+    {
+      // Set information already updated
+      movieDetails = *item->GetVideoInfoTag();
+      update = true;
+      dbId = movieDetails.m_set.GetID();
+    }
+
+    if (update)
+    {
+      m_database.AddSet(movieDetails.m_set.GetTitle(), movieDetails.m_set.GetOverview(),
+                        movieDetails.m_set.GetOriginalTitle(),
+                        movieDetails.GetUpdateSetOverview()); // Update set
+      m_database.SetArtForItem(dbId, MediaTypeVideoCollection, movieDetails.m_set.GetArt());
+    }
+  }
+
+  bool CVideoInfoScanner::UpdateSetInTag(CVideoInfoTag& tag)
+  {
+    // Uses the set information in m_set from a tag of a movie
+    // If there is a set, see if the details need to be updated from the
+    // Movie Set Information Folder
+    if (!tag.m_set.HasTitle())
+      return false;
+
+    bool setUpdated{false};
+    ART::Artwork movieSetArt;
+    const std::string movieSetInfoPath{GetMovieSetInfoFolder(tag.m_set.GetTitle())};
+    if (!movieSetInfoPath.empty())
+    {
+      // Look for set.nfo
+      if (const std::unique_ptr setLoader{
+              CSetInfoTagLoaderFactory::CreateLoader(tag.m_set.GetTitle())};
+          setLoader)
+      {
+        CSetInfoTag setTag;
+        InfoType result{setLoader->Load(setTag, false)};
+        if (result != InfoType::NONE && !setTag.IsEmpty())
+        {
+          tag.m_set.SetOriginalTitle(tag.m_set.GetTitle());
+          if (!setTag.GetTitle().empty())
+            tag.m_set.SetTitle(setTag.GetTitle());
+          if (!setTag.GetOverview().empty())
+          {
+            tag.m_set.SetOverview(setTag.GetOverview());
+            tag.SetUpdateSetOverview(true);
+          }
+          if (setTag.HasArt())
+            tag.m_set.SetArt(setTag.GetArt());
+          setUpdated = true;
+        }
+      }
+
+      // Now look for art
+      // Look for local art files first
+      const std::vector<std::string> movieSetArtTypes =
+          CVideoThumbLoader::GetArtTypes(MediaTypeVideoCollection);
+      AddLocalItemArtwork(movieSetArt, movieSetArtTypes, movieSetInfoPath, true, false);
+
+      // If art specified in set.nfo use that next
+      if (movieSetArt.empty() && tag.m_set.HasArt())
+        for (auto& art : tag.m_set.GetArt())
+          if (CVideoThumbLoader::IsArtTypeInWhitelist(art.first, movieSetArtTypes, false))
+            movieSetArt.insert(art);
+    }
+    else
+    {
+      // No MSIF, so use the set art from the scraper (already in tag)
+      tag.m_strPictureURL.Parse();
+      for (const auto& url : tag.m_strPictureURL.GetUrls())
+        if (StringUtils::StartsWith(url.m_aspect, "set."))
+          movieSetArt.insert({url.m_aspect.substr(4), url.m_url});
+    }
+    if (!movieSetArt.empty())
+      tag.m_set.SetArt(movieSetArt);
+
+    return setUpdated;
   }
 
   bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items,
@@ -863,6 +967,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
       std::tie(result, loader) = ReadInfoTag(*pItem, info2, bDirNames, true);
     if (result == InfoType::FULL)
     {
+      if (UpdateSetInTag(*pItem->GetVideoInfoTag()))
+        pItem->SetProperty("set_updated", true);
+
       const int dbId = AddVideo(pItem, info2->Content(), bDirNames, true);
       if (dbId < 0)
         return InfoRet::INFO_ERROR;
@@ -897,6 +1004,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                                                                     : nullptr,
                      pDlgProgress))
       {
+        if (UpdateSetInTag(*pItem->GetVideoInfoTag()))
+          pItem->SetProperty("set_updated", true);
+
         const int dbId = AddVideo(pItem, info2->Content(), bDirNames, useLocal);
         if (dbId < 0)
           return InfoRet::INFO_ERROR;
@@ -919,6 +1029,9 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                                                                   : nullptr,
                    pDlgProgress))
     {
+      if (UpdateSetInTag(*pItem->GetVideoInfoTag()))
+        pItem->SetProperty("set_updated", true);
+
       const int dbId = AddVideo(pItem, info2->Content(), bDirNames, useLocal);
       if (dbId < 0)
         return InfoRet::INFO_ERROR;
