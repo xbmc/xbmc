@@ -28,7 +28,7 @@ CDefaultButtonMap::~CDefaultButtonMap() = default;
 
 std::string CDefaultButtonMap::Location() const
 {
-  return m_device->Location();
+  return m_device->FileLocation();
 }
 
 bool CDefaultButtonMap::Load()
@@ -53,7 +53,7 @@ bool CDefaultButtonMap::Load()
   }
 
   CLog::Log(LOGDEBUG, "Failed to load default button map for \"{}\" with profile {}",
-            m_device->Location(), m_strControllerId);
+            m_device->FileLocation(), m_strControllerId);
   return false;
 }
 

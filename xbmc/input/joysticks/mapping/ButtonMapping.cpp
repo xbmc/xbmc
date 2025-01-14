@@ -263,8 +263,7 @@ CAxisDetector& CButtonMapping::GetAxis(
 
     PERIPHERALS::CPeripherals& peripheralManager = CServiceBroker::GetPeripherals();
 
-    const PERIPHERALS::PeripheralPtr peripheral =
-        peripheralManager.GetPeripheralAtLocation(peripheralLocation);
+    const PERIPHERALS::PeripheralPtr peripheral = peripheralManager.GetByPath(peripheralLocation);
 
     if (peripheral &&
         peripheral->GetBusType() == PERIPHERALS::PeripheralBusType::PERIPHERAL_BUS_GCCONTROLLER)
