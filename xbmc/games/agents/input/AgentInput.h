@@ -104,7 +104,7 @@ private:
   using JoystickMap = std::map<PortAddress, std::shared_ptr<CGameClientJoystick>>;
   using PortMap = std::map<JOYSTICK::IInputProvider*, std::shared_ptr<CGameClientJoystick>>;
 
-  using PeripheralLocation = std::string;
+  using PeripheralLocation = std::string; // peripherals:// protocol URI
   using CurrentPortMap = std::map<PortAddress, PeripheralLocation>;
   using CurrentPeripheralMap = std::map<PeripheralLocation, PortAddress>;
 
