@@ -83,6 +83,13 @@ public:
   */
   int GetPlayResY();
 
+  /*!
+  * \brief Check if currently an event is active
+  * \param pts as double
+  * \return True when there is any event active
+  */
+  bool EventActive(double pts);
+
 protected:
   /*!
   * \brief Create a new empty ASS track

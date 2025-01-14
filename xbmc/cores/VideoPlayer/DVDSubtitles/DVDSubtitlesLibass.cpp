@@ -562,6 +562,26 @@ int CDVDSubtitlesLibass::GetPlayResY()
   return m_track->PlayResY;
 }
 
+bool CDVDSubtitlesLibass::EventActive(double pts)
+{
+  std::unique_lock<CCriticalSection> lock(m_section);
+  if (!m_library || !m_track)
+  {
+    CLog::Log(LOGERROR, "{} - Missing ASS structs (m_library or m_track)", __FUNCTION__);
+    return false;
+  }
+
+  int64_t _pts(DVD_TIME_TO_MSEC(pts));
+  for (int i = 0; i < m_track->n_events; i++)
+  {
+    ASS_Event* assEvent = (m_track->events + i);
+    if (assEvent->Start <= _pts && (assEvent->Start + assEvent->Duration) > _pts)
+      return true;
+  }
+
+  return false;
+}
+
 void CDVDSubtitlesLibass::ConfigureAssOverride(const std::shared_ptr<struct style>& subStyle,
                                                ASS_Style* style)
 {
