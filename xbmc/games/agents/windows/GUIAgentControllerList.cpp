@@ -268,7 +268,7 @@ void CGUIAgentControllerList::OnControllerSelect(const CFileItem& selectedAgentI
   for (const std::shared_ptr<const CAgentController>& agentController : agentControllers)
   {
     PERIPHERALS::PeripheralPtr peripheral = agentController->GetPeripheral();
-    if (peripheral && peripheral->Location() == selectedAgentItem.GetPath())
+    if (peripheral && peripheral->FileLocation() == selectedAgentItem.GetPath())
     {
       if (peripheral->GetSettings().empty())
       {
@@ -307,7 +307,7 @@ void CGUIAgentControllerList::ShowControllerDialog(const CAgentController& agent
   CServiceBroker::GetPeripherals().GetDirectory("peripherals://all/", peripherals);
   for (int i = 0; i < peripherals.Size(); ++i)
   {
-    if (peripherals[i]->GetProperty("location").asString() == peripheral->Location())
+    if (peripherals[i]->GetPath() == peripheral->FileLocation())
     {
       peripheralItem = peripherals[i];
       break;
@@ -316,15 +316,14 @@ void CGUIAgentControllerList::ShowControllerDialog(const CAgentController& agent
 
   if (!peripheralItem)
   {
-    CLog::Log(LOGERROR, "Failed to get peripheral for location {}", peripheral->Location());
+    CLog::Log(LOGERROR, "Failed to get peripheral for location {}", peripheral->FileLocation());
     if (peripherals.IsEmpty())
       CLog::Log(LOGERROR, "No peripherals available");
     else
     {
       CLog::Log(LOGERROR, "Available peripherals are:");
       for (int i = 0; i < peripherals.Size(); ++i)
-        CLog::Log(LOGERROR, "  - \"{}\" ({})", peripherals[i]->GetProperty("location").asString(),
-                  peripherals[i]->GetPath());
+        CLog::Log(LOGERROR, "  - \"{}\"", peripherals[i]->GetPath());
     }
     return;
   }
