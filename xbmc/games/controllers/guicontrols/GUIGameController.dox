@@ -74,9 +74,9 @@ A SNES controller connected to port 1 on a multitap would then have the address
 --------------------------------------------------------------------------------
 \section Game_Controller_sect4 Peripheral location
 
-Peripherals are located by their driver and peripheral index. For example, the
-first controller connected via the peripheral.joystick add-on (<b>`joystick`</b>
-driver) would be <b>`/joystick/0`</b>.
+Peripherals are located by a <b>`peripherals://`</b> URI containing their
+peripheral bus as a hostname and a path to the peripheral. For example,
+keyboards have the location <b>`peripherals://application/keyboard.dev`</b>.
 
 
 --------------------------------------------------------------------------------
