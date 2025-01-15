@@ -9,6 +9,8 @@ PUSHD %~dp0
 
 if not exist %DOWNLOAD_FOLDER% mkdir %DOWNLOAD_FOLDER%
 
+if exist %DOWNLOAD_FOLDER%\%DOWNLOAD_FILE% del %DOWNLOAD_FOLDER%\%DOWNLOAD_FILE%
+
 if not exist %DOWNLOAD_FOLDER%\%DOWNLOAD_FILE% (
   echo Downloading vc143 redist...
   curl --retry 5 --retry-all-errors --retry-connrefused --retry-delay 5 --location --output %DOWNLOAD_FOLDER%\%DOWNLOAD_FILE% %DOWNLOAD_URL%
