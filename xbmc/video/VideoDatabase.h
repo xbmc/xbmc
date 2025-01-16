@@ -610,6 +610,13 @@ public:
    */
   bool SetStreamDetailsForFileId(const CStreamDetails& details, int idFile);
 
+  /*!
+   * \brief Get all playlists from a single bluray:// path in the database
+   * \param[in] path The bluray:// path
+   * \return vector int array of playlist numbers
+   */
+  std::vector<int> GetPlaylistsByPath(const std::string& path);
+
   bool SetSingleValue(VideoDbContentType type, int dbId, int dbField, const std::string& strValue);
   bool SetSingleValue(VideoDbContentType type,
                       int dbId,

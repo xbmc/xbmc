@@ -274,9 +274,10 @@ bool CPlayListPlayer::PlayItemIdx(int itemIdx)
   return Play();
 }
 
-bool CPlayListPlayer::Play(const CFileItemPtr& pItem,
-                           const std::string& player,
-                           bool forceSelection /* = false */)
+bool CPlayListPlayer::Play(
+    const CFileItemPtr& pItem,
+    const std::string& player,
+    ForcePlaylistSelection forceSelection /* = DONT_FORCE_PLAYLIST_SELECTION */)
 {
   Id playlistId;
   bool isVideo{IsVideo(*pItem)};
@@ -318,11 +319,12 @@ bool CPlayListPlayer::Play(const CFileItemPtr& pItem,
   return Play(0, player, false, false, forceSelection);
 }
 
-bool CPlayListPlayer::Play(int iSong,
-                           const std::string& player,
-                           bool bAutoPlay /* = false */,
-                           bool bPlayPrevious /* = false */,
-                           bool forceSelection /* = false */)
+bool CPlayListPlayer::Play(
+    int iSong,
+    const std::string& player,
+    bool bAutoPlay /* = false */,
+    bool bPlayPrevious /* = false */,
+    ForcePlaylistSelection forceSelection /* = DONT_FORCE_PLAYLIST_SELECTION */)
 {
   if (m_iCurrentPlayList == Id::TYPE_NONE)
     return false;
