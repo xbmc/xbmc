@@ -6669,11 +6669,40 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
     m_pDS->exec("DELETE FROM episode WHERE idSeason NOT IN (SELECT idSeason from seasons)");
   }
+
+  if (iVersion < 134)
+  {
+    // renumber itemType to free the value 0 for nodes navigation
+    // former value 0 for versions becomes 1
+    // former value 1 for extras becomes 2
+
+    static constexpr int VIDEOASSETTYPE_VERSION_OLD{0};
+    static constexpr int VIDEOASSETTYPE_EXTRA_OLD{1};
+
+    m_pDS->query(
+        PrepareSQL("SELECT itemType FROM videoversion WHERE itemType NOT IN (%i, %i) UNION ALL "
+                   "SELECT itemType FROM videoversiontype WHERE itemType NOT IN (%i, %i) "
+                   "LIMIT 1 ",
+                   VIDEOASSETTYPE_VERSION_OLD, VIDEOASSETTYPE_EXTRA_OLD, VIDEOASSETTYPE_VERSION_OLD,
+                   VIDEOASSETTYPE_EXTRA_OLD));
+    if (!m_pDS->eof())
+    {
+      CLog::LogF(LOGERROR, "invalid itemType values in videoversion or videoversiontype");
+      m_pDS->close();
+    }
+
+    m_pDS->exec(
+        PrepareSQL("UPDATE videoversion SET itemType = itemType + 1  WHERE itemType IN (%i, %i)",
+                   VIDEOASSETTYPE_VERSION_OLD, VIDEOASSETTYPE_EXTRA_OLD));
+    m_pDS->exec(PrepareSQL(
+        "UPDATE videoversiontype SET itemType = itemType + 1  WHERE itemType IN (%i, %i)",
+        VIDEOASSETTYPE_VERSION_OLD, VIDEOASSETTYPE_EXTRA_OLD));
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 133;
+  return 134;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
