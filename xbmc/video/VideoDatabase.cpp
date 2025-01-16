@@ -64,6 +64,7 @@
 #include <algorithm>
 #include <map>
 #include <memory>
+#include <ranges>
 #include <string>
 #include <unordered_set>
 #include <vector>
@@ -3570,22 +3571,92 @@ void CVideoDatabase::DeleteResumeBookMark(const CFileItem& item)
   }
 }
 
-void CVideoDatabase::GetEpisodesByFile(const std::string& strFilenameAndPath, std::vector<CVideoInfoTag>& episodes)
+void CVideoDatabase::GetEpisodesByBlurayPath(const std::string& path,
+                                             std::vector<CVideoInfoTag>& episodes)
 {
+  // url will be in vfs format (ie. bluray://.../episode/1/1)
+  // episode database entries will either have basepath path (ie. ISO/BDMV) if not yet played ...
+  const std::string baseFileAndPath{URIUtils::GetBlurayFile(path)};
+  std::string baseFile;
+  std::string basePath;
+  SplitPath(baseFileAndPath, basePath, baseFile);
+
+  // ... or bluray:// path (ie. bluray://.../BDMV/00000.mpls) if already played
+  CURL url{path};
+  url.SetFileName("");
+  const std::string blurayPath{URIUtils::AddFileToFolder(url.Get(), "BDMV", "PLAYLIST", "")};
   try
   {
-    std::string strSQL = PrepareSQL("select * from episode_view where idFile=%i order by c%02d, c%02d asc", GetFileId(strFilenameAndPath), VIDEODB_ID_EPISODE_SORTSEASON, VIDEODB_ID_EPISODE_SORTEPISODE);
-    m_pDS->query(strSQL);
+    const std::string sql{
+        PrepareSQL("select idFile from episode_view "
+                   "where (strPath = '%s' and strFileName = '%s') or strPath = '%s'",
+                   basePath.c_str(), baseFile.c_str(), blurayPath.c_str())};
+    m_pDS->query(sql);
+    if (!m_pDS->eof())
+      return GetEpisodesByFileId(m_pDS->fv("idFile").get_asInt(), episodes);
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Path {} failed", path);
+  }
+}
+
+void CVideoDatabase::GetEpisodesByFile(const std::string& strFilenameAndPath,
+                                       std::vector<CVideoInfoTag>& episodes)
+{
+  return GetEpisodesByFileId(GetFileId(strFilenameAndPath), episodes);
+}
+
+void CVideoDatabase::GetEpisodesByFileId(int idFile, std::vector<CVideoInfoTag>& episodes)
+{
+  if (idFile < 0)
+    return;
+
+  try
+  {
+    const std::string sql{
+        PrepareSQL("SELECT * FROM episode_view "
+                   "WHERE idShow = (SELECT idShow FROM episode WHERE idFile=%i LIMIT 1) "
+                   "ORDER BY CAST(c%02d AS INTEGER), CAST(c%02d AS INTEGER)",
+                   idFile, VIDEODB_ID_EPISODE_SEASON, VIDEODB_ID_EPISODE_EPISODE)};
+    m_pDS->query(sql);
+
+    // Generate map of episodes in each file (finding base file for bluray://) of show
+    std::multimap<std::string, int> fileMap;
+    int index{1};
+    std::string episodeFile;
     while (!m_pDS->eof())
     {
-      episodes.emplace_back(GetDetailsForEpisode(m_pDS));
+      std::string file{URIUtils::AddFileToFolder(m_pDS->fv("strPath").get_asString(),
+                                                 m_pDS->fv("strFileName").get_asString())};
+      if (URIUtils::IsBlurayPath(file))
+        file = URIUtils::GetBlurayFile(file);
+      fileMap.insert({file, index});
+      if (episodeFile.empty() && m_pDS->fv("idFile").get_asInt() == idFile)
+        episodeFile = file;
       m_pDS->next();
+      index++;
+    }
+
+    // Remove episodes not from the base file/path
+    std::erase_if(fileMap,
+                  [&episodeFile](const auto& it)
+                  {
+                    auto const& [file, _] = it;
+                    return file != episodeFile;
+                  });
+
+    // Get episode details
+    for (int index : fileMap | std::views::values)
+    {
+      m_pDS->goto_rec(index);
+      episodes.emplace_back(GetDetailsForEpisode(m_pDS));
     }
     m_pDS->close();
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strFilenameAndPath);
+    CLog::LogF(LOGERROR, "File Id {} failed", idFile);
   }
 }
 
