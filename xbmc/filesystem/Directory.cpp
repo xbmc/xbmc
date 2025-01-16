@@ -28,7 +28,9 @@
 #include "utils/JobManager.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "video/VideoDatabase.h"
 #include "video/VideoFileItemClassify.h"
+#include "video/VideoInfoTag.h"
 
 using namespace KODI;
 using namespace XFILE;
@@ -308,6 +310,30 @@ bool CDirectory::GetDirectory(const CURL& url,
   XBMCCOMMONS_HANDLE_UNCHECKED
   catch (...) { CLog::Log(LOGERROR, "{} - Unhandled exception", __FUNCTION__); }
   CLog::Log(LOGERROR, "{} - Error getting {}", __FUNCTION__, url.GetRedacted());
+  return false;
+}
+
+bool CDirectory::GetDirectory(const std::string& path, CFileItemList& items, const CFileItem& item)
+{
+  // Specifically looking for blu-ray episodes
+  const CURL url{path};
+  const CURL realURL{URIUtils::SubstitutePath(url)};
+  if (url.IsProtocol("bluray"))
+  {
+    std::shared_ptr<IDirectory> directory(CDirectoryFactory::Create(realURL));
+    if (directory)
+    {
+      std::vector<CVideoInfoTag> episodesOnDisc;
+      CVideoDatabase database;
+      if (!database.Open())
+      {
+        CLog::LogF(LOGERROR, "Failed to open video database");
+        return false;
+      }
+      database.GetEpisodesByFileId(item.GetVideoInfoTag()->m_iFileId, episodesOnDisc);
+      return directory->GetEpisodeDirectory(url, item, items, episodesOnDisc);
+    }
+  }
   return false;
 }
 

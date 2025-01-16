@@ -9,6 +9,7 @@
 #pragma once
 
 #include "utils/Variant.h"
+#include "video/VideoInfoTag.h"
 
 #include <string>
 
@@ -103,7 +104,23 @@ public:
    \return Returns \e true, if successful.
    \sa CDirectoryFactory
    */
-  virtual bool GetDirectory(const CURL& url, CFileItemList &items) = 0;
+  virtual bool GetDirectory(const CURL& url, CFileItemList& items) { return false; }
+
+  /*!
+   \brief Get the \e episodes in the directory \e strPath.
+   \param url Directory to read.
+   \param items Retrieves the directory episode entries.
+   \return Returns \e true, if successful.
+   \sa CDirectoryFactory
+   */
+  virtual bool GetEpisodeDirectory(const CURL& url,
+                                   const CFileItem& episode,
+                                   CFileItemList& items,
+                                   const std::vector<CVideoInfoTag>& episodesOnDisc)
+  {
+    return false;
+  }
+
   /*!
    \brief Retrieve the progress of the current directory fetch (if possible).
    \return the progress as a float in the range 0..100.

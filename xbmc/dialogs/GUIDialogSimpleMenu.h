@@ -20,9 +20,21 @@ class CGUIDialogSimpleMenu
 public:
 
   /*! \brief Show dialog allowing selection of wanted playback item */
-  static bool ShowPlaySelection(CFileItem& item, bool forceSelection = false);
-  static bool ShowPlaySelection(CFileItem& item, const std::string& directory);
+  static bool ShowPlaySelection(CFileItem& item,
+                                bool forceSelection = false,
+                                const std::vector<int>* excludePlaylists = nullptr);
 
 protected:
-  static bool GetDirectoryItems(const std::string &path, CFileItemList &items, const XFILE::CDirectory::CHints &hints);
+  static bool GetDirectoryItems(const std::string& path,
+                                CFileItemList& items,
+                                const XFILE::CDirectory::CHints& hints);
+  static bool GetEpisodeDirectoryItems(const std::string& path,
+                                       CFileItemList& items,
+                                       const CFileItem& item);
+
+private:
+  static bool GetItems(const CFileItem& item,
+                       CFileItemList& items,
+                       const std::string& directory,
+                       const std::vector<int>* excludePlaylists);
 };

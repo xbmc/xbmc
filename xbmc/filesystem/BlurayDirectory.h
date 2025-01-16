@@ -32,7 +32,7 @@ public:
   bool GetEpisodeDirectory(const CURL& url,
                            const CFileItem& episode,
                            CFileItemList& items,
-                           const std::vector<CVideoInfoTag>& episodesOnDisc);
+                           const std::vector<CVideoInfoTag>& episodesOnDisc) override;
   std::string GetBlurayTitle();
   std::string GetBlurayID();
 
