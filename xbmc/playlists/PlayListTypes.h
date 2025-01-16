@@ -29,4 +29,16 @@ enum class RepeatState
   ALL
 };
 
+enum class ForcePlaylistSelection : bool
+{
+  DONT_FORCE_PLAYLIST_SELECTION,
+  FORCE_PLAYLIST_SELECTION
+};
+
+enum class ExcludeUsedPlaylists : bool
+{
+  DONT_EXCLUDE_USED_PLAYLISTS,
+  EXCLUDE_USED_PLAYLISTS
+};
+
 } // namespace KODI::PLAYLIST
