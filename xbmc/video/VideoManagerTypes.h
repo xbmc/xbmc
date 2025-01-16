@@ -21,8 +21,9 @@ enum class VideoAssetTypeOwner
 enum class VideoAssetType : int
 {
   UNKNOWN = -1,
-  VERSION = 0,
-  EXTRA = 1
+  ALL = 0, // reserved value for nodes navigation. do not use in the db.
+  VERSION = 1,
+  EXTRA = 2
 };
 
 enum class MediaRole
