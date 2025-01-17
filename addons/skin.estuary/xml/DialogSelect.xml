@@ -13,7 +13,5 @@
 		<include condition="Window.IsActive(gamestretchmode)">GameDialogSelectViewLayout</include>
 		<include condition="Window.IsActive(gamevideorotation)">GameDialogSelectViewLayout</include>
 		<include condition="Window.IsActive(ingamesaves)">GameDialogSelectSaveInGameLayout</include>
-		<include condition="Window.IsActive(selectvideoversion)">VideoSelectLayout</include>
-		<include condition="Window.IsActive(selectvideoextra)">VideoSelectLayout</include>
 	</controls>
 </window>

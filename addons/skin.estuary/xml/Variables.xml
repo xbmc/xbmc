@@ -912,7 +912,6 @@
 		<value>$INFO[ListItem.Property(stream.codec)]</value>
 	</variable>
 	<variable name="MediaInfoListLabelVar">
-		<value condition="Window.IsVisible(selectvideoversion)">$INFO[ListItem.VideoVersionName]</value>
 		<value>$INFO[ListItem.Label]</value>
 	</variable>
 	<variable name="MediaInfoListLabel2Var">
