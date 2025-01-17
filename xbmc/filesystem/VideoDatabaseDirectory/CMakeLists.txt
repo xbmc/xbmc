@@ -2,6 +2,8 @@ set(SOURCES DirectoryNode.cpp
             DirectoryNodeEpisodes.cpp
             DirectoryNodeGrouped.cpp
             DirectoryNodeInProgressTvShows.cpp
+            DirectoryNodeMovieAssetTypes.cpp
+            DirectoryNodeMovieAssets.cpp
             DirectoryNodeMoviesOverview.cpp
             DirectoryNodeMusicVideosOverview.cpp
             DirectoryNodeOverview.cpp
@@ -20,6 +22,8 @@ set(HEADERS DirectoryNode.h
             DirectoryNodeEpisodes.h
             DirectoryNodeGrouped.h
             DirectoryNodeInProgressTvShows.h
+            DirectoryNodeMovieAssetTypes.h
+            DirectoryNodeMovieAssets.h
             DirectoryNodeMoviesOverview.h
             DirectoryNodeMusicVideosOverview.h
             DirectoryNodeOverview.h

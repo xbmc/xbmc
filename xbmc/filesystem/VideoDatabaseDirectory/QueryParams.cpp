@@ -95,6 +95,9 @@ void CQueryParams::SetQueryParam(NodeType nodeType, const std::string& strNodeNa
     case NodeType::VIDEOVERSIONS:
       m_idVideoVersion = idDb;
       break;
+    case NodeType::MOVIE_ASSET_TYPES:
+      m_videoAssetType = idDb;
+      break;
     default:
       break;
   }

@@ -1,28 +1,31 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2025 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
  *  See LICENSES/README.md for more information.
  */
 
-#include "DirectoryNodeTitleMovies.h"
+#include "DirectoryNodeMovieAssetTypes.h"
 
-#include "FileItem.h"
-#include "FileItemList.h"
-#include "QueryParams.h"
-#include "video/VideoDatabase.h"
+//#include "FileItem.h"
+//#include "FileItemList.h"
+//#include "QueryParams.h"
+//#include "video/VideoDatabase.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
-CDirectoryNodeTitleMovies::CDirectoryNodeTitleMovies(const std::string& strName,
-                                                     CDirectoryNode* pParent)
-  : CDirectoryNode(NodeType::TITLE_MOVIES, strName, pParent)
+CDirectoryNodeMovieAssetTypes::CDirectoryNodeMovieAssetTypes(const std::string& strName,
+                                                             CDirectoryNode* pParent)
+  : CDirectoryNode(NodeType::MOVIE_ASSET_TYPES, strName, pParent)
 {
-
 }
 
-bool CDirectoryNodeTitleMovies::GetContent(CFileItemList& items) const
+/*
+
+//! @todo: implement some navigation that returns the available asset types for the movie
+
+bool CDirectoryNodeMovieAssetTypes::GetContent(CFileItemList& items) const
 {
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
@@ -44,8 +47,9 @@ bool CDirectoryNodeTitleMovies::GetContent(CFileItemList& items) const
 
   return bSuccess;
 }
+*/
 
-NodeType CDirectoryNodeTitleMovies::GetChildType() const
+NodeType CDirectoryNodeMovieAssetTypes::GetChildType() const
 {
-  return NodeType::MOVIE_ASSET_TYPES;
+  return NodeType::MOVIE_ASSETS;
 }

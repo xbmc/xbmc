@@ -79,6 +79,8 @@ std::string GetChildContentType(const std::unique_ptr<CDirectoryNode>& node)
       return "tags";
     case NodeType::VIDEOVERSIONS:
       return "videoversions";
+    case NodeType::MOVIE_ASSETS:
+      return "movies"; // TODO impact of that value? what to choose? how to have a different view type for versions?
     default:
       break;
   }

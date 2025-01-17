@@ -24600,6 +24600,7 @@ msgstr ""
 #. Button label for video extras
 #: addons/skin.estuary/xml/DialogVideoInfo.xml
 #: xbmc/video/guilib/VideoVersionHelper.cpp
+#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMovieAssets.cpp
 msgctxt "#40211"
 msgid "Extras"
 msgstr ""
