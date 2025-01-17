@@ -206,26 +206,6 @@ bool CVideoBrowse::Execute(const std::shared_ptr<CFileItem>& item) const
   return true;
 }
 
-bool CVideoChooseVersion::IsVisible(const CFileItem& item) const
-{
-  return item.HasVideoVersions() &&
-         !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-             CSettings::SETTING_VIDEOLIBRARY_SHOWVIDEOVERSIONSASFOLDER) &&
-         !VIDEO::IsVideoAssetFile(item);
-}
-
-bool CVideoChooseVersion::Execute(const std::shared_ptr<CFileItem>& item) const
-{
-  // force selection dialog, regardless of any settings like 'Select default video version'
-  item->SetProperty("needs_resolved_video_asset", true);
-  item->SetProperty("video_asset_type", static_cast<int>(VideoAssetType::VERSION));
-  KODI::VIDEO::GUILIB::CVideoSelectActionProcessor proc{item};
-  const bool ret = proc.ProcessDefaultAction();
-  item->ClearProperty("needs_resolved_video_asset");
-  item->ClearProperty("video_asset_type");
-  return ret;
-}
-
 std::string CVideoResume::GetLabel(const CFileItem& item) const
 {
   return VIDEO::UTILS::GetResumeString(item.GetItemToPlay());
@@ -343,10 +323,8 @@ bool CVideoPlay::Execute(const std::shared_ptr<CFileItem>& itemIn) const
 
 bool CVideoPlayUsing::IsVisible(const CFileItem& item) const
 {
-  if (item.HasVideoVersions() &&
-      !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-          CSettings::SETTING_VIDEOLIBRARY_SHOWVIDEOVERSIONSASFOLDER) &&
-      !VIDEO::IsVideoAssetFile(item))
+  if (item.HasVideoVersions() && !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                                     CSettings::SETTING_VIDEOLIBRARY_SHOWVIDEOVERSIONSASFOLDER))
     return false;
 
   if (item.IsLiveTV())
@@ -376,10 +354,8 @@ bool CVideoPlayStackPart::Execute(const std::shared_ptr<CFileItem>& itemIn) cons
 
 bool CVideoPlayVersionUsing::IsVisible(const CFileItem& item) const
 {
-  return item.HasVideoVersions() &&
-         !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-             CSettings::SETTING_VIDEOLIBRARY_SHOWVIDEOVERSIONSASFOLDER) &&
-         !VIDEO::IsVideoAssetFile(item);
+  return item.HasVideoVersions() && !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                                        CSettings::SETTING_VIDEOLIBRARY_SHOWVIDEOVERSIONSASFOLDER);
 }
 
 bool CVideoPlayVersionUsing::Execute(const std::shared_ptr<CFileItem>& itemIn) const
