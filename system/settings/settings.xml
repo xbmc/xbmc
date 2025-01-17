@@ -1200,11 +1200,6 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
-        <setting id="videolibrary.showvideoversionsasfolder" type="boolean" label="40206" help="40207">
-          <level>1</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
         <setting id="myvideos.flatten" type="boolean" label="20456" help="36183">
           <level>2</level>
           <default>false</default>
