@@ -163,7 +163,7 @@
 					<align>left</align>
 					<aligny>center</aligny>
 					<texture>overlays/extras.png</texture>
-					<visible>ListItem.HasVideoVersions + ListItem.HasVideoExtras</visible>
+					<visible>ListItem.HasVideoVersions + ListItem.HasVideoExtras + !ListItem.IsVideoAsset</visible>
 				</control>
 				<control type="label">
 					<left>100</left>
