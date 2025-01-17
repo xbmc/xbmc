@@ -841,6 +841,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     std::unique_ptr<IVideoInfoTagLoader> loader;
     if (useLocal)
       std::tie(result, loader) = ReadInfoTag(*pItem, info2, bDirNames, true);
+    if (result == InfoType::FULL)
     {
       if (AddVideo(pItem, info2->Content(), bDirNames, true) < 0)
         return InfoRet::INFO_ERROR;
