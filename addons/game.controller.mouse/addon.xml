@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="game.controller.mouse"
         name="Computer Mouse"
-        version="1.0.26"
+        version="1.0.28"
         provider-name="Team Kodi">
     <extension point="kodi.game.controller" library="resources/layout.xml"/>
     <extension point="xbmc.addon.metadata">
@@ -15,6 +15,7 @@
         <summary lang="es_ES">Ratón de Ordenador</summary>
         <summary lang="fi_FI">Tietokoneen hiiri</summary>
         <summary lang="fr_FR">Souris d&apos;ordinateur</summary>
+        <summary lang="is_IS">Tölvumús</summary>
         <summary lang="it_IT">Mouse del computer</summary>
         <summary lang="pl_PL">Mysz komputerowa</summary>
         <summary lang="ru_RU">Компьютерная мышь</summary>
@@ -25,6 +26,7 @@
         <description lang="es_ES">Un ratón estándar con dos botones y una rueda central.</description>
         <description lang="fi_FI">Tavallinen kahdella painikkeella ja keskirullalla varustettu hiiri.</description>
         <description lang="fr_FR">Une souris standard avec deux boutons et une molette centrale.</description>
+        <description lang="is_IS">Stöðluð tölvumús með tveimur hnöppum og miðjuhjóli.</description>
         <description lang="it_IT">Un mouse standard con due pulsanti e una rotellina centrale.</description>
         <description lang="pl_PL">Standardowa mysz z dwoma przyciskami i środkowym kółkiem.</description>
         <description lang="ru_RU">Стандартная компьютерная мышь с двумя кнопками и с колесом посередине.</description>
