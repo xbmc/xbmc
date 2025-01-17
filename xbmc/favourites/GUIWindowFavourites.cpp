@@ -63,9 +63,6 @@ bool CGUIWindowFavourites::OnSelect(int itemIdx)
   // video select action setting is for files only, except exec func is playmedia...
   if (targetItem->HasVideoInfoTag() && (!targetItem->m_bIsFolder || isPlayMedia))
   {
-    // play the given/default video version, even if multiple versions are available
-    targetItem->SetProperty("has_resolved_video_asset", true);
-
     KODI::VIDEO::GUILIB::CVideoSelectActionProcessor proc{targetItem};
     if (proc.ProcessDefaultAction())
       return true;

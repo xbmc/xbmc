@@ -5912,17 +5912,7 @@ msgctxt "#12014"
 msgid "Last updated"
 msgstr ""
 
-#: xbmc/guilib/WindowIDs.h
-msgctxt "#12015"
-msgid "Select video version"
-msgstr ""
-
-#: xbmc/guilib/WindowIDs.h
-msgctxt "#12016"
-msgid "Select video extra"
-msgstr ""
-
-#empty strings from id 12017 to 12020
+#empty strings from id 12015 to 12020
 
 #. Label of various controls for starting playback from the beginning
 #: addons/skin.estuary/xml/SkinSettings.xml
@@ -24566,15 +24556,7 @@ msgctxt "#40205"
 msgid "Select scanner action for video extras in \"extras\" folder.[CR][Enabled] Scan video extras like regular videos.[CR][Disabled] Add video extras to library for associated video."
 msgstr ""
 
-#empty strings from id 40206 to 40207
-
-#. Choose video version dialog title
-#: xbmc/video/guilib/VideoVersionHelper.cpp
-msgctxt "#40208"
-msgid "Choose version: {}"
-msgstr ""
-
-#empty strings id 40209
+#empty strings from id 40206 to 40209
 
 #. Button label for video versions
 #: addons/skin.estuary/xml/DialogVideoInfo.xml
@@ -24603,11 +24585,7 @@ msgctxt "#40213"
 msgid "If selected the remote player volume level will be synchronized with the volume of this application.[CR]Warning: Global system volume level may be different than the application volume level - they are controlled independently.[CR]This may lead the remote player to be set to 100% volume level if the application has 100% volume level but the overall system volume level is smaller."
 msgstr ""
 
-#. Dialog title for the selection of the video extra
-#: xbmc/video/guilib/VideoVersionHelper.cpp
-msgctxt "#40214"
-msgid "Choose extra: {}"
-msgstr ""
+#empty string id 40214
 
 #. Title of the dialog for version rename action from Versions Manager
 #: xbmc/video/dialogs/GUIDialogVideoManager.cpp
