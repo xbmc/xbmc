@@ -323,10 +323,6 @@ bool CVideoPlay::Execute(const std::shared_ptr<CFileItem>& itemIn) const
 
 bool CVideoPlayUsing::IsVisible(const CFileItem& item) const
 {
-  if (item.HasVideoVersions() && !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-                                     CSettings::SETTING_VIDEOLIBRARY_SHOWVIDEOVERSIONSASFOLDER))
-    return false;
-
   if (item.IsLiveTV())
     return false;
 

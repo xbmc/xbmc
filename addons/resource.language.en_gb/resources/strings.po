@@ -24566,17 +24566,7 @@ msgctxt "#40205"
 msgid "Select scanner action for video extras in \"extras\" folder.[CR][Enabled] Scan video extras like regular videos.[CR][Disabled] Add video extras to library for associated video."
 msgstr ""
 
-#. Show video versions as folder settting
-#: system/settings/settings.xml
-msgctxt "#40206"
-msgid "Show videos with multiple versions as folder"
-msgstr ""
-
-#. Help for show video versions as folder settting
-#: system/settings/settings.xml
-msgctxt "#40207"
-msgid "When enabled, a video with multiple versions will be shown as a folder in the video library. This folder can then be opened to display the individual video versions. When disabled, the configured select action will be applied."
-msgstr ""
+#empty strings from id 40206 to 40207
 
 #. Choose video version dialog title
 #: xbmc/video/guilib/VideoVersionHelper.cpp
