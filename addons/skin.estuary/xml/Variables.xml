@@ -464,11 +464,11 @@
 	<variable name="ListWatchedIconVar">
 		<value condition="ListItem.IsRecording">windows/pvr/record.png</value>
 		<value condition="ListItem.IsCollection">overlays/set.png</value>
-		<value condition="ListItem.HasVideoVersions">overlays/versions.png</value>
+		<value condition="ListItem.HasVideoVersions + !Container.Content(videoassets) + !Container.Content(videoversions) + !Container.Content(videoextras)">overlays/versions.png</value>
 		<value condition="ListItem.IsPlaying">overlays/watched/OverlayPlaying-List.png</value>
 		<value condition="ListItem.IsResumable + Integer.IsGreater(ListItem.Playcount,0)">overlays/watched/OverlayWatchedResume.png</value>
 		<value condition="ListItem.IsResumable">overlays/watched/OverlayResume.png</value>
-		<value condition="ListItem.HasVideoExtras">overlays/extras.png</value>
+		<value condition="ListItem.HasVideoExtras + !Container.Content(videoassets) + !Container.Content(videoversions) + !Container.Content(videoextras)">overlays/extras.png</value>
 		<value condition="ListItem.IsFolder + String.IsEmpty(Listitem.dbtype) + !String.IsEqual(ListItem.Overlay,OverlayWatched.png) + !ListItem.IsParentFolder">overlays/folder.png</value>
 		<value condition="!String.IsEmpty(ListItem.Overlay)">$INFO[ListItem.Overlay]</value>
 		<value condition="!ListItem.IsParentFolder">OverlayUnwatched.png</value>
@@ -487,8 +487,8 @@
 	</variable>
 	<variable name="ItemTypeIconVar">
 		<value condition="ListItem.IsCollection">overlays/set.png</value>
-		<value condition="ListItem.HasVideoVersions">overlays/versions.png</value>
-		<value condition="ListItem.HasVideoExtras">overlays/extras.png</value>
+		<value condition="ListItem.HasVideoVersions + !Container.Content(videoassets) + !Container.Content(videoversions) + !Container.Content(videoextras)">overlays/versions.png</value>
+		<value condition="ListItem.HasVideoExtras + !Container.Content(videoassets) + !Container.Content(videoversions) + !Container.Content(videoextras)">overlays/extras.png</value>
 	</variable>
 	<variable name="ListPVRRecordingsIconVar">
 		<value condition="ListItem.IsRecording">windows/pvr/record.png</value>
@@ -501,7 +501,7 @@
 		<value condition="ListItem.IsRecording">windows/pvr/record.png</value>
 		<value condition="ListItem.HasReminder">icons/pvr/timers/bell.png</value>
 		<value>icons/pvr/timers/recording.png</value>
-  </variable>
+	</variable>
 	<!-- Breadcrumbs -->
 	<variable name="BreadcrumbsVideoVar">
 		<value condition="Container.Content(movies) | String.StartsWith(container.folderpath,library://video/movies/) | String.StartsWith(container.folderpath,videodb://movies)">$LOCALIZE[20342]</value>
@@ -918,7 +918,7 @@
 		<value condition="!String.IsEqual(ListItem.Property(stream.bitrate),0)">$INFO[ListItem.Property(stream.bitrate)]</value>
 	</variable>
 	<variable name="MediaInfoListLabelVar">
-		<value condition="Window.IsVisible(selectvideoversion)">$INFO[ListItem.VideoVersionName]</value>
+		<value condition="Window.IsVisible(selectvideoversion)">$INFO[ListItem.VideoVersionName]</value>		
 		<value>$INFO[ListItem.Label]</value>
 	</variable>
 	<variable name="MediaInfoListLabel2Var">
