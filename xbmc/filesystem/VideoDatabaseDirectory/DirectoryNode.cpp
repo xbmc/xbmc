@@ -11,6 +11,8 @@
 #include "DirectoryNodeEpisodes.h"
 #include "DirectoryNodeGrouped.h"
 #include "DirectoryNodeInProgressTvShows.h"
+#include "DirectoryNodeMovieAssetTypes.h"
+#include "DirectoryNodeMovieAssets.h"
 #include "DirectoryNodeMoviesOverview.h"
 #include "DirectoryNodeMusicVideosOverview.h"
 #include "DirectoryNodeOverview.h"
@@ -133,6 +135,10 @@ CDirectoryNode* CDirectoryNode::CreateNode(NodeType Type,
       return new CDirectoryNodeInProgressTvShows(strName, pParent);
     case NodeType::TITLE_MUSICVIDEOS:
       return new CDirectoryNodeTitleMusicVideos(strName, pParent);
+    case NodeType::MOVIE_ASSET_TYPES:
+      return new CDirectoryNodeMovieAssetTypes(strName, pParent);
+    case NodeType::MOVIE_ASSETS:
+      return new CDirectoryNodeMovieAssets(strName, pParent);
     default:
       break;
   }

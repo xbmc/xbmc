@@ -8,8 +8,6 @@
 
 #pragma once
 
-#include <string>
-
 enum class VideoAssetTypeOwner
 {
   UNKNOWN = -1,
@@ -20,6 +18,8 @@ enum class VideoAssetTypeOwner
 
 enum class VideoAssetType : int
 {
+  VERSIONSANDEXTRASFOLDER =
+      -2, //!< reserved for nodes navigation, returns versions + extras virtual folder. do not use in the db.
   UNKNOWN = -1,
   ALL =
       0, //!< reserved for nodes navigation, returns all assets of all types. do not use in the db.
@@ -37,7 +37,6 @@ static constexpr int VIDEO_VERSION_ID_BEGIN = 40400;
 static constexpr int VIDEO_VERSION_ID_END = 40800;
 static constexpr int VIDEO_VERSION_ID_DEFAULT = VIDEO_VERSION_ID_BEGIN;
 static constexpr int VIDEO_VERSION_ID_ALL = 0;
-inline const std::string VIDEODB_PATH_VERSION_ID_ALL{"videodb://movies/videoversions/0"};
 
 struct VideoAssetInfo
 {

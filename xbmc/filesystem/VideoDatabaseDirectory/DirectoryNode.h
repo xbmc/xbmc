@@ -46,7 +46,9 @@ namespace XFILE
       COUNTRY,
       TAGS,
       INPROGRESS_TVSHOWS,
-      VIDEOVERSIONS
+      VIDEOVERSIONS,
+      MOVIE_ASSET_TYPES,
+      MOVIE_ASSETS,
     };
 
     typedef struct {
