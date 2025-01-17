@@ -176,8 +176,6 @@
 //! the window. 12009 to 12014 are already taken for something else in strings.po (accidentally).
 //! So, do not define windows with ids 12009 to 12014, unless strings.po got fixed.
 
-#define WINDOW_DIALOG_SELECT_VIDEO_VERSION 12015
-#define WINDOW_DIALOG_SELECT_VIDEO_EXTRA 12016
 #define WINDOW_DIALOG_MANAGE_VIDEO_EXTRAS 12017
 
 #define WINDOW_DIALOG_SELECT_VIDEO_STREAM 12300

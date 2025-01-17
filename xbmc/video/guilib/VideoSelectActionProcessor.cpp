@@ -71,9 +71,6 @@ bool CVideoSelectActionProcessor::Process(Action action)
 
 bool CVideoSelectActionProcessor::OnPlaySelected()
 {
-  // Play the current video version, even if multiple versions are available.
-  m_item->SetProperty("has_resolved_video_asset", true);
-
   // Execute default play action.
   CVideoPlayActionProcessor proc(m_item);
   return proc.ProcessDefaultAction();

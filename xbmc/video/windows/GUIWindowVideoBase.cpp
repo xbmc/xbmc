@@ -587,9 +587,6 @@ public:
 protected:
   bool OnPlaySelected() override
   {
-    // Play the given/default video version, even if multiple versions are available.
-    m_item->SetProperty("has_resolved_video_asset", true);
-
     CVideoPlayActionProcessor proc{m_window, m_item, m_player};
     return proc.ProcessDefaultAction();
   }

@@ -30,7 +30,6 @@
 #include "video/guilib/VideoGUIUtils.h"
 #include "video/guilib/VideoPlayActionProcessor.h"
 #include "video/guilib/VideoSelectActionProcessor.h"
-#include "video/guilib/VideoVersionHelper.h"
 
 #include <utility>
 
@@ -226,7 +225,6 @@ enum class PlayMode
 {
   PLAY,
   PLAY_USING,
-  PLAY_VERSION_USING,
   PLAY_STACK_PART,
   RESUME,
 };
@@ -254,19 +252,8 @@ void SetPathAndPlay(const std::shared_ptr<CFileItem>& item, PlayMode mode)
       }
     }
 
-    if (mode == PlayMode::PLAY_VERSION_USING)
-    {
-      // force video version selection dialog
-      itemCopy->SetProperty("needs_resolved_video_asset", true);
-    }
-    else
-    {
-      // play the given/default video version, if multiple versions are available
-      itemCopy->SetProperty("has_resolved_video_asset", true);
-    }
-
     KODI::VIDEO::GUILIB::CVideoPlayActionProcessor proc{itemCopy};
-    if (mode == PlayMode::PLAY_USING || mode == PlayMode::PLAY_VERSION_USING)
+    if (mode == PlayMode::PLAY_USING)
       proc.SetChoosePlayer();
     else if (mode == PlayMode::PLAY_STACK_PART)
       proc.SetChooseStackPart();
@@ -345,20 +332,6 @@ bool CVideoPlayStackPart::Execute(const std::shared_ptr<CFileItem>& itemIn) cons
 {
   const auto item{std::make_shared<CFileItem>(itemIn->GetItemToPlay())};
   SetPathAndPlay(item, PlayMode::PLAY_STACK_PART);
-  return true;
-}
-
-bool CVideoPlayVersionUsing::IsVisible(const CFileItem& item) const
-{
-  return item.HasVideoVersions() && !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-                                        CSettings::SETTING_VIDEOLIBRARY_SHOWVIDEOVERSIONSASFOLDER);
-}
-
-bool CVideoPlayVersionUsing::Execute(const std::shared_ptr<CFileItem>& itemIn) const
-{
-  const auto item{std::make_shared<CFileItem>(itemIn->GetItemToPlay())};
-  item->SetProperty("video_asset_type", static_cast<int>(VideoAssetType::VERSION));
-  SetPathAndPlay(item, PlayMode::PLAY_VERSION_USING);
   return true;
 }
 

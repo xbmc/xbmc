@@ -429,11 +429,8 @@ bool CGUIWindowVideoPlaylist::OnPlayMedia(int iItem, const std::string& player)
   else
   {
     const auto item{m_vecItems->Get(iItem)};
-    // play the current video version, even if multiple versions are available
-    item->SetProperty("has_resolved_video_asset", true);
     CVideoPlayActionProcessor proc{item, iItem, player};
     proc.ProcessDefaultAction();
-    item->ClearProperty("has_resolved_video_asset");
   }
   return true;
 }
