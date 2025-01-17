@@ -37,6 +37,8 @@ namespace XFILE
     long GetSetId() const { return m_idSet; }
     long GetTagId() const { return m_idTag; }
     long GetVideoVersionId() const { return m_idVideoVersion; }
+    long GetVideoAssetType() const { return m_videoAssetType; }
+    long GetVideoAssetId() const { return m_idVideoAsset; }
 
   protected:
     void SetQueryParam(NodeType NodeType, const std::string& strNodeName);
@@ -60,6 +62,8 @@ namespace XFILE
     long m_idSet;
     long m_idTag;
     long m_idVideoVersion{-1};
+    long m_videoAssetType{-1};
+    long m_idVideoAsset{-1};
   };
   }
 }

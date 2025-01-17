@@ -44,3 +44,8 @@ bool CDirectoryNodeTitleMovies::GetContent(CFileItemList& items) const
 
   return bSuccess;
 }
+
+NodeType CDirectoryNodeTitleMovies::GetChildType() const
+{
+  return NodeType::MOVIE_ASSET_TYPES;
+}
