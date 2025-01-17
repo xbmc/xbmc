@@ -35,7 +35,6 @@
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
-#include "video/guilib/VideoVersionHelper.h"
 
 #include <algorithm>
 #include <cstdlib>
