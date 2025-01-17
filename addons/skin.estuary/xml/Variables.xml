@@ -464,11 +464,11 @@
 	<variable name="ListWatchedIconVar">
 		<value condition="ListItem.IsRecording">windows/pvr/record.png</value>
 		<value condition="ListItem.IsCollection">overlays/set.png</value>
-		<value condition="ListItem.HasVideoVersions">overlays/versions.png</value>
+		<value condition="ListItem.HasVideoVersions + !ListItem.IsVideoAsset">overlays/versions.png</value>
 		<value condition="ListItem.IsPlaying">overlays/watched/OverlayPlaying-List.png</value>
 		<value condition="ListItem.IsResumable + Integer.IsGreater(ListItem.Playcount,0)">overlays/watched/OverlayWatchedResume.png</value>
 		<value condition="ListItem.IsResumable">overlays/watched/OverlayResume.png</value>
-		<value condition="ListItem.HasVideoExtras">overlays/extras.png</value>
+		<value condition="ListItem.HasVideoExtras + !ListItem.IsVideoAsset">overlays/extras.png</value>
 		<value condition="ListItem.IsFolder + String.IsEmpty(Listitem.dbtype) + !String.IsEqual(ListItem.Overlay,OverlayWatched.png) + !ListItem.IsParentFolder">overlays/folder.png</value>
 		<value condition="!String.IsEmpty(ListItem.Overlay)">$INFO[ListItem.Overlay]</value>
 		<value condition="!ListItem.IsParentFolder">OverlayUnwatched.png</value>
@@ -487,8 +487,8 @@
 	</variable>
 	<variable name="ItemTypeIconVar">
 		<value condition="ListItem.IsCollection">overlays/set.png</value>
-		<value condition="ListItem.HasVideoVersions">overlays/versions.png</value>
-		<value condition="ListItem.HasVideoExtras">overlays/extras.png</value>
+		<value condition="ListItem.HasVideoVersions + !ListItem.IsVideoAsset">overlays/versions.png</value>
+		<value condition="ListItem.HasVideoExtras + !ListItem.IsVideoAsset">overlays/extras.png</value>
 	</variable>
 	<variable name="ListPVRRecordingsIconVar">
 		<value condition="ListItem.IsRecording">windows/pvr/record.png</value>
