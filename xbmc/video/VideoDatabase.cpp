@@ -8496,7 +8496,13 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
     // navigation = from videoversions node
     const bool videoVersionNav{options.find("videoversionid") != options.end()};
     // navigation = list of assets of the movie
-    const bool assetsNav{options.find("assetType") != options.end()};
+    bool assetsNav{false};
+    int assetType{-1};
+    if (auto option = options.find("assetType"); option != options.end())
+    {
+      assetsNav = true;
+      assetType = option->second.asInteger();
+    }
 
     int total = -1;
 
@@ -8558,7 +8564,27 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
         {
           // Display the name of the movie for a collection of movie assets rather than "Assets"
           if (!items.HasProperty("customtitle"))
-            items.SetProperty("customtitle", movie.GetTitle());
+          {
+            int msgId;
+            switch (assetType)
+            {
+              case static_cast<int>(VideoAssetType::VERSION):
+                msgId = 40210; // "Versions"
+                break;
+              case static_cast<int>(VideoAssetType::EXTRA):
+                msgId = 40211; // "Extras"
+                break;
+              default:
+                msgId = 40209; // "Assets"
+                break;
+            }
+            //! @todo works only for one level, not a very generic way to show the navigation of the items
+            //! @todo in the nav path displayed in top left corner of Esturay, is / a separator
+            //! added by core or by Estuary (therefore variable by skin)?
+            //! examples: Movies / Titles, Movies / Sintel
+            items.SetProperty("customtitle",
+                              movie.GetTitle() + " / " + g_localizeStrings.Get(msgId));
+          }
 
           if (movie.IsDefaultVideoVersion())
             pItem->Select(true);

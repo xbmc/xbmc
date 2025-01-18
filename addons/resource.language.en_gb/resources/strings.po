@@ -24556,11 +24556,18 @@ msgctxt "#40205"
 msgid "Select scanner action for video extras in \"extras\" folder.[CR][Enabled] Scan video extras like regular videos.[CR][Disabled] Add video extras to library for associated video."
 msgstr ""
 
-#empty strings from id 40206 to 40209
+#empty strings from id 40206 to 40208
+
+#. Button label for video assets
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40209"
+msgid "Assets"
+msgstr ""
 
 #. Button label for video versions
 #: addons/skin.estuary/xml/DialogVideoInfo.xml
 #: xbmc/video/guilib/VideoVersionHelper.cpp
+#: xbmc/video/VideoDatabase.cpp
 msgctxt "#40210"
 msgid "Versions"
 msgstr ""
@@ -24569,6 +24576,7 @@ msgstr ""
 #: addons/skin.estuary/xml/DialogVideoInfo.xml
 #: xbmc/video/guilib/VideoVersionHelper.cpp
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMovieAssets.cpp
+#: xbmc/video/VideoDatabase.cpp
 msgctxt "#40211"
 msgid "Extras"
 msgstr ""
