@@ -67,6 +67,12 @@
 			<onclick>ActivateWindow(1110)</onclick>
 			<visible>Player.TempoEnabled</visible>
 		</control>
+		<control type="button" id="22110">
+			<include>DialogSettingButton</include>
+			<label>$LOCALIZE[31597]</label>
+			<onclick>Dialog.Close(1101)</onclick>
+			<onclick>ActivateWindow(playerprocessinfo)</onclick>
+		</control>
 	</include>
 	<include name="SettingsDialog3DContent">
 		<control type="radiobutton" id="22101">

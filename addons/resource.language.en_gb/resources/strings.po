@@ -9363,6 +9363,7 @@ msgid "Deinterlace video"
 msgstr ""
 
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+#: addons/skin.estuary/xml/DialogPlayerProcessInfo.xml
 msgctxt "#16038"
 msgid "Deinterlace method"
 msgstr ""
@@ -9775,6 +9776,7 @@ msgstr ""
 
 #. label for PVR backend name in system information's PVR section
 #: xbmc/windows/GUIWindowSystemInfo.cpp
+#: addons/skin.estuary/xml/DialogPlayerProcessInfo.xml
 msgctxt "#19012"
 msgid "PVR backend"
 msgstr ""
@@ -14412,6 +14414,7 @@ msgstr ""
 
 #. Used in smart playlists to select items based on the HDR type (HDR10, HLG, Dolbyvision)
 #: xbmc/playlists/SmartPlayList.cpp
+#: addons/skin.estuary/xml/DialogPlayerProcessInfo.xml
 msgctxt "#20474"
 msgid "HDR type"
 msgstr ""
@@ -14926,6 +14929,7 @@ msgid "Audio codec"
 msgstr ""
 
 #: xbmc/playlists/SmartPlaylist.cpp
+#: addons/skin.estuary/xml/DialogPlayerProcessInfo.xml
 msgctxt "#21447"
 msgid "Audio language"
 msgstr ""
@@ -15656,6 +15660,7 @@ msgid "GPU temperature:"
 msgstr ""
 
 #: xbmc/windows/GUIWindowSystemInfo.cpp
+#: addons/skin.estuary/xml/DialogPlayerProcessInfo.xml
 msgctxt "#22011"
 msgid "CPU temperature:"
 msgstr ""
