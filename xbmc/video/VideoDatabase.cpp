@@ -8556,6 +8556,9 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
           if (!items.HasProperty("customtitle"))
             items.SetProperty("customtitle", movie.GetTitle());
 
+          if (movie.IsDefaultVideoVersion())
+            pItem->Select(true);
+
           itemUrl.AppendPath(std::to_string(movie.m_iFileId));
 
           // Adjust item fields
