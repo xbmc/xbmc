@@ -24560,6 +24560,7 @@ msgstr ""
 
 #. Button label for video assets
 #: xbmc/filesystem/VideoDatabaseDirectory.cpp
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#40209"
 msgid "Assets"
 msgstr ""
@@ -24567,6 +24568,7 @@ msgstr ""
 #. Button label for video versions
 #: addons/skin.estuary/xml/DialogVideoInfo.xml
 #: xbmc/filesystem/VideoDatabaseDirectory.cpp
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#40210"
 msgid "Versions"
 msgstr ""
@@ -24574,6 +24576,7 @@ msgstr ""
 #. Button label for video extras
 #: addons/skin.estuary/xml/DialogVideoInfo.xml
 #: xbmc/filesystem/VideoDatabaseDirectory.cpp
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#40211"
 msgid "Extras"
 msgstr ""

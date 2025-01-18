@@ -1211,6 +1211,11 @@
 			<visible>![Window.IsActive(MyPVRChannels.xml) | Window.IsActive(MyPVRTimers.xml) | Window.IsActive(MyPVRRecordings.xml) | Window.IsActive(MyPVRSearch.xml) | Window.IsActive(MyPVRProviders.xml)]</visible>
 		</control>
 		<control type="label">
+			<label>$VAR[BreadcrumbsVideoAssetTypeVar, / ]</label>
+			<include>BreadcrumbsLabel</include>
+			<visible>Container.Content(videoassets) | Container.Content(videoversions) | Container.Content(videoextras)</visible>
+		</control>
+		<control type="label">
 			<label>$INFO[Container.PluginCategory, / ]</label>
 			<include>BreadcrumbsLabel</include>
 			<visible>!String.isempty(Container.PluginCategory)</visible>
