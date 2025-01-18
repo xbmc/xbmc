@@ -80,7 +80,7 @@ std::string GetChildContentType(const std::unique_ptr<CDirectoryNode>& node)
     case NodeType::VIDEOVERSIONS:
       return "videoversions";
     case NodeType::MOVIE_ASSETS:
-      return "movies";
+      return "videoassets";
     default:
       break;
   }
