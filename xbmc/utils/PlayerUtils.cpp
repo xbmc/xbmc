@@ -9,10 +9,14 @@
 #include "PlayerUtils.h"
 
 #include "FileItem.h"
+#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
+#include "application/Application.h"
 #include "application/ApplicationPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
+#include "music/MusicFileItemClassify.h"
 #include "music/MusicUtils.h"
+#include "playlists/PlayListFileItemClassify.h"
 #include "utils/Variant.h"
 #include "video/VideoFileItemClassify.h"
 #include "video/guilib/VideoGUIUtils.h"
@@ -83,4 +87,28 @@ std::vector<std::string> CPlayerUtils::GetPlayersForItem(const CFileItem& item)
 bool CPlayerUtils::HasItemMultiplePlayers(const CFileItem& item)
 {
   return GetPlayersForItem(item).size() > 1;
+}
+
+bool CPlayerUtils::PlayMedia(const std::shared_ptr<CFileItem>& item,
+                             const std::string& player,
+                             KODI::PLAYLIST::Id playlistId)
+{
+  //! @todo get rid of special treatment for some media
+
+  if ((MUSIC::IsAudio(*item) || VIDEO::IsVideo(*item)) && !PLAYLIST::IsSmartPlayList(*item) &&
+      !item->IsPVR())
+  {
+    if (!item->HasProperty("playlist_type_hint"))
+      item->SetProperty("playlist_type_hint", static_cast<int>(playlistId));
+
+    PLAYLIST::CPlayListPlayer& playlistPlayer{CServiceBroker::GetPlaylistPlayer()};
+    playlistPlayer.Reset();
+    playlistPlayer.SetCurrentPlaylist(playlistId);
+    playlistPlayer.Play(item, player);
+  }
+  else
+  {
+    g_application.PlayMedia(*item, player, playlistId);
+  }
+  return true;
 }
