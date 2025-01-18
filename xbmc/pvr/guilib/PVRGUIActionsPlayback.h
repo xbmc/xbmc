@@ -34,10 +34,9 @@ public:
   /*!
    * @brief Play recording.
    * @param item containing a recording or an epg tag.
-   * @param bCheckResume controls resume check.
    * @return true on success, false otherwise.
    */
-  bool PlayRecording(const CFileItem& item, bool bCheckResume) const;
+  bool PlayRecording(const CFileItem& item) const;
 
   /*!
    * @brief Play EPG tag.
@@ -52,11 +51,9 @@ public:
   /*!
    * @brief Switch channel.
    * @param item containing a channel or an epg tag.
-   * @param bCheckResume controls resume check in case a recording for the current epg event is
-   * present.
    * @return true on success, false otherwise.
    */
-  bool SwitchToChannel(const CFileItem& item, bool bCheckResume) const;
+  bool SwitchToChannel(const CFileItem& item) const;
 
   /*!
    * @brief Playback the given file item.
@@ -98,14 +95,6 @@ public:
 private:
   CPVRGUIActionsPlayback(const CPVRGUIActionsPlayback&) = delete;
   CPVRGUIActionsPlayback const& operator=(CPVRGUIActionsPlayback const&) = delete;
-
-  /*!
-   * @brief Check whether resume play is possible for a given item, display "resume from ..."/"play
-   * from start" context menu in case.
-   * @param item containing a recording or an epg tag.
-   * @return true, to play/resume the item, false otherwise.
-   */
-  bool CheckResumeRecording(const CFileItem& item) const;
 
   /*!
    * @brief Check "play minimized" settings value and switch to fullscreen if not set.

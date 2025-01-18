@@ -555,7 +555,6 @@ int PlayOrQueueMedia(const std::vector<std::string>& params,
       return false;
     }
   }
-  item.SetProperty("check_resume", false);
 
   if (!forcePlay /* queue */ || item.m_bIsFolder || PLAYLIST::IsPlayList(item))
   {

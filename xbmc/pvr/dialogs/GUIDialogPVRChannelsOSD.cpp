@@ -251,8 +251,7 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int iItem)
           CSettings::SETTING_PVRMENU_CLOSECHANNELOSDONSWITCH))
     Close();
 
-  CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(
-      *item, true /* bCheckResume */);
+  CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(*item);
 }
 
 void CGUIDialogPVRChannelsOSD::Notify(const PVREvent& event)

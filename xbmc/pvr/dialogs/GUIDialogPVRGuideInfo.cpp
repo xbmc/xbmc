@@ -154,8 +154,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonPlay(const CGUIMessage& message)
       }
       else
       {
-        CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(
-            *m_progItem, true /* bCheckResume */);
+        CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(*m_progItem);
       }
       bReturn = true;
     }

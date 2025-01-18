@@ -246,7 +246,7 @@ void CPVRGUIChannelNavigator::SwitchToCurrentChannel()
     item = std::make_unique<CFileItem>(m_currentChannel);
   }
 
-  CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(*item, false);
+  CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(*item);
 }
 
 bool CPVRGUIChannelNavigator::IsPreview() const

@@ -33,6 +33,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
+#include "video/guilib/VideoPlayActionProcessor.h"
 
 #include <memory>
 #include <string>
@@ -178,8 +179,13 @@ bool PlayRecording::IsVisible(const CFileItem& item) const
 
 bool PlayRecording::Execute(const CFileItemPtr& item) const
 {
-  return CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
-      *item, true /* bCheckResume */);
+  const std::shared_ptr<CPVRRecording> recording{
+      CServiceBroker::GetPVRManager().Recordings()->GetRecordingForEpgTag(item->GetEPGInfoTag())};
+  if (!recording)
+    return false;
+
+  KODI::VIDEO::GUILIB::CVideoPlayActionProcessor proc{std::make_shared<CFileItem>(recording)};
+  return proc.ProcessDefaultAction();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
