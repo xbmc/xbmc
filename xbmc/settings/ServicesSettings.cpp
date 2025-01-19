@@ -114,3 +114,15 @@ void CServicesSettings::SettingOptionsCacheChunkSizesFiller(const SettingConstPt
   list.emplace_back(StringUtils::Format(kb, 512), 512 * 1024);
   list.emplace_back(StringUtils::Format(mb, 1), 1024 * 1024);
 }
+
+void CServicesSettings::SettingOptionsSmbVersionsFiller(const SettingConstPtr& setting,
+                                                        std::vector<IntegerSettingOption>& list,
+                                                        int& current,
+                                                        void* data)
+{
+  list.emplace_back(g_localizeStrings.Get(36623), 0);
+  list.emplace_back(g_localizeStrings.Get(36624), 1);
+  list.emplace_back(g_localizeStrings.Get(36625), 2);
+  list.emplace_back(g_localizeStrings.Get(36637), 21);
+  list.emplace_back(g_localizeStrings.Get(36626), 3);
+}

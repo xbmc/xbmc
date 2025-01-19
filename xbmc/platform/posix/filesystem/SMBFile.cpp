@@ -133,21 +133,43 @@ void CSMB::Init()
         fprintf(f, "\tlock directory = %s/.smb/\n", home.c_str());
 
         // set minimum smbclient protocol version
-        if (settings->GetInt(CSettings::SETTING_SMB_MINPROTOCOL) > 0)
+        switch (settings->GetInt(CSettings::SETTING_SMB_MINPROTOCOL))
         {
-          if (settings->GetInt(CSettings::SETTING_SMB_MINPROTOCOL) == 1)
+          case 0:
+          default:
+            break;
+          case 1:
             fprintf(f, "\tclient min protocol = NT1\n");
-          else
-            fprintf(f, "\tclient min protocol = SMB%d\n", settings->GetInt(CSettings::SETTING_SMB_MINPROTOCOL));
+            break;
+          case 2:
+            fprintf(f, "\tclient min protocol = SMB2_02\n");
+            break;
+          case 21:
+            fprintf(f, "\tclient min protocol = SMB2_10\n");
+            break;
+          case 3:
+            fprintf(f, "\tclient min protocol = SMB3\n");
+            break;
         }
 
         // set maximum smbclient protocol version
-        if (settings->GetInt(CSettings::SETTING_SMB_MAXPROTOCOL) > 0)
+        switch (settings->GetInt(CSettings::SETTING_SMB_MAXPROTOCOL))
         {
-          if (settings->GetInt(CSettings::SETTING_SMB_MAXPROTOCOL) == 1)
+          case 0:
+          default:
+            break;
+          case 1:
             fprintf(f, "\tclient max protocol = NT1\n");
-          else
-            fprintf(f, "\tclient max protocol = SMB%d\n", settings->GetInt(CSettings::SETTING_SMB_MAXPROTOCOL));
+            break;
+          case 2:
+            fprintf(f, "\tclient max protocol = SMB2_02\n");
+            break;
+          case 21:
+            fprintf(f, "\tclient max protocol = SMB2_10\n");
+            break;
+          case 3:
+            fprintf(f, "\tclient max protocol = SMB3\n");
+            break;
         }
 
         // set legacy security options
@@ -749,14 +771,11 @@ int CSMBFile::GetChunkSize()
   if (!settings)
     return (64 * 1024);
 
-  int chunkSize = settings->GetInt(CSettings::SETTING_SMB_CHUNKSIZE) * 1024;
-
-  if (settings->GetInt(CSettings::SETTING_SMB_MINPROTOCOL) == 1 &&
-      settings->GetInt(CSettings::SETTING_SMB_MAXPROTOCOL) == 1)
+  // Only SMBv2.1 and SMBv3 supports large MTU
+  if (settings->GetInt(CSettings::SETTING_SMB_MINPROTOCOL) > 2)
   {
-    if (chunkSize > 64 * 1024)
-      chunkSize = 64 * 1024;
+    return (settings->GetInt(CSettings::SETTING_SMB_CHUNKSIZE) * 1024);
   }
 
-  return chunkSize;
+  return (64 * 1024);
 }

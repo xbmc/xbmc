@@ -36,4 +36,8 @@ public:
                                                   std::vector<IntegerSettingOption>& list,
                                                   int& current,
                                                   void* data);
+  static void SettingOptionsSmbVersionsFiller(const SettingConstPtr& setting,
+                                              std::vector<IntegerSettingOption>& list,
+                                              int& current,
+                                              void* data);
 };

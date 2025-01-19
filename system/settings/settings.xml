@@ -2525,14 +2525,9 @@
         </setting>
         <setting id="smb.minprotocol" type="integer" label="36628" help="36629">
           <level>2</level>
-          <default>0</default>
+          <default>21</default>
           <constraints>
-            <options>
-              <option label="36623">0</option>
-              <option label="36624">1</option>
-              <option label="36625">2</option>
-              <option label="36626">3</option>
-            </options>
+            <options>smbversions</options>
           </constraints>
           <control type="list" format="integer" />
         </setting>
@@ -2540,12 +2535,7 @@
           <level>2</level>
           <default>3</default>
           <constraints>
-            <options>
-              <option label="36623">0</option>
-              <option label="36624">1</option>
-              <option label="36625">2</option>
-              <option label="36626">3</option>
-            </options>
+            <options>smbversions</options>
           </constraints>
           <control type="list" format="integer" />
         </setting>
@@ -2574,6 +2564,14 @@
           <constraints>
             <options>filechunksizes</options>
           </constraints>
+          <dependencies>
+            <dependency type="enable">
+              <or>
+                <condition setting="smb.minprotocol" operator="is">21</condition>
+                <condition setting="smb.minprotocol" operator="is">3</condition>
+              </or>
+            </dependency>
+          </dependencies>
           <control type="list" format="string" />
         </setting>
       </group>
