@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "media/MediaType.h"
+
 enum class VideoAssetTypeOwner
 {
   UNKNOWN = -1,
