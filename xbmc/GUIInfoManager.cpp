@@ -4692,6 +4692,7 @@ const infomap container_ints[] = {{ "row",              CONTAINER_ROW },
 ///       - <b>tags</b>
 ///       - <b>videoversions</b>
 ///       - <b>videoassets</b>
+///       - <b>videoextras</b>
 ///     @note These currently only work in the Video and Music
 ///     Library or unless a Plugin has set the value) also available are
 ///     Addons true when a list of add-ons is shown LiveTV true when a

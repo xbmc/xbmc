@@ -19,6 +19,8 @@
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
+//! @todo does the node type need to match the type requested by the parent node?
+//! this type of node is used for MOVIE_ASSETS MOVIE_ASSETS_VERSIONS MOVIE_ASSETS_EXTRAS
 CDirectoryNodeMovieAssets::CDirectoryNodeMovieAssets(const std::string& strName,
                                                      CDirectoryNode* pParent)
   : CDirectoryNode(NodeType::MOVIE_ASSETS, strName, pParent)

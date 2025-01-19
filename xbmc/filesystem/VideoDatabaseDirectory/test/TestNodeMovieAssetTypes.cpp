@@ -39,3 +39,38 @@ TEST(TestNodeMovieAssetTypes, General)
   ASSERT_EQ(params.GetMovieId(), 123);
   ASSERT_EQ(params.GetVideoAssetType(), -1);
 }
+
+TEST(TestNodeMovieAssetTypes, ChildType)
+{
+  std::unique_ptr<CDirectoryNode> node;
+
+  // special value to return versions + extras virtual folder.
+  node.reset(CDirectoryNode::ParseURL("videodb://movies/titles/123/-2"));
+
+  EXPECT_TRUE(node);
+  ASSERT_EQ(node->GetChildType(), NodeType::MOVIE_ASSETS_VERSIONS);
+
+  // all types
+  node.reset(CDirectoryNode::ParseURL("videodb://movies/titles/123/0"));
+
+  EXPECT_TRUE(node);
+  ASSERT_EQ(node->GetChildType(), NodeType::MOVIE_ASSETS);
+
+  // versions
+  node.reset(CDirectoryNode::ParseURL("videodb://movies/titles/123/1"));
+
+  EXPECT_TRUE(node);
+  ASSERT_EQ(node->GetChildType(), NodeType::MOVIE_ASSETS_VERSIONS);
+
+  // extras
+  node.reset(CDirectoryNode::ParseURL("videodb://movies/titles/123/2"));
+
+  EXPECT_TRUE(node);
+  ASSERT_EQ(node->GetChildType(), NodeType::MOVIE_ASSETS_EXTRAS);
+
+  // unused value at this time, supposed to default to MOVIE_ASSETS
+  node.reset(CDirectoryNode::ParseURL("videodb://movies/titles/123/3"));
+
+  EXPECT_TRUE(node);
+  ASSERT_EQ(node->GetChildType(), NodeType::MOVIE_ASSETS);
+}

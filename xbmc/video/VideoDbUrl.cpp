@@ -71,6 +71,8 @@ bool CVideoDbUrl::parse()
     case NodeType::RECENTLY_ADDED_MOVIES:
     case NodeType::MOVIE_ASSET_TYPES:
     case NodeType::MOVIE_ASSETS:
+    case NodeType::MOVIE_ASSETS_VERSIONS:
+    case NodeType::MOVIE_ASSETS_EXTRAS:
       m_type = "movies";
       m_itemType = "movies";
       break;

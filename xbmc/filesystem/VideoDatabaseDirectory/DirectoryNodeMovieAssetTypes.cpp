@@ -8,6 +8,9 @@
 
 #include "DirectoryNodeMovieAssetTypes.h"
 
+#include "QueryParams.h"
+#include "video/VideoManagerTypes.h"
+
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
 CDirectoryNodeMovieAssetTypes::CDirectoryNodeMovieAssetTypes(const std::string& strName,
@@ -18,5 +21,18 @@ CDirectoryNodeMovieAssetTypes::CDirectoryNodeMovieAssetTypes(const std::string& 
 
 NodeType CDirectoryNodeMovieAssetTypes::GetChildType() const
 {
-  return NodeType::MOVIE_ASSETS;
+  CQueryParams params;
+  CollectQueryParams(params);
+
+  switch (static_cast<VideoAssetType>(params.GetVideoAssetType()))
+  {
+    case VideoAssetType::VERSIONSANDEXTRASFOLDER:
+    case VideoAssetType::VERSION:
+      return NodeType::MOVIE_ASSETS_VERSIONS;
+    case VideoAssetType::EXTRA:
+      return NodeType::MOVIE_ASSETS_EXTRAS;
+    case VideoAssetType::ALL:
+    default:
+      return NodeType::MOVIE_ASSETS;
+  }
 }

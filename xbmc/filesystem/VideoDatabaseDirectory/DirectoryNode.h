@@ -49,6 +49,8 @@ namespace XFILE
       VIDEOVERSIONS,
       MOVIE_ASSET_TYPES,
       MOVIE_ASSETS,
+      MOVIE_ASSETS_VERSIONS,
+      MOVIE_ASSETS_EXTRAS,
     };
 
     typedef struct {

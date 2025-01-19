@@ -364,6 +364,7 @@ void CGUIWindowVideoNav::SelectDefaultItem()
       break;
     }
     case NodeType::MOVIE_ASSETS:
+    case NodeType::MOVIE_ASSETS_VERSIONS:
     {
       //! @todo: worth a setting? some users may prefer the selection to remain on the .. parent item
       if (!isItemSelected)
