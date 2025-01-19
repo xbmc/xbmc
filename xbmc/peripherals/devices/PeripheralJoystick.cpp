@@ -15,7 +15,9 @@
 #include "games/GameServices.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerIDs.h"
+#include "games/controllers/ControllerLayout.h"
 #include "games/controllers/ControllerManager.h"
+#include "games/controllers/input/PhysicalTopology.h"
 #include "input/InputManager.h"
 #include "input/joysticks/DeadzoneFilter.h"
 #include "input/joysticks/JoystickMonitor.h"
@@ -26,6 +28,7 @@
 #include "peripherals/Peripherals.h"
 #include "peripherals/addons/AddonButtonMap.h"
 #include "peripherals/bus/virtual/PeripheralBusAddon.h"
+#include "settings/lib/Setting.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -93,7 +96,7 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
       if (bSuccess)
       {
         m_buttonMap =
-            std::make_unique<CAddonButtonMap>(this, addon, DEFAULT_CONTROLLER_ID, m_manager);
+            std::make_unique<CAddonButtonMap>(this, addon, GAME::DEFAULT_CONTROLLER_ID, m_manager);
         if (m_buttonMap->Load())
         {
           InitializeDeadzoneFiltering(*m_buttonMap);
@@ -281,11 +284,32 @@ void CPeripheralJoystick::SetControllerProfile(const KODI::GAME::ControllerPtr& 
 {
   CPeripheral::SetControllerProfile(controller);
 
+  const std::string controllerId = controller ? controller->ID() : "";
+  const bool providesInput = controller ? controller->Layout().Topology().ProvidesInput() : true;
+
   // Save preference to buttonmap
   if (m_buttonMap)
   {
-    if (m_buttonMap->SetAppearance(controller->ID()))
+    if (m_buttonMap->SetAppearance(controllerId))
       m_buttonMap->SaveButtonMap();
+  }
+
+  // Update settings
+  for (const auto& it : m_settings)
+  {
+    std::shared_ptr<CSetting> setting = it.second.m_setting;
+    if (!setting)
+      continue;
+
+    if (setting->GetId() == CDeadzoneFilter::SETTING_LEFT_STICK_DEADZONE ||
+        setting->GetId() == CDeadzoneFilter::SETTING_RIGHT_STICK_DEADZONE)
+    {
+      if (controllerId == GAME::DEFAULT_KEYBOARD_ID || controllerId == GAME::DEFAULT_MOUSE_ID ||
+          controllerId == GAME::DEFAULT_REMOTE_ID || !providesInput)
+        setting->SetVisible(false);
+      else
+        setting->SetVisible(true);
+    }
   }
 }
 

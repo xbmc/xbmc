@@ -37,7 +37,7 @@ CRumbleGenerator::CRumbleGenerator()
 
 std::string CRumbleGenerator::ControllerID() const
 {
-  return DEFAULT_CONTROLLER_ID;
+  return GAME::DEFAULT_CONTROLLER_ID;
 }
 
 void CRumbleGenerator::NotifyUser(IInputReceiver* receiver)
