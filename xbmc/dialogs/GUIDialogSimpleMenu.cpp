@@ -76,6 +76,8 @@ bool CGUIDialogSimpleMenu::GetOrShowPlaylistSelection(
                         {
                           if (item.GetVideoContentType() == VideoDbContentType::EPISODES)
                           {
+                            if (item.m_multipleTitles)
+                              return URIUtils::GetBlurayAllEpisodesPath(originalDynPath);
                             const CVideoInfoTag* tag{item.GetVideoInfoTag()};
                             return URIUtils::GetBlurayEpisodePath(originalDynPath, tag->m_iSeason,
                                                                   tag->m_iEpisode);
@@ -132,7 +134,7 @@ bool CGUIDialogSimpleMenu::GetOrShowPlaylistSelection(
     }
 
     // If item is not folder (ie. all titles)
-    if (!item_new->m_bIsFolder)
+    if (!item_new->m_bIsFolder && !item.m_multipleTitles)
     {
       // See if already selected
       if (!usedPlaylists.empty())
