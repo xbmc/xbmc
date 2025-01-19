@@ -30,13 +30,11 @@ public:
   void Initialise(void) override;
   void GetDirectory(const std::string& strPath, CFileItemList& items) const override;
 
-  /*!
-   * \brief Get the location for the specified controller index
-   */
-  std::string MakeLocation(unsigned int controllerIndex) const;
-
 protected:
   // implementation of CPeripheralBus
   bool PerformDeviceScan(PeripheralScanResults& results) override;
+
+  // Internal helper fuction
+  static std::string MakeLocation(PeripheralType peripheralType);
 };
 } // namespace PERIPHERALS
