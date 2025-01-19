@@ -78,21 +78,17 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
   {
     if (feature == FEATURE_JOYSTICK)
     {
-      // Ensure an add-on is present to translate input
+      // Log if an add-on is not present to translate input
       PeripheralAddonPtr addon = m_manager.GetAddonWithButtonMap(this);
       if (!addon)
-      {
         CLog::Log(LOGERROR, "CPeripheralJoystick: No button mapping add-on for {}", m_strLocation);
-      }
-      else
-      {
-        if (m_bus->InitializeProperties(*this))
-          bSuccess = true;
-        else
-          CLog::Log(LOGERROR, "CPeripheralJoystick: Invalid location ({})", m_strLocation);
-      }
 
-      if (bSuccess)
+      if (m_bus->InitializeProperties(*this))
+        bSuccess = true;
+      else
+        CLog::Log(LOGERROR, "CPeripheralJoystick: Invalid location ({})", m_strLocation);
+
+      if (bSuccess && addon)
       {
         m_buttonMap =
             std::make_unique<CAddonButtonMap>(this, addon, GAME::DEFAULT_CONTROLLER_ID, m_manager);
