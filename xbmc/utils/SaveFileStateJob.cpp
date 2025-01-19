@@ -101,7 +101,7 @@ void CSaveFileState::DoWork(CFileItem& item,
 
         bool updateListing = false;
         // No resume & watched status for livetv
-        if (!item.IsLiveTV())
+        if (!item.IsLiveTV() && !item.ContainsMultipleEpisodes())
         {
           if (updatePlayCount)
           {
@@ -188,7 +188,7 @@ void CSaveFileState::DoWork(CFileItem& item,
         }
 
         if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->HasStreamDetails() &&
-            !item.IsLiveTV())
+            !item.IsLiveTV() && !item.ContainsMultipleEpisodes())
         {
           CFileItem dbItem(item);
 
@@ -216,7 +216,7 @@ void CSaveFileState::DoWork(CFileItem& item,
 
         if (tag && tag->m_iDbId >= 0 && tag->m_iFileId >= 0 &&
             URIUtils::IsBlurayPath(item.GetDynPath()) &&
-            tag->m_strFileNameAndPath != item.GetDynPath())
+            tag->m_strFileNameAndPath != item.GetDynPath() && !item.ContainsMultipleEpisodes())
         {
           videodatabase.BeginTransaction();
           // tag->m_iFileId contains the idFile originally played and may be different to the idFile

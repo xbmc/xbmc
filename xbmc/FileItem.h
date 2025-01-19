@@ -94,6 +94,12 @@ enum class FileFolderType
   MASK_ONBROWSE = ALWAYS | ONCLICK | ONBROWSE,
 };
 
+enum class MultipleEpisodes
+{
+  DONT_GROUP_MULTIPLE_EPISODES = 0,
+  GROUP_MULTIPLE_EPISODES
+};
+
 /*!
   \brief Represents a file on a share
   \sa CFileItemList
@@ -496,8 +502,12 @@ public:
    in the given item.
    \param item the item used to supplement information
    \param replaceLabels whether to replace labels (defaults to true)
+   \param replaceEpisodes whether to list all episodes on multi-episode disc (defaults to not)
    */
-  void UpdateInfo(const CFileItem &item, bool replaceLabels = true);
+  void UpdateInfo(
+      const CFileItem& item,
+      bool replaceLabels = true,
+      MultipleEpisodes replaceEpisodes = MultipleEpisodes::DONT_GROUP_MULTIPLE_EPISODES);
 
   /*! \brief Merge an item with information from another item
   We take metadata/art information from the given item and supplement the current
@@ -557,6 +567,9 @@ public:
   bool HasCueDocument() const;
   bool LoadTracksFromCueDocument(CFileItemList& scannedItems);
 
+  bool ContainsMultipleEpisodes() const { return m_multipleTitles; }
+  void SetContainsMultipleEpisodes(bool multipleTitles) { m_multipleTitles = multipleTitles; }
+
 private:
   /*! \brief initialize all members of this class (not CGUIListItem members) to default values.
    Called from constructors, and from Reset()
@@ -606,6 +619,7 @@ private:
   bool m_bIsAlbum;
   int64_t m_lStartOffset;
   int64_t m_lEndOffset;
+  bool m_multipleTitles{false};
 
   CCueDocumentPtr m_cueDocument;
 };
