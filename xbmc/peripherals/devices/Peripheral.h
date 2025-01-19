@@ -14,8 +14,12 @@
 #include "input/mouse/interfaces/IMouseInputProvider.h"
 #include "peripherals/PeripheralTypes.h"
 
+#include <functional>
+#include <future>
 #include <map>
 #include <memory>
+#include <mutex>
+#include <queue>
 #include <set>
 #include <string>
 #include <vector>
@@ -304,6 +308,13 @@ public:
 protected:
   virtual void ClearSettings(void);
 
+  // Helper functions
+  void InstallController(
+      const std::string& controllerId,
+      std::function<void(const KODI::GAME::ControllerPtr& installedController)> callback);
+  KODI::GAME::ControllerPtr InstallAsync(const std::string& controllerId);
+  static bool InstallSync(const std::string& controllerId);
+
   CPeripherals& m_manager;
   PeripheralType m_type;
   PeripheralBusType m_busType;
@@ -335,5 +346,8 @@ protected:
   std::map<KODI::JOYSTICK::IButtonMapper*, std::unique_ptr<CAddonButtonMapping>> m_buttonMappers;
   KODI::GAME::ControllerPtr m_controllerProfile;
   std::unique_ptr<KODI::GAME::CAgentController> m_controllerInput;
+  std::queue<std::string> m_controllersToInstall;
+  std::vector<std::future<void>> m_installTasks;
+  std::mutex m_controllerInstallMutex;
 };
 } // namespace PERIPHERALS

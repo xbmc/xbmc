@@ -17,7 +17,6 @@
 
 #include <future>
 #include <memory>
-#include <queue>
 #include <string>
 #include <vector>
 
@@ -120,10 +119,6 @@ protected:
 
   void PowerOff();
 
-  // Helper functions
-  KODI::GAME::ControllerPtr InstallAsync(const std::string& controllerId);
-  static bool InstallSync(const std::string& controllerId);
-
   struct DriverHandler
   {
     KODI::JOYSTICK::IDriverHandler* handler;
@@ -139,8 +134,6 @@ protected:
   unsigned int m_motorCount = 0;
   bool m_supportsPowerOff = false;
   CDateTime m_lastActive;
-  std::queue<std::string> m_controllersToInstall;
-  std::vector<std::future<void>> m_installTasks;
 
   // Input clients
   std::unique_ptr<KODI::KEYMAP::CKeymapHandling> m_appInput;
@@ -152,6 +145,5 @@ protected:
 
   // Synchronization parameters
   CCriticalSection m_handlerMutex;
-  CCriticalSection m_controllerInstallMutex;
 };
 } // namespace PERIPHERALS

@@ -9,8 +9,6 @@
 #include "PeripheralJoystick.h"
 
 #include "ServiceBroker.h"
-#include "addons/AddonInstaller.h"
-#include "addons/AddonManager.h"
 #include "application/Application.h"
 #include "games/GameServices.h"
 #include "games/controllers/Controller.h"
@@ -131,53 +129,35 @@ void CPeripheralJoystick::InitializeDeadzoneFiltering(IButtonMap& buttonMap)
 
 void CPeripheralJoystick::InitializeControllerProfile(IButtonMap& buttonMap)
 {
-  const std::string controllerId = buttonMap.GetAppearance();
+  GAME::ControllerPtr controller;
+
+  // Buttonmap has the freshest state
+  std::string controllerId = buttonMap.GetAppearance();
+
   if (controllerId.empty())
-    return;
-
-  auto controller = m_manager.GetControllerProfiles().GetController(controllerId);
-  if (controller)
-    CPeripheral::SetControllerProfile(controller);
-  else
   {
-    std::unique_lock<CCriticalSection> lock(m_controllerInstallMutex);
-
-    // Deposit controller into queue
-    m_controllersToInstall.emplace(controllerId);
-
-    // Clean up finished install tasks
-    m_installTasks.erase(std::remove_if(m_installTasks.begin(), m_installTasks.end(),
-                                        [](std::future<void>& task) {
-                                          return task.wait_for(std::chrono::seconds(0)) ==
-                                                 std::future_status::ready;
-                                        }),
-                         m_installTasks.end());
-
-    // Install controller off-thread
-    std::future<void> installTask =
-        std::async(std::launch::async,
-                   [this]()
-                   {
-                     // Withdraw controller from queue
-                     std::string controllerToInstall;
-                     {
-                       std::unique_lock<CCriticalSection> lock(m_controllerInstallMutex);
-                       if (!m_controllersToInstall.empty())
-                       {
-                         controllerToInstall = m_controllersToInstall.front();
-                         m_controllersToInstall.pop();
-                       }
-                     }
-
-                     // Do the install
-                     GAME::ControllerPtr controller = InstallAsync(controllerToInstall);
-                     if (controller)
-                       CPeripheral::SetControllerProfile(controller);
-                   });
-
-    // Hold the task to prevent the destructor from completing during an install
-    m_installTasks.emplace_back(std::move(installTask));
+    // Next try our current state
+    if (m_controllerProfile)
+    {
+      controller = m_controllerProfile;
+      controllerId = m_controllerProfile->ID();
+    }
   }
+
+  // Try loading controller profile
+  if (!controller)
+    controller = CServiceBroker::GetGameControllerManager().GetController(controllerId);
+
+  // If controller is not available, try to install it now
+  if (!controllerId.empty() && !controller)
+  {
+    InstallController(controllerId, [this](const GAME::ControllerPtr& installedController)
+                      { SetControllerProfile(installedController); });
+    return;
+  }
+
+  // Initialize state with desired controller
+  CPeripheral::SetControllerProfile(controller);
 }
 
 void CPeripheralJoystick::OnUserNotification()
@@ -516,43 +496,4 @@ void CPeripheralJoystick::SetSupportsPowerOff(bool bSupportsPowerOff)
                      m_features.end());
   else if (std::find(m_features.begin(), m_features.end(), FEATURE_POWER_OFF) == m_features.end())
     m_features.push_back(FEATURE_POWER_OFF);
-}
-
-GAME::ControllerPtr CPeripheralJoystick::InstallAsync(const std::string& controllerId)
-{
-  GAME::ControllerPtr controller;
-
-  // Only 1 install at a time. Remaining installs will wake when this one
-  // is done.
-  std::unique_lock<CCriticalSection> lockInstall(m_manager.GetAddonInstallMutex());
-
-  CLog::LogF(LOGDEBUG, "Installing {}", controllerId);
-
-  if (InstallSync(controllerId))
-    controller = m_manager.GetControllerProfiles().GetController(controllerId);
-  else
-    CLog::LogF(LOGERROR, "Failed to install {}", controllerId);
-
-  return controller;
-}
-
-bool CPeripheralJoystick::InstallSync(const std::string& controllerId)
-{
-  // If the addon isn't installed we need to install it
-  bool installed = CServiceBroker::GetAddonMgr().IsAddonInstalled(controllerId);
-  if (!installed)
-  {
-    ADDON::AddonPtr installedAddon;
-    installed = ADDON::CAddonInstaller::GetInstance().InstallModal(
-        controllerId, installedAddon, ADDON::InstallModalPrompt::CHOICE_NO);
-  }
-
-  if (installed)
-  {
-    // Make sure add-on is enabled
-    if (CServiceBroker::GetAddonMgr().IsAddonDisabled(controllerId))
-      CServiceBroker::GetAddonMgr().EnableAddon(controllerId);
-  }
-
-  return installed;
 }
