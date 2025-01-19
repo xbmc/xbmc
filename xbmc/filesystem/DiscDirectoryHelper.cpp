@@ -14,6 +14,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "video/VideoDatabase.h"
 #include "video/VideoInfoTag.h"
 
 #include <array>
@@ -32,7 +33,7 @@ void CDiscDirectoryHelper::GetEpisodeTitles(CURL url,
   bool isSpecial{false};
   unsigned int episodeIndex{0};
   unsigned int specialIndex{0};
-  bool allEpisodes{false};
+  bool allEpisodes{episode.m_multipleTitles};
 
   for (unsigned int i = 0; i < episodesOnDisc.size(); ++i)
   {
@@ -660,4 +661,56 @@ std::string CDiscDirectoryHelper::HexToString(const uint8_t* buf, int count)
   }
 
   return std::string(std::begin(tmp), std::end(tmp));
+}
+
+std::string CDiscDirectoryHelper::GetEpisodesLabel(CFileItem& newItem, const CFileItem& item)
+{
+  std::string label{};
+
+  // Get episodes on disc
+  CVideoDatabase database;
+  if (!database.Open())
+  {
+    CLog::LogF(LOGERROR, "Failed to open video database");
+    return label;
+  }
+
+  std::vector<CVideoInfoTag> episodes;
+  database.GetEpisodesByFileId(item.GetVideoInfoTag()->m_iFileId, episodes);
+  if (!episodes.empty())
+  {
+    bool specials{false};
+    int startEpisode{INT_MAX};
+    int endEpisode{-1};
+    for (const auto& episode : episodes)
+    {
+      if (episode.m_iSeason > 0 && episode.m_iEpisode < startEpisode)
+        startEpisode = episode.m_iEpisode;
+      if (episode.m_iSeason > 0 && episode.m_iEpisode > endEpisode)
+        endEpisode = episode.m_iEpisode;
+      if (episode.m_iSeason == 0)
+        specials = true;
+    }
+
+    if (startEpisode == endEpisode && startEpisode != -1)
+      label = StringUtils::Format(g_localizeStrings.Get(21349) /* Episode n */, startEpisode);
+    else if (startEpisode < endEpisode)
+    {
+      label = StringUtils::Format(g_localizeStrings.Get(21350) /* Episodes m-n*/, startEpisode,
+                                  endEpisode);
+
+      // Get description of plot as more generic for multiple episodes
+      newItem.GetVideoInfoTag()->m_strPlot =
+          database.GetPlotByShowId(item.GetVideoInfoTag()->m_iIdShow);
+    }
+
+    if (specials)
+    {
+      if (!label.empty())
+        label += g_localizeStrings.Get(21351); // and Specials
+      else
+        label = g_localizeStrings.Get(21352); // Specials
+    }
+  }
+  return label;
 }

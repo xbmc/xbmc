@@ -10011,6 +10011,35 @@ void CVideoDatabase::GetMusicVideosByName(const std::string& strSearch, CFileIte
   }
 }
 
+std::string CVideoDatabase::GetPlotByShowId(int idShow)
+{
+  std::string strSQL;
+
+  try
+  {
+    if (nullptr == m_pDB)
+      return "";
+    if (nullptr == m_pDS)
+      return "";
+
+    strSQL = PrepareSQL("SELECT idShow, c%02d FROM tvshow WHERE idShow = %i", VIDEODB_ID_TV_PLOT,
+                        idShow);
+    m_pDS->query(strSQL);
+
+    std::string plot{};
+    if (!m_pDS->eof())
+      plot = m_pDS->fv(1).get_asString();
+
+    m_pDS->close();
+    return plot;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "({}) failed", strSQL);
+    return std::string{};
+  }
+}
+
 void CVideoDatabase::GetEpisodesByPlot(const std::string& strSearch, CFileItemList& items)
 {
 // Alternative searching - not quite as fast though due to
