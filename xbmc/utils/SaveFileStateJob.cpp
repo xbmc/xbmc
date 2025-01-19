@@ -101,7 +101,7 @@ void CSaveFileState::DoWork(CFileItem& item,
 
         bool updateListing = false;
         // No resume & watched status for livetv
-        if (!item.IsLiveTV())
+        if (!item.IsLiveTV() && !item.m_multipleTitles)
         {
           if (updatePlayCount)
           {
@@ -188,7 +188,7 @@ void CSaveFileState::DoWork(CFileItem& item,
         }
 
         if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->HasStreamDetails() &&
-            !item.IsLiveTV())
+            !item.IsLiveTV() && !item.m_multipleTitles)
         {
           CFileItem dbItem(item);
 
@@ -216,16 +216,16 @@ void CSaveFileState::DoWork(CFileItem& item,
 
         if (tag && tag->m_iDbId >= 0 && tag->m_iFileId >= 0 &&
             URIUtils::IsBlurayPath(item.GetDynPath()) &&
-            tag->m_strFileNameAndPath != item.GetDynPath())
+            tag->m_strFileNameAndPath != item.GetDynPath() && !item.m_multipleTitles)
         {
-          videodatabase.BeginTransaction();
-          // tag->m_iFileId contains the idFile originally played and may be different to the idFile
-          // in the movie table entry if it's a non-default video version
-          if (videodatabase.SetFileForMedia(item.GetDynPath(), item.GetVideoContentType(),
-                                            tag->m_iDbId, tag->m_iFileId))
-            videodatabase.CommitTransaction();
-          else
-            videodatabase.RollbackTransaction();
+            videodatabase.BeginTransaction();
+            // tag->m_iFileId contains the idFile originally played and may be different to the idFile
+            // in the movie table entry if it's a non-default video version
+            if (videodatabase.SetFileForMedia(item.GetDynPath(), item.GetVideoContentType(),
+                tag->m_iDbId, tag->m_iFileId))
+                videodatabase.CommitTransaction();
+            else
+                videodatabase.RollbackTransaction();
         }
 
         if (updateListing)

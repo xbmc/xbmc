@@ -94,6 +94,12 @@ enum class FileFolderType
   MASK_ONBROWSE = ALWAYS | ONCLICK | ONBROWSE,
 };
 
+enum class MultipleEpisodes
+{
+  DONT_GROUP_MULTIPLE_EPISODES = 0,
+  GROUP_MULTIPLE_EPISODES
+};
+
 /*!
   \brief Represents a file on a share
   \sa CFileItemList
@@ -496,8 +502,12 @@ public:
    in the given item.
    \param item the item used to supplement information
    \param replaceLabels whether to replace labels (defaults to true)
+   \param replaceEpisodes whether to list all episodes on multi-episode disc (defaults to not)
    */
-  void UpdateInfo(const CFileItem &item, bool replaceLabels = true);
+  void UpdateInfo(
+      const CFileItem& item,
+      bool replaceLabels = true,
+      MultipleEpisodes replaceEpisodes = MultipleEpisodes::DONT_GROUP_MULTIPLE_EPISODES);
 
   /*! \brief Merge an item with information from another item
   We take metadata/art information from the given item and supplement the current
@@ -551,6 +561,7 @@ public:
   std::string m_strLockCode;
   int m_iHasLock; // 0 - no lock 1 - lock, but unlocked 2 - locked
   int m_iBadPwdCount;
+  bool m_multipleTitles;
 
   void SetCueDocument(const CCueDocumentPtr& cuePtr);
   void LoadEmbeddedCue();
