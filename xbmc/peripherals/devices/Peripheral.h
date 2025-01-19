@@ -274,6 +274,13 @@ public:
   virtual CDateTime LastActive() const;
 
   /*!
+   * \brief Set the last time this peripheral was active
+   *
+   * \param lastActive The time of last activation, or invalid if unknown/never active
+   */
+  virtual void SetLastActive(const CDateTime& lastActive);
+
+  /*!
    * \brief Return the current activity level of the peripheral
    *
    * \return The activity level, on a scale of 0.0 to 1.0
