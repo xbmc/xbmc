@@ -8,10 +8,12 @@
 
 #include "Peripheral.h"
 
+#include "ServiceBroker.h"
 #include "Util.h"
 #include "XBDateTime.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerLayout.h"
+#include "games/controllers/ControllerManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/joysticks/interfaces/IInputHandler.h"
 #include "input/keyboard/generic/DefaultKeyboardHandling.h"
@@ -36,6 +38,11 @@ using namespace KODI;
 using namespace JOYSTICK;
 using namespace PERIPHERALS;
 
+namespace
+{
+// Settings for peripherals
+constexpr std::string_view SETTING_APPEARANCE = "appearance";
+
 struct SortBySettingsOrder
 {
   bool operator()(const PeripheralDeviceSetting& left, const PeripheralDeviceSetting& right)
@@ -43,6 +50,7 @@ struct SortBySettingsOrder
     return left.m_order < right.m_order;
   }
 };
+} // namespace
 
 CPeripheral::CPeripheral(CPeripherals& manager,
                          const PeripheralScanResult& scanResult,
@@ -277,6 +285,19 @@ void CPeripheral::AddSetting(const std::string& strKey, const SettingConstPtr& s
               std::make_shared<CSettingAddon>(strKey, *mappedSetting);
           addonSetting->SetVisible(mappedSetting->IsVisible());
           deviceSetting.m_setting = addonSetting;
+
+          // Handle default settings
+          if (strKey == SETTING_APPEARANCE)
+          {
+            const std::string& controllerId = addonSetting->GetValue();
+            if (!controllerId.empty())
+            {
+              GAME::ControllerPtr controllerProfile =
+                  CServiceBroker::GetGameControllerManager().GetController(controllerId);
+              if (controllerProfile)
+                SetControllerProfile(controllerProfile);
+            }
+          }
         }
         else
         {
