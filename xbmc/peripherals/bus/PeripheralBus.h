@@ -77,6 +77,11 @@ public:
   }
 
   /*!
+   * \brief Get the appearance of a peripheral, if known
+   */
+  virtual std::string GetAppearance(const CPeripheral& peripheral) const { return ""; }
+
+  /*!
    * @brief Get the instance of the peripheral at the given location.
    * @param strLocation The location.
    * @return The peripheral or NULL if it wasn't found.
