@@ -265,6 +265,13 @@ public:
   virtual CDateTime LastActive() const;
 
   /*!
+   * \brief Set the last time this peripheral was active
+   *
+   * \param lastActive The time of last activation, or invalid if unknown/never active
+   */
+  virtual void SetLastActive(const CDateTime& lastActive);
+
+  /*!
    * \brief Get the controller profile that best represents this peripheral
    *
    * \return The controller profile, or empty if unknown
