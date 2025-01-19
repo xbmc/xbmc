@@ -298,6 +298,19 @@ void CPeripheral::AddSetting(const std::string& strKey, const SettingConstPtr& s
               std::make_shared<CSettingAddon>(strKey, *mappedSetting);
           addonSetting->SetVisible(mappedSetting->IsVisible());
           deviceSetting.m_setting = addonSetting;
+
+          // Handle default settings
+          if (strKey == SETTING_APPEARANCE)
+          {
+            const std::string& controllerId = addonSetting->GetValue();
+            if (!controllerId.empty())
+            {
+              GAME::ControllerPtr controllerProfile =
+                  CServiceBroker::GetGameControllerManager().GetController(controllerId);
+              if (controllerProfile)
+                m_controllerProfile = controllerProfile;
+            }
+          }
         }
         else
         {
