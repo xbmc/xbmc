@@ -75,6 +75,7 @@ public:
                            bool isSpecial = false);
   static void AddRootOptions(const CURL& url, CFileItemList& items, bool addMenuOption);
   static std::vector<CVideoInfoTag> GetEpisodesOnDisc(const CURL& url);
+  static std::string GetEpisodesLabel(CFileItem& newItem, const CFileItem& item);
 
   static std::string HexToString(const uint8_t* buf, int count);
 };
