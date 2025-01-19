@@ -269,7 +269,7 @@ void CGUIAgentControllerList::OnControllerSelect(const CFileItem& selectedAgentI
     PERIPHERALS::PeripheralPtr peripheral = agentController->GetPeripheral();
     if (peripheral && peripheral->Location() == selectedAgentItem.GetPath())
     {
-      if (peripheral->GetSettings().empty())
+      if (!peripheral->HasConfigurableSettings())
       {
         // Show an error if the peripheral doesn't have any settings
         CLog::Log(LOGERROR, "Peripheral has no settings");

@@ -35,6 +35,7 @@ public:
                                   bool bPromiscuous) override;
   void UnregisterMouseDriverHandler(KODI::MOUSE::IMouseDriverHandler* handler) override;
   CDateTime LastActive() const override { return m_lastActive; }
+  void SetLastActive(const CDateTime& lastActive) override;
   KODI::GAME::ControllerPtr ControllerProfile() const override;
 
   // implementation of IMouseDriverHandler

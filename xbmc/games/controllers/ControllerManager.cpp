@@ -35,6 +35,9 @@ ControllerPtr CControllerManager::GetController(const std::string& controllerId)
 {
   using namespace ADDON;
 
+  if (controllerId.empty())
+    return {};
+
   std::lock_guard<CCriticalSection> lock(m_mutex);
 
   ControllerPtr& cachedController = m_cache[controllerId];

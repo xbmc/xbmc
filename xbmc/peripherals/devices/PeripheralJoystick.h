@@ -65,6 +65,7 @@ public:
   KODI::JOYSTICK::IDriverReceiver* GetDriverReceiver() override { return this; }
   KODI::KEYMAP::IKeymap* GetKeymap(const std::string& controllerId) override;
   CDateTime LastActive() const override { return m_lastActive; }
+  void SetLastActive(const CDateTime& lastActive) override;
   KODI::GAME::ControllerPtr ControllerProfile() const override;
   void SetControllerProfile(const KODI::GAME::ControllerPtr& controller) override;
 
