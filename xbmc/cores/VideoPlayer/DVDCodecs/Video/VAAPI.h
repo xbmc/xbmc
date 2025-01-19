@@ -59,14 +59,14 @@ class CDecoder;
 class CVaapiBufferStats
 {
 public:
-  uint16_t decodedPics;
-  uint16_t processedPics;
-  uint16_t renderPics;
-  uint64_t latency;         // time decoder has waited for a frame, ideally there is no latency
-  int codecFlags;
-  bool canSkipDeint;
-  int processCmd;
-  bool isVpp;
+  uint16_t decodedPics{};
+  uint16_t processedPics{};
+  uint16_t renderPics{};
+  uint64_t latency{}; // time decoder has waited for a frame, ideally there is no latency
+  int codecFlags{};
+  bool canSkipDeint{};
+  int processCmd{};
+  bool isVpp{};
 
   void IncDecoded()
   {
@@ -105,6 +105,9 @@ public:
     processedPics = 0;
     renderPics = 0;
     latency = 0;
+    codecFlags = 0;
+    canSkipDeint = false;
+    processCmd = 0;
     isVpp = false;
   }
   void Get(uint16_t& decoded, uint16_t& processed, uint16_t& render, bool& vpp)
