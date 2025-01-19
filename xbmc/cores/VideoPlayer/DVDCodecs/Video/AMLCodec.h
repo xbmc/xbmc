@@ -64,7 +64,6 @@ public:
   virtual ~CAMLCodec();
 
   bool          OpenDecoder();
-  bool          Enable_vadj1();
   void          CloseDecoder();
   void          Reset();
 
@@ -89,9 +88,6 @@ public:
 private:
   void          ShowMainVideo(const bool show);
   void          SetVideoZoom(const float zoom);
-  void          SetVideoContrast(const int contrast);
-  void          SetVideoBrightness(const int brightness);
-  void          SetVideoSaturation(const int saturation);
   bool          OpenAmlVideo(const CDVDStreamInfo &hints);
   void          CloseAmlVideo();
   std::string   GetVfmMap(const std::string &name);
@@ -123,9 +119,6 @@ private:
   RENDER_STEREO_MODE m_guiStereoMode = RENDER_STEREO_MODE_OFF;
   RENDER_STEREO_VIEW m_guiStereoView = RENDER_STEREO_VIEW_OFF;
   float            m_zoom = -1.0f;
-  int              m_contrast = -1;
-  int              m_brightness = -1;
-  bool             m_vadj1_enabled = false;
   RESOLUTION       m_video_res = RES_INVALID;
 
   static const unsigned int STATE_PREFILLED  = 1;
