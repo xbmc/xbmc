@@ -97,5 +97,13 @@ public:
    * \param addMenuOption Bluray disc has menu, so add Menu Option
    */
   static void AddRootOptions(const CURL& url, CFileItemList& items, AddMenuOption addMenuOption);
+
+  /*!
+   * \brief Generate label for episode range (eg. Episodes 1-4) and update plot
+   * \param newItem the CFileItem being updated
+   * \param item The source CFileItem
+   * \return label
+   */
+  static std::string GetEpisodesLabel(CFileItem& newItem, const CFileItem& item);
 };
 } // namespace XFILE
