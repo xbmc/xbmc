@@ -259,11 +259,22 @@ int CSMBDirectory::Open(const CURL &url)
 int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
 {
   int fd = -1;
+  bool guest = false;
 
   /* make a writeable copy */
   CURL urlIn = CSMB::GetResolvedUrl(url);
 
   CPasswordManager::GetInstance().AuthenticateURL(urlIn);
+
+  // set the username to "guest" when not provided username
+  // which is required for passwordless or everyone access
+  if (urlIn.GetUserName().empty())
+  {
+    urlIn.SetUserName("guest");
+    urlIn.SetPassword(" ");
+    guest = true;
+  }
+
   strAuth = smb.URLEncode(urlIn);
 
   // remove the / or \ at the end. the samba library does not strip them off
@@ -292,7 +303,14 @@ int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
     if (errno == EACCES || errno == EPERM || errno == EAGAIN || errno == EINVAL)
     {
       if (m_flags & DIR_FLAG_ALLOW_PROMPT)
+      {
+        if (guest) // clean user/pass if tried guest access and failed
+        {
+          urlIn.SetUserName("");
+          urlIn.SetPassword("");
+        }
         RequireAuthentication(urlIn);
+      }
       break;
     }
 
