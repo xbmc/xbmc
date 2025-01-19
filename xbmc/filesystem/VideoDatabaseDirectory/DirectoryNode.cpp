@@ -138,6 +138,8 @@ CDirectoryNode* CDirectoryNode::CreateNode(NodeType Type,
     case NodeType::MOVIE_ASSET_TYPES:
       return new CDirectoryNodeMovieAssetTypes(strName, pParent);
     case NodeType::MOVIE_ASSETS:
+    case NodeType::MOVIE_ASSETS_VERSIONS:
+    case NodeType::MOVIE_ASSETS_EXTRAS:
       return new CDirectoryNodeMovieAssets(strName, pParent);
     default:
       break;

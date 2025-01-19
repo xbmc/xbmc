@@ -10,8 +10,9 @@
 
 //#include "FileItem.h"
 //#include "FileItemList.h"
-//#include "QueryParams.h"
+#include "QueryParams.h"
 //#include "video/VideoDatabase.h"
+#include "video/VideoManagerTypes.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
@@ -51,5 +52,18 @@ bool CDirectoryNodeMovieAssetTypes::GetContent(CFileItemList& items) const
 
 NodeType CDirectoryNodeMovieAssetTypes::GetChildType() const
 {
-  return NodeType::MOVIE_ASSETS;
+  CQueryParams params;
+  CollectQueryParams(params);
+
+  switch (params.GetVideoAssetType())
+  {
+    case -2: // special value for all assets + extras virtual folder
+    case static_cast<int>(VideoAssetType::VERSION):
+      return NodeType::MOVIE_ASSETS_VERSIONS;
+    case static_cast<int>(VideoAssetType::EXTRA):
+      return NodeType::MOVIE_ASSETS_EXTRAS;
+    case 0:
+    default:
+      return NodeType::MOVIE_ASSETS;
+  }
 }

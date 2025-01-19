@@ -71,6 +71,8 @@ bool CVideoDbUrl::parse()
     case NodeType::RECENTLY_ADDED_MOVIES:
     case NodeType::MOVIE_ASSET_TYPES: // where to add this - only here or above too?
     case NodeType::MOVIE_ASSETS: //  what's the right m_type m_itemType value? what's the impact?
+    case NodeType::MOVIE_ASSETS_VERSIONS:
+    case NodeType::MOVIE_ASSETS_EXTRAS:
       m_type = "movies";
       m_itemType = "movies";
       break;
