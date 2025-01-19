@@ -76,6 +76,17 @@
 						<texture>icons/pvr/timers/bell.png</texture>
 						<visible>ListItem.Property(PVR.IsRemindingTimer)</visible>
 					</control>
+					<control type="gamecontroller">
+						<description>The animated controller image for game controllers in the select dialog</description>
+						<left>12</left>
+						<top>7</top>
+						<width>110</width>
+						<height>110</height>
+						<texture>$INFO[ListItem.Art(icon)]</texture>
+						<peripherallocation>$INFO[ListItem.FilenameAndPath]</peripherallocation>
+						<controllerdiffuse>button_focus</controllerdiffuse>
+						<visible>String.StartsWith(ListItem.FilenameAndPath,peripherals://)</visible>
+					</control>
 					<control type="label">
 						<left>135</left>
 						<top>0</top>
@@ -132,6 +143,16 @@
 						<aligny>center</aligny>
 						<texture>icons/pvr/timers/bell.png</texture>
 						<visible>ListItem.Property(PVR.IsRemindingTimer)</visible>
+					</control>
+					<control type="gamecontroller">
+						<left>12</left>
+						<top>7</top>
+						<width>110</width>
+						<height>110</height>
+						<texture>$INFO[ListItem.Art(icon)]</texture>
+						<peripherallocation>$INFO[ListItem.FilenameAndPath]</peripherallocation>
+						<controllerdiffuse>button_focus</controllerdiffuse>
+						<visible>String.StartsWith(ListItem.FilenameAndPath,peripherals://)</visible>
 					</control>
 					<control type="label">
 						<left>135</left>

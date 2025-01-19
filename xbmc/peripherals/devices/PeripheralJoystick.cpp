@@ -32,7 +32,6 @@
 #include "utils/log.h"
 
 #include <algorithm>
-#include <memory>
 #include <mutex>
 
 using namespace KODI;
