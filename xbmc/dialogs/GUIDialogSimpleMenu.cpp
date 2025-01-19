@@ -74,6 +74,8 @@ bool CGUIDialogSimpleMenu::GetOrShowPlaylistSelection(
                         {
                           if (item.GetVideoContentType() == VideoDbContentType::EPISODES)
                           {
+                            if (item.m_multipleTitles)
+                              return URIUtils::GetBlurayAllEpisodesPath(originalDynPath);
                             const CVideoInfoTag* tag{item.GetVideoInfoTag()};
                             return URIUtils::GetBlurayEpisodePath(originalDynPath, tag->m_iSeason,
                                                                   tag->m_iEpisode);
@@ -174,7 +176,7 @@ bool CGUIDialogSimpleMenu::GetItems(const CFileItem& item,
   }
 
   // Remove playlists that are already used
-  if (excludePlaylists.has_value() && !excludePlaylists->empty())
+  if (!item.m_multipleTitles && excludePlaylists.has_value() && !excludePlaylists->empty())
   {
     for (const int playlist : *excludePlaylists)
     {
