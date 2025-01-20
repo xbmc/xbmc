@@ -288,32 +288,13 @@ void CPeripheralJoystick::SetControllerProfile(const KODI::GAME::ControllerPtr& 
 {
   CPeripheral::SetControllerProfile(controller);
 
-  const std::string controllerId = controller ? controller->ID() : "";
-  const bool providesInput = controller ? controller->Layout().Topology().ProvidesInput() : true;
-
   // Save preference to buttonmap
   if (m_buttonMap)
   {
+    const std::string controllerId = controller ? controller->ID() : "";
+
     if (m_buttonMap->SetAppearance(controllerId))
       m_buttonMap->SaveButtonMap();
-  }
-
-  // Update settings
-  for (const auto& it : m_settings)
-  {
-    std::shared_ptr<CSetting> setting = it.second.m_setting;
-    if (!setting)
-      continue;
-
-    if (setting->GetId() == CDeadzoneFilter::SETTING_LEFT_STICK_DEADZONE ||
-        setting->GetId() == CDeadzoneFilter::SETTING_RIGHT_STICK_DEADZONE)
-    {
-      if (controllerId == GAME::DEFAULT_KEYBOARD_ID || controllerId == GAME::DEFAULT_MOUSE_ID ||
-          controllerId == GAME::DEFAULT_REMOTE_ID || !providesInput)
-        setting->SetVisible(false);
-      else
-        setting->SetVisible(true);
-    }
   }
 }
 
