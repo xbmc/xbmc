@@ -132,6 +132,8 @@ public:
 
   void SetVideoSettings(const CVideoSettings& settings);
 
+  void UpdateAudioLatencyTweak(double audioLatency);
+
 protected:
 
   void PresentSingle(bool clear, DWORD flags, DWORD alpha);
@@ -190,9 +192,10 @@ protected:
   ERENDERSTATE m_renderState = STATE_UNCONFIGURED;
   CEvent m_stateEvent;
 
-  /// Display latency tweak value from AdvancedSettings for the current refresh rate
+  /// Display latency tweak value from AdvancedSettings for the current refresh rate and resolution, and audio
   /// in milliseconds
   double m_latencyTweak = 0.0;
+  double m_audioLatencyTweak = 0.0;
   /// Display latency updated in PrepareNextRender in DVD clock units, includes m_latencyTweak
   double m_displayLatency = 0.0;
   std::atomic_int m_videoDelay = {};

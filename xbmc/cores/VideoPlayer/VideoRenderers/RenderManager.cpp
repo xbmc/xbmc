@@ -749,9 +749,11 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
 
         double refreshrate, clockspeed;
         int missedvblanks;
-        info.vsync = StringUtils::Format("VSyncOff: {:.1f} latency: {:.3f}  ",
-                                         m_clockSync.m_syncOffset / 1000,
-                                         DVD_TIME_TO_MSEC(m_displayLatency) / 1000.0f);
+        info.vsync = StringUtils::Format("VSyncOff: {:.1f} latency: {:.3f} at:{:.3f} vt:{:.3f}",
+                                         (m_clockSync.m_syncOffset / 1000),
+                                         (DVD_TIME_TO_MSEC(m_displayLatency) / 1000.0f),
+                                         (m_audioLatencyTweak / 1000.0),
+                                         (m_latencyTweak / 1000.0));
         if (m_dvdClock.GetClockInfo(missedvblanks, clockspeed, refreshrate))
         {
           info.vsync += StringUtils::Format("VSync: refresh:{:.3f} missed:{} speed:{:.3f}%",
@@ -1160,6 +1162,11 @@ int CRenderManager::WaitForBuffer(volatile std::atomic_bool& bStop,
   return m_queued.size() + m_discard.size();
 }
 
+void CRenderManager::UpdateAudioLatencyTweak(double audioLatency)
+{
+  m_audioLatencyTweak = audioLatency;
+}
+
 void CRenderManager::PrepareNextRender()
 {
   if (m_queued.empty())
@@ -1184,9 +1191,8 @@ void CRenderManager::PrepareNextRender()
 
   m_displayLatency = DVD_MSEC_TO_TIME(
       m_latencyTweak +
-      static_cast<double>(CServiceBroker::GetWinSystem()->GetGfxContext().GetDisplayLatency()) -
-      m_videoDelay -
-      static_cast<double>(CServiceBroker::GetWinSystem()->GetFrameLatencyAdjustment()));
+      m_audioLatencyTweak -
+      m_videoDelay);
 
   double frameOnScreen = m_dvdClock.GetClock();
   double renderPts = frameOnScreen + m_displayLatency;

@@ -14,6 +14,7 @@
 #include "DVDStreamInfo.h"
 #include "IVideoPlayer.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "threads/SystemClock.h"
 #include "threads/Thread.h"
 #include "utils/BitstreamStats.h"
@@ -30,7 +31,11 @@ class CDVDAudioCodec;
 class CVideoPlayerAudio : public CThread, public IDVDStreamPlayerAudio
 {
 public:
-  CVideoPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent, CProcessInfo &processInfo);
+  CVideoPlayerAudio(
+    CDVDClock* pClock, 
+    CDVDMessageQueue& parent,
+    CRenderManager& renderManager,
+    CProcessInfo &processInfo);
   ~CVideoPlayerAudio() override;
 
   bool OpenStream(CDVDStreamInfo hints) override;
@@ -87,6 +92,9 @@ protected:
 
   CDVDMessageQueue m_messageQueue;
   CDVDMessageQueue& m_messageParent;
+
+  // Access to adjust the tweak the latency because of audio
+  CRenderManager& m_renderManager;
 
   // holds stream information for current playing stream
   CDVDStreamInfo m_streaminfo;
