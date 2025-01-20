@@ -647,7 +647,8 @@ void CRenderManager::ManageCaptures()
 
 void CRenderManager::RenderCapture(CRenderCapture* capture)
 {
-  if (!m_pRenderer || !m_pRenderer->RenderCapture(m_presentsource, capture))
+  int index = m_presentstarted ? m_presentsource : 0;
+  if (!m_pRenderer || !m_pRenderer->RenderCapture(index, capture))
     capture->SetState(CAPTURESTATE_FAILED);
 }
 
@@ -701,7 +702,7 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
 
   {
     std::unique_lock<CCriticalSection> lock(m_statelock);
-    if (m_renderState != STATE_CONFIGURED)
+    if (!m_presentstarted || (m_renderState != STATE_CONFIGURED))
       return;
   }
 
@@ -800,8 +801,9 @@ bool CRenderManager::IsGuiLayer()
     if (!m_pRenderer)
       return false;
 
+    int index = m_presentstarted ? m_presentsource : 0;
     if ((m_pRenderer->IsGuiLayer() && IsPresenting()) ||
-        m_renderedOverlay || m_overlays.HasOverlay(m_presentsource))
+        m_renderedOverlay || m_overlays.HasOverlay(index))
       return true;
 
     if (m_renderDebug && m_debugTimer.IsTimePast())
@@ -1257,7 +1259,7 @@ void CRenderManager::PrepareNextRender()
     m_presentsource = idx;
     m_presentstarted = true;
     m_queued.pop_front();
-    m_presentpts = m_Queue[idx].pts - m_displayLatency;
+    m_presentpts = m_Queue[m_presentsource].pts - m_displayLatency;
     m_presentevent.notifyAll();
 
   }
