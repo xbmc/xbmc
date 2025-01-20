@@ -581,11 +581,13 @@ void CVideoPlayer::SetAVChange(std::string from)
   CLog::Log(LOGINFO, "VideoPlayer::SetAVChange true [{}]", from);
   CServiceBroker::GetDataCacheCore().SetAVChange(true);
 
-  // Schedule set to false in 5 sec - adjust further in skin annimation for actual display time on screen.
-  CServiceBroker::GetJobManager()->Submit([this, from]() {
-      usleep(1000 * 5000);
+  unsigned int timeout(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiAVChangeFlagTimeout);
+
+  // Schedule set to false after the configured timeout in advanced settings - user can dial-in as preferred.
+  CServiceBroker::GetJobManager()->Submit([this, from, timeout]() {
+      usleep(timeout * 1000 * 1000);
       CServiceBroker::GetDataCacheCore().SetAVChange(false);
-      CLog::Log(LOGINFO, "VideoPlayer::SetAVChange false [{}]", from);
+      CLog::Log(LOGINFO, "VideoPlayer::SetAVChange false [{}] after [{}] seconds", from, timeout);
   });
 }
 
