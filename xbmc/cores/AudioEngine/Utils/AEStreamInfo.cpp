@@ -73,10 +73,12 @@ double CAEStreamInfo::GetDuration() const
         rate = 176400;
       duration = 3840.0 / rate;
       break;
+    case STREAM_TYPE_DTSHD_MA:
+      duration = ((m_dtsSamplesPerFrame != 0) ? static_cast<double>(m_dtsSamplesPerFrame) : 512.0) / m_sampleRate;
+      break;
     case STREAM_TYPE_DTS_512:
     case STREAM_TYPE_DTSHD_CORE:
     case STREAM_TYPE_DTSHD:
-    case STREAM_TYPE_DTSHD_MA:
       duration = 512.0 / m_sampleRate;
       break;
     case STREAM_TYPE_DTS_1024:
@@ -696,7 +698,6 @@ unsigned int CAEStreamParser::SyncDTS(uint8_t* data, unsigned int size)
       m_info.m_repeat = 1;      
       
       uint32_t hd_bits = 0;
-      uint32_t nHeaderSize = 0;
 
       // If XLL aka DTS-HD Master Audio - Work out the bit depth
       if (ext_sub_sync == DTS_SYNC_EXT_XLL)
@@ -721,7 +722,19 @@ unsigned int CAEStreamParser::SyncDTS(uint8_t* data, unsigned int size)
 
         // XLL Common Header
         uint32_t nVersion = ExtractBits(4) + 1;           // Version is 4 bits, add 1 to get actual version
-        nHeaderSize = ExtractBits(8) + 1;                 // Header size is 8 bits, add 1 to get actual size (size is in bytes)
+        uint32_t nHeaderSize = ExtractBits(8) + 1;        // Header size is 8 bits, add 1 to get actual size (size is in bytes)
+        uint32_t nBits4FrameFsize = ExtractBits(5) + 1;
+        uint32_t nLLFrameSize = ExtractBits(nBits4FrameFsize) + 1;
+        uint32_t nNumChSetsInFrame = ExtractBits(4) + 1;
+        
+        // Segments and samples calculation
+        uint32_t tmp = ExtractBits(4);
+        uint32_t nSegmentsInFrame = 1 << tmp;
+        tmp = ExtractBits(4);
+        uint32_t nSmplInSeg = 1 << tmp;
+        
+        // Calculate total samples per frame
+        m_info.m_dtsSamplesPerFrame = (nSegmentsInFrame * nSmplInSeg);
 
         // Now find the offset to the first channel set sub header given the header size (in bytes).
         bitPosition = (nHeaderSize * 8);
