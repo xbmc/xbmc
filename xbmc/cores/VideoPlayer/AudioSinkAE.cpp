@@ -28,6 +28,7 @@ CAudioSinkAE::CAudioSinkAE(CDVDClock *clock) : m_pClock(clock)
   m_sampleRate = 0;
   m_bPaused = true;
   m_playingPts = DVD_NOPTS_VALUE; //silence coverity uninitialized warning, is set elsewhere
+  m_playingFramePts = DVD_NOPTS_VALUE; 
   m_timeOfPts = 0.0; //silence coverity uninitialized warning, is set elsewhere
   m_syncError = 0.0;
   m_syncErrorTime = 0;
@@ -84,6 +85,7 @@ void CAudioSinkAE::Destroy(bool finish)
   m_bPassthrough = false;
   m_bPaused = true;
   m_playingPts = DVD_NOPTS_VALUE;
+  m_playingFramePts = DVD_NOPTS_VALUE; 
 }
 
 unsigned int CAudioSinkAE::AddPackets(const DVDAudioFrame &audioframe)
@@ -152,6 +154,7 @@ unsigned int CAudioSinkAE::AddPackets(const DVDAudioFrame &audioframe)
   } while (!m_bAbort);
 
   m_playingPts = audioframe.pts + audioframe.duration - GetDelay();
+  m_playingFramePts = audioframe.pts + audioframe.duration;
   m_timeOfPts = m_pClock->GetAbsoluteClock();
 
   return total - frames;
@@ -185,6 +188,7 @@ void CAudioSinkAE::Pause()
     m_pAudioStream->Pause();
   CLog::Log(LOGDEBUG,"CDVDAudio::Pause - pausing audio stream");
   m_playingPts = DVD_NOPTS_VALUE;
+  m_playingFramePts = DVD_NOPTS_VALUE;
 }
 
 void CAudioSinkAE::Resume()
@@ -217,6 +221,7 @@ void CAudioSinkAE::Flush()
     CLog::Log(LOGDEBUG,"CDVDAudio::Flush - flush audio stream");
   }
   m_playingPts = DVD_NOPTS_VALUE;
+  m_playingFramePts = DVD_NOPTS_VALUE;
   m_syncError = 0.0;
   m_syncErrorTime = 0;
 }
@@ -290,6 +295,14 @@ double CAudioSinkAE::GetPlayingPts()
   m_timeOfPts = now;
   m_playingPts += played;
   return m_playingPts;
+}
+
+double CAudioSinkAE::GetPlayingFramePts()
+{
+  if (m_playingFramePts == DVD_NOPTS_VALUE)
+    return 0.0;
+
+  return m_playingFramePts;
 }
 
 double CAudioSinkAE::GetSyncError()

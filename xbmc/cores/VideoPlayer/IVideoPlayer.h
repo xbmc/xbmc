@@ -95,6 +95,7 @@ public:
   bool IsStalled() const override = 0;
   virtual bool IsRewindStalled() const { return false; }
   virtual double GetCurrentPts() = 0;
+  virtual double GetCurrentFramePts() = 0;
   virtual double GetOutputDelay() = 0;
   virtual std::string GetPlayerInfo() = 0;
   virtual int GetVideoBitrate() = 0;
@@ -124,6 +125,7 @@ public:
   virtual std::string GetPlayerInfo() = 0;
   virtual int GetAudioChannels() = 0;
   virtual double GetCurrentPts() = 0;
+  virtual double GetCurrentFramePts() = 0;
   bool IsStalled() const override = 0;
   virtual bool IsPassthrough() const = 0;
   virtual float GetDynamicRangeAmplification() const = 0;

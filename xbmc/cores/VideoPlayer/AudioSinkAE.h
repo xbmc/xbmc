@@ -41,6 +41,7 @@ public:
   void Destroy(bool finish);
   unsigned int AddPackets(const DVDAudioFrame &audioframe);
   double GetPlayingPts();
+  double GetPlayingFramePts();
   double GetCacheTime();
   double GetCacheTotal(); // returns total time a stream can buffer
   double GetMaxDelay(); // returns total time of audio in AE for the stream
@@ -66,6 +67,7 @@ public:
 protected:
   IAE::StreamPtr m_pAudioStream;
   double m_playingPts;
+  double m_playingFramePts;
   double m_timeOfPts;
   double m_syncError;
   unsigned int m_syncErrorTime;

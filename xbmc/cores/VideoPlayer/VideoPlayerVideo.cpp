@@ -1051,13 +1051,8 @@ void CVideoPlayerVideo::ResetFrameRateCalc()
 
 double CVideoPlayerVideo::GetCurrentPts()
 {
-  double renderPts;
-  int sleepTime;
-  int queued, discard;
-
-  // get render stats
-  m_renderManager.GetStats(sleepTime, renderPts, queued, discard);
-
+  double renderPts = m_renderManager.GetRenderPts();
+ 
   if (renderPts == DVD_NOPTS_VALUE)
     return DVD_NOPTS_VALUE;
   else if (m_stalled)
@@ -1068,6 +1063,11 @@ double CVideoPlayerVideo::GetCurrentPts()
       renderPts = 0;
   }
   return renderPts;
+}
+
+double CVideoPlayerVideo::GetCurrentFramePts()
+{
+  return m_renderManager.GetFramePts();
 }
 
 #define MAXFRAMERATEDIFF   0.01

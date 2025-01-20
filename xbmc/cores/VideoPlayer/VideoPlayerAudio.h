@@ -62,6 +62,12 @@ public:
     return m_info.pts;
   }
 
+  double GetCurrentFramePts() override
+  {
+    std::unique_lock<CCriticalSection> lock(m_info_section);
+    return m_info.fpts;
+  }
+
   bool IsStalled() const override { return m_stalled;  }
   bool IsPassthrough() const override;
 
@@ -108,6 +114,7 @@ protected:
   {
     std::string      info;
     double           pts = DVD_NOPTS_VALUE;
+    double           fpts = DVD_NOPTS_VALUE;
     bool             passthrough = false;
   };
 

@@ -65,6 +65,7 @@
 #include "video/VideoInfoTag.h"
 #include "windowing/WinSystem.h"
 
+#include <cmath>
 #include <iterator>
 #include <memory>
 #include <mutex>
@@ -597,7 +598,7 @@ void CVideoPlayer::CreatePlayers()
     return;
 
   m_VideoPlayerVideo = new CVideoPlayerVideo(&m_clock, &m_overlayContainer, m_messenger, m_renderManager, *m_processInfo);
-  m_VideoPlayerAudio = new CVideoPlayerAudio(&m_clock, m_messenger, *m_processInfo);
+  m_VideoPlayerAudio = new CVideoPlayerAudio(&m_clock, m_messenger, m_renderManager, *m_processInfo);
   m_VideoPlayerSubtitle = new CVideoPlayerSubtitle(&m_overlayContainer, *m_processInfo);
   m_VideoPlayerTeletext = new CDVDTeletextData(*m_processInfo);
   m_VideoPlayerRadioRDS = new CDVDRadioRDSData(*m_processInfo);
@@ -3320,26 +3321,135 @@ bool CVideoPlayer::SeekScene(bool bPlus)
 
 void CVideoPlayer::GetGeneralInfo(std::string& strGeneralInfo)
 {
-  if (!m_bStop)
+  
+  // Moving Average variables.
+  static const int BUFFER_SIZE = 128;
+  static int index = 0;
+  static bool bufferFilled = false;
+  static bool resetDone = false;
+
+  static double bufferAudio[BUFFER_SIZE] = {0};
+  static double bufferVideo[BUFFER_SIZE] = {0};
+  static double bufferDelta[BUFFER_SIZE] = {0};
+  
+  static double bufferAudioFrame[BUFFER_SIZE] = {0};
+  static double bufferVideoFrame[BUFFER_SIZE] = {0};
+  static double bufferDeltaFrame[BUFFER_SIZE] = {0};
+
+  static double sumAudio = 0;
+  static double sumVideo = 0;
+  static double sumDelta = 0;
+
+  static double sumAudioFrame = 0;
+  static double sumVideoFrame = 0;
+  static double sumDeltaFrame = 0;  
+
+  if (!m_bStop && (m_playSpeed == DVD_PLAYSPEED_NORMAL))
   {
+    resetDone = false;
+
+    double clock = m_clock.GetClock();
     double apts = m_VideoPlayerAudio->GetCurrentPts();
     double vpts = m_VideoPlayerVideo->GetCurrentPts();
-    double dDiff = 0;
 
-    if (apts != DVD_NOPTS_VALUE && vpts != DVD_NOPTS_VALUE)
-      dDiff = (apts - vpts) / DVD_TIME_BASE;
+    double afpts = m_VideoPlayerAudio->GetCurrentFramePts();
+    double vfpts = m_VideoPlayerVideo->GetCurrentFramePts();
+
+    bool have_apts = (apts != DVD_NOPTS_VALUE);
+    bool have_vpts = (vpts != DVD_NOPTS_VALUE);
+
+    bool have_afpts = (afpts != DVD_NOPTS_VALUE);
+    bool have_vfpts = (vfpts != DVD_NOPTS_VALUE);
+
+    double dDiffAudio = (have_apts) ? (apts - clock) / DVD_TIME_BASE : 0;
+    double dDiffVideo = (have_vpts) ? (vpts - clock) / DVD_TIME_BASE : 0;
+
+    double dDiffAudioFrame = (have_afpts) ? (afpts - clock) / DVD_TIME_BASE : 0;
+    double dDiffVideoFrame = (have_vfpts) ? (vfpts - clock) / DVD_TIME_BASE : 0;
+
+    double dDiff = (have_apts && have_vpts) ? (apts - vpts) / DVD_TIME_BASE : 0;
+    double dDiffFrame = (have_afpts && have_vfpts) ? (afpts - vfpts) / DVD_TIME_BASE : 0;
+
+    // Moving Average Delta of Audio and Video
+    sumDelta -= bufferDelta[index];  // subtract "oldest" value from sum
+    sumDelta += dDiff;               // add new value to sum
+    bufferDelta[index] = dDiff;      // store new value at the index of "oldest"
+
+    // Moving Average Delta of Audio and Video
+    sumDeltaFrame -= bufferDeltaFrame[index];  // subtract "oldest" value from sum
+    sumDeltaFrame += dDiffFrame;               // add new value to sum
+    bufferDeltaFrame[index] = dDiffFrame;      // store new value at the index of "oldest"
+
+    // Moving Average Delta of Audio and Clock
+    sumAudio -= bufferAudio[index];  // subtract "oldest" value from sum
+    sumAudio += dDiffAudio;          // add new value to sum
+    bufferAudio[index] = dDiffAudio; // store new value at the index of "oldest"
+
+    // Moving Average Delta of Audio and Clock
+    sumAudioFrame -= bufferAudioFrame[index];  // subtract "oldest" value from sum
+    sumAudioFrame += dDiffAudioFrame;          // add new value to sum
+    bufferAudioFrame[index] = dDiffAudioFrame; // store new value at the index of "oldest"
+
+    // Moving Average Delta of Video and Clock
+    sumVideo -= bufferVideo[index];  // subtract "oldest" value from sum
+    sumVideo += dDiffVideo;          // add new value to sum
+    bufferVideo[index] = dDiffVideo; // store new value at the index of "oldest" 
+
+    // Moving Average Delta of Video and Clock
+    sumVideoFrame -= bufferVideoFrame[index];  // subtract "oldest" value from sum
+    sumVideoFrame += dDiffVideoFrame;          // add new value to sum
+    bufferVideoFrame[index] = dDiffVideoFrame; // store new value at the index of "oldest" 
+
+    index = (index + 1) % BUFFER_SIZE;            // next slot in ring buffers, wraps back to 0 for last index entry @ 127
+    bufferFilled = bufferFilled || (index == 0);  // buffer already filled or index wrapped i.e. all buffer slots now have a value so filled
+    int filled = bufferFilled ? BUFFER_SIZE : index;
+
+    // calc moving average from sum and how many entries in buffer
+    double dDiffDeltaMovingAverage = sumDelta / filled;
+    double dDiffAudioMovingAverage = sumAudio / filled;
+    double dDiffVideoMovingAverage = sumVideo / filled;
+
+    double dDiffDeltaFrameMovingAverage = sumDeltaFrame / filled;
+    double dDiffAudioFrameMovingAverage = sumAudioFrame / filled;
+    double dDiffVideoFrameMovingAverage = sumVideoFrame / filled;
 
     std::string strBuf;
     std::unique_lock<CCriticalSection> lock(m_StateSection);
     if (m_State.cache_bytes >= 0)
     {
-      strBuf += StringUtils::Format("forward: {} / {:2.0f}% / {:6.3f}s / {:.3f}%",
-                                    StringUtils::SizeToString(m_State.cache_bytes),
+      strBuf += StringUtils::Format("fwd: {} / {:2.0f}% / {:6.3f}s / {:.3f}%",
+                                    StringUtils::SizeToString(m_State.cache_bytes), 
                                     m_State.cache_level * 100.0, m_State.cache_time,
                                     m_State.cache_offset * 100.0);
     }
 
-    strGeneralInfo = StringUtils::Format("Player: a/v:{: 6.3f}, {}", dDiff, strBuf);
+    strGeneralInfo = StringUtils::Format("P: a/v:{: 6.3f}, a/c:{: 6.3f}, v/c:{: 6.3f}, af/vf:{: 6.3f}, af/c:{: 6.3f}, vf/c:{: 6.3f}, {}",
+        dDiffDeltaMovingAverage, dDiffAudioMovingAverage, dDiffVideoMovingAverage,
+        dDiffDeltaFrameMovingAverage, dDiffAudioFrameMovingAverage, dDiffVideoFrameMovingAverage, 
+        strBuf);
+  }
+  else if (!resetDone)
+  {
+    // Reset the Moving Average variables.
+    index = 0;
+    bufferFilled = false;
+
+    memset(bufferAudio, 0, sizeof(bufferAudio));
+    memset(bufferVideo, 0, sizeof(bufferVideo));
+    memset(bufferDelta, 0, sizeof(bufferDelta));
+    memset(bufferAudioFrame, 0, sizeof(bufferAudioFrame));
+    memset(bufferVideoFrame, 0, sizeof(bufferVideoFrame));
+    memset(bufferDeltaFrame, 0, sizeof(bufferDeltaFrame));
+
+    sumAudio = 0;
+    sumVideo = 0;
+    sumDelta = 0;
+
+    sumAudioFrame = 0;
+    sumVideoFrame = 0;
+    sumDeltaFrame = 0;
+
+    resetDone = true;
   }
 }
 

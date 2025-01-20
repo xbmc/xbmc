@@ -68,6 +68,7 @@ public:
   bool IsStalled() const override { return m_stalled; }
   bool IsRewindStalled() const override { return m_rewindStalled; }
   double GetCurrentPts() override;
+  double GetCurrentFramePts() override;
   double GetOutputDelay() override; /* returns the expected delay, from that a packet is put in queue */
   std::string GetPlayerInfo() override;
   int GetVideoBitrate() override;

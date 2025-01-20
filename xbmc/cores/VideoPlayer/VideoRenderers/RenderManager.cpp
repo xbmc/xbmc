@@ -1259,7 +1259,7 @@ void CRenderManager::PrepareNextRender()
     m_presentsource = idx;
     m_presentstarted = true;
     m_queued.pop_front();
-    m_presentpts = m_Queue[m_presentsource].pts - m_displayLatency;
+    m_presentpts = m_Queue[m_presentsource].pts;
     m_presentevent.notifyAll();
 
   }
@@ -1271,7 +1271,7 @@ void CRenderManager::PrepareNextRender()
     m_presentsource = m_queued.front();
     m_presentstarted = true;
     m_queued.pop_front();
-    m_presentpts = m_Queue[m_presentsource].pts - m_displayLatency - frametime / 2;
+    m_presentpts = m_Queue[m_presentsource].pts - frametime / 2;
     m_presentevent.notifyAll();
   }
 
@@ -1298,10 +1298,22 @@ bool CRenderManager::GetStats(int &lateframes, double &pts, int &queued, int &di
 {
   std::unique_lock<CCriticalSection> lock(m_presentlock);
   lateframes = m_lateframes / 10;
-  pts = m_presentpts;
+  pts = m_presentpts - m_displayLatency;
   queued = m_queued.size();
   discard  = m_discard.size();
   return true;
+}
+
+double CRenderManager::GetRenderPts()
+{
+  std::unique_lock<CCriticalSection> lock(m_presentlock);
+  return (m_presentpts - m_displayLatency);
+}
+
+double CRenderManager::GetFramePts()
+{
+  std::unique_lock<CCriticalSection> lock(m_presentlock);
+  return m_presentpts;
 }
 
 void CRenderManager::CheckEnableClockSync()

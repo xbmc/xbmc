@@ -186,6 +186,7 @@ void CVideoPlayerAudio::CloseStream(bool bWaitForBuffers)
   SInfo info;
   info.info        = s.str();
   info.pts         = DVD_NOPTS_VALUE;
+  info.fpts        = DVD_NOPTS_VALUE;
   info.passthrough = false;
 
   { std::unique_lock<CCriticalSection> lock(m_info_section);
@@ -219,6 +220,7 @@ void CVideoPlayerAudio::UpdatePlayerInfo()
   SInfo info;
   info.info        = s.str();
   info.pts         = m_audioSink.GetPlayingPts();
+  info.fpts        = m_audioSink.GetPlayingFramePts();
   info.passthrough = m_pAudioCodec && m_pAudioCodec->NeedPassthrough();
 
   {
