@@ -272,7 +272,9 @@ void CPeripheralJoystick::SetControllerProfile(const KODI::GAME::ControllerPtr& 
   // Save preference to buttonmap
   if (m_buttonMap)
   {
-    if (m_buttonMap->SetAppearance(controller->ID()))
+    const std::string controllerId = controller ? controller->ID() : "";
+
+    if (m_buttonMap->SetAppearance(controllerId))
       m_buttonMap->SaveButtonMap();
   }
 }
