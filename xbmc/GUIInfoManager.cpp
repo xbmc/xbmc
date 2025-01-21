@@ -4019,7 +4019,7 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///   \table_row3{   <b>`VideoPlayer.TitleExtraInfo`</b>,
 ///                  \anchor VideoPlayer_TitleExtraInfo
 ///                  _string_,
-///     @return string containing extra information, enriching the title of the currently playing media, if any.
+///     @return string containing extra information\, enriching the title of the currently playing media\, if any.
 ///     <p><hr>
 ///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_TitleExtraInfo `VideoPlayer.TitleExtraInfo`\endlink
 ///     <p>
@@ -7105,7 +7105,7 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///   \table_row3{   <b>`ListItem.PVRGroupOrigin`</b>,
 ///                  \anchor ListItem_PVRGroupOrigin
 ///                  _string_,
-///     @return If selected item is of type PVR channel group, the creator (user, system, client) of
+///     @return If selected item is of type PVR channel group\, the creator (user\, system\, client) of
 ///     the group.
 ///     <p><hr>
 ///     @skinning_v22 **[New Infolabel]** \link ListItem_PVRGroupOrigin `ListItem.PVRGroupOrigin`\endlink
@@ -7130,7 +7130,7 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///   \table_row3{   <b>`ListItem.TitleExtraInfo`</b>,
 ///                  \anchor ListItem_TitleExtraInfo
 ///                  _string_,
-///     @return string containing extra information, enriching the title of the item.
+///     @return string containing extra information\, enriching the title of the item.
 ///     <p><hr>
 ///     @skinning_v22 **[New Infolabel]** \link ListItem_TitleExtraInfo `ListItem.TitleExtraInfo`\endlink
 ///     <p>
