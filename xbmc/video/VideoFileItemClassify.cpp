@@ -22,11 +22,7 @@ namespace KODI::VIDEO
 
 bool IsBDFile(const CFileItem& item)
 {
-  const std::string strFileName = URIUtils::GetFileName(item.GetDynPath());
-  return (StringUtils::EqualsNoCase(strFileName, "index.bdmv") ||
-          StringUtils::EqualsNoCase(strFileName, "MovieObject.bdmv") ||
-          StringUtils::EqualsNoCase(strFileName, "INDEX.BDM") ||
-          StringUtils::EqualsNoCase(strFileName, "MOVIEOBJ.BDM"));
+  return URIUtils::IsBDFile(item.GetDynPath());
 }
 
 bool IsDiscStub(const CFileItem& item)
