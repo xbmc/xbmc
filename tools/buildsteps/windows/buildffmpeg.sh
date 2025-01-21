@@ -116,6 +116,8 @@ cd $LOCALBUILDDIR
 
 do_clean_get $1
 [ -f config.mak ] && make distclean
+cleanLastSuccess $FFMPEGDESTDIR
+
 do_print_status "$LIBNAME-$VERSION (${TRIPLET})" "$blue_color" "Configuring"
 
 [[ -z "$extra_cflags" ]] && extra_cflags=-DPTW32_STATIC_LIB
