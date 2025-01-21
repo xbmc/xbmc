@@ -434,8 +434,8 @@ bool UndeleteRecording::Execute(const CFileItemPtr& item) const
 bool DeleteWatchedRecordings::IsVisible(const CFileItem& item) const
 {
   // recordings folder?
-  if (item.m_bIsFolder && !item.IsParentFolder())
-    return CPVRRecordingsPath(item.GetPath()).IsValid();
+  if (item.m_bIsFolder && !item.IsParentFolder() && CPVRRecordingsPath(item.GetPath()).IsValid())
+    return item.GetProperty("watchedepisodes").asInteger() > 0;
 
   return false;
 }
