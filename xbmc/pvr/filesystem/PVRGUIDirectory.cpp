@@ -762,7 +762,11 @@ bool CPVRGUIDirectory::GetChannelsDirectory(CFileItemList& results) const
           }
         }
 
-        results.Add(std::make_shared<CFileItem>(groupMember));
+        const auto item{std::make_shared<CFileItem>(groupMember)};
+        if (dateAdded)
+          item->SetProperty("hideable", true);
+
+        results.Add(std::move(item));
       }
       return true;
     }
