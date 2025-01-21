@@ -226,3 +226,12 @@ function extractPackage()
 
   echo $package
 }
+
+function cleanLastSuccess()
+{
+  local path="$1"
+  local file="$path/$PATH_CHANGE_REV_FILENAME"
+  if [[ -f $file ]]; then
+    rm $file
+  fi
+}
