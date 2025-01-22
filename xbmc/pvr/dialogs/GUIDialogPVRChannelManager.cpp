@@ -105,77 +105,71 @@ bool CGUIDialogPVRChannelManager::OnActionMove(const CAction& action)
   bool bReturn(false);
   int iActionId = action.GetID();
 
-  if (GetFocusedControlID() == CONTROL_LIST_CHANNELS)
+  if (iActionId == ACTION_MOUSE_MOVE)
   {
-    if (iActionId == ACTION_MOUSE_MOVE)
+    const int selectedItem{m_viewControl.GetSelectedItem()};
+    if (m_iSelected < selectedItem)
+      iActionId = ACTION_MOVE_DOWN;
+    else if (m_iSelected > selectedItem)
+      iActionId = ACTION_MOVE_UP;
+    else
+      return bReturn;
+  }
+
+  const bool moveUp{iActionId == ACTION_MOVE_UP || iActionId == ACTION_PAGE_UP ||
+                    iActionId == ACTION_FIRST_PAGE};
+  const bool moveDown{iActionId == ACTION_MOVE_DOWN || iActionId == ACTION_PAGE_DOWN ||
+                      iActionId == ACTION_LAST_PAGE};
+
+  if (moveUp || moveDown)
+  {
+    CGUIDialog::OnAction(action);
+    const int selectedItem{m_viewControl.GetSelectedItem()};
+
+    bReturn = true;
+
+    if (!m_bMovingMode)
     {
-      int iSelected = m_viewControl.GetSelectedItem();
-      if (m_iSelected < iSelected)
+      if (selectedItem != m_iSelected)
       {
-        iActionId = ACTION_MOVE_DOWN;
-      }
-      else if (m_iSelected > iSelected)
-      {
-        iActionId = ACTION_MOVE_UP;
-      }
-      else
-      {
-        return bReturn;
+        m_iSelected = selectedItem;
+        SetData(m_iSelected);
       }
     }
-
-    if (iActionId == ACTION_MOVE_DOWN || iActionId == ACTION_MOVE_UP ||
-        iActionId == ACTION_PAGE_DOWN || iActionId == ACTION_PAGE_UP ||
-        iActionId == ACTION_FIRST_PAGE || iActionId == ACTION_LAST_PAGE)
+    else
     {
-      CGUIDialog::OnAction(action);
-      int iSelected = m_viewControl.GetSelectedItem();
+      bool up{moveUp};
+      int lines{up ? std::abs(m_iSelected - selectedItem) : 1};
 
-      bReturn = true;
-      if (!m_bMovingMode)
+      const bool outOfBounds{moveUp ? m_iSelected <= 0 : m_iSelected >= m_channelItems->Size() - 1};
+      if (outOfBounds)
       {
-        if (iSelected != m_iSelected)
-        {
-          m_iSelected = iSelected;
-          SetData(m_iSelected);
-        }
+        up = !up;
+        lines = m_channelItems->Size() - 1;
       }
-      else
+
+      for (int line = 0; line < lines; ++line)
       {
-        bool bMoveUp = iActionId == ACTION_PAGE_UP || iActionId == ACTION_MOVE_UP ||
-                       iActionId == ACTION_FIRST_PAGE;
-        unsigned int iLines = bMoveUp ? abs(m_iSelected - iSelected) : 1;
-        bool bOutOfBounds = bMoveUp ? m_iSelected <= 0 : m_iSelected >= m_channelItems->Size() - 1;
-        if (bOutOfBounds)
+        const int newSelected{up ? m_iSelected - 1 : m_iSelected + 1};
+        const std::shared_ptr<CFileItem> newItem{m_channelItems->Get(newSelected)};
+        const std::string number{newItem->GetProperty(PROPERTY_CHANNEL_NUMBER).asString()};
+        if (number != LABEL_CHANNEL_DISABLED)
         {
-          bMoveUp = !bMoveUp;
-          iLines = m_channelItems->Size() - 1;
-        }
-        for (unsigned int iLine = 0; iLine < iLines; ++iLine)
-        {
-          unsigned int iNewSelect = bMoveUp ? m_iSelected - 1 : m_iSelected + 1;
-
-          const CFileItemPtr newItem = m_channelItems->Get(iNewSelect);
-          const std::string number = newItem->GetProperty(PROPERTY_CHANNEL_NUMBER).asString();
-          if (number != LABEL_CHANNEL_DISABLED)
-          {
-            // Swap channel numbers
-            const CFileItemPtr item = m_channelItems->Get(m_iSelected);
-            newItem->SetProperty(PROPERTY_CHANNEL_NUMBER,
-                                 item->GetProperty(PROPERTY_CHANNEL_NUMBER));
-            SetItemChanged(newItem);
-            item->SetProperty(PROPERTY_CHANNEL_NUMBER, number);
-            SetItemChanged(item);
-          }
-
-          // swap items
-          m_channelItems->Swap(iNewSelect, m_iSelected);
-          m_iSelected = iNewSelect;
+          // Swap channel numbers
+          const std::shared_ptr<CFileItem> item{m_channelItems->Get(m_iSelected)};
+          newItem->SetProperty(PROPERTY_CHANNEL_NUMBER, item->GetProperty(PROPERTY_CHANNEL_NUMBER));
+          SetItemChanged(newItem);
+          item->SetProperty(PROPERTY_CHANNEL_NUMBER, number);
+          SetItemChanged(item);
         }
 
-        m_viewControl.SetItems(*m_channelItems);
-        m_viewControl.SetSelectedItem(m_iSelected);
+        // swap items
+        m_channelItems->Swap(newSelected, m_iSelected);
+        m_iSelected = newSelected;
       }
+
+      m_viewControl.SetItems(*m_channelItems);
+      m_viewControl.SetSelectedItem(m_iSelected);
     }
   }
 

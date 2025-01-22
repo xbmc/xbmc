@@ -199,7 +199,7 @@
 					<width>70</width>
 					<height>50</height>
 					<aspectratio>keep</aspectratio>
-					<texture background="true">$INFO[Container(20).ListItem.Property(icon)]</texture>
+					<texture background="true">$INFO[ListItem.Property(icon)]</texture>
 				</control>
 				<control type="grouplist" id="9003">
 					<top>590</top>
