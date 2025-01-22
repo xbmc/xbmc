@@ -212,7 +212,7 @@ bool CPVRSettings::IsSettingVisible(const std::string& condition,
   }
   else if (settingId == CSettings::SETTING_PVRMANAGER_CLIENTPRIORITIES)
   {
-    // Setting is only visible if more than one PVR client is enabeld.
+    // Setting is only visible if more than one PVR client is enabled.
     return CServiceBroker::GetPVRManager().Clients()->EnabledClientAmount() > 1;
   }
   else

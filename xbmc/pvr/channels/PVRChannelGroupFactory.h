@@ -69,7 +69,7 @@ public:
       const std::shared_ptr<const CPVRChannelGroup>& allChannels);
 
   /*!
-   * @brief Get the priority (e.g. for sorting groups) for the type of the given group. Lower number means higer priority.
+   * @brief Get the priority (e.g. for sorting groups) for the type of the given group. Lower number means higher priority.
    * @param group The group.
    * @return The group's type priority.
    */

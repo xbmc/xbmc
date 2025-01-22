@@ -225,7 +225,7 @@ namespace PVR
     bool QueueDeleteQueries(const std::shared_ptr<CPVREpgDatabase>& database);
 
     /*!
-     * @brief Get the start and end time of the last not yet commited entry in this table.
+     * @brief Get the start and end time of the last not yet committed entry in this table.
      * @return The times; first: start time, second: end time.
      */
     std::pair<CDateTime, CDateTime> GetFirstAndLastUncommitedEPGDate() const;

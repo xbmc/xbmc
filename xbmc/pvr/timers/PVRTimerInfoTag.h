@@ -259,7 +259,7 @@ public:
 
   /*!
    * @brief The index for the parent of this timer, as given by the client. Timers scheduled by a
-   * timer rule will have a parant index != PVR_TIMER_NO_PARENT.
+   * timer rule will have a parent index != PVR_TIMER_NO_PARENT.
    * @return The client index or PVR_TIMER_NO_PARENT if the timer has no parent.
    */
   int ParentClientIndex() const { return m_iParentClientIndex; }

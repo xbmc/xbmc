@@ -153,7 +153,7 @@ public:
   std::vector<std::shared_ptr<CPVREpgInfoTag>> GetAllTags() const;
 
   /*!
-   * @brief Get the start and end time of the last not yet commited entry in this EPG.
+   * @brief Get the start and end time of the last not yet committed entry in this EPG.
    * @return The times; first: start time, second: end time.
    */
   std::pair<CDateTime, CDateTime> GetFirstAndLastUncommitedEPGDate() const;

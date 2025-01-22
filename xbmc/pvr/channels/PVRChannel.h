@@ -560,7 +560,7 @@ private:
       PVR_PROVIDER_INVALID_UID; /*!< the unique id for this provider from the client */
   int m_lastWatchedGroupId{
       -1}; /*!< the id of the channel group the channel was watched from the last time */
-  CDateTime m_dateTimeAdded; /*!< the date and time the channel was added to the TV datebase */
+  CDateTime m_dateTimeAdded; /*!< the date and time the channel was added to the TV database */
   //@}
 
   mutable CCriticalSection m_critSection;
