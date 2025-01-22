@@ -1367,7 +1367,6 @@ bool CGUIWindowManager::Render()
     m_tracker.CleanMarkedRegions(10);
 
   CDirtyRegionList dirtyRegions = m_tracker.GetDirtyRegions();
-  CServiceBroker::GetWinSystem()->SetDirtyRegions(dirtyRegions);
 
   bool hasRendered = false;
   // If we visualize the regions we will always render the entire viewport
@@ -1393,6 +1392,9 @@ bool CGUIWindowManager::Render()
     {
       if (i.IsEmpty())
         continue;
+
+      if (!hasRendered)
+        CServiceBroker::GetWinSystem()->SetDirtyRegions(dirtyRegions);
 
       CServiceBroker::GetWinSystem()->GetGfxContext().SetScissors(i);
       RenderPass();
