@@ -32,13 +32,11 @@ protected:
   Action GetDefaultAction() override;
   bool Process(Action action) override;
 
-  virtual bool OnPlayPartSelected(unsigned int part);
   virtual bool OnQueueSelected();
   virtual bool OnInfoSelected();
   virtual bool OnChooseSelected();
 
 private:
   CVideoSelectActionProcessor() = delete;
-  unsigned int ChooseStackItemPartNumber() const;
 };
 } // namespace KODI::VIDEO::GUILIB

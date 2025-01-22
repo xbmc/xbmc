@@ -252,12 +252,6 @@ public:
   }
 
 protected:
-  bool OnPlayPartSelected(unsigned int part) override
-  {
-    //! @todo pvr recordings do not support video stacking (yet).
-    return false;
-  }
-
   bool OnChooseSelected() override
   {
     m_window.OnPopupMenu(m_itemIndex);

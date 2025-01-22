@@ -72,4 +72,12 @@ bool HasItemVideoDbInformation(const CFileItem& item);
  */
 std::string GetResumeString(const CFileItem& item);
 
+/*!
+ \brief Get a localized resume string for the given start offset.
+ \param startOffset The Start offset to get the resume string for
+ \param partNumber The part number if available (1-based), 0 otherwise
+ \return The resume string.
+ */
+std::string GetResumeString(int64_t startOffset, unsigned int partNumber);
+
 } // namespace KODI::VIDEO::UTILS

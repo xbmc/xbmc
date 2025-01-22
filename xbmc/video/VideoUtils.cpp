@@ -167,6 +167,177 @@ bool IsAutoPlayNextItem(const std::string& content)
   return setting && CSettingUtils::FindIntInList(setting, settingValue);
 }
 
+std::tuple<int64_t, unsigned int> GetStackResumeOffsetAndPartNumber(const CFileItem& item)
+{
+  int64_t offset{-1};
+  unsigned int partNumber{0};
+  if (item.IsStack())
+  {
+    const std::string& path{item.GetDynPath()};
+    if (URIUtils::IsDiscImageStack(path))
+    {
+      // disc image stacks - every part can have its own resume point
+      CVideoDatabase db;
+      if (!db.Open())
+      {
+        CLog::LogF(LOGERROR, "Cannot open VideoDatabase");
+        return {};
+      }
+
+      CBookmark bookmark;
+      if (db.GetResumeBookMark(path, bookmark))
+      {
+        offset = CUtil::ConvertSecsToMilliSecs(bookmark.timeInSeconds);
+        partNumber = static_cast<unsigned int>(bookmark.partNumber);
+      }
+    }
+    else
+    {
+      // all other stacks - there is only one resume point for the whole stack
+      if (item.HasVideoInfoTag())
+      {
+        const CBookmark bookmark{item.GetVideoInfoTag()->GetResumePoint()};
+        if (bookmark.IsPartWay())
+        {
+          offset = CUtil::ConvertSecsToMilliSecs(bookmark.timeInSeconds);
+
+          //! @todo Should the part number be set when loading/setting tags's bookmark from db,
+          //!       like done for disc image stacks?
+          //partNumber = static_cast<unsigned int>(bookmark.partNumber);
+
+          CVideoDatabase db;
+          if (!db.Open())
+          {
+            CLog::LogF(LOGERROR, "Cannot open VideoDatabase");
+            return {};
+          }
+
+          partNumber = 1;
+          std::vector<uint64_t> times;
+          if (db.GetStackTimes(path, times))
+          {
+            for (size_t i = times.size(); i > 0; i--)
+            {
+              if (times[i - 1] <= static_cast<uint64_t>(offset))
+              {
+                partNumber = static_cast<unsigned int>(i + 1);
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  return {offset, partNumber};
+}
+
+int64_t GetStackPartResumeOffset(const CFileItem& item, unsigned int partNumber)
+{
+  int64_t offset{-1};
+  if (item.IsStack() && partNumber > 0)
+  {
+    const std::string& path{item.GetDynPath()};
+    if (URIUtils::IsDiscImageStack(path))
+    {
+      // disc image stacks - every part can have its own resume point
+      CVideoDatabase db;
+      if (!db.Open())
+      {
+        CLog::LogF(LOGERROR, "Cannot open VideoDatabase");
+        return offset;
+      }
+
+      std::vector<CBookmark> bookmarks;
+      db.GetBookMarksForFile(path, bookmarks, CBookmark::RESUME);
+      for (const auto& bookmark : bookmarks)
+      {
+        if (bookmark.partNumber == static_cast<long>(partNumber))
+        {
+          offset = CUtil::ConvertSecsToMilliSecs(bookmark.timeInSeconds);
+          break;
+        }
+      }
+    }
+    else
+    {
+      // all other stacks - there is only one resume point for the whole stack
+      if (item.HasVideoInfoTag())
+      {
+        const CBookmark bookmark{item.GetVideoInfoTag()->GetResumePoint()};
+        if (bookmark.IsPartWay())
+        {
+          //! @todo Should the part number be set when loading/setting tags's bookmark from db,
+          //!       like done for disc image stacks?
+          //if (bookmark.partNumber == static_cast<long>(partNumber))
+          //  offset = CUtil::ConvertSecsToMilliSecs(bookmark.timeInSeconds);
+          //else
+          //  offset = 0;
+
+          CVideoDatabase db;
+          if (!db.Open())
+          {
+            CLog::LogF(LOGERROR, "Cannot open VideoDatabase");
+            return offset;
+          }
+
+          offset = 0;
+
+          std::vector<uint64_t> times;
+          if (db.GetStackTimes(path, times))
+          {
+            const int64_t offsetToCheck{CUtil::ConvertSecsToMilliSecs(bookmark.timeInSeconds)};
+            const uint64_t partBegin{partNumber == 1 ? 0 : times[partNumber - 2]};
+            const uint64_t partEnd{times[partNumber - 1]};
+            if (static_cast<uint64_t>(offsetToCheck) <= partEnd &&
+                static_cast<uint64_t>(offsetToCheck) > partBegin)
+            {
+              offset = offsetToCheck;
+            }
+          }
+        }
+      }
+    }
+  }
+  return offset;
+}
+
+int64_t GetStackPartStartOffset(const CFileItem& item, unsigned int partNumber)
+{
+  int64_t offset{-1};
+  if (item.IsStack() && partNumber > 0)
+  {
+    const std::string& path{item.GetDynPath()};
+    if (URIUtils::IsDiscImageStack(path))
+    {
+      // disc image stacks - every part starts at offset 0, correct part is selected via part naumber
+      offset = 0;
+    }
+    else
+    {
+      // all other stacks - start offset for a part is relative to beginning of stack
+      if (partNumber == 1)
+      {
+        offset = 0;
+      }
+      else
+      {
+        CVideoDatabase db;
+        if (!db.Open())
+        {
+          CLog::LogF(LOGERROR, "Cannot open VideoDatabase");
+          return {};
+        }
+
+        std::vector<uint64_t> times;
+        if (db.GetStackTimes(path, times) && partNumber <= times.size())
+          offset = times[partNumber - 2];
+      }
+    }
+  }
+  return offset;
+}
+
 ResumeInformation GetItemResumeInformation(const CFileItem& item)
 {
   // do not resume nfo files
@@ -187,6 +358,7 @@ ResumeInformation GetItemResumeInformation(const CFileItem& item)
   {
     ResumeInformation resumeInfo;
     resumeInfo.startOffset = CUtil::ConvertSecsToMilliSecs(startOffset);
+    resumeInfo.partNumber = partNumber;
     resumeInfo.isResumable = true;
     return resumeInfo;
   }
@@ -199,44 +371,6 @@ ResumeInformation GetItemResumeInformation(const CFileItem& item)
   }
 
   return {};
-}
-
-ResumeInformation GetStackPartResumeInformation(const CFileItem& item, unsigned int partNumber)
-{
-  ResumeInformation resumeInfo;
-
-  if (item.IsStack())
-  {
-    const std::string& path = item.GetDynPath();
-    if (URIUtils::IsDiscImageStack(path))
-    {
-      // disc image stack
-      CFileItemList parts;
-      XFILE::CDirectory::GetDirectory(path, parts, "", XFILE::DIR_FLAG_DEFAULTS);
-
-      resumeInfo = GetItemResumeInformation(*parts[partNumber - 1]);
-      resumeInfo.partNumber = partNumber;
-    }
-    else
-    {
-      // video file stack
-      CVideoDatabase db;
-      if (!db.Open())
-      {
-        CLog::LogF(LOGERROR, "Cannot open VideoDatabase");
-        return {};
-      }
-
-      std::vector<uint64_t> times;
-      if (db.GetStackTimes(path, times))
-      {
-        resumeInfo.startOffset = times[partNumber - 1];
-        resumeInfo.isResumable = (resumeInfo.startOffset > 0);
-      }
-      resumeInfo.partNumber = partNumber;
-    }
-  }
-  return resumeInfo;
 }
 
 std::shared_ptr<CFileItem> LoadVideoFilesFolderInfo(const CFileItem& folder)

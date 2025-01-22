@@ -59,7 +59,6 @@ public:
                             bool allowReplaceLabels = true);
 
   bool PlayItem(const std::shared_ptr<CFileItem>& item, const std::string& player);
-  bool OnPlayStackPart(const std::shared_ptr<CFileItem>& item, unsigned int partNumber);
   void OnQueueItem(const std::shared_ptr<CFileItem>& item, int iItem, bool first = false);
 
 protected:
@@ -86,13 +85,6 @@ protected:
    \return true if the action is performed, false otherwise
    */
   bool OnItemInfo(int item);
-  /*! \brief perform a given action on a file
-   \param item the selected item
-   \param action the action to perform
-   \return true if the action is performed, false otherwise
-   */
-  bool OnFileAction(int item, KODI::VIDEO::GUILIB::Action action, const std::string& player);
-
   void OnRestartItem(int iItem, const std::string &player = "");
   bool OnPlayOrResumeItem(int iItem, const std::string& player = "");
   bool OnPlayMedia(int iItem, const std::string &player = "") override;

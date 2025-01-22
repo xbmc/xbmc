@@ -13639,7 +13639,7 @@ msgid "Movie plot"
 msgstr ""
 
 #. Label for context menu entry to start playback of a part of a video stack
-#: xbmc/video/guilib/VideoSelectActionProcessor.cpp
+#: xbmc/video/guilib/VideoPlayActionProcessor.cpp
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#20324"
 msgid "Play part..."
@@ -15797,8 +15797,8 @@ msgid "Activate teletext"
 msgstr ""
 
 #. Label for disc stack part and number
-#: xbmc/video/guilib/VideoSelectActionProcessor.cpp
-#: xbmc/video/VideoUtils.cpp
+#: xbmc/video/guilib/VideoPlayActionProcessor.cpp
+#: xbmc/video/gui/VideoGUIUtils.cpp
 msgctxt "#23051"
 msgid "Part {0:d}"
 msgstr ""
