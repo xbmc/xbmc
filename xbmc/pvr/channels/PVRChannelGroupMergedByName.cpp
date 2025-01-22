@@ -88,9 +88,9 @@ std::vector<std::string> GetGroupNames(const std::vector<std::shared_ptr<CPVRCha
       {
         const auto it = knownNamesCountMap.find(groupName);
         if (it == knownNamesCountMap.end())
-          knownNamesCountMap.insert({groupName, 1}); // first occurance
+          knownNamesCountMap.insert({groupName, 1}); // first occurrence
         else if ((*it).second > 0)
-          (*it).second++; // second+ occurance
+          (*it).second++; // second+ occurrence
         break;
       }
       default:

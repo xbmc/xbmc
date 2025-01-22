@@ -380,7 +380,7 @@ public:
    * @brief Check whether at least one channel of this group is offered by the given provider.
    * @param clientId The clientId to check.
    * @param providerId The providerId to check.
-   * @return True, if the group countains at least one channel offered by the provider, false otherwise.
+   * @return True, if the group contains at least one channel offered by the provider, false otherwise.
    */
   bool HasChannelForProvider(int clientId, int providerId) const;
 

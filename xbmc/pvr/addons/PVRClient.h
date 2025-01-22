@@ -189,7 +189,7 @@ public:
   std::string GetInstanceName() const;
 
   /*!
-   * @brief A name used to uniquely identify the client, inclusing addon name and instance
+   * @brief A name used to uniquely identify the client, including addon name and instance
    * name, if multiple instances are supported by the client implementation.
    * @return string that can be used in log messages and the GUI.
    */
@@ -1098,7 +1098,7 @@ private:
    */
   static void cb_epg_event_state_change(void* kodiInstance, EPG_TAG* tag, EPG_EVENT_STATE newState);
 
-  /*! @todo remove the use complete from them, or add as generl function?!
+  /*! @todo remove the use complete from them, or add as general function?!
    * Returns the ffmpeg codec id from given ffmpeg codec string name
    */
   static PVR_CODEC cb_get_codec_by_name(const void* kodiInstance, const char* strCodecName);

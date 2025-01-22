@@ -349,7 +349,7 @@ public:
   const std::string& IconPath() const { return m_iconPath.GetLocalImage(); }
 
   /*!
-   * @brief Return the thumnail path used by Kodi.
+   * @brief Return the thumbnail path used by Kodi.
    * @return The path.
    */
   const std::string& ThumbnailPath() const { return m_thumbnailPath.GetLocalImage(); }

@@ -817,7 +817,7 @@ std::pair<CDateTime, CDateTime> CPVREpgContainer::GetFirstAndLastEPGDate() const
   if (database)
     dbDates = database->GetFirstAndLastEPGDate();
 
-  // Merge not yet commited changes
+  // Merge not yet committed changes
   m_critSection.lock();
   const auto epgs = m_epgIdToEpgMap;
   m_critSection.unlock();

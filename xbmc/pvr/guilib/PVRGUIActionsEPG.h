@@ -93,7 +93,7 @@ public:
    * @brief Get the title for the given EPG tag, taking settings and parental controls into account.
    * @param item The EPG tag.
    * @return "Parental locked" in case the access to the information is restricted by parental
-   * controls, "No information avilable" if the real EPG event title is empty and
+   * controls, "No information available" if the real EPG event title is empty and
    * SETTING_EPG_HIDENOINFOAVAILABLE is false or tag is nullptr, the real EPG event title as given
    * by the EPG data provider otherwise.
    */
