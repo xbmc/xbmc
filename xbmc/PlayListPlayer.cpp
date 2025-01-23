@@ -354,7 +354,13 @@ bool CPlayListPlayer::Play(int iSong,
   m_bPlaybackStarted = false;
 
   const auto playAttempt = std::chrono::steady_clock::now();
-  bool ret = g_application.PlayFile(*item, player, bAutoPlay, forceSelection);
+
+  bool ret{false};
+  if ((MUSIC::IsAudio(*item) || VIDEO::IsVideo(*item)) && !item->IsPVR())
+    ret = g_application.PlayFile(*item, player, bAutoPlay, forceSelection);
+  else
+    ret = g_application.PlayMedia(*item, player, m_iCurrentPlayList);
+
   if (!ret)
   {
     CLog::Log(LOGERROR, "Playlist Player: skipping unplayable item: {}, path [{}]", m_iCurrentSong,
