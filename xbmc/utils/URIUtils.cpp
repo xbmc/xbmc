@@ -494,6 +494,15 @@ std::string URIUtils::GetDiscBasePath(const std::string& file)
   return base;
 }
 
+std::string URIUtils::GetDiscUnderlyingFile(const CURL& url)
+{
+  std::string host = url.GetHostName();
+  const std::string& filename = url.GetFileName();
+  if (host.empty() || filename.empty())
+    return {};
+  return AddFileToFolder(host, filename);
+}
+
 std::string URIUtils::GetBlurayFile(const std::string& path)
 {
   if (IsBlurayPath(path))
@@ -516,6 +525,17 @@ std::string URIUtils::GetBlurayRootPath(const std::string& path)
 std::string URIUtils::GetBlurayTitlesPath(const std::string& path)
 {
   return AddFileToFolder(GetBlurayPath(path), "root", "titles");
+}
+
+std::string URIUtils::GetBlurayEpisodePath(const std::string& path, int season, int episode)
+{
+  return AddFileToFolder(GetBlurayPath(path), "root", "episode", StringUtils::Format("{}", season),
+                         StringUtils::Format("{}", episode));
+}
+
+std::string URIUtils::GetBlurayAllEpisodesPath(const std::string& path)
+{
+  return AddFileToFolder(GetBlurayPath(path), "root", "episode", "all");
 }
 
 std::string URIUtils::GetBlurayPlaylistPath(const std::string& path)
