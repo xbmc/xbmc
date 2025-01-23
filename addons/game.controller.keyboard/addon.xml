@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="game.controller.keyboard"
         name="IBM Model M Keyboard"
-        version="1.1.43"
+        version="1.1.45"
         provider-name="Team Kodi">
     <extension point="kodi.game.controller" library="resources/layout.xml"/>
     <extension point="xbmc.addon.metadata">
@@ -15,6 +15,7 @@
         <summary lang="es_ES">Teclado IBM modelo M</summary>
         <summary lang="fi_FI">IBM Model M -näppäimistö</summary>
         <summary lang="fr_FR">Clavier IBM modèle M</summary>
+        <summary lang="is_IS">IBM Model M lyklaborð</summary>
         <summary lang="it_IT">Tastiera IBM modello M</summary>
         <summary lang="pl_PL">Klawiatura IBM Model M</summary>
         <summary lang="ru_RU">Клавиатура IBM Model M</summary>
@@ -26,6 +27,7 @@
         <description lang="es_ES">El teclado IBM Modelo M, presentado en 1984, se considera una pieza de hardware atemporal y duradera.</description>
         <description lang="fi_FI">Vuonna 1984 esiteltyä IBM Model M -näppäimistöä pidetään ajattomana ja kestävänä laitteena.</description>
         <description lang="fr_FR">Le clavier IBM Model M, introduit en 1984, est considéré comme un matériel intemporel et durable.</description>
+        <description lang="is_IS">IBM Model M lyklaborðið sem kom á markað árið 1984, er oft álitið vera tímalaus snilld með endingartíma yfir öllum væntingum.</description>
         <description lang="it_IT">La tastiera IBM Model M, introdotta nel 1984, è considerata un componente hardware senza tempo e durevole.</description>
         <description lang="pl_PL">Klawiatura IBM Model M, wprowadzona na rynek w 1984 roku, jest uważana za ponadczasowy i trwały sprzęt.</description>
         <description lang="ru_RU">Клавиатура IBM Model M, выпущена в 1984 году, и считаестся долговечным изделием, неподвластным временем.</description>
@@ -38,6 +40,7 @@
         <disclaimer lang="es_MX">Créditos de imagen: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="fi_FI">Kuvan lähde: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="fr_FR">Crédit image : Wikipédia (wikipedia.org)</disclaimer>
+        <disclaimer lang="is_IS">Mynd frá: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="it_IT">Credito immagine: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="nl_NL">Bron afbeelding: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="pl_PL">Pochodzenie obrazu: Wikipedia (wikipedia.org)</disclaimer>
