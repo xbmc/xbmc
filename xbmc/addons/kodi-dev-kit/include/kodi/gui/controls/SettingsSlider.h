@@ -183,7 +183,7 @@ public:
   /// becomes changed with this function will a step of the user with the
   /// value fixed here be executed.
   ///
-  /// @param[in] interval Intervall step to set.
+  /// @param[in] interval interval step to set.
   ///
   /// @note Percent, floating point or integer are alone possible. Combining
   /// these different values can be not together and can, therefore, only
@@ -293,7 +293,7 @@ public:
   /// becomes changed with this function will a step of the user with the
   /// value fixed here be executed.
   ///
-  /// @param[in] interval Intervall step to set.
+  /// @param[in] interval interval step to set.
   ///
   /// @note Percent, floating point or integer are alone possible. Combining
   /// these different values can be not together and can, therefore, only

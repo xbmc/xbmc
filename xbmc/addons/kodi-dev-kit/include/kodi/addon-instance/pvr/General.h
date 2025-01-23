@@ -316,7 +316,7 @@ public:
   ///
   /// @param[in] settingValues possible setting values
   /// @param[in] defaultValue default setting value
-  /// @param[in] minValue minimim setting value
+  /// @param[in] minValue minimum setting value
   /// @param[in] step amount to change values from min to max
   /// @param[in] maxValue maximum setting value
   PVRIntSettingDefinition(const std::vector<PVRTypeIntValue>& settingValues,

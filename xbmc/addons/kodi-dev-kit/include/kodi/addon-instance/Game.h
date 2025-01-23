@@ -1020,7 +1020,7 @@ public:
   /// @brief Resets the runtime. Must be called each time a new rom is starting
   ///        and when the savestate is changed
   ///
-  /// @return the error, or GAME_ERROR_NO_ERROR if the runtim was reseted
+  /// @return the error, or GAME_ERROR_NO_ERROR if the runtime was reset
   ///         successfully
   ///
   virtual GAME_ERROR RCResetRuntime() { return GAME_ERROR_NOT_IMPLEMENTED; }

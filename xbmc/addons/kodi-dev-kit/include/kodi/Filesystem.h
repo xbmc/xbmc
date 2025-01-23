@@ -568,8 +568,8 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
-  // @note Not for addon development itself needed, thats why below is
-  // disabled for doxygen!
+  // @note Not necessary for addon development, therefore it's 
+  // disabled for doxygen below!
   //
   // @ingroup cpp_kodi_vfs_CDirEntry
   // @brief Constructor to create own copy
@@ -1148,7 +1148,7 @@ inline std::string ATTR_DLL_LOCAL GetFileMD5(const std::string& path)
 /// std::string thumb;
 /// std::string filename;
 /// if (kodi::gui::DialogFileBrowser::ShowAndGetFile("local", "*.avi|*.mpg|*.mp4",
-///                                                "Test File selection to get Thumnail",
+///                                                "Test File selection to get Thumbnail",
 ///                                                filename))
 /// {
 ///   thumb = kodi::vfs::GetCacheThumbName(filename);
