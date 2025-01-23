@@ -100,6 +100,12 @@ public:
    */
   static std::string GetDiscBasePath(const std::string& file);
 
+  /*! \brief Given a bluray:// path, return the underlying file path (eg. smb://, udf:// etc..)
+   \param url CURL containing bluray:// path.
+   \return return the underlying file path.
+   */
+  static std::string GetDiscUnderlyingFile(const CURL& url);
+
   /*! \brief Given a bluray:// path, return the base .ISO or index.BDMV.
    \param path bluray:// path.
    \return the base .ISO or index.BDMV.
@@ -117,6 +123,18 @@ public:
    \return the bluray:// root/titles path.
    */
   static std::string GetBlurayTitlesPath(const std::string& path);
+
+  /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path to a given episode.
+   \param path the ISO/index.BDMV path.
+   \return the bluray:// root/episode/<season number>/<episode number> path.
+   */
+  static std::string GetBlurayEpisodePath(const std::string& path, int season, int episode);
+
+  /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// for all episodes on disc.
+   \param path the ISO/index.BDMV path.
+   \return the bluray:// root/episode/all path.
+   */
+  static std::string GetBlurayAllEpisodesPath(const std::string& path);
 
   /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path to default playlist path.
    \param path the ISO/index.BDMV path.
