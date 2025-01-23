@@ -40,7 +40,7 @@ typedef struct SSelectionEntry
   SSelectionEntry() = default;
   /*! \endcond */
 
-  /// Entry identfication string
+  /// Entry identification string
   std::string id;
 
   /// Entry name to show on GUI dialog
