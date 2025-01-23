@@ -187,7 +187,7 @@ void CGUIGameControllerList::UpdatePortIndex(const PERIPHERALS::PeripheralPtr& a
 
 void CGUIGameControllerList::UpdatePeripheral(const PERIPHERALS::PeripheralPtr& agentPeripheral)
 {
-  m_peripheralLocation = agentPeripheral->Location();
+  m_peripheralLocation = agentPeripheral->FileLocation();
 }
 
 std::string CGUIGameControllerList::GetPortAddress(

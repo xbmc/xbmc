@@ -179,7 +179,7 @@ std::string CGameClientJoystick::GetControllerAddress() const
 std::string CGameClientJoystick::GetSourceLocation() const
 {
   if (m_sourcePeripheral)
-    return m_sourcePeripheral->Location();
+    return m_sourcePeripheral->FileLocation();
 
   return "";
 }
