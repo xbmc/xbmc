@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "XBDateTime.h"
+#include "games/agents/input/AgentController.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerLayout.h"
 #include "games/controllers/ControllerManager.h"
@@ -84,6 +85,12 @@ CPeripheral::CPeripheral(CPeripherals& manager,
 
 CPeripheral::~CPeripheral(void)
 {
+  if (m_controllerInput)
+  {
+    m_controllerInput->Deinitialize();
+    m_controllerInput.reset();
+  }
+
   PersistSettings(true);
 
   m_subDevices.clear();
@@ -192,6 +199,13 @@ bool CPeripheral::Initialise(void)
     CLog::Log(LOGDEBUG, "{} - initialised peripheral on '{}' with {} features and {} sub devices",
               __FUNCTION__, m_strLocation, (int)m_features.size(), (int)m_subDevices.size());
     m_bInitialised = true;
+  }
+
+  // Initialize controller input
+  if (m_bInitialised)
+  {
+    m_controllerInput = std::make_unique<GAME::CAgentController>(shared_from_this());
+    m_controllerInput->Initialize();
   }
 
   return bReturn;
@@ -822,6 +836,14 @@ bool CPeripheral::operator!=(const PeripheralScanResult& right) const
 CDateTime CPeripheral::LastActive() const
 {
   return CDateTime();
+}
+
+float CPeripheral::GetActivation() const
+{
+  if (m_controllerInput)
+    return m_controllerInput->GetActivation();
+
+  return 0.0f;
 }
 
 void CPeripheral::SetControllerProfile(const GAME::ControllerPtr& controller)

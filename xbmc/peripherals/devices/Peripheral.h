@@ -15,6 +15,7 @@
 #include "peripherals/PeripheralTypes.h"
 
 #include <map>
+#include <memory>
 #include <set>
 #include <string>
 #include <vector>
@@ -24,6 +25,11 @@ class CSetting;
 
 namespace KODI
 {
+namespace GAME
+{
+class CAgentController;
+}
+
 namespace JOYSTICK
 {
 class IButtonMapper;
@@ -70,7 +76,8 @@ typedef enum
  */
 class CPeripheral : public KODI::JOYSTICK::IInputProvider,
                     public KODI::KEYBOARD::IKeyboardInputProvider,
-                    public KODI::MOUSE::IMouseInputProvider
+                    public KODI::MOUSE::IMouseInputProvider,
+                    public std::enable_shared_from_this<CPeripheral>
 {
   friend class CGUIDialogPeripheralSettings;
 
@@ -267,6 +274,13 @@ public:
   virtual CDateTime LastActive() const;
 
   /*!
+   * \brief Return the current activity level of the peripheral
+   *
+   * \return The activity level, on a scale of 0.0 to 1.0
+   */
+  virtual float GetActivation() const;
+
+  /*!
    * \brief Get the controller profile that best represents this peripheral
    *
    * \return The controller profile, or empty if unknown
@@ -313,5 +327,6 @@ protected:
       m_mouseHandlers;
   std::map<KODI::JOYSTICK::IButtonMapper*, std::unique_ptr<CAddonButtonMapping>> m_buttonMappers;
   KODI::GAME::ControllerPtr m_controllerProfile;
+  std::unique_ptr<KODI::GAME::CAgentController> m_controllerInput;
 };
 } // namespace PERIPHERALS
