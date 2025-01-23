@@ -15,6 +15,7 @@
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "Util.h"
+#include "application/Application.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "dialogs/GUIDialogBusy.h"
@@ -36,7 +37,6 @@
 #include "settings/SettingsComponent.h"
 #include "threads/IRunnable.h"
 #include "utils/FileUtils.h"
-#include "utils/PlayerUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -440,7 +440,20 @@ void PlayItem(
     else // mode == PlayMode::PLAY_ONLY_THIS
     {
       // single item, play it
-      CPlayerUtils::PlayMedia(item, player, PLAYLIST::Id::TYPE_NONE);
+
+      //! @todo get rid of special treatment for some media
+      //! logic "borrowed" from PlayerBuiltins.cpp -> PlayOrQueueMedia()
+      if (item->IsPVR() || PLAYLIST::IsSmartPlayList(*item))
+      {
+        g_application.PlayMedia(*item, player, PLAYLIST::Id::TYPE_NONE);
+      }
+      else
+      {
+        auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
+        playlistPlayer.Reset();
+        playlistPlayer.SetCurrentPlaylist(PLAYLIST::Id::TYPE_NONE);
+        playlistPlayer.Play(item, player);
+      }
     }
   }
 }
