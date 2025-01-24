@@ -1082,7 +1082,8 @@ bool CGUIWindowVideoBase::PlayItem(const std::shared_ptr<CFileItem>& pItem,
 
     // recursively add items to list
     CFileItemList queuedItems;
-    VIDEO::UTILS::GetItemsForPlayList(item, queuedItems);
+    VIDEO::UTILS::GetItemsForPlayList(item, queuedItems,
+                                      ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM);
 
     CServiceBroker::GetPlaylistPlayer().ClearPlaylist(PLAYLIST::Id::TYPE_VIDEO);
     CServiceBroker::GetPlaylistPlayer().Reset();

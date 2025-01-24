@@ -453,7 +453,8 @@ namespace
 void GetItemsForPlayList(const std::shared_ptr<CFileItem>& item, CFileItemList& queuedItems)
 {
   if (VIDEO::UTILS::IsItemPlayable(*item))
-    VIDEO::UTILS::GetItemsForPlayList(item, queuedItems);
+    VIDEO::UTILS::GetItemsForPlayList(item, queuedItems,
+                                      ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM);
   else if (MUSIC_UTILS::IsItemPlayable(*item))
     MUSIC_UTILS::GetItemsForPlayList(item, queuedItems);
 }
