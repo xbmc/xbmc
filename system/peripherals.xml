@@ -63,9 +63,20 @@
   </peripheral>
 
   <peripheral class="joystick" name="joystick" mapTo="joystick">
-    <setting key="appearance" type="addon" addontype="kodi.game.controller" label="480" order="1"/>
+    <setting key="appearance" type="addon" addontype="kodi.game.controller" value="game.controller.default" label="480" order="1"/>
+    <setting key="last_active" type="string" value="" configurable="0"/>
     <setting key="left_stick_deadzone" type="float" label="35078" order="2" value="0.2" min="0.0" step="0.05" max="1.0" />
     <setting key="right_stick_deadzone" type="float" label="35079" order="3" value="0.2" min="0.0" step="0.05" max="1.0" />
+  </peripheral>
+
+  <peripheral class="keyboard" name="keyboard" mapTo="keyboard">
+    <setting key="appearance" type="addon" addontype="kodi.game.controller" value="game.controller.keyboard" configurable="0"/>
+    <setting key="last_active" type="string" value="" configurable="0"/>
+  </peripheral>
+
+  <peripheral class="mouse" name="mouse" mapTo="mouse">
+    <setting key="appearance" type="addon" addontype="kodi.game.controller" value="game.controller.mouse" configurable="0"/>
+    <setting key="last_active" type="string" value="" configurable="0"/>
   </peripheral>
 
 </peripherals>

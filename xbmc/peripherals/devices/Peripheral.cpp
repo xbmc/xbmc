@@ -11,6 +11,8 @@
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "XBDateTime.h"
+#include "addons/AddonInstaller.h"
+#include "addons/AddonManager.h"
 #include "games/agents/input/AgentController.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerLayout.h"
@@ -43,7 +45,7 @@ namespace
 {
 // Settings for peripherals
 constexpr std::string_view SETTING_APPEARANCE = "appearance";
-} // namespace
+constexpr std::string_view SETTING_LAST_ACTIVE = "last_active";
 
 struct SortBySettingsOrder
 {
@@ -52,6 +54,7 @@ struct SortBySettingsOrder
     return left.m_order < right.m_order;
   }
 };
+} // namespace
 
 CPeripheral::CPeripheral(CPeripherals& manager,
                          const PeripheralScanResult& scanResult,
@@ -183,8 +186,10 @@ bool CPeripheral::Initialise(void)
           CUtil::MakeLegalFileName(std::move(safeDeviceName), LegalPath::WIN32_COMPAT));
   }
 
+  // Load settings and initialize state
   LoadPersistedSettings();
 
+  // Initialize features
   for (unsigned int iFeaturePtr = 0; iFeaturePtr < m_features.size(); iFeaturePtr++)
   {
     PeripheralFeature feature = m_features.at(iFeaturePtr);
@@ -298,6 +303,33 @@ void CPeripheral::AddSetting(const std::string& strKey, const SettingConstPtr& s
               std::make_shared<CSettingAddon>(strKey, *mappedSetting);
           addonSetting->SetVisible(mappedSetting->IsVisible());
           deviceSetting.m_setting = addonSetting;
+
+          // Handle default settings
+          if (strKey == SETTING_APPEARANCE)
+          {
+            const std::string& controllerId = addonSetting->GetValue();
+            if (!controllerId.empty())
+            {
+              GAME::ControllerPtr controllerProfile =
+                  CServiceBroker::GetGameControllerManager().GetController(controllerId);
+              if (controllerProfile)
+                SetControllerProfile(controllerProfile);
+              else
+              {
+                InstallController(controllerId,
+                                  [this](const GAME::ControllerPtr& installedController)
+                                  {
+                                    SetControllerProfile(installedController);
+
+                                    // Since the controller was just installed, we now have a way
+                                    // to show the peripheral, so let listeners know to refresh
+                                    // their state
+                                    m_manager.SetChanged(true);
+                                    m_manager.NotifyObservers(ObservableMessagePeripheralsChanged);
+                                  });
+              }
+            }
+          }
         }
         else
         {
@@ -499,6 +531,13 @@ bool CPeripheral::SetSetting(const std::string& strKey, const std::string& strVa
         stringSetting->SetValue(strValue);
         if (bChanged && m_bInitialised)
           m_changedSettings.insert(strKey);
+
+        if (strKey == SETTING_LAST_ACTIVE && !strValue.empty())
+        {
+          CDateTime lastActive;
+          lastActive.SetFromW3CDateTime(strValue, false);
+          SetLastActive(lastActive);
+        }
       }
     }
     else if ((*it).second.m_setting->GetType() == SettingType::Integer)
@@ -835,7 +874,35 @@ bool CPeripheral::operator!=(const PeripheralScanResult& right) const
 
 CDateTime CPeripheral::LastActive() const
 {
-  return CDateTime();
+  // By default, peripherals are fully-activated
+  return CDateTime::GetCurrentDateTime();
+}
+
+void CPeripheral::SetLastActive(const CDateTime& lastActive)
+{
+  // Update last active setting
+  const std::string strKey{SETTING_LAST_ACTIVE};
+
+  auto it = m_settings.find(strKey);
+  if (it != m_settings.end() && it->second.m_setting->GetType() == SettingType::String)
+  {
+    std::shared_ptr<CSettingString> stringSetting =
+        std::static_pointer_cast<CSettingString>(it->second.m_setting);
+
+    const bool wasActive = !stringSetting->GetValue().empty();
+
+    const std::string lastActiveStr = lastActive.IsValid() ? lastActive.GetAsW3CDateTime() : "";
+
+    stringSetting->SetValue(lastActiveStr);
+
+    // Notify listeners if a peripheral was activated for the first time
+    if (!wasActive & lastActive.IsValid())
+    {
+      m_manager.SetChanged(true);
+      m_manager.NotifyObservers(ObservableMessagePeripheralsChanged);
+      PersistSettings();
+    }
+  }
 }
 
 float CPeripheral::GetActivation() const
@@ -863,7 +930,91 @@ void CPeripheral::SetControllerProfile(const GAME::ControllerPtr& controller)
 
     const bool bChanged = !StringUtils::EqualsNoCase(stringSetting->GetValue(), newControllerId);
     stringSetting->SetValue(newControllerId);
-    if (bChanged)
+    if (bChanged && m_bInitialised)
       m_changedSettings.insert(strKey);
   }
+}
+
+void CPeripheral::InstallController(
+    const std::string& controllerId,
+    std::function<void(const KODI::GAME::ControllerPtr& installedController)> callback)
+{
+  std::unique_lock<std::mutex> lock(m_controllerInstallMutex);
+
+  // Deposit controller into queue
+  m_controllersToInstall.emplace(controllerId);
+
+  // Clean up finished install tasks
+  m_installTasks.erase(std::remove_if(m_installTasks.begin(), m_installTasks.end(),
+                                      [](std::future<void>& task) {
+                                        return task.wait_for(std::chrono::seconds(0)) ==
+                                               std::future_status::ready;
+                                      }),
+                       m_installTasks.end());
+
+  // Install controller off-thread
+  std::future<void> installTask =
+      std::async(std::launch::async,
+                 [this, callback]()
+                 {
+                   // Withdraw controller from queue
+                   std::string controllerToInstall;
+                   {
+                     std::unique_lock<std::mutex> lock(m_controllerInstallMutex);
+                     if (!m_controllersToInstall.empty())
+                     {
+                       controllerToInstall = m_controllersToInstall.front();
+                       m_controllersToInstall.pop();
+                     }
+                   }
+
+                   // Do the install
+                   GAME::ControllerPtr controller = InstallAsync(controllerToInstall);
+                   if (controller)
+                   {
+                     // Success
+                     callback(controller);
+                   }
+                 });
+
+  // Hold the task to prevent the destructor from completing during an install
+  m_installTasks.emplace_back(std::move(installTask));
+}
+
+GAME::ControllerPtr CPeripheral::InstallAsync(const std::string& controllerId)
+{
+  GAME::ControllerPtr controller;
+
+  // Only 1 install at a time. Remaining installs will wake when this one
+  // is done.
+  std::unique_lock<CCriticalSection> lockInstall(m_manager.GetAddonInstallMutex());
+
+  CLog::LogF(LOGDEBUG, "Installing {}", controllerId);
+
+  if (InstallSync(controllerId))
+    controller = m_manager.GetControllerProfiles().GetController(controllerId);
+  else
+    CLog::LogF(LOGERROR, "Failed to install {}", controllerId);
+
+  return controller;
+}
+
+bool CPeripheral::InstallSync(const std::string& controllerId)
+{
+  // If the addon isn't installed we need to install it
+  bool installed = CServiceBroker::GetAddonMgr().IsAddonInstalled(controllerId);
+  if (!installed)
+  {
+    installed = ADDON::CAddonInstaller::GetInstance().InstallOrUpdate(
+        controllerId, ADDON::BackgroundJob::CHOICE_YES, ADDON::ModalJob::CHOICE_NO);
+  }
+
+  if (installed)
+  {
+    // Make sure add-on is enabled
+    if (CServiceBroker::GetAddonMgr().IsAddonDisabled(controllerId))
+      CServiceBroker::GetAddonMgr().EnableAddon(controllerId);
+  }
+
+  return installed;
 }

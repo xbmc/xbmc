@@ -105,13 +105,11 @@ void CAgentInput::Refresh()
 {
   if (m_gameClient)
   {
-    // Open keyboard
-    if (m_bHasKeyboard)
-      ProcessKeyboard();
+    // Process keyboard
+    ProcessKeyboard();
 
-    // Open mouse
-    if (m_bHasMouse)
-      ProcessMouse();
+    // Process mouse
+    ProcessMouse();
 
     // Open/close joysticks
     PERIPHERALS::EventLockHandlePtr inputHandlingLock;
@@ -431,6 +429,10 @@ void CAgentInput::ProcessAgentControllers(const PERIPHERALS::PeripheralVector& p
   // Handle new and existing controllers
   for (const auto& peripheral : peripherals)
   {
+    // Skip peripherals that have never been active
+    if (!peripheral->LastActive().IsValid())
+      continue;
+
     // Check if controller already exists
     auto it =
         std::find_if(m_controllers.begin(), m_controllers.end(),

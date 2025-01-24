@@ -132,8 +132,7 @@ bool CController::LoadLayout(void)
     }
 
     auto* pRootElement = xmlDoc.RootElement();
-    if (pRootElement == nullptr || pRootElement->NoChildren() ||
-        std::strcmp(pRootElement->Value(), LAYOUT_XML_ROOT) != 0)
+    if (pRootElement == nullptr || std::strcmp(pRootElement->Value(), LAYOUT_XML_ROOT) != 0)
     {
       CLog::Log(LOGERROR, "Can't find root <{}> tag", LAYOUT_XML_ROOT);
       return false;
