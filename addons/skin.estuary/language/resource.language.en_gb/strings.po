@@ -856,7 +856,25 @@ msgctxt "#31176"
 msgid "Default select action for movie sets on the home screen"
 msgstr ""
 
-#empty strings from id 31177 to 31599
+#empty strings from id 31177 to 31596
+
+#: /xml/Includes_SettingsDialog.xml
+#. Button to select Player Process Info window
+msgctxt "#31597"
+msgid "Player info"
+msgstr ""
+
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show player cache
+msgctxt "#31598"
+msgid "Player cache"
+msgstr ""
+
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show the video codec name
+msgctxt "#31599"
+msgid "Audio decoder"
+msgstr ""
 
 #: /xml/DialogPlayerProcessInfo.xml
 #. Label to show the video codec name
