@@ -43,6 +43,7 @@
 #include "pvr/timers/PVRTimers.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "video/guilib/VideoPlayActionProcessor.h"
 #include "view/GUIViewState.h"
 
 #include <functional>
@@ -445,15 +446,21 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
                   bReturn = true;
                   break;
                 case EPG_SELECT_ACTION_SWITCH:
-                  CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(*pItem,
-                                                                                            true);
+                  CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(*pItem);
                   bReturn = true;
                   break;
                 case EPG_SELECT_ACTION_PLAY_RECORDING:
-                  CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(*pItem,
-                                                                                          true);
-                  bReturn = true;
+                {
+                  const std::shared_ptr<CPVRRecording> recording{CPVRItem(pItem).GetRecording()};
+                  if (recording)
+                  {
+                    KODI::VIDEO::GUILIB::CVideoPlayActionProcessor proc{
+                        std::make_shared<CFileItem>(recording)};
+                    proc.ProcessDefaultAction();
+                    bReturn = true;
+                  }
                   break;
+                }
                 case EPG_SELECT_ACTION_INFO:
                   CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ShowEPGInfo(*pItem);
                   bReturn = true;
@@ -475,7 +482,7 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
                     {
                       // current event
                       CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(
-                          *pItem, true);
+                          *pItem);
                     }
                     else if (now < start)
                     {
@@ -506,15 +513,20 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
                                                                                            false);
                         else if (ret == HELPERS::DialogResponse::CHOICE_YES)
                           CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(
-                              *pItem, true);
+                              *pItem);
                       }
                     }
                     else
                     {
                       // past event
-                      if (CServiceBroker::GetPVRManager().Recordings()->GetRecordingForEpgTag(tag))
-                        CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
-                            *pItem, true);
+                      const std::shared_ptr<CPVRRecording> recording{
+                          CPVRItem(pItem).GetRecording()};
+                      if (recording)
+                      {
+                        KODI::VIDEO::GUILIB::CVideoPlayActionProcessor proc{
+                            std::make_shared<CFileItem>(recording)};
+                        proc.ProcessDefaultAction();
+                      }
                       else if (tag->IsPlayable())
                         CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayEpgTag(
                             *pItem);
@@ -532,8 +544,7 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
               bReturn = true;
               break;
             case ACTION_PLAYER_PLAY:
-              CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(*pItem,
-                                                                                        true);
+              CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(*pItem);
               bReturn = true;
               break;
             case ACTION_RECORD:

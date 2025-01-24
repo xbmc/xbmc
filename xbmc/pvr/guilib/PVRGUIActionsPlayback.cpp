@@ -43,7 +43,7 @@
 #include "utils/log.h"
 #include "video/VideoUtils.h"
 #include "video/guilib/VideoGUIUtils.h"
-#include "video/guilib/VideoSelectActionProcessor.h"
+#include "video/guilib/VideoPlayActionProcessor.h"
 
 #include <memory>
 #include <string>
@@ -59,29 +59,6 @@ CPVRGUIActionsPlayback::CPVRGUIActionsPlayback()
 {
 }
 
-bool CPVRGUIActionsPlayback::CheckResumeRecording(const CFileItem& item) const
-{
-  bool bPlayIt(true);
-
-  const VIDEO::GUILIB::Action action =
-      VIDEO::GUILIB::CVideoSelectActionProcessor::ChoosePlayOrResume(item);
-  if (action == VIDEO::GUILIB::ACTION_RESUME)
-  {
-    const_cast<CFileItem*>(&item)->SetStartOffset(STARTOFFSET_RESUME);
-  }
-  else if (action == VIDEO::GUILIB::ACTION_PLAY_FROM_BEGINNING)
-  {
-    const_cast<CFileItem*>(&item)->SetStartOffset(0);
-  }
-  else
-  {
-    // The Resume dialog was closed without any choice
-    bPlayIt = false;
-  }
-
-  return bPlayIt;
-}
-
 void CPVRGUIActionsPlayback::CheckAndSwitchToFullscreen(bool bFullscreen) const
 {
   CMediaSettings::GetInstance().SetMediaStartWindowed(!bFullscreen);
@@ -94,7 +71,7 @@ void CPVRGUIActionsPlayback::CheckAndSwitchToFullscreen(bool bFullscreen) const
   }
 }
 
-bool CPVRGUIActionsPlayback::PlayRecording(const CFileItem& item, bool bCheckResume) const
+bool CPVRGUIActionsPlayback::PlayRecording(const CFileItem& item) const
 {
   const std::shared_ptr<CPVRRecording> recording(CPVRItem(item).GetRecording());
   if (!recording)
@@ -108,51 +85,49 @@ bool CPVRGUIActionsPlayback::PlayRecording(const CFileItem& item, bool bCheckRes
     return true;
   }
 
-  if (!bCheckResume || CheckResumeRecording(item))
+  if (!item.m_bIsFolder && VIDEO::UTILS::IsAutoPlayNextItem(item))
   {
-    if (!item.m_bIsFolder && VIDEO::UTILS::IsAutoPlayNextItem(item))
+    // recursively add items located in the same folder as item to play list, starting with item
+    std::string parentPath{item.GetProperty("ParentPath").asString()};
+    if (parentPath.empty())
+      URIUtils::GetParentPath(item.GetPath(), parentPath);
+
+    if (parentPath.empty())
     {
-      // recursively add items located in the same folder as item to play list, starting with item
-      std::string parentPath = item.GetProperty("ParentPath").asString();
-      if (parentPath.empty())
-        URIUtils::GetParentPath(item.GetPath(), parentPath);
-
-      if (parentPath.empty())
-      {
-        CLog::LogF(LOGERROR, "Unable to obtain parent path for '{}'", item.GetPath());
-        return false;
-      }
-
-      const auto parentItem = std::make_shared<CFileItem>(parentPath, true);
-      parentItem->LoadDetails();
-      if (item.GetStartOffset() == STARTOFFSET_RESUME)
-        parentItem->SetStartOffset(STARTOFFSET_RESUME);
-
-      auto queuedItems = std::make_unique<CFileItemList>();
-      VIDEO::UTILS::GetItemsForPlayList(parentItem, *queuedItems);
-
-      // figure out where to start playback
-      int pos = 0;
-      for (const std::shared_ptr<CFileItem>& queuedItem : *queuedItems)
-      {
-        if (queuedItem->IsSamePath(&item))
-          break;
-
-        pos++;
-      }
-
-      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, pos, -1,
-                                                 static_cast<void*>(queuedItems.release()));
+      CLog::LogF(LOGERROR, "Unable to obtain parent path for '{}'", item.GetPath());
+      return false;
     }
-    else
+
+    const auto parentItem{std::make_shared<CFileItem>(parentPath, true)};
+    parentItem->LoadDetails();
+    if (item.GetStartOffset() == STARTOFFSET_RESUME)
+      parentItem->SetStartOffset(STARTOFFSET_RESUME);
+
+    auto queuedItems{std::make_unique<CFileItemList>()};
+    VIDEO::UTILS::GetItemsForPlayList(parentItem, *queuedItems);
+
+    // figure out where to start playback
+    int pos{0};
+    for (const std::shared_ptr<CFileItem>& queuedItem : *queuedItems)
     {
-      std::unique_ptr<CFileItem> itemToPlay{std::make_unique<CFileItem>(recording)};
-      itemToPlay->SetStartOffset(item.GetStartOffset());
-      CServiceBroker::GetPVRManager().PlaybackState()->StartPlayback(
-          itemToPlay, ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM, PVR_SOURCE::DEFAULT);
+      if (queuedItem->IsSamePath(&item))
+        break;
+
+      pos++;
     }
-    CheckAndSwitchToFullscreen(true);
+
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, pos, -1,
+                                               static_cast<void*>(queuedItems.release()));
   }
+  else
+  {
+    std::unique_ptr<CFileItem> itemToPlay{std::make_unique<CFileItem>(recording)};
+    itemToPlay->SetStartOffset(item.GetStartOffset());
+    CServiceBroker::GetPVRManager().PlaybackState()->StartPlayback(
+        itemToPlay, ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM, PVR_SOURCE::DEFAULT);
+  }
+
+  CheckAndSwitchToFullscreen(true);
   return true;
 }
 
@@ -208,7 +183,7 @@ bool CPVRGUIActionsPlayback::PlayEpgTag(
   return true;
 }
 
-bool CPVRGUIActionsPlayback::SwitchToChannel(const CFileItem& item, bool bCheckResume) const
+bool CPVRGUIActionsPlayback::SwitchToChannel(const CFileItem& item) const
 {
   if (item.m_bIsFolder)
     return false;
@@ -261,7 +236,10 @@ bool CPVRGUIActionsPlayback::SwitchToChannel(const CFileItem& item, bool bCheckR
         return false;
 
       if (bPlayRecording)
-        return PlayRecording(CFileItem(recording), bCheckResume);
+      {
+        KODI::VIDEO::GUILIB::CVideoPlayActionProcessor proc{std::make_shared<CFileItem>(recording)};
+        return proc.ProcessDefaultAction();
+      }
     }
 
     bool bFullscreen;
@@ -352,7 +330,7 @@ bool CPVRGUIActionsPlayback::SwitchToChannel(PlaybackType type) const
   // if we have a last played channel, start playback
   if (groupMember)
   {
-    return SwitchToChannel(CFileItem(groupMember), true);
+    return SwitchToChannel(CFileItem(groupMember));
   }
   else
   {
@@ -366,7 +344,7 @@ bool CPVRGUIActionsPlayback::SwitchToChannel(PlaybackType type) const
           channelGroup->GetMembers();
       if (!groupMembers.empty())
       {
-        return SwitchToChannel(CFileItem(*groupMembers.begin()), true);
+        return SwitchToChannel(CFileItem(*groupMembers.begin()));
       }
     }
   }
@@ -412,7 +390,7 @@ bool CPVRGUIActionsPlayback::PlayChannelOnStartup() const
 
   CLog::Log(LOGINFO, "PVR is starting playback of channel '{}'",
             groupMember->Channel()->ChannelName());
-  return SwitchToChannel(CFileItem(groupMember), true);
+  return SwitchToChannel(CFileItem(groupMember));
 }
 
 bool CPVRGUIActionsPlayback::PlayMedia(const CFileItem& item) const
@@ -436,17 +414,14 @@ bool CPVRGUIActionsPlayback::PlayMedia(const CFileItem& item) const
       pvrItem->SetStartOffset(item.GetStartOffset());
     }
   }
-  bool bCheckResume = true;
-  if (item.HasProperty("check_resume"))
-    bCheckResume = item.GetProperty("check_resume").asBoolean();
 
   if (pvrItem && pvrItem->HasPVRChannelInfoTag())
   {
-    return SwitchToChannel(*pvrItem, bCheckResume);
+    return SwitchToChannel(*pvrItem);
   }
   else if (pvrItem && pvrItem->HasPVRRecordingInfoTag())
   {
-    return PlayRecording(*pvrItem, bCheckResume);
+    return PlayRecording(*pvrItem);
   }
 
   return false;

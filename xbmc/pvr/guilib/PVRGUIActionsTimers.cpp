@@ -1034,7 +1034,7 @@ void CPVRGUIActionsTimers::AnnounceReminder(const std::shared_ptr<CPVRTimerInfoT
     if (groupMember)
     {
       CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(
-          CFileItem(groupMember), false);
+          CFileItem(groupMember));
 
       if (bAutoClosed)
       {

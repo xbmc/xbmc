@@ -939,7 +939,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
 
     CFileItem recItem{recording};
     HandleResumeOption(optionResume, recItem);
-    if (!CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(recItem, false))
+    if (!CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayMedia(recItem))
       return FailedToExecute;
 
     return ACK;
@@ -992,8 +992,7 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
 
         CFileItem recItem{recording};
         HandleResumeOption(optionResume, recItem);
-        if (!CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(recItem,
-                                                                                     false))
+        if (!CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayMedia(recItem))
           return FailedToExecute;
       }
       else

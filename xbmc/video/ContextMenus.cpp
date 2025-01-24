@@ -252,8 +252,6 @@ enum class PlayMode
 
 void SetPathAndPlay(const std::shared_ptr<CFileItem>& item, PlayMode mode)
 {
-  item->SetProperty("check_resume", false);
-
   if (item->IsLiveTV()) // pvr tv or pvr radio?
   {
     g_application.PlayMedia(*item, "", PLAYLIST::Id::TYPE_VIDEO);
