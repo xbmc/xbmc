@@ -3581,11 +3581,13 @@ void CVideoDatabase::GetEpisodesByFileId(int idFile, std::vector<CVideoInfoTag>&
 
   try
   {
-    const std::string sql{PrepareSQL("SELECT * FROM episode_view "
-                                     "WHERE idShow = (SELECT idShow FROM episode WHERE idFile=%i) "
-                                     "ORDER BY CAST(c%02d AS INTEGER), CAST(c%02d AS INTEGER)",
-                                     idFile, VIDEODB_ID_EPISODE_SEASON,
-                                     VIDEODB_ID_EPISODE_EPISODE)};
+    const std::string sql{PrepareSQL(
+        "select episode_view.*, streamdetails.iVideoDuration as duration from "
+        "episode_view left join streamdetails on episode_view.idFile = streamdetails.idFile "
+        "and streamdetails.iStreamType = %i "
+        "where episode_view.idShow = (select idShow from episode where idFile = %i) "
+        "order by cast(episode_view.c%02d as integer), cast(episode_view.c%02d as integer)",
+        CStreamDetail::VIDEO, idFile, VIDEODB_ID_EPISODE_SEASON, VIDEODB_ID_EPISODE_EPISODE)};
     m_pDS->query(sql);
 
     // Generate map of episodes in each file (finding base file for bluray://) of show
@@ -3617,7 +3619,15 @@ void CVideoDatabase::GetEpisodesByFileId(int idFile, std::vector<CVideoInfoTag>&
     for (int index : fileMap | std::views::values)
     {
       m_pDS->goto_rec(index);
-      episodes.emplace_back(GetDetailsForEpisode(m_pDS));
+      CVideoInfoTag tag{GetDetailsForEpisode(m_pDS)};
+
+      // Different scrapers put duration in different places
+      const unsigned int episodeViewDuration{
+          m_pDS->fv(StringUtils::Format("c{:02}", VIDEODB_ID_EPISODE_RUNTIME).c_str())
+              .get_asUInt()};
+      const unsigned int streamDetailsDuration{m_pDS->fv("duration").get_asUInt()};
+      tag.m_duration = episodeViewDuration > 0 ? episodeViewDuration : streamDetailsDuration;
+      episodes.emplace_back(tag);
     }
     m_pDS->close();
   }
