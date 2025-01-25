@@ -10,7 +10,7 @@
 
 #include "OptionalsReg.h"
 #include "cores/RetroPlayer/process/gbm/RPProcessInfoGbm.h"
-#include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererDMA.h"
+#include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererDMAOpenGLES.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererOpenGLES.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecDRMPRIME.h"
@@ -57,7 +57,7 @@ bool CWinSystemGbmGLESContext::InitWindowSystem()
   CDVDFactoryCodec::ClearHWAccels();
   CLinuxRendererGLES::Register();
   RETRO::CRPProcessInfoGbm::Register();
-  RETRO::CRPProcessInfoGbm::RegisterRendererFactory(new RETRO::CRendererFactoryDMA);
+  RETRO::CRPProcessInfoGbm::RegisterRendererFactory(new RETRO::CRendererFactoryDMAOpenGLES);
   RETRO::CRPProcessInfoGbm::RegisterRendererFactory(new RETRO::CRendererFactoryOpenGLES);
 
   if (!CWinSystemGbmEGLContext::InitWindowSystemEGL(EGL_OPENGL_ES2_BIT, EGL_OPENGL_ES_API))

@@ -6,7 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "RPRendererDMA.h"
+#include "RPRendererDMAOpenGLES.h"
 
 #include "cores/RetroPlayer/buffers/RenderBufferDMA.h"
 #include "cores/RetroPlayer/buffers/RenderBufferPoolDMA.h"
@@ -21,19 +21,20 @@
 using namespace KODI;
 using namespace RETRO;
 
-std::string CRendererFactoryDMA::RenderSystemName() const
+std::string CRendererFactoryDMAOpenGLES::RenderSystemName() const
 {
-  return "DMA";
+  return "DMA-GLES";
 }
 
-CRPBaseRenderer* CRendererFactoryDMA::CreateRenderer(const CRenderSettings& settings,
-                                                     CRenderContext& context,
-                                                     std::shared_ptr<IRenderBufferPool> bufferPool)
+CRPBaseRenderer* CRendererFactoryDMAOpenGLES::CreateRenderer(
+    const CRenderSettings& settings,
+    CRenderContext& context,
+    std::shared_ptr<IRenderBufferPool> bufferPool)
 {
-  return new CRPRendererDMA(settings, context, std::move(bufferPool));
+  return new CRPRendererDMAOpenGLES(settings, context, std::move(bufferPool));
 }
 
-RenderBufferPoolVector CRendererFactoryDMA::CreateBufferPools(CRenderContext& context)
+RenderBufferPoolVector CRendererFactoryDMAOpenGLES::CreateBufferPools(CRenderContext& context)
 {
   if (!CBufferObjectFactory::CreateBufferObject(false))
     return {};
@@ -41,14 +42,14 @@ RenderBufferPoolVector CRendererFactoryDMA::CreateBufferPools(CRenderContext& co
   return {std::make_shared<CRenderBufferPoolDMA>(context)};
 }
 
-CRPRendererDMA::CRPRendererDMA(const CRenderSettings& renderSettings,
-                               CRenderContext& context,
-                               std::shared_ptr<IRenderBufferPool> bufferPool)
+CRPRendererDMAOpenGLES::CRPRendererDMAOpenGLES(const CRenderSettings& renderSettings,
+                                               CRenderContext& context,
+                                               std::shared_ptr<IRenderBufferPool> bufferPool)
   : CRPRendererOpenGLES(renderSettings, context, std::move(bufferPool))
 {
 }
 
-void CRPRendererDMA::Render(uint8_t alpha)
+void CRPRendererDMAOpenGLES::Render(uint8_t alpha)
 {
   auto renderBuffer = static_cast<CRenderBufferDMA*>(m_renderBuffer);
   assert(renderBuffer != nullptr);
