@@ -284,7 +284,7 @@
 						<right>50</right>
 						<height>30</height>
 						<aligny>center</aligny>
-						<label>$INFO[ListItem.Property(stream.codec)]$INFO[ListItem.Property(stream.hdrtype),$COMMA ]$INFO[ListItem.Property(stream.resolution),$COMMA ]$VAR[StreamBitrateVar,$COMMA , kbps]$INFO[ListItem.Property(stream.fps),$COMMA , fps]$VAR[VideoStreamDialogItemLabelVar, - [LIGHT],[/LIGHT]]</label>
+						<label>$VAR[VideoCodecVar]$VAR[VideoHDRTypeVar, | ]$INFO[ListItem.Property(stream.resolution), | ]$VAR[StreamBitrateVar, | , kbps]$INFO[ListItem.Property(stream.fps), | , fps]$VAR[VideoStreamDialogItemLabelVar, - [LIGHT],[/LIGHT]]</label>
 					</control>
 					<control type="label">
 						<left>50</left>
@@ -333,7 +333,7 @@
 						<height>30</height>
 						<aligny>center</aligny>
 						<scroll>true</scroll>
-						<label>$INFO[ListItem.Property(stream.codec)]$INFO[ListItem.Property(stream.hdrtype),$COMMA ]$INFO[ListItem.Property(stream.resolution),$COMMA ]$VAR[StreamBitrateVar,$COMMA , kbps]$INFO[ListItem.Property(stream.fps),$COMMA , fps]$VAR[VideoStreamDialogItemLabelVar, - [LIGHT],[/LIGHT]]</label>
+						<label>$VAR[VideoCodecVar]$VAR[VideoHDRTypeVar, | ]$INFO[ListItem.Property(stream.resolution), | ]$VAR[StreamBitrateVar, | , kbps]$INFO[ListItem.Property(stream.fps), | , fps]$VAR[VideoStreamDialogItemLabelVar, - [LIGHT],[/LIGHT]]</label>
 					</control>
 					<control type="label">
 						<left>50</left>
@@ -359,7 +359,7 @@
 				</focusedlayout>
 			</control>
 			<control type="scrollbar" id="61">
-				<left>960</left>
+				<left>950</left>
 				<top>100</top>
 				<width>12</width>
 				<bottom>20</bottom>
@@ -404,7 +404,7 @@
 	Available ListItem audio stream properties:
 	stream.description, stream.codec, stream.codecdesc, stream.channels,
 	stream.isdefault, stream.isforced, stream.isoriginal, stream.ishearingimpaired, stream.isvisualimpaired
-	-->
+	-->
 		<control type="group">
 			<centertop>50%</centertop>
 			<centerleft>50%</centerleft>
@@ -461,7 +461,7 @@
 						<texture>icons/menumarks/tick.png</texture>
 						<visible>ListItem.IsSelected</visible>
 					</control>
--					<control type="label">
+					<control type="label">
 						<left>50</left>
 						<top>5</top>
 						<right>50</right>
@@ -476,7 +476,7 @@
 						<height>20</height>
 						<font>font10</font>
 						<aligny>center</aligny>
-						<label>$INFO[ListItem.Property(stream.codecdesc)]$INFO[ListItem.Property(stream.channels), - , $LOCALIZE[31612]]$INFO[ListItem.Property(stream.description), - ]</label>
+						<label>$VAR[StreamCodecVar]$VAR[AudioChannelsVar, ]$INFO[ListItem.Property(stream.description), | ]</label>
 						<textcolor>grey</textcolor>
 					</control>
 					<control type="image">
@@ -526,7 +526,7 @@
 						<font>font10</font>
 						<aligny>center</aligny>
 						<scroll>true</scroll>
-						<label>$INFO[ListItem.Property(stream.codecdesc)]$INFO[ListItem.Property(stream.channels), - , $LOCALIZE[31612]]$INFO[ListItem.Property(stream.description), - ]</label>
+						<label>$VAR[StreamCodecVar]$VAR[AudioChannelsVar, ]$INFO[ListItem.Property(stream.description), | ]</label>
 					</control>
 					<control type="image">
 						<right>10</right>
@@ -541,7 +541,7 @@
 				</focusedlayout>
 			</control>
 			<control type="scrollbar" id="61">
-				<left>960</left>
+				<left>950</left>
 				<top>100</top>
 				<width>12</width>
 				<bottom>20</bottom>
@@ -586,7 +586,7 @@
 	Available ListItem subtitle stream properties:
 	stream.description, stream.codec, stream.isdefault, stream.isforced, stream.isoriginal,
 	stream.ishearingimpaired, stream.isvisualimpaired, stream.isexternal
-	-->
+	-->
 		<control type="group">
 			<centertop>50%</centertop>
 			<centerleft>50%</centerleft>
@@ -723,7 +723,7 @@
 				</focusedlayout>
 			</control>
 			<control type="scrollbar" id="61">
-				<left>910</left>
+				<left>900</left>
 				<top>100</top>
 				<width>12</width>
 				<bottom>20</bottom>
@@ -1272,9 +1272,9 @@
 			<centertop>50%</centertop>
 			<centerleft>50%</centerleft>
 			<height>750</height>
-			<width>1640</width>
+			<width>1760</width>
 			<include content="DialogBackgroundCommons">
-				<param name="width" value="1640" />
+				<param name="width" value="1760" />
 				<param name="height" value="750" />
 				<param name="header_id" value="1" />
 			</include>
@@ -1289,7 +1289,7 @@
 			<control type="image">
 				<left>420</left>
 				<top>80</top>
-				<width>920</width>
+				<width>1040</width>
 				<height>665</height>
 				<texture border="40">buttons/dialogbutton-nofo.png</texture>
 			</control>
@@ -1298,7 +1298,7 @@
 			<control type="list" id="6">
 				<left>440</left>
 				<top>100</top>
-				<width>920</width>
+				<width>1040</width>
 				<height>625</height>
 				<onup>6</onup>
 				<ondown>6</ondown>
@@ -1309,7 +1309,7 @@
 				<include>MediaInfoListLayout</include>
 			</control>
 			<control type="scrollbar" id="61">
-				<left>1320</left>
+				<left>1440</left>
 				<top>100</top>
 				<width>12</width>
 				<bottom>20</bottom>
@@ -1318,7 +1318,7 @@
 				<orientation>vertical</orientation>
 			</control>
 			<control type="grouplist" id="9001">
-				<left>1340</left>
+				<left>1460</left>
 				<top>80</top>
 				<onleft>61</onleft>
 				<itemgap>dialogbuttons_itemgap</itemgap>

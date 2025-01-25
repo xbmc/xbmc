@@ -3,25 +3,74 @@
 	<include name="SettingsDialogOSDVisible">
 		<visible>!Window.IsActive(DialogSettings.xml) + !Window.IsActive(DialogSlider.xml) + !Window.IsActive(GameVideoFilter) + !Window.IsActive(GameStretchMode) + !Window.IsActive(GameControllers) + !Window.IsActive(GameVideoRotation)</visible>
 	</include>
+	<include name="SettingsDialogLayout">
+		<param name="height">700</param>
+		<param name="width">700</param>
+		<definition>
+			<control type="group">
+				<centerleft>50%</centerleft>
+				<height>$PARAM[height]</height>
+				<centertop>50%</centertop>
+				<width>$PARAM[width]</width>
+				<include condition="String.IsEqual(window(home).Property(settingsdialog_content),osd) | String.IsEqual(window(home).Property(settingsdialog_content),3d) | String.IsEqual(window(home).Property(settingsdialog_content),games)">SettingsDialogOSDVisible</include>
+				<animation effect="fade" time="200">VisibleChange</animation>
+				<include content="DialogBackgroundCommons">
+					<param name="width" value="$PARAM[width]" />
+					<param name="height" value="80" />
+					<param name="header_label" value="$INFO[Window(home).Property(settingsdialog_header)]" />
+					<param name="header_id" value="1" />
+				</include>
+				<control type="group" id="11000">
+					<left>0</left>
+					<top>80</top>
+					<control type="grouplist" id="11100">
+						<width>$PARAM[width]</width>
+						<height>$PARAM[height]</height>
+						<itemgap>0</itemgap>
+						<onup>11100</onup>
+						<ondown>11100</ondown>
+						<orientation>vertical</orientation>
+						<include condition="String.IsEqual(window(home).Property(settingsdialog_content),streamselection)">SettingsDialogStreamSelectionContent</include>
+						<include condition="String.IsEqual(window(home).Property(settingsdialog_content),videosettings)">SettingsDialogVideoSettingsContent</include>
+						<include condition="String.IsEqual(window(home).Property(settingsdialog_content),3d)">SettingsDialog3DContent</include>
+						<include condition="String.IsEqual(window(home).Property(settingsdialog_content),games)">SettingsDialogGameContent</include>
+						<include condition="String.IsEqual(window(home).Property(settingsdialog_content),musicsettings)">SettingsDialogMusicSettingsContent</include>
+						<include condition="String.IsEqual(window(home).Property(settingsdialog_content),moviewidgets)">SettingsDialogMovieWidgetsContent</include>
+						<include condition="String.IsEqual(window(home).Property(settingsdialog_content),tvshowwidgets)">SettingsDialogTVShowWidgetsContent</include>
+						<include condition="String.IsEqual(window(home).Property(settingsdialog_content),musicwidgets)">SettingsDialogMusicWidgetsContent</include>
+						<include condition="String.IsEqual(window(home).Property(settingsdialog_content),musicvideowidgets)">SettingsDialogMusicVideoWidgetsContent</include>
+						<include condition="String.IsEqual(window(home).Property(settingsdialog_content),tvwidgets)">SettingsDialogTVWidgetsContent</include>
+						<include condition="String.IsEqual(window(home).Property(settingsdialog_content),radiowidgets)">SettingsDialogRadioWidgetsContent</include>
+					</control>
+				</control>
+			</control>
+		</definition>
+	</include>
 	<include name="SettingsDialogStreamSelectionContent">
 		<control type="button" id="22106">
-			<include>DialogSettingButton</include>
+			<include content="DialogSettingButton">
+				<param name="width" value="1000" />
+			</include>
 			<label>$LOCALIZE[31115]</label>
-			<label2>$VAR[ActiveVideoPlayerSubtitleLanguage]</label2>
+			<label2>[B]$VAR[ActiveVideoPlayerSubtitleLanguage][/B]</label2>
 			<onclick>DialogSelectSubtitle</onclick>
 			<enable>VideoPlayer.HasSubtitles</enable>
 		</control>
 		<control type="button" id="22105">
-			<include>DialogSettingButton</include>
+			<include content="DialogSettingButton">
+				<param name="width" value="1000" />
+			</include>
 			<label>$LOCALIZE[31112]</label>
-			<label2>[B]$VAR[ActiveVideoPlayerAudioLanguage]$VAR[AudioCodecVar, - ]$VAR[AudioChannelsVar, ][/B]</label2>
+			<label2>[B]$VAR[ActiveVideoPlayerAudioLanguage]$VAR[AudioCodecVar, | ]$VAR[ObjectAudioTypeVar, / ]$VAR[AudioChannelsVar, ][/B]</label2>
 			<onclick>DialogSelectAudio</onclick>
 			<enable>Integer.IsGreater(VideoPlayer.AudioStreamCount,1)</enable>
 		</control>
 		<control type="button" id="22110">
-			<include>DialogSettingButton</include>
+			<include content="DialogSettingButton">
+				<param name="width" value="1000" />
+			</include>
 			<label>$LOCALIZE[31109]</label>
-			<label2>[B]$INFO[VideoCodecVar]$INFO[Player.Process(videowidth), - ]$INFO[Player.Process(videoheight),x]$INFO[Player.Process(videoscantype)][/B]</label2>
+			<label2>[B]$VAR[VideoCodecVar]$VAR[VideoHDRTypeVar, | ]$INFO[VideoPlayer.VideoResolution, | ]$VAR[VideoResolutionTypeVar, ][/B]</label2>
 			<onclick>DialogSelectVideo</onclick>
 			<enable>Integer.IsGreater(VideoPlayer.VideoStreamCount,1)</enable>
 		</control>
