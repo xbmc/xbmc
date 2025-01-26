@@ -166,6 +166,15 @@ constexpr auto xkbMap = make_map<xkb_keysym_t, XBMCKey>({
     {XKB_KEY_XF86AudioPlay, XBMCK_PLAY},
     {XKB_KEY_XF86AudioRandomPlay, XBMCK_SHUFFLE}
     // XBMCK_FASTFORWARD clashes with XBMCK_MEDIA_FASTFORWARD
+    // Kodi does not have XBMCK_ constants for these media keys:
+    // {XKB_KEY_XF86CycleAngle, XBMCK_UNKNOWN},
+    // {XKB_KEY_XF86FullScreen, XBMCK_UNKNOWN},
+    // {XKB_KEY_XF86AspectRatio, XBMCK_UNKNOWN},
+    // {XKB_KEY_XF86DVD, XBMCK_UNKNOWN},
+    // {XKB_KEY_XF86Audio, XBMCK_UNKNOWN},
+    // {XKB_KEY_XF86Video, XBMCK_UNKNOWN},
+    // {XKB_KEY_XF86AudioRandomPlay, XBMCK_UNKNOWN},
+    // {XKB_KEY_XF86Fn, XBMCK_UNKNOWN},
 });
 
 constexpr auto logLevelMap = make_map<xkb_log_level, int>({{XKB_LOG_LEVEL_CRITICAL, LOGERROR},
