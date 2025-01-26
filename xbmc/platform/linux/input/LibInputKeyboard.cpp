@@ -142,6 +142,18 @@ constexpr auto xkbMap = make_map<xkb_keysym_t, XBMCKey>({
     {XKB_KEY_XF86HomePage, XBMCK_HOMEPAGE},
     // Unmapped: XBMCK_CONFIG, XBMCK_EPG
 
+    // Numeric keys on remote controls
+    {XKB_KEY_XF86Numeric0, XBMCK_0},
+    {XKB_KEY_XF86Numeric1, XBMCK_1},
+    {XKB_KEY_XF86Numeric2, XBMCK_2},
+    {XKB_KEY_XF86Numeric3, XBMCK_3},
+    {XKB_KEY_XF86Numeric4, XBMCK_4},
+    {XKB_KEY_XF86Numeric5, XBMCK_5},
+    {XKB_KEY_XF86Numeric6, XBMCK_6},
+    {XKB_KEY_XF86Numeric7, XBMCK_7},
+    {XKB_KEY_XF86Numeric8, XBMCK_8},
+    {XKB_KEY_XF86Numeric9, XBMCK_9},
+
     // Media keys
     {XKB_KEY_XF86Info, XBMCK_INFO},
     {XKB_KEY_XF86Eject, XBMCK_EJECT},
