@@ -288,6 +288,8 @@ enum XBMCKey
   XBMCK_SUBTITLE = 500,
   XBMCK_OK = 501,
   XBMCK_LANGUAGE = 502,
+  XBMCK_CHANNEL_UP = 503,
+  XBMCK_CHANNEL_DOWN = 504,
 
   /*
    * Extended keypad key symbols for Num Lock state-specific behaviors

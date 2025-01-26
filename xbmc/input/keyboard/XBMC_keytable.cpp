@@ -195,7 +195,9 @@ static const XBMCKEYTABLE XBMCKeyTable[] = {
     ,
     {XBMCK_SUBTITLE, 0, 0, XBMCVK_SUBTITLE, "subtitle"},
     {XBMCK_OK, 0, 0, XBMCVK_OK, "ok"},
-    {XBMCK_LANGUAGE, 0, 0, XBMCVK_LANGUAGE, "language"}
+    {XBMCK_LANGUAGE, 0, 0, XBMCVK_LANGUAGE, "language"},
+    {XBMCK_CHANNEL_UP, 0, 0, XBMCVK_CHANNEL_UP, "channel_up"},
+    {XBMCK_CHANNEL_DOWN, 0, 0, XBMCVK_CHANNEL_DOWN, "channel_down"}
 
     // Function keys
     ,

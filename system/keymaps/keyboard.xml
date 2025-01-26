@@ -39,6 +39,8 @@
       <right mod="ctrl">analogseekforward</right>
       <pageup>PageUp</pageup>
       <pagedown>PageDown</pagedown>
+      <channel_up>PageUp</channel_up>
+      <channel_down>PageDown</channel_down>
       <return>Select</return>
       <return mod="longpress">ContextMenu</return>
       <return mod="ctrl">Enter</return>
@@ -403,6 +405,8 @@
       <down mod="ctrl">SubtitleShiftDown</down>
       <pageup>SkipNext</pageup>
       <pagedown>SkipPrevious</pagedown>
+      <channel_up>SkipNext</channel_up>
+      <channel_down>SkipPrevious</channel_down>
       <plus mod="ctrl">VolAmpUp</plus>
       <equals mod="ctrl">VolAmpUp</equals>
       <minus mod="ctrl">VolAmpDown</minus>
@@ -613,6 +617,8 @@
       <ok>Select</ok>
       <pageup>SkipNext</pageup>
       <pagedown>SkipPrevious</pagedown>
+      <channel_up>SkipNext</channel_up>
+      <channel_down>SkipPrevious</channel_down>
     </keyboard>
   </VideoMenu>
   <OSDVideoSettings>
@@ -725,6 +731,8 @@
       <ok mod="longpress">ActivateWindow(PVROSDChannels)</ok>
       <pageup>ChannelUp</pageup>
       <pagedown>ChannelDown</pagedown>
+      <channel_up>ChannelUp</channel_up>
+      <channel_down>ChannelDown</channel_down>
       <period mod="longpress">ChannelNumberSeparator</period>
       <numpadperiod>ChannelNumberSeparator</numpadperiod>
     </keyboard>
@@ -745,6 +753,8 @@
       <ok mod="longpress">ActivateWindow(PVROSDChannels)</ok>
       <pageup>ChannelUp</pageup>
       <pagedown>ChannelDown</pagedown>
+      <channel_up>ChannelUp</channel_up>
+      <channel_down>ChannelDown</channel_down>
       <period mod="longpress">ChannelNumberSeparator</period>
       <numpadperiod>ChannelNumberSeparator</numpadperiod>
     </keyboard>

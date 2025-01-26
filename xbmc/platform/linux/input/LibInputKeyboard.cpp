@@ -160,6 +160,8 @@ constexpr auto xkbMap = make_map<xkb_keysym_t, XBMCKey>({
     {XKB_KEY_XF86MediaSelectProgramGuide, XBMCK_EPG},
     {XKB_KEY_XF86MediaLanguageMenu, XBMCK_LANGUAGE},
     {XKB_KEY_XF86Subtitle, XBMCK_SUBTITLE},
+    {XKB_KEY_XF86ChannelUp, XBMCK_CHANNEL_UP},
+    {XKB_KEY_XF86ChannelDown, XBMCK_CHANNEL_DOWN},
     {XKB_KEY_XF86Eject, XBMCK_EJECT},
     {XKB_KEY_Cancel, XBMCK_STOP},
     {XKB_KEY_XF86AudioRecord, XBMCK_RECORD},
