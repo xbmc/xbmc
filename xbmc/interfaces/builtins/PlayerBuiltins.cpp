@@ -643,7 +643,18 @@ int PlayOrQueueMedia(const std::vector<std::string>& params,
 
   if (forcePlay)
   {
-    CPlayerUtils::PlayMedia(std::make_shared<CFileItem>(item), "", GetPlayListId(item));
+    if ((MUSIC::IsAudio(item) || VIDEO::IsVideo(item)) && !PLAYLIST::IsSmartPlayList(item) &&
+        !item.IsPVR())
+    {
+      if (!item.HasProperty("playlist_type_hint"))
+        item.SetProperty("playlist_type_hint", static_cast<int>(GetPlayListId(item)));
+
+      CServiceBroker::GetPlaylistPlayer().Play(std::make_shared<CFileItem>(item), "");
+    }
+    else
+    {
+      g_application.PlayMedia(item, "", GetPlayListId(item));
+    }
   }
   else
   {
