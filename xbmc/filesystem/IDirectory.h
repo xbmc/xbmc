@@ -141,7 +141,7 @@ public:
   \param item The item being manipulated (which the path points to a vfs protocol implementation)
   \return true if the item was resolved, false if it failed to resolve
   */
-  virtual bool Resolve(CFileItem& item) const { return true; };
+  virtual bool Resolve(CFileItem& item) const { return true; }
 
 protected:
   /*! \brief Prompt the user for some keyboard input

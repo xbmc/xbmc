@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_general.h"
 #include "pvr/PVRConstants.h" // PVR_CLIENT_INVALID_UID
 #include "threads/CriticalSection.h"
 #include "utils/ContentUtils.h"
@@ -52,6 +51,14 @@ public:
   void ReInit();
 
   /*!
+   * @brief Inform that playback of an item is going to happen.
+   * Add any info to the item that is needed for playback, e.g. add dyn path and properties
+   * @param item The item that shall be played.
+   * @return True on success, false otherwise.
+   */
+  bool OnPreparePlayback(CFileItem& item);
+
+  /*!
    * @brief Inform that playback of an item just started.
    * @param item The item that started to play.
    */
@@ -76,9 +83,7 @@ public:
    * @param item containing a channel, a recording or an epg tag.
    * @param mode playback mode.
    */
-  void StartPlayback(std::unique_ptr<CFileItem>& item,
-                     ContentUtils::PlayMode mode,
-                     PVR_SOURCE source) const;
+  void StartPlayback(std::unique_ptr<CFileItem>& item, ContentUtils::PlayMode mode) const;
 
   /*!
    * @brief Check if a TV channel, radio channel or recording is playing.

@@ -58,6 +58,13 @@ public:
   bool SupportsWriteFileOperations() const;
 
   /*!
+   * @brief Resolves a given item to a playable item
+   * @param item The item being manipulated (which the path points to a vfs protocol implementation)
+   * @return True if the item was resolved, false if it failed to resolve
+  */
+  static bool Resolve(CFileItem& item);
+
+  /*!
    * @brief Check if any TV recordings are existing.
    * @return True if TV recordings exists, false otherwise.
    */

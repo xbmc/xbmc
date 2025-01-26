@@ -23,6 +23,11 @@ bool CPVRDirectory::Exists(const CURL& url)
   return dir.Exists();
 }
 
+bool CPVRDirectory::Resolve(CFileItem& item) const
+{
+  return CPVRGUIDirectory::Resolve(item);
+}
+
 bool CPVRDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   const CPVRGUIDirectory dir(url);
