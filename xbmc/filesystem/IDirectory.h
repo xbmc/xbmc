@@ -12,6 +12,25 @@
 
 #include <string>
 
+struct PlaylistInformation
+{
+  unsigned int duration{0};
+  std::vector<unsigned int> clips;
+  std::string languages;
+};
+
+struct ClipInformation
+{
+  unsigned int duration{0};
+  std::vector<unsigned int> playlists;
+};
+
+typedef std::map<unsigned int, PlaylistInformation> PlaylistMap;
+typedef std::pair<unsigned int, PlaylistInformation> PlaylistMapEntry;
+typedef std::vector<std::pair<unsigned int, PlaylistInformation>> PlaylistVector;
+typedef std::pair<unsigned int, PlaylistInformation> PlaylistVectorEntry;
+typedef std::map<unsigned int, ClipInformation> ClipMap;
+
 class CFileItemList;
 class CProfileManager;
 class CURL;
@@ -47,6 +66,20 @@ enum DIR_FLAG
   DIR_FLAG_BYPASS_CACHE =
       (2 << 5) ///< Completely bypass the directory cache (no reading, no writing)
 };
+
+enum GET_TITLES_JOB
+{
+  GET_TITLES_ONE = 0,
+  GET_TITLES_MAIN = 1,
+  GET_TITLES_ALL = 2
+};
+enum SORT_TITLES_JOB
+{
+  SORT_TITLES_NONE = 0,
+  SORT_TITLES_EPISODE = 1,
+  SORT_TITLES_MOVIE = 2
+};
+
 /*!
  \ingroup filesystem
  \brief Interface to the directory on a file system.

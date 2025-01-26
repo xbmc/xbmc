@@ -14516,7 +14516,13 @@ msgctxt "#21347"
 msgid "MIME type: \"{0:s}\""
 msgstr ""
 
-#empty strings from id 21348 to 21357
+#. Used to show Special in episode list
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#21348"
+msgid "Special"
+msgstr ""
+
+#empty strings from id 21349 to 21357
 
 #: system/settings/settings.xml
 msgctxt "#21358"
