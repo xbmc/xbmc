@@ -19,9 +19,11 @@
 
 #include <algorithm>
 #include <array>
+#include <iomanip>
 #include <iterator>
 #include <ranges>
 #include <set>
+#include <sstream>
 #include <tuple>
 
 bool CDiscDirectoryHelper::GetEpisodePlaylists(const CURL& url,
@@ -626,16 +628,12 @@ void CDiscDirectoryHelper::AddRootOptions(const CURL& url, CFileItemList& items,
   }
 }
 
-std::string CDiscDirectoryHelper::HexToString(const uint8_t* buf, int count)
+std::string CDiscDirectoryHelper::HexToString(std::span<const uint8_t> buf, int count)
 {
-  std::array<char, 42> tmp;
-
-  for (int i = 0; i < count; i++)
-  {
-    sprintf(tmp.data() + (i * 2), "%02x", buf[i]);
-  }
-
-  return std::string(std::begin(tmp), std::end(tmp));
+  std::stringstream ss;
+  ss << std::hex << std::setw(count) << std::setfill('0');
+  std::ranges::for_each(buf, [&](auto x) { ss << static_cast<int>(x); });
+  return ss.str();
 }
 
 std::string CDiscDirectoryHelper::GetEpisodesLabel(CFileItem& newItem, const CFileItem& item)
