@@ -12,6 +12,7 @@
 
 #include <map>
 #include <memory>
+#include <span>
 #include <string>
 #include <utility>
 #include <vector>
@@ -77,5 +78,5 @@ public:
   static std::vector<CVideoInfoTag> GetEpisodesOnDisc(const CURL& url);
   static std::string GetEpisodesLabel(CFileItem& newItem, const CFileItem& item);
 
-  static std::string HexToString(const uint8_t* buf, int count);
+  static std::string HexToString(std::span<const uint8_t> buf, int count);
 };
