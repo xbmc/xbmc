@@ -437,6 +437,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
       case LISTITEM_PARENTAL_RATING_ICON:
       case LISTITEM_PARENTAL_RATING_SOURCE:
       case LISTITEM_MEDIAPROVIDERS:
+      case LISTITEM_TITLE_EXTRAINFO:
         break; // obtain value from channel/epg
       default:
         return false;
