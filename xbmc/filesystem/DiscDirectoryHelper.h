@@ -10,6 +10,7 @@
 
 #include "IDirectory.h"
 
+#include <span>
 #include <string>
 #include <vector>
 
@@ -40,7 +41,7 @@ public:
                            bool isSpecial = false);
   static void AddRootOptions(CURL url, CFileItemList& items, bool addMenuOption);
 
-  static std::string HexToString(const uint8_t* buf, int count);
+  static std::string HexToString(std::span<const uint8_t> buf, int count);
 
   static std::string GetEpisodesLabel(CFileItem& newItem, const CFileItem& item);
 };
