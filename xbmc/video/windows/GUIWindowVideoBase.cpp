@@ -778,21 +778,6 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
   {
     if (!item->IsParentFolder())
     {
-      std::string path(item->GetPath());
-      if (VIDEO::IsVideoDb(*item) && item->HasVideoInfoTag())
-        path = item->GetVideoInfoTag()->m_strFileNameAndPath;
-
-      if (!item->IsPath("add") && !item->IsPlugin() &&
-          !item->IsScript() && !item->IsAddonsPath() && !item->IsLiveTV())
-      {
-        if (URIUtils::IsStack(path))
-        {
-          std::vector<uint64_t> times;
-          if (m_database.GetStackTimes(path, times) || URIUtils::IsDiscImageStack(path))
-            buttons.Add(CONTEXT_BUTTON_PLAY_PART, 20324);
-        }
-      }
-
       if (PLAYLIST::IsSmartPlayList(*item))
       {
         buttons.Add(CONTEXT_BUTTON_PLAY_PARTYMODE, 15216); // Play in Partymode
@@ -832,13 +817,6 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       OnAssignContent(item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strPath.empty() ? item->GetVideoInfoTag()->m_strPath : item->GetPath());
       return true;
     }
-  case CONTEXT_BUTTON_PLAY_PART:
-    {
-      CVideoPlayActionProcessor proc{*this, m_vecItems->Get(itemNumber), ""};
-      proc.SetChooseStackPart();
-      return proc.ProcessDefaultAction();
-    }
-
   case CONTEXT_BUTTON_PLAY_PARTYMODE:
     g_partyModeManager.Enable(PartyModeContext::VIDEO, m_vecItems->Get(itemNumber)->GetPath());
     return true;

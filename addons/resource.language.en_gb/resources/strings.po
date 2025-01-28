@@ -13642,7 +13642,7 @@ msgstr ""
 
 #. Label for context menu entry to start playback of a part of a video stack
 #: xbmc/video/guilib/VideoPlayActionProcessor.cpp
-#: xbmc/video/windows/GUIWindowVideoBase.cpp
+#: xbmc/video/ContextMenus.h
 msgctxt "#20324"
 msgid "Play part..."
 msgstr ""
