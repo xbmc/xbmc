@@ -15,12 +15,6 @@
 class CApplicationPlayer;
 class CFileItem;
 
-namespace KODI::PLAYLIST
-{
-enum class Id;
-
-} // namespace KODI::PLAYLIST
-
 enum class TempoStepChange
 {
   INCREASE,
@@ -43,19 +37,8 @@ public:
 
   /*!
    \brief Check whether multiple players are available for the given item.
-   \param item The item
+   \param item The ite.
    \return True if multiple players are available, false otherwise
    */
   static bool HasItemMultiplePlayers(const CFileItem& item);
-
-  /*!
-   \brief Play the media represented by the given item.
-   \param item The item
-   \param player The player to use or empty string for default player
-   \param playlistId The id of the playlist to add the item to.
-   \return True on success, false otherwise
-   */
-  static bool PlayMedia(const std::shared_ptr<CFileItem>& item,
-                        const std::string& player,
-                        KODI::PLAYLIST::Id playlistId);
 };

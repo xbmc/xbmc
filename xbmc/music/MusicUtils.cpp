@@ -42,7 +42,6 @@
 #include "threads/IRunnable.h"
 #include "utils/FileUtils.h"
 #include "utils/JobManager.h"
-#include "utils/PlayerUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -764,7 +763,10 @@ void PlayItem(const std::shared_ptr<CFileItem>& itemIn,
     else // mode == PlayMode::PLAY_ONLY_THIS
     {
       // song, so just play it
-      CPlayerUtils::PlayMedia(item, player, PLAYLIST::Id::TYPE_NONE);
+      auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
+      playlistPlayer.Reset();
+      playlistPlayer.SetCurrentPlaylist(PLAYLIST::Id::TYPE_NONE);
+      playlistPlayer.Play(item, player);
     }
   }
 }

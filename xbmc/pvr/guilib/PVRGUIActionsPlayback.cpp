@@ -23,8 +23,6 @@
 #include "pvr/PVRItem.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
-#include "pvr/PVRStreamProperties.h"
-#include "pvr/addons/PVRClient.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroup.h"
 #include "pvr/channels/PVRChannelGroupMember.h"
@@ -121,10 +119,10 @@ bool CPVRGUIActionsPlayback::PlayRecording(const CFileItem& item) const
   }
   else
   {
-    std::unique_ptr<CFileItem> itemToPlay{std::make_unique<CFileItem>(recording)};
+    auto itemToPlay{std::make_unique<CFileItem>(recording)};
     itemToPlay->SetStartOffset(item.GetStartOffset());
     CServiceBroker::GetPVRManager().PlaybackState()->StartPlayback(
-        itemToPlay, ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM, PVR_SOURCE::DEFAULT);
+        itemToPlay, ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM);
   }
 
   CheckAndSwitchToFullscreen(true);
@@ -147,38 +145,8 @@ bool CPVRGUIActionsPlayback::PlayEpgTag(
     return true;
   }
 
-  // Obtain dynamic playback url and properties from the respective pvr client
-  const std::shared_ptr<const CPVRClient> client =
-      CServiceBroker::GetPVRManager().GetClient(epgTag->ClientID());
-  if (!client)
-    return false;
-
-  CPVRStreamProperties props;
-  PVR_ERROR retVal = client->StreamClosed();
-  if (retVal != PVR_ERROR_NO_ERROR)
-    CLog::LogFC(LOGERROR, LOGPVR, "Client error on call to StreamClosed(): {}",
-                CPVRClient::ToString(retVal));
-
-  client->GetEpgTagStreamProperties(epgTag, props);
-
-  std::unique_ptr<CFileItem> itemToPlay;
-  PVR_SOURCE source = DEFAULT;
-  if (props.EPGPlaybackAsLive())
-  {
-    const std::shared_ptr<CPVRChannelGroupMember> groupMember =
-        CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().GetChannelGroupMember(item);
-    if (!groupMember)
-      return false;
-
-    source = PVR_SOURCE_EPG_AS_LIVE;
-    itemToPlay = std::make_unique<CFileItem>(groupMember);
-  }
-  else
-  {
-    itemToPlay = std::make_unique<CFileItem>(epgTag);
-  }
-
-  CServiceBroker::GetPVRManager().PlaybackState()->StartPlayback(itemToPlay, mode, source);
+  auto itemToPlay{std::make_unique<CFileItem>(epgTag)};
+  CServiceBroker::GetPVRManager().PlaybackState()->StartPlayback(itemToPlay, mode);
   CheckAndSwitchToFullscreen(true);
   return true;
 }
@@ -264,9 +232,9 @@ bool CPVRGUIActionsPlayback::SwitchToChannel(const CFileItem& item) const
     if (!groupMember)
       return false;
 
-    std::unique_ptr<CFileItem> itemToPlay{std::make_unique<CFileItem>(groupMember)};
+    auto itemToPlay{std::make_unique<CFileItem>(groupMember)};
     CServiceBroker::GetPVRManager().PlaybackState()->StartPlayback(
-        itemToPlay, ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM, PVR_SOURCE::DEFAULT);
+        itemToPlay, ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM);
     CheckAndSwitchToFullscreen(bFullscreen);
     return true;
   }

@@ -36,7 +36,6 @@
 #include "settings/SettingsComponent.h"
 #include "threads/IRunnable.h"
 #include "utils/FileUtils.h"
-#include "utils/PlayerUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -440,7 +439,10 @@ void PlayItem(
     else // mode == PlayMode::PLAY_ONLY_THIS
     {
       // single item, play it
-      CPlayerUtils::PlayMedia(item, player, PLAYLIST::Id::TYPE_NONE);
+      auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
+      playlistPlayer.Reset();
+      playlistPlayer.SetCurrentPlaylist(PLAYLIST::Id::TYPE_NONE);
+      playlistPlayer.Play(item, player);
     }
   }
 }

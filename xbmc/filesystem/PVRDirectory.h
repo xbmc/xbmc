@@ -23,6 +23,7 @@ public:
   bool AllowAll() const override { return true; }
   CacheType GetCacheType(const CURL& url) const override { return CacheType::NEVER; }
   bool Exists(const CURL& url) override;
+  bool Resolve(CFileItem& item) const override;
 
   static bool SupportsWriteFileOperations(const std::string& strPath);
 
