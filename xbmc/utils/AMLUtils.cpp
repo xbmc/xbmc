@@ -555,12 +555,18 @@ void aml_dv_off()
 {
   // change mode and disable.
   CSysfsPath dolby_vision_mode{"/sys/module/amdolby_vision/parameters/dolby_vision_mode"};
-  bool modeChange(dolby_vision_mode.Get<unsigned int>().value() != DOLBY_VISION_OUTPUT_MODE_BYPASS);
-  CLog::Log(LOGINFO, "AMLUtils::{} - mode change [{}]", __FUNCTION__, modeChange);
+  unsigned int existing_mode = dolby_vision_mode.Get<unsigned int>().value();
+  bool modeChange(existing_mode != DOLBY_VISION_OUTPUT_MODE_BYPASS);
+  
+  CLog::Log(LOGINFO, "AMLUtils::{} - mode change [{}], existing mode [{}], this mode [{}]", 
+    __FUNCTION__, modeChange,
+    aml_dv_output_mode_to_string(existing_mode), 
+    aml_dv_output_mode_to_string(DOLBY_VISION_OUTPUT_MODE_BYPASS));
 
   // First allow system to reset to follow source, then turn off DV.
   CSysfsPath("/sys/module/amdolby_vision/parameters/dolby_vision_policy", DOLBY_VISION_FOLLOW_SOURCE);
-  if (modeChange) aml_dv_toggle_frame(DOLBY_VISION_OUTPUT_MODE_BYPASS);
+  if ((modeChange) && (existing_mode == DOLBY_VISION_OUTPUT_MODE_IPT_TUNNEL)) 
+     aml_dv_toggle_frame(DOLBY_VISION_OUTPUT_MODE_BYPASS);
   CSysfsPath("/sys/module/amdolby_vision/parameters/dolby_vision_enable", "N");
   
   // Finally reset back to bypass for consistency.
