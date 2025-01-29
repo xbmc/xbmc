@@ -639,6 +639,11 @@ void aml_dv_start()
   }
 }
 
+void aml_dv_set_subtitles(bool visible) {
+
+  CSysfsPath("/sys/module/amdolby_vision/parameters/dolby_vision_subtitles", visible ? 1 : 0);
+}
+
 enum DV_MODE aml_dv_mode()
 {
   return static_cast<DV_MODE>(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_MODE));
