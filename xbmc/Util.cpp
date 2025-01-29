@@ -1241,6 +1241,10 @@ int CUtil::GetMatchingSource(const std::string& strPath1,
   if (checkURL.IsProtocol("stack"))
     strPath.erase(0, 8); // remove the stack protocol
 
+  // bluray://
+  if (checkURL.IsProtocol("bluray"))
+    strPath = URIUtils::GetDiscBase(checkURL.Get()); // get the actual path on disc
+
   if (checkURL.IsProtocol("shout"))
     strPath = checkURL.GetHostName();
 
