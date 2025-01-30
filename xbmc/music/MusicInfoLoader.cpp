@@ -15,6 +15,7 @@
 #include "MusicDatabase.h"
 #include "MusicThumbLoader.h"
 #include "ServiceBroker.h"
+#include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
 #include "filesystem/MusicDatabaseDirectory/QueryParams.h"
@@ -29,6 +30,8 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+
+#include <ranges>
 
 using namespace KODI;
 using namespace MUSIC_INFO;
@@ -214,6 +217,37 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
         pItem->GetMusicInfoTag()->SetSong(it->second[0]);
         if (!it->second[0].strThumb.empty())
           pItem->SetArt("thumb", it->second[0].strThumb);
+      }
+      else if (it != m_songsMap.end() && it->second.size() > 1 &&
+               pItem->HasProperty("cueloadinformation") &&
+               pItem->GetProperty("cueloadinformation").asBoolean())
+      {
+        // Part of cuesheet - so need to reference songs by their musicdb:// path
+        // Get album ID
+        const int idAlbum{it->second[0].idAlbum};
+
+        // Generate musicdb:// URL
+        CURL musicDbURL;
+        musicDbURL.SetProtocol("musicdb");
+        musicDbURL.SetFileName(URIUtils::AddFileToFolder("albums", std::to_string(idAlbum)));
+
+        // Get all the songs in the album - with musicdb:// paths
+        CFileItemList dbItems;
+        if (CDirectory::GetDirectory(musicDbURL, dbItems, "", DIR_FLAG_DEFAULTS))
+        {
+          // Find correct song based on file and offsets
+          const auto& it2 =
+              std::ranges::find_if(dbItems,
+                                   [&pItem](const auto& songItem)
+                                   {
+                                     return songItem->GetDynPath() == pItem->GetPath() &&
+                                            songItem->GetStartOffset() == pItem->GetStartOffset() &&
+                                            songItem->GetEndOffset() == pItem->GetEndOffset();
+                                   });
+          if (it2 != dbItems.end())
+            *pItem =
+                **it2; // Replace CFileItem (as also has MusicInfoTag() populated along with correct paths)
+        }
       }
       else if (MUSIC::IsMusicDb(*pItem))
       { // a music db item that doesn't have tag loaded - grab details from the database
