@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017-2018 Team Kodi
+ *  Copyright (C) 2017-2025 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "RPRendererOpenGLES.h"
+#include "RPRendererOpenGL.h"
 
 #include <memory>
 
@@ -16,10 +16,10 @@ namespace KODI
 {
 namespace RETRO
 {
-class CRendererFactoryDMA : public IRendererFactory
+class CRendererFactoryDMAOpenGL : public IRendererFactory
 {
 public:
-  ~CRendererFactoryDMA() override = default;
+  ~CRendererFactoryDMAOpenGL() override = default;
 
   // implementation of IRendererFactory
   std::string RenderSystemName() const override;
@@ -35,18 +35,17 @@ public:
  *        CRenderBufferPoolDMA and CRenderBufferDMA. A windowing system
  *        must register use of this renderer and register at least one
  *        CBufferObject types.
- *
  */
-class CRPRendererDMA : public CRPRendererOpenGLES
+class CRPRendererDMAOpenGL : public CRPRendererOpenGL
 {
 public:
-  CRPRendererDMA(const CRenderSettings& renderSettings,
-                 CRenderContext& context,
-                 std::shared_ptr<IRenderBufferPool> bufferPool);
-  ~CRPRendererDMA() override = default;
+  CRPRendererDMAOpenGL(const CRenderSettings& renderSettings,
+                       CRenderContext& context,
+                       std::shared_ptr<IRenderBufferPool> bufferPool);
+  ~CRPRendererDMAOpenGL() override = default;
 
 protected:
-  // implementation of CRPRendererOpenGLES
+  // Implementation of CRPRendererOpenGLES
   void Render(uint8_t alpha) override;
 };
 } // namespace RETRO

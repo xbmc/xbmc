@@ -9,7 +9,8 @@
 #include "RenderBufferPoolDMA.h"
 
 #include "RenderBufferDMA.h"
-#include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererDMA.h"
+#include "cores/RetroPlayer/rendering/RenderVideoSettings.h"
+#include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererDMAUtils.h"
 
 #include <drm_fourcc.h>
 
@@ -22,7 +23,7 @@ CRenderBufferPoolDMA::CRenderBufferPoolDMA(CRenderContext& context) : m_context(
 
 bool CRenderBufferPoolDMA::IsCompatible(const CRenderVideoSettings& renderSettings) const
 {
-  if (!CRPRendererDMA::SupportsScalingMethod(renderSettings.GetScalingMethod()))
+  if (!CRPRendererDMAUtils::SupportsScalingMethod(renderSettings.GetScalingMethod()))
     return false;
 
   return true;
