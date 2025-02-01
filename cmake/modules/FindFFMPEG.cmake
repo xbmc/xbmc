@@ -38,7 +38,7 @@ macro(buildFFMPEG)
     set(FFMPEG_OPTIONS -DENABLE_DAV1D=ON)
   endif()
 
-  set(MODULE_LC ffmpeg)
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC ffmpeg)
 
   SETUP_BUILD_VARS()
 
@@ -65,8 +65,8 @@ macro(buildFFMPEG)
 
   # Some list shenanigans not being passed through without stringify/listify
   # externalproject_add allows declaring list separator to generate a list for the target
-  string(REPLACE ";" "|" FFMPEG_MODULE_PATH "${CMAKE_MODULE_PATH}")
-  set(FFMPEG_LIST_SEPARATOR LIST_SEPARATOR |)
+  string(REPLACE ";" "|" ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_MODULE_PATH "${CMAKE_MODULE_PATH}")
+  set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIST_SEPARATOR LIST_SEPARATOR |)
 
   set(CMAKE_ARGS -DCMAKE_MODULE_PATH=${FFMPEG_MODULE_PATH}
                  -DFFMPEG_VER=${FFMPEG_VER}
@@ -88,13 +88,13 @@ macro(buildFFMPEG)
                     <SOURCE_DIR>)
 
   if(CMAKE_GENERATOR STREQUAL Xcode)
-    set(FFMPEG_GENERATOR CMAKE_GENERATOR "Unix Makefiles")
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_GENERATOR CMAKE_GENERATOR "Unix Makefiles")
   endif()
 
   BUILD_DEP_TARGET()
 
   if(TARGET ${APP_NAME_LC}::Dav1d)
-    add_dependencies(ffmpeg ${APP_NAME_LC}::Dav1d)
+    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} ${APP_NAME_LC}::Dav1d)
   endif()
 
   find_program(BASH_COMMAND bash)

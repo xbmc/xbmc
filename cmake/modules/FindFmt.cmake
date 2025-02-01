@@ -16,12 +16,12 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       set(EXTRA_ARGS "-DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}")
     endif()
 
-    set(FMT_VERSION ${${MODULE}_VER})
+    set(FMT_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
     # fmt debug uses postfix d for all platforms
-    set(FMT_DEBUG_POSTFIX d)
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_DEBUG_POSTFIX d)
 
     if(WIN32 OR WINDOWS_STORE)
-      set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/001-windows-pdb-symbol-gen.patch")
+      set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/001-windows-pdb-symbol-gen.patch")
       generate_patchcommand("${patches}")
     endif()
 
@@ -35,7 +35,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     BUILD_DEP_TARGET()
   endmacro()
 
-  set(MODULE_LC fmt)
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC fmt)
 
   SETUP_BUILD_VARS()
 
@@ -44,7 +44,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                    HINTS ${DEPENDS_PATH}/lib/cmake
                    ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 
-  if((FMT_VERSION VERSION_LESS ${${MODULE}_VER} AND ENABLE_INTERNAL_FMT) OR
+  if((FMT_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_FMT) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_FMT))
     # build internal module
     buildFmt()

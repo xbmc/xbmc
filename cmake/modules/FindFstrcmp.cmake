@@ -13,7 +13,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     find_program(LIBTOOL libtool REQUIRED)
     include(cmake/scripts/common/ModuleHelpers.cmake)
 
-    set(MODULE_LC fstrcmp)
+    set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC fstrcmp)
 
     SETUP_BUILD_VARS()
 

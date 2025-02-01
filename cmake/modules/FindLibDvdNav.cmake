@@ -13,13 +13,15 @@ if(NOT TARGET LibDvdNav::LibDvdNav)
 
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  set(MODULE_LC libdvdnav)
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC libdvdnav)
 
   # We require this due to the odd nature of github URL's compared to our other tarball
   # mirror system. If User sets LIBDVDNAV_URL or libdvdnav_URL, allow get_filename_component in SETUP_BUILD_VARS
-  if(LIBDVDNAV_URL OR ${MODULE_LC}_URL)
-    if(${MODULE_LC}_URL)
-      set(LIBDVDNAV_URL ${${MODULE_LC}_URL})
+  if(LIBDVDNAV_URL OR libdvdnav_URL)
+    if(libdvdnav_URL)
+      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL ${libdvdnav_URL})
+    else()
+      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL ${LIBDVDNAV_URL})
     endif()
     set(LIBDVDNAV_URL_PROVIDED TRUE)
   endif()
@@ -28,10 +30,10 @@ if(NOT TARGET LibDvdNav::LibDvdNav)
 
   if(NOT LIBDVDNAV_URL_PROVIDED)
     # override LIBDVDNAV_URL due to tar naming when retrieved from github release
-    set(LIBDVDNAV_URL ${LIBDVDNAV_BASE_URL}/archive/${LIBDVDNAV_VER}.tar.gz)
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BASE_URL}/archive/${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER}.tar.gz)
   endif()
 
-  set(LIBDVDNAV_VERSION ${${MODULE}_VER})
+  set(LIBDVDNAV_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
 
   set(HOST_ARCH ${ARCH})
   if(CORE_SYSTEM_NAME STREQUAL android)
@@ -46,13 +48,13 @@ if(NOT TARGET LibDvdNav::LibDvdNav)
     set(LIBDVD_ADDITIONAL_ARGS "-DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME}" "-DCMAKE_SYSTEM_VERSION=${CMAKE_SYSTEM_VERSION}")
   endif()
 
-  string(APPEND LIBDVDNAV_CFLAGS "-D_XBMC")
+  string(APPEND ${CMAKE_FIND_PACKAGE_NAME}_MODULE}_CFLAGS "-D_XBMC")
 
   if(APPLE)
-    set(LIBDVDNAV_LDFLAGS "-framework CoreFoundation")
-    string(APPEND LIBDVDNAV_CFLAGS " -D__DARWIN__")
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LDFLAGS "-framework CoreFoundation")
+    string(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_CFLAGS " -D__DARWIN__")
     if(NOT CORE_SYSTEM_NAME STREQUAL darwin_embedded)
-      string(APPEND LIBDVDNAV_LDFLAGS " -framework IOKit")
+      string(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LDFLAGS " -framework IOKit")
     endif()
   endif()
 
@@ -65,11 +67,11 @@ if(NOT TARGET LibDvdNav::LibDvdNav)
     # individually to then set the -I argument correctly with each path
     get_target_property(_interface_include_dirs LibDvdRead::LibDvdRead INTERFACE_INCLUDE_DIRECTORIES)
     foreach(_interface_include_dir ${_interface_include_dirs})
-      string(APPEND LIBDVDNAV_CFLAGS " -I${_interface_include_dir}")
+      string(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_CFLAGS " -I${_interface_include_dir}")
     endforeach()
 
     if(TARGET LibDvdCSS::LibDvdCSS)
-      string(APPEND LIBDVDNAV_CFLAGS " -I$<TARGET_PROPERTY:LibDvdCSS::LibDvdCSS,INTERFACE_INCLUDE_DIRECTORIES> $<$<TARGET_EXISTS:LibDvdCSS::LibDvdCSS>:-D$<TARGET_PROPERTY:LibDvdCSS::LibDvdCSS,INTERFACE_COMPILE_DEFINITIONS>>")
+      string(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_CFLAGS " -I$<TARGET_PROPERTY:LibDvdCSS::LibDvdCSS,INTERFACE_INCLUDE_DIRECTORIES> $<$<TARGET_EXISTS:LibDvdCSS::LibDvdCSS>:-D$<TARGET_PROPERTY:LibDvdCSS::LibDvdCSS,INTERFACE_COMPILE_DEFINITIONS>>")
     endif()
 
     find_program(AUTORECONF autoreconf REQUIRED)
@@ -88,8 +90,8 @@ if(NOT TARGET LibDvdNav::LibDvdNav)
                           --prefix=${DEPENDS_PATH}
                           --libdir=${DEPENDS_PATH}/lib
                           "CC=${CMAKE_C_COMPILER}"
-                          "CFLAGS=${CMAKE_C_FLAGS} ${LIBDVDNAV_CFLAGS}"
-                          "LDFLAGS=${CMAKE_EXE_LINKER_FLAGS} ${LIBDVDNAV_LDFLAGS}"
+                          "CFLAGS=${CMAKE_C_FLAGS} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_CFLAGS}"
+                          "LDFLAGS=${CMAKE_EXE_LINKER_FLAGS} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LDFLAGS}"
                           "PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig")
 
     set(BUILD_COMMAND ${MAKE_EXECUTABLE})
@@ -99,7 +101,7 @@ if(NOT TARGET LibDvdNav::LibDvdNav)
 
   BUILD_DEP_TARGET()
 
-  add_dependencies(libdvdnav LibDvdRead::LibDvdRead)
+  add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} LibDvdRead::LibDvdRead)
 
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(LibDvdNav

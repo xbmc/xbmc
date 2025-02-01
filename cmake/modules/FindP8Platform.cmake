@@ -12,10 +12,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} OR P8Platform_FIND_REQU
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
   macro(buildlibp8platform)
-    set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/001-all-fix-c++17-support.patch"
-                "${CORE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/002-all-fixcmakeinstall.patch"
-                "${CORE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/003-all-cmake_tweakversion.patch"
-                "${CORE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/004-all-fix-cxx-standard.patch")
+    set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/001-all-fix-c++17-support.patch"
+                "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/002-all-fixcmakeinstall.patch"
+                "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/003-all-cmake_tweakversion.patch"
+                "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/004-all-fix-cxx-standard.patch")
 
     generate_patchcommand("${patches}")
 
@@ -23,16 +23,16 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} OR P8Platform_FIND_REQU
 
     # CMAKE_INSTALL_LIBDIR in p8-platform prepends project prefix, so disable sending any
     # install_libdir to generator
-    set(P8-PLATFORM_INSTALL_LIBDIR "/lib")
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INSTALL_LIBDIR "/lib")
 
-    set(BUILD_NAME build-${MODULE_LC})
+    set(BUILD_NAME build-p8-platform)
 
     BUILD_DEP_TARGET()
 
-    set(P8-PLATFORM_VERSION ${${MODULE}_VER})
+    set(P8-PLATFORM_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
   endmacro()
 
-  set(MODULE_LC p8-platform)
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC p8-platform)
   SETUP_BUILD_VARS()
 
   # Search cmake-config. Suitable all platforms
@@ -40,7 +40,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} OR P8Platform_FIND_REQU
                            HINTS ${DEPENDS_PATH}/lib/cmake
                            ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
 
-  if(p8-platform_VERSION VERSION_LESS ${${MODULE}_VER})
+  if(p8-platform_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
     # build p8-platform lib
     buildlibp8platform()
   else()

@@ -11,13 +11,13 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
   macro(buildCEC)
-    set(CEC_VERSION ${${MODULE}_VER})
+    set(CEC_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
 
-    set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/001-all-cmakelists.patch"
-                "${CORE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/002-all-libceccmakelists.patch"
-                "${CORE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/003-all-remove_git_info.patch"
-                "${CORE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/004-win-remove_32bit_timet.patch"
-                "${CORE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/005-win-pdbstatic.patch")
+    set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/001-all-cmakelists.patch"
+                "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/002-all-libceccmakelists.patch"
+                "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/003-all-remove_git_info.patch"
+                "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/004-win-remove_32bit_timet.patch"
+                "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/005-win-pdbstatic.patch")
 
     generate_patchcommand("${patches}")
 
@@ -31,18 +31,18 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     endif()
 
     if(CORE_SYSTEM_NAME STREQUAL "osx")
-      set(CEC_BYPRODUCT_EXTENSION "dylib")
+      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BYPRODUCT_EXTENSION "dylib")
     endif()
 
     BUILD_DEP_TARGET()
 
     if(CORE_SYSTEM_NAME STREQUAL "osx")
       find_program(INSTALL_NAME_TOOL NAMES install_name_tool)
-      add_custom_command(TARGET cec POST_BUILD
+      add_custom_command(TARGET ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} POST_BUILD
                                     COMMAND ${INSTALL_NAME_TOOL} -id ${CEC_LIBRARY} ${CEC_LIBRARY})
     endif()
 
-    add_dependencies(cec ${APP_NAME_LC}::P8Platform)
+    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} ${APP_NAME_LC}::P8Platform)
   endmacro()
 
   # We only need to check p8-platform if we have any intention to build internal
@@ -54,7 +54,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     get_property(LIB_FORCE_REBUILD TARGET ${APP_NAME_LC}::P8Platform PROPERTY LIB_BUILD)
   endif()
 
-  set(MODULE_LC cec)
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC cec)
 
   SETUP_BUILD_VARS()
 
@@ -63,7 +63,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                       HINTS ${DEPENDS_PATH}/lib/cmake
                       ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 
-  if((libcec_VERSION VERSION_LESS ${${MODULE}_VER} AND ENABLE_INTERNAL_CEC) OR LIB_FORCE_REBUILD)
+  if((libcec_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_CEC) OR LIB_FORCE_REBUILD)
     # Build lib
     buildCEC()
   else()

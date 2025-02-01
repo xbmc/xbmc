@@ -15,13 +15,15 @@ if(NOT TARGET LibDvdRead::LibDvdRead)
 
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  set(MODULE_LC libdvdread)
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC libdvdread)
 
   # We require this due to the odd nature of github URL's compared to our other tarball
   # mirror system. If User sets LIBDVDREAD_URL or libdvdread_URL, allow get_filename_component in SETUP_BUILD_VARS
-  if(LIBDVDREAD_URL OR ${MODULE_LC}_URL)
-    if(${MODULE_LC}_URL)
-      set(LIBDVDREAD_URL ${${MODULE_LC}_URL})
+  if(LIBDVDREAD_URL OR libdvdread_URL)
+    if(libdvdread_URL)
+      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL ${libdvdread_URL})
+    else()
+      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL ${LIBDVDREAD_URL})
     endif()
     set(LIBDVDREAD_URL_PROVIDED TRUE)
   endif()
@@ -30,10 +32,10 @@ if(NOT TARGET LibDvdRead::LibDvdRead)
 
   if(NOT LIBDVDREAD_URL_PROVIDED)
     # override LIBDVDREAD_URL due to tar naming when retrieved from github release
-    set(LIBDVDREAD_URL ${LIBDVDREAD_BASE_URL}/archive/${LIBDVDREAD_VER}.tar.gz)
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BASE_URL}/archive/${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER}.tar.gz)
   endif()
 
-  set(LIBDVDREAD_VERSION ${${MODULE}_VER})
+  set(LIBDVDREAD_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
 
   set(HOST_ARCH ${ARCH})
   if(CORE_SYSTEM_NAME STREQUAL android)
@@ -48,13 +50,13 @@ if(NOT TARGET LibDvdRead::LibDvdRead)
     set(LIBDVD_ADDITIONAL_ARGS "-DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME}" "-DCMAKE_SYSTEM_VERSION=${CMAKE_SYSTEM_VERSION}")
   endif()
 
-  string(APPEND LIBDVDREAD_CFLAGS "-D_XBMC")
+  string(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_CFLAGS "-D_XBMC")
 
   if(APPLE)
-    set(LIBDVDREAD_LDFLAGS "-framework CoreFoundation")
-    string(APPEND LIBDVDREAD_CFLAGS " -D__DARWIN__")
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LDFLAGS "-framework CoreFoundation")
+    string(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_CFLAGS " -D__DARWIN__")
     if(NOT CORE_SYSTEM_NAME STREQUAL darwin_embedded)
-      string(APPEND LIBDVDREAD_LDFLAGS " -framework IOKit")
+      string(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LDFLAGS " -framework IOKit")
     endif()
   endif()
 
@@ -64,7 +66,7 @@ if(NOT TARGET LibDvdRead::LibDvdRead)
   else()
 
     if(TARGET LibDvdCSS::LibDvdCSS)
-      string(APPEND LIBDVDREAD_CFLAGS " -I$<TARGET_PROPERTY:LibDvdCSS::LibDvdCSS,INTERFACE_INCLUDE_DIRECTORIES> $<$<TARGET_EXISTS:LibDvdCSS::LibDvdCSS>:-D$<TARGET_PROPERTY:LibDvdCSS::LibDvdCSS,INTERFACE_COMPILE_DEFINITIONS>>")
+      string(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_CFLAGS " -I$<TARGET_PROPERTY:LibDvdCSS::LibDvdCSS,INTERFACE_INCLUDE_DIRECTORIES> $<$<TARGET_EXISTS:LibDvdCSS::LibDvdCSS>:-D$<TARGET_PROPERTY:LibDvdCSS::LibDvdCSS,INTERFACE_COMPILE_DEFINITIONS>>")
       set(with-css "--with-libdvdcss")
     endif()
 
@@ -85,8 +87,8 @@ if(NOT TARGET LibDvdRead::LibDvdRead)
                           --libdir=${DEPENDS_PATH}/lib
                           ${with-css}
                           "CC=${CMAKE_C_COMPILER}"
-                          "CFLAGS=${CMAKE_C_FLAGS} ${LIBDVDREAD_CFLAGS}"
-                          "LDFLAGS=${CMAKE_EXE_LINKER_FLAGS} ${LIBDVDREAD_LDFLAGS}"
+                          "CFLAGS=${CMAKE_C_FLAGS} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_CFLAGS}"
+                          "LDFLAGS=${CMAKE_EXE_LINKER_FLAGS} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LDFLAGS}"
                           "PKG_CONFIG_PATH=${DEPENDS_PATH}/lib/pkgconfig")
 
     set(BUILD_COMMAND ${MAKE_EXECUTABLE})
@@ -97,7 +99,7 @@ if(NOT TARGET LibDvdRead::LibDvdRead)
   BUILD_DEP_TARGET()
 
   if(TARGET LibDvdCSS::LibDvdCSS)
-    add_dependencies(libdvdread LibDvdCSS::LibDvdCSS)
+    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} LibDvdCSS::LibDvdCSS)
   endif()
 
   include(FindPackageHandleStandardArgs)

@@ -25,12 +25,12 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     find_package(Zlib REQUIRED)
     unset(ZLIB_USE_STATIC_LIBS)
 
-    set(CURL_VERSION ${${MODULE}_VER})
+    set(CURL_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
     # Curl debug uses postfix -d for all platforms
-    set(CURL_DEBUG_POSTFIX -d)
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_DEBUG_POSTFIX -d)
 
     if(WIN32 OR WINDOWS_STORE)
-      set(CURL_C_FLAGS -DNGHTTP2_STATICLIB)
+      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_C_FLAGS -DNGHTTP2_STATICLIB)
       set(PLATFORM_LINK_LIBS crypt32.lib)
     endif()
 
@@ -59,14 +59,14 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     set(PC_CURL_LINK_LIBRARIES Brotli::Brotli NGHttp2::NGHttp2 OpenSSL::Crypto OpenSSL::SSL ZLIB::ZLIB ${PLATFORM_LINK_LIBS})
 
     # Add dependencies to build target
-    add_dependencies(${MODULE_LC} Brotli::Brotli)
-    add_dependencies(${MODULE_LC} NGHttp2::NGHttp2)
-    add_dependencies(${MODULE_LC} OpenSSL::SSL)
-    add_dependencies(${MODULE_LC} OpenSSL::Crypto)
-    add_dependencies(${MODULE_LC} ZLIB::ZLIB)
+    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} Brotli::Brotli)
+    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} NGHttp2::NGHttp2)
+    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} OpenSSL::SSL)
+    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} OpenSSL::Crypto)
+    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} ZLIB::ZLIB)
   endmacro()
 
-  set(MODULE_LC curl)
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC curl)
 
   SETUP_BUILD_VARS()
 
@@ -76,7 +76,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   # Check for existing Curl. If version >= CURL-VERSION file version, dont build
   # A corner case, but if a linux/freebsd user WANTS to build internal curl, build anyway
-  if((CURL_VERSION VERSION_LESS ${${MODULE}_VER} AND ENABLE_INTERNAL_CURL) OR
+  if((CURL_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_CURL) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_CURL))
 
     buildCurl()
