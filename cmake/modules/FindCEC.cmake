@@ -38,7 +38,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
     if(CORE_SYSTEM_NAME STREQUAL "osx")
       find_program(INSTALL_NAME_TOOL NAMES install_name_tool)
-      add_custom_command(TARGET cec POST_BUILD
+      add_custom_command(TARGET ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} POST_BUILD
                                     COMMAND ${INSTALL_NAME_TOOL} -id ${CEC_LIBRARY} ${CEC_LIBRARY})
     endif()
 
