@@ -22,9 +22,9 @@ if(NOT TARGET flatbuffers::flatc)
     string(REGEX REPLACE ".* version (.*)" "\\1" FLATBUFFERS_FLATC_VERSION "${FLATBUFFERS_FLATC_VERSION}")
   endif()
 
-  set(MODULE_LC flatc)
-  set(${MODULE_LC}_MODULE_LOCATION flatbuffers)
-  set(${MODULE_LC}_LIB_TYPE native)
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC flatc)
+  set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_MODULE_LOCATION flatbuffers)
+  set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_LIB_TYPE native)
 
   SETUP_BUILD_VARS()
 

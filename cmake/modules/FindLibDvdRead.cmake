@@ -15,13 +15,13 @@ if(NOT TARGET LibDvdRead::LibDvdRead)
 
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  set(MODULE_LC libdvdread)
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC libdvdread)
 
   # We require this due to the odd nature of github URL's compared to our other tarball
   # mirror system. If User sets LIBDVDREAD_URL or libdvdread_URL, allow get_filename_component in SETUP_BUILD_VARS
-  if(LIBDVDREAD_URL OR ${MODULE_LC}_URL)
-    if(${MODULE_LC}_URL)
-      set(LIBDVDREAD_URL ${${MODULE_LC}_URL})
+  if(LIBDVDREAD_URL OR libdvdread_URL)
+    if(libdvdread_URL)
+      set(LIBDVDREAD_URL ${libdvdread_URL})
     endif()
     set(LIBDVDREAD_URL_PROVIDED TRUE)
   endif()
@@ -33,7 +33,7 @@ if(NOT TARGET LibDvdRead::LibDvdRead)
     set(LIBDVDREAD_URL ${LIBDVDREAD_BASE_URL}/archive/${LIBDVDREAD_VER}.tar.gz)
   endif()
 
-  set(LIBDVDREAD_VERSION ${${MODULE}_VER})
+  set(LIBDVDREAD_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
 
   set(HOST_ARCH ${ARCH})
   if(CORE_SYSTEM_NAME STREQUAL android)

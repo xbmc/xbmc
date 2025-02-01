@@ -17,8 +17,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                    -DENABLE_EXAMPLES=OFF)
 
     if(WIN32 OR WINDOWS_STORE)
-      set(${MODULE}_C_FLAGS "/sdl-")
-      set(${MODULE}_CXX_FLAGS "/sdl-")
+      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_C_FLAGS "/sdl-")
+      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_CXX_FLAGS "/sdl-")
     endif()
 
     BUILD_DEP_TARGET()
@@ -29,7 +29,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  set(MODULE_LC libnfs)
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC libnfs)
 
   SETUP_BUILD_VARS()
 
@@ -40,7 +40,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   # Check for existing LIBNFS. If version >= LIBNFS-VERSION file version, dont build
   # A corner case, but if a linux/freebsd user WANTS to build internal libnfs, build anyway
-  if((libnfs_VERSION VERSION_LESS ${${MODULE}_VER} AND ENABLE_INTERNAL_NFS) OR
+  if((libnfs_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_NFS) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_NFS))
     # Build lib
     buildlibnfs()

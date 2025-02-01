@@ -9,7 +9,7 @@
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  set(MODULE_LC libandroidjni)
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC libandroidjni)
 
   SETUP_BUILD_VARS()
 

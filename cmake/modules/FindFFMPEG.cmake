@@ -38,7 +38,7 @@ macro(buildFFMPEG)
     set(FFMPEG_OPTIONS -DENABLE_DAV1D=ON)
   endif()
 
-  set(MODULE_LC ffmpeg)
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC ffmpeg)
 
   SETUP_BUILD_VARS()
 

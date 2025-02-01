@@ -13,7 +13,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     find_package(Iconv REQUIRED)
 
     # Patch pending review upstream (https://github.com/Exiv2/exiv2/pull/3004)
-    set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/0001-WIN-lib-postfix.patch")
+    set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/0001-WIN-lib-postfix.patch")
 
     generate_patchcommand("${patches}")
 
@@ -54,7 +54,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  set(MODULE_LC exiv2)
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC exiv2)
 
   SETUP_BUILD_VARS()
 
@@ -63,7 +63,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                             ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 
   # Check for existing EXIV2. If version >= EXIV2-VERSION file version, dont build
-  if((exiv2_VERSION VERSION_LESS ${${MODULE}_VER} AND ENABLE_INTERNAL_EXIV2) OR
+  if((exiv2_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_EXIV2) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_EXIV2))
 
     buildexiv2()

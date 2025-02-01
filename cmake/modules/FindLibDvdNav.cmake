@@ -13,13 +13,13 @@ if(NOT TARGET LibDvdNav::LibDvdNav)
 
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  set(MODULE_LC libdvdnav)
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC libdvdnav)
 
   # We require this due to the odd nature of github URL's compared to our other tarball
   # mirror system. If User sets LIBDVDNAV_URL or libdvdnav_URL, allow get_filename_component in SETUP_BUILD_VARS
-  if(LIBDVDNAV_URL OR ${MODULE_LC}_URL)
-    if(${MODULE_LC}_URL)
-      set(LIBDVDNAV_URL ${${MODULE_LC}_URL})
+  if(LIBDVDNAV_URL OR libdvdnav_URL)
+    if(libdvdnav_URL)
+      set(LIBDVDNAV_URL ${libdvdnav_URL})
     endif()
     set(LIBDVDNAV_URL_PROVIDED TRUE)
   endif()
@@ -31,7 +31,7 @@ if(NOT TARGET LibDvdNav::LibDvdNav)
     set(LIBDVDNAV_URL ${LIBDVDNAV_BASE_URL}/archive/${LIBDVDNAV_VER}.tar.gz)
   endif()
 
-  set(LIBDVDNAV_VERSION ${${MODULE}_VER})
+  set(LIBDVDNAV_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
 
   set(HOST_ARCH ${ARCH})
   if(CORE_SYSTEM_NAME STREQUAL android)

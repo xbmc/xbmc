@@ -10,13 +10,13 @@
 if(NOT TARGET LibDvdCSS::LibDvdCSS)
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  set(MODULE_LC libdvdcss)
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC libdvdcss)
 
   # We require this due to the odd nature of github URL's compared to our other tarball
   # mirror system. If User sets LIBDVDCSS_URL or libdvdcss_URL, allow get_filename_component in SETUP_BUILD_VARS
-  if(LIBDVDCSS_URL OR ${MODULE_LC}_URL)
-    if(${MODULE_LC}_URL)
-      set(LIBDVDCSS_URL ${${MODULE_LC}_URL})
+  if(LIBDVDCSS_URL OR libdvdcss_URL)
+    if(libdvdcss_URL)
+      set(LIBDVDCSS_URL ${libdvdcss_URL})
     endif()
     set(LIBDVDCSS_URL_PROVIDED TRUE)
   endif()
@@ -28,7 +28,7 @@ if(NOT TARGET LibDvdCSS::LibDvdCSS)
     set(LIBDVDCSS_URL ${LIBDVDCSS_BASE_URL}/archive/${LIBDVDCSS_VER}.tar.gz)
   endif()
 
-  set(LIBDVDCSS_VERSION ${${MODULE}_VER})
+  set(LIBDVDCSS_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
 
   set(HOST_ARCH ${ARCH})
   if(CORE_SYSTEM_NAME STREQUAL android)

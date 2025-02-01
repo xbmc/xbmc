@@ -16,11 +16,11 @@
 if(ENABLE_INTERNAL_GTEST)
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  set(MODULE_LC gtest)
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC gtest)
 
   SETUP_BUILD_VARS()
 
-  set(GTEST_VERSION ${${MODULE}_VER})
+  set(GTEST_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
 
   # Override build type detection and always build as release
   set(GTEST_BUILD_TYPE Release)

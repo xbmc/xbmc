@@ -11,7 +11,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   macro(buildEffects11)
 
-    set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/01-win-debugpostfix.patch")
+    set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/01-win-debugpostfix.patch")
     generate_patchcommand("${patches}")
 
     # Effects 11 cant be built using /permissive-
@@ -27,14 +27,14 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
     BUILD_DEP_TARGET()
 
-    set(EFFECTS11_VERSION ${${MODULE}_VER})
+    set(EFFECTS11_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
 
     # Make INCLUDE_DIR match cmake config output
     string(APPEND EFFECTS11_INCLUDE_DIR "/Effects11")
     file(MAKE_DIRECTORY ${EFFECTS11_INCLUDE_DIR})
   endmacro()
 
-  set(MODULE_LC effects11)
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC effects11)
 
   SETUP_BUILD_VARS()
 
@@ -42,7 +42,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                 HINTS ${DEPENDS_PATH}/share
                                 ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 
-  if(effects11_VERSION VERSION_LESS ${${MODULE}_VER})
+  if(effects11_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
     buildEffects11()
   else()
     get_target_property(_EFFECTS_CONFIGURATIONS Microsoft::Effects11 IMPORTED_CONFIGURATIONS)
