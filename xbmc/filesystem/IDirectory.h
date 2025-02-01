@@ -19,6 +19,12 @@ class CFileItem;
 
 namespace XFILE
 {
+/*!
+ \brief max attempts to resolve an item.
+ \sa Resolve
+ */
+static constexpr size_t MAX_ITEM_RESOLVE_ATTEMPTS{5};
+
 enum class CacheType
 {
   NEVER = 0, ///< Never cache this directory to memory

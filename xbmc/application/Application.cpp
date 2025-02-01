@@ -2332,8 +2332,6 @@ bool CApplication::PlayFile(CFileItem item,
     return false;
 
   // Translate/Resolve the url if needed - recursively, but only limited times.
-  static constexpr size_t MAX_ITEM_RESOLVE_ATTEMPTS{5};
-
   std::string lastDynPath{item.GetDynPath()};
   size_t itemResolveAttempt{0};
   while (itemResolveAttempt < MAX_ITEM_RESOLVE_ATTEMPTS)
