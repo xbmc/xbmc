@@ -35,7 +35,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
       generate_patchcommand("${patches}")
 
-      set(LIBASS_DEBUG_POSTFIX d)
+      set(${CMAKE_FIND_PACKAGE_NAME}_LIBASS_DEBUG_POSTFIX d)
     endif()
 
     if(WIN32 OR WINDOWS_STORE)
