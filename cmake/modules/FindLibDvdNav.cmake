@@ -30,7 +30,7 @@ if(NOT TARGET LibDvdNav::LibDvdNav)
 
   if(NOT LIBDVDNAV_URL_PROVIDED)
     # override LIBDVDNAV_URL due to tar naming when retrieved from github release
-    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BASE_URL}/archive/${${CMAKE_FIND_PACKAGE_NAME}_VER}.tar.gz)
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BASE_URL}/archive/${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER}.tar.gz)
   endif()
 
   set(LIBDVDNAV_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
