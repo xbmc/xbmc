@@ -13,18 +13,18 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     find_package(Iconv REQUIRED)
 
     # Patch pending review upstream (https://github.com/Exiv2/exiv2/pull/3004)
-    set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/0001-WIN-lib-postfix.patch")
+    set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/0001-WIN-lib-postfix.patch")
 
     generate_patchcommand("${patches}")
 
     if(WIN32 OR WINDOWS_STORE)
-      set(EXIV2_DEBUG_POSTFIX d)
+      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_DEBUG_POSTFIX d)
 
       # Exiv2 cant be built using /RTC1, so we alter and disable the auto addition of flags
       # using WIN_DISABLE_PROJECT_FLAGS
-      string(REPLACE "/RTC1" "" EXIV2_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG} )
+      string(REPLACE "/RTC1" "" ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG} )
 
-      set(EXTRA_ARGS "-DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}$<$<CONFIG:Debug>: ${EXIV2_CXX_FLAGS_DEBUG}>$<$<CONFIG:Release>: ${CMAKE_CXX_FLAGS_RELEASE}>"
+      set(EXTRA_ARGS "-DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}$<$<CONFIG:Debug>: ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_CXX_FLAGS_DEBUG}>$<$<CONFIG:Release>: ${CMAKE_CXX_FLAGS_RELEASE}>"
                      "-DCMAKE_EXE_LINKER_FLAGS=${CMAKE_EXE_LINKER_FLAGS}$<$<CONFIG:Debug>: ${CMAKE_EXE_LINKER_FLAGS_DEBUG}>$<$<CONFIG:Release>: ${CMAKE_EXE_LINKER_FLAGS_RELEASE}>")
 
       set(WIN_DISABLE_PROJECT_FLAGS ON)
@@ -54,7 +54,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  set(MODULE_LC exiv2)
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC exiv2)
 
   SETUP_BUILD_VARS()
 
@@ -63,7 +63,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                             ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 
   # Check for existing EXIV2. If version >= EXIV2-VERSION file version, dont build
-  if((exiv2_VERSION VERSION_LESS ${${MODULE}_VER} AND ENABLE_INTERNAL_EXIV2) OR
+  if((exiv2_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_EXIV2) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_EXIV2))
 
     buildexiv2()

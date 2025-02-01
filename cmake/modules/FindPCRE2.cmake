@@ -10,13 +10,13 @@
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   macro(buildPCRE2)
-    set(PCRE2_VERSION ${${MODULE}_VER})
+    set(PCRE2_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
     if(WIN32)
-      set(PCRE2_DEBUG_POSTFIX d)
+      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_DEBUG_POSTFIX d)
     endif()
 
-    set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/001-all-enable_docs_pc.patch"
-                "${CORE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/002-all-cmake-config-installdir.patch")
+    set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/001-all-enable_docs_pc.patch"
+                "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/002-all-cmake-config-installdir.patch")
 
     generate_patchcommand("${patches}")
 
@@ -45,7 +45,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  set(MODULE_LC pcre2)
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC pcre2)
 
   SETUP_BUILD_VARS()
 
@@ -56,7 +56,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   # Check for existing PCRE2. If version >= PCRE2-VERSION file version, dont build
   find_package(PCRE2 CONFIG COMPONENTS 8BIT QUIET)
 
-  if((PCRE2_VERSION VERSION_LESS ${${MODULE}_VER} AND ENABLE_INTERNAL_PCRE2) OR
+  if((PCRE2_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_PCRE2) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_PCRE2))
     buildPCRE2()
   else()

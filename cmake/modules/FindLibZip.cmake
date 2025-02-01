@@ -9,7 +9,7 @@
 
 include(cmake/scripts/common/ModuleHelpers.cmake)
 
-set(MODULE_LC libzip)
+set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC libzip)
 SETUP_BUILD_VARS()
 
 # Check for existing lib
@@ -17,7 +17,7 @@ find_package(libzip CONFIG QUIET
                     HINTS ${DEPENDS_PATH}/lib
                     ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 
-if(NOT LIBZIP_FOUND OR libzip_VERSION VERSION_LESS ${${MODULE}_VER})
+if(NOT LIBZIP_FOUND OR libzip_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
   # Check for dependencies
   find_package(GnuTLS REQUIRED)
 
@@ -31,7 +31,7 @@ if(NOT LIBZIP_FOUND OR libzip_VERSION VERSION_LESS ${${MODULE}_VER})
                  -DBUILD_SHARED_LIBS=OFF
                  -DBUILD_TOOLS=OFF)
 
-  set(LIBZIP_VERSION ${${MODULE}_VER})
+  set(LIBZIP_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
 
   BUILD_DEP_TARGET()
 else()
