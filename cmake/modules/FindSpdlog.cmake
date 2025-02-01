@@ -24,7 +24,7 @@ macro(buildSpdlog)
 
   set(SPDLOG_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
   # spdlog debug uses postfix d for all platforms
-  set(SPDLOG_DEBUG_POSTFIX d)
+  set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_DEBUG_POSTFIX d)
 
   set(CMAKE_ARGS -DCMAKE_CXX_EXTENSIONS=${CMAKE_CXX_EXTENSIONS}
                  -DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}

@@ -27,10 +27,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
     set(CURL_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
     # Curl debug uses postfix -d for all platforms
-    set(CURL_DEBUG_POSTFIX -d)
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_DEBUG_POSTFIX -d)
 
     if(WIN32 OR WINDOWS_STORE)
-      set(CURL_C_FLAGS -DNGHTTP2_STATICLIB)
+      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_C_FLAGS -DNGHTTP2_STATICLIB)
       set(PLATFORM_LINK_LIBS crypt32.lib)
     endif()
 

@@ -23,7 +23,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} OR P8Platform_FIND_REQU
 
     # CMAKE_INSTALL_LIBDIR in p8-platform prepends project prefix, so disable sending any
     # install_libdir to generator
-    set(P8-PLATFORM_INSTALL_LIBDIR "/lib")
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INSTALL_LIBDIR "/lib")
 
     set(BUILD_NAME build-p8-platform)
 

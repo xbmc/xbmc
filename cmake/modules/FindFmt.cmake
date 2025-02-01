@@ -18,7 +18,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
     set(FMT_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
     # fmt debug uses postfix d for all platforms
-    set(FMT_DEBUG_POSTFIX d)
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_DEBUG_POSTFIX d)
 
     if(WIN32 OR WINDOWS_STORE)
       set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/001-windows-pdb-symbol-gen.patch")

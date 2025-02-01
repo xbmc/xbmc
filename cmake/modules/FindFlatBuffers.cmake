@@ -14,7 +14,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   macro(buildflatbuffers)
     # Override build type detection and always build as release
-    set(FLATBUFFERS_BUILD_TYPE Release)
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_TYPE Release)
 
     set(CMAKE_ARGS -DFLATBUFFERS_CODE_COVERAGE=OFF
                    -DFLATBUFFERS_BUILD_TESTS=OFF

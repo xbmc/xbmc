@@ -34,7 +34,7 @@ macro(buildTagLib)
 
   # Debug postfix only used for windows
   if(WIN32 OR WINDOWS_STORE)
-    set(TAGLIB_DEBUG_POSTFIX "d")
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_DEBUG_POSTFIX "d")
   endif()
 
   set(CMAKE_ARGS -DBUILD_SHARED_LIBS=OFF

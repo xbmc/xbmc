@@ -14,7 +14,7 @@ macro(buildCrossGUID)
   SETUP_BUILD_VARS()
 
   set(CROSSGUID_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
-  set(CROSSGUID_DEBUG_POSTFIX "-dgb")
+  set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_DEBUG_POSTFIX "-dgb")
 
   set(_crossguid_definitions HAVE_NEW_CROSSGUID)
 

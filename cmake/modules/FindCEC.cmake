@@ -31,7 +31,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     endif()
 
     if(CORE_SYSTEM_NAME STREQUAL "osx")
-      set(CEC_BYPRODUCT_EXTENSION "dylib")
+      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BYPRODUCT_EXTENSION "dylib")
     endif()
 
     BUILD_DEP_TARGET()
@@ -42,7 +42,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                     COMMAND ${INSTALL_NAME_TOOL} -id ${CEC_LIBRARY} ${CEC_LIBRARY})
     endif()
 
-    add_dependencies(cec ${APP_NAME_LC}::P8Platform)
+    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} ${APP_NAME_LC}::P8Platform)
   endmacro()
 
   # We only need to check p8-platform if we have any intention to build internal
