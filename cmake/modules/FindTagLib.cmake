@@ -9,6 +9,9 @@
 #
 
 macro(buildTagLib)
+
+  find_package(Utfcpp REQUIRED QUIET)
+
   # Suppress mismatch warning, see https://cmake.org/cmake/help/latest/module/FindPackageHandleStandardArgs.html
   set(FPHSA_NAME_MISMATCHED 1)
 
@@ -46,6 +49,7 @@ macro(buildTagLib)
   BUILD_DEP_TARGET()
 
   add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} ZLIB::ZLIB)
+  add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} utf8cpp::utf8cpp)
   set(TAGLIB_LINK_LIBRARIES "ZLIB::ZLIB")
 endmacro()
 
