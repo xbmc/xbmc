@@ -34,8 +34,6 @@ using namespace KODI::MESSAGING;
 
 namespace
 {
-const unsigned int maxPluginResolutions = 5;
-
 /*!
   \brief Get the plugin path from a CFileItem.
 
@@ -113,9 +111,10 @@ bool CPluginDirectory::GetResolvedPluginResult(CFileItem& resultItem)
 
   if (!lastResolvedPath.empty())
   {
-    // we try to resolve recursively up to n. (maxPluginResolutions) nested plugin paths
+    // we try to resolve recursively up to n. (MAX_ITEM_RESOLVE_ATTEMPTS) nested plugin paths
     // to avoid deadlocks (plugin:// paths can resolve to plugin:// paths)
-    for (unsigned int i = 0; URIUtils::IsPlugin(lastResolvedPath) && i < maxPluginResolutions; ++i)
+    for (unsigned int i = 0; URIUtils::IsPlugin(lastResolvedPath) && i < MAX_ITEM_RESOLVE_ATTEMPTS;
+         ++i)
     {
       bool resume = resultItem.GetStartOffset() == STARTOFFSET_RESUME;
 

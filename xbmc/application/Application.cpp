@@ -2331,11 +2331,25 @@ bool CApplication::PlayFile(CFileItem item,
   if (PLAYLIST::IsPlayList(item))
     return false;
 
-  // Translate/Resolve the url if needed
-  const std::unique_ptr<IDirectory> dir{CDirectoryFactory::Create(item)};
-  if (dir && !dir->Resolve(item))
+  // Translate/Resolve the url if needed - recursively, but only limited times.
+  std::string lastDynPath{item.GetDynPath()};
+  size_t itemResolveAttempt{0};
+  while (itemResolveAttempt < MAX_ITEM_RESOLVE_ATTEMPTS)
   {
-    return false;
+    itemResolveAttempt++;
+
+    const std::unique_ptr<IDirectory> dir{CDirectoryFactory::Create(item)};
+    if (dir && !dir->Resolve(item))
+    {
+      CLog::LogF(LOGERROR, "Error resolving item. Item '{}‘ is not playable.", item.GetDynPath());
+      return false;
+    }
+
+    std::string newDynPath{item.GetDynPath()};
+    if (newDynPath == lastDynPath)
+      break; // done
+
+    lastDynPath = std::move(newDynPath);
   }
 
   // if we have a stacked set of files, we need to setup our stack routines for
