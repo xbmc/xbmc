@@ -188,8 +188,14 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         return true;
       case MUSICPLAYER_GENRE:
       case LISTITEM_GENRE:
-        value =  StringUtils::Join(tag->GetGenre(), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
+      {
+        const std::string sep{info.GetData3().empty() ? CServiceBroker::GetSettingsComponent()
+                                                            ->GetAdvancedSettings()
+                                                            ->m_musicItemSeparator
+                                                      : info.GetData3()};
+        value = StringUtils::Join(tag->GetGenre(), sep);
         return true;
+      }
       case MUSICPLAYER_LYRICS:
         value = tag->GetLyrics();
         return true;

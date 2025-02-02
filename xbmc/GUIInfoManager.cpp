@@ -2493,6 +2493,16 @@ const infomap musicpartymode[] = {{ "enabled",           MUSICPM_ENABLED },
 ///     @return The genre(s) of current song.
 ///     <p>
 ///   }
+///   \table_row3{   <b>`MusicPlayer.Genre(separator)`</b>,
+///                  \anchor MusicPlayer_Genre_separator
+///                  _string_,
+///     @return A list of genres of current song\, separated by given separator\, or if no
+///     separator was given separated by the advanced settings value \“itemseparator\” for music.
+///     Possible values for separator: comma\, pipe\, slash\, cr\, dash\, colon\, semicolon\, fullstop
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link MusicPlayer_Genre_separator `MusicPlayer.Genre(separator)`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`MusicPlayer.offset(number).Genre`</b>,
 ///                  \anchor MusicPlayer_OffSet_Genre
 ///                  _string_,
@@ -3162,6 +3172,16 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///     @return The genre(s) of current movie\, if it's in the database.
 ///     <p>
 ///   }
+///   \table_row3{   <b>`VideoPlayer.Genre(separator)`</b>,
+///                  \anchor VideoPlayer_Genre_separator
+///                  _string_,
+///     @return A list of genres of current movie\, separated by given separator\, or if no
+///     separator was given separated by the advanced settings value \“itemseparator\” for videos.
+///     Possible values for separator: comma\, pipe\, slash\, cr\, dash\, colon\, semicolon\, fullstop
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_Genre_separator `VideoPlayer.Genre(separator)`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`VideoPlayer.offset(number).Genre`</b>,
 ///                  \anchor VideoPlayer_Offset_Genre
 ///                  _string_,
@@ -3185,6 +3205,17 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///     <p><hr>
 ///     @skinning_v15 **[Infolabel Updated]** \link VideoPlayer_Director `VideoPlayer.Director`\endlink
 ///     also supports EPG.
+///     <p>
+///   }
+///   \table_row3{   <b>`VideoPlayer.Director(separator)`</b>,
+///                  \anchor VideoPlayer_Director_separator
+///                  _string_,
+///     @return A list of directors of the currently playing video\, separated by given separator\,
+///     or if no separator was given separated by the advanced settings value \“itemseparator\” for
+///     video items.
+///     Possible values for separator: comma\, pipe\, slash\, cr\, dash\, colon\, semicolon\, fullstop
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_Director_separator `VideoPlayer.Director(separator)`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.offset(number).Director`</b>,
@@ -3488,11 +3519,31 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///     also supports EPG.
 ///     <p>
 ///   }
+///   \table_row3{   <b>`VideoPlayer.Cast(separator)`</b>,
+///                  \anchor VideoPlayer_Cast_separator
+///                  _string_,
+///     @return A list of cast members of the currently playing video\, separated by given
+///     separator\, or if no separator was given separated by carriage returns.
+///     Possible values for separator: comma\, pipe\, slash\, cr\, dash\, colon\, semicolon\, fullstop
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_Cast_separator `VideoPlayer.Cast(separator)`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`VideoPlayer.CastAndRole`</b>,
 ///                  \anchor VideoPlayer_CastAndRole
 ///                  _string_,
 ///     @return A list of cast members and roles\, separated by carriage
 ///     returns. Every cast/role combination is formatted 'cast' as 'role' where 'as' is localised.
+///     <p>
+///   }
+///   \table_row3{   <b>`VideoPlayer.CastAndRole(separator)`</b>,
+///                  \anchor VideoPlayer_CastAndRole_separator
+///                  _string_,
+///     @return A list of cast members and roles of the currently playing video\, pairs separated by
+///     given separator\, or if no separator was given separated by carriage returns.
+///     Possible values for separator: comma\, pipe\, slash\, cr\, dash\, colon\, semicolon\, fullstop
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_CastAndRole_separator `VideoPlayer.CastAndRole(separator)`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.Album`</b>,
@@ -3568,6 +3619,17 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///     <p><hr>
 ///     @skinning_v15 **[Infolabel Updated]** \link VideoPlayer_Writer `VideoPlayer.Writer`\endlink
 ///     also supports EPG.
+///     <p>
+///   }
+///   \table_row3{   <b>`VideoPlayer.Writer(separator)`</b>,
+///                  \anchor VideoPlayer_Writer_separator
+///                  _string_,
+///     @return A list of writers of the currently playing video\, separated by given separator\,
+///     or if no separator was given separated by the advanced settings value \“itemseparator\” for
+///     video items.
+///     Possible values for separator: comma\, pipe\, slash\, cr\, dash\, colon\, semicolon\, fullstop
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_Writer_separator `VideoPlayer.Writer(separator)`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.offset(number).Writer`</b>,
@@ -3833,6 +3895,17 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///                  \anchor VideoPlayer_NextGenre
 ///                  _string_,
 ///     @return The genre of the programme that will be played next (PVR).
+///     <p>
+///   }
+///   \table_row3{   <b>`VideoPlayer.NextGenre(separator)`</b>,
+///                  \anchor VideoPlayer_NextGenre_separator
+///                  _string_,
+///     @return A list of genres of the programme that will be played next (PVR)\, separated by
+///     given separator\, or if no separator was given separated by the advanced settings value
+///     \“itemseparator\” for videos.
+///     Possible values for separator: comma\, pipe\, slash\, cr\, dash\, colon\, semicolon\, fullstop
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_NextGenre_separator `VideoPlayer.NextGenre(separator)`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.NextPlot`</b>,
@@ -5107,6 +5180,16 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     container.
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.Genre(separator)`</b>,
+///                  \anchor ListItem_Genre_separator
+///                  _string_,
+///     @return A list of genres\, separated by given separator\, or if no separator was given
+///     separated by the advanced settings value \“itemseparator\” for videos or music.
+///     Possible values for separator: comma\, pipe\, slash\, cr\, dash\, colon\, semicolon\, fullstop
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link ListItem_Genre_separator `ListItem.Genre(separator)`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`ListItem.Contributors`</b>,
 ///                  \anchor ListItem_Contributors
 ///                  _string_,
@@ -5130,6 +5213,16 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     <p><hr>
 ///     @skinning_v15 **[Infolabel Updated]** \link ListItem_Director `ListItem.Director`\endlink
 ///     also supports EPG.
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.Director(separator)`</b>,
+///                  \anchor ListItem_Director_separator
+///                  _string_,
+///     @return A list of directors\, separated by given separator\, or if no separator was given
+///     separated by the advanced settings value \“itemseparator\” for video items.
+///     Possible values for separator: comma\, pipe\, slash\, cr\, dash\, colon\, semicolon\, fullstop
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link ListItem_Director_separator `ListItem.Director(separator)`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Country`</b>,
@@ -5967,11 +6060,31 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     also supports EPG.
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.Cast(separator)`</b>,
+///                  \anchor ListItem_Cast_separator
+///                  _string_,
+///     @return A list of cast members\, separated by given separator\, or if no separator was
+///     given separated by carriage returns.
+///     Possible values for separator: comma\, pipe\, slash\, cr\, dash\, colon\, semicolon\, fullstop
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link ListItem_Cast_separator `ListItem.Cast(separator)`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`ListItem.CastAndRole`</b>,
 ///                  \anchor ListItem_CastAndRole
 ///                  _string_,
 ///     @return A list of cast members and roles\, separated by carriage
 ///     returns. Every cast/role combination is formatted 'cast' as 'role' where 'as' is localised.
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.CastAndRole(separator)`</b>,
+///                  \anchor ListItem_CastAndRole_separator
+///                  _string_,
+///     @return A list of cast members and roles\, separated by given separator\, or if no separator
+///     was given separated by carriage returns.
+///     Possible values for separator: comma\, pipe\, slash\, cr\, dash\, colon\, semicolon\, fullstop
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link ListItem_CastAndRole_separator `ListItem.CastAndRole(separator)`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Studio`</b>,
@@ -6001,6 +6114,16 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     <p><hr>
 ///     @skinning_v15 **[Infolabel Updated]** \link ListItem_Writer `ListItem.Writer`\endlink
 ///     also supports EPG.
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.Writer(separator)`</b>,
+///                  \anchor ListItem_Writer_separator
+///                  _string_,
+///     @return A list of writers\, separated by given separator\, or if no separator was given
+///     separated by the advanced settings value \“itemseparator\” for video items.
+///     Possible values for separator: comma\, pipe\, slash\, cr\, dash\, colon\, semicolon\, fullstop
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link ListItem_Writer_separator `ListItem.Writer(separator)`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Tag`</b>,
@@ -6314,6 +6437,17 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///                  \anchor ListItem_NextGenre
 ///                  _string_,
 ///     @return The genre of the next item (PVR).
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.NextGenre(separator)`</b>,
+///                  \anchor ListItem_NextGenre_separator
+///                  _string_,
+///     @return A list of genres of the the next item (PVR)\, separated by given separator\, or if
+///     no separator was given separated by the advanced settings value \“itemseparator\” for
+///     videos.
+///     Possible values for separator: comma\, pipe\, slash\, cr\, dash\, colon\, semicolon\, fullstop
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link ListItem_NextGenre_separator `ListItem.NextGenre(separator)`\endlink
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.NextPlot`</b>,
@@ -10220,6 +10354,34 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition)
   return TranslateSingleString(strCondition, listItemDependent);
 }
 
+namespace
+{
+std::string TranslateListSeparator(const std::string& param)
+{
+  if (StringUtils::EqualsNoCase(param, "comma"))
+    return ",";
+  else if (StringUtils::EqualsNoCase(param, "pipe"))
+    return "|";
+  else if (StringUtils::EqualsNoCase(param, "slash"))
+    return "/";
+  else if (StringUtils::EqualsNoCase(param, "cr"))
+    return "\n";
+  else if (StringUtils::EqualsNoCase(param, "dash"))
+    return "-";
+  else if (StringUtils::EqualsNoCase(param, "colon"))
+    return ":";
+  else if (StringUtils::EqualsNoCase(param, "semicolon"))
+    return ";";
+  else if (StringUtils::EqualsNoCase(param, "fullstop"))
+    return ".";
+  else
+  {
+    CLog::Log(LOGERROR, "unhandled separator param {}", param);
+    return {};
+  }
+}
+} // unnamed namespace
+
 int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool &listItemDependent)
 {
   /* We need to disable caching in INFO::InfoBool::Get if either of the following are true:
@@ -10525,7 +10687,13 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
           return AddMultiInfo(CGUIInfo(player_time.val, TranslateTimeFormat(prop.param())));
       }
       if (prop.name == "content" && prop.num_params())
+      {
         return AddMultiInfo(CGUIInfo(MUSICPLAYER_CONTENT, prop.param(), 0));
+      }
+      else if (prop.name == "genre" && prop.num_params() > 0)
+      {
+        return AddMultiInfo(CGUIInfo(MUSICPLAYER_GENRE, TranslateListSeparator(prop.param()), 0));
+      }
       else if (prop.name == "property")
       {
         if (StringUtils::EqualsNoCase(prop.param(), "fanart_image"))
@@ -10556,6 +10724,33 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       if (prop.name == "art" && prop.num_params() > 0)
       {
         return AddMultiInfo(CGUIInfo(VIDEOPLAYER_ART, prop.param(), 0));
+      }
+      if (prop.name == "cast" && prop.num_params() > 0)
+      {
+        return AddMultiInfo(CGUIInfo(VIDEOPLAYER_CAST, TranslateListSeparator(prop.param()), 0));
+      }
+      if (prop.name == "castandrole" && prop.num_params() > 0)
+      {
+        return AddMultiInfo(
+            CGUIInfo(VIDEOPLAYER_CAST_AND_ROLE, TranslateListSeparator(prop.param()), 0));
+      }
+      if (prop.name == "writer" && prop.num_params() > 0)
+      {
+        return AddMultiInfo(CGUIInfo(VIDEOPLAYER_WRITER, TranslateListSeparator(prop.param()), 0));
+      }
+      if (prop.name == "director" && prop.num_params() > 0)
+      {
+        return AddMultiInfo(
+            CGUIInfo(VIDEOPLAYER_DIRECTOR, TranslateListSeparator(prop.param()), 0));
+      }
+      if (prop.name == "genre" && prop.num_params() > 0)
+      {
+        return AddMultiInfo(CGUIInfo(VIDEOPLAYER_GENRE, TranslateListSeparator(prop.param()), 0));
+      }
+      if (prop.name == "nextgenre" && prop.num_params() > 0)
+      {
+        return AddMultiInfo(
+            CGUIInfo(VIDEOPLAYER_NEXT_GENRE, TranslateListSeparator(prop.param()), 0));
       }
       return TranslateVideoPlayerString(prop.name);
     }
@@ -10884,6 +11079,11 @@ int CGUIInfoManager::TranslateListItem(const Property& cat, const Property& prop
              prop.name == "uniqueid")
     {
       data3 = prop.param();
+    }
+    else if (prop.name == "cast" || prop.name == "castandrole" || prop.name == "director" ||
+             prop.name == "writer" || prop.name == "genre" || prop.name == "nextgenre")
+    {
+      data3 = TranslateListSeparator(prop.param());
     }
     else if (prop.name == "duration" || prop.name == "nextduration")
     {
