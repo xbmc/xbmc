@@ -1696,7 +1696,7 @@
 	</include>
 	<include name="MediaInfoListLayout">
 		<param name="height">125</param>
-		<param name="width">880</param>
+		<param name="width">1000</param>
 		<param name="fontcolor">grey</param>
 		<definition>
 			<itemlayout height="$PARAM[height]" width="$PARAM[width]">

@@ -5,11 +5,11 @@
 		<control type="group">
 			<centertop>50%</centertop>
 			<centerleft>50%</centerleft>
-			<width>1640</width>
+			<width>1760</width>
 			<height>780</height>
 			<include>Animation_DialogPopupVisible</include>
 			<include content="DialogBackgroundCommons">
-				<param name="width" value="1640" />
+				<param name="width" value="1760" />
 				<param name="height" value="780" />
 				<param name="header_id" value="2" />
 			</include>
@@ -25,7 +25,7 @@
 				<description>Path label</description>
 				<left>20</left>
 				<bottom>10</bottom>
-				<width>1300</width>
+				<width>1420</width>
 				<height>30</height>
 				<font>font12</font>
 				<align>right</align>
@@ -50,7 +50,7 @@
 				<control type="image">
 					<left>0</left>
 					<top>0</top>
-					<width>920</width>
+					<width>1040</width>
 					<height>665</height>
 					<texture border="40">buttons/dialogbutton-nofo.png</texture>
 				</control>
@@ -68,7 +68,7 @@
 					<include>MediaInfoListLayout</include>
 				</control>
 				<control type="scrollbar" id="60">
-					<left>900</left>
+					<left>1020</left>
 					<top>20</top>
 					<width>12</width>
 					<height>625</height>
@@ -78,7 +78,7 @@
 				</control>
 			</control>
 			<control type="grouplist" id="101">
-				<left>1340</left>
+				<left>1460</left>
 				<top>80</top>
 				<width>300</width>
 				<height>565</height>
