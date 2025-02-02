@@ -45,6 +45,7 @@
 #include <taglib/rifffile.h>
 #include <taglib/s3mfile.h>
 #include <taglib/speexfile.h>
+#include <taglib/tbytevector.h>
 #include <taglib/textidentificationframe.h>
 #include <taglib/tpropertymap.h>
 #include <taglib/trueaudiofile.h>
@@ -602,7 +603,7 @@ bool CTagLoaderTagLib::ParseTag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTag& 
     {
       TagLib::ByteVector tdata = it->second.binaryData();
       // The image data follows a null byte, which can optionally be preceded by a filename
-      const uint offset = tdata.find('\0') + 1;
+      const unsigned int offset = tdata.find('\0') + 1;
       ByteVector bv(tdata.data() + offset, tdata.size() - offset);
       // Infer the mimetype
       std::string mime{};
