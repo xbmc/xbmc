@@ -2084,21 +2084,9 @@ bool CAMLCodec::OpenDecoder()
   // DEC_CONTROL_FLAG_DISABLE_FAST_POC
   CSysfsPath("/sys/module/amvdec_h264/parameters/dec_control", 4);
 
-  CSysfsPath di_debug_flag{"/sys/module/di/parameters/di_debug_flag"};
-  CSysfsPath di_debug{"/sys/class/deinterlace/di0/debug"};
-  if (di_debug_flag.Exists() && di_debug.Exists())
-  {
-    if (am_private->video_format == VFORMAT_VC1) 					/* workaround to fix slowdown VC1 progressive */
-    {
-      di_debug_flag.Set(0x10000);
-      di_debug.Set("di_debug_flag0x10000");
-    }
-    else
-    {
-      di_debug_flag.Set(0);
-      di_debug.Set("di_debug_flag0x0");
-    }
-  }
+  // workaround to fix slow framerate for VC1 progressive (force interlace!)
+  bool vc1 = (am_private->video_format == VFORMAT_VC1);
+  CSysfsPath("/sys/class/deinterlace/di0/debug", vc1 ? "di_debug_flag0x10000" : "di_debug_flag0x0");
 
   switch(am_private->video_format)
   {
