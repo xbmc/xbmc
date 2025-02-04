@@ -2071,18 +2071,13 @@ bool CAMLCodec::OpenDecoder()
   SetProcessInfoVideoDetails();
 
   // Setup Codec for DV Content
-  if ((hints.hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION) && aml_is_dv_enable()) 
+  if ((hints.hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION) && aml_is_dv_enable())
   {
     am_private->gcodec.dv_enable = 1;
-    if ((hints.dovi.dv_profile == 4) || (hints.dovi.dv_profile == 7))
+    if (((hints.dovi.dv_profile == 4) || (hints.dovi.dv_profile == 7)) && (hints.dovi_el_type == DOVIELType::TYPE_FEL))
     {
-      if (hints.dovi_el_type == DOVIELType::TYPE_FEL) // use stream path if FEL
-      {
-        CSysfsPath amdolby_vision_debug{"/sys/class/amdolby_vision/debug"};
-        if (amdolby_vision_debug.Exists())
-          amdolby_vision_debug.Set("enable_fel 1");
-        am_private->gcodec.dec_mode = STREAM_TYPE_STREAM;
-      }
+      aml_dv_enable_fel();                              // Make sure enable fel is set.
+      am_private->gcodec.dec_mode = STREAM_TYPE_STREAM; // Use stream path if FEL
     }
   }
 
@@ -2165,6 +2160,7 @@ bool CAMLCodec::OpenDecoder()
       am_private->gcodec.param  = (void*)EXTERNAL_PTS;
       if (m_hints.ptsinvalid)
         am_private->gcodec.param = (void*)(EXTERNAL_PTS | SYNC_OUTSIDE);
+      aml_hevc_nal_skip_policy((am_private->gcodec.dec_mode == STREAM_TYPE_STREAM) ? 1 : 2);
       break;
     case VFORMAT_VP9:
       am_private->gcodec.format = VIDEO_DEC_FORMAT_VP9;

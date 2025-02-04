@@ -122,6 +122,8 @@ void aml_dv_set_subtitles(bool visible);
 unsigned int aml_vs10_by_setting(const std::string setting);
 enum DV_MODE aml_dv_mode();
 enum DV_TYPE aml_dv_type();
+void aml_dv_enable_fel();
+void aml_hevc_nal_skip_policy(const int value);
 void aml_set_transfer_pq(StreamHdrType hdrType, unsigned int bitDepth);
 bool aml_has_frac_rate_policy();
 void aml_video_mute(bool mute);

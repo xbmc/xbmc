@@ -639,8 +639,8 @@ void aml_dv_start()
   }
 }
 
-void aml_dv_set_subtitles(bool visible) {
-
+void aml_dv_set_subtitles(bool visible) 
+{
   CSysfsPath("/sys/module/amdolby_vision/parameters/dolby_vision_subtitles", visible ? 1 : 0);
 }
 
@@ -657,6 +657,16 @@ enum DV_TYPE aml_dv_type()
 unsigned int aml_vs10_by_setting(const std::string setting)
 {
   return static_cast<unsigned int>(settings()->GetInt(setting));
+}
+
+void aml_dv_enable_fel() 
+{
+  CSysfsPath("/sys/class/amdolby_vision/debug", "enable_fel 1");  
+}
+
+void aml_hevc_nal_skip_policy(const int value) 
+{
+  CSysfsPath("/sys/module/amvdec_h265/parameters/nal_skip_policy", value);  
 }
 
 void aml_set_transfer_pq(StreamHdrType hdrType, unsigned int bitDepth) {
@@ -1420,8 +1430,8 @@ std::string aml_video_fps_drop() {
   return format_fps_info().drop_info;
 }
 
-void aml_toogle_video_freerun_mode() {
-
+void aml_toogle_video_freerun_mode() 
+{
   CSysfsPath freerun_mode{"/sys/class/video/freerun_mode"};
   if (freerun_mode.Exists()) {
     freerun_mode.Set(0);
