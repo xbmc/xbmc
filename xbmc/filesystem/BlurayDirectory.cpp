@@ -235,6 +235,22 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     hints.flags = m_flags;
     if (!CDirectory::GetDirectory(url2, items, hints))
       return false;
+
+    // Found items will have underlying protocol (eg. udf:// or smb://)
+    // in path so add back bluray://
+    // (so properly recognised in cache as bluray:// files for CFile:Exists() etc..)
+    CURL url3{url};
+    for (const auto& item : items)
+    {
+      const CURL url4{item->GetPath()};
+      url3.SetFileName(url4.GetFileName());
+      item->SetPath(url3.Get());
+    }
+
+    url3.SetFileName("menu");
+    const std::shared_ptr<CFileItem> item{std::make_shared<CFileItem>()};
+    item->SetPath(url3.Get());
+    items.Add(item);
   }
 
   items.AddSortMethod(SortByTrackNumber,  554, LABEL_MASKS("%L", "%D", "%L", ""));    // FileName, Duration | Foldername, empty

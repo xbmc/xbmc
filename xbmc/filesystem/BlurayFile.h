@@ -19,6 +19,8 @@ namespace XFILE
     CBlurayFile();
     ~CBlurayFile() override;
 
+    bool Exists(const CURL& url) override;
+
   protected:
     std::string TranslatePath(const CURL& url) override;
   };

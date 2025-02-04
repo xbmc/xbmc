@@ -330,6 +330,17 @@ bool URIUtils::GetParentPath(const std::string& strPath, std::string& strParent)
     strFile = url.GetHostName();
     return GetParentPath(strFile, strParent);
   }
+  else if (url.IsProtocol("bluray"))
+  {
+    const CURL url2(url.GetHostName()); // strip bluray://
+    if (url2.IsProtocol("udf"))
+    {
+      strFile = url2.GetHostName(); // strip udf://
+      return GetParentPath(strFile, strParent);
+    }
+    strParent = url2.Get();
+    return true;
+  }
   else if (url.IsProtocol("stack"))
   {
     CStackDirectory dir;
