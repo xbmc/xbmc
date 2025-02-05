@@ -360,6 +360,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         return true;
       case LISTITEM_FILENAME:
       case LISTITEM_FILE_EXTENSION:
+      case LISTITEM_FILENAME_NO_EXTENSION:
         if (MUSIC::IsMusicDb(*item))
           value = URIUtils::GetFileName(tag->GetURL());
         else if (item->HasVideoInfoTag()) // special handling for music videos, which have both a videotag and a musictag
@@ -371,6 +372,10 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         {
           std::string strExtension = URIUtils::GetExtension(value);
           value = StringUtils::TrimLeft(strExtension, ".");
+        }
+        else if (info.m_info == LISTITEM_FILENAME_NO_EXTENSION)
+        {
+          URIUtils::RemoveExtension(value);
         }
         return true;
       case LISTITEM_FOLDERNAME:
