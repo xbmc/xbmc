@@ -1610,6 +1610,12 @@ void CGUIWindowManager::AddMsgTarget(IMsgTargetCallback* pMsgTarget)
   m_vecMsgTargets.emplace_back(pMsgTarget);
 }
 
+void CGUIWindowManager::RemoveMsgTarget(IMsgTargetCallback* pMsgTarget)
+{
+  m_vecMsgTargets.erase(std::remove(m_vecMsgTargets.begin(), m_vecMsgTargets.end(), pMsgTarget),
+                        m_vecMsgTargets.end());
+}
+
 int CGUIWindowManager::GetActiveWindow() const
 {
   if (!m_windowHistory.empty())

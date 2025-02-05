@@ -510,6 +510,10 @@ void CPeripheralJoystick::SetSupportsPowerOff(bool bSupportsPowerOff)
 
 GAME::ControllerPtr CPeripheralJoystick::InstallAsync(const std::string& controllerId)
 {
+  // Installing controllers calls into the GUI, so wait for it to be ready
+  if (!m_manager.WaitForGUI())
+    return {};
+
   GAME::ControllerPtr controller;
 
   // Only 1 install at a time. Remaining installs will wake when this one
