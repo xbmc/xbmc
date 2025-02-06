@@ -2365,7 +2365,7 @@ bool CAMLCodec::AddData(uint8_t *pData, size_t iSize, double dts, double pts)
   float new_buffer_level = GetBufferLevel(chunk_size, data_len, free_len);
   bool streambuffer(am_private->gcodec.dec_mode == STREAM_TYPE_STREAM);
  
-  m_minimum_buffer_level = 5.0f;
+  m_minimum_buffer_level = (streambuffer ? 10.0f : 5.0f);
 
   if (!m_opened || !pData || free_len == 0 || new_buffer_level >= 100.0f)
   {
