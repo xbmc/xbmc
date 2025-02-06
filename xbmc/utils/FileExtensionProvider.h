@@ -10,6 +10,7 @@
 
 #include <map>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -77,10 +78,12 @@ private:
   void SetAddonExtensions(ADDON::AddonType type);
 
   void OnAddonEvent(const ADDON::AddonEvent& event);
+  void OnAdvancedSettingsLoaded();
 
   // Construction properties
   std::shared_ptr<CAdvancedSettings> m_advancedSettings;
   ADDON::CAddonMgr &m_addonManager;
+  int m_callbackId;
 
   // File extension properties
   std::map<ADDON::AddonType, std::string> m_addonExtensions;
@@ -88,4 +91,12 @@ private:
 
   // Protocols from add-ons with encoded host names
   std::vector<std::string> m_encoded;
+
+  // Cached extensions lists
+  mutable std::optional<std::string> m_discStubExtensions;
+  mutable std::optional<std::string> m_musicExtensions;
+  mutable std::optional<std::string> m_pictureExtensions;
+  mutable std::optional<std::string> m_subtitlesExtensions;
+  mutable std::optional<std::string> m_videoExtensions;
+  mutable std::optional<std::string> m_fileFolderExtensions;
 };
