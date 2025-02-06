@@ -33,6 +33,9 @@
 #include "rendering/RenderSystem.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
+#include "ServiceBroker.h"
 
 #include "platform/linux/SysfsPath.h"
 
@@ -642,6 +645,16 @@ void aml_dv_start()
 void aml_dv_set_subtitles(bool visible) 
 {
   CSysfsPath("/sys/module/amdolby_vision/parameters/dolby_vision_subtitles", visible ? 1 : 0);
+}
+
+void aml_dv_set_xbmc_osd()
+{
+  auto &wm = CServiceBroker::GetGUI()->GetWindowManager();
+
+  bool osd_active = wm.HasVisibleDialog() ||
+                    wm.IsWindowVisible(WINDOW_VIDEO_MENU);
+
+  CSysfsPath("/sys/module/amdolby_vision/parameters/dolby_vision_xbmc_osd", osd_active ? 1 : 0);
 }
 
 enum DV_MODE aml_dv_mode()

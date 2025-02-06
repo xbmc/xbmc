@@ -119,6 +119,7 @@ void aml_dv_display_trigger();
 void aml_dv_display_auto_now();
 void aml_dv_start();
 void aml_dv_set_subtitles(bool visible);
+void aml_dv_set_xbmc_osd();
 unsigned int aml_vs10_by_setting(const std::string setting);
 enum DV_MODE aml_dv_mode();
 enum DV_TYPE aml_dv_type();

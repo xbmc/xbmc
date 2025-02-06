@@ -43,6 +43,7 @@
 #include "settings/windows/GUIWindowSettingsCategory.h"
 #include "settings/windows/GUIWindowSettingsScreenCalibration.h"
 #include "threads/SingleLock.h"
+#include "utils/AMLUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -1364,6 +1365,9 @@ void CGUIWindowManager::AfterRender()
         pWindow->MarkDirtyRegion();
     }
   }
+
+  // Inform AMLogic kernel if OSD is displaying
+  aml_dv_set_xbmc_osd();
 }
 
 void CGUIWindowManager::FrameMove()
