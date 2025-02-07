@@ -361,34 +361,38 @@ unsigned int CPVREpgInfoTag::GetDuration() const
   }
 }
 
-const std::string CPVREpgInfoTag::GetCastLabel() const
+const std::string CPVREpgInfoTag::GetCastLabel(const std::string& separator) const
 {
   // Note: see CVideoInfoTag::GetCast for reference implementation.
-  std::string strLabel;
-  for (const auto& castEntry : m_cast)
-    strLabel += StringUtils::Format("{}\n", castEntry);
-
-  return StringUtils::TrimRight(strLabel, "\n");
+  const std::string sep{separator.empty() ? "\n" : separator};
+  return StringUtils::Join(m_cast, sep);
 }
 
-const std::string CPVREpgInfoTag::GetDirectorsLabel() const
+const std::string CPVREpgInfoTag::GetDirectorsLabel(const std::string& separator) const
 {
-  return StringUtils::Join(
-      m_directors,
-      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
+  const std::string sep{
+      separator.empty()
+          ? CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator
+          : separator};
+  return StringUtils::Join(m_directors, sep);
 }
 
-const std::string CPVREpgInfoTag::GetWritersLabel() const
+const std::string CPVREpgInfoTag::GetWritersLabel(const std::string& separator) const
 {
-  return StringUtils::Join(
-      m_writers,
-      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
+  const std::string sep{
+      separator.empty()
+          ? CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator
+          : separator};
+  return StringUtils::Join(m_writers, sep);
 }
 
-const std::string CPVREpgInfoTag::GetGenresLabel() const
+const std::string CPVREpgInfoTag::GetGenresLabel(const std::string& separator) const
 {
-  return StringUtils::Join(
-      Genre(), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
+  const std::string sep{
+      separator.empty()
+          ? CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator
+          : separator};
+  return StringUtils::Join(Genre(), sep);
 }
 
 int CPVREpgInfoTag::Year() const

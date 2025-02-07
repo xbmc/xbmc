@@ -1,125 +1,371 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-	<defaultcontrol always="true">9000</defaultcontrol>
+	<defaultcontrol always="true">5000</defaultcontrol>
 	<onload>SetProperty(infobackground,$ESCINFO[ListItem.Art(fanart)],home)</onload>
 	<onunload>ClearProperty(infobackground,home)</onunload>
 	<controls>
-		<control type="group">
-			<animation effect="fade" start="0" end="100" time="100">WindowOpen</animation>
-			<animation effect="fade" start="100" end="0" time="100">WindowClose</animation>
-			<animation effect="fade" start="100" end="75" time="0" condition="true">Conditional</animation>
-			<visible>Window.isActive(fullscreenvideo)</visible>
-			<include>ColoredBackgroundImages</include>
-		</control>
 		<control type="group">
 			<centertop>50%</centertop>
 			<height>1080</height>
 			<centerleft>50%</centerleft>
 			<width>1920</width>
-			<control type="image">
+			<control type="group">
+				<top>150</top>
+				<left>66</left>
 				<include>OpenClose_Left</include>
-				<left>114</left>
-				<top>236</top>
-				<width>461</width>
-				<height>461</height>
-				<aspectratio>keep</aspectratio>
-				<texture fallback="DefaultTVShows.png">$INFO[ListItem.Icon]</texture>
+				<control type="group">
+					<control type="image">
+						<top>-16</top>
+						<left>-16</left>
+						<width>566</width>
+						<height>718</height>
+						<aspectratio>stretch</aspectratio>
+						<texture border="21">dialogs/dialog-bg.png</texture>
+					</control>
+					<control type="image">
+						<left>14</left>
+						<width>505</width>
+						<height>655</height>
+						<aligny>center</aligny>
+						<aspectratio>keep</aspectratio>
+						<texture fallback="DefaultTVShows.png">$INFO[ListItem.ChannelLogo]</texture>
+						<visible>!String.IsEmpty(ListItem.ChannelLogo) + String.IsEmpty(ListItem.Art(thumb)) + String.IsEmpty(ListItem.EpgEventIcon)</visible>
+					</control>
+					<control type="image">
+						<left>14</left>
+						<width>505</width>
+						<height>655</height>
+						<aligny>center</aligny>
+						<aspectratio>keep</aspectratio>
+						<texture fallback="DefaultMovies.png">$INFO[ListItem.EpgEventIcon]</texture>
+						<visible>String.IsEmpty(ListItem.ChannelLogo) + String.IsEmpty(ListItem.Art(thumb)) + !String.IsEmpty(ListItem.EpgEventIcon)</visible>
+					</control>
+					<control type="image">
+						<left>14</left>
+						<width>505</width>
+						<height>655</height>
+						<aspectratio>keep</aspectratio>
+						<aligny>center</aligny>
+						<texture fallback="DefaultMovies.png">$INFO[ListItem.Art(thumb)]</texture>
+						<visible>String.IsEmpty(ListItem.ChannelLogo) + !String.IsEmpty(ListItem.Art(thumb)) + String.IsEmpty(ListItem.EpgEventIcon)</visible>
+					</control>
+					<control type="image">
+						<left>14</left>
+						<top>14</top>
+						<width>505</width>
+						<height>315</height>
+						<aspectratio>keep</aspectratio>
+						<texture fallback="DefaultTVShows.png">$INFO[ListItem.ChannelLogo]</texture>
+						<visible>!String.IsEmpty(ListItem.ChannelLogo) + [!String.IsEmpty(ListItem.Art(thumb)) | !String.IsEmpty(ListItem.EpgEventIcon)]</visible>
+					</control>
+					<control type="image">
+						<left>14</left>
+						<top>360</top>
+						<width>505</width>
+						<height>315</height>
+						<aspectratio>keep</aspectratio>
+						<texture fallback="DefaultMovies.png">$INFO[ListItem.EpgEventIcon]</texture>
+						<visible>!String.IsEmpty(ListItem.ChannelLogo) + String.IsEmpty(ListItem.Art(thumb)) + !String.IsEmpty(ListItem.EpgEventIcon)</visible>
+					</control>
+					<control type="image">
+						<left>14</left>
+						<top>360</top>
+						<width>505</width>
+						<height>315</height>
+						<aspectratio>keep</aspectratio>
+						<texture fallback="DefaultMovies.png">$INFO[ListItem.Art(thumb)]</texture>
+						<visible>!String.IsEmpty(ListItem.ChannelLogo) + !String.IsEmpty(ListItem.Art(thumb)) + String.IsEmpty(ListItem.EpgEventIcon)</visible>
+					</control>
+				</control>
 			</control>
 			<control type="group">
-				<top>230</top>
-				<left>50</left>
 				<include>OpenClose_Right</include>
-				<control type="button" id="61">
-					<left>600</left>
-					<top>-18</top>
-					<width>1170</width>
-					<height>509</height>
-					<font></font>
-					<onleft>61</onleft>
-					<onright>61</onright>
-					<ondown>9000</ondown>
-					<onup>9000</onup>
-					<onclick>SetProperty(TextViewer_Header,$LOCALIZE[207],home)</onclick>
-					<onclick>SetProperty(TextViewer_Text,$ESCINFO[ListItem.Plot],home)</onclick>
-					<onclick>ActivateWindow(1102)</onclick>
+				<left>600</left>
+				<top>-30</top>
+				<control type="group" id="140">
+					<top>164</top>
+					<control type="button" id="138">
+						<width>774</width>
+						<height>718</height>
+						<textoffsetx>40</textoffsetx>
+						<textoffsety>20</textoffsety>
+						<aligny>bottom</aligny>
+						<label></label>
+						<onclick condition="!String.IsEmpty(ListItem.Plot)">SetProperty(TextViewer_Header,$LOCALIZE[207],home)</onclick>
+						<onclick condition="!String.IsEmpty(ListItem.Plot)">SetProperty(TextViewer_Text,$ESCINFO[ListItem.Plot],home)</onclick>
+						<onclick condition="!String.IsEmpty(ListItem.Plot)">ActivateWindow(1102)</onclick>
+						<onup>5000</onup>
+						<onleft>4000</onleft>
+						<onright>4000</onright>
+						<ondown>5000</ondown>
+						<texturenofocus border="21">dialogs/dialog-bg.png</texturenofocus>
+						<visible>Integer.IsGreater(Container(4000).NumItems,0)</visible>
+					</control>
+					<control type="image">
+						<left>755</left>
+						<width>512</width>
+						<height>718</height>
+						<aligny>bottom</aligny>
+						<texture border="21">dialogs/dialog-bg.png</texture>
+						<visible>Integer.IsGreater(Container(4000).NumItems,0)</visible>
+					</control>
+					<control type="button" id="139">
+						<width>1265</width>
+						<height>718</height>
+						<textoffsetx>40</textoffsetx>
+						<textoffsety>20</textoffsety>
+						<aligny>bottom</aligny>
+						<label></label>
+						<onclick condition="!String.IsEmpty(ListItem.Plot)">SetProperty(TextViewer_Header,$LOCALIZE[207],home)</onclick>
+						<onclick condition="!String.IsEmpty(ListItem.Plot)">SetProperty(TextViewer_Text,$ESCINFO[ListItem.Plot],home)</onclick>
+						<onclick condition="!String.IsEmpty(ListItem.Plot)">ActivateWindow(1102)</onclick>
+						<onup>50</onup>
+						<onleft>4000</onleft>
+						<onright>4000</onright>
+						<ondown>5000</ondown>
+						<texturenofocus border="21">dialogs/dialog-bg.png</texturenofocus>
+						<visible>!Integer.IsGreater(Container(4000).NumItems,0)</visible>
+					</control>
+					<control type="textbox">
+						<left>40</left>
+						<top>25</top>
+						<width>690</width>
+						<height>660</height>
+						<label fallback="19055">$INFO[ListItem.Plot]</label>
+						<autoscroll delay="10000" time="5000" repeat="10000">Skin.HasSetting(AutoScroll)</autoscroll>
+						<visible>Integer.IsGreater(Container(4000).NumItems,0)</visible>
+					</control>
+					<control type="textbox">
+						<left>40</left>
+						<top>25</top>
+						<width>1185</width>
+						<height>660</height>
+						<label fallback="19055">$INFO[ListItem.Plot]</label>
+						<autoscroll delay="10000" time="5000" repeat="10000">Skin.HasSetting(AutoScroll)</autoscroll>
+						<visible>!Integer.IsGreater(Container(4000).NumItems,0)</visible>
+					</control>
 				</control>
-				<control type="textbox" id="400">
-					<left>660</left>
-					<top>20</top>
-					<width>1050</width>
-					<height>425</height>
-					<align>justify</align>
-					<label>$INFO[ListItem.ChannelName,[B],[/B][CR]]$INFO[ListItem.Date,[COLOR grey]$LOCALIZE[552]:[/COLOR] ,[CR]]$INFO[ListItem.Duration,[COLOR grey]$LOCALIZE[180]:[/COLOR] ,[CR]]$VAR[RecordingSizeLabel]$VAR[PremieredLabel]$INFO[ListItem.Rating,[COLOR grey]$LOCALIZE[563]:[/COLOR] ,[CR]]$VAR[ExpirationDateTimeLabel]$VAR[PVRInstanceName,,[CR]]$INFO[ListItem.MediaProviders,[COLOR grey]$LOCALIZE[19334]:[/COLOR] ,[CR]]$INFO[ListItem.Genre,[COLOR grey]$LOCALIZE[515]: [/COLOR]][CR]$INFO[ListItem.ParentalRatingCode,[COLOR grey]$LOCALIZE[31017]: [/COLOR],[CR]]$INFO[ListItem.Writer,[COLOR grey]$LOCALIZE[20417]:[/COLOR] ,[CR]]$INFO[ListItem.Director,[COLOR grey]$LOCALIZE[20339]:[/COLOR] ,[CR]]$INFO[ListItem.Cast,[COLOR grey]$LOCALIZE[206]:[/COLOR] ,[CR]][CR]$INFO[ListItem.Plot]</label>
-					<autoscroll time="3000" delay="4000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+				<control type="grouplist" id="4000">
+					<orientation>vertical</orientation>
+					<left>775</left>
+					<top>185</top>
+					<height>677</height>
+					<itemgap>-8</itemgap>
+					<ondown>5000</ondown>
+					<onup>5000</onup>
+					<onright>140</onright>
+					<onleft>140</onleft>
+					<include content="InfoDialogMetadata">
+						<param name="control_id" value="150" />
+						<param name="label" value="[COLOR button_focus]$LOCALIZE[19029]: [/COLOR]$INFO[ListItem.ChannelNumberLabel,(,) ]$INFO[ListItem.ChannelName]" />
+						<param name="altlabel" value="$LOCALIZE[19029]: $INFO[ListItem.ChannelNumberLabel,(,) ]$INFO[ListItem.ChannelName]" />
+						<param name="visible" value="!String.IsEmpty(ListItem.ChannelNumberLabel) | !String.IsEmpty(ListItem.ChannelName)" />
+					</include>
+					<include content="InfoDialogMetadata">
+						<param name="control_id" value="151" />
+						<param name="label" value="[COLOR button_focus]$LOCALIZE[31137]: [/COLOR]$INFO[ListItem.PVRClientName] $INFO[ListItem.PVRInstanceName, (,)]" />
+						<param name="altlabel" value="$LOCALIZE[31137]: $INFO[ListItem.PVRClientName] $INFO[ListItem.PVRInstanceName, (,)]" />
+						<param name="visible" value="!String.IsEmpty(ListItem.PVRClientName)" />
+					</include>
+					<include content="InfoDialogMetadata">
+						<param name="control_id" value="152" />
+						<param name="label" value="[COLOR button_focus]$LOCALIZE[19334]: [/COLOR]$INFO[ListItem.MediaProviders]" />
+						<param name="altlabel" value="$LOCALIZE[19334]: $INFO[ListItem.MediaProviders]" />
+						<param name="visible" value="!String.IsEmpty(ListItem.MediaProviders)" />
+					</include>
+					<include content="InfoDialogMetadata">
+						<param name="control_id" value="153" />
+						<param name="label" value="[COLOR button_focus]$LOCALIZE[515]: [/COLOR]$INFO[ListItem.Genre]" />
+						<param name="altlabel" value="$LOCALIZE[515]: $INFO[ListItem.Genre]" />
+						<param name="visible" value="!String.IsEmpty(ListItem.Genre)" />
+					</include>
+					<include content="InfoDialogMetadata">
+						<param name="control_id" value="154" />
+						<param name="label" value="[COLOR button_focus]$LOCALIZE[206]: [/COLOR]$INFO[ListItem.Cast(pipe)]" />
+						<param name="altlabel" value="$LOCALIZE[206]: $INFO[ListItem.Cast(pipe)]" />
+						<param name="visible" value="!String.IsEmpty(ListItem.Cast(pipe))" />
+					</include>
+					<include content="InfoDialogMetadata">
+						<param name="control_id" value="155" />
+						<param name="label" value="[COLOR button_focus]$LOCALIZE[20339]: [/COLOR]$INFO[ListItem.Director(pipe)]" />
+						<param name="altlabel" value="$LOCALIZE[20339]: $INFO[ListItem.Director(pipe)]" />
+						<param name="visible" value="!String.IsEmpty(ListItem.Director(pipe))" />
+					</include>
+					<include content="InfoDialogMetadata">
+						<param name="control_id" value="156" />
+						<param name="label" value="[COLOR button_focus]$LOCALIZE[20417]: [/COLOR]$INFO[ListItem.Writer(pipe)]" />
+						<param name="altlabel" value="$LOCALIZE[20417]: $INFO[ListItem.Writer(pipe)]" />
+						<param name="visible" value="!String.IsEmpty(ListItem.Writer(pipe))" />
+					</include>
+					<include content="InfoDialogMetadata">
+						<param name="control_id" value="157" />
+						<param name="label" value="[COLOR button_focus]$VAR[FirstAiredLabel]: [/COLOR]$INFO[ListItem.Premiered]" />
+						<param name="altlabel" value="$VAR[FirstAiredLabel]: $INFO[ListItem.Premiered]" />
+						<param name="visible" value="!String.IsEmpty(ListItem.Premiered)" />
+					</include>
+					<include content="InfoDialogMetadata">
+						<param name="control_id" value="158" />
+						<param name="label" value="[COLOR button_focus]$LOCALIZE[552]: [/COLOR]$INFO[ListItem.Date]" />
+						<param name="altlabel" value="$LOCALIZE[552]: $INFO[ListItem.Date]" />
+						<param name="visible" value="!String.IsEmpty(ListItem.Date)" />
+					</include>
+					<include content="InfoDialogMetadata">
+						<param name="control_id" value="159" />
+						<param name="label" value="[COLOR button_focus]$LOCALIZE[180]: [/COLOR]$INFO[ListItem.Duration]" />
+						<param name="altlabel" value="$LOCALIZE[180]: $INFO[ListItem.Duration]" />
+						<param name="visible" value="!String.IsEmpty(ListItem.Duration)" />
+					</include>
+					<include content="InfoDialogMetadata">
+						<param name="control_id" value="160" />
+						<param name="label" value="[COLOR button_focus]$LOCALIZE[22031]: [/COLOR]$INFO[ListItem.Size]" />
+						<param name="altlabel" value="$LOCALIZE[22031]: $INFO[ListItem.Size]" />
+						<param name="visible" value="!String.IsEmpty(ListItem.Size) + !String.IsEqual(ListItem.Size,0.00 B)" />
+					</include>
+					<include content="InfoDialogMetadata">
+						<param name="control_id" value="161" />
+						<param name="label" value="[COLOR button_focus]$LOCALIZE[576]: [/COLOR]$INFO[ListItem.PlayCount]" />
+						<param name="altlabel" value="$LOCALIZE[576]: $INFO[ListItem.PlayCount]" />
+						<param name="visible" value="!String.IsEmpty(ListItem.PlayCount)" />
+					</include>
+					<include content="InfoDialogMetadata">
+						<param name="control_id" value="162" />
+						<param name="label" value="[COLOR button_focus]$LOCALIZE[568]: [/COLOR]$INFO[ListItem.LastPlayed]" />
+						<param name="altlabel" value="$LOCALIZE[568]: $INFO[ListItem.LastPlayed]" />
+						<param name="visible" value="!String.IsEmpty(ListItem.LastPlayed)" />
+					</include>
+					<include content="InfoDialogMetadata">
+						<param name="control_id" value="163" />
+						<param name="label" value="[COLOR button_focus]$LOCALIZE[19299]: [/COLOR]$INFO[ListItem.ExpirationDate] $INFO[ListItem.ExpirationTime]" />
+						<param name="altlabel" value="$LOCALIZE[19299]: $INFO[ListItem.ExpirationDate] $INFO[ListItem.ExpirationTime]" />
+						<param name="visible" value="!String.IsEmpty(ListItem.ExpirationDate) + !String.IsEmpty(ListItem.ExpirationTime) " />
+					</include>
+					<include content="InfoDialogMetadata">
+						<param name="control_id" value="164" />
+						<param name="label" value="[COLOR button_focus]$LOCALIZE[563]: [/COLOR]$INFO[ListItem.Rating]" />
+						<param name="altlabel" value="$LOCALIZE[563]: $INFO[ListItem.Rating]" />
+						<param name="visible" value="!String.IsEmpty(ListItem.Rating)" />
+					</include>
+					<include content="InfoDialogMetadata">
+						<param name="control_id" value="165" />
+						<param name="label" value="[COLOR button_focus]$LOCALIZE[31017]: [/COLOR]$INFO[ListItem.ParentalRatingCode]" />
+						<param name="altlabel" value="$LOCALIZE[31017]: $INFO[ListItem.ParentalRatingCode]" />
+						<param name="visible" value="!String.IsEmpty(ListItem.ParentalRatingCode)" />
+					</include>
 				</control>
-				<control type="grouplist" id="9000">
-					<left>150</left>
-					<top>600</top>
-					<width>1520</width>
-					<height>160</height>
-					<itemgap>10</itemgap>
+			</control>
+			<control type="group">
+				<include>OpenClose_Right</include>
+				<left>90</left>
+				<top>864</top>
+				<width>1740</width>
+				<height>400</height>
+				<control type="grouplist" id="5000">
+					<onleft>5000</onleft>
+					<onright>5000</onright>
+					<onup>140</onup>
+					<ondown>140</ondown>
+					<itemgap>-18</itemgap>
 					<align>center</align>
 					<orientation>horizontal</orientation>
-					<defaultcontrol always="true">5</defaultcontrol>
-					<onleft>9000</onleft>
-					<onright>9000</onright>
-					<onup>61</onup>
-					<ondown>61</ondown>
+					<scrolltime tween="quadratic">200</scrolltime>
 					<include content="InfoDialogButton">
-						<param name="width" value="275" />
 						<param name="id" value="5" />
 						<param name="icon" value="icons/infodialogs/launch.png" />
 						<param name="label" value="$LOCALIZE[19165]" />
 						<param name="visible" value="Window.IsActive(PVRGuideInfo)" />
 					</include>
 					<include content="InfoDialogButton">
-						<param name="width" value="275" />
 						<param name="id" value="10" />
 						<param name="icon" value="icons/infodialogs/cinema.png" />
 						<param name="label" value="$LOCALIZE[19190]" />
 						<param name="visible" value="Window.IsActive(PVRGuideInfo)" />
 					</include>
 					<include content="InfoDialogButton">
-						<param name="width" value="275" />
 						<param name="id" value="8" />
 						<param name="icon" value="icons/infodialogs/play_record.png" />
 						<param name="label" value="$LOCALIZE[19687]" />
 						<param name="visible" value="Window.IsActive(PVRGuideInfo) | Window.IsActive(PVRRecordingInfo)" />
 					</include>
 					<include content="InfoDialogButton">
-						<param name="width" value="275" />
 						<param name="id" value="6" />
 						<param name="icon" value="icons/infodialogs/record.png" />
+						<param name="label" value="$LOCALIZE[264]" />
 						<param name="visible" value="Window.IsActive(PVRGuideInfo)" />
 					</include>
 					<include content="InfoDialogButton">
-						<param name="width" value="275" />
 						<param name="id" value="9" />
 						<param name="icon" value="icons/infodialogs/timer.png" />
 						<param name="label" value="$LOCALIZE[19061]" />
 						<param name="visible" value="Window.IsActive(PVRGuideInfo)" />
 					</include>
 					<include content="InfoDialogButton">
-						<param name="width" value="275" />
 						<param name="id" value="11" />
 						<param name="icon" value="icons/infodialogs/bell.png" />
 						<param name="label" value="$LOCALIZE[826]" />
 						<param name="visible" value="Window.IsActive(PVRGuideInfo)" />
 					</include>
 					<include content="InfoDialogButton">
-						<param name="width" value="275" />
 						<param name="id" value="4" />
 						<param name="icon" value="icons/infodialogs/similar.png" />
 						<param name="label" value="$LOCALIZE[19003]" />
 						<param name="visible" value="Window.IsActive(PVRGuideInfo) | Window.IsActive(PVRRecordingInfo)" />
 					</include>
+					<include content="InfoDialogButton">
+						<param name="id" value="102" />
+						<param name="icon" value="icons/infodialogs/image.png" />
+						<param name="label" value="$LOCALIZE[31028]" />
+						<param name="onclick_1" value="SetProperty(fanart,$ESCINFO[ListItem.Art(fanart)],home)" />
+						<param name="onclick_2" value="ActivateWindow(1104)" />
+						<param name="visible" value="!String.IsEmpty(ListItem.Art(fanart))" />
+					</include>
+					<include content="InfoDialogButton">
+						<param name="id" value="13" />
+						<param name="icon" value="icons/infodialogs/director.png" />
+						<param name="label" value="$LOCALIZE[31123]" />
+						<param name="visible" value="!String.IsEmpty(ListItem.Director)" />
+					</include>
 				</control>
+				<include content="LeftRightArrows">
+					<param name="list_id" value="5000" />
+					<param name="left_posx" value="-15" />
+					<param name="right_posx" value="1730" />
+					<param name="posy" value="60" />
+					<param name="visible" value="true" />
+				</include>
 			</control>
 			<include content="InfoDialogTopBarInfo">
 				<param name="main_label" value="$INFO[ListItem.Title] $INFO[ListItem.Year,([COLOR grey],[/COLOR])]" />
 				<param name="sub_label" value="$VAR[FlagDashLabel]$VAR[SeasonEpisodeAndNameLabel]" />
-				<param name="posy" value="40" />
 			</include>
+		</control>
+		<control type="group">
+			<animation effect="fade" start="0" end="100" time="300" delay="300">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+			<centerleft>50%</centerleft>
+			<width>1920</width>
+			<bottom>0</bottom>
+			<height>70</height>
+			<include>MediaFlags</include>
+			<control type="group">
+				<visible>Control.HasFocus(138)</visible>
+				<animation effect="fade" time="200">VisibleChange</animation>
+				<top>10</top>
+				<left>0</left>
+				<control type="image">
+					<top>4</top>
+					<left>17</left>
+					<width>36</width>
+					<height>36</height>
+					<texture colordiffuse="grey">lists/played-total.png</texture>
+				</control>
+				<control type="label">
+					<left>74</left>
+					<width>800</width>
+					<height>44</height>
+					<shadowcolor>text_shadow</shadowcolor>
+					<label>$LOCALIZE[31126]</label>
+				</control>
+			</control>
 		</control>
 		<include condition="Skin.HasSetting(touchmode)">TouchBackButton</include>
 	</controls>

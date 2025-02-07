@@ -982,20 +982,22 @@ bool CVideoInfoTag::HasUniqueID() const
   return !m_uniqueIDs.empty();
 }
 
-const std::string CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const
+const std::string CVideoInfoTag::GetCast(const std::string& separator,
+                                         bool bIncludeRole /*= false*/) const
 {
+  const std::string sep{separator.empty() ? "\n" : separator};
   std::string strLabel;
   for (iCast it = m_cast.begin(); it != m_cast.end(); ++it)
   {
     std::string character;
     if (it->strRole.empty() || !bIncludeRole)
-      character = StringUtils::Format("{}\n", it->strName);
+      character = StringUtils::Format("{}{}", it->strName, sep);
     else
-      character =
-          StringUtils::Format("{} {} {}\n", it->strName, g_localizeStrings.Get(20347), it->strRole);
+      character = StringUtils::Format("{} {} {}{}", it->strName, g_localizeStrings.Get(20347),
+                                      it->strRole, sep);
     strLabel += character;
   }
-  return StringUtils::TrimRight(strLabel, "\n");
+  return StringUtils::TrimRight(strLabel, sep.c_str());
 }
 
 void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)

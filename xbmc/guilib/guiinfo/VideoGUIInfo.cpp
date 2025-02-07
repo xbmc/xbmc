@@ -143,12 +143,24 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         return true;
       case VIDEOPLAYER_GENRE:
       case LISTITEM_GENRE:
-        value = StringUtils::Join(tag->m_genre, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
+      {
+        const std::string sep{info.GetData3().empty() ? CServiceBroker::GetSettingsComponent()
+                                                            ->GetAdvancedSettings()
+                                                            ->m_videoItemSeparator
+                                                      : info.GetData3()};
+        value = StringUtils::Join(tag->m_genre, sep);
         return true;
+      }
       case VIDEOPLAYER_DIRECTOR:
       case LISTITEM_DIRECTOR:
-        value = StringUtils::Join(tag->m_director, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
+      {
+        const std::string sep{info.GetData3().empty() ? CServiceBroker::GetSettingsComponent()
+                                                            ->GetAdvancedSettings()
+                                                            ->m_videoItemSeparator
+                                                      : info.GetData3()};
+        value = StringUtils::Join(tag->m_director, sep);
         return true;
+      }
       case VIDEOPLAYER_IMDBNUMBER:
       case LISTITEM_IMDBNUMBER:
         value = tag->GetUniqueID();
@@ -300,11 +312,11 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         break;
       case VIDEOPLAYER_CAST:
       case LISTITEM_CAST:
-        value = tag->GetCast();
+        value = tag->GetCast(info.GetData3());
         return true;
       case VIDEOPLAYER_CAST_AND_ROLE:
       case LISTITEM_CAST_AND_ROLE:
-        value = tag->GetCast(true);
+        value = tag->GetCast(info.GetData3(), true);
         return true;
       case VIDEOPLAYER_ARTIST:
       case LISTITEM_ARTIST:
@@ -316,8 +328,14 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         return true;
       case VIDEOPLAYER_WRITER:
       case LISTITEM_WRITER:
-        value = StringUtils::Join(tag->m_writingCredits, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
+      {
+        const std::string sep{info.GetData3().empty() ? CServiceBroker::GetSettingsComponent()
+                                                            ->GetAdvancedSettings()
+                                                            ->m_videoItemSeparator
+                                                      : info.GetData3()};
+        value = StringUtils::Join(tag->m_writingCredits, sep);
         return true;
+      }
       case VIDEOPLAYER_TAGLINE:
       case LISTITEM_TAGLINE:
         value = tag->m_strTagLine;

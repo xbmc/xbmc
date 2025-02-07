@@ -736,7 +736,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
       case LISTITEM_GENRE:
       case VIDEOPLAYER_NEXT_GENRE:
       case LISTITEM_NEXT_GENRE:
-        strValue = epgTag->GetGenresLabel();
+        strValue = epgTag->GetGenresLabel(info.GetData3());
         return true;
       case VIDEOPLAYER_PLOT:
       case LISTITEM_PLOT:
@@ -831,15 +831,15 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
         return true;
       case VIDEOPLAYER_CAST:
       case LISTITEM_CAST:
-        strValue = epgTag->GetCastLabel();
+        strValue = epgTag->GetCastLabel(info.GetData3());
         return true;
       case VIDEOPLAYER_DIRECTOR:
       case LISTITEM_DIRECTOR:
-        strValue = epgTag->GetDirectorsLabel();
+        strValue = epgTag->GetDirectorsLabel(info.GetData3());
         return true;
       case VIDEOPLAYER_WRITER:
       case LISTITEM_WRITER:
-        strValue = epgTag->GetWritersLabel();
+        strValue = epgTag->GetWritersLabel(info.GetData3());
         return true;
       case LISTITEM_EPG_EVENT_ICON:
         strValue = epgTag->IconPath();

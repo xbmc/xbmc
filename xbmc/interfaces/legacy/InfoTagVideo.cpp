@@ -219,7 +219,7 @@ namespace XBMCAddon
 
     String InfoTagVideo::getCast()
     {
-      return infoTag->GetCast(true);
+      return infoTag->GetCast("\n", true);
     }
 
     std::vector<Actor*> InfoTagVideo::getActors()

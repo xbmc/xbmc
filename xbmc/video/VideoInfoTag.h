@@ -88,7 +88,7 @@ public:
   bool HasPremiered() const;
   const CDateTime& GetPremiered() const;
   const CDateTime& GetFirstAired() const;
-  const std::string GetCast(bool bIncludeRole = false) const;
+  const std::string GetCast(const std::string& separator, bool bIncludeRole = false) const;
   bool HasStreamDetails() const;
   bool IsEmpty() const;
 

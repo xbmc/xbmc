@@ -238,28 +238,32 @@ public:
   const std::vector<std::string>& Writers() const { return m_writers; }
 
   /*!
-   * @brief Get the cast of this event as formatted string.
+   * @brief Get the cast members of this event as formatted string.
+   * @param separator The separator for the different cast members, default value if empty.
    * @return The cast label.
    */
-  const std::string GetCastLabel() const;
+  const std::string GetCastLabel(const std::string& separator) const;
 
   /*!
    * @brief Get the director(s) of this event as formatted string.
+   * @param separator The separator for the different directors, default value if empty.
    * @return The directors label.
    */
-  const std::string GetDirectorsLabel() const;
+  const std::string GetDirectorsLabel(const std::string& separator) const;
 
   /*!
    * @brief Get the writer(s) of this event as formatted string.
+   * @param separator The separator for the different writers, default value if empty.
    * @return The writers label.
    */
-  const std::string GetWritersLabel() const;
+  const std::string GetWritersLabel(const std::string& separator) const;
 
   /*!
    * @brief Get the genre(s) of this event as formatted string.
+   * @param separator The separator for the different genres, default value if empty.
    * @return The genres label.
    */
-  const std::string GetGenresLabel() const;
+  const std::string GetGenresLabel(const std::string& separator) const;
 
   /*!
    * @brief Get the year of this event.
