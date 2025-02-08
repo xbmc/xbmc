@@ -529,17 +529,12 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
 
 bool CProcessorHD::IsSuperResolutionSuitable(const VideoPicture& picture)
 {
-  if (picture.iWidth > 1920)
+  if (picture.iWidth > 2560) // use VSR up to 1440p
     return false;
 
   const UINT outputWidth = DX::Windowing()->GetBackBuffer().GetWidth();
 
   if (outputWidth <= picture.iWidth)
-    return false;
-
-  if (picture.color_primaries == AVCOL_PRI_BT2020 ||
-      picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
-      picture.color_transfer == AVCOL_TRC_ARIB_STD_B67)
     return false;
 
   return true;
