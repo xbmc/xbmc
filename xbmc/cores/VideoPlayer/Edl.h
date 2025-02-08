@@ -87,7 +87,7 @@ public:
    * @brief Get the list of EDL cut markers.
    * @return The list of EDL cut markers or an empty vector if no EDL cuts exist.
    * The returned values are accurate with respect to cut durations. I.e. if the file
-   * has multiple cuts, the positions of subsquent cuts are automatically corrected by
+   * has multiple cuts, the positions of subsequent cuts are automatically corrected by
    * substracting the previous cut durations.
   */
   const std::vector<std::chrono::milliseconds> GetCutMarkers() const;

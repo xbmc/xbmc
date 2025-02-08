@@ -654,7 +654,7 @@ void CDVDRadioRDSData::Flush()
 {
   if(!m_messageQueue.IsInited())
     return;
-  /* flush using message as this get's called from VideoPlayer thread */
+  /* flush using message as this gets called from VideoPlayer thread */
   /* and any demux packet that has been taken out of queue need to */
   /* be disposed of before we flush */
   m_messageQueue.Flush();

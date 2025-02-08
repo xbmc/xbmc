@@ -116,7 +116,7 @@ private:
     bool AddEndOfStreamPacket();
     /*!
      * \brief Create a XAUDIO2_BUFFER with a struct buffer_ctx in pContext member, which must
-     * be deleted either manually or by XAudio2 BufferEnd callbak to avoid memory leaks.
+     * be deleted either manually or by XAudio2 BufferEnd callback to avoid memory leaks.
      * \param data data of the frames to copy. if null, the new buffer will contain silence.
      * \param frames number of frames
      * \param offset offset from the start in the data buffer.

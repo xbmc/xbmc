@@ -214,7 +214,7 @@ public:
    * \param outputFormat the output format
    * \param outputCS the output color space
    * \return true when the conversion is supported, false when it is not
-   * or the API used to validate is not availe (Windows < 10)
+   * or the API used to validate is not available (Windows < 10)
   */
   bool CheckConversion(DXGI_FORMAT inputFormat,
                        DXGI_COLOR_SPACE_TYPE inputCS,
@@ -331,7 +331,7 @@ protected:
   ProcessorConversions LogAndListConversions(const DXGIColorSpaceArgs& inputArgs,
                                              const DXGIColorSpaceArgs& outputArgs) const;
   /*!
-   * \brief Suggest chroma siting derived from source charateristics.
+   * \brief Suggest chroma siting derived from source characteristics.
    * Has limited functionality at this time and supports values that make sense for dxgi
    * \param args description of the sourcce
    * \return suggested chroma siting.

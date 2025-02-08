@@ -49,7 +49,7 @@ important, as xml tags are case-sensitive.
 --------------------------------------------------------------------------------
 \section Game_Control_sect3 List item info
 
-List item info can be used for all tag values. For example, if the control defintion looks like:
+List item info can be used for all tag values. For example, if the control definition looks like:
 
 ~~~~~~~~~~~~~
 <itemlayout width="444" height="250">

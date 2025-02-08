@@ -1477,7 +1477,7 @@ void CVideoPlayer::Process()
 {
   // Try to resolve the correct mime type. This can take some time, for example if a requested
   // item is located at a slow/not reachable remote source. So, do mime type detection in vp worker
-  // thread, not directly when initalizing the player to keep GUI responsible.
+  // thread, not directly when initializing the player to keep GUI responsible.
   m_item.SetMimeTypeForInternetFile();
 
   CServiceBroker::GetWinSystem()->RegisterRenderLoop(this);

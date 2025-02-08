@@ -993,7 +993,7 @@ void CRPRenderManager::GetVideoFrame(IRenderBuffer*& readableBuffer,
                          [](const IRenderBuffer* renderBuffer)
                          { return renderBuffer->GetMemoryAccess() != DataAccess::WRITE_ONLY; });
 
-  // Aquire buffer if one was found
+  // Acquire buffer if one was found
   if (it != m_renderBuffers.end())
   {
     readableBuffer = *it;

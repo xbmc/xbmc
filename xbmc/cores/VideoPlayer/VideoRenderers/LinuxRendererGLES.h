@@ -124,7 +124,7 @@ protected:
   void RenderFromFBO();
   void RenderSinglePass(int index, int field); // single pass glsl renderer
 
-  // hooks for HwDec Renderered
+  // hooks for HwDec rendering
   virtual bool LoadShadersHook() { return false; }
   virtual bool RenderHook(int idx) { return false; }
   virtual void AfterRenderHook(int idx) {}

@@ -94,8 +94,8 @@ void CDVDSubtitlesLibass::Configure()
 
   // Libass uses system font provider (like fontconfig) by default in some
   // platforms (e.g. linux/windows), on some other systems like android the
-  // font provider is currenlty not supported, then an user can add his
-  // additionals fonts only by using the user fonts folder.
+  // font provider is currently not supported, then an user can add his
+  // additional fonts only by using the user fonts folder.
   ass_set_fonts_dir(m_library, CSpecialProtocol::TranslatePath(FONT::FONTPATH::USER).c_str());
 
   // Load additional fonts into Libass memory

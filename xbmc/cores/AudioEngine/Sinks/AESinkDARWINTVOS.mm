@@ -300,7 +300,7 @@ bool CAAudioUnitSink::deactivate()
     AudioUnitReset(m_audioUnit, kAudioUnitScope_Global, 0);
 
     // this is a delayed call, the OS will block here
-    // until the autio unit actually is stopped.
+    // until the audio unit actually is stopped.
     AudioOutputUnitStop(m_audioUnit);
 
     // detach the render callback on the unit
