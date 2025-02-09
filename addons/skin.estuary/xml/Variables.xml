@@ -819,7 +819,7 @@
 		<value condition="String.IsEqual(ListItem.AudioCodec,truehd_atmos) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.AudioCodec,truehd_atmos)] | [Window.IsActive(visualisation) + String.IsEqual(MusicPlayer.AudioCodec,truehd_atmos)]">Dolby TrueHD</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,vorbis) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.AudioCodec,vorbis)] | [Window.IsActive(visualisation) + String.IsEqual(MusicPlayer.AudioCodec,vorbis)]">Vorbis</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,wav) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.AudioCodec,wav)] | [Window.IsActive(visualisation) + String.IsEqual(MusicPlayer.AudioCodec,wav)]">WAV</value>
-		<value condition="String.IsEqual(ListItem.AudioCodec,wavpack) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.AudioCodec,wavpack)] | [Window.IsActive(visualisation) + String.IsEqual(MusicPlayer.AudioCodec,wavpack)]">">WAVP</value>
+		<value condition="String.IsEqual(ListItem.AudioCodec,wavpack) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.AudioCodec,wavpack)] | [Window.IsActive(visualisation) + String.IsEqual(MusicPlayer.AudioCodec,wavpack)]">WAVP</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,wmapro) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.AudioCodec,wmapro)] | [Window.IsActive(visualisation) + String.IsEqual(VideoPlayer.AudioCodec,wmapro)]">WMA-PRO</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,wmav2) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.AudioCodec,wmav2)] | [Window.IsActive(visualisation) + String.IsEqual(VideoPlayer.AudioCodec,wmav2)]">WMA</value>
 		<value condition="Window.IsActive(fullscreenvideo)">$INFO[VideoPlayer.AudioCodec]</value>
@@ -894,7 +894,7 @@
 		<value condition="Window.IsVisible(dialogselectaudio) + String.Contains(ListItem.Property(stream.codec),pcm_s24le)">PCM</value>
 		<value condition="Window.IsVisible(dialogselectaudio) + String.Contains(ListItem.Property(stream.codec),vorbis)">Vorbis</value>
 		<value condition="Window.IsVisible(dialogselectaudio) + String.Contains(ListItem.Property(stream.codec),wav)">WAV</value>
-		<value condition="Window.IsVisible(dialogselectaudio) + String.Contains(ListItem.Property(stream.codec),wavpack)">">WAVP</value>
+		<value condition="Window.IsVisible(dialogselectaudio) + String.Contains(ListItem.Property(stream.codec),wavpack)">WAVP</value>
 		<value condition="Window.IsVisible(dialogselectaudio) + String.Contains(ListItem.Property(stream.codec),wmapro)">WMA-PRO</value>
 		<value condition="Window.IsVisible(dialogselectaudio) + String.Contains(ListItem.Property(stream.codec),wmav2)">WMA</value>
 		<value condition="Window.IsVisible(dialogselectaudio) + String.Contains(ListItem.Property(stream.codec),dtshd_hra)">DTS-HD HRA</value>
