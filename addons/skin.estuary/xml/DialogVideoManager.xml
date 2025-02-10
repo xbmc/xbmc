@@ -81,7 +81,7 @@
 				<left>1460</left>
 				<top>80</top>
 				<width>300</width>
-				<height>565</height>
+				<height>665</height>
 				<onleft condition="Integer.IsGreater(Container(50).NumItems,0)">100</onleft>
 				<itemgap>dialogbuttons_itemgap</itemgap>
 				<scrolltime tween="quadratic">200</scrolltime>
@@ -106,6 +106,16 @@
 				<include content="DefaultDialogButton">
 					<param name="id" value="24" />
 					<param name="label" value="$LOCALIZE[40004]" />
+					<param name="visible">Window.IsVisible(managevideoversions)</param>
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="29" />
+					<param name="label" value="$LOCALIZE[13424]" />
+					<param name="visible">Window.IsVisible(managevideoversions)</param>
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="30" />
+					<param name="label" value="$LOCALIZE[40033]" />
 					<param name="visible">Window.IsVisible(managevideoversions)</param>
 				</include>
 				<include content="DefaultDialogButton">

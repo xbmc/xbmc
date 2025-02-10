@@ -27,6 +27,7 @@
 #include "storage/MediaManager.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoManagerTypes.h"
 #include "video/VideoThumbLoader.h"
@@ -37,6 +38,8 @@
 static constexpr unsigned int CONTROL_BUTTON_ADD_VERSION = 22;
 static constexpr unsigned int CONTROL_BUTTON_RENAME_VERSION = 24;
 static constexpr unsigned int CONTROL_BUTTON_SET_DEFAULT = 25;
+static constexpr unsigned int CONTROL_BUTTON_CHOOSE_PLAYLIST = 29;
+static constexpr unsigned int CONTROL_BUTTON_ANOTHER_PLAYLIST = 30;
 
 CGUIDialogVideoManagerVersions::CGUIDialogVideoManagerVersions()
   : CGUIDialogVideoManager(WINDOW_DIALOG_MANAGE_VIDEO_VERSIONS),
@@ -73,6 +76,14 @@ bool CGUIDialogVideoManagerVersions::OnMessage(CGUIMessage& message)
       else if (control == CONTROL_BUTTON_SET_DEFAULT)
       {
         SetDefault();
+      }
+      else if (control == CONTROL_BUTTON_CHOOSE_PLAYLIST)
+      {
+        ChoosePlaylist(m_selectedVideoAsset);
+      }
+      else if (control == CONTROL_BUTTON_ANOTHER_PLAYLIST)
+      {
+        ChoosePlaylist(m_selectedVideoAsset, false);
       }
       break;
     }
@@ -116,6 +127,20 @@ void CGUIDialogVideoManagerVersions::UpdateButtons()
   else
   {
     CONTROL_ENABLE(CONTROL_BUTTON_RENAME_VERSION);
+  }
+
+  if (m_selectedVideoAsset->IsBluray())
+  {
+    CONTROL_ENABLE(CONTROL_BUTTON_CHOOSE_PLAYLIST);
+    if (URIUtils::IsBlurayPath(m_selectedVideoAsset->GetDynPath()))
+      CONTROL_ENABLE(CONTROL_BUTTON_ANOTHER_PLAYLIST);
+    else
+      CONTROL_DISABLE(CONTROL_BUTTON_ANOTHER_PLAYLIST);
+  }
+  else
+  {
+    CONTROL_DISABLE(CONTROL_BUTTON_CHOOSE_PLAYLIST);
+    CONTROL_DISABLE(CONTROL_BUTTON_ANOTHER_PLAYLIST);
   }
 }
 

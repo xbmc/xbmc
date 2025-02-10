@@ -3403,6 +3403,44 @@ bool CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
   return false;
 }
 
+std::vector<int> CVideoDatabase::GetPlaylistsByPath(const std::string& path)
+{
+  std::vector<int> playlists{};
+
+  try
+  {
+    if (nullptr == m_pDB)
+      return playlists;
+    if (nullptr == m_pDS)
+      return playlists;
+
+    const std::string strSQL{PrepareSQL("SELECT files.strFileName FROM path INNER JOIN files ON "
+                                        "path.idPath=files.idPath WHERE path.strPath='%s'",
+                                        path.c_str())};
+    m_pDS->query(strSQL);
+
+    while (!m_pDS->eof())
+    {
+      std::string filename = m_pDS->fv("files.strFilename").get_asString();
+      if (StringUtils::EqualsNoCase(URIUtils::GetExtension(filename), ".mpls"))
+      {
+        filename.erase(filename.find_last_of('.')); // remove extension
+        const int playlist{stoi(filename)};
+        playlists.emplace_back(playlist);
+      }
+      m_pDS->next();
+    }
+    m_pDS->close();
+
+    return playlists;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "failed - path {}", path);
+  }
+  return std::vector<int>{}; // empty
+}
+
 //********************************************************************************************************************************
 void CVideoDatabase::GetFilePathById(int idMovie, std::string& filePath, VideoDbContentType iType)
 {
@@ -4095,7 +4133,7 @@ std::string CVideoDatabase::GetFileBasePathById(int idFile)
 
     if (!m_pDS->eof())
     {
-      return m_pDS->fv("strPath").get_asString();
+      return URIUtils::GetBasePath(m_pDS->fv("strPath").get_asString());
     }
     m_pDS->close();
   }
@@ -11663,8 +11701,12 @@ void CVideoDatabase::InvalidatePathHash(const std::string& strPath)
 {
   SScanSettings settings;
   bool foundDirectly;
-  ScraperPtr info = GetScraperForPath(strPath,settings,foundDirectly);
-  SetPathHash(strPath,"");
+
+  const std::string path{URIUtils::IsBlurayPath(strPath) ? URIUtils::GetDiscBasePath(strPath)
+                                                         : strPath};
+
+  ScraperPtr info = GetScraperForPath(path, settings, foundDirectly);
+  SetPathHash(path, "");
   if (!info)
     return;
   if (info->Content() == CONTENT_TVSHOWS || (info->Content() == CONTENT_MOVIES && !foundDirectly)) // if we scan by folder name we need to invalidate parent as well
@@ -11672,7 +11714,8 @@ void CVideoDatabase::InvalidatePathHash(const std::string& strPath)
     if (info->Content() == CONTENT_TVSHOWS || settings.parent_name_root)
     {
       std::string strParent;
-      if (URIUtils::GetParentPath(strPath, strParent) && (!URIUtils::IsPlugin(strPath) || !CURL(strParent).GetHostName().empty()))
+      if (URIUtils::GetParentPath(path, strParent) &&
+          (!URIUtils::IsPlugin(path) || !CURL(strParent).GetHostName().empty()))
         SetPathHash(strParent, "");
     }
   }
@@ -12686,6 +12729,23 @@ bool CVideoDatabase::ConvertVideoToVersion(VideoDbContentType itemType,
                           idVideoVersion, assetType, idFile));
 
   CommitTransaction();
+
+  return true;
+}
+
+bool CVideoDatabase::AddVideoVersion(VideoDbContentType itemType,
+                                     int dbIdSource,
+                                     int idFile,
+                                     int idVideoVersion,
+                                     VideoAssetType assetType)
+{
+  MediaType mediaType;
+  VideoContentTypeToString(itemType, mediaType);
+
+  ExecuteQuery(
+      PrepareSQL("INSERT INTO videoversion (idFile, idMedia, media_type, itemType, idType) "
+                 "VALUES(%i, %i, '%s', %i, %i)",
+                 idFile, dbIdSource, mediaType.c_str(), assetType, idVideoVersion));
 
   return true;
 }

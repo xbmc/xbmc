@@ -7463,6 +7463,7 @@ msgstr ""
 #. Shown on context menu when a bluray:// or dvd:// playlist has already been saved
 #. Giving the user a chance to select a new one via the simple menu dialog
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
+#: addons/skin.estuary/xml/DialogVideoManager.xml
 msgctxt "#13424"
 msgid "Choose playlist"
 msgstr ""
@@ -24470,7 +24471,12 @@ msgctxt "#40032"
 msgid "No similar movies were found in the library."
 msgstr ""
 
-#empty string id 40033
+#. Allow the addition of another playlist from a disc source
+#. (ie. a bluray with more than one movie version on the same disc)
+#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
+msgctxt "#40033"
+msgid "Another playlist"
+msgstr ""
 
 #. Addition of new extra: a movie with multiple versions cannot be turned into an extra of another movie.
 #: xbmc/video/dialogs/GUIDialogVideoManagerExtras.cpp
