@@ -56,7 +56,7 @@ UTILS::DISCS::DiscInfo UTILS::DISCS::ProbeBlurayDiscInfo(const std::string& medi
 {
   DiscInfo info;
 #ifdef HAVE_LIBBLURAY
-  XFILE::CBlurayDirectory bdDir;
+  CBlurayDirectory bdDir;
   if (!bdDir.InitializeBluray(mediaPath))
     return info;
 
