@@ -15,6 +15,7 @@
 #include "RenderFlags.h"
 #include "ServiceBroker.h"
 #include "application/Application.h"
+#include "cores/DataCacheCore.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/StereoscopicsManager.h"
@@ -23,6 +24,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
+#include "utils/AMLUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
@@ -696,6 +698,26 @@ RESOLUTION CRenderManager::GetResolution()
   return res;
 }
 
+bool CRenderManager::CalcOverlayActiveArea(CRect& src, CRect& dst)
+{
+  // Setup - DV Active Area (L5) Overlay handling.
+  if ((m_picture.hdrType != StreamHdrType::HDR_TYPE_DOLBYVISION) || !aml_dv_use_active_area())
+    return false;
+
+  // Calculate scaling factors from source to destination
+  float scaleX = static_cast<float>(dst.Width()) / src.Width();
+  float scaleY = static_cast<float>(dst.Height()) / src.Height();
+
+  // Create active area rectangle based on scaled offsets
+  const auto& doviMeta = CServiceBroker::GetDataCacheCore().GetVideoDoViFrameMetadata();
+  dst.x1 += static_cast<int>(doviMeta.level5_active_area_left_offset   * scaleX);
+  dst.x2 -= static_cast<int>(doviMeta.level5_active_area_right_offset  * scaleX);
+  dst.y1 += static_cast<int>(doviMeta.level5_active_area_top_offset    * scaleY);
+  dst.y2 -= static_cast<int>(doviMeta.level5_active_area_bottom_offset * scaleY);
+
+  return true;
+}
+
 void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
 {
   CSingleExit exitLock(CServiceBroker::GetWinSystem()->GetGfxContext());
@@ -729,6 +751,7 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
     m_renderedOverlay = m_overlays.HasOverlay(m_presentsource);
     CRect src, dst, view;
     m_pRenderer->GetVideoRect(src, dst, view);
+    m_overlays.SetForceInside(CalcOverlayActiveArea(src, dst));
     m_overlays.SetVideoRect(src, dst, view);
     m_overlays.Render(m_presentsource);
 
