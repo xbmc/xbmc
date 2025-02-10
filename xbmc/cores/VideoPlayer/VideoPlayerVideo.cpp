@@ -796,7 +796,7 @@ void CVideoPlayerVideo::SetSpeed(int speed)
 
 void CVideoPlayerVideo::Flush(bool sync)
 {
-  /* flush using message as this get's called from VideoPlayer thread */
+  /* flush using message as this gets called from VideoPlayer thread */
   /* and any demux packet that has been taken out of queue need to */
   /* be disposed of before we flush */
   SendMessage(std::make_shared<CDVDMsgBool>(CDVDMsg::GENERAL_FLUSH, sync), 1);

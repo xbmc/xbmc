@@ -653,9 +653,9 @@ void CRendererBase::ProcessHDR(CRenderBuffer* rb)
     {
       // Switch to SDR rendering
       CLog::LogF(LOGINFO, "Switching to SDR rendering");
-      // not need set color space because is alredy set when swap chain is re-created
       if (m_AutoSwitchHDR)
       {
+        // color space already sdr or set by the swap chain re-creation
         if (DX::Windowing()->IsHDROutput())
           DX::Windowing()->ToggleHDR(); // Toggle display HDR OFF
       }

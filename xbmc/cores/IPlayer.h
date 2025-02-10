@@ -184,9 +184,9 @@ public:
   virtual void SetTime(int64_t time) { }
 
   /*!
-   \brief Set the total time  in milliseconds
+   \brief Set the total time in milliseconds
    this can be used for injecting the duration in case
-   its not available in the underlaying decoder (airtunes for example)
+   it's not available in the underlying decoder (airtunes for example)
    */
   virtual void SetTotalTime(int64_t time) { }
   virtual void SetSpeed(float speed) = 0;

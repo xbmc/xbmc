@@ -321,7 +321,7 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
   }
 
   // parse the rle.
-  // this should be changed so it get's converted to a yuv overlay
+  // this should be changed so it gets converted to a yuv overlay
   return ParseRLE(pSPUInfo, pUnparsedData);
 }
 

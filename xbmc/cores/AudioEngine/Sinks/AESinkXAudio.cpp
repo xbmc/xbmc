@@ -302,7 +302,7 @@ unsigned int CAESinkXAudio::AddPackets(uint8_t **data, unsigned int frames, unsi
   hr = m_sourceVoice->SubmitSourceBuffer(&xbuffer);
   if (FAILED(hr))
   {
-    CLog::LogF(LOGERROR, "submiting buffer failed due to {}", CWIN32Util::FormatHRESULT(hr));
+    CLog::LogF(LOGERROR, "submitting buffer failed due to {}", CWIN32Util::FormatHRESULT(hr));
     delete xbuffer.pContext;
     return INT_MAX;
   }

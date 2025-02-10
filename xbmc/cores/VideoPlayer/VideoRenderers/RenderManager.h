@@ -117,7 +117,7 @@ public:
   bool GetStats(int &lateframes, double &pts, int &queued, int &discard);
 
   /**
-   * Video player call this on flush in oder to discard any queued frames
+   * Video player call this on flush in order to discard any queued frames
    */
   void DiscardBuffer();
 
