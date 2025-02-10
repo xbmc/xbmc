@@ -12,7 +12,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
   macro(buildrapidjson)
-    set(RapidJSON_VERSION ${${MODULE}_VER})
+    set(RapidJSON_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
 
     set(patches "${CORE_SOURCE_DIR}/tools/depends/target/rapidjson/001-remove_custom_cxx_flags.patch"
                 "${CORE_SOURCE_DIR}/tools/depends/target/rapidjson/002-cmake-standardise_config_installpath.patch"
@@ -30,10 +30,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
     BUILD_DEP_TARGET()
 
-    set(RAPIDJSON_INCLUDE_DIRS ${${MODULE}_INCLUDE_DIR})
+    set(RAPIDJSON_INCLUDE_DIRS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR})
   endmacro()
 
-  set(MODULE_LC rapidjson)
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC rapidjson)
 
   SETUP_BUILD_VARS()
 
@@ -53,7 +53,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   # Check for existing RAPIDJSON. If version >= RAPIDJSON-VERSION file version, dont build
   # A corner case, but if a linux/freebsd user WANTS to build internal tinyxml2, build anyway
-  if((RapidJSON_VERSION VERSION_LESS ${${MODULE}_VER} AND ENABLE_INTERNAL_RapidJSON) OR
+  if((RapidJSON_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_RapidJSON) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_RapidJSON))
     # Build internal rapidjson
     buildrapidjson()
