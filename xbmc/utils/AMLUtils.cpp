@@ -667,6 +667,13 @@ void aml_dv_set_xbmc_osd()
   CSysfsPath("/sys/module/amdolby_vision/parameters/dolby_vision_xbmc_osd", osd_active ? 1 : 0);
 }
 
+bool aml_dv_use_active_area()
+{
+  return (aml_is_dv_enable() &&
+          (aml_dv_dolby_vision_mode() == DOLBY_VISION_OUTPUT_MODE_IPT_TUNNEL) &&
+         settings()->GetBool(CSettings::SETTING_COREELEC_AMLOGIC_DV_STD_RESTRICT_OVERLAYS));
+}
+
 enum DV_MODE aml_dv_mode()
 {
   return static_cast<DV_MODE>(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_MODE));
