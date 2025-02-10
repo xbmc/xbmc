@@ -1058,8 +1058,6 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
       valid = true;
       if(!psp.relevant(stream))
         visible = false;
-      //else if(stream.flags & StreamFlags::FLAG_FORCED)
-      //  visible = true;
       break;
     }
   }
