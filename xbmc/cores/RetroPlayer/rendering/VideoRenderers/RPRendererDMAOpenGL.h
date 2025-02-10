@@ -45,7 +45,7 @@ public:
   ~CRPRendererDMAOpenGL() override = default;
 
 protected:
-  // Implementation of CRPRendererOpenGLES
+  // Implementation of CRPRendererOpenGL
   void Render(uint8_t alpha) override;
 };
 } // namespace RETRO

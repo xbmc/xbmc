@@ -52,6 +52,12 @@ public:
   static bool SupportsScalingMethod(SCALINGMETHOD method);
 
 protected:
+  struct PackedVertex
+  {
+    float x, y, z;
+    float u1, v1;
+  };
+
   // implementation of CRPBaseRenderer
   void RenderInternal(bool clear, uint8_t alpha) override;
   void FlushInternal() override;
