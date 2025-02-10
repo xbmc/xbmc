@@ -3011,6 +3011,8 @@ void CVideoPlayer::HandleMessages()
           CloseStream(m_CurrentSubtitle, false);
           OpenStream(m_CurrentSubtitle, st.demuxerId, st.id, st.source);
         }
+        // Reset delay when changing subtitles
+        SetSubTitleDelay(0);
       }
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_SET_SUBTITLESTREAM_VISIBLE))
