@@ -84,7 +84,7 @@ public:
    *
    * Call only from main thread
    */
-  void SetState(CSizeInt size, int scale, IShellSurface::StateBitset state);
+  void SetState(CSizeInt size, int scale, const IShellSurface::StateBitset& state);
   /**
    * Get calculated size of main surface
    */
@@ -100,12 +100,12 @@ public:
    * Calculate size of main surface given the size of the full area
    * including decorations and a state
    */
-  CSizeInt CalculateMainSurfaceSize(CSizeInt size, IShellSurface::StateBitset state) const;
+  CSizeInt CalculateMainSurfaceSize(CSizeInt size, const IShellSurface::StateBitset& state) const;
   /**
    * Calculate size of full surface including decorations given the size of the
    * main surface and a state
    */
-  CSizeInt CalculateFullSurfaceSize(CSizeInt mainSurfaceSize, IShellSurface::StateBitset state) const;
+  CSizeInt CalculateFullSurfaceSize(CSizeInt mainSurfaceSize, const IShellSurface::StateBitset& state) const;
 
   bool IsDecorationActive() const;
 
@@ -177,7 +177,7 @@ private:
   void Repaint();
   void CommitAllBuffers();
 
-  bool StateHasWindowDecorations(IShellSurface::StateBitset state) const;
+  bool StateHasWindowDecorations(const IShellSurface::StateBitset& state) const;
 
   Buffer GetBuffer(CSizeInt size);
 
