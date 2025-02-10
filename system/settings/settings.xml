@@ -4103,7 +4103,7 @@
           <constraints>
             <options>
               <option label="50133">0</option> <!-- DV has Priroty -->
-              <option label="50134">1</option> <!-- HDR10+ has Priority -->              
+              <option label="50134">1</option> <!-- HDR10+ has Priority -->
             </options>
           </constraints>
           <control type="spinner" format="string" />
