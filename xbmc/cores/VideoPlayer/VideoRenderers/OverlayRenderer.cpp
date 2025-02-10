@@ -285,6 +285,11 @@ void CRenderer::SetStereoMode(const std::string &stereomode)
   m_stereomode = stereomode;
 }
 
+void CRenderer::SetForceInside(bool forceInside)
+{
+  m_forceInside = forceInside;
+}
+
 void CRenderer::SetSubtitleVerticalPosition(const int value, bool save)
 {
   std::unique_lock<CCriticalSection> lock(m_section);
@@ -501,6 +506,17 @@ std::shared_ptr<COverlay> CRenderer::ConvertLibass(
       rOpts.horizontalAlignment = SUBTITLES::STYLE::HorizontalAlign::RIGHT;
     else
       rOpts.horizontalAlignment = SUBTITLES::STYLE::HorizontalAlign::CENTER;
+  }
+
+  // Force subs to be inside the video rect.
+  if (m_forceInside)
+  {
+    if (m_subtitleAlign == SUBTITLES::Align::BOTTOM_OUTSIDE)
+      m_subtitleAlign == SUBTITLES::Align::BOTTOM_INSIDE;
+    else if (m_subtitleAlign == SUBTITLES::Align::TOP_OUTSIDE) 
+      m_subtitleAlign == SUBTITLES::Align::TOP_INSIDE;
+    
+    rOpts.marginsMode = SUBTITLES::STYLE::MarginsMode::INSIDE_VIDEO;
   }
 
   // changes: Detect changes from previously rendered images, if > 0 they are changed
