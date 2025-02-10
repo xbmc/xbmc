@@ -330,13 +330,28 @@ static void get_dovi_rpu_info(uint8_t* nal_buf, uint32_t nal_size, bool first_fr
 
   const DoviVdrDmData* vdr_dm_data = dovi_rpu_get_vdr_dm_data(rpuOpaque);
 
-  if (vdr_dm_data && vdr_dm_data->dm_data.level1)
+  if (vdr_dm_data)
   {
+
     DOVIFrameMetadata dovi_frame_metadata;
-    dovi_frame_metadata.level1_min_pq = vdr_dm_data->dm_data.level1->min_pq;
-    dovi_frame_metadata.level1_max_pq = vdr_dm_data->dm_data.level1->max_pq;
-    dovi_frame_metadata.level1_avg_pq = vdr_dm_data->dm_data.level1->avg_pq;
-    dovi_frame_metadata.pts = pts;
+
+    if (vdr_dm_data->dm_data.level1)
+    {
+      dovi_frame_metadata.level1_min_pq = vdr_dm_data->dm_data.level1->min_pq;
+      dovi_frame_metadata.level1_max_pq = vdr_dm_data->dm_data.level1->max_pq;
+      dovi_frame_metadata.level1_avg_pq = vdr_dm_data->dm_data.level1->avg_pq;
+      dovi_frame_metadata.pts = pts;
+    }
+
+    if (vdr_dm_data->dm_data.level5)
+    {
+      dovi_frame_metadata.has_level5_metadata = true;
+      dovi_frame_metadata.level5_active_area_left_offset = vdr_dm_data->dm_data.level5->active_area_left_offset;
+      dovi_frame_metadata.level5_active_area_right_offset = vdr_dm_data->dm_data.level5->active_area_right_offset;
+      dovi_frame_metadata.level5_active_area_top_offset = vdr_dm_data->dm_data.level5->active_area_top_offset;
+      dovi_frame_metadata.level5_active_area_bottom_offset = vdr_dm_data->dm_data.level5->active_area_bottom_offset;
+    }
+
     dataCacheCore.SetVideoDoViFrameMetadata(dovi_frame_metadata);
   }
 
@@ -360,7 +375,7 @@ static void get_dovi_rpu_info(uint8_t* nal_buf, uint32_t nal_size, bool first_fr
       dovi_stream_metadata.level6_max_cll = vdr_dm_data->dm_data.level6->max_content_light_level;
       dovi_stream_metadata.level6_max_fall = vdr_dm_data->dm_data.level6->max_frame_average_light_level;
     }
-    
+
     std::string meta_version = "";
     if (vdr_dm_data && vdr_dm_data->dm_data.level254)
     {
