@@ -488,11 +488,9 @@ ProcessorConversion CRendererDXVA::ChooseConversion(const ProcessorConversions& 
 {
   assert(conversions.size() > 0);
 
-  // Try HQ except when:
-  // - trying VSR scaling, which requires RGB8 processor output format
-  // - the user opted out of high quality and the swap chain is 8 bits.
-  if (!m_tryVSR && (DX::Windowing()->IsHighPrecisionProcessingSettingEnabled() ||
-                    DX::Windowing()->GetBackBuffer().GetFormat() == DXGI_FORMAT_R10G10B10A2_UNORM))
+  // Try HQ except when the user opted out of high quality and the swap chain is 8 bits.
+  if (DX::Windowing()->IsHighPrecisionProcessingSettingEnabled() ||
+      DX::Windowing()->GetBackBuffer().GetFormat() == DXGI_FORMAT_R10G10B10A2_UNORM)
   {
     const auto it =
         std::find_if(conversions.cbegin(), conversions.cend(), [](const ProcessorConversion& c) {
