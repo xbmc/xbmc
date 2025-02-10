@@ -151,6 +151,8 @@ typedef enum
   FieldHdrType,
   FieldProvider,
   FieldUserPreference,
+  FieldHasVideoVersions,
+  FieldHasVideoExtras,
   FieldMax
 } Field;
 
