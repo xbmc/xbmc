@@ -1527,6 +1527,17 @@ void CDVDDemuxFFmpeg::DisposeStreams()
   m_parsers.clear();
 }
 
+bool CDVDDemuxFFmpeg::isFpsNonsense(const AVRational &frameRate)
+{
+  if (frameRate.num == 0 || frameRate.den == 0)
+  {
+	return true;
+  }
+
+  const double fps = (double) frameRate.num / (double) frameRate.den;
+  return fps > 500.;
+}
+
 CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
 {
   AVStream* pStream = m_pFormatContext->streams[streamIdx];
@@ -1594,6 +1605,18 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
 
         AVRational r_frame_rate = pStream->r_frame_rate;
 
+        if (isFpsNonsense(r_frame_rate))
+        {
+          r_frame_rate.num = 0;
+          r_frame_rate.den = 0;
+        }
+
+        if (isFpsNonsense(pStream->avg_frame_rate))
+        {
+          pStream->avg_frame_rate.num = 0;
+          pStream->avg_frame_rate.den = 0;
+        }
+
         //average fps is more accurate for mkv files
         if (m_bMatroska && pStream->avg_frame_rate.den && pStream->avg_frame_rate.num)
         {
@@ -1604,6 +1627,11 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         {
           st->iFpsRate = r_frame_rate.num;
           st->iFpsScale = r_frame_rate.den;
+        }
+        else if(pStream->avg_frame_rate.den && pStream->avg_frame_rate.num)
+        {
+          st->iFpsRate = pStream->avg_frame_rate.num;
+          st->iFpsScale = pStream->avg_frame_rate.den;
         }
         else
         {
