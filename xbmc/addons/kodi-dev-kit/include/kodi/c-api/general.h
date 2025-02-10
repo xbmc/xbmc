@@ -100,7 +100,7 @@ extern "C"
     char* (*get_region)(void* kodiBase, const char* id);
     void (*get_free_mem)(void* kodiBase, long* free, long* total, bool as_bytes);
     int (*get_global_idle_time)(void* kodiBase);
-    bool (*is_addon_avilable)(void* kodiBase, const char* id, char** version, bool* enabled);
+    bool (*is_addon_available)(void* kodiBase, const char* id, char** version, bool* enabled);
     void (*kodi_version)(void* kodiBase,
                          char** compile_name,
                          int* major,
