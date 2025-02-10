@@ -25057,3 +25057,15 @@ msgstr ""
 msgctxt "#50181"
 msgid "When using Display Led (DV-Std) and sending the source's level 6 metadata to the diplay, choose how to handle the metadata."
 msgstr ""
+
+#. "Dolby Vision Display Led Restrict Overlays"
+#: system/settings/settings.xml
+msgctxt "#50190"
+msgid "Restrict overlays"
+msgstr ""
+
+#. "Dolby Vision Display Led Restrict Overlays"
+#: system/settings/settings.xml
+msgctxt "#50191"
+msgid "When using Display Led (DV-Std) should overlays be restricted to the active area only."
+msgstr ""

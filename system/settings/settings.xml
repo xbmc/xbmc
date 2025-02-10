@@ -4092,6 +4092,17 @@
           <control type="spinner" format="string" />
         </setting>
         <setting id="coreelec.amlogic.dolbyvision.std.restrict.overlays" type="boolean" label="50190" help="50191" parent="coreelec.amlogic.dolbyvision.std.source.levels.metadata">
+          <requirement>HAVE_AMCODEC</requirement>
+          <visible>false</visible>
+          <level>2</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="is">0</dependency>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.std.source.levels.metadata" operator="is">true</dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
         <setting id="coreelec.amlogic.dolbyvision.dual.priority" type="integer" label="50131" help="50132" parent="coreelec.amlogic.dolbyvision.type">
           <requirement>HAVE_AMCODEC</requirement>
           <visible>false</visible>

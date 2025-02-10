@@ -256,6 +256,7 @@ bool CDolbyVisionAML::Setup()
   set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_STD_SOURCE_LEVELS_METADATA, true); 
   set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_STD_SOURCE_LEVEL_5, true);
   set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_STD_SOURCE_LEVEL_6, true);
+  set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_STD_RESTRICT_OVERLAYS, true);
   set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_VS10_SDR8, true);
   set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_VS10_SDR10, true);
   set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_VS10_HDR10, true);
@@ -282,7 +283,7 @@ bool CDolbyVisionAML::Setup()
   auto announcer = CServiceBroker::GetAnnouncementManager();
   announcer->AddAnnouncer(this);
 
-  // Turn on dv - if dv mode is on, limit the menu lumincance as menu now can be in DV/HDR. 
+  // Turn on dv - if dv mode is on, limit the menu luminance as menu now can be in DV/HDR. 
   aml_dv_start();
 
   CLog::Log(LOGDEBUG, "CDolbyVisionAML::Setup - Complete");
