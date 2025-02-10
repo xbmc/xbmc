@@ -11,11 +11,11 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   if(ENABLE_INTERNAL_DAV1D AND NOT (WIN32 OR WINDOWS_STORE))
     include(cmake/scripts/common/ModuleHelpers.cmake)
 
-    set(MODULE_LC dav1d)
+    set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC dav1d)
 
     SETUP_BUILD_VARS()
 
-    set(DAV1D_VERSION ${${MODULE}_VER})
+    set(DAV1D_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
 
     find_program(NINJA_EXECUTABLE ninja REQUIRED)
     find_program(MESON_EXECUTABLE meson REQUIRED)

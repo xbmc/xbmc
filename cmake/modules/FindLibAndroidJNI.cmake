@@ -9,11 +9,11 @@
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  set(MODULE_LC libandroidjni)
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC libandroidjni)
 
   SETUP_BUILD_VARS()
 
-  set(LIBANDROIDJNI_BUILD_TYPE Release)
+  set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_TYPE Release)
 
   # We still need to supply SOMETHING to CMAKE_ARGS to initiate a cmake BUILD_DEP_TARGET
   # Setting cmake_build_type twice wont cause issues

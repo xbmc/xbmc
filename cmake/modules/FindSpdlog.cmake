@@ -12,7 +12,7 @@ macro(buildSpdlog)
   endif()
 
   if(WIN32 OR WINDOWS_STORE)
-    set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/001-windows-pdb-symbol-gen.patch")
+    set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/001-windows-pdb-symbol-gen.patch")
     generate_patchcommand("${patches}")
 
     set(EXTRA_ARGS -DSPDLOG_WCHAR_SUPPORT=ON
@@ -22,9 +22,9 @@ macro(buildSpdlog)
                           SPDLOG_WCHAR_TO_UTF8_SUPPORT)
   endif()
 
-  set(SPDLOG_VERSION ${${MODULE}_VER})
+  set(SPDLOG_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
   # spdlog debug uses postfix d for all platforms
-  set(SPDLOG_DEBUG_POSTFIX d)
+  set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_DEBUG_POSTFIX d)
 
   set(CMAKE_ARGS -DCMAKE_CXX_EXTENSIONS=${CMAKE_CXX_EXTENSIONS}
                  -DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}
@@ -42,7 +42,7 @@ macro(buildSpdlog)
 
   BUILD_DEP_TARGET()
 
-  add_dependencies(${MODULE_LC} ${APP_NAME_LC}::Fmt)
+  add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} ${APP_NAME_LC}::Fmt)
 endmacro()
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
@@ -60,7 +60,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     get_property(LIB_FORCE_REBUILD TARGET ${APP_NAME_LC}::Fmt PROPERTY LIB_BUILD)
   endif()
 
-  set(MODULE_LC spdlog)
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC spdlog)
   SETUP_BUILD_VARS()
 
   # Check for existing SPDLOG. If version >= SPDLOG-VERSION file version, dont build
@@ -68,7 +68,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                              HINTS ${DEPENDS_PATH}/lib/cmake
                              ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
 
-  if((SPDLOG_VERSION VERSION_LESS ${${MODULE}_VER} AND ENABLE_INTERNAL_SPDLOG) OR
+  if((SPDLOG_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_SPDLOG) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_SPDLOG) OR
      LIB_FORCE_REBUILD)
 

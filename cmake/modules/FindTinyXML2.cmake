@@ -8,8 +8,8 @@
 #   ${APP_NAME_LC}::TinyXML2   - The TinyXML2 library
 
 macro(buildTinyXML2)
-  set(TINYXML2_VERSION ${${MODULE}_VER})
-  set(TINYXML2_DEBUG_POSTFIX d)
+  set(TINYXML2_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
+  set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_DEBUG_POSTFIX d)
 
   find_package(Patch MODULE REQUIRED)
 
@@ -18,10 +18,10 @@ macro(buildTinyXML2)
     # Strip crlf before applying patches.
     # Freebsd fails even harder and requires both .patch and CMakeLists.txt to be crlf stripped
     # possibly add requirement for freebsd on gpatch? Wouldnt need to copy/strip the patch file then
-    set(PATCH_COMMAND sed -ie s|\\r\$|| ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${MODULE_LC}/src/${MODULE_LC}/CMakeLists.txt
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/tools/depends/target/tinyxml2/001-debug-pdb.patch ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${MODULE_LC}/src/${MODULE_LC}/001-debug-pdb.patch
-              COMMAND sed -ie s|\\r\$|| ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${MODULE_LC}/src/${MODULE_LC}/001-debug-pdb.patch
-              COMMAND ${PATCH_EXECUTABLE} -p1 -i ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${MODULE_LC}/src/${MODULE_LC}/001-debug-pdb.patch)
+    set(PATCH_COMMAND sed -ie s|\\r\$|| ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/src/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/CMakeLists.txt
+              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/tools/depends/target/tinyxml2/001-debug-pdb.patch ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/src/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/001-debug-pdb.patch
+              COMMAND sed -ie s|\\r\$|| ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/src/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/001-debug-pdb.patch
+              COMMAND ${PATCH_EXECUTABLE} -p1 -i ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/src/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/001-debug-pdb.patch)
   else()
     set(PATCH_COMMAND ${PATCH_EXECUTABLE} -p1 -i ${CMAKE_SOURCE_DIR}/tools/depends/target/tinyxml2/001-debug-pdb.patch)
   endif()
@@ -44,7 +44,7 @@ endmacro()
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  set(MODULE_LC tinyxml2)
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC tinyxml2)
 
   SETUP_BUILD_VARS()
 
@@ -54,7 +54,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   # Check for existing TINYXML2. If version >= TINYXML2-VERSION file version, dont build
   # A corner case, but if a linux/freebsd user WANTS to build internal tinyxml2, build anyway
-  if((tinyxml2_VERSION VERSION_LESS ${${MODULE}_VER} AND ENABLE_INTERNAL_TINYXML2) OR
+  if((tinyxml2_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_TINYXML2) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_TINYXML2))
 
     buildTinyXML2()
