@@ -174,7 +174,7 @@ void CAndroidStorageProvider::GetRemovableDrives(std::vector<CMediaSource>& remo
       for (int i = 0; i < vols.size(); ++i)
       {
         CJNIStorageVolume vol = vols.get(i);
-        // CLog::Log(LOGDEBUG, "-- Volume: {}({}) -- {}", vol.getPath(), vol.getUserLabel(), vol.getState());
+        // CLog::Log(LOGDEBUG, "-- Volume: {}({}) -- {}", vol.getDirectory().getAbsolutePath(), vol.getUserLabel(), vol.getState());
 
         bool removable = vol.isRemovable();
         if (xbmc_jnienv()->ExceptionCheck())
@@ -198,7 +198,7 @@ void CAndroidStorageProvider::GetRemovableDrives(std::vector<CMediaSource>& remo
         {
           CMediaSource share;
 
-          share.strPath = vol.getPath();
+          share.strPath = vol.getDirectory().getAbsolutePath();
           if (xbmc_jnienv()->ExceptionCheck())
           {
             xbmc_jnienv()->ExceptionDescribe();
