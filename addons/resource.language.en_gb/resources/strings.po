@@ -7457,7 +7457,7 @@ msgid "Start slideshow here"
 msgstr ""
 
 msgctxt "#13423"
-msgid "Remember for this path"
+msgid "Remember credentials"
 msgstr ""
 
 #. Shown on context menu when a bluray:// or dvd:// playlist has already been saved
@@ -13183,7 +13183,7 @@ msgid "Cancel shutdown timer"
 msgstr ""
 
 msgctxt "#20152"
-msgid "Lock preferences for {0:s}"
+msgid "Enter credentials for {0:s}"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogFileBrowser.cpp
