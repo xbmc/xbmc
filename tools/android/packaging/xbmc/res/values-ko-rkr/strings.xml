@@ -10,7 +10,7 @@
     <string name="starting">%1$s 시작…</string>
     <string name="first_run">첫 번째 실행을 준비 중입니다. 잠시만 기다려 주세요…</string>
     <string name="permission_denied">허가 거부!! 종료 중…</string>
-    <string name="exit_button">종료</string>
+    <string name="exit_button">나가기</string>
     <string name="no_find_apk">패키지를 찾을 수 없습니다.</string>
     <string name="no_read_apk">패키지를 읽을 수 없습니다.</string>
     <string name="continue_button">계속</string>

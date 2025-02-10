@@ -1,3 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    </resources>
+    <string name="suggestion_channel">Voorstelle</string>
+    <string name="notice_dialog">%1$s vereis toegang tot jou toestel media en lêers om te funksioneer. Laat dit asseblief toe via die volgende dialoog boks of %1$s sal uit gaan.</string>
+    <string name="asking_permissions">Vra vir toestemmings…</string>
+    <string name="clearing_cache">Maak cache skoon…</string>
+    <string name="waiting_external">Wag vir eksterne stoor…</string>
+    <string name="external_ok">Eksterne stoor OK…</string>
+    <string name="permission_denied">Toestemming geweier! Gaan uit…</string>
+    <string name="starting">Begin %1$s…</string>
+    <string name="first_run">Maak reg vir eerste hardloop. Wag asseblief…</string>
+    <string name="no_read_apk">Kan nie pakket lees nie.</string>
+    <string name="continue_button">Gaan voort</string>
+    <string name="info_title">Inligting</string>
+    <string name="error_title">Fout</string>
+    <string name="exit_button">Gaan Uit</string>
+    <string name="no_find_apk">Kan nie pakket kry nie.</string>
+</resources>

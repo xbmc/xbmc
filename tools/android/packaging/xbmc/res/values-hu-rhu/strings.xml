@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="suggestion_channel">Javaslatok</string>
+    <string name="error_title">Hiba</string>
+    <string name="info_title">Infó</string>
+    <string name="asking_permissions">Engedélyek kérése…</string>
+    <string name="clearing_cache">Gyorsítótár törlése…</string>
+    <string name="starting">%1$s indítása…</string>
+    <string name="no_find_apk">A csomag nem található.</string>
+    <string name="continue_button">Folytatás</string>
+    <string name="notice_dialog">A(z) %1$s működéséhez hozzáférésre van szükség az eszköz adathordozóihoz és fájljaihoz. Kérjük, engedélyezd ezt a következő párbeszédpanelen keresztül, különben a %1$s kilép.</string>
+    <string name="waiting_external">Várakozás a külső tárhelyre…</string>
+    <string name="external_ok">Külső tárhely rendben…</string>
+    <string name="no_read_apk">A csomag nem olvasható.</string>
+    <string name="exit_button">Kilépés</string>
+    <string name="first_run">Felkészülés az első indításra. Kérjük, várj…</string>
+    <string name="permission_denied">Az engedély megtagadva!! Kilépés…</string>
 </resources>
