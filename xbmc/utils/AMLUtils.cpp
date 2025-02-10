@@ -499,6 +499,16 @@ unsigned int aml_dv_on(unsigned int mode)
   CSysfsPath("/sys/module/hdmitx20/parameters/dovi_tv_led_bt2020", (colorimetry == DV_COLORIMETRY_BT2020NC) ? 'Y' : 'N');
   CSysfsPath("/sys/module/hdmitx20/parameters/dovi_tv_led_no_colorimetry", (colorimetry == DV_COLORIMETRY_REMOVE) ? 'Y' : 'N');
 
+  // set source metadata handling
+  bool dv_source_levels_metadata(settings()->GetBool(CSettings::SETTING_COREELEC_AMLOGIC_DV_STD_SOURCE_LEVELS_METADATA)); 
+  CSysfsPath("/sys/module/amdolby_vision/parameters/dolby_vision_use_source_meta_levels", dv_source_levels_metadata);
+
+  int dv_source_level_5(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_STD_SOURCE_LEVEL_5));
+  CSysfsPath("/sys/module/amdolby_vision/parameters/dolby_vision_keep_source_meta_level_5", dv_source_level_5);
+
+  int dv_source_level_6(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_STD_SOURCE_LEVEL_6));
+  CSysfsPath("/sys/module/amdolby_vision/parameters/dolby_vision_keep_source_meta_level_6", dv_source_level_6);
+
   enum DV_TYPE dv_type(aml_dv_type());
   
   // set the HDR for LLDV if DV_TYPE_PLAYER_LED_HDR.
