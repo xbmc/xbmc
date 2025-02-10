@@ -79,7 +79,8 @@ CPeripherals::CPeripherals(CInputManager& inputManager,
                            GAME::CControllerManager& controllerProfiles)
   : m_inputManager(inputManager),
     m_controllerProfiles(controllerProfiles),
-    m_eventScanner(new CEventScanner(*this))
+    m_eventScanner(new CEventScanner(*this)),
+    m_guiReadyEvent(std::make_unique<CEvent>())
 {
   // Register settings
   std::set<std::string> settingSet;
@@ -93,6 +94,13 @@ CPeripherals::CPeripherals(CInputManager& inputManager,
 
 CPeripherals::~CPeripherals()
 {
+  // Unregister with GUI messenger
+  CGUIComponent* gui = CServiceBroker::GetGUI();
+  if (gui != nullptr)
+    gui->GetWindowManager().RemoveMsgTarget(this);
+
+  m_guiReadyEvent->Set();
+
   // Unregister settings
   CServiceBroker::GetSettingsComponent()->GetSettings()->UnregisterCallback(this);
 
@@ -137,6 +145,11 @@ void CPeripherals::Initialise()
 
   CServiceBroker::GetAppMessenger()->RegisterReceiver(this);
   CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this, ANNOUNCEMENT::Player);
+
+  // Register for GUI messages
+  CGUIComponent* gui = CServiceBroker::GetGUI();
+  if (gui != nullptr)
+    gui->GetWindowManager().AddMsgTarget(this);
 }
 
 void CPeripherals::Clear()
@@ -735,6 +748,32 @@ bool CPeripherals::OnAction(const CAction& action)
   }
 
   return false;
+}
+
+bool CPeripherals::OnMessage(CGUIMessage& message)
+{
+  switch (message.GetMessage())
+  {
+    case GUI_MSG_NOTIFY_ALL:
+    {
+      if (message.GetParam1() == GUI_MSG_UI_READY)
+      {
+        m_guiReady = true;
+        m_guiReadyEvent->Set();
+      }
+      break;
+    }
+    default:
+      break;
+  }
+
+  return false;
+}
+
+bool CPeripherals::WaitForGUI()
+{
+  m_guiReadyEvent->Wait();
+  return m_guiReady;
 }
 
 bool CPeripherals::IsMuted()
