@@ -11,8 +11,9 @@
 #include "guilib/GUIDialog.h"
 #include "playlists/SmartPlayList.h"
 
-class CGUIDialogSmartPlaylistRule :
-      public CGUIDialog
+class CGUIEditControl;
+
+class CGUIDialogSmartPlaylistRule : public CGUIDialog
 {
 public:
   CGUIDialogSmartPlaylistRule(void);
@@ -36,4 +37,5 @@ protected:
   KODI::PLAYLIST::CSmartPlaylistRule m_rule;
   bool m_cancelled;
   std::string m_type;
+  CGUIEditControl* m_editControl;
 };
