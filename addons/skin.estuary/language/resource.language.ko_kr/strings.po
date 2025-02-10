@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: 2024-10-19 07:10+0000\n"
 "Last-Translator: Minho Park <parkmino@gmail.com>\n"
@@ -679,6 +679,22 @@ msgstr "홈 화면의 TV 프로그램에 대한 기본 작업 선택"
 msgctxt "#31176"
 msgid "Default select action for movie sets on the home screen"
 msgstr "홈 화면의 영화 세트에 대한 기본 작업 선택"
+
+# empty strings from id 31177 to 31596
+#. Button to select Player Process Info window
+msgctxt "#31597"
+msgid "Player info"
+msgstr ""
+
+#. Label to show player cache
+msgctxt "#31598"
+msgid "Player cache"
+msgstr ""
+
+#. Label to show the video codec name
+msgctxt "#31599"
+msgid "Audio decoder"
+msgstr ""
 
 # empty strings from id 31170 to 31599
 #. Label to show the video codec name

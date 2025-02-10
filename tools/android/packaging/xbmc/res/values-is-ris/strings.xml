@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="suggestion_channel">Tillögur</string>
+    <string name="continue_button">Halda áfram</string>
+    <string name="error_title">Villa</string>
+    <string name="info_title">Upplýsingar</string>
+    <string name="exit_button">Hætta</string>
+    <string name="notice_dialog">%1$s þarf greiðan aðgang að skránum og myndefninu á tækinu þínu. Þú þarft að heimila það í eftirfarandi samskiptaglugga því annars mun %1$s will hætta.</string>
+    <string name="asking_permissions">Biður um heimildir…</string>
+    <string name="clearing_cache">Hreinsa biðminni…</string>
+    <string name="waiting_external">Bíð eftir ytri gagnageymslu…</string>
+    <string name="external_ok">Ytri gagnageymsla í lagi…</string>
+    <string name="starting">Ræsi %1$s…</string>
+    <string name="first_run">Undirbý fyrstu keyrslu. Bíddu aðeins…</string>
+    <string name="permission_denied">Heimild hafnað!! Hætti…</string>
+    <string name="no_find_apk">Fann ekki pakka.</string>
+    <string name="no_read_apk">Get ekki lesið pakka.</string>
 </resources>

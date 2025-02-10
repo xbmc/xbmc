@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2024-10-08 13:49+0000\n"
+"PO-Revision-Date: 2025-01-29 15:33+0000\n"
 "Last-Translator: Frodo19 <bilbohu@gmail.com>\n"
 "Language-Team: Hungarian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/hu_hu/>\n"
 "Language: hu_hu\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.7.2\n"
+"X-Generator: Weblate 5.9.2\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -397,7 +397,7 @@ msgstr "Széles Lista"
 # empty strings from id 31108 to 31108
 msgctxt "#31109"
 msgid "Video streams"
-msgstr ""
+msgstr "Videó folyamok"
 
 msgctxt "#31110"
 msgid "Enter files section"
@@ -409,7 +409,7 @@ msgstr "Nézd meg a saját fényképeidet vagy tölts le egyet a sok képkiegés
 
 msgctxt "#31112"
 msgid "Audio streams"
-msgstr ""
+msgstr "Hang folyamok"
 
 msgctxt "#31113"
 msgid "Search local library"
@@ -421,7 +421,7 @@ msgstr "YouTube keresés"
 
 msgctxt "#31115"
 msgid "Subtitles streams"
-msgstr ""
+msgstr "Feliratok"
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
@@ -680,6 +680,22 @@ msgctxt "#31176"
 msgid "Default select action for movie sets on the home screen"
 msgstr "A filmgyűjtemények alapértelmezett kiválasztási művelete a kezdőképernyőn"
 
+# empty strings from id 31177 to 31596
+#. Button to select Player Process Info window
+msgctxt "#31597"
+msgid "Player info"
+msgstr "Lejátszó info"
+
+#. Label to show player cache
+msgctxt "#31598"
+msgid "Player cache"
+msgstr "Videófolyam puffer"
+
+#. Label to show the video codec name
+msgctxt "#31599"
+msgid "Audio decoder"
+msgstr "Audió dekóder"
+
 # empty strings from id 31170 to 31599
 #. Label to show the video codec name
 msgctxt "#31600"
@@ -744,7 +760,7 @@ msgstr "Rendszer"
 #. Audio channels
 msgctxt "#31612"
 msgid "channels"
-msgstr ""
+msgstr "csatornák"
 
 #~ msgctxt "#31112"
 #~ msgid "Toggle audio stream"
