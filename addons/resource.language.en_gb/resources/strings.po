@@ -24991,3 +24991,69 @@ msgstr ""
 msgctxt "#50134"
 msgid "HDR10+"
 msgstr ""
+
+#. "Dolby Vision Display Led Source Levels Metadata"
+#: system/settings/settings.xml
+msgctxt "#50150"
+msgid "Source levels metadata"
+msgstr ""
+
+#. "Dolby Vision Display Led Source Levels Metadata"
+#: system/settings/settings.xml
+msgctxt "#50151"
+msgid "When using Display Led (DV-Std), send the source's levels Metadata, otherwise send then Dolby Vision engines altered levels metadata to the display."
+msgstr ""
+
+#. "Dolby Vision Display Led Level 5 Handling"
+#: system/settings/settings.xml
+msgctxt "#50160"
+msgid "Source level 5 metadata"
+msgstr ""
+
+#. "Dolby Vision Display Led Level 5 Handling"
+#: system/settings/settings.xml
+msgctxt "#50161"
+msgid "When using Display Led (DV-Std) and sending the source's level 5 metadata to the diplay, choose how to handle the metadata."
+msgstr ""
+
+#. "Dolby Vision Display Led Level 5 Handling"
+#: system/settings/settings.xml
+msgctxt "#50170"
+msgid "Discard"
+msgstr ""
+
+#. "Dolby Vision Display Led Level 5 Handling"
+#: system/settings/settings.xml
+msgctxt "#50171"
+msgid "Keep with source values"
+msgstr ""
+
+#. "Dolby Vision Display Led Level 5 Handling"
+#: system/settings/settings.xml
+msgctxt "#50172"
+msgid "Keep and always set to 0 (zero)"
+msgstr ""
+
+#. "Dolby Vision Display Led Level 5 Handling"
+#: system/settings/settings.xml
+msgctxt "#50173"
+msgid "Keep with source values, expect when subtiles are set on or the OSD is showing, then set to 0 (zero)"
+msgstr ""
+
+#. "Dolby Vision Display Led Level 5 Handling"
+#: system/settings/settings.xml
+msgctxt "#50174"
+msgid "Keep with source values, expect when the OSD is showing, then set to 0 (zero)"
+msgstr ""
+
+#. "Dolby Vision Display Led Level 6 Handling"
+#: system/settings/settings.xml
+msgctxt "#50180"
+msgid "Source level 6 metadata"
+msgstr ""
+
+#. "Dolby Vision Display Led Level 6 Handling"
+#: system/settings/settings.xml
+msgctxt "#50181"
+msgid "When using Display Led (DV-Std) and sending the source's level 6 metadata to the diplay, choose how to handle the metadata."
+msgstr ""

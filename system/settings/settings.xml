@@ -4041,6 +4041,57 @@
           </constraints>
           <control type="spinner" format="string" />
         </setting>
+        <setting id="coreelec.amlogic.dolbyvision.std.source.levels.metadata" type="boolean" label="50150" help="50151" parent="coreelec.amlogic.dolbyvision.type">
+          <requirement>HAVE_AMCODEC</requirement>
+          <visible>false</visible>
+          <level>2</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="is">0</dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
+        <setting id="coreelec.amlogic.dolbyvision.std.source.level.5" type="integer" label="50160" help="50161" parent="coreelec.amlogic.dolbyvision.std.source.levels.metadata">
+          <requirement>HAVE_AMCODEC</requirement>
+          <visible>false</visible>
+          <level>2</level>
+          <default>0</default>
+          <dependencies>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="is">0</dependency>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.std.source.levels.metadata" operator="is">true</dependency>
+          </dependencies>
+          <constraints>
+            <options>
+              <option label="50170">0</option> <!-- Discard -->
+              <option label="50171">1</option> <!-- Keep Source -->
+              <option label="50172">2</option> <!-- Keep Zero -->
+              <option label="50173">3</option> <!-- Keep Source (Unless Subtitles or OSD on then Zero) -->
+              <option label="50174">4</option> <!-- Keep Source (Unless OSD on then Zero) -->
+            </options>
+          </constraints>
+          <control type="spinner" format="string" />
+        </setting>
+        <setting id="coreelec.amlogic.dolbyvision.std.source.level.6" type="integer" label="50180" help="50181" parent="coreelec.amlogic.dolbyvision.std.source.levels.metadata">
+          <requirement>HAVE_AMCODEC</requirement>
+          <visible>false</visible>
+          <level>2</level>
+          <default>0</default>
+          <dependencies>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="is">0</dependency>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.std.source.levels.metadata" operator="is">true</dependency>
+          </dependencies>
+          <constraints>
+            <options>
+              <option label="50170">0</option> <!-- Discard -->
+              <option label="50171">1</option> <!-- Keep Source -->
+            </options>
+          </constraints>
+          <control type="spinner" format="string" />
+        </setting>
+        <setting id="coreelec.amlogic.dolbyvision.std.restrict.overlays" type="boolean" label="50190" help="50191" parent="coreelec.amlogic.dolbyvision.std.source.levels.metadata">
         <setting id="coreelec.amlogic.dolbyvision.dual.priority" type="integer" label="50131" help="50132" parent="coreelec.amlogic.dolbyvision.type">
           <requirement>HAVE_AMCODEC</requirement>
           <visible>false</visible>

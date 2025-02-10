@@ -253,6 +253,9 @@ bool CDolbyVisionAML::Setup()
   set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_HDR_INJECT, true);
   set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_HDR_PAYLOAD, true);
   set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_COLORIMETRY_FOR_STD, true);
+  set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_STD_SOURCE_LEVELS_METADATA, true); 
+  set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_STD_SOURCE_LEVEL_5, true);
+  set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_STD_SOURCE_LEVEL_6, true);
   set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_VS10_SDR8, true);
   set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_VS10_SDR10, true);
   set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_VS10_HDR10, true);

@@ -461,6 +461,9 @@ public:
   static constexpr auto SETTING_COREELEC_AMLOGIC_DV_MODE_ON_LUMINANCE = "coreelec.amlogic.dolbyvision.mode.on.luminance";
   static constexpr auto SETTING_COREELEC_AMLOGIC_DV_TYPE = "coreelec.amlogic.dolbyvision.type";
   static constexpr auto SETTING_COREELEC_AMLOGIC_DV_COLORIMETRY_FOR_STD = "coreelec.amlogic.dolbyvision.colorimtry.for.std";
+  static constexpr auto SETTING_COREELEC_AMLOGIC_DV_STD_SOURCE_LEVELS_METADATA = "coreelec.amlogic.dolbyvision.std.source.levels.metadata";
+  static constexpr auto SETTING_COREELEC_AMLOGIC_DV_STD_SOURCE_LEVEL_5 = "coreelec.amlogic.dolbyvision.std.source.level.5";
+  static constexpr auto SETTING_COREELEC_AMLOGIC_DV_STD_SOURCE_LEVEL_6 = "coreelec.amlogic.dolbyvision.std.source.level.6";
   static constexpr auto SETTING_COREELEC_AMLOGIC_DV_VSVDB_INJECT = "coreelec.amlogic.dolbyvision.vsvdb.inject";
   static constexpr auto SETTING_COREELEC_AMLOGIC_DV_VSVDB_PAYLOAD = "coreelec.amlogic.dolbyvision.vsvdb.payload";
   static constexpr auto SETTING_COREELEC_AMLOGIC_DV_VSVDB_CS = "coreelec.amlogic.dolbyvision.vsvdb.colour.space";
