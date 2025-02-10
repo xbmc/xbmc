@@ -37,13 +37,15 @@ private:
   bool m_canReboot;
   bool m_hasUPower;
   bool m_lowBattery;
+  bool m_chargerState;
+  int m_batteryState;
   int m_batteryLevel;
   int m_delayLockSleepFd = -1; // file descriptor for the logind sleep delay lock
   int m_delayLockShutdownFd = -1; // file descriptor for the logind powerdown delay lock
-  void UpdateBatteryLevel();
+  void UpdatePowerSupplyInfo();
   void InhibitDelayLockSleep();
-  void InhibitDelayLockShutdown();  
-  int InhibitDelayLock(const char *what);
+  void InhibitDelayLockShutdown();
+  int InhibitDelayLock(const char* what);
   void ReleaseDelayLockSleep();
   void ReleaseDelayLockShutdown();
   void ReleaseDelayLock(int lockFd, const char *what);
