@@ -372,6 +372,8 @@ public:
   float GetPeripheralActivation(const std::string& peripheralPath) const;
 
 private:
+  static const unsigned int HOLD_THRESHOLD_MS = 250;
+
   bool LoadMappings();
   bool GetMappingForDevice(const CPeripheralBus& bus, PeripheralScanResult& result) const;
   static void GetSettingsFromMappingsFile(
