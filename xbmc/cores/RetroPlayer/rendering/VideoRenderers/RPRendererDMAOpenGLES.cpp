@@ -23,7 +23,7 @@ using namespace RETRO;
 
 std::string CRendererFactoryDMAOpenGLES::RenderSystemName() const
 {
-  return "DMA-GLES";
+  return "DMAOpenGLES";
 }
 
 CRPBaseRenderer* CRendererFactoryDMAOpenGLES::CreateRenderer(

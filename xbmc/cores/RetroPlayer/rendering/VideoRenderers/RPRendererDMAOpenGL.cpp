@@ -23,7 +23,7 @@ using namespace RETRO;
 
 std::string CRendererFactoryDMAOpenGL::RenderSystemName() const
 {
-  return "DMA-GL";
+  return "DMAOpenGL";
 }
 
 CRPBaseRenderer* CRendererFactoryDMAOpenGL::CreateRenderer(
