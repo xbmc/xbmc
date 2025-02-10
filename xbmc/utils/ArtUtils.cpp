@@ -226,7 +226,7 @@ std::string GetLocalArtBaseFilename(const CFileItem& item, bool& useFolder)
   if (item.IsMultiPath())
     strFile = CMultiPathDirectory::GetFirstPath(item.GetPath());
 
-  if (item.IsOpticalMediaFile())
+  if (item.IsOpticalMediaFile() || URIUtils::IsBlurayPath(file))
   { // optical media files should be treated like folders
     useFolder = true;
     strFile = item.GetLocalMetadataPath();

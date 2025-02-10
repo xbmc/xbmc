@@ -566,6 +566,11 @@ public:
   int GetSeasonId(int idShow, int season);
 
   void GetEpisodesByFile(const std::string& strFilenameAndPath, std::vector<CVideoInfoTag>& episodes);
+  void GetEpisodesByFileId(int idFile, std::vector<CVideoInfoTag>& episodes);
+  bool GetEpisodeMap(int idShow,
+                     std::multimap<std::string, int>& fileMap,
+                     std::unique_ptr<dbiplus::Dataset>& pDS,
+                     int idFile = -1 /* = -1 */);
 
   int SetDetailsForItem(CVideoInfoTag& details, const std::map<std::string, std::string> &artwork);
   int SetDetailsForItem(int id, const MediaType& mediaType, CVideoInfoTag& details, const std::map<std::string, std::string> &artwork);
@@ -950,6 +955,7 @@ public:
 
   void ExportToXML(const std::string &path, bool singleFile = true, bool images=false, bool actorThumbs=false, bool overwrite=false);
   void ExportActorThumbs(const std::string& path,
+                         const std::string& singlePath,
                          const CVideoInfoTag& tag,
                          bool singleFiles,
                          bool overwrite = false,
