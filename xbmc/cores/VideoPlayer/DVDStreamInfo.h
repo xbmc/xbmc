@@ -38,6 +38,12 @@ struct DOVIFrameMetadata
   uint16_t level1_min_pq = 0;
   uint16_t level1_max_pq = 0;
   uint16_t level1_avg_pq = 0;
+
+  bool has_level5_metadata = false;
+  uint16_t level5_active_area_left_offset = 0;
+  uint16_t level5_active_area_right_offset = 0;
+  uint16_t level5_active_area_top_offset = 0;
+  uint16_t level5_active_area_bottom_offset = 0;
 };
 
 struct DOVIStreamMetadata
