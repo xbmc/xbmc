@@ -23,6 +23,8 @@ public:
   bool Exists(const CURL& url) override;
   bool Remove(const CURL& url) override;
   bool RemoveRecursive(const CURL& url) override;
+  std::string ResolveMountPoint(const std::string& file) const override;
+
 private:
   bool Create(const std::string& path);
 };
