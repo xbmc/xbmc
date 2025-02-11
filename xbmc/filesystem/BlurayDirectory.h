@@ -30,6 +30,7 @@ public:
   bool GetDirectory(const CURL& url, CFileItemList &items) override;
 
   bool InitializeBluray(const std::string &root);
+  void FindMountPoint(std::string *file);
   std::string GetBlurayTitle();
   std::string GetBlurayID();
 
