@@ -165,6 +165,36 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
   if (m_fctx->nb_chapters > 1)
     thumb = IMAGE_FILES::URLFromFile(url.Get(), "music");
 
+  // Look for any embedded art
+  for (size_t i = 0; i < m_fctx->nb_streams; ++i)
+  {
+    const AVStream* fctx_pic = m_fctx->streams[i];
+    if ((fctx_pic->disposition & AV_DISPOSITION_ATTACHED_PIC) == 0)
+      continue;
+    AVCodecID pic_id = fctx_pic->codecpar->codec_id;
+    std::string mimetype;
+    switch (pic_id)
+    {
+      case AV_CODEC_ID_MJPEG:
+        mimetype = "image/jpeg";
+        break;
+      case AV_CODEC_ID_PNG:
+        mimetype = "image/png";
+        break;
+      case AV_CODEC_ID_BMP:
+        mimetype = "image/bmp";
+        break;
+      default:
+        break;
+    }
+    if (!mimetype.empty())
+    {
+      size_t pic_size = fctx_pic->attached_pic.size;
+      albumtag.SetCoverArtInfo(pic_size, mimetype);
+      break; // Assume the first picture is the cover
+    }
+  }
+
   for (size_t i=0;i<m_fctx->nb_chapters;++i)
   {
     tag=nullptr;
