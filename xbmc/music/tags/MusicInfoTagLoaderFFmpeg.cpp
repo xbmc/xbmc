@@ -157,6 +157,32 @@ bool CMusicInfoTagLoaderFFmpeg::Load(const std::string& strFileName, CMusicInfoT
     while ((avtag = av_dict_get(st->metadata, "", avtag, AV_DICT_IGNORE_SUFFIX)))
       ParseTag(avtag);
 
+  // Look for any embedded art
+  for (size_t i = 0; i < fctx->nb_streams; ++i)
+  {
+    const AVStream* fctx_pic = fctx->streams[i];
+    if ((fctx_pic->disposition & AV_DISPOSITION_ATTACHED_PIC) == 0)
+      continue;
+
+    AVCodecID pic_id = fctx_pic->codecpar->codec_id;
+    const std::unordered_map<AVCodecID, std::string> mime_map = {{AV_CODEC_ID_MJPEG, "image/jpeg"},
+                                                                 {AV_CODEC_ID_PNG, "image/png"},
+                                                                 {AV_CODEC_ID_BMP, "image/bmp"}};
+
+    auto it = mime_map.find(pic_id);
+    if (it != mime_map.end())
+    {
+      const auto& mime = it->second;
+      size_t size = fctx_pic->attached_pic.size;
+      uint8_t* pic = fctx_pic->attached_pic.data;
+
+      tag.SetCoverArtInfo(size, mime);
+      if (art)
+        art->Set(pic, size, mime, "thumb");
+      break; // just need one cover
+    }
+  }
+
   if (!tag.GetTitle().empty())
     tag.SetLoaded(true);
 
