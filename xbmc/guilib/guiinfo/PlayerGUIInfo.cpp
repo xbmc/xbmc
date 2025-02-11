@@ -661,6 +661,22 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       value = std::to_string(static_cast<int>(pq_to_nits(CServiceBroker::GetDataCacheCore().GetVideoDoViFrameMetadata().level1_avg_pq)));
       return true;
 
+    case PLAYER_PROCESS_VIDEO_DOVI_HAS_L5:
+      value =std::to_string(CServiceBroker::GetDataCacheCore().GetVideoDoViFrameMetadata().has_level5_metadata);
+      return true;
+    case PLAYER_PROCESS_VIDEO_DOVI_L5_LEFT_OFFSET:
+      value = std::to_string(CServiceBroker::GetDataCacheCore().GetVideoDoViFrameMetadata().level5_active_area_left_offset);
+      return true;
+    case PLAYER_PROCESS_VIDEO_DOVI_L5_RIGHT_OFFSET:
+      value = std::to_string(CServiceBroker::GetDataCacheCore().GetVideoDoViFrameMetadata().level5_active_area_right_offset);
+      return true;
+    case PLAYER_PROCESS_VIDEO_DOVI_L5_TOP_OFFSET:
+      value = std::to_string(CServiceBroker::GetDataCacheCore().GetVideoDoViFrameMetadata().level5_active_area_top_offset);
+      return true;
+    case PLAYER_PROCESS_VIDEO_DOVI_L5_BOTTOM_OFFSET:
+      value = std::to_string(CServiceBroker::GetDataCacheCore().GetVideoDoViFrameMetadata().level5_active_area_bottom_offset);
+      return true;
+
     case PLAYER_PROCESS_VIDEO_DOVI_SOURCE_MIN_PQ:
       value = std::to_string(CServiceBroker::GetDataCacheCore().GetVideoDoViStreamMetadata().source_min_pq);
       return true;
