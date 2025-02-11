@@ -51,6 +51,7 @@ private:
   CURL          m_url;
   BLURAY*       m_bd = nullptr;
   bool          m_blurayInitialized = false;
+  std::string m_realPath;
 };
 
 }
