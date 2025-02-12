@@ -5,27 +5,94 @@
 #
 # This will define the following target:
 #
-#   NGHttp2::NGHttp2   - The NGHttp2 library
+#   LIBRARY::NGHttp2   - The App specific library dependency target
+#
 
-if(NOT TARGET NGHttp2::NGHttp2)
-  find_package(PkgConfig QUIET)
-  if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWSSTORE))
-    pkg_check_modules(NGHTTP2 libnghttp2 QUIET)
+if(NOT TARGET LIBRARY::NGHttp2)
 
-    # First item is the full path of the library file found
-    # pkg_check_modules does not populate a variable of the found library explicitly
-    list(GET NGHTTP2_LINK_LIBRARIES 0 NGHTTP2_LIBRARY)
+  macro(buildlibnghttp2)
+    set(CMAKE_ARGS -DENABLE_DEBUG=OFF
+                   -DENABLE_FAILMALLOC=OFF
+                   -DENABLE_LIB_ONLY=ON
+                   -DENABLE_DOC=OFF
+                   -DBUILD_STATIC_LIBS=ON
+                   -DBUILD_SHARED_LIBS=OFF
+                   -DWITH_LIBXML2=OFF)
 
-    set(NGHTTP2_INCLUDE_DIR ${NGHTTP2_INCLUDEDIR})
+    BUILD_DEP_TARGET()
+  endmacro()
+
+  include(cmake/scripts/common/ModuleHelpers.cmake)
+
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC nghttp2)
+
+  SETUP_BUILD_VARS()
+
+  # Search for cmake config. Suitable for all platforms including windows
+  # nghttp uses a non standard config name, so we have to supply CONFIGS
+  find_package(nghttp2 CONFIG QUIET
+                       CONFIGS nghttp2-targets.cmake
+                       HINTS ${DEPENDS_PATH}/lib/cmake
+                       ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+
+  # Check for existing Nghttp2. If version >= NGHTTP2-VERSION file version, dont build
+  if(nghttp2_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND NGHttp2_FIND_REQUIRED)
+    # Build lib
+    buildlibnghttp2()
   else()
+    if(TARGET nghttp2::nghttp2 OR TARGET nghttp2::nghttp2_static)
 
-    find_path(NGHTTP2_INCLUDE_DIR NAMES nghttp2/nghttp2.h
-                                  HINTS ${DEPENDS_PATH}/include
-                                  ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
-    find_library(NGHTTP2_LIBRARY NAMES nghttp2 nghttp2_static
-                                 HINTS ${DEPENDS_PATH}/lib
-                                 ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+      # We have a preference for the static lib when needed, however provide support for the shared
+      # lib as well
+      if(TARGET nghttp2::nghttp2_static)
+        set(_target nghttp2::nghttp2_static)
+      else()
+        set(_target nghttp2::nghttp2)
+      endif()
+
+      # This is for the case where a distro provides a non standard (Debug/Release) config type
+      # convert this back to either DEBUG/RELEASE or just RELEASE
+      # we only do this because we use find_package_handle_standard_args for config time output
+      # and it isnt capable of handling TARGETS, so we have to extract the info
+      get_target_property(_NGHTTP2_CONFIGURATIONS ${_target} IMPORTED_CONFIGURATIONS)
+      foreach(_nghttp2_config IN LISTS _NGHTTP2_CONFIGURATIONS)
+        # Some non standard config (eg None on Debian)
+        # Just set to RELEASE var so select_library_configurations can continue to work its magic
+        string(TOUPPER ${_nghttp2_config} _nghttp2_config_UPPER)
+        if((NOT ${_nghttp2_config_UPPER} STREQUAL "RELEASE") AND
+           (NOT ${_nghttp2_config_UPPER} STREQUAL "DEBUG"))
+          get_target_property(NGHTTP2_LIBRARY_RELEASE ${_target} IMPORTED_LOCATION_${_nghttp2_config_UPPER})
+        else()
+          get_target_property(NGHTTP2_LIBRARY_${_nghttp2_config_UPPER} ${_target} IMPORTED_LOCATION_${_nghttp2_config_UPPER})
+        endif()
+      endforeach()
+
+      get_target_property(NGHTTP2_INCLUDE_DIR ${_target} INTERFACE_INCLUDE_DIRECTORIES)
+    else()
+      find_package(PkgConfig QUIET)
+      if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWSSTORE))
+        pkg_check_modules(NGHTTP2 libnghttp2 QUIET)
+    
+        # First item is the full path of the library file found
+        # pkg_check_modules does not populate a variable of the found library explicitly
+        list(GET NGHTTP2_LINK_LIBRARIES 0 NGHTTP2_LIBRARY)
+    
+        set(NGHTTP2_INCLUDE_DIR ${NGHTTP2_INCLUDEDIR})
+      else()
+    
+        find_path(NGHTTP2_INCLUDE_DIR NAMES nghttp2/nghttp2.h
+                                      HINTS ${DEPENDS_PATH}/include
+                                      ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+        find_library(NGHTTP2_LIBRARY NAMES nghttp2 nghttp2_static
+                                     HINTS ${DEPENDS_PATH}/lib
+                                     ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+      endif()
+    endif()
   endif()
+
+  include(SelectLibraryConfigurations)
+  select_library_configurations(NGHTTP2)
+  unset(NGHTTP2_LIBRARIES)
 
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(NGHttp2
@@ -33,16 +100,62 @@ if(NOT TARGET NGHttp2::NGHttp2)
                                     VERSION_VAR NGHTTP2_VERSION)
 
   if(NGHTTP2_FOUND)
-    add_library(NGHttp2::NGHttp2 UNKNOWN IMPORTED)
 
-    set_target_properties(NGHttp2::NGHttp2 PROPERTIES
-                                           IMPORTED_LOCATION "${NGHTTP2_LIBRARY}"
-                                           INTERFACE_INCLUDE_DIRECTORIES "${NGHTTP2_INCLUDE_DIR}")
+    if((TARGET nghttp2::nghttp2 OR TARGET nghttp2::nghttp2_static) AND NOT TARGET nghttp2)
+      # We have a preference for the static lib when needed, however provide support 
+      # for the shared lib as well
+      if(TARGET nghttp2::nghttp2_static)
+        set(_target nghttp2::nghttp2_static)
+      else()
+        set(_target nghttp2::nghttp2)
+      endif()
 
-    # Todo: for windows, do a find_package config call to retrieve this from the cmake config
-    #       For now just explicitly say its a static build
-    if(WIN32 OR WINDOWS_STORE)
-      set_property(TARGET NGHttp2::NGHttp2 APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS "NGHTTP2_STATICLIB")
+      # This is a kodi target name
+      add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS ${_target})
+    else()
+
+      add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
+  
+      set_target_properties(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                INTERFACE_INCLUDE_DIRECTORIES "${NGHTTP2_INCLUDE_DIR}")
+
+      if(NGHTTP2_LIBRARY_RELEASE)
+        set_target_properties(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                  IMPORTED_CONFIGURATIONS RELEASE
+                                                                  IMPORTED_LOCATION_RELEASE "${NGHTTP2_LIBRARY_RELEASE}")
+      endif()
+      if(NGHTTP2_LIBRARY_DEBUG)
+        set_target_properties(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                  IMPORTED_LOCATION_DEBUG "${NGHTTP2_LIBRARY_DEBUG}")
+        set_property(TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY
+                                                                       IMPORTED_CONFIGURATIONS DEBUG)
+      endif()
+
+      set_property(TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS "NGHTTP2_STATICLIB")
+
+    endif()
+    if(TARGET nghttp2)
+      add_dependencies(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} nghttp2)
+
+      # We are building as a requirement, so set LIB_BUILD property to allow calling
+      # modules to know we will be building, and they will want to rebuild as well.
+      set_target_properties(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES LIB_BUILD ON)
+    endif()
+
+    # Add internal build target when a Multi Config Generator is used
+    # We cant add a dependency based off a generator expression for targeted build types,
+    # https://gitlab.kitware.com/cmake/cmake/-/issues/19467
+    # therefore if the find heuristics only find the library, we add the internal build
+    # target to the project to allow user to manually trigger for any build type they need
+    # in case only a specific build type is actually available (eg Release found, Debug Required)
+    # This is mainly targeted for windows who required different runtime libs for different
+    # types, and they arent compatible
+    if(_multiconfig_generator)
+      if(NOT TARGET nghttp2)
+        buildlibnghttp2()
+        set_target_properties(nghttp2 PROPERTIES EXCLUDE_FROM_ALL TRUE)
+      endif()
+      add_dependencies(build_internal_depends nghttp2)
     endif()
   else()
     if(NGHttp2_FIND_REQUIRED)

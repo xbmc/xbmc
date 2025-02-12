@@ -1,5 +1,6 @@
 include ../../Makefile.include NGHTTP2-VERSION ../../download-files.include
-DEPS = ../../Makefile.include NGHTTP2-VERSION Makefile ../../download-files.include
+DEPS = ../../Makefile.include NGHTTP2-VERSION Makefile ../../download-files.include \
+                        01-all-cmake-version.patch
 
 # configuration settings
 CMAKE_OPTIONS=-DENABLE_DEBUG=OFF \
@@ -17,6 +18,7 @@ all: .installed-$(PLATFORM)
 $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)/build
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	cd $(PLATFORM); patch -p1 -i ../01-all-cmake-version.patch
 	cd $(PLATFORM)/build; $(CMAKE) $(CMAKE_OPTIONS) ..
 
 $(LIBDYLIB): $(PLATFORM)
