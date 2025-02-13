@@ -25007,7 +25007,7 @@ msgstr ""
 #. "Dolby Vision Display Led Level 5 Handling"
 #: system/settings/settings.xml
 msgctxt "#50160"
-msgid "Source level 5 metadata"
+msgid "Level 5"
 msgstr ""
 
 #. "Dolby Vision Display Led Level 5 Handling"
@@ -25025,31 +25025,31 @@ msgstr ""
 #. "Dolby Vision Display Led Level 5 Handling"
 #: system/settings/settings.xml
 msgctxt "#50171"
-msgid "Keep with source values"
+msgid "Source"
 msgstr ""
 
 #. "Dolby Vision Display Led Level 5 Handling"
 #: system/settings/settings.xml
 msgctxt "#50172"
-msgid "Keep and always set to 0 (zero)"
+msgid "0 (zero)"
 msgstr ""
 
 #. "Dolby Vision Display Led Level 5 Handling"
 #: system/settings/settings.xml
 msgctxt "#50173"
-msgid "Keep with source values, expect when subtiles are set on or the OSD is showing, then set to 0 (zero)"
+msgid "Source, 0 (zero) when OSD is active or subtiles set on"
 msgstr ""
 
 #. "Dolby Vision Display Led Level 5 Handling"
 #: system/settings/settings.xml
 msgctxt "#50174"
-msgid "Keep with source values, expect when the OSD is showing, then set to 0 (zero)"
+msgid "Source, 0 (zero) when OSD is active"
 msgstr ""
 
 #. "Dolby Vision Display Led Level 6 Handling"
 #: system/settings/settings.xml
 msgctxt "#50180"
-msgid "Source level 6 metadata"
+msgid "Level 6"
 msgstr ""
 
 #. "Dolby Vision Display Led Level 6 Handling"
