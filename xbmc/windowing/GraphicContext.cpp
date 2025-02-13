@@ -446,6 +446,10 @@ void CGraphicContext::SetVideoResolutionInternal(RESOLUTION res, bool forceUpdat
 
   UpdateInternalStateWithResolution(res);
   RESOLUTION_INFO info_org  = CDisplaySettings::GetInstance().GetResolutionInfo(res);
+  RENDER_STEREO_MODE stereo_mode = CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode();
+
+  if (stereo_mode == RENDER_STEREO_MODE_HARDWAREBASED)
+    info_org.iHeight = info_org.iScreenHeight * 2 + info_org.iBlanking;
 
   bool switched = false;
   if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_fullScreen)
