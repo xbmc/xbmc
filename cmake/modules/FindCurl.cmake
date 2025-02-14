@@ -56,10 +56,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     BUILD_DEP_TARGET()
 
     # Link libraries for target interface
-    set(PC_CURL_LINK_LIBRARIES Brotli::Brotli LIBRARY::NGHttp2 OpenSSL::Crypto OpenSSL::SSL ZLIB::ZLIB ${PLATFORM_LINK_LIBS})
+    set(PC_CURL_LINK_LIBRARIES LIBRARY::Brotli LIBRARY::NGHttp2 OpenSSL::Crypto OpenSSL::SSL ZLIB::ZLIB ${PLATFORM_LINK_LIBS})
 
     # Add dependencies to build target
-    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} Brotli::Brotli)
+    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} LIBRARY::Brotli)
     add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} LIBRARY::NGHttp2)
     add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} OpenSSL::SSL)
     add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} OpenSSL::Crypto)

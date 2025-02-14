@@ -6,7 +6,6 @@ endif
 
 # Keep in alphabetical order
 DEPENDS = \
-  brotli \
   bzip2 \
   dav1d \
   expat \
