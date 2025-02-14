@@ -1,6 +1,7 @@
 include ../../Makefile.include BROTLI-VERSION ../../download-files.include
 DEPS = ../../Makefile.include Makefile BROTLI-VERSION ../../download-files.include \
-                01-all-disable-exe.patch
+                01-all-disable-exe.patch \
+                02-all-cmake-install-config.patch
 
 LIBDYLIB=$(PLATFORM)/build/$(BYPRODUCT)
 
@@ -16,6 +17,7 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)/build
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../01-all-disable-exe.patch
+	cd $(PLATFORM); patch -p1 -i ../02-all-cmake-install-config.patch
 	cd $(PLATFORM)/build; $(CMAKE) ${CMAKE_OPTIONS} ..
 
 $(LIBDYLIB): $(PLATFORM)
