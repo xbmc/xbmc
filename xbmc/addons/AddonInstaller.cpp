@@ -805,7 +805,7 @@ bool CAddonInstallJob::DoWork()
   if (!Install(installFrom, m_repo))
     return false;
 
-  // Load new installed and if successed replace defined m_addon here with new one
+  // Load new installed and if succeeded replace defined m_addon here with new one
   if (!CServiceBroker::GetAddonMgr().LoadAddon(m_addon->ID(), m_addon->Origin(),
                                                m_addon->Version()) ||
       !CServiceBroker::GetAddonMgr().GetAddon(m_addon->ID(), m_addon, OnlyEnabled::CHOICE_YES))

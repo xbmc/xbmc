@@ -394,7 +394,7 @@ protected:
    *
    * \param[in] id Instance identifier to use, use @ref ADDON_SETTINGS_ID
    *               to denote global add-on settings from settings.xml.
-   * \return true if settings initialize was successfull
+   * \return true if settings initialization was successful
    */
   virtual bool SettingsInitialized(AddonInstanceId id = ADDON_SETTINGS_ID) const;
 
