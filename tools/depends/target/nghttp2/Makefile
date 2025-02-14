@@ -5,8 +5,10 @@ DEPS = ../../Makefile.include NGHTTP2-VERSION Makefile ../../download-files.incl
 CMAKE_OPTIONS=-DENABLE_DEBUG=OFF \
               -DENABLE_FAILMALLOC=OFF \
               -DENABLE_LIB_ONLY=ON \
-              -DENABLE_STATIC_LIB=ON \
-              -DENABLE_SHARED_LIB=OFF
+              -DENABLE_DOC=OFF \
+              -DBUILD_STATIC_LIBS=ON \
+              -DBUILD_SHARED_LIBS=OFF \
+              -DWITH_LIBXML2=OFF
 
 LIBDYLIB=$(PLATFORM)/build/lib/$(BYPRODUCT)
 
