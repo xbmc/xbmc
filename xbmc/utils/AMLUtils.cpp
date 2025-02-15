@@ -24,6 +24,7 @@
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
+#include "cores/DataCacheCore.h"
 #include "utils/log.h"
 #include "utils/JobManager.h"
 #include "utils/StringUtils.h"
@@ -663,7 +664,8 @@ void aml_dv_set_xbmc_osd()
   auto &wm = CServiceBroker::GetGUI()->GetWindowManager();
 
   bool osd_active = wm.HasVisibleDialog() ||
-                    wm.IsWindowVisible(WINDOW_VIDEO_MENU);
+                    wm.IsWindowVisible(WINDOW_VIDEO_MENU) ||
+                    CServiceBroker::GetDataCacheCore().GetAVChangeExtended();
 
   CSysfsPath("/sys/module/amdolby_vision/parameters/dolby_vision_xbmc_osd", osd_active ? 1 : 0);
 }
