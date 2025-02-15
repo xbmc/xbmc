@@ -23,7 +23,7 @@ using namespace RETRO;
 
 std::string CRendererFactoryDMAOpenGLES::RenderSystemName() const
 {
-  return "DMA-GLES";
+  return "DMAOpenGLES";
 }
 
 CRPBaseRenderer* CRendererFactoryDMAOpenGLES::CreateRenderer(
@@ -77,11 +77,7 @@ void CRPRendererDMAOpenGLES::Render(uint8_t alpha)
 
   GLubyte colour[4];
   GLubyte idx[4] = {0, 1, 3, 2}; // Determines order of triangle strip
-  struct PackedVertex
-  {
-    float x, y, z;
-    float u1, v1;
-  } vertex[4];
+  PackedVertex vertex[4];
 
   GLint vertLoc = m_context.GUIShaderGetPos();
   GLint loc = m_context.GUIShaderGetCoord0();
