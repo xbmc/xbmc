@@ -63,6 +63,10 @@
      <setting key="keymap" value="osmcv3" label="35007" configurable="1"/>
   </peripheral>
 
+  <peripheral vendor_product="20A0:0001" bus="usb" name="Flirc" mapTo="hid">
+    <setting key="appearance" type="addon" addontype="kodi.game.controller" value="game.controller.flirc" configurable="0"/>
+  </peripheral>
+
   <peripheral class="joystick" name="joystick" mapTo="joystick">
     <setting key="appearance" type="addon" addontype="kodi.game.controller" value="game.controller.default" label="480" order="1"/>
     <setting key="last_active" type="string" value="" configurable="0"/>
