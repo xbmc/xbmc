@@ -20,13 +20,37 @@ function(generate_file file)
     set(JAVA_OPEN_OPTS --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.util.regex=ALL-UNNAMED --add-opens java.base/java.io=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED  --add-opens java.base/java.net=ALL-UNNAMED)
   endif()
 
+  # Args used for swig execution
+  set(SWIG_ARGS -w401 -c++ -o ${file}.xml -xml -I${CMAKE_SOURCE_DIR}/xbmc ${CMAKE_CURRENT_SOURCE_DIR}/../swig/${file})
+
+  # This generates a file that has the dependencies the preprocessed swig template finds
+  # execute_process needs explicit use of explicit swig executable location. it is not TARGET aware
+  # retrieve location property from TARGET
+  get_target_property(_swig_exe SWIG::SWIG IMPORTED_LOCATION)
+  execute_process(COMMAND ${_swig_exe} -MM -MF build/swig/${file}.dep ${SWIG_ARGS})
+  file(READ ${CMAKE_BINARY_DIR}/build/swig/${file}.dep swig_deps)
+
+  # Match all lines except the first one until " \"
+  string(REGEX MATCHALL "\n  [^ ]+" temp ${swig_deps})
+  set(swig_deps)
+  foreach(t ${temp})
+    string(STRIP "${t}" t)
+    set(swig_deps ${swig_deps} "${t}")
+  endforeach()
+
+  # We set this to allow cmake to detect if changes in the headers/template files are made
+  # and to force a cmake reconfigure to detect new dependencies that may have been added.
+  set_property(DIRECTORY ${CMAKE_SOURCE_DIR} APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${swig_deps})
+
   add_custom_command(OUTPUT ${CPP_FILE}
                      COMMAND SWIG::SWIG
-                     ARGS -w401 -c++ -o ${file}.xml -xml -I${CMAKE_SOURCE_DIR}/xbmc ${CMAKE_CURRENT_SOURCE_DIR}/../swig/${file}
+                     ARGS ${SWIG_ARGS}
                      COMMAND ${Java_JAVA_EXECUTABLE}
                      ARGS ${JAVA_OPEN_OPTS} -cp "${classpath}" groovy.ui.GroovyMain ${CMAKE_SOURCE_DIR}/tools/codegenerator/Generator.groovy ${file}.xml ${CMAKE_CURRENT_SOURCE_DIR}/../python/PythonSwig.cpp.template ${file}.cpp > ${devnull}
                      ${CLANG_FORMAT_COMMAND}
-                     DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../swig/${file} ${CMAKE_CURRENT_SOURCE_DIR}/../python/PythonSwig.cpp.template)
+                     DEPENDS SWIG::SWIG ${swig_deps} ${CMAKE_CURRENT_SOURCE_DIR}/../python/PythonSwig.cpp.template
+                     BYPRODUCTS build/swig/${CPP_FILE} build/swig/${file}.xml)
+
   set(SOURCES ${SOURCES} "${CPP_FILE}" PARENT_SCOPE)
 endfunction()
 
