@@ -8,56 +8,55 @@
 
 #include "TagLoaderTagLib.h"
 
+#include "MusicInfoTag.h"
+#include "ReplayGain.h"
+#include "ServiceBroker.h"
+#include "TagLibVFSStream.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
+#include "utils/RegExp.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/log.h"
+
 #include <vector>
 
-#include <taglib/id3v1tag.h>
-#include <taglib/apetag.h>
-#include <taglib/asftag.h>
-#include <taglib/id3v1genres.h>
 #include <taglib/aifffile.h>
 #include <taglib/apefile.h>
+#include <taglib/apetag.h>
 #include <taglib/asffile.h>
+#include <taglib/asftag.h>
+#include <taglib/attachedpictureframe.h>
+#include <taglib/commentsframe.h>
+#include <taglib/flacfile.h>
+#include <taglib/id3v1genres.h>
+#include <taglib/id3v1tag.h>
+#include <taglib/id3v2tag.h>
+#include <taglib/itfile.h>
 #include <taglib/modfile.h>
 #include <taglib/mp4file.h>
+#include <taglib/mp4tag.h>
+#include <taglib/mpcfile.h>
 #include <taglib/mpegfile.h>
 #include <taglib/oggfile.h>
 #include <taglib/oggflacfile.h>
 #include <taglib/opusfile.h>
+#include <taglib/popularimeterframe.h>
 #include <taglib/rifffile.h>
-#include <taglib/speexfile.h>
 #include <taglib/s3mfile.h>
+#include <taglib/speexfile.h>
+#include <taglib/tbytevector.h>
+#include <taglib/textidentificationframe.h>
+#include <taglib/tpropertymap.h>
 #include <taglib/trueaudiofile.h>
+#include <taglib/tstring.h>
+#include <taglib/uniquefileidentifierframe.h>
+#include <taglib/unsynchronizedlyricsframe.h>
 #include <taglib/vorbisfile.h>
 #include <taglib/wavfile.h>
 #include <taglib/wavpackfile.h>
-#include <taglib/xmfile.h>
-#include <taglib/flacfile.h>
-#include <taglib/itfile.h>
-#include <taglib/mpcfile.h>
-#include <taglib/id3v2tag.h>
 #include <taglib/xiphcomment.h>
-#include <taglib/mp4tag.h>
-
-#include <taglib/textidentificationframe.h>
-#include <taglib/uniquefileidentifierframe.h>
-#include <taglib/popularimeterframe.h>
-#include <taglib/commentsframe.h>
-#include <taglib/unsynchronizedlyricsframe.h>
-#include <taglib/attachedpictureframe.h>
-
-#include <taglib/tstring.h>
-#include <taglib/tpropertymap.h>
-
-#include "TagLibVFSStream.h"
-#include "MusicInfoTag.h"
-#include "ReplayGain.h"
-#include "utils/RegExp.h"
-#include "utils/URIUtils.h"
-#include "utils/log.h"
-#include "utils/StringUtils.h"
-#include "ServiceBroker.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/SettingsComponent.h"
+#include <taglib/xmfile.h>
 
 #if TAGLIB_MAJOR_VERSION <= 1 && TAGLIB_MINOR_VERSION < 11
 #include "utils/Base64.h"
@@ -604,7 +603,7 @@ bool CTagLoaderTagLib::ParseTag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTag& 
     {
       TagLib::ByteVector tdata = it->second.binaryData();
       // The image data follows a null byte, which can optionally be preceded by a filename
-      const uint offset = tdata.find('\0') + 1;
+      const unsigned int offset = tdata.find('\0') + 1;
       ByteVector bv(tdata.data() + offset, tdata.size() - offset);
       // Infer the mimetype
       std::string mime{};
