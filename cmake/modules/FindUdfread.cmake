@@ -10,7 +10,7 @@
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   macro(buildudfread)
-    set(UDFREAD_VERSION ${${MODULE}_VER})
+    set(UDFREAD_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
     set(BUILD_NAME udfread_build)
 
     set(CONFIGURE_COMMAND autoreconf -vif &&
@@ -46,12 +46,12 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
     include(cmake/scripts/common/ModuleHelpers.cmake)
 
-    set(MODULE_LC udfread)
+    set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC udfread)
     SETUP_BUILD_VARS()
 
     # Check for existing UDFREAD. If version >= UDFREAD-VERSION file version, dont build
     # A corner case, but if a linux/freebsd user WANTS to build internal udfread, build anyway
-    if((libudfread_VERSION VERSION_LESS ${${MODULE}_VER} AND ENABLE_INTERNAL_UDFREAD) OR
+    if((libudfread_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_UDFREAD) OR
        ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_UDFREAD))
       buildudfread()
   

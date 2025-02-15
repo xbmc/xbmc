@@ -14,7 +14,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   macro(buildflatbuffers)
     # Override build type detection and always build as release
-    set(FLATBUFFERS_BUILD_TYPE Release)
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_TYPE Release)
 
     set(CMAKE_ARGS -DFLATBUFFERS_CODE_COVERAGE=OFF
                    -DFLATBUFFERS_BUILD_TESTS=OFF
@@ -30,7 +30,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     BUILD_DEP_TARGET()
   endmacro()
 
-  set(MODULE_LC flatbuffers)
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC flatbuffers)
 
   SETUP_BUILD_VARS()
 
@@ -40,7 +40,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   # Check for existing Flatbuffers. If version >= FLATBUFFERS-VERSION file version, dont build
   # A corner case, but if a linux/freebsd user WANTS to build internal flatbuffers, build anyway
-  if((flatbuffers_VERSION VERSION_LESS ${${MODULE}_VER} AND ENABLE_INTERNAL_FLATBUFFERS) OR
+  if((flatbuffers_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_FLATBUFFERS) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_FLATBUFFERS))
 
     buildflatbuffers()

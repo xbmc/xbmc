@@ -21,10 +21,10 @@ macro(buildTagLib)
   find_package(ZLIB REQUIRED)
   unset(FPHSA_NAME_MISMATCHED)
 
-  set(TAGLIB_VERSION ${${MODULE}_VER})
+  set(TAGLIB_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
 
   if(WIN32 OR WINDOWS_STORE)
-    set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/001-cmake-pdb-debug.patch")
+    set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/001-cmake-pdb-debug.patch")
     generate_patchcommand("${patches}")
 
     if(WINDOWS_STORE)
@@ -34,7 +34,7 @@ macro(buildTagLib)
 
   # Debug postfix only used for windows
   if(WIN32 OR WINDOWS_STORE)
-    set(TAGLIB_DEBUG_POSTFIX "d")
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_DEBUG_POSTFIX "d")
   endif()
 
   set(CMAKE_ARGS -DBUILD_SHARED_LIBS=OFF
@@ -45,7 +45,7 @@ macro(buildTagLib)
 
   BUILD_DEP_TARGET()
 
-  add_dependencies(${MODULE_LC} ZLIB::ZLIB)
+  add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} ZLIB::ZLIB)
   set(TAGLIB_LINK_LIBRARIES "ZLIB::ZLIB")
 endmacro()
 
@@ -53,7 +53,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  set(MODULE_LC taglib)
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC taglib)
 
   SETUP_BUILD_VARS()
 
@@ -67,7 +67,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                     OUTPUT_STRIP_TRAILING_WHITESPACE)
   endif()
 
-  if((TAGLIBCONFIG_VER VERSION_LESS ${${MODULE}_VER} AND ENABLE_INTERNAL_TAGLIB) OR
+  if((TAGLIBCONFIG_VER VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_TAGLIB) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_TAGLIB))
     # Build Taglib
     buildTagLib()

@@ -25,7 +25,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       find_package(Fontconfig REQUIRED QUIET)
     endif()
 
-    set(ASS_VERSION ${${MODULE}_VER})
+    set(ASS_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
 
     if(WIN32 OR WINDOWS_STORE)
       set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/libass/01-win-CMakeLists.patch"
@@ -35,7 +35,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
       generate_patchcommand("${patches}")
 
-      set(LIBASS_DEBUG_POSTFIX d)
+      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_DEBUG_POSTFIX d)
     endif()
 
     if(WIN32 OR WINDOWS_STORE)
@@ -85,23 +85,23 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                      "-framework CoreFoundation")
     else()
       list(APPEND ASS_LINK_LIBRARIES Fontconfig::Fontconfig)
-      add_dependencies(${MODULE_LC} Fontconfig::Fontconfig)
+      add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} Fontconfig::Fontconfig)
     endif()
 
-    set(ASS_INCLUDE_DIR ${LIBASS_INCLUDE_DIR})
-    set(ASS_LIBRARY_RELEASE ${LIBASS_LIBRARY_RELEASE})
-    if(LIBASS_LIBRARY_DEBUG)
-      set(ASS_LIBRARY_DEBUG ${LIBASS_LIBRARY_DEBUG})
+    set(ASS_INCLUDE_DIR ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR})
+    set(ASS_LIBRARY_RELEASE ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_RELEASE})
+    if(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_DEBUG)
+      set(ASS_LIBRARY_DEBUG ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_DEBUG})
     endif()
 
     # Add dependencies to build target
-    add_dependencies(${MODULE_LC} ${APP_NAME_LC}::FriBidi)
-    add_dependencies(${MODULE_LC} ${APP_NAME_LC}::Iconv)
-    add_dependencies(${MODULE_LC} ${APP_NAME_LC}::HarfBuzz)
-    add_dependencies(${MODULE_LC} ${APP_NAME_LC}::FreeType)
+    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} ${APP_NAME_LC}::FriBidi)
+    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} ${APP_NAME_LC}::Iconv)
+    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} ${APP_NAME_LC}::HarfBuzz)
+    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} ${APP_NAME_LC}::FreeType)
   endmacro()
 
-  set(MODULE_LC libass)
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC libass)
 
   SETUP_BUILD_VARS()
 
@@ -110,7 +110,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                         HINTS ${DEPENDS_PATH}/lib/cmake
                         ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 
-    if(libass_VERSION VERSION_LESS ${${MODULE}_VER} AND ENABLE_INTERNAL_ASS)
+    if(libass_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_ASS)
       # build internal module
       buildlibASS()
     else()
@@ -138,7 +138,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     find_package(PkgConfig REQUIRED)
     pkg_check_modules(PC_ASS libass QUIET IMPORTED_TARGET)
 
-    if((PC_ASS_VERSION VERSION_LESS ${${MODULE}_VER} AND ENABLE_INTERNAL_ASS) OR
+    if((PC_ASS_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_ASS) OR
        ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_ASS))
       # build internal module
       buildlibASS()

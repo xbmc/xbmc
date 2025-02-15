@@ -9,12 +9,12 @@
 macro(buildCrossGUID)
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  set(MODULE_LC crossguid)
+  set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC crossguid)
 
   SETUP_BUILD_VARS()
 
-  set(CROSSGUID_VERSION ${${MODULE}_VER})
-  set(CROSSGUID_DEBUG_POSTFIX "-dgb")
+  set(CROSSGUID_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
+  set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_DEBUG_POSTFIX "-dgb")
 
   set(_crossguid_definitions HAVE_NEW_CROSSGUID)
 
