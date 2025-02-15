@@ -580,7 +580,10 @@ int CSelectionStreams::CountType(StreamType type) const
 void CVideoPlayer::SetAVChange(std::string from)
 {
   CLog::Log(LOGINFO, "VideoPlayer::SetAVChange true [{}]", from);
+  if (CServiceBroker::GetDataCacheCore().GetAVChange()) return; // already set, do not allow set again until done.
+
   CServiceBroker::GetDataCacheCore().SetAVChange(true);
+  CServiceBroker::GetDataCacheCore().SetAVChangeExtended(true);
 
   unsigned int timeout(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiAVChangeFlagTimeout);
 
@@ -589,6 +592,8 @@ void CVideoPlayer::SetAVChange(std::string from)
       usleep(timeout * 1000 * 1000);
       CServiceBroker::GetDataCacheCore().SetAVChange(false);
       CLog::Log(LOGINFO, "VideoPlayer::SetAVChange false [{}] after [{}] seconds", from, timeout);
+      usleep(2 * 1000 * 1000);
+      CServiceBroker::GetDataCacheCore().SetAVChangeExtended(false);
   });
 }
 
