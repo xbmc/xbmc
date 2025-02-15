@@ -10,6 +10,7 @@
 
 #include "bus/PeripheralBus.h"
 #include "devices/Peripheral.h"
+#include "guilib/IMsgTargetCallback.h"
 #include "interfaces/IAnnouncer.h"
 #include "messaging/IMessageTarget.h"
 #include "peripherals/events/interfaces/IEventScannerCallback.h"
@@ -18,6 +19,7 @@
 #include "threads/Thread.h"
 #include "utils/Observer.h"
 
+#include <atomic>
 #include <memory>
 #include <vector>
 
@@ -27,6 +29,7 @@ class CSetting;
 class CSettingsCategory;
 class CAction;
 class CKey;
+class CEvent;
 
 namespace tinyxml2
 {
@@ -57,7 +60,8 @@ class CPeripherals : public ISettingCallback,
                      public Observable,
                      public KODI::MESSAGING::IMessageTarget,
                      public IEventScannerCallback,
-                     public ANNOUNCEMENT::IAnnouncer
+                     public ANNOUNCEMENT::IAnnouncer,
+                     public IMsgTargetCallback
 {
 public:
   explicit CPeripherals(CInputManager& inputManager,
@@ -338,6 +342,9 @@ public:
                 const std::string& message,
                 const CVariant& data) override;
 
+  // Implementation of IMsgTargetCallback
+  bool OnMessage(CGUIMessage& message) override;
+
   /*!
    * \brief Access the input manager passed to the constructor
    */
@@ -362,6 +369,9 @@ public:
     return m_addonInstallMutex;
   }
 
+  // GUI functions
+  bool WaitForGUI();
+
 private:
   bool LoadMappings();
   bool GetMappingForDevice(const CPeripheralBus& bus, PeripheralScanResult& result) const;
@@ -383,5 +393,7 @@ private:
   mutable CCriticalSection m_critSectionBusses;
   mutable CCriticalSection m_critSectionMappings;
   CCriticalSection m_addonInstallMutex;
+  std::atomic<bool> m_guiReady{false};
+  std::unique_ptr<CEvent> m_guiReadyEvent;
 };
 } // namespace PERIPHERALS
