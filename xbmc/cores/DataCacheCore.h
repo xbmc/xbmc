@@ -34,6 +34,8 @@ public:
 
   void SetAVChange(bool value);
   bool GetAVChange();
+  void SetAVChangeExtended(bool value);
+  bool GetAVChangeExtended();
 
   // player video info
   void SetVideoDecoderName(std::string name, bool isHw);
@@ -250,6 +252,7 @@ public:
 
 protected:
   std::atomic_bool m_AVChange = false;
+  std::atomic_bool m_AVChangeExtended = false;
   std::atomic_bool m_hasAVInfoChanges = false;
 
   CCriticalSection m_videoPlayerSection;

@@ -93,6 +93,16 @@ bool CDataCacheCore::GetAVChange()
   return m_AVChange;
 }
 
+void CDataCacheCore::SetAVChangeExtended(bool value)
+{
+  m_AVChangeExtended = value;
+}
+
+bool CDataCacheCore::GetAVChangeExtended()
+{
+  return m_AVChangeExtended;
+}
+
 void CDataCacheCore::SetVideoDecoderName(std::string name, bool isHw)
 {
   std::unique_lock<CCriticalSection> lock(m_videoPlayerSection);
