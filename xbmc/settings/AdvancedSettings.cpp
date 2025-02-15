@@ -418,7 +418,7 @@ void CAdvancedSettings::Initialize()
   m_guiVisualizeDirtyRegions = false;
   m_guiAlgorithmDirtyRegions = 3;
   m_guiSmartRedraw = false;
-  m_guiAVChangeFlagTimeout = 5;
+  m_guiAVChangeFlagTimeout = 8;
   m_airTunesPort = 36666;
   m_airPlayPort = 36667;
 
