@@ -963,7 +963,10 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
     res->dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
 
   if (fromMode.find("FramePacking") != std::string::npos)
+  {
+    res->iBlanking = res->iScreenHeight == 1080 ? 45 : 30;
     res->dwFlags |= D3DPRESENTFLAG_MODE3DFP;
+  }
 
   if (fromMode.find("TopBottom") != std::string::npos)
     res->dwFlags |= D3DPRESENTFLAG_MODE3DTB;
