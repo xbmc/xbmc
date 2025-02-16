@@ -15,6 +15,7 @@
 #include "filesystem/File.h"
 #include "guilib/LocalizeStrings.h"
 #include "imagefiles/ImageFileURL.h"
+#include "music/MusicEmbeddedCoverLoaderFFmpeg.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
@@ -164,6 +165,9 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
   std::string thumb;
   if (m_fctx->nb_chapters > 1)
     thumb = IMAGE_FILES::URLFromFile(url.Get(), "music");
+
+  // Look for any embedded cover art
+  CMusicEmbeddedCoverLoaderFFmpeg::GetEmbeddedCover(m_fctx, albumtag);
 
   for (size_t i=0;i<m_fctx->nb_chapters;++i)
   {
