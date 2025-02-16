@@ -590,7 +590,7 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecAmlogic::GetPicture(VideoPicture* pVideoP
   if (!m_Codec)
     return VC_ERROR;
 
-  VCReturn retVal = m_Codec->GetPicture(&m_videobuffer);
+  VCReturn retVal = m_Codec->GetPicture(m_videobuffer);
 
   if (retVal == VC_PICTURE)
   {

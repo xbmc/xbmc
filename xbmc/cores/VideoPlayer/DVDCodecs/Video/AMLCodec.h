@@ -68,7 +68,7 @@ public:
   void          Reset();
 
   bool          AddData(uint8_t *pData, size_t size, double dts, double pts);
-  CDVDVideoCodec::VCReturn GetPicture(VideoPicture* pVideoPicture);
+  CDVDVideoCodec::VCReturn GetPicture(VideoPicture& videoPicture);
 
   void          SetSpeed(int speed);
   void          SetDrain(bool drain){m_drain = drain;};

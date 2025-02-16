@@ -2592,7 +2592,7 @@ int CAMLCodec::DequeueBuffer()
   return ret;
 }
 
-CDVDVideoCodec::VCReturn CAMLCodec::GetPicture(VideoPicture *pVideoPicture)
+CDVDVideoCodec::VCReturn CAMLCodec::GetPicture(VideoPicture& videoPicture)
 {
   struct vdec_info vi;
   int ret = EAGAIN;
@@ -2606,19 +2606,19 @@ CDVDVideoCodec::VCReturn CAMLCodec::GetPicture(VideoPicture *pVideoPicture)
 
   if (!m_drain && buffer_level > m_minimum_buffer_level && (ret = DequeueBuffer()) == 0)
   {
-    pVideoPicture->iFlags = 0;
+    videoPicture.iFlags = 0;
 
     m_minimum_buffer_level = (streambuffer ? m_minimum_buffer_level : 0.0f);
 
     m_tp_last_frame = std::chrono::system_clock::now();
 
     if (m_last_pts == DVD_NOPTS_VALUE)
-      pVideoPicture->iDuration = static_cast<double>(am_private->video_rate * DVD_TIME_BASE) / UNIT_FREQ;
+      videoPicture.iDuration = static_cast<double>(am_private->video_rate * DVD_TIME_BASE) / UNIT_FREQ;
     else
-      pVideoPicture->iDuration = static_cast<double>(m_cur_pts - m_last_pts);
+      videoPicture.iDuration = static_cast<double>(m_cur_pts - m_last_pts);
 
-    pVideoPicture->dts = DVD_NOPTS_VALUE;
-    pVideoPicture->pts = static_cast<double>(m_cur_pts);
+    videoPicture.dts = DVD_NOPTS_VALUE;
+    videoPicture.pts = static_cast<double>(m_cur_pts);
 
     m_dll->codec_get_vdec_info(&am_private->vcodec, &vi);
     if  (vi.ratio_control ) {
@@ -2627,13 +2627,13 @@ CDVDVideoCodec::VCReturn CAMLCodec::GetPicture(VideoPicture *pVideoPicture)
     }
 
     CLog::Log(LOGDEBUG, LOGVIDEO, "CAMLCodec::GetPicture: index: {:d}, pts: {:.3f}, dur:{:.3f}ms ar:{:.2f} elf:{:d}ms",
-      m_bufferIndex, pVideoPicture->pts / DVD_TIME_BASE, pVideoPicture->iDuration / 1000, m_hints.aspect, elapsed_since_last_frame.count());
+      m_bufferIndex, videoPicture.pts / DVD_TIME_BASE, videoPicture.iDuration / 1000, m_hints.aspect, elapsed_since_last_frame.count());
 
-    pVideoPicture->stereoMode = m_hints.stereo_mode;
-    if (pVideoPicture->stereoMode == "block_lr" && m_processInfo.GetVideoSettings().m_StereoInvert)
-      pVideoPicture->stereoMode = "block_rl";
-    else if (pVideoPicture->stereoMode == "block_rl" && m_processInfo.GetVideoSettings().m_StereoInvert)
-      pVideoPicture->stereoMode = "block_lr";
+    videoPicture.stereoMode = m_hints.stereo_mode;
+    if (videoPicture.stereoMode == "block_lr" && m_processInfo.GetVideoSettings().m_StereoInvert)
+      videoPicture.stereoMode = "block_rl";
+    else if (videoPicture.stereoMode == "block_rl" && m_processInfo.GetVideoSettings().m_StereoInvert)
+      videoPicture.stereoMode = "block_lr";
 
     return CDVDVideoCodec::VC_PICTURE;
   }
