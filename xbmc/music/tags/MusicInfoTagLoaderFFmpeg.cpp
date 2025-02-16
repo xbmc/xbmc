@@ -11,6 +11,7 @@
 #include "MusicInfoTag.h"
 #include "cores/FFmpeg.h"
 #include "filesystem/File.h"
+#include "music/MusicEmbeddedCoverLoaderFFmpeg.h"
 #include "utils/StringUtils.h"
 
 using namespace MUSIC_INFO;
@@ -156,6 +157,9 @@ bool CMusicInfoTagLoaderFFmpeg::Load(const std::string& strFileName, CMusicInfoT
   if (st)
     while ((avtag = av_dict_get(st->metadata, "", avtag, AV_DICT_IGNORE_SUFFIX)))
       ParseTag(avtag);
+
+  // Look for any embedded cover art
+  CMusicEmbeddedCoverLoaderFFmpeg::GetEmbeddedCover(fctx, tag, art);
 
   if (!tag.GetTitle().empty())
     tag.SetLoaded(true);
