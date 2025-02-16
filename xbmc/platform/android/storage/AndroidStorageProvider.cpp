@@ -198,7 +198,10 @@ void CAndroidStorageProvider::GetRemovableDrives(std::vector<CMediaSource>& remo
         {
           CMediaSource share;
 
-          share.strPath = vol.getDirectory().getAbsolutePath();
+          if (CJNIBase::GetSDKVersion() >= 30)
+            share.strPath = vol.getDirectory().getAbsolutePath();
+          else
+            share.strPath = vol.getPath();
           if (xbmc_jnienv()->ExceptionCheck())
           {
             xbmc_jnienv()->ExceptionDescribe();
