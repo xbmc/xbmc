@@ -1,9 +1,0 @@
-//
-// Prefix header for all source files of the 'CocoaTouchBrowser' target in the 'CocoaTouchBrowser' project
-//
-#import <Availability.h>
-
-#ifdef __OBJC__
-    #import <Foundation/Foundation.h>
-    #import <UIKit/UIKit.h>
-#endif
