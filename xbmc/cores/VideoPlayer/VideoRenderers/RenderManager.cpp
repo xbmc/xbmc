@@ -1281,9 +1281,7 @@ void CRenderManager::PrepareNextRender()
 
     int idx = m_queued.front();
 
-    double lateframes = diff / frametime;
-    m_lateframes = (int) (lateframes > 0. ? lateframes : 0.);
-
+    m_lateframes = static_cast<int>(std::max(0.0, diff / frametime));
     m_presentstep = PRESENT_FLIP;
     m_presentsource = idx;
     m_presentstarted = true;
