@@ -67,7 +67,7 @@ std::unique_ptr<CDVDVideoCodec> CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInf
     return nullptr;
   }
 
-  // platform specifig video decoders
+  // platform specific video decoders
   if (!(hint.codecOptions & CODEC_FORCE_SOFTWARE))
   {
     for (auto &codec : m_hwVideoCodecs)
@@ -183,7 +183,7 @@ std::unique_ptr<CDVDAudioCodec> CDVDFactoryCodec::CreateAudioCodec(
   if (!allowdtshddecode)
     options.m_keys.emplace_back("allowdtshddecode", "0");
 
-  // platform specifig audio decoders
+  // platform specific audio decoders
   for (auto &codec : m_hwAudioCodecs)
   {
     pCodec = CreateAudioCodecHW(codec.first, processInfo);

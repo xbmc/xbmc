@@ -312,7 +312,7 @@ int CAEEncoderFFmpeg::Encode(uint8_t *in, int in_size, uint8_t *out, int out_siz
     //! @TODO: This is a workaround for our current design. The caller should be made
     // aware of the potential error values to use the ffmpeg API in a proper way, which means
     // copying with EAGAIN and multiple packet output.
-    // For the current situation there is a relationship implicitely assumed of:
+    // For the current situation there is a relationship implicitly assumed of:
     // 1 frame in - 1 packet out. This holds true in practice but the API does not guarantee it.
     if (err >= 0)
     {
@@ -331,7 +331,7 @@ int CAEEncoderFFmpeg::Encode(uint8_t *in, int in_size, uint8_t *out, int out_siz
     }
     else
     {
-      CLog::LogF(LOGERROR, "Error receiving encoded paket ({})", err);
+      CLog::LogF(LOGERROR, "Error receiving encoded packet ({})", err);
     }
   }
   catch (const FFMpegException& caught)

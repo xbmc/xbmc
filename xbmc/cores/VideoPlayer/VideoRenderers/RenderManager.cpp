@@ -838,7 +838,7 @@ void CRenderManager::PresentSingle(bool clear, DWORD flags, DWORD alpha)
 }
 
 /* new simpler method of handling interlaced material, *
- * we just render the two fields right after eachother */
+ * we just render the two fields right after each other */
 void CRenderManager::PresentFields(bool clear, DWORD flags, DWORD alpha)
 {
   const SPresent& m = m_Queue[m_presentsource];

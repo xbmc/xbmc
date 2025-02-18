@@ -17,7 +17,7 @@ struct BlurayState
   int32_t playlistId = -1;
 };
 
-/*! \brief Auxiliar class to serialize/deserialize the Bluray state (into/from XML)
+/*! \brief Auxiliary class to serialize/deserialize the Bluray state (into/from XML)
 */
 class CBlurayStateSerializer
 {
