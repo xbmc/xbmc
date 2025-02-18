@@ -882,9 +882,12 @@ void CVideoPlayerVideo::Flush(bool sync)
 
 void CVideoPlayerVideo::ProcessOverlays(const VideoPicture* pSource, double pts)
 {
+
+  double subsPts = pts - m_iSubtitleDelay;
+
   // remove any overlays that are out of time
   if (m_syncState == IDVDStreamPlayer::SYNC_INSYNC)
-    m_pOverlayContainer->CleanUp(pts - m_iSubtitleDelay);
+    m_pOverlayContainer->CleanUp(subsPts);
 
   VecOverlays overlays;
 
@@ -902,7 +905,7 @@ void CVideoPlayerVideo::ProcessOverlays(const VideoPicture* pSource, double pts)
       if(!pOverlay->bForced && !m_bRenderSubs)
         continue;
 
-      double pts2 = pOverlay->bForced ? pts : pts - m_iSubtitleDelay;
+      double pts2 = pOverlay->bForced ? pts : subsPts;
       auto libassOverlay = std::dynamic_pointer_cast<CDVDOverlayLibass>(pOverlay);
       if (libassOverlay) {
         if (!libassOverlay->GetLibassHandler()->EventActive(pts2))
@@ -925,7 +928,7 @@ void CVideoPlayerVideo::ProcessOverlays(const VideoPicture* pSource, double pts)
 
     for(it = overlays.begin(); it != overlays.end(); ++it)
     {
-      double pts2 = (*it)->bForced ? pts : pts - m_iSubtitleDelay;
+      double pts2 = (*it)->bForced ? pts : subsPts;
       m_renderManager.AddOverlay(*it, pts2);
     }
   }
