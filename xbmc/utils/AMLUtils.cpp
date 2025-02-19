@@ -586,7 +586,8 @@ void aml_dv_off()
   CSysfsPath("/sys/module/amdolby_vision/parameters/dolby_vision_policy", DOLBY_VISION_FORCE_OUTPUT_MODE);
   if (modeChange) CSysfsPath("/sys/module/amdolby_vision/parameters/dolby_vision_mode", DOLBY_VISION_OUTPUT_MODE_BYPASS);
 
-  aml_dv_display_auto_now();
+  // Do set_disp_mode_auto on kernel.
+  if (modeChange) aml_dv_display_auto_now();
 }
 
 unsigned int aml_dv_dolby_vision_mode()
