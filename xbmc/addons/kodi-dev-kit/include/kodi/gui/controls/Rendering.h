@@ -93,7 +93,7 @@ public:
   /// @param[in] h Height of control
   /// @param[in] device The device to use. For OpenGL is empty on Direct X is
   ///                   the needed device send.
-  /// @return Add-on needs to return true if successed, otherwise false.
+  /// @return True on success, false otherwise.
   ///
   /// @note The @ref kodi::HardwareContext is basically a simple pointer which
   /// has to be changed to the desired format at the corresponding places using

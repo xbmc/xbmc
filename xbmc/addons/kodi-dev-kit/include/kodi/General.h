@@ -571,7 +571,7 @@ inline void ATTR_DLL_LOCAL KodiVersion(kodi_version_t& version)
 /// @param[in] modifierKey the key to define the needed layout (uppercase, symbols...)
 /// @param[out] layout_name name of used layout
 /// @param[out] layout list of selected keyboard layout
-/// @return true if request successed
+/// @return true if request succeeded
 ///
 ///
 /// ------------------------------------------------------------------------
@@ -639,7 +639,7 @@ inline bool ATTR_DLL_LOCAL GetKeyboardLayout(int modifierKey,
 /// This is used to change the keyboard layout currently used from Kodi
 ///
 /// @param[out] layout_name new name of used layout (input string not used!)
-/// @return true if request successed
+/// @return true if request succeeded
 ///
 /// @note @ref GetKeyboardLayout must be called afterwards.
 ///

@@ -350,7 +350,7 @@ public:
   /// @param[in] fragmentExtraEnd   [opt] To additionally add fragment source
   ///                               code to the end of the loaded file
   ///                               source code
-  /// @return                       true if compile was successed
+  /// @return                       true if compile was successful
   ///
   ///
   /// @note In the case of a compile error, it will be written once into the Kodi

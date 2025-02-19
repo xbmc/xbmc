@@ -196,7 +196,7 @@ protected:
     VFSEntryPtr m_addon; //!< Pointer to wrapped CVFSEntry.
   };
 
-  //! \brief Wrapper equpping a CVFSEntry with an IDirectory interface.
+  //! \brief Wrapper equipping a CVFSEntry with an IDirectory interface.
   //! \details Needed as CVFSEntry implements several VFS interfaces
   //!          with overlapping methods.
   class CVFSEntryIDirectoryWrapper : public XFILE::IDirectory
@@ -252,7 +252,7 @@ protected:
     VFSEntryPtr m_addon; //!< Pointer to wrapper CVFSEntry.
   };
 
-  //! \brief Wrapper equpping a CVFSEntry with an IFileDirectory interface.
+  //! \brief Wrapper equipping a CVFSEntry with an IFileDirectory interface.
   //! \details Needed as CVFSEntry implements several VFS interfaces
   //!          with overlapping methods.
   class CVFSEntryIFileDirectoryWrapper : public XFILE::IFileDirectory,
