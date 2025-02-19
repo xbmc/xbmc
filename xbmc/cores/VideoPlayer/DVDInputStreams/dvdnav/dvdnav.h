@@ -283,7 +283,7 @@ dvdnav_status_t dvdnav_stop(dvdnav_t *self);
  * Note this has no relation with the region setting of the DVD drive.
  * Old DVD drives (RPC-I) used to delegate most of the RCE handling to the CPU and
  * will actually call the virtual machine (VM) for its region setting. In those cases,
- * changing the VM region mask via dvdnav_set_region_mask() will circunvent
+ * changing the VM region mask via dvdnav_set_region_mask() will circumvent
  * the region protection scheme. This is no longer the case with more recent (RPC-II) drives
  * as RCE is handled internally by the drive firmware.
  *

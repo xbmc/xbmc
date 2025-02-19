@@ -1187,7 +1187,7 @@ bool CDVDInputStreamNavigator::GetCurrentButtonInfo(CDVDOverlaySpu& pOverlayPict
 
   if (pSPU->m_bHasClut)
   {
-    // get color stored in the highlight area palete using the previously stored clut
+    // get color stored in the highlight area palette using the previously stored clut
     for (unsigned i = 0; i < 4; i++)
     {
       uint8_t* yuvColor = pSPU->m_clut[(hl.palette >> (16 + i * 4)) & 0x0f];

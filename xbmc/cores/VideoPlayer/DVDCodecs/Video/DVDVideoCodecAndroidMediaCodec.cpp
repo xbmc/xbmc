@@ -797,7 +797,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
           else
           {
             m_mime = v;
-            CLog::Log(LOGDEBUG, "Succesfully replaced VC1 mime type to {}", m_mime);
+            CLog::Log(LOGDEBUG, "Successfully replaced VC1 mime type to {}", m_mime);
             success = true;
             break;
           }

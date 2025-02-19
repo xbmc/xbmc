@@ -35,7 +35,7 @@ struct DemuxCryptoSession
     return keySystem == other.keySystem && sessionId == other.sessionId;
   };
 
-  // encryped stream infos
+  // encrypted stream infos
   std::string sessionId;
   CryptoSessionSystem keySystem;
 
