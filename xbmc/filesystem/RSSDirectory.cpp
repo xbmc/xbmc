@@ -541,7 +541,7 @@ static void ParseItem(CFileItem* item, tinyxml2::XMLElement* root, const std::st
     if(best->duration)
       item->SetProperty("duration", StringUtils::SecondsToTimeString(best->duration));
 
-    /* handling of mimetypes fo directories are sub optimal at best */
+    /* handling of mimetypes for directories are sub optimal at best */
     if(best->mime == "application/rss+xml" && StringUtils::StartsWithNoCase(item->GetPath(), "http://"))
       item->SetPath("rss://" + item->GetPath().substr(7));
 

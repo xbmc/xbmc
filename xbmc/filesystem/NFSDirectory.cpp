@@ -251,7 +251,7 @@ bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     bool bIsDir = false;
     int64_t lTimeDate = 0;
 
-    //reslove symlinks
+    //resolve symlinks
     if(tmpDirent.type == NF3LNK)
     {
       CURL linkUrl;
