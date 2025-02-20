@@ -44,8 +44,6 @@ void CPipewireRegistry::OnGlobalAdded(void* userdata,
                                       uint32_t version,
                                       const struct spa_dict* props)
 {
-  auto& registry = *reinterpret_cast<CPipewireRegistry*>(userdata);
-
   if (strcmp(type, PW_TYPE_INTERFACE_Node) != 0)
     return;
 
@@ -67,6 +65,8 @@ void CPipewireRegistry::OnGlobalAdded(void* userdata,
   auto properties =
       std::unique_ptr<pw_properties, PipewirePropertiesDeleter>(pw_properties_new_dict(props));
 
+  auto& registry = *reinterpret_cast<CPipewireRegistry*>(userdata);
+  std::lock_guard lg(registry);
   auto node = std::make_unique<CPipewireNode>(registry, id, type);
 
   auto& globals = registry.GetGlobals();
@@ -86,6 +86,7 @@ void CPipewireRegistry::OnGlobalAdded(void* userdata,
 void CPipewireRegistry::OnGlobalRemoved(void* userdata, uint32_t id)
 {
   auto& registry = *reinterpret_cast<CPipewireRegistry*>(userdata);
+  std::lock_guard lg(registry);
   auto& globals = registry.GetGlobals();
 
   auto it = globals.find(id);
