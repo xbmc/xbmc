@@ -16,6 +16,7 @@ SET opt=mintty
 SET build32=yes
 SET build64=no
 SET buildArm=no
+SET buildArm64=no
 SET vcarch=x86
 SET msys2=msys64
 SET win10=no
@@ -30,6 +31,7 @@ FOR %%b in (%*) DO (
     SET build64=yes
     SET build32=no
     SET buildArm=no
+    SET buildArm64=no
     SET vcarch=amd64
     SET TARGETPLATFORM=x64
     )
@@ -37,8 +39,17 @@ FOR %%b in (%*) DO (
     SET build64=no
     SET build32=no
     SET buildArm=yes
+    SET buildArm64=no
     SET vcarch=arm
     SET TARGETPLATFORM=arm
+    )
+  IF %%b==buildArm64 (
+    SET build64=no
+    SET build32=no
+    SET buildArm=no
+    SET buildArm64=yes
+    SET vcarch=arm64
+    SET TARGETPLATFORM=arm64
     )
   IF %%b==win10 (
     SET win10=yes
@@ -59,7 +70,7 @@ rem compiles a bunch of mingw libs and not more
 IF %opt%==sh (
   IF EXIST %WORKDIR%\project\BuildDependencies\%msys2%\usr\bin\sh.exe (
     ECHO starting sh shell
-    %WORKDIR%\project\BuildDependencies\%msys2%\usr\bin\sh.exe --login -i /xbmc/tools/buildsteps/windows/make-mingwlibs.sh --prompt=%PROMPTLEVEL% --mode=%BUILDMODE% --build32=%build32% --build64=%build64% --buildArm=%buildArm% --win10=%win10%
+    %WORKDIR%\project\BuildDependencies\%msys2%\usr\bin\sh.exe --login -i /xbmc/tools/buildsteps/windows/make-mingwlibs.sh --prompt=%PROMPTLEVEL% --mode=%BUILDMODE% --build32=%build32% --build64=%build64% --buildArm=%buildArm% --buildArm64=%buildArm64%  --win10=%win10%
     GOTO END
   ) ELSE (
     GOTO ENDWITHERROR
@@ -67,7 +78,7 @@ IF %opt%==sh (
 )
 IF EXIST %WORKDIR%\project\BuildDependencies\%msys2%\usr\bin\mintty.exe (
   ECHO starting mintty shell
-  %WORKDIR%\project\BuildDependencies\%msys2%\usr\bin\mintty.exe -d -i /msys2.ico /usr/bin/bash --login /xbmc/tools/buildsteps/windows/make-mingwlibs.sh --prompt=%PROMPTLEVEL% --mode=%BUILDMODE% --build32=%build32% --build64=%build64% --buildArm=%buildArm% --win10=%win10%
+  %WORKDIR%\project\BuildDependencies\%msys2%\usr\bin\mintty.exe -d -i /msys2.ico /usr/bin/bash --login /xbmc/tools/buildsteps/windows/make-mingwlibs.sh --prompt=%PROMPTLEVEL% --mode=%BUILDMODE% --build32=%build32% --build64=%build64% --buildArm=%buildArm% --buildArm64=%buildArm64% --win10=%win10%
   GOTO END
 )
 GOTO ENDWITHERROR

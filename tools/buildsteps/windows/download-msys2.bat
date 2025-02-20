@@ -187,6 +187,7 @@ if not exist %instdir%\downloads2 mkdir %instdir%\downloads2
 if not exist %instdir%\locals mkdir %instdir%\locals
 if not exist %instdir%\locals\win32 mkdir %instdir%\locals\win32
 if not exist %instdir%\locals\x64 mkdir %instdir%\locals\x64
+if not exist %instdir%\locals\arm64 mkdir %instdir%\locals\arm64
 
 if not exist %instdir%\locals\win32\share (
     echo.-------------------------------------------------------------------------------
@@ -212,6 +213,18 @@ if not exist %instdir%\locals\x64\share (
     mkdir %instdir%\locals\x64\share
     )
 
+if not exist %instdir%\locals\arm64\share (
+    echo.-------------------------------------------------------------------------------
+    echo.create local arm64 folders
+    echo.-------------------------------------------------------------------------------
+    mkdir %instdir%\locals\arm64\bin
+    mkdir %instdir%\locals\arm64\etc
+    mkdir %instdir%\locals\arm64\include
+    mkdir %instdir%\locals\arm64\lib
+    mkdir %instdir%\locals\arm64\lib\pkgconfig
+    mkdir %instdir%\locals\arm64\share
+    )
+
 if not exist %instdir%\%msys2%\etc\fstab. GOTO writeFstab
 
 set searchRes=
@@ -233,14 +246,17 @@ if "%cygdrive%"=="no" echo.none / cygdrive binary,posix=0,noacl,user 0 ^0>>%inst
     echo.%instdir%\downloads\        /downloads
     echo.%instdir%\locals\win32\     /local32
     echo.%instdir%\locals\x64\       /local64
+    echo.%instdir%\locals\arm64\     /localarm64
     echo.%instdir%\%msys2%\mingw32\  /mingw32
     echo.%instdir%\%msys2%\mingw64\  /mingw64
+    echo.%instdir%\%msys2%\clangarm64\ /clangarm64
     echo.%instdir%\downloads2\       /var/cache/pacman/pkg
     echo.%instdir%\win32\            /depends/win32
     echo.%instdir%\x64\              /depends/x64
     echo.%instdir%\win10-arm\        /depends/win10-arm
     echo.%instdir%\win10-win32\      /depends/win10-win32
     echo.%instdir%\win10-x64\        /depends/win10-x64
+    echo.%instdir%\arm64\            /depends/arm64
     echo.%instdir%\..\..\            /xbmc
 )>>%instdir%\%msys2%\etc\fstab.
 
@@ -329,7 +345,7 @@ if exist %instdir%\locals\win32\etc\profile.local GOTO writeProfile64
     )
 
 :writeProfile64
-if exist %instdir%\locals\x64\etc\profile.local GOTO loadGasPreproc
+if exist %instdir%\locals\x64\etc\profile.local GOTO writeProfilearm64
     echo -------------------------------------------------------------------------------
     echo.- write profile for 64 bit compiling
     echo -------------------------------------------------------------------------------
@@ -375,6 +391,52 @@ if exist %instdir%\locals\x64\etc\profile.local GOTO loadGasPreproc
         echo.LOCALDESTDIR=/local64
         echo.export LOCALBUILDDIR LOCALDESTDIR
         )>>%instdir%\locals\x64\etc\profile.local
+    )
+
+:writeProfilearm64
+if exist %instdir%\locals\arm64\etc\profile.local GOTO loadGasPreproc
+    echo -------------------------------------------------------------------------------
+    echo.- write profile for arm64 compiling
+    echo -------------------------------------------------------------------------------
+    (
+        echo.#
+        echo.# /localarm64/etc/profile.local
+        echo.#
+        echo.
+        echo.MSYSTEM=MINGW64
+
+        echo.alias dir='ls -la --color=auto'
+        echo.alias ls='ls --color=auto'
+        echo.export CC=gcc
+        echo.export python=/usr/bin/python
+
+        echo.MSYS2_PATH="/usr/local/bin:/usr/bin"
+        echo.MANPATH="/usr/share/man:/clangarm64/share/man:/localarm64/man:/localarm64/share/man"
+        echo.INFOPATH="/usr/local/info:/usr/share/info:/usr/info:/clangarm64/share/info"
+        echo.MINGW_PREFIX="/clangarm64"
+        echo.MINGW_CHOST="aarch64-w64-mingw32"
+        echo.export MSYSTEM MINGW_PREFIX MINGW_CHOST
+        echo.
+        echo.DXSDK_DIR="/clangarm64/aarch64-w64-mingw32"
+        echo.ACLOCAL_PATH="/clangarm64/share/aclocal:/usr/share/aclocal"
+        echo.PKG_CONFIG_LOCAL_PATH="/localarm64/lib/pkgconfig"
+        echo.PKG_CONFIG_PATH="/localarm64/lib/pkgconfig:/clangarm64/lib/pkgconfig"
+        echo.CPPFLAGS="-I/localarm64/include -D_FORTIFY_SOURCE=2"
+        echo.CFLAGS="-I/localarm64/include -mms-bitfields -mthreads -march=armv8-a -pipe"
+        echo.CXXFLAGS="-I/localarm64/include -mms-bitfields -mthreads -march=armv8-a -pipe"
+        echo.LDFLAGS="-L/localarm64/lib -pipe"
+        echo.export DXSDK_DIR ACLOCAL_PATH PKG_CONFIG_PATH PKG_CONFIG_LOCAL_PATH CPPFLAGS CFLAGS CXXFLAGS LDFLAGS MSYSTEM
+        echo.
+        echo.PATH=".:/localarm64/bin:/clangarm64/bin:${MSYS2_PATH}:${INFOPATH}:${PATH}"
+        echo.PS1='\[\033[32m\]\u@\h \[\e[33m\]\w\[\e[0m\]\n\$ '
+        echo.export PATH PS1
+        echo.
+        echo.# package build directory
+        echo.LOCALBUILDDIR=/build
+        echo.# package installation prefix
+        echo.LOCALDESTDIR=/localarm64
+        echo.export LOCALBUILDDIR LOCALDESTDIR
+        )>>%instdir%\locals\arm64\etc\profile.local
     )
 
 :loadGasPreproc

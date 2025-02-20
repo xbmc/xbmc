@@ -15,6 +15,7 @@ while true; do
     --build32=* ) build32="${1#*=}"; shift ;;
     --build64=* ) build64="${1#*=}"; shift ;;
     --buildArm=* ) buildArm="${1#*=}"; shift ;;
+    --buildArm64=* ) buildArm64="${1#*=}"; shift ;;
     --prompt=* ) PROMPTLEVEL="${1#*=}"; shift ;;
     --mode=* ) BUILDMODE="${1#*=}"; shift ;;
     --win10=* ) win10="${1#*=}"; shift ;;
@@ -33,6 +34,9 @@ elif [[ $build64 = "yes" ]]; then
 elif [[ $buildArm = "yes" ]]; then
   TRIPLET=arm
   ARCH=arm
+elif [[ $buildArm64 = "yes" ]]; then
+  TRIPLET=arm64
+  ARCH=arm64
 else
   echo "-------------------------------------------------------------------------------"
   echo " none of build types (build32, build64 or buildArm) was specified "
@@ -117,6 +121,8 @@ run_builds() {
       profile_path=/local64/etc/profile.local
     elif [[ $buildArm = "yes" ]]; then
       profile_path=/local32/etc/profile.local
+    elif [[ $buildArm64 = "yes" ]]; then
+      profile_path=/localarm64/etc/profile.local
     fi
 
     if [ ! -z $profile_path ]; then

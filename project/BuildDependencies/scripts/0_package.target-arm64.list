@@ -1,0 +1,41 @@
+; package.list should contain all file names of packages which are already in the "new" package format (the package contains the paths to the libraries
+; and headers relative to the XBMC root directory, stored in a zip container)
+; example sqlite-3.7.12.1-win32.7z:
+; -> (package name)\(relative path to file)
+; -> sqlite-3.7.12.1-win32\project\BuildDependencies\lib\sqlite3.lib
+; -> sqlite-3.7.12.1-win32\system\sqlite3.dll
+; -> ...
+;PLEASE KEEP THIS LIST IN ALPHABETICAL ORDER!
+brotli-1.0.7-arm64-v142-20250209.7z
+dav1d-1.5.1-arm64-v142-20250209.7z
+detours-64ec13-arm64-v142-20250209.7z
+dnssd-878.260.1-arm64-v142-20250209.7z
+expat-2.4.9-arm64-v142-20250209.7z
+freetype-2.10.1-arm64-v142-20250209.7z
+fstrcmp-0.7-arm64-v142-20250209.7z
+GoogleTest-1.10.0-arm64-v142-20250209.7z
+harfbuzz-2.8.0-arm64-v142-20250209.7z
+lcms2-2.9-arm64-v142-20250209.7z
+libaacs-0.9.0-arm64-v142-20250209.7z
+libbdplus-0.1.2-arm64-v142-20250209.7z
+libbluray-1.3.4-arm64-v142-20250209.7z
+libcdio-2.1.0-arm64-v142-20250209.7z
+libfribidi-1.0.8-arm64-v142-20250209.7z
+libiconv-1.16-arm64-v142-20250209.7z
+libmicrohttpd-0.9.69-arm64-v142-20250209.7z
+libplist-2.1.0-arm64-v142-20250209.7z
+libudfread-1.1.2-arm64-v142-20250209.7z
+libxml2-2.9.9-arm64-v142-20250209.7z
+libxslt-1.1.34-arm64-v142-20250209.7z
+lzo2-2.10-arm64-v142-20250209.7z
+mariadb-connector-c-3.1.6-arm64-v142-20250209.7z
+miniwdk-10.0.17763-20200106.7z
+nghttp2-1.40.0-arm64-v142-20250209.7z
+openssl-1.1.1q-arm64-v142-20250209.7z
+pillow-6.2.1-arm64-v142-20250209.7z
+pycryptodome-3.9.4-arm64-v142-20250209.7z
+python-3.8.15-arm64-v142-20250209.7z
+shairplay-ce80e00-arm64-v142-20250209.7z
+sqlite-3300100-arm64-v142-20250209.7z
+tinyxml-2.6.2-arm64-v142-20250209.7z
+zlib-1.2.11-arm64-v142-20250209.7z
