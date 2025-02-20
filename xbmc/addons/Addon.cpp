@@ -36,6 +36,59 @@
 using XFILE::CDirectory;
 using XFILE::CFile;
 
+namespace
+{
+class FilenameXMLCache
+{
+public:
+  const CXBMCTinyXML* loadXMLFile(const std::string& id, const std::string& xmlFilename)
+  {
+    struct __stat64 s;
+    if (XFILE::CFile::Stat(xmlFilename, &s) == 0)
+    {
+      auto found = m_cache.find(xmlFilename);
+      if (found != m_cache.end() && s.st_mtime <= found->second.modified)
+      {
+        auto& cachedItem = found->second;
+        return &cachedItem.xml;
+      }
+      else
+      {
+        auto& cachedItem = m_cache[xmlFilename];
+        cachedItem.modified = s.st_mtime;
+
+        if (!cachedItem.xml.LoadFile(xmlFilename))
+        {
+          if (CFile::Exists(xmlFilename))
+          {
+            CLog::Log(LOGERROR, "CAddon[{}]: unable to load: {}, Line {}\n{}", id, xmlFilename,
+                      cachedItem.xml.ErrorRow(), cachedItem.xml.ErrorDesc());
+          }
+          m_cache.erase(xmlFilename);
+          return nullptr;
+        }
+
+        return &cachedItem.xml;
+      }
+    }
+    return nullptr;
+  }
+
+  void RemoveAddon(const std::string& xmlFilename) { m_cache.erase(xmlFilename); }
+
+private:
+  struct CacheItem
+  {
+    time_t modified;
+    CXBMCTinyXML xml;
+  };
+
+  std::unordered_map<std::string, CacheItem> m_cache;
+};
+
+FilenameXMLCache cache;
+} // namespace
+
 namespace ADDON
 {
 
@@ -234,6 +287,8 @@ bool CAddon::DeleteInstanceSettings(AddonInstanceId instance)
   if (itr == m_settings.end())
     return false;
 
+  cache.RemoveAddon(itr->second.m_addonSettingsPath);
+
   if (CFile::Exists(itr->second.m_userSettingsPath))
     CFile::Delete(itr->second.m_userSettingsPath);
 
@@ -264,6 +319,11 @@ bool CAddon::SettingsLoaded(AddonInstanceId id /* = ADDON_SETTINGS_ID */) const
   return addonSettings && addonSettings->IsLoaded();
 }
 
+const CXBMCTinyXML* loadXMLFile(const std::string& id, const std::string& xmlFilename)
+{
+  return cache.loadXMLFile(id, xmlFilename);
+}
+
 bool CAddon::LoadSettings(bool bForce,
                           bool loadUserSettings,
                           AddonInstanceId id /* = ADDON_SETTINGS_ID */)
@@ -290,22 +350,13 @@ bool CAddon::LoadSettings(bool bForce,
     GetSettings(id)->Uninitialize();
 
   // load the settings definition XML file
-  const auto addonSettingsDefinitionFile = m_settings[id].m_addonSettingsPath;
-  CXBMCTinyXML addonSettingsDefinitionDoc;
-  if (!addonSettingsDefinitionDoc.LoadFile(addonSettingsDefinitionFile))
-  {
-    if (CFile::Exists(addonSettingsDefinitionFile))
-    {
-      CLog::Log(LOGERROR, "CAddon[{}]: unable to load: {}, Line {}\n{}", ID(),
-                addonSettingsDefinitionFile, addonSettingsDefinitionDoc.ErrorRow(),
-                addonSettingsDefinitionDoc.ErrorDesc());
-    }
-
+  const auto& xmlFilename = m_settings[id].m_addonSettingsPath;
+  const CXBMCTinyXML* doc = loadXMLFile(ID(), xmlFilename);
+  if (doc == nullptr)
     return false;
-  }
 
   // initialize the settings definition
-  if (!GetSettings(id)->Initialize(addonSettingsDefinitionDoc))
+  if (!GetSettings(id)->Initialize(*doc))
   {
     CLog::Log(LOGERROR, "CAddon[{}]: failed to initialize addon settings", ID());
     return false;
@@ -356,15 +407,11 @@ bool CAddon::LoadUserSettings(AddonInstanceId id /* = ADDON_SETTINGS_ID */)
     return true;
   }
 
-  CXBMCTinyXML doc;
-  if (!doc.LoadFile(data.m_userSettingsPath))
-  {
-    CLog::Log(LOGERROR, "CAddon[{}]: failed to load addon settings from {}", ID(),
-              data.m_userSettingsPath);
+  const auto& xmlFilename = data.m_userSettingsPath;
+  const CXBMCTinyXML* doc = loadXMLFile(ID(), xmlFilename);
+  if (doc == nullptr)
     return false;
-  }
-
-  return SettingsFromXML(doc, false, id);
+  return SettingsFromXML(*doc, false, id);
 }
 
 bool CAddon::HasSettingsToSave(AddonInstanceId id /* = ADDON_SETTINGS_ID */) const
@@ -654,6 +701,18 @@ std::string CAddon::LibPath() const
 CAddonVersion CAddon::GetDependencyVersion(const std::string& dependencyID) const
 {
   return m_addonInfo->DependencyVersion(dependencyID);
+}
+
+void CAddon::OnPostUnInstall()
+{
+  for (const auto& instanceId : GetKnownInstanceIds())
+  {
+    const auto itr = m_settings.find(instanceId);
+    if (itr == m_settings.end())
+      continue;
+
+    cache.RemoveAddon(itr->second.m_addonSettingsPath);
+  }
 }
 
 void OnPreInstall(const AddonPtr& addon)
