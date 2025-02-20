@@ -43,8 +43,6 @@ void CPipewireRegistry::OnGlobalAdded(void* userdata,
                                       uint32_t version,
                                       const struct spa_dict* props)
 {
-  auto& registry = *reinterpret_cast<CPipewireRegistry*>(userdata);
-
   if (strcmp(type, PW_TYPE_INTERFACE_Node) != 0)
     return;
 
@@ -55,6 +53,8 @@ void CPipewireRegistry::OnGlobalAdded(void* userdata,
   if (strcmp(mediaClass, "Audio/Sink") != 0)
     return;
 
+  auto& registry = *reinterpret_cast<CPipewireRegistry*>(userdata);
+  std::lock_guard lg(registry);
   auto& nodes = registry.GetNodes();
 
   nodes[id] = std::make_unique<CPipewireNode>(registry, id, type);
@@ -65,6 +65,7 @@ void CPipewireRegistry::OnGlobalAdded(void* userdata,
 void CPipewireRegistry::OnGlobalRemoved(void* userdata, uint32_t id)
 {
   auto& registry = *reinterpret_cast<CPipewireRegistry*>(userdata);
+  std::lock_guard lg(registry);
   auto& nodes = registry.GetNodes();
 
   auto it = nodes.find(id);
