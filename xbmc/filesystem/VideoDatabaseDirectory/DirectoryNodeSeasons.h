@@ -26,7 +26,7 @@ namespace XFILE
 
     private:
       /*!
-       * \brief Get the title of choosen season.
+       * \brief Get the title of chosen season.
        * \return The season title.
        */
       std::string GetSeasonTitle() const;

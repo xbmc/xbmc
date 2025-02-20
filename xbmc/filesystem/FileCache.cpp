@@ -102,7 +102,7 @@ bool CFileCache::Open(const CURL& url)
   CLog::Log(LOGDEBUG, "CFileCache::{} - <{}> opening", __FUNCTION__, m_sourcePath);
 
   // Opening the source file.
-  // The READ_NO_CACHE and READ_NO_BUFFER flags are required to avoid create other intances of
+  // The READ_NO_CACHE and READ_NO_BUFFER flags are required to avoid create other instances of
   // FileCache or StreamBuffer since CFile::Open is called again in loop
   if (!m_source.Open(url.Get(), READ_NO_CACHE | READ_TRUNCATED | READ_NO_BUFFER))
   {

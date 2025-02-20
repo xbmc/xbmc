@@ -776,7 +776,7 @@ bool XFILE::CFile::ReadLine(std::string& line)
 
   try
   {
-    // Read by buffer chuncks until to EOL or EOF
+    // Read by buffer chunks until to EOL or EOF
     while (true)
     {
       char bufferLine[1025];
