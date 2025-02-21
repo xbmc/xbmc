@@ -27,6 +27,7 @@
 #include <ostream>
 #include <string.h>
 #include <utility>
+#include <unordered_map>
 #include <vector>
 
 #ifdef HAS_PYTHON
@@ -38,7 +39,7 @@ using XFILE::CFile;
 
 namespace
 {
-class FilenameXMLCache
+class CFilenameXMLCache
 {
 public:
   const CXBMCTinyXML* loadXMLFile(const std::string& id, const std::string& xmlFilename)
@@ -46,11 +47,10 @@ public:
     struct __stat64 s;
     if (XFILE::CFile::Stat(xmlFilename, &s) == 0)
     {
-      auto found = m_cache.find(xmlFilename);
+      const auto found = m_cache.find(xmlFilename);
       if (found != m_cache.end() && s.st_mtime <= found->second.modified)
       {
-        auto& cachedItem = found->second;
-        return &cachedItem.xml;
+        return &found->second.xml;
       }
       else
       {
@@ -86,7 +86,7 @@ private:
   std::unordered_map<std::string, CacheItem> m_cache;
 };
 
-FilenameXMLCache cache;
+CFilenameXMLCache cache;
 } // namespace
 
 namespace ADDON
