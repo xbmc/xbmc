@@ -23,8 +23,6 @@
 namespace
 {
 
-const auto PAGESIZE = getpagesize();
-
 int RoundUp(int num, int factor)
 {
   return num + factor - 1 - (num - 1) % factor;
@@ -93,7 +91,7 @@ bool CUDMABufferObject::CreateBufferObject(uint32_t format, uint32_t width, uint
 bool CUDMABufferObject::CreateBufferObject(uint64_t size)
 {
   // Must be rounded to the system page size
-  m_size = RoundUp(size, PAGESIZE);
+  m_size = RoundUp(size, sysconf(_SC_PAGESIZE));
 
   m_memfd = memfd_create("kodi", MFD_CLOEXEC | MFD_ALLOW_SEALING);
   if (m_memfd < 0)
