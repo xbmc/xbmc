@@ -1354,10 +1354,19 @@ CVideoInfoScanner::~CVideoInfoScanner()
           else if (((regexp2pos < regexppos) && regexp2pos != -1) ||
                    (regexp2pos >= 0 && regexppos == -1))
           {
-            episode.iEpisode = atoi(reg2.GetMatch(1).c_str());
-            CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding multipart episode {} [{}]",
-                      episode.iEpisode, m_advancedSettings->m_tvshowMultiPartEnumRegExp);
-            episodeList.push_back(episode);
+            int next{0};
+            const int last{std::stoi(reg2.GetMatch(1))};
+            if (remainder.starts_with("-"))
+              next = episode.iEpisode + 1;
+            else
+              next = last;
+            for (int e = next; e <= last; ++e)
+            {
+              episode.iEpisode = e;
+              CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding multipart episode {} [{}]",
+                        episode.iEpisode, m_advancedSettings->m_tvshowMultiPartEnumRegExp);
+              episodeList.push_back(episode);
+            }
             offset += regexp2pos + reg2.GetFindLen();
           }
         }
