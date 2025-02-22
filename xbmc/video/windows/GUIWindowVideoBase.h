@@ -11,7 +11,6 @@
 #include "playlists/PlayListTypes.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoThumbLoader.h"
-#include "video/guilib/VideoAction.h"
 #include "windows/GUIMediaWindow.h"
 
 class CGUIWindowVideoBase : public CGUIMediaWindow, public IBackgroundLoaderObserver
@@ -131,5 +130,5 @@ private:
    */
   bool ShowInfo(const CFileItemPtr& item, const ADDON::ScraperPtr& content);
 
-  bool m_forceSelection;
+  KODI::PLAYLIST::ForcePlaylistSelection m_forceSelection;
 };

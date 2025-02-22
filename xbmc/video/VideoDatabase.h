@@ -566,6 +566,7 @@ public:
   int GetSeasonId(int idShow, int season);
 
   void GetEpisodesByFile(const std::string& strFilenameAndPath, std::vector<CVideoInfoTag>& episodes);
+  void GetEpisodesByFileId(int idFile, std::vector<CVideoInfoTag>& episodes);
 
   int SetDetailsForItem(CVideoInfoTag& details, const std::map<std::string, std::string> &artwork);
   int SetDetailsForItem(int id, const MediaType& mediaType, CVideoInfoTag& details, const std::map<std::string, std::string> &artwork);
@@ -608,6 +609,13 @@ public:
    * \return operation success. true for success, false for failure
    */
   bool SetStreamDetailsForFileId(const CStreamDetails& details, int idFile);
+
+  /*!
+   * \brief Get all playlists from a single bluray:// path in the database
+   * \param[in] path The bluray:// path
+   * \return vector int array of playlist numbers
+   */
+  std::vector<int> GetPlaylistsByPath(const std::string& path);
 
   bool SetSingleValue(VideoDbContentType type, int dbId, int dbField, const std::string& strValue);
   bool SetSingleValue(VideoDbContentType type,
@@ -831,6 +839,7 @@ public:
   void GetEpisodesByName(const std::string& strSearch, CFileItemList& items);
   void GetMusicVideosByName(const std::string& strSearch, CFileItemList& items);
 
+  std::string GetPlotByShowId(int idShow);
   void GetEpisodesByPlot(const std::string& strSearch, CFileItemList& items);
   void GetMoviesByPlot(const std::string& strSearch, CFileItemList& items);
 

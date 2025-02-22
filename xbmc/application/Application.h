@@ -128,7 +128,8 @@ public:
   bool PlayFile(CFileItem item,
                 const std::string& player,
                 bool bRestart = false,
-                bool forceSelection = false);
+                KODI::PLAYLIST::ForcePlaylistSelection forceSelection =
+                    KODI::PLAYLIST::ForcePlaylistSelection::DONT_FORCE_PLAYLIST_SELECTION);
   void StopPlaying();
   void Restart(bool bSamePosition = true);
   void DelayedPlayerRestart();
