@@ -28,25 +28,37 @@ public:
   ~CShaderPreset();
 
   /*!
-   * \brief @todo document
+   * \brief Loads preset file and all associated state (passes, textures,
+   * imports, etc)
+   *
+   * \param shader Shader passes handle
+   *
+   * \return True if successful, otherwise false
    */
   bool ReadShaderPreset(video_shader& shader);
 
   /*!
-   * \brief @todo document
+   * \brief Save preset and all associated state (passes, textures, imports,
+   * etc) to disk
+   *
+   * \param shader Shader passes handle
    */
   void WriteShaderPreset(const video_shader& shader);
 
-  /*
-  void ResolveRelative(video_shader &shader, const std::string &ref_path);
-  bool ResolveCurrentParameters(video_shader &shader);
-  */
-
   /*!
-   * \brief @todo document
+   * \brief Resolve all shader parameters belonging to the shader preset
+   *
+   * \param shader Shader passes handle
+   *
+   * \return True if successful, otherwise false
    */
   bool ResolveParameters(video_shader& shader);
 
+  /*!
+   * \brief Frees a preset file and all associated resources
+   *
+   * \param shader Shader passes handle
+   */
   void FreeShaderPreset(video_shader& shader);
 
 private:
@@ -78,7 +90,7 @@ public:
    */
   const std::vector<std::string>& GetExtensions() const { return m_extensions; }
 
-  // implementation of IShaderPresetLoader
+  // Implementation of IShaderPresetLoader
   bool LoadPreset(const std::string& presetPath,
                   KODI::SHADER::IShaderPreset& shaderPreset) override;
 
@@ -105,7 +117,6 @@ private:
 
   std::vector<std::string> m_extensions;
 
-  // TODO: Convert to CSingleSection?
   CSharedSection m_dllSection;
 };
 } // namespace ADDON

@@ -234,7 +234,9 @@ void CWinRenderBufferPool::CompileOutputShaders()
 {
   for (auto scalingMethod : GetScalingMethods())
   {
-    std::unique_ptr<SHADER::CRPWinOutputShader> outputShader(new SHADER::CRPWinOutputShader);
+    std::unique_ptr<SHADER::CRPWinOutputShader> outputShader =
+        std::make_unique<SHADER::CRPWinOutputShader>();
+
     if (outputShader->Create(scalingMethod))
       m_outputShaders[scalingMethod] = std::move(outputShader);
     else

@@ -134,7 +134,9 @@ void CShaderPresetFactory::UpdateAddons()
     if (bIsFailed)
       continue;
 
-    std::unique_ptr<CShaderPresetAddon> addonPtr(new CShaderPresetAddon(shaderAddon));
+    std::unique_ptr<CShaderPresetAddon> addonPtr =
+        std::make_unique<CShaderPresetAddon>(shaderAddon);
+
     if (addonPtr->CreateAddon())
     {
       for (const auto& extension : addonPtr->GetExtensions())

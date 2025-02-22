@@ -29,39 +29,27 @@ CShaderPreset::CShaderPreset(preset_file file, AddonInstance_ShaderPreset& insta
 
 CShaderPreset::~CShaderPreset()
 {
-  m_struct.toAddon->preset_file_free(&m_struct, m_file);
+  m_struct.toAddon->PresetFileFree(&m_struct, m_file);
 }
 
 bool CShaderPreset::ReadShaderPreset(video_shader& shader)
 {
-  return m_struct.toAddon->video_shader_read(&m_struct, m_file, &shader);
+  return m_struct.toAddon->VideoShaderRead(&m_struct, m_file, &shader);
 }
 
 void CShaderPreset::WriteShaderPreset(const video_shader& shader)
 {
-  return m_struct.toAddon->video_shader_write(&m_struct, m_file, &shader);
+  return m_struct.toAddon->VideoShaderWrite(&m_struct, m_file, &shader);
 }
-
-/*
-void CShaderPreset::ResolveRelative(video_shader& shader, const std::string& ref_path)
-{
-  return m_struct.toAddon->video_shader_resolve_relative(&m_struct, &shader, ref_path.c_str());
-}
-
-bool CShaderPreset::ResolveCurrentParameters(video_shader &shader)
-{
-  return m_struct.toAddon->video_shader_resolve_current_parameters(&m_struct, m_file, &shader);
-}
-*/
 
 bool CShaderPreset::ResolveParameters(video_shader& shader)
 {
-  return m_struct.toAddon->video_shader_resolve_parameters(&m_struct, m_file, &shader);
+  return m_struct.toAddon->VideoShaderResolveParameters(&m_struct, m_file, &shader);
 }
 
 void CShaderPreset::FreeShaderPreset(video_shader& shader)
 {
-  m_struct.toAddon->video_shader_free(&m_struct, &shader);
+  m_struct.toAddon->VideoShaderFree(&m_struct, &shader);
 }
 
 // --- CShaderPresetAddon ------------------------------------------------------
@@ -97,8 +85,7 @@ bool CShaderPresetAddon::CreateAddon(void)
   ResetProperties();
 
   // Initialise the add-on
-  CLog::Log(LOGDEBUG, "{} - creating ShaderPreset add-on instance '{}'", __FUNCTION__,
-            Name().c_str());
+  CLog::Log(LOGDEBUG, "{} - creating ShaderPreset add-on instance '{}'", __FUNCTION__, Name());
 
   if (CreateInstance() != ADDON_STATUS_OK)
     return false;
@@ -131,11 +118,12 @@ bool CShaderPresetAddon::LoadPreset(const std::string& presetPath,
   std::string translatedPath = CSpecialProtocol::TranslatePath(presetPath);
 
   preset_file file =
-      m_ifc.shaderpreset->toAddon->preset_file_new(m_ifc.shaderpreset, translatedPath.c_str());
+      m_ifc.shaderpreset->toAddon->PresetFileNew(m_ifc.shaderpreset, translatedPath.c_str());
 
   if (file != nullptr)
   {
-    std::unique_ptr<CShaderPreset> shaderPresetAddon(new CShaderPreset(file, *m_ifc.shaderpreset));
+    std::unique_ptr<CShaderPreset> shaderPresetAddon =
+        std::make_unique<CShaderPreset>(file, *m_ifc.shaderpreset);
 
     video_shader videoShader = {};
     if (shaderPresetAddon->ReadShaderPreset(videoShader))

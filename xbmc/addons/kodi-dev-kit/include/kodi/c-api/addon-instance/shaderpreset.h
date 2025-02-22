@@ -11,13 +11,8 @@
 
 #include "../addon_base.h"
 
-#include <stddef.h> /* size_t */
-
-//==============================================================================
-/// @ingroup cpp_kodi_addon_shader_preset_Defs
-/// @brief **Port ID used when topology is unknown**
-#define DEFAULT_PORT_ID "1"
-//------------------------------------------------------------------------------
+#include <stdbool.h>
+#include <stddef.h>
 
 #ifdef __cplusplus
 extern "C"
@@ -113,7 +108,7 @@ extern "C"
      * \brief Float framebuffer
      *
      * This parameter defines if the pass should be rendered to a 32-bit
-     * floating point buffer. This only takes effect if the pass is actaully
+     * floating point buffer. This only takes effect if the pass is actually
      * rendered to an FBO. This is useful for shaders which have to store FBO
      * values outside the range [0, 1].
      */
@@ -250,8 +245,10 @@ extern "C"
     const char* addon_path;
   } AddonProps_ShaderPreset;
 
-  /*! Structure to transfer the methods from kodi_shader_preset_dll.h to Kodi */
-
+  /*!
+   * \brief Structure to transfer the methods from kodi_shader_preset_dll.h to
+   * Kodi
+   */
   struct AddonInstance_ShaderPreset;
 
   /*!
@@ -273,26 +270,18 @@ extern "C"
   {
     KODI_HANDLE addonInstance;
 
-    // TODO: Convert function pointers to CamelCase
-    preset_file(__cdecl* preset_file_new)(const AddonInstance_ShaderPreset*, const char*);
-    void(__cdecl* preset_file_free)(const AddonInstance_ShaderPreset*, preset_file);
-
-    bool(__cdecl* video_shader_read)(const AddonInstance_ShaderPreset*, preset_file, video_shader*);
-    void(__cdecl* video_shader_write)(const AddonInstance_ShaderPreset*,
-                                      preset_file,
-                                      const video_shader*);
-    /*
-    void(__cdecl* video_shader_resolve_relative)(const AddonInstance_ShaderPreset*,
-                                                 video_shader*,
-                                                 const char*);
-    bool(__cdecl* video_shader_resolve_current_parameters)(const AddonInstance_ShaderPreset*,
-                                                           preset_file,
-                                                           video_shader*);
-    */
-    bool(__cdecl* video_shader_resolve_parameters)(const AddonInstance_ShaderPreset*,
-                                                   preset_file,
-                                                   video_shader*);
-    void(__cdecl* video_shader_free)(const AddonInstance_ShaderPreset*, video_shader*);
+    preset_file(__cdecl* PresetFileNew)(const struct AddonInstance_ShaderPreset*, const char*);
+    void(__cdecl* PresetFileFree)(const struct AddonInstance_ShaderPreset*, preset_file);
+    bool(__cdecl* VideoShaderRead)(const struct AddonInstance_ShaderPreset*,
+                                   preset_file,
+                                   struct video_shader*);
+    void(__cdecl* VideoShaderWrite)(const struct AddonInstance_ShaderPreset*,
+                                    preset_file,
+                                    const struct video_shader*);
+    bool(__cdecl* VideoShaderResolveParameters)(const struct AddonInstance_ShaderPreset*,
+                                                preset_file,
+                                                struct video_shader*);
+    void(__cdecl* VideoShaderFree)(const struct AddonInstance_ShaderPreset*, struct video_shader*);
   } KodiToAddonFuncTable_ShaderPreset;
 
   /*!

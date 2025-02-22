@@ -148,7 +148,22 @@ bool CShaderPresetGL::CreateShaderTextures()
         }
       }
 
-      //! @todo Enable usage of optimal texture sizes when all issues are fixed
+      //! @todo Enable usage of optimal texture sizes once multi-pass preset
+      // geometry and LUT rendering are fixed.
+      //
+      // Current issues:
+      //   - Enabling optimal texture sizes breaks geometry for many multi-pass
+      //     presets
+      //   - LUTs render incorrectly due to missing per-pass and per-LUT
+      //     TexCoord attributes.
+      //
+      // Planned solution:
+      //   - Implement additional TexCoord attributes for each pass and LUT,
+      //     setting coordinates to `xamt` and `yamt` instead of 1
+      //
+      // Reference implementation in RetroArch:
+      //   https://github.com/libretro/RetroArch/blob/09a59edd6b415b7bd124b03bda68ccc4d60b0ea8/gfx/drivers/gl2.c#L3018
+      //
       textureSize = scaledSize; // CShaderUtils::GetOptimalTextureSize(scaledSize)
 
       std::shared_ptr<CGLTexture> textureGL = std::make_shared<CGLTexture>(
