@@ -313,10 +313,7 @@ if exist %instdir%\locals\win32\etc\profile.local GOTO writeProfile64
         echo.LDFLAGS="-L/local32/lib -mthreads -pipe"
         echo.export DXSDK_DIR ACLOCAL_PATH PKG_CONFIG_PATH PKG_CONFIG_LOCAL_PATH CPPFLAGS CFLAGS CXXFLAGS LDFLAGS MSYSTEM
         echo.
-        echo.PYTHONHOME=/usr
-        echo.PYTHONPATH="/usr/lib/python2.7:/usr/lib/python2.7/Tools/Scripts"
-        echo.
-        echo.PATH=".:/local32/bin:/mingw32/bin:${MSYS2_PATH}:${INFOPATH}:${PYTHONHOME}:${PYTHONPATH}:${PATH}"
+        echo.PATH=".:/local32/bin:/mingw32/bin:${MSYS2_PATH}:${INFOPATH}:${PATH}"
         echo.PS1='\[\033[32m\]\u@\h \[\e[33m\]\w\[\e[0m\]\n\$ '
         echo.export PATH PS1
         echo.
@@ -362,10 +359,7 @@ if exist %instdir%\locals\x64\etc\profile.local GOTO loadGasPreproc
         echo.LDFLAGS="-L/local64/lib -pipe"
         echo.export DXSDK_DIR ACLOCAL_PATH PKG_CONFIG_PATH PKG_CONFIG_LOCAL_PATH CPPFLAGS CFLAGS CXXFLAGS LDFLAGS MSYSTEM
         echo.
-        echo.PYTHONHOME=/usr
-        echo.PYTHONPATH="/usr/lib/python2.7:/usr/lib/python2.7/Tools/Scripts"
-        echo.
-        echo.PATH=".:/local64/bin:/mingw64/bin:${MSYS2_PATH}:${INFOPATH}:${PYTHONHOME}:${PYTHONPATH}:${PATH}"
+        echo.PATH=".:/local64/bin:/mingw64/bin:${MSYS2_PATH}:${INFOPATH}:${PATH}"
         echo.PS1='\[\033[32m\]\u@\h \[\e[33m\]\w\[\e[0m\]\n\$ '
         echo.export PATH PS1
         echo.
