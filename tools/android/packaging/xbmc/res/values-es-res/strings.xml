@@ -5,7 +5,7 @@
     <string name="asking_permissions">Pidiendo permisos…</string>
     <string name="clearing_cache">Limpiando caché…</string>
     <string name="external_ok">Almacenamiento externo OK…</string>
-    <string name="starting">Lanzando %1$s…</string>
+    <string name="starting">Arrancando %1$s…</string>
     <string name="first_run">Preparando para la primera ejecución. Por favor, espera…</string>
     <string name="permission_denied">¡¡Permiso denegado!! Saliendo…</string>
     <string name="no_read_apk">No se puede leer el paquete.</string>

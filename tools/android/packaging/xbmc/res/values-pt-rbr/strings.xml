@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="suggestion_channel">Sugestões</string>
+    <string name="continue_button">Continuar</string>
+    <string name="notice_dialog">%1$s requer acesso à mídia e arquivos do seu dispositivo para funcionar. Aguarde isso através da seguinte caixa de diálogo ou de %1$s sairá.</string>
+    <string name="error_title">Erro</string>
+    <string name="info_title">Info</string>
+    <string name="exit_button">Sair</string>
+    <string name="asking_permissions">Pedindo permissões …</string>
+    <string name="clearing_cache">Limpando o cache…</string>
+    <string name="waiting_external">Esperando por armazenamento externo…</string>
+    <string name="external_ok">Armazenamento externo OK…</string>
+    <string name="starting">Iniciando %1$s…</string>
+    <string name="first_run">Preparando -se para a primeira corrida. Por favor, aguarde…</string>
+    <string name="permission_denied">Permissão negada !! Saindo …</string>
+    <string name="no_find_apk">Não foi possível encontrar o pacote.</string>
+    <string name="no_read_apk">Não foi possível ler o pacote.</string>
 </resources>

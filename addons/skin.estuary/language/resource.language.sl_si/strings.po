@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: 2024-11-09 17:26+0000\n"
 "Last-Translator: Simon <dolenec@gmail.com>\n"
@@ -688,6 +688,22 @@ msgstr "Privzeto izberite dejanje za TV-oddaje na začetnem zaslonu"
 msgctxt "#31176"
 msgid "Default select action for movie sets on the home screen"
 msgstr "Privzeta izbira dejanja za nize filmov na začetnem zaslonu"
+
+# empty strings from id 31177 to 31596
+#. Button to select Player Process Info window
+msgctxt "#31597"
+msgid "Player info"
+msgstr ""
+
+#. Label to show player cache
+msgctxt "#31598"
+msgid "Player cache"
+msgstr ""
+
+#. Label to show the video codec name
+msgctxt "#31599"
+msgid "Audio decoder"
+msgstr ""
 
 # empty strings from id 31170 to 31599
 #. Label to show the video codec name

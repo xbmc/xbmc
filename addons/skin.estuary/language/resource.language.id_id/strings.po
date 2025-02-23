@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2024-12-01 02:25+0000\n"
+"PO-Revision-Date: 2025-02-04 02:37+0000\n"
 "Last-Translator: Nao3Line Prez <n.yazawa6932@gmail.com>\n"
 "Language-Team: Indonesian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/id_id/>\n"
 "Language: id_id\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.8.4\n"
+"X-Generator: Weblate 5.9.2\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -690,6 +690,22 @@ msgstr "Tindakan pemilihan default untuk acara TV di layar beranda"
 msgctxt "#31176"
 msgid "Default select action for movie sets on the home screen"
 msgstr "Tindakan pemilihan default untuk kumpulan film di layar beranda"
+
+# empty strings from id 31177 to 31596
+#. Button to select Player Process Info window
+msgctxt "#31597"
+msgid "Player info"
+msgstr "Info pemutar"
+
+#. Label to show player cache
+msgctxt "#31598"
+msgid "Player cache"
+msgstr "Cache pemutar"
+
+#. Label to show the video codec name
+msgctxt "#31599"
+msgid "Audio decoder"
+msgstr "Dekoder audio"
 
 # empty strings from id 31170 to 31599
 #. Label to show the video codec name

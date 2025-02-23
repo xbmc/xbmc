@@ -7,15 +7,15 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2024-10-20 06:47+0000\n"
-"Last-Translator: José Antonio Alvarado <jalvarado0.eses@gmail.com>\n"
+"PO-Revision-Date: 2025-01-27 16:21+0000\n"
+"Last-Translator: Alfonso Cachero <alfonso.cachero@gmail.com>\n"
 "Language-Team: Spanish (Spain) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/es_es/>\n"
 "Language: es_es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.7.2\n"
+"X-Generator: Weblate 5.9.2\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -679,6 +679,22 @@ msgstr "Acción por defecto al seleccionar series de TV en la pantalla de inicio
 msgctxt "#31176"
 msgid "Default select action for movie sets on the home screen"
 msgstr "Acción por defecto al seleccionar películas en la pantalla de inicio"
+
+# empty strings from id 31177 to 31596
+#. Button to select Player Process Info window
+msgctxt "#31597"
+msgid "Player info"
+msgstr "Información de reproductor"
+
+#. Label to show player cache
+msgctxt "#31598"
+msgid "Player cache"
+msgstr "Caché de reproductor"
+
+#. Label to show the video codec name
+msgctxt "#31599"
+msgid "Audio decoder"
+msgstr "Decodificador de audio"
 
 # empty strings from id 31170 to 31599
 #. Label to show the video codec name
