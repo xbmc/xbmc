@@ -29,6 +29,9 @@ SET APP_PATH=%WORKSPACE%\project\BuildDependencies\%TARGETPLATFORM%
 SET NATIVE_PATH=%WORKSPACE%\project\BuildDependencies\%HOST_BUILDTOOLS%
 SET TMP_PATH=%BUILD_DEPS_PATH%\scripts\tmp
 
+REM Clean dependencies path (install path) to avoid Debug vs Release conflicts
+IF EXIST %APP_PATH% rmdir %APP_PATH% /S /Q
+
 REM Change to the BuildDependencies directory, if we're not there already
 PUSHD %BUILD_DEPS_PATH%
 
