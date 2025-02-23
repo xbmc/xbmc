@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="suggestion_channel">Ehdotukset</string>
+    <string name="continue_button">Jatka</string>
+    <string name="error_title">Virhe</string>
+    <string name="info_title">Tiedot</string>
+    <string name="exit_button">Lopeta</string>
+    <string name="notice_dialog">%1$s tarvitsee laitteesi tiedostojärjestelmän käyttöoikeuden. Salli se seuraavasta valinnasta tai %1$s suljetaan.</string>
+    <string name="asking_permissions">Pyydetään käyttöoikeutta…</string>
+    <string name="clearing_cache">Tyhjennetään välimuistia…</string>
+    <string name="waiting_external">Odotetaan ulkoista tallennuslaitetta…</string>
+    <string name="external_ok">Ulkoinen tallennuslaite OK…</string>
+    <string name="starting">Käynnistetään %1$s…</string>
+    <string name="first_run">Valmistaudutaan ensimmäiseen käynnistykseen. Odota…</string>
+    <string name="permission_denied">Käyttöoikeutta ei myönnetty!! Suljetaan…</string>
+    <string name="no_find_apk">Pakettia ei löytynyt.</string>
+    <string name="no_read_apk">Pakettia ei voitu lukea.</string>
 </resources>
