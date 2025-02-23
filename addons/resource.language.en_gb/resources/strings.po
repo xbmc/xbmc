@@ -24261,7 +24261,13 @@ msgctxt "#39205"
 msgid "By enabling it, CC subtitles will be labeled for the hearing impaired; this will affect the automatic selection of subtitles, which unless otherwise specified will not be displayed by default."
 msgstr ""
 
-#empty strings from id 39206 to 39999
+#. Abbreviation for Closed Caption subtitles (subtitles embedded in videos)
+#: xbmc/cores/VideoPlayer/DVDDemuxers/DVDDemuxCC.cpp
+msgctxt "#39206"
+msgid "CC"
+msgstr ""
+
+#empty strings from id 39207 to 39999
 
 # 40000 to 40800 are reserved for Video Versions feature
 
