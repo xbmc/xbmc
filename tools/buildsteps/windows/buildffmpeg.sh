@@ -27,6 +27,9 @@ do_getFFmpegConfig() {
   elif [ "$ARCH" == "arm" ]; then
     FFMPEG_TARGET_OS=mingw32
     do_addOption "--cpu=armv7"
+  elif [ "$ARCH" == "arm64" ]; then
+    FFMPEG_TARGET_OS=mingw32
+    do_addOption "--cpu=armv8-a"
   fi
 
   # add options for static modplug
@@ -92,6 +95,8 @@ elif [ "$ARCH" = "x86" ]; then
   FFMPEG_TARGET_OS=win32
 elif [ "$ARCH" = "arm" ]; then
   FFMPEG_TARGET_OS=win32
+elif [ "$ARCH" = "arm64" ]; then
+  FFMPEG_TARGET_OS=mingw32
 fi
 
 export CFLAGS=""
@@ -104,6 +109,10 @@ if [ $win10 == "yes" ]; then
   do_addOption "--enable-cross-compile"
   extra_cflags=$extra_cflags" -MD -DWINAPI_FAMILY=WINAPI_FAMILY_APP -D_WIN32_WINNT=0x0A00"
   extra_ldflags=$extra_ldflags" -APPCONTAINER WindowsApp.lib"
+fi
+
+if [ "$ARCH" == "arm64" -a $(uname -m) == "x86_64" ]; then
+  do_addOption "--enable-cross-compile"
 fi
 
 # compile ffmpeg with debug symbols
