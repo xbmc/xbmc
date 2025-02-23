@@ -186,7 +186,7 @@ pythonmodule-pil: bzip2 $(PYMODULE_DEPS) $(ZLIB) libjpeg-turbo libpng freetype2 
 pythonmodule-pycryptodome: $(PYMODULE_DEPS) python3 pythonmodule-setuptools
 pythonmodule-setuptools: $(PYMODULE_DEPS) python3
 samba-gplv3: gnutls $(ZLIB)
-taglib: $(ZLIB)
+taglib: utf8-cpp $(ZLIB)
 wayland: expat libffi
 waylandpp: wayland $(WAYLANDPP_DEPS)
 xz: gettext
