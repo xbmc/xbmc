@@ -1223,7 +1223,6 @@ const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
 
 /// \page modules__infolabels_boolean_conditions
 /// \subsection modules__infolabels_boolean_conditions_System System
-/// @todo some values are hardcoded in the middle of the code  - refactor to make it easier to track
 /// \table_start
 ///   \table_h3{ Labels, Type, Description }
 ///   \table_row3{   <b>`System.AlarmLessOrEqual(alarmname\,seconds)`</b>,
@@ -2036,6 +2035,7 @@ const infomap system_labels[] = {
 ///     <p>
 ///   }
 /// \table_end
+/// @todo Some values are hardcoded in the middle of the code  - refactor to make it easier to track
 ///
 /// -----------------------------------------------------------------------------
 const infomap system_param[] =   {{ "hasalarm",         SYSTEM_HAS_ALARM },
@@ -10000,7 +10000,6 @@ const infomap slideshow[] = {
 
 /// \page modules__infolabels_boolean_conditions
 /// \subsection modules__infolabels_boolean_conditions_Library Library
-/// @todo Make this annotate an array of infobools/labels to make it easier to track
 /// \table_start
 ///   \table_h3{ Labels, Type, Description }
 ///   \table_row3{   <b>`Library.IsScanning`</b>,
@@ -10166,6 +10165,7 @@ const infomap slideshow[] = {
 ///     <p>
 ///   }
 /// \table_end
+/// @todo Make this annotate an array of infobools/labels to make it easier to track
 ///
 /// -----------------------------------------------------------------------------
 
