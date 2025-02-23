@@ -1,7 +1,13 @@
 cmake_minimum_required(VERSION 3.15)
 project(TexturePacker)
 
-list(APPEND CMAKE_MODULE_PATH ${KODI_SOURCE_DIR}/cmake/modules)
+# If we are building inside the Kodi project, add its Find module paths
+# otherwise point to TexturePacker's source for the Find modules
+if(${KODI_SOURCE_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
+  list(APPEND CMAKE_MODULE_PATH ${KODI_SOURCE_DIR}/cmake/modules)
+else()
+  list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR})
+endif()
 
 if(NATIVEPREFIX)
   set(CMAKE_FIND_ROOT_PATH ${NATIVEPREFIX})
