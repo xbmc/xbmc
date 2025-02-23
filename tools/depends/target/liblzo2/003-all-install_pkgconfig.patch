@@ -1,0 +1,17 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -296,12 +296,12 @@
+ endif()
+ endif()
+ 
+-if(PKG_CONFIG_FOUND)
++#if(PKG_CONFIG_FOUND)
+     configure_file(lzo2.pc.cmakein lzo2.pc @ONLY)
+     #if(EXISTS "${CMAKE_INSTALL_FULL_LIBDIR}/pkgconfig")
+     install(FILES "${CMAKE_CURRENT_BINARY_DIR}/lzo2.pc" DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/pkgconfig")
+     #endif()
+-endif()
++#endif()
+ 
+ endif() # CMAKE_INSTALL_FULL_LIBDIR
+ 
