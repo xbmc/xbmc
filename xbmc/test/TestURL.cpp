@@ -124,3 +124,136 @@ TEST(TestURL, TestWithoutFilenameEncodingDecoding)
   EXPECT_EQ("u$ername", decoded.GetUserName());
   EXPECT_EQ("pa$$word", decoded.GetPassWord());
 }
+
+TEST_F(TestCURL, TestPaths)
+{
+  std::string path{"/somepath/path/movie.avi"};
+  CURL url(path);
+  EXPECT_TRUE(url.GetFileName() == path);
+  EXPECT_TRUE(url.GetShareName().empty());
+  EXPECT_TRUE(url.GetHostName().empty());
+  EXPECT_TRUE(url.GetProtocol().empty());
+  EXPECT_TRUE(url.GetFileType() == "avi");
+  EXPECT_TRUE(url.Get() == path);
+
+  path = "/somepath/path/";
+  url.SetFileName(path);
+  EXPECT_TRUE(url.Get() == path);
+
+  path = "D:\\Movies\\movie.avi";
+  url = CURL(path);
+  EXPECT_TRUE(url.GetFileName() == path);
+  EXPECT_TRUE(url.GetShareName() == "D:");
+  EXPECT_TRUE(url.GetHostName().empty());
+  EXPECT_TRUE(url.GetProtocol().empty());
+  EXPECT_TRUE(url.GetFileType() == "avi");
+  EXPECT_TRUE(url.Get() == path);
+
+  path = "D:\\Movies\\";
+  url.SetFileName(path);
+  EXPECT_TRUE(url.Get() == path);
+
+  path = "smb://somepath/Movies/movie.mkv";
+  url = CURL(path);
+  EXPECT_TRUE(url.GetFileName() == "Movies/movie.mkv");
+  EXPECT_TRUE(url.GetShareName() == "Movies");
+  EXPECT_TRUE(url.GetHostName() == "somepath");
+  EXPECT_TRUE(url.GetProtocol() == "smb");
+  EXPECT_TRUE(url.GetFileType() == "mkv");
+  EXPECT_TRUE(url.Get() == path);
+
+  url.SetFileName("Films/film.mp4");
+  path = "smb://somepath/Films/film.mp4";
+  EXPECT_TRUE(url.GetFileName() == "Films/film.mp4");
+  EXPECT_TRUE(url.GetShareName() == "Films");
+  EXPECT_TRUE(url.GetHostName() == "somepath");
+  EXPECT_TRUE(url.GetProtocol() == "smb");
+  EXPECT_TRUE(url.GetFileType() == "mp4");
+  EXPECT_TRUE(url.Get() == path);
+
+  // bluray:// path
+  path =
+      "bluray://"
+      "udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fMovies%252fAlien%2520(1979)%252fDisc%25201%252f"
+      "ALIEN.ISO%2f/BDMV/PLAYLIST/"
+      "00800.mpls";
+  url = CURL(path);
+  EXPECT_TRUE(url.GetFileName() == "BDMV/PLAYLIST/00800.mpls");
+  EXPECT_TRUE(url.GetShareName() == "BDMV");
+  EXPECT_TRUE(url.GetHostName() ==
+              "udf://smb%3a%2f%2fsomepath%2fMovies%2fAlien%20(1979)%2fDisc%201%2fALIEN.ISO/");
+  EXPECT_TRUE(url.GetProtocol() == "bluray");
+  EXPECT_TRUE(url.GetFileType() == "mpls");
+  EXPECT_TRUE(url.Get() == path);
+
+  // Contains an embedded udf:// path
+  std::string path2{url.GetHostName()};
+  CURL url2(path2);
+  EXPECT_TRUE(url2.GetFileName().empty());
+  EXPECT_TRUE(url2.GetShareName().empty());
+  EXPECT_TRUE(url2.GetHostName() == "smb://somepath/Movies/Alien (1979)/Disc 1/ALIEN.ISO");
+  EXPECT_TRUE(url2.GetProtocol() == "udf");
+  EXPECT_TRUE(url2.GetFileType().empty());
+  EXPECT_TRUE(url2.Get() == path2);
+
+  // Contains an embedded smb:// path
+  std::string path3{url2.GetHostName()};
+  CURL url3(path3);
+  EXPECT_TRUE(url3.GetFileName() == "Movies/Alien (1979)/Disc 1/ALIEN.ISO");
+  EXPECT_TRUE(url3.GetShareName() == "Movies");
+  EXPECT_TRUE(url3.GetHostName() == "somepath");
+  EXPECT_TRUE(url3.GetProtocol() == "smb");
+  EXPECT_TRUE(url3.GetFileType() == "iso");
+  EXPECT_TRUE(url3.Get() == path3);
+
+  // Alter the smb path to point to Disc 2
+  url3.SetFileName("Movies/Alien (1979)/Disc 2/ALIEN_DISC2.NRG");
+  path3 = "smb://somepath/Movies/Alien (1979)/Disc 2/ALIEN_DISC2.NRG";
+  EXPECT_TRUE(url3.GetFileName() == "Movies/Alien (1979)/Disc 2/ALIEN_DISC2.NRG");
+  EXPECT_TRUE(url3.GetShareName() == "Movies");
+  EXPECT_TRUE(url3.GetHostName() == "somepath");
+  EXPECT_TRUE(url3.GetProtocol() == "smb");
+  EXPECT_TRUE(url3.GetFileType() == "nrg");
+  EXPECT_TRUE(url3.Get() == path3);
+
+  // Update the udf:// path to use the new smb path
+  url2.SetHostName(url3.Get());
+  path2 = "udf://smb%3a%2f%2fsomepath%2fMovies%2fAlien%20(1979)%2fDisc%202%2fALIEN_DISC2.NRG/";
+  EXPECT_TRUE(url2.GetFileName().empty());
+  EXPECT_TRUE(url2.GetShareName().empty());
+  EXPECT_TRUE(url2.GetHostName() == "smb://somepath/Movies/Alien (1979)/Disc 2/ALIEN_DISC2.NRG");
+  EXPECT_TRUE(url2.GetProtocol() == "udf");
+  EXPECT_TRUE(url2.GetFileType().empty());
+  EXPECT_TRUE(url2.Get() == path2);
+
+  // Update the bluray:// path to use the new udf path
+  url.SetHostName(url2.Get());
+  path = "bluray://"
+         "udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fMovies%252fAlien%20(1979)%252fDisc%202%252f"
+         "ALIEN_DISC2.NRG%2f/BDMV/PLAYLIST/"
+         "00800.mpls";
+  url = CURL(path);
+  EXPECT_TRUE(url.GetFileName() == "BDMV/PLAYLIST/00800.mpls");
+  EXPECT_TRUE(url.GetShareName() == "BDMV");
+  EXPECT_TRUE(url.GetHostName() ==
+              "udf://smb%3a%2f%2fsomepath%2fMovies%2fAlien (1979)%2fDisc 2%2fALIEN_DISC2.NRG/");
+  EXPECT_TRUE(url.GetProtocol() == "bluray");
+  EXPECT_TRUE(url.GetFileType() == "mpls");
+  EXPECT_TRUE(url.Get() == path);
+}
+
+TEST_F(TestCURL, TestExtensions)
+{
+  CURL url("/somepath/path/movie.zip");
+  EXPECT_STREQ(".zip", url.GetExtension().c_str());
+  std::string extensions{".zip|.rar|.tar.gz"};
+  EXPECT_TRUE(url.HasExtension(extensions));
+
+  url = CURL("/somepath/path/movie.tar.gz");
+  EXPECT_STREQ(".tar.gz", url.GetExtension().c_str());
+  EXPECT_TRUE(url.HasExtension(extensions));
+
+  url = CURL("/somepath/path/movie.gz");
+  EXPECT_STREQ(".gz", url.GetExtension().c_str());
+  EXPECT_FALSE(url.HasExtension(extensions));
+}
