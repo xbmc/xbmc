@@ -383,44 +383,40 @@ std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false *
 
 namespace
 {
-void GetTrailingPartNumberSegmentInfoFromPath(const std::string& pathIn,
-                                              size_t& pos,
-                                              std::string& number)
+std::string GetPartAndRemoveDiscFromPath(std::string& path,
+                                         CUtil::PreserveFileName preserveFileName)
 {
-  std::string path{pathIn};
-  URIUtils::RemoveSlashAtEnd(path);
+  // Only remove file name if it's a disc path and the file name does not represent the movie name
+  if (preserveFileName == CUtil::PreserveFileName::KEEP && !URIUtils::IsBDFile(path) &&
+      !URIUtils::IsDVDFile(path))
+    return {};
 
-  pos = std::string::npos;
-  number.clear();
+  path = URIUtils::GetDirectory(path);
+  path = URIUtils::IsDiscPath(path) ? URIUtils::GetDiscBase(path) : path;
+  std::string basePath{path};
+  URIUtils::RemoveSlashAtEnd(basePath);
 
   const std::string r{URIUtils::GetTrailingPartNumberRegex()};
   CRegExp regex{true, CRegExp::autoUtf8, r.c_str()};
-  if (regex.RegFind(path) != -1)
+  if (regex.RegFind(basePath) != -1)
   {
-    pos = regex.GetSubStart(0) + 1;
-    number = regex.GetMatch(1);
+    path = basePath.erase(regex.GetSubStart(0) + 1);
+    return regex.GetMatch(1);
   }
+  return {};
 }
 } // unnamed namespace
 
-std::string CUtil::RemoveTrailingPartNumberSegmentFromPath(std::string path)
+std::string CUtil::RemoveTrailingPartNumberSegmentFromPath(std::string path,
+                                                           PreserveFileName preserveFileName)
 {
-  size_t partPos{std::string::npos};
-  std::string partNum;
-  GetTrailingPartNumberSegmentInfoFromPath(path, partPos, partNum);
-
-  if (partPos != std::string::npos)
-    path.erase(partPos);
-
+  GetPartAndRemoveDiscFromPath(path, preserveFileName);
   return path;
 }
 
-std::string CUtil::GetPartNumberFromPath(const std::string& path)
+std::string CUtil::GetPartNumberFromPath(std::string path)
 {
-  size_t partPos{std::string::npos};
-  std::string partNum;
-  GetTrailingPartNumberSegmentInfoFromPath(path, partPos, partNum);
-  return partNum;
+  return GetPartAndRemoveDiscFromPath(path, PreserveFileName::REMOVE);
 }
 
 bool CUtil::GetFilenameIdentifier(const std::string& fileName,

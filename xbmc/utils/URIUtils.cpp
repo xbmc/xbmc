@@ -468,9 +468,18 @@ std::string URIUtils::GetBasePath(const std::string& strPath)
 
   std::string strDirectory = GetDirectory(strCheck);
 
-  strDirectory = CUtil::RemoveTrailingPartNumberSegmentFromPath(strDirectory);
+  strDirectory =
+      CUtil::RemoveTrailingPartNumberSegmentFromPath(strDirectory, CUtil::PreserveFileName::REMOVE);
 
   return strDirectory;
+}
+
+bool URIUtils::IsDiscPath(const std::string& path)
+{
+  std::string folder{path};
+  RemoveSlashAtEnd(folder);
+  folder = GetFileName(folder);
+  return StringUtils::EqualsNoCase(folder, "VIDEO_TS") || StringUtils::EqualsNoCase(folder, "BDMV");
 }
 
 std::string URIUtils::GetDiscBase(const std::string& file)

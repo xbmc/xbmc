@@ -87,6 +87,12 @@ public:
    */
   static std::string GetBasePath(const std::string& strPath);
 
+  /*! \brief Determine if a path belongs to a disc file structure (ie. VIDEO_TS or BDMV).
+   \param path the path.
+   \return true if the path is a disc file structure, false otherwise.
+   */
+  static bool IsDiscPath(const std::string& path);
+
   /*! \brief Given a bluray:// path, return the base .ISO or folder containing the bluray file structure.
    \param path bluray:// path.
    \return the base .ISO or folder containing the bluray file structure.

@@ -66,13 +66,21 @@ public:
    'Disc', 'Disk' and the locale specific spelling, as well as 'CD', and 'DVD'
    \return the part number as string if found, empty string otherwise.
    */
-  static std::string GetPartNumberFromPath(const std::string& path);
+  static std::string GetPartNumberFromPath(std::string path);
+
+  enum class PreserveFileName : bool
+  {
+    REMOVE,
+    KEEP
+  };
 
   /*! \brief Remove last segment of the given path if it matches with
-   'Disc', 'Disk' and the locale specific spelling, as well as 'CD', and 'DVD'
+   'Disc', 'Disk' and the locale specific spelling, as well as 'CD', and 'DVD' along with any disc folders
+   (ie. BDMV or VIDEO_TS).
    \return the given path with last segment removed if it matches, unchanged path otherwise.
    */
-  static std::string RemoveTrailingPartNumberSegmentFromPath(std::string path);
+  static std::string RemoveTrailingPartNumberSegmentFromPath(std::string path,
+                                                             PreserveFileName preserveFileName);
 
   static void GetQualifiedFilename(const std::string &strBasePath, std::string &strFilename);
   static void RunShortcut(const char* szPath);
