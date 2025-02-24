@@ -1574,8 +1574,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
         movieDetails.m_strTrailer = strTrailer;
 
       // Deal with 'Disc n' subdirectories
-      const std::string discNum{
-          CUtil::GetDiscNumberFromPath(URIUtils::GetParentPath(movieDetails.m_strFileNameAndPath))};
+      const std::string discNum{CUtil::GetPartNumberFromPath(movieDetails.m_strFileNameAndPath)};
       if (!discNum.empty())
       {
         if (movieDetails.m_set.title.empty())
