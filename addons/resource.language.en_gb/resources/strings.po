@@ -25069,3 +25069,33 @@ msgstr ""
 msgctxt "#50191"
 msgid "When using Display Led (DV-Std) should overlays be restricted to the active area only."
 msgstr ""
+
+#. "Dolby Vision Display LL Dolby VSVDB Limit"
+#: system/settings/settings.xml
+msgctxt "#50200"
+msgid "Limit VSVDB luminance"
+msgstr ""
+
+#. "Dolby Vision Display LL Dolby VSVDB Limit"
+#: system/settings/settings.xml
+msgctxt "#50201"
+msgid "When using Player Led (DV-LL / HDR) limit the VSVDB min / max luminance to match the source being played."
+msgstr ""
+
+#. "Dolby Vision Display LL Dolby VSVDB Limit"
+#: system/settings/settings.xml
+msgctxt "#50202"
+msgid "Do not limit"
+msgstr ""
+
+#. "Dolby Vision Display LL Dolby VSVDB Limit"
+#: system/settings/settings.xml
+msgctxt "#50203"
+msgid "Limit min and max"
+msgstr ""
+
+#. "Dolby Vision Display LL Dolby VSVDB Limit"
+#: system/settings/settings.xml
+msgctxt "#50204"
+msgid "Limit max only"
+msgstr ""
