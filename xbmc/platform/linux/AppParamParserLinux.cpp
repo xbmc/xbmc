@@ -33,7 +33,7 @@ Selected window system not available: {}
 constexpr const char* loggingText =
     R"""(
 Selected logging target not available: {}
-    Available log targest: {}
+    Available log targets: {}
 )""";
 
 constexpr const char* audioBackendsText =

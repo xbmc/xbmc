@@ -3477,7 +3477,7 @@ void WINAPI DXGetErrorDescriptionW( _In_ HRESULT hr, _Out_cap_(count) WCHAR* des
 //        CHK_ERR(DDERR_OUTOFMEMORY, "DDERR_OUTOFMEMORY")
 //        CHK_ERR(DDERR_OUTOFVIDEOMEMORY, "DDERR_OUTOFVIDEOMEMORY")
         CHK_ERR(DDERR_OVERLAYCANTCLIP, "hardware does not support clipped overlays")
-        CHK_ERR(DDERR_OVERLAYCOLORKEYONLYONEACTIVE, "Can only have ony color key active at one time for overlays")
+        CHK_ERR(DDERR_OVERLAYCOLORKEYONLYONEACTIVE, "Can only have one color key active at one time for overlays")
         CHK_ERR(DDERR_PALETTEBUSY, "Access to this palette is being refused because the palette is already locked by another thread.")
         CHK_ERR(DDERR_COLORKEYNOTSET, "No src color key specified for this operation.")
         CHK_ERR(DDERR_SURFACEALREADYATTACHED, "This surface is already attached to the surface it is being attached to.")
@@ -3515,8 +3515,8 @@ void WINAPI DXGetErrorDescriptionW( _In_ HRESULT hr, _Out_cap_(count) WCHAR* des
         CHK_ERR(DDERR_NOBLTHW, "No blter.")
         CHK_ERR(DDERR_NODDROPSHW, "No DirectDraw ROP hardware.")
         CHK_ERR(DDERR_OVERLAYNOTVISIBLE, "returned when GetOverlayPosition is called on a hidden overlay")
-        CHK_ERR(DDERR_NOOVERLAYDEST, "returned when GetOverlayPosition is called on a overlay that UpdateOverlay has never been called on to establish a destionation.")
-        CHK_ERR(DDERR_INVALIDPOSITION, "returned when the position of the overlay on the destionation is no longer legal for that destionation.")
+        CHK_ERR(DDERR_NOOVERLAYDEST, "returned when GetOverlayPosition is called on a overlay that UpdateOverlay has never been called on to establish a destination.")
+        CHK_ERR(DDERR_INVALIDPOSITION, "returned when the position of the overlay on the destination is no longer legal for that destination.")
         CHK_ERR(DDERR_NOTAOVERLAYSURFACE, "returned when an overlay member is called for a non-overlay surface")
         CHK_ERR(DDERR_EXCLUSIVEMODEALREADYSET, "An attempt was made to set the cooperative level when it was already set to exclusive.")
         CHK_ERR(DDERR_NOTFLIPPABLE, "An attempt has been made to flip a surface that is not flippable.")
@@ -3627,7 +3627,7 @@ void WINAPI DXGetErrorDescriptionW( _In_ HRESULT hr, _Out_cap_(count) WCHAR* des
 // -------------------------------------------------------------
 // D2DERR_UNSUPPORTED_PIXEL_FORMAT is not defined for UWP. WINCODEC_ERR_UNSUPPORTEDPIXELFORMAT is and has the same value.
 //        CHK_ERR(D2DERR_UNSUPPORTED_PIXEL_FORMAT, "The pixel format is not supported.")
-//        CHK_ERR(D2DERR_INSUFFICIENT_BUFFER, "The supplied buffer was too small to accomodate the data.")
+//        CHK_ERR(D2DERR_INSUFFICIENT_BUFFER, "The supplied buffer was too small to accommodate the data.")
         CHK_ERR(D2DERR_WRONG_STATE, "The object was not in the correct state to process the method.")
         CHK_ERR(D2DERR_NOT_INITIALIZED, "The object has not yet been initialized.")
         CHK_ERR(D2DERR_UNSUPPORTED_OPERATION, "The requested operation is not supported.")

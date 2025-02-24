@@ -132,7 +132,7 @@ private:
       return false;
     }
     // Ignore return value, if we try to read past the end of the message this
-    // will be catched by the type check (past-end type is DBUS_TYPE_INVALID)
+    // will be caught by the type check (past-end type is DBUS_TYPE_INVALID)
     dbus_message_iter_next(iter);
     return GetReplyArgumentsWithIter(iter, args...);
   }

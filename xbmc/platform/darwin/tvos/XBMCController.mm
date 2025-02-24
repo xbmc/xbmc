@@ -465,7 +465,7 @@ int KODI_Run(bool renderGUI)
 
 #pragma mark - remoteControlReceivedWithEvent forwarder
 //  remoteControlReceived requires subclassing of UIViewController
-//  Just implement as a forwarding class to CLibRemote so it doesnt need to subclass
+//  Just implement as a forwarding class to CLibRemote so it doesn't need to subclass
 - (void)remoteControlReceivedWithEvent:(UIEvent*)receivedEvent
 {
   if (receivedEvent.type == UIEventTypeRemoteControl)
