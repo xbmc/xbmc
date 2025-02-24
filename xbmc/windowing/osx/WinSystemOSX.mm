@@ -785,7 +785,7 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
 
 bool CWinSystemOSX::DestroyWindowInternal()
 {
-  // set this 1st, we should really mutex protext m_appWindow in this class
+  // set this 1st, we should really mutex protect m_appWindow in this class
   m_bWindowCreated = false;
   if (m_appWindow)
   {

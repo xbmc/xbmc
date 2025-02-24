@@ -130,7 +130,7 @@ public:
   void ResetDepth() { m_layer = 2; }
   /*! \brief Reserve layers for the caller to use
    \param addLayers number of layers needed
-   \returns uint32_t returns the absolute layer hight
+   \returns uint32_t returns the absolute layer height
    */
   uint32_t GetDepth(uint32_t addLayers = 2);
 

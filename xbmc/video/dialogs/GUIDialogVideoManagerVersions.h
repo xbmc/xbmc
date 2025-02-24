@@ -68,7 +68,7 @@ private:
    * to if role is Parent
    * \param[in] videoDb Database connection
    * \param[in] role NewVersion: dbId will be converted to a version of the movie chosen by
-   * the user from the whole libray.
+   * the user from the whole library.
    * Parent: dbId will have another movie chosen by the user from the whole library as a new version.
    *
    * \return True: success, a version was created and attached, false otherwise.
@@ -100,12 +100,12 @@ private:
   /*!
    * \brief Convert the movie into a version
    * \param itemMovie Movie to convert
-   * \return True for success, false otherwse
+   * \return True for success, false otherwise
    */
   bool AddSimilarMovieAsVersion(const std::shared_ptr<CFileItem>& itemMovie);
 
   /*!
-   * \brief Populates a list with all movies of the libray, excluding the item provided as parameter.
+   * \brief Populates a list with all movies of the library, excluding the item provided as parameter.
    * \param[in] item The item that will be excluded from the list
    * \param[out] list List to populate
    * \param[in] videoDb Database connection

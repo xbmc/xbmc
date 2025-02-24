@@ -180,7 +180,7 @@ private:
         if (cancelPoll.revents & POLLIN)
         {
           // Read away the char so we don't get another notification
-          // Indepentent from m_roundtripQueue so there are no races
+          // Independent from m_roundtripQueue so there are no races
           char c;
           if (read(m_pipeRead, &c, 1) != 1)
             throw std::runtime_error("Error reading from wayland message pipe");

@@ -163,7 +163,7 @@ public:
 
    \param input Input string to be split
    \param delimiter Delimiter to be used to split the input string
-   \param iMaxStrings (optional) Maximum number of splitted strings
+   \param iMaxStrings (optional) Maximum number of split strings
    */
   static std::vector<std::string> Split(const std::string& input, const std::string& delimiter, unsigned int iMaxStrings = 0);
   static std::vector<std::string> Split(const std::string& input, const char delimiter, size_t iMaxStrings = 0);
@@ -175,7 +175,7 @@ public:
    \param d_first the beginning of the destination range
    \param input Input string to be split
    \param delimiter Delimiter to be used to split the input string
-   \param iMaxStrings (optional) Maximum number of splitted strings
+   \param iMaxStrings (optional) Maximum number of split strings
    \return output iterator to the element in the destination range, one past the last element
    *       that was put there
    */

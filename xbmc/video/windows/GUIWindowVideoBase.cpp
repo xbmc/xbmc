@@ -479,7 +479,7 @@ bool CGUIWindowVideoBase::ShowInfo(const CFileItemPtr& item2, const ScraperPtr& 
   do
   {
     // reload images
-    //! !todo we need this to update images in video info dialog immediatly after refresh, but why?
+    //! @todo we need this to update images in video info dialog immediately after refresh, but why?
     CGUIMessage reload(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
     OnMessage(reload);
 
