@@ -13,6 +13,8 @@
 #include "ServiceBroker.h"
 #include "StringUtils.h"
 #include "URL.h"
+#include "Util.h"
+#include "filesystem/BlurayDirectory.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/StackDirectory.h"
@@ -454,19 +456,20 @@ std::string URIUtils::GetBasePath(const std::string& strPath)
   if (IsStack(strPath))
     strCheck = CStackDirectory::GetFirstStackedFile(strPath);
 
+  // Check to see if protocol is VFS addon (eg. archive://, rar://) or zip://
+  CURL url(strPath);
+  if ((CServiceBroker::IsAddonInterfaceUp() &&
+       CServiceBroker::GetFileExtensionProvider().EncodedHostName(url.GetProtocol())) ||
+      IsArchive(url))
+    strCheck = url.GetHostName();
+
+  if (IsBlurayPath(strCheck))
+    strCheck = CBlurayDirectory::GetBasePath(CURL(strPath));
+
   std::string strDirectory = GetDirectory(strCheck);
-  if (IsInRAR(strCheck))
-  {
-    std::string strPath=strDirectory;
-    GetParentPath(strPath, strDirectory);
-  }
-  if (IsStack(strPath))
-  {
-    strCheck = strDirectory;
-    RemoveSlashAtEnd(strCheck);
-    if (GetFileName(strCheck).size() == 3 && StringUtils::StartsWithNoCase(GetFileName(strCheck), "cd"))
-      strDirectory = GetDirectory(strCheck);
-  }
+
+  strDirectory = CUtil::RemoveTrailingPartNumberSegmentFromPath(strDirectory);
+
   return strDirectory;
 }
 
