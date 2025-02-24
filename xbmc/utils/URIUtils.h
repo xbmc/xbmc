@@ -267,6 +267,7 @@ public:
   static bool IsAPK(const std::string& strFile);
   static bool IsZIP(const std::string& strFile);
   static bool IsArchive(const std::string& strFile);
+  static bool IsArchive(const CURL& url);
   static bool IsDiscImage(const std::string& file);
   static bool IsDiscImageStack(const std::string& file);
   static bool IsBlurayPath(const std::string& strFile);
