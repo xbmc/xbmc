@@ -1107,6 +1107,11 @@ bool URIUtils::IsArchive(const std::string& strFile)
   return HasExtension(strFile, ".zip|.rar|.apk|.cbz|.cbr");
 }
 
+bool URIUtils::IsArchive(const CURL& url)
+{
+  return url.IsProtocol("archive") || url.IsProtocol("zip") || url.IsProtocol("rar");
+}
+
 bool URIUtils::IsDiscImage(const std::string& file)
 {
   return HasExtension(file, ".img|.iso|.nrg|.udf");

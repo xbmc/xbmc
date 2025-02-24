@@ -654,7 +654,7 @@ int CVideoDatabase::GetPathId(const std::string& strPath)
       return -1;
 
     std::string strPath1(strPath);
-    if (URIUtils::IsStack(strPath) || StringUtils::StartsWithNoCase(strPath, "rar://") || StringUtils::StartsWithNoCase(strPath, "zip://"))
+    if (URIUtils::IsStack(strPath))
       URIUtils::GetParentPath(strPath,strPath1);
 
     URIUtils::AddSlashAtEnd(strPath1);
@@ -868,7 +868,7 @@ int CVideoDatabase::AddPath(const std::string& strPath, const std::string &paren
       return -1;
 
     std::string strPath1(strPath);
-    if (URIUtils::IsStack(strPath) || StringUtils::StartsWithNoCase(strPath, "rar://") || StringUtils::StartsWithNoCase(strPath, "zip://"))
+    if (URIUtils::IsStack(strPath))
       URIUtils::GetParentPath(strPath,strPath1);
 
     URIUtils::AddSlashAtEnd(strPath1);
@@ -1099,7 +1099,7 @@ int CVideoDatabase::AddOrUpdateFile(const std::string& fileAndPath,
 
 int CVideoDatabase::AddFile(const CFileItem& item)
 {
-  if (URIUtils::IsBlurayPath(item.GetDynPath()) || item.IsStack())
+  if (CUtil::UseDynPathForAddOrUpdate(item))
     return AddFile(item.GetDynPath());
   if (IsVideoDb(item) && item.HasVideoInfoTag())
   {
@@ -11731,8 +11731,7 @@ void CVideoDatabase::ConstructPath(std::string& strDest,
                                    const std::string& strPath,
                                    const std::string& strFileName) const
 {
-  if (URIUtils::IsStack(strFileName) ||
-      URIUtils::IsInArchive(strFileName) || URIUtils::IsPlugin(strPath))
+  if (URIUtils::IsStack(strFileName) || URIUtils::IsPlugin(strPath))
     strDest = strFileName;
   else
     strDest = URIUtils::AddFileToFolder(strPath, strFileName);
@@ -11742,7 +11741,7 @@ void CVideoDatabase::SplitPath(const std::string& strFileNameAndPath,
                                std::string& strPath,
                                std::string& strFileName) const
 {
-  if (URIUtils::IsStack(strFileNameAndPath) || StringUtils::StartsWithNoCase(strFileNameAndPath, "rar://") || StringUtils::StartsWithNoCase(strFileNameAndPath, "zip://"))
+  if (URIUtils::IsStack(strFileNameAndPath))
   {
     URIUtils::GetParentPath(strFileNameAndPath,strPath);
     strFileName = strFileNameAndPath;
