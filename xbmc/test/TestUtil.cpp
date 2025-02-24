@@ -70,8 +70,6 @@ TEST(TestUtil, ValidatePath)
 {
   std::string path;
 #ifdef TARGET_WINDOWS
-  path = "C:/foo/bar/";
-  EXPECT_EQ(CUtil::ValidatePath(path), "C:\\foo\\bar\\");
   path = "C:\\\\foo\\\\bar\\";
   EXPECT_EQ(CUtil::ValidatePath(path, true), "C:\\foo\\bar\\");
   path = "\\\\foo\\\\bar\\";
@@ -82,6 +80,8 @@ TEST(TestUtil, ValidatePath)
   path = "/foo//bar/";
   EXPECT_EQ(CUtil::ValidatePath(path, true), "/foo/bar/");
 #endif
+  path = "C:\\foo\\bar\\";
+  EXPECT_EQ(CUtil::ValidatePath(path), "C:\\foo\\bar\\");
   path = "smb://foo/bar/";
   EXPECT_EQ(CUtil::ValidatePath(path), "smb://foo/bar/");
   path = "smb://foo//bar/";
@@ -288,21 +288,29 @@ class TestDiscNumbers : public Test, public WithParamInterface<TestDiscData>
 {
 };
 
-const TestDiscData BaseFiles[] = {{"/home/user/movies/movie/video_ts/VIDEO_TS.IFO", ""},
-                                  {"/home/user/movies/movie/disc 1/video_ts/VIDEO_TS.IFO", "1"},
-                                  {"/home/user/movies/movie/BDMV/index.bdmv", ""},
-                                  {"/home/user/movies/movie/disc 1/BDMV/index.bdmv", "1"},
-                                  {"/home/user/movies/movie.iso", ""},
-                                  {"/home/user/movies/movie/file.iso", ""},
-                                  {"/home/user/movies/disc 1/movie.iso", "1"},
-                                  {"/home/user/movies/movie/disc 1/file.iso", "1"},
-                                  {"/home/user/movies/movie.avi", ""},
-                                  {"/home/user/movies/movie/file.avi", ""},
-                                  {"/home/user/movies/movie/disc 1/file.avi", "1"},
-                                  {"/home/user/movies/movie/disk 1/file.avi", "1"},
-                                  {"/home/user/movies/movie/cd 1/file.avi", "1"},
-                                  {"/home/user/movies/movie/dvd 1/file.avi", "1"},
-                                  {"smb://home/user/movies/movie/disc 1/file.avi", "1"}};
+const TestDiscData BaseFiles[] = {
+    {"/home/user/movies/movie/video_ts/VIDEO_TS.IFO", ""},
+    {"/home/user/movies/movie/disc 1/video_ts/VIDEO_TS.IFO", "1"},
+    {"/home/user/movies/movie/BDMV/index.bdmv", ""},
+    {"/home/user/movies/movie/disc 1/BDMV/index.bdmv", "1"},
+    {"/home/user/movies/movie.iso", ""},
+    {"/home/user/movies/movie/file.iso", ""},
+    {"/home/user/movies/disc 1/movie.iso", "1"},
+    {"/home/user/movies/movie/disc 1/file.iso", "1"},
+    {"/home/user/movies/movie.avi", ""},
+    {"/home/user/movies/movie/file.avi", ""},
+    {"/home/user/movies/movie/disc 1/file.avi", "1"},
+    {"/home/user/movies/movie/disk 1/file.avi", "1"},
+    {"/home/user/movies/movie/cd 1/file.avi", "1"},
+    {"/home/user/movies/movie/dvd 1/file.avi", "1"},
+    {"smb://home/user/movies/movie/disc 1/file.avi", "1"},
+    {"D:\\movies\\movie\\disc 1\\file.avi", "1"},
+    {"bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fpath%252fdisc%25201%252fmovie.iso%2f/"
+     "BDMV/PLAYLIST/00800.mpls",
+     "1"},
+    {"zip://smb%3a%2f%2fsomepath%2fpath%2fdisc%202%2fmovie.zip/BDMV/index.bdmv", "2"},
+    {"rar://smb%3a%2f%2fsomepath%2fpath%2fdisc%203%2fmovie.rar/BDMV/index.bdmv", "3"},
+    {"archive://smb%3a%2f%2fsomepath%2fpath%2fdisc%204%2fmovie.tar.gz/VIDEO_TS/VIDEO_TS.IFO", "4"}};
 
 TEST_P(TestDiscNumbers, GetDiscNumbers)
 {
@@ -334,7 +342,17 @@ const TestRemoveData BasePaths[] = {
     {"/home/user/movies/movie/disk 1/file.avi", "/home/user/movies/movie/"},
     {"/home/user/movies/movie/cd 1/file.avi", "/home/user/movies/movie/"},
     {"/home/user/movies/movie/dvd 1/file.avi", "/home/user/movies/movie/"},
-    {"smb://home/user/movies/movie/disc 1/file.avi", "smb://home/user/movies/movie/"}};
+    {"smb://home/user/movies/movie/disc 1/file.avi", "smb://home/user/movies/movie/"},
+    {"D:\\movies\\movie\\disc 1\\file.avi", "D:\\movies\\movie\\"},
+    {"bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fpath%252fdisc%25201%252fmovie.iso%2f/"
+     "BDMV/PLAYLIST/00800.mpls",
+     "smb://somepath/path/"},
+    {"zip://smb%3a%2f%2fsomepath%2fpath%2fdisc%202%2fmovie.zip/BDMV/index.bdmv",
+     "smb://somepath/path/"},
+    {"rar://smb%3a%2f%2fsomepath%2fpath%2fdisc%203%2fmovie.rar/BDMV/index.bdmv",
+     "smb://somepath/path/"},
+    {"archive://smb%3a%2f%2fsomepath%2fpath%2fdisc%204%2fmovie.tar.gz/VIDEO_TS/VIDEO_TS.IFO",
+     "smb://somepath/path/"}};
 
 TEST_P(TestRemoveDiscNumbers, RemoveDiscNumbers)
 {
@@ -357,9 +375,8 @@ class TestVideoBasePathAndFileName : public Test, public WithParamInterface<Test
 };
 
 const TestBaseData Paths[] = {
-    {"bluray://smb%3a%2f%2fsomepath%2fmovie%2f/BDMV/PLAYLIST/00800.mpls", "smb://somepath/movie/",
-     "movie"},
     {"c:\\dir\\movie.avi", "c:\\dir\\", "movie"},
+    {"zip://D%3a%5cMovies%5cmovie.zip/film.mkv", "D:\\Movies\\", "movie"},
     {"/dir/movie.avi", "/dir/", "movie"},
     {"smb://somepath/movie.avi", "smb://somepath/", "movie"},
     {"smb://somepath/disc 1/movie.avi", "smb://somepath/disc 1/", "movie"},
@@ -372,12 +389,25 @@ const TestBaseData Paths[] = {
     {"/home/user/movies/movie/disc 1/file.iso", "/home/user/movies/movie/disc 1/", "file"},
     {"bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fmovie.iso%2f/BDMV/PLAYLIST/00800.mpls",
      "smb://somepath/", "movie"},
-    {"bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fdisc%201%252fmovie.iso%2f/BDMV/PLAYLIST/"
+    {"bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fdisc%25201%252fmovie.iso%2f/BDMV/"
+     "PLAYLIST/"
      "00800.mpls",
      "smb://somepath/disc 1/", "movie"},
     {"bluray://smb%3a%2f%2fsomepath%2fmovie%2f/BDMV/PLAYLIST/00800.mpls", "smb://somepath/movie/",
      "movie"},
     {"bluray://smb%3a%2f%2fsomepath%2fmovie%2fdisc%201%2f/BDMV/PLAYLIST/00800.mpls",
+     "smb://somepath/movie/disc 1/", "movie"},
+    {"zip://smb%3a%2f%2fsomepath%2fmovie%2fmovie.zip/BDMV/PLAYLIST/00800.mpls",
+     "smb://somepath/movie/", "movie"},
+    {"zip://smb%3a%2f%2fsomepath%2fmovie%2fdisc%201%2fmovie.zip/file.mkv",
+     "smb://somepath/movie/disc 1/", "movie"},
+    {"rar://smb%3a%2f%2fsomepath%2fmovie%2fmovie.rar/BDMV/PLAYLIST/00800.mpls",
+     "smb://somepath/movie/", "movie"},
+    {"rar://smb%3a%2f%2fsomepath%2fmovie%2fdisc%201%2fmovie.rar/file.mkv",
+     "smb://somepath/movie/disc 1/", "movie"},
+    {"archive://smb%3a%2f%2fsomepath%2fmovie%2fmovie.tar.gz/BDMV/PLAYLIST/00800.mpls",
+     "smb://somepath/movie/", "movie"},
+    {"archive://smb%3a%2f%2fsomepath%2fmovie%2fdisc%201%2fmovie.tar.gz/file.mkv",
      "smb://somepath/movie/disc 1/", "movie"}};
 
 TEST_P(TestVideoBasePathAndFileName, GetVideoBasePathAndFileName)
@@ -411,29 +441,38 @@ class TestMatchingSource : public Test, public WithParamInterface<TestMatchingSo
 
 constexpr SourceData Sources[] = {{"Movies", "smb://somepath/Movies/"},
                                   {"TV Shows", "smb://somepath/TV Shows/"},
-                                  {"Documentaries", "/somepath/Documentaries/"}};
+                                  {"Documentaries", "/somepath/Documentaries/"},
+                                  {"Local Movies", "D:\\Movies\\"}};
 
 constexpr TestMatchingSourceData SourcesToMatch[] = {
     {"smb://somepath/Movies/Alien (1979)/ALIEN.ISO", 0},
     {"smb://somepath/Movies/Alien (1979)/Disc 1/ALIEN.ISO", 0},
     {"smb://somepath/Movies/Alien (1979)/Disc 1/BDMV/index.bdmv", 0},
     {"bluray://"
-     "udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fMovies%252fAlien%20(1979)%252fALIEN.ISO%2f/BDMV/"
+     "udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fMovies%252fAlien%2520(1979)%252fALIEN.ISO%2f/BDMV/"
      "PLAYLIST/"
      "00800.mpls",
      0},
     {"bluray://"
-     "udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fMovies%252fAlien%20(1979)%252fDisc%201%252f"
+     "udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fMovies%252fAlien%2520(1979)%252fDisc%25201%252f"
      "ALIEN.ISO%2f/BDMV/PLAYLIST/"
      "00800.mpls",
      0},
-    {"bluray://smb%3a%2f%2fsomepath%2fMovies%2fAlien%20(1979)/BDMV/PLAYLIST/00800.mpls", 0},
-    {"bluray://smb%3a%2f%2fsomepath%2fMovies%2fAlien%20(1979)%2fDisc%201/BDMV/PLAYLIST/00800.mpls",
+    {"bluray://smb%3a%2f%2fsomepath%2fMovies%2fAlien%2520(1979)/BDMV/PLAYLIST/00800.mpls", 0},
+    {"bluray://smb%3a%2f%2fsomepath%2fMovies%2fAlien%2520(1979)%2fDisc%201/BDMV/PLAYLIST/"
+     "00800.mpls",
      0},
-    {"stack:///somepath/Documentaries/other/part 1.mkv,/somepath/Documentaries/other/part 2.mkv",
+    {"stack:///somepath/Documentaries/other/part 1.mkv , /somepath/Documentaries/other/part 2.mkv",
      2},
     {"smb://somepath/TV Shows/A Perfect Planet (2021)/", 1},
-    {"smb://somepath/Other/Something Else/", -1}};
+    {"smb://somepath/Other/Something Else/", -1},
+    {"zip://smb%3a%2f%2fsomepath%2fMovies%2fmovie.zip/BDMV/PLAYLIST/00800.mpls", 0},
+    {"zip://smb%3a%2f%2fsomepath%2fTV%20Shows%2fShowf%2fdisc%201%2fshow.rar/file.mkv", 1},
+    {"rar://smb%3a%2f%2fsomepath%2fMovies%2fmovie.rar/BDMV/PLAYLIST/00800.mpls", 0},
+    {"rar://smb%3a%2f%2fsomepath%2fTV%20Shows%2fShowf%2fdisc%201%2fshow.rar/file.mkv", 1},
+    {"archive://smb%3a%2f%2fsomepath%2fMovies%2fmovie.tar.gz/BDMV/PLAYLIST/00800.mpls", 0},
+    {"archive://smb%3a%2f%2fsomepath%2fTV%20Shows%2fShowf%2fdisc%201%2fshow.rar/file.mkv", 1},
+    {"D:\\Movies\\Movie\\movie.mkv", 3}};
 
 TEST_P(TestMatchingSource, GetMatchingSource)
 {

@@ -95,6 +95,110 @@ TEST_F(TestURIUtils, RemoveExtension)
   var = "/path/to/file.xml";
   URIUtils::RemoveExtension(var);
   EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = "/path/to/file.zip";
+  URIUtils::RemoveExtension(var);
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = "/path/to/file.rar";
+  URIUtils::RemoveExtension(var);
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = "/path/to/file.gz";
+  URIUtils::RemoveExtension(var);
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = "/path/to/file.tar";
+  URIUtils::RemoveExtension(var);
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = "/path/to/file.tar.gz";
+  URIUtils::RemoveExtension(var);
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = "/path/to/file.";
+  URIUtils::RemoveExtension(var);
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = "/path/to/file";
+  URIUtils::RemoveExtension(var);
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  ref = "/path/to/.file";
+  var = "/path/to/.file";
+  URIUtils::RemoveExtension(var);
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  ref = "/path/to/file.name";
+  var = "/path/to/file.name.mp4";
+  URIUtils::RemoveExtension(var);
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = "/path/to/file.name.tar.gz";
+  URIUtils::RemoveExtension(var);
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  ref = ".";
+  var = ".";
+  URIUtils::RemoveExtension(var);
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  ref = "..";
+  var = "..";
+  URIUtils::RemoveExtension(var);
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  ref = "";
+  var = "";
+  URIUtils::RemoveExtension(var);
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  ref = "file";
+  var = "file.xml";
+  URIUtils::RemoveExtension(var);
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = "file.zip";
+  URIUtils::RemoveExtension(var);
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = "file.rar";
+  URIUtils::RemoveExtension(var);
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = "file.gz";
+  URIUtils::RemoveExtension(var);
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = "file.tar";
+  URIUtils::RemoveExtension(var);
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = "file.tar.gz";
+  URIUtils::RemoveExtension(var);
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = "file.";
+  URIUtils::RemoveExtension(var);
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = "file";
+  URIUtils::RemoveExtension(var);
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  ref = ".file";
+  var = ".file";
+  URIUtils::RemoveExtension(var);
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  ref = "file.name";
+  var = "file.name.mp4";
+  URIUtils::RemoveExtension(var);
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = "file.name.tar.gz";
+  URIUtils::RemoveExtension(var);
+  EXPECT_STREQ(ref.c_str(), var.c_str());
 }
 
 TEST_F(TestURIUtils, ReplaceExtension)
@@ -185,11 +289,120 @@ TEST_F(TestURIUtils, GetParentPath)
   std::string var;
 
   ref = "/path/to/";
+
+  EXPECT_TRUE(URIUtils::GetParentPath("/path/to/movie.avi", var));
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
   var = URIUtils::GetParentPath("/path/to/movie.avi");
   EXPECT_STREQ(ref.c_str(), var.c_str());
 
-  var.clear();
-  EXPECT_TRUE(URIUtils::GetParentPath("/path/to/movie.avi", var));
+  ref = "D:\\Movies\\";
+
+  var = URIUtils::GetParentPath("D:\\Movies\\movie.avi");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetParentPath("D:\\Movies\\BDMV\\index.bdmv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetParentPath("bluray://D%3a%5cMovies%5c/BDMV/PLAYLIST/00800.mpls");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetParentPath(
+      "bluray://udf%3a%2f%2fD%253a%255cMovies%255cMovie.iso%2f/BDMV/PLAYLIST/00800.mpls");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetParentPath("zip://D%3a%5cMovies%5cmovie.zip/movie.mkv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetParentPath("zip://D%3a%5cMovies%5cmovie.zip/BDMV/index.bdmv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetParentPath("rar://D%3a%5cMovies%5cmovie.rar/movie.mkv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetParentPath("rar://D%3a%5cMovies%5cmovie.rar/BDMV/index.bdmv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetParentPath("archive://D%3a%5cMovies%5cmovie.tar.gz/movie.mkv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetParentPath("archive://D%3a%5cMovies%5cmovie.tar.gz/BDMV/index.bdmv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  ref = "smb://somepath/path/";
+
+  var = URIUtils::GetParentPath("smb://somepath/path/movie.avi");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetParentPath("smb://somepath/path/BDMV/index.bdmv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetParentPath("bluray://smb%3a%2f%2fsomepath%2fpath%2f/BDMV/PLAYLIST/00800.mpls");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetParentPath(
+      "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fpath%252fmovie.iso%2f/BDMV/PLAYLIST/"
+      "00800.mpls");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetParentPath("zip://smb%3a%2f%2fsomepath%2fpath%2fmovie.zip/movie.mkv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetParentPath("zip://smb%3a%2f%2fsomepath%2fpath%2fmovie.zip/BDMV/index.bdmv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetParentPath("rar://smb%3a%2f%2fsomepath%2fpath%2fmovie.rar/movie.mkv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetParentPath("rar://smb%3a%2f%2fsomepath%2fpath%2fmovie.rar/BDMV/index.bdmv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetParentPath("archive://smb%3a%2f%2fsomepath%2fpath%2fmovie.tar.gz/movie.mkv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetParentPath(
+      "archive://smb%3a%2f%2fsomepath%2fpath%2fmovie.tar.gz/BDMV/index.bdmv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  ref = "smb://somepath/path/disc 1/";
+
+  var = URIUtils::GetParentPath("smb://somepath/path/disc 1/movie.avi");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetParentPath("smb://somepath/path/disc 1/BDMV/index.bdmv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetParentPath(
+      "bluray://smb%3a%2f%2fsomepath%2fpath%2fdisc%201%2f/BDMV/PLAYLIST/00800.mpls");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetParentPath(
+      "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fpath%252fdisc%25201%252fmovie.iso%2f/"
+      "BDMV/PLAYLIST/00800.mpls");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var =
+      URIUtils::GetParentPath("zip://smb%3a%2f%2fsomepath%2fpath%2fdisc%201%2fmovie.zip/movie.mkv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetParentPath(
+      "zip://smb%3a%2f%2fsomepath%2fpath%2fdisc%201%2fmovie.zip/BDMV/index.bdmv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var =
+      URIUtils::GetParentPath("rar://smb%3a%2f%2fsomepath%2fpath%2fdisc%201%2fmovie.rar/movie.mkv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetParentPath(
+      "rar://smb%3a%2f%2fsomepath%2fpath%2fdisc%201%2fmovie.rar/BDMV/index.bdmv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetParentPath(
+      "archive://smb%3a%2f%2fsomepath%2fpath%2fdisc%201%2fmovie.tar.gz/movie.mkv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetParentPath(
+      "archive://smb%3a%2f%2fsomepath%2fpath%2fdisc%201%2fmovie.tar.gz/BDMV/index.bdmv");
   EXPECT_STREQ(ref.c_str(), var.c_str());
 }
 
@@ -197,6 +410,39 @@ TEST_F(TestURIUtils, GetBasePath)
 {
   std::string ref;
   std::string var;
+
+  ref = "D:\\Movies\\";
+
+  var = URIUtils::GetBasePath("D:\\Movies\\movie.avi");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetBasePath("D:\\Movies\\BDMV\\index.bdmv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetBasePath("bluray://D%3a%5cMovies%5c/BDMV/PLAYLIST/00800.mpls");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetBasePath(
+      "bluray://udf%3a%2f%2fD%253a%255cMovies%255cMovie.iso%2f/BDMV/PLAYLIST/00800.mpls");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetBasePath("zip://D%3a%5cMovies%5cmovie.zip/movie.mkv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetBasePath("zip://D%3a%5cMovies%5cmovie.zip/BDMV/index.bdmv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetBasePath("rar://D%3a%5cMovies%5cmovie.rar/movie.mkv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetBasePath("rar://D%3a%5cMovies%5cmovie.rar/BDMV/index.bdmv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetBasePath("archive://D%3a%5cMovies%5cmovie.tar.gz/movie.mkv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetBasePath("archive://D%3a%5cMovies%5cmovie.tar.gz/BDMV/index.bdmv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
 
   ref = "smb://somepath/path/";
 
@@ -214,13 +460,62 @@ TEST_F(TestURIUtils, GetBasePath)
       "00800.mpls");
   EXPECT_STREQ(ref.c_str(), var.c_str());
 
+  var = URIUtils::GetBasePath("zip://smb%3a%2f%2fsomepath%2fpath%2fmovie.zip/movie.mkv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetBasePath("zip://smb%3a%2f%2fsomepath%2fpath%2fmovie.zip/BDMV/index.bdmv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetBasePath("rar://smb%3a%2f%2fsomepath%2fpath%2fmovie.rar/movie.mkv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetBasePath("rar://smb%3a%2f%2fsomepath%2fpath%2fmovie.rar/BDMV/index.bdmv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetBasePath("archive://smb%3a%2f%2fsomepath%2fpath%2fmovie.tar.gz/movie.mkv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var =
+      URIUtils::GetBasePath("archive://smb%3a%2f%2fsomepath%2fpath%2fmovie.tar.gz/BDMV/index.bdmv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
   ref = "smb://somepath/path/disc 1/";
 
   var = URIUtils::GetBasePath("smb://somepath/path/disc 1/movie.avi");
   EXPECT_STREQ(ref.c_str(), var.c_str());
 
+  var = URIUtils::GetBasePath("smb://somepath/path/disc 1/BDMV/index.bdmv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
   var = URIUtils::GetBasePath(
       "bluray://smb%3a%2f%2fsomepath%2fpath%2fdisc%201%2f/BDMV/PLAYLIST/00800.mpls");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetBasePath(
+      "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fpath%252fdisc%25201%252fmovie.iso%2f/"
+      "BDMV/PLAYLIST/00800.mpls");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetBasePath("zip://smb%3a%2f%2fsomepath%2fpath%2fdisc%201%2fmovie.zip/movie.mkv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetBasePath(
+      "zip://smb%3a%2f%2fsomepath%2fpath%2fdisc%201%2fmovie.zip/BDMV/index.bdmv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetBasePath("rar://smb%3a%2f%2fsomepath%2fpath%2fdisc%201%2fmovie.rar/movie.mkv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetBasePath(
+      "rar://smb%3a%2f%2fsomepath%2fpath%2fdisc%201%2fmovie.rar/BDMV/index.bdmv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetBasePath(
+      "archive://smb%3a%2f%2fsomepath%2fpath%2fdisc%201%2fmovie.tar.gz/movie.mkv");
+  EXPECT_STREQ(ref.c_str(), var.c_str());
+
+  var = URIUtils::GetBasePath(
+      "archive://smb%3a%2f%2fsomepath%2fpath%2fdisc%201%2fmovie.tar.gz/BDMV/index.bdmv");
   EXPECT_STREQ(ref.c_str(), var.c_str());
 }
 
@@ -1084,6 +1379,44 @@ TEST_F(TestURIUtils, CheckConsistencyBetweenFileNameUtilities)
     EXPECT_EQ("a:b", URIUtils::GetFileName("/hello/there/a:b"));
     EXPECT_EQ("a:b", CURL_FileName_URIUtils_Split("/hello/there/a:b"));
     EXPECT_EQ("a:b", URIUtils_Split("/hello/there/a:b"));
+  }
+  {
+    const std::string path{
+        "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fpath%252fmovie.iso%2f/BDMV/PLAYLIST/"
+        "00800.mpls"};
+
+    EXPECT_EQ("BDMV/PLAYLIST/00800.mpls", CURL(path).GetFileName());
+
+    EXPECT_EQ("00800.mpls", URIUtils::GetFileName(path));
+    EXPECT_EQ("00800.mpls", CURL_FileName_URIUtils_Split(path));
+    EXPECT_EQ("00800.mpls", URIUtils_Split(path));
+  }
+  {
+    const std::string path{"zip://smb%3a%2f%2fsomepath%2fpath%2fmovie.zip/movie.mkv"};
+
+    EXPECT_EQ("movie.mkv", CURL(path).GetFileName());
+
+    EXPECT_EQ("movie.mkv", URIUtils::GetFileName(path));
+    EXPECT_EQ("movie.mkv", CURL_FileName_URIUtils_Split(path));
+    EXPECT_EQ("movie.mkv", URIUtils_Split(path));
+  }
+  {
+    const std::string path{"rar://smb%3a%2f%2fsomepath%2fpath%2fmovie.zip/BDMV/index.bdmv"};
+
+    EXPECT_EQ("BDMV/index.bdmv", CURL(path).GetFileName());
+
+    EXPECT_EQ("index.bdmv", URIUtils::GetFileName(path));
+    EXPECT_EQ("index.bdmv", CURL_FileName_URIUtils_Split(path));
+    EXPECT_EQ("index.bdmv", URIUtils_Split(path));
+  }
+  {
+    const std::string path{"archive://smb%3a%2f%2fsomepath%2fpath%2fmovie.tar.gz/BDMV/index.bdmv"};
+
+    EXPECT_EQ("BDMV/index.bdmv", CURL(path).GetFileName());
+
+    EXPECT_EQ("index.bdmv", URIUtils::GetFileName(path));
+    EXPECT_EQ("index.bdmv", CURL_FileName_URIUtils_Split(path));
+    EXPECT_EQ("index.bdmv", URIUtils_Split(path));
   }
 }
 

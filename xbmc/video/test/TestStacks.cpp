@@ -237,6 +237,18 @@ constexpr TestStackData Stacks[] = {
          "stack://smb://somepath/movie_part_1/movie.iso , smb://somepath/movie_part_2/movie.iso",
      .basePath = "smb://somepath/movie/",
      .firstPath = "smb://somepath/movie_part_1/movie.iso"},
+    {.path = "stack://smb://somepath/movie (2000) part 1/movie.iso , smb://somepath/movie (2000) "
+             "part 2/movie.iso",
+     .basePath = "smb://somepath/movie (2000)/",
+     .firstPath = "smb://somepath/movie (2000) part 1/movie.iso"},
+    {.path = "stack://D:\\somepath\\movie (2000) part 1\\movie.iso , D:\\somepath\\movie (2000) "
+             "part 2\\movie.iso",
+     .basePath = "D:\\somepath\\movie (2000)\\",
+     .firstPath = "D:\\somepath\\movie (2000) part 1\\movie.iso"},
+    {.path = "stack://smb://somepath/movie - part 1/movie.iso , smb://somepath/movie - part "
+             "2/movie.iso",
+     .basePath = "smb://somepath/movie/",
+     .firstPath = "smb://somepath/movie - part 1/movie.iso"},
     {.path = "stack://smb://somepath/movie_part_1/BDMV/index.bdmv , "
              "smb://somepath/movie_part_2/VIDEO_TS/VIDEO_TS.IFO",
      .basePath = "smb://somepath/movie/",
@@ -250,8 +262,7 @@ constexpr TestStackData Stacks[] = {
      .basePath = "smb://somepath/movie/",
      .firstPath =
          "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fmovie_part_1%252fmovie.iso%2f/BDMV/"
-         "PLAYLIST/00800.mpls"},
-};
+         "PLAYLIST/00800.mpls"}};
 
 TEST_P(TestGetStackedTitlePath, GetStackedTitlePath)
 {
