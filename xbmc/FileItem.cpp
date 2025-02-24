@@ -1999,17 +1999,17 @@ std::string CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
                                (HasVideoInfoTag() && GetVideoInfoTag()->m_iDbId > 0 &&
                                 !CMediaTypes::IsContainer(GetVideoInfoTag()->m_type))))
   {
-    std::string name2{strMovieName};
-    URIUtils::GetParentPath(name2, strMovieName);
-    if (URIUtils::IsInArchive(m_strPath))
-    {
-      // Try to get archive itself, if empty take path before
-      name2 = CURL(m_strPath).GetHostName();
-      if (name2.empty())
-        name2 = strMovieName;
-
-      URIUtils::GetParentPath(name2, strMovieName);
-    }
+    const std::string name{strMovieName};
+    URIUtils::GetParentPath(name, strMovieName);
+  }
+  const CURL url{strMovieName};
+  if (URIUtils::IsInArchive(strMovieName) || URIUtils::IsArchive(url))
+  {
+    // Try to get archive itself, if empty take path before
+    std::string name{url.GetHostName()};
+    if (name.empty())
+      name = strMovieName;
+    URIUtils::GetParentPath(name, strMovieName);
   }
 
   // Remove any trailing 'Disc n' and disc path (VIDEO_TS or BDMV) to get actual movie title
