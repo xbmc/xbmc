@@ -2001,7 +2001,7 @@ std::string CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
     }
 
     // Remove trailing 'Disc n' path segment to get actual movie title
-    strMovieName = CUtil::RemoveTrailingDiscNumberSegmentFromPath(strMovieName);
+    strMovieName = CUtil::RemoveTrailingPartNumberSegmentFromPath(strMovieName);
   }
 
   return strMovieName;

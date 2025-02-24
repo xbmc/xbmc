@@ -16,6 +16,7 @@
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/StackDirectory.h"
+#include "guilib/LocalizeStrings.h"
 #include "network/DNSNameCache.h"
 #include "network/Network.h"
 #include "pvr/channels/PVRChannelsPath.h"
@@ -504,6 +505,16 @@ std::string URIUtils::GetBlurayFile(const std::string& path)
     return AddFileToFolder(url2.Get(), "BDMV", "index.bdmv"); // BDMV
   }
   return std::string{};
+}
+
+std::string URIUtils::GetTrailingPartNumberRegex()
+{
+  // Build regex inserting local specific spelling of disc (xxx)
+  // \/?:cd|dvd|xxx|dis[ck][ _.-]*([0-9]+)$
+  std::string localeDiscStr{StringUtils::Format("{} ", g_localizeStrings.Get(427))};
+  if (!localeDiscStr.empty())
+    localeDiscStr += "|";
+  return {R"(\/(?:cd|dvd|)" + localeDiscStr + R"(dis[ck])[ _.-]*([0-9]+)$)"};
 }
 
 std::string URLEncodePath(const std::string& strPath)
