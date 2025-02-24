@@ -2459,3 +2459,17 @@ std::string CUtil::GetHexString(const std::span<const uint8_t>& buf, int count)
   std::ranges::for_each(buf, [&](auto x) { ss << static_cast<int>(x); });
   return std::move(ss).str();
 }
+
+bool CUtil::UseDynPathForAddOrUpdate(const CFileItem& item)
+{
+  return item.IsStack() ||
+         (URIUtils::IsBlurayPath(item.GetDynPath()) &&
+          (item.GetVideoContentType() == VideoDbContentType::MOVIES ||
+           item.GetVideoContentType() == VideoDbContentType::EPISODES ||
+           item.GetVideoContentType() == VideoDbContentType::UNKNOWN /* Removable bluray */)) ||
+         [&item]()
+  {
+    const CURL url{item.GetDynPath()};
+    return URIUtils::IsArchive(url);
+  }();
+}
