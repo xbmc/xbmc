@@ -389,7 +389,13 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     uint32_t m_nfsTimeout;
     int m_nfsRetries;
 
-    int  m_videoDecoderTimeout;
+    int m_videoDecoderTimeout;
+    bool m_videoDecoderBypassBufferReady;
+    float m_videoDecoderBuffer;
+    float m_videoDecoderStreamBuffer;
+    float m_videoDecoderMinimumBuffer;
+    float m_videoDecoderMinimumStreamBuffer;
+
 
   private:
     void Initialize();

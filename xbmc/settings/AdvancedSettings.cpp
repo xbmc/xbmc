@@ -174,6 +174,11 @@ void CAdvancedSettings::Initialize()
   m_videoDefaultLatency = 0.0;
 
   m_videoDecoderTimeout = 5;
+  m_videoDecoderBypassBufferReady = true;     // Alt SoC false
+  m_videoDecoderBuffer = 5.0f;                // Alt SoC 
+  m_videoDecoderStreamBuffer = 90.0f;         // Alt SoC
+  m_videoDecoderMinimumBuffer = 5.0f;
+  m_videoDecoderMinimumStreamBuffer = 10.0f;  // Alt SoC 17.5f
 
   m_musicUseTimeSeeking = true;
   m_musicTimeSeekForward = 10;
@@ -876,6 +881,11 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     }
 
     XMLUtils::GetInt(pElement, "decodertimeout", m_videoDecoderTimeout, 1, 60);
+    XMLUtils::GetBoolean(pElement, "decoderbypassbufferready", m_videoDecoderBypassBufferReady);
+    XMLUtils::GetFloat(pElement, "decoderbuffer", m_videoDecoderBuffer, 1.0f, 200.0f);
+    XMLUtils::GetFloat(pElement, "decoderstreambuffer", m_videoDecoderStreamBuffer, 1.0f, 200.0f);
+    XMLUtils::GetFloat(pElement, "decoderminimumbuffer", m_videoDecoderMinimumBuffer, 1.0f, 200.0f);
+    XMLUtils::GetFloat(pElement, "decoderminimumstreambuffer", m_videoDecoderMinimumStreamBuffer, 1.0f, 200.0f);
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");
