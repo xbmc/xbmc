@@ -507,6 +507,18 @@ std::string URIUtils::GetBlurayFile(const std::string& path)
   return std::string{};
 }
 
+bool URIUtils::IsOpticalMediaFile(const std::string& file)
+{
+  const std::string filename{GetFileName(file)};
+  return StringUtils::EqualsNoCase(filename, "video_ts.ifo") ||
+         (StringUtils::StartsWithNoCase(filename, "vts_") &&
+          StringUtils::EndsWithNoCase(filename, "_0.ifo") && filename.length() == 12) ||
+         StringUtils::EqualsNoCase(filename, "index.bdmv") ||
+         StringUtils::EqualsNoCase(filename, "MovieObject.bdmv") ||
+         StringUtils::EqualsNoCase(filename, "INDEX.BDM") ||
+         StringUtils::EqualsNoCase(filename, "MOVIEOBJ.BDM");
+}
+
 std::string URIUtils::GetTrailingPartNumberRegex()
 {
   // Build regex inserting local specific spelling of disc (xxx)
