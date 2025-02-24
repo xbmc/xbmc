@@ -12231,16 +12231,8 @@ void CVideoDatabase::EraseAllForFile(const std::string& fileNameAndPath)
     const int fileId{GetFileId(fileNameAndPath)};
     if (fileId != -1)
     {
-      std::string sql = PrepareSQL("DELETE FROM settings WHERE idFile = %i", fileId);
-      m_pDS->exec(sql);
-
-      sql = PrepareSQL("DELETE FROM bookmark WHERE idFile = %i", fileId);
-      m_pDS->exec(sql);
-
-      sql = PrepareSQL("DELETE FROM streamdetails WHERE idFile = %i", fileId);
-      m_pDS->exec(sql);
-
-      sql = PrepareSQL("DELETE FROM files WHERE idFile = %i", fileId);
+      // Note: Associated bookmarks, streamdetails, ... are deleted by trigger delete_file.
+      std::string sql{PrepareSQL("DELETE FROM files WHERE idFile = %i", fileId)};
       m_pDS->exec(sql);
 
       std::string path;
