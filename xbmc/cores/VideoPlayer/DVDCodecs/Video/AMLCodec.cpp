@@ -1927,6 +1927,12 @@ bool CAMLCodec::OpenDecoder()
   m_hints.pClock = hints.pClock;
   m_tp_last_frame = std::chrono::system_clock::now();
   m_decoder_timeout = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoDecoderTimeout;
+  m_decoder_bypass_buffer_ready = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoDecoderBypassBufferReady;
+  m_decoder_buffer = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoDecoderBuffer;
+  m_decoder_stream_buffer = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoDecoderStreamBuffer;
+  m_decoder_minimum_buffer = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoDecoderMinimumBuffer;
+  m_decoder_minimum_stream_buffer = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoDecoderMinimumStreamBuffer;
+  m_buffer_level_ready = false;
 
   if (!OpenAmlVideo(hints))
   {
@@ -2352,6 +2358,7 @@ void CAMLCodec::Reset()
   m_cur_pts = DVD_NOPTS_VALUE;
   m_last_pts = DVD_NOPTS_VALUE;
   m_state = 0;
+  m_buffer_level_ready = false;
 
   SetSpeed(m_speed);
 
@@ -2365,7 +2372,16 @@ bool CAMLCodec::AddData(uint8_t *pData, size_t iSize, double dts, double pts)
   float new_buffer_level = GetBufferLevel(chunk_size, data_len, free_len);
   bool streambuffer(am_private->gcodec.dec_mode == STREAM_TYPE_STREAM);
  
-  m_minimum_buffer_level = (streambuffer ? 10.0f : 5.0f);
+  if (!m_buffer_level_ready) {
+    m_buffer_level_ready = m_decoder_bypass_buffer_ready ||
+                           (streambuffer 
+                              ? new_buffer_level > m_decoder_stream_buffer
+                              : new_buffer_level > m_decoder_buffer);
+
+    m_minimum_buffer_level = streambuffer 
+                               ? m_decoder_minimum_stream_buffer
+                               : m_decoder_minimum_buffer;
+  }
 
   if (!m_opened || !pData || free_len == 0 || new_buffer_level >= 100.0f)
   {
@@ -2604,7 +2620,8 @@ CDVDVideoCodec::VCReturn CAMLCodec::GetPicture(VideoPicture& videoPicture)
   if (!m_opened)
     return CDVDVideoCodec::VC_ERROR;
 
-  if (!m_drain && buffer_level > m_minimum_buffer_level && (ret = DequeueBuffer()) == 0)
+  // add buffer level ready.
+  if (!m_drain && m_buffer_level_ready && (buffer_level > m_minimum_buffer_level) && ((ret = DequeueBuffer()) == 0))
   {
     videoPicture.iFlags = 0;
 
