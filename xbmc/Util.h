@@ -259,6 +259,13 @@ public:
                                           std::string& basePath,
                                           std::string& videoFileName);
 
+  /*! \brief If a file has a stack://, bluray:// or archive (zip://, rar://, archive://) path,
+   *         use the dynamic path for updates (settings, SaveFileStateJob) instead of the real path.
+   *  \param item The file item to check.
+   *  \return true if dynamic path should be used, false otherwise.
+   */
+  static bool UseDynPathForAddOrUpdate(const CFileItem& item);
+
 #if !defined(TARGET_WINDOWS)
 private:
   static unsigned int s_randomSeed;
