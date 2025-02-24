@@ -126,6 +126,25 @@ TEST_F(TestStacks, TestMovieFilesStackFolderFilesPart)
   }
 }
 
+TEST_F(TestStacks, TestMovieFilesStackFolderFilesPart2)
+{
+  const std::string movieFolder =
+      XBMC_REF_FILE_PATH("xbmc/video/test/testdata/moviestack_subfolder_movie");
+  CFileItemList items;
+  CDirectory::GetDirectory(movieFolder, items, "", DIR_FLAG_DEFAULTS);
+  // make sure items has 2 items (the two movie parts)
+  EXPECT_EQ(items.Size(), 2);
+  // stack the items and make sure we end up with a single movie
+  items.Stack();
+  EXPECT_EQ(items.Size(), 1);
+  // check the single item in the stack is a stack://
+  if (!items.IsEmpty())
+  {
+    EXPECT_EQ(items.Get(0)->IsStack(), true);
+    EXPECT_EQ(items.Get(0)->IsFolder(), false);
+  }
+}
+
 TEST_F(TestStacks, TestMovieFilesStackFolderFilesDiscPart)
 {
   const std::string movieFolder =
@@ -157,8 +176,10 @@ TEST_F(TestStacks, TestMovieFilesStackFolderFilesDiscPart)
 TEST_F(TestStacks, TestConstructStackPath)
 {
   CFileItemList items;
-
   CFileItem item;
+
+  // File stack
+
   item.SetPath("smb://somepath/movie_part_1.mkv");
   items.Add(std::make_shared<CFileItem>(item));
 
@@ -191,6 +212,55 @@ TEST_F(TestStacks, TestConstructStackPath)
             true);
   EXPECT_EQ(path, "stack://smb://somepath/movie_part_1.mkv , smb://somepath/movie_part_2.mkv , "
                   "smb://somepath/movie_part_3.mkv");
+
+  // Folder stack
+
+  items.Clear();
+
+  item.SetPath("smb://somepath/movie/movie_part_1/file.mkv");
+  items.Add(std::make_shared<CFileItem>(item));
+
+  item2.SetPath("smb://somepath/movie/movie_part_2/file.mkv");
+  items.Add(std::make_shared<CFileItem>(item2));
+
+  index[0] = 0;
+  index[1] = 1;
+
+  path = CStackDirectory::ConstructStackPath(items, index);
+  EXPECT_EQ(path, "stack://smb://somepath/movie/movie_part_1/file.mkv , "
+                  "smb://somepath/movie/movie_part_2/file.mkv");
+
+  index[0] = 1;
+  index[1] = 0;
+
+  path = CStackDirectory::ConstructStackPath(items, index);
+  EXPECT_EQ(path, "stack://smb://somepath/movie/movie_part_2/file.mkv , "
+                  "smb://somepath/movie/movie_part_1/file.mkv");
+
+  paths.clear();
+  paths.emplace_back("smb://somepath/movie/movie_part_1/file.mkv");
+  EXPECT_EQ(CStackDirectory::ConstructStackPath(paths, path), false);
+
+  paths.emplace_back("smb://somepath/movie/movie_part_2/file.mkv");
+  EXPECT_EQ(CStackDirectory::ConstructStackPath(paths, path), true);
+  EXPECT_EQ(path, "stack://smb://somepath/movie/movie_part_1/file.mkv , "
+                  "smb://somepath/movie/movie_part_2/file.mkv");
+
+  EXPECT_EQ(CStackDirectory::ConstructStackPath(paths, path,
+                                                "smb://somepath/movie/movie_part_3/file.mkv"),
+            true);
+  EXPECT_EQ(path, "stack://smb://somepath/movie/movie_part_1/file.mkv , "
+                  "smb://somepath/movie/movie_part_2/file.mkv , "
+                  "smb://somepath/movie/movie_part_3/file.mkv");
+
+  paths.clear();
+  paths.emplace_back("smb://somepath/movie/moviepart1/file.mkv");
+  EXPECT_EQ(CStackDirectory::ConstructStackPath(paths, path), false);
+
+  paths.emplace_back("smb://somepath/movie/moviepart2/file.mkv");
+  EXPECT_EQ(CStackDirectory::ConstructStackPath(paths, path), true);
+  EXPECT_EQ(path, "stack://smb://somepath/movie/moviepart1/file.mkv , "
+                  "smb://somepath/movie/moviepart2/file.mkv");
 }
 
 TEST_F(TestStacks, TestGetParentPath)
@@ -204,6 +274,16 @@ TEST_F(TestStacks, TestGetParentPath)
   parent = CStackDirectory::GetParentPath(path);
   EXPECT_EQ(parent, "smb://somepath/");
 
+  path = "stack://smb://somepath/movie/movie_part_1/file.mkv , "
+         "smb://somepath/movie/movie_part_2/file.mkv";
+  parent = CStackDirectory::GetParentPath(path);
+  EXPECT_EQ(parent, "smb://somepath/movie/");
+
+  path = "stack://smb://somepath/movie/moviepart1/file.mkv , "
+         "smb://somepath/movie/moviepart2/file.mkv";
+  parent = CStackDirectory::GetParentPath(path);
+  EXPECT_EQ(parent, "smb://somepath/movie/");
+
   path = "stack://smb://somepath/a/b/c/d/e/movie_part_1.mkv , "
          "smb://somepath/a/f/g/h/i/movie_part_2.mkv";
   parent = CStackDirectory::GetParentPath(path);
@@ -212,7 +292,7 @@ TEST_F(TestStacks, TestGetParentPath)
   path = "stack://smb://somepath/a/b/c/d/e/f/g/movie_part_1.mkv , "
          "smb://somepath/a/h/i/j/k/l/m/movie_part_2.mkv";
   parent = CStackDirectory::GetParentPath(path);
-  EXPECT_EQ(parent, "/");
+  EXPECT_EQ(parent, "/"); // Too many levels
 }
 
 struct TestStackData
@@ -237,6 +317,31 @@ constexpr TestStackData Stacks[] = {
          "stack://smb://somepath/movie_part_1/movie.iso , smb://somepath/movie_part_2/movie.iso",
      .basePath = "smb://somepath/movie/",
      .firstPath = "smb://somepath/movie_part_1/movie.iso"},
+    {.path = "stack://smb://somepath/movie (2000) part 1/movie.iso , smb://somepath/movie (2000) "
+             "part 2/movie.iso",
+     .basePath = "smb://somepath/movie (2000)/",
+     .firstPath = "smb://somepath/movie (2000) part 1/movie.iso"},
+    {.path = "stack://D:\\somepath\\movie (2000) part 1\\movie.iso , D:\\somepath\\movie (2000) "
+             "part 2\\movie.iso",
+     .basePath = "D:\\somepath\\movie (2000)\\",
+     .firstPath = "D:\\somepath\\movie (2000) part 1\\movie.iso"},
+    {.path = "stack://smb://somepath/movie - part 1/movie.iso , smb://somepath/movie - part "
+             "2/movie.iso",
+     .basePath = "smb://somepath/movie/",
+     .firstPath = "smb://somepath/movie - part 1/movie.iso"},
+    {.path = "stack://smb://somepath/movie (2000) - part 1/movie.iso , smb://somepath/movie (2000) "
+             "- part "
+             "2/movie.iso",
+     .basePath = "smb://somepath/movie (2000)/",
+     .firstPath = "smb://somepath/movie (2000) - part 1/movie.iso"},
+    {.path = "stack://smb://somepath/movie.(2000).part.1/movie.iso , smb://somepath/movie.(2000)."
+             "part.2/movie.iso",
+     .basePath = "smb://somepath/movie.(2000)/",
+     .firstPath = "smb://somepath/movie.(2000).part.1/movie.iso"},
+    {.path = "stack://smb://somepath/movie(2000)part1/movie.iso , smb://somepath/movie(2000)"
+             "part2/movie.iso",
+     .basePath = "smb://somepath/movie(2000)/",
+     .firstPath = "smb://somepath/movie(2000)part1/movie.iso"},
     {.path = "stack://smb://somepath/movie_part_1/BDMV/index.bdmv , "
              "smb://somepath/movie_part_2/VIDEO_TS/VIDEO_TS.IFO",
      .basePath = "smb://somepath/movie/",
@@ -250,8 +355,7 @@ constexpr TestStackData Stacks[] = {
      .basePath = "smb://somepath/movie/",
      .firstPath =
          "bluray://udf%3a%2f%2fsmb%253a%252f%252fsomepath%252fmovie_part_1%252fmovie.iso%2f/BDMV/"
-         "PLAYLIST/00800.mpls"},
-};
+         "PLAYLIST/00800.mpls"}};
 
 TEST_P(TestGetStackedTitlePath, GetStackedTitlePath)
 {

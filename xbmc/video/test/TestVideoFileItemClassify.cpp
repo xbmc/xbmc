@@ -135,7 +135,7 @@ TEST(TestVideoFileItemClassify, VideoExtensions)
   {
     if (!ext.empty())
     {
-      EXPECT_TRUE(VIDEO::IsVideo(CFileItem(ext, false)));
+      EXPECT_TRUE(VIDEO::IsVideo(CFileItem("test" + ext, false)));
     }
   }
 }
