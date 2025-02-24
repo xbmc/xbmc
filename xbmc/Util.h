@@ -62,17 +62,25 @@ public:
   static std::string GetTitleFromPath(const CURL& url, bool bIsFolder = false);
   static std::string GetTitleFromPath(const std::string& strFileNameAndPath, bool bIsFolder = false);
 
-  /*! \brief Return the disc number in case the last segment of given path ends with 'Disc n'.
-   Will look for 'Disc', 'Disk' and the locale specific spelling.
-   \return the disc number as string if found, empty string otherwise.
+  /*! \brief Return the part number in case the last segment of given path ends with
+   'Disc', 'Disk' and the locale specific spelling, as well as 'CD', and 'DVD'
+   \return the part number as string if found, empty string otherwise.
    */
-  static std::string GetDiscNumberFromPath(const std::string& path);
+  static std::string GetPartNumberFromPath(std::string path);
 
-  /*! \brief Remove last segment of the given path if it matches 'Disc n'.
-   Will look for 'Disc', 'Disk' and the locale specific spelling.
-   \return the given path with last segment removed if it matches 'Disc n', unchanged path otherwise.
+  enum class PreserveFileName : bool
+  {
+    REMOVE,
+    KEEP
+  };
+
+  /*! \brief Remove last segment of the given path if it matches with
+   'Disc', 'Disk' and the locale specific spelling, as well as 'CD', and 'DVD' along with any disc folders
+   (ie. BDMV or VIDEO_TS).
+   \return the given path with last segment removed if it matches, unchanged path otherwise.
    */
-  static std::string RemoveTrailingDiscNumberSegmentFromPath(std::string path);
+  static std::string RemoveTrailingPartNumberSegmentFromPath(std::string path,
+                                                             PreserveFileName preserveFileName);
 
   static void GetQualifiedFilename(const std::string &strBasePath, std::string &strFilename);
   static void RunShortcut(const char* szPath);
