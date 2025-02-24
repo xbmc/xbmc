@@ -529,31 +529,20 @@ std::string URIUtils::GetBasePath(const std::string& strPath)
 {
   std::string strCheck{strPath};
   if (IsStack(strPath))
-    strCheck = CStackDirectory::GetFirstStackedFile(strPath);
-
-  std::string strDirectory = GetDirectory(strCheck);
-
-  if (IsInRAR(strCheck))
-  {
-    std::string path{strDirectory};
-    GetParentPath(path, strDirectory);
-  }
+    return CStackDirectory::GetBasePath(strPath);
 
   if (IsBDFile(strCheck) || IsDVDFile(strCheck))
-    strDirectory = GetDiscBasePath(strCheck);
+    return GetDiscBasePath(strCheck);
 
 #ifdef HAVE_LIBBLURAY
   if (IsBlurayPath(strCheck))
-    strDirectory = CBlurayDirectory::GetBasePath(CURL(strCheck));
+    return CBlurayDirectory::GetBasePath(CURL(strCheck));
 #endif
 
-  if (IsStack(strPath))
-  {
-    strCheck = strDirectory;
-    RemoveSlashAtEnd(strCheck);
-    if (GetFileName(strCheck).size() == 3 && StringUtils::StartsWithNoCase(GetFileName(strCheck), "cd"))
-      strDirectory = GetDirectory(strCheck);
-  }
+  if (const CURL url(strPath); IsArchive(url))
+    strCheck = url.GetHostName();
+
+  std::string strDirectory = GetDirectory(strCheck);
 
   return strDirectory;
 }
