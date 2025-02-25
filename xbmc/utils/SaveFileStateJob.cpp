@@ -86,10 +86,6 @@ void CSaveFileState::DoWork(CFileItem& item,
       }
       else
       {
-        //! @todo check possible failure of BeginTransaction
-        //! todo catch and handle errors and commit/rollback the transaction appropriately
-        videodatabase.BeginTransaction();
-
         if (URIUtils::IsPlugin(progressTrackingFile) && !(item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iDbId >= 0))
         {
           // FileItem from plugin can lack information, make sure all needed fields are set
@@ -107,7 +103,6 @@ void CSaveFileState::DoWork(CFileItem& item,
         // No resume & watched status for livetv
         if (!item.IsLiveTV())
         {
-          //! @todo handle db failures to maintain data integrity
           if (updatePlayCount)
           {
             // no watched for not yet finished pvr recordings
@@ -117,7 +112,12 @@ void CSaveFileState::DoWork(CFileItem& item,
                         redactPath);
 
               // consider this item as played
+              videodatabase.BeginTransaction();
               const CDateTime newLastPlayed = videodatabase.IncrementPlayCount(item);
+              if (newLastPlayed.IsValid())
+                videodatabase.CommitTransaction();
+              else
+                videodatabase.RollbackTransaction();
 
               item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_WATCHED);
               updateListing = true;
@@ -143,7 +143,12 @@ void CSaveFileState::DoWork(CFileItem& item,
           }
           else
           {
+            videodatabase.BeginTransaction();
             const CDateTime newLastPlayed = videodatabase.UpdateLastPlayed(item);
+            if (newLastPlayed.IsValid())
+              videodatabase.CommitTransaction();
+            else
+              videodatabase.RollbackTransaction();
 
             if (item.HasVideoInfoTag() && newLastPlayed.IsValid())
               item.GetVideoInfoTag()->m_lastPlayed = newLastPlayed;
@@ -152,11 +157,19 @@ void CSaveFileState::DoWork(CFileItem& item,
           if (!item.HasVideoInfoTag() ||
               item.GetVideoInfoTag()->GetResumePoint().timeInSeconds != bookmark.timeInSeconds)
           {
+            videodatabase.BeginTransaction();
+            bool success{true};
             if (bookmark.timeInSeconds <= 0.0)
-              videodatabase.ClearBookMarksOfFile(progressTrackingFile, CBookmark::RESUME);
+              success = videodatabase.ClearBookMarksOfFile(progressTrackingFile, CBookmark::RESUME);
             else
-              videodatabase.AddBookMarkToFile(progressTrackingFile, bookmark, CBookmark::RESUME);
-            if (item.HasVideoInfoTag())
+              success = videodatabase.AddBookMarkToFile(progressTrackingFile, bookmark,
+                                                        CBookmark::RESUME);
+            if (success)
+              videodatabase.CommitTransaction();
+            else
+              videodatabase.RollbackTransaction();
+
+            if (item.HasVideoInfoTag() && success)
               item.GetVideoInfoTag()->SetResumePoint(bookmark);
 
             // UPnP announce resume point changes to clients
@@ -173,7 +186,6 @@ void CSaveFileState::DoWork(CFileItem& item,
             updateListing = true;
           }
         }
-        videodatabase.CommitTransaction();
 
         if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->HasStreamDetails() &&
             !item.IsLiveTV())
