@@ -93,7 +93,7 @@ private:
    * January 1, 1970 
    *
    * Our implementation will only set this on creation of the class
-   * We arent providing services to clients, so this should be ok.
+   * We aren't providing services to clients, so this should be ok.
    */
   long long wsd_instance_id;
 

@@ -41,7 +41,7 @@ public:
   void EjectDriveTray(const std::string& devicePath) override;
 
   /*! \brief Close the provided drive device
-  * \note Some drives support closing appart from opening/eject
+  * \note Some drives support closing apart from opening/eject
   * \param devicePath the path for the device drive (e.g. /dev/sr0)
   */
   void CloseDriveTray(const std::string& devicePath) override;
