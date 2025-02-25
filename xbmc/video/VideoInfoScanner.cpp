@@ -2449,7 +2449,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
   {
     int dbId = -1;
 
-    // get the library item which was added previously with the specified conent type
+    // get the library item which was added previously with the specified content type
     for (const auto& item : items)
     {
       if (content == CONTENT_MOVIES && !item->m_bIsFolder)

@@ -93,7 +93,7 @@ SortDescription GetSortDescription(const CGUIViewState& state, const CFileItemLi
       {
         if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iEpisode > 0)
         {
-          // first choice for folders containig episodes
+          // first choice for folders containing episodes
           sortDescription.sortOrder = SortOrderAscending;
           return sortDescription;
         }

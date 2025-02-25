@@ -247,7 +247,7 @@ bool CWinSystemIOS::GetScreenResolution(int* w, int* h, double* fps, int screenI
   }
 
   // for mainscreen use the eagl bounds from xbmcController
-  // because mainscreen is might be 90° rotate dependend on
+  // because mainscreen is might be 90° rotate dependent on
   // the device and eagl gives the correct values in all cases.
   if(screenIdx == 0)
   {

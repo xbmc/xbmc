@@ -53,7 +53,7 @@ struct DiscInfo
 /*! \brief Try to obtain the disc info (type, name, serial) of a given media path
     \param[in, out] info The disc info struct
     \param mediaPath The disc mediapath (e.g. /dev/cdrom, D\://, etc)
-    \return true if getting the disc info was successfull
+    \return true if getting the disc info was successful
 */
 bool GetDiscInfo(DiscInfo& info, const std::string& mediaPath);
 
