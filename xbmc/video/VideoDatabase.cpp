@@ -12234,34 +12234,41 @@ void CVideoDatabase::EraseAllForPath(const std::string& path)
   }
 }
 
-void CVideoDatabase::EraseAllForFile(const std::string& fileNameAndPath)
+bool CVideoDatabase::EraseAllForFile(const std::string& fileNameAndPath)
 {
+  if (!m_pDB || !m_pDS)
+    return false;
+
+  assert(m_pDB->in_transaction());
+
   try
   {
     const int fileId{GetFileId(fileNameAndPath)};
-    if (fileId != -1)
-    {
-      // Note: Associated bookmarks, streamdetails, ... are deleted by trigger delete_file.
-      std::string sql{PrepareSQL("DELETE FROM files WHERE idFile = %i", fileId)};
-      m_pDS->exec(sql);
+    if (fileId == -1)
+      return false;
 
-      std::string path;
-      std::string fileName;
-      SplitPath(fileNameAndPath, path, fileName);
-      const int pathId{GetPathId(path)};
-      if (pathId != -1)
-      {
-        sql = PrepareSQL("DELETE FROM path WHERE idPath = %i "
-                         "AND NOT EXISTS (SELECT 1 FROM files WHERE files.idPath = %i)",
-                         pathId, pathId);
-        m_pDS->exec(sql);
-      }
-    }
+    // Note: Associated bookmarks, streamdetails, ... are deleted by trigger delete_file.
+    std::string sql{PrepareSQL("DELETE FROM files WHERE idFile = %i", fileId)};
+    m_pDS->exec(sql);
+
+    std::string path;
+    std::string fileName;
+    SplitPath(fileNameAndPath, path, fileName);
+    const int pathId{GetPathId(path)};
+    if (pathId == -1)
+      return false;
+
+    sql = PrepareSQL("DELETE FROM path WHERE idPath = %i "
+                     "AND NOT EXISTS (SELECT 1 FROM files WHERE files.idPath = %i)",
+                     pathId, pathId);
+    m_pDS->exec(sql);
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
+    CLog::LogF(LOGERROR, "failed");
+    return false;
   }
+  return true;
 }
 
 std::string CVideoDatabase::GetVideoItemTitle(VideoDbContentType itemType, int dbId)
