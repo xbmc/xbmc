@@ -29,7 +29,6 @@ This page shows the window names, the window definition, the window ID and the s
 | SkinSettings            | WINDOW_SKIN_SETTINGS                 | 10035     | SkinSettings.xml                    |                                    |
 | AddonBrowser            | WINDOW_ADDON_BROWSER                 | 10040     | AddonBrowser.xml                    |                                    |
 | EventLog                | WINDOW_EVENT_LOG                     | 10050     | EventLog.xml                        |                                    |
-| FavouritesBrowser       | WINDOW_FAVOURITES                    | 10060     | MyFavourites.xml                    | **New window** FavouritesBrowser, replaces the old Favourites dialog. |
 | Pointer                 | WINDOW_DIALOG_POINTER                | 10099     | Pointer.xml                         |                                    |
 | YesNoDialog             | WINDOW_DIALOG_YES_NO                 | 10100     | DialogConfirm.xml                   |                                    |
 | ProgressDialog          | WINDOW_DIALOG_PROGRESS               | 10101     | DialogConfirm.xml                   |                                    |
@@ -68,7 +67,7 @@ This page shows the window names, the window definition, the window ID and the s
 | AddonInformation        | WINDOW_DIALOG_ADDON_INFO             | 10146     | DialogAddonInfo.xml                 |                                    |
 | TextViewer              | WINDOW_DIALOG_TEXT_VIEWER            | 10147     | DialogTextViewer.xml                |                                    |
 |                         | WINDOW_DIALOG_PLAY_EJECT             | 10148     | DialogConfirm.xml                   |                                    |
-| Peripherals             | WINDOW_DIALOG_PERIPHERALS            | 10149     | DialogSelect.xml                    | The "Peripherals" alias has been added for this window |
+| Peripherals             | WINDOW_DIALOG_PERIPHERALS            | 10149     | DialogSelect.xml                    | @skinning_v21 The "Peripherals" alias has been added for this window<p></p> |
 | PeripheralSettings      | WINDOW_DIALOG_PERIPHERAL_SETTINGS    | 10150     | DialogSettings.xml                  |                                    |
 | ExtendedProgressDialog  | WINDOW_DIALOG_EXT_PROGRESS           | 10151     | DialogExtendedProgressBar.xml       |                                    |
 | MediaFilter             | WINDOW_DIALOG_MEDIA_FILTER           | 10152     | DialogSettings.xml                  |                                    |
@@ -95,7 +94,6 @@ This page shows the window names, the window definition, the window ID and the s
 | PVRRadioRDSInfo         | WINDOW_DIALOG_PVR_RADIO_RDS_INFO     | 10610     | DialogPVRRadioRDSInfo.xml           |                                    |
 | PVRRecordingSettings    | WINDOW_DIALOG_PVR_RECORDING_SETTING  | 10611     | DialogSettings.xml                  |                                    |
 |                         | WINDOW_DIALOG_PVR_CLIENT_PRIORITIES  | 10612     | DialogSettings.xml                  |                                    |
-| PVRGuideControls        | WINDOW_DIALOG_PVR_GUIDE_CONTROLS     | 10613     | DialogPVRGuideControls.xml          |                                    |
 | TVChannels              | WINDOW_TV_CHANNELS                   | 10700     | MyPVRChannels.xml                   |                                    |
 | TVRecordings            | WINDOW_TV_RECORDINGS                 | 10701     | MyPVRRecordings.xml                 |                                    |
 | TVGuide                 | WINDOW_TV_GUIDE                      | 10702     | MyPVRGuide.xml                      |                                    |
@@ -114,18 +112,18 @@ This page shows the window names, the window definition, the window ID and the s
 | FullscreenRadioPreview  | WINDOW_FULLSCREEN_RADIO_PREVIEW      | 10803     | None (shortcut to fullscreenradio)  |                                    |
 | FullscreenLivetvInput   | WINDOW_FULLSCREEN_LIVETV_INPUT       | 10804     | None (shortcut to fullscreenlivetv) |                                    |
 | FullscreenRadioInput    | WINDOW_FULLSCREEN_RADIO_INPUT        | 10805     | None (shortcut to fullscreenradio)  |                                    |
-| GameControllers         | WINDOW_DIALOG_GAME_CONTROLLERS       | 10820     | DialogGameControllers.xml           | **New window** |
-| Games                   | WINDOW_GAMES                         | 10821     | MyGames.xml                         | **New window** |
-| GameOSD                 | WINDOW_DIALOG_GAME_OSD               | 10822     | GameOSD.xml                         | **New window** |
-| GameVideoFilter         | WINDOW_DIALOG_GAME_VIDEO_FILTER      | 10823     | DialogSelect.xml                    | **New window** |
-| GameStretchMode         | WINDOW_DIALOG_GAME_STRETCH_MODE      | 10824     | DialogSelect.xml                    | **New window** |
-| GameVolume              | WINDOW_DIALOG_GAME_VOLUME            | 10825     | DialogSlider.xml                    | **New window** See https://github.com/xbmc/xbmc/pull/12765 |
-| GameAdvancedSettings    | WINDOW_DIALOG_GAME_ADVANCED_SETTINGS | 10826     | DialogAddonSettings.xml             | **New window** |
-| GameVideoRotation       | WINDOW_DIALOG_GAME_VIDEO_ROTATION    | 10827     | DialogSelect.xml                    | **New window** |
-| GamePorts               | WINDOW_DIALOG_GAME_PORTS             | 10828     | DialogGameControllers.xml           | **New window** See https://github.com/xbmc/xbmc/pull/20505 |
-| InGameSaves             | WINDOW_DIALOG_IN_GAME_SAVES          | 10829     | DialogSelect.xml                    | **New window** Part of the GSoC 2020 Saved Game Manager |
-| GameSaves               | WINDOW_DIALOG_GAME_SAVES             | 10830     | DialogSelect.xml                    | **New window** Part of the GSoC 2020 Saved Game Manager |
-| GameAgents              | WINDOW_DIALOG_GAME_AGENTS            | 10831     | DialogGameControllers.xml           | **New window** See https://github.com/xbmc/xbmc/pull/23548 |
+| GameControllers         | WINDOW_DIALOG_GAME_CONTROLLERS       | 10820     | DialogGameControllers.xml           | @skinning_v17 **New window**<p></p> |
+| Games                   | WINDOW_GAMES                         | 10821     | MyGames.xml                         | @skinning_v18 **New window**<p></p> |
+| GameOSD                 | WINDOW_DIALOG_GAME_OSD               | 10822     | GameOSD.xml                         | @skinning_v18 **New window**<p></p> |
+| GameVideoFilter         | WINDOW_DIALOG_GAME_VIDEO_FILTER      | 10823     | DialogSelect.xml                    | @skinning_v18 **New window**<p></p> |
+| GameStretchMode         | WINDOW_DIALOG_GAME_STRETCH_MODE      | 10824     | DialogSelect.xml                    | @skinning_v18 **New window**<p></p> |
+| GameVolume              | WINDOW_DIALOG_GAME_VOLUME            | 10825     | DialogSlider.xml                    | @skinning_v18 **New window** See https://github.com/xbmc/xbmc/pull/12765<p></p> |
+| GameAdvancedSettings    | WINDOW_DIALOG_GAME_ADVANCED_SETTINGS | 10826     | DialogAddonSettings.xml             | @skinning_v18 **New window**<p></p> |
+| GameVideoRotation       | WINDOW_DIALOG_GAME_VIDEO_ROTATION    | 10827     | DialogSelect.xml                    | @skinning_v18 **New window**<p></p> |
+| GamePorts               | WINDOW_DIALOG_GAME_PORTS             | 10828     | DialogGameControllers.xml           | @skinning_v20 **New window** See https://github.com/xbmc/xbmc/pull/20505<p></p> |
+| InGameSaves             | WINDOW_DIALOG_IN_GAME_SAVES          | 10829     | DialogSelect.xml                    | @skinning_v20 **New window** Part of the GSoC 2020 Saved Game Manager<p></p> |
+| GameSaves               | WINDOW_DIALOG_GAME_SAVES             | 10830     | DialogSelect.xml                    | @skinning_v20 **New window** Part of the GSoC 2020 Saved Game Manager<p></p> |
+| GameAgents              | WINDOW_DIALOG_GAME_AGENTS            | 10831     | DialogGameControllers.xml           | @skinning_v21 **New window** See https://github.com/xbmc/xbmc/pull/23548<p></p> |
 | Custom Skin Windows     | -                                    | -         | custom*.xml                         |                                    |
 | SelectDialog            | WINDOW_DIALOG_SELECT                 | 12000     | DialogSelect.xml                    |                                    |
 | MusicInformation        | WINDOW_DIALOG_MUSIC_INFO             | 12001     | DialogMusicInfo.xml                 |                                    |
@@ -135,13 +133,13 @@ This page shows the window names, the window definition, the window ID and the s
 | Visualisation           | WINDOW_VISUALISATION                 | 12006     | MusicVisualisation.xml              |                                    |
 | Slideshow               | WINDOW_SLIDESHOW                     | 12007     | SlideShow.xml                       |                                    |
 | DialogColorPicker       | WINDOW_DIALOG_COLOR_PICKER           | 12008     | DialogColorPicker.xml               |                                    |
-| SelectVideoVersion      | WINDOW_DIALOG_SELECT_VIDEO_VERSION   | 12015     | DialogSelect.xml                    | **New window** SelectVideoVersion |
-| SelectVideoExtra        | WINDOW_DIALOG_SELECT_VIDEO_EXTRA     | 12016     | DialogSelect.xml                    | **New window** SelectVideoExtra |
-| ManageVideoVersions     | WINDOW_DIALOG_MANAGE_VIDEO_VERSIONS  | 12004     | DialogVideoManager.xml              | **New window** ManageVideoVersions |
-| ManageVideoExtras       | WINDOW_DIALOG_MANAGE_VIDEO_EXTRAS    | 12017     | DialogVideoManager.xml              | **New window** ManageVideoExtras |
-| DialogSelectVideo       | WINDOW_DIALOG_SELECT_VIDEO_STREAM    | 12300     | DialogSelect.xml                    | **New window** DialogSelectVideo |
-| DialogSelectAudio       | WINDOW_DIALOG_SELECT_AUDIO_STREAM    | 12301     | DialogSelect.xml                    | **New window** DialogSelectAudio |
-| DialogSelectSubtitle    | WINDOW_DIALOG_SELECT_SUBTITLE_STREAM | 12302     | DialogSelect.xml                    | **New window** DialogSelectSubtitle |
+| SelectVideoVersion      | WINDOW_DIALOG_SELECT_VIDEO_VERSION   | 12015     | DialogSelect.xml                    | @skinning_v21 **New window** SelectVideoVersion |
+| SelectVideoExtra        | WINDOW_DIALOG_SELECT_VIDEO_EXTRA     | 12016     | DialogSelect.xml                    | @skinning_v21 **New window** SelectVideoExtra |
+| ManageVideoVersions     | WINDOW_DIALOG_MANAGE_VIDEO_VERSIONS  | 12004     | DialogVideoManager.xml              | @skinning_v21 **New window** ManageVideoVersions |
+| ManageVideoExtras       | WINDOW_DIALOG_MANAGE_VIDEO_EXTRAS    | 12017     | DialogVideoManager.xml              | @skinning_v21 **New window** ManageVideoExtras |
+| DialogSelectVideo       | WINDOW_DIALOG_SELECT_VIDEO_STREAM    | 12300     | DialogSelect.xml                    | @skinning_v22 **New window** DialogSelectVideo |
+| DialogSelectAudio       | WINDOW_DIALOG_SELECT_AUDIO_STREAM    | 12301     | DialogSelect.xml                    | @skinning_v22 **New window** DialogSelectAudio |
+| DialogSelectSubtitle    | WINDOW_DIALOG_SELECT_SUBTITLE_STREAM | 12302     | DialogSelect.xml                    | @skinning_v22 **New window** DialogSelectSubtitle |
 | Weather                 | WINDOW_WEATHER                       | 12600     | MyWeather.xml                       |                                    |
 | Screensaver             | WINDOW_SCREENSAVER                   | 12900     | none                                |                                    |
 | VideoOSD                | WINDOW_DIALOG_VIDEO_OSD              | 12901     | VideoOSD.xml                        |                                    |
@@ -151,11 +149,12 @@ This page shows the window names, the window definition, the window ID and the s
 | Splash                  | WINDOW_SPLASH                        | 12997     | none                                |                                    |
 | StartWindow             | WINDOW_START                         | 12998     | shortcut to the current startwindow |                                    |
 | Startup                 | WINDOW_STARTUP_ANIM                  | 12999     | Startup.xml                         |                                    |
+| FavouritesBrowser       | WINDOW_FAVOURITES                    | 10060     | MyFavourites.xml                    | @skinning_v20 **New window** FavouritesBrowser, replaces the old Favourites dialog.<p></p> |
 
 \section window_ids_rm Additional revision history
 
 \subsection modules_rm_windowids_v21 Kodi v21 (Omega)
-**[Removed Windows]** The following windows have been removed:
+@skinning_v21 **[Removed Windows]** The following windows have been removed:
 - **Favourites** - Window Favourites (DialogFavourites.xml with id 10134) has been removed. Please use **FavouritesBrowser** instead.
 
 */
