@@ -124,6 +124,7 @@ CCPUInfoWin32::CCPUInfoWin32()
   else
     m_cpuQueryLoad = nullptr;
 
+#ifndef _M_ARM64
   int CPUInfo[4] = {}; // receives EAX, EBX, ECD and EDX in that order
 
   __cpuid(CPUInfo, 0);
@@ -166,6 +167,7 @@ CCPUInfoWin32::CCPUInfoWin32()
   // Set MMX2 when SSE is present as SSE is a superset of MMX2 and Intel doesn't set the MMX2 cap
   if (m_cpuFeatures & CPU_FEATURE_SSE)
     m_cpuFeatures |= CPU_FEATURE_MMX2;
+#endif
 }
 
 CCPUInfoWin32::~CCPUInfoWin32()
