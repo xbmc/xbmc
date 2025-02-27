@@ -591,8 +591,8 @@ bool CPVRTimers::UpdateEntries(int iMaxNotificationDelay)
 
           if (timer->EndAsUTC() >= now)
           {
-            // disable timer until timer's end time is due
-            if (!timer->IsDisabled())
+            // Disable reminder after pre-padding time has passed to skip further announcements.
+            if (timer->IsReminder() && !timer->IsDisabled() && timer->StartAsUTC() <= now)
             {
               timer->SetState(PVR_TIMER_STATE_DISABLED);
               bChanged = true;
