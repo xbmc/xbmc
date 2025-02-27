@@ -222,7 +222,7 @@ void CAlbum::MergeScrapedAlbum(const CAlbum& source, bool override /* = true */)
    appropriate when the music files are tagged with mbids, these are taken as definative, scraped
    mbids can not be depended on in this way.
 
-   When the album is megerd in this deep way it is flagged so that the database album update is aware
+   When the album is merged in this deep way it is flagged so that the database album update is aware
    artist credits and songs need to be updated too.
   */
 

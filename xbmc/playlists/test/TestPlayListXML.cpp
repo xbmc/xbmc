@@ -34,7 +34,7 @@ TEST(TestPlayListXML, LoadData)
   // Test no name and no lang
   EXPECT_STREQ(playlist[1]->GetLabel().c_str(), "mms://video.rfn.ru/vesti_24");
 
-  // Test nane and no lang
+  // Test name and no lang
   EXPECT_STREQ(playlist[2]->GetLabel().c_str(), "Test Name");
 
   /*

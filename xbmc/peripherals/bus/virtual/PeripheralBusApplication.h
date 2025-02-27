@@ -34,7 +34,7 @@ protected:
   // implementation of CPeripheralBus
   bool PerformDeviceScan(PeripheralScanResults& results) override;
 
-  // Internal helper fuction
+  // Internal helper function
   static std::string MakeLocation(PeripheralType peripheralType);
 };
 } // namespace PERIPHERALS
