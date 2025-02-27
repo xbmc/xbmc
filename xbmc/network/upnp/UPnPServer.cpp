@@ -362,7 +362,7 @@ PLT_MediaObject* CUPnPServer::Build(const std::shared_ptr<CFileItem>& item,
           }
         }
 
-        // all items appart from songs (artists, albums, etc) are folders
+        // all items apart from songs (artists, albums, etc) are folders
         if (!item->HasMusicInfoTag() || item->GetMusicInfoTag()->GetType() != MediaTypeSong)
         {
           item->m_bIsFolder = true;

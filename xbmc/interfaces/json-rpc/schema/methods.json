@@ -612,7 +612,7 @@
           {
             "type": "number",
             "description":
-                "The value should be a multiple of 0.025 in a range of +/-10 (the default range can be overriden by advancedsettings.xml).",
+                "The value should be a multiple of 0.025 in a range of +/-10 (the default range can be overridden by advancedsettings.xml).",
             "required": true
           },
           {

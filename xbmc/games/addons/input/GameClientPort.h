@@ -79,7 +79,7 @@ public:
   /*!
    * \brief Get the ID of the port
    *
-   * The ID is used when creating a toplogical address for the port.
+   * The ID is used when creating a topological address for the port.
    */
   const std::string& ID() const { return m_portId; }
 

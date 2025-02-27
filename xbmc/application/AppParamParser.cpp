@@ -70,7 +70,7 @@ void CAppParamParser::Parse(const char* const* argv, int nArgs)
       m_params->SetTestMode(false);
   }
 
-  // Record raw paramerters
+  // Record raw parameters
   m_params->SetRawArgs(std::move(args));
 }
 

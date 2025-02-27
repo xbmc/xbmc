@@ -168,7 +168,7 @@ int CMusicInfoTag::GetYear() const
 std::string CMusicInfoTag::GetYearString() const
 {
   /* Get year as YYYY from release or original dates depending on setting
-     This is how GUI and by year sorting swiches to using original year.
+     This is how GUI and by year sorting switches to using original year.
      For ripper and non-library items (library entries have both values):
      when release date missing try to fallback to original date
      when original date missing use release date

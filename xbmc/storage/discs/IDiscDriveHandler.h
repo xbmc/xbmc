@@ -16,7 +16,7 @@ enum class DriveState
 {
   /*! The drive is open */
   OPEN,
-  /*! The drive is not ready (happens when openning or closing) */
+  /*! The drive is not ready (happens when opening or closing) */
   NOT_READY,
   /*! The drive is ready */
   READY,
@@ -66,7 +66,7 @@ public:
   virtual void EjectDriveTray(const std::string& devicePath) = 0;
 
   /*! \brief Close the provided drive device
-  * \note Some drives support closing appart from opening/eject
+  * \note Some drives support closing apart from opening/eject
   * \param devicePath the path for the device drive (e.g. /dev/sr0)
   */
   virtual void CloseDriveTray(const std::string& devicePath) = 0;

@@ -1034,7 +1034,7 @@ bool CFileItemList::Save(int windowID)
   if (file.OpenForWrite(cachefile, true)) // overwrite always
   {
     // Before caching save simplified cache file name in every item so the cache file can be
-    // identifed and removed if the item is updated. List path and options (used for file
+    // identified and removed if the item is updated. List path and options (used for file
     // name when list cached) can not be accurately derived from item path.
     StringUtils::Replace(cachefile, "special://temp/archive_cache/", "");
     StringUtils::Replace(cachefile, ".fi", "");

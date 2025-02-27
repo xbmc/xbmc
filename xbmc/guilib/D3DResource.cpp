@@ -385,7 +385,7 @@ void CD3DTexture::SaveTexture()
     ComPtr<ID3D11Texture2D> texture = nullptr;
     if (textureDesc.Usage != D3D11_USAGE_STAGING || 0 == (textureDesc.CPUAccessFlags & D3D11_CPU_ACCESS_READ))
     {
-      // create texture which can be readed by CPU - D3D11_USAGE_STAGING
+      // create texture which can be read by CPU - D3D11_USAGE_STAGING
       CD3D11_TEXTURE2D_DESC stagingDesc(textureDesc);
       stagingDesc.Usage = D3D11_USAGE_STAGING;
       stagingDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;

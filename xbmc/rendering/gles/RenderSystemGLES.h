@@ -69,7 +69,7 @@ private:
        "multi with color/alpha texture and blend color"},
       {ShaderMethodGLES::SM_MULTI_111R_111R_BLENDCOLOR,
        "multi with alpha/alpha texture and blend color"},
-      {ShaderMethodGLES::SM_TEXTURE_RGBA, "texure rgba"},
+      {ShaderMethodGLES::SM_TEXTURE_RGBA, "texture rgba"},
       {ShaderMethodGLES::SM_TEXTURE_RGBA_OES, "texture rgba OES"},
       {ShaderMethodGLES::SM_TEXTURE_RGBA_BLENDCOLOR, "texture rgba blend colour"},
       {ShaderMethodGLES::SM_TEXTURE_RGBA_BOB, "texture rgba bob"},

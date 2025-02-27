@@ -800,7 +800,7 @@ const infomap integer_bools[] =  {{ "isequal",          INTEGER_IS_EQUAL },
 ///                  _string_,
 ///     @return The editlist of the currently playing item as csv in the format start1\,end1\,start2\,end2\,...
 ///     Tokens must have values in the range from 0.0 to 100.0. end token must be less or equal than start token.
-///     @note This infolabel does not contain EDL cuts. Edits start and end times are ajusted according to cuts
+///     @note This infolabel does not contain EDL cuts. Edits start and end times are adjusted according to cuts
 ///     defined for the media item.
 ///     <p><hr>
 ///     @skinning_v20 **[New Infolabel]** \link Player_Editlist `Player.Editlist`\endlink
@@ -2897,7 +2897,7 @@ const infomap musicpartymode[] = {{ "enabled",           MUSICPM_ENABLED },
 ///   \table_row3{   <b>`MusicPlayer.MediaProviders`</b>,
 ///                  \anchor MusicPlayer_MediaProviders
 ///                  _string_,
-///     @return string containing the names of the providers of the currently playing media\, separated by commas if muliple are present.
+///     @return string containing the names of the providers of the currently playing media\, separated by commas if multiple are present.
 ///     <p><hr>
 ///     @skinning_v22 **[New Infolabel]** \link MusicPlayer_MediaProviders `MusicPlayer.MediaProviders`\endlink
 ///     <p>
@@ -4084,7 +4084,7 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///   \table_row3{   <b>`VideoPlayer.MediaProviders`</b>,
 ///                  \anchor VideoPlayer_MediaProviders
 ///                  _string_,
-///     @return string containing the names of the providers of the currently playing media\, separated by commas if muliple are present.
+///     @return string containing the names of the providers of the currently playing media\, separated by commas if multiple are present.
 ///     <p><hr>
 ///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_MediaProviders `VideoPlayer.MediaProviders`\endlink
 ///     <p>
@@ -7256,7 +7256,7 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///   \table_row3{   <b>`ListItem.MediaProviders`</b>,
 ///                  \anchor ListItem_MediaProviders
 ///                  _string_,
-///     @return string containing the names of the media providers of the item\, separated by commas if muliple are present.
+///     @return string containing the names of the media providers of the item\, separated by commas if multiple are present.
 ///     <p><hr>
 ///     @skinning_v22 **[New Infolabel]** \link ListItem_MediaProviders `ListItem.MediaProviders`\endlink
 ///     <p>

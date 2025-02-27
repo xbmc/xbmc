@@ -48,7 +48,7 @@ The game-specific tags added in v21 are:
 | controllerdiffuse  | A diffuse color used to highlight the controller when activity is detected on the in-game port or on the underlying peripheral held by the user.
 | controlleraddress  | The in-game "address" of the controller, e.g. <b>`/1/game.controller.snes`</b> for a SNES controller connected to console port 1. Used to highlight the controller on port activity. Overrides <b>`<controllerid>`</b> and <b>`<portaddress>`</b>.
 | portaddress        | The in-game "address" of the port the controller is connected to, e.g. <b>`/1`</b> for port 1 of a SNES emulator. Used to highlight the controller on port activity.
-| peripherallocation | The location of the underlying peripheral providing input, e.g. <b>`/joystick/0`</b> for the first physical controller held by the user. Used to hightlight the controller on peripheral activity.
+| peripherallocation | The location of the underlying peripheral providing input, e.g. <b>`/joystick/0`</b> for the first physical controller held by the user. Used to highlight the controller on peripheral activity.
 
 @skinning_v21 The control has been greatly expanded to allow for more use cases in the new Player Viewer (<b>`GameAgents`</b>) dialog.
 
@@ -82,7 +82,7 @@ keyboards have the location <b>`peripherals://application/keyboard.dev`</b>.
 --------------------------------------------------------------------------------
 \section Game_Controller_sect5 List item info
 
-List item info can be used for all tag values. For example, if the control defintion looks like:
+List item info can be used for all tag values. For example, if the control definition looks like:
 
 ~~~~~~~~~~~~~
 <itemlayout width="96" height="96">
