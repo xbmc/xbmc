@@ -1934,6 +1934,14 @@ bool CAMLCodec::OpenDecoder()
   m_decoder_minimum_stream_buffer = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoDecoderMinimumStreamBuffer;
   m_buffer_level_ready = false;
 
+  CLog::Log(LOGINFO, "CAMLCodec::OpenDecoder - Decoder settings: timeout: [{:d}s], bypass buffer ready: [{:d}], buffer: [{:.1f}%], stream buffer: [{:.1f}%], minimum buffer: [{:.1f}%], minimum stream buffer: [{:.1f}%]",
+    m_decoder_timeout,
+    m_decoder_bypass_buffer_ready,
+    m_decoder_buffer,
+    m_decoder_stream_buffer,
+    m_decoder_minimum_buffer,
+    m_decoder_minimum_stream_buffer);
+
   if (!OpenAmlVideo(hints))
   {
     CLog::Log(LOGERROR, "CAMLCodec::OpenDecoder - cannot open amlvideo device");
