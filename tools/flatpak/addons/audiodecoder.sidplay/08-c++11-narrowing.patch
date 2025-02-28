@@ -1,0 +1,11 @@
+--- a/libsidplay/src/xsid/xsid.cpp
++++ b/libsidplay/src/xsid/xsid.cpp
+@@ -96,7 +96,7 @@
+ */
+ const int8_t XSID::sampleConvertTable[16] =
+ {
+-    '\x80', '\x94', '\xa9', '\xbc', '\xce', '\xe1', '\xf2', '\x03',
++    static_cast<int8_t>('\x80'), static_cast<int8_t>('\x94'), static_cast<int8_t>('\xa9'), static_cast<int8_t>('\xbc'), static_cast<int8_t>('\xce'), static_cast<int8_t>('\xe1'), static_cast<int8_t>('\xf2'), '\x03',
+     '\x1b', '\x2a', '\x3b', '\x49', '\x58', '\x66', '\x73', '\x7f'
+ };
+ 
