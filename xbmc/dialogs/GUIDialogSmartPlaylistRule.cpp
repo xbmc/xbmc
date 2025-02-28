@@ -44,6 +44,7 @@ CGUIDialogSmartPlaylistRule::CGUIDialogSmartPlaylistRule(void)
 {
   m_cancelled = false;
   m_loadType = KEEP_IN_MEMORY;
+  m_editControl = nullptr;
 }
 
 CGUIDialogSmartPlaylistRule::~CGUIDialogSmartPlaylistRule() = default;
@@ -479,7 +480,11 @@ void CGUIDialogSmartPlaylistRule::OnField()
     m_rule.m_operator = (CDatabaseQueryRule::SEARCH_OPERATOR)std::get<1>(validOperators[0]);
 
   m_rule.SetParameter("");
+
   UpdateButtons();
+
+  if (m_editControl)
+    m_editControl->ValidateInput();
 }
 
 void CGUIDialogSmartPlaylistRule::OnOperator()
@@ -499,6 +504,9 @@ void CGUIDialogSmartPlaylistRule::OnOperator()
 
   m_rule.m_operator = (CDatabaseQueryRule::SEARCH_OPERATOR)std::get<1>(labels[newSelected]);
   UpdateButtons();
+
+  if (m_editControl)
+    m_editControl->ValidateInput();
 }
 
 void CGUIDialogSmartPlaylistRule::UpdateButtons()
@@ -550,14 +558,16 @@ void CGUIDialogSmartPlaylistRule::OnInitWindow()
 
   UpdateButtons();
 
-  CGUIEditControl *editControl = dynamic_cast<CGUIEditControl*>(GetControl(CONTROL_VALUE));
-  if (editControl != NULL)
-    editControl->SetInputValidation(PLAYLIST::CSmartPlaylistRule::Validate, &m_rule);
+  m_editControl = dynamic_cast<CGUIEditControl*>(GetControl(CONTROL_VALUE));
+  if (m_editControl)
+    m_editControl->SetInputValidation(PLAYLIST::CSmartPlaylistRule::Validate, &m_rule);
 }
 
 void CGUIDialogSmartPlaylistRule::OnDeinitWindow(int nextWindowID)
 {
   CGUIDialog::OnDeinitWindow(nextWindowID);
+
+  m_editControl = nullptr;
 
   // reset field spincontrolex
   SendMessage(GUI_MSG_LABEL_RESET, CONTROL_FIELD);
