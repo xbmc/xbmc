@@ -114,9 +114,9 @@ protected:
   bool              IsSlice(uint8_t unit_type);
   bool              BitstreamConvertInitAVC(void *in_extradata, int in_extrasize);
   bool              BitstreamConvertInitHEVC(void *in_extradata, int in_extrasize);
-  bool              BitstreamConvert(uint8_t* pData, int iSize, uint8_t **poutbuf, int *poutbuf_size);
+  bool              BitstreamConvert(uint8_t* pData, int iSize, uint8_t **poutbuf, uint32_t *poutbuf_size);
   static void BitstreamAllocAndCopy(uint8_t** poutbuf,
-                                    int* poutbuf_size,
+                                    uint32_t* poutbuf_size,
                                     const uint8_t* sps_pps,
                                     uint32_t sps_pps_size,
                                     const uint8_t* in,
