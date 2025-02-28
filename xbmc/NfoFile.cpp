@@ -76,6 +76,16 @@ CInfoScanner::InfoType CNfoFile::Create(const std::string& strPath,
           bNfo = GetDetails(details);
       }
     }
+    else if (episode > -1 && bNfo && m_type == AddonType::SCRAPER_MOVIES)
+    {
+      for (int i = 0; i <= episode; ++i)
+      {
+        m_headPos = m_doc.find("<movie", m_headPos + 1);
+        if (m_headPos == std::string::npos)
+          break;
+      }
+      bNfo = GetDetails(details);
+    }
   }
 
   std::vector<ScraperPtr> vecScrapers = GetScrapers(m_type, m_info);
