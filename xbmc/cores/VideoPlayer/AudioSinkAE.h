@@ -73,6 +73,7 @@ protected:
   unsigned int m_syncErrorTime;
   double m_resampleRatio = 0.0; // invalid
   CCriticalSection m_critSection;
+  unsigned int m_addPacketUnlockTime;
 
   AEDataFormat m_dataFormat;
   unsigned int m_sampleRate;
