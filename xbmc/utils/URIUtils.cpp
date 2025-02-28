@@ -506,6 +506,54 @@ std::string URIUtils::GetBlurayFile(const std::string& path)
   return std::string{};
 }
 
+int URIUtils::GetBlurayPlaylistFromPath(const std::string& path)
+{
+  int playlist{-1};
+  if (IsBlurayPath(path))
+  {
+    CRegExp regex{true, CRegExp::autoUtf8, R"(\/(\d+).mpls$)"};
+    if (regex.RegFind(path) != -1)
+      playlist = std::stoi(regex.GetMatch(1));
+  }
+  return playlist;
+}
+
+std::string URIUtils::GetBlurayPlaylistPath(const std::string& path, int playlist /* = -1 */)
+{
+  return AddFileToFolder(GetBlurayPath(path), "BDMV", "PLAYLIST",
+                         playlist != -1 ? StringUtils::Format("{:05}.mpls", playlist) : "");
+}
+
+std::string URIUtils::GetBlurayPath(const std::string& path)
+{
+  if (IsBlurayPath(path))
+  {
+    // Already bluray:// path
+    CURL url(path);
+    url.SetFileName("");
+    return url.Get();
+  }
+
+  std::string newPath{};
+  if (IsDiscImage(path))
+  {
+    CURL url("udf://");
+    url.SetHostName(path);
+    newPath = url.Get();
+  }
+  else if (IsBDFile(path))
+    newPath = GetDiscBasePath(path);
+
+  if (!newPath.empty())
+  {
+    CURL url("bluray://");
+    url.SetHostName(newPath);
+    newPath = url.Get();
+  }
+
+  return newPath;
+}
+
 std::string URLEncodePath(const std::string& strPath)
 {
   std::vector<std::string> segments = StringUtils::Split(strPath, "/");
@@ -1237,6 +1285,15 @@ bool URIUtils::IsVideoDb(const std::string& strFile)
 bool URIUtils::IsBlurayPath(const std::string& strFile)
 {
   return IsProtocol(strFile, "bluray");
+}
+
+bool URIUtils::IsBDFile(const std::string& file)
+{
+  const std::vector<std::string> files = {"index.bdmv", "INDEX.BDM", "MovieObject.bdmv",
+                                          "MOVIEOBJ.BDM"};
+  const std::string filename{GetFileName(file)};
+  return std::ranges::any_of(files, [filename](const std::string& f)
+                             { return StringUtils::EqualsNoCase(f, filename); });
 }
 
 bool URIUtils::IsAndroidApp(const std::string &path)
