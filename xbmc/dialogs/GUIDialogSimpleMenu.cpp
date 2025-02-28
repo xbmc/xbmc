@@ -52,107 +52,103 @@ protected:
 };
 }
 
-bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item, bool forceSelection /* = false */)
+bool CGUIDialogSimpleMenu::ShowPlaySelection(
+    CFileItem& item,
+    bool forceSelection /* = false */,
+    const std::vector<int>* excludePlaylists /* = nullptr */)
 {
-  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_DISC_PLAYBACK) != BD_PLAYBACK_SIMPLE_MENU)
+  if (!forceSelection && CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+                             CSettings::SETTING_DISC_PLAYBACK) != BD_PLAYBACK_SIMPLE_MENU)
     return true;
 
-  if (forceSelection && URIUtils::IsBlurayPath(item.GetDynPath()))
-  {
-    item.SetProperty("save_dyn_path", item.GetDynPath()); // save for screen refresh later
-    item.SetDynPath(URIUtils::GetBlurayFile(item.GetDynPath()));
-  }
+  const std::string originalDynPath{
+      item.GetDynPath()}; // Overwritten by dialog selection. Needed for screen refresh.
 
-  if (VIDEO::IsBDFile(item))
+  std::string directory{URIUtils::GetBlurayRootPath(originalDynPath)};
+  if (directory.empty())
+    return true;
+
+  // Show simple menu selection if bluray
+  if (URIUtils::IsBlurayPath(directory))
   {
-    std::string root = URIUtils::GetParentPath(item.GetDynPath());
-    URIUtils::RemoveSlashAtEnd(root);
-    if (URIUtils::GetFileName(root) == "BDMV")
+    // Get titles
+    CFileItemList items;
+    while (items.Size() <= 2)
     {
-      CURL url("bluray://");
-      url.SetHostName(URIUtils::GetParentPath(root));
-      url.SetFileName("root");
-      return ShowPlaySelection(item, url.Get());
+      if (!GetItems(items, directory, excludePlaylists))
+        return true;
+
+      if (items.Size() ==
+          2) // Only main menu and all titles (others have been removed as already used)
+        directory = URIUtils::GetBlurayTitlesPath(originalDynPath);
+    }
+
+    CGUIDialogSelect* dialog =
+        CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
+            WINDOW_DIALOG_SELECT);
+    while (true)
+    {
+      dialog->Reset();
+      dialog->SetHeading(CVariant{25006}); // Select playback item
+      dialog->SetItems(items);
+      dialog->SetUseDetails(true);
+      dialog->Open();
+
+      const std::shared_ptr<CFileItem> item_new = dialog->GetSelectedFileItem();
+      if (!item_new || dialog->GetSelectedItem() < 0)
+      {
+        CLog::LogF(LOGDEBUG, "User aborted {}", directory);
+        break;
+      }
+
+      if (item_new->m_bIsFolder == false)
+      {
+        item.SetDynPath(item_new->GetDynPath());
+        item.GetVideoInfoTag()->m_streamDetails =
+            item_new->GetVideoInfoTag()
+                ->m_streamDetails; // Basic stream details from BLURAY_TITLE INFO
+        item.SetProperty("get_stream_details_from_player", true); // Overwrite when played
+        item.SetProperty("original_listitem_url", originalDynPath);
+        return true;
+      }
+
+      if (!GetItems(items, item_new->GetDynPath(),
+                    excludePlaylists)) // Get selected (usually all) titles
+        return true;
     }
   }
-
-  if (item.IsDiscImage())
-  {
-    CURL url2("udf://");
-    url2.SetHostName(item.GetDynPath());
-    url2.SetFileName("BDMV/index.bdmv");
-    if (CFileUtils::Exists(url2.Get()))
-    {
-      url2.SetFileName("");
-
-      CURL url("bluray://");
-      url.SetHostName(url2.Get());
-      url.SetFileName("root");
-      return ShowPlaySelection(item, url.Get());
-    }
-  }
-  return true;
+  return false;
 }
 
-bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item, const std::string& directory)
+bool CGUIDialogSimpleMenu::GetItems(CFileItemList& items,
+                                    const std::string& directory,
+                                    const std::vector<int>* excludePlaylists)
 {
-
-  CFileItemList items;
+  items.Clear();
 
   if (!GetDirectoryItems(directory, items, XFILE::CDirectory::CHints()))
   {
-    CLog::Log(LOGERROR,
-              "CGUIWindowVideoBase::ShowPlaySelection - Failed to get play directory for {}",
-              directory);
-    return true;
+    CLog::LogF(LOGERROR, "Failed to get play directory for {}", directory);
+    return false;
   }
 
   if (items.IsEmpty())
   {
-    CLog::Log(LOGERROR, "CGUIWindowVideoBase::ShowPlaySelection - Failed to get any items {}",
-              directory);
-    return true;
+    CLog::LogF(LOGERROR, "Failed to get any items {}", directory);
+    return false;
   }
 
-  CGUIDialogSelect* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
-  while (true)
+  // Remove playlists that are already used
+  if (excludePlaylists != nullptr)
   {
-    dialog->Reset();
-    dialog->SetHeading(CVariant{25006}); // Select playback item
-    dialog->SetItems(items);
-    dialog->SetUseDetails(true);
-    dialog->Open();
-
-    CFileItemPtr item_new = dialog->GetSelectedFileItem();
-    if (!item_new || dialog->GetSelectedItem() < 0)
-    {
-      CLog::Log(LOGDEBUG, "CGUIWindowVideoBase::ShowPlaySelection - User aborted {}", directory);
-      break;
-    }
-
-    if (item_new->m_bIsFolder == false)
-    {
-      std::string path;
-      if (item.HasProperty("save_dyn_path"))
-        path = item.GetProperty("save_dyn_path").asString();
-      else
-        path = item.GetDynPath(); // If not set above (choose playlist selected)
-      item.SetDynPath(item_new->GetDynPath());
-      item.SetProperty("get_stream_details_from_player", true);
-      item.SetProperty("original_listitem_url", path);
-      return true;
-    }
-
-    items.Clear();
-    if (!GetDirectoryItems(item_new->GetDynPath(), items, XFILE::CDirectory::CHints()) || items.IsEmpty())
-    {
-      CLog::Log(LOGERROR, "CGUIWindowVideoBase::ShowPlaySelection - Failed to get any items {}",
-                item_new->GetPath());
-      break;
-    }
+    for (const int playlist : *excludePlaylists)
+      items.erase(std::remove_if(items.begin(), items.end(),
+                                 [playlist](const auto& i)
+                                 { return i->GetVideoInfoTag()->m_iTrack == playlist; }),
+                  items.end());
   }
 
-  return false;
+  return true;
 }
 
 bool CGUIDialogSimpleMenu::GetDirectoryItems(const std::string &path, CFileItemList &items,

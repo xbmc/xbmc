@@ -13,8 +13,10 @@
 #include "GUIUserMessages.h"
 #include "MediaSource.h"
 #include "ServiceBroker.h"
+#include "URL.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
+#include "dialogs/GUIDialogSimpleMenu.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
@@ -296,6 +298,10 @@ void CGUIDialogVideoManager::Remove()
 
   m_database.DeleteVideoAsset(m_selectedVideoAsset->GetVideoInfoTag()->m_iDbId);
 
+  // If a version of a bluray then remove the idFile as well
+  if (URIUtils::IsBlurayPath(m_selectedVideoAsset->GetDynPath()))
+    m_database.DeleteFile(m_selectedVideoAsset->GetVideoInfoTag()->m_iDbId);
+
   // refresh data and controls
   Refresh();
   RefreshSelectedVideoAsset();
@@ -477,4 +483,74 @@ void CGUIDialogVideoManager::RefreshSelectedVideoAsset()
 
   if (it == m_videoAssetsList->cend())
     m_selectedVideoAsset = m_videoAssetsList->Get(0);
+}
+
+void CGUIDialogVideoManager::ChoosePlaylist(const std::shared_ptr<CFileItem>& item,
+                                            bool replaceExistingFile /* = true */)
+{
+  // Open database
+  if (!m_database.IsOpen() && !m_database.Open())
+  {
+    CLog::LogF(LOGERROR, "Failed to open video database!");
+    return;
+  }
+
+  // Select the playlist using the simple menu
+  const std::string oldPath{item->GetDynPath()};
+  const int idMovie{m_database.GetMovieId(oldPath)};
+  const std::vector usedPlaylists{
+      m_database.GetPlaylistsByPath(URIUtils::GetBlurayPlaylistPath(oldPath))};
+
+  if (CGUIDialogSimpleMenu::ShowPlaySelection(*item, true, &usedPlaylists))
+  {
+    if (oldPath != item->GetDynPath())
+    {
+      // Add playlist file as bluray://
+      bool videoDbSuccess{false};
+      m_database.BeginTransaction();
+      if (replaceExistingFile)
+      {
+        videoDbSuccess = m_database.SetFileForMedia(item->GetDynPath(), item->GetVideoContentType(),
+                                                    idMovie, item->GetVideoInfoTag()->m_iFileId);
+        if (videoDbSuccess)
+        {
+          m_database.SetStreamDetailsForFile(item->GetVideoInfoTag()->m_streamDetails,
+                                             item->GetDynPath());
+
+          // Notify all windows to update the file item
+          std::shared_ptr<CFileItem> oldItem{item};
+          oldItem->SetPath(oldPath);
+          CGUIMessage msg{GUI_MSG_NOTIFY_ALL,        0,      0, GUI_MSG_UPDATE_ITEM,
+                          GUI_MSG_FLAG_FORCE_UPDATE, oldItem};
+          CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
+        }
+      }
+      else
+      {
+        // Choose a video version for the video
+        const int idVideoVersion{ChooseVideoAsset(item, VideoAssetType::VERSION, "")};
+        if (idVideoVersion < 0)
+          return;
+
+        const int idFile{m_database.AddFile(item->GetDynPath())};
+        if (idFile > 0)
+        {
+          videoDbSuccess = true;
+          m_database.SetStreamDetailsForFileId(item->GetVideoInfoTag()->m_streamDetails, idFile);
+          m_database.AddVideoVersion(item->GetVideoContentType(), idMovie, idFile, idVideoVersion,
+                                     VideoAssetType::VERSION);
+        }
+      }
+
+      if (videoDbSuccess)
+        m_database.CommitTransaction();
+      else
+        m_database.RollbackTransaction();
+
+      // refresh data and controls
+      Refresh();
+      UpdateControls();
+      m_hasUpdatedItems = true;
+    }
+  }
 }
