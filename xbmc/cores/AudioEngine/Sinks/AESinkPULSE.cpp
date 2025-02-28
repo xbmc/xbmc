@@ -96,6 +96,9 @@ static pa_sample_format AEStreamFormatToPulseFormat(CAEStreamInfo::DataType type
     case CAEStreamInfo::STREAM_TYPE_DTS_2048:
     case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
     case CAEStreamInfo::STREAM_TYPE_EAC3:
+    case CAEStreamInfo::STREAM_TYPE_DTSHD_MA:
+    case CAEStreamInfo::STREAM_TYPE_DTSHD:
+    case CAEStreamInfo::STREAM_TYPE_TRUEHD:
       return PA_SAMPLE_S16NE;
 
     default:
@@ -131,6 +134,21 @@ static pa_encoding AEStreamFormatToPulseEncoding(CAEStreamInfo::DataType type)
     case CAEStreamInfo::STREAM_TYPE_DTS_2048:
     case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
       return PA_ENCODING_DTS_IEC61937;
+
+#if PA_CHECK_VERSION(13, 0, 0)
+    case CAEStreamInfo::STREAM_TYPE_DTSHD_MA:
+      return PA_ENCODING_DTSHD_IEC61937;
+
+    case CAEStreamInfo::STREAM_TYPE_DTSHD:
+#ifdef PA_ENCODING_DTSHD_HR_IEC61937
+      return PA_ENCODING_DTSHD_HR_IEC61937;
+#else
+      return PA_ENCODING_DTSHD_IEC61937;
+#endif
+
+    case CAEStreamInfo::STREAM_TYPE_TRUEHD:
+      return PA_ENCODING_TRUEHD_IEC61937;
+#endif
 
     case CAEStreamInfo::STREAM_TYPE_EAC3:
       return PA_ENCODING_EAC3_IEC61937;
@@ -558,6 +576,25 @@ static void SinkInfoRequestCallback(pa_context *c, const pa_sink_info *i, int eo
           device.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
           device_type = AE_DEVTYPE_IEC958;
           break;
+#if PA_CHECK_VERSION(13, 0, 0)
+        case PA_ENCODING_TRUEHD_IEC61937:
+          device.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
+          device.m_channels = AE_CH_LAYOUT_7_1;
+          device_type = AE_DEVTYPE_HDMI;
+          break;
+#ifdef PA_ENCODING_DTSHD_HR_IEC61937
+        case PA_ENCODING_DTSHD_HR_IEC61937:
+          device.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
+          device_type = AE_DEVTYPE_HDMI;
+          break;
+#endif
+        case PA_ENCODING_DTSHD_IEC61937:
+          device.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
+          device.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_MA);
+          device.m_channels = AE_CH_LAYOUT_7_1;
+          device_type = AE_DEVTYPE_HDMI;
+          break;
+#endif
         case PA_ENCODING_PCM:
           device.m_dataFormats.insert(device.m_dataFormats.end(), defaultDataFormats.begin(),
                                       defaultDataFormats.end());
@@ -566,12 +603,20 @@ static void SinkInfoRequestCallback(pa_context *c, const pa_sink_info *i, int eo
           break;
       }
     }
-    // passthrough is only working when device has Stereo channel config
+#if PA_CHECK_VERSION(13, 0, 0)
+    if (device_type > AE_DEVTYPE_PCM)
+    {
+      device.m_deviceType = AE_DEVTYPE_HDMI;
+      device.m_dataFormats.push_back(AE_FMT_RAW);
+    }
+#else
+    // passthrough is only working when device has Stereo channel config in old PA version
     if (device_type > AE_DEVTYPE_PCM && device.m_channels.Count() == 2)
     {
       device.m_deviceType = AE_DEVTYPE_IEC958;
       device.m_dataFormats.push_back(AE_FMT_RAW);
     }
+#endif
     else
       device.m_deviceType = AE_DEVTYPE_PCM;
 
@@ -825,14 +870,19 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
    // PULSE cannot cope with e.g. planar formats so we fall back to FLOAT
    // when we receive an invalid pulse format
    pa_sample_format pa_fmt;
+   pa_encoding pa_enc;
    // PA can only handle IEC packed RAW format if we get a RAW format
    if (format.m_dataFormat == AE_FMT_RAW)
    {
      pa_fmt = AEStreamFormatToPulseFormat(format.m_streamInfo.m_type);
+     pa_enc = AEStreamFormatToPulseEncoding(format.m_streamInfo.m_type);
      m_passthrough = true;
    }
    else
-    pa_fmt = AEFormatToPulseFormat(format.m_dataFormat);
+   {
+     pa_fmt = AEFormatToPulseFormat(format.m_dataFormat);
+     pa_enc = AEFormatToPulseEncoding(format.m_dataFormat);
+   }
 
    if (pa_fmt == PA_SAMPLE_INVALID)
    {
@@ -864,8 +914,21 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
 
   if(m_passthrough)
   {
+#if PA_CHECK_VERSION(13, 0, 0)
+    if (pa_enc == PA_ENCODING_TRUEHD_IEC61937 || pa_enc == PA_ENCODING_DTSHD_IEC61937)
+    {
+      map.channels = 8;
+      format.m_channelLayout = AE_CH_LAYOUT_7_1;
+    }
+    else
+    {
+      map.channels = 2;
+      format.m_channelLayout = AE_CH_LAYOUT_2_0;
+    }
+#else
     map.channels = 2;
     format.m_channelLayout = AE_CH_LAYOUT_2_0;
+#endif
   }
   else
   {
@@ -880,10 +943,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
 
   pa_format_info *info[1];
   info[0] = pa_format_info_new();
-  if (m_passthrough)
-    info[0]->encoding = AEStreamFormatToPulseEncoding(format.m_streamInfo.m_type);
-  else
-   info[0]->encoding = AEFormatToPulseEncoding(format.m_dataFormat);
+  info[0]->encoding = pa_enc;
 
   if (info[0]->encoding == PA_ENCODING_INVALID)
   {
