@@ -3587,17 +3587,19 @@ void CVideoDatabase::GetEpisodesByFile(const std::string& strFilenameAndPath, st
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::AddBookMarkToFile(const std::string& strFilenameAndPath, const CBookmark &bookmark, CBookmark::EType type /*= CBookmark::STANDARD*/)
+bool CVideoDatabase::AddBookMarkToFile(const std::string& strFilenameAndPath,
+                                       const CBookmark& bookmark,
+                                       CBookmark::EType type /*= CBookmark::STANDARD*/)
 {
   try
   {
     int idFile = AddFile(strFilenameAndPath);
     if (idFile < 0)
-      return;
+      return false;
     if (nullptr == m_pDB)
-      return;
+      return false;
     if (nullptr == m_pDS)
-      return;
+      return false;
 
     std::string strSQL;
     int idBookmark=-1;
@@ -3632,7 +3634,9 @@ void CVideoDatabase::AddBookMarkToFile(const std::string& strFilenameAndPath, co
   catch (...)
   {
     CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strFilenameAndPath);
+    return false;
   }
+  return true;
 }
 
 void CVideoDatabase::ClearBookMarkOfFile(const std::string& strFilenameAndPath,
@@ -3676,24 +3680,28 @@ void CVideoDatabase::ClearBookMarkOfFile(const std::string& strFilenameAndPath,
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::ClearBookMarksOfFile(const std::string& strFilenameAndPath, CBookmark::EType type /*= CBookmark::STANDARD*/)
+bool CVideoDatabase::ClearBookMarksOfFile(const std::string& strFilenameAndPath,
+                                          CBookmark::EType type /*= CBookmark::STANDARD*/)
 {
   int idFile = GetFileId(strFilenameAndPath);
-  if (idFile >= 0)
-    return ClearBookMarksOfFile(idFile, type);
+  if (idFile < 0)
+    return false;
+
+  return ClearBookMarksOfFile(idFile, type);
 }
 
-void CVideoDatabase::ClearBookMarksOfFile(int idFile, CBookmark::EType type /*= CBookmark::STANDARD*/)
+bool CVideoDatabase::ClearBookMarksOfFile(int idFile,
+                                          CBookmark::EType type /*= CBookmark::STANDARD*/)
 {
   if (idFile < 0)
-    return;
+    return false;
 
   try
   {
     if (nullptr == m_pDB)
-      return;
+      return false;
     if (nullptr == m_pDS)
-      return;
+      return false;
 
     std::string strSQL=PrepareSQL("delete from bookmark where idFile=%i and type=%i", idFile, (int)type);
     m_pDS->exec(strSQL);
@@ -3706,7 +3714,9 @@ void CVideoDatabase::ClearBookMarksOfFile(int idFile, CBookmark::EType type /*= 
   catch (...)
   {
     CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, idFile);
+    return false;
   }
+  return true;
 }
 
 
@@ -12224,42 +12234,41 @@ void CVideoDatabase::EraseAllForPath(const std::string& path)
   }
 }
 
-void CVideoDatabase::EraseAllForFile(const std::string& fileNameAndPath)
+bool CVideoDatabase::EraseAllForFile(const std::string& fileNameAndPath)
 {
+  if (!m_pDB || !m_pDS)
+    return false;
+
+  assert(m_pDB->in_transaction());
+
   try
   {
     const int fileId{GetFileId(fileNameAndPath)};
-    if (fileId != -1)
-    {
-      std::string sql = PrepareSQL("DELETE FROM settings WHERE idFile = %i", fileId);
-      m_pDS->exec(sql);
+    if (fileId == -1)
+      return false;
 
-      sql = PrepareSQL("DELETE FROM bookmark WHERE idFile = %i", fileId);
-      m_pDS->exec(sql);
+    // Note: Associated bookmarks, streamdetails, ... are deleted by trigger delete_file.
+    std::string sql{PrepareSQL("DELETE FROM files WHERE idFile = %i", fileId)};
+    m_pDS->exec(sql);
 
-      sql = PrepareSQL("DELETE FROM streamdetails WHERE idFile = %i", fileId);
-      m_pDS->exec(sql);
+    std::string path;
+    std::string fileName;
+    SplitPath(fileNameAndPath, path, fileName);
+    const int pathId{GetPathId(path)};
+    if (pathId == -1)
+      return false;
 
-      sql = PrepareSQL("DELETE FROM files WHERE idFile = %i", fileId);
-      m_pDS->exec(sql);
-
-      std::string path;
-      std::string fileName;
-      SplitPath(fileNameAndPath, path, fileName);
-      const int pathId{GetPathId(path)};
-      if (pathId != -1)
-      {
-        sql = PrepareSQL("DELETE FROM path WHERE idPath = %i "
-                         "AND NOT EXISTS (SELECT 1 FROM files WHERE files.idPath = %i)",
-                         pathId, pathId);
-        m_pDS->exec(sql);
-      }
-    }
+    sql = PrepareSQL("DELETE FROM path WHERE idPath = %i "
+                     "AND NOT EXISTS (SELECT 1 FROM files WHERE files.idPath = %i)",
+                     pathId, pathId);
+    m_pDS->exec(sql);
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
+    CLog::LogF(LOGERROR, "failed");
+    return false;
   }
+  return true;
 }
 
 std::string CVideoDatabase::GetVideoItemTitle(VideoDbContentType itemType, int dbId)
