@@ -45,7 +45,7 @@ public:
 
   std::string GetAsString() const;
 
-  // The text is UTF-16 and the data stored in a character_t hold multiple informations by bits:
+  // The text is UTF-16 and the data stored in a character_t hold multiple information by bits:
   // <16 bits: are unicode code bits
   // 16-24 bits: are color bits
   // 24-32 bits: are style bits (see FONT_STYLE_* flags)

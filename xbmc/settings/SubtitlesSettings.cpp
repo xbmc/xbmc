@@ -189,7 +189,7 @@ void CSubtitlesSettings::SettingOptionsSubtitleFontsFiller(const SettingConstPtr
       list.emplace_back(g_localizeStrings.Get(571) + " " + familyName, FONT_DEFAULT_FAMILYNAME);
     }
   }
-  // Add additionals fonts from the user fonts folder
+  // Add additional fonts from the user fonts folder
   for (const std::string& familyName : g_fontManager.GetUserFontsFamilyNames())
   {
     list.emplace_back(familyName, familyName);

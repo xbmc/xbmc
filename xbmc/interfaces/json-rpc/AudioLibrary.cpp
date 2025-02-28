@@ -1379,7 +1379,7 @@ JSONRPC_STATUS CAudioLibrary::RefreshArtist(const std::string& method,
   //set the artist id on the musicdb url
   musicUrl.AddOption("artistid", artistID);
 
-  //executing the StartArtistScan for refreshing the artist scraped informations
+  //executing the StartArtistScan for refreshing the artist scraped information
   CMusicLibraryQueue::GetInstance().StartArtistScan(musicUrl.ToString(), true);
 
   return ACK;

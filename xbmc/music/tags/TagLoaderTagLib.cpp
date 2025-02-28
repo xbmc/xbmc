@@ -285,7 +285,7 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, EmbeddedArt *art, MUSIC_INFO:
   const ID3v2::FrameListMap& frameListMap = id3v2->frameListMap();
   for (ID3v2::FrameListMap::ConstIterator it = frameListMap.begin(); it != frameListMap.end(); ++it)
   {
-    // It is possible that the taglist is empty. In that case no useable values can be extracted.
+    // It is possible that the taglist is empty. In that case no usable values can be extracted.
     // and we should skip the tag.
     if (it->second.isEmpty()) continue;
 

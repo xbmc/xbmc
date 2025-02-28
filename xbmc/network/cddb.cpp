@@ -574,7 +574,7 @@ void Xcddb::parseData(const char *buffer)
       addExtended((strKeyword + "=" + strValue).c_str());
   }
 
-  //writeLog("parseData Ende");
+  //writeLog("parseData End");
 }
 
 //-------------------------------------------------------------------------------------------------------------------

@@ -1229,7 +1229,7 @@ void MUSIC_INFO::CMusicInfoScanner::RetrieveLocalArt()
     has been found for an album artist, art is not searched for in other folders.
 
     It will find art for "various artists", if artwork is located above the
-    folder containing compilatons.
+    folder containing compilations.
     */
     for (auto artistCredit = album.artistCredits.begin(); artistCredit != album.artistCredits.end(); ++artistCredit)
     {
@@ -1972,7 +1972,7 @@ bool CMusicInfoScanner::AddArtistArtwork(CArtist& artist, const std::string& art
   std::map<std::string, std::string> addedart;
   std::string strArt;
 
-  // Handle thumb separately, can be from multiple confgurable file names
+  // Handle thumb separately, can be from multiple configurable file names
   if (artist.art.find("thumb") == artist.art.end())
   {
     if (!artfolder.empty())
@@ -2046,7 +2046,7 @@ bool CMusicInfoScanner::AddAlbumArtwork(CAlbum& album)
   std::string strArt;
 
   // Fetch local art from album folder
-  // Handle thumbs separately, can be from multiple confgurable file names
+  // Handle thumbs separately, can be from multiple configurable file names
   if (replaceThumb || thumb == album.art.end())
   {
     if (!album.strPath.empty())
@@ -2080,7 +2080,7 @@ bool CMusicInfoScanner::AddAlbumArtwork(CAlbum& album)
       if (discnum > 0)
       {
         // Handle thumbs separately. Get thumb for path from textures db cached during scan
-        // (could be embedded or local file from multiple confgurable file names)
+        // (could be embedded or local file from multiple configurable file names)
         CFileItem item(pathpair.first.c_str(), true);
         std::string strArtType = StringUtils::Format("{}{}", "thumb", discnum);
         strArt = loader.GetCachedImage(item, "thumb");
@@ -2197,7 +2197,7 @@ bool CMusicInfoScanner::AddLocalArtwork(std::map<std::string, std::string>& art,
       strCandidate.erase(0, mediaName.length());
     StringUtils::ToLower(strCandidate);
     // Skip files already used as "thumb"
-    // Typically folder.jpg but can be from multiple confgurable file names
+    // Typically folder.jpg but can be from multiple configurable file names
     if (std::find(thumbs.begin(), thumbs.end(), strCandidate) != thumbs.end())
       continue;
     // Grab and strip file extension

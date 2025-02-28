@@ -73,7 +73,7 @@ namespace XbmcCommons
    * printf("buffer contents: %d, \"%s\", %ll\n", buffer.getInt(),
    *         buffer.getCharPointerDirect(), buffer.getLongLong());
    *
-   * This would also produce erroneous results as they get's will be evaluated
+   * This would also produce erroneous results as the gets will be evaluated
    *   from right to left in the parameter list of printf.
    */
   class Buffer

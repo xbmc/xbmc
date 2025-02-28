@@ -186,13 +186,13 @@ public:
 
   /*!
    * \brief Check if font override is enabled
-   * \return True if fonts must be overriden, otherwise false
+   * \return True if fonts must be overridden, otherwise false
    */
   bool IsOverrideFonts();
 
   /*!
    * \brief Get override styles
-   * \return The styles to be overriden
+   * \return The styles to be overridden
    */
   OverrideStyles GetOverrideStyles();
 
