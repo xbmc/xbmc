@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "DiscDirectoryHelper.h"
 #include "IDirectory.h"
 #include "URL.h"
 
@@ -27,9 +28,9 @@ class CBlurayDirectory : public IDirectory
 public:
   CBlurayDirectory() = default;
   ~CBlurayDirectory() override;
-  bool GetDirectory(const CURL& url, CFileItemList &items) override;
+  bool GetDirectory(const CURL& url, CFileItemList& items) override;
 
-  bool InitializeBluray(const std::string &root);
+  bool InitializeBluray(const std::string& root);
   std::string GetBlurayTitle();
   std::string GetBlurayID();
 
@@ -40,17 +41,17 @@ private:
     ID
   };
 
-  void         Dispose();
-  std::string  GetDiscInfoString(DiscInfo info);
-  void         GetRoot  (CFileItemList &items);
-  void         GetTitles(bool main, CFileItemList &items);
-  std::vector<BLURAY_TITLE_INFO*> GetUserPlaylists();
-  std::shared_ptr<CFileItem> GetTitle(const BLURAY_TITLE_INFO* title, const std::string& label);
-  CURL         GetUnderlyingCURL(const CURL& url);
-  std::string  HexToString(const uint8_t * buf, int count);
-  CURL          m_url;
-  BLURAY*       m_bd = nullptr;
-  bool          m_blurayInitialized = false;
-};
+  void Dispose();
+  std::string GetDiscInfoString(DiscInfo info) const;
+  void GetTitles(GetTitlesJob job, CFileItemList& items, SortTitlesJob sort) const;
+  void GetPlaylistInfo(ClipMap& clips, PlaylistMap& playlists) const;
+  int GetUserPlaylists() const;
+  std::shared_ptr<CFileItem> GetTitle(const BLURAY_TITLE_INFO* title,
+                                      const std::string& label) const;
 
-}
+  CURL m_url;
+  BLURAY* m_bd{nullptr};
+  bool m_blurayInitialized{false};
+  bool m_blurayMenuSupport{false};
+};
+} // namespace XFILE

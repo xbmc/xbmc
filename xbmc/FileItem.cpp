@@ -15,6 +15,7 @@
 #include "events/IEvent.h"
 #include "filesystem/CurlFile.h"
 #include "filesystem/Directory.h"
+#include "filesystem/DiscDirectoryHelper.h"
 #include "filesystem/File.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
@@ -552,6 +553,7 @@ CFileItem& CFileItem::operator=(const CFileItem& item)
   m_specialSort = item.m_specialSort;
   m_bIsAlbum = item.m_bIsAlbum;
   m_doContentLookup = item.m_doContentLookup;
+  m_multipleTitles = item.m_multipleTitles;
   return *this;
 }
 
@@ -578,6 +580,7 @@ void CFileItem::Initialize()
   m_bCanQueue = true;
   m_specialSort = SortSpecialNone;
   m_doContentLookup = true;
+  m_multipleTitles = false;
 }
 
 void CFileItem::Reset()
@@ -1150,12 +1153,8 @@ bool CFileItem::IsMultiPath() const
 
 bool CFileItem::IsBluray() const
 {
-  if (URIUtils::IsBlurayPath(m_strPath))
-    return true;
-
-  CFileItem item = CFileItem(VIDEO::UTILS::GetOpticalMediaPath(*this), false);
-
-  return VIDEO::IsBDFile(item);
+  return URIUtils::IsBlurayPath(GetDynPath()) ||
+         URIUtils::IsBDFile(VIDEO::UTILS::GetOpticalMediaPath(*this));
 }
 
 bool CFileItem::IsDVD() const
@@ -1424,7 +1423,9 @@ bool CFileItem::IsAlbum() const
   return m_bIsAlbum;
 }
 
-void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
+void CFileItem::UpdateInfo(const CFileItem& item,
+                           bool replaceLabels /* = true */,
+                           MultipleEpisodes replaceEpisodes /* = DONT_GROUP_MULTIPLE_EPISODES */)
 {
   if (item.HasVideoInfoTag())
   { // copy info across
@@ -1492,8 +1493,24 @@ void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
     SetInvalid();
   }
   SetDynPath(item.GetDynPath());
-  if (replaceLabels && !item.GetLabel().empty())
-    SetLabel(item.GetLabel());
+
+  // Alter label to episode number(s) if requested if (replaceLabels)
+  std::string label;
+  if (replaceLabels)
+  {
+    if (replaceEpisodes == MultipleEpisodes::GROUP_MULTIPLE_EPISODES &&
+        (item.IsDiscImage() || VIDEO::IsDVDFile(item) || item.IsBluray()) &&
+        item.GetVideoContentType() == VideoDbContentType::EPISODES)
+    {
+      label = CDiscDirectoryHelper::GetEpisodesLabel(*this, item);
+      m_multipleTitles = true;
+    }
+    else if (!item.GetLabel().empty())
+      label = item.GetLabel();
+  }
+  if (!label.empty())
+    SetLabel(label);
+
   if (replaceLabels && !item.GetLabel2().empty())
     SetLabel2(item.GetLabel2());
   if (!item.GetArt().empty())
