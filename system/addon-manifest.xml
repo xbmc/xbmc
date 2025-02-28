@@ -20,6 +20,7 @@
   <addon>kodi.binary.instance.peripheral</addon>
   <addon>kodi.binary.instance.pvr</addon>
   <addon>kodi.binary.instance.screensaver</addon>
+  <addon>kodi.binary.instance.shaderpreset</addon>
   <addon>kodi.binary.instance.vfs</addon>
   <addon>kodi.binary.instance.videocodec</addon>
   <addon>kodi.binary.instance.visualization</addon>
@@ -52,6 +53,7 @@
   <addon>xbmc.metadata</addon>
   <addon>xbmc.python</addon>
   <addon>xbmc.webinterface</addon>
+  <addon optional="true">game.shader.presets</addon>
   <addon optional="true">inputstream.adaptive</addon>
   <addon optional="true">peripheral.joystick</addon>
   <addon optional="true">service.xbmc.versioncheck</addon>
