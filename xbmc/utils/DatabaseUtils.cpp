@@ -227,6 +227,10 @@ std::string DatabaseUtils::GetField(Field field, const MediaType &mediaType, Dat
     else if (field == FieldLastPlayed) return "movie_view.lastPlayed";
     else if (field == FieldDateAdded) return "movie_view.dateAdded";
     else if (field == FieldUserRating) return "movie_view.userrating";
+    else if (field == FieldHasVideoVersions)
+      return "movie_view.hasVideoVersions";
+    else if (field == FieldHasVideoExtras)
+      return "movie_view.hasVideoExtras";
 
     if (!result.empty())
       return result;
