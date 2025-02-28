@@ -302,6 +302,7 @@ void CAESinkPipewire::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
   list.emplace_back(defaultDevice);
 
   auto& registry = pipewire->GetRegistry();
+  std::lock_guard lg(registry);
 
   for (const auto& [id, node] : registry.GetNodes())
   {
