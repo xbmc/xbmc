@@ -982,6 +982,9 @@ void CPVRGUIActionsTimers::AnnounceReminder(const std::shared_ptr<CPVRTimerInfoT
 
   dialog->Close();
 
+  // Disable the timer. No further announcements needed.
+  timer->SetState(PVR_TIMER_STATE_DISABLED);
+
   bool bAutoClosed = (iRemaining <= 0);
   bool bSwitch = (result == 0);
   bool bRecord = (result == 1);
