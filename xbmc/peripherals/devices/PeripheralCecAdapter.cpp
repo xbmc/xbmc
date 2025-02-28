@@ -926,7 +926,7 @@ void CPeripheralCecAdapter::PushCecKeypress(const cec_keypress& key)
       PushCecKeypress(xbmcKey);
       break;
     case CEC_USER_CONTROL_CODE_FAVORITE_MENU:
-      xbmcKey.iButton = XINPUT_IR_REMOTE_MENU;
+      xbmcKey.iButton = XINPUT_IR_REMOTE_FAVORITE_MENU;
       PushCecKeypress(xbmcKey);
       break;
     case CEC_USER_CONTROL_CODE_EXIT:
@@ -946,7 +946,7 @@ void CPeripheralCecAdapter::PushCecKeypress(const cec_keypress& key)
       PushCecKeypress(xbmcKey);
       break;
     case CEC_USER_CONTROL_CODE_PREVIOUS_CHANNEL:
-      xbmcKey.iButton = XINPUT_IR_REMOTE_TELETEXT;
+      xbmcKey.iButton = XINPUT_IR_REMOTE_LAST;
       PushCecKeypress(xbmcKey);
       break;
     case CEC_USER_CONTROL_CODE_SOUND_SELECT:
