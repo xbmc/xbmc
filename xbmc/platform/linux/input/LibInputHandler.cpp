@@ -268,6 +268,7 @@ void CLibInputHandler::DeviceAdded(libinput_device *dev)
               name, sysname);
     m_devices.push_back(libinput_device_ref(dev));
     m_keyboard->GetRepeat(dev);
+    m_keyboard->CheckForRemoteControl(dev);
   }
 }
 
@@ -298,5 +299,6 @@ void CLibInputHandler::DeviceRemoved(libinput_device *dev)
               __FUNCTION__, name, sysname);
     auto device = std::find(m_devices.begin(), m_devices.end(), libinput_device_unref(dev));
     m_devices.erase(device);
+    m_keyboard->DeviceRemoved(dev);
   }
 }
