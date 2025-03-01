@@ -29,6 +29,7 @@
 #include <cassert>
 #include <memory>
 #include <regex>
+#include <set>
 #include <string>
 
 #include <libbluray/bluray-version.h>
@@ -128,7 +129,7 @@ std::string CBlurayDirectory::GetDiscInfoString(DiscInfo info) const
   return "";
 }
 
-void CBlurayDirectory::GetPlaylists(ClipMap& clips, PlaylistMap& playlists) const
+void CBlurayDirectory::GetPlaylistsInformation(ClipMap& clips, PlaylistMap& playlists) const
 {
   // Check cache
   const std::string path{m_url.GetHostName()};
@@ -140,90 +141,79 @@ void CBlurayDirectory::GetPlaylists(ClipMap& clips, PlaylistMap& playlists) cons
 
   // Get all titles on disc
   // Sort by playlist for grouping later
-
   CFileItemList allTitles;
-  GetPlaylists(GetTitles::GET_TITLES_ALL, allTitles, SortTitles::SORT_TITLES_NONE);
-  SortDescription sorting;
-  sorting.sortBy = SortByFile;
-  allTitles.Sort(sorting);
+  GetPlaylists(GetTitles::GET_TITLES_ALL, allTitles, SortTitles::SORT_TITLES_EPISODE);
 
-  // Get information on all titles
+  // Get information on all playlists
   // Including relationship between clips and playlists
   // List all playlists
-
   CLog::LogF(LOGDEBUG, "*** Playlist information ***");
-  const std::regex playlistPath("(\\d{5}.mpls)");
-  std::smatch playlistMatch;
+
   for (const auto& title : allTitles)
   {
-    const CURL url{title->GetDynPath()};
-    const std::string filename{URIUtils::GetFileName(url.GetFileName())};
-    if (std::regex_search(filename, playlistMatch, playlistPath))
+    const int playlist{title->GetProperty("bluray_playlist").asInteger32(0)};
+    BLURAY_TITLE_INFO titleInfo{};
+    if (!GetPlaylistInfoFromDisc(playlist, titleInfo))
     {
-      const unsigned int playlist{static_cast<unsigned int>(std::stoi(playlistMatch[0]))};
-      BLURAY_TITLE_INFO titleInfo{};
-      if (!GetPlaylistInfoFromDisc(playlist, titleInfo))
+      CLog::LogF(LOGDEBUG, "Unable to get playlist {}", playlist);
+    }
+    else
+    {
+      // Save playlist
+      PlaylistInfo info;
+
+      // Save playlist duration
+      info.duration = static_cast<unsigned int>(titleInfo.duration / 90000);
+
+      // Get clips
+      std::string clipsStr;
+      for (unsigned int i = 0; i < titleInfo.clip_count; ++i)
       {
-        CLog::LogF(LOGDEBUG, "Unable to get playlist {}", playlist);
+        // Add clip to playlist
+        const unsigned int clip{
+            static_cast<unsigned int>(std::strtoul(titleInfo.clips[i].clip_id, nullptr, 10))};
+        info.clips.emplace_back(clip);
+
+        // Add/extend clip information
+        const auto& it = clips.find(clip);
+        if (it == clips.end())
+        {
+          // First reference to clip
+          ClipInfo clipInfo;
+          clipInfo.duration = static_cast<unsigned int>(
+              (titleInfo.clips[i].out_time - titleInfo.clips[i].in_time) / 90000);
+          clipInfo.playlists.emplace_back(playlist);
+          clips[clip] = clipInfo;
+        }
+        else
+        {
+          // Additional reference to clip, add this playlist
+          it->second.playlists.emplace_back(playlist);
+        }
+
+        const std::string c{titleInfo.clips[i].clip_id};
+        clipsStr += c + ",";
       }
-      else
+      if (!clipsStr.empty())
+        clipsStr.pop_back(); // Remove last ','
+
+      playlists[playlist] = info;
+
+      // Get languages
+      std::string langs;
+      for (int i = 0; i < titleInfo.clips[0].audio_stream_count; ++i)
       {
-        // Save playlist
-        PlaylistInfo info;
-
-        // Save playlist duration
-        info.duration = static_cast<unsigned int>(titleInfo.duration / 90000);
-
-        // Get clips
-        std::string clipsStr;
-        for (unsigned int i = 0; i < titleInfo.clip_count; ++i)
-        {
-          // Add clip to playlist
-          const unsigned int clip{
-              static_cast<unsigned int>(strtoul(titleInfo.clips[i].clip_id, nullptr, 10))};
-          info.clips.emplace_back(clip);
-
-          // Add/extend clip information
-          const auto& it = clips.find(clip);
-          if (it == clips.end())
-          {
-            // First reference to clip
-            ClipInfo clipInfo;
-            clipInfo.duration = static_cast<unsigned int>(
-                (titleInfo.clips[i].out_time - titleInfo.clips[i].in_time) / 90000);
-            clipInfo.playlists.emplace_back(playlist);
-            clips[clip] = clipInfo;
-          }
-          else
-          {
-            // Additional reference to clip, add this playlist
-            it->second.playlists.emplace_back(playlist);
-          }
-
-          const std::string c{titleInfo.clips[i].clip_id};
-          clipsStr += c + ",";
-        }
-        if (!clipsStr.empty())
-          clipsStr.pop_back(); // Remove last ','
-
-        playlists[playlist] = info;
-
-        // Get languages
-        std::string langs;
-        for (int i = 0; i < titleInfo.clips[0].audio_stream_count; ++i)
-        {
-          const std::string l{
-              reinterpret_cast<char const*>(titleInfo.clips[0].audio_streams[i].lang)};
-          langs += l + ",";
-        }
-        if (!langs.empty())
-          langs.pop_back(); // Remove last ','
-
-        playlists[playlist].languages = langs;
-
-        CLog::LogF(LOGDEBUG, "Playlist {}, Duration {}, Langs {}, Clips {} ", playlist,
-                   title->GetVideoInfoTag()->GetDuration(), langs, clipsStr);
+        const std::string l{
+            reinterpret_cast<char const*>(titleInfo.clips[0].audio_streams[i].lang)};
+        langs += l + ",";
       }
+      if (!langs.empty())
+        langs.pop_back(); // Remove last ','
+
+      playlists[playlist].languages = langs;
+
+      CLog::LogF(LOGDEBUG, "Playlist {}, Duration {}, Langs {}, Clips {} ", playlist,
+                 title->GetVideoInfoTag()->GetDuration(), langs, clipsStr);
     }
   }
 
@@ -414,9 +404,7 @@ std::shared_ptr<CFileItem> CBlurayDirectory::GetFileItem(const BLURAY_TITLE_INFO
 
 bool CBlurayDirectory::GetPlaylists(GetTitles job, CFileItemList& items, SortTitles sort) const
 {
-  std::vector<BLURAY_TITLE_INFO> titleList;
-  uint64_t maxDuration{0};
-  int maxPlaylist{-1};
+  std::vector<BLURAY_TITLE_INFO> playlists;
   int mainPlaylist{-1};
 
   // See if disc.inf for main playlist
@@ -428,38 +416,100 @@ bool CBlurayDirectory::GetPlaylists(GetTitles job, CFileItemList& items, SortTit
       // Only main playlist is needed
       BLURAY_TITLE_INFO t{};
       if (!GetPlaylistInfoFromDisc(mainPlaylist, t))
-        CLog::LogF(LOGDEBUG, "Unable to get title {}", mainPlaylist);
+        CLog::LogF(LOGDEBUG, "Unable to get playlist {}", mainPlaylist);
       else
-        titleList.emplace_back(t);
+        playlists.emplace_back(t);
     }
   }
 
-  if (titleList.empty())
+  if (playlists.empty())
   {
-    const int numTitles{GetNumberOfTitlesFromDisc()};
-    for (int i = 0; i < numTitles; i++)
+    const CURL url{URIUtils::AddFileToFolder(m_url.GetHostName(), "BDMV", "PLAYLIST", "")};
+    CDirectory::CHints hints;
+    hints.flags = m_flags;
+    CFileItemList allTitles;
+    if (!CDirectory::GetDirectory(url, allTitles, hints))
+      return false;
+
+    // Get information on all playlists
+    const std::regex playlistPath("(\\d{5}.mpls)");
+    std::smatch playlistMatch;
+    for (const auto& title : allTitles)
     {
-      BLURAY_TITLE_INFO t{};
-      if (!GetTitleInfoFromDisc(i, t))
-        CLog::LogF(LOGDEBUG, "Unable to get title {}", i);
-      else
+      const CURL url2{title->GetPath()};
+      const std::string filename{URIUtils::GetFileName(url2.GetFileName())};
+      if (std::regex_search(filename, playlistMatch, playlistPath))
       {
-        if (t.duration > maxDuration)
-        {
-          maxDuration = t.duration;
-          maxPlaylist = static_cast<int>(t.playlist);
-        }
-        titleList.emplace_back(t);
+        const unsigned int playlist{static_cast<unsigned int>(std::stoi(playlistMatch[0]))};
+
+        BLURAY_TITLE_INFO t{};
+        if (!GetPlaylistInfoFromDisc(playlist, t))
+          CLog::LogF(LOGDEBUG, "Unable to get playlist {}", playlist);
+        else
+          playlists.emplace_back(t);
       }
     }
   }
+
+  // Remove very short (<0.5s) playlists
+  std::erase_if(playlists,
+                [](const BLURAY_TITLE_INFO& playlist) { return playlist.duration < 45000; });
+
+  // Remove playlists with duplicate clips
+  std::erase_if(playlists,
+                [](const BLURAY_TITLE_INFO& playlist)
+                {
+                  std::set<uint32_t> clips;
+                  for (uint32_t i = 0; i < playlist.clip_count; ++i)
+                    clips.emplace(strtoul(playlist.clips[i].clip_id, nullptr, 10));
+                  return clips.size() < playlist.clip_count;
+                });
+
+  // Remove playlists with no clips
+  std::erase_if(playlists,
+                [](const BLURAY_TITLE_INFO& playlist) { return playlist.clip_count == 0; });
+
+  // Remove duplicate playlists
+  std::set<unsigned int> duplicatePlaylists;
+  for (unsigned int i = 0; i < playlists.size() - 1; ++i)
+  {
+    for (unsigned int j = i + 1; j < playlists.size(); ++j)
+    {
+      if (playlists[i].clip_count == playlists[j].clip_count &&
+          playlists[i].chapter_count == playlists[j].chapter_count &&
+          playlists[i].mark_count == playlists[j].mark_count &&
+          playlists[i].clips[0].audio_stream_count == playlists[j].clips[0].audio_stream_count &&
+          playlists[i].clips[0].pg_stream_count == playlists[j].clips[0].pg_stream_count &&
+          std::memcmp(playlists[i].chapters, playlists[j].chapters,
+                      sizeof(BLURAY_TITLE_CHAPTER) * playlists[i].chapter_count) == 0 &&
+          std::memcmp(playlists[i].marks, playlists[j].marks,
+                      sizeof(BLURAY_TITLE_MARK) * playlists[i].mark_count) == 0)
+      {
+        duplicatePlaylists.emplace(playlists[j].playlist);
+      }
+    }
+  }
+  std::erase_if(playlists,
+                [&duplicatePlaylists](const BLURAY_TITLE_INFO& p)
+                {
+                  return std::ranges::any_of(duplicatePlaylists,
+                                             [&p](const unsigned int duplicatePlaylist)
+                                             { return p.playlist == duplicatePlaylist; });
+                });
+
+  // Now we have curated playlists, find longest (for main title derivation)
+  const auto& it{std::ranges::max_element(playlists,
+                                          [](const BLURAY_TITLE_INFO& p, const BLURAY_TITLE_INFO& q)
+                                          { return p.duration < q.duration; })};
+  const uint64_t maxDuration{it->duration};
+  const unsigned int maxPlaylist{it->playlist};
 
   // Sort
   // Movies - placing main title - if present - first, then by duration
   // Episodes - by playlist number
   if (sort != SortTitles::SORT_TITLES_NONE)
   {
-    std::ranges::sort(titleList,
+    std::ranges::sort(playlists,
                       [&sort](const BLURAY_TITLE_INFO& i, const BLURAY_TITLE_INFO& j)
                       {
                         if (sort == SortTitles::SORT_TITLES_MOVIE)
@@ -472,14 +522,14 @@ bool CBlurayDirectory::GetPlaylists(GetTitles job, CFileItemList& items, SortTit
                       });
 
     const auto& pivot{
-        std::ranges::find_if(titleList, [&mainPlaylist](const BLURAY_TITLE_INFO& title)
+        std::ranges::find_if(playlists, [&mainPlaylist](const BLURAY_TITLE_INFO& title)
                              { return title.playlist == static_cast<uint32_t>(mainPlaylist); })};
-    if (pivot != titleList.end())
-      std::rotate(titleList.begin(), pivot, pivot + 1);
+    if (pivot != playlists.end())
+      std::rotate(playlists.begin(), pivot, pivot + 1);
   }
 
   const uint64_t minDuration{maxDuration * MAIN_TITLE_LENGTH_PERCENT / 100};
-  for (const auto& title : titleList)
+  for (const auto& title : playlists)
   {
     if (job == GetTitles::GET_TITLES_ALL ||
         (job == GetTitles::GET_TITLES_MAIN && title.duration >= minDuration) ||
@@ -552,7 +602,7 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
     // Get playlist, clip and language information
     ClipMap clips;
     PlaylistMap playlists;
-    GetPlaylists(clips, playlists);
+    GetPlaylistsInformation(clips, playlists);
 
     // Get episode playlists
     CDiscDirectoryHelper helper;
@@ -672,11 +722,6 @@ const BLURAY_DISC_INFO* CBlurayDirectory::GetDiscInfo() const
   return bd_get_disc_info(m_bd);
 }
 
-int CBlurayDirectory::GetNumberOfTitlesFromDisc() const
-{
-  return static_cast<int>(bd_get_titles(m_bd, TITLES_RELEVANT, 0));
-}
-
 bool CBlurayDirectory::GetPlaylistInfoFromDisc(unsigned int playlist,
                                                BLURAY_TITLE_INFO& playlistInfo) const
 {
@@ -692,27 +737,6 @@ bool CBlurayDirectory::GetPlaylistInfoFromDisc(unsigned int playlist,
 
   // Cache and return
   CServiceBroker::GetBlurayDiscCache()->SetPlaylistInfo(path, playlist, p);
-  playlistInfo = *p;
-
-  return true;
-}
-
-bool CBlurayDirectory::GetTitleInfoFromDisc(unsigned int title,
-                                            BLURAY_TITLE_INFO& playlistInfo) const
-{
-  // A title maps to a specific playlist
-  // Check cache
-  const std::string path{GetCachePath()};
-  if (CServiceBroker::GetBlurayDiscCache()->GetTitleInfo(path, title, playlistInfo))
-    return true;
-
-  // Retrieve from disc
-  BLURAY_TITLE_INFO* p{bd_get_title_info(m_bd, title, 0)};
-  if (!p)
-    return false;
-
-  // Cache the playlist associated with the title and return
-  CServiceBroker::GetBlurayDiscCache()->SetTitleInfo(path, title, p);
   playlistInfo = *p;
 
   return true;
