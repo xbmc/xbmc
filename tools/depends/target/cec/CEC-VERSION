@@ -4,3 +4,5 @@ ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
 SHA512=76e6686252dd53fca72130fadcc90d88f6b255a6fed12330d68ef0cc3f34906053ecfc23c6570991614c49857e13bbb37963fea5803560a19a97f097f4b0ae60
 BYPRODUCT=libcec.so
 BYPRODUCT_WIN=cec.lib
+
+BASE_URL=https://github.com/Pulse-Eight/libcec/archive/refs/tags
