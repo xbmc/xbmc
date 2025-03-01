@@ -45,14 +45,13 @@ private:
 
   void Dispose();
   std::string GetDiscInfoString(DiscInfo info);
-  void GetTitles(GetTitlesJob job, CFileItemList& items, SortTitlesJob sort) const;
-  void GetPlaylists(ClipMap& clips, PlaylistMap& playlists) const;
+  void GetPlaylistsInformation(ClipMap& clips, PlaylistMap& playlists) const;
+  void GetPlaylists(GetTitlesJob job, CFileItemList& items, SortTitlesJob sort) const;
   int GetMainPlaylistFromDisc() const;
   std::shared_ptr<CFileItem> GetFileItem(const BLURAY_TITLE_INFO& title,
                                          const std::string& label) const;
 
   void GetDiscInfo();
-  int GetNumberOfTitlesFromDisc() const;
   bool GetPlaylistInfoFromDisc(unsigned int playlist, BLURAY_TITLE_INFO& p) const;
 
   CURL m_url;
