@@ -87,7 +87,6 @@ public:
 
 private:
   void          ShowMainVideo(const bool show);
-  void          SetVideoZoom(const float zoom);
   bool          OpenAmlVideo(const CDVDStreamInfo &hints);
   void          CloseAmlVideo();
   std::string   GetVfmMap(const std::string &name);
@@ -118,7 +117,6 @@ private:
   int              m_view_mode = -1;
   RENDER_STEREO_MODE m_guiStereoMode = RENDER_STEREO_MODE_OFF;
   RENDER_STEREO_VIEW m_guiStereoView = RENDER_STEREO_VIEW_OFF;
-  float            m_zoom = -1.0f;
   RESOLUTION       m_video_res = RES_INVALID;
 
   static const unsigned int STATE_PREFILLED  = 1;

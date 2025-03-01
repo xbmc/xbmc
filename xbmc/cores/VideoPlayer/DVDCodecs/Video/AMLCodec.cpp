@@ -1921,7 +1921,6 @@ bool CAMLCodec::OpenDecoder()
   m_drain = false;
   m_cur_pts = DVD_NOPTS_VALUE;
   m_dst_rect.SetRect(0, 0, 0, 0);
-  m_zoom = -1.0f;
   CDVDStreamInfo &hints = m_hints;  // Fudge to avoid large chnage delta renaming hints to m_hints.
   m_state = 0;
   m_hints.pClock = hints.pClock;
@@ -2628,7 +2627,6 @@ CDVDVideoCodec::VCReturn CAMLCodec::GetPicture(VideoPicture& videoPicture)
   if (!m_opened)
     return CDVDVideoCodec::VC_ERROR;
 
-  // add buffer level ready.
   if (!m_drain && m_buffer_level_ready && (buffer_level > m_minimum_buffer_level) && ((ret = DequeueBuffer()) == 0))
   {
     videoPicture.iFlags = 0;
@@ -2646,7 +2644,7 @@ CDVDVideoCodec::VCReturn CAMLCodec::GetPicture(VideoPicture& videoPicture)
     videoPicture.pts = static_cast<double>(m_cur_pts);
 
     m_dll->codec_get_vdec_info(&am_private->vcodec, &vi);
-    if  (vi.ratio_control ) {
+    if (vi.ratio_control) {
       m_hints.aspect = 65536.0 / vi.ratio_control;
       m_processInfo.SetVideoDAR(m_hints.aspect);
     }
@@ -2724,28 +2722,12 @@ void CAMLCodec::ShowMainVideo(const bool show)
   saved_disable_video = disable_video;
 }
 
-void CAMLCodec::SetVideoZoom(const float zoom)
-{
-  // input zoom range is 0.5 to 2.0 with a default of 1.0.
-  // output zoom range is 2 to 300 with default of 100.
-  // we limit that to a range of 50 to 200 with default of 100.
-  int aml_zoom = 100 * zoom;
-  CSysfsPath("/sys/class/video/zoom", aml_zoom);
-}
-
 void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
 {
   // this routine gets called every video frame
   // and is in the context of the renderer thread so
   // do not do anything stupid here.
   bool update = false;
-
-  // video zoom adjustment.
-  float zoom = m_processInfo.GetVideoSettings().m_CustomZoomAmount;
-  if ((int)(zoom * 1000) != (int)(m_zoom * 1000))
-  {
-    m_zoom = zoom;
-  }
 
   // video rate adjustment.
   unsigned int video_rate = GetDecoderVideoRate();
