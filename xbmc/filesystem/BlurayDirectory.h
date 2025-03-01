@@ -19,9 +19,6 @@
 class CFileItem;
 class CFileItemList;
 
-typedef struct bluray BLURAY;
-typedef struct bd_title_info BLURAY_TITLE_INFO;
-
 namespace XFILE
 {
 
@@ -46,17 +43,15 @@ private:
 
   void Dispose();
   std::string GetDiscInfoString(DiscInfo info) const;
+  void GetPlaylistsInformation(ClipMap& clips, PlaylistMap& playlists) const;
   bool GetPlaylists(GetTitles job, CFileItemList& items, SortTitles sort) const;
-  void GetPlaylists(ClipMap& clips, PlaylistMap& playlists) const;
   int GetMainPlaylistFromDisc() const;
   std::shared_ptr<CFileItem> GetFileItem(const BLURAY_TITLE_INFO& title,
                                          const std::string& label) const;
 
   std::string GetCachePath() const;
   const BLURAY_DISC_INFO* GetDiscInfo() const;
-  int GetNumberOfTitlesFromDisc() const;
   bool GetPlaylistInfoFromDisc(unsigned int playlist, BLURAY_TITLE_INFO& p) const;
-  bool GetTitleInfoFromDisc(unsigned int title, BLURAY_TITLE_INFO& p) const;
 
   CURL m_url;
   std::string m_realPath;
