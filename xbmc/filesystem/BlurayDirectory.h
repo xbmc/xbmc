@@ -14,6 +14,8 @@
 
 #include <memory>
 
+#include <libbluray/bluray.h>
+
 class CFileItem;
 class CFileItemList;
 
@@ -26,7 +28,7 @@ namespace XFILE
 class CBlurayDirectory : public IDirectory
 {
 public:
-  CBlurayDirectory() = default;
+  CBlurayDirectory();
   ~CBlurayDirectory() override;
   bool GetDirectory(const CURL& url, CFileItemList& items) override;
 
@@ -42,16 +44,22 @@ private:
   };
 
   void Dispose();
-  std::string GetDiscInfoString(DiscInfo info) const;
+  std::string GetDiscInfoString(DiscInfo info);
   bool GetPlaylists(GetTitlesJob job, CFileItemList& items, SortTitlesJob sort) const;
   void GetPlaylists(ClipMap& clips, PlaylistMap& playlists) const;
   int GetMainPlaylistFromDisc() const;
-  std::shared_ptr<CFileItem> GetFileItem(const BLURAY_TITLE_INFO* title,
+  std::shared_ptr<CFileItem> GetFileItem(const BLURAY_TITLE_INFO& title,
                                          const std::string& label) const;
+
+  void GetDiscInfo();
+  int GetNumberOfTitlesFromDisc() const;
+  bool GetPlaylistInfoFromDisc(unsigned int playlist, BLURAY_TITLE_INFO& p) const;
 
   CURL m_url;
   BLURAY* m_bd{nullptr};
   bool m_blurayInitialized{false};
   bool m_blurayMenuSupport{false};
+
+  const BLURAY_DISC_INFO* m_disc_info;
 };
 } // namespace XFILE
