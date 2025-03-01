@@ -38,9 +38,6 @@ public:
   void Clear();
 
   CacheMap::iterator SetDisc(const std::string& path);
-  void SetTitleInfo(const std::string& path,
-                    unsigned int title,
-                    const BLURAY_TITLE_INFO* playlistInfo);
   void SetPlaylistInfo(const std::string& path,
                        unsigned int playlist,
                        const BLURAY_TITLE_INFO* playlistInfo);
@@ -49,9 +46,6 @@ public:
   bool GetPlaylistInfo(const std::string& path,
                        unsigned int playlist,
                        BLURAY_TITLE_INFO& playlistInfo) const;
-  bool GetTitleInfo(const std::string& path,
-                    unsigned int title,
-                    BLURAY_TITLE_INFO& playlistInfo) const;
   bool GetMaps(const std::string& path, PlaylistMap& playlistmap, ClipMap& clipmap) const;
 
   void ClearDisc(const std::string& path);
