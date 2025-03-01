@@ -184,6 +184,7 @@ cmake_install.cmake
 /project/BuildDependencies/bin/doxygen
 /project/BuildDependencies/bin/json-rpc
 /project/BuildDependencies/mingwlibs
+/project/BuildDependencies/arm64
 /project/BuildDependencies/x64
 /project/BuildDependencies/win10-arm
 /project/BuildDependencies/win10-x64
