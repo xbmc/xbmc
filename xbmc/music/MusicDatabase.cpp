@@ -5554,7 +5554,7 @@ bool CMusicDatabase::GetArtistsByWhere(
     if (!BuildSQL(strSQLExtra, extFilter, strSQLExtra))
       return false;
 
-    // Count number of artsits that satisfy selection criteria (no limit built)
+    // Count number of artists that satisfy selection criteria (no limit built)
     // Count done in full query fetch when unlimited
     if (countOnly || limitedInSQL)
     {

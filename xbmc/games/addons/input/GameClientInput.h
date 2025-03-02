@@ -131,7 +131,7 @@ private:
   /*!
    * \brief Map of port address to joystick handler
    *
-   * The port address is a string that identifies the adress of the port.
+   * The port address is a string that identifies the address of the port.
    *
    * The joystick handler connects to joystick input of the game client.
    *

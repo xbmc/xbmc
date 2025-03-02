@@ -512,7 +512,7 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
 
       case TAG_FNUMBER:
         // Simplest way of expressing aperture, so I trust it the most.
-        // (overwrite previously computd value if there is one)
+        // (overwrite previously computed value if there is one)
         m_ExifInfo->ApertureFNumber = (float)ConvertAnyFormat(ValuePtr, Format);
       break;
 
@@ -533,7 +533,7 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
       break;
 
       case TAG_SUBJECT_DISTANCE:
-        // Inidcates the distacne the autofocus camera is focused to.
+        // Indicates the distance the autofocus camera is focused to.
         // Tends to be less accurate as distance increases.
         {
           float distance = (float)ConvertAnyFormat(ValuePtr, Format);
@@ -543,11 +543,11 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
 
       case TAG_EXPOSURETIME:
         {
-        // Simplest way of expressing exposure time, so I trust it most.
-        // (overwrite previously computd value if there is one)
-        float expTime = (float)ConvertAnyFormat(ValuePtr, Format);
-        if (expTime)
-          m_ExifInfo->ExposureTime = expTime;
+          // Simplest way of expressing exposure time, so I trust it most.
+          // (overwrite previously computed value if there is one)
+          float expTime = (float)ConvertAnyFormat(ValuePtr, Format);
+          if (expTime)
+            m_ExifInfo->ExposureTime = expTime;
         }
       break;
 
@@ -648,7 +648,7 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
         const unsigned char* const SubdirStart = OffsetBase + (unsigned)Get32(ValuePtr, m_MotorolaOrder);
         if (SubdirStart < OffsetBase || SubdirStart > OffsetBase+ExifLength)
         {
-          ErrNonfatal("Illegal exif or interop ofset directory link",0,0);
+          ErrNonfatal("Illegal exif or interop offset directory link", 0, 0);
         }
         else
         {

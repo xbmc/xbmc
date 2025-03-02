@@ -1213,7 +1213,7 @@ void CGUIFontTTF::RenderCharacter(CGraphicContext& context,
   const float tb = texture.y2 * m_textureScaleY;
 #else
   // when scaling by shader, we have to grow the vertex and texture coords
-  // by .5 or we would ommit pixels when animating.
+  // by .5 or we would omit pixels when animating.
   const float tl = (texture.x1 - .5f) * m_textureScaleX;
   const float tr = (texture.x2 + .5f) * m_textureScaleX;
   const float tt = (texture.y1 - .5f) * m_textureScaleY;

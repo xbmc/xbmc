@@ -1169,7 +1169,7 @@ void CXBMCApp::onReceive(CJNIIntent intent)
   android_printf("CXBMCApp::onReceive - Got intent. Action: %s", action.c_str());
 
   // Most actions can be processed only after the app is fully initialized,
-  // but some actions should be processed even during initilization phase.
+  // but some actions should be processed even during initialization phase.
   if (!g_application.IsInitialized() && action != CJNIAudioManager::ACTION_HDMI_AUDIO_PLUG)
   {
     android_printf("CXBMCApp::onReceive - ignoring action %s during app initialization phase",
@@ -1667,7 +1667,7 @@ void CXBMCApp::onDisplayChanged(int displayId)
   CLog::Log(LOGDEBUG, "CXBMCApp::{}: id: {}", __FUNCTION__, displayId);
 
   if (!g_application.IsInitialized())
-    // Display mode has beed changed during app startup; we want to reset audio engine on next ACTION_HDMI_AUDIO_PLUG event
+    // Display mode has been changed during app startup; we want to reset audio engine on next ACTION_HDMI_AUDIO_PLUG event
     m_aeReset = true;
 
   // Update display modes

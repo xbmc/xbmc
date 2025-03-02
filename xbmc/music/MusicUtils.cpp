@@ -149,7 +149,7 @@ public:
       CFileItemPtr songitem = playlist[i];
       if (HasSongExtraArtChanged(songitem, type, itemID, db))
       {
-        songitem->ClearArt(); // Art gets reloaded when the current playist is shown
+        songitem->ClearArt(); // Art gets reloaded when the current playlist is shown
         clearcache = true;
       }
     }

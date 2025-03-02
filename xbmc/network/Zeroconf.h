@@ -82,7 +82,7 @@ public:
 
 protected:
   //methods to implement for concrete implementations
-  //publishs this service
+  //publishes this service
   virtual bool doPublishService(const std::string& fcr_identifier,
                                 const std::string& fcr_type,
                                 const std::string& fcr_name,

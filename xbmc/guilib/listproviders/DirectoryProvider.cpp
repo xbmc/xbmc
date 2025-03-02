@@ -115,14 +115,14 @@ public:
           (m_browse == CDirectoryProvider::BrowseMode::AUTO && limit < items.Size()))
       {
         // Add a special item to the end of the list, which can be used to open the
-        // full listing containg all items in the given target window.
+        // full listing containing all items in the given target window.
         if (!m_target.empty())
         {
           CFileItem item(m_url, true);
           item.SetLabel(g_localizeStrings.Get(22082)); // More...
           item.SetArt("icon", "DefaultFolder.png");
           item.SetProperty("node.target", m_target);
-          item.SetProperty("node.type", "target_folder"); // make item identifyable, e.g. by skins
+          item.SetProperty("node.type", "target_folder"); // make item identifiable, e.g. by skins
 
           m_items.emplace_back(std::make_shared<CGUIStaticItem>(item));
         }
