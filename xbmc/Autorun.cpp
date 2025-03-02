@@ -116,13 +116,12 @@ bool CAutorun::PlayDisc(const std::string& path, bool bypassSettings, bool start
   std::string mediaPath;
 
   CCdInfo* pInfo = CServiceBroker::GetMediaManager().GetCdInfo(path);
-  if (pInfo == NULL)
-    return false;
 
-  if (pInfo->IsAudio(1))
+  if (pInfo && pInfo->IsAudio(1))
     mediaPath = "cdda://local/";
 
-  if (mediaPath.empty() && (pInfo->IsISOUDF(1) || pInfo->IsISOHFS(1) || pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1)))
+  if (mediaPath.empty() && (pInfo && (pInfo->IsISOUDF(1) || pInfo->IsISOHFS(1) ||
+                                      pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1))))
     mediaPath = "iso9660://";
 
   if (mediaPath.empty())
