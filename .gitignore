@@ -132,6 +132,7 @@ cmake_install.cmake
 /addons/kodi.binary.instance.inputstream/addon.xml
 /addons/kodi.binary.instance.peripheral/addon.xml
 /addons/kodi.binary.instance.pvr/addon.xml
+/addons/kodi.binary.instance.shaderpreset/addon.xml
 /addons/kodi.binary.instance.screensaver/addon.xml
 /addons/kodi.binary.instance.vfs/addon.xml
 /addons/kodi.binary.instance.videocodec/addon.xml
