@@ -33,7 +33,7 @@ namespace XBMCAddon
       /// Read a maximum of `<size>` bytes from the wsgi.input stream.
       ///
       /// @param size         [opt] bytes to read
-      /// @return             Returns the readed string
+      /// @return             Returns the read string
       ///
       read(...);
 #else
@@ -48,7 +48,7 @@ namespace XBMCAddon
       /// stream.
       ///
       /// @param size         [opt] bytes to read
-      /// @return             Returns the readed string line
+      /// @return             Returns the read string line
       ///
       read(...);
 #else
@@ -63,7 +63,7 @@ namespace XBMCAddon
       /// wsgi.input stream and return them as a list.
       ///
       /// @param sizehint      [opt] bytes to read
-      /// @return              Returns a list readed string lines
+      /// @return              Returns a list read string lines
       ///
       read(...);
 #else

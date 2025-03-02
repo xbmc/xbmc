@@ -217,7 +217,7 @@ namespace XBMCAddon
     /// @throws PyExc_TypeError     If time is not an integer.
     ///
     /// @warning This is useful if you need to sleep for a small amount of time
-    /// (milisecond range) somewhere in your addon logic. Please note that Kodi
+    /// (millisecond range) somewhere in your addon logic. Please note that Kodi
     /// will attempt to stop any running scripts when signaled to exit and wait for a maximum
     /// of 5 seconds before trying to force stop your script. If your addon makes use
     /// of \ref xbmc_Sleep "xbmc.sleep()" incorrectly (long periods of time, e.g. that exceed

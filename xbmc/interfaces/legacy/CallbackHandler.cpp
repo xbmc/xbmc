@@ -113,7 +113,7 @@ namespace XBMCAddon
 
         // since the state of the iterator may have been corrupted by
         //  the changing state of the list from another thread during
-        //  the releasing fo the lock in the immediately preceeding
+        //  the releasing of the lock in the immediately preceding
         //  codeblock, we need to reset it before continuing the loop
         iter = g_callQueue.begin();
       }
