@@ -12,9 +12,12 @@
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "LangInfo.h"
+#include "ServiceBroker.h"
 #include "filesystem/BlurayCallback.h"
 #include "filesystem/Directory.h"
 #include "guilib/LocalizeStrings.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
@@ -439,9 +442,14 @@ bool CBlurayDirectory::GetPlaylists(GetTitlesJob job,
     }
   }
 
-  // Remove very short (<0.5s) playlists
-  std::erase_if(playlists,
-                [](const BLURAY_TITLE_INFO& playlist) { return playlist.duration < 45000; });
+  // Remove playlists below minimum duration (default 5 minutes)
+  const uint64_t minimumDuration{static_cast<uint64_t>(CServiceBroker::GetSettingsComponent()
+                                                           ->GetAdvancedSettings()
+                                                           ->m_minimumEpisodePlaylistDuration) *
+                                 90000};
+
+  std::erase_if(playlists, [&minimumDuration](const BLURAY_TITLE_INFO& playlist)
+                { return playlist.duration < minimumDuration; });
 
   // Remove playlists with duplicate clips
   std::erase_if(playlists,
