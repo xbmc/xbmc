@@ -73,7 +73,7 @@ namespace XBMCAddon
       ///                                          performance).
       ///                                          Note however, that if you are creating listitems
       ///                                          and managing the container itself (e.g using
-      ///                                          WindowXML or WindowXMLDialog classes) subsquent
+      ///                                          WindowXML or WindowXMLDialog classes) subsequent
       ///                                          modifications to the item will require locking.
       ///                                          Thus, in such cases, use the default value (`False`).
       ///

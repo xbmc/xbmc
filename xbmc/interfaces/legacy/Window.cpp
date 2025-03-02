@@ -518,7 +518,7 @@ namespace XBMCAddon
       int iControlId = ref(window)->GetFocusedControlID();
       if(iControlId == -1)
         throw WindowException("No control in this window has focus");
-      // Sine I'm already holding the lock theres no reason to give it to GetFocusedControlID
+      // Since I'm already holding the lock there's no reason to give it to GetFocusedControlID
       return GetControlById(iControlId,NULL);
     }
 
