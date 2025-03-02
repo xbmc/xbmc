@@ -149,42 +149,6 @@ cmake_install.cmake
 /lib/*/1
 /lib/*/win32/1
 
-# /lib/gtest
-/lib/gtest/Makefile.in
-/lib/gtest/aclocal.m4
-/lib/gtest/build-aux/compile
-/lib/gtest/build-aux/config.guess
-/lib/gtest/build-aux/config.h.in
-/lib/gtest/build-aux/config.sub
-/lib/gtest/build-aux/depcomp
-/lib/gtest/build-aux/install-sh
-/lib/gtest/build-aux/ltmain.sh
-/lib/gtest/build-aux/missing
-/lib/gtest/configure
-/lib/gtest/config.cache
-/lib/gtest/config.log
-/lib/gtest/config.status
-/lib/gtest/m4/libtool.m4
-/lib/gtest/m4/ltoptions.m4
-/lib/gtest/m4/ltsugar.m4
-/lib/gtest/m4/ltversion.m4
-/lib/gtest/m4/lt~obsolete.m4
-/lib/gtest/Makefile
-/lib/gtest/build-aux/config.h
-/lib/gtest/build-aux/config.h.in~
-/lib/gtest/build-aux/stamp-h1
-/lib/gtest/build-aux/test-driver
-/lib/gtest/fused-src/
-/lib/gtest/lib/
-/lib/gtest/libtool
-/lib/gtest/samples/.dirstamp
-/lib/gtest/scripts/gtest-config
-/lib/gtest/src/.dirstamp
-
-# /project
-/project/obj
-/project/output
-
 # /cmake
 /cmake/KodiConfig.cmake
 /cmake/addons/*.error
@@ -220,6 +184,7 @@ cmake_install.cmake
 /project/BuildDependencies/bin/doxygen
 /project/BuildDependencies/bin/json-rpc
 /project/BuildDependencies/mingwlibs
+/project/BuildDependencies/arm64
 /project/BuildDependencies/x64
 /project/BuildDependencies/win10-arm
 /project/BuildDependencies/win10-x64
@@ -231,14 +196,6 @@ cmake_install.cmake
 
 # /system
 /system/profiles.xml
-
-# /system/python
-/system/python/
-
-# /system/webserver
-/system/webserver
-
-/system/airplay
 
 #/tools/android
 /tools/android/packaging/Makefile
@@ -288,21 +245,17 @@ cmake_install.cmake
 /tools/EventClients/Clients/WiiRemote/WiiRemote
 
 # /tools/darwin/
-/tools/darwin/Configurations/App.xcconfig
-/tools/darwin/Configurations/Common.xcconfig
 /tools/darwin/packaging/darwin_embedded/mkdeb-darwin_embedded.sh
 /tools/darwin/packaging/osx/mkdmg-osx.sh
 /tools/darwin/packaging/osx/VolumeIcon.icns
-/tools/darwin/packaging/seatbeltunlock/mkdeb-seatbeltunlock.sh
-/tools/darwin/runtime/XBMCHelper
 
 # /tools/Linux/
 /tools/Linux/kodi.sh
+/tools/Linux/kodi.desktop
+/tools/Linux/kodi-gbm-session.desktop
+/tools/Linux/kodi-metainfo.xml
 /tools/Linux/kodi-standalone.sh
 /tools/Linux/kodi-xsession.desktop
-
-# /tools/osx
-/tools/osx/XBMCHelper
 
 # /tools/TexturePacker
 /tools/TexturePacker/TexturePacker*
@@ -314,10 +267,6 @@ cmake_install.cmake
 /userdata/Thumbnails
 /userdata/cache
 /userdata/guisettings.xml
-
-#/lib/win32
-/lib/win32/*.tar*
-/lib/win32/pax_global_header
 
 /lib/libUPnP/Makefile
 
