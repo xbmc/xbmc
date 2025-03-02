@@ -175,18 +175,6 @@ bool CGUIDialogSimpleMenu::GetItems(const CFileItem& item,
     return false;
   }
 
-  // Remove playlists that are already used
-  if (!item.m_multipleTitles && excludePlaylists.has_value() && !excludePlaylists->empty())
-  {
-    for (const int playlist : *excludePlaylists)
-    {
-      items.erase(std::remove_if(items.begin(), items.end(),
-                                 [&playlist](const auto& i)
-                                 { return i->GetVideoInfoTag()->m_iTrack == playlist; }),
-                  items.end());
-    }
-  }
-
   return true;
 }
 
