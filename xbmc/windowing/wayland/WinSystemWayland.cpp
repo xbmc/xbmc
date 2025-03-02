@@ -332,7 +332,7 @@ bool CWinSystemWayland::CreateNewWindow(const std::string& name,
 
   // Update resolution with real size as it could have changed due to configure()
   UpdateDesktopResolution(res, res.strOutput, m_bufferSize.Width(), m_bufferSize.Height(), res.fRefreshRate, 0);
-  res.bFullScreen = fullScreen;
+  res.bFullScreen = m_bFullScreen;
 
   // Now start processing events
   //
@@ -796,7 +796,7 @@ void CWinSystemWayland::OnConfigure(std::uint32_t serial, CSizeInt size, IShellS
     CLog::LogF(LOGDEBUG, "Initial configure serial {}: size {}x{} state {}", serial, size.Width(),
                size.Height(), IShellSurface::StateToString(state));
     m_shellSurfaceState = state;
-    if (!size.IsZero())
+    if (!size.IsZero() || state.test(IShellSurface::STATE_FULLSCREEN))
     {
       UpdateSizeVariables(size, m_scale, m_shellSurfaceState, true);
     }
@@ -1025,6 +1025,7 @@ CWinSystemWayland::SizeUpdateInformation CWinSystemWayland::UpdateSizeVariables(
   m_surfaceSize = sizes.surfaceSize;
   m_bufferSize = sizes.bufferSize;
   m_configuredSize = sizes.configuredSize;
+  m_bFullScreen = state.test(IShellSurface::STATE_FULLSCREEN);
 
   SizeUpdateInformation changes{m_surfaceSize != oldSurfaceSize, m_bufferSize != oldBufferSize, m_configuredSize != oldConfiguredSize, m_scale != oldBufferScale};
 
