@@ -29,12 +29,12 @@ CGUIAction::CExecutableAction::CExecutableAction(const std::string& condition,
 {
 }
 
-std::string CGUIAction::CExecutableAction::GetCondition() const
+const std::string& CGUIAction::CExecutableAction::GetCondition() const
 {
   return m_condition;
 }
 
-std::string CGUIAction::CExecutableAction::GetAction() const
+const std::string& CGUIAction::CExecutableAction::GetAction() const
 {
   return m_action;
 }
