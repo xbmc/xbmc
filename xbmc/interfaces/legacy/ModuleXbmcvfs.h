@@ -37,7 +37,7 @@ namespace XBMCAddon
     ///
     /// @param source                file to copy.
     /// @param destination           destination file
-    /// @return                      True if successed
+    /// @return                      True if successful
     ///
     ///
     /// ------------------------------------------------------------------------
@@ -61,7 +61,7 @@ namespace XBMCAddon
     /// Delete a file
     ///
     /// @param file                  File to delete
-    /// @return                      True if successed
+    /// @return                      True if successful
     ///
     ///
     /// ------------------------------------------------------------------------
@@ -86,7 +86,7 @@ namespace XBMCAddon
     ///
     /// @param file                  File to rename
     /// @param newFileName           New filename, including the full path
-    /// @return                      True if successed
+    /// @return                      True if successful
     ///
     /// @note Moving files between different filesystem (eg. local to nfs://) is not possible on
     ///       all platforms. You may have to do it manually by using the copy and deleteFile functions.
@@ -114,7 +114,7 @@ namespace XBMCAddon
     ///
     /// @param path                  File or folder (folder must end with
     ///                              slash or backslash)
-    /// @return                      True if successed
+    /// @return                      True if successful
     ///
     ///
     /// ------------------------------------------------------------------------
@@ -206,7 +206,7 @@ namespace XBMCAddon
     /// @return            Validated path
     ///
     /// @note The result is platform-specific. Only useful if you are coding
-    ///       for multiple platfforms for fixing slash problems
+    ///       for multiple platforms for fixing slash problems
     ///         (e.g. Corrects 'Z://something' -> 'Z:\something').
     ///
     ///
@@ -232,7 +232,7 @@ namespace XBMCAddon
     /// Create a folder.
     ///
     /// @param path                  Folder to create
-    /// @return                      True if successed
+    /// @return                      True if successful
     ///
     ///
     /// ------------------------------------------------------------------------
@@ -258,7 +258,7 @@ namespace XBMCAddon
     /// Create folder(s) - it will create all folders in the path.
     ///
     /// @param path                  Folders to create
-    /// @return                      True if successed
+    /// @return                      True if successful
     ///
     ///
     /// ------------------------------------------------------------------------
