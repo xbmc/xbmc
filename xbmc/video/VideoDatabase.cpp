@@ -3030,7 +3030,7 @@ bool CVideoDatabase::SetFileForMedia(const std::string& fileAndPath,
     case VideoDbContentType::EPISODES:
       return SetFileForEpisode(fileAndPath, mediaId, oldIdFile);
     default:
-      CLog::LogF(LOGDEBUG, "unsupported media type {}", type);
+      CLog::LogF(LOGDEBUG, "unsupported media type {}", static_cast<int>(type));
       return false;
   }
 }
