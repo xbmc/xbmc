@@ -29,6 +29,7 @@
     defined(__arm__) || \
     defined(__loongarch__) || \
     defined(_M_ARM) || \
+    defined(_M_ARM64) || \
     defined(__mips__) || \
     defined(__or1k__) || \
     defined(__powerpc__) || \
