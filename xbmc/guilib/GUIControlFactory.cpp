@@ -1498,6 +1498,16 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
       icontrol->SetAspectRatio(aspect);
       icontrol->SetCrossFade(fadeTime);
 
+      // Set image filter
+      GUIINFO::CGUIInfoLabel imageFilter;
+      GetInfoLabel(pControlNode, "imagefilter", imageFilter, parentID);
+      icontrol->SetImageFilter(imageFilter);
+
+      // Set duffuse filter
+      GUIINFO::CGUIInfoLabel diffuseFilter;
+      GetInfoLabel(pControlNode, "diffusefilter", diffuseFilter, parentID);
+      icontrol->SetDiffuseFilter(diffuseFilter);
+
       break;
     }
     case CGUIControl::GUICONTROL_MULTI_IMAGE:
