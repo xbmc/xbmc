@@ -496,7 +496,8 @@
 	</variable>
 	<variable name="ListPVRRecordingsIconVar">
 		<value condition="ListItem.IsRecording">windows/pvr/record.png</value>
-		<value condition="ListItem.IsResumable">overlays/watched/resume.png</value>
+		<value condition="ListItem.IsResumable + Integer.IsGreater(ListItem.Playcount,0)">overlays/watched/OverlayWatchedResume.png</value>
+		<value condition="ListItem.IsResumable">overlays/watched/OverlayResume.png</value>
 		<value condition="!String.IsEmpty(ListItem.Overlay)">$INFO[ListItem.Overlay]</value>
 		<value condition="!ListItem.IsParentFolder">OverlayUnwatched.png</value>
 	</variable>
