@@ -797,8 +797,17 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       }
       if (PLAYLIST::IsSmartPlayList(*item) || PLAYLIST::IsSmartPlayList(*m_vecItems))
         buttons.Add(CONTEXT_BUTTON_EDIT_SMART_PLAYLIST, 586);
-      if (URIUtils::IsBlurayPath(item->GetDynPath()))
+
+      // If version then may be more appropriate to change playlist through version manager dialog
+      // If versions as folders is not selected then correct place to change playlists is in the version dialog
+      // If versions as folders is selected then can change either on individual version in library or through dialog
+      if (URIUtils::IsBlurayPath(item->GetDynPath()) && !item->m_bIsFolder &&
+          !(item->GetVideoInfoTag()->HasVideoVersions() &&
+            !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                CSettings::SETTING_VIDEOLIBRARY_SHOWVIDEOVERSIONSASFOLDER)))
+      {
         buttons.Add(CONTEXT_BUTTON_CHOOSE_PLAYLIST, 13424);
+      }
     }
   }
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
