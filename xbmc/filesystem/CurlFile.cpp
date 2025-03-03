@@ -1769,6 +1769,7 @@ int8_t CCurlFile::CReadState::FillBuffer(unsigned int want)
             if ( (msg->data.result == CURLE_OPERATION_TIMEDOUT ||
                   msg->data.result == CURLE_PARTIAL_FILE       ||
                   msg->data.result == CURLE_COULDNT_CONNECT    ||
+                  msg->data.result == CURLE_HTTP2_STREAM       ||
                   msg->data.result == CURLE_RECV_ERROR)        &&
                   !m_bFirstLoop)
             {
