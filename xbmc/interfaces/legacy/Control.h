@@ -1502,7 +1502,7 @@ namespace XBMCAddon
       /// @brief \python_func{ getItemHeight() }
       /// Returns the control's current item height as an integer.
       ///
-      /// @return                       Current item heigh
+      /// @return                       Current item height
       ///
       ///
       ///--------------------------------------------------------------------------

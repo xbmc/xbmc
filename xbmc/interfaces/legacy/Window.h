@@ -514,7 +514,7 @@ namespace XBMCAddon
       /// @brief \python_func{ show() }
       /// Show this window.
       ///
-      /// Shows this window by activating it, calling close() after it wil
+      /// Shows this window by activating it, calling close() afterwards will
       /// activate the current window again.
       ///
       /// @note If your script ends this window will be closed to. To show it

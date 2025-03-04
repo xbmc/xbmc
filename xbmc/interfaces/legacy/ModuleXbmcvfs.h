@@ -30,103 +30,103 @@ namespace XBMCAddon
     //
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
-    ///
-    /// \ingroup python_xbmcvfs
-    /// @brief \python_func{ xbmcvfs.copy(source, destination) }
-    /// Copy file to destination, returns true/false.
-    ///
-    /// @param source                file to copy.
-    /// @param destination           destination file
-    /// @return                      True if successed
-    ///
-    ///
-    /// ------------------------------------------------------------------------
-    ///
-    /// **Example:**
-    /// ~~~~~~~~~~~~~{.py}
-    /// ..
-    /// success = xbmcvfs.copy(source, destination)
-    /// ..
-    /// ~~~~~~~~~~~~~
-    ///
-    copy(...);
+  ///
+  /// \ingroup python_xbmcvfs
+  /// @brief \python_func{ xbmcvfs.copy(source, destination) }
+  /// Copy file to destination, returns true/false.
+  ///
+  /// @param source                file to copy.
+  /// @param destination           destination file
+  /// @return                      True if successful
+  ///
+  ///
+  /// ------------------------------------------------------------------------
+  ///
+  /// **Example:**
+  /// ~~~~~~~~~~~~~{.py}
+  /// ..
+  /// success = xbmcvfs.copy(source, destination)
+  /// ..
+  /// ~~~~~~~~~~~~~
+  ///
+  copy(...);
 #else
     bool copy(const String& strSource, const String& strDestination);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
-    ///
-    /// \ingroup python_xbmcvfs
-    /// @brief \python_func{ xbmcvfs.delete(file) }
-    /// Delete a file
-    ///
-    /// @param file                  File to delete
-    /// @return                      True if successed
-    ///
-    ///
-    /// ------------------------------------------------------------------------
-    ///
-    /// **Example:**
-    /// ~~~~~~~~~~~~~{.py}
-    /// ..
-    /// xbmcvfs.delete(file)
-    /// ..
-    /// ~~~~~~~~~~~~~
-    ///
-    delete(...);
+  ///
+  /// \ingroup python_xbmcvfs
+  /// @brief \python_func{ xbmcvfs.delete(file) }
+  /// Delete a file
+  ///
+  /// @param file                  File to delete
+  /// @return                      True if successful
+  ///
+  ///
+  /// ------------------------------------------------------------------------
+  ///
+  /// **Example:**
+  /// ~~~~~~~~~~~~~{.py}
+  /// ..
+  /// xbmcvfs.delete(file)
+  /// ..
+  /// ~~~~~~~~~~~~~
+  ///
+  delete (...);
 #else
     bool deleteFile(const String& file);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
-    ///
-    /// \ingroup python_xbmcvfs
-    /// @brief \python_func{ xbmcvfs.rename(file, newFileName) }
-    /// Rename a file
-    ///
-    /// @param file                  File to rename
-    /// @param newFileName           New filename, including the full path
-    /// @return                      True if successed
-    ///
-    /// @note Moving files between different filesystem (eg. local to nfs://) is not possible on
-    ///       all platforms. You may have to do it manually by using the copy and deleteFile functions.
-    ///
-    ///
-    /// ------------------------------------------------------------------------
-    ///
-    /// **Example:**
-    /// ~~~~~~~~~~~~~{.py}
-    /// ..
-    /// success = xbmcvfs.rename(file,newFileName)
-    /// ..
-    /// ~~~~~~~~~~~~~
-    ///
-    rename(...);
+  ///
+  /// \ingroup python_xbmcvfs
+  /// @brief \python_func{ xbmcvfs.rename(file, newFileName) }
+  /// Rename a file
+  ///
+  /// @param file                  File to rename
+  /// @param newFileName           New filename, including the full path
+  /// @return                      True if successful
+  ///
+  /// @note Moving files between different filesystem (eg. local to nfs://) is not possible on
+  ///       all platforms. You may have to do it manually by using the copy and deleteFile functions.
+  ///
+  ///
+  /// ------------------------------------------------------------------------
+  ///
+  /// **Example:**
+  /// ~~~~~~~~~~~~~{.py}
+  /// ..
+  /// success = xbmcvfs.rename(file,newFileName)
+  /// ..
+  /// ~~~~~~~~~~~~~
+  ///
+  rename(...);
 #else
     bool rename(const String& file, const String& newFile);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
-    ///
-    /// \ingroup python_xbmcvfs
-    /// @brief \python_func{ xbmcvfs.exists(path) }
-    /// Check for a file or folder existence
-    ///
-    /// @param path                  File or folder (folder must end with
-    ///                              slash or backslash)
-    /// @return                      True if successed
-    ///
-    ///
-    /// ------------------------------------------------------------------------
-    ///
-    /// **Example:**
-    /// ~~~~~~~~~~~~~{.py}
-    /// ..
-    /// success = xbmcvfs.exists(path)
-    /// ..
-    /// ~~~~~~~~~~~~~
-    ///
-    exists(...);
+  ///
+  /// \ingroup python_xbmcvfs
+  /// @brief \python_func{ xbmcvfs.exists(path) }
+  /// Check for a file or folder existence
+  ///
+  /// @param path                  File or folder (folder must end with
+  ///                              slash or backslash)
+  /// @return                      True if successful
+  ///
+  ///
+  /// ------------------------------------------------------------------------
+  ///
+  /// **Example:**
+  /// ~~~~~~~~~~~~~{.py}
+  /// ..
+  /// success = xbmcvfs.exists(path)
+  /// ..
+  /// ~~~~~~~~~~~~~
+  ///
+  exists(...);
 #else
     bool exists(const String& path);
 #endif
@@ -206,7 +206,7 @@ namespace XBMCAddon
     /// @return            Validated path
     ///
     /// @note The result is platform-specific. Only useful if you are coding
-    ///       for multiple platfforms for fixing slash problems
+    ///       for multiple platforms for fixing slash problems
     ///         (e.g. Corrects 'Z://something' -> 'Z:\something').
     ///
     ///
@@ -232,7 +232,7 @@ namespace XBMCAddon
     /// Create a folder.
     ///
     /// @param path                  Folder to create
-    /// @return                      True if successed
+    /// @return                      True if successful
     ///
     ///
     /// ------------------------------------------------------------------------
@@ -258,7 +258,7 @@ namespace XBMCAddon
     /// Create folder(s) - it will create all folders in the path.
     ///
     /// @param path                  Folders to create
-    /// @return                      True if successed
+    /// @return                      True if successful
     ///
     ///
     /// ------------------------------------------------------------------------
