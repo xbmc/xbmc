@@ -915,12 +915,6 @@ void CPVRGUIActionsTimers::AnnounceReminder(const std::shared_ptr<CPVRTimerInfoT
     return;
   }
 
-  if (CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingChannel(timer->Channel()))
-  {
-    // no need for an announcement. channel in question is already playing.
-    return;
-  }
-
   // show the reminder dialog
   CGUIDialogProgress* dialog =
       CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(
@@ -931,30 +925,40 @@ void CPVRGUIActionsTimers::AnnounceReminder(const std::shared_ptr<CPVRTimerInfoT
   dialog->Reset();
 
   dialog->SetHeading(CVariant{19312}); // "PVR reminder"
-  dialog->ShowChoice(0, CVariant{19165}); // "Switch"
+
+  static constexpr int CHOICE_SWITCH{0};
+  static constexpr int CHOICE_RECORD{1};
+  static constexpr int CHOICE_CANCEL{2};
 
   std::string text = GetAnnouncerText(timer, 19307, 19308); // Reminder for ...
 
-  bool bCanRecord = false;
-  const std::shared_ptr<const CPVRClient> client =
-      CServiceBroker::GetPVRManager().GetClient(timer->ClientID());
+  bool autoRecord{false};
+  const std::shared_ptr<const CPVRClient> client{
+      CServiceBroker::GetPVRManager().GetClient(timer->ClientID())};
   if (client && client->GetClientCapabilities().SupportsTimers())
   {
-    bCanRecord = true;
-    dialog->ShowChoice(1, CVariant{264}); // "Record"
-    dialog->ShowChoice(2, CVariant{222}); // "Cancel"
+    dialog->ShowChoice(CHOICE_RECORD, CVariant{264}); // "Record"
+    autoRecord = m_settings.GetBoolValue(CSettings::SETTING_PVRREMINDERS_AUTORECORD);
+    if (autoRecord)
+    {
+      // (Auto-close of this reminder will schedule a recording...)
+      text += "\n\n" + g_localizeStrings.Get(19309);
+    }
+  }
 
-    if (m_settings.GetBoolValue(CSettings::SETTING_PVRREMINDERS_AUTORECORD))
-      text += "\n\n" + g_localizeStrings.Get(
-                           19309); // (Auto-close of this reminder will schedule a recording...)
-    else if (m_settings.GetBoolValue(CSettings::SETTING_PVRREMINDERS_AUTOSWITCH))
-      text += "\n\n" + g_localizeStrings.Get(
-                           19331); // (Auto-close of this reminder will switch to channel...)
-  }
-  else
+  bool autoSwitch{false};
+  if (!CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingChannel(timer->Channel()))
   {
-    dialog->ShowChoice(1, CVariant{222}); // "Cancel"
+    dialog->ShowChoice(CHOICE_SWITCH, CVariant{19165}); // "Switch"
+    autoSwitch = m_settings.GetBoolValue(CSettings::SETTING_PVRREMINDERS_AUTOSWITCH);
+    if (autoSwitch)
+    {
+      // (Auto-close of this reminder will switch to channel...)
+      text += "\n\n" + g_localizeStrings.Get(19331);
+    }
   }
+
+  dialog->ShowChoice(CHOICE_CANCEL, CVariant{222}); // "Cancel"
 
   dialog->SetText(text);
   dialog->SetPercentage(100);
@@ -986,13 +990,13 @@ void CPVRGUIActionsTimers::AnnounceReminder(const std::shared_ptr<CPVRTimerInfoT
   timer->SetState(PVR_TIMER_STATE_DISABLED);
 
   bool bAutoClosed = (iRemaining <= 0);
-  bool bSwitch = (result == 0);
-  bool bRecord = (result == 1);
+  bool bSwitch = (result == CHOICE_SWITCH);
+  bool bRecord = (result == CHOICE_RECORD);
 
   if (bAutoClosed)
   {
-    bRecord = (bCanRecord && m_settings.GetBoolValue(CSettings::SETTING_PVRREMINDERS_AUTORECORD));
-    bSwitch = m_settings.GetBoolValue(CSettings::SETTING_PVRREMINDERS_AUTOSWITCH);
+    bRecord = autoRecord;
+    bSwitch = autoSwitch;
   }
 
   if (bRecord)
@@ -1050,17 +1054,23 @@ void CPVRGUIActionsTimers::AnnounceReminder(const std::shared_ptr<CPVRTimerInfoT
 
 void CPVRGUIActionsTimers::AnnounceReminders() const
 {
-  // Prevent multiple yesno dialogs, all on same call stack, due to gui message processing while dialog is open.
+  // Prevent multiple announcer dialogs, all on same call stack (thus no mutex protection needed),
+  // due to GUI message processing while dialog is open.
   if (m_bReminderAnnouncementRunning)
     return;
 
+  const auto playbackState{CServiceBroker::GetPVRManager().PlaybackState()};
+  const auto timers{CServiceBroker::GetPVRManager().Timers()};
+
   m_bReminderAnnouncementRunning = true;
-  std::shared_ptr<CPVRTimerInfoTag> timer =
-      CServiceBroker::GetPVRManager().Timers()->GetNextReminderToAnnnounce();
+  std::shared_ptr<CPVRTimerInfoTag> timer{timers->GetNextReminderToAnnnounce()};
   while (timer)
   {
-    AnnounceReminder(timer);
-    timer = CServiceBroker::GetPVRManager().Timers()->GetNextReminderToAnnnounce();
+    // No announcements for currently playing channel.
+    if (!playbackState->IsPlayingChannel(timer->Channel()))
+      AnnounceReminder(timer);
+
+    timer = timers->GetNextReminderToAnnnounce();
   }
   m_bReminderAnnouncementRunning = false;
 }
