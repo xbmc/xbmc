@@ -13,7 +13,7 @@ xbmc/interfaces/python/test       test/python
 xbmc/music/test                   test/music
 xbmc/music/tags/test              test/music_tags
 xbmc/network/test                 test/network
-xbmc/pictures/metadata/test       test/pictures/metatada
+xbmc/pictures/metadata/test       test/pictures/metadata
 xbmc/playlists/test               test/playlists
 xbmc/pvr/channels/test            test/pvrchannels
 xbmc/settings/test                test/settings

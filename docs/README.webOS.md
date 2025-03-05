@@ -66,7 +66,7 @@ Several different strategies are used to draw your attention to certain pieces o
 
 ## 2. Prerequisites
 * **[LG developer account](https://webostv.developer.lge.com/develop/getting-started/preparing-lg-account)**. This is required to access developer mode on the webOS device.
-* **[Actvate developer mode on your webOS device]**. Follow the instructions as per **[Installing Developer Mode app page](https://webostv.developer.lge.com/develop/getting-started/developer-mode-app#installing-developer-mode-app)**.
+* **[Activate developer mode on your webOS device]**. Follow the instructions as per **[Installing Developer Mode app page](https://webostv.developer.lge.com/develop/getting-started/developer-mode-app#installing-developer-mode-app)**.
 * **[Download ares CLI tools](https://webostv.developer.lge.com/develop/tools/cli-installation)**. These are required to package the kodi binary into a IPK format that webOS understands.
 * **[Download and setup a compatible toolchain to compile kodi]**. The toolchain which was used in this guide is **[buildroot-nc4](https://github.com/openlgtv/buildroot-nc4)**, it is an up to date buildroot configuration and comes with newer tools such as GCC 12.2.0. Other toolchains exist, such as those found on the LG OpenSource website: **https://opensource.lge.com/**. You will need to enter the model number of your TV to find the applicable toolchain.
 

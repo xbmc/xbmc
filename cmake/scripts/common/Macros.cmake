@@ -234,7 +234,7 @@ function(copy_file_to_buildtree file)
   endif()
 
   if(${CORE_SYSTEM_NAME} MATCHES "windows")
-    # if DEPENDS_PATH in fille
+    # if DEPENDS_PATH in file
     if(${file} MATCHES ${DEPENDS_PATH})
       file(APPEND ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ExportFiles.cmake
 "file(GLOB filenames ${file})
