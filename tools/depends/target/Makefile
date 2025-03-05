@@ -166,6 +166,7 @@ libass: $(FONTCONFIG) fribidi harfbuzz freetype2 $(ICONV)
 libbluray: fontconfig freetype2 $(ICONV) udfread libxml2
 libcdio-gplv3: $(ICONV)
 libcdio: $(ICONV)
+libdatachannel: libjuice libsrtp plog usrsctp
 libdisplay-info: hwdata
 libevdev: libudev
 libgcrypt: libgpg-error
@@ -173,6 +174,8 @@ libinput: mtdev libevdev
 libmicrohttpd: gnutls libgcrypt libgpg-error
 libplist: $(ZLIB)
 libpng: $(ZLIB)
+libsrtp: openssl
+libtorrent: boost libdatachannel openssl try_signal $(ZLIB)
 libva: libdrm $(LIBVA_DEPS)
 libxml2: $(ZLIB)
 libxslt: libgcrypt libxml2
