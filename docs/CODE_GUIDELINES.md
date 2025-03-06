@@ -385,7 +385,7 @@ int x{3};
 int* y{nullptr};
 bool z = false;
 std::string text; // not primitive
-KindOfStruct theStruct{}; // POD structures or structures with uninitalised members must be initialised with empty brackets
+KindOfStruct theStruct{}; // POD structures or structures with uninitialised members must be initialised with empty brackets
 Log::Log("test: {}, {}, {}", x, y, z);
 ```
 
@@ -643,7 +643,7 @@ New classes and functions are expected to have Doxygen comments describing their
  * \param destination the beginning of the destination range
  * \param input input string to be split
  * \param delimiter delimiter to be used to split the input string
- * \param maxStrings (optional) maximum number of splitted strings
+ * \param maxStrings (optional) maximum number of split strings
  * \return output iterator to the element in the destination range one past the last element
  *         that was put there
  */
