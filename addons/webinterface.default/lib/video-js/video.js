@@ -10690,7 +10690,7 @@ var Player = function (_Component) {
 
     seconds = parseFloat(seconds) || 0;
 
-    // Standardize on Inifity for signaling video is live
+    // Standardize on Infinity for signaling video is live
     if (seconds < 0) {
       seconds = Infinity;
     }
@@ -14238,7 +14238,7 @@ for (var _i = 0; _i < _readOnly.length; _i++) {
  *
  * @method Flash#initialTime
  * @return {number}
- *         The `initialTime` proprety on the swf.
+ *         The `initialTime` property on the swf.
  */
 
 /**
@@ -14246,7 +14246,7 @@ for (var _i = 0; _i < _readOnly.length; _i++) {
  *
  * @method Flash#startOffsetTime
  * @return {number}
- *         The `startOffsetTime` proprety on the swf.
+ *         The `startOffsetTime` property on the swf.
  */
 
 /**
@@ -16150,7 +16150,7 @@ Html5.resetMediaElement = function (el) {
  * @return {boolean}
  *         - The value of `seeking` from the media element.
  *         - True indicates that the media is currently seeking to a new position.
- *         - Flase indicates that the media is not seeking to a new position at this time.
+ *         - False indicates that the media is not seeking to a new position at this time.
  *
  * @see [Spec]{@link https://www.w3.org/TR/html5/embedded-content-0.html#dom-media-seeking}
  */
@@ -16443,10 +16443,10 @@ _tech2['default'].withSourceHandlers(Html5);
 /**
  * Native source handler for Html5, simply passes the source to the media element.
  *
- * @proprety {Tech~SourceObject} source
+ * @property {Tech~SourceObject} source
  *        The source object
  *
- * @proprety {Html5} tech
+ * @property {Html5} tech
  *        The instance of the HTML5 tech.
  */
 Html5.nativeSourceHandler = {};
@@ -23276,7 +23276,7 @@ function rangeCheck(fnName, index, maxIndex) {
  *        The function name to use for logging
  *
  * @param {string} valueIndex
- *        The proprety that should be used to get the time. should be 'start' or 'end'
+ *        The property that should be used to get the time. should be 'start' or 'end'
  *
  * @param {Array} ranges
  *        An array of time ranges
