@@ -41,10 +41,26 @@ FOR %%b in (%*) DO (
   IF %%b==sh SET useshell=sh
 )
 
-SET PreferredToolArchitecture=x64
-SET buildconfig=Release
-set WORKSPACE=%base_dir%\kodi-build.%TARGET_PLATFORM%
+IF DEFINED PreferredToolArchitecture (
+  echo Build Tool Arch: %PreferredToolArchitecture%
+) else (
+  echo Setting Default Tool Arch: %PROCESSOR_ARCHITECTURE%
+  SET PreferredToolArchitecture=%PROCESSOR_ARCHITECTURE%
+)
 
+IF DEFINED buildconfig (
+  echo Build Configuration: %buildconfig%
+) else (
+  echo Setting Default Build Configuration: Release
+  SET buildconfig=Release
+)
+
+IF DEFINED WORKSPACE (
+  echo Workspace: %WORKSPACE%
+) else (
+  echo Setting Default Workspace: %base_dir%\kodi-build.%TARGET_PLATFORM%
+  SET WORKSPACE=%base_dir%\kodi-build.%TARGET_PLATFORM%
+)
 
   :: sets the BRANCH env var
   FOR /f %%a IN ('getbranch.bat') DO SET BRANCH=%%a
