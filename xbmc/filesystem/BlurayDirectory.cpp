@@ -707,7 +707,118 @@ void CBlurayDirectory::GetDiscInfo()
   {
     m_disc_info = bd_get_disc_info(m_bd);
     g_blurayDiscCache.SetDisc(path, m_disc_info);
+
+    const std::string movieObjectFile{URIUtils::AddFileToFolder(path, "BDMV", "MovieObject.bdmv")};
+    CFile file;
+    if (file.Open(movieObjectFile))
+    {
+      const int64_t size{file.GetLength()};
+      std::vector<char> buffer;
+      buffer.resize(size);
+      ssize_t read = file.Read(buffer.data(), size);
+      if (read == size)
+      {
+        ParseMovieObjectBDMV(buffer);
+      }
+      file.Close();
+    }
   }
+}
+
+bool CBlurayDirectory::ParseMovieObjectBDMV(const std::vector<char>& buffer)
+{
+  // Check size
+  if (buffer.size() < 50)
+  {
+    CLog::LogF(LOGDEBUG, "Invalid MovieObject.bdmv - too small");
+    return false;
+  }
+
+  // Check header
+  const std::string header{buffer.begin(), buffer.begin() + 4};
+  if (header != "MOBJ")
+  {
+    CLog::LogF(LOGDEBUG, "Invalid MovieObject.bdmv header");
+    return false;
+  }
+
+  const unsigned int dataLength{GetDWord(buffer, 40)};
+  const unsigned int numberOfObjects{GetWord(buffer, 48)};
+
+  // Check size
+  if (buffer.size() < dataLength + 44)
+  {
+    CLog::LogF(LOGDEBUG, "Invalid MovieObject.bdmv - too small");
+    return false;
+  }
+
+  int offset{50};
+  for (unsigned int i = 0; i < numberOfObjects; ++i)
+  {
+    const unsigned int numberOfCommands{GetWord(buffer, offset + 2)};
+
+    offset += 4;
+    for (unsigned int j = 0; j < numberOfCommands; ++j)
+    {
+      const unsigned int command{GetDWord(buffer, offset)};
+      const unsigned int dst{GetDWord(buffer, offset + 4)};
+      if (command == 0x22800000 || command == 0x42820000)
+      {
+        CLog::LogF(LOGDEBUG, "Playlist {} is played through the menu in title {} with command 0x{}",
+                   dst, i, CDiscDirectoryHelper::HexToString(command));
+      }
+      if (command == 0x22000000)
+      {
+        // Need to look back and see if register set
+        // Loop back through last (up to) 10 commands for move command
+        const unsigned int lookBack{j > 10 ? 10 : j};
+        int playlist{-1};
+        for (unsigned int k = 1; k <= lookBack; ++k)
+        {
+          const unsigned int command2{GetDWord(buffer, offset - (k * 12))};
+          const unsigned int src2{GetDWord(buffer, offset - (k * 12) + 8)};
+          if (command2 == 0x50400001)
+          {
+            playlist = static_cast<int>(src2);
+            break;
+          }
+        }
+        if (playlist != -1)
+        {
+          CLog::LogF(LOGDEBUG,
+                     "Playlist {} is played through the menu in title {} with command 0x{}",
+                     playlist, i, CDiscDirectoryHelper::HexToString(command));
+        }
+        else
+        {
+          CLog::LogF(
+              LOGDEBUG,
+              "Unknown playlist is played through the menu in title {} with command 0x{} GPR {}", i,
+              CDiscDirectoryHelper::HexToString(command), dst);
+        }
+      }
+      offset += 12;
+    }
+  }
+  return true;
+}
+
+unsigned int CBlurayDirectory::GetDWord(const std::vector<char>& bytes, unsigned int offset)
+{
+  unsigned int result{0};
+  result |= (static_cast<unsigned char>(bytes[offset]) << 24);
+  result |= (static_cast<unsigned char>(bytes[offset + 1]) << 16);
+  result |= (static_cast<unsigned char>(bytes[offset + 2]) << 8);
+  result |= static_cast<unsigned char>(bytes[offset + 3]);
+  return result;
+}
+
+unsigned int CBlurayDirectory::GetWord(const std::vector<char>& bytes, unsigned int offset)
+{
+  unsigned int result{0};
+  result |= (static_cast<unsigned char>(bytes[offset]) << 8);
+  result |= static_cast<unsigned char>(bytes[offset + 1]);
+  return result;
 }
 
 bool CBlurayDirectory::GetPlaylistInfoFromDisc(unsigned int playlist,

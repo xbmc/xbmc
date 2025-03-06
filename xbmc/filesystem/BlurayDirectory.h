@@ -52,6 +52,9 @@ private:
                                          const std::string& label) const;
 
   void GetDiscInfo();
+  bool ParseMovieObjectBDMV(const std::vector<char>& buffer);
+  static unsigned int GetDWord(const std::vector<char>& bytes, unsigned int offset);
+  static unsigned int GetWord(const std::vector<char>& bytes, unsigned int offset);
   bool GetPlaylistInfoFromDisc(unsigned int playlist, BLURAY_TITLE_INFO& p) const;
 
   CURL m_url;

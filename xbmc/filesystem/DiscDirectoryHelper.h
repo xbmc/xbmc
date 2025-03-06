@@ -79,4 +79,5 @@ public:
   static std::string GetEpisodesLabel(CFileItem& newItem, const CFileItem& item);
 
   static std::string HexToString(std::span<const uint8_t> buf, int count);
+  static std::string HexToString(int num);
 };

@@ -633,6 +633,13 @@ std::string CDiscDirectoryHelper::HexToString(std::span<const uint8_t> buf, int 
   return ss.str();
 }
 
+std::string CDiscDirectoryHelper::HexToString(int num)
+{
+  std::stringstream ss;
+  ss << std::hex << std::setw(4) << std::setfill('0') << num;
+  return ss.str();
+}
+
 std::string CDiscDirectoryHelper::GetEpisodesLabel(CFileItem& newItem, const CFileItem& item)
 {
   std::string label;
