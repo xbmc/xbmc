@@ -1,7 +1,6 @@
 include ../../Makefile.include PCRE2-VERSION ../../download-files.include
 DEPS = ../../Makefile.include Makefile PCRE2-VERSION ../../download-files.include \
-                                001-all-enable_docs_pc.patch \
-                                002-all-cmake-config-installdir.patch
+                                001-all-enable_docs_pc.patch
 
 # configuration settings
 CMAKE_OPTIONS=-DBUILD_STATIC_LIBS=ON \
@@ -28,7 +27,6 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); mkdir -p build
 	cd $(PLATFORM); patch -p1 -i ../001-all-enable_docs_pc.patch
-	cd $(PLATFORM); patch -p1 -i ../002-all-cmake-config-installdir.patch
 	cd $(PLATFORM)/build; $(CMAKE) $(CMAKE_OPTIONS) ..
 
 $(LIBDYLIB): $(PLATFORM)
