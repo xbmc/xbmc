@@ -75,6 +75,7 @@
       <eight>JumpSMS8</eight>
       <nine>JumpSMS9</nine>
       <print>Screenshot</print>
+      <favorites>ActivateWindow(FavouritesBrowser)</favorites>
     </remote>
   </global>
   <Home>
@@ -712,4 +713,9 @@
       <title>PlayerProcessInfo</title>
     </remote>
   </PlayerProcessInfo>
+  <FullScreenLiveTV>
+    <remote>
+      <last>Number0</last>
+    </remote>
+  </FullScreenLiveTV>
 </keymap>

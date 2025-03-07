@@ -299,6 +299,10 @@ uint32_t CIRTranslator::TranslateString(std::string strButton)
     buttonCode = XINPUT_IR_REMOTE_DVD_MENU;
   else if (strButton == "print")
     buttonCode = XINPUT_IR_REMOTE_PRINT;
+  else if (strButton == "favorites")
+    buttonCode = XINPUT_IR_REMOTE_FAVORITE_MENU;
+  else if (strButton == "last")
+    buttonCode = XINPUT_IR_REMOTE_LAST;
   else
     CLog::Log(LOGERROR, "Remote Translator: Can't find button {}", strButton);
   return buttonCode;
