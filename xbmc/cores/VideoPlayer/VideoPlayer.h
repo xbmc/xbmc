@@ -24,6 +24,7 @@
 #include "guilib/DispResource.h"
 #include "threads/SystemClock.h"
 #include "threads/Thread.h"
+#include "utils/StreamDetails.h"
 
 #include <atomic>
 #include <chrono>
@@ -470,6 +471,7 @@ protected:
   void OpenDefaultStreams(bool reset = true);
 
   void UpdatePlayState(double timeout);
+  void SavePlaylistInformation();
   void GetGeneralInfo(std::string& strVideoInfo);
   int64_t GetUpdatedTime();
   int64_t GetTime();
@@ -478,7 +480,7 @@ protected:
   void UpdateContent();
   void UpdateContentState();
 
-  void UpdateFileItemStreamDetails(CFileItem& item);
+  void UpdateFileItemStreamDetails(CFileItem& item, bool alwaysUpdate = false);
   int GetPreviousChapter();
 
   bool m_players_created;
@@ -493,6 +495,23 @@ protected:
   XbmcThreads::EndTime<> m_cachingTimer;
 
   std::unique_ptr<CProcessInfo> m_processInfo;
+
+  bool m_isBluray{false};
+  int m_currentPlaylist{-1};
+  bool m_mightBeMenu{false};
+  double m_currentDuration{0};
+  CStreamDetails m_currentStreamDetails;
+  std::chrono::steady_clock::time_point m_startWatchTime{};
+  struct playlistInfo
+  {
+    int playlist{-1};
+    bool mightBeMenu{false};
+    double duration{0};
+    double watchedTime{0};
+    CStreamDetails details;
+    SPlayerState state;
+  };
+  std::vector<playlistInfo> m_playedPlaylists;
 
   CCurrentStream m_CurrentAudio;
   CCurrentStream m_CurrentVideo;
