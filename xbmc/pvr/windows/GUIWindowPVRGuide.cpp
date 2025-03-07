@@ -474,64 +474,74 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
                   const std::shared_ptr<const CPVREpgInfoTag> tag(pItem->GetEPGInfoTag());
                   if (tag)
                   {
-                    const CDateTime start(tag->StartAsUTC());
-                    const CDateTime end(tag->EndAsUTC());
-                    const CDateTime now(CDateTime::GetUTCDateTime());
-
-                    if (start <= now && now <= end)
+                    if (tag->IsPlayable())
                     {
-                      // current event
-                      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(
-                          *pItem);
-                    }
-                    else if (now < start)
-                    {
-                      // future event
-                      if (CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(tag))
-                        CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().EditTimer(*pItem);
-                      else
-                      {
-                        bool bCanRecord = true;
-                        const std::shared_ptr<const CPVRChannel> channel =
-                            CPVRItem(pItem).GetChannel();
-                        if (channel)
-                          bCanRecord = channel->CanRecord();
-
-                        const int iTextID =
-                            bCanRecord
-                                ? 19302 // "Do you want to record the selected programme or to switch to the current programme?"
-                                : 19344; // "Do you want to set a reminder for the selected programme or to switch to the current programme?"
-                        const int iNoButtonID = bCanRecord ? 264 // No => "Record"
-                                                           : 826; // "Set reminder"
-
-                        HELPERS::DialogResponse ret =
-                            HELPERS::ShowYesNoDialogText(CVariant{19096}, // "Smart select"
-                                                         CVariant{iTextID}, CVariant{iNoButtonID},
-                                                         CVariant{19165}); // Yes => "Switch"
-                        if (ret == HELPERS::DialogResponse::CHOICE_NO)
-                          CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().AddTimer(*pItem,
-                                                                                           false);
-                        else if (ret == HELPERS::DialogResponse::CHOICE_YES)
-                          CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(
-                              *pItem);
-                      }
+                      // VOD event
+                      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayEpgTag(*pItem);
                     }
                     else
                     {
-                      // past event
-                      const std::shared_ptr<CPVRRecording> recording{
-                          CPVRItem(pItem).GetRecording()};
-                      if (recording)
+                      const CDateTime start{tag->StartAsUTC()};
+                      const CDateTime end{tag->EndAsUTC()};
+                      const CDateTime now{CDateTime::GetUTCDateTime()};
+
+                      if (start <= now && now <= end)
                       {
-                        KODI::VIDEO::GUILIB::CVideoPlayActionProcessor proc{
-                            std::make_shared<CFileItem>(recording)};
-                        proc.ProcessDefaultAction();
-                      }
-                      else if (tag->IsPlayable())
-                        CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayEpgTag(
+                        // Current event
+                        CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(
                             *pItem);
+                      }
+                      else if (now < start)
+                      {
+                        // Future event
+                        if (CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(tag))
+                        {
+                          CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().EditTimer(*pItem);
+                        }
+                        else
+                        {
+                          bool canRecord{true};
+                          const std::shared_ptr<const CPVRChannel> channel{
+                              CPVRItem(pItem).GetChannel()};
+                          if (channel)
+                            canRecord = channel->CanRecord();
+
+                          const int textID{
+                              canRecord
+                                  ? 19302 // "Do you want to record the selected programme or to switch to the current programme?"
+                                  : 19344}; // "Do you want to set a reminder for the selected programme or to switch to the current programme?"
+                          const int noButtonID = canRecord ? 264 // No => "Record"
+                                                           : 826; // "Set reminder"
+
+                          const HELPERS::DialogResponse ret{
+                              HELPERS::ShowYesNoDialogText(CVariant{19096}, // "Smart select"
+                                                           CVariant{textID}, CVariant{noButtonID},
+                                                           CVariant{19165})}; // Yes => "Switch"
+                          if (ret == HELPERS::DialogResponse::CHOICE_NO)
+                            CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().AddTimer(*pItem,
+                                                                                             false);
+                          else if (ret == HELPERS::DialogResponse::CHOICE_YES)
+                            CServiceBroker::GetPVRManager()
+                                .Get<PVR::GUI::Playback>()
+                                .SwitchToChannel(*pItem);
+                        }
+                      }
                       else
-                        CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ShowEPGInfo(*pItem);
+                      {
+                        // Past event
+                        const std::shared_ptr<CPVRRecording> recording{
+                            CPVRItem(pItem).GetRecording()};
+                        if (recording)
+                        {
+                          KODI::VIDEO::GUILIB::CVideoPlayActionProcessor proc{
+                              std::make_shared<CFileItem>(recording)};
+                          proc.ProcessDefaultAction();
+                        }
+                        else
+                        {
+                          CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ShowEPGInfo(*pItem);
+                        }
+                      }
                     }
                     bReturn = true;
                   }
