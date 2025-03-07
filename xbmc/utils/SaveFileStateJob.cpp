@@ -234,6 +234,7 @@ void CSaveFileState::DoWork(CFileItem& item,
           CFileItemPtr msgItem(new CFileItem(item));
           if (item.HasProperty("original_listitem_url"))
             msgItem->SetPath(item.GetProperty("original_listitem_url").asString());
+          msgItem->SetDynPath(item.GetDynPath());
 
           // Could be part of an ISO stack. In this case the bookmark is saved onto the part.
           // In order to properly update the list, we need to refresh the stack's resume point
