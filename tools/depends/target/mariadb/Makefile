@@ -1,8 +1,7 @@
 include ../../Makefile.include MARIADB-VERSION ../../download-files.include
 DEPS = ../../Makefile.include MARIADB-VERSION Makefile ../../download-files.include \
                                   01-android.patch \
-                                  02-fix-CONC-612.patch \
-                                  04-pthread.patch
+                                  02-linux-pthread.patch
 
 LIBDYLIB=$(PLATFORM)/build/lib$(LIBNAME)/lib$(LIBNAME)client.a
 
@@ -19,6 +18,13 @@ endif
 # Disable GSSAPI authentication plugin (not widely used by Kodi users)
 PLUGIN_BUILD_FLAGS+=-DCLIENT_PLUGIN_AUTH_GSSAPI_CLIENT=OFF
 
+# configuration settings
+CMAKE_OPTIONS=-DWITH_SSL=OPENSSL \
+              -DWITH_UNIT_TESTS:BOOL=OFF \
+              -DWITH_EXTERNAL_ZLIB:BOOL=ON \
+              -DWITH_CURL:BOOL=OFF \
+              -DCMAKE_COMPILE_WARNING_AS_ERROR=OFF
+
 all: .installed-$(PLATFORM)
 
 $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
@@ -27,11 +33,10 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 ifeq ($(OS),android)
 	cd $(PLATFORM); patch -p1 -i ../01-android.patch
 endif
-	cd $(PLATFORM); patch -p1 -i ../02-fix-CONC-612.patch
 ifeq ($(OS),linux)
-	cd $(PLATFORM); patch -p1 -i ../04-pthread.patch
+	cd $(PLATFORM); patch -p1 -i ../02-linux-pthread.patch
 endif
-	cd $(PLATFORM)/build; $(CMAKE) $(PLUGIN_BUILD_FLAGS) -DWITH_SSL=OPENSSL -DWITH_UNIT_TESTS:BOOL=OFF -DWITH_EXTERNAL_ZLIB:BOOL=ON -DWITH_CURL:BOOL=OFF ..
+	cd $(PLATFORM)/build; $(CMAKE) $(PLUGIN_BUILD_FLAGS) $(CMAKE_OPTIONS) ..
 
 $(LIBDYLIB): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)/build
