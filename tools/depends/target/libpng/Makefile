@@ -18,9 +18,7 @@ ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
   endif
 else
   CMAKE_OPTIONS+= -DPNG_HARDWARE_OPTIMIZATIONS=ON \
-                  -DPNG_BUILD_ZLIB=ON \
-                  -DZLIB_LIBRARY=$(PREFIX)/lib/libz.a \
-                  -DZLIB_INCLUDE_DIR=$(PREFIX)/include
+                  -DZLIB_ROOT=$(PREFIX)
 endif
 
 LIBDYLIB=$(PLATFORM)/build/$(BYPRODUCT)
