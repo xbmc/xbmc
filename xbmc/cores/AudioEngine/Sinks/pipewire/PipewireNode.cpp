@@ -40,7 +40,8 @@ void CPipewireNode::EnumerateFormats()
   for (uint32_t param = 0; param < m_info->n_params; param++)
   {
     if (m_info->params[param].id == SPA_PARAM_EnumFormat)
-      pw_node_enum_params(m_proxy.get(), 0, m_info->params[param].id, 0, 0, NULL);
+      pw_node_enum_params(reinterpret_cast<struct pw_node*>(m_proxy.get()), 0,
+                          m_info->params[param].id, 0, 0, NULL);
   }
 }
 
