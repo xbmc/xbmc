@@ -541,7 +541,7 @@ int PlayOrQueueMedia(const std::vector<std::string>& params,
   if (!item.m_bIsFolder && item.IsPlugin())
     item.SetProperty("IsPlayable", true);
 
-  if (askToResume)
+  if (forcePlay && askToResume)
   {
     const VIDEO::GUILIB::Action action =
         VIDEO::GUILIB::CVideoSelectActionProcessor::ChoosePlayOrResume(item);
