@@ -1723,12 +1723,21 @@ CVideoInfoScanner::~CVideoInfoScanner()
       baseFilename.append("-");
     }
 
+    bool caseSensitive{CServiceBroker::GetSettingsComponent()
+                           ->GetAdvancedSettings()
+                           ->m_bCaseSensitiveLocalArtMatch};
+
     for (const auto& artFile : availableArtFiles)
     {
       std::string candidate = URIUtils::GetFileName(artFile->GetPath());
 
-      bool matchesFilename =
-        !baseFilename.empty() && StringUtils::StartsWith(candidate, baseFilename);
+      bool matchesFilename;
+      if (caseSensitive)
+        matchesFilename = !baseFilename.empty() && StringUtils::StartsWith(candidate, baseFilename);
+      else
+        matchesFilename =
+            !baseFilename.empty() && StringUtils::StartsWithNoCase(candidate, baseFilename);
+
       if (!baseFilename.empty() && !matchesFilename)
         continue;
 
