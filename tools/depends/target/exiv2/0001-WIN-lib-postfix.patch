@@ -1,6 +1,6 @@
 --- a/src/CMakeLists.txt
 +++ b/src/CMakeLists.txt
-@@ -215,6 +215,7 @@
+@@ -213,6 +213,7 @@
      target_compile_definitions(exiv2lib PRIVATE PSAPI_VERSION=1)    # to be compatible with <= WinVista (#905)
      # Since windows.h is included in some headers, we need to propagate this definition
      target_compile_definitions(exiv2lib PUBLIC WIN32_LEAN_AND_MEAN)

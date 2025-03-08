@@ -11,6 +11,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   macro(buildexiv2)
     find_package(Iconv REQUIRED)
+    find_package(Brotli REQUIRED)
 
     # Patch pending review upstream (https://github.com/Exiv2/exiv2/pull/3004)
     set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/0001-WIN-lib-postfix.patch")
@@ -38,8 +39,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                    -DEXIV2_BUILD_SAMPLES=OFF
                    -DEXIV2_BUILD_UNIT_TESTS=OFF
                    -DEXIV2_ENABLE_VIDEO=OFF
-                   -DEXIV2_ENABLE_BMFF=OFF
-                   -DEXIV2_ENABLE_BROTLI=OFF
+                   -DEXIV2_ENABLE_BMFF=ON
+                   -DEXIV2_ENABLE_BROTLI=ON
                    -DEXIV2_ENABLE_INIH=OFF
                    -DEXIV2_ENABLE_FILESYSTEM_ACCESS=OFF
                    -DEXIV2_BUILD_EXIV2_COMMAND=OFF
@@ -50,6 +51,13 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     endif()
 
     BUILD_DEP_TARGET()
+
+    # Link libraries for target interface
+    set(EXIV2_LINK_LIBRARIES Brotli::Brotli ZLIB::ZLIB)
+
+    # Add dependencies to build target
+    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} Brotli::Brotli)
+    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} ZLIB::ZLIB)
   endmacro()
 
   include(cmake/scripts/common/ModuleHelpers.cmake)
@@ -145,6 +153,11 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                                                          IMPORTED_LOCATION_DEBUG "${EXIV2_LIBRARY_DEBUG}")
         set_property(TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY
                                                                               IMPORTED_CONFIGURATIONS DEBUG)
+      endif()
+
+      if(EXIV2_LINK_LIBRARIES)
+        set_property(TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY
+                                                                       INTERFACE_LINK_LIBRARIES "${EXIV2_LINK_LIBRARIES}")
       endif()
 
       if(CORE_SYSTEM_NAME STREQUAL "freebsd")
