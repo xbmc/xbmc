@@ -243,29 +243,9 @@ bool CAESinkAUDIOTRACK::VerifySinkConfiguration(int sampleRate,
   int minBufferSize = CJNIAudioTrack::getMinBufferSize(sampleRate, channelMask, encoding);
   bool supported = (minBufferSize > 0);
 
-  // make sure to have enough buffer as minimum might not be enough to open
-  if (!isRaw)
-    minBufferSize *= 2;
-
-  if (supported)
-  {
-    jni::CJNIAudioTrack* jniAt = CreateAudioTrack(CJNIAudioManager::STREAM_MUSIC, sampleRate,
-                                                  channelMask, encoding, minBufferSize);
-    supported = (jniAt && jniAt->getState() == CJNIAudioTrack::STATE_INITIALIZED);
-    if (supported)
-    {
-      jniAt->pause();
-      jniAt->flush();
-    }
-
-    if (jniAt)
-    {
-      jniAt->release();
-      delete jniAt;
-    }
-  }
   CLog::Log(LOGDEBUG, "VerifySinkConfiguration samplerate: {} mask: {} encoding: {} success: {}",
             sampleRate, channelMask, encoding, supported ? "true" : "false");
+
   return supported;
 }
 
