@@ -27,12 +27,12 @@ class IAddonProvider
 {
 public:
   virtual ~IAddonProvider() = default;
-  enum INSTANCE_TYPE
+  enum class InstanceType
   {
-    INSTANCE_INPUTSTREAM,
-    INSTANCE_VIDEOCODEC
+    INPUTSTREAM,
+    VIDEOCODEC
   };
-  virtual void GetAddonInstance(INSTANCE_TYPE instance_type,
+  virtual void GetAddonInstance(InstanceType instance_type,
                                 ADDON::AddonInfoPtr& addonInfo,
                                 KODI_HANDLE& parentInstance) = 0;
 };
