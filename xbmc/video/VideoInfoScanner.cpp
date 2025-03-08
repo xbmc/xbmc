@@ -741,17 +741,52 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
     InfoType result = InfoType::NONE;
     CScraperUrl scrUrl;
+
     // handle .nfo files
     std::unique_ptr<IVideoInfoTagLoader> loader;
+    CFileItem item{*pItem};
     if (useLocal)
-      std::tie(result, loader) = ReadInfoTag(*pItem, info2, bDirNames, true);
+      std::tie(result, loader) = ReadInfoTag(item, info2, bDirNames, true);
     if (result == InfoType::FULL)
     {
-      const int dbId = AddVideo(pItem, info2->Content(), bDirNames, true);
-      if (dbId < 0)
+      // Add the movie entry
+      const int movieId{static_cast<int>(AddVideo(&item, info2->Content(), bDirNames, true))};
+      if (movieId < 0)
         return InfoRet::INFO_ERROR;
-      if (!m_ignoreVideoVersions && ProcessVideoVersion(VideoDbContentType::MOVIES, dbId))
-        return InfoRet::HAVE_ALREADY;
+
+      // Look for default version
+      int defaultVersonFileId{-1};
+      if (item.GetVideoInfoTag()->IsDefaultVideoVersion())
+        defaultVersonFileId = item.GetVideoInfoTag()->m_iFileId; // Updated in AddMovie()
+
+      // Look for versions
+      item.SetProperty("idMovie", movieId);
+      int index{0};
+      do
+      {
+        index++;
+        item.GetVideoInfoTag()
+            ->Reset(); // Reset here rather than in ReadInfoTag() to preserve m_iTrack
+        item.GetVideoInfoTag()->m_iTrack = index; // Attempt to read next movie version (playlist)
+        std::tie(result, loader) = ReadInfoTag(item, info2, bDirNames, false);
+        if (result == InfoType::FULL)
+        {
+          // Add the version entry
+          const int versionId{
+              static_cast<int>(AddVideo(&item, CONTENT_MOVIEVERSIONS, bDirNames, true))};
+          if (versionId < 0)
+            return InfoRet::INFO_ERROR;
+
+          // Look for default version
+          if (item.GetVideoInfoTag()->IsDefaultVideoVersion())
+            defaultVersonFileId =
+                item.GetVideoInfoTag()->m_iFileId; // Updated in AddPlaylistMovieVersion()
+        }
+      } while (result == InfoType::FULL);
+
+      // Set default version
+      m_database.SetDefaultVideoVersion(VideoDbContentType::MOVIES, movieId, defaultVersonFileId);
+
       return InfoRet::ADDED;
     }
     if (result == InfoType::URL || result == InfoType::COMBINED)
@@ -1460,12 +1495,28 @@ CVideoInfoScanner::~CVideoInfoScanner()
     CVideoInfoTag &movieDetails = *pItem->GetVideoInfoTag();
     if (movieDetails.m_basePath.empty())
       movieDetails.m_basePath = pItem->GetBaseMoviePath(videoFolder);
-    movieDetails.m_parentPathID = m_database.AddPath(URIUtils::GetParentPath(movieDetails.m_basePath));
+    if (movieDetails.m_iTrack > -1)
+    {
+      // Relative path (eg. bluray://) with playlist/title
+      const std::string fileandpath{
+          URIUtils::GetBlurayPlaylistPath(pItem->GetPath(), movieDetails.m_iTrack)};
+      const std::string path{URIUtils::GetDirectory(fileandpath)};
 
-    movieDetails.m_strFileNameAndPath = pItem->GetPath();
+      movieDetails.m_parentPathID = m_database.AddPath(path);
+      movieDetails.m_strPath = path;
+      movieDetails.m_strFileNameAndPath = fileandpath;
+      pItem->SetDynPath(fileandpath); // Needed for SetPlayCount() later
+    }
+    else
+    {
+      movieDetails.m_parentPathID =
+          m_database.AddPath(URIUtils::GetParentPath(movieDetails.m_basePath));
 
-    if (pItem->m_bIsFolder)
-      movieDetails.m_strPath = pItem->GetPath();
+      movieDetails.m_strFileNameAndPath = pItem->GetPath();
+
+      if (pItem->m_bIsFolder)
+        movieDetails.m_strPath = pItem->GetPath();
+    }
 
     std::string strTitle(movieDetails.m_strTitle);
 
@@ -1547,6 +1598,17 @@ CVideoInfoScanner::~CVideoInfoScanner()
                     movieDetails.m_strTitle, movieDetails.m_showLink[i]);
       }
     }
+    else if (content == CONTENT_MOVIEVERSIONS)
+    {
+      const int idMovie{pItem->HasProperty("idMovie") ? pItem->GetProperty("idMovie").asInteger32()
+                                                      : -1};
+      if (idMovie != -1)
+      {
+        lResult = m_database.AddPlaylistMovieVersion(*pItem, idMovie);
+        movieDetails.m_iDbId = lResult;
+        movieDetails.m_type = MediaTypeMovie;
+      }
+    }
     else if (content == CONTENT_TVSHOWS)
     {
       if (pItem->m_bIsFolder)
@@ -1605,7 +1667,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
       if ((libraryImport || m_advancedSettings->m_bVideoLibraryImportResumePoint) &&
           movieDetails.GetResumePoint().IsSet())
-        m_database.AddBookMarkToFile(pItem->GetPath(), movieDetails.GetResumePoint(), CBookmark::RESUME);
+        m_database.AddBookMarkToFile(pItem->GetVideoInfoTag()->m_strFileNameAndPath,
+                                     movieDetails.GetResumePoint(), CBookmark::RESUME);
     }
 
     m_database.Close();
