@@ -73,6 +73,7 @@ public:
 
   virtual bool HasInvalidInput() const { return m_invalidInput; }
   virtual void SetInputValidation(StringValidation::Validator inputValidator, void *data = NULL);
+  void ValidateInput();
 
 protected:
   void SetFocus(bool focus) override;
@@ -95,8 +96,7 @@ protected:
   void OnSMSCharacter(unsigned int key);
   void DefaultConstructor();
 
-  virtual bool ValidateInput(const std::wstring &data) const;
-  void ValidateInput();
+  virtual bool ValidateInput(const std::wstring& data) const;
 
   /*! \brief Clear out the current text input if it's an MD5 password.
    \return true if the password is cleared, false otherwise.
