@@ -106,6 +106,17 @@ public:
    */
   static std::string GetBlurayFile(const std::string& path);
 
+  /*! \brief Determines if a file is from optical media (ie. index.bdmv, video_ts.ifo etc..)
+   \param file file path for determination.
+   \return true if file is from optical media
+   */
+  static bool IsOpticalMediaFile(const std::string& file);
+
+  /*! \brief Get the regex for matching trailing part numbers.
+   \return the regex
+  */
+  static std::string GetTrailingPartNumberRegex();
+
   /* \brief Change the base path of a URL: fromPath/fromFile -> toPath/toFile
     Handles changes in path separator and filename URL encoding if necessary to derive toFile.
     \param fromPath the base path of the original URL
@@ -195,6 +206,7 @@ public:
   static bool IsAPK(const std::string& strFile);
   static bool IsZIP(const std::string& strFile);
   static bool IsArchive(const std::string& strFile);
+  static bool IsArchive(const CURL& url);
   static bool IsDiscImage(const std::string& file);
   static bool IsDiscImageStack(const std::string& file);
   static bool IsBlurayPath(const std::string& strFile);
