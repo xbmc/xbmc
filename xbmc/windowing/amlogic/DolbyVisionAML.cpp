@@ -258,6 +258,7 @@ bool CDolbyVisionAML::Setup()
   set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_STD_SOURCE_LEVEL_6, true);
   set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_STD_RESTRICT_OVERLAYS, true);
   set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_LL_VSVDB_LIMIT, true);
+  set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_LL_VSVDB_LIMIT_BRIGHTNESS, true);
   set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_VS10_SDR8, true);
   set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_VS10_SDR10, true);
   set_visible(CSettings::SETTING_COREELEC_AMLOGIC_DV_VS10_HDR10, true);

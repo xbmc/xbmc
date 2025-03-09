@@ -482,6 +482,10 @@ unsigned int aml_dv_on(unsigned int mode)
   int dv_ll_dolby_vsvdb_limit(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_LL_VSVDB_LIMIT));
   CSysfsPath("/sys/module/amdolby_vision/parameters/dolby_vision_dolby_vsvdb_source_lum_limit", dv_ll_dolby_vsvdb_limit);
 
+  // set the DV-LL Dolby VSVDB limit brightness to latest value from user.
+  int dv_ll_dolby_vsvdb_limit_brightness(settings()->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_LL_VSVDB_LIMIT_BRIGHTNESS));
+  CSysfsPath("/sys/module/amdolby_vision/parameters/dolby_vision_dolby_vsvdb_brightness_lvl_pq20", dv_ll_dolby_vsvdb_limit_brightness);
+
   // set the Dolby VSVDB parameter to latest value from user.
   bool dv_dolby_vsvdb_inject(settings()->GetBool(CSettings::SETTING_COREELEC_AMLOGIC_DV_VSVDB_INJECT));
   CSysfsPath("/sys/module/amdolby_vision/parameters/dolby_vision_dolby_vsvdb_inject", dv_dolby_vsvdb_inject ? 1 : 0);

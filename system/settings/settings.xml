@@ -4117,10 +4117,29 @@
             <options>
               <option label="50202">0</option> <!-- Do not limit -->
               <option label="50203">1</option> <!-- Limit min and max -->
-              <option label="50204">2</option> <!-- Limit max only -->
+              <option label="50204">2</option> <!-- Min PQ 20 and limit max -->
+              <option label="50205">3</option> <!-- Limit max only -->
             </options>
           </constraints>
           <control type="spinner" format="string" />
+        </setting>
+        <setting id="coreelec.amlogic.dolbyvision.ll.vsvdb.limit.brightness" type="integer" label="50210" help="50211" parent="coreelec.amlogic.dolbyvision.ll.vsvdb.limit">
+          <requirement>HAVE_AMCODEC</requirement>
+          <visible>false</visible>
+          <level>2</level>
+          <default>-4</default>
+          <dependencies>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="!is">0</dependency>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="!is">3</dependency>
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.ll.vsvdb.limit" operator="is">2</dependency>
+          </dependencies>
+          <constraints>
+            <minimum>-1024</minimum>
+            <maximum>1023</maximum>
+            <step>1</step>
+          </constraints>
+          <control type="spinner" format="integer"/>
         </setting>
         <setting id="coreelec.amlogic.dolbyvision.dual.priority" type="integer" label="50131" help="50132" parent="coreelec.amlogic.dolbyvision.type">
           <requirement>HAVE_AMCODEC</requirement>
