@@ -10,17 +10,19 @@
 
 #include "GUIFont.h"
 #include "GUIMessage.h"
+#include "URL.h"
 #include "utils/CharsetConverter.h"
 #include "utils/ColorUtils.h"
 #include "utils/StringUtils.h"
 
 using namespace KODI::GUILIB;
 
-CGUILabelControl::CGUILabelControl(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool wrapMultiLine, bool bHasPath)
+CGUILabelControl::CGUILabelControl(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool wrapMultiLine, bool bHasPath, bool bDecodePath)
     : CGUIControl(parentID, controlID, posX, posY, width, height)
     , m_label(posX, posY, width, height, labelInfo, wrapMultiLine ? CGUILabel::OVER_FLOW_WRAP : CGUILabel::OVER_FLOW_TRUNCATE)
 {
   m_bHasPath = bHasPath;
+  m_bDecodePath = bDecodePath;
   m_iCursorPos = 0;
   m_bShowCursor = false;
   m_dwCounter = 0;
@@ -110,6 +112,9 @@ void CGUILabelControl::UpdateInfo(const CGUIListItem *item)
   {
     if (m_bHasPath)
       label = ShortenPath(label);
+
+    if (m_bDecodePath)
+      label = DecodePath(label);
 
     changed |= m_label.SetMaxRect(m_posX, m_posY, GetMaxWidth(), m_height);
     changed |= m_label.SetText(label);
@@ -276,6 +281,11 @@ std::string CGUILabelControl::ShortenPath(const std::string &path)
     textWidth = m_label.GetTextWidth();
   }
   return workPath;
+}
+
+std::string CGUILabelControl::DecodePath(const std::string& path)
+{
+  return CURL::Decode(path);
 }
 
 void CGUILabelControl::SetHighlight(unsigned int start, unsigned int end)

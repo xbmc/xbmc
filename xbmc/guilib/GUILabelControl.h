@@ -25,7 +25,16 @@ class CGUILabelControl :
       public CGUIControl
 {
 public:
-  CGUILabelControl(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool wrapMultiLine, bool bHasPath);
+  CGUILabelControl(int parentID,
+                   int controlID,
+                   float posX,
+                   float posY,
+                   float width,
+                   float height,
+                   const CLabelInfo& labelInfo,
+                   bool wrapMultiLine,
+                   bool bHasPath,
+                   bool bDecodePath);
   ~CGUILabelControl(void) override;
   CGUILabelControl* Clone() const override { return new CGUILabelControl(*this); }
 
@@ -53,6 +62,7 @@ public:
 protected:
   bool UpdateColors(const CGUIListItem* item) override;
   std::string ShortenPath(const std::string &path);
+  std::string DecodePath(const std::string& path);
 
   /*! \brief Return the maximum width of this label control.
    \return Return the width of the control if available, else the width of the current text.
@@ -62,6 +72,7 @@ protected:
   CGUILabel m_label;
 
   bool m_bHasPath;
+  bool m_bDecodePath;
   bool m_bShowCursor;
   int m_iCursorPos;
   unsigned int m_dwCounter;

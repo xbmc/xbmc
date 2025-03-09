@@ -977,6 +977,7 @@ namespace XBMCAddon
                                const char* p_disabledColor,
                                long p_alignment,
                                bool hasPath,
+                               bool decodePath,
                                long angle)
       : strFont("font13"),
         strText(label),
@@ -984,6 +985,7 @@ namespace XBMCAddon
         disabledColor(0x60ffffff),
         align(p_alignment),
         bHasPath(hasPath),
+        bDecodePath(decodePath),
         iAngle(angle)
     {
       dwPosX = x;
@@ -1011,16 +1013,9 @@ namespace XBMCAddon
       label.disabledColor = disabledColor;
       label.align = align;
       label.angle = (float)-iAngle;
-      pGUIControl = new CGUILabelControl(
-        iParentId,
-        iControlId,
-        (float)dwPosX,
-        (float)dwPosY,
-        (float)dwWidth,
-        (float)dwHeight,
-        label,
-        false,
-        bHasPath);
+      pGUIControl =
+          new CGUILabelControl(iParentId, iControlId, (float)dwPosX, (float)dwPosY, (float)dwWidth,
+                               (float)dwHeight, label, false, bHasPath, bDecodePath);
       pGUIControl->SetVisible(m_visible);
       static_cast<CGUILabelControl*>(pGUIControl)->SetLabel(strText);
       return pGUIControl;

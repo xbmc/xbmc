@@ -152,7 +152,7 @@ void CGUIDialogKeyboardGeneric::OnWindowLoaded()
     CGUILabelControl* control = static_cast<CGUILabelControl*>(GetControl(CTL_LABEL_HZCODE));
     if (!control)
     {
-      control = new CGUILabelControl(GetID(), CTL_LABEL_HZCODE, px, py + ph, 90, 30, labelInfo, false, false);
+      control = new CGUILabelControl(GetID(), CTL_LABEL_HZCODE, px, py + ph, 90, 30, labelInfo, false, false, false);
       ParentControl->AddControl(control);
     }
 
@@ -160,7 +160,7 @@ void CGUIDialogKeyboardGeneric::OnWindowLoaded()
     if (!control)
     {
       labelInfo.align = XBFONT_CENTER_Y;
-      control = new CGUILabelControl(GetID(), CTL_LABEL_HZLIST, px + 95, py + ph, pw - 95, 30, labelInfo, false, false);
+      control = new CGUILabelControl(GetID(), CTL_LABEL_HZLIST, px + 95, py + ph, pw - 95, 30, labelInfo, false, false, false);
       ParentControl->AddControl(control);
     }
   }

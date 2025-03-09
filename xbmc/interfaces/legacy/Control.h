@@ -767,11 +767,18 @@ namespace XBMCAddon
     class ControlLabel : public Control
     {
     public:
-      ControlLabel(long x, long y, long width, long height, const String& label,
-                  const char* font = NULL, const char* textColor = NULL,
-                  const char* disabledColor = NULL,
-                  long alignment = XBFONT_LEFT,
-                  bool hasPath = false, long angle = 0);
+      ControlLabel(long x,
+                   long y,
+                   long width,
+                   long height,
+                   const String& label,
+                   const char* font = NULL,
+                   const char* textColor = NULL,
+                   const char* disabledColor = NULL,
+                   long alignment = XBFONT_LEFT,
+                   bool hasPath = false,
+                   bool decodePath = false,
+                   long angle = 0);
 
       ~ControlLabel() override;
 
@@ -845,6 +852,7 @@ namespace XBMCAddon
       KODI::UTILS::COLOR::Color disabledColor;
       uint32_t align;
       bool bHasPath = false;
+      bool bDecodePath{false};
       int iAngle = 0;
 
       CGUIControl* Create() override;
