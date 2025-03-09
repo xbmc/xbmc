@@ -11914,7 +11914,13 @@ msgctxt "#19356"
 msgid "Copy of '{0:s}'"
 msgstr ""
 
-#empty strings from id 19357 to 19498
+#. Label of a context menu entry to delete a recording
+#: xbmc/pvr/PVRContextMenus.cpp
+msgctxt "#19357"
+msgid "Delete recording"
+msgstr ""
+
+#empty strings from id 19358 to 19498
 
 #. label for epg genre value
 #: xbmc/pvr/epg/Epg.cpp
