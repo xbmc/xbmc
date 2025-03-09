@@ -149,7 +149,10 @@ void CBlurayDirectory::GetPlaylistsInformation(ClipMap& clips, PlaylistMap& play
         // Add clip to playlist
         const unsigned int clip{
             static_cast<unsigned int>(strtoul(titleInfo.clips[i].clip_id, nullptr, 10))};
-        const PlaylistClipInformation playlistClipInfo{.clip = clip};
+        const PlaylistClipInformation playlistClipInfo{.clip = clip,
+                                                       .inTime = titleInfo.clips[i].in_time,
+                                                       .outTime = titleInfo.clips[i].out_time,
+                                                       .packets = titleInfo.clips[i].pkt_count};
         info.clips.emplace_back(playlistClipInfo);
 
         // Add/extend clip information
@@ -190,8 +193,15 @@ void CBlurayDirectory::GetPlaylistsInformation(ClipMap& clips, PlaylistMap& play
 
       playlists[playlist].languages = langs;
 
-      CLog::LogF(LOGDEBUG, "Playlist {}, Duration {}, Langs {}, Clips {} ", playlist,
+      CLog::LogF(LOGDEBUG, "Playlist {}, Duration {}, Langs {}, Clips {}", playlist,
                  title->GetVideoInfoTag()->GetDuration(), langs, clipsStr);
+
+      // Clip info from playlist
+      for (const auto& clip : info.clips)
+      {
+        CLog::LogF(LOGDEBUG, "   Clip {}, In-time {}, Out-time {}, Packets {}", clip.clip,
+                   clip.inTime, clip.outTime, clip.packets);
+      }
     }
   }
 
