@@ -30,11 +30,11 @@ namespace
 {
 std::string GetGPSString(const Exiv2::Value& value)
 {
-  const Exiv2::Rational degress = value.toRational(0);
+  const Exiv2::Rational degrees = value.toRational(0);
   const Exiv2::Rational minutes = value.toRational(1);
   Exiv2::Rational seconds = value.toRational(2);
 
-  const int32_t dd = degress.first;
+  const int32_t dd = degrees.first;
   int32_t mm{0};
   float ss{0.0};
   if (minutes.second > 0)
