@@ -24899,7 +24899,7 @@ msgstr ""
 #. "Dolby Vision HDR InfoFrame"
 #: system/settings/settings.xml
 msgctxt "#50094"
-msgid "HDR InfoFrame Payload. A 48 character basic hex string to specify colour primaries, white point, luminance and content light level."
+msgid "HDR InfoFrame Payload. A 48 character basic hex string to specify colour primaries, white point, luminance and content light level. Leave blank to align values with the Dolby VSVDB."
 msgstr ""
 
 #. "Dolby Vision HDR10+"
@@ -25097,5 +25097,23 @@ msgstr ""
 #. "Dolby Vision Display LL Dolby VSVDB Limit"
 #: system/settings/settings.xml
 msgctxt "#50204"
+msgid "Min PQ 20 and limit max"
+msgstr ""
+
+#. "Dolby Vision Display LL Dolby VSVDB Limit"
+#: system/settings/settings.xml
+msgctxt "#50205"
 msgid "Limit max only"
+msgstr ""
+
+#. "Dolby Vision Display LL Dolby VSVDB Limit"
+#: system/settings/settings.xml
+msgctxt "#50210"
+msgid "Brightness adjustment"
+msgstr ""
+
+#. "Dolby Vision Display LL Dolby VSVDB Limit"
+#: system/settings/settings.xml
+msgctxt "#50211"
+msgid "Brightness adjustment (compensation) when using Min PQ 20."
 msgstr ""
