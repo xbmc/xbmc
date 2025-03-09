@@ -636,6 +636,36 @@ std::string CDiscDirectoryHelper::HexToString(std::span<const uint8_t> buf, int 
   return ss.str();
 }
 
+std::string CDiscDirectoryHelper::HexToString(int num)
+{
+  std::stringstream ss;
+  ss << std::hex << std::setw(4) << std::setfill('0') << num;
+  return ss.str();
+}
+
+unsigned int CDiscDirectoryHelper::GetDWord(const std::vector<char>& bytes, unsigned int offset)
+{
+  unsigned int result{0};
+  result |= (static_cast<unsigned char>(bytes[offset]) << 24);
+  result |= (static_cast<unsigned char>(bytes[offset + 1]) << 16);
+  result |= (static_cast<unsigned char>(bytes[offset + 2]) << 8);
+  result |= static_cast<unsigned char>(bytes[offset + 3]);
+  return result;
+}
+
+unsigned int CDiscDirectoryHelper::GetWord(const std::vector<char>& bytes, unsigned int offset)
+{
+  unsigned int result{0};
+  result |= (static_cast<unsigned char>(bytes[offset]) << 8);
+  result |= static_cast<unsigned char>(bytes[offset + 1]);
+  return result;
+}
+
+unsigned int CDiscDirectoryHelper::GetByte(const std::vector<char>& bytes, unsigned int offset)
+{
+  return static_cast<unsigned char>(bytes[offset]);
+}
+
 std::string CDiscDirectoryHelper::GetEpisodesLabel(CFileItem& newItem, const CFileItem& item)
 {
   std::string label;

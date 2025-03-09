@@ -87,4 +87,8 @@ public:
   static std::string GetEpisodesLabel(CFileItem& newItem, const CFileItem& item);
 
   static std::string HexToString(std::span<const uint8_t> buf, int count);
+  static std::string HexToString(int num);
+  static unsigned int GetDWord(const std::vector<char>& bytes, unsigned int offset);
+  static unsigned int GetWord(const std::vector<char>& bytes, unsigned int offset);
+  static unsigned int GetByte(const std::vector<char>& bytes, unsigned int offset);
 };
