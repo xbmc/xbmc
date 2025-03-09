@@ -1112,12 +1112,11 @@
       <group id="1" label="593">
         <setting id="myvideos.selectaction" type="integer" label="22079" help="36177">
           <level>0</level>
-          <default>1</default> <!-- ACTION_PLAY_OR_RESUME -->
+          <default>8</default> <!-- ACTION_PLAY -->
           <constraints>
             <options>
               <option label="22080">0</option> <!-- ACTION_CHOOSE -->
-              <option label="208">1</option> <!-- ACTION_PLAY_OR_RESUME -->
-              <option label="13404">2</option> <!-- ACTION_RESUME -->
+              <option label="208">8</option> <!-- ACTION_PLAY -->
               <option label="22081">3</option> <!-- ACTION_INFO -->
               <option label="13347">7</option> <!-- ACTION_QUEUE -->
             </options>
@@ -1136,6 +1135,7 @@
             <options>
               <option label="22077">1</option> <!-- ACTION_PLAY_OR_RESUME -->
               <option label="22078">2</option> <!-- ACTION_RESUME -->
+              <option label="12021">4</option> <!-- ACTION_PLAY_FROM_BEGINNING -->
             </options>
           </constraints>
           <control type="list" format="string" />

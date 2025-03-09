@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2025 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -549,6 +549,26 @@ void CGUIWindowVideoBase::OnQueueItem(const std::shared_ptr<CFileItem>& item, in
 
 namespace
 {
+class CVideoPlayActionProcessor : public VIDEO::GUILIB::CVideoPlayActionProcessor
+{
+public:
+  CVideoPlayActionProcessor(CGUIWindowVideoBase& window,
+                            const std::shared_ptr<CFileItem>& item,
+                            const std::string& player)
+    : VIDEO::GUILIB::CVideoPlayActionProcessor(item), m_window(window), m_player(player)
+  {
+  }
+
+protected:
+  bool OnResumeSelected() override { return m_window.PlayItem(m_item, m_player); }
+
+  bool OnPlaySelected() override { return m_window.PlayItem(m_item, m_player); }
+
+private:
+  CGUIWindowVideoBase& m_window;
+  const std::string m_player;
+};
+
 class CVideoSelectActionProcessor : public VIDEO::GUILIB::CVideoSelectActionProcessor
 {
 public:
@@ -564,9 +584,14 @@ public:
   }
 
 protected:
-  bool OnResumeSelected() override { return m_window.PlayItem(m_item, m_player); }
+  bool OnPlaySelected() override
+  {
+    // Play the given/default video version, even if multiple versions are available.
+    m_item->SetProperty("has_resolved_video_asset", true);
 
-  bool OnPlaySelected() override { return m_window.PlayItem(m_item, m_player); }
+    CVideoPlayActionProcessor proc{m_window, m_item, m_player};
+    return proc.ProcessDefaultAction();
+  }
 
   bool OnQueueSelected() override
   {
@@ -734,29 +759,6 @@ void CGUIWindowVideoBase::LoadVideoInfo(CFileItemList& items,
     }
   }
 }
-
-namespace
-{
-class CVideoPlayActionProcessor : public VIDEO::GUILIB::CVideoPlayActionProcessor
-{
-public:
-  CVideoPlayActionProcessor(CGUIWindowVideoBase& window,
-                            const std::shared_ptr<CFileItem>& item,
-                            const std::string& player)
-    : VIDEO::GUILIB::CVideoPlayActionProcessor(item), m_window(window), m_player(player)
-  {
-  }
-
-protected:
-  bool OnResumeSelected() override { return m_window.PlayItem(m_item, m_player); }
-
-  bool OnPlaySelected() override { return m_window.PlayItem(m_item, m_player); }
-
-private:
-  CGUIWindowVideoBase& m_window;
-  const std::string m_player;
-};
-} // namespace
 
 bool CGUIWindowVideoBase::OnPlayOrResumeItem(int iItem, const std::string& player)
 {
