@@ -1,4 +1,4 @@
-From d475edac8c6890fbaea5ca20d552c60aead0f04a Mon Sep 17 00:00:00 2001
+From dbb8b7c79ea51029e9c8404323acfe954df1ddec Mon Sep 17 00:00:00 2001
 From: Lukas Rusak <lorusak@gmail.com>
 Date: Sat, 10 Apr 2021 08:19:27 -0700
 Subject: [PATCH 4/4] ffmpeg: windows: configure: detect libdav1d
@@ -8,10 +8,10 @@ Subject: [PATCH 4/4] ffmpeg: windows: configure: detect libdav1d
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/configure b/configure
-index e3a8f45ff4..983d7e1078 100755
+index 28dcf462dd..ffa96e283d 100755
 --- a/configure
 +++ b/configure
-@@ -6541,7 +6541,7 @@ enabled libcelt           && require libcelt celt/celt.h celt_decode -lcelt0 &&
+@@ -6884,7 +6884,7 @@ enabled libcelt           && require libcelt celt/celt.h celt_decode -lcelt0 &&
                                 die "ERROR: libcelt must be installed and version must be >= 0.11.0."; }
  enabled libcaca           && require_pkg_config libcaca caca caca.h caca_create_canvas
  enabled libcodec2         && require libcodec2 codec2/codec2.h codec2_create -lcodec2
@@ -19,7 +19,7 @@ index e3a8f45ff4..983d7e1078 100755
 +enabled libdav1d          && require libdav1d dav1d/dav1d.h dav1d_version -llibdav1d
  enabled libdavs2          && require_pkg_config libdavs2 "davs2 >= 1.6.0" davs2.h davs2_decoder_open
  enabled libdc1394         && require_pkg_config libdc1394 libdc1394-2 dc1394/dc1394.h dc1394_new
- enabled libdrm            && require_pkg_config libdrm libdrm xf86drm.h drmGetVersion
+ enabled libdrm            && check_pkg_config libdrm libdrm xf86drm.h drmGetVersion
 -- 
-2.29.2
+2.46.1
 
