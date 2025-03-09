@@ -33,11 +33,18 @@
 
 namespace KODI::VIDEO::GUILIB
 {
-
-Action CVideoPlayActionProcessor::GetDefaultAction()
+namespace
+{
+Action GetDefaultPlayAction()
 {
   return static_cast<Action>(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
       CSettings::SETTING_MYVIDEOS_PLAYACTION));
+}
+} // unnamed namespace
+
+Action CVideoPlayActionProcessor::GetDefaultAction()
+{
+  return GetDefaultPlayAction();
 }
 
 bool CVideoPlayActionProcessor::ProcessDefaultAction()
@@ -153,7 +160,11 @@ Action CVideoPlayActionProcessor::ChoosePlayOrResume(const std::string& resumeSt
 
 Action CVideoPlayActionProcessor::ChoosePlayOrResume(const CFileItem& item)
 {
-  return ChoosePlayOrResume(VIDEO::UTILS::GetResumeString(item));
+  const Action action{GetDefaultPlayAction()};
+  if (action == VIDEO::GUILIB::ACTION_PLAY_OR_RESUME)
+    return ChoosePlayOrResume(VIDEO::UTILS::GetResumeString(item));
+  else
+    return action;
 }
 
 unsigned int CVideoPlayActionProcessor::ChooseStackPart() const
