@@ -56,11 +56,13 @@
       <escape>PreviousMenu</escape>
       <escape mod="longpress">Back</escape>
       <i>Info</i>
+      <info>Info</info>
       <menu>ContextMenu</menu>
       <menu mod="longpress">Menu</menu>
       <c>ContextMenu</c>
       <c mod="longpress">Menu</c>
       <space>Pause</space>
+      <pause>Pause</pause>
       <x>Stop</x>
       <period>SkipNext</period>
       <comma>SkipPrevious</comma>
@@ -370,6 +372,7 @@
       <z>AspectRatio</z>
       <zoom>AspectRatio</zoom>
       <t>ShowSubtitles</t>
+      <subtitle>ShowSubtitles</subtitle>
       <t mod="ctrl">SubtitleAlign</t>
       <l>DialogSelectSubtitle</l>
       <left>StepBack</left>
