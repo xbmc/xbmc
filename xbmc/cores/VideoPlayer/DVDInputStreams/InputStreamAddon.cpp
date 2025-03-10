@@ -32,11 +32,11 @@ CInputStreamProvider::CInputStreamProvider(const ADDON::AddonInfoPtr& addonInfo,
 {
 }
 
-void CInputStreamProvider::GetAddonInstance(INSTANCE_TYPE instance_type,
+void CInputStreamProvider::GetAddonInstance(InstanceType instance_type,
                                             ADDON::AddonInfoPtr& addonInfo,
                                             KODI_HANDLE& parentInstance)
 {
-  if (instance_type == ADDON::IAddonProvider::INSTANCE_VIDEOCODEC)
+  if (instance_type == ADDON::IAddonProvider::InstanceType::VIDEOCODEC)
   {
     addonInfo = m_addonInfo;
     parentInstance = m_parentInstance;
