@@ -1,0 +1,19 @@
+{
+    "name": "audiodecoder.gsf",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/xbmc/audiodecoder.gsf",
+            "commit": "83fd27fe4ac4f726569b79cca4b8f7a9c483979c"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}

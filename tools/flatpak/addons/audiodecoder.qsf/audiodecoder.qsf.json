@@ -1,0 +1,19 @@
+{
+    "name": "audiodecoder.qsf",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/xbmc/audiodecoder.qsf",
+            "commit": "08018ac2fc34cc3f71717133a6d45e594e43e7e7"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}
