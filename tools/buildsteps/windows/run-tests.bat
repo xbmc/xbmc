@@ -5,7 +5,15 @@ REM setup all paths
 PUSHD %~dp0\..\..\..
 SET WORKSPACE=%CD%
 POPD
-cd %WORKSPACE%\kodi-build.%TARGET_PLATFORM%
+
+IF DEFINED BUILDDIR (
+  echo Test BuildDir: %BUILDDIR%
+) else (
+  echo Setting Default BUILDDIR: %WORKSPACE%\kodi-build.%TARGET_PLATFORM%
+  SET BUILDDIR=%WORKSPACE%\kodi-build.%TARGET_PLATFORM%
+)
+
+cd %BUILDDIR%
 
 REM read the version values from version.txt
 FOR /f "tokens=1,2" %%i IN (%WORKSPACE%\version.txt) DO IF "%%i" == "APP_NAME" SET APP_NAME=%%j
@@ -40,9 +48,9 @@ ECHO ------------------------------------------------------------
 
 :RUNTESTSUITE
 ECHO Running testsuite...
-  "%buildconfig%\%APP_NAME%-test.exe" --gtest_output=xml:%WORKSPACE%\gtestresults.xml
+  "%buildconfig%\%APP_NAME%-test.exe" --gtest_output=xml:%BUILDDIR%\gtestresults.xml
 
-  IF NOT EXIST %WORKSPACE%\gtestresults.xml (
+  IF NOT EXIST %BUILDDIR%\gtestresults.xml (
     set DIETEXT="%APP_NAME%-test.exe failed to execute or output test results!"
     goto DIE
   )
@@ -53,9 +61,9 @@ ECHO Running testsuite...
   rem <testcase name="IsStarted" status="notrun" time="0" classname="TestWebServer"/>
   rem becomes
   rem <testcase name="IsStarted" status="notrun" time="0" classname="TestWebServer"><skipped/></testcase>
-  @PowerShell "(GC %WORKSPACE%\gtestresults.xml)|%%{$_ -Replace '(<testcase.+)("notrun")(.+)(/>)','$1$2$3><skipped/></testcase>'}|SC %WORKSPACE%\gtestresults-skipped.xml"
-  del %WORKSPACE%\gtestresults.xml
-  move %WORKSPACE%\gtestresults-skipped.xml %WORKSPACE%\gtestresults.xml
+  @PowerShell "(GC %BUILDDIR%\gtestresults.xml)|%%{$_ -Replace '(<testcase.+)("notrun")(.+)(/>)','$1$2$3><skipped/></testcase>'}|SC %BUILDDIR%\gtestresults-skipped.xml"
+  del %BUILDDIR%\gtestresults.xml
+  move %BUILDDIR%\gtestresults-skipped.xml %BUILDDIR%\gtestresults.xml
 ECHO Done running testsuite!
 ECHO ------------------------------------------------------------
 GOTO END
