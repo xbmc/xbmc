@@ -269,6 +269,8 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_bVideoScannerIgnoreErrors;
     int m_iVideoLibraryDateAdded;
 
+    bool m_bCaseSensitiveLocalArtMatch;
+
     std::set<std::string> m_vecTokens;
 
     int m_iEpgUpdateCheckInterval;  // seconds
