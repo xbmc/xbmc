@@ -72,6 +72,7 @@
                 <data android:mimeType="audio/*" />
                 <data android:mimeType="image/*" />
 
+                <data android:scheme="" />
                 <data android:scheme="file" />
                 <data android:scheme="content" />
                 <data android:scheme="http" />
