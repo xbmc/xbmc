@@ -730,7 +730,7 @@ PLT_MediaObject* BuildObject(CFileItem& item,
     if (with_count && upnp_server)
     {
       const NPT_String decodedObjectId = DecodeObjectId(object->m_ObjectID.GetChars());
-      if (StringUtils::StartsWithNoCase(decodedObjectId, "virtualpath://"))
+      if (StringUtils::StartsWithNoCase(decodedObjectId.GetChars(), "virtualpath://"))
       {
         NPT_LargeSize count = 0;
         NPT_CHECK_LABEL(NPT_File::GetSize(file_path, count), failure);
@@ -1362,7 +1362,7 @@ bool GetResource(const PLT_MediaObject* entry, CFileItem& item)
     }
 
     // if this is an image fill the thumb of the item
-    if (StringUtils::StartsWithNoCase(resource.m_ProtocolInfo.GetContentType(), "image"))
+    if (StringUtils::StartsWithNoCase(resource.m_ProtocolInfo.GetContentType().GetChars(), "image"))
     {
       item.SetArt("thumb", std::string(resource.m_Uri));
     }
