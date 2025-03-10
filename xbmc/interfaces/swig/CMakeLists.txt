@@ -27,7 +27,7 @@ function(generate_file file)
   # execute_process needs explicit use of explicit swig executable location. it is not TARGET aware
   # retrieve location property from TARGET
   get_target_property(_swig_exe SWIG::SWIG IMPORTED_LOCATION)
-  execute_process(COMMAND ${_swig_exe} -MM -MF build/swig/${file}.dep ${SWIG_ARGS})
+  execute_process(COMMAND ${_swig_exe} -MM -MF ${CMAKE_BINARY_DIR}/build/swig/${file}.dep ${SWIG_ARGS})
   file(READ ${CMAKE_BINARY_DIR}/build/swig/${file}.dep swig_deps)
 
   # Match all lines except the first one until " \"
@@ -49,7 +49,7 @@ function(generate_file file)
                      ARGS ${JAVA_OPEN_OPTS} -cp "${classpath}" groovy.ui.GroovyMain ${CMAKE_SOURCE_DIR}/tools/codegenerator/Generator.groovy ${file}.xml ${CMAKE_CURRENT_SOURCE_DIR}/../python/PythonSwig.cpp.template ${file}.cpp > ${devnull}
                      ${CLANG_FORMAT_COMMAND}
                      DEPENDS SWIG::SWIG ${swig_deps} ${CMAKE_CURRENT_SOURCE_DIR}/../python/PythonSwig.cpp.template
-                     BYPRODUCTS build/swig/${CPP_FILE} build/swig/${file}.xml)
+                     BYPRODUCTS ${CMAKE_BINARY_DIR}/build/swig/${CPP_FILE} ${CMAKE_BINARY_DIR}/build/swig/${file}.xml)
 
   set(SOURCES ${SOURCES} "${CPP_FILE}" PARENT_SCOPE)
 endfunction()
