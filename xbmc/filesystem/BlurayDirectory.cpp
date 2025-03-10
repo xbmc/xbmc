@@ -26,6 +26,9 @@
 #include <cassert>
 #include <climits>
 #include <memory>
+#ifdef HAVE_GETMNTENT_R
+#include <mntent.h>
+#endif
 #include <stdlib.h>
 #include <string>
 
@@ -212,6 +215,42 @@ void CBlurayDirectory::GetRoot(CFileItemList &items)
     items.Add(item);
 }
 
+void CBlurayDirectory::FindMountPoint(std::string* file)
+{
+#ifdef HAVE_GETMNTENT_R
+  const char* device = file->c_str();
+
+  /* bd path may be a symlink (e.g. /dev/dvd -> /dev/sr0), so make sure
+   * we look up the real device
+   */
+  char* bd_device = realpath(device, NULL);
+  if (bd_device == NULL)
+    return;
+
+  struct stat st;
+  if (lstat(bd_device, &st) == 0 && S_ISBLK(st.st_mode))
+  {
+    FILE* mtab = setmntent("/proc/self/mounts", "r");
+    if (mtab)
+    {
+      struct mntent *m, mbuf;
+      char buf[8192];
+
+      while ((m = getmntent_r(mtab, &mbuf, buf, sizeof(buf))) != NULL)
+      {
+        if (!strcmp(m->mnt_fsname, bd_device))
+        {
+          *file = std::string(strdup(m->mnt_dir));
+          break;
+        }
+      }
+      endmntent(mtab);
+    }
+  }
+  free(bd_device);
+#endif
+}
+
 bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   Dispose();
@@ -271,6 +310,9 @@ bool CBlurayDirectory::InitializeBluray(const std::string &root)
 {
   bd_set_debug_handler(CBlurayCallback::bluray_logger);
   bd_set_debug_mask(DBG_CRIT | DBG_BLURAY | DBG_NAV);
+  std::string real_path = root;
+
+  FindMountPoint(&real_path);
 
   m_bd = bd_init();
 
@@ -284,7 +326,8 @@ bool CBlurayDirectory::InitializeBluray(const std::string &root)
   g_LangCodeExpander.ConvertToISO6392T(g_langInfo.GetDVDMenuLanguage(), langCode);
   bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_MENU_LANG, langCode.c_str());
 
-  if (!bd_open_files(m_bd, const_cast<std::string*>(&root), CBlurayCallback::dir_open, CBlurayCallback::file_open))
+  if (!bd_open_files(m_bd, const_cast<std::string*>(&real_path), CBlurayCallback::dir_open,
+                     CBlurayCallback::file_open))
   {
     CLog::Log(LOGERROR, "CBlurayDirectory::InitializeBluray - failed to open {}",
               CURL::GetRedacted(root));
