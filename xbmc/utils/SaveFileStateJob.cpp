@@ -211,10 +211,11 @@ void CSaveFileState::DoWork(CFileItem& item,
           }
         }
 
-        // See if idFile needs updating
+        // See if idFile of library item needs updating
         const CVideoInfoTag* tag{item.HasVideoInfoTag() ? item.GetVideoInfoTag() : nullptr};
 
-        if (tag && URIUtils::IsBlurayPath(item.GetDynPath()) &&
+        if (tag && tag->m_iDbId >= 0 && tag->m_iFileId >= 0 &&
+            URIUtils::IsBlurayPath(item.GetDynPath()) &&
             tag->m_strFileNameAndPath != item.GetDynPath())
         {
           videodatabase.BeginTransaction();

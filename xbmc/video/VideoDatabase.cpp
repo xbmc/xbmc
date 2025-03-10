@@ -3023,6 +3023,9 @@ bool CVideoDatabase::SetFileForMedia(const std::string& fileAndPath,
                                      int mediaId,
                                      int oldIdFile)
 {
+  if (mediaId < 0 || oldIdFile < 0)
+    return false;
+
   switch (type)
   {
     case VideoDbContentType::MOVIES:
