@@ -139,7 +139,10 @@ do_loaddeps() {
   VERSION=$(grep "VERSION=" $file | sed 's/VERSION=//g;s/#.*$//g;/^$/d')
   ARCHIVE=$LIBNAME-$VERSION.tar.gz
 
-  BASE_URL=http://mirrors.kodi.tv/build-deps/sources
+  BASE_URL=$(grep "BASE_URL=" $file | sed 's/BASE_URL=//g;s/#.*$//g;/^$/d')
+  if [ -z "$BASE_URL" ]; then
+    BASE_URL=http://mirrors.kodi.tv/build-deps/sources
+  fi
   local libsrcdir=$LIBNAME-$VERSION
 
   LOCALSRCDIR=$LOCALBUILDDIR/src/$libsrcdir
