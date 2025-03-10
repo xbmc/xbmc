@@ -857,7 +857,9 @@ CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(const VideoPict
     m_messageParent.Put(std::make_shared<CDVDMsg>(CDVDMsg::PLAYER_AVCHANGE));
   }
 
-  double config_framerate = m_bFpsInvalid ? 0.0 : m_fFrameRate;
+  double config_framerate =
+      m_bFpsInvalid ? static_cast<double>(CServiceBroker::GetWinSystem()->GetGfxContext().GetFPS())
+                    : m_fFrameRate;
   if (m_processInfo.GetVideoInterlaced())
   {
     if (MathUtils::FloatEquals(config_framerate, 25.0, 0.02))
