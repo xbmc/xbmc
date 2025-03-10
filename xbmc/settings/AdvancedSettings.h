@@ -94,6 +94,8 @@ struct RefreshVideoLatency
   float refreshmin;
   float refreshmax;
 
+  unsigned int resolution;
+
   float delay;
   float hdrextradelay;
 };
@@ -352,7 +354,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::vector<std::string> m_settingsFiles;
     void ParseSettingsFile(const std::string &file);
 
-    float GetLatencyTweak(float refreshrate, bool isHDREnabled);
+    float GetLatencyTweak(float refreshrate, bool isHDREnabled, unsigned int resolution);
     bool m_initialized;
 
     void SetDebugMode(bool debug);
