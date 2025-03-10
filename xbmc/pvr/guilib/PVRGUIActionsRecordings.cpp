@@ -269,6 +269,15 @@ bool CPVRGUIActionsRecordings::CanEditRecording(const CFileItem& item) const
 
 bool CPVRGUIActionsRecordings::DeleteRecording(const CFileItem& item) const
 {
+  if (!item.m_bIsFolder && !item.HasPVRRecordingInfoTag())
+  {
+    const std::shared_ptr<CPVRRecording> recording{CPVRItem(item).GetRecording()};
+    if (recording)
+      return DeleteRecording(CFileItem{recording});
+    else
+      return false;
+  }
+
   if ((!item.IsPVRRecording() && !item.m_bIsFolder) || item.IsParentFolder())
     return false;
 

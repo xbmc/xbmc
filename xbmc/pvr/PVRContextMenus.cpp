@@ -385,25 +385,33 @@ bool EditRecording::Execute(const CFileItemPtr& item) const
 std::string DeleteRecording::GetLabel(const CFileItem& item) const
 {
   const std::shared_ptr<const CPVRRecording> recording(item.GetPVRRecordingInfoTag());
-  if (recording && recording->IsDeleted())
-    return g_localizeStrings.Get(19291); /* Delete permanently */
-
-  return g_localizeStrings.Get(117); /* Delete */
+  if (recording)
+  {
+    if (recording->IsDeleted())
+      return g_localizeStrings.Get(19291); // Delete permanently
+    else
+      return g_localizeStrings.Get(117); // Delete
+  }
+  return g_localizeStrings.Get(19357); // Delete recording
 }
 
 bool DeleteRecording::IsVisible(const CFileItem& item) const
 {
-  const std::shared_ptr<const CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(item);
+  const auto& pvrMgr{CServiceBroker::GetPVRManager()};
+
+  const std::shared_ptr<const CPVRClient> client{pvrMgr.GetClient(item)};
   if (client && !client->GetClientCapabilities().SupportsRecordingsDelete())
     return false;
 
-  const std::shared_ptr<const CPVRRecording> recording(item.GetPVRRecordingInfoTag());
+  std::shared_ptr<const CPVRRecording> recording{item.GetPVRRecordingInfoTag()};
+  if (!recording && item.HasEPGInfoTag())
+    recording = pvrMgr.Recordings()->GetRecordingForEpgTag(item.GetEPGInfoTag());
+
   if (recording && !recording->IsInProgress())
     return true;
 
   // recordings folder?
-  if (item.m_bIsFolder &&
-      CServiceBroker::GetPVRManager().Clients()->AnyClientSupportingRecordingsDelete())
+  if (item.m_bIsFolder && pvrMgr.Clients()->AnyClientSupportingRecordingsDelete())
   {
     const CPVRRecordingsPath path(item.GetPath());
     return path.IsValid() && !path.IsRecordingsRoot();
