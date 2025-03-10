@@ -269,6 +269,8 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_bVideoScannerIgnoreErrors;
     int m_iVideoLibraryDateAdded;
 
+    int m_minimumEpisodePlaylistDuration; // seconds
+
     std::set<std::string> m_vecTokens;
 
     int m_iEpgUpdateCheckInterval;  // seconds

@@ -101,7 +101,7 @@ void CSaveFileState::DoWork(CFileItem& item,
 
         bool updateListing = false;
         // No resume & watched status for livetv
-        if (!item.IsLiveTV())
+        if (!item.IsLiveTV() && !item.m_multipleTitles)
         {
           if (updatePlayCount)
           {
@@ -188,7 +188,7 @@ void CSaveFileState::DoWork(CFileItem& item,
         }
 
         if (item.HasVideoInfoTag() && item.GetVideoInfoTag()->HasStreamDetails() &&
-            !item.IsLiveTV())
+            !item.IsLiveTV() && !item.m_multipleTitles)
         {
           CFileItem dbItem(item);
 
@@ -215,7 +215,7 @@ void CSaveFileState::DoWork(CFileItem& item,
         const CVideoInfoTag* tag{item.HasVideoInfoTag() ? item.GetVideoInfoTag() : nullptr};
 
         if (tag && URIUtils::IsBlurayPath(item.GetDynPath()) &&
-            tag->m_strFileNameAndPath != item.GetDynPath())
+            tag->m_strFileNameAndPath != item.GetDynPath() && !item.m_multipleTitles)
         {
           videodatabase.BeginTransaction();
           // tag->m_iFileId contains the idFile originally played and may be different to the idFile
@@ -233,6 +233,7 @@ void CSaveFileState::DoWork(CFileItem& item,
           CFileItemPtr msgItem(new CFileItem(item));
           if (item.HasProperty("original_listitem_url"))
             msgItem->SetPath(item.GetProperty("original_listitem_url").asString());
+          msgItem->SetDynPath(item.GetDynPath());
 
           // Could be part of an ISO stack. In this case the bookmark is saved onto the part.
           // In order to properly update the list, we need to refresh the stack's resume point
