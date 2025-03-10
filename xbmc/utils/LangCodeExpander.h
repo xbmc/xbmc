@@ -24,7 +24,8 @@ public:
   {
     ISO_639_1,
     ISO_639_2,
-    ENGLISH_NAME
+    ENGLISH_NAME,
+    ISO_NAME,
   };
 
   enum class LANG_LIST
@@ -139,6 +140,22 @@ public:
    */
   std::vector<std::string> GetLanguageNames(LANGFORMATS format = ISO_639_1,
                                             LANG_LIST list = LANG_LIST::DEFAULT);
+
+  /** \brief Performs various ISO 3166-1 lookups.
+  *          Input can be alpha-2, alpha-3 or name.
+  *          If the input is alpha-2 or alpha-3 then the
+  *          name will be returned unless returnCode is true,
+  *          then the opposite code will be returned.
+  *          If the input is a name, then alpha-3 is returned
+  *          unless returnCode is true, then alpha-2 is returned.
+  *   \param[in] searchString The code or name to be found.
+  *   \param[out] returned The code or name being returned.
+  *   \param[in] returnCode Control the value returned.
+  *   \return true if the conversion succeeded, false otherwise.
+  */
+  bool LookupISO31661(std::string_view searchString,
+                      std::string& returned,
+                      bool returnCode = false);
 
 protected:
   /*
