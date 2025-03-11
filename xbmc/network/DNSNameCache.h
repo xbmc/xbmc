@@ -9,19 +9,13 @@
 #pragma once
 
 #include <string>
-#include <vector>
+#include <unordered_map>
 
 class CCriticalSection;
 
 class CDNSNameCache
 {
 public:
-  class CDNSName
-  {
-  public:
-    std::string m_strHostName;
-    std::string m_strIpAddress;
-  };
   CDNSNameCache(void);
   virtual ~CDNSNameCache(void);
   static void Add(const std::string& strHostName, const std::string& strIpAddress);
@@ -30,5 +24,5 @@ public:
 
 protected:
   static CCriticalSection m_critical;
-  std::vector<CDNSName> m_vecDNSNames;
+  std::unordered_map<std::string, std::string> m_hostToIp;
 };
