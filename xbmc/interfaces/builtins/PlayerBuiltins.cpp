@@ -44,7 +44,7 @@
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoUtils.h"
 #include "video/guilib/VideoGUIUtils.h"
-#include "video/guilib/VideoSelectActionProcessor.h"
+#include "video/guilib/VideoPlayActionProcessor.h"
 
 #include <math.h>
 
@@ -541,10 +541,10 @@ int PlayOrQueueMedia(const std::vector<std::string>& params,
   if (!item.m_bIsFolder && item.IsPlugin())
     item.SetProperty("IsPlayable", true);
 
-  if (askToResume)
+  if (forcePlay && askToResume)
   {
     const VIDEO::GUILIB::Action action =
-        VIDEO::GUILIB::CVideoSelectActionProcessor::ChoosePlayOrResume(item);
+        VIDEO::GUILIB::CVideoPlayActionProcessor::ChoosePlayOrResume(item);
     if (action == VIDEO::GUILIB::ACTION_RESUME)
     {
       item.SetStartOffset(STARTOFFSET_RESUME);
