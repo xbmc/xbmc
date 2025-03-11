@@ -2181,7 +2181,7 @@ bool CAMLCodec::OpenDecoder()
   }
 
   if (am_private->vcodec.dec_mode == STREAM_TYPE_SINGLE)
-    SetVfmMap("default", "decoder ppmgr amlvideo deinterlace amvideo");
+    SetVfmMap("default", "decoder ppmgr deinterlace amlvideo amvideo");
 
   int ret = m_dll->codec_init(&am_private->vcodec);
   if (ret != CODEC_ERROR_NONE)
