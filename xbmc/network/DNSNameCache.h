@@ -8,26 +8,27 @@
 
 #pragma once
 
+#include "threads/CriticalSection.h"
+
 #include <chrono>
 #include <optional>
 #include <string>
 #include <unordered_map>
 
-class CCriticalSection;
-
-class CDNSNameCache
+class CDNSNameCache final
 {
 public:
-  CDNSNameCache(void);
-  virtual ~CDNSNameCache(void);
   static void Add(const std::string& strHostName, const std::string& strIpAddress);
   static void AddPermanent(const std::string& strHostName, const std::string& strIpAddress);
   static bool GetCached(const std::string& strHostName, std::string& strIpAddress);
   static bool Lookup(const std::string& strHostName, std::string& strIpAddress);
 
-protected:
-  static CCriticalSection m_critical;
+private:
+  CDNSNameCache() = default;
+
   static constexpr std::chrono::seconds TTL{60};
+  static CDNSNameCache ms_instance;
+
   struct CacheEntry
   {
     CacheEntry(std::string ip, std::optional<std::chrono::steady_clock::time_point> expirationTime);
@@ -35,5 +36,7 @@ protected:
     std::string m_ip;
     std::optional<std::chrono::steady_clock::time_point> m_expirationTime;
   };
+
+  CCriticalSection m_critical;
   std::unordered_map<std::string, CacheEntry> m_hostToIp;
 };
