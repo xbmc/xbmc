@@ -2097,10 +2097,6 @@ bool CAMLCodec::OpenDecoder()
   // DEC_CONTROL_FLAG_DISABLE_FAST_POC
   CSysfsPath("/sys/module/amvdec_h264/parameters/dec_control", 4);
 
-  // workaround to fix slow framerate for VC1 progressive (force interlace!)
-  bool vc1 = (am_private->video_format == VFORMAT_VC1);
-  CSysfsPath("/sys/class/deinterlace/di0/debug", vc1 ? "di_debug_flag0x10000" : "di_debug_flag0x0");
-
   switch(am_private->video_format)
   {
     default:
