@@ -49,7 +49,7 @@ function(generate_file file)
                      ARGS ${JAVA_OPEN_OPTS} -cp "${classpath}" groovy.ui.GroovyMain ${CMAKE_SOURCE_DIR}/tools/codegenerator/Generator.groovy ${file}.xml ${CMAKE_CURRENT_SOURCE_DIR}/../python/PythonSwig.cpp.template ${file}.cpp > ${devnull}
                      ${CLANG_FORMAT_COMMAND}
                      DEPENDS SWIG::SWIG ${swig_deps} ${CMAKE_CURRENT_SOURCE_DIR}/../python/PythonSwig.cpp.template
-                     BYPRODUCTS ${CMAKE_BINARY_DIR}/build/swig/${CPP_FILE} ${CMAKE_BINARY_DIR}/build/swig/${file}.xml)
+                     BYPRODUCTS ${CMAKE_BINARY_DIR}/build/swig/${file}.xml)
 
   set(SOURCES ${SOURCES} "${CPP_FILE}" PARENT_SCOPE)
 endfunction()
