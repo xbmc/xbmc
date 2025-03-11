@@ -13,6 +13,8 @@
 #include "utils/log.h"
 
 #include <mutex>
+#include <tuple>
+#include <utility>
 
 #if !defined(TARGET_WINDOWS) && defined(HAS_FILESYSTEM_SMB)
 #include "ServiceBroker.h"
@@ -83,8 +85,14 @@ bool CDNSNameCache::GetCached(const std::string& strHostName, std::string& strIp
 
   if (auto iter = g_DNSCache.m_hostToIp.find(strHostName); iter != g_DNSCache.m_hostToIp.end())
   {
-    strIpAddress = iter->second;
-    return true;
+    if (!iter->second.m_expirationTime ||
+        iter->second.m_expirationTime > std::chrono::steady_clock::now())
+    {
+      strIpAddress = iter->second.m_ip;
+      return true;
+    }
+    else
+      g_DNSCache.m_hostToIp.erase(iter);
   }
 
 #if !defined(TARGET_WINDOWS) && defined(HAS_FILESYSTEM_SMB)
@@ -107,5 +115,20 @@ bool CDNSNameCache::GetCached(const std::string& strHostName, std::string& strIp
 void CDNSNameCache::Add(const std::string& strHostName, const std::string& strIpAddress)
 {
   std::unique_lock<CCriticalSection> lock(m_critical);
-  g_DNSCache.m_hostToIp.emplace(strHostName, strIpAddress);
+  g_DNSCache.m_hostToIp.emplace(
+      std::piecewise_construct, std::forward_as_tuple(strHostName),
+      std::forward_as_tuple(strIpAddress, std::chrono::steady_clock::now() + TTL));
+}
+
+void CDNSNameCache::AddPermanent(const std::string& strHostName, const std::string& strIpAddress)
+{
+  std::unique_lock<CCriticalSection> lock(m_critical);
+  g_DNSCache.m_hostToIp.emplace(std::piecewise_construct, std::forward_as_tuple(strHostName),
+                                std::forward_as_tuple(strIpAddress, std::nullopt));
+}
+
+CDNSNameCache::CacheEntry::CacheEntry(
+    std::string ip, std::optional<std::chrono::steady_clock::time_point> expirationTime)
+  : m_ip(std::move(ip)), m_expirationTime(expirationTime)
+{
 }
