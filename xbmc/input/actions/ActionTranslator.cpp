@@ -61,7 +61,6 @@ static const std::map<ActionName, ActionID> ActionMappings = {
     {"vs10.sdr", ACTION_VS10_SDR},
     {"vs10.hdr10", ACTION_VS10_HDR10},
     {"vs10.dv", ACTION_VS10_DV},
-    {"toggle.video.freerun.mode", ACTION_TOGGLE_VIDEO_FREERUN_MODE},
     {"codecinfo", ACTION_PLAYER_PROCESS_INFO},
     {"playerprocessinfo", ACTION_PLAYER_PROCESS_INFO},
     {"playerprogramselect", ACTION_PLAYER_PROGRAM_SELECT},

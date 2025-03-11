@@ -26,7 +26,6 @@
 #include "application/ApplicationPlayer.h"
 #include "cores/DataCacheCore.h"
 #include "utils/log.h"
-#include "utils/JobManager.h"
 #include "utils/StringUtils.h"
 #include "windowing/GraphicContext.h"
 #include "utils/RegExp.h"
@@ -1474,17 +1473,4 @@ std::string aml_video_fps_info() {
 
 std::string aml_video_fps_drop() {
   return format_fps_info().drop_info;
-}
-
-void aml_toogle_video_freerun_mode() 
-{
-  CSysfsPath freerun_mode{"/sys/class/video/freerun_mode"};
-  if (freerun_mode.Exists()) {
-    freerun_mode.Set(0);
-    // Schedule back to 1 in 1 sec.
-    CServiceBroker::GetJobManager()->Submit([freerun_mode]() mutable {
-      usleep(1000 * 1000);
-      freerun_mode.Set(1);
-    });
-  }
 }

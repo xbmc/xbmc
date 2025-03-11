@@ -363,8 +363,6 @@ constexpr const int ACTION_VS10_SDR = 166;
 constexpr const int ACTION_VS10_HDR10 = 167;
 constexpr const int ACTION_VS10_DV = 168;
 
-constexpr const int ACTION_TOGGLE_VIDEO_FREERUN_MODE = 169;
-
 constexpr const int ACTION_RECORD = 170;
 
 constexpr const int ACTION_PASTE = 180;
