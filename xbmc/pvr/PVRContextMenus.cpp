@@ -384,14 +384,13 @@ bool EditRecording::Execute(const CFileItemPtr& item) const
 
 std::string DeleteRecording::GetLabel(const CFileItem& item) const
 {
-  const std::shared_ptr<const CPVRRecording> recording(item.GetPVRRecordingInfoTag());
-  if (recording)
-  {
-    if (recording->IsDeleted())
-      return g_localizeStrings.Get(19291); // Delete permanently
-    else
-      return g_localizeStrings.Get(117); // Delete
-  }
+  const std::shared_ptr<const CPVRRecording> recording{item.GetPVRRecordingInfoTag()};
+  if (recording && recording->IsDeleted())
+    return g_localizeStrings.Get(19291); // Delete permanently
+
+  if (recording || item.m_bIsFolder)
+    return g_localizeStrings.Get(117); // Delete
+
   return g_localizeStrings.Get(19357); // Delete recording
 }
 
