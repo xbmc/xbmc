@@ -789,6 +789,11 @@ bool CPVRDatabase::DeleteChannels()
   CLog::LogFC(LOGDEBUG, LOGPVR, "Deleting all channels from the database");
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
+  // Reset datetime first channels added for all clients.
+  if (!ExecuteQuery("UPDATE clients SET sDateTimeFirstChannelsAdded = ''"))
+    return false;
+
+  // Delete all channels data.
   return DeleteValues("channels");
 }
 
