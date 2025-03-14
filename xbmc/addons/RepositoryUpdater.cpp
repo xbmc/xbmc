@@ -327,9 +327,10 @@ void CRepositoryUpdater::ScheduleUpdate(UpdateScheduleType scheduleType)
   if (nextCheck.IsValid())
   {
     // Repos were already checked once and we know when to check next
-    delta = std::max(1, (nextCheck - CDateTime::GetCurrentDateTime()).GetSecondsTotal() * 1000);
+    delta = std::max(0, (nextCheck - CDateTime::GetCurrentDateTime()).GetSecondsTotal());
     CLog::Log(LOGDEBUG, "CRepositoryUpdater: closest next update check at {} (in {} s)",
-              nextCheck.GetAsLocalizedDateTime(), delta / 1000);
+              nextCheck.GetAsLocalizedDateTime(), delta);
+    delta = delta ? delta * 1000 : 1;
   }
 
   if (scheduleType == UpdateScheduleType::Regular)
