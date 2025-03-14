@@ -7,6 +7,9 @@
 #   ${APP_NAME_LC}::Spdlog   - The Spdlog library
 
 macro(buildSpdlog)
+
+  find_package(Fmt REQUIRED QUIET)
+
   if(APPLE)
     set(EXTRA_ARGS "-DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}")
   endif()
@@ -48,16 +51,14 @@ endmacro()
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  # Check for dependencies - Must be done before SETUP_BUILD_VARS
-  # Todo: We might need a way to do this after SETUP_BUILD_VARS...
+  # If there is a potential this library can be built internally
+  # Check its dependencies to allow forcing this lib to be built if one of its
+  # dependencies requires being rebuilt
   if(ENABLE_INTERNAL_SPDLOG)
-    get_libversion_data("fmt" "target")
-    find_package(Fmt ${LIB_FMT_VER} MODULE REQUIRED)
-  endif()
+    # Dependency list of this find module for an INTERNAL build
+    set(${CMAKE_FIND_PACKAGE_NAME}_DEPLIST Fmt)
 
-  if(TARGET ${APP_NAME_LC}::Fmt)
-    # Check if we want to force a build due to a dependency rebuild
-    get_property(LIB_FORCE_REBUILD TARGET ${APP_NAME_LC}::Fmt PROPERTY LIB_BUILD)
+    check_dependency_build(${CMAKE_FIND_PACKAGE_NAME} "${${CMAKE_FIND_PACKAGE_NAME}_DEPLIST}")
   endif()
 
   set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC spdlog)
@@ -70,7 +71,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   if((SPDLOG_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_SPDLOG) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_SPDLOG) OR
-     LIB_FORCE_REBUILD)
+     (DEFINED ${CMAKE_FIND_PACKAGE_NAME}_FORCE_BUILD))
 
     buildSpdlog()
   else()
