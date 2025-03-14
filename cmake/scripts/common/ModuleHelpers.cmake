@@ -461,6 +461,40 @@ macro(PATCH_LF_CHECK patch)
   unset(patch_content_hex)
 endmacro()
 
+# Function to check a list of libraries to force the calling library to be
+# rebuilt if one of its dependencies needs to be built.
+#
+# ToDo: all dep_list libs are considered REQUIRED for find_package call
+#       Should we handle optional dependencies?
+#
+# caller: Parent lib
+# dep_list: List of libraries to be checked for LIB_BUILD property
+#
+# Return: Set ${caller}_FORCE_BUILD variable to alert caller lib to force a rebuild
+#
+# ToDo: We break early on detection of first lib in dep_list requiring a build
+#       We may want to run all find_package calls regardless for dependency inception
+function(check_dependency_build caller dep_list)
+    foreach(_dep ${dep_list})
+      find_package(${_dep} REQUIRED QUIET)
+      if(TARGET LIBRARY::${_dep})
+        # Test if LIB_BUILD property is set on LIBRARY::${_dep} TARGET indicating
+        # if it requires to be build (version update, or even just missing)
+        get_target_property(${caller}_DEP_BUILD LIBRARY::${_dep} LIB_BUILD)
+
+        if(${caller}_DEP_BUILD)
+          # A dependency is to be rebuilt, set this lib to be built, no need to check any
+          # other libs in DEPLIST
+          set(${caller}_FORCE_BUILD ON PARENT_SCOPE)
+          if(VERBOSE)
+            message(WARNING "${caller} alerted to rebuild required by ${_dep}")
+          endif()
+          break()
+        endif()
+      endif()
+    endforeach()
+endfunction()
+
 # Custom property that we can track to allow us to notify to dependency find modules
 # that a dependency of that find module is being built, and therefore that higher level
 # dependency should also be built regardless of success in lib searches
