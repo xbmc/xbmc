@@ -142,19 +142,19 @@ static int RunAddon(const std::vector<std::string>& params)
       }
 
       std::string cmd;
-      if (plugin->Provides(CPluginSource::VIDEO))
+      if (plugin->Provides(CPluginSource::Content::VIDEO))
         cmd = StringUtils::Format("ActivateWindow(Videos,plugin://{}{},return)", addonid,
                                   urlParameters);
-      else if (plugin->Provides(CPluginSource::AUDIO))
+      else if (plugin->Provides(CPluginSource::Content::AUDIO))
         cmd = StringUtils::Format("ActivateWindow(Music,plugin://{}{},return)", addonid,
                                   urlParameters);
-      else if (plugin->Provides(CPluginSource::EXECUTABLE))
+      else if (plugin->Provides(CPluginSource::Content::EXECUTABLE))
         cmd = StringUtils::Format("ActivateWindow(Programs,plugin://{}{},return)", addonid,
                                   urlParameters);
-      else if (plugin->Provides(CPluginSource::IMAGE))
+      else if (plugin->Provides(CPluginSource::Content::IMAGE))
         cmd = StringUtils::Format("ActivateWindow(Pictures,plugin://{}{},return)", addonid,
                                   urlParameters);
-      else if (plugin->Provides(CPluginSource::GAME))
+      else if (plugin->Provides(CPluginSource::Content::GAME))
         cmd = StringUtils::Format("ActivateWindow(Games,plugin://{}{},return)", addonid,
                                   urlParameters);
       else

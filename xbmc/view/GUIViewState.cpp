@@ -586,9 +586,9 @@ CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGU
                                                OnlyEnabled::CHOICE_YES))
     {
       const auto plugin = std::static_pointer_cast<CPluginSource>(addon);
-      if (plugin->Provides(CPluginSource::AUDIO))
+      if (plugin->Provides(CPluginSource::Content::AUDIO))
         m_playlist = PLAYLIST::Id::TYPE_MUSIC;
-      if (plugin->Provides(CPluginSource::VIDEO))
+      if (plugin->Provides(CPluginSource::Content::VIDEO))
         m_playlist = PLAYLIST::Id::TYPE_VIDEO;
     }
   }
