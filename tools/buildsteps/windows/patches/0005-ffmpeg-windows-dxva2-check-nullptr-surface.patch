@@ -1,7 +1,7 @@
 diff --git a/libavcodec/dxva2.c b/libavcodec/dxva2.c
 --- a/libavcodec/dxva2.c
 +++ b/libavcodec/dxva2.c
-@@ -777,7 +777,7 @@ unsigned ff_dxva2_get_surface_index(const AVCodecContext *avctx,
+@@ -783,7 +783,7 @@ unsigned ff_dxva2_get_surface_index(const AVCodecContext *avctx,
  #if CONFIG_D3D11VA
      if (avctx->pix_fmt == AV_PIX_FMT_D3D11)
          return (intptr_t)frame->data[1];
