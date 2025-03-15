@@ -13,6 +13,7 @@
 #include "ServiceBroker.h"
 #include "StringUtils.h"
 #include "URL.h"
+#include "filesystem/BlurayFile.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/StackDirectory.h"
@@ -451,11 +452,16 @@ std::string URIUtils::GetBasePath(const std::string& strPath)
     strCheck = CStackDirectory::GetFirstStackedFile(strPath);
 
   std::string strDirectory = GetDirectory(strCheck);
+
   if (IsInRAR(strCheck))
   {
     std::string strPath=strDirectory;
     GetParentPath(strPath, strDirectory);
   }
+
+  if (IsBlurayPath(strCheck))
+    strDirectory = CBlurayFile::GetBasePath(CURL(strPath));
+
   if (IsStack(strPath))
   {
     strCheck = strDirectory;
@@ -463,6 +469,7 @@ std::string URIUtils::GetBasePath(const std::string& strPath)
     if (GetFileName(strCheck).size() == 3 && StringUtils::StartsWithNoCase(GetFileName(strCheck), "cd"))
       strDirectory = GetDirectory(strCheck);
   }
+
   return strDirectory;
 }
 
@@ -504,6 +511,51 @@ std::string URIUtils::GetBlurayFile(const std::string& path)
     return AddFileToFolder(url2.Get(), "BDMV", "index.bdmv"); // BDMV
   }
   return std::string{};
+}
+
+std::string URIUtils::GetBlurayRootPath(const std::string& path)
+{
+  return AddFileToFolder(GetBlurayPath(path), "root");
+}
+
+std::string URIUtils::GetBlurayTitlesPath(const std::string& path)
+{
+  return AddFileToFolder(GetBlurayPath(path), "root", "titles");
+}
+
+std::string URIUtils::GetBlurayPlaylistPath(const std::string& path)
+{
+  return AddFileToFolder(GetBlurayPath(path), "BDMV", "PLAYLIST", "");
+}
+
+std::string URIUtils::GetBlurayPath(const std::string& path)
+{
+  if (IsBlurayPath(path))
+  {
+    // Already bluray:// path
+    CURL url(path);
+    url.SetFileName("");
+    return url.Get();
+  }
+
+  std::string newPath{};
+  if (IsDiscImage(path))
+  {
+    CURL url("udf://");
+    url.SetHostName(path);
+    newPath = url.Get();
+  }
+  else if (IsBDFile(path))
+    newPath = GetDiscBasePath(path);
+
+  if (!newPath.empty())
+  {
+    CURL url("bluray://");
+    url.SetHostName(newPath);
+    newPath = url.Get();
+  }
+
+  return newPath;
 }
 
 std::string URLEncodePath(const std::string& strPath)
@@ -1237,6 +1289,15 @@ bool URIUtils::IsVideoDb(const std::string& strFile)
 bool URIUtils::IsBlurayPath(const std::string& strFile)
 {
   return IsProtocol(strFile, "bluray");
+}
+
+bool URIUtils::IsBDFile(const std::string& file)
+{
+  const std::vector<std::string> files = {"index.bdmv", "INDEX.BDM", "MovieObject.bdmv",
+                                          "MOVIEOBJ.BDM"};
+  const std::string filename{GetFileName(file)};
+  return std::ranges::any_of(files, [filename](const std::string& f)
+                             { return StringUtils::EqualsNoCase(f, filename); });
 }
 
 bool URIUtils::IsAndroidApp(const std::string &path)

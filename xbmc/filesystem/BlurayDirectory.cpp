@@ -136,6 +136,152 @@ std::shared_ptr<CFileItem> CBlurayDirectory::GetTitle(const BLURAY_TITLE_INFO* t
   for(unsigned int i = 0; i < title->clip_count; ++i)
     item->m_dwSize += title->clips[i].pkt_count * 192;
 
+  // Generate streamdetails
+  VideoStreamInfo videoInfo;
+  AudioStreamInfo audioInfo;
+  SubtitleStreamInfo subtitleInfo;
+  CVideoInfoTag* info = item->GetVideoInfoTag();
+
+  // Populate videoInfo
+  if (title->clip_count > 0 && title->clips[0].video_stream_count > 0)
+  {
+    const auto& video{title->clips[0].video_streams[0]};
+    videoInfo.valid = true;
+    videoInfo.bitrate = 0;
+    switch (video.format)
+    {
+      case BLURAY_VIDEO_FORMAT_480I:
+      case BLURAY_VIDEO_FORMAT_480P:
+        videoInfo.height = 480;
+        videoInfo.width = 640; // Guess but never displayed
+        break;
+      case BLURAY_VIDEO_FORMAT_576I:
+      case BLURAY_VIDEO_FORMAT_576P:
+        videoInfo.height = 576;
+        videoInfo.width = 720; // Guess but never displayed
+        break;
+      case BLURAY_VIDEO_FORMAT_720P:
+        videoInfo.height = 720;
+        videoInfo.width = 1280; // Guess but never displayed
+        break;
+      case BLURAY_VIDEO_FORMAT_1080I:
+      case BLURAY_VIDEO_FORMAT_1080P:
+        videoInfo.height = 1080;
+        videoInfo.width = 1920; // Guess but never displayed
+        break;
+      case BLURAY_VIDEO_FORMAT_2160P:
+        videoInfo.height = 2160;
+        videoInfo.width = 3840; // Guess but never displayed
+        break;
+      default:
+        videoInfo.height = 0;
+        videoInfo.width = 0;
+        break;
+    }
+    switch (video.coding_type)
+    {
+      case BLURAY_STREAM_TYPE_VIDEO_MPEG1:
+        videoInfo.codecName = "mpeg1";
+        break;
+      case BLURAY_STREAM_TYPE_VIDEO_MPEG2:
+        videoInfo.codecName = "mpeg2";
+        break;
+      case BLURAY_STREAM_TYPE_VIDEO_VC1:
+        videoInfo.codecName = "vc1";
+        break;
+      case BLURAY_STREAM_TYPE_VIDEO_H264:
+        videoInfo.codecName = "h264";
+        break;
+      case BLURAY_STREAM_TYPE_VIDEO_HEVC:
+        videoInfo.codecName = "hevc";
+        break;
+      default:
+        videoInfo.codecName = "";
+        break;
+    }
+    switch (video.aspect)
+    {
+      case BLURAY_ASPECT_RATIO_4_3:
+        videoInfo.videoAspectRatio = 4.0f / 3.0f;
+        break;
+      case BLURAY_ASPECT_RATIO_16_9:
+        videoInfo.videoAspectRatio = 16.0f / 9.0f;
+        break;
+      default:
+        videoInfo.videoAspectRatio = 0.0f;
+        break;
+    }
+    videoInfo.stereoMode = ""; // Not stored in BLURAY_TITLE_INFO
+    videoInfo.flags = FLAG_NONE;
+    videoInfo.hdrType = StreamHdrType::HDR_TYPE_NONE; // Not stored in BLURAY_TITLE_INFO
+    videoInfo.fpsRate = 0; // Not in streamdetails
+    videoInfo.fpsScale = 0; // Not in streamdetails
+
+    info->m_streamDetails.SetStreams(videoInfo, static_cast<int>(title->duration / 90000),
+                                     audioInfo, subtitleInfo);
+
+    for (int i = 0; i < title->clips[0].audio_stream_count; ++i)
+    {
+      AudioStreamInfo audioInfo;
+      auto& audio{title->clips[0].audio_streams[i]};
+
+      audioInfo.valid = true;
+      audioInfo.bitrate = 0;
+      audioInfo.channels = 0; // Only basic mono/stereo/multichannel is stored in BLURAY_TITLE_INFO
+
+      switch (audio.coding_type)
+      {
+        case BLURAY_STREAM_TYPE_AUDIO_AC3:
+          audioInfo.codecName = "ac3";
+          break;
+        case BLURAY_STREAM_TYPE_AUDIO_AC3PLUS:
+        case BLURAY_STREAM_TYPE_AUDIO_AC3PLUS_SECONDARY:
+          audioInfo.codecName = "eac3";
+          break;
+        case BLURAY_STREAM_TYPE_AUDIO_LPCM:
+          audioInfo.codecName = "pcm";
+          break;
+        case BLURAY_STREAM_TYPE_AUDIO_DTS:
+          audioInfo.codecName = "dts";
+          break;
+        case BLURAY_STREAM_TYPE_AUDIO_DTSHD:
+        case BLURAY_STREAM_TYPE_AUDIO_DTSHD_SECONDARY:
+          audioInfo.codecName = "dtshd";
+          break;
+        case BLURAY_STREAM_TYPE_AUDIO_DTSHD_MASTER:
+          audioInfo.codecName = "dtshd_ma";
+          break;
+        case BLURAY_STREAM_TYPE_AUDIO_TRUHD:
+          audioInfo.codecName = "truehd";
+          break;
+        default:
+          audioInfo.codecName = "";
+          break;
+      }
+      audioInfo.flags = FLAG_NONE;
+      audioInfo.language = reinterpret_cast<char*>(audio.lang);
+      info->m_streamDetails.AddStream(new CStreamDetailAudio(audioInfo));
+    }
+
+    // Subtitles
+    for (int i = 0; i < title->clips[0].pg_stream_count; ++i)
+    {
+      SubtitleStreamInfo subtitleInfo;
+      auto& subtitle{title->clips[0].pg_streams[i]};
+
+      subtitleInfo.valid = true;
+      subtitleInfo.bitrate = 0;
+      subtitleInfo.codecDesc = "";
+      subtitleInfo.codecName = "";
+      subtitleInfo.isExternal = false;
+      subtitleInfo.name = "";
+      subtitleInfo.flags = FLAG_NONE;
+
+      subtitleInfo.language = reinterpret_cast<char*>(subtitle.lang);
+      info->m_streamDetails.AddStream(new CStreamDetailSubtitle(subtitleInfo));
+    }
+  }
+
   return item;
 }
 
