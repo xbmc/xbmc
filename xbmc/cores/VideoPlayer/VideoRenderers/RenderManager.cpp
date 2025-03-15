@@ -103,10 +103,10 @@ bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned 
     }
   }
 
-  CLog::Log(LOGDEBUG,
-            "CRenderManager::Configure - change configuration. {}x{}. display: {}x{}. framerate: "
-            "{:4.2f} hdrType: {}.",
-            picture.iWidth, picture.iHeight, picture.iDisplayWidth, picture.iDisplayHeight, fps, CStreamDetails::DynamicRangeToString(hdrType));
+  logM(LOGDEBUG,"CRenderManager", "change configuration. {}x{}. display: {}x{}. framerate: {:4.2f} hdrType: {}.",
+            picture.iWidth, picture.iHeight,
+            picture.iDisplayWidth, picture.iDisplayHeight,
+            fps, CStreamDetails::DynamicRangeToString(hdrType));
 
   // make sure any queued frame was fully presented
   {
@@ -117,7 +117,7 @@ bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned 
     {
       if(endtime.IsTimePast())
       {
-        CLog::Log(LOGWARNING, "CRenderManager::Configure - timeout waiting for state");
+        logM(LOGWARNING, "CRenderManager", "timeout waiting for state");
         m_forceNext = false;
         return false;
       }
@@ -146,7 +146,7 @@ bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned 
 
   if (!m_stateEvent.Wait(1000ms))
   {
-    CLog::Log(LOGWARNING, "CRenderManager::Configure - timeout waiting for configure");
+    logM(LOGWARNING, "CRenderManager", "timeout waiting for configure");
     std::unique_lock<CCriticalSection> lock(m_statelock);
     return false;
   }
@@ -154,7 +154,7 @@ bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned 
   std::unique_lock<CCriticalSection> lock(m_statelock);
   if (m_renderState != STATE_CONFIGURED)
   {
-    CLog::Log(LOGWARNING, "CRenderManager::Configure - failed to configure");
+    logM(LOGWARNING, "CRenderManager", "failed to configure");
     return false;
   }
 
@@ -193,7 +193,7 @@ bool CRenderManager::Configure()
     if(m_QueueSize < 2)
     {
       m_QueueSize = 2;
-      CLog::Log(LOGWARNING, "CRenderManager::Configure - queue size too small ({}, {}, {})",
+      logM(LOGWARNING, "CRenderManager", "queue size too small ({}, {}, {})",
                 m_QueueSize, renderbuffers, m_NumberBuffers);
     }
 
@@ -230,7 +230,7 @@ bool CRenderManager::Configure()
 
     UpdateResolution(true);
 
-    CLog::Log(LOGDEBUG, "CRenderManager::Configure - {}", m_QueueSize);
+    logM(LOGDEBUG, "CRenderManager", "queue size {}", m_QueueSize);
   }
   else
     m_renderState = STATE_UNCONFIGURED;
@@ -358,7 +358,7 @@ void CRenderManager::PreInit()
     CServiceBroker::GetAppMessenger()->PostMsg(TMSG_RENDERER_PREINIT);
     if (!m_initEvent.Wait(2000ms))
     {
-      CLog::Log(LOGERROR, "{} - timed out waiting for renderer to preinit", __FUNCTION__);
+      logM(LOGERROR, "CRenderManager", "timed out waiting for renderer to preinit");
     }
   }
 
@@ -387,7 +387,7 @@ void CRenderManager::UnInit()
     CServiceBroker::GetAppMessenger()->PostMsg(TMSG_RENDERER_UNINIT);
     if (!m_initEvent.Wait(2000ms))
     {
-      CLog::Log(LOGERROR, "{} - timed out waiting for renderer to uninit", __FUNCTION__);
+      logM(LOGERROR, "CRenderManager", "timed out waiting for renderer to uninit");
     }
   }
 
@@ -414,7 +414,7 @@ bool CRenderManager::Flush(bool wait, bool saveBuffers)
 
   if (CServiceBroker::GetAppMessenger()->IsProcessThread())
   {
-    CLog::Log(LOGDEBUG, "{} - flushing renderer", __FUNCTION__);
+    logM(LOGDEBUG, "CRenderManager", "flushing renderer");
 
 // fix deadlock on Windows only when is enabled 'Sync playback to display'
 #ifndef TARGET_WINDOWS
@@ -454,7 +454,7 @@ bool CRenderManager::Flush(bool wait, bool saveBuffers)
     {
       if (!m_flushEvent.Wait(1000ms))
       {
-        CLog::Log(LOGERROR, "{} - timed out waiting for renderer to flush", __FUNCTION__);
+        logM(LOGERROR, "CRenderManager", "timed out waiting for renderer to flush");
         return false;
       }
       else
@@ -492,7 +492,7 @@ void CRenderManager::DeleteRenderer()
 {
   if (m_pRenderer)
   {
-    CLog::Log(LOGDEBUG, "{} - deleting renderer", __FUNCTION__);
+    logM(LOGDEBUG, "CRenderManager", "deleting renderer");
 
     delete m_pRenderer;
     m_pRenderer = NULL;
@@ -533,7 +533,7 @@ void CRenderManager::StartRenderCapture(unsigned int captureId, unsigned int wid
   it = m_captures.find(captureId);
   if (it == m_captures.end())
   {
-    CLog::Log(LOGERROR, "CRenderManager::Capture - unknown capture id: {}", captureId);
+    logM(LOGERROR, "CRenderManager", "Capture - unknown capture id: {}", captureId);
     return;
   }
 
@@ -936,18 +936,18 @@ void CRenderManager::UpdateResolution(bool force)
 
         StreamHdrType actual_hdrType = (m_hdrType_override != StreamHdrType::HDR_TYPE_NONE) ? m_hdrType_override : m_picture.hdrType;
 
-        CLog::Log(LOGINFO, "CRenderManager::{} Before - Set fps [{}] width [{}] height [{}] stereomode empty [{}] hdr type [{}]",
-          __FUNCTION__, m_fps, m_picture.iWidth, m_picture.iHeight, m_picture.stereoMode.empty(), CStreamDetails::DynamicRangeToString(actual_hdrType));
-  
+        logM(LOGINFO, "CRenderManager", "Before - Set fps [{}] width [{}] height [{}] stereomode empty [{}] hdr type [{}]",
+                       m_fps, m_picture.iWidth, m_picture.iHeight, m_picture.stereoMode.empty(), CStreamDetails::DynamicRangeToString(actual_hdrType));
+
         RESOLUTION res = CResolutionUtils::ChooseBestResolution(m_fps, m_picture.iWidth, m_picture.iHeight, !m_picture.stereoMode.empty());
         CServiceBroker::GetWinSystem()->GetGfxContext().SetHDRType(actual_hdrType);
         CServiceBroker::GetWinSystem()->GetGfxContext().SetVideoResolution(res, false);
         UpdateLatencyTweak();
 
-        CLog::Log(LOGINFO, "CRenderManager::{} After - Set fps [{}] width [{}] height [{}] stereomode empty [{}] hdr type [{}]",
-          __FUNCTION__, m_fps, m_picture.iWidth, m_picture.iHeight, m_picture.stereoMode.empty(), CStreamDetails::DynamicRangeToString(actual_hdrType));
-        
-        if (m_pRenderer) 
+        logM(LOGINFO, "CRenderManager", "After - Set fps [{}] width [{}] height [{}] stereomode empty [{}] hdr type [{}]",
+                      m_fps, m_picture.iWidth, m_picture.iHeight, m_picture.stereoMode.empty(), CStreamDetails::DynamicRangeToString(actual_hdrType));
+
+        if (m_pRenderer)
           m_pRenderer->Update();
       }
       m_bTriggerUpdateResolution = false;
@@ -959,8 +959,8 @@ void CRenderManager::UpdateResolution(bool force)
 
 void CRenderManager::TriggerUpdateResolutionHdr(StreamHdrType hdrType)
 {
-  CLog::Log(LOGINFO, "CRenderManager::{} - hdr type [{}] current trigger [{}]",
-    __FUNCTION__, CStreamDetails::DynamicRangeToString(hdrType), m_bTriggerUpdateResolution);
+  logM(LOGINFO, "CRenderManager", "hdr type [{}] current trigger [{}]",
+                CStreamDetails::DynamicRangeToString(hdrType), m_bTriggerUpdateResolution);
 
   m_hdrType_override = hdrType;
   m_bTriggerUpdateResolution = true;
@@ -968,8 +968,8 @@ void CRenderManager::TriggerUpdateResolutionHdr(StreamHdrType hdrType)
 
 void CRenderManager::TriggerUpdateResolution(float fps, int width, int height, std::string &stereomode)
 {
-  CLog::Log(LOGINFO, "CRenderManager::{} - fps [{}] width [{}] height [{}] stereomode empty [{}] current trigger [{}]", 
-    __FUNCTION__, fps, width, height, m_picture.stereoMode.empty(), m_bTriggerUpdateResolution);
+  logM(LOGINFO, "CRenderManager", "fps [{}] width [{}] height [{}] stereomode empty [{}] current trigger [{}]",
+                fps, width, height, m_picture.stereoMode.empty(), m_bTriggerUpdateResolution);
 
   if (width)
   {
@@ -1095,7 +1095,7 @@ bool CRenderManager::AddVideoPicture(const VideoPicture& picture, volatile std::
       {
         if (!bStop)
         {
-          CLog::Log(LOGWARNING, "CRenderManager::AddVideoPicture - timeout waiting for render");
+          logM(LOGWARNING, "CRenderManager", "timeout waiting for render");
         }
         break;
       }
@@ -1192,7 +1192,7 @@ void CRenderManager::PrepareNextRender()
 {
   if (m_queued.empty())
   {
-    CLog::Log(LOGERROR, "CRenderManager::PrepareNextRender - asked to prepare with nothing available");
+    logM(LOGERROR, "CRenderManager", "asked to prepare with nothing available");
     m_presentstep = PRESENT_IDLE;
     m_presentevent.notifyAll();
     return;
@@ -1244,11 +1244,11 @@ void CRenderManager::PrepareNextRender()
     m_dvdClock.SetVsyncAdjust(0);
   }
 
-  CLog::LogFC(LOGDEBUG, LOGAVTIMING,
-              "frameOnScreen: {:.3f} renderPts: {:.3f} nextFramePts: {:.3f} -> diff: {:.3f}  render: {:d} "
-              "forceNext: {:d}",
-              frameOnScreen / DVD_TIME_BASE, renderPts / DVD_TIME_BASE, nextFramePts / DVD_TIME_BASE,
-              (renderPts - nextFramePts) / DVD_TIME_BASE, renderPts >= nextFramePts, m_forceNext);
+  logComponentM(LOGDEBUG, LOGAVTIMING, "CRenderManager",
+                "frameOnScreen: {:.3f} renderPts: {:.3f} nextFramePts: {:.3f} -> diff: {:.3f}  render: {:d} "
+                "forceNext: {:d}",
+                frameOnScreen / DVD_TIME_BASE, renderPts / DVD_TIME_BASE, nextFramePts / DVD_TIME_BASE,
+                (renderPts - nextFramePts) / DVD_TIME_BASE, renderPts >= nextFramePts, m_forceNext);
 
   bool combined = false;
   if (m_presentsourcePast >= 0)
@@ -1257,7 +1257,7 @@ void CRenderManager::PrepareNextRender()
     m_presentsourcePast = -1;
     combined = true;
   }
- 
+
   if (renderPts >= nextFramePts || m_forceNext)
   {
     // push back present source index before other lates to keep order
