@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Team Kodi
+ *  Copyright (C) 2023-2025 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -26,10 +26,8 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
-#include "video/VideoFileItemClassify.h"
 #include "video/VideoUtils.h"
 #include "video/guilib/VideoGUIUtils.h"
-#include "video/guilib/VideoVersionHelper.h"
 
 namespace KODI::VIDEO::GUILIB
 {
@@ -47,25 +45,9 @@ Action CVideoPlayActionProcessor::GetDefaultAction()
   return GetDefaultPlayAction();
 }
 
-bool CVideoPlayActionProcessor::ProcessDefaultAction()
+bool CVideoPlayActionProcessor::Process(Action action)
 {
-  return ProcessAction(GetDefaultAction());
-}
-
-bool CVideoPlayActionProcessor::ProcessAction(Action action)
-{
-  m_userCancelled = false;
-
-  const auto movie{CVideoVersionHelper::ChooseVideoFromAssets(m_item)};
-  if (movie)
-    m_item = movie;
-  else
-  {
-    m_userCancelled = true;
-    return true; // User cancelled the select menu. We're done.
-  }
-
-  if (m_chooseStackPart)
+  if (m_chooseStackPart && m_chosenStackPart == 0)
   {
     if (!URIUtils::IsStack(m_item->GetDynPath()))
     {
@@ -81,11 +63,6 @@ bool CVideoPlayActionProcessor::ProcessAction(Action action)
     }
   }
 
-  return Process(action);
-}
-
-bool CVideoPlayActionProcessor::Process(Action action)
-{
   switch (action)
   {
     case ACTION_PLAY_OR_RESUME:
