@@ -1,7 +1,9 @@
 function(generate_file file)
-  set(classpath ${groovy_SOURCE_DIR}/lib/*
-                ${apache-commons-lang_SOURCE_DIR}/*
-                ${apache-commons-text_SOURCE_DIR}/*
+  set(classpath ${groovy_SOURCE_DIR}/lib/groovy-${GROOVY_VER}.jar
+                ${groovy_SOURCE_DIR}/lib/groovy-xml-${GROOVY_VER}.jar
+                ${groovy_SOURCE_DIR}/lib/groovy-templates-${GROOVY_VER}.jar
+                ${apache-commons-lang_SOURCE_DIR}/commons-lang3-${APACHE_COMMONS_LANG_VER}.jar
+                ${apache-commons-text_SOURCE_DIR}/commons-text-${APACHE_COMMONS_TEXT_VER}.jar
                 ${CMAKE_SOURCE_DIR}/tools/codegenerator
                 ${CMAKE_CURRENT_SOURCE_DIR}/../python)
   if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL windowsstore)
