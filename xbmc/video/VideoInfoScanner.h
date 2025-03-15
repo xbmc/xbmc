@@ -133,7 +133,8 @@ namespace KODI::VIDEO
                                     long showID,
                                     const ADDON::ScraperPtr& scraper,
                                     bool useLocal,
-                                    CGUIDialogProgress* progress = nullptr);
+                                    CGUIDialogProgress* progress = nullptr,
+                                    bool alreadyHasArt = false);
 
     /*! \brief Update the progress bar with the heading and line and check for cancellation
      \param progress CGUIDialogProgress bar
