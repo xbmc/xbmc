@@ -477,6 +477,7 @@ void CPVRClient::ResetProperties()
   m_prevConnectionState = PVR_CONNECTION_STATE_UNKNOWN;
   m_ignoreClient = false;
   m_priority.reset();
+  m_firstChannelsAdded.reset();
   m_strBackendVersion = DEFAULT_INFO_STRING_VALUE;
   m_strConnectionString = DEFAULT_INFO_STRING_VALUE;
   m_strBackendName = DEFAULT_INFO_STRING_VALUE;
@@ -572,6 +573,7 @@ void CPVRClient::Stop()
 {
   m_bBlockAddonCalls = true;
   m_priority.reset();
+  m_firstChannelsAdded.reset();
 }
 
 void CPVRClient::Continue()
