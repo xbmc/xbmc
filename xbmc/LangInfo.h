@@ -78,6 +78,14 @@ public:
 
   // three char language code (not win32 specific)
   const std::string& GetLanguageCode() const { return m_languageCodeGeneral; }
+  // The original language locale from the langinfo.xml file.
+  const std::string& GetLanguageConfigCode() const { return m_strLanguageConfigCode; }
+  // The 2 char language code if it exists, else the 3 char code.
+  const std::string& GetLanguageISO6391() const { return m_strLanguageISO6391; }
+  // The 3 char language code.
+  const std::string& GetLanguageISO6392() const { return m_strLanguageISO6392; }
+  // The ISO name of the language (Not the description in the config file).
+  const std::string& GetLanguageISOEnglishName() const { return m_strlanguageISOEnglishName; }
 
   /*!
    * \brief Convert an english language name to an addon locale,
@@ -190,6 +198,9 @@ public:
   void GetRegionNames(std::vector<std::string>& array);
   void SetCurrentRegion(const std::string& strName);
   const std::string& GetCurrentRegion() const;
+  const std::string& GetCurrentRegionISO31661Alpha2() const;
+  const std::string& GetCurrentRegionISO31661Alpha3() const;
+  const std::string& GetCurrentRegionISO31661EnglishName() const;
 
   std::set<std::string> GetSortTokens() const;
 
@@ -306,8 +317,10 @@ protected:
 
     CTemperature::Unit m_tempUnit;
     CSpeed::Unit m_speedUnit;
+    std::string m_strRegionISO31661Alpha2;
+    std::string m_strRegionISO31661Alpha3;
+    std::string m_strRegionISO31661EnglishName;
   };
-
 
   typedef std::map<std::string, CRegion> MAPREGIONS;
   typedef std::map<std::string, CRegion>::iterator ITMAPREGIONS;
@@ -338,6 +351,11 @@ protected:
   std::string m_audioLanguage; // ISO 639-2 three char (not win32 specific)
   std::string m_subtitleLanguage; // ISO 639-2 three char (not win32 specific)
   std::string m_languageCodeGeneral; // ISO 639-2 three char (not win32-specific)
+
+  std::string m_strLanguageConfigCode; // Original language code from the config file
+  std::string m_strLanguageISO6391; // 2 char ISO ISO 639-1 (3 char if no 2 char available)
+  std::string m_strLanguageISO6392; // 3 char ISO ISO 639-2
+  std::string m_strlanguageISOEnglishName; // The ISO english name of this language
 };
 
 
