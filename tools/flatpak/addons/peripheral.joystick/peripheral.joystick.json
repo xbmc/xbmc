@@ -1,0 +1,19 @@
+{
+    "name": "peripheral.joystick",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/xbmc/peripheral.joystick",
+            "commit": "16ad3d865372e2d7a37f103a6b1c958d44ad5494"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}
