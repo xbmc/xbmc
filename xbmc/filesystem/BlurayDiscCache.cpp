@@ -35,7 +35,7 @@ CacheMap::iterator CBlurayDiscCache::SetDisc(const std::string& path)
 
 void CBlurayDiscCache::SetPlaylistInfo(const std::string& path,
                                        unsigned int playlist,
-                                       const BLURAY_TITLE_INFO* playlistInfo)
+                                       const PlaylistInformation& playlistInfo)
 {
   std::unique_lock<CCriticalSection> lock(m_cs);
 
@@ -47,30 +47,7 @@ void CBlurayDiscCache::SetPlaylistInfo(const std::string& path,
   if (i == m_cache.end())
     i = SetDisc(path);
   auto& [_, disc] = *i;
-  disc.m_playlists[playlist] = *playlistInfo;
-}
-
-void CBlurayDiscCache::SetTitleInfo(const std::string& path,
-                                    unsigned int title,
-                                    const BLURAY_TITLE_INFO* playlistInfo)
-{
-  std::unique_lock<CCriticalSection> lock(m_cs);
-
-  // Get rid of any URL options, else the compare may be wrong
-  std::string storedPath{CURL(path).GetWithoutOptions()};
-  URIUtils::RemoveSlashAtEnd(storedPath);
-
-  auto i{m_cache.find(storedPath)};
-  if (i == m_cache.end())
-    i = SetDisc(path);
-  auto& [_, disc] = *i;
-
-  // Update title to playlist map
-  const unsigned int playlist{playlistInfo->playlist};
-  disc.m_titleMap[title] = playlist;
-
-  // Add playlist itself
-  disc.m_playlists[playlist] = *playlistInfo;
+  disc.m_playlists[playlist] = playlistInfo;
 }
 
 void CBlurayDiscCache::SetMaps(const std::string& path,
@@ -94,30 +71,7 @@ void CBlurayDiscCache::SetMaps(const std::string& path,
 
 bool CBlurayDiscCache::GetPlaylistInfo(const std::string& path,
                                        unsigned int playlist,
-                                       BLURAY_TITLE_INFO& playlistInfo)
-{
-  std::unique_lock<CCriticalSection> lock(m_cs);
-
-  // Get rid of any URL options, else the compare may be wrong
-  std::string storedPath{CURL(path).GetWithoutOptions()};
-  URIUtils::RemoveSlashAtEnd(storedPath);
-
-  if (const auto& i{m_cache.find(storedPath)}; i != m_cache.end())
-  {
-    const auto& [_, disc] = *i;
-    if (const auto& j{disc.m_playlists.find(playlist)}; j != disc.m_playlists.end())
-    {
-      const auto& [_, info] = *j;
-      playlistInfo = info;
-      return true;
-    }
-  }
-  return false;
-}
-
-bool CBlurayDiscCache::GetTitleInfo(const std::string& path,
-                                    unsigned int title,
-                                    BLURAY_TITLE_INFO& playlistInfo)
+                                       PlaylistInformation& playlistInfo)
 {
   std::unique_lock<CCriticalSection> lock(m_cs);
 
@@ -125,20 +79,16 @@ bool CBlurayDiscCache::GetTitleInfo(const std::string& path,
   std::string storedPath = CURL(path).GetWithoutOptions();
   URIUtils::RemoveSlashAtEnd(storedPath);
 
-  if (const auto& i{m_cache.find(storedPath)}; i != m_cache.end())
+  const auto i = m_cache.find(storedPath);
+  if (i != m_cache.end())
   {
     const auto& [_, disc] = *i;
-
-    // See if we know which playlist maps to this title
-    if (const auto& j{disc.m_titleMap.find(title)}; j != disc.m_titleMap.end())
+    const auto j = disc.m_playlists.find(playlist);
+    if (j != disc.m_playlists.end())
     {
-      const auto& [_, playlist] = *j;
-      if (const auto& k{disc.m_playlists.find(playlist)}; k != disc.m_playlists.end())
-      {
-        const auto& [_, info] = *k;
-        playlistInfo = info;
-        return true;
-      }
+      const auto& [_, info] = *j;
+      playlistInfo = info;
+      return true;
     }
   }
   return false;

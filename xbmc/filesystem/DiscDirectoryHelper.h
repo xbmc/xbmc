@@ -26,11 +26,25 @@ static constexpr unsigned int MAX_EPISODE_DIFFERENCE = 30; // 30 seconds
 static constexpr unsigned int MIN_SPECIAL_DURATION = 5 * 60; // 5 minutes
 static constexpr unsigned int MAIN_TITLE_LENGTH_PERCENT = 70;
 
+struct DiscStreamInfo
+{
+  unsigned int coding{0};
+  unsigned int format{0};
+  unsigned int rate{0};
+  unsigned int aspect{0};
+  std::string lang;
+};
+
 struct PlaylistInfo
 {
+  unsigned int playlist;
   unsigned int duration{0};
   std::vector<unsigned int> clips;
+  std::map<unsigned int, unsigned int> clipDuration;
   std::vector<unsigned int> chapters;
+  std::vector<DiscStreamInfo> videoStreams;
+  std::vector<DiscStreamInfo> audioStreams;
+  std::vector<DiscStreamInfo> pgStreams;
   std::string languages;
 };
 
