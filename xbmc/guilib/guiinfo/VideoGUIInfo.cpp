@@ -702,9 +702,6 @@ bool CVideoGUIInfo::GetPlaylistInfo(std::string& value, const CGUIInfo& info) co
   {
     CVideoThumbLoader loader;
     loader.LoadItem(playlistItem.get());
-    // still no thumb? then just the set the default cover
-    if (!playlistItem->HasArt("thumb"))
-      playlistItem->SetArt("thumb", "DefaultVideoCover.png");
   }
   if (info.m_info == VIDEOPLAYER_PLAYLISTPOS)
   {
