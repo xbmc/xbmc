@@ -1104,7 +1104,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
         std::string name  = XMLUtils::GetAttribute(element, "name");
         std::string value = element->FirstChild()->ValueStr();
         if (!name.empty())
-          CDNSNameCache::Add(name, value);
+          CDNSNameCache::AddPermanent(name, value);
       }
       element = element->NextSiblingElement("entry");
     }
