@@ -202,20 +202,39 @@ private:
 
   void Dispose();
   std::string GetDiscInfoString(DiscInfo info);
-  void GetPlaylistsInformation(ClipMap& clips, PlaylistMap& playlists) const;
-  bool GetPlaylists(GetTitlesJob job, CFileItemList& items, SortTitlesJob sort) const;
+  void GetPlaylistsInformation(ClipMap& clips, PlaylistMap& playlists);
+  bool GetPlaylists(GetTitlesJob job, CFileItemList& items, SortTitlesJob sort);
   int GetMainPlaylistFromDisc() const;
-  std::shared_ptr<CFileItem> GetFileItem(const BLURAY_TITLE_INFO& title,
-                                         const std::string& label) const;
+  std::shared_ptr<CFileItem> GetFileItem(const PlaylistInfo& title, const std::string& label) const;
 
   std::string GetCachePath() const;
   const BLURAY_DISC_INFO* GetDiscInfo() const;
-  bool GetPlaylistInfoFromDisc(unsigned int playlist, BLURAY_TITLE_INFO& p) const;
+  bool GetPlaylistInfoFromDisc(unsigned int playlist, PlaylistInfo& p);
+  bool ReadMPLS(unsigned int playlist, PlaylistInformation& playlistInformation);
+  bool ParseMPLS(const std::vector<char>& buffer,
+                 PlaylistInformation& playlistInformation,
+                 unsigned int playlist);
+  static bool ParsePlayItem(const std::vector<char>& buffer,
+                            unsigned int& offset,
+                            PlayItemInformation& playItem);
+  static bool ParseSubPlayItem(const std::vector<char>& buffer,
+                               unsigned int& offset,
+                               SubPlayItemInformation& subPlayItemInformation);
+  static StreamInformation ParseStream(const std::vector<char>& buffer,
+                                       unsigned int& offset,
+                                       STREAM_TYPE streamType);
+
+  bool ReadCLPI(unsigned int clip, ClipInformation& clipInformation) const;
+  static bool ParseCLPI(const std::vector<char>& buffer,
+                        ClipInformation& clipInformation,
+                        unsigned int clip);
 
   CURL m_url;
   std::string m_realPath;
   BLURAY* m_bd{nullptr};
   bool m_blurayInitialized{false};
   bool m_blurayMenuSupport{false};
+
+  std::map<unsigned int, ClipInformation> m_clips;
 };
 } // namespace XFILE

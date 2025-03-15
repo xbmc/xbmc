@@ -8,16 +8,15 @@
 
 #pragma once
 
+#include "BlurayDirectory.h"
 #include "DiscDirectoryHelper.h"
 #include "threads/CriticalSection.h"
 
 #include <map>
 
-#include <libbluray/bluray.h>
-
 struct Disc
 {
-  std::map<unsigned int, BLURAY_TITLE_INFO> m_playlists;
+  std::map<unsigned int, PlaylistInformation> m_playlists;
   std::map<unsigned int, unsigned int> m_titleMap;
 
   bool m_mapsSet{false};
@@ -38,18 +37,14 @@ public:
   void Clear();
 
   CacheMap::iterator SetDisc(const std::string& path);
-  void SetTitleInfo(const std::string& path,
-                    unsigned int title,
-                    const BLURAY_TITLE_INFO* playlistInfo);
   void SetPlaylistInfo(const std::string& path,
                        unsigned int playlist,
-                       const BLURAY_TITLE_INFO* playlistInfo);
+                       const PlaylistInformation& playlistInfo);
   void SetMaps(const std::string& path, const PlaylistMap& playlistmap, const ClipMap& clipmap);
 
   bool GetPlaylistInfo(const std::string& path,
                        unsigned int playlist,
-                       BLURAY_TITLE_INFO& playlistInfo);
-  bool GetTitleInfo(const std::string& path, unsigned int title, BLURAY_TITLE_INFO& playlistInfo);
+                       PlaylistInformation& playlistInfo);
   bool GetMaps(const std::string& path, PlaylistMap& playlistmap, ClipMap& clipmap);
 
   void ClearDisc(const std::string& path);

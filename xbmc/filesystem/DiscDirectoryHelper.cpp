@@ -26,6 +26,8 @@
 #include <sstream>
 #include <tuple>
 
+using namespace XFILE;
+
 bool CDiscDirectoryHelper::GetEpisodePlaylists(const CURL& url,
                                                CFileItemList& items,
                                                int episodeIndex,
