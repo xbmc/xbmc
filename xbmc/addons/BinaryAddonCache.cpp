@@ -18,7 +18,7 @@
 namespace ADDON
 {
 
-const std::vector<AddonType> ADDONS_TO_CACHE = {AddonType::GAMEDLL};
+const std::vector<AddonType> ADDONS_TO_CACHE = {AddonType::GAMEDLL, AddonType::SHADERDLL};
 
 CBinaryAddonCache::~CBinaryAddonCache()
 {
