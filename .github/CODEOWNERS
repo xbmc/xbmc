@@ -3,15 +3,21 @@
 
 # Please try and keep the list in alphabetical order
 
+/addons/kodi-dev-kit/include/kodi/addon-instance/pvr/ @ksooo
+/addons/kodi-dev-kit/include/kodi/addon-instance/PVR.h @ksooo
+/addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/ @ksooo
+/addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr.h @ksooo
 /xbmc/cores/RetroPlayer/ @garbear
 /xbmc/cores/VideoPlayer/DVDInputStreams/InputStreamPVR*.* @ksooo
 /xbmc/cores/VideoPlayer/VideoRenderers/HwDecRender/DRMPRIMEEGL.* @lrusak
 /xbmc/cores/VideoPlayer/VideoRenderers/HwDecRender/RendererDRMPRIME* @lrusak
+/xbmc/favourites/ @ksooo
 /xbmc/filesystem/Music*.* @DaveTBlake
+/xbmc/filesystem/PVR*.* @ksooo
 /xbmc/games/ @garbear
 /xbmc/input/ @garbear
 /xbmc/interfaces/builtins/PVR*.* @ksooo
-/xbmc/interfaces/json-rpc/AudioLibrary.*  @DaveTBlake
+/xbmc/interfaces/json-rpc/AudioLibrary.* @DaveTBlake
 /xbmc/interfaces/json-rpc/PVR*.* @ksooo
 /xbmc/guilib/GUIRangesControl.* @ksooo
 /xbmc/guilib/guiinfo/GUIInfoProvider.h @ksooo
@@ -19,12 +25,22 @@
 /xbmc/guilib/guiinfo/IGUIInfoProvider.h @ksooo
 /xbmc/music/ @DaveTBlake
 /xbmc/peripherals/ @garbear
+/xbmc/platform/android/speech/ @ksooo
+/xbmc/platform/darwin/speech/ @ksooo
 /xbmc/platform/linux/ @lrusak
 /xbmc/pvr/ @ksooo
 /xbmc/rendering/gles/ @lrusak
 /xbmc/settings/SettingsComponent.* @ksooo
+/xbmc/speech/ @ksooo
 /xbmc/utils/EGL* @lrusak
+/xbmc/utils/ExecString.* @ksooo
 /xbmc/utils/GBMBufferObject.* @lrusak
+/xbmc/utils/PlayerUtils.* @ksooo
+/xbmc/video/VideoUtils.* @ksooo
+/xbmc/video/guilib/VideoAction.h @ksooo
+/xbmc/video/guilib/VideoActionProcessorBase.* @ksooo
+/xbmc/video/guilib/VideoGUIUtils.* @ksooo
+/xbmc/video/guilib/VideoPlayActionProcessor.* @ksooo
+/xbmc/video/guilib/VideoSelectActionProcessor.* @ksooo
 /xbmc/windowing/gbm/ @lrusak
 /xbmc/windowing/wayland/ @yol
-
