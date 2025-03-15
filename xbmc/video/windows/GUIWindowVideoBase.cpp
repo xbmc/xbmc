@@ -697,7 +697,7 @@ void CGUIWindowVideoBase::LoadVideoInfo(CFileItemList& items,
     }
     if (match)
     {
-      pItem->UpdateInfo(*match, replaceLabels);
+      pItem->UpdateInfo(*match, replaceLabels, MultipleEpisodes::GROUP_MULTIPLE_EPISODES);
 
       if (stackItems)
       {
@@ -807,7 +807,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
 bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
   CFileItemPtr item;
-  m_forceSelection = false;
+  m_forceSelection = PLAYLIST::ForcePlaylistSelection::DONT_FORCE_PLAYLIST_SELECTION;
   if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
     item = m_vecItems->Get(itemNumber);
   switch (button)
@@ -862,7 +862,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return OnPlayMedia(itemNumber);
   case CONTEXT_BUTTON_CHOOSE_PLAYLIST:
   {
-    m_forceSelection = true;
+    m_forceSelection = PLAYLIST::ForcePlaylistSelection::FORCE_PLAYLIST_SELECTION;
     return OnPlayMedia(itemNumber);
   }
   default:
@@ -1041,7 +1041,7 @@ bool CGUIWindowVideoBase::PlayItem(const std::shared_ptr<CFileItem>& pItem,
     return true;
   }
 
-  m_forceSelection = false;
+  m_forceSelection = PLAYLIST::ForcePlaylistSelection::DONT_FORCE_PLAYLIST_SELECTION;
 
   //! @todo get rid of "videos with versions as folder" hack!
   if (pItem->m_bIsFolder && !pItem->IsPlugin() &&

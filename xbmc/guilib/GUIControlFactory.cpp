@@ -850,6 +850,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
   CPoint offset;
 
   bool bHasPath = false;
+  bool bDecodePath{false};
   CGUIAction clickActions;
   CGUIAction altclickActions;
   CGUIAction focusActions;
@@ -1024,6 +1025,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
   XMLUtils::GetString(pControlNode, "selected", toggleSelect);
 
   XMLUtils::GetBoolean(pControlNode, "haspath", bHasPath);
+  XMLUtils::GetBoolean(pControlNode, "decodepath", bDecodePath);
 
   GetTexture(pControlNode, "textureup", textureUp);
   GetTexture(pControlNode, "texturedown", textureDown);
@@ -1283,7 +1285,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
       else
       {
         control = new CGUILabelControl(parentID, id, posX, posY, width, height, labelInfo,
-                                       wrapMultiLine, bHasPath);
+                                       wrapMultiLine, bHasPath, bDecodePath);
         static_cast<CGUILabelControl*>(control)->SetInfo(content);
         static_cast<CGUILabelControl*>(control)->SetWidthControl(
             minWidth, (scrollValue == CGUIControl::ALWAYS));

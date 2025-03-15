@@ -45,7 +45,6 @@
 #include "input/actions/ActionIDs.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
-#include "network/NetworkFileItemClassify.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -53,7 +52,6 @@
 #include "utils/FontUtils.h"
 #include "utils/JobManager.h"
 #include "utils/LangCodeExpander.h"
-#include "utils/StreamDetails.h"
 #include "utils/StreamUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -799,12 +797,18 @@ bool CVideoPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options
 
   m_item = file;
   m_playerOptions = options;
+  m_isBluray = URIUtils::IsBlurayPath(m_item.GetDynPath());
 
   m_processInfo->SetPlayTimes(0,0,0,0);
   m_bAbortRequest = false;
   m_error = false;
   m_bCloseRequest = false;
   m_renderManager.PreInit();
+  m_startWatchTime = {};
+  m_currentPlaylist = -1;
+  m_mightBeMenu = false;
+  m_currentDuration = 0;
+  m_playedPlaylists.clear();
 
   Create();
   m_messenger.Init();
@@ -2647,7 +2651,51 @@ void CVideoPlayer::OnExit()
     CLog::Log(LOGINFO, "VideoPlayer: eof, waiting for queues to empty");
 
   CFileItem fileItem(m_item);
-  UpdateFileItemStreamDetails(fileItem);
+  if (m_isBluray)
+  {
+    // Save playlist currently playing
+    SavePlaylistInformation();
+
+    // With BD-J discs everything played through the menu is indistinguishable from the menu itself
+    // So assume only the first playlist marked as menu is the menu
+    const auto& menu_it{std::ranges::find_if(m_playedPlaylists,
+                                             [](const playlistInfo& p) { return p.mightBeMenu; })};
+
+    if (menu_it != m_playedPlaylists.end())
+    {
+      const int menuPlaylist{menu_it->playlist};
+      m_playedPlaylists.erase(m_playedPlaylists.begin(), menu_it);
+
+      // Now remove any subsequent menu playlists
+      std::erase_if(m_playedPlaylists,
+                    [&menuPlaylist](const playlistInfo& p) { return p.playlist == menuPlaylist; });
+    }
+
+    // If never reached menu or ended in menu and menu only played once then never got to feature
+    if (m_playedPlaylists.empty())
+    {
+      fileItem.GetVideoInfoTag()->m_streamDetails.Reset();
+      fileItem.SetDynPath("");
+      m_State.time = 0.0;
+    }
+    else
+    {
+      // Find the playlist that was played the longest (of those that remain)
+      const auto& it{std::ranges::max_element(m_playedPlaylists,
+                                              [](const playlistInfo& i, const playlistInfo& j)
+                                              { return i.watchedTime < j.watchedTime; })};
+
+      fileItem.GetVideoInfoTag()->m_streamDetails = it->details;
+      const int playlist{it->playlist};
+      fileItem.GetVideoInfoTag()->m_iTrack = playlist;
+      CURL url{m_item.GetDynPath()};
+      url.SetFileName(StringUtils::Format("BDMV/PLAYLIST/{:05}.mpls", playlist));
+      fileItem.SetDynPath(url.Get());
+      m_State = it->state;
+    }
+  }
+  else
+    UpdateFileItemStreamDetails(fileItem);
 
   CloseStream(m_CurrentAudio, !m_bAbortRequest);
   CloseStream(m_CurrentVideo, !m_bAbortRequest);
@@ -5102,8 +5150,47 @@ void CVideoPlayer::UpdatePlayState(double timeout)
 
   m_processInfo->SetPlayTimes(state.startTime, state.time, state.timeMin, state.timeMax);
 
+  // Save longest stream (for DVDs and Blurays played through menu) and playlist information
+  if (m_isBluray)
+  {
+    BlurayState blurayState;
+    CBlurayStateSerializer serializer;
+    int playlist{-1};
+    if (serializer.XMLToBlurayState(blurayState, state.player_state))
+      playlist = blurayState.playlistId;
+
+    // Track playlists played and how long they were watched for
+    if (playlist != m_currentPlaylist && m_content.m_videoIndex >= 0)
+    {
+      if (m_currentPlaylist != -1)
+        SavePlaylistInformation(); // Save previous playlist
+
+      // Details for this playlist
+      CFileItem item;
+      UpdateFileItemStreamDetails(item, true);
+      m_currentStreamDetails = item.GetVideoInfoTag()->m_streamDetails;
+      m_currentPlaylist = playlist;
+      m_mightBeMenu = IsInMenuInternal(); // IsInMenuInternal() not accurate for BD-J discs
+      m_currentDuration = state.timeMax;
+      m_startWatchTime = std::chrono::steady_clock::now();
+    }
+  }
+
   std::unique_lock<CCriticalSection> lock(m_StateSection);
   m_State = state;
+}
+
+void CVideoPlayer::SavePlaylistInformation()
+{
+  const std::chrono::steady_clock::time_point timeNow{std::chrono::steady_clock::now()};
+  const std::chrono::duration<double> watchedTime{timeNow - m_startWatchTime};
+  const playlistInfo lastPlaylistInfo{.playlist = m_currentPlaylist,
+                                      .mightBeMenu = m_mightBeMenu,
+                                      .duration = m_currentDuration,
+                                      .watchedTime = watchedTime.count(),
+                                      .details = m_currentStreamDetails,
+                                      .state = m_State};
+  m_playedPlaylists.emplace_back(lastPlaylistInfo);
 }
 
 int64_t CVideoPlayer::GetUpdatedTime()
@@ -5289,9 +5376,9 @@ void CVideoPlayer::OnResetDisplay()
   m_VideoPlayerAudio->SendMessage(std::make_shared<CDVDMsg>(CDVDMsg::PLAYER_DISPLAY_RESET), 1);
 }
 
-void CVideoPlayer::UpdateFileItemStreamDetails(CFileItem& item)
+void CVideoPlayer::UpdateFileItemStreamDetails(CFileItem& item, bool alwaysUpdate /* = false */)
 {
-  if (!m_UpdateStreamDetails)
+  if (!m_UpdateStreamDetails && !alwaysUpdate)
     return;
   m_UpdateStreamDetails = false;
 

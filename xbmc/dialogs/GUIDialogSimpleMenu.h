@@ -9,6 +9,7 @@
 #pragma once
 
 #include "filesystem/Directory.h"
+#include "playlists/PlayListTypes.h"
 
 #include <string>
 
@@ -20,9 +21,18 @@ class CGUIDialogSimpleMenu
 public:
 
   /*! \brief Show dialog allowing selection of wanted playback item */
-  static bool ShowPlaySelection(CFileItem& item, bool forceSelection = false);
-  static bool ShowPlaySelection(CFileItem& item, const std::string& directory);
+  static bool GetOrShowPlaylistSelection(
+      CFileItem& item,
+      KODI::PLAYLIST::ForcePlaylistSelection forceSelection =
+          KODI::PLAYLIST::ForcePlaylistSelection::DONT_FORCE_PLAYLIST_SELECTION,
+      KODI::PLAYLIST::ExcludeUsedPlaylists excludeUsedPlaylists =
+          KODI::PLAYLIST::ExcludeUsedPlaylists::EXCLUDE_USED_PLAYLISTS);
 
 protected:
-  static bool GetDirectoryItems(const std::string &path, CFileItemList &items, const XFILE::CDirectory::CHints &hints);
+  static bool GetDirectoryItems(const std::string& path,
+                                CFileItemList& items,
+                                const XFILE::CDirectory::CHints& hints);
+
+private:
+  static bool GetItems(const CFileItem& item, CFileItemList& items, const std::string& directory);
 };
