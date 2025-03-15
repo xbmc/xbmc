@@ -17,8 +17,12 @@
 
 #include <memory>
 #include <set>
+#include <stdexcept>
+#include <string_view>
 #include <utility>
 #include <vector>
+
+#include <fmt/format.h>
 
 class CFileItem;
 class CFileItemList;
@@ -178,6 +182,40 @@ enum class VideoDbContentType
   EPISODES = 4,
   MOVIE_SETS = 5,
   MUSICALBUMS = 6
+};
+
+template<>
+struct fmt::formatter<VideoDbContentType> : fmt::formatter<std::string_view>
+{
+  template<typename FormatContext>
+  constexpr auto format(const VideoDbContentType& type, FormatContext& ctx)
+  {
+    return fmt::formatter<std::string_view>::format(enumToSV(type), ctx);
+  }
+
+private:
+  static constexpr std::string_view enumToSV(VideoDbContentType type)
+  {
+    using namespace std::literals::string_view_literals;
+    switch (type)
+    {
+      case VideoDbContentType::UNKNOWN:
+        return "unknown"sv;
+      case VideoDbContentType::MOVIES:
+        return "movies"sv;
+      case VideoDbContentType::TVSHOWS:
+        return "TV shows"sv;
+      case VideoDbContentType::MUSICVIDEOS:
+        return "music videos"sv;
+      case VideoDbContentType::EPISODES:
+        return "episodes"sv;
+      case VideoDbContentType::MOVIE_SETS:
+        return "movie sets"sv;
+      case VideoDbContentType::MUSICALBUMS:
+        return "music albums"sv;
+    };
+    throw std::invalid_argument("no videodb content string found");
+  }
 };
 
 typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
