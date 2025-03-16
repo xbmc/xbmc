@@ -443,3 +443,18 @@ std::shared_ptr<speech::ISpeechRecognition> CServiceBroker::GetSpeechRecognition
 {
   return g_serviceBroker.m_speechRecognition;
 }
+
+void CServiceBroker::RegisterBlurayDiscCache(const std::shared_ptr<XFILE::CBlurayDiscCache>& cache)
+{
+  g_serviceBroker.m_blurayDiscCache = cache;
+}
+
+void CServiceBroker::UnregisterBlurayDiscCache()
+{
+  g_serviceBroker.m_blurayDiscCache.reset();
+}
+
+std::shared_ptr<XFILE::CBlurayDiscCache> CServiceBroker::GetBlurayDiscCache()
+{
+  return g_serviceBroker.m_blurayDiscCache;
+}
