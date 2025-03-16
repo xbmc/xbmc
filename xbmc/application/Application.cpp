@@ -56,6 +56,7 @@
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
 #include "favourites/FavouritesService.h"
+#include "filesystem/BlurayDiscCache.h"
 #include "filesystem/Directory.h"
 #include "filesystem/DirectoryCache.h"
 #include "filesystem/DirectoryFactory.h"
@@ -353,6 +354,10 @@ bool CApplication::Create()
   // application inbound service
   m_pAppPort = std::make_shared<CAppInboundProtocol>(*this);
   CServiceBroker::RegisterAppPort(m_pAppPort);
+
+#ifdef HAVE_LIBBLURAY
+  CServiceBroker::RegisterBlurayDiscCache(std::make_shared<CBlurayDiscCache>());
+#endif
 
   if (!m_ServiceManager->InitStageTwo(
           settingsComponent->GetProfileManager()->GetProfileUserDataFolder()))
@@ -1930,6 +1935,10 @@ bool CApplication::Cleanup()
 
     if (m_ServiceManager)
       m_ServiceManager->DeinitStageThree();
+
+#ifdef HAVE_LIBBLURAY
+    CServiceBroker::UnregisterBlurayDiscCache();
+#endif
 
     CServiceBroker::UnregisterSpeechRecognition();
 
