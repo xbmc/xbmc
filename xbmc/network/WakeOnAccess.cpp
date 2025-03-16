@@ -68,7 +68,7 @@ static int GetTotalSeconds(const CDateTimeSpan& ts)
 static unsigned long HostToIP(const std::string& host)
 {
   std::string ip;
-  CDNSNameCache::Lookup(host, ip);
+  CServiceBroker::GetDNSNameCache()->Lookup(host, ip);
   return inet_addr(ip.c_str());
 }
 

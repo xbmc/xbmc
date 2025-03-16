@@ -76,7 +76,7 @@ CNfsConnection::~CNfsConnection()
 void CNfsConnection::resolveHost(const CURL& url)
 {
   // resolve if hostname has changed
-  CDNSNameCache::Lookup(url.GetHostName(), m_resolvedHostName);
+  CServiceBroker::GetDNSNameCache()->Lookup(url.GetHostName(), m_resolvedHostName);
 }
 
 std::list<std::string> CNfsConnection::GetExportList(const CURL& url)
