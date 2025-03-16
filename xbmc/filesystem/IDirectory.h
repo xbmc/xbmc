@@ -104,6 +104,13 @@ public:
   virtual bool Remove(const CURL& url) { return false; }
 
   /*!
+  \brief Provided a path, attempts to resolve to a mount point
+  \param path Path to resolve
+  \return Returns the mountpoint if found, else the provided path
+  */
+  virtual std::string ResolveMountPoint(const std::string& path) const { return path; }
+
+  /*!
   \brief Recursively removes the directory
   \param url Directory to remove.
   \return Returns \e false if not successful

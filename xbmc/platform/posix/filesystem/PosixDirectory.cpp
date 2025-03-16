@@ -16,8 +16,12 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XTimeUtils.h"
+#include "utils/log.h"
 
 #include <dirent.h>
+#ifdef HAVE_GETMNTENT_R
+#include <mntent.h>
+#endif
 #include <sys/stat.h>
 
 using namespace XFILE;
@@ -205,4 +209,52 @@ bool CPosixDirectory::Exists(const CURL& url)
   if (stat(path.c_str(), &buffer) != 0)
     return false;
   return S_ISDIR(buffer.st_mode) ? true : false;
+}
+
+std::string CPosixDirectory::ResolveMountPoint(const std::string& file) const
+{
+#ifdef HAVE_GETMNTENT_R
+  // Check if file is a block device, if yes we need the mount point
+  struct stat st;
+
+  if (stat(file.c_str(), &st) == 0 && S_ISBLK(st.st_mode))
+  {
+    // the path may be a symlink (e.g. /dev/dvd -> /dev/sr0), so make sure
+    // we look up the real device
+    char pathBuffer[MAX_PATH];
+    char* bdDevice = realpath(file.c_str(), pathBuffer);
+
+    if (bdDevice == nullptr)
+    {
+      CLog::LogF(LOGERROR, "realpath on '{}' failed with {}", file, errno);
+      return file;
+    }
+
+    struct FileDeleter
+    {
+      void operator()(FILE* f) { endmntent(f); }
+    };
+    std::unique_ptr<FILE, FileDeleter> mtab(setmntent("/proc/self/mounts", "r"));
+
+    if (mtab)
+    {
+      mntent *m, mbuf;
+      char buf[8192];
+      std::string_view bdDeviceSv = bdDevice;
+
+      while ((m = getmntent_r(mtab.get(), &mbuf, buf, sizeof(buf))) != nullptr)
+      {
+        if (bdDeviceSv == m->mnt_fsname)
+        {
+          return m->mnt_dir;
+        }
+      }
+
+      CLog::LogF(LOGINFO, "No mount point for device '{}' found", bdDeviceSv);
+    }
+    else
+      CLog::LogF(LOGWARNING, "Failed to open mount table");
+  }
+#endif
+  return file;
 }
