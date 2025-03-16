@@ -162,6 +162,7 @@ gettext: $(ICONV)
 gnutls: nettle $(ZLIB)
 harfbuzz: freetype2-noharfbuzz $(ICONV)
 libass: $(FONTCONFIG) fribidi harfbuzz freetype2 $(ICONV)
+libbdplus: libaacs
 libbluray: fontconfig freetype2 $(ICONV) udfread libxml2
 libcdio-gplv3: $(ICONV)
 libcdio: $(ICONV)
