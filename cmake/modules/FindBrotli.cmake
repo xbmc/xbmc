@@ -30,7 +30,7 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
 
     # Retrieve suffix of platform byproduct to apply to second brotli library
     string(REGEX REPLACE "^.*\\." "" _LIBEXT ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BYPRODUCT})
-    if(NOT WIN32 OR WINDOWS_STORE)
+    if(NOT (WIN32 OR WINDOWS_STORE))
       set(_PREFIX "lib")
     endif()
 
