@@ -24,14 +24,14 @@ public:
    * \param strHostName The hostname
    * \param strIpAddress The IP for that hostname. Can be IPv4 or IPv6
    */
-  static void Add(const std::string& strHostName, const std::string& strIpAddress);
+  void Add(const std::string& strHostName, const std::string& strIpAddress);
   /*!
    * \brief Add the IP for a hostname to the cache indefinitely
    *
    * \param strHostName The hostname
    * \param strIpAddress The IP for that hostname. Can be IPv4 or IPv6
    */
-  static void AddPermanent(const std::string& strHostName, const std::string& strIpAddress);
+  void AddPermanent(const std::string& strHostName, const std::string& strIpAddress);
   /*!
    * \brief Get an IP for a hostname from the cache
    *
@@ -40,7 +40,7 @@ public:
    *
    * \return true if the IP is cached
    */
-  static bool GetCached(const std::string& strHostName, std::string& strIpAddress);
+  bool GetCached(const std::string& strHostName, std::string& strIpAddress);
   /*!
    * \brief Get the IP for the hostname from the cache or query it form the DNS
    *
@@ -51,13 +51,10 @@ public:
    *
    * \return true if the IP is cached or the DNS query was successful
    */
-  static bool Lookup(const std::string& strHostName, std::string& strIpAddress);
+  bool Lookup(const std::string& strHostName, std::string& strIpAddress);
 
 private:
-  CDNSNameCache() = default;
-
   static constexpr std::chrono::seconds TTL{60};
-  static CDNSNameCache ms_instance;
 
   struct CacheEntry
   {
