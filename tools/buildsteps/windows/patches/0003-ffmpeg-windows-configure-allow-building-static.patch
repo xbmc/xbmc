@@ -1,4 +1,4 @@
-From efb771d944e96bcbb24635bcae99a43dffab262e Mon Sep 17 00:00:00 2001
+From 5dff0aeffe43dc71448d7a0b0c1e51d236e87d17 Mon Sep 17 00:00:00 2001
 From: Lukas Rusak <lorusak@gmail.com>
 Date: Sat, 10 Apr 2021 08:17:11 -0700
 Subject: [PATCH 3/4] ffmpeg: windows: configure: allow building static
@@ -8,21 +8,21 @@ Subject: [PATCH 3/4] ffmpeg: windows: configure: allow building static
  1 file changed, 4 insertions(+)
 
 diff --git a/configure b/configure
-index da457705d1..e3a8f45ff4 100755
+index 9bebb75093..28dcf462dd 100755
 --- a/configure
 +++ b/configure
-@@ -5566,6 +5566,8 @@ case $target_os in
-         enabled shared && ! enabled small && test_cmd $windres --version && enable gnu_windres
+@@ -5827,6 +5827,8 @@ case $target_os in
          enabled x86_32 && check_ldflags -Wl,--large-address-aware
+         add_cppflags -DWIN32_LEAN_AND_MEAN
          shlibdir_default="$bindir_default"
 +        LIBPREF=""
 +        LIBSUF=".lib"
          SLIBPREF=""
          SLIBSUF=".dll"
          SLIBNAME_WITH_VERSION='$(SLIBPREF)$(FULLNAME)-$(LIBVERSION)$(SLIBSUF)'
-@@ -5615,6 +5617,8 @@ case $target_os in
-         fi
+@@ -5878,6 +5880,8 @@ case $target_os in
          enabled x86_32 && check_ldflags -LARGEADDRESSAWARE
+         add_cppflags -DWIN32_LEAN_AND_MEAN
          shlibdir_default="$bindir_default"
 +        LIBPREF=""
 +        LIBSUF=".lib"
@@ -30,5 +30,5 @@ index da457705d1..e3a8f45ff4 100755
          SLIBSUF=".dll"
          SLIBNAME_WITH_VERSION='$(SLIBPREF)$(FULLNAME)-$(LIBVERSION)$(SLIBSUF)'
 -- 
-2.29.2
+2.46.1
 
