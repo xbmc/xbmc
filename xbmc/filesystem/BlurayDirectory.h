@@ -14,6 +14,8 @@
 
 #include <memory>
 
+#include <libbluray/bluray.h>
+
 class CFileItem;
 class CFileItemList;
 
@@ -47,8 +49,14 @@ private:
   bool GetPlaylists(GetTitles job, CFileItemList& items, SortTitles sort) const;
   void GetPlaylists(ClipMap& clips, PlaylistMap& playlists) const;
   int GetMainPlaylistFromDisc() const;
-  std::shared_ptr<CFileItem> GetFileItem(const BLURAY_TITLE_INFO* title,
+  std::shared_ptr<CFileItem> GetFileItem(const BLURAY_TITLE_INFO& title,
                                          const std::string& label) const;
+
+  std::string GetCachePath() const;
+  const BLURAY_DISC_INFO* GetDiscInfo() const;
+  int GetNumberOfTitlesFromDisc() const;
+  bool GetPlaylistInfoFromDisc(unsigned int playlist, BLURAY_TITLE_INFO& p) const;
+  bool GetTitleInfoFromDisc(unsigned int title, BLURAY_TITLE_INFO& p) const;
 
   CURL m_url;
   std::string m_realPath;
