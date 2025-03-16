@@ -682,7 +682,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
 
         if (fetchEpisodes)
         {
-          InfoRet ret = RetrieveInfoForEpisodes(pItem, lResult, info2, useLocal, pDlgProgress);
+          InfoRet ret =
+              RetrieveInfoForEpisodes(pItem, lResult, info2, useLocal, pDlgProgress, true);
           if (ret == InfoRet::ADDED)
           {
             m_database.SetPathHash(pItem->GetPath(), pItem->GetProperty("hash").asString());
@@ -712,7 +713,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
     }
     if (fetchEpisodes)
     {
-      InfoRet ret = RetrieveInfoForEpisodes(pItem, lResult, info2, useLocal, pDlgProgress);
+      InfoRet ret = RetrieveInfoForEpisodes(pItem, lResult, info2, useLocal, pDlgProgress, true);
       if (ret == InfoRet::ADDED)
         m_database.SetPathHash(pItem->GetPath(), pItem->GetProperty("hash").asString());
     }
@@ -905,7 +906,8 @@ CVideoInfoScanner::~CVideoInfoScanner()
                                                                    long showID,
                                                                    const ADDON::ScraperPtr& scraper,
                                                                    bool useLocal,
-                                                                   CGUIDialogProgress* progress)
+                                                                   CGUIDialogProgress* progress,
+                                                                   bool alreadyHasArt /* = false */)
   {
     // enumerate episodes
     EPISODELIST files;
@@ -926,19 +928,12 @@ CVideoInfoScanner::~CVideoInfoScanner()
       std::map<int, std::map<std::string, std::string>> seasonArt;
       m_database.GetTvShowSeasonArt(showID, seasonArt);
 
-      bool updateSeasonArt = false;
-      for (std::map<int, std::map<std::string, std::string>>::const_iterator i = seasonArt.begin(); i != seasonArt.end(); ++i)
-      {
-        if (i->second.empty())
-        {
-          updateSeasonArt = true;
-          break;
-        }
-      }
-
+      const bool updateSeasonArt{
+          alreadyHasArt ||
+          std::ranges::any_of(seasonArt, [](const auto& i) { return i.second.empty(); })};
       if (updateSeasonArt)
       {
-        if (!item->IsPlugin() || scraper->ID() != "metadata.local")
+        if (!alreadyHasArt && !item->IsPlugin() && scraper->ID() != "metadata.local")
         {
           CVideoInfoDownloader loader(scraper);
           loader.GetArtwork(showInfo);
