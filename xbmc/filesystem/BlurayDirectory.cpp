@@ -7,10 +7,12 @@
  */
 #include "BlurayDirectory.h"
 
+#include "BlurayDiscCache.h"
 #include "File.h"
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "LangInfo.h"
+#include "ServiceBroker.h"
 #include "Util.h"
 #include "filesystem/BlurayCallback.h"
 #include "filesystem/Directory.h"
@@ -35,6 +37,10 @@
 
 namespace XFILE
 {
+
+CBlurayDirectory::CBlurayDirectory()
+{
+}
 
 namespace
 {
@@ -88,14 +94,14 @@ std::string CBlurayDirectory::GetBlurayID()
   return GetDiscInfoString(DiscInfo::ID);
 }
 
-std::string CBlurayDirectory::GetDiscInfoString(DiscInfo info) const
+std::string CBlurayDirectory::GetDiscInfoString(DiscInfo info)
 {
   if (!m_blurayInitialized)
     return "";
 
-  const BLURAY_DISC_INFO* disc_info = bd_get_disc_info(m_bd);
-  if (!disc_info || !disc_info->bluray_detected)
-    return "";
+  const BLURAY_DISC_INFO* discInfo{GetDiscInfo()};
+  if (!discInfo || !discInfo->bluray_detected)
+    return {};
 
   switch (info)
   {
@@ -104,7 +110,7 @@ std::string CBlurayDirectory::GetDiscInfoString(DiscInfo info) const
       std::string title;
 
 #if (BLURAY_VERSION > BLURAY_VERSION_CODE(1, 0, 0))
-      title = disc_info->disc_name ? disc_info->disc_name : "";
+      title = discInfo->disc_name ? discInfo->disc_name : "";
 #endif
 
       return title;
@@ -114,9 +120,9 @@ std::string CBlurayDirectory::GetDiscInfoString(DiscInfo info) const
       std::string id;
 
 #if (BLURAY_VERSION > BLURAY_VERSION_CODE(1, 0, 0))
-      id = disc_info->udf_volume_id ? disc_info->udf_volume_id : "";
+      id = discInfo->udf_volume_id ? discInfo->udf_volume_id : "";
       if (id.empty())
-        id = CUtil::HexToString(disc_info->disc_id, 10);
+        id = CUtil::HexToString(discInfo->disc_id, 10);
 #endif
 
       return id;
@@ -128,6 +134,14 @@ std::string CBlurayDirectory::GetDiscInfoString(DiscInfo info) const
 
 void CBlurayDirectory::GetPlaylists(ClipMap& clips, PlaylistMap& playlists) const
 {
+  // Check cache
+  const std::string path{m_url.GetHostName()};
+  if (CServiceBroker::GetBlurayDiscCache()->GetMaps(path, playlists, clips))
+  {
+    CLog::LogF(LOGDEBUG, "Playlist information for {} retrieved from cache", path);
+    return;
+  }
+
   // Get all titles on disc
   // Sort by playlist for grouping later
 
@@ -151,8 +165,8 @@ void CBlurayDirectory::GetPlaylists(ClipMap& clips, PlaylistMap& playlists) cons
     if (std::regex_search(filename, playlistMatch, playlistPath))
     {
       const unsigned int playlist{static_cast<unsigned int>(std::stoi(playlistMatch[0]))};
-      BLURAY_TITLE_INFO* titleInfo{bd_get_playlist_info(m_bd, playlist, 0)};
-      if (!titleInfo)
+      BLURAY_TITLE_INFO titleInfo{};
+      if (!GetPlaylistInfoFromDisc(playlist, titleInfo))
       {
         CLog::LogF(LOGDEBUG, "Unable to get playlist {}", playlist);
       }
@@ -162,15 +176,15 @@ void CBlurayDirectory::GetPlaylists(ClipMap& clips, PlaylistMap& playlists) cons
         PlaylistInfo info;
 
         // Save playlist duration
-        info.duration = static_cast<unsigned int>(titleInfo->duration / 90000);
+        info.duration = static_cast<unsigned int>(titleInfo.duration / 90000);
 
         // Get clips
         std::string clipsStr;
-        for (unsigned int i = 0; i < titleInfo->clip_count; ++i)
+        for (unsigned int i = 0; i < titleInfo.clip_count; ++i)
         {
           // Add clip to playlist
           const unsigned int clip{
-              static_cast<unsigned int>(strtoul(titleInfo->clips[i].clip_id, nullptr, 10))};
+              static_cast<unsigned int>(strtoul(titleInfo.clips[i].clip_id, nullptr, 10))};
           info.clips.emplace_back(clip);
 
           // Add/extend clip information
@@ -180,7 +194,7 @@ void CBlurayDirectory::GetPlaylists(ClipMap& clips, PlaylistMap& playlists) cons
             // First reference to clip
             ClipInfo clipInfo;
             clipInfo.duration = static_cast<unsigned int>(
-                (titleInfo->clips[i].out_time - titleInfo->clips[i].in_time) / 90000);
+                (titleInfo.clips[i].out_time - titleInfo.clips[i].in_time) / 90000);
             clipInfo.playlists.emplace_back(playlist);
             clips[clip] = clipInfo;
           }
@@ -190,7 +204,7 @@ void CBlurayDirectory::GetPlaylists(ClipMap& clips, PlaylistMap& playlists) cons
             it->second.playlists.emplace_back(playlist);
           }
 
-          const std::string c{titleInfo->clips[i].clip_id};
+          const std::string c{titleInfo.clips[i].clip_id};
           clipsStr += c + ",";
         }
         if (!clipsStr.empty())
@@ -200,10 +214,10 @@ void CBlurayDirectory::GetPlaylists(ClipMap& clips, PlaylistMap& playlists) cons
 
         // Get languages
         std::string langs;
-        for (int i = 0; i < titleInfo->clips[0].audio_stream_count; ++i)
+        for (int i = 0; i < titleInfo.clips[0].audio_stream_count; ++i)
         {
           const std::string l{
-              reinterpret_cast<char const*>(titleInfo->clips[0].audio_streams[i].lang)};
+              reinterpret_cast<char const*>(titleInfo.clips[0].audio_streams[i].lang)};
           langs += l + ",";
         }
         if (!langs.empty())
@@ -213,8 +227,6 @@ void CBlurayDirectory::GetPlaylists(ClipMap& clips, PlaylistMap& playlists) cons
 
         CLog::LogF(LOGDEBUG, "Playlist {}, Duration {}, Langs {}, Clips {} ", playlist,
                    title->GetVideoInfoTag()->GetDuration(), langs, clipsStr);
-
-        bd_free_title_info(titleInfo);
       }
     }
   }
@@ -233,35 +245,39 @@ void CBlurayDirectory::GetPlaylists(ClipMap& clips, PlaylistMap& playlists) cons
   }
 
   CLog::LogF(LOGDEBUG, "*** Playlist information End ***");
+
+  // Cache
+  CServiceBroker::GetBlurayDiscCache()->SetMaps(path, playlists, clips);
+  CLog::LogF(LOGDEBUG, "Playlist information for {} cached", path);
 }
 
-std::shared_ptr<CFileItem> CBlurayDirectory::GetFileItem(const BLURAY_TITLE_INFO* title,
+std::shared_ptr<CFileItem> CBlurayDirectory::GetFileItem(const BLURAY_TITLE_INFO& title,
                                                          const std::string& label) const
 {
   CURL path{m_url};
-  path.SetFileName(StringUtils::Format("BDMV/PLAYLIST/{:05}.mpls", title->playlist));
+  path.SetFileName(StringUtils::Format("BDMV/PLAYLIST/{:05}.mpls", title.playlist));
   const auto item{std::make_shared<CFileItem>(path.Get(), false)};
-  const int duration = static_cast<int>(title->duration / 90000);
+  const int duration = static_cast<int>(title.duration / 90000);
   item->GetVideoInfoTag()->SetDuration(duration);
-  item->GetVideoInfoTag()->m_iTrack = static_cast<int>(title->playlist);
-  const std::string buf{StringUtils::Format(label, title->playlist)};
+  item->GetVideoInfoTag()->m_iTrack = static_cast<int>(title.playlist);
+  const std::string buf{StringUtils::Format(label, title.playlist)};
   item->m_strTitle = buf;
   item->SetLabel(buf);
-  const std::string chap{StringUtils::Format(g_localizeStrings.Get(25007), title->chapter_count,
+  const std::string chap{StringUtils::Format(g_localizeStrings.Get(25007), title.chapter_count,
                                              StringUtils::SecondsToTimeString(duration))};
   item->SetLabel2(chap);
   item->m_dwSize = 0;
   item->SetArt("icon", "DefaultVideo.png");
-  for (unsigned int i = 0; i < title->clip_count; ++i)
-    item->m_dwSize += static_cast<int64_t>(title->clips[i].pkt_count * 192);
+  for (unsigned int i = 0; i < title.clip_count; ++i)
+    item->m_dwSize += static_cast<int64_t>(title.clips[i].pkt_count * 192);
 
   // Generate streamdetails
 
   // Populate videoInfo
-  if (title->clip_count > 0 && title->clips[0].video_stream_count > 0)
+  if (title.clip_count > 0 && title.clips[0].video_stream_count > 0)
   {
     VideoStreamInfo videoInfo;
-    const auto& video{title->clips[0].video_streams[0]};
+    const auto& video{title.clips[0].video_streams[0]};
     videoInfo.valid = true;
     videoInfo.bitrate = 0;
     switch (video.format)
@@ -334,12 +350,12 @@ std::shared_ptr<CFileItem> CBlurayDirectory::GetFileItem(const BLURAY_TITLE_INFO
     videoInfo.fpsScale = 0; // Not in streamdetails
 
     CVideoInfoTag* info = item->GetVideoInfoTag();
-    info->m_streamDetails.SetStreams(videoInfo, static_cast<int>(title->duration / 90000),
+    info->m_streamDetails.SetStreams(videoInfo, static_cast<int>(title.duration / 90000),
                                      AudioStreamInfo{}, SubtitleStreamInfo{});
 
-    for (int i = 0; i < title->clips[0].audio_stream_count; ++i)
+    for (int i = 0; i < title.clips[0].audio_stream_count; ++i)
     {
-      auto& audio{title->clips[0].audio_streams[i]};
+      auto& audio{title.clips[0].audio_streams[i]};
 
       AudioStreamInfo audioInfo;
       audioInfo.valid = true;
@@ -381,9 +397,9 @@ std::shared_ptr<CFileItem> CBlurayDirectory::GetFileItem(const BLURAY_TITLE_INFO
     }
 
     // Subtitles
-    for (int i = 0; i < title->clips[0].pg_stream_count; ++i)
+    for (int i = 0; i < title.clips[0].pg_stream_count; ++i)
     {
-      auto& subtitle{title->clips[0].pg_streams[i]};
+      auto& subtitle{title.clips[0].pg_streams[i]};
 
       SubtitleStreamInfo subtitleInfo;
       subtitleInfo.valid = true;
@@ -404,7 +420,7 @@ std::shared_ptr<CFileItem> CBlurayDirectory::GetFileItem(const BLURAY_TITLE_INFO
 
 bool CBlurayDirectory::GetPlaylists(GetTitles job, CFileItemList& items, SortTitles sort) const
 {
-  std::vector<BLURAY_TITLE_INFO*> titleList;
+  std::vector<BLURAY_TITLE_INFO> titleList;
   uint64_t maxDuration{0};
   int maxPlaylist{-1};
   int mainPlaylist{-1};
@@ -416,8 +432,8 @@ bool CBlurayDirectory::GetPlaylists(GetTitles job, CFileItemList& items, SortTit
     if (mainPlaylist != -1)
     {
       // Only main playlist is needed
-      BLURAY_TITLE_INFO* t{bd_get_playlist_info(m_bd, mainPlaylist, 0)};
-      if (!t)
+      BLURAY_TITLE_INFO t{};
+      if (!GetPlaylistInfoFromDisc(mainPlaylist, t))
         CLog::LogF(LOGDEBUG, "Unable to get title {}", mainPlaylist);
       else
         titleList.emplace_back(t);
@@ -426,18 +442,18 @@ bool CBlurayDirectory::GetPlaylists(GetTitles job, CFileItemList& items, SortTit
 
   if (titleList.empty())
   {
-    const uint32_t numTitles{bd_get_titles(m_bd, TITLES_RELEVANT, 0)};
-    for (uint32_t i = 0; i < numTitles; i++)
+    const int numTitles{GetNumberOfTitlesFromDisc()};
+    for (int i = 0; i < numTitles; i++)
     {
-      BLURAY_TITLE_INFO* t{bd_get_title_info(m_bd, i, 0)};
-      if (!t)
+      BLURAY_TITLE_INFO t{};
+      if (!GetTitleInfoFromDisc(i, t))
         CLog::LogF(LOGDEBUG, "Unable to get title {}", i);
       else
       {
-        if (t->duration > maxDuration)
+        if (t.duration > maxDuration)
         {
-          maxDuration = t->duration;
-          maxPlaylist = static_cast<int>(t->playlist);
+          maxDuration = t.duration;
+          maxPlaylist = static_cast<int>(t.playlist);
         }
         titleList.emplace_back(t);
       }
@@ -450,20 +466,20 @@ bool CBlurayDirectory::GetPlaylists(GetTitles job, CFileItemList& items, SortTit
   if (sort != SortTitles::SORT_TITLES_NONE)
   {
     std::ranges::sort(titleList,
-                      [&sort](const BLURAY_TITLE_INFO* i, const BLURAY_TITLE_INFO* j)
+                      [&sort](const BLURAY_TITLE_INFO& i, const BLURAY_TITLE_INFO& j)
                       {
                         if (sort == SortTitles::SORT_TITLES_MOVIE)
                         {
-                          if (i->duration == j->duration)
-                            return i->playlist < j->playlist;
-                          return i->duration > j->duration;
+                          if (i.duration == j.duration)
+                            return i.playlist < j.playlist;
+                          return i.duration > j.duration;
                         }
-                        return i->playlist < j->playlist;
+                        return i.playlist < j.playlist;
                       });
 
     const auto& pivot{
-        std::ranges::find_if(titleList, [&mainPlaylist](const BLURAY_TITLE_INFO* title)
-                             { return title->playlist == static_cast<uint32_t>(mainPlaylist); })};
+        std::ranges::find_if(titleList, [&mainPlaylist](const BLURAY_TITLE_INFO& title)
+                             { return title.playlist == static_cast<uint32_t>(mainPlaylist); })};
     if (pivot != titleList.end())
       std::rotate(titleList.begin(), pivot, pivot + 1);
   }
@@ -472,16 +488,15 @@ bool CBlurayDirectory::GetPlaylists(GetTitles job, CFileItemList& items, SortTit
   for (const auto& title : titleList)
   {
     if (job == GetTitles::GET_TITLES_ALL ||
-        (job == GetTitles::GET_TITLES_MAIN && title->duration >= minDuration) ||
+        (job == GetTitles::GET_TITLES_MAIN && title.duration >= minDuration) ||
         (job == GetTitles::GET_TITLES_ONE &&
-         (title->playlist == static_cast<uint32_t>(mainPlaylist) ||
-          (mainPlaylist == -1 && title->playlist == static_cast<uint32_t>(maxPlaylist)))))
+         (title.playlist == static_cast<uint32_t>(mainPlaylist) ||
+          (mainPlaylist == -1 && title.playlist == static_cast<uint32_t>(maxPlaylist)))))
     {
-      items.Add(GetFileItem(title, title->playlist == static_cast<uint32_t>(mainPlaylist)
+      items.Add(GetFileItem(title, title.playlist == static_cast<uint32_t>(mainPlaylist)
                                        ? g_localizeStrings.Get(25004) /* Main Title */
                                        : g_localizeStrings.Get(25005) /* Title */));
     }
-    bd_free_title_info(title);
   }
 
   return !items.IsEmpty();
@@ -614,8 +629,8 @@ bool CBlurayDirectory::InitializeBluray(const std::string& root)
   }
   m_blurayInitialized = true;
 
-  const BLURAY_DISC_INFO* disc_info{bd_get_disc_info(m_bd)};
-  m_blurayMenuSupport = disc_info && !disc_info->no_menu_support;
+  const BLURAY_DISC_INFO* discInfo{GetDiscInfo()};
+  m_blurayMenuSupport = discInfo && !discInfo->no_menu_support;
 
   return true;
 }
@@ -646,6 +661,67 @@ int CBlurayDirectory::GetMainPlaylistFromDisc() const
     file.Close();
   }
   return playlist;
+}
+
+std::string CBlurayDirectory::GetCachePath() const
+{
+  if (m_url.Get().empty())
+    return m_realPath;
+  std::string path{m_url.GetHostName()};
+  if (path.empty())
+    path = m_url.Get(); // Could be drive letter
+  return path;
+}
+
+const BLURAY_DISC_INFO* CBlurayDirectory::GetDiscInfo() const
+{
+  return bd_get_disc_info(m_bd);
+}
+
+int CBlurayDirectory::GetNumberOfTitlesFromDisc() const
+{
+  return static_cast<int>(bd_get_titles(m_bd, TITLES_RELEVANT, 0));
+}
+
+bool CBlurayDirectory::GetPlaylistInfoFromDisc(unsigned int playlist,
+                                               BLURAY_TITLE_INFO& playlistInfo) const
+{
+  // Check cache
+  const std::string path{GetCachePath()};
+  if (CServiceBroker::GetBlurayDiscCache()->GetPlaylistInfo(path, playlist, playlistInfo))
+    return true;
+
+  // Retrieve from disc
+  BLURAY_TITLE_INFO* p{bd_get_playlist_info(m_bd, playlist, 0)};
+  if (!p)
+    return false;
+
+  // Cache and return
+  CServiceBroker::GetBlurayDiscCache()->SetPlaylistInfo(path, playlist, p);
+  playlistInfo = *p;
+
+  return true;
+}
+
+bool CBlurayDirectory::GetTitleInfoFromDisc(unsigned int title,
+                                            BLURAY_TITLE_INFO& playlistInfo) const
+{
+  // A title maps to a specific playlist
+  // Check cache
+  const std::string path{GetCachePath()};
+  if (CServiceBroker::GetBlurayDiscCache()->GetTitleInfo(path, title, playlistInfo))
+    return true;
+
+  // Retrieve from disc
+  BLURAY_TITLE_INFO* p{bd_get_title_info(m_bd, title, 0)};
+  if (!p)
+    return false;
+
+  // Cache the playlist associated with the title and return
+  CServiceBroker::GetBlurayDiscCache()->SetTitleInfo(path, title, p);
+  playlistInfo = *p;
+
+  return true;
 }
 
 } // namespace XFILE
