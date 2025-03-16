@@ -1,6 +1,6 @@
 --- a/setup.py
 +++ b/setup.py
-@@ -473,6 +473,8 @@
+@@ -480,6 +480,8 @@
          pkg_config = None
          if _cmd_exists(os.environ.get("PKG_CONFIG", "pkg-config")):
              pkg_config = _pkg_config
@@ -9,7 +9,7 @@
  
          #
          # add configured kits
-@@ -544,8 +546,8 @@
+@@ -552,8 +554,8 @@
                  for d in os.environ[k].split(os.path.pathsep):
                      _add_directory(library_dirs, d)
  
