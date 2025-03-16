@@ -449,6 +449,10 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
   bool skipCreateStreams = false;
   bool isBluray = pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY);
 
+  // increase probesize for mpegts streams only
+  if (iformat && strcmp(iformat->name, "mpegts") == 0)
+    av_opt_set_int(m_pFormatContext, "probesize", 10000000, 0); // double ffmpeg default
+
   // this should never happen. Log it to inform about the error.
   if (m_pFormatContext->nb_streams > 0 && m_pFormatContext->streams == nullptr)
   {
