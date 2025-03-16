@@ -2,3 +2,5 @@ LIBNAME=pillow
 VERSION=11.1.0
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
 SHA512=14f0cf262cc546de280356339b034148fd7e2f19da05572a3e4f3cf4cd77b0120120b9f232cbe96c7ae41c1ea943bcae774c446741890286be975124154746f9
+
+BASE_URL=https://files.pythonhosted.org/packages/source/p/pillow
