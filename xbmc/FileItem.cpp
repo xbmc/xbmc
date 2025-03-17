@@ -1070,10 +1070,7 @@ bool CFileItem::IsDiscImage() const
 
 bool CFileItem::IsOpticalMediaFile() const
 {
-  if (VIDEO::IsDVDFile(*this, false, true))
-    return true;
-
-  return VIDEO::IsBDFile(*this);
+  return URIUtils::IsOpticalMediaFile(GetDynPath());
 }
 
 bool CFileItem::IsRAR() const

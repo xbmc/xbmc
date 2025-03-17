@@ -1307,6 +1307,11 @@ bool URIUtils::IsBlurayPath(const std::string& strFile)
   return IsProtocol(strFile, "bluray");
 }
 
+bool URIUtils::IsOpticalMediaFile(const std::string& file)
+{
+  return IsBDFile(file) || IsDVDFile(file);
+}
+
 bool URIUtils::IsBDFile(const std::string& file)
 {
   const std::string fileName{GetFileName(file)};
@@ -1314,6 +1319,14 @@ bool URIUtils::IsBDFile(const std::string& file)
          StringUtils::EqualsNoCase(fileName, "MovieObject.bdmv") ||
          StringUtils::EqualsNoCase(fileName, "INDEX.BDM") ||
          StringUtils::EqualsNoCase(fileName, "MOVIEOBJ.BDM");
+}
+
+bool URIUtils::IsDVDFile(const std::string& file)
+{
+  const std::string fileName{GetFileName(file)};
+  return StringUtils::EqualsNoCase(fileName, "video_ts.ifo") ||
+         (StringUtils::StartsWithNoCase(fileName, "vts_") &&
+          StringUtils::EndsWithNoCase(fileName, "_0.ifo") && fileName.length() == 12);
 }
 
 bool URIUtils::IsAndroidApp(const std::string &path)

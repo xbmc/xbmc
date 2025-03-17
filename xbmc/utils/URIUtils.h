@@ -148,6 +148,12 @@ public:
    */
   static std::string GetBlurayPath(const std::string& path);
 
+  /*! \brief Determines if a file is from optical media (ie. index.bdmv, video_ts.ifo etc..)
+   \param file file path for determination.
+   \return true if file is from optical media
+   */
+  static bool IsOpticalMediaFile(const std::string& file);
+
   /* \brief Change the base path of a URL: fromPath/fromFile -> toPath/toFile
     Handles changes in path separator and filename URL encoding if necessary to derive toFile.
     \param fromPath the base path of the original URL
@@ -241,6 +247,7 @@ public:
   static bool IsDiscImageStack(const std::string& file);
   static bool IsBlurayPath(const std::string& strFile);
   static bool IsBDFile(const std::string& file);
+  static bool IsDVDFile(const std::string& file);
   static bool IsAndroidApp(const std::string& strFile);
   static bool IsLibraryFolder(const std::string& strFile);
   static bool IsLibraryContent(const std::string& strFile);
