@@ -1421,7 +1421,10 @@ bool CDVDDemuxFFmpeg::SeekTime(double time, bool backwards, double* startpts)
   if (ret >= 0)
   {
     if (!hitEnd)
+    {
+      Flush();
       return true;
+    }
     else
       return false;
   }
@@ -1440,7 +1443,13 @@ bool CDVDDemuxFFmpeg::SeekByte(int64_t pos)
   m_pkt.result = -1;
   av_packet_unref(&m_pkt.pkt);
 
-  return (ret >= 0);
+  if (ret >= 0)
+  {
+    Flush();
+    return true;
+  }
+
+  return false;
 }
 
 int CDVDDemuxFFmpeg::GetStreamLength()
