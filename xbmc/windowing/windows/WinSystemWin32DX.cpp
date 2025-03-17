@@ -22,7 +22,7 @@
 #include "platform/win32/CharsetConverter.h"
 #include "platform/win32/WIN32Util.h"
 
-#ifndef _M_X64
+#if !defined(_M_X64) && !defined(_M_ARM64)
 #include "utils/SystemInfo.h"
 #endif
 #pragma comment(lib, "dxgi.lib")
@@ -269,7 +269,7 @@ void CWinSystemWin32DX::InitHooks(IDXGIOutput* pOutput)
   CLog::LogF(LOGDEBUG, "Hooking into UserModeDriver on device {}. ",
              FromW(displayDevice.DeviceKey));
   const wchar_t* keyName =
-#ifndef _M_X64
+#if !defined(_M_X64) && !defined(_M_ARM64)
       // on x64 system and x32 build use UserModeDriverNameWow key
       CSysInfo::GetKernelBitness() == 64 ? keyName = L"UserModeDriverNameWow" :
 #endif // !_WIN64
