@@ -29,8 +29,11 @@
 
 #include <algorithm>
 #include <cassert>
-#include <netinet/in.h>
+#include <ranges>
+#include <vector>
+
 #include <arpa/inet.h>
+#include <netinet/in.h>
 
 using namespace PVR;
 using namespace XFILE;
@@ -492,6 +495,15 @@ std::string URIUtils::GetDiscBasePath(const std::string& file)
   return base;
 }
 
+std::string URIUtils::GetDiscUnderlyingFile(const CURL& url)
+{
+  std::string host = url.GetHostName();
+  const std::string& filename = url.GetFileName();
+  if (host.empty() || filename.empty())
+    return {};
+  return AddFileToFolder(host, filename);
+}
+
 std::string URIUtils::GetBlurayFile(const std::string& path)
 {
   if (IsBlurayPath(path))
@@ -504,6 +516,62 @@ std::string URIUtils::GetBlurayFile(const std::string& path)
     return AddFileToFolder(url2.Get(), "BDMV", "index.bdmv"); // BDMV
   }
   return std::string{};
+}
+
+std::string URIUtils::GetBlurayRootPath(const std::string& path)
+{
+  return AddFileToFolder(GetBlurayPath(path), "root");
+}
+
+std::string URIUtils::GetBlurayTitlesPath(const std::string& path)
+{
+  return AddFileToFolder(GetBlurayPath(path), "root", "titles");
+}
+
+std::string URIUtils::GetBlurayEpisodePath(const std::string& path, int season, int episode)
+{
+  return AddFileToFolder(GetBlurayPath(path), "root", "episode", std::to_string(season),
+                         std::to_string(episode));
+}
+
+std::string URIUtils::GetBlurayAllEpisodesPath(const std::string& path)
+{
+  return AddFileToFolder(GetBlurayPath(path), "root", "episode", "all");
+}
+
+std::string URIUtils::GetBlurayPlaylistPath(const std::string& path)
+{
+  return AddFileToFolder(GetBlurayPath(path), "BDMV", "PLAYLIST", "");
+}
+
+std::string URIUtils::GetBlurayPath(const std::string& path)
+{
+  if (IsBlurayPath(path))
+  {
+    // Already bluray:// path
+    CURL url(path);
+    url.SetFileName("");
+    return url.Get();
+  }
+
+  std::string newPath{};
+  if (IsDiscImage(path))
+  {
+    CURL url("udf://");
+    url.SetHostName(path);
+    newPath = url.Get();
+  }
+  else if (IsBDFile(path))
+    newPath = GetDiscBasePath(path);
+
+  if (!newPath.empty())
+  {
+    CURL url("bluray://");
+    url.SetHostName(newPath);
+    newPath = url.Get();
+  }
+
+  return newPath;
 }
 
 std::string URLEncodePath(const std::string& strPath)
@@ -1237,6 +1305,28 @@ bool URIUtils::IsVideoDb(const std::string& strFile)
 bool URIUtils::IsBlurayPath(const std::string& strFile)
 {
   return IsProtocol(strFile, "bluray");
+}
+
+bool URIUtils::IsOpticalMediaFile(const std::string& file)
+{
+  return IsBDFile(file) || IsDVDFile(file);
+}
+
+bool URIUtils::IsBDFile(const std::string& file)
+{
+  const std::string fileName{GetFileName(file)};
+  return StringUtils::EqualsNoCase(fileName, "index.bdmv") ||
+         StringUtils::EqualsNoCase(fileName, "MovieObject.bdmv") ||
+         StringUtils::EqualsNoCase(fileName, "INDEX.BDM") ||
+         StringUtils::EqualsNoCase(fileName, "MOVIEOBJ.BDM");
+}
+
+bool URIUtils::IsDVDFile(const std::string& file)
+{
+  const std::string fileName{GetFileName(file)};
+  return StringUtils::EqualsNoCase(fileName, "video_ts.ifo") ||
+         (StringUtils::StartsWithNoCase(fileName, "vts_") &&
+          StringUtils::EndsWithNoCase(fileName, "_0.ifo") && fileName.length() == 12);
 }
 
 bool URIUtils::IsAndroidApp(const std::string &path)

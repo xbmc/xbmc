@@ -100,11 +100,59 @@ public:
    */
   static std::string GetDiscBasePath(const std::string& file);
 
+  /*! \brief Given a bluray:// path, return the underlying file path (eg. smb://, udf:// etc..)
+   \param url CURL containing bluray:// path.
+   \return return the underlying file path.
+   */
+  static std::string GetDiscUnderlyingFile(const CURL& url);
+
   /*! \brief Given a bluray:// path, return the base .ISO or index.BDMV.
    \param path bluray:// path.
    \return the base .ISO or index.BDMV.
    */
   static std::string GetBlurayFile(const std::string& path);
+
+  /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path to root.
+   \param path the ISO/index.BDMV path.
+   \return the bluray:// root path.
+   */
+  static std::string GetBlurayRootPath(const std::string& path);
+
+  /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path to titles.
+   \param path the ISO/index.BDMV path.
+   \return the bluray:// root/titles path.
+   */
+  static std::string GetBlurayTitlesPath(const std::string& path);
+
+  /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path to a given episode.
+   \param path the ISO/index.BDMV path.
+   \return the bluray:// root/episode/<season number>/<episode number> path.
+   */
+  static std::string GetBlurayEpisodePath(const std::string& path, int season, int episode);
+
+  /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// for all episodes on disc.
+   \param path the ISO/index.BDMV path.
+   \return the bluray:// root/episode/all path.
+   */
+  static std::string GetBlurayAllEpisodesPath(const std::string& path);
+
+  /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path to default playlist path.
+   \param path the ISO/index.BDMV path.
+   \return the bluray:// playlist path - BDMV/PLAYLIST
+   */
+  static std::string GetBlurayPlaylistPath(const std::string& path);
+
+  /*! \brief Given a path to an .ISO or index.BDMV, returns a bluray:// path.
+   \param path the ISO/index.BDMV path.
+   \return the bluray:// path.
+   */
+  static std::string GetBlurayPath(const std::string& path);
+
+  /*! \brief Determines if a file is from optical media (ie. index.bdmv, video_ts.ifo etc..)
+   \param file file path for determination.
+   \return true if file is from optical media
+   */
+  static bool IsOpticalMediaFile(const std::string& file);
 
   /* \brief Change the base path of a URL: fromPath/fromFile -> toPath/toFile
     Handles changes in path separator and filename URL encoding if necessary to derive toFile.
@@ -198,6 +246,8 @@ public:
   static bool IsDiscImage(const std::string& file);
   static bool IsDiscImageStack(const std::string& file);
   static bool IsBlurayPath(const std::string& strFile);
+  static bool IsBDFile(const std::string& file);
+  static bool IsDVDFile(const std::string& file);
   static bool IsAndroidApp(const std::string& strFile);
   static bool IsLibraryFolder(const std::string& strFile);
   static bool IsLibraryContent(const std::string& strFile);

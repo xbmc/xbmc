@@ -1070,10 +1070,7 @@ bool CFileItem::IsDiscImage() const
 
 bool CFileItem::IsOpticalMediaFile() const
 {
-  if (VIDEO::IsDVDFile(*this, false, true))
-    return true;
-
-  return VIDEO::IsBDFile(*this);
+  return URIUtils::IsOpticalMediaFile(GetDynPath());
 }
 
 bool CFileItem::IsRAR() const
@@ -1150,12 +1147,8 @@ bool CFileItem::IsMultiPath() const
 
 bool CFileItem::IsBluray() const
 {
-  if (URIUtils::IsBlurayPath(m_strPath))
-    return true;
-
-  CFileItem item = CFileItem(VIDEO::UTILS::GetOpticalMediaPath(*this), false);
-
-  return VIDEO::IsBDFile(item);
+  return URIUtils::IsBlurayPath(GetDynPath()) ||
+         URIUtils::IsBDFile(VIDEO::UTILS::GetOpticalMediaPath(*this));
 }
 
 bool CFileItem::IsDVD() const
