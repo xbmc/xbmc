@@ -125,10 +125,7 @@ public:
                                KODI::PLAYLIST::CPlayList& playlist,
                                KODI::PLAYLIST::Id playlistId,
                                int track = 0);
-  bool PlayFile(CFileItem item,
-                const std::string& player,
-                bool bRestart = false,
-                bool forceSelection = false);
+  bool PlayFile(CFileItem item, const std::string& player, bool bRestart = false);
   void StopPlaying();
   void Restart(bool bSamePosition = true);
   void DelayedPlayerRestart();
