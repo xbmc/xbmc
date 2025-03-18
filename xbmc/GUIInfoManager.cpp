@@ -5848,6 +5848,15 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     movie in a container.
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.DecodedFileNameAndPath`</b>,
+///                  \anchor ListItem_DecodedFileNameAndPath
+///                  _string_,
+///     @return The full path with filename of the currently selected song or
+///     movie in a container decoded - made more human readable.
+///     For example bluray://smb%3A%2F%2Fsomepath%2Fmovie.iso/BDMV/PLAYLIST/00000.mpls
+///     becomes bluray://smb://somepath/movie.iso/BDMV/PLAYLIST/00000.mpls
+///     <p>
+///   }
 ///   \table_row3{   <b>`ListItem.FileExtension`</b>,
 ///                  \anchor ListItem_FileExtension
 ///                  _string_,
@@ -7292,6 +7301,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "disctitle",        LISTITEM_DISC_TITLE },
                                   { "filename",         LISTITEM_FILENAME },
                                   { "filenameandpath",  LISTITEM_FILENAME_AND_PATH },
+                                  { "decodedfilenameandpath", LISTITEM_DECODED_FILENAME_AND_PATH },
                                   { "fileextension",    LISTITEM_FILE_EXTENSION },
                                   { "filenamenoextension",  LISTITEM_FILENAME_NO_EXTENSION },
                                   { "date",             LISTITEM_DATE },
