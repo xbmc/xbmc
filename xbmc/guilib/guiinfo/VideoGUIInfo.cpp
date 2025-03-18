@@ -541,6 +541,7 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         }
         return true;
       case LISTITEM_FILENAME_AND_PATH:
+      case LISTITEM_DECODED_FILENAME_AND_PATH:
         if (VIDEO::IsVideoDb(*item))
           value = tag->m_strFileNameAndPath;
         else if (item->HasMusicInfoTag()) // special handling for music videos, which have both a videotag and a musictag
@@ -549,6 +550,18 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
           value = item->GetPath();
 
         value = CURL(value).GetWithoutUserDetails();
+
+        // Decode path for readability
+        // Loop up to MAX_DECODE_PASSES times as each call to CURL::Decode() decodes one 'layer'
+        // ie. bluray://udf://smb:// would require 2 passes to make fully human-readable
+        if (info.m_info == LISTITEM_DECODED_FILENAME_AND_PATH)
+        {
+          static constexpr unsigned int MAX_DECODE_PASSES = 5;
+          for (unsigned int i = 0; value.find('%') != std::string::npos && i < MAX_DECODE_PASSES;
+               ++i)
+            value = CURL::Decode(value);
+        }
+
         return true;
       case LISTITEM_VIDEO_HDR_TYPE:
         value = tag->m_streamDetails.GetVideoHdrType();

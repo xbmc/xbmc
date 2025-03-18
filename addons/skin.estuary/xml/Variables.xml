@@ -392,10 +392,6 @@
 		<value condition="String.IsEqual(ListItem.DBType,movie)">$INFO[ListItem.Tagline,[I],[/I]]</value>
 		<value>$INFO[ListItem.Genre]</value>
 	</variable>
-	<variable name="VideoInfoBottomLabelVar">
-		<value condition="Control.HasFocus(8)">$INFO[ListItem.LastPlayed,$LOCALIZE[568]: ]</value>
-		<value condition="Control.HasFocus(6)">$INFO[ListItem.FileNameAndPath]</value>
-	</variable>
 	<variable name="PictureInfoMainLabelVar">
 		<value condition="Window.IsActive(Slideshow)">$INFO[SlideShow.Filename]</value>
 		<value>$INFO[ListItem.Label]</value>
