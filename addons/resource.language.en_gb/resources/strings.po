@@ -5927,6 +5927,7 @@ msgstr ""
 #. Label of various controls for starting playback from the beginning
 #: addons/skin.estuary/xml/SkinSettings.xml
 #: addons/skin.estuary/xml/Variables.xml
+#: system/settings/settings.xml
 #: xbmc/Autorun.cpp
 #: xbmc/favourites/ContextMenus.cpp
 #: xbmc/pvr/guilib/PVRGUIActionsPlayback.cpp
@@ -7359,7 +7360,8 @@ msgctxt "#13403"
 msgid "Clear default"
 msgstr ""
 
-#: system/settings/settings.xml
+#. Button label used in play disc ask resume dialog
+#: xbmc/Autorun.cpp
 msgctxt "#13404"
 msgid "Resume"
 msgstr ""
@@ -19968,7 +19970,7 @@ msgstr ""
 #. Description of setting with label #22079 "Default select action"
 #: system/settings/settings.xml
 msgctxt "#36177"
-msgid "Toggle between [Choose], [Play] (default), [Resume], [Show information] and [Queue item].[CR][Choose] will open a context menu to select an item, e.g. show information.[CR][Play] will automatically play videos from the beginning or if a resume point is present ask whether to play from beginning or to resume.[CR][Resume] Will automatically resume videos from the last position that you were viewing them.[CR][Show information] will open the video's information dialog.[CR][Queue item] will append the video to the video playlist."
+msgid "Toggle between [Choose], [Play] (default), [Show information] and [Queue item].[CR][Choose] will open a context menu to select an item, e.g. show information.[CR][Play] will play videos as defined by the setting 'Default play action'.[CR][Show information] will open the video's information dialog.[CR][Queue item] will append the video to the video playlist."
 msgstr ""
 
 #. Description of setting with label #20433 "Extract thumbnails and video information"
@@ -20122,7 +20124,7 @@ msgstr ""
 #. Description of setting with label #22076 "Default play action"
 #: system/settings/settings.xml
 msgctxt "#36204"
-msgid "Toggle between [Ask if resumable] (default) and [Resume].[CR][Ask if resumable] will ask whether to play from beginning or to resume (if a resume point is present).[CR][Resume] will automatically resume videos from the last position that you were viewing them.[CR]If no resume point is set, playback will automatically start from the beginning."
+msgid "Toggle between [Ask if resumable] (default), [Resume] and [Play from beginning].[CR][Ask if resumable] will ask whether to play from beginning or to resume (if a resume point is present).[CR][Resume] will automatically resume playback from the last position that you were viewing them. If no resume point is set, playback will automatically start from the beginning.[CR][Play from beginning] will automatically start playback from beginning, ignoring any existing resume positions."
 msgstr ""
 
 #: system/settings/settings.xml
