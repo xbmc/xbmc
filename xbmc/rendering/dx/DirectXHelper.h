@@ -22,6 +22,7 @@ enum PCI_Vendors
   PCIV_NVIDIA = 0x10DE,
   PCIV_Intel = 0x8086,
   PCIV_MICROSOFT = 0x1414,
+  PCIV_QUALCOMM = 0x4D4F4351
 };
 
 namespace DX
@@ -104,6 +105,8 @@ namespace DX
         return "NVIDIA";
       case PCIV_MICROSOFT:
         return "Microsoft";
+      case PCIV_QUALCOMM:
+        return "Qualcomm";
       default:
         return "unknown";
     }
