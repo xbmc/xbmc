@@ -114,7 +114,6 @@
             <intent-filter>
                 <action android:name="android.intent.action.DREAMING_STOPPED" />
                 <action android:name="android.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED" />
-                <action android:name="android.intent.action.MEDIA_BUTTON" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
