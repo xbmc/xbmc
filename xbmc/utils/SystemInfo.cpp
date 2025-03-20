@@ -1023,7 +1023,8 @@ int CSysInfo::GetKernelBitness(void)
     GetNativeSystemInfo(&si);
     if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL || si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM)
       kernelBitness = 32;
-    else if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64)
+    else if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64 ||
+             si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM64)
       kernelBitness = 64;
     else
     {
@@ -1067,7 +1068,8 @@ const std::string& CSysInfo::GetKernelCpuFamily(void)
     if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_INTEL ||
         si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64)
         kernelCpuFamily = "x86";
-    else if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM)
+    else if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM ||
+             si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_ARM64)
       kernelCpuFamily = "ARM";
 #elif defined(TARGET_DARWIN)
     const NXArchInfo* archInfo = NXGetLocalArchInfo();
@@ -1476,7 +1478,7 @@ std::string CSysInfo::GetBuildTargetCpuFamily(void)
 {
 #if defined(__thumb__) || defined(_M_ARMT)
   return "ARM (Thumb)";
-#elif defined(__arm__) || defined(_M_ARM) || defined (__aarch64__)
+#elif defined(__arm__) || defined(_M_ARM) || defined(__aarch64__) || defined(_M_ARM64)
   return "ARM";
 #elif defined(__loongarch__)
   return "LoongArch";
