@@ -161,15 +161,3 @@ CJNIRect CJNIMainActivity::getDisplayRect()
   return call_method<jhobject>(m_context,
                                "getDisplayRect", "()Landroid/graphics/Rect;");
 }
-
-void CJNIMainActivity::registerMediaButtonEventReceiver()
-{
-  call_method<void>(m_context,
-                    "registerMediaButtonEventReceiver", "()V");
-}
-
-void CJNIMainActivity::unregisterMediaButtonEventReceiver()
-{
-  call_method<void>(m_context,
-                    "unregisterMediaButtonEventReceiver", "()V");
-}
