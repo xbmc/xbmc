@@ -151,12 +151,7 @@ bool ResolveChannel(CFileItem& item,
                     PVR_SOURCE source)
 {
   if (source == PVR_SOURCE::DEFAULT)
-  {
-    const PVR_ERROR retVal{client->StreamClosed()};
-    if (retVal != PVR_ERROR_NO_ERROR)
-      CLog::LogFC(LOGERROR, LOGPVR, "Client error on call to StreamClosed(): {}",
-                  CPVRClient::ToString(retVal));
-  }
+    client->StreamClosed();
 
   client->GetChannelStreamProperties(item.GetPVRChannelInfoTag(), source, props);
 
@@ -173,11 +168,7 @@ bool ResolveEPG(CFileItem& item,
                 CPVRStreamProperties& props,
                 const std::shared_ptr<const CPVRClient>& client)
 {
-  const PVR_ERROR retVal{client->StreamClosed()};
-  if (retVal != PVR_ERROR_NO_ERROR)
-    CLog::LogFC(LOGERROR, LOGPVR, "Client error on call to StreamClosed(): {}",
-                CPVRClient::ToString(retVal));
-
+  client->StreamClosed();
   client->GetEpgTagStreamProperties(item.GetEPGInfoTag(), props);
 
   if (props.EPGPlaybackAsLive())
