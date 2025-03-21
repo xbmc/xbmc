@@ -1987,12 +1987,15 @@ PVR_ERROR CPVRClient::IsRealTimeStream(bool& bRealTime) const
 
 PVR_ERROR CPVRClient::OnSystemSleep()
 {
-  return DoAddonCall(__func__, [](const AddonInstance* addon)
-                     { return addon->toAddon->OnSystemSleep(addon); });
+  const PVR_ERROR ret = DoAddonCall(__func__, [](const AddonInstance* addon)
+                                    { return addon->toAddon->OnSystemSleep(addon); });
+  m_bBlockAddonCalls = true;
+  return ret;
 }
 
 PVR_ERROR CPVRClient::OnSystemWake()
 {
+  m_bBlockAddonCalls = false;
   return DoAddonCall(__func__, [](const AddonInstance* addon)
                      { return addon->toAddon->OnSystemWake(addon); });
 }
