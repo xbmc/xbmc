@@ -1584,6 +1584,31 @@ void CBlurayDirectory::Dispose()
   }
 }
 
+bool CBlurayDirectory::Resolve(CFileItem& item) const
+{
+  const std::string originalPath{item.GetDynPath()};
+  if (CURL::Decode(originalPath).find("removable://") != std::string::npos)
+  {
+    std::string newPath;
+    if (URIUtils::GetExtension(originalPath) == ".mpls")
+    {
+      // Playlist (.mpls) so return bluray:// path with removable:// resolved to physical disc
+      const CURL pathUrl{originalPath};
+      newPath = URIUtils::GetBlurayPlaylistPath(item.GetPath());
+      newPath = URIUtils::AddFileToFolder(newPath, pathUrl.GetFileNameWithoutPath());
+    }
+    else
+    {
+      // Not a playlist resolve removable:// to physical disc
+      newPath = item.GetPath();
+    }
+
+    item.SetDynPath(newPath);
+    CLog::LogF(LOGDEBUG, "Resolved removable bluray path from {} to {}", originalPath, newPath);
+  }
+  return true;
+}
+
 std::string CBlurayDirectory::GetBasePath(const CURL& url)
 {
   if (!url.IsProtocol("bluray"))

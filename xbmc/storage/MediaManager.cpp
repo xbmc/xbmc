@@ -596,7 +596,14 @@ std::string CMediaManager::GetDiskUniqueId(const std::string& devicePath)
     return "";
   }
 
-  std::string strID = StringUtils::Format("removable://{}_{}", info.name, info.serial);
+  std::string strID{StringUtils::Format("removable://{}_{}", info.name, info.serial)};
+  if (info.type == UTILS::DISCS::DiscType::BLURAY)
+  {
+    CURL url("bluray://");
+    url.SetHostName(strID);
+    url.SetFileName(URIUtils::AddFileToFolder("BDMV", "index.bdmv"));
+    strID = url.Get();
+  }
   CLog::Log(LOGDEBUG, "GetDiskUniqueId: Got ID {} for disc with path {}", strID,
             CURL::GetRedacted(mediaPath));
 
