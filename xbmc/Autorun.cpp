@@ -244,6 +244,17 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
           if (!startFromBeginning && !item->GetVideoInfoTag()->m_strFileNameAndPath.empty())
             item->SetStartOffset(STARTOFFSET_RESUME);
 
+          // See if this disc has been played before and playlist is available
+          CVideoDatabase db;
+          if (!item->GetVideoInfoTag()->m_strFileNameAndPath.empty() && db.Open())
+          {
+            const std::string path{
+                db.GetRemovableBlurayPath(item->GetVideoInfoTag()->m_strFileNameAndPath)};
+            if (!path.empty())
+              item->GetVideoInfoTag()->SetFileNameAndPath(path);
+            db.Close();
+          }
+
           CServiceBroker::GetPlaylistPlayer().ClearPlaylist(PLAYLIST::Id::TYPE_VIDEO);
           CServiceBroker::GetPlaylistPlayer().SetShuffle(PLAYLIST::Id::TYPE_VIDEO, false);
           CServiceBroker::GetPlaylistPlayer().Add(PLAYLIST::Id::TYPE_VIDEO, item);
