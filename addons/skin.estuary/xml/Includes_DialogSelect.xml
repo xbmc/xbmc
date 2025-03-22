@@ -284,7 +284,7 @@
 						<right>50</right>
 						<height>30</height>
 						<aligny>center</aligny>
-						<label>$VAR[VideoCodecVar]$VAR[VideoHDRTypeVar, | ]$INFO[ListItem.Property(stream.resolution), | ]$VAR[StreamBitrateVar, | , kbps]$INFO[ListItem.Property(stream.fps), | , fps]$VAR[VideoStreamDialogItemLabelVar, - [LIGHT],[/LIGHT]]</label>
+						<label>$VAR[StreamCodecVar]$VAR[StreamHDRTypeVar, | ]$INFO[ListItem.Property(stream.resolution), | ]$VAR[StreamBitrateVar, | , kbps]$INFO[ListItem.Property(stream.fps), | , fps]$VAR[VideoStreamDialogItemLabelVar, - [LIGHT],[/LIGHT]]</label>
 					</control>
 					<control type="label">
 						<left>50</left>
@@ -333,7 +333,7 @@
 						<height>30</height>
 						<aligny>center</aligny>
 						<scroll>true</scroll>
-						<label>$VAR[VideoCodecVar]$VAR[VideoHDRTypeVar, | ]$INFO[ListItem.Property(stream.resolution), | ]$VAR[StreamBitrateVar, | , kbps]$INFO[ListItem.Property(stream.fps), | , fps]$VAR[VideoStreamDialogItemLabelVar, - [LIGHT],[/LIGHT]]</label>
+						<label>$VAR[StreamCodecVar]$VAR[StreamHDRTypeVar, | ]$INFO[ListItem.Property(stream.resolution), | ]$VAR[StreamBitrateVar, | , kbps]$INFO[ListItem.Property(stream.fps), | , fps]$VAR[VideoStreamDialogItemLabelVar, - [LIGHT],[/LIGHT]]</label>
 					</control>
 					<control type="label">
 						<left>50</left>

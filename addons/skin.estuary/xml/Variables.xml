@@ -716,9 +716,6 @@
 		<value condition="!String.IsEmpty(VideoPlayer.AudioLanguage)">[UPPERCASE]$INFO[VideoPlayer.AudioLanguage][/UPPERCASE]</value>
 		<value condition="String.IsEmpty(VideoPlayer.AudioLanguage)">$LOCALIZE[13205]</value>
 	</variable>
-	<variable name="StreamBitrateVar">
-		<value condition="!String.IsEqual(ListItem.Property(stream.bitrate),0)">$INFO[ListItem.Property(stream.bitrate)]</value>
-	</variable>
 	<variable name="VideoListPosterVar">
 		<value condition="!String.IsEmpty(Container(6).ListItem.Art(poster))">$INFO[Container(6).ListItem.Art(poster)]</value>
 		<value condition="!String.IsEmpty(Container(6).ListItem.Art(thumb))">$INFO[Container(6).ListItem.Art(thumb)]</value>
@@ -910,6 +907,15 @@
 		<value condition="Window.IsVisible(dialogselectaudio) + String.Contains(ListItem.Property(stream.codec),truehd_atmos)">Dolby TrueHD Atmos</value>
 		<value condition="Window.IsVisible(dialogselectaudio) + String.Contains(ListItem.Property(stream.codec),truehd)">Dolby TrueHD</value>
 		<value>$INFO[ListItem.Property(stream.codec)]</value>
+	</variable>
+	<variable name="StreamHDRTypeVar">
+		<value condition="String.IsEqual(ListItem.Property(stream.hdrtype),dolbyvision)">Dolby Vision</value>
+		<value condition="String.IsEqual(ListItem.Property(stream.hdrtype),hdr10)">HDR10</value>
+		<value condition="String.IsEqual(ListItem.Property(stream.hdrtype),hlg)">HLG</value>
+		<value>$INFO[ListItem.Property(stream.hdrtype)]</value>
+	</variable>
+	<variable name="StreamBitrateVar">
+		<value condition="!String.IsEqual(ListItem.Property(stream.bitrate),0)">$INFO[ListItem.Property(stream.bitrate)]</value>
 	</variable>
 	<variable name="MediaInfoListLabelVar">
 		<value condition="Window.IsVisible(selectvideoversion)">$INFO[ListItem.VideoVersionName]</value>
