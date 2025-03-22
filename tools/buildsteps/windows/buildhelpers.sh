@@ -114,6 +114,15 @@ do_clean() {
 
 do_download() {
   if [ ! -d "$LOCALSRCDIR" ]; then
+    if [ -f /downloads/$ARCHIVE ]; then
+      HASH_SUM=$(sha512sum /downloads/$ARCHIVE | cut -f 1 -d " ")
+      if [ "$HASH_SUM" != "$SHA512" ]; then
+        echo "Hash of file '${ARCHIVE}' not match!"
+        echo "Expected: ${SHA512}"
+        echo "Found: ${HASH_SUM}"
+        rm /downloads/$ARCHIVE
+      fi
+    fi
     if [ ! -f /downloads/$ARCHIVE ]; then
       do_print_status "$LIBNAME-$VERSION" "$orange_color" "Downloading"
       do_wget $BASE_URL/$ARCHIVE $ARCHIVE
@@ -137,6 +146,7 @@ do_loaddeps() {
   local file="$1"
   LIBNAME=$(grep "LIBNAME=" $file | sed 's/LIBNAME=//g;s/#.*$//g;/^$/d')
   VERSION=$(grep "VERSION=" $file | sed 's/VERSION=//g;s/#.*$//g;/^$/d')
+  SHA512=$(grep "SHA512=" $file | sed 's/SHA512=//g;s/#.*$//g;/^$/d')
   ARCHIVE=$LIBNAME-$VERSION.tar.gz
 
   BASE_URL=$(grep "BASE_URL=" $file | sed 's/BASE_URL=//g;s/#.*$//g;/^$/d')
