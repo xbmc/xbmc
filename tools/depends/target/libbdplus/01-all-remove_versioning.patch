@@ -1,0 +1,11 @@
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -80,7 +80,7 @@
+ 	src/libbdplus/bdplus.h \
+ 	src/libbdplus/bdplus-version.h
+ 
+-libbdplus_la_LDFLAGS= -no-undefined -version-info $(LT_VERSION_INFO)
++libbdplus_la_LDFLAGS= -no-undefined -avoid-version
+ libbdplus_la_LIBADD = $(LIBGCRYPT_LIBS) $(GPG_ERROR_LIBS)
+ pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = src/libbdplus.pc

@@ -9,6 +9,7 @@
 #include "PlatformDarwinOSX.h"
 
 #include "Util.h"
+#include "filesystem/SpecialProtocol.h"
 
 #if defined(HAS_GL)
 #include "windowing/osx/OpenGL/WinSystemOSXGL.h"
@@ -40,6 +41,7 @@ bool CPlatformDarwinOSX::InitStageOne()
 
   std::string install_path(CUtil::GetHomePath());
   setenv("KODI_HOME", install_path.c_str(), 0);
+  setenv("AACS_HOME", CSpecialProtocol::TranslatePath("special://home").c_str(), 1);
 
   install_path += "/tools/darwin/runtime/preflight";
   system(install_path.c_str());

@@ -1,0 +1,10 @@
+--- a/src/file/dl_posix.c
++++ b/src/file/dl_posix.c
+@@ -77,6 +77,7 @@
+     */
+     static const char *search_paths[] = {"", "@loader_path/lib/", "@loader_path/", "@executable_path/",
+                                          "@executable_path/lib/", "@executable_path/../lib/",
++                                         "@executable_path/../Libraries/", "@executable_path/Frameworks/",
+                                          "@executable_path/../Resources/", "@rpath/", "/usr/local/lib/", NULL};
+     version = NULL;
+ #else
