@@ -206,7 +206,7 @@ CInfoScanner::InfoType CVideoTagLoaderFFmpeg::LoadMKV(CVideoInfoTag& tag,
       std::vector<std::string> dirs = StringUtils::Split(avtag->value, " / ");
       tag.SetDirector(dirs);
     }
-    else if (StringUtils::CompareNoCase(avtag->key, "date_released") == 0)
+    else if (StringUtils::CompareNoCase(avtag->key, "DATE") == 0)
       tag.SetYear(atoi(avtag->value));
     hastag = true;
   }
