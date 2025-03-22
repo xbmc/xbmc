@@ -316,9 +316,36 @@ bool CGUIDialogVideoManagerVersions::ManageVideoVersions(const std::shared_ptr<C
     return false;
   }
 
+  CheckAndGetVideoVersionArt(item);
+
   dialog->SetVideoAsset(item);
   dialog->Open();
   return dialog->HasUpdatedItems();
+}
+
+bool CGUIDialogVideoManagerVersions::CheckAndGetVideoVersionArt(
+    const std::shared_ptr<CFileItem>& item)
+{
+  CVideoDatabase videoDb;
+  if (!videoDb.Open())
+  {
+    CLog::LogF(LOGERROR, "Failed to open video database!");
+    return false;
+  }
+
+  ArtMap art;
+  videoDb.GetArtForAsset(item->GetVideoInfoTag()->m_iFileId, ArtFallbackOptions::NONE, art);
+  if (!art.empty())
+    return true;
+
+  videoDb.GetArtForAsset(item->GetVideoInfoTag()->m_iFileId, ArtFallbackOptions::PARENT, art);
+  if (!art.empty())
+  {
+    VideoAssetInfo vv{videoDb.GetVideoVersionInfo(item->GetDynPath())};
+    return videoDb.SetArtForItem(vv.m_idMedia, MediaTypeVideoVersion, art);
+  }
+
+  return false;
 }
 
 bool CGUIDialogVideoManagerVersions::ChooseVideoAndConvertToVideoVersion(
