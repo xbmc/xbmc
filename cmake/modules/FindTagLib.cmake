@@ -126,8 +126,12 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
     # if pkg-config returns link libs add to TARGET.
     if(TAGLIB_LINK_LIBRARIES)
-        set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                         INTERFACE_LINK_LIBRARIES "${TAGLIB_LINK_LIBRARIES}")
+      # Remove taglib from list to remove duplicate link flags
+      # taglib pkgconfig has -ltag for Libs link line.
+      list(REMOVE_ITEM TAGLIB_LINK_LIBRARIES ${TAGLIB_LIBRARY_RELEASE} ${TAGLIB_LIBRARY_DEBUG})
+
+      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                       INTERFACE_LINK_LIBRARIES "${TAGLIB_LINK_LIBRARIES}")
     endif()
 
     if(TARGET taglib)

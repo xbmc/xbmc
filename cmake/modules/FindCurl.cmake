@@ -22,7 +22,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     if(NOT CMAKE_SYSTEM_NAME MATCHES "Darwin" AND NOT (WIN32 OR WINDOWS_STORE))
       set(ZLIB_USE_STATIC_LIBS ON)
     endif()
-    find_package(Zlib REQUIRED)
+    find_package(Zlib REQUIRED QUIET)
     unset(ZLIB_USE_STATIC_LIBS)
 
     set(CURL_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
@@ -56,15 +56,28 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     BUILD_DEP_TARGET()
 
     # Link libraries for target interface
-    set(PC_CURL_LINK_LIBRARIES Brotli::Brotli NGHttp2::NGHttp2 OpenSSL::Crypto OpenSSL::SSL ZLIB::ZLIB ${PLATFORM_LINK_LIBS})
+    set(PC_CURL_LINK_LIBRARIES LIBRARY::Brotli LIBRARY::NGHttp2 OpenSSL::Crypto OpenSSL::SSL ZLIB::ZLIB ${PLATFORM_LINK_LIBS})
 
     # Add dependencies to build target
-    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} Brotli::Brotli)
-    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} NGHttp2::NGHttp2)
+    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} LIBRARY::Brotli)
+    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} LIBRARY::NGHttp2)
     add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} OpenSSL::SSL)
     add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} OpenSSL::Crypto)
     add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} ZLIB::ZLIB)
   endmacro()
+
+  # If there is a potential this library can be built internally
+  # Check its dependencies to allow forcing this lib to be built if one of its
+  # dependencies requires being rebuilt
+  if(ENABLE_INTERNAL_CURL)
+    # Dependency list of this find module for an INTERNAL build
+    set(${CMAKE_FIND_PACKAGE_NAME}_DEPLIST Brotli
+                                           NGHttp2
+                                           OpenSSL
+                                           ZLIB)
+
+    check_dependency_build(${CMAKE_FIND_PACKAGE_NAME} "${${CMAKE_FIND_PACKAGE_NAME}_DEPLIST}")
+  endif()
 
   set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC curl)
 
@@ -77,8 +90,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   # Check for existing Curl. If version >= CURL-VERSION file version, dont build
   # A corner case, but if a linux/freebsd user WANTS to build internal curl, build anyway
   if((CURL_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_CURL) OR
-     ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_CURL))
-
+     ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_CURL) OR
+     (DEFINED ${CMAKE_FIND_PACKAGE_NAME}_FORCE_BUILD))
     buildCurl()
   else()
     # Maybe need to look explicitly for CURL::libcurl_static/shared?

@@ -53,14 +53,25 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     BUILD_DEP_TARGET()
 
     # Link libraries for target interface
-    set(EXIV2_LINK_LIBRARIES Brotli::Brotli ZLIB::ZLIB)
+    set(EXIV2_LINK_LIBRARIES LIBRARY::Brotli ZLIB::ZLIB)
 
     # Add dependencies to build target
-    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} Brotli::Brotli)
+    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} LIBRARY::Brotli)
     add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} ZLIB::ZLIB)
   endmacro()
 
   include(cmake/scripts/common/ModuleHelpers.cmake)
+
+  # If there is a potential this library can be built internally
+  # Check its dependencies to allow forcing this lib to be built if one of its
+  # dependencies requires being rebuilt
+  if(ENABLE_INTERNAL_EXIV2)
+    # Dependency list of this find module for an INTERNAL build
+    set(${CMAKE_FIND_PACKAGE_NAME}_DEPLIST Brotli
+                                           Iconv)
+
+    check_dependency_build(${CMAKE_FIND_PACKAGE_NAME} "${${CMAKE_FIND_PACKAGE_NAME}_DEPLIST}")
+  endif()
 
   set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC exiv2)
 
@@ -72,7 +83,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   # Check for existing EXIV2. If version >= EXIV2-VERSION file version, dont build
   if((exiv2_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_EXIV2) OR
-     ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_EXIV2))
+     ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_EXIV2) OR
+     (DEFINED ${CMAKE_FIND_PACKAGE_NAME}_FORCE_BUILD))
 
     buildexiv2()
   else()

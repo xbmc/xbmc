@@ -6,7 +6,6 @@
 ; -> sqlite-3.7.12.1-win32\system\sqlite3.dll
 ; -> ...
 ;PLEASE KEEP THIS LIST IN ALPHABETICAL ORDER!
-brotli-1.0.7-win10-x64-v141-20200105.7z
 dav1d-1.5.1-win10-x64-v142-20250209.7z
 expat-2.2.9-win10-x64-v141-20200105.7z
 freetype-2.10.1-win10-x64-v141-20200105.7z
@@ -27,7 +26,6 @@ libxslt-1.1.34-win10-x64-v141-20200105.7z
 lzo2-2.10-win10-x64-v141-20200105.7z
 mariadb-connector-c-3.1.6-win10-x64-v141-20200105.7z
 miniwdk-10.0.17763-20200106.7z
-nghttp2-1.40.0-win10-x64-v141-20200105.7z
 openssl-1.1.1q-win10-x64-v142-20221017.7z
 pillow-6.2.1-win10-x64-v142-20200803.7z
 pycryptodome-3.9.4-win10-x64-v142-20200803.7z

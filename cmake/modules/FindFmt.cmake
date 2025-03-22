@@ -5,6 +5,9 @@
 # This will define the following target:
 #
 #   ${APP_NAME_LC}::Fmt   - The Fmt library
+#   LIBRARY::Fmt   - An ALIAS TARGET for the Fmt Library if built internally
+#                    This is due to the ability of the Fmt Lib to be a dependency
+#                    of other libs
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
@@ -120,8 +123,13 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
     if(TARGET fmt)
       add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} fmt)
+
+      # Add ALIAS TARGET as Fmt can be a dependency of other libs
+      add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
+
       # We are building as a requirement, so set LIB_BUILD property to allow calling
       # modules to know we will be building, and they will want to rebuild as well.
+      # Property must be set on actual TARGET and not the ALIAS
       set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES LIB_BUILD ON)
     endif()
 
