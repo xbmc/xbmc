@@ -1,0 +1,49 @@
+--- a/src/cec-client/CMakeLists.txt
++++ b/src/cec-client/CMakeLists.txt
+@@ -66,7 +66,8 @@ if (NOT WIN32)
+   endif()
+ else()
+   add_definitions(-DTARGET_WINDOWS -DNOMINMAX -D_CRT_SECURE_NO_WARNINGS -D_WINSOCKAPI_)
+-  if ((${WIN64}) OR (${_M_ARM64}))
++  check_symbol_exists(_AMD64_ Windows.h WIN64)
++  if (WIN64 OR (${_M_ARM64}))
+     string(REPLACE "/arch:SSE2" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+   else()
+     add_definitions(-D_USE_32BIT_TIME_T)
+--- a/src/cecc-client/CMakeLists.txt
++++ b/src/cecc-client/CMakeLists.txt
+@@ -36,7 +36,8 @@ if (NOT WIN32)
+   endif()
+ else()
+   add_definitions(-DTARGET_WINDOWS -DNOMINMAX -D_CRT_SECURE_NO_WARNINGS -D_WINSOCKAPI_)
+-  if ((${WIN64}) OR (${_M_ARM64}))
++  check_symbol_exists(_AMD64_ Windows.h WIN64)
++  if (WIN64 OR (${_M_ARM64}))
+     string(REPLACE "/arch:SSE2" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+   else()
+     add_definitions(-D_USE_32BIT_TIME_T)
+--- a/src/libcec/CMakeLists.txt
++++ b/src/libcec/CMakeLists.txt
+@@ -161,7 +161,7 @@ if (WIN32)
+   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libcec.rc.in ${CMAKE_CURRENT_SOURCE_DIR}/libcec.rc)
+   add_definitions(-DDLL_EXPORT)
+   add_definitions(-DTARGET_WINDOWS -DNOMINMAX -D_CRT_SECURE_NO_WARNINGS -D_WINSOCKAPI_)
+-  if ((${WIN64}) OR (${_M_ARM64}))
++  if (WIN64 OR (${_M_ARM64}))
+     string(REPLACE "/arch:SSE2" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+   else()
+     add_definitions(-D_USE_32BIT_TIME_T)
+--- a/src/libcec/cmake/CheckPlatformSupport.cmake
++++ b/src/libcec/cmake/CheckPlatformSupport.cmake
+@@ -50,9 +50,8 @@ if(WIN32)
+     # force python2 for eventghost
+     set(PYTHON_USE_VERSION 2)
+   elseif("${MSVC_C_ARCHITECTURE_ID}" STREQUAL "x64")
+-    check_symbol_exists(_X64_ Windows.h WIN64)
+-    check_symbol_exists(_AMD64_ Windows.h AMD64)
+-    if (DEFINED WIN64 OR DEFINED AMD64)
++    check_symbol_exists(_AMD64_ Windows.h WIN64)
++    if (DEFINED WIN64)
+       set(LIB_INFO "${LIB_INFO} (x64)")
+     endif()
+   elseif("${MSVC_C_ARCHITECTURE_ID}" STREQUAL "ARM")

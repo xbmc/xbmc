@@ -1,6 +1,6 @@
 --- a/src/libcec/CMakeLists.txt
 +++ b/src/libcec/CMakeLists.txt
-@@ -175,7 +175,7 @@
+@@ -176,7 +176,7 @@
                          ${CMAKE_INSTALL_PREFIX}/include)
  
    install(FILES         ${CMAKE_CURRENT_SOURCE_DIR}/libcec.pc
@@ -9,7 +9,7 @@
  endif()
  
  # install headers
-@@ -193,11 +193,25 @@
+@@ -194,7 +194,10 @@
  # libCEC shared target
  add_library(cec SHARED ${CEC_SOURCES})
  install(TARGETS cec
@@ -18,14 +18,16 @@
 +        RUNTIME DESTINATION bin
 +        ARCHIVE DESTINATION lib
 +        LIBRARY DESTINATION lib)
-+
-+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/libcec-config.cmake
-+        DESTINATION lib/cmake/libcec)
-+
  set_target_properties(cec PROPERTIES VERSION   ${LIBCEC_VERSION_MAJOR}.${LIBCEC_VERSION_MINOR}.${LIBCEC_VERSION_PATCH}
                                       SOVERSION ${LIBCEC_VERSION_MAJOR})
  target_link_libraries(cec ${cec_depends})
+@@ -235,4 +238,14 @@
+   endif(MSVC)
+ endif(WIN32)
  
++install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/libcec-config.cmake
++        DESTINATION lib/cmake/libcec)
++
 +install(EXPORT libcec
 +  NAMESPACE
 +    libcec::
@@ -33,9 +35,7 @@
 +    lib/cmake/libcec
 +)
 +
- if (MSVC)
-   # generate pdb in release mode too
-   set_target_properties(cec
+ include(cmake/DisplayPlatformSupport.cmake)
 --- /dev/null
 +++ b/src/libcec/cmake/libcec-config.cmake
 @@ -0,0 +1 @@
