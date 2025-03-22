@@ -398,7 +398,7 @@ bool CZeroconfBrowserMDNS::doResolveService(CZeroconfBrowser::ZeroconfService& f
       CLog::Log(LOGWARNING,
                 "ZeroconfBrowserMDNS: Could not resolve hostname {} falling back to CDNSNameCache",
                 fr_service.GetHostname());
-      if (CDNSNameCache::Lookup(fr_service.GetHostname(), strIP))
+      if (CServiceBroker::GetDNSNameCache()->Lookup(fr_service.GetHostname(), strIP))
         fr_service.SetIP(strIP);
       else
         CLog::Log(LOGERROR, "ZeroconfBrowserMDNS: Could not resolve hostname {}",

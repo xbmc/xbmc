@@ -80,6 +80,7 @@ class CPlatform;
 class CTextureCache;
 class CJobManager;
 class CSlideShowDelegator;
+class CDNSNameCache;
 
 namespace WSDiscovery
 {
@@ -225,6 +226,10 @@ public:
   static void UnregisterSpeechRecognition();
   static std::shared_ptr<speech::ISpeechRecognition> GetSpeechRecognition();
 
+  static void RegisterDNSNameCache(std::shared_ptr<CDNSNameCache> cache);
+  static void UnregisterDNSNameCache();
+  static std::shared_ptr<CDNSNameCache> GetDNSNameCache();
+
 private:
   std::shared_ptr<CAppParams> m_appParams;
   std::unique_ptr<CLog> m_logging;
@@ -242,6 +247,7 @@ private:
   std::shared_ptr<KODI::KEYBOARD::CKeyboardLayoutManager> m_keyboardLayoutManager;
   std::shared_ptr<speech::ISpeechRecognition> m_speechRecognition;
   std::shared_ptr<CSlideShowDelegator> m_slideshowDelegator;
+  std::shared_ptr<CDNSNameCache> m_dnsNameCache;
 };
 
 XBMC_GLOBAL_REF(CServiceBroker, g_serviceBroker);

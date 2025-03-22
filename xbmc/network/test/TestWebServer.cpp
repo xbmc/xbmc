@@ -10,17 +10,15 @@
 #  include <windows.h>
 #endif
 
-#include <errno.h>
-#include <stdlib.h>
-
-#include <gtest/gtest.h>
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "filesystem/CurlFile.h"
 #include "filesystem/File.h"
 #include "interfaces/json-rpc/JSONRPC.h"
+#include "network/DNSNameCache.h"
 #include "network/WebServer.h"
-#include "network/httprequesthandler/HTTPVfsHandler.h"
 #include "network/httprequesthandler/HTTPJsonRpcHandler.h"
+#include "network/httprequesthandler/HTTPVfsHandler.h"
 #include "settings/MediaSourceSettings.h"
 #include "test/TestUtils.h"
 #include "utils/JSONVariantParser.h"
@@ -28,7 +26,11 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 
+#include <errno.h>
 #include <random>
+#include <stdlib.h>
+
+#include <gtest/gtest.h>
 
 using namespace XFILE;
 
@@ -64,6 +66,8 @@ protected:
 protected:
   void SetUp() override
   {
+    CServiceBroker::RegisterDNSNameCache(std::make_shared<CDNSNameCache>());
+
     SetupMediaSources();
 
     webserver.Start(webserverPort, "", "");
@@ -80,6 +84,8 @@ protected:
     webserver.UnregisterRequestHandler(&m_jsonRpcHandler);
 
     TearDownMediaSources();
+
+    CServiceBroker::UnregisterDNSNameCache();
   }
 
   void SetupMediaSources()
