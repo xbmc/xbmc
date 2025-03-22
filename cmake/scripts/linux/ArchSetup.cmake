@@ -156,6 +156,11 @@ if(HAVE_MKOSTEMP)
   list(APPEND ARCH_DEFINES "-DHAVE_MKOSTEMP=1")
 endif()
 
+check_symbol_exists(getmntent_r "mntent.h" HAVE_GETMNTENT_R)
+if(HAVE_GETMNTENT_R)
+  list(APPEND ARCH_DEFINES "-DHAVE_GETMNTENT_R=1")
+endif()
+
 set(CMAKE_REQUIRED_DEFINITIONS "-D_GNU_SOURCE")
 check_symbol_exists("memfd_create" "sys/mman.h" HAVE_LINUX_MEMFD)
 set(CMAKE_REQUIRED_DEFINITIONS "")
