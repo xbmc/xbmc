@@ -1,0 +1,19 @@
+{
+    "name": "pvr.sledovanitv.cz",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/palinek/pvr.sledovanitv.cz",
+            "commit": "662a8e6c598db0acf4012fcc52b45ba1b94088e5"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}

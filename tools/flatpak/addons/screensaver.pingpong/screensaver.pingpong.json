@@ -1,0 +1,19 @@
+{
+    "name": "screensaver.pingpong",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/xbmc/screensaver.pingpong",
+            "commit": "a0b8b956002ddc64eb6d433e3230fa09619f2aef"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}
