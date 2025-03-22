@@ -649,6 +649,20 @@ public:
    */
   bool SetStreamDetailsForFileId(const CStreamDetails& details, int idFile);
 
+  struct PlaylistInfo
+  {
+    int playlist{-1};
+    int idFile{-1};
+    int idMedia{-1};
+  };
+
+  /*!
+   * \brief Get all playlists from a single bluray:// path in the database
+   * \param[in] path The bluray:// path
+   * \return vector array of playlist numbers and idFiles
+   */
+  std::vector<PlaylistInfo> GetPlaylistsByPath(const std::string& path);
+
   bool SetSingleValue(VideoDbContentType type, int dbId, int dbField, const std::string& strValue);
   bool SetSingleValue(VideoDbContentType type,
                       int dbId,
@@ -874,6 +888,7 @@ public:
   void GetEpisodesByName(const std::string& strSearch, CFileItemList& items);
   void GetMusicVideosByName(const std::string& strSearch, CFileItemList& items);
 
+  std::string GetPlotByShowId(int idShow);
   void GetEpisodesByPlot(const std::string& strSearch, CFileItemList& items);
   void GetMoviesByPlot(const std::string& strSearch, CFileItemList& items);
 
@@ -1203,6 +1218,7 @@ public:
   std::string GetMovieTitle(int idMovie);
   void GetSameVideoItems(const CFileItem& item, CFileItemList& items);
   int GetFileIdByMovie(int idMovie);
+  int GetFileIdByFile(const std::string& fullpath);
   std::string GetFileBasePathById(int idFile);
 
   /*!
