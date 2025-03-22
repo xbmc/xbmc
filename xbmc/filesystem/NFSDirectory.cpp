@@ -109,6 +109,7 @@ bool CNFSDirectory::ResolveSymlink( const std::string &dirName, struct nfsdirent
   std::string fullpath = dirName;
   char resolvedLink[MAX_PATH];
 
+  StringUtils::Replace(fullpath, std::string("\%3F"), std::string("?"));
   URIUtils::AddSlashAtEnd(fullpath);
   fullpath.append(dirent->name);
 
@@ -135,12 +136,14 @@ bool CNFSDirectory::ResolveSymlink( const std::string &dirName, struct nfsdirent
       //and just can't change the global nfs context here
       //without destroying something...
       fullpath = resolvedLink;
+      StringUtils::Replace(fullpath, std::string("?"), std::string("\%3F"));
       resolvedUrl.SetFileName(fullpath);
       ret = gNfsConnection.stat(resolvedUrl, &tmpBuffer);
     }
     else
     {
       ret = nfs_stat64(gNfsConnection.GetNfsContext(), fullpath.c_str(), &tmpBuffer);
+      StringUtils::Replace(fullpath, std::string("?"), std::string("\%3F"));
       resolvedUrl.SetFileName(gNfsConnection.GetConnectedExport() + fullpath);
     }
 
@@ -246,6 +249,7 @@ bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   {
     struct nfsdirent tmpDirent = *nfsdirent;
     std::string strName = tmpDirent.name;
+    StringUtils::Replace(strName, std::string("?"), std::string("\%3F"));
     std::string path(myStrPath + strName);
     int64_t iSize = 0;
     bool bIsDir = false;
