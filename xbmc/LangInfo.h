@@ -103,18 +103,37 @@ public:
   */
   bool SetLanguage(std::string strLanguage = "", bool reloadServices = true);
 
+  /*
+   * \brief Get the audio language in ISO 639-2 format.
+   * \return The language code (user-defined also allowed), otherwise if "default", "original" or "mediadefault" is set
+   *         to the audio language setting, will fallback to a general language code (e.g. eng)
+   */
   const std::string& GetAudioLanguage() const;
-  // language can either be a two char language code as defined in ISO639
-  // or a three char language code
-  // or a language name in english (as used by XBMC)
-  void SetAudioLanguage(const std::string& language);
 
-  // three char language code (not win32 specific)
+  /*
+   * \brief Set the audio language.
+   * \param language The language can either be a two char language code,
+   *        or a three char language code, or a language name in english,
+   *        also user-defined languages are allowed.
+   * \param isIso6392 Defines that language is in ISO 639-2 format, otherwise will be considered as ISO 639-1 format.
+   */
+  void SetAudioLanguage(const std::string& language, bool isIso6392 = false);
+
+  /*
+   * \brief Get the subtitle language in ISO 639-2 format.
+   * \return The language code (user-defined also allowed), otherwise if "default", "original" is set
+   *         to the subtitle language setting, will fallback to a general language code (e.g. eng)
+   */
   const std::string& GetSubtitleLanguage() const;
-  // language can either be a two char language code as defined in ISO639
-  // or a three char language code
-  // or a language name in english (as used by XBMC)
-  void SetSubtitleLanguage(const std::string& language);
+
+  /*
+   * \brief Set the subtitle language.
+   * \param language The language can either be a two char language code,
+   *        or a three char language code, or a language name in english,
+   *        also user-defined languages are allowed.
+   * \param isIso6392 Defines that language is in ISO 639-2 format, otherwise will be considered as ISO 639-1 format.
+   */
+  void SetSubtitleLanguage(const std::string& language, bool isIso6392 = false);
 
   const std::string GetDVDMenuLanguage() const;
   const std::string GetDVDAudioLanguage() const;
@@ -314,10 +333,9 @@ protected:
   CTemperature::Unit m_temperatureUnit;
   CSpeed::Unit m_speedUnit;
 
-  std::string m_audioLanguage;
-  std::string m_subtitleLanguage;
-  // this is the general (not win32-specific) three char language code
-  std::string m_languageCodeGeneral;
+  std::string m_audioLanguage; // ISO 639-2 three char (not win32 specific)
+  std::string m_subtitleLanguage; // ISO 639-2 three char (not win32 specific)
+  std::string m_languageCodeGeneral; // ISO 639-2 three char (not win32-specific)
 };
 
 
