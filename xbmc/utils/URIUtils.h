@@ -38,7 +38,22 @@ public:
   static std::string GetFileName(const std::string& strFileNameAndPath);
   static std::string GetFileOrFolderName(const std::string& path);
 
+  /*!
+   * \brief Retrieve the extension of the file name.
+   * In case of multiple extensions or presence of dot characters in the file name
+   * (ex. dot.separated.filename.mkv), the last extension is returned.
+   * \param url[in] CURL of the file
+   * \return the extension. Empty for filenames without an extension.
+   */
   static std::string GetExtension(const CURL& url);
+
+  /*!
+   * \brief Retrieve the extension of the file name.
+   * In case of multiple extensions or presence of dot characters in the file name
+   * (ex. dot.separated.filename.mkv), the last extension is returned.
+   * \param url[in] filename, with or without path
+   * \return the extension. Empty for filenames without an extension.
+   */
   static std::string GetExtension(const std::string& strFileName);
 
 
