@@ -9,10 +9,12 @@
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "filesystem/Directory.h"
+#include "filesystem/DirectoryFactory.h"
 #include "filesystem/IDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "test/TestUtils.h"
 #include "utils/URIUtils.h"
+#include "video/VideoInfoTag.h"
 
 #include <gtest/gtest.h>
 
@@ -55,3 +57,37 @@ TEST(TestDirectory, CreateRecursive)
   EXPECT_TRUE(XFILE::CDirectory::Create(path2));
   EXPECT_TRUE(XFILE::CDirectory::RemoveRecursive(path1));
 }
+
+#ifdef HAVE_LIBBLURAY
+TEST(TestDirectory, BlurayResolve)
+{
+  CFileItem item;
+  CVideoInfoTag* tag{item.GetVideoInfoTag()};
+
+  // Emulate first play of removable bluray disc
+  item.SetPath("E:\\BDMV\\index.bdmv");
+  std::string pathToResolve{
+      "bluray://removable%3a%2f%2fsometitle_0000000000000000000000000000000000000000%00%cc"
+      "/BDMV/index.bdmv"};
+  item.SetDynPath(pathToResolve);
+  tag->m_strFileNameAndPath = pathToResolve;
+
+  if (const std::unique_ptr<XFILE::IDirectory> dir{XFILE::CDirectoryFactory::Create(item)}; dir)
+  {
+    EXPECT_TRUE(dir->Resolve(item));
+    std::string correctResolvedPath{"E:\\BDMV\\index.bdmv"};
+    EXPECT_STREQ(item.GetDynPath().c_str(), correctResolvedPath.c_str());
+
+    // Emulate second/resume play of removable bluray disc
+    pathToResolve =
+        "bluray://removable%3a%2f%2fsometitle_0000000000000000000000000000000000000000%00%cc"
+        "/BDMV/PLAYLIST/00800.mpls";
+    item.SetDynPath(pathToResolve);
+    tag->m_strFileNameAndPath = pathToResolve;
+
+    EXPECT_TRUE(dir->Resolve(item));
+    correctResolvedPath = "bluray://E%3a%5c/BDMV/PLAYLIST/00800.mpls";
+    EXPECT_STREQ(item.GetDynPath().c_str(), correctResolvedPath.c_str());
+  }
+}
+#endif
