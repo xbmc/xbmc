@@ -19,14 +19,14 @@
 #include <xmmintrin.h>
 #endif
 
-void AEDelayStatus::SetDelay(double d) 
+void AEDelayStatus::SetDelay(double d)
 {
   delay = d;
   maxcorrection = d;
   startTime = std::chrono::steady_clock::now();
 }
 
-double AEDelayStatus::GetDelay() const 
+double AEDelayStatus::GetDelay() const
 {
   auto elapsed = std::chrono::steady_clock::now() - startTime;
   double d = std::chrono::duration<double>(elapsed).count();
