@@ -469,6 +469,18 @@ uint64_t CAEUtil::GetAVChannelLayout(const CAEChannelInfo &info)
   return channelLayout;
 }
 
+std::string CAEUtil::GetAVChannelLayoutString(const CAEChannelInfo& info)
+{
+  std::string channelInfoStr;
+  for (unsigned int i = 0; i < info.Count(); i++) {
+    enum AEChannel channel = info[i];
+    const char* channelName = CAEChannelInfo::GetChName(channel);
+    channelInfoStr += channelName;
+    if (i < info.Count() - 1) channelInfoStr += " ";
+  }
+  return channelInfoStr;
+}
+
 CAEChannelInfo CAEUtil::GetAEChannelLayout(uint64_t layout)
 {
   CAEChannelInfo channelLayout;
