@@ -39,11 +39,11 @@ class CRepository : public CAddon
 public:
   explicit CRepository(const AddonInfoPtr& addonInfo);
 
-  enum FetchStatus
+  enum class FetchStatus
   {
-    STATUS_OK,
-    STATUS_NOT_MODIFIED,
-    STATUS_ERROR
+    OK,
+    NOT_MODIFIED,
+    FETCH_ERROR
   };
 
   FetchStatus FetchIfChanged(const std::string& oldChecksum,

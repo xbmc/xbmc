@@ -264,7 +264,7 @@ CRepository::FetchStatus CRepository::FetchIfChanged(const std::string& oldCheck
       {
         recheckAfter = 1 * 60 * 60; // retry after 1 hour
         CLog::Log(LOGERROR, "CRepository: failed read '{}'", dir.checksum);
-        return STATUS_ERROR;
+        return FetchStatus::FETCH_ERROR;
       }
       dirChecksums.emplace_back(dir, part);
       recheckAfterTimes.push_back(recheckAfterThisDir);
@@ -281,17 +281,17 @@ CRepository::FetchStatus CRepository::FetchIfChanged(const std::string& oldCheck
     recheckAfter = *std::min_element(recheckAfterTimes.begin(), recheckAfterTimes.end());
     // If all directories have checksums and they match the last one, nothing has changed
     if (dirChecksums.size() == m_dirs.size() && oldChecksum == checksum)
-      return STATUS_NOT_MODIFIED;
+      return FetchStatus::NOT_MODIFIED;
   }
 
   for (const auto& dirTuple : dirChecksums)
   {
     std::vector<AddonInfoPtr> tmp;
     if (!FetchIndex(std::get<0>(dirTuple), std::get<1>(dirTuple), tmp))
-      return STATUS_ERROR;
+      return FetchStatus::FETCH_ERROR;
     addons.insert(addons.end(), tmp.begin(), tmp.end());
   }
-  return STATUS_OK;
+  return FetchStatus::OK;
 }
 
 RepositoryDirInfo CRepository::ParseDirConfiguration(const CAddonExtensions& configuration)
