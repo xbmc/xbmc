@@ -69,9 +69,41 @@ if(NOT TARGET TexturePacker::TexturePacker::Executable)
 
     # Build and install internal TexturePacker if needed
     if (INTERNAL_TEXTUREPACKER_EXECUTABLE OR INTERNAL_TEXTUREPACKER_INSTALLABLE)
-      set(KODI_SOURCE_DIR ${CMAKE_SOURCE_DIR})
-      add_subdirectory(${CMAKE_SOURCE_DIR}/tools/depends/native/TexturePacker/src build/texturepacker)
-      unset(KODI_SOURCE_DIR)
+      set(CMAKE_ARGS "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} $<$<CONFIG:Debug>:${CMAKE_C_FLAGS_DEBUG}> $<$<CONFIG:Release>:${CMAKE_C_FLAGS_RELEASE}>"
+                     "-DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS} $<$<CONFIG:Debug>:${CMAKE_CXX_FLAGS_DEBUG}> $<$<CONFIG:Release>:${CMAKE_CXX_FLAGS_RELEASE}>"
+                     "-DCMAKE_EXE_LINKER_FLAGS=${CMAKE_EXE_LINKER_FLAGS} $<$<CONFIG:Debug>:${CMAKE_EXE_LINKER_FLAGS_DEBUG}> $<$<CONFIG:Release>:${CMAKE_EXE_LINKER_FLAGS_RELEASE}>"
+                     "-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}"
+                     "-DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}"
+                     "-DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}"
+                     "-DCMAKE_AR=${CMAKE_AR}"
+                     "-DCMAKE_LINKER=${CMAKE_LINKER}"
+                     "-DCMAKE_NM=${CMAKE_NM}"
+                     "-DCMAKE_STRIP=${CMAKE_STRIP}"
+                     "-DCMAKE_OBJDUMP=${CMAKE_OBJDUMP}"
+                     "-DCMAKE_RANLIB=${CMAKE_RANLIB}"
+                     -DKODI_SOURCE_DIR=${CMAKE_SOURCE_DIR}
+                     -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/build)
+
+      # Create a list with an alternate separator e.g. pipe symbol
+      string(REPLACE ";" "|" string_ARCH_DEFINES "${ARCH_DEFINES}")
+
+      list(APPEND CMAKE_ARGS -DARCH_DEFINES=${string_ARCH_DEFINES})
+
+      externalproject_add(buildtexturepacker
+                          SOURCE_DIR ${CMAKE_SOURCE_DIR}/tools/depends/native/TexturePacker/src
+                          PREFIX ${CORE_BUILD_DIR}/build-texturepacker
+                          LIST_SEPARATOR |
+                          INSTALL_DIR ${CMAKE_BINARY_DIR}/build
+                          INSTALL_BYPRODUCTS ${CMAKE_BINARY_DIR}/build/bin/TexturePacker
+                          CMAKE_ARGS ${CMAKE_ARGS})
+
+      ExternalProject_Get_Property(buildtexturepacker install_dir)
+      add_executable(TexturePacker IMPORTED)
+      set_target_properties(TexturePacker PROPERTIES
+                                          IMPORTED_LOCATION "${install_dir}/bin/TexturePacker")
+
+      add_dependencies(TexturePacker buildtexturepacker)
+
       message(STATUS "Building internal TexturePacker")
     endif()
 
