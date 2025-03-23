@@ -23,6 +23,7 @@
 };
 // clang-format on
 
+#include "ServiceBroker.h"
 #include "commons/ilog.h"
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
