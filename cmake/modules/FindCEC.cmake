@@ -11,24 +11,24 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
   macro(buildCEC)
+
+    find_package(P8Platform REQUIRED)
+
     set(CEC_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
 
     set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/001-all-cmakelists.patch"
                 "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/002-all-libceccmakelists.patch"
                 "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/003-all-remove_git_info.patch"
-                "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/004-win-remove_32bit_timet.patch"
-                "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/005-win-pdbstatic.patch")
+                "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/004-all-PR674.patch"
+                "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/005-all-PR675-1.patch"
+                "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/006-all-PR675-2.patch")
 
     generate_patchcommand("${patches}")
 
     set(CMAKE_ARGS -DBUILD_SHARED_LIBS=ON
                    -DSKIP_PYTHON_WRAPPER=ON
+                   -DDISABLE_BUILDINFO=ON
                    -DCMAKE_PLATFORM_NO_VERSIONED_SONAME=ON)
-
-    if(WIN32 AND ARCH STREQUAL "x64")
-      # Disable _USE_32BIT_TIME_T for x64 win target
-      list(APPEND CMAKE_ARGS -DWIN64=ON)
-    endif()
 
     if(CORE_SYSTEM_NAME STREQUAL "osx")
       set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BYPRODUCT_EXTENSION "dylib")
@@ -44,15 +44,6 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
     add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} ${APP_NAME_LC}::P8Platform)
   endmacro()
-
-  # We only need to check p8-platform if we have any intention to build internal
-  if(ENABLE_INTERNAL_CEC)
-    # Check for dependencies - Must be done before SETUP_BUILD_VARS
-    get_libversion_data("p8-platform" "target")
-    find_package(P8Platform ${LIB_P8-PLATFORM_VER} MODULE QUIET REQUIRED)
-    # Check if we want to force a build due to a dependency rebuild
-    get_property(LIB_FORCE_REBUILD TARGET ${APP_NAME_LC}::P8Platform PROPERTY LIB_BUILD)
-  endif()
 
   set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC cec)
 

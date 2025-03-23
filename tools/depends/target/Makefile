@@ -154,6 +154,7 @@ $(DOWNLOAD_TARGETS):
 
 download: $(DOWNLOAD_TARGETS)
 
+cec: p8-platform
 crossguid: $(LIBUUID)
 curl: brotli openssl nghttp2 $(ZLIB)
 dbus: expat
