@@ -1,7 +1,10 @@
 include ../../Makefile.include LIBAACS-VERSION ../../download-files.include
 DEPS = ../../Makefile.include LIBAACS-VERSION Makefile ../../download-files.include \
                     01-all-remove_versioning.patch \
-                    02-all-AACS_HOME-env.patch
+                    02-all-AACS_HOME-env.patch \
+                    03-win-cmake.patch \
+                    04-win-UWP.patch \
+                    05-win-fix_gcrypt_build.patch
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) \
@@ -23,6 +26,9 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../01-all-remove_versioning.patch
 	cd $(PLATFORM); patch -p1 -i ../02-all-AACS_HOME-env.patch
+	cd $(PLATFORM); patch -p1 -i ../03-win-cmake.patch
+	cd $(PLATFORM); patch -p1 -i ../04-win-UWP.patch
+	cd $(PLATFORM); patch -p1 -i ../05-win-fix_gcrypt_build.patch
 	cd $(PLATFORM); ./bootstrap
 	cd $(PLATFORM); $(CONFIGURE)
 

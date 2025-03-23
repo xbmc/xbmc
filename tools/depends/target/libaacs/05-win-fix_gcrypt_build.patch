@@ -1,0 +1,53 @@
+--- a/src/libaacs/crypto.c
++++ b/src/libaacs/crypto.c
+@@ -484,22 +484,26 @@
+     }
+ 
+     /* Build an s-expression for the hash */
+-    GCRY_VERIFY("gcry_sexp_build",
+-                gcry_sexp_build(p_sexp_data, NULL,
+-                                "(data"
+ #if defined(GCRYPT_VERSION_NUMBER) && GCRYPT_VERSION_NUMBER >= 0x010600
+-                                /*
+-                                 * For some reason gcrypt 1.6.0
+-                                 * requires 'param' flag here and not
+-                                 * in key, probably a bug.
+-                                 */
+-                                "  (flags raw param)"
++    /*
++     * For some reason gcrypt 1.6.0
++     * requires 'param' flag here and not
++     * in key, probably a bug.
++     */
++    GCRY_VERIFY( "gcry_sexp_build",
++        gcry_sexp_build( p_sexp_data, NULL,
++        "(data""  (flags raw param)"
++        "  (value %m))",
++        mpi_md
++        ));
+ #else
+-                                "  (flags raw)"
++    GCRY_VERIFY( "gcry_sexp_build",
++        gcry_sexp_build( p_sexp_data, NULL,
++        "(data""  (flags raw)"
++        "  (value %m))",
++        mpi_md
++        ));
+ #endif
+-                                "  (value %m))",
+-                                mpi_md
+-                                ));
+ 
+     /* Dump information about the data s-expression when debugging */
+     if (GCRYPT_DEBUG) {
+--- a/src/libaacs/ec.c
++++ b/src/libaacs/ec.c
+@@ -18,6 +18,8 @@
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+    USA.  */
+ 
++#include <gcrypt.h>
++
+ #define mpi_alloc(m)        gcry_mpi_new(0)
+ #define mpi_alloc_like(m)   gcry_mpi_new(0)
+ #define mpi_alloc_set_ui(u) gcry_mpi_set_ui(gcry_mpi_new(0), u)
