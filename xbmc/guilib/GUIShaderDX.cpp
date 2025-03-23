@@ -283,6 +283,8 @@ void CGUIShaderDX::Project(float &x, float &y, float &z)
 {
 #if defined(_XM_SSE_INTRINSICS_) && !defined(_XM_NO_INTRINSICS_)
   XMVECTOR vLocation = { x, y, z };
+#elif defined(_M_ARM64) && defined(_XM_ARM_NEON_INTRINSICS_) && !defined(_XM_NO_INTRINSICS_)
+  XMVECTOR vLocation = {.n128_f32{x, y, z}};
 #elif defined(_XM_ARM_NEON_INTRINSICS_) && !defined(_XM_NO_INTRINSICS_)
   XMVECTOR vLocation = { x, y };
 #endif
