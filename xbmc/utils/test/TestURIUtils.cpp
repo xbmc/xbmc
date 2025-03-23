@@ -105,6 +105,10 @@ TEST_F(TestURIUtils, HasExtension)
   EXPECT_TRUE(URIUtils::HasExtension("/path/to/movie.AvI", ".avi|"));
   EXPECT_FALSE(URIUtils::HasExtension("/path/to/movie.AvI", ".mkv|"));
   EXPECT_TRUE(URIUtils::HasExtension("/path/to/movie.avi", "*.avi"));
+  // pathologic, doesn't need to be supported but happens to work
+  EXPECT_FALSE(URIUtils::HasExtension("/path/to/movie.avi", ".avi."));
+  // pathologic, known broken, not worth fixing
+  //EXPECT_FALSE(URIUtils::HasExtension("/path/to/movie.avi", "..avi"));
   EXPECT_FALSE(URIUtils::HasExtension("/path/.avi/movie", ".avi"));
   EXPECT_FALSE(URIUtils::HasExtension("", ".avi"));
 
@@ -129,6 +133,11 @@ TEST_F(TestURIUtils, HasExtension)
   EXPECT_FALSE(URIUtils::HasExtension("http://server/path/to/movie.AvI", ".mpg|.mkv|.mp4"));
   EXPECT_TRUE(URIUtils::HasExtension("http://server/path/to/movie.AvI?foo=bar", ".avi|.mkv|.mp4"));
   EXPECT_FALSE(URIUtils::HasExtension("http://server/path/to/movie?foo=bar.AvI", ".avi|.mkv|.mp4"));
+
+  EXPECT_FALSE(URIUtils::HasExtension("/home/alwin/test.bdm", ".bdmv|.m4v"));
+  EXPECT_FALSE(URIUtils::HasExtension("/home/alwin/test.bdm", ".bd|.m4v"));
+  EXPECT_FALSE(URIUtils::HasExtension("/home/alwin/test.bdm", ".bdmv"));
+  EXPECT_FALSE(URIUtils::HasExtension("/home/alwin/test.bdm", ".bd"));
 }
 
 TEST_F(TestURIUtils, GetFileName)

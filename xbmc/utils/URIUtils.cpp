@@ -95,29 +95,62 @@ bool URIUtils::HasExtension(const CURL& url, std::string_view extensions)
 
 namespace
 {
-bool IsExtensionInList(std::string_view extension, std::string_view extensions)
+bool IsExtensionInList(std::string_view extension, std::string_view extList)
 {
-  //! @todo switch to faster case-sensitive comparison once case of extension and list are guaranteed
-  while (extensions.size() > 0)
+  //! @todo simplify once strings can be assumed in same case
+
+  const size_t lengthExt = extension.size();
+  const size_t lengthList = extList.size();
+  size_t idxExt = 0; // current position in the extension to be matched
+  size_t idxList = 0; // current position in the string of | delimited extensions
+  bool waitForDelimiter = false; // true=mismatch found, advance idxList to next candidate extension
+
+  while (idxList < lengthList)
   {
-    const size_t delim = extensions.find('|');
-    if (delim != std::string_view::npos)
+    if (idxExt >= lengthExt)
     {
-      // EndsWith and switched parameters hack to make compound extensions sort-of-work
-      if (StringUtils::EndsWithNoCase(extensions.substr(0, delim), extension))
+      if (extList[idxList] == '|')
         return true;
-      extensions.remove_prefix(delim + 1);
+
+      waitForDelimiter = true;
+      idxExt = 0;
     }
-    else
+
+    if (extList[idxList] == '|')
     {
-      return StringUtils::EndsWithNoCase(extensions, extension);
+      waitForDelimiter = false;
+      ++idxList;
+      continue;
     }
+
+    // handle match of *.avi, ".gz" match of ".tar.gz"
+    if (extList[idxList] == '.')
+    {
+      waitForDelimiter = false;
+      idxExt = 0;
+    }
+
+    if (!waitForDelimiter)
+    {
+      if (extList[idxList] != extension[idxExt] &&
+          ::tolower(extList[idxList]) != ::tolower(extension[idxExt]))
+      {
+        waitForDelimiter = true;
+        idxExt = 0;
+      }
+      else
+      {
+        ++idxExt;
+      }
+    }
+    ++idxList;
   }
-  return false;
+  return idxExt == lengthExt;
 }
+
 } // namespace
 
-bool URIUtils::HasExtension(const std::string& strFileName, std::string_view strExtensions)
+bool URIUtils::HasExtension(const std::string& strFileName, std::string_view extensions)
 {
   std::string extension = GetExtension(strFileName);
   if (extension.empty())
@@ -127,7 +160,7 @@ bool URIUtils::HasExtension(const std::string& strFileName, std::string_view str
   // comparison with the extension is case-sensitive first.
   StringUtils::ToLower(extension);
 
-  return IsExtensionInList(extension, strExtensions);
+  return IsExtensionInList(extension, extensions);
 }
 
 void URIUtils::RemoveExtension(std::string& strFileName)
