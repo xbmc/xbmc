@@ -1,0 +1,54 @@
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -241,6 +241,9 @@ pkginclude_HEADERS = \
+ 
+ if USING_BDJAVA_BUILD_JAR
+ 
++if USING_JAVAC_20
++java_versions = -Djava_version_asm=1.8 -Djava_version_bdj=1.8
++else
+ if USING_JAVAC_12
+ java_versions = -Djava_version_asm=1.7 -Djava_version_bdj=1.7
+ else
+@@ -250,6 +253,7 @@ else
+ java_versions = -Djava_version_asm=1.5 -Djava_version_bdj=1.4
+ endif
+ endif
++endif
+ 
+ if BDJ_J2SE
+ awt_src = java-$(BDJ_TYPE):java-build-support
+--- a/configure.ac
++++ b/configure.ac
+@@ -131,6 +131,10 @@ AC_ARG_WITH([bdj-bootclasspath],
+ 
+ AC_ARG_WITH([java9],
+   [AS_HELP_STRING([--with-java9], [build with Java 9+ (drop support for Java <1.6) @<:@default=without@:>@])])
++AC_ARG_WITH([java12],
++  [AS_HELP_STRING([--with-java9], [build with Java 12+ (drop support for Java <1.7) @<:@default=without@:>@])])
++AC_ARG_WITH([java20],
++  [AS_HELP_STRING([--with-java20], [build with Java 20-21 (drop support for Java <1.8) @<:@default=without@:>@])])
+ 
+ AC_ARG_WITH([external-libudfread],
+   [AS_HELP_STRING([--without-external-libudfread],
+@@ -293,10 +297,12 @@ AS_IF([test "x$use_bdjava_jar" = "xyes"], [
+         javac_version=`"$JAVAC" -version 2>&1 | head -n 1`
+         [with_java9=`echo "$javac_version" | grep -E -q '^javac\ (9|1[0-1])' && echo yes`]
+         [with_java12=`echo "$javac_version" | grep -E -q '^javac\ (1[2-9])' && echo yes`]
++        [with_java20=`echo "$javac_version" | grep -E -q '^javac\ (2[0-1])' && echo yes`]
+     ])
+ 
+     AS_IF([test "x$with_java9" = "xyes" -a "$BDJ_TYPE" != "j2me"], [java_code_version=1.6], [java_code_version=1.4])
+     AS_IF([test "x$with_java12" = "xyes" -a "$BDJ_TYPE" != "j2me"], [java_code_version=1.7])
++    AS_IF([test "x$with_java20" = "xyes" -a "$BDJ_TYPE" != "j2me"], [java_code_version=1.8])
+ ])
+ 
+ AC_DEFINE_UNQUOTED([JAVA_ARCH], ["$java_arch"], ["Defines the architecture of the java vm."])
+@@ -304,6 +310,7 @@ AC_DEFINE_UNQUOTED([JDK_HOME], ["$JDK_HOME"], [""])
+ AM_CONDITIONAL([USING_BDJAVA_BUILD_JAR], [ test $use_bdjava_jar = "yes" ])
+ AM_CONDITIONAL([USING_JAVAC_9], [ test x"$with_java9" = x"yes" ])
+ AM_CONDITIONAL([USING_JAVAC_12], [ test x"$with_java12" = x"yes" ])
++AM_CONDITIONAL([USING_JAVAC_20], [ test x"$with_java20" = x"yes" ])
+ 
+ dnl BD-J type
+ if test "$BDJ_TYPE" = "j2me"; then

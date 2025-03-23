@@ -66,7 +66,10 @@ endif
 ifeq ($(OS),osx)
   FONTCONFIG=
   EXCLUDED_DEPENDS = libusb
-  DEPENDS += smctemp
+  DEPENDS += smctemp libaacs libbdplus apache-ant
+  LIBAACS = libaacs
+  LIBDPLUS = libbdplus
+  APACHEANT = apache-ant
 endif
 
 ifeq ($(OS),android)
@@ -161,8 +164,10 @@ freetype2: bzip2 harfbuzz $(ZLIB)
 gettext: $(ICONV)
 gnutls: nettle $(ZLIB)
 harfbuzz: freetype2-noharfbuzz $(ICONV)
+libaacs: libgcrypt libgpg-error
 libass: $(FONTCONFIG) fribidi harfbuzz freetype2 $(ICONV)
-libbluray: fontconfig freetype2 $(ICONV) udfread libxml2
+libbdplus: libaacs libgcrypt libgpg-error
+libbluray: fontconfig freetype2 $(ICONV) udfread libxml2 $(LIBAACS) $(LIBDPLUS) $(APACHEANT)
 libcdio-gplv3: $(ICONV)
 libcdio: $(ICONV)
 libdisplay-info: hwdata

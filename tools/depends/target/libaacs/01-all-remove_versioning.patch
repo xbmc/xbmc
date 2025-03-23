@@ -1,0 +1,11 @@
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -73,7 +73,7 @@
+ 	src/file/filesystem.h \
+ 	src/libaacs/aacs-version.h
+ 
+-libaacs_la_LDFLAGS= -no-undefined -version-info $(LT_VERSION_INFO)
++libaacs_la_LDFLAGS= -no-undefined -avoid-version
+ libaacs_la_LIBADD = $(LIBGCRYPT_LIBS) $(GPG_ERROR_LIBS)
+ pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = src/libaacs.pc
