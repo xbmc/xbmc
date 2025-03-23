@@ -95,7 +95,8 @@ if(NOT TARGET TexturePacker::TexturePacker::Executable)
                           LIST_SEPARATOR |
                           INSTALL_DIR ${CMAKE_BINARY_DIR}/build
                           CMAKE_ARGS ${CMAKE_ARGS}
-                          INSTALL_BYPRODUCTS ${CMAKE_BINARY_DIR}/build/bin/TexturePacker)
+                          INSTALL_BYPRODUCTS ${CMAKE_BINARY_DIR}/build/bin/TexturePacker
+                          BUILD_BYPRODUCTS ${CMAKE_BINARY_DIR}/build/bin/TexturePacker)
 
       ExternalProject_Get_Property(buildtexturepacker INSTALL_DIR)
       add_executable(TexturePacker IMPORTED)
