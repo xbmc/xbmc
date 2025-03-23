@@ -157,6 +157,9 @@ macro(SETUP_BUILD_VARS)
 
   # allow user to override the download URL with a local tarball
   # needed for offline build envs
+  if(DEFINED ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_URL)
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_URL})
+  endif()
   if(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL)
     get_filename_component(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL "${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL}" ABSOLUTE)
   else()
