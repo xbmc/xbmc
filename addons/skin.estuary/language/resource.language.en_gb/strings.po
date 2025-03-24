@@ -274,7 +274,12 @@ msgctxt "#31048"
 msgid "Available"
 msgstr ""
 
-#empty strings from id 31049 to 31051
+#empty strings from id 31049 to 31050
+
+#: /xml/DialogVideoInfo.xml
+msgctxt "#31051"
+msgid "Press OK to see path"
+msgstr ""
 
 #: /xml/Includes.xml
 msgctxt "#31052"

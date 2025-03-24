@@ -45,6 +45,27 @@
 			</control>
 		</definition>
 	</include>
+	<include name="InfoDialogMetaTextViewer">
+		<param name="visible">true</param>
+		<definition>
+			<control type="togglebutton" id="$PARAM[control_id]">
+				<width>472</width>
+				<height>49</height>
+				<textoffsetx>16</textoffsetx>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
+				<alttexturefocus colordiffuse="button_focus">lists/focus.png</alttexturefocus>
+				<onclick>SetProperty(TextViewer_Header,$PARAM[text_viewer_header],home)</onclick>
+				<onclick>SetProperty(TextViewer_Text,$PARAM[text_viewer_info],home)</onclick>
+				<onclick>ActivateWindow(1102)</onclick>
+				<label>$PARAM[label]</label>
+				<altlabel>$PARAM[altlabel]</altlabel>
+				<usealttexture>Control.HasFocus($PARAM[control_id])</usealttexture>
+				<visible>$PARAM[visible]</visible>
+			</control>
+		</definition>
+	</include>
 	<include name="DefaultSettingButton">
 		<param name="height">70</param>
 		<param name="textoffsetx">40</param>

@@ -4,6 +4,7 @@
 	<include>Animation_DialogPopupOpenClose</include>
 	<controls>
 		<control type="group">
+			<visible>!String.IsEqual(window(home).Property(TextViewer_Header),$LOCALIZE[15311])</visible>
 			<left>13%</left>
 			<centertop>50%</centertop>
 			<height>770</height>
@@ -22,6 +23,34 @@
 				<pagecontrol>3000</pagecontrol>
 				<font>font37</font>
 				<label>$INFO[Window(home).Property(TextViewer_Text)]</label>
+			</control>
+			<control type="scrollbar" id="3000">
+				<include>HiddenObject</include>
+				<ondown>3000</ondown>
+				<onup>3000</onup>
+			</control>
+		</control>
+		<control type="group">
+			<visible>String.IsEqual(window(home).Property(TextViewer_Header),$LOCALIZE[15311])</visible>
+			<left>13%</left>
+			<centertop>50%</centertop>
+			<height>255</height>
+			<include content="DialogBackgroundCommons">
+				<param name="width" value="84%" />
+				<param name="height" value="255" />
+				<param name="header_label" value="$INFO[Window(home).Property(TextViewer_Header)]" />
+				<param name="header_id" value="1" />
+			</include>
+			<control type="textbox" id="2000">
+				<left>1%</left>
+				<top>85</top>
+				<width>82%</width>
+				<height>170</height>
+				<shadowcolor>black</shadowcolor>
+				<pagecontrol>3000</pagecontrol>
+				<font>font13</font>
+				<label>$INFO[Window(home).Property(TextViewer_Text)]</label>
+				<autoscroll delay="2000" time="5000">true</autoscroll>
 			</control>
 			<control type="scrollbar" id="3000">
 				<include>HiddenObject</include>

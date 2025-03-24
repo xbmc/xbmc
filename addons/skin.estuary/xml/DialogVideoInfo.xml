@@ -245,8 +245,15 @@
 						<param name="altlabel" value="$LOCALIZE[126]: $INFO[ListItem.Status]" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Status)" />
 					</include>
-					<include content="InfoDialogMetadata">
+					<include content="InfoDialogMetaTextViewer">
 						<param name="control_id" value="161" />
+						<param name="label" value="[COLOR button_focus]$LOCALIZE[15311] [/COLOR]$INFO[ListItem.DecodedFileNameAndPath]" />
+						<param name="altlabel" value="$LOCALIZE[15311] $INFO[ListItem.DecodedFileNameAndPath]" />
+						<param name="text_viewer_header" value="$LOCALIZE[15311]" />
+						<param name="text_viewer_info" value="$INFO[ListItem.DecodedFileNameAndPath]" />
+					</include>
+					<include content="InfoDialogMetadata">
+						<param name="control_id" value="162" />
 						<param name="label" value="[COLOR button_focus]$LOCALIZE[570]: [/COLOR]$INFO[ListItem.DateAdded]" />
 						<param name="altlabel" value="$LOCALIZE[570]: $INFO[ListItem.DateAdded]" />
 						<param name="visible" value="!String.IsEmpty(ListItem.DateAdded) + [String.IsEqual(ListItem.DBType,episode) | String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,musicvideo) | String.IsEqual(ListItem.DBType,video)]" />
@@ -671,22 +678,6 @@
 					<param name="visible" value="true" />
 				</include>
 			</control>
-			<control type="label">
-				<right>80</right>
-				<top>970</top>
-				<align>right</align>
-				<width>1194</width>
-				<height>44</height>
-				<font>font20_title</font>
-				<textcolor>99FFFFFF</textcolor>
-				<shadowcolor>text_shadow</shadowcolor>
-				<scroll>true</scroll>
-				<label>$INFO[ListItem.DecodedFileNameAndPath]</label>
-				<animation effect="fade" start="0" end="100" time="300" delay="300">WindowOpen</animation>
-				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
-				<animation effect="fade" start="0" end="100" time="300">Visible</animation>
-				<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
-			</control>
 			<include content="InfoDialogTopBarInfo">
 				<param name="main_label" value="$VAR[VideoInfoMainLabelVar]" />
 				<param name="sub_label" value="$VAR[VideoInfoSubLabelVar]" />
@@ -702,43 +693,33 @@
 			<height>40</height>
 			<include>MediaFlags</include>
 			<control type="group">
-				<visible>Control.HasFocus(50) + !String.IsEqual(ListItem.DBType,set)</visible>
+				<visible>Control.HasFocus(50) + !String.IsEqual(ListItem.DBType,set) | Control.HasFocus(138) | Control.HasFocus(139) | Control.HasFocus(161)</visible>
 				<animation effect="fade" time="200">VisibleChange</animation>
-				<top>10</top>
-				<left>0</left>
-				<control type="image">
-					<left>21</left>
-					<width>36</width>
-					<height>36</height>
-					<animation effect="rotate" end="-90" center="36,19" time="0" condition="true">Conditional</animation>
-					<texture colordiffuse="grey">frame/menu-nofo.png</texture>
-				</control>
-				<control type="label">
-					<left>74</left>
-					<width>500</width>
-					<height>44</height>
-					<shadowcolor>text_shadow</shadowcolor>
-					<label>$LOCALIZE[31125]</label>
-				</control>
-			</control>
-			<control type="group">
-				<visible>Control.HasFocus(138)</visible>
-				<animation effect="fade" time="200">VisibleChange</animation>
-				<top>10</top>
+				<top>5</top>
 				<left>0</left>
 				<control type="image">
 					<top>4</top>
 					<left>17</left>
 					<width>36</width>
 					<height>36</height>
+					<animation effect="rotate" end="-90" center="36,19" time="0" condition="true">Conditional</animation>
+					<texture colordiffuse="grey">frame/menu-nofo.png</texture>
+					<visible>Control.HasFocus(50) + !String.IsEqual(ListItem.DBType,set)</visible>
+				</control>
+				<control type="image">
+					<top>4</top>
+					<left>17</left>
+					<width>36</width>
+					<height>36</height>
 					<texture colordiffuse="grey">lists/played-total.png</texture>
+					<visible>Control.HasFocus(138) | Control.HasFocus(139) | Control.HasFocus(161)</visible>
 				</control>
 				<control type="label">
 					<left>74</left>
 					<width>800</width>
 					<height>44</height>
 					<shadowcolor>text_shadow</shadowcolor>
-					<label>$LOCALIZE[31126]</label>
+					<label>$VAR[DialogVideoInfoHelpVar]</label>
 				</control>
 			</control>
 		</control>

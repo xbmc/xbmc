@@ -941,4 +941,9 @@
 		<value condition="String.IsEqual(ListItem.Property(stream.isforced),true)">$LOCALIZE[39106]</value>
 		<value condition="String.IsEqual(ListItem.Property(stream.isoriginal),true)">$LOCALIZE[39111]</value>
 	</variable>
+	<variable name="DialogVideoInfoHelpVar">
+		<value condition="Control.HasFocus(50) + !String.IsEqual(ListItem.DBType,set)">$LOCALIZE[31125]</value>
+		<value condition="Control.HasFocus(138) | Control.HasFocus(139)">$LOCALIZE[31126]</value>
+		<value condition="Control.HasFocus(161)">$LOCALIZE[31051]</value>
+	</variable>
 </includes>
