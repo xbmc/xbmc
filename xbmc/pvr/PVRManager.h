@@ -18,6 +18,7 @@
 #include "threads/Thread.h"
 #include "utils/EventStream.h"
 
+#include <atomic>
 #include <memory>
 #include <string>
 #include <vector>
@@ -451,6 +452,7 @@ private:
   mutable CCriticalSection
       m_critSection; /*!< critical section for all changes to this class, except for changes to triggers */
   bool m_bFirstStart = true; /*!< true when the PVR manager was started first, false otherwise */
+  std::atomic<bool> m_suspended{false}; /*!< whether the system is in suspended state */
 
   mutable CCriticalSection m_managerStateMutex;
   ManagerState m_managerState = ManagerState::STATE_STOPPED;
