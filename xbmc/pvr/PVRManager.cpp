@@ -528,7 +528,7 @@ void CPVRManager::Process()
 
   while (IsStarted() && m_addons->HasCreatedClients() && !bRestart)
   {
-    if (m_suspended)
+    if (IsSleeping())
     {
       CThread::Sleep(1s);
       continue;
@@ -640,18 +640,18 @@ void CPVRManager::OnSleep()
 
   SetWakeupCommand();
 
-  m_epgContainer->OnSystemSleep();
-  m_timers->OnSystemSleep();
-  m_addons->OnSystemSleep();
-  m_suspended = true;
+  m_epgContainer->OnSleep();
+  m_timers->OnSleep();
+  m_addons->OnSleep();
+  CPowerState::OnSleep();
 }
 
 void CPVRManager::OnWake()
 {
-  m_suspended = false;
-  m_addons->OnSystemWake();
-  m_timers->OnSystemWake();
-  m_epgContainer->OnSystemWake();
+  CPowerState::OnWake();
+  m_addons->OnWake();
+  m_timers->OnWake();
+  m_epgContainer->OnWake();
 
   PublishEvent(PVREvent::SystemWake);
 

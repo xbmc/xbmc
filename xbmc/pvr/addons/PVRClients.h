@@ -10,6 +10,7 @@
 
 #include "addons/IAddonManagerCallback.h"
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_general.h"
+#include "powermanagement/PowerState.h"
 #include "threads/CriticalSection.h"
 
 #include <functional>
@@ -62,7 +63,7 @@ struct SBackend
   uint64_t diskTotal = 0;
 };
 
-class CPVRClients : public ADDON::IAddonMgrCallback
+class CPVRClients : public ADDON::IAddonMgrCallback, public CPowerState
 {
 public:
   CPVRClients();
@@ -384,12 +385,12 @@ public:
   /*!
    * @brief Propagate "system sleep" event to clients
    */
-  void OnSystemSleep();
+  void OnSleep() override;
 
   /*!
    * @brief Propagate "system wakeup" event to clients
    */
-  void OnSystemWake();
+  void OnWake() override;
 
   /*!
    * @brief Propagate "power saving activated" event to clients

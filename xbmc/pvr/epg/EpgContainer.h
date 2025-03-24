@@ -9,6 +9,7 @@
 #pragma once
 
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_epg.h"
+#include "powermanagement/PowerState.h"
 #include "pvr/settings/PVRSettings.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
@@ -39,7 +40,7 @@ enum class PVREvent;
 
 struct PVREpgSearchData;
 
-class CPVREpgContainer : private CThread
+class CPVREpgContainer : private CThread, public CPowerState
 {
   friend class CPVREpgDatabase;
 
@@ -206,16 +207,6 @@ public:
   void OnPlaybackStopped();
 
   /*!
-   * @brief Inform the epg container that the system is going to sleep
-   */
-  void OnSystemSleep();
-
-  /*!
-   * @brief Inform the epg container that the system gets awake from sleep
-   */
-  void OnSystemWake();
-
-  /*!
    * @brief Erase stale texture db entries and image files.
    * @return number of cleaned up images.
    */
@@ -362,7 +353,5 @@ private:
       false; /*!< true while an epg updated notification to observers is pending. */
   CPVRSettings m_settings;
   CEventSource<PVREvent>& m_events;
-
-  std::atomic<bool> m_bSuspended = {false};
 };
 } // namespace PVR

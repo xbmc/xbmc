@@ -810,16 +810,18 @@ bool CPVRClients::AnyClientSupportingRecordingsDelete() const
   });
 }
 
-void CPVRClients::OnSystemSleep()
+void CPVRClients::OnSleep()
 {
   ForCreatedClients(__FUNCTION__, [](const std::shared_ptr<CPVRClient>& client) {
     client->OnSystemSleep();
     return PVR_ERROR_NO_ERROR;
   });
+  CPowerState::OnSleep();
 }
 
-void CPVRClients::OnSystemWake()
+void CPVRClients::OnWake()
 {
+  CPowerState::OnWake();
   ForCreatedClients(__FUNCTION__, [](const std::shared_ptr<CPVRClient>& client) {
     client->OnSystemWake();
     return PVR_ERROR_NO_ERROR;

@@ -10,6 +10,7 @@
 
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_general.h"
 #include "interfaces/IAnnouncer.h"
+#include "powermanagement/PowerState.h"
 #include "pvr/PVRComponentRegistration.h"
 #include "pvr/guilib/PVRGUIActionListener.h"
 #include "pvr/settings/PVRSettings.h"
@@ -18,7 +19,6 @@
 #include "threads/Thread.h"
 #include "utils/EventStream.h"
 
-#include <atomic>
 #include <memory>
 #include <string>
 #include <vector>
@@ -94,7 +94,7 @@ enum class PVREvent
   SystemWake,
 };
 
-class CPVRManager : private CThread, public ANNOUNCEMENT::IAnnouncer
+class CPVRManager : private CThread, public ANNOUNCEMENT::IAnnouncer, public CPowerState
 {
 public:
   /*!
@@ -206,12 +206,12 @@ public:
   /*!
    * @brief Propagate event on system sleep
    */
-  void OnSleep();
+  void OnSleep() override;
 
   /*!
    * @brief Propagate event on system wake
    */
-  void OnWake();
+  void OnWake() override;
 
   /*!
    * @brief Get the TV database.
@@ -452,7 +452,6 @@ private:
   mutable CCriticalSection
       m_critSection; /*!< critical section for all changes to this class, except for changes to triggers */
   bool m_bFirstStart = true; /*!< true when the PVR manager was started first, false otherwise */
-  std::atomic<bool> m_suspended{false}; /*!< whether the system is in suspended state */
 
   mutable CCriticalSection m_managerStateMutex;
   ManagerState m_managerState = ManagerState::STATE_STOPPED;
