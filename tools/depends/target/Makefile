@@ -6,7 +6,6 @@ endif
 
 # Keep in alphabetical order
 DEPENDS = \
-  brotli \
   bzip2 \
   dav1d \
   expat \
@@ -36,7 +35,6 @@ DEPENDS = \
   libxslt \
   mariadb \
   nettle \
-  nghttp2 \
   openssl \
   python3 \
   pythonmodule-pil \
