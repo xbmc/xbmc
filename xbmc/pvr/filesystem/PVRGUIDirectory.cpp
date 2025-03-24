@@ -10,7 +10,10 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
+#include "GUIUserMessages.h"
 #include "ServiceBroker.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "input/WindowTranslator.h"
@@ -40,6 +43,8 @@
 #include "pvr/utils/PVRPathUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/Job.h"
+#include "utils/JobManager.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -411,7 +416,9 @@ void GetGetRecordingsSubDirectories(const CPVRRecordingsPath& recParentPath,
     {
       item->IncrementProperty("watchedepisodes", 1);
     }
-    if (recording->GetResumePoint().IsPartWay())
+    // Note: Calling GetResumePoint() could involve a PVR add-on backend call!
+    // So we fetch the the locally cached resume point here for performance reasons.
+    if (recording->GetLocalResumePoint().IsPartWay())
     {
       item->IncrementProperty("inprogressepisodes", 1);
     }
@@ -483,6 +490,68 @@ bool CPVRGUIDirectory::GetRecordingsDirectoryInfo(CFileItem& item)
   return false;
 }
 
+namespace
+{
+class CPVRRecordingFoldersInProgressEpisodesCountJob : public CJob
+{
+public:
+  CPVRRecordingFoldersInProgressEpisodesCountJob(
+      const CFileItemList& folders, const std::vector<std::shared_ptr<CPVRRecording>>& recordings)
+    : m_recordings(recordings)
+  {
+    // Take a copy of original items; do not manipulate them directly (CFileItem is not threadsafe).
+    m_folders.Copy(folders);
+  }
+
+  bool DoWork() override
+  {
+    if (m_recordings.empty() || m_folders.IsEmpty())
+      return true; // Nothing to do.
+
+    auto& windowMgr{CServiceBroker::GetGUI()->GetWindowManager()};
+
+    for (const auto& folder : m_folders)
+    {
+      const CPVRRecordingsPath recPath{folder->GetPath()};
+      if (!recPath.IsValid())
+        continue;
+
+      const auto oldInProgressEpisodes{folder->GetProperty("inprogressepisodes").asInteger(0)};
+
+      // Get all matching recordings of the current directory and sum up in-progress episodes.
+      int inProgressEpisodes{0};
+      const CByClientAndProviderFilter<CPVRRecording> byClientAndProviderFilter{folder->GetURL()};
+      const std::string directory{recPath.GetUnescapedDirectoryPath()};
+      for (const auto& recording : m_recordings)
+      {
+        // Omit recordings not matching criteria.
+        if (recording->IsDeleted() != recPath.IsDeleted() ||
+            recording->IsRadio() != recPath.IsRadio() ||
+            byClientAndProviderFilter.Filter(recording) ||
+            !IsDirectoryMember(directory, recording->Directory(), true))
+          continue;
+
+        // Note: This could involve a PVR add-on backend call!
+        if (recording->GetResumePoint().IsPartWay())
+          inProgressEpisodes++;
+      }
+
+      if (inProgressEpisodes != oldInProgressEpisodes)
+      {
+        folder->SetProperty("inprogressepisodes", inProgressEpisodes);
+        windowMgr.SendThreadMessage(
+            {GUI_MSG_NOTIFY_ALL, windowMgr.GetActiveWindow(), 0, GUI_MSG_UPDATE_ITEM, 0, folder});
+      }
+    }
+    return true;
+  }
+
+private:
+  CFileItemList m_folders;
+  std::vector<std::shared_ptr<CPVRRecording>> m_recordings;
+};
+} // unnamed namespace
+
 bool CPVRGUIDirectory::GetRecordingsDirectory(CFileItemList& results) const
 {
   results.SetContent("recordings");
@@ -521,6 +590,14 @@ bool CPVRGUIDirectory::GetRecordingsDirectory(CFileItemList& results) const
     const std::string strDirectory = recPath.GetUnescapedDirectoryPath();
     if (!recPath.IsDeleted() && bGrouped)
       GetGetRecordingsSubDirectories(recPath, recordings, byClientAndProviderFilter, results);
+
+    if (!results.IsEmpty())
+    {
+      // Update folders in-progress episodes count asynchronously, as this can involve
+      // many PVR backend calls (one per recording), due to PVR add-on API limitations.
+      CServiceBroker::GetJobManager()->AddJob(
+          new CPVRRecordingFoldersInProgressEpisodesCountJob(results, recordings), nullptr);
+    }
 
     // get all files of the current directory or recursively all files starting at the current directory if in flatten mode
     std::shared_ptr<CFileItem> item;

@@ -1607,7 +1607,7 @@ int CGUIWindowManager::GetTopmostModalDialog(bool ignoreClosing /*= false*/) con
   return GetTopmostDialog(true, ignoreClosing);
 }
 
-void CGUIWindowManager::SendThreadMessage(CGUIMessage& message, int window /*= 0*/)
+void CGUIWindowManager::SendThreadMessage(const CGUIMessage& message, int window /*= 0*/)
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
