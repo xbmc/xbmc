@@ -2464,9 +2464,9 @@ bool CApplication::PlayFile(CFileItem item,
   }
 
   // a disc image might be Blu-Ray disc
-  if (!(options.startpercent > 0.0 || options.starttime > 0.0) &&
-      (VIDEO::IsBDFile(item) || item.IsDiscImage() ||
-       (forceSelection && URIUtils::IsBlurayPath(item.GetDynPath()))))
+  if ((!(options.startpercent > 0.0 || options.starttime > 0.0) &&
+       (VIDEO::IsBDFile(item) || item.IsDiscImage())) ||
+      (forceSelection && URIUtils::IsBlurayPath(item.GetDynPath())))
   {
     // No video selection when using external or remote players (they handle it if supported)
     const bool isSimpleMenuAllowed = [&]()
@@ -2486,6 +2486,9 @@ bool CApplication::PlayFile(CFileItem item,
       // Check if we must show the simplified bd menu.
       if (!CGUIDialogSimpleMenu::ShowPlaySelection(item, forceSelection))
         return true;
+
+      // Reset any resume state as new playlist chosen
+      options = {};
     }
   }
 
