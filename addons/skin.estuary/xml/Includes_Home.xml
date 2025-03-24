@@ -1023,7 +1023,8 @@
 		<onunfocus>SetProperty(listposition,$INFO[Container($PARAM[list_id]).Position],home)</onunfocus>
 		<onfocus>Control.Move($PARAM[list_id],-$INFO[Container($PARAM[list_id]).Position])</onfocus>
 		<onfocus>Control.Move($PARAM[list_id],$INFO[Window(home).Property(listposition)])</onfocus>
-		<onback>SetFocus($PARAM[list_id],0,absolute)</onback>
+		<onback condition="!Container($PARAM[list_id]).Position(0)">SetFocus($PARAM[list_id],0,absolute)</onback>
+		<onback condition="Container($PARAM[list_id]).Position(0)">9000</onback>
 		<preloaditems>2</preloaditems>
 	</include>
 	<include name="BusyListSpinner">
