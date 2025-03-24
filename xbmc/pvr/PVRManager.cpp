@@ -641,6 +641,7 @@ void CPVRManager::OnSleep()
   SetWakeupCommand();
 
   m_epgContainer->OnSystemSleep();
+  m_timers->OnSystemSleep();
   m_addons->OnSystemSleep();
   m_suspended = true;
 }
@@ -649,6 +650,7 @@ void CPVRManager::OnWake()
 {
   m_suspended = false;
   m_addons->OnSystemWake();
+  m_timers->OnSystemWake();
   m_epgContainer->OnSystemWake();
 
   PublishEvent(PVREvent::SystemWake);

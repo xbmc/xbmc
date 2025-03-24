@@ -11,6 +11,7 @@
 #include "pvr/settings/PVRSettings.h"
 #include "threads/Thread.h"
 
+#include <atomic>
 #include <map>
 #include <memory>
 #include <queue>
@@ -80,6 +81,16 @@ public:
      * @brief stop the timer update thread.
      */
   void Stop();
+
+  /*!
+   * @brief Inform the epg container that the system is going to sleep
+   */
+  void OnSystemSleep();
+
+  /*!
+   * @brief Inform the epg container that the system gets awake from sleep
+   */
+  void OnSystemWake();
 
   /*!
    * @brief Update all timers from PVR database and from given clients.
@@ -326,6 +337,7 @@ private:
   CPVRSettings m_settings;
   std::queue<std::shared_ptr<CPVRTimerInfoTag>> m_remindersToAnnounce;
   bool m_bReminderRulesUpdatePending = false;
+  std::atomic<bool> m_suspended{false};
 
   bool m_bFirstUpdate = true;
   std::vector<int> m_failedClients;
