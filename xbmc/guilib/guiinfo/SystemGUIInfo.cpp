@@ -484,6 +484,18 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       value = CServiceBroker::GetMediaManager().GetDriveStatus() == DriveState::OPEN;
       return true;
 #endif
+    case SYSTEM_MEDIA_BLURAY_PLAYLIST:
+#if defined(HAS_OPTICAL_DRIVE) && defined(HAVE_LIBBLURAY)
+      if (CServiceBroker::GetMediaManager().IsDiscInDrive())
+      {
+        value = CServiceBroker::GetMediaManager().HasMediaBlurayPlaylist();
+      }
+      else
+#endif
+      {
+        value = false;
+      }
+      return true;
     case SYSTEM_CAN_POWERDOWN:
       value = CServiceBroker::GetPowerManager().CanPowerdown();
       return true;

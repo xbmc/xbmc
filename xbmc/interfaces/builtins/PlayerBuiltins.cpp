@@ -426,7 +426,23 @@ static int PlayDVD(const std::vector<std::string>& params)
   bool restart = false;
   if (!params.empty() && StringUtils::EqualsNoCase(params[0], "restart"))
     restart = true;
-  MEDIA_DETECT::CAutorun::PlayDisc(CServiceBroker::GetMediaManager().GetDiscPath(), true, restart);
+  MEDIA_DETECT::PlayDiscOptions options(
+      {.bypassSettings = true, .startFromBeginning = restart, .forceSelection = false});
+  MEDIA_DETECT::CAutorun::PlayDisc(CServiceBroker::GetMediaManager().GetDiscPath(), options);
+#endif
+
+  return 0;
+}
+
+/*! \brief Play currently inserted Bluray, allowing the user to choose the playlist.
+ *  \param params Not used here (but needed for builtin interface).
+ */
+static int PlayPlaylist(const std::vector<std::string>& params)
+{
+#ifdef HAS_OPTICAL_DRIVE
+  MEDIA_DETECT::PlayDiscOptions options(
+      {.bypassSettings = true, .startFromBeginning = false, .forceSelection = true});
+  MEDIA_DETECT::CAutorun::PlayDisc(CServiceBroker::GetMediaManager().GetDiscPath(), options);
 #endif
 
   return 0;
@@ -891,6 +907,7 @@ CBuiltins::CommandMap CPlayerBuiltins::GetOperations() const
   return {
            {"playdisc",            {"Plays the inserted disc, like CD, DVD or Blu-ray, in the disc drive.", 0, PlayDVD}},
            {"playdvd",             {"Plays the inserted disc, like CD, DVD or Blu-ray, in the disc drive.", 0, PlayDVD}},
+           {"playplaylist",        {"Plays a playlist on the Blu-ray in the disc drive.", 0, PlayPlaylist}},
            {"playlist.clear",      {"Clear the current playlist", 0, ClearPlaylist}},
            {"playlist.playoffset", {"Start playing from a particular offset in the playlist", 1, PlayOffset}},
            {"playercontrol",       {"Control the music or video player", 1, PlayerControl}},
