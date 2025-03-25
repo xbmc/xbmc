@@ -15,22 +15,11 @@ if(NOT TARGET LibDvdNav::LibDvdNav)
 
   set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC libdvdnav)
 
-  # We require this due to the odd nature of github URL's compared to our other tarball
-  # mirror system. If User sets LIBDVDNAV_URL or libdvdnav_URL, allow get_filename_component in SETUP_BUILD_VARS
-  if(LIBDVDNAV_URL OR libdvdnav_URL)
-    if(libdvdnav_URL)
-      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL ${libdvdnav_URL})
-    else()
-      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL ${LIBDVDNAV_URL})
-    endif()
-    set(LIBDVDNAV_URL_PROVIDED TRUE)
-  endif()
-
   SETUP_BUILD_VARS()
 
-  if(NOT LIBDVDNAV_URL_PROVIDED)
-    # override LIBDVDNAV_URL due to tar naming when retrieved from github release
-    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BASE_URL}/archive/${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER}.tar.gz)
+  # Legacy support for lowercase user provided URL override
+  if(libdvdnav_URL)
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL ${libdvdnav_URL})
   endif()
 
   set(LIBDVDNAV_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})

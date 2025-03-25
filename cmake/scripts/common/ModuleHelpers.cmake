@@ -165,19 +165,11 @@ macro(SETUP_BUILD_VARS)
     get_versionfile_data()
   endif()
 
-  # allow user to override the download URL with a local tarball
-  # needed for offline build envs
-  if(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL)
-    get_filename_component(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL "${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL}" ABSOLUTE)
-  else()
-    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BASE_URL}/${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_ARCHIVE})
-  endif()
   if(VERBOSE)
     message(STATUS "MODULE: ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}")
     message(STATUS "${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_LIB_TYPE: ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_LIB_TYPE}")
     message(STATUS "DEP_LOCATION: ${DEP_LOCATION}")
     message(STATUS "PROJECTSOURCE: ${PROJECTSOURCE}")
-    message(STATUS "${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL: ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL}")
   endif()
 endmacro()
 
@@ -227,6 +219,20 @@ endmacro()
 #
 macro(BUILD_DEP_TARGET)
   include(ExternalProject)
+
+  # allow user to override the download URL with a local tarball
+  # needed for offline build envs
+  if(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL)
+    get_filename_component(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL "${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL}" ABSOLUTE)
+  elseif(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_FULL_URL)
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL "${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_FULL_URL}")
+  else()
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BASE_URL}/${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_ARCHIVE})
+  endif()
+
+  if(VERBOSE)
+    message(STATUS "${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL: ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL}")
+  endif()
 
   # Remove cmake warning when Xcode generator used with "New" build system
   if(CMAKE_GENERATOR STREQUAL Xcode)
