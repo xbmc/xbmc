@@ -2668,17 +2668,6 @@ CDVDVideoCodec::VCReturn CAMLCodec::GetPicture(VideoPicture& videoPicture)
     m_tp_last_frame = std::chrono::system_clock::now();
 
     videoPicture.iDuration = CalculatePictureDuration();
-
-    // When FF/RW adjust the iDuration, smaller of original logic or ratio from play speed.
-    if (m_speed != DVD_PLAYSPEED_NORMAL)
-    {
-      const double calculatedDuration = videoPicture.iDuration * static_cast<double>(DVD_PLAYSPEED_NORMAL) / abs(m_speed);
-      const double measuredDuration = static_cast<double>(m_cur_pts - m_last_pts);
-      videoPicture.iDuration = (measuredDuration > 0.0) 
-                                 ? std::min(measuredDuration, calculatedDuration)
-                                 : calculatedDuration;
-    }
-
     videoPicture.dts = DVD_NOPTS_VALUE;
     videoPicture.pts = static_cast<double>(m_cur_pts);
 
