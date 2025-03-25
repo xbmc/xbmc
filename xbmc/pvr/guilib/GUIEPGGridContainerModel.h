@@ -46,8 +46,6 @@ class CPVREpgInfoTag;
 class CGUIEPGGridContainerModel
 {
 public:
-  static constexpr int MINSPERBLOCK = 5; // minutes
-
   CGUIEPGGridContainerModel() = default;
   virtual ~CGUIEPGGridContainerModel() = default;
 
@@ -58,6 +56,7 @@ public:
                   int iChannelsPerPage,
                   int iFirstBlock,
                   int iBlocksPerPage,
+                  unsigned int minutesPerBlock,
                   int iRulerUnit,
                   float fBlockSize);
   void SetInvalid();
@@ -168,6 +167,7 @@ private:
   mutable std::unordered_map<GridCoordinates, GridItem, GridCoordinatesHash> m_gridIndex;
 
   int m_blocks = 0;
+  unsigned int m_minutesPerBlock{0};
   float m_fBlockSize = 0.0f;
 
   int m_firstActiveChannel = 0;

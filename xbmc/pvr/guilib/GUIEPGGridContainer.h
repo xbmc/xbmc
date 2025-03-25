@@ -39,6 +39,8 @@ class CGUIEPGGridContainerModel;
 class CGUIEPGGridContainer : public IGUIContainer
 {
 public:
+  static constexpr unsigned int DEFAULT_MINUTES_PER_BLOCK{5};
+
   CGUIEPGGridContainer(int parentID,
                        int controlID,
                        float posX,
@@ -48,7 +50,8 @@ public:
                        ORIENTATION orientation,
                        int scrollTime,
                        int preloadItems,
-                       int minutesPerPage,
+                       int timeBlocks,
+                       unsigned int minutesPerTimeBlock,
                        int rulerUnit,
                        const CTextureInfo& progressIndicatorTexture);
   CGUIEPGGridContainer(const CGUIEPGGridContainer& other);
@@ -252,12 +255,15 @@ private:
   int GetChannelScrollOffset(CGUIListItemLayout* layout) const;
   int GetProgrammeScrollOffset() const;
 
+  int GetBlockScrollOffset() const;
+
   int m_rulerUnit; //! number of blocks that makes up one element of the ruler
   int m_channelsPerPage = 0;
   int m_programmesPerPage = 0;
   int m_channelCursor = 0;
   int m_channelOffset = 0;
   int m_blocksPerPage;
+  unsigned int m_minutesPerBlock{DEFAULT_MINUTES_PER_BLOCK};
   int m_blockCursor = 0;
   int m_blockOffset = 0;
   int m_blockTravelAxis = 0;

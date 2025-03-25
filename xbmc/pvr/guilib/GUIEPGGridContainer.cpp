@@ -40,9 +40,6 @@ using namespace KODI;
 using namespace PVR;
 
 #define BLOCKJUMP 4 // how many blocks are jumped with each analogue scroll action
-static const int BLOCK_SCROLL_OFFSET =
-    60 / CGUIEPGGridContainerModel::
-             MINSPERBLOCK; // how many blocks are jumped if we are at left/right edge of grid
 
 CGUIEPGGridContainer::CGUIEPGGridContainer(int parentID,
                                            int controlID,
@@ -54,12 +51,14 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(int parentID,
                                            int scrollTime,
                                            int preloadItems,
                                            int timeBlocks,
+                                           unsigned int minutesPerTimeBlock,
                                            int rulerUnit,
                                            const CTextureInfo& progressIndicatorTexture)
   : IGUIContainer(parentID, controlID, posX, posY, width, height),
     m_orientation(orientation),
     m_rulerUnit(rulerUnit),
     m_blocksPerPage(timeBlocks),
+    m_minutesPerBlock(minutesPerTimeBlock),
     m_cacheChannelItems(preloadItems),
     m_cacheProgrammeItems(preloadItems),
     m_cacheRulerItems(preloadItems),
@@ -94,6 +93,7 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(const CGUIEPGGridContainer& other)
     m_channelCursor(other.m_channelCursor),
     m_channelOffset(other.m_channelOffset),
     m_blocksPerPage(other.m_blocksPerPage),
+    m_minutesPerBlock(other.m_minutesPerBlock),
     m_blockCursor(other.m_blockCursor),
     m_blockOffset(other.m_blockOffset),
     m_blockTravelAxis(other.m_blockTravelAxis),
@@ -289,8 +289,7 @@ float CGUIEPGGridContainer::GetCurrentTimePositionOnPage() const
     return -1.0f;
 
   const CDateTimeSpan startDelta(CDateTime::GetUTCDateTime() - m_gridModel->GetGridStart());
-  const float fPos = (startDelta.GetSecondsTotal() * m_blockSize) /
-                         (CGUIEPGGridContainerModel::MINSPERBLOCK * 60) -
+  const float fPos = (startDelta.GetSecondsTotal() * m_blockSize) / (m_minutesPerBlock * 60) -
                      GetProgrammeScrollOffsetPos();
   return std::min(fPos, m_orientation == VERTICAL ? m_gridWidth : m_gridHeight);
 }
@@ -451,13 +450,13 @@ bool CGUIEPGGridContainer::OnAction(const CAction& action)
 
     case ACTION_NEXT_ITEM:
       // skip +12h
-      ScrollToBlockOffset(m_blockOffset + (12 * 60 / CGUIEPGGridContainerModel::MINSPERBLOCK));
+      ScrollToBlockOffset(m_blockOffset + (12 * 60 / m_minutesPerBlock));
       SetBlock(m_blockCursor);
       return true;
 
     case ACTION_PREV_ITEM:
       // skip -12h
-      ScrollToBlockOffset(m_blockOffset - (12 * 60 / CGUIEPGGridContainerModel::MINSPERBLOCK));
+      ScrollToBlockOffset(m_blockOffset - (12 * 60 / m_minutesPerBlock));
       SetBlock(m_blockCursor);
       return true;
 
@@ -876,6 +875,11 @@ int CGUIEPGGridContainer::GetProgrammeScrollOffset() const
     return m_blockOffset;
 }
 
+int CGUIEPGGridContainer::GetBlockScrollOffset() const
+{
+  return 60 / m_minutesPerBlock;
+}
+
 void CGUIEPGGridContainer::ChannelScroll(int amount)
 {
   // increase or decrease the vertical offset
@@ -939,10 +943,10 @@ void CGUIEPGGridContainer::OnUp()
       UpdateBlock();
       return;
     }
-    else if (m_blockCursor <= 0 && m_blockOffset && m_blockOffset - BLOCK_SCROLL_OFFSET >= 0)
+    else if (m_blockCursor <= 0 && m_blockOffset && m_blockOffset - GetBlockScrollOffset() >= 0)
     {
       // this is the first item on page
-      ScrollToBlockOffset(m_blockOffset - BLOCK_SCROLL_OFFSET);
+      ScrollToBlockOffset(m_blockOffset - GetBlockScrollOffset());
       UpdateBlock();
       return;
     }
@@ -993,10 +997,10 @@ void CGUIEPGGridContainer::OnDown()
     }
     else if ((m_blockOffset != m_gridModel->GridItemsSize() - m_blocksPerPage) &&
              m_gridModel->GridItemsSize() > m_blocksPerPage &&
-             m_blockOffset + BLOCK_SCROLL_OFFSET < m_gridModel->GetLastBlock())
+             m_blockOffset + GetBlockScrollOffset() < m_gridModel->GetLastBlock())
     {
       // this is the last item on page
-      ScrollToBlockOffset(m_blockOffset + BLOCK_SCROLL_OFFSET);
+      ScrollToBlockOffset(m_blockOffset + GetBlockScrollOffset());
       UpdateBlock();
       return;
     }
@@ -1020,10 +1024,10 @@ void CGUIEPGGridContainer::OnLeft()
       UpdateBlock();
       return;
     }
-    else if (m_blockCursor <= 0 && m_blockOffset && m_blockOffset - BLOCK_SCROLL_OFFSET >= 0)
+    else if (m_blockCursor <= 0 && m_blockOffset && m_blockOffset - GetBlockScrollOffset() >= 0)
     {
       // this is the first item on page
-      ScrollToBlockOffset(m_blockOffset - BLOCK_SCROLL_OFFSET);
+      ScrollToBlockOffset(m_blockOffset - GetBlockScrollOffset());
       UpdateBlock();
       return;
     }
@@ -1076,10 +1080,10 @@ void CGUIEPGGridContainer::OnRight()
     }
     else if ((m_blockOffset != m_gridModel->GridItemsSize() - m_blocksPerPage) &&
              m_gridModel->GridItemsSize() > m_blocksPerPage &&
-             m_blockOffset + BLOCK_SCROLL_OFFSET < m_gridModel->GetLastBlock())
+             m_blockOffset + GetBlockScrollOffset() < m_gridModel->GetLastBlock())
     {
       // this is the last item on page
-      ScrollToBlockOffset(m_blockOffset + BLOCK_SCROLL_OFFSET);
+      ScrollToBlockOffset(m_blockOffset + GetBlockScrollOffset());
       UpdateBlock();
       return;
     }
@@ -1830,6 +1834,7 @@ void CGUIEPGGridContainer::SetTimelineItems(const std::unique_ptr<CFileItemList>
   int iFirstChannel;
   int iChannelsPerPage;
   int iBlocksPerPage;
+  unsigned int minutesPerBlock{DEFAULT_MINUTES_PER_BLOCK};
   int iFirstBlock;
   float fBlockSize;
   {
@@ -1840,6 +1845,7 @@ void CGUIEPGGridContainer::SetTimelineItems(const std::unique_ptr<CFileItemList>
     iChannelsPerPage = m_channelsPerPage;
     iFirstBlock = m_blockOffset;
     iBlocksPerPage = m_blocksPerPage;
+    minutesPerBlock = m_minutesPerBlock;
     fBlockSize = m_blockSize;
   }
 
@@ -1847,7 +1853,8 @@ void CGUIEPGGridContainer::SetTimelineItems(const std::unique_ptr<CFileItemList>
   std::unique_ptr<CGUIEPGGridContainerModel> newUpdatedGridModel(new CGUIEPGGridContainerModel);
 
   newUpdatedGridModel->Initialize(items, gridStart, gridEnd, iFirstChannel, iChannelsPerPage,
-                                  iFirstBlock, iBlocksPerPage, iRulerUnit, fBlockSize);
+                                  iFirstBlock, iBlocksPerPage, minutesPerBlock, iRulerUnit,
+                                  fBlockSize);
   {
     std::unique_lock<CCriticalSection> lock(m_critSection);
 
