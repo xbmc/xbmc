@@ -451,14 +451,16 @@ bool StringUtils::EqualsNoCase(const char *s1, const char *s2)
   char c2; // we need only one char outside the loop
   do
   {
-    const char c1 = *s1++; // const local variable should help compiler to optimize
-    c2 = *s2++;
+    const char c1 = *s1; // const local variable should help compiler to optimize
+    c2 = *s2;
     if (c1 != c2 && ::tolower(c1) != ::tolower(c2))
     {
       // This includes the possibility that one of the characters is the
       // null-terminator, which implies a string mismatch.
       return false;
     }
+    s1++;
+    s2++;
   } while (c2 != '\0'); // At this point, we know c1 == c2, so there's no need
       // to test them both.
   return true;
@@ -746,7 +748,7 @@ bool StringUtils::EndsWithNoCase(const std::string& str1, const std::string& str
   const char* s2 = str2.c_str();
   while (*s2 != '\0')
   {
-    if (::tolower(*s1) != ::tolower(*s2))
+    if (*s1 != *s2 && ::tolower(*s1) != ::tolower(*s2))
       return false;
     s1++;
     s2++;
@@ -762,7 +764,7 @@ bool StringUtils::EndsWithNoCase(const std::string& str1, const char* s2)
   const char* s1 = str1.c_str() + str1.size() - len2;
   while (*s2 != '\0')
   {
-    if (::tolower(*s1) != ::tolower(*s2))
+    if (*s1 != *s2 && ::tolower(*s1) != ::tolower(*s2))
       return false;
     s1++;
     s2++;
