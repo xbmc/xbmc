@@ -56,7 +56,7 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(int parentID,
                                            const CTextureInfo& progressIndicatorTexture)
   : IGUIContainer(parentID, controlID, posX, posY, width, height),
     m_orientation(orientation),
-    m_rulerUnit(rulerUnit),
+    m_rulerUnit(rulerUnit * MINUTES_PER_RULER_UNIT / minutesPerTimeBlock),
     m_blocksPerPage(timeBlocks),
     m_minutesPerBlock(minutesPerTimeBlock),
     m_cacheChannelItems(preloadItems),

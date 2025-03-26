@@ -40,6 +40,7 @@ class CGUIEPGGridContainer : public IGUIContainer
 {
 public:
   static constexpr unsigned int DEFAULT_MINUTES_PER_BLOCK{5};
+  static constexpr unsigned int MINUTES_PER_RULER_UNIT{5};
 
   CGUIEPGGridContainer(int parentID,
                        int controlID,
