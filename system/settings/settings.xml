@@ -4127,7 +4127,7 @@
           <requirement>HAVE_AMCODEC</requirement>
           <visible>false</visible>
           <level>2</level>
-          <default>-4</default>
+          <default>-1</default>
           <dependencies>
             <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
             <dependency type="visible" setting="coreelec.amlogic.dolbyvision.type" operator="!is">0</dependency>
@@ -4287,7 +4287,7 @@
           <level>2</level>
           <default>0</default>
           <dependencies>
-            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>            
+            <dependency type="visible" setting="coreelec.amlogic.dolbyvision.mode" operator="!is">2</dependency>
           </dependencies>
           <constraints>
             <options>
