@@ -520,8 +520,8 @@ unsigned int aml_dv_on(unsigned int mode)
 
   enum DV_TYPE dv_type(aml_dv_type());
 
-  // set the HDR for LLDV if DV_TYPE_PLAYER_LED_HDR.
-  CSysfsPath("/sys/module/amdolby_vision/parameters/dolby_vision_hdr_for_lldv", (dv_type == DV_TYPE_PLAYER_LED_HDR) ? 'Y' : 'N');
+  // set the HDR for DV-LL if DV_TYPE_PLAYER_LED_HDR.
+  CSysfsPath("/sys/module/amdolby_vision/parameters/dolby_vision_hdr_for_dv_ll", (dv_type == DV_TYPE_PLAYER_LED_HDR) ? 'Y' : 'N');
 
   // setup display led or player led
   CSysfsPath dolby_vision_flags{"/sys/module/amdolby_vision/parameters/dolby_vision_flags"};
