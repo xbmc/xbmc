@@ -1258,21 +1258,21 @@ void CRenderManager::PrepareNextRender()
     combined = true;
   }
 
-  if (renderPts >= nextFramePts || m_forceNext)
+  if ((renderPts >= nextFramePts) || m_forceNext)
   {
     // push back present source index before other lates to keep order
     if (m_presentstarted) m_discard.push_back(m_presentsource);
 
     double diff = (renderPts - nextFramePts);
-    while (diff > 62000 && m_queued.size() > 2)
+    while ((diff > 62000) && (m_queued.size() > 2))
     {
-      // skip late frames if possible; if the queue is almost empty, we don't skip
+      // skip late frames (over 62ms) if possible; if the queue is almost empty, we don't skip
       // even if we should to avoid emptying the queue too fast
       int late = m_queued.front();
       m_queued.pop_front();
 
       m_discard.push_back(late);
-      m_QueueSkip++;
+      if (m_dataCacheCore.GetSpeed() == 1.0f) m_QueueSkip++;
 
       diff = (renderPts - m_Queue[m_queued.front()].pts);
     }
