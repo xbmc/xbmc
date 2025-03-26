@@ -986,9 +986,6 @@ void CPVRGUIActionsTimers::AnnounceReminder(const std::shared_ptr<CPVRTimerInfoT
 
   dialog->Close();
 
-  // Disable the timer. No further announcements needed.
-  timer->SetState(PVR_TIMER_STATE_DISABLED);
-
   bool bAutoClosed = (iRemaining <= 0);
   bool bSwitch = (result == CHOICE_SWITCH);
   bool bRecord = (result == CHOICE_RECORD);
@@ -1066,9 +1063,16 @@ void CPVRGUIActionsTimers::AnnounceReminders() const
   std::shared_ptr<CPVRTimerInfoTag> timer{timers->GetNextReminderToAnnnounce()};
   while (timer)
   {
-    // No announcements for currently playing channel.
-    if (!playbackState->IsPlayingChannel(timer->Channel()))
+    if (playbackState->IsPlayingChannel(timer->Channel()))
+    {
+      // No announcements for currently playing channel, but reschedule
+      // for potential future announcement (e.g. after channel switch).
+      timer->SetState(PVR_TIMER_STATE_SCHEDULED);
+    }
+    else
+    {
       AnnounceReminder(timer);
+    }
 
     timer = timers->GetNextReminderToAnnnounce();
   }
