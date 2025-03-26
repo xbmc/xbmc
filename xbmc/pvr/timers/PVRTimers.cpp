@@ -150,6 +150,16 @@ void CPVRTimers::Stop()
   CServiceBroker::GetPVRManager().Events().Unsubscribe(this);
 }
 
+void CPVRTimers::OnSystemSleep()
+{
+  m_suspended = true;
+}
+
+void CPVRTimers::OnSystemWake()
+{
+  m_suspended = false;
+}
+
 bool CPVRTimers::UpdateFromClients(const std::vector<std::shared_ptr<CPVRClient>>& clients)
 {
   {
@@ -173,6 +183,12 @@ void CPVRTimers::Process()
 {
   while (!m_bStop)
   {
+    if (m_suspended)
+    {
+      CThread::Sleep(10s);
+      continue;
+    }
+
     // update all timers not owned by a client (e.g. reminders)
     UpdateEntries(MAX_NOTIFICATION_DELAY.count());
 

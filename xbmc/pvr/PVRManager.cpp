@@ -528,6 +528,12 @@ void CPVRManager::Process()
 
   while (IsStarted() && m_addons->HasCreatedClients() && !bRestart)
   {
+    if (m_suspended)
+    {
+      CThread::Sleep(1s);
+      continue;
+    }
+
     // In case any new client connected, load from db and fetch data update from new client(s)
     UpdateComponents(ManagerState::STATE_STARTED);
 
@@ -635,12 +641,16 @@ void CPVRManager::OnSleep()
   SetWakeupCommand();
 
   m_epgContainer->OnSystemSleep();
+  m_timers->OnSystemSleep();
   m_addons->OnSystemSleep();
+  m_suspended = true;
 }
 
 void CPVRManager::OnWake()
 {
+  m_suspended = false;
   m_addons->OnSystemWake();
+  m_timers->OnSystemWake();
   m_epgContainer->OnSystemWake();
 
   PublishEvent(PVREvent::SystemWake);
