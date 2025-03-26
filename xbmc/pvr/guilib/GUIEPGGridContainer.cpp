@@ -56,7 +56,7 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(int parentID,
                                            const CTextureInfo& progressIndicatorTexture)
   : IGUIContainer(parentID, controlID, posX, posY, width, height),
     m_orientation(orientation),
-    m_rulerUnit(rulerUnit * MINUTES_PER_RULER_UNIT / minutesPerTimeBlock),
+    m_blocksPerRulerItem(rulerUnit * MINUTES_PER_RULER_UNIT / minutesPerTimeBlock),
     m_blocksPerPage(timeBlocks),
     m_minutesPerBlock(minutesPerTimeBlock),
     m_cacheChannelItems(preloadItems),
@@ -87,7 +87,7 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(const CGUIEPGGridContainer& other)
     m_rulerLayout(other.m_rulerLayout),
     m_rulerDateLayout(other.m_rulerDateLayout),
     m_pageControl(other.m_pageControl),
-    m_rulerUnit(other.m_rulerUnit),
+    m_blocksPerRulerItem(other.m_blocksPerRulerItem),
     m_channelsPerPage(other.m_channelsPerPage),
     m_programmesPerPage(other.m_programmesPerPage),
     m_channelCursor(other.m_channelCursor),
@@ -1830,7 +1830,7 @@ void CGUIEPGGridContainer::SetTimelineItems(const std::unique_ptr<CFileItemList>
                                             const CDateTime& gridStart,
                                             const CDateTime& gridEnd)
 {
-  int iRulerUnit;
+  int blocksPerRulerItem{MINUTES_PER_RULER_UNIT};
   int iFirstChannel;
   int iChannelsPerPage;
   int iBlocksPerPage;
@@ -1840,7 +1840,7 @@ void CGUIEPGGridContainer::SetTimelineItems(const std::unique_ptr<CFileItemList>
   {
     std::unique_lock<CCriticalSection> lock(m_critSection);
 
-    iRulerUnit = m_rulerUnit;
+    blocksPerRulerItem = m_blocksPerRulerItem;
     iFirstChannel = m_channelOffset;
     iChannelsPerPage = m_channelsPerPage;
     iFirstBlock = m_blockOffset;
@@ -1853,7 +1853,7 @@ void CGUIEPGGridContainer::SetTimelineItems(const std::unique_ptr<CFileItemList>
   std::unique_ptr<CGUIEPGGridContainerModel> newUpdatedGridModel(new CGUIEPGGridContainerModel);
 
   newUpdatedGridModel->Initialize(items, gridStart, gridEnd, iFirstChannel, iChannelsPerPage,
-                                  iFirstBlock, iBlocksPerPage, minutesPerBlock, iRulerUnit,
+                                  iFirstBlock, iBlocksPerPage, minutesPerBlock, blocksPerRulerItem,
                                   fBlockSize);
   {
     std::unique_lock<CCriticalSection> lock(m_critSection);
@@ -1946,7 +1946,7 @@ void CGUIEPGGridContainer::UpdateLayout()
     m_gridWidth = m_width - m_channelWidth;
     m_gridHeight = m_height - m_rulerHeight - m_rulerDateHeight;
     m_blockSize = m_gridWidth / m_blocksPerPage;
-    m_rulerWidth = m_rulerUnit * m_blockSize;
+    m_rulerWidth = m_blocksPerRulerItem * m_blockSize;
     m_channelPosX = m_posX;
     m_channelPosY = m_posY + m_rulerHeight + m_rulerDateHeight;
     m_rulerPosX = m_posX + m_channelWidth;
@@ -1965,7 +1965,7 @@ void CGUIEPGGridContainer::UpdateLayout()
     m_gridWidth = m_width - m_rulerWidth;
     m_gridHeight = m_height - m_channelHeight - m_rulerDateHeight;
     m_blockSize = m_gridHeight / m_blocksPerPage;
-    m_rulerHeight = m_rulerUnit * m_blockSize;
+    m_rulerHeight = m_blocksPerRulerItem * m_blockSize;
     m_channelPosX = m_posX + m_rulerWidth;
     m_channelPosY = m_posY + m_rulerDateHeight;
     m_rulerPosX = m_posX;
@@ -2300,7 +2300,7 @@ void CGUIEPGGridContainer::HandleRulerDate(bool bRender,
   else
   {
     const int rulerOffset = GetProgrammeScrollOffset();
-    item->SetLabel(m_gridModel->GetRulerItem(rulerOffset / m_rulerUnit + 1)->GetLabel2());
+    item->SetLabel(m_gridModel->GetRulerItem(rulerOffset / m_blocksPerRulerItem + 1)->GetLabel2());
 
     CFileItemPtr lastitem;
     ProcessItem(m_posX, m_posY, item, lastitem, false, m_rulerDateLayout, m_rulerDateLayout,
@@ -2353,7 +2353,8 @@ void CGUIEPGGridContainer::HandleRuler(bool bRender,
   {
     if (!m_rulerDateLayout)
     {
-      item->SetLabel(m_gridModel->GetRulerItem(rulerOffset / m_rulerUnit + 1)->GetLabel2());
+      item->SetLabel(
+          m_gridModel->GetRulerItem(rulerOffset / m_blocksPerRulerItem + 1)->GetLabel2());
       ProcessItem(m_posX, m_posY, item, lastitem, false, m_rulerLayout, m_rulerLayout, currentTime,
                   dirtyregions, m_channelWidth);
     }
@@ -2362,8 +2363,8 @@ void CGUIEPGGridContainer::HandleRuler(bool bRender,
 
     // Free memory not used on screen
     if (m_gridModel->RulerItemsSize() > m_blocksPerPage + cacheBeforeRuler + cacheAfterRuler)
-      m_gridModel->FreeRulerMemory(rulerOffset / m_rulerUnit + 1 - cacheBeforeRuler,
-                                   rulerOffset / m_rulerUnit + 1 + m_blocksPerPage - 1 +
+      m_gridModel->FreeRulerMemory(rulerOffset / m_blocksPerRulerItem + 1 - cacheBeforeRuler,
+                                   rulerOffset / m_blocksPerRulerItem + 1 + m_blocksPerPage - 1 +
                                        cacheAfterRuler);
   }
 
@@ -2387,12 +2388,12 @@ void CGUIEPGGridContainer::HandleRuler(bool bRender,
   pos += drawOffset;
   end += cacheAfterRuler * m_rulerLayout->Size(m_orientation == VERTICAL ? HORIZONTAL : VERTICAL);
 
-  if (rulerOffset % m_rulerUnit != 0)
+  if (rulerOffset % m_blocksPerRulerItem != 0)
   {
     /* first ruler marker starts before current view */
     int startBlock = rulerOffset - 1;
 
-    while (startBlock % m_rulerUnit != 0)
+    while (startBlock % m_blocksPerRulerItem != 0)
       startBlock--;
 
     int missingSection = rulerOffset - startBlock;
@@ -2400,9 +2401,9 @@ void CGUIEPGGridContainer::HandleRuler(bool bRender,
     pos -= missingSection * m_blockSize;
   }
 
-  while (pos < end && (rulerOffset / m_rulerUnit + 1) < m_gridModel->RulerItemsSize())
+  while (pos < end && (rulerOffset / m_blocksPerRulerItem + 1) < m_gridModel->RulerItemsSize())
   {
-    item = m_gridModel->GetRulerItem(rulerOffset / m_rulerUnit + 1);
+    item = m_gridModel->GetRulerItem(rulerOffset / m_blocksPerRulerItem + 1);
 
     if (m_orientation == VERTICAL)
     {
@@ -2429,7 +2430,7 @@ void CGUIEPGGridContainer::HandleRuler(bool bRender,
       pos += m_rulerHeight;
     }
 
-    rulerOffset += m_rulerUnit;
+    rulerOffset += m_blocksPerRulerItem;
   }
 
   if (bRender)

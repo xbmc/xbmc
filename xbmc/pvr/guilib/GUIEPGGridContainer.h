@@ -258,7 +258,7 @@ private:
 
   int GetBlockScrollOffset() const;
 
-  int m_rulerUnit; //! number of blocks that makes up one element of the ruler
+  int m_blocksPerRulerItem; //! number of blocks that makes up one element of the ruler
   int m_channelsPerPage = 0;
   int m_programmesPerPage = 0;
   int m_channelCursor = 0;

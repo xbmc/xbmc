@@ -73,7 +73,7 @@ void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>&
                                            int iFirstBlock,
                                            int iBlocksPerPage,
                                            unsigned int minutesPerBlock,
-                                           int iRulerUnit,
+                                           int blocksPerRulerItem,
                                            float fBlockSize)
 {
   if (!m_channelItems.empty())
@@ -134,7 +134,7 @@ void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>&
   rulerItem->SetProperty("DateLabel", true);
   m_rulerItems.emplace_back(rulerItem);
 
-  const CDateTimeSpan unit(0, 0, iRulerUnit * minutesPerBlock, 0);
+  const CDateTimeSpan unit(0, 0, blocksPerRulerItem * minutesPerBlock, 0);
   for (; ruler < rulerEnd; ruler += unit)
   {
     rulerItem = std::make_shared<CFileItem>(ruler.GetAsLocalizedTime("", false));

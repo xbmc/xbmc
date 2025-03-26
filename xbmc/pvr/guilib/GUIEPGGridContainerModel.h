@@ -57,7 +57,7 @@ public:
                   int iFirstBlock,
                   int iBlocksPerPage,
                   unsigned int minutesPerBlock,
-                  int iRulerUnit,
+                  int blocksPerRulerItem,
                   float fBlockSize);
   void SetInvalid();
 
