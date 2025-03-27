@@ -640,18 +640,18 @@ void CPVRManager::OnSleep()
 
   SetWakeupCommand();
 
+  CPowerState::OnSleep();
   m_epgContainer->OnSleep();
   m_timers->OnSleep();
   m_addons->OnSleep();
-  CPowerState::OnSleep();
 }
 
 void CPVRManager::OnWake()
 {
-  CPowerState::OnWake();
   m_addons->OnWake();
   m_timers->OnWake();
   m_epgContainer->OnWake();
+  CPowerState::OnWake();
 
   PublishEvent(PVREvent::SystemWake);
 
