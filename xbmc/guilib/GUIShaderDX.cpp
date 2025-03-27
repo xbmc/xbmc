@@ -279,21 +279,17 @@ void CGUIShaderDX::SetViewPort(D3D11_VIEWPORT viewPort)
   }
 }
 
-void CGUIShaderDX::Project(float &x, float &y, float &z)
+void CGUIShaderDX::Project(float& x, float& y, float& z) const
 {
-#if defined(_XM_SSE_INTRINSICS_) && !defined(_XM_NO_INTRINSICS_)
-  XMVECTOR vLocation = { x, y, z };
-#elif defined(_M_ARM64) && defined(_XM_ARM_NEON_INTRINSICS_) && !defined(_XM_NO_INTRINSICS_)
-  XMVECTOR vLocation = {.n128_f32{x, y, z}};
-#elif defined(_XM_ARM_NEON_INTRINSICS_) && !defined(_XM_NO_INTRINSICS_)
-  XMVECTOR vLocation = { x, y };
-#endif
-  XMVECTOR vScreenCoord = XMVector3Project(vLocation, m_cbViewPort.TopLeftX, m_cbViewPort.TopLeftY,
-                                           m_cbViewPort.Width, m_cbViewPort.Height, 0, 1,
-                                           m_cbWorldViewProj.projection, m_cbWorldViewProj.view, m_cbWorldViewProj.world);
-  x = XMVectorGetX(vScreenCoord);
-  y = XMVectorGetY(vScreenCoord);
-  z = 0;
+  const XMVECTOR V = XMVectorSet(x, y, z, .0f);
+
+  const XMVECTOR screenCoord = XMVector3Project(
+      V, m_cbViewPort.TopLeftX, m_cbViewPort.TopLeftY, m_cbViewPort.Width, m_cbViewPort.Height,
+      0.0f, 1.0f, m_cbWorldViewProj.projection, m_cbWorldViewProj.view, m_cbWorldViewProj.world);
+
+  x = XMVectorGetX(screenCoord);
+  y = XMVectorGetY(screenCoord);
+  z = .0f;
 }
 
 void XM_CALLCONV CGUIShaderDX::SetWVP(const XMMATRIX &w, const XMMATRIX &v, const XMMATRIX &p)
