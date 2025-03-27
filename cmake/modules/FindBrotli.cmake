@@ -34,9 +34,11 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
       set(_PREFIX "lib")
     endif()
 
-    set(BROTLICOMMON_LIBRARY "${DEP_LOCATION}/lib/${_PREFIX}brotlicommon.${_LIBEXT}")
+    set(BROTLICOMMON_LIBRARY_RELEASE "${DEP_LOCATION}/lib/${_PREFIX}brotlicommon.${_LIBEXT}")
+    set(BROTLIDEC_LIBRARY_RELEASE "${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY}")
 
-    set(BROTLIDEC_LIBRARY "${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY}")
+    # Todo: debug postfix libs for windows
+    #       Will require patching nghttp2, as they do not use debug postfix for differentiation
 
   endmacro()
 
@@ -52,7 +54,7 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
                       ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 
   # Check for existing Brotli. If version >= BROTLI-VERSION file version, dont build
-  if(brotli2_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND Brotli_FIND_REQUIRED)
+  if(brotli_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND Brotli_FIND_REQUIRED)
     # Build lib
     buildbrotli()
   else()
@@ -62,7 +64,9 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
       # convert this back to either DEBUG/RELEASE or just RELEASE
       # we only do this because we use find_package_handle_standard_args for config time output
       # and it isnt capable of handling TARGETS, so we have to extract the info
-      foreach(_target "brotli::brotlicommon;brotli::brotlidec")
+      set(brotli_targets brotli::brotlicommon
+                         brotli::brotlidec)
+      foreach(_target ${brotli_targets})
 
         string(REPLACE "brotli::" "" _target_name ${_target})
         string(TOUPPER ${_target_name} _target_name_UPPER)
@@ -102,8 +106,12 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
   endif()
 
   include(SelectLibraryConfigurations)
-  select_library_configurations(BROTLI)
-  unset(BROTLI_LIBRARIES)
+  select_library_configurations(BROTLIDEC)
+  unset(BROTLIDEC_LIBRARIES)
+
+  include(SelectLibraryConfigurations)
+  select_library_configurations(BROTLICOMMON)
+  unset(BROTLICOMMON_LIBRARIES)
 
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(Brotli
