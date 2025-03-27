@@ -12,22 +12,11 @@ if(NOT TARGET LibDvdCSS::LibDvdCSS)
 
   set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC libdvdcss)
 
-  # We require this due to the odd nature of github URL's compared to our other tarball
-  # mirror system. If User sets LIBDVDCSS_URL or libdvdcss_URL, allow get_filename_component in SETUP_BUILD_VARS
-  if(LIBDVDCSS_URL OR libdvdcss_URL)
-    if(libdvdcss_URL)
-      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL ${libdvdcss_URL})
-    else()
-      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL ${LIBDVDCSS_URL})
-    endif()
-    set(LIBDVDCSS_URL_PROVIDED TRUE)
-  endif()
-
   SETUP_BUILD_VARS()
 
-  if(NOT LIBDVDCSS_URL_PROVIDED)
-    # override LIBDVDCSS_URL_PROVIDED due to tar naming when retrieved from github release
-    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BASE_URL}/archive/${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER}.tar.gz)
+  # Legacy support for lowercase user provided URL override
+  if(libdvdcss_URL)
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL ${libdvdcss_URL})
   endif()
 
   set(LIBDVDCSS_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})

@@ -17,22 +17,11 @@ if(NOT TARGET LibDvdRead::LibDvdRead)
 
   set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC libdvdread)
 
-  # We require this due to the odd nature of github URL's compared to our other tarball
-  # mirror system. If User sets LIBDVDREAD_URL or libdvdread_URL, allow get_filename_component in SETUP_BUILD_VARS
-  if(LIBDVDREAD_URL OR libdvdread_URL)
-    if(libdvdread_URL)
-      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL ${libdvdread_URL})
-    else()
-      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL ${LIBDVDREAD_URL})
-    endif()
-    set(LIBDVDREAD_URL_PROVIDED TRUE)
-  endif()
-
   SETUP_BUILD_VARS()
 
-  if(NOT LIBDVDREAD_URL_PROVIDED)
-    # override LIBDVDREAD_URL due to tar naming when retrieved from github release
-    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BASE_URL}/archive/${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER}.tar.gz)
+  # Legacy support for lowercase user provided URL override
+  if(libdvdread_URL)
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_URL ${libdvdread_URL})
   endif()
 
   set(LIBDVDREAD_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
