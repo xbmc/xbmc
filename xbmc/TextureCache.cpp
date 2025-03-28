@@ -433,10 +433,17 @@ bool CTextureCache::CleanAllUnusedImagesJob(CGUIDialogProgress* progress)
 
 void CTextureCache::CleanTimer()
 {
+  if (IsSleeping())
+  {
+    CLog::LogF(LOGDEBUG, "Texture cleanup postponed. System is sleeping.");
+    m_cleanTimer.Start(1h);
+    return;
+  }
+
   CServiceBroker::GetJobManager()->Submit(
       [this]()
       {
-        auto next = m_cleaningInProgress.test_and_set() ? std::chrono::hours(1) : ScanOldestCache();
+        auto next = m_cleaningInProgress.test_and_set() ? 1h : ScanOldestCache();
         m_cleaningInProgress.clear();
         m_cleanTimer.Start(next);
       },

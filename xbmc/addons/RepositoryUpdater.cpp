@@ -227,6 +227,12 @@ static void SetProgressIndicator(CRepositoryUpdateJob* job)
 void CRepositoryUpdater::CheckForUpdates(const ADDON::RepositoryPtr& repo, bool showProgress)
 {
   std::unique_lock<CCriticalSection> lock(m_criticalSection);
+  if (IsSleeping())
+  {
+    CLog::LogF(LOGDEBUG, "Repository update check postponed. System is sleeping.");
+    return;
+  }
+
   auto job = std::find_if(m_jobs.begin(), m_jobs.end(),
       [&](CRepositoryUpdateJob* job){ return job->GetAddon()->ID() == repo->ID(); });
 

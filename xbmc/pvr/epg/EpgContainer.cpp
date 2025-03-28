@@ -318,7 +318,7 @@ void CPVREpgContainer::Process()
     CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNow);
     {
       std::unique_lock<CCriticalSection> lock(m_critSection);
-      bUpdateEpg = (iNow >= m_iNextEpgUpdate) && !m_bSuspended;
+      bUpdateEpg = (iNow >= m_iNextEpgUpdate) && IsAwake();
       iLastEpgCleanup = m_iLastEpgCleanup;
     }
 
@@ -327,7 +327,7 @@ void CPVREpgContainer::Process()
       m_bIsInitialising = false;
 
     /* clean up old entries */
-    if (!m_bStop && !m_bSuspended &&
+    if (!m_bStop && IsAwake() &&
         iNow >= iLastEpgCleanup + CServiceBroker::GetSettingsComponent()
                                       ->GetAdvancedSettings()
                                       ->m_iEpgCleanupInterval)
@@ -335,7 +335,7 @@ void CPVREpgContainer::Process()
 
     /* check for pending manual EPG updates */
 
-    while (!m_bStop && !m_bSuspended)
+    while (!m_bStop && IsAwake())
     {
       CEpgUpdateRequest request;
       std::shared_ptr<CPVREpg> epg;
@@ -362,7 +362,7 @@ void CPVREpgContainer::Process()
 
     /* check for pending EPG tag changes */
 
-    if (!m_bStop && !m_bSuspended)
+    if (!m_bStop && IsAwake())
     {
       unsigned int iProcessed = 0;
       XbmcThreads::EndTime<> processTimeslice(
@@ -401,7 +401,7 @@ void CPVREpgContainer::Process()
       }
     }
 
-    if (!m_bStop && !m_bSuspended)
+    if (!m_bStop && IsAwake())
     {
       bool bHasPendingUpdates = false;
 
@@ -921,16 +921,6 @@ void CPVREpgContainer::OnPlaybackStopped()
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   m_bPlaying = false;
-}
-
-void CPVREpgContainer::OnSystemSleep()
-{
-  m_bSuspended = true;
-}
-
-void CPVREpgContainer::OnSystemWake()
-{
-  m_bSuspended = false;
 }
 
 int CPVREpgContainer::CleanupCachedImages()
