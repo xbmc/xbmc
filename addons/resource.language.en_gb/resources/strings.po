@@ -14545,7 +14545,25 @@ msgctxt "#21347"
 msgid "MIME type: \"{0:s}\""
 msgstr ""
 
-#empty strings from id 21348 to 21357
+#. Used to show a special in episode list, eg. 'Special 33 - The Interview'
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#21348"
+msgid "Special {0:d} - {1:s}"
+msgstr ""
+
+#. Used to show an episode in episode list, eg. 'Episode 4 - The Return'
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#21349"
+msgid "Episode {0:d} - {1:s}"
+msgstr ""
+
+#. Used to show a special in episode list
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#21350"
+msgid "Special"
+msgstr ""
+
+#empty strings from id 21351 to 21357
 
 #: system/settings/settings.xml
 msgctxt "#21358"
