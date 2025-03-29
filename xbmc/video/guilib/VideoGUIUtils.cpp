@@ -148,7 +148,9 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
       const std::string mediapath = VIDEO::UTILS::GetOpticalMediaPath(*item);
       if (!mediapath.empty())
       {
-        m_queuedItems.Add(std::make_shared<CFileItem>(mediapath, false));
+        const auto newItem{std::make_shared<CFileItem>(mediapath, false)};
+        newItem->SetContainsMultipleEpisodes(item->ContainsMultipleEpisodes());
+        m_queuedItems.Add(newItem);
         return;
       }
     }

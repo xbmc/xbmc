@@ -6,12 +6,12 @@
  *  See LICENSES/README.md for more information.
  */
 
-
 #include "GUIDialogSimpleMenu.h"
 
 #include "FileItem.h"
 #include "FileItemList.h"
 #include "GUIDialogSelect.h"
+#include "GUIDialogYesNo.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "dialogs/GUIDialogBusy.h"
@@ -22,12 +22,16 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/IRunnable.h"
-#include "utils/FileUtils.h"
+#include "utils/RegExp.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
-#include "video/VideoFileItemClassify.h"
-#include "video/VideoInfoTag.h"
+#include "video/VideoDatabase.h"
+
+#include <memory>
+#include <ranges>
+#include <vector>
 
 using namespace KODI;
 
@@ -36,85 +40,84 @@ namespace
 class CGetDirectoryItems : public IRunnable
 {
 public:
-  CGetDirectoryItems(const std::string &path, CFileItemList &items, const XFILE::CDirectory::CHints &hints)
-  : m_path(path), m_items(items), m_hints(hints)
+  CGetDirectoryItems(const std::string& path,
+                     CFileItemList& items,
+                     const XFILE::CDirectory::CHints& hints)
+    : m_path(path), m_items(items), m_hints(hints)
   {
   }
   void Run() override
   {
     m_result = XFILE::CDirectory::GetDirectory(m_path, m_items, m_hints);
   }
-  bool m_result;
+  bool m_result{false};
+
 protected:
   std::string m_path;
   CFileItemList &m_items;
   XFILE::CDirectory::CHints m_hints;
 };
-}
+} // namespace
 
-bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item, bool forceSelection /* = false */)
+bool CGUIDialogSimpleMenu::GetOrShowPlaylistSelection(
+    CFileItem& item,
+    PLAYLIST::ExcludeUsedPlaylists excludeUsedPlaylists /* = DONT_EXCLUDE_USED_PLAYLISTS */)
 {
-  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_DISC_PLAYBACK) != BD_PLAYBACK_SIMPLE_MENU)
+  const bool forceSelection{item.HasProperty("force_playlist_selection") &&
+                            item.GetProperty("force_playlist_selection").asBoolean()};
+  if (!forceSelection && CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+                             CSettings::SETTING_DISC_PLAYBACK) != BD_PLAYBACK_SIMPLE_MENU)
     return true;
 
-  if (forceSelection && URIUtils::IsBlurayPath(item.GetDynPath()))
-  {
-    item.SetProperty("save_dyn_path", item.GetDynPath()); // save for screen refresh later
-    item.SetDynPath(URIUtils::GetBlurayFile(item.GetDynPath()));
-  }
+  const std::string originalDynPath{
+      item.GetDynPath()}; // Overwritten by dialog selection. Needed for screen refresh.
 
-  if (VIDEO::IsBDFile(item))
+  std::string directory{[&item, &originalDynPath]
+                        {
+                          if (item.GetVideoContentType() == VideoDbContentType::EPISODES)
+                          {
+                            if (item.ContainsMultipleEpisodes())
+                              return URIUtils::GetBlurayAllEpisodesPath(originalDynPath);
+                            const CVideoInfoTag* tag{item.GetVideoInfoTag()};
+                            return URIUtils::GetBlurayEpisodePath(originalDynPath, tag->m_iSeason,
+                                                                  tag->m_iEpisode);
+                          }
+                          return URIUtils::GetBlurayRootPath(originalDynPath);
+                        }()};
+
+  // Get playlists that are already used (to avoid duplicates in file table)
+  std::vector<CVideoDatabase::PlaylistInfo> usedPlaylists{};
+  if (excludeUsedPlaylists == PLAYLIST::ExcludeUsedPlaylists::EXCLUDE_USED_PLAYLISTS)
   {
-    std::string root = URIUtils::GetParentPath(item.GetDynPath());
-    URIUtils::RemoveSlashAtEnd(root);
-    if (URIUtils::GetFileName(root) == "BDMV")
+    CVideoDatabase database;
+    if (!database.Open())
     {
-      CURL url("bluray://");
-      url.SetHostName(URIUtils::GetParentPath(root));
-      url.SetFileName("root");
-      return ShowPlaySelection(item, url.Get());
+      CLog::LogF(LOGERROR, "Failed to open video database");
+      return false;
+    }
+    usedPlaylists = database.GetPlaylistsByPath(URIUtils::GetBlurayPlaylistPath(originalDynPath));
+
+    // If replacing existing playlist (FORCE_PLAYLIST_SELECTION), remove it from exclude list
+    // as user could choose the same playlist again
+    if (forceSelection)
+    {
+      CRegExp regex{true, CRegExp::autoUtf8, R"(\/(\d+).mpls$)"};
+      if (regex.RegFind(originalDynPath) != -1)
+      {
+        const int playlist{std::stoi(regex.GetMatch(1))};
+        std::erase_if(usedPlaylists, [&playlist](const CVideoDatabase::PlaylistInfo& p)
+                      { return p.playlist == playlist; });
+      }
     }
   }
 
-  if (item.IsDiscImage())
-  {
-    CURL url2("udf://");
-    url2.SetHostName(item.GetDynPath());
-    url2.SetFileName("BDMV/index.bdmv");
-    if (CFileUtils::Exists(url2.Get()))
-    {
-      url2.SetFileName("");
-
-      CURL url("bluray://");
-      url.SetHostName(url2.Get());
-      url.SetFileName("root");
-      return ShowPlaySelection(item, url.Get());
-    }
-  }
-  return true;
-}
-
-bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item, const std::string& directory)
-{
-
+  // Get items
   CFileItemList items;
+  if (!GetItems(item, items, directory))
+    return false;
 
-  if (!GetDirectoryItems(directory, items, XFILE::CDirectory::CHints()))
-  {
-    CLog::Log(LOGERROR,
-              "CGUIWindowVideoBase::ShowPlaySelection - Failed to get play directory for {}",
-              directory);
-    return true;
-  }
-
-  if (items.IsEmpty())
-  {
-    CLog::Log(LOGERROR, "CGUIWindowVideoBase::ShowPlaySelection - Failed to get any items {}",
-              directory);
-    return true;
-  }
-
-  CGUIDialogSelect* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
+  CGUIDialogSelect* dialog{CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
+      WINDOW_DIALOG_SELECT)};
   while (true)
   {
     dialog->Reset();
@@ -123,36 +126,83 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item, const std::string&
     dialog->SetUseDetails(true);
     dialog->Open();
 
-    CFileItemPtr item_new = dialog->GetSelectedFileItem();
+    const std::shared_ptr<CFileItem> item_new{dialog->GetSelectedFileItem()};
     if (!item_new || dialog->GetSelectedItem() < 0)
     {
-      CLog::Log(LOGDEBUG, "CGUIWindowVideoBase::ShowPlaySelection - User aborted {}", directory);
+      CLog::LogF(LOGDEBUG, "User aborted {}", directory);
       break;
     }
 
-    if (item_new->m_bIsFolder == false)
+    // If item is not folder (ie. all titles)
+    if (!item_new->m_bIsFolder && !item.ContainsMultipleEpisodes())
     {
-      std::string path;
-      if (item.HasProperty("save_dyn_path"))
-        path = item.GetProperty("save_dyn_path").asString();
-      else
-        path = item.GetDynPath(); // If not set above (choose playlist selected)
+      // See if already selected
+      if (!usedPlaylists.empty())
+      {
+        const auto& it{
+            std::ranges::find_if(usedPlaylists, [&item_new](const CVideoDatabase::PlaylistInfo& p)
+                                 { return p.playlist == item_new->GetVideoInfoTag()->m_iTrack; })};
+        if (it != usedPlaylists.end())
+        {
+          // Warn that this playlist is already associated with an episode
+          if (CGUIDialogYesNo::ShowAndGetInput(CVariant{559}, CVariant{25015}))
+          {
+            // Delink
+            CVideoDatabase database;
+            if (!database.Open())
+            {
+              CLog::LogF(LOGERROR, "Failed to open video database");
+              return false;
+            }
+
+            // Revert file to base file (BDMV/ISO)
+            const std::string base{URIUtils::GetBlurayFile(item.GetDynPath())};
+            database.BeginTransaction();
+            if (database.SetFileForMedia(base, VideoDbContentType::EPISODES, it->idMedia,
+                                         it->idFile))
+              database.CommitTransaction();
+            else
+              database.RollbackTransaction();
+          }
+          else
+            return false;
+        }
+      }
+
       item.SetDynPath(item_new->GetDynPath());
-      item.SetProperty("get_stream_details_from_player", true);
-      item.SetProperty("original_listitem_url", path);
+      item.GetVideoInfoTag()->m_streamDetails =
+          item_new->GetVideoInfoTag()
+              ->m_streamDetails; // Basic stream details from BLURAY_TITLE INFO
+      item.SetProperty("get_stream_details_from_player", true); // Overwrite when played
+      item.SetProperty("original_listitem_url", originalDynPath);
       return true;
     }
 
-    items.Clear();
-    if (!GetDirectoryItems(item_new->GetDynPath(), items, XFILE::CDirectory::CHints()) || items.IsEmpty())
-    {
-      CLog::Log(LOGERROR, "CGUIWindowVideoBase::ShowPlaySelection - Failed to get any items {}",
-                item_new->GetPath());
-      break;
-    }
+    if (!GetItems(item, items, item_new->GetDynPath())) // Get selected (usually all) titles
+      return true;
   }
 
   return false;
+}
+
+bool CGUIDialogSimpleMenu::GetItems(const CFileItem& item,
+                                    CFileItemList& items,
+                                    const std::string& directory)
+{
+  items.Clear();
+  if (!GetDirectoryItems(directory, items, XFILE::CDirectory::CHints()))
+  {
+    CLog::LogF(LOGERROR, "Failed to get play directory for {}", directory);
+    return false;
+  }
+
+  if (items.IsEmpty())
+  {
+    CLog::LogF(LOGERROR, "Failed to get any items in {}", directory);
+    return false;
+  }
+
+  return true;
 }
 
 bool CGUIDialogSimpleMenu::GetDirectoryItems(const std::string &path, CFileItemList &items,

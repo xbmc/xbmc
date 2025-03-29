@@ -3408,6 +3408,53 @@ bool CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
   return false;
 }
 
+std::vector<CVideoDatabase::PlaylistInfo> CVideoDatabase::GetPlaylistsByPath(
+    const std::string& path)
+{
+  std::vector<PlaylistInfo> playlists{};
+
+  try
+  {
+    if (nullptr == m_pDB)
+      return playlists;
+    if (nullptr == m_pDS)
+      return playlists;
+
+    const std::string strSQL{PrepareSQL(
+        "SELECT files.strFileName, files.idFile, episode.idEpisode, movie.idMovie FROM files "
+        "LEFT JOIN episode ON episode.idFile=files.idFile "
+        "LEFT JOIN movie ON movie.idFile=files.idFile "
+        "INNER JOIN path ON path.idPath=files.idPath "
+        "WHERE path.strPath='%s'",
+        path.c_str())};
+    m_pDS->query(strSQL);
+
+    while (!m_pDS->eof())
+    {
+      std::string filename{m_pDS->fv("files.strFilename").get_asString()};
+      if (StringUtils::EqualsNoCase(URIUtils::GetExtension(filename), ".mpls"))
+      {
+        filename.erase(filename.find_last_of('.')); // remove extension
+        PlaylistInfo playlistInfo{.playlist = std::stoi(filename),
+                                  .idFile = m_pDS->fv("files.idFile").get_asInt(),
+                                  .idMedia =
+                                      m_pDS->fv("episodes.idEpisode").get_asInt() +
+                                      m_pDS->fv("movie.idMovie").get_asInt()}; // One will be null
+        playlists.emplace_back(playlistInfo);
+      }
+      m_pDS->next();
+    }
+    m_pDS->close();
+
+    return playlists;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "failed - path {}", path);
+  }
+  return {};
+}
+
 //********************************************************************************************************************************
 void CVideoDatabase::GetFilePathById(int idMovie, std::string& filePath, VideoDbContentType iType)
 {
@@ -10067,6 +10114,35 @@ void CVideoDatabase::GetMusicVideosByName(const std::string& strSearch, CFileIte
   {
     CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strSQL);
   }
+}
+
+std::string CVideoDatabase::GetPlotByShowId(int idShow)
+{
+  std::string strSQL;
+
+  try
+  {
+    if (nullptr == m_pDB)
+      return "";
+    if (nullptr == m_pDS)
+      return "";
+
+    strSQL = PrepareSQL("SELECT idShow, c%02d FROM tvshow WHERE idShow = %i", VIDEODB_ID_TV_PLOT,
+                        idShow);
+    m_pDS->query(strSQL);
+
+    std::string plot{};
+    if (!m_pDS->eof())
+      plot = m_pDS->fv(1).get_asString();
+
+    m_pDS->close();
+    return plot;
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "({}) failed", strSQL);
+  }
+  return {};
 }
 
 void CVideoDatabase::GetEpisodesByPlot(const std::string& strSearch, CFileItemList& items)

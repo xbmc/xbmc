@@ -83,6 +83,13 @@
 
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
 
+#include <ctime>
+#include <iomanip>
+#include <memory>
+#include <random>
+#include <sstream>
+#include <vector>
+
 #include <fstrcmp.h>
 
 #ifdef HAS_OPTICAL_DRIVE
@@ -2457,4 +2464,49 @@ void CUtil::CopyUserDataIfNeeded(const std::string& strPath,
     std::string srcPath = URIUtils::AddFileToFolder("special://xbmc/userdata/", file);
     CFile::Copy(srcPath, destPath);
   }
+}
+
+std::string CUtil::HexToString(std::span<const uint8_t> buf, int count)
+{
+  std::stringstream ss;
+  ss << std::hex << std::setw(count) << std::setfill('0');
+  std::ranges::for_each(buf, [&](auto x) { ss << static_cast<int>(x); });
+  return ss.str();
+}
+
+std::string CUtil::HexToString(int num, int count)
+{
+  std::stringstream ss;
+  ss << std::hex << std::setw(count) << std::setfill('0') << num;
+  return ss.str();
+}
+
+unsigned int CUtil::GetDWord(const std::vector<char>& bytes, unsigned int offset)
+{
+  unsigned int result{0};
+  result |= (static_cast<unsigned char>(bytes[offset]) << 24);
+  result |= (static_cast<unsigned char>(bytes[offset + 1]) << 16);
+  result |= (static_cast<unsigned char>(bytes[offset + 2]) << 8);
+  result |= static_cast<unsigned char>(bytes[offset + 3]);
+  return result;
+}
+
+unsigned int CUtil::GetWord(const std::vector<char>& bytes, unsigned int offset)
+{
+  unsigned int result{0};
+  result |= (static_cast<unsigned char>(bytes[offset]) << 8);
+  result |= static_cast<unsigned char>(bytes[offset + 1]);
+  return result;
+}
+
+unsigned int CUtil::GetByte(const std::vector<char>& bytes, unsigned int offset)
+{
+  return static_cast<unsigned char>(bytes[offset]);
+}
+
+std::string CUtil::GetString(const std::vector<char>& bytes,
+                             unsigned int offset,
+                             unsigned int length)
+{
+  return std::string{bytes.begin() + offset, bytes.begin() + offset + length};
 }
