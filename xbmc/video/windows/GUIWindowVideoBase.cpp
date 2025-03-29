@@ -371,7 +371,10 @@ bool CGUIWindowVideoBase::ShowInfo(const CFileItemPtr& item2, const ScraperPtr& 
   bool bHasInfo=false;
 
   CVideoInfoTag movieDetails;
-  if (info)
+
+  //! @todo remove hack for non-unique videodb paths of multiple movie versions of same name
+  if (info && !(!item->m_bIsFolder && info->Content() == CONTENT_MOVIES &&
+                item->GetPath().starts_with(VIDEODB_PATH_VERSION_ROOT)))
   {
     m_database.Open(); // since we can be called from the music library
 
@@ -1470,8 +1473,7 @@ void CGUIWindowVideoBase::UpdateVideoVersionItems()
         }
 
         CVideoDbUrl itemUrl;
-        itemUrl.FromString(
-            StringUtils::Format("videodb://movies/videoversions/{}", videoVersionId));
+        itemUrl.FromString(StringUtils::Format("{}{}", VIDEODB_PATH_VERSION_ROOT, videoVersionId));
         itemUrl.AddOption("mediaid", item->GetVideoInfoTag()->m_iDbId);
         item->SetPath(itemUrl.ToString());
       }

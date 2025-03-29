@@ -12640,7 +12640,7 @@ bool CVideoDatabase::FillMovieItem(std::unique_ptr<Dataset>& dataset, int movieI
 
   CVideoDbUrl itemUrl;
   itemUrl.FromString(
-      StringUtils::Format("videodb://movies/videoversions/{}", infoTag.GetAssetInfo().GetId()));
+      StringUtils::Format("{}{}", VIDEODB_PATH_VERSION_ROOT, infoTag.GetAssetInfo().GetId()));
   itemUrl.AppendPath(std::to_string(movieId));
   itemUrl.AddOption("mediaid", movieId);
   item.SetPath(itemUrl.ToString());
