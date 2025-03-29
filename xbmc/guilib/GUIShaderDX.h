@@ -61,7 +61,7 @@ public:
   void XM_CALLCONV SetWorld(const DirectX::XMMATRIX &value);
   void XM_CALLCONV SetView(const DirectX::XMMATRIX &value);
   void XM_CALLCONV SetProjection(const DirectX::XMMATRIX &value);
-  void Project(float &x, float &y, float &z);
+  void Project(float& x, float& y, float& z) const;
 
   void DrawQuad(Vertex& v1, Vertex& v2, Vertex& v3, Vertex& v4);
   void DrawIndexed(unsigned int indexCount, unsigned int startIndex, unsigned int startVertex);
