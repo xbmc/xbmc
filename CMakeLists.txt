@@ -519,6 +519,13 @@ add_custom_target(generate-packaging ALL
 
 core_target_add_dependencies(export-files)
 
+# optional package_libs must be built/available before exporting files to buildtrees
+# some platforms require the libraries to exist, otherwise their packaging may not copy
+# the requested package_libs into the final app
+if(package_libs)
+  add_dependencies(export-files ${package_libs})
+endif()
+
 # Add to lib${APP_NAME_LC} solely for Win UWP. msix building doesnt seem to pick up the
 # generated buildtree if we do it later. Other platforms dont care when this happens.
 add_dependencies(lib${APP_NAME_LC} generate-packaging)
