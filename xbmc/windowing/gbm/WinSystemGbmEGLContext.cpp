@@ -9,8 +9,12 @@
 #include "WinSystemGbmEGLContext.h"
 
 #include "OptionalsReg.h"
+#include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "settings/lib/Setting.h"
 #include "utils/log.h"
 
 using namespace KODI::WINDOWING::GBM;
@@ -32,6 +36,11 @@ bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint 
   {
     return false;
   }
+
+  CServiceBroker::GetSettingsComponent()
+      ->GetSettings()
+      ->GetSetting(CSettings::SETTING_VIDEOSCREEN_USEMODIFIERS)
+      ->SetVisible(true);
 
   auto plane = m_DRM->GetGuiPlane();
   uint32_t visualId = plane != nullptr ? plane->GetFormat() : DRM_FORMAT_XRGB2101010;
@@ -101,10 +110,12 @@ bool CWinSystemGbmEGLContext::CreateNewWindow(const std::string& name,
   uint32_t format = m_eglContext.GetConfigAttrib(EGL_NATIVE_VISUAL_ID);
 
   std::vector<uint64_t> modifiers;
-
+  bool useModifiers = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+      CSettings::SETTING_VIDEOSCREEN_USEMODIFIERS);
   auto plane = m_DRM->GetGuiPlane();
   if (plane)
-    modifiers = plane->GetModifiersForFormat(format);
+    modifiers = useModifiers ? plane->GetModifiersForFormat(format)
+                             : std::vector<uint64_t>{DRM_FORMAT_MOD_LINEAR};
 
   if (!m_GBM->GetDevice().CreateSurface(res.iWidth, res.iHeight, format, modifiers.data(),
                                         modifiers.size()))
