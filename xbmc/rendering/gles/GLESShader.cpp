@@ -71,14 +71,6 @@ void CGLESShader::OnCompiledAndLinked()
   glUniform1i(m_hTex1, 1);
   glUniform4f(m_hUniCol, 1.0, 1.0, 1.0, 1.0);
 
-  const float identity[16] = {
-    1.0f, 0.0f, 0.0f, 0.0f,
-    0.0f, 1.0f, 0.0f, 0.0f,
-    0.0f, 0.0f, 1.0f, 0.0f,
-    0.0f, 0.0f, 0.0f, 1.0f
-  };
-  glUniformMatrix4fv(m_hCoord0Matrix,  1, GL_FALSE, identity);
-
   glUseProgram( 0 );
 }
 

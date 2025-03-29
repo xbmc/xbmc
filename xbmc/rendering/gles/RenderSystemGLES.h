@@ -34,9 +34,8 @@ enum class ShaderMethodGLES
   SM_MULTI_111R_111R_BLENDCOLOR,
   SM_TEXTURE_RGBA,
   SM_TEXTURE_RGBA_OES,
-  SM_TEXTURE_RGBA_BLENDCOLOR,
-  SM_TEXTURE_RGBA_BOB,
-  SM_TEXTURE_RGBA_BOB_OES,
+  SM_TEXTURE_RGBA_OES_MEDIACODEC,
+  SM_TEXTURE_RGBA_BOB_OES_MEDIACODEC,
   SM_TEXTURE_NOALPHA,
   SM_MAX
 };
@@ -71,9 +70,8 @@ private:
        "multi with alpha/alpha texture and blend color"},
       {ShaderMethodGLES::SM_TEXTURE_RGBA, "texture rgba"},
       {ShaderMethodGLES::SM_TEXTURE_RGBA_OES, "texture rgba OES"},
-      {ShaderMethodGLES::SM_TEXTURE_RGBA_BLENDCOLOR, "texture rgba blend colour"},
-      {ShaderMethodGLES::SM_TEXTURE_RGBA_BOB, "texture rgba bob"},
-      {ShaderMethodGLES::SM_TEXTURE_RGBA_BOB_OES, "texture rgba bob OES"},
+      {ShaderMethodGLES::SM_TEXTURE_RGBA_OES_MEDIACODEC, "texture rgba OES for mediacodec"},
+      {ShaderMethodGLES::SM_TEXTURE_RGBA_BOB_OES_MEDIACODEC, "texture rgba bob OES for mediacodec"},
       {ShaderMethodGLES::SM_TEXTURE_NOALPHA, "texture no alpha"},
   });
 
