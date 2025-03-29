@@ -15,8 +15,10 @@
 #include "guilib/GUIStaticItem.h"
 #include "interfaces/IAnnouncer.h"
 #include "threads/CriticalSection.h"
+#include "threads/Timer.h"
 #include "utils/Job.h"
 
+#include <chrono>
 #include <string>
 #include <vector>
 
@@ -40,7 +42,8 @@ enum class InfoTagType
 
 class CDirectoryProvider : public IListProvider,
                            public IJobCallback,
-                           public ANNOUNCEMENT::IAnnouncer
+                           public ANNOUNCEMENT::IAnnouncer,
+                           private ITimerCallback
 {
 public:
   typedef enum
@@ -81,8 +84,17 @@ public:
   void OnJobComplete(unsigned int jobID, bool success, CJob* job) override;
 
 private:
+  void StartDirectoryJob();
+
+  // ITimerCallback implementation
+  void OnTimeout() override;
+
   UpdateState m_updateState = OK;
   unsigned int m_jobID = 0;
+  bool m_jobPending{false};
+  std::chrono::time_point<std::chrono::system_clock> m_lastJobStartedAt;
+  CTimer m_nextJobTimer;
+
   KODI::GUILIB::GUIINFO::CGUIInfoLabel m_url;
   KODI::GUILIB::GUIINFO::CGUIInfoLabel m_target;
   KODI::GUILIB::GUIINFO::CGUIInfoLabel m_sortMethod;

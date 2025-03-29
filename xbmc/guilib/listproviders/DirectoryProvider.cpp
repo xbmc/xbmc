@@ -193,7 +193,7 @@ private:
 };
 
 CDirectoryProvider::CDirectoryProvider(const TiXmlElement* element, int parentID)
-  : IListProvider(parentID)
+  : IListProvider(parentID), m_nextJobTimer(this)
 {
   assert(element);
   if (!element->NoChildren())
@@ -225,6 +225,7 @@ CDirectoryProvider::CDirectoryProvider(const TiXmlElement* element, int parentID
 CDirectoryProvider::CDirectoryProvider(const CDirectoryProvider& other)
   : IListProvider(other.m_parentID),
     m_updateState(INVALIDATED),
+    m_nextJobTimer(this),
     m_url(other.m_url),
     m_target(other.m_target),
     m_sortMethod(other.m_sortMethod),
@@ -247,6 +248,19 @@ CDirectoryProvider::~CDirectoryProvider()
 std::unique_ptr<IListProvider> CDirectoryProvider::Clone()
 {
   return std::make_unique<CDirectoryProvider>(*this);
+}
+
+void CDirectoryProvider::StartDirectoryJob()
+{
+  std::unique_lock<CCriticalSection> lock(m_section);
+  m_jobPending = false;
+  m_lastJobStartedAt = std::chrono::system_clock::now();
+  m_nextJobTimer.Stop();
+
+  m_jobID = CServiceBroker::GetJobManager()->AddJob(
+      new CDirectoryJob(m_currentUrl, m_target.GetLabel(m_parentID, false), m_currentSort,
+                        m_currentLimit, m_currentBrowse, m_parentID),
+      this);
 }
 
 bool CDirectoryProvider::Update(bool forceRefresh)
@@ -274,11 +288,26 @@ bool CDirectoryProvider::Update(bool forceRefresh)
   {
     CLog::Log(LOGDEBUG, "CDirectoryProvider[{}]: refreshing..", m_currentUrl);
     if (m_jobID)
-      CServiceBroker::GetJobManager()->CancelJob(m_jobID);
-    m_jobID = CServiceBroker::GetJobManager()->AddJob(
-        new CDirectoryJob(m_currentUrl, m_target.GetLabel(m_parentID, false), m_currentSort,
-                          m_currentLimit, m_currentBrowse, m_parentID),
-        this);
+    {
+      // Ignore update request for now.
+      // We will start another update job once the currently running has finished.
+      m_jobPending = true;
+      changed = false;
+    }
+    else
+    {
+      if (m_jobPending)
+      {
+        // Ignore the update request.
+        // We already have scheduled another update job.
+        changed = false;
+      }
+      else
+      {
+        // Start a new update job.
+        StartDirectoryJob();
+      }
+    }
   }
 
   if (!changed)
@@ -399,6 +428,9 @@ void CDirectoryProvider::Reset()
     if (m_jobID)
       CServiceBroker::GetJobManager()->CancelJob(m_jobID);
     m_jobID = 0;
+    m_jobPending = false;
+    m_lastJobStartedAt = {};
+    m_nextJobTimer.Stop();
     m_items.clear();
     m_currentTarget.clear();
     m_currentUrl.clear();
@@ -441,6 +473,39 @@ void CDirectoryProvider::OnJobComplete(unsigned int jobID, bool success, CJob* j
       m_updateState = DONE;
   }
   m_jobID = 0;
+
+  if (m_jobPending)
+  {
+    // Handle delayed update request(s).
+
+    using namespace std::chrono_literals;
+    static constexpr auto JOB_RATE_LIMIT = 1s;
+    const auto now{std::chrono::system_clock::now()};
+    const auto nextJobAllowedAt{m_lastJobStartedAt + JOB_RATE_LIMIT};
+
+    if (now >= nextJobAllowedAt)
+    {
+      // Finished job ended after job schedule timeslice was over. Start a new update job now.
+      StartDirectoryJob();
+    }
+    else
+    {
+      // Finished job ended before job schedule timeslice was over. Start a new update job delayed.
+      m_nextJobTimer.Start(
+          std::chrono::duration_cast<std::chrono::milliseconds>(nextJobAllowedAt - now));
+    }
+  }
+}
+
+void CDirectoryProvider::OnTimeout()
+{
+  std::unique_lock<CCriticalSection> lock(m_section);
+
+  if (m_jobPending)
+  {
+    // Start a new update job.
+    StartDirectoryJob();
+  }
 }
 
 std::string CDirectoryProvider::GetTarget(const CFileItem& item) const
@@ -551,7 +616,7 @@ bool CDirectoryProvider::OnContextMenu(const std::shared_ptr<CGUIListItem>& item
 bool CDirectoryProvider::IsUpdating() const
 {
   std::unique_lock<CCriticalSection> lock(m_section);
-  return m_jobID || m_updateState == DONE || m_updateState == INVALIDATED;
+  return m_jobID || m_jobPending || m_updateState == DONE || m_updateState == INVALIDATED;
 }
 
 bool CDirectoryProvider::UpdateURL()
