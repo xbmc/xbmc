@@ -9,6 +9,7 @@
 #pragma once
 
 #include <string>
+#include <string_view>
 
 enum class VideoAssetTypeOwner
 {
@@ -35,6 +36,7 @@ static constexpr int VIDEO_VERSION_ID_BEGIN = 40400;
 static constexpr int VIDEO_VERSION_ID_END = 40800;
 static constexpr int VIDEO_VERSION_ID_DEFAULT = VIDEO_VERSION_ID_BEGIN;
 static constexpr int VIDEO_VERSION_ID_ALL = 0;
+static constexpr std::string_view VIDEODB_PATH_VERSION_ROOT{"videodb://movies/videoversions/"};
 inline const std::string VIDEODB_PATH_VERSION_ID_ALL{"videodb://movies/videoversions/0"};
 
 struct VideoAssetInfo
