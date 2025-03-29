@@ -11,9 +11,12 @@
 #include "pictures/PictureScalingAlgorithm.h"
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
+#include "threads/CriticalSection.h"
 #include "utils/SortUtils.h"
 
 #include <cstdint>
+#include <functional>
+#include <map>
 #include <set>
 #include <string>
 #include <utility>
@@ -100,6 +103,8 @@ struct RefreshVideoLatency
 
 typedef std::vector<TVShowRegexp> SETTINGS_TVSHOWLIST;
 
+using AdvancedSettingsCallback = std::function<void()>;
+
 class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 {
   public:
@@ -115,6 +120,18 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool Initialized() const { return m_initialized; }
     void AddSettingsFile(const std::string &filename);
     bool Load(const CProfileManager &profileManager);
+
+    /*!
+     * \brief Register a callback to receive notifications when the advanced settings are loaded.
+     * \param[in] callback
+     * \return opaque handle
+     */
+    int RegisterSettingsLoadedCallback(AdvancedSettingsCallback callback);
+    /*!
+     * \brief Unregister a callback for notifications of advanced settings load.
+     * \param[in] handle of the callback
+     */
+    void UnregisterSettingsLoadedCallback(int handle);
 
     static void GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_TVSHOWLIST& settings);
     static void GetCustomRegexps(TiXmlElement *pRootElement, std::vector<std::string> &settings);
@@ -386,4 +403,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     void Initialize();
     void Clear();
     void SetExtraArtwork(const TiXmlElement* arttypes, std::vector<std::string>& artworkMap);
+
+    mutable CCriticalSection m_listCritSection;
+    std::map<int, AdvancedSettingsCallback> m_settingsLoadedCallbacks;
 };

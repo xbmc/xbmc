@@ -88,35 +88,79 @@ bool URIUtils::HasExtension(const std::string& strFileName)
   return iPeriod != std::string::npos && strFileName[iPeriod] == '.';
 }
 
-bool URIUtils::HasExtension(const CURL& url, const std::string& strExtensions)
+bool URIUtils::HasExtension(const CURL& url, std::string_view extensions)
 {
-  return HasExtension(url.GetFileName(), strExtensions);
+  return HasExtension(url.GetFileName(), extensions);
 }
 
-bool URIUtils::HasExtension(const std::string& strFileName, const std::string& strExtensions)
+namespace
 {
-  if (IsURL(strFileName))
-  {
-    const CURL url(strFileName);
-    return HasExtension(url.GetFileName(), strExtensions);
-  }
+bool IsExtensionInList(std::string_view extension, std::string_view extList)
+{
+  //! @todo simplify once strings can be assumed in same case
 
-  const size_t pos = strFileName.find_last_of("./\\");
-  if (pos == std::string::npos || strFileName[pos] != '.')
+  const size_t lengthExt = extension.size();
+  const size_t lengthList = extList.size();
+  size_t idxExt = 0; // current position in the extension to be matched
+  size_t idxList = 0; // current position in the string of | delimited extensions
+  bool waitForDelimiter = false; // true=mismatch found, advance idxList to next candidate extension
+
+  while (idxList < lengthList)
+  {
+    if (idxExt >= lengthExt)
+    {
+      if (extList[idxList] == '|')
+        return true;
+
+      waitForDelimiter = true;
+      idxExt = 0;
+    }
+
+    if (extList[idxList] == '|')
+    {
+      waitForDelimiter = false;
+      ++idxList;
+      continue;
+    }
+
+    // handle match of *.avi, ".gz" match of ".tar.gz"
+    if (extList[idxList] == '.')
+    {
+      waitForDelimiter = false;
+      idxExt = 0;
+    }
+
+    if (!waitForDelimiter)
+    {
+      if (extList[idxList] != extension[idxExt] &&
+          ::tolower(extList[idxList]) != ::tolower(extension[idxExt]))
+      {
+        waitForDelimiter = true;
+        idxExt = 0;
+      }
+      else
+      {
+        ++idxExt;
+      }
+    }
+    ++idxList;
+  }
+  return idxExt == lengthExt;
+}
+
+} // namespace
+
+bool URIUtils::HasExtension(const std::string& strFileName, std::string_view extensions)
+{
+  std::string extension = GetExtension(strFileName);
+  if (extension.empty())
     return false;
 
-  const std::string extensionLower = StringUtils::ToLower(strFileName.substr(pos));
+  // optimization: extensions are likely but not guaranteed yet to be in lower case and the
+  // comparison with the extension is case-sensitive first.
+  StringUtils::ToLower(extension);
 
-  const std::vector<std::string> extensionsLower =
-      StringUtils::Split(StringUtils::ToLower(strExtensions), '|');
-
-  for (const auto& ext : extensionsLower)
-  {
-    if (StringUtils::EndsWith(ext, extensionLower))
-      return true;
-  }
-
-  return false;
+  return IsExtensionInList(extension, extensions);
 }
 
 void URIUtils::RemoveExtension(std::string& strFileName)
