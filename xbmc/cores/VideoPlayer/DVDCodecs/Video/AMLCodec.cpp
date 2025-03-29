@@ -1857,7 +1857,7 @@ int CAMLCodec::GetAmlDuration() const
   return am_private ? (am_private->video_rate * PTS_FREQ) / UNIT_FREQ : 0;
 };
 
-std::string CAMLCodec::intToFourCCString(unsigned int value) 
+std::string CAMLCodec::intToFourCCString(unsigned int value)
 {
   char bytes[4];
   bytes[0] = value & 0xFF;
@@ -1892,7 +1892,7 @@ std::string CAMLCodec::GetDoViCodecFourCC(unsigned int codec_tag)
   return fourCC;
 }
 
-void CAMLCodec::SetProcessInfoVideoDetails() 
+void CAMLCodec::SetProcessInfoVideoDetails()
 {
   m_dataCacheCore.SetVideoHdrType(m_hints.hdrType);
   m_dataCacheCore.SetVideoColorSpace(m_hints.colorSpace);
@@ -1900,7 +1900,7 @@ void CAMLCodec::SetProcessInfoVideoDetails()
   m_dataCacheCore.SetVideoColorPrimaries(m_hints.colorPrimaries);
   m_dataCacheCore.SetVideoColorTransferCharacteristic(m_hints.colorTransferCharacteristic);
 
-  if (m_hints.hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION) 
+  if (m_hints.hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)
   {
     m_dataCacheCore.SetVideoDoViCodecFourCC(GetDoViCodecFourCC(m_hints.codec_tag));
 
@@ -2372,14 +2372,14 @@ bool CAMLCodec::AddData(uint8_t *pData, size_t iSize, double dts, double pts)
   int chunk_size = calc_chunk_size(iSize);
   float new_buffer_level = GetBufferLevel(chunk_size, data_len, free_len);
   bool streambuffer(am_private->gcodec.dec_mode == STREAM_TYPE_STREAM);
- 
+
   if (!m_buffer_level_ready) {
     m_buffer_level_ready = m_decoder_bypass_buffer_ready ||
-                           (streambuffer 
+                           (streambuffer
                               ? new_buffer_level > m_decoder_stream_buffer
                               : new_buffer_level > m_decoder_buffer);
 
-    m_minimum_buffer_level = streambuffer 
+    m_minimum_buffer_level = streambuffer
                                ? m_decoder_minimum_stream_buffer
                                : m_decoder_minimum_buffer;
   }
@@ -2613,8 +2613,8 @@ inline double CAMLCodec::CalculatePictureDuration()
   double rate_duration = static_cast<double>(am_private->video_rate * DVD_TIME_BASE) / UNIT_FREQ;
 
   if (m_last_pts == DVD_NOPTS_VALUE) return rate_duration;
-  
-  if (m_cur_pts < m_last_pts) 
+
+  if (m_cur_pts < m_last_pts)
   {
     logM(LOGDEBUG, "CAMLCodec", "cur pts:[{:.3f}] < last pts:[{:.3f}] dur:[{:.3f}ms]",
         static_cast<double>(m_cur_pts) / DVD_TIME_BASE,
@@ -2678,7 +2678,7 @@ CDVDVideoCodec::VCReturn CAMLCodec::GetPicture(VideoPicture& videoPicture)
     }
 
     logComponentM(LOGDEBUG, LOGVIDEO, "CAMLCodec", "index: {:d}, pts: {:.3f}, dur:{:.3f}ms ar:{:.2f} elf:{:d}ms",
-                  m_bufferIndex, videoPicture.pts / DVD_TIME_BASE, videoPicture.iDuration / 1000, m_hints.aspect, 
+                  m_bufferIndex, videoPicture.pts / DVD_TIME_BASE, videoPicture.iDuration / 1000, m_hints.aspect,
                   elapsed_since_last_frame.count());
 
     videoPicture.stereoMode = m_hints.stereo_mode;
