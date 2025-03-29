@@ -63,6 +63,7 @@ public:
   bool RemoveCdInfo(const std::string& devicePath="");
   std::string GetDiskLabel(const std::string& devicePath="");
   std::string GetDiskUniqueId(const std::string& devicePath="");
+  bool HasMediaBlurayPlaylist(const std::string& devicePath = "");
 
   /*! \brief Gets the platform disc drive handler
   * @todo this likely doesn't belong here but in some discsupport component owned by media manager

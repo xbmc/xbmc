@@ -307,7 +307,11 @@ bool CVideoResume::Execute(const std::shared_ptr<CFileItem>& itemIn) const
   const auto item{std::make_shared<CFileItem>(itemIn->GetItemToPlay())};
 #ifdef HAS_OPTICAL_DRIVE
   if (item->IsDVD() || MUSIC::IsCDDA(*item))
-    return MEDIA_DETECT::CAutorun::PlayDisc(item->GetPath(), true, false);
+  {
+    PlayDiscOptions options(
+        {.bypassSettings = true, .startFromBeginning = false, .forceSelection = false});
+    return MEDIA_DETECT::CAutorun::PlayDisc(item->GetPath(), options);
+  }
 #endif
 
   item->SetStartOffset(STARTOFFSET_RESUME);
@@ -335,7 +339,11 @@ bool CVideoPlay::Execute(const std::shared_ptr<CFileItem>& itemIn) const
   const auto item{std::make_shared<CFileItem>(itemIn->GetItemToPlay())};
 #ifdef HAS_OPTICAL_DRIVE
   if (item->IsDVD() || MUSIC::IsCDDA(*item))
-    return MEDIA_DETECT::CAutorun::PlayDisc(item->GetPath(), true, true);
+  {
+    PlayDiscOptions options(
+        {.bypassSettings = true, .startFromBeginning = true, .forceSelection = false});
+    return MEDIA_DETECT::CAutorun::PlayDisc(item->GetPath(), options);
+  }
 #endif
   SetPathAndPlay(item, PlayMode::PLAY);
   return true;
