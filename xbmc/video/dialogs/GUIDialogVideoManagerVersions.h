@@ -37,6 +37,8 @@ public:
    */
   static bool ManageVideoVersions(const std::shared_ptr<CFileItem>& item);
 
+  static bool CheckAndGetVideoVersionArt(const std::shared_ptr<CFileItem>& item);
+
 protected:
   bool OnMessage(CGUIMessage& message) override;
 
