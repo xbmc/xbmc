@@ -663,7 +663,7 @@ void CVideoPlayerVideo::Process()
 
 void CVideoPlayerVideo::UpdatePlayerInfo()
 {
-  m_dataCacheCore.SetVideoLiveBitRate(GetVideoBitrate());  
+  m_dataCacheCore.SetVideoLiveBitRate(GetVideoBitrate());
   m_dataCacheCore.SetVideoQueueLevel(std::min(99, m_messageQueue.GetLevel()));
   m_dataCacheCore.SetVideoQueueDataLevel(std::min(99, m_messageQueue.GetLevel(true)));
 }
@@ -685,19 +685,18 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(double &frametime, double &pts)
     {
       auto msg = std::static_pointer_cast<CDVDMsgDemuxerPacket>(m_packets.front().message);
       m_packets.pop_front();
-
       SendMessage(msg, 10);
     }
 
     m_pVideoCodec->Reset();
     m_packets.clear();
-    //picture.iFlags &= ~DVP_FLAG_ALLOCATED;
     m_renderManager.DiscardBuffer();
     return false;
   }
 
   if (decoderState == CDVDVideoCodec::VC_REOPEN)
   {
+    CLog::Log(LOGDEBUG, "CVideoPlayerVideo - video decoder request reopen");
     while (!m_packets.empty())
     {
       auto msg = std::static_pointer_cast<CDVDMsgDemuxerPacket>(m_packets.front().message);
@@ -1061,7 +1060,7 @@ void CVideoPlayerVideo::ResetFrameRateCalc()
 double CVideoPlayerVideo::GetCurrentPts()
 {
   double renderPts = m_renderManager.GetRenderPts();
- 
+
   if (renderPts == DVD_NOPTS_VALUE)
     return DVD_NOPTS_VALUE;
   else if (m_stalled)
