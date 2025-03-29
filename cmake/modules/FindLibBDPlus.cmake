@@ -43,10 +43,9 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                     VERSION_VAR BDPLUS_VERSION)
 
   if(LIBBDPLUS_FOUND)
-    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
+    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE IMPORTED)
     set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                     IMPORTED_LOCATION "${BDPLUS_LIBRARY}"
-                                                                     INTERFACE_INCLUDE_DIRECTORIES "${BDPLUS_INCLUDEDIR}")
-
+                                                                     INTERFACE_INCLUDE_DIRECTORIES "${BDPLUS_INCLUDEDIR}"
+                                                                     INTERFACE_LINK_LIBRARIES "${BDPLUS_LIBRARY}")
   endif()
 endif()
