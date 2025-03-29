@@ -53,27 +53,82 @@ TEST_F(TestURIUtils, GetDirectory)
 
 TEST_F(TestURIUtils, GetExtension)
 {
-  EXPECT_STREQ(".avi",
-               URIUtils::GetExtension("/path/to/movie.avi").c_str());
+  EXPECT_STREQ(".avi", URIUtils::GetExtension("movie.avi").c_str());
+  EXPECT_STREQ(".avi", URIUtils::GetExtension("D:\\\\path\\to\\movie.avi").c_str());
+  EXPECT_STREQ(".avi", URIUtils::GetExtension("/path/to/movie.avi").c_str());
+  EXPECT_STREQ("", URIUtils::GetExtension("/path/to/movie").c_str());
+  EXPECT_STREQ("", URIUtils::GetExtension("/path/to.the/movie").c_str());
+  EXPECT_STREQ("", URIUtils::GetExtension("").c_str());
+
+  EXPECT_STREQ(".avi", URIUtils::GetExtension("http://server/path/to/movie.avi").c_str());
+  EXPECT_STREQ("", URIUtils::GetExtension("http://server/path/to/movie?foo=bar.avi").c_str());
+  EXPECT_STREQ("", URIUtils::GetExtension("http://server/path/to.the/movie").c_str());
+  EXPECT_STREQ(".avi", URIUtils::GetExtension("http://server/path/to/movie.avi?foo=bar").c_str());
+
+  // compound extensions: returning last one is the only sane possibility given the function signature.
+  // A period . is sometimes used as separator in filenames instead of the space character.
+  EXPECT_STREQ(".gz", URIUtils::GetExtension("archive.tar.gz").c_str());
+  EXPECT_STREQ(".gz", URIUtils::GetExtension("/path/to/archive.tar.gz").c_str());
 }
 
 TEST_F(TestURIUtils, HasExtension)
 {
-  EXPECT_TRUE (URIUtils::HasExtension("/path/to/movie.AvI"));
+  EXPECT_TRUE(URIUtils::HasExtension("/path/to/movie.AvI"));
   EXPECT_FALSE(URIUtils::HasExtension("/path/to/movie"));
   EXPECT_FALSE(URIUtils::HasExtension("/path/.to/movie"));
   EXPECT_FALSE(URIUtils::HasExtension(""));
+  EXPECT_TRUE(URIUtils::HasExtension("http://server/path/to/movie.AvI"));
+  EXPECT_TRUE(URIUtils::HasExtension("http://server/path/to/movie.AvI?foo=bar"));
+  EXPECT_FALSE(URIUtils::HasExtension("http://server/path/to/movie?foo=bar.AvI"));
 
-  EXPECT_TRUE (URIUtils::HasExtension("/path/to/movie.AvI", ".avi"));
+  // Pattern used by the file browser to exclude all files of a directory
+  EXPECT_FALSE(URIUtils::HasExtension("/path/to/movie.AvI", "/"));
+  EXPECT_FALSE(URIUtils::HasExtension("/path/.avi/movie", "/"));
+  EXPECT_FALSE(URIUtils::HasExtension("/path/.avi/movie/", "/"));
+  EXPECT_FALSE(URIUtils::HasExtension("", "/"));
+  EXPECT_FALSE(URIUtils::HasExtension("http://server/path/to/movie.AvI", "/"));
+  EXPECT_FALSE(URIUtils::HasExtension("http://server/path/", "/"));
+  EXPECT_FALSE(URIUtils::HasExtension("http://server/path/to/movie.AvI?foo=bar", "/"));
+  EXPECT_FALSE(URIUtils::HasExtension("http://server/path/to/movie?foo=bar.AvI", "/"));
+
+  EXPECT_FALSE(URIUtils::HasExtension("/path/to/movie.AvI", ""));
+  EXPECT_FALSE(URIUtils::HasExtension("/path/.avi/movie", ""));
+  EXPECT_FALSE(URIUtils::HasExtension("/path/.avi/movie/", ""));
+  EXPECT_FALSE(URIUtils::HasExtension("", ""));
+  EXPECT_FALSE(URIUtils::HasExtension("http://server/path/to/movie.AvI", ""));
+  EXPECT_FALSE(URIUtils::HasExtension("http://server/path/", ""));
+  EXPECT_FALSE(URIUtils::HasExtension("http://server/path/to/movie.AvI?foo=bar", ""));
+  EXPECT_FALSE(URIUtils::HasExtension("http://server/path/to/movie?foo=bar.AvI", ""));
+
+  EXPECT_TRUE(URIUtils::HasExtension("/path/to/movie.AvI", ".avi"));
   EXPECT_FALSE(URIUtils::HasExtension("/path/to/movie.AvI", ".mkv"));
+  EXPECT_TRUE(URIUtils::HasExtension("/path/to/movie.AvI", ".avi|"));
+  EXPECT_FALSE(URIUtils::HasExtension("/path/to/movie.AvI", ".mkv|"));
+  EXPECT_TRUE(URIUtils::HasExtension("/path/to/movie.avi", "*.avi"));
   EXPECT_FALSE(URIUtils::HasExtension("/path/.avi/movie", ".avi"));
   EXPECT_FALSE(URIUtils::HasExtension("", ".avi"));
 
-  EXPECT_TRUE (URIUtils::HasExtension("/path/movie.AvI", ".avi|.mkv|.mp4"));
-  EXPECT_TRUE (URIUtils::HasExtension("/path/movie.AvI", ".mkv|.avi|.mp4"));
+  EXPECT_TRUE(URIUtils::HasExtension("/path/to/archive.tar.gz", ".gz"));
+  EXPECT_TRUE(URIUtils::HasExtension("/path/to/archive.tar.gz", ".tar.gz"));
+  //! @fixme, known broken
+  //EXPECT_FALSE(URIUtils::HasExtension("/path/to/archive.bar.gz", ".tar.gz"));
+  //EXPECT_FALSE(URIUtils::HasExtension("/path/to/archive.gz", ".tar.gz"));
+
+  EXPECT_TRUE(URIUtils::HasExtension("http://server/path/to/movie.AvI", ".avi"));
+  EXPECT_FALSE(URIUtils::HasExtension("http://server/path/to/movie.AvI", ".mkv"));
+  EXPECT_TRUE(URIUtils::HasExtension("http://server/path/to/movie.AvI", "*.avi"));
+  EXPECT_TRUE(URIUtils::HasExtension("http://server/path/to/movie.AvI?foo=bar", ".avi"));
+  EXPECT_FALSE(URIUtils::HasExtension("http://server/path/to/movie?foo=bar.AvI", ".avi"));
+
+  EXPECT_TRUE(URIUtils::HasExtension("/path/movie.AvI", ".avi|.mkv|.mp4"));
+  EXPECT_TRUE(URIUtils::HasExtension("/path/movie.AvI", ".mkv|.avi|.mp4"));
   EXPECT_FALSE(URIUtils::HasExtension("/path/movie.AvI", ".mpg|.mkv|.mp4"));
   EXPECT_FALSE(URIUtils::HasExtension("/path.mkv/movie.AvI", ".mpg|.mkv|.mp4"));
   EXPECT_FALSE(URIUtils::HasExtension("", ".avi|.mkv|.mp4"));
+  EXPECT_TRUE(URIUtils::HasExtension("http://server/path/to/movie.AvI", ".avi|.mkv|.mp4"));
+  EXPECT_FALSE(URIUtils::HasExtension("http://server/path/to/movie.AvI", ".mpg|.mkv|.mp4"));
+  EXPECT_TRUE(URIUtils::HasExtension("http://server/path/to/movie.AvI?foo=bar", ".avi|.mkv|.mp4"));
+  EXPECT_FALSE(URIUtils::HasExtension("http://server/path/to/movie?foo=bar.AvI", ".avi|.mkv|.mp4"));
 }
 
 TEST_F(TestURIUtils, GetFileName)

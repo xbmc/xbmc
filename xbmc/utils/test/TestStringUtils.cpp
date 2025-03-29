@@ -130,10 +130,19 @@ TEST(TestStringUtils, ToCapitalize)
 
 TEST(TestStringUtils, EqualsNoCase)
 {
-  std::string refstr = "TeSt";
+  std::string refStr = "TeSt";
 
-  EXPECT_TRUE(StringUtils::EqualsNoCase(refstr, "TeSt"));
-  EXPECT_TRUE(StringUtils::EqualsNoCase(refstr, "tEsT"));
+  EXPECT_TRUE(StringUtils::EqualsNoCase(refStr, "TeSt"));
+  EXPECT_TRUE(StringUtils::EqualsNoCase(refStr, "tEsT"));
+  EXPECT_FALSE(StringUtils::EqualsNoCase(refStr, "tEsTe"));
+  EXPECT_FALSE(StringUtils::EqualsNoCase(refStr, "tEs"));
+  EXPECT_FALSE(StringUtils::EqualsNoCase(refStr, "tEsU"));
+  EXPECT_FALSE(StringUtils::EqualsNoCase(refStr, "ta"));
+  EXPECT_FALSE(StringUtils::EqualsNoCase(refStr, ""));
+
+  std::string empStr;
+  EXPECT_FALSE(StringUtils::EqualsNoCase(empStr, "tEsT"));
+  EXPECT_TRUE(StringUtils::EqualsNoCase(empStr, ""));
 }
 
 TEST(TestStringUtils, Left)
@@ -264,16 +273,46 @@ TEST(TestStringUtils, StartsWith)
 
 TEST(TestStringUtils, EndsWith)
 {
-  std::string refstr = "test";
+  std::string refStr = "test";
 
-  EXPECT_FALSE(StringUtils::EndsWithNoCase(refstr, "x"));
+  EXPECT_TRUE(StringUtils::EndsWith(refStr, ""));
 
-  EXPECT_TRUE(StringUtils::EndsWith(refstr, "st"));
-  EXPECT_TRUE(StringUtils::EndsWith(refstr, "test"));
-  EXPECT_FALSE(StringUtils::EndsWith(refstr, "sT"));
+  EXPECT_FALSE(StringUtils::EndsWith(refStr, "x"));
 
-  EXPECT_TRUE(StringUtils::EndsWithNoCase(refstr, "sT"));
-  EXPECT_TRUE(StringUtils::EndsWithNoCase(refstr, "TesT"));
+  EXPECT_TRUE(StringUtils::EndsWith(refStr, "st"));
+  EXPECT_TRUE(StringUtils::EndsWith(refStr, "test"));
+  EXPECT_FALSE(StringUtils::EndsWith(refStr, "sT"));
+  EXPECT_FALSE(StringUtils::EndsWith(refStr, "retest"));
+
+  EXPECT_FALSE(StringUtils::EndsWith("", refStr));
+
+  std::string mixedCaseRefStr = "TesT";
+
+  EXPECT_FALSE(StringUtils::EndsWith(mixedCaseRefStr, "st"));
+  EXPECT_FALSE(StringUtils::EndsWith(mixedCaseRefStr, "test"));
+  EXPECT_TRUE(StringUtils::EndsWith(mixedCaseRefStr, "sT"));
+  EXPECT_FALSE(StringUtils::EndsWith(mixedCaseRefStr, "retest"));
+}
+
+TEST(TestStringUtils, EndsWithNoCase)
+{
+  std::string refStr = "test";
+
+  EXPECT_TRUE(StringUtils::EndsWithNoCase(refStr, ""));
+
+  EXPECT_FALSE(StringUtils::EndsWithNoCase(refStr, "x"));
+
+  EXPECT_TRUE(StringUtils::EndsWithNoCase(refStr, "sT"));
+  EXPECT_TRUE(StringUtils::EndsWithNoCase(refStr, "TesT"));
+  EXPECT_FALSE(StringUtils::EndsWithNoCase(refStr, "ReTesT"));
+
+  EXPECT_FALSE(StringUtils::EndsWithNoCase("", refStr));
+
+  std::string mixedCaseRefStr = "TesT";
+
+  EXPECT_TRUE(StringUtils::EndsWithNoCase(mixedCaseRefStr, "st"));
+  EXPECT_TRUE(StringUtils::EndsWithNoCase(mixedCaseRefStr, "test"));
+  EXPECT_FALSE(StringUtils::EndsWithNoCase(mixedCaseRefStr, "retest"));
 }
 
 TEST(TestStringUtils, Join)
