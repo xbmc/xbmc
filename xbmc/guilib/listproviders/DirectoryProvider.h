@@ -125,6 +125,6 @@ private:
 
   std::string GetTarget(const CFileItem& item) const;
 
-  CCriticalSection m_subscriptionSection;
+  mutable CCriticalSection m_subscriptionSection;
   std::unique_ptr<CSubscriber> m_subscriber;
 };
