@@ -284,6 +284,13 @@ endforeach()
 core_optional_dep(${optional_deps})
 core_require_dep(${required_deps})
 
+# Check for any libs to be packaged with main app. eg libaacs
+# These libs are not directly linked with main app, but may be used if available from a 
+# dependency in the main app. eg libbluray can dyload libaacs for additional features
+if(PLATFORM_OPTIONAL_PACKAGES)
+  core_optional_package_lib(${PLATFORM_OPTIONAL_PACKAGES})
+endif()
+
 if(ENABLE_MARIADBCLIENT AND NOT ENABLE_MARIADBCLIENT STREQUAL AUTO AND ENABLE_MYSQLCLIENT AND NOT ENABLE_MYSQLCLIENT STREQUAL AUTO)
   MESSAGE(FATAL_ERROR "You can not use MySql and MariaDB at the same time. Disable one by adding -DENABLE_MYSQLCLIENT=OFF or -DENABLE_MARIADBCLIENT=OFF.")
 elseif(ENABLE_MYSQLCLIENT AND NOT ENABLE_MYSQLCLIENT STREQUAL AUTO)
