@@ -103,7 +103,7 @@
 					</control>
 					<control type="image">
 						<left>755</left>
-						<width>512</width>
+						<width>509</width>
 						<height>718</height>
 						<aligny>bottom</aligny>
 						<texture border="21">dialogs/dialog-bg.png</texture>
