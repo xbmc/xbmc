@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <utility>
+
 /**
  * This file contains a few templates to define various length
  * Tuples.
@@ -38,7 +40,7 @@ namespace XBMCAddon
     T1 v1{};
 
   public:
-    explicit inline Tuple(T1 p1) : TupleBase(1), v1(p1) {}
+    explicit inline Tuple(T1 p1) : TupleBase(1), v1(std::move(p1)) {}
     inline Tuple() : TupleBase(0) {}
     inline Tuple(const Tuple<T1>& o) : TupleBase(o), v1(o.v1) {}
     Tuple<T1>& operator=(const Tuple<T1>& other) = default;
@@ -54,7 +56,7 @@ namespace XBMCAddon
     T2 v2{};
 
   public:
-    inline Tuple(T1 p1, T2 p2) : Tuple<T1>(p1), v2(p2) { TupleBase::nvs(2); }
+    inline Tuple(T1 p1, T2 p2) : Tuple<T1>(std::move(p1)), v2(std::move(p2)) { TupleBase::nvs(2); }
     explicit inline Tuple(T1 p1) : Tuple<T1>(p1) {}
     inline Tuple() = default;
     Tuple<T1, T2>& operator=(const Tuple<T1, T2>& other) = default;
