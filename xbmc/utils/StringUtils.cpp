@@ -432,31 +432,56 @@ void StringUtils::ToCapitalize(std::wstring &str)
   }
 }
 
+static bool EqualsNoCaseInternal(const char* s1, size_t length, const char* s2)
+{
+  size_t idx{0};
+  char c1;
+
+  while (idx < length && (c1 = s1[idx]) != '\0')
+  {
+    const auto c2{s2[idx]};
+    if (!c2)
+      return false;
+
+    if (c1 != c2 && ::tolower(c1) != ::tolower(c2))
+      return false;
+    ++idx;
+  }
+  return s2[idx] == '\0';
+}
+
 bool StringUtils::EqualsNoCase(const std::string &str1, const std::string &str2)
 {
   // before we do the char-by-char comparison, first compare sizes of both strings.
   // This led to a 33% improvement in benchmarking on average. (size() just returns a member of std::string)
-  if (str1.size() != str2.size())
+  const auto length{str1.size()};
+  if (length != str2.size())
     return false;
-  return EqualsNoCase(str1.c_str(), str2.c_str());
+  return EqualsNoCaseInternal(str1.c_str(), length, str2.c_str());
 }
 
 bool StringUtils::EqualsNoCase(const std::string &str1, const char *s2)
 {
-  return EqualsNoCase(str1.c_str(), s2);
+  return EqualsNoCaseInternal(str1.c_str(), str1.size(), s2);
 }
 
 bool StringUtils::EqualsNoCase(const char *s1, const char *s2)
 {
-  char c2; // we need only one char outside the loop
-  do
-  {
-    const char c1 = *s1++; // const local variable should help compiler to optimize
-    c2 = *s2++;
-    if (c1 != c2 && ::tolower(c1) != ::tolower(c2)) // This includes the possibility that one of the characters is the null-terminator, which implies a string mismatch.
-      return false;
-  } while (c2 != '\0'); // At this point, we know c1 == c2, so there's no need to test them both.
-  return true;
+  return EqualsNoCaseInternal(s1, static_cast<size_t>(-1), s2);
+}
+
+bool StringUtils::EqualsNoCase(std::string_view str1, std::string_view str2)
+{
+  const auto length{str1.size()};
+  if (length != str2.size())
+    return false;
+
+  return EqualsNoCaseInternal(str1.data(), length, str2.data());
+}
+
+bool StringUtils::EqualsNoCase(std::string_view str1, const char* s2)
+{
+  return EqualsNoCaseInternal(str1.data(), str1.size(), s2);
 }
 
 int StringUtils::CompareNoCase(const std::string& str1, const std::string& str2, size_t n /* = 0 */)
@@ -733,36 +758,16 @@ bool StringUtils::EndsWith(const std::string &str1, const char *s2)
   return str1.compare(str1.size() - len2, len2, s2) == 0;
 }
 
-bool StringUtils::EndsWithNoCase(const std::string &str1, const std::string &str2)
+bool StringUtils::EndsWithNoCase(std::string_view str1, std::string_view str2)
 {
-  if (str1.size() < str2.size())
-    return false;
-  const char *s1 = str1.c_str() + str1.size() - str2.size();
-  const char *s2 = str2.c_str();
-  while (*s2 != '\0')
-  {
-    if (::tolower(*s1) != ::tolower(*s2))
-      return false;
-    s1++;
-    s2++;
-  }
-  return true;
-}
+  const int diff = str1.size() - str2.size();
 
-bool StringUtils::EndsWithNoCase(const std::string &str1, const char *s2)
-{
-  size_t len2 = strlen(s2);
-  if (str1.size() < len2)
+  if (diff < 0)
     return false;
-  const char *s1 = str1.c_str() + str1.size() - len2;
-  while (*s2 != '\0')
-  {
-    if (::tolower(*s1) != ::tolower(*s2))
-      return false;
-    s1++;
-    s2++;
-  }
-  return true;
+  else if (diff > 0)
+    str1.remove_prefix(diff);
+
+  return EqualsNoCase(str1, str2);
 }
 
 std::vector<std::string> StringUtils::Split(const std::string& input, const std::string& delimiter, unsigned int iMaxStrings)

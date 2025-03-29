@@ -145,6 +145,39 @@ TEST(TestStringUtils, EqualsNoCase)
   EXPECT_TRUE(StringUtils::EqualsNoCase(empStr, ""));
 }
 
+TEST(TestStringUtils, EqualsNoCaseStringViewChar)
+{
+  using namespace std::literals;
+
+  std::string_view refStr = "TeSt"sv;
+
+  EXPECT_TRUE(StringUtils::EqualsNoCase(refStr, "TeSt"));
+  EXPECT_TRUE(StringUtils::EqualsNoCase(refStr, "tEsT"));
+  EXPECT_FALSE(StringUtils::EqualsNoCase(refStr, "tEsTe"));
+  EXPECT_FALSE(StringUtils::EqualsNoCase(refStr, "tEs"));
+  EXPECT_FALSE(StringUtils::EqualsNoCase(refStr, "tEsU"));
+  EXPECT_FALSE(StringUtils::EqualsNoCase(refStr, "ta"));
+  EXPECT_FALSE(StringUtils::EqualsNoCase(refStr, ""));
+
+  std::string_view empStr;
+  EXPECT_FALSE(StringUtils::EqualsNoCase(empStr, "tEsT"));
+  EXPECT_TRUE(StringUtils::EqualsNoCase(empStr, ""));
+}
+
+TEST(TestStringUtils, EqualsNoCaseCharChar)
+{
+  EXPECT_TRUE(StringUtils::EqualsNoCase("TeSt", "TeSt"));
+  EXPECT_TRUE(StringUtils::EqualsNoCase("TeSt", "tEsT"));
+  EXPECT_FALSE(StringUtils::EqualsNoCase("TeSt", "tEsTe"));
+  EXPECT_FALSE(StringUtils::EqualsNoCase("TeSt", "tEs"));
+  EXPECT_FALSE(StringUtils::EqualsNoCase("TeSt", "tEsU"));
+  EXPECT_FALSE(StringUtils::EqualsNoCase("TeSt", "ta"));
+  EXPECT_FALSE(StringUtils::EqualsNoCase("TeSt", ""));
+
+  EXPECT_FALSE(StringUtils::EqualsNoCase("", "tEsT"));
+  EXPECT_TRUE(StringUtils::EqualsNoCase("", ""));
+}
+
 TEST(TestStringUtils, Left)
 {
   std::string refstr, varstr;

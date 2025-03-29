@@ -88,35 +88,46 @@ bool URIUtils::HasExtension(const std::string& strFileName)
   return iPeriod != std::string::npos && strFileName[iPeriod] == '.';
 }
 
-bool URIUtils::HasExtension(const CURL& url, const std::string& strExtensions)
+bool URIUtils::HasExtension(const CURL& url, std::string_view extensions)
 {
-  return HasExtension(url.GetFileName(), strExtensions);
+  return HasExtension(url.GetFileName(), extensions);
 }
 
-bool URIUtils::HasExtension(const std::string& strFileName, const std::string& strExtensions)
+namespace
 {
-  if (IsURL(strFileName))
+bool IsExtensionInList(std::string_view extension, std::string_view extensions)
+{
+  //! @todo switch to faster case-sensitive comparison once case of extension and list are guaranteed
+  while (extensions.size() > 0)
   {
-    const CURL url(strFileName);
-    return HasExtension(url.GetFileName(), strExtensions);
+    const size_t delim = extensions.find('|');
+    if (delim != std::string_view::npos)
+    {
+      // EndsWith and switched parameters hack to make compound extensions sort-of-work
+      if (StringUtils::EndsWithNoCase(extensions.substr(0, delim), extension))
+        return true;
+      extensions.remove_prefix(delim + 1);
+    }
+    else
+    {
+      return StringUtils::EndsWithNoCase(extensions, extension);
+    }
   }
+  return false;
+}
+} // namespace
 
-  const size_t pos = strFileName.find_last_of("./\\");
-  if (pos == std::string::npos || strFileName[pos] != '.')
+bool URIUtils::HasExtension(const std::string& strFileName, std::string_view strExtensions)
+{
+  std::string extension = GetExtension(strFileName);
+  if (extension.empty())
     return false;
 
-  const std::string extensionLower = StringUtils::ToLower(strFileName.substr(pos));
+  // optimization: extensions are likely but not guaranteed yet to be in lower case and the
+  // comparison with the extension is case-sensitive first.
+  StringUtils::ToLower(extension);
 
-  const std::vector<std::string> extensionsLower =
-      StringUtils::Split(StringUtils::ToLower(strExtensions), '|');
-
-  for (const auto& ext : extensionsLower)
-  {
-    if (StringUtils::EndsWith(ext, extensionLower))
-      return true;
-  }
-
-  return false;
+  return IsExtensionInList(extension, strExtensions);
 }
 
 void URIUtils::RemoveExtension(std::string& strFileName)

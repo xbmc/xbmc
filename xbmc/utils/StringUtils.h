@@ -107,6 +107,8 @@ public:
   static bool EqualsNoCase(const std::string &str1, const std::string &str2);
   static bool EqualsNoCase(const std::string &str1, const char *s2);
   static bool EqualsNoCase(const char *s1, const char *s2);
+  static bool EqualsNoCase(std::string_view str1, std::string_view str2);
+  static bool EqualsNoCase(std::string_view str1, const char* str2);
   static int CompareNoCase(const std::string& str1, const std::string& str2, size_t n = 0);
   static int CompareNoCase(const char* s1, const char* s2, size_t n = 0);
   static int ReturnDigits(const std::string &str);
@@ -141,8 +143,7 @@ public:
   static bool StartsWithNoCase(const char *s1, const char *s2);
   static bool EndsWith(const std::string &str1, const std::string &str2);
   static bool EndsWith(const std::string &str1, const char *s2);
-  static bool EndsWithNoCase(const std::string &str1, const std::string &str2);
-  static bool EndsWithNoCase(const std::string &str1, const char *s2);
+  static bool EndsWithNoCase(std::string_view str1, std::string_view str2);
 
   template<typename CONTAINER>
   static std::string Join(const CONTAINER &strings, const std::string& delimiter)

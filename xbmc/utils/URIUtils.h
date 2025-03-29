@@ -59,16 +59,14 @@ public:
 
   /*!
    \brief Check if filename have any of the listed extensions
-   \param strFileName Path or URL to check
-   \param strExtensions List of '.' prefixed lowercase extensions separated with '|'
-   \return \e true if strFileName have any one of the extensions.
-   \note The check is case insensitive for strFileName, but requires
-         strExtensions to be lowercase. Returns false when strFileName or
-         strExtensions is empty.
+   \param fileName Path or URL to check
+   \param extensions List of '.' prefixed lowercase extensions separated with '|'
+   \return \e true if fileName has any one of the extensions.
+   \note The check is case insensitive.Returns false when fileName or extensions is empty.
    \sa GetExtension
    */
-  static bool HasExtension(const std::string& strFileName, const std::string& strExtensions);
-  static bool HasExtension(const CURL& url, const std::string& strExtensions);
+  static bool HasExtension(const std::string& fileName, std::string_view extensions);
+  static bool HasExtension(const CURL& url, std::string_view extensions);
 
   static void RemoveExtension(std::string& strFileName);
   static std::string ReplaceExtension(const std::string& strFile,
