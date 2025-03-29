@@ -487,7 +487,8 @@ void CGUIDialogMediaSource::UpdateButtons()
     std::string path;
     CURL url(item->GetPath());
     path = url.GetWithoutUserDetails();
-    if (path.empty()) path = "<" + g_localizeStrings.Get(231) + ">"; // <None>
+    if (path.empty())
+      path = g_localizeStrings.Get(1020); // "Enter path..."
     item->SetLabel(path);
   }
   CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_PATH, 0, 0, m_paths);
