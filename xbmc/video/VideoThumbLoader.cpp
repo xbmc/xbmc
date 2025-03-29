@@ -35,7 +35,6 @@
 #include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
-#include "video/guilib/VideoVersionHelper.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -566,8 +565,8 @@ std::string CVideoThumbLoader::GetEmbeddedThumbURL(const CFileItem &item)
 
 void CVideoThumbLoader::DetectAndAddMissingItemData(CFileItem &item)
 {
-  // @todo remove exception for hybrid movie/folder of versions
-  if (item.m_bIsFolder && !StringUtils::StartsWith(item.GetPath(), VIDEODB_PATH_VERSION_ID_ALL))
+  // @todo rework for movies with multiple assets that behave as virtual folders?
+  if (item.m_bIsFolder) // && !StringUtils::StartsWith(item.GetPath(), VIDEODB_PATH_VERSION_ID_ALL))
     return;
 
   if (item.HasVideoInfoTag())

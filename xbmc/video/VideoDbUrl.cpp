@@ -58,6 +58,7 @@ bool CVideoDbUrl::parse()
     case NodeType::TITLE_MUSICVIDEOS:
     case NodeType::MUSICVIDEOS_ALBUM:
       m_type = "musicvideos";
+      break;
 
     default:
       break;
@@ -68,6 +69,10 @@ bool CVideoDbUrl::parse()
     case NodeType::MOVIES_OVERVIEW:
     case NodeType::TITLE_MOVIES:
     case NodeType::RECENTLY_ADDED_MOVIES:
+    case NodeType::MOVIE_ASSET_TYPES: // where to add this - only here or above too?
+    case NodeType::MOVIE_ASSETS: //  what's the right m_type m_itemType value? what's the impact?
+    case NodeType::MOVIE_ASSETS_VERSIONS:
+    case NodeType::MOVIE_ASSETS_EXTRAS:
       m_type = "movies";
       m_itemType = "movies";
       break;
@@ -190,6 +195,8 @@ bool CVideoDbUrl::parse()
     AddOption("year", (int)queryParams.GetYear());
   if (queryParams.GetVideoVersionId() != -1)
     AddOption("videoversionid", (int)queryParams.GetVideoVersionId());
+  if (queryParams.GetVideoAssetType() != -1)
+    AddOption("assetType", (int)queryParams.GetVideoAssetType());
 
   return true;
 }

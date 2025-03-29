@@ -1192,11 +1192,6 @@ public:
                            VideoDbContentType idContent = VideoDbContentType::UNKNOWN,
                            const Filter& filter = Filter());
   VideoAssetInfo GetVideoVersionInfo(const std::string& filenameAndPath);
-  bool GetAssetsForVideo(VideoDbContentType itemType,
-                         int mediaId,
-                         VideoAssetType assetType,
-                         CFileItemList& items);
-  bool GetDefaultVersionForVideo(VideoDbContentType itemType, int mediaId, CFileItem& item);
   bool UpdateAssetsOwner(const std::string& mediaType, int dbIdSource, int dbIdTarget);
 
   int GetMovieId(const std::string& strFilenameAndPath);
@@ -1383,6 +1378,4 @@ private:
   static void AnnounceUpdate(const std::string& content, int id);
 
   static CDateTime GetDateAdded(const std::string& filename, CDateTime dateAdded = CDateTime());
-
-  bool FillMovieItem(std::unique_ptr<dbiplus::Dataset>& dataset, int movieId, CFileItem& item);
 };
