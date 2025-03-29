@@ -1415,15 +1415,8 @@ bool CGUIDialogVideoInfo::DeleteVideoItem(const std::shared_ptr<CFileItem>& item
   {
     std::string strDeletePath = item->GetVideoInfoTag()->GetPath();
 
-    if (StringUtils::EqualsNoCase(URIUtils::GetFileName(strDeletePath), "VIDEO_TS.IFO"))
-    {
-      strDeletePath = URIUtils::GetDirectory(strDeletePath);
-      if (StringUtils::EndsWithNoCase(strDeletePath, "video_ts/"))
-      {
-        URIUtils::RemoveSlashAtEnd(strDeletePath);
-        strDeletePath = URIUtils::GetDirectory(strDeletePath);
-      }
-    }
+    if (URIUtils::IsBlurayPath(strDeletePath) || VIDEO::IsDVDFile(*item) || VIDEO::IsBDFile(*item))
+      strDeletePath = URIUtils::GetDiscBase(strDeletePath);
     if (URIUtils::HasSlashAtEnd(strDeletePath))
       item->m_bIsFolder = true;
 
