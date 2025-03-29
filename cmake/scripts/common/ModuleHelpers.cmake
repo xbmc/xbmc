@@ -358,11 +358,27 @@ macro(BUILD_DEP_TARGET)
   endif()
 
   if(BUILD_COMMAND)
-    set(BUILD_COMMAND BUILD_COMMAND ${BUILD_COMMAND})
+    # DEP_BUILDENV is potentially populated in a toolchain file. We dont want to use it
+    # for host tool builds, so make sure to check _LIB_TYPE
+    if(NOT CMAKE_ARGS AND
+      (DEP_BUILDENV AND NOT ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_LIB_TYPE STREQUAL "native"))
+      # DEP_BUILDENV only used for non cmake externalproject_add builds
+      set(BUILD_COMMAND BUILD_COMMAND ${DEP_BUILDENV} ${BUILD_COMMAND})
+    else()
+      set(BUILD_COMMAND BUILD_COMMAND ${BUILD_COMMAND})
+    endif()
   endif()
 
   if(INSTALL_COMMAND)
-    set(INSTALL_COMMAND INSTALL_COMMAND ${INSTALL_COMMAND})
+    # DEP_BUILDENV is potentially populated in a toolchain file. We dont want to use it
+    # for host tool builds, so make sure to check _LIB_TYPE
+    if(NOT CMAKE_ARGS AND
+      (DEP_BUILDENV AND NOT ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_LIB_TYPE STREQUAL "native"))
+      # DEP_BUILDENV only used for non cmake externalproject_add builds
+      set(INSTALL_COMMAND INSTALL_COMMAND ${DEP_BUILDENV} ${INSTALL_COMMAND})
+    else()
+      set(INSTALL_COMMAND INSTALL_COMMAND ${INSTALL_COMMAND})
+    endif()
   endif()
 
   if(BUILD_IN_SOURCE)

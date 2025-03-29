@@ -213,6 +213,7 @@ set(PROJECT_BUILDENV CC_FOR_BUILD=${CC_FOR_BUILD}
                      OBJDUMP_FOR_BUILD=${OBJDUMP_FOR_BUILD}
                      CFLAGS_FOR_BUILD=${CFLAGS_FOR_BUILD}
                      LDFLAGS_FOR_BUILD=${LDFLAGS_FOR_BUILD}
+                     PATH=${NATIVEPREFIX}/bin:$ENV{PATH}
                      )
 
 # variable to easily set host/target env for non cmake internal dep builds

@@ -1,0 +1,326 @@
+--- /dev/null
++++ b/CMakeLists.txt
+@@ -0,0 +1,203 @@
++cmake_minimum_required(VERSION 3.10)
++
++set(AACS_VERSION_MAJOR 0)
++set(AACS_VERSION_MINOR 11)
++set(AACS_VERSION_MICRO 1)
++
++project(libaacs VERSION ${AACS_VERSION_MAJOR}.${AACS_VERSION_MINOR}.${AACS_VERSION_MICRO} LANGUAGES C)
++
++configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/libaacs/aacs-version.h.in
++               ${CMAKE_CURRENT_SOURCE_DIR}/src/libaacs/aacs-version.h)
++
++find_package(libgpg-error 1.2.7 REQUIRED NO_MODULE)
++find_package(libgcrypt 1.7 REQUIRED NO_MODULE)
++find_package(iconv REQUIRED NO_MODULE)
++
++if(MSVC)
++  set(CMAKE_DEBUG_POSTFIX "d")
++endif()
++
++find_program(BISON NAMES bison win_bison HINTS ${NATIVEPREFIX}/bin)
++include(FindPackageHandleStandardArgs)
++find_package_handle_standard_args(BISON REQUIRED_VARS BISON)
++if(NOT ${BISON_FOUND})
++  message(FATAL_ERROR "BISON not found, can't generate error codes")
++endif()
++find_program(FLEX NAMES flex win_flex HINTS ${NATIVEPREFIX}/bin)
++find_package_handle_standard_args(FLEX REQUIRED_VARS FLEX)
++if(NOT ${FLEX_FOUND})
++  message(FATAL_ERROR "FLEX not found, can't generate error codes")
++endif()
++
++add_library(libaacs SHARED
++  src/file/dirs.h
++  src/file/dirs_win32.c
++  src/file/file.c
++  src/file/file.h
++  src/file/file_win32.c
++  src/file/filesystem.c
++  src/file/filesystem.h
++  src/file/keydb.h
++  src/file/keydbcfg-lexer.c
++  src/file/keydbcfg-parser.c
++  src/file/keydbcfg.c
++  src/file/keydbcfg.h
++  src/file/mmc_device.h
++  src/file/mmc_device_win32.c
++  src/libaacs/aacs.c
++  src/libaacs/aacs.h
++  src/libaacs/cci.c
++  src/libaacs/cci.h
++  src/libaacs/cci_data.h
++  src/libaacs/content_cert.c
++  src/libaacs/content_cert.h
++  src/libaacs/crypto.c
++  src/libaacs/crypto.h
++  src/libaacs/ec.c
++  src/libaacs/mkb.c
++  src/libaacs/mkb.h
++  src/libaacs/mmc.c
++  src/libaacs/mmc.h
++  src/libaacs/unit_key.c
++  src/libaacs/unit_key.h
++  src/libaacs/aacs-version.h
++  src/util/attributes.h
++  src/util/logging.c
++  src/util/logging.h
++  src/util/macro.h
++  src/util/strutl.c
++  src/util/strutl.h
++)
++
++target_compile_definitions(libaacs
++  PRIVATE
++  HAVE_CONFIG_H
++  PKGDATADIR=""
++  WIN32_LEAN_AND_MEAN
++  _CRT_SECURE_NO_WARNINGS
++  _CRT_NONSTDC_NO_WARNINGS
++  __PRETTY_FUNCTION__=__FUNCTION__
++)
++
++if(WINDOWS_STORE)
++  target_compile_definitions(libaacs
++    PRIVATE
++      MS_APP
++  )
++else()
++  target_compile_definitions(libaacs
++    PRIVATE
++    _WIN32_IE=0x0600
++    _WIN32_WINNT=0x0600
++  )
++
++  target_link_libraries(libaacs
++    PRIVATE
++    shell32.lib
++  )
++endif()
++
++target_link_libraries(libaacs
++  PRIVATE
++  kernel32.lib
++)
++
++target_link_options(libaacs
++  PRIVATE
++    /debug:full
++)
++  
++target_include_directories(libaacs
++  PRIVATE
++  $<BUILD_INTERFACE:.;cmake;src;src/util;${CMAKE_CURRENT_BINARY_DIR}>
++  INTERFACE
++  $<INSTALL_INTERFACE:include/libaacs>
++)
++
++add_custom_command(
++  OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/src/file/keydbcfg-parser.c ${CMAKE_CURRENT_SOURCE_DIR}/src/file/keydbcfg-lexer.c
++  COMMAND ${FLEX} -L ${CMAKE_CURRENT_SOURCE_DIR}/src/file/keydbcfg-lexer.l
++  COMMAND ${CMAKE_COMMAND} -E rename ${CMAKE_CURRENT_BINARY_DIR}/lex.yy.c ${CMAKE_CURRENT_SOURCE_DIR}/src/file/keydbcfg-lexer.c
++  COMMAND ${BISON} -l -y -d -p libaacs_yy -o ${CMAKE_CURRENT_SOURCE_DIR}/src/file/keydbcfg-parser.c ${CMAKE_CURRENT_SOURCE_DIR}/src/file/keydbcfg-parser.y
++)
++
++target_link_libraries(libaacs PRIVATE libgpg-error::libgpg-error libgcrypt::libgcrypt iconv::iconv)
++
++if (NOT WINDOWS_STORE)
++  set(EX_SRCS
++    ${CMAKE_CURRENT_SOURCE_DIR}/src/examples/aacs_info.c
++  )
++
++  ADD_EXECUTABLE(aacsinfo ${EX_SRCS})
++  target_compile_definitions(aacsinfo
++    PRIVATE
++    HAVE_CONFIG_H
++    _CRT_SECURE_NO_WARNINGS
++    _CRT_NONSTDC_NO_WARNINGS)
++    
++  target_include_directories(aacsinfo
++    PRIVATE
++    $<BUILD_INTERFACE:.;cmake;src;${CMAKE_CURRENT_BINARY_DIR}>
++    INTERFACE
++  )
++  add_dependencies(aacsinfo libaacs)
++  target_link_libraries(aacsinfo PRIVATE libaacs)
++endif(NOT WINDOWS_STORE)
++
++include(CMakePackageConfigHelpers)
++write_basic_package_version_file(
++  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
++  VERSION ${PROJECT_VERSION}
++  COMPATIBILITY AnyNewerVersion
++)
++
++include(CMakePackageConfigHelpers)
++write_basic_package_version_file(
++  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
++  VERSION ${PROJECT_VERSION}
++  COMPATIBILITY AnyNewerVersion
++)
++
++install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}
++  RUNTIME DESTINATION bin
++  LIBRARY DESTINATION lib
++  ARCHIVE DESTINATION lib
++)
++
++install(FILES src/libaacs/aacs.h src/file/filesystem.h src/libaacs/aacs-version.h DESTINATION include/${PROJECT_NAME})
++
++if(MSVC)
++  set_target_properties(libaacs
++    PROPERTIES
++      COMPILE_PDB_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}
++      COMPILE_PDB_NAME libaacs
++      COMPILE_PDB_NAME_DEBUG libaacsd
++  )
++  install(FILES
++    ${PROJECT_BINARY_DIR}/RelWithDebInfo/libaacs.pdb
++    DESTINATION lib
++    CONFIGURATIONS RelWithDebInfo
++  )
++  install(FILES
++    ${PROJECT_BINARY_DIR}/Debug/libaacsd.pdb
++    DESTINATION lib
++    CONFIGURATIONS Debug
++  )
++endif()
++
++install(EXPORT ${PROJECT_NAME}
++  FILE
++    ${PROJECT_NAME}.cmake
++  NAMESPACE
++    ${PROJECT_NAME}::
++  DESTINATION
++    lib/cmake/${PROJECT_NAME}
++)
++
++install(
++  FILES
++    cmake/${PROJECT_NAME}-config.cmake
++    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
++  DESTINATION
++    lib/cmake/${PROJECT_NAME}
++)
+--- /dev/null
++++ b/cmake/libaacs-config.cmake
+@@ -0,0 +1 @@
++include(${CMAKE_CURRENT_LIST_DIR}/libaacs.cmake)
+--- /dev/null
++++ b/cmake/config.h
+@@ -0,0 +1,113 @@
++/* Define to 1 if you have the declaration of `strerror_r', and to 0 if you
++   don't. */
++#define HAVE_DECL_STRERROR_R 0
++
++/* Define to 1 if you have the <dirent.h> header file, and it defines `DIR'.
++   */
++/* #undef HAVE_DIRENT_H */
++
++/* Define to 1 if you have the <dlfcn.h> header file. */
++/* #undef HAVE_DLFCN_H */
++
++/* Define to 1 if you have the <errno.h> header file. */
++#define HAVE_ERRNO_H 1
++
++/* Define to 1 if you have the <inttypes.h> header file. */
++#define HAVE_INTTYPES_H 1
++
++/* Define to 1 if you have the <libgen.h> header file. */
++#define HAVE_LIBGEN_H 1
++
++/* Define to 1 if you have the gpg-error library */
++#define HAVE_LIBGPG_ERROR 1
++
++/* Define to 1 if you have the <limits.h> header file. */
++#define HAVE_LIMITS_H 1
++
++/* Define to 1 if you have the <linux/cdrom.h> header file. */
++/* #undef HAVE_LINUX_CDROM_H */
++
++/* Define to 1 if you have the <malloc.h> header file. */
++#define HAVE_MALLOC_H 1
++
++/* Define to 1 if you have the <memory.h> header file. */
++#define HAVE_MEMORY_H 1
++
++/* Define to 1 if you have the <mntent.h> header file. */
++/* #undef HAVE_MNTENT_H */
++
++/* Define to 1 if you have the <ndir.h> header file, and it defines `DIR'. */
++/* #undef HAVE_NDIR_H */
++
++/* Define to 1 if you have the <pthread.h> header file. */
++/* #undef HAVE_PTHREAD_H */
++
++/* Define to 1 if you have the <stdarg.h> header file. */
++#define HAVE_STDARG_H 1
++
++/* Define to 1 if you have the <stdint.h> header file. */
++#define HAVE_STDINT_H 1
++
++/* Define to 1 if you have the <stdlib.h> header file. */
++#define HAVE_STDLIB_H 1
++
++/* Define to 1 if you have the `strerror_r' function. */
++/* #undef HAVE_STRERROR_R */
++
++/* Define to 1 if you have the <strings.h> header file. */
++/* #undef HAVE_STRINGS_H */
++
++/* Define to 1 if you have the <string.h> header file. */
++#define HAVE_STRING_H 1
++
++/* Define to 1 if `d_type' is a member of `struct dirent'. */
++/* #undef HAVE_STRUCT_DIRENT_D_TYPE */
++
++/* Define to 1 if you have the <sys/dir.h> header file, and it defines `DIR'.
++   */
++/* #undef HAVE_SYS_DIR_H */
++
++/* Define to 1 if you have the <sys/mount.h> header file. */
++/* #undef HAVE_SYS_MOUNT_H */
++
++/* Define to 1 if you have the <sys/ndir.h> header file, and it defines `DIR'.
++   */
++/* #undef HAVE_SYS_NDIR_H */
++
++/* Define to 1 if you have the <sys/param.h> header file. */
++#define HAVE_SYS_PARAM_H 1
++
++/* Define to 1 if you have the <sys/select.h> header file. */
++/* #undef HAVE_SYS_SELECT_H */
++
++/* Define to 1 if you have the <sys/stat.h> header file. */
++#define HAVE_SYS_STAT_H 1
++
++/* Define to 1 if you have the <sys/time.h> header file. */
++/* #undef HAVE_SYS_TIME_H */
++
++/* Define to 1 if you have the <sys/types.h> header file. */
++#define HAVE_SYS_TYPES_H 1
++
++/* Define to 1 if you have the <time.h> header file. */
++#define HAVE_TIME_H 1
++
++/* Define to 1 if you have the <unistd.h> header file. */
++#define HAVE_UNISTD_H 1
++
++/* Define as the return type of signal handlers (`int' or `void'). */
++#define RETSIGTYPE void
++
++/* Define to 1 if you have the ANSI C header files. */
++#define STDC_HEADERS 1
++
++/* Define to 1 if strerror_r returns char *. */
++/* #undef STRERROR_R_CHAR_P */
++
++/* Use IOKit for MMC access */
++/* #undef USE_IOKIT */
++
++/* Define to 1 if `lex' declares `yytext' as a `char *' by default, not a
++   `char[]'. */
++/* #undef YYTEXT_POINTER */
++

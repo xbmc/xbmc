@@ -1,0 +1,46 @@
+--- a/src/file/dirs_win32.c
++++ b/src/file/dirs_win32.c
+@@ -29,7 +29,9 @@
+ #include <string.h>
+ 
+ #include <windows.h>
++#ifndef MS_APP
+ #include <shlobj.h>
++#endif
+ #include <limits.h>
+ 
+ 
+@@ -40,6 +42,9 @@
+ 
+ char *file_get_data_home(void)
+ {
++#ifdef MS_APP
++    return NULL;
++#else
+     wchar_t wdir[MAX_PATH];
+ 
+     /* Get the "Application Data" folder for the user */
+@@ -55,6 +60,7 @@
+ 
+     BD_DEBUG(DBG_FILE, "Can't find user configuration directory !\n");
+     return NULL;
++#endif
+ }
+ 
+ char *file_get_cache_home(void)
+@@ -64,6 +70,9 @@
+ 
+ const char *file_get_config_system(const char *dir)
+ {
++#ifdef MS_APP
++    return NULL;
++#else
+     static char *appdir = NULL;
+     wchar_t wdir[MAX_PATH];
+ 
+@@ -92,4 +101,5 @@
+     }
+ 
+     return dir;
++#endif
+ }
