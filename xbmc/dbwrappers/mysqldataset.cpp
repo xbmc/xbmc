@@ -8,6 +8,7 @@
 
 #include "mysqldataset.h"
 
+#include "ServiceBroker.h"
 #include "Util.h"
 #include "network/DNSNameCache.h"
 #include "network/WakeOnAccess.h"
@@ -159,7 +160,8 @@ int MysqlDatabase::connect(bool create_new)
     return DB_CONNECTION_NONE;
 
   std::string resolvedHost;
-  if (!StringUtils::EqualsNoCase(host, "localhost") && CDNSNameCache::Lookup(host, resolvedHost))
+  if (!StringUtils::EqualsNoCase(host, "localhost") &&
+      CServiceBroker::GetDNSNameCache()->Lookup(host, resolvedHost))
   {
     if (host != resolvedHost)
       CLog::LogF(LOGDEBUG, "Replacing configured host {} with resolved host {}", host,

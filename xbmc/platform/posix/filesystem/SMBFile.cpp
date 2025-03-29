@@ -373,7 +373,7 @@ CURL CSMB::GetResolvedUrl(const CURL& url)
   CURL tmpUrl(url);
   std::string resolvedHostName;
 
-  if (CDNSNameCache::Lookup(tmpUrl.GetHostName(), resolvedHostName))
+  if (CServiceBroker::GetDNSNameCache()->Lookup(tmpUrl.GetHostName(), resolvedHostName))
     tmpUrl.SetHostName(resolvedHostName);
 
   return tmpUrl;

@@ -8,9 +8,11 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "filesystem/CurlFile.h"
 #include "filesystem/HTTPDirectory.h"
+#include "network/DNSNameCache.h"
 #include "network/WebServer.h"
 #include "network/httprequesthandler/HTTPVfsHandler.h"
 #include "settings/MediaSourceSettings.h"
@@ -81,6 +83,8 @@ protected:
 protected:
   void SetUp() override
   {
+    CServiceBroker::RegisterDNSNameCache(std::make_shared<CDNSNameCache>());
+
     SetupMediaSources();
 
     m_webServer.Start(m_webServerPort, "", "");
@@ -95,6 +99,8 @@ protected:
     m_webServer.UnregisterRequestHandler(&m_vfsHandler);
 
     TearDownMediaSources();
+
+    CServiceBroker::UnregisterDNSNameCache();
   }
 
   void SetupMediaSources()
