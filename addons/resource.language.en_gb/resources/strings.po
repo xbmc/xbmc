@@ -7763,7 +7763,17 @@ msgctxt "#13476"
 msgid "16 bit per channel"
 msgstr ""
 
-#empty strings from id 13477 to 13504
+#: system/settings/settings.xml
+msgctxt "#13477"
+msgid "Texture Compression"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#13478"
+msgid "Allowing texture compression when available helps to boost memory performance of gui rendering, however if the video is also compressed it may cause issues on some systems where gui and video can't be displayed at the same time if the are both compressed"
+msgstr ""
+
+#empty strings from id 13479 to 13504
 
 #: system/settings/settings.xml
 msgctxt "#13505"

@@ -205,6 +205,13 @@
           </constraints>
           <control type="spinner" format="string" />
         </setting>
+        <setting id="videoplayer.compression" type="boolean" label="13477" help="13478">
+          <requirement>HAS_GLES</requirement>
+          <visible>false</visible>
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
       </group>
     </category>
   </section>

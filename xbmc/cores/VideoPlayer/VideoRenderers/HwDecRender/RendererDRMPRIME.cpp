@@ -26,6 +26,7 @@
 
 using namespace KODI::WINDOWING::GBM;
 
+const std::string SETTING_VIDEOPLAYER_COMPRESSION = "videoplayer.compression";
 const std::string SETTING_VIDEOPLAYER_USEPRIMERENDERER = "videoplayer.useprimerenderer";
 
 CRendererDRMPRIME::~CRendererDRMPRIME()
@@ -95,6 +96,10 @@ void CRendererDRMPRIME::Register()
     CServiceBroker::GetSettingsComponent()
         ->GetSettings()
         ->GetSetting(SETTING_VIDEOPLAYER_USEPRIMERENDERER)
+        ->SetVisible(true);
+    CServiceBroker::GetSettingsComponent()
+        ->GetSettings()
+        ->GetSetting(SETTING_VIDEOPLAYER_COMPRESSION)
         ->SetVisible(true);
     VIDEOPLAYER::CRendererFactory::RegisterRenderer("drm_prime", CRendererDRMPRIME::Create);
     return;
