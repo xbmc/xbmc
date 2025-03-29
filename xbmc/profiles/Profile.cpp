@@ -11,8 +11,7 @@
 #include "XBDateTime.h"
 #include "utils/XMLUtils.h"
 
-CProfile::CLock::CLock(LockMode type, const std::string& password)
-  : mode(type), code(password), settings(SettingsLock::NONE)
+CProfile::CLock::CLock(LockMode type, const std::string& password) : mode(type), code(password)
 {
   programs = false;
   pictures = false;
