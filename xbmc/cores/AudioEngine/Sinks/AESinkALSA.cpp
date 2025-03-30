@@ -893,8 +893,8 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
   snd_pcm_hw_params_any(m_pcm, hw_params);
   snd_pcm_hw_params_set_access(m_pcm, hw_params, SND_PCM_ACCESS_RW_INTERLEAVED);
 
-  unsigned int sampleRate   = inconfig.sampleRate;
-  snd_pcm_hw_params_set_rate_near    (m_pcm, hw_params, &sampleRate, NULL);
+  unsigned int sampleRate = inconfig.sampleRate;
+  snd_pcm_hw_params_set_rate_near(m_pcm, hw_params, &sampleRate, NULL);
 
   unsigned int channelCount = inconfig.channels;
   /* select a channel count >=wanted, or otherwise the highest available */
@@ -939,7 +939,7 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
         continue;
 
       if (m_passthrough && i != AE_FMT_S16BE && i != AE_FMT_S16LE)
-	continue;
+        continue;
 
       fmt = AEFormatToALSAFormat(i);
       if (fmt == SND_PCM_FORMAT_UNKNOWN)
@@ -1066,7 +1066,7 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
             bufferSize);
 
   /* set the format parameters */
-  outconfig.sampleRate   = sampleRate;
+  outconfig.sampleRate = sampleRate;
 
   /* if periodSize is too small Audio Engine might starve */
   m_fragmented = false;
