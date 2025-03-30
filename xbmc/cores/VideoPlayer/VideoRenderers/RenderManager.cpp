@@ -1215,8 +1215,8 @@ void CRenderManager::PrepareNextRender()
       m_audioLatencyTweak -
       m_videoDelay);
 
-  double frameOnScreen = m_dvdClock.GetClock();
-  double renderPts = frameOnScreen + m_displayLatency;
+  double clockPts = m_dvdClock.GetClock();
+  double renderPts = clockPts + m_displayLatency;
 
   int nextFrameIndex = m_queued.front();
   double nextFramePts = m_Queue[nextFrameIndex].pts;
@@ -1245,10 +1245,12 @@ void CRenderManager::PrepareNextRender()
   }
 
   logComponentM(LOGDEBUG, LOGAVTIMING, "CRenderManager",
-                "frameOnScreen: {:.3f} renderPts: {:.3f} nextFramePts: {:.3f} -> diff: {:.3f}  render: {:d} "
-                "forceNext: {:d}",
-                frameOnScreen / DVD_TIME_BASE, renderPts / DVD_TIME_BASE, nextFramePts / DVD_TIME_BASE,
-                (renderPts - nextFramePts) / DVD_TIME_BASE, renderPts >= nextFramePts, m_forceNext);
+                "clockPts: [{:.3f}] renderPts: [{:.3f}] nextFramePts: [{:.3f}] "
+                "-> diff: [{:.3f}] render: [{:d}] "
+                "forceNext: [{:d}[] queueSize: [{:d}] frametime: [{:.3f}]",
+                (clockPts / DVD_TIME_BASE), (renderPts / DVD_TIME_BASE), (nextFramePts / DVD_TIME_BASE),
+                ((renderPts - nextFramePts) / DVD_TIME_BASE), (renderPts >= nextFramePts),
+                m_forceNext, m_queued.size(), (frametime / DVD_TIME_BASE));
 
   bool combined = false;
   if (m_presentsourcePast >= 0)
