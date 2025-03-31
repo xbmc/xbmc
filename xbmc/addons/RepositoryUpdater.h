@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "powermanagement/PowerState.h"
 #include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 #include "threads/Timer.h"
@@ -31,7 +32,10 @@ class CRepositoryUpdateJob;
 
 struct AddonEvent;
 
-class CRepositoryUpdater : private ITimerCallback, private IJobCallback, public ISettingCallback
+class CRepositoryUpdater : private ITimerCallback,
+                           private IJobCallback,
+                           public ISettingCallback,
+                           public CPowerState
 {
 public:
   explicit CRepositoryUpdater(CAddonMgr& addonMgr);

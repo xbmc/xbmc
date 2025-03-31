@@ -38,6 +38,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   if(ZLIB_FOUND)
     add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS ZLIB::ZLIB)
+
+    # Required for external searches. Not used internally
+    set(ZLIB_FOUND ON CACHE BOOL "ZLIB found")
+    mark_as_advanced(ZLIB_FOUND)
   else()
     if(ZLIB_FIND_REQUIRED)
       message(FATAL_ERROR "Zlib libraries were not found.")

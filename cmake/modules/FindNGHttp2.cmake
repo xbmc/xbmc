@@ -11,6 +11,10 @@
 if(NOT TARGET LIBRARY::NGHttp2)
 
   macro(buildlibnghttp2)
+
+    set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/01-all-cmake-version.patch")
+    generate_patchcommand("${patches}")
+
     set(CMAKE_ARGS -DENABLE_DEBUG=OFF
                    -DENABLE_FAILMALLOC=OFF
                    -DENABLE_LIB_ONLY=ON

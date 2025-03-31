@@ -36,6 +36,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     # Add Crypto as a link library to easily propagate both targets to our custom target
     set_target_properties(OpenSSL::SSL PROPERTIES
                                        INTERFACE_LINK_LIBRARIES "OpenSSL::Crypto")
+
+    # Required for external searches. Not used internally
+    set(OpenSSL_FOUND ON CACHE BOOL "OpenSSL found")
+    mark_as_advanced(OpenSSL_FOUND)
   else()
     if(OpenSSL_FIND_REQUIRED)
       message(FATAL_ERROR "OpenSSL libraries were not found.")
