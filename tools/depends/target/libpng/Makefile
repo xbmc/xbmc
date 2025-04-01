@@ -5,20 +5,12 @@ DEPS = ../../Makefile.include Makefile LIBPNG-VERSION ../../download-files.inclu
 CMAKE_OPTIONS=-DPNG_SHARED=OFF \
               -DPNG_STATIC=ON \
               -DPNG_TESTS=OFF \
-              -DPNG_DEBUG=OFF
+              -DPNG_DEBUG=OFF \
+              -DPNG_HARDWARE_OPTIMIZATIONS=ON
 
-ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
-  # hardware optimizations require NEON instructions that
-  # fail on m1 hardware and ios/tvos, so just disable for any arm64 target cpu on
-  # an apple-darwin target
-  ifeq ($(CPU), arm64)
-    CMAKE_OPTIONS+= -DPNG_HARDWARE_OPTIMIZATIONS=OFF
-  else
-    CMAKE_OPTIONS+= -DPNG_HARDWARE_OPTIMIZATIONS=ON
-  endif
-else
-  CMAKE_OPTIONS+= -DPNG_HARDWARE_OPTIMIZATIONS=ON \
-                  -DZLIB_ROOT=$(PREFIX)
+# provide ZLIB_ROOT if platform is building zlib
+ifneq ($(HAS_ZLIB),1)
+  CMAKE_OPTIONS+= -DZLIB_ROOT=$(PREFIX)
 endif
 
 LIBDYLIB=$(PLATFORM)/build/$(BYPRODUCT)
