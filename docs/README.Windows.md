@@ -55,7 +55,7 @@ To build Kodi:
 * **[CMake](https://cmake.org/download/)** (version 3.20 or greater is required to build Kodi, version 3.21 or greater to build with Visual Studio 2022)
 * **[Git for Windows](https://gitforwindows.org/)**
 * **[Java Runtime Environment (JRE)](http://www.oracle.com/technetwork/java/javase/downloads/index.html)**
-* **[Nullsoft scriptable install system (NSIS)](http://nsis.sourceforge.net/Download)** (Only needed if you want to generate an installer file)
+* **[Nullsoft scriptable install system (NSIS)](http://nsis.sourceforge.net/Download)** version 3.04 or greater (Only needed if you want to generate an installer file)
 * **[Visual Studio 2022](https://visualstudio.microsoft.com/downloads/)** or **[Visual Studio 2019](https://visualstudio.microsoft.com/vs/older-downloads/)** (Community Edition is fine)
 
 To run Kodi you need a relatively recent CPU with integrated GPU or discrete GPU with up-to-date graphics device-drivers installed from the manufacturer's website.
