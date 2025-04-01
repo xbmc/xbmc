@@ -252,7 +252,7 @@
 						<param name="label" value="$LOCALIZE[24020]" />
 					</include>
 					<control type="radiobutton" id="13">
-						<width>262</width>
+						<width>264</width>
 						<height>140</height>
 						<align>center</align>
 						<aligny>top</aligny>
@@ -262,6 +262,7 @@
 						<radioposy>17</radioposy>
 						<radiowidth>100</radiowidth>
 						<font>font12</font>
+						<hitrect x="21" y="21" w="245" h="100" />
 						<visible>Control.IsEnabled(13)</visible>
 					</control>
 					<include content="InfoDialogButton">
