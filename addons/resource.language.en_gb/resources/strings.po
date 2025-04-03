@@ -17012,7 +17012,19 @@ msgctxt "#25015"
 msgid "Selected playlist is already in use. Associate with this episode instead?"
 msgstr ""
 
-#empty strings from id 25016 to 29800
+#. Inform user that no valid movie playlist has been found on disc
+#: xbmc/video/dialogs/GUIDialogSimpleMenu.cpp
+msgctxt "#25016"
+msgid "No valid movie playlist has been found."
+msgstr ""
+
+#. Inform user that no valid episode playlist has been found on disc
+#: xbmc/video/dialogs/GUIDialogSimpleMenu.cpp
+msgctxt "#25017"
+msgid "No valid episode playlist has been found."
+msgstr ""
+
+#empty strings from id 25018 to 29800
 
 #: unused
 msgctxt "#29801"

@@ -29,20 +29,60 @@
 
 #include <algorithm>
 #include <cassert>
+#include <chrono>
 #include <memory>
 #include <regex>
 #include <set>
 #include <string>
 
+#include <fmt/chrono.h>
 #include <libbluray/bluray-version.h>
 #include <libbluray/bluray.h>
 #include <libbluray/log_control.h>
+
+using namespace std::chrono_literals;
 
 namespace XFILE
 {
 
 namespace
 {
+
+constexpr unsigned int GetBits(unsigned int value, unsigned int firstBit, unsigned int numBits)
+{
+  return (value >> (firstBit - numBits)) & ((1 << numBits) - 1); // bits 32->1
+}
+
+constexpr unsigned int GetDWord(std::span<std::byte> bytes, unsigned int offset)
+{
+  if (bytes.size() < offset + 4)
+    throw std::out_of_range("Not enough bytes to extract a DWORD");
+  return static_cast<unsigned int>(
+      static_cast<uint8_t>(bytes[offset + 3]) | static_cast<uint8_t>(bytes[offset + 2]) << 8 |
+      static_cast<uint8_t>(bytes[offset + 1]) << 16 | static_cast<uint8_t>(bytes[offset]) << 24);
+}
+
+constexpr unsigned int GetWord(std::span<std::byte> bytes, unsigned int offset)
+{
+  if (bytes.size() < offset + 2)
+    throw std::out_of_range("Not enough bytes to extract a WORD");
+  return static_cast<unsigned int>(static_cast<uint8_t>(bytes[offset + 1]) |
+                                   static_cast<uint8_t>(bytes[offset]) << 8);
+}
+
+constexpr uint8_t GetByte(std::span<std::byte> bytes, unsigned int offset)
+{
+  if (bytes.size() < offset + 1)
+    throw std::out_of_range("Not enough bytes to extract a BYTE");
+  return static_cast<uint8_t>(bytes[offset]);
+}
+
+std::string GetString(std::span<std::byte> bytes, unsigned int offset, unsigned int length)
+{
+  if (bytes.size() < offset + length)
+    throw std::out_of_range("Not enough bytes to extract a STRING");
+  return std::string{reinterpret_cast<const char*>(bytes.data() + offset), length};
+}
 
 void AddOptionsAndSort(const CURL& url, CFileItemList& items, bool blurayMenuSupport)
 {
@@ -56,6 +96,1478 @@ void AddOptionsAndSort(const CURL& url, CFileItemList& items, bool blurayMenuSup
                       LABEL_MASKS("%L", "%I", "%L", "%I")); // FileName, Size | Foldername, Size
 }
 
+std::map<unsigned int, ClipInformation> lcl_clips;
+
+constexpr unsigned int OFFSET_STREAM_TYPE = 1;
+constexpr unsigned int OFFSET_PLAYITEM_PACKET_IDENTIFIER = 2;
+constexpr unsigned int OFFSET_SUBPATH_SUBPATH_ID = 2;
+constexpr unsigned int OFFSET_SUBPATH_SUBCLIP_ID = 3;
+constexpr unsigned int OFFSET_SUBPATH_PACKET_IDENTIFIER = 4;
+constexpr unsigned int OFFSET_DV_PIP_SUBPATH_ID = 2;
+constexpr unsigned int OFFSET_DV_PIP_PACKET_IDENTIFIER = 3;
+constexpr unsigned int OFFSET_STREAM_CODING = 1;
+constexpr unsigned int OFFSET_STREAM_VIDEO_FLAG_1 = 2;
+constexpr unsigned int OFFSET_STREAM_VIDEO_FLAG_2 = 3;
+constexpr unsigned int OFFSET_STREAM_VIDEO_FLAG_3 = 4;
+constexpr unsigned int OFFSET_STREAM_AUDIO_FLAG_1 = 2;
+constexpr unsigned int OFFSET_STREAM_AUDIO_LANGUAGE = 3;
+constexpr unsigned int OFFSET_STREAM_SUB_LANGUAGE = 2;
+constexpr unsigned int OFFSET_STREAM_TEXT_ENCODING = 2;
+constexpr unsigned int OFFSET_STREAM_TEXT_LANGUAGE = 3;
+constexpr unsigned int OFFSET_STREAM_SECONDARY_REFERENCES = 2;
+
+StreamInformation ParseStream(std::vector<std::byte>& buffer,
+                              unsigned int& offset,
+                              STREAM_TYPE streamType)
+{
+  StreamInformation streamInformation;
+  unsigned int length{GetByte(buffer, offset)};
+
+  const BLURAY_STREAM_TYPE type{GetByte(buffer, offset + OFFSET_STREAM_TYPE)};
+  streamInformation.type = type;
+  switch (type)
+  {
+    case BLURAY_STREAM_TYPE::PLAYITEM: // a stream of the clip used by the PlayItem
+    {
+      streamInformation.packetIdentifier =
+          GetWord(buffer, offset + OFFSET_PLAYITEM_PACKET_IDENTIFIER);
+      break;
+    }
+    case BLURAY_STREAM_TYPE::
+        SUBPATH: // a stream of the clip used by a SubPath (types 2, 3, 4, 5, 6, 8 or 9)
+    {
+      streamInformation.subpathId = GetWord(buffer, offset + OFFSET_SUBPATH_SUBPATH_ID);
+      streamInformation.subclipId = GetWord(buffer, offset + OFFSET_SUBPATH_SUBCLIP_ID);
+      streamInformation.packetIdentifier =
+          GetWord(buffer, offset + OFFSET_SUBPATH_PACKET_IDENTIFIER);
+      break;
+    }
+    case BLURAY_STREAM_TYPE::
+        SUBPATH_INMUX_SYNCHRONOUS_PIP: // a stream of the clip used by a SubPath (type 7)
+    case BLURAY_STREAM_TYPE::
+        SUBPATH_DOLBY_VISION_LAYER: // a stream of the clip used by a SubPath (type 10)
+    {
+      streamInformation.subpathId = GetWord(buffer, offset + OFFSET_DV_PIP_SUBPATH_ID);
+      streamInformation.packetIdentifier =
+          GetWord(buffer, offset + OFFSET_DV_PIP_PACKET_IDENTIFIER);
+      break;
+    }
+  }
+  offset += length + 1;
+
+  length = GetByte(buffer, offset);
+  const ENCODING_TYPE coding{GetByte(buffer, offset + OFFSET_STREAM_CODING)};
+  streamInformation.coding = coding;
+  switch (coding)
+  {
+    case ENCODING_TYPE::VIDEO_MPEG1:
+    case ENCODING_TYPE::VIDEO_MPEG2:
+    case ENCODING_TYPE::VIDEO_H264:
+    case ENCODING_TYPE::VIDEO_HEVC:
+    case ENCODING_TYPE::VIDEO_VC1:
+    {
+      unsigned int flag{GetByte(buffer, offset + OFFSET_STREAM_VIDEO_FLAG_1)};
+      streamInformation.format = GetBits(flag, 8, 4);
+      streamInformation.rate = GetBits(flag, 4, 4);
+      if (coding == ENCODING_TYPE::VIDEO_HEVC)
+      {
+        flag = GetByte(buffer, offset + OFFSET_STREAM_VIDEO_FLAG_2);
+        streamInformation.dynamicRangeType = GetBits(flag, 8, 4);
+        streamInformation.colorSpace = GetBits(flag, 4, 4);
+        flag = GetByte(buffer, offset + OFFSET_STREAM_VIDEO_FLAG_3);
+        streamInformation.copyRestricted = GetBits(flag, 8, 1);
+        streamInformation.HDRPlus = GetBits(flag, 7, 1);
+      }
+      break;
+    }
+    case ENCODING_TYPE::AUDIO_MPEG1:
+    case ENCODING_TYPE::AUDIO_MPEG2:
+    case ENCODING_TYPE::AUDIO_LPCM:
+    case ENCODING_TYPE::AUDIO_AC3:
+    case ENCODING_TYPE::AUDIO_DTS:
+    case ENCODING_TYPE::AUDIO_TRUHD:
+    case ENCODING_TYPE::AUDIO_AC3PLUS:
+    case ENCODING_TYPE::AUDIO_DTSHD:
+    case ENCODING_TYPE::AUDIO_DTSHD_MASTER:
+    case ENCODING_TYPE::AUDIO_AC3PLUS_SECONDARY:
+    case ENCODING_TYPE::AUDIO_DTSHD_SECONDARY:
+    {
+      const unsigned int flag{GetByte(buffer, offset + OFFSET_STREAM_AUDIO_FLAG_1)};
+      streamInformation.format = GetBits(flag, 8, 4);
+      streamInformation.rate = GetBits(flag, 4, 4);
+      streamInformation.language = GetString(buffer, offset + OFFSET_STREAM_AUDIO_LANGUAGE, 3);
+      break;
+    }
+    case ENCODING_TYPE::SUB_PG:
+    case ENCODING_TYPE::SUB_IG:
+    {
+      streamInformation.language = GetString(buffer, offset + OFFSET_STREAM_SUB_LANGUAGE, 3);
+      break;
+    }
+    case ENCODING_TYPE::SUB_TEXT:
+    {
+      streamInformation.characterEncoding = GetByte(buffer, offset + OFFSET_STREAM_TEXT_ENCODING);
+      streamInformation.language = GetString(buffer, offset + OFFSET_STREAM_TEXT_LANGUAGE, 3);
+      break;
+    }
+    default:
+      break;
+  }
+  offset += length + 1;
+
+  switch (streamType)
+  {
+    case STREAM_TYPE::SECONDARY_AUDIO_STREAM:
+    {
+      const unsigned int numAudioReferences{GetByte(buffer, offset)};
+      streamInformation.secondaryAudio_audioReferences.reserve(numAudioReferences);
+      for (unsigned int i = 0; i < numAudioReferences; ++i)
+      {
+        streamInformation.secondaryAudio_audioReferences.emplace_back(
+            GetByte(buffer, offset + OFFSET_STREAM_SECONDARY_REFERENCES + i));
+      }
+      offset += numAudioReferences + OFFSET_STREAM_SECONDARY_REFERENCES +
+                (numAudioReferences % 2); // next word boundary
+      break;
+    }
+    case STREAM_TYPE::SECONDARY_VIDEO_STREAM:
+    {
+      const unsigned int numAudioReferences{GetByte(buffer, offset)};
+      streamInformation.secondaryVideo_audioReferences.reserve(numAudioReferences);
+      for (unsigned int i = 0; i < numAudioReferences; ++i)
+      {
+        streamInformation.secondaryVideo_audioReferences.emplace_back(
+            GetByte(buffer, offset + OFFSET_STREAM_SECONDARY_REFERENCES + i));
+      }
+      offset += numAudioReferences + OFFSET_STREAM_SECONDARY_REFERENCES +
+                (numAudioReferences % 2); // next word boundary
+      const unsigned int numPGReferences{GetByte(buffer, offset)};
+      streamInformation.secondaryVideo_audioReferences.reserve(numPGReferences);
+      for (unsigned int i = 0; i < numPGReferences; ++i)
+      {
+        streamInformation.secondaryVideo_presentationGraphicReferences.emplace_back(
+            GetByte(buffer, offset + OFFSET_STREAM_SECONDARY_REFERENCES + i));
+      }
+      offset += numPGReferences + OFFSET_STREAM_SECONDARY_REFERENCES +
+                (numPGReferences % 2); // next word boundary
+      break;
+    }
+    case STREAM_TYPE::VIDEO_STREAM:
+    case STREAM_TYPE::AUDIO_STREAM:
+    case STREAM_TYPE::PRESENTATION_GRAPHIC_STREAM:
+    case STREAM_TYPE::INTERACTIVE_GRAPHIC_STREAM:
+    case STREAM_TYPE::PICTURE_IN_PICTURE_SUBTITLE_STREAM:
+    case STREAM_TYPE::DOLBY_VISION_STREAM:
+      break;
+  }
+
+  CLog::Log(LOGDEBUG, "  Stream - type {}, coding 0x{}",
+            static_cast<unsigned int>(streamInformation.type),
+            fmt::format("{:02x}", static_cast<int>(streamInformation.coding)));
+
+  return streamInformation;
+}
+
+constexpr unsigned int CLPI_HEADER_SIZE = 28;
+constexpr unsigned int OFFSET_CLPI_HEADER = 0;
+constexpr unsigned int OFFSET_CLPI_VERSION = 4;
+constexpr unsigned int OFFSET_CLPI_PROGRAM_INFORMATION = 12;
+constexpr unsigned int OFFSET_CLPI_PROGRAM_INFORMATION_NUM_PROGRAMS = 5;
+constexpr unsigned int OFFSET_CLPI_PROGRAM_INFORMATION_SEQUENCE_START = 0;
+constexpr unsigned int OFFSET_CLPI_PROGRAM_INFORMATION_PROGRAM_ID = 4;
+constexpr unsigned int OFFSET_CLPI_PROGRAM_INFORMATION_NUM_STREAMS = 6;
+constexpr unsigned int OFFSET_CLPI_PROGRAM_INFORMATION_NUM_GROUPS = 7;
+constexpr unsigned int OFFSET_CLPI_STREAM_INFORMATION_CODING = 1;
+constexpr unsigned int OFFSET_CLPI_STREAM_VIDEO_FLAGS = 2;
+constexpr unsigned int OFFSET_CLPI_STREAM_AUDIO_FLAGS = 2;
+constexpr unsigned int OFFSET_CLPI_STREAM_AUDIO_LANGUAGE = 3;
+constexpr unsigned int OFFSET_CLPI_STREAM_SUB_LANGUAGE = 2;
+constexpr unsigned int OFFSET_CLPI_STREAM_TEXT_ENCODING = 2;
+constexpr unsigned int OFFSET_CLPI_STREAM_TEXT_LANGUAGE = 3;
+
+bool ParseCLPI(std::vector<std::byte>& buffer, ClipInformation& clipInformation, unsigned int clip)
+{
+  // Check size
+  if (buffer.size() < CLPI_HEADER_SIZE)
+  {
+    CLog::Log(LOGDEBUG, "Invalid CLPI - header too small");
+    return false;
+  }
+
+  // Check header
+  const std::string header{GetString(buffer, OFFSET_CLPI_HEADER, 4)};
+  const std::string version{GetString(buffer, OFFSET_CLPI_VERSION, 4)};
+  if (header != "HDMV")
+  {
+    CLog::Log(LOGDEBUG, "Invalid CLPI header");
+    return false;
+  }
+  CLog::Log(LOGDEBUG, "Valid CLPI header for clip {} header version {}", clip, version);
+
+  clipInformation.version = version;
+  clipInformation.clip = clip;
+
+  //const unsigned int sequenceInformationStartAddress{GetDWord(buffer, 8)};
+  const unsigned int programInformationStartAddress{
+      GetDWord(buffer, OFFSET_CLPI_PROGRAM_INFORMATION)};
+  //const unsigned int CPIStartAddress{GetDWord(buffer, 16)};
+  //const unsigned int clipMarkStartAddress{GetDWord(buffer, 20)};
+  //const unsigned int extensionDataStartAddress{GetDWord(buffer, 24)};
+
+  unsigned int offset{programInformationStartAddress};
+  const unsigned int length{GetDWord(buffer, offset)};
+  if (buffer.size() < length + offset)
+  {
+    CLog::Log(LOGDEBUG, "Invalid CLPI - too small for Program Information");
+    return false;
+  }
+
+  const unsigned int numPrograms{
+      GetByte(buffer, offset + OFFSET_CLPI_PROGRAM_INFORMATION_NUM_PROGRAMS)};
+  offset += 6;
+  clipInformation.programs.reserve(numPrograms);
+  for (unsigned int i = 0; i < numPrograms; ++i)
+  {
+    ProgramInformation programInformation;
+    programInformation.spnProgramSequenceStart =
+        GetDWord(buffer, offset + OFFSET_CLPI_PROGRAM_INFORMATION_SEQUENCE_START);
+    programInformation.programId =
+        GetWord(buffer, offset + OFFSET_CLPI_PROGRAM_INFORMATION_PROGRAM_ID);
+    const unsigned int numStreams{
+        GetByte(buffer, offset + OFFSET_CLPI_PROGRAM_INFORMATION_NUM_STREAMS)};
+    programInformation.numGroups =
+        GetByte(buffer, offset + OFFSET_CLPI_PROGRAM_INFORMATION_NUM_GROUPS);
+    offset += 8;
+
+    CLog::Log(LOGDEBUG, " Program {}", i);
+
+    programInformation.streams.reserve(numStreams);
+    for (unsigned int j = 0; j < numStreams; ++j)
+    {
+      StreamInformation streamInformation;
+      streamInformation.packetIdentifier = GetWord(buffer, offset);
+      offset += 2;
+
+      const unsigned int streamLength{GetByte(buffer, offset)};
+      const ENCODING_TYPE coding{GetByte(buffer, offset + OFFSET_CLPI_STREAM_INFORMATION_CODING)};
+      streamInformation.coding = coding;
+      switch (coding)
+      {
+        case ENCODING_TYPE::VIDEO_MPEG1:
+        case ENCODING_TYPE::VIDEO_MPEG2:
+        case ENCODING_TYPE::VIDEO_H264:
+        case ENCODING_TYPE::VIDEO_HEVC:
+        case ENCODING_TYPE::VIDEO_VC1:
+        {
+          const unsigned int flag{GetDWord(buffer, offset + OFFSET_CLPI_STREAM_VIDEO_FLAGS)};
+          streamInformation.format = GetBits(flag, 32, 4);
+          streamInformation.rate = GetBits(flag, 28, 4);
+          streamInformation.aspect = static_cast<ASPECT_RATIO>(GetBits(flag, 24, 4));
+          streamInformation.outOfMux = GetBits(flag, 18, 1);
+          if (coding == ENCODING_TYPE::VIDEO_HEVC)
+          {
+            streamInformation.copyRestricted = GetBits(flag, 17, 1);
+            streamInformation.dynamicRangeType = GetBits(flag, 16, 4);
+            streamInformation.colorSpace = GetBits(flag, 12, 4);
+            streamInformation.HDRPlus = GetBits(flag, 8, 1);
+          }
+          break;
+        }
+        case ENCODING_TYPE::AUDIO_MPEG1:
+        case ENCODING_TYPE::AUDIO_MPEG2:
+        case ENCODING_TYPE::AUDIO_LPCM:
+        case ENCODING_TYPE::AUDIO_AC3:
+        case ENCODING_TYPE::AUDIO_DTS:
+        case ENCODING_TYPE::AUDIO_TRUHD:
+        case ENCODING_TYPE::AUDIO_AC3PLUS:
+        case ENCODING_TYPE::AUDIO_DTSHD:
+        case ENCODING_TYPE::AUDIO_DTSHD_MASTER:
+        case ENCODING_TYPE::AUDIO_AC3PLUS_SECONDARY:
+        case ENCODING_TYPE::AUDIO_DTSHD_SECONDARY:
+        {
+          const unsigned int flag{GetByte(buffer, offset + OFFSET_CLPI_STREAM_AUDIO_FLAGS)};
+          streamInformation.format = GetBits(flag, 8, 4);
+          streamInformation.rate = GetBits(flag, 4, 4);
+          streamInformation.language =
+              GetString(buffer, offset + OFFSET_CLPI_STREAM_AUDIO_LANGUAGE, 3);
+          break;
+        }
+        case ENCODING_TYPE::SUB_PG:
+        case ENCODING_TYPE::SUB_IG:
+        {
+          streamInformation.language =
+              GetString(buffer, offset + OFFSET_CLPI_STREAM_SUB_LANGUAGE, 3);
+          break;
+        }
+        case ENCODING_TYPE::SUB_TEXT:
+        {
+          streamInformation.characterEncoding =
+              GetByte(buffer, offset + OFFSET_CLPI_STREAM_TEXT_ENCODING);
+          streamInformation.language =
+              GetString(buffer, offset + OFFSET_CLPI_STREAM_TEXT_LANGUAGE, 3);
+          break;
+        }
+        default:
+          break;
+      }
+      programInformation.streams.emplace_back(streamInformation);
+
+      CLog::Log(LOGDEBUG, "  Stream - coding 0x{}",
+                fmt::format("{:02x}", static_cast<int>(streamInformation.coding)));
+
+      offset += streamLength + 1;
+    }
+    clipInformation.programs.emplace_back(programInformation);
+  }
+
+  return true;
+}
+
+bool ReadCLPI(const CURL& url, unsigned int clip, ClipInformation& clipInformation)
+{
+  const std::string path{url.GetHostName()};
+  const std::string clipFile{
+      URIUtils::AddFileToFolder(path, "BDMV", "CLIPINF", StringUtils::Format("{:05}.clpi", clip))};
+  CFile file;
+  if (!file.Open(clipFile))
+    return false;
+
+  const int64_t size{file.GetLength()};
+  std::vector<std::byte> buffer;
+  buffer.resize(size);
+  ssize_t read = file.Read(buffer.data(), size);
+  file.Close();
+
+  if (read == size)
+    return ParseCLPI(buffer, clipInformation, clip);
+  return false;
+}
+
+constexpr unsigned int PLAYITEM_HEADER_SIZE = 18;
+constexpr unsigned int OFFSET_PLAYITEM_CLIP_ID = 2;
+constexpr unsigned int OFFSET_PLAYITEM_CODEC_ID = 7;
+constexpr unsigned int OFFSET_PLAYITEM_FLAGS = 11;
+constexpr unsigned int OFFSET_PLAYITEM_IN_TIME = 14;
+constexpr unsigned int OFFSET_PLAYITEM_OUT_TIME = 18;
+constexpr unsigned int OFFSET_PLAYITEM_FLAGS_2 = 30;
+constexpr unsigned int OFFSET_PLAYITEM_STILL_MODE = 31;
+constexpr unsigned int OFFSET_PLAYITEM_STILL_TIME = 32;
+constexpr unsigned int OFFSET_PLAYITEM_NUM_ANGLES = 34;
+constexpr unsigned int OFFSET_ANGLE_CODEC_ID = 5;
+constexpr unsigned int OFFSET_STREAM_TABLE_NUM_VIDEO_STREAMS = 4;
+constexpr unsigned int OFFSET_STREAM_TABLE_NUM_AUDIO_STREAMS = 5;
+constexpr unsigned int OFFSET_STREAM_TABLE_NUM_PG_STREAMS = 6;
+constexpr unsigned int OFFSET_STREAM_TABLE_NUM_IG_STREAMS = 7;
+constexpr unsigned int OFFSET_STREAM_TABLE_NUM_SECONDARY_VIDEO_STREAMS = 8;
+constexpr unsigned int OFFSET_STREAM_TABLE_NUM_SECONDARY_AUDIO_STREAMS = 9;
+constexpr unsigned int OFFSET_STREAM_TABLE_NUM_PIP_STREAMS = 10;
+constexpr unsigned int OFFSET_STREAM_TABLE_NUM_DV_STREAMS = 11;
+
+bool ParsePlayItem(std::vector<std::byte>& buffer,
+                   unsigned int& offset,
+                   PlayItemInformation& playItem)
+{
+  const unsigned int saveOffset{offset};
+  const unsigned int length{GetWord(buffer, offset)};
+  if (length < PLAYITEM_HEADER_SIZE)
+  {
+    CLog::Log(LOGDEBUG, "Invalid MPLS - Playitem too small");
+    return false;
+  }
+  if (buffer.size() < length + offset)
+  {
+    CLog::Log(LOGDEBUG, "Invalid MPLS - too small for Playitem");
+    return false;
+  }
+
+  std::string clipId{GetString(buffer, offset + OFFSET_PLAYITEM_CLIP_ID, 5)};
+  std::string codecId{GetString(buffer, offset + OFFSET_PLAYITEM_CODEC_ID, 4)};
+  if (codecId != "M2TS" && codecId != "FMTS")
+  {
+    CLog::Log(LOGDEBUG, "Invalid MPLS - invalid PlayItem codec identifier - {}", codecId);
+    return false;
+  }
+
+  unsigned int flags{GetWord(buffer, offset + OFFSET_PLAYITEM_FLAGS)};
+  const bool isMultiAngle{static_cast<bool>(GetBits(flags, 5, 1))};
+  const BLURAY_CONNECTION connectionCondition{GetBits(flags, 4, 4)};
+  if (connectionCondition != BLURAY_CONNECTION::SEAMLESS &&
+      connectionCondition != BLURAY_CONNECTION::NONSEAMLESS &&
+      connectionCondition != BLURAY_CONNECTION::BRANCHING)
+  {
+    CLog::Log(LOGDEBUG, "Invalid MPLS - invalid PlayItem connection condition - {}",
+              static_cast<unsigned int>(connectionCondition));
+    return false;
+  }
+  playItem.isMultiAngle = isMultiAngle;
+  playItem.connectionCondition = connectionCondition;
+
+  const std::chrono::milliseconds inTime{GetDWord(buffer, offset + OFFSET_PLAYITEM_IN_TIME) /
+                                         45}; // 45KHz clock
+  const std::chrono::milliseconds outTime{GetDWord(buffer, offset + OFFSET_PLAYITEM_OUT_TIME) /
+                                          45}; // 45KHz clock
+  playItem.inTime = inTime;
+  playItem.outTime = outTime;
+
+  flags = GetByte(buffer, offset + OFFSET_PLAYITEM_FLAGS_2);
+  const bool randomAccessFlag{static_cast<bool>(GetBits(flags, 8, 1))};
+  const unsigned int stillMode{GetByte(buffer, offset + OFFSET_PLAYITEM_STILL_MODE)};
+  std::chrono::milliseconds stillTime{0ms};
+  if (stillMode == BLURAY_STILL_TIME)
+    stillTime = std::chrono::milliseconds(GetWord(buffer, offset + OFFSET_PLAYITEM_STILL_TIME));
+  playItem.randomAccessFlag = randomAccessFlag;
+  playItem.stillMode = stillMode;
+  playItem.stillTime = stillTime;
+
+  unsigned int angleCount{1};
+  if (isMultiAngle)
+  {
+    angleCount = GetByte(buffer, offset + OFFSET_PLAYITEM_NUM_ANGLES);
+    offset += 36;
+  }
+  else
+    offset += 34;
+
+  CLog::Log(LOGDEBUG,
+            "PlayItem entry - clip id {}, codec id {}, in time {}, out time {}, still mode "
+            "{} (still time {}), angles {}",
+            clipId, codecId, fmt::format("{:%H:%M:%S}", inTime),
+            fmt::format("{:%H:%M:%S}", outTime), stillMode, stillTime, angleCount);
+
+  // First/only angle
+  ClipInformation angleInformation;
+  angleInformation.clip = std::stoi(clipId);
+  angleInformation.codec = codecId;
+  playItem.angleClips.emplace_back(angleInformation);
+
+  // Get additional angles (if any)
+  for (unsigned int j = 1; j < angleCount; ++j)
+  {
+    ClipInformation additionalAngleInformation;
+    const std::string angleClipId{GetString(buffer, offset, 5)};
+    const std::string angleCodecId{GetString(buffer, offset + OFFSET_ANGLE_CODEC_ID, 4)};
+    if (angleCodecId != "M2TS" && angleCodecId != "FMTS")
+    {
+      CLog::Log(LOGDEBUG, "Invalid MPLS - invalid PlayItem angle {} codec identifier - {}", j,
+                angleCodecId);
+      return false;
+    }
+    CLog::Log(LOGDEBUG, "  Additional angle {} - clip id {}, codec id {}", j, angleClipId,
+              angleCodecId);
+
+    additionalAngleInformation.clip = std::stoi(angleClipId);
+    additionalAngleInformation.codec = angleCodecId;
+    playItem.angleClips.emplace_back(additionalAngleInformation);
+    offset += 10;
+  }
+
+  // Parse stream number table
+  const unsigned int stnLength{GetWord(buffer, offset)};
+  if (buffer.size() < stnLength + offset)
+  {
+    CLog::Log(LOGDEBUG, "Invalid MPLS - too small for Stream Number Table");
+    return false;
+  }
+
+  const unsigned int numVideoStreams{
+      GetByte(buffer, offset + OFFSET_STREAM_TABLE_NUM_VIDEO_STREAMS)};
+  const unsigned int numAudioStreams{
+      GetByte(buffer, offset + OFFSET_STREAM_TABLE_NUM_AUDIO_STREAMS)};
+  const unsigned int numPresentationGraphicStreams{
+      GetByte(buffer, offset + OFFSET_STREAM_TABLE_NUM_PG_STREAMS)};
+  const unsigned int numInteractiveGraphicStreams{
+      GetByte(buffer, offset + OFFSET_STREAM_TABLE_NUM_IG_STREAMS)};
+  const unsigned int numSecondaryVideoStreams{
+      GetByte(buffer, offset + OFFSET_STREAM_TABLE_NUM_SECONDARY_VIDEO_STREAMS)};
+  const unsigned int numSecondaryAudioStreams{
+      GetByte(buffer, offset + OFFSET_STREAM_TABLE_NUM_SECONDARY_AUDIO_STREAMS)};
+  const unsigned int numPictureInPictureSubtitleStreams{
+      GetByte(buffer, offset + OFFSET_STREAM_TABLE_NUM_PIP_STREAMS)};
+  const unsigned int numDolbyVisionStreams{
+      GetByte(buffer, offset + OFFSET_STREAM_TABLE_NUM_DV_STREAMS)};
+
+  CLog::Log(LOGDEBUG,
+            " Stream number table - video {}, audio {}, presentation graphic (subtitle) {}, "
+            "interactive graphic {}, "
+            "secondary video {}, secondary audio {}, PIP subtitle {}, dolby vision {}",
+            numVideoStreams, numAudioStreams, numPresentationGraphicStreams,
+            numInteractiveGraphicStreams, numSecondaryVideoStreams, numSecondaryAudioStreams,
+            numPictureInPictureSubtitleStreams, numDolbyVisionStreams);
+
+  offset += 16;
+
+  playItem.videoStreams.reserve(numVideoStreams);
+  for (unsigned int k = 0; k < numVideoStreams; ++k)
+  {
+    playItem.videoStreams.emplace_back(ParseStream(buffer, offset, STREAM_TYPE::VIDEO_STREAM));
+  }
+
+  playItem.audioStreams.reserve(numAudioStreams);
+  for (unsigned int k = 0; k < numAudioStreams; ++k)
+  {
+    playItem.audioStreams.emplace_back(ParseStream(buffer, offset, STREAM_TYPE::AUDIO_STREAM));
+  }
+
+  playItem.presentationGraphicStreams.reserve(numPresentationGraphicStreams);
+  for (unsigned int k = 0; k < numPresentationGraphicStreams; ++k)
+  {
+    playItem.presentationGraphicStreams.emplace_back(
+        ParseStream(buffer, offset, STREAM_TYPE::PRESENTATION_GRAPHIC_STREAM));
+  }
+
+  playItem.interactiveGraphicStreams.reserve(numInteractiveGraphicStreams);
+  for (unsigned int k = 0; k < numInteractiveGraphicStreams; ++k)
+  {
+    playItem.interactiveGraphicStreams.emplace_back(
+        ParseStream(buffer, offset, STREAM_TYPE::INTERACTIVE_GRAPHIC_STREAM));
+  }
+
+  playItem.secondaryAudioStreams.reserve(numSecondaryAudioStreams);
+  for (unsigned int k = 0; k < numSecondaryAudioStreams; ++k)
+  {
+    playItem.secondaryAudioStreams.emplace_back(
+        ParseStream(buffer, offset, STREAM_TYPE::SECONDARY_AUDIO_STREAM));
+  }
+
+  playItem.secondaryVideoStreams.reserve(numSecondaryVideoStreams);
+  for (unsigned int k = 0; k < numSecondaryVideoStreams; ++k)
+  {
+    playItem.secondaryVideoStreams.emplace_back(
+        ParseStream(buffer, offset, STREAM_TYPE::SECONDARY_VIDEO_STREAM));
+  }
+
+  playItem.dolbyVisionStreams.reserve(numDolbyVisionStreams);
+  for (unsigned int k = 0; k < numDolbyVisionStreams; ++k)
+  {
+    playItem.dolbyVisionStreams.emplace_back(
+        ParseStream(buffer, offset, STREAM_TYPE::DOLBY_VISION_STREAM));
+  }
+
+  offset = saveOffset + length + 2;
+  return true;
+}
+
+constexpr unsigned int SUBPLAYITEM_HEADER_SIZE = 24;
+constexpr unsigned int OFFSET_SUBPLAYITEM_CLIP_ID = 2;
+constexpr unsigned int OFFSET_SUBPLAYITEM_CODEC_ID = 7;
+constexpr unsigned int OFFSET_SUBPLAYITEM_FLAGS = 11;
+constexpr unsigned int OFFSET_SUBPLAYITEM_IN_TIME = 16;
+constexpr unsigned int OFFSET_SUBPLAYITEM_OUT_TIME = 20;
+constexpr unsigned int OFFSET_SUBPLAYITEM_SYNC_PLAYITEM_ID = 24;
+constexpr unsigned int OFFSET_SUBPLAYITEM_NUM_CLIPS = 26;
+constexpr unsigned int OFFSET_SUBPLAYITEM_CLIP_CODEC_ID = 5;
+
+bool ParseSubPlayItem(std::vector<std::byte>& buffer,
+                      unsigned int& offset,
+                      SubPlayItemInformation& subPlayItemInformation)
+{
+  const unsigned int saveOffset{offset};
+  unsigned int length{GetWord(buffer, offset)};
+  if (length < SUBPLAYITEM_HEADER_SIZE)
+  {
+    CLog::Log(LOGDEBUG, "Invalid MPLS - SubPlayItem too small");
+    return false;
+  }
+  if (buffer.size() < length + offset)
+  {
+    CLog::Log(LOGDEBUG, "Invalid MPLS - too small for SubPlayItem");
+    return false;
+  }
+
+  std::string clipId{GetString(buffer, offset + OFFSET_SUBPLAYITEM_CLIP_ID, 5)};
+  std::string codecId{GetString(buffer, offset + OFFSET_SUBPLAYITEM_CODEC_ID, 4)};
+  if (codecId != "M2TS" && codecId != "FMTS")
+  {
+    CLog::Log(LOGDEBUG, "Invalid MPLS - invalid PlayItem codec identifier - {}", codecId);
+    return false;
+  }
+
+  unsigned int flags{GetDWord(buffer, offset + OFFSET_SUBPLAYITEM_FLAGS)};
+  const bool isMultiClip{static_cast<bool>(GetBits(flags, 1, 1))};
+  const BLURAY_CONNECTION connectionCondition{GetBits(flags, 5, 4)};
+  if (connectionCondition != BLURAY_CONNECTION::SEAMLESS &&
+      connectionCondition != BLURAY_CONNECTION::NONSEAMLESS &&
+      connectionCondition != BLURAY_CONNECTION::BRANCHING)
+  {
+    CLog::Log(LOGDEBUG, "Invalid MPLS - invalid PlayItem connection condition - {}",
+              static_cast<unsigned int>(connectionCondition));
+    return false;
+  }
+  subPlayItemInformation.isMultiClip = isMultiClip;
+  subPlayItemInformation.connectionCondition = connectionCondition;
+
+  const std::chrono::milliseconds inTime{GetDWord(buffer, offset + OFFSET_SUBPLAYITEM_IN_TIME) /
+                                         45}; // 45KHz clock
+  const std::chrono::milliseconds outTime{GetDWord(buffer, offset + OFFSET_SUBPLAYITEM_OUT_TIME) /
+                                          45}; // 45KHz clock
+  subPlayItemInformation.inTime = inTime;
+  subPlayItemInformation.outTime = outTime;
+
+  const unsigned int syncPlayItemId{GetWord(buffer, offset + OFFSET_SUBPLAYITEM_SYNC_PLAYITEM_ID)};
+  subPlayItemInformation.syncPlayItemId = syncPlayItemId;
+
+  unsigned int numClips{1};
+  if (isMultiClip)
+  {
+    numClips = GetByte(buffer, offset + OFFSET_SUBPLAYITEM_NUM_CLIPS);
+    offset += 27;
+  }
+  else
+    offset += 26;
+
+  CLog::Log(LOGDEBUG,
+            " SubPlayItem entry - clip id {}, codec id {}, in time {}, out time {}, clips {}",
+            clipId, codecId, fmt::format("{:%H:%M:%S}", inTime),
+            fmt::format("{:%H:%M:%S}", outTime), numClips);
+
+  // First/only clip
+  ClipInformation clipInformation;
+  clipInformation.clip = std::stoi(clipId);
+  clipInformation.codec = codecId;
+  subPlayItemInformation.clips.emplace_back(clipInformation);
+
+  // Get additional clips (if any)
+  for (unsigned int j = 1; j < numClips; ++j)
+  {
+    ClipInformation additionalClipInformation;
+    const std::string additionalClipId{GetString(buffer, offset, 5)};
+    const std::string additionalCodecId{
+        GetString(buffer, offset + OFFSET_SUBPLAYITEM_CLIP_CODEC_ID, 4)};
+    if (additionalCodecId != "M2TS" && additionalCodecId != "FMTS")
+    {
+      CLog::Log(LOGDEBUG, "Invalid MPLS - invalid SubPlayItem clip {} codec identifier - {}", j,
+                additionalCodecId);
+      return false;
+    }
+    CLog::Log(LOGDEBUG, "  Additional clip {} - clip id {}, codec id {}", j, additionalClipId,
+              additionalCodecId);
+
+    additionalClipInformation.clip = std::stoi(additionalClipId);
+    additionalClipInformation.codec = additionalCodecId;
+    subPlayItemInformation.clips.emplace_back(additionalClipInformation);
+    offset += 10;
+  }
+
+  offset = saveOffset + length + 2;
+
+  return true;
+}
+
+// Structure of an MPLS File:
+//
+// Header: Contains general information about the playlist.
+//
+// PlayItems: Each PlayItem corresponds to a specific .m2ts file and includes details like
+// In Time, Out Time, and System Time Clock ID for synchronization.
+//
+// SubPath: Optional, used for features like Picture-in-Picture (PiP) or secondary audio.
+
+constexpr unsigned int MPLS_HEADER_SIZE = 40;
+constexpr unsigned int MPLS_PLAYLISTMARK_SIZE = 14;
+constexpr unsigned int OFFSET_MPLS_HEADER = 0;
+constexpr unsigned int OFFSET_MPLS_VERSION = 4;
+constexpr unsigned int OFFSET_MPLS_PLAYLIST_POSITION = 8;
+constexpr unsigned int OFFSET_MPLS_PLAYLIST_MARK_POSITION = 12;
+constexpr unsigned int OFFSET_MPLS_APP_INFO_PLAYLIST = 40;
+constexpr unsigned int OFFSET_MPLS_APP_INFO_PLAYBACK_TYPE = 5;
+constexpr unsigned int OFFSET_MPLS_NUM_PLAYITEMS = 6;
+constexpr unsigned int OFFSET_MPLS_NUM_SUBPATHS = 8;
+constexpr unsigned int OFFSET_MPLS_SUBPATH_TYPE = 5;
+constexpr unsigned int OFFSET_MPLS_SUBPATH_FLAGS = 6;
+constexpr unsigned int OFFSET_MPLS_SUBPATH_NUM_SUBPLAYITEMS = 9;
+constexpr unsigned int OFFSET_MPLS_NUM_PLAYLISTMARKS = 4;
+constexpr unsigned int OFFSET_MPLS_PLAYLISTMARK_TYPE = 1;
+constexpr unsigned int OFFSET_MPLS_PLAYLISTMARK_PLAYITEM = 2;
+constexpr unsigned int OFFSET_MPLS_PLAYLISTMARK_TIME = 4;
+constexpr unsigned int OFFSET_MPLS_PLAYLISTMARK_PACKET_IDENTIFIER = 8;
+constexpr unsigned int OFFSET_MPLS_PLAYLISTMARK_DURATION = 10;
+
+bool ParseMPLS(const CURL& url,
+               std::vector<std::byte>& buffer,
+               PlaylistInformation& playlistInformation,
+               unsigned int playlist)
+{
+  // Check size
+  if (buffer.size() < MPLS_HEADER_SIZE)
+  {
+    CLog::Log(LOGDEBUG, "Invalid MPLS - header too small");
+    return false;
+  }
+
+  // Check header
+  const std::string header{GetString(buffer, OFFSET_MPLS_HEADER, 4)};
+  const std::string version{GetString(buffer, OFFSET_MPLS_VERSION, 4)};
+  if (header != "MPLS")
+  {
+    CLog::Log(LOGDEBUG, "Invalid MPLS header");
+    return false;
+  }
+  CLog::Log(LOGDEBUG, "*** Valid MPLS header for playlist {} version {}", playlist, version);
+
+  playlistInformation.playlist = playlist;
+  playlistInformation.version = version;
+
+  const unsigned int playlistPosition{GetDWord(buffer, OFFSET_MPLS_PLAYLIST_POSITION)};
+  const unsigned int playlistMarkPosition{GetDWord(buffer, OFFSET_MPLS_PLAYLIST_MARK_POSITION)};
+  //const unsigned int extensionPosition{GetDWord(buffer, 16)};
+
+  // AppInfoPlaylist
+  unsigned int offset{OFFSET_MPLS_APP_INFO_PLAYLIST};
+  const unsigned int appInfoSize{GetDWord(buffer, offset)};
+  if (buffer.size() < appInfoSize + offset)
+  {
+    CLog::Log(LOGDEBUG, "Invalid MPLS - too small for AppInfoPlaylist");
+    return false;
+  }
+
+  BLURAY_PLAYBACK_TYPE playbackType{GetByte(buffer, offset + OFFSET_MPLS_APP_INFO_PLAYBACK_TYPE)};
+  unsigned int playbackCount{0};
+  if (playbackType == BLURAY_PLAYBACK_TYPE::RANDOM || playbackType == BLURAY_PLAYBACK_TYPE::SHUFFLE)
+    playbackCount = GetWord(buffer, offset + 6);
+  playlistInformation.playbackType = playbackType;
+  playlistInformation.playbackCount = playbackCount;
+
+  // Playlist
+  offset = playlistPosition;
+  const unsigned int playlistSize{GetDWord(buffer, offset)};
+  if (buffer.size() < playlistSize + offset)
+  {
+    CLog::Log(LOGDEBUG, "Invalid MPLS - too small for Playlist");
+    return false;
+  }
+  const unsigned int numPlayItems{GetWord(buffer, offset + OFFSET_MPLS_NUM_PLAYITEMS)};
+  const unsigned int numSubPaths{GetWord(buffer, offset + OFFSET_MPLS_NUM_SUBPATHS)};
+  offset += 10;
+
+  playlistInformation.playItems.reserve(numPlayItems);
+  for (unsigned int i = 0; i < numPlayItems; ++i)
+  {
+    PlayItemInformation playItem;
+    if (!ParsePlayItem(buffer, offset, playItem))
+      return false;
+    playlistInformation.playItems.emplace_back(playItem);
+  }
+
+  // Calculate duration
+  std::chrono::milliseconds duration{0ms};
+  for (const auto& playItem : playlistInformation.playItems)
+    duration += playItem.outTime - playItem.inTime;
+  playlistInformation.duration = duration;
+  CLog::Log(LOGDEBUG, "Playlist duration {}", fmt::format("{:%H:%M:%S}", duration));
+
+  // Process clips
+  for (const auto& playItem : playlistInformation.playItems)
+  {
+    for (const auto& clip : playItem.angleClips)
+    {
+      const auto& it = lcl_clips.find(clip.clip);
+      if (it == lcl_clips.end()) // not in local cache
+      {
+        ClipInformation clipInformation;
+        if (!ReadCLPI(url, clip.clip, clipInformation))
+        {
+          CLog::Log(LOGDEBUG, "Cannot read clip {} information", clip.clip);
+          return false;
+        }
+        playlistInformation.clips.emplace_back(clipInformation);
+        lcl_clips[clip.clip] = clipInformation;
+      }
+      else // is in local cache
+        playlistInformation.clips.emplace_back(it->second);
+    }
+  }
+
+  if (numSubPaths > 0)
+  {
+    for (unsigned int i = 0; i < numSubPaths; ++i)
+    {
+      SubPathInformation subPathInformation;
+
+      const BLURAY_SUBPATH_TYPE type{GetByte(buffer, offset + OFFSET_MPLS_SUBPATH_TYPE)};
+      const unsigned int flags{GetWord(buffer, offset + OFFSET_MPLS_SUBPATH_FLAGS)};
+      subPathInformation.type = type;
+      subPathInformation.repeat = GetBits(flags, 1, 1);
+
+      const unsigned int numSubPlayItems{
+          GetByte(buffer, offset + OFFSET_MPLS_SUBPATH_NUM_SUBPLAYITEMS)};
+      offset += 10;
+      if (numSubPlayItems > 0)
+      {
+        playlistInformation.subPlayItems.reserve(numSubPlayItems);
+        for (unsigned int j = 0; j < numSubPlayItems; ++j)
+        {
+          SubPlayItemInformation subPlayItem;
+          if (!ParseSubPlayItem(buffer, offset, subPlayItem))
+            return false;
+          playlistInformation.subPlayItems.emplace_back(subPlayItem);
+        }
+      }
+    }
+  }
+
+  // Parse PlayListMark
+  offset = playlistMarkPosition;
+  const unsigned int playlistMarkSize{GetDWord(buffer, offset)};
+  if (buffer.size() < playlistMarkSize + offset)
+  {
+    CLog::Log(LOGDEBUG, "Invalid MPLS - too small for PlayListMark");
+    return false;
+  }
+
+  const unsigned int numPlaylistMarks{GetWord(buffer, offset + OFFSET_MPLS_NUM_PLAYLISTMARKS)};
+  if (buffer.size() < (numPlaylistMarks * MPLS_PLAYLISTMARK_SIZE) + offset + 6)
+  {
+    CLog::Log(LOGDEBUG, "Invalid MPLS - too small for PlayListMark");
+    return false;
+  }
+
+  offset += 6;
+  playlistInformation.playlistMarks.reserve(numPlaylistMarks);
+  for (unsigned int i = 0; i < numPlaylistMarks; ++i)
+  {
+
+    PlaylistMarkInformation playlistMark{
+        .markType =
+            static_cast<BLURAY_MARK_TYPE>(GetByte(buffer, offset + OFFSET_MPLS_PLAYLISTMARK_TYPE)),
+        .playItemReference = GetWord(buffer, offset + OFFSET_MPLS_PLAYLISTMARK_PLAYITEM),
+        .time = std::chrono::milliseconds(GetDWord(buffer, offset + OFFSET_MPLS_PLAYLISTMARK_TIME) /
+                                          45), // 45KHz clock
+        .elementaryStreamPacketIdentifier =
+            GetWord(buffer, offset + OFFSET_MPLS_PLAYLISTMARK_PACKET_IDENTIFIER),
+        .duration = std::chrono::milliseconds(
+            GetDWord(buffer, offset + OFFSET_MPLS_PLAYLISTMARK_DURATION))};
+    playlistInformation.playlistMarks.emplace_back(playlistMark);
+    offset += MPLS_PLAYLISTMARK_SIZE;
+  }
+
+  // Update clip timings from corresponding playItems
+  std::chrono::milliseconds startTime{0ms};
+  for (unsigned int i = 0; i < playlistInformation.playItems.size(); ++i)
+  {
+    const auto& playItem = playlistInformation.playItems[i];
+    auto& clip = playlistInformation.clips[i];
+    clip.duration = playItem.outTime - playItem.inTime;
+    clip.time = startTime;
+    startTime += clip.duration;
+  }
+
+  // Update playMark timings
+  int prevChapter{-1};
+  for (int i = 0; i < static_cast<int>(playlistInformation.playlistMarks.size()); ++i)
+  {
+    auto& playlistMark{playlistInformation.playlistMarks[i]};
+
+    // Get referenced playItem and clip to calculate playMark time
+    const auto& clip = playlistInformation.clips[playlistMark.playItemReference];
+    const auto& playItem = playlistInformation.playItems[playlistMark.playItemReference];
+    playlistMark.time = clip.time + playlistMark.time - playItem.inTime;
+
+    if (playlistMark.markType == BLURAY_MARK_TYPE::ENTRY) // chapter
+    {
+      if (prevChapter >= 0)
+      {
+        auto& prevMark{playlistInformation.playlistMarks[prevChapter]};
+        if (prevMark.duration == 0ms)
+          prevMark.duration = playlistMark.time - prevMark.time;
+      }
+      prevChapter = i;
+    }
+  }
+  if (prevChapter >= 0 && playlistInformation.playlistMarks[prevChapter].duration == 0ms)
+  {
+    auto& prevMark{playlistInformation.playlistMarks[prevChapter]};
+    prevMark.duration = playlistInformation.duration - prevMark.time;
+  }
+
+  // Derive chapters from playMarks
+  unsigned int chapter{1};
+  std::chrono::milliseconds start{0ms};
+  for (const auto& playlistMark : playlistInformation.playlistMarks)
+  {
+    if (playlistMark.markType == BLURAY_MARK_TYPE::ENTRY)
+    {
+      ChapterInformation chapterInformation{
+          .chapter = chapter, .start = start, .duration = playlistMark.duration};
+      playlistInformation.chapters.emplace_back(chapterInformation);
+      CLog::Log(LOGDEBUG, "Chapter {} start {} duration {} end {}", chapter,
+                fmt::format("{:%H:%M:%S}", start),
+                fmt::format("{:%H:%M:%S}", chapterInformation.duration),
+                fmt::format("{:%H:%M:%S}", start + chapterInformation.duration));
+      start += chapterInformation.duration;
+      ++chapter;
+    }
+  }
+
+  return true;
+}
+
+std::shared_ptr<CFileItem> GetFileItem(const CURL& url,
+                                       const PlaylistInfo& title,
+                                       const std::string& label)
+{
+  CURL path{url};
+  path.SetFileName(StringUtils::Format("BDMV/PLAYLIST/{:05}.mpls", title.playlist));
+  const auto item{std::make_shared<CFileItem>(path.Get(), false)};
+  const int duration{static_cast<int>(title.duration.count() / 1000)};
+  item->GetVideoInfoTag()->SetDuration(duration);
+  item->SetProperty("bluray_playlist", title.playlist);
+  const std::string buf{StringUtils::Format(label, title.playlist)};
+  item->m_strTitle = buf;
+  item->SetLabel(buf);
+  const std::string chap{StringUtils::Format(g_localizeStrings.Get(25007), title.chapters.size(),
+                                             StringUtils::SecondsToTimeString(duration))};
+  item->SetLabel2(chap);
+  item->m_dwSize = 0;
+  item->SetArt("icon", "DefaultVideo.png");
+
+  // Generate streamdetails
+
+  // Populate videoInfo
+  if (!title.videoStreams.empty())
+  {
+    VideoStreamInfo videoInfo;
+    const auto& video{title.videoStreams[0]};
+    videoInfo.valid = true;
+    videoInfo.bitrate = 0;
+    switch (video.format)
+    {
+      case BLURAY_VIDEO_FORMAT_480I:
+      case BLURAY_VIDEO_FORMAT_480P:
+        videoInfo.height = 480;
+        videoInfo.width = 640; // Guess but never displayed
+        break;
+      case BLURAY_VIDEO_FORMAT_576I:
+      case BLURAY_VIDEO_FORMAT_576P:
+        videoInfo.height = 576;
+        videoInfo.width = 720; // Guess but never displayed
+        break;
+      case BLURAY_VIDEO_FORMAT_720P:
+        videoInfo.height = 720;
+        videoInfo.width = 1280; // Guess but never displayed
+        break;
+      case BLURAY_VIDEO_FORMAT_1080I:
+      case BLURAY_VIDEO_FORMAT_1080P:
+        videoInfo.height = 1080;
+        videoInfo.width = 1920; // Guess but never displayed
+        break;
+      case BLURAY_VIDEO_FORMAT_2160P:
+        videoInfo.height = 2160;
+        videoInfo.width = 3840; // Guess but never displayed
+        break;
+      default:
+        videoInfo.height = 0;
+        videoInfo.width = 0;
+        break;
+    }
+    switch (video.coding)
+    {
+      case ENCODING_TYPE::VIDEO_MPEG1:
+        videoInfo.codecName = "mpeg1";
+        break;
+      case ENCODING_TYPE::VIDEO_MPEG2:
+        videoInfo.codecName = "mpeg2";
+        break;
+      case ENCODING_TYPE::VIDEO_VC1:
+        videoInfo.codecName = "vc1";
+        break;
+      case ENCODING_TYPE::VIDEO_H264:
+        videoInfo.codecName = "h264";
+        break;
+      case ENCODING_TYPE::VIDEO_HEVC:
+        videoInfo.codecName = "hevc";
+        break;
+      default:
+        videoInfo.codecName = "";
+        break;
+    }
+    switch (video.aspect)
+    {
+      case ASPECT_RATIO::RATIO_4_3:
+        videoInfo.videoAspectRatio = 4.0f / 3.0f;
+        break;
+      case ASPECT_RATIO::RATIO_16_9:
+        videoInfo.videoAspectRatio = 16.0f / 9.0f;
+        break;
+      default:
+        videoInfo.videoAspectRatio = 0.0f;
+        break;
+    }
+    videoInfo.stereoMode = ""; // Not stored in BLURAY_TITLE_INFO
+    videoInfo.flags = FLAG_NONE;
+    videoInfo.hdrType = StreamHdrType::HDR_TYPE_NONE; // Not stored in BLURAY_TITLE_INFO
+    videoInfo.fpsRate = 0; // Not in streamdetails
+    videoInfo.fpsScale = 0; // Not in streamdetails
+
+    CVideoInfoTag* info = item->GetVideoInfoTag();
+    info->m_streamDetails.SetStreams(videoInfo, static_cast<int>(title.duration.count() / 90000),
+                                     AudioStreamInfo{}, SubtitleStreamInfo{});
+
+    for (const auto& audio : title.audioStreams)
+    {
+      AudioStreamInfo audioInfo;
+      audioInfo.valid = true;
+      audioInfo.bitrate = 0;
+      audioInfo.channels = 0; // Only basic mono/stereo/multichannel is stored in BLURAY_TITLE_INFO
+
+      switch (audio.coding)
+      {
+        case ENCODING_TYPE::AUDIO_AC3:
+          audioInfo.codecName = "ac3";
+          break;
+        case ENCODING_TYPE::AUDIO_AC3PLUS:
+        case ENCODING_TYPE::AUDIO_AC3PLUS_SECONDARY:
+          audioInfo.codecName = "eac3";
+          break;
+        case ENCODING_TYPE::AUDIO_LPCM:
+          audioInfo.codecName = "pcm";
+          break;
+        case ENCODING_TYPE::AUDIO_DTS:
+          audioInfo.codecName = "dts";
+          break;
+        case ENCODING_TYPE::AUDIO_DTSHD:
+        case ENCODING_TYPE::AUDIO_DTSHD_SECONDARY:
+          audioInfo.codecName = "dtshd";
+          break;
+        case ENCODING_TYPE::AUDIO_DTSHD_MASTER:
+          audioInfo.codecName = "dtshd_ma";
+          break;
+        case ENCODING_TYPE::AUDIO_TRUHD:
+          audioInfo.codecName = "truehd";
+          break;
+        default:
+          audioInfo.codecName = "";
+          break;
+      }
+      audioInfo.flags = FLAG_NONE;
+      audioInfo.language = audio.lang;
+      info->m_streamDetails.AddStream(new CStreamDetailAudio(audioInfo));
+    }
+
+    // Subtitles
+    for (const auto& subtitle : title.pgStreams)
+    {
+      SubtitleStreamInfo subtitleInfo;
+      subtitleInfo.valid = true;
+      subtitleInfo.bitrate = 0;
+      subtitleInfo.codecDesc = "";
+      subtitleInfo.codecName = "";
+      subtitleInfo.isExternal = false;
+      subtitleInfo.name = "";
+      subtitleInfo.flags = FLAG_NONE;
+      subtitleInfo.language = subtitle.lang;
+      info->m_streamDetails.AddStream(new CStreamDetailSubtitle(subtitleInfo));
+    }
+  }
+
+  return item;
+}
+
+int GetMainPlaylistFromDisc(const CURL& url)
+{
+  const std::string root{url.GetHostName()};
+  const std::string discInfPath{URIUtils::AddFileToFolder(root, "disc.inf")};
+  CFile file;
+  std::string line;
+  line.reserve(1024);
+  int playlist{-1};
+
+  if (file.Open(discInfPath))
+  {
+    CLog::LogF(LOGDEBUG, "disc.inf found");
+    CRegExp pl{true, CRegExp::autoUtf8, R"((?:playlists=)(\d+))"};
+    uint8_t maxLines{100};
+    while ((maxLines > 0) && file.ReadLine(line))
+    {
+      maxLines--;
+      if (pl.RegFind(line) != -1)
+      {
+        playlist = std::stoi(pl.GetMatch(1));
+        break;
+      }
+    }
+    file.Close();
+  }
+  return playlist;
+}
+
+std::string GetCachePath(const CURL& url, const std::string& realPath)
+{
+  if (url.Get().empty())
+    return realPath;
+  std::string path{url.GetHostName()};
+  if (path.empty())
+    path = url.Get(); // Could be drive letter
+  return path;
+}
+
+bool ReadMPLS(const CURL& url, unsigned int playlist, PlaylistInformation& playlistInformation)
+{
+  const std::string path{url.GetHostName()};
+  const std::string playlistFile{URIUtils::AddFileToFolder(
+      path, "BDMV", "PLAYLIST", StringUtils::Format("{:05}.mpls", playlist))};
+  CFile file;
+  if (!file.Open(playlistFile))
+    return false;
+
+  const int64_t size{file.GetLength()};
+  std::vector<std::byte> buffer;
+  buffer.resize(size);
+  ssize_t read = file.Read(buffer.data(), size);
+  file.Close();
+
+  if (read == size)
+    return ParseMPLS(url, buffer, playlistInformation, playlist);
+  return false;
+}
+
+bool GetPlaylistInfoFromDisc(const CURL& url,
+                             const std::string& realPath,
+                             unsigned int playlist,
+                             PlaylistInfo& playlistInfo)
+{
+  const std::string path{GetCachePath(url, realPath)};
+
+  // Check cache
+  PlaylistInformation p;
+  if (!CServiceBroker::GetBlurayDiscCache()->GetPlaylistInfo(path, playlist, p))
+  {
+    // Retrieve from disc
+    if (!ReadMPLS(url, playlist, p))
+      return false;
+
+    // Cache and return
+    CServiceBroker::GetBlurayDiscCache()->SetPlaylistInfo(path, playlist, p);
+  }
+
+  // Parse PlaylistInformation into PlayInfo
+  playlistInfo.playlist = p.playlist;
+  playlistInfo.duration = p.duration;
+  playlistInfo.chapters.reserve(p.chapters.size());
+  for (const ChapterInformation& chapter : p.chapters)
+    playlistInfo.chapters.emplace_back(chapter.start);
+  playlistInfo.clips.reserve(p.clips.size());
+  for (const ClipInformation& clip : p.clips)
+  {
+    playlistInfo.clips.emplace_back(clip.clip);
+    playlistInfo.clipDuration[clip.clip] = clip.duration;
+  }
+  if (!p.clips.empty() && !p.clips[0].programs.empty())
+  {
+    for (const StreamInformation& stream : p.clips[0].programs[0].streams)
+    {
+      switch (stream.coding)
+      {
+        case ENCODING_TYPE::VIDEO_MPEG1:
+        case ENCODING_TYPE::VIDEO_MPEG2:
+        case ENCODING_TYPE::VIDEO_VC1:
+        case ENCODING_TYPE::VIDEO_H264:
+        case ENCODING_TYPE::VIDEO_HEVC:
+          playlistInfo.videoStreams.emplace_back(DiscStreamInfo{.coding = stream.coding,
+                                                                .format = stream.format,
+                                                                .rate = stream.rate,
+                                                                .aspect = stream.aspect,
+                                                                .lang = ""});
+          break;
+        case ENCODING_TYPE::AUDIO_MPEG1:
+        case ENCODING_TYPE::AUDIO_MPEG2:
+        case ENCODING_TYPE::AUDIO_LPCM:
+        case ENCODING_TYPE::AUDIO_AC3:
+        case ENCODING_TYPE::AUDIO_DTS:
+        case ENCODING_TYPE::AUDIO_TRUHD:
+        case ENCODING_TYPE::AUDIO_AC3PLUS:
+        case ENCODING_TYPE::AUDIO_DTSHD:
+        case ENCODING_TYPE::AUDIO_DTSHD_MASTER:
+          playlistInfo.audioStreams.emplace_back(DiscStreamInfo{.coding = stream.coding,
+                                                                .format = stream.format,
+                                                                .rate = stream.rate,
+                                                                .aspect = stream.aspect,
+                                                                .lang = stream.language});
+          break;
+        case ENCODING_TYPE::SUB_PG:
+        case ENCODING_TYPE::SUB_TEXT:
+          playlistInfo.pgStreams.emplace_back(DiscStreamInfo{.coding = stream.coding,
+                                                             .format = stream.format,
+                                                             .rate = stream.rate,
+                                                             .aspect = stream.aspect,
+                                                             .lang = stream.language});
+          break;
+        case ENCODING_TYPE::SUB_IG:
+        case ENCODING_TYPE::AUDIO_AC3PLUS_SECONDARY:
+        case ENCODING_TYPE::AUDIO_DTSHD_SECONDARY:
+        default:
+          break;
+      }
+    }
+  }
+  return true;
+}
+
+bool GetPlaylists(const CURL& url,
+                  const std::string& realPath,
+                  int flags,
+                  GetTitles job,
+                  CFileItemList& items,
+                  SortTitles sort)
+{
+  std::vector<PlaylistInfo> playlists;
+  int mainPlaylist{-1};
+
+  // See if disc.inf for main playlist
+  if (job != GetTitles::GET_TITLES_ALL && job != GetTitles::GET_TITLES_EPISODES)
+  {
+    mainPlaylist = GetMainPlaylistFromDisc(url);
+    if (mainPlaylist != -1)
+    {
+      // Only main playlist is needed
+      PlaylistInfo t{};
+      if (!GetPlaylistInfoFromDisc(url, realPath, mainPlaylist, t))
+        CLog::LogF(LOGDEBUG, "Unable to get playlist {}", mainPlaylist);
+      else
+        playlists.emplace_back(t);
+    }
+  }
+
+  if (playlists.empty())
+  {
+    const CURL url2{URIUtils::AddFileToFolder(url.GetHostName(), "BDMV", "PLAYLIST", "")};
+    CDirectory::CHints hints;
+    hints.flags = flags;
+    CFileItemList allTitles;
+    if (!CDirectory::GetDirectory(url2, allTitles, hints))
+      return false;
+
+    // Get information on all playlists
+    const std::regex playlistPath("(\\d{5}.mpls)");
+    std::smatch playlistMatch;
+    for (const auto& title : allTitles)
+    {
+      const CURL url3{title->GetPath()};
+      const std::string filename{URIUtils::GetFileName(url3.GetFileName())};
+      if (std::regex_search(filename, playlistMatch, playlistPath))
+      {
+        const unsigned int playlist{static_cast<unsigned int>(std::stoi(playlistMatch[0]))};
+
+        PlaylistInfo t{};
+        if (!GetPlaylistInfoFromDisc(url, realPath, playlist, t))
+          CLog::LogF(LOGDEBUG, "Unable to get playlist {}", playlist);
+        else
+          playlists.emplace_back(t);
+      }
+    }
+  }
+
+  // Remove playlists with no clips
+  std::erase_if(playlists, [](const PlaylistInfo& playlist) { return playlist.clips.empty(); });
+
+  // Remove all clips less than a second in length
+  std::erase_if(playlists, [](const PlaylistInfo& playlist) { return playlist.duration < 1s; });
+
+  // Remove playlists with duplicate clips
+  std::erase_if(playlists,
+                [](const PlaylistInfo& playlist)
+                {
+                  std::set<unsigned int> clips;
+                  for (const auto& clip : playlist.clips)
+                    clips.emplace(clip);
+                  return clips.size() < playlist.clips.size();
+                });
+
+  // Remove duplicate playlists
+  // For episodes playlist selection happens in CDiscDirectoryHelper
+  if (job != GetTitles::GET_TITLES_ALL && job != GetTitles::GET_TITLES_EPISODES &&
+      playlists.size() > 1)
+  {
+    std::set<unsigned int> duplicatePlaylists;
+    for (unsigned int i = 0; i < playlists.size() - 1; ++i)
+    {
+      for (unsigned int j = i + 1; j < playlists.size(); ++j)
+      {
+        if (playlists[i].audioStreams.size() == playlists[j].audioStreams.size() &&
+            playlists[i].pgStreams.size() == playlists[j].pgStreams.size() &&
+            playlists[i].chapters.size() == playlists[j].chapters.size() &&
+            playlists[i].clips.size() == playlists[j].clips.size() &&
+            playlists[i].audioStreams == playlists[j].audioStreams &&
+            playlists[i].pgStreams == playlists[j].pgStreams &&
+            playlists[i].chapters == playlists[j].chapters &&
+            playlists[i].clips == playlists[j].clips)
+        {
+          duplicatePlaylists.emplace(playlists[j].playlist);
+        }
+      }
+    }
+    std::erase_if(playlists, [&duplicatePlaylists](const PlaylistInfo& p)
+                  { return duplicatePlaylists.contains(p.playlist); });
+  }
+
+  // Remove playlists below minimum duration (default 5 minutes) unless that would leave no playlists
+  if (job != GetTitles::GET_TITLES_ALL)
+  {
+    const std::chrono::milliseconds minimumDuration{CServiceBroker::GetSettingsComponent()
+                                                        ->GetAdvancedSettings()
+                                                        ->m_minimumEpisodePlaylistDuration *
+                                                    1000};
+    if (std::ranges::any_of(playlists, [&minimumDuration](const PlaylistInfo& playlist)
+                            { return playlist.duration >= minimumDuration; }))
+    {
+      std::erase_if(playlists, [&minimumDuration](const PlaylistInfo& playlist)
+                    { return playlist.duration < minimumDuration; });
+    }
+  }
+
+  if (!playlists.empty())
+  {
+    // Now we have curated playlists, find longest (for main title derivation)
+    const auto& it{std::ranges::max_element(playlists, {}, &PlaylistInfo::duration)};
+
+    const std::chrono::milliseconds maxDuration{it->duration};
+    const unsigned int maxPlaylist{it->playlist};
+
+    // Sort
+    // Movies - placing main title - if present - first, then by duration
+    // Episodes - by playlist number
+    if (sort != SortTitles::SORT_TITLES_NONE)
+    {
+      std::ranges::sort(playlists,
+                        [&sort](const PlaylistInfo& i, const PlaylistInfo& j)
+                        {
+                          if (sort == SortTitles::SORT_TITLES_MOVIE)
+                          {
+                            if (i.duration == j.duration)
+                              return i.playlist < j.playlist;
+                            return i.duration > j.duration;
+                          }
+                          return i.playlist < j.playlist;
+                        });
+
+      const auto& pivot{std::ranges::find_if(
+          playlists, [&mainPlaylist](const PlaylistInfo& title)
+          { return title.playlist == static_cast<unsigned int>(mainPlaylist); })};
+      if (pivot != playlists.end())
+        std::rotate(playlists.begin(), pivot, pivot + 1);
+    }
+
+    const std::chrono::milliseconds minDuration{maxDuration * MAIN_TITLE_LENGTH_PERCENT / 100};
+    for (const auto& title : playlists)
+    {
+      if (job == GetTitles::GET_TITLES_ALL || job == GetTitles::GET_TITLES_EPISODES ||
+          (job == GetTitles::GET_TITLES_MAIN && title.duration >= minDuration) ||
+          (job == GetTitles::GET_TITLES_ONE &&
+           (title.playlist == static_cast<unsigned int>(mainPlaylist) ||
+            (mainPlaylist == -1 && title.playlist == maxPlaylist))))
+      {
+        items.Add(GetFileItem(url, title,
+                              title.playlist == static_cast<unsigned int>(mainPlaylist)
+                                  ? g_localizeStrings.Get(25004) /* Main Title */
+                                  : g_localizeStrings.Get(25005) /* Title */));
+      }
+    }
+  }
+
+  return !items.IsEmpty();
+}
+
+void GetPlaylistsInformation(
+    const CURL& url, const std::string& realPath, int flags, ClipMap& clips, PlaylistMap& playlists)
+{
+  // Check cache
+  const std::string path{url.GetHostName()};
+  if (CServiceBroker::GetBlurayDiscCache()->GetMaps(path, playlists, clips))
+  {
+    CLog::LogF(LOGDEBUG, "Playlist information for {} retrieved from cache", path);
+    return;
+  }
+
+  // Get all titles on disc
+  // Sort by playlist for grouping later
+  CFileItemList allTitles;
+  GetPlaylists(url, realPath, flags, GetTitles::GET_TITLES_EPISODES, allTitles,
+               SortTitles::SORT_TITLES_EPISODE);
+
+  // Get information on all playlists
+  // Including relationship between clips and playlists
+  // List all playlists
+  CLog::LogF(LOGDEBUG, "*** Playlist information ***");
+
+  for (const auto& title : allTitles)
+  {
+    const int playlist{title->GetProperty("bluray_playlist").asInteger32(0)};
+    PlaylistInfo titleInfo;
+    if (!GetPlaylistInfoFromDisc(url, realPath, playlist, titleInfo))
+    {
+      CLog::LogF(LOGDEBUG, "Unable to get playlist {}", playlist);
+    }
+    else
+    {
+      // Save playlist
+      PlaylistInfo info;
+      info.playlist = playlist;
+
+      // Save playlist duration and chapters
+      info.duration = titleInfo.duration;
+      info.chapters = titleInfo.chapters;
+
+      // Get clips
+      std::string clipsStr;
+      for (const auto& clip : titleInfo.clips)
+      {
+        // Add clip to playlist
+        info.clips.emplace_back(clip);
+
+        // Add/extend clip information
+        const auto& it = clips.find(clip);
+        if (it == clips.end())
+        {
+          // First reference to clip
+          ClipInfo clipInfo;
+          clipInfo.duration = titleInfo.clipDuration[clip];
+          clipInfo.playlists.emplace_back(playlist);
+          clips[clip] = clipInfo;
+        }
+        else
+        {
+          // Additional reference to clip, add this playlist
+          it->second.playlists.emplace_back(playlist);
+        }
+
+        clipsStr += std::to_string(clip) + ",";
+      }
+      if (!clipsStr.empty())
+        clipsStr.pop_back(); // Remove last ','
+
+      playlists[playlist] = info;
+
+      // Get languages
+      std::string langs;
+      for (const auto& audio : titleInfo.audioStreams)
+        langs += audio.lang + ",";
+      if (!langs.empty())
+        langs.pop_back(); // Remove last ','
+
+      playlists[playlist].languages = langs;
+
+      CLog::LogF(LOGDEBUG, "Playlist {}, Duration {}, Langs {}, Clips {} ", playlist,
+                 title->GetVideoInfoTag()->GetDuration(), langs, clipsStr);
+    }
+  }
+
+  // List clip info (automatically sorted as map)
+  for (const auto& c : clips)
+  {
+    const auto& [clip, clipInformation] = c;
+    std::string ps{StringUtils::Format("Clip {0:d} duration {1:d} - playlists ", clip,
+                                       clipInformation.duration.count() / 1000)};
+    for (const auto& playlist : clipInformation.playlists)
+      ps += std::to_string(playlist) + ",";
+    ps.pop_back(); // Remove last ','
+    CLog::LogF(LOGDEBUG, "{}", ps);
+  }
+
+  CLog::LogF(LOGDEBUG, "*** Playlist information End ***");
+
+  // Cache
+  CServiceBroker::GetBlurayDiscCache()->SetMaps(path, playlists, clips);
+  CLog::LogF(LOGDEBUG, "Playlist information for {} cached", path);
+}
 } // namespace
 
 CBlurayDirectory::~CBlurayDirectory()
@@ -131,428 +1643,6 @@ std::string CBlurayDirectory::GetDiscInfoString(DiscInfo info) const
   return "";
 }
 
-void CBlurayDirectory::GetPlaylistsInformation(ClipMap& clips, PlaylistMap& playlists) const
-{
-  // Check cache
-  const std::string path{m_url.GetHostName()};
-  if (CServiceBroker::GetBlurayDiscCache()->GetMaps(path, playlists, clips))
-  {
-    CLog::LogF(LOGDEBUG, "Playlist information for {} retrieved from cache", path);
-    return;
-  }
-
-  // Get all titles on disc
-  // Sort by playlist for grouping later
-  CFileItemList allTitles;
-  GetPlaylists(GetTitles::GET_TITLES_ALL, allTitles, SortTitles::SORT_TITLES_EPISODE);
-
-  // Get information on all playlists
-  // Including relationship between clips and playlists
-  // List all playlists
-  CLog::LogF(LOGDEBUG, "*** Playlist information ***");
-
-  for (const auto& title : allTitles)
-  {
-    const int playlist{title->GetProperty("bluray_playlist").asInteger32(0)};
-    BLURAY_TITLE_INFO titleInfo{};
-    if (!GetPlaylistInfoFromDisc(playlist, titleInfo))
-    {
-      CLog::LogF(LOGDEBUG, "Unable to get playlist {}", playlist);
-    }
-    else
-    {
-      // Save playlist
-      PlaylistInfo info;
-
-      // Save playlist duration
-      info.duration = static_cast<unsigned int>(titleInfo.duration / 90000);
-
-      // Get clips
-      std::string clipsStr;
-      for (unsigned int i = 0; i < titleInfo.clip_count; ++i)
-      {
-        // Add clip to playlist
-        const unsigned int clip{
-            static_cast<unsigned int>(std::strtoul(titleInfo.clips[i].clip_id, nullptr, 10))};
-        info.clips.emplace_back(clip);
-
-        // Add/extend clip information
-        const auto& it = clips.find(clip);
-        if (it == clips.end())
-        {
-          // First reference to clip
-          ClipInfo clipInfo;
-          clipInfo.duration = static_cast<unsigned int>(
-              (titleInfo.clips[i].out_time - titleInfo.clips[i].in_time) / 90000);
-          clipInfo.playlists.emplace_back(playlist);
-          clips[clip] = clipInfo;
-        }
-        else
-        {
-          // Additional reference to clip, add this playlist
-          it->second.playlists.emplace_back(playlist);
-        }
-
-        const std::string c{titleInfo.clips[i].clip_id};
-        clipsStr += c + ",";
-      }
-      if (!clipsStr.empty())
-        clipsStr.pop_back(); // Remove last ','
-
-      playlists[playlist] = info;
-
-      // Get languages
-      std::string langs;
-      for (int i = 0; i < titleInfo.clips[0].audio_stream_count; ++i)
-      {
-        const std::string l{
-            reinterpret_cast<char const*>(titleInfo.clips[0].audio_streams[i].lang)};
-        langs += l + ",";
-      }
-      if (!langs.empty())
-        langs.pop_back(); // Remove last ','
-
-      playlists[playlist].languages = langs;
-
-      CLog::LogF(LOGDEBUG, "Playlist {}, Duration {}, Langs {}, Clips {} ", playlist,
-                 title->GetVideoInfoTag()->GetDuration(), langs, clipsStr);
-    }
-  }
-
-  // List clip info (automatically sorted as map)
-  // @todo - remove once code stable
-  for (const auto& c : clips)
-  {
-    const auto& [clip, clipInformation] = c;
-    std::string ps{StringUtils::Format("Clip {0:d} duration {1:d} - playlists ", clip,
-                                       clipInformation.duration)};
-    for (const auto& playlist : clipInformation.playlists)
-      ps += std::to_string(playlist) + ",";
-    ps.pop_back(); // Remove last ','
-    CLog::LogF(LOGDEBUG, "{}", ps);
-  }
-
-  CLog::LogF(LOGDEBUG, "*** Playlist information End ***");
-
-  // Cache
-  CServiceBroker::GetBlurayDiscCache()->SetMaps(path, playlists, clips);
-  CLog::LogF(LOGDEBUG, "Playlist information for {} cached", path);
-}
-
-std::shared_ptr<CFileItem> CBlurayDirectory::GetFileItem(const BLURAY_TITLE_INFO& title,
-                                                         const std::string& label) const
-{
-  CURL path{m_url};
-  path.SetFileName(StringUtils::Format("BDMV/PLAYLIST/{:05}.mpls", title.playlist));
-  const auto item{std::make_shared<CFileItem>(path.Get(), false)};
-  const int duration = static_cast<int>(title.duration / 90000);
-  item->GetVideoInfoTag()->SetDuration(duration);
-  item->SetProperty("bluray_playlist", title.playlist);
-  const std::string buf{StringUtils::Format(label, title.playlist)};
-  item->m_strTitle = buf;
-  item->SetLabel(buf);
-  const std::string chap{StringUtils::Format(g_localizeStrings.Get(25007), title.chapter_count,
-                                             StringUtils::SecondsToTimeString(duration))};
-  item->SetLabel2(chap);
-  item->m_dwSize = 0;
-  item->SetArt("icon", "DefaultVideo.png");
-  for (unsigned int i = 0; i < title.clip_count; ++i)
-    item->m_dwSize += static_cast<int64_t>(title.clips[i].pkt_count * 192);
-
-  // Generate streamdetails
-
-  // Populate videoInfo
-  if (title.clip_count > 0 && title.clips[0].video_stream_count > 0)
-  {
-    VideoStreamInfo videoInfo;
-    const auto& video{title.clips[0].video_streams[0]};
-    videoInfo.valid = true;
-    videoInfo.bitrate = 0;
-    switch (video.format)
-    {
-      case BLURAY_VIDEO_FORMAT_480I:
-      case BLURAY_VIDEO_FORMAT_480P:
-        videoInfo.height = 480;
-        videoInfo.width = 640; // Guess but never displayed
-        break;
-      case BLURAY_VIDEO_FORMAT_576I:
-      case BLURAY_VIDEO_FORMAT_576P:
-        videoInfo.height = 576;
-        videoInfo.width = 720; // Guess but never displayed
-        break;
-      case BLURAY_VIDEO_FORMAT_720P:
-        videoInfo.height = 720;
-        videoInfo.width = 1280; // Guess but never displayed
-        break;
-      case BLURAY_VIDEO_FORMAT_1080I:
-      case BLURAY_VIDEO_FORMAT_1080P:
-        videoInfo.height = 1080;
-        videoInfo.width = 1920; // Guess but never displayed
-        break;
-      case BLURAY_VIDEO_FORMAT_2160P:
-        videoInfo.height = 2160;
-        videoInfo.width = 3840; // Guess but never displayed
-        break;
-      default:
-        videoInfo.height = 0;
-        videoInfo.width = 0;
-        break;
-    }
-    switch (video.coding_type)
-    {
-      case BLURAY_STREAM_TYPE_VIDEO_MPEG1:
-        videoInfo.codecName = "mpeg1";
-        break;
-      case BLURAY_STREAM_TYPE_VIDEO_MPEG2:
-        videoInfo.codecName = "mpeg2";
-        break;
-      case BLURAY_STREAM_TYPE_VIDEO_VC1:
-        videoInfo.codecName = "vc1";
-        break;
-      case BLURAY_STREAM_TYPE_VIDEO_H264:
-        videoInfo.codecName = "h264";
-        break;
-      case BLURAY_STREAM_TYPE_VIDEO_HEVC:
-        videoInfo.codecName = "hevc";
-        break;
-      default:
-        videoInfo.codecName = "";
-        break;
-    }
-    switch (video.aspect)
-    {
-      case BLURAY_ASPECT_RATIO_4_3:
-        videoInfo.videoAspectRatio = 4.0f / 3.0f;
-        break;
-      case BLURAY_ASPECT_RATIO_16_9:
-        videoInfo.videoAspectRatio = 16.0f / 9.0f;
-        break;
-      default:
-        videoInfo.videoAspectRatio = 0.0f;
-        break;
-    }
-    videoInfo.stereoMode = ""; // Not stored in BLURAY_TITLE_INFO
-    videoInfo.flags = FLAG_NONE;
-    videoInfo.hdrType = StreamHdrType::HDR_TYPE_NONE; // Not stored in BLURAY_TITLE_INFO
-    videoInfo.fpsRate = 0; // Not in streamdetails
-    videoInfo.fpsScale = 0; // Not in streamdetails
-
-    CVideoInfoTag* info = item->GetVideoInfoTag();
-    info->m_streamDetails.SetStreams(videoInfo, static_cast<int>(title.duration / 90000),
-                                     AudioStreamInfo{}, SubtitleStreamInfo{});
-
-    for (int i = 0; i < title.clips[0].audio_stream_count; ++i)
-    {
-      AudioStreamInfo audioInfo;
-      audioInfo.valid = true;
-      audioInfo.bitrate = 0;
-      audioInfo.channels = 0; // Only basic mono/stereo/multichannel is stored in BLURAY_TITLE_INFO
-
-      auto& audio{title.clips[0].audio_streams[i]};
-      switch (audio.coding_type)
-      {
-        case BLURAY_STREAM_TYPE_AUDIO_AC3:
-          audioInfo.codecName = "ac3";
-          break;
-        case BLURAY_STREAM_TYPE_AUDIO_AC3PLUS:
-        case BLURAY_STREAM_TYPE_AUDIO_AC3PLUS_SECONDARY:
-          audioInfo.codecName = "eac3";
-          break;
-        case BLURAY_STREAM_TYPE_AUDIO_LPCM:
-          audioInfo.codecName = "pcm";
-          break;
-        case BLURAY_STREAM_TYPE_AUDIO_DTS:
-          audioInfo.codecName = "dts";
-          break;
-        case BLURAY_STREAM_TYPE_AUDIO_DTSHD:
-        case BLURAY_STREAM_TYPE_AUDIO_DTSHD_SECONDARY:
-          audioInfo.codecName = "dtshd";
-          break;
-        case BLURAY_STREAM_TYPE_AUDIO_DTSHD_MASTER:
-          audioInfo.codecName = "dtshd_ma";
-          break;
-        case BLURAY_STREAM_TYPE_AUDIO_TRUHD:
-          audioInfo.codecName = "truehd";
-          break;
-        default:
-          audioInfo.codecName = "";
-          break;
-      }
-      audioInfo.flags = FLAG_NONE;
-      audioInfo.language = reinterpret_cast<char*>(audio.lang);
-      info->m_streamDetails.AddStream(new CStreamDetailAudio(audioInfo));
-    }
-
-    // Subtitles
-    for (int i = 0; i < title.clips[0].pg_stream_count; ++i)
-    {
-      SubtitleStreamInfo subtitleInfo;
-      subtitleInfo.valid = true;
-      subtitleInfo.bitrate = 0;
-      subtitleInfo.codecDesc = "";
-      subtitleInfo.codecName = "";
-      subtitleInfo.isExternal = false;
-      subtitleInfo.name = "";
-      subtitleInfo.flags = FLAG_NONE;
-
-      auto& subtitle{title.clips[0].pg_streams[i]};
-      subtitleInfo.language = reinterpret_cast<char*>(subtitle.lang);
-      info->m_streamDetails.AddStream(new CStreamDetailSubtitle(subtitleInfo));
-    }
-  }
-
-  return item;
-}
-
-bool CBlurayDirectory::GetPlaylists(GetTitles job, CFileItemList& items, SortTitles sort) const
-{
-  std::vector<BLURAY_TITLE_INFO> playlists;
-  int mainPlaylist{-1};
-
-  // See if disc.inf for main playlist
-  if (job != GetTitles::GET_TITLES_ALL)
-  {
-    mainPlaylist = GetMainPlaylistFromDisc();
-    if (mainPlaylist != -1)
-    {
-      // Only main playlist is needed
-      BLURAY_TITLE_INFO t{};
-      if (!GetPlaylistInfoFromDisc(mainPlaylist, t))
-        CLog::LogF(LOGDEBUG, "Unable to get playlist {}", mainPlaylist);
-      else
-        playlists.emplace_back(t);
-    }
-  }
-
-  if (playlists.empty())
-  {
-    const CURL url{URIUtils::AddFileToFolder(m_url.GetHostName(), "BDMV", "PLAYLIST", "")};
-    CDirectory::CHints hints;
-    hints.flags = m_flags;
-    CFileItemList allTitles;
-    if (!CDirectory::GetDirectory(url, allTitles, hints))
-      return false;
-
-    // Get information on all playlists
-    const std::regex playlistPath("(\\d{5}.mpls)");
-    std::smatch playlistMatch;
-    for (const auto& title : allTitles)
-    {
-      const CURL url2{title->GetPath()};
-      const std::string filename{URIUtils::GetFileName(url2.GetFileName())};
-      if (std::regex_search(filename, playlistMatch, playlistPath))
-      {
-        const unsigned int playlist{static_cast<unsigned int>(std::stoi(playlistMatch[0]))};
-
-        BLURAY_TITLE_INFO t{};
-        if (!GetPlaylistInfoFromDisc(playlist, t))
-          CLog::LogF(LOGDEBUG, "Unable to get playlist {}", playlist);
-        else
-          playlists.emplace_back(t);
-      }
-    }
-  }
-
-  // Remove playlists below minimum duration (default 5 minutes)
-  const uint64_t minimumDuration{static_cast<uint64_t>(CServiceBroker::GetSettingsComponent()
-                                                           ->GetAdvancedSettings()
-                                                           ->m_minimumEpisodePlaylistDuration) *
-                                 90000};
-
-  std::erase_if(playlists, [&minimumDuration](const BLURAY_TITLE_INFO& playlist)
-                { return playlist.duration < minimumDuration; });
-
-  // Remove playlists with duplicate clips
-  std::erase_if(playlists,
-                [](const BLURAY_TITLE_INFO& playlist)
-                {
-                  std::set<uint32_t> clips;
-                  for (uint32_t i = 0; i < playlist.clip_count; ++i)
-                    clips.emplace(strtoul(playlist.clips[i].clip_id, nullptr, 10));
-                  return clips.size() < playlist.clip_count;
-                });
-
-  // Remove playlists with no clips
-  std::erase_if(playlists,
-                [](const BLURAY_TITLE_INFO& playlist) { return playlist.clip_count == 0; });
-
-  // Remove duplicate playlists
-  std::set<unsigned int> duplicatePlaylists;
-  for (unsigned int i = 0; i < playlists.size() - 1; ++i)
-  {
-    for (unsigned int j = i + 1; j < playlists.size(); ++j)
-    {
-      if (playlists[i].clip_count == playlists[j].clip_count &&
-          playlists[i].chapter_count == playlists[j].chapter_count &&
-          playlists[i].mark_count == playlists[j].mark_count &&
-          playlists[i].clips[0].audio_stream_count == playlists[j].clips[0].audio_stream_count &&
-          playlists[i].clips[0].pg_stream_count == playlists[j].clips[0].pg_stream_count &&
-          std::memcmp(playlists[i].chapters, playlists[j].chapters,
-                      sizeof(BLURAY_TITLE_CHAPTER) * playlists[i].chapter_count) == 0 &&
-          std::memcmp(playlists[i].marks, playlists[j].marks,
-                      sizeof(BLURAY_TITLE_MARK) * playlists[i].mark_count) == 0)
-      {
-        duplicatePlaylists.emplace(playlists[j].playlist);
-      }
-    }
-  }
-  std::erase_if(playlists,
-                [&duplicatePlaylists](const BLURAY_TITLE_INFO& p)
-                {
-                  return std::ranges::any_of(duplicatePlaylists,
-                                             [&p](const unsigned int duplicatePlaylist)
-                                             { return p.playlist == duplicatePlaylist; });
-                });
-
-  // Now we have curated playlists, find longest (for main title derivation)
-  const auto& it{std::ranges::max_element(playlists,
-                                          [](const BLURAY_TITLE_INFO& p, const BLURAY_TITLE_INFO& q)
-                                          { return p.duration < q.duration; })};
-  const uint64_t maxDuration{it->duration};
-  const unsigned int maxPlaylist{it->playlist};
-
-  // Sort
-  // Movies - placing main title - if present - first, then by duration
-  // Episodes - by playlist number
-  if (sort != SortTitles::SORT_TITLES_NONE)
-  {
-    std::ranges::sort(playlists,
-                      [&sort](const BLURAY_TITLE_INFO& i, const BLURAY_TITLE_INFO& j)
-                      {
-                        if (sort == SortTitles::SORT_TITLES_MOVIE)
-                        {
-                          if (i.duration == j.duration)
-                            return i.playlist < j.playlist;
-                          return i.duration > j.duration;
-                        }
-                        return i.playlist < j.playlist;
-                      });
-
-    const auto& pivot{
-        std::ranges::find_if(playlists, [&mainPlaylist](const BLURAY_TITLE_INFO& title)
-                             { return title.playlist == static_cast<uint32_t>(mainPlaylist); })};
-    if (pivot != playlists.end())
-      std::rotate(playlists.begin(), pivot, pivot + 1);
-  }
-
-  const uint64_t minDuration{maxDuration * MAIN_TITLE_LENGTH_PERCENT / 100};
-  for (const auto& title : playlists)
-  {
-    if (job == GetTitles::GET_TITLES_ALL ||
-        (job == GetTitles::GET_TITLES_MAIN && title.duration >= minDuration) ||
-        (job == GetTitles::GET_TITLES_ONE &&
-         (title.playlist == static_cast<uint32_t>(mainPlaylist) ||
-          (mainPlaylist == -1 && title.playlist == static_cast<uint32_t>(maxPlaylist)))))
-    {
-      items.Add(GetFileItem(title, title.playlist == static_cast<uint32_t>(mainPlaylist)
-                                       ? g_localizeStrings.Get(25004) /* Main Title */
-                                       : g_localizeStrings.Get(25005) /* Title */));
-    }
-  }
-
-  return !items.IsEmpty();
-}
-
 bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
 {
   Dispose();
@@ -572,13 +1662,15 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
   // /root/episode/all                  - get all episodes
   if (file == "root")
   {
-    GetPlaylists(GetTitles::GET_TITLES_MAIN, items, SortTitles::SORT_TITLES_MOVIE);
+    GetPlaylists(url, m_realPath, m_flags, GetTitles::GET_TITLES_MAIN, items,
+                 SortTitles::SORT_TITLES_MOVIE);
     AddOptionsAndSort(m_url, items, m_blurayMenuSupport);
     return (items.Size() > 2);
   }
 
   if (file == "root/titles")
-    return GetPlaylists(GetTitles::GET_TITLES_ALL, items, SortTitles::SORT_TITLES_MOVIE);
+    return GetPlaylists(url, m_realPath, m_flags, GetTitles::GET_TITLES_ALL, items,
+                        SortTitles::SORT_TITLES_MOVIE);
 
   if (StringUtils::StartsWith(file, "root/episode"))
   {
@@ -609,7 +1701,7 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
     // Get playlist, clip and language information
     ClipMap clips;
     PlaylistMap playlists;
-    GetPlaylistsInformation(clips, playlists);
+    GetPlaylistsInformation(url, m_realPath, m_flags, clips, playlists);
 
     // Get episode playlists
     CDiscDirectoryHelper helper;
@@ -617,7 +1709,8 @@ bool CBlurayDirectory::GetDirectory(const CURL& url, CFileItemList& items)
 
     // Heuristics failed so return all playlists
     if (items.IsEmpty())
-      GetPlaylists(GetTitles::GET_TITLES_ALL, items, SortTitles::SORT_TITLES_EPISODE);
+      GetPlaylists(url, m_realPath, m_flags, GetTitles::GET_TITLES_EPISODES, items,
+                   SortTitles::SORT_TITLES_EPISODE);
 
     // Add all titles and menu options
     AddOptionsAndSort(m_url, items, m_blurayMenuSupport);
@@ -683,70 +1776,15 @@ bool CBlurayDirectory::InitializeBluray(const std::string& root)
   const BLURAY_DISC_INFO* discInfo{GetDiscInfo()};
   m_blurayMenuSupport = discInfo && !discInfo->no_menu_support;
 
+  // Clear local clip cache
+  lcl_clips.clear();
+
   return true;
-}
-
-int CBlurayDirectory::GetMainPlaylistFromDisc() const
-{
-  const std::string root{m_url.GetHostName()};
-  const std::string discInfPath{URIUtils::AddFileToFolder(root, "disc.inf")};
-  CFile file;
-  std::string line;
-  line.reserve(1024);
-  int playlist{-1};
-
-  if (file.Open(discInfPath))
-  {
-    CLog::LogF(LOGDEBUG, "disc.inf found");
-    CRegExp pl{true, CRegExp::autoUtf8, R"((?:playlists=)(\d+))"};
-    uint8_t maxLines{100};
-    while ((maxLines > 0) && file.ReadLine(line))
-    {
-      maxLines--;
-      if (pl.RegFind(line) != -1)
-      {
-        playlist = std::stoi(pl.GetMatch(1));
-        break;
-      }
-    }
-    file.Close();
-  }
-  return playlist;
-}
-
-std::string CBlurayDirectory::GetCachePath() const
-{
-  if (m_url.Get().empty())
-    return m_realPath;
-  std::string path{m_url.GetHostName()};
-  if (path.empty())
-    path = m_url.Get(); // Could be drive letter
-  return path;
 }
 
 const BLURAY_DISC_INFO* CBlurayDirectory::GetDiscInfo() const
 {
   return bd_get_disc_info(m_bd);
-}
-
-bool CBlurayDirectory::GetPlaylistInfoFromDisc(unsigned int playlist,
-                                               BLURAY_TITLE_INFO& playlistInfo) const
-{
-  // Check cache
-  const std::string path{GetCachePath()};
-  if (CServiceBroker::GetBlurayDiscCache()->GetPlaylistInfo(path, playlist, playlistInfo))
-    return true;
-
-  // Retrieve from disc
-  BLURAY_TITLE_INFO* p{bd_get_playlist_info(m_bd, playlist, 0)};
-  if (!p)
-    return false;
-
-  // Cache and return
-  CServiceBroker::GetBlurayDiscCache()->SetPlaylistInfo(path, playlist, p);
-  playlistInfo = *p;
-
-  return true;
 }
 
 } // namespace XFILE

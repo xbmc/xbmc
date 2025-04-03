@@ -10,6 +10,7 @@
 
 #include "FileItem.h"
 #include "FileItemList.h"
+#include "GUIDialogOK.h"
 #include "GUIDialogSelect.h"
 #include "GUIDialogYesNo.h"
 #include "ServiceBroker.h"
@@ -105,7 +106,13 @@ bool CGUIDialogSimpleMenu::ShowPlaylistSelection(CFileItem& item)
   // Get items
   CFileItemList items;
   if (!GetItems(item, items, directory))
+  {
+    // No main movie or episode playlist found
+    CGUIDialogOK::ShowAndGetInput(
+        CVariant{257},
+        CVariant{item.GetVideoContentType() == VideoDbContentType::EPISODES ? 25017 : 25016});
     return false;
+  }
 
   CGUIDialogSelect* dialog{CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
       WINDOW_DIALOG_SELECT)};
