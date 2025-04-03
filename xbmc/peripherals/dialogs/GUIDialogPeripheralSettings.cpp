@@ -124,6 +124,8 @@ void CGUIDialogPeripheralSettings::OnSettingChanged(const std::shared_ptr<const 
     if (controller)
       peripheral->SetControllerProfile(controller);
   }
+
+  peripheral->OnSettingChanged(settingId);
 }
 
 bool CGUIDialogPeripheralSettings::Save()
