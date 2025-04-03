@@ -19,12 +19,14 @@
 
 #include <algorithm>
 #include <array>
+#include <chrono>
 #include <iterator>
 #include <ranges>
 #include <set>
 #include <tuple>
 
 using namespace XFILE;
+using namespace std::chrono_literals;
 
 using PlaylistMapEntry = std::pair<unsigned int, PlaylistInfo>;
 using PlaylistVector = std::vector<std::pair<unsigned int, PlaylistInfo>>;
@@ -292,7 +294,7 @@ void CDiscDirectoryHelper::FindCandidatePlaylists(const std::vector<CVideoInfoTa
     // Get the potential single episodes from the map
     const auto& [playlist, playlistInformation] = *playlists.find(playAllPlaylist);
     CLog::LogF(LOGDEBUG, "Using candidate play all playlist {} duration {}", playlist,
-               playlistInformation.duration);
+               static_cast<int>(playlistInformation.duration.count() / 1000));
 
     // Find the clip for the episode(s)
     unsigned int i{0};
@@ -326,7 +328,7 @@ void CDiscDirectoryHelper::FindCandidatePlaylists(const std::vector<CVideoInfoTa
               playlists.find(singleEpisodePlaylist)->second};
 
           CLog::LogF(LOGDEBUG, "Candidate playlist {} duration {}", singleEpisodePlaylist,
-                     singleEpisodePlaylistInformation.duration);
+                     static_cast<int>(singleEpisodePlaylistInformation.duration.count() / 1000));
 
           m_candidatePlaylists.insert(
               {singleEpisodePlaylist,
@@ -440,10 +442,10 @@ void CDiscDirectoryHelper::FindCandidatePlaylists(const std::vector<CVideoInfoTa
 
     for (unsigned int currentEpisodeIndex : indexes)
     {
-      unsigned int duration{episodesOnDisc[currentEpisodeIndex].GetDuration()};
-      if (duration == 0)
-        duration = std::numeric_limits<
-            int>::max(); // If episode length not known, ensure the longest playlist selected
+      std::chrono::milliseconds duration{episodesOnDisc[currentEpisodeIndex].GetDuration() * 1000};
+      if (duration == 0ms)
+        duration = std::chrono::milliseconds::
+            max(); // If episode length not known, ensure the longest playlist selected
 
       // Create vector of candidate playlists, duration difference and chapters
       std::vector<CandidatePlaylistsDurationInformation> candidatePlaylistsDuration;
@@ -460,7 +462,7 @@ void CDiscDirectoryHelper::FindCandidatePlaylists(const std::vector<CVideoInfoTa
           const auto& playlistInformation{playlists.find(playlist)->second};
           candidatePlaylistsDuration.emplace_back(CandidatePlaylistsDurationInformation{
               .playlist = playlist,
-              .durationDelta = abs(static_cast<int>(playlistInformation.duration - duration)),
+              .durationDelta = abs(playlistInformation.duration - duration),
               .chapters = static_cast<unsigned int>(playlistInformation.chapters.size())});
         }
       }
@@ -583,7 +585,7 @@ void CDiscDirectoryHelper::GenerateItem(const CURL& url,
 
   // Get clips
   const auto it{playlists.find(playlist)};
-  const int duration{static_cast<int>(it->second.duration)};
+  const std::chrono::milliseconds duration{it->second.duration};
 
   // Get languages
   const std::string langs{it->second.languages};
@@ -594,7 +596,7 @@ void CDiscDirectoryHelper::GenerateItem(const CURL& url,
   item->SetPath(path.Get());
 
   CVideoInfoTag* itemTag{item->GetVideoInfoTag()};
-  itemTag->SetDuration(duration);
+  itemTag->SetDuration(static_cast<int>(duration.count()));
   item->SetProperty("bluray_playlist", playlist);
 
   // Get episode title
@@ -615,7 +617,8 @@ void CDiscDirectoryHelper::GenerateItem(const CURL& url,
 
   item->SetLabel2(StringUtils::Format(
       g_localizeStrings.Get(25005) /* Title: {0:d} */ + " - {1:s}: {2:s}\n\r{3:s}: {4:s}", playlist,
-      g_localizeStrings.Get(180) /* Duration */, StringUtils::SecondsToTimeString(duration),
+      g_localizeStrings.Get(180) /* Duration */,
+      StringUtils::SecondsToTimeString(static_cast<int>(duration.count() / 1000)),
       g_localizeStrings.Get(24026) /* Languages */, langs));
   item->m_dwSize = 0;
   item->SetArt("icon", "DefaultVideo.png");
