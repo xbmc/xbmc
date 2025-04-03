@@ -156,6 +156,7 @@ void FindPlayAllPlaylists(
 }
 
 void FindGroups(unsigned int numEpisodes,
+                unsigned int numSpecials,
                 const PlaylistMap& playlists,
                 const std::vector<unsigned int>& playAllPlaylists,
                 std::vector<std::vector<unsigned int>>& groups)
@@ -190,9 +191,27 @@ void FindGroups(unsigned int numEpisodes,
                       groups.emplace_back(1, playlist); // New group
                   });
 
-    // Remove any groups containing fewer than numEpisodes playlists
-    std::erase_if(groups, [numEpisodes](const std::vector<unsigned int>& group)
-                  { return group.size() < numEpisodes; });
+    // See if any groups have at least numEpisode playlists
+    if (std::ranges::count_if(groups, [numEpisodes](const std::vector<unsigned int>& group)
+                              { return group.size() >= numEpisodes; }) > 0)
+    {
+      // Remove any groups containing fewer than numEpisodes playlists
+      std::erase_if(groups, [numEpisodes](const std::vector<unsigned int>& group)
+                    { return group.size() < numEpisodes; });
+    }
+    else
+    {
+      // See if there are exactly numEpisode playlists remaining and no specials, in which case make a group
+      // Assumption has to be playlists match episodes in ascending order
+      if (longPlaylists.size() == numEpisodes && numSpecials == 0)
+      {
+        groups.clear();
+        groups.emplace_back(1, longPlaylists.begin()->first);
+        std::for_each(++longPlaylists.begin(), longPlaylists.end(),
+                      [&groups](const PlaylistMapEntry& p)
+                      { groups.back().emplace_back(p.first); });
+      }
+    }
 
     if (groups.empty())
       CLog::LogF(LOGDEBUG, "No playlist groups found");
@@ -673,7 +692,7 @@ bool CDiscDirectoryHelper::GetEpisodePlaylists(const CURL& url,
   FindPlayAllPlaylists(numEpisodes, clips, playlists, playAllPlaylists, playAllPlaylistsMap);
 
   std::vector<std::vector<unsigned int>> groups;
-  FindGroups(numEpisodes, playlists, playAllPlaylists, groups);
+  FindGroups(numEpisodes, numSpecials, playlists, playAllPlaylists, groups);
 
   std::map<unsigned int, unsigned int> candidatePlaylists;
   FindCandidatePlaylists(numEpisodes, episodesOnDisc, episodeIndex, numSpecials, allEpisodes,

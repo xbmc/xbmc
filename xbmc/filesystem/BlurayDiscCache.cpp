@@ -12,8 +12,6 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
-#include <libbluray/bluray.h>
-
 using namespace XFILE;
 
 CacheMap::iterator CBlurayDiscCache::SetDisc(const std::string& path)
@@ -21,17 +19,17 @@ CacheMap::iterator CBlurayDiscCache::SetDisc(const std::string& path)
   std::unique_lock<CCriticalSection> lock(m_cs);
 
   // Get rid of any URL options, else the compare may be wrong
-  std::string storedPath = CURL(path).GetWithoutOptions();
+  std::string storedPath{CURL(path).GetWithoutOptions()};
   URIUtils::RemoveSlashAtEnd(storedPath);
 
   Disc disc;
-  const auto it = m_cache.emplace(storedPath, disc);
+  const auto it{m_cache.emplace(storedPath, disc)};
   return it.first;
 }
 
 void CBlurayDiscCache::SetPlaylistInfo(const std::string& path,
                                        unsigned int playlist,
-                                       const BLURAY_TITLE_INFO* playlistInfo)
+                                       const PlaylistInformation& playlistInfo)
 {
   std::unique_lock<CCriticalSection> lock(m_cs);
 
@@ -43,7 +41,7 @@ void CBlurayDiscCache::SetPlaylistInfo(const std::string& path,
   if (i == m_cache.end())
     i = SetDisc(path);
   auto& [_, disc] = *i;
-  disc.m_playlists[playlist] = *playlistInfo;
+  disc.m_playlists[playlist] = playlistInfo;
 }
 
 void CBlurayDiscCache::SetMaps(const std::string& path,
@@ -67,7 +65,7 @@ void CBlurayDiscCache::SetMaps(const std::string& path,
 
 bool CBlurayDiscCache::GetPlaylistInfo(const std::string& path,
                                        unsigned int playlist,
-                                       BLURAY_TITLE_INFO& playlistInfo) const
+                                       PlaylistInformation& playlistInfo) const
 {
   std::unique_lock<CCriticalSection> lock(m_cs);
 
