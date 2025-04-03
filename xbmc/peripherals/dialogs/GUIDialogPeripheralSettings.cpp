@@ -114,7 +114,8 @@ void CGUIDialogPeripheralSettings::OnSettingChanged(const std::shared_ptr<const 
   if (!peripheral)
     return;
 
-  peripheral->SetSetting(settingId, setting->ToString());
+  if (peripheral->SetSetting(settingId, setting->ToString()))
+    peripheral->OnSettingChanged(settingId);
 
   // Refresh peripheral icon
   UpdateIcon(peripheral->ControllerProfile());
