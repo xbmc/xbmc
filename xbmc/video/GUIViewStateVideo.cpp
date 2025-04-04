@@ -322,6 +322,36 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
         SetSortOrder(SortOrderNone);
       }
       break;
+      case NodeType::MOVIE_ASSETS:
+      case NodeType::MOVIE_ASSETS_EXTRAS:
+      case NodeType::MOVIE_ASSETS_VERSIONS:
+      {
+        AddSortMethod(SortByLabel, sortAttributes, 551,
+                      LABEL_MASKS("%L", "", "%L", "")); // Label, empty | Label, empty
+        AddSortMethod(SortByTime, 180,
+                      LABEL_MASKS("%L", "%D", "%L", "%D")); // Label, Duration | empty, empty
+        AddSortMethod(SortByVideoResolution, sortAttributes, 21443,
+                      LABEL_MASKS("%L", "", "%L", "")); // Label, empty | Label, empty
+        AddSortMethod(SortByVideoCodec, sortAttributes, 21445,
+                      LABEL_MASKS("%L", "", "%L", "")); // Label, empty | Label, empty
+        AddSortMethod(SortByAudioCodec, sortAttributes, 21446,
+                      LABEL_MASKS("%L", "", "%L", "")); // Label, empty | Label, empty
+        AddSortMethod(SortByDateAdded, 570,
+                      LABEL_MASKS("%L", "%a", "%L", "%a")); // Label, DateAdded | Label, DateAdded
+        AddSortMethod(
+            SortByLastPlayed, 568,
+            LABEL_MASKS("%L", "%p", "%L", "%p")); // Label, #Last played | Label, #Last played
+        AddSortMethod(SortByPlaycount, 567,
+                      LABEL_MASKS("%L", "%V", "%L", "%V")); // Label, Playcount | Label, Playcount
+
+        const CViewState* viewState = CViewStateSettings::GetInstance().Get("videonavassets");
+        SetSortMethod(viewState->m_sortDescription);
+        SetSortOrder(viewState->m_sortDescription.sortOrder);
+
+        SetViewAsControl(viewState->m_viewMode);
+      }
+      break;
+
     default:
       break;
     }
@@ -384,6 +414,13 @@ void CGUIViewStateWindowVideoNav::SaveViewState()
         SaveViewToDb(m_items.GetPath(), WINDOW_VIDEO_NAV,
                      CViewStateSettings::GetInstance().Get("videonavmusicvideos"));
         break;
+      case NodeType::MOVIE_ASSETS:
+      case NodeType::MOVIE_ASSETS_EXTRAS:
+      case NodeType::MOVIE_ASSETS_VERSIONS:
+        SaveViewToDb(m_items.GetPath(), WINDOW_VIDEO_NAV,
+                     CViewStateSettings::GetInstance().Get("videonavassets"));
+        break;
+
       default:
         SaveViewToDb(m_items.GetPath(), WINDOW_VIDEO_NAV);
         break;

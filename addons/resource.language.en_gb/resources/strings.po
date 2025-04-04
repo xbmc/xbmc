@@ -2589,6 +2589,7 @@ msgstr ""
 #. generic "name" label used in different places
 #: xbmc/addons/settings/AddonSettings.cpp
 #: xbmc/pvr/windows/GUIViewStatePVR.cpp
+#: xbmc/video/GUIViewStateVideo.cpp
 #: xbmc/view/GUIViewState.cpp
 msgctxt "#551"
 msgid "Name"
@@ -2598,11 +2599,13 @@ msgstr ""
 #: addons/skin.estuary/xml/DialogPVRInfo.xml
 #: addons/skin.estuary/xml/Variables.xml
 #: xbmc/pvr/windows/GUIViewStatePVR.cpp
+#: xbmc/video/GUIViewStateVideo.cpp
 msgctxt "#552"
 msgid "Date"
 msgstr ""
 
 #: xbmc/filesystem/BlurayDirectory.cpp
+#: xbmc/video/GUIViewStateVideo.cpp
 msgctxt "#553"
 msgid "Size"
 msgstr ""
@@ -2621,6 +2624,7 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 #: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
+#: xbmc/video/GUIViewStateVideo.cpp
 msgctxt "#556"
 msgid "Title"
 msgstr ""
@@ -2701,6 +2705,7 @@ msgstr ""
 #: addons/skin.estuary/xml/Includes_MusicInfo.xml
 #: addons/skin.estuary/xml/Variables.xml
 #: xbmc/pvr/dialogs/GUIDialogPVRRecordingSettings.cpp
+#: xbmc/video/GUIViewStateVideo.cpp
 msgctxt "#567"
 msgid "Play count"
 msgstr ""
@@ -2711,6 +2716,7 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 #: xbmc/pvr/windows/GUIViewStatePVR.cpp
+#: xbmc/video/GUIViewStateVideo.cpp
 msgctxt "#568"
 msgid "Last played"
 msgstr ""
@@ -2724,6 +2730,7 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 #: xbmc/pvr/windows/GUIViewStatePVR.cpp
+#: xbmc/video/GUIViewStateVideo.cpp
 msgctxt "#570"
 msgid "Date added"
 msgstr ""
@@ -14914,6 +14921,7 @@ msgid "Episode title"
 msgstr ""
 
 #: xbmc/playlists/SmartPlaylist.cpp
+#: xbmc/video/GUIViewStateVideo.cpp
 msgctxt "#21443"
 msgid "Video resolution"
 msgstr ""
@@ -14925,11 +14933,13 @@ msgid "Audio channels"
 msgstr ""
 
 #: xbmc/playlists/SmartPlaylist.cpp
+#: xbmc/video/GUIViewStateVideo.cpp
 msgctxt "#21445"
 msgid "Video codec"
 msgstr ""
 
 #: xbmc/playlists/SmartPlaylist.cpp
+#: xbmc/video/GUIViewStateVideo.cpp
 #: addons/skin.estuary/xml/MusicVisualisation.xml
 msgctxt "#21446"
 msgid "Audio codec"
