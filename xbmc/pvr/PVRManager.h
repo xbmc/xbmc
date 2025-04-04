@@ -48,11 +48,9 @@ class CPVREpgInfoTag;
 enum class PVREvent
 {
   // PVR Manager states
-  ManagerError = 0,
   ManagerStopped,
   ManagerStarting,
   ManagerStopping,
-  ManagerInterrupted,
   ManagerStarted,
 
   // Channel events
@@ -356,11 +354,9 @@ private:
 
   enum class ManagerState
   {
-    STATE_ERROR = 0,
     STATE_STOPPED,
     STATE_STARTING,
     STATE_STOPPING,
-    STATE_INTERRUPTED,
     STATE_STARTED
   };
 
