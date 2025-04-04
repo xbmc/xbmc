@@ -9,27 +9,19 @@
 #pragma once
 
 #include "IListProvider.h"
-#include "addons/AddonEvents.h"
-#include "addons/RepositoryUpdater.h"
-#include "favourites/FavouritesService.h"
 #include "guilib/GUIStaticItem.h"
-#include "interfaces/IAnnouncer.h"
 #include "threads/CriticalSection.h"
 #include "threads/Timer.h"
 #include "utils/Job.h"
 
 #include <chrono>
+#include <memory>
 #include <string>
 #include <vector>
 
 class CFileItem;
 class TiXmlElement;
 class CVariant;
-
-namespace PVR
-{
-enum class PVREvent;
-}
 
 enum class InfoTagType
 {
@@ -40,9 +32,23 @@ enum class InfoTagType
   PVR,
 };
 
+class ISubscriberCallback
+{
+public:
+  enum class Topic
+  {
+    UNSPECIFIED,
+    VIDEO_LIBRARY,
+    AUDIO_LIBRARY,
+    PLAYER,
+  };
+  virtual ~ISubscriberCallback() = default;
+  virtual bool OnEventPublished(Topic topic = Topic::UNSPECIFIED) = 0;
+};
+
 class CDirectoryProvider : public IListProvider,
                            public IJobCallback,
-                           public ANNOUNCEMENT::IAnnouncer,
+                           public ISubscriberCallback,
                            private ITimerCallback
 {
 public:
@@ -67,10 +73,6 @@ public:
   // Implementation of IListProvider
   std::unique_ptr<IListProvider> Clone() override;
   bool Update(bool forceRefresh) override;
-  void Announce(ANNOUNCEMENT::AnnouncementFlag flag,
-                const std::string& sender,
-                const std::string& message,
-                const CVariant& data) override;
   void Fetch(std::vector<std::shared_ptr<CGUIListItem>>& items) override;
   void Reset() override;
   bool OnClick(const std::shared_ptr<CGUIListItem>& item) override;
@@ -82,6 +84,12 @@ public:
 
   // callback from directory job
   void OnJobComplete(unsigned int jobID, bool success, CJob* job) override;
+
+  // ISubscriberCallback implementation
+  bool OnEventPublished(Topic topic = Topic::UNSPECIFIED) override;
+
+  // Implementation detail.
+  class CSubscriber;
 
 private:
   void StartDirectoryJob();
@@ -114,12 +122,9 @@ private:
   bool UpdateLimit();
   bool UpdateSort();
   bool UpdateBrowse();
-  void OnAddonEvent(const ADDON::AddonEvent& event);
-  void OnAddonRepositoryEvent(const ADDON::CRepositoryUpdater::RepositoryUpdated& event);
-  void OnPVRManagerEvent(const PVR::PVREvent& event);
-  void OnFavouritesEvent(const CFavouritesService::FavouritesUpdated& event);
+
   std::string GetTarget(const CFileItem& item) const;
 
   CCriticalSection m_subscriptionSection;
-  bool m_isSubscribed{false};
+  std::unique_ptr<CSubscriber> m_subscriber;
 };

@@ -11,11 +11,14 @@
 #include "ContextMenuManager.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
+#include "addons/AddonEvents.h"
 #include "addons/AddonManager.h"
+#include "addons/RepositoryUpdater.h"
 #include "favourites/FavouritesService.h"
 #include "filesystem/Directory.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
+#include "interfaces/IAnnouncer.h"
 #include "music/MusicFileItemClassify.h"
 #include "music/MusicThumbLoader.h"
 #include "pictures/PictureThumbLoader.h"
@@ -50,6 +53,156 @@ using namespace KODI;
 using namespace KODI::MESSAGING;
 using namespace KODI::UTILS::GUILIB;
 using namespace PVR;
+
+class CDirectoryProvider::CSubscriber : public ANNOUNCEMENT::IAnnouncer
+{
+public:
+  explicit CSubscriber(ISubscriberCallback& invalidate) : m_callback(invalidate)
+  {
+    CServiceBroker::GetAnnouncementManager()->AddAnnouncer(
+        this, ANNOUNCEMENT::VideoLibrary | ANNOUNCEMENT::AudioLibrary | ANNOUNCEMENT::Player |
+                  ANNOUNCEMENT::GUI);
+  }
+  virtual ~CSubscriber() { CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this); }
+
+protected:
+  bool OnEventPublished(Topic topic = Topic::UNSPECIFIED)
+  {
+    return m_callback.OnEventPublished(topic);
+  }
+
+private:
+  CSubscriber() = delete;
+
+  // IAnnouncer implementation
+  void Announce(ANNOUNCEMENT::AnnouncementFlag flag,
+                const std::string& sender,
+                const std::string& message,
+                const CVariant& data) override
+  {
+    if (flag & ANNOUNCEMENT::VideoLibrary && OnEventPublished(Topic::VIDEO_LIBRARY))
+      return;
+
+    if (flag & ANNOUNCEMENT::AudioLibrary && OnEventPublished(Topic::AUDIO_LIBRARY))
+      return;
+
+    if (flag & ANNOUNCEMENT::Player)
+    {
+      if (message == "OnPlay" || message == "OnResume" || message == "OnStop")
+        OnEventPublished(Topic::PLAYER);
+    }
+    else
+    {
+      // if we're in a database transaction, don't bother doing anything just yet
+      if (data.isMember("transaction") && data["transaction"].asBoolean())
+        return;
+
+      // if there was a database update, we set the update state
+      // to PENDING to fire off a new job in the next update
+      if (message == "OnScanFinished" || message == "OnCleanFinished" || message == "OnUpdate" ||
+          message == "OnRemove" || message == "OnRefresh")
+        OnEventPublished();
+    }
+  }
+
+  CCriticalSection m_critSection;
+  ISubscriberCallback& m_callback;
+};
+
+namespace
+{
+class CAddonsSubscriber : public CDirectoryProvider::CSubscriber
+{
+public:
+  explicit CAddonsSubscriber(ISubscriberCallback& invalidate)
+    : CDirectoryProvider::CSubscriber(invalidate)
+  {
+    CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CAddonsSubscriber::OnAddonEvent);
+    CServiceBroker::GetRepositoryUpdater().Events().Subscribe(
+        this, &CAddonsSubscriber::OnAddonRepositoryEvent);
+  }
+  ~CAddonsSubscriber() override
+  {
+    CServiceBroker::GetRepositoryUpdater().Events().Unsubscribe(this);
+    CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
+  }
+
+private:
+  void OnAddonEvent(const ADDON::AddonEvent& event)
+  {
+    if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) ||
+        typeid(event) == typeid(ADDON::AddonEvents::Disabled) ||
+        typeid(event) == typeid(ADDON::AddonEvents::ReInstalled) ||
+        typeid(event) == typeid(ADDON::AddonEvents::UnInstalled) ||
+        typeid(event) == typeid(ADDON::AddonEvents::MetadataChanged) ||
+        typeid(event) == typeid(ADDON::AddonEvents::AutoUpdateStateChanged))
+    {
+      OnEventPublished();
+    }
+  }
+
+  void OnAddonRepositoryEvent(const ADDON::CRepositoryUpdater::RepositoryUpdated& event)
+  {
+    OnEventPublished();
+  }
+};
+
+class CPVRSubscriber : public CDirectoryProvider::CSubscriber
+{
+public:
+  explicit CPVRSubscriber(ISubscriberCallback& invalidate)
+    : CDirectoryProvider::CSubscriber(invalidate)
+  {
+    CServiceBroker::GetPVRManager().Events().Subscribe(this, &CPVRSubscriber::OnPVRManagerEvent);
+  }
+  ~CPVRSubscriber() override { CServiceBroker::GetPVRManager().Events().Unsubscribe(this); }
+
+private:
+  void OnPVRManagerEvent(const PVR::PVREvent& event)
+  {
+    if (event == PVR::PVREvent::ManagerStarted || event == PVR::PVREvent::ManagerStopped ||
+        event == PVR::PVREvent::RecordingsInvalidated ||
+        event == PVR::PVREvent::TimersInvalidated ||
+        event == PVR::PVREvent::ChannelGroupsInvalidated ||
+        event == PVR::PVREvent::SavedSearchesInvalidated ||
+        event == PVR::PVREvent::ClientsInvalidated ||
+        event == PVR::PVREvent::ClientsPrioritiesInvalidated)
+    {
+      OnEventPublished();
+    }
+  }
+};
+
+class CFavouritesSubscriber : public CDirectoryProvider::CSubscriber
+{
+public:
+  explicit CFavouritesSubscriber(ISubscriberCallback& invalidate)
+    : CDirectoryProvider::CSubscriber(invalidate)
+  {
+    CServiceBroker::GetFavouritesService().Events().Subscribe(
+        this, &CFavouritesSubscriber::OnFavouritesEvent);
+  }
+  ~CFavouritesSubscriber() override
+  {
+    CServiceBroker::GetFavouritesService().Events().Unsubscribe(this);
+  }
+
+private:
+  void OnFavouritesEvent(const CFavouritesService::FavouritesUpdated& event) { OnEventPublished(); }
+};
+
+std::unique_ptr<CDirectoryProvider::CSubscriber> GetSubscriber(const std::string& url,
+                                                               ISubscriberCallback& invalidate)
+{
+  if (URIUtils::IsProtocol(url, "addons"))
+    return std::make_unique<CAddonsSubscriber>(invalidate);
+  else if (URIUtils::IsProtocol(url, "pvr"))
+    return std::make_unique<CPVRSubscriber>(invalidate);
+  else if (URIUtils::IsProtocol(url, "favourites"))
+    return std::make_unique<CFavouritesSubscriber>(invalidate);
+  else
+    return std::make_unique<CDirectoryProvider::CSubscriber>(invalidate);
+}
 
 class CDirectoryJob : public CJob
 {
@@ -191,6 +344,7 @@ private:
   std::vector<CGUIStaticItemPtr> m_items;
   std::map<InfoTagType, std::shared_ptr<CThumbLoader>> m_thumbloaders;
 };
+} // unnamed namespace
 
 CDirectoryProvider::CDirectoryProvider(const TiXmlElement* element, int parentID)
   : IListProvider(parentID), m_nextJobTimer(this)
@@ -318,50 +472,6 @@ bool CDirectoryProvider::Update(bool forceRefresh)
   return changed; //! @todo Also returned changed if properties are changed (if so, need to update scroll to letter).
 }
 
-void CDirectoryProvider::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
-                                  const std::string& sender,
-                                  const std::string& message,
-                                  const CVariant& data)
-{
-  {
-    std::unique_lock<CCriticalSection> lock(m_section);
-    // we don't need to refresh anything if there are no fitting
-    // items in this list provider for the announcement flag
-    if (((flag & ANNOUNCEMENT::VideoLibrary) &&
-         (std::find(m_itemTypes.begin(), m_itemTypes.end(), InfoTagType::VIDEO) ==
-          m_itemTypes.end())) ||
-        ((flag & ANNOUNCEMENT::AudioLibrary) &&
-         (std::find(m_itemTypes.begin(), m_itemTypes.end(), InfoTagType::AUDIO) ==
-          m_itemTypes.end())))
-      return;
-
-    if (flag & ANNOUNCEMENT::Player)
-    {
-      if (message == "OnPlay" || message == "OnResume" || message == "OnStop")
-      {
-        if (m_currentSort.sortBy ==
-                SortByNone || // not nice, but many directories that need to be refreshed on start/stop have no special sort order (e.g. in progress movies)
-            m_currentSort.sortBy == SortByLastPlayed ||
-            m_currentSort.sortBy == SortByDateAdded || m_currentSort.sortBy == SortByPlaycount ||
-            m_currentSort.sortBy == SortByLastUsed)
-          m_updateState = INVALIDATED;
-      }
-    }
-    else
-    {
-      // if we're in a database transaction, don't bother doing anything just yet
-      if (data.isMember("transaction") && data["transaction"].asBoolean())
-        return;
-
-      // if there was a database update, we set the update state
-      // to PENDING to fire off a new job in the next update
-      if (message == "OnScanFinished" || message == "OnCleanFinished" || message == "OnUpdate" ||
-          message == "OnRemove" || message == "OnRefresh")
-        m_updateState = INVALIDATED;
-    }
-  }
-}
-
 void CDirectoryProvider::Fetch(std::vector<std::shared_ptr<CGUIListItem>>& items)
 {
   std::unique_lock<CCriticalSection> lock(m_section);
@@ -371,54 +481,6 @@ void CDirectoryProvider::Fetch(std::vector<std::shared_ptr<CGUIListItem>>& items
     if (i->IsVisible())
       items.push_back(i);
   }
-}
-
-void CDirectoryProvider::OnAddonEvent(const ADDON::AddonEvent& event)
-{
-  std::unique_lock<CCriticalSection> lock(m_section);
-  if (URIUtils::IsProtocol(m_currentUrl, "addons"))
-  {
-    if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) ||
-        typeid(event) == typeid(ADDON::AddonEvents::Disabled) ||
-        typeid(event) == typeid(ADDON::AddonEvents::ReInstalled) ||
-        typeid(event) == typeid(ADDON::AddonEvents::UnInstalled) ||
-        typeid(event) == typeid(ADDON::AddonEvents::MetadataChanged) ||
-        typeid(event) == typeid(ADDON::AddonEvents::AutoUpdateStateChanged))
-      m_updateState = INVALIDATED;
-  }
-}
-
-void CDirectoryProvider::OnAddonRepositoryEvent(
-    const ADDON::CRepositoryUpdater::RepositoryUpdated& event)
-{
-  std::unique_lock<CCriticalSection> lock(m_section);
-  if (URIUtils::IsProtocol(m_currentUrl, "addons"))
-  {
-    m_updateState = INVALIDATED;
-  }
-}
-
-void CDirectoryProvider::OnPVRManagerEvent(const PVR::PVREvent& event)
-{
-  std::unique_lock<CCriticalSection> lock(m_section);
-  if (URIUtils::IsProtocol(m_currentUrl, "pvr"))
-  {
-    if (event == PVR::PVREvent::ManagerStarted || event == PVR::PVREvent::ManagerStopped ||
-        event == PVR::PVREvent::RecordingsInvalidated ||
-        event == PVR::PVREvent::TimersInvalidated ||
-        event == PVR::PVREvent::ChannelGroupsInvalidated ||
-        event == PVR::PVREvent::SavedSearchesInvalidated ||
-        event == PVR::PVREvent::ClientsInvalidated ||
-        event == PVR::PVREvent::ClientsPrioritiesInvalidated)
-      m_updateState = INVALIDATED;
-  }
-}
-
-void CDirectoryProvider::OnFavouritesEvent(const CFavouritesService::FavouritesUpdated& event)
-{
-  std::unique_lock<CCriticalSection> lock(m_section);
-  if (URIUtils::IsProtocol(m_currentUrl, "favourites"))
-    m_updateState = INVALIDATED;
 }
 
 void CDirectoryProvider::Reset()
@@ -442,15 +504,9 @@ void CDirectoryProvider::Reset()
     m_updateState = OK;
   }
 
-  std::unique_lock<CCriticalSection> subscriptionLock(m_subscriptionSection);
-  if (m_isSubscribed)
   {
-    m_isSubscribed = false;
-    CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
-    CServiceBroker::GetFavouritesService().Events().Unsubscribe(this);
-    CServiceBroker::GetRepositoryUpdater().Events().Unsubscribe(this);
-    CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
-    CServiceBroker::GetPVRManager().Events().Unsubscribe(this);
+    std::unique_lock<CCriticalSection> subscriptionLock(m_subscriptionSection);
+    m_subscriber.reset();
   }
 }
 
@@ -506,6 +562,32 @@ void CDirectoryProvider::OnTimeout()
     // Start a new update job.
     StartDirectoryJob();
   }
+}
+
+bool CDirectoryProvider::OnEventPublished(Topic topic /*= Topic::UNSPECIFIED*/)
+{
+  std::unique_lock<CCriticalSection> lock(m_section);
+  switch (topic)
+  {
+    case Topic::UNSPECIFIED:
+      // Always invalidate.
+      break;
+    case Topic::PLAYER:
+      // We don't need to do anything if there is no matching sort method.
+      if (m_currentSort.sortBy != SortByNone && m_currentSort.sortBy != SortByLastPlayed &&
+          m_currentSort.sortBy != SortByDateAdded && m_currentSort.sortBy != SortByPlaycount &&
+          m_currentSort.sortBy != SortByLastUsed)
+        return false;
+      break;
+    case Topic::VIDEO_LIBRARY:
+      // We don't need to do anything if there are no fitting items.
+      return std::ranges::find(m_itemTypes, InfoTagType::VIDEO) == m_itemTypes.cend();
+    case Topic::AUDIO_LIBRARY:
+      // We don't need to do anything if there are no fitting items.
+      return std::ranges::find(m_itemTypes, InfoTagType::AUDIO) == m_itemTypes.cend();
+  }
+  m_updateState = INVALIDATED;
+  return true;
 }
 
 std::string CDirectoryProvider::GetTarget(const CFileItem& item) const
@@ -621,9 +703,10 @@ bool CDirectoryProvider::IsUpdating() const
 
 bool CDirectoryProvider::UpdateURL()
 {
+  std::string value;
   {
     std::unique_lock<CCriticalSection> lock(m_section);
-    std::string value(m_url.GetLabel(m_parentID, false));
+    value = m_url.GetLabel(m_parentID, false);
     if (value == m_currentUrl)
       return false;
 
@@ -631,20 +714,7 @@ bool CDirectoryProvider::UpdateURL()
   }
 
   std::unique_lock<CCriticalSection> subscriptionLock(m_subscriptionSection);
-  if (!m_isSubscribed)
-  {
-    m_isSubscribed = true;
-    CServiceBroker::GetAnnouncementManager()->AddAnnouncer(
-        this, ANNOUNCEMENT::VideoLibrary | ANNOUNCEMENT::AudioLibrary | ANNOUNCEMENT::Player |
-                  ANNOUNCEMENT::GUI);
-    CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CDirectoryProvider::OnAddonEvent);
-    CServiceBroker::GetRepositoryUpdater().Events().Subscribe(
-        this, &CDirectoryProvider::OnAddonRepositoryEvent);
-    CServiceBroker::GetPVRManager().Events().Subscribe(this,
-                                                       &CDirectoryProvider::OnPVRManagerEvent);
-    CServiceBroker::GetFavouritesService().Events().Subscribe(
-        this, &CDirectoryProvider::OnFavouritesEvent);
-  }
+  m_subscriber = GetSubscriber(value, *this);
   return true;
 }
 
@@ -656,7 +726,6 @@ bool CDirectoryProvider::UpdateLimit()
     return false;
 
   m_currentLimit = value;
-
   return true;
 }
 
