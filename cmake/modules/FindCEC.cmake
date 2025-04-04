@@ -21,7 +21,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                 "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/003-all-remove_git_info.patch"
                 "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/004-all-PR674.patch"
                 "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/005-all-PR675-1.patch"
-                "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/006-all-PR675-2.patch")
+                "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/006-all-PR675-2.patch"
+                "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/007-all-cmake-version.patch")
 
     generate_patchcommand("${patches}")
 
@@ -50,7 +51,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   SETUP_BUILD_VARS()
 
   # Check for existing libcec. If version >= LIBCEC-VERSION file version, dont build
-  find_package(libcec CONFIG
+  find_package(libcec CONFIG QUIET
                       HINTS ${DEPENDS_PATH}/lib/cmake
                       ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 
@@ -81,24 +82,15 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       set(CEC_VERSION ${libcec_VERSION})
     else()
       find_package(PkgConfig QUIET)
-      # Fallback to pkg-config and individual lib/include file search
+      # Fallback to pkg-config
       if(PKG_CONFIG_FOUND)
-        pkg_check_modules(PC_CEC libcec QUIET)
-      endif()
-      find_library(CEC_LIBRARY_RELEASE NAMES cec
-                                       HINTS ${DEPENDS_PATH}/lib ${PC_CEC_LIBDIR}
-                                       ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+        pkg_check_modules(CEC libcec IMPORTED_TARGET GLOBAL QUIET)
 
-      find_path(CEC_INCLUDE_DIR NAMES libcec/cec.h libCEC/CEC.h
-                                HINTS ${DEPENDS_PATH}/include ${PC_CEC_INCLUDEDIR}
-                                ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+        # First item is the full path of the library file found
+        # pkg_check_modules does not populate a variable of the found library explicitly
+        list(GET CEC_LINK_LIBRARIES 0 CEC_LIBRARY_RELEASE)
 
-      if(PC_CEC_VERSION)
-        set(CEC_VERSION ${PC_CEC_VERSION})
-      elseif(CEC_INCLUDE_DIR AND EXISTS "${CEC_INCLUDE_DIR}/libcec/version.h")
-        file(STRINGS "${CEC_INCLUDE_DIR}/libcec/version.h" cec_version_str REGEX "^[\t ]+LIBCEC_VERSION_TO_UINT\\(.*\\)")
-        string(REGEX REPLACE "^[\t ]+LIBCEC_VERSION_TO_UINT\\(([0-9]+), ([0-9]+), ([0-9]+)\\)" "\\1.\\2.\\3" CEC_VERSION "${cec_version_str}")
-        unset(cec_version_str)
+        get_target_property(CEC_INCLUDE_DIR PkgConfig::CEC INTERFACE_INCLUDE_DIRECTORIES)
       endif()
     endif()
   endif()
@@ -121,9 +113,9 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                              INTERFACE_COMPILE_DEFINITIONS HAVE_LIBCEC)
     # pkgconfig target found
     elseif(TARGET PkgConfig::PC_CEC)
-      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::PC_CEC)
-      set_property(TARGET PkgConfig::PC_CEC APPEND PROPERTY
-                                            INTERFACE_COMPILE_DEFINITIONS HAVE_LIBCEC)
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::CEC)
+      set_property(TARGET PkgConfig::CEC APPEND PROPERTY
+                                                INTERFACE_COMPILE_DEFINITIONS HAVE_LIBCEC)
     # building internal or no cmake config or pkgconfig
     else()
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)

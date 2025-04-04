@@ -1,0 +1,19 @@
+--- a/src/libcec/CMakeLists.txt
++++ b/src/libcec/CMakeLists.txt
+@@ -238,6 +239,16 @@
+   endif(MSVC)
+ endif(WIN32)
+ 
++# handle version file
++include(CMakePackageConfigHelpers)
++write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/libcec-config-version.cmake
++                                 VERSION ${LIBCEC_VERSION_MAJOR}.${LIBCEC_VERSION_MINOR}.${LIBCEC_VERSION_PATCH}
++                                 COMPATIBILITY AnyNewerVersion)
++
++install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libcec-config-version.cmake
++        DESTINATION lib/cmake/libcec)
++
++
+ install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/libcec-config.cmake
+         DESTINATION lib/cmake/libcec)
+ 
