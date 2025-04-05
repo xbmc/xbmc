@@ -3327,7 +3327,7 @@ bool CVideoPlayer::SeekScene(bool bPlus)
 
 void CVideoPlayer::GetGeneralInfo(std::string& strGeneralInfo)
 {
-  
+
   // Moving Average variables.
   static const int BUFFER_SIZE = 128;
   static int index = 0;
@@ -3337,7 +3337,7 @@ void CVideoPlayer::GetGeneralInfo(std::string& strGeneralInfo)
   static double bufferAudio[BUFFER_SIZE] = {0};
   static double bufferVideo[BUFFER_SIZE] = {0};
   static double bufferDelta[BUFFER_SIZE] = {0};
-  
+
   static double bufferAudioFrame[BUFFER_SIZE] = {0};
   static double bufferVideoFrame[BUFFER_SIZE] = {0};
   static double bufferDeltaFrame[BUFFER_SIZE] = {0};
@@ -3348,7 +3348,7 @@ void CVideoPlayer::GetGeneralInfo(std::string& strGeneralInfo)
 
   static double sumAudioFrame = 0;
   static double sumVideoFrame = 0;
-  static double sumDeltaFrame = 0;  
+  static double sumDeltaFrame = 0;
 
   if (!m_bStop && (m_playSpeed == DVD_PLAYSPEED_NORMAL))
   {
@@ -3399,12 +3399,12 @@ void CVideoPlayer::GetGeneralInfo(std::string& strGeneralInfo)
     // Moving Average Delta of Video and Clock
     sumVideo -= bufferVideo[index];  // subtract "oldest" value from sum
     sumVideo += dDiffVideo;          // add new value to sum
-    bufferVideo[index] = dDiffVideo; // store new value at the index of "oldest" 
+    bufferVideo[index] = dDiffVideo; // store new value at the index of "oldest"
 
     // Moving Average Delta of Video and Clock
     sumVideoFrame -= bufferVideoFrame[index];  // subtract "oldest" value from sum
     sumVideoFrame += dDiffVideoFrame;          // add new value to sum
-    bufferVideoFrame[index] = dDiffVideoFrame; // store new value at the index of "oldest" 
+    bufferVideoFrame[index] = dDiffVideoFrame; // store new value at the index of "oldest"
 
     index = (index + 1) % BUFFER_SIZE;            // next slot in ring buffers, wraps back to 0 for last index entry @ 127
     bufferFilled = bufferFilled || (index == 0);  // buffer already filled or index wrapped i.e. all buffer slots now have a value so filled
@@ -3424,14 +3424,14 @@ void CVideoPlayer::GetGeneralInfo(std::string& strGeneralInfo)
     if (m_State.cache_bytes >= 0)
     {
       strBuf += StringUtils::Format("fwd: {} / {:2.0f}% / {:6.3f}s / {:.3f}%",
-                                    StringUtils::SizeToString(m_State.cache_bytes), 
+                                    StringUtils::SizeToString(m_State.cache_bytes),
                                     m_State.cache_level * 100.0, m_State.cache_time,
                                     m_State.cache_offset * 100.0);
     }
 
     strGeneralInfo = StringUtils::Format("P: a/v:{: 6.3f}, a/c:{: 6.3f}, v/c:{: 6.3f}, af/vf:{: 6.3f}, af/c:{: 6.3f}, vf/c:{: 6.3f}, {}",
         dDiffDeltaMovingAverage, dDiffAudioMovingAverage, dDiffVideoMovingAverage,
-        dDiffDeltaFrameMovingAverage, dDiffAudioFrameMovingAverage, dDiffVideoFrameMovingAverage, 
+        dDiffDeltaFrameMovingAverage, dDiffAudioFrameMovingAverage, dDiffVideoFrameMovingAverage,
         strBuf);
   }
   else if (!resetDone)
@@ -4738,11 +4738,11 @@ bool CVideoPlayer::OnAction(const CAction &action)
       else
         aml_dv_set_vs10_mode(DOLBY_VISION_OUTPUT_MODE_BYPASS);
       return true;
-    
+
     case ACTION_VS10_SDR:
       aml_dv_set_vs10_mode(DOLBY_VISION_OUTPUT_MODE_SDR10);
       return true;
-    
+
     case ACTION_VS10_HDR10:
       aml_dv_set_vs10_mode(DOLBY_VISION_OUTPUT_MODE_HDR10);
       return true;
@@ -5240,7 +5240,7 @@ void CVideoPlayer::TriggerUpdateResolutionHdr(StreamHdrType hdrType)
   m_renderManager.TriggerUpdateResolutionHdr(hdrType);
 }
 
-void CVideoPlayer::UpdateAudioLatencyTweak(double audioLatency)
+void CVideoPlayer::UpdateAudioLatencyTweak(int audioLatency)
 {
   m_renderManager.UpdateAudioLatencyTweak(audioLatency);
 }

@@ -664,7 +664,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     if (pAudioLatency)
     {
       std::string type;
-      float delay;
+      int delay;
 
       TiXmlElement* pPassthroughAudioLatency = pAudioLatency->FirstChildElement("passthrough");
 
@@ -675,7 +675,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
         XMLUtils::GetString(pPassthroughAudioLatency, "type", type);
         audiolatency.type = passthroughStringToEnum(type);
 
-        if (XMLUtils::GetFloat(pPassthroughAudioLatency, "delay", delay, -600.0f, 600.0f))
+        if (XMLUtils::GetInt(pPassthroughAudioLatency, "delay", delay, -600, 600))
           audiolatency.delay = delay;
 
         m_audioPassthroughLatency.push_back(audiolatency);
@@ -1511,7 +1511,7 @@ int CAdvancedSettings::GetVideoLatencyTweak(float refreshrate, unsigned int reso
   return delay; // in milliseconds
 }
 
-float CAdvancedSettings::GetAudioLatencyTweak(CAEStreamInfo::DataType type)
+int CAdvancedSettings::GetAudioLatencyTweak(CAEStreamInfo::DataType type)
 {
   for (int i = 0; i < (int) m_audioPassthroughLatency.size(); i++)
   {

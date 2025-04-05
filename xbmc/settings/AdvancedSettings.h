@@ -104,7 +104,7 @@ struct PassthroughAudioLatency
 {
   CAEStreamInfo::DataType type;
 
-  float delay;
+  int delay;
 };
 
 typedef std::vector<TVShowRegexp> SETTINGS_TVSHOWLIST;
@@ -360,7 +360,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     void DefaultVideoLatency();
 
     int GetVideoLatencyTweak(float refreshrate, unsigned int resolution);
-    float GetAudioLatencyTweak(CAEStreamInfo::DataType type);
+    int GetAudioLatencyTweak(CAEStreamInfo::DataType type);
 
     bool m_initialized;
 

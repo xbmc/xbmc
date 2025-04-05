@@ -1181,7 +1181,7 @@ int CRenderManager::WaitForBuffer(volatile std::atomic_bool& bStop,
   return m_queued.size() + m_discard.size();
 }
 
-void CRenderManager::UpdateAudioLatencyTweak(double audioLatency)
+void CRenderManager::UpdateAudioLatencyTweak(int audioLatency)
 {
   m_audioLatencyTweak = audioLatency;
 }

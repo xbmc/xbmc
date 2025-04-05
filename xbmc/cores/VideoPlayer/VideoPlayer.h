@@ -250,9 +250,9 @@ class CJobQueue;
 class CVideoPlayer : public IPlayer, public CThread, public IVideoPlayer,
                      public IDispResource, public IRenderLoop, public IRenderMsg
 {
-private:  
+private:
   void SetAVChange(std::string from);
-  
+
 public:
   explicit CVideoPlayer(IPlayerCallback& callback);
   ~CVideoPlayer() override;
@@ -345,7 +345,7 @@ public:
   float GetRenderAspectRatio() const override;
   void TriggerUpdateResolution() override;
   void TriggerUpdateResolutionHdr(StreamHdrType hdrType) override;
-  void UpdateAudioLatencyTweak(double audioLatency);
+  void UpdateAudioLatencyTweak(int audioLatency);
   bool IsRenderingVideo() const override;
   bool Supports(EINTERLACEMETHOD method) const override;
   EINTERLACEMETHOD GetDeinterlacingMethodDefault() const override;
