@@ -134,8 +134,6 @@ public:
 
   void SetVideoSettings(const CVideoSettings& settings);
 
-  void UpdateAudioLatencyTweak(int audioLatency);
-
 protected:
 
   void PresentSingle(bool clear, DWORD flags, DWORD alpha);

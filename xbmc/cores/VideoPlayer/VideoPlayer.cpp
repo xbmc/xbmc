@@ -5240,11 +5240,6 @@ void CVideoPlayer::TriggerUpdateResolutionHdr(StreamHdrType hdrType)
   m_renderManager.TriggerUpdateResolutionHdr(hdrType);
 }
 
-void CVideoPlayer::UpdateAudioLatencyTweak(int audioLatency)
-{
-  m_renderManager.UpdateAudioLatencyTweak(audioLatency);
-}
-
 bool CVideoPlayer::IsRenderingVideo() const
 {
   return m_renderManager.IsConfigured();

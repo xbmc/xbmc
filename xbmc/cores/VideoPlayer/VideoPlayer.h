@@ -345,7 +345,6 @@ public:
   float GetRenderAspectRatio() const override;
   void TriggerUpdateResolution() override;
   void TriggerUpdateResolutionHdr(StreamHdrType hdrType) override;
-  void UpdateAudioLatencyTweak(int audioLatency);
   bool IsRenderingVideo() const override;
   bool Supports(EINTERLACEMETHOD method) const override;
   EINTERLACEMETHOD GetDeinterlacingMethodDefault() const override;
