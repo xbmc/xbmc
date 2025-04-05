@@ -21,6 +21,11 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} OR P8Platform_FIND_REQU
 
     set(CMAKE_ARGS -DBUILD_SHARED_LIBS=OFF)
 
+    # p8-platform hasnt tagged a release since 2016. Force this for cmake 4.0
+    # p8-platform master has updated cmake minimum to 3.12, so if they ever tag a new release
+    # this can be dropped.
+    list(APPEND CMAKE_ARGS -DCMAKE_POLICY_VERSION_MINIMUM=3.10)
+
     # CMAKE_INSTALL_LIBDIR in p8-platform prepends project prefix, so disable sending any
     # install_libdir to generator
     set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INSTALL_LIBDIR "/lib")
