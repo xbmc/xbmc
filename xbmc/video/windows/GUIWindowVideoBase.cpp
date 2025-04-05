@@ -1095,10 +1095,6 @@ bool CGUIWindowVideoBase::Update(const std::string &strDirectory, bool updateFil
   if (!m_thumbLoader.IsLoading())
     m_thumbLoader.Load(*m_vecItems);
 
-  UpdateVideoVersionItems();
-
-  UpdateVideoVersionItemsLabel(strDirectory);
-
   return true;
 }
 
@@ -1431,79 +1427,4 @@ void CGUIWindowVideoBase::OnAssignContent(const std::string &path)
   {
     CVideoLibraryQueue::GetInstance().ScanLibrary(path, true, true);
   }
-}
-
-void CGUIWindowVideoBase::UpdateVideoVersionItems()
-{
-  if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-          CSettings::SETTING_VIDEOLIBRARY_SHOWVIDEOVERSIONSASFOLDER))
-    return;
-
-  for (const auto& item : *m_vecItems)
-  {
-    if (item->m_bIsFolder || !item->HasVideoInfoTag())
-      continue;
-
-    MediaType type = item->GetVideoInfoTag()->m_type;
-    if (type == MediaTypeVideoVersion)
-    {
-      continue;
-    }
-    else if (type == MediaTypeMovie)
-    {
-      //! @todo patching the items after loading is a hack, which only works in the video window,
-      //! not for example for home screen widgets!
-
-      int videoVersionId{-1};
-      if (VIDEO::IsVideoDb(*item) && item->GetVideoInfoTag()->HasVideoVersions())
-      {
-        if (item->GetProperty("has_resolved_video_asset").asBoolean(false))
-        {
-          // certain version of the movie
-          videoVersionId = item->GetVideoInfoTag()->GetAssetInfo().GetId();
-        }
-        else
-        {
-          // movie node representing all versions of this movie
-          videoVersionId = VIDEO_VERSION_ID_ALL;
-          item->GetVideoInfoTag()->GetAssetInfo().SetId(videoVersionId);
-          item->m_bIsFolder = true;
-        }
-
-        CVideoDbUrl itemUrl;
-        itemUrl.FromString(
-            StringUtils::Format("videodb://movies/videoversions/{}", videoVersionId));
-        itemUrl.AddOption("mediaid", item->GetVideoInfoTag()->m_iDbId);
-        item->SetPath(itemUrl.ToString());
-      }
-    }
-  }
-}
-
-void CGUIWindowVideoBase::UpdateVideoVersionItemsLabel(const std::string& directory)
-{
-  bool isVersionsFolderView{false};
-
-  CVideoDbUrl videoUrl;
-  if (videoUrl.FromString(directory) && videoUrl.HasOption("videoversionid"))
-  {
-    CVariant value;
-    if (videoUrl.GetOption("videoversionid", value))
-    {
-      const int idVideoVersion{static_cast<int>(value.asInteger(-1))};
-      if (idVideoVersion == VIDEO_VERSION_ID_ALL && videoUrl.GetOption("mediaid", value))
-      {
-        const int idMedia{static_cast<int>(value.asInteger(-1))};
-        if (idMedia != -1)
-        {
-          // adjust breadcrumb to display the correct movie title
-          m_vecItems->SetLabel(
-              m_database.GetVideoItemTitle(m_vecItems->GetVideoContentType(), idMedia));
-          isVersionsFolderView = true;
-        }
-      }
-    }
-  }
-
-  SetProperty("VideoVersionsFolderView", isVersionsFolderView);
 }

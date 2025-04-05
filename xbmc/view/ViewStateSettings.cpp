@@ -43,6 +43,7 @@ CViewStateSettings::CViewStateSettings()
   AddViewState("videonavtvshows");
   AddViewState("videonavseasons");
   AddViewState("videonavmusicvideos");
+  AddViewState("videonavassets");
 
   AddViewState("programs", DEFAULT_VIEW_AUTO);
   AddViewState("pictures", DEFAULT_VIEW_AUTO);

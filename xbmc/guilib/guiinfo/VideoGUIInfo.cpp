@@ -840,6 +840,10 @@ bool CVideoGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextW
       case LISTITEM_HASVIDEOEXTRAS:
         value = tag->HasVideoExtras();
         return true;
+      case LISTITEM_ISVIDEOASSET:
+        //! @todo: is this a hot path? should store in the tag instead of recalculating?
+        value = VIDEO::IsVideoAssetFile(*item);
+        return true;
     }
   }
 

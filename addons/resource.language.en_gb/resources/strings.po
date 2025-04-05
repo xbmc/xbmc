@@ -2589,6 +2589,7 @@ msgstr ""
 #. generic "name" label used in different places
 #: xbmc/addons/settings/AddonSettings.cpp
 #: xbmc/pvr/windows/GUIViewStatePVR.cpp
+#: xbmc/video/GUIViewStateVideo.cpp
 #: xbmc/view/GUIViewState.cpp
 msgctxt "#551"
 msgid "Name"
@@ -2598,11 +2599,13 @@ msgstr ""
 #: addons/skin.estuary/xml/DialogPVRInfo.xml
 #: addons/skin.estuary/xml/Variables.xml
 #: xbmc/pvr/windows/GUIViewStatePVR.cpp
+#: xbmc/video/GUIViewStateVideo.cpp
 msgctxt "#552"
 msgid "Date"
 msgstr ""
 
 #: xbmc/filesystem/BlurayDirectory.cpp
+#: xbmc/video/GUIViewStateVideo.cpp
 msgctxt "#553"
 msgid "Size"
 msgstr ""
@@ -2621,6 +2624,7 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 #: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
+#: xbmc/video/GUIViewStateVideo.cpp
 msgctxt "#556"
 msgid "Title"
 msgstr ""
@@ -2701,6 +2705,7 @@ msgstr ""
 #: addons/skin.estuary/xml/Includes_MusicInfo.xml
 #: addons/skin.estuary/xml/Variables.xml
 #: xbmc/pvr/dialogs/GUIDialogPVRRecordingSettings.cpp
+#: xbmc/video/GUIViewStateVideo.cpp
 msgctxt "#567"
 msgid "Play count"
 msgstr ""
@@ -2711,6 +2716,7 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 #: xbmc/pvr/windows/GUIViewStatePVR.cpp
+#: xbmc/video/GUIViewStateVideo.cpp
 msgctxt "#568"
 msgid "Last played"
 msgstr ""
@@ -2724,6 +2730,7 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 #: xbmc/pvr/windows/GUIViewStatePVR.cpp
+#: xbmc/video/GUIViewStateVideo.cpp
 msgctxt "#570"
 msgid "Date added"
 msgstr ""
@@ -5912,17 +5919,7 @@ msgctxt "#12014"
 msgid "Last updated"
 msgstr ""
 
-#: xbmc/guilib/WindowIDs.h
-msgctxt "#12015"
-msgid "Select video version"
-msgstr ""
-
-#: xbmc/guilib/WindowIDs.h
-msgctxt "#12016"
-msgid "Select video extra"
-msgstr ""
-
-#empty strings from id 12017 to 12020
+#empty strings from id 12015 to 12020
 
 #. Label of various controls for starting playback from the beginning
 #: addons/skin.estuary/xml/SkinSettings.xml
@@ -14924,6 +14921,7 @@ msgid "Episode title"
 msgstr ""
 
 #: xbmc/playlists/SmartPlaylist.cpp
+#: xbmc/video/GUIViewStateVideo.cpp
 msgctxt "#21443"
 msgid "Video resolution"
 msgstr ""
@@ -14935,11 +14933,13 @@ msgid "Audio channels"
 msgstr ""
 
 #: xbmc/playlists/SmartPlaylist.cpp
+#: xbmc/video/GUIViewStateVideo.cpp
 msgctxt "#21445"
 msgid "Video codec"
 msgstr ""
 
 #: xbmc/playlists/SmartPlaylist.cpp
+#: xbmc/video/GUIViewStateVideo.cpp
 #: addons/skin.estuary/xml/MusicVisualisation.xml
 msgctxt "#21446"
 msgid "Audio codec"
@@ -24566,40 +24566,30 @@ msgctxt "#40205"
 msgid "Select scanner action for video extras in \"extras\" folder.[CR][Enabled] Scan video extras like regular videos.[CR][Disabled] Add video extras to library for associated video."
 msgstr ""
 
-#. Show video versions as folder settting
-#: system/settings/settings.xml
-msgctxt "#40206"
-msgid "Show videos with multiple versions as folder"
-msgstr ""
+#empty strings from id 40206 to 40208
 
-#. Help for show video versions as folder settting
-#: system/settings/settings.xml
-msgctxt "#40207"
-msgid "When enabled, a video with multiple versions will be shown as a folder in the video library. This folder can then be opened to display the individual video versions. When disabled, the configured select action will be applied."
-msgstr ""
-
-#. Choose video version dialog title
-#: xbmc/video/guilib/VideoVersionHelper.cpp
-msgctxt "#40208"
-msgid "Choose version: {}"
-msgstr ""
-
-#. First choose video version and then select a player and play context menu item label
-#: xbmc/video/ContextMenus.h
+#. Button label for video assets
+#: xbmc/filesystem/VideoDatabaseDirectory.cpp
+#: xbmc/video/VideoDatabase.cpp
 msgctxt "#40209"
-msgid "Play version using..."
+msgid "Assets"
 msgstr ""
 
 #. Button label for video versions
 #: addons/skin.estuary/xml/DialogVideoInfo.xml
+#: xbmc/filesystem/VideoDatabaseDirectory.cpp
 #: xbmc/video/guilib/VideoVersionHelper.cpp
+#: xbmc/video/VideoDatabase.cpp
 msgctxt "#40210"
 msgid "Versions"
 msgstr ""
 
 #. Button label for video extras
 #: addons/skin.estuary/xml/DialogVideoInfo.xml
+#: xbmc/filesystem/VideoDatabaseDirectory.cpp
+#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMovieAssets.cpp
 #: xbmc/video/guilib/VideoVersionHelper.cpp
+#: xbmc/video/VideoDatabase.cpp
 msgctxt "#40211"
 msgid "Extras"
 msgstr ""
@@ -24616,11 +24606,7 @@ msgctxt "#40213"
 msgid "If selected the remote player volume level will be synchronized with the volume of this application.[CR]Warning: Global system volume level may be different than the application volume level - they are controlled independently.[CR]This may lead the remote player to be set to 100% volume level if the application has 100% volume level but the overall system volume level is smaller."
 msgstr ""
 
-#. Dialog title for the selection of the video extra
-#: xbmc/video/guilib/VideoVersionHelper.cpp
-msgctxt "#40214"
-msgid "Choose extra: {}"
-msgstr ""
+#empty string id 40214
 
 #. Title of the dialog for version rename action from Versions Manager
 #: xbmc/video/dialogs/GUIDialogVideoManager.cpp
@@ -24658,13 +24644,7 @@ msgctxt "#40220"
 msgid "New extra name"
 msgstr ""
 
-#. Choose video version context menu item label
-#: xbmc/video/ContextMenus.h
-msgctxt "#40221"
-msgid "Choose version"
-msgstr ""
-
-#empty strings from id 40222 to 40399
+#empty strings from id 40221 to 40399
 
 # Video versions
 

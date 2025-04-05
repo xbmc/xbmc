@@ -124,9 +124,9 @@ bool IsVideoAssetFile(const CFileItem& item)
   if (item.m_bIsFolder || !IsVideoDb(item))
     return false;
 
-  // @todo maybe in the future look for prefix videodb://movies/videoversions in path instead
   // @todo better encoding of video assets as path, they won't always be tied with movies.
-  return CURL(item.GetPath()).HasOption("videoversionid");
+  const CURL url{item.GetPath()};
+  return (url.HasOption("videoversionid") || url.HasOption("assetType"));
 }
 
 bool IsVideoDb(const CFileItem& item)
