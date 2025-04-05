@@ -13,6 +13,7 @@
 
 #include <climits>
 #include <cmath>
+#include <span>
 #include <stdint.h>
 #include <string.h>
 #include <vector>
@@ -232,6 +233,55 @@ public:
                                    const std::string& file,
                                    const std::string& destname = "");
 
+  /*!
+   *\brief Converts byte array in big endian format to hex string
+   *\param buf byte array
+   *\param count number of bytes to format (string padded with 0s)
+   *\return hex string
+   */
+  static std::string HexToString(std::span<const uint8_t> buf, int count);
+
+  /*!
+   *\brief Converts number to hex string
+   *\param number
+   *\param count number of bytes to format (string padded with 0s)
+   *\return hex string
+   */
+  static std::string HexToString(int num, int count);
+
+  /*!
+   *\brief Retrieves a numerical dword from a byte array in big endian format
+   *\param bytes byte array
+   *\param offset offset into byte array
+   *\return number
+   */
+  static unsigned int GetDWord(std::span<char> bytes, unsigned int offset);
+
+  /*!
+   *\brief Retrieves a numerical word from a byte array in big endian format
+   *\param bytes byte array
+   *\param offset offset into byte array
+   *\return number
+   */
+  static unsigned int GetWord(std::span<char> bytes, unsigned int offset);
+
+  /*!
+   *\brief Retrieves a numerical byte from a byte array
+   *\param bytes byte array
+   *\param offset offset into byte array
+   *\return number
+   */
+  static unsigned int GetByte(std::span<char> bytes, unsigned int offset);
+
+  /*!
+   *\brief Retrieves a text string from a byte array
+   *\param bytes byte array
+   *\param offset offset into byte array
+   *\param length number of characters to retrieve
+   *\return string
+   */
+  static std::string GetString(std::span<char> bytes, unsigned int offset, unsigned int length);
+
 #if !defined(TARGET_WINDOWS)
 private:
   static unsigned int s_randomSeed;
@@ -279,7 +329,4 @@ private:
                                              const std::string& videoNameNoExt,
                                              const std::vector<std::string>& item_exts,
                                              std::vector<std::string>& associatedFiles);
-
 };
-
-
