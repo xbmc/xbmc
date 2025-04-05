@@ -25,7 +25,7 @@
 		<param name="altclick">noop</param>
 		<definition>
 			<control type="togglebutton" id="$PARAM[control_id]">
-				<width>472</width>
+				<width>469</width>
 				<height>49</height>
 				<textoffsetx>16</textoffsetx>
 				<aligny>center</aligny>
