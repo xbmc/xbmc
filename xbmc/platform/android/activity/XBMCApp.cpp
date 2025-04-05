@@ -42,6 +42,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/Event.h"
+#include "utils/JSONVariantParser.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
 #include "utils/URIUtils.h"
@@ -102,7 +103,6 @@
 #include <crossguid/guid.hpp>
 #include <dlfcn.h>
 #include <jni.h>
-#include <rapidjson/document.h>
 #include <unistd.h>
 
 #define ACTION_XBMC_RESUME "android.intent.XBMC_RESUME"
@@ -1071,17 +1071,18 @@ bool CXBMCApp::StartActivity(const std::string& package,
 
   if (!extras.empty())
   {
-    rapidjson::Document doc;
-    doc.Parse(extras.c_str());
-    if (!doc.IsArray())
+    CVariant doc;
+    CJSONVariantParser::Parse(extras, doc);
+    if (!doc.isArray())
     {
       CLog::LogF(LOGDEBUG, "Invalid intent extras format: Needs to be an array");
       return false;
     }
 
-    for (auto& e : doc.GetArray())
+    for (auto it = doc.begin_array(); it != doc.end_array(); ++it)
     {
-      if (!e.IsObject() || !e.HasMember("type") || !e.HasMember("key") || !e.HasMember("value"))
+      CVariant& e = *it;
+      if (!e.isObject() || !e.isMember("type") || !e.isMember("key") || !e.isMember("value"))
       {
         CLog::LogF(LOGDEBUG, "Invalid intent extras value format");
         continue;
@@ -1089,12 +1090,12 @@ bool CXBMCApp::StartActivity(const std::string& package,
 
       if (e["type"] == "string")
       {
-        newIntent.putExtra(e["key"].GetString(), e["value"].GetString());
-        CLog::LogF(LOGDEBUG, "Putting extra key: {}, value: {}", e["key"].GetString(),
-                   e["value"].GetString());
+        newIntent.putExtra(e["key"].asString(), e["value"].asString());
+        CLog::LogF(LOGDEBUG, "Putting extra key: {}, value: {}", e["key"].asString(),
+                   e["value"].asString());
       }
       else
-        CLog::LogF(LOGDEBUG, "Intent extras data type ({}) not implemented", e["type"].GetString());
+        CLog::LogF(LOGDEBUG, "Intent extras data type ({}) not implemented", e["type"].asString());
     }
   }
 
