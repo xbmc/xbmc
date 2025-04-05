@@ -115,7 +115,7 @@ dependent_option(ENABLE_INTERNAL_FLATBUFFERS "Enable internal flatbuffers?")
 dependent_option(ENABLE_INTERNAL_FMT "Enable internal fmt?")
 dependent_option(ENABLE_INTERNAL_NFS "Enable internal libnfs?")
 dependent_option(ENABLE_INTERNAL_PCRE2 "Enable internal pcre2?")
-dependent_option(ENABLE_INTERNAL_RapidJSON "Enable internal rapidjson?")
+dependent_option(ENABLE_INTERNAL_NLOHMANNJSON "Enable internal nlohmannjson?")
 
 # If ENABLE_INTERNAL_FMT is ON, we force ENABLE_INTERNAL_SPDLOG ON as it has a hard
 # dependency on fmt
@@ -240,7 +240,7 @@ set(required_deps ASS>=0.15.0
                   Lzo2
                   OpenSSL>=1.1.0
                   PCRE2
-                  RapidJSON>=1.0.2
+                  NlohmannJSON>=3.2.0
                   Spdlog
                   Sqlite3
                   TagLib>=1.9.0
