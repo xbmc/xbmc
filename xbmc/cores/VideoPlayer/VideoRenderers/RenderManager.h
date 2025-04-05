@@ -229,7 +229,6 @@ protected:
   bool m_forceNext = false;
   bool m_presentstarted = false;
   int m_presentsource = 0;
-  int m_presentsourcePast = -1;
   XbmcThreads::ConditionVariable m_presentevent;
   CEvent m_flushEvent;
   CEvent m_initEvent;
