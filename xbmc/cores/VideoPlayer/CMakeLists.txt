@@ -43,4 +43,9 @@ set(HEADERS AudioSinkAE.h
             Interface/InputStreamConstants.h
             Interface/TimingConstants.h)
 
+if("webos" IN_LIST CORE_PLATFORM_NAME_LC)
+    list(APPEND SOURCES MediaPipelineWebOS.cpp VideoPlayerWebOS.cpp)
+    list(APPEND HEADERS MediaPipelineWebOS.h VideoPlayerWebOS.h)
+endif()
+
 core_add_library(VideoPlayer)
