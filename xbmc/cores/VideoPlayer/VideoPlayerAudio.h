@@ -32,7 +32,7 @@ class CVideoPlayerAudio : public CThread, public IDVDStreamPlayerAudio
 {
 public:
   CVideoPlayerAudio(
-    CDVDClock* pClock, 
+    CDVDClock* pClock,
     CDVDMessageQueue& parent,
     CRenderManager& renderManager,
     CProcessInfo &processInfo);
@@ -132,5 +132,8 @@ protected:
   bool m_displayReset = false;
   unsigned int m_disconAdjustTimeMs = 30; // maximum sync-off before adjusting
   int m_disconAdjustCounter = 0;
+
+  // Display latency tweak from AdvancedSettings for audio in milliseconds
+  std::atomic_int m_audioLatencyTweak = 0;
 };
 

@@ -130,6 +130,8 @@ public:
   void SetDelay(int delay) { m_videoDelay = delay; }
   int GetDelay() { return m_videoDelay; }
 
+  int GetVideoLatencyTweak() { return m_videoLatencyTweak; }
+
   void SetVideoSettings(const CVideoSettings& settings);
 
   void UpdateAudioLatencyTweak(int audioLatency);
@@ -194,8 +196,7 @@ protected:
 
   /// Display latency tweak value from AdvancedSettings for the current refresh rate and resolution, and audio
   /// in milliseconds
-  int m_videoLatencyTweak = 0;
-  int m_audioLatencyTweak = 0;
+  std::atomic_int m_videoLatencyTweak = 0;
   /// Display latency updated in PrepareNextRender in DVD clock units, includes m_latencyTweak
   double m_displayLatency = 0.0;
   std::atomic_int m_videoDelay = {};
