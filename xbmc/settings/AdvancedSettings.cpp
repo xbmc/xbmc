@@ -174,11 +174,11 @@ void CAdvancedSettings::Initialize()
   m_videoDefaultLatency = 0.0;
 
   m_videoDecoderTimeout = 5;
-  m_videoDecoderBypassBufferReady = true;     // Alt SoC false
-  m_videoDecoderBuffer = 5.0f;                // Alt SoC 
-  m_videoDecoderStreamBuffer = 90.0f;         // Alt SoC
+  m_videoDecoderBypassBufferReady = false;
+  m_videoDecoderBuffer = 5.0f;
+  m_videoDecoderStreamBuffer = 90.0f;
   m_videoDecoderMinimumBuffer = 5.0f;
-  m_videoDecoderMinimumStreamBuffer = 5.0f;   // Alt SoC 17.5f
+  m_videoDecoderMinimumStreamBuffer = 10.0f;  // Alt SoC 17.5f
 
   m_musicUseTimeSeeking = true;
   m_musicTimeSeekForward = 10;
@@ -509,12 +509,12 @@ void CAdvancedSettings::DefaultAudioLatency() {
   audiolatency.type = CAEStreamInfo::DataType::STREAM_TYPE_AC3;
   audiolatency.delay = -30;
   m_audioPassthroughLatency.push_back(audiolatency);
-  
+
   audiolatency = {};
   audiolatency.type = CAEStreamInfo::DataType::STREAM_TYPE_EAC3;
   audiolatency.delay = -30;
   m_audioPassthroughLatency.push_back(audiolatency);
-  
+
   audiolatency = {};
   audiolatency.type = CAEStreamInfo::DataType::STREAM_TYPE_TRUEHD;
   audiolatency.delay = 30;
