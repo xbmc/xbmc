@@ -1,0 +1,19 @@
+{
+    "name": "pvr.iptvsimple",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/kodi-pvr/pvr.iptvsimple",
+            "commit": "2471a9e451cb8cd0cdb083df5a8c3665d16bab05"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0 -Wp,-U_GLIBCXX_ASSERTIONS"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}
