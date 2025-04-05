@@ -1497,8 +1497,7 @@ void CAdvancedSettings::AddSettingsFile(const std::string &filename)
   m_settingsFiles.push_back(filename);
 }
 
-int CAdvancedSettings::GetLatencyTweak(float refreshrate,
-                                         unsigned int resolution)
+int CAdvancedSettings::GetVideoLatencyTweak(float refreshrate, unsigned int resolution)
 {
   int delay = m_videoDefaultLatency;
   for (int i = 0; i < (int) m_videoRefreshLatency.size(); i++)

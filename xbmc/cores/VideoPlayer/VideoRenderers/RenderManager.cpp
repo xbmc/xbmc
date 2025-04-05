@@ -369,7 +369,7 @@ void CRenderManager::PreInit()
     CreateRenderer();
   }
 
-  UpdateLatencyTweak();
+  UpdateVideoLatencyTweak();
 
   m_QueueSize   = 2;
   m_QueueSkip   = 0;
@@ -775,7 +775,7 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
                                          (m_clockSync.m_syncOffset / 1000),
                                          (DVD_TIME_TO_MSEC(m_displayLatency) / 1000.0f),
                                          (m_audioLatencyTweak / 1000.0),
-                                         (m_latencyTweak / 1000.0));
+                                         (m_videoLatencyTweak / 1000.0));
         if (m_dvdClock.GetClockInfo(missedvblanks, clockspeed, refreshrate))
         {
           info.vsync += StringUtils::Format("VSync: refresh:{:.3f} missed:{} speed:{:.3f}%",
@@ -900,7 +900,7 @@ void CRenderManager::PresentBlend(bool clear, DWORD flags, DWORD alpha)
   }
 }
 
-void CRenderManager::UpdateLatencyTweak()
+void CRenderManager::UpdateVideoLatencyTweak()
 {
   float fps = CServiceBroker::GetWinSystem()->GetGfxContext().GetFPS();
   const RESOLUTION_INFO res = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
@@ -908,9 +908,7 @@ void CRenderManager::UpdateLatencyTweak()
   float refresh = fps;
   if (CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution() == RES_WINDOW)
     refresh = 0; // No idea about refresh rate when windowed, just get the default latency
-  m_latencyTweak = static_cast<double>(
-      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->GetLatencyTweak(
-          refresh, res.iScreenHeight));
+  m_videoLatencyTweak = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->GetVideoLatencyTweak(refresh, res.iScreenHeight);
 }
 
 void CRenderManager::UpdateResolution(bool force)
@@ -942,7 +940,7 @@ void CRenderManager::UpdateResolution(bool force)
         RESOLUTION res = CResolutionUtils::ChooseBestResolution(m_fps, m_picture.iWidth, m_picture.iHeight, !m_picture.stereoMode.empty());
         CServiceBroker::GetWinSystem()->GetGfxContext().SetHDRType(actual_hdrType);
         CServiceBroker::GetWinSystem()->GetGfxContext().SetVideoResolution(res, false);
-        UpdateLatencyTweak();
+        UpdateVideoLatencyTweak();
 
         logM(LOGINFO, "CRenderManager", "After - Set fps [{}] width [{}] height [{}] stereomode empty [{}] hdr type [{}]",
                       m_fps, m_picture.iWidth, m_picture.iHeight, m_picture.stereoMode.empty(), CStreamDetails::DynamicRangeToString(actual_hdrType));
@@ -1211,7 +1209,7 @@ void CRenderManager::PrepareNextRender()
                      DVD_TIME_BASE;
 
   m_displayLatency = DVD_MSEC_TO_TIME(
-      m_latencyTweak +
+      m_videoLatencyTweak +
       m_audioLatencyTweak -
       m_videoDelay);
 

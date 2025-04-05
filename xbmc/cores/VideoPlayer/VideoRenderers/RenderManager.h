@@ -149,7 +149,7 @@ protected:
   void DeleteRenderer();
   void ManageCaptures();
 
-  void UpdateLatencyTweak();
+  void UpdateVideoLatencyTweak();
   void CheckEnableClockSync();
 
   CBaseRenderer *m_pRenderer = nullptr;
@@ -194,7 +194,7 @@ protected:
 
   /// Display latency tweak value from AdvancedSettings for the current refresh rate and resolution, and audio
   /// in milliseconds
-  double m_latencyTweak = 0.0;
+  int m_videoLatencyTweak = 0;
   double m_audioLatencyTweak = 0.0;
   /// Display latency updated in PrepareNextRender in DVD clock units, includes m_latencyTweak
   double m_displayLatency = 0.0;

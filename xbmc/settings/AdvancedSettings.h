@@ -359,7 +359,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     void DefaultAudioLatency();
     void DefaultVideoLatency();
 
-    int GetLatencyTweak(float refreshrate, unsigned int resolution);
+    int GetVideoLatencyTweak(float refreshrate, unsigned int resolution);
     float GetAudioLatencyTweak(CAEStreamInfo::DataType type);
 
     bool m_initialized;
