@@ -10,6 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "application/AppParams.h"
+#include "cores/AudioEngine/Sinks/AENullSink.h"
 #include "filesystem/SpecialProtocol.h"
 
 #if defined(HAS_ALSA)
@@ -116,6 +117,10 @@ bool CPlatformLinux::InitStageOne()
     OPTIONALS::ALSARegister();
     OPTIONALS::PulseAudioRegister(true);
   }
+  else if (sink == "null")
+  {
+    CAENullSink::Register();
+  }
   else
   {
     if (!OPTIONALS::PulseAudioRegister(false))
@@ -124,7 +129,10 @@ bool CPlatformLinux::InitStageOne()
       {
         if (!OPTIONALS::ALSARegister())
         {
-          OPTIONALS::SndioRegister();
+          if (!OPTIONALS::SndioRegister())
+          {
+            CAENullSink::Register();
+          }
         }
       }
     }
