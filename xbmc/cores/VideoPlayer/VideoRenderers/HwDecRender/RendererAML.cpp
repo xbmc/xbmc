@@ -118,10 +118,7 @@ void CRendererAML::ReleaseBuffer(int idx)
 
 bool CRendererAML::Supports(ERENDERFEATURE feature) const
 {
-  if (feature == RENDERFEATURE_ZOOM ||
-      feature == RENDERFEATURE_CONTRAST ||
-      feature == RENDERFEATURE_BRIGHTNESS ||
-      feature == RENDERFEATURE_NONLINSTRETCH ||
+  if (feature == RENDERFEATURE_NONLINSTRETCH ||
       feature == RENDERFEATURE_VERTICAL_SHIFT ||
       feature == RENDERFEATURE_STRETCH ||
       feature == RENDERFEATURE_PIXEL_RATIO ||
