@@ -37,7 +37,7 @@ bool CDirectoryNodeMovieAssets::GetContent(CFileItemList& items) const
 
   const int details{items.HasProperty("set_videodb_details")
                         ? items.GetProperty("set_videodb_details").asInteger32()
-                        : VideoDbDetailsNone};
+                        : VideoDbDetailsStream};
 
   const std::string path{BuildPath()};
 
