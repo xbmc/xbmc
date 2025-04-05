@@ -26,6 +26,9 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                    -DRAPIDJSON_BUILD_TESTS=OFF
                    -DRAPIDJSON_BUILD_THIRDPARTY_GTEST=OFF)
 
+    # rapidjson hasnt tagged a release since 2016. Force this for cmake 4.0
+    list(APPEND CMAKE_ARGS -DCMAKE_POLICY_VERSION_MINIMUM=3.10)
+
     set(BUILD_BYPRODUCTS ${DEPENDS_PATH}/include/rapidjson/rapidjson.h)
 
     BUILD_DEP_TARGET()
