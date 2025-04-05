@@ -12,6 +12,7 @@
 #include "DVDInputStreams/DVDInputStream.h"
 #include "cores/FFmpeg.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
+#include "utils/StreamUtils.h"
 #include "utils/log.h"
 
 #include <memory>
@@ -662,34 +663,12 @@ std::string CDVDDemuxClient::GetFileName()
 
 std::string CDVDDemuxClient::GetStreamCodecName(int iStreamId)
 {
-  CDemuxStream *stream = GetStream(iStreamId);
-  std::string strName;
+  CDemuxStream* stream = GetStream(iStreamId);
   if (stream)
   {
-    if (stream->codec == AV_CODEC_ID_AC3)
-      strName = "ac3";
-    else if (stream->codec == AV_CODEC_ID_MP2)
-      strName = "mp2";
-    else if (stream->codec == AV_CODEC_ID_AAC)
-      strName = "aac";
-    else if (stream->codec == AV_CODEC_ID_DTS)
-      strName = "dca";
-    else if (stream->codec == AV_CODEC_ID_MPEG2VIDEO)
-      strName = "mpeg2video";
-    else if (stream->codec == AV_CODEC_ID_H264)
-      strName = "h264";
-    else if (stream->codec == AV_CODEC_ID_EAC3)
-      strName = "eac3";
-    else if (stream->codec == AV_CODEC_ID_VP8)
-      strName = "vp8";
-    else if (stream->codec == AV_CODEC_ID_VP9)
-      strName = "vp9";
-    else if (stream->codec == AV_CODEC_ID_HEVC)
-      strName = "hevc";
-    else if (stream->codec == AV_CODEC_ID_AV1)
-      strName = "av1";
+    return StreamUtils::GetCodecName(stream->codec, stream->profile);
   }
-  return strName;
+  return {};
 }
 
 bool CDVDDemuxClient::SeekTime(double timems, bool backwards, double *startpts)
