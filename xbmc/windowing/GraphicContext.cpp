@@ -413,7 +413,7 @@ void CGraphicContext::SetVideoResolutionInternal(RESOLUTION res, bool forceUpdat
     return;
   }
 
-  if (res >= RES_DESKTOP)
+  if (CDisplaySettings::GetInstance().GetResolutionInfo(res).bFullScreen)
   {
     CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_fullScreen = true;
     m_bFullScreenRoot = true;
