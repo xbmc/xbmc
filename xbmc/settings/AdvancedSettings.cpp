@@ -840,7 +840,8 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     TiXmlElement* pVideoLatency = pElement->FirstChildElement("latency");
     if (pVideoLatency)
     {
-      float refresh, refreshmin, refreshmax, delay;
+      float refresh, refreshmin, refreshmax;
+      int delay;
       TiXmlElement* pRefreshVideoLatency = pVideoLatency->FirstChildElement("refresh");
 
       while (pRefreshVideoLatency)
@@ -858,7 +859,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
           videolatency.refreshmin = refreshmin;
           videolatency.refreshmax = refreshmax;
         }
-        if (XMLUtils::GetFloat(pRefreshVideoLatency, "delay", delay, -600.0f, 600.0f))
+        if (XMLUtils::GetInt(pRefreshVideoLatency, "delay", delay, -600, 600))
           videolatency.delay = delay;
 
         if (pRefreshVideoLatency->QueryUnsignedAttribute("resolution", &videolatency.resolution) ==
@@ -877,7 +878,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 
       // Get default global display latency
       m_hasVideoDefaultLatency = !!pVideoLatency->FirstChildElement("delay");
-      XMLUtils::GetFloat(pVideoLatency, "delay", m_videoDefaultLatency, -600.0f, 600.0f);
+      XMLUtils::GetInt(pVideoLatency, "delay", m_videoDefaultLatency, -600, 600);
     }
 
     XMLUtils::GetInt(pElement, "decodertimeout", m_videoDecoderTimeout, 1, 60);
@@ -1496,10 +1497,10 @@ void CAdvancedSettings::AddSettingsFile(const std::string &filename)
   m_settingsFiles.push_back(filename);
 }
 
-float CAdvancedSettings::GetLatencyTweak(float refreshrate,
+int CAdvancedSettings::GetLatencyTweak(float refreshrate,
                                          unsigned int resolution)
 {
-  float delay = m_videoDefaultLatency;
+  int delay = m_videoDefaultLatency;
   for (int i = 0; i < (int) m_videoRefreshLatency.size(); i++)
   {
     RefreshVideoLatency& videolatency = m_videoRefreshLatency[i];

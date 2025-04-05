@@ -97,7 +97,7 @@ struct RefreshVideoLatency
 
   unsigned int resolution;
 
-  float delay;
+  int delay;
 };
 
 struct PassthroughAudioLatency
@@ -176,7 +176,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::vector<RefreshVideoLatency> m_videoRefreshLatency;
     std::vector<PassthroughAudioLatency> m_audioPassthroughLatency;
     bool m_hasVideoDefaultLatency;
-    float m_videoDefaultLatency;
+    int m_videoDefaultLatency;
     int  m_videoCaptureUseOcclusionQuery;
     bool m_DXVACheckCompatibility;
     bool m_DXVACheckCompatibilityPresent;
@@ -359,7 +359,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     void DefaultAudioLatency();
     void DefaultVideoLatency();
 
-    float GetLatencyTweak(float refreshrate, unsigned int resolution);
+    int GetLatencyTweak(float refreshrate, unsigned int resolution);
     float GetAudioLatencyTweak(CAEStreamInfo::DataType type);
 
     bool m_initialized;
