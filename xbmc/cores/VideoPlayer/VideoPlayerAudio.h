@@ -130,7 +130,7 @@ protected:
   SInfo            m_info;
 
   bool m_displayReset = false;
-  unsigned int m_disconAdjustTimeMs = 30; // maximum sync-off before adjusting
+  unsigned int m_disconAdjustTimeMs = 50; // maximum sync-off before adjusting
   int m_disconAdjustCounter = 0;
 
   // Display latency tweak from AdvancedSettings for audio in milliseconds
