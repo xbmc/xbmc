@@ -284,6 +284,13 @@ endforeach()
 core_optional_dep(${optional_deps})
 core_require_dep(${required_deps})
 
+# Check for any libs to be packaged with main app. eg libaacs
+# These libs are not directly linked with main app, but may be used if available from a 
+# dependency in the main app. eg libbluray can dyload libaacs for additional features
+if(PLATFORM_OPTIONAL_PACKAGES)
+  core_optional_package_lib(${PLATFORM_OPTIONAL_PACKAGES})
+endif()
+
 if(ENABLE_MARIADBCLIENT AND NOT ENABLE_MARIADBCLIENT STREQUAL AUTO AND ENABLE_MYSQLCLIENT AND NOT ENABLE_MYSQLCLIENT STREQUAL AUTO)
   MESSAGE(FATAL_ERROR "You can not use MySql and MariaDB at the same time. Disable one by adding -DENABLE_MYSQLCLIENT=OFF or -DENABLE_MARIADBCLIENT=OFF.")
 elseif(ENABLE_MYSQLCLIENT AND NOT ENABLE_MYSQLCLIENT STREQUAL AUTO)
@@ -518,6 +525,13 @@ add_custom_target(generate-packaging ALL
                   DEPENDS TexturePacker::TexturePacker::Executable export-files gen_skin_pack gen_system_addons)
 
 core_target_add_dependencies(export-files)
+
+# optional package_libs must be built/available before exporting files to buildtrees
+# some platforms require the libraries to exist, otherwise their packaging may not copy
+# the requested package_libs into the final app
+if(package_libs)
+  add_dependencies(export-files ${package_libs})
+endif()
 
 # Add to lib${APP_NAME_LC} solely for Win UWP. msix building doesnt seem to pick up the
 # generated buildtree if we do it later. Other platforms dont care when this happens.
