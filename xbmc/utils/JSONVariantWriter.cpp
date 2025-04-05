@@ -10,83 +10,76 @@
 
 #include "utils/Variant.h"
 
-#include <rapidjson/prettywriter.h>
-#include <rapidjson/stringbuffer.h>
-#include <rapidjson/writer.h>
+#include <nlohmann/json.hpp>
 
-template<class TWriter>
-bool InternalWrite(TWriter& writer, const CVariant &value)
+void InternalWrite(nlohmann::json& writer, const CVariant& value)
 {
   switch (value.type())
   {
   case CVariant::VariantTypeInteger:
-    return writer.Int64(value.asInteger());
-
+    writer = value.asInteger();
+    break;
   case CVariant::VariantTypeUnsignedInteger:
-    return writer.Uint64(value.asUnsignedInteger());
-
+    writer = value.asUnsignedInteger();
+    break;
   case CVariant::VariantTypeDouble:
-    return writer.Double(value.asDouble());
-
+    writer = value.asDouble();
+    break;
   case CVariant::VariantTypeBoolean:
-    return writer.Bool(value.asBoolean());
-
+    writer = value.asBoolean();
+    break;
   case CVariant::VariantTypeString:
-    return writer.String(value.c_str(), value.size());
-
+    writer = std::string(value.c_str(), value.size());
+    break;
   case CVariant::VariantTypeArray:
-    if (!writer.StartArray())
-      return false;
+    writer = nlohmann::json::array();
 
     for (CVariant::const_iterator_array itr = value.begin_array(); itr != value.end_array(); ++itr)
     {
-      if (!InternalWrite(writer, *itr))
-        return false;
+      nlohmann::json& o = writer.emplace_back();
+      InternalWrite(o, *itr);
     }
 
-    return writer.EndArray(value.size());
-
+    break;
   case CVariant::VariantTypeObject:
-    if (!writer.StartObject())
-      return false;
+    writer = nlohmann::json::object();
 
     for (CVariant::const_iterator_map itr = value.begin_map(); itr != value.end_map(); ++itr)
     {
-      if (!writer.Key(itr->first.c_str()) ||
-        !InternalWrite(writer, itr->second))
-        return false;
+      nlohmann::json& o = writer[itr->first];
+      InternalWrite(o, itr->second);
     }
 
-    return writer.EndObject(value.size());
+    break;
 
   case CVariant::VariantTypeConstNull:
   case CVariant::VariantTypeNull:
   default:
-    return writer.Null();
+    writer = nullptr;
+    break;
   }
-
-  return false;
 }
 
 bool CJSONVariantWriter::Write(const CVariant &value, std::string& output, bool compact)
 {
-  rapidjson::StringBuffer stringBuffer;
-  if (compact)
+  try
   {
-    rapidjson::Writer<rapidjson::StringBuffer> writer(stringBuffer);
+    nlohmann::json json;
+    InternalWrite(json, value);
 
-    if (!InternalWrite(writer, value) || !writer.IsComplete())
-      return false;
+    if (compact)
+    {
+      output = json.dump();
+    }
+    else
+    {
+      output = json.dump(1, '\t');
+    }
   }
-  else
+  catch (nlohmann::json::exception& e)
   {
-    rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(stringBuffer);
-    writer.SetIndent('\t', 1);
-
-    if (!InternalWrite(writer, value) || !writer.IsComplete())
-      return false;
+    return false;
   }
 
-  output = stringBuffer.GetString();
   return true;
 }
