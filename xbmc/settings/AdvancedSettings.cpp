@@ -523,7 +523,7 @@ void CAdvancedSettings::DefaultAudioLatency() {
 
 void CAdvancedSettings::DefaultVideoLatency() {
 
-  if (!m_hasVideoDefaultLatency) m_videoDefaultLatency = 165;
+  if (!m_hasVideoDefaultLatency) m_videoDefaultLatency = 160;
 
   RefreshVideoLatency videolatency = {};
   videolatency.resolution = 2160;
