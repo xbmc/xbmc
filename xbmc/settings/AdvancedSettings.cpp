@@ -515,10 +515,10 @@ void CAdvancedSettings::DefaultAudioLatency() {
   audiolatency.delay = -30;
   m_audioPassthroughLatency.push_back(audiolatency);
 
-  audiolatency = {};
-  audiolatency.type = CAEStreamInfo::DataType::STREAM_TYPE_TRUEHD;
-  audiolatency.delay = 30;
-  m_audioPassthroughLatency.push_back(audiolatency);
+  //audiolatency = {};
+  //audiolatency.type = CAEStreamInfo::DataType::STREAM_TYPE_TRUEHD;
+  //audiolatency.delay = 30;
+  //m_audioPassthroughLatency.push_back(audiolatency);
 }
 
 void CAdvancedSettings::DefaultVideoLatency() {
