@@ -1069,7 +1069,6 @@ bool CRenderManager::AddVideoPicture(const VideoPicture& picture, volatile std::
     }
   }
 
-
   SPresent& m = m_Queue[index];
   m.presentfield = displayField;
   m.presentmethod = presentmethod;
