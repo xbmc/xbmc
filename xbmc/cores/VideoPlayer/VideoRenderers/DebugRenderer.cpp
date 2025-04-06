@@ -73,6 +73,7 @@ void CDebugRenderer::SetInfo(DEBUG_INFO_PLAYER& info)
   m_adapter->AddSubtitle(info.video, 0., 5000000.);
   m_adapter->AddSubtitle(info.player, 0., 5000000.);
   m_adapter->AddSubtitle(info.vsync, 0., 5000000.);
+  m_adapter->AddSubtitle(info.latency, 0., 5000000.);
 }
 
 void CDebugRenderer::SetInfo(DEBUG_INFO_VIDEO& video, DEBUG_INFO_RENDER& render)
