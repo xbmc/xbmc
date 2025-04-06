@@ -403,9 +403,10 @@ void CPVRChannelGroups::UpdateSystemChannelGroups()
   }
 
   if (!newGroups.empty())
+  {
     m_groups.insert(m_groups.end(), newGroups.cbegin(), newGroups.cend());
-
-  SortGroups();
+    SortGroups();
+  }
 }
 
 bool CPVRChannelGroups::UpdateChannelNumbersFromAllChannelsGroup()
