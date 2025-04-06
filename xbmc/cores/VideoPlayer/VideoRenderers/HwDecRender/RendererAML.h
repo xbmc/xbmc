@@ -49,7 +49,6 @@ private:
   {
     BUFFER() : videoBuffer(nullptr) {};
     CVideoBuffer *videoBuffer;
-    int duration;
   } m_buffers[m_numRenderBuffers];
 
   int m_prevVPts;
