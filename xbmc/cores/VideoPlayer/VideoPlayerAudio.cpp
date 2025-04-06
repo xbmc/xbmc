@@ -480,13 +480,8 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
     }
     else
     {
-      logM(LOGINFO, "CVideoPlayerAudio", "latency - audio:[{}] video:[{}] user:[{}]",
-                                         m_audioLatencyTweak,
-                                         m_renderManager.GetVideoLatencyTweak(),
-                                         -m_renderManager.GetDelay());
-
-      audioframe.pts += DVD_MSEC_TO_TIME(m_audioLatencyTweak +
-                                         m_renderManager.GetVideoLatencyTweak() -
+      audioframe.pts += DVD_MSEC_TO_TIME(m_renderManager.GetVideoLatencyTweak() +
+                                         m_renderManager.GetAudioLatencyTweak() -
                                          m_renderManager.GetDelay());
       m_audioClock = audioframe.pts;
     }
@@ -606,9 +601,9 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
       m_processInfo.SetAudioDecoderName(m_pAudioCodec->GetName());
       m_messageParent.Put(std::make_shared<CDVDMsg>(CDVDMsg::PLAYER_AVCHANGE));
 
-      m_audioLatencyTweak = CServiceBroker::GetSettingsComponent()
-                                              ->GetAdvancedSettings()
-                                              ->GetAudioLatencyTweak(audioframe.format.m_streamInfo.m_type);
+      m_renderManager.SetAudioLatencyTweak(CServiceBroker::GetSettingsComponent()
+                                            ->GetAdvancedSettings()
+                                            ->GetAudioLatencyTweak(audioframe.format.m_streamInfo.m_type));
     }
   }
 
