@@ -845,7 +845,7 @@ bool CPVRGUIDirectory::GetChannelsDirectory(CFileItemList& results) const
           }
         }
 
-        const auto item{std::make_shared<CFileItem>(groupMember)};
+        auto item{std::make_shared<CFileItem>(groupMember)};
         if (dateAdded)
           item->SetProperty("hideable", true);
 
