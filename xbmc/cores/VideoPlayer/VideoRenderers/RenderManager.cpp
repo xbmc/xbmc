@@ -115,7 +115,7 @@ bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned 
     m_forceNext = true;
     while (m_presentstep != PRESENT_IDLE)
     {
-      if(endtime.IsTimePast())
+      if (endtime.IsTimePast())
       {
         logM(LOGWARNING, "CRenderManager", "timeout waiting for state");
         m_forceNext = false;
@@ -190,7 +190,7 @@ bool CRenderManager::Configure()
     if (m_NumberBuffers > 0)
       m_QueueSize = std::min(m_NumberBuffers, renderbuffers);
 
-    if(m_QueueSize < 2)
+    if (m_QueueSize < 2)
     {
       m_QueueSize = 2;
       logM(LOGWARNING, "CRenderManager", "queue size too small ({}, {}, {})",
@@ -261,7 +261,7 @@ void CRenderManager::FrameWait(std::chrono::milliseconds duration)
 {
   XbmcThreads::EndTime<> timeout{duration};
   std::unique_lock<CCriticalSection> lock(m_presentlock);
-  while(m_presentstep == PRESENT_IDLE && !timeout.IsTimePast())
+  while (m_presentstep == PRESENT_IDLE && !timeout.IsTimePast())
     m_presentevent.wait(lock, timeout.GetTimeLeft());
 }
 
@@ -299,6 +299,7 @@ void CRenderManager::FrameMove()
 
     CheckEnableClockSync();
   }
+
   {
     std::unique_lock<CCriticalSection> lock2(m_presentlock);
 
@@ -728,13 +729,13 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
   if (!gui && m_pRenderer->IsGuiLayer())
     return;
 
+  const SPresent& present = m_Queue[m_presentsource];
+
   if (!gui || m_pRenderer->IsGuiLayer())
   {
-    const SPresent& m = m_Queue[m_presentsource];
-
-    if( m.presentmethod == PRESENT_METHOD_BOB )
+    if (present.presentmethod == PRESENT_METHOD_BOB)
       PresentFields(clear, flags, alpha);
-    else if( m.presentmethod == PRESENT_METHOD_BLEND )
+    else if (present.presentmethod == PRESENT_METHOD_BLEND)
       PresentBlend(clear, flags, alpha);
     else
       PresentSingle(clear, flags, alpha);
@@ -794,14 +795,12 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
     }
   }
 
-  const SPresent& m = m_Queue[m_presentsource];
-
   {
     std::unique_lock<CCriticalSection> lock(m_presentlock);
 
     if (m_presentstep == PRESENT_FRAME)
     {
-      if (m.presentmethod == PRESENT_METHOD_BOB)
+      if (present.presentmethod == PRESENT_METHOD_BOB)
         m_presentstep = PRESENT_FRAME2;
       else
         m_presentstep = PRESENT_IDLE;
@@ -854,32 +853,32 @@ bool CRenderManager::IsVideoLayer()
 /* simple present method */
 void CRenderManager::PresentSingle(bool clear, DWORD flags, DWORD alpha)
 {
-  const SPresent& m = m_Queue[m_presentsource];
+  const SPresent& present = m_Queue[m_presentsource];
 
-  if (m.presentfield == FS_BOT)
+  if (present.presentfield == FS_BOT)
     m_pRenderer->RenderUpdate(m_presentsource, m_presentsource, clear, flags | RENDER_FLAG_BOT, alpha);
-  else if (m.presentfield == FS_TOP)
+  else if (present.presentfield == FS_TOP)
     m_pRenderer->RenderUpdate(m_presentsource, m_presentsource, clear, flags | RENDER_FLAG_TOP, alpha);
   else
     m_pRenderer->RenderUpdate(m_presentsource, m_presentsource, clear, flags, alpha);
 }
 
 /* new simpler method of handling interlaced material, *
- * we just render the two fields right after eachother */
+ * we just render the two fields right after each other */
 void CRenderManager::PresentFields(bool clear, DWORD flags, DWORD alpha)
 {
-  const SPresent& m = m_Queue[m_presentsource];
+  const SPresent& present = m_Queue[m_presentsource];
 
-  if(m_presentstep == PRESENT_FRAME)
+  if (m_presentstep == PRESENT_FRAME)
   {
-    if( m.presentfield == FS_BOT)
+    if (present.presentfield == FS_BOT)
       m_pRenderer->RenderUpdate(m_presentsource, m_presentsource, clear, flags | RENDER_FLAG_BOT | RENDER_FLAG_FIELD0, alpha);
     else
       m_pRenderer->RenderUpdate(m_presentsource, m_presentsource, clear, flags | RENDER_FLAG_TOP | RENDER_FLAG_FIELD0, alpha);
   }
   else
   {
-    if( m.presentfield == FS_TOP)
+    if (present.presentfield == FS_TOP)
       m_pRenderer->RenderUpdate(m_presentsource, m_presentsource, clear, flags | RENDER_FLAG_BOT | RENDER_FLAG_FIELD1, alpha);
     else
       m_pRenderer->RenderUpdate(m_presentsource, m_presentsource, clear, flags | RENDER_FLAG_TOP | RENDER_FLAG_FIELD1, alpha);
@@ -888,9 +887,9 @@ void CRenderManager::PresentFields(bool clear, DWORD flags, DWORD alpha)
 
 void CRenderManager::PresentBlend(bool clear, DWORD flags, DWORD alpha)
 {
-  const SPresent& m = m_Queue[m_presentsource];
+  const SPresent& present = m_Queue[m_presentsource];
 
-  if( m.presentfield == FS_BOT )
+  if (present.presentfield == FS_BOT)
   {
     m_pRenderer->RenderUpdate(m_presentsource, m_presentsource, clear, flags | RENDER_FLAG_BOT | RENDER_FLAG_NOOSD, alpha);
     m_pRenderer->RenderUpdate(m_presentsource, m_presentsource, false, flags | RENDER_FLAG_TOP, alpha / 2);
@@ -1029,7 +1028,6 @@ bool CRenderManager::AddVideoPicture(const VideoPicture& picture, volatile std::
     m_pRenderer->AddVideoPicture(picture, index);
   }
 
-
   // set fieldsync if picture is interlaced
   EFIELDSYNC displayField = FS_NONE;
   if (picture.iFlags & DVP_FLAG_INTERLACED)
@@ -1069,11 +1067,12 @@ bool CRenderManager::AddVideoPicture(const VideoPicture& picture, volatile std::
     }
   }
 
-  SPresent& m = m_Queue[index];
-  m.presentfield = displayField;
-  m.presentmethod = presentmethod;
-  m.pts = picture.pts;
-  m.duration = picture.iDuration;
+  SPresent& present = m_Queue[index];
+  present.presentfield = displayField;
+  present.presentmethod = presentmethod;
+  present.pts = picture.pts;
+  present.duration = picture.iDuration;
+
   m_queued.push_back(index);
   m_free.pop_front();
 
@@ -1091,7 +1090,7 @@ bool CRenderManager::AddVideoPicture(const VideoPicture& picture, volatile std::
     while (m_presentstep == PRESENT_READY)
     {
       m_presentevent.wait(lock, 20ms);
-      if(endtime.IsTimePast() || bStop)
+      if (endtime.IsTimePast() || bStop)
       {
         if (!bStop)
         {
@@ -1295,7 +1294,6 @@ void CRenderManager::PrepareNextRender()
   // Seek may push the diff to a large negative value, make sure it is sensible. TODO should be better protected elsewhere.
   if ((diff < 0) && (diff > -1000000))
   {
-    //usleep(-diff);
     Wait(-diff);
     renderPts = m_dvdClock.GetClock();
     diff = (renderPts - m_presentpts);
@@ -1322,14 +1320,15 @@ void CRenderManager::DiscardBuffer()
 {
   std::unique_lock<CCriticalSection> lock2(m_presentlock);
 
-  while(!m_queued.empty())
+  while (!m_queued.empty())
   {
     m_discard.push_back(m_queued.front());
     m_queued.pop_front();
   }
 
-  if(m_presentstep == PRESENT_READY)
+  if (m_presentstep == PRESENT_READY)
     m_presentstep = PRESENT_IDLE;
+
   m_presentevent.notifyAll();
 }
 
@@ -1378,7 +1377,7 @@ void CRenderManager::CheckEnableClockSync()
     diff = std::abs(std::round(diff) - diff);
   }
 
-  if (diff && diff > 0.0005)
+  if (diff && (diff > 0.0005))
   {
     m_clockSync.m_enabled = true;
   }
