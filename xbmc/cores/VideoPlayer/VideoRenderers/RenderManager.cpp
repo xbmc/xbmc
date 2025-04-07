@@ -1216,7 +1216,7 @@ void inline CRenderManager::Wait(useconds_t uSeconds)
 
 bool inline CRenderManager::Paused(bool paused, double clock)
 {
-  static double previousClock = 0;
+  static double previousClock = DVD_NOPTS_VALUE;
 
   // for pause, check for frame advance
   bool check = paused ? (clock == previousClock) : paused;
