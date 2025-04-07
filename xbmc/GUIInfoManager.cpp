@@ -6286,12 +6286,20 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///                  _string_,
 ///     @return The audio codec of the currently selected video. Common values:
 ///       - <b>aac</b>
+///       - <b>aac_lc</b>
+///       - <b>he_aac</b>
+///       - <b>he_aac_v2</b>
+///       - <b>aac_ssr</b>
+///       - <b>aac_ltp</b>
 ///       - <b>ac3</b>
 ///       - <b>cook</b>
 ///       - <b>dca</b>
 ///       - <b>dtshd_hra</b>
 ///       - <b>dtshd_ma</b>
+///       - <b>dtshd_ma_x</b>
+///       - <b>dtshd_ma_x_imax</b>
 ///       - <b>eac3</b>
+///       - <b>eac3_ddp_atmos</b>
 ///       - <b>mp1</b>
 ///       - <b>mp2</b>
 ///       - <b>mp3</b>
@@ -6299,6 +6307,7 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///       - <b>pcm_s16le</b>
 ///       - <b>pcm_u8</b>
 ///       - <b>truehd</b>
+///       - <b>truehd_atmos</b>
 ///       - <b>vorbis</b>
 ///       - <b>wmapro</b>
 ///       - <b>wmav2</b>

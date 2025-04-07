@@ -57,6 +57,33 @@ std::string StreamUtils::GetCodecName(int codecId, int profile)
     return codecName;
   }
 
+  if (codecId == AV_CODEC_ID_AAC)
+  {
+    switch (profile)
+    {
+      case FF_PROFILE_AAC_LOW:
+      case FF_PROFILE_MPEG2_AAC_LOW:
+        codecName = "aac_lc";
+        break;
+      case FF_PROFILE_AAC_HE:
+      case FF_PROFILE_MPEG2_AAC_HE:
+        codecName = "he_aac";
+        break;
+      case FF_PROFILE_AAC_HE_V2:
+        codecName = "he_aac_v2";
+        break;
+      case FF_PROFILE_AAC_SSR:
+        codecName = "aac_ssr";
+        break;
+      case FF_PROFILE_AAC_LTP:
+        codecName = "aac_ltp";
+        break;
+      default:
+        codecName = "aac";
+    }
+    return codecName;
+  }
+
   if (codecId == AV_CODEC_ID_EAC3 && profile == AV_PROFILE_EAC3_DDP_ATMOS)
     return "eac3_ddp_atmos";
 
