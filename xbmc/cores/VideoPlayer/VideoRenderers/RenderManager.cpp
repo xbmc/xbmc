@@ -1228,16 +1228,14 @@ bool inline CRenderManager::Paused(bool paused, double clock)
 
 void CRenderManager::PrepareNextRender()
 {
-  if (!m_showVideo && !m_forceNext)
-    return;
+  if (!m_showVideo && !m_forceNext) return;
 
   double renderPts = m_dvdClock.GetClock();
 
   float speed = m_dataCacheCore.GetSpeed();
   bool paused = Paused((speed == 0.0f), renderPts);
 
-  if (paused)
-    return;
+  if (paused) return;
 
   bool playing = (speed == 1.0f);
 
@@ -1262,7 +1260,7 @@ void CRenderManager::PrepareNextRender()
     m_presentframetime = 1.0 / static_cast<double>(CServiceBroker::GetWinSystem()->GetGfxContext().GetFPS()) * DVD_TIME_BASE;
     double err = fmod(diff, m_presentframetime);
     m_clockSync.m_error += err;
-    m_clockSync.m_errCount ++;
+    m_clockSync.m_errCount++;
     if (m_clockSync.m_errCount > 30)
     {
       double average = m_clockSync.m_error / m_clockSync.m_errCount;
@@ -1307,13 +1305,12 @@ void CRenderManager::PrepareNextRender()
 
   m_dataCacheCore.SetRenderPts(m_presentpts);
 
-  logComponentM(LOGDEBUG, LOGAVTIMING, "CRenderManager", "render: [{:.3f}] next: [{:02d}] [{:.3f}] "
-                                       "diff: [{:.3f}] delay: [{:.3f}] "
-                                       "queued: [{:02d}] frametime: [{:.3f}] skip: [{:02d}] force: [{:d}] speed: [{:.1f}]",
+  logComponentM(LOGDEBUG, LOGAVTIMING, "CRenderManager", "render:[{:.3f}] presenting:[{:02d}] [{:.3f}] "
+                                       "diff:[{:.3f}] delay:[{:.3f}] "
+                                       "queued:[{:02d}] frametime:[{:.3f}] skip:[{:02d}] force:[{:d}] speed:[{:.1f}]",
                                        (renderPts / DVD_TIME_BASE), m_presentsource, (m_presentpts / DVD_TIME_BASE),
                                        (diff / DVD_TIME_BASE), (delay / DVD_TIME_BASE),
                                        m_queued.size(), (m_presentframetime / DVD_TIME_BASE), m_QueueSkip, m_forceNext, speed);
-
 }
 
 void CRenderManager::DiscardBuffer()
