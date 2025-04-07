@@ -1092,7 +1092,6 @@ msgstr ""
 #. Name of an action to perform on a specific event, like changing the CEC source away from Kodi
 #: system/peripherals.xml
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
-#: xbmc/dialogs/GUIDialogMediaSource.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
 #: system/settings/settings.xml
 #: xbmc/LangInfo.cpp
@@ -4163,7 +4162,11 @@ msgctxt "#1019"
 msgid "Enter the username"
 msgstr ""
 
-#empty string with id 1020
+#. Label for button to enter path in the Add video/music/picture/file source dialogs
+#: xbmc/dialogs/GUIDialogMediaSource.cpp
+msgctxt "#1020"
+msgid "Enter path..."
+msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaSource.cpp
 #: addons/skin.estuary/xml/DialogMediaSource.xml
