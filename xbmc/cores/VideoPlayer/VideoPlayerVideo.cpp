@@ -394,7 +394,7 @@ void CVideoPlayerVideo::Process()
       if (m_outputSate == OUTPUT_AGAIN &&
           m_picture.videoBuffer)
       {
-        m_outputSate = OutputPicture(&m_picture);
+        m_outputSate = OutputPicture(m_picture);
         if (m_processInfo.IsVideoHwDecoder())
         {
           vfmtCheckCount = 16;
@@ -443,7 +443,7 @@ void CVideoPlayerVideo::Process()
       if (m_picture.videoBuffer)
       {
         m_picture.pts = pts;
-        m_outputSate = OutputPicture(&m_picture);
+        m_outputSate = OutputPicture(m_picture);
         pts += frametime;
       }
 
@@ -819,7 +819,7 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(double &frametime, double &pts)
       }
     }
 
-    m_outputSate = OutputPicture(&m_picture);
+    m_outputSate = OutputPicture(m_picture);
 
     if (m_outputSate == OUTPUT_AGAIN)
     {
@@ -876,9 +876,8 @@ void CVideoPlayerVideo::Flush(bool sync)
   m_bAbortOutput = true;
 }
 
-void CVideoPlayerVideo::ProcessOverlays(const VideoPicture* pSource, double pts)
+void CVideoPlayerVideo::ProcessOverlays(const VideoPicture& picture, double pts)
 {
-
   double subsPts = pts - m_iSubtitleDelay;
 
   // remove any overlays that are out of time
@@ -911,7 +910,7 @@ void CVideoPlayerVideo::ProcessOverlays(const VideoPicture* pSource, double pts)
       if((pOverlay->iPTSStartTime <= pts2 && (pOverlay->iPTSStopTime > pts2 || pOverlay->iPTSStopTime == 0LL)))
       {
 
-        pOverlay->m_3dSubtitleDepth = pSource->m_3dSubtitleDepth;
+        pOverlay->m_3dSubtitleDepth = picture.m_3dSubtitleDepth;
 
         if(pOverlay->IsOverlayType(DVDOVERLAY_TYPE_GROUP))
           overlays.insert(overlays.end(),
@@ -930,13 +929,13 @@ void CVideoPlayerVideo::ProcessOverlays(const VideoPicture* pSource, double pts)
   }
 }
 
-CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(const VideoPicture* pPicture)
+CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(const VideoPicture& picture)
 {
   m_bAbortOutput = false;
 
-  if (m_processInfo.GetVideoStereoMode() != pPicture->stereoMode)
+  if (m_processInfo.GetVideoStereoMode() != picture.stereoMode)
   {
-    m_processInfo.SetVideoStereoMode(pPicture->stereoMode);
+    m_processInfo.SetVideoStereoMode(picture.stereoMode);
     // signal about changes in video parameters
     m_messageParent.Put(std::make_shared<CDVDMsg>(CDVDMsg::PLAYER_AVCHANGE));
   }
@@ -954,7 +953,7 @@ CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(const VideoPict
   int orientation = sorient != 0 ? (sorient + m_hints.orientation) % 360
                                  : m_hints.orientation;
 
-  if (!m_renderManager.Configure(*pPicture,
+  if (!m_renderManager.Configure(picture,
                                 static_cast<float>(config_framerate),
                                 orientation,
                                 m_hints.hdrType,
@@ -964,8 +963,8 @@ CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(const VideoPict
     return OUTPUT_ABORT;
   }
 
-  //try to calculate the framerate
-  m_ptsTracker.Add(pPicture->pts);
+  // try to calculate the framerate
+  m_ptsTracker.Add(picture.pts);
   if (!m_stalled)
     CalcFrameRate();
 
@@ -978,24 +977,26 @@ CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(const VideoPict
 
   iPlayingClock = m_pClock->GetClock(iCurrentClock, false); // snapshot current clock
 
-  if ((pPicture->iFlags & DVP_FLAG_DROPPED))
+  if (picture.iFlags & DVP_FLAG_DROPPED)
   {
-    m_droppingStats.AddOutputDropGain(pPicture->pts, 1);
+    m_droppingStats.AddOutputDropGain(picture.pts, 1);
     CLog::Log(LOGDEBUG, "{} - dropped in output", __FUNCTION__);
     return OUTPUT_DROPPED;
   }
 
-  auto timeToDisplay = std::chrono::milliseconds(DVD_TIME_TO_MSEC(pPicture->pts - iPlayingClock));
+  auto timeToDisplay = std::chrono::milliseconds(DVD_TIME_TO_MSEC(picture.pts - iPlayingClock));
 
   // make sure waiting time is not negative
   std::chrono::milliseconds maxWaitTime = std::min(std::max(timeToDisplay + 500ms, 50ms), 500ms);
+
   // don't wait when going ff
   if (m_speed > DVD_PLAYSPEED_NORMAL)
     maxWaitTime = std::max(timeToDisplay, 0ms);
 
   int buffer = m_renderManager.WaitForBuffer(m_bAbortOutput, maxWaitTime);
-  CLog::Log(LOGDEBUG,"CVideoPlayerVideo::{} - ttd:{:d}ms pts:{:.3f} Clock:{:.3f} Level:{:d}",
-        __FUNCTION__, timeToDisplay.count(), pPicture->pts/DVD_TIME_BASE, static_cast<double>(iPlayingClock/DVD_TIME_BASE), buffer);
+  logM(LOGINFO, "CVideoPlayerVideo", "ttd:{:d}ms pts:{:.3f} Clock:{:.3f} Level:{:d}",
+                                     timeToDisplay.count(), (picture.pts / DVD_TIME_BASE), static_cast<double>(iPlayingClock/DVD_TIME_BASE), buffer);
+
   if (buffer < 0)
   {
     if (m_speed != DVD_PLAYSPEED_PAUSE)
@@ -1003,16 +1004,16 @@ CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(const VideoPict
     return OUTPUT_AGAIN;
   }
 
-  ProcessOverlays(pPicture, pPicture->pts);
+  ProcessOverlays(picture, picture.pts);
 
   EINTERLACEMETHOD deintMethod = EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE;
   deintMethod = m_processInfo.GetVideoSettings().m_InterlaceMethod;
   if (!m_processInfo.Supports(deintMethod))
     deintMethod = m_processInfo.GetDeinterlacingMethodDefault();
 
-  if (!m_renderManager.AddVideoPicture(*pPicture, m_bAbortOutput, deintMethod, (m_syncState == ESyncState::SYNC_STARTING)))
+  if (!m_renderManager.AddVideoPicture(picture, m_bAbortOutput, deintMethod, (m_syncState == ESyncState::SYNC_STARTING)))
   {
-    m_droppingStats.AddOutputDropGain(pPicture->pts, 1);
+    m_droppingStats.AddOutputDropGain(picture.pts, 1);
     return OUTPUT_DROPPED;
   }
 

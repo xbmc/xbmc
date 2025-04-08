@@ -99,8 +99,8 @@ protected:
                                 std::chrono::milliseconds timeout,
                                 int& priority);
 
-  EOutputState OutputPicture(const VideoPicture* src);
-  void ProcessOverlays(const VideoPicture* pSource, double pts);
+  EOutputState OutputPicture(const VideoPicture& src);
+  void ProcessOverlays(const VideoPicture& source, double pts);
   void OpenStream(CDVDStreamInfo& hint, std::unique_ptr<CDVDVideoCodec> codec);
 
   void ResetFrameRateCalc();
