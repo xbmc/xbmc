@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+	<include name="View_504_MediaList">
+		<param name="bottom_offset">list_bottom_offset</param>
+		<definition>
+			<control type="group">
+				<include>OpenClose_Right</include>
+				<visible>Control.IsVisible(504)</visible>
+				<include>Visible_Right</include>
+				<control type="fixedlist" id="504">
+					<visible>$EXP[videoasset_true]</visible>
+					<left>594</left>
+					<top>list_top_offset</top>
+					<bottom>$PARAM[bottom_offset]</bottom>
+					<right>0</right>
+					<scrolltime tween="cubic" easing="out">500</scrolltime>
+					<orientation>vertical</orientation>
+					<pagecontrol>531</pagecontrol>
+					<movement>3</movement>
+					<focusposition>3</focusposition>
+					<onleft>9000</onleft>
+					<onright>531</onright>
+					<onup>504</onup>
+					<ondown>504</ondown>
+					<viewtype label="$LOCALIZE[31108]">list</viewtype>
+					<focusedlayout height="100" condition="$EXP[videoasset_true]">
+					<control type="image">
+							<left>0</left>
+							<right>0</right>
+							<bottom>0</bottom>
+							<texture colordiffuse="button_focus">lists/focus.png</texture>
+							<visible>Control.HasFocus(504)</visible>
+						</control>
+						<control type="image">
+							<left>35</left>
+							<top>17</top>
+							<width>32</width>
+							<height>32</height>
+							<texture>$VAR[ListWatchedIconVar]</texture>
+						</control>
+						<control type="label">
+							<left>105</left>
+							<top>10</top>
+							<height>50</height>
+							<right>40</right>
+							<aligny>center</aligny>
+							<label>$VAR[ListLabelVar]</label>
+							<shadowcolor>text_shadow</shadowcolor>
+						</control>
+						<control type="label">
+							<left>105</left>
+							<top>10</top>
+							<height>50</height>
+							<right>40</right>
+							<align>right</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Duration]</label>
+							<shadowcolor>text_shadow</shadowcolor>
+						</control>
+						<control type="label" id="50401">
+							<left>105</left>
+							<right>40</right>
+							<top>53</top>
+							<height>30</height>
+							<font>font12</font>
+							<aligny>top</aligny>
+							<label>$VAR[MediaInfoListLabel2Var]</label>
+						</control>
+						<control type="label">
+							<left>105</left>
+							<right>40</right>
+							<top>53</top>
+							<height>30</height>
+							<font>font12</font>
+							<aligny>top</aligny>
+							<align>right</align>
+							<label>$VAR[ListLabel2Var]</label>
+							<shadowcolor>text_shadow</shadowcolor>
+						</control>
+					</focusedlayout>
+					<itemlayout height="100" condition="$EXP[videoasset_true]">
+					<control type="image">
+							<left>35</left>
+							<top>17</top>
+							<width>32</width>
+							<height>32</height>
+							<texture>$VAR[ListWatchedIconVar]</texture>
+						</control>
+						<control type="label">
+							<left>105</left>
+							<top>10</top>
+							<height>50</height>
+							<right>40</right>
+							<aligny>center</aligny>
+							<label>$VAR[ListLabelVar]</label>
+							<shadowcolor>text_shadow</shadowcolor>
+						</control>
+						<control type="label">
+							<left>105</left>
+							<top>10</top>
+							<height>50</height>
+							<right>40</right>
+							<align>right</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Duration]</label>
+							<shadowcolor>text_shadow</shadowcolor>
+						</control>
+						<control type="label">
+							<left>105</left>
+							<right>40</right>
+							<top>53</top>
+							<height>30</height>
+							<font>font12</font>
+							<aligny>top</aligny>
+							<label>$VAR[MediaInfoListLabel2Var]</label>
+							<textcolor>grey</textcolor>
+						</control>
+						<control type="label">
+							<left>105</left>
+							<right>40</right>
+							<top>53</top>
+							<height>30</height>
+							<font>font12</font>
+							<aligny>top</aligny>
+							<align>right</align>
+							<label>$VAR[ListLabel2Var]</label>
+							<shadowcolor>text_shadow</shadowcolor>
+						</control>
+					</itemlayout>
+				</control>
+			</control>
+		</definition>
+	</include>
+</includes>

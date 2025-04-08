@@ -20,12 +20,14 @@
 	<include file="View_500_Wall.xml" />
 	<include file="View_501_Banner.xml" />
 	<include file="View_502_FanArt.xml" />
+	<include file="View_504_MediaList.xml" />
 	<include file="Variables.xml" />
 	<include condition="Integer.IsLessOrEqual(System.ScreenHeight,720)" file="Constants_720.xml" />
 	<include condition="Integer.IsGreater(System.ScreenHeight,720)" file="Constants_1080.xml" />
 	<expression name="infodialog_active">Window.IsActive(musicinformation) | Window.IsActive(songinformation) | Window.IsActive(movieinformation) | Window.IsActive(addoninformation) | Window.IsActive(pvrguideinfo) | Window.IsActive(pvrrecordinginfo) | Window.IsActive(pictureinfo) | Window.IsVisible(script-embuary-video.xml) | Window.IsVisible(script-embuary-person.xml) | Window.IsVisible(script-embuary-image.xml)</expression>
 	<expression name="sidebar_visible">ControlGroup(9000).HasFocus | Control.HasFocus(6130) | Control.HasFocus(6131)</expression>
 	<expression name="object_audio_true">[String.Contains(ListItem.AudioCodec,atmos) | String.Contains(ListItem.AudioCodec,dtshd_ma_x)] | [Window.IsActive(fullscreenvideo) + [String.Contains(VideoPlayer.AudioCodec,atmos) | String.Contains(VideoPlayer.AudioCodec,dtshd_ma_x)]] | [Window.IsActive(visualisation) + [String.Contains(MusicPlayer.AudioCodec,atmos) | String.Contains(MusicPlayer.AudioCodec,dtshd_ma_x)]]</expression>
+	<expression name="videoasset_true">Container.Content(videoassets) | Container.Content(videoversions) | Container.Content(videoextras)</expression>
 	<include name="CommonScrollbars">
 		<param name="bottom_offset">list_bottom_offset</param>
 		<definition>
@@ -303,18 +305,19 @@
 	</include>
 	<include name="InfoFlag">
 		<control type="group">
-			<width>114</width>
+			<width>150</width>
 			<visible>$PARAM[visible]</visible>
 			<control type="image">
 				<top>-3</top>
 				<left>0</left>
 				<width>33</width>
 				<height>33</height>
+				<aspectratio aligny="center">keep</aspectratio>
 				<texture colordiffuse="white">$PARAM[icon]</texture>
 			</control>
 			<control type="label">
 				<left>40</left>
-				<width>114</width>
+				<width>110</width>
 				<height>36</height>
 				<aligny>center</aligny>
 				<font>font_flag</font>
@@ -360,7 +363,7 @@
 					<visible>System.AddonIsEnabled(resource.images.studios.white) + !String.IsEmpty($PARAM[infolabel_prefix]ListItem.Studio)</visible>
 				</control>
 				<control type="group">
-					<width>144</width>
+					<width>150</width>
 					<visible>!String.IsEmpty($PARAM[infolabel_prefix]ListItem.Premiered)</visible>
 					<include content="InfoFlag">
 						<param name="icon" value="lists/year.png" />
@@ -368,39 +371,39 @@
 					</include>
 				</control>
 				<include content="MediaFlag">
-					<param name="flag_visible" value="!String.IsEmpty(ListItem.Duration)" />
+					<param name="flag_visible" value="!String.IsEmpty(ListItem.Duration) + !Control.IsVisible(504)" />
 					<param name="flag_label" value="$INFO[ListItem.Duration]" />
 				</include>
 				<include content="MediaFlag">
-					<param name="flag_visible" value="ListItem.IsStereoscopic" />
+					<param name="flag_visible" value="ListItem.IsStereoscopic + !Control.IsVisible(504)" />
 					<param name="flag_label" value="3D" />
 				</include>
 				<include content="MediaFlag">
-					<param name="flag_visible" value="!String.IsEmpty(ListItem.VideoCodec)" />
+					<param name="flag_visible" value="!String.IsEmpty(ListItem.VideoCodec) + !Control.IsVisible(504)" />
 					<param name="flag_label" value="$VAR[VideoCodecVar]" />
 				</include>
 				<include content="MediaFlag">
-					<param name="flag_visible" value="!String.IsEmpty(ListItem.VideoResolution)" />
+					<param name="flag_visible" value="!String.IsEmpty(ListItem.VideoResolution) + !Control.IsVisible(504)" />
 					<param name="flag_label" value="$INFO[ListItem.VideoResolution]$VAR[VideoResolutionTypeVar, ]" />
 				</include>
 				<include content="MediaFlag">
-					<param name="flag_visible" value="!String.IsEmpty(ListItem.HdrType)" />
+					<param name="flag_visible" value="!String.IsEmpty(ListItem.HdrType) + !Control.IsVisible(504)" />
 					<param name="flag_label" value="$VAR[VideoHDRTypeVar]" />
 				</include>
 				<include content="MediaFlag">
-					<param name="flag_visible" value="!String.IsEmpty(ListItem.VideoAspect)" />
+					<param name="flag_visible" value="!String.IsEmpty(ListItem.VideoAspect) + !Control.IsVisible(504)" />
 					<param name="flag_label" value="$INFO[ListItem.VideoAspect,,:1]" />
 				</include>
 				<include content="MediaFlag">
-					<param name="flag_visible" value="!String.IsEmpty(ListItem.AudioCodec)" />
+					<param name="flag_visible" value="!String.IsEmpty(ListItem.AudioCodec) + !Control.IsVisible(504)" />
 					<param name="flag_label" value="$VAR[AudioCodecVar]" />
 				</include>
 				<include content="MediaFlag">
-					<param name="flag_visible" value="$EXP[object_audio_true]" />
+					<param name="flag_visible" value="$EXP[object_audio_true] + !Control.IsVisible(504)" />
 					<param name="flag_label" value="$VAR[ObjectAudioTypeVar]" />
 				</include>
 				<include content="MediaFlag">
-					<param name="flag_visible" value="!String.IsEmpty(ListItem.AudioChannels)" />
+					<param name="flag_visible" value="!String.IsEmpty(ListItem.AudioChannels) + !Control.IsVisible(504)" />
 					<param name="flag_label" value="$VAR[AudioChannelsVar]" />
 				</include>
 			</control>
@@ -1730,7 +1733,7 @@
 					<font>font10</font>
 					<aligny>center</aligny>
 					<textcolor>grey</textcolor>
-					<label>$VAR[MediaInfoListLabel2Var]</label>
+					<label>$INFO[ListItem.Duration,$LOCALIZE[180]: ][CR]$VAR[MediaInfoListLabel2Var]</label>
 				</control>
 			</itemlayout>
 			<focusedlayout height="$PARAM[height]" width="$PARAM[width]">
@@ -1766,7 +1769,7 @@
 					<height>65</height>
 					<font>font10</font>
 					<aligny>center</aligny>
-					<label>$VAR[MediaInfoListLabel2Var]</label>
+					<label>$INFO[ListItem.Duration,$LOCALIZE[180]: ][CR]$VAR[MediaInfoListLabel2Var]</label>
 				</control>
 			</focusedlayout>
 		</definition>
