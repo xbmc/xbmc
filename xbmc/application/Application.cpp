@@ -124,6 +124,7 @@
 #include "storage/MediaManager.h"
 #include "threads/SingleLock.h"
 #include "threads/SystemClock.h"
+#include "utils/AMLUtils.h"
 #include "utils/AlarmClock.h"
 #include "utils/CPUInfo.h"
 #include "utils/CharsetConverter.h"
@@ -1925,6 +1926,9 @@ int CApplication::Run()
     CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST::TYPE_MUSIC);
     CServiceBroker::GetAppMessenger()->PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
   }
+
+  // pin the main thread (Process/FrameMove/Render) to A73 core 5
+  aml_pin_thread_to_core(5);
 
   // Run the app
   while (!m_bStop)

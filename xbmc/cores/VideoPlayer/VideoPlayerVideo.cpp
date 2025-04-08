@@ -18,6 +18,7 @@
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/AMLUtils.h"
 #include "utils/MathUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
@@ -340,6 +341,8 @@ inline MsgQueueReturnCode CVideoPlayerVideo::GetMessage(std::shared_ptr<CDVDMsg>
 
 void CVideoPlayerVideo::Process()
 {
+  aml_pin_thread_to_core(3);
+
   CLog::Log(LOGINFO, "running thread: video_thread");
 
   double pts = 0;

@@ -6,6 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include <pthread.h>
 #include <unistd.h>
 #include <string.h>
 #include <stdio.h>
@@ -1476,4 +1477,25 @@ std::string aml_video_fps_info() {
 
 std::string aml_video_fps_drop() {
   return format_fps_info().drop_info;
+}
+
+void aml_pin_thread_to_core(unsigned int core_id) {
+
+  auto tid = pthread_self();
+
+  char name[16] = {0};
+  pthread_getname_np(tid, name, sizeof(name));
+
+  cpu_set_t cpuset;
+  CPU_ZERO(&cpuset);
+  CPU_SET(core_id, &cpuset);
+  int ret_affinity = pthread_setaffinity_np(tid, sizeof(cpu_set_t), &cpuset);
+
+  //struct sched_param param;
+  //param.sched_priority = sched_get_priority_max(SCHED_FIFO);
+  //int ret_priority = pthread_setschedparam(tid, SCHED_FIFO, &param);
+  int ret_priority = 0;
+;
+  logM(LOGINFO, "AMLUtils", "pin thread:[{}]-[{}] to core id:[{}] ret-affinity:[{}] ret-priority:[{}]",
+                            static_cast<unsigned long>(tid), name, core_id, ret_affinity, ret_priority);
 }

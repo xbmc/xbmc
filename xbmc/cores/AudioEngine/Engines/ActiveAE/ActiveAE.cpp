@@ -20,6 +20,7 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/AMLUtils.h"
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
 
@@ -1035,6 +1036,10 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
 
 void CActiveAE::Process()
 {
+  aml_pin_thread_to_core(2);
+
+  CLog::Log(LOGINFO, "running thread: active_ae");
+
   Message *msg = NULL;
   Protocol *port = NULL;
   bool gotMsg;
