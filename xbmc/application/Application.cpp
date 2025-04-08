@@ -1843,15 +1843,15 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     }
 
     // Open the door for external calls e.g python exactly here.
-    // Window size can be between 2 and 10ms and depends on number of continuous requests
+    // Window size can be between 2 and 6ms and depends on number of continuous requests
     if (m_WaitingExternalCalls)
     {
       CSingleExit ex(CServiceBroker::GetWinSystem()->GetGfxContext());
       m_frameMoveGuard.unlock();
 
-      // Calculate a window size between 2 and 10ms, 4 continuous requests let the window grow by 1ms
+      // Calculate a window size between 2 and 6ms, 4 continuous requests let the window grow by 1ms
       // When not playing video we allow it to increase to 80ms
-      unsigned int max_sleep = 10;
+      unsigned int max_sleep = 6;
       if (!appPlayer->IsPlayingVideo() || appPlayer->IsPausedPlayback())
         max_sleep = 80;
       unsigned int sleepTime = std::max(static_cast<unsigned int>(2), std::min(m_ProcessedExternalCalls >> 2, max_sleep));
