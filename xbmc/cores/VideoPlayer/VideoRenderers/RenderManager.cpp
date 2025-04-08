@@ -707,7 +707,7 @@ bool CRenderManager::CalcOverlayActiveArea(CRect& src, CRect& dst)
   float scaleY = static_cast<float>(dst.Height()) / src.Height();
 
   // Create active area rectangle based on scaled offsets
-  const auto& doviMeta = CServiceBroker::GetDataCacheCore().GetVideoDoViFrameMetadata();
+  const auto& doviMeta = m_dataCacheCore.GetVideoDoViFrameMetadata();
   dst.x1 += static_cast<int>(doviMeta.level5_active_area_left_offset   * scaleX);
   dst.x2 -= static_cast<int>(doviMeta.level5_active_area_right_offset  * scaleX);
   dst.y1 += static_cast<int>(doviMeta.level5_active_area_top_offset    * scaleY);
