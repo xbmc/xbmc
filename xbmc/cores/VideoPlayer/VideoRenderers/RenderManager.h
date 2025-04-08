@@ -267,6 +267,8 @@ protected:
 
 private:
   bool CalcOverlayActiveArea(CRect& src, CRect& dst);
+  void ClockAlign();
+  void RenderUpdate(bool clear, unsigned int flags, unsigned int alpha);
 
   CDataCacheCore &m_dataCacheCore;
 };
