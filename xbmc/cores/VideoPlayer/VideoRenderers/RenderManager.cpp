@@ -49,8 +49,7 @@ unsigned int CRenderManager::m_nextCaptureId = 0;
 CRenderManager::CRenderManager(CDVDClock &clock, IRenderMsg *player) :
   m_dvdClock(clock),
   m_playerPort(player),
-  m_dataCacheCore(CServiceBroker::GetDataCacheCore()),
-  m_appPlayer(CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>())
+  m_dataCacheCore(CServiceBroker::GetDataCacheCore())
 {
 }
 

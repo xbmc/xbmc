@@ -269,5 +269,4 @@ private:
   bool CalcOverlayActiveArea(CRect& src, CRect& dst);
 
   CDataCacheCore &m_dataCacheCore;
-  std::shared_ptr<const CApplicationPlayer> m_appPlayer;
 };
