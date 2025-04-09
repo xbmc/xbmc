@@ -123,8 +123,6 @@ const CWindowTranslator::WindowMapByName CWindowTranslator::WindowMappingByName 
     {"movieinformation", WINDOW_DIALOG_VIDEO_INFO},
     {"managevideoversions", WINDOW_DIALOG_MANAGE_VIDEO_VERSIONS},
     {"managevideoextras", WINDOW_DIALOG_MANAGE_VIDEO_EXTRAS},
-    {"selectvideoversion", WINDOW_DIALOG_SELECT_VIDEO_VERSION},
-    {"selectvideoextra", WINDOW_DIALOG_SELECT_VIDEO_EXTRA},
     {"textviewer", WINDOW_DIALOG_TEXT_VIEWER},
     {"fullscreenvideo", WINDOW_FULLSCREEN_VIDEO},
     {"dialogcolorpicker", WINDOW_DIALOG_COLOR_PICKER},

@@ -2107,9 +2107,9 @@ bool CFileItem::LoadDetails()
     bool ret{false};
     auto tag{std::make_unique<CVideoInfoTag>()};
     if (params.GetMovieId() >= 0)
-      ret = db.GetMovieInfo(
-          {}, *tag, static_cast<int>(params.GetMovieId()),
-          static_cast<int>(params.GetVideoVersionId())); //! @todo add support for asset id
+      ret = db.GetMovieInfo({}, *tag, static_cast<int>(params.GetMovieId()),
+                            static_cast<int>(params.GetVideoVersionId()),
+                            static_cast<int>(params.GetVideoAssetId()));
     else if (params.GetMVideoId() >= 0)
       ret = db.GetMusicVideoInfo({}, *tag, static_cast<int>(params.GetMVideoId()));
     else if (params.GetEpisodeId() >= 0)

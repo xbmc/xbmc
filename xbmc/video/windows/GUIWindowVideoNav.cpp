@@ -151,7 +151,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
         }
         if (i >= m_vecItems->Size())
         {
-          SelectFirstUnwatched();
+          SelectDefaultItem();
 
           if (url.GetOption("showinfo") == "true")
           {
@@ -174,7 +174,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       {
         // This needs to be done again, because the initialization of CGUIWindow overwrites it with default values
         // Mostly affects cases where GUIWindowVideoNav is constructed and we're already in a show, e.g. entering from the homescreen
-        SelectFirstUnwatched();
+        SelectDefaultItem();
       }
 
       return true;
@@ -248,20 +248,14 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
 
 SelectFirstUnwatchedItem CGUIWindowVideoNav::GetSettingSelectFirstUnwatchedItem()
 {
-  if (VIDEO::IsVideoDb(*m_vecItems))
-  {
-    NodeType nodeType = CVideoDatabaseDirectory::GetDirectoryChildType(m_vecItems->GetPath());
+  const int value{CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+      CSettings::SETTING_VIDEOLIBRARY_TVSHOWSSELECTFIRSTUNWATCHEDITEM)};
 
-    if (nodeType == NodeType::SEASONS || nodeType == NodeType::EPISODES)
-    {
-      int iValue = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOLIBRARY_TVSHOWSSELECTFIRSTUNWATCHEDITEM);
-      if (iValue >= static_cast<int>(SelectFirstUnwatchedItem::NEVER) &&
-          iValue <= static_cast<int>(SelectFirstUnwatchedItem::ALWAYS))
-        return static_cast<SelectFirstUnwatchedItem>(iValue);
-    }
-  }
-
-  return SelectFirstUnwatchedItem::NEVER;
+  if (value >= static_cast<int>(SelectFirstUnwatchedItem::NEVER) &&
+      value <= static_cast<int>(SelectFirstUnwatchedItem::ALWAYS))
+    return static_cast<SelectFirstUnwatchedItem>(value);
+  else
+    return SelectFirstUnwatchedItem::NEVER;
 }
 
 IncludeAllSeasonsAndSpecials CGUIWindowVideoNav::GetSettingIncludeAllSeasonsAndSpecials()
@@ -329,29 +323,57 @@ bool CGUIWindowVideoNav::Update(const std::string &strDirectory, bool updateFilt
   if (!CGUIWindowVideoBase::Update(strDirectory, updateFilterPath))
     return false;
 
-  SelectFirstUnwatched();
+  SelectDefaultItem();
 
   return true;
 }
 
-void CGUIWindowVideoNav::SelectFirstUnwatched() {
-  // Check if we should select the first unwatched item
-  SelectFirstUnwatchedItem selectFirstUnwatched = GetSettingSelectFirstUnwatchedItem();
-  if (selectFirstUnwatched != SelectFirstUnwatchedItem::NEVER)
+void CGUIWindowVideoNav::SelectDefaultItem()
+{
+  if (!VIDEO::IsVideoDb(*m_vecItems))
+    return;
+
+  const NodeType nodeType{CVideoDatabaseDirectory::GetDirectoryChildType(m_vecItems->GetPath())};
+  const bool isItemSelected{m_viewControl.GetSelectedItem() > 0};
+
+  switch (nodeType)
   {
-    bool bIsItemSelected = (m_viewControl.GetSelectedItem() > 0);
-
-    if (selectFirstUnwatched == SelectFirstUnwatchedItem::ALWAYS ||
-      (selectFirstUnwatched == SelectFirstUnwatchedItem::ON_FIRST_ENTRY && !bIsItemSelected))
+    case NodeType::SEASONS:
+    case NodeType::EPISODES:
     {
-      IncludeAllSeasonsAndSpecials incAllSeasonsSpecials = GetSettingIncludeAllSeasonsAndSpecials();
+      // Check if we should select the first unwatched item
+      const auto selectFirstUnwatched{GetSettingSelectFirstUnwatchedItem()};
+      if (selectFirstUnwatched != SelectFirstUnwatchedItem::NEVER)
+      {
+        if (selectFirstUnwatched == SelectFirstUnwatchedItem::ALWAYS ||
+            (selectFirstUnwatched == SelectFirstUnwatchedItem::ON_FIRST_ENTRY && !isItemSelected))
+        {
+          const auto incAllSeasonsSpecials{GetSettingIncludeAllSeasonsAndSpecials()};
 
-      bool bIncludeAllSeasons = (incAllSeasonsSpecials == IncludeAllSeasonsAndSpecials::BOTH || incAllSeasonsSpecials == IncludeAllSeasonsAndSpecials::ALL_SEASONS);
-      bool bIncludeSpecials = (incAllSeasonsSpecials == IncludeAllSeasonsAndSpecials::BOTH || incAllSeasonsSpecials == IncludeAllSeasonsAndSpecials::SPECIALS);
+          const bool includeAllSeasons{
+              (incAllSeasonsSpecials == IncludeAllSeasonsAndSpecials::BOTH ||
+               incAllSeasonsSpecials == IncludeAllSeasonsAndSpecials::ALL_SEASONS)};
+          const bool includeSpecials{
+              (incAllSeasonsSpecials == IncludeAllSeasonsAndSpecials::BOTH ||
+               incAllSeasonsSpecials == IncludeAllSeasonsAndSpecials::SPECIALS)};
 
-      int iIndex = GetFirstUnwatchedItemIndex(bIncludeAllSeasons, bIncludeSpecials);
-      m_viewControl.SetSelectedItem(iIndex);
+          const int index{GetFirstUnwatchedItemIndex(includeAllSeasons, includeSpecials)};
+          m_viewControl.SetSelectedItem(index);
+        }
+      }
+      break;
     }
+    case NodeType::MOVIE_ASSETS:
+    case NodeType::MOVIE_ASSETS_VERSIONS:
+    {
+      //! @todo: worth a setting? some users may prefer the selection to remain on the .. parent item
+      if (!isItemSelected)
+        if (const int index{GetFirstSelectedItemIndex()}; index > 0)
+          m_viewControl.SetSelectedItem(index);
+      break;
+    }
+    default:
+      break;
   }
 }
 
@@ -1120,4 +1142,14 @@ bool CGUIWindowVideoNav::ApplyWatchedFilter(CFileItemList &items)
   }
 
   return listchanged;
+}
+
+int CGUIWindowVideoNav::GetFirstSelectedItemIndex() const
+{
+  // Run through the list of items and find the first selected item
+  for (int i = 0; i < m_vecItems->Size(); ++i)
+    if (m_vecItems->Get(i)->IsSelected())
+      return i;
+
+  return 0;
 }

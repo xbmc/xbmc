@@ -401,8 +401,8 @@ PLT_MediaObject* CUPnPServer::Build(const std::shared_ptr<CFileItem>& item,
 
           if (params.GetMovieId() >= 0)
             db.GetMovieInfo(static_cast<const char*>(path), *item->GetVideoInfoTag(),
-                            params.GetMovieId(),
-                            params.GetVideoVersionId()); //! @todo add support for asset id
+                            params.GetMovieId(), params.GetVideoVersionId(),
+                            params.GetVideoAssetId());
           else if (params.GetMVideoId() >= 0)
             db.GetMusicVideoInfo((const char*)path, *item->GetVideoInfoTag(), params.GetMVideoId());
           else if (params.GetEpisodeId() >= 0)

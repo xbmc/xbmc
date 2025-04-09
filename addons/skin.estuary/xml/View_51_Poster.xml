@@ -43,7 +43,7 @@
 					<ondown>5199</ondown>
 					<onright>51</onright>
 					<hitrect x="100" y="0" w="800" h="400" />
-					<visible>Container.Content(movies) | Container.Content(seasons) | Container.Content(sets) | Container.Content(tvshows) | Container.Content(games)</visible>
+					<visible>Container.Content(movies) | Container.Content(seasons) | Container.Content(sets) | Container.Content(tvshows) | Container.Content(games) | $EXP[videoasset_true]</visible>
 					<preloaditems>1</preloaditems>
 					<viewtype label="20021">icon</viewtype>
 					<itemlayout width="317">
@@ -163,7 +163,7 @@
 					<align>left</align>
 					<aligny>center</aligny>
 					<texture>overlays/extras.png</texture>
-					<visible>ListItem.HasVideoVersions + ListItem.HasVideoExtras</visible>
+					<visible>ListItem.HasVideoVersions + ListItem.HasVideoExtras + !$EXP[videoasset_true]</visible>
 				</control>
 				<control type="label">
 					<left>100</left>

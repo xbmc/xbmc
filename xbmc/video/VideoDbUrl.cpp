@@ -58,6 +58,7 @@ bool CVideoDbUrl::parse()
     case NodeType::TITLE_MUSICVIDEOS:
     case NodeType::MUSICVIDEOS_ALBUM:
       m_type = "musicvideos";
+      break;
 
     default:
       break;
@@ -68,6 +69,10 @@ bool CVideoDbUrl::parse()
     case NodeType::MOVIES_OVERVIEW:
     case NodeType::TITLE_MOVIES:
     case NodeType::RECENTLY_ADDED_MOVIES:
+    case NodeType::MOVIE_ASSET_TYPES:
+    case NodeType::MOVIE_ASSETS:
+    case NodeType::MOVIE_ASSETS_VERSIONS:
+    case NodeType::MOVIE_ASSETS_EXTRAS:
       m_type = "movies";
       m_itemType = "movies";
       break;
@@ -190,6 +195,10 @@ bool CVideoDbUrl::parse()
     AddOption("year", (int)queryParams.GetYear());
   if (queryParams.GetVideoVersionId() != -1)
     AddOption("videoversionid", (int)queryParams.GetVideoVersionId());
+  if (queryParams.GetVideoAssetType() != -1)
+    AddOption("assetType", static_cast<int>(queryParams.GetVideoAssetType()));
+  if (queryParams.GetVideoAssetId() != -1)
+    AddOption("assetid", static_cast<int>(queryParams.GetVideoAssetId()));
 
   return true;
 }

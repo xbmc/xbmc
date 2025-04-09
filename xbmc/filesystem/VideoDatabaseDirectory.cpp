@@ -78,7 +78,12 @@ std::string GetChildContentType(const std::unique_ptr<CDirectoryNode>& node)
     case NodeType::TAGS:
       return "tags";
     case NodeType::VIDEOVERSIONS:
+    case NodeType::MOVIE_ASSETS_VERSIONS:
       return "videoversions";
+    case NodeType::MOVIE_ASSETS_EXTRAS:
+      return "videoextras";
+    case NodeType::MOVIE_ASSETS:
+      return "videoassets";
     default:
       break;
   }
@@ -299,6 +304,16 @@ bool CVideoDatabaseDirectory::GetLabel(const std::string& strDirectory, std::str
       case NodeType::INPROGRESS_TVSHOWS: // InProgress TvShows
         strLabel = g_localizeStrings.Get(626);
         break;
+      case NodeType::MOVIE_ASSETS: // Video assets
+        strLabel = g_localizeStrings.Get(40209);
+        break;
+      case NodeType::MOVIE_ASSETS_VERSIONS: // Video versions
+        strLabel = g_localizeStrings.Get(40210);
+        break;
+      case NodeType::MOVIE_ASSETS_EXTRAS: // Video extras
+        strLabel = g_localizeStrings.Get(40211);
+        break;
+
       default:
         return false;
     }

@@ -502,7 +502,11 @@ msgctxt "#31107"
 msgid "WideList"
 msgstr ""
 
-#empty strings from id 31108 to 31108
+#. viewtype name
+#: /xml/View_504_MediaList.xml
+msgctxt "#31108"
+msgid "MediaList"
+msgstr ""
 
 #: /xml/VideoOSD.xml
 msgctxt "#31109"
