@@ -26,7 +26,7 @@ class CVariant;
 
 namespace PVR
 {
-  enum class PVREvent;
+enum class PVREvent;
 }
 
 enum class InfoTagType
@@ -38,10 +38,9 @@ enum class InfoTagType
   PVR,
 };
 
-class CDirectoryProvider :
-  public IListProvider,
-  public IJobCallback,
-  public ANNOUNCEMENT::IAnnouncer
+class CDirectoryProvider : public IListProvider,
+                           public IJobCallback,
+                           public ANNOUNCEMENT::IAnnouncer
 {
 public:
   typedef enum
@@ -58,7 +57,7 @@ public:
     ALWAYS
   };
 
-  CDirectoryProvider(const TiXmlElement *element, int parentID);
+  CDirectoryProvider(const TiXmlElement* element, int parentID);
   explicit CDirectoryProvider(const CDirectoryProvider& other);
   ~CDirectoryProvider() override;
 
@@ -79,7 +78,8 @@ public:
   void FreeResources(bool immediately) override;
 
   // callback from directory job
-  void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
+  void OnJobComplete(unsigned int jobID, bool success, CJob* job) override;
+
 private:
   UpdateState m_updateState = OK;
   unsigned int m_jobID = 0;
@@ -89,9 +89,9 @@ private:
   KODI::GUILIB::GUIINFO::CGUIInfoLabel m_sortOrder;
   KODI::GUILIB::GUIINFO::CGUIInfoLabel m_limit;
   KODI::GUILIB::GUIINFO::CGUIInfoLabel m_browse;
-  std::string      m_currentUrl;
-  std::string      m_currentTarget;   ///< \brief node.target property on the list as a whole
-  SortDescription  m_currentSort;
+  std::string m_currentUrl;
+  std::string m_currentTarget; ///< \brief node.target property on the list as a whole
+  SortDescription m_currentSort;
   unsigned int m_currentLimit{0};
   BrowseMode m_currentBrowse{BrowseMode::AUTO};
   std::vector<CGUIStaticItemPtr> m_items;
