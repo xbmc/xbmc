@@ -39,12 +39,9 @@ bool CPlatformWebOS::InitStageOne()
 
 bool CPlatformWebOS::InitStageTwo()
 {
-  if (CServiceBroker::GetLogging().GetLogLevel() > LOG_LEVEL_DEBUG)
-  {
-    constexpr rlimit limit{0, 0};
-    if (setrlimit(RLIMIT_CORE, &limit) != 0)
-      CLog::Log(LOGERROR, "Failed to disable core dumps");
-  }
+  constexpr rlimit limit{0, 0};
+  if (setrlimit(RLIMIT_CORE, &limit) != 0)
+    CLog::Log(LOGERROR, "Failed to disable core dumps");
 
   return CPlatformLinux::InitStageTwo();
 }
