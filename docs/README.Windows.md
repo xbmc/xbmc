@@ -10,6 +10,8 @@ This guide has been tested with Windows 10 Pro x64, version 22H2, build 19045.45
 4. **[Set up the build environment](#4-set-up-the-build-environment)**
 5. **[Build Kodi automagically](#5-build-kodi-automagically)**
 6. **[Build Kodi manually](#6-build-kodi-manually)**
+7. **[Build binary add-ons manually](#7-build-binary-add-ons-manually)**  
+  7.1. **[In-tree building of binary add-ons](#71-in-tree-building-of-binary-add-ons)**  
 
 ## 1. Document conventions
 This guide assumes you are using `Developer Command Prompt for VS 2022`, also known as `terminal`, `console`, `command-line` or simply `cli`. Commands need to be run at the terminal, one at a time and in the provided order.
@@ -261,3 +263,24 @@ UWP builds generate `msix`, `appxsym` and `cer` files, located inside directorie
 
 
 **[back to top](#table-of-contents)** | **[back to section top](#6-build-kodi-manually)**
+
+## 7. Build binary add-ons manually
+You can find a complete list of available binary add-ons **[here](https://github.com/xbmc/repo-binary-addons)**.
+
+There are two approaches to build binary add-ons: _In-tree_ building that is automated, but doesn't support building from sources (forks, PRs, branches) other than the [Kodi binary addon repo](https://github.com/xbmc/repo-binary-addons), and _out-of-tree_ building that allows building from any source. Please refer to each add-on repository for out-of-tree build instructions.
+
+### 7.1. In-tree building of binary add-ons
+Change to the architecture platform you wish to build for (examples use x64):
+```
+cd %userprofile%\kodi\tools\buildsteps\windows\x64
+```
+Build specific add-on:
+```
+make-addons.bat package audioencoder.flac
+```
+Built files are under the folder `kodi\addons\<add-on name>`.
+
+Clean-up binary add-ons:
+```
+make-addons.bat clean
+```
