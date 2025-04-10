@@ -44,6 +44,11 @@ int main(int argc, char* argv[])
   rlim.rlim_cur = rlim.rlim_max = RLIM_INFINITY;
   if (setrlimit(RLIMIT_CORE, &rlim) == -1)
     fprintf(stderr, "Failed to set core size limit (%s).\n", strerror(errno));
+#elif defined(TARGET_WEBOS)
+    // On webOS, many firmwares generates core files upon crashing, this could take up space very soon.
+    // So we disable core dumps in release builds
+    struct rlimit rlim = {0, 0};
+    setrlimit(RLIMIT_CORE, &rlim);
 #endif
 
   // Set up global SIGINT/SIGHUP/SIGTERM handler
