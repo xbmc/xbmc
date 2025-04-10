@@ -476,7 +476,7 @@
 						<height>20</height>
 						<font>font10</font>
 						<aligny>center</aligny>
-						<label>$VAR[StreamCodecVar]$VAR[AudioChannelsVar, ]$INFO[ListItem.Property(stream.description), | ]</label>
+						<label>$VAR[StreamCodecVar]$VAR[StreamChannelsVar, ]$INFO[ListItem.Property(stream.description), | ]</label>
 						<textcolor>grey</textcolor>
 					</control>
 					<control type="image">
@@ -526,7 +526,7 @@
 						<font>font10</font>
 						<aligny>center</aligny>
 						<scroll>true</scroll>
-						<label>$VAR[StreamCodecVar]$VAR[AudioChannelsVar, ]$INFO[ListItem.Property(stream.description), | ]</label>
+						<label>$VAR[StreamCodecVar]$VAR[StreamChannelsVar, ]$INFO[ListItem.Property(stream.description), | ]</label>
 					</control>
 					<control type="image">
 						<right>10</right>
