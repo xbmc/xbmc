@@ -364,23 +364,28 @@ void CFileItemList::Sort(SortBy sortBy,
 
 void CFileItemList::Sort(SortDescription sortDescription)
 {
-  if (sortDescription.sortBy == SortByFile || sortDescription.sortBy == SortBySortTitle ||
-      sortDescription.sortBy == SortByOriginalTitle || sortDescription.sortBy == SortByDateAdded ||
-      sortDescription.sortBy == SortByRating || sortDescription.sortBy == SortByYear ||
-      sortDescription.sortBy == SortByPlaylistOrder || sortDescription.sortBy == SortByLastPlayed ||
-      sortDescription.sortBy == SortByPlaycount)
-    sortDescription.sortAttributes =
-        (SortAttribute)((int)sortDescription.sortAttributes | SortAttributeIgnoreFolders);
-
   if (sortDescription.sortBy == SortByNone ||
       (m_sortDescription.sortBy == sortDescription.sortBy &&
        m_sortDescription.sortOrder == sortDescription.sortOrder &&
        m_sortDescription.sortAttributes == sortDescription.sortAttributes))
     return;
 
-  if (m_sortIgnoreFolders)
+  if (sortDescription.sortAttributes & SortAttributeForceConsiderFolders)
+  {
     sortDescription.sortAttributes =
-        (SortAttribute)((int)sortDescription.sortAttributes | SortAttributeIgnoreFolders);
+        static_cast<SortAttribute>(sortDescription.sortAttributes & ~SortAttributeIgnoreFolders);
+  }
+  else if ((sortDescription.sortBy == SortByFile || sortDescription.sortBy == SortBySortTitle ||
+            sortDescription.sortBy == SortByOriginalTitle ||
+            sortDescription.sortBy == SortByDateAdded || sortDescription.sortBy == SortByRating ||
+            sortDescription.sortBy == SortByYear || sortDescription.sortBy == SortByPlaylistOrder ||
+            sortDescription.sortBy == SortByLastPlayed ||
+            sortDescription.sortBy == SortByPlaycount) ||
+           m_sortIgnoreFolders)
+  {
+    sortDescription.sortAttributes =
+        static_cast<SortAttribute>(sortDescription.sortAttributes | SortAttributeIgnoreFolders);
+  }
 
   const Fields fields = SortUtils::GetFieldsForSorting(sortDescription.sortBy);
   SortItems sortItems((size_t)Size());
