@@ -1216,7 +1216,7 @@
 		<control type="label">
 			<label>$VAR[BreadcrumbsVideoAssetTypeVar, / ]</label>
 			<include>BreadcrumbsLabel</include>
-			<visible>Container.Content(videoassets) | Container.Content(videoversions) | Container.Content(videoextras)</visible>
+			<visible>$EXP[videoasset_true]</visible>
 		</control>
 		<control type="label">
 			<label>$INFO[Container.PluginCategory, / ]</label>

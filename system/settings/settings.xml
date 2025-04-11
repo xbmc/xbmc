@@ -1123,11 +1123,6 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
-        <setting id="myvideos.selectdefaultversion" type="boolean" label="40200" help="40201">
-          <level>0</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
         <setting id="myvideos.playaction" type="integer" label="22076" help="36204">
           <level>0</level>
           <default>1</default> <!-- ACTION_PLAY_OR_RESUME -->
