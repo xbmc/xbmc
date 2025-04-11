@@ -24521,19 +24521,7 @@ msgctxt "#40040"
 msgid "Are you sure to remove the extra \"{0:s}\"?"
 msgstr ""
 
-#empty strings with id 40041 to 40199
-
-#. Select default video version setting
-#: system/settings/settings.xml
-msgctxt "#40200"
-msgid "Select default video version"
-msgstr ""
-
-#. Help for select default video version setting
-#: system/settings/settings.xml
-msgctxt "#40201"
-msgid "Defines how to handle selection of videos with multiple versions.[CR][Enabled] Automatically select the default video version without prompting.[CR][Disabled] Display a dialogue to select a version of the video."
-msgstr ""
+#empty strings with id 40041 to 40201
 
 #. Ignore different video versions settting
 #: system/settings/settings.xml
