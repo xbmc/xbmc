@@ -512,10 +512,10 @@ std::shared_ptr<COverlay> CRenderer::ConvertLibass(
   if (m_forceInside)
   {
     if (m_subtitleAlign == SUBTITLES::Align::BOTTOM_OUTSIDE)
-      m_subtitleAlign == SUBTITLES::Align::BOTTOM_INSIDE;
-    else if (m_subtitleAlign == SUBTITLES::Align::TOP_OUTSIDE) 
-      m_subtitleAlign == SUBTITLES::Align::TOP_INSIDE;
-    
+      m_subtitleAlign = SUBTITLES::Align::BOTTOM_INSIDE;
+    else if (m_subtitleAlign == SUBTITLES::Align::TOP_OUTSIDE)
+      m_subtitleAlign = SUBTITLES::Align::TOP_INSIDE;
+
     rOpts.marginsMode = SUBTITLES::STYLE::MarginsMode::INSIDE_VIDEO;
   }
 
