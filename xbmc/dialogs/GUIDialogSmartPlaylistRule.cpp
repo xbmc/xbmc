@@ -422,13 +422,11 @@ std::vector<std::pair<std::string, int>> CGUIDialogSmartPlaylistRule::GetValidOp
     break;
 
   case CDatabaseQueryRule::PLAYLIST_FIELD:
-    CONTROL_ENABLE(CONTROL_BROWSE);
     labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_EQUALS));
     labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_DOES_NOT_EQUAL));
     break;
 
   case CDatabaseQueryRule::BOOLEAN_FIELD:
-    CONTROL_DISABLE(CONTROL_VALUE);
     labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_TRUE));
     labels.push_back(OperatorLabel(CDatabaseQueryRule::OPERATOR_FALSE));
     break;
@@ -507,17 +505,18 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
     m_rule.m_field = PLAYLIST::CSmartPlaylistRule::GetFields(m_type)[0];
   SET_CONTROL_LABEL(CONTROL_FIELD, PLAYLIST::CSmartPlaylistRule::GetLocalizedField(m_rule.m_field));
 
-  CONTROL_ENABLE(CONTROL_VALUE);
-  if (PLAYLIST::CSmartPlaylistRule::IsFieldBrowseable(m_rule.m_field))
-    CONTROL_ENABLE(CONTROL_BROWSE);
-  else
-    CONTROL_DISABLE(CONTROL_BROWSE);
+  const CDatabaseQueryRule::FIELD_TYPE fieldType = m_rule.GetFieldType(m_rule.m_field);
+
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_VALUE, fieldType != CDatabaseQueryRule::BOOLEAN_FIELD);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BROWSE,
+                              PLAYLIST::CSmartPlaylistRule::IsFieldBrowseable(m_rule.m_field));
+
   SET_CONTROL_LABEL(CONTROL_OPERATOR, std::get<0>(OperatorLabel(m_rule.m_operator)));
 
   // update label2 appropriately
   SET_CONTROL_LABEL2(CONTROL_VALUE, m_rule.GetParameter());
   CGUIEditControl::INPUT_TYPE type = CGUIEditControl::INPUT_TYPE_TEXT;
-  CDatabaseQueryRule::FIELD_TYPE fieldType = m_rule.GetFieldType(m_rule.m_field);
+
   switch (fieldType)
   {
   case CDatabaseQueryRule::TEXT_FIELD:
