@@ -2478,32 +2478,44 @@ CVideoInfoScanner::~CVideoInfoScanner()
         path,
         [this, content, dbId, path](const std::shared_ptr<CFileItem>& item)
         {
-          if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-                  CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
-          {
-            CDVDFileInfo::GetFileStreamDetails(item.get());
-            CLog::Log(LOGDEBUG, "VideoInfoScanner: Extracted filestream details from video file {}",
-                      CURL::GetRedacted(item->GetPath()));
-          }
-
           const std::string extraTypeName =
               CGUIDialogVideoManagerExtras::GenerateVideoExtra(path, item->GetPath());
 
           const int idVideoAssetType = m_database.AddVideoVersionType(
               extraTypeName, VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRA);
 
-          GetArtwork(item.get(), content, true, true, "");
+          // the video may have been added to the library as a movie earlier (different settings)
+          const int idMovie{m_database.GetMovieId(item->GetPath())};
 
-          if (m_database.AddVideoAsset(ContentToVideoDbType(content), dbId, idVideoAssetType,
-                                       VideoAssetType::EXTRA, *item.get()))
+          if (idMovie <= 0)
           {
-            CLog::Log(LOGDEBUG, "VideoInfoScanner: Added video extra {}",
-                      CURL::GetRedacted(item->GetPath()));
+            if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                    CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
+            {
+              CDVDFileInfo::GetFileStreamDetails(item.get());
+              CLog::Log(LOGDEBUG,
+                        "VideoInfoScanner: Extracted filestream details from video file {}",
+                        CURL::GetRedacted(item->GetPath()));
+            }
+
+            GetArtwork(item.get(), content, true, true, "");
+
+            if (m_database.AddVideoAsset(ContentToVideoDbType(content), dbId, idVideoAssetType,
+                                         VideoAssetType::EXTRA, *item.get()))
+            {
+              CLog::Log(LOGDEBUG, "VideoInfoScanner: Added video extra {}",
+                        CURL::GetRedacted(item->GetPath()));
+            }
+            else
+            {
+              CLog::Log(LOGERROR, "VideoInfoScanner: Failed to add video extra {}",
+                        CURL::GetRedacted(item->GetPath()));
+            }
           }
           else
           {
-            CLog::Log(LOGERROR, "VideoInfoScanner: Failed to add video extra {}",
-                      CURL::GetRedacted(item->GetPath()));
+            m_database.ConvertVideoToVersion(ContentToVideoDbType(content), idMovie, dbId,
+                                             idVideoAssetType, VideoAssetType::EXTRA);
           }
         },
         [](const std::shared_ptr<CFileItem>& dirItem) { return !HasNoMedia(dirItem->GetPath()); },
