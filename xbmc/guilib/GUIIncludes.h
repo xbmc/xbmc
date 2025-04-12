@@ -11,8 +11,8 @@
 #include "interfaces/info/InfoBool.h"
 
 #include <map>
-#include <set>
 #include <string>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
@@ -119,9 +119,9 @@ private:
   std::string ResolveExpressions(const std::string &expression) const;
 
   std::vector<std::string> m_files;
-  std::map<std::string, std::pair<TiXmlElement, Params>> m_includes;
-  std::map<std::string, TiXmlElement> m_defaults;
-  std::map<std::string, TiXmlElement> m_skinvariables;
-  std::map<std::string, std::string> m_constants;
-  std::map<std::string, std::string> m_expressions;
+  std::unordered_map<std::string, std::pair<TiXmlElement, Params>> m_includes;
+  std::unordered_map<std::string, TiXmlElement> m_defaults;
+  std::unordered_map<std::string, TiXmlElement> m_skinvariables;
+  std::unordered_map<std::string, std::string> m_constants;
+  std::unordered_map<std::string, std::string> m_expressions;
 };

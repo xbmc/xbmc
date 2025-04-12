@@ -113,7 +113,7 @@ void CGUIIncludes::LoadDefaults(const TiXmlElement *node)
   {
     const char *type = child->Attribute("type");
     if (type && child->FirstChild())
-      m_defaults.insert(std::make_pair(type, *child));
+      m_defaults.try_emplace(type, *child);
 
     child = child->NextSiblingElement("default");
   }
@@ -129,7 +129,7 @@ void CGUIIncludes::LoadExpressions(const TiXmlElement *node)
   {
     const char *tagName = child->Attribute("name");
     if (tagName && child->FirstChild())
-      m_expressions.insert(std::make_pair(tagName, "[" + child->FirstChild()->ValueStr() + "]"));
+      m_expressions.try_emplace(tagName, "[" + child->FirstChild()->ValueStr() + "]");
 
     child = child->NextSiblingElement("expression");
   }
@@ -146,7 +146,7 @@ void CGUIIncludes::LoadConstants(const TiXmlElement *node)
   {
     const char *tagName = child->Attribute("name");
     if (tagName && child->FirstChild())
-      m_constants.insert(std::make_pair(tagName, child->FirstChild()->ValueStr()));
+      m_constants.try_emplace(tagName, child->FirstChild()->ValueStr());
 
     child = child->NextSiblingElement("constant");
   }
@@ -162,7 +162,7 @@ void CGUIIncludes::LoadVariables(const TiXmlElement *node)
   {
     const char *tagName = child->Attribute("name");
     if (tagName && child->FirstChild())
-      m_skinvariables.insert(std::make_pair(tagName, *child));
+      m_skinvariables.try_emplace(tagName, *child);
 
     child = child->NextSiblingElement("variable");
   }
@@ -190,7 +190,7 @@ void CGUIIncludes::LoadIncludes(const TiXmlElement *node)
       if (haveParamTags && !definitionTag)
         CLog::Log(LOGWARNING, "Skin has invalid include definition: {}", tagName);
       else
-        m_includes.insert({ tagName, { *includeBody, std::move(defaultParams) } });
+        m_includes.try_emplace(tagName, std::make_pair(*includeBody, std::move(defaultParams)));
     }
     else if (child->Attribute("file"))
     {
@@ -212,11 +212,11 @@ void CGUIIncludes::LoadIncludes(const TiXmlElement *node)
 
 void CGUIIncludes::FlattenExpressions()
 {
-  for (auto& expression : m_expressions)
+  std::vector<std::string> resolved(1);
+  for (auto& [key, value] : m_expressions)
   {
-    std::vector<std::string> resolved = std::vector<std::string>();
-    resolved.push_back(expression.first);
-    FlattenExpression(expression.second, resolved);
+    resolved[0] = key;
+    FlattenExpression(value, resolved);
   }
 }
 
@@ -643,7 +643,7 @@ std::string CGUIIncludes::ResolveConstant(const std::string &constant) const
   std::vector<std::string> values = StringUtils::Split(constant, ",");
   for (auto& i : values)
   {
-    std::map<std::string, std::string>::const_iterator it = m_constants.find(i);
+    const auto it = m_constants.find(i);
     if (it != m_constants.end())
       i = it->second;
   }
@@ -653,19 +653,21 @@ std::string CGUIIncludes::ResolveConstant(const std::string &constant) const
 std::string CGUIIncludes::ResolveExpressions(const std::string &expression) const
 {
   std::string work(expression);
-  GUIINFO::CGUIInfoLabel::ReplaceSpecialKeywordReferences(work, "EXP", [&](const std::string &str) -> std::string {
-    std::map<std::string, std::string>::const_iterator it = m_expressions.find(str);
-    if (it != m_expressions.end())
-      return it->second;
-    return "";
-  });
+  GUIINFO::CGUIInfoLabel::ReplaceSpecialKeywordReferences(work, "EXP",
+                                                          [&](const std::string& str) -> std::string
+                                                          {
+                                                            const auto it = m_expressions.find(str);
+                                                            if (it != m_expressions.end())
+                                                              return it->second;
+                                                            return "";
+                                                          });
 
   return work;
 }
 
 const INFO::CSkinVariableString* CGUIIncludes::CreateSkinVariable(const std::string& name, int context)
 {
-  std::map<std::string, TiXmlElement>::const_iterator it = m_skinvariables.find(name);
+  const auto it = m_skinvariables.find(name);
   if (it != m_skinvariables.end())
     return INFO::CSkinVariable::CreateFromXML(it->second, context);
   return NULL;
