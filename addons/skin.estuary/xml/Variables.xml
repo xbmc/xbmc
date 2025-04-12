@@ -96,6 +96,13 @@
 		<value condition="Container.SortMethod(7) | Container.SortMethod(29)">$INFO[ListItem.Year]</value>
 		<value condition="!String.isempty(ListItem.Appearances)">$LOCALIZE[38026]: $INFO[ListItem.Appearances]</value>
 		<value condition="Window.IsActive(musicplaylist) | Window.IsActive(videoplaylist)">$INFO[ListItem.Duration]</value>
+		<value condition="$EXP[videoasset_true] + Container.SortMethod(1)"></value>
+		<value condition="$EXP[videoasset_true] + Container.SortMethod(9) + Control.IsVisible(504)"></value>
+		<value condition="$EXP[videoasset_true] + Container.SortMethod(9) + !Control.IsVisible(504)">$INFO[ListItem.Duration]</value>
+		<value condition="$EXP[videoasset_true] + Container.SortMethod(32)">$INFO[ListItem.VideoResolution]$VAR[VideoResolutionTypeVar, ]</value>
+		<value condition="$EXP[videoasset_true] + Container.SortMethod(33)">$VAR[VideoCodecVar]</value>
+		<value condition="$EXP[videoasset_true] + Container.SortMethod(36)">$VAR[AudioCodecVar]$VAR[ObjectAudioTypeVar, / ]</value>
+		<value condition="Container.SortMethod(9)">$INFO[ListItem.Duration]</value>
 		<value>$INFO[ListItem.Label2]</value>
 	</variable>
 	<variable name="PlotTextBoxVar">

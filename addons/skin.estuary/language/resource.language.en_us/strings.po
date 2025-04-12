@@ -125,8 +125,8 @@ msgid "Sort by"
 msgstr "Sort by"
 
 msgctxt "#31023"
-msgid "Viewtype"
-msgstr "Viewtype"
+msgid "View type"
+msgstr "View type"
 
 msgctxt "#31024"
 msgid "Choose rating to display for media items"
