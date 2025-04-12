@@ -511,6 +511,19 @@ function(check_dependency_build caller dep_list)
     endforeach()
 endfunction()
 
+macro(SETUP_FIND_SPECS)
+  # Setup Find version specs if requested by caller
+  if(${CMAKE_FIND_PACKAGE_NAME}_FIND_VERSION)
+    if(${CMAKE_FIND_PACKAGE_NAME}_FIND_VERSION_EXACT)
+      set(CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC "${${CMAKE_FIND_PACKAGE_NAME}_FIND_VERSION_COMPLETE} EXACT")
+      set(PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC "=${${CMAKE_FIND_PACKAGE_NAME}_FIND_VERSION_COMPLETE}")
+    else()
+      set(CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC "${${CMAKE_FIND_PACKAGE_NAME}_FIND_VERSION_COMPLETE}")
+      set(PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC ">=${${CMAKE_FIND_PACKAGE_NAME}_FIND_VERSION_COMPLETE}")
+    endif()
+  endif()
+endmacro()
+
 # Custom property that we can track to allow us to notify to dependency find modules
 # that a dependency of that find module is being built, and therefore that higher level
 # dependency should also be built regardless of success in lib searches
