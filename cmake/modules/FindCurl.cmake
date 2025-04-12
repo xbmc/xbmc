@@ -56,14 +56,14 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     BUILD_DEP_TARGET()
 
     # Link libraries for target interface
-    set(PC_CURL_LINK_LIBRARIES LIBRARY::Brotli LIBRARY::NGHttp2 OpenSSL::Crypto OpenSSL::SSL ZLIB::ZLIB ${PLATFORM_LINK_LIBS})
+    set(CURL_LINK_LIBRARIES LIBRARY::Brotli LIBRARY::NGHttp2 OpenSSL::Crypto OpenSSL::SSL LIBRARY::Zlib ${PLATFORM_LINK_LIBS})
 
     # Add dependencies to build target
     add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} LIBRARY::Brotli)
     add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} LIBRARY::NGHttp2)
     add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} OpenSSL::SSL)
     add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} OpenSSL::Crypto)
-    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} ZLIB::ZLIB)
+    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} LIBRARY::Zlib)
   endmacro()
 
   # If there is a potential this library can be built internally
@@ -83,9 +83,24 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   SETUP_BUILD_VARS()
 
-  find_package(CURL CONFIG QUIET
+  SETUP_FIND_SPECS()
+
+  find_package(CURL ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG QUIET
                     HINTS ${DEPENDS_PATH}/lib/cmake
                     ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+
+  # cmake config may not be available (eg Debian libcurl-dev package)
+  # fallback to pkgconfig for non windows platforms
+  if(NOT CURL_FOUND)
+    find_package(PkgConfig QUIET)
+    # We explicitly skip a pkgconfig search for Darwin platforms, as system zlib can not
+    # be found by pkg-config, and a search for Curl's Libs field is made during the
+    # pkg_check_modules call
+    if(PKG_CONFIG_FOUND AND NOT ((WIN32 OR WINDOWSSTORE) OR 
+                                 (CMAKE_SYSTEM_NAME MATCHES "Darwin")))
+      pkg_check_modules(CURL libcurl${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} QUIET IMPORTED_TARGET)
+    endif()
+  endif()
 
   # Check for existing Curl. If version >= CURL-VERSION file version, dont build
   # A corner case, but if a linux/freebsd user WANTS to build internal curl, build anyway
@@ -95,38 +110,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     buildCurl()
   else()
     # Maybe need to look explicitly for CURL::libcurl_static/shared?
-    if(NOT TARGET CURL::libcurl)
-      find_package(PkgConfig QUIET)
-
-      # We only rely on pkgconfig for non windows platforms
-      if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWS_STORE))
-        pkg_check_modules(CURL libcurl QUIET)
-
-        # First item is the full path of the library file found
-        # pkg_check_modules does not populate a variable of the found library explicitly
-        list(GET CURL_LINK_LIBRARIES 0 CURL_LIBRARY_RELEASE)
-
-        # Add link libraries for static lib usage
-        if(${CURL_LIBRARY} MATCHES ".+\.a$" AND CURL_LINK_LIBRARIES)
-          # Remove duplicates
-          list(REMOVE_DUPLICATES CURL_LINK_LIBRARIES)
-
-          # Remove own library - eg libcurl.a
-          list(FILTER CURL_LINK_LIBRARIES EXCLUDE REGEX ".*curl.*\.a$")
-          set(PC_CURL_LINK_LIBRARIES ${CURL_LINK_LIBRARIES})
-        endif()
-
-        # pkgconfig sets CURL_INCLUDEDIR, map this to our "standard" variable name
-        set(CURL_INCLUDE_DIR ${CURL_INCLUDEDIR})
-      else()
-        find_path(CURL_INCLUDE_DIR NAMES curl/curl.h
-                                   HINTS ${DEPENDS_PATH}/include
-                                   ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
-        find_library(CURL_LIBRARY_RELEASE NAMES curl libcurl libcurl_imp
-                                          HINTS ${DEPENDS_PATH}/lib
-                                          ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
-      endif()
-    else()
+    if(TARGET CURL::libcurl)
       # CURL::libcurl is an alias. We need to get the actual aias target, as we cant make an
       # alias of an alias (ie our ${APP_NAME_LC}::Curl cant be an alias of Curl::libcurl)
       get_target_property(_CURL_ALIASTARGET CURL::libcurl ALIASED_TARGET)
@@ -150,6 +134,12 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       endforeach()
 
       get_target_property(CURL_INCLUDE_DIR CURL::libcurl INTERFACE_INCLUDE_DIRECTORIES)
+    elseif(TARGET PkgConfig::CURL)
+      # First item is the full path of the library file found
+      # pkg_check_modules does not populate a variable of the found library explicitly
+      list(GET CURL_LINK_LIBRARIES 0 CURL_LIBRARY_RELEASE)
+
+      get_target_property(CURL_INCLUDE_DIR PkgConfig::CURL INTERFACE_INCLUDE_DIRECTORIES)
     endif()
   endif()
 
@@ -172,10 +162,14 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       endif()
 
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS ${_CURL_ALIASTARGET})
+    elseif(TARGET PkgConfig::CURL AND NOT TARGET curl)
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::CURL)
     else()
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
       set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                       INTERFACE_INCLUDE_DIRECTORIES "${CURL_INCLUDE_DIR}")
+                                                                       INTERFACE_COMPILE_DEFINITIONS "CURL_STATICLIB"
+                                                                       INTERFACE_INCLUDE_DIRECTORIES "${CURL_INCLUDE_DIR}"
+                                                                       INTERFACE_LINK_LIBRARIES "${CURL_LINK_LIBRARIES}")
 
       if(CURL_LIBRARY_RELEASE)
         set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
@@ -188,17 +182,6 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
         set_property(TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY
                                                                               IMPORTED_CONFIGURATIONS DEBUG)
       endif()
-
-      # Add link libraries for static lib usage found from pkg-config
-      if(PC_CURL_LINK_LIBRARIES)
-        set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                         INTERFACE_LINK_LIBRARIES "${PC_CURL_LINK_LIBRARIES}")
-      endif()
-
-      if(WIN32 OR WINDOWS_STORE)
-        set_property(TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS "CURL_STATICLIB")
-      endif()
-
     endif()
 
     if(TARGET curl)
