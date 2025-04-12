@@ -12,6 +12,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
   macro(buildrapidjson)
+    set(BUILD_NAME rapidjson_build)
+
     set(RapidJSON_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
 
     set(patches "${CORE_SOURCE_DIR}/tools/depends/target/rapidjson/001-remove_custom_cxx_flags.patch"
@@ -32,27 +34,27 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     set(BUILD_BYPRODUCTS ${DEPENDS_PATH}/include/rapidjson/rapidjson.h)
 
     BUILD_DEP_TARGET()
-
-    set(RAPIDJSON_INCLUDE_DIRS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR})
   endmacro()
 
   set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC rapidjson)
 
   SETUP_BUILD_VARS()
 
-  if(RapidJSON_FIND_VERSION)
-    if(RapidJSON_FIND_VERSION_EXACT)
-      set(RapidJSON_FIND_SPEC "=${RapidJSON_FIND_VERSION_COMPLETE}")
-      set(RapidJSON_CONFIG_SPEC "${RapidJSON_FIND_VERSION_COMPLETE}" EXACT)
-    else()
-      set(RapidJSON_FIND_SPEC ">=${RapidJSON_FIND_VERSION_COMPLETE}")
-      set(RapidJSON_CONFIG_SPEC "${RapidJSON_FIND_VERSION_COMPLETE}")
+  SETUP_FIND_SPECS()
+
+  find_package(RapidJSON ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG QUIET
+                         HINTS ${DEPENDS_PATH}/lib/cmake
+                         ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+
+  # cmake config may not be available (eg Debian libpcre2-dev package)
+  # fallback to pkgconfig for non windows platforms
+  if(NOT RapidJSON_FOUND)
+    find_package(PkgConfig QUIET)
+
+    if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWSSTORE))
+      pkg_check_modules(RapidJSON RapidJSON${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} QUIET IMPORTED_TARGET)
     endif()
   endif()
-
-  find_package(RapidJSON CONFIG ${RapidJSON_CONFIG_SPEC}
-                                HINTS ${DEPENDS_PATH}/lib/cmake
-                                ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 
   # Check for existing RAPIDJSON. If version >= RAPIDJSON-VERSION file version, dont build
   # A corner case, but if a linux/freebsd user WANTS to build internal tinyxml2, build anyway
@@ -61,34 +63,35 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     # Build internal rapidjson
     buildrapidjson()
   else()
-    # If RAPIDJSON_INCLUDE_DIRS exists, then the find_package command found a config
-    # and suitable version. If its not, we fall back to a pkgconfig/manual search
-    if(NOT DEFINED RAPIDJSON_INCLUDE_DIRS)
-      find_package(PkgConfig QUIET)
-      # Fallback to pkg-config and individual lib/include file search
-      # Do not use pkgconfig on windows
-      if(PKG_CONFIG_FOUND AND NOT WIN32)
-        pkg_check_modules(PC_RapidJSON RapidJSON${RapidJSON_FIND_SPEC} QUIET)
-        set(RapidJSON_VERSION ${PC_RapidJSON_VERSION})
-      endif()
-
-      find_path(RAPIDJSON_INCLUDE_DIRS NAMES rapidjson/rapidjson.h
-                                       HINTS ${DEPENDS_PATH}/include ${PC_RapidJSON_INCLUDEDIR}
-                                       ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+    if(TARGET PkgConfig::RapidJSON)
+      get_target_property(RAPIDJSON_INCLUDE_DIR PkgConfig::RapidJSON INTERFACE_INCLUDE_DIRECTORIES)
+    elseif(TARGET rapidjson)
+      # RapidJSON cmake config newer than 1.1.0 tag creates a target
+      get_target_property(RAPIDJSON_INCLUDE_DIR rapidjson INTERFACE_INCLUDE_DIRECTORIES)
+    elseif(RAPIDJSON_INCLUDE_DIRS)
+      # RapidJSON cmake config <= 1.1.0 tag does not create a target, only the single variable
+      set(RAPIDJSON_INCLUDE_DIR ${RAPIDJSON_INCLUDE_DIRS})
     endif()
   endif()
 
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(RapidJSON
-                                    REQUIRED_VARS RAPIDJSON_INCLUDE_DIRS RapidJSON_VERSION
+                                    REQUIRED_VARS RAPIDJSON_INCLUDE_DIR
                                     VERSION_VAR RapidJSON_VERSION)
 
-  if(RAPIDJSON_FOUND)
-    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE IMPORTED)
-    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                     INTERFACE_INCLUDE_DIRECTORIES "${RAPIDJSON_INCLUDE_DIRS}")
-    if(TARGET rapidjson)
-      add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} rapidjson)
+  if(RapidJSON_FOUND)
+    if(TARGET PkgConfig::RapidJSON AND NOT TARGET rapidjson_build)
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::RapidJSON)
+    elseif(TARGET rapidson AND NOT TARGET rapidjson_build)
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS rapidson)
+    else()
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE IMPORTED)
+      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                       INTERFACE_INCLUDE_DIRECTORIES "${RAPIDJSON_INCLUDE_DIR}")
+    endif()
+
+    if(TARGET rapidjson_build)
+      add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} rapidjson_build)
     endif()
 
     # Add internal build target when a Multi Config Generator is used
@@ -100,11 +103,11 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     # This is mainly targeted for windows who required different runtime libs for different
     # types, and they arent compatible
     if(_multiconfig_generator)
-      if(NOT TARGET rapidjson)
+      if(NOT TARGET rapidjson_build)
         buildrapidjson()
-        set_target_properties(rapidjson PROPERTIES EXCLUDE_FROM_ALL TRUE)
+        set_target_properties(rapidjson_build PROPERTIES EXCLUDE_FROM_ALL TRUE)
       endif()
-      add_dependencies(build_internal_depends rapidjson)
+      add_dependencies(build_internal_depends rapidjson_build)
     endif()
   else()
     if(RapidJSON_FIND_REQUIRED)
