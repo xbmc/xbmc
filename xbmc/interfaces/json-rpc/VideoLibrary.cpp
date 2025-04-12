@@ -94,7 +94,7 @@ JSONRPC_STATUS CVideoLibrary::GetMovieDetails(const std::string &method, ITransp
 
   CVideoInfoTag infos;
   if (!videodatabase.GetMovieInfo("", infos, id, -1, //! @todo API support for video version id
-                                  RequiresAdditionalDetails(MediaTypeMovie, parameterObject)) ||
+                                  -1, RequiresAdditionalDetails(MediaTypeMovie, parameterObject)) ||
       infos.m_iDbId <= 0)
     return InvalidParams;
 
