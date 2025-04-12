@@ -8307,14 +8307,22 @@ bool CVideoDatabase::GetSortedVideos(const MediaType &mediaType, const std::stri
   if (mediaType != MediaTypeMovie && mediaType != MediaTypeTvShow && mediaType != MediaTypeEpisode && mediaType != MediaTypeMusicVideo)
     return false;
 
-  SortDescription sorting = sortDescription;
-  if (sortDescription.sortBy == SortByFile || sortDescription.sortBy == SortByTitle ||
-      sortDescription.sortBy == SortBySortTitle || sortDescription.sortBy == SortByOriginalTitle ||
-      sortDescription.sortBy == SortByLabel || sortDescription.sortBy == SortByDateAdded ||
-      sortDescription.sortBy == SortByRating || sortDescription.sortBy == SortByUserRating ||
-      sortDescription.sortBy == SortByYear || sortDescription.sortBy == SortByLastPlayed ||
-      sortDescription.sortBy == SortByPlaycount)
-    sorting.sortAttributes = (SortAttribute)(sortDescription.sortAttributes | SortAttributeIgnoreFolders);
+  SortDescription sorting{sortDescription};
+  if (sorting.sortAttributes & SortAttributeForceConsiderFolders)
+  {
+    sorting.sortAttributes =
+        static_cast<SortAttribute>(sorting.sortAttributes & ~SortAttributeIgnoreFolders);
+  }
+  else if (sortDescription.sortBy == SortByFile || sortDescription.sortBy == SortByTitle ||
+           sortDescription.sortBy == SortBySortTitle ||
+           sortDescription.sortBy == SortByOriginalTitle || sortDescription.sortBy == SortByLabel ||
+           sortDescription.sortBy == SortByDateAdded || sortDescription.sortBy == SortByRating ||
+           sortDescription.sortBy == SortByUserRating || sortDescription.sortBy == SortByYear ||
+           sortDescription.sortBy == SortByLastPlayed || sortDescription.sortBy == SortByPlaycount)
+  {
+    sorting.sortAttributes =
+        static_cast<SortAttribute>(sortDescription.sortAttributes | SortAttributeIgnoreFolders);
+  }
 
   bool success = false;
   if (mediaType == MediaTypeMovie)

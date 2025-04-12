@@ -24,12 +24,14 @@ typedef enum {
   SortOrderDescending
 } SortOrder;
 
-typedef enum {
-  SortAttributeNone           = 0x0,
-  SortAttributeIgnoreArticle  = 0x1,
-  SortAttributeIgnoreFolders  = 0x2,
+typedef enum
+{
+  SortAttributeNone = 0x0,
+  SortAttributeIgnoreArticle = 0x1,
+  SortAttributeIgnoreFolders = 0x2,
   SortAttributeUseArtistSortName = 0x4,
-  SortAttributeIgnoreLabel = 0x8
+  SortAttributeIgnoreLabel = 0x8,
+  SortAttributeForceConsiderFolders = 0x10, // overrides SortAttributeIgnoreFolders
 } SortAttribute;
 
 typedef enum {

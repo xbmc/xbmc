@@ -322,8 +322,55 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
         SetSortOrder(SortOrderNone);
       }
       break;
-    default:
+      case NodeType::MOVIE_ASSETS:
+      case NodeType::MOVIE_ASSETS_VERSIONS:
+      {
+        AddSortMethod(SortByLabel, sortAttributes, 551,
+                      LABEL_MASKS("%L", "", "%L", "")); // Label, empty | Label, empty
+        AddSortMethod(SortByTime, 180,
+                      LABEL_MASKS("%L", "%D", "%L", "")); // Label, Duration | Label, empty
+        AddSortMethod(SortByVideoResolution, 21443,
+                      LABEL_MASKS("%L", "", "%L", "")); // Label, empty | Label, empty
+        AddSortMethod(SortByVideoCodec, 21445,
+                      LABEL_MASKS("%L", "", "%L", "")); // Label, empty | Label, empty
+        AddSortMethod(SortByAudioCodec, 21446,
+                      LABEL_MASKS("%L", "", "%L", "")); // Label, empty | Label, empty
+        AddSortMethod(SortByDateAdded, 570,
+                      LABEL_MASKS("%L", "%a", "%L", "")); // Label, DateAdded | Label, empty
+        AddSortMethod(SortByLastPlayed, SortAttributeForceConsiderFolders, 568,
+                      LABEL_MASKS("%L", "%p", "%L", "")); // Label, #Last played | Label, empty
+        AddSortMethod(SortByPlaycount, SortAttributeForceConsiderFolders, 567,
+                      LABEL_MASKS("%L", "%V", "%L", "")); // Label, Playcount | Label, empty
+
+        const CViewState* viewState = CViewStateSettings::GetInstance().Get(
+            nodeType == NodeType::MOVIE_ASSETS ? "videonavassets" : "videonavversions");
+        SetSortMethod(viewState->m_sortDescription);
+        SetSortOrder(viewState->m_sortDescription.sortOrder);
+        SetViewAsControl(viewState->m_viewMode);
+      }
       break;
+      case NodeType::MOVIE_ASSETS_EXTRAS:
+      {
+        AddSortMethod(SortByLabel, sortAttributes, 551,
+                      LABEL_MASKS("%L", "", "%L", "")); // Label, empty | Label, empty
+        AddSortMethod(SortByTime, 180,
+                      LABEL_MASKS("%L", "%D", "%L", "")); // Label, Duration | Label, empty
+        AddSortMethod(SortByDateAdded, 570,
+                      LABEL_MASKS("%L", "%a", "%L", "")); // Label, DateAdded | Label, empty
+        AddSortMethod(SortByLastPlayed, SortAttributeForceConsiderFolders, 568,
+                      LABEL_MASKS("%L", "%p", "%L", "")); // Label, #Last played | Label, empty
+        AddSortMethod(SortByPlaycount, SortAttributeForceConsiderFolders, 567,
+                      LABEL_MASKS("%L", "%V", "%L", "")); // Label, Playcount | Label, empty
+
+        const CViewState* viewState = CViewStateSettings::GetInstance().Get("videonavextras");
+        SetSortMethod(viewState->m_sortDescription);
+        SetSortOrder(viewState->m_sortDescription.sortOrder);
+        SetViewAsControl(viewState->m_viewMode);
+      }
+      break;
+
+      default:
+        break;
     }
   }
   else
@@ -383,6 +430,18 @@ void CGUIViewStateWindowVideoNav::SaveViewState()
       case NodeType::TITLE_MUSICVIDEOS:
         SaveViewToDb(m_items.GetPath(), WINDOW_VIDEO_NAV,
                      CViewStateSettings::GetInstance().Get("videonavmusicvideos"));
+        break;
+      case NodeType::MOVIE_ASSETS:
+        SaveViewToDb(m_items.GetPath(), WINDOW_VIDEO_NAV,
+                     CViewStateSettings::GetInstance().Get("videonavassets"));
+        break;
+      case NodeType::MOVIE_ASSETS_VERSIONS:
+        SaveViewToDb(m_items.GetPath(), WINDOW_VIDEO_NAV,
+                     CViewStateSettings::GetInstance().Get("videonavversions"));
+        break;
+      case NodeType::MOVIE_ASSETS_EXTRAS:
+        SaveViewToDb(m_items.GetPath(), WINDOW_VIDEO_NAV,
+                     CViewStateSettings::GetInstance().Get("videonavextras"));
         break;
       default:
         SaveViewToDb(m_items.GetPath(), WINDOW_VIDEO_NAV);
