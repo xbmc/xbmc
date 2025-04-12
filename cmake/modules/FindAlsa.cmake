@@ -8,18 +8,14 @@
 #   ${APP_NAME_LC}::Alsa   - The Alsa library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
+  include(cmake/scripts/common/ModuleHelpers.cmake)
+
+  SETUP_FIND_SPECS()
+
   find_package(PkgConfig QUIET)
 
-  if(Alsa_FIND_VERSION)
-    if(Alsa_FIND_VERSION_EXACT)
-      set(Alsa_FIND_SPEC "=${Alsa_FIND_VERSION_COMPLETE}")
-    else()
-      set(Alsa_FIND_SPEC ">=${Alsa_FIND_VERSION_COMPLETE}")
-    endif()
-  endif()
-
   if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_ALSA alsa${Alsa_FIND_SPEC} QUIET)
+    pkg_check_modules(PC_ALSA alsa${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} QUIET)
   endif()
 
   find_path(ALSA_INCLUDE_DIR NAMES alsa/asoundlib.h
