@@ -34,7 +34,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   SETUP_BUILD_VARS()
 
-  find_package(flatbuffers CONFIG
+  find_package(flatbuffers CONFIG QUIET
                            HINTS ${DEPENDS_PATH}/lib/cmake
                            ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 
