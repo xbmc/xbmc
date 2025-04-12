@@ -124,10 +124,4 @@ private:
   std::map<std::string, TiXmlElement> m_skinvariables;
   std::map<std::string, std::string> m_constants;
   std::map<std::string, std::string> m_expressions;
-
-  std::set<std::string> m_constantAttributes;
-  std::set<std::string> m_constantNodes;
-
-  std::set<std::string> m_expressionAttributes;
-  std::set<std::string> m_expressionNodes;
 };
