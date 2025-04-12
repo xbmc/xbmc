@@ -43,24 +43,45 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                     COMMAND ${INSTALL_NAME_TOOL} -id ${CEC_LIBRARY} ${CEC_LIBRARY})
     endif()
 
-    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} ${APP_NAME_LC}::P8Platform)
+    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} LIBRARY::P8Platform)
   endmacro()
+
+  # If there is a potential this library can be built internally
+  # Check its dependencies to allow forcing this lib to be built if one of its
+  # dependencies requires being rebuilt
+  if(ENABLE_INTERNAL_CEC)
+    # Dependency list of this find module for an INTERNAL build
+    set(${CMAKE_FIND_PACKAGE_NAME}_DEPLIST P8Platform)
+
+    check_dependency_build(${CMAKE_FIND_PACKAGE_NAME} "${${CMAKE_FIND_PACKAGE_NAME}_DEPLIST}")
+  endif()
 
   set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC cec)
 
   SETUP_BUILD_VARS()
 
+  SETUP_FIND_SPECS()
+
   # Check for existing libcec. If version >= LIBCEC-VERSION file version, dont build
-  find_package(libcec CONFIG QUIET
+  find_package(libcec ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG QUIET
                       HINTS ${DEPENDS_PATH}/lib/cmake
                       ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 
-  if((libcec_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_CEC) OR LIB_FORCE_REBUILD)
+  # cmake config may not be available (eg Debian libcec-dev package)
+  # fallback to pkgconfig for non windows platforms
+  if(NOT libcec_FOUND)
+    find_package(PkgConfig QUIET)
+    if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWSSTORE))
+      pkg_check_modules(libcec libcec${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} QUIET IMPORTED_TARGET)
+    endif()
+  endif()
+
+  if((libcec_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_CEC) OR
+     ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_CEC) OR
+     (DEFINED ${CMAKE_FIND_PACKAGE_NAME}_FORCE_BUILD))
     # Build lib
     buildCEC()
   else()
-    # if libcec::cec target exists, it meets version requirements
-    # we only do a pkgconfig search when a suitable cmake config returns nothing
     if(TARGET libcec::cec)
       get_target_property(_CEC_CONFIGURATIONS libcec::cec IMPORTED_CONFIGURATIONS)
       foreach(_cec_config IN LISTS _CEC_CONFIGURATIONS)
@@ -80,18 +101,13 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                 HINTS ${DEPENDS_PATH}/include
                                 ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
       set(CEC_VERSION ${libcec_VERSION})
-    else()
-      find_package(PkgConfig QUIET)
-      # Fallback to pkg-config
-      if(PKG_CONFIG_FOUND)
-        pkg_check_modules(CEC libcec IMPORTED_TARGET GLOBAL QUIET)
+    elseif(TARGET PkgConfig::libcec)
+      # First item is the full path of the library file found
+      # pkg_check_modules does not populate a variable of the found library explicitly
+      list(GET libcec_LINK_LIBRARIES 0 CEC_LIBRARY_RELEASE)
 
-        # First item is the full path of the library file found
-        # pkg_check_modules does not populate a variable of the found library explicitly
-        list(GET CEC_LINK_LIBRARIES 0 CEC_LIBRARY_RELEASE)
-
-        get_target_property(CEC_INCLUDE_DIR PkgConfig::CEC INTERFACE_INCLUDE_DIRECTORIES)
-      endif()
+      get_target_property(CEC_INCLUDE_DIR PkgConfig::libcec INTERFACE_INCLUDE_DIRECTORIES)
+      set(CEC_VERSION ${libcec_VERSION})
     endif()
   endif()
 
@@ -105,18 +121,15 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                     VERSION_VAR CEC_VERSION)
 
   if(CEC_FOUND)
-    # cmake target and not building internal
     if(TARGET libcec::cec AND NOT TARGET cec)
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS libcec::cec)
       # We need to append in case the cmake config already has definitions
       set_property(TARGET libcec::cec APPEND PROPERTY
                                              INTERFACE_COMPILE_DEFINITIONS HAVE_LIBCEC)
-    # pkgconfig target found
-    elseif(TARGET PkgConfig::PC_CEC)
-      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::CEC)
-      set_property(TARGET PkgConfig::CEC APPEND PROPERTY
-                                                INTERFACE_COMPILE_DEFINITIONS HAVE_LIBCEC)
-    # building internal or no cmake config or pkgconfig
+    elseif(TARGET PkgConfig::libcec AND NOT TARGET cec)
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::libcec)
+      set_property(TARGET PkgConfig::libcec APPEND PROPERTY
+                                                   INTERFACE_COMPILE_DEFINITIONS HAVE_LIBCEC)
     else()
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
       set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
