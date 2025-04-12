@@ -70,7 +70,7 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
   return false;
 }
 
-bool CDNSNameCache::GetCached(const std::string& strHostName, std::string& strIpAddress)
+bool CDNSNameCache::GetCached(const std::string& strHostName, std::string& strIpAddress) const
 {
   std::lock_guard lock(m_critical);
 

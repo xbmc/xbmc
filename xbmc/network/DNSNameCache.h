@@ -40,7 +40,7 @@ public:
    *
    * \return true if the IP is cached
    */
-  bool GetCached(const std::string& strHostName, std::string& strIpAddress);
+  bool GetCached(const std::string& strHostName, std::string& strIpAddress) const;
   /*!
    * \brief Get the IP for the hostname from the cache or query it form the DNS
    *
@@ -64,6 +64,6 @@ private:
     std::optional<std::chrono::steady_clock::time_point> m_expirationTime;
   };
 
-  CCriticalSection m_critical;
-  std::unordered_map<std::string, CacheEntry> m_hostToIp;
+  mutable CCriticalSection m_critical;
+  mutable std::unordered_map<std::string, CacheEntry> m_hostToIp;
 };
