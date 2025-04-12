@@ -5,6 +5,7 @@
 # This will define the following target:
 #
 #   ${APP_NAME_LC}::ZLIB - Alias to ZLIB::ZLIB target
+#   LIBRARY::ZLIB - Alias to ZLIB::ZLIB target
 #   ZLIB::ZLIB - standard Zlib target from system find package
 #
 
@@ -30,7 +31,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     set(ZLIB_USE_STATIC_LIBS ON)
   endif()
 
-  find_package(ZLIB ${REQ})
+  find_package(ZLIB QUIET ${REQ})
   unset(ZLIB_USE_STATIC_LIBS)
 
   # Back to our normal module paths
@@ -38,6 +39,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   if(ZLIB_FOUND)
     add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS ZLIB::ZLIB)
+    add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS ZLIB::ZLIB)
 
     # Required for external searches. Not used internally
     set(ZLIB_FOUND ON CACHE BOOL "ZLIB found")
