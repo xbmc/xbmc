@@ -8,17 +8,13 @@
 #   ${APP_NAME_LC}::PlayerAPIs   - The playerAPIs library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
+  include(cmake/scripts/common/ModuleHelpers.cmake)
+
+  SETUP_FIND_SPECS()
+
   find_package(PkgConfig QUIET)
   if(PKG_CONFIG_FOUND)
-    if(PlayerAPIs_FIND_VERSION)
-      if(PlayerAPIs_FIND_VERSION_EXACT)
-        set(PlayerAPIs_FIND_SPEC "=${PlayerAPIs_FIND_VERSION_COMPLETE}")
-      else()
-        set(PlayerAPIs_FIND_SPEC ">=${PlayerAPIs_FIND_VERSION_COMPLETE}")
-      endif()
-    endif()
-
-    pkg_check_modules(PC_PLAYERAPIS libplayerAPIs${PlayerAPIs_FIND_SPEC} QUIET)
+    pkg_check_modules(PC_PLAYERAPIS libplayerAPIs${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} QUIET)
   endif()
 
   find_path(PLAYERAPIS_INCLUDE_DIR NAMES starfish-media-pipeline/StarfishMediaAPIs.h
