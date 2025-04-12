@@ -902,6 +902,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
   int focusPosition = 0;
   int scrollTime = 200;
   int timeBlocks = 36;
+  unsigned int minutesPerTimeBlock{CGUIEPGGridContainer::DEFAULT_MINUTES_PER_BLOCK};
   int rulerUnit = 12;
   bool useControlCoords = false;
   bool renderFocusedLast = false;
@@ -1133,6 +1134,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
 
   XMLUtils::GetBoolean(pControlNode, "pulseonselect", bPulse);
   XMLUtils::GetInt(pControlNode, "timeblocks", timeBlocks);
+  XMLUtils::GetUInt(pControlNode, "minspertimeblock", minutesPerTimeBlock);
   XMLUtils::GetInt(pControlNode, "rulerunit", rulerUnit);
   GetTexture(pControlNode, "progresstexture", textureProgressIndicator);
 
@@ -1551,9 +1553,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
     }
     case CGUIControl::GUICONTAINER_EPGGRID:
     {
-      CGUIEPGGridContainer* epgGridContainer =
-          new CGUIEPGGridContainer(parentID, id, posX, posY, width, height, orientation, scrollTime,
-                                   preloadItems, timeBlocks, rulerUnit, textureProgressIndicator);
+      CGUIEPGGridContainer* epgGridContainer = new CGUIEPGGridContainer(
+          parentID, id, posX, posY, width, height, orientation, scrollTime, preloadItems,
+          timeBlocks, minutesPerTimeBlock, rulerUnit, textureProgressIndicator);
       control = epgGridContainer;
       epgGridContainer->LoadLayout(pControlNode);
       epgGridContainer->SetRenderOffset(offset);

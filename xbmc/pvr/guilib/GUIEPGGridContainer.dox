@@ -224,6 +224,7 @@ important, as `xml` tags are case-sensitive.
 | Tag                   | Description                                                   |
 |----------------------:|:--------------------------------------------------------------|
 | timeblocks            | The number of timeframes on the ruler.
+| minspertimeblock      | The number of minutes a timeblock represents.
 | rulerunit             | Timeframe of each unit on ruler. 1 unit equals 5 minutes.
 | rulerdatelayout       | The layout of a ruler date item (usually used to display the start date of current epg page).
 | rulerlayout           | The layout of a ruler item.

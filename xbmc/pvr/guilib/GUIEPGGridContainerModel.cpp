@@ -51,8 +51,9 @@ std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::CreateGapItem(int iChannel
 std::vector<std::shared_ptr<CPVREpgInfoTag>> CGUIEPGGridContainerModel::GetEPGTimeline(
     int iChannel, const CDateTime& minEventEnd, const CDateTime& maxEventStart) const
 {
-  CDateTime min = minEventEnd - CDateTimeSpan(0, 0, MINSPERBLOCK, 0) + CDateTimeSpan(0, 0, 0, 1);
-  CDateTime max = maxEventStart + CDateTimeSpan(0, 0, MINSPERBLOCK, 0);
+  CDateTime min =
+      minEventEnd - CDateTimeSpan(0, 0, m_minutesPerBlock, 0) + CDateTimeSpan(0, 0, 0, 1);
+  CDateTime max = maxEventStart + CDateTimeSpan(0, 0, m_minutesPerBlock, 0);
 
   if (min < m_gridStart)
     min = m_gridStart;
@@ -71,7 +72,8 @@ void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>&
                                            int iChannelsPerPage,
                                            int iFirstBlock,
                                            int iBlocksPerPage,
-                                           int iRulerUnit,
+                                           unsigned int minutesPerBlock,
+                                           int blocksPerRulerItem,
                                            float fBlockSize)
 {
   if (!m_channelItems.empty())
@@ -81,6 +83,7 @@ void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>&
   }
 
   m_fBlockSize = fBlockSize;
+  m_minutesPerBlock = minutesPerBlock;
 
   ////////////////////////////////////////////////////////////////////////
   // Create channel items
@@ -91,7 +94,7 @@ void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>&
   {
     // default to start "now minus GRID_START_PADDING minutes" and end "start plus one page".
     m_gridStart = CDateTime::GetUTCDateTime() - CDateTimeSpan(0, 0, GetGridStartPadding(), 0);
-    m_gridEnd = m_gridStart + CDateTimeSpan(0, 0, iBlocksPerPage * MINSPERBLOCK, 0);
+    m_gridEnd = m_gridStart + CDateTimeSpan(0, 0, iBlocksPerPage * minutesPerBlock, 0);
   }
   else if (gridStart >
            (CDateTime::GetUTCDateTime() - CDateTimeSpan(0, 0, GetGridStartPadding(), 0)))
@@ -117,7 +120,7 @@ void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>&
   const int iBlocksLastPage = m_blocks % iBlocksPerPage;
   if (iBlocksLastPage > 0)
   {
-    m_gridEnd += CDateTimeSpan(0, 0, (iBlocksPerPage - iBlocksLastPage) * MINSPERBLOCK, 0);
+    m_gridEnd += CDateTimeSpan(0, 0, (iBlocksPerPage - iBlocksLastPage) * minutesPerBlock, 0);
     m_blocks += (iBlocksPerPage - iBlocksLastPage);
   }
 
@@ -131,7 +134,7 @@ void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>&
   rulerItem->SetProperty("DateLabel", true);
   m_rulerItems.emplace_back(rulerItem);
 
-  const CDateTimeSpan unit(0, 0, iRulerUnit * MINSPERBLOCK, 0);
+  const CDateTimeSpan unit(0, 0, blocksPerRulerItem * minutesPerBlock, 0);
   for (; ruler < rulerEnd; ruler += unit)
   {
     rulerItem = std::make_shared<CFileItem>(ruler.GetAsLocalizedTime("", false));
@@ -603,7 +606,8 @@ void CGUIEPGGridContainerModel::FreeRulerMemory(int keepStart, int keepEnd)
 
 unsigned int CGUIEPGGridContainerModel::GetPageNowOffset() const
 {
-  return GetGridStartPadding() / MINSPERBLOCK; // this is the 'now' block relative to page start
+  return GetGridStartPadding() /
+         m_minutesPerBlock; // this is the 'now' block relative to page start
 }
 
 CDateTime CGUIEPGGridContainerModel::GetStartTimeForBlock(int block) const
@@ -613,7 +617,7 @@ CDateTime CGUIEPGGridContainerModel::GetStartTimeForBlock(int block) const
   else if (block >= GridItemsSize())
     block = GetLastBlock();
 
-  return m_gridStart + CDateTimeSpan(0, 0, block * MINSPERBLOCK, 0);
+  return m_gridStart + CDateTimeSpan(0, 0, block * m_minutesPerBlock, 0);
 }
 
 int CGUIEPGGridContainerModel::GetBlock(const CDateTime& datetime) const
@@ -632,9 +636,9 @@ int CGUIEPGGridContainerModel::GetBlock(const CDateTime& datetime) const
   //       an event starting at 5:00:00 shall be mapped to block 10, not both at block 10.
   //       Only exception is grid end, because there is no successor.
   if (datetime >= m_gridEnd)
-    return diff / 60 / MINSPERBLOCK; // block is equal or after grid end
+    return diff / 60 / m_minutesPerBlock; // block is equal or after grid end
   else
-    return (diff - 1) / 60 / MINSPERBLOCK;
+    return (diff - 1) / 60 / m_minutesPerBlock;
 }
 
 int CGUIEPGGridContainerModel::GetNowBlock() const
@@ -656,7 +660,7 @@ int CGUIEPGGridContainerModel::GetFirstEventBlock(
     diff = (eventStart - m_gridStart).GetSecondsTotal();
 
   // First block of a tag is always the block calculated using event's start time, rounded up.
-  float fBlockIndex = diff / 60.0f / MINSPERBLOCK;
+  float fBlockIndex = diff / 60.0f / m_minutesPerBlock;
   return static_cast<int>(std::ceil(fBlockIndex));
 }
 

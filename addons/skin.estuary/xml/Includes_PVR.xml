@@ -602,7 +602,8 @@
 				<orientation>$PARAM[control_orientation]</orientation>
 				<pagecontrol>60</pagecontrol>
 				<scrolltime tween="quadratic" easing="out">300</scrolltime>
-				<timeblocks>34</timeblocks>
+				<timeblocks>170</timeblocks>
+				<minspertimeblock>1</minspertimeblock>
 				<rulerunit>6</rulerunit>
 				<onleft>9000</onleft>
 				<onright>60</onright>
