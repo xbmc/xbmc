@@ -201,7 +201,7 @@ else()
                   libpostproc${_postproc_ver})
 
   if(NOT WIN32)
-    find_package(PkgConfig REQUIRED)
+    find_package(PkgConfig REQUIRED QUIET)
 
     pkg_check_modules(PC_FFMPEG ${FFMPEG_PKGS})
   endif()
