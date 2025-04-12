@@ -10,8 +10,9 @@
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   macro(buildexiv2)
-    find_package(Iconv REQUIRED)
     find_package(Brotli REQUIRED)
+    find_package(Iconv REQUIRED)
+    find_package(Zlib REQUIRED)
 
     # Patch pending review upstream (https://github.com/Exiv2/exiv2/pull/3004)
     set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/0001-WIN-lib-postfix.patch")
@@ -53,11 +54,12 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     BUILD_DEP_TARGET()
 
     # Link libraries for target interface
-    set(EXIV2_LINK_LIBRARIES LIBRARY::Brotli ZLIB::ZLIB)
+    set(EXIV2_LINK_LIBRARIES LIBRARY::Brotli LIBRARY::Iconv LIBRARY::Zlib)
 
     # Add dependencies to build target
     add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} LIBRARY::Brotli)
-    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} ZLIB::ZLIB)
+    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} LIBRARY::Iconv)
+    add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} LIBRARY::Zlib)
   endmacro()
 
   include(cmake/scripts/common/ModuleHelpers.cmake)
@@ -68,7 +70,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   if(ENABLE_INTERNAL_EXIV2)
     # Dependency list of this find module for an INTERNAL build
     set(${CMAKE_FIND_PACKAGE_NAME}_DEPLIST Brotli
-                                           Iconv)
+                                           Iconv
+                                           Zlib)
 
     check_dependency_build(${CMAKE_FIND_PACKAGE_NAME} "${${CMAKE_FIND_PACKAGE_NAME}_DEPLIST}")
   endif()
@@ -77,9 +80,20 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   SETUP_BUILD_VARS()
 
-  find_package(exiv2 CONFIG QUIET
-                            HINTS ${DEPENDS_PATH}/lib/cmake
-                            ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+  SETUP_FIND_SPECS()
+
+  find_package(exiv2 ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG QUIET
+                     HINTS ${DEPENDS_PATH}/lib/cmake
+                     ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+
+  # cmake config may not be available
+  # fallback to pkgconfig for non windows platforms
+  if(NOT exiv2_FOUND)
+    find_package(PkgConfig QUIET)
+    if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWSSTORE))
+      pkg_check_modules(exiv2 exiv2${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} QUIET IMPORTED_TARGET)
+    endif()
+  endif()
 
   # Check for existing EXIV2. If version >= EXIV2-VERSION file version, dont build
   if((exiv2_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_EXIV2) OR
@@ -117,18 +131,12 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       endforeach()
 
       get_target_property(EXIV2_INCLUDE_DIR ${_exiv_target_name} INTERFACE_INCLUDE_DIRECTORIES)
-    else()
-      find_package(PkgConfig QUIET)
-      # Fallback to pkg-config and individual lib/include file search
-      if(PKG_CONFIG_FOUND)
-        pkg_check_modules(PC_EXIV2 exiv2 QUIET)
-        set(EXIV2_VER ${PC_EXIV2_VERSION})
-      endif()
+    elseif(TARGET PkgConfig::exiv2)
+      # First item is the full path of the library file found
+      # pkg_check_modules does not populate a variable of the found library explicitly
+      list(GET exiv2_LINK_LIBRARIES 0 EXIV2_LIBRARY_RELEASE)
 
-      find_path(EXIV2_INCLUDE_DIR NAMES exiv2/exiv2.hpp
-                                  HINTS ${PC_EXIV2_INCLUDEDIR})
-      find_library(EXIV2_LIBRARY_RELEASE NAMES exiv2
-                                        HINTS ${PC_EXIV2_LIBDIR})
+      get_target_property(EXIV2_INCLUDE_DIR PkgConfig::exiv2 INTERFACE_INCLUDE_DIRECTORIES)
     endif()
   endif()
 
@@ -150,10 +158,13 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
         set(_exiv_target_name ${_EXIV2_ALIASTARGET})
       endif()
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS ${_exiv_target_name})
+    elseif(TARGET PkgConfig::exiv2 AND NOT TARGET exiv2)
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::exiv2)
     else()
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
       set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                       INTERFACE_INCLUDE_DIRECTORIES "${EXIV2_INCLUDE_DIR}")
+                                                                       INTERFACE_INCLUDE_DIRECTORIES "${EXIV2_INCLUDE_DIR}"
+                                                                       INTERFACE_LINK_LIBRARIES "${EXIV2_LINK_LIBRARIES}")
 
       if(EXIV2_LIBRARY_RELEASE)
         set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
@@ -165,11 +176,6 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                                                          IMPORTED_LOCATION_DEBUG "${EXIV2_LIBRARY_DEBUG}")
         set_property(TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY
                                                                               IMPORTED_CONFIGURATIONS DEBUG)
-      endif()
-
-      if(EXIV2_LINK_LIBRARIES)
-        set_property(TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY
-                                                                       INTERFACE_LINK_LIBRARIES "${EXIV2_LINK_LIBRARIES}")
       endif()
 
       if(CORE_SYSTEM_NAME STREQUAL "freebsd")
