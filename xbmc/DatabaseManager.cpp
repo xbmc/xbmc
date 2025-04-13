@@ -61,6 +61,7 @@ bool CDatabaseManager::Initialize()
   CLog::Log(LOGDEBUG, "{}, updating databases... DONE", __FUNCTION__);
 
   m_bIsUpgrading = false;
+  m_connecting = false;
 
   return std::ranges::all_of(m_dbStatus,
                              [](const auto& db) { return db.second == DBStatus::READY; });
@@ -100,7 +101,9 @@ bool CDatabaseManager::Update(CDatabase &db, const DatabaseSettings &settings)
     if (version)
       dbName += std::to_string(version);
 
+    m_connecting = true;
     const CDatabase::ConnectionState connectionState{db.Connect(dbName, dbSettings, false)};
+    m_connecting = false;
 
     if (connectionState == CDatabase::ConnectionState::STATE_ERROR)
     {

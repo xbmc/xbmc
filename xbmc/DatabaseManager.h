@@ -50,12 +50,21 @@ public:
    */
   bool CanOpen(const std::string &name);
 
+  /*! \brief Check whether manager is connecting to the databases currently.
+   \return true if connecting, false otherwise.
+   */
+  bool IsConnecting() const { return m_connecting; }
+
+  /*! \brief Check whether manager is upgrading the databases currently.
+   \return true if upgrading, false otherwise.
+   */
   bool IsUpgrading() const { return m_bIsUpgrading; }
 
   void LocalizationChanged();
 
 private:
   std::atomic<bool> m_bIsUpgrading;
+  std::atomic<bool> m_connecting{false};
 
   enum class DBStatus
   {
