@@ -31,7 +31,7 @@
 #define DTS_SYNC_EXT_X96K   0x1d95f262  // DTS Extension to 96 kHz Frequency (X96k) - if a channel extension is present the X96k extension data is placed before the XCh extension data in the encoded bit stream.
 #define DTS_SYNC_EXT_XBR    0x655e315e  // DTS Extension Extended Bit Rate, allow greater than 1.5 Mbps
 #define DTS_SYNC_EXT_LBR    0x0a801921  // DTS Extention Low Bit Rate
-#define DTS_SYNC_EXT_XLL    0x41a29547  // DTS Extention Lossless conding ententlon as used for DTS-HD Master Audio
+#define DTS_SYNC_EXT_XLL    0x41a29547  // DTS Extention Lossless conding extension as used for DTS-HD Master Audio
 
 #define DTS_SFREQ_COUNT 16
 #define MAX_EAC3_BLOCKS 6
