@@ -577,11 +577,14 @@ bool CApplication::Initialize()
   // initialize (and update as needed) our databases
   CDatabaseManager &databaseManager = m_ServiceManager->GetDatabaseManager();
 
+  bool allDatabasesInitialized{false};
   CEvent event(true);
-  CServiceBroker::GetJobManager()->Submit([&databaseManager, &event]() {
-    databaseManager.Initialize();
-    event.Set();
-  });
+  CServiceBroker::GetJobManager()->Submit(
+      [&allDatabasesInitialized, &databaseManager, &event]()
+      {
+        allDatabasesInitialized = databaseManager.Initialize();
+        event.Set();
+      });
 
   std::string localizedStr = g_localizeStrings.Get(24150);
   int iDots = 1;
@@ -596,6 +599,13 @@ bool CApplication::Initialize()
       ++iDots;
   }
   CServiceBroker::GetRenderSystem()->ShowSplash("");
+
+  if (!allDatabasesInitialized)
+  {
+    // Bail out if any of the databases failed to initialize properly.
+    CLog::Log(LOGFATAL, "Failed to initialize databases");
+    return false;
+  }
 
   // Initialize GUI font manager to build/update fonts cache
   //! @todo Move GUIFontManager into service broker and drop the global reference

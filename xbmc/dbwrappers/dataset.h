@@ -29,9 +29,9 @@ class Dataset; // forward declaration of class Dataset
 
 #define DB_BUFF_MAX 8 * 1024 // Maximum buffer's capacity
 
-#define DB_CONNECTION_NONE 0
-#define DB_CONNECTION_OK 1
-#define DB_CONNECTION_BAD 2
+constexpr unsigned int DB_CONNECTION_NONE = 0;
+constexpr unsigned int DB_CONNECTION_OK = 1;
+constexpr unsigned int DB_CONNECTION_DATABASE_NOT_FOUND = 2;
 
 #define DB_COMMAND_OK 0 // OK - command executed
 #define DB_EMPTY_QUERY 1 // Query didn't return tuples

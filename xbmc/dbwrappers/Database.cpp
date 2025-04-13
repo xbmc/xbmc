@@ -535,7 +535,7 @@ bool CDatabase::Open(const DatabaseSettings& settings)
 
   std::string dbName = dbSettings.name;
   dbName += std::to_string(GetSchemaVersion());
-  return Connect(dbName, dbSettings, false);
+  return Connect(dbName, dbSettings, false) == CDatabase::ConnectionState::STATE_CONNECTED;
 }
 
 void CDatabase::InitSettings(DatabaseSettings& dbSettings)
@@ -580,7 +580,9 @@ void CDatabase::DropAnalytics()
   m_pDB->drop_analytics();
 }
 
-bool CDatabase::Connect(const std::string& dbName, const DatabaseSettings& dbSettings, bool create)
+CDatabase::ConnectionState CDatabase::Connect(const std::string& dbName,
+                                              const DatabaseSettings& dbSettings,
+                                              bool create)
 {
   // create the appropriate database structure
   if (dbSettings.type == "sqlite3")
@@ -596,7 +598,7 @@ bool CDatabase::Connect(const std::string& dbName, const DatabaseSettings& dbSet
   else
   {
     CLog::Log(LOGERROR, "Unable to determine database type: {}", dbSettings.type);
-    return false;
+    return ConnectionState::STATE_ERROR;
   }
 
   // host name is always required
@@ -623,8 +625,19 @@ bool CDatabase::Connect(const std::string& dbName, const DatabaseSettings& dbSet
   m_pDS.reset(m_pDB->CreateDataset());
   m_pDS2.reset(m_pDB->CreateDataset());
 
-  if (m_pDB->connect(create) != DB_CONNECTION_OK)
-    return false;
+  const int state{m_pDB->connect(create)};
+  switch (state)
+  {
+    case DB_CONNECTION_OK:
+      break;
+    case DB_CONNECTION_DATABASE_NOT_FOUND:
+      return ConnectionState::STATE_DATABASE_NOT_FOUND;
+    case DB_CONNECTION_NONE:
+      return ConnectionState::STATE_ERROR;
+    default:
+      CLog::LogF(LOGERROR, "Unhandled connection status: {}", state);
+      return ConnectionState::STATE_ERROR;
+  }
 
   try
   {
@@ -652,11 +665,11 @@ bool CDatabase::Connect(const std::string& dbName, const DatabaseSettings& dbSet
     CLog::Log(LOGERROR, "{} failed with '{}'", __FUNCTION__, error.getMsg());
     m_openCount = 1; // set to open so we can execute Close()
     Close();
-    return false;
+    return ConnectionState::STATE_ERROR;
   }
 
   m_openCount = 1; // our database is open
-  return true;
+  return ConnectionState::STATE_CONNECTED;
 }
 
 int CDatabase::GetDBVersion()

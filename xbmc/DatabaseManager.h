@@ -35,8 +35,9 @@ public:
 
   /*! \brief Initialize the database manager
    Checks that all databases are up to date, otherwise updates them.
+   \return true if all databases are initialized successfully, false otherwise.
    */
-  void Initialize();
+  bool Initialize();
 
   /*! \brief Check whether we can open a database.
 

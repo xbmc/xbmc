@@ -254,14 +254,16 @@ int MysqlDatabase::connect(bool create_new)
     }
 
     // if we failed above, either credentials were incorrect or the database didn't exist
-    if (mysql_errno(conn) == ER_BAD_DB_ERROR && create_new)
+    if (mysql_errno(conn) == ER_BAD_DB_ERROR)
     {
-
-      if (create() == MYSQL_OK)
+      if (create_new && create() == MYSQL_OK)
       {
         active = true;
-
         return DB_CONNECTION_OK;
+      }
+      else
+      {
+        return DB_CONNECTION_DATABASE_NOT_FOUND; // we're connected, but database does not exist
       }
     }
 
