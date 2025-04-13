@@ -606,7 +606,7 @@ int check_in_pts(am_private_t *para, am_packet_t *pkt)
     && UINT64_0 != pkt->avpts
     && para->m_dll->codec_checkin_pts_us64(pkt->codec, pkt->avpts) != 0)
   {
-    logM(LOGDEBUG, "AMLCodec", "ERROR check in pts error!");
+    logM(LOGERROR, "AMLCodec", "ERROR check in pts error!");
     return PLAYER_PTS_ERROR;
   }
   return PLAYER_SUCCESS;
@@ -669,12 +669,12 @@ int write_av_packet(am_private_t *para, am_packet_t *pkt)
         if (pkt->isvalid) {
             ret = check_in_pts(para, pkt);
             if (ret != PLAYER_SUCCESS) {
-                logM(LOGDEBUG, "AMLCodec", "check in pts failed");
+                logM(LOGERROR, "AMLCodec", "check in pts failed");
                 return PLAYER_WR_FAILED;
             }
         }
         if (write_header(para, pkt) == PLAYER_WR_FAILED) {
-            logM(LOGDEBUG, "AMLCodec", "write header failed!");
+            logM(LOGERROR, "AMLCodec", "write header failed!");
             return PLAYER_WR_FAILED;
         }
         pkt->newflag = 0;
@@ -690,7 +690,7 @@ int write_av_packet(am_private_t *para, am_packet_t *pkt)
     while (size > 0 && pkt->isvalid) {
         write_bytes = para->m_dll->codec_write(pkt->codec, buf, size);
         if (write_bytes < 0 || write_bytes > size) {
-            logM(LOGDEBUG, "AMLCodec", "write codec data failed, write_bytes({:d}), errno({:d}), size({:d})", write_bytes, errno, size);
+            logM(LOGERROR, "AMLCodec", "write codec data failed, write_bytes({:d}), errno({:d}), size({:d})", write_bytes, errno, size);
             if (-errno != AVERROR(EAGAIN)) {
                 logM(LOGDEBUG, "AMLCodec", "write codec data failed!");
                 return PLAYER_WR_FAILED;
