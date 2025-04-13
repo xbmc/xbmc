@@ -36,17 +36,17 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   SETUP_FIND_SPECS()
 
   # Search for cmake config. Suitable for all platforms including windows
-  find_package(libnfs ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG QUIET
+  find_package(libnfs ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
                       HINTS ${DEPENDS_PATH}/lib/cmake
                       ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 
   # cmake config may not be available (eg Debian libnfs-dev package)
   # fallback to pkgconfig for non windows platforms
   if(NOT libnfs_FOUND)
-    find_package(PkgConfig QUIET)
+    find_package(PkgConfig ${SEARCH_QUIET})
 
     if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWSSTORE))
-      pkg_check_modules(libnfs libnfs${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} IMPORTED_TARGET QUIET)
+      pkg_check_modules(libnfs libnfs${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} IMPORTED_TARGET ${SEARCH_QUIET})
     endif()
   endif()
 

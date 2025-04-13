@@ -13,11 +13,11 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   SETUP_FIND_SPECS()
 
-  find_package(PkgConfig QUIET)
+  find_package(PkgConfig ${SEARCH_QUIET})
 
   if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWS_STORE))
 
-    pkg_check_modules(MICROHTTPD libmicrohttpd${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} QUIET)
+    pkg_check_modules(MICROHTTPD libmicrohttpd${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET})
 
     # First item is the full path of the library file found
     # pkg_check_modules does not populate a variable of the found library explicitly

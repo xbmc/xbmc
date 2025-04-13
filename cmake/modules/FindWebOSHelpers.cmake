@@ -13,9 +13,9 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   SETUP_FIND_SPECS()
 
-  find_package(PkgConfig QUIET)
+  find_package(PkgConfig ${SEARCH_QUIET})
   if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_WEBOSHELPERS helpers${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} QUIET)
+    pkg_check_modules(PC_WEBOSHELPERS helpers${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET})
   endif()
 
   find_path(WEBOSHELPERS_INCLUDE_DIR NAMES webos-helpers/libhelpers.h

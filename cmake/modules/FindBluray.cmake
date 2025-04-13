@@ -16,16 +16,16 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   SETUP_FIND_SPECS()
 
   # Check for existing libcec. If version >= LIBBLURAY-VERSION file version, dont build
-  find_package(libbluray ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG QUIET
+  find_package(libbluray ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
                          HINTS ${DEPENDS_PATH}/lib/cmake
                          ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 
   # cmake config may not be available (eg Debian libbluray-dev package)
   # fallback to pkgconfig for non windows platforms
   if(NOT libbluray_FOUND)
-    find_package(PkgConfig QUIET)
+    find_package(PkgConfig ${SEARCH_QUIET})
     if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWSSTORE))
-      pkg_check_modules(libbluray libbluray${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} QUIET IMPORTED_TARGET)
+      pkg_check_modules(libbluray libbluray${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET} IMPORTED_TARGET)
     endif()
   endif()
 

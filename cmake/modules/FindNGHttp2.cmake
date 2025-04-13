@@ -36,7 +36,7 @@ if(NOT TARGET LIBRARY::NGHttp2)
 
   # Search for cmake config. Suitable for all platforms including windows
   # nghttp uses a non standard config name, so we have to supply CONFIGS
-  find_package(nghttp2 ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG QUIET
+  find_package(nghttp2 ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
                        CONFIGS nghttp2-targets.cmake
                        HINTS ${DEPENDS_PATH}/lib/cmake
                        ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
@@ -44,10 +44,10 @@ if(NOT TARGET LIBRARY::NGHttp2)
   # cmake config may not be available (eg Debian libnghttp2-dev package)
   # fallback to pkgconfig for non windows platforms
   if(NOT nghttp2_FOUND)
-    find_package(PkgConfig QUIET)
+    find_package(PkgConfig ${SEARCH_QUIET})
 
     if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWSSTORE))
-      pkg_check_modules(nghttp2 libnghttp2${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} QUIET IMPORTED_TARGET)
+      pkg_check_modules(nghttp2 libnghttp2${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET} IMPORTED_TARGET)
     endif()
   endif()
 

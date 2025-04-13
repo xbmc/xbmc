@@ -10,9 +10,9 @@
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   macro(buildexiv2)
-    find_package(Brotli REQUIRED)
-    find_package(Iconv REQUIRED)
-    find_package(Zlib REQUIRED)
+    find_package(Brotli REQUIRED ${SEARCH_QUIET})
+    find_package(Iconv REQUIRED ${SEARCH_QUIET})
+    find_package(Zlib REQUIRED ${SEARCH_QUIET})
 
     # Patch pending review upstream (https://github.com/Exiv2/exiv2/pull/3004)
     set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/0001-WIN-lib-postfix.patch")
@@ -82,16 +82,16 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   SETUP_FIND_SPECS()
 
-  find_package(exiv2 ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG QUIET
+  find_package(exiv2 ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
                      HINTS ${DEPENDS_PATH}/lib/cmake
                      ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 
   # cmake config may not be available
   # fallback to pkgconfig for non windows platforms
   if(NOT exiv2_FOUND)
-    find_package(PkgConfig QUIET)
+    find_package(PkgConfig ${SEARCH_QUIET})
     if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWSSTORE))
-      pkg_check_modules(exiv2 exiv2${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} QUIET IMPORTED_TARGET)
+      pkg_check_modules(exiv2 exiv2${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET} IMPORTED_TARGET)
     endif()
   endif()
 

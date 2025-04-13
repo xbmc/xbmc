@@ -11,9 +11,9 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
   macro(buildCurl)
-    find_package(Brotli REQUIRED QUIET)
-    find_package(NGHttp2 REQUIRED QUIET)
-    find_package(OpenSSL REQUIRED QUIET)
+    find_package(Brotli REQUIRED ${SEARCH_QUIET})
+    find_package(NGHttp2 REQUIRED ${SEARCH_QUIET})
+    find_package(OpenSSL REQUIRED ${SEARCH_QUIET})
 
     # Darwin platforms link against toolchain provided zlib regardless
     # They will fail when searching for static. All other platforms, prefer static
@@ -22,7 +22,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     if(NOT CMAKE_SYSTEM_NAME MATCHES "Darwin" AND NOT (WIN32 OR WINDOWS_STORE))
       set(ZLIB_USE_STATIC_LIBS ON)
     endif()
-    find_package(Zlib REQUIRED QUIET)
+    find_package(Zlib REQUIRED ${SEARCH_QUIET})
     unset(ZLIB_USE_STATIC_LIBS)
 
     set(CURL_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
@@ -85,20 +85,20 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   SETUP_FIND_SPECS()
 
-  find_package(CURL ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG QUIET
+  find_package(CURL ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
                     HINTS ${DEPENDS_PATH}/lib/cmake
                     ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 
   # cmake config may not be available (eg Debian libcurl-dev package)
   # fallback to pkgconfig for non windows platforms
   if(NOT CURL_FOUND)
-    find_package(PkgConfig QUIET)
+    find_package(PkgConfig ${SEARCH_QUIET})
     # We explicitly skip a pkgconfig search for Darwin platforms, as system zlib can not
     # be found by pkg-config, and a search for Curl's Libs field is made during the
     # pkg_check_modules call
     if(PKG_CONFIG_FOUND AND NOT ((WIN32 OR WINDOWSSTORE) OR 
                                  (CMAKE_SYSTEM_NAME MATCHES "Darwin")))
-      pkg_check_modules(CURL libcurl${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} QUIET IMPORTED_TARGET)
+      pkg_check_modules(CURL libcurl${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET} IMPORTED_TARGET)
     endif()
   endif()
 

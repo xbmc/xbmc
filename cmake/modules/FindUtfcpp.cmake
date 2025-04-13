@@ -28,7 +28,7 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
 
   SETUP_BUILD_VARS()
 
-  find_package(utf8cpp CONFIG QUIET
+  find_package(utf8cpp CONFIG ${SEARCH_QUIET}
                        HINTS ${DEPENDS_PATH}/share/utf8cpp/cmake
                        ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 

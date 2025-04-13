@@ -8,9 +8,9 @@
 #   ${APP_NAME_LC}::UDEV   - The UDEV library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  find_package(PkgConfig QUIET)
+  find_package(PkgConfig ${SEARCH_QUIET})
   if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_UDEV libudev QUIET)
+    pkg_check_modules(PC_UDEV libudev ${SEARCH_QUIET})
   endif()
 
   find_path(UDEV_INCLUDE_DIR NAMES libudev.h

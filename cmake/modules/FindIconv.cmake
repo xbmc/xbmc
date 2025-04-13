@@ -19,7 +19,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     set(ICONV_REQUIRED "REQUIRED")
   endif()
 
-  find_package(Iconv ${ICONV_REQUIRED} QUIET)
+  find_package(Iconv ${ICONV_REQUIRED} ${SEARCH_QUIET})
 
   # Back to our normal module paths
   set(CMAKE_MODULE_PATH ${_temp_CMAKE_MODULE_PATH})

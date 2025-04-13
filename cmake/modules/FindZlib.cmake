@@ -31,7 +31,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     set(ZLIB_USE_STATIC_LIBS ON)
   endif()
 
-  find_package(ZLIB QUIET ${REQ})
+  find_package(ZLIB ${SEARCH_QUIET} ${REQ})
   unset(ZLIB_USE_STATIC_LIBS)
 
   # Back to our normal module paths

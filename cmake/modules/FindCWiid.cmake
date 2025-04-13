@@ -9,7 +9,7 @@
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_CWIID cwiid QUIET)
+    pkg_check_modules(PC_CWIID cwiid ${SEARCH_QUIET})
   endif()
 
   find_path(CWIID_INCLUDE_DIR NAMES cwiid.h

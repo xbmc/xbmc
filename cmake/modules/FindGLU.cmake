@@ -9,10 +9,10 @@
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
-  find_package(PkgConfig QUIET)
+  find_package(PkgConfig ${SEARCH_QUIET})
 
   if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_GLU glu QUIET)
+    pkg_check_modules(PC_GLU glu ${SEARCH_QUIET})
   endif()
 
   find_path(GLU_INCLUDE_DIR NAMES GL/glu.h

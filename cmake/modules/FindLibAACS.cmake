@@ -9,11 +9,11 @@
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
-  find_package(PkgConfig QUIET)
+  find_package(PkgConfig ${SEARCH_QUIET})
 
   # We only rely on pkgconfig for non windows platforms
   if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWS_STORE))
-    pkg_check_modules(LIBAACS libaacs IMPORTED_TARGET GLOBAL QUIET)
+    pkg_check_modules(LIBAACS libaacs IMPORTED_TARGET ${SEARCH_QUIET})
 
     get_target_property(LIBAACS_LIBRARY PkgConfig::LIBAACS INTERFACE_LINK_LIBRARIES)
     get_target_property(LIBAACS_INCLUDE_DIR PkgConfig::LIBAACS INTERFACE_INCLUDE_DIRECTORIES)

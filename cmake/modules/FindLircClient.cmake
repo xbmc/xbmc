@@ -7,9 +7,9 @@
 #   ${APP_NAME_LC}::LircClient - The lirc library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  find_package(PkgConfig QUIET)
+  find_package(PkgConfig ${SEARCH_QUIET})
   if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_LIRC lirc QUIET)
+    pkg_check_modules(PC_LIRC lirc ${SEARCH_QUIET})
   endif()
 
   find_path(LIRCCLIENT_INCLUDE_DIR lirc/lirc_client.h

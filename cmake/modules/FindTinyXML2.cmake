@@ -14,7 +14,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     set(TINYXML2_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
     set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_DEBUG_POSTFIX d)
   
-    find_package(Patch MODULE REQUIRED)
+    find_package(Patch MODULE REQUIRED ${SEARCH_QUIET})
   
     if(UNIX)
       # ancient patch (Apple/freebsd) fails to patch tinyxml2 CMakeLists.txt file due to it being crlf encoded
@@ -50,16 +50,16 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   SETUP_FIND_SPECS()
 
-  find_package(tinyxml2 ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG QUIET
+  find_package(tinyxml2 ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
                         HINTS ${DEPENDS_PATH}/lib/cmake
                         ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 
   # fallback to pkgconfig for non windows platforms
   if(NOT tinyxml2_FOUND)
-    find_package(PkgConfig QUIET)
+    find_package(PkgConfig ${SEARCH_QUIET})
 
     if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWSSTORE))
-      pkg_check_modules(tinyxml2 tinyxml2${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} QUIET IMPORTED_TARGET)
+      pkg_check_modules(tinyxml2 tinyxml2${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET} IMPORTED_TARGET)
     endif()
   endif()
 

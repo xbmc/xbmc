@@ -9,9 +9,9 @@
 #
 
 if(NOT TARGET UUID::UUID)
-  find_package(PkgConfig QUIET)
+  find_package(PkgConfig ${SEARCH_QUIET})
   if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_UUID uuid QUIET)
+    pkg_check_modules(PC_UUID uuid ${SEARCH_QUIET})
   endif()
 
   find_path(UUID_INCLUDE_DIR uuid/uuid.h

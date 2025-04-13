@@ -10,7 +10,7 @@
 if(NOT TARGET LibDvdRead::LibDvdRead)
 
   if(ENABLE_DVDCSS)
-    find_package(LibDvdCSS MODULE REQUIRED)
+    find_package(LibDvdCSS MODULE REQUIRED ${SEARCH_QUIET})
   endif()
 
   include(cmake/scripts/common/ModuleHelpers.cmake)

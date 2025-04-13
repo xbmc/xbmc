@@ -8,9 +8,9 @@
 #   ${APP_NAME_LC}::AcbAPI   - The acbAPI library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  find_package(PkgConfig QUIET)
+  find_package(PkgConfig ${SEARCH_QUIET})
   if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_ACBAPI libAcbAPI QUIET)
+    pkg_check_modules(PC_ACBAPI libAcbAPI ${SEARCH_QUIET})
   endif()
 
   find_path(ACBAPI_INCLUDE_DIR NAMES appswitching-control-block/AcbAPI.h

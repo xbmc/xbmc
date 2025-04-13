@@ -41,16 +41,16 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
   SETUP_FIND_SPECS()
 
   # Search cmake-config. Suitable all platforms
-  find_package(p8-platform ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG QUIET
+  find_package(p8-platform ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
                            HINTS ${DEPENDS_PATH}/lib/cmake
                            ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
 
   # fallback to pkgconfig for non windows platforms
   if(NOT p8-platform_FOUND)
-    find_package(PkgConfig QUIET)
+    find_package(PkgConfig ${SEARCH_QUIET})
 
     if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWSSTORE))
-      pkg_check_modules(p8-platform p8-platform${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} QUIET IMPORTED_TARGET)
+      pkg_check_modules(p8-platform p8-platform${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET} IMPORTED_TARGET)
     endif()
   endif()
 

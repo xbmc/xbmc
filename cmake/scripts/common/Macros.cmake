@@ -599,7 +599,7 @@ function(core_find_git_rev stamp)
     string(TIMESTAMP APP_BUILD_DATE "%Y%m%d" UTC)
     set(APP_BUILD_DATE ${APP_BUILD_DATE} PARENT_SCOPE)
   else()
-    find_package(Git)
+    find_package(Git ${SEARCH_QUIET})
     if(GIT_FOUND AND EXISTS ${CMAKE_SOURCE_DIR}/.git)
       # get tree status i.e. clean working tree vs dirty (uncommitted or unstashed changes, etc.)
       execute_process(COMMAND ${GIT_EXECUTABLE} update-index --ignore-submodules -q --refresh

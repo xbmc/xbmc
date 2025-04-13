@@ -9,11 +9,11 @@
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
-  find_package(LibXml2 REQUIRED)
-  find_package(PkgConfig QUIET)
+  find_package(LibXml2 REQUIRED ${SEARCH_QUIET})
+  find_package(PkgConfig ${SEARCH_QUIET})
 
   if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWS_STORE))
-    pkg_check_modules(PC_XSLT libxslt QUIET)
+    pkg_check_modules(PC_XSLT libxslt ${SEARCH_QUIET})
   endif()
 
   find_path(XSLT_INCLUDE_DIR NAMES libxslt/xslt.h

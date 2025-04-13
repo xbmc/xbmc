@@ -14,11 +14,11 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   SETUP_FIND_SPECS()
 
-  find_package(PkgConfig QUIET)
+  find_package(PkgConfig ${SEARCH_QUIET})
   if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_PULSEAUDIO libpulse${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} QUIET)
-    pkg_check_modules(PC_PULSEAUDIO_MAINLOOP libpulse-mainloop-glib${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} QUIET)
-    pkg_check_modules(PC_PULSEAUDIO_SIMPLE libpulse-simple${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} QUIET)
+    pkg_check_modules(PC_PULSEAUDIO libpulse${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET})
+    pkg_check_modules(PC_PULSEAUDIO_MAINLOOP libpulse-mainloop-glib${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET})
+    pkg_check_modules(PC_PULSEAUDIO_SIMPLE libpulse-simple${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET})
   endif()
 
   find_path(PULSEAUDIO_INCLUDE_DIR NAMES pulse/pulseaudio.h pulse/simple.h

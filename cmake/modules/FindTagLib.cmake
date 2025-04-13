@@ -19,8 +19,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       # Requires cmake 3.24 for ZLIB_USE_STATIC_LIBS to actually do something
       set(ZLIB_USE_STATIC_LIBS ON)
     endif()
-    find_package(ZLIB REQUIRED)
-    find_package(Utfcpp REQUIRED QUIET)
+    find_package(ZLIB REQUIRED ${SEARCH_QUIET})
+    find_package(Utfcpp REQUIRED ${SEARCH_QUIET})
   
     set(TAGLIB_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
   
@@ -69,17 +69,17 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   # Check for existing TAGLIB. If version >= TAGLIB-VERSION file version, dont build
   # Taglib 2.0+ provides cmake configs
-  find_package(taglib ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG QUIET
+  find_package(taglib ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
                       HINTS ${DEPENDS_PATH}/lib/cmake
                       ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
 
   # cmake config may not be available (taglib 1.x series)
   # fallback to pkgconfig for non windows platforms
   if(NOT taglib_FOUND)
-    find_package(PkgConfig QUIET)
+    find_package(PkgConfig ${SEARCH_QUIET})
 
     if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWSSTORE))
-      pkg_check_modules(taglib taglib${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} QUIET IMPORTED_TARGET)
+      pkg_check_modules(taglib taglib${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET} IMPORTED_TARGET)
 
     else()
       # Taglib installs a shell script for all platforms. This can provide version universally

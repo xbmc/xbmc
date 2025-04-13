@@ -38,7 +38,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   SETUP_BUILD_VARS()
 
-  find_package(effects11 CONFIG QUIET
+  find_package(effects11 CONFIG ${SEARCH_QUIET}
                                 HINTS ${DEPENDS_PATH}/share
                                 ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 

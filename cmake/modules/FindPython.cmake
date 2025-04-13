@@ -46,7 +46,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     unset(PYTHON_VER CACHE)
   endif()
 
-  find_package(Python3 ${VERSION} ${EXACT_VER} COMPONENTS Development)
+  find_package(Python3 ${VERSION} ${EXACT_VER} COMPONENTS Development ${SEARCH_QUIET})
 
   if(Python3_FOUND)
     if(KODI_DEPENDSBUILD)

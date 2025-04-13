@@ -12,10 +12,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   SETUP_FIND_SPECS()
 
-  find_package(PkgConfig QUIET)
+  find_package(PkgConfig ${SEARCH_QUIET})
   if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_PIPEWIRE libpipewire-0.3${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} QUIET)
-    pkg_check_modules(PC_SPA libspa-0.2>=0.2 QUIET)
+    pkg_check_modules(PC_PIPEWIRE libpipewire-0.3${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET})
+    pkg_check_modules(PC_SPA libspa-0.2>=0.2 ${SEARCH_QUIET})
   endif()
 
   find_path(PIPEWIRE_INCLUDE_DIR NAMES pipewire/pipewire.h

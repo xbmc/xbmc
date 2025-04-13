@@ -106,7 +106,7 @@ endfunction()
 # Used to test windows line endings and set appropriate patch commands
 function(generate_patchcommand _patchlist)
   # find the path to the patch executable
-  find_package(Patch MODULE REQUIRED)
+  find_package(Patch MODULE REQUIRED ${SEARCH_QUIET})
 
   # Loop through patches and add to PATCH_COMMAND
   # for windows, check CRLF/LF state
@@ -492,7 +492,7 @@ endmacro()
 #       We may want to run all find_package calls regardless for dependency inception
 function(check_dependency_build caller dep_list)
     foreach(_dep ${dep_list})
-      find_package(${_dep} REQUIRED QUIET)
+      find_package(${_dep} REQUIRED ${SEARCH_QUIET})
       if(TARGET LIBRARY::${_dep})
         # Test if LIB_BUILD property is set on LIBRARY::${_dep} TARGET indicating
         # if it requires to be build (version update, or even just missing)

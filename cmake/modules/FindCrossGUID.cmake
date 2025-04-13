@@ -38,10 +38,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   if(ENABLE_INTERNAL_CROSSGUID)
     buildCrossGUID()
   else()
-    find_package(PkgConfig QUIET)
+    find_package(PkgConfig ${SEARCH_QUIET})
     # Do not use pkgconfig on windows
     if(PKG_CONFIG_FOUND AND NOT WIN32)
-      pkg_check_modules(PC_CROSSGUID crossguid QUIET)
+      pkg_check_modules(PC_CROSSGUID crossguid ${SEARCH_QUIET})
       set(CROSSGUID_VERSION ${PC_CROSSGUID_VERSION})
     endif()
 
@@ -91,7 +91,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     if(UNIX AND NOT (APPLE OR ANDROID))
       # Suppress mismatch warning, see https://cmake.org/cmake/help/latest/module/FindPackageHandleStandardArgs.html
       set(FPHSA_NAME_MISMATCHED 1)
-      find_package(UUID REQUIRED)
+      find_package(UUID REQUIRED ${SEARCH_QUIET})
       unset(FPHSA_NAME_MISMATCHED)
 
       if(TARGET UUID::UUID)
