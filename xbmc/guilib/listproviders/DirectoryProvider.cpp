@@ -370,7 +370,6 @@ void CDirectoryProvider::OnPVRManagerEvent(const PVR::PVREvent& event)
   if (URIUtils::IsProtocol(m_currentUrl, "pvr"))
   {
     if (event == PVR::PVREvent::ManagerStarted || event == PVR::PVREvent::ManagerStopped ||
-        event == PVR::PVREvent::ManagerError || event == PVR::PVREvent::ManagerInterrupted ||
         event == PVR::PVREvent::RecordingsInvalidated ||
         event == PVR::PVREvent::TimersInvalidated ||
         event == PVR::PVREvent::ChannelGroupsInvalidated ||

@@ -176,8 +176,6 @@ int CPVRChannelGroups::GetGroupClientPriority(
 
 void CPVRChannelGroups::SortGroupsByBackendOrder()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
-
   const auto& gF = GetGroupFactory();
 
   // sort by group type, then by client priority, then by position, last by name
@@ -202,8 +200,6 @@ void CPVRChannelGroups::SortGroupsByBackendOrder()
 
 void CPVRChannelGroups::SortGroupsByLocalOrder()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
-
   // sort by group's local position
   std::sort(m_groups.begin(), m_groups.end(), [](const auto& group1, const auto& group2) {
     return group1->GetPosition() < group2->GetPosition();
@@ -212,15 +208,24 @@ void CPVRChannelGroups::SortGroupsByLocalOrder()
 
 void CPVRChannelGroups::SortGroups()
 {
-  const bool backendOrderSort =
-      m_settings.GetBoolValue(CSettings::SETTING_PVRMANAGER_BACKENDCHANNELGROUPSORDER);
+  bool orderChanged{false};
+  {
+    std::unique_lock<CCriticalSection> lock(m_critSection);
 
-  if (backendOrderSort)
-    SortGroupsByBackendOrder();
-  else
-    SortGroupsByLocalOrder();
+    const bool backendOrderSort{
+        m_settings.GetBoolValue(CSettings::SETTING_PVRMANAGER_BACKENDCHANNELGROUPSORDER)};
 
-  CServiceBroker::GetPVRManager().PublishEvent(PVREvent::ChannelGroupsInvalidated);
+    const std::vector<std::shared_ptr<CPVRChannelGroup>> groupsInOldOrder{m_groups};
+
+    if (backendOrderSort)
+      SortGroupsByBackendOrder();
+    else
+      SortGroupsByLocalOrder();
+
+    orderChanged = m_groups != groupsInOldOrder;
+  }
+  if (orderChanged)
+    CServiceBroker::GetPVRManager().PublishEvent(PVREvent::ChannelGroupsInvalidated);
 }
 
 std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroups::GetChannelGroupMemberByPath(
@@ -403,9 +408,10 @@ void CPVRChannelGroups::UpdateSystemChannelGroups()
   }
 
   if (!newGroups.empty())
+  {
     m_groups.insert(m_groups.end(), newGroups.cbegin(), newGroups.cend());
-
-  SortGroups();
+    SortGroups();
+  }
 }
 
 bool CPVRChannelGroups::UpdateChannelNumbersFromAllChannelsGroup()

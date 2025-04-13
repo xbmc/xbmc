@@ -451,9 +451,6 @@ void CPVRManager::SetState(CPVRManager::ManagerState state)
   PVREvent event;
   switch (state)
   {
-    case ManagerState::STATE_ERROR:
-      event = PVREvent::ManagerError;
-      break;
     case ManagerState::STATE_STOPPED:
       event = PVREvent::ManagerStopped;
       break;
@@ -462,9 +459,6 @@ void CPVRManager::SetState(CPVRManager::ManagerState state)
       break;
     case ManagerState::STATE_STOPPING:
       event = PVREvent::ManagerStopped;
-      break;
-    case ManagerState::STATE_INTERRUPTED:
-      event = PVREvent::ManagerInterrupted;
       break;
     case ManagerState::STATE_STARTED:
       event = PVREvent::ManagerStarted;
@@ -592,8 +586,6 @@ void CPVRManager::Process()
   m_timers->Stop();
   m_epgContainer->Stop();
   m_guiInfo->Stop();
-
-  SetState(ManagerState::STATE_INTERRUPTED);
 
   UnloadComponents();
   m_database->Close();
