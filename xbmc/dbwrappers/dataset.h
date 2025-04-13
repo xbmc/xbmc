@@ -56,6 +56,7 @@ protected:
       sequence_table, //Sequence table for nextid
       default_charset, //Default character set
       key, cert, ca, capath, ciphers; //SSL - Encryption info
+  unsigned int connect_timeout; // seconds
 
 public:
   /* constructor */
@@ -97,6 +98,7 @@ public:
                          const char* newCA,
                          const char* newCApath,
                          const char* newCiphers,
+                         unsigned int newConnectTimeout,
                          bool newCompression)
   {
     key = newKey;
@@ -104,6 +106,7 @@ public:
     ca = newCA;
     capath = newCApath;
     ciphers = newCiphers;
+    connect_timeout = newConnectTimeout;
     compression = newCompression;
   }
 

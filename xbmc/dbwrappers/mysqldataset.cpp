@@ -180,9 +180,7 @@ int MysqlDatabase::connect(bool create_new)
       mysql_ssl_set(conn, key.empty() ? NULL : key.c_str(), cert.empty() ? NULL : cert.c_str(),
                     ca.empty() ? NULL : ca.c_str(), capath.empty() ? NULL : capath.c_str(),
                     ciphers.empty() ? NULL : ciphers.c_str());
-      //! @todo make this a setting
-      static constexpr unsigned int CONNECT_TIMEOUT = 5; // secs
-      mysql_options(conn, MYSQL_OPT_CONNECT_TIMEOUT, &CONNECT_TIMEOUT);
+      mysql_options(conn, MYSQL_OPT_CONNECT_TIMEOUT, &connect_timeout);
     }
 
     if (!CWakeOnAccess::GetInstance().WakeUpHost(host, "MySQL : " + db))
