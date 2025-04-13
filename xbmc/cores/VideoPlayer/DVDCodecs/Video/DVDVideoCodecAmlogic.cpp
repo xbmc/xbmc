@@ -309,26 +309,26 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
       if (m_hints.extradata && !m_hints.cryptoSession && m_bitstream && (aml_dv_mode() != DV_MODE_OFF))
       {
         auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-        
+
         bool dualPriorityHdr10Plus = (settings->GetInt(CSettings::SETTING_COREELEC_AMLOGIC_DV_DUAL_PRIORITY) == 1);
-        
-        if (m_hints.hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION) 
+
+        if (m_hints.hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)
         {
           if (dualPriorityHdr10Plus)
           {
             logM(LOGINFO, "CDVDVideoCodecAmlogic", "DV HEVC bitstream - if stream also contains HDR10+, native HDR10+ has priority.");
             m_bitstream->SetDualPriorityHdr10Plus(true);
-          } 
-          else if (settings->GetBool(CSettings::SETTING_COREELEC_AMLOGIC_DV_HDR10PLUS_CONVERT)) 
+          }
+          else if (settings->GetBool(CSettings::SETTING_COREELEC_AMLOGIC_DV_HDR10PLUS_CONVERT))
           {
             bool preferConvertHdr10Plus = settings->GetBool(CSettings::SETTING_COREELEC_AMLOGIC_DV_HDR10PLUS_PREFER_CONVERT);
             m_bitstream->SetPreferCovertHdr10Plus(preferConvertHdr10Plus);
 
-            if (preferConvertHdr10Plus) 
+            if (preferConvertHdr10Plus)
               logM(LOGINFO, "CDVDVideoCodecAmlogic", "DV HEVC bitstream - if stream also contains HDR10+, conversion will be preferred over original Dolby Vision.");
           }
 
-          if (m_hints.dovi.dv_profile == 7) 
+          if (m_hints.dovi.dv_profile == 7)
           {
             DOVIMode convertDovi = static_cast<DOVIMode>(settings->GetInt(CSettings::SETTING_VIDEOPLAYER_CONVERTDOVI));
             if (convertDovi)
