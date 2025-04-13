@@ -336,7 +336,7 @@
 					<width>114</width>
 					<height>36</height>
 					<fadetime>0</fadetime>
-					<aspectratio align="center" aligny="center">keep</aspectratio>
+					<aspectratio align="right" aligny="center">keep</aspectratio>
 					<texture>$INFO[ListItem.Studio,resource://resource.images.studios.white/,.png]</texture>
 					<visible>System.AddonIsEnabled(resource.images.studios.white) + !String.IsEmpty($PARAM[infolabel_prefix]ListItem.Studio)</visible>
 				</control>
