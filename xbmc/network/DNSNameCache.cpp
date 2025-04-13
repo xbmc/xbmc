@@ -9,10 +9,11 @@
 #include "DNSNameCache.h"
 
 #include "network/Network.h"
-#include "threads/CriticalSection.h"
 #include "utils/log.h"
 
 #include <mutex>
+#include <tuple>
+#include <utility>
 
 #if !defined(TARGET_WINDOWS) && defined(HAS_FILESYSTEM_SMB)
 #include "ServiceBroker.h"
@@ -27,14 +28,6 @@
 #if defined(TARGET_FREEBSD)
 #include <sys/socket.h>
 #endif
-
-CDNSNameCache g_DNSCache;
-
-CCriticalSection CDNSNameCache::m_critical;
-
-CDNSNameCache::CDNSNameCache(void) = default;
-
-CDNSNameCache::~CDNSNameCache(void) = default;
 
 bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAddress)
 {
@@ -54,7 +47,7 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
   }
 
   // check if there's a custom entry or if it's already cached
-  if (g_DNSCache.GetCached(strHostName, strIpAddress))
+  if (GetCached(strHostName, strIpAddress))
     return true;
 
   // perform dns lookup
@@ -69,7 +62,7 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
   {
     strIpAddress = CNetworkBase::GetIpStr(res->ai_addr);
     freeaddrinfo(res);
-    g_DNSCache.Add(strHostName, strIpAddress);
+    Add(strHostName, strIpAddress);
     return true;
   }
 
@@ -77,20 +70,20 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
   return false;
 }
 
-bool CDNSNameCache::GetCached(const std::string& strHostName, std::string& strIpAddress)
+bool CDNSNameCache::GetCached(const std::string& strHostName, std::string& strIpAddress) const
 {
-  {
-    std::unique_lock<CCriticalSection> lock(m_critical);
+  std::lock_guard lock(m_critical);
 
-    // loop through all DNSname entries and see if strHostName is cached
-    for (const auto& DNSname : g_DNSCache.m_vecDNSNames)
+  if (auto iter = m_hostToIp.find(strHostName); iter != m_hostToIp.end())
+  {
+    if (!iter->second.m_expirationTime ||
+        iter->second.m_expirationTime > std::chrono::steady_clock::now())
     {
-      if (DNSname.m_strHostName == strHostName)
-      {
-        strIpAddress = DNSname.m_strIpAddress;
-        return true;
-      }
+      strIpAddress = iter->second.m_ip;
+      return true;
     }
+    else
+      m_hostToIp.erase(iter);
   }
 
 #if !defined(TARGET_WINDOWS) && defined(HAS_FILESYSTEM_SMB)
@@ -112,12 +105,20 @@ bool CDNSNameCache::GetCached(const std::string& strHostName, std::string& strIp
 
 void CDNSNameCache::Add(const std::string& strHostName, const std::string& strIpAddress)
 {
-  CDNSName dnsName;
-
-  dnsName.m_strHostName = strHostName;
-  dnsName.m_strIpAddress  = strIpAddress;
-
-  std::unique_lock<CCriticalSection> lock(m_critical);
-  g_DNSCache.m_vecDNSNames.push_back(dnsName);
+  std::lock_guard lock(m_critical);
+  m_hostToIp.emplace(std::piecewise_construct, std::forward_as_tuple(strHostName),
+                     std::forward_as_tuple(strIpAddress, std::chrono::steady_clock::now() + TTL));
 }
 
+void CDNSNameCache::AddPermanent(const std::string& strHostName, const std::string& strIpAddress)
+{
+  std::lock_guard lock(m_critical);
+  m_hostToIp.emplace(std::piecewise_construct, std::forward_as_tuple(strHostName),
+                     std::forward_as_tuple(strIpAddress, std::nullopt));
+}
+
+CDNSNameCache::CacheEntry::CacheEntry(
+    std::string ip, std::optional<std::chrono::steady_clock::time_point> expirationTime)
+  : m_ip(std::move(ip)), m_expirationTime(expirationTime)
+{
+}

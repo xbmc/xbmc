@@ -443,3 +443,18 @@ std::shared_ptr<speech::ISpeechRecognition> CServiceBroker::GetSpeechRecognition
 {
   return g_serviceBroker.m_speechRecognition;
 }
+
+void CServiceBroker::RegisterDNSNameCache(std::shared_ptr<CDNSNameCache> cache)
+{
+  g_serviceBroker.m_dnsNameCache = std::move(cache);
+}
+
+void CServiceBroker::UnregisterDNSNameCache()
+{
+  g_serviceBroker.m_dnsNameCache.reset();
+}
+
+std::shared_ptr<CDNSNameCache> CServiceBroker::GetDNSNameCache()
+{
+  return g_serviceBroker.m_dnsNameCache;
+}

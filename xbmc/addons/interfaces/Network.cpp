@@ -156,7 +156,7 @@ char* Interface_Network::dns_lookup(void* kodiBase, const char* url, bool* ret)
   }
 
   std::string string;
-  *ret = CDNSNameCache::Lookup(url, string);
+  *ret = CServiceBroker::GetDNSNameCache()->Lookup(url, string);
   char* buffer = nullptr;
   if (!string.empty())
     buffer = strdup(string.c_str());
