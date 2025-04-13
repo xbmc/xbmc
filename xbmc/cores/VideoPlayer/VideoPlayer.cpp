@@ -2498,7 +2498,7 @@ bool CVideoPlayer::CheckSceneSkip(const CCurrentStream& current)
     return false;
 
   const auto hasEdit =
-      m_Edl.InEdit(std::chrono::milliseconds(std::lround(current.dts + m_offset_pts)));
+      m_Edl.InEdit(std::chrono::milliseconds(DVD_TIME_TO_MSEC(current.dts + m_offset_pts)));
   return hasEdit && hasEdit.value()->action == EDL::Action::CUT;
 }
 
