@@ -237,7 +237,10 @@ void CApplicationSkinHandling::UnloadSkin()
     gui->GetAudioManager().Enable(false);
 
     gui->GetWindowManager().DeInitialize();
-    CServiceBroker::GetTextureCache()->Deinitialize();
+
+    const std::shared_ptr<CTextureCache> textureCache{CServiceBroker::GetTextureCache()};
+    if (textureCache)
+      textureCache->Deinitialize();
 
     // remove the skin-dependent window
     gui->GetWindowManager().Delete(WINDOW_DIALOG_FULLSCREEN_INFO);

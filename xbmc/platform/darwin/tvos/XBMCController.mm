@@ -423,11 +423,15 @@ int KODI_Run(bool renderGUI)
   if (renderGUI && !g_application.CreateGUI())
   {
     CLog::Log(LOGERROR, "ERROR: Unable to create GUI. Exiting");
+    if (g_application.Stop(EXITCODE_QUIT))
+      g_application.Cleanup();
     return status;
   }
   if (!g_application.Initialize())
   {
     CLog::Log(LOGERROR, "ERROR: Unable to Initialize. Exiting");
+    if (g_application.Stop(EXITCODE_QUIT))
+      g_application.Cleanup();
     return status;
   }
 
