@@ -490,6 +490,7 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
     streamVideo->colorTransferCharacteristic = source->colorTransferCharacteristic;
     streamVideo->masteringMetaData = source->masteringMetaData;
     streamVideo->contentLightMetaData = source->contentLightMetaData;
+    streamVideo->hdr_type = source->hdr_type;
 
     streamVideo->m_parser_split = true;
     streamVideo->changes++;
