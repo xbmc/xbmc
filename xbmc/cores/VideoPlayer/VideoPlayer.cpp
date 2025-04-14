@@ -2878,12 +2878,40 @@ void CVideoPlayer::HandleMessages()
       int offset = 0;
 
       // This should always be the case.
-      if(m_pDemuxer && m_pDemuxer->SeekChapter(msg.GetChapter(), &start))
+      if (m_pDemuxer)
       {
-        FlushBuffers(start, true, true);
-        int64_t beforeSeek = GetTime();
-        offset = DVD_TIME_TO_MSEC(start) - static_cast<int>(beforeSeek);
-        m_callback.OnPlayBackSeekChapter(msg.GetChapter());
+        // SeekChapter does not know about EDL cuts as demuxers are EDL agnostic
+        // So get and adjust chapter time
+        const std::chrono::milliseconds position{m_pDemuxer->GetChapterPos(msg.GetChapter()) *
+                                                 1000};
+        const auto hasEdit{m_Edl.InEdit(position)};
+        double time{static_cast<double>(position.count())};
+        if (hasEdit)
+        {
+          const auto& edit{hasEdit.value()};
+          if (edit->action == EDL::Action::CUT)
+          {
+            // Ensure moving backward/forward doesn't take us past the beginning/end point (which may be cut)
+            const bool forward{msg.GetChapter() > GetChapter()};
+            const std::chrono::milliseconds absoluteTime{forward ? edit->start : edit->end};
+            const std::chrono::milliseconds adjustedTime{m_Edl.GetTimeWithoutCuts(absoluteTime)};
+            const auto endTime{std::chrono::duration<double, std::milli>(m_State.timeMax)};
+            if (adjustedTime + 50ms > endTime)
+              // If close to end then use end of stream otherwise adjustedTime can be a few ms over the end
+              // and still cause the video to freeze
+              time = m_pDemuxer->GetStreamLength();
+            else
+              time = static_cast<double>(absoluteTime.count());
+          }
+        }
+
+        if (m_pDemuxer->SeekTime(time, true, &start))
+        {
+          FlushBuffers(start, true, true);
+          int64_t beforeSeek = GetTime();
+          offset = DVD_TIME_TO_MSEC(start) - static_cast<int>(beforeSeek);
+          m_callback.OnPlayBackSeekChapter(msg.GetChapter());
+        }
       }
       else if (m_pInputStream)
       {
