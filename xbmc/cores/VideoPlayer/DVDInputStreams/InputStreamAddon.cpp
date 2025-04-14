@@ -444,6 +444,20 @@ KODI_HANDLE CInputStreamAddon::cb_get_stream_transfer(KODI_HANDLE handle,
     videoStream->colorTransferCharacteristic =
         static_cast<AVColorTransferCharacteristic>(stream->m_colorTransferCharacteristic);
 
+    // Determine the HDR type
+    if (videoStream->colorTransferCharacteristic == AVCOL_TRC_SMPTE2084)
+    {
+      if (stream->m_codecFourCC == MKTAG('d', 'v', 'h', '1') ||
+          stream->m_codecFourCC == MKTAG('d', 'v', 'h', 'e'))
+        videoStream->hdr_type = StreamHdrType::HDR_TYPE_DOLBYVISION;
+      else
+        videoStream->hdr_type = StreamHdrType::HDR_TYPE_HDR10;
+    }
+    else if (videoStream->colorTransferCharacteristic == AVCOL_TRC_ARIB_STD_B67)
+      videoStream->hdr_type = StreamHdrType::HDR_TYPE_HLG;
+    else
+      videoStream->hdr_type = StreamHdrType::HDR_TYPE_NONE;
+
     if (stream->m_masteringMetadata)
     {
       videoStream->masteringMetaData = std::make_shared<AVMasteringDisplayMetadata>();
