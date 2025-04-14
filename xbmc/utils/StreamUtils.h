@@ -31,4 +31,12 @@ public:
     return ((static_cast<uint32_t>(c1) << 24) | (static_cast<uint32_t>(c2) << 16) |
             (static_cast<uint32_t>(c3) << 8) | (static_cast<uint32_t>(c4)));
   }
+
+  /*!
+   * \brief Get the codec name translated from ffmpeg codec id and profile
+   * \param codecId The ffmpeg codec id
+   * \param profile The ffmpeg codec profile
+   * \return The codec name
+   */
+  static std::string GetCodecName(int codecId, int profile);
 };
