@@ -1491,11 +1491,6 @@ void aml_pin_thread_to_core(unsigned int core_id) {
   CPU_SET(core_id, &cpuset);
   int ret_affinity = pthread_setaffinity_np(tid, sizeof(cpu_set_t), &cpuset);
 
-  //struct sched_param param;
-  //param.sched_priority = sched_get_priority_max(SCHED_FIFO);
-  //int ret_priority = pthread_setschedparam(tid, SCHED_FIFO, &param);
-  int ret_priority = 0;
-;
-  logM(LOGINFO, "AMLUtils", "pin thread:[{}]-[{}] to core id:[{}] ret-affinity:[{}] ret-priority:[{}]",
-                            static_cast<unsigned long>(tid), name, core_id, ret_affinity, ret_priority);
+  logM(LOGINFO, "AMLUtils", "pin thread:[{}]-[{}] to core id:[{}] ret-affinity:[{}]",
+                            static_cast<unsigned long>(tid), name, core_id, ret_affinity);
 }
