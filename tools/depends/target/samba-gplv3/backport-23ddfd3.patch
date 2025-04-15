@@ -1,0 +1,32 @@
+From 23ddfd3b03e491fbfc153e1e24fbd232d9aa1167 Mon Sep 17 00:00:00 2001
+From: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Date: Wed, 6 Nov 2024 00:57:37 +0100
+Subject: [PATCH] lib/util: Include grp.h for setgroups during autoconf
+
+Otherwise setresuid and friends don't get detected on GNU/Hurd because the
+inclusion of <grp.h> is missing for the declaration of setgroups.
+
+Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Reviewed-by: Volker Lendecke <vl@samba.org>
+Reviewed-by: Ralph Boehme <slow@samba.org>
+
+Autobuild-User(master): Volker Lendecke <vl@samba.org>
+Autobuild-Date(master): Mon Nov 11 12:51:17 UTC 2024 on atb-devel-224
+---
+ lib/util/setid.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/lib/util/setid.c b/lib/util/setid.c
+index 10014618defa..6447909a5f3c 100644
+--- a/lib/util/setid.c
++++ b/lib/util/setid.c
+@@ -43,6 +43,9 @@
+ #ifdef HAVE_SYS_ID_H
+ #include <sys/id.h>
+ #endif
++#ifdef HAVE_GRP_H
++#include <grp.h>
++#endif
+
+ /* autoconf tests don't include setid.h */
+ int samba_setresuid(uid_t ruid, uid_t euid, uid_t suid);

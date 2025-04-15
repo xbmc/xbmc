@@ -7,6 +7,7 @@ DEPS= ../../Makefile.include Makefile SAMBA-GPLV3-VERSION ../../download-files.i
                               samba_android.patch \
                               no_fork_and_exec.patch \
                               crt_extensions.patch \
+                              backport-23ddfd3.patch
 
 # vfs_snapper requires dbus, so disable.
 CONFIGURE=./configure --prefix=$(PREFIX) \
@@ -92,6 +93,7 @@ ifeq ($(TARGET_PLATFORM),webos)
 	cd $(PLATFORM); patch -p1 -i ../webos-no-readline.patch
 endif
 	cd $(PLATFORM); patch -p1 -i ../08-py312-distutils.patch
+	cd $(PLATFORM); patch -p1 -i ../backport-23ddfd3.patch
 
 $(LIBDYLIB): $(PLATFORM)
 	cd $(PLATFORM); $(CONFIGURE)
