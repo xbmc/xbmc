@@ -2652,6 +2652,7 @@ msgstr ""
 #: xbmc/playlists/SmartPlaylist.cpp
 #: xbmc/PlayListPlayer.cpp
 #: xbmc/music/windows/GUIWindowMusicPlaylistEditor.cpp
+#: xbmc/video/dialogs/GUIDialogSimpleMenu.cpp
 msgctxt "#559"
 msgid "Playlist"
 msgstr ""
@@ -17005,7 +17006,13 @@ msgctxt "#25014"
 msgid "Manual"
 msgstr ""
 
-#empty strings from id 25015 to 29800
+#. Used to ask user if they want to use a playlist already assigned to an episode
+#: xbmc/video/dialogs/GUIDialogSimpleMenu.cpp
+msgctxt "#25015"
+msgid "Selected playlist is already in use. Associate with this episode instead?"
+msgstr ""
+
+#empty strings from id 25016 to 29800
 
 #: unused
 msgctxt "#29801"
