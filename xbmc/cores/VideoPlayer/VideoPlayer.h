@@ -189,6 +189,7 @@ struct SelectionStream
   std::string codec;
   std::string codecDesc;
   int channels = 0;
+  std::string channelLayout;
   int bitrate = 0;
   int width = 0;
   int height = 0;
