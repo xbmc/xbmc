@@ -303,28 +303,6 @@
 			</focusedlayout>
 		</definition>
 	</include>
-	<include name="InfoFlag">
-		<control type="group">
-			<width>150</width>
-			<visible>$PARAM[visible]</visible>
-			<control type="image">
-				<top>-3</top>
-				<left>0</left>
-				<width>33</width>
-				<height>33</height>
-				<aspectratio aligny="center">keep</aspectratio>
-				<texture colordiffuse="white">$PARAM[icon]</texture>
-			</control>
-			<control type="label">
-				<left>40</left>
-				<width>110</width>
-				<height>36</height>
-				<aligny>center</aligny>
-				<font>font_flag</font>
-				<label>$PARAM[label]</label>
-			</control>
-		</control>
-	</include>
 	<include name="MediaFlag">
 		<param name="texture">colors/white.png</param>
 		<param name="flag_visible">true</param>
@@ -358,17 +336,25 @@
 					<width>114</width>
 					<height>36</height>
 					<fadetime>0</fadetime>
-					<aspectratio align="center" aligny="center">keep</aspectratio>
+					<aspectratio align="right" aligny="center">keep</aspectratio>
 					<texture>$INFO[ListItem.Studio,resource://resource.images.studios.white/,.png]</texture>
 					<visible>System.AddonIsEnabled(resource.images.studios.white) + !String.IsEmpty($PARAM[infolabel_prefix]ListItem.Studio)</visible>
 				</control>
-				<control type="group">
-					<width>150</width>
-					<visible>!String.IsEmpty($PARAM[infolabel_prefix]ListItem.Premiered)</visible>
-					<include content="InfoFlag">
-						<param name="icon" value="lists/year.png" />
-						<param name="label" value="$INFO[ListItem.Premiered]" />
-					</include>
+				<control type="image">
+					<visible>!String.IsEmpty(ListItem.Premiered))</visible>
+					<top>-2</top>
+					<width>32</width>
+					<height>32</height>
+					<aspectratio align="right" aligny="center">keep</aspectratio>
+					<texture colordiffuse="white">lists/year.png</texture>
+				</control>
+				<control type="label">
+					<visible>!String.IsEmpty(ListItem.Premiered)</visible>
+					<width>auto</width>
+					<height>33</height>
+					<aligny>center</aligny>
+					<font>font_flag</font>
+					<label>$INFO[ListItem.Premiered]</label>
 				</control>
 				<include content="MediaFlag">
 					<param name="flag_visible" value="!String.IsEmpty(ListItem.Duration) + !Control.IsVisible(504)" />
