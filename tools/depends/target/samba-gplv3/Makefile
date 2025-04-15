@@ -92,9 +92,9 @@ ifeq ($(TARGET_PLATFORM),webos)
 	cd $(PLATFORM); patch -p1 -i ../webos-no-readline.patch
 endif
 	cd $(PLATFORM); patch -p1 -i ../08-py312-distutils.patch
-	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
+	cd $(PLATFORM); $(CONFIGURE)
 	cd $(PLATFORM); WAF_MAKE=1 ./buildtools/bin/waf --targets=smbclient
 
 .installed-$(PLATFORM): $(LIBDYLIB)
