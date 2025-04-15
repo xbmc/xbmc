@@ -30,6 +30,11 @@ using namespace PVR;
 
 static const unsigned int GRID_START_PADDING = 30; // minutes
 
+CGUIEPGGridContainerModel::CGUIEPGGridContainerModel(unsigned int minutesPerBlock)
+  : m_minutesPerBlock(minutesPerBlock)
+{
+}
+
 void CGUIEPGGridContainerModel::SetInvalid()
 {
   for (const auto& gridItem : m_gridIndex)
@@ -72,7 +77,6 @@ void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>&
                                            int iChannelsPerPage,
                                            int iFirstBlock,
                                            int iBlocksPerPage,
-                                           unsigned int minutesPerBlock,
                                            int blocksPerRulerItem,
                                            float fBlockSize)
 {
@@ -83,7 +87,6 @@ void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>&
   }
 
   m_fBlockSize = fBlockSize;
-  m_minutesPerBlock = minutesPerBlock;
 
   ////////////////////////////////////////////////////////////////////////
   // Create channel items
@@ -94,7 +97,7 @@ void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>&
   {
     // default to start "now minus GRID_START_PADDING minutes" and end "start plus one page".
     m_gridStart = CDateTime::GetUTCDateTime() - CDateTimeSpan(0, 0, GetGridStartPadding(), 0);
-    m_gridEnd = m_gridStart + CDateTimeSpan(0, 0, iBlocksPerPage * minutesPerBlock, 0);
+    m_gridEnd = m_gridStart + CDateTimeSpan(0, 0, iBlocksPerPage * m_minutesPerBlock, 0);
   }
   else if (gridStart >
            (CDateTime::GetUTCDateTime() - CDateTimeSpan(0, 0, GetGridStartPadding(), 0)))
@@ -120,7 +123,7 @@ void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>&
   const int iBlocksLastPage = m_blocks % iBlocksPerPage;
   if (iBlocksLastPage > 0)
   {
-    m_gridEnd += CDateTimeSpan(0, 0, (iBlocksPerPage - iBlocksLastPage) * minutesPerBlock, 0);
+    m_gridEnd += CDateTimeSpan(0, 0, (iBlocksPerPage - iBlocksLastPage) * m_minutesPerBlock, 0);
     m_blocks += (iBlocksPerPage - iBlocksLastPage);
   }
 
@@ -134,7 +137,7 @@ void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>&
   rulerItem->SetProperty("DateLabel", true);
   m_rulerItems.emplace_back(rulerItem);
 
-  const CDateTimeSpan unit(0, 0, blocksPerRulerItem * minutesPerBlock, 0);
+  const CDateTimeSpan unit(0, 0, blocksPerRulerItem * m_minutesPerBlock, 0);
   for (; ruler < rulerEnd; ruler += unit)
   {
     rulerItem = std::make_shared<CFileItem>(ruler.GetAsLocalizedTime("", false));
