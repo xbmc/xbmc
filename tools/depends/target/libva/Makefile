@@ -13,8 +13,7 @@ CONFIGURE = $(NATIVEPREFIX)/bin/python3 $(NATIVEPREFIX)/bin/meson \
 	--libdir=lib \
 	--buildtype=$(MESON_BUILD_TYPE) \
 	-Ddisable_drm=false \
-	-Denable_docs=false \
-	-Denable_va_messaging=true
+	-Denable_docs=false
 
 ifeq ($(CROSS_COMPILING), yes)
 CONFIGURE += --cross-file $(PREFIX)/share/cross-file.meson
