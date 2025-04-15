@@ -23,6 +23,8 @@ endif
 
 LIBDYLIB=$(PLATFORM)/src/microhttpd/.libs/$(LIBNAME).a
 
+export PKG_CONFIG_PATH=$(PREFIX)/lib/pkgconfig
+
 all: .installed-$(PLATFORM)
 
 $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
