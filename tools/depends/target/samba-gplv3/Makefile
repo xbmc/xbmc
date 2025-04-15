@@ -62,6 +62,7 @@ export CC CXX CPP AR RANLIB LD AS NM STRIP TOOLCHAIN
 export CFLAGS CXXFLAGS CPPFLAGS LDFLAGS
 export HOST
 export PKG_CONFIG_LIBDIR=$(PREFIX)/lib/pkgconfig
+export PKG_CONFIG_PATH=$(PREFIX)/lib/pkgconfig
 
 # samba doesn't build with distcc
 export DISTCC_HOSTS=
