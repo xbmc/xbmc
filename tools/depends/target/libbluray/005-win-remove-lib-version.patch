@@ -1,0 +1,10 @@
+--- a/src/meson.build
++++ b/src/meson.build
+@@ -111,7 +111,6 @@
+     ],
+     c_args: [api_export_flags],
+     gnu_symbol_visibility: 'hidden',
+-    version: libbluray_soname_version,
+     install: true,
+ )
+ 
