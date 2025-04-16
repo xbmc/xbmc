@@ -529,7 +529,8 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
 
 bool CProcessorHD::IsSuperResolutionSuitable(const VideoPicture& picture)
 {
-  if (picture.iWidth > 1920)
+  // both Intel and NVIDIA support VSR in videos up to 1440p
+  if (picture.iWidth > 2560)
     return false;
 
   const UINT outputWidth = DX::Windowing()->GetBackBuffer().GetWidth();
