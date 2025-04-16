@@ -58,14 +58,14 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(int parentID,
     m_orientation(orientation),
     m_blocksPerRulerItem(rulerUnit * MINUTES_PER_RULER_UNIT / minutesPerTimeBlock),
     m_blocksPerPage(timeBlocks),
-    m_minutesPerBlock(minutesPerTimeBlock),
+    m_minutesPerBlock(minutesPerTimeBlock > 0 ? minutesPerTimeBlock : DEFAULT_MINUTES_PER_BLOCK),
     m_cacheChannelItems(preloadItems),
     m_cacheProgrammeItems(preloadItems),
     m_cacheRulerItems(preloadItems),
     m_guiProgressIndicatorTexture(
         CGUITexture::CreateTexture(posX, posY, width, height, progressIndicatorTexture)),
     m_scrollTime(scrollTime ? scrollTime : 1),
-    m_gridModel(new CGUIEPGGridContainerModel)
+    m_gridModel(new CGUIEPGGridContainerModel(m_minutesPerBlock))
 {
   ControlType = GUICONTAINER_EPGGRID;
 }
@@ -88,12 +88,12 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(const CGUIEPGGridContainer& other)
     m_rulerDateLayout(other.m_rulerDateLayout),
     m_pageControl(other.m_pageControl),
     m_blocksPerRulerItem(other.m_blocksPerRulerItem),
+    m_blocksPerPage(other.m_blocksPerPage),
+    m_minutesPerBlock(other.m_minutesPerBlock),
     m_channelsPerPage(other.m_channelsPerPage),
     m_programmesPerPage(other.m_programmesPerPage),
     m_channelCursor(other.m_channelCursor),
     m_channelOffset(other.m_channelOffset),
-    m_blocksPerPage(other.m_blocksPerPage),
-    m_minutesPerBlock(other.m_minutesPerBlock),
     m_blockCursor(other.m_blockCursor),
     m_blockOffset(other.m_blockOffset),
     m_blockTravelAxis(other.m_blockTravelAxis),
@@ -1830,11 +1830,11 @@ void CGUIEPGGridContainer::SetTimelineItems(const std::unique_ptr<CFileItemList>
                                             const CDateTime& gridStart,
                                             const CDateTime& gridEnd)
 {
-  int blocksPerRulerItem{MINUTES_PER_RULER_UNIT};
+  int blocksPerRulerItem;
   int iFirstChannel;
   int iChannelsPerPage;
   int iBlocksPerPage;
-  unsigned int minutesPerBlock{DEFAULT_MINUTES_PER_BLOCK};
+  unsigned int minutesPerBlock;
   int iFirstBlock;
   float fBlockSize;
   {
@@ -1850,11 +1850,10 @@ void CGUIEPGGridContainer::SetTimelineItems(const std::unique_ptr<CFileItemList>
   }
 
   std::unique_ptr<CGUIEPGGridContainerModel> oldUpdatedGridModel;
-  std::unique_ptr<CGUIEPGGridContainerModel> newUpdatedGridModel(new CGUIEPGGridContainerModel);
+  auto newUpdatedGridModel{std::make_unique<CGUIEPGGridContainerModel>(minutesPerBlock)};
 
   newUpdatedGridModel->Initialize(items, gridStart, gridEnd, iFirstChannel, iChannelsPerPage,
-                                  iFirstBlock, iBlocksPerPage, minutesPerBlock, blocksPerRulerItem,
-                                  fBlockSize);
+                                  iFirstBlock, iBlocksPerPage, blocksPerRulerItem, fBlockSize);
   {
     std::unique_lock<CCriticalSection> lock(m_critSection);
 

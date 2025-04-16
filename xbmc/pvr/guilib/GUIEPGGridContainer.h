@@ -258,13 +258,14 @@ private:
 
   int GetBlockScrollOffset() const;
 
-  int m_blocksPerRulerItem; //! number of blocks that makes up one element of the ruler
+  const int m_blocksPerRulerItem{0}; //! number of blocks that make up one element of the ruler
+  const int m_blocksPerPage{0};
+  const unsigned int m_minutesPerBlock{DEFAULT_MINUTES_PER_BLOCK};
+
   int m_channelsPerPage = 0;
   int m_programmesPerPage = 0;
   int m_channelCursor = 0;
   int m_channelOffset = 0;
-  int m_blocksPerPage;
-  unsigned int m_minutesPerBlock{DEFAULT_MINUTES_PER_BLOCK};
   int m_blockCursor = 0;
   int m_blockOffset = 0;
   int m_blockTravelAxis = 0;

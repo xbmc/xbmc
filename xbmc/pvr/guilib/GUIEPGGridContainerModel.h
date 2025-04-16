@@ -46,7 +46,7 @@ class CPVREpgInfoTag;
 class CGUIEPGGridContainerModel
 {
 public:
-  CGUIEPGGridContainerModel() = default;
+  explicit CGUIEPGGridContainerModel(unsigned int minutesPerBlock);
   virtual ~CGUIEPGGridContainerModel() = default;
 
   void Initialize(const std::unique_ptr<CFileItemList>& items,
@@ -56,7 +56,6 @@ public:
                   int iChannelsPerPage,
                   int iFirstBlock,
                   int iBlocksPerPage,
-                  unsigned int minutesPerBlock,
                   int blocksPerRulerItem,
                   float fBlockSize);
   void SetInvalid();
@@ -111,6 +110,8 @@ public:
   std::unique_ptr<CFileItemList> GetCurrentTimeLineItems(int firstChannel, int numChannels) const;
 
 private:
+  CGUIEPGGridContainerModel() = delete;
+
   GridItem* GetGridItemPtr(int iChannel, int iBlock) const;
   std::shared_ptr<CFileItem> CreateGapItem(int iChannel) const;
   std::shared_ptr<CFileItem> GetItem(int iChannel, int iBlock) const;
@@ -167,7 +168,7 @@ private:
   mutable std::unordered_map<GridCoordinates, GridItem, GridCoordinatesHash> m_gridIndex;
 
   int m_blocks = 0;
-  unsigned int m_minutesPerBlock{0};
+  const unsigned int m_minutesPerBlock{0};
   float m_fBlockSize = 0.0f;
 
   int m_firstActiveChannel = 0;
