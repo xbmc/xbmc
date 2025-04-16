@@ -341,7 +341,7 @@
 					<visible>System.AddonIsEnabled(resource.images.studios.white) + !String.IsEmpty($PARAM[infolabel_prefix]ListItem.Studio)</visible>
 				</control>
 				<control type="image">
-					<visible>!String.IsEmpty(ListItem.Premiered))</visible>
+					<visible>!String.IsEmpty(ListItem.Premiered)</visible>
 					<top>-2</top>
 					<width>32</width>
 					<height>32</height>
