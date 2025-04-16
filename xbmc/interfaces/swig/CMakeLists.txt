@@ -54,7 +54,10 @@ function(generate_file file)
   set(SOURCES ${SOURCES} "${CPP_FILE}" PARENT_SCOPE)
 endfunction()
 
-find_package(Java COMPONENTS Runtime REQUIRED)
+if(SWIG_GENERATE_JAVA)
+  find_package(Java COMPONENTS Runtime REQUIRED)
+endif()
+
 find_package(SWIG REQUIRED)
 
 # Default URL/Versions/Hashes to use unless *_SOURCE_DIR are set for the relevant binary
