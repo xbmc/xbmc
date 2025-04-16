@@ -1,0 +1,48 @@
+From e53beafc51ddf83029cdf90a5646f08633ca897d Mon Sep 17 00:00:00 2001
+From: Rob Hall <robxnanocode@outlook.com>
+Date: Tue, 2 Sep 2025 20:54:17 +0100
+Subject: [PATCH] Fixes for building with MSVC
+
+---
+ meson.build                      | 6 +++++-
+ src/libbluray/bdnav/meta_parse.c | 3 +++
+ 2 files changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/meson.build b/meson.build
+index 9dcfcc9f..d9162c57 100644
+--- a/meson.build
++++ b/meson.build
+@@ -42,9 +42,11 @@ extra_dependencies = []
+ 
+ if host_machine.system() == 'windows'
+     test_args += ['-D_WIN32_WINNT=0x0502', '-D_WIN32_IE=0x0501']
+-    if cc.get_argument_syntax() != 'msvc'
++    if cc.get_define('_MSC_VER') == ''
+         extra_dependencies += cc.find_library('ssp')
+         test_args += '-D__USE_MINGW_ANSI_STDIO=1'
++    else
++        test_args += ['-D_CRT_NONSTDC_NO_WARNINGS', '-D_CRT_SECURE_NO_WARNINGS']
+     endif
+ else
+     test_args += '-D_POSIX_C_SOURCE=200809L'
+@@ -212,6 +214,8 @@ if cc.get_argument_syntax() != 'msvc'
+     if get_option('buildtype') not in ['debug', 'plain']
+         optional_arguments += '-fomit-frame-pointer'
+     endif
++else
++    optional_arguments += '/wd4267' # Disable warning C4267: conversion from 'size_t' to 'int'
+ endif
+ 
+ add_project_arguments(cc.get_supported_arguments(optional_arguments), language: 'c')
+--- a/src/libbluray/bdnav/meta_parse.c
++++ b/src/libbluray/bdnav/meta_parse.c
+@@ -48,6 +48,9 @@
+ 
+ #define DEFAULT_LANGUAGE  "eng"
+ 
++#ifdef _MSC_VER
++#define strncasecmp _strnicmp
++#endif
+ 
+ #define BAD_CAST_CONST (const xmlChar *)
+ #define XML_FREE(p) (xmlFree(p), p = NULL)
