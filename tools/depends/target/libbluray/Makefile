@@ -2,8 +2,10 @@ include ../../Makefile.include LIBBLURAY-VERSION ../../download-files.include
 DEPS = ../../Makefile.include LIBBLURAY-VERSION Makefile ../../download-files.include \
                                   001-darwinembed_DiskArbitration-revert.patch \
                                   002-darwin-dlopen_searchpath.patch \
-                                  003-win-libxml_searchname.patch \
+                                  003-all-libxml_searchname.patch \
+                                  004-win-remove-lib-version.patch \
                                   tvos.patch
+
 MESON_BUILD_TYPE=release
 
 ifeq ($(DEBUG_BUILD), yes)
@@ -47,9 +49,12 @@ ifeq ($(OS),darwin_embedded)
 	cd $(PLATFORM); patch -p1 -i ../001-darwinembed_DiskArbitration-revert.patch
 endif
 	cd $(PLATFORM); patch -p1 -i ../002-darwin-dlopen_searchpath.patch
-	cd $(PLATFORM); patch -p1 -i ../003-win-libxml_searchname.patch
+	cd $(PLATFORM); patch -p1 -i ../003-all-libxml_searchname.patch
 ifeq ($(TARGET_PLATFORM),appletvos)
 	cd $(PLATFORM); patch -p1 -i ../tvos.patch
+endif
+ifeq ($(TARGET_PLATFORM),windows)
+	cd $(PLATFORM); patch -p1 -i ../004-win-remove-lib-version.patch
 endif
 	cd $(PLATFORM); $(CONFIGURE)
 

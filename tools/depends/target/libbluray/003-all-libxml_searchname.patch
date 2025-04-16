@@ -1,6 +1,15 @@
 --- a/meson.build
 +++ b/meson.build
-@@ -181,7 +181,7 @@
+@@ -168,7 +168,7 @@
+     cdata.set('HAVE_PTHREAD_H', 1)
+ endif
+ 
+-freetype_dependency = dependency('freetype2', required: get_option('freetype'))
++freetype_dependency = dependency('freetype2', 'freetype', required: get_option('freetype'))
+ if freetype_dependency.found()
+     cdata.set('HAVE_FT2', 1)
+ endif
+@@ -191,7 +191,7 @@
      endif
  endif
  
