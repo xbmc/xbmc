@@ -1,13 +1,16 @@
---- a/configure.ac
-+++ b/configure.ac
-@@ -46,7 +46,6 @@
-     ;;
-   *darwin*)
-     SYS=darwin
--    EXTRA_LIBS="${EXTRA_LIBS} -framework CoreFoundation -framework DiskArbitration"
-     ;;
-   netbsd*)
-     SYS=netbsd
+--- a/meson.build
++++ b/meson.build
+@@ -51,8 +51,8 @@
+ endif
+ 
+ if host_machine.system() == 'darwin'
+-    extra_dependencies += dependency('appleframeworks',
+-        modules: ['CoreFoundation', 'DiskArbitration'])
++#    extra_dependencies += dependency('appleframeworks',
++#        modules: ['CoreFoundation', 'DiskArbitration'])
+ elif host_machine.system() == 'netbsd'
+     test_args += '-D_NETBSD_SOURCE'
+ elif host_machine.system() == 'openbsd'
 --- a/src/file/mount_darwin.c
 +++ b/src/file/mount_darwin.c
 @@ -29,53 +29,36 @@
