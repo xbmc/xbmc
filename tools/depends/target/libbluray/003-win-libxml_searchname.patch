@@ -1,0 +1,11 @@
+--- a/meson.build
++++ b/meson.build
+@@ -181,7 +181,7 @@
+     endif
+ endif
+ 
+-libxml2_dependency = dependency('libxml-2.0', version: '>= 2.6', required: get_option('libxml2'))
++libxml2_dependency = dependency('libxml-2.0', 'libxml2', version: '>= 2.6', required: get_option('libxml2'))
+ if libxml2_dependency.found()
+     cdata.set('HAVE_LIBXML2', 1)
+ endif
