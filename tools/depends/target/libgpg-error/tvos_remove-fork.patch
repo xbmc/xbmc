@@ -1,34 +1,22 @@
 --- a/src/spawn-posix.c
 +++ b/src/spawn-posix.c
-@@ -314,7 +314,7 @@
- 
-   if (preexec)
-     preexec ();
--  execv (pgmname, arg_list);
-+//  execv (pgmname, arg_list);
+@@ -413,12 +413,12 @@
+   /* This use case is for assuan pipe connect with no PGMNAME */
+   if (pgmname == NULL)
+     return 0;
+-
++/*
+   if (act->environ)
+     execve (pgmname, (char *const *)argv, act->environ);
+   else
+     execv (pgmname, (char *const *)argv);
+-
++*/
    /* No way to print anything, as we have may have closed all streams. */
+  leave:
    _exit (127);
- }
-@@ -464,7 +464,7 @@
+@@ -441,7 +441,7 @@
      }
- 
-   _gpgrt_pre_syscall ();
--  *pid = fork ();
-+  *pid = -1;
-   _gpgrt_post_syscall ();
-   if (*pid == (pid_t)(-1))
-     {
-@@ -534,7 +534,7 @@
-   gpg_error_t err;
- 
-   _gpgrt_pre_syscall ();
--  *pid = fork ();
-+  *pid = -1;
-   _gpgrt_post_syscall ();
-   if (*pid == (pid_t)(-1))
-     {
-@@ -818,7 +818,7 @@
-     return _gpg_err_code_from_syserror ();
  
    _gpgrt_pre_syscall ();
 -  pid = fork ();
@@ -36,7 +24,7 @@
    _gpgrt_post_syscall ();
    if (pid == (pid_t)(-1))
      {
-@@ -835,7 +835,7 @@
+@@ -458,7 +458,7 @@
        if (setsid() == -1 || chdir ("/"))
          _exit (1);
  
@@ -45,3 +33,12 @@
        if (pid2 == (pid_t)(-1))
          _exit (1);
        if (pid2)
+@@ -724,7 +724,7 @@
+     }
+ 
+   _gpgrt_pre_syscall ();
+-  pid = fork ();
++  pid = -1;
+   _gpgrt_post_syscall ();
+   if (pid == (pid_t)(-1))
+     {
