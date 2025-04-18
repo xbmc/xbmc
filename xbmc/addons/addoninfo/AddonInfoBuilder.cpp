@@ -26,6 +26,7 @@
 #include <algorithm>
 #include <memory>
 #include <regex>
+#include <string_view>
 
 namespace
 {
@@ -462,8 +463,8 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon,
       element = child->FirstChildElement("platform");
       if (element && element->GetText() != nullptr)
       {
-        auto platforms = StringUtils::Split(element->GetText(),
-                                            {" ", "\t", "\n", "\r"});
+        using namespace std::literals;
+        auto platforms = StringUtils::Split(element->GetText(), {{" "sv, "\t"sv, "\n"sv, "\r"sv}});
         platforms.erase(std::remove_if(platforms.begin(), platforms.end(),
                         [](const std::string& platform) { return platform.empty(); }),
                         platforms.cend());
