@@ -5446,7 +5446,6 @@ msgid "File browser"
 msgstr ""
 
 #. Audio Channel count
-#: xbmc/cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.cpp
 #: xbmc/utils/StreamUtils.cpp
 #: xbmc/video/dialogs/GUIDialogAudioSettings.cpp
 msgctxt "#10127"
@@ -22469,19 +22468,7 @@ msgctxt "#37002"
 msgid "(Director's comments 2)"
 msgstr ""
 
-#. DVD short name for 1.0 channel layout
-#: xbmc/cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.cpp
-msgctxt "#37003"
-msgid "mono"
-msgstr ""
-
-#. DVD short name for 2.0 channel layout
-#: xbmc/cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.cpp
-msgctxt "#37004"
-msgid "stereo"
-msgstr ""
-
-#empty strings from id 37005 to 37013
+#empty strings from id 37003 to 37013
 
 #: xbmc/GUIInfoManager.cpp
 msgctxt "#37014"
