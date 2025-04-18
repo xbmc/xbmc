@@ -23,6 +23,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/Geometry.h"
 #include "utils/LangCodeExpander.h"
+#include "utils/StreamUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -1062,26 +1063,11 @@ void CDVDInputStreamNavigator::SetAudioStreamName(AudioStreamInfo &info, const a
     break;
   }
 
-  info.codecDesc.append(" ");
+  const int channels{audio_attributes.channels + 1};
+  info.channels = channels;
 
-  switch(audio_attributes.channels + 1)
-  {
-  case 1:
-    info.codecDesc += g_localizeStrings.Get(37003); // "mono"
-    break;
-  case 2:
-    info.codecDesc += g_localizeStrings.Get(37004); // "stereo"
-    break;
-  case 6:
-    info.codecDesc += "5.1";
-    break;
-  case 7:
-    info.codecDesc += "6.1";
-    break;
-  default:
-    info.codecDesc += StringUtils::Format("{:d} {}", audio_attributes.channels + 1,
-                                          g_localizeStrings.Get(10127)); // "channels"
-  }
+  info.codecDesc.append(" ");
+  info.codecDesc.append(StreamUtils::GetLayout(channels));
 }
 
 AudioStreamInfo CDVDInputStreamNavigator::GetAudioStreamInfo(const int iId)
@@ -1102,7 +1088,6 @@ AudioStreamInfo CDVDInputStreamNavigator::GetAudioStreamInfo(const int iId)
     lang[0] = (audio_attributes.lang_code >> 8) & 255;
 
     info.language = g_LangCodeExpander.ConvertToISO6392B(lang);
-    info.channels = audio_attributes.channels + 1;
   }
 
   return info;
