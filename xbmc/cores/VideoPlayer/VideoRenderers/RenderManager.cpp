@@ -729,7 +729,7 @@ void CRenderManager::ClockAlign()
     diff = (renderPts - m_presentpts);
   }
 
-  logM(LOGINFO, "CRenderManager", "render:[{:.3f}] presenting:[{:02d}] [{:.3f}] "
+  logM(LOGDEBUG, "CRenderManager", "render:[{:.3f}] presenting:[{:02d}] [{:.3f}] "
                                   "diff:[{:.3f}] delay:[{:.3f}] "
                                   "queued:[{:02d}] frametime:[{:.3f}] skip:[{:02d}]",
                                   (renderPts / DVD_TIME_BASE), m_presentsource, (m_presentpts / DVD_TIME_BASE),
