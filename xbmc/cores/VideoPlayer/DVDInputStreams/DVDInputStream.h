@@ -15,6 +15,7 @@
 #include "utils/BitstreamStats.h"
 #include "utils/Geometry.h"
 
+#include <cstdint>
 #include <string>
 #include <vector>
 

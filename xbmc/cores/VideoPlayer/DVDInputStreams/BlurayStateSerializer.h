@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <cstdint>
 #include <string>
 
 /*! \brief Pod structure which represents the current Bluray state */

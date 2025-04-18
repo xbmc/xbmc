@@ -11,6 +11,7 @@
 #include "cores/Direction.h"
 #include "cores/EdlEdit.h"
 
+#include <cstdint>
 #include <memory>
 #include <optional>
 #include <string>
