@@ -135,12 +135,37 @@ std::string StreamUtils::GetLayoutXYZ(uint64_t mask)
 
 std::string StreamUtils::GetLayout(uint64_t mask, int channels)
 {
-  if (mask)
-    return GetLayoutXYZ(mask);
+  if (!mask)
+    mask = GetDefaultMask(channels);
+
+  std::string layout = GetLayoutXYZ(mask);
 
   //! @todo return something or nothing in case of unknown layout?
-  std::string layout = std::to_string(channels);
-  layout.append(" ");
-  layout.append(g_localizeStrings.Get(10127)); // "channels"
+  if (layout.empty())
+  {
+    layout = std::to_string(channels);
+    layout.append(" ");
+    layout.append(g_localizeStrings.Get(10127)); // "channels"
+  }
   return layout;
+}
+
+uint64_t StreamUtils::GetDefaultMask(int channels)
+{
+  switch (channels)
+  {
+    // Match historical default layouts of Estuary
+    case 5:
+      return AV_CH_LAYOUT_QUAD | AV_CH_LOW_FREQUENCY;
+    case 10:
+      return AV_CH_LAYOUT_7POINT1 | AV_CH_FRONT_LEFT_OF_CENTER | AV_CH_FRONT_RIGHT_OF_CENTER;
+    // Likely atmos, which can't be accurately be described by a channels layout
+    case 16:
+      return 0;
+  }
+
+  AVChannelLayout layout;
+  av_channel_layout_default(&layout, channels);
+
+  return layout.order == AV_CHANNEL_ORDER_NATIVE ? layout.u.mask : 0;
 }
