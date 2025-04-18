@@ -235,6 +235,7 @@ bool CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
           CLog::Log(LOGDEBUG, "CDVDDemuxClient::ParsePacket - ({}) channels changed from {} to {}",
                     st->uniqueId, sta->iChannels, streamChannels);
           sta->iChannels = streamChannels;
+          sta->m_channelLayoutName = StreamUtils::GetDefaultLayout(streamChannels);
           sta->changes++;
           sta->disabled = false;
         }
@@ -438,6 +439,7 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
         streamAudio->m_parser->flags |= PARSER_FLAG_COMPLETE_FRAMES;
       streamAudio->iSampleRate = source->iSampleRate;
       streamAudio->iChannels = source->iChannels;
+      streamAudio->m_channelLayoutName = StreamUtils::GetDefaultLayout(source->iChannels);
     }
 
     streamAudio->iBlockAlign     = source->iBlockAlign;
