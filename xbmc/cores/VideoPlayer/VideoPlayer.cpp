@@ -558,12 +558,14 @@ void CSelectionStreams::Update(const std::shared_ptr<CDVDInputStream>& input,
       {
         s.codecDesc = aStream->GetStreamType();
         s.channels = aStream->iChannels;
+        s.channelLayout = aStream->m_channelLayoutName;
         s.bitrate = aStream->iBitRate;
       }
       else
       {
         s.codecDesc = info.codecDesc;
         s.channels = info.channels;
+        s.channelLayout = info.channelLayout;
       }
       s.language = g_LangCodeExpander.ConvertToISO6392B(info.language);
       s.flags = info.flags;
