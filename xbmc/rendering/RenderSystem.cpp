@@ -89,7 +89,8 @@ void CRenderSystemBase::ShowSplash(const std::string& message)
   {
     if (!m_splashMessageLayout)
     {
-      auto messageFont = g_fontManager.LoadTTF("__splash__", "arial.ttf", 0xFFFFFFFF, 0, 20, FONT_STYLE_NORMAL, false, 1.0f, 1.0f, &res);
+      auto messageFont = g_fontManager.LoadTTF("__splash__", "arial.ttf", 0xFFFFFFFF, 0, 40,
+                                               FONT_STYLE_NORMAL, false, 1.0f, 1.0f, &res);
       if (messageFont)
         m_splashMessageLayout = std::make_unique<CGUITextLayout>(messageFont, true, .0f);
     }
