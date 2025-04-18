@@ -38,7 +38,22 @@ public:
   static std::string GetFileName(const std::string& strFileNameAndPath);
   static std::string GetFileOrFolderName(const std::string& path);
 
+  /*!
+   * \brief Retrieve the extension of the file name.
+   * In case of multiple extensions or presence of dot characters in the file name
+   * (ex. dot.separated.filename.mkv), the last extension is returned.
+   * \param url[in] CURL of the file
+   * \return the extension. Empty for filenames without an extension.
+   */
   static std::string GetExtension(const CURL& url);
+
+  /*!
+   * \brief Retrieve the extension of the file name.
+   * In case of multiple extensions or presence of dot characters in the file name
+   * (ex. dot.separated.filename.mkv), the last extension is returned.
+   * \param url[in] filename, with or without path
+   * \return the extension. Empty for filenames without an extension.
+   */
   static std::string GetExtension(const std::string& strFileName);
 
 
@@ -59,16 +74,14 @@ public:
 
   /*!
    \brief Check if filename have any of the listed extensions
-   \param strFileName Path or URL to check
-   \param strExtensions List of '.' prefixed lowercase extensions separated with '|'
-   \return \e true if strFileName have any one of the extensions.
-   \note The check is case insensitive for strFileName, but requires
-         strExtensions to be lowercase. Returns false when strFileName or
-         strExtensions is empty.
+   \param fileName Path or URL to check
+   \param extensions List of '.' prefixed lowercase extensions separated with '|'
+   \return \e true if fileName has any one of the extensions.
+   \note The check is case insensitive.Returns false when fileName or extensions is empty.
    \sa GetExtension
    */
-  static bool HasExtension(const std::string& strFileName, const std::string& strExtensions);
-  static bool HasExtension(const CURL& url, const std::string& strExtensions);
+  static bool HasExtension(const std::string& fileName, std::string_view extensions);
+  static bool HasExtension(const CURL& url, std::string_view extensions);
 
   static void RemoveExtension(std::string& strFileName);
   static std::string ReplaceExtension(const std::string& strFile,
