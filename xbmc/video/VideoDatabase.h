@@ -650,6 +650,8 @@ public:
    */
   bool SetStreamDetailsForFileId(const CStreamDetails& details, int idFile);
 
+  std::vector<int> GetPlaylistsByPath(const std::string& path);
+
   bool SetSingleValue(VideoDbContentType type, int dbId, int dbField, const std::string& strValue);
   bool SetSingleValue(VideoDbContentType type,
                       int dbId,
@@ -1160,6 +1162,11 @@ public:
                              int dbIdTarget,
                              int idVideoVersion,
                              VideoAssetType assetType);
+  bool AddVideoVersion(VideoDbContentType itemType,
+                       int dbIdSource,
+                       int idFile,
+                       int idVideoVersion,
+                       VideoAssetType assetType);
   void SetDefaultVideoVersion(VideoDbContentType itemType, int dbId, int idFile);
   void SetVideoVersion(int idFile, int idVideoVersion);
   int AddVideoVersionType(const std::string& typeVideoVersion,
