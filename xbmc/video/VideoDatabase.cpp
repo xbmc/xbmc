@@ -183,10 +183,11 @@ void CVideoDatabase::CreateTables()
 
   CLog::Log(LOGINFO, "create streaminfo table");
   m_pDS->exec("CREATE TABLE streamdetails (idFile integer, iStreamType integer, "
-    "strVideoCodec text, fVideoAspect float, iVideoWidth integer, iVideoHeight integer, "
-    "strAudioCodec text, iAudioChannels integer, strAudioLanguage text, "
-    "strSubtitleLanguage text, iVideoDuration integer, strStereoMode text, strVideoLanguage text, "
-    "strHdrType text)");
+              "strVideoCodec text, fVideoAspect float, iVideoWidth integer, iVideoHeight integer, "
+              "strAudioCodec text, iAudioChannels integer, strAudioLanguage text, "
+              "strSubtitleLanguage text, iVideoDuration integer, strStereoMode text, "
+              "strVideoLanguage text, "
+              "strHdrType text, strAudioChannelLayout text)");
 
   CLog::Log(LOGINFO, "create sets table");
   m_pDS->exec("CREATE TABLE sets ( idSet integer primary key, strSet text, strOverview text)");
@@ -3375,12 +3376,14 @@ bool CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
     }
     for (int i=1; i<=details.GetAudioStreamCount(); i++)
     {
-      m_pDS->exec(PrepareSQL(
-          "INSERT INTO streamdetails "
-          "(idFile, iStreamType, strAudioCodec, iAudioChannels, strAudioLanguage) "
-          "VALUES (%i,%i,'%s',%i,'%s')",
-          idFile, static_cast<int>(CStreamDetail::AUDIO), details.GetAudioCodec(i).c_str(),
-          details.GetAudioChannels(i), details.GetAudioLanguage(i).c_str()));
+      m_pDS->exec(PrepareSQL("INSERT INTO streamdetails "
+                             "(idFile, iStreamType, strAudioCodec, iAudioChannels, "
+                             "strAudioLanguage, strAudioChannelLayout) "
+                             "VALUES (%i,%i,'%s',%i,'%s','%s')",
+                             idFile, static_cast<int>(CStreamDetail::AUDIO),
+                             details.GetAudioCodec(i).c_str(), details.GetAudioChannels(i),
+                             details.GetAudioLanguage(i).c_str(),
+                             details.GetAudioChannelLayout(i).c_str()));
     }
     for (int i=1; i<=details.GetSubtitleStreamCount(); i++)
     {
@@ -4499,6 +4502,7 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag)
           else
             p->m_iChannels = pDS->fv(7).get_asInt();
           p->m_strLanguage = pDS->fv(8).get_asString();
+          p->m_channelLayout = pDS->fv(14).get_asString();
           details.AddStream(p);
           retVal = true;
           break;
@@ -6698,11 +6702,51 @@ void CVideoDatabase::UpdateTables(int iVersion)
         "UPDATE videoversiontype SET itemType = itemType + 1  WHERE itemType IN (%i, %i)",
         VIDEOASSETTYPE_VERSION_OLD, VIDEOASSETTYPE_EXTRA_OLD));
   }
+
+  if (iVersion < 135)
+  {
+    m_pDS->exec(PrepareSQL("ALTER TABLE streamdetails ADD strAudioChannelLayout text"));
+
+    // Populate existing data best we can, with standard layouts deduced from channel count
+    // Precalculated so that the db conversion won't be impacted in case the format changes in the future.
+    struct DefaultLayout
+    {
+      int m_channels;
+      std::string m_layout;
+    };
+
+    // Match ffmpeg default layouts and descriptions for the channel counts
+    // av_channel_layout_default and av_channel_layout_describe
+    std::vector<DefaultLayout> mappings{
+        {0, "0 channels"},
+        {1, "mono"},
+        {2, "stereo"},
+        {3, "2.1"},
+        {4, "4.0"},
+        {5, "5.0"},
+        {6, "5.1"},
+        {7, "6.1"},
+        {8, "7.1"},
+        {9, "9 channels"},
+        {10, "5.1.4"},
+        {11, "11 channels"},
+        {12, "7.1.4"},
+        {13, "13 channels"},
+        {14, "9.1.4"},
+        {15, "15 channels"},
+        {16, "hexadecagonal"},
+    };
+
+    for (const auto& mapping : mappings)
+      m_pDS->exec(PrepareSQL(
+          "UPDATE streamdetails set strAudioChannelLayout = '%s'  WHERE iAudioChannels = %i",
+          mapping.m_layout.c_str(), mapping.m_channels));
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 134;
+  return 135;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)

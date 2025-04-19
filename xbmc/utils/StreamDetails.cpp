@@ -88,11 +88,12 @@ CStreamDetailAudio::CStreamDetailAudio() :
 {
 }
 
-CStreamDetailAudio::CStreamDetailAudio(const AudioStreamInfo &info) :
-  CStreamDetail(CStreamDetail::AUDIO),
-  m_iChannels(info.channels),
-  m_strCodec(info.codecName),
-  m_strLanguage(info.language)
+CStreamDetailAudio::CStreamDetailAudio(const AudioStreamInfo& info)
+  : CStreamDetail(CStreamDetail::AUDIO),
+    m_iChannels(info.channels),
+    m_channelLayout(info.channelLayout),
+    m_strCodec(info.codecName),
+    m_strLanguage(info.language)
 {
 }
 
@@ -103,12 +104,14 @@ void CStreamDetailAudio::Archive(CArchive& ar)
     ar << m_strCodec;
     ar << m_strLanguage;
     ar << m_iChannels;
+    ar << m_channelLayout;
   }
   else
   {
     ar >> m_strCodec;
     ar >> m_strLanguage;
     ar >> m_iChannels;
+    ar >> m_channelLayout;
   }
 }
 void CStreamDetailAudio::Serialize(CVariant& value) const
@@ -116,6 +119,7 @@ void CStreamDetailAudio::Serialize(CVariant& value) const
   value["codec"] = m_strCodec;
   value["language"] = m_strLanguage;
   value["channels"] = m_iChannels;
+  value["channellayout"] = m_channelLayout;
 }
 
 bool CStreamDetailAudio::IsWorseThan(const CStreamDetail &that) const
@@ -234,9 +238,10 @@ bool CStreamDetails::operator ==(const CStreamDetails &right) const
 
   for (int iStream=1; iStream<=GetAudioStreamCount(); iStream++)
   {
-    if (GetAudioCodec(iStream)    != right.GetAudioCodec(iStream)    ||
+    if (GetAudioCodec(iStream) != right.GetAudioCodec(iStream) ||
         GetAudioLanguage(iStream) != right.GetAudioLanguage(iStream) ||
-        GetAudioChannels(iStream) != right.GetAudioChannels(iStream) )
+        GetAudioChannels(iStream) != right.GetAudioChannels(iStream) ||
+        GetAudioChannelLayout(iStream) != right.GetAudioChannelLayout(iStream))
       return false;
   }
 
@@ -473,6 +478,16 @@ int CStreamDetails::GetAudioChannels(int idx) const
     return item->m_iChannels;
   else
     return -1;
+}
+
+std::string CStreamDetails::GetAudioChannelLayout(int idx) const
+{
+  const CStreamDetailAudio* item =
+      dynamic_cast<const CStreamDetailAudio*>(GetNthStream(CStreamDetail::AUDIO, idx));
+  if (item)
+    return item->m_channelLayout;
+  else
+    return {};
 }
 
 std::string CStreamDetails::GetSubtitleLanguage(int idx) const

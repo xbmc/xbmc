@@ -71,6 +71,7 @@ public:
   bool IsWorseThan(const CStreamDetail &that) const override;
 
   int m_iChannels = -1;
+  std::string m_channelLayout;
   std::string m_strCodec;
   std::string m_strLanguage;
 };
@@ -122,6 +123,7 @@ public:
   std::string GetAudioCodec(int idx = 0) const;
   std::string GetAudioLanguage(int idx = 0) const;
   int GetAudioChannels(int idx = 0) const;
+  std::string GetAudioChannelLayout(int idx = 0) const;
 
   std::string GetSubtitleLanguage(int idx = 0) const;
 

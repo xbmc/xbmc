@@ -96,3 +96,13 @@ std::string StreamUtils::GetCodecName(int codecId, int profile)
 
   return codecName;
 }
+
+std::string StreamUtils::GetDefaultLayout(int channels)
+{
+  AVChannelLayout layout;
+  av_channel_layout_default(&layout, channels);
+
+  char buf[32] = {};
+  av_channel_layout_describe(&layout, buf, sizeof(buf));
+  return buf;
+}
