@@ -20,6 +20,7 @@
 #include "video/VideoDatabase.h"
 #include "view/ViewDatabase.h"
 
+#include <algorithm>
 #include <mutex>
 
 using namespace PVR;
@@ -34,7 +35,7 @@ CDatabaseManager::CDatabaseManager() :
 
 CDatabaseManager::~CDatabaseManager() = default;
 
-void CDatabaseManager::Initialize()
+bool CDatabaseManager::Initialize()
 {
   std::unique_lock<CCriticalSection> lock(m_section);
 
@@ -60,6 +61,10 @@ void CDatabaseManager::Initialize()
   CLog::Log(LOGDEBUG, "{}, updating databases... DONE", __FUNCTION__);
 
   m_bIsUpgrading = false;
+  m_connecting = false;
+
+  return std::ranges::all_of(m_dbStatus,
+                             [](const auto& db) { return db.second == DBStatus::READY; });
 }
 
 bool CDatabaseManager::CanOpen(const std::string &name)
@@ -96,7 +101,15 @@ bool CDatabaseManager::Update(CDatabase &db, const DatabaseSettings &settings)
     if (version)
       dbName += std::to_string(version);
 
-    if (db.Connect(dbName, dbSettings, false))
+    m_connecting = true;
+    const CDatabase::ConnectionState connectionState{db.Connect(dbName, dbSettings, false)};
+    m_connecting = false;
+
+    if (connectionState == CDatabase::ConnectionState::STATE_ERROR)
+    {
+      return false; // unable to connect
+    }
+    else if (connectionState == CDatabase::ConnectionState::STATE_CONNECTED)
     {
       // Database exists, take a copy for our current version (if needed) and reopen that one
       if (version < db.GetSchemaVersion())
@@ -122,7 +135,7 @@ bool CDatabaseManager::Update(CDatabase &db, const DatabaseSettings &settings)
         if (copy_fail)
           return false;
 
-        if (!db.Connect(latestDb, dbSettings, false))
+        if (db.Connect(latestDb, dbSettings, false) != CDatabase::ConnectionState::STATE_CONNECTED)
         {
           CLog::Log(LOGERROR, "Unable to open freshly copied database {}", latestDb);
           return false;
@@ -141,7 +154,7 @@ bool CDatabaseManager::Update(CDatabase &db, const DatabaseSettings &settings)
     version--;
   }
   // try creating a new one
-  if (db.Connect(latestDb, dbSettings, true))
+  if (db.Connect(latestDb, dbSettings, true) == CDatabase::ConnectionState::STATE_CONNECTED)
     return true;
 
   // failed to update or open the database

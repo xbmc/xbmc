@@ -16843,7 +16843,19 @@ msgctxt "#24185"
 msgid "Minimum: {0:s} / Not available{3:s}"
 msgstr ""
 
-#empty strings from id 24186 to 24990
+#. Progress text on splash screen
+#: xbmc/Application.cpp
+msgctxt "#24186"
+msgid "Connecting to database - please wait"
+msgstr ""
+
+#. Error text on splash screen
+#: xbmc/Application.cpp
+msgctxt "#24187"
+msgid "Failed to initialise databases - exiting in {} seconds."
+msgstr ""
+
+#empty strings from id 24188 to 24990
 
 #. Used as error message in add-on browser when add-on repository data could not be downloaded
 #: xbmc/filesystem/AddonsDirectory.cpp

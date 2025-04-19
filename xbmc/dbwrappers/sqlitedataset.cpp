@@ -322,10 +322,17 @@ int SqliteDatabase::connect(bool create)
     if (create)
       flags |= SQLITE_OPEN_CREATE;
     int errorCode = sqlite3_open_v2(db_fullpath.c_str(), &conn, flags, NULL);
-    if (create && errorCode == SQLITE_CANTOPEN)
+    if (errorCode == SQLITE_CANTOPEN)
     {
-      CLog::Log(LOGFATAL, "SqliteDatabase: can't open {}", db_fullpath);
-      throw std::runtime_error("SqliteDatabase: can't open " + db_fullpath);
+      if (create)
+      {
+        CLog::Log(LOGFATAL, "SqliteDatabase: can't open {}", db_fullpath);
+        throw std::runtime_error("SqliteDatabase: can't open " + db_fullpath);
+      }
+      else
+      {
+        return DB_CONNECTION_DATABASE_NOT_FOUND; // database file does not exist
+      }
     }
     else if (errorCode == SQLITE_OK)
     {

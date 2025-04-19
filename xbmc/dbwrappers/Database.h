@@ -255,7 +255,14 @@ public:
                         CDbUrl& dbUrl,
                         SortDescription& sorting);
 
-  bool Connect(const std::string& dbName, const DatabaseSettings& db, bool create);
+  enum class ConnectionState
+  {
+    STATE_ERROR,
+    STATE_DATABASE_NOT_FOUND,
+    STATE_CONNECTED,
+  };
+
+  ConnectionState Connect(const std::string& dbName, const DatabaseSettings& db, bool create);
 
 protected:
   friend class CDatabaseManager;

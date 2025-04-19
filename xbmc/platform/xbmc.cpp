@@ -43,6 +43,8 @@ extern "C" int XBMC_Run(bool renderGUI)
   if (!g_application.Initialize())
   {
     CMessagePrinter::DisplayError("ERROR: Unable to Initialize. Exiting");
+    if (g_application.Stop(EXITCODE_QUIT))
+      g_application.Cleanup();
     return status;
   }
 

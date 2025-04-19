@@ -577,18 +577,23 @@ bool CApplication::Initialize()
   // initialize (and update as needed) our databases
   CDatabaseManager &databaseManager = m_ServiceManager->GetDatabaseManager();
 
+  bool allDatabasesInitialized{false};
   CEvent event(true);
-  CServiceBroker::GetJobManager()->Submit([&databaseManager, &event]() {
-    databaseManager.Initialize();
-    event.Set();
-  });
+  CServiceBroker::GetJobManager()->Submit(
+      [&allDatabasesInitialized, &databaseManager, &event]()
+      {
+        allDatabasesInitialized = databaseManager.Initialize();
+        event.Set();
+      });
 
-  std::string localizedStr = g_localizeStrings.Get(24150);
+  const std::string connecting{g_localizeStrings.Get(24186)};
+  const std::string updating{g_localizeStrings.Get(24150)};
   int iDots = 1;
   while (!event.Wait(1000ms))
   {
-    if (databaseManager.IsUpgrading())
-      CServiceBroker::GetRenderSystem()->ShowSplash(std::string(iDots, ' ') + localizedStr + std::string(iDots, '.'));
+    CServiceBroker::GetRenderSystem()->ShowSplash(
+        std::string(iDots, ' ') + (databaseManager.IsConnecting() ? connecting : updating) +
+        std::string(iDots, '.'));
 
     if (iDots == 3)
       iDots = 1;
@@ -596,6 +601,24 @@ bool CApplication::Initialize()
       ++iDots;
   }
   CServiceBroker::GetRenderSystem()->ShowSplash("");
+
+  if (!allDatabasesInitialized)
+  {
+    // Bail out if any of the databases failed to initialize properly.
+    CLog::Log(LOGFATAL, "Failed to initialize databases");
+
+    const std::string dbInitFailedExiting{g_localizeStrings.Get(24187)};
+
+    unsigned int secondsLeftUntilExit{10};
+    while (secondsLeftUntilExit)
+    {
+      CServiceBroker::GetRenderSystem()->ShowSplash(
+          StringUtils::Format(dbInitFailedExiting, secondsLeftUntilExit));
+      KODI::TIME::Sleep(1s);
+      secondsLeftUntilExit--;
+    }
+    return false;
+  }
 
   // Initialize GUI font manager to build/update fonts cache
   //! @todo Move GUIFontManager into service broker and drop the global reference
@@ -605,7 +628,8 @@ bool CApplication::Initialize()
     guiFontManager.Initialize();
     event.Set();
   });
-  localizedStr = g_localizeStrings.Get(39175);
+
+  std::string localizedStr{g_localizeStrings.Get(39175)};
   iDots = 1;
   while (!event.Wait(1000ms))
   {
