@@ -1265,6 +1265,38 @@ int CVideoDatabase::GetAndFillFileId(CVideoInfoTag& details)
   return details.m_iFileId;
 }
 
+std::string CVideoDatabase::GetRemovableBlurayPath(std::string originalPath)
+{
+  try
+  {
+    if (nullptr == m_pDB)
+      return {};
+    if (nullptr == m_pDS)
+      return {};
+
+    std::string path, filename;
+    SplitPath(originalPath, path, filename);
+    path = URIUtils::AddFileToFolder(path, "PLAYLIST", "");
+
+    if (const int idPath{GetPathId(path)}; idPath >= 0)
+    {
+      m_pDS->query(PrepareSQL("select strFilename from files where idPath=%i", idPath));
+      if (m_pDS->num_rows() > 0)
+      {
+        const std::string newPath{
+            URIUtils::AddFileToFolder(path, m_pDS->fv("strFilename").get_asString())};
+        m_pDS->close();
+        return newPath;
+      }
+    }
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "({}) failed", originalPath);
+  }
+  return {};
+}
+
 //********************************************************************************************************************************
 int CVideoDatabase::GetMovieId(const std::string& strFilenameAndPath)
 {

@@ -114,6 +114,33 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
   if (bookmark.timeInSeconds == 0.0)
     return;
 
+  // Adjust paths of new fileItem for physical/removable blurays
+  // If first play then DynPath contains the mpls played
+  // If resume then DynPath is empty and VideoInfoTag()->m_strFileNameAndPath contains the mpls played
+  if (fileItem.HasVideoInfoTag() &&
+      fileItem.GetVideoInfoTag()->m_strFileNameAndPath.starts_with("bluray://removable"))
+  {
+    std::string newPath;
+    const std::string dynPath{fileItem.GetDynPath()};
+    const std::string tagPath{fileItem.GetVideoInfoTag()->m_strFileNameAndPath};
+    if (URIUtils::IsBlurayPath(dynPath))
+    {
+      // First play
+      CURL url{tagPath};
+      const CURL fileUrl{dynPath};
+      url.SetFileName(fileUrl.GetFileName());
+      newPath = url.Get();
+      fileItem.GetVideoInfoTag()->SetFileNameAndPath(newPath);
+    }
+    else
+    {
+      // Resume
+      newPath = tagPath;
+    }
+    fileItem.SetPath(newPath);
+    fileItem.SetDynPath("");
+  }
+
   if (stackHelper->GetRegisteredStack(fileItem) != nullptr)
   {
     if (stackHelper->GetRegisteredStackTotalTimeMs(fileItem) > 0)
