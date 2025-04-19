@@ -408,11 +408,27 @@ TEST(TestStringUtils, FindNumber)
 
 TEST(TestStringUtils, AlphaNumericCompare)
 {
-  int64_t ref, var;
+  // less than
+  EXPECT_LT(StringUtils::AlphaNumericCompare(L"123abc", L"abc123"), 0);
+  EXPECT_LT(StringUtils::AlphaNumericCompare(L"123abc", L"124abc"), 0);
+  EXPECT_LT(StringUtils::AlphaNumericCompare(L"123abc", L"123bbc"), 0);
+  EXPECT_LT(StringUtils::AlphaNumericCompare(L"abc123", L"abc124"), 0);
+  EXPECT_LT(StringUtils::AlphaNumericCompare(L"abc123", L"bbc123"), 0);
+  EXPECT_LT(StringUtils::AlphaNumericCompare(L"2", L"12"), 0);
 
-  ref = 0;
-  var = StringUtils::AlphaNumericCompare(L"123abc", L"abc123");
-  EXPECT_LT(var, ref);
+  // equals
+  EXPECT_EQ(StringUtils::AlphaNumericCompare(L"123abc", L"123abc"), 0);
+
+  // greater than (same as less than but reversed arguments)
+  EXPECT_GT(StringUtils::AlphaNumericCompare(L"abc123", L"123abc"), 0);
+  EXPECT_GT(StringUtils::AlphaNumericCompare(L"124abc", L"123abc"), 0);
+  EXPECT_GT(StringUtils::AlphaNumericCompare(L"123bbc", L"123abc"), 0);
+  EXPECT_GT(StringUtils::AlphaNumericCompare(L"abc124", L"abc123"), 0);
+  EXPECT_GT(StringUtils::AlphaNumericCompare(L"bbc123", L"abc123"), 0);
+  EXPECT_GT(StringUtils::AlphaNumericCompare(L"12", L"2"), 0);
+
+  // test that long numbers are treated correctly
+  EXPECT_EQ(StringUtils::AlphaNumericCompare(L"12345678901234567890", L"12345678901234567890"), 0);
 }
 
 TEST(TestStringUtils, TimeStringToSeconds)
