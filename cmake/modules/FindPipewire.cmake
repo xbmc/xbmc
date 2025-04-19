@@ -8,18 +8,14 @@
 #   ${APP_NAME_LC}::Pipewire    - The pipewire library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  find_package(PkgConfig QUIET)
-  if(PKG_CONFIG_FOUND)
-    if(Pipewire_FIND_VERSION)
-      if(Pipewire_FIND_VERSION_EXACT)
-        set(Pipewire_FIND_SPEC "=${Pipewire_FIND_VERSION_COMPLETE}")
-      else()
-        set(Pipewire_FIND_SPEC ">=${Pipewire_FIND_VERSION_COMPLETE}")
-      endif()
-    endif()
+  include(cmake/scripts/common/ModuleHelpers.cmake)
 
-    pkg_check_modules(PC_PIPEWIRE libpipewire-0.3${Pipewire_FIND_SPEC} QUIET)
-    pkg_check_modules(PC_SPA libspa-0.2>=0.2 QUIET)
+  SETUP_FIND_SPECS()
+
+  find_package(PkgConfig ${SEARCH_QUIET})
+  if(PKG_CONFIG_FOUND)
+    pkg_check_modules(PC_PIPEWIRE libpipewire-0.3${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET})
+    pkg_check_modules(PC_SPA libspa-0.2>=0.2 ${SEARCH_QUIET})
   endif()
 
   find_path(PIPEWIRE_INCLUDE_DIR NAMES pipewire/pipewire.h

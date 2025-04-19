@@ -33,10 +33,22 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   SETUP_BUILD_VARS()
 
+  SETUP_FIND_SPECS()
+
   # Search for cmake config. Suitable for all platforms including windows
-  find_package(libnfs CONFIG QUIET
-                             HINTS ${DEPENDS_PATH}/lib/cmake
-                             ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+  find_package(libnfs ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
+                      HINTS ${DEPENDS_PATH}/lib/cmake
+                      ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+
+  # cmake config may not be available (eg Debian libnfs-dev package)
+  # fallback to pkgconfig for non windows platforms
+  if(NOT libnfs_FOUND)
+    find_package(PkgConfig ${SEARCH_QUIET})
+
+    if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWSSTORE))
+      pkg_check_modules(libnfs libnfs${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} IMPORTED_TARGET ${SEARCH_QUIET})
+    endif()
+  endif()
 
   # Check for existing LIBNFS. If version >= LIBNFS-VERSION file version, dont build
   # A corner case, but if a linux/freebsd user WANTS to build internal libnfs, build anyway
@@ -66,29 +78,14 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       find_path(LIBNFS_INCLUDE_DIR NAMES nfsc/libnfs.h
                                    HINTS ${DEPENDS_PATH}/include
                                    ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
-    else()
-      find_package(PkgConfig QUIET)
-      # Try pkgconfig based search as last resort
-      if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWS_STORE))
-        if(NFS_FIND_VERSION)
-          if(NFS_FIND_VERSION_EXACT)
-            set(NFS_FIND_SPEC "=${NFS_FIND_VERSION_COMPLETE}")
-          else()
-            set(NFS_FIND_SPEC ">=${NFS_FIND_VERSION_COMPLETE}")
-          endif()
-        endif()
+    elseif(TARGET PkgConfig::libnfs)
+      # First item is the full path of the library file found
+      # pkg_check_modules does not populate a variable of the found library explicitly
+      list(GET libnfs_LINK_LIBRARIES 0 LIBNFS_LIBRARY_RELEASE)
 
-        pkg_check_modules(PC_LIBNFS libnfs${NFS_FIND_SPEC} QUIET)
-      endif()
+      get_target_property(LIBNFS_INCLUDE_DIR PkgConfig::libnfs INTERFACE_INCLUDE_DIRECTORIES)
 
-      find_library(LIBNFS_LIBRARY_RELEASE NAMES nfs libnfs
-                                          HINTS ${DEPENDS_PATH}/lib
-                                                ${PC_LIBNFS_LIBDIR}
-                                          ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
-      find_path(LIBNFS_INCLUDE_DIR nfsc/libnfs.h HINTS ${PC_LIBNFS_INCLUDEDIR}
-                                                       ${DEPENDS_PATH}/include
-                                                       ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
-      set(LIBNFS_VERSION ${PC_LIBNFS_VERSION})
+      set(LIBNFS_VERSION ${libnfs_VERSION})
     endif()
   endif()
 
@@ -143,10 +140,16 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     # cmake target and not building internal
     if(TARGET libnfs::nfs AND NOT TARGET libnfs)
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS libnfs::nfs)
+
+      # Need to manually set this, as libnfs cmake config does not provide INTERFACE_INCLUDE_DIRECTORIES
+      set_target_properties(libnfs::nfs PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${LIBNFS_INCLUDE_DIR})
+    elseif(TARGET PkgConfig::libnfs AND NOT TARGET libnfs)
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::libnfs)
     else()
 
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
       set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                       INTERFACE_INCLUDE_DIRECTORIES ${LIBNFS_INCLUDE_DIR}
                                                                        IMPORTED_LOCATION "${LIBNFS_LIBRARY}")
     endif()
 
@@ -162,9 +165,6 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     # We need to append in case the cmake config already has definitions
     set_property(TARGET ${_nfs_target} APPEND PROPERTY
                                               INTERFACE_COMPILE_DEFINITIONS ${_nfs_definitions})
-
-    # Need to manually set this, as libnfs cmake config does not provide INTERFACE_INCLUDE_DIRECTORIES
-    set_target_properties(${_nfs_target} PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${LIBNFS_INCLUDE_DIR})
 
     if(TARGET libnfs)
       add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} libnfs)

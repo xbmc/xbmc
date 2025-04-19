@@ -7,9 +7,10 @@
 #
 #   utf8cpp::utf8cpp   - The utf8-cpp header-only library
 #   utf8::cpp          - ALIAS target to utf8cpp::utf8cpp
+#   LIBRARY::Utfcpp    - ALIAS target to utf8cpp::utf8cpp
 #
 
-if(NOT TARGET utf8cpp::utf8cpp)
+if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
 
   macro(buildutfcpp)
     # Install headeronly lib
@@ -27,7 +28,7 @@ if(NOT TARGET utf8cpp::utf8cpp)
 
   SETUP_BUILD_VARS()
 
-  find_package(utf8cpp CONFIG QUIET
+  find_package(utf8cpp CONFIG ${SEARCH_QUIET}
                        HINTS ${DEPENDS_PATH}/share/utf8cpp/cmake
                        ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 
@@ -44,16 +45,23 @@ if(NOT TARGET utf8cpp::utf8cpp)
                                     VERSION_VAR utf8cpp_VERSION)
 
   if(Utfcpp_FOUND)
-    if(NOT TARGET utf8cpp::utf8cpp)
-      add_library(utf8cpp::utf8cpp UNKNOWN IMPORTED)
-      set_target_properties(utf8cpp::utf8cpp PROPERTIES
-                                             INTERFACE_INCLUDE_DIRECTORIES "${UTFCPP_INCLUDE_DIR}")
-
-      add_library(utf8::cpp ALIAS utf8cpp::utf8cpp)
+    if(TARGET utf8cpp::utf8cpp AND NOT TARGET utfcpp)
+      add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS utf8cpp::utf8cpp)
+    elseif(TARGET PkgConfig::utf8cpp AND NOT TARGET utfcpp)
+      add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::utf8cpp)
+    else()
+      add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} INTERFACE IMPORTED)
+      set_target_properties(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                INTERFACE_INCLUDE_DIRECTORIES "${UTFCPP_INCLUDE_DIR}")
     endif()
 
     if(TARGET utfcpp)
-      add_dependencies(utf8cpp::utf8cpp utfcpp)
+      add_dependencies(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} utfcpp)
+
+      # We are building as a requirement, so set LIB_BUILD property to allow calling
+      # modules to know we will be building, and they will want to rebuild as well.
+      # Property must be set on actual TARGET and not the ALIAS
+      set_target_properties(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES LIB_BUILD ON)
     endif()
 
     # Add internal build target when a Multi Config Generator is used

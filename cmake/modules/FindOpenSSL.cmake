@@ -24,7 +24,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     set(OPENSSL_ROOT_DIR ${DEPENDS_PATH})
   endif()
 
-  find_package(OpenSSL ${REQ})
+  find_package(OpenSSL ${REQ} ${SEARCH_QUIET})
   unset(OPENSSL_USE_STATIC_LIBS)
 
   # Back to our normal module paths

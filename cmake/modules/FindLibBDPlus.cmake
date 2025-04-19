@@ -9,11 +9,11 @@
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
-  find_package(PkgConfig QUIET)
+  find_package(PkgConfig ${SEARCH_QUIET})
 
   # We only rely on pkgconfig for non windows platforms
   if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWS_STORE))
-    pkg_check_modules(BDPLUS libbdplus QUIET)
+    pkg_check_modules(BDPLUS libbdplus ${SEARCH_QUIET})
 
     # First item is the full path of the library file found
     # pkg_check_modules does not populate a variable of the found library explicitly

@@ -27,9 +27,9 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
     BUILD_DEP_TARGET()
   else()
-    find_package(PkgConfig QUIET)
+    find_package(PkgConfig ${SEARCH_QUIET})
     if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWS_STORE))
-      pkg_check_modules(PC_FSTRCMP fstrcmp QUIET)
+      pkg_check_modules(PC_FSTRCMP fstrcmp ${SEARCH_QUIET})
     endif()
 
     find_path(FSTRCMP_INCLUDE_DIR NAMES fstrcmp.h

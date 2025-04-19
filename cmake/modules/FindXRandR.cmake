@@ -8,10 +8,10 @@
 #   ${APP_NAME_LC}::XRandR   - The XRANDR library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  find_package(PkgConfig QUIET)
+  find_package(PkgConfig ${SEARCH_QUIET})
 
   if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_XRANDR xrandr QUIET)
+    pkg_check_modules(PC_XRANDR xrandr ${SEARCH_QUIET})
   endif()
 
   find_path(XRANDR_INCLUDE_DIR NAMES X11/extensions/Xrandr.h

@@ -8,9 +8,9 @@
 #   ${APP_NAME_LC}::VDPAU   - The VDPAU library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  find_package(PkgConfig QUIET)
+  find_package(PkgConfig ${SEARCH_QUIET})
   if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_VDPAU vdpau QUIET)
+    pkg_check_modules(PC_VDPAU vdpau ${SEARCH_QUIET})
   endif()
 
   find_path(VDPAU_INCLUDE_DIR NAMES vdpau/vdpau.h vdpau/vdpau_x11.h

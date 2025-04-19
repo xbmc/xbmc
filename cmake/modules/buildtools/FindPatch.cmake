@@ -10,7 +10,7 @@
 
 if(CMAKE_HOST_WIN32)
 
-  find_package(Git)
+  find_package(Git ${SEARCH_QUIET})
   if(Git_FOUND)
     get_filename_component(GIT_DIR ${GIT_EXECUTABLE} DIRECTORY)
   endif()

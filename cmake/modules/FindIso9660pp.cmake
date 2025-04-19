@@ -8,21 +8,18 @@
 #   ${APP_NAME_LC}::Iso9660pp - The Iso9660pp library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  find_package(Cdio)
+
+  include(cmake/scripts/common/ModuleHelpers.cmake)
+
+  SETUP_FIND_SPECS()
+
+  find_package(Cdio ${SEARCH_QUIET})
 
   if(Cdio_FOUND)
-    find_package(PkgConfig QUIET)
+    find_package(PkgConfig ${SEARCH_QUIET})
     if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWS_STORE))
-      if(Iso9660pp_FIND_VERSION)
-        if(Iso9660pp_FIND_VERSION_EXACT)
-          set(Iso9660pp_FIND_SPEC "=${Iso9660pp_FIND_VERSION_COMPLETE}")
-        else()
-          set(Iso9660pp_FIND_SPEC ">=${Iso9660pp_FIND_VERSION_COMPLETE}")
-        endif()
-      endif()
-
-      pkg_check_modules(PC_ISO9660PP libiso9660++${Iso9660pp_FIND_SPEC} QUIET)
-      pkg_check_modules(PC_ISO9660 libiso9660${Iso9660pp_FIND_SPEC} QUIET)
+      pkg_check_modules(PC_ISO9660PP libiso9660++${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET})
+      pkg_check_modules(PC_ISO9660 libiso9660${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET})
     endif()
 
     find_path(ISO9660PP_INCLUDE_DIR NAMES cdio++/iso9660.hpp

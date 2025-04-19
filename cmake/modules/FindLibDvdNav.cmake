@@ -9,7 +9,7 @@
 
 if(NOT TARGET LibDvdNav::LibDvdNav)
 
-  find_package(LibDvdRead MODULE REQUIRED)
+  find_package(LibDvdRead MODULE REQUIRED ${SEARCH_QUIET})
 
   include(cmake/scripts/common/ModuleHelpers.cmake)
 

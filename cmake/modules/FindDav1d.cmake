@@ -35,10 +35,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
     BUILD_DEP_TARGET()
   else()
-    find_package(PkgConfig QUIET)
+    find_package(PkgConfig ${SEARCH_QUIET})
     # Do not use pkgconfig on windows
     if(PKG_CONFIG_FOUND AND NOT WIN32)
-      pkg_check_modules(PC_DAV1D dav1d QUIET)
+      pkg_check_modules(PC_DAV1D dav1d ${SEARCH_QUIET})
     endif()
 
     find_library(DAV1D_LIBRARY NAMES dav1d libdav1d

@@ -6,7 +6,7 @@
 #
 #   ${APP_NAME_LC}::FlatBuffers - The flatbuffers headers
 
-find_package(FlatC REQUIRED)
+find_package(FlatC REQUIRED ${SEARCH_QUIET})
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
@@ -34,7 +34,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   SETUP_BUILD_VARS()
 
-  find_package(flatbuffers CONFIG
+  find_package(flatbuffers CONFIG ${SEARCH_QUIET}
                            HINTS ${DEPENDS_PATH}/lib/cmake
                            ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 

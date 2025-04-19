@@ -9,9 +9,9 @@
 #   ${APP_NAME_LC}::Xext - The X11 extension library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  find_package(PkgConfig QUIET)
+  find_package(PkgConfig ${SEARCH_QUIET})
   if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_X x11 xext QUIET)
+    pkg_check_modules(PC_X x11 xext ${SEARCH_QUIET})
   endif()
 
   find_path(X_INCLUDE_DIR NAMES X11/Xlib.h

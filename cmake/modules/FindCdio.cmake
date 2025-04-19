@@ -9,11 +9,11 @@
 #
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  find_package(PkgConfig QUIET)
+  find_package(PkgConfig ${SEARCH_QUIET})
 
   if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_CDIO libcdio>=0.80 QUIET)
-    pkg_check_modules(PC_CDIOPP libcdio++>=2.1.0 QUIET)
+    pkg_check_modules(PC_CDIO libcdio>=0.80 ${SEARCH_QUIET})
+    pkg_check_modules(PC_CDIOPP libcdio++>=2.1.0 ${SEARCH_QUIET})
   endif()
 
   find_path(CDIO_INCLUDE_DIR NAMES cdio/cdio.h

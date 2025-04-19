@@ -48,10 +48,26 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
 
   SETUP_BUILD_VARS()
 
+  SETUP_FIND_SPECS()
+
   # Search for cmake config. Suitable for all platforms including windows
-  find_package(brotli CONFIG
+  find_package(brotli ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
                       HINTS ${DEPENDS_PATH}/lib/cmake
                       ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+
+  # cmake config may not be available (eg Debian libbrotli-dev package)
+  # fallback to pkgconfig for non windows platforms
+  if(NOT brotli_FOUND)
+    find_package(PkgConfig ${SEARCH_QUIET})
+    if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWSSTORE))
+      pkg_check_modules(brotlicommon libbrotlicommon${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET} IMPORTED_TARGET)
+      pkg_check_modules(brotlidec libbrotlidec${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET} IMPORTED_TARGET)
+
+      if(brotlicommon_VERSION)
+        set(brotli_VERSION ${brotlicommon_VERSION})
+      endif()
+    endif()
+  endif()
 
   # Check for existing Brotli. If version >= BROTLI-VERSION file version, dont build
   if(brotli_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND Brotli_FIND_REQUIRED)
@@ -86,22 +102,18 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
       endforeach()
 
       get_target_property(BROTLI_INCLUDE_DIR brotli::brotlicommon INTERFACE_INCLUDE_DIRECTORIES)
-    else()
-      find_package(PkgConfig QUIET)
-      if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWSSTORE))
-        pkg_check_modules(BROTLICOMMON libbrotlicommon QUIET)
-        # First item is the full path of the library file found
-        # pkg_check_modules does not populate a variable of the found library explicitly
-        list(GET BROTLICOMMON_LINK_LIBRARIES 0 BROTLICOMMON_LIBRARY)
-    
-        pkg_check_modules(BROTLIDEC libbrotlidec QUIET)
-        # First item is the full path of the library file found
-        # pkg_check_modules does not populate a variable of the found library explicitly
-        list(GET BROTLIDEC_LINK_LIBRARIES 0 BROTLIDEC_LIBRARY)
-    
-        set(BROTLI_INCLUDE_DIR ${BROTLICOMMON_INCLUDEDIR})
-        set(BROTLI_VERSION ${BROTLICOMMON_VERSION})
-      endif()
+
+    elseif(TARGET PkgConfig::brotlicommon AND TARGET PkgConfig::brotlidec)
+      # First item is the full path of the library file found
+      # pkg_check_modules does not populate a variable of the found library explicitly
+      list(GET brotlicommon_LINK_LIBRARIES 0 BROTLICOMMON_LIBRARY_RELEASE)
+
+      get_target_property(BROTLI_INCLUDE_DIR PkgConfig::brotlidec INTERFACE_INCLUDE_DIRECTORIES)
+      set(BROTLI_VERSION ${brotlicommon_VERSION})
+
+      # First item is the full path of the library file found
+      # pkg_check_modules does not populate a variable of the found library explicitly
+      list(GET brotlidec_LINK_LIBRARIES 0 BROTLIDEC_LIBRARY_RELEASE)
     endif()
   endif()
 
@@ -121,22 +133,21 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
   if(BROTLI_FOUND)
     if((TARGET brotli::brotlicommon AND TARGET brotli::brotlidec) AND NOT TARGET brotli)
       add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS brotli::brotlidec)
+    elseif(TARGET PkgConfig::brotlicommon AND TARGET PkgConfig::brotlidec AND NOT TARGET brotli)
+      add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::brotlidec)
     else()
-      # We have to use custom TARGET names, as it is possible the brotli native
-      # TARGETS were found, and exist, but we still wanted to rebuild (eg older version)
       add_library(LIBRARY::brotlicommon UNKNOWN IMPORTED)
       set_target_properties(LIBRARY::brotlicommon PROPERTIES
-                                                 IMPORTED_LOCATION "${BROTLICOMMON_LIBRARY}"
-                                                 INTERFACE_INCLUDE_DIRECTORIES "${BROTLI_INCLUDE_DIR}")
+                                                  IMPORTED_LOCATION "${BROTLICOMMON_LIBRARY}"
+                                                  INTERFACE_INCLUDE_DIRECTORIES "${BROTLI_INCLUDE_DIR}")
   
       add_library(LIBRARY::brotlidec UNKNOWN IMPORTED)
       set_target_properties(LIBRARY::brotlidec PROPERTIES
-                                              IMPORTED_LOCATION "${BROTLIDEC_LIBRARY}"
-                                              INTERFACE_LINK_LIBRARIES LIBRARY::brotlicommon
-                                              INTERFACE_INCLUDE_DIRECTORIES "${BROTLI_INCLUDE_DIR}")
+                                               IMPORTED_LOCATION "${BROTLIDEC_LIBRARY}"
+                                               INTERFACE_LINK_LIBRARIES LIBRARY::brotlicommon
+                                               INTERFACE_INCLUDE_DIRECTORIES "${BROTLI_INCLUDE_DIR}")
   
       add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS LIBRARY::brotlidec)
-
     endif()
 
     if(TARGET brotli)

@@ -31,7 +31,7 @@ macro(buildFFMPEG)
 
   # Check for dependencies - Must be done before SETUP_BUILD_VARS
   get_libversion_data("dav1d" "target")
-  find_package(Dav1d ${LIB_DAV1D_VER} MODULE)
+  find_package(Dav1d ${LIB_DAV1D_VER} MODULE ${SEARCH_QUIET})
   if(NOT TARGET ${APP_NAME_LC}::Dav1d)
     message(STATUS "dav1d not found, internal ffmpeg build will be missing AV1 support!")
   else()
@@ -201,7 +201,7 @@ else()
                   libpostproc${_postproc_ver})
 
   if(NOT WIN32)
-    find_package(PkgConfig REQUIRED)
+    find_package(PkgConfig REQUIRED ${SEARCH_QUIET})
 
     pkg_check_modules(PC_FFMPEG ${FFMPEG_PKGS})
   endif()
@@ -266,7 +266,7 @@ else()
         # pkg_check_modules is run with a list, the only *_LDFLAGS set is a concatenated 
         # list of all checked modules. Ideally we want each target to only have the LDFLAGS
         # required for that specific module
-        pkg_check_modules(PC_FFMPEG_${libname} ${libname}${_${name}_ver} QUIET)
+        pkg_check_modules(PC_FFMPEG_${libname} ${libname}${_${name}_ver} ${SEARCH_QUIET})
 
         # pkg-config LDFLAGS always seem to have -l<name> listed. We dont need that, as
         # the target gets a direct path to the physical lib

@@ -4,11 +4,9 @@
 #
 # This will define the following target:
 #
-#   ${APP_NAME_LC}::P8Platform   - The P8-Platform library
+#   LIBRARY::P8Platform   - ALIAS target for P8-Platform library
 
-# If find_package REQUIRED, check again to make sure any potential versions
-# supplied in the call match what we can find/build
-if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} OR P8Platform_FIND_REQUIRED)
+if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
   macro(buildlibp8platform)
@@ -40,35 +38,41 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} OR P8Platform_FIND_REQU
   set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC p8-platform)
   SETUP_BUILD_VARS()
 
+  SETUP_FIND_SPECS()
+
   # Search cmake-config. Suitable all platforms
-  find_package(p8-platform CONFIG
+  find_package(p8-platform ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
                            HINTS ${DEPENDS_PATH}/lib/cmake
                            ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
+
+  # fallback to pkgconfig for non windows platforms
+  if(NOT p8-platform_FOUND)
+    find_package(PkgConfig ${SEARCH_QUIET})
+
+    if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWSSTORE))
+      pkg_check_modules(p8-platform p8-platform${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET} IMPORTED_TARGET)
+    endif()
+  endif()
 
   if(p8-platform_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
     # build p8-platform lib
     buildlibp8platform()
   else()
-    # p8-platform cmake config is terrible for modern cmake. For now just use pkgconfig
-    # and manual find_* 
-    find_package(PkgConfig QUIET)
-    # Do not use pkgconfig on windows
-    if(PKG_CONFIG_FOUND AND NOT WIN32)
-      pkg_check_modules(PC_P8PLATFORM p8-platform QUIET)
-      set(P8-PLATFORM_VERSION ${PC_P8PLATFORM_VERSION})
-    else()
+    if(TARGET PkgConfig::p8-platform)
+      # First item is the full path of the library file found
+      # pkg_check_modules does not populate a variable of the found library explicitly
+      list(GET p8-platform_LINK_LIBRARIES 0 P8-PLATFORM_LIBRARY)
+
+      get_target_property(P8-PLATFORM_INCLUDE_DIR PkgConfig::p8-platform INTERFACE_INCLUDE_DIRECTORIES)
+    elseif(TARGET p8-platform)
+
+      # First item is the full path of the library file found
+      # pkg_check_modules does not populate a variable of the found library explicitly
+      list(GET p8-platform_LIBRARIES 0 P8-PLATFORM_LIBRARY)
+
+      set(P8-PLATFORM_INCLUDE_DIR ${p8-platform_INCLUDE_DIRS})
       set(P8-PLATFORM_VERSION ${p8-platform_VERSION})
     endif()
-
-    # Hack: kodi uses a tweak version. Along with p8platform cmake config/pkgconfig
-    # returns versions without patch. Just skip for now
-    set(P8Platform_FIND_VERSION "2.1")
-    find_library(P8-PLATFORM_LIBRARY NAMES p8-platform
-                                     HINTS ${DEPENDS_PATH}/lib ${PC_P8PLATFORM_LIBDIR}
-                                     ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
-    find_path(P8-PLATFORM_INCLUDE_DIR NAMES p8-platform/os.h
-                                      HINTS ${DEPENDS_PATH}/include ${PC_P8PLATFORM_INCLUDEDIR}
-                                      ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
   endif()
 
   include(FindPackageHandleStandardArgs)
@@ -77,21 +81,26 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} OR P8Platform_FIND_REQU
                                     VERSION_VAR P8-PLATFORM_VERSION)
 
   if(P8PLATFORM_FOUND)
-    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
-    set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                     IMPORTED_LOCATION "${P8-PLATFORM_LIBRARY}"
-                                                                     INTERFACE_INCLUDE_DIRECTORIES "${P8-PLATFORM_INCLUDE_DIR}")
-
-    if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
-      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                       INTERFACE_LINK_LIBRARIES "-framework CoreVideo")
+    if(TARGET PkgConfig::p8-platform AND NOT TARGET build-p8-platform)
+      add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::p8-platform)
+    else()
+      add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
+      set_target_properties(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                IMPORTED_LOCATION "${P8-PLATFORM_LIBRARY}"
+                                                                INTERFACE_INCLUDE_DIRECTORIES "${P8-PLATFORM_INCLUDE_DIR}")
+  
+      if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
+        set_target_properties(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                  INTERFACE_LINK_LIBRARIES "-framework CoreVideo")
+      endif()
     endif()
 
     if(TARGET build-p8-platform)
-      add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} build-p8-platform)
+      add_dependencies(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} build-p8-platform)
+
       # If the build target exists here, set LIB_BUILD property to allow calling modules
       # know that this will be rebuilt, and they will need to rebuild as well
-      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES LIB_BUILD ON)
+      set_target_properties(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES LIB_BUILD ON)
     endif()
 
     # Add internal build target when a Multi Config Generator is used

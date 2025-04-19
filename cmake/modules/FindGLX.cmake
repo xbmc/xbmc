@@ -8,10 +8,10 @@
 #   ${APP_NAME_LC}::GLX    - The GLX library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  find_package(PkgConfig QUIET)
+  find_package(PkgConfig ${SEARCH_QUIET})
 
   if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_GLX glx QUIET)
+    pkg_check_modules(PC_GLX glx ${SEARCH_QUIET})
   endif()
 
   find_path(GLX_INCLUDE_DIR NAMES GL/glx.h

@@ -8,17 +8,13 @@
 #   ${APP_NAME_LC}::LibDRM   - The LibDRM library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  if(LibDRM_FIND_VERSION)
-    if(LibDRM_FIND_VERSION_EXACT)
-      set(LibDRM_FIND_SPEC "=${LibDRM_FIND_VERSION_COMPLETE}")
-    else()
-      set(LibDRM_FIND_SPEC ">=${LibDRM_FIND_VERSION_COMPLETE}")
-    endif()
-  endif()
+  include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  find_package(PkgConfig QUIET)
+  SETUP_FIND_SPECS()
+
+  find_package(PkgConfig ${SEARCH_QUIET})
   if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_LIBDRM libdrm${LibDRM_FIND_SPEC} QUIET)
+    pkg_check_modules(PC_LIBDRM libdrm${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET})
   endif()
 
   find_path(LIBDRM_INCLUDE_DIR NAMES drm.h

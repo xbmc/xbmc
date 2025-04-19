@@ -9,10 +9,10 @@
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
-  find_package(PkgConfig QUIET)
+  find_package(PkgConfig ${SEARCH_QUIET})
 
   if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_LIBDISPLAYINFO libdisplay-info QUIET)
+    pkg_check_modules(PC_LIBDISPLAYINFO libdisplay-info ${SEARCH_QUIET})
   endif()
 
   find_path(LIBDISPLAYINFO_INCLUDE_DIR libdisplay-info/edid.h

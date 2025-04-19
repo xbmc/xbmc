@@ -8,10 +8,10 @@
 #   ${APP_NAME_LC}::FriBidi   - The FriBidi library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  find_package(PkgConfig QUIET)
+  find_package(PkgConfig ${SEARCH_QUIET})
 
   if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWS_STORE))
-    pkg_check_modules(FRIBIDI fribidi IMPORTED_TARGET GLOBAL QUIET)
+    pkg_check_modules(FRIBIDI fribidi IMPORTED_TARGET GLOBAL ${SEARCH_QUIET})
 
     get_target_property(FRIBIDI_LIBRARY PkgConfig::FRIBIDI INTERFACE_LINK_LIBRARIES)
     get_target_property(FRIBIDI_INCLUDE_DIR PkgConfig::FRIBIDI INTERFACE_INCLUDE_DIRECTORIES)

@@ -8,17 +8,14 @@
 #   ${APP_NAME_LC}::LCMS2 - The LCMS Color Management library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  if(LCMS2_FIND_VERSION)
-    if(LCMS2_FIND_VERSION_EXACT)
-      set(LCMS2_FIND_SPEC "=${LCMS2_FIND_VERSION_COMPLETE}")
-    else()
-      set(LCMS2_FIND_SPEC ">=${LCMS2_FIND_VERSION_COMPLETE}")
-    endif()
-  endif()
 
-  find_package(PkgConfig QUIET)
+  include(cmake/scripts/common/ModuleHelpers.cmake)
+
+  SETUP_FIND_SPECS()
+
+  find_package(PkgConfig ${SEARCH_QUIET})
   if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWS_STORE))
-    pkg_check_modules(PC_LCMS2 lcms2${LCMS2_FIND_SPEC} QUIET)
+    pkg_check_modules(PC_LCMS2 lcms2${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET})
   endif()
 
   find_path(LCMS2_INCLUDE_DIR NAMES lcms2.h

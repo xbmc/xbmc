@@ -7,8 +7,8 @@
 # WAYLAND_PROTOCOLS_DIR - directory containing the additional Wayland protocols
 #                         from the wayland-protocols package
 
-find_package(PkgConfig QUIET)
-pkg_check_modules(PC_WAYLAND_PROTOCOLS wayland-protocols)
+find_package(PkgConfig ${SEARCH_QUIET})
+pkg_check_modules(PC_WAYLAND_PROTOCOLS wayland-protocols ${SEARCH_QUIET})
 if(PC_WAYLAND_PROTOCOLS_FOUND)
   pkg_get_variable(WAYLAND_PROTOCOLS_DIR wayland-protocols pkgdatadir)
 endif()

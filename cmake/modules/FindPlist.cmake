@@ -8,9 +8,9 @@
 #   ${APP_NAME_LC}::Plist - The Plist library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  find_package(PkgConfig QUIET)
+  find_package(PkgConfig ${SEARCH_QUIET})
   if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWS_STORE))
-    pkg_search_module(PC_PLIST libplist-2.0 libplist QUIET)
+    pkg_search_module(PC_PLIST libplist-2.0 libplist ${SEARCH_QUIET})
   endif()
 
   find_path(PLIST_INCLUDE_DIR plist/plist.h

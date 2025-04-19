@@ -12,18 +12,20 @@ include(cmake/scripts/common/ModuleHelpers.cmake)
 set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC libzip)
 SETUP_BUILD_VARS()
 
+SETUP_FIND_SPECS()
+
 # Check for existing lib
-find_package(libzip CONFIG QUIET
+find_package(libzip ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
                     HINTS ${DEPENDS_PATH}/lib
                     ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 
-if(NOT LIBZIP_FOUND OR libzip_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
+if(libzip_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
   # Check for dependencies
-  find_package(GnuTLS REQUIRED)
+  find_package(GnuTLS REQUIRED ${SEARCH_QUIET})
+  find_package(Zlib REQUIRED ${SEARCH_QUIET})
 
   # Eventually we will want Find modules for the following deps
   # bzip2 
-  # ZLIB
 
   set(CMAKE_ARGS -DBUILD_DOC=OFF
                  -DBUILD_EXAMPLES=OFF
@@ -34,6 +36,9 @@ if(NOT LIBZIP_FOUND OR libzip_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME
   set(LIBZIP_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
 
   BUILD_DEP_TARGET()
+
+  # Todo: Gnutls dependency
+  add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} LIBRARY::Zlib)
 else()
   # we only do this because we use find_package_handle_standard_args for config time output
   # and it isnt capable of handling TARGETS, so we have to extract the info
@@ -52,11 +57,11 @@ else()
 
   get_target_property(ZIP_INCLUDE_DIR libzip::zip INTERFACE_INCLUDE_DIRECTORIES)
   set(LIBZIP_VERSION ${libzip_VERSION})
-
-  include(SelectLibraryConfigurations)
-  select_library_configurations(LIBZIP)
-  unset(LIBZIP_LIBRARIES)
 endif()
+
+include(SelectLibraryConfigurations)
+select_library_configurations(LIBZIP)
+unset(LIBZIP_LIBRARIES)
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(LibZip
@@ -70,10 +75,10 @@ if(LIBZIP_FOUND)
     add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS libzip::zip)
 
     # ToDo: When we correctly import dependencies cmake targets for the following
-    # BZip2::BZip2, LibLZMA::LibLZMA, GnuTLS::GnuTLS, Nettle::Nettle,ZLIB::ZLIB
+    # BZip2::BZip2, LibLZMA::LibLZMA, GnuTLS::GnuTLS, Nettle::Nettle
     # For now, we just override 
     set_target_properties(libzip::zip PROPERTIES
-                                      INTERFACE_LINK_LIBRARIES "")
+                                      INTERFACE_LINK_LIBRARIES "LIBRARY::Zlib")
   else()
     add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
 

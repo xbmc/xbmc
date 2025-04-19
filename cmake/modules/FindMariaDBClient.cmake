@@ -8,10 +8,10 @@
 #   ${APP_NAME_LC}::MariaDBClient   - The MariaDBClient library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  find_package(PkgConfig QUIET)
+  find_package(PkgConfig ${SEARCH_QUIET})
 
   if(PKG_CONFIG_FOUND)
-    pkg_search_module(PC_MARIADBCLIENT libmariadb mariadb QUIET)
+    pkg_search_module(PC_MARIADBCLIENT libmariadb mariadb ${SEARCH_QUIET})
   endif()
 
   find_path(MARIADBCLIENT_INCLUDE_DIR NAMES mariadb/mysql.h mariadb/server/mysql.h

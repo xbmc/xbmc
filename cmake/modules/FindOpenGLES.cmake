@@ -8,9 +8,9 @@
 #   ${APP_NAME_LC}::OpenGLES - The OpenGLES IMPORTED library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  find_package(PkgConfig QUIET)
+  find_package(PkgConfig ${SEARCH_QUIET})
   if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_OPENGLES glesv2 QUIET)
+    pkg_check_modules(PC_OPENGLES glesv2 ${SEARCH_QUIET})
   endif()
 
   find_library(OPENGLES_gl_LIBRARY NAMES GLESv2 OpenGLES

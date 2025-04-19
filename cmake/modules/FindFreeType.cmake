@@ -8,10 +8,10 @@
 #   ${APP_NAME_LC}::FreeType   - The FreeType library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  find_package(PkgConfig QUIET)
+  find_package(PkgConfig ${SEARCH_QUIET})
   # Do not use pkgconfig on windows
   if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWS_STORE))
-    pkg_check_modules(PC_FREETYPE freetype2 QUIET)
+    pkg_check_modules(PC_FREETYPE freetype2 ${SEARCH_QUIET})
   endif()
 
   find_path(FREETYPE_INCLUDE_DIR NAMES freetype/freetype.h freetype.h

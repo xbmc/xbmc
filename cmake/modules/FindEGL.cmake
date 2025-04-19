@@ -8,9 +8,9 @@
 #   ${APP_NAME_LC}::EGL   - The EGL library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  find_package(PkgConfig QUIET)
+  find_package(PkgConfig ${SEARCH_QUIET})
   if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_EGL egl QUIET)
+    pkg_check_modules(PC_EGL egl ${SEARCH_QUIET})
   endif()
 
   find_path(EGL_INCLUDE_DIR EGL/egl.h

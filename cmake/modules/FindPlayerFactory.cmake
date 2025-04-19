@@ -8,17 +8,13 @@
 #   ${APP_NAME_LC}::PlayerFactory   - The PlayerFactory library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  find_package(PkgConfig QUIET)
-  if(PKG_CONFIG_FOUND)
-    if(PlayerFactory_FIND_VERSION)
-      if(PlayerFactory_FIND_VERSION_EXACT)
-        set(PlayerFactory_FIND_SPEC "=${PlayerFactory_FIND_VERSION_COMPLETE}")
-      else()
-        set(PlayerFactory_FIND_SPEC ">=${PlayerFactory_FIND_VERSION_COMPLETE}")
-      endif()
-    endif()
+  include(cmake/scripts/common/ModuleHelpers.cmake)
 
-    pkg_check_modules(PC_PLAYERFACTORY libpf-1.0${PlayerFactory_FIND_SPEC} QUIET)
+  SETUP_FIND_SPECS()
+
+  find_package(PkgConfig ${SEARCH_QUIET})
+  if(PKG_CONFIG_FOUND)
+    pkg_check_modules(PC_PLAYERFACTORY libpf-1.0${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET})
   endif()
 
   find_path(PLAYERFACTORY_INCLUDE_DIR NAMES player-factory/common.hpp

@@ -32,12 +32,24 @@ if(NOT TARGET LIBRARY::NGHttp2)
 
   SETUP_BUILD_VARS()
 
+  SETUP_FIND_SPECS()
+
   # Search for cmake config. Suitable for all platforms including windows
   # nghttp uses a non standard config name, so we have to supply CONFIGS
-  find_package(nghttp2 CONFIG QUIET
+  find_package(nghttp2 ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
                        CONFIGS nghttp2-targets.cmake
                        HINTS ${DEPENDS_PATH}/lib/cmake
                        ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+
+  # cmake config may not be available (eg Debian libnghttp2-dev package)
+  # fallback to pkgconfig for non windows platforms
+  if(NOT nghttp2_FOUND)
+    find_package(PkgConfig ${SEARCH_QUIET})
+
+    if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWSSTORE))
+      pkg_check_modules(nghttp2 libnghttp2${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET} IMPORTED_TARGET)
+    endif()
+  endif()
 
   # Check for existing Nghttp2. If version >= NGHTTP2-VERSION file version, dont build
   if(nghttp2_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND NGHttp2_FIND_REQUIRED)
@@ -72,25 +84,14 @@ if(NOT TARGET LIBRARY::NGHttp2)
       endforeach()
 
       get_target_property(NGHTTP2_INCLUDE_DIR ${_target} INTERFACE_INCLUDE_DIRECTORIES)
-    else()
-      find_package(PkgConfig QUIET)
-      if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWSSTORE))
-        pkg_check_modules(NGHTTP2 libnghttp2 QUIET)
-    
-        # First item is the full path of the library file found
-        # pkg_check_modules does not populate a variable of the found library explicitly
-        list(GET NGHTTP2_LINK_LIBRARIES 0 NGHTTP2_LIBRARY)
-    
-        set(NGHTTP2_INCLUDE_DIR ${NGHTTP2_INCLUDEDIR})
-      else()
-    
-        find_path(NGHTTP2_INCLUDE_DIR NAMES nghttp2/nghttp2.h
-                                      HINTS ${DEPENDS_PATH}/include
-                                      ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
-        find_library(NGHTTP2_LIBRARY NAMES nghttp2 nghttp2_static
-                                     HINTS ${DEPENDS_PATH}/lib
-                                     ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
-      endif()
+    elseif(TARGET PkgConfig::nghttp2)
+      # First item is the full path of the library file found
+      # pkg_check_modules does not populate a variable of the found library explicitly
+      list(GET nghttp2_LINK_LIBRARIES 0 NGHTTP2_LIBRARY_RELEASE)
+
+      get_target_property(NGHTTP2_INCLUDE_DIR PkgConfig::nghttp2 INTERFACE_INCLUDE_DIRECTORIES)
+
+      set(NGHTTP2_VERSION ${nghttp2_VERSION})
     endif()
   endif()
 
@@ -116,11 +117,14 @@ if(NOT TARGET LIBRARY::NGHttp2)
 
       # This is a kodi target name
       add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS ${_target})
+    elseif(TARGET PkgConfig::nghttp2 AND NOT TARGET nghttp2)
+      add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::nghttp2)
     else()
 
       add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
   
       set_target_properties(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                INTERFACE_COMPILE_DEFINITIONS "NGHTTP2_STATICLIB"
                                                                 INTERFACE_INCLUDE_DIRECTORIES "${NGHTTP2_INCLUDE_DIR}")
 
       if(NGHTTP2_LIBRARY_RELEASE)
@@ -134,10 +138,8 @@ if(NOT TARGET LIBRARY::NGHttp2)
         set_property(TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY
                                                                        IMPORTED_CONFIGURATIONS DEBUG)
       endif()
-
-      set_property(TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS "NGHTTP2_STATICLIB")
-
     endif()
+
     if(TARGET nghttp2)
       add_dependencies(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} nghttp2)
 

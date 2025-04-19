@@ -14,15 +14,15 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   macro(buildlibASS)
 
-    find_package(FreeType REQUIRED QUIET)
-    find_package(HarfBuzz REQUIRED QUIET)
-    find_package(FriBidi REQUIRED QUIET)
-    find_package(Iconv REQUIRED QUIET)
+    find_package(FreeType REQUIRED ${SEARCH_QUIET})
+    find_package(HarfBuzz REQUIRED ${SEARCH_QUIET})
+    find_package(FriBidi REQUIRED ${SEARCH_QUIET})
+    find_package(Iconv REQUIRED ${SEARCH_QUIET})
 
     # Posix platforms (except Apple) use fontconfig
     if(NOT (WIN32 OR WINDOWS_STORE) AND
        NOT (CMAKE_SYSTEM_NAME STREQUAL Darwin))
-      find_package(Fontconfig REQUIRED QUIET)
+      find_package(Fontconfig REQUIRED ${SEARCH_QUIET})
     endif()
 
     set(ASS_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
@@ -105,16 +105,28 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   SETUP_BUILD_VARS()
 
-  if(WIN32 OR WINDOWS_STORE)
-    find_package(libass CONFIG QUIET
-                        HINTS ${DEPENDS_PATH}/lib/cmake
-                        ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+  SETUP_FIND_SPECS()
 
-    if(libass_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_ASS)
-      # build internal module
-      buildlibASS()
-    else()
-  
+
+  # Check for cmake config that is used by our windows platforms custom cmake
+  find_package(libass ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
+                      HINTS ${DEPENDS_PATH}/lib/cmake
+                      ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+
+  # fallback to pkgconfig for non windows platforms
+  if(NOT libass_FOUND)
+    find_package(PkgConfig ${SEARCH_QUIET})
+    if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWSSTORE))
+      pkg_check_modules(libass libass${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET} IMPORTED_TARGET)
+    endif()
+  endif()
+
+  if((libass_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_ASS) OR
+     ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_ASS))
+    # build internal module
+    buildlibASS()
+  else()
+    if(TARGET libass::libass)
       # we only do this because we use find_package_handle_standard_args for config time output
       # and it isnt capable of handling TARGETS, so we have to extract the info
       get_target_property(_ASS_CONFIGURATIONS libass::libass IMPORTED_CONFIGURATIONS)
@@ -132,27 +144,16 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   
       get_target_property(ASS_INCLUDE_DIR libass::libass INTERFACE_INCLUDE_DIRECTORIES)
       set(ASS_VERSION ${libass_VERSION})
-  
-    endif()
-  else()
-    find_package(PkgConfig REQUIRED)
-    pkg_check_modules(PC_ASS libass QUIET IMPORTED_TARGET)
-
-    if((PC_ASS_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_ASS) OR
-       ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_ASS))
-      # build internal module
-      buildlibASS()
-    else()
+    elseif(TARGET PkgConfig::libass)
       # INTERFACE_LINK_OPTIONS is incorrectly populated when cmake generation is executed
       # when an existing build generation is already done. Just set this to blank
-      set_target_properties(PkgConfig::PC_ASS PROPERTIES INTERFACE_LINK_OPTIONS "")
+      set_target_properties(PkgConfig::libass PROPERTIES INTERFACE_LINK_OPTIONS "")
   
       # First item is the full path of the library file found
       # pkg_check_modules does not populate a variable of the found library explicitly
-      list(GET PC_ASS_LINK_LIBRARIES 0 ASS_LIBRARY_RELEASE)
-      set(ASS_INCLUDE_DIR ${PC_ASS_INCLUDEDIR})
-      set(ASS_LINK_LIBRARIES ${PC_ASS_LINK_LIBRARIES})
-      set(ASS_VERSION ${PC_ASS_VERSION})
+      list(GET libass_LINK_LIBRARIES 0 ASS_LIBRARY_RELEASE)
+      get_target_property(ASS_INCLUDE_DIR PkgConfig::libass INTERFACE_INCLUDE_DIRECTORIES)
+      set(ASS_VERSION ${libass_VERSION})
     endif()
   endif()
 
@@ -166,8 +167,8 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                     VERSION_VAR ASS_VERSION)
 
   if(ASS_FOUND)
-    if(TARGET PkgConfig::PC_ASS AND NOT TARGET libass)
-      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::PC_ASS)
+    if(TARGET PkgConfig::libass AND NOT TARGET libass)
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::libass)
     elseif(TARGET libass::libass AND NOT TARGET libass)
       # Kodi custom libass target used for windows platforms
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS libass::libass)

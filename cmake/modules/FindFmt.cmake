@@ -42,34 +42,28 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   SETUP_BUILD_VARS()
 
+  SETUP_FIND_SPECS()
+
   # Check for existing FMT. If version >= FMT-VERSION file version, dont build
-  find_package(FMT CONFIG QUIET
+  find_package(FMT ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
                    HINTS ${DEPENDS_PATH}/lib/cmake
                    ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+
+  # cmake config may not be available
+  # fallback to pkgconfig for non windows platforms
+  if(NOT FMT_FOUND)
+    find_package(PkgConfig ${SEARCH_QUIET})
+    if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWSSTORE))
+      pkg_check_modules(FMT fmt${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET} IMPORTED_TARGET)
+    endif()
+  endif()
 
   if((FMT_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_FMT) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_FMT))
     # build internal module
     buildFmt()
   else()
-    if(NOT TARGET fmt::fmt)
-      # Do not use pkgconfig on windows
-      if(PKG_CONFIG_FOUND AND NOT WIN32)
-        pkg_check_modules(PC_FMT libfmt QUIET)
-        set(FMT_VERSION ${PC_FMT_VERSION})
-      endif()
-
-      find_path(FMT_INCLUDE_DIR NAMES fmt/format.h
-                                HINTS ${DEPENDS_PATH}/include ${PC_FMT_INCLUDEDIR}
-                                ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
-
-      find_library(FMT_LIBRARY_RELEASE NAMES fmt
-                                       HINTS ${DEPENDS_PATH}/lib ${PC_FMT_LIBDIR}
-                                       ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
-      find_library(FMT_LIBRARY_DEBUG NAMES fmtd
-                                     HINTS ${DEPENDS_PATH}/lib ${PC_FMT_LIBDIR}
-                                     ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
-    else()
+    if(TARGET fmt::fmt)
       # This is for the case where a distro provides a non standard (Debug/Release) config type
       # eg Debian's config file is fmtConfigTargets-none.cmake
       # convert this back to either DEBUG/RELEASE or just RELEASE
@@ -89,6 +83,12 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       endforeach()
 
       get_target_property(FMT_INCLUDE_DIR fmt::fmt INTERFACE_INCLUDE_DIRECTORIES)
+    elseif(TARGET PkgConfig::FMT)
+      # First item is the full path of the library file found
+      # pkg_check_modules does not populate a variable of the found library explicitly
+      list(GET FMT_LINK_LIBRARIES 0 FMT_LIBRARY_RELEASE)
+
+      get_target_property(FMT_INCLUDE_DIR PkgConfig::FMT INTERFACE_INCLUDE_DIRECTORIES)
     endif()
   endif()
 
@@ -101,11 +101,15 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                     REQUIRED_VARS FMT_LIBRARY FMT_INCLUDE_DIR
                                     VERSION_VAR FMT_VERSION)
   if(Fmt_FOUND)
-    # cmake target and not building internal
     if(TARGET fmt::fmt AND NOT TARGET fmt)
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS fmt::fmt)
+    elseif(TARGET PkgConfig::FMT AND NOT TARGET fmt)
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::FMT)
     else()
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
+      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                       INTERFACE_INCLUDE_DIRECTORIES "${FMT_INCLUDE_DIR}")
+
       if(FMT_LIBRARY_RELEASE)
         set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
                                                                          IMPORTED_CONFIGURATIONS RELEASE
@@ -117,8 +121,6 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
         set_property(TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY
                                                                               IMPORTED_CONFIGURATIONS DEBUG)
       endif()
-      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                       INTERFACE_INCLUDE_DIRECTORIES "${FMT_INCLUDE_DIR}")
     endif()
 
     if(TARGET fmt)

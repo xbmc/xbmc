@@ -7,50 +7,61 @@
 #
 #   ${APP_NAME_LC}::TinyXML2   - The TinyXML2 library
 
-macro(buildTinyXML2)
-  set(TINYXML2_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
-  set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_DEBUG_POSTFIX d)
-
-  find_package(Patch MODULE REQUIRED)
-
-  if(UNIX)
-    # ancient patch (Apple/freebsd) fails to patch tinyxml2 CMakeLists.txt file due to it being crlf encoded
-    # Strip crlf before applying patches.
-    # Freebsd fails even harder and requires both .patch and CMakeLists.txt to be crlf stripped
-    # possibly add requirement for freebsd on gpatch? Wouldnt need to copy/strip the patch file then
-    set(PATCH_COMMAND sed -ie s|\\r\$|| ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/src/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/CMakeLists.txt
-              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/tools/depends/target/tinyxml2/001-debug-pdb.patch ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/src/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/001-debug-pdb.patch
-              COMMAND sed -ie s|\\r\$|| ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/src/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/001-debug-pdb.patch
-              COMMAND ${PATCH_EXECUTABLE} -p1 -i ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/src/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/001-debug-pdb.patch)
-  else()
-    set(PATCH_COMMAND ${PATCH_EXECUTABLE} -p1 -i ${CMAKE_SOURCE_DIR}/tools/depends/target/tinyxml2/001-debug-pdb.patch)
-  endif()
-
-  if(CMAKE_GENERATOR MATCHES "Visual Studio" OR CMAKE_GENERATOR STREQUAL Xcode)
-    # Multiconfig generators fail due to file(GENERATE tinyxml.pc) command.
-    # This patch makes it generate a distinct named pc file for each build type and rename
-    # pc file on install
-    list(APPEND PATCH_COMMAND COMMAND ${PATCH_EXECUTABLE} -p1 -i ${CMAKE_SOURCE_DIR}/tools/depends/target/tinyxml2/002-multiconfig-gen-pkgconfig.patch)
-  endif()
-
-  set(CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
-                 -DCMAKE_CXX_EXTENSIONS=${CMAKE_CXX_EXTENSIONS}
-                 -DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}
-                 -Dtinyxml2_BUILD_TESTING=OFF)
-
-  BUILD_DEP_TARGET()
-endmacro()
-
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   include(cmake/scripts/common/ModuleHelpers.cmake)
+
+  macro(buildTinyXML2)
+    set(TINYXML2_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_DEBUG_POSTFIX d)
+  
+    find_package(Patch MODULE REQUIRED ${SEARCH_QUIET})
+  
+    if(UNIX)
+      # ancient patch (Apple/freebsd) fails to patch tinyxml2 CMakeLists.txt file due to it being crlf encoded
+      # Strip crlf before applying patches.
+      # Freebsd fails even harder and requires both .patch and CMakeLists.txt to be crlf stripped
+      # possibly add requirement for freebsd on gpatch? Wouldnt need to copy/strip the patch file then
+      set(PATCH_COMMAND sed -ie s|\\r\$|| ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/src/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/CMakeLists.txt
+                COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/tools/depends/target/tinyxml2/001-debug-pdb.patch ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/src/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/001-debug-pdb.patch
+                COMMAND sed -ie s|\\r\$|| ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/src/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/001-debug-pdb.patch
+                COMMAND ${PATCH_EXECUTABLE} -p1 -i ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/src/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/001-debug-pdb.patch)
+    else()
+      set(PATCH_COMMAND ${PATCH_EXECUTABLE} -p1 -i ${CMAKE_SOURCE_DIR}/tools/depends/target/tinyxml2/001-debug-pdb.patch)
+    endif()
+  
+    if(CMAKE_GENERATOR MATCHES "Visual Studio" OR CMAKE_GENERATOR STREQUAL Xcode)
+      # Multiconfig generators fail due to file(GENERATE tinyxml.pc) command.
+      # This patch makes it generate a distinct named pc file for each build type and rename
+      # pc file on install
+      list(APPEND PATCH_COMMAND COMMAND ${PATCH_EXECUTABLE} -p1 -i ${CMAKE_SOURCE_DIR}/tools/depends/target/tinyxml2/002-multiconfig-gen-pkgconfig.patch)
+    endif()
+  
+    set(CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
+                   -DCMAKE_CXX_EXTENSIONS=${CMAKE_CXX_EXTENSIONS}
+                   -DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}
+                   -Dtinyxml2_BUILD_TESTING=OFF)
+  
+    BUILD_DEP_TARGET()
+  endmacro()
 
   set(${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC tinyxml2)
 
   SETUP_BUILD_VARS()
 
-  find_package(tinyxml2 CONFIG QUIET
-                               HINTS ${DEPENDS_PATH}/lib/cmake
-                               ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+  SETUP_FIND_SPECS()
+
+  find_package(tinyxml2 ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
+                        HINTS ${DEPENDS_PATH}/lib/cmake
+                        ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+
+  # fallback to pkgconfig for non windows platforms
+  if(NOT tinyxml2_FOUND)
+    find_package(PkgConfig ${SEARCH_QUIET})
+
+    if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWSSTORE))
+      pkg_check_modules(tinyxml2 tinyxml2${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET} IMPORTED_TARGET)
+    endif()
+  endif()
 
   # Check for existing TINYXML2. If version >= TINYXML2-VERSION file version, dont build
   # A corner case, but if a linux/freebsd user WANTS to build internal tinyxml2, build anyway
@@ -80,22 +91,13 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
       # Need this, as we may only get the existing TARGET from system and not build or use pkg-config
       get_target_property(TINYXML2_INCLUDE_DIR tinyxml2::tinyxml2 INTERFACE_INCLUDE_DIRECTORIES)
-    else()
-      if(PKG_CONFIG_FOUND)
-        pkg_check_modules(PC_TINYXML2 tinyxml2 QUIET)
-      endif()
+    elseif(TARGET PkgConfig::tinyxml2)
+      # First item is the full path of the library file found
+      # pkg_check_modules does not populate a variable of the found library explicitly
+      list(GET tinyxml2_LINK_LIBRARIES 0 TINYXML2_LIBRARY_RELEASE)
 
-      find_path(TINYXML2_INCLUDE_DIR NAMES tinyxml2.h
-                                     HINTS ${DEPENDS_PATH}/include ${PC_TINYXML2_INCLUDEDIR}
-                                     ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
-      find_library(TINYXML2_LIBRARY_RELEASE NAMES tinyxml2
-                                            HINTS ${DEPENDS_PATH}/lib ${PC_TINYXML2_LIBDIR}
-                                            ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
-      find_library(TINYXML2_LIBRARY_DEBUG NAMES tinyxml2d
-                                          HINTS ${DEPENDS_PATH}/lib ${PC_TINYXML2_LIBDIR}
-                                          ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
-
-      set(TINYXML2_VERSION ${PC_TINYXML2_VERSION})
+      get_target_property(TINYXML2_INCLUDE_DIR PkgConfig::tinyxml2 INTERFACE_INCLUDE_DIRECTORIES)
+      set(TINYXML2_VERSION ${tinyxml2_VERSION})
     endif()
   endif()
 
@@ -112,8 +114,13 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     # cmake target and not building internal
     if(TARGET tinyxml2::tinyxml2 AND NOT TARGET tinyxml2)
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS tinyxml2::tinyxml2)
+    elseif(TARGET PkgConfig::tinyxml2 AND NOT TARGET tinyxml2)
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::tinyxml2)
     else()
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
+      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                       INTERFACE_INCLUDE_DIRECTORIES "${TINYXML2_INCLUDE_DIR}")
+
       if(TINYXML2_LIBRARY_RELEASE)
         set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
                                                                          IMPORTED_CONFIGURATIONS RELEASE
@@ -125,8 +132,6 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
         set_property(TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY
                                                                               IMPORTED_CONFIGURATIONS DEBUG)
       endif()
-      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                       INTERFACE_INCLUDE_DIRECTORIES "${TINYXML2_INCLUDE_DIR}")
     endif()
 
     if(TARGET tinyxml2)

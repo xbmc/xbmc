@@ -9,18 +9,15 @@
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
-  find_package(PkgConfig QUIET)
+  include(cmake/scripts/common/ModuleHelpers.cmake)
+
+  SETUP_FIND_SPECS()
+
+  find_package(PkgConfig ${SEARCH_QUIET})
 
   if(PKG_CONFIG_FOUND AND NOT (WIN32 OR WINDOWS_STORE))
-    if(MicroHttpd_FIND_VERSION)
-      if(MicroHttpd_FIND_VERSION_EXACT)
-        set(MicroHttpd_FIND_SPEC "=${MicroHttpd_FIND_VERSION_COMPLETE}")
-      else()
-        set(MicroHttpd_FIND_SPEC ">=${MicroHttpd_FIND_VERSION_COMPLETE}")
-      endif()
-    endif()
 
-    pkg_check_modules(MICROHTTPD libmicrohttpd${MicroHttpd_FIND_SPEC} QUIET)
+    pkg_check_modules(MICROHTTPD libmicrohttpd${PC_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} ${SEARCH_QUIET})
 
     # First item is the full path of the library file found
     # pkg_check_modules does not populate a variable of the found library explicitly

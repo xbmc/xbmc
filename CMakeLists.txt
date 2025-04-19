@@ -69,6 +69,7 @@ endif()
 # Hide messages from Check*.cmake (e.g. CheckCSourceCompiles)
 if(NOT VERBOSE)
   set(CMAKE_REQUIRED_QUIET ON)
+  set(SEARCH_QUIET QUIET)
 endif()
 
 # Includes
@@ -179,9 +180,9 @@ if (NOT PLATFORMDEFS_DIR STREQUAL "")
   list(APPEND INCLUDES ${CMAKE_SOURCE_DIR}/xbmc/${PLATFORMDEFS_DIR})
 endif()
 
-find_package(PkgConfig QUIET)
+find_package(PkgConfig ${SEARCH_QUIET})
 set(THREADS_PREFER_PTHREAD_FLAG ON)
-find_package(Threads REQUIRED QUIET)
+find_package(Threads REQUIRED ${SEARCH_QUIET})
 list(APPEND DEPLIBS ${CMAKE_THREAD_LIBS_INIT})
 
 # Clean any existing generated build dir cmake files
@@ -315,7 +316,7 @@ if(ENABLE_OPTICAL)
 endif()
 
 if(ENABLE_AIRTUNES)
-  find_package(Shairplay)
+  find_package(Shairplay ${SEARCH_QUIET})
   if(TARGET ${APP_NAME_LC}::Shairplay)
     core_require_dep(Shairplay)
   endif()
