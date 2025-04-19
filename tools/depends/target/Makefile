@@ -32,7 +32,6 @@ DEPENDS = \
   libshairplay \
   libusb \
   libxml2 \
-  libxslt \
   mariadb \
   nettle \
   openssl \
