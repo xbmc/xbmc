@@ -5,17 +5,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2023-12-04 09:42+0000\n"
-"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"PO-Revision-Date: 2025-04-18 09:31+0000\n"
+"Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/sv_se/>\n"
 "Language: sv_se\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.2.1\n"
+"X-Generator: Weblate 5.11\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -31,7 +31,7 @@ msgstr "Estuary är Kodis standardskal. Om du tar bort det kan det orsaka proble
 
 msgctxt "#31000"
 msgid "Now playing"
-msgstr "Spelas just nu"
+msgstr "Spelas nu"
 
 msgctxt "#31001"
 msgid "Search..."
@@ -55,7 +55,7 @@ msgstr "Se i 2D"
 
 msgctxt "#31006"
 msgid "Random movies"
-msgstr "Slumpvis utvalda filmer"
+msgstr "Slumpmässiga filmer"
 
 msgctxt "#31007"
 msgid "Unwatched movies"
@@ -79,7 +79,7 @@ msgstr "Mest spelade album"
 
 msgctxt "#31012"
 msgid "Random albums"
-msgstr "Slumpvis utvalda album"
+msgstr "Slumpmässiga album"
 
 msgctxt "#31013"
 msgid "Random artists"
@@ -118,7 +118,7 @@ msgstr "Åtgärder"
 
 msgctxt "#31021"
 msgid "Misc options"
-msgstr "Övriga val"
+msgstr "Diverse alternativ"
 
 msgctxt "#31022"
 msgid "Sort by"
@@ -138,7 +138,7 @@ msgstr "Inga favoriter hittades. Du kan lägga till objekt från mediavyer till 
 
 msgctxt "#31026"
 msgid "Timeshift"
-msgstr "Tidsskifte"
+msgstr "Tidsförskjutning"
 
 msgctxt "#31027"
 msgid "Next aired"
@@ -163,7 +163,7 @@ msgstr "Versionsinfo"
 
 msgctxt "#31032"
 msgid "Order"
-msgstr "Sortera"
+msgstr "Ordning"
 
 msgctxt "#31033"
 msgid "Your rating"
@@ -187,15 +187,15 @@ msgstr "Markerat spår"
 
 msgctxt "#31038"
 msgid "Rewind"
-msgstr "Spolar bakåt"
+msgstr "Spola tillbaka"
 
 msgctxt "#31039"
 msgid "Fast forward"
-msgstr "Spolar framåt"
+msgstr "Snabbspola"
 
 msgctxt "#31040"
 msgid "Edit widgets"
-msgstr ""
+msgstr "Redigera widgetar"
 
 msgctxt "#31041"
 msgid "Camera manufacturer"
@@ -203,7 +203,7 @@ msgstr "Kameratillverkare"
 
 msgctxt "#31042"
 msgid "Playlist options"
-msgstr "Alternativ för spellista"
+msgstr "Alternativ för spellistor"
 
 msgctxt "#31043"
 msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
@@ -267,7 +267,7 @@ msgstr "Sektioner"
 
 msgctxt "#31065"
 msgid "Video playlist"
-msgstr "Spellista för video"
+msgstr "Videospellista"
 
 msgctxt "#31066"
 msgid "Music playlist"
@@ -323,7 +323,7 @@ msgstr "Inställningar för sångtexttillägg"
 
 msgctxt "#31084"
 msgid "Visualisation settings"
-msgstr "Visualiseringsinställningar"
+msgstr "Inställningar för visualisering"
 
 msgctxt "#31089"
 msgid "Available groups"
@@ -359,9 +359,10 @@ msgid "IconWall"
 msgstr "Ikonvägg"
 
 #. viewtype name
+#, fuzzy
 msgctxt "#31100"
 msgid "Shift"
-msgstr "Skifta"
+msgstr "Skift"
 
 #. viewtype name
 msgctxt "#31101"
@@ -394,10 +395,15 @@ msgctxt "#31107"
 msgid "WideList"
 msgstr "Bred lista"
 
+#. viewtype name
+msgctxt "#31108"
+msgid "MediaList"
+msgstr "Medialista"
+
 # empty strings from id 31108 to 31108
 msgctxt "#31109"
 msgid "Video streams"
-msgstr ""
+msgstr "Videoströmmar"
 
 msgctxt "#31110"
 msgid "Enter files section"
@@ -409,11 +415,11 @@ msgstr "Visa dina personliga bilder eller hämta en av de många bild tilläggen
 
 msgctxt "#31112"
 msgid "Audio streams"
-msgstr ""
+msgstr "Ljudströmmar"
 
 msgctxt "#31113"
 msgid "Search local library"
-msgstr "Sök i det lokala biblioteket"
+msgstr "Sök i lokalt bibliotek"
 
 msgctxt "#31114"
 msgid "Search YouTube"
@@ -421,7 +427,7 @@ msgstr "Sök på Youtube"
 
 msgctxt "#31115"
 msgid "Subtitles streams"
-msgstr ""
+msgstr "Undertextströmmar"
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
@@ -597,7 +603,7 @@ msgstr "Pekskärmsläge"
 
 msgctxt "#31159"
 msgid "Artwork"
-msgstr "Utsmyckning"
+msgstr "Bakgrund"
 
 msgctxt "#31160"
 msgid "Show media flags"
@@ -628,7 +634,7 @@ msgstr "Profilnamn"
 #. Label for the kind of profile identification
 msgctxt "#31166"
 msgid "Profile avatar"
-msgstr "Profil avatar"
+msgstr "Avatar för profil"
 
 #. Label of a setting
 msgctxt "#31167"
@@ -643,7 +649,7 @@ msgstr "Visa affischer istället för miniatyrbilder för musikvideor"
 #. Description label for skin settings area
 msgctxt "#31169"
 msgid "Artwork related settings."
-msgstr "Inställningar för omslag."
+msgstr "Inställningar för bakgrund."
 
 #. Label for OSD settings category
 msgctxt "#31170"
@@ -656,14 +662,16 @@ msgid "On screen display (OSD) related settings"
 msgstr "Skärmvisning (OSD) relaterade inställningar"
 
 #. Setting Automatically close video OSD
+#, fuzzy
 msgctxt "#31172"
 msgid "Automatically close video OSD"
-msgstr "Stäng video OSD automatiskt"
+msgstr "Automatisk stängning av video OSD"
 
 #. Setting auto close time for video osd
+#, fuzzy
 msgctxt "#31173"
 msgid "Video OSD autoclose time (seconds)"
-msgstr "Tid för video OSD automatisk stängning (sekunder)"
+msgstr "Tid för automatisk stängning av video OSD (sekunder)"
 
 #. Setting to control what happens when clicking a music album on the home screen
 msgctxt "#31174"
@@ -682,19 +690,21 @@ msgstr "Standardvalsåtgärd för filmer på hemskärmen"
 
 # empty strings from id 31177 to 31596
 #. Button to select Player Process Info window
+#, fuzzy
 msgctxt "#31597"
 msgid "Player info"
-msgstr ""
+msgstr "Spelarinformation"
 
 #. Label to show player cache
+#, fuzzy
 msgctxt "#31598"
 msgid "Player cache"
-msgstr ""
+msgstr "Spelarcache"
 
 #. Label to show the video codec name
 msgctxt "#31599"
 msgid "Audio decoder"
-msgstr ""
+msgstr "Ljudavkodare"
 
 # empty strings from id 31170 to 31599
 #. Label to show the video codec name
@@ -715,7 +725,7 @@ msgstr "Bildförhållande"
 #. Label to show the video bitrate
 msgctxt "#31603"
 msgid "Video bitrate"
-msgstr "Video överföringshastighet"
+msgstr "Videobitfrekvens"
 
 #. Label to show the audio codec name
 msgctxt "#31604"
@@ -730,7 +740,7 @@ msgstr "Ljudkanaler"
 #. Label to show the audio bitrate
 msgctxt "#31606"
 msgid "Audio bitrate"
-msgstr "Ljud överföringshastighet"
+msgstr "Bitfrekvens för ljud"
 
 #. Label to show the screen resolution
 msgctxt "#31607"
@@ -760,7 +770,7 @@ msgstr "System"
 #. Audio channels
 msgctxt "#31612"
 msgid "channels"
-msgstr ""
+msgstr "kanaler"
 
 #~ msgctxt "#31112"
 #~ msgid "Toggle audio stream"

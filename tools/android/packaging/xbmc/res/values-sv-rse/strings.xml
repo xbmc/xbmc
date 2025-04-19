@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="suggestion_channel">Förslag</string>
+    <string name="continue_button">Fortsätt</string>
+    <string name="error_title">Fel</string>
+    <string name="info_title">Info</string>
+    <string name="exit_button">Avsluta</string>
+    <string name="notice_dialog">%1$s behöver tillgång till din enhets media och filer för att fungera. Tillåt detta via följande dialogruta, annars kommer %1$s att avslutas.</string>
+    <string name="asking_permissions">Ber om tillstånd…</string>
+    <string name="clearing_cache">Tömmer cache…</string>
+    <string name="waiting_external">Väntar på extern lagring…</string>
+    <string name="external_ok">Extern lagring OK…</string>
+    <string name="starting">Startar %1$s…</string>
+    <string name="permission_denied">Behörighet nekades!! Avslutar…</string>
+    <string name="no_find_apk">Kan inte hitta paket.</string>
+    <string name="no_read_apk">Kan inte läsa paket.</string>
+    <string name="first_run">Förbereder första körningen. Vänta…</string>
 </resources>

@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2025-01-25 17:30+0000\n"
+"PO-Revision-Date: 2025-04-10 12:15+0000\n"
 "Last-Translator: Kai Sommerfeld <ksooo@users.noreply.kodi.weblate.cloud>\n"
 "Language-Team: German <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/de_de/>\n"
 "Language: de_de\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9.2\n"
+"X-Generator: Weblate 5.10.4\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -138,7 +138,7 @@ msgstr "Keine Favoriten gefunden. Es kann jeder beliebige Eintrag aus den Medien
 
 msgctxt "#31026"
 msgid "Timeshift"
-msgstr "Timeshift"
+msgstr "Zeitversatz"
 
 msgctxt "#31027"
 msgid "Next aired"
@@ -393,6 +393,11 @@ msgstr "Teletext"
 msgctxt "#31107"
 msgid "WideList"
 msgstr "WideList"
+
+#. viewtype name
+msgctxt "#31108"
+msgid "MediaList"
+msgstr "MediaList"
 
 # empty strings from id 31108 to 31108
 msgctxt "#31109"

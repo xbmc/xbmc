@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2024-10-19 07:10+0000\n"
+"PO-Revision-Date: 2025-04-11 00:18+0000\n"
 "Last-Translator: Minho Park <parkmino@gmail.com>\n"
 "Language-Team: Korean <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/ko_kr/>\n"
 "Language: ko_kr\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.7.2\n"
+"X-Generator: Weblate 5.10.4\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -394,6 +394,11 @@ msgctxt "#31107"
 msgid "WideList"
 msgstr "WideList"
 
+#. viewtype name
+msgctxt "#31108"
+msgid "MediaList"
+msgstr "미디어 목록"
+
 # empty strings from id 31108 to 31108
 msgctxt "#31109"
 msgid "Video streams"
@@ -684,17 +689,17 @@ msgstr "홈 화면의 영화 세트에 대한 기본 작업 선택"
 #. Button to select Player Process Info window
 msgctxt "#31597"
 msgid "Player info"
-msgstr ""
+msgstr "플레이어 정보"
 
 #. Label to show player cache
 msgctxt "#31598"
 msgid "Player cache"
-msgstr ""
+msgstr "플레이어 캐시"
 
 #. Label to show the video codec name
 msgctxt "#31599"
 msgid "Audio decoder"
-msgstr ""
+msgstr "오디오 디코더"
 
 # empty strings from id 31170 to 31599
 #. Label to show the video codec name
