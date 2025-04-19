@@ -3,10 +3,9 @@ DEPS = ../../Makefile.include Makefile LIBXSLT-VERSION ../../download-files.incl
 
 # configuration settings
 CMAKE_OPTIONS=-DBUILD_SHARED_LIBS=OFF \
+              -DLIBXSLT_WITH_PROGRAMS=OFF \
               -DLIBXSLT_WITH_PYTHON=OFF \
-              -DLIBXSLT_WITH_TESTS=OFF \
-              -DLIBXSLT_WITH_CRYPTO=ON \
-              -DLIBXSLT_WITH_MODULES=OFF
+              -DLIBXSLT_WITH_TESTS=OFF
 
 LIBDYLIB=$(PLATFORM)/build/$(BYPRODUCT)
 
