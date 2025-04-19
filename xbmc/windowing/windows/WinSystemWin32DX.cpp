@@ -299,7 +299,7 @@ void CWinSystemWin32DX::InitHooks(IDXGIOutput* pOutput)
       return;
     // 3. we take only first three values (dx12 driver isn't needed if it exists ofc)
     if (drivers.size() > 3)
-      drivers = std::vector<std::wstring>(drivers.begin(), drivers.begin() + 3);
+      drivers.resize(3);
     // 4. and then iterate with reverse order to start iterate with the best candidate for d3d11 driver
     for (auto it = drivers.rbegin(); it != drivers.rend(); ++it)
     {
