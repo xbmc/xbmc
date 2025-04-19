@@ -1,0 +1,19 @@
+{
+    "name": "pvr.hts",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/kodi-pvr/pvr.hts",
+            "commit": "0effdb6269684db0385299c1121cfc982c2a9bd4"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}

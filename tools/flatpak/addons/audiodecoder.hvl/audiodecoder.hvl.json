@@ -1,0 +1,19 @@
+{
+    "name": "audiodecoder.hvl",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/xbmc/audiodecoder.hvl",
+            "commit": "f7df5679921419770c3d0d0edd0c9fbc036bdf3d"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}

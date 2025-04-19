@@ -1,0 +1,19 @@
+{
+    "name": "screensaver.stars",
+    "buildsystem": "cmake-ninja",
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/xbmc/screensaver.stars",
+            "commit": "e31111555b41692fd373719a9ba74aba3e7f4790"
+        }
+    ],
+    "build-options": {
+        "no-debuginfo": true,
+        "cflags": "-g0",
+        "cxxflags": "-g0"
+    },
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release"
+    ]
+}

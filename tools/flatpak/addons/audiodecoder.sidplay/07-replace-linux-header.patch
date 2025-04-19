@@ -1,0 +1,11 @@
+--- sidplay2/libsidutils/src/ini/ini.cpp.orig	2015-03-14 09:25:18.182881129 +0100
++++ sidplay2/libsidutils/src/ini/ini.cpp	2015-03-14 09:25:31.018881743 +0100
+@@ -100,7 +100,7 @@
+ //*******************************************************************************************************************
+ #include <assert.h>
+ #include <ctype.h>
+-#include <malloc.h>
++#include <stdlib.h>
+ #include <stdio.h>
+ #include <string.h>
+ 
