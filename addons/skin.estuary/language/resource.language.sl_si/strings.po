@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2024-11-09 17:26+0000\n"
+"PO-Revision-Date: 2025-04-02 12:55+0000\n"
 "Last-Translator: Simon <dolenec@gmail.com>\n"
 "Language-Team: Slovenian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/sl_si/>\n"
 "Language: sl_si\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3;\n"
-"X-Generator: Weblate 5.8.2\n"
+"X-Generator: Weblate 5.10.4\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -39,7 +39,7 @@ msgstr "Poišči …"
 
 msgctxt "#31002"
 msgid "Show media fanart as background"
-msgstr "Pokaži medijsko fanart kot ozadje"
+msgstr "Pokaži medijski fanart kot ozadje"
 
 msgctxt "#31003"
 msgid "Cinema mode"
@@ -179,7 +179,7 @@ msgstr "Strani"
 
 msgctxt "#31036"
 msgid "items"
-msgstr "predmete"
+msgstr "predmeti"
 
 msgctxt "#31037"
 msgid "Selected track"
@@ -234,7 +234,7 @@ msgstr "filtrirano"
 
 msgctxt "#31053"
 msgid "Arial based"
-msgstr "Arial"
+msgstr "Temelji na Arial"
 
 msgctxt "#31054"
 msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
@@ -296,7 +296,7 @@ msgstr "od"
 
 msgctxt "#31072"
 msgid "Power Options"
-msgstr "Možnosti varčevanja z energijo"
+msgstr "Možnosti napajanja"
 
 msgctxt "#31073"
 msgid "Total length"
@@ -400,6 +400,11 @@ msgstr "Teletekst"
 msgctxt "#31107"
 msgid "WideList"
 msgstr "Širok seznam"
+
+#. viewtype name
+msgctxt "#31108"
+msgid "MediaList"
+msgstr ""
 
 # empty strings from id 31108 to 31108
 msgctxt "#31109"

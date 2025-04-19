@@ -394,6 +394,11 @@ msgctxt "#31107"
 msgid "WideList"
 msgstr "Lista ancha"
 
+#. viewtype name
+msgctxt "#31108"
+msgid "MediaList"
+msgstr ""
+
 # empty strings from id 31108 to 31108
 msgctxt "#31109"
 msgid "Video streams"

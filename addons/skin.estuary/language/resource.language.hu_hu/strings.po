@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: 2025-01-29 15:33+0000\n"
 "Last-Translator: Frodo19 <bilbohu@gmail.com>\n"
@@ -393,6 +393,11 @@ msgstr "Teletext"
 msgctxt "#31107"
 msgid "WideList"
 msgstr "Széles Lista"
+
+#. viewtype name
+msgctxt "#31108"
+msgid "MediaList"
+msgstr ""
 
 # empty strings from id 31108 to 31108
 msgctxt "#31109"

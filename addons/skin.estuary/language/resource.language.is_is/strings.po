@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2025-01-06 13:07+0000\n"
+"PO-Revision-Date: 2025-02-26 21:51+0000\n"
 "Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
 "Language-Team: Icelandic <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/is_is/>\n"
 "Language: is_is\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n % 10 != 1 || n % 100 == 11;\n"
-"X-Generator: Weblate 5.9.2\n"
+"X-Generator: Weblate 5.10.1\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -394,6 +394,11 @@ msgctxt "#31107"
 msgid "WideList"
 msgstr "Breiðlisti"
 
+#. viewtype name
+msgctxt "#31108"
+msgid "MediaList"
+msgstr ""
+
 # empty strings from id 31108 to 31108
 msgctxt "#31109"
 msgid "Video streams"
@@ -684,17 +689,17 @@ msgstr "Sjálfgefin valaðgerð fyrir kvikmyndasett á upphafsskjánum"
 #. Button to select Player Process Info window
 msgctxt "#31597"
 msgid "Player info"
-msgstr ""
+msgstr "Upplýsingar um spilara"
 
 #. Label to show player cache
 msgctxt "#31598"
 msgid "Player cache"
-msgstr ""
+msgstr "Biðminni spilara"
 
 #. Label to show the video codec name
 msgctxt "#31599"
 msgid "Audio decoder"
-msgstr ""
+msgstr "Hljóðafkóðari"
 
 # empty strings from id 31170 to 31599
 #. Label to show the video codec name
