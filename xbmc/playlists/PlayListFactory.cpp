@@ -84,7 +84,7 @@ CPlayList* CPlayListFactory::Create(const CFileItem& item)
       return new CPlayListXSPF();
   }
 
-  std::string path = item.GetDynPath();
+  const std::string& path = item.GetDynPath();
 
   std::string extension = URIUtils::GetExtension(path);
   StringUtils::ToLower(extension);
