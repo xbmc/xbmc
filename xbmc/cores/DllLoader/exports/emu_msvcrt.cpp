@@ -72,6 +72,15 @@
 #include "platform/win32/CharsetConverter.h"
 #endif
 
+#ifdef TARGET_LINUX
+#ifndef _PATH_MOUNTED
+#define _PATH_MOUNTED "/proc/mounts"
+#endif
+#ifndef _PATH_MNTTAB
+#define _PATH_MNTTAB "/etc/fstab"
+#endif
+#endif
+
 using namespace XFILE;
 
 struct SDirData
