@@ -19,6 +19,7 @@
 #define CHDR_SIZE 46
 #define ECDREC_SIZE 22
 
+#include <cstdint>
 #include <cstring>
 #include <map>
 #include <string>
