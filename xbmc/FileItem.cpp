@@ -1400,7 +1400,8 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
       dbItem.SetProperty("item_start", item->GetProperty("item_start"));
     return IsSamePath(&dbItem);
   }
-  if (VIDEO::IsVideoDb(*item) && item->HasVideoInfoTag())
+  if (VIDEO::IsVideoDb(*item) && item->HasVideoInfoTag() &&
+      !URIUtils::IsBlurayPath(item->GetDynPath()))
   {
     CFileItem dbItem(item->GetVideoInfoTag()->m_strFileNameAndPath, false);
     if (item->HasProperty("item_start"))

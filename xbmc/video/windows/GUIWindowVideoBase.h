@@ -11,7 +11,6 @@
 #include "playlists/PlayListTypes.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoThumbLoader.h"
-#include "video/guilib/VideoAction.h"
 #include "windows/GUIMediaWindow.h"
 
 class CGUIWindowVideoBase : public CGUIMediaWindow, public IBackgroundLoaderObserver
@@ -130,6 +129,4 @@ private:
    \return true: the information of the item was modified. false: no change.
    */
   bool ShowInfo(const CFileItemPtr& item, const ADDON::ScraperPtr& content);
-
-  bool m_forceSelection;
 };
