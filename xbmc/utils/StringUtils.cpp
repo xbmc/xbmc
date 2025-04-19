@@ -17,6 +17,7 @@
 //------------------------------------------------------------------------
 
 #include <charconv>
+#include <iterator>
 #ifdef HAVE_NEW_CROSSGUID
 #include <crossguid/guid.hpp>
 #else
@@ -1053,27 +1054,23 @@ static wchar_t GetCollationWeight(const wchar_t& r)
 // See also the equivalent StringUtils::AlphaNumericCollation() for UFT8 data
 int64_t StringUtils::AlphaNumericCompare(std::wstring_view left, std::wstring_view right) noexcept
 {
-  auto l = left.begin();
-  auto r = right.begin();
-  std::wstring_view::const_iterator ld, rd;
-  wchar_t lc, rc;
-  int64_t lnum, rnum;
-  bool lsym, rsym;
+  auto l{left.cbegin()};
+  auto r{right.cbegin()};
   while (l != left.end() && r != right.end())
   {
     // check if we have a numerical value
     if (*l >= L'0' && *l <= L'9' && *r >= L'0' && *r <= L'9')
     {
-      ld = l;
-      lnum = *ld++ - L'0';
-      while (ld != left.end() && *ld >= L'0' && *ld <= L'9' && ld < l + 15)
+      auto ld = l;
+      int64_t lnum{*ld++ - L'0'};
+      while (ld != left.end() && *ld >= L'0' && *ld <= L'9' && std::distance(l, ld) < 15)
       { // compare only up to 15 digits
         lnum *= 10;
         lnum += *ld++ - L'0';
       }
-      rd = r;
-      rnum = *rd++ - L'0';
-      while (rd != right.end() && *rd >= L'0' && *rd <= L'9' && rd < r + 15)
+      auto rd = r;
+      int64_t rnum{*rd++ - L'0'};
+      while (rd != right.end() && *rd >= L'0' && *rd <= L'9' && std::distance(r, rd) < 15)
       { // compare only up to 15 digits
         rnum *= 10;
         rnum += *rd++ - L'0';
@@ -1088,16 +1085,16 @@ int64_t StringUtils::AlphaNumericCompare(std::wstring_view left, std::wstring_vi
       continue;
     }
 
-    lc = *l;
-    rc = *r;
+    wchar_t lc{*l};
+    wchar_t rc{*r};
     // Put ascii punctuation and symbols e.g. !#$&()*+,-./:;<=>?@[\]^_ `{|}~ above the other
     // alphanumeric ascii, rather than some being mixed between the numbers and letters, and
     // above all other unicode letters, symbols and punctuation.
     // (Locale collation of these chars varies across platforms)
-    lsym = (lc >= 32 && lc < L'0') || (lc > L'9' && lc < L'A') || (lc > L'Z' && lc < L'a') ||
-           (lc > L'z' && lc < 128);
-    rsym = (rc >= 32 && rc < L'0') || (rc > L'9' && rc < L'A') || (rc > L'Z' && rc < L'a') ||
-           (rc > L'z' && rc < 128);
+    const bool lsym{(lc >= 32 && lc < L'0') || (lc > L'9' && lc < L'A') ||
+                    (lc > L'Z' && lc < L'a') || (lc > L'z' && lc < 128)};
+    const bool rsym{(rc >= 32 && rc < L'0') || (rc > L'9' && rc < L'A') ||
+                    (rc > L'Z' && rc < L'a') || (rc > L'z' && rc < 128)};
     if (lsym && !rsym)
       return -1;
     if (!lsym && rsym)
