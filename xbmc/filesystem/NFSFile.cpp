@@ -250,6 +250,8 @@ bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url,std::string &expo
 
       std::string path = url.GetFileName();
 
+      StringUtils::Replace(path, std::string("\%3F"), std::string("?"));
+
       //GetFileName returns path without leading "/"
       //but we need it because the export paths start with "/"
       //and path.Find(*it) wouldn't work else
@@ -888,7 +890,6 @@ bool CNFSFile::Delete(const CURL& url)
   if(!gNfsConnection.Connect(url, filename))
     return false;
 
-
   ret = nfs_unlink(gNfsConnection.GetNfsContext(), filename.c_str());
 
   if(ret != 0)
@@ -912,7 +913,7 @@ bool CNFSFile::Rename(const CURL& url, const CURL& urlnew)
   std::string strDummy;
   gNfsConnection.splitUrlIntoExportAndPath(urlnew, strDummy, strFileNew);
 
-  ret = nfs_rename(gNfsConnection.GetNfsContext() , strFile.c_str(), strFileNew.c_str());
+  ret = nfs_rename(gNfsConnection.GetNfsContext(), strFile.c_str(), strFileNew.c_str());
 
   if(ret != 0)
   {
@@ -944,7 +945,8 @@ bool CNFSFile::OpenForWrite(const CURL& url, bool bOverWrite)
     CLog::Log(LOGWARNING, "FileNFS::OpenForWrite() called with overwriting enabled! - {}",
               filename);
     //create file with proper permissions
-    ret = nfs_creat(m_pNfsContext, filename.c_str(), S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH, &m_pFileHandle);
+    ret = nfs_creat(m_pNfsContext, filename.c_str(), S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH,
+                    &m_pFileHandle);
     //if file was created the file handle isn't valid ... so close it and open later
     if(ret == 0)
     {
