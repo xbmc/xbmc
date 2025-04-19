@@ -178,7 +178,7 @@ libplist: $(ZLIB)
 libpng: $(ZLIB)
 libva: libdrm $(LIBVA_DEPS)
 libxml2: $(ZLIB)
-libxslt: libgcrypt libxml2
+libxslt: libxml2
 libzip: bzip2 gnutls $(ZLIB)
 mariadb: openssl $(ICONV) $(ZLIB)
 mesa: libdrm $(MESA_DEPS) $(ZLIB)
