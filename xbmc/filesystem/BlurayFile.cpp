@@ -9,6 +9,7 @@
 #include "BlurayFile.h"
 
 #include "URL.h"
+#include "utils/URIUtils.h"
 
 #include <assert.h>
 
@@ -34,8 +35,7 @@ std::string CBlurayFile::TranslatePath(const CURL& url)
 
 bool CBlurayFile::Exists(const CURL& url)
 {
-  const CURL baseUrl{TranslatePath(url)};
-  if (baseUrl.GetFileName() == "menu")
-    return true;
-  return CFile::Exists(baseUrl);
+  if (url.GetFileName() == "menu")
+    return CFile::Exists(URIUtils::GetBlurayFile(url.Get()));
+  return CFile::Exists(TranslatePath(url));
 }
