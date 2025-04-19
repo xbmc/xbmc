@@ -17,6 +17,7 @@
 //------------------------------------------------------------------------
 
 #include <charconv>
+#include <iterator>
 #ifdef HAVE_NEW_CROSSGUID
 #include <crossguid/guid.hpp>
 #else
@@ -1066,14 +1067,14 @@ int64_t StringUtils::AlphaNumericCompare(std::wstring_view left, std::wstring_vi
     {
       ld = l;
       lnum = *ld++ - L'0';
-      while (ld != left.end() && *ld >= L'0' && *ld <= L'9' && ld < l + 15)
+      while (ld != left.end() && *ld >= L'0' && *ld <= L'9' && std::distance(l, ld) < 15)
       { // compare only up to 15 digits
         lnum *= 10;
         lnum += *ld++ - L'0';
       }
       rd = r;
       rnum = *rd++ - L'0';
-      while (rd != right.end() && *rd >= L'0' && *rd <= L'9' && rd < r + 15)
+      while (rd != right.end() && *rd >= L'0' && *rd <= L'9' && std::distance(r, rd) < 15)
       { // compare only up to 15 digits
         rnum *= 10;
         rnum += *rd++ - L'0';
