@@ -538,9 +538,11 @@ bool CProcessorHD::IsSuperResolutionSuitable(const VideoPicture& picture)
   if (outputWidth <= picture.iWidth)
     return false;
 
-  if (picture.color_primaries == AVCOL_PRI_BT2020 ||
-      picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
-      picture.color_transfer == AVCOL_TRC_ARIB_STD_B67)
+  // At this time, Intel GPUs do not support VSR on HDR video
+  if ((picture.color_primaries == AVCOL_PRI_BT2020 ||
+       picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
+       picture.color_transfer == AVCOL_TRC_ARIB_STD_B67) &&
+      DX::DeviceResources::Get()->GetAdapterDesc().VendorId == PCIV_Intel)
     return false;
 
   return true;
