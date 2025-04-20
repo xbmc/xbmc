@@ -28,8 +28,11 @@ void err(void *ctx, const char *msg, ...) {
 XSLTUtils::XSLTUtils()
 {
   // initialize libxslt
+  // The following two functions are deprecated
+#if LIBXML_VERSION <= 21200
   xmlSubstituteEntitiesDefault(1);
   xmlLoadExtDtdDefaultValue = 0;
+#endif
   xsltSetGenericErrorFunc(NULL, err);
 }
 
@@ -71,7 +74,8 @@ bool XSLTUtils::XSLTTransform(std::string& output)
 
 bool XSLTUtils::SetInput(const std::string& input)
 {
-  m_xmlInput = xmlParseMemory(input.c_str(), input.size());
+  m_xmlInput = xmlReadMemory(input.c_str(), input.size(), NULL, NULL, XML_PARSE_NOENT);
+
   if (!m_xmlInput)
     return false;
   return true;
@@ -84,10 +88,12 @@ bool XSLTUtils::SetStylesheet(const std::string& stylesheet)
     m_xsltStylesheet = NULL;
   }
 
-  m_xmlStylesheet = xmlParseMemory(stylesheet.c_str(), stylesheet.size());
+  m_xmlStylesheet =
+      xmlReadMemory(stylesheet.c_str(), stylesheet.size(), NULL, NULL, XML_PARSE_NOENT);
+
   if (!m_xmlStylesheet)
   {
-    CLog::Log(LOGDEBUG, "could not xmlParseMemory stylesheetdoc");
+    CLog::Log(LOGDEBUG, "could not read stylesheetdoc");
     return false;
   }
 

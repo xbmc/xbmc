@@ -14,6 +14,11 @@ ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
   endif
 endif
 
+# Disable random jitter entropy due to failure on multiple platform/arches
+# ./jitterentropy-base.c:58:3: error: "The CPU Jitter random number generator must not be compiled with optimizations. 
+#                                       See documentation. Use the compiler switch -O0 for compiling jitterentropy.c."
+CONFIGURE_FLAGS+= --disable-jent-support
+
 export GPG_ERROR_CONFIG=$(PREFIX)/bin/gpg-error-config
 
 # configuration settings
