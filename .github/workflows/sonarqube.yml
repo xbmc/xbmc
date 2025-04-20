@@ -1,4 +1,5 @@
 name: SonarQube
+
 # Only run after push to master - PR analysis is very unhelpful since we cannot tune the
 # ruleset, quality gate etc.
 on:
@@ -6,8 +7,8 @@ on:
     branches:
       - master
 jobs:
-  build:
-    name: SonarQube
+  sonarqube:
+    if: github.repository == 'xbmc/xbmc'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
