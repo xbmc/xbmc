@@ -575,7 +575,7 @@ void CDVDVideoCodecAmlogic::Reset(void)
 
   m_mpeg2_sequence_pts = 0;
   m_has_keyframe = false;
-  if (m_bitstream && m_hints.codec == AV_CODEC_ID_H264)
+  if (m_bitstream)
     m_bitstream->ResetStartDecode();
 }
 
