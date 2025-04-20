@@ -312,7 +312,7 @@ static const DoviData* convert_dovi_rpu_nal(uint8_t* nal_buf, uint32_t nal_size,
       }
     }
 
-    if (dovi_convert_rpu_with_mode(rpuOpaque, mode) >= 0) 
+    if (dovi_convert_rpu_with_mode(rpuOpaque, mode) >= 0)
       rpu_data = dovi_write_unspec62_nalu(rpuOpaque);
   }
 
@@ -359,7 +359,7 @@ static void get_dovi_rpu_info(uint8_t* nal_buf, uint32_t nal_size, bool first_fr
 
     DOVIStreamMetadata dovi_stream_metadata;
 
-    if (vdr_dm_data) 
+    if (vdr_dm_data)
     {
       dovi_stream_metadata.source_min_pq = vdr_dm_data->source_min_pq;
       dovi_stream_metadata.source_max_pq = vdr_dm_data->source_max_pq;
@@ -371,7 +371,7 @@ static void get_dovi_rpu_info(uint8_t* nal_buf, uint32_t nal_size, bool first_fr
 
       dovi_stream_metadata.level6_max_lum = vdr_dm_data->dm_data.level6->max_display_mastering_luminance;
       dovi_stream_metadata.level6_min_lum = vdr_dm_data->dm_data.level6->min_display_mastering_luminance;
-      
+
       dovi_stream_metadata.level6_max_cll = vdr_dm_data->dm_data.level6->max_content_light_level;
       dovi_stream_metadata.level6_max_fall = vdr_dm_data->dm_data.level6->max_frame_average_light_level;
     }
@@ -381,13 +381,13 @@ static void get_dovi_rpu_info(uint8_t* nal_buf, uint32_t nal_size, bool first_fr
     {
       unsigned int noL8 = vdr_dm_data->dm_data.level8.len;
       if (noL8 > 0)
-        meta_version = fmt::format("CMv4.0 {}-{} {}-L8", 
-                                  vdr_dm_data->dm_data.level254->dm_version_index, 
+        meta_version = fmt::format("CMv4.0 {}-{} {}-L8",
+                                  vdr_dm_data->dm_data.level254->dm_version_index,
                                   vdr_dm_data->dm_data.level254->dm_mode,
                                   noL8);
-      else 
-        meta_version = fmt::format("CMv4.0 {}-{}", 
-                                  vdr_dm_data->dm_data.level254->dm_version_index, 
+      else
+        meta_version = fmt::format("CMv4.0 {}-{}",
+                                  vdr_dm_data->dm_data.level254->dm_version_index,
                                   vdr_dm_data->dm_data.level254->dm_mode);
     }
     else if (vdr_dm_data && vdr_dm_data->dm_data.level1)
@@ -395,7 +395,7 @@ static void get_dovi_rpu_info(uint8_t* nal_buf, uint32_t nal_size, bool first_fr
       unsigned int noL2 = vdr_dm_data->dm_data.level2.len;
       if (noL2 > 0)
         meta_version = fmt::format("CMv2.9 {}-L2", noL2);
-      else 
+      else
         meta_version = "CMv2.9";
     }
     dovi_stream_metadata.meta_version = meta_version;
@@ -413,7 +413,7 @@ static void get_dovi_rpu_info(uint8_t* nal_buf, uint32_t nal_size, bool first_fr
         dovi_el_type = DOVIELType::TYPE_MEL;
     }
 
-    dovi_stream_info.dovi_el_type = dovi_el_type; 
+    dovi_stream_info.dovi_el_type = dovi_el_type;
     dovi_stream_info.dovi = dovi;
 
     dovi_stream_info.has_config = (memcmp(&dovi, &CDVDStreamInfo::empty_dovi, sizeof(AVDOVIDecoderConfigurationRecord)) != 0);
@@ -481,8 +481,8 @@ bool CBitstreamParser::CanStartDecode(const uint8_t *buf, int buf_size)
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
-CBitstreamConverter::CBitstreamConverter(CDVDStreamInfo& hints) 
-                        : m_hints(hints) 
+CBitstreamConverter::CBitstreamConverter(CDVDStreamInfo& hints)
+                        : m_hints(hints)
                         , m_dataCacheCore(CServiceBroker::GetDataCacheCore())
 {
   m_convert_bitstream = false;
@@ -842,19 +842,19 @@ bool CBitstreamConverter::Convert(uint8_t *pData_bl, int iSize_bl, uint8_t *pDat
       switch (nal_type) {
 
         case HEVC_NAL_SEI_PREFIX:
-          ProcessSeiPrefixWrap(buf, size, &m_convertBuffer, offset, hdr10plus_meta, convert_hdr10plus_meta); 
+          ProcessSeiPrefixWrap(buf, size, &m_convertBuffer, offset, hdr10plus_meta, convert_hdr10plus_meta);
           break;
 
-        case AVC_NAL_END_SEQUENCE: 
+        case AVC_NAL_END_SEQUENCE:
           buf_eos = buf;
           size_eos = size;
           break;
 
         default:
           BitstreamAllocAndCopy(&m_convertBuffer, &offset, buf, size, nal_type);
-          break;        
+          break;
       }
-      
+
       // Make sure bl_present_flag is set.
       m_hints.dovi.bl_present_flag = true;
 
@@ -877,7 +877,7 @@ bool CBitstreamConverter::Convert(uint8_t *pData_bl, int iSize_bl, uint8_t *pDat
       nal_type = (buf[0] >> 1) & 0x3f;
 
       switch (nal_type) {
-  
+
         case HEVC_NAL_UNSPEC62: // DoVi RPU
           if (!m_removeDovi && !convert_hdr10plus_meta)
             ProcessDoViRpuWrap(buf, size, &m_convertBuffer, offset, pts);
@@ -1210,7 +1210,7 @@ void CBitstreamConverter::ApplyContentLightLevel(const ContentLightLevel& metada
     m_hdrStaticMetadataInfo.max_fall = metadata.maxFrameAverageLightLevel;
     update = true;
 
-    CLog::Log(LOGINFO, "CBitstreamConverter::ApplyContentLightLevel [{}] [{}]", m_hdrStaticMetadataInfo.max_cll, m_hdrStaticMetadataInfo.max_fall);    
+    CLog::Log(LOGINFO, "CBitstreamConverter::ApplyContentLightLevel [{}] [{}]", m_hdrStaticMetadataInfo.max_cll, m_hdrStaticMetadataInfo.max_fall);
   }
 }
 
@@ -1231,7 +1231,7 @@ void CBitstreamConverter::UpdateHdrStaticMetadata() {
 }
 
 void CBitstreamConverter::AddDoViRpuNaluWrap(const Hdr10PlusMetadata& meta, uint8_t **poutbuf, uint32_t& poutbuf_size, double pts) {
-  
+
   int int_poutbuf_size = poutbuf_size;
   AddDoViRpuNalu(meta, poutbuf, &int_poutbuf_size, pts);
   poutbuf_size = static_cast<uint32_t>(int_poutbuf_size);
@@ -1241,7 +1241,7 @@ void CBitstreamConverter::AddDoViRpuNalu(const Hdr10PlusMetadata& meta, uint8_t 
 
   auto nalu = create_rpu_nalu_for_hdr10plus(
     meta,
-    m_convert_Hdr10Plus_peak_brightness_source, 
+    m_convert_Hdr10Plus_peak_brightness_source,
     m_hdrStaticMetadataInfo);
 
   if (!nalu.empty())
@@ -1268,7 +1268,7 @@ void CBitstreamConverter::AddDoViRpuNalu(const Hdr10PlusMetadata& meta, uint8_t 
 }
 
 void CBitstreamConverter::ProcessSeiPrefixWrap(uint8_t *buf, int32_t nal_size, uint8_t **poutbuf, uint32_t& poutbuf_size, Hdr10PlusMetadata& meta, bool& convert_hdr10plus_meta) {
-  
+
   int int_poutbuf_size = poutbuf_size;
   ProcessSeiPrefix(buf, nal_size, poutbuf, &int_poutbuf_size, meta, convert_hdr10plus_meta);
   poutbuf_size = static_cast<uint32_t>(int_poutbuf_size);
@@ -1286,7 +1286,7 @@ void CBitstreamConverter::ProcessSeiPrefix(uint8_t *buf, int32_t nal_size, uint8
   if (auto colourVolume = CHevcSei::ExtractMasteringDisplayColourVolume(messages, clearBuf))
     ApplyMasteringDisplayColourVolume(colourVolume.value(), updateMetadata);
 
-  if (auto lightLevel = CHevcSei::ExtractContentLightLevel(messages, clearBuf)) 
+  if (auto lightLevel = CHevcSei::ExtractContentLightLevel(messages, clearBuf))
     ApplyContentLightLevel(lightLevel.value(), updateMetadata);
 
   if (updateMetadata) UpdateHdrStaticMetadata();
@@ -1299,16 +1299,16 @@ void CBitstreamConverter::ProcessSeiPrefix(uint8_t *buf, int32_t nal_size, uint8
     if (m_first_frame) {
       if (considerAsHdr10Plus) {
         m_hints.hdrType = StreamHdrType::HDR_TYPE_HDR10PLUS;
-        m_dataCacheCore.SetVideoSourceHdrType(StreamHdrType::HDR_TYPE_HDR10PLUS);      
+        m_dataCacheCore.SetVideoSourceHdrType(StreamHdrType::HDR_TYPE_HDR10PLUS);
         if (isDual) m_dataCacheCore.SetVideoSourceAdditionalHdrType(StreamHdrType::HDR_TYPE_DOLBYVISION);
-      } else {        
+      } else {
         if (isDual) m_dataCacheCore.SetVideoSourceAdditionalHdrType(StreamHdrType::HDR_TYPE_HDR10PLUS);
       }
     }
 
     bool convert = (considerAsHdr10Plus && m_convert_Hdr10Plus && !m_dual_priority_Hdr10Plus);
 
-    if (convert) {      
+    if (convert) {
       meta = res.value();
       convert_hdr10plus_meta = true;
     }
@@ -1325,11 +1325,11 @@ void CBitstreamConverter::ProcessSeiPrefix(uint8_t *buf, int32_t nal_size, uint8
     }
   }
 
-  if (copy) BitstreamAllocAndCopy(poutbuf, poutbuf_size, NULL, 0, buf, nal_size, HEVC_NAL_SEI_PREFIX);   
+  if (copy) BitstreamAllocAndCopy(poutbuf, poutbuf_size, NULL, 0, buf, nal_size, HEVC_NAL_SEI_PREFIX);
 }
 
 void CBitstreamConverter::ProcessDoViRpuWrap(uint8_t *nal_buf, int32_t nal_size, uint8_t **poutbuf, uint32_t& poutbuf_size, double pts) {
-  
+
   int int_poutbuf_size = poutbuf_size;
   ProcessDoViRpu(nal_buf, nal_size, poutbuf, &int_poutbuf_size, pts);
   poutbuf_size = static_cast<uint32_t>(int_poutbuf_size);
@@ -1348,7 +1348,7 @@ void CBitstreamConverter::ProcessDoViRpu(uint8_t *nal_buf, int32_t nal_size, uin
       nal_size = rpu_data->len;
 
       // Capture the DOVI source details - about to be replaced.
-      if (m_first_frame) 
+      if (m_first_frame)
       {
         DOVIStreamInfo dovi_stream_info;
         dovi_stream_info.dovi_el_type = dovi_el_type;
@@ -1370,10 +1370,10 @@ void CBitstreamConverter::ProcessDoViRpu(uint8_t *nal_buf, int32_t nal_size, uin
 
 #ifdef HAVE_LIBDOVI
   if (rpu_data) dovi_data_free(rpu_data);
-#endif  
+#endif
 }
 
-bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **poutbuf, int *poutbuf_size, double pts) 
+bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **poutbuf, int *poutbuf_size, double pts)
 {
   // based on h264_mp4toannexb_bsf.c (ffmpeg)
   // which is Copyright (c) 2007 Benoit Fouet <benoit.fouet@free.fr>
@@ -1453,7 +1453,7 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **
       }
 
       switch (unit_type) {
-        
+
         case HEVC_NAL_SEI_PREFIX:
           ProcessSeiPrefix(buf, nal_size, poutbuf, poutbuf_size, hdr10plus_meta, convert_hdr10plus_meta);
           break;
