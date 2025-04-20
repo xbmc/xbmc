@@ -820,6 +820,7 @@
 		<value condition="String.IsEqual(ListItem.AudioCodec,eac3_ddp_atmos) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.AudioCodec,eac3_ddp_atmos)] | [Window.IsActive(visualisation) + String.IsEqual(MusicPlayer.Codec,eac3_ddp_atmos)]">Dolby Digital+</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,flac) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.AudioCodec,flac)] | [Window.IsActive(visualisation) + String.IsEqual(MusicPlayer.Codec,flac)]">FLAC</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,mp1) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.AudioCodec,mp1)] | [Window.IsActive(visualisation) + String.IsEqual(MusicPlayer.Codec,mp1)]">MP1</value>
+		<value condition="String.IsEqual(ListItem.AudioCodec,mp2) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.AudioCodec,mp2)] | [Window.IsActive(visualisation) + String.IsEqual(MusicPlayer.Codec,mp2)]">MP2</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,mp3) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.AudioCodec,mp3)] | [Window.IsActive(visualisation) + String.IsEqual(MusicPlayer.Codec,mp3)]">MP3</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,mp3float) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.AudioCodec,mp3float)] | [Window.IsActive(visualisation) + String.IsEqual(MusicPlayer.Codec,mp3float)]">MP3</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,ogg) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.AudioCodec,ogg)] | [Window.IsActive(visualisation) + String.IsEqual(MusicPlayer.Codec,ogg)]">OGG</value>
@@ -904,6 +905,7 @@
 		<value condition="Window.IsVisible(dialogselectaudio) + String.IsEqual(ListItem.Property(stream.codec),cdda)">CDDA</value>
 		<value condition="Window.IsVisible(dialogselectaudio) + String.IsEqual(ListItem.Property(stream.codec),flac)">FLAC</value>
 		<value condition="Window.IsVisible(dialogselectaudio) + String.IsEqual(ListItem.Property(stream.codec),mp1)">MP1</value>
+		<value condition="Window.IsVisible(dialogselectaudio) + String.IsEqual(ListItem.Property(stream.codec),mp2)">MP2</value>
 		<value condition="Window.IsVisible(dialogselectaudio) + String.IsEqual(ListItem.Property(stream.codec),mp3)">MP3</value>
 		<value condition="Window.IsVisible(dialogselectaudio) + String.IsEqual(ListItem.Property(stream.codec),mp3float)">MP3</value>
 		<value condition="Window.IsVisible(dialogselectaudio) + String.IsEqual(ListItem.Property(stream.codec),ogg)">OGG</value>
