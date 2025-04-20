@@ -469,31 +469,31 @@
 						<top>480</top>
 						<control type="list" id="41">
 							<left>42</left>
-							<top>9</top>
+							<top>0</top>
 							<width>446</width>
-							<height>369</height>
+							<height>385</height>
 							<onleft>130</onleft>
 							<onright>130</onright>
 							<onup>50</onup>
 							<ondown>9000</ondown>
 							<pagecontrol/>
 							<scrolltime>200</scrolltime>
-							<itemlayout height="41">
+							<itemlayout height="35">
 								<control type="label">
 									<left>10</left>
 									<top>0</top>
 									<width>410</width>
-									<height>39</height>
+									<height>30</height>
 									<font>font27_narrow</font>
 									<label>$INFO[ListItem.Label,[COLOR button_focus],[/COLOR]] $INFO[ListItem.Label2]</label>
 								</control>
 							</itemlayout>
-							<focusedlayout height="41">
+							<focusedlayout height="35">
 								<control type="image">
 									<left>0</left>
 									<top>1</top>
 									<width>446</width>
-									<height>39</height>
+									<height>33</height>
 									<texture colordiffuse="button_focus">lists/focus.png</texture>
 									<visible>Control.HasFocus(41)</visible>
 								</control>
@@ -501,7 +501,7 @@
 									<left>10</left>
 									<top>0</top>
 									<width>410</width>
-									<height>39</height>
+									<height>30</height>
 									<font>font27_narrow</font>
 									<label>$INFO[ListItem.Label] $INFO[ListItem.Label2]</label>
 									<scroll>true</scroll>
