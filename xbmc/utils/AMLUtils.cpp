@@ -711,11 +711,6 @@ void aml_dv_enable_fel()
   CSysfsPath("/sys/class/amdolby_vision/debug", "enable_fel 1");
 }
 
-void aml_hevc_nal_skip_policy(const int value)
-{
-  CSysfsPath("/sys/module/amvdec_h265/parameters/nal_skip_policy", value);
-}
-
 void aml_set_transfer_pq(StreamHdrType hdrType, unsigned int bitDepth) {
 
   // Configure GUI/OSD for HDR PQ when display is in HDR PQ mode
