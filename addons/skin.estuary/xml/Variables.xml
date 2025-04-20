@@ -834,8 +834,8 @@
 		<value condition="String.IsEqual(ListItem.AudioCodec,vorbis) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.AudioCodec,vorbis)] | [Window.IsActive(visualisation) + String.IsEqual(MusicPlayer.Codec,vorbis)]">Vorbis</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,wav) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.AudioCodec,wav)] | [Window.IsActive(visualisation) + String.IsEqual(MusicPlayer.Codec,wav)]">WAV</value>
 		<value condition="String.IsEqual(ListItem.AudioCodec,wavpack) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.AudioCodec,wavpack)] | [Window.IsActive(visualisation) + String.IsEqual(MusicPlayer.Codec,wavpack)]">WAVP</value>
-		<value condition="String.IsEqual(ListItem.AudioCodec,wmapro) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.AudioCodec,wmapro)] | [Window.IsActive(visualisation) + String.IsEqual(VideoPlayer.AudioCodec,wmapro)]">WMA-PRO</value>
-		<value condition="String.IsEqual(ListItem.AudioCodec,wmav2) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.AudioCodec,wmav2)] | [Window.IsActive(visualisation) + String.IsEqual(VideoPlayer.AudioCodec,wmav2)]">WMA</value>
+		<value condition="String.IsEqual(ListItem.AudioCodec,wmapro) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.AudioCodec,wmapro)] | [Window.IsActive(visualisation) + String.IsEqual(MusicPlayer.Codec,wmapro)]">WMA-PRO</value>
+		<value condition="String.IsEqual(ListItem.AudioCodec,wmav2) | [Window.IsActive(fullscreenvideo) + String.IsEqual(VideoPlayer.AudioCodec,wmav2)] | [Window.IsActive(visualisation) + String.IsEqual(MusicPlayer.Codec,wmav2)]">WMA</value>
 		<value condition="Window.IsActive(fullscreenvideo)">$INFO[VideoPlayer.AudioCodec]</value>
 		<value condition="Window.IsActive(visualisation)">$INFO[MusicPlayer.Codec]</value>
 		<value>$INFO[ListItem.AudioCodec]</value>
