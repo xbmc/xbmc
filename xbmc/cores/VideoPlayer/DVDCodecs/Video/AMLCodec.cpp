@@ -273,7 +273,7 @@ static const uint64_t UINT64_0 = 0x8000000000000000ULL;
 #define CODEC_TAG_jpeg  (0x6765706a)
 #define CODEC_TAG_mjpa  (0x61706a6d)
 
-#define RW_WAIT_TIME    (5 * 1000) // 20ms
+#define RW_WAIT_TIME    (5 * 1000) // 5ms
 
 #define P_PRE           (0x02000000)
 #define F_PRE           (0x03000000)
@@ -681,7 +681,7 @@ int write_av_packet(am_private_t *para, am_packet_t *pkt)
     }
 
     buf = pkt->data;
-    size = pkt->data_size ;
+    size = pkt->data_size;
     if (size == 0 && pkt->isvalid) {
         pkt->isvalid = 0;
         pkt->data_size = 0;
@@ -869,7 +869,6 @@ static int h264_add_header(unsigned char *buf, int size, am_packet_t *pkt)
 
 static int h264_write_header(am_private_t *para, am_packet_t *pkt)
 {
-    // logNoFormatM(LOGDEBUG, "AMLCodec");
     int ret = h264_add_header(para->extradata.GetData(), para->extradata.GetSize(), pkt);
     if (ret == PLAYER_SUCCESS) {
         if (1) {
