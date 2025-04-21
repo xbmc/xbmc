@@ -112,10 +112,10 @@
 						<control type="group">
 							<visible>String.IsEmpty(ListItem.Art(fanart))</visible>
 							<control type="image">
-								<left>-15</left>
-								<top>20</top>
-								<width>670</width>
-								<height>380</height>
+								<left>-4</left>
+								<top>30</top>
+								<width>660</width>
+								<height>370</height>
 								<aspectratio>scale</aspectratio>
 								<texture colordiffuse="AAFFFFFF">colors/black.png</texture>
 							</control>
@@ -198,7 +198,7 @@
 						<control type="label">
 							<left>40</left>
 							<top>10</top>
-							<width>546</width>
+							<width>522</width>
 							<height>60</height>
 							<font>font12</font>
 							<aligny>center</aligny>
@@ -215,10 +215,11 @@
 						<control type="label">
 							<left>40</left>
 							<top>10</top>
-							<width>546</width>
+							<width>522</width>
 							<height>60</height>
 							<font>font12</font>
 							<aligny>center</aligny>
+							<scroll>true</scroll>
 							<label>$INFO[ListItem.Label,[COLOR white], - [/COLOR]]$INFO[ListItem.Label2]</label>
 						</control>
 					</focusedlayout>
@@ -229,18 +230,29 @@
 							<height>100</height>
 							<texture border="21">buttons/button-nofo.png</texture>
 						</control>
-						<control type="label">
-							<left>40</left>
-							<top>10</top>
-							<width>546</width>
-							<height>60</height>
-							<font>font12</font>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.TrackNumber,[COLOR grey], - [/COLOR]]$INFO[ListItem.Label]</label>
-						</control>
+							<control type="label">
+								<left>40</left>
+								<top>10</top>
+								<width>522</width>
+								<height>60</height>
+								<font>font12</font>
+								<aligny>center</aligny>
+								<label>$INFO[ListItem.TrackNumber,[COLOR grey], - [/COLOR]]$INFO[ListItem.Label]</label>
+								<visible>![Skin.HasSetting(circle_rating) | Skin.HasSetting(circle_userrating)] | [Skin.HasSetting(circle_userrating) + String.IsEmpty(ListItem.UserRating)] | [Skin.HasSetting(circle_rating) + String.IsEmpty(ListItem.Rating)]</visible>
+							</control>
+							<control type="label">
+								<left>40</left>
+								<top>10</top>
+								<width>470</width>
+								<height>60</height>
+								<font>font12</font>
+								<aligny>center</aligny>
+								<label>$INFO[ListItem.TrackNumber,[COLOR grey], - [/COLOR]]$INFO[ListItem.Label]</label>
+								<visible>[Skin.HasSetting(circle_rating) + !String.IsEmpty(ListItem.Rating)] | [Skin.HasSetting(circle_userrating) + !String.IsEmpty(ListItem.UserRating)]</visible>
+							</control>
 						<control type="group">
-							<left>230</left>
-							<top>28</top>
+							<left>518</left>
+							<top>23</top>
 							<include condition="Skin.HasSetting(circle_rating) | Skin.HasSetting(circle_userrating)">RatingCircle</include>
 						</control>
 					</itemlayout>
@@ -255,15 +267,28 @@
 							<control type="label">
 								<left>40</left>
 								<top>10</top>
-								<width>546</width>
+								<width>522</width>
 								<height>60</height>
 								<font>font12</font>
 								<aligny>center</aligny>
+								<scroll>true</scroll>
 								<label>$INFO[ListItem.TrackNumber,[COLOR white], - [/COLOR]]$INFO[ListItem.Label]</label>
+								<visible>![Skin.HasSetting(circle_rating) | Skin.HasSetting(circle_userrating)] | [Skin.HasSetting(circle_userrating) + String.IsEmpty(ListItem.UserRating)] | [Skin.HasSetting(circle_rating) + String.IsEmpty(ListItem.Rating)]</visible>
+							</control>
+							<control type="label">
+								<left>40</left>
+								<top>10</top>
+								<width>470</width>
+								<height>60</height>
+								<font>font12</font>
+								<aligny>center</aligny>
+								<scroll>true</scroll>
+								<label>$INFO[ListItem.TrackNumber,[COLOR white], - [/COLOR]]$INFO[ListItem.Label]</label>
+								<visible>[Skin.HasSetting(circle_rating) + !String.IsEmpty(ListItem.Rating)] | [Skin.HasSetting(circle_userrating) + !String.IsEmpty(ListItem.UserRating)]</visible>
 							</control>
 							<control type="group">
-								<left>230</left>
-								<top>28</top>
+								<left>518</left>
+								<top>23</top>
 								<include condition="Skin.HasSetting(circle_rating) | Skin.HasSetting(circle_userrating)">RatingCircle</include>
 							</control>
 						</control>
@@ -349,16 +374,16 @@
 					</focusedlayout>
 				</control>
 				<control type="grouplist" id="9000">
-					<left>-80</left>
+					<left>10</left>
 					<top>864</top>
-					<width>1920</width>
+					<width>1740</width>
 					<height>300</height>
 					<onleft>9000</onleft>
 					<onright>9000</onright>
 					<onup>130</onup>
 					<ondown>50</ondown>
 					<align>center</align>
-					<itemgap>-15</itemgap>
+					<itemgap>-18</itemgap>
 					<orientation>horizontal</orientation>
 					<control type="group" id="420">
 						<width>264</width>
