@@ -643,7 +643,7 @@ CVideoInfoScanner::~CVideoInfoScanner()
       if (fetchEpisodes)
       {
         InfoRet ret = RetrieveInfoForEpisodes(pItem, lResult, info2, useLocal, pDlgProgress);
-        if (ret == InfoRet::INFO_ERROR)
+        if (ret == InfoRet::ADDED)
           m_database.SetPathHash(pItem->GetPath(), pItem->GetProperty("hash").asString());
         return ret;
       }
