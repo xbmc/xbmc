@@ -92,7 +92,14 @@ CPVRRecordingsPath::CPVRRecordingsPath(bool bDeleted,
 {
   std::string strDirectoryN(TrimSlashes(strDirectory));
   if (!strDirectoryN.empty())
+  {
+    std::vector<std::string> segments{StringUtils::Split(strDirectoryN, "/")};
+    for (auto& segment : segments)
+      segment = CURL::Encode(segment);
+
+    strDirectoryN = StringUtils::Join(segments, "/");
     strDirectoryN = StringUtils::Format("{}/", strDirectoryN);
+  }
 
   std::string strTitleN(strTitle);
   strTitleN = CURL::Encode(strTitleN);

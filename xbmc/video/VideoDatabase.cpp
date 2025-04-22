@@ -6698,11 +6698,39 @@ void CVideoDatabase::UpdateTables(int iVersion)
         "UPDATE videoversiontype SET itemType = itemType + 1  WHERE itemType IN (%i, %i)",
         VIDEOASSETTYPE_VERSION_OLD, VIDEOASSETTYPE_EXTRA_OLD));
   }
+
+  if (iVersion < 135)
+  {
+    // Fix PVR recording path encoding bug.
+    m_pDS->query("SELECT idPath, strPath FROM path WHERE strPath LIKE 'pvr://recordings/%'");
+    while (!m_pDS->eof())
+    {
+      std::string fixedPath{m_pDS->fv(1).get_asString()};
+      fixedPath.erase(0, 17); // Omit "pvr://recordings/".
+
+      // Fix special case where ? contained in directory names was treated as URL parameter.
+      const size_t pos{fixedPath.find("/?")};
+      if (pos != std::string::npos)
+        fixedPath.erase(pos, 1);
+
+      std::vector<std::string> segments{StringUtils::Split(fixedPath, "/")};
+      for (auto& segment : segments)
+        segment = CURL::Encode(segment);
+
+      fixedPath = "pvr://recordings/";
+      fixedPath += StringUtils::Join(segments, "/");
+
+      m_pDS2->exec(PrepareSQL("UPDATE path SET strPath='%s' WHERE idPath=%i", fixedPath.c_str(),
+                              m_pDS->fv(0).get_asInt()));
+      m_pDS->next();
+    }
+    m_pDS->close();
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 134;
+  return 135;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
