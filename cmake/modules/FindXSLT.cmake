@@ -123,12 +123,12 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
                                     VERSION_VAR XSLT_VERSION)
 
   if(XSLT_FOUND)
-    if(TARGET LibXslt::LibXslt AND NOT TARGET xslt)
+    if(TARGET LibXslt::LibXslt AND NOT TARGET libxslt)
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS LibXslt::LibXslt)
       # We need to append in case the cmake config already has definitions
       set_property(TARGET LibXslt::LibXslt APPEND PROPERTY
                                                   INTERFACE_COMPILE_DEFINITIONS HAVE_LIBXSLT)
-    elseif(TARGET PkgConfig::libxslt AND NOT TARGET xslt)
+    elseif(TARGET PkgConfig::libxslt AND NOT TARGET libxslt)
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::libxslt)
       set_property(TARGET PkgConfig::libxslt APPEND PROPERTY
                                                     INTERFACE_COMPILE_DEFINITIONS HAVE_LIBXSLT)

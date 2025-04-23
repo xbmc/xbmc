@@ -113,6 +113,13 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       list(GET SPDLOG_LINK_LIBRARIES 0 SPDLOG_LIBRARY_RELEASE)
 
       get_target_property(SPDLOG_INCLUDE_DIR PkgConfig::SPDLOG INTERFACE_INCLUDE_DIRECTORIES)
+
+      # Some older debian pkgconfig packages for Spdlog dont include the include dirs data
+      # If we cant get that data from the pkgconfig TARGET, fall back to the old *_INCLUDEDIR
+      # variable
+      if(NOT SPDLOG_INCLUDE_DIR)
+        set(SPDLOG_INCLUDE_DIR SPDLOG_INCLUDEDIR)
+      endif()
     endif()
   endif()
 
