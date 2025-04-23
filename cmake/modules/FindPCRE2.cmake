@@ -97,6 +97,13 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       list(GET PCRE2_LINK_LIBRARIES 0 PCRE2_LIBRARY_RELEASE)
 
       get_target_property(PCRE2_INCLUDE_DIR PkgConfig::PCRE2 INTERFACE_INCLUDE_DIRECTORIES)
+
+      # Some older debian pkgconfig packages for PCRE2 dont include the include dirs data
+      # If we cant get that data from the pkgconfig TARGET, fall back to the old *_INCLUDEDIR
+      # variable
+      if(NOT PCRE2_INCLUDE_DIR)
+        set(PCRE2_INCLUDE_DIR PCRE2_INCLUDEDIR)
+      endif()
     endif()
   endif()
 
