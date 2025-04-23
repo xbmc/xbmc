@@ -126,7 +126,10 @@ bool CCPUInfoOsx::GetTemperature(CTemperature& temperature)
     return CheckUserTemperatureCommand(temperature);
   }
 
-  smctemp::SmcTemp smcTemp = smctemp::SmcTemp();
+  // isFailsoft lets smctemp average temperatures across reads for some models that
+  // aren't as robust in their readings
+  const bool isFailSoft = true;
+  smctemp::SmcTemp smcTemp = smctemp::SmcTemp(isFailSoft);
   const double value = smcTemp.GetCpuTemp();
   if (value <= 0.0)
   {
