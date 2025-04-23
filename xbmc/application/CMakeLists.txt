@@ -16,6 +16,7 @@ set(HEADERS AppEnvironment.h
             AppInboundProtocol.h
             Application.h
             ApplicationActionListeners.h
+            ApplicationEnums.h
             ApplicationPlayer.h
             ApplicationPlayerCallback.h
             ApplicationPowerHandling.h
