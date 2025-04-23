@@ -1357,14 +1357,27 @@ bool CGUIWindowManager::Render()
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiVisualizeDirtyRegions;
   if (visualizeDirtyRegions)
     bufferAge = 20;
+    
+  // Optimize tracking of dirty regions - if the buffer age is 0, 
+  // we're in a vsync-synchronized environment and can use a smaller cleanup threshold
   if (bufferAge)
     m_tracker.CleanMarkedRegions(bufferAge + 1);
   else
-    m_tracker.CleanMarkedRegions(10);
+    m_tracker.CleanMarkedRegions(5);  // Use smaller value than original 10
 
   CDirtyRegionList dirtyRegions = m_tracker.GetDirtyRegions();
 
+  // Fast path: Skip rendering if no dirty regions and not forcing a full redraw
   bool hasRendered = false;
+  if (dirtyRegions.empty() && 
+      bufferAge > 0 && 
+      !visualizeDirtyRegions && 
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiAlgorithmDirtyRegions != 
+      DIRTYREGION_SOLVER_FILL_VIEWPORT_ALWAYS)
+  {
+    return false;
+  }
+  
   // If we visualize the regions we will always render the entire viewport
   // If the buffer age is zero, the current content is undefined and has to be rendered
   if (visualizeDirtyRegions || bufferAge == 0 ||

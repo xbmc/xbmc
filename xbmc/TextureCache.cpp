@@ -87,6 +87,10 @@ bool CTextureCache::HasCachedImage(const std::string &url)
 
 std::string CTextureCache::GetCachedImage(const std::string &image, CTextureDetails &details, bool trackUsage)
 {
+  // Early exit for empty images
+  if (image.empty())
+    return "";
+    
   std::string url = IMAGE_FILES::ToCacheKey(image);
   if (url.empty())
     return "";
@@ -248,10 +252,19 @@ bool CTextureCache::GetCachedTexture(const std::string &url, CTextureDetails &de
   return m_database.GetCachedTexture(url, details);
 }
 
-bool CTextureCache::AddCachedTexture(const std::string &url, const CTextureDetails &details)
+bool CTextureCache::AddCachedTexture(const std::string &image, const CTextureDetails &details)
 {
-  std::unique_lock<CCriticalSection> lock(m_databaseSection);
-  return m_database.AddCachedTexture(url, details);
+  CSingleLock lock(m_databaseSection);
+  
+#if defined(TARGET_ANDROID)
+  // Use Android-specific texture optimization if available
+  if (CServiceBroker::GetWinSystem()->IsAndroid())
+  {
+    return CAndroidTextureManager::AddCachedTextureOptimized(image, details);
+  }
+#endif
+
+  return m_database.AddCachedTexture(image, details);
 }
 
 void CTextureCache::IncrementUseCount(const CTextureDetails &details)

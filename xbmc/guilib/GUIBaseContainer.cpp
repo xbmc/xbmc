@@ -218,6 +218,16 @@ void CGUIBaseContainer::ProcessItem(float posX,
 
   if (m_bInvalidated)
     item->SetInvalid();
+    
+  // Fast path for non-focused items with layout already created (majority case)
+  if (!focused && item->GetLayout() && !m_bInvalidated && 
+      !(item->GetFocusedLayout() && item->GetFocusedLayout()->IsAnimating(ANIM_TYPE_UNFOCUS)))
+  {
+    item->GetLayout()->Process(item.get(), m_parentID, currentTime, dirtyregions);
+    CServiceBroker::GetWinSystem()->GetGfxContext().RestoreOrigin();
+    return;
+  }
+  
   if (focused)
   {
     if (!item->GetFocusedLayout())
@@ -246,13 +256,16 @@ void CGUIBaseContainer::ProcessItem(float posX,
   {
     if (item->GetFocusedLayout())
       item->GetFocusedLayout()->SetFocusedItem(0);  // focus is not set
+      
     if (!item->GetLayout())
     {
       auto layout = std::make_unique<CGUIListItemLayout>(*m_layout, this);
       item->SetLayout(std::move(layout));
     }
+    
     if (item->GetFocusedLayout() && item->GetFocusedLayout()->IsAnimating(ANIM_TYPE_UNFOCUS))
       item->GetFocusedLayout()->Process(item.get(), m_parentID, currentTime, dirtyregions);
+      
     if (item->GetLayout())
       item->GetLayout()->Process(item.get(), m_parentID, currentTime, dirtyregions);
   }

@@ -138,6 +138,10 @@ CGUITexture::CGUITexture(const CGUITexture& right)
 
 bool CGUITexture::AllocateOnDemand()
 {
+  // Fast early return if texture is already in good state (most common case)
+  if (m_visible && IsAllocated() && (m_isAllocated != LARGE || m_texture.size()))
+    return false;
+  
   if (m_visible)
   { // visible, so make sure we're allocated
     if (!IsAllocated() || (m_isAllocated == LARGE && !m_texture.size()))

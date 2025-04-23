@@ -219,7 +219,8 @@ bool CTextureDatabase::GetCachedTexture(const std::string &url, CTextureDetails 
     if (!m_pDS)
       return false;
 
-    std::string sql = PrepareSQL("SELECT id, cachedurl, lasthashcheck, imagehash, width, height FROM texture JOIN sizes ON (texture.id=sizes.idtexture AND sizes.size=1) WHERE url='%s'", url.c_str());
+    // Use INDEXED BY for better query performance
+    std::string sql = PrepareSQL("SELECT id, cachedurl, lasthashcheck, imagehash, width, height FROM texture INDEXED BY idxTexture JOIN sizes ON (texture.id=sizes.idtexture AND sizes.size=1) WHERE url='%s'", url.c_str());
     m_pDS->query(sql);
     if (!m_pDS->eof())
     { // have some information

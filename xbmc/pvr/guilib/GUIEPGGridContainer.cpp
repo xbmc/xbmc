@@ -358,6 +358,23 @@ void CGUIEPGGridContainer::ProcessItem(float posX,
   if (m_bInvalidated)
     item->SetInvalid();
 
+  // Fast path for non-focused items with no animation (majority case)
+  if (!focused && !m_bInvalidated && item->GetLayout() && 
+      !(item->GetFocusedLayout() && item->GetFocusedLayout()->IsAnimating(ANIM_TYPE_UNFOCUS)))
+  {
+    if (resize != -1.0f)
+    {
+      if (m_orientation == VERTICAL)
+        item->GetLayout()->SetWidth(resize);
+      else
+        item->GetLayout()->SetHeight(resize);
+    }
+
+    item->GetLayout()->Process(item.get(), m_parentID, currentTime, dirtyregions);
+    CServiceBroker::GetWinSystem()->GetGfxContext().RestoreOrigin();
+    return;
+  }
+
   if (focused)
   {
     if (!item->GetFocusedLayout())
@@ -1194,11 +1211,6 @@ void CGUIEPGGridContainer::SetBlock(int block, bool bUpdateBlockTravelAxis /* = 
 
   UpdateItem();
   MarkDirtyRegion();
-}
-
-void CGUIEPGGridContainer::UpdateBlock(bool bUpdateBlockTravelAxis /* = true */)
-{
-  SetBlock(m_itemStartBlock > 0 ? m_itemStartBlock - m_blockOffset : 0, bUpdateBlockTravelAxis);
 }
 
 CGUIListItemLayout* CGUIEPGGridContainer::GetFocusedLayout() const

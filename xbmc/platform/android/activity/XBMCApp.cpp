@@ -480,6 +480,21 @@ void CXBMCApp::UnregisterDisplayListener()
 
 void CXBMCApp::Initialize()
 {
+  // Create unique thread stack pool for Java ART
+  m_thread = std::thread(&CXBMCApp::run, this);
+
+  // Initialize our Android optimization utilities
+  JNIEnv* env = xbmc_jnienv();
+  CAndroidSortUtils::Initialize(env, getActivity());
+  CAndroidTextureManager::Initialize();
+  CAndroidDatabaseManager::Initialize();
+
+  std::string packageName = GetPackageName();
+  android_printf(
+      "CXBMCApp::Initialize: Android package name: %s, optimizations enabled",
+      packageName.c_str());
+  
+  // Rest of initialization continues
   CServiceBroker::GetAnnouncementManager()->AddAnnouncer(
       this, ANNOUNCEMENT::Input | ANNOUNCEMENT::Player | ANNOUNCEMENT::Info);
 }

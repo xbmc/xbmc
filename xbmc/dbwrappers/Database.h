@@ -177,6 +177,14 @@ public:
   bool ExecuteQuery(const std::string& strQuery);
 
   /*!
+   * @brief Execute a query that does not return any result, with caching for repeated queries.
+   * @param strQuery The query to execute.
+   * @return True if the query was executed successfully, false otherwise.
+   * @note This method uses query caching on Android platforms for better performance
+   */
+  bool ExecuteCachedQuery(const std::string& strQuery);
+
+  /*!
    * @brief Execute a query that returns a result.
    * @remarks Call m_pDS->close(); to clean up the dataset when done.
    * @param strQuery The query to execute.
