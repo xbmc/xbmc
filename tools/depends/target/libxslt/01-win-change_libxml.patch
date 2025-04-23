@@ -1,0 +1,29 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -231,7 +231,7 @@
+ 	$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/${CMAKE_INSTALL_INCLUDEDIR}>
+ )
+ 
+-target_link_libraries(LibXslt PUBLIC LibXml2::LibXml2)
++target_link_libraries(LibXslt PUBLIC libxml2::libxml2)
+ 
+ if(LIBXSLT_WITH_MODULES)
+ 	target_link_libraries(LibXslt PRIVATE ${CMAKE_DL_LIBS})
+@@ -334,7 +334,7 @@
+ 	set(LIBM "-lm")
+ endif()
+ 
+-target_link_libraries(LibExslt PUBLIC LibXslt LibXml2::LibXml2)
++target_link_libraries(LibExslt PUBLIC LibXslt libxml2::libxml2)
+ 
+ set_target_properties(
+ 	LibExslt
+@@ -400,7 +400,7 @@
+ 
+ 	if (LIBXSLT_WITH_MODULES)
+ 		add_library(testplugin SHARED tests/testplugin.c)
+-		target_link_libraries(testplugin LibExslt LibXslt LibXml2::LibXml2)
++		target_link_libraries(testplugin LibExslt LibXslt libxml2::libxml2)
+ 		set_target_properties(
+ 			testplugin PROPERTIES
+ 			PREFIX ""
