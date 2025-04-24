@@ -8,14 +8,16 @@ set(HEADERS CPUInfoAndroid.h
             GPUInfoAndroid.h
             PlatformAndroid.h)
 
-add_subdirectory(utils)
-add_subdirectory(activity)
-add_subdirectory(filesystem)
-add_subdirectory(media)
-add_subdirectory(network)
-add_subdirectory(powermanagement)
-add_subdirectory(speech)
-add_subdirectory(storage)
+# PR #26685 Feedback (fuzzard): Directly adding all subdirectories here is incorrect.
+# Modules should be included via the top-level CMakeLists or dedicated Android targets.
+#add_subdirectory(utils)
+#add_subdirectory(activity)
+#add_subdirectory(filesystem)
+#add_subdirectory(media)
+#add_subdirectory(network)
+#add_subdirectory(powermanagement)
+#add_subdirectory(speech)
+#add_subdirectory(storage)
 
 core_add_library(androidsupport)
 target_include_directories(${CORE_LIBRARY} SYSTEM

@@ -608,13 +608,16 @@ void CAndroidTVPerformance::ApplyOptimalSettings()
     
   auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   
-  settings->SetBool("videoplayer.usemediacodec", true);
-  
-  if (m_androidVersion >= 23 && m_gpuLevel >= 3)
-  {
-    settings->SetBool("videoplayer.usemediacodecsurface", true);
-  }
-  
+  // PR #26685 Feedback by CastagnaIT: Forcing VP settings may break playback on some devices.
+  // Avoid overriding user-configured video player acceleration settings.
+  // settings->SetBool("videoplayer.usemediacodec", true);
+
+  // For capable devices, surface rendering can improve performance, but forcing it may cause issues.
+  // if (m_androidVersion >= 23 && m_gpuLevel >= 3)
+  // {
+  //   settings->SetBool("videoplayer.usemediacodecsurface", true);
+  // }
+
   settings->SetBool("audiooutput.processquality", m_cpuCores >= 4);
   
   if (m_has4K && m_gpuLevel >= 5)
