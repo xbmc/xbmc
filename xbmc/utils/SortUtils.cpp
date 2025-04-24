@@ -358,7 +358,7 @@ std::string BySeason(SortAttribute attributes, const SortItem &values)
 {
   int season = (int)values.at(FieldSeason).asInteger();
   const CVariant &specialSeason = values.at(FieldSeasonSpecialSort);
-  if (!specialSeason.isNull())
+  if (!specialSeason.isNull() && specialSeason.asInteger() > 0)
     season = (int)specialSeason.asInteger();
 
   return StringUtils::Format("{} {}", season, ByLabel(attributes, values));
