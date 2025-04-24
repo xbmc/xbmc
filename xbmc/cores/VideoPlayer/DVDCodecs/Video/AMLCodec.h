@@ -63,8 +63,8 @@ public:
   CAMLCodec(CProcessInfo &processInfo, CDVDStreamInfo &hints);
   virtual ~CAMLCodec();
 
-  bool          OpenDecoder();
-  void          CloseDecoder();
+  bool          OpenDecoder(bool restart);
+  void          CloseDecoder(bool restart);
   void          Reset();
 
   bool          AddData(uint8_t *pData, size_t size, double dts, double pts);

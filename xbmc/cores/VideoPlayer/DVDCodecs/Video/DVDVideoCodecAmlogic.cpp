@@ -426,7 +426,7 @@ void CDVDVideoCodecAmlogic::Close(void)
   m_videoBufferPool = nullptr;
 
   if (m_Codec)
-    m_Codec->CloseDecoder(), m_Codec = nullptr;
+    m_Codec->CloseDecoder(false), m_Codec = nullptr;
 
   m_videobuffer.iFlags = 0;
 
@@ -530,7 +530,7 @@ bool CDVDVideoCodecAmlogic::AddData(const DemuxPacket &packet)
         m_hints.ptsinvalid = true;
 
       logM(LOGINFO, "CDVDVideoCodecAmlogic", "Open decoder: fps:{:d}/{:d}", m_hints.fpsrate, m_hints.fpsscale);
-      if (m_Codec && !m_Codec->OpenDecoder())
+      if (m_Codec && !m_Codec->OpenDecoder(false))
         logM(LOGERROR, "CDVDVideoCodecAmlogic", "Failed to open Amlogic Codec");
 
       m_videoBufferPool = std::shared_ptr<CAMLVideoBufferPool>(new CAMLVideoBufferPool());
@@ -563,7 +563,8 @@ bool CDVDVideoCodecAmlogic::AddData(const DemuxPacket &packet)
 
 void CDVDVideoCodecAmlogic::Reset(void)
 {
-  m_Codec->Reset();
+  m_Codec->CloseDecoder(true);
+  m_Codec->OpenDecoder(true);
 
   while (!m_packages.empty())
   {
