@@ -42,13 +42,13 @@ public class XBMCProperties
         FileInputStream xbmcenvprop = new FileInputStream(fProp);
         sysProp.load(xbmcenvprop);
         System.setProperties(sysProp);
+        System.setProperty("xbmc.proploaded", "yes");
       }
       catch (Exception e)
       {
         Log.e(TAG, "XBMCProperties: Error loading " + propfn + " (" + e.getMessage() + ")");
       }
     }
-    System.setProperty("xbmc.proploaded", "yes");
   }
 
   public static String getStringProperty(String key, String devValue)
