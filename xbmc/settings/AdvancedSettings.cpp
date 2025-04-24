@@ -506,40 +506,12 @@ constexpr CAEStreamInfo::DataType passthroughStringToEnum(std::string_view str) 
 }
 
 void CAdvancedSettings::DefaultAudioLatency() {
-
-  PassthroughAudioLatency audiolatency = {};
-  audiolatency.type = CAEStreamInfo::DataType::STREAM_TYPE_AC3;
-  audiolatency.delay = -30;
-  m_audioPassthroughLatency.push_back(audiolatency);
-
-  audiolatency = {};
-  audiolatency.type = CAEStreamInfo::DataType::STREAM_TYPE_EAC3;
-  audiolatency.delay = -30;
-  m_audioPassthroughLatency.push_back(audiolatency);
-
-  //audiolatency = {};
-  //audiolatency.type = CAEStreamInfo::DataType::STREAM_TYPE_TRUEHD;
-  //audiolatency.delay = 30;
-  //m_audioPassthroughLatency.push_back(audiolatency);
+  // Default any required audio latency settings here.
 }
 
 void CAdvancedSettings::DefaultVideoLatency() {
-
+  // Default any required video latency settings here.
   if (!m_hasVideoDefaultLatency) m_videoDefaultLatency = 160;
-
-  RefreshVideoLatency videolatency = {};
-  videolatency.resolution = 2160;
-  videolatency.refreshmin = 25;
-  videolatency.refreshmax = 25;
-  videolatency.delay = 70;
-  m_videoRefreshLatency.push_back(videolatency);
-
-  videolatency = {};
-  videolatency.resolution = 2160;
-  videolatency.refreshmin = 50;
-  videolatency.refreshmax = 60;
-  videolatency.delay = 90;
-  m_videoRefreshLatency.push_back(videolatency);
 }
 
 void CAdvancedSettings::ParseSettingsFile(const std::string &file)
