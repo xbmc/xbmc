@@ -185,50 +185,64 @@ int CAndroidTVPerformance::GetPerformanceMode()
   return m_performanceMode.load();
 }
 
-void CAndroidTVPerformance::OptimizeVideoPlayback(int videoWidth, int videoHeight, float frameRate, bool isHDR)
+bool CAndroidTVPerformance::OptimizeVideoPlayback()
 {
-  m_isVideoPlaying = true;
-  
-  CLog::Log(LOGINFO, "AndroidTVPerformance: Optimizing for video playback %dx%d @ %.2f fps, HDR: %s", 
-      videoWidth, videoHeight, frameRate, isHDR ? "yes" : "no");
-      
-  // Save current settings for later restoration
-  SaveCurrentSettings();
-  
-  // Configure refresh rate to match content if enabled
-  if (m_framerateSwitchingEnabled && m_hasOptimalRefreshRate)
-    SetRefreshRate(frameRate);
-    
-  // Configure CPU for video playback
-  ConfigureCPUGovernor(true);
-  
-  // Configure GPU for video playback
-  ConfigureGPUPerformance(true);
-  
-  // Configure audio for optimal video playback
-  ConfigureAudio(true);
-  
-  // Check if this is 4K or HDR content and needs extra optimization
-  if (videoWidth >= 3840 || videoHeight >= 2160 || isHDR)
+  bool success = false;
+
+  CLog::Log(LOGINFO, "AndroidTVPerformance: Optimizing video playback");
+
+  if (!g_application.GetAppPlayer().IsPlaying() || !g_application.GetAppPlayer().IsPlayingVideo())
   {
-    // For 4K or HDR content, we need full performance
-    SetPerformanceMode(TV_PERFORMANCE_MODE_MAX_PERFORMANCE);
-    
-    // Special configuration for HDR content
-    if (isHDR && m_hasHDR)
+    CLog::Log(LOGINFO, "AndroidTVPerformance: No active video playback, nothing to optimize");
+    return false;
+  }
+
+  m_isVideoPlaying = true; // Mark video as playing
+
+  // Get actual stream properties
+  const auto& player = g_application.GetAppPlayer();
+  VideoStreamInfo streamInfo;
+  if (player.GetVideoStreamInfo(CURRENT_STREAM, streamInfo))
+  {
+    int videoWidth = streamInfo.width;
+    int videoHeight = streamInfo.height;
+    double fps = streamInfo.fps;
+    const std::string codecName = streamInfo.codecName;
+
+    CLog::Log(LOGINFO, "AndroidTVPerformance: Stream resolution: %dx%d, FPS: %.2f, Codec: %s",
+              videoWidth, videoHeight, fps, codecName.c_str());
+
+    // Check if stream has HDR, using the actual stream info
+    bool isHDRStream = IsHDRStream(streamInfo);
+
+    // Check if stream requires DRM
+    bool needsDRM = IsDRMPlayback(); // Checks player.IsVideoDRM()
+
+    // Determine and set performance mode based on actual stream properties
+    ConfigurePerformanceMode(videoWidth, videoHeight, fps, codecName, isHDRStream);
+
+    // Configure DRM *only if* the current stream requires it
+    if (needsDRM)
     {
-      // Configure DRM secure playback for HDR content if needed
       ConfigureDRMPlayback();
     }
-    
-    // Reduce background activity for high-demand content
-    PrioritizeBackgroundProcesses(true);
+
+    // Adjust refresh rate if enabled
+    if (m_framerateSwitchingEnabled && m_hasOptimalRefreshRate)
+    {
+        SetRefreshRate(static_cast<float>(fps));
+    }
+
+    success = true;
   }
   else
   {
-    // For regular HD content, optimized mode is sufficient
-    SetPerformanceMode(TV_PERFORMANCE_MODE_OPTIMIZED);
+    CLog::Log(LOGERROR, "AndroidTVPerformance: Failed to get video stream info");
+    m_isVideoPlaying = false; // Reset flag if we failed
+    return false;
   }
+
+  return success;
 }
 
 void CAndroidTVPerformance::RestoreAfterVideoPlayback()
@@ -262,12 +276,8 @@ void CAndroidTVPerformance::EnableFramerateSwitching(bool enabled)
 
 void CAndroidTVPerformance::ConfigureCPUGovernor(bool highPerformance)
 {
-  // CPU governor configuration requires root on Android
-  // We can only request high performance mode through standard Android APIs
-  
   try
   {
-    // Android's CPU boost functionality is available through PowerManager
     JNIEnv* env = xbmc_jnienv();
     if (!env)
       return;
@@ -277,7 +287,6 @@ void CAndroidTVPerformance::ConfigureCPUGovernor(bool highPerformance)
     {
       if (highPerformance)
       {
-        // Request sustained performance mode if available (API 24+)
         if (CJNIBuild::SDK_INT >= 24)
         {
           jobject activity = CXBMCApp::Get().getActivity();
@@ -303,35 +312,28 @@ void CAndroidTVPerformance::ConfigureCPUGovernor(bool highPerformance)
 
 void CAndroidTVPerformance::ConfigureGPUPerformance(bool maxPerformance)
 {
-  // We can't directly control the GPU, but we can adjust rendering settings 
-  // in Kodi to optimize GPU usage
-  
   if (CServiceBroker::GetSettingsComponent())
   {
     auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
     
     if (maxPerformance)
     {
-      // Enable all hardware acceleration features
       settings->SetBool("videoplayer.usemediacodec", true);
       settings->SetBool("videoplayer.usemediacodecsurface", true);
       
       if (m_gpuLevel >= 3)
       {
-        // Higher-end GPUs can handle these features
-        settings->SetInt("videoplayer.limitguiupdate", 0);  // No limit
-        settings->SetInt("videoplayer.maxgop", 0);          // No limit
+        settings->SetInt("videoplayer.limitguiupdate", 0);
+        settings->SetInt("videoplayer.maxgop", 0);
       }
       else
       {
-        // For lower-end GPUs, limit some features
-        settings->SetInt("videoplayer.limitguiupdate", 2);  // Moderate limit
+        settings->SetInt("videoplayer.limitguiupdate", 2);
       }
     }
     else
     {
-      // Standard mode - balanced settings
-      settings->SetInt("videoplayer.limitguiupdate", 1);  // Normal limit
+      settings->SetInt("videoplayer.limitguiupdate", 1);
     }
   }
 }
@@ -344,24 +346,20 @@ void CAndroidTVPerformance::ManageMemory(bool forceGc)
     CJNIActivityManager::MemoryInfo memoryInfo;
     activityManager.getMemoryInfo(memoryInfo);
     
-    // Calculate percentage of available memory
     int64_t availMemory = memoryInfo.availMem;
     int percentAvail = (int)((availMemory * 100) / m_totalMemory);
     
     CLog::Log(LOGDEBUG, "AndroidTVPerformance: Memory available: %d%% (%" PRId64 "MB of %" PRId64 "MB)",
         percentAvail, availMemory / (1024*1024), m_totalMemory / (1024*1024));
     
-    // If memory is low or GC is forced, attempt to release memory
     if (percentAvail < TV_MEMORY_THRESHOLD_LOW || forceGc)
     {
       CLog::Log(LOGINFO, "AndroidTVPerformance: Low memory condition (%d%%), performing cleanup", percentAvail);
       
-      // Release JNI local references
       JNIEnv* env = xbmc_jnienv();
       if (env)
         env->EnsureLocalCapacity(16);
         
-      // Call Java garbage collection
       JNIEnv* jenv = xbmc_jnienv();
       jclass jcls = jenv->FindClass("java/lang/System");
       jmethodID runFinalization = jenv->GetStaticMethodID(jcls, "runFinalization", "()V");
@@ -377,7 +375,6 @@ void CAndroidTVPerformance::ManageMemory(bool forceGc)
       jenv->DeleteLocalRef(jcls);
     }
     
-    // If memory is critically low, take emergency action
     if (percentAvail < 10)
     {
       CLog::Log(LOGWARNING, "AndroidTVPerformance: Critical memory condition (%d%%)", percentAvail);
@@ -401,24 +398,19 @@ void CAndroidTVPerformance::EnableHDMICEC(bool enabled)
 
 void CAndroidTVPerformance::ConfigureAudio(bool digitalOutput)
 {
-  // Configure audio settings for optimal performance
   if (CServiceBroker::GetSettingsComponent())
   {
     auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
     
-    // Configure passthrough based on whether we're using digital output
     settings->SetBool("audiooutput.passthrough", digitalOutput);
     
-    // Configure other audio settings
     if (m_isVideoPlaying)
     {
-      // Optimize for video playback
-      settings->SetInt("audiooutput.buffersize", 4); // larger buffer
+      settings->SetInt("audiooutput.buffersize", 4);
     }
     else
     {
-      // Normal operation
-      settings->SetInt("audiooutput.buffersize", 2); // default buffer
+      settings->SetInt("audiooutput.buffersize", 2);
     }
   }
 }
@@ -429,51 +421,41 @@ bool CAndroidTVPerformance::SetRefreshRate(float fps)
   if (!winSystem)
     return false;
     
-  // Get current resolution details
   RESOLUTION_INFO res_info = winSystem->GetGfxContext().GetResInfo();
   
-  // Find the closest matching refresh rate
   std::vector<float> availableRates = GetAvailableRefreshRates();
-  float closestMatch = 60.0f; // default
+  float closestMatch = 60.0f;
   float smallestDiff = 100.0f;
   
-  // Consider common frame rates and their multiples
   std::vector<float> commonMultiples;
   if (fps <= 30.0)
   {
-    // For 23.976, 24, 25, 29.97, 30 fps content
-    // Consider: 1x, 2x, 3x multipliers
     commonMultiples.push_back(fps);
     commonMultiples.push_back(fps * 2.0f);
     commonMultiples.push_back(fps * 3.0f);
   }
   else
   {
-    // For higher fps content, just use direct match
     commonMultiples.push_back(fps);
   }
   
-  // Find the best match from available refresh rates
   for (float rate : availableRates)
   {
     for (float targetRate : commonMultiples)
     {
       float diff = std::abs(rate - targetRate);
       
-      // If we're very close (within 0.2 Hz) or this is a better match than before
       if (diff < 0.2f || diff < smallestDiff)
       {
         smallestDiff = diff;
         closestMatch = rate;
         
-        // If we're very close, stop searching
         if (diff < 0.2f)
           break;
       }
     }
   }
   
-  // Apply the new refresh rate if it's different enough
   if (std::abs(res_info.fRefreshRate - closestMatch) > 0.2f)
   {
     CLog::Log(LOGINFO, "AndroidTVPerformance: Setting refresh rate to %.2f Hz for content at %.2f fps", 
@@ -496,12 +478,11 @@ std::vector<float> CAndroidTVPerformance::GetAvailableRefreshRates()
     CJNIDisplay display = windowManager.getDefaultDisplay();
     CJNISurfaceHolder holder = CXBMCApp::Get().getWindow().getDecorView().getHolder();
     
-    if (CJNIBuild::SDK_INT >= 24) // Android 7.0+
+    if (CJNIBuild::SDK_INT >= 24)
     {
       jobject jsurface = holder.getSurface();
       CJNISurface surface(jsurface);
       
-      // Call to get supported modes
       JNIEnv* env = xbmc_jnienv();
       if (env && surface)
       {
@@ -537,7 +518,6 @@ std::vector<float> CAndroidTVPerformance::GetAvailableRefreshRates()
     }
     else
     {
-      // Fallback for older Android versions - just get current rate
       result.push_back(display.getRefreshRate());
     }
   }
@@ -546,11 +526,9 @@ std::vector<float> CAndroidTVPerformance::GetAvailableRefreshRates()
     CLog::Log(LOGERROR, "AndroidTVPerformance: Exception in GetAvailableRefreshRates: %s", e.what());
   }
   
-  // If we didn't get any rates, add the default 60Hz
   if (result.empty())
     result.push_back(60.0f);
     
-  // Log available rates
   std::string ratesLog = "Available refresh rates: ";
   for (float rate : result)
     ratesLog += std::to_string(rate) + "Hz, ";
@@ -562,16 +540,13 @@ std::vector<float> CAndroidTVPerformance::GetAvailableRefreshRates()
 
 void CAndroidTVPerformance::PrioritizeBackgroundProcesses(bool enableBackgroundPriority)
 {
-  // Adjust the priority of background threads
   if (enableBackgroundPriority)
   {
-    // Lower priority of non-critical background tasks
     CServiceBroker::GetJobManager()->SetMaximumWorkers(CJob::PRIORITY_LOW, 1);
     CServiceBroker::GetJobManager()->SetMaximumWorkers(CJob::PRIORITY_LOW_PAUSABLE, 0);
   }
   else
   {
-    // Restore normal priority
     CServiceBroker::GetJobManager()->SetMaximumWorkers(CJob::PRIORITY_LOW, 2);
     CServiceBroker::GetJobManager()->SetMaximumWorkers(CJob::PRIORITY_LOW_PAUSABLE, 1);
   }
@@ -583,16 +558,12 @@ void CAndroidTVPerformance::HandleMemoryPressure(bool lowMemory)
   {
     CLog::Log(LOGWARNING, "AndroidTVPerformance: Handling low memory pressure");
     
-    // Force garbage collection
     ManageMemory(true);
     
-    // Reduce GUI complexity
     OptimizeGUIRendering(true);
     
-    // Reduce background activity
     PrioritizeBackgroundProcesses(true);
     
-    // Notify application of low memory
     g_application.OnMemoryLow();
   }
 }
@@ -605,26 +576,21 @@ void CAndroidTVPerformance::OptimizeGUIRendering(bool optimized)
     
     if (optimized)
     {
-      // Configure for optimal performance
       settings->SetBool("videoscreen.blankdisplays", false);
       
-      // Configure texture caching based on device capabilities
-      if (m_totalMemory >= 2LL * 1024 * 1024 * 1024) // 2GB or more RAM
+      if (m_totalMemory >= 2LL * 1024 * 1024 * 1024)
       {
-        // High memory device - can use more texture memory
         settings->SetInt("videoplayer.textureupprescaleratio", 2);
         CServiceBroker::GetRenderSystem()->SetTexturesCacheMaxSize(true);
       }
       else
       {
-        // Lower memory device - use more conservative texture settings
         settings->SetInt("videoplayer.textureupprescaleratio", 1);
         CServiceBroker::GetRenderSystem()->SetTexturesCacheMaxSize(false);
       }
     }
     else
     {
-      // Standard settings
       settings->SetInt("videoplayer.textureupprescaleratio", 1);
       CServiceBroker::GetRenderSystem()->SetTexturesCacheMaxSize(false);
     }
@@ -633,9 +599,6 @@ void CAndroidTVPerformance::OptimizeGUIRendering(bool optimized)
 
 void CAndroidTVPerformance::SaveCurrentSettings()
 {
-  // This method would save current settings before optimization
-  // but we don't actually need to implement it since we restore
-  // to known defaults rather than previous values
 }
 
 void CAndroidTVPerformance::ApplyOptimalSettings()
@@ -645,84 +608,66 @@ void CAndroidTVPerformance::ApplyOptimalSettings()
     
   auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   
-  // Apply Android TV-specific optimal settings
+  settings->SetBool("videoplayer.usemediacodec", true);
   
-  // Video settings
-  settings->SetBool("videoplayer.usemediacodec", true);  // Use hardware acceleration
-  
-  // For capable devices, use surface rendering for better performance
-  if (m_androidVersion >= 23 && m_gpuLevel >= 3)  // Android 6.0+ with decent GPU
+  if (m_androidVersion >= 23 && m_gpuLevel >= 3)
   {
     settings->SetBool("videoplayer.usemediacodecsurface", true);
   }
   
-  // GUI settings
-  settings->SetBool("audiooutput.processquality", m_cpuCores >= 4);  // High quality processing only for better CPUs
+  settings->SetBool("audiooutput.processquality", m_cpuCores >= 4);
   
-  // For 4K capable devices, enable 4K GUI
   if (m_has4K && m_gpuLevel >= 5)
   {
-    settings->SetInt("videoscreen.guiresolution", 0);  // Auto resolution
+    settings->SetInt("videoscreen.guiresolution", 0);
   }
   
-  // Memory settings based on device capabilities
-  if (m_totalMemory < 1LL * 1024 * 1024 * 1024)  // Less than 1GB RAM
+  if (m_totalMemory < 1LL * 1024 * 1024 * 1024)
   {
-    // Low memory device
     CLog::Log(LOGINFO, "AndroidTVPerformance: Configuring for low-memory device");
-    settings->SetInt("network.cachemembuffersize", 5242880);  // 5MB network cache
+    settings->SetInt("network.cachemembuffersize", 5242880);
   }
-  else if (m_totalMemory < 2LL * 1024 * 1024 * 1024)  // 1-2GB RAM
+  else if (m_totalMemory < 2LL * 1024 * 1024 * 1024)
   {
-    // Medium memory device
     CLog::Log(LOGINFO, "AndroidTVPerformance: Configuring for medium-memory device");
-    settings->SetInt("network.cachemembuffersize", 20971520);  // 20MB network cache
+    settings->SetInt("network.cachemembuffersize", 20971520);
   }
-  else  // 2GB+ RAM
+  else
   {
-    // High memory device
     CLog::Log(LOGINFO, "AndroidTVPerformance: Configuring for high-memory device");
-    settings->SetInt("network.cachemembuffersize", 41943040);  // 40MB network cache
+    settings->SetInt("network.cachemembuffersize", 41943040);
   }
 }
 
 void CAndroidTVPerformance::MonitorPerformance()
 {
-  // Check if video is playing and optimize if needed
   if (g_application.GetAppPlayer().IsPlaying() && !m_isVideoPlaying && 
       g_application.GetAppPlayer().IsPlayingVideo())
   {
-    // Video just started
     int width = 0;
     int height = 0;
     float fps = 0.0f;
     bool isHDR = false;
     
-    // Get video details
     g_application.GetAppPlayer().GetVideoResolution(width, height);
     fps = g_application.GetAppPlayer().GetVideoFps();
     
-    // Check if HDR
     CVideoSettings videoSettings = g_application.GetAppPlayer().GetVideoSettings();
     isHDR = videoSettings.m_HDR;
     
-    // Optimize for this video
-    OptimizeVideoPlayback(width, height, fps, isHDR);
+    OptimizeVideoPlayback();
   }
   else if (!g_application.GetAppPlayer().IsPlayingVideo() && m_isVideoPlaying)
   {
-    // Video playback ended
     RestoreAfterVideoPlayback();
   }
   
-  // Periodically manage memory
-  if (m_performanceMonitor.IsRunning() && m_performanceMonitor.GetElapsedSeconds() > 300)  // Every 5 minutes
+  if (m_performanceMonitor.IsRunning() && m_performanceMonitor.GetElapsedSeconds() > 300)
   {
     ManageMemory(false);
     m_performanceMonitor.Reset();
   }
   
-  // Restart timer for next check
   m_monitorTimer.Start();
 }
 
@@ -736,36 +681,79 @@ bool CAndroidTVPerformance::HasHDRCapability()
   return m_hasHDR;
 }
 
-void CAndroidTVPerformance::ConfigureDRMPlayback()
+void CAndroidTVPerformance::ConfigurePerformanceMode(int width, int height, double fps, const std::string& codecName, bool isHDRStream)
 {
-  if (CServiceBroker::GetSettingsComponent())
+  CLog::Log(LOGINFO, "AndroidTVPerformance: Configuring performance for %dx%d@%.2f, Codec: %s, HDR: %s",
+            width, height, fps, codecName.c_str(), isHDRStream ? "yes" : "no");
+
+  int targetMode = TV_PERFORMANCE_MODE_STANDARD;
+
+  if (width >= 3840 || height >= 2160 || fps > 30.1 || isHDRStream)
   {
-    auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-    
-    // Configure DRM settings for secure playback
-    settings->SetBool("videoplayer.useprimedecoder", true);
-    
-    // Check if we need Widevine DRM
-    bool hasWidevine = false;
-    JNIEnv* env = xbmc_jnienv();
-    if (env)
+    if (m_has4K && m_gpuLevel >= 3)
     {
-      jobject activity = CXBMCApp::Get().getActivity();
-      jclass activityClass = env->GetObjectClass(activity);
-      jmethodID hasWidevineDrm = env->GetMethodID(activityClass, "hasWidevineDrm", "()Z");
-      
-      if (hasWidevineDrm != NULL)
-      {
-        hasWidevine = env->CallBooleanMethod(activity, hasWidevineDrm) == JNI_TRUE;
-      }
-      
-      env->DeleteLocalRef(activityClass);
-    }
-    
-    if (hasWidevine)
-    {
-      CLog::Log(LOGINFO, "AndroidTVPerformance: Widevine DRM detected, configuring secure playback");
-      settings->SetBool("videoplayer.usedrmsecuredecoder", true);
+        targetMode = TV_PERFORMANCE_MODE_OPTIMIZED;
     }
   }
+
+  SetPerformanceMode(targetMode);
+}
+
+void CAndroidTVPerformance::ConfigureDRMPlayback()
+{
+  CLog::Log(LOGINFO, "AndroidTVPerformance: Configuring for DRM playback (stream requires DRM)");
+
+  if (GetPerformanceMode() != TV_PERFORMANCE_MODE_MAX_PERFORMANCE)
+  {
+      CLog::Log(LOGINFO, "AndroidTVPerformance: Setting MAX_PERFORMANCE mode for DRM playback");
+      SetPerformanceMode(TV_PERFORMANCE_MODE_MAX_PERFORMANCE);
+  }
+
+  if (HasDedicatedDRMHardware())
+  {
+    CLog::Log(LOGINFO, "AndroidTVPerformance: Device likely has dedicated DRM hardware.");
+  }
+  else
+  {
+    CLog::Log(LOGINFO, "AndroidTVPerformance: Assuming software DRM, ensuring CPU performance.");
+  }
+}
+
+bool CAndroidTVPerformance::HasDedicatedDRMHardware()
+{
+  if (m_gpuLevel >= 4 && m_androidVersion >= 9)
+    return true;
+    
+  return false;
+}
+
+bool CAndroidTVPerformance::IsDRMPlayback()
+{
+  bool isDRM = false;
+  
+  if (g_application.GetAppPlayer().IsPlaying())
+  {
+    auto& player = g_application.GetAppPlayer();
+    isDRM = player.IsVideoDRM();
+    
+    CLog::Log(LOGDEBUG, "AndroidTVPerformance: DRM detection result: %s", isDRM ? "yes" : "no");
+  }
+  
+  return isDRM;
+}
+
+bool CAndroidTVPerformance::IsHDRStream(const VideoStreamInfo& streamInfo)
+{
+  bool isHDRStream = false;
+  
+  if (streamInfo.hdrType == HDR_TYPE_HDR10 ||
+      streamInfo.hdrType == HDR_TYPE_HDR10PLUS ||
+      streamInfo.hdrType == HDR_TYPE_DOLBYVISION ||
+      streamInfo.hdrType == HDR_TYPE_HLG)
+  {
+    isHDRStream = true;
+    CLog::Log(LOGINFO, "AndroidTVPerformance: HDR stream detected (type: %d)", streamInfo.hdrType);
+  }
+  
+  return isHDRStream;
 }

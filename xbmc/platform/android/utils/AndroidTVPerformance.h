@@ -17,6 +17,9 @@
 #include "threads/Timer.h"
 #include "threads/CriticalSection.h"
 
+// Forward declarations
+struct VideoStreamInfo;
+
 // Performance modes
 #define TV_PERFORMANCE_MODE_STANDARD 0
 #define TV_PERFORMANCE_MODE_OPTIMIZED 1
@@ -48,12 +51,9 @@ public:
 
   /**
    * @brief Optimize video playback performance
-   * @param videoWidth Video width in pixels
-   * @param videoHeight Video height in pixels
-   * @param frameRate Video frame rate
-   * @param isHDR Whether the video is HDR
+   * @return True if optimization was successful
    */
-  static void OptimizeVideoPlayback(int videoWidth, int videoHeight, float frameRate, bool isHDR);
+  static bool OptimizeVideoPlayback();
 
   /**
    * @brief Restore settings after video playback
@@ -127,6 +127,36 @@ public:
    */
   static void OptimizeGUIRendering(bool optimized);
 
+  /**
+   * @brief Check if current playback is using DRM
+   * @return True if DRM is being used for playback
+   */
+  static bool IsDRMPlayback();
+
+  /**
+   * @brief Check if the video stream contains HDR content
+   * @param streamInfo The video stream information
+   * @return True if the stream contains HDR content
+   */
+  static bool IsHDRStream(const VideoStreamInfo& streamInfo);
+
+  /**
+   * @brief Configure performance mode based on video properties
+   * @param width Video width in pixels
+   * @param height Video height in pixels
+   * @param fps Video frame rate
+   * @param codecName Name of the video codec
+   * @param isHDRStream Whether the video is HDR
+   * @note PR #26685 Feedback: Implementation should consider more factors than just resolution/HDR (e.g., bitrate).
+   * @note PR #26685 Feedback: Calling ConfigureDRMPlayback based solely on isHDR is incorrect; DRM is independent of HDR.
+   */
+  static void ConfigurePerformanceMode(int width, int height, double fps, const std::string& codecName, bool isHDRStream);
+
+  /**
+   * @brief Register for playback changes to adapt performance settings
+   */
+  static void RegisterForPlaybackChanges();
+
 private:
   /**
    * @brief Detect the available system resources
@@ -162,6 +192,9 @@ private:
 
   /**
    * @brief Configure DRM secure playback
+   * @note PR #26685 Feedback: Implementation should check if the *current stream* requires DRM, not just system capability.
+   * @note PR #26685 Feedback: Investigate using CDVDVideoCodecAndroidMediaCodec for DRM checks.
+   * @note PR #26685 Feedback: Clarify or remove usage of the 'videoplayer.usedrmsecuredecoder' setting.
    */
   static void ConfigureDRMPlayback();
 
