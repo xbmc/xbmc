@@ -24,7 +24,7 @@
 #include "windowing/WinSystem.h"
 
 CRendererAML::CRendererAML()
- : m_prevVPts(-1)
+ : m_prevVPts(DVD_NOPTS_VALUE)
  , m_bConfigured(false)
 {
   CLog::Log(LOGINFO, "Constructing CRendererAML");
@@ -131,7 +131,7 @@ bool CRendererAML::Supports(ERENDERFEATURE feature) const
 void CRendererAML::Reset()
 {
   std::array<int, 2> reset_arr[m_numRenderBuffers];
-  m_prevVPts = -1;
+  m_prevVPts = DVD_NOPTS_VALUE;
 
   for (int i = 0 ; i < m_numRenderBuffers ; ++i)
   {
@@ -177,7 +177,7 @@ void CRendererAML::RenderUpdate(int index, int index2, bool clear, unsigned int 
     CAMLVideoBuffer *amli = dynamic_cast<CAMLVideoBuffer *>(videoBuffer);
     if (amli->m_amlCodec)
     {
-      int pts = amli->m_omxPts;
+      uint64_t pts = amli->m_omxPts;
       if (pts != m_prevVPts)
       {
         amli->m_amlCodec->ReleaseFrame(amli->m_bufferIndex);
