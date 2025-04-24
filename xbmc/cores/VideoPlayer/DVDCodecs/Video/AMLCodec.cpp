@@ -2216,9 +2216,6 @@ bool CAMLCodec::OpenDecoder()
 
   CSysfsPath("/sys/class/video/freerun_mode", 1);
 
-  // set video mute to hide waste frames
-  //aml_video_mute(true);
-
   m_opened = true;
   // vcodec is open, update speed if it was
   // changed before VideoPlayer called OpenDecoder.
@@ -2287,10 +2284,8 @@ void CAMLCodec::CloseDecoder()
 
   // never leave vcodec ff/rw or paused.
   if (m_speed != DVD_PLAYSPEED_NORMAL)
-  {
-    //m_dll->codec_resume(&am_private->vcodec);
     m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_NONE);
-  }
+
   m_dll->codec_close(&am_private->vcodec);
   dumpfile_close(am_private);
   m_opened = false;
@@ -2299,6 +2294,7 @@ void CAMLCodec::CloseDecoder()
   am_private->extradata = {};
   if (am_private->vcodec.config)
     free(am_private->vcodec.config);
+
   // return tsync to default so external apps work
   CSysfsPath("/sys/class/tsync/enable", 1);
 
@@ -2720,16 +2716,13 @@ void CAMLCodec::SetSpeed(int speed)
   switch(speed)
   {
     case DVD_PLAYSPEED_PAUSE:
-      //m_dll->codec_pause(&am_private->vcodec);
       m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_NONE);
       break;
     case DVD_PLAYSPEED_NORMAL:
-      //m_dll->codec_resume(&am_private->vcodec);
       m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_NONE);
       m_tp_last_frame = std::chrono::system_clock::now();
       break;
     default:
-      //m_dll->codec_resume(&am_private->vcodec);
       if ((am_private->video_format == VFORMAT_H264) || (am_private->video_format == VFORMAT_H264_4K2K))
         m_dll->codec_set_cntl_mode(&am_private->vcodec, TRICKMODE_FFFB);
       else
