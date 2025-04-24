@@ -105,8 +105,6 @@ public:
   bool IsTempoAllowed(float tempo);
   virtual float MinTempoPlatform();
   virtual float MaxTempoPlatform();
-  void SetLevelVQ(int level);
-  int GetLevelVQ();
   void SetGuiRender(bool gui);
   bool GetGuiRender();
   void SetVideoRender(bool video);
@@ -161,7 +159,6 @@ protected:
   // player states
   CCriticalSection m_stateSection;
   bool m_stateSeeking;
-  std::atomic_int m_levelVQ;
   std::atomic_bool m_renderGuiLayer;
   std::atomic_bool m_renderVideoLayer;
   float m_tempo;
