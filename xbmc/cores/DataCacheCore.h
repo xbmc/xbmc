@@ -257,7 +257,7 @@ protected:
 
   CCriticalSection m_videoPlayerSection;
   struct SPlayerVideoInfo
-  {    
+  {
     std::string decoderName;
     bool isHwDecoder;
     std::string deintMethod;
@@ -276,7 +276,7 @@ protected:
     AVColorRange colorRange = AVCOL_RANGE_UNSPECIFIED;
     AVColorPrimaries colorPrimaries = AVCOL_PRI_UNSPECIFIED;
     AVColorTransferCharacteristic colorTransferCharacteristic = AVCOL_TRC_UNSPECIFIED;
-    AgedMap<uint64_t, DOVIFrameMetadata> doviFrameMetadataMap;
+    AgedMap<double, DOVIFrameMetadata> doviFrameMetadataMap;
     DOVIStreamMetadata doviStreamMetadata = {};
     DOVIStreamInfo doviStreamInfo = {};
     DOVIStreamInfo sourceDoViStreamInfo = {};

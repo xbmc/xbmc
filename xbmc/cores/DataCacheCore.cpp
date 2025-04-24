@@ -305,6 +305,7 @@ void CDataCacheCore::SetVideoDoViFrameMetadata(DOVIFrameMetadata value)
 {
   std::unique_lock<CCriticalSection> lock(m_videoPlayerSection);
 
+  logM(LOGINFO, "CDataCacheCore", "Set Meta for Pts [{}] [{}]", value.pts, value.level1_max_pq);
   m_playerVideoInfo.doviFrameMetadataMap.insert(value.pts, value);
 }
 
@@ -312,9 +313,14 @@ DOVIFrameMetadata CDataCacheCore::GetVideoDoViFrameMetadata()
 {
   std::unique_lock<CCriticalSection> lock(m_videoPlayerSection);
 
-  auto doviFrameMetadata = m_playerVideoInfo.doviFrameMetadataMap.findOrLatest(GetRenderPts());
+  double pts = GetRenderPts();
+  auto doviFrameMetadata = m_playerVideoInfo.doviFrameMetadataMap.findOrLatest(pts);
   if (doviFrameMetadata != m_playerVideoInfo.doviFrameMetadataMap.end())
+  {
+    logM(LOGINFO, "CDataCacheCore", "Get Meta for Pts [{}] [{}]", pts, doviFrameMetadata->second.level1_max_pq);
     return doviFrameMetadata->second;
+  }
+  logM(LOGINFO, "CDataCacheCore", "Get Meta Pts [{}] not found", pts);
   return {};
 }
 
@@ -636,12 +642,14 @@ void CDataCacheCore::SetRenderPts(double pts)
   std::unique_lock<CCriticalSection> lock(m_renderSection);
 
   m_renderInfo.pts = pts;
+  logM(LOGINFO, "CDataCacheCore", "Set Render Pts [{}]", m_renderInfo.pts);
 }
 
 double CDataCacheCore::GetRenderPts()
 {
   std::unique_lock<CCriticalSection> lock(m_renderSection);
 
+  logM(LOGINFO, "CDataCacheCore", "Get Render Pts [{}]", m_renderInfo.pts);
   return m_renderInfo.pts;
 }
 
