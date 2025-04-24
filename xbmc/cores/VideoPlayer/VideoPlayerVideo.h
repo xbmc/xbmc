@@ -54,9 +54,13 @@ public:
 
   bool OpenStream(CDVDStreamInfo hint) override;
   void CloseStream(bool bWaitForBuffers) override;
+
+  void SetSpeed(int iSpeed) override;
   void Flush(bool sync) override;
+
   bool AcceptsData() const override;
   bool HasData() const override;
+  int  GetLevel() const override { return m_messageQueue.GetLevel(); }
   bool IsInited() const override;
   void SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priority = 0) override;
   void FlushMessages() override;
@@ -72,7 +76,6 @@ public:
   double GetOutputDelay() override; /* returns the expected delay, from that a packet is put in queue */
   std::string GetPlayerInfo() override;
   int GetVideoBitrate() override;
-  void SetSpeed(int iSpeed) override;
   bool SupportsExtention() const override { return m_pVideoCodec && m_pVideoCodec->SupportsExtention(); }
 
   // classes
