@@ -1377,6 +1377,7 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
           return myTag->m_iFileId == otherTag->m_iFileId;
         return true;
       }
+      return false;
     }
   }
   if (MUSIC::IsMusicDb(*this) && HasMusicInfoTag())
