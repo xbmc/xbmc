@@ -147,10 +147,11 @@ public:
    * @param fps Video frame rate
    * @param codecName Name of the video codec
    * @param isHDRStream Whether the video is HDR
-   * @note PR #26685 Feedback: Implementation should consider more factors than just resolution/HDR (e.g., bitrate).
-   * @note PR #26685 Feedback: Calling ConfigureDRMPlayback based solely on isHDR is incorrect; DRM is independent of HDR.
+   * @param bitrate Stream bitrate in bits per second
+   * @note PR #26685 Feedback: Implementation should consider bitrate and codec complexity when selecting performance mode.
+   * @note PR #26685 Feedback: Avoid hard-coded resolution/HDR-only logic; stream-adaptive decision is required.
    */
-  static void ConfigurePerformanceMode(int width, int height, double fps, const std::string& codecName, bool isHDRStream);
+  static void ConfigurePerformanceMode(int width, int height, double fps, const std::string& codecName, bool isHDRStream, int bitrate);
 
   /**
    * @brief Register for playback changes to adapt performance settings

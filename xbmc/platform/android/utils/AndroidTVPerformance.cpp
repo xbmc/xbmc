@@ -219,7 +219,7 @@ bool CAndroidTVPerformance::OptimizeVideoPlayback()
     bool needsDRM = IsDRMPlayback(); // Checks player.IsVideoDRM()
 
     // Determine and set performance mode based on actual stream properties
-    ConfigurePerformanceMode(videoWidth, videoHeight, fps, codecName, isHDRStream);
+    ConfigurePerformanceMode(videoWidth, videoHeight, fps, codecName, isHDRStream, streamInfo.bitrate);
 
     // Configure DRM *only if* the current stream requires it
     if (needsDRM)
@@ -684,19 +684,22 @@ bool CAndroidTVPerformance::HasHDRCapability()
   return m_hasHDR;
 }
 
-void CAndroidTVPerformance::ConfigurePerformanceMode(int width, int height, double fps, const std::string& codecName, bool isHDRStream)
+// Change signature to include bitrate parameter
+void CAndroidTVPerformance::ConfigurePerformanceMode(int width, int height, double fps, const std::string& codecName, bool isHDRStream, int bitrate)
 {
-  CLog::Log(LOGINFO, "AndroidTVPerformance: Configuring performance for %dx%d@%.2f, Codec: %s, HDR: %s",
-            width, height, fps, codecName.c_str(), isHDRStream ? "yes" : "no");
+  CLog::Log(LOGINFO, "AndroidTVPerformance: Configuring performance for %dx%d@%.2f, Codec: %s, HDR: %s, Bitrate: %d kbps",
+            width, height, fps, codecName.c_str(), isHDRStream ? "yes" : "no", bitrate / 1000);
 
+  // PR #26685 Feedback by CastagnaIT: Consider bitrate and codec complexity when selecting performance mode.
   int targetMode = TV_PERFORMANCE_MODE_STANDARD;
 
-  if (width >= 3840 || height >= 2160 || fps > 30.1 || isHDRStream)
+  const int HIGH_BITRATE_THRESHOLD = 5000000; // 5 Mbps
+  // Simplified check: high-bitrate or demanding streams
+  if (bitrate >= HIGH_BITRATE_THRESHOLD || width >= 3840 || height >= 2160 || fps > 30.1 || isHDRStream)
   {
     if (m_has4K && m_gpuLevel >= 3)
-    {
-        targetMode = TV_PERFORMANCE_MODE_OPTIMIZED;
-    }
+      targetMode = TV_PERFORMANCE_MODE_OPTIMIZED;
+    // Could escalate to MAX_PERFORMANCE for very high bitrate/codecs
   }
 
   SetPerformanceMode(targetMode);
