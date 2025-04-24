@@ -2652,6 +2652,7 @@ msgstr ""
 #: xbmc/playlists/SmartPlaylist.cpp
 #: xbmc/PlayListPlayer.cpp
 #: xbmc/music/windows/GUIWindowMusicPlaylistEditor.cpp
+#: xbmc/video/dialogs/GUIDialogSimpleMenu.cpp
 msgctxt "#559"
 msgid "Playlist"
 msgstr ""
@@ -14545,7 +14546,25 @@ msgctxt "#21347"
 msgid "MIME type: \"{0:s}\""
 msgstr ""
 
-#empty strings from id 21348 to 21357
+#. Used to show a special in episode list, eg. 'Special 33 - The Interview'
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#21348"
+msgid "Special {0:d} - {1:s}"
+msgstr ""
+
+#. Used to show an episode in episode list, eg. 'Episode 4 - The Return'
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#21349"
+msgid "Episode {0:d} - {1:s}"
+msgstr ""
+
+#. Used to show a special in episode list
+#: xbmc/filesystem/DiscDirectoryHelper.cpp
+msgctxt "#21350"
+msgid "Special"
+msgstr ""
+
+#empty strings from id 21351 to 21357
 
 #: system/settings/settings.xml
 msgctxt "#21358"
@@ -16987,7 +17006,25 @@ msgctxt "#25014"
 msgid "Manual"
 msgstr ""
 
-#empty strings from id 25015 to 29800
+#. Used to ask user if they want to use a playlist already assigned to an episode
+#: xbmc/video/dialogs/GUIDialogSimpleMenu.cpp
+msgctxt "#25015"
+msgid "Selected playlist is already in use. Associate with this episode instead?"
+msgstr ""
+
+#. Inform user that no valid movie playlist has been found on disc
+#: xbmc/video/dialogs/GUIDialogSimpleMenu.cpp
+msgctxt "#25016"
+msgid "No valid movie playlist has been found."
+msgstr ""
+
+#. Inform user that no valid episode playlist has been found on disc
+#: xbmc/video/dialogs/GUIDialogSimpleMenu.cpp
+msgctxt "#25017"
+msgid "No valid episode playlist has been found."
+msgstr ""
+
+#empty strings from id 25018 to 29800
 
 #: unused
 msgctxt "#29801"

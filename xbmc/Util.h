@@ -13,6 +13,7 @@
 
 #include <climits>
 #include <cmath>
+#include <span>
 #include <stdint.h>
 #include <string.h>
 #include <vector>
@@ -232,6 +233,14 @@ public:
                                    const std::string& file,
                                    const std::string& destname = "");
 
+  /*!
+   *\brief Converts byte array in big endian format to hex string
+   *\param buf byte array
+   *\param count number of bytes to format (string padded with 0s)
+   *\return hex string
+   */
+  static std::string GetHexString(const std::span<const uint8_t>& buf, int count);
+
 #if !defined(TARGET_WINDOWS)
 private:
   static unsigned int s_randomSeed;
@@ -279,7 +288,4 @@ private:
                                              const std::string& videoNameNoExt,
                                              const std::vector<std::string>& item_exts,
                                              std::vector<std::string>& associatedFiles);
-
 };
-
-
