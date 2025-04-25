@@ -218,9 +218,13 @@ void CSaveFileState::DoWork(CFileItem& item,
           videodatabase.BeginTransaction();
           // tag->m_iFileId contains the idFile originally played and may be different to the idFile
           // in the movie table entry if it's a non-default video version
-          if (videodatabase.SetFileForMedia(item.GetDynPath(), item.GetVideoContentType(),
-                                            tag->m_iDbId, tag->m_iFileId))
+          const int newFileId{videodatabase.SetFileForMedia(
+              item.GetDynPath(), item.GetVideoContentType(), tag->m_iDbId, tag->m_iFileId)};
+          if (newFileId > 0)
+          {
             videodatabase.CommitTransaction();
+            item.GetVideoInfoTag()->m_iFileId = newFileId;
+          }
           else
             videodatabase.RollbackTransaction();
         }
