@@ -274,7 +274,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_iVideoLibraryDateAdded;
 
     bool m_caseSensitiveLocalArtMatch{true};
-    int m_minimumEpisodePlaylistDuration; // seconds
 
     std::set<std::string> m_vecTokens;
 

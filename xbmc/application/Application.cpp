@@ -56,7 +56,6 @@
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
 #include "favourites/FavouritesService.h"
-#include "filesystem/BlurayDiscCache.h"
 #include "filesystem/Directory.h"
 #include "filesystem/DirectoryCache.h"
 #include "filesystem/DirectoryFactory.h"
@@ -354,10 +353,6 @@ bool CApplication::Create()
   // application inbound service
   m_pAppPort = std::make_shared<CAppInboundProtocol>(*this);
   CServiceBroker::RegisterAppPort(m_pAppPort);
-
-#ifdef HAVE_LIBBLURAY
-  CServiceBroker::RegisterBlurayDiscCache(std::make_shared<CBlurayDiscCache>());
-#endif
 
   if (!m_ServiceManager->InitStageTwo(
           settingsComponent->GetProfileManager()->GetProfileUserDataFolder()))
@@ -1936,10 +1931,6 @@ bool CApplication::Cleanup()
     if (m_ServiceManager)
       m_ServiceManager->DeinitStageThree();
 
-#ifdef HAVE_LIBBLURAY
-    CServiceBroker::UnregisterBlurayDiscCache();
-#endif
-
     CServiceBroker::UnregisterSpeechRecognition();
 
     CLog::Log(LOGINFO, "unload skin");
@@ -2337,7 +2328,10 @@ bool CApplication::PlayStack(CFileItem& item, bool bRestart)
   return PlayFile(selectedStackPart, "", true);
 }
 
-bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRestart /* = false */)
+bool CApplication::PlayFile(CFileItem item,
+                            const std::string& player,
+                            bool bRestart /* = false */,
+                            bool forceSelection /* = false */)
 {
   // Ensure the MIME type has been retrieved for http:// and shout:// streams
   if (item.GetMimeType().empty())
@@ -2492,8 +2486,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   // a disc image might be Blu-Ray disc
   if (!(options.startpercent > 0.0 || options.starttime > 0.0) &&
       (VIDEO::IsBDFile(item) || item.IsDiscImage() ||
-       (item.GetProperty("force_playlist_selection").asBoolean(false) &&
-        URIUtils::IsBlurayPath(item.GetDynPath()))))
+       (forceSelection && URIUtils::IsBlurayPath(item.GetDynPath()))))
   {
     // No video selection when using external or remote players (they handle it if supported)
     const bool isSimpleMenuAllowed = [&]()
@@ -2511,7 +2504,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
     if (isSimpleMenuAllowed)
     {
       // Check if we must show the simplified bd menu.
-      if (!CGUIDialogSimpleMenu::ShowPlaylistSelection(item))
+      if (!CGUIDialogSimpleMenu::ShowPlaySelection(item, forceSelection))
         return true;
     }
   }

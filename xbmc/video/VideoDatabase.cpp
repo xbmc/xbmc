@@ -3414,64 +3414,6 @@ bool CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
   return false;
 }
 
-std::vector<CVideoDatabase::PlaylistInfo> CVideoDatabase::GetPlaylistsByPath(
-    const std::string& path)
-{
-  std::vector<PlaylistInfo> playlists{};
-
-  try
-  {
-    if (!m_pDB || !m_pDS)
-      return playlists;
-
-    const std::string strSQL{PrepareSQL(
-        "SELECT files.strFilename, files.idFile, episode.idEpisode, vv.idMedia FROM files "
-        "LEFT JOIN episode ON episode.idFile=files.idFile "
-        "LEFT JOIN videoversion vv ON vv.idFile = files.idFile AND vv.media_type='%s' "
-        "INNER JOIN path ON path.idPath=files.idPath "
-        "WHERE path.strPath='%s'",
-        MediaTypeMovie, path.c_str())};
-    m_pDS->query(strSQL);
-
-    while (!m_pDS->eof())
-    {
-      const int filenameIndex{m_pDS->fieldIndex("strFilename")};
-      std::string filename{m_pDS->fv(filenameIndex).get_asString()};
-      if (StringUtils::EndsWithNoCase(filename, ".mpls"))
-      {
-        const int idFileIndex{m_pDS->fieldIndex("idFile")};
-        const int idEpisodeIndex{m_pDS->fieldIndex("idEpisode")};
-        const int idMovieIndex{m_pDS->fieldIndex("idMedia")};
-        const int idEpisode{m_pDS->fv(idEpisodeIndex).get_asInt()};
-        const int idMovie{m_pDS->fv(idMovieIndex).get_asInt()};
-        filename.erase(filename.size() - 5); // remove extension
-        if (filename.size() == 5)
-        {
-          if (idEpisode > 0)
-            playlists.emplace_back(PlaylistInfo{.playlist = std::stoi(filename),
-                                                .idFile = m_pDS->fv(idFileIndex).get_asInt(),
-                                                .mediaType = VideoDbContentType::EPISODES,
-                                                .idMedia = idEpisode});
-          if (idMovie > 0)
-            playlists.emplace_back(PlaylistInfo{.playlist = std::stoi(filename),
-                                                .idFile = m_pDS->fv(idFileIndex).get_asInt(),
-                                                .mediaType = VideoDbContentType::MOVIES,
-                                                .idMedia = idMovie});
-        }
-      }
-      m_pDS->next();
-    }
-    m_pDS->close();
-
-    return playlists;
-  }
-  catch (const std::exception& e)
-  {
-    CLog::LogF(LOGERROR, "failed - path {} - error {}", path, e.what());
-  }
-  return {};
-}
-
 //********************************************************************************************************************************
 void CVideoDatabase::GetFilePathById(int idMovie, std::string& filePath, VideoDbContentType iType)
 {

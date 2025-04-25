@@ -35,7 +35,6 @@
 #include "addons/VFSEntry.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogPlayEject.h"
-#include "filesystem/BlurayDiscCache.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
@@ -784,10 +783,6 @@ void CMediaManager::RemoveDiscInfo(const std::string& devicePath)
   auto it = m_mapDiscInfo.find(strDevice);
   if (it != m_mapDiscInfo.end())
     m_mapDiscInfo.erase(it);
-
-#ifdef HAVE_LIBBLURAY
-  CServiceBroker::GetBlurayDiscCache()->ClearDisc(strDevice);
-#endif
 }
 
 bool CMediaManager::playStubFile(const CFileItem& item)

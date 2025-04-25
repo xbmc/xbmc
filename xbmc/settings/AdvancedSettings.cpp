@@ -325,7 +325,6 @@ void CAdvancedSettings::Initialize()
   m_bVideoLibraryUseFastHash = true;
   m_bVideoScannerIgnoreErrors = false;
   m_iVideoLibraryDateAdded = 1; // prefer mtime over ctime and current time
-  m_minimumEpisodePlaylistDuration = 5 * 60; // 5 minutes
 
   m_caseSensitiveLocalArtMatch = true; // case sensitive local art matching
 
@@ -829,7 +828,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetBoolean(pElement, "importresumepoint", m_bVideoLibraryImportResumePoint);
     XMLUtils::GetInt(pElement, "dateadded", m_iVideoLibraryDateAdded);
     XMLUtils::GetBoolean(pElement, "casesensitivelocalartmatch", m_caseSensitiveLocalArtMatch);
-    XMLUtils::GetInt(pElement, "minimumepisodeplaylistduration", m_minimumEpisodePlaylistDuration);
   }
 
   pElement = pRootElement->FirstChildElement("videoscanner");

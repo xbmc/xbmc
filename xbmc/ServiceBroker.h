@@ -121,11 +121,6 @@ namespace speech
 class ISpeechRecognition;
 }
 
-namespace XFILE
-{
-class CBlurayDiscCache;
-}
-
 class CServiceBroker
 {
 public:
@@ -235,10 +230,6 @@ public:
   static void UnregisterDNSNameCache();
   static std::shared_ptr<CDNSNameCache> GetDNSNameCache();
 
-  static void RegisterBlurayDiscCache(const std::shared_ptr<XFILE::CBlurayDiscCache>& cache);
-  static void UnregisterBlurayDiscCache();
-  static std::shared_ptr<XFILE::CBlurayDiscCache> GetBlurayDiscCache();
-
 private:
   std::shared_ptr<CAppParams> m_appParams;
   std::unique_ptr<CLog> m_logging;
@@ -257,7 +248,6 @@ private:
   std::shared_ptr<speech::ISpeechRecognition> m_speechRecognition;
   std::shared_ptr<CSlideShowDelegator> m_slideshowDelegator;
   std::shared_ptr<CDNSNameCache> m_dnsNameCache;
-  std::shared_ptr<XFILE::CBlurayDiscCache> m_blurayDiscCache;
 };
 
 XBMC_GLOBAL_REF(CServiceBroker, g_serviceBroker);

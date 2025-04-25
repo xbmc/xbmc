@@ -807,6 +807,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
 bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
   CFileItemPtr item;
+  m_forceSelection = false;
   if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
     item = m_vecItems->Get(itemNumber);
   switch (button)
@@ -861,7 +862,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return OnPlayMedia(itemNumber);
   case CONTEXT_BUTTON_CHOOSE_PLAYLIST:
   {
-    item->SetProperty("force_playlist_selection", true);
+    m_forceSelection = true;
     return OnPlayMedia(itemNumber);
   }
   default:
@@ -901,10 +902,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(const std::shared_ptr<CFileItem>& pItem,
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopAsync();
 
-  CServiceBroker::GetPlaylistPlayer().Play(itemCopy, player);
-
-  // Reset force selection flag
-  pItem->ClearProperty("force_playlist_selection");
+  CServiceBroker::GetPlaylistPlayer().Play(itemCopy, player, m_forceSelection);
 
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
@@ -1042,6 +1040,8 @@ bool CGUIWindowVideoBase::PlayItem(const std::shared_ptr<CFileItem>& pItem,
     }
     return true;
   }
+
+  m_forceSelection = false;
 
   //! @todo get rid of "videos with versions as folder" hack!
   if (pItem->m_bIsFolder && !pItem->IsPlugin() &&
