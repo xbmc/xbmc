@@ -1,9 +1,7 @@
 #pragma once
 
 #include <unordered_map>
-#include <queue>
-
-// TODO: Make this thread safe, probably not a concern for now.
+#include <deque>
 
 template<typename K, typename V, size_t MaxSize = 512>
 class AgedMap {
@@ -12,39 +10,40 @@ public:
   auto find(const K& key) const { return map.find(key); }
   auto findOrLatest(const K& key) const;
   auto end() const { return map.end(); }
-  void erase(const K& key);
 
 private:
   std::unordered_map<K, V> map;
-  std::queue<K> ages;
+  std::deque<K> ages;
+  K mostRecentKey;
+  bool hasEntries = false;
 };
 
-// Template implementation must be visible to compilation units
 template<typename K, typename V, size_t MaxSize>
 void AgedMap<K, V, MaxSize>::insert(K key, V value) {
-  if (map.size() >= MaxSize && map.find(key) == map.end()) {
-    map.erase(ages.front());
-    ages.pop();
-  }
-  map[key] = value;
-  ages.push(key);
-}
+  bool isNewKey = (map.find(key) == map.end());
 
-template<typename K, typename V, size_t MaxSize>
-void AgedMap<K, V, MaxSize>::erase(const K& key) {
-  map.erase(key);
+  map[key] = value;
+  mostRecentKey = key;
+  hasEntries = true;
+
+  if (isNewKey) {
+    ages.push_back(key);
+
+    while (map.size() > MaxSize) {
+      map.erase(ages.front());
+      ages.pop_front();
+    }
+  }
 }
 
 template<typename K, typename V, size_t MaxSize>
 auto AgedMap<K, V, MaxSize>::findOrLatest(const K& key) const {
   auto it = map.find(key);
-  if (it != map.end()) {
+
+  if (it != map.end())
     return it;
-  } else if (!ages.empty()) {
-    // Get the most recently inserted key
-    K latestKey = ages.back();
-    return map.find(latestKey);
-  } else {
+  else if (hasEntries)
+    return map.find(mostRecentKey);
+  else
     return map.end();
-  }
 }
