@@ -1525,10 +1525,15 @@ void CXBMCApp::SetupEnv()
   else
     setenv("HOME", getenv("KODI_TEMP"), 0);
 
-  std::string pythonPath = cacheDir + "/apk/assets/python" + CCompileInfo::GetPythonVersion();
+  std::string pythonPath;
+  if (xbmcHome.empty())
+    pythonPath = cacheDir + "/apk/assets/python" + CCompileInfo::GetPythonVersion();
+  else
+    pythonPath = xbmcHome + "/assets/python" + CCompileInfo::GetPythonVersion();
+
   setenv("PYTHONHOME", pythonPath.c_str(), 1);
   setenv("PYTHONPATH", "", 1);
-  setenv("PYTHONOPTIMIZE","", 1);
+  setenv("PYTHONOPTIMIZE", "", 1);
   setenv("PYTHONNOUSERSITE", "1", 1);
 }
 
