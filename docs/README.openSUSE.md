@@ -83,7 +83,7 @@ If you get a `package not found` type of message with the below command, remove 
 
 Install build dependencies:
 ```
-sudo zypper install alsa-devel autoconf automake bluez-devel boost-devel capi4linux-devel ccache cmake doxygen flac-devel fribidi-devel fstrcmp-devel gcc gcc-c++ gettext-devel giflib-devel glew-devel googletest gperf java-openjdk libass-devel libavahi-devel libbluray-devel libbz2-devel libcap-devel libcap-ng-devel libcdio-devel libcec-devel libcurl-devel libdvdread-devel libexiv2-devel libgudev-1_0-devel libidn2-devel libjasper-devel libjpeg-devel liblcms2-devel libmad-devel libmicrohttpd-devel libmodplug-devel libmpeg2-devel libmysqlclient-devel libnfs-devel libogg-devel libpcap-devel libplist-devel libpng12-devel libpulse-devel libsamplerate-devel libsmbclient-devel libtag-devel libtiff-devel libtool libudev-devel libuuid-devel libva-devel libvdpau-devel libvorbis-devel libXrandr-devel libXrender-devel libxslt-devel lirc-devel lzo-devel make Mesa-libEGL-devel Mesa-libGLESv2-devel Mesa-libGLESv3-devel nasm patch pcre2-devel python3-devel python3-Pillow randrproto-devel renderproto-devel shairplay-devel sqlite3-devel swig tinyxml-devel tinyxml2-devel
+sudo zypper install alsa-devel autoconf automake bluez-devel boost-devel capi4linux-devel ccache cmake doxygen flac-devel fribidi-devel fstrcmp-devel gcc gcc-c++ gettext-devel giflib-devel glew-devel googletest gperf java-openjdk libass-devel libavahi-devel libbluray-devel libbz2-devel libcap-devel libcap-ng-devel libcdio-devel libcec-devel libcurl-devel libdvdread-devel libexiv2-devel libgudev-1_0-devel libidn2-devel libjasper-devel libjpeg-devel liblcms2-devel libmad-devel libmicrohttpd-devel libmodplug-devel libmpeg2-devel libmysqlclient-devel libnfs-devel libogg-devel libpcap-devel libplist-devel libpng12-devel libpulse-devel libsamplerate-devel libsmbclient-devel libtag-devel libtiff-devel libtool libudev-devel libuuid-devel libva-devel libvdpau-devel libvorbis-devel libXrandr-devel libXrender-devel libxslt-devel lirc-devel lzo-devel make Mesa-libEGL-devel Mesa-libGLESv2-devel Mesa-libGLESv3-devel nasm nlohmann_json patch pcre2-devel python3-devel python3-Pillow randrproto-devel renderproto-devel shairplay-devel sqlite3-devel swig tinyxml-devel tinyxml2-devel
 ```
 
 > [!WARNING]  
@@ -100,7 +100,7 @@ sudo zypper install libgbm-devel libinput-devel libxkbcommon-devel
 ```
 
 > [!WARNING]  
-> Fedora repositories don't have install candidates for `libfmt`, `rapidjson` and `waylandpp`. See **[build missing dependencies manually](#31-build-missing-dependencies)** section before you proceed.
+> Fedora repositories don't have install candidates for `libfmt`, and `waylandpp`. See **[build missing dependencies manually](#31-build-missing-dependencies)** section before you proceed.
 
 Optional packages that you might want to install for extra functionality (generating doxygen documentation, for instance):
 ```
@@ -131,11 +131,10 @@ Change to Kodi's source code directory:
 cd $HOME/kodi
 ```
 
-Build and install missing dependencies from repositories (*flatbuffers*, *libfmt*, *rapidjson* and *waylandpp*):
+Build and install missing dependencies from repositories (*flatbuffers*, *libfmt*, and *waylandpp*):
 ```
 sudo make -C tools/depends/target/flatbuffers PREFIX=/usr/local
 sudo make -C tools/depends/target/libfmt PREFIX=/usr/local
-sudo make -C tools/depends/target/rapidjson PREFIX=/usr/local
 sudo make -C tools/depends/target/waylandpp PREFIX=/usr/local
 ```
 

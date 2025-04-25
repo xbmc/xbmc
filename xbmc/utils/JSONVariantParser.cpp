@@ -8,27 +8,28 @@
 
 #include "JSONVariantParser.h"
 
-#include <rapidjson/reader.h>
+#include <nlohmann/json.hpp>
 
-class CJSONVariantParserHandler
+class CJSONVariantParserHandler : public nlohmann::json::json_sax_t
 {
 public:
   explicit CJSONVariantParserHandler(CVariant& parsedObject);
 
-  bool Null();
-  bool Bool(bool b);
-  bool Int(int i);
-  bool Uint(unsigned u);
-  bool Int64(int64_t i);
-  bool Uint64(uint64_t u);
-  bool Double(double d);
-  bool RawNumber(const char* str, rapidjson::SizeType length, bool copy);
-  bool String(const char* str, rapidjson::SizeType length, bool copy);
-  bool StartObject();
-  bool Key(const char* str, rapidjson::SizeType length, bool copy);
-  bool EndObject(rapidjson::SizeType memberCount);
-  bool StartArray();
-  bool EndArray(rapidjson::SizeType elementCount);
+  bool null() override;
+  bool binary(binary_t& b) override;
+  bool boolean(bool b) override;
+  bool number_integer(number_integer_t i) override;
+  bool number_unsigned(number_unsigned_t u) override;
+  bool number_float(number_float_t d, const string_t& s) override;
+  bool string(std::string& str) override;
+  bool start_object(std::size_t elements) override;
+  bool key(string_t& str) override;
+  bool end_object() override;
+  bool start_array(std::size_t elements) override;
+  bool end_array() override;
+  bool parse_error(std::size_t position,
+                   const std::string& last_token,
+                   const nlohmann::json::exception& ex) override;
 
 private:
   template <typename... TArgs>
@@ -61,7 +62,7 @@ CJSONVariantParserHandler::CJSONVariantParserHandler(CVariant& parsedObject)
   : m_parsedObject(parsedObject), m_parse(), m_key()
 { }
 
-bool CJSONVariantParserHandler::Null()
+bool CJSONVariantParserHandler::null()
 {
   PushObject(CVariant::ConstNullVariant);
   PopObject();
@@ -69,79 +70,76 @@ bool CJSONVariantParserHandler::Null()
   return true;
 }
 
-bool CJSONVariantParserHandler::Bool(bool b)
+bool CJSONVariantParserHandler::boolean(bool b)
 {
   return Primitive(b);
 }
 
-bool CJSONVariantParserHandler::Int(int i)
+bool CJSONVariantParserHandler::number_integer(number_integer_t i)
 {
   return Primitive(i);
 }
 
-bool CJSONVariantParserHandler::Uint(unsigned u)
+bool CJSONVariantParserHandler::number_unsigned(number_unsigned_t u)
 {
   return Primitive(u);
 }
 
-bool CJSONVariantParserHandler::Int64(int64_t i)
-{
-  return Primitive(i);
-}
-
-bool CJSONVariantParserHandler::Uint64(uint64_t u)
-{
-  return Primitive(u);
-}
-
-bool CJSONVariantParserHandler::Double(double d)
+bool CJSONVariantParserHandler::number_float(number_float_t d, const string_t& s)
 {
   return Primitive(d);
 }
 
-bool CJSONVariantParserHandler::RawNumber(const char* str, rapidjson::SizeType length, bool copy)
+bool CJSONVariantParserHandler::string(std::string& str)
 {
-  return Primitive(str, length);
+  return Primitive(str);
 }
 
-bool CJSONVariantParserHandler::String(const char* str, rapidjson::SizeType length, bool copy)
+bool CJSONVariantParserHandler::binary(binary_t& b)
 {
-  return Primitive(str, length);
+  return true;
 }
 
-bool CJSONVariantParserHandler::StartObject()
+bool CJSONVariantParserHandler::start_object(std::size_t elements)
 {
   PushObject(CVariant::VariantTypeObject);
 
   return true;
 }
 
-bool CJSONVariantParserHandler::Key(const char* str, rapidjson::SizeType length, bool copy)
+bool CJSONVariantParserHandler::key(std::string& str)
 {
-  m_key = std::string(str, 0, length);
+  m_key = str;
 
   return true;
 }
 
-bool CJSONVariantParserHandler::EndObject(rapidjson::SizeType memberCount)
+bool CJSONVariantParserHandler::end_object()
 {
   PopObject();
 
   return true;
 }
 
-bool CJSONVariantParserHandler::StartArray()
+bool CJSONVariantParserHandler::start_array(std::size_t elements)
 {
   PushObject(CVariant::VariantTypeArray);
 
   return true;
 }
 
-bool CJSONVariantParserHandler::EndArray(rapidjson::SizeType elementCount)
+bool CJSONVariantParserHandler::end_array()
 {
   PopObject();
 
   return true;
+}
+
+bool CJSONVariantParserHandler::parse_error(std::size_t position,
+                                            const std::string& last_token,
+                                            const nlohmann::json::exception& ex)
+{
+  return false;
 }
 
 void CJSONVariantParserHandler::PushObject(CVariant variant)
@@ -201,16 +199,8 @@ bool CJSONVariantParser::Parse(const char* json, CVariant& data)
   if (json == nullptr)
     return false;
 
-  rapidjson::Reader reader;
-  rapidjson::StringStream stringStream(json);
-
   CJSONVariantParserHandler handler(data);
-  // use kParseIterativeFlag to eliminate possible stack overflow
-  // from json parsing via reentrant calls
-  if (reader.Parse<rapidjson::kParseIterativeFlag>(stringStream, handler))
-    return true;
-
-  return false;
+  return nlohmann::json::sax_parse(json, &handler);
 }
 
 bool CJSONVariantParser::Parse(const std::string& json, CVariant& data)
