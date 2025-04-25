@@ -31,6 +31,7 @@
 				<align>right</align>
 				<aligny>bottom</aligny>
 				<textcolor>grey</textcolor>
+				<scroll>true</scroll>
 				<label>$INFO[Container(50).ListItem.FileNameAndPath]</label>
 			</control>
 			<control type="label">
