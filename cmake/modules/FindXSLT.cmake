@@ -69,8 +69,15 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   # Check for existing libxslt. If version >= LIBXSLT-VERSION file version, dont build
   find_package(libxslt ${CONFIG_${CMAKE_FIND_PACKAGE_NAME}_FIND_SPEC} CONFIG ${SEARCH_QUIET}
-                      HINTS ${DEPENDS_PATH}/lib/cmake
-                      ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+                       HINTS ${DEPENDS_PATH}/lib/cmake
+                       ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+
+  # Differences in variable output of libxslt being built by cmake or autotools
+  if(libxslt_FOUND)
+    if(NOT libxslt_VERSION)
+      set(libxslt_VERSION ${LIBXSLT_VERSION})
+    endif()
+  endif()
 
   # cmake config may not be available (eg Debian libxslt1-dev package)
   # fallback to pkgconfig for non windows platforms
@@ -88,18 +95,24 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     buildXSLT()
   else()
     if(TARGET LibXslt::LibXslt)
+      # libxslt has wildly different cmake config files depending on how it was built (cmake vs autotools)
+      # The autotools generated cmake config file does not have a build configuration suffix
       get_target_property(_XSLT_CONFIGURATIONS LibXslt::LibXslt IMPORTED_CONFIGURATIONS)
-      foreach(_xslt_config IN LISTS _XSLT_CONFIGURATIONS)
-        # Some non standard config (eg None on Debian)
-        # Just set to RELEASE var so select_library_configurations can continue to work its magic
-        string(TOUPPER ${_xslt_config} _xslt_config_UPPER)
-        if((NOT ${_xslt_config_UPPER} STREQUAL "RELEASE") AND
-           (NOT ${_xslt_config_UPPER} STREQUAL "DEBUG"))
-          get_target_property(XSLT_LIBRARY_RELEASE LibXslt::LibXslt IMPORTED_LOCATION_${_xslt_config_UPPER})
-        else()
-          get_target_property(XSLT_LIBRARY_${_xslt_config_UPPER} LibXslt::LibXslt IMPORTED_LOCATION_${_xslt_config_UPPER})
-        endif()
-      endforeach()
+      if(_XSLT_CONFIGURATIONS)
+        foreach(_xslt_config IN LISTS _XSLT_CONFIGURATIONS)
+          # Some non standard config (eg None on Debian)
+          # Just set to RELEASE var so select_library_configurations can continue to work its magic
+          string(TOUPPER ${_xslt_config} _xslt_config_UPPER)
+          if((NOT ${_xslt_config_UPPER} STREQUAL "RELEASE") AND
+             (NOT ${_xslt_config_UPPER} STREQUAL "DEBUG"))
+            get_target_property(XSLT_LIBRARY_RELEASE LibXslt::LibXslt IMPORTED_LOCATION_${_xslt_config_UPPER})
+          else()
+            get_target_property(XSLT_LIBRARY_${_xslt_config_UPPER} LibXslt::LibXslt IMPORTED_LOCATION_${_xslt_config_UPPER})
+          endif()
+        endforeach()
+      else()
+        get_target_property(XSLT_LIBRARY_RELEASE LibXslt::LibXslt IMPORTED_LOCATION)
+      endif()
 
       get_target_property(XSLT_INCLUDE_DIR LibXslt::LibXslt INTERFACE_INCLUDE_DIRECTORIES)
       set(XSLT_VERSION ${libxslt_VERSION})
