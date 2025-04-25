@@ -509,8 +509,9 @@ void CGUIDialogVideoManager::ChoosePlaylist(const std::shared_ptr<CFileItem>& it
       m_database.BeginTransaction();
       if (replaceExistingFile)
       {
-        videoDbSuccess = m_database.SetFileForMedia(item->GetDynPath(), item->GetVideoContentType(),
-                                                    idMovie, item->GetVideoInfoTag()->m_iFileId);
+        videoDbSuccess =
+            m_database.SetFileForMedia(item->GetDynPath(), item->GetVideoContentType(), idMovie,
+                                       item->GetVideoInfoTag()->m_iFileId) > 0;
         if (videoDbSuccess)
         {
           m_database.SetStreamDetailsForFile(item->GetVideoInfoTag()->m_streamDetails,
