@@ -223,7 +223,6 @@ void CGUIDialogVideoManager::Refresh()
 
   for (auto& item : *m_videoAssetsList)
   {
-    item->SetProperty("noartfallbacktoowner", true);
     loader.LoadItem(item.get());
   }
 
