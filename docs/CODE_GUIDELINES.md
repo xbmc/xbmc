@@ -471,7 +471,10 @@ Header order has to be:
 #include <cassert>
 #include <utility>
 
+extern "C"
+{
 #include <libavutil/pixfmt.h>
+}
 ```
 
 If the headers aren't sorted, either do your best to match the existing order, or precede your commit with an alphabetization commit.
