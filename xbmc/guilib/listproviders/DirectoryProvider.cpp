@@ -44,6 +44,7 @@
 #include "video/guilib/VideoPlayActionProcessor.h"
 #include "video/guilib/VideoSelectActionProcessor.h"
 
+#include <atomic>
 #include <memory>
 #include <mutex>
 #include <utility>
@@ -64,6 +65,8 @@ public:
                   ANNOUNCEMENT::GUI);
   }
   virtual ~CSubscriber() { CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this); }
+
+  virtual bool IsReadyToUse() const { return true; }
 
 protected:
   bool OnEventPublished(Topic topic = Topic::UNSPECIFIED)
@@ -157,9 +160,20 @@ public:
   }
   ~CPVRSubscriber() override { CServiceBroker::GetPVRManager().Events().Unsubscribe(this); }
 
+  bool IsReadyToUse() const override { return m_pvrStarted.test(); }
+
 private:
   void OnPVRManagerEvent(const PVR::PVREvent& event)
   {
+    if (event == PVR::PVREvent::ManagerStarted)
+      m_pvrStarted.test_and_set();
+    else if (event == PVR::PVREvent::ManagerStarting || event == PVR::PVREvent::ManagerStopping ||
+             event == PVR::PVREvent::ManagerStopped)
+      m_pvrStarted.clear();
+
+    if (!m_pvrStarted.test())
+      return;
+
     if (event == PVR::PVREvent::ManagerStarted || event == PVR::PVREvent::ManagerStopped ||
         event == PVR::PVREvent::RecordingsInvalidated ||
         event == PVR::PVREvent::TimersInvalidated ||
@@ -171,6 +185,8 @@ private:
       OnEventPublished();
     }
   }
+
+  std::atomic_flag m_pvrStarted{};
 };
 
 class CFavouritesSubscriber : public CDirectoryProvider::CSubscriber
@@ -411,6 +427,7 @@ void CDirectoryProvider::StartDirectoryJob()
   m_lastJobStartedAt = std::chrono::system_clock::now();
   m_nextJobTimer.Stop();
 
+  CLog::Log(LOGDEBUG, "CDirectoryProvider[{}]: refreshing...", m_currentUrl);
   m_jobID = CServiceBroker::GetJobManager()->AddJob(
       new CDirectoryJob(m_currentUrl, m_target.GetLabel(m_parentID, false), m_currentSort,
                         m_currentLimit, m_currentBrowse, m_parentID),
@@ -440,7 +457,6 @@ bool CDirectoryProvider::Update(bool forceRefresh)
 
   if (fireJob)
   {
-    CLog::Log(LOGDEBUG, "CDirectoryProvider[{}]: refreshing..", m_currentUrl);
     if (m_jobID)
     {
       // Ignore update request for now.
@@ -697,8 +713,14 @@ bool CDirectoryProvider::OnContextMenu(const std::shared_ptr<CGUIListItem>& item
 
 bool CDirectoryProvider::IsUpdating() const
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
-  return m_jobID || m_jobPending || m_updateState == DONE || m_updateState == INVALIDATED;
+  {
+    std::unique_lock<CCriticalSection> lock(m_section);
+    if (m_jobID || m_jobPending || m_updateState == DONE || m_updateState == INVALIDATED)
+      return true;
+  }
+
+  std::unique_lock<CCriticalSection> subscriptionLock(m_subscriptionSection);
+  return m_subscriber && !m_subscriber->IsReadyToUse();
 }
 
 bool CDirectoryProvider::UpdateURL()
