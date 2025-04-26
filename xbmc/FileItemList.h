@@ -14,6 +14,7 @@
  */
 
 #include "FileItem.h"
+#include "threads/CriticalSection.h"
 
 /*!
   \brief Represents a list of files

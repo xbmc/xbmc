@@ -17,7 +17,6 @@
 #include "SourceType.h"
 #include "XBDateTime.h"
 #include "guilib/GUIListItem.h"
-#include "threads/CriticalSection.h"
 #include "utils/IArchivable.h"
 #include "utils/ISerializable.h"
 #include "utils/ISortable.h"
