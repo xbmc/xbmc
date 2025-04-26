@@ -29,6 +29,10 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
     # for integration into our core dep packaging
     add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS Iconv::Iconv)
     add_library(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} ALIAS Iconv::Iconv)
+
+    # Required for external searches. Not used internally
+    set(Iconv_FOUND ON CACHE BOOL "Iconv found")
+    mark_as_advanced(Iconv_FOUND)
   else()
     if(Iconv_FIND_REQUIRED)
       message(FATAL_ERROR "Iconv libraries were not found.")
