@@ -10,6 +10,7 @@
 
 #include "BlurayStateSerializer.h"
 #include "DVDInputStream.h"
+#include "threads/CriticalSection.h"
 
 #include <list>
 #include <memory>
