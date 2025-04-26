@@ -65,7 +65,9 @@ extern "C"
     /// three letter code as defined in ISO 639-2/T or ISO 639-2/B
     LANG_FMT_ISO_639_2,
     /// full language name in English
-    LANG_FMT_ENGLISH_NAME
+    LANG_FMT_ENGLISH_NAME,
+    /// full language name in English without qualifiers
+    LANG_FMT_ISO_NAME,
   } LangFormats;
   //----------------------------------------------------------------------------
 

@@ -90,6 +90,7 @@ inline bool ATTR_DLL_LOCAL UnknownToUTF8(const std::string& stringSrc,
 ///  | LANG_FMT_ENGLISH_NAME | full language name in English (Default)                    |
 ///  | LANG_FMT_ISO_639_1    | two letter code as defined in ISO 639-1                    |
 ///  | LANG_FMT_ISO_639_2    | three letter code as defined in ISO 639-2/T or ISO 639-2/B |
+///  | LANG_FMT_ISO_NAME     | full language name without qualifiers                      |
 /// @param[in] region [opt] append the region delimited by "-" of the language (setting) to the returned language string <em>(default is <b><c>false</c></b>)</em>
 /// @return active language
 ///
