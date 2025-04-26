@@ -998,7 +998,7 @@ double CDVDDemuxFFmpeg::ConvertTimestamp(int64_t pts, int den, int num)
 
   // do calculations in floats as they can easily overflow otherwise
   // we don't care for having a completely exact timestamp anyway
-  double timestamp = (double)pts * num / den;
+  double timestamp = static_cast<double>(pts) * num / den;
   double starttime = 0.0;
 
   const std::shared_ptr<CDVDInputStream::IMenus> menuInterface =
@@ -1021,7 +1021,10 @@ double CDVDDemuxFFmpeg::ConvertTimestamp(int64_t pts, int den, int num)
       timestamp = 0;
   }
 
-  return timestamp * DVD_TIME_BASE;
+  if (den <= 1000000)
+    return static_cast<double>((static_cast<int64_t>(round(timestamp * den / num)) * num * DVD_TIME_BASE) / den);
+  else
+    return timestamp * DVD_TIME_BASE;
 }
 
 DemuxPacket* CDVDDemuxFFmpeg::ReadInternal(bool keep)
