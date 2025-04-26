@@ -81,14 +81,13 @@ public:
   virtual bool SupportsExtention() { return true; }
 
 protected:
-  void            Close(void);
-  void            FrameRateTracking(uint8_t *pData, int iSize, double dts, double pts);
-  //void            RemoveInfo(CDVDAmlogicInfo* info);
+  void Close(void);
+  void FrameRateTracking(uint8_t *pData, int iSize, double dts, double pts);
 
   std::shared_ptr<CAMLCodec> m_Codec;
 
   const char     *m_pFormatName;
-  VideoPicture m_videobuffer;
+  VideoPicture    m_videobuffer;
   bool            m_opened;
   int             m_codecControlFlags;
   CDVDStreamInfo  m_hints;
@@ -103,6 +102,7 @@ protected:
 
   CBitstreamParser *m_bitparser;
   std::unique_ptr<CBitstreamConverter> m_bitstream;
+
 private:
   std::shared_ptr<CAMLVideoBufferPool> m_videoBufferPool;
   static std::atomic<bool> m_InstanceGuard;
