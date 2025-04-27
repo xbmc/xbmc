@@ -642,7 +642,14 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
       g_curlInterface.easy_setopt(h, CURLOPT_PROXYUSERPWD, userpass.c_str());
   }
   if (m_customrequest.length() > 0)
+  {
     g_curlInterface.easy_setopt(h, CURLOPT_CUSTOMREQUEST, m_customrequest.c_str());
+    if (StringUtils::CompareNoCase(m_customrequest, "HEAD") == 0)
+    {
+      // Allow libcurl to switch to a proper HEAD request
+      g_curlInterface.easy_setopt(h, CURLOPT_NOBODY, 1);
+    }
+  }
 
   if (m_connecttimeout == 0)
     m_connecttimeout = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_curlconnecttimeout;
