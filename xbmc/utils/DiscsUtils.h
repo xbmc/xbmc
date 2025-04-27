@@ -10,6 +10,8 @@
 
 #include <string>
 
+class CFileItem;
+
 namespace UTILS
 {
 namespace DISCS
@@ -68,6 +70,12 @@ DiscInfo ProbeDVDDiscInfo(const std::string& mediaPath);
     \return the DiscInfo for the given media path (might be an empty struct)
 */
 DiscInfo ProbeBlurayDiscInfo(const std::string& mediaPath);
+
+/*! \brief Probe a FileItem to see it is a bluray disc image
+    \param item The FileItem to probe
+    \return true if the item is a bluray disc image, false otherwise
+*/
+bool IsBlurayDiscImage(const CFileItem& item);
 
 } // namespace DISCS
 } // namespace UTILS

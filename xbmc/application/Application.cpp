@@ -2491,7 +2491,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
 
   // a disc image might be Blu-Ray disc
   if (!(options.startpercent > 0.0 || options.starttime > 0.0) &&
-      (VIDEO::IsBDFile(item) || item.IsDiscImage() ||
+      (VIDEO::IsBDFile(item) || ::UTILS::DISCS::IsBlurayDiscImage(item) ||
        (item.GetProperty("force_playlist_selection").asBoolean(false) &&
         URIUtils::IsBlurayPath(item.GetDynPath()))))
   {
