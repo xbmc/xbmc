@@ -5447,6 +5447,7 @@ msgstr ""
 
 #. Audio Channel count
 #: xbmc/cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.cpp
+#: xbmc/utils/StreamUtils.cpp
 #: xbmc/video/dialogs/GUIDialogAudioSettings.cpp
 msgctxt "#10127"
 msgid "channels"
