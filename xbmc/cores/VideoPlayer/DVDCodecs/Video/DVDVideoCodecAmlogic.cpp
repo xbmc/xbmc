@@ -522,7 +522,7 @@ bool CDVDVideoCodecAmlogic::AddData(const DemuxPacket &packet)
       else
         m_has_keyframe = true;
     }
-    FrameRateTracking( pData, iSize, packet.dts, packet.pts);
+    FrameRateTracking(pData, iSize, packet.dts, packet.pts);
 
     if (!m_opened)
     {
