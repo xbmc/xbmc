@@ -104,6 +104,8 @@ protected:
   std::unique_ptr<CBitstreamConverter> m_bitstream;
 
 private:
+  bool DualLayerConvert(uint8_t *pData, uint32_t iSize, const DemuxPacket &packet, bool &dual_layer_converted);
+
   std::shared_ptr<CAMLVideoBufferPool> m_videoBufferPool;
   static std::atomic<bool> m_InstanceGuard;
 

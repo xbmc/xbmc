@@ -441,6 +441,49 @@ void CDVDVideoCodecAmlogic::Close(void)
   m_opened = false;
 }
 
+bool CDVDVideoCodecAmlogic::DualLayerConvert(uint8_t *pData, uint32_t iSize, const DemuxPacket &packet, bool &dual_layer_converted)
+{
+  logComponentM(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAmlogic", "{} package with dts: {:.3f}, pts: {:.3f} and size {} arrived, list {} empty",
+    packet.isELPackage ? "EL" : "BL", packet.dts/DVD_TIME_BASE, packet.pts/DVD_TIME_BASE, iSize, m_packages.empty() ? "is" : "is not");
+
+  if (!m_packages.empty())
+  {
+    // convert bl and el package to single package
+    DLDemuxPacket dual_layer_packet = m_packages.front();
+    uint8_t *pDataBackup = std::get<0>(dual_layer_packet);
+    uint32_t iSizeBackup = std::get<1>(dual_layer_packet);
+    bool isELPackageBackup = std::get<2>(dual_layer_packet);
+
+    if (isELPackageBackup != packet.isELPackage)
+    {
+      if (packet.isELPackage)
+      {
+        logComponentM(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAmlogic", "found DT-DL BL package with dts: {:.3f}, pts: {:.3f} and size {} in list",
+          packet.dts/DVD_TIME_BASE, packet.pts/DVD_TIME_BASE, iSizeBackup);
+        dual_layer_converted = m_bitstream->Convert(pDataBackup, iSizeBackup, pData, iSize, packet.pts);
+      }
+      else
+      {
+        logComponentM(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAmlogic", "found DT-DL EL package with dts: {:.3f}, pts: {:.3f} and size {} in list",
+          packet.dts/DVD_TIME_BASE, packet.pts/DVD_TIME_BASE, iSizeBackup);
+        dual_layer_converted = m_bitstream->Convert(pData, iSize, pDataBackup, iSizeBackup, packet.pts);
+      }
+    }
+  }
+
+  if (!dual_layer_converted)
+  {
+    // backup package and don't send to decoder yet
+    uint8_t *pDataBackup = static_cast<uint8_t*>(KODI::MEMORY::AlignedMalloc(packet.iSize + AV_INPUT_BUFFER_PADDING_SIZE, 16));
+    memcpy(pDataBackup, packet.pData, packet.iSize);
+    m_packages.push_back(std::make_tuple(pDataBackup, iSize, packet.isELPackage));
+    logComponentM(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAmlogic", "did add {} package with dts: {:.3f}, pts: {:.3f} and size {} in list",
+      packet.isELPackage ? "EL" : "BL", packet.dts/DVD_TIME_BASE, packet.pts/DVD_TIME_BASE, packet.iSize);
+  }
+
+  return dual_layer_converted;
+}
+
 bool CDVDVideoCodecAmlogic::AddData(const DemuxPacket &packet)
 {
   // Handle Input, add demuxer packet to input queue, we must accept it or
@@ -458,52 +501,14 @@ bool CDVDVideoCodecAmlogic::AddData(const DemuxPacket &packet)
     {
       if (packet.isDualStream && aml_dolby_vision_enabled())
       {
-        logComponentM(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAmlogic", "{} package with dts: {:.3f}, pts: {:.3f} and size {} arrived, list {} empty",
-          packet.isELPackage ? "EL" : "BL", packet.dts/DVD_TIME_BASE, packet.pts/DVD_TIME_BASE, iSize, m_packages.empty() ? "is" : "is not");
-
-        if (!m_packages.empty())
-        {
-          // convert bl and el package to single package
-          DLDemuxPacket dual_layer_packet = m_packages.front();
-          uint8_t *pDataBackup = std::get<0>(dual_layer_packet);
-          uint32_t iSizeBackup = std::get<1>(dual_layer_packet);
-          bool isELPackageBackup = std::get<2>(dual_layer_packet);
-
-          if (isELPackageBackup != packet.isELPackage)
-          {
-            if (packet.isELPackage)
-            {
-              logComponentM(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAmlogic", "found DT-DL BL package with dts: {:.3f}, pts: {:.3f} and size {} in list",
-                packet.dts/DVD_TIME_BASE, packet.pts/DVD_TIME_BASE, iSizeBackup);
-              dual_layer_converted = m_bitstream->Convert(pDataBackup, iSizeBackup, pData, iSize, packet.pts);
-            }
-            else
-            {
-              logComponentM(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAmlogic", "found DT-DL EL package with dts: {:.3f}, pts: {:.3f} and size {} in list",
-                packet.dts/DVD_TIME_BASE, packet.pts/DVD_TIME_BASE, iSizeBackup);
-              dual_layer_converted = m_bitstream->Convert(pData, iSize, pDataBackup, iSizeBackup, packet.pts);
-            }
-          }
-        }
-
-        if (!dual_layer_converted)
-        {
-          // backup package and don't send to decoder yet
-          uint8_t *pDataBackup = static_cast<uint8_t*>(KODI::MEMORY::AlignedMalloc(packet.iSize + AV_INPUT_BUFFER_PADDING_SIZE, 16));
-          memcpy(pDataBackup, packet.pData, packet.iSize);
-          m_packages.push_back(std::make_tuple(pDataBackup, iSize, packet.isELPackage));
-          logComponentM(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAmlogic", "did add {} package with dts: {:.3f}, pts: {:.3f} and size {} in list",
-            packet.isELPackage ? "EL" : "BL", packet.dts/DVD_TIME_BASE, packet.pts/DVD_TIME_BASE, packet.iSize);
-
+        if (!DualLayerConvert(pData, iSize, packet, dual_layer_converted))
           return true;
-        }
       }
       else
       {
         if (!m_bitstream->Convert(pData, iSize, packet.pts))
           return true;
       }
-
       if (!m_bitstream->CanStartDecode())
       {
         logM(LOGDEBUG, "CDVDVideoCodecAmlogic", "waiting for keyframe (bitstream)");
