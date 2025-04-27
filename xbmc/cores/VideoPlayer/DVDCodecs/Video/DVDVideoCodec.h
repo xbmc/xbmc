@@ -132,7 +132,7 @@ public:
     VC_EOF              //< EOF
   };
 
-  explicit CDVDVideoCodec(CProcessInfo &processInfo) : m_processInfo(processInfo), 
+  explicit CDVDVideoCodec(CProcessInfo &processInfo) : m_processInfo(processInfo),
                                                        m_dataCacheCore(CServiceBroker::GetDataCacheCore()) {
   }
   virtual ~CDVDVideoCodec() = default;
