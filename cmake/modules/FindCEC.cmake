@@ -26,21 +26,23 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
     generate_patchcommand("${patches}")
 
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SHARED_LIB TRUE)
+
+    if(CORE_SYSTEM_NAME STREQUAL "osx")
+      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LOCATION_POSTFIX "dylib")
+    endif()
+
     set(CMAKE_ARGS -DBUILD_SHARED_LIBS=ON
                    -DSKIP_PYTHON_WRAPPER=ON
                    -DDISABLE_BUILDINFO=ON
                    -DCMAKE_PLATFORM_NO_VERSIONED_SONAME=ON)
-
-    if(CORE_SYSTEM_NAME STREQUAL "osx")
-      set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BYPRODUCT_EXTENSION "dylib")
-    endif()
 
     BUILD_DEP_TARGET()
 
     if(CORE_SYSTEM_NAME STREQUAL "osx")
       find_program(INSTALL_NAME_TOOL NAMES install_name_tool)
       add_custom_command(TARGET ${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} POST_BUILD
-                                    COMMAND ${INSTALL_NAME_TOOL} -id ${CEC_LIBRARY} ${CEC_LIBRARY})
+                         COMMAND ${INSTALL_NAME_TOOL} -id ${CEC_LIBRARY} ${CEC_LIBRARY})
     endif()
 
     add_dependencies(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC} LIBRARY::P8Platform)
