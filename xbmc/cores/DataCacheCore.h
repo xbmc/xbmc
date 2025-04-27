@@ -276,7 +276,7 @@ protected:
     AVColorRange colorRange = AVCOL_RANGE_UNSPECIFIED;
     AVColorPrimaries colorPrimaries = AVCOL_PRI_UNSPECIFIED;
     AVColorTransferCharacteristic colorTransferCharacteristic = AVCOL_TRC_UNSPECIFIED;
-    AgedMap<double, DOVIFrameMetadata> doviFrameMetadataMap;
+    AgedMap<uint64_t, DOVIFrameMetadata> doviFrameMetadataMap;
     DOVIStreamMetadata doviStreamMetadata = {};
     DOVIStreamInfo doviStreamInfo = {};
     DOVIStreamInfo sourceDoViStreamInfo = {};
