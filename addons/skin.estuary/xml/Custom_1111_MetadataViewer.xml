@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<window type="dialog" id="1111">
+	<defaultcontrol always="true">4000</defaultcontrol>
+	<onload>SetFocus(4000,0)</onload>
+	<include condition="String.IsEqual(Window(home).Property(MetadataViewer.Type),video)">MetadataViewerVideoClearProperty</include>
+	<include>Animation_DialogPopupOpenClose</include>
+	<controls>
+		<control type="group">
+			<centerleft>50%</centerleft>
+			<centertop>50%</centertop>
+			<width>1400</width>
+			<height>760</height>
+			<include>Animation_DialogPopupVisible</include>
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsVisible(script-embuary-video.xml) | Window.IsVisible(script-embuary-person.xml) | Window.IsVisible(script-embuary-image.xml)">Conditional</animation>
+			<include content="DialogBackgroundCommons">
+				<param name="width" value="1400"/>
+				<param name="height" value="760"/>
+				<param name="header_label" value="$INFO[Window(home).Property(MetadataViewer.Header)]"/>
+			</include>
+			<control type="image">
+				<left>0</left>
+				<top>70</top>
+				<width>1383</width>
+				<height>690</height>
+				<texture border="40">buttons/dialogbutton-nofo.png</texture>
+			</control>
+			<control type="list" id="4000">
+				<left>20</left>
+				<top>90</top>
+				<width>1383</width>
+				<height>650</height>
+				<itemgap>0</itemgap>
+				<onleft>60</onleft>
+				<onright>60</onright>
+				<pagecontrol>60</pagecontrol>
+				<orientation>vertical</orientation>
+				<itemlayout height="50" width="1343">
+					<control type="label">
+						<left>16</left>
+						<top>0</top>
+						<width>1311</width>
+						<height>50</height>
+						<aligny>center</aligny>
+						<font>font37</font>
+						<label>[COLOR button_focus]$INFO[ListItem.Property(prefix)]: [/COLOR]$INFO[ListItem.Label2]</label>
+					</control>
+				</itemlayout>
+				<focusedlayout height="50" width="1343">
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<width>1343</width>
+						<height>50</height>
+						<texture colordiffuse="button_focus">lists/focus.png</texture>
+					</control>
+					<control type="label">
+						<left>16</left>
+						<top>0</top>
+						<width>1311</width>
+						<height>50</height>
+						<aligny>center</aligny>
+						<font>font37</font>
+						<scroll>true</scroll>
+						<label>$INFO[ListItem.Property(prefix)]: $INFO[ListItem.Label2]</label>
+					</control>
+				</focusedlayout>
+				<content>
+					<include condition="String.IsEqual(Window(home).Property(MetadataViewer.Type),video)">MetadataViewerVideoList</include>
+					<include condition="String.IsEqual(Window(home).Property(MetadataViewer.Type),album)">MetadataViewerAlbumList</include>
+					<include condition="String.IsEqual(Window(home).Property(MetadataViewer.Type),artist)">MetadataViewerArtistList</include>
+					<include condition="String.IsEqual(Window(home).Property(MetadataViewer.Type),song)">MetadataViewerSongList</include>
+					<include condition="String.IsEqual(Window(home).Property(MetadataViewer.Type),pvr)">MetadataViewerPVRList</include>
+					<include condition="String.IsEqual(Window(home).Property(MetadataViewer.Type),radio)">MetadataViewerRadioList</include>
+					<include condition="String.IsEqual(Window(home).Property(MetadataViewer.Type),radio)">MetadataViewerAddonList</include>
+				</content>
+			</control>
+			<control type="scrollbar" id="60">
+				<left>1368</left>
+				<top>90</top>
+				<height>650</height>
+				<width>12</width>
+				<height>698</height>
+				<onleft>4000</onleft>
+				<onright>4000</onright>
+				<orientation>vertical</orientation>
+				<showonepage>false</showonepage>
+			</control>
+		</control>
+	</controls>
+</window>

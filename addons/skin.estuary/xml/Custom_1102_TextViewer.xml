@@ -4,20 +4,21 @@
 	<include>Animation_DialogPopupOpenClose</include>
 	<controls>
 		<control type="group">
-			<left>13%</left>
+			<centerleft>50%</centerleft>
 			<centertop>50%</centertop>
-			<height>770</height>
+			<width>1400</width>
+			<height>760</height>
 			<include content="DialogBackgroundCommons">
-				<param name="width" value="84%" />
-				<param name="height" value="770" />
+				<param name="width" value="1400" />
+				<param name="height" value="760" />
 				<param name="header_label" value="$INFO[Window(home).Property(TextViewer_Header)]" />
 				<param name="header_id" value="1" />
 			</include>
 			<control type="textbox" id="2000">
-				<left>1%</left>
-				<top>85</top>
-				<width>82%</width>
-				<height>675</height>
+				<left>20</left>
+				<top>90</top>
+				<width>1320</width>
+				<height>650</height>
 				<shadowcolor>black</shadowcolor>
 				<pagecontrol>3000</pagecontrol>
 				<font>font37</font>
@@ -37,7 +38,7 @@
 		</control>
 		<control type="button">
 			<centerleft>50%</centerleft>
-			<top>113</top>
+			<top>120</top>
 			<width>48</width>
 			<height>20</height>
 			<onclick>SetFocus(3000)</onclick>

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+	<include name="MetadataViewerListItem">
+		<item>
+			<label>$INFO[$PARAM[label]]</label>
+			<label2>$INFO[$PARAM[label2]]</label2>
+			<property name="prefix">$PARAM[prefix]</property>
+			<onclick condition="$PARAM[onclick_condition]">$PARAM[onclick]</onclick>
+			<visible>!String.IsEmpty($PARAM[label]) | !String.IsEmpty($PARAM[label2])</visible>
+		</item>
+	</include>
+	<include name="MetadataViewerVideoClearProperty">
+		<onunload>ClearProperty(MetadataViewer.DBType,home)</onunload>
+		<onunload>ClearProperty(MetadataViewer.Header,home)</onunload>
+		<onunload>ClearProperty(MetadataViewer.Type,home)</onunload>
+		<onunload>ClearProperty(MetadataViewer.VideoVersionName,home)</onunload>
+		<onunload>ClearProperty(MetadataViewer.Director,home)</onunload>
+		<onunload>ClearProperty(MetadataViewer.Writer,home)</onunload>
+		<onunload>ClearProperty(MetadataViewer.RatingAndVotes,home)</onunload>
+		<onunload>ClearProperty(MetadataViewer.Genre,home)</onunload>
+		<onunload>ClearProperty(MetadataViewer.Country,home)</onunload>
+		<onunload>ClearProperty(MetadataViewer.Studio,home)</onunload>
+		<onunload>ClearProperty(MetadataViewer.Premiered,home)</onunload>
+		<onunload>ClearProperty(MetadataViewer.Premiered_Tag,home)</onunload>
+		<onunload>ClearProperty(MetadataViewer.Episode,home)</onunload>
+		<onunload>ClearProperty(MetadataViewer.Mpaa,home)</onunload>
+		<onunload>ClearProperty(MetadataViewer.Set,home)</onunload>
+		<onunload>ClearProperty(MetadataViewer.Top250,home)</onunload>
+		<onunload>ClearProperty(MetadataViewer.Tag,home)</onunload>
+		<onunload>ClearProperty(MetadataViewer.Status,home)</onunload>
+		<onunload>ClearProperty(MetadataViewer.DateAdded,home)</onunload>
+		<onunload>ClearProperty(MetadataViewer.PlayCount,home)</onunload>
+		<onunload>ClearProperty(MetadataViewer.LastPlayed,home)</onunload>
+	</include>
+	<include name="MetadataViewerVideoButton">
+		<onclick condition="String.IsEqual(ListItem.DBType,movie)">SetProperty(MetadataViewer.DBType,movie,home)</onclick>
+		<onclick condition="String.IsEqual(ListItem.DBType,set)">SetProperty(MetadataViewer.DBType,set,home)</onclick>
+		<onclick condition="String.IsEqual(ListItem.DBType,tvshow)">SetProperty(MetadataViewer.DBType,tvshow,home)</onclick>
+		<onclick condition="String.IsEqual(ListItem.DBType,season)">SetProperty(MetadataViewer.DBType,season,home)</onclick>
+		<onclick condition="String.IsEqual(ListItem.DBType,episode)">SetProperty(MetadataViewer.DBType,episode,home)</onclick>
+		<onclick condition="String.IsEqual(ListItem.DBType,musicvideo)">SetProperty(MetadataViewer.DBType,musicvideo,home)</onclick>
+		<onclick>SetProperty(MetadataViewer.Header,$LOCALIZE[31047],home)</onclick>
+		<onclick>SetProperty(MetadataViewer.Type,video,home)</onclick>
+		<onclick condition="!String.IsEqual(ListItem.VideoVersionName,$LOCALIZE[40400])">SetProperty(MetadataViewer.VideoVersionName,$INFO[ListItem.VideoVersionName],home)</onclick>
+		<onclick>SetProperty(MetadataViewer.Director,$INFO[ListItem.Director],home)</onclick>
+		<onclick>SetProperty(MetadataViewer.Writer,$INFO[ListItem.Writer],home)</onclick>
+		<onclick>SetProperty(MetadataViewer.RatingAndVotes,$INFO[ListItem.RatingAndVotes],home)</onclick>
+		<onclick>SetProperty(MetadataViewer.Genre,$INFO[ListItem.Genre],home)</onclick>
+		<onclick>SetProperty(MetadataViewer.Country,$INFO[ListItem.Country],home)</onclick>
+		<onclick>SetProperty(MetadataViewer.Studio,$INFO[ListItem.Studio],home)</onclick>
+		<onclick>SetProperty(MetadataViewer.Premiered,$INFO[ListItem.Premiered],home)</onclick>
+		<onclick>SetProperty(MetadataViewer.Episode,$INFO[ListItem.Episode],home)</onclick>
+		<onclick>SetProperty(MetadataViewer.Mpaa,$INFO[ListItem.Mpaa],home)</onclick>
+		<onclick>SetProperty(MetadataViewer.Set,$INFO[ListItem.Set],home)</onclick>
+		<onclick>SetProperty(MetadataViewer.Top250,$INFO[ListItem.Top250],home)</onclick>
+		<onclick>SetProperty(MetadataViewer.Tag,$INFO[ListItem.Tag],home)</onclick>
+		<onclick>SetProperty(MetadataViewer.Status,$INFO[ListItem.Status],home)</onclick>
+		<onclick>SetProperty(MetadataViewer.DateAdded,$INFO[ListItem.DateAdded],home)</onclick>
+		<onclick>SetProperty(MetadataViewer.PlayCount,$INFO[ListItem.PlayCount],home)</onclick>
+		<onclick>SetProperty(MetadataViewer.LastPlayed,$INFO[ListItem.LastPlayed],home)</onclick>
+	</include>
+	<include name="MetadataViewerVideoList">
+		<include condition="!String.IsEqual(ListItem.VideoVersionName,$LOCALIZE[40400])" content="MetadataViewerListItem">
+			<param name="prefix" value="$LOCALIZE[40003]"/>
+			<param name="label" value="ListItem.VideoVersionName"/>
+			<param name="label2" value="Window(home).Property(MetadataViewer.VideoVersionName)"/>
+		</include>
+		<include content="MetadataViewerListItem">
+			<param name="prefix" value="$LOCALIZE[20339]"/>
+			<param name="label" value="ListItem.Director"/>
+			<param name="label2" value="Window(home).Property(MetadataViewer.Director)"/>
+			<param name="onclick_condition" value="System.AddonIsEnabled(script.embuary.info)"/>
+			<param name="onclick" value="RunScript(script.embuary.info,call=person,query='$ESCINFO[Window(home).Property(MetadataViewer.Director)]')"/>
+		</include>
+		<include content="MetadataViewerListItem">
+			<param name="prefix" value="$LOCALIZE[20417]"/>
+			<param name="label" value="ListItem.Writer"/>
+			<param name="label2" value="Window(home).Property(MetadataViewer.Writer)"/>
+			<param name="onclick_condition" value="System.AddonIsEnabled(script.embuary.info)"/>
+			<param name="onclick" value="RunScript(script.embuary.info,call=person,query='$ESCINFO[Window(home).Property(MetadataViewer.Writer)]')"/>
+		</include>
+		<include content="MetadataViewerListItem">
+			<param name="prefix" value="$LOCALIZE[563]"/>
+			<param name="label" value="ListItem.RatingAndVotes"/>
+			<param name="label2" value="Window(home).Property(MetadataViewer.RatingAndVotes)"/>
+		</include>
+		<include content="MetadataViewerListItem">
+			<param name="prefix" value="$LOCALIZE[515]"/>
+			<param name="label" value="ListItem.Genre"/>
+			<param name="label2" value="Window(home).Property(MetadataViewer.Genre)"/>
+		</include>
+		<include content="MetadataViewerListItem">
+			<param name="prefix" value="$LOCALIZE[21875]"/>
+			<param name="label" value="ListItem.Country"/>
+			<param name="label2" value="Window(home).Property(MetadataViewer.Country)"/>
+		</include>
+		<include content="MetadataViewerListItem">
+			<param name="prefix" value="$LOCALIZE[29909]"/>
+			<param name="label" value="ListItem.Studio"/>
+			<param name="label2" value="Window(home).Property(MetadataViewer.Studio)"/>
+		</include>
+		<include condition="Window.IsVisible(1111) + String.IsEqual(Window(home).Property(MetadataViewer.DBType),movie)" content="MetadataViewerListItem">
+			<param name="prefix" value="$LOCALIZE[20473]"/>
+			<param name="label2" value="Window(home).Property(MetadataViewer.Premiered)"/>
+		</include>
+		<include condition="Window.IsVisible(1111) + !String.IsEqual(Window(home).Property(MetadataViewer.DBType),movie)" content="MetadataViewerListItem">
+			<param name="prefix" value="$LOCALIZE[20416]"/>
+			<param name="label2" value="Window(home).Property(MetadataViewer.Premiered)"/>
+		</include>
+		<include condition="!Window.IsVisible(1111) + String.IsEqual(ListItem.DBType,movie)" content="MetadataViewerListItem">
+			<param name="prefix" value="$LOCALIZE[20473]"/>
+			<param name="label" value="ListItem.Premiered"/>
+		</include>
+		<include condition="!Window.IsVisible(1111) + !String.IsEqual(ListItem.DBType,movie)" content="MetadataViewerListItem">
+			<param name="prefix" value="$LOCALIZE[20416]"/>
+			<param name="label" value="ListItem.Premiered"/>
+		</include>
+		<include condition="Window.IsVisible(1111) + !String.IsEmpty(Window(home).Property(MetadataViewer.Episode)) + String.IsEqual(Window(home).Property(MetadataViewer.DBType),season)" content="MetadataViewerListItem">
+			<param name="prefix" value="$LOCALIZE[31048]"/>
+			<param name="label2" value="Window(home).Property(MetadataViewer.Episode),, $LOCALIZE[20453]"/>
+		</include>
+		<include condition="!Window.IsVisible(1111) + !String.IsEmpty(ListItem.Episode) + String.IsEqual(ListItem.DBType,season)" content="MetadataViewerListItem">
+			<param name="prefix" value="$LOCALIZE[31048]"/>
+			<param name="label" value="ListItem.Episode,, $LOCALIZE[20453]"/>
+		</include>
+		<include content="MetadataViewerListItem">
+			<param name="prefix" value="$LOCALIZE[31017]"/>
+			<param name="label" value="ListItem.Mpaa"/>
+			<param name="label2" value="Window(home).Property(MetadataViewer.Mpaa)"/>
+		</include>
+		<include content="MetadataViewerListItem">
+			<param name="prefix" value="$LOCALIZE[20457]"/>
+			<param name="label" value="ListItem.Set"/>
+			<param name="label2" value="Window(home).Property(MetadataViewer.Set)"/>
+		</include>
+		<include content="MetadataViewerListItem">
+			<param name="prefix" value="$LOCALIZE[31059]"/>
+			<param name="label" value="ListItem.Top250,No. "/>
+			<param name="label2" value="Window(home).Property(MetadataViewer.Top250,No. "/>
+		</include>
+		<include content="MetadataViewerListItem">
+			<param name="prefix" value="$LOCALIZE[20459]"/>
+			<param name="label" value="ListItem.Tag"/>
+			<param name="label2" value="Window(home).Property(MetadataViewer.Tag)"/>
+		</include>
+		<include content="MetadataViewerListItem">
+			<param name="prefix" value="$LOCALIZE[126]"/>
+			<param name="label" value="ListItem.Status"/>
+			<param name="label2" value="Window(home).Property(MetadataViewer.Status)"/>
+		</include>
+		<include content="MetadataViewerListItem">
+			<param name="prefix" value="$LOCALIZE[570]"/>
+			<param name="label" value="ListItem.DateAdded"/>
+			<param name="label2" value="Window(home).Property(MetadataViewer.DateAdded)"/>
+		</include>
+		<include content="MetadataViewerListItem">
+			<param name="prefix" value="$LOCALIZE[576]"/>
+			<param name="label" value="ListItem.PlayCount"/>
+			<param name="label2" value="Window(home).Property(MetadataViewer.PlayCount)"/>
+		</include>
+		<include content="MetadataViewerListItem">
+			<param name="prefix" value="$LOCALIZE[568]"/>
+			<param name="label" value="ListItem.LastPlayed"/>
+			<param name="label2" value="Window(home).Property(MetadataViewer.LastPlayed)"/>
+		</include>
+		<include content="MetadataViewerListItem">
+			<param name="prefix" value="$LOCALIZE[564]"/>
+			<param name="label" value="ListItem.DBType"/>
+			<param name="label2" value="Window(home).Property(MetadataViewer.DBType)"/>
+		</include>
+	</include>
+</includes>

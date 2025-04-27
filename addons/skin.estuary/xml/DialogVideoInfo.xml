@@ -118,18 +118,10 @@
 						<onclick condition="!String.IsEmpty(ListItem.Plot)">SetProperty(TextViewer_Text,$ESCINFO[ListItem.Plot],home)</onclick>
 						<onclick condition="!String.IsEmpty(ListItem.Plot)">ActivateWindow(1102)</onclick>
 						<onup>50</onup>
-						<onleft>4000</onleft>
-						<onright>4000</onright>
+						<onleft>4001</onleft>
+						<onright>4001</onright>
 						<ondown>5000</ondown>
 						<texturenofocus border="21">dialogs/dialog-bg.png</texturenofocus>
-						<visible>Integer.IsGreater(Container(4000).NumItems,0)</visible>
-					</control>
-					<control type="image">
-						<left>735</left>
-						<width>509</width>
-						<height>418</height>
-						<aligny>bottom</aligny>
-						<texture border="21">dialogs/dialog-bg.png</texture>
 						<visible>Integer.IsGreater(Container(4000).NumItems,0)</visible>
 					</control>
 					<control type="button" id="139">
@@ -143,157 +135,116 @@
 						<onclick condition="!String.IsEmpty(ListItem.Plot)">SetProperty(TextViewer_Text,$ESCINFO[ListItem.Plot],home)</onclick>
 						<onclick condition="!String.IsEmpty(ListItem.Plot)">ActivateWindow(1102)</onclick>
 						<onup>50</onup>
-						<onleft>4000</onleft>
-						<onright>4000</onright>
+						<onleft>4001</onleft>
+						<onright>4001</onright>
 						<ondown>5000</ondown>
 						<texturenofocus border="21">dialogs/dialog-bg.png</texturenofocus>
 						<visible>!Integer.IsGreater(Container(4000).NumItems,0)</visible>
 					</control>
 					<control type="textbox">
 						<left>40</left>
-						<top>25</top>
+						<top>23</top>
 						<width>670</width>
-						<height>363</height>
+						<height>369</height>
 						<label fallback="19055">$INFO[ListItem.Plot]</label>
 						<autoscroll delay="10000" time="5000" repeat="10000">Skin.HasSetting(AutoScroll)</autoscroll>
 						<visible>Integer.IsGreater(Container(4000).NumItems,0)</visible>
 					</control>
 					<control type="textbox">
 						<left>40</left>
-						<top>25</top>
+						<top>23</top>
 						<width>1165</width>
-						<height>363</height>
+						<height>369</height>
 						<label fallback="19055">$INFO[ListItem.Plot]</label>
 						<autoscroll delay="10000" time="5000" repeat="10000">Skin.HasSetting(AutoScroll)</autoscroll>
 						<visible>!Integer.IsGreater(Container(4000).NumItems,0)</visible>
 					</control>
 				</control>
-				<control type="grouplist" id="4000">
-					<orientation>vertical</orientation>
+				<control type="image">
+					<left>735</left>
+					<top>468</top>
+					<width>509</width>
+					<height>418</height>
+					<texture border="21">dialogs/dialog-bg.png</texture>
+					<visible>!Control.HasFocus(4001) + Integer.IsGreater(Container(4000).NumItems,0)</visible>
+				</control>
+				<control type="image">
+					<left>735</left>
+					<top>468</top>
+					<width>509</width>
+					<height>418</height>
+					<texture border="21" colordiffuse="button_focus">buttons/button-fo.png</texture>
+					<visible>Control.HasFocus(4001) + Integer.IsGreater(Container(4000).NumItems,0)</visible>
+				</control>
+				<control type="list" id="4000">
 					<left>755</left>
-					<top>488</top>
-					<height>377</height>
-					<itemgap>-8</itemgap>
+					<top>493</top>
+					<width>509</width>
+					<height>369</height>
+					<orientation>vertical</orientation>
+					<itemlayout height="41" width="509">
+						<control type="label">
+							<left>16</left>
+							<top>0</top>
+							<width>437</width>
+							<height>41</height>
+							<aligny>center</aligny>
+							<font>font13</font>
+							<label>[COLOR button_focus]$INFO[ListItem.Property(prefix)]: [/COLOR]$INFO[ListItem.Label]</label>
+							<visible>!Control.HasFocus(4001) + !Window.IsVisible(1111)</visible>
+						</control>
+						<control type="label">
+							<left>16</left>
+							<top>0</top>
+							<width>437</width>
+							<height>41</height>
+							<aligny>center</aligny>
+							<font>font13</font>
+							<label>$INFO[ListItem.Property(prefix)]: $INFO[ListItem.Label]</label>
+							<visible>Control.HasFocus(4001) | Window.IsVisible(1111)</visible>
+						</control>
+					</itemlayout>
+					<focusedlayout height="41" width="509">
+						<control type="label">
+							<left>16</left>
+							<top>0</top>
+							<width>437</width>
+							<height>41</height>
+							<aligny>center</aligny>
+							<font>font13</font>
+							<label>[COLOR button_focus]$INFO[ListItem.Property(prefix)]: [/COLOR]$INFO[ListItem.Label]</label>
+							<visible>!Control.HasFocus(4001) + !Window.IsVisible(1111)</visible>
+						</control>
+						<control type="label">
+							<left>16</left>
+							<top>0</top>
+							<width>437</width>
+							<height>41</height>
+							<aligny>center</aligny>
+							<font>font13</font>
+							<label>$INFO[ListItem.Property(prefix)]: $INFO[ListItem.Label]</label>
+							<visible>Control.HasFocus(4001) | Window.IsVisible(1111)</visible>
+						</control>
+					</focusedlayout>
+					<content>
+						<include>MetadataViewerVideoList</include>
+					</content>
+				</control>
+				<control type="button" id="4001">
+					<left>735</left>
+					<top>468</top>
+					<width>509</width>
+					<height>418</height>
+					<label/>
+					<include>MetadataViewerVideoButton</include>
+					<onclick>ActivateWindow(1111)</onclick>
 					<ondown>5000</ondown>
 					<onup>50</onup>
 					<onright>140</onright>
 					<onleft>140</onleft>
-					<include content="InfoDialogMetadata">
-						<param name="control_id" value="146" />
-						<param name="label" value="[COLOR button_focus]$LOCALIZE[40003]: [/COLOR]$INFO[ListItem.VideoVersionName]" />
-						<param name="altlabel" value="$LOCALIZE[40003]: $INFO[ListItem.VideoVersionname]" />
-						<param name="visible" value="!String.IsEmpty(ListItem.VideoVersionName)" />
-					</include>
-					<include content="InfoDialogMetadata">
-						<param name="control_id" value="147" />
-						<param name="label" value="$INFO[ListItem.Director,[COLOR button_focus]$LOCALIZE[20339]: [/COLOR]]" />
-						<param name="altlabel" value="$INFO[ListItem.Director,$LOCALIZE[20339]: ]" />
-						<param name="onclick_condition" value="System.AddonIsEnabled(script.embuary.info)" />
-						<param name="onclick" value="RunScript(script.embuary.info,call=person,query='$ESCINFO[ListItem.Director]')" />
-						<param name="altclick_condition" value="System.AddonIsEnabled(script.embuary.info)" />
-						<param name="altclick" value="RunScript(script.embuary.info,call=person,query='$ESCINFO[ListItem.Director]')" />
-						<param name="visible" value="!String.IsEmpty(ListItem.Director)" />
-					</include>
-					<include content="InfoDialogMetadata">
-						<param name="control_id" value="148" />
-						<param name="label" value="$INFO[ListItem.Writer,[COLOR button_focus]$LOCALIZE[20417]: [/COLOR]]" />
-						<param name="altlabel" value="$INFO[ListItem.Writer,$LOCALIZE[20417]: ]" />
-						<param name="onclick_condition" value="System.AddonIsEnabled(script.embuary.info)" />
-						<param name="onclick" value="RunScript(script.embuary.info,call=person,query='$ESCINFO[ListItem.Writer]')" />
-						<param name="altclick_condition" value="System.AddonIsEnabled(script.embuary.info)" />
-						<param name="altclick" value="RunScript(script.embuary.info,call=person,query='$ESCINFO[ListItem.Writer]')" />
-						<param name="visible" value="!String.IsEmpty(ListItem.Writer)" />
-					</include>
-					<include content="InfoDialogMetadata">
-						<param name="control_id" value="149" />
-						<param name="label" value="[COLOR button_focus]$LOCALIZE[563]: [/COLOR]$INFO[ListItem.RatingAndVotes]" />
-						<param name="altlabel" value="$LOCALIZE[563]: $INFO[ListItem.RatingAndVotes]" />
-						<param name="visible" value="!String.IsEmpty(ListItem.RatingAndVotes)" />
-					</include>
-					<include content="InfoDialogMetadata">
-						<param name="control_id" value="150" />
-						<param name="label" value="[COLOR button_focus]$LOCALIZE[515]: [/COLOR]$INFO[ListItem.Genre]" />
-						<param name="altlabel" value="$LOCALIZE[515]: $INFO[ListItem.Genre]" />
-						<param name="visible" value="!String.IsEmpty(ListItem.Genre) + [String.IsEqual(ListItem.DBType,musicvideo) | String.IsEqual(ListItem.DBType,movie)]" />
-					</include>
-					<include content="InfoDialogMetadata">
-						<param name="control_id" value="152" />
-						<param name="label" value="[COLOR button_focus]$LOCALIZE[21875]: [/COLOR]$INFO[ListItem.Country]" />
-						<param name="altlabel" value="$LOCALIZE[21875]: $INFO[ListItem.Country]" />
-						<param name="visible" value="!String.IsEmpty(ListItem.Country)" />
-					</include>
-					<include content="InfoDialogMetadata">
-						<param name="control_id" value="153" />
-						<param name="label" value="[COLOR button_focus]$LOCALIZE[29909]: [/COLOR]$INFO[ListItem.Studio]" />
-						<param name="altlabel" value="$LOCALIZE[29909]: $INFO[ListItem.Studio]" />
-						<param name="visible" value="!String.IsEmpty(ListItem.Studio)" />
-					</include>
-					<include content="InfoDialogMetadata">
-						<param name="control_id" value="154" />
-						<param name="label" value="[COLOR button_focus]$VAR[FirstAiredLabel]: [/COLOR]$INFO[ListItem.Premiered]" />
-						<param name="altlabel" value="$VAR[FirstAiredLabel]: $INFO[ListItem.Premiered]" />
-						<param name="visible" value="!String.IsEmpty(ListItem.Premiered)" />
-					</include>
-					<include content="InfoDialogMetadata">
-						<param name="control_id" value="155" />
-						<param name="label" value="[COLOR button_focus]$LOCALIZE[31048]: [/COLOR]$INFO[ListItem.Season,, $LOCALIZE[36905]]$INFO[ListItem.Episode, (, $LOCALIZE[20453])]" />
-						<param name="altlabel" value="$LOCALIZE[31048]: $INFO[ListItem.Season,, $LOCALIZE[36905]]$INFO[ListItem.Episode, (, $LOCALIZE[20453])]" />
-						<param name="visible" value="!String.IsEmpty(ListItem.Season) + String.IsEqual(ListItem.DBType,tvshow)" />
-					</include>
-					<include content="InfoDialogMetadata">
-						<param name="control_id" value="156" />
-						<param name="label" value="[COLOR button_focus]$LOCALIZE[31048]: [/COLOR]$INFO[ListItem.Episode,, $LOCALIZE[20453]]" />
-						<param name="altlabel" value="$LOCALIZE[31048]: $INFO[ListItem.Episode,, $LOCALIZE[20453]]" />
-						<param name="visible" value="!String.IsEmpty(ListItem.Episode) + String.IsEqual(ListItem.DBType,season)" />
-					</include>
-					<include content="InfoDialogMetadata">
-						<param name="control_id" value="157" />
-						<param name="label" value="[COLOR button_focus]$LOCALIZE[31017]: [/COLOR]$INFO[ListItem.Mpaa]" />
-						<param name="altlabel" value="$LOCALIZE[31017]: $INFO[ListItem.Mpaa]" />
-						<param name="visible" value="!String.IsEmpty(ListItem.Mpaa)" />
-					</include>
-					<include content="InfoDialogMetadata">
-						<param name="control_id" value="158" />
-						<param name="label" value="[COLOR button_focus]$LOCALIZE[20457]: [/COLOR]$INFO[ListItem.Set]" />
-						<param name="altlabel" value="$LOCALIZE[20457]: $INFO[ListItem.Set]" />
-						<param name="visible" value="!String.IsEmpty(ListItem.Set)" />
-					</include>
-					<include content="InfoDialogMetadata">
-						<param name="control_id" value="159" />
-						<param name="label" value="[COLOR button_focus]$LOCALIZE[20459]: [/COLOR]$INFO[ListItem.Tag]" />
-						<param name="altlabel" value="$LOCALIZE[20459]: $INFO[ListItem.Tag]" />
-						<param name="visible" value="!String.IsEmpty(ListItem.Tag)" />
-					</include>
-					<include content="InfoDialogMetadata">
-						<param name="control_id" value="160" />
-						<param name="label" value="[COLOR button_focus]$LOCALIZE[126]: [/COLOR]$INFO[ListItem.Status]" />
-						<param name="altlabel" value="$LOCALIZE[126]: $INFO[ListItem.Status]" />
-						<param name="visible" value="!String.IsEmpty(ListItem.Status)" />
-					</include>
-					<include content="InfoDialogMetadata">
-						<param name="control_id" value="161" />
-						<param name="label" value="[COLOR button_focus]$LOCALIZE[570]: [/COLOR]$INFO[ListItem.DateAdded]" />
-						<param name="altlabel" value="$LOCALIZE[570]: $INFO[ListItem.DateAdded]" />
-						<param name="visible" value="!String.IsEmpty(ListItem.DateAdded) + [String.IsEqual(ListItem.DBType,episode) | String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,musicvideo) | String.IsEqual(ListItem.DBType,video)]" />
-					</include>
-					<include content="InfoDialogMetadata">
-						<param name="control_id" value="163" />
-						<param name="label" value="[COLOR button_focus]$LOCALIZE[576]: [/COLOR]$INFO[ListItem.PlayCount]" />
-						<param name="altlabel" value="$LOCALIZE[576]: $INFO[ListItem.PlayCount]" />
-						<param name="visible" value="!String.IsEmpty(ListItem.PlayCount)" />
-					</include>
-					<include content="InfoDialogMetadata">
-						<param name="control_id" value="164" />
-						<param name="label" value="[COLOR button_focus]$LOCALIZE[568]: [/COLOR]$INFO[ListItem.LastPlayed]" />
-						<param name="altlabel" value="$LOCALIZE[568]: $INFO[ListItem.LastPlayed]" />
-						<param name="visible" value="!String.IsEmpty(ListItem.LastPlayed)" />
-					</include>
-					<include content="InfoDialogMetadata">
-						<param name="control_id" value="165" />
-						<param name="label" value="[COLOR button_focus]$LOCALIZE[564]: [/COLOR]$INFO[ListItem.DBType]" />
-						<param name="altlabel" value="$LOCALIZE[564]: $INFO[ListItem.DBType]" />
-						<param name="visible" value="!String.IsEmpty(ListItem.DBType)" />
-					</include>
+					<texturefocus/>
+					<texturenofocus/>
+					<visible>Integer.IsGreater(Container(4000).NumItems,0)</visible>
 				</control>
 				<control type="group">
 					<visible>Integer.IsEqual(Container(50).NumItems,0) + String.IsEmpty(ListItem.Art(tvshow.banner)) + String.IsEmpty(ListItem.Art(banner))</visible>
@@ -782,7 +733,7 @@
 			<control type="group">
 				<visible>Control.HasFocus(50) + !String.IsEqual(ListItem.DBType,set)</visible>
 				<animation effect="fade" time="200">VisibleChange</animation>
-				<top>10</top>
+				<top>-10</top>
 				<left>0</left>
 				<control type="image">
 					<left>21</left>
@@ -802,7 +753,7 @@
 			<control type="group">
 				<visible>Control.HasFocus(138)</visible>
 				<animation effect="fade" time="200">VisibleChange</animation>
-				<top>10</top>
+				<top>-10</top>
 				<left>0</left>
 				<control type="image">
 					<top>4</top>
@@ -817,6 +768,26 @@
 					<height>44</height>
 					<shadowcolor>text_shadow</shadowcolor>
 					<label>$LOCALIZE[31126]</label>
+				</control>
+			</control>
+			<control type="group">
+				<visible>Control.HasFocus(4001)</visible>
+				<animation effect="fade" time="200">VisibleChange</animation>
+				<top>-10</top>
+				<left>0</left>
+				<control type="image">
+					<top>4</top>
+					<left>17</left>
+					<width>36</width>
+					<height>36</height>
+					<texture colordiffuse="grey">lists/played-total.png</texture>
+				</control>
+				<control type="label">
+					<left>74</left>
+					<width>800</width>
+					<height>44</height>
+					<shadowcolor>text_shadow</shadowcolor>
+					<label>$LOCALIZE[31124]</label>
 				</control>
 			</control>
 		</control>

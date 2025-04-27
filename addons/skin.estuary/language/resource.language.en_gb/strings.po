@@ -267,7 +267,10 @@ msgctxt "#31046"
 msgid "Delete group"
 msgstr ""
 
-#empty string with id 31047
+#: /xml/Custom_1111_MetadataViewer.xml
+msgctxt "#31047"
+msgid "Video details"
+msgstr ""
 
 #: /xml/DialogVideoInfo.xml
 msgctxt "#31048"
@@ -311,7 +314,12 @@ msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr ""
 
-#empty strings from id 31059 to 31060
+#: /xml/Custom_1111_MetadataViewer.xml
+msgctxt "#31059"
+msgid "IMDb Top 250"
+msgstr ""
+
+#empty string with id 31060
 
 #: /xml/SkinSettings.xml
 msgctxt "#31061"
@@ -583,7 +591,10 @@ msgctxt "#31123"
 msgid "Same director"
 msgstr ""
 
-#empty string with id 31124
+#: /xml/DialogVideoInfo.xml
+msgctxt "#31124"
+msgid "Press OK for full details"
+msgstr ""
 
 #: /xml/DialogVideoInfo.xml
 msgctxt "#31125"
