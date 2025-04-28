@@ -190,18 +190,15 @@ void CFileItemList::AddFront(const CFileItemPtr& pItem, int itemPosition)
 void CFileItemList::Remove(CFileItem* pItem)
 {
   std::unique_lock<CCriticalSection> lock(m_lock);
-
-  for (IVECFILEITEMS it = m_items.begin(); it != m_items.end(); ++it)
+  const auto it =
+      std::ranges::find_if(m_items, [pItem](const auto& item) { return item.get() == pItem; });
+  if (it != m_items.end())
   {
-    if (pItem == it->get())
+    m_items.erase(it);
+    if (m_fastLookup)
     {
-      m_items.erase(it);
-      if (m_fastLookup)
-      {
-        m_map.erase(m_ignoreURLOptions ? CURL(pItem->GetPath()).GetWithoutOptions()
-                                       : pItem->GetPath());
-      }
-      break;
+      m_map.erase(m_ignoreURLOptions ? CURL(pItem->GetPath()).GetWithoutOptions()
+                                     : pItem->GetPath());
     }
   }
 }
