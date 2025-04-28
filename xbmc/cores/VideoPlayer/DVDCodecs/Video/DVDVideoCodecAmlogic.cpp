@@ -66,10 +66,7 @@ CDVDVideoCodecAmlogic::CDVDVideoCodecAmlogic(CProcessInfo &processInfo)
   , m_codecControlFlags(0)
   , m_framerate(0.0)
   , m_video_rate(0)
-  , m_mpeg2_sequence(NULL)
-  , m_h264_sequence(NULL)
   , m_has_keyframe(false)
-  , m_bitparser(NULL)
 {
 }
 
@@ -129,7 +126,7 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
           m_hints.aspect = 16.0 / 9.0;
 
       m_mpeg2_sequence_pts = 0;
-      m_mpeg2_sequence = new mpeg2_sequence;
+      m_mpeg2_sequence = std::make_unique<mpeg2_sequence>();
       m_mpeg2_sequence->width  = m_hints.width;
       m_mpeg2_sequence->height = m_hints.height;
       m_mpeg2_sequence->ratio  = m_hints.aspect;
@@ -164,7 +161,7 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
       if (m_hints.aspect == 0.0)
       {
         m_h264_sequence_pts = 0;
-        m_h264_sequence = new h264_sequence;
+        m_h264_sequence = std::make_unique<h264_sequence>();
         m_h264_sequence->width  = m_hints.width;
         m_h264_sequence->height = m_hints.height;
         m_h264_sequence->ratio  = m_hints.aspect;
@@ -174,6 +171,7 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
         m_pFormatName = "am-h264mvc";
       else
         m_pFormatName = "am-h264";
+
       // convert h264-avcC to h264-annex-b as h264-avcC
       // under streamers can have issues when seeking.
       if (m_hints.extradata && m_hints.extradata.GetData()[0] == 1)
@@ -188,7 +186,7 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
       }
       else
       {
-        m_bitparser = new CBitstreamParser();
+        m_bitparser = std::make_unique<CBitstreamParser>();
         m_bitparser->Open();
       }
 
@@ -429,14 +427,6 @@ void CDVDVideoCodecAmlogic::Close(void)
     m_Codec->CloseDecoder(false), m_Codec = nullptr;
 
   m_videobuffer.iFlags = 0;
-
-  if (m_mpeg2_sequence)
-    delete m_mpeg2_sequence, m_mpeg2_sequence = NULL;
-  if (m_h264_sequence)
-    delete m_h264_sequence, m_h264_sequence = NULL;
-
-  if (m_bitparser)
-    delete m_bitparser, m_bitparser = NULL;
 
   m_opened = false;
 
@@ -687,7 +677,7 @@ void CDVDVideoCodecAmlogic::FrameRateTracking(uint8_t *pData, int iSize, double 
   {
     // probe demux for sequence_header_code NAL and
     // decode aspect ratio and frame rate.
-    if (CBitstreamConverter::mpeg2_sequence_header(pData, iSize, m_mpeg2_sequence) &&
+    if (CBitstreamConverter::mpeg2_sequence_header(pData, iSize, m_mpeg2_sequence.get()) &&
        (m_mpeg2_sequence->fps_rate > 0) && (m_mpeg2_sequence->fps_scale > 0))
     {
       if (!m_mpeg2_sequence->fps_scale || !m_mpeg2_sequence->fps_scale)
@@ -729,7 +719,7 @@ void CDVDVideoCodecAmlogic::FrameRateTracking(uint8_t *pData, int iSize, double 
   if (m_h264_sequence)
   {
     // probe demux for SPS NAL and decode aspect ratio
-    if (CBitstreamConverter::h264_sequence_header(pData, iSize, m_h264_sequence))
+    if (CBitstreamConverter::h264_sequence_header(pData, iSize, m_h264_sequence.get()))
     {
       m_h264_sequence_pts = pts;
       if (m_h264_sequence_pts == DVD_NOPTS_VALUE)
