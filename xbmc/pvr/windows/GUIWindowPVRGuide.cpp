@@ -109,7 +109,7 @@ void CGUIWindowPVRGuideBase::InitEpgGridControl()
 void CGUIWindowPVRGuideBase::ClearData()
 {
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::unique_lock lock(m_critSection);
     m_cachedChannelGroup.reset();
   }
 
@@ -244,7 +244,7 @@ bool CGUIWindowPVRGuideBase::Update(const std::string& strDirectory,
 bool CGUIWindowPVRGuideBase::GetDirectory(const std::string& strDirectory, CFileItemList& items)
 {
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::unique_lock lock(m_critSection);
 
     if (m_cachedChannelGroup && *m_cachedChannelGroup != *GetChannelGroup())
     {
@@ -777,7 +777,7 @@ bool CGUIWindowPVRGuideBase::RefreshTimelineItems()
       epgGridContainer->SetTimelineItems(channels, startDate, endDate);
 
       {
-        std::unique_lock<CCriticalSection> lock(m_critSection);
+        std::unique_lock lock(m_critSection);
         m_cachedChannelGroup = group;
       }
       return true;

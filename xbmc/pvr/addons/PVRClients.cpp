@@ -61,7 +61,7 @@ void CPVRClients::Start()
 
 void CPVRClients::Stop()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   for (const auto& client : m_clientMap)
   {
     client.second->Stop();
@@ -70,7 +70,7 @@ void CPVRClients::Stop()
 
 void CPVRClients::Continue()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   for (const auto& client : m_clientMap)
   {
     client.second->Continue();
@@ -90,7 +90,7 @@ void CPVRClients::UpdateClients(
   std::vector<int> clientsToDestroy; // client id
 
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::unique_lock lock(m_critSection);
     for (const auto& addonWithStatus : addonsWithStatus)
     {
       const AddonInfoPtr addon = addonWithStatus.first;
@@ -209,7 +209,7 @@ void CPVRClients::UpdateClients(
     if (!clientsToCreate.empty())
     {
       // update created clients map
-      std::unique_lock<CCriticalSection> lock(m_critSection);
+      std::unique_lock lock(m_critSection);
       for (const auto& client : clientsToCreate)
       {
         if (m_clientMap.find(client->GetID()) == m_clientMap.end())
@@ -240,7 +240,7 @@ bool CPVRClients::StopClient(int clientId, bool restart)
   if (CServiceBroker::GetPVRManager().PlaybackState()->IsPlaying())
     CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_STOP);
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
 
   const std::shared_ptr<CPVRClient> client = GetClient(clientId);
   if (client)
@@ -294,7 +294,7 @@ std::shared_ptr<CPVRClient> CPVRClients::GetClient(int clientId) const
   if (clientId == PVR_CLIENT_INVALID_UID)
     return {};
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   const auto it = m_clientMap.find(clientId);
   if (it != m_clientMap.end())
     return it->second;
@@ -304,21 +304,21 @@ std::shared_ptr<CPVRClient> CPVRClients::GetClient(int clientId) const
 
 size_t CPVRClients::CreatedClientAmount() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return std::count_if(m_clientMap.cbegin(), m_clientMap.cend(),
                        [](const auto& client) { return client.second->ReadyToUse(); });
 }
 
 bool CPVRClients::HasCreatedClients() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return std::any_of(m_clientMap.cbegin(), m_clientMap.cend(),
                      [](const auto& client) { return client.second->ReadyToUse(); });
 }
 
 bool CPVRClients::IsKnownClient(int clientId) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
 
   // valid client IDs start at 1
   const auto it = m_clientMap.find(clientId);
@@ -343,7 +343,7 @@ CPVRClientMap CPVRClients::GetCreatedClients() const
 {
   CPVRClientMap clients;
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   for (const auto& client : m_clientMap)
   {
     if (client.second->ReadyToUse())
@@ -361,7 +361,7 @@ std::vector<CVariant> CPVRClients::GetClientProviderInfos() const
   // Get enabled and disabled PVR client addon infos
   CServiceBroker::GetAddonMgr().GetAddonInfos(addonInfos, false, AddonType::PVRDLL);
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
 
   std::vector<CVariant> clientProviderInfos;
   for (const auto& addonInfo : addonInfos)
@@ -399,7 +399,7 @@ std::vector<CVariant> CPVRClients::GetClientProviderInfos() const
 
 int CPVRClients::GetFirstCreatedClientID() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   const auto it = std::find_if(m_clientMap.cbegin(), m_clientMap.cend(),
                                [](const auto& client) { return client.second->ReadyToUse(); });
   return it != m_clientMap.cend() ? (*it).second->GetID() : PVR_CLIENT_INVALID_UID;
@@ -439,7 +439,7 @@ size_t CPVRClients::EnabledClientAmount() const
 {
   CPVRClientMap clientMap;
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::unique_lock lock(m_critSection);
     clientMap = m_clientMap;
   }
 
@@ -461,7 +461,7 @@ std::vector<CVariant> CPVRClients::GetEnabledClientInfos() const
 
   CPVRClientMap clientMap;
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::unique_lock lock(m_critSection);
     clientMap = m_clientMap;
   }
 
@@ -498,7 +498,7 @@ std::vector<CVariant> CPVRClients::GetEnabledClientInfos() const
 
 bool CPVRClients::HasIgnoredClients() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return std::any_of(m_clientMap.cbegin(), m_clientMap.cend(),
                      [](const auto& client) { return client.second->IgnoreClient(); });
 }
@@ -508,7 +508,7 @@ std::vector<ADDON::AddonInstanceId> CPVRClients::GetKnownInstanceIds(
 {
   std::vector<ADDON::AddonInstanceId> instanceIds;
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   for (const auto& entry : m_clientMap)
   {
     if (entry.second->ID() == addonID)
@@ -635,7 +635,7 @@ const std::vector<std::shared_ptr<CPVRTimerType>> CPVRClients::GetTimerTypes() c
 {
   std::vector<std::shared_ptr<CPVRTimerType>> types;
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   for (const auto& entry : m_clientMap)
   {
     const auto& client = entry.second;
@@ -738,7 +738,7 @@ std::vector<std::shared_ptr<CPVRClient>> CPVRClients::GetClientsSupportingChanne
 {
   std::vector<std::shared_ptr<CPVRClient>> possibleScanClients;
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   for (const auto& entry : m_clientMap)
   {
     const auto& client = entry.second;
@@ -754,7 +754,7 @@ std::vector<std::shared_ptr<CPVRClient>> CPVRClients::GetClientsSupportingChanne
 {
   std::vector<std::shared_ptr<CPVRClient>> possibleSettingsClients;
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   for (const auto& entry : m_clientMap)
   {
     const auto& client = entry.second;
@@ -772,7 +772,7 @@ std::vector<std::shared_ptr<CPVRClient>> CPVRClients::GetClientsSupportingChanne
 
 bool CPVRClients::AnyClientSupportingRecordingsSize() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return std::any_of(m_clientMap.cbegin(), m_clientMap.cend(), [](const auto& entry) {
     const auto& client = entry.second;
     return client->ReadyToUse() && !client->IgnoreClient() &&
@@ -782,7 +782,7 @@ bool CPVRClients::AnyClientSupportingRecordingsSize() const
 
 bool CPVRClients::AnyClientSupportingEPG() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return std::any_of(m_clientMap.cbegin(), m_clientMap.cend(), [](const auto& entry) {
     const auto& client = entry.second;
     return client->ReadyToUse() && !client->IgnoreClient() &&
@@ -792,7 +792,7 @@ bool CPVRClients::AnyClientSupportingEPG() const
 
 bool CPVRClients::AnyClientSupportingRecordings() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return std::any_of(m_clientMap.cbegin(), m_clientMap.cend(), [](const auto& entry) {
     const auto& client = entry.second;
     return client->ReadyToUse() && !client->IgnoreClient() &&
@@ -802,7 +802,7 @@ bool CPVRClients::AnyClientSupportingRecordings() const
 
 bool CPVRClients::AnyClientSupportingRecordingsDelete() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return std::any_of(m_clientMap.cbegin(), m_clientMap.cend(), [](const auto& entry) {
     const auto& client = entry.second;
     return client->ReadyToUse() && !client->IgnoreClient() &&
@@ -995,7 +995,7 @@ PVR_ERROR CPVRClients::ForClients(const char* strFunctionName,
   failedClients.clear();
 
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::unique_lock lock(m_critSection);
     for (const auto& entry : m_clientMap)
     {
       if (entry.second->ReadyToUse() && !entry.second->IgnoreClient() &&

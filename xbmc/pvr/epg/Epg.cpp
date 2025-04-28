@@ -68,7 +68,7 @@ void CPVREpg::ForceUpdate()
 
 void CPVREpg::Clear()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   m_tags.Clear();
 }
 
@@ -80,31 +80,31 @@ void CPVREpg::Cleanup(int iPastDays)
 
 void CPVREpg::Cleanup(const CDateTime& time)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   m_tags.Cleanup(time);
 }
 
 std::shared_ptr<CPVREpgInfoTag> CPVREpg::GetTagNow() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_tags.GetActiveTag();
 }
 
 std::shared_ptr<CPVREpgInfoTag> CPVREpg::GetTagNext() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_tags.GetNextStartingTag();
 }
 
 std::shared_ptr<CPVREpgInfoTag> CPVREpg::GetTagPrevious() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_tags.GetLastEndedTag();
 }
 
 bool CPVREpg::CheckPlayingEvent()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   if (m_tags.UpdateActiveTag())
   {
     m_events.Publish(PVREvent::EpgActiveItem);
@@ -115,13 +115,13 @@ bool CPVREpg::CheckPlayingEvent()
 
 std::shared_ptr<CPVREpgInfoTag> CPVREpg::GetTagByBroadcastId(unsigned int iUniqueBroadcastId) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_tags.GetTag(iUniqueBroadcastId);
 }
 
 std::shared_ptr<CPVREpgInfoTag> CPVREpg::GetTagByDatabaseId(int iDatabaseId) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_tags.GetTagByDatabaseID(iDatabaseId);
 }
 
@@ -129,7 +129,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpg::GetTagBetween(const CDateTime& beginTim
 {
   std::shared_ptr<CPVREpgInfoTag> tag;
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   tag = m_tags.GetTagBetween(beginTime, endTime);
 
   if (!tag && bUpdateFromClient)
@@ -158,13 +158,13 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpg::GetTimeline(
     const CDateTime& minEventEnd,
     const CDateTime& maxEventStart) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_tags.GetTimeline(timelineStart, timelineEnd, minEventEnd, maxEventStart);
 }
 
 bool CPVREpg::UpdateEntries(const CPVREpg& epg)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
 
   /* copy over tags */
   m_tags.UpdateEntries(epg.m_tags);
@@ -210,12 +210,12 @@ bool CPVREpg::UpdateEntry(const std::shared_ptr<CPVREpgInfoTag>& tag, EPG_EVENT_
 
   if (newState == EPG_EVENT_CREATED || newState == EPG_EVENT_UPDATED)
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::unique_lock lock(m_critSection);
     bRet = !IsTagExpired(tag) && m_tags.UpdateEntry(tag);
   }
   else if (newState == EPG_EVENT_DELETED)
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::unique_lock lock(m_critSection);
     const std::shared_ptr<CPVREpgInfoTag> existingTag = m_tags.GetTag(tag->UniqueBroadcastID());
     if (!existingTag)
     {
@@ -257,7 +257,7 @@ bool CPVREpg::Update(time_t start,
   std::shared_ptr<CPVREpg> tmpEpg;
 
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::unique_lock lock(m_critSection);
 
     if (!m_lastScanTime.IsValid())
     {
@@ -318,7 +318,7 @@ bool CPVREpg::Update(time_t start,
 
 std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpg::GetTags() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_tags.GetAllTags();
 }
 
@@ -363,7 +363,7 @@ bool CPVREpg::QueueDeleteQueries(const std::shared_ptr<CPVREpgDatabase>& databas
     return false;
   }
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
 
   // delete own epg db entry
   database->QueueDeleteEpgQuery(*this);
@@ -381,7 +381,7 @@ bool CPVREpg::QueueDeleteQueries(const std::shared_ptr<CPVREpgDatabase>& databas
 
 std::pair<CDateTime, CDateTime> CPVREpg::GetFirstAndLastUncommitedEPGDate() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_tags.GetFirstAndLastUncommitedEPGDate();
 }
 
@@ -484,38 +484,38 @@ const std::string& CPVREpg::ConvertGenreIdToString(int iID, int iSubID)
 
 std::shared_ptr<CPVREpgChannelData> CPVREpg::GetChannelData() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_channelData;
 }
 
 void CPVREpg::SetChannelData(const std::shared_ptr<CPVREpgChannelData>& data)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   m_channelData = data;
   m_tags.SetChannelData(data);
 }
 
 int CPVREpg::ChannelID() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_channelData->ChannelId();
 }
 
 const std::string& CPVREpg::ScraperName() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_strScraperName;
 }
 
 const std::string& CPVREpg::Name() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_strName;
 }
 
 int CPVREpg::EpgID() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_iEpgID;
 }
 
@@ -526,13 +526,13 @@ bool CPVREpg::UpdatePending() const
 
 bool CPVREpg::NeedsSave() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_bChanged || m_bUpdateLastScanTime || m_tags.NeedsSave();
 }
 
 bool CPVREpg::IsValid() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   if (ScraperName() == "client")
     return m_channelData->ClientId() != PVR_CLIENT_INVALID_UID &&
            m_channelData->UniqueClientChannelId() != PVR_CHANNEL_INVALID_UID;

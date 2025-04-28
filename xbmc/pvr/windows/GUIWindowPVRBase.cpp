@@ -248,7 +248,7 @@ bool CGUIWindowPVRBase::ActivateNextChannelGroup()
 
 void CGUIWindowPVRBase::ClearData()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   m_channelGroup.reset();
   m_channelGroupsSelector = std::make_unique<CGUIPVRChannelGroupsSelector>();
 }
@@ -507,7 +507,7 @@ bool CGUIWindowPVRBase::InitChannelGroup()
 
   if (group)
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::unique_lock lock(m_critSection);
     if (m_channelGroup != group)
     {
       m_viewControl.SetSelectedItem(0);
@@ -522,7 +522,7 @@ bool CGUIWindowPVRBase::InitChannelGroup()
 
 std::shared_ptr<CPVRChannelGroup> CGUIWindowPVRBase::GetChannelGroup()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_channelGroup;
 }
 
@@ -533,7 +533,7 @@ void CGUIWindowPVRBase::SetChannelGroup(std::shared_ptr<CPVRChannelGroup> &&grou
 
   std::shared_ptr<CPVRChannelGroup> updateChannelGroup;
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::unique_lock lock(m_critSection);
     if (m_channelGroup != group)
     {
       if (m_channelGroup)
@@ -558,7 +558,7 @@ void CGUIWindowPVRBase::SetChannelGroupPath(const std::string& path)
   const CURL url{path};
   const std::string pathWithoutOptions{url.GetWithoutOptions()};
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   if (m_channelGroupPath != pathWithoutOptions)
   {
     m_channelGroupPath = pathWithoutOptions;

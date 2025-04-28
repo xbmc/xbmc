@@ -36,7 +36,7 @@ CPVRGUITimesInfo::CPVRGUITimesInfo()
 
 void CPVRGUITimesInfo::Reset()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
 
   m_iStartTime = 0;
   m_iDuration = 0;
@@ -67,7 +67,7 @@ void CPVRGUITimesInfo::UpdatePlayingTag()
     const std::shared_ptr<const CPVRChannelGroupsContainer> groups =
         CServiceBroker::GetPVRManager().ChannelGroups();
 
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::unique_lock lock(m_critSection);
 
     const std::shared_ptr<const CPVRChannel> playingChannel =
         m_playingEpgTag ? groups->GetChannelForEpgTag(m_playingEpgTag) : nullptr;
@@ -100,7 +100,7 @@ void CPVRGUITimesInfo::UpdatePlayingTag()
         CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingRecording();
     if (recording)
     {
-      std::unique_lock<CCriticalSection> lock(m_critSection);
+      std::unique_lock lock(m_critSection);
       m_playingEpgTag.reset();
       m_iDuration = recording->GetDuration();
     }
@@ -124,7 +124,7 @@ void CPVRGUITimesInfo::UpdateTimeshiftData()
   const std::shared_ptr<const CPVRChannel> playingChannel =
       CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannel();
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
 
   if (playingChannel != m_playingChannel)
   {
@@ -182,7 +182,7 @@ void CPVRGUITimesInfo::UpdateTimeshiftProgressData()
   //       In simple timeshift mode (settings value), progress start is always the start time of
   //       playing epg event and progress end is always the end time of playing epg event.
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
 
   //////////////////////////////////////////////////////////////////////////////////////
   // start time
@@ -253,50 +253,50 @@ std::string CPVRGUITimesInfo::TimeToTimeString(time_t datetime, TIME_FORMAT form
 
 std::string CPVRGUITimesInfo::GetTimeshiftStartTime(TIME_FORMAT format) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return TimeToTimeString(m_iTimeshiftStartTime, format, false);
 }
 
 std::string CPVRGUITimesInfo::GetTimeshiftEndTime(TIME_FORMAT format) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return TimeToTimeString(m_iTimeshiftEndTime, format, false);
 }
 
 std::string CPVRGUITimesInfo::GetTimeshiftPlayTime(TIME_FORMAT format) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return TimeToTimeString(m_iTimeshiftPlayTime, format, true);
 }
 
 std::string CPVRGUITimesInfo::GetTimeshiftOffset(TIME_FORMAT format) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return StringUtils::SecondsToTimeString(m_iTimeshiftOffset, format);
 }
 
 std::string CPVRGUITimesInfo::GetTimeshiftProgressDuration(TIME_FORMAT format) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return StringUtils::SecondsToTimeString(m_iTimeshiftProgressDuration, format);
 }
 
 std::string CPVRGUITimesInfo::GetTimeshiftProgressStartTime(TIME_FORMAT format) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return TimeToTimeString(m_iTimeshiftProgressStartTime, format, false);
 }
 
 std::string CPVRGUITimesInfo::GetTimeshiftProgressEndTime(TIME_FORMAT format) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return TimeToTimeString(m_iTimeshiftProgressEndTime, format, false);
 }
 
 std::string CPVRGUITimesInfo::GetEpgEventDuration(
     const std::shared_ptr<const CPVREpgInfoTag>& epgTag, TIME_FORMAT format) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return StringUtils::SecondsToTimeString(GetEpgEventDuration(epgTag), format);
 }
 
@@ -304,7 +304,7 @@ std::string CPVRGUITimesInfo::GetEpgEventElapsedTime(
     const std::shared_ptr<const CPVREpgInfoTag>& epgTag, TIME_FORMAT format) const
 {
   int iElapsed = 0;
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   if (epgTag && m_playingEpgTag && *epgTag != *m_playingEpgTag)
     iElapsed = epgTag->Progress();
   else
@@ -316,7 +316,7 @@ std::string CPVRGUITimesInfo::GetEpgEventElapsedTime(
 std::string CPVRGUITimesInfo::GetEpgEventRemainingTime(
     const std::shared_ptr<const CPVREpgInfoTag>& epgTag, TIME_FORMAT format) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return StringUtils::SecondsToTimeString(GetRemainingTime(epgTag), format);
 }
 
@@ -335,7 +335,7 @@ std::string CPVRGUITimesInfo::GetEpgEventSeekTime(int iSeekSize, TIME_FORMAT for
 
 int CPVRGUITimesInfo::GetElapsedTime() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   if (m_playingEpgTag || m_iTimeshiftStartTime)
   {
     CDateTime current(m_iTimeshiftPlayTime);
@@ -351,7 +351,7 @@ int CPVRGUITimesInfo::GetElapsedTime() const
 
 int CPVRGUITimesInfo::GetRemainingTime(const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   if (epgTag && m_playingEpgTag && *epgTag != *m_playingEpgTag)
     return epgTag->GetDuration() - epgTag->Progress();
   else
@@ -360,7 +360,7 @@ int CPVRGUITimesInfo::GetRemainingTime(const std::shared_ptr<const CPVREpgInfoTa
 
 int CPVRGUITimesInfo::GetTimeshiftProgress() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   const std::chrono::duration<double> total{m_iTimeshiftEndTime - m_iTimeshiftStartTime};
   if (total.count())
   {
@@ -372,13 +372,13 @@ int CPVRGUITimesInfo::GetTimeshiftProgress() const
 
 int CPVRGUITimesInfo::GetTimeshiftProgressDuration() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return static_cast<int>(m_iTimeshiftProgressDuration);
 }
 
 int CPVRGUITimesInfo::GetTimeshiftProgressPlayPosition() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   if (m_iTimeshiftProgressDuration)
   {
     const std::chrono::duration<double> duration{m_iTimeshiftPlayTime -
@@ -390,7 +390,7 @@ int CPVRGUITimesInfo::GetTimeshiftProgressPlayPosition() const
 
 int CPVRGUITimesInfo::GetTimeshiftProgressEpgStart() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   if (m_playingEpgTag && m_iTimeshiftProgressDuration)
   {
     time_t epgStart = 0;
@@ -403,7 +403,7 @@ int CPVRGUITimesInfo::GetTimeshiftProgressEpgStart() const
 
 int CPVRGUITimesInfo::GetTimeshiftProgressEpgEnd() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   if (m_playingEpgTag && m_iTimeshiftProgressDuration)
   {
     time_t epgEnd = 0;
@@ -416,7 +416,7 @@ int CPVRGUITimesInfo::GetTimeshiftProgressEpgEnd() const
 
 int CPVRGUITimesInfo::GetTimeshiftProgressBufferStart() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   if (m_iTimeshiftProgressDuration)
   {
     const std::chrono::duration<double> duration{m_iTimeshiftStartTime -
@@ -428,7 +428,7 @@ int CPVRGUITimesInfo::GetTimeshiftProgressBufferStart() const
 
 int CPVRGUITimesInfo::GetTimeshiftProgressBufferEnd() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   if (m_iTimeshiftProgressDuration)
   {
     const std::chrono::duration<double> duration{m_iTimeshiftEndTime -
@@ -440,7 +440,7 @@ int CPVRGUITimesInfo::GetTimeshiftProgressBufferEnd() const
 
 int CPVRGUITimesInfo::GetEpgEventDuration(const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   if (epgTag && m_playingEpgTag && *epgTag != *m_playingEpgTag)
     return epgTag->GetDuration();
   else
@@ -449,7 +449,7 @@ int CPVRGUITimesInfo::GetEpgEventDuration(const std::shared_ptr<const CPVREpgInf
 
 int CPVRGUITimesInfo::GetEpgEventProgress(const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   if (epgTag && m_playingEpgTag && *epgTag != *m_playingEpgTag)
     return MathUtils::round_int(epgTag->ProgressPercentage());
   else if (m_iDuration)
@@ -460,6 +460,6 @@ int CPVRGUITimesInfo::GetEpgEventProgress(const std::shared_ptr<const CPVREpgInf
 
 bool CPVRGUITimesInfo::IsTimeshifting() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return (m_iTimeshiftOffset > static_cast<unsigned int>(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeshiftThreshold));
 }
