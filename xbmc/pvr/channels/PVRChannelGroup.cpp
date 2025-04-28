@@ -589,7 +589,7 @@ void CPVRChannelGroup::DeleteGroupMembersFromDb(
 
     for (const auto& member : membersToDelete)
     {
-      commitPending |= database->QueueDeleteQuery(*member);
+      commitPending |= database->QueueGroupMemberDeleteQuery(*member);
 
       size_t queryCount = database->GetDeleteQueriesCount();
       if (queryCount > CHANNEL_COMMIT_QUERY_COUNT_LIMIT)

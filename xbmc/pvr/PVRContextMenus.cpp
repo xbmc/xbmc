@@ -571,7 +571,7 @@ bool DeleteTimerRule::IsVisible(const CFileItem& item) const
 
 bool DeleteTimerRule::Execute(const CFileItemPtr& item) const
 {
-  auto& timers = CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>();
+  const auto& timers{CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>()};
   const std::shared_ptr<CFileItem> parentTimer = timers.GetTimerRule(*item);
   if (parentTimer)
     return timers.DeleteTimerRule(*parentTimer);
@@ -852,8 +852,7 @@ void CPVRContextMenuManager::RemoveMenuHook(const CPVRClientMenuHook& hook)
 
   for (auto it = m_items.begin(); it < m_items.end(); ++it)
   {
-    const CONTEXTMENUITEM::PVRClientMenuHook* cmh =
-        dynamic_cast<const CONTEXTMENUITEM::PVRClientMenuHook*>((*it).get());
+    const auto* cmh{dynamic_cast<const CONTEXTMENUITEM::PVRClientMenuHook*>((*it).get())};
     if (cmh && cmh->GetHook() == hook)
     {
       m_events.Publish(PVRContextMenuEvent(PVRContextMenuEventAction::REMOVE_ITEM, *it));

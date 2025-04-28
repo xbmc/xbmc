@@ -26,7 +26,6 @@ namespace PVR
   class CPVRProviders;
   class CPVRClient;
   class CPVRTimerInfoTag;
-  class CPVRTimers;
 
   /** The PVR database */
 
@@ -145,14 +144,14 @@ namespace PVR
      * @param bCommit queue only or queue and commit
      * @return True when persisted or queued, false otherwise.
      */
-    bool Persist(CPVRChannel& channel, bool bCommit);
+    bool Persist(const CPVRChannel& channel, bool bCommit);
 
     /*!
      * @brief Remove a channel entry from the database
      * @param channel The channel to remove.
      * @return True if the channel was removed, false otherwise.
      */
-    bool QueueDeleteQuery(const CPVRChannel& channel);
+    bool QueueChannelDeleteQuery(const CPVRChannel& channel);
 
     //@}
 
@@ -164,7 +163,7 @@ namespace PVR
      * @param groupMember The group member to remove.
      * @return True if the member was removed, false otherwise.
      */
-    bool QueueDeleteQuery(const CPVRChannelGroupMember& groupMember);
+    bool QueueGroupMemberDeleteQuery(const CPVRChannelGroupMember& groupMember);
 
     //@}
 
@@ -268,12 +267,11 @@ namespace PVR
 
     /*!
      * @brief Get the timers.
-     * @param timers The container for the timers.
      * @param clients The PVR clients the timers should be loaded for. Leave empty for all clients.
      * @return The timers.
      */
     std::vector<std::shared_ptr<CPVRTimerInfoTag>> GetTimers(
-        CPVRTimers& timers, const std::vector<std::shared_ptr<CPVRClient>>& clients) const;
+        const std::vector<std::shared_ptr<CPVRClient>>& clients) const;
 
     /*!
      * @brief Add or update a timer entry in the database

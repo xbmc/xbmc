@@ -45,7 +45,7 @@ namespace
 {
 // clang-format off
 
-  static const std::string sqlCreateTimersTable =
+  const std::string sqlCreateTimersTable =
     "CREATE TABLE timers ("
       "iClientIndex       integer primary key, "
       "iParentClientIndex integer, "
@@ -73,7 +73,7 @@ namespace
       "iRecordingGroup    integer"
   ")";
 
-  static const std::string sqlCreateProvidersTable =
+  const std::string sqlCreateProvidersTable =
     "CREATE TABLE providers ("
       "idProvider           integer primary key, "
       "iUniqueId            integer, "
@@ -85,33 +85,33 @@ namespace
       "sLanguages           varchar(64) "
     ")";
 
-  // clang-format on
+// clang-format on
 
-  std::string GetClientIdsSQL(const std::vector<std::shared_ptr<CPVRClient>>& clients,
-                              bool migrate = false)
+std::string GetClientIdsSQL(const std::vector<std::shared_ptr<CPVRClient>>& clients,
+                            bool migrate = false)
+{
+  if (clients.empty() && !migrate)
+    return {};
+
+  std::string clientIds{"("};
+  for (auto it = clients.cbegin(); it != clients.cend(); ++it)
   {
-    if (clients.empty() && !migrate)
-      return {};
+    if (it != clients.cbegin())
+      clientIds += " OR ";
 
-    std::string clientIds = "(";
-    for (auto it = clients.cbegin(); it != clients.cend(); ++it)
-    {
-      if (it != clients.cbegin())
-        clientIds += " OR ";
-
-      clientIds += "iClientId = ";
-      clientIds += std::to_string((*it)->GetID());
-    }
-    if (migrate)
-    {
-      if (!clients.empty())
-        clientIds += " OR ";
-
-      clientIds += "iClientId = -2"; // PVR_GROUP_CLIENT_ID_UNKNOWN
-    }
-    clientIds += ")";
-    return clientIds;
+    clientIds += "iClientId = ";
+    clientIds += std::to_string((*it)->GetID());
   }
+  if (migrate)
+  {
+    if (!clients.empty())
+      clientIds += " OR ";
+
+    clientIds += "iClientId = -2"; // PVR_GROUP_CLIENT_ID_UNKNOWN
+  }
+  clientIds += ")";
+  return clientIds;
+}
 
 } // unnamed namespace
 
@@ -679,8 +679,8 @@ bool CPVRDatabase::Get(CPVRProviders& results,
     {
       while (!m_pDS->eof())
       {
-        std::shared_ptr<CPVRProvider> provider = std::make_shared<CPVRProvider>(
-            m_pDS->fv("iUniqueId").get_asInt(), m_pDS->fv("iClientId").get_asInt());
+        const auto provider{std::make_shared<CPVRProvider>(m_pDS->fv("iUniqueId").get_asInt(),
+                                                           m_pDS->fv("iClientId").get_asInt())};
 
         provider->SetDatabaseId(m_pDS->fv("idProvider").get_asInt());
         provider->SetName(m_pDS->fv("sName").get_asString());
@@ -738,8 +738,8 @@ int CPVRDatabase::Get(bool bRadio,
     {
       while (!m_pDS->eof())
       {
-        const std::shared_ptr<CPVRChannel> channel(new CPVRChannel(
-            m_pDS->fv("bIsRadio").get_asBool(), m_pDS->fv("sIconPath").get_asString()));
+        const auto channel{std::make_shared<CPVRChannel>(m_pDS->fv("bIsRadio").get_asBool(),
+                                                         m_pDS->fv("sIconPath").get_asString())};
 
         channel->m_iChannelId = m_pDS->fv("idChannel").get_asInt();
         channel->m_iUniqueId = m_pDS->fv("iUniqueId").get_asInt();
@@ -797,7 +797,7 @@ bool CPVRDatabase::DeleteChannels()
   return DeleteValues("channels");
 }
 
-bool CPVRDatabase::QueueDeleteQuery(const CPVRChannel& channel)
+bool CPVRDatabase::QueueChannelDeleteQuery(const CPVRChannel& channel)
 {
   /* invalid channel */
   if (channel.ChannelID() <= 0)
@@ -821,7 +821,7 @@ bool CPVRDatabase::QueueDeleteQuery(const CPVRChannel& channel)
 
 /********** Channel group member methods **********/
 
-bool CPVRDatabase::QueueDeleteQuery(const CPVRChannelGroupMember& groupMember)
+bool CPVRDatabase::QueueGroupMemberDeleteQuery(const CPVRChannelGroupMember& groupMember)
 {
   CLog::LogFC(LOGDEBUG, LOGPVR, "Queueing delete for channel group member '{}' from the database",
               groupMember.Channel() ? groupMember.Channel()->ChannelName()
@@ -1018,9 +1018,9 @@ bool CPVRDatabase::PersistChannels(const CPVRChannelGroup& group)
   bool bReturn(true);
 
   std::shared_ptr<CPVRChannel> channel;
-  for (const auto& groupMember : group.m_members)
+  for (const auto& [_, groupMember] : group.m_members)
   {
-    channel = groupMember.second->Channel();
+    channel = groupMember->Channel();
     if (channel->IsChanged() || channel->IsNew())
     {
       if (Persist(*channel, false))
@@ -1037,9 +1037,9 @@ bool CPVRDatabase::PersistChannels(const CPVRChannelGroup& group)
   {
     std::string strQuery;
     std::string strValue;
-    for (const auto& groupMember : group.m_members)
+    for (const auto& [_, groupMember] : group.m_members)
     {
-      channel = groupMember.second->Channel();
+      channel = groupMember->Channel();
       strQuery =
           PrepareSQL("iUniqueId = %i AND iClientId = %i", channel->UniqueID(), channel->ClientID());
       strValue = GetSingleValue("channels", "idChannel", strQuery);
@@ -1047,7 +1047,7 @@ bool CPVRDatabase::PersistChannels(const CPVRChannelGroup& group)
       {
         const int iChannelID = std::atoi(strValue.c_str());
         channel->SetChannelID(iChannelID);
-        groupMember.second->m_iChannelDatabaseID = iChannelID;
+        groupMember->m_iChannelDatabaseID = iChannelID;
       }
     }
   }
@@ -1185,7 +1185,7 @@ bool CPVRDatabase::Persist(CPVRChannelGroup& group)
   return bReturn;
 }
 
-bool CPVRDatabase::Persist(CPVRChannel& channel, bool bCommit)
+bool CPVRDatabase::Persist(const CPVRChannel& channel, bool bCommit)
 {
   bool bReturn(false);
 
@@ -1287,7 +1287,7 @@ bool CPVRDatabase::UpdateLastOpened(const CPVRChannelGroup& group)
 /********** Timer methods **********/
 
 std::vector<std::shared_ptr<CPVRTimerInfoTag>> CPVRDatabase::GetTimers(
-    CPVRTimers& timers, const std::vector<std::shared_ptr<CPVRClient>>& clients) const
+    const std::vector<std::shared_ptr<CPVRClient>>& clients) const
 {
   std::vector<std::shared_ptr<CPVRTimerInfoTag>> result;
 
@@ -1304,7 +1304,7 @@ std::vector<std::shared_ptr<CPVRTimerInfoTag>> CPVRDatabase::GetTimers(
     {
       while (!m_pDS->eof())
       {
-        std::shared_ptr<CPVRTimerInfoTag> newTag(new CPVRTimerInfoTag());
+        const auto newTag{std::make_shared<CPVRTimerInfoTag>()};
 
         newTag->m_iClientIndex = -m_pDS->fv("iClientIndex").get_asInt();
         newTag->m_iParentClientIndex = m_pDS->fv("iParentClientIndex").get_asInt();
@@ -1315,11 +1315,12 @@ std::vector<std::shared_ptr<CPVRTimerInfoTag>> CPVRDatabase::GetTimers(
         newTag->m_strTitle = m_pDS->fv("sTitle").get_asString().c_str();
         newTag->m_iClientChannelUid = m_pDS->fv("iClientChannelUid").get_asInt();
         newTag->m_strSeriesLink = m_pDS->fv("sSeriesLink").get_asString().c_str();
-        newTag->SetStartFromUTC(CDateTime::FromDBDateTime(m_pDS->fv("sStartTime").get_asString().c_str()));
+        newTag->SetStartFromUTC(CDateTime::FromDBDateTime(m_pDS->fv("sStartTime").get_asString()));
         newTag->m_bStartAnyTime = m_pDS->fv("bStartAnyTime").get_asBool();
-        newTag->SetEndFromUTC(CDateTime::FromDBDateTime(m_pDS->fv("sEndTime").get_asString().c_str()));
+        newTag->SetEndFromUTC(CDateTime::FromDBDateTime(m_pDS->fv("sEndTime").get_asString()));
         newTag->m_bEndAnyTime = m_pDS->fv("bEndAnyTime").get_asBool();
-        newTag->SetFirstDayFromUTC(CDateTime::FromDBDateTime(m_pDS->fv("sFirstDay").get_asString().c_str()));
+        newTag->SetFirstDayFromUTC(
+            CDateTime::FromDBDateTime(m_pDS->fv("sFirstDay").get_asString()));
         newTag->m_iWeekdays = m_pDS->fv("iWeekdays").get_asInt();
         newTag->m_iEpgUid = m_pDS->fv("iEpgUid").get_asInt();
         newTag->m_iMarginStart = m_pDS->fv("iMarginStart").get_asInt();

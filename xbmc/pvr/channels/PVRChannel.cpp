@@ -125,7 +125,7 @@ bool CPVRChannel::QueueDelete()
   if (epg)
     ResetEPG();
 
-  bReturn = database->QueueDeleteQuery(*this);
+  bReturn = database->QueueChannelDeleteQuery(*this);
   return bReturn;
 }
 

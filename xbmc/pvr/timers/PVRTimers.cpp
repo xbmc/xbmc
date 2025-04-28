@@ -114,8 +114,7 @@ bool CPVRTimers::LoadFromDatabase(const std::vector<std::shared_ptr<CPVRClient>>
       CServiceBroker::GetPVRManager().GetTVDatabase();
   if (database)
   {
-    const std::vector<std::shared_ptr<CPVRTimerInfoTag>> timers =
-        database->GetTimers(*this, clients);
+    const std::vector<std::shared_ptr<CPVRTimerInfoTag>> timers{database->GetTimers(clients)};
 
     if (std::accumulate(timers.cbegin(), timers.cend(), false,
                         [this](bool changed, const auto& timer) {
