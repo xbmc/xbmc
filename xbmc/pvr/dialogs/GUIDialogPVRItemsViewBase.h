@@ -32,7 +32,6 @@ public:
 protected:
   void Init();
 
-  void OnInitWindow() override;
   void OnDeinitWindow(int nextWindowID) override;
   CGUIControl* GetFirstFocusableControl(int id) override;
 
@@ -41,7 +40,7 @@ protected:
 
 private:
   void Clear();
-  void ShowInfo(int itemIdx);
+  void ShowInfo(int itemIdx) const;
   bool ContextMenu(int iItemIdx);
 };
 } // namespace PVR

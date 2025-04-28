@@ -50,7 +50,7 @@ private:
   void SaveList();
   void Renumber();
   void SetData(int iItem);
-  void RenameChannel(const CFileItemPtr& pItem);
+  void RenameChannel(const std::shared_ptr<CFileItem>& pItem) const;
 
   void ClearChannelOptions();
   void EnableChannelOptions(bool bEnable);
@@ -75,7 +75,7 @@ private:
   bool OnClickButtonRefreshChannelLogos();
 
   bool UpdateChannelData(const std::shared_ptr<CFileItem>& pItem,
-                         const std::shared_ptr<CPVRChannelGroup>& group);
+                         const std::shared_ptr<CPVRChannelGroup>& group) const;
 
   bool HasChangedItems() const;
   void SetItemChanged(const CFileItemPtr& pItem);
@@ -88,7 +88,7 @@ private:
 
   std::shared_ptr<CFileItem> m_initialSelection;
   int m_iSelected = 0;
-  CFileItemList* m_channelItems;
+  std::unique_ptr<CFileItemList> m_channelItems;
   CGUIViewControl m_viewControl;
 
   std::vector<std::shared_ptr<CPVRClient>> m_clientsWithSettingsList;

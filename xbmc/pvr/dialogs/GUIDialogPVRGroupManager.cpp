@@ -21,7 +21,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
-#include "messaging/helpers//DialogOKHelper.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
 #include "pvr/addons/PVRClient.h"
@@ -43,42 +43,36 @@
 using namespace KODI::MESSAGING;
 using namespace PVR;
 
-#define CONTROL_LIST_CHANNELS_LEFT 11
-#define CONTROL_LIST_CHANNELS_RIGHT 12
-#define CONTROL_LIST_CHANNEL_GROUPS 13
-#define CONTROL_CURRENT_GROUP_LABEL 20
-#define CONTROL_UNGROUPED_LABEL 21
-#define CONTROL_IN_GROUP_LABEL 22
-#define BUTTON_HIDE_GROUP 25
-#define BUTTON_NEWGROUP 26
-#define BUTTON_RENAMEGROUP 27
-#define BUTTON_DELGROUP 28
-#define BUTTON_OK 29
-#define BUTTON_TOGGLE_RADIO_TV 34
-#define BUTTON_RECREATE_GROUP_THUMB 35
-
 namespace
 {
+constexpr unsigned int CONTROL_LIST_CHANNELS_LEFT = 11;
+constexpr unsigned int CONTROL_LIST_CHANNELS_RIGHT = 12;
+constexpr unsigned int CONTROL_LIST_CHANNEL_GROUPS = 13;
+constexpr unsigned int CONTROL_CURRENT_GROUP_LABEL = 20;
+constexpr unsigned int CONTROL_UNGROUPED_LABEL = 21;
+constexpr unsigned int CONTROL_IN_GROUP_LABEL = 22;
+constexpr unsigned int BUTTON_HIDE_GROUP = 25;
+constexpr unsigned int BUTTON_NEWGROUP = 26;
+constexpr unsigned int BUTTON_RENAMEGROUP = 27;
+constexpr unsigned int BUTTON_DELGROUP = 28;
+constexpr unsigned int BUTTON_OK = 29;
+constexpr unsigned int BUTTON_TOGGLE_RADIO_TV = 34;
+constexpr unsigned int BUTTON_RECREATE_GROUP_THUMB = 35;
+
 constexpr const char* PROPERTY_CLIENT_NAME = "ClientName";
 
 } // namespace
 
 CGUIDialogPVRGroupManager::CGUIDialogPVRGroupManager()
-  : CGUIDialog(WINDOW_DIALOG_PVR_GROUP_MANAGER, "DialogPVRGroupManager.xml")
+  : CGUIDialog(WINDOW_DIALOG_PVR_GROUP_MANAGER, "DialogPVRGroupManager.xml"),
+    m_ungroupedChannels(std::make_unique<CFileItemList>()),
+    m_groupMembers(std::make_unique<CFileItemList>()),
+    m_channelGroups(std::make_unique<CFileItemList>())
 {
-  m_ungroupedChannels = new CFileItemList;
-  m_groupMembers = new CFileItemList;
-  m_channelGroups = new CFileItemList;
-
   SetRadio(false);
 }
 
-CGUIDialogPVRGroupManager::~CGUIDialogPVRGroupManager()
-{
-  delete m_ungroupedChannels;
-  delete m_groupMembers;
-  delete m_channelGroups;
-}
+CGUIDialogPVRGroupManager::~CGUIDialogPVRGroupManager() = default;
 
 void CGUIDialogPVRGroupManager::SetRadio(bool bIsRadio)
 {
@@ -400,17 +394,13 @@ bool CGUIDialogPVRGroupManager::ActionButtonHideGroup(const CGUIMessage& message
 
   if (message.GetSenderId() == BUTTON_HIDE_GROUP && m_selectedGroup)
   {
-    CGUIRadioButtonControl* button =
-        static_cast<CGUIRadioButtonControl*>(GetControl(message.GetSenderId()));
-    if (button)
+    const auto* button{static_cast<CGUIRadioButtonControl*>(GetControl(message.GetSenderId()))};
+    if (button && CServiceBroker::GetPVRManager()
+                      .ChannelGroups()
+                      ->Get(m_bIsRadio)
+                      ->HideGroup(m_selectedGroup, button->IsSelected()))
     {
-      if (CServiceBroker::GetPVRManager()
-              .ChannelGroups()
-              ->Get(m_bIsRadio)
-              ->HideGroup(m_selectedGroup, button->IsSelected()))
-      {
-        Update();
-      }
+      Update();
     }
 
     bReturn = true;
@@ -458,15 +448,9 @@ bool CGUIDialogPVRGroupManager::OnMessageClick(const CGUIMessage& message)
 
 bool CGUIDialogPVRGroupManager::OnMessage(CGUIMessage& message)
 {
-  unsigned int iMessage = message.GetMessage();
-
-  switch (iMessage)
+  if (message.GetMessage() == GUI_MSG_CLICKED)
   {
-    case GUI_MSG_CLICKED:
-    {
-      OnMessageClick(message);
-    }
-    break;
+    OnMessageClick(message);
   }
 
   return CGUIDialog::OnMessage(message);
@@ -605,7 +589,7 @@ void CGUIDialogPVRGroupManager::Update()
   // get the groups list
   CPVRGUIDirectory::GetChannelGroupsDirectory(m_bIsRadio, false, *m_channelGroups);
 
-  for (auto& group : *m_channelGroups)
+  for (const auto& group : *m_channelGroups)
   {
     const std::shared_ptr<const CPVRClient> client =
         CServiceBroker::GetPVRManager().GetClient(*group);
