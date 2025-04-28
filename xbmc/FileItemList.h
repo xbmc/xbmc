@@ -16,6 +16,10 @@
 #include "FileItem.h"
 #include "threads/CriticalSection.h"
 
+#include <map>
+#include <string>
+#include <vector>
+
 /*!
   \brief Represents a list of files
   \sa CFileItemList, CFileItem

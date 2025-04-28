@@ -22,7 +22,6 @@
 #include "utils/ISortable.h"
 #include "utils/SortUtils.h"
 
-#include <map>
 #include <memory>
 #include <string>
 #include <utility>
@@ -620,12 +619,6 @@ typedef std::shared_ptr<CFileItem> CFileItemPtr;
   \sa CFileItem
   */
 typedef std::vector< CFileItemPtr > VECFILEITEMS;
-
-/*!
-  \brief A map of pointers to CFileItem
-  \sa CFileItem
-  */
-typedef std::map<std::string, CFileItemPtr > MAPFILEITEMS;
 
 typedef bool (*FILEITEMLISTCOMPARISONFUNC) (const CFileItemPtr &pItem1, const CFileItemPtr &pItem2);
 typedef void (*FILEITEMFILLFUNC)(CFileItemPtr& item);
