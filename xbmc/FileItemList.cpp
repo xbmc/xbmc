@@ -92,9 +92,9 @@ void CFileItemList::SetFastLookup(bool fastLookup)
     for (unsigned int i = 0; i < m_items.size(); i++)
     {
       CFileItemPtr pItem = m_items[i];
-      m_map.insert(MAPFILEITEMSPAIR(m_ignoreURLOptions ? CURL(pItem->GetPath()).GetWithoutOptions()
-                                                       : pItem->GetPath(),
-                                    pItem));
+      m_map.emplace(m_ignoreURLOptions ? CURL(pItem->GetPath()).GetWithoutOptions()
+                                       : pItem->GetPath(),
+                    pItem);
     }
   }
   if (!fastLookup && m_fastLookup)
@@ -153,8 +153,8 @@ void CFileItemList::Add(CFileItemPtr pItem)
 {
   std::unique_lock<CCriticalSection> lock(m_lock);
   if (m_fastLookup)
-    m_map.insert(MAPFILEITEMSPAIR(
-        m_ignoreURLOptions ? CURL(pItem->GetPath()).GetWithoutOptions() : pItem->GetPath(), pItem));
+    m_map.emplace(
+        m_ignoreURLOptions ? CURL(pItem->GetPath()).GetWithoutOptions() : pItem->GetPath(), pItem);
   m_items.emplace_back(std::move(pItem));
 }
 
@@ -163,8 +163,8 @@ void CFileItemList::Add(CFileItem&& item)
   std::unique_lock<CCriticalSection> lock(m_lock);
   auto ptr = std::make_shared<CFileItem>(std::move(item));
   if (m_fastLookup)
-    m_map.insert(MAPFILEITEMSPAIR(
-        m_ignoreURLOptions ? CURL(ptr->GetPath()).GetWithoutOptions() : ptr->GetPath(), ptr));
+    m_map.emplace(m_ignoreURLOptions ? CURL(ptr->GetPath()).GetWithoutOptions() : ptr->GetPath(),
+                  ptr);
   m_items.emplace_back(std::move(ptr));
 }
 
@@ -182,8 +182,8 @@ void CFileItemList::AddFront(const CFileItemPtr& pItem, int itemPosition)
   }
   if (m_fastLookup)
   {
-    m_map.insert(MAPFILEITEMSPAIR(
-        m_ignoreURLOptions ? CURL(pItem->GetPath()).GetWithoutOptions() : pItem->GetPath(), pItem));
+    m_map.emplace(
+        m_ignoreURLOptions ? CURL(pItem->GetPath()).GetWithoutOptions() : pItem->GetPath(), pItem);
   }
 }
 
