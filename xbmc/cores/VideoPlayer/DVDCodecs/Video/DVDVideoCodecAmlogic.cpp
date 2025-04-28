@@ -430,6 +430,11 @@ void CDVDVideoCodecAmlogic::Close(void)
 
   m_opened = false;
 
+  ClearBitstreamCommon();
+}
+
+void CDVDVideoCodecAmlogic::ClearBitstreamCommon(void)
+{
   while (!m_packages.empty())
   {
     KODI::MEMORY::AlignedFree(std::get<0>(m_packages.front()));
@@ -590,15 +595,7 @@ void CDVDVideoCodecAmlogic::Reset(void)
   m_Codec->CloseDecoder(true);
   m_Codec->OpenDecoder(true);
 
-  while (!m_packages.empty())
-  {
-    KODI::MEMORY::AlignedFree(std::get<0>(m_packages.front()));
-    m_packages.pop_front();
-  }
-
-  m_last_added = true;
-  m_last_pData = nullptr;
-  m_last_iSize = 0;
+  ClearBitstreamCommon();
 
   m_mpeg2_sequence_pts = 0;
   m_has_keyframe = false;
