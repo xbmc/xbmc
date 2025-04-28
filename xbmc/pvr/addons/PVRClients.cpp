@@ -30,6 +30,7 @@
 #include <functional>
 #include <memory>
 #include <mutex>
+#include <source_location>
 #include <string>
 #include <utility>
 #include <vector>
@@ -48,9 +49,9 @@ CPVRClients::~CPVRClients()
   CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
   CServiceBroker::GetAddonMgr().UnregisterAddonMgrCallback(AddonType::PVRDLL);
 
-  for (const auto& client : m_clientMap)
+  for (const auto& [_, client] : m_clientMap)
   {
-    client.second->Destroy();
+    client->Destroy();
   }
 }
 
@@ -62,18 +63,18 @@ void CPVRClients::Start()
 void CPVRClients::Stop()
 {
   std::unique_lock lock(m_critSection);
-  for (const auto& client : m_clientMap)
+  for (const auto& [_, client] : m_clientMap)
   {
-    client.second->Stop();
+    client->Stop();
   }
 }
 
 void CPVRClients::Continue()
 {
   std::unique_lock lock(m_critSection);
-  for (const auto& client : m_clientMap)
+  for (const auto& [_, client] : m_clientMap)
   {
-    client.second->Continue();
+    client->Continue();
   }
 }
 
@@ -91,16 +92,14 @@ void CPVRClients::UpdateClients(
 
   {
     std::unique_lock lock(m_critSection);
-    for (const auto& addonWithStatus : addonsWithStatus)
+    for (const auto& [addon, addonStatus] : addonsWithStatus)
     {
-      const AddonInfoPtr addon = addonWithStatus.first;
       const std::vector<std::pair<ADDON::AddonInstanceId, bool>> instanceIdsWithStatus =
-          GetInstanceIdsWithStatus(addon, addonWithStatus.second);
+          GetInstanceIdsWithStatus(addon, addonStatus);
 
-      for (const auto& instanceIdWithStatus : instanceIdsWithStatus)
+      for (const auto& [instanceId, instanceIdStatus] : instanceIdsWithStatus)
       {
-        const ADDON::AddonInstanceId instanceId = instanceIdWithStatus.first;
-        bool instanceEnabled = instanceIdWithStatus.second;
+        bool instanceEnabled{instanceIdStatus};
         const CPVRClientUID clientUID(addon->ID(), instanceId);
         const int clientId = clientUID.GetUID();
 
@@ -170,32 +169,31 @@ void CPVRClients::UpdateClients(
     size_t i = 0;
     for (const auto& client : clientsToCreate)
     {
-      progressHandler->UpdateProgress(client->Name(), i++,
+      progressHandler->UpdateProgress(client->Name(), i,
                                       clientsToCreate.size() + clientsToReCreate.size());
+      i++;
 
       const ADDON_STATUS status = client->Create();
 
-      if (status != ADDON_STATUS_OK)
+      if (status != ADDON_STATUS_OK && status == ADDON_STATUS_PERMANENT_FAILURE)
       {
-        if (status == ADDON_STATUS_PERMANENT_FAILURE)
-        {
-          CServiceBroker::GetAddonMgr().DisableAddon(client->ID(),
-                                                     AddonDisabledReason::PERMANENT_FAILURE);
-          CServiceBroker::GetJobManager()->AddJob(
-              new CPVREventLogJob(true, EventLevel::Error, client->Name(),
-                                  g_localizeStrings.Get(24070), client->Icon()),
-              nullptr);
-        }
+        CServiceBroker::GetAddonMgr().DisableAddon(client->ID(),
+                                                   AddonDisabledReason::PERMANENT_FAILURE);
+        CServiceBroker::GetJobManager()->AddJob(
+            new CPVREventLogJob(true, EventLevel::Error, client->Name(),
+                                g_localizeStrings.Get(24070), client->Icon()),
+            nullptr);
       }
     }
 
-    for (const auto& clientInfo : clientsToReCreate)
+    for (const auto& [clientId, addonName] : clientsToReCreate)
     {
-      progressHandler->UpdateProgress(clientInfo.second, i++,
+      progressHandler->UpdateProgress(addonName, i,
                                       clientsToCreate.size() + clientsToReCreate.size());
+      i++;
 
       // stop and recreate client
-      StopClient(clientInfo.first, true /* restart */);
+      StopClient(clientId, true /* restart */);
     }
 
     progressHandler.reset();
@@ -212,7 +210,7 @@ void CPVRClients::UpdateClients(
       std::unique_lock lock(m_critSection);
       for (const auto& client : clientsToCreate)
       {
-        if (m_clientMap.find(client->GetID()) == m_clientMap.end())
+        if (!m_clientMap.contains(client->GetID()))
         {
           m_clientMap.insert({client->GetID(), client});
         }
@@ -305,15 +303,15 @@ std::shared_ptr<CPVRClient> CPVRClients::GetClient(int clientId) const
 size_t CPVRClients::CreatedClientAmount() const
 {
   std::unique_lock lock(m_critSection);
-  return std::count_if(m_clientMap.cbegin(), m_clientMap.cend(),
-                       [](const auto& client) { return client.second->ReadyToUse(); });
+  return std::ranges::count_if(m_clientMap,
+                               [](const auto& client) { return client.second->ReadyToUse(); });
 }
 
 bool CPVRClients::HasCreatedClients() const
 {
   std::unique_lock lock(m_critSection);
-  return std::any_of(m_clientMap.cbegin(), m_clientMap.cend(),
-                     [](const auto& client) { return client.second->ReadyToUse(); });
+  return std::ranges::any_of(m_clientMap,
+                             [](const auto& client) { return client.second->ReadyToUse(); });
 }
 
 bool CPVRClients::IsKnownClient(int clientId) const
@@ -344,11 +342,11 @@ CPVRClientMap CPVRClients::GetCreatedClients() const
   CPVRClientMap clients;
 
   std::unique_lock lock(m_critSection);
-  for (const auto& client : m_clientMap)
+  for (const auto& [clientId, client] : m_clientMap)
   {
-    if (client.second->ReadyToUse())
+    if (client->ReadyToUse())
     {
-      clients.insert(std::make_pair(client.second->GetID(), client.second));
+      clients.insert(std::make_pair(clientId, client));
     }
   }
 
@@ -400,8 +398,8 @@ std::vector<CVariant> CPVRClients::GetClientProviderInfos() const
 int CPVRClients::GetFirstCreatedClientID() const
 {
   std::unique_lock lock(m_critSection);
-  const auto it = std::find_if(m_clientMap.cbegin(), m_clientMap.cend(),
-                               [](const auto& client) { return client.second->ReadyToUse(); });
+  const auto it = std::ranges::find_if(m_clientMap, [](const auto& client)
+                                       { return client.second->ReadyToUse(); });
   return it != m_clientMap.cend() ? (*it).second->GetID() : PVR_CLIENT_INVALID_UID;
 }
 
@@ -443,10 +441,9 @@ size_t CPVRClients::EnabledClientAmount() const
     clientMap = m_clientMap;
   }
 
-  ADDON::CAddonMgr& addonMgr = CServiceBroker::GetAddonMgr();
-  return std::count_if(clientMap.cbegin(), clientMap.cend(),
-                       [&addonMgr](const auto& client)
-                       { return !addonMgr.IsAddonDisabled(client.second->ID()); });
+  const ADDON::CAddonMgr& addonMgr = CServiceBroker::GetAddonMgr();
+  return std::ranges::count_if(clientMap, [&addonMgr](const auto& client)
+                               { return !addonMgr.IsAddonDisabled(client.second->ID()); });
 }
 
 bool CPVRClients::IsEnabledClient(int clientId) const
@@ -465,21 +462,21 @@ std::vector<CVariant> CPVRClients::GetEnabledClientInfos() const
     clientMap = m_clientMap;
   }
 
-  for (const auto& client : clientMap)
+  for (const auto& [clientId, client] : clientMap)
   {
     const auto& addonInfo =
-        CServiceBroker::GetAddonMgr().GetAddonInfo(client.second->ID(), AddonType::PVRDLL);
+        CServiceBroker::GetAddonMgr().GetAddonInfo(client->ID(), AddonType::PVRDLL);
 
     if (addonInfo)
     {
       // This will be the same variant structure used in the json api
       CVariant clientInfo(CVariant::VariantTypeObject);
-      clientInfo["clientid"] = client.first;
-      clientInfo["addonid"] = client.second->ID();
-      clientInfo["instanceid"] = client.second->InstanceId();
+      clientInfo["clientid"] = clientId;
+      clientInfo["addonid"] = client->ID();
+      clientInfo["instanceid"] = client->InstanceId();
       clientInfo["label"] = addonInfo->Name(); // Note that this is called label instead of name
 
-      const auto& capabilities = client.second->GetClientCapabilities();
+      const auto& capabilities = client->GetClientCapabilities();
       clientInfo["supportstv"] = capabilities.SupportsTV();
       clientInfo["supportsradio"] = capabilities.SupportsRadio();
       clientInfo["supportsepg"] = capabilities.SupportsEPG();
@@ -489,7 +486,7 @@ std::vector<CVariant> CPVRClients::GetEnabledClientInfos() const
       clientInfo["supportschannelscan"] = capabilities.SupportsChannelScan();
       clientInfo["supportchannelproviders"] = capabilities.SupportsProviders();
 
-      clientInfos.push_back(clientInfo);
+      clientInfos.emplace_back(clientInfo);
     }
   }
 
@@ -499,27 +496,26 @@ std::vector<CVariant> CPVRClients::GetEnabledClientInfos() const
 bool CPVRClients::HasIgnoredClients() const
 {
   std::unique_lock lock(m_critSection);
-  return std::any_of(m_clientMap.cbegin(), m_clientMap.cend(),
-                     [](const auto& client) { return client.second->IgnoreClient(); });
+  return std::ranges::any_of(m_clientMap,
+                             [](const auto& client) { return client.second->IgnoreClient(); });
 }
 
-std::vector<ADDON::AddonInstanceId> CPVRClients::GetKnownInstanceIds(
-    const std::string& addonID) const
+std::vector<ADDON::AddonInstanceId> CPVRClients::GetKnownInstanceIds(std::string_view addonID) const
 {
   std::vector<ADDON::AddonInstanceId> instanceIds;
 
   std::unique_lock lock(m_critSection);
-  for (const auto& entry : m_clientMap)
+  for (const auto& [_, client] : m_clientMap)
   {
-    if (entry.second->ID() == addonID)
-      instanceIds.emplace_back(entry.second->InstanceId());
+    if (client->ID() == addonID)
+      instanceIds.emplace_back(client->InstanceId());
   }
 
   return instanceIds;
 }
 
 bool CPVRClients::GetAddonsWithStatus(
-    const std::string& changedAddonId,
+    std::string_view changedAddonId,
     std::vector<std::pair<AddonInfoPtr, bool>>& addonsWithStatus) const
 {
   std::vector<AddonInfoPtr> addons;
@@ -547,16 +543,15 @@ std::vector<std::pair<ADDON::AddonInstanceId, bool>> CPVRClients::GetInstanceIds
   std::vector<std::pair<ADDON::AddonInstanceId, bool>> instanceIdsWithStatus;
 
   std::vector<ADDON::AddonInstanceId> instanceIds = addon->GetKnownInstanceIds();
-  std::transform(instanceIds.cbegin(), instanceIds.cend(),
-                 std::back_inserter(instanceIdsWithStatus), [addonIsEnabled](const auto& id) {
-                   return std::pair<ADDON::AddonInstanceId, bool>(id, addonIsEnabled);
-                 });
+  std::ranges::transform(instanceIds, std::back_inserter(instanceIdsWithStatus),
+                         [addonIsEnabled](const auto& id)
+                         { return std::pair<ADDON::AddonInstanceId, bool>(id, addonIsEnabled); });
 
   // find removed instances
   const std::vector<ADDON::AddonInstanceId> knownInstanceIds = GetKnownInstanceIds(addon->ID());
   for (const auto& knownInstanceId : knownInstanceIds)
   {
-    if (std::find(instanceIds.begin(), instanceIds.end(), knownInstanceId) == instanceIds.end())
+    if (std::ranges::find(instanceIds, knownInstanceId) == instanceIds.cend())
     {
       // instance was removed
       instanceIdsWithStatus.emplace_back(knownInstanceId, false);
@@ -574,38 +569,40 @@ std::vector<SBackend> CPVRClients::GetBackendProperties() const
 {
   std::vector<SBackend> backendProperties;
 
-  ForCreatedClients(
-      __FUNCTION__, [&backendProperties](const std::shared_ptr<const CPVRClient>& client) {
-        SBackend properties;
+  ForCreatedClients(std::source_location::current().function_name(),
+                    [&backendProperties](const std::shared_ptr<const CPVRClient>& client)
+                    {
+                      SBackend properties;
 
-        if (client->GetDriveSpace(properties.diskTotal, properties.diskUsed) == PVR_ERROR_NO_ERROR)
-        {
-          properties.diskTotal *= 1024;
-          properties.diskUsed *= 1024;
-        }
+                      if (client->GetDriveSpace(properties.diskTotal, properties.diskUsed) ==
+                          PVR_ERROR_NO_ERROR)
+                      {
+                        properties.diskTotal *= 1024;
+                        properties.diskUsed *= 1024;
+                      }
 
-        int iAmount = 0;
-        if (client->GetProvidersAmount(iAmount) == PVR_ERROR_NO_ERROR)
-          properties.numProviders = iAmount;
-        if (client->GetChannelGroupsAmount(iAmount) == PVR_ERROR_NO_ERROR)
-          properties.numChannelGroups = iAmount;
-        if (client->GetChannelsAmount(iAmount) == PVR_ERROR_NO_ERROR)
-          properties.numChannels = iAmount;
-        if (client->GetTimersAmount(iAmount) == PVR_ERROR_NO_ERROR)
-          properties.numTimers = iAmount;
-        if (client->GetRecordingsAmount(false, iAmount) == PVR_ERROR_NO_ERROR)
-          properties.numRecordings = iAmount;
-        if (client->GetRecordingsAmount(true, iAmount) == PVR_ERROR_NO_ERROR)
-          properties.numDeletedRecordings = iAmount;
-        properties.clientname = client->GetClientName();
-        properties.instancename = client->GetInstanceName();
-        properties.name = client->GetBackendName();
-        properties.version = client->GetBackendVersion();
-        properties.host = client->GetConnectionString();
+                      int iAmount{0};
+                      if (client->GetProvidersAmount(iAmount) == PVR_ERROR_NO_ERROR)
+                        properties.numProviders = iAmount;
+                      if (client->GetChannelGroupsAmount(iAmount) == PVR_ERROR_NO_ERROR)
+                        properties.numChannelGroups = iAmount;
+                      if (client->GetChannelsAmount(iAmount) == PVR_ERROR_NO_ERROR)
+                        properties.numChannels = iAmount;
+                      if (client->GetTimersAmount(iAmount) == PVR_ERROR_NO_ERROR)
+                        properties.numTimers = iAmount;
+                      if (client->GetRecordingsAmount(false, iAmount) == PVR_ERROR_NO_ERROR)
+                        properties.numRecordings = iAmount;
+                      if (client->GetRecordingsAmount(true, iAmount) == PVR_ERROR_NO_ERROR)
+                        properties.numDeletedRecordings = iAmount;
+                      properties.clientname = client->GetClientName();
+                      properties.instancename = client->GetInstanceName();
+                      properties.name = client->GetBackendName();
+                      properties.version = client->GetBackendVersion();
+                      properties.host = client->GetConnectionString();
 
-        backendProperties.emplace_back(properties);
-        return PVR_ERROR_NO_ERROR;
-      });
+                      backendProperties.emplace_back(properties);
+                      return PVR_ERROR_NO_ERROR;
+                    });
 
   return backendProperties;
 }
@@ -615,30 +612,28 @@ bool CPVRClients::GetTimers(const std::vector<std::shared_ptr<CPVRClient>>& clie
                             std::vector<int>& failedClients) const
 {
   return ForClients(
-             __FUNCTION__, clients,
-             [timers](const std::shared_ptr<const CPVRClient>& client) {
-               return client->GetTimers(timers);
-             },
+             std::source_location::current().function_name(), clients,
+             [timers](const std::shared_ptr<const CPVRClient>& client)
+             { return client->GetTimers(timers); },
              failedClients) == PVR_ERROR_NO_ERROR;
 }
 
 PVR_ERROR CPVRClients::UpdateTimerTypes(const std::vector<std::shared_ptr<CPVRClient>>& clients,
-                                        std::vector<int>& failedClients)
+                                        std::vector<int>& failedClients) const
 {
   return ForClients(
-      __FUNCTION__, clients,
+      std::source_location::current().function_name(), clients,
       [](const std::shared_ptr<CPVRClient>& client) { return client->UpdateTimerTypes(); },
       failedClients);
 }
 
-const std::vector<std::shared_ptr<CPVRTimerType>> CPVRClients::GetTimerTypes() const
+std::vector<std::shared_ptr<CPVRTimerType>> CPVRClients::GetTimerTypes() const
 {
   std::vector<std::shared_ptr<CPVRTimerType>> types;
 
   std::unique_lock lock(m_critSection);
-  for (const auto& entry : m_clientMap)
+  for (const auto& [_, client] : m_clientMap)
   {
-    const auto& client = entry.second;
     if (client->ReadyToUse() && !client->IgnoreClient())
     {
       const auto& clientTypes = client->GetTimerTypes();
@@ -655,32 +650,31 @@ PVR_ERROR CPVRClients::GetRecordings(const std::vector<std::shared_ptr<CPVRClien
                                      std::vector<int>& failedClients) const
 {
   return ForClients(
-      __FUNCTION__, clients,
-      [recordings, deleted](const std::shared_ptr<const CPVRClient>& client) {
-        return client->GetRecordings(recordings, deleted);
-      },
+      std::source_location::current().function_name(), clients,
+      [recordings, deleted](const std::shared_ptr<const CPVRClient>& client)
+      { return client->GetRecordings(recordings, deleted); },
       failedClients);
 }
 
-PVR_ERROR CPVRClients::DeleteAllRecordingsFromTrash()
+PVR_ERROR CPVRClients::DeleteAllRecordingsFromTrash() const
 {
-  return ForCreatedClients(__FUNCTION__, [](const std::shared_ptr<CPVRClient>& client) {
-    return client->DeleteAllRecordingsFromTrash();
-  });
+  return ForCreatedClients(std::source_location::current().function_name(),
+                           [](const std::shared_ptr<CPVRClient>& client)
+                           { return client->DeleteAllRecordingsFromTrash(); });
 }
 
-PVR_ERROR CPVRClients::SetEPGMaxPastDays(int iPastDays)
+PVR_ERROR CPVRClients::SetEPGMaxPastDays(int iPastDays) const
 {
-  return ForCreatedClients(__FUNCTION__, [iPastDays](const std::shared_ptr<CPVRClient>& client) {
-    return client->SetEPGMaxPastDays(iPastDays);
-  });
+  return ForCreatedClients(std::source_location::current().function_name(),
+                           [iPastDays](const std::shared_ptr<CPVRClient>& client)
+                           { return client->SetEPGMaxPastDays(iPastDays); });
 }
 
-PVR_ERROR CPVRClients::SetEPGMaxFutureDays(int iFutureDays)
+PVR_ERROR CPVRClients::SetEPGMaxFutureDays(int iFutureDays) const
 {
-  return ForCreatedClients(__FUNCTION__, [iFutureDays](const std::shared_ptr<CPVRClient>& client) {
-    return client->SetEPGMaxFutureDays(iFutureDays);
-  });
+  return ForCreatedClients(std::source_location::current().function_name(),
+                           [iFutureDays](const std::shared_ptr<CPVRClient>& client)
+                           { return client->SetEPGMaxFutureDays(iFutureDays); });
 }
 
 PVR_ERROR CPVRClients::GetChannels(const std::vector<std::shared_ptr<CPVRClient>>& clients,
@@ -689,10 +683,9 @@ PVR_ERROR CPVRClients::GetChannels(const std::vector<std::shared_ptr<CPVRClient>
                                    std::vector<int>& failedClients) const
 {
   return ForClients(
-      __FUNCTION__, clients,
-      [bRadio, &channels](const std::shared_ptr<const CPVRClient>& client) {
-        return client->GetChannels(bRadio, channels);
-      },
+      std::source_location::current().function_name(), clients,
+      [bRadio, &channels](const std::shared_ptr<const CPVRClient>& client)
+      { return client->GetChannels(bRadio, channels); },
       failedClients);
 }
 
@@ -701,10 +694,9 @@ PVR_ERROR CPVRClients::GetProviders(const std::vector<std::shared_ptr<CPVRClient
                                     std::vector<int>& failedClients) const
 {
   return ForClients(
-      __FUNCTION__, clients,
-      [providers](const std::shared_ptr<const CPVRClient>& client) {
-        return client->GetProviders(*providers);
-      },
+      std::source_location::current().function_name(), clients,
+      [providers](const std::shared_ptr<const CPVRClient>& client)
+      { return client->GetProviders(*providers); },
       failedClients);
 }
 
@@ -713,10 +705,9 @@ PVR_ERROR CPVRClients::GetChannelGroups(const std::vector<std::shared_ptr<CPVRCl
                                         std::vector<int>& failedClients) const
 {
   return ForClients(
-      __FUNCTION__, clients,
-      [groups](const std::shared_ptr<const CPVRClient>& client) {
-        return client->GetChannelGroups(groups);
-      },
+      std::source_location::current().function_name(), clients,
+      [groups](const std::shared_ptr<const CPVRClient>& client)
+      { return client->GetChannelGroups(groups); },
       failedClients);
 }
 
@@ -727,10 +718,9 @@ PVR_ERROR CPVRClients::GetChannelGroupMembers(
     std::vector<int>& failedClients) const
 {
   return ForClients(
-      __FUNCTION__, clients,
-      [group, &groupMembers](const std::shared_ptr<const CPVRClient>& client) {
-        return client->GetChannelGroupMembers(group, groupMembers);
-      },
+      std::source_location::current().function_name(), clients,
+      [group, &groupMembers](const std::shared_ptr<const CPVRClient>& client)
+      { return client->GetChannelGroupMembers(group, groupMembers); },
       failedClients);
 }
 
@@ -739,9 +729,8 @@ std::vector<std::shared_ptr<CPVRClient>> CPVRClients::GetClientsSupportingChanne
   std::vector<std::shared_ptr<CPVRClient>> possibleScanClients;
 
   std::unique_lock lock(m_critSection);
-  for (const auto& entry : m_clientMap)
+  for (const auto& [_, client] : m_clientMap)
   {
-    const auto& client = entry.second;
     if (client->ReadyToUse() && !client->IgnoreClient() &&
         client->GetClientCapabilities().SupportsChannelScan())
       possibleScanClients.emplace_back(client);
@@ -755,9 +744,8 @@ std::vector<std::shared_ptr<CPVRClient>> CPVRClients::GetClientsSupportingChanne
   std::vector<std::shared_ptr<CPVRClient>> possibleSettingsClients;
 
   std::unique_lock lock(m_critSection);
-  for (const auto& entry : m_clientMap)
+  for (const auto& [_, client] : m_clientMap)
   {
-    const auto& client = entry.second;
     if (client->ReadyToUse() && !client->IgnoreClient())
     {
       const CPVRClientCapabilities& caps = client->GetClientCapabilities();
@@ -773,81 +761,97 @@ std::vector<std::shared_ptr<CPVRClient>> CPVRClients::GetClientsSupportingChanne
 bool CPVRClients::AnyClientSupportingRecordingsSize() const
 {
   std::unique_lock lock(m_critSection);
-  return std::any_of(m_clientMap.cbegin(), m_clientMap.cend(), [](const auto& entry) {
-    const auto& client = entry.second;
-    return client->ReadyToUse() && !client->IgnoreClient() &&
-           client->GetClientCapabilities().SupportsRecordingsSize();
-  });
+  return std::ranges::any_of(m_clientMap,
+                             [](const auto& entry)
+                             {
+                               const auto& client = entry.second;
+                               return client->ReadyToUse() && !client->IgnoreClient() &&
+                                      client->GetClientCapabilities().SupportsRecordingsSize();
+                             });
 }
 
 bool CPVRClients::AnyClientSupportingEPG() const
 {
   std::unique_lock lock(m_critSection);
-  return std::any_of(m_clientMap.cbegin(), m_clientMap.cend(), [](const auto& entry) {
-    const auto& client = entry.second;
-    return client->ReadyToUse() && !client->IgnoreClient() &&
-           client->GetClientCapabilities().SupportsEPG();
-  });
+  return std::ranges::any_of(m_clientMap,
+                             [](const auto& entry)
+                             {
+                               const auto& client = entry.second;
+                               return client->ReadyToUse() && !client->IgnoreClient() &&
+                                      client->GetClientCapabilities().SupportsEPG();
+                             });
 }
 
 bool CPVRClients::AnyClientSupportingRecordings() const
 {
   std::unique_lock lock(m_critSection);
-  return std::any_of(m_clientMap.cbegin(), m_clientMap.cend(), [](const auto& entry) {
-    const auto& client = entry.second;
-    return client->ReadyToUse() && !client->IgnoreClient() &&
-           client->GetClientCapabilities().SupportsRecordings();
-  });
+  return std::ranges::any_of(m_clientMap,
+                             [](const auto& entry)
+                             {
+                               const auto& client = entry.second;
+                               return client->ReadyToUse() && !client->IgnoreClient() &&
+                                      client->GetClientCapabilities().SupportsRecordings();
+                             });
 }
 
 bool CPVRClients::AnyClientSupportingRecordingsDelete() const
 {
   std::unique_lock lock(m_critSection);
-  return std::any_of(m_clientMap.cbegin(), m_clientMap.cend(), [](const auto& entry) {
-    const auto& client = entry.second;
-    return client->ReadyToUse() && !client->IgnoreClient() &&
-           client->GetClientCapabilities().SupportsRecordingsDelete();
-  });
+  return std::ranges::any_of(m_clientMap,
+                             [](const auto& entry)
+                             {
+                               const auto& client = entry.second;
+                               return client->ReadyToUse() && !client->IgnoreClient() &&
+                                      client->GetClientCapabilities().SupportsRecordingsDelete();
+                             });
 }
 
 void CPVRClients::OnSleep()
 {
-  ForCreatedClients(__FUNCTION__, [](const std::shared_ptr<CPVRClient>& client) {
-    client->OnSystemSleep();
-    return PVR_ERROR_NO_ERROR;
-  });
+  ForCreatedClients(std::source_location::current().function_name(),
+                    [](const std::shared_ptr<CPVRClient>& client)
+                    {
+                      client->OnSystemSleep();
+                      return PVR_ERROR_NO_ERROR;
+                    });
   CPowerState::OnSleep();
 }
 
 void CPVRClients::OnWake()
 {
   CPowerState::OnWake();
-  ForCreatedClients(__FUNCTION__, [](const std::shared_ptr<CPVRClient>& client) {
-    client->OnSystemWake();
-    return PVR_ERROR_NO_ERROR;
-  });
+  ForCreatedClients(std::source_location::current().function_name(),
+                    [](const std::shared_ptr<CPVRClient>& client)
+                    {
+                      client->OnSystemWake();
+                      return PVR_ERROR_NO_ERROR;
+                    });
 }
 
-void CPVRClients::OnPowerSavingActivated()
+void CPVRClients::OnPowerSavingActivated() const
 {
-  ForCreatedClients(__FUNCTION__, [](const std::shared_ptr<CPVRClient>& client) {
-    client->OnPowerSavingActivated();
-    return PVR_ERROR_NO_ERROR;
-  });
+  ForCreatedClients(std::source_location::current().function_name(),
+                    [](const std::shared_ptr<CPVRClient>& client)
+                    {
+                      client->OnPowerSavingActivated();
+                      return PVR_ERROR_NO_ERROR;
+                    });
 }
 
-void CPVRClients::OnPowerSavingDeactivated()
+void CPVRClients::OnPowerSavingDeactivated() const
 {
-  ForCreatedClients(__FUNCTION__, [](const std::shared_ptr<CPVRClient>& client) {
-    client->OnPowerSavingDeactivated();
-    return PVR_ERROR_NO_ERROR;
-  });
+  ForCreatedClients(std::source_location::current().function_name(),
+                    [](const std::shared_ptr<CPVRClient>& client)
+                    {
+                      client->OnPowerSavingDeactivated();
+                      return PVR_ERROR_NO_ERROR;
+                    });
 }
 
-void CPVRClients::ConnectionStateChange(CPVRClient* client,
-                                        const std::string& strConnectionString,
+void CPVRClients::ConnectionStateChange(const CPVRClient* client,
+                                        std::string_view strConnectionString,
                                         PVR_CONNECTION_STATE newState,
-                                        const std::string& strMessage)
+                                        std::string_view strMessage) const
 {
   if (!client)
     return;
@@ -931,15 +935,16 @@ void LogClientWarning(const char* strFunctionName, const std::shared_ptr<const C
 
 } // unnamed namespace
 
-PVR_ERROR CPVRClients::ForCreatedClients(const char* strFunctionName,
-                                         const PVRClientFunction& function) const
+template<typename F>
+PVR_ERROR CPVRClients::ForCreatedClients(const char* strFunctionName, F function) const
 {
   std::vector<int> failedClients;
   return ForCreatedClients(strFunctionName, function, failedClients);
 }
 
+template<typename F>
 PVR_ERROR CPVRClients::ForCreatedClients(const char* strFunctionName,
-                                         const PVRClientFunction& function,
+                                         F function,
                                          std::vector<int>& failedClients) const
 {
   PVR_ERROR lastError = PVR_ERROR_NO_ERROR;
@@ -958,12 +963,12 @@ PVR_ERROR CPVRClients::ForCreatedClients(const char* strFunctionName,
     }
   }
 
-  for (const auto& clientEntry : clients)
+  for (const auto& [clientId, client] : clients)
   {
     //    CLog::LogFC(LOGDEBUG, LOGPVR, "Calling add-on function '{}' on client {}.", strFunctionName,
     //                clientEntry.second->GetID());
 
-    PVR_ERROR currentError = function(clientEntry.second);
+    PVR_ERROR currentError = function(client);
 
     //    CLog::LogFC(LOGDEBUG, LOGPVR, "Called add-on function '{}' on client {}. return={}",
     //                strFunctionName, clientEntry.second->GetID(), currentError);
@@ -971,20 +976,21 @@ PVR_ERROR CPVRClients::ForCreatedClients(const char* strFunctionName,
     if (currentError != PVR_ERROR_NO_ERROR && currentError != PVR_ERROR_NOT_IMPLEMENTED)
     {
       lastError = currentError;
-      failedClients.emplace_back(clientEntry.first);
+      failedClients.emplace_back(clientId);
 
       CLog::LogFC(LOGDEBUG, LOGPVR,
                   "Added client {} to failed clients list after call to "
                   "function '{}‘ returned error {}.",
-                  clientEntry.second->GetID(), strFunctionName, currentError);
+                  client->GetID(), strFunctionName, currentError);
     }
   }
   return lastError;
 }
 
+template<typename F>
 PVR_ERROR CPVRClients::ForClients(const char* strFunctionName,
                                   const std::vector<std::shared_ptr<CPVRClient>>& clients,
-                                  const PVRClientFunction& function,
+                                  F function,
                                   std::vector<int>& failedClients) const
 {
   if (clients.empty())
@@ -996,24 +1002,24 @@ PVR_ERROR CPVRClients::ForClients(const char* strFunctionName,
 
   {
     std::unique_lock lock(m_critSection);
-    for (const auto& entry : m_clientMap)
+    for (const auto& [clientId, client] : m_clientMap)
     {
-      if (entry.second->ReadyToUse() && !entry.second->IgnoreClient() &&
-          std::any_of(clients.cbegin(), clients.cend(),
-                      [&entry](const auto& client) { return client->GetID() == entry.first; }))
+      if (client->ReadyToUse() && !client->IgnoreClient() &&
+          std::ranges::any_of(clients,
+                              [clientId](const auto& c) { return c->GetID() == clientId; }))
       {
         // Allow ready to use clients that shall be called
         continue;
       }
 
-      failedClients.emplace_back(entry.first);
+      failedClients.emplace_back(clientId);
     }
   }
 
   for (const auto& client : clients)
   {
-    if (std::none_of(failedClients.cbegin(), failedClients.cend(),
-                     [&client](int failedClientId) { return failedClientId == client->GetID(); }))
+    if (std::ranges::none_of(failedClients, [&client](int failedClientId)
+                             { return failedClientId == client->GetID(); }))
     {
       //      CLog::LogFC(LOGDEBUG, LOGPVR, "Calling add-on function '{}' on client {}.", strFunctionName,
       //                  client->GetID());

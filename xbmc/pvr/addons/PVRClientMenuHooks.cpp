@@ -19,8 +19,7 @@ namespace PVR
 {
 
 CPVRClientMenuHook::CPVRClientMenuHook(const std::string& addonId, const PVR_MENUHOOK& hook)
-: m_addonId(addonId),
-  m_hook(new PVR_MENUHOOK(hook))
+  : m_addonId(addonId), m_hook(std::make_shared<PVR_MENUHOOK>(hook))
 {
   if (hook.category != PVR_MENUHOOK_UNKNOWN &&
       hook.category != PVR_MENUHOOK_ALL &&
@@ -115,8 +114,8 @@ void CPVRClientMenuHooks::Clear()
   m_hooks.reset();
 }
 
-std::vector<CPVRClientMenuHook> CPVRClientMenuHooks::GetHooks(
-    const std::function<bool(const CPVRClientMenuHook& hook)>& function) const
+template<typename F>
+std::vector<CPVRClientMenuHook> CPVRClientMenuHooks::GetHooks(F function) const
 {
   std::vector<CPVRClientMenuHook> hooks;
 

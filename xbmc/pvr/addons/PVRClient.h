@@ -15,7 +15,6 @@
 #include "threads/Event.h"
 
 #include <atomic>
-#include <functional>
 #include <memory>
 #include <optional>
 #include <string>
@@ -336,7 +335,7 @@ public:
    * @return PVR_ERROR_NO_ERROR if the list has been fetched successfully.
    */
   PVR_ERROR GetChannelGroupMembers(
-      CPVRChannelGroup* group,
+      const CPVRChannelGroup* group,
       std::vector<std::shared_ptr<CPVRChannelGroupMember>>& groupMembers) const;
 
   //@}
@@ -911,9 +910,9 @@ private:
    * @param bCheckReadyToUse If true, this method will check whether this instance is ready for use and return PVR_ERROR_SERVER_ERROR if it is not.
    * @return PVR_ERROR_NO_ERROR on success, any other PVR_ERROR_* value otherwise.
    */
-  typedef AddonInstance_PVR AddonInstance;
+  template<typename F>
   PVR_ERROR DoAddonCall(const char* strFunctionName,
-                        const std::function<PVR_ERROR(const AddonInstance*)>& function,
+                        F function,
                         bool bIsImplemented = true,
                         bool bCheckReadyToUse = true) const;
 
@@ -924,9 +923,10 @@ private:
    * @param function The function to wrap. It must take one parameter of type CPVRClient*.
    * @param bForceCall If true, make the call, ignoring client's state.
    */
+  template<typename F>
   static void HandleAddonCallback(const char* strFunctionName,
                                   void* kodiInstance,
-                                  const std::function<void(CPVRClient* client)>& function,
+                                  F function,
                                   bool bForceCall = false);
 
   /*!
