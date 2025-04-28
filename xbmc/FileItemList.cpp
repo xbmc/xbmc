@@ -293,8 +293,7 @@ CFileItemPtr CFileItemList::Get(const std::string& strPath) const
 
   if (m_fastLookup)
   {
-    MAPFILEITEMS::const_iterator it =
-        m_map.find(m_ignoreURLOptions ? CURL(strPath).GetWithoutOptions() : strPath);
+    const auto it = m_map.find(m_ignoreURLOptions ? CURL(strPath).GetWithoutOptions() : strPath);
     if (it != m_map.end())
       return it->second;
 
