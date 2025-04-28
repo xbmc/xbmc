@@ -11,6 +11,8 @@
 #include "addons/IAddon.h"
 #include "pvr/PVRConstants.h" // PVR_CLIENT_INVALID_UID
 
+#include <string_view>
+
 class CDateTime;
 
 namespace PVR
@@ -28,15 +30,14 @@ namespace PVR
                      const std::string& strGroupName,
                      int iGroupClientID);
     CPVRChannelsPath(bool bRadio,
-                     const std::string& strGroupName,
+                     std::string_view strGroupName,
                      int iGroupClientID,
-                     const std::string& strAddonID,
+                     std::string_view strAddonID,
                      ADDON::AddonInstanceId instanceID,
                      int iChannelUID);
 
     operator std::string() const { return m_path; }
-    bool operator ==(const CPVRChannelsPath& right) const { return m_path == right.m_path; }
-    bool operator !=(const CPVRChannelsPath& right) const { return !(*this == right); }
+    bool operator==(const CPVRChannelsPath& right) const { return m_path == right.m_path; }
 
     bool IsValid() const { return m_kind > Kind::PROTO; }
 

@@ -31,7 +31,7 @@ bool CPVRChannelGroupMergedByName::ShouldBeIgnored(
   static constexpr int NO_GROUP_FOUND{-1};
   int matchingGroup{NO_GROUP_FOUND};
 
-  for (const auto& member : m_members)
+  for (const auto& [_, member] : m_members)
   {
     for (const auto& group : allChannelGroups)
     {
@@ -41,7 +41,7 @@ bool CPVRChannelGroupMergedByName::ShouldBeIgnored(
       if (group->GroupName() != mergedGroupName && group->ClientGroupName() != mergedGroupName)
         continue;
 
-      if (group->IsGroupMember(member.second))
+      if (group->IsGroupMember(member))
       {
         if (matchingGroup != NO_GROUP_FOUND && matchingGroup != group->GroupID())
         {
@@ -99,10 +99,10 @@ std::vector<std::string> GetGroupNames(const std::vector<std::shared_ptr<CPVRCha
   }
 
   std::vector<std::string> names;
-  for (const auto& name : knownNamesCountMap)
+  for (const auto& [name, occurences] : knownNamesCountMap)
   {
-    if (name.second > 1)
-      names.emplace_back(name.first);
+    if (occurences > 1)
+      names.emplace_back(name);
   }
   return names;
 }

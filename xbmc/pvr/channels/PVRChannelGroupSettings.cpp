@@ -11,27 +11,29 @@
 #include "ServiceBroker.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
+#include "pvr/settings/PVRSettings.h"
 #include "settings/Settings.h"
 #include "settings/lib/Setting.h"
 
 using namespace PVR;
 
 CPVRChannelGroupSettings::CPVRChannelGroupSettings()
-  : m_settings({CSettings::SETTING_PVRMANAGER_BACKENDCHANNELORDER,
-                CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS,
-                CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERSALWAYS,
-                CSettings::SETTING_PVRMANAGER_STARTGROUPCHANNELNUMBERSFROMONE})
+  : m_settings(std::make_unique<CPVRSettings>(
+        std::set<std::string>({CSettings::SETTING_PVRMANAGER_BACKENDCHANNELORDER,
+                               CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS,
+                               CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERSALWAYS,
+                               CSettings::SETTING_PVRMANAGER_STARTGROUPCHANNELNUMBERSFROMONE})))
 {
   UpdateUseBackendChannelOrder();
   UpdateUseBackendChannelNumbers();
   UpdateStartGroupChannelNumbersFromOne();
 
-  m_settings.RegisterCallback(this);
+  m_settings->RegisterCallback(this);
 }
 
 CPVRChannelGroupSettings::~CPVRChannelGroupSettings()
 {
-  m_settings.UnregisterCallback(this);
+  m_settings->UnregisterCallback(this);
 }
 
 void CPVRChannelGroupSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
@@ -80,7 +82,7 @@ void CPVRChannelGroupSettings::UnregisterCallback(IChannelGroupSettingsCallback*
 bool CPVRChannelGroupSettings::UpdateUseBackendChannelOrder()
 {
   m_bUseBackendChannelOrder =
-      m_settings.GetBoolValue(CSettings::SETTING_PVRMANAGER_BACKENDCHANNELORDER);
+      m_settings->GetBoolValue(CSettings::SETTING_PVRMANAGER_BACKENDCHANNELORDER);
   return m_bUseBackendChannelOrder;
 }
 
@@ -89,9 +91,9 @@ bool CPVRChannelGroupSettings::UpdateUseBackendChannelNumbers()
   const size_t enabledClientAmount =
       CServiceBroker::GetPVRManager().Clients()->EnabledClientAmount();
   m_bUseBackendChannelNumbers =
-      m_settings.GetBoolValue(CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS) &&
+      m_settings->GetBoolValue(CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS) &&
       (enabledClientAmount == 1 ||
-       (m_settings.GetBoolValue(CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERSALWAYS) &&
+       (m_settings->GetBoolValue(CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERSALWAYS) &&
         enabledClientAmount > 1));
   return m_bUseBackendChannelNumbers;
 }
@@ -99,7 +101,7 @@ bool CPVRChannelGroupSettings::UpdateUseBackendChannelNumbers()
 bool CPVRChannelGroupSettings::UpdateStartGroupChannelNumbersFromOne()
 {
   m_bStartGroupChannelNumbersFromOne =
-      m_settings.GetBoolValue(CSettings::SETTING_PVRMANAGER_STARTGROUPCHANNELNUMBERSFROMONE) &&
+      m_settings->GetBoolValue(CSettings::SETTING_PVRMANAGER_STARTGROUPCHANNELNUMBERSFROMONE) &&
       !UseBackendChannelNumbers();
   return m_bStartGroupChannelNumbersFromOne;
 }

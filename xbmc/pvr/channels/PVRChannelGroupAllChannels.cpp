@@ -20,7 +20,6 @@
 #include "utils/log.h"
 
 #include <algorithm>
-#include <iterator>
 #include <mutex>
 #include <string>
 #include <utility>
@@ -39,9 +38,7 @@ CPVRChannelGroupAllChannels::CPVRChannelGroupAllChannels(const CPVRChannelsPath&
 {
 }
 
-CPVRChannelGroupAllChannels::~CPVRChannelGroupAllChannels()
-{
-}
+CPVRChannelGroupAllChannels::~CPVRChannelGroupAllChannels() = default;
 
 void CPVRChannelGroupAllChannels::CheckGroupName()
 {
@@ -65,11 +62,12 @@ bool CPVRChannelGroupAllChannels::UpdateFromClients(
 
   // create group members for the channels
   std::vector<std::shared_ptr<CPVRChannelGroupMember>> groupMembers;
-  std::transform(channels.cbegin(), channels.cend(), std::back_inserter(groupMembers),
-                 [this](const auto& channel) {
-                   return std::make_shared<CPVRChannelGroupMember>(GroupID(), GroupName(),
-                                                                   GetClientID(), channel);
-                 });
+  std::ranges::transform(channels, std::back_inserter(groupMembers),
+                         [this](const auto& channel)
+                         {
+                           return std::make_shared<CPVRChannelGroupMember>(GroupID(), GroupName(),
+                                                                           GetClientID(), channel);
+                         });
 
   return UpdateGroupEntries(groupMembers);
 }

@@ -16,16 +16,7 @@ namespace PVR
 class CPVRChannelGroupMergedByName : public CPVRChannelGroup
 {
 public:
-  /*!
-   * @brief Create a new channel group instance.
-   * @param path The channel group path.
-   * @param allChannelsGroup The channel group containing all TV or radio channels.
-   */
-  CPVRChannelGroupMergedByName(const CPVRChannelsPath& path,
-                               const std::shared_ptr<const CPVRChannelGroup>& allChannelsGroup)
-    : CPVRChannelGroup(path, allChannelsGroup)
-  {
-  }
+  using CPVRChannelGroup::CPVRChannelGroup;
 
   /*!
    * @brief Get the group's origin.
