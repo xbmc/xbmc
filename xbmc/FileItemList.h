@@ -192,7 +192,7 @@ private:
   void StackFolders();
 
   VECFILEITEMS m_items;
-  MAPFILEITEMS m_map;
+  std::map<std::string, std::shared_ptr<CFileItem>> m_map;
   bool m_ignoreURLOptions = false;
   bool m_fastLookup = false;
   SortDescription m_sortDescription;
