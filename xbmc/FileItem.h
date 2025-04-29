@@ -627,11 +627,5 @@ typedef std::vector< CFileItemPtr > VECFILEITEMS;
   */
 typedef std::map<std::string, CFileItemPtr > MAPFILEITEMS;
 
-/*!
-  \brief Pair for MAPFILEITEMS
-  \sa MAPFILEITEMS
-  */
-typedef std::pair<std::string, CFileItemPtr > MAPFILEITEMSPAIR;
-
 typedef bool (*FILEITEMLISTCOMPARISONFUNC) (const CFileItemPtr &pItem1, const CFileItemPtr &pItem2);
 typedef void (*FILEITEMFILLFUNC)(CFileItemPtr& item);
