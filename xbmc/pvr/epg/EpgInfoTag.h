@@ -70,7 +70,6 @@ public:
   void SetChannelData(const std::shared_ptr<CPVREpgChannelData>& data);
 
   bool operator==(const CPVREpgInfoTag& right) const;
-  bool operator!=(const CPVREpgInfoTag& right) const;
 
   // ISerializable implementation
   void Serialize(CVariant& value) const override;
@@ -242,28 +241,28 @@ public:
    * @param separator The separator for the different cast members, default value if empty.
    * @return The cast label.
    */
-  const std::string GetCastLabel(const std::string& separator) const;
+  std::string GetCastLabel(const std::string& separator) const;
 
   /*!
    * @brief Get the director(s) of this event as formatted string.
    * @param separator The separator for the different directors, default value if empty.
    * @return The directors label.
    */
-  const std::string GetDirectorsLabel(const std::string& separator) const;
+  std::string GetDirectorsLabel(const std::string& separator) const;
 
   /*!
    * @brief Get the writer(s) of this event as formatted string.
    * @param separator The separator for the different writers, default value if empty.
    * @return The writers label.
    */
-  const std::string GetWritersLabel(const std::string& separator) const;
+  std::string GetWritersLabel(const std::string& separator) const;
 
   /*!
    * @brief Get the genre(s) of this event as formatted string.
    * @param separator The separator for the different genres, default value if empty.
    * @return The genres label.
    */
-  const std::string GetGenresLabel(const std::string& separator) const;
+  std::string GetGenresLabel(const std::string& separator) const;
 
   /*!
    * @brief Get the year of this event.
@@ -407,7 +406,7 @@ public:
    * @param database The database.
    * @return True on success, false otherwise.
    */
-  bool QueuePersistQuery(const std::shared_ptr<CPVREpgDatabase>& database);
+  bool QueuePersistQuery(const std::shared_ptr<CPVREpgDatabase>& database) const;
 
   /*!
    * @brief Update the information in this tag with the info in the given tag.
@@ -484,7 +483,7 @@ public:
    * @param str The string to tokenize.
    * @return the tokens.
    */
-  static const std::vector<std::string> Tokenize(const std::string& str);
+  static std::vector<std::string> Tokenize(const std::string& str);
 
   /*!
    * @brief Combine the given strings to a single string. Inserts EPG_STRING_TOKEN_SEPARATOR as
@@ -492,7 +491,7 @@ public:
    * @param tokens The tokens.
    * @return the combined string.
    */
-  static const std::string DeTokenize(const std::vector<std::string>& tokens);
+  static std::string DeTokenize(const std::vector<std::string>& tokens);
 
 private:
   CPVREpgInfoTag(int iEpgID,

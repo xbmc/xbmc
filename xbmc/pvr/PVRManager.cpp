@@ -506,9 +506,6 @@ void CPVRManager::Process()
     return;
   }
 
-  // Load EPGs from database.
-  m_epgContainer->Load();
-
   // Reinit playbackstate
   m_playbackState->ReInit();
 

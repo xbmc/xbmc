@@ -61,7 +61,7 @@ std::string CPVREpgSearchFilter::GetPath() const
   return CPVREpgSearchPath(*this).GetPath();
 }
 
-void CPVREpgSearchFilter::SetSearchTerm(const std::string& strSearchTerm)
+void CPVREpgSearchFilter::SetSearchTerm(std::string_view strSearchTerm)
 {
   if (m_searchData.m_strSearchTerm != strSearchTerm)
   {
@@ -256,7 +256,7 @@ void CPVREpgSearchFilter::SetDatabaseId(int iDatabaseId)
   }
 }
 
-void CPVREpgSearchFilter::SetTitle(const std::string& title)
+void CPVREpgSearchFilter::SetTitle(std::string_view title)
 {
   if (m_title != title)
   {
@@ -265,7 +265,7 @@ void CPVREpgSearchFilter::SetTitle(const std::string& title)
   }
 }
 
-void CPVREpgSearchFilter::SetIconPath(const std::string& iconPath)
+void CPVREpgSearchFilter::SetIconPath(std::string_view iconPath)
 {
   if (m_iconPath != iconPath)
   {

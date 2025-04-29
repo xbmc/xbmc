@@ -10,7 +10,6 @@
 
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_epg.h"
 #include "powermanagement/PowerState.h"
-#include "pvr/settings/PVRSettings.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 #include "threads/Thread.h"
@@ -35,6 +34,7 @@ class CPVREpgChannelData;
 class CPVREpgDatabase;
 class CPVREpgInfoTag;
 class CPVREpgSearchFilter;
+class CPVRSettings;
 
 enum class PVREvent;
 
@@ -72,12 +72,6 @@ public:
    * @brief Stop the EPG update thread.
    */
   void Stop();
-
-  /**
-   * @brief (re)load EPG data.
-   * @return True if loaded successfully, false otherwise.
-   */
-  bool Load();
 
   /**
    * @brief unload all EPG data.
@@ -239,7 +233,7 @@ public:
    * @param epgSearch The search.
    * @return True on success, false otherwise.
    */
-  bool UpdateSavedSearchLastExecuted(const CPVREpgSearchFilter& epgSearch);
+  bool UpdateSavedSearchLastExecuted(const CPVREpgSearchFilter& epgSearch) const;
 
   /*!
    * @brief Delete a saved search from the database.
@@ -351,7 +345,7 @@ private:
 
   bool m_bUpdateNotificationPending =
       false; /*!< true while an epg updated notification to observers is pending. */
-  CPVRSettings m_settings;
+  std::unique_ptr<CPVRSettings> m_settings;
   CEventSource<PVREvent>& m_events;
 };
 } // namespace PVR

@@ -91,7 +91,7 @@ const std::string& CPVREpgChannelData::ChannelName() const
   return m_strChannelName;
 }
 
-void CPVREpgChannelData::SetChannelName(const std::string& strChannelName)
+void CPVREpgChannelData::SetChannelName(std::string_view strChannelName)
 {
   m_strChannelName = strChannelName;
 }
@@ -101,7 +101,7 @@ const std::string& CPVREpgChannelData::ChannelIconPath() const
   return m_strChannelIconPath;
 }
 
-void CPVREpgChannelData::SetChannelIconPath(const std::string& strChannelIconPath)
+void CPVREpgChannelData::SetChannelIconPath(std::string_view strChannelIconPath)
 {
   m_strChannelIconPath = strChannelIconPath;
 }

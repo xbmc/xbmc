@@ -12,6 +12,7 @@
 
 #include <ctime>
 #include <string>
+#include <string_view>
 
 namespace PVR
 {
@@ -41,10 +42,10 @@ public:
   void SetChannelId(int iChannelId);
 
   const std::string& ChannelName() const;
-  void SetChannelName(const std::string& strChannelName);
+  void SetChannelName(std::string_view strChannelName);
 
   const std::string& ChannelIconPath() const;
-  void SetChannelIconPath(const std::string& strChannelIconPath);
+  void SetChannelIconPath(std::string_view strChannelIconPath);
 
 private:
   const bool m_bIsRadio = false;

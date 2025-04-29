@@ -39,7 +39,7 @@ CPVREpgInfoTag::CPVREpgInfoTag(int iEpgID,
     m_iUniqueBroadcastID(EPG_TAG_INVALID_UID),
     m_iconPath(iconPath, StringUtils::Format(IMAGE_OWNER_PATTERN, iEpgID)),
     m_iFlags(EPG_TAG_FLAG_UNDEFINED),
-    m_channelData(new CPVREpgChannelData),
+    m_channelData(std::make_shared<CPVREpgChannelData>()),
     m_iEpgID(iEpgID)
 {
 }
@@ -165,14 +165,6 @@ bool CPVREpgInfoTag::operator==(const CPVREpgInfoTag& right) const
           m_channelData->ClientId() == right.m_channelData->ClientId());
 }
 
-bool CPVREpgInfoTag::operator!=(const CPVREpgInfoTag& right) const
-{
-  if (this == &right)
-    return false;
-
-  return !(*this == right);
-}
-
 void CPVREpgInfoTag::Serialize(CVariant& value) const
 {
   std::unique_lock lock(m_critSection);
@@ -249,9 +241,13 @@ double CPVREpgInfoTag::ProgressPercentage() const
 {
   double ret = 0.0;
 
-  time_t currentTime, startTime, endTime;
+  time_t currentTime{0};
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(currentTime);
+
+  time_t startTime{0};
   m_startTime.GetAsTime(startTime);
+
+  time_t endTime{0};
   m_endTime.GetAsTime(endTime);
 
   if (currentTime >= startTime && currentTime <= endTime)
@@ -273,8 +269,10 @@ double CPVREpgInfoTag::ProgressPercentage() const
 
 unsigned int CPVREpgInfoTag::Progress() const
 {
-  time_t currentTime, startTime;
+  time_t currentTime{0};
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(currentTime);
+
+  time_t startTime{0};
   m_startTime.GetAsTime(startTime);
 
   if (currentTime > startTime)
@@ -346,8 +344,10 @@ void CPVREpgInfoTag::SetEndFromUTC(const CDateTime& end)
 
 unsigned int CPVREpgInfoTag::GetDuration() const
 {
-  time_t start, end;
+  time_t start{0};
   m_startTime.GetAsTime(start);
+
+  time_t end{0};
   m_endTime.GetAsTime(end);
 
   if (end > start)
@@ -361,14 +361,14 @@ unsigned int CPVREpgInfoTag::GetDuration() const
   }
 }
 
-const std::string CPVREpgInfoTag::GetCastLabel(const std::string& separator) const
+std::string CPVREpgInfoTag::GetCastLabel(const std::string& separator) const
 {
   // Note: see CVideoInfoTag::GetCast for reference implementation.
   const std::string sep{separator.empty() ? "\n" : separator};
   return StringUtils::Join(m_cast, sep);
 }
 
-const std::string CPVREpgInfoTag::GetDirectorsLabel(const std::string& separator) const
+std::string CPVREpgInfoTag::GetDirectorsLabel(const std::string& separator) const
 {
   const std::string sep{
       separator.empty()
@@ -377,7 +377,7 @@ const std::string CPVREpgInfoTag::GetDirectorsLabel(const std::string& separator
   return StringUtils::Join(m_directors, sep);
 }
 
-const std::string CPVREpgInfoTag::GetWritersLabel(const std::string& separator) const
+std::string CPVREpgInfoTag::GetWritersLabel(const std::string& separator) const
 {
   const std::string sep{
       separator.empty()
@@ -386,7 +386,7 @@ const std::string CPVREpgInfoTag::GetWritersLabel(const std::string& separator) 
   return StringUtils::Join(m_writers, sep);
 }
 
-const std::string CPVREpgInfoTag::GetGenresLabel(const std::string& separator) const
+std::string CPVREpgInfoTag::GetGenresLabel(const std::string& separator) const
 {
   const std::string sep{
       separator.empty()
@@ -544,7 +544,7 @@ bool CPVREpgInfoTag::Update(const CPVREpgInfoTag& tag, bool bUpdateBroadcastId /
   return bChanged;
 }
 
-bool CPVREpgInfoTag::QueuePersistQuery(const std::shared_ptr<CPVREpgDatabase>& database)
+bool CPVREpgInfoTag::QueuePersistQuery(const std::shared_ptr<CPVREpgDatabase>& database) const
 {
   if (!database)
   {
@@ -658,12 +658,12 @@ bool CPVREpgInfoTag::IsLive() const
   return (m_iFlags & EPG_TAG_FLAG_IS_LIVE) > 0;
 }
 
-const std::vector<std::string> CPVREpgInfoTag::Tokenize(const std::string& str)
+std::vector<std::string> CPVREpgInfoTag::Tokenize(const std::string& str)
 {
   return StringUtils::Split(str, EPG_STRING_TOKEN_SEPARATOR);
 }
 
-const std::string CPVREpgInfoTag::DeTokenize(const std::vector<std::string>& tokens)
+std::string CPVREpgInfoTag::DeTokenize(const std::vector<std::string>& tokens)
 {
   return StringUtils::Join(tokens, EPG_STRING_TOKEN_SEPARATOR);
 }
