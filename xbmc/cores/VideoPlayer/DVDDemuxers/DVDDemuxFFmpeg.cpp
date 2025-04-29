@@ -1133,11 +1133,19 @@ DemuxPacket* CDVDDemuxFFmpeg::ReadInternal(bool keep)
 
         if (pPacket)
         {
-          if (m_bAVI && stream->codecpar && stream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
+
+          if (stream->codecpar && (stream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO))
           {
-            // AVI's always have borked pts, specially if m_pFormatContext->flags includes
-            // AVFMT_FLAG_GENPTS so always use dts
-            m_pkt.pkt.pts = AV_NOPTS_VALUE;
+            logM(LOGDEBUG, "CDVDDemuxFFmpeg", "video: pts [{}] dts [{}] den [{}] num [{}] avi [{}] codec [{}] [{}]",
+                 m_pkt.pkt.pts, m_pkt.pkt.dts ,stream->time_base.den, stream->time_base.num,
+                 m_bAVI, stream->codecpar->codec_type, avcodec_get_name(stream->codecpar->codec_id));
+
+            if (m_bAVI)
+            {
+              // AVI's always have borked pts, specially if m_pFormatContext->flags includes
+              // AVFMT_FLAG_GENPTS so always use dts
+              m_pkt.pkt.pts = AV_NOPTS_VALUE;
+            }
           }
 
           // copy contents into our own packet
