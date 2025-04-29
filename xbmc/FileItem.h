@@ -24,7 +24,6 @@
 
 #include <memory>
 #include <string>
-#include <utility>
 #include <vector>
 
 class CMediaSource;
@@ -620,5 +619,4 @@ typedef std::shared_ptr<CFileItem> CFileItemPtr;
   */
 typedef std::vector< CFileItemPtr > VECFILEITEMS;
 
-typedef bool (*FILEITEMLISTCOMPARISONFUNC) (const CFileItemPtr &pItem1, const CFileItemPtr &pItem2);
 typedef void (*FILEITEMFILLFUNC)(CFileItemPtr& item);
