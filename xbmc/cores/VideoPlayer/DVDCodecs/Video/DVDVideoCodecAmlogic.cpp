@@ -684,7 +684,10 @@ void CDVDVideoCodecAmlogic::SetCodecControl(int flags)
 void CDVDVideoCodecAmlogic::SetSpeed(int iSpeed)
 {
   if (m_Codec)
+  {
     m_Codec->SetSpeed(iSpeed);
+    if (m_hints.codec == AV_CODEC_ID_H264) m_Codec->Reset();
+  }
 }
 
 void CDVDVideoCodecAmlogic::FrameRateTracking(uint8_t *pData, int iSize, double dts, double pts)
