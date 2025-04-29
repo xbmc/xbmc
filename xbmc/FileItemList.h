@@ -170,7 +170,8 @@ public:
 
   VECFILEITEMS::iterator begin() { return m_items.begin(); }
   VECFILEITEMS::iterator end() { return m_items.end(); }
-  VECFILEITEMS::iterator erase(VECFILEITEMS::iterator first, VECFILEITEMS::iterator last);
+  using Iterator = std::vector<std::shared_ptr<CFileItem>>::iterator;
+  Iterator erase(Iterator first, Iterator last);
   VECFILEITEMS::const_iterator begin() const { return m_items.begin(); }
   VECFILEITEMS::const_iterator end() const { return m_items.end(); }
   VECFILEITEMS::const_iterator cbegin() const { return m_items.cbegin(); }
