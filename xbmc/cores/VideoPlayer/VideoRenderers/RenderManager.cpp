@@ -31,6 +31,7 @@
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
+#include <algorithm>
 #include <memory>
 #include <mutex>
 
@@ -722,19 +723,30 @@ void CRenderManager::ClockAlign()
   double delay = diff;
 
   // Seek may push the diff to a large negative value, make sure it is sensible. TODO should be better protected elsewhere.
-  if ((diff < 0) && (diff > -1000000))
+  if (diff < 0)
   {
-    Wait(-diff);
+    double wait = -diff;
+
+    if (wait > m_presentframetime)
+    {
+      double maxWait = (wait > 1000000)
+        ? (m_presentframetime * 4)
+        : (m_presentframetime * (((wait / m_presentframetime) / 10) + 1));
+      Wait(maxWait);
+    }
+    else
+      Wait(wait);
+
     renderPts = m_dvdClock.GetClock();
     diff = (renderPts - m_presentpts);
   }
 
   logM(LOGDEBUG, "CRenderManager", "render:[{:.3f}] presenting:[{:02d}] [{:.3f}] "
-                                  "diff:[{:.3f}] delay:[{:.3f}] "
-                                  "queued:[{:02d}] frametime:[{:.3f}] skip:[{:02d}]",
-                                  (renderPts / DVD_TIME_BASE), m_presentsource, (m_presentpts / DVD_TIME_BASE),
-                                  (diff / DVD_TIME_BASE), (delay / DVD_TIME_BASE),
-                                  m_queued.size(), (m_presentframetime / DVD_TIME_BASE), m_QueueSkip);
+                                   "diff:[{:.3f}] delay:[{:.3f}] "
+                                   "queued:[{:02d}] frametime:[{:.3f}] skip:[{:02d}]",
+                                   (renderPts / DVD_TIME_BASE), m_presentsource, (m_presentpts / DVD_TIME_BASE),
+                                   (diff / DVD_TIME_BASE), (delay / DVD_TIME_BASE),
+                                   m_queued.size(), (m_presentframetime / DVD_TIME_BASE), m_QueueSkip);
 }
 
 void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
@@ -1309,7 +1321,7 @@ void CRenderManager::PrepareNextRender()
 
   // remove late frames from queue - present from next up frame.
   if (diff > 0)
-    while ((diff > -1000) && (m_queued.size() > 2))
+    while ((diff > -500) && (m_queued.size() > 2))
     {
       if (playing) m_QueueSkip++;
       m_queued.pop_front(); // skip this frame
