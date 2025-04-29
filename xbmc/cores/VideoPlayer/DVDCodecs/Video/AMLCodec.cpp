@@ -2624,10 +2624,10 @@ inline double CAMLCodec::CalculatePictureDuration()
 
   if (m_cur_pts < m_last_pts)
   {
-    logM(LOGDEBUG, "CAMLCodec", "cur pts:[{:.3f}] < last pts:[{:.3f}] dur:[{:.3f}ms]",
-        static_cast<double>(m_cur_pts) / DVD_TIME_BASE,
-        static_cast<double>(m_last_pts) / DVD_TIME_BASE,
-        rate_duration / 1000);
+    logM(LOGDEBUG, "CAMLCodec", "behind :: cur pts:[{:.3f}] < last pts:[{:.3f}] dur:[{:.3f}ms]",
+         static_cast<double>(m_cur_pts) / DVD_TIME_BASE,
+         static_cast<double>(m_last_pts) / DVD_TIME_BASE,
+         rate_duration / 1000);
 
     m_cur_pts = m_last_pts + rate_duration;
     return rate_duration;
@@ -2636,21 +2636,24 @@ inline double CAMLCodec::CalculatePictureDuration()
   double picture_duration = static_cast<double>(m_cur_pts - m_last_pts);
   double duration_ratio = picture_duration / rate_duration;
 
-  // pts order not correct (sometimes, the pts_server in the kernel returns wrong
-  // pts values => try to compensate). If the difference is too big, then we assume
-  // there's a leap in the stream's pts values
   if ((m_speed == DVD_PLAYSPEED_NORMAL) &&
       (duration_ratio < 0.2 || (duration_ratio > 1.5 && duration_ratio < 4.0))) {
 
-    logM(LOGDEBUG, "CAMLCodec", "drift cur pts:[{:.3f}] last pts:[{:.3f}] calc dur:[{:.3f}ms] ratio:[{:.3f}]",
-        static_cast<double>(m_cur_pts) / DVD_TIME_BASE,
-        static_cast<double>(m_last_pts) / DVD_TIME_BASE,
-        picture_duration / 1000,
-        duration_ratio);
+    logM(LOGDEBUG, "CAMLCodec", "drift :: cur pts:[{:.3f}] last pts:[{:.3f}] calc dur:[{:.3f}ms] ratio:[{:.3f}]",
+         static_cast<double>(m_cur_pts) / DVD_TIME_BASE,
+         static_cast<double>(m_last_pts) / DVD_TIME_BASE,
+         picture_duration / 1000,
+         duration_ratio);
 
     m_cur_pts = m_last_pts + rate_duration;
     return rate_duration;
   }
+
+  logM(LOGDEBUG, "CAMLCodec", "in-sync :: cur pts:[{:.3f}] last pts:[{:.3f}] dur:[{:.3f}ms] ratio:[{:.3f}]",
+       static_cast<double>(m_cur_pts) / DVD_TIME_BASE,
+       static_cast<double>(m_last_pts) / DVD_TIME_BASE,
+       rate_duration / 1000,
+       duration_ratio);
 
   return picture_duration;
 }
