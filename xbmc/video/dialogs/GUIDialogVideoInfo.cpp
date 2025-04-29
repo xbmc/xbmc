@@ -1446,9 +1446,9 @@ bool CGUIDialogVideoInfo::ManageMovieSets(const std::shared_ptr<CFileItem>& item
       selectedItems.Size() == 0) // need at least one item selected
     return false;
 
-  VECFILEITEMS original = originalItems.GetList();
+  auto original = originalItems.GetList();
   std::sort(original.begin(), original.end(), compFileItemsByDbId);
-  VECFILEITEMS selected = selectedItems.GetList();
+  auto selected = selectedItems.GetList();
   std::sort(selected.begin(), selected.end(), compFileItemsByDbId);
 
   bool refreshNeeded = false;

@@ -50,7 +50,7 @@ public:
   void Remove(CFileItem* pItem);
   void Remove(int iItem);
   CFileItemPtr Get(int iItem) const;
-  const VECFILEITEMS& GetList() const { return m_items; }
+  const auto& GetList() const { return m_items; }
   CFileItemPtr Get(const std::string& strPath) const;
   int Size() const;
   bool IsEmpty() const;
@@ -168,16 +168,20 @@ public:
 
   void ClearSortState();
 
-  VECFILEITEMS::iterator begin() { return m_items.begin(); }
-  VECFILEITEMS::iterator end() { return m_items.end(); }
+  auto begin() { return m_items.begin(); }
+  auto end() { return m_items.end(); }
+
+  auto begin() const { return m_items.begin(); }
+  auto end() const { return m_items.end(); }
+
   using Iterator = std::vector<std::shared_ptr<CFileItem>>::iterator;
   Iterator erase(Iterator first, Iterator last);
-  VECFILEITEMS::const_iterator begin() const { return m_items.begin(); }
-  VECFILEITEMS::const_iterator end() const { return m_items.end(); }
-  VECFILEITEMS::const_iterator cbegin() const { return m_items.cbegin(); }
-  VECFILEITEMS::const_iterator cend() const { return m_items.cend(); }
-  std::reverse_iterator<VECFILEITEMS::const_iterator> rbegin() const { return m_items.rbegin(); }
-  std::reverse_iterator<VECFILEITEMS::const_iterator> rend() const { return m_items.rend(); }
+
+  auto cbegin() const { return m_items.cbegin(); }
+  auto cend() const { return m_items.cend(); }
+
+  auto rbegin() const { return m_items.rbegin(); }
+  auto rend() const { return m_items.rend(); }
 
 private:
   std::string GetDiscFileCache(int windowID) const;
