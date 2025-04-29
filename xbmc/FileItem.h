@@ -618,5 +618,3 @@ typedef std::shared_ptr<CFileItem> CFileItemPtr;
   \sa CFileItem
   */
 typedef std::vector< CFileItemPtr > VECFILEITEMS;
-
-typedef void (*FILEITEMFILLFUNC)(CFileItemPtr& item);
