@@ -179,8 +179,6 @@ public:
   std::reverse_iterator<VECFILEITEMS::const_iterator> rend() const { return m_items.rend(); }
 
 private:
-  void Sort(FILEITEMLISTCOMPARISONFUNC func);
-  void FillSortFields(FILEITEMFILLFUNC func);
   std::string GetDiscFileCache(int windowID) const;
 
   /*!
