@@ -622,12 +622,6 @@ typedef std::shared_ptr<CFileItem> CFileItemPtr;
 typedef std::vector< CFileItemPtr > VECFILEITEMS;
 
 /*!
-  \brief Iterator for VECFILEITEMS
-  \sa CFileItemList
-  */
-typedef std::vector< CFileItemPtr >::iterator IVECFILEITEMS;
-
-/*!
   \brief A map of pointers to CFileItem
   \sa CFileItem
   */
