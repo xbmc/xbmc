@@ -328,12 +328,6 @@ void CFileItemList::Reserve(size_t iCount)
   m_items.reserve(iCount);
 }
 
-void CFileItemList::Sort(FILEITEMLISTCOMPARISONFUNC func)
-{
-  std::unique_lock<CCriticalSection> lock(m_lock);
-  std::stable_sort(m_items.begin(), m_items.end(), func);
-}
-
 void CFileItemList::FillSortFields(FILEITEMFILLFUNC func)
 {
   std::unique_lock<CCriticalSection> lock(m_lock);
