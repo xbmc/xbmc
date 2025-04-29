@@ -384,7 +384,7 @@ void CFileItemList::Sort(SortDescription sortDescription)
   SortUtils::Sort(sortDescription, sortItems);
 
   // apply the new order to the existing CFileItems
-  VECFILEITEMS sortedFileItems;
+  std::vector<std::shared_ptr<CFileItem>> sortedFileItems;
   sortedFileItems.reserve(Size());
   for (SortItems::const_iterator it = sortItems.begin(); it != sortItems.end(); ++it)
   {

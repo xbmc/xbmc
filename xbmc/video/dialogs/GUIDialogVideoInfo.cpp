@@ -1453,7 +1453,7 @@ bool CGUIDialogVideoInfo::ManageMovieSets(const std::shared_ptr<CFileItem>& item
 
   bool refreshNeeded = false;
   // update the "added" items
-  VECFILEITEMS addedItems;
+  std::vector<std::shared_ptr<CFileItem>> addedItems;
   set_difference(selected.begin(),selected.end(), original.begin(),original.end(), std::back_inserter(addedItems), compFileItemsByDbId);
   for (const auto& it : addedItems)
   {
@@ -1464,7 +1464,7 @@ bool CGUIDialogVideoInfo::ManageMovieSets(const std::shared_ptr<CFileItem>& item
   // update the "deleted" items
   CFileItemPtr clearItem(new CFileItem());
   clearItem->GetVideoInfoTag()->m_iDbId = -1; // -1 will be used to clear set
-  VECFILEITEMS deletedItems;
+  std::vector<std::shared_ptr<CFileItem>> deletedItems;
   set_difference(original.begin(),original.end(), selected.begin(),selected.end(), std::back_inserter(deletedItems), compFileItemsByDbId);
   for (const auto& it : deletedItems)
   {
