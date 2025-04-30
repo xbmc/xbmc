@@ -77,21 +77,7 @@ bool CMediaSource::operator==(const CMediaSource &share) const
 
 void AddOrReplace(std::vector<CMediaSource>& sources, const std::vector<CMediaSource>& extras)
 {
-  unsigned int i;
-  for( i=0;i<extras.size();++i )
-  {
-    unsigned int j;
-    for ( j=0;j<sources.size();++j)
-    {
-      if (StringUtils::EqualsNoCase(sources[j].strPath, extras[i].strPath))
-      {
-        sources[j] = extras[i];
-        break;
-      }
-    }
-    if (j == sources.size())
-      sources.push_back(extras[i]);
-  }
+  std::ranges::for_each(extras, [&sources](auto& extra) { AddOrReplace(sources, extra); });
 }
 
 void AddOrReplace(std::vector<CMediaSource>& sources, const CMediaSource& source)
