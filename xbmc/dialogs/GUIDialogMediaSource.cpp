@@ -140,7 +140,7 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const std::string &type)
     std::string strName = dialog->GetUniqueMediaSourceName();
 
     CMediaSource share;
-    share.FromNameAndPaths(type, strName, dialog->GetPaths());
+    share.FromNameAndPaths(strName, dialog->GetPaths());
     if (dialog->m_paths->Size() > 0)
       share.m_strThumbnailImage = dialog->m_paths->Get(0)->GetArt("thumb");
     CMediaSourceSettings::GetInstance().AddShare(type, share);
@@ -183,7 +183,7 @@ bool CGUIDialogMediaSource::ShowAndEditMediaSource(const std::string &type, cons
       strName = dialog->GetUniqueMediaSourceName();
 
     CMediaSource newShare;
-    newShare.FromNameAndPaths(type, strName, dialog->GetPaths());
+    newShare.FromNameAndPaths(strName, dialog->GetPaths());
     CMediaSourceSettings::GetInstance().UpdateShare(type, strOldName, newShare);
 
     OnMediaSourceChanged(type, strOldName, newShare);
@@ -450,7 +450,7 @@ void CGUIDialogMediaSource::OnOK()
   // Create temp media source to encode path urls as multipath
   // Name of actual source may need to be made unique when saved in sources
   CMediaSource share;
-  share.FromNameAndPaths(m_type, m_name, GetPaths());
+  share.FromNameAndPaths(m_name, GetPaths());
 
   if (StringUtils::StartsWithNoCase(share.strPath, "plugin://") ||
     CDirectory::GetDirectory(share.strPath, items, "", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_ALLOW_PROMPT) ||

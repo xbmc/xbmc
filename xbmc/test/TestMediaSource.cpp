@@ -107,7 +107,7 @@ class AddOrReplaceTest : public testing::WithParamInterface<AddOrReplaceTestDef>
 TEST_P(FromNameAndPathTest, FromNameAndPath)
 {
   CMediaSource source;
-  source.FromNameAndPaths("", GetParam().in.name, GetParam().in.path);
+  source.FromNameAndPaths(GetParam().in.name, GetParam().in.path);
 
   EXPECT_EQ(source.strName, GetParam().ref.strName);
   EXPECT_EQ(source.strPath, GetParam().ref.strPath);

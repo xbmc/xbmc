@@ -25,7 +25,7 @@ class CMediaSource final
 public:
   bool operator==(const CMediaSource &right) const;
 
-  void FromNameAndPaths(const std::string &category, const std::string &name, const std::vector<std::string> &paths);
+  void FromNameAndPaths(const std::string& name, const std::vector<std::string>& paths);
   bool IsWritable() const;
   std::string strName; ///< Name of the share, can be chosen freely.
   std::string strStatus; ///< Status of the share (eg has disk etc.)

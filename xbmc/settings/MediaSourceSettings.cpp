@@ -413,7 +413,7 @@ bool CMediaSourceSettings::GetSource(const std::string& category,
     }
   }
 
-  share.FromNameAndPaths(category, name, verifiedPaths);
+  share.FromNameAndPaths(name, verifiedPaths);
 
   share.m_iBadPwdCount = 0;
   if (lockModeElement)
