@@ -117,8 +117,10 @@ void CPVRGUITimesInfo::UpdateTimeshiftData()
   }
 
   time_t now = std::time(nullptr);
-  time_t iStartTime;
-  int64_t iPlayTime, iMinTime, iMaxTime;
+  time_t iStartTime{0};
+  int64_t iPlayTime{0};
+  int64_t iMinTime{0};
+  int64_t iMaxTime{0};
   CServiceBroker::GetDataCacheCore().GetPlayTimes(iStartTime, iPlayTime, iMinTime, iMaxTime);
   bool bPlaying = CServiceBroker::GetDataCacheCore().GetSpeed() == 1.0f;
   const std::shared_ptr<const CPVRChannel> playingChannel =

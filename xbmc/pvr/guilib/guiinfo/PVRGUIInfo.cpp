@@ -108,12 +108,12 @@ void CPVRGUIInfo::ResetProperties()
   m_bRegistered = false;
 }
 
-void CPVRGUIInfo::ClearQualityInfo(CPVRSignalStatus& qualityInfo)
+void CPVRGUIInfo::ClearQualityInfo(CPVRSignalStatus& qualityInfo) const
 {
-  qualityInfo = {g_localizeStrings.Get(13106).c_str(), g_localizeStrings.Get(13106).c_str()};
+  qualityInfo = {g_localizeStrings.Get(13106), g_localizeStrings.Get(13106)};
 }
 
-void CPVRGUIInfo::ClearDescrambleInfo(CPVRDescrambleInfo& descrambleInfo)
+void CPVRGUIInfo::ClearDescrambleInfo(CPVRDescrambleInfo& descrambleInfo) const
 {
   descrambleInfo = {};
 }
@@ -627,6 +627,8 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
         StringUtils::Replace(strValue, "\n", ", ");
         return true;
       }
+      default:
+        break;
     }
     return false;
   }
@@ -645,6 +647,8 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
           strValue = g_localizeStrings.Get(10006); // "N/A"
         return true;
       }
+      default:
+        break;
     }
     return false;
   }
@@ -671,10 +675,14 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
             case CPVRChannelGroup::Origin::USER:
               strValue = g_localizeStrings.Get(858); // User
               return true;
+            default:
+              break;
           }
         }
         break;
       }
+      default:
+        break;
     }
     return false;
   }
@@ -725,6 +733,8 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
         // associated with the epg event of a timer, if any, and not the title of the timer.
         strValue = CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().GetTitleForEpgTag(epgTag);
         return true;
+      default:
+        break;
     }
   }
 
@@ -905,6 +915,8 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
         StringUtils::Replace(strValue, "\n", ", ");
         return true;
       }
+      default:
+        break;
     }
   }
 
@@ -981,6 +993,8 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
             return true;
           }
         }
+        break;
+      default:
         break;
     }
   }
@@ -1221,6 +1235,8 @@ bool CPVRGUIInfo::GetPVRLabel(const CFileItem* item,
     case PVR_CHANNEL_NUMBER_INPUT:
       strValue = m_channelNumberInput;
       return true;
+    default:
+      break;
   }
 
   return false;
@@ -1363,6 +1379,8 @@ bool CPVRGUIInfo::GetRadioRDSLabel(const CFileItem* item,
       case RDS_GET_RADIOTEXT_LINE:
         strValue = tag->GetRadioText(info.GetData1());
         return true;
+      default:
+        break;
     }
   }
   return false;
@@ -1403,7 +1421,7 @@ bool CPVRGUIInfo::GetInt(int& value,
   if (!item->IsFileItem())
     return false;
 
-  const CFileItem* fitem = static_cast<const CFileItem*>(item);
+  const auto* fitem{static_cast<const CFileItem*>(item)};
   return GetListItemAndPlayerInt(fitem, info, value) || GetPVRInt(fitem, info, value);
 }
 
@@ -1421,6 +1439,8 @@ bool CPVRGUIInfo::GetListItemAndPlayerInt(const CFileItem* item,
           iValue = static_cast<int>(epgTag->ProgressPercentage());
       }
       return true;
+    default:
+      break;
   }
   return false;
 }
@@ -1485,6 +1505,8 @@ bool CPVRGUIInfo::GetPVRInt(const CFileItem* item, const CGUIInfo& info, int& iV
     case PVR_CLIENT_COUNT:
       iValue = static_cast<int>(CServiceBroker::GetPVRManager().Clients()->EnabledClientAmount());
       return true;
+    default:
+      break;
   }
   return false;
 }
@@ -1497,7 +1519,7 @@ bool CPVRGUIInfo::GetBool(bool& value,
   if (!item->IsFileItem())
     return false;
 
-  const CFileItem* fitem = static_cast<const CFileItem*>(item);
+  const auto* fitem{static_cast<const CFileItem*>(item)};
   return GetListItemAndPlayerBool(fitem, info, value) || GetPVRBool(fitem, info, value) ||
          GetRadioRDSBool(fitem, info, value);
 }
@@ -1803,6 +1825,8 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem* item,
         return true;
       }
       break;
+    default:
+      break;
   }
   return false;
 }
@@ -1873,6 +1897,8 @@ bool CPVRGUIInfo::GetPVRBool(const CFileItem* item, const CGUIInfo& info, bool& 
     case PVR_IS_PLAYING_ACTIVE_RECORDING:
       bValue = m_bIsPlayingActiveRecording;
       return true;
+    default:
+      break;
   }
   return false;
 }
@@ -1901,6 +1927,8 @@ bool CPVRGUIInfo::GetRadioRDSBool(const CFileItem* item, const CGUIInfo& info, b
         bValue = (!tag->GetEMailStudio().empty() || !tag->GetSMSStudio().empty() ||
                   !tag->GetPhoneStudio().empty());
         return true;
+      default:
+        break;
     }
   }
 
@@ -1913,6 +1941,8 @@ bool CPVRGUIInfo::GetRadioRDSBool(const CFileItem* item, const CGUIInfo& info, b
       bValue = appPlayer->IsPlayingRDS();
       return true;
     }
+    default:
+      break;
   }
 
   return false;
@@ -2206,7 +2236,7 @@ int CPVRGUIInfo::GetTimeShiftSeekPercent() const
   {
     int total = m_timesInfo.GetTimeshiftProgressDuration();
 
-    const double totalTime = static_cast<double>(total);
+    const auto totalTime{static_cast<double>(total)};
     if (totalTime == 0.0)
       return 0;
 
