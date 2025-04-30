@@ -1945,7 +1945,8 @@
         "userrating",
         "ratings",
         "runtime",
-        "uniqueid"
+        "uniqueid",
+        "trailer"
       ]
     }
   },
@@ -2382,6 +2383,9 @@
       },
       "uniqueid": {
         "$ref": "Media.UniqueID"
+      },
+      "trailer": {
+        "type": "string"
       }
     }
   },
