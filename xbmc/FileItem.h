@@ -24,7 +24,6 @@
 
 #include <memory>
 #include <string>
-#include <vector>
 
 class CMediaSource;
 enum class VideoDbContentType;
@@ -612,9 +611,3 @@ private:
   \sa CFileItem
   */
 typedef std::shared_ptr<CFileItem> CFileItemPtr;
-
-/*!
-  \brief A vector of pointer to CFileItem
-  \sa CFileItem
-  */
-typedef std::vector< CFileItemPtr > VECFILEITEMS;

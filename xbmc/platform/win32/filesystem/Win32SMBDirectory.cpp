@@ -292,7 +292,7 @@ bool CWin32SMBDirectory::RealExists(const CURL& url, bool tryToConnect)
       return false;
     }
     const std::string& searchStr = (url.GetShareName().empty()) ? url.GetHostName() : url.GetShareName();
-    const VECFILEITEMS entrVec = entries.GetList();
+    const auto entrVec = entries.GetList();
     for (const auto& it : entrVec)
     {
       if (it->GetLabel() == searchStr)

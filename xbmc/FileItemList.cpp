@@ -203,8 +203,7 @@ void CFileItemList::Remove(CFileItem* pItem)
   }
 }
 
-VECFILEITEMS::iterator CFileItemList::erase(VECFILEITEMS::iterator first,
-                                            VECFILEITEMS::iterator last)
+CFileItemList::Iterator CFileItemList::erase(Iterator first, Iterator last)
 {
   std::unique_lock<CCriticalSection> lock(m_lock);
   return m_items.erase(first, last);
@@ -384,7 +383,7 @@ void CFileItemList::Sort(SortDescription sortDescription)
   SortUtils::Sort(sortDescription, sortItems);
 
   // apply the new order to the existing CFileItems
-  VECFILEITEMS sortedFileItems;
+  std::vector<std::shared_ptr<CFileItem>> sortedFileItems;
   sortedFileItems.reserve(Size());
   for (SortItems::const_iterator it = sortItems.begin(); it != sortItems.end(); ++it)
   {
