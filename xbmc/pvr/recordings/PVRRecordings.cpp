@@ -21,9 +21,9 @@
 #include "video/VideoDatabase.h"
 
 #include <algorithm>
-#include <iterator>
 #include <memory>
 #include <mutex>
+#include <ranges>
 #include <utility>
 #include <vector>
 
@@ -46,18 +46,18 @@ bool CPVRRecordings::UpdateFromClients(const std::vector<std::shared_ptr<CPVRCli
 
   m_bIsUpdating = true;
 
-  for (const auto& recording : m_recordings)
-    recording.second->SetDirty(true);
+  for (const auto& [_, recording] : m_recordings)
+    recording->SetDirty(true);
 
   std::vector<int> failedClients;
   CServiceBroker::GetPVRManager().Clients()->GetRecordings(clients, this, false, failedClients);
   CServiceBroker::GetPVRManager().Clients()->GetRecordings(clients, this, true, failedClients);
 
   // remove recordings that were deleted at the backend
-  for (auto it = m_recordings.begin(); it != m_recordings.end();)
+  for (auto it = m_recordings.cbegin(); it != m_recordings.cend();)
   {
-    if ((*it).second->IsDirty() && std::find(failedClients.begin(), failedClients.end(),
-                                             (*it).second->ClientID()) == failedClients.end())
+    if ((*it).second->IsDirty() &&
+        std::ranges::find(failedClients, (*it).second->ClientID()) == failedClients.cend())
       it = m_recordings.erase(it);
     else
       ++it;
@@ -91,11 +91,11 @@ void CPVRRecordings::UpdateInProgressSize()
   m_bIsUpdating = true;
 
   bool bHaveUpdatedInProgessRecording = false;
-  for (auto& recording : m_recordings)
+  for (auto& [_, recording] : m_recordings)
   {
-    if (recording.second->IsInProgress())
+    if (recording->IsInProgress())
     {
-      if (recording.second->UpdateRecordingSize())
+      if (recording->UpdateRecordingSize())
         bHaveUpdatedInProgessRecording = true;
     }
   }
@@ -135,8 +135,7 @@ std::vector<std::shared_ptr<CPVRRecording>> CPVRRecordings::GetAll() const
   std::vector<std::shared_ptr<CPVRRecording>> recordings;
 
   std::unique_lock lock(m_critSection);
-  std::transform(m_recordings.cbegin(), m_recordings.cend(), std::back_inserter(recordings),
-                 [](const auto& recordingEntry) { return recordingEntry.second; });
+  std::ranges::copy(std::views::values(m_recordings), std::back_inserter(recordings));
 
   return recordings;
 }
@@ -144,9 +143,8 @@ std::vector<std::shared_ptr<CPVRRecording>> CPVRRecordings::GetAll() const
 std::shared_ptr<CPVRRecording> CPVRRecordings::GetById(unsigned int iId) const
 {
   std::unique_lock lock(m_critSection);
-  const auto it =
-      std::find_if(m_recordings.cbegin(), m_recordings.cend(),
-                   [iId](const auto& recording) { return recording.second->RecordingID() == iId; });
+  const auto it = std::ranges::find_if(m_recordings, [iId](const auto& recording)
+                                       { return recording.second->RecordingID() == iId; });
   return it != m_recordings.cend() ? (*it).second : std::shared_ptr<CPVRRecording>();
 }
 
@@ -160,15 +158,14 @@ std::shared_ptr<CPVRRecording> CPVRRecordings::GetByPath(const std::string& path
     bool bDeleted = recPath.IsDeleted();
     bool bRadio = recPath.IsRadio();
 
-    for (const auto& recording : m_recordings)
+    for (const auto& [_, recording] : m_recordings)
     {
-      std::shared_ptr<CPVRRecording> current = recording.second;
       // Omit recordings not matching criteria
-      if (!URIUtils::PathEquals(path, current->m_strFileNameAndPath) ||
-          bDeleted != current->IsDeleted() || bRadio != current->IsRadio())
+      if (!URIUtils::PathEquals(path, recording->m_strFileNameAndPath) ||
+          bDeleted != recording->IsDeleted() || bRadio != recording->IsRadio())
         continue;
 
-      return current;
+      return recording;
     }
   }
 
@@ -202,9 +199,10 @@ bool MatchProvider(const std::shared_ptr<CPVRRecording>& recording,
 bool CPVRRecordings::HasRecordingForProvider(bool isRadio, int clientId, int providerId) const
 {
   std::unique_lock lock(m_critSection);
-  return std::any_of(m_recordings.cbegin(), m_recordings.cend(),
-                     [isRadio, clientId, providerId](const auto& entry)
-                     { return MatchProvider(entry.second, isRadio, clientId, providerId); });
+  return std::ranges::any_of(m_recordings,
+                             [isRadio, clientId, providerId](const auto& entry) {
+                               return MatchProvider(entry.second, isRadio, clientId, providerId);
+                             });
 }
 
 unsigned int CPVRRecordings::GetRecordingCountByProvider(bool isRadio,
@@ -212,8 +210,8 @@ unsigned int CPVRRecordings::GetRecordingCountByProvider(bool isRadio,
                                                          int providerId) const
 {
   std::unique_lock lock(m_critSection);
-  auto recs = std::count_if(m_recordings.cbegin(), m_recordings.cend(),
-                            [isRadio, clientId, providerId](const auto& entry)
+  auto recs =
+      std::ranges::count_if(m_recordings, [isRadio, clientId, providerId](const auto& entry)
                             { return MatchProvider(entry.second, isRadio, clientId, providerId); });
   return static_cast<unsigned int>(recs);
 }
@@ -240,7 +238,8 @@ void CPVRRecordings::UpdateFromClient(const std::shared_ptr<CPVRRecording>& tag,
   else
   {
     tag->UpdateMetadata(GetVideoDatabase(), client);
-    tag->SetRecordingID(++m_iLastId);
+    m_iLastId++;
+    tag->SetRecordingID(m_iLastId);
     m_recordings.insert({CPVRRecordingUid(tag->ClientID(), tag->ClientRecordingID()), tag});
     if (tag->IsRadio())
       ++m_iRadioRecordings;
@@ -257,28 +256,28 @@ std::shared_ptr<CPVRRecording> CPVRRecordings::GetRecordingForEpgTag(
 
   std::unique_lock lock(m_critSection);
 
-  for (const auto& recording : m_recordings)
+  for (const auto& [_, recording] : m_recordings)
   {
-    if (recording.second->IsDeleted())
+    if (recording->IsDeleted())
       continue;
 
-    if (recording.second->ClientID() != epgTag->ClientID())
+    if (recording->ClientID() != epgTag->ClientID())
       continue;
 
-    if (recording.second->ChannelUid() != epgTag->UniqueChannelID())
+    if (recording->ChannelUid() != epgTag->UniqueChannelID())
       continue;
 
-    unsigned int iEpgEvent = recording.second->BroadcastUid();
+    unsigned int iEpgEvent = recording->BroadcastUid();
     if (iEpgEvent != EPG_TAG_INVALID_UID)
     {
       if (iEpgEvent == epgTag->UniqueBroadcastID())
-        return recording.second;
+        return recording;
     }
     else
     {
-      if (recording.second->RecordingTimeAsUTC() <= epgTag->StartAsUTC() &&
-          recording.second->EndTimeAsUTC() >= epgTag->EndAsUTC())
-        return recording.second;
+      if (recording->RecordingTimeAsUTC() <= epgTag->StartAsUTC() &&
+          recording->EndTimeAsUTC() >= epgTag->EndAsUTC())
+        return recording;
     }
   }
 
@@ -386,13 +385,13 @@ int CPVRRecordings::CleanupCachedImages()
   std::vector<std::string> urlsToCheck;
   {
     std::unique_lock lock(m_critSection);
-    for (const auto& recording : m_recordings)
+    for (const auto& [_, recording] : m_recordings)
     {
-      urlsToCheck.emplace_back(recording.second->ClientIconPath());
-      urlsToCheck.emplace_back(recording.second->ClientThumbnailPath());
-      urlsToCheck.emplace_back(recording.second->ClientFanartPath());
-      urlsToCheck.emplace_back(recording.second->ClientParentalRatingIconPath());
-      urlsToCheck.emplace_back(recording.second->m_strFileNameAndPath);
+      urlsToCheck.emplace_back(recording->ClientIconPath());
+      urlsToCheck.emplace_back(recording->ClientThumbnailPath());
+      urlsToCheck.emplace_back(recording->ClientFanartPath());
+      urlsToCheck.emplace_back(recording->ClientParentalRatingIconPath());
+      urlsToCheck.emplace_back(recording->m_strFileNameAndPath);
     }
   }
 

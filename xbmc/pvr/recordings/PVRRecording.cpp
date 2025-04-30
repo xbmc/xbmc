@@ -201,11 +201,6 @@ bool CPVRRecording::operator==(const CPVRRecording& right) const
           m_titleExtraInfo == right.m_titleExtraInfo);
 }
 
-bool CPVRRecording::operator!=(const CPVRRecording& right) const
-{
-  return !(*this == right);
-}
-
 void CPVRRecording::Serialize(CVariant& value) const
 {
   CVideoInfoTag::Serialize(value);
@@ -287,19 +282,19 @@ void CPVRRecording::Reset()
   CVideoInfoTag::Reset();
 }
 
-bool CPVRRecording::Delete()
+bool CPVRRecording::Delete() const
 {
   std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
   return client && (client->DeleteRecording(*this) == PVR_ERROR_NO_ERROR);
 }
 
-bool CPVRRecording::Undelete()
+bool CPVRRecording::Undelete() const
 {
   const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
   return client && (client->UndeleteRecording(*this) == PVR_ERROR_NO_ERROR);
 }
 
-bool CPVRRecording::Rename(const std::string& strNewName)
+bool CPVRRecording::Rename(std::string_view strNewName)
 {
   m_strTitle = strNewName;
   const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
@@ -377,7 +372,7 @@ CBookmark CPVRRecording::GetResumePoint() const
       CBookmark resumePoint(CVideoInfoTag::GetResumePoint());
       resumePoint.timeInSeconds = pos;
       resumePoint.totalTimeInSeconds = (pos == 0) ? 0 : m_duration;
-      CPVRRecording* pThis = const_cast<CPVRRecording*>(this);
+      auto* pThis{const_cast<CPVRRecording*>(this)};
       pThis->CVideoInfoTag::SetResumePoint(resumePoint);
     }
   }
@@ -429,7 +424,7 @@ void CPVRRecording::UpdateMetadata(CVideoDatabase& db, const CPVRClient& client)
   m_bGotMetaData = true;
 }
 
-void CPVRRecording::DeleteMetadata(CVideoDatabase& db)
+void CPVRRecording::DeleteMetadata(CVideoDatabase& db) const
 {
   db.BeginTransaction();
   if (db.EraseAllForFile(m_strFileNameAndPath))
@@ -657,7 +652,7 @@ void CPVRRecording::SetGenre(int iGenreType, int iGenreSubType, const std::strin
   }
 }
 
-const std::string CPVRRecording::GetGenresLabel() const
+std::string CPVRRecording::GetGenresLabel() const
 {
   return StringUtils::Join(
       m_genre, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
