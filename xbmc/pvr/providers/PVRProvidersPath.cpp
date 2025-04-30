@@ -32,9 +32,8 @@ CPVRProvidersPath::CPVRProvidersPath(CPVRProvidersPath::Kind kind,
                                      int clientId,
                                      int providerUid,
                                      const std::string& lastSegment /* = "" */)
+  : m_isValid((kind == Kind::RADIO) || (kind == Kind::TV)), m_kind(kind)
 {
-  m_kind = kind;
-  m_isValid = ((m_kind == Kind::RADIO) || (m_kind == Kind::TV));
   if (m_isValid)
   {
     if (lastSegment.empty())

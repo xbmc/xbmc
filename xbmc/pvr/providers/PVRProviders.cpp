@@ -38,7 +38,8 @@ bool CPVRProvidersContainer::UpdateFromClient(const std::shared_ptr<CPVRProvider
   }
   else
   {
-    provider->SetDatabaseId(++m_iLastId);
+    m_iLastId++;
+    provider->SetDatabaseId(m_iLastId);
     InsertEntry(provider, ProviderUpdateMode::BY_CLIENT);
   }
 
@@ -49,10 +50,9 @@ std::shared_ptr<CPVRProvider> CPVRProvidersContainer::GetByClient(int iClientId,
                                                                   int iUniqueId) const
 {
   std::unique_lock lock(m_critSection);
-  const auto it = std::find_if(
-      m_providers.cbegin(), m_providers.cend(), [iClientId, iUniqueId](const auto& provider) {
-        return provider->GetClientId() == iClientId && provider->GetUniqueId() == iUniqueId;
-      });
+  const auto it = std::ranges::find_if(
+      m_providers, [iClientId, iUniqueId](const auto& provider)
+      { return provider->GetClientId() == iClientId && provider->GetUniqueId() == iUniqueId; });
   return it != m_providers.cend() ? (*it) : std::shared_ptr<CPVRProvider>();
 }
 
@@ -60,7 +60,7 @@ void CPVRProvidersContainer::InsertEntry(const std::shared_ptr<CPVRProvider>& ne
                                          ProviderUpdateMode updateMode)
 {
   bool found = false;
-  for (auto& provider : m_providers)
+  for (const auto& provider : m_providers)
   {
     if (provider->GetClientId() == newProvider->GetClientId() &&
         provider->GetUniqueId() == newProvider->GetUniqueId())
@@ -133,7 +133,7 @@ bool CPVRProviders::LoadFromDatabase(const std::vector<std::shared_ptr<CPVRClien
     CPVRProviders providers;
     database->Get(providers, clients);
 
-    for (auto& provider : providers.GetProvidersList())
+    for (const auto& provider : providers.GetProvidersList())
       CheckAndAddEntry(provider, ProviderUpdateMode::BY_DATABASE);
   }
   return true;
@@ -194,8 +194,7 @@ bool CPVRProviders::UpdateDefaultEntries(const CPVRProvidersContainer& newProvid
       });
 
   // check for deleted providers
-  for (std::vector<std::shared_ptr<CPVRProvider>>::iterator it = m_providers.begin();
-       it != m_providers.end();)
+  for (auto it = m_providers.cbegin(); it != m_providers.cend();)
   {
     const std::shared_ptr<const CPVRProvider> provider = *it;
     if (!newProviders.GetByClient(provider->GetClientId(), provider->GetUniqueId()))
@@ -250,14 +249,10 @@ bool CPVRProviders::UpdateClientEntries(const CPVRProvidersContainer& newProvide
     {
       const bool bIgnoreProvider =
           (provider->IsClientProvider() || // ignore add-on providers as they are a special case
-           std::any_of(failedClients.cbegin(), failedClients.cend(),
-                       [&provider](const auto& failedClient) {
-                         return failedClient == provider->GetClientId();
-                       }) ||
-           std::any_of(disabledClients.cbegin(), disabledClients.cend(),
-                       [&provider](const auto& disabledClient) {
-                         return disabledClient == provider->GetClientId();
-                       }));
+           std::ranges::any_of(failedClients, [&provider](const auto& failedClient)
+                               { return failedClient == provider->GetClientId(); }) ||
+           std::ranges::any_of(disabledClients, [&provider](const auto& disabledClient)
+                               { return disabledClient == provider->GetClientId(); }));
       if (bIgnoreProvider)
       {
         ++it;
@@ -331,7 +326,8 @@ std::shared_ptr<CPVRProvider> CPVRProviders::CheckAndPersistEntry(
   }
   else
   {
-    newProvider->SetDatabaseId(++m_iLastId);
+    m_iLastId++;
+    newProvider->SetDatabaseId(m_iLastId);
     InsertEntry(newProvider, updateMode);
 
     newProvider->Persist();
@@ -349,7 +345,8 @@ std::shared_ptr<CPVRProvider> CPVRProviders::CheckAndPersistEntry(
   return {};
 }
 
-bool CPVRProviders::PersistUserChanges(const std::vector<std::shared_ptr<CPVRProvider>>& providers)
+bool CPVRProviders::PersistUserChanges(
+    const std::vector<std::shared_ptr<CPVRProvider>>& providers) const
 {
   for (const auto& provider : providers)
   {
@@ -365,10 +362,8 @@ bool CPVRProviders::PersistUserChanges(const std::vector<std::shared_ptr<CPVRPro
 std::shared_ptr<CPVRProvider> CPVRProviders::GetById(int iProviderId) const
 {
   std::unique_lock lock(m_critSection);
-  const auto it =
-      std::find_if(m_providers.cbegin(), m_providers.cend(), [iProviderId](const auto& provider) {
-        return provider->GetDatabaseId() == iProviderId;
-      });
+  const auto it = std::ranges::find_if(m_providers, [iProviderId](const auto& provider)
+                                       { return provider->GetDatabaseId() == iProviderId; });
   return it != m_providers.cend() ? (*it) : std::shared_ptr<CPVRProvider>();
 }
 
