@@ -15,6 +15,8 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
+#include <algorithm>
+
 using namespace XFILE;
 
 bool CMediaSource::IsWritable() const
@@ -94,15 +96,10 @@ void AddOrReplace(std::vector<CMediaSource>& sources, const std::vector<CMediaSo
 
 void AddOrReplace(std::vector<CMediaSource>& sources, const CMediaSource& source)
 {
-  unsigned int i;
-  for( i=0;i<sources.size();++i )
-  {
-    if (StringUtils::EqualsNoCase(sources[i].strPath, source.strPath))
-    {
-      sources[i] = source;
-      break;
-    }
-  }
-  if (i == sources.size())
+  auto it = std::ranges::find_if(sources, [&path = source.strPath](const auto& src)
+                                 { return StringUtils::EqualsNoCase(src.strPath, path); });
+  if (it != sources.end())
+    *it = source;
+  else
     sources.push_back(source);
 }
