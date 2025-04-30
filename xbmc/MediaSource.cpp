@@ -70,11 +70,7 @@ void CMediaSource::FromNameAndPaths(const std::string& name, const std::vector<s
 bool CMediaSource::operator==(const CMediaSource &share) const
 {
   // NOTE: we may wish to filter this through CURL to enable better "fuzzy" matching
-  if (strPath != share.strPath)
-    return false;
-  if (strName != share.strName)
-    return false;
-  return true;
+  return strPath == share.strPath && strName == share.strName;
 }
 
 void AddOrReplace(std::vector<CMediaSource>& sources, const std::vector<CMediaSource>& extras)
