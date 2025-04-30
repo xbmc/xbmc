@@ -13,6 +13,7 @@
 
 #include <memory>
 #include <string>
+#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -40,9 +41,9 @@ public:
   void AddSettings(IPVRSettingsContainer& settingsContainer,
                    const std::shared_ptr<CSettingGroup>& group);
 
-  bool IsCustomSetting(const std::string& settingId) const;
-  bool IsCustomIntSetting(const std::string& settingId) const;
-  bool IsCustomStringSetting(const std::string& settingId) const;
+  bool IsCustomSetting(std::string_view settingId) const;
+  bool IsCustomIntSetting(std::string_view settingId) const;
+  bool IsCustomStringSetting(std::string_view settingId) const;
 
   const CPVRTimerInfoTag::CustomPropsMap& GetProperties() const { return m_customProps; }
 

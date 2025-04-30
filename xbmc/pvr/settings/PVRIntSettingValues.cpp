@@ -16,7 +16,7 @@
 
 namespace PVR
 {
-CPVRIntSettingValues::CPVRIntSettingValues(struct PVR_ATTRIBUTE_INT_VALUE* values,
+CPVRIntSettingValues::CPVRIntSettingValues(const struct PVR_ATTRIBUTE_INT_VALUE* values,
                                            unsigned int valuesSize,
                                            int defaultValue,
                                            int defaultDescriptionResourceId /* = 0 */)

@@ -97,8 +97,8 @@ void CPVRSettings::OnSettingsLoaded()
 
   {
     std::unique_lock lock(m_critSection);
-    for (const auto& settingName : m_settings)
-      settingNames.insert(settingName.first);
+    for (const auto& [settingName, _] : m_settings)
+      settingNames.insert(settingName);
 
     m_settings.clear();
   }

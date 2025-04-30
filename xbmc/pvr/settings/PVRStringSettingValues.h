@@ -22,7 +22,7 @@ class CPVRStringSettingValues
 {
 public:
   CPVRStringSettingValues() = default;
-  CPVRStringSettingValues(struct PVR_ATTRIBUTE_STRING_VALUE* values,
+  CPVRStringSettingValues(const struct PVR_ATTRIBUTE_STRING_VALUE* values,
                           unsigned int valuesSize,
                           const std::string& defaultValue,
                           int defaultDescriptionResourceId = 0);

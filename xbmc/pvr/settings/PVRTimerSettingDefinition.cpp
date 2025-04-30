@@ -61,11 +61,6 @@ bool CPVRTimerSettingDefinition::operator==(const CPVRTimerSettingDefinition& ri
           m_stringDefinition == right.m_stringDefinition);
 }
 
-bool CPVRTimerSettingDefinition::operator!=(const CPVRTimerSettingDefinition& right) const
-{
-  return !(*this == right);
-}
-
 CVariant CPVRTimerSettingDefinition::GetDefaultValue() const
 {
   if (GetType() == PVR_SETTING_TYPE::INTEGER)
