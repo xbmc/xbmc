@@ -236,14 +236,9 @@ bool CPVRTimerInfoTag::operator==(const CPVRTimerInfoTag& right) const
           m_customProps == right.m_customProps);
 }
 
-bool CPVRTimerInfoTag::operator!=(const CPVRTimerInfoTag& right) const
-{
-  return !(*this == right);
-}
-
 void CPVRTimerInfoTag::Serialize(CVariant& value) const
 {
-  value["channelid"] = m_channel != NULL ? m_channel->ChannelID() : -1;
+  value["channelid"] = m_channel != nullptr ? m_channel->ChannelID() : -1;
   value["summary"] = m_strSummary;
   value["isradio"] = m_bIsRadio;
   value["preventduplicateepisodes"] = m_iPreventDupEpisodes;
@@ -707,7 +702,7 @@ void CPVRTimerInfoTag::ResetChildState()
   m_iRadioChildTimersErrors = 0;
 }
 
-bool CPVRTimerInfoTag::UpdateOnClient()
+bool CPVRTimerInfoTag::UpdateOnClient() const
 {
   const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
   return client && (client->UpdateTimer(*this) == PVR_ERROR_NO_ERROR);
@@ -909,7 +904,7 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromEpg(
 std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromEpg(
     const std::shared_ptr<CPVREpgInfoTag>& tag, bool bCreateRule, bool bCreateReminder)
 {
-  std::shared_ptr<CPVRTimerInfoTag> newTag(new CPVRTimerInfoTag());
+  const auto newTag{std::make_shared<CPVRTimerInfoTag>()};
 
   /* check if a valid channel is set */
   const std::shared_ptr<CPVRChannel> channel =
@@ -1025,7 +1020,7 @@ int days_from_1jan(int year, int month, int day)
   return days[IsLeapYear(year)][month - 1] + day - 1;
 }
 
-time_t mytimegm(struct tm* time)
+time_t mytimegm(const struct tm* time)
 {
   int year = time->tm_year + 1900;
   int month = time->tm_mon;
@@ -1155,9 +1150,12 @@ void CPVRTimerInfoTag::SetEndFromLocalTime(const CDateTime& end)
 
 int CPVRTimerInfoTag::GetDuration() const
 {
-  time_t start, end;
+  time_t start{0};
   m_StartTime.GetAsTime(start);
+
+  time_t end{0};
   m_StopTime.GetAsTime(end);
+
   return end - start > 0 ? static_cast<int>(end - start) : 3600;
 }
 
@@ -1231,17 +1229,16 @@ std::string CPVRTimerInfoTag::GetDeletedNotificationText() const
 
   int stringID = 0;
   // The state in this case is the state the timer had when it was last seen
-  switch (m_state)
+  if (m_state == PVR_TIMER_STATE_RECORDING)
   {
-    case PVR_TIMER_STATE_RECORDING:
-      stringID = 19227; // Recording completed
-      break;
-    case PVR_TIMER_STATE_SCHEDULED:
-    default:
-      if (IsTimerRule())
-        stringID = 828; // Timer rule deleted
-      else
-        stringID = 19228; // Timer deleted
+    stringID = 19227; // Recording completed
+  }
+  else // PVR_TIMER_STATE_SCHEDULED:
+  {
+    if (IsTimerRule())
+      stringID = 828; // Timer rule deleted
+    else
+      stringID = 19228; // Timer deleted
   }
 
   return StringUtils::Format("{}: '{}'", g_localizeStrings.Get(stringID), m_strTitle);
