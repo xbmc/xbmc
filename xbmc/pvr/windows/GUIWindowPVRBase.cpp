@@ -38,7 +38,6 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
-#include <iterator>
 #include <memory>
 #include <mutex>
 #include <string>
@@ -47,10 +46,18 @@
 
 using namespace std::chrono_literals;
 
-#define MAX_INVALIDATION_FREQUENCY 2000ms // limit to one invalidation per X milliseconds
-
 using namespace PVR;
 using namespace KODI::MESSAGING;
+
+namespace
+{
+constexpr auto MAX_INVALIDATION_FREQUENCY = 2000ms; // limit to one invalidation per X milliseconds
+
+// Numeric values are part of the Skinning API. Do not change.
+constexpr unsigned int CONTROL_LSTCHANNELGROUPS = 11;
+constexpr unsigned int CONTROL_BTNCHANNELGROUPS = 28;
+
+} // unnamed namespace
 
 namespace PVR
 {
@@ -134,7 +141,7 @@ bool CGUIPVRChannelGroupsSelector::SelectChannelGroup(const std::shared_ptr<CPVR
 CGUIWindowPVRBase::CGUIWindowPVRBase(bool bRadio, int id, const std::string& xmlFile)
   : CGUIMediaWindow(id, xmlFile.c_str()),
     m_bRadio(bRadio),
-    m_channelGroupsSelector(new CGUIPVRChannelGroupsSelector)
+    m_channelGroupsSelector(std::make_unique<CGUIPVRChannelGroupsSelector>())
 {
   // prevent removable drives to appear in directory listing (base class default behavior).
   m_rootDir.AllowNonLocalSources(false);
@@ -209,6 +216,8 @@ bool CGUIWindowPVRBase::OnAction(const CAction& action)
         return true;
       }
     }
+    default:
+      break;
   }
 
   return CGUIMediaWindow::OnAction(action);
@@ -307,8 +316,13 @@ bool CGUIWindowPVRBase::OnMessage(CGUIMessage& message)
               bReturn = true;
               break;
             }
+            default:
+              break;
           }
         }
+
+        default:
+          break;
       }
       break;
     }
@@ -317,9 +331,11 @@ bool CGUIWindowPVRBase::OnMessage(CGUIMessage& message)
     {
       switch (static_cast<PVREvent>(message.GetParam1()))
       {
-        case PVREvent::ManagerStarted:
-        case PVREvent::ClientsInvalidated:
-        case PVREvent::ChannelGroupsInvalidated:
+        using enum PVREvent;
+
+        case ManagerStarted:
+        case ClientsInvalidated:
+        case ChannelGroupsInvalidated:
         {
           if (InitChannelGroup())
           {
@@ -366,9 +382,14 @@ bool CGUIWindowPVRBase::OnMessage(CGUIMessage& message)
           }
           break;
         }
+        default:
+          break;
       }
       break;
     }
+
+    default:
+      break;
   }
 
   return bReturn || CGUIMediaWindow::OnMessage(message);
@@ -412,7 +433,7 @@ bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog()
   dialog->SetMultiSelection(false);
   dialog->SetItems(options);
 
-  auto& pvrMgr = CServiceBroker::GetPVRManager();
+  const auto& pvrMgr{CServiceBroker::GetPVRManager()};
   const bool useDetails = pvrMgr.Clients()->CreatedClientAmount() > 1;
   dialog->SetUseDetails(useDetails);
   if (useDetails)
@@ -424,7 +445,7 @@ bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog()
 
     CPVRThumbLoader loader;
     int idx = 0;
-    for (auto& group : options)
+    for (const auto& group : options)
     {
       // set client name as label2
       const std::shared_ptr<const CPVRClient> client = pvrMgr.GetClient(*group);
@@ -456,7 +477,7 @@ bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog()
     {
       int idx = -1;
       const std::string selectedGroup{channelGroup->GetPath()};
-      for (auto& group : options)
+      for (const auto& group : options)
       {
         // select currently active channel group
         if (group->GetPath() == selectedGroup)
@@ -526,7 +547,8 @@ std::shared_ptr<CPVRChannelGroup> CGUIWindowPVRBase::GetChannelGroup()
   return m_channelGroup;
 }
 
-void CGUIWindowPVRBase::SetChannelGroup(std::shared_ptr<CPVRChannelGroup> &&group, bool bUpdate /* = true */)
+void CGUIWindowPVRBase::SetChannelGroup(const std::shared_ptr<CPVRChannelGroup>& group,
+                                        bool bUpdate /* = true */)
 {
   if (!group)
     return;

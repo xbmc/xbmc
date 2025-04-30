@@ -30,6 +30,14 @@
 
 using namespace PVR;
 
+namespace
+{
+// Numeric values are part of the Skinning API. Do not change.
+constexpr unsigned int CONTROL_BTNHIDEDISABLEDTIMERS = 8;
+constexpr unsigned int CONTROL_LABEL_HEADER1 = 29;
+
+} // unnamed namespace
+
 CGUIWindowPVRTimersBase::CGUIWindowPVRTimersBase(bool bRadio, int id, const std::string& xmlFile)
   : CGUIWindowPVRBase(bRadio, id, xmlFile)
 {
@@ -167,15 +175,17 @@ bool CGUIWindowPVRTimersBase::OnMessage(CGUIMessage& message)
     {
       switch (static_cast<PVREvent>(message.GetParam1()))
       {
-        case PVREvent::CurrentItem:
-        case PVREvent::Epg:
-        case PVREvent::EpgActiveItem:
-        case PVREvent::EpgContainer:
-        case PVREvent::Timers:
+        using enum PVREvent;
+
+        case CurrentItem:
+        case Epg:
+        case EpgActiveItem:
+        case EpgContainer:
+        case Timers:
           SetInvalid();
           break;
 
-        case PVREvent::TimersInvalidated:
+        case TimersInvalidated:
           Refresh(true);
           break;
 
@@ -184,12 +194,14 @@ bool CGUIWindowPVRTimersBase::OnMessage(CGUIMessage& message)
       }
       break;
     }
+    default:
+      break;
   }
 
   return bReturn || CGUIWindowPVRBase::OnMessage(message);
 }
 
-bool CGUIWindowPVRTimersBase::ActionShowTimer(const CFileItem& item)
+bool CGUIWindowPVRTimersBase::ActionShowTimer(const CFileItem& item) const
 {
   bool bReturn = false;
 

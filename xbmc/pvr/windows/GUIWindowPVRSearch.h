@@ -51,7 +51,7 @@ protected:
   void OnPrepareFileItems(CFileItemList& items) override;
 
 private:
-  bool OnContextButtonClear(CFileItem* item, CONTEXT_BUTTON button);
+  bool OnContextButtonClear(CONTEXT_BUTTON button);
 
   CGUIDialogPVRGuideSearch::Result OpenDialogSearch(
       const std::shared_ptr<CPVREpgSearchFilter>& searchFilter);

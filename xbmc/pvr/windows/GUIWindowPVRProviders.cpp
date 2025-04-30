@@ -30,6 +30,13 @@
 
 using namespace PVR;
 
+namespace
+{
+// Numeric values are part of the Skinning API. Do not change.
+constexpr unsigned int CONTROL_LABEL_HEADER1 = 29;
+
+} // unnamed namespace
+
 CGUIWindowPVRProvidersBase::CGUIWindowPVRProvidersBase(bool isRadio,
                                                        int id,
                                                        const std::string& xmlFile)
@@ -126,18 +133,23 @@ bool CGUIWindowPVRProvidersBase::OnMessage(CGUIMessage& message)
                 // Folders and ".." folders in subfolders are handled by base class.
                 ret = false;
               }
+              break;
             }
+            default:
+              break;
           }
         }
       }
       break;
     }
+    default:
+      break;
   }
 
   return ret || CGUIWindowPVRBase::OnMessage(message);
 }
 
-void CGUIWindowPVRProvidersBase::ActivateChannelsWindow(const CPVRProvidersPath& selectedPath)
+void CGUIWindowPVRProvidersBase::ActivateChannelsWindow(const CPVRProvidersPath& selectedPath) const
 {
   const CPVRManager& pvrMgr{CServiceBroker::GetPVRManager()};
   const std::shared_ptr<CPVRChannelGroup> allChannelsGroup{
@@ -153,7 +165,8 @@ void CGUIWindowPVRProvidersBase::ActivateChannelsWindow(const CPVRProvidersPath&
       selectedPath.IsRadio() ? WINDOW_RADIO_CHANNELS : WINDOW_TV_CHANNELS, targetPath);
 }
 
-void CGUIWindowPVRProvidersBase::ActivateRecordingsWindow(const CPVRProvidersPath& selectedPath)
+void CGUIWindowPVRProvidersBase::ActivateRecordingsWindow(
+    const CPVRProvidersPath& selectedPath) const
 {
   std::string targetPath{CPVRRecordingsPath(selectedPath.IsRadio()
                                                 ? CPVRRecordingsPath::PATH_ACTIVE_RADIO_RECORDINGS

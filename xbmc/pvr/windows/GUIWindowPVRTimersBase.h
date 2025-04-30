@@ -29,7 +29,7 @@ public:
   void UpdateButtons() override;
 
 private:
-  bool ActionShowTimer(const CFileItem& item);
+  bool ActionShowTimer(const CFileItem& item) const;
 
   std::shared_ptr<CFileItem> m_currentFileItem;
 };

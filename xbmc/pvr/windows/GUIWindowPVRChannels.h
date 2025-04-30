@@ -40,11 +40,10 @@ protected:
 private:
   bool OnContextButtonManage(const CFileItemPtr& item, CONTEXT_BUTTON button);
 
-  void ShowChannelManager();
-  void ShowGroupManager();
-  void UpdateEpg(const CFileItemPtr& item);
+  void ShowChannelManager() const;
+  void ShowGroupManager() const;
+  void UpdateEpg(const std::shared_ptr<CFileItem>& item) const;
 
-protected:
   bool m_bShowHiddenChannels = false;
 };
 

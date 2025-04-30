@@ -46,6 +46,10 @@ using namespace KODI::MESSAGING;
 
 namespace
 {
+// Numeric values are part of the Skinning API. Do not change.
+constexpr unsigned int CONTROL_LABEL_HEADER1 = 29;
+constexpr unsigned int CONTROL_LABEL_HEADER2 = 30;
+
 class AsyncSearchAction : private IRunnable
 {
 public:
@@ -74,7 +78,7 @@ void AsyncSearchAction::Run()
 {
   CPVREpgSearch search(*m_filter);
   search.Execute();
-  const auto tags{search.GetResults()};
+  const auto& tags{search.GetResults()};
   for (const auto& tag : tags)
   {
     m_items->Add(std::make_shared<CFileItem>(tag));
@@ -87,9 +91,7 @@ CGUIWindowPVRSearchBase::CGUIWindowPVRSearchBase(bool bRadio, int id, const std:
 {
 }
 
-CGUIWindowPVRSearchBase::~CGUIWindowPVRSearchBase()
-{
-}
+CGUIWindowPVRSearchBase::~CGUIWindowPVRSearchBase() = default;
 
 void CGUIWindowPVRSearchBase::GetContextButtons(int itemNumber, CContextButtons& buttons)
 {
@@ -108,10 +110,8 @@ bool CGUIWindowPVRSearchBase::OnContextButton(int itemNumber, CONTEXT_BUTTON but
 {
   if (itemNumber < 0 || itemNumber >= m_vecItems->Size())
     return false;
-  CFileItemPtr pItem = m_vecItems->Get(itemNumber);
 
-  return OnContextButtonClear(pItem.get(), button) ||
-         CGUIMediaWindow::OnContextButton(itemNumber, button);
+  return OnContextButtonClear(button) || CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
 
 void CGUIWindowPVRSearchBase::SetItemToSearch(const CFileItem& item)
@@ -264,6 +264,8 @@ bool CGUIWindowPVRSearchBase::OnMessage(CGUIMessage& message)
           case ACTION_RECORD:
             CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().ToggleTimer(*pItem);
             return true;
+          default:
+            break;
         }
       }
     }
@@ -372,7 +374,7 @@ void CGUIWindowPVRSearchBase::UpdateButtons()
     SET_CONTROL_LABEL(CONTROL_LABEL_HEADER2, "");
 }
 
-bool CGUIWindowPVRSearchBase::OnContextButtonClear(CFileItem* item, CONTEXT_BUTTON button)
+bool CGUIWindowPVRSearchBase::OnContextButtonClear(CONTEXT_BUTTON button)
 {
   bool bReturn = false;
 
