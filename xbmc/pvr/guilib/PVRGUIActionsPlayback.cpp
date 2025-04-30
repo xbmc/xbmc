@@ -33,6 +33,7 @@
 #include "pvr/guilib/PVRGUIActionsParentalControl.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/recordings/PVRRecordings.h"
+#include "pvr/settings/PVRSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
@@ -52,10 +53,13 @@ using namespace PVR;
 using namespace KODI::MESSAGING;
 
 CPVRGUIActionsPlayback::CPVRGUIActionsPlayback()
-  : m_settings({CSettings::SETTING_LOOKANDFEEL_STARTUPACTION,
-                CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREENCHANNELTYPES})
+  : m_settings(std::make_unique<CPVRSettings>(
+        std::set<std::string>({CSettings::SETTING_LOOKANDFEEL_STARTUPACTION,
+                               CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREENCHANNELTYPES})))
 {
 }
+
+CPVRGUIActionsPlayback::~CPVRGUIActionsPlayback() = default;
 
 void CPVRGUIActionsPlayback::CheckAndSwitchToFullscreen(bool bFullscreen) const
 {
@@ -211,7 +215,7 @@ bool CPVRGUIActionsPlayback::SwitchToChannel(const CFileItem& item) const
     }
 
     bool bFullscreen;
-    switch (m_settings.GetIntValue(CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREENCHANNELTYPES))
+    switch (m_settings->GetIntValue(CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREENCHANNELTYPES))
     {
       case 0: // never
         bFullscreen = false;
@@ -261,7 +265,9 @@ bool CPVRGUIActionsPlayback::SwitchToChannel(PlaybackType type) const
   // and if not, try to grab the last played channel of this type
   switch (type)
   {
-    case PlaybackTypeRadio:
+    using enum PlaybackType;
+
+    case TYPE_RADIO:
     {
       if (CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingRadio())
         return true;
@@ -274,7 +280,7 @@ bool CPVRGUIActionsPlayback::SwitchToChannel(PlaybackType type) const
       bIsRadio = true;
       break;
     }
-    case PlaybackTypeTV:
+    case TYPE_TV:
     {
       if (CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingTV())
         return true;
@@ -333,7 +339,7 @@ bool CPVRGUIActionsPlayback::SwitchToChannel(PlaybackType type) const
 
 bool CPVRGUIActionsPlayback::PlayChannelOnStartup() const
 {
-  int iAction = m_settings.GetIntValue(CSettings::SETTING_LOOKANDFEEL_STARTUPACTION);
+  const int iAction{m_settings->GetIntValue(CSettings::SETTING_LOOKANDFEEL_STARTUPACTION)};
   if (iAction != STARTUP_ACTION_PLAY_TV && iAction != STARTUP_ACTION_PLAY_RADIO)
     return false;
 
@@ -363,7 +369,7 @@ bool CPVRGUIActionsPlayback::PlayChannelOnStartup() const
 
 bool CPVRGUIActionsPlayback::PlayMedia(const CFileItem& item) const
 {
-  std::unique_ptr<CFileItem> pvrItem = std::make_unique<CFileItem>(item);
+  auto pvrItem{std::make_unique<CFileItem>(item)};
   if (URIUtils::IsPVRChannel(item.GetPath()) && !item.HasPVRChannelInfoTag())
   {
     const std::shared_ptr<CPVRChannelGroupMember> groupMember =
@@ -395,7 +401,7 @@ bool CPVRGUIActionsPlayback::PlayMedia(const CFileItem& item) const
   return false;
 }
 
-void CPVRGUIActionsPlayback::SeekForward()
+void CPVRGUIActionsPlayback::SeekForward() const
 {
   time_t playbackStartTime = CServiceBroker::GetDataCacheCore().GetStartTime();
   if (playbackStartTime > 0)
@@ -433,7 +439,7 @@ void CPVRGUIActionsPlayback::SeekForward()
   }
 }
 
-void CPVRGUIActionsPlayback::SeekBackward(unsigned int iThreshold)
+void CPVRGUIActionsPlayback::SeekBackward(unsigned int iThreshold) const
 {
   time_t playbackStartTime = CServiceBroker::GetDataCacheCore().GetStartTime();
   if (playbackStartTime > 0)

@@ -218,7 +218,7 @@ void CPVRGUIChannelNavigator::SelectChannel(
       if (m_iChannelEntryJobId >= 0)
         CServiceBroker::GetJobManager()->CancelJob(m_iChannelEntryJobId);
 
-      CPVRChannelEntryTimeoutJob* job = new CPVRChannelEntryTimeoutJob(*this, timeout);
+      auto* job = new CPVRChannelEntryTimeoutJob(*this, timeout);
       m_iChannelEntryJobId =
           CServiceBroker::GetJobManager()->AddJob(job, dynamic_cast<IJobCallback*>(job));
     }
@@ -289,7 +289,7 @@ void CPVRGUIChannelNavigator::ShowInfo(bool bForce)
 
     if (!bForce && timeout > 0s)
     {
-      CPVRChannelInfoTimeoutJob* job = new CPVRChannelInfoTimeoutJob(*this, timeout);
+      auto* job{new CPVRChannelInfoTimeoutJob(*this, timeout)};
       m_iChannelInfoJobId =
           CServiceBroker::GetJobManager()->AddJob(job, dynamic_cast<IJobCallback*>(job));
     }

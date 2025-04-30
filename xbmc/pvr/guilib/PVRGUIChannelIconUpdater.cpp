@@ -70,7 +70,8 @@ void CPVRGUIChannelIconUpdater::SearchAndUpdateMissingChannelIcons() const
     {
       const std::shared_ptr<CPVRChannel> channel = member->Channel();
 
-      progressHandler->UpdateProgress(channel->ChannelName(), channelIndex++, members.size());
+      progressHandler->UpdateProgress(channel->ChannelName(), channelIndex, members.size());
+      channelIndex++;
 
       // skip if an icon is already set and exists
       if (CFileUtils::Exists(channel->IconPath()))

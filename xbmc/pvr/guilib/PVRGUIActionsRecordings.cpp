@@ -30,6 +30,7 @@
 #include "pvr/dialogs/GUIDialogPVRRecordingSettings.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/recordings/PVRRecordings.h"
+#include "pvr/settings/PVRSettings.h"
 #include "settings/Settings.h"
 #include "threads/IRunnable.h"
 #include "utils/StringUtils.h"
@@ -199,9 +200,12 @@ private:
 } // unnamed namespace
 
 CPVRGUIActionsRecordings::CPVRGUIActionsRecordings()
-  : m_settings({CSettings::SETTING_PVRRECORD_DELETEAFTERWATCH})
+  : m_settings(std::make_unique<CPVRSettings>(
+        std::set<std::string>({CSettings::SETTING_PVRRECORD_DELETEAFTERWATCH})))
 {
 }
+
+CPVRGUIActionsRecordings::~CPVRGUIActionsRecordings() = default;
 
 bool CPVRGUIActionsRecordings::ShowRecordingInfo(const CFileItem& item) const
 {
@@ -234,7 +238,7 @@ bool CPVRGUIActionsRecordings::EditRecording(const CFileItem& item) const
     return false;
   }
 
-  std::shared_ptr<CPVRRecording> origRecording(new CPVRRecording);
+  const auto origRecording{std::make_shared<CPVRRecording>()};
   origRecording->Update(*recording,
                         *CServiceBroker::GetPVRManager().GetClient(recording->ClientID()));
 
@@ -386,7 +390,7 @@ bool CPVRGUIActionsRecordings::ProcessDeleteAfterWatch(const CFileItem& item) co
 {
   bool deleteRecording{false};
 
-  const int action{m_settings.GetIntValue(CSettings::SETTING_PVRRECORD_DELETEAFTERWATCH)};
+  const int action{m_settings->GetIntValue(CSettings::SETTING_PVRRECORD_DELETEAFTERWATCH)};
   switch (action)
   {
     case PVRRECORD_DELETE_AFTER_WATCH::NO:
@@ -415,7 +419,7 @@ bool CPVRGUIActionsRecordings::ProcessDeleteAfterWatch(const CFileItem& item) co
   {
     if (AsyncDeleteRecording().Execute(item))
     {
-      CPVREventLogJob* job = new CPVREventLogJob;
+      auto* job{new CPVREventLogJob};
       job->AddEvent(true, // display a toast, and log event
                     EventLevel::Information, // info, no error
                     g_localizeStrings.Get(860), // "Delete after watching"

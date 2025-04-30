@@ -9,7 +9,6 @@
 #pragma once
 
 #include "pvr/IPVRComponent.h"
-#include "pvr/settings/PVRSettings.h"
 
 #include <memory>
 
@@ -18,12 +17,13 @@ class CFileItem;
 namespace PVR
 {
 class CPVRRecording;
+class CPVRSettings;
 
 class CPVRGUIActionsRecordings : public IPVRComponent
 {
 public:
   CPVRGUIActionsRecordings();
-  ~CPVRGUIActionsRecordings() override = default;
+  ~CPVRGUIActionsRecordings() override;
 
   /*!
    * @brief Open a dialog with information for a given recording.
@@ -127,7 +127,7 @@ private:
    */
   bool ProcessDeleteAfterWatch(const CFileItem& item) const;
 
-  CPVRSettings m_settings;
+  std::unique_ptr<CPVRSettings> m_settings;
 };
 
 namespace GUI

@@ -13,16 +13,10 @@
 
 #include <memory>
 
-namespace KODI
-{
-namespace GUILIB
-{
-namespace GUIINFO
+namespace KODI::GUILIB::GUIINFO
 {
 struct PlayerShowInfoChangedEvent;
 }
-} // namespace GUILIB
-} // namespace KODI
 
 namespace PVR
 {

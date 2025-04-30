@@ -28,7 +28,7 @@ bool CPVRGUIActionsUtils::HasInfoForItem(const CFileItem& item) const
          item.HasPVRTimerInfoTag() || item.HasEPGSearchFilter();
 }
 
-bool CPVRGUIActionsUtils::OnInfo(const CFileItem& item)
+bool CPVRGUIActionsUtils::OnInfo(const CFileItem& item) const
 {
   if (item.HasPVRRecordingInfoTag())
   {
@@ -90,7 +90,7 @@ std::shared_ptr<CFileItem> LoadChannelItem(const CFileItem& item)
 }
 } // unnamed namespace
 
-std::shared_ptr<CFileItem> CPVRGUIActionsUtils::LoadItem(const CFileItem& item)
+std::shared_ptr<CFileItem> CPVRGUIActionsUtils::LoadItem(const CFileItem& item) const
 {
   std::shared_ptr<CFileItem> loadedItem{LoadRecordingFileOrFolderItem(item)};
   if (loadedItem)

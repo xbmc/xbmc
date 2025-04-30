@@ -9,7 +9,6 @@
 #pragma once
 
 #include "pvr/IPVRComponent.h"
-#include "pvr/settings/PVRSettings.h"
 
 #include <memory>
 
@@ -18,13 +17,14 @@ class CFileItem;
 namespace PVR
 {
 class CPVRChannel;
+class CPVRSettings;
 class CPVRTimerInfoTag;
 
 class CPVRGUIActionsTimers : public IPVRComponent
 {
 public:
   CPVRGUIActionsTimers();
-  ~CPVRGUIActionsTimers() override = default;
+  ~CPVRGUIActionsTimers() override;
 
   /*!
    * @brief Open the timer settings dialog to create a new tv or radio timer.
@@ -138,7 +138,7 @@ public:
    * @param bOnOff True to start recording, false to stop.
    * @return True if the recording was started or stopped successfully, false otherwise.
    */
-  bool SetRecordingOnChannel(const std::shared_ptr<CPVRChannel>& channel, bool bOnOff);
+  bool SetRecordingOnChannel(const std::shared_ptr<CPVRChannel>& channel, bool bOnOff) const;
 
   /*!
    * @brief Stop a currently active recording, always showing a confirmation dialog.
@@ -222,7 +222,7 @@ private:
    */
   void AnnounceReminder(const std::shared_ptr<CPVRTimerInfoTag>& timer) const;
 
-  CPVRSettings m_settings;
+  std::unique_ptr<CPVRSettings> m_settings;
   mutable bool m_bReminderAnnouncementRunning{false};
 };
 
