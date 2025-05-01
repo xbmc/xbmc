@@ -122,30 +122,10 @@ bool CAutoSwitch::ByFolders(const CFileItemList& vecItems)
 /// \param vecItems Vector of FileItems
 bool CAutoSwitch::ByFiles(bool bHideParentDirItems, const CFileItemList& vecItems)
 {
-  bool bThumbs = false;
-  int iCompare = 0;
+  if (vecItems.GetFolderCount() <= (bHideParentDirItems ? 0 : 1))
+    return false;
 
-  // parent directories are visible, increment
-  if (!bHideParentDirItems)
-  {
-    iCompare = 1;
-  }
-
-  // confirm the list is not just files and folderback
-  if (vecItems.GetFolderCount() > iCompare)
-  {
-    // test for thumbs
-    for (int i = 0; i < vecItems.Size(); i++)
-    {
-      const CFileItemPtr pItem = vecItems[i];
-      if (pItem->HasArt("thumb"))
-      {
-        bThumbs = true;
-        break;
-      }
-    }
-  }
-  return bThumbs;
+  return std::ranges::any_of(vecItems, hasThumb);
 }
 
 /// \brief Auto Switch method based on the percentage of non-default thumbs \e in the current directory
