@@ -36,9 +36,8 @@ bool CFavouriteContextMenuAction::Execute(const std::shared_ptr<CFileItem>& item
   CFileItemList items;
   CServiceBroker::GetFavouritesService().GetAll(items);
 
-  const auto it = std::find_if(items.cbegin(), items.cend(), [&item](const auto& favourite) {
-    return favourite->GetPath() == item->GetPath();
-  });
+  const auto it = std::ranges::find_if(items, [&item](const auto& favourite)
+                                       { return favourite->GetPath() == item->GetPath(); });
 
   if ((it != items.cend()) && DoExecute(items, *it))
     return CServiceBroker::GetFavouritesService().Save(items);
