@@ -35,7 +35,9 @@
 #include "addons/VFSEntry.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogPlayEject.h"
+#ifdef HAVE_LIBBLURAY
 #include "filesystem/BlurayDiscCache.h"
+#endif
 #include "messaging/helpers/DialogOKHelper.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"

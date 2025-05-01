@@ -56,7 +56,9 @@
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
 #include "favourites/FavouritesService.h"
+#ifdef HAVE_LIBBLURAY
 #include "filesystem/BlurayDiscCache.h"
+#endif
 #include "filesystem/Directory.h"
 #include "filesystem/DirectoryCache.h"
 #include "filesystem/DirectoryFactory.h"
