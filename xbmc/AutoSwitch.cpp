@@ -18,6 +18,8 @@
 #include "settings/SettingsComponent.h"
 #include "view/ViewState.h"
 
+#include <algorithm>
+
 namespace
 {
 
@@ -31,6 +33,7 @@ enum class Method
   BY_FOLDERTHUMBS,
 };
 
+auto hasThumb = [](const auto& item) { return item->HasArt("thumb"); };
 }
 
 CAutoSwitch::CAutoSwitch(void) = default;
@@ -108,22 +111,10 @@ int CAutoSwitch::GetView(const CFileItemList &vecItems)
 /// \param vecItems Vector of FileItems
 bool CAutoSwitch::ByFolders(const CFileItemList& vecItems)
 {
-  bool bThumbs = false;
-  // is the list all folders?
-  if (vecItems.GetFolderCount() == vecItems.Size())
-  {
-    // test for thumbs
-    for (int i = 0; i < vecItems.Size(); i++)
-    {
-      const CFileItemPtr pItem = vecItems[i];
-      if (pItem->HasArt("thumb"))
-      {
-        bThumbs = true;
-        break;
-      }
-    }
-  }
-  return bThumbs;
+  if (vecItems.GetFolderCount() != vecItems.Size())
+    return false;
+
+  return std::ranges::any_of(vecItems, hasThumb);
 }
 
 /// \brief Auto Switch method based on the current directory \e not containing ALL files and \e atleast one non-default thumb
@@ -156,7 +147,6 @@ bool CAutoSwitch::ByFiles(bool bHideParentDirItems, const CFileItemList& vecItem
   }
   return bThumbs;
 }
-
 
 /// \brief Auto Switch method based on the percentage of non-default thumbs \e in the current directory
 /// \param iPercent Percent of non-default thumbs to autoswitch on
