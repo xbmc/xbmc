@@ -169,7 +169,8 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         }
         else if (iAction == ACTION_SHOW_INFO)
         {
-          return OnItemInfo(iItem);
+          OnItemInfo(iItem);
+          return true;
         }
         else if (iAction == ACTION_PLAYER_PLAY)
         {
