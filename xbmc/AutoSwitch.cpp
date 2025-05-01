@@ -155,27 +155,17 @@ bool CAutoSwitch::ByFileCount(const CFileItemList& vecItems)
 // 2. Have more than percent folders with thumbs
 bool CAutoSwitch::ByFolderThumbPercentage(bool hideParentDirItems, int percent, const CFileItemList &vecItems)
 {
-  int numItems = vecItems.Size();
-  if (!hideParentDirItems)
-    numItems--;
-  if (numItems <= 0) return false;
+  const int numItems = hideParentDirItems ? vecItems.Size() : vecItems.Size() - 1;
+  if (numItems <= 0)
+    return false;
 
-  int fileCount = vecItems.GetFileCount();
-  if (fileCount > 0.25f * numItems) return false;
+  const int fileCount = vecItems.GetFileCount();
+  if (fileCount > 0.25f * numItems)
+    return false;
 
-  int numThumbs = 0;
-  for (int i = 0; i < vecItems.Size(); i++)
-  {
-    const CFileItemPtr item = vecItems[i];
-    if (item->m_bIsFolder && item->HasArt("thumb"))
-    {
-      numThumbs++;
-      if (numThumbs >= 0.01f * percent * (numItems - fileCount))
-        return true;
-    }
-  }
-
-  return false;
+  const int numThumbs = std::ranges::count_if(
+      vecItems, [](const auto& item) { return item->m_bIsFolder && item->HasArt("thumb"); });
+  return numThumbs >= 0.01f * percent * (numItems - fileCount);
 }
 
 float CAutoSwitch::MetadataPercentage(const CFileItemList &vecItems)
