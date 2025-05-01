@@ -36,10 +36,6 @@ enum class Method
 auto hasThumb = [](const auto& item) { return item->HasArt("thumb"); };
 }
 
-CAutoSwitch::CAutoSwitch(void) = default;
-
-CAutoSwitch::~CAutoSwitch(void) = default;
-
 /// \brief Generic function to add a layer of transparency to the calling window
 /// \param vecItems Vector of FileItems passed from the calling window
 int CAutoSwitch::GetView(const CFileItemList &vecItems)
