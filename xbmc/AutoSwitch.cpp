@@ -133,32 +133,12 @@ bool CAutoSwitch::ByFiles(bool bHideParentDirItems, const CFileItemList& vecItem
 /// \param vecItems Vector of FileItems
 bool CAutoSwitch::ByThumbPercent(bool bHideParentDirItems, int iPercent, const CFileItemList& vecItems)
 {
-  bool bThumbs = false;
-  int iNumThumbs = 0;
-  int iNumItems = vecItems.Size();
-  if (!bHideParentDirItems)
-  {
-    iNumItems--;
-  }
+  const int numItems = bHideParentDirItems ? vecItems.Size() : vecItems.Size() - 1;
+  if (numItems <= 0)
+    return false;
 
-  if (iNumItems <= 0) return false;
-
-  for (int i = 0; i < vecItems.Size(); i++)
-  {
-    const CFileItemPtr pItem = vecItems[i];
-    if (pItem->HasArt("thumb"))
-    {
-      iNumThumbs++;
-      float fTempPercent = ( (float)iNumThumbs / (float)iNumItems ) * (float)100;
-      if (fTempPercent >= (float)iPercent)
-      {
-        bThumbs = true;
-        break;
-      }
-    }
-  }
-
-  return bThumbs;
+  const float numThumbs = std::ranges::count_if(vecItems, hasThumb);
+  return numThumbs / numItems * 100.f > iPercent;
 }
 
 /// \brief Auto Switch method based on whether there is more than 25% files.
