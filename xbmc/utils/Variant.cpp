@@ -599,7 +599,10 @@ const char *CVariant::c_str() const
 
 void CVariant::swap(CVariant& rhs) noexcept
 {
-  std::swap(m_data, rhs.m_data);
+  if (type() == VariantTypeConstNull)
+    rhs = VariantTypeConstNull;
+  else
+    std::swap(m_data, rhs.m_data);
 }
 
 CVariant::iterator_array CVariant::begin_array()
