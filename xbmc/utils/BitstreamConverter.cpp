@@ -851,6 +851,7 @@ bool CBitstreamConverter::Convert(uint8_t *pData_bl, int iSize_bl, uint8_t *pDat
           break;
 
         default:
+          if (!m_start_decode && IsIDR(nal_type)) m_start_decode = true;
           BitstreamAllocAndCopy(&m_convertBuffer, &offset, buf, size, nal_type);
           break;
       }
