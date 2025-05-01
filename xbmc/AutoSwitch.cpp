@@ -18,11 +18,20 @@
 #include "settings/SettingsComponent.h"
 #include "view/ViewState.h"
 
-#define METHOD_BYFOLDERS  0
-#define METHOD_BYFILES   1
-#define METHOD_BYTHUMBPERCENT 2
-#define METHOD_BYFILECOUNT 3
-#define METHOD_BYFOLDERTHUMBS 4
+namespace
+{
+
+enum class Method
+{
+  NONE,
+  BY_FOLDERS,
+  BY_FILES,
+  BY_THUMBPERCENT,
+  BY_FILECOUNT,
+  BY_FOLDERTHUMBS,
+};
+
+}
 
 CAutoSwitch::CAutoSwitch(void) = default;
 
@@ -32,7 +41,7 @@ CAutoSwitch::~CAutoSwitch(void) = default;
 /// \param vecItems Vector of FileItems passed from the calling window
 int CAutoSwitch::GetView(const CFileItemList &vecItems)
 {
-  int iSortMethod = -1;
+  Method iSortMethod = Method::NONE;
   int iPercent = 0;
   int iCurrentWindow = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
   bool bHideParentFolderItems = !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_SHOWPARENTDIRITEMS);
@@ -41,13 +50,13 @@ int CAutoSwitch::GetView(const CFileItemList &vecItems)
   {
   case WINDOW_PICTURES:
     {
-      iSortMethod = METHOD_BYFILECOUNT;
+      iSortMethod = Method::BY_FILECOUNT;
     }
     break;
 
   case WINDOW_PROGRAMS:
     {
-      iSortMethod = METHOD_BYTHUMBPERCENT;
+      iSortMethod = Method::BY_THUMBPERCENT;
       iPercent = 50;  // 50% of thumbs -> use thumbs.
     }
     break;
@@ -66,23 +75,28 @@ int CAutoSwitch::GetView(const CFileItemList &vecItems)
 
   switch (iSortMethod)
   {
-  case METHOD_BYFOLDERS:
-    bThumbs = ByFolders(vecItems);
-    break;
+    case Method::BY_FOLDERS:
+      bThumbs = ByFolders(vecItems);
+      break;
 
-  case METHOD_BYFILES:
-    bThumbs = ByFiles(bHideParentFolderItems, vecItems);
-    break;
+    case Method::BY_FILES:
+      bThumbs = ByFiles(bHideParentFolderItems, vecItems);
+      break;
 
-  case METHOD_BYTHUMBPERCENT:
-    bThumbs = ByThumbPercent(bHideParentFolderItems, iPercent, vecItems);
-    break;
-  case METHOD_BYFILECOUNT:
-    bThumbs = ByFileCount(vecItems);
-    break;
-  case METHOD_BYFOLDERTHUMBS:
-    bThumbs = ByFolderThumbPercentage(bHideParentFolderItems, iPercent, vecItems);
-    break;
+    case Method::BY_THUMBPERCENT:
+      bThumbs = ByThumbPercent(bHideParentFolderItems, iPercent, vecItems);
+      break;
+
+    case Method::BY_FILECOUNT:
+      bThumbs = ByFileCount(vecItems);
+      break;
+
+    case Method::BY_FOLDERTHUMBS:
+      bThumbs = ByFolderThumbPercentage(bHideParentFolderItems, iPercent, vecItems);
+      break;
+
+    case Method::NONE:
+      break;
   }
 
   // the GUIViewControl object will default down to small icons if a big icon
