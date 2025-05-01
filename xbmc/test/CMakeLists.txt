@@ -1,4 +1,5 @@
-set(SOURCES TestBasicEnvironment.cpp
+set(SOURCES TestAutoSwitch.cpp
+            TestBasicEnvironment.cpp
             TestCueDocument.cpp
             TestDateTime.cpp
             TestDateTimeSpan.cpp
