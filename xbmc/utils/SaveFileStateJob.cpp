@@ -41,14 +41,10 @@ void CSaveFileState::DoWork(CFileItem& item,
 {
   std::string progressTrackingFile = item.GetPath();
 
-  if (item.HasVideoInfoTag() &&
-      StringUtils::StartsWith(item.GetVideoInfoTag()->m_strFileNameAndPath, "removable://"))
-    progressTrackingFile =
-        item.GetVideoInfoTag()
-            ->m_strFileNameAndPath; // this variable contains removable:// suffixed by disc label+uniqueid or is empty if label not uniquely identified
-  else if (URIUtils::IsBlurayPath(item.GetDynPath()) &&
-           (item.GetVideoContentType() == VideoDbContentType::MOVIES ||
-            item.GetVideoContentType() == VideoDbContentType::EPISODES))
+  if (URIUtils::IsBlurayPath(item.GetDynPath()) &&
+      (item.GetVideoContentType() == VideoDbContentType::MOVIES ||
+       item.GetVideoContentType() == VideoDbContentType::EPISODES ||
+       item.GetVideoContentType() == VideoDbContentType::UNKNOWN /* Removable bluray */))
     progressTrackingFile = item.GetDynPath();
   else if (item.HasVideoInfoTag() && IsVideoDb(item))
     progressTrackingFile =
@@ -214,7 +210,8 @@ void CSaveFileState::DoWork(CFileItem& item,
         // See if idFile of library item needs updating
         const CVideoInfoTag* tag{item.HasVideoInfoTag() ? item.GetVideoInfoTag() : nullptr};
 
-        if (tag && tag->m_iDbId >= 0 && tag->m_iFileId >= 0 &&
+        if (tag && tag->m_iFileId >= 0 &&
+            !(tag->m_iDbId < 0 && item.GetVideoContentType() != VideoDbContentType::UNKNOWN) &&
             URIUtils::IsBlurayPath(item.GetDynPath()) &&
             tag->m_strFileNameAndPath != item.GetDynPath())
         {

@@ -1259,6 +1259,15 @@ const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
 ///   @skinning_v18 **[New Boolean Condition]** \link System_HasMediaAudioCD
 ///   `System.HasMediaAudioCD` \endlink <p>
 ///   }
+///   \table_row3{   <b>`System.HasMediaBlurayPlaylist`</b>,
+///                  \anchor System_HasMediaBlurayPlaylist
+///                  _boolean_,
+///     @return **True** if there is a bluray in the drive that has been played before.
+///     **False** if no drive available\, empty drive, other medium or new bluray.
+///   <p><hr>
+///   @skinning_v18 **[New Boolean Condition]** \link System_HasMediaBlurayPlaylist
+///   `System.System_HasMediaBlurayPlaylist` \endlink <p>
+///   }
 ///   \table_row3{   <b>`System.DVDReady`</b>,
 ///                  \anchor System_DVDReady
 ///                  _boolean_,
@@ -1907,6 +1916,7 @@ const infomap system_labels[] = {
     {"hasnetwork", SYSTEM_ETHERNET_LINK_ACTIVE},
     {"hasmediadvd", SYSTEM_MEDIA_DVD},
     {"hasmediaaudiocd", SYSTEM_MEDIA_AUDIO_CD},
+    {"hasmediablurayplaylist", SYSTEM_MEDIA_BLURAY_PLAYLIST},
     {"dvdready", SYSTEM_DVDREADY},
     {"trayopen", SYSTEM_TRAYOPEN},
     {"haslocks", SYSTEM_HASLOCKS},

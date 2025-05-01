@@ -863,11 +863,15 @@
 						<param name="button_onclick" value="PlayDisc"/>
 						<param name="button_id" value="21100"/>
 						<param name="visible" value="true"/>
-						<param name="button2_label" value="$LOCALIZE[13391]"/>
-						<param name="button2_onclick" value="EjectTray()"/>
-						<param name="button3_label" value="$LOCALIZE[600]"/>
-						<param name="button3_onclick" value="RipCD"/>
-						<param name="visible_3" value="System.HasMediaAudioCD"/>
+						<param name="button2_label" value="$LOCALIZE[13424]" />
+						<param name="button2_onclick" value="PlayPlaylist"/>
+						<param name="visible_2" value="System.HasMediaBlurayPlaylist"/>
+						<param name="button3_label" value="$LOCALIZE[13391]"/>
+						<param name="button3_onclick" value="EjectTray()"/>
+						<param name="visible_3" value="true"/>
+						<param name="button4_label" value="$LOCALIZE[600]"/>
+						<param name="button4_onclick" value="RipCD"/>
+						<param name="visible_4" value="System.HasMediaAudioCD"/>
 					</include>
 				</control>
 			</control>

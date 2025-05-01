@@ -1224,6 +1224,12 @@ public:
    */
   std::vector<std::string> GetUsedImages(const std::vector<std::string>& imagesToCheck);
 
+  /*! \brief Find a playlist path for a removable bluray disc.
+   \param originalPath A path in the format of bluray://removable://<title_ID>/BDMV/index.bdmv
+   \return A path in the format of bluray://removable://<title_ID>/BDMV/PLAYLIST/00000.mpls if found, otherwise an empty string.
+   */
+  std::string GetRemovableBlurayPath(std::string originalPath);
+
 protected:
   int AddNewMovie(CVideoInfoTag& details);
   int AddNewMusicVideo(CVideoInfoTag& details);
@@ -1320,6 +1326,7 @@ protected:
 
   bool SetFileForEpisode(const std::string& fileAndPath, int idEpisode, int oldIdFile);
   bool SetFileForMovie(const std::string& fileAndPath, int idMovie, int oldIdFile);
+  bool SetFileForUnknown(const std::string& fileAndPath, int oldIdFile);
 
 private:
   void CreateTables() override;
