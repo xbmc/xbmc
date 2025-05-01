@@ -460,11 +460,20 @@ bool CDVDVideoCodecAmlogic::DualLayerConvert(uint8_t *pData, uint32_t iSize, con
     uint8_t *pDataBackup = std::get<0>(dual_layer_packet);
     uint32_t iSizeBackup = std::get<1>(dual_layer_packet);
     bool isELPackageBackup = std::get<2>(dual_layer_packet);
+    double dts = std::get<3>(dual_layer_packet);
 
     if (isELPackageBackup != packet.isELPackage)
     {
-      logComponentM(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAmlogic", "found DT-DL {} package with dts: {:.3f}, pts: {:.3f} and size {} in list",
-        packet.isELPackage ? "BL" : "EL", packet.dts/DVD_TIME_BASE, packet.pts/DVD_TIME_BASE, iSizeBackup);
+      logComponentM(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAmlogic", "found DT-DL {} package with dts: {:.3f} in list",
+        packet.isELPackage ? "BL" : "EL", dts/DVD_TIME_BASE);
+
+      if (packet.dts < dts) // prior dts arrived - out of step - remove and attempt next.
+      {
+        logComponentM(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAmlogic", "discarding DT-DL {} package with dts {:.3f} as before package in list with dts: {:.3f}",
+          packet.isELPackage ? "EL" : "BL", packet.dts/DVD_TIME_BASE, dts/DVD_TIME_BASE);
+
+        return false;
+      }
 
       if (packet.isELPackage)
         dual_layer_converted = m_bitstream->Convert(pDataBackup, iSizeBackup, pData, iSize, packet.pts);
@@ -477,7 +486,7 @@ bool CDVDVideoCodecAmlogic::DualLayerConvert(uint8_t *pData, uint32_t iSize, con
   {
     uint8_t *pDataBackup = static_cast<uint8_t*>(KODI::MEMORY::AlignedMalloc(packet.iSize + AV_INPUT_BUFFER_PADDING_SIZE, 16));
     memcpy(pDataBackup, packet.pData, packet.iSize);
-    m_packages.push_back(std::make_tuple(pDataBackup, iSize, packet.isELPackage));
+    m_packages.push_back(std::make_tuple(pDataBackup, iSize, packet.isELPackage, packet.dts));
 
     logComponentM(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAmlogic", "did add DT-DL {} package with dts: {:.3f}, pts: {:.3f} and size {} in list",
       packet.isELPackage ? "EL" : "BL", packet.dts/DVD_TIME_BASE, packet.pts/DVD_TIME_BASE, packet.iSize);
@@ -486,6 +495,9 @@ bool CDVDVideoCodecAmlogic::DualLayerConvert(uint8_t *pData, uint32_t iSize, con
   }
   else
   {
+    logComponentM(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAmlogic", "converted DT-DL with dts: {:.3f}, pts: {:.3f}",
+      packet.dts/DVD_TIME_BASE, packet.pts/DVD_TIME_BASE);
+
     // All good can remove the backed up package
     KODI::MEMORY::AlignedFree(std::get<0>(m_packages.front()));
     m_packages.pop_front();
