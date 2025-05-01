@@ -156,7 +156,7 @@ std::string CGUIDialogSubtitleSettings::BrowseForSubtitle()
       paths.push_back(URIUtils::GetDirectory(strPath));
     }
     paths.push_back(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH));
-    share.FromNameAndPaths("video",g_localizeStrings.Get(21367),paths);
+    share.FromNameAndPaths(g_localizeStrings.Get(21367), paths);
     shares.push_back(share);
     strPath = share.strPath;
     URIUtils::AddSlashAtEnd(strPath);

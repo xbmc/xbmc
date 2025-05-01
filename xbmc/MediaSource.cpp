@@ -15,6 +15,8 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
+#include <algorithm>
+
 using namespace XFILE;
 
 bool CMediaSource::IsWritable() const
@@ -22,7 +24,7 @@ bool CMediaSource::IsWritable() const
   return CUtil::SupportsWriteFileOperations(strPath);
 }
 
-void CMediaSource::FromNameAndPaths(const std::string &category, const std::string &name, const std::vector<std::string> &paths)
+void CMediaSource::FromNameAndPaths(const std::string& name, const std::vector<std::string>& paths)
 {
   vecPaths = paths;
   if (paths.empty())
@@ -70,43 +72,20 @@ void CMediaSource::FromNameAndPaths(const std::string &category, const std::stri
 bool CMediaSource::operator==(const CMediaSource &share) const
 {
   // NOTE: we may wish to filter this through CURL to enable better "fuzzy" matching
-  if (strPath != share.strPath)
-    return false;
-  if (strName != share.strName)
-    return false;
-  return true;
+  return strPath == share.strPath && strName == share.strName;
 }
 
 void AddOrReplace(std::vector<CMediaSource>& sources, const std::vector<CMediaSource>& extras)
 {
-  unsigned int i;
-  for( i=0;i<extras.size();++i )
-  {
-    unsigned int j;
-    for ( j=0;j<sources.size();++j)
-    {
-      if (StringUtils::EqualsNoCase(sources[j].strPath, extras[i].strPath))
-      {
-        sources[j] = extras[i];
-        break;
-      }
-    }
-    if (j == sources.size())
-      sources.push_back(extras[i]);
-  }
+  std::ranges::for_each(extras, [&sources](auto& extra) { AddOrReplace(sources, extra); });
 }
 
 void AddOrReplace(std::vector<CMediaSource>& sources, const CMediaSource& source)
 {
-  unsigned int i;
-  for( i=0;i<sources.size();++i )
-  {
-    if (StringUtils::EqualsNoCase(sources[i].strPath, source.strPath))
-    {
-      sources[i] = source;
-      break;
-    }
-  }
-  if (i == sources.size())
+  auto it = std::ranges::find_if(sources, [&path = source.strPath](const auto& src)
+                                 { return StringUtils::EqualsNoCase(src.strPath, path); });
+  if (it != sources.end())
+    *it = source;
+  else
     sources.push_back(source);
 }
