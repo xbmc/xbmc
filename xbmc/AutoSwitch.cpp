@@ -170,18 +170,16 @@ bool CAutoSwitch::ByFolderThumbPercentage(bool hideParentDirItems, int percent, 
 
 float CAutoSwitch::MetadataPercentage(const CFileItemList &vecItems)
 {
-  int count = 0;
   int total = vecItems.Size();
-  for (int i = 0; i < vecItems.Size(); i++)
-  {
-    const CFileItemPtr item = vecItems[i];
-    if(item->HasMusicInfoTag()
-    || item->HasVideoInfoTag()
-    || item->HasPictureInfoTag()
-    || item->HasProperty("Addon.ID"))
-      count++;
-    if(item->IsParentFolder())
-      total--;
-  }
-  return (total != 0) ? ((float)count / total) : 0.0f;
+  const float count =
+      std::ranges::count_if(vecItems,
+                            [&total](const auto& item)
+                            {
+                              if (item->IsParentFolder())
+                                --total;
+
+                              return item->HasMusicInfoTag() || item->HasVideoInfoTag() ||
+                                     item->HasPictureInfoTag() || item->HasProperty("Addon.ID");
+                            });
+  return total != 0 ? count / total : 0.0f;
 }
