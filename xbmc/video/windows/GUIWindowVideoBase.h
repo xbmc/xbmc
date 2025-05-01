@@ -122,11 +122,19 @@ protected:
   bool m_stackingAvailable;
 
 private:
+  enum class ShowInfoResult
+  {
+    RESULT_ERROR, // some error occured
+    RESULT_OK_UPDATED, // no error, data updated
+    RESULT_OK_NOT_UPDATED, // no error, data not updated
+  };
+
   /*!
    \brief Lookup the information of an item and display an Info dialog
    \param item the item to lookup
    \param content
-   \return true: the information of the item was modified. false: no change.
+   \return the result.
    */
-  bool ShowInfo(const CFileItemPtr& item, const ADDON::ScraperPtr& content);
+  ShowInfoResult ShowInfo(const std::shared_ptr<CFileItem>& item,
+                          const std::shared_ptr<ADDON::CScraper>& content);
 };
