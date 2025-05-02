@@ -2279,6 +2279,11 @@ void CAMLCodec::SetVfmMap(const std::string &name, const std::string &map)
   }
 }
 
+bool CAMLCodec::IsStreamTypeStream()
+{
+  return (am_private->gcodec.dec_mode == STREAM_TYPE_STREAM);
+}
+
 void CAMLCodec::CloseDecoder(bool restart)
 {
   logNoFormatM(LOGINFO, "CAMLCodec");

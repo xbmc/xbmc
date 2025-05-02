@@ -82,6 +82,8 @@ public:
   int           GetAmlDuration() const;
   int           ReleaseFrame(const uint32_t index, bool bDrop = false);
 
+  bool          IsStreamTypeStream();
+
   static int    PollFrame();
   static void   SetPollDevice(int device);
 
