@@ -265,7 +265,7 @@ CFileItemPtr CFileItemList::Get(int iItem) const
 {
   std::unique_lock<CCriticalSection> lock(m_lock);
 
-  if (iItem > -1 && iItem < (int)m_items.size())
+  if (iItem > -1 && iItem < static_cast<int>(m_items.size()))
     return m_items[iItem];
 
   return CFileItemPtr();
@@ -293,7 +293,7 @@ CFileItemPtr CFileItemList::Get(const std::string& strPath) const
 int CFileItemList::Size() const
 {
   std::unique_lock<CCriticalSection> lock(m_lock);
-  return (int)m_items.size();
+  return static_cast<int>(m_items.size());
 }
 
 bool CFileItemList::IsEmpty() const
@@ -396,24 +396,24 @@ void CFileItemList::Archive(CArchive& ar)
     if (!m_items.empty() && m_items[0]->IsParentFolder())
       i = 1;
 
-    ar << (int)(m_items.size() - i);
+    ar << static_cast<int>(m_items.size() - i);
 
     ar << m_ignoreURLOptions;
 
     ar << m_fastLookup;
 
-    ar << (int)m_sortDescription.sortBy;
-    ar << (int)m_sortDescription.sortOrder;
-    ar << (int)m_sortDescription.sortAttributes;
+    ar << static_cast<int>(m_sortDescription.sortBy);
+    ar << static_cast<int>(m_sortDescription.sortOrder);
+    ar << static_cast<int>(m_sortDescription.sortAttributes);
     ar << m_sortIgnoreFolders;
-    ar << (int)m_cacheToDisc;
+    ar << static_cast<int>(m_cacheToDisc);
 
-    ar << (int)m_sortDetails.size();
+    ar << static_cast<int>(m_sortDetails.size());
     for (const auto& details : m_sortDetails)
     {
-      ar << (int)details.m_sortDescription.sortBy;
-      ar << (int)details.m_sortDescription.sortOrder;
-      ar << (int)details.m_sortDescription.sortAttributes;
+      ar << static_cast<int>(details.m_sortDescription.sortBy);
+      ar << static_cast<int>(details.m_sortDescription.sortOrder);
+      ar << static_cast<int>(details.m_sortDescription.sortAttributes);
       ar << details.m_buttonLabel;
       ar << details.m_labelMasks.m_strLabelFile;
       ar << details.m_labelMasks.m_strLabelFolder;
@@ -423,7 +423,7 @@ void CFileItemList::Archive(CArchive& ar)
 
     ar << m_content;
 
-    for (; i < (int)m_items.size(); ++i)
+    for (; i < static_cast<int>(m_items.size()); ++i)
     {
       CFileItemPtr pItem = m_items[i];
       ar << *pItem;
@@ -466,14 +466,14 @@ void CFileItemList::Archive(CArchive& ar)
 
     int tempint;
     ar >> tempint;
-    m_sortDescription.sortBy = (SortBy)tempint;
+    m_sortDescription.sortBy = static_cast<SortBy>(tempint);
     ar >> tempint;
-    m_sortDescription.sortOrder = (SortOrder)tempint;
+    m_sortDescription.sortOrder = static_cast<SortOrder>(tempint);
     ar >> tempint;
-    m_sortDescription.sortAttributes = (SortAttribute)tempint;
+    m_sortDescription.sortAttributes = static_cast<SortAttribute>(tempint);
     ar >> m_sortIgnoreFolders;
     ar >> tempint;
-    m_cacheToDisc = CacheType(tempint);
+    m_cacheToDisc = static_cast<CacheType>(tempint);
 
     unsigned int detailSize = 0;
     ar >> detailSize;
@@ -481,11 +481,11 @@ void CFileItemList::Archive(CArchive& ar)
     {
       GUIViewSortDetails details;
       ar >> tempint;
-      details.m_sortDescription.sortBy = (SortBy)tempint;
+      details.m_sortDescription.sortBy = static_cast<SortBy>(tempint);
       ar >> tempint;
-      details.m_sortDescription.sortOrder = (SortOrder)tempint;
+      details.m_sortDescription.sortOrder = static_cast<SortOrder>(tempint);
       ar >> tempint;
-      details.m_sortDescription.sortAttributes = (SortAttribute)tempint;
+      details.m_sortDescription.sortAttributes = static_cast<SortAttribute>(tempint);
       ar >> details.m_buttonLabel;
       ar >> details.m_labelMasks.m_strLabelFile;
       ar >> details.m_labelMasks.m_strLabelFolder;
@@ -524,7 +524,7 @@ int CFileItemList::GetObjectCount() const
 {
   std::unique_lock<CCriticalSection> lock(m_lock);
 
-  int numObjects = (int)m_items.size();
+  int numObjects = static_cast<int>(m_items.size());
   if (numObjects && m_items[0]->IsParentFolder())
     numObjects--;
 
