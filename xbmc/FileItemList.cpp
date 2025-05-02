@@ -592,8 +592,8 @@ void CFileItemList::FilterCueItems()
                   for (const auto& ext : extensions)
                   {
                     strMediaFile = URIUtils::ReplaceExtension(pItem->GetPath(), ext);
-                    CFileItem item(strMediaFile, false);
-                    if (!MUSIC::IsCUESheet(item) && !PLAYLIST::IsPlayList(item) &&
+                    CFileItem media_item(strMediaFile, false);
+                    if (!MUSIC::IsCUESheet(media_item) && !PLAYLIST::IsPlayList(media_item) &&
                         Contains(strMediaFile))
                     {
                       bFoundMediaFile = true;
@@ -607,10 +607,10 @@ void CFileItemList::FilterCueItems()
             {
               cuesheet->UpdateMediaFile(fileFromCue, strMediaFile);
               // apply CUE for later processing
-              for (auto& pItem : m_items)
+              for (auto& inner_item : m_items)
               {
-                if (StringUtils::CompareNoCase(pItem->GetPath(), strMediaFile) == 0)
-                  pItem->SetCueDocument(cuesheet);
+                if (StringUtils::CompareNoCase(inner_item->GetPath(), strMediaFile) == 0)
+                  inner_item->SetCueDocument(cuesheet);
               }
             }
           }
