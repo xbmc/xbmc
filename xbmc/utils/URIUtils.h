@@ -246,6 +246,7 @@ public:
   static bool IsDiscImage(const std::string& file);
   static bool IsDiscImageStack(const std::string& file);
   static bool IsBlurayPath(const std::string& strFile);
+  static bool IsBluray(const std::string& strFile);
   static bool IsBDFile(const std::string& file);
   static bool IsDVDFile(const std::string& file);
   static bool IsAndroidApp(const std::string& strFile);
