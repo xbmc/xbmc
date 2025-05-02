@@ -1307,6 +1307,11 @@ bool URIUtils::IsBlurayPath(const std::string& strFile)
   return IsProtocol(strFile, "bluray");
 }
 
+bool URIUtils::IsBluray(const std::string& strFile)
+{
+  return IsBlurayPath(strFile) || IsBDFile(strFile) || IsDiscImage(strFile);
+}
+
 bool URIUtils::IsOpticalMediaFile(const std::string& file)
 {
   return IsBDFile(file) || IsDVDFile(file);
