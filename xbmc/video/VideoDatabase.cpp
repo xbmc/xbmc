@@ -1410,8 +1410,6 @@ int CVideoDatabase::GetEpisodeId(const std::string& strFilenameAndPath, int idEp
   {
     if (nullptr == m_pDB)
       return -1;
-    if (nullptr == m_pDS)
-      return -1;
 
     // need this due to the nested GetEpisodeInfo query
     std::unique_ptr<Dataset> pDS;
@@ -1419,43 +1417,64 @@ int CVideoDatabase::GetEpisodeId(const std::string& strFilenameAndPath, int idEp
     if (nullptr == pDS)
       return -1;
 
-    int idFile = GetFileId(strFilenameAndPath);
-    if (idFile < 0)
-      return -1;
-
-    std::string strSQL=PrepareSQL("select idEpisode from episode where idFile=%i", idFile);
-
-    CLog::Log(LOGDEBUG, LOGDATABASE, "{} ({}), query = {}", __FUNCTION__,
-              CURL::GetRedacted(strFilenameAndPath), strSQL);
-    pDS->query(strSQL);
-    if (pDS->num_rows() > 0)
+    const int idFile{GetFileId(strFilenameAndPath)};
+    int idReturnEpisode{-1};
+    if (idFile > 0)
     {
-      if (idEpisode == -1)
-        idEpisode = pDS->fv("episode.idEpisode").get_asInt();
-      else // use the hint!
+      const std::string strSQL{PrepareSQL("select idEpisode from episode where idFile=%i", idFile)};
+
+      CLog::Log(LOGDEBUG, LOGDATABASE, "{} ({}), query = {}", __FUNCTION__,
+                CURL::GetRedacted(strFilenameAndPath), strSQL);
+      pDS->query(strSQL);
+      if (pDS->num_rows() > 0)
       {
-        while (!pDS->eof())
+        if (idEpisode == -1)
+          idReturnEpisode = pDS->fv("episode.idEpisode").get_asInt();
+        else // use the hint!
         {
-          CVideoInfoTag tag;
-          int idTmpEpisode = pDS->fv("episode.idEpisode").get_asInt();
-          GetEpisodeBasicInfo(strFilenameAndPath, tag, idTmpEpisode);
-          if (tag.m_iEpisode == idEpisode && (idSeason == -1 || tag.m_iSeason == idSeason)) {
-            // match on the episode hint, and there's no season hint or a season hint match
-            idEpisode = idTmpEpisode;
-            break;
+          while (!pDS->eof())
+          {
+            CVideoInfoTag tag;
+            const int idTmpEpisode{pDS->fv("episode.idEpisode").get_asInt()};
+            GetEpisodeBasicInfo(strFilenameAndPath, tag, idTmpEpisode);
+            if (tag.m_iEpisode == idEpisode && (idSeason == -1 || tag.m_iSeason == idSeason))
+            {
+              // match on the episode hint, and there's no season hint or a season hint match
+              idReturnEpisode = idTmpEpisode;
+              break;
+            }
+            pDS->next();
           }
-          pDS->next();
         }
-        if (pDS->eof())
-          idEpisode = -1;
       }
     }
-    else
-      idEpisode = -1;
+
+    if (idReturnEpisode == -1 && idEpisode != -1 && idSeason != -1)
+    {
+      // Consider the possibility the path could be bluray://
+      // In which case strFilenameAndPath is the basepath
+      const std::string strSQL{PrepareSQL("select strFileName, strPath from episode_view "
+                                          "where c%02d='%s' and c%02d=%i and c%02d=%i",
+                                          VIDEODB_ID_EPISODE_BASEPATH, strFilenameAndPath.c_str(),
+                                          VIDEODB_ID_EPISODE_SEASON, idSeason,
+                                          VIDEODB_ID_EPISODE_EPISODE, idEpisode)};
+
+      CLog::Log(LOGDEBUG, LOGDATABASE, "{} ({}), query = {}", __FUNCTION__,
+                CURL::GetRedacted(strFilenameAndPath), strSQL);
+      pDS->query(strSQL);
+      if (pDS->num_rows() == 1)
+      {
+        std::string newFilenameAndPath;
+        ConstructPath(newFilenameAndPath, pDS->fv("strPath").get_asString(),
+                      pDS->fv("strFileName").get_asString());
+        if (newFilenameAndPath != strFilenameAndPath)
+          idReturnEpisode = GetEpisodeId(newFilenameAndPath, idEpisode, idSeason);
+      }
+    }
 
     pDS->close();
 
-    return idEpisode;
+    return idReturnEpisode;
   }
   catch (...)
   {
