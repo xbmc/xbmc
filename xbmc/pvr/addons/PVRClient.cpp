@@ -2259,24 +2259,21 @@ void CPVRClient::cb_transfer_provider_entry(void* kodiInstance,
                                             const PVR_HANDLE handle,
                                             const PVR_PROVIDER* provider)
 {
-  if (!handle)
-  {
-    CLog::LogF(LOGERROR, "Invalid handler data");
-    return;
-  }
+  HandleAddonCallback(
+      __func__, kodiInstance,
+      [handle, provider](const CPVRClient* client)
+      {
+        if (!handle || !provider)
+        {
+          CLog::LogF(LOGERROR, "Invalid callback parameter(s)");
+          return;
+        }
 
-  CPVRClient* client = static_cast<CPVRClient*>(kodiInstance);
-  CPVRProvidersContainer* kodiProviders = static_cast<CPVRProvidersContainer*>(handle->dataAddress);
-  if (!provider || !client || !kodiProviders)
-  {
-    CLog::LogF(LOGERROR, "Invalid handler data");
-    return;
-  }
-
-  /* transfer this entry to the internal channels group */
-  std::shared_ptr<CPVRProvider> transferProvider(
-      std::make_shared<CPVRProvider>(*provider, client->GetID()));
-  kodiProviders->UpdateFromClient(transferProvider);
+        // transfer this entry to the providers container
+        auto* kodiProviders{static_cast<CPVRProvidersContainer*>(handle->dataAddress)};
+        const auto transferProvider{std::make_shared<CPVRProvider>(*provider, client->GetID())};
+        kodiProviders->UpdateFromClient(transferProvider);
+      });
 }
 
 void CPVRClient::cb_transfer_channel_entry(void* kodiInstance,
