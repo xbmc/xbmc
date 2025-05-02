@@ -129,21 +129,21 @@ private:
 
 void CPVRManagerJobQueue::Start()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   m_bStopped = false;
   m_triggerEvent.Set();
 }
 
 void CPVRManagerJobQueue::Stop()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   m_bStopped = true;
   m_triggerEvent.Reset();
 }
 
 void CPVRManagerJobQueue::Clear()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   for (CPVRJob* updateJob : m_pendingUpdates)
     delete updateJob;
 
@@ -153,7 +153,7 @@ void CPVRManagerJobQueue::Clear()
 
 void CPVRManagerJobQueue::AppendJob(CPVRJob* job)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
 
   // check for another pending job of given type...
   if (std::any_of(m_pendingUpdates.cbegin(), m_pendingUpdates.cend(),
@@ -172,7 +172,7 @@ void CPVRManagerJobQueue::ExecutePendingJobs()
   std::vector<CPVRJob*> pendingUpdates;
 
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::unique_lock lock(m_critSection);
 
     if (m_bStopped)
       return;
@@ -243,7 +243,7 @@ void CPVRManager::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
 
 std::shared_ptr<CPVRDatabase> CPVRManager::GetTVDatabase() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   if (!m_database || !m_database->IsOpen())
     CLog::LogF(LOGERROR, "Failed to open the PVR database");
 
@@ -252,25 +252,25 @@ std::shared_ptr<CPVRDatabase> CPVRManager::GetTVDatabase() const
 
 std::shared_ptr<CPVRProviders> CPVRManager::Providers() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_providers;
 }
 
 std::shared_ptr<CPVRChannelGroupsContainer> CPVRManager::ChannelGroups() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_channelGroups;
 }
 
 std::shared_ptr<CPVRRecordings> CPVRManager::Recordings() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_recordings;
 }
 
 std::shared_ptr<CPVRTimers> CPVRManager::Timers() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_timers;
 }
 
@@ -334,7 +334,7 @@ void CPVRManager::Clear()
   m_playbackState->Clear();
   m_pendingUpdates->Clear();
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
 
   m_guiInfo.reset();
   m_timers.reset();
@@ -347,7 +347,7 @@ void CPVRManager::Clear()
 
 void CPVRManager::ResetProperties()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   Clear();
 
   m_database = std::make_shared<CPVRDatabase>();
@@ -372,7 +372,7 @@ void CPVRManager::Init()
 
 void CPVRManager::Start()
 {
-  std::unique_lock<CCriticalSection> initLock(m_startStopMutex);
+  std::unique_lock initLock(m_startStopMutex);
 
   // Prevent concurrent starts
   if (IsInitialising())
@@ -397,7 +397,7 @@ void CPVRManager::Start()
 
 void CPVRManager::Stop(bool bRestart /* = false */)
 {
-  std::unique_lock<CCriticalSection> initLock(m_startStopMutex);
+  std::unique_lock initLock(m_startStopMutex);
 
   // Prevent concurrent stops
   if (IsStopped())
@@ -434,14 +434,14 @@ void CPVRManager::Deinit()
 
 CPVRManager::ManagerState CPVRManager::GetState() const
 {
-  std::unique_lock<CCriticalSection> lock(m_managerStateMutex);
+  std::unique_lock lock(m_managerStateMutex);
   return m_managerState;
 }
 
 void CPVRManager::SetState(CPVRManager::ManagerState state)
 {
   {
-    std::unique_lock<CCriticalSection> lock(m_managerStateMutex);
+    std::unique_lock lock(m_managerStateMutex);
     if (m_managerState == state)
       return;
 
@@ -550,7 +550,7 @@ void CPVRManager::Process()
     if (m_bFirstStart)
     {
       {
-        std::unique_lock<CCriticalSection> lock(m_critSection);
+        std::unique_lock lock(m_critSection);
         m_bFirstStart = false;
       }
 
@@ -865,7 +865,7 @@ void CPVRManager::OnPlaybackEnded(const CFileItem& item)
 
 void CPVRManager::LocalizationChanged()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   if (IsStarted())
   {
     static_cast<CPVRChannelGroupAllChannels*>(m_channelGroups->GetGroupAllRadio().get())

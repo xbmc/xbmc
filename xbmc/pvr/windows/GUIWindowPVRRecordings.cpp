@@ -178,7 +178,7 @@ bool CGUIWindowPVRRecordingsBase::Update(const std::string& strDirectory,
     //       to see the deleted recordings? Or is this just another hack to avoid misbehavior
     //       of CGUIMediaWindow if it has no content?
 
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::unique_lock lock(m_critSection);
 
     /* empty list for deleted recordings */
     if (m_vecItems->GetObjectCount() == 0 && m_bShowDeletedRecordings)

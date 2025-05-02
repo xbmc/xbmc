@@ -65,7 +65,7 @@ CPVRPlaybackState::~CPVRPlaybackState() = default;
 
 void CPVRPlaybackState::ReInit()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
 
   Clear();
 
@@ -129,7 +129,7 @@ void CPVRPlaybackState::ClearData()
 
 void CPVRPlaybackState::Clear()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
 
   m_playingChannel.reset();
   m_playingRecording.reset();
@@ -234,7 +234,7 @@ bool CPVRPlaybackState::OnPreparePlayback(CFileItem& item)
 
 void CPVRPlaybackState::OnPlaybackStarted(const CFileItem& item)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
 
   m_playingChannel.reset();
   m_playingRecording.reset();
@@ -319,7 +319,7 @@ bool CPVRPlaybackState::OnPlaybackStopped(const CFileItem& item)
 {
   // Playback ended due to user interaction
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
 
   bool bChanged = false;
 
@@ -379,7 +379,7 @@ std::unique_ptr<CFileItem> CPVRPlaybackState::GetNextAutoplayItem(const CFileIte
   if (!item.GetProperty("epg_playlist_item").asBoolean(false))
     return {};
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
 
   if (item.HasEPGInfoTag() && item.GetEPGInfoTag()->ClientID() == m_playingClientId &&
       item.GetEPGInfoTag()->UniqueChannelID() == m_playingEpgTagChannelUniqueId &&
@@ -458,43 +458,43 @@ void CPVRPlaybackState::StartPlayback(std::unique_ptr<CFileItem>& item,
 
 bool CPVRPlaybackState::IsPlaying() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_playingChannel != nullptr || m_playingRecording != nullptr || m_playingEpgTag != nullptr;
 }
 
 bool CPVRPlaybackState::IsPlayingTV() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_playingChannel && !m_playingChannel->Channel()->IsRadio();
 }
 
 bool CPVRPlaybackState::IsPlayingRadio() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_playingChannel && m_playingChannel->Channel()->IsRadio();
 }
 
 bool CPVRPlaybackState::IsPlayingEncryptedChannel() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_playingChannel && m_playingChannel->Channel()->IsEncrypted();
 }
 
 bool CPVRPlaybackState::IsPlayingRecording() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_playingRecording != nullptr;
 }
 
 bool CPVRPlaybackState::IsPlayingEpgTag() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_playingEpgTag != nullptr;
 }
 
 bool CPVRPlaybackState::IsPlayingChannel(int iClientID, int iUniqueChannelID) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_playingClientId == iClientID && m_playingChannelUniqueId == iUniqueChannelID;
 }
 
@@ -541,43 +541,43 @@ bool CPVRPlaybackState::IsPlayingEpgTag(const std::shared_ptr<const CPVREpgInfoT
 
 std::shared_ptr<CPVRChannel> CPVRPlaybackState::GetPlayingChannel() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_playingChannel ? m_playingChannel->Channel() : std::shared_ptr<CPVRChannel>();
 }
 
 std::shared_ptr<CPVRChannelGroupMember> CPVRPlaybackState::GetPlayingChannelGroupMember() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_playingChannel;
 }
 
 std::shared_ptr<CPVRRecording> CPVRPlaybackState::GetPlayingRecording() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_playingRecording;
 }
 
 std::shared_ptr<CPVREpgInfoTag> CPVRPlaybackState::GetPlayingEpgTag() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_playingEpgTag;
 }
 
 int CPVRPlaybackState::GetPlayingChannelUniqueID() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_playingChannelUniqueId;
 }
 
 std::string CPVRPlaybackState::GetPlayingClientName() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_strPlayingClientName;
 }
 
 int CPVRPlaybackState::GetPlayingClientID() const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return m_playingClientId;
 }
 
@@ -726,13 +726,13 @@ void CPVRPlaybackState::UpdateLastWatched(const std::shared_ptr<CPVRChannelGroup
 std::shared_ptr<CPVRChannelGroupMember> CPVRPlaybackState::GetLastPlayedChannelGroupMember(
     bool bRadio) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return bRadio ? m_lastPlayedChannelRadio : m_lastPlayedChannelTV;
 }
 
 std::shared_ptr<CPVRChannelGroupMember> CPVRPlaybackState::
     GetPreviousToLastPlayedChannelGroupMember(bool bRadio) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return bRadio ? m_previousToLastPlayedChannelRadio : m_previousToLastPlayedChannelTV;
 }

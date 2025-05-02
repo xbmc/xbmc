@@ -20,7 +20,7 @@ using namespace PVR;
 bool CPVRChannelGroupMergedByName::ShouldBeIgnored(
     const std::vector<std::shared_ptr<CPVRChannelGroup>>& allChannelGroups) const
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
 
   // Ignore the group if it is empty or only members from one group are present.
 

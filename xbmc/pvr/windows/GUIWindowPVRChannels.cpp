@@ -105,7 +105,7 @@ bool CGUIWindowPVRChannelsBase::Update(const std::string& strDirectory,
 
   if (bReturn)
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
+    std::unique_lock lock(m_critSection);
     /* empty list for hidden channels */
     if (m_vecItems->GetObjectCount() == 0 && m_bShowHiddenChannels)
     {

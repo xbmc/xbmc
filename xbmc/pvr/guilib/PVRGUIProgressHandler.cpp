@@ -31,7 +31,7 @@ CPVRGUIProgressHandler::CPVRGUIProgressHandler(const std::string& strTitle)
 
 void CPVRGUIProgressHandler::UpdateProgress(const std::string& strText, float fProgress)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   m_bChanged = true;
   m_strText = strText;
   m_fProgress = fProgress;
@@ -73,7 +73,7 @@ void CPVRGUIProgressHandler::Process()
     bool bUpdate = false;
 
     {
-      std::unique_lock<CCriticalSection> lock(m_critSection);
+      std::unique_lock lock(m_critSection);
       if (m_bChanged)
       {
         m_bChanged = false;

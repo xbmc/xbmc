@@ -401,7 +401,7 @@ void CPVRGUIActionsChannels::OnPlaybackStopped(const CFileItem& item)
 
 void CPVRGUIActionsChannels::SetSelectedChannelPath(bool bRadio, const std::string& path)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   if (bRadio)
     m_selectedChannelPathRadio = path;
   else
@@ -431,6 +431,6 @@ std::string CPVRGUIActionsChannels::GetSelectedChannelPath(bool bRadio) const
     }
   }
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock lock(m_critSection);
   return bRadio ? m_selectedChannelPathRadio : m_selectedChannelPathTV;
 }
