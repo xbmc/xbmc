@@ -574,6 +574,73 @@ macro(SETUP_FIND_SPECS)
   endif()
 endmacro()
 
+# Macro to generate a TARGET based on information created by a BUILD_DEP_TARGET call
+#
+# Populates the following INTERFACE options for a target if they exist for ${CMAKE_FIND_PACKAGE_NAME}_MODULE
+#   INTERFACE_INCLUDE_DIRECTORIES
+#   INTERFACE_LINK_LIBRARIES
+#   IMPORTED_LOCATION_RELEASE
+#   IMPORTED_IMPLIB_RELEASE
+#   IMPORTED_LOCATION_DEBUG
+#   IMPORTED_IMPLIB_DEBUG
+#
+# Input:
+#   ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SHARED_LIB (BOOL) - Library created as SHARED
+#   ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INTERFACE_LIB (BOOL) - Library created as INTERFACE
+#   Default: STATIC - Library created as INTERFACE
+#
+#   ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_TYPE
+#   Default: ${APP_NAME_LC}
+#   Option:  LIBRARY
+#
+macro(SETUP_BUILD_TARGET)
+  if(DEFINED ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_TYPE)
+    set(LIB_SCOPE ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_TYPE})
+  else()
+    set(LIB_SCOPE ${APP_NAME_LC})
+  endif()
+
+  if(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SHARED_LIB)
+    add_library(${LIB_SCOPE}::${CMAKE_FIND_PACKAGE_NAME} SHARED IMPORTED)
+  elseif(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INTERFACE_LIB)
+    add_library(${LIB_SCOPE}::${CMAKE_FIND_PACKAGE_NAME} INTERFACE IMPORTED)
+  else()
+    add_library(${LIB_SCOPE}::${CMAKE_FIND_PACKAGE_NAME} STATIC IMPORTED)
+  endif()
+
+  if(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR)
+    set_target_properties(${LIB_SCOPE}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                   INTERFACE_INCLUDE_DIRECTORIES "${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR}")
+  endif()
+
+  if(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LINK_LIBRARIES)
+    set_target_properties(${LIB_SCOPE}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                   INTERFACE_LINK_LIBRARIES "${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LINK_LIBRARIES}")
+  endif()
+
+  if(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_RELEASE)
+    set_target_properties(${LIB_SCOPE}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                   IMPORTED_CONFIGURATIONS RELEASE
+                                                                   IMPORTED_LOCATION_RELEASE "${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_RELEASE}")
+    if(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SHARED_LIB AND (WIN32 OR WINDOWS_STORE))
+      set_target_properties(${LIB_SCOPE}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                     IMPORTED_IMPLIB_RELEASE "${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_IMPLIB_RELEASE}")
+    endif()
+  endif()
+
+  if(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_DEBUG)
+    set_target_properties(${LIB_SCOPE}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                   IMPORTED_LOCATION_DEBUG "${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_DEBUG}")
+    set_property(TARGET ${LIB_SCOPE}::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY
+                                                                        IMPORTED_CONFIGURATIONS DEBUG)
+
+    if(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SHARED_LIB AND (WIN32 OR WINDOWS_STORE))
+      set_target_properties(${LIB_SCOPE}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                     IMPORTED_IMPLIB_DEBUG "${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_IMPLIB_DEBUG}")
+    endif()
+  endif()
+endmacro()
+
 # Custom property that we can track to allow us to notify to dependency find modules
 # that a dependency of that find module is being built, and therefore that higher level
 # dependency should also be built regardless of success in lib searches
