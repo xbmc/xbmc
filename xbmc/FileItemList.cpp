@@ -89,9 +89,8 @@ void CFileItemList::SetFastLookup(bool fastLookup)
   if (fastLookup && !m_fastLookup)
   { // generate the map
     m_map.clear();
-    for (unsigned int i = 0; i < m_items.size(); i++)
+    for (const auto& pItem : m_items)
     {
-      CFileItemPtr pItem = m_items[i];
       m_map.emplace(m_ignoreURLOptions ? CURL(pItem->GetPath()).GetWithoutOptions()
                                        : pItem->GetPath(),
                     pItem);
@@ -367,11 +366,11 @@ void CFileItemList::Sort(SortDescription sortDescription)
   // apply the new order to the existing CFileItems
   std::vector<std::shared_ptr<CFileItem>> sortedFileItems;
   sortedFileItems.reserve(Size());
-  for (SortItems::const_iterator it = sortItems.begin(); it != sortItems.end(); ++it)
+  for (const auto& sortItem : sortItems)
   {
-    CFileItemPtr item = m_items[(int)(*it)->at(FieldId).asInteger()];
+    CFileItemPtr item = m_items[static_cast<int>(sortItem->at(FieldId).asInteger())];
     // Set the sort label in the CFileItem
-    item->SetSortLabel((*it)->at(FieldSort).asWideString());
+    item->SetSortLabel(sortItem->at(FieldSort).asWideString());
 
     sortedFileItems.push_back(item);
   }
@@ -410,9 +409,8 @@ void CFileItemList::Archive(CArchive& ar)
     ar << (int)m_cacheToDisc;
 
     ar << (int)m_sortDetails.size();
-    for (unsigned int j = 0; j < m_sortDetails.size(); ++j)
+    for (const auto& details : m_sortDetails)
     {
-      const GUIViewSortDetails& details = m_sortDetails[j];
       ar << (int)details.m_sortDescription.sortBy;
       ar << (int)details.m_sortDescription.sortOrder;
       ar << (int)details.m_sortDescription.sortAttributes;
@@ -550,9 +548,8 @@ void CFileItemList::FilterCueItems()
   std::unique_lock<CCriticalSection> lock(m_lock);
   // Handle .CUE sheet files...
   std::vector<std::string> itemstodelete;
-  for (int i = 0; i < (int)m_items.size(); i++)
+  for (auto& pItem : m_items)
   {
-    CFileItemPtr pItem = m_items[i];
     if (!pItem->m_bIsFolder)
     { // see if it's a .CUE sheet
       if (MUSIC::IsCUESheet(*pItem))
@@ -564,10 +561,9 @@ void CFileItemList::FilterCueItems()
           cuesheet->GetMediaFiles(MediaFileVec);
 
           // queue the cue sheet and the underlying media file for deletion
-          for (std::vector<std::string>::iterator itMedia = MediaFileVec.begin();
-               itMedia != MediaFileVec.end(); ++itMedia)
+          for (const auto& itMedia : MediaFileVec)
           {
-            std::string strMediaFile = *itMedia;
+            std::string strMediaFile = itMedia;
             std::string fileFromCue =
                 strMediaFile; // save the file from the cue we're matching against,
             // as we're going to search for others here...
@@ -593,10 +589,9 @@ void CFileItemList::FilterCueItems()
                 { // try replacing the extension with one of our allowed ones.
                   std::vector<std::string> extensions = StringUtils::Split(
                       CServiceBroker::GetFileExtensionProvider().GetMusicExtensions(), "|");
-                  for (std::vector<std::string>::const_iterator i = extensions.begin();
-                       i != extensions.end(); ++i)
+                  for (const auto& ext : extensions)
                   {
-                    strMediaFile = URIUtils::ReplaceExtension(pItem->GetPath(), *i);
+                    strMediaFile = URIUtils::ReplaceExtension(pItem->GetPath(), ext);
                     CFileItem item(strMediaFile, false);
                     if (!MUSIC::IsCUESheet(item) && !PLAYLIST::IsPlayList(item) &&
                         Contains(strMediaFile))
@@ -612,9 +607,8 @@ void CFileItemList::FilterCueItems()
             {
               cuesheet->UpdateMediaFile(fileFromCue, strMediaFile);
               // apply CUE for later processing
-              for (int j = 0; j < (int)m_items.size(); j++)
+              for (auto& pItem : m_items)
               {
-                CFileItemPtr pItem = m_items[j];
                 if (StringUtils::CompareNoCase(pItem->GetPath(), strMediaFile) == 0)
                   pItem->SetCueDocument(cuesheet);
               }
@@ -626,17 +620,13 @@ void CFileItemList::FilterCueItems()
     }
   }
   // now delete the .CUE files.
-  for (int i = 0; i < (int)itemstodelete.size(); i++)
+  for (const auto& delItem : itemstodelete)
   {
-    for (int j = 0; j < (int)m_items.size(); j++)
-    {
-      CFileItemPtr pItem = m_items[j];
-      if (StringUtils::CompareNoCase(pItem->GetPath(), itemstodelete[i]) == 0)
-      { // delete this item
-        m_items.erase(m_items.begin() + j);
-        break;
-      }
-    }
+    const auto it = std::ranges::find_if(
+        m_items, [&delItem](const auto& pItem)
+        { return StringUtils::CompareNoCase(pItem->GetPath(), delItem) == 0; });
+    if (it != m_items.end())
+      m_items.erase(it);
   }
 }
 
@@ -694,9 +684,8 @@ void CFileItemList::StackFolders()
   }
 
   // stack folders
-  for (int i = 0; i < Size(); i++)
+  for (auto& item : m_items)
   {
-    CFileItemPtr item = Get(i);
     // combined the folder checks
     if (item->m_bIsFolder)
     {
