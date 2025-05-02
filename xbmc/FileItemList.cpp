@@ -106,18 +106,12 @@ bool CFileItemList::Contains(const std::string& fileName) const
 {
   std::unique_lock<CCriticalSection> lock(m_lock);
 
+  const std::string fname = m_ignoreURLOptions ? CURL(fileName).GetWithoutOptions() : fileName;
   if (m_fastLookup)
-    return m_map.find(m_ignoreURLOptions ? CURL(fileName).GetWithoutOptions() : fileName) !=
-           m_map.end();
+    return m_map.find(fname) != m_map.end();
 
   // slow method...
-  for (unsigned int i = 0; i < m_items.size(); i++)
-  {
-    const CFileItemPtr pItem = m_items[i];
-    if (pItem->IsPath(m_ignoreURLOptions ? CURL(fileName).GetWithoutOptions() : fileName))
-      return true;
-  }
-  return false;
+  return std::ranges::any_of(m_items, [&fname](const auto& pItem) { return pItem->IsPath(fname); });
 }
 
 void CFileItemList::Clear()
@@ -140,11 +134,7 @@ void CFileItemList::ClearItems()
   std::unique_lock<CCriticalSection> lock(m_lock);
   // make sure we free the memory of the items (these are GUIControls which may have allocated resources)
   FreeMemory();
-  for (unsigned int i = 0; i < m_items.size(); i++)
-  {
-    CFileItemPtr item = m_items[i];
-    item->FreeMemory();
-  }
+  std::ranges::for_each(m_items, [](const auto& item) { item->FreeMemory(); });
   m_items.clear();
   m_map.clear();
 }
@@ -229,8 +219,7 @@ void CFileItemList::Append(const CFileItemList& itemlist)
 {
   std::unique_lock<CCriticalSection> lock(m_lock);
 
-  for (int i = 0; i < itemlist.Size(); ++i)
-    Add(itemlist[i]);
+  std::ranges::for_each(itemlist, [this](const auto& item) { Add(item); });
 }
 
 void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
@@ -266,11 +255,8 @@ bool CFileItemList::Copy(const CFileItemList& items, bool copyItems /* = true */
   if (copyItems)
   {
     // make a copy of each item
-    for (int i = 0; i < items.Size(); i++)
-    {
-      CFileItemPtr newItem(new CFileItem(*items[i]));
-      Add(newItem);
-    }
+    std::ranges::for_each(items,
+                          [this](const auto& item) { Add(std::make_shared<CFileItem>(*item)); });
   }
 
   return true;
@@ -299,14 +285,10 @@ CFileItemPtr CFileItemList::Get(const std::string& strPath) const
     return CFileItemPtr();
   }
   // slow method...
-  for (unsigned int i = 0; i < m_items.size(); i++)
-  {
-    CFileItemPtr pItem = m_items[i];
-    if (pItem->IsPath(m_ignoreURLOptions ? CURL(strPath).GetWithoutOptions() : strPath))
-      return pItem;
-  }
-
-  return CFileItemPtr();
+  const std::string fname = m_ignoreURLOptions ? CURL(strPath).GetWithoutOptions() : strPath;
+  const auto it =
+      std::ranges::find_if(m_items, [&fname](const auto& pItem) { return pItem->IsPath(fname); });
+  return it != m_items.end() ? *it : CFileItemPtr();
 }
 
 int CFileItemList::Size() const
@@ -531,25 +513,13 @@ void CFileItemList::Archive(CArchive& ar)
 void CFileItemList::FillInDefaultIcons()
 {
   std::unique_lock<CCriticalSection> lock(m_lock);
-  for (int i = 0; i < (int)m_items.size(); ++i)
-  {
-    CFileItemPtr pItem = m_items[i];
-    ART::FillInDefaultIcon(*pItem);
-  }
+  std::ranges::for_each(m_items, [](const auto& pItem) { ART::FillInDefaultIcon(*pItem); });
 }
 
 int CFileItemList::GetFolderCount() const
 {
   std::unique_lock<CCriticalSection> lock(m_lock);
-  int nFolderCount = 0;
-  for (int i = 0; i < (int)m_items.size(); i++)
-  {
-    CFileItemPtr pItem = m_items[i];
-    if (pItem->m_bIsFolder)
-      nFolderCount++;
-  }
-
-  return nFolderCount;
+  return std::ranges::count_if(m_items, [](const auto& pItem) { return pItem->m_bIsFolder; });
 }
 
 int CFileItemList::GetObjectCount() const
@@ -566,29 +536,13 @@ int CFileItemList::GetObjectCount() const
 int CFileItemList::GetFileCount() const
 {
   std::unique_lock<CCriticalSection> lock(m_lock);
-  int nFileCount = 0;
-  for (int i = 0; i < (int)m_items.size(); i++)
-  {
-    CFileItemPtr pItem = m_items[i];
-    if (!pItem->m_bIsFolder)
-      nFileCount++;
-  }
-
-  return nFileCount;
+  return std::ranges::count_if(m_items, [](const auto& pItem) { return !pItem->m_bIsFolder; });
 }
 
 int CFileItemList::GetSelectedCount() const
 {
   std::unique_lock<CCriticalSection> lock(m_lock);
-  int count = 0;
-  for (int i = 0; i < (int)m_items.size(); i++)
-  {
-    CFileItemPtr pItem = m_items[i];
-    if (pItem->IsSelected())
-      count++;
-  }
-
-  return count;
+  return std::ranges::count_if(m_items, [](const auto& pItem) { return pItem->IsSelected(); });
 }
 
 void CFileItemList::FilterCueItems()
@@ -690,8 +644,7 @@ void CFileItemList::FilterCueItems()
 void CFileItemList::RemoveExtensions()
 {
   std::unique_lock<CCriticalSection> lock(m_lock);
-  for (int i = 0; i < Size(); ++i)
-    m_items[i]->RemoveExtension();
+  std::ranges::for_each(m_items, [](auto& item) { item->RemoveExtension(); });
 }
 
 void CFileItemList::Stack(bool stackFiles /* = true */)
@@ -1111,16 +1064,12 @@ bool CFileItemList::UpdateItem(const CFileItem* item)
     return false;
 
   std::unique_lock<CCriticalSection> lock(m_lock);
-  for (unsigned int i = 0; i < m_items.size(); i++)
-  {
-    CFileItemPtr pItem = m_items[i];
-    if (pItem->IsSamePath(item))
-    {
-      pItem->UpdateInfo(*item);
-      return true;
-    }
-  }
-  return false;
+  const auto it =
+      std::ranges::find_if(m_items, [&item](const auto& pItem) { return pItem->IsSamePath(item); });
+  if (it != m_items.end())
+    (*it)->UpdateInfo(*item);
+
+  return it != m_items.end();
 }
 
 void CFileItemList::AddSortMethod(SortBy sortBy,
