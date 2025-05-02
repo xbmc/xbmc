@@ -25,6 +25,11 @@ public:
   explicit IListProvider(const IListProvider& other) = default;
   virtual ~IListProvider() = default;
 
+  /*! \brief Get the parent id for the container.
+   \return the id.
+   */
+  int GetParentId() const { return m_parentID; }
+
   /*! \brief Factory to create list providers.
    \param parent a parent TiXmlNode for the container.
    \param parentID id of parent window for context.
@@ -110,6 +115,7 @@ public:
    \sa GetDefaultItem, SetDefaultItem
    */
   virtual bool AlwaysFocusDefaultItem() const { return false; }
-protected:
-  int m_parentID;
+
+private:
+  const int m_parentID{-1};
 };

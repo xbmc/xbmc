@@ -42,7 +42,7 @@ CGUIGameControllerProvider::CGUIGameControllerProvider(unsigned int portCount,
 }
 
 CGUIGameControllerProvider::CGUIGameControllerProvider(const CGUIGameControllerProvider& other)
-  : IListProvider(other.m_parentID),
+  : IListProvider(other),
     m_portCount(other.m_portCount),
     m_portIndex(other.m_portIndex),
     m_peripheralLocation(other.m_peripheralLocation),

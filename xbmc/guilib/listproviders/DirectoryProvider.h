@@ -52,13 +52,6 @@ class CDirectoryProvider : public IListProvider,
                            private ITimerCallback
 {
 public:
-  typedef enum
-  {
-    OK,
-    INVALIDATED,
-    DONE
-  } UpdateState;
-
   enum class BrowseMode
   {
     NEVER,
@@ -92,12 +85,19 @@ public:
   class CSubscriber;
 
 private:
+  enum class UpdateState
+  {
+    OK,
+    INVALIDATED,
+    DONE
+  };
+
   void StartDirectoryJob();
 
   // ITimerCallback implementation
   void OnTimeout() override;
 
-  UpdateState m_updateState = OK;
+  UpdateState m_updateState{UpdateState::OK};
   unsigned int m_jobID = 0;
   bool m_jobPending{false};
   std::chrono::time_point<std::chrono::system_clock> m_lastJobStartedAt;

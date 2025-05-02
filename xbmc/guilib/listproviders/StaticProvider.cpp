@@ -12,11 +12,8 @@
 #include "utils/TimeUtils.h"
 #include "utils/XMLUtils.h"
 
-CStaticListProvider::CStaticListProvider(const TiXmlElement *element, int parentID)
-: IListProvider(parentID),
-  m_defaultItem(-1),
-  m_defaultAlways(false),
-  m_updateTime(0)
+CStaticListProvider::CStaticListProvider(const TiXmlElement* element, int parentID)
+  : IListProvider(parentID)
 {
   assert(element);
 
@@ -24,10 +21,8 @@ CStaticListProvider::CStaticListProvider(const TiXmlElement *element, int parent
   while (item)
   {
     if (item->FirstChild())
-    {
-      CGUIStaticItemPtr newItem(new CGUIStaticItem(item, parentID));
-      m_items.push_back(newItem);
-    }
+      m_items.emplace_back(std::make_shared<CGUIStaticItem>(item, parentID));
+
     item = item->NextSiblingElement("item");
   }
 
@@ -39,28 +34,24 @@ CStaticListProvider::CStaticListProvider(const TiXmlElement *element, int parent
   }
 }
 
-CStaticListProvider::CStaticListProvider(const std::vector<CGUIStaticItemPtr> &items)
-: IListProvider(0),
-  m_defaultItem(-1),
-  m_defaultAlways(false),
-  m_updateTime(0),
-  m_items(items)
+CStaticListProvider::CStaticListProvider(const std::vector<CGUIStaticItemPtr>& items)
+  : IListProvider(0), m_items(items)
 {
 }
 
 CStaticListProvider::CStaticListProvider(const CStaticListProvider& other)
-  : IListProvider(other.m_parentID),
+  : IListProvider(other),
     m_defaultItem(other.m_defaultItem),
     m_defaultAlways(other.m_defaultAlways),
     m_updateTime(other.m_updateTime)
 {
   for (const auto& item : other.m_items)
   {
-    std::shared_ptr<CGUIListItem> control(item->Clone());
+    const std::shared_ptr<CGUIListItem> control(item->Clone());
     if (!control)
       continue;
 
-    std::shared_ptr<CGUIStaticItem> newItem = std::dynamic_pointer_cast<CGUIStaticItem>(control);
+    auto newItem{std::dynamic_pointer_cast<CGUIStaticItem>(control)};
     if (!newItem)
       continue;
 
@@ -79,15 +70,19 @@ bool CStaticListProvider::Update(bool forceRefresh)
 {
   bool changed = forceRefresh;
   if (!m_updateTime)
+  {
     m_updateTime = CTimeUtils::GetFrameTime();
+  }
   else if (CTimeUtils::GetFrameTime() - m_updateTime > 1000)
   {
     m_updateTime = CTimeUtils::GetFrameTime();
-    for (auto& i : m_items)
-      i->UpdateProperties(m_parentID);
+    for (const auto& i : m_items)
+      i->UpdateProperties(GetParentId());
   }
-  for (auto& i : m_items)
-    changed |= i->UpdateVisibility(m_parentID);
+
+  for (const auto& i : m_items)
+    changed |= i->UpdateVisibility(GetParentId());
+
   return changed; //! @todo Also returned changed if properties are changed (if so, need to update scroll to letter).
 }
 
@@ -114,12 +109,13 @@ int CStaticListProvider::GetDefaultItem() const
     unsigned int offset = 0;
     for (const auto& i : m_items)
     {
-      if (i->IsVisible())
-      {
-        if (i->m_iprogramCount == m_defaultItem)
-          return offset;
-        offset++;
-      }
+      if (!i->IsVisible())
+        continue;
+
+      if (i->m_iprogramCount == m_defaultItem)
+        return offset;
+
+      offset++;
     }
   }
   return -1;
@@ -132,6 +128,6 @@ bool CStaticListProvider::AlwaysFocusDefaultItem() const
 
 bool CStaticListProvider::OnClick(const std::shared_ptr<CGUIListItem>& item)
 {
-  CGUIStaticItem *staticItem = static_cast<CGUIStaticItem*>(item.get());
-  return staticItem->GetClickActions().ExecuteActions(0, m_parentID);
+  const auto* staticItem{static_cast<CGUIStaticItem*>(item.get())};
+  return staticItem->GetClickActions().ExecuteActions(0, GetParentId());
 }
