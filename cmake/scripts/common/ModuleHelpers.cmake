@@ -641,6 +641,25 @@ macro(SETUP_BUILD_TARGET)
   endif()
 endmacro()
 
+# Macro to add INTERFACE_COMPILE_DEFINITIONS to a TARGET
+# if ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_COMPILE_DEFINITIONS is defined
+#
+# We use this to add HAVE_<LIB> defines to any TARGET type we use (pkgconfig, cmake or build)
+#
+macro(ADD_TARGET_COMPILE_DEFINITION)
+  if(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_COMPILE_DEFINITIONS)
+    get_target_property(_ALIASTARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIASED_TARGET)
+    if(_ALIASTARGET)
+      set(LIB_TARGET ${_ALIASTARGET})
+    else()
+      set(LIB_TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
+    endif()
+
+    set_property(TARGET ${LIB_TARGET} APPEND PROPERTY
+                                             INTERFACE_COMPILE_DEFINITIONS "${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_COMPILE_DEFINITIONS}")
+  endif()
+endmacro()
+
 # Custom property that we can track to allow us to notify to dependency find modules
 # that a dependency of that find module is being built, and therefore that higher level
 # dependency should also be built regardless of success in lib searches
