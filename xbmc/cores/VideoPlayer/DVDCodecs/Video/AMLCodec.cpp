@@ -1930,15 +1930,20 @@ bool CAMLCodec::OpenDecoder(bool restart)
   m_decoder_stream_buffer = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoDecoderStreamBuffer;
   m_decoder_minimum_buffer = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoDecoderMinimumBuffer;
   m_decoder_minimum_stream_buffer = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoDecoderMinimumStreamBuffer;
+  m_decoder_stream_type_stream_offset = static_cast<uint64_t>(CServiceBroker::GetSettingsComponent()
+                                                              ->GetAdvancedSettings()->m_videoDecoderStreamTypeStreamOffset * 1000);
   m_buffer_level_ready = false;
 
-  logM(LOGINFO, "CAMLCodec", "Decoder settings: timeout: [{:d}s], bypass buffer ready: [{:d}], buffer: [{:.1f}%], stream buffer: [{:.1f}%], minimum buffer: [{:.1f}%], minimum stream buffer: [{:.1f}%]",
+  logM(LOGINFO, "CAMLCodec", "Decoder settings: timeout: [{:d}s], bypass buffer ready: [{:d}], buffer: [{:.1f}%], "
+                             "stream buffer: [{:.1f}%], minimum buffer: [{:.1f}%], minimum stream buffer: [{:.1f}%] "
+                             "stream type stream offset: [{:d}usec]",
     m_decoder_timeout,
     m_decoder_bypass_buffer_ready,
     m_decoder_buffer,
     m_decoder_stream_buffer,
     m_decoder_minimum_buffer,
-    m_decoder_minimum_stream_buffer);
+    m_decoder_minimum_stream_buffer,
+    m_decoder_stream_type_stream_offset);
 
   if (!OpenAmlVideo(hints))
   {
@@ -2589,6 +2594,9 @@ int CAMLCodec::DequeueBuffer()
 
     m_cur_pts =  static_cast<uint64_t>(static_cast<uint32_t>(vbuf.timestamp.tv_sec)) << 32;
     m_cur_pts += static_cast<uint32_t>(vbuf.timestamp.tv_usec);
+
+    if (am_private->vcodec.dec_mode == STREAM_TYPE_STREAM) // Offset for STREAM_TYPE_STREAM (Used for FEL)
+      m_cur_pts -= std::min(m_cur_pts, m_decoder_stream_type_stream_offset);
 
     logComponentM(LOGDEBUG, LOGAVTIMING, "CAMLCodec", "pts:{:.3f} idx:{:d}",
                   static_cast<double>(m_cur_pts) /  DVD_TIME_BASE, vbuf.index);

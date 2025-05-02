@@ -143,6 +143,7 @@ private:
   float m_decoder_stream_buffer;
   float m_decoder_minimum_buffer;
   float m_decoder_minimum_stream_buffer;
+  uint64_t m_decoder_stream_type_stream_offset;
 
   std::chrono::time_point<std::chrono::system_clock> m_tp_last_frame;
 
