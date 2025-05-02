@@ -14,11 +14,7 @@
 #include <utility>
 #include <vector>
 
-namespace KODI
-{
-namespace GUILIB
-{
-namespace GUIINFO
+namespace KODI::GUILIB::GUIINFO
 {
 
 class CGUIInfo;
@@ -54,6 +50,4 @@ private:
   mutable std::vector<std::pair<std::string, int>> m_libraryRoleCounts;
 };
 
-} // namespace GUIINFO
-} // namespace GUILIB
-} // namespace KODI
+} // namespace KODI::GUILIB::GUIINFO

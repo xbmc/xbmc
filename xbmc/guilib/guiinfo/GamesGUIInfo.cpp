@@ -47,7 +47,7 @@ bool CGamesGUIInfo::InitCurrentItem(CFileItem *item)
 
 bool CGamesGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const CGUIInfo &info, std::string *fallback) const
 {
-  switch (info.m_info)
+  switch (info.GetInfo())
   {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // RETROPLAYER_*

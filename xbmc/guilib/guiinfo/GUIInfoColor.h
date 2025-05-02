@@ -20,11 +20,7 @@
 
 class CGUIListItem;
 
-namespace KODI
-{
-namespace GUILIB
-{
-namespace GUIINFO
+namespace KODI::GUILIB::GUIINFO
 {
 
 class CGUIInfoColor
@@ -49,6 +45,4 @@ private:
   KODI::UTILS::COLOR::Color m_color;
 };
 
-} // namespace GUIINFO
-} // namespace GUILIB
-} // namespace KODI
+} // namespace KODI::GUILIB::GUIINFO

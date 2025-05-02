@@ -101,15 +101,16 @@ bool CVideoGUIInfo::InitCurrentItem(CFileItem *item)
 bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const CGUIInfo &info, std::string *fallback) const
 {
   // For videoplayer "offset" and "position" info labels check playlist
-  if (info.GetData1() && ((info.m_info >= VIDEOPLAYER_OFFSET_POSITION_FIRST &&
-      info.m_info <= VIDEOPLAYER_OFFSET_POSITION_LAST) ||
-      (info.m_info >= PLAYER_OFFSET_POSITION_FIRST && info.m_info <= PLAYER_OFFSET_POSITION_LAST)))
+  if (info.GetData1() && ((info.GetInfo() >= VIDEOPLAYER_OFFSET_POSITION_FIRST &&
+                           info.GetInfo() <= VIDEOPLAYER_OFFSET_POSITION_LAST) ||
+                          (info.GetInfo() >= PLAYER_OFFSET_POSITION_FIRST &&
+                           info.GetInfo() <= PLAYER_OFFSET_POSITION_LAST)))
     return GetPlaylistInfo(value, info);
 
   const CVideoInfoTag* tag = item->GetVideoInfoTag();
   if (tag)
   {
-    switch (info.m_info)
+    switch (info.GetInfo())
     {
       /////////////////////////////////////////////////////////////////////////////////////////////
       // PLAYER_* / VIDEOPLAYER_* / LISTITEM_*
@@ -126,11 +127,9 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         value = tag->m_strFileNameAndPath;
         if (value.empty())
           value = item->GetPath();
-        value = GUIINFO::GetFileInfoLabelValueFromPath(info.m_info, value);
+        value = GUIINFO::GetFileInfoLabelValueFromPath(info.GetInfo(), value);
         return true;
       case PLAYER_TITLE:
-        value = tag->m_strTitle;
-        return !value.empty();
       case VIDEOPLAYER_TITLE:
         value = tag->m_strTitle;
         return !value.empty();
@@ -508,12 +507,12 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         else
           value = URIUtils::GetFileName(item->GetPath());
 
-        if (info.m_info == LISTITEM_FILE_EXTENSION)
+        if (info.GetInfo() == LISTITEM_FILE_EXTENSION)
         {
           std::string strExtension = URIUtils::GetExtension(value);
           value = StringUtils::TrimLeft(strExtension, ".");
         }
-        else if (info.m_info == LISTITEM_FILENAME_NO_EXTENSION)
+        else if (info.GetInfo() == LISTITEM_FILENAME_NO_EXTENSION)
         {
           URIUtils::RemoveExtension(value);
         }
@@ -534,7 +533,7 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
 
         value = CURL(value).GetWithoutUserDetails();
 
-        if (info.m_info == LISTITEM_FOLDERNAME)
+        if (info.GetInfo() == LISTITEM_FOLDERNAME)
         {
           URIUtils::RemoveSlashAtEnd(value);
           value = URIUtils::GetFileName(value);
@@ -554,7 +553,7 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         // Decode path for readability
         // Loop up to MAX_DECODE_PASSES times as each call to CURL::Decode() decodes one 'layer'
         // ie. bluray://udf://smb:// would require 2 passes to make fully human-readable
-        if (info.m_info == LISTITEM_DECODED_FILENAME_AND_PATH)
+        if (info.GetInfo() == LISTITEM_DECODED_FILENAME_AND_PATH)
         {
           static constexpr unsigned int MAX_DECODE_PASSES = 5;
           for (unsigned int i = 0; value.find('%') != std::string::npos && i < MAX_DECODE_PASSES;
@@ -566,10 +565,12 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       case LISTITEM_VIDEO_HDR_TYPE:
         value = tag->m_streamDetails.GetVideoHdrType();
         return true;
+      default:
+        break;
     }
   }
 
-  switch (info.m_info)
+  switch (info.GetInfo())
   {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // VIDEOPLAYER_*
@@ -666,6 +667,8 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
     case VIDEOPLAYER_AUDIO_LANG:
       value = m_audioInfo.language;
       return true;
+    default:
+      break;
   }
 
   return false;
@@ -697,23 +700,23 @@ bool CVideoGUIInfo::GetPlaylistInfo(std::string& value, const CGUIInfo& info) co
     CVideoThumbLoader loader;
     loader.LoadItem(playlistItem.get());
   }
-  if (info.m_info == VIDEOPLAYER_PLAYLISTPOS)
+  if (info.GetInfo() == VIDEOPLAYER_PLAYLISTPOS)
   {
     value = std::to_string(index + 1);
     return true;
   }
-  else if (info.m_info == VIDEOPLAYER_COVER)
+  else if (info.GetInfo() == VIDEOPLAYER_COVER)
   {
     value = playlistItem->GetArt("thumb");
     return true;
   }
-  else if (info.m_info == VIDEOPLAYER_ART)
+  else if (info.GetInfo() == VIDEOPLAYER_ART)
   {
     value = playlistItem->GetArt(info.GetData3());
     return true;
   }
 
-  return GetLabel(value, playlistItem.get(), 0, CGUIInfo(info.m_info), nullptr);
+  return GetLabel(value, playlistItem.get(), 0, CGUIInfo(info.GetInfo()), nullptr);
 }
 
 bool CVideoGUIInfo::GetFallbackLabel(std::string& value,
@@ -723,15 +726,16 @@ bool CVideoGUIInfo::GetFallbackLabel(std::string& value,
                                      std::string* fallback)
 {
   // No fallback for videoplayer "offset" and "position" info labels
-  if (info.GetData1() && ((info.m_info >= VIDEOPLAYER_OFFSET_POSITION_FIRST &&
-      info.m_info <= VIDEOPLAYER_OFFSET_POSITION_LAST) ||
-      (info.m_info >= PLAYER_OFFSET_POSITION_FIRST && info.m_info <= PLAYER_OFFSET_POSITION_LAST)))
+  if (info.GetData1() && ((info.GetInfo() >= VIDEOPLAYER_OFFSET_POSITION_FIRST &&
+                           info.GetInfo() <= VIDEOPLAYER_OFFSET_POSITION_LAST) ||
+                          (info.GetInfo() >= PLAYER_OFFSET_POSITION_FIRST &&
+                           info.GetInfo() <= PLAYER_OFFSET_POSITION_LAST)))
     return false;
 
   const CVideoInfoTag* tag = item->GetVideoInfoTag();
   if (tag)
   {
-    switch (info.m_info)
+    switch (info.GetInfo())
     {
       /////////////////////////////////////////////////////////////////////////////////////////////
       // VIDEOPLAYER_*
@@ -753,11 +757,11 @@ bool CVideoGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWin
   if (!gitem->IsFileItem())
     return false;
 
-  const CFileItem *item = static_cast<const CFileItem*>(gitem);
+  const auto* item{static_cast<const CFileItem*>(gitem)};
   const CVideoInfoTag* tag = item->GetVideoInfoTag();
   if (tag)
   {
-    switch (info.m_info)
+    switch (info.GetInfo())
     {
       /////////////////////////////////////////////////////////////////////////////////////////////
       // LISTITEM_*
@@ -765,10 +769,12 @@ bool CVideoGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWin
       case LISTITEM_PERCENT_PLAYED:
         value = GetPercentPlayed(tag);
         return true;
+      default:
+        break;
     }
   }
 
-  switch (info.m_info)
+  switch (info.GetInfo())
   {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // VIDEOPLAYER_*
@@ -779,7 +785,6 @@ bool CVideoGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWin
     case VIDEOPLAYER_AUDIOSTREAMCOUNT:
       value = m_appPlayer->GetAudioStreamCount();
       return true;
-
     default:
       break;
   }
@@ -792,11 +797,11 @@ bool CVideoGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextW
   if (!gitem->IsFileItem())
     return false;
 
-  const CFileItem *item = static_cast<const CFileItem*>(gitem);
+  const auto* item{static_cast<const CFileItem*>(gitem)};
   const CVideoInfoTag* tag = item->GetVideoInfoTag();
   if (tag)
   {
-    switch (info.m_info)
+    switch (info.GetInfo())
     {
       /////////////////////////////////////////////////////////////////////////////////////////////
       // VIDEOPLAYER_*
@@ -821,10 +826,12 @@ bool CVideoGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextW
       case LISTITEM_HASVIDEOEXTRAS:
         value = tag->HasVideoExtras();
         return true;
+      default:
+        break;
     }
   }
 
-  switch (info.m_info)
+  switch (info.GetInfo())
   {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // VIDEOPLAYER_*
@@ -882,6 +889,8 @@ bool CVideoGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextW
         value = true;
       return true;
     }
+    default:
+      break;
   }
 
   return false;

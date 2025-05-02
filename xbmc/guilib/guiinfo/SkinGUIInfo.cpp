@@ -28,7 +28,7 @@ bool CSkinGUIInfo::InitCurrentItem(CFileItem *item)
 
 bool CSkinGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const CGUIInfo &info, std::string *fallback) const
 {
-  switch (info.m_info)
+  switch (info.GetInfo())
   {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // SKIN_*
@@ -77,6 +77,8 @@ bool CSkinGUIInfo::GetLabel(std::string& value, const CFileItem *item, int conte
       value = std::to_string(g_SkinInfo->GetTimerElapsedSeconds(info.GetData3()));
       return true;
     }
+    default:
+      break;
   }
 
   return false;
@@ -84,7 +86,7 @@ bool CSkinGUIInfo::GetLabel(std::string& value, const CFileItem *item, int conte
 
 bool CSkinGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
 {
-  switch (info.m_info)
+  switch (info.GetInfo())
   {
     case SKIN_INTEGER:
     {
@@ -96,13 +98,15 @@ bool CSkinGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWind
       value = g_SkinInfo->GetTimerElapsedSeconds(info.GetData3());
       return true;
     }
+    default:
+      break;
   }
   return false;
 }
 
 bool CSkinGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
 {
-  switch (info.m_info)
+  switch (info.GetInfo())
   {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // SKIN_*
@@ -134,6 +138,8 @@ bool CSkinGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWi
       value = g_SkinInfo->TimerIsRunning(info.GetData3());
       return true;
     }
+    default:
+      break;
   }
 
   return false;

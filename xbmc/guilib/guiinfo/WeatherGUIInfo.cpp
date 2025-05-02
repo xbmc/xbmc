@@ -28,7 +28,7 @@ bool CWeatherGUIInfo::InitCurrentItem(CFileItem *item)
 
 bool CWeatherGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const CGUIInfo &info, std::string *fallback) const
 {
-  switch (info.m_info)
+  switch (info.GetInfo())
   {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // WEATHER_*
@@ -55,6 +55,8 @@ bool CWeatherGUIInfo::GetLabel(std::string& value, const CFileItem *item, int co
     case WEATHER_PLUGIN:
       value = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_WEATHER_ADDON);
       return true;
+    default:
+      break;
   }
 
   return false;
@@ -67,14 +69,16 @@ bool CWeatherGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextW
 
 bool CWeatherGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
 {
-  switch (info.m_info)
+  switch (info.GetInfo())
   {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // WEATHER_*
     ///////////////////////////////////////////////////////////////////////////////////////////////
     case WEATHER_IS_FETCHED:
       value = CServiceBroker::GetWeatherManager().IsFetched();
-      return true;;
+      return true;
+    default:
+      break;
   }
 
   return false;
