@@ -9,7 +9,7 @@
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
-  macro(buildexiv2)
+  macro(buildmacroExiv2)
     find_package(Brotli REQUIRED ${SEARCH_QUIET})
     find_package(Iconv REQUIRED ${SEARCH_QUIET})
     find_package(Zlib REQUIRED ${SEARCH_QUIET})
@@ -96,8 +96,9 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   if((${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER} AND ENABLE_INTERNAL_EXIV2) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_EXIV2) OR
      (DEFINED ${CMAKE_FIND_PACKAGE_NAME}_FORCE_BUILD))
-
-    buildexiv2()
+    cmake_language(EVAL CODE "
+      buildmacro${CMAKE_FIND_PACKAGE_NAME}()
+    ")
   else()
     if(TARGET Exiv2::exiv2lib OR TARGET exiv2lib)
       # We create variables based off TARGET data for use with FPHSA
@@ -167,21 +168,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
       add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
     endif()
 
-    # Add internal build target when a Multi Config Generator is used
-    # We cant add a dependency based off a generator expression for targeted build types,
-    # https://gitlab.kitware.com/cmake/cmake/-/issues/19467
-    # therefore if the find heuristics only find the library, we add the internal build
-    # target to the project to allow user to manually trigger for any build type they need
-    # in case only a specific build type is actually available (eg Release found, Debug Required)
-    # This is mainly targeted for windows who required different runtime libs for different
-    # types, and they arent compatible
-    if(_multiconfig_generator)
-      if(NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
-        buildexiv2()
-        set_target_properties(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} PROPERTIES EXCLUDE_FROM_ALL TRUE)
-      endif()
-      add_dependencies(build_internal_depends ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
-    endif()
+    ADD_MULTICONFIG_BUILDMACRO()
   else()
     if(Exiv2_FIND_REQUIRED)
       message(FATAL_ERROR "Could NOT find or build Exiv2 library. You may want to try -DENABLE_INTERNAL_EXIV2=ON")
