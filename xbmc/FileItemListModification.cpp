@@ -25,8 +25,8 @@ CFileItemListModification::CFileItemListModification()
 
 CFileItemListModification::~CFileItemListModification()
 {
-  for (std::set<IFileItemListModifier*>::const_iterator modifier = m_modifiers.begin(); modifier != m_modifiers.end(); ++modifier)
-    delete *modifier;
+  for (auto& modifier : m_modifiers)
+    delete modifier;
 
   m_modifiers.clear();
 }
