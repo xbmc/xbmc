@@ -27,7 +27,7 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
     BUILD_DEP_TARGET()
 
-    set(EFFECTS11_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
 
     # Make INCLUDE_DIR match cmake config output
     string(APPEND ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR "/Effects11")
@@ -38,62 +38,47 @@ if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
 
   SETUP_BUILD_VARS()
 
-  find_package(effects11 CONFIG ${SEARCH_QUIET}
-                                HINTS ${DEPENDS_PATH}/share
-                                ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+  SEARCH_EXISTING_PACKAGES()
 
-  if(effects11_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
+  if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
     buildEffects11()
   else()
     get_target_property(_EFFECTS_CONFIGURATIONS Microsoft::Effects11 IMPORTED_CONFIGURATIONS)
-    foreach(_effects_config IN LISTS _EFFECTS_CONFIGURATIONS)
-      # Some non standard config (eg None on Debian)
-      # Just set to RELEASE var so select_library_configurations can continue to work its magic
-      string(TOUPPER ${_effects_config} _effects_config_UPPER)
-      if((NOT ${_effects_config_UPPER} STREQUAL "RELEASE") AND
-         (NOT ${_effects_config_UPPER} STREQUAL "DEBUG"))
-        get_target_property(EFFECTS11_LIBRARY_RELEASE Microsoft::Effects11 IMPORTED_LOCATION_${_effects_config_UPPER})
-      else()
-        get_target_property(EFFECTS11_LIBRARY_${_effects_config_UPPER} Microsoft::Effects11 IMPORTED_LOCATION_${_effects_config_UPPER})
-      endif()
-    endforeach()
+    if(_EFFECTS_CONFIGURATIONS)
+      foreach(_effects_config IN LISTS _EFFECTS_CONFIGURATIONS)
+        # Just set to RELEASE var so select_library_configurations can continue to work its magic
+        string(TOUPPER ${_effects_config} _effects_config_UPPER)
+        if((NOT ${_effects_config_UPPER} STREQUAL "RELEASE") AND
+           (NOT ${_effects_config_UPPER} STREQUAL "DEBUG"))
+          get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_RELEASE Microsoft::Effects11 IMPORTED_LOCATION_${_effects_config_UPPER})
+        else()
+          get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_${_effects_config_UPPER} Microsoft::Effects11 IMPORTED_LOCATION_${_effects_config_UPPER})
+        endif()
+      endforeach()
+    else()
+      get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY_RELEASE Microsoft::Effects11 IMPORTED_LOCATION)
+    endif()
 
-    get_target_property(EFFECTS11_INCLUDE_DIR Microsoft::Effects11 INTERFACE_INCLUDE_DIRECTORIES)
-    set(EFFECTS11_VERSION ${effects11_VERSION})
+    get_target_property(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR Microsoft::Effects11 INTERFACE_INCLUDE_DIRECTORIES)
+    set(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VERSION ${${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION})
   endif()
 
   include(SelectLibraryConfigurations)
-  select_library_configurations(EFFECTS11)
-  unset(EFFECTS11_LIBRARIES)
+  select_library_configurations(${${CMAKE_FIND_PACKAGE_NAME}_MODULE})
+  unset(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARIES)
 
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(Effects11
-                                    REQUIRED_VARS EFFECTS11_LIBRARY EFFECTS11_INCLUDE_DIR
-                                    VERSION_VAR EFFECTS11_VERSION)
+                                    REQUIRED_VARS ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_LIBRARY ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INCLUDE_DIR
+                                    VERSION_VAR ${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VERSION)
 
   if(Effects11_FOUND)
     
     if(TARGET Microsoft::Effects11 AND NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS Microsoft::Effects11)
     else()
-      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
-      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                       INTERFACE_INCLUDE_DIRECTORIES "${EFFECTS11_INCLUDE_DIR}")
+      SETUP_BUILD_TARGET()
 
-      if(EFFECTS11_LIBRARY_RELEASE)
-        set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                         IMPORTED_CONFIGURATIONS RELEASE
-                                                                         IMPORTED_LOCATION_RELEASE "${EFFECTS11_LIBRARY_RELEASE}")
-      endif()
-      if(EFFECTS11_LIBRARY_DEBUG)
-        set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                         IMPORTED_LOCATION_DEBUG "${EFFECTS11_LIBRARY_DEBUG}")
-        set_property(TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} APPEND PROPERTY
-                                                                              IMPORTED_CONFIGURATIONS DEBUG)
-      endif()
-    endif()
-
-    if(TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
       add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
     endif()
 
