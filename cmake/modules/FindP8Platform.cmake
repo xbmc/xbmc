@@ -9,7 +9,7 @@
 if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  macro(buildlibp8platform)
+  macro(buildmacroP8Platform)
     set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/001-all-fix-c++17-support.patch"
                 "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/002-all-fixcmakeinstall.patch"
                 "${CORE_SOURCE_DIR}/tools/depends/target/${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}/003-all-cmake_tweakversion.patch"
@@ -46,7 +46,9 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
 
   if(${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME}_VERSION VERSION_LESS ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_VER})
     # build p8-platform lib
-    buildlibp8platform()
+    cmake_language(EVAL CODE "
+      buildmacro${CMAKE_FIND_PACKAGE_NAME}()
+    ")
   else()
     if(TARGET PkgConfig::${${CMAKE_FIND_PACKAGE_NAME}_SEARCH_NAME})
       # First item is the full path of the library file found
@@ -85,21 +87,7 @@ if(NOT TARGET LIBRARY::${CMAKE_FIND_PACKAGE_NAME})
       set_target_properties(LIBRARY::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES LIB_BUILD ON)
     endif()
 
-    # Add internal build target when a Multi Config Generator is used
-    # We cant add a dependency based off a generator expression for targeted build types,
-    # https://gitlab.kitware.com/cmake/cmake/-/issues/19467
-    # therefore if the find heuristics only find the library, we add the internal build
-    # target to the project to allow user to manually trigger for any build type they need
-    # in case only a specific build type is actually available (eg Release found, Debug Required)
-    # This is mainly targeted for windows who required different runtime libs for different
-    # types, and they arent compatible
-    if(_multiconfig_generator)
-      if(NOT TARGET ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
-        buildlibp8platform()
-        set_target_properties(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME} PROPERTIES EXCLUDE_FROM_ALL TRUE)
-      endif()
-      add_dependencies(build_internal_depends ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME})
-    endif()
+    ADD_MULTICONFIG_BUILDMACRO()
   else()
     if(P8Platform_FIND_REQUIRED)
       message(FATAL_ERROR "P8-PLATFORM not found.")
