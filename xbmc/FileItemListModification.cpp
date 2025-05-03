@@ -18,17 +18,9 @@ using namespace KODI;
 
 CFileItemListModification::CFileItemListModification()
 {
-  m_modifiers.push_back(new PLAYLIST::CSmartPlaylistFileItemListModifier());
-  m_modifiers.push_back(new CMusicFileItemListModifier());
-  m_modifiers.push_back(new CVideoFileItemListModifier());
-}
-
-CFileItemListModification::~CFileItemListModification()
-{
-  for (auto& modifier : m_modifiers)
-    delete modifier;
-
-  m_modifiers.clear();
+  m_modifiers.push_back(std::make_unique<PLAYLIST::CSmartPlaylistFileItemListModifier>());
+  m_modifiers.push_back(std::make_unique<CMusicFileItemListModifier>());
+  m_modifiers.push_back(std::make_unique<CVideoFileItemListModifier>());
 }
 
 CFileItemListModification& CFileItemListModification::GetInstance()
